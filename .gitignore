@@ -1,5 +1,12 @@
 # Ficheros que se ignorarán #
 #############################
+.classpath
+.project
+.settings/
+./compiler/src/es.fap.simpleled.generator/bin/*
+./compiler/src/es.fap.simpleled/bin/*
+eclipse/
+modules/
 *.jks
 
 # Compiled source #

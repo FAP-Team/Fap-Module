@@ -1,0 +1,7 @@
+# Ficheros que se ignorarán #
+#############################
+*.class
+*.ext
+*.xpt
+*.mwe2
+

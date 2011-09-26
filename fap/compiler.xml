@@ -12,8 +12,8 @@
 	<!-- FTP Tasks properties -->
 	<property name="ftp.server" value="fap-devel.etsii.ull.es"/>
 	<property name="ftp.fap.dir" value="/public/fap-sdk2/"/>
-	<property name="ftp.user" value="shaggy"/>
-	<property name="ftp.pass" value="shaggy"/>
+	<property name="ftp.user" value="undefined"/>
+	<property name="ftp.pass" value="undefined"/>
 	<!-- FTP Tasks properties -->
 	
 	<!-- SVN and SVN-ANT Tasks properties -->

@@ -3,4 +3,10 @@
 *.class
 *.xtext
 *.mwe2
-es/
+*.java
+*.xmi
+*.ecore
+*.genmodel
+*.g
+*.tokens
+src-gen/

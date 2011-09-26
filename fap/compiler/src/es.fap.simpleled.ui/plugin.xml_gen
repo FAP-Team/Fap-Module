@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+
+    <extension
+            point="org.eclipse.ui.editors">
+        <editor
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+            contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+            default="true"
+            extensions="fap"
+            id="es.fap.simpleled.Led"
+            name="Led Editor">
+        </editor>
+    </extension>
+    <extension
+        point="org.eclipse.ui.handlers">
+        <handler
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclarationHandler"
+            commandId="org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclaration">
+            <activeWhen>
+                <reference
+                    definitionId="es.fap.simpleled.Led.Editor.opened">
+                </reference>
+            </activeWhen>
+        </handler>
+        <handler
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.handler.ValidateActionHandler"
+            commandId="es.fap.simpleled.Led.validate">
+         <activeWhen>
+            <reference
+                    definitionId="es.fap.simpleled.Led.Editor.opened">
+            </reference>
+         </activeWhen>
+      </handler>
+    </extension>
+    <extension point="org.eclipse.core.expressions.definitions">
+        <definition id="es.fap.simpleled.Led.Editor.opened">
+            <and>
+                <reference definitionId="isActiveEditorAnInstanceOfXtextEditor"/>
+                <with variable="activeEditor">
+                    <test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName" 
+                        value="es.fap.simpleled.Led" 
+                        forcePluginActivation="true"/>
+                </with>        
+            </and>
+        </definition>
+    </extension>
+    <extension
+            point="org.eclipse.ui.preferencePages">
+        <page
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+            id="es.fap.simpleled.Led"
+            name="Led">
+            <keywordReference id="es.fap.simpleled.ui.keyword_Led"/>
+        </page>
+        <page
+            category="es.fap.simpleled.Led"
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
+            id="es.fap.simpleled.Led.coloring"
+            name="Syntax Coloring">
+            <keywordReference id="es.fap.simpleled.ui.keyword_Led"/>
+        </page>
+        <page
+            category="es.fap.simpleled.Led"
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
+            id="es.fap.simpleled.Led.templates"
+            name="Templates">
+            <keywordReference id="es.fap.simpleled.ui.keyword_Led"/>
+        </page>
+    </extension>
+    <extension
+        point="org.eclipse.ui.keywords">
+        <keyword
+            id="es.fap.simpleled.ui.keyword_Led"
+            label="Led"/>
+    </extension>
+    <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Trigger expensive validation"
+            id="es.fap.simpleled.Led.validate"
+            name="Validate">
+      </command>
+    </extension>
+    <extension point="org.eclipse.ui.menus">
+        <menuContribution
+            locationURI="popup:#TextEditorContext?after=group.edit">
+             <command
+                 commandId="es.fap.simpleled.Led.validate"
+                 style="push"
+                 tooltip="Trigger expensive validation">
+            <visibleWhen checkEnabled="false">
+                <reference
+                    definitionId="es.fap.simpleled.Led.Editor.opened">
+                </reference>
+            </visibleWhen>
+         </command>  
+         </menuContribution>
+    </extension>
+    <extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:#TextEditorContext?endof=group.find">
+			<command commandId="org.eclipse.xtext.ui.editor.FindReferences">
+				<visibleWhen checkEnabled="false">
+                	<reference definitionId="es.fap.simpleled.Led.Editor.opened">
+                	</reference>
+            	</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.handlers">
+	    <handler
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
+            commandId="org.eclipse.xtext.ui.editor.FindReferences">
+            <activeWhen>
+                <reference
+                    definitionId="es.fap.simpleled.Led.Editor.opened">
+                </reference>
+            </activeWhen>
+        </handler>
+    </extension>   
+
+<!-- adding resource factories -->
+
+	<extension
+		point="org.eclipse.emf.ecore.extension_parser">
+		<parser
+			class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			type="fap">
+		</parser>
+	</extension>
+	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
+        <resourceServiceProvider
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+            uriExtension="fap">
+        </resourceServiceProvider>
+    </extension>
+
+
+
+	<!-- Quick Outline -->
+	<extension
+		point="org.eclipse.ui.handlers">
+		<handler 
+			class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
+			commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline">
+			<activeWhen>
+				<reference
+					definitionId="es.fap.simpleled.Led.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+	</extension>
+	<extension
+		point="org.eclipse.ui.commands">
+		<command
+			description="Open the quick outline."
+			id="org.eclipse.xtext.ui.editor.outline.QuickOutline"
+			name="Quick Outline">
+		</command>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution
+			locationURI="popup:#TextEditorContext?after=group.open">
+			<command commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline"
+				style="push"
+				tooltip="Open Quick Outline">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="es.fap.simpleled.Led.Editor.opened"/>
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+   <!-- quickfix marker resolution generator -->
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator">
+      </markerResolutionGenerator>
+   </extension>
+
+</plugin>

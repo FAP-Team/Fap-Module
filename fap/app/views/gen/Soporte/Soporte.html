@@ -1,0 +1,51 @@
+
+			#{extends 'fap/template.html' /}
+			#{set title:'Soporte' /}
+
+			#{fap.permiso }
+
+			
+		#{if play.getVirtualFile("app/views/gen/menu/Soporte.html") != null}
+			#{set 'menu'}
+					#{include 'gen/menu/Soporte.html'/}
+			#{/set}
+		#{/if}
+		
+
+			#{fap.messages}
+
+			#{fap.permiso }
+
+			
+				
+			<div class="wiki ">
+
+<p>Utilice el siguiente formulario para notificar una incidencia o realizar cualquier consulta respecto a su solicitud. En el tiempo más breve posible se le contestará a la dirección de correo electrónico que indique.</p>			
+			</div>
+		
+			#{form @SoporteController.incidencia(), id:"incidencia" }
+				
+#{fap.texto titulo:'Email del remitente', campo:'incidencia.email', requerido:true /}		
+		
+#{fap.texto titulo:'Teléfono', campo:'incidencia.telefono', requerido:true /}		
+		
+#{fap.texto titulo:'Nombre', campo:'incidencia.nombre', requerido:true /}		
+		
+#{fap.texto titulo:'Apellidos', campo:'incidencia.apellidos', requerido:true /}		
+		
+#{fap.texto titulo:'Asunto', campo:'incidencia.asunto', requerido:true /}		
+		
+#{fap.areaTexto titulo:'Texto', campo:'incidencia.texto', requerido:true /}		
+		
+#{fap.boton id:'enviarIncidencia', titulo:'Enviar' /}
+			
+				
+			#{/form}
+		
+			
+
+			#{/fap.permiso}
+			#{/fap.messages}
+			#{/fap.permiso}
+
+		

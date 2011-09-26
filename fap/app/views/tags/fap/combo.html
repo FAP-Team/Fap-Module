@@ -1,0 +1,125 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0]) }%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+	def id = _id ?: field.id
+	def label = _titulo ?: play.i18n.Messages.get(field.name)
+	def value = _value ?: field.flashorvalue
+		
+	def ayuda = _ayuda
+	def requerido = _requerido != null? _requerido : false;
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	def showRow   = _noRow != null? !_noRow : true
+	def blanco    = _blanco != null? blanco : true
+	def searchable = _searchable != null? _searchable : false
+	def mostrarClave = _mostrarClave != null? _mostrarClave : false
+	def anchoTitulo = _anchoTitulo
+	
+	def multiple = _multiple != null? _multiple : false;
+	
+		
+	def style = '';
+	def ancho = _ancho
+	def anchoBloque
+	if(tags.TagMapStack.top("agruparCampos")){
+		if(ancho == null) ancho = "200px";
+		anchoBloque = ancho;
+	}
+	
+	if(ancho != null)
+		style += 'width: ' + ancho + ';'
+			
+	//Campo de los elementos de la lista a partir del cual se extrae la clave y el valor		
+	def comboValue = _comboValue != null? _comboValue : "key"
+	def comboText = _comboText != null? _comboText : "value"		
+}%
+
+	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
+		%{
+			//
+			
+			multiple = field.isCollection;
+			
+			if(field.reference){
+				//Añade .id al nombre del campo para que play haga el binding corretamente
+				field.name = field.name + ".id"
+				comboValue = "id";
+			}
+			
+			def items = null;
+			//Opciones pasadas por parámetro del tag
+			if(_items != null){
+				items = _items
+			}else{
+				items = tags.ReflectionUtils.callControllerMethodIfExists(id)
+				if(items == null){
+					//No existe método en el controlador
+					if(field.reference){
+						//Opciones buscando todas las filas de una tabla
+						items = [];
+						
+						for(row in field.referenceClass.findAll()){
+							def ik; 
+							def iv;
+							try {
+								ik = row."$comboValue";
+								iv = row."$comboText"?.toString();
+							}catch(Exception e){
+								ik = row.id;
+								iv = ik;
+							}
+							items.add(new tags.ComboItem(ik, iv));
+						}
+					}else{
+						//Opciones desde tabla de tablas
+						items = tags.ComboItem.listFromTableOfTable(field.table)					
+					}
+				}
+			}
+			
+			//Values
+			def values = [];			
+			if(value != null){
+				if(field.reference){
+					values.addAll(value.collect{ it."$comboValue" })
+				}else{
+					//Tabla de tablas
+					values.addAll(value);
+				}
+			}
+		}%
+		
+		<select class="combo" data-placeholder="Seleccione..." id="${id}" name="${field.name}" #{if multiple} multiple #{/if} ${disabled} #{if style}style="${style}"#{/if}>
+			#{if blanco && !multiple}
+			<option> </option>
+			#{/if}
+			
+			#{list items:items, as:'entry'}
+				%{				
+					def clave = entry.key
+					def valor = entry.value
+					def selected = values.contains(clave)? 'selected="selected"' : ''
+				}%
+				<option value="${clave}" ${selected}>#{if mostrarClave}${clave} - #{/if}${valor}</option>
+			#{/list}
+		</select>
+	#{/fap.formrow}
+
+	#{if multiple}
+		<script>
+			$("#${id}.combo").chosen();
+		</script>
+
+	#{/if}	
+	#{elseif searchable}
+		<script>
+			var $combo = $("#${id}.combo");
+			if ($combo.attr('disabled') != "disabled") {
+				$combo.chosen();
+			}
+		</script>
+	#{/elseif}
+	
+#{/fap.field}

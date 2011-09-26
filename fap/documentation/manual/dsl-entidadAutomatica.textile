@@ -1,0 +1,40 @@
+h1. EntidadAutomatica
+
+h2. Descripción
+
+A partir de una entidad, permite mostrar todos sus atributos como campos.
+
+h2. Parámetros
+
+* **name** - Identificador del elemento
+* **nombreEntidad** - Nombre de la entidad representada en el modelo que queremos mostrar 
+* **campo** - Campo donde está la entidad
+* **permiso** (opcional) - Permite especificar el permiso que tendrá esa entidad
+
+h2. Definición
+
+bc. EntidadAutomatica:
+	'EntidadAutomatica' (name=ID) (	
+		('nombreEntidad' '=' entidad=[Entity]) & 
+		('campo' '=' campo=STRING) & 
+		( permiso?="permiso" "=" namePermiso=STRING)?		
+	)
+;
+
+h2. Ejemplo de uso
+
+bc. EntidadAutomatica idcontacto nombreEntidad=Contacto campo="solicitud.datosSolicitante.contacto"
+
+donde la entidad está definida de la siguiente manera:
+
+bc. Entidad Contacto {
+	String nombre requerido
+	String apellido1 requerido
+	String apellido2
+	String telefono requerido
+	String movil
+	String fax
+	Email email requerido
+}
+
+!images/dsl-entidadAutomatica!

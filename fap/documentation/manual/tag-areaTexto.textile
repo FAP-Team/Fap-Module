@@ -1,0 +1,25 @@
+h1. Tag areaTexto
+
+h2. Descripción
+
+Tag que muestra un area de texto.
+
+h2. Parámetros
+
+* **_id** - ID
+* **_titulo** - Label
+* **_value**  - Valor a mostrar, si no se especifica busca el valor del campo
+* **_campo**  - Campo donde se almacenará el area de texto
+* **_ayuda**  - Objeto de tipo TagAyuda
+* **_requerido**(false) - El campo es requerido
+* **_obj**     - Objeto a partir del cual se accede al value. Usar en el caso de que se llame desde otro tag
+* **_noRow**(false)   - true para no envolver el campo en un form-row
+* **_filas**          - Numero de filas ( 8 por defecto )
+
+h2. Ejemplo de uso
+
+
+bc. #{fap.areaTexto titulo:'Nombre', campo:'solicitud.solicitante.fisica.nombre', requerido:true /}
+
+
+

@@ -1,0 +1,49 @@
+
+			#{extends 'fap/template.html' /}
+			#{set title:'Usuarios' /}
+
+			#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+
+			
+		#{if play.getVirtualFile("app/views/gen/menu/Administracion.html") != null}
+			#{set 'menu'}
+					#{include 'gen/menu/Administracion.html'/}
+			#{/set}
+		#{/if}
+		
+
+			#{fap.messages}
+
+			#{fap.permiso }
+
+			
+			#{form @UsuariosController.save(), id:"save" }
+				
+			<div class="wiki ">
+
+<p>Para asignar roles seleccione el usuario y pulse en editar</p>
+			</div>
+		
+#{fap.tabla id:'listaUsuarios', titulo:'Usuarios', campo:'Agente', popup:'PopupUsuario', tipo:'pagina', idProperty:'agente_id', url:@UsuariosController.tablalistaUsuarios(idAgente)}
+	
+	#{fap.columna campo:'id', cabecera:'Id', ancho:25 /}
+		
+	#{fap.columna campo:'username', cabecera:'Usuario', expandir:true, ancho:200 /}
+		
+	#{fap.columna campo:'name', cabecera:'Nombre completo', expandir:true, ancho:200 /}
+		
+	#{fap.columna campo:'roles', cabecera:'Roles', expandir:true, ancho:200 /}
+		
+	#{fap.columna campo:'email', cabecera:'Email', ancho:150 /}
+		
+#{/fap.tabla}
+
+				
+			#{/form}
+		
+
+			#{/fap.permiso}
+			#{/fap.messages}
+			#{/fap.permiso}
+
+		

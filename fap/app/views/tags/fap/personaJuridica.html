@@ -1,0 +1,20 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0]) }%
+#{fap.field _campo, obj:obj}
+%{ 
+	def id = _id ?: field.id
+	def label = _titulo ?: play.i18n.Messages.get('fap.tags.personajuridica.grupo.titulo')
+	def requerido = _requerido != null? _requerido : false;
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	def grupoVisible   = _grupoVisible != null? _grupoVisible : true
+	def campo = _campo
+	def siCombo = _siCombo
+	def siComboValue = _siComboValue	
+}%
+	
+	#{fap.grupo titulo:label, siCombo:siCombo, siComboValue:siComboValue, visible:grupoVisible}
+		#{fap.texto id:id + '_entidad', titulo:play.i18n.Messages.get('fap.tags.personajuridica.entidad'), campo:campo + '.entidad', requerido:requerido, obj:obj /}		
+		#{fap.texto id:id + '_cif', titulo:play.i18n.Messages.get('fap.tags.personajuridica.cif'), campo:campo + '.cif', requerido:requerido, obj:obj /}
+	#{/fap.grupo}
+	
+#{/fap.field}

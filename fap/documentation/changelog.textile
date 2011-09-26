@@ -1,0 +1,47 @@
+h2. Changelog
+
+h3. Versión 1.1
+
+* Arreglado problema de NullPointer al acceder a la página de aportación.
+* Arreglado fallo en el botón de acceso con certificado electrónico, se duplicaba el mensaje de "comprobando certificado..." si se pulsaba más de una vez.
+* Arreglado error cuando un representante intenta firma la solicitud.
+* Arreglado error al asignar la participación del representante en una solicitud de persona física.
+* Si al presentar la solicitud no se pueden clasificar algunos de los documentos, la solicitud se considera iniciada y se permite al administrador pulsar el botón para completar el proceso de presentación.
+* Se añade el representante de las personas físicas a la platilla del documento de la solicitud.
+* Añadido método en el controlador para validar las reglas de negocio.
+* Agregado atributo anchoTitulo a los elementos Texto, Combo, AreaTexto y Check, permite especificar el ancho de la etiqueta.
+* Generador actualizado a Xtext 2.0 (Actualizada documentación y librerías del plugin)
+* Se añade la columna "Nombre Solicitante" a la tabla de solicitudes.
+* Añadida anotación validate a los atributos de las entidades, permite validar un atributo de tipo texto mediante una expresión regular, asignar un rango de valores a un atributo de tipo numerico y validar si los atributos de tipo booleano son True.u
+
+h3. Versión 1.0.2
+
+* El atributo página de las tablas ahora puede ser una properties si comienza con @ 
+* Aplicado cambios de adaptación a la nueva versión del AED.
+* Añadido el parametro "seleccionable" a las tablas, con esto el usuario puede seleccionar mas de una fila en la tabla y obtener la lista de elementos en el controlador.  
+* Añadida la pagina informe que muestra información de la aplicación (número de solicitudes, de documentos ...)
+* Arreglado problema al cargar las listas desde fichero, no se actualizaba correctamente la cache de la tabla de tablas.
+* Añadido el plugin para eclipse del módulo y la documentación para su instalación. 
+* Las referencias @OneToMany no se inicializan automáticamente
+* Combo con referencias a entidades
+* Combo con tipos simples
+* Especificar la lista de los elementos que aparecen en un combo mediante método en el controlador manual
+* Añadido nuevo atributo a las entidades, ahora se pueden definir colecciones (Set y List) de atributos basicos
+* Se actualiza la versión de Play Framework a la 1.2.3
+* Arreglado problema con la auditoria (AuditLogListener) que ocasionaba problemas al actualizar entidades.
+* Arreglados problemas de NullPointer al registrar una solicitud (FirmaService y AedClient)
+
+h3. Versión 1.0.1
+
+* Se puede extender y poner en las entidades atributos de tipo Agente y Documento
+* Los representantes ahora están asociados al Solicitante y no a la Persona
+* Cambios en el constructor y el método init de las entidades
+** Ahora el método siempre se llama "init" y no "initNombreEntidad"
+** El método init siempre se genera, aunque esté vacio, para poder extenderlo.
+** El comportamiento del método init varía. Si encuentra una referencia a null hace un new, en el caso de que no esté vacia, llama al init de la referencia
+
+h3. Versión 1.0
+
+* Primera versión estable.
+    
+ 

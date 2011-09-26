@@ -1,0 +1,347 @@
+
+/*
+ * Entidades que pertenecen al modulo FAP
+ */
+
+Entidad TableKeyValue noAuditable{
+	String table column="t"
+	String key column="k"
+	String value column="v"
+}
+
+Entidad Singleton SuperClass {
+}
+
+Entidad SolicitudGenerica tableName="solicitud"{
+	String estado
+	Lista estadosSolicitud estadoUsuario transient
+	Solicitante solicitante
+	Documentacion documentacion
+	Documentacion documentacionProceso
+	Documentacion documentacionAportada
+	Registro registro
+	ExpedientePlatino expedientePlatino
+	ExpedienteAed expedienteAed
+	Aportaciones aportaciones
+	Verificacion verificacion
+}
+
+Entidad Solicitante extends Persona {
+	Direccion domicilio
+	String telefonoFijo
+	String telefonoMovil
+	String fax
+	Email email
+	String web
+	// Datos de los representantes
+	Boolean representado
+	RepresentantePersonaFisica representante //noConstruct
+	OneToMany RepresentantePersonaJuridica representantes
+}
+
+Entidad Agente Inheritance=joined{
+	String username
+	String password
+	Email email
+	String name
+	Lista multiple roles roles
+	Lista roles rolActivo
+}
+
+Entidad Direccion Embeddable {
+	String calle
+	String numero
+	String otros
+	String codigoPostal
+	Lista municipios municipio
+	Lista provincias provincia
+	Lista paises pais
+}
+
+Entidad Documento {
+	String uri
+	Lista tipoDocumentosCiudadanos tipoCiudadano transient
+	Lista tipoDocumentosOrganismos tipoOrganismo transient
+	Lista tipoDocumentosOtrasEntidades tipoOtraEntidad transient
+	Lista tipoDocumentosTodos tipo
+	String descripcion
+	Boolean clasificado
+	String hash
+	DateTime fechaSubida
+	DateTime fechaRegistro
+	String urlDescarga transient
+}
+
+Entidad Documentacion {
+	OneToMany Documento documentos
+	
+	// Ésto se está eliminando de aqui
+	String uriDocOficial
+	String urlDocOficial
+	Boolean docOficialClasificado
+	DateTime fechaFirma
+	String firma transient
+}
+
+Entidad Persona Inheritance=joined {
+	PersonaFisica fisica
+	PersonaJuridica juridica
+	Lista TipoDePersona tipo
+	String numeroId transient
+	String nombreCompleto transient
+}
+
+Entidad PersonaFisica Inheritance=joined {
+	String nombre
+	String primerApellido
+	String segundoApellido
+	Nip nip
+}
+
+Entidad PersonaJuridica Inheritance=joined {
+	String entidad
+	String cif
+	Email email
+	String telefonoFijo
+	String telefonoMovil
+	DateTime fechaFirma
+}
+
+Entidad RepresentantePersonaFisica extends Persona {
+	String telefonoFijo
+	String telefonoMovil
+	String fax
+	Email email
+}
+
+Entidad RepresentantePersonaJuridica extends RepresentantePersonaFisica {
+	Lista TiposRepresentantes tipoRepresentacion
+}
+
+
+Entidad Nip Embeddable {
+	String tipo
+	String valor
+}
+
+Entidad Participacion {
+	ManyToOne Agente agente noConstruct
+	ManyToOne SolicitudGenerica solicitud noConstruct
+	Lista TiposParticipacion tipo
+}
+
+Entidad Quartz extends Singleton{
+	Boolean execute
+	Boolean mostrarTodasSolicitudes
+	Boolean mostrarSolicitudesRequeridas
+	Boolean ejecutarCambioDeFecha
+	Boolean cambiarEstadoPlazoVencido
+	Boolean sendMail
+	String texto
+}
+
+Entidad Registro {
+	Documento borrador
+	Documento oficial
+	Documento justificante
+	
+	InformacionRegistro informacionRegistro
+	
+	FasesRegistro fasesRegistro
+	
+	
+	//En el caso de que firme una persona jurídica
+	//Se almacena si se firma con el certificado de empresa
+	//o firman los representantes
+	Lista tipoFirmaJuridica tipoFirma 
+	 
+	//Persona que han firmado o deben firmar	
+	OneToMany Firmante firmantes
+}
+
+
+Entidad Firmante {
+	String nombre
+	String idtipo
+	String idvalor
+	DateTime fechaFirma
+	String tipo // fisica, juridica, representante
+	String cardinalidad // unico, multiple
+}
+
+Entidad InformacionRegistro {
+	DateTime fechaRegistro
+	String unidadOrganica
+	String numeroRegistro
+	String numeroRegistroGeneral
+}
+
+Entidad FasesRegistro {
+	Boolean borrador
+	Boolean firmada
+	Boolean expedientePlatino
+	Boolean registro
+	Boolean expedienteAed
+	Boolean clasificarAed
+}
+
+Entidad ExpedientePlatino {
+	String uri
+	String numero
+	DateTime fechaApertura
+	Boolean creado
+	String ruta	
+}
+
+Entidad ExpedienteAed{
+	String idAed	
+}
+
+
+Entidad Aportaciones {
+	Aportacion actual
+	OneToMany Aportacion registradas
+}
+
+Entidad Aportacion {
+	String estado
+	OneToMany Documento documentos
+	
+	InformacionRegistro informacionRegistro
+	
+	Documento borrador
+	Documento oficial
+	Documento justificante
+}
+
+
+
+
+Entidad Incidencia {
+    Email email
+    String telefono
+    String nombre
+    String apellidos
+    String asunto
+    LongText texto
+}
+
+Entidad SemillaExpediente extends Singleton{
+	Long semilla
+}
+
+//Entidad Pdf {
+//	String idPdf
+//	String title
+//	LongText content
+//	String header
+//	String footer
+//}
+//
+Entidad Mail tableName="email" {
+	String idMail
+	String bcc
+	LongText content
+	String footer
+	String sendTo
+	String sender
+	String subject
+}
+
+Entidad Log nonPersist {
+	String time
+	String level
+	String class_
+	String user
+	String message
+	String trace
+}
+
+
+Entidad Verificacion {
+	String uriVerificacion
+	String uriProcedimiento
+	String uriTramite
+	String expediente
+	String estado
+		
+	OneToMany VerificacionDocumento documentos transient
+		
+	String uriExclusion
+	String motivoExclusion
+	OneToMany Exclusion codigosExclusion transient
+		 
+	OneToOne Requerimiento requerimientoProceso
+	OneToMany Requerimiento requerimientos
+		
+	DateTime fechaCreacion
+	DateTime fechaUltimaActualizacion	
+}
+
+Entidad VerificacionDocumento {
+	String uriDocumentoVerificacion
+	String uriDocumento
+		
+	String uriTipoDocumento
+	String etiquetaTipoDocumento
+	String descripcion
+		
+	String estadoDocumentoVerificacion
+	DateTime fechaPresentacion
+	String identificadorMultiple
+	Integer version
+
+	LongText motivoRequerimiento
+	OneToMany CodigoRequerimiento codigosRequerimiento
+		
+	//Si existe permite ver el documento
+	Boolean existe
+}
+
+Entidad CodigoRequerimiento {
+	String codigo
+	LongText descripcion
+	String descripcionCorta
+}
+
+Entidad Exclusion {
+	String codigo
+	LongText descripcion
+	String descripcionCorta
+}
+
+Entidad Requerimiento {
+	String firma transient					//Guarda firma del requerimiento
+	String urlDocRequerimiento transient		//Guarda url del doc oficial, publicado en el servlet
+	String estado 					 	//Rellenar a mano
+		
+	String motivo
+		
+	String firmante							//ver como enlazarlo con usuarios
+		
+	DateTime fechaRegistroSalida
+	String numeroRegistroSalida
+	String numeroGeneralRegistroSalida
+	String oficinaRegistroSalida
+	DateTime fechaAcuse
+	String uriDocRequerimiento				//uri del documento de requerimiento oficial, este es el que se firma
+	Boolean docRequerimientoClasificado
+	String uriDocJustificanteRequerimiento	//uri del jsutificante del registro de salida
+	Boolean docJustificanteRequerimientoClasificado	
+	String uriRequerimiento					//uri del requerimiento (identificador del servicio verificacion)
+
+	//Estos campos estan añadidos a partir del wsdl
+	DateTime fechaAcceso		  //fecha de cuando el usuario entra en la sede por primera vez desde el requerimiento 
+	DateTime fechaNotificacion  //fecha del registro de salida
+	DateTime fechaVencimiento   //fecha calculada justo cuando se hace la notificacion fechaAcceso + 10N + 10H. Recalculada cuando el usuario entra en la sede por
+										  // primera vez fechaAcceso + 10H. 
+	Boolean accesoaSede
+
+	DateTime fechaDisposicionSede
+	DateTime fechaAcuseSede
+	DateTime fechaRechazoSede
+	Boolean postal
+	DateTime fechaEnvioPostal
+	DateTime fechaAcusePostal
+}
+

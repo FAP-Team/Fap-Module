@@ -1,0 +1,24 @@
+h1. Instalación de Xtext
+
+A continuación se explica como instalar Xtext para eclipse indigo y helios, para otras versiones de eclipse los pasos pueden ser distintos.  
+
+h2. Desde ficheros
+
+* Descargar el fichero:
+**"Xtext2-eclipse":http://fap-devel.etsii.ull.es/public/Xtext-eclipse/Xtext2-eclipse.rar (para Windows)
+**"Xtext2-eclipse-linux":http://fap-devel.etsii.ull.es/public/Xtext-eclipse/Xtext2-eclipse-linux.rar (para Linux)
+* Descomprimir el contenido del fichero dentro del directorio dropins de eclipse (${ECLIPSE_HOME}/dropins).
+
+h2. Desde el asistente de eclipse
+
+Desde eclipse ir a:
+
+* Help
+* Install New software
+* En "work with" añadir la ruta al repositorio de Xtext *http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/*
+* Expandir la categoria *TMF Xtext-2.0.1*
+* Seleccionar:
+** Xbase
+** Xtext runtime
+** Xtext UI
+* Pulsar en Next y continuar con el proceso normal de instalación. 

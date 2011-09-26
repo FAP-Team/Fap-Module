@@ -1,0 +1,29 @@
+h1. Subir Archivo AED
+
+h2. Descripción
+
+Elemento para la subida de documentos al Archivo Electrónico de Documentos. El documento se crea sin clasificar, y se coloca en la ruta donde se van a almacenar los archivo temporales.
+
+h2. Parámetros
+
+* **name** - Identificador del elemento.
+* **campo** - Especifica la entidad en la que se va a guardar el tipo y la descripción del documento subido.
+* **requerido** (opcional) - Indica la obligatoriedad de la subida de un documento.
+
+h2. Definición
+
+bc. SubirArchivoAed:
+   'SubirArchivoAed' name=ID (
+      ('campo' '=' campo=STRING)
+      & (requerido?='requerido')?
+   )
+;
+
+h2. Ejemplos de uso
+
+h3. Elemento SubirArchivoAed dentro de un Form
+
+bc. Form anadirDocumentacion campo="solicitud.documentacion.documentos" {		
+   SubirArchivoAed fileAportacion campo="documento" requerido
+   Boton subirDocumento titulo="Añadir documentación"
+}

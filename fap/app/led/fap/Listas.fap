@@ -1,0 +1,153 @@
+Lista TiposParticipacion {
+	creador : "Creador"
+	solicitante: "Solicitante"
+	representante: "Representante"
+}
+
+Lista TiposRepresentantes {
+	mancomunado: "Mancomunado"
+	solidario: "Solidario"
+	administradorUnico: "Administrador Único"
+}
+
+Lista roles {
+	administrador: "Administrador"
+	usuario: "Usuario"
+}
+
+Lista tipoFirmaJuridica {
+	cif: "Certificado de empresa"
+	representantes : "Certificados de los representantes"
+}
+
+Lista estadosSolicitud {
+	borrador: "Borrador"
+	iniciada: "Iniciada"	
+}
+
+Lista TipoDePersona {
+	fisica: "Persona física"
+	juridica: "Persona jurídica"
+}
+
+
+Lista tipoDocumentosCiudadanos {
+	
+}
+
+Lista tipoDocumentosOrganismos {
+	
+}
+
+Lista tipoDocumentosOtrasEntidades {
+	
+}
+
+Lista tipoDocumentosUsuario{
+	// Los elementos de esta lista se obtienen
+	// dinamicamente a traves del WS.	
+}
+
+Lista tipoDocumentosTodos{
+	// Los elementos de esta lista se obtienen
+	// dinamicamente a traves del WS.
+}
+
+Lista provincias {
+	// TODO: rellenar lista de provincias
+}
+
+Lista paises {
+	// TODO: rellenar lista de paises
+}
+
+Lista municipios {
+	350017:	"Agaete"                    
+	350022:	"Agüimes"                   
+	350206:	"La Aldea de San Nicolás"   
+	350038:	"Antigua"                   
+	350043:	"Arrecife"                  
+	350056:	"Artenara"                  
+	350069:	"Arucas"                    
+	350075:	"Betancuria"                
+	350081:	"Firgas"                    
+	350094:	"Gáldar"                    
+	350108:	"Haría"                     
+	350115:	"Ingenio"                   
+	350120:	"Mogán"                     
+	350136:	"Moya"                      
+	350141:	"La Oliva"                  
+	350154:	"Pájara"                    
+	350167:	"Las Palmas de Gran Canaria"
+	350173:	"Puerto del Rosario"        
+	350189:	"San Bartolomé"             
+	350192:	"San Bartolomé de Tirajana" 
+	350213:	"Santa Brígida"             
+	350228:	"Santa Lucía de Tirajana"   
+	350234:	"Santa María de Guía de Gran Canaria"
+	350249:	"Teguise"                   
+	350252:	"Tejeda"                    
+	350265:	"Telde"                     
+	350271:	"Teror"                     
+	350287:	"Tías"                      
+	350290:	"Tinajo"                    
+	350304:	"Tuineje"                   
+	350326:	"Valleseco"                 
+	350311:	"Valsequillo de Gran Canaria"
+	350332:	"Vega de San Mateo"         
+	350347:	"Yaiza"                     
+	380012:	"Adeje"                     
+	380027:	"Agulo"                     
+	380033:	"Alajeró"                   
+	380048:	"Arafo"                     
+	380051:	"Arico"                     
+	380064:	"Arona"                     
+	380070:	"Barlovento"                
+	380086:	"Breña Alta"                
+	380099:	"Breña Baja"                
+	380103:	"Buenavista del Norte"      
+	380110:	"Candelaria"                
+	380125:	"Fasnia"                    
+	380131:	"Frontera"                  
+	380146:	"Fuencaliente de la Palma"  
+	380159:	"Garachico"                 
+	380162:	"Garafía"                   
+	380178:	"Granadilla de Abona"       
+	380184:	"La Guancha"                
+	380197:	"Guía de Isora"             
+	380201:	"Güímar"                    
+	380218:	"Hermigua"                  
+	380223:	"Icod de los Vinos"         
+	380244:	"Los Llanos de Aridane"     
+	380257:	"La Matanza de Acentejo"    
+	380260:	"La Orotava"                
+	380276:	"El Paso"                   
+	389013:	"El Pinar de El Hierro"     
+	380282:	"Puerto de la Cruz"         
+	380295:	"Puntagorda"                
+	380309:	"Puntallana"                
+	380316:	"Los Realejos"              
+	380321:	"El Rosario"                
+	380337:	"San Andrés y Sauces"       
+	380239:	"San Cristóbal de La Laguna"
+	380342:	"San Juan de la Rambla"     
+	380355:	"San Miguel de Abona"       
+	380368:	"San Sebastián de la Gomera"
+	380374:	"Santa Cruz de la Palma"    
+	380380:	"Santa Cruz de Tenerife"    
+	380393:	"Santa Úrsula"              
+	380407:	"Santiago del Teide"        
+	380414:	"El Sauzal"                 
+	380429:	"Los Silos"                 
+	380435:	"Tacoronte"                 
+	380440:	"El Tanque"                 
+	380453:	"Tazacorte"                 
+	380466:	"Tegueste"                  
+	380472:	"Tijarafe"                  
+	380491:	"Valle Gran Rey"            
+	380504:	"Vallehermoso"              
+	380488:	"Valverde"                  
+	380511:	"La Victoria de Acentejo"   
+	380526:	"Vilaflor"                  
+	380532:	"Villa de Mazo"             	
+}

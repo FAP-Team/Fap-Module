@@ -1,0 +1,30 @@
+h1. Compilación del generador
+
+La compilación del generador se divide en dos pasos:
+
+# Generar la gramática
+# Compilar el generador
+
+El proceso de compilación se puede realizar de dos maneras, utilizando Eclipse o utilizando Ant
+
+h2. Compilación con Eclipse
+
+Para poder compilar el generador desde eclipse vamos a tener que tener instalado el plugin de xText, además del plugin de Groovy.
+
+# Generar la gramática ejecutando el workflow es.fap.simpleled -> src/es.fap.simpleled.GenerateLed.mwe2
+# Una vez generado eclipse compilará automáticamente el proyecto
+
+Nota: Para ejecutar un workflow -> Boton derecho en el archivo .mwe2/Run As/MWE2 Workflow
+
+h2. Compilación con Ant
+
+# Generar la grámatica: Ejecutar el target **clean-all** de es.fap.simpled -> build.xml
+# Compilar el generador: Ejecutar el target **clean-compile** de es.fap.simpleled.generator -> build.xml
+
+bc.. 
+[es.fap.simpleled] $ ant clean-all
+[es.fap.simpleled.generator] $ ant clean-compile
+
+
+
+

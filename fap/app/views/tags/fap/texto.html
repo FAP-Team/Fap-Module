@@ -1,0 +1,60 @@
+*{
+  Campo de Texto
+  ==================================
+  Argumentos
+  	_id     - ID
+  	_titulo - Label
+  	_value  - Valor a mostrar, si no se especifica busca el valor del campo
+  	_campo  - Campo donde se almacenará el campo de texto
+  	_ayuda  - Objeto de tipo TagAyuda
+  	_requerido(false) - El campo es requerido
+    _obj     - Objeto a partir del cual se accede al value. 
+    		  Usar en el caso de que se llame desde otro tag
+    _noRow(false)   - true para no envolver el campo en un form-row
+    _ancho          - Ancho del campo
+    _bloque         - Bloque
+}*
+
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+	def id = _id ?: field.id
+	def label = _titulo ?: play.i18n.Messages.get(field.name)
+	def value = _value ?: field.flashorvalue
+	def ayuda = _ayuda
+	
+	def requerido;
+	if(_requerido != null) 
+		requerido = _requerido
+	else if(field.required != null) 
+		requerido = field.required
+	else
+		requerido = false
+	
+	
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	def showRow   = _noRow != null? !_noRow : true
+	def anchoTitulo = _anchoTitulo
+	
+	String style = '';
+	
+	def ancho = _ancho
+	def anchoBloque
+	if(tags.TagMapStack.top("agruparCampos")){
+		if(ancho == null) ancho = "200px";
+		anchoBloque = ancho;
+	}
+	
+	if(ancho != null)
+		style += 'width: ' + ancho + ';'
+			
+}%
+
+	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
+		<input id="${id}" type="text" name="${field.name}" value="${value}" ${disabled} #{if style}style="${style}"#{/if}>
+	#{/fap.formrow}
+	
+#{/fap.field}

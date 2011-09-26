@@ -1,0 +1,30 @@
+h1. Tag persona Física
+
+h2. Descripción
+
+Muestra los campos para rellenar una persona física:
+* Nombre
+* PrimerApellido
+* SegundoApellido
+* NIP
+
+h2. Parámetros
+
+* **_id** (opciona) - ID.
+* **_titulo** - Título que aparecerá en la cabecera del grupo.
+* **_campo** - Campo de tipo PersonaFisica donde se almacenarán los datos
+* **_requerido**(false) -  Si true, los campos Nombre, Apellido1 y NIP serán requeridos
+* **_obj**  - Objeto a partir del cual se accede al value. Usar en el caso de que se llame desde otro tag
+* **_siCombo** - ID del combo cuyo valor hará que el grupo se muester o no.
+* **_siComboValue** - Lista de valores del combo con los que se mostrará el grupo. Si se especifíca el parámetro siCombo, este parámetro es obligatorio.
+* **_grupoVisible**(true) - Permite especificar si se envuelve el elemento en un grupo o no
+
+h2. Ejemplo de uso
+
+bc. #{fap.personaFisica campo:'solicitud.solicitante.fisica', titulo:'Persona física' /}
+
+
+
+
+
+

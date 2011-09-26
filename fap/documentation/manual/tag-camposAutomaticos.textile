@@ -1,0 +1,44 @@
+h1. Tag camposAutomáticos
+
+h2. Descripción
+
+A partir de un campo muestra el formulario completo con todos sus campos.
+Para que los campos se marquen como requeridos, la entidad tienen que estar anotada con @Required.
+Para cambiar las etiquetas de los campos, añadir una nueva entrada al fichero de mensaje por cada uno de los campos.
+**Sólo funciona con entidades simples que no tengan relaciones ni tipos complejos.** 
+
+h2. Parámetros
+
+* **campo** - Campo a partir del cual obtendrá el tipo y buscará todos los campos que están definidos en ese tipo
+
+
+
+h2. Ejemplo de uso
+
+h3. DSL Entidad
+
+bc. Entidad Contacto {
+	String nombre
+	String apellido1
+	String apellido2
+	String telefono
+	String movil
+	String fax
+	Email email
+}
+
+h3. Vista
+
+bc. #{fap.camposAutomaticos campo:'solicitud.datosSolicitante.contacto' /}
+
+h3. Fichero de mensajes
+
+bc. solicitud.datosSolicitante.contacto.nombre=Nombre
+solicitud.datosSolicitante.contacto.apellido1=Primer apellido
+solicitud.datosSolicitante.contacto.apellido2=Segundo apellido
+solicitud.datosSolicitante.contacto.telefono=Teléfono
+solicitud.datosSolicitante.contacto.movil=Móvil
+solicitud.datosSolicitante.contacto.fax=Fax
+solicitud.datosSolicitante.contacto.email=Correo electrónico
+
+

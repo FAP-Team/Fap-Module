@@ -1,0 +1,105 @@
+%{
+	def current = messages.Messages.current();
+	List<String> msgOK = current.messages(messages.Messages.MessageType.OK)
+	List<String> msgError = current.messages(messages.Messages.MessageType.ERROR)
+	List<String> msgInfo = current.messages(messages.Messages.MessageType.INFO)
+	List<String> msgWarning = current.messages(messages.Messages.MessageType.WARNING)
+	List<String> msgFatal = current.messages(messages.Messages.MessageType.FATAL)
+	
+}%
+
+#{if msgFatal}
+	<div class="box box-fatal">
+		<ul>
+			#{list items:msgFatal, as:'msg'}
+				<li>${msg}</li>
+			#{/list}
+		</ul>
+	</div>
+#{/if}
+#{else}
+	#{if msgOK}
+		<div class="box box-ok">
+			<ul>
+				#{list items:msgOK, as:'msg'}
+					<li>${msg}</li>
+				#{/list}
+			</ul>
+		</div>
+	#{/if}
+	#{if msgInfo}
+		<div class="box box-info">
+			<ul>
+				#{list items:msgInfo, as:'msg'}
+					<li>${msg}</li>
+				#{/list}
+			</ul>
+		</div>
+	#{/if}
+	#{if msgWarning}
+		<div class="box box-warn">
+			<ul>
+				#{list items:msgWarning, as:'msg'}
+					<li>${msg}</li>
+				#{/list}
+			</ul>
+		</div>
+	#{/if}
+	
+	
+	#{if msgError}
+		<div class="box box-error">
+			<ul>
+				#{list items:msgError, as:'msg'}
+					<li>${msg}</li>
+				#{/list}
+			</ul>
+	#{/if}
+	
+	#{ifErrors}
+		#{ifnot msgError != null}
+			<div class="box box-error">
+		#{/ifnot}
+			<p>
+				&{'fap.page.save.error'} <a href="#" class="errorsMore">&{'fap.page.save.error.more'}</a>
+			</p>
+			<ul class="errorsDetails" style="display:none">
+	%{ 
+	        validations = play.data.validation.Validation.errors()
+	        size = validations.size()
+	        validations.eachWithIndex() { item, i -> 
+	                attrs = [:] 
+	                attrs.put('error', item) 
+	                attrs.put('error_index', i+1) 
+	                attrs.put('error_isLast', (i+1) == size) 
+	                attrs.put('error_isFirst', i==0) 
+	                attrs.put('error_parity', (i+1)%2==0?'even':'odd')
+	          
+	          if(!item.message().equals('Validation failed')){
+	}%      
+	        <li><a href="#${item.getKey().replace('.','_')}">${item.message()}</a></li>
+	%{
+	        }} 
+	}% 
+		#{ifnot msgError}
+			</div>
+		#{/ifnot}
+	#{/ifErrors}
+	
+	#{if msgError}
+		</div>
+	#{/if}
+	
+	#{ifErrors}
+		<script>
+			$('.errorsMore').click(function(){
+				$(this).hide().parent().siblings().filter('.errorsDetails').show();
+				return false;
+			});
+		</script>
+	#{/ifErrors}
+	
+	#{doBody /}
+
+#{/else}
+	

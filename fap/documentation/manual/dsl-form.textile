@@ -1,0 +1,40 @@
+h1. Form
+
+h2. Descripción
+
+Añade un tag Form dentro de la página. Al controlador de la página se le añade un método para guardar todas aquellas entidades utilizadas en elementos que se encuentren dentro del form. Este elemento es útil cuando se necesita asociarle una acción a realizar a un elemento de una página, por ejemplo a un botón.
+
+h2. Parámetros
+
+* **name** - Identificador del elemento. En el controlador de la página correspondiente se creará un método con este nombre.
+* **campo** (opcional) - Especifica un campo de una entidad, con multiplicidad one-to-many o many-to-many. A dicho campo se le añade la primera entidad utilizada dentro del form.
+* **autoenviar** (opcional) - Reenvía el formulario cada vez que un elemento input o select del form cambia de estado.
+* **permiso** (opcional) - Nombre del permiso asociado al form.
+
+h2. Definición
+
+bc. Form:
+   'Form' (name=ID) (
+      ('campo' '=' campo=STRING)?
+      & (autoEnviar?="autoEnviar")?
+      & (permiso?="permiso" "=" namePermiso=STRING)?		
+   )
+   '{'
+      elementos+=Elemento+
+   '}'
+;
+
+h2. Ejemplos de uso
+
+h3. Form para asociarle una acción a un botón
+
+bc. Form presentar {
+   Boton titulo="Presentar la solicitud"
+}
+
+h3. Form para añadir una entidad a un campo one-to-many de otra entidad
+
+bc. Form anadirDocumentacion campo="solicitud.documentacion.documentos" {		
+   SubirArchivoAed fileAportacion campo="documento" requerido
+   Boton subirDocumento titulo="Añadir documentación"
+}

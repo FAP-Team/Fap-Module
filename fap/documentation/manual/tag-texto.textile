@@ -1,0 +1,25 @@
+h1. Tag texto
+
+h2. Descripción
+
+Tag que muestra un campo de texto.
+
+h2. Parámetros
+
+* **_id** - ID
+* **_titulo** - Label
+* **_value**  - Valor a mostrar, si no se especifica busca el valor del campo
+* **_campo**  - Campo donde se almacenará el campo de texto
+* **_ayuda**  - Objeto de tipo TagAyuda
+* **_requerido**(false) - El campo es requerido
+* **_obj**     - Objeto a partir del cual se accede al value. Usar en el caso de que se llame desde otro tag
+* **_noRow**(false)   - true para no envolver el campo en un form-row
+* **_ancho**          - Ancho del campo
+
+h2. Ejemplo de uso
+
+
+bc. #{fap.texto titulo:'Nombre', campo:'solicitud.solicitante.fisica.nombre', requerido:true /}
+
+
+

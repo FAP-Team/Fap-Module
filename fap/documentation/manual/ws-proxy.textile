@@ -1,0 +1,19 @@
+h1. Configuración de un proxy
+
+La clase platino.PlatinoProxy configura el proxy según el archivo de configuración de la aplicación.
+El código siguiente está extraido de esa clase.
+
+h4. Código para configurar un servicio web con un proxy
+
+bc.. 
+String proxyUrl = ...
+String proxyPort = ...
+Client client = ClientProxy.getClient(service);
+HTTPConduit http = (HTTPConduit) client.getConduit();
+HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+httpClientPolicy.setAutoRedirect(false);
+httpClientPolicy.setAllowChunking(false);
+httpClientPolicy.setConnectionTimeout(400000);
+httpClientPolicy.setProxyServer(proxyUrl);
+httpClientPolicy.setProxyServerPort(proxyPort);
+http.setClient(httpClientPolicy);

@@ -1,0 +1,31 @@
+h1. ClaveValor
+
+h2. Descripción
+
+Elemento *ClaveValor*, el cual permitirá insertar una clave y mostrará el valor asociado a esa clave. **Nota**: Esa clave deberá estar en la tabla de tablas (es decir, entre las listas de la aplicación).
+
+h2. Parámetros
+
+* **name** (opcional) - Identificador del elemento
+* **campo** - Atributo donde se almacenará la clave
+* **titulo** (opcional) - Etiqueta que se mostrará al lado del elemento, si no se especifica se mostrará el nombre del campo
+* **requerido** (opcional) - Si se especifica, indica que el campo deberá ser obligatorio rellenarlo
+
+h2. Definición
+
+bc. ClaveValor:
+	'ClaveValor' (name=ID)? (
+		('campo' '=' campo=STRING) &
+		('titulo' '=' titulo=STRING)? &
+		(requerido?='requerido')?
+	)
+;
+
+
+h2. Ejemplo de uso
+
+bc. ClaveValor campo="solicitud.datosSolicitante.cnaePrincipal" titulo="Clasificación CNAE Principal" requerido
+
+h2. Resultado
+
+!images/dsl-claveValor!

@@ -1,0 +1,58 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0]) }%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+	def id = _id ?: field.id
+	def label = _titulo ?: field.name
+	def value = _value ?: field.flashorvalue
+	def ayuda = _ayuda
+	def requerido = _requerido != null? _requerido : false;
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	def showRow   = _noRow != null? !_noRow : true
+	def blanco    = _blanco != null? blanco : true
+	def items     = _items  != null? _items : tags.ComboItem.listFromTableOfTable(field.table);
+	def desc_id = id + '_desc';
+	String style = '';
+	if(_ancho != null)
+		style += 'width: ' + _ancho + ';'		
+}%
+	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error}
+		<input id="${id}" type="text" name="${field.name}" value="${value}" ${disabled} #{if style}style="${style}"#{/if}>
+		<span class="keyvalue-description" id="${desc_id}"></span>
+	#{/fap.formrow}
+
+
+#{if field.table}
+
+<script type="text/javascript">
+
+	$(function(){
+		var $key = $('#${id}');		
+		var $description = $('#${desc_id}'); 
+		
+		var table = {};
+		var tableAction = #{jsAction @fap.ListController.list(':tabla') /}
+				
+		function changeValue(){
+			var value = $key.val();	
+			if(value in table){
+				$description.html(table[value]);
+			}else{
+				$description.html("");
+			}	
+		};
+		
+		Listas.load('${field.table}', function(lista){
+			table = lista;
+			changeValue();
+			$key.keyup(changeValue);			
+		});
+		
+		
+	});
+</script>
+#{/if}
+
+#{/fap.field}

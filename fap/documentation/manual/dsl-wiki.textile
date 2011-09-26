@@ -1,0 +1,39 @@
+h1. Wiki
+
+h2. Descripción
+
+Convierte el texto escrito en formato MediaWiki, en html.
+
+El formato MediaWiki es el utilizado en los artículos de la wikipedia. Puedes consultar la sintaxis del formato en el siguiente enlace:
+
+"Documentación MediaWiki":http://www.mediawiki.org/wiki/Help:Formatting
+
+h2. Parámetros
+
+* **name** (opcional) - Identificador del elemento
+* **titulo** (opcional) - Etiqueta que se mostrará como un titulo del wiki.
+* **wikiData** - Lista de cadenas que se añadiran como cuerpo del wiki, se permiten cadenas multilinea.
+
+h2. Definición
+
+bc.	Wiki:
+	"Wiki" (name=ID)? (
+		("titulo" "=" titulo=STRING)?
+	)
+	'{'
+		wikiData+=STRING+
+	'}'
+;
+
+h2. Ejemplo de uso
+
+bc. Wiki titulo="Titulo del wiki" {
+		"cadena 1"
+		"cadena 2
+			cadena 2.1
+			cadena 2.2"
+		"enlace externo http://www.google.es"
+		"enlace interno [[solicitante]]"
+	}	
+
+!images/dsl-wiki!

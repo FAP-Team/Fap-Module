@@ -1,0 +1,67 @@
+<project name="fap-generator" default="clean-all">
+
+	<property name="build.dir" value="bin" />
+	<property name="src.dir" value="src" />
+	<property name="src.gen.dir" value="src-gen" />
+	<property name="dist.dir" value="dist" />
+	<property name="xtext.lib.dir" value="../../fap/compiler/lib" />
+
+	<path id="classpath">
+		<fileset dir="${xtext.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${src.dir}" />
+	</path>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+
+	<target name="generate">
+		<java classname="org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher" classpathref="classpath" fork="true">
+			<arg value="es.fap.simpleled.Led" />
+			<sysproperty key="file.encoding" value="UTF-8" />
+		</java>
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${build.dir}" />
+		<javac destdir="${build.dir}" classpathref="classpath">
+			<src path="${src.dir}" />
+			<src path="${src.gen.dir}" />
+		</javac>
+
+		<copy todir="${build.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xtext" />
+
+			</fileset>
+			<fileset dir="${src.gen.dir}">
+				<include name="**/*.ecore" />
+				<include name="**/*.genmodel" />
+				<include name="**/*.xmi" />
+				<include name="**/*.tokens" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<target name="all">
+		<antcall target="generate" />
+		<antcall target="compile" />
+	</target>
+
+	<target name="clean-all">
+		<antcall target="clean" />
+		<antcall target="all" />
+	</target>
+
+	<target name="dist">
+		<antcall target="clean-all" />
+		<delete dir="${dist.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+		<jar destfile="${dist.dir}/es.fap.simpleled.jar" basedir="${build.dir}"/>
+	</target>
+	
+</project>

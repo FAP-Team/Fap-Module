@@ -1,0 +1,29 @@
+%{
+	id = _id;
+%}
+
+<div class="formrow">
+	<input class="file" disabled="disabled">
+	<div class="upload">
+		<input id='${id}' name='${id}' type='file'>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function(){
+		var self = $('#${id}');
+		if ($.browser.mozilla) {
+            if (/Win/.test(navigator.platform)) {
+                $(self).css("margin-left", "-142px");                    
+            } else {
+                $(self).css("margin-left", "-168px");                    
+            };
+        };
+        
+        $(self).bind("change", function() {
+            $(".file").val($(self).val());
+        });
+  
+	});
+</script>
+

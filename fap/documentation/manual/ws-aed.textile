@@ -1,0 +1,82 @@
+h1. AED
+
+h2. Descripción
+
+El Archivo Electrónico de Documentos (AED) permite almacenar los documentos de la aplicación, tanto los aportados por el ciudadano como los generados por la aplicación.
+La base es un Alfresco y por encima hay una serie de servicios webs que permite tener los documentos almacenados en expedientes.
+
+El AED está compuesto por una serie de servicios webs, en la actualidad se utilizan:
+* **aed**: Permite manipular los documentos
+* **tipos-documentos**: Permite trabajar con los tipos de los documentos
+
+h2. Documentación del servicio
+
+* Falta añadir enlaces a los PDFs del manual. (Pedir a arte)
+
+h2. Configuración en fap
+
+En la fichero conf/application.conf hay una sección dedicada a la configuración del archivo electrónico
+
+bc.. #End-point del archivo electrónico
+fap.aed.url=http://fap-devel.etsii.ull.es/ws/aed/
+
+#Procedimiento
+fap.aed.procedimiento=Tecnologos2010
+
+#Ruta donde se van a almacenar los archivo temporales, esta ruta debe estar creada en el aed
+fap.aed.temporales=Tecnologos2010/C201001
+
+#Convocatoria
+fap.aed.convocatoria=C201001
+
+#Prefijo que va a llevar el nombre del expediente en el AED
+fap.aed.expediente.prefijo=Tecnologos20102010
+
+#End-point del servicio de tipos de documentos
+fap.aed.tiposdocumentos.url=http://fap-devel.etsii.ull.es/ws/tipos-documentos/
+
+#Uri del tipo de documento base
+fap.aed.tiposdocumentos.base=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000001/v01
+
+#Grupo de documentos donde deben estar todos los documentos que puede aportar el usuario
+fap.aed.tiposdocumentos.grupo=eadmon://gobcan.es/grupos/GRP000000000000000001
+
+#Uri del tipo otros, este tipo permite a los usuario añadir una descripción
+fap.aed.tiposdocumentos.otros=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000001/v01
+
+#Uri del tipo de justificante de registro
+fap.aed.tiposdocumentos.justificanteRegistroSolicitud=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000002/v01
+
+h2. Creación de grupos de documentos
+
+En el archivo electrónico se debe crear un grupo que tenga almacenado los tipos de documentos que va a utilizar la aplicación.
+Para crear un grupo de tipos de documentos hay que ir a la aplicación de "tiposdocumentos", seleccionar "Grupos" en el menú de la izquierda y seleccionar el botón "Nuevo grupo". Añadir  una etiqueta y una descripción. Con esto se creará el grupo, ahora hay que añadir documentos al grupo en el botón "Añadir tipo de documento".
+
+!images/aed-tiposDocumentos!
+
+La URI de el grupo creado es el valor que debería tener la property **"fap.aed.tiposdocumentos.grupo"** del fichero "conf/application.conf"
+
+Cuando realices cambios en el contenido del grupo es necesario "Actualizar tipos de documentos desde el AED" en la página de administración. Puedes comprobar que los cambios se han actualizado correctamente buscando en la tabla de tablas la tabla "tipoDocumentos".
+
+h2. Clases de ayuda
+
+El paquete aed que está dentro del módulo contiene las clases que trabajan con el AED.
+* **aed.AedClient**
+* **aed.TiposDocumentosClient**
+
+h2. Tests
+
+El módulo incluye una serie de test para comprobar que el archivo electrónico está configurado correctamente.
+
+* **AedTest**
+** **getVersion**
+** **subirArchivoTemporal** - Sube un documento a la carpeta temporal. Hace falta tener un documento en C:/report.pdf
+** **actualizarPropiedades** - Sube un documento a la carpeta temporal, una vez subido actualiza la descripción. Hace falta tener un documento en C:/report.pdf
+* **TiposDocumentosTest**
+** **getVersion**
+** **actualizarDB** - Consulta los tipos de documentos que hay en el aed y actualiza la base de datos
+
+h2. Página de administración
+
+En la página de administración existe una sección dedicada a la configuración del AED.
+* **Actualizar tipos de documentos desde el AED** - Consulta los tipos de documentos definidos en el archivo electrónico y actualiza la tabla "tipoDocumentos" definida en la tabla de tablas.

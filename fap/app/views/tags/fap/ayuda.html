@@ -1,0 +1,47 @@
+*{
+	Ayuda
+	=====================
+	Tres tipos de ayuda, ayuda texto, ayuda textoPopup o ayuda refPopup
+	
+	Parametros
+		_id  = ID del campo que es la ayuda
+		_ayuda = Objeto de la clase ayuda ayuda con alguna de las 3 opciones seteadas
+}*
+
+
+%{
+	def id = _id;
+	def ayuda = _ayuda
+	def button_id = id + '-button'
+	
+	def dialog_id
+	def dialog_title
+	if(ayuda?.refPopup)
+		dialog_id = ayuda.refPopUp
+	else if(ayuda?.textoPopup){
+		dialog_id = id + '-popup'
+		dialog_title = 'Ayuda'
+	}	
+}%
+
+#{if ayuda?.texto}
+	<span class="help">${ayuda.texto}</span>	
+#{/if}
+
+#{if ayuda?.textoPopup || ayuda?.refPopup}
+	<span id="${button_id}" class="help">Ayuda</span>
+	<script type="text/javascript">
+		$(function(){			
+			$('#${button_id}').click(function(){
+				$('#${dialog_id}').dialog('open');
+				return false;
+			});			
+		});
+	</script>
+#{/if}
+
+#{if ayuda?.textoPopup}	
+	#{fap.popup id:dialog_id, titulo:dialog_title}
+		${ayuda.textoPopup}
+	#{/fap.popup}
+#{/if}

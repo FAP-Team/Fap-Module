@@ -1,0 +1,38 @@
+h1. Solicitante 
+
+h2. Descripción
+
+Muestra los campos para rellenar los datos de un solicitante.
+
+h2. Parámetros
+
+* **name** - Identificador del elemento
+* **campo** - Campo de tipo Solicitante donde se almacenarán los datos
+* **titulo** (Opcional) - Título que aparecerá en la cabecera del grupo
+* **permiso** (Opcional) - Permiso que se le aplicará al PopUp de creación de representantes (cuando la opción seleccionada sea Persona Jurídica).
+* **requerido** (Opcional) - Indica si es obligatorio rellenar los campos "necesarios" de persona física.
+* **noRepresentante** (Opcional) - En caso de estar presente, no se le permitirá asociar un representante al solicitante.
+
+h2. Definición
+
+bc. 'Solicitante' (name=ID) (
+		('campo' '=' campo=STRING) & 
+		('titulo' '=' titulo=STRING)? &
+		(requerido?='requerido')? &
+		( permiso?="permiso" "=" namePermiso=STRING)?
+		& (noRepresentante?='noRepresentante')?
+	)
+;
+
+h2. Ejemplo de uso
+
+bc. Solicitante personaSolicitante campo="solicitud.solicitante" titulo="Datos solicitante" permiso="solicitudEditable" requerido
+
+
+
+
+
+
+
+
+

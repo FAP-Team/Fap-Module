@@ -1,0 +1,518 @@
+grammar es.fap.simpleled.Led with org.eclipse.xtext.common.Terminals
+
+generate led "http://www.fap.es/simpleled/Led"
+
+Model:
+	(
+		(entidades += Entity) |
+	 	(formularios += Formulario) |
+	 	(listas += Lista) |
+	 	(permisos += Permiso) 
+	 ) *
+;
+
+QN: // QualifiedName
+	IDS ('.' IDS)*
+;
+
+IDS: 
+	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
+	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante"
+;
+
+Entity:
+	'Entidad' name=IDS
+		("tableName" "=" tableName=STRING)?
+		( "extends" extends=[Entity|IDS])? 
+		anotaciones=EntityAnotations
+	'{'
+		attributes+=Attribute*
+	'}'
+;
+
+// Anotaciones permitidas en las entidades
+EntityAnotations:
+	(nonPersist?="nonPersist")?
+	& (embedded?="Embeddable")?
+	& (inheritance?="Inheritance" "=" "joined")?
+	& (superClass?="SuperClass")?
+	& (noConstruct?="noConstruct")?
+	& (noAuditable?="noAuditable")?
+;
+
+Attribute:
+	type=Type
+	name=IDS
+	anotaciones=AttributeAnotations
+	(defaultValue=STRING)?
+;
+
+AttributeAnotations:
+	(isTransient?="transient")?
+	& (hasLength?="length" "=" length=INT)?
+	& (required?="requerido")?	// NOTA: No se comprobará en la Entidad, sino en los "validators"
+	& (noConstruct?="noConstruct")? // No crea el new para ese atributo
+	& (noCascade?="noCascade")?
+	& ("checkWith" "=" checkWith=STRING)? // Manual validator
+	& ("column" "=" column=STRING)?
+	& ("validate" "=" validate=STRING)?  // validacion por regexp
+;
+
+Type:
+	simple=SimpleType | special=SpecialType | compound=CompoundType
+;
+
+SimpleType:
+	//Tipos Java
+	"String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText"
+;
+
+SpecialType:
+	"Cif" | "Telefono" | "Email" | "Moneda" | "DateTime"
+;
+
+CompoundType:
+	(tipoReferencia=AttributeReferences)? entidad=[Entity|IDS]
+	| 'Lista' (multiple?="multiple")? lista=[Lista|IDS]
+	| collectionType=tipoColeccion"<"collectionReferencia=SimpleType">"
+;
+
+tipoColeccion:
+	"Set" | "List"
+;	
+
+AttributeReferences:
+	"OneToOne" | "OneToMany" | "ManyToOne" | "ManyToMany"
+; 
+
+Formulario:
+	'Formulario' name=IDS
+	("permiso" "=" permiso=[Permiso])? 
+	'{'
+		(menu = Menu)?
+		(paginas += Pagina  |  popups += Popup)*
+	'}'
+;
+
+Menu:
+	'Menu' '{'
+		elementos +=MenuElemento+
+	'}'
+;
+
+MenuElemento:
+	MenuGrupo | MenuEnlace
+;	
+
+MenuGrupo:
+	'Grupo' titulo=STRING 
+	("permiso" "=" permiso=[Permiso])?  '{'
+		elementos +=MenuElemento*
+	'}'
+;
+
+MenuEnlace:
+	'Enlace' 
+		titulo=STRING
+		("permiso" "=" permiso=[Permiso])?
+		(
+			('pagina' '=' pagina=[Pagina|QN]) | 
+			('accion' '=' accion=STRING) |
+			('url' '=' url=STRING) |
+			('popup' '=' popup=[Popup])
+		)?
+;
+
+
+Pagina:
+	'Pagina' name=IDS
+	(
+		(noForm?='noForm')? 
+		& (noAutenticar?='noAutenticar')?
+		& (guardarParaPreparar?="guardarParaPreparar")?
+		& ("permiso" "=" permiso=[Permiso])?
+		& (inicial?="inicial")?
+		& (titulo?="titulo" "=" namePagina=STRING)?
+	)
+	'{'
+		elementos+=Elemento*
+	'}'
+;
+
+Popup:
+	'Popup' name=ID
+	(
+		('titulo' '=' titulo=STRING)?
+		& ("permiso" "=" permiso=[Permiso])?
+		& ('campo' '=' campo=Campo)?
+		& (crear?='crear')?
+		& (modificar?='modificar')?
+		& (borrar?='borrar')?
+		& (ver?='ver')?
+	)
+	'{'
+		elementos+=Elemento*
+	'}'
+;
+
+Grupo:
+	grupo= 'Grupo' (name=ID)? (
+		('titulo' '=' titulo=STRING)? &
+		('mostrarSiCombo' siCombo=[Combo|QN] '=' siComboValues=MostrarSiComboValues)? &
+		('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false"))? &
+		('mostrarSiCampo' campo=Campo '=' siCampoValues=MostrarSiCampoValues)? &
+		('mostrarSiExpresion' siExpresion=STRING)? &
+		('visible' '=' visible=("true" | "false"))? & 
+		("permiso" "=" permiso=[Permiso])?
+	)
+	'{'
+		elementos+=Elemento*
+	'}'
+;	
+
+AgruparCampos:
+	agrupar='AgruparCampos' '{'
+		elementos+=Elemento*
+	'}'
+;	
+
+MostrarSiComboValues:
+	values+=STRING (',' values+=STRING)*
+;
+
+MostrarSiCampoValues:
+	values+=STRING (',' values+=STRING)*
+;
+
+Elemento:
+	Grupo | AgruparCampos | 
+	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check |
+	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
+	AreaTexto | Enlace | Form |
+	SubirArchivoAed | EditarArchivoAed | FirmaPlatinoSimple | 
+	EntidadAutomatica
+;
+
+Campo:
+	entidad=[Entity|IDS] (atributos=CampoAtributos)?
+;
+
+CampoAtributos:
+	"." atributo=[Attribute|IDS] (atributos=CampoAtributos)?
+;
+
+Texto:
+	'Texto' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('ancho' '=' ancho=STRING)?
+		& ('ayuda' '=' ayuda=STRING)?
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
+		& (requerido?='requerido')?
+	)
+;
+
+AreaTexto:
+	'AreaTexto' (name=ID)? (
+		  ('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('valor' '=' valor=STRING)?
+		& ('filas' '=' filas=INT)?
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
+		& (requerido?='requerido')?
+	)
+;
+
+Check:
+	'Check' (name=ID)? (
+		  ('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
+			
+	)
+;	
+
+
+Enlace:
+	'Enlace' (name=ID)? (
+		(('pagina' '=' pagina=[Pagina|QN]) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING)) 
+		& ('titulo' '=' titulo=STRING)?
+		& ('destino' '=' destino=STRING)?
+		& ('estilo' '=' estilo=STRING)?
+	)
+;
+
+
+Wiki:
+	'Wiki' ('estilo' '=' estilo=STRING)? '{'
+		wikiData+=STRING+
+	'}'
+;
+
+Boton:
+	'Boton' (name=ID)? (
+	 	('titulo' '=' titulo=STRING)
+	    & ('ancho' '=' ancho=STRING)? 
+	    &('popup' '=' popup=[Popup])?
+	    &('pagina' '=' pagina=[Pagina|QN])?
+		& (waitPopup?="waitPopup")?		
+	)
+;
+
+
+Fecha:
+	'Fecha' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& (requerido?='requerido')?
+	)
+;
+
+Combo:
+	'Combo' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& (requerido?='requerido')?
+		& (busqueda?="busqueda")?
+		& (mostrarClave?="mostrarClave")?
+		& (multiple?="multiple")?
+		& ('ancho' '=' ancho=STRING)? 
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
+		& ('comboTexto' '=' comboTexto=STRING)? 
+		& ('comboValor' '=' comboValor=STRING)? 
+	)
+;
+
+Form:
+	'Form' (name=ID) (
+		('campo' '=' campo=Campo)?
+		& (autoEnviar?="autoEnviar")?
+		& ("permiso" "=" permiso=[Permiso])?
+		& ('redirigir' '=' redirigir=[Pagina|QN])?
+	)
+	'{'
+		elementos+=Elemento+
+	'}'
+;	
+
+Tabla:
+	'Tabla' (name=ID)?
+	(
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('pagina' '=' (pagina=[Pagina|QN] | paginaProperty=STRING))?
+        & ('alto' '=' alto=STRING)? 
+        & (columnasAutomaticas?="columnasAutomaticas")?
+        & ("permiso" "=" permiso=[Permiso])?
+		& (consultaCompleta?="consultaCompleta")?
+		& (recargarPagina?="recargarPagina")?
+		& (seleccionable?="seleccionable" "=" nameSeleccionable=STRING)?
+	    & (	
+	    	('popup' '=' popup=[Popup])	
+	    	| (('popupCrear' '=' popupCrear=[Popup])
+	    		(('popupBorrar' '=' popupBorrar=[Popup])? & ('popupModificar' '=' popupModificar=[Popup])? & ('popupVer' '=' popupVer=[Popup])?)
+	    	)
+	    	| (('popupBorrar' '=' popupBorrar=[Popup])
+	    		(('popupCrear' '=' popupCrear=[Popup])? & ('popupModificar' '=' popupModificar=[Popup])? & ('popupVer' '=' popupVer=[Popup])?) 
+	    	)
+	    	| (('popupModificar' '=' popupModificar=[Popup])
+	    		(('popupBorrar' '=' popupBorrar=[Popup])? & ('popupCrear' '=' popupCrear=[Popup])? & ('popupVer' '=' popupVer=[Popup])?)
+	    	)
+	    	| (('popupVer' '=' popupVer=[Popup])
+	    		(('popupBorrar' '=' popupBorrar=[Popup])? & ('popupModificar' '=' popupModificar=[Popup])? & ('popupCrear' '=' popupCrear=[Popup])?)
+	    	)
+	    )? 
+	)
+	('{'
+		columnas += Columna+
+	'}')?
+;
+
+Columna:
+	'Columna' ( 
+	       ( ('campo' '=' campo=Campo) | ('funcion' '=' funcion=STRING) )
+	       & ('titulo' '=' titulo=STRING)? 
+	       & ('ancho' '=' ancho=STRING)? 
+		   & ("permiso" "=" permiso=[Permiso])?
+	       & (expandir?='expandir')?
+	)
+;
+
+
+SubirArchivo:
+	'SubirArchivo' name=ID (
+		(requerido?='requerido')?
+	)
+;	
+
+SubirArchivoAed:
+	'SubirArchivoAed' name=ID (
+		('campo' '=' campo=Campo)
+		& (requerido?='requerido')?
+	)
+;
+
+EditarArchivoAed:
+	'EditarArchivoAed' name=ID (
+		('campo' '=' campo=Campo)
+		& (requerido?='requerido')?
+	)
+;
+
+FirmaPlatinoSimple:
+	"FirmaSimple" (name=ID)
+		"titulo" "=" titulo=STRING
+		(
+			"documento" "=" campo=Campo
+		)
+;
+
+Direccion:
+	"Direccion" (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ("titulo" "=" titulo=STRING)?
+		& (provincia?="provincia")?
+		& (pais?="pais")?
+		& (requerido?="requerido")?
+	    & ('ancho' '=' ancho=STRING)?
+	)
+;
+
+Nip:
+	'Nip' (name=ID)? (
+		('campo' '=' campo=Campo) & 
+		('titulo' '=' titulo=STRING) &
+		(requerido?='requerido')?
+	)
+;
+
+PersonaFisica:
+	'PersonaFisica' (name=ID) (
+		('campo' '=' campo=Campo) & 
+		('titulo' '=' titulo=STRING)? &
+		(requerido?='requerido')?
+	)
+;
+
+PersonaJuridica:
+	'PersonaJuridica' (name=ID) (
+		('campo' '=' campo=Campo) & 
+		('titulo' '=' titulo=STRING) &
+		(requerido?='requerido')? &
+		("permiso" "=" permiso=[Permiso])?
+	)
+;
+
+Persona:
+	'Persona' (name=ID) (
+		('campo' '=' campo=Campo) & 
+		('titulo' '=' titulo=STRING)? &
+		(requerido?='requerido')? &
+		("permiso" "=" permiso=[Permiso])?
+	)
+;
+
+Solicitante:
+	'Solicitante' (name=ID) (
+		('campo' '=' campo=Campo) & 
+		('titulo' '=' titulo=STRING)? &
+		(requerido?='requerido')? &
+		("permiso" "=" permiso=[Permiso])?
+		& (noRepresentante?='noRepresentante')?
+	)
+;
+
+EntidadAutomatica:
+	'EntidadAutomatica' (name=ID) (	
+		('campo' '=' campo=Campo) & 
+		("permiso" "=" permiso=[Permiso])?
+	)
+;
+
+Lista:
+	'Lista' name=ID '{'
+		elementos+=ElementoLista*
+	'}'
+;
+
+ElementoLista:
+	value=STRING |
+	key=ElementoListaKey ':' value=STRING |
+	key=ElementoListaKey
+;
+
+ElementoListaKey:
+	ID | INT
+;
+
+Permiso:
+	'rule' name=ID
+	(varSection=PermisoVarsSection)?
+	'when'
+		rule = PermisoRule
+	'then'
+		then=PermisoThen
+;
+
+PermisoVarsSection:
+	'vars'
+		vars+=PermisoVar+
+;
+
+PermisoVar:
+	tipo=IDS var=PERMISO_VARIABLE
+		(':' 'sql' '(' sql=STRING (',' sqlParams=PermivoVarSqlParameters)? ')') ?
+;
+
+PermivoVarSqlParameters:
+	sqlParams+=PERMISO_ACCESOVARIABLE (',' sqlParams+=PERMISO_ACCESOVARIABLE)*
+;
+
+PERMISO_VARIABLE:
+	ID
+;	
+
+PERMISO_ACCESOVARIABLE:
+	ID ('.' ID)* 
+;
+
+PermisoRule:
+	PermisoRuleOr
+;	
+
+PermisoRuleOr returns PermisoRule:
+	PermisoRuleAnd ({PermisoRuleOr.left=current} 'or' right=PermisoRuleAnd)*
+;
+
+PermisoRuleAnd returns PermisoRule:
+	PermisoPrimary ({PermisoRuleAnd.left=current} 'and' right=PermisoPrimary)*
+;
+
+PermisoPrimary returns PermisoRule:
+	PermisoRuleCheck |
+	 '(' PermisoRuleOr ')' {PermisoPrimary.left=current}
+;
+
+PermisoRuleCheck:
+	left=PERMISO_ACCESOVARIABLE simpleOp=PermisoRuleCheckSimpleOp right=PermisoRuleCheckRight |
+	left=PERMISO_ACCESOVARIABLE groupOp=PermisoRuleCheckGroupOp '(' rightGroup+=PermisoRuleCheckRight (',' rightGroup+=PermisoRuleCheckRight)* ')' 
+	| permiso=[Permiso]
+	| not?="!" permiso=[Permiso] 
+;
+
+PermisoRuleCheckSimpleOp:
+	'=' | '!='
+;
+
+PermisoRuleCheckGroupOp:
+	'in' | 'not in'
+;
+
+PermisoRuleCheckRight:
+	PERMISO_ACCESOVARIABLE | STRING  | 'null'
+;
+
+
+PermisoThen:
+	'grant' | 'deny'
+;	

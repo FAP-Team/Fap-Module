@@ -1,0 +1,36 @@
+h1. Plugin de Eclipse
+
+h2. Exportar e instalar el plugin de forma manual desde eclipse
+
+Instrucciones para exportar el plugin de eclipse.
+
+Seleccionar los proyecto @es.fap.simpleled@ y @es.fap.simpleled.ui@, botón derecho y @Export@
+
+!images/plugin-1!
+
+Deployable plug-ins and fragments
+
+!images/plugin-2!
+
+Seleccionamos la ruta del eclipse y los paquetes: @es.fap.simpleled@ y @es.fap.simpleled.ui@ y pulsamos finish.
+
+!images/plugin-3!
+
+Con estos pasos el plugin queda instalado en eclipse, si se quiere actualizar la versión del plugin se deben repetir todos los pasos utilizando las versiones actualizadas de los proyecto. 
+
+h2. Exportar el plugin vía ant
+
+Dentro del proyecto @es.fap.simpleled@ se encuentra el fichero *exportar plugin.xml* que se encarga de crear los ficheros .jar del plugin. Para ejecutar este fichero, dentro de eclipse pulsar boton derecho, Run as -> ant build (si se produce el error *Problem: failed to create task or type pde.exportPlugins* ir a Run as -> ant build... -> pestaña JRE -> seleccionar *Run in the same JRE as the workspace* -> Apply -> Run). Los .jar resultantes se almacenan en el módulo @fap@, dentro del directorio plugins (*es.fap.simpleled_1.0.0.jar* y *es.fap.simpleled.ui_1.0.0.jar*). 
+
+h2. Instalación del plugin
+
+h2. Instalación del plugin (ficheros .jar)
+
+Para instalar el plugin partiendo de los ficheros .jar creados por ant, se debe tener instalado xtext 1.0, para instalarlo seguir las instrucciones que se detallan en "Instalación Xtext":xtext-instalacion). Una vez instalados Xtext se deben copiar los ficheros *es.fap.simpleled_1.0.0.jar* y *es.fap.simpleled.ui_1.0.0.jar* que se encuentran en el módulo fap/plugins dentro del directorio dropins de eclipse (${ECLIPSE_HOME}/dropins).
+
+h2. Actualizacición del plugin (ficheros .jar)
+
+Para actualizar el plugin simplemente sustituir los ficheros *es.fap.simpleled_1.0.0.jar* y *es.fap.simpleled.ui_1.0.0.jar* que estan en el directorio dropins de eclipse (${ECLIPSE_HOME}/dropins). Con cada nueva versión del módulo se le añade la ultima versión del plugin, en el directorio plugins.  
+
+
+

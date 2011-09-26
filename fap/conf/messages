@@ -1,0 +1,71 @@
+# Mensajes
+
+#fap.name=fap
+
+fap.login.username=NIP / E-Mail
+fap.login.password=Contraseña
+fap.login.remember=Recordarme
+fap.login.signin=Acceder
+fap.login.type.user=Acceso con usuario y contraseña
+fap.login.type.cert=Acceso con certificado
+fap.login.welcome=Bienvenido a %s
+fap.login.error.user=Usuario o contraseña inválidos
+
+fap.logout.ok=Has salido de la aplicación
+
+fap.header.user=Usuario %s estás en 
+fap.header.rol=Rol
+fap.header.logout=Salir
+
+fap.page.save.error=Error al guardar. La página contiene errores.
+fap.page.save.error.more=Ver detalles
+
+
+#Validaciones
+validation.required=Requerido
+validation.email=Formato del email incorrecto
+validation.invalid=Valor incorrecto
+validation.nip.notipo=Selecciona el tipo de documento
+validation.nip.novalor=Escribe el número del documento
+validation.nip.tipo=Tipo incorrecto, se esperaba nif, nie o pasaporte
+validation.nip.nif.format=Formato del NIF incorrecto
+validation.nip.nif.letter=Letra del NIF incorrecta
+validation.nip.nie.format=Formato del NIE incorrecto
+validation.nip.nie.letter=Letra del NIE incorrecta
+
+validation.personafisica.nonombre=Nombre requerido
+validation.personafisica.primerapellido=Primer apellido requerido
+
+validation.match=Formato incorrecto
+validation.range=Valor fuera de rango
+validation.isTrue=Debe ser seleccionado
+
+#TAGS
+#==================================
+
+#NIP
+fap.tags.nip.nif=NIF
+fap.tags.nip.nie=NIE
+fap.tags.nip.pasaporte=Pasaporte
+
+#Persona Fisica
+fap.tags.personafisica.grupo.titulo=Persona física
+fap.tags.personafisica.nombre=Nombre
+fap.tags.personafisica.primerApellido=Primer apellido
+fap.tags.personafisica.segundoApellido=Segundo apellido
+fap.tags.personafisica.nip=NIP
+fap.tags.personafisica.representado=Asignar un representante
+
+#Persona Jurídica
+fap.tags.personajuridica.grupo.titulo=Persona jurídica
+fap.tags.personajuridica.entidad=Nombre de la entidad
+fap.tags.personajuridica.cif=CIF de la entidad
+
+#Persona
+fap.tags.persona.grupo.titulo=Persona
+fap.tags.persona.tipo=Tipo
+
+fap.tags.popup.boton.crear=Guardar
+fap.tags.popup.boton.editar=Guardar
+fap.tags.popup.boton.borrar=Borrar
+fap.tags.popup.boton.cerrar=Cerrar

@@ -1,0 +1,42 @@
+h1. Tag combo
+
+h2. Descripción
+
+Tag que muestra un combo.
+
+h2. Parámetros
+
+* **_id**     - ID
+* **_titulo** - Label
+* **_value**  - Valor a mostrar, si no se especifica busca el valor del campo
+* **_campo**  - Campo donde se almacenará el campo de texto
+* **_ayuda**  - Objeto de tipo TagAyuda
+* **_requerido**(false) - El campo es requerido
+* **_obj**     - Objeto a partir del cual se accede al value.Usar en el caso de que se llame desde otro tag
+* **_noRow(false)**   - true para no envolver el campo en un form-row
+* **_items**  - Lista de objetos fap.ComboItem que serán las posibles opciones del combo si no se especifica, busca en el campo la anotación @valuesFromTable
+* **_blanco**(true) - Si true, la primera opción es una entrada co
+* **_ancho**  - Ancho del campo
+
+h2. Ejemplo de uso
+
+h3. Ejemplo utilizando tabla de tablas
+
+Entidad
+
+bc. @ValueFromTable("paises")
+public String paisDeNacimiento;	
+
+Vista
+
+bc. #{fap.combo titulo:'País', campo:'solicitud.prueba.paisDeNacimiento', requerido:true /}	
+
+h3. Ejemplo especificando los valores del combo
+
+bc. 
+%{
+def items = [new tags.ComboItem('clave1', 'valor1'), 
+ new tags.ComboItem('clave2', 'valor2'), 
+ new tags.ComboItem('clave3', 'valor3')]
+%}
+#{fap.combo campo:'entidad.campo', items:items, titulo:"Ejemplo combo", ancho:"170px" /}

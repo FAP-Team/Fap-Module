@@ -1,0 +1,106 @@
+h1. Creación de un nuevo proyecto
+
+h2. Creación del proyecto holamundo
+
+1. Crea un nuevo proyecto play
+
+bc. play new holamundo
+
+2. Accede a la carpeta del proyecto
+
+bc. cd holamundo
+
+3. Sobreescribe las dependencias en el fichero "conf/dependencies.yml" (Nota: Cambia el número de versión por la última versión disponible del módulo)
+
+bc. # Dependencias
+require:
+    - play
+    - fap -> fap 1.0
+    - play -> pdf 0.6
+# Custom repository 
+repositories: 
+    - Fap repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/fap-sdk2/[revision]/[module]-[revision].zip"
+        contains:
+            - fap -> fap
+            
+
+4. Carga las dependencias del proyecto
+
+bc. play deps
+
+6. Crea el esqueleto de la aplicación fap
+
+bc. play fap:init
+
+8. Edita el fichero *led/src/Solicitud.play* y añade un nuevo mensaje
+
+bc. Formulario Solicitud {
+	Pagina Solicitante inicial  {
+		Wiki {"Hola Mundo!"}		
+	}
+}
+
+9. Genera la aplicación. Este paso lo tendras que repetir cada vez que modifiques algún fichero .play. Puedes generar la aplicación mientras está arrancada. Actualiza la página en el navegador para ver los cambios reflejados. 
+
+bc. play fap:generate
+
+9. Para ejecutar la aplicación:
+
+bc. play run
+
+ 
+10. A partir de este momento tenemos la aplicación ejecutandose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. El usuario por defecto es *admin* y la contraseña no se comprueba cuando se está en modo desarrollo. Crea una nueva solicitud e irás a la página con el mensaje que acabas de crear.
+
+h2. Configuración de la base de datos
+
+Por defecto play utiliza una base de datos en memoria. Para utilizar una base de datos MySQL debemos modificar el fichero de configuración *conf/application.conf*
+
+Sustituye:
+
+bc. db=mem
+
+por
+
+bc. db=mysql:user:password@schema
+
+
+h2. Configuración de Eclipse
+
+Para abrir el proyecto que acabamos de crear en Eclipse.
+
+bc. play eclipsify
+
+
+h2. Desarrollo
+
+Fichero "dependencies.yml"
+
+bc. require:
+    - play
+    - fap -> fap 1.0
+    - play -> pdf 0.6
+repositories:
+    - Fap Local repository:
+        type:       local
+        artifact:   ${fapsdk}/fap
+        contains:
+            - fap-module -> *
+
+Debemos tener la variable de entorno FAPSDK
+
+Carga las dependencias del proyecto
+
+bc. play dependencies -Dfapsdk="<ruta_al_fapsdk>"
+
+Generación del módulo
+
+bc. play fap:model --dev
+
+Generación de la aplicación
+
+bc. play fap:generate --dev
+
+
+

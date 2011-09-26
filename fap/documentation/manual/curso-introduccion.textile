@@ -1,0 +1,7 @@
+h1. Introducción
+
+h2. Hola mundo
+
+A lo largo de este tutorial crearemos una aplicación simple desde cero.
+
+En las páginas de documentación verás unas secciones llamadas *desarrollo*. Estas secciones están pensada para la gente que está desarrollando tanto el módulo como el generador. Si únicamente estas utilizando la herramienta para crear aplicaciones, puedes omitir estas secciones.

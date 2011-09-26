@@ -1,0 +1,411 @@
+package templates;
+
+import java.util.List;
+import java.util.Map;
+
+import generator.utils.*;
+import generator.utils.HashStack.HashStackName;
+import es.fap.simpleled.led.*;
+import generator.utils.EntidadUtils
+
+public class GPopup {
+
+	def elementoGramatica;
+	def Popup popup;
+	String name;
+	def	formulario = "";
+	
+	List<EntidadUtils> saveEntity;
+	List<String> saveExtra;
+	List<String> saveCode;
+	List<String> saveController;
+	
+	public static String generate(Popup popup){
+		GPopup g = new GPopup();
+		g.popup = popup;
+		g.elementoGramatica = popup;
+		g.name = popup.name;
+		g.formulario = ModelUtils.getActualContainer().name
+
+		HashStack.push(HashStackName.ROUTES, g)
+		HashStack.push(HashStackName.GPOPUP, g)
+		
+		g.view();
+		g.controller();
+		
+		HashStack.pop(HashStackName.GPOPUP)
+	}
+	
+	public String controllerName(){
+		return popup.name + "Controller";
+	}
+	
+	public String controllerFullName(){
+		return "popups." + controllerName();
+	}
+	
+	public String controllerGenName(){
+		return controllerName() + "Gen";
+	}
+	
+	public String controllerGenFullName(){
+		return "popups." + controllerGenName();
+	}
+	
+	public String view(){
+		String elementos = "";
+		
+		int sizeEntity = HashStack.size(HashStackName.SAVE_ENTITY)
+		int sizeExtra = HashStack.size(HashStackName.SAVE_EXTRA)
+		int sizeCode = HashStack.size(HashStackName.SAVE_CODE)
+		int sizeController = HashStack.size(HashStackName.CONTROLLER)
+		
+		for(Elemento elemento : popup.getElementos()){
+			elementos += Expand.expand(elemento);
+		}
+		
+		saveEntity = HashStack.popUntil(HashStackName.SAVE_ENTITY, sizeEntity).unique();
+		saveExtra = HashStack.popUntil(HashStackName.SAVE_EXTRA, sizeExtra);
+		saveCode = HashStack.popUntil(HashStackName.SAVE_CODE, sizeCode);
+		saveController = HashStack.popUntil(HashStackName.CONTROLLER, sizeController)
+				
+		String titulo = popup.titulo ?: popup.name;
+				
+		EntidadUtils padre = EntidadUtils.create(popup.campo?.entidad);
+		
+		List<Object> camposEnPopup = camposEnPopup();
+
+        TagParameters params = new TagParameters();
+        params.putStr("popup", popup.name)
+        params.putStr("titulo", titulo)
+        params.put("action", 'accion')
+
+        if(camposEnPopup.size() > 0){
+			EntidadUtils hijo = EntidadUtils.create(camposEnPopup[0].entidad);
+			if (popup.campo != null){
+				params.put('hidden', "[${padre.id}:${padre.id}, ${hijo.id}: ${hijo.id}]");
+			}
+			else{
+				params.put('hidden', "[${hijo.id}: ${hijo.id}]");
+			}
+        }
+
+		if (popup.permiso != null) {
+			params.putStr('permiso', popup.permiso.name)
+		}
+
+		String view = """
+#{fap.popup ${params.lista()}}
+	${elementos}
+#{/fap.popup}
+		"""
+					
+		FileUtils.overwrite(FileUtils.getRoute('VIEW'), "popups/${popup.name}.html", view);
+	}
+	
+	public String controller(){
+	    boolean popupCompleto = !((popup.crear) || (popup.modificar) || (popup.borrar) || (popup.ver));
+
+		//Parámetros del método crear
+		//def saveParamsStr = saveParams != null ? ", " + saveParams.unique().join(",") : "";
+		def saveParamsStr = saveEntity != null ? ", " + saveEntity.collect { "${it.clase} ${it.variable}" }.join(",") : "";
+		
+		String controllerHS = "";
+		for(elemento in saveController){
+			controllerHS += elemento.controller();
+		}
+
+        List<Object> camposEnPopup = camposEnPopup();
+		
+		Campo campo0 = null;
+		if (camposEnPopup.size() > 0){
+			campo0 = camposEnPopup[0];
+		}
+		
+        EntidadUtils entidad = EntidadUtils.create(CampoUtils.create(campo0));
+        EntidadUtils almacen;
+		
+		CampoUtils popupCampo = CampoUtils.create(popup.campo);
+        if(popup.campo != null){
+            almacen = EntidadUtils.create(popupCampo);
+        }
+
+
+
+        //Getters
+        String getters;
+        if(almacen != null){
+            getters = """
+            ${ControllerUtils.simpleGetter(almacen, true)}
+            ${ControllerUtils.complexGetter(almacen, entidad, popupCampo)}
+            """
+        }else{
+            getters = ControllerUtils.simpleGetter(entidad, true)
+        }
+
+        //metodo Abrir
+        def abrirParams = ["String accion"];
+        abrirParams.add(entidad.typeId)
+        if (almacen != null) abrirParams.add(almacen.typeId)
+
+        String getterCall = almacen != null? ControllerUtils.complexGetterCall(almacen, entidad): ControllerUtils.simpleGetterCall(entidad, true)
+
+        def abrirRenderParams = ["\"gen/popups/${popup.name}.html\"", "accion"]
+        abrirRenderParams.add(entidad.id)
+        abrirRenderParams.add(entidad.variable)
+        if(almacen != null) abrirRenderParams.add(almacen.id)
+
+        String metodoAbrir = """
+	public static void abrir(${abrirParams.join(",")}){
+		$entidad.clase $entidad.variable;
+		if(accion.equals("crear")){
+            $entidad.variable = new $entidad.clase();
+		}else{
+		    $entidad.variable = $getterCall;
+		}
+
+		if (!permiso(accion)){
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+
+		renderArgs.put("controllerName", "${controllerGenName()}");
+		renderTemplate(${abrirRenderParams.join(',')});
+	}
+        """
+
+        //permiso
+
+        String metodoPermiso = """
+			@Util
+            protected static boolean permiso(String accion) {
+                ${ControllerUtils.permisoContent(popup.permiso)}
+            }
+        """
+
+        //Metodo editar
+        String metodoEditar = ""
+
+		if ((popup.modificar) || (popupCompleto)) {
+
+            def editarParams = []
+            if(almacen != null) editarParams.add(almacen.typeId)
+            editarParams.addAll([entidad.typeId, entidad.typeVariable]);
+
+            def editarAbrirCallParams = ['"editar"', entidad.id]
+            if(almacen != null) editarAbrirCallParams.add(almacen.id)
+
+            metodoEditar = """
+                public static void editar(${editarParams.join(',')}){
+                    checkAuthenticity();
+                    if(!permiso("update")){
+                        Messages.error("No tiene permisos suficientes para realizar la acción");
+                    }
+
+                    ${ControllerUtils.fullGetterCall(almacen, entidad)}
+
+                    if(!Messages.hasErrors()){
+                        ${ControllerUtils.validateCopyCall(this, entidad)};
+                    }
+
+                    if(!Messages.hasErrors()){
+                        ${entidad.variableDb}.save();
+                    }
+
+                    if(!Messages.hasErrors()){
+                        renderJSON(utils.RestResponse.ok("Registro actualizado correctamente"));
+                    }else{
+                        Messages.keep();
+                        abrir(${editarAbrirCallParams.join(',')});
+                    }
+
+                }
+            """
+        }
+
+        String metodoCrear = ""
+        if(popup.crear || popupCompleto){
+            def crearParams = []
+            if(almacen != null) crearParams.add(almacen.typeId)
+            crearParams.add(entidad.typeVariable);
+
+            String crearCrearSaveCall = ""
+            if(almacen == null){
+                crearCrearSaveCall = "${entidad.variableDb}.save();"
+            }else{
+                crearCrearSaveCall = """
+                ${entidad.variableDb}.save();
+                db${popupCampo.str}.add(${entidad.variableDb});
+                ${almacen.variableDb}.save();
+                """
+            }
+
+            def crearAbrirCallParams = ['"crear"', null]
+            if(almacen != null) crearAbrirCallParams.add(almacen.id)
+
+            metodoCrear = """
+                public static void crear(${crearParams.join(",")}){
+                    checkAuthenticity();
+                    if(!permiso("create")){
+                        Messages.error("No tiene permisos suficientes para realizar la acción");
+                    }
+
+                    ${entidad.clase} ${entidad.variableDb} = new ${entidad.clase}();
+                    ${ControllerUtils.fullGetterCall(null, almacen)}
+
+                    if(!Messages.hasErrors()){
+                        ${ControllerUtils.validateCopyCall(this, entidad)};
+                    }
+
+
+                    if(!Messages.hasErrors()){
+                        $crearCrearSaveCall
+                    }
+
+                    if(!Messages.hasErrors()){
+                        renderJSON(utils.RestResponse.ok("Registro creado correctamente"));
+                    }else{
+                        Messages.keep();
+                        abrir(${crearAbrirCallParams.join(',')});
+                    }
+                }
+            """
+        }
+
+
+        String metodoBorrar = ""
+        if ((popup.borrar) || (popupCompleto)) {
+            def borrarParams = []
+            if(almacen != null) borrarParams.add(almacen.typeId)
+            borrarParams.addAll([entidad.typeId]);
+
+            def borrarGetter = ControllerUtils.fullGetterCall(almacen, entidad);
+
+            def borrarBorrarEntidad = ""
+            if(almacen != null){
+                borrarBorrarEntidad = """${popupCampo.firstLower()}.remove($entidad.variableDb);
+                ${almacen.variable}.save();
+                ${entidad.variableDb}.delete();
+                """
+            }else{
+                borrarBorrarEntidad = "${entidad.variableDb}.delete();"
+            }
+
+            def borrarAbrirCallParams = ['"borrar"', entidad.id]
+            if(almacen != null) borrarAbrirCallParams.add(almacen.id)
+
+            metodoBorrar  ="""
+                public static void borrar(${borrarParams.join(",")}){
+                    checkAuthenticity();
+                    if(!permiso("delete")){
+                        Messages.error("No tiene permisos suficientes para realizar la acción");
+                    }
+
+                    $borrarGetter
+
+                    if(!Messages.hasErrors()){
+                        $borrarBorrarEntidad
+                    }
+
+                    if(!Messages.hasErrors()){
+                        renderJSON(utils.RestResponse.ok("Registro borrado correctamente"));
+                    }else{
+                        Messages.keep();
+                        abrir(${borrarAbrirCallParams.join(',')});
+                    }
+                }
+            """
+        }
+
+
+		String controllerGen = """
+package controllers.gen.popups;
+
+import play.*;
+import play.mvc.*;
+import play.db.jpa.Model;
+import controllers.fap.*;
+import validation.*;
+import messages.Messages;
+
+import models.*;
+import tags.ReflectionUtils;
+
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+
+
+public class ${controllerGenName()} extends GenericController {
+
+    $getters
+
+    $metodoAbrir
+
+    $metodoPermiso
+
+    $metodoCrear
+
+    $metodoEditar
+
+    $metodoBorrar
+
+    ${ControllerUtils.validateCopyMethod(this, entidad)}
+
+    $controllerHS
+}
+"""
+		
+		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName().replaceAll("\\.", "/") + ".java", controllerGen);
+			
+		String controller = """
+package controllers.popups;
+
+import controllers.gen.popups.${controllerGenName()};
+			
+public class ${controllerName()} extends ${controllerGenName()} {
+
+}
+		"""
+		FileUtils.write(FileUtils.getRoute("CONTROLLER"), controllerFullName().replaceAll("\\.", "/") + ".java", controller);
+	}
+
+	public String url(){
+		String idSolicitud = "";
+		if (ModelUtils.isSolicitudForm())
+			idSolicitud = "/{idSolicitud}";
+		return "/${formulario}${idSolicitud}/${popup.name.toLowerCase()}/{idEntidad}";			
+	}
+	
+	public String generateRoutes(){
+		StringBuffer sb = new StringBuffer();
+		StringUtils.appendln sb, Route.to("GET", url() + "/abrir", controllerFullName() + ".abrir")
+		StringUtils.appendln sb, Route.to("POST", url() + "/editar", controllerFullName() + ".editar")
+		StringUtils.appendln sb, Route.to("POST", url() + "/borrar", controllerFullName() + ".borrar")
+		StringUtils.appendln sb, Route.to("POST", url() + "/crear", controllerFullName() + ".crear")
+		StringUtils.appendln sb, Route.to("POST", url() + "/cancelarcrear", controllerFullName() + ".cancelarCrear")
+		return sb.toString();
+	}
+	
+	/**
+	 * Calcula todos los campos que se utilizan en una página
+	 * Se utiliza para copiar esos campos a la entidad
+	 * que se va a persistir
+	 */
+	private List<Object> camposEnPopup(){
+		List<Object> campos = new ArrayList<Object>();
+		addCampos(campos, popup);
+		return campos;
+	}
+	
+	private void addCampos(List<Object> lista, Object o){
+		if(o.metaClass.respondsTo(o,"getElementos")){
+			o.elementos.each { addCampos(lista, it)};
+		}else if(o.metaClass.respondsTo(o,"getCampo")){
+			if(! (o instanceof Tabla)){
+				lista.add(o.campo);
+			}
+		}
+	}
+	
+}

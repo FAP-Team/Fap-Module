@@ -1,0 +1,146 @@
+h1. Generación de informes en PDF
+
+h2. Introducción
+
+Para la generación de los informes de play se utiliza el modulo "pdf":http://www.playframework.org/modules/pdf .También está disponible la clase **reports.Report** del módulo que contiene algunos métodos de ayuda para crear los informes.
+
+h2. Escribir la plantilla
+
+Las plantillas se definen utilizando HTML, CSS y los tags de play.
+Puedes consultar la lista de tags disponibles en "http://www.playframework.org/documentation/1.2.2/templates":http://www.playframework.org/documentation/1.2.2/templates y en "http://www.playframework.org/documentation/1.2.2/tags":http://www.playframework.org/documentation/1.2.2/tags
+
+h3. Ejemplo de plantilla
+
+bc.. <html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+.table-gris {
+width:100%;
+	border-collapse: collapse;
+	
+}
+
+.table-gris thead td {
+	background-color : #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding-left: 2px;
+}
+
+.table-gris td {
+	border: 1px solid #000;
+}
+</style>
+
+</head>
+<body>
+
+	<h2>ANEXO III</h2>
+	<h3>Solicitud para la subvención de la compensación del sobrecoste
+		que afrontan los operadores de telecomunicaciones para desplegar
+		servicios de banda ancha en Canarias - Convocatoria 2011</h3>
+
+	<!-- Solicitante -->
+	<div id="divDatosPersonalesSolicitante">
+		<table id="tblDatosPersonalesSolicitante">
+			<tr>
+				<td><b>SOLICITANTE:</b></td>
+			</tr>
+			<tr>
+				<td>#{if solicitud.solicitante.isPersonaFisica()}NIF:#{/if}
+				    #{if solicitud.solicitante.isPersonaJuridica()}CIF#{/if}
+				</td>
+				<td>${solicitud.solicitante.getNumeroId()?.toUpperCase()}</td>
+			</tr>
+			<tr>
+				<td>Nombre/Razón Social:</td>
+				<td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td>
+			</tr>
+			<tr>
+				<td>Teléfono:</td>
+				<td>${solicitud.solicitante.telefonoFijo}</td>
+			</tr>
+			<tr>
+				<td>Móvil:</td>
+				<td>${solicitud.solicitante.telefonoMovil}</td>
+			</tr>
+			<tr>
+				<td>Fax:</td>
+				<td>${solicitud.solicitante.fax}</td>
+			</tr>
+			<tr>
+				<td>Correo electrónico:</td>
+				<td>${solicitud.solicitante.email}</td>
+			</tr>
+			<tr>
+				<td>Web:</td>
+				<td>${solicitud.solicitante.web}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<table id="tblDatosRepresentantes" class="table-gris"
+	cellspacing="0px" cellpadding="2px">
+	<thead>
+		<tr>
+			<td width='10%'>NIF</td>
+			<td width='75%'>Nombre</td>
+			<td width='16%'>Tipo</td>
+		</tr>
+	</thead>
+	
+	#{list items:solicitud.solicitante.juridica.representantes, as:'representante' }
+	<tr>
+		<td>${representante.nip.valor?.toUpperCase()}</td>
+		<td>${representante.getNombreCompleto()?.toUpperCase()}</td>
+		<td>${representante.tipo?.toUpperCase()}</td>
+	</tr>
+	#{/list}
+	
+	</table>
+	...
+</body>
+</html>	
+
+h3. CSS de impresión
+
+Existen una serie de propiedades de CSS específicas para la impresión que es conveniente utilizar a la hora de darle formato a la plantilla.
+
+Enlaces a documentación CSS:
+* "Paged Media w3c":http://www.w3.org/TR/CSS21/page.html
+
+
+h2. Renderizar la plantilla
+
+Para renderizar la plantilla se utiliza la clase **reports.Report** que tiene los parámetros:
+
+h4. Parámetros:
+
+* **Constructor** : ruta al fichero de la plantilla
+* **header** : ruta a la plantilla de cabecera
+* **footer** : ruta a la plantilla de pie de página
+* **pageSize** : tamaño de la página
+** **normalSize** : A4 Normal
+** **registroSize** : A4 Con espacio en el pie de página para que platino añada la información de registro
+
+h4. Métodos:
+
+* **renderTmpFile(argumentos...)** - Renderiza la plantilla a un fichero temporal. Los argumentos son las variables que van a estar disponibles en la plantilla.
+* **renderResponse(argumentos...)** - Renderiza la plantilla y se la muestra al usuario. Los argumentos son las variables que van a estar disponibles en la plantilla. 
+
+h4. Ejemplo de uso
+
+bc.. File borrador = new Report("reports/solicitud.html")
+                         .header("reports/header.html")
+                         .footer("reports/footer-borrador.html")
+                         .registroSize()
+                         .renderTmpFile(solicitud);

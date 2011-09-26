@@ -1,0 +1,29 @@
+h1. Boton
+
+h2. Descripción
+
+Permite definir un boton, por defecto al pulsar el boton se llama al metodo del controlador del form que lo contenga. 
+
+h2. Parámetros
+
+* **name** (opcional) - Identificador del elemento
+* **titulo** - Etiqueta que se mostrará dentro del boton
+* **ancho** (opcional) - Ancho en pixeles del boton
+* **popup** (opcional) - Si se especifica, al pulsar el boton se abrira el popup
+* **pagina** (opcional) - Si se especifica, al pulsar el boton se redirige a la pagina
+h2. Definición
+
+bc. Boton:
+	'Boton' (name=ID)? (
+	 	('titulo' '=' titulo=STRING)
+	    & ('ancho' '=' ancho=STRING)? 
+	    &('popup' '=' popup=[Popup])?
+	    &('pagina' '=' pagina=STRING)?
+	)
+;
+
+h2. Ejemplo de uso
+
+bc. Boton subirDocumento titulo="Añadir documentación"
+
+bc. Boton irPresentacion titulo="Ir a Presentación" pagina="Presentacion"

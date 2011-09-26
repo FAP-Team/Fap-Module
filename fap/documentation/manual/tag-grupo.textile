@@ -1,0 +1,36 @@
+h1. Tag grupo
+
+h2. Descripción
+
+Muestra un grupo de elemento en la página.
+
+El grupo se puede mostrar u ocultar según los valores de un combo utilizando los parámetros "siCombo" y "siComboValue".
+
+h2. Parámetros
+
+* **_id** - ID. Opcional, en el caso de que no se especifique un ID se creará uno automáticamente utilizando play.libs.Codec.UUID().
+* **_titulo** - Título que aparecerá en la cabecera del grupo.
+* **_siCombo** - ID del combo cuyo valor hará que el grupo se muester o no.
+* **_siComboValue**  - Lista de valores del combo con los que se mostrará el grupo. Si se especifíca el parámetro siCombo, este parámetro es obligatorio.
+
+h2. Ejemplo de uso
+
+h3. Grupo con contenido
+
+bc. #{fap.grupo titulo:'Nombre'}
+   Esto es el contenido del grupo. 
+   Se puede escribir html directamente o utilizar otros tags.
+   #{fap.text campo:'solicitud.solicitante.fisica.nombre' /}
+#{/fap.grupo}
+
+h3. Grupo con siCombo
+
+bc. #{fap.combo id:"tipoSolicitante", titulo:"Tipo de persona", campo:'solicitud.solicitante.tipo' /}
+#{fap.grupo titulo:"Persona física", siCombo:"tipoSolicitante", siComboValue:["fisica"]}	
+	Contenido dentro del grupo
+#{/fap.grupo}
+
+
+
+
+

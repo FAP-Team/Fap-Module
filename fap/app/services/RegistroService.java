@@ -1,0 +1,251 @@
+package services;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.activation.DataSource;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.apache.log4j.Logger;
+
+import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
+
+import aed.AedClient;
+
+import emails.Mails;
+import es.gobcan.eadmon.aed.ws.AedExcepcion;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAdministrativas;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
+import es.gobcan.platino.servicios.registro.JustificanteRegistro;
+import platino.DatosDocumento;
+import platino.DatosExpediente;
+import platino.DatosRegistro;
+import platino.PlatinoGestorDocumentalClient;
+import platino.PlatinoRegistro;
+import properties.FapProperties;
+import utils.BinaryResponse;
+import messages.Messages;
+import models.Aportacion;
+import models.Documento;
+import models.ExpedientePlatino;
+import models.Persona;
+import models.PersonaFisica;
+import models.PersonaJuridica;
+import models.SemillaExpediente;
+import models.Singleton;
+import models.Solicitante;
+import models.SolicitudGenerica;
+
+public class RegistroService {
+	
+	private static Logger log = Logger.getLogger(RegistroService.class);
+	
+	
+	/**
+	 * Registra la solicitud
+	 * @throws RegistroException
+	 */
+	public static void registrarSolicitud(SolicitudGenerica solicitud) throws RegistroException {
+		if(!solicitud.registro.fasesRegistro.borrador){
+			Messages.error("Intentando registrar una solicitud que no se ha preparado para firmar");
+			throw new RegistroException("Intentando registrar una solicitud que no se ha preparado para firmar");
+		}
+		
+		if(!solicitud.registro.fasesRegistro.firmada){
+			Messages.error("Intentando registrar una solicitud que no ha sido firmada");
+			throw new RegistroException("Intentando registrar una solicitud que no ha sido firmada");
+		}
+		
+		//Crea el expediente en el archivo electrónico de platino
+		if(!solicitud.registro.fasesRegistro.expedientePlatino){
+			try {
+				PlatinoGestorDocumentalClient.crearExpediente(solicitud.expedientePlatino);
+			
+				solicitud.registro.fasesRegistro.expedientePlatino = true;
+				solicitud.registro.fasesRegistro.save();
+			} catch (Exception e) {
+				Messages.error("Error creando expediente en el gestor documental de platino");
+				throw new RegistroException("Error creando expediente en el gestor documental de platino");
+			}
+		}else{
+			play.Logger.debug("El expediente de platino para la solicitud %s ya está creado", solicitud.id);
+		}
+		
+		
+		//Registra la solicitud
+		if(!solicitud.registro.fasesRegistro.registro){
+			try {
+				DatosRegistro datos = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, solicitud.registro.oficial, solicitud.expedientePlatino);
+				//Registra la solicitud
+				JustificanteRegistro justificante = PlatinoRegistro.registroDeEntrada(datos);
+				play.Logger.info("Se ha registrado la solicitud %s en platino, solicitud.id");
+				
+				//Almacena la información de registro
+				solicitud.registro.informacionRegistro.setDataFromJustificante(justificante);
+				play.Logger.info("Almacenada la información del registro en la base de datos");
+
+				//Guarda el justificante en el AED
+				play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
+				Documento documento = solicitud.registro.justificante;
+				documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitud");
+				documento.descripcion = "Justificante de registro de la solicitud";
+				documento.save();
+				AedClient.saveDocumentoTemporal(documento, justificante.getReciboPdf().getInputStream(), "JustificanteSolicitudPDF" + solicitud.id + ".pdf");
+				
+				solicitud.registro.fasesRegistro.registro = true;
+				solicitud.registro.fasesRegistro.save();
+				
+				play.Logger.info("Justificante almacenado en el AED");
+				
+				
+				// Establecemos las fechas de registro para todos los documentos de la solicitud
+				List<Documento> documentos = new ArrayList<Documento>();
+				documentos.addAll(solicitud.documentacion.documentos);
+				documentos.add(solicitud.registro.justificante);
+				documentos.add(solicitud.registro.oficial);
+				for (Documento doc: documentos) {
+					if (doc.fechaRegistro == null) {
+						doc.fechaRegistro = solicitud.registro.informacionRegistro.fechaRegistro;
+					}
+				}
+				play.Logger.info("Fechas de registro establecidas a  "+solicitud.registro.informacionRegistro.fechaRegistro);
+				
+			} catch (Exception e) {
+				Messages.error("Error al registrar de entrada la solicitud");
+				throw new RegistroException("Error al obtener el justificante del registro de entrada");
+			}
+		}else{
+			play.Logger.debug("La solicitud %s ya está registrada", solicitud.id);
+		}
+		
+		
+		
+		//Crea el expediente en el AED
+		if(!solicitud.registro.fasesRegistro.expedienteAed){
+			AedClient.crearExpediente(solicitud);
+			solicitud.registro.fasesRegistro.expedienteAed = true;
+			solicitud.registro.fasesRegistro.save();
+		}else{
+			play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
+		}
+
+		//Cambiamos el estado de la solicitud
+		if (!solicitud.estado.equals("iniciada")) {
+			solicitud.estado = "iniciada";
+			solicitud.save();
+			Mails.enviar("solicitudIniciada", solicitud);
+		}
+	
+		//Clasifica los documentos en el AED
+		if(!solicitud.registro.fasesRegistro.clasificarAed){
+			//Clasifica los documentos sin registro
+			List<Documento> documentos = new ArrayList<Documento>();
+			documentos.addAll(solicitud.documentacion.documentos);
+			documentos.add(solicitud.registro.justificante);
+			boolean todosClasificados = AedClient.clasificarDocumentos(solicitud, documentos);
+			
+			//Clasifica los documentos con registro de entrada
+			List<Documento> documentosRegistrados = new ArrayList<Documento>();
+			documentosRegistrados.add(solicitud.registro.oficial);
+			todosClasificados = todosClasificados && AedClient.clasificarDocumentos(solicitud, documentosRegistrados, solicitud.registro.informacionRegistro);
+			
+			if(todosClasificados){
+				solicitud.registro.fasesRegistro.clasificarAed = true;
+				solicitud.registro.fasesRegistro.save();
+			}else{
+				Messages.error("Algunos documentos no se pudieron clasificar correctamente");
+			}
+		}else{
+			play.Logger.debug("Ya están clasificados todos los documentos de la solicitud %s", solicitud.id);
+		}
+	}	 
+	
+
+	public static void registrarAportacionActual(SolicitudGenerica solicitud) throws RegistroException {
+		//Registra la solicitud
+		
+		Aportacion aportacion = solicitud.aportaciones.actual; 
+		
+		if(aportacion.estado == null){
+			Messages.error("La solicitud no está firmada");
+		}
+		
+		//Registro de entrada en platino
+		if(aportacion.estado.equals("firmada")){
+			try {
+				DatosRegistro datos = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, aportacion.oficial, solicitud.expedientePlatino);
+				//Registra la solicitud
+				JustificanteRegistro justificante = PlatinoRegistro.registroDeEntrada(datos);
+				play.Logger.info("Se ha registrado la solicitud de aportacion de la solicitud %s en platino", solicitud.id);
+				
+				//Almacena la información de registro
+				aportacion.informacionRegistro.setDataFromJustificante(justificante);
+				play.Logger.info("Almacenada la información del registro en la base de datos");
+
+				//Guarda el justificante en el AED
+				play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
+				Documento documento = aportacion.justificante;
+				documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitud");
+				documento.descripcion = "Justificante de registro de la solicitud";
+				documento.save();
+				AedClient.saveDocumentoTemporal(documento, justificante.getReciboPdf().getInputStream(), "JustificanteSolicitudPDF" + solicitud.id + ".pdf");
+				
+				aportacion.estado = "registrada";
+				aportacion.save();
+				Mails.enviar("aportacionRealizada", solicitud);
+				
+				play.Logger.info("Justificante almacenado en el AED");
+			} catch (Exception e) {
+				e.printStackTrace();
+				Messages.error("Error al registrar de entrada la solicitud");
+				throw new RegistroException("Error al obtener el justificante del registro de entrada");
+			}
+		}else{
+			play.Logger.debug("La solicitud %s ya está registrada", solicitud.id);
+		}
+		
+		//Clasifica los documentos
+		if(aportacion.estado.equals("registrada")){
+			//Clasifica los documentos sin registro
+			List<Documento> documentos = new ArrayList<Documento>();
+			documentos.addAll(aportacion.documentos);
+			documentos.add(aportacion.justificante);
+			boolean todosClasificados = AedClient.clasificarDocumentos(solicitud, documentos);
+			
+			//Clasifica los documentos con registro de entrada
+			List<Documento> documentosRegistrados = new ArrayList<Documento>();
+			documentosRegistrados.add(aportacion.oficial);
+			todosClasificados = todosClasificados && AedClient.clasificarDocumentos(solicitud, documentosRegistrados, aportacion.informacionRegistro);
+			
+			if(todosClasificados){
+				aportacion.estado = "clasificada";
+				aportacion.save();
+				play.Logger.info("Se clasificaron todos los documentos");
+			}else{
+				Messages.error("Algunos documentos no se pudieron clasificar correctamente");
+			}
+		}else{
+			play.Logger.debug("Ya están clasificados todos los documentos de la solicitud %s", solicitud.id);
+		}
+		
+		//Mueve la aportación a la lista de aportaciones clasificadas
+		//Añade los documentos a la lista de documentos
+		if(aportacion.estado.equals("clasificada")){
+			solicitud.aportaciones.registradas.add(aportacion);
+			solicitud.documentacion.documentos.addAll(aportacion.documentos);
+			solicitud.aportaciones.actual = new Aportacion();
+			solicitud.save();
+			aportacion.estado = "finalizada";
+			aportacion.save();
+			
+			play.Logger.debug("Los documentos de la aportacion se movieron correctamente");
+		}
+		
+		
+	}
+	
+}

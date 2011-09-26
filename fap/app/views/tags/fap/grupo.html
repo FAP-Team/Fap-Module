@@ -1,0 +1,114 @@
+%{
+	def id = _id ?: play.libs.Codec.UUID();
+	def siCombo = _siCombo;
+	def siComboValue = _siComboValue;
+	def siCheck = _siCheck
+	def siCheckValue = _siCheckValue
+	def siCampo = _siCampo;
+	def siCampoValue = _siCampoValue;
+	def permiso = _permiso
+	
+	def siComboReverse = siComboReverse ?: false;
+	
+	if(siCombo != null && siComboValue == null)
+		throw new play.exceptions.TagInternalException("SiComboValue no definido");
+	
+	if(siCheck != null && siCheckValue == null)
+		throw new play.exceptions.TagInternalException("SiCheckValue no definido");
+
+	if(siCampo != null && siCampoValue == null)
+		throw new play.exceptions.TagInternalException("SiCampoValue no definido");
+			
+	def visible = _visible != null? _visible : true
+	
+	def valueCampo = null
+	if (siCampo != null) {
+		def objCampo = _caller.get(siCampo.split("\\.")[0])
+		valueCampo = tags.ReflectionUtils.getValueRecursively(objCampo, siCampo)
+	}
+	
+	
+	def mostrarSi = _mostrarSi != null? _mostrarSi : true
+	
+%}
+
+
+#{if mostrarSi}
+
+	#{fap.permiso permiso:permiso}
+
+	#{if visible}
+		<div id="${id}" class="grupo">
+			#{if _titulo}
+				<p class="grupo-header">${_titulo}</p>
+			#{/if}
+			<div class="grupo-content">
+			#{doBody/}
+			</div>
+		</div>
+	#{/if}
+	#{else}
+		<div id="${id}">
+			#{doBody/}
+		</div>
+	#{/else}
+
+#{if siCombo}
+
+<script type="text/javascript">
+	$(function(){
+		
+		var $combo = $('#${siCombo}');
+		
+		function change(){
+			if($combo.val() in #{fap.toJSMapNoValue siComboValue/} ){
+				var el = Ext.get('${id}').#{if siComboReverse}hide#{/if}#{else}show#{/else}();
+				$('#${id} .tabla').each( function(index){
+					if ((typeof $(this).data('grid')!=  "undefined")) {
+						$(this).data('grid').setWidth("10%"); // IE7
+						$(this).data('grid').setWidth("100%");
+					}
+				});			
+			}else{
+				var el = Ext.get('${id}');
+				el.setVisibilityMode(Ext.Element.OFFSETS);
+				el.#{if siComboReverse}show#{/if}#{else}hide#{/else}();
+			}				
+		};
+		change();
+		$combo.change(change);
+		
+	});
+</script>
+
+#{/if}
+
+#{if siCheck}
+<script type="text/javascript">
+	$(function(){
+		var $check = $('#${siCheck}');
+		var $group = $('#${id}');
+		function click${siCheck}(){
+			var value = $check.is(':checked');
+			if(value == ${siCheckValue} ){
+				var el = Ext.get('${id}').show();				
+				$('#${id} .tabla').each( function(index){
+					console.log($(this).data('grid'));
+					if ((typeof $(this).data('grid')!=  "undefined")) {
+						$(this).data('grid').setWidth("10%"); // IE7
+						$(this).data('grid').setWidth("100%");
+					}
+				});			
+			}else{
+				var el = Ext.get('${id}');
+				el.setVisibilityMode(Ext.Element.OFFSETS);
+				el.hide();
+			}	
+		};
+		click${siCheck}();
+		$check.click(click${siCheck});
+	});
+</script>
+#{/if}
+#{/fap.permiso}
+#{/if}

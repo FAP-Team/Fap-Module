@@ -1,0 +1,27 @@
+*{
+	_campo
+}*
+
+%{
+	def campo = _campo
+	def obj = _obj ?: _caller.get(_campo.split("\\.")[0])
+	def clazz = obj.getClass()
+	def fields = tags.ReflectionUtils.getFieldsOfType(clazz, campo)
+}%
+
+#{list items:fields, as:"field"}
+	%{def nombreCampo = campo + "." + field.getName() }%
+	
+	#{if field.getType() == String.class}
+		
+		#{if field.getAnnotation(validation.ValueFromTable.class) != null}
+			#{fap.combo campo:nombreCampo, obj:obj /}
+		#{/if}
+		#{else}
+			#{fap.texto campo:nombreCampo, obj:obj /}
+		#{/else}
+		
+	#{/if}
+	
+	
+#{/list}

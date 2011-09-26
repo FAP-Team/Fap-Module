@@ -1,0 +1,13 @@
+Agente(agente-admin):
+    email: "admin@fap.com"
+    username: "admin"
+    password: "DMF1ucDxtqgxw5niaXcmYQ=="
+    roles: [administrador, usuario]
+    rolActivo: "administrador"
+
+Agente(agente-fap):
+    email: "fap@fap.com"
+    username: "fap"
+    password: "DMF1ucDxtqgxw5niaXcmYQ=="
+    roles: [usuario]
+    rolActivo: "usuario"

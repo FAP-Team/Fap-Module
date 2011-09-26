@@ -1,0 +1,20 @@
+h1. Depuración de peticiones y respuestas
+
+h2. Configuración de los interceptores
+
+Para depurar las peticiones y las respuestas que hace un servicio web hay que añadir los interceptores **LoggingInInterceptor** y **LogginOutInterceptor**.
+
+bc.. //Creación del servicio
+URL wsdlURL = Registro_Service.class.getClassLoader().getResource("wsdl/registro.wsdl");
+registro = new Registro_Service(wsdlURL).getRegistroPort();
+
+//Añadiendo interceptores para la depuración
+Client client = ClientProxy.getClient(registro);
+client.getInInterceptors().add(new LoggingInInterceptor());
+client.getOutInterceptors().add(new LoggingOutInterceptor());
+
+h2. Pitidos por la consola
+
+Cuando se activan los Interceptores de Logging se muestran todos los mensajes por la consola. En el caso de que esos mensajes tengan contenido binario (por ejemplo un PDF) la consola emite pitidos, es normal y no pasa nada.
+
+Si llegan a resultar muy molestos se puede redirigir la salida de estos Interceptores a un fichero, en vez de la consola.

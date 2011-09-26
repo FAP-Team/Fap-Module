@@ -1,0 +1,257 @@
+h1. Atributo
+
+h2. Descripción
+
+Permite definir un atributo en una entidad.
+
+bc. type name Anotaciones "ValorPorDefecto" comentarios
+
+h2. Parámetros
+
+* **type** (Opcional) - Tipo del atributo y su relación con la entidad.(Ver Tipos de Atributos)
+* **name** - Identificador del atributo
+* **Anotaciones**  (Opcional) - Permite definir anotaciones, ver Anotaciones
+* **Valor Por Defecto** (Opcional) - Permite especificar un valor por defecto para ese atributo, en todas las instancias de esa entidad.
+* **comentarios** (Opcional) - Comienza con *#* hasta fin de línea. El comentario añadido al atributo, será incluido en la clase generada.
+
+h2. Tipos de Atributos
+
+h3. Tipos Simples
+
+Los tipos simples son los siguientes:
+
+bc. "String" | "Long" | "Integer" | "Boolean" | "Double" | "DateTime" |
+ "LongText" | "Telefono" | "Email" | "Moneda" 
+
+Al definirnos un atributo con uno de éstos tipos, se crea en la entidad un atributo con ese nombre y con éste tipo. Veamos:
+
+bc. Entidad Prueba {
+	String nombre
+	...
+}
+
+nos crea:
+
+bc. @Entity
+public class Prueba extends Model {
+	public String nombre;
+	...
+}
+
+h3. Tipos especiales
+ 
+bc. "Nip" | "Cif" | "Direccion"
+
+Similares a los tipos básicos pero en este caso se genera el código necesario para validarlos.
+
+h3. Tipos Compuestos
+
+Existen tres clases de tipos compuestos, los que son tipos de otras entidades, las _Listas_ y las colecciones.
+
+h4. Tipos de otra entidad
+
+Estos tipos son los de otra entidad declarada por nosotros mismos en el fichero actual, o proveidas por Fap (como Persona, PersonaFisica, PersonaJuridica, ...).
+
+Se les puede asignar opcionalmente el tipo de relación que tiene el atributo con la entidad "tipo". Así el tipo de relación del atributo con la entidad que lo engloba puede ser de los siguientes tipos:
+
+* **OneToOne** (es el valor por defecto) - Relación Uno a Uno, en la cual en la entidad se creará un atributo de la clase del tipo indicado.
+
+bc. Entidad Verificacion (Solicitud) {
+	OneToOne Requerimiento requerimientoProceso
+	...
+}
+
+En la clase Verificación se creará un campo llamado *requerimientoProceso* que será del tipo *Requerimiento*.
+
+bc. @OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+public Requerimiento requerimientoProceso; 
+
+
+* **OneToMany** - Relación Uno a Muchos, por cada entidad padre del atributo, podrá haber varias entidades del tipo del atributo. Mejor, un ejemplo:
+
+bc. Entidad Verificacion (Solicitud) {
+	OneToMany Requerimiento requerimientos
+	...
+}
+
+En la clase _Verificacion_ quedará algo como lo siguiente:
+
+bc. @OneToMany(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+@JoinTable(name="verificacion_requerimientos")
+public List<Requerimiento> requerimientos; 
+
+Fijémonos que requerimientos ahora será una lista, y para la persistencia se utilizará un join con una tabla intermedia _verificacion_requerimientos_.
+
+* **ManyToOne**
+
+TODO
+
+* **ManyToMany**
+
+TODO
+
+h4. Atributos de tipo Lista
+
+bc. Lista multiple? nombreLista nombreDelAtributo
+
+El tipo del atributo será uno o varios (en caso de indicar multiple) _String_ de los valores de una lista. Dicha lista puede ser declarada por nosotros o proveida por Fap (en cuyo caso deberá ser su nombre de lista indicado mediante una String).
+
+bc. Lista multiple "roles" roles
+Lista "roles" rolActivo
+
+Así, expliquemos la definición anterior. La primera línea indica que en la entidad en la que se esté declarando habrá un atributo *roles* (de tipo _Set< String>_ ... _porque lo indica el *multiple*_) cuyos valores posibles serán los que tiene la lista definida *"roles"*.
+
+La segunda línea difiere de la anterior en el modificador *multiple*, lo que quiere decir que el campo *rolActivo* será de tipo _String_ y no _Set_.
+
+Quedando el código generado de la siguiente manera:
+
+bc. @ElementCollection
+@ValueFromTable("roles")
+public List<String> roles;
+...
+@ValueFromTable("roles")
+public String rolActivo; 
+
+h4. Atributos de tipo colección
+
+bc. Set<Tipo_simple> nombreDelAtributo
+
+Permite definir colecciones *Set* y *List* para tipos simples. Esta definición genera si elemento correspondiente en java. 
+
+bc. Set<String> setDeString
+List<Double> ListaDeDoubles
+
+generara
+
+bc. @ElementCollection
+Set<String> setDeString;
+@ElementCollection
+List<Double> ListaDeDoubles;
+
+h2. Anotaciones
+
+h3. Validación manual
+
+Se puede establecer validación manual para un atributo, indicándole *checkWith="_package.claseCheck_"*. Creando la clase que extienda de _Check_, y con el método *_public boolean isSatisfied(Object validatedObject, Object value)_*. Un ejemplo:
+
+bc. Entidad Contacto {
+	String nombre requerido checkWith="validacion.Checkeo"
+	...
+}
+
+bc. package validacion;
+public class Checkeo extends Check {
+	@Override
+	public boolean isSatisfied(Object validatedObject, Object value) {
+		....
+		return resultValidacion;
+	}
+}
+
+Donde _value_ será el atributo que estamos validando.
+
+h3. Validación utilizando una expresión regular 
+
+Para validar un atributo utilizando una expresión regualar se utiliza el la anotación 
+*vaildate="RegExp"*, esta anotación solo es valida para atributos de tipo String y LongText. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.match* en el fichero de mensajes.
+
+bc. Entidad PersonaFisica Inheritance=joined {
+	String nombre validate="[A-Z].*"
+	String primerApellido validate="[A-Z].*"
+	String segundoApellido validate="[A-Z].*"
+	Nip nip
+}
+
+*NOTA:* la cadena vacía se considera valida.
+
+Si el atributo es de tipo Integer, Double o Long se puede indicar el rango de valores que puede tomar. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.range* en el fichero de mensajes.
+
+
+bc. Entidad Presupuesto {
+	Double total validate="min=0, max=1000"
+}
+
+*NOTA:* El valor null considera valido.
+
+Si el atributo es Booleano se permite validar si su valor es True. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.isTrue* en el fichero de mensajes.
+
+
+bc. Entidad Aceptacion {
+	Boolean acepta validate="true"
+}
+
+*Nota:* Solo se puede validar si el valor es true. Si el valor es null se considera false.
+
+h2. Definición
+
+bc. Attribute:
+	(type=Type)
+	(name=ID | name=PosibleAttributeName)
+	(anotaciones=AttributeAnotations)
+	('(' (defaultValue=STRING) ')')?
+	(comments=MY_COMMENT)?
+;
+terminal MY_COMMENT:
+	'#' !('\n'|'\r')* ('\r'? '\n')?
+;
+PosibleAttributeName:
+	'provincia' | 'pais' | 'valor'
+;
+AttributeAnotations:
+	(isTransient?="transient")?
+	& (hasLength?="length" "=" length=INT)?
+	& (required?="requerido")?
+	& (noConstruct?="noConstruct")?
+	& (noCascade?="noCascade")?
+	& ("checkWith" "=" checkWith=STRING)? // Manual validator
+;
+Type:
+	simple=SimpleType | simple=SpecialType | compound=CompoundType
+;
+SimpleType:
+	"String" | "Long" | "Integer" | "Boolean" | "Double" | "DateTime" |
+	"LongText" | "Telefono" | "Email" | "Moneda"
+;
+SpecialType:
+	"Nip" | "Cif" | "Direccion"
+;
+CompoundType:
+	  (tipoReferencia=AttributeReferences)? entidadProveida=ProvidedType
+	| (tipoReferencia=AttributeReferences)? entidadReferencia=[Entity]
+	| 'Lista' (multiple?="multiple")? listaReferencia=[Lista]
+	| 'Lista' (multiple?="multiple")? listaProveida=STRING
+;
+AttributeReferences:
+	"OneToOne" | "OneToMany" | "ManyToOne" | "ManyToMany"
+; 
+ProvidedType : 
+	"PersonaFisica" | "PersonaJuridica" | "Persona"
+;
+
+
+h2. Ejemplo de uso
+
+bc. Entidad Agente Inheritance=joined {
+	String username
+	String password
+	Email email
+	String name
+	Lista multiple "roles" roles
+	Lista "roles" rolActivo
+}
+
+bc. Entidad Verificacion (Solicitud) {
+	String uriVerificacion
+	String uriProcedimiento
+	String uriTramite
+	String expediente
+	String estado
+	OneToMany VerificacionDocumento documentos transient
+	String uriExclusion
+	String motivoExclusion
+	OneToMany Exclusion codigosExclusion transient
+	OneToOne Requerimiento requerimientoProceso
+	OneToMany Requerimiento requerimientos
+	DateTime fechaCreacion
+	DateTime fechaUltimaActualizacion	
+}

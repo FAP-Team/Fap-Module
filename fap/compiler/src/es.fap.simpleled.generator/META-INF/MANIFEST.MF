@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: es.fap.simpleled.generator
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0
+Bundle-SymbolicName: es.fap.simpleled.generator; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: es.fap.simpleled;visibility:=reexport,
+ org.eclipse.xpand;visibility:=reexport,
+ org.eclipse.xtend;visibility:=reexport,
+ org.eclipse.xtext;visibility:=reexport,
+ org.eclipse.emf.mwe2.launch;resolution:=optional,
+ org.eclipse.emf.mwe.utils;visibility:=reexport,
+ org.eclipse.xtend.typesystem.emf;visibility:=reexport,
+ org.codehaus.groovy;bundle-version="1.7.5"
+Import-Package: org.apache.log4j
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

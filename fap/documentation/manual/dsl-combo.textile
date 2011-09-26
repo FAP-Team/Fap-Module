@@ -1,0 +1,262 @@
+h1. Combo
+
+h2. Descripción
+
+Permite definir un Combo para seleccionar un valor de una lista de valores. 
+
+h2. Parámetros
+
+* **name** (opcional) - Identificador del elemento
+* **campo** - Atributo donde se almacenará la clave. Los tipos de atributos permitidos son:
+** **Listas** - Cuando el atributo es de tipo lista, los elementos del desplegable mostrarán todos los elementos de la tabla.
+** **Tipo simples** - Por ejemplo String o Long. Este caso está pensado para crear un método en el controlador manual donde se especifiquen los elementos que debe contener el desplegable.
+** **Referencias** - Referencias a otras entidades. Las referencias pueden ser **ManyToOne** o **ManyToMany**. Cuando la referencia es de tipos **ManyToMany** se sobreentiende una lista múltiple. En el caso de las referencias es importante especificar el campo **comboValor** para mostrar la descripción adecuada, en caso contrario se mostrará el identificador.
+* **titulo** (opcional) - Etiqueta que se mostrará al lado del combo
+* **requerido** (opcional) - Si se especifica, indica que el campo deberá ser obligatorio rellenarlo
+* **busqueda** (opcional) - El combo permitirá filtrar los elementos del desplegable mediante un campo de texto
+* **mostrarClave** (opcional) - En el desplegable aparecerá tanto la clave, como la descripción de los elementos
+* **multiple** (opcional) - **Deprecated**. Actualmente, para comprobar si un combo es múltiple se comprueba si el tipo del campo es de tipo Collection (Listas multiples, referencias ManyToMany, Set o List de tipos básicos)
+* **ancho** (opcional) - Especifica el ancho que tiene el campo
+* **anchoTitulo** (opcional) - Permite indicar el ancho de la etiqueta de titulo.
+* **comboTexto** (opcional) - Cuando
+* **comboValor** (opcional)
+
+h2. Definición
+
+bc. Combo:
+	'Combo' (name=ID)? (
+		('campo' '=' campo=STRING)
+		& ('titulo' '=' titulo=STRING)?
+		& (requerido?='requerido')?
+		& (busqueda?="busqueda")?
+		& (mostrarClave?="mostrarClave")?
+		& (multiple?="multiple")? //DEPRECATED
+		& ('ancho' '=' ancho=STRING)?
+		& ('comboTexto' '=' comboTexto=STRING)? 
+		& ('comboValor' '=' comboValor=STRING)? 
+	)
+;
+
+
+h2. Ejemplos de uso
+
+h3. Campo de tipo lista (Simple y Múltiple)
+
+bc.. Entidad ComboTest(Solicitud) {
+	Lista ComboTestList list
+	Lista multiple ComboTestList listMultiple
+}
+
+Lista ComboTestList {
+	a : "A"
+	b : "B"
+	c : "C"
+	d : "D"
+}
+
+Combo titulo="Lista" campo="solicitud.comboTest.list" requerido
+Combo titulo="Lista" campo="solicitud.comboTest.listMultiple" requerido
+
+
+h3. Campo de referencia (Simple y múltiple)
+
+bc.. Entidad ComboTest(Solicitud) {
+	ManyToOne ComboTestRef ref
+	ManyToMany ComboTestRef refMultiple
+}
+
+Entidad ComboTestRef {
+	String nombre
+}
+
+Combo campo="solicitud.comboTest.ref" comboTexto="nombre" titulo="Combo de Referencias"
+Combo campo="solicitud.comboTest.refMultiple" comboTexto="nombre" titulo="Combo de Referencias Múltiples"
+
+
+h2. Método para especificar la lista de elementos
+
+Es posible especificar mediante código cuales son los elementos que van a aparecer en un combo, para ello es necesario crear un método en el controlador manual de la página donde aparece el combo.
+El método definido en el controlador devuelva una lista de **ComboItem**. Es importante que la clave de los elementos ComboItem coincida con el tipo de dato, definido en la entidad donde se va a guardar el dato. En caso contrario dará error.
+
+h4. Esqueleto del método sobreescrito
+
+bc.. public static List<ComboItem> nombreDelCombo() {
+	List<ComboItem> result = new ArrayList<ComboItem>();
+	//Añadir los elementos a la lista
+	return result;
+}
+
+h3. Ejemplos de uso
+
+h4. Lista de elementos de tipos simples (String y Long). Lista Simple y Múltiple
+
+bc.. Entidad ComboTest(Solicitud) {
+	String listOverwrite
+	Long listOverwriteLong
+	Set<String> listMultipleOverwrite
+	List<Long> listMultipleOverwriteLong
+}
+
+Combo lista campo="solicitud.comboTest.listOverwrite" titulo="Combo manual (String)"
+Combo listaLong campo="solicitud.comboTest.listOverwriteLong" titulo="Combo manual (Long)"
+Combo listaMultiple campo="solicitud.comboTest.listMultipleOverwrite" titulo="Combo múltiple manual (Set<String>)"
+Combo listaMultipleLong campo="solicitud.comboTest.listMultipleOverwriteLong" titulo="Combo múltiple manual (Long<Long>)"
+
+//Métodos en el controlador manual
+public static List<ComboItem> lista() {
+	List<ComboItem> result = new ArrayList<ComboItem>();
+	result.add(new ComboItem("a", "A"));
+	result.add(new ComboItem("b", "B"));
+	result.add(new ComboItem("c", "C"));
+	return result;
+}
+
+public static List<ComboItem> listaLong() {
+	List<ComboItem> result = new ArrayList<ComboItem>();
+	result.add(new ComboItem(1L, "Uno"));
+	result.add(new ComboItem(2L, "Dos"));
+	result.add(new ComboItem(3L, "Tres"));
+	return result;
+}
+
+public static List<ComboItem> listaMultiple(){
+	List<ComboItem> result = new ArrayList<ComboItem>();
+	result.add(new ComboItem("a", "Uno"));
+	result.add(new ComboItem("b", "Dos"));
+	result.add(new ComboItem("c", "Tres"));
+	return result;
+}
+
+public static List<ComboItem> listaMultipleLong(){
+	List<ComboItem> result = new ArrayList<ComboItem>();
+	result.add(new ComboItem(1L, "Uno"));
+	result.add(new ComboItem(2L, "Dos"));
+	result.add(new ComboItem(3L, "Tres"));
+	return result;
+}
+
+h3. Lista de elementos de tipo referencia. Lista Simple y Múltiple
+
+En este ejemplo se filtran los elementos de tipo ComboTestRef con nombre que contenga la letra "a".
+
+bc.. Entidad ComboTest(Solicitud) {
+	ManyToOne ComboTestRef refOverwrite
+	ManyToMany ComboTestRef refMultipleOverwrite
+}
+
+Entidad ComboTestRef {
+	String nombre
+}
+
+Combo referencia campo="solicitud.comboTest.refOverwrite" comboTexto="nombre" titulo="Combo de Referencias (Filtrando las que tienen en el nombre a)"
+Combo referenciaMultiple campo="solicitud.comboTest.refMultipleOverwrite" comboTexto="nombre" titulo="Combo de Referencias Múltiples (Filtrando las que tienen en el nombre a)"
+
+//Métodos en el controlador manual 
+public static List<ComboItem> referencia() {
+	List<ComboItem> result = new ArrayList<ComboItem>();
+	// Filtra los elementos que tienen A
+	List<ComboTestRef> comboTests = ComboTestRef.find("nombre like ?","%a%").fetch();
+	for (ComboTestRef c : comboTests) {
+		result.add(new ComboItem(c.id, c.nombre));
+	}
+	return result;
+}
+
+public static List<ComboItem> referenciaMultiple() {
+	List<ComboItem> result = new ArrayList<ComboItem>();
+	// Filtra los elementos que tienen A
+	List<ComboTestRef> comboTests = ComboTestRef.find("nombre like ?","%a%").fetch();
+	for (ComboTestRef c : comboTests) {
+		result.add(new ComboItem(c.id, c.nombre));
+	}
+	return result;
+}
+
+h3. Lista de elemento a partir de un servicio web (JSON o XML)
+
+En este ejemplo para acceder a los servicio web se utilizan las librerías que provee PlayFramework y se hace un parseo manual de la respuesta que da el servicio. En el caso de que se esté accediendo a servicio web SOAP es conveniente crear una librería para acceder al servicio de una manera más cómoda.
+
+
+bc.. Entidad ComboTest(Solicitud) {
+	Long wsjson
+	Long wsxml
+}
+
+Combo wsjson campo="solicitud.comboTest.wsjson" titulo="Valor del combo obtenido desde un servicio web en JSON"
+Combo wsxml campo="solicitud.comboTest.wsxml" titulo="Valor del combo obtenido desde un servicio web en XML"
+
+//Métodos en el controlador manual
+
+public static List<ComboItem> wsjson() {
+	List<ComboItem> result = new ArrayList<ComboItem>();
+	JsonObject root = null;
+	
+	// ==========================
+	// Código para prueba
+	//===========================
+	Response response = FunctionalTest.GET("/api/json");
+	String content = FunctionalTest.getContent(response);
+	String json = content;
+	try {
+		root = new JsonParser().parse(json).getAsJsonObject();
+	} catch (Exception e) {
+	}
+	
+	// end Codigo prueba
+	
+	
+	//==========================
+	// Código real - No funciona en el mismo dominio en desarrollo
+	//==========================
+	//HttpResponse wsResponse = WS.url("http://localhost:9000/api/json").get();
+	//root = wsResponse.getJson().getAsJsonObject();
+	// end Codigo real	
+	
+	JsonArray list = root.get("list").getAsJsonArray();
+	Iterator<JsonElement> iterator = list.iterator();
+	while (iterator.hasNext()) {
+		JsonObject e = iterator.next().getAsJsonObject();
+		result.add(new ComboItem(e.get("id").getAsLong(), e.get("text")
+				.getAsString()));
+	}
+
+	return result;
+}
+
+public static List<ComboItem> wsxml() {
+	List<ComboItem> result = new ArrayList<ComboItem>();
+
+	// ==========================
+	// Código para prueba
+	//===========================
+	Document xml = null;
+	try {
+		Response response = FunctionalTest.GET("/api/xml");
+		String content = FunctionalTest.getContent(response);
+		xml = XML.getDocument(content);
+	} catch (RuntimeException e) {
+	}
+	// end Codigo prueba
+	
+	//==========================
+	// Código real - No funciona en el mismo dominio en desarrollo
+	//==========================
+	//HttpResponse wsResponse = WS.url("http://localhost:9000/api/json").get();
+	//Document xml = wsResponse.getXml();
+	// end Codigo real
+	
+	for(Node node : XPath.selectNodes("ws.WSEmulatorResult/list/ws.WSEmulatorResultListItem", xml)){
+		Long id = Long.parseLong(XPath.selectText("id", node));
+		String text = XPath.selectText("text", node);
+		result.add(new ComboItem(id, text));
+	}
+	 
+	return result;
+}
+
+p. **¿Código para pruebas y código real?**
+En los métodos se pueden ver zonas de código de pruebas y zonas de código real. Para hacer la prueba del servicio web se simuló un servicio web dentro de la propia aplicación, por eso la dirección apunta al propio localhost. Cuando se está probando la aplicación en modo desarrollo, las peticiones al servicio web terminan con timeout. Por eso se simula el comportamiento utilizando la clase **FunctionalTest**.
+Cuando vaya a utilizar servicios web alojados en otro servidor (no dentro de la misma aplicación) no tendrá estos problemas y podrá utilizar el bloque de código real.
+
+p. **Consideraciones de rendimiento**
+Cada vez que se muestre el combo se realizará una consulta al servicio web. Esto puede suponer mucha carga, por lo que sería conveniente hacer una única consulta y almacenar la información en base de datos, en una entidad o en la propia tabla de tablas. La ventaja de utilizar la tabla de tablas es que los elementos se cachean, reduciendo el número de accesos a base de datos. 

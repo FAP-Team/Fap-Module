@@ -1,0 +1,25 @@
+h1. Generar la aplicación
+
+Cuando hagamos cambios en los ficheros .play debemos volver a generar la aplicación.
+
+bc. play fap:generate
+
+h2. Configuración para generar desde Eclipse
+
+Puedes configurar Eclipse para generar las aplicación y no tener que hacerlo desde la consola
+* Abrir Run/External Tools/External Tools Configurations...
+* Añadir un nuevo Program
+** Location (ruta a Play): ruta_play/play.bat
+** Working directory: Ruta raíz del proyecto (Seleccionar con Browse Workspace)
+** Arguments: fap:generate --opciones
+
+h2. Desarrollo
+
+h3. Opciones adicionales
+
+*  **--dev**: No añade en el classpath las liberías compiladas y añade las rutas $FAPSDK/compiler-src/es.fap.simpleled.generator/bin y $FAPSDK/compiler-src/es.fap.simpleled/bin de manera que permite trabajar directamente con el generador compilado con Eclipse, sin tener que exportar el jar.
+bc. play fap:generate --dev
+
+*  **--debug**: Por defecto se utiliza el fichero de log que está en $modulofap/compiler/config/log4.properties. Pasando este parámetro se utiliza $modulofap/compiler/config/log4-debug.properties
+bc. play fap:generate --debug
+

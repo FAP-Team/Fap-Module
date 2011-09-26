@@ -1,0 +1,87 @@
+h1. Platino
+
+h2. Descripción
+
+Platino es un arquitectura capaz de soportar la ejecución de los procesos de tramitación relacionados con los servicios de administración electrónica.
+
+Está formado por una serie de servicios de los cuales en la actualidad se utilizan:
+* **Firma y sellado de tiempo**
+* **Registro de entrada y de salida**
+* **Gestor documental**
+
+
+h2. Documentación del servicio
+
+"Documentación oficial de platino":http://www.gobiernodecanarias.org/platino/formacion.html
+
+h2. Acceso a la VPN de gobierno
+
+Para poder utilizar los servicios de platino es necesario estar conectado a la VPN de gobierno.
+
+En "http://www.gobiernodecanarias.org/platino/acceso.html":http://www.gobiernodecanarias.org/platino/acceso.html se detallan los pasos necesarios a seguir para poder tener acceso a la vpn de gobierno.
+
+h3. VPNClient desde linux
+
+El cliente de vpn de cisco no funciona correctamente en linux. Para poder utilizarlo hay que aplicar un parche que se encuentra en "http://projects.tuxx-home.at/?id=cisco_vpn_client":http://projects.tuxx-home.at/?id=cisco_vpn_client
+
+h2. Proxy
+
+Cuando estas conectado a la VPN es necesario activar el proxy para poder acceder a otros servidores que no estén en la red de gobierno, como por ejemplo el AED.
+
+En el fichero de configuración existe está la property "fap.proxy.enable" que debe valer "true" en el caso de que estes conectado a la vpn y "false" en caso contrario.
+
+h2. Configuración en fap
+
+bc.. # -------------------------------------------------------------------------------------------------------------
+# PLATINO
+# -------------------------------------------------------------------------------------------------------------
+# Seguridad
+fap.platino.security.backoffice.uri=http://platino.gobcan.es/pre/backoffice/ASCIISI
+fap.platino.security.certificado.alias=PRE_ASCIISI
+
+org.apache.ws.security.crypto.provider=org.apache.ws.security.components.crypto.Merlin
+org.apache.ws.security.crypto.merlin.keystore.type=...
+org.apache.ws.security.crypto.merlin.keystore.password=...
+
+# Proxy
+fap.proxy.enable=false
+fap.proxy.server=proxy.gobiernodecanarias.net
+fap.proxy.port=3128
+
+# Firma
+fap.platino.firma.url=http://laderas.gobiernodecanarias.net:8077/firma/
+fap.platino.firma.invokingApp=PLATINO
+fap.platino.firma.alias=camerfirma
+
+# GestorDocumental
+fap.platino.gestordocumental.url=http://laderas.gobiernodecanarias.net:8076/sgrde/
+fap.platino.gestordocumental.expediente.descripcion=ACIISI
+fap.platino.gestordocumental.procedimiento=P_S002.3308710
+
+# Registro de entrada y salida
+fap.platino.registro.url=http://laderas.gobiernodecanarias.net:8076/registro/
+fap.platino.registro.username=PLATIN
+fap.platino.registro.password=PLATIN
+fap.platino.registro.asunto=Tecnólogos
+fap.platino.registro.unidadOrganica=0
+fap.platino.registro.aliasServidor=aciisi-7177660
+
+h2. Clases de ayuda
+
+El paquete platino que está dentro del módulo contiene las clases de ayuda para trabajar con platino.
+
+Las clases más importantes son:
+* **FirmaClient**
+* **PlatinoRegistro**
+* **PlatinoGestorDocumental**
+
+El resto de clases son clases de apoyo
+
+h2. Tests
+
+En el paquete de test se encuentran:
+
+* **PlatinoVersionTest**
+* **PlatinoCertificadosTest**
+* **PlatinoFirmaTest**
+* **PlatinoRegistroTest**

@@ -1,0 +1,22 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET        /                SolicitudesController.index
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Autogenerada por fap:create
+*     /                       module:fap
+
+# Dentro de esta region se van a escribir todas las rutas generadas
+# === FAPGENERATED ===
+# === END FAPGENERATED ===
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

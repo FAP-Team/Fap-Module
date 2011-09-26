@@ -1,0 +1,60 @@
+h1. Lista de solicitudes
+
+h2. Descripción
+
+Esta página le muestra al usuario sus solicitudes. Las solicitudes que puede ver un usuario se controlan por medio de los permisos.
+
+h2. Captura de pantalla
+
+!images/default-solicitudes!
+
+En el caso de que el usuario tenga el rol activo @administrador@ también verá el menú de administración.
+
+!images/default-solicitudes-rol-admin!
+
+!images/default-solicitudes-menu!
+
+h2. Personalización
+
+El botón @Nueva solicitud@ crea una nueva solicitud en estado @borrador@ le asigna la participación al usuario. Además redirige a la primera página.
+
+h3. Personalizar la redicción de la página
+
+Para ello basta con indicarle en la página del formulario que queremos que sea la inicial, mediante el parámetro **inicial**. Ejemplo:
+
+bc. Pagina Solicitante guardarParaPreparar inicial permiso="solicitudEditable" {
+....
+}
+
+h3. Personalizar la inicialización
+
+Además, podremos personalizar la inicialización. Para ello deberemos crear una clase que herede de @InitController@, y sobreescribiremos el método @inicialize()@, el cual deberá devolver la solicitud inicializada de la manera que queramos. Ejemplo:
+
+bc. public class InitMarco extends InitController {
+	public static Object inicialize() {
+		Solicitud solicitud = new Solicitud(SecureController.getAgente());
+		solicitud.estado = "borrador";
+		solicitud.save();
+		return solicitud;
+	}
+} 
+
+El permiso que controla qué solicitudes puede ver un usuario es @listaSolicitudes@. El valor por defecto de este permiso es:
+
+bc.. rule listaSolicitudes
+vars
+	Solicitud solicitud
+	Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
+when
+	(action = "read" and agente.rolActivo.nombre = "administrador")
+	or
+	(
+	action = "read"
+	and
+	participacion != null 			
+	)
+then
+	grant
+
+p. Puedes sobreescribir este permiso, creando un permiso nuevo en la aplicación con el mismo nombre.
+

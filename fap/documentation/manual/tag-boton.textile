@@ -1,0 +1,19 @@
+h1. Tag texto
+
+h2. Descripción
+
+Tag que muestra un boton.
+
+h2. Parámetros
+
+* **_id** - ID
+* **_titulo** - Label
+* **_ancho**  - Ancho del campo
+
+h2. Ejemplo de uso
+
+
+bc. #{fap.boton titulo:'Boton de aceptar' /}
+
+
+

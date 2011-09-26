@@ -1,0 +1,43 @@
+
+			#{extends 'fap/template.html' /}
+			#{set title:'Aed' /}
+
+			#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+
+			
+		#{if play.getVirtualFile("app/views/gen/menu/Administracion.html") != null}
+			#{set 'menu'}
+					#{include 'gen/menu/Administracion.html'/}
+			#{/set}
+		#{/if}
+		
+
+			#{fap.messages}
+
+			#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a ésta página'}
+
+			
+				
+#{fap.grupo titulo:'Tipos de documentos'}
+	
+			<div class="wiki ">
+
+<p>Busca en el archivo electrónico los tipos de documento y los almacena en la base de datos. Los tipos almacenados en la base de datos serán los que aparecen en el combo de la página de documentación.</p>
+			</div>
+		
+			#{form @AedController.tiposDeDocumentos(), id:"tiposDeDocumentos" }
+				
+#{fap.boton titulo:'Actualizar tipos de documentos desde el AED' /}
+			
+				
+			#{/form}
+		
+#{/fap.grupo}
+
+			
+
+			#{/fap.permiso}
+			#{/fap.messages}
+			#{/fap.permiso}
+
+		

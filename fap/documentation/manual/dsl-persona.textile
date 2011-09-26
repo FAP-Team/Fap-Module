@@ -1,0 +1,37 @@
+h1. Persona 
+
+h2. Descripción
+
+Muestra los campos para rellenar los datos de una persona.
+
+h2. Parámetros
+
+* **name** - Identificador del elemento
+* **campo** - Campo de tipo Persona donde se almacenarán los datos
+* **titulo** (Opcional) - Título que aparecerá en la cabecera del grupo
+* **permiso** (Opcional) - Permiso que se le aplicará al PopUp de creación de representantes (cuando la opción seleccionada sea Persona Jurídica).
+* **requerido** (Opcional) - Indica si es obligatorio rellenar los campos "necesarios" de persona física.
+
+h2. Definición
+
+bc. 'Persona' (name=ID) (
+		('campo' '=' campo=STRING) & 
+		('titulo' '=' titulo=STRING)? &
+		(permiso?="permiso" "=" namePermiso=STRING)? &
+		(requerido?='requerido')?
+	)
+;
+
+h2. Ejemplo de uso
+
+bc. Persona personaSolicitante campo="solicitud.solicitante" titulo="Datos solicitante" permiso="solicitudEditable" requerido
+
+!images/dsl-persona!
+
+
+
+
+
+
+
+

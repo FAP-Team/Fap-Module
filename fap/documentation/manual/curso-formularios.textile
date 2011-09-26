@@ -1,0 +1,222 @@
+h1. Vista (Formularios y Páginas)
+
+h2. Formularios
+
+Vale, ahora que sabemos construir entidades y relacionarlas entre ellas, ¿cómo permitimos al usuario rellenar dichas entidades?, es decir, rellenar datos en nuestra aplicación web. Para ello en *FAP* existen los _Formularios_. Una aplicación FAP, puede tener tantos formularios como queramos.
+
+Los formularios tienen asociado un *permiso* (opcional), un *Menu* (opcional), cero o varias *páginas* y *popups*.
+
+!images/curso_formulario_1!
+
+Le definición en la gramática de los fomularios más información "aquí":dsl-formulario.
+
+h3. Formulario Solicitud
+
+Existe un formulario _especial_, llamado formulario *Solicitud* (será el formuario principal de la aplicación FAP). Este formulario, el cual tiene partes definidas ya en el módulo *FAP* (como por ejemplo la página de _Aportación de documentación_), es y debe ser redefinido en nuestra aplicación añadiéndole las páginas necesarias para que los usuarios rellenen datos en la aplicación. Así, antes de redefinir el formulario _Solicitud_, internamente tendrá un esquema parecido al siguiente.
+
+!images/curso_formulario_2-SolicitudInicial!
+
+Nos fijamos en que por defecto, inicialmente no tiene ni un permiso definido (el formulario), ni un menú de navegación, únicamente tiene una página de aportación de documentación la cual tendrán todas las aplicaciones FAP, y una serie de popups utilizados en dichas páginas (no detallaremos su contenido).
+
+h3. Añadir menu y páginas al formulario Solicitud
+
+Como usuarios del módulo FAP, podemos añadir páginas, un menú y permisos al formulario *Solicitud*. Para ello, en algun fichero *.play* definido en _led/src/_ de nuestra aplicación (lo más normal sería hacerlo en el _Solicitud.play_) escribimos acuerdo al dsl un formulario llamado _Solicitud_ que tenga el menú, las páginas y los popups que queramos.
+
+!images/curso_formulario_3-SolicitudDesarrollador!
+
+En este caso incluiremos una página *Solicitante*, un menu de navegación con el enlace a la página solicitante y otro a la página de *Aportación* (que por defecto provee el módulo FAP). Quedando nuestro fichero de la siguiente manera:
+
+bc. 
+Formulario Solicitud {
+	
+    Menu {
+    	Enlace "Volver" pagina="Principal/Solicitudes"
+    	
+    	Grupo "Solicitud" {
+		Enlace "Solicitante" pagina="Solicitante"
+	}
+	Grupo "Instruccion" permiso="instruccion" {
+		Enlace "Aportación de Documentacion" pagina="Aportacion"
+	}
+	Enlace "Ayuda" pagina="Soporte/Soporte"
+	Enlace "Salir" accion="fap.SecureController.logout"
+	}
+    Pagina Solicitante guardarParaPreparar inicial permiso="solicitudEditable" {
+	Persona personaSolicitante campo="solicitud.solicitante" titulo="Datos solicitante" permiso="solicitudEditable" requerido
+	Direccion campo="solicitud.solicitante.domicilio" titulo="Domicilio Social" requerido 
+	Texto campo="solicitud.solicitante.telefonoFijo" titulo="Teléfono" requerido
+	Texto campo="solicitud.solicitante.telefonoMovil" titulo="Teléfono Móvil"
+	Texto campo="solicitud.solicitante.fax" titulo="Fax"
+	Texto campo="solicitud.solicitante.email" titulo="Correo electrónico" requerido
+	Texto campo="solicitud.solicitante.web" titulo="Página web"
+	Fecha campo="solicitud.solicitante.fechaNacimiento" titulo="Fecha de Nacimiento"
+    }
+}
+
+Podemos observar como definimos el formulario *Solicitud*, incluyendo un *menu* y una *página* de _Solicitante_ donde permitiremos rellenar datos al usuario de la aplicación, y el *permiso* de la página deberá estar definido en nuestra aplicación, o en el módulo FAP (que provee varios permisos pordefecto). 
+
+El menú tiene el siguiente contenido:
+
+# Un enlace "Volver" que permite regresar a la página de listas de solicitudes.
+# Un grupo de navegación "Solicitud" con un único enlace a una página, en concreto a la página "Solicitante".
+# Un grupo de navegación "Instrucción" con un único enlace a una página, en concreto a la página "Aportación", incluida por defecto en el módulo FAP.
+# Un enlace a la Ayuda de la aplicación, en concreto a la página "Soporte" del formulario "Soporte". Se indica en "_pagina=NombreFormulario/NombreDePagina_".
+
+En la definción de la página de _Solicitante_, se establecen una serie de opciones (para su comportamiento), en concreto *guardarParaPreparar* (indica que la página deberá ser "guardada" para poder presentar más adelante la solicitud) e *inicial* (indica que será la página principal de la solicitud, es decir, la primera página que se enlazará desde la lista de Solicitudes). Mas información sobre las páginas "aquí":dsl-pagina.
+
+En la página _Solicitante_ creada por nosotros, permitimos rellenar varios campos:
+
+# Un campo *Persona*, el cual define todos los campos para rellenar datos sobre una persona, ya sea física o jurídica. "Más info":dsl-persona.
+# Un campo *Dirección*, que nos permite rellenar los datos de una dirección. "Más Info":dsl-direccion.
+# Varios campos de texto para diferente información
+# Un campo de *Fecha*, permite indicar la fecha de nacimiento del solicitante. "Más info":dsl-fecha.
+
+Nos fijamos en que podemos indicar si el campo es requerido (necesario rellenar para poder almacenar).
+
+h4. Generación del formulario
+
+Así, cuando generemos el código del formulario _play fap:generate_, el formulario *Solicitud* creado por el desarrollador de la aplicación, se _unirá_ al que viene por defecto en el módulo FAP, creandose un formulario conjunto:
+
+!images/curso_formulario_4-SolicitudUnion!
+
+Una vez generado y ejecutada la aplicación, al inicial una nueva solicitud, nos aparecerá directamente la página *Solicitante* que nosotros especificamos:
+
+!images/curso_formulario_5-paginaSolicitud!
+
+h3. Otros formularios
+
+La creación de otros formularios en nuestra aplicación se hará básicemente de la misma forma, sólo que únicamente el formulario estará definido en nuestra aplicación, y no en el módulo FAP. Veremos como definirlos más adelante.
+
+h3. Añadir popups a los formularios
+
+Los "Popups":dsl-popup en las aplicaciones FAP pueden ser utilizadon en los enlaces del menú, en los botones de la aplicación web y por último, pero más importante, en las tablas. En este caso, utilizaremos los Popups para mostrar, editar o eliminar información de cada una de las "filas" de la tabla, es decir de sus elementos. Más información sobre las tablas "aquí":dsl-tabla (TODO).
+
+Pongamos un ejemplo, supongamos que tenemos una tabla en la cual llevaremos la cuenta de los pagos que vamos haciendo, con las columas concepto y cantidad. Lo primero será crear las entidades, la cual llamaremos *Pago* que tendrá dos atributos, *concepto* y *cantidad* (cuyos tipos serán _String_ y _Moneda_ respectivamente).
+
+bc. Entidad Pago {
+	String concepto
+	Moneda cantidad
+}
+
+Para "unir" ésta entidad a la de Solicitud, crearemos la entidad *DatosDePagos* (cuyo tipo especial es _Solicitud_), la cual tendrá la relación *OneToMany* a la entidad *Pago* con el nombre de atributo que nosotros queramos (en este caso *pagos*).
+
+bc. Entidad DatosDePagos (Solicitud) {
+	OneToMany Pago pagos
+}
+
+Así, una representación gráfica de la estructura sería la siguiente:
+
+!images/curso_formulario_8-solicitudPagos!
+
+Lo primero que haremos será crear la tabla de pagos, cuyo código quedará de la siguiente manera:
+
+bc.	 Tabla tablaPagos titulo="Pagos realizados por el solicitante" campo="solicitud.datosDePago.pagos"
+	popup=popUpPagos
+	recargarPagina
+	{
+		Columna campo="Pago.concepto" titulo="Concepto" expandir
+		Columna campo="Pago.cantidad" titulo="Cantidad" expandir
+	}
+
+El aspecto visual de la tabla quedará de la siguiente manera:
+
+!images/curso_formulario_9-ejemploTablaPagos!
+
+Y el popup que se utilizará para crear, editar y ver datos referentes a cada pago, es el siguiente:
+
+bc. Popup popUpPagos titulo="Tabla de pagos" campo="solicitud.datosDePago.pagos" {
+	Texto campo="pago.concepto" titulo="Concepto"
+	Texto campo="pago.cantidad" titulo="Cantidad"
+}
+
+Si pulsamos sobre *Nuevo*, se cargará el popUp que indicamos, y nos saldrá lo siguiente:
+
+!images/curso_formulario_9-ejemploTablaPagos2!
+
+Podemos insertar varios pagos, y la tabla nos quedará algo así:
+
+!images/curso_formulario_9-ejemploTablaPagos3!
+
+Los pagos ya creados los podremos editar, borrar y ver (mediante el mismo PopUp). *NOTA:* También podemos utilizar diferentes popups para las diferentes acciones de la tabla, asignando los popups mediante *popupCrear*, *popupModificar*, *popupVer* y *popupBorrar*.
+
+h2. Ciclo de vida de los formularios
+
+Nos referiremos en concreto al ciclo de vida de las páginas (ya que cada una tiene un controlador diferente). El ciclo de vida de una página es el que provee Play. Todos los controladores de las páginas tendrán un método *index* que hace la carga de la solicitud, y a partir de ésta realiza el render de la misma (se "dibuja" en pantalla la página con los datos incluidos).
+
+Las páginas que permitan "guardar" algo, tendrán también los siguientes métodos (por defecto): *save*, *saveValidateCopy* y *saveRender*, los cuales podemos sobreescribir su comportamiento. El método *save* es el que se ejecuta cuando pulsamos sobre el botón guardar de una página (éste botón se crea por defecto en las páginas, a no ser que la página tenga un *noForm* especificado), y él es el que se encarga de realizar las otras 2 llamadas a *saveValidateCopy* y a *saveRender* si se cumplen los requisitos necesarios (no hay errores de validación, los permisos se cumplen, ...)  
+
+h2. Relación con las entidades
+
+Para poder indicar elementos en las páginas y en los popups, deberemos haber creado las entidades que utilizaremos primero. Si hacemos referencia en algún elemento a por ejemplo *"solicitud.datosSolicitante.telefono"*:
+
+bc. Texto campo="solicitud.datosSolicitante.telefono" titulo="Telefono"
+
+deberá haber una entidad *DatosSolicitante* (cuyo tipo especial sea _Solicitud_, para que se pueda accceder desde la entidad _Solicitud_), y en dicha entidad _DatosSolicitante_ un campo *telefono*.
+
+bc. Entidad DatosSolicitante (Solicitud) {
+	String telefono
+	......
+}
+
+Gráficamente debería quedar algo así:
+
+!images/curso_formulario_6-ejemploSimple!
+
+De la misma manera podemos seguir enlazando tantas entidades como queramos, para accdeer y almacenar los datos, así, un ejemplo (algo rebuscado) sería enlazar un elemento con *solicitud.entidadA.entidadB.entidadC.entidadD.campo*.
+
+¿Cómo sería la definición de éstas entidades? ......
+
+bc. 
+Entidad EntidadA (Solicitud) {
+	EntidadB entidadB
+}
+Entidad EntidadB {
+	EntidadC entidadC
+}
+Entidad EntidadC {
+	EntidadD entidadD
+}
+Entidad EntidadD {
+	String campo
+}
+
+¿y el mapa de entidades?
+
+!images/curso_formulario_7-ejemploComplejo!
+
+
+Más información acerca de las entidades "aquí":curso-entidades.
+
+h2. Especificación de formularios y páginas
+
+La especificación de otros formularios y páginas para nuestra aplicación se realiza de la misma manera. Se especifica el formulario, con un permiso asociado, un menú, y varias páginas y popups.
+
+Veamos por ejemplo como escribir un formulario de Soporte (el cual ya viene definido en el módulo FAP). El formulario que crearemos tendrá un menú:
+
+# Enlace a login, llamado "Inicio"
+# Enlace a la lista de solicitudes.
+# Enlace a si mismo (página de soporte)
+
+Y en el formulario definiremos una página Soporte, indicándole mediante opciones que no cree un form para toda la página (*noForm*), y que el usuario no necesite estar logueado para poder visualizar la página (*noAutenticar*). La página tendrá un texto fijo, el cual lo definimos como "wiki":dsl-wiki, y un "Form":dsl-form con varios campos y un botón que realice el submit. "Más información":dsl-pagina.
+
+bc. Formulario Soporte {
+	Menu {
+		Enlace "Inicio" accion="fap.SecureController.login"
+		Enlace "Mis Solicitudes" permiso="logeado" pagina="Solicitudes" 		
+    		Enlace "Soporte" pagina="Soporte"
+    	}
+	Pagina Soporte noForm noAutenticar {
+		Wiki {"
+Utilice el siguiente formulario para notificar una incidencia o realizar cualquier consulta respecto a su solicitud. En el tiempo más breve posible se le contestará a la dirección de correo electrónico que indique.
+			"}
+		Form incidencia {	
+			Texto campo="incidencia.email" titulo="Email del remitente" requerido
+			Texto campo="incidencia.telefono" titulo="Teléfono" requerido
+			Texto campo="incidencia.nombre" titulo="Nombre" requerido
+			Texto campo="incidencia.apellidos" titulo="Apellidos" requerido
+			Texto campo="incidencia.asunto" titulo="Asunto" requerido
+			AreaTexto campo="incidencia.texto" titulo="Texto" requerido
+			Boton enviarIncidencia titulo="Enviar"
+		}
+	}	
+}

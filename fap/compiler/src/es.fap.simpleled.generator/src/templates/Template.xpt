@@ -1,0 +1,18 @@
+«IMPORT es::fap::simpleled::led»
+«EXTENSION templates::expand»
+
+«DEFINE main FOR Entity-»
+	«expand(this)»
+«ENDDEFINE»
+
+«DEFINE main FOR Formulario-»
+	«expand(this)»
+«ENDDEFINE»
+
+«DEFINE main FOR Lista-»
+	«expand(this)»
+«ENDDEFINE»
+
+«DEFINE main FOR Permiso-»
+	«expand(this)»
+«ENDDEFINE»

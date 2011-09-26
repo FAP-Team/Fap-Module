@@ -1,0 +1,39 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+	def id = _id ?: field.id
+	def label = _titulo ?: play.i18n.Messages.get(field.name)
+	def value = _value ?: field.flashorvalue
+	def ayuda = _ayuda
+	
+	def requerido;
+	if(_requerido != null) 
+		requerido = _requerido
+	else if(field.required != null) 
+		requerido = field.required
+	else
+		requerido = false
+	
+	def checked = ""
+	if((value == true) || (value == 'on'))
+		checked = "checked=\"true\""
+	
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	def showRow   = _noRow != null? !_noRow : true
+	String style = '';
+	if(_ancho != null)
+		style += 'width: ' + _ancho + ';'
+		
+	def styleLabel = _anchoTitulo != null ? "width:${_anchoTitulo}" : ""
+	
+}%
+	<div class="form-row">
+		<div class="check">
+            <label for="${id}" style="${styleLabel}"><input type="checkbox" id="${id}" name="${field.name}" ${checked} ${disabled}></input>${label}</label>
+		</div>
+	</div>
+	
+#{/fap.field}

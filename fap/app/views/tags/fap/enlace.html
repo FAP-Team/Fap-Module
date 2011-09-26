@@ -1,0 +1,35 @@
+*{
+  Campo de Texto
+  ==================================
+  Argumentos
+  	_id     - ID
+  	_Titulo  - Texto a mostrar, si no se especifica se muestra la URL
+	_url	- Url del enlace
+	_action - Accion de un controlador  
+	_destino- Indica al enlace donde tiene que abrirse (campo target en html)
+	 
+}*
+
+%{ 
+	def id = _id ?: play.libs.Codec.UUID()
+	def label = _titulo ?: _pagina
+	
+	def url;
+	if(_url != null){
+		url = _url;
+	}else if(_action != null){
+		play.mvc.Router.ActionDefinition action = _action;
+		url = action.url;
+	}else{
+		throw new play.exceptions.TagInternalException("el atributo url y accion no pueden ser vacios");
+	}
+	
+	def target = _target
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	def estilo = _estilo;
+}%
+
+<div class="form-row">
+	<a id="${id}" href="${url}" #{if target}target="${target}"#{/if} ${disabled} #{if estilo}class="${estilo}"#{/if}>${label}</a>		
+</div>	

@@ -1,0 +1,16 @@
+h1. Tag toJSMapNoValue
+
+h2. Descripción
+
+Convierte una lista groovy a un hash de javascript, utilizando los elementos de la lista como clave y dejando los valores vacios
+
+h2. Parámetros
+
+* **arg** - Lista
+
+h2. Ejemplo de uso
+
+bc. 
+def lista = ['clave1', 'clave2', 'clave2']
+#{fap.toJSMapNoValue lista}  
+//resultado {'clave1':'', 'clave2':'', 'clave3':''} 

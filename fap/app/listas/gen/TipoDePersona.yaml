@@ -1,0 +1,10 @@
+TableKeyValue(TipoDePersona-fisica):
+  table: 'TipoDePersona'
+  key: 'fisica'
+  value: 'Persona física'
+
+TableKeyValue(TipoDePersona-juridica):
+  table: 'TipoDePersona'
+  key: 'juridica'
+  value: 'Persona jurídica'
+

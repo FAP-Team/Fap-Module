@@ -1,0 +1,53 @@
+h1. Pagina
+
+h2. Descripción
+
+Crear una pagina dentro de un Formulario. Por defecto la pagina define un Form que contendra todos los elementos de la pagina.
+
+
+h2. Parámetros
+
+* **name** - Identificador del elemento
+* **noForm** (opcional) - No se crea el Form por defecto, permite definir manualmente Form dentro de la pagina.
+* **noAutenticar** (opcional) - Los usuario no registrados pueden acceder a la pagina. 
+* **guardarParaPreparar** (opcional) - Guarda en base de datos si la pagina fue guardada, sirve para comprobar que todas las paginas fueron guardadas antes de presentar la solicitud. 
+* **permiso** (opcional) - Nombre del permiso asociado a la pagina. 
+
+h2. Definición
+
+bc. Pagina:
+	'Pagina' name=ID 
+	(
+		(noForm?='noForm')? 
+		& (noAutenticar?='noAutenticar')?
+		& (guardarParaPreparar?="guardarParaPreparar")?
+		& (permiso?="permiso" "=" namePermiso=STRING)? 
+	)
+	'{'
+		elementos+=Elemento*
+	'}'
+;
+
+
+h2. Ejemplo de uso
+
+h3. Pagina estandar
+
+bc.	Pagina Solicitante {
+	Persona personaSolicitante titulo="Datos solicitante" ...
+	Direccion titulo="Domicilio Social" ... 
+	Texto titulo="Teléfono" ...
+	Texto titulo="Teléfono Móvil" ...
+}
+
+h3. Pagina donde el usuario define Form dentro de la pagina
+
+bc.	Pagina Solicitudes noForm{
+	....
+	Form nuevaSolicitud {
+		Boton titulo="Nueva Solicitud"
+	}
+	Form borrarSolicitud {
+		Boton titulo="Borrar Solicitud"
+	}
+}

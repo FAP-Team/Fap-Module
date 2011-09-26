@@ -1,0 +1,59 @@
+h1. Utilizando permisos
+
+Todo esto que he visto está muy bien, ... pero ... ¿todas las partes de la aplicación son vistas por todos los usuarios? ¿qué pasa si necesitamos que en la aplicación algunos usuarios puedan ver o efectuar cosas que otros no? ¿Se puede hacer esto en una aplicación FAP? .... Claro!!
+
+Para ello existen los *permisos*, los cuales se declaran mediante la siguiente sintaxis:
+
+bc. 'rule' name
+	(VarsSection)?
+	'when'
+		PermisoRule
+	'then'
+		'grant' | 'deny'
+;
+
+La sección *VarsSection* permite declarar variables que serán utilizadas en la sección *PermisoRule*, donde se utilizarán expresiones para realizar el cálculo de permisos. Existen variables por defecto, las cuales no hará falta declarar (_agente_ y _action_), más info "aqui":permisos.
+
+Los permisos se podrán aplicar a páginas, grupos, forms, tablas, al menú (tanto grupos como elementos individuales). Cuando se comprueba un permiso se le consulta para una acción en concreto. Las posibles acciones son:
+
+* **create** : Aplicable a tablas
+* **read**   : Aplicable a tablas y elementos visuales
+* **update** : Aplicable a tablas y elementos visual
+* **delete** : Aplicable a tablas
+
+Supongamos que queremos que un _Grupo_ (que dentro tiene varios elementos, Texto, Combo, ...) sea editable para los administradores, y que los usuarios únicamente puedan verlo. Así, la representación gráfica del permiso sería algo como:
+
+!images/curso_permisos_1!
+
+¿Cómo definiríamos éste permiso? .... Pensemos un poco. Para el usuario con rol activo *administrador*, permitiremos tanto la acción *read* como *update* (o lo que es lo mismo, desde que sea *administrador*, autorizaremos la acción). Mientras que para los usuarios con rol activo *usuario*, sólo concederemos acceso si la acción es *read*, quedando el permiso de la siguiente manera:
+
+bc. rule miPermisoEspecial
+when
+	(agente.rolActivo = "administrador")
+	or
+		((agente.rolActivo = "usuario")
+		and (action = "read")
+		)
+then
+	grant
+
+Si aplicamos éste permiso a un grupo .....
+
+bc. Grupo titulo="Datos de la persona de contacto" permiso="miPermisoEspecial"{
+	EntidadAutomatica idcontacto nombreEntidad=Contacto campo="solicitud.datosSolicitante.contacto"
+}
+
+... el resultado en la aplicación es el siguiente:
+
+!images/curso_permisos_2!
+
+*NOTA:* En la aplicación web los nombres de los roles son *Administrador* y *Usuario* (ámbas con la primera en mayúscula), pero en el permiso utilizamos los roles *administrador* y *usuario* (con minúscula). ¿Por qué? ...... La explicación está en la lista de roles que utilizamos, que es la siguiente:
+
+bc. Lista roles {
+	administrador: "Administrador"
+	usuario: "Usuario"
+}
+
+Con el formato *clave: "Valor"*, así las comparaciones se harán con las claves (en minúscula), mientras que para mostrar en la aplicación utilizaremos el valor.
+
+Los permisos son mucho más potentes que lo que hemos explicado aquí, pudiendo referirnos a las entidades utilizadas en la aplicación, utilizar variables a partir de una consulta SQL, referirnos dentro de un permiso a otro, ... Más información sobre los mismos "aquí":permisos.

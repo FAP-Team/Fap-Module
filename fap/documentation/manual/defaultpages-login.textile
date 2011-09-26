@@ -1,0 +1,40 @@
+h1. Página de login
+
+h2. Captura de pantalla
+
+!images/default-login!
+
+h2. Personalización
+
+h3. Properties en application/conf
+
+Configuración por defecto
+
+bc.. #Nombre de la aplicacion
+fap.app.name=Aplicacion sin nombre
+
+# Tipo de login
+fap.login.type.cert=true
+fap.login.type.user=true
+p. 
+
+* @fap.app.name@ - Nombre de la aplicación. Aparece en el mensaje de bienvenida de la parte de arriba.
+* @fap.login.type.cert@ - Controla si se permite el login por certificado electrónico
+* @fap.login.type.user@ - Controla si se permite el login por usuario y contraseña
+
+h3. Mensajes conf/messages
+
+Configuración por defecto
+
+bc.. fap.login.username=NIP / E-Mail
+fap.login.password=Contraseña
+fap.login.remember=Recordarme
+fap.login.signin=Acceder
+fap.login.type.user=Acceso con usuario y contraseña
+fap.login.type.cert=Acceso con certificado
+fap.login.welcome=Bienvenido a %s
+fap.login.error.user=Usuario o contraseña inválidos
+
+fap.logout.ok=Has salido de la aplicación 	
+ 
+p. 

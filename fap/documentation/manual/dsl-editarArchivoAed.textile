@@ -1,0 +1,28 @@
+h1. Editar Archivo AED
+
+h2. Descripción
+
+Elemento que permite modificar los campos tipo y descripción de un documento previamente subido al Archivo Electrónico de Documentos.
+
+h2. Parámetros
+
+* **name** - Identificador del elemento.
+* **campo** - Especifica la entidad de la que se va a obtener la uri, descripción y tipo del documento. La uri se necesita para recuperar el archivo previamente subido al AED, mientras que la descripción y el tipo serán para actualizar las propiedades del documento.
+* **requerido** (opcional) - Indica la obligatoriedad de la edición de un documento.
+
+h2. Definición
+
+bc. EditarArchivoAed:
+   'EditarArchivoAed' name=ID (
+      ('campo' '=' campo=STRING)
+      & (requerido?='requerido')?
+   )
+;
+
+h2. Ejemplos de uso
+
+h3. Elemento SubirArchivoAed dentro de un Form
+
+bc. Popup PopUpDocumentacion titulo="Documentación" campo="solicitud.documentacion.documentos" {
+   EditarArchivoAed modificarDocumento campo="documento" requerido
+}

@@ -1,0 +1,62 @@
+
+			#{extends 'fap/template.html' /}
+			#{set title:'Aportacion' /}
+
+			#{fap.permiso }
+
+			
+		#{if play.getVirtualFile("app/views/gen/menu/Solicitud.html") != null}
+			#{set 'menu'}
+					#{include 'gen/menu/Solicitud.html'/}
+			#{/set}
+		#{/if}
+		
+
+			#{fap.messages}
+
+			#{fap.permiso permiso:'aportacion', mensaje:'No tiene suficientes privilegios para acceder a ésta página'}
+
+			
+				
+		#{fap.enlace titulo:'Consultar documentos ya aportados', estilo:'boton', action:@AportacionAportadosController.index(idSolicitud) /}
+		#{fap.enlace titulo:'Consultar recibos de aportaciones', estilo:'boton', action:@AportacionRecibosController.index(idSolicitud) /}
+#{fap.tabla id:'documentos', titulo:'Documentos nuevos pendientes de aportar', campo:'Solicitud.aportaciones.actual.documentos', tipo:'pagina', popupVer:'PopUpDocProcesos', idProperty:'documento_id', popupBorrar:'PopUpDocProcesos', popupModificar:'PopUpDocProcesos', url:@AportacionController.tabladocumentos(idSolicitud)}
+	
+	#{fap.columna campo:'fechaSubida', cabecera:'Fecha', ancho:80 /}
+		
+	#{fap.columna campo:'descripcion', cabecera:'Tipo', expandir:true, ancho:200 /}
+		
+	#{fap.columna cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>', ancho:100 /}
+		
+#{/fap.tabla}
+
+			#{form @AportacionController.addDocumento(idSolicitud), id:"addDocumento" , enctype:"multipart/form-data"}
+				
+#{fap.grupo titulo:'Añadir documentación'}
+	#{fap.uploadAed id:'fileAportacion', campo:'documento', tipo:'tipoCiudadano', requerido:true /}	
+#{fap.boton id:'subirDocumento', titulo:'Añadir documentación' /}
+			
+#{/fap.grupo}
+
+				
+			#{/form}
+		
+			#{form @AportacionController.presentar(idSolicitud), id:"presentar" }
+				
+			<div class="wiki ">
+
+<p>Debe registrar los documentos para que se consideren aportados a la solicitud.</p>
+			</div>
+		
+#{fap.boton titulo:'Preparar para registrar' /}
+			
+				
+			#{/form}
+		
+			
+
+			#{/fap.permiso}
+			#{/fap.messages}
+			#{/fap.permiso}
+
+		

@@ -1,0 +1,27 @@
+h1. Tag texto
+
+h2. Descripción
+
+Tag que muestra los campos de dirección.
+
+h2. Parámetros
+
+* **_id** - ID
+* **_titulo** - Label
+* **_provincia** - si es true muestra un combo de provincia
+* **_pais** - si es true muestra un combo de pais
+* **_campo**  - Campo donde se almacenará la dirección
+* **_ayuda**  - Objeto de tipo TagAyuda
+* **_requerido**(false) - El campo es requerido
+* **_obj**     - Objeto a partir del cual se accede al value. Usar en el caso de que se llame desde otro tag
+* **_noRow**(false)   - true para no envolver el campo en un form-row
+* **_ancho**          - Ancho del campo
+
+h2. Ejemplo de uso
+
+
+bc. #{fap.direccion id:'tipoDireccion' titulo:'Dirección', campo:'solicitud.solicitante.domicilio', requerido:true, pais:true /}
+
+
+
+

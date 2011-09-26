@@ -1,0 +1,53 @@
+#{extends 'fap/template.html' /}
+#{set title:'Solicitudes' /}
+
+
+#{set 'menu'}
+		#{include 'menu.html'/}
+#{/set}
+
+
+#{fap.tabla id:"tabla_solicitudes", url:@fap.Solicitudes.tablasolicitudes(), titulo:"Solicitudes"}
+
+		#{fap.columna campo:"solicitud.id", cabecera:"ID" /}
+
+	
+	#{fap.columna campo:"solicitud.estado", cabecera:"Estado" /}
+	
+	#{fap.columna campo:"solicitud.prueba.nombre", cabecera:"Nombre", expandir:true/}
+#{/fap.tabla}
+
+
+
+
+
+#{fap.popup id:'popup', titulo:'hola'}
+	asdf
+#{/fap.popup}
+
+<a id="rbutton">Actualizar</a>
+<a id="id123">Nueva solicitud</a>
+
+<script type="text/javascript">
+	$(function(){
+		
+		$tabla = $('#tabla').data('editar', function(id){
+			popup_open('#popup', '@{Application.popup(1, 1)}', 'asdf');
+		});
+		
+		
+		$('#id123').button();
+		$('#rbutton').button();
+		
+		$('#rbutton').click(function(){
+			$tabla.data('actualizar')();
+			return false;
+		});
+		
+		$('#id123').click(function(){
+			popup_open('#popup', '@{Application.popup(1, 1)}', $tabla ,'asdf');
+			return false;
+		});
+		
+	});
+</script>

@@ -1,0 +1,29 @@
+h1. Enlace
+
+h2. Descripción
+
+Muestra un enlace a otra pagina.
+
+h2. Parámetros
+
+* **name** - (opcional) - Identificador del elemento
+* **titulo** - (opcional) - Etiqueta que se mostrará en el enlace
+* **pagina** - Pagina a la que apunta el enlace, puede ser externa o interna
+* **campo** - (Opcional)Indica donde se encuentra almacenada la url del enlace.
+* **destino**  (Opcional) - Indica al enlace donde tiene que abrirse (campo target en html)
+
+h2. Definición
+
+bc. Enlace:
+	'Enlace' (name=ID)? (
+		  (('pagina' '=' pagina=STRING) | ('campo' '=' campo=STRING)) 
+		& ('titulo' '=' titulo=STRING)?
+		& ('destino' '=' destino=STRING)?
+	)
+;
+
+h2. Ejemplo de uso
+
+bc. Enlace pagina="Presentacion" titulo="Ir a presentación"
+
+bc. Enlace campo="solicitud.urlDescarga" titulo="Obtener solicitud" destino="_blank"

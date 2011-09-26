@@ -1,0 +1,63 @@
+*{
+	Parámetros:
+		_id    : ID
+		_label : Etiqueta
+		_ayuda : TagAyuda con la ayuda seteada
+		_visible(true)    : False no genera nada
+		_requerido(false) : True si el campo es requerido
+		_errores          : Cadena con los errores del campo
+		_anchoMensajes       : Ancho de la parte de la derecha
+		_labelRight          : Coloca la etiqueta después del cuerpo
+		_anchoBloque         : Ancho del bloque
+}*
+
+%{
+	def id = _id
+	def id_help  = id + '-help' 
+	def label = _label
+	def showRight = _ayudaTexto != null || ayudaTextoEnPopUp != null || _ayudaPopUp != null
+	def ayuda = _ayuda
+	def visible = _visible != null ? _visible : true
+	def requerido = _requerido != null ? _requerido : false
+	def errores = _errores;
+	def labelRight = _labelRight != null? _labelRight : false
+	
+	def style = ''
+	if(_anchoBloque){
+		style += "vertical-align:top; display:inline-block; width:${_anchoBloque}"
+	}
+	
+	def styleLabel = _anchoTitulo != null ? "width:${_anchoTitulo}" : ""
+		
+}%
+
+#{if visible && !labelRight}
+<div class="form-row" style="${style}">
+	<label for="${id}" style="${styleLabel}">${label}
+		#{if requerido}
+			<span class="required">*</span>
+		#{/if}
+	</label>
+#{/if}
+
+	
+#{doBody /}
+
+#{if visible && labelRight}
+<div class="form-row">
+	<label for="${id}">${label}
+		#{if requerido}
+			<span class="required">*</span>
+		#{/if}
+	</label>
+#{/if}
+
+#{if visible}	
+	<div class="messages">
+		#{if errores}
+			<span class="error">${errores}</span>
+		#{/if}
+		#{fap.ayuda ayuda:ayuda, id:id_help /} 
+	</div>
+</div>
+#{/if}

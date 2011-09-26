@@ -1,0 +1,51 @@
+h1. PopUp
+
+h2. Descripción
+
+Crea un Popup, por defecto se definen 4 posibles usos para este elemento: crear una entidad nueva, modificar una entidad ya existente, borrar una entidad y ver los valores de una entidad.
+
+h2. Parámetros
+
+* **name** - Identificador del elemento
+* **Titulo** (opcional) - Texto que se mostrara como titulo del Popup. 
+* **permiso** (opcional) - Nombre del permiso asociado al Popup.
+* **campo** (opcional) - En el caso de que las entidades se guarden en una lista, se debe especificar la ruta de la lista. 
+* **crear** (opcional) - El popup permite crear entidades nuevas.
+* **modificar** (opcional) - El popup permite modificar entidades ya existentes.
+* **borrar** (opcional) - El popup permite borrar entidades.
+* **ver** (opcional) - El popup permite ver informacion de las entidades.
+
+h2. Definición
+
+bc. Popup:
+	'Popup' name=ID
+	(
+		('titulo' '=' titulo=STRING)?
+		& (permiso?="permiso" "=" namePermiso=STRING)?
+		& ('campo' '=' campo=STRING)?
+		& (crear?='crear')?
+		& (modificar?='modificar')?
+		& (borrar?='borrar')?
+		& (ver?='ver')?
+	)
+	'{'
+		elementos+=Elemento*
+	'}'
+;
+
+
+h2. Ejemplo de uso
+
+h3. Popup estandar
+
+bc.	Popup PopupUsuario titulo="Usuario" {
+	Texto campo="agente.username" titulo="Username" requerido
+	Texto campo="agente.email" titulo="Email" requerido
+}
+
+h3. PopUp solo para crear y borrar
+
+bc.	Popup PopupUsuario crear borrar titulo="Usuario" {
+	Texto campo="agente.username" titulo="Username" requerido
+	Texto campo="agente.email" titulo="Email" requerido
+}

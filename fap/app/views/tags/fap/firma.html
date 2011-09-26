@@ -1,0 +1,67 @@
+*{
+  
+  ==================================
+  Argumentos
+  	_id     - ID
+  	_titulo - Label
+  	_uri
+}*
+
+%{ 
+	def id = _id ?: play.libs.Codec.UUID()
+	def titulo = _titulo
+	def label = "Selecciona un certificado"
+	def ayuda = _ayuda
+	def showRow   = _noRow != null? !_noRow : true
+	
+	String style = '';
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'	
+	
+	def requerido = false;
+	if(_requerido != null) 
+		requerido = _requerido
+	
+	def uri = _uri ?: "No hay URI"
+	def firma = _firma ?: ""
+	def url = utils.AedUtils.crearUrl(uri)
+	def id_boton = id + "_boton";
+	def id_firma = id + "_firma";
+}%
+
+#{set 'moreScripts'}
+	<script language="javascript" src="http://www.gobiernodecanarias.org/platino/servicios/sfst/js/WS_Full.js" type="text/javascript"></script>
+	<script language="javascript" src="http://www.gobiernodecanarias.org/platino/servicios/sfst/js/sfest.utils.js" type="text/javascript"></script>
+	<script language="javascript" src="http://www.gobiernodecanarias.org/platino/servicios/sfst/js/sfest.base.js" type="text/javascript"></script>
+	<script language="javascript" src="@{'/public/javascripts/platino.js'}" type="text/javascript"></script>
+	<script language="javascript" src="@{'/public/javascripts/msg.js'}" type="text/javascript"></script>
+#{/set}
+
+<input type="hidden" id="${id_firma}" name="${firma}"/>
+
+#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
+<div class="form-row">
+	<select id="certificado" name="certificado">
+		<option disabled="disabled">--Certificados--</option>
+	</select>
+</div>
+#{/fap.formrow}
+
+<div id="cert-msg"></div>
+
+#{fap.boton id:id_boton, titulo:titulo, waitPopup:true/}
+<script>
+		$(function(){
+			var mensajes = new Mensajes("#cert-msg");
+			Platino.listarCertificados("#certificado", {mensajes: mensajes});
+			
+			$('#${id_boton}').click(function(){
+				if(firmarUrl('${url}', 'certificado', {idFirma : '${id_firma}', idError : 'cert-msg'}) != null){
+					var value = $('#${id_firma}').val();
+					
+					//$(this).parent('form').submit();
+					//return false;
+				}
+			});
+		});
+</script>

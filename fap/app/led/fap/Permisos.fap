@@ -1,0 +1,409 @@
+// Permisos de administracion
+rule administrador
+when
+	agente.rolActivo = "administrador"
+then
+	grant
+
+rule usuario
+when
+	agente.rolActivo = "usuario"
+then
+	grant
+
+rule noUsuario
+when
+	agente.rolActivo = "usuario"
+then
+	deny
+		
+		
+rule logeado
+when 
+	agente != null
+then 
+	grant
+		
+// Permisos de la pag presentacion
+rule presentacionPrepararParaFirmar
+vars
+	SolicitudGenerica solicitud
+when
+	(
+		action = "update" and
+		(agente.rolActivo in ("administrador", "usuario")) and
+		solicitud.registro.fasesRegistro.borrador = "false"
+	)	
+	or
+	(
+		action = "read" and
+		(agente.rolActivo in ("administrador", "usuario"))
+	)	
+then
+	grant
+
+rule presentacionModificar
+vars
+	SolicitudGenerica solicitud
+when
+	action = "read"
+	or
+	(action = "update" and solicitud.registro.fasesRegistro.registro = "false")
+then
+	grant		
+
+rule presentacionObtenerBorrador
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "usuario"))
+	and
+	solicitud.registro.fasesRegistro.borrador = "true"
+then
+	grant
+
+
+rule presentacionFirmar
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "usuario"))
+	and 
+		solicitud.registro.fasesRegistro.borrador = "true"
+	and
+	(
+		(action = "update" and solicitud.registro.fasesRegistro.firmada= "false")
+		or	
+		(action = "read")
+	)	
+then
+	grant
+
+
+
+rule presentacionRegistrar
+vars
+	SolicitudGenerica solicitud
+when
+	solicitud.registro.fasesRegistro.firmada = "true"
+	and
+	(
+		(
+			action = "update"
+			and
+			(
+				(
+					agente.rolActivo = "usuario"
+					and
+					solicitud.registro.fasesRegistro.registro = "false"
+				)
+				or
+				(
+					agente.rolActivo = "administrador"
+					and
+					solicitud.registro.fasesRegistro.clasificarAed = "false"
+				)
+			)
+		)
+		or	
+			action = "read"
+	)
+then
+	grant			
+	
+
+rule presentacionRecibo
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "usuario"))
+	and
+	solicitud.registro.fasesRegistro.registro = "true"
+then
+	grant	
+		
+
+
+rule instruccion
+vars
+	SolicitudGenerica solicitud
+when
+	solicitud.estado = "iniciada"
+then
+	grant		
+
+	
+rule solicitudPreparadaFirmarYPresentar
+vars
+	SolicitudGenerica solicitud
+when
+	(action = "update" and
+	(agente.rolActivo in ("administrador", "usuario")) and
+	solicitud.estado = "borrador" and
+	solicitud.registro.fasesRegistro.borrador = "true")
+	or
+	(action = "read" and
+	(agente.rolActivo in ("administrador", "usuario")))
+then
+	grant
+
+rule editableSiSolicitudIniciada
+vars
+	SolicitudGenerica solicitud
+when
+	action = "update" and
+	solicitud.estado in ("Iniciada", "Requerida", "Requerida plazo vencido", "En verificación", "Pendiente requerimiento", "Excluido", "Plazo vencido", "Verificado")
+then
+	grant
+
+rule solicitudPreparadaFirmar
+vars
+	SolicitudGenerica solicitud
+when
+	(action = "update" and
+	(agente.rolActivo in ("administrador", "usuario")) and
+	solicitud.estado = "borrador"  and
+	solicitud.registro.fasesRegistro.borrador != null and
+	solicitud.registro.fasesRegistro.borrador = "true")
+	or
+	(action = "read" and
+	(agente.rolActivo in ("administrador", "usuario")))
+then
+	grant
+
+rule solicitudPreparadaPresentar
+vars
+	SolicitudGenerica solicitud
+when
+	(action = "update" and
+	(agente.rolActivo in ("administrador", "usuario")) and
+	solicitud.estado = "borrador" and
+	solicitud.registro.fasesRegistro.borrador != null and
+	solicitud.registro.fasesRegistro.borrador = "true" and
+	solicitud.registro.fasesRegistro.firmada = "true")
+	or
+	(action = "read" and
+	(agente.rolActivo in ("administrador", "usuario")))
+then
+	grant
+
+// Permiso lista de Solicitudes visibles para el usuario
+rule listaSolicitudes
+vars
+	SolicitudGenerica solicitud
+	Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
+when
+	(action = "read" and agente.rolActivo = "administrador")
+	or
+	(
+	action = "read"
+	and
+	participacion != null 			
+	)
+then
+	grant
+
+
+// Permisos pagina de presentacion
+
+rule adminGestorRevisor
+when
+	(action in ("read", "write")) and 
+	(agente.rolActivo in ("administrador", "gestor", "revisor"))
+then 
+	grant
+
+rule aportacion
+vars
+	SolicitudGenerica solicitud
+when 
+	(agente.rolActivo in ("administrador", "usuario")) and
+	(solicitud.estado in ("iniciada", "requerida"))
+then 
+	grant
+
+rule aportacionDocumentos
+vars
+	SolicitudGenerica solicitud
+when
+	(action = "read") and 
+	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
+	(solicitud.estado in ("iniciada", "requrida", "requerida plazo vencido"))
+then
+	grant	
+
+rule noEditable
+when
+	(action = "update")
+then
+	deny
+
+rule noVisibleUsuario
+when
+	(action = "read") and
+	agente.rolActivo = "usuario"
+then
+	deny
+	
+rule solicitudEnBorrador
+vars
+	SolicitudGenerica solicitud
+when
+	solicitud.estado = "borrador"	
+then
+	grant
+	
+
+// Este permiso lo tienen todas las páginas de la solicitud
+// Controla que los datos no se puedan editar cuando la solicitud está preparada para registrar
+rule solicitudEditable
+vars
+	SolicitudGenerica solicitud
+when
+	(action = "read")
+	or
+	(agente.rolActivo="administrador")
+	or
+	(
+	 agente.rolActivo = "usuario"
+	 and
+	 solicitud.estado = "borrador"
+	 and
+	 solicitud.registro.fasesRegistro.borrador = "false"
+	)
+then
+	grant	
+
+	
+rule solicitudEditableDocumentacion
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo="administrador")
+	or
+	(
+	 //agente.rolActivo = "usuario"
+	 usuario
+	 and
+	 solicitud.estado = "borrador"
+	 and
+	 solicitud.registro.fasesRegistro.borrador = "false"
+	)
+then
+	grant
+	
+/* Se puede moficicar la aportación de documentación cuando está en borrador*/	
+rule aportacionModificar
+vars
+	SolicitudGenerica solicitud
+when
+	solicitud.aportaciones.actual.estado in ("borrador")
+then
+	grant	
+	
+/*
+  Cuando la firma y registro se quedo en un paso intermedio. Se le muestra un mensaje
+  al usuario diciendole que hubo un problema, que pulse otra vez el problema para
+  completar el registro 
+*/	
+rule aportacionMensajeIntermedio
+vars
+	SolicitudGenerica solicitud
+when
+	solicitud.aportaciones.actual.estado in ("firmada", "registrada", "clasificada", "finalizada")
+then
+	grant	
+	
+	
+/* 
+ * Permisos de la pagina de presentacion
+ */
+rule mensajeVerificacion
+vars
+	SolicitudGenerica solicitud
+when
+	(action = "read") and 
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+	(solicitud.estado = "requerida plazo vencido")
+then
+	grant
+
+	
+rule iniciarVerificacion
+vars
+	SolicitudGenerica solicitud
+when
+	(action in ("read", "update")) and 
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+	(solicitud.estado = "iniciada")
+then
+	grant
+
+rule verificarDocumentos
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+	(
+		(
+			(action = "read") and 
+			(solicitud.estado in ("requerida", "pendiente requerimiento", "requerida plazo vencido", "en verificacion"))
+		)
+		or
+		(
+			(action = "update") and
+			(solicitud.estado = "en verificacion") 
+		)
+	)
+then 
+	grant
+	
+rule verificacionRequerimientos
+vars
+	SolicitudGenerica solicitud
+when
+	(action in ("read", "update")) and 
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+	(solicitud.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido"))
+then
+	grant
+
+rule nuevoRequerimiento
+vars
+	SolicitudGenerica solicitud
+when
+	(action in ("read", "update")) and 
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+	(solicitud.estado = "pendiente requerimiento")
+then
+	grant
+
+
+rule firmarRequerimiento
+vars
+	SolicitudGenerica solicitud
+when
+	(solicitud.estado = "pendiente requerimiento") and
+	(
+		(
+			(action = "read") and 
+			(agente.rolActivo in ("administrador", "gestor", "revisor"))		
+		)
+		or 
+		(
+			(action = "update") and 
+			(agente.rolActivo in ("administrador", "gestor"))		
+		)
+	)
+then
+	grant
+
+rule finalizarRequerimiento
+vars
+	SolicitudGenerica solicitud
+when
+	(action in ("read", "update")) and 
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+	(solicitud.estado in ("requerida", "requerida plazo vencido"))
+then
+	grant

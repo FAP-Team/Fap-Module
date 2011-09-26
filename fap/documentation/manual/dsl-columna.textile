@@ -1,0 +1,33 @@
+h1. Columna
+
+h2. Descripción
+
+Añade una columna en un elemento de tipo tabla. 
+
+h2. Parámetros
+
+* **campo** - Atributo de la entidad que se mostrara en la tabla
+* **funcion** - Permite asignar el código que representara el valor de esta columna, en el código las variables (${nombreVariable}) serán sustituidas por su valor correspondiente.  
+* **titulo** (opcional) - Titulo de la columna en la tabla, si no se especifica se mostrará el nombre del campo
+* **ancho** (opcional) - Permite especificar el ancho de la columna
+* **permiso** (opcional) - Permite asociar un permiso a la columna, por ejemplo para que solo se muestre a un usuario determinado. 
+* **expandir** (opcional) - Se asigna a la columna todo el espacio no ocupado en la tabla.
+
+h2. Definición
+
+bc. Columna:
+	'Columna' ( 
+	       ( ('campo' '=' campo=STRING) | ('funcion' '='  funcion=STRING) )
+	       & ('titulo' '=' titulo=STRING)? 
+	       & ('ancho' '=' ancho=STRING)? 
+		   & ( permiso?="permiso" "=" namePermiso=STRING)?
+	       & (expandir?='expandir')?
+	)
+;
+
+
+h2. Ejemplo de uso
+
+bc. Columna campo="documento.fechaSubida" titulo="Fecha" ancho="80"
+			Columna campo="documento.descripcion" titulo="Tipo" expandir
+			Columna funcion="<a href=\"${documento.urlDescarga}\"target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"

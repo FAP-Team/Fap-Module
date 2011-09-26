@@ -1,0 +1,39 @@
+
+			#{extends 'fap/template.html' /}
+			#{set title:'AportacionRecibos' /}
+
+			#{fap.permiso }
+
+			
+		#{if play.getVirtualFile("app/views/gen/menu/Solicitud.html") != null}
+			#{set 'menu'}
+					#{include 'gen/menu/Solicitud.html'/}
+			#{/set}
+		#{/if}
+		
+
+			#{fap.messages}
+
+			#{fap.permiso }
+
+			
+			#{form @AportacionRecibosController.save(idSolicitud), id:"save" }
+				
+#{fap.tabla id:'recibosAportados', titulo:'Recibos de las aportaciones', campo:'Solicitud.documentacionAportada.documentos', tipo:'pagina', popupVer:'PopUpDocAportados', idProperty:'documento_id', url:@AportacionRecibosController.tablarecibosAportados(idSolicitud)}
+	
+	#{fap.columna campo:'fechaSubida', cabecera:'Fecha', expandir:true, ancho:200 /}
+		
+	#{fap.columna cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>', ancho:100 /}
+		
+#{/fap.tabla}
+
+		#{fap.enlace titulo:'Volver', estilo:'boton', action:@AportacionController.index(idSolicitud) /}
+				
+			#{/form}
+		
+
+			#{/fap.permiso}
+			#{/fap.messages}
+			#{/fap.permiso}
+
+		

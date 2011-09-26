@@ -1,0 +1,124 @@
+
+#{extends 'fap/template.html' /}
+#{set title:'Informe' /}
+
+#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+
+			
+#{set 'menu'}
+	#{include 'gen/menu/Administracion.html'/}
+#{/set}
+		
+#{fap.messages}
+
+#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a ésta página'}
+
+<div id="tablaInforme" class="tabla"></div>
+
+<script>
+	Ext.onReady(function() {
+		if (!Ext.ModelManager.isRegistered('modelInforme')){
+			Ext.define('modelInforme',{
+        		extend: 'Ext.data.Model',
+					fields:['campo', 'valor']
+		    });
+		}
+			var store = Ext.create('Ext.data.Store', {
+		        model: 'modelInforme',
+		        data:{'items':[
+               	#{list items:labels, as:'label'}
+               		%{ def valor = valores.get(label) }%
+               		{'campo':'${label}','valor':'${valor}'}${product_isLast ? '' : ','}
+		        #{/list}			
+		                       
+		        ]},
+		        
+		        proxy: {
+		        	type: 'memory',
+		            reader: {
+		                type: 'json',
+		                root: 'items'
+		            }
+		        }
+		    });
+
+			store.sort('campo', 'DESC');
+			
+			var sm = Ext.create('Ext.selection.CheckboxModel');
+						
+		    var boton_actualizar = new Ext.Button({
+		    	text: 'Actualizar',
+		    	handler : function(){
+					window.location.reload();
+		    	}
+		    });
+		    
+		    var boton_select = new Ext.Button({
+		    	text: 'Exportar a PDF',
+		    	handler : function(){
+		    		var selected = sm.getSelection();
+		    		var params = new Array();
+		    		for (var i in selected) {
+		    			params[i] = "campos="+selected[i].data.campo;
+		    			params[i+selected.lengt] = "valores="+selected[i].data.valor;
+		    		}
+		    		
+		    		createAndSubmitDynamicForm("exportarPdf", params, $('#tablaInforme'));
+			   	}
+		    });
+
+		    
+		    var grid = Ext.create('Ext.grid.Panel', {
+		        store: store,
+		        title: 'Informe',
+		        renderTo: 'tablaInforme',
+		        selModel: sm,
+				columns: [
+				          {header: 'Campo',  dataIndex: 'campo', field: 'textfield', flex:1},
+				          {header: 'Valor',  dataIndex: 'valor', field: 'textfield'}
+				          ],
+		        height: 400,
+		        viewConfig: {
+		            forceFit: true
+		        },
+		        split: true,
+		        region: 'center',
+				dockedItems: [
+								{
+									itemId: 'barraInferior',
+			                		xtype: 'toolbar',
+			        				dock: 'bottom',
+			        				items: [
+			  							 {
+			  								itemId: 'searchbox',
+			                				width: 300,
+			                				fieldLabel: 'Buscar',
+			                				labelWidth: 50,
+			                				xtype: 'searchfield',
+			                				store: store
+			            				},
+						            '->',
+						            boton_select,
+						            boton_actualizar
+			        				]
+			    				}
+							]
+		    });
+		        		    
+		    Ext.create('Ext.Panel', {
+		        frame: true,
+		        title: 'Informe',
+		        height: 400,
+		        layout: 'border',
+		        items: [grid]
+		    });
+		    		 
+		});
+	
+</script>
+
+#{/fap.permiso}
+#{/fap.messages}
+#{/fap.permiso}
+
+		

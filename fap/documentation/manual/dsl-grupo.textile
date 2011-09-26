@@ -1,0 +1,53 @@
+h1. Grupo
+
+h2. Descripción
+
+Grupo de elementos
+
+h2. Parámetros
+
+* **name** (opcional) - Identificador del elemento
+* **titulo** (opcional) - Etiqueta que se mostrará al lado del campo de texto, si no se especifica se mostrar el nombre del campo
+* **mostrarSiCombo IDCombo = "value1", "value2"** (opcional) - Muestra el grupo si el valor del combo específicado es alguno de la lista
+* **mostrarSiCheck IDCheck = "true", "false"** (opcional) - Muestra el grupo si el valor del check específicado es true o false
+* **mostrarSiCampo IDCampo = "value"** (opcional) - Muestra el grupo si el valor del campo corresponde con el valor específicado 
+* **mostrarSiExpresion "expresion"** (opcional) - Muestra el grupo si el valor de la expresion que de especifique es verdadero 
+* **visible** (opcional) - Si es false no se mostrara el cuadro que engloba a los elementos del grupo
+* **permiso** (opcional) - nombre del permiso asociado al grupo 
+
+h2. Definición
+
+bc. Grupo:
+	'Grupo' (name=ID)? (
+		('titulo' '=' titulo=STRING)? &
+		('mostrarSiCombo' siCombo=[Combo] '=' siComboValues=MostrarSiComboValues)? &
+		('mostrarSiCheck' siCheck=[Check] '=' siCheckValues=("true" | "false"))? &
+		('mostrarSiCampo' siCampo=STRING '=' siCampoValues=MostrarSiCampoValues)? &
+		('mostrarSiExpresion' siExpresion=STRING)? &
+		('visible' '=' visible=("true" | "false"))? & 
+		(permiso?="permiso" "=" namePermiso=STRING)?
+	)
+	'{'
+		elementos+=Elemento*
+	'}'
+;	
+
+
+h2. Ejemplos de uso
+
+h3. Grupo Simple
+
+bc. Grupo titulo="Persona jurídica" {
+  Texto campo="solicitud.solicitante.juridica.entidad" titulo="Nombre de la entidad"
+  Texto campo="solicitud.solicitante.juridica.cif" titulo="CIF"
+}
+
+h3. Grupo con mostrarSiCombo
+
+bc. Combo combotipoSolicitante campo="solicitud.solicitante.tipo" titulo="Tipo de Solicitante"
+Grupo titulo="Persona física" mostrarSiCombo combotipoSolicitante = "fisica" {
+   Texto campo="solicitud.solicitante.fisica.nombre" titulo="Nombre" requerido
+   Texto campo="solicitud.solicitante.fisica.primerApellido" titulo="Primer Apellido" requerido
+   Texto campo="solicitud.solicitante.fisica.segundoApellido" titulo="Segundo Apellido"
+   Nip campo="solicitud.solicitante.fisica.nip" titulo="NIP" requerido
+}

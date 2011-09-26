@@ -1,0 +1,187 @@
+
+#{extends 'fap/template.html' /}
+#{set title:'Logs' /}
+
+#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+
+			
+#{set 'menu'}
+	#{include 'gen/menu/Administracion.html'/}
+#{/set}
+		
+#{fap.messages}
+
+#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a ésta página'}
+				
+<div id="tablaLogs" class="tabla"></div>
+
+<div id="mensajeLogs" class="box"  style="display:none" >
+	<h2>Fecha</h2>
+	<p id="mensajeFecha"></p>
+	<br/>
+	<h2>Tipo</h2>
+	<p id="mensajeTipo"></p>
+	<br/>
+	<h2>Usuario</h2>
+	<p id="mensajeUsuario"></p>
+	<br/>
+	<h2>Clase</h2>
+	<p id="mensajeClase"></p>
+	<br/>
+	<h2>Mensaje</h2>
+	<p id="mensajeMensaje"></p>
+	<br/>
+	<h2>Traza</h2>
+	<p id="mensajeTraza"></p>
+	<br/>
+</div>
+
+
+<script>
+	Ext.onReady(function() {
+		if (!Ext.ModelManager.isRegistered('modelLogs')){
+			Ext.define('modelLogs',{
+        		extend: 'Ext.data.Model',
+					fields:['time', 
+					        'level', 
+					        'class_', 
+					        'user', 
+					        'trace', 
+					        'message']
+		    	});
+			}
+
+	    	var logAction = #{jsAction @fap.LoggerController.logs(':fecha') /}
+	    	
+			var store = Ext.create('Ext.data.Store', {
+		        model: 'modelLogs',
+		        autoLoad: true,
+		        proxy: {
+		            type: 'ajax',
+		            url: logAction({fecha: new Date().getTime()}),
+		            reader: {
+		                type: 'json',
+		                root: 'rows',
+		                totalRecords: 'total'
+		            }
+		        }
+		    });
+
+			store.sort('time', 'DESC');
+
+		    var boton_actualizar = new Ext.Button({
+		    	text: 'Actualizar',
+		    	handler : function(){
+		    		store.load();
+		    	}
+		    });
+		    
+		    var grid = Ext.create('Ext.grid.Panel', {
+		        store: store,
+		        title: 'Logs',
+				renderTo: 'tablaLogs',
+				columns: [
+				          {header: 'Fecha',  dataIndex: 'time', field: 'textfield', width:150},
+				          {header: 'Tipo',  dataIndex: 'level', field: 'textfield', width:50},
+				          {header: 'Mensaje',  dataIndex: 'message', flex:1, field: 'textfield',  height: "5"},
+				          {header: 'Usuario',  dataIndex: 'user', field: 'textfield', width:80},
+				          {header: 'Clase',  dataIndex: 'class_', field: 'textfield', width:180}
+				          ],
+				id: 'tablaLogs-grid',
+		        height: 400,
+		        viewConfig: {
+		            forceFit: true
+		        },
+		        split: true,
+		        region: 'center',
+				dockedItems: [
+								{
+									itemId: 'barraInferior',
+			                		xtype: 'toolbar',
+			        				dock: 'bottom',
+			        				items: [
+			  							 {
+			  								itemId: 'searchbox',
+			                				width: 300,
+			                				fieldLabel: 'Buscar',
+			                				labelWidth: 50,
+			                				xtype: 'searchfield',
+			                				store: store
+			            				},
+			        		   	        {
+			  								itemId: 'fechabox',
+			        		   	            xtype: 'datefield',
+			                				width: 150,
+			        		   	            fieldLabel: 'Fecha',
+			                				labelWidth: 50,
+			        		   	            format: 'Y-m-d',
+			        		   	            maxValue: new Date(),
+			        		   	            value: new Date()
+			        		   	        },
+						            '->',
+						            boton_actualizar
+			        				]
+			    				}
+							]
+		    });
+		        		    
+		    Ext.create('Ext.Panel', {
+		        frame: true,
+		        title: 'Logs',
+		        height: 400,
+		        layout: 'border',
+		        items: [grid]
+		    });
+		    
+		    grid.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
+		    	 if (selectedRecord.length) {
+		        	var log = selectedRecord[0].data;
+		        	var $box = $('#mensajeLogs');
+			    
+					$('#mensajeFecha').html(log.time);
+			    	$('#mensajeTipo').html(log.level);
+			    	$('#mensajeUsuario').html(log.user);
+			    	$('#mensajeClase').html(log.class_);
+			    	$('#mensajeMensaje').html(log.message);
+			    	$('#mensajeTraza').html(log.trace);
+			    
+			    	$box.removeClass("box-error box-info box-fatal box-warn");
+			    	if (log.level == "INFO")
+			    		$box.addClass("box-info");
+			    	else if (log.level == "WARN")
+			    		$box.addClass("box-warn");
+			    	else if (log.level == "ERROR")
+			    		$box.addClass("box-error");
+			    	else if (log.level == "FATAL")
+			    		$box.addClass("box-fatal");
+			    	$box.show();
+		    	 }
+		  	});
+
+	   		grid.getComponent('barraInferior').getComponent('fechabox').addListener("change", function(){
+		   		fecha = grid.getComponent('barraInferior').getComponent('fechabox').value
+		   		grid.store.setProxy(new Ext.data.proxy.Ajax({
+		            type: 'ajax',
+		            url: logAction({fecha: fecha.getTime()}),
+		            reader: {
+		                type: 'json',
+		                root: 'rows',
+		                totalRecords: 'total'
+		            }
+		   		}));
+		   		store.load();
+		    });
+
+		   	store.addListener("load", function(){
+				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
+		    });	  	
+		  	
+		});
+</script>
+			
+
+#{/fap.permiso}
+#{/fap.messages}
+#{/fap.permiso}
+
+		

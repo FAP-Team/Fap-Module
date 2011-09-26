@@ -1,0 +1,144 @@
+h1. Modelo de entidades
+
+En esta sección veremos cómo crear y relacionar entidades. Las entidades permiten definir el modelo de datos que componen la aplicación, por defecto una entidad representa una tabla en la base de datos. *FAP* nos ofrece un conjunto de entidades ya definidas como *Solicitante*, *Persona*, *Documentacion* ... (Ver todas en el fichero ModelFap del modulo FAP), que definen los componentes básicos que posee cualquier aplicación. Además, en las aplicaciones el desarrollador puede crear tantas entidades como sean necesarias para representar el modelo.
+
+!images/curso_2_2-entidades!
+
+h2. Crear una entidad
+
+Las entidades se definen en el fichero entidades.play de nuestra aplicación, todas las entidades deben tener un *nombre* y al menos un *atributo*. La definición completa de una entidad se puede ver en "entidad":dsl-entidad.
+
+!images/curso-2-4-entidad.play!
+
+bc. Entidad Solicitante {
+	String nombre
+}
+
+Esto nos creara una entidad solicitante cuyo único parámetro será el nombre. Esta es la forma más simple de entidad. 
+
+h2. Asignar un tipo a la entidad
+
+Para crear entidades más complejas *FAP* provee una serie de tipos que se pueden asignar a las entidades, *(Solicitud)*, *(Solicitud[])* o *(Singleton)*. 
+
+bc. Entidad Quartz (Singleton){
+	Boolean execute
+	Boolean mostrarTodasSolicitudes
+	...
+}
+
+Al asignar el tipo *(Singleton)* solo se creara una instancia de la clase generada por esta entidad.
+
+bc. Entidad Aceptacion(Solicitud){
+	Boolean compromisos
+	Boolean declaraciones
+}
+
+Al asignar el tipo *(Solicitud)* se indica que esta entidad pertenece a solicitud, por lo que cada solicitud tendrá una referencia a una instancia de esta entidad.
+
+!images/curso-2-3-relacion_solicitud!
+
+
+Además de los tipos que provee *FAP* se permite al desarrollador crear entidades que extiendan de otras entidades. Utilizando *extends "NombreEntidad"* se indica que la entidad que estamos definiendo extenderá (será una clase hija) de la entidad *"NombreEntidad"*.
+
+bc. Entidad RepresentantePersonaFisica extends Persona  {
+	String campoMejorado
+	.....
+}
+
+!images/curso-2-5-herencia!
+
+h2. Opciones Avanzadas
+
+A cada entidad se le pueden asignar una serie de anotaciones que cambian su comportamiento. (Para más información "entidad":dsl-entidad.)
+
+bc. Entidad Solicitante extends Persona noConstruct {
+	Direccion domicilio
+	String telefonoFijo
+	Email email
+	DateTime fechaNacimiento
+}
+
+La anotación *noConstruct* hace que no se genere un constructor para esta entidad. 
+
+bc. Entidad Direccion Embeddable {
+	String calle
+	Lista "municipios" municipio
+	Lista "provincia" provincia
+	Lista "pais" pais
+}
+
+Con *embedded* no se creara una tabla para almacenar los atributos de la entidad, estos se almacenaran en la tabla de la entidad que la referencie.
+
+h2. Relaciones entre entidades 
+
+Para definir las relaciones entre entidades primero debemos definir los atributos que estas pueden contener. Estos atributos pueden ser de tipo simple como String, Double, ..., y de tipo compuestos como Listas y otras entidades. En *FAP* si queremos que una entidad esté relacionada con otra debemos asignarle un atributo cuyo tipo sea la otra entidad. 
+
+bc. Entidad Solicitante extends Persona noConstruct {
+	Direccion domicilio
+	String telefonoFijo
+	Email email
+	DateTime fechaNacimiento
+}
+Entidad Direccion Embeddable {
+	String calle
+	Lista "municipios" municipio
+	Lista "provincia" provincia
+	Lista "pais" pais
+}
+
+!images/curso_2_1-relacion_entidades!
+
+En este caso la entidad Solicitante tiene definido el atributo domicilio que es de tipo Direccion. Por lo que existe una relación OneToOne entre Solicitante y Direccion, OneToOne es la relación por defecto, esto se puede cambiar.  
+
+bc. Entidad Documentacion (Solicitud){
+	OneToMany Documento documentos
+}
+
+h2. Atributos
+
+Las entidades tienen atributos, para más información ver "Atributos":dsl-atributo.
+
+h3. Validación Manual
+
+Si queremos utilizar validación manual en alguno de los atributos de una entidad, tendremos que anotar ese atributo indicándole cual es la clase que realizará la validación. Un ejemplo, puede ser el siguiente:
+
+Supongamos que queremos que todos los nombres del contacto empiecen por mayúscula, así, para que se pueda almacenar correctamente el nombre del contacto, éste debe empezar por una mayúscula.
+
+bc. Entidad Contacto {
+	String nombre requerido
+	...
+}
+
+Anotaremos dicha entidad mediante *checkWith="validacion.Mayuscula", quedando de la siguiente manera:
+
+bc. Entidad Contacto {
+	String nombre requerido checkWith="validacion.Mayuscula"
+	...
+}
+
+Y creamos la clase con la que comprobamos el valor (_NOTA: Como la llamamos validacion.Mayuscula, la clase se deberá llamar *Mayuscula* y deberá estar en el paquete *validacion*_), quedando de la siguiente manera:
+
+bc. package validacion;
+import play.data.validation.Check;
+public class Mayuscula extends Check {
+	@Override
+	public boolean isSatisfied(Object validatedObject, Object value) {
+		String name = (String) value;
+		if (Character.isUpperCase(name.charAt(0))) {
+			return true;
+		}
+		return false;
+	}
+}
+
+El atributo que estamos validando es el objeto _value_ del método _isSatisfied(..)_. Si el primer carácter del nombre es una mayúscula devolvemos *_true_* (validación correcta), en caso contrario _false_. Así, en el momento de guardar la página donde se referencia ese atributo, dará un error de validación, indicando que el valor del atributo es inválido.
+
+
+h2. Ciclo de vida
+
+El ciclo de vida de una entidad se puede definir en las siguientes situaciones: 
+
+* **Instanciar una nueva entidad** - Al instanciar una nueva entidad (por ejemplo una nueva solicitud), se instanciaran todas las entidades que dependan de esta. Para ello las entidades que dependan de otras entidades tendrán un método init encargado de inicializarlas, este método se llama por defecto al crear la entidad.
+* **Cargar el contenido de una entidad** - Para cargar una entidad se utilizan los métodos que provee play, que permiten buscar una entidad por su id, o por cualquiera de sus campos entre otras posibilidades. Al mostrar una página el método index del controlador carga las entidades que requiera la página. En el caso de que la página contenga tablas se generara un método para que cada tabla cargue la entidad que le corresponde, este método se encuentra dentro del controlador de la página. 
+* **Guardar el contenido de una entidad** - Para guardar el contenido de una entidad se utiliza el método save que provee play, este método se asigna a cada entidad (por ejemplo, solicitud.save()). Al guardar una página se llama el método save del controlador (no confundir con el método save de la entidad) el cual se encarga de hacer las validaciones y guardar la entidades que se utilicen en la página. 
+* **Borrar el contenido de una entidad** - Para borrar el contenido de una entidad se llama al método delete que provee play. La llamada a este método se puede encontrar en el controlador de los PopUp, en el método de borrado.

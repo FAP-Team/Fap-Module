@@ -1,0 +1,12 @@
+h1. Páginas por defecto
+
+El módulo incluye una serie de páginas que se crean por defecto. La idea de estas páginas es que sean comunes a todas las aplicaciones.
+
+* "Login":defaultpages-login
+* "Listado de solicitudes":defaultpages-solicitudes
+* Página de administracion
+** Usuario
+** AED
+** Requerimientos
+** Tabla de tablas
+** Emails

@@ -1,0 +1,15 @@
+TableKeyValue(TiposParticipacion-creador):
+  table: 'TiposParticipacion'
+  key: 'creador'
+  value: 'Creador'
+
+TableKeyValue(TiposParticipacion-solicitante):
+  table: 'TiposParticipacion'
+  key: 'solicitante'
+  value: 'Solicitante'
+
+TableKeyValue(TiposParticipacion-representante):
+  table: 'TiposParticipacion'
+  key: 'representante'
+  value: 'Representante'
+

@@ -1,0 +1,34 @@
+h1. FirmaSimple
+
+h2. Descripción
+
+Nos permitirá firmar un documento (Doc). Creará un selector de certificado y el botón de firma, además de realizar las llamadas necesarias para la firma.
+
+h2. Parámetros
+
+* **name** - Identificador del elemento
+* **titulo**  - Etiqueta que se mostrará en el botón que realiza la acción de firmar
+* **documento** - Campo donde estará el documento que se va a firmar (Doc)
+
+h2. Definición
+
+bc. "FirmaSimple" (name=ID)
+		"titulo" "=" titulo=STRING
+		"documento" "=" documento=STRING
+;
+
+
+h2. Ejemplo de uso
+
+bc. FirmaSimple firmarPresentarPFFirma titulo="Firmar la solicitud" documento="solicitud.registro.oficial"
+
+**NOTA:** Deberá ir dentro de un @Form@, quedando de la siguiente manera:
+
+bc. Form formFirma {
+	FirmaSimple firmarPresentarPFFirma titulo="Firmar la solicitud" documento="solicitud.registro.oficial"
+}
+
+
+h2. Resultado
+
+!images/dsl-firmaPlatinoSimple!

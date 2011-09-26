@@ -1,0 +1,15 @@
+TableKeyValue(TiposRepresentantes-mancomunado):
+  table: 'TiposRepresentantes'
+  key: 'mancomunado'
+  value: 'Mancomunado'
+
+TableKeyValue(TiposRepresentantes-solidario):
+  table: 'TiposRepresentantes'
+  key: 'solidario'
+  value: 'Solidario'
+
+TableKeyValue(TiposRepresentantes-administradorUnico):
+  table: 'TiposRepresentantes'
+  key: 'administradorUnico'
+  value: 'Administrador Único'
+

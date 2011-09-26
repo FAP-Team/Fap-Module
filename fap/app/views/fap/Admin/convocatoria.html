@@ -1,0 +1,9 @@
+#{extends 'fap/main.html' /}
+#{set title:'Administración - Convocatoria' /}
+
+#{form @fap.Admin.convocatoria_save()}
+	<input type="hidden" name="convocatoria.id" value="${convocatoria.id}"/>
+	#{fap.combo campo:"convocatoria.estado", titulo:"Estado de la convocatoria"/}
+			
+	<input type="submit" value="Guardar"/>
+#{/form}

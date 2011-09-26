@@ -1,0 +1,11 @@
+h1. Configuración de ANT
+
+* Instalar "ANT":http://ant.apache.org/index.html
+
+* Añadir a la carpeta lib de ant el fichero "commons-net":http://fap-devel.etsii.ull.es/public/antConfiguracion/commons-net-3.0.1.jar
+
+* Añadir el directorio de eclipse al PATH del sistema.
+
+* Copiar en el pc la carpeta "svnant":http://fap-devel.etsii.ull.es/public/antConfiguracion/svnant.rar y crear una variable de entorno SVNANT_HOME que apunte la carpeta svnant
+
+* Copiar en el pc la carpeta "groovy":http://fap-devel.etsii.ull.es/public/antConfiguracion/groovy.rar y crear una variable de entorno GROOVY_HOME que apunte a la carpeta groovy

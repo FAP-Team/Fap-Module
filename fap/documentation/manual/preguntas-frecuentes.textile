@@ -1,0 +1,89 @@
+h1. Preguntas Frecuentes
+
+Preguntas frecuentes realizadas al equipo FAP.
+
+h2. ¿Qué significa declarar una entidad con "(Solicitud)"?
+
+Al declarar una entidad con el tipo especial *(Solicitud)*, _Ejemplo: *Entidad EntidadA (Solicitud) { ... }*_, estamos indicando que en la clase _Solicitud_ deberá haber un campo _entidadA_, que referencia a un objeto de la clase _EntidadA_. Así podremos acceder a ese objeto mediante *solicitud.entidadA*.
+
+h2. ¿Puedo crear una entidad cuyo nombre sea *Solicitud*?
+
+No, ya que no se permiten crear entidades cuyos nombres ya estén incluidos en el módulo FAP.
+
+h2. ¿Todas las entidades que creo deberán ser referenciadas directa o indirectamente desde la entidad Solicitud?
+
+En principio si, a no ser que sean entidades *Singleton*, las cuales sólo existirá una estancia en toda la aplicación (útil para valores globales a todas las solicitudes).
+
+h2. ¿Puedo hacer que una entidad *EntidadA* extienda de otra *EntidadB*?
+
+Si, de la siguiente manera:
+
+bc. Entidad EntidadA extends EntidadB {
+	String campoEntidadA
+}
+Entidad EntidadB {
+	String campo
+}  
+
+Así, la entidadA tendrá "internamente" los campos *campoEntidadA* y *campo*.
+
+
+h2. ¿Qué implica la declaración de una entidad en un fichero de tipo ".play"?
+
+Por defecto una entidad representa una tabla en la base de datos. En la aplicación se crea una clase entity, esta clase se instancia al crear una nueva solicitud, aunque el desarrollador puede crear una instancia en cualquier momento. Si la clase es Singleton solo se crear una instancia de la clase para toda la aplicación. 
+
+La entidad solicitante
+
+bc. Entidad Solicitante extends Persona noConstruct {
+	Direccion domicilio
+	String telefonoFijo
+	String telefonoMovil
+	String fax
+	...
+}
+
+Genera la clase solicitante
+
+bc. @Entity
+public class Solicitante extends Persona {
+	@Embedded
+	public Direccion domicilio; 
+	public String telefonoFijo; 
+	public String telefonoMovil; 
+	public String fax; 
+	...
+}	
+
+h2. Si dos tablas definieran el mismo valor para el campo "Campo", ¿qué pasaría?
+
+Se tienen dos tablas que muestran información de la misma lista de entidades, no tienen por qué ser dos tabla iguales, depende de las columnas que se muestren en cada una.
+
+h2. Parece que la relación "OneToMany" asocia implícitamente un campo identificador a la variable que se instancia a partir del mismo. Por ejemplo, en el proyecto "Tecnólogos", para la entidad "Solicitud" no se declara el campo "idSolicitud"; sin embargo, en la tabla "tablaSolicitudes" se hace referencia al mismo. ¿Existen campos implícitos en los tipos de datos y, en el caso, qué convención siguen?
+
+Las clases generadas por las entidades extiende de otra clase que provee Play para simplificar el acceso JPA, play.db.jpa.Model, entre otras cosas esta clase provee un campo Long id autogenerado que se utiliza como clave primaria del modelo JPA. 
+
+Más información en "The play.db.jpa.Model support class":http://www.playframework.org/documentation/1.2.2/jpa#support
+
+h2. ¿Se puede hacer referencia a formularios que se encuentren en diferentes ficheros ".play" sin necesidad de importar su declaración? 
+
+Siempre que los ficheros ".play" estén definidos dentro de la carpeta (o subcarpetas) "src" pueden ser referenciados entre ellos si necesidad de importarlos. 
+
+h2. ¿El formulario "principal.play" es siempre el punto de entrada de la aplicación? En tal caso, ¿qué pasaría si no se incluyese? 
+
+principal.play muestra la lista de solicitudes del usuario y un menú para acceder a las páginas de administración, si no se incluye se tendría que crear una página para realizar estas tareas y hacer que las redirecciones que apuntaban a la página principal apunten a la nueva página  
+
+h2. En el elemento "Tabla", parece ser que el atributo "Campo" se mapea con los tipos de datos de cada una de las columnas de la tabla. A este respecto: ¿Se chequea la compatibilidad entre los tipos de datos? ¿Existe algún tipo de compatibilidad entre tipos de datos diferentes? Por ejemplo, ¿un "Integer" se puede asociar a un "Double"?.
+
+Las tablas automáticamente detectan los tipos de datos que se muestran en las columnas, las únicas transformaciones que se realizan son para las fechas y para los campos que toman su valor de una lista. 
+
+h2. ¿Los popup creados para la inserción y actualización de los datos tienen asociados implícitamente la instancia de una variable? Parece que en el caso de las tablas que invocan popups a través de acciones como "Guardar" e "Insertar" tienen asociada una variable asociada a los registros de la tabla. ¿Se asume?
+
+Cuando el popup es para crear, se crear una nueva instancia de la entidad (se ignora lo que este seleccionado en la tabla), para el resto de acciones se busca en base de datos el objeto seleccionado en la tabla. 
+
+h2. Proporcionar la descripción completa de la sintaxis del elemento "Wiki". Solo se muestran ejemplos para enumeraciones.
+
+"Documentación Wiki":dsl-wiki
+
+h2. Atributos del elemento "Grupo", tales como "SiCombo" o "SiCheck". Por ejemplo, nos queda la duda de si existe el elemento "SiText" o algún otro.
+
+"Documentación grupo":dsl-grupo

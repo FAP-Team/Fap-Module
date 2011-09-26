@@ -1,0 +1,58 @@
+h1. Formulario
+
+h2. Descripción
+
+Crea un formulario con sus páginas y sus popups. Se pueden sobreescribir formularios en el módulo FAP.
+
+
+h2. Parámetros
+
+* **name** - Identificador del Formulario 
+* **permiso** (opcional) - Nombre del permiso asociado al formulario
+* **menu** (opcional) - Menú que se asociará a todas las páginas del formulario actual
+* **pagina** (opcional) - Se pueden definir varias páginas dentro del formulario
+* **popups** (opcional) - De la misma manera que las páginas, también podemos definir varios popups asociados al formulario 
+
+h2. Definición
+
+bc. Formulario:
+	'Formulario' (name=ID | name='Solicitud')
+	(permiso?="permiso" "=" namePermiso=STRING)? 
+	'{'
+		(menu = Menu)?
+		(paginas += Pagina  |  popups += Popup)*
+	'}'
+;
+
+
+h2. Ejemplo de uso
+
+h3. Formulario sin menú
+
+bc.	Formulario Solicitud {
+	Pagina Aportacion noForm permiso="aportacion" {
+		....
+	}
+}
+
+h3. Formulario con menú
+
+bc. Formulario Solicitud {
+	Menu {
+    		Enlace "Volver" pagina="Principal/Solicitudes"
+		Grupo "Solicitud" {
+			Enlace "Pruebas" pagina="Pruebas"
+			Enlace "Solicitante" pagina="Solicitante"
+			...
+		}
+		Enlace "Ayuda" pagina="Soporte/Soporte"
+		Enlace "Salir" accion="fap.SecureController.logout"
+	}
+	Pagina Solicitante {
+		Persona personaSolicitante campo="solicitud.solicitante" titulo="Datos solicitante" permiso="solicitudEditable" requerido
+		Direccion campo="solicitud.solicitante.domicilio" titulo="Domicilio Social" requerido 
+		...
+	}
+}
+
+!images/dsl-formulario!

@@ -1,0 +1,102 @@
+#{extends 'fap/template.html' /}
+#{set title:'Admin - Listas' /}		
+<div id="tabla"></div>
+
+<script>
+Ext.require(['Ext.data.*', 'Ext.grid.*']);
+
+Ext.define('TableKeyValue', {
+    extend: 'Ext.data.Model',
+    fields: [{
+        name: 'id',
+        type: 'int',
+        useNull: true
+    }
+    , 'table', 'key', 'value']
+});
+
+
+Ext.onReady(function(){
+
+    var store = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        autoSync: true,
+        model: 'TableKeyValue',
+        proxy: {
+            type: 'rest',
+            url: '/admin/edit/listas',
+            reader: {
+                type: 'json',
+                root: 'data'
+            }
+        }
+    });
+    
+    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing');
+    
+    var grid = Ext.create('Ext.grid.Panel', {
+        renderTo: "tabla",
+        plugins: [rowEditing],
+        width: "100%",
+        height: 500,
+        frame: true,
+        title: 'Users',
+        store: store,
+        columns: [{
+            text: 'ID',
+            width: 40,
+            sortable: true,
+            dataIndex: 'id',
+            renderer: function(v){
+                if (Ext.isEmpty(v)) {
+                    v = '&#160;';
+                }
+                return v;
+            }
+        }, {
+            text: 'Tabla',
+            flex: 1,
+            sortable: true,
+            dataIndex: 'table',
+            field: {
+                xtype: 'textfield'
+            }
+        }, {
+            header: 'Clave',
+            width: 180,
+            sortable: true,
+            dataIndex: 'key',
+            field: {
+                xtype: 'textfield'
+            }
+        }, {
+            text: 'Valor',
+            width: 180,
+            sortable: true,
+            dataIndex: 'value',
+            field: {
+                xtype: 'textfield'
+            }
+        }],
+        dockedItems: [{
+            xtype: 'toolbar',
+            items: [{
+                text: 'Nuevo',
+                handler: function(){
+                    // empty record
+                    store.insert(0, new TableKeyValue());
+                    rowEditing.startEdit(0, 0);
+                }
+            }, '-', {
+                text: 'Borrar',
+                handler: function(){
+                    var selection = grid.getView().getSelectionModel().getSelection()[0];
+                    if (selection) {
+                        store.remove(selection);
+                    }
+                }
+            }]
+        }]
+    });
+});
+</script>

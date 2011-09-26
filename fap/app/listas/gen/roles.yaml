@@ -1,0 +1,10 @@
+TableKeyValue(roles-administrador):
+  table: 'roles'
+  key: 'administrador'
+  value: 'Administrador'
+
+TableKeyValue(roles-usuario):
+  table: 'roles'
+  key: 'usuario'
+  value: 'Usuario'
+

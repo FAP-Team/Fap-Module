@@ -1,0 +1,15 @@
+h1. Creación y distribución de una nueva versión del módulo
+
+* Para crear una nueva versión del módulo, lo primero que debemos hacer es comprobar que todo está funcionando correctamente.
+
+* Modifica el fichero @conf/dependencies.yml@ y aumenta el número de versión del módulo
+
+bc. self: play -> fap 1.1
+
+* El siguiente comando genera la gramática, compila los fuentes, genera los plugin de la gramatica y los añade al módulo, empaqueta la nueva versión, sube la nueva versión y la documentación correspondiente al ftp, a la carpeta *public/fap-sdk2/*, y crea los tag del generador y del modulo para poder tener un control del estado del código en una versión concreta. Para ejecutarlo debe tener instaladas una serie de "librerias":ant-configuracion.
+
+bc. ant -f compiler.xml
+
+
+
+

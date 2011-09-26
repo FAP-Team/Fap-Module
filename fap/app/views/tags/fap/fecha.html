@@ -1,0 +1,46 @@
+*{
+	Fecha
+	=====================================
+	_id			- ID
+	_titulo		- Label
+	_value 		- Valor a mostrar, si no se especifica busca el valor del campo
+	_campo		- Campo donde se almacenará el texto
+	_ayuda		- Objeto del tipo TagAyuda
+	_requerido(false)	- El campo es requerido
+	_obj		- Objeto a partir del cual se accede al value. 
+    		   	  Usar en el caso de que se llame desde otro tag.
+ 	_noRow(false)	- true para no envolver el campo en un form-row
+
+}*
+
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+	def id = _id ?: field.id
+	def label = _titulo ?: field.name
+	def value = _value ?: field.flashorvalue
+	if(value instanceof org.joda.time.DateTime) //Formatea la fecha
+		value = value.format()
+		
+	def ayuda = _ayuda
+	def requerido = _requerido != null? _requerido : false;
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	def showRow   = _noRow != null? !_noRow : true
+	
+}%
+
+
+#{fap.texto id:id, titulo:label, value:value, campo:field.name, ayuda:ayuda, requerido:requerido, obj:obj}
+#{/fap.texto}
+	
+	<script type="text/javascript">
+		$(function(){
+			$('#${id}').datepicker();	
+		});
+	</script>
+
+
+#{/fap.field}

@@ -1,0 +1,10 @@
+TableKeyValue(estadosSolicitud-borrador):
+  table: 'estadosSolicitud'
+  key: 'borrador'
+  value: 'Borrador'
+
+TableKeyValue(estadosSolicitud-iniciada):
+  table: 'estadosSolicitud'
+  key: 'iniciada'
+  value: 'Iniciada'
+

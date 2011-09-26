@@ -1,0 +1,60 @@
+
+			#{extends 'fap/template.html' /}
+			#{set title:'Tabla de tablas' /}
+
+			#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+
+			
+		#{if play.getVirtualFile("app/views/gen/menu/Administracion.html") != null}
+			#{set 'menu'}
+					#{include 'gen/menu/Administracion.html'/}
+			#{/set}
+		#{/if}
+		
+
+			#{fap.messages}
+
+			#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a ésta página'}
+
+			
+				
+			<div class="wiki ">
+
+<p>La tabla de tablas almacena la información de la listas. </p>
+			</div>
+		
+#{fap.tabla id:'tabladetablas', titulo:'Tabla de tablas', campo:'TableKeyValue', popup:'PopupTablaDeTablas', tipo:'pagina', idProperty:'tableKeyValue_id', url:@TablaDeTablasController.tablatabladetablas(idTableKeyValue)}
+	
+	#{fap.columna campo:'table', cabecera:'Tabla', ancho:200 /}
+		
+	#{fap.columna campo:'key', cabecera:'Clave', ancho:200 /}
+		
+	#{fap.columna campo:'value', cabecera:'Valor', expandir:true, ancho:200 /}
+		
+#{/fap.tabla}
+
+#{fap.grupo titulo:'Actualizar desde fichero'}
+	
+			#{form @TablaDeTablasController.actualizarDesdeFichero(), id:"actualizarDesdeFichero" }
+				
+			<div class="wiki ">
+
+<p><b>Perderá todas las modificaciones</b> que ha hecho y recuperará los valores puestos en la generación.</p>
+<p><b>IMPORTANTE</b> : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
+Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de documentos desde el AED.</p>                
+			</div>
+		
+#{fap.boton titulo:'Borrar todas y leer desde ficheros' /}
+			
+				
+			#{/form}
+		
+#{/fap.grupo}
+
+			
+
+			#{/fap.permiso}
+			#{/fap.messages}
+			#{/fap.permiso}
+
+		

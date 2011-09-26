@@ -1,0 +1,58 @@
+h1. Lista
+
+h2. Descripción
+
+Permite crear listas de valores. Cada uno de los valores de la lista puede ser un par key-value o contener solo uno de los elementos de este par, en cuyo caso al elemento no especificado se le asigna el contenido del que sí está presente.  
+
+h2. Parámetros de un elemento de la lista
+
+* **value** - Elemento valor del par key-value. Es de tipo String y puede contener tildes y espacios.
+* **key** - Elemento clave del par key-value. Puede ser un identificador o un valor entero.
+
+h2. Definición
+
+bc. Lista:
+   'Lista' name=ID '{'
+      elementos+=ElementoLista+
+   '}'
+;
+
+bc. ElementoLista:
+   value=STRING |
+   key=ElementoListaKey ':' value=STRING |
+   key=ElementoListaKey
+;
+
+bc. ElementoListaKey:
+   ID | INT
+;
+
+h2. Ejemplos de uso
+
+h3. Lista solo con claves
+
+bc. Lista ListaClaves {
+   clave1
+   clave2
+   3
+   4
+}
+
+h3. Lista solo con valores
+
+bc. Lista ListaValores {
+   "clave1"
+   "clave2"
+   "3"
+   "4"
+}
+
+h3. Lista con claves y valores
+
+bc. Lista ListaClavesValores {
+   1: "clave1" 
+   2: "clave2"
+   3: "3"
+   cuatro: "4"
+}
+

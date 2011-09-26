@@ -1,0 +1,27 @@
+# Application dependencies
+
+self: play -> fap 1.0.2
+ 
+require:
+    - play 1.2.3
+    - org.jadira.usertype -> usertype.jodatime 1.8:
+        transitive: false
+    - com.google.guava -> guava r09
+    - net.sf.flexjson -> flexjson 2.1
+    - play -> pdf 0.6
+    - es.gobcan.platino -> platino.pre 1.0:
+        transitive: false    
+    - es.gobcan.eadmon.verificacion -> verificacion 1.0:
+        transitive: false
+    - es.gobcan.eadmon -> procedimientos 1.0:
+        transitive: false
+    
+repositories:
+    - Fap nexus:
+        type: iBiblio
+        root: "http://fap-devel.etsii.ull.es/nexus/content/groups/public/"
+        contains:
+            - es.gobcan.platino -> *    
+            - es.gobcan.eadmon.verificacion -> *
+            - es.gobcan.eadmon -> *
+            

@@ -4,7 +4,9 @@
 	<property name="src.dir" value="src" />
 	<property name="src.gen.dir" value="src-gen" />
 	<property name="dist.dir" value="dist" />
-	<property name="xtext.lib.dir" value="../../fap/compiler/lib" />
+	<property name="xtext.lib.dir" value="../../lib" />
+	<!--property name="xtext.lib.dir" value="../../fap/compiler/lib" /-->
+
 
 	<path id="classpath">
 		<fileset dir="${xtext.lib.dir}">

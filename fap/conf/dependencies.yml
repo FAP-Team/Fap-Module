@@ -6,22 +6,57 @@ require:
     - play 1.2.3
     - org.jadira.usertype -> usertype.jodatime 1.8:
         transitive: false
+    - org.jadira.usertype -> usertype.spi 1.8:
+        transitive: false
     - com.google.guava -> guava r09
     - net.sf.flexjson -> flexjson 2.1
     - play -> pdf 0.6
+    - javassist -> javassist 3.8.0.GA:
+        transitive: false
+    - joda-time -> joda-time-hibernate 1.2:
+        transitive: false
+    - org.opensaml -> opensaml 1.1:
+        transitive: false
+    - wsdl4j -> wsdl4j 1.6.1:
+        transitive: false
+    - xalan -> xalan 2.7.1:
+        transitive: false
+    - commons-io -> commons-io 2.0.1
+        
+    - org.apache.ws.security -> wss4j 1.5.4:
+        transitive: false
+    - org.apache.cxf -> cxf-bundle 2.2.6:
+        transitive: false
+    - org.apache.ws.commons.schema -> XmlSchema 1.4.2:
+        transitive: false
+    - org.apache.santuario -> xmlsec 1.4.3:
+        transitive: false
+
+    - es.gobcan.eadmon -> eadmon-aed-cliente 1.0.3:
+        transitive: false
+
     - es.gobcan.platino -> platino.pre 1.0:
+        transitive: false
+    - es.gobcan.platino.servicios -> firma.pre 1.0:
         transitive: false    
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false
     - es.gobcan.eadmon -> procedimientos 1.0:
         transitive: false
+    - es.gobcan.eadmon.tiposdocumentos -> tiposdocumentos 1.0:
+        transitive: false
+        
+    - platinowssinterceptor -> platinowssinterceptor 2
     
 repositories:
     - Fap nexus:
         type: iBiblio
         root: "http://fap-devel.etsii.ull.es/nexus/content/groups/public/"
         contains:
-            - es.gobcan.platino -> *    
+            - org.apache -> *
+            - es.gobcan.platino -> *
+            - es.gobcan.platino.servicios -> *    
             - es.gobcan.eadmon.verificacion -> *
+            - es.gobcan.eadmon.tiposdocumentos -> *
             - es.gobcan.eadmon -> *
-            
+            - platinowssinterceptor -> *

@@ -27,6 +27,7 @@ modules/
 *.gz
 *.iso
 *.jar
+!fap/compiler/lib/*.jar
 *.rar
 *.tar
 *.zip

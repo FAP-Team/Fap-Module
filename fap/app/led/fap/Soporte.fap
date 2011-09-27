@@ -6,8 +6,6 @@ Formulario Soporte {
     	Enlace "Soporte" pagina=Soporte
     	Enlace "Manuales"
     }
-		
-	
 	
 	Pagina Soporte noForm noAutenticar {
 		Wiki {"

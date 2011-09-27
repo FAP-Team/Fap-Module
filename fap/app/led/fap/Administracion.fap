@@ -32,7 +32,7 @@ Formulario Administracion permiso=administrador{
 		}
 	}
 	
-	Popup PopupUsuario modificar crear borrar titulo="Usuario" {
+	Popup PopupUsuario campo=Agente modificar crear borrar titulo="Usuario" {
 		Texto campo=Agente.username titulo="Username" requerido
 		Combo campo=Agente.roles titulo="Roles" multiple busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido
@@ -90,7 +90,7 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 	    }
 	}
 
-	Popup PopupTablaDeTablas {
+	Popup PopupTablaDeTablas campo=TableKeyValue {
 	    Texto campo=TableKeyValue.table titulo="Tabla"
 	    Texto campo=TableKeyValue.key titulo="Clave"
 	    Texto campo=TableKeyValue.value titulo="Valor"
@@ -128,7 +128,7 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 	    }
     }
 
-    Popup PopupEmail titulo="Email" {
+    Popup PopupEmail campo=Mail titulo="Email" {
         Wiki {"
 Dentro de los campos puede utilizar variables con ${nombreVariable} y otros elementos que puede consultar en la [http://www.playframework.org/documentation/1.2.1/templates#syntax documentación]
 
@@ -141,7 +141,7 @@ En los campos '''Para''' y '''CC''' puede poner varios destinatarios separados p
         Texto campo=Mail.bcc titulo="CC"
         Texto campo=Mail.subject titulo="Asunto" requerido
         AreaTexto campo=Mail.content titulo="Mensaje" requerido
-        AreaTexto campo=Mail.footer titulo="Pie de mensaje"
+		AreaTexto campo=Mail.footer titulo="Pie de mensaje"
 
     }
 }

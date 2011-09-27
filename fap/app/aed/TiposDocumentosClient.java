@@ -4,11 +4,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javassist.NotFoundException;
+
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Holder;
 
 import org.apache.log4j.Logger;
 
+import models.ObligatoriedadDocumentos;
+import models.Quartz;
+import models.Singleton;
 import models.TableKeyValue;
 
 import platino.PlatinoProxy;
@@ -29,6 +34,7 @@ import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosInterface;
 import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTiposDocumentosEnTramite;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
 import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Tramite;
 import es.gobcan.eadmon.procedimientos.ws.servicios.ObtenerTramite;
@@ -98,7 +104,9 @@ public class TiposDocumentosClient {
 		boolean organismo = actualizarDocumentosDB(listaOrganismos, "tipoDocumentosOrganismos");
 		boolean otrasEntidades = actualizarDocumentosDB(listaOtrasEntidades, "tipoDocumentosOtrasEntidades");
 		
-		return todos && ciudadano && organismo && otrasEntidades;
+		boolean obligatoriedad = actualizarObligatoriedadDocumentos(listaCiudadanos);
+		
+		return todos && ciudadano && organismo && otrasEntidades && obligatoriedad;
 	}
 	
 	public static boolean actualizarDocumentosDB(List<TipoDocumentoEnTramite> lista, String table) {
@@ -120,5 +128,39 @@ public class TiposDocumentosClient {
 		log.debug("lista de documentos de la tabla " + table + " actualizada");
 		return true;
 	}
+
 	
+	public static boolean actualizarObligatoriedadDocumentos(List<TipoDocumentoEnTramite> lista) {
+		JPAPlugin.startTx(false);
+    	ObligatoriedadDocumentos docObli = ObligatoriedadDocumentos.get(ObligatoriedadDocumentos.class);
+		try {
+			docObli.clear();
+			for(TipoDocumentoEnTramite tipoDoc : lista){
+				ObligatoriedadEnum obligatoriedad = tipoDoc.getObligatoriedad();
+				if (obligatoriedad == ObligatoriedadEnum.IMPRESCINDIBLE) {
+					docObli.imprescindibles.add(tipoDoc.getUri());
+				}
+				else if (obligatoriedad == ObligatoriedadEnum.OBLIGATORIO) {
+					docObli.obligatorias.add(tipoDoc.getUri());
+				}
+				else if (obligatoriedad == ObligatoriedadEnum.CONDICIONADO_AUTOMATICO) {
+					docObli.automaticas.add(tipoDoc.getUri());
+				}
+				else if (obligatoriedad == ObligatoriedadEnum.CONDICIONADO_MANUAL) {
+					docObli.manuales.add(tipoDoc.getUri());
+				}
+				else {
+					throw new NotFoundException("Tipo de obligatoriedad no encontrado ("+obligatoriedad.name()+")");
+				}
+			}
+			docObli.save();
+		}catch(Exception e){
+			log.error("Se produjo un error al asignar el tipo de obligatoriedad de los documentos", e);
+			JPAPlugin.closeTx(true);
+			return false;
+		}
+		JPAPlugin.closeTx(false);
+		return true;
+	}
+
 }

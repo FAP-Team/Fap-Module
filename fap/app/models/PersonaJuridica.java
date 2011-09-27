@@ -28,7 +28,7 @@ public class PersonaJuridica extends Model {
 	public String entidad;
 	
 	
-	
+	@CheckWith(CifCheck.class)
 	public String cif;
 	
 	

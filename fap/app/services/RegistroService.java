@@ -32,6 +32,7 @@ import messages.Messages;
 import models.Aportacion;
 import models.Documento;
 import models.ExpedientePlatino;
+import models.ObligatoriedadDocumentos;
 import models.Persona;
 import models.PersonaFisica;
 import models.PersonaJuridica;
@@ -39,6 +40,7 @@ import models.SemillaExpediente;
 import models.Singleton;
 import models.Solicitante;
 import models.SolicitudGenerica;
+import models.TableKeyValue;
 
 public class RegistroService {
 	
@@ -58,6 +60,39 @@ public class RegistroService {
 		if(!solicitud.registro.fasesRegistro.firmada){
 			Messages.error("Intentando registrar una solicitud que no ha sido firmada");
 			throw new RegistroException("Intentando registrar una solicitud que no ha sido firmada");
+		}
+
+		//mira si se aportaron todos los documentos necesarios
+		ObligatoriedadDocumentos docObli = ObligatoriedadDocumentos.get(ObligatoriedadDocumentos.class);
+		for (Documento doc : solicitud.documentacion.documentos) {
+			if (doc.tipoCiudadano != null) {
+				String tipo = doc.tipoCiudadano;
+				if(docObli.imprescindibles.remove(tipo)) continue;
+				else if(docObli.obligatorias.remove(tipo)) continue;
+				else if(docObli.automaticas.remove(tipo)) continue;
+			}
+		}
+		
+		if (!docObli.imprescindibles.isEmpty()) {
+			for (String uri : docObli.imprescindibles) {
+				String descripcion = TableKeyValue.getValue("tipoDocumentosCiudadanos", uri);
+				Messages.error("Documento \""+ descripcion + "\" es imprescindible");
+			}
+			throw new RegistroException("Faltan documentos imprescindibles");
+		}
+		if (!docObli.obligatorias.isEmpty()) {
+			for (String uri : docObli.obligatorias) {
+				String descripcion = TableKeyValue.getValue("tipoDocumentosCiudadanos", uri);
+				Messages.warning("Documento \""+ descripcion + "\" pendiente de aportación 1");
+			}
+		}
+		if (!docObli.automaticas.isEmpty()) {
+			for (String uri : docObli.automaticas) {
+				if (solicitud.documentoEsObligatorio(uri)) {
+					String descripcion = TableKeyValue.getValue("tipoDocumentosCiudadanos", uri);
+					Messages.warning("Documento \""+ descripcion + "\" pendiente de aportación 2");
+				}
+			}
 		}
 		
 		//Crea el expediente en el archivo electrónico de platino

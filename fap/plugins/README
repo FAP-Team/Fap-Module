@@ -1,0 +1,8 @@
+Para instalar el plugin se debe tener instalado xtext 1.0, para instalarlo descargue el fichero 
+http://fap-devel.etsii.ull.es/public/Xtext-eclipse/Xtext-eclipse.rar (Solo disponibles para eclipse Helios).
+Descomprimir el contenido del fichero dentro del directorio dropins de eclipse 
+(${ECLIPSE_HOME}/dropins).
+
+Una vez instalados Xtext se deben copiar los ficheros es.fap.simpleled_1.0.0.jar y 
+es.fap.simpleled.ui_1.0.0.jar dentro del directorio dropins de eclipse 
+(${ECLIPSE_HOME}/dropins).

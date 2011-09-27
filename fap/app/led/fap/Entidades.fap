@@ -1,15 +1,10 @@
-
-/*
- * Entidades que pertenecen al modulo FAP
- */
-
 Entidad TableKeyValue noAuditable{
 	String table column="t"
 	String key column="k"
 	String value column="v"
 }
 
-Entidad Singleton SuperClass {
+Entidad Singleton superClass {
 }
 
 Entidad SolicitudGenerica tableName="solicitud"{
@@ -39,7 +34,7 @@ Entidad Solicitante extends Persona {
 	OneToMany RepresentantePersonaJuridica representantes
 }
 
-Entidad Agente Inheritance=joined{
+Entidad Agente inheritance=joined{
 	String username
 	String password
 	Email email
@@ -48,7 +43,7 @@ Entidad Agente Inheritance=joined{
 	Lista roles rolActivo
 }
 
-Entidad Direccion Embeddable {
+Entidad Direccion embeddable {
 	String calle
 	String numero
 	String otros
@@ -83,7 +78,15 @@ Entidad Documentacion {
 	String firma transient
 }
 
-Entidad Persona Inheritance=joined {
+
+Entidad ObligatoriedadDocumentos extends Singleton {
+	List<String> imprescindibles
+	List<String> obligatorias
+	List<String> automaticas
+	List<String> manuales
+}
+
+Entidad Persona inheritance=joined {
 	PersonaFisica fisica
 	PersonaJuridica juridica
 	Lista TipoDePersona tipo
@@ -91,16 +94,16 @@ Entidad Persona Inheritance=joined {
 	String nombreCompleto transient
 }
 
-Entidad PersonaFisica Inheritance=joined {
+Entidad PersonaFisica inheritance=joined {
 	String nombre
 	String primerApellido
 	String segundoApellido
 	Nip nip
 }
 
-Entidad PersonaJuridica Inheritance=joined {
+Entidad PersonaJuridica inheritance=joined {
 	String entidad
-	String cif
+	Cif cif
 	Email email
 	String telefonoFijo
 	String telefonoMovil
@@ -119,7 +122,7 @@ Entidad RepresentantePersonaJuridica extends RepresentantePersonaFisica {
 }
 
 
-Entidad Nip Embeddable {
+Entidad Nip embeddable {
 	String tipo
 	String valor
 }
@@ -315,7 +318,7 @@ Entidad Requerimiento {
 	String urlDocRequerimiento transient		//Guarda url del doc oficial, publicado en el servlet
 	String estado 					 	//Rellenar a mano
 		
-	String motivo
+	LongText motivo
 		
 	String firmante							//ver como enlazarlo con usuarios
 		

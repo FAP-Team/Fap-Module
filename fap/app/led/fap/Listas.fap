@@ -53,6 +53,12 @@ Lista tipoDocumentosTodos{
 	// dinamicamente a traves del WS.
 }
 
+Lista obligatoriedadDocumentos{
+	// Los elementos de esta lista se obtienen
+	// dinamicamente a traves del WS.
+}
+
+
 Lista provincias {
 	// TODO: rellenar lista de provincias
 }

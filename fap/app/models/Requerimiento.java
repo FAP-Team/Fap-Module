@@ -35,7 +35,7 @@ public class Requerimiento extends Model {
 	public String estado;
 	
 	
-	
+	@Column(columnDefinition="LONGTEXT")
 	public String motivo;
 	
 	

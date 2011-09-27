@@ -37,13 +37,6 @@ DELETE /admin/edit/listas/{id} 		          fap.AdminController.delete
 GET /Administracion/logs fap.LoggerController.index
 
 # === FAPGENERATED ===
-GET /Soporte/soporte SoporteController.index
-
-POST /Soporte/soporte/incidencia SoporteController.incidencia
-GET /Principal/solicitudes SolicitudesController.index
-
-GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
-POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
 GET /Solicitud/aportacion AportacionController.index
 
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
@@ -129,4 +122,11 @@ POST /Administracion/popupemail/{idEntidad}/borrar popups.PopupEmailController.b
 POST /Administracion/popupemail/{idEntidad}/crear popups.PopupEmailController.crear
 POST /Administracion/popupemail/{idEntidad}/cancelarcrear popups.PopupEmailController.cancelarCrear
 
+GET /Soporte/soporte SoporteController.index
+
+POST /Soporte/soporte/incidencia SoporteController.incidencia
+GET /Principal/solicitudes SolicitudesController.index
+
+GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
+POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
 # === END FAPGENERATED ===			 

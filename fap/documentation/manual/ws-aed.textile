@@ -17,6 +17,8 @@ h2. Configuración en fap
 
 En la fichero conf/application.conf hay una sección dedicada a la configuración del archivo electrónico
 
+
+
 bc.. #End-point del archivo electrónico
 fap.aed.url=http://fap-devel.etsii.ull.es/ws/aed/
 
@@ -35,33 +37,49 @@ fap.aed.expediente.prefijo=Tecnologos20102010
 #End-point del servicio de tipos de documentos
 fap.aed.tiposdocumentos.url=http://fap-devel.etsii.ull.es/ws/tipos-documentos/
 
+#End-point del servicio de tipos de documentos
+fap.aed.procedimientos.url=http://fap-devel.etsii.ull.es/ws/procedimientos/
+
 #Uri del tipo de documento base
 fap.aed.tiposdocumentos.base=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000001/v01
 
-#Grupo de documentos donde deben estar todos los documentos que puede aportar el usuario
-fap.aed.tiposdocumentos.grupo=eadmon://gobcan.es/grupos/GRP000000000000000001
+#Uri del tramite del que se obtendran los tipos de documentos
+fap.aed.procedimientos.tramite.uri=eadmon://gobcan.es/tramitesProcedimientos/TRP000000000000000006
+
+#Uri del procedimiento del que se obtendran los tipos de documentos
+fap.aed.procedimientos.procedimiento.uri=eadmon://gobcan.es/procedimientos/PRC000000000000000033/v09
 
 #Uri del tipo otros, este tipo permite a los usuario añadir una descripción
 fap.aed.tiposdocumentos.otros=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000001/v01
 
+#Uri del tipo de solicitud
+fap.aed.tiposdocumentos.solicitud=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000002/v01
+
 #Uri del tipo de justificante de registro
 fap.aed.tiposdocumentos.justificanteRegistroSolicitud=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000002/v01
 
-h2. Creación de grupos de documentos
+# Cuando se sube un documento, puede que todavía el usuario no haya rellenado el solicitante
+# se le pone un interesado por defecto, cuando se registre la solicitud y se clasifique el documento
+# se establece bien el interesado
+fap.aed.documentonoclasificado.interesado.nombre=fap
+fap.aed.documentonoclasificado.interesado.nif=123456789a
 
-En el archivo electrónico se debe crear un grupo que tenga almacenado los tipos de documentos que va a utilizar la aplicación.
-Para crear un grupo de tipos de documentos hay que ir a la aplicación de "tiposdocumentos", seleccionar "Grupos" en el menú de la izquierda y seleccionar el botón "Nuevo grupo". Añadir  una etiqueta y una descripción. Con esto se creará el grupo, ahora hay que añadir documentos al grupo en el botón "Añadir tipo de documento".
+#Documentos para la aportacion
+fap.aed.tiposdocumentos.aportacion.solicitud=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000002/v01
+fap.aed.tiposdocumentos.aportacion.registro=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000002/v01
 
-!images/aed-tiposDocumentos!
+h2. Tipos de documentos 
 
-La URI de el grupo creado es el valor que debería tener la property **"fap.aed.tiposdocumentos.grupo"** del fichero "conf/application.conf"
+Los tipos de documentos estan asociados a un tramite y se organizan en función de quien debe aportarlo 
 
-Cuando realices cambios en el contenido del grupo es necesario "Actualizar tipos de documentos desde el AED" en la página de administración. Puedes comprobar que los cambios se han actualizado correctamente buscando en la tabla de tablas la tabla "tipoDocumentos".
-
+* Cuidadano
+* Organismo
+* Otras entidades
+ 
 h2. Clases de ayuda
 
 El paquete aed que está dentro del módulo contiene las clases que trabajan con el AED.
-* **aed.AedClient**
+* **aed.AedClient** 
 * **aed.TiposDocumentosClient**
 
 h2. Tests
@@ -79,4 +97,15 @@ El módulo incluye una serie de test para comprobar que el archivo electrónico 
 h2. Página de administración
 
 En la página de administración existe una sección dedicada a la configuración del AED.
-* **Actualizar tipos de documentos desde el AED** - Consulta los tipos de documentos definidos en el archivo electrónico y actualiza la tabla "tipoDocumentos" definida en la tabla de tablas.
+* **Actualizar tipos de documentos desde el AED** - Consulta los tipos de documentos definidos en el archivo electrónico y actualiza la tabla "tipoDocumentos" definida en la tabla de tablas. Ademas carga una lista con la obligatoriedad de cada uno de los documentos. 
+
+h2. Obligatoriedad de los documentos
+
+Cuando se registra una solicitud se controla si los ciudadanos aportaron los documentos imprescindibles y obligatorios.
+  
+Los documentos en el trámite se catalogan en cuanto a la obligatoriedad como:
+ 
+* **Imprescindible:**  Si no se presentan no se permite la presentación.
+* **Obligatorio:** Si no se presentan se permite continuar pero se requerirán.
+* **Condicionado automático:** Se utiliza un método de la aplicación que en función de la información de la solicitud decide si deben ser o no obligatorios. Este método se encuentra en la solicitud (*documentoEsObligatorio*) y debe ser reescrito por el usuario.
+* **Condicionado manual:** Es criterio de gestor considerar si deben o no presentarse

@@ -191,6 +191,11 @@ public class SolicitudGenerica extends Model {
 			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
 		}	
 	}
+	
+	public boolean documentoEsObligatorio(String uri) {
+		return false;
+	}
+
 	// === MANUAL REGION END ===
 	
 	

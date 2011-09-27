@@ -18,9 +18,7 @@ import play.cache.Cache;
 import utils.Fixtures;			
 // === IMPORT REGION END ===
 	
-/*
- * Entidades que pertenecen al modulo FAP
- */
+
 
 @Entity
 public class TableKeyValue extends Model {

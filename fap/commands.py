@@ -66,8 +66,8 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
 	
         #Desarrollo
         jars.append(os.path.join(os.getenv("FAPSDK"), "fap/compiler/lib/*")) 
-        jars.append(os.path.join(os.getenv("FAPSDK"), "compiler-src/es.fap.simpleled.generator/bin"))
-        jars.append(os.path.join(os.getenv("FAPSDK"), "compiler-src/es.fap.simpleled/bin"))
+        jars.append(os.path.join(os.getenv("FAPSDK"), "fap/compiler/src/es.fap.simpleled.generator/bin/"))
+        jars.append(os.path.join(os.getenv("FAPSDK"), "fap/compiler/src/es.fap.simpleled/bin/"))
     else:
         #No desarrollo
         moduleDir =  getModuleDir(app)   

@@ -2,6 +2,7 @@ package generator.utils
 
 
 import es.fap.simpleled.led.*
+import es.fap.simpleled.led.util.LedEntidadUtils;
 import org.eclipse.emf.ecore.EObject;
 import utils.*;
 
@@ -282,19 +283,19 @@ class ControllerUtils {
 
 	public static String copyCamposTodos(CampoUtils campo) {
 		Entity entidad;
-		Attribute last = campo.getLastAttribute();
+		Attribute last = campo.getUltimoAtributo();
 		if (last != null){
-			if (EntidadUtils.xToMany(last)){
+			if (LedEntidadUtils.xToMany(last)){
 				return "";
 			}
-			entidad = EntidadUtils.getEntity(last);
+			entidad = LedEntidadUtils.getEntidad(last);
 		}
 		else{
 			entidad = campo.entidad;
 		}
 		if (entidad != null){
 			String out = "";
-			for (Attribute at: EntidadUtils.getAllAttributesExceptId(entidad)){
+			for (Attribute at: LedEntidadUtils.getAllDirectAttributesExceptId(entidad)){
 				out += copyCamposTodos(CampoUtils.create(campo.addAttribute(at)));
 			}	
 			return out;
@@ -316,7 +317,7 @@ class ControllerUtils {
 	}
 	
 	public static String copyCampoSimple(CampoUtils campo) {
-		if (campo.getLastAttribute()?.type.compound?.multiple){
+		if (campo.getUltimoAtributo()?.type.compound?.multiple){
 			return """
 			db${campo.str}.retainAll(${campo.firstLower()});
 			db${campo.str}.addAll(${campo.firstLower()});

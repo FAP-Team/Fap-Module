@@ -98,12 +98,11 @@ public class GTabla {
 			params.put 'pagina', "\"@{${ParameterUtils.parameter(tabla.paginaProperty)}Controller.index()}\""
 		}
 		
-		
 		if (tabla.recargarPagina)
 			params.put("recargarPagina", true)
 			
 		if (tabla.columnasAutomaticas)
-			tabla.columnas.addAll(ColumnasUtils.columnas(campo.campo))
+			tabla.columnas.addAll(ColumnasUtils.columnas(campo.campo));
 
 		
 		params.putStr('idProperty', idProperty(tabla))
@@ -225,9 +224,8 @@ public class GTabla {
 
 		//Clase de la entidad que contiene la lista
 		
-		EntidadUtils entidad = EntidadUtils.create(campo.getLastEntity());
+		EntidadUtils entidad = EntidadUtils.create(campo.getUltimaEntidad());
 		EntidadUtils entidadRaiz = EntidadUtils.create(campo.getEntidad());
-		
 		
 		//La consulta depende de si se listan todas las entidades de una clase, o se accede a un campo
 		String query = null;

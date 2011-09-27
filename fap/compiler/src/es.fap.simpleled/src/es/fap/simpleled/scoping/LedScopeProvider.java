@@ -3,8 +3,9 @@
  */
 package es.fap.simpleled.scoping;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
@@ -13,10 +14,8 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CampoAtributos;
-import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
-import es.fap.simpleled.led.LedFactory;
-import es.fap.simpleled.led.impl.LedFactoryImpl;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 
 /**
  * This class contains custom scoping description.
@@ -35,43 +34,23 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 		}
 		else{
 			Attribute attr = ((CampoAtributos)atributos.eContainer()).getAtributo();
-			if (attr.getType().getCompound() != null){
-				CompoundType c = attr.getType().getCompound();
-				if (c.getTipoReferencia() == null || (!c.getTipoReferencia().equals("OneToMany") && !c.getTipoReferencia().equals("ManyToMany"))){
-					entidad = attr.getType().getCompound().getEntidad();
-				}
+			if (LedEntidadUtils.xToOne(attr)){
+				entidad = attr.getType().getCompound().getEntidad();
 			}
 		}
-		EList<Attribute> attrs = new BasicEList<Attribute>();
-		while(entidad != null){
-			addId(entidad);
-			for (Attribute at: entidad.getAttributes()){
-				attrs.add(at);
-			}
-			entidad = entidad.getExtends();
-		}
-		return Scopes.scopeFor(attrs);
+		return Scopes.scopeFor(getAllDirectAttributesAndAddId(entidad));
 	}
 	
-	public static void addId(Entity entidad){
-		Entity padre = entidad;
-		while(entidad != null){
+	public static List<Attribute> getAllDirectAttributesAndAddId(Entity entidad){
+		List<Attribute> attrs = new ArrayList<Attribute>();
+		while (entidad != null){
+			LedEntidadUtils.addId(entidad);
 			for (Attribute attr: entidad.getAttributes()){
-				if (attr.getName().equals("id")){
-					return;
-				}
+				attrs.add(attr);
 			}
 			entidad = entidad.getExtends();
-			if (entidad != null){
-				padre = entidad;
-			}
 		}
-		LedFactory factory = new LedFactoryImpl();
-		Attribute id = factory.createAttribute();
-		id.setName("id");
-		id.setType(factory.createType());
-		id.getType().setSimple("Long");
-		padre.getAttributes().add(id);
+		return attrs;
 	}
 	
 }

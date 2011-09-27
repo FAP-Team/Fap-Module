@@ -2,6 +2,7 @@ package generator.utils
 
 import java.text.CollationElementIterator;
 
+import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.*
 import es.fap.simpleled.led.impl.*;
 import generator.utils.HashStack.HashStackName;
@@ -12,13 +13,13 @@ public class ColumnasUtils {
 	
 	public static List<Columna> columnas(Campo campo){
 		ColumnasUtils columnas = new ColumnasUtils();
-		columnas.campo = CampoUtils.create(CampoUtils.create(campo).getLastEntity());
+		columnas.campo = CampoUtils.create(CampoUtils.create(campo).getUltimaEntidad());
 		return columnas.recorrerEntidad();
 	}
 	
 	public List<Columna> recorrerEntidad(){
 		List<Columna> out = new ArrayList<Columna>();
-		for (Attribute attr: EntidadUtils.getAllAttributes(campo.getLastEntity())){
+		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(campo.getUltimaEntidad())){
 			out.addAll(generateAttr(attr));
 		}
 		out.last()?.expandir = true;
@@ -27,7 +28,7 @@ public class ColumnasUtils {
 				
 	private List<Columna> generateAttr(Attribute attr){
 		List<Columna> out = new ArrayList<Columna>();
-		if ( attr.type.simple != null){
+		if (LedEntidadUtils.esSimple(attr)){
 			out.add(columna(attr));
 		}
 		else{

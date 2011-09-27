@@ -6,7 +6,9 @@ import java.util.Map;
 import generator.utils.*;
 import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.*;
-import generator.utils.EntidadUtils
+import generator.utils.EntidadUtils;
+import es.fap.simpleled.led.util.LedCampoUtils;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 
 public class GPopup {
 
@@ -20,6 +22,9 @@ public class GPopup {
 	List<String> saveCode;
 	List<String> saveController;
 	
+	EntidadUtils almacen;
+	EntidadUtils entidad;
+	
 	public static String generate(Popup popup){
 		GPopup g = new GPopup();
 		g.popup = popup;
@@ -29,6 +34,15 @@ public class GPopup {
 
 		HashStack.push(HashStackName.ROUTES, g)
 		HashStack.push(HashStackName.GPOPUP, g)
+		
+		Attribute attr = LedCampoUtils.getUltimoAtributo(popup.campo);
+		if (LedEntidadUtils.xToMany(attr)){
+			g.almacen = EntidadUtils.create(popup.campo.entidad);
+			g.entidad = EntidadUtils.create(LedEntidadUtils.getEntidad(attr));
+		}
+		else{
+			g.entidad = EntidadUtils.create(popup.campo.entidad);
+		}
 		
 		g.view();
 		g.controller();
@@ -70,23 +84,18 @@ public class GPopup {
 		saveController = HashStack.popUntil(HashStackName.CONTROLLER, sizeController)
 				
 		String titulo = popup.titulo ?: popup.name;
-				
-		EntidadUtils padre = EntidadUtils.create(popup.campo?.entidad);
 		
-		List<Object> camposEnPopup = camposEnPopup();
-
         TagParameters params = new TagParameters();
         params.putStr("popup", popup.name)
         params.putStr("titulo", titulo)
         params.put("action", 'accion')
 
-        if(camposEnPopup.size() > 0){
-			EntidadUtils hijo = EntidadUtils.create(camposEnPopup[0].entidad);
-			if (popup.campo != null){
-				params.put('hidden', "[${padre.id}:${padre.id}, ${hijo.id}: ${hijo.id}]");
+        if (hayCamposEnPopup()){
+			if (almacen != null){
+				params.put('hidden', "[${almacen.id}:${almacen.id}, ${entidad.id}: ${entidad.id}]");
 			}
 			else{
-				params.put('hidden', "[${hijo.id}: ${hijo.id}]");
+				params.put('hidden', "[${entidad.id}: ${entidad.id}]");
 			}
         }
 
@@ -115,22 +124,7 @@ public class GPopup {
 			controllerHS += elemento.controller();
 		}
 
-        List<Object> camposEnPopup = camposEnPopup();
-		
-		Campo campo0 = null;
-		if (camposEnPopup.size() > 0){
-			campo0 = camposEnPopup[0];
-		}
-		
-        EntidadUtils entidad = EntidadUtils.create(CampoUtils.create(campo0));
-        EntidadUtils almacen;
-		
 		CampoUtils popupCampo = CampoUtils.create(popup.campo);
-        if(popup.campo != null){
-            almacen = EntidadUtils.create(popupCampo);
-        }
-
-
 
         //Getters
         String getters;
@@ -387,23 +381,22 @@ public class ${controllerName()} extends ${controllerGenName()} {
 		return sb.toString();
 	}
 	
-	/**
-	 * Calcula todos los campos que se utilizan en una página
-	 * Se utiliza para copiar esos campos a la entidad
-	 * que se va a persistir
-	 */
-	private List<Object> camposEnPopup(){
-		List<Object> campos = new ArrayList<Object>();
-		addCampos(campos, popup);
-		return campos;
+	private boolean hayCamposEnPopup(){
+		return hayCampos(popup);
 	}
 	
-	private void addCampos(List<Object> lista, Object o){
+	private boolean hayCampos(Object o){
 		if(o.metaClass.respondsTo(o,"getElementos")){
-			o.elementos.each { addCampos(lista, it)};
-		}else if(o.metaClass.respondsTo(o,"getCampo")){
+			for (Object elemento: o.elementos){
+				if (hayCampos(elemento)){
+					return true;
+				}
+			}
+			return false;
+		}
+		if(o.metaClass.respondsTo(o,"getCampo")){
 			if(! (o instanceof Tabla)){
-				lista.add(o.campo);
+				return true;
 			}
 		}
 	}

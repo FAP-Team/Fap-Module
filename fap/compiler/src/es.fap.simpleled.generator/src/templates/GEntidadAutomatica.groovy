@@ -2,6 +2,7 @@
 package templates;
 
 import es.fap.simpleled.led.*
+import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.impl.*;
 import generator.utils.*
 import generator.utils.HashStack.HashStackName
@@ -19,7 +20,7 @@ public class GEntidadAutomatica {
 	
 	public String view(){
 		String out = ""
-		Entity entidad = CampoUtils.create(entidadAutomatica.campo).getLastEntity();
+		Entity entidad = CampoUtils.create(entidadAutomatica.campo).getUltimaEntidad();
 				
 		if (entidad.getExtends()?.name.equals("Persona")) {
 			Persona persona = new PersonaImpl()
@@ -80,7 +81,7 @@ public class GEntidadAutomatica {
 
 	private String generateAttrSpecial(Attribute attr) {
 		String out = ""
-		String type = attr.type.simple
+		String type = attr.type.special
 		if (type.equals("DateTime")) {
 			out = generateFecha(attr);
 		}
@@ -236,10 +237,10 @@ public class GEntidadAutomatica {
 			out = generateNip(attr);
 		}
 		else{
-			if (EntidadUtils.xToOne(attr)){ 
+			if (LedEntidadUtils.xToOne(attr)){ 
 				out = generateEntidadAutomatica(attr);
 			}
-			else if (EntidadUtils.xToMany(attr)){
+			else if (LedEntidadUtils.xToMany(attr)){
 				out = generateTabla(attr);
 			}
 		}

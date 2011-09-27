@@ -11,7 +11,7 @@
             default="true"
             extensions="fap"
             id="es.fap.simpleled.Led"
-            name="Led Editor">
+            name="Fap Editor">
         </editor>
     </extension>
     <extension

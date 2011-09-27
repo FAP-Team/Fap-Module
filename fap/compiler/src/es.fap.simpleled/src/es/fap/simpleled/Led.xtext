@@ -33,9 +33,9 @@ Entity:
 // Anotaciones permitidas en las entidades
 EntityAnotations:
 	(nonPersist?="nonPersist")?
-	& (embedded?="Embeddable")?
-	& (inheritance?="Inheritance" "=" "joined")?
-	& (superClass?="SuperClass")?
+	& (embedded?="embeddable")?
+	& (inheritance?="inheritance" "=" "joined")?
+	& (superClass?="superClass")?
 	& (noConstruct?="noConstruct")?
 	& (noAuditable?="noAuditable")?
 ;
@@ -63,7 +63,6 @@ Type:
 ;
 
 SimpleType:
-	//Tipos Java
 	"String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText"
 ;
 
@@ -72,9 +71,9 @@ SpecialType:
 ;
 
 CompoundType:
-	(tipoReferencia=AttributeReferences)? entidad=[Entity|IDS]
-	| 'Lista' (multiple?="multiple")? lista=[Lista|IDS]
-	| collectionType=tipoColeccion"<"collectionReferencia=SimpleType">"
+	((tipoReferencia=AttributeReferences)? entidad=[Entity|IDS])
+	| ('Lista' (multiple?="multiple")? lista=[Lista|IDS])
+	| (collectionType=tipoColeccion"<"collectionReferencia=SimpleType">")
 ;
 
 tipoColeccion:
@@ -143,8 +142,8 @@ Popup:
 	'Popup' name=ID
 	(
 		('titulo' '=' titulo=STRING)?
+		& ('campo' '=' campo=Campo)
 		& ("permiso" "=" permiso=[Permiso])?
-		& ('campo' '=' campo=Campo)?
 		& (crear?='crear')?
 		& (modificar?='modificar')?
 		& (borrar?='borrar')?
@@ -156,7 +155,7 @@ Popup:
 ;
 
 Grupo:
-	grupo= 'Grupo' (name=ID)? (
+	grupo='Grupo' (name=ID)? (
 		('titulo' '=' titulo=STRING)? &
 		('mostrarSiCombo' siCombo=[Combo|QN] '=' siComboValues=MostrarSiComboValues)? &
 		('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false"))? &
@@ -323,9 +322,9 @@ Tabla:
 	    	)
 	    )? 
 	)
-	('{'
-		columnas += Columna+
-	'}')?
+	'{'
+		columnas += Columna*
+	'}'
 ;
 
 Columna:

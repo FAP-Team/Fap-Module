@@ -214,6 +214,10 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			}else if (compuesto?.entidad?.anotaciones?.embedded){
 				type = compuesto.entidad.name;
 				anotaciones.add "@Embedded";
+			}else if (compuesto.collectionType != null) {
+				//Colecciones
+				anotaciones.add("@ElementCollection");
+				type = "${compuesto.collectionType}<${compuesto.collectionReferencia}>";
 			}
 			else{
 				//Referencia

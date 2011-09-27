@@ -5,12 +5,14 @@ package es.fap.simpleled.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
+import org.eclipse.xtext.resource.containers.IAllContainersState;
 import org.eclipse.xtext.ui.editor.hover.DispatchingEObjectTextHover;
 import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 
 import com.google.inject.Binder;
+import com.google.inject.Provider;
 
 import es.fap.simpleled.ui.coloring.FapSemanticHighlighting;
 import es.fap.simpleled.ui.documentation.FapDocumentationProvider;
@@ -21,9 +23,14 @@ import es.fap.simpleled.ui.documentation.FapHoverProvider;
  */
 
 public class LedUiModule extends es.fap.simpleled.ui.AbstractLedUiModule {
+	
 	public LedUiModule(AbstractUIPlugin plugin) {
 		super(plugin);
 	}
+	
+//	public Provider<IAllContainersState> provideIAllContainersState() {
+//		return org.eclipse.xtext.ui.shared.Access.getWorkspaceProjectsState();
+//	}
 	
 	public Class<? extends DispatchingEObjectTextHover> bindDispatchingEObjectTextHover() {
 		return FapHoverProvider.class;

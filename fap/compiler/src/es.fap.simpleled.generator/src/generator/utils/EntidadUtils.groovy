@@ -7,7 +7,7 @@ import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity
 import generator.utils.StringUtils
 import generator.utils.CampoUtils
-import generator.utils.HashStack.HashStackName;
+import generator.utils.HashStack.HashStackName; 
 
 public class EntidadUtils implements Comparable{
 
@@ -98,59 +98,6 @@ public class EntidadUtils implements Comparable{
 		}
         return "db" + entidad.name;
     }
-	
-	public static Attribute getAttribute(Entity entidad, String atributo){
-		for (Attribute attr: getAllAttributes(entidad)){
-			if (attr.getName().equals(atributo)){
-				return attr;
-			}
-		}
-		return null;
-	}
-	
-	public static List<Attribute> getAllAttributes(Entity entidad){
-		List<Attribute> attrs = new ArrayList<Attribute>();
-		while (entidad != null){
-			for (Attribute attr: entidad.getAttributes()){
-				attrs.add(attr);
-			}
-			entidad = entidad.getExtends();
-		}
-		return attrs;
-	}
-	
-	public static List<Attribute> getAllAttributesExceptId(Entity entidad){
-		List<Attribute> attrs = getAllAttributes(entidad);
-		for (int i = 0; i < attrs.size(); i++){
-			if (attrs.get(i).name.equals("id")){
-				attrs.remove(i);
-				break;
-			}
-		}
-		return attrs;
-	}
-	
-	// OneToOne o ManyToOne 
-	public static boolean xToOne(Attribute attr){
-		if (getEntity(attr) == null){
-			return false;
-		}
-		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() == null || (!c.getTipoReferencia().equals("OneToMany") && !c.getTipoReferencia().equals("ManyToMany"));
-	} 
-	
-	// OneToMany o ManyToMany
-	public static boolean xToMany(Attribute attr){
-		if (getEntity(attr) == null){
-			return false;
-		}
-		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() != null && (c.getTipoReferencia().equals("OneToMany") || c.getTipoReferencia().equals("ManyToMany"));
-	}
-	
-	public static Entity getEntity(Attribute attr){
-		return attr?.type?.compound?.entidad;
-	}
 	
 	@Override
 	public boolean equals(Object util){

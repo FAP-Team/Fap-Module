@@ -1,6 +1,8 @@
 package generator.utils;
 
 import es.fap.simpleled.led.Attribute;
+import es.fap.simpleled.led.util.LedEntidadUtils;
+import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CampoAtributos;
 import es.fap.simpleled.led.Entity;
@@ -65,14 +67,14 @@ public class CampoUtils implements Comparable{
 			if (entity == null){
 				return null;
 			}
-			Attribute attr = EntidadUtils.getAttribute(entity, atributo);
+			Attribute attr = LedEntidadUtils.getAttribute(entity, atributo);
 			if (attr == null){
 				return null;
 			}
 			entity = attr.getType().getCompound()?.getEntidad();
 			attrsResult.setAtributo(attr);
 			if (i < atributos.size() - 1){
-				if (EntidadUtils.xToMany(attr)){
+				if (LedEntidadUtils.xToMany(attr)){
 					return null;
 				}
 				attrsResult.setAtributos(factory.createCampoAtributos());
@@ -114,27 +116,12 @@ public class CampoUtils implements Comparable{
 		return StringUtils.firstLower(str);
 	}
 	
-	public Attribute getLastAttribute(){
-		Attribute result = null;
-		CampoAtributos attrs = campo.getAtributos();
-		while (attrs != null){
-			result = attrs.getAtributo();
-			attrs = attrs.getAtributos();
-		}
-		return result;
+	public Attribute getUltimoAtributo(){
+		return LedCampoUtils.getUltimoAtributo(campo);
 	}
 	
-	public Entity getLastEntity(){
-		Entity result = campo.getEntidad();
-		CampoAtributos attrs = campo.getAtributos();
-		while (attrs != null){
-			Entity e = attrs.getAtributo().getType().getCompound()?.getEntidad();
-			if (e != null){
-				result = e;
-			}
-			attrs = attrs.getAtributos();
-		}
-		return result;
+	public Entity getUltimaEntidad(){
+		return LedCampoUtils.getUltimaEntidad(campo);
 	}
 	
 	public static Campo addMore(Campo campo, String more){

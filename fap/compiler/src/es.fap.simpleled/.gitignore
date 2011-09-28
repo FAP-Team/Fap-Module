@@ -3,7 +3,6 @@
 *.class
 *.xtext
 *.mwe2
-*.java
 *.xmi
 *.ecore
 *.genmodel

@@ -36,7 +36,7 @@ public class LedUtils {
 		mapNodes = new HashMap<Class, List<EObject>>();
 		
 		for (Resource r: obj.eResource().getResourceSet().getResources()){
-			if (r.getContents().get(0) instanceof Model){
+			if (r.getContents().size() != 0 && r.getContents().get(0) instanceof Model){
 				for (EObject o: r.getAllContents()){
 					allNodes.add(o);
 					if (mapNodes.get(o.getClass()) == null){

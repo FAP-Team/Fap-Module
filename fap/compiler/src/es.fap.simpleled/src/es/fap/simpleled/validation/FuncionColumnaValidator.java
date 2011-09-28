@@ -2,6 +2,7 @@ package es.fap.simpleled.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,7 +51,7 @@ public class FuncionColumnaValidator {
 	private static List<Entity> getEntidades(EObject obj){
 		ArrayList<Entity> entidades = new ArrayList<Entity>();
 		for (Resource r: obj.eResource().getResourceSet().getResources()){
-			if (r.getContents().get(0) instanceof Model){
+			if ((r.getContents().size() != 0) && r.getContents().get(0) instanceof Model){
 				Model model = (Model) r.getContents().get(0);
 				for (Entity entidad: model.getEntidades()){
 					entidades.add(entidad);

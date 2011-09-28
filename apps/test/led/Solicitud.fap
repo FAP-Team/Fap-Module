@@ -1,0 +1,100 @@
+Entidad Solicitud extends SolicitudGenerica {
+	DireccionTest direccionTest
+	ComboTest comboTest
+}
+
+
+Entidad DireccionTest {
+	Direccion direccion
+}
+
+Entidad ComboTest {
+	Lista ComboTestList list
+	Lista multiple ComboTestList listMultiple
+	ManyToOne ComboTestRef ref
+	ManyToMany ComboTestRef refMultiple
+	
+	
+	String listOverwrite
+	Long listOverwriteLong
+	Set<String> listMultipleOverwrite
+	List<Long> listMultipleOverwriteLong
+	ManyToOne ComboTestRef refOverwrite
+	ManyToMany ComboTestRef refMultipleOverwrite
+	
+	Long wsjson
+	Long wsxml
+}
+
+Entidad ComboTestRef {
+	String nombre
+}
+
+Lista ComboTestList {
+	a : "A"
+	b : "B"
+	c : "C"
+	d : "D"
+}
+
+Formulario Solicitud {
+	
+    Menu {
+    	Enlace "Volver" pagina=Principal.Solicitudes
+    	
+    	Grupo "Combos" {
+			Enlace "Combos por defecto" pagina=Combos
+//			Enlace "Combos sobreescritos" pagina=CombosOverwrite
+		}
+		
+		Grupo "Direccion"{
+			Enlace "Direccion" pagina=Direcciones
+		}
+		
+		Enlace "Salir" accion="fap.SecureController.logout"
+    }
+	
+	Pagina Solicitante {}
+	
+	Pagina Direcciones {
+		Direccion campo=Solicitud.direccionTest.direccion
+	}
+	
+	
+	Pagina Combos inicial {
+
+		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
+			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"
+			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas"
+			Combo campo=Solicitud.comboTest.ref comboTexto="nombre" titulo="Combo de Referencias"
+			Combo campo=Solicitud.comboTest.refMultiple comboTexto="nombre" titulo="Combo de Referencias Múltiples"
+		}
+				
+		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRef titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
+			Columna campo=ComboTestRef.nombre expandir
+		}
+	}
+
+	Pagina CombosOverwrite {
+		
+		Grupo titulo="Combos sobreescritos en el controlador manual" {
+			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)"
+			Combo listaLong campo=Solicitud.comboTest.listOverwriteLong titulo="Combo manual (Long)"
+			Combo listaMultiple campo=Solicitud.comboTest.listMultipleOverwrite titulo="Combo múltiple manual (Set<String>)"
+			Combo listaMultipleLong campo=Solicitud.comboTest.listMultipleOverwriteLong titulo="Combo múltiple manual (Long<Long>)"
+			Combo referencia campo=Solicitud.comboTest.refOverwrite comboTexto="nombre" titulo="Combo de Referencias (Filtrando las que tienen en el nombre a)"
+			Combo referenciaMultiple campo=Solicitud.comboTest.refMultipleOverwrite comboTexto="nombre" titulo="Combo de Referencias Múltiples (Filtrando las que tienen en el nombre a)"
+			
+			Combo wsjson campo=Solicitud.comboTest.wsjson titulo="Valor del combo obtenido desde un servicio web en JSON"
+			Combo wsxml campo=Solicitud.comboTest.wsxml titulo="Valor del combo obtenido desde un servicio web en XML"
+		}
+				
+		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRef titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
+			Columna campo=ComboTestRef.nombre expandir
+		}
+	}
+
+	Popup ComboTestRef campo=ComboTestRef {
+		Texto campo=ComboTestRef.nombre	
+	}
+}

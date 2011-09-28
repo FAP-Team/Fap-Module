@@ -47,6 +47,14 @@ public class LedEntidadUtils {
 		return c.getTipoReferencia() != null && (c.getTipoReferencia().equals("OneToMany") || c.getTipoReferencia().equals("ManyToMany"));
 	}
 	
+	// ManyToOne o ManyToMany
+	public static boolean ManyToX (Attribute attr) {
+		if (getEntidad(attr) == null)
+			return false;
+		CompoundType c = attr.getType().getCompound();
+		return (c.getTipoReferencia() != null && (c.getTipoReferencia().equals("ManyToMany") || c.getTipoReferencia().equals("ManyToOne")));
+	}
+	
 	public static boolean esLista(Attribute attr){
 		if (attr.getType().getCompound() == null){
 			return false;

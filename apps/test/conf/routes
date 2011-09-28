@@ -1,0 +1,50 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET        /                SolicitudesController.index
+GET        /api/xml         WebServiceEmulator.xml
+GET        /api/json        WebServiceEmulator.json
+
+
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Autogenerada por fap:create
+*     /                       module:fap
+
+
+
+
+
+# Dentro de esta region se van a escribir todas las rutas generadas
+# === FAPGENERATED ===
+GET /Solicitud/solicitante SolicitanteController.index
+
+POST /Solicitud/solicitante/save SolicitanteController.save
+GET /Solicitud/direcciones DireccionesController.index
+
+POST /Solicitud/direcciones/save DireccionesController.save
+GET /Solicitud/combos CombosController.index
+
+GET /Solicitud/combos/comboTestRef CombosController.tablacomboTestRef
+POST /Solicitud/combos/save CombosController.save
+GET /Solicitud/combosoverwrite CombosOverwriteController.index
+
+GET /Solicitud/combosoverwrite/comboTestRef CombosOverwriteController.tablacomboTestRef
+POST /Solicitud/combosoverwrite/save CombosOverwriteController.save
+GET /Solicitud/combotestref/{idEntidad}/abrir popups.ComboTestRefController.abrir
+POST /Solicitud/combotestref/{idEntidad}/editar popups.ComboTestRefController.editar
+POST /Solicitud/combotestref/{idEntidad}/borrar popups.ComboTestRefController.borrar
+POST /Solicitud/combotestref/{idEntidad}/crear popups.ComboTestRefController.crear
+POST /Solicitud/combotestref/{idEntidad}/cancelarcrear popups.ComboTestRefController.cancelarCrear
+
+# === END FAPGENERATED ===
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

@@ -1,0 +1,61 @@
+Entidad Solicitud extends SolicitudGenerica {
+	DireccionTest direccionTest
+	ComboTest comboTest
+	ValoresPorDefectoTest valoresPorDefectoTest
+}
+
+
+Entidad DireccionTest {
+	Direccion direccion
+}
+
+Entidad ComboTest {
+	Lista ComboTestList list
+	Lista multiple ComboTestList listMultiple
+	ManyToOne ComboTestRef ref
+	ManyToMany ComboTestRef refMultiple
+	
+	
+	String listOverwrite
+	Long listOverwriteLong
+	Set<String> listMultipleOverwrite
+	List<Long> listMultipleOverwriteLong
+	ManyToOne ComboTestRef refOverwrite
+	ManyToMany ComboTestRef refMultipleOverwrite
+	
+	Long wsjson
+	Long wsxml
+}
+
+Entidad ComboTestRef {
+	String nombre
+}
+
+Entidad ValoresPorDefectoTest {
+	// Tipos Simples
+	String mString "string"
+	Long mLong "2"
+	Integer mInteger "4"
+	Boolean mBoolean "true"
+	Double mDouble "2.345"
+	LongText mLongText "texto largooooo largiiisimo"
+	
+	// Tipos Especiales 
+	Telefono mTelefono "900 120 120"
+	Email mEmail "asas@pepe.com"
+	Email mEmail2 "as@pepe"
+	Cif mCif "1234567A"
+	Moneda mMoneda "2.10"
+	DateTime mDateTime "12/12/2010"
+	
+	// Algunos tipos compuestos
+	Lista ComboTestList mLista "c"
+	
+	
+	// Embeddable
+	Embebida mEmbebida
+}
+
+Entidad Embebida embeddable {
+	String algo "pepe"
+}

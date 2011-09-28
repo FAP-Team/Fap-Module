@@ -18,15 +18,24 @@ import audit.Auditable;
 // === IMPORT REGION END ===
 	
 
-@Auditable
-@Entity
-public class SavePages extends Model {
+
+@Embeddable
+public class Embebida  {
 	// Código de los atributos
+	
+	
+	public String algo;
+	
+	
+	public Embebida (){
+		init();
+	}
 	
 
 	public void init(){
 		
-		
+		algo = "pepe";
+
 	}
 		
 	

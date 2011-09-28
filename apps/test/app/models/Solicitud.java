@@ -32,6 +32,10 @@ public class Solicitud extends SolicitudGenerica {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	public ValoresPorDefectoTest valoresPorDefectoTest;
+	
+	
+	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
 	public SavePages savePages;
 	
 	
@@ -53,6 +57,11 @@ public class Solicitud extends SolicitudGenerica {
 						else
 							comboTest.init();
 					
+						if (valoresPorDefectoTest == null)
+							valoresPorDefectoTest = new ValoresPorDefectoTest();
+						else
+							valoresPorDefectoTest.init();
+					
 						if (savePages == null)
 							savePages = new SavePages();
 						else
@@ -65,7 +74,6 @@ public class Solicitud extends SolicitudGenerica {
 		public void savePagesPrepared () {
 			}
 			
-	
 
 // === MANUAL REGION START ===
 		public Solicitud(Agente agente) {

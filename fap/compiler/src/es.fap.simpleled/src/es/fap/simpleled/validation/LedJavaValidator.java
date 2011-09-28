@@ -84,8 +84,8 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 				if (compound.getEntidad() != null){
 					warning("Valores por defecto no aplicables sobre el tipo "+attribute.getType().getCompound().getEntidad().getName()+" (solo aplicables a tipos simples)", LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
 				}
-				else{
-					warning("Valores por defecto no aplicables sobre listas (solo aplicables a tipos simples)", LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
+				else if ((compound.getLista() == null) || (compound.isMultiple())) {
+					warning("Valores por defecto no aplicables sobre listas de tipo multiple", LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
 				}
 			}
 		}

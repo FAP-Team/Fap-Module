@@ -15,18 +15,17 @@ import es.fap.simpleled.led.impl.LedFactoryImpl
 import es.fap.simpleled.led.impl.PaginaImpl
 import es.fap.simpleled.led.impl.TypeImpl
 import java.io.File;
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
 
 public class GEntidad {
-	
-	public static String prePersistCode = "";
 	
 	public static String moreImports = "";
 	
 	public static String generate(Entity entity){
 		String extendz;
 		String attrSolicitud;
-		prePersistCode = "";
 		
 		if (entity.name.equals("Solicitud")){
 			solicitudStuff(entity);
@@ -81,16 +80,6 @@ public class GEntidad {
 		String initCode = generateInit(entity);
 		
 		
-		String prePersistMethod = "";
-		if ((prePersistCode != null) && (!prePersistCode.trim().equals(""))) {
-			prePersistMethod = """
-			@PrePersist
-			public void prePersist${entity.name} () {
-				${prePersistCode}
-			}"""
-		}
-		
-		
 		String out = """
 package models;
 
@@ -113,7 +102,6 @@ public class ${entity.name} ${extendz} {
 	${attributesCode}
 	${initCode}
 	${savePagesPrepared(entity)}
-	${prePersistMethod}
 ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}	
 	
 	}
@@ -131,7 +119,6 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		
 		String type;
 		String name = attribute.name;
-		String prePersist = "";
 		List<String> anotaciones = new ArrayList<String>();
 		List<String> columnAnotations = new ArrayList<String>();
 		
@@ -164,9 +151,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				type="String";
 				anotaciones.add "@CheckWith(CifCheck.class)"
 			}
-			
-			prePersistCode += defaultValue(attribute.defaultValue, type, name)
-			
+						
 		} else if (attribute.type.special != null) {
 			type = attribute.type.special;
 			if(type.equals("Email")){
@@ -184,8 +169,6 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				type="String";
 				anotaciones.add "@CheckWith(CifCheck.class)"
 			}
-
-			prePersistCode += defaultValue(attribute.defaultValue, type, name)
 			
 		}else{
 			//Atributo compuesto
@@ -194,14 +177,6 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			
 			if(compuesto.lista != null){
 				//Listas
-				
-				// Valor por defecto de una lista definida (no en otro fichero)
-				if (attribute.defaultValue != null) {
-					String tabla = compuesto.lista.name;
-					String value = attribute.defaultValue;
-					prePersistCode += """if (TableKeyValue.contains("${tabla}", "${value}"))"""
-					prePersistCode +=  """	${name} = "${value}";"""
-				}
 				
 				if (compuesto.multiple){
 					anotaciones.add("@ElementCollection");
@@ -287,6 +262,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		for(Attribute attribute : entity.attributes){
 			CompoundType compuesto = attribute.type.compound;
 			String tipo = compuesto?.entidad?.name;
+			
 			if (compuesto?.entidad?.anotaciones?.embedded){
 				refInit += """
 			if (${attribute.name} == null)
@@ -316,11 +292,53 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 					""";
 				}
 			}
+			
+
+			
+			/** Valores por defecto de los atributos */
+			if (attribute.defaultValue != null) {
+				/** Valores por defecto para los tipos simples */
+				if (attribute?.type?.simple != null) { 
+					tipo = attribute?.type?.simple;
+					refInit += defaultValue(attribute.defaultValue, tipo, attribute.name);
+					
+				} else if (attribute?.type?.special != null) {
+					/** Valores por defecto para tipos especiales */
+					tipo = attribute?.type?.special;
+					if (tipo.equals("Telefono")) {
+						refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
+					} else if (tipo.equals("Email")) {
+						if (isValidEmailAddress((String)attribute.defaultValue)) {
+							refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
+						} else {
+							println "WARNING: El valor por defecto para email no es correcto";
+						}
+					} else if (tipo.equals("Cif")) {
+						// TODO: Validar el CIF
+						refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
+					} else if (tipo.equals("Moneda")) {
+						refInit += defaultValue(attribute.defaultValue, "Double", attribute.name);
+					}  else if (tipo.equals("DateTime")) {
+						// TODO: Validar el DateTime
+						refInit += defaultValue(attribute.defaultValue, tipo, attribute.name);
+					}
+				} else {
+					// Valor por defecto de una lista definida (no en otro fichero)
+					if ((attribute?.type?.compound?.lista != null) && (!attribute?.type?.compound?.isMultiple())) {
+						String tabla = attribute?.type?.compound?.lista.name;
+						String value = attribute.defaultValue;
+						refInit += """if (TableKeyValue.contains("${tabla}", "${value}"))""";
+						refInit +=  """	${attribute.name} = "${value}";""";
+					} else {
+						println "WARNING: Valor por defecto no permitido en este tipo";
+					}
+				}
+			}
 		}
 		
 		//Si la clase no tiene referencias miramos si es embedded
 		if(refInit.isEmpty()) {
-			if (entity?.anotaciones?.embedded) {               // hay q inicialiar algun atributo para
+			if (entity?.anotaciones?.embedded) {               // hay q inicializar algun atributo para
 				for(Attribute attribute : entity.attributes){  // que se pueda guardar en BD
 					if (attribute.type.simple != null) {
 						refInit += """
@@ -340,8 +358,6 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 //				return ""; // no genera constructor
 //			}
 		}
-
-		
 		
 		
 		//Constructor para inicializar las referencias
@@ -423,23 +439,46 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		solicitud.getAttributes().add(at);
 	}
 	
-	
+	/**
+	 * Devuelve el string que asigna el valor por defecto
+	 * @param value Valor por defecto asignado
+	 * @param type Tipo del atributo de la entidad
+	 * @param name Atributo de la entidad
+	 * @return
+	 */
 	private static String defaultValue(String value, String type, String name) {
+		// println "DefaultValue ("+value+", "+type+", "+name+")";
 		if ((value != null)) {
 			def defaultValue = value;
 			if (type.equals("Double")) {
 				defaultValue = Double.parseDouble(value);
 			} else if (type.equals("Integer")) {
 				defaultValue = Integer.parseInt(value);
+			} else if (type.equals("Long")) {
+				defaultValue = Long.parseLong(value) + "L";
 			}
 		
 			if (defaultValue != null) {
-				if (type.equals("String"))
+				if (type.equals("String") || (type.equals("LongText")))
 					defaultValue = "\"${defaultValue}\"";
-				return  """${name} = ${defaultValue};"""
+				else if (type.equals("DateTime"))
+					defaultValue = "new DateTime (\"${defaultValue}\")";
+				return  """${name} = ${defaultValue};\n"""
 			}
 		}
 		return ""
 	}
+	
+	/**
+	 * Indica se el string pasado es un email válido
+	 */
+	public static boolean isValidEmailAddress(String emailAddress){
+		String  expression="^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[A-Z]{2,4}\$";
+		CharSequence inputStr = emailAddress;
+		Pattern pattern = Pattern.compile(expression,Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(inputStr);
+		return matcher.matches();
+	  }
+	
 	
 }

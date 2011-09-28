@@ -1,42 +1,3 @@
-Entidad Solicitud extends SolicitudGenerica {
-	DireccionTest direccionTest
-	ComboTest comboTest
-}
-
-
-Entidad DireccionTest {
-	Direccion direccion
-}
-
-Entidad ComboTest {
-	Lista ComboTestList list
-	Lista multiple ComboTestList listMultiple
-	ManyToOne ComboTestRef ref
-	ManyToMany ComboTestRef refMultiple
-	
-	
-	String listOverwrite
-	Long listOverwriteLong
-	Set<String> listMultipleOverwrite
-	List<Long> listMultipleOverwriteLong
-	ManyToOne ComboTestRef refOverwrite
-	ManyToMany ComboTestRef refMultipleOverwrite
-	
-	Long wsjson
-	Long wsxml
-}
-
-Entidad ComboTestRef {
-	String nombre
-}
-
-Lista ComboTestList {
-	a : "A"
-	b : "B"
-	c : "C"
-	d : "D"
-}
-
 Formulario Solicitud {
 	
     Menu {
@@ -44,7 +5,8 @@ Formulario Solicitud {
     	
     	Grupo "Combos" {
 			Enlace "Combos por defecto" pagina=Combos
-//			Enlace "Combos sobreescritos" pagina=CombosOverwrite
+			Enlace "Combos sobreescritos" pagina=CombosOverwrite
+			Enlace "Valores por defecto" pagina=ValoresPorDefecto
 		}
 		
 		Grupo "Direccion"{
@@ -96,5 +58,16 @@ Formulario Solicitud {
 
 	Popup ComboTestRef campo=ComboTestRef {
 		Texto campo=ComboTestRef.nombre	
+	}
+	
+	Pagina ValoresPorDefecto {
+		Texto mString campo=Solicitud.valoresPorDefectoTest.mString titulo="String"
+		Texto mLong campo=Solicitud.valoresPorDefectoTest.mLong titulo="Long"
+		Texto mInteger campo=Solicitud.valoresPorDefectoTest.mInteger titulo="Integer"
+		Check mBoolean campo=Solicitud.valoresPorDefectoTest.mBoolean titulo="Boolean"
+		Texto mDouble campo=Solicitud.valoresPorDefectoTest.mDouble titulo="Double"
+		Texto mLongText campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText"
+		
+		Texto mEmbeddable campo=Solicitud.valoresPorDefectoTest.mEmbebida.algo titulo="String embeddable" 
 	}
 }

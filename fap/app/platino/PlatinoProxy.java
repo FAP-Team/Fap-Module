@@ -13,6 +13,7 @@ public class PlatinoProxy {
 
 	public static void setProxy(Object service){
 		if(FapProperties.getBoolean("fap.proxy.enable")){
+			System.out.println("Proxy");
 			Client client = ClientProxy.getClient(service);
 			HTTPConduit http = (HTTPConduit) client.getConduit();
 			HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();

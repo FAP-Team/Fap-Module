@@ -46,7 +46,6 @@ public class RepresentantePersonaFisica extends Persona {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	@PostPersist

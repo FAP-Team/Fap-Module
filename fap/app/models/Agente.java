@@ -71,7 +71,6 @@ public class Agente extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	

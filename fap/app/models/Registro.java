@@ -100,7 +100,6 @@ public class Registro extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 

@@ -42,7 +42,6 @@ public class CodigoRequerimiento extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 			

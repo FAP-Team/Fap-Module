@@ -159,6 +159,7 @@ public class GForm {
 			}
 		"""
 
+		println ("Controlador: <"+controllerMethodName()+"> saveParams: ("+saveParams+")");
 		
 		controllerCode += """
 			${ControllerUtils.validateCopyMethod(this, (EntidadUtils[])entities.toArray())}

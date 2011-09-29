@@ -65,7 +65,6 @@ public class Persona extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	public boolean isPersonaFisica(){

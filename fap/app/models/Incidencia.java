@@ -54,7 +54,6 @@ public class Incidencia extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 

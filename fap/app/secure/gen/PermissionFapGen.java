@@ -299,7 +299,7 @@ public class PermissionFapGen  {
 		//Variables
 		Agente agente = AgenteController.getAgente();
 		
-		boolean resultado = (utils.StringUtils.in(action.toString(), "read", "write")) && (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "revisor"));
+		boolean resultado = (utils.StringUtils.in(action.toString(), "read", "update")) && (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "revisor"));
 		return resultado;
 	}
 	
@@ -341,7 +341,7 @@ public class PermissionFapGen  {
 		if (solicitud == null)
 			return false;
 
-		boolean resultado = (action.toString().equals("read".toString())) && (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "usuario", "gestor", "revisor")) && (utils.StringUtils.in(solicitud.estado.toString(), "iniciada", "requrida", "requerida plazo vencido"));
+		boolean resultado = (action.toString().equals("read".toString())) && (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "usuario", "gestor", "revisor")) && (utils.StringUtils.in(solicitud.estado.toString(), "iniciada", "requerida", "requerida plazo vencido"));
 		return resultado;
 	}
 	

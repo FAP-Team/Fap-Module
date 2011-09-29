@@ -87,7 +87,6 @@ public class Solicitante extends Persona {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	public Boolean getRepresentado() {

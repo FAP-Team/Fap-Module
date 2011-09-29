@@ -54,7 +54,6 @@ public class Log extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 			

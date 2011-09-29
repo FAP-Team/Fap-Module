@@ -171,5 +171,89 @@
 			
 			}
 		
+			@Util
+			protected static boolean permisopresentarSinRegistrar(String accion) {
+				//Sobreescribir para incorporar permisos a mano
+			return true;
+			}
+		
+			
+			@Util
+			protected static void presentarSinRegistrarValidateCopy(SolicitudGenerica dbSolicitud, SolicitudGenerica solicitud, platino.Firma firma){
+				CustomValidation.clearValidadas();
+				CustomValidation.valid("solicitud.aportaciones.actual", solicitud.aportaciones.actual);
+CustomValidation.valid("solicitud.aportaciones", solicitud.aportaciones);
+CustomValidation.valid("solicitud", solicitud);
+CustomValidation.required("solicitud.aportaciones.actual.fechaAportacionSinRegistro", solicitud.aportaciones.actual.fechaAportacionSinRegistro);
+dbSolicitud.aportaciones.actual.fechaAportacionSinRegistro = solicitud.aportaciones.actual.fechaAportacionSinRegistro;
+dbSolicitud.aportaciones.actual.oficial.uri = solicitud.aportaciones.actual.oficial.uri;
+dbSolicitud.aportaciones.actual.oficial.tipoCiudadano = solicitud.aportaciones.actual.oficial.tipoCiudadano;
+dbSolicitud.aportaciones.actual.oficial.tipoOrganismo = solicitud.aportaciones.actual.oficial.tipoOrganismo;
+dbSolicitud.aportaciones.actual.oficial.tipoOtraEntidad = solicitud.aportaciones.actual.oficial.tipoOtraEntidad;
+dbSolicitud.aportaciones.actual.oficial.tipo = solicitud.aportaciones.actual.oficial.tipo;
+dbSolicitud.aportaciones.actual.oficial.descripcion = solicitud.aportaciones.actual.oficial.descripcion;
+dbSolicitud.aportaciones.actual.oficial.clasificado = solicitud.aportaciones.actual.oficial.clasificado;
+dbSolicitud.aportaciones.actual.oficial.hash = solicitud.aportaciones.actual.oficial.hash;
+dbSolicitud.aportaciones.actual.oficial.fechaSubida = solicitud.aportaciones.actual.oficial.fechaSubida;
+dbSolicitud.aportaciones.actual.oficial.fechaRegistro = solicitud.aportaciones.actual.oficial.fechaRegistro;
+dbSolicitud.aportaciones.actual.oficial.urlDescarga = solicitud.aportaciones.actual.oficial.urlDescarga;
+
+				
+			}
+		
+			
+			public static void presentarSinRegistrar(Long idSolicitud, SolicitudGenerica solicitud, platino.Firma firma){
+				checkAuthenticity();
+				if (permisopresentarSinRegistrar("update") || permisopresentarSinRegistrar("create")) {
+				
+					SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+				
+					presentarSinRegistrarValidateCopy(dbSolicitud, solicitud, firma);
+
+					if(!validation.hasErrors()){
+						presentarSinRegistrarValidateRules(dbSolicitud, solicitud, firma);
+					}
+					
+					if(!validation.hasErrors()){
+						dbSolicitud.save(); Logger.info("Guardando solicitud " + dbSolicitud.id);
+				
+		
+					}
+				}
+				else {
+					Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+					/* no se hace aqui Messages.keep(); */
+				}
+				
+				presentarSinRegistrarRender(idSolicitud);
+
+			}
+			
+			
+			@Util
+			protected static void presentarSinRegistrarValidateRules(SolicitudGenerica dbSolicitud, SolicitudGenerica solicitud, platino.Firma firma){
+				//Sobreescribir para validar las reglas de negocio
+			}
+		
+
+			
+		
+			@Util
+			public static void presentarSinRegistrarRender(Long idSolicitud){
+				
+				if (!Messages.hasMessages()) {
+					Messages.ok("Página guardada correctamente");
+				}		
+			
+				Messages.keep();
+				
+				if(Messages.hasErrors()){
+					redirect( "AportacionPresentarController.index" , idSolicitud);
+				}else{
+					redirect( "AportacionRecibosController.index" , idSolicitud);
+				}			
+			
+			}
+		
 			}
 		

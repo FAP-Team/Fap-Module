@@ -52,7 +52,6 @@ public class ExpedientePlatino extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 

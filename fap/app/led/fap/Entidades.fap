@@ -216,6 +216,8 @@ Entidad Aportacion {
 	OneToMany Documento documentos
 	
 	InformacionRegistro informacionRegistro
+	/* Cuando aportamos sin registro, se establece ésta fecha */
+	DateTime fechaAportacionSinRegistro
 	
 	Documento borrador
 	Documento oficial

@@ -55,7 +55,6 @@ public class PersonaFisica extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	/**

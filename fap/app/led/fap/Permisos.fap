@@ -208,7 +208,7 @@ then
 
 rule adminGestorRevisor
 when
-	(action in ("read", "write")) and 
+	(action in ("read", "update")) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor"))
 then 
 	grant
@@ -228,7 +228,7 @@ vars
 when
 	(action = "read") and 
 	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
-	(solicitud.estado in ("iniciada", "requrida", "requerida plazo vencido"))
+	(solicitud.estado in ("iniciada", "requerida", "requerida plazo vencido"))
 then
 	grant	
 

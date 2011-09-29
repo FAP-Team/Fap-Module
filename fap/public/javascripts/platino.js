@@ -4,6 +4,7 @@ var Platino = {
 		if(opciones == null){
 			opciones = {};
 		}
+		
 		var mensajes;
 		if(opciones.mensajes != null){
 			mensajes = opciones.mensajes;

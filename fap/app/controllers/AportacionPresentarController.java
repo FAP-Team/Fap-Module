@@ -1,7 +1,12 @@
 package controllers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 import messages.Messages;
 import models.*;
@@ -97,6 +102,45 @@ public class AportacionPresentarController extends AportacionPresentarController
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
 		}
 		presentarRender(idSolicitud);
+	}
+	
+	
+	/** Presenta la aportación de documentación sin registrar los documentos.
+	 * Deberá realizarlo únicamente un gestor, administrador o revisor. */
+	public static void presentarSinRegistrar(Long idSolicitud, SolicitudGenerica solicitud, platino.Firma firma){
+		checkAuthenticity();
+		if (permisopresentarSinRegistrar("update") || permisopresentarSinRegistrar("create")) {
+		
+			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+			
+			presentarSinRegistrarValidateCopy(dbSolicitud, solicitud, firma);
+			
+			Aportacion aportacion = dbSolicitud.aportaciones.actual;
+			
+			if ((aportacion.fechaAportacionSinRegistro == null) || (aportacion.fechaAportacionSinRegistro.isAfterNow())) {
+				System.out.println("-> "+aportacion.fechaAportacionSinRegistro);
+		        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		        Date date = new Date();
+				Messages.error("La fecha de incorporación debe ser anterior a "+dateFormat.format(date));
+			}
+			
+			
+			if (!Messages.hasErrors()){
+				play.Logger.info("Se procede a aportar sin registrar en la solicitud: "+dbSolicitud.id);
+				play.Logger.info("El estado es "+dbSolicitud.estado);
+				
+				
+			}
+
+			
+		}
+		else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+			/* no se hace aqui Messages.keep(); */
+		}
+		
+		presentarSinRegistrarRender(idSolicitud);
+
 	}
 	
 }

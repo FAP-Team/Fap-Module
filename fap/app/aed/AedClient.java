@@ -123,6 +123,7 @@ public class AedClient {
 	
 	public static String saveDocumentoTemporal(models.Documento documento, File file) throws AedExcepcion {
 		try {
+			log.info("Documento "+documento.toString());
 			return saveDocumentoTemporal(documento, new FileInputStream(file), file.getName());
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Archivo no encontrado");

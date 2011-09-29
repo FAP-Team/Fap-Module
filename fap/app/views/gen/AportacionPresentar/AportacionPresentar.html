@@ -65,6 +65,19 @@
 				
 			#{/form}
 		
+#{fap.grupo titulo:'Incorporar Documentos sin Registro de Entrada', permiso:'adminGestorRevisor'}
+	
+			#{form @AportacionPresentarController.presentarSinRegistrar(idSolicitud), id:"presentarSinRegistrar" }
+				
+#{fap.fecha titulo:'Fecha Incorporación', campo:'solicitud.aportaciones.actual.fechaAportacionSinRegistro', requerido:true /}		
+		
+#{fap.firma titulo:'Incorporar', uri:solicitud.aportaciones.actual.oficial.uri, firma:'firma.firma' /}
+		
+				
+			#{/form}
+		
+#{/fap.grupo}
+
 			<div class="wiki ">
 
 <p>Nota: La operación de firmar y presentar puede tardar varios minutos.</p>

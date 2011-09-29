@@ -47,7 +47,6 @@ public class InformacionRegistro extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	public void setDataFromJustificante(es.gobcan.platino.servicios.registro.JustificanteRegistro justificante){

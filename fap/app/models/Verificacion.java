@@ -107,7 +107,6 @@ public class Verificacion extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 			

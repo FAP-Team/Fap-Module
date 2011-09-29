@@ -313,7 +313,7 @@ fieldset legend {
 }
 
 /* Login */
-#certificado {
+select.certificado, #certificado {
 	width: 100%;
 	margin: 0;
 }

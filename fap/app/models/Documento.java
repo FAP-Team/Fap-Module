@@ -80,7 +80,6 @@ public class Documento extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	public Documento(){

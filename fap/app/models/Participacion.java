@@ -42,7 +42,6 @@ public class Participacion extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 // === MANUAL REGION END ===

@@ -54,7 +54,6 @@ public class FasesRegistro extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 public FasesRegistro() {

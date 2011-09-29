@@ -128,7 +128,6 @@ public class SolicitudGenerica extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 

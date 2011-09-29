@@ -1,5 +1,10 @@
 # Ficheros que se ignorarán #
 #############################
+
+# Añadimos el fichero de configuración, para no incluir información importante
+fap/conf/application.conf
+fap/app/platino/client_sign.properties
+
 .classpath
 .project
 .settings/

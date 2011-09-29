@@ -162,6 +162,7 @@ CustomValidation.required("agente.roles", agente.roles);
 			dbAgente.roles.addAll(agente.roles);
 			CustomValidation.required("agente.email", agente.email);
 dbAgente.email = agente.email;
+dbAgente.funcionario = agente.funcionario;
 
 				
 			}

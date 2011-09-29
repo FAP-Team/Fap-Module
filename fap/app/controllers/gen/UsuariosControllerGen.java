@@ -35,7 +35,7 @@
 		List<Agente> rowsFiltered = rows; //Tabla sin permisos, no filtra
 			
 			tables.TableRenderResponse<Agente> response = new tables.TableRenderResponse<Agente>(rowsFiltered);
-			renderJSON(response.toJSON("id", "username", "name", "roles", "email"));
+			renderJSON(response.toJSON("id", "username", "name", "roles", "email", "funcionario"));
 				
 	}
 		

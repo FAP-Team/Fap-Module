@@ -424,6 +424,85 @@ public class PermissionFapGen  {
 		return resultado;
 	}
 	
+	public static boolean visibleSiAccesoCertificado (String action, Map<String, Long> ids, Map<String, Object> vars){
+		//Variables
+		Agente agente = AgenteController.getAgente();
+		
+		boolean resultado = agente.acceso.toString().equals("certificado".toString());
+		return resultado;
+	}
+	
+	public static boolean visibleSiAccesoContrasena (String action, Map<String, Long> ids, Map<String, Object> vars){
+		//Variables
+		Agente agente = AgenteController.getAgente();
+		
+		boolean resultado = (agente.acceso.toString().equals("usuario".toString()));
+		return resultado;
+	}
+	
+	public static boolean documentoAutorizacionGenerado (String action, Map<String, Long> ids, Map<String, Object> vars){
+		//Variables
+		Agente agente = AgenteController.getAgente();
+		
+		//solicitud
+		SolicitudGenerica solicitud = null;
+		if((vars != null) && (vars.containsKey("solicitud"))){
+			solicitud = (SolicitudGenerica) vars.get("solicitud");
+		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
+			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
+		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
+			solicitud = SolicitudGenerica.all().first();
+		}
+		
+		if (solicitud == null)
+			return false;
+
+		boolean resultado = (solicitud.registro.autorizacionFuncionario.urlDescarga != null) && (!agente.funcionario.toString().equals("true".toString()));
+		return resultado;
+	}
+	
+	public static boolean visibleFuncionarioAutorizado (String action, Map<String, Long> ids, Map<String, Object> vars){
+		//Variables
+		Agente agente = AgenteController.getAgente();
+		
+		//solicitud
+		SolicitudGenerica solicitud = null;
+		if((vars != null) && (vars.containsKey("solicitud"))){
+			solicitud = (SolicitudGenerica) vars.get("solicitud");
+		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
+			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
+		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
+			solicitud = SolicitudGenerica.all().first();
+		}
+		
+		if (solicitud == null)
+			return false;
+
+		boolean resultado = (agente.funcionario.toString().equals("true".toString())) && (solicitud.solicitante.autorizaFuncionario.toString().equals("true".toString()));
+		return resultado;
+	}
+	
+	public static boolean noVisibleFuncionarioAutorizado (String action, Map<String, Long> ids, Map<String, Object> vars){
+		//Variables
+		Agente agente = AgenteController.getAgente();
+		
+		//solicitud
+		SolicitudGenerica solicitud = null;
+		if((vars != null) && (vars.containsKey("solicitud"))){
+			solicitud = (SolicitudGenerica) vars.get("solicitud");
+		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
+			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
+		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
+			solicitud = SolicitudGenerica.all().first();
+		}
+		
+		if (solicitud == null)
+			return false;
+
+		boolean resultado = (agente.funcionario.toString().equals("true".toString())) && (solicitud.solicitante.autorizaFuncionario.toString().equals("true".toString()));
+		return !resultado;
+	}
+	
 	public static boolean aportacionModificar (String action, Map<String, Long> ids, Map<String, Object> vars){
 		//Variables
 		Agente agente = AgenteController.getAgente();

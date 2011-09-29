@@ -83,6 +83,42 @@ public class FirmaService {
 			log.error("firmanteCertificado == null????");
 		}
 	}
+
+	
+	
+	/**
+	 * Permite a un funcionario habilitado firmar, valida la firma y la almacena en el AED
+	 * @param documento Documento firmado
+	 * @param firmantes Lista de firmantes. Se comprueba que la persona no haya firmado ya.
+	 * @param firma Firma
+	 * @param valorDocumentofirmanteSolicitado En el caso de que sea != null se comprueba que el certificado del firmante coincida
+	 */
+	public static void firmarFH(Documento documento, Firma firma){		
+		Firmante firmante = firma.validaFirmayObtieneFirmante(documento);
+		
+		if((firmante != null)&&(firmante.esFuncionarioHabilitado())){
+			log.info("Funcionario habilitado validado");
+			log.info("Firmante encontrado " + firmante.idvalor );
+			
+			if(!Messages.hasErrors()){
+				// Guarda la firma en el AED
+				try {
+					log.info("Guardando firma en el aed");
+					firmante.fechaFirma = new DateTime();
+					AedClient.agregarFirma(documento.uri, firmante, firma.firma);
+					firmante.save();
+					
+					log.info("Firma del documento " + documento.uri + " guardada en el AED");
+				}catch(AedExcepcion e){
+					log.error("Error guardando la firma en el aed");
+					Messages.error("Error al guardar la firma");
+				}				
+			}
+		}else{
+			Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud.");
+		}
+	}
+
 	
 	/**
 	 * Comprueba que al menos uno de los firmantes únicos ha firmado
@@ -161,7 +197,7 @@ public class FirmaService {
 				fr.tipo = "representante";
 				if(r.tipo.equals("mancomunado")){
 					fr.cardinalidad = "multiple";
-				}else if((r.tipo.equals("solidario")) || (r.tipo.equals("aministradorUnico"))){
+				}else if((r.tipo.equals("solidario")) || (r.tipo.equals("administradorUnico"))){
 					fr.cardinalidad = "unico";
 				}
 				fr.setIdentificador(r);

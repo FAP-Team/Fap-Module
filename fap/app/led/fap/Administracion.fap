@@ -29,6 +29,7 @@ Formulario Administracion permiso=administrador{
 			Columna campo=Agente.name titulo="Nombre completo" expandir
 			Columna campo=Agente.roles titulo="Roles" expandir
 			Columna campo=Agente.email titulo="Email" ancho="150"
+			Columna campo=Agente.funcionario titulo="Funcionario" ancho="80"
 		}
 	}
 	
@@ -36,8 +37,9 @@ Formulario Administracion permiso=administrador{
 		Texto campo=Agente.username titulo="Username" requerido
 		Combo campo=Agente.roles titulo="Roles" multiple busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido
+		Check campo=Agente.funcionario titulo="Funcionario habilitado"
 	}
-	
+		
 	Pagina Aed noForm permiso=administrador  {
 		Grupo titulo="Tipos de documentos" {
 			Wiki {"Busca en el archivo electrónico los tipos de documento y los almacena en la base de datos. Los tipos almacenados en la base de datos serán los que aparecen en el combo de la página de documentación."}

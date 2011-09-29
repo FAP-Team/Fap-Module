@@ -36,6 +36,10 @@ public class Registro extends Model {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	public Documento autorizacionFuncionario;
+	
+	
+	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
 	public InformacionRegistro informacionRegistro;
 	
 	
@@ -74,6 +78,11 @@ public class Registro extends Model {
 							justificante = new Documento();
 						else
 							justificante.init();
+					
+						if (autorizacionFuncionario == null)
+							autorizacionFuncionario = new Documento();
+						else
+							autorizacionFuncionario.init();
 					
 						if (informacionRegistro == null)
 							informacionRegistro = new InformacionRegistro();

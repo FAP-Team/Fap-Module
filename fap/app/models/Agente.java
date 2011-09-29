@@ -49,6 +49,14 @@ public class Agente extends Model {
 	public String rolActivo;
 	
 	
+	
+	public String acceso;
+	
+	
+	
+	public Boolean funcionario;
+	
+	
 	public Agente (){
 		init();
 	}
@@ -80,6 +88,12 @@ public class Agente extends Model {
 	@Override
 	public String toString() {
 		return "Agente [username=" + username + ", email=" + email + "]";
+	}
+	
+	public boolean getFuncionario () {
+		if (funcionario != null)
+			return funcionario;
+		return false;
 	}
 	// === MANUAL REGION END ===
 	

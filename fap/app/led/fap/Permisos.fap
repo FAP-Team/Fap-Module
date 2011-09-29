@@ -291,6 +291,53 @@ when
 	)
 then
 	grant
+
+
+rule visibleSiAccesoCertificado
+when 
+	agente.acceso = "certificado"
+then 
+	grant
+
+
+rule visibleSiAccesoContrasena
+when 
+	(agente.acceso = "usuario")
+then 
+	grant
+	
+	
+rule documentoAutorizacionGenerado
+vars 
+	Solicitud solicitud
+when 
+	(solicitud.registro.autorizacionFuncionario.urlDescarga != null)
+	and
+	(agente.funcionario != "true")
+then 
+	grant
+
+
+rule visibleFuncionarioAutorizado
+vars
+	Solicitud solicitud
+when 
+	(agente.funcionario = "true")
+	and
+	(solicitud.solicitante.autorizaFuncionario = "true")
+then 
+	grant
+
+rule noVisibleFuncionarioAutorizado
+vars
+	Solicitud solicitud
+when 
+	(agente.funcionario = "true")
+	and
+	(solicitud.solicitante.autorizaFuncionario = "true")
+then 
+	deny
+
 	
 /* Se puede moficicar la aportación de documentación cuando está en borrador*/	
 rule aportacionModificar
@@ -300,6 +347,7 @@ when
 	solicitud.aportaciones.actual.estado in ("borrador")
 then
 	grant	
+	
 	
 /*
   Cuando la firma y registro se quedo en un paso intermedio. Se le muestra un mensaje

@@ -517,6 +517,7 @@ li a.menu-activo {
 	-moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3), inset 1px 1px #fff;
 	-webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3), inset 1px 1px #fff;
 	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3), inset 1px 1px #fff;
+	margin-bottom: 5px;
 }
 
 .boton[disabled] {

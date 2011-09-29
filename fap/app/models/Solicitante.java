@@ -14,6 +14,7 @@ import validation.*;
 import audit.Auditable;
 
 // === IMPORT REGION START ===
+import controllers.fap.AgenteController;
 			
 // === IMPORT REGION END ===
 	
@@ -60,6 +61,10 @@ public class Solicitante extends Persona {
 	public List<RepresentantePersonaJuridica> representantes;
 	
 	
+	
+	public Boolean autorizaFuncionario;
+	
+	
 	public Solicitante (){
 		init();
 	}
@@ -90,6 +95,14 @@ public class Solicitante extends Persona {
 			return representado;
 		return false;
 	}
+	
+	public Boolean getAutorizaFuncionario() {
+		if (autorizaFuncionario != null)
+			return autorizaFuncionario;
+		return false;
+	}
+
+	
 // === MANUAL REGION END ===
 	
 	

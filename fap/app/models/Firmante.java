@@ -118,6 +118,12 @@ public class Firmante extends Model {
 	}
 	
 	
+	public boolean esFuncionarioHabilitado() {
+		Agente agente = Agente.find("byUsername", idvalor).first();
+		if ((agente != null) && (agente.funcionario))
+			return true;
+		return false;
+	}
 	
 // === MANUAL REGION END ===
 	

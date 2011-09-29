@@ -32,6 +32,7 @@ Entidad Solicitante extends Persona {
 	Boolean representado
 	RepresentantePersonaFisica representante //noConstruct
 	OneToMany RepresentantePersonaJuridica representantes
+	Boolean autorizaFuncionario
 }
 
 Entidad Agente inheritance=joined{
@@ -41,7 +42,10 @@ Entidad Agente inheritance=joined{
 	String name
 	Lista multiple roles roles
 	Lista roles rolActivo
+	String acceso
+	Boolean funcionario
 }
+
 
 Entidad Direccion embeddable {
 	String calle
@@ -147,6 +151,7 @@ Entidad Registro {
 	Documento borrador
 	Documento oficial
 	Documento justificante
+	Documento autorizacionFuncionario
 	
 	InformacionRegistro informacionRegistro
 	

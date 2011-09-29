@@ -138,14 +138,16 @@ public class SecureController extends Controller {
 			agente.rolActivo = "usuario";
 			agente.name = name;
 			
-			agente.save();
 		}else{
 			if(agente.name == null){
 				agente.name = name;
-				agente.save();
 			}
 		}
 		
+		//Almacena el modo de acceso del agente
+		agente.acceso = "certificado";
+		agente.save();
+
 		//Almacena el usuario en la sesion
 		session.put("username", agente.username);
 		
@@ -214,6 +216,10 @@ public class SecureController extends Controller {
             login();
     	}
         
+		//Almacena el modo de acceso del agente
+		agente.acceso = "usuario";
+		agente.save();
+		
         // Mark user as connected
         session.put("username", agente.username);
         // Remember if needed

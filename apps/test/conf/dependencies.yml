@@ -1,0 +1,19 @@
+# Application dependencies
+
+require:
+    - play
+    - fap -> fap 1.0.3
+    - play -> pdf 0.6
+
+repositories:
+    - Fap Local repository:
+        type:       local
+        artifact:   ${fapsdk}/fap
+        contains:
+            - fap -> *
+#    - Fap repository:
+#        type: http
+#        artifact: "http://fap-devel.etsii.ull.es/public/fap-sdk2/[revision]/[module]-[revision].zip"
+#        contains:
+#            - fap -> fap
+

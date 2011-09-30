@@ -8,11 +8,12 @@ fap/app/platino/client_sign.properties
 .classpath
 .project
 .settings/
-./compiler/src/es.fap.simpleled.generator/bin/*
-./compiler/src/es.fap.simpleled/bin/*
 eclipse/
 modules/
 *.jks
+
+.*
+!.gitignore
 
 # Compiled source #
 ###################
@@ -53,7 +54,15 @@ Thumbs.db
 
 # Listas
 apps/test/app/listas/gen/*
+apps/test/tmp/*
 
 fap/app/controllers/gen/*
 fap/app/secure/gen/*
 fap/app/views/gen/*
+fap/app/listas/gen/*
+
+fap/compiler/src/es.fap.simpleled/bin/*
+fap/compiler/src/es.fap.simpleled/src-gen/*
+fap/compiler/src/es.fap.simpleled.ui/bin/*
+fap/compiler/src/es.fap.simpleled.ui/src-gen/*
+fap/compiler/src/es.fap.simpleled.generator/bin/*

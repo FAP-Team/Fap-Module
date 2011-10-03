@@ -8,12 +8,15 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
+import aed.AedClient;
+
 import messages.Messages;
 import models.*;
 import play.mvc.Util;
 import services.FirmaService;
 import services.RegistroException;
 import services.RegistroService;
+import validation.CustomValidation;
 import controllers.gen.AportacionPresentarControllerGen;
 
 public class AportacionPresentarController extends AportacionPresentarControllerGen {
@@ -113,25 +116,38 @@ public class AportacionPresentarController extends AportacionPresentarController
 		
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			
-			presentarSinRegistrarValidateCopy(dbSolicitud, solicitud, firma);
+
+			CustomValidation.required("solicitud.aportaciones.actual.fechaAportacionSinRegistro", solicitud.aportaciones.actual.fechaAportacionSinRegistro);
+			dbSolicitud.aportaciones.actual.fechaAportacionSinRegistro = solicitud.aportaciones.actual.fechaAportacionSinRegistro;
 			
 			Aportacion aportacion = dbSolicitud.aportaciones.actual;
 			
-			if ((aportacion.fechaAportacionSinRegistro == null) || (aportacion.fechaAportacionSinRegistro.isAfterNow())) {
-				System.out.println("-> "+aportacion.fechaAportacionSinRegistro);
-		        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		        Date date = new Date();
-				Messages.error("La fecha de incorporación debe ser anterior a "+dateFormat.format(date));
+			//Firma si es necesario
+			if(!Messages.hasErrors() && aportacion.estado.equals("borrador")){
+				play.Logger.info("Calculando firmantes");
+				List<Firmante> firmantes = new ArrayList<Firmante>();
+				FirmaService.calcularFirmantes(dbSolicitud.solicitante, firmantes);
+				play.Logger.info("Firmantes " + firmantes);
+				FirmaService.firmar(dbSolicitud.aportaciones.actual.oficial, firmantes, firma);
+				play.Logger.info("Firmada");
+				
+				//La solicitud se firmó correctamente y la firma ya está guardada en el AED
+				if(!Messages.hasErrors()) {
+					aportacion.estado = "firmada";
+					aportacion.save();
+				}
 			}
 			
-			
-			if (!Messages.hasErrors()){
-				play.Logger.info("Se procede a aportar sin registrar en la solicitud: "+dbSolicitud.id);
-				play.Logger.info("El estado es "+dbSolicitud.estado);
-				
-				
+			//No Registra la solicitud
+			if(!Messages.hasErrors()){
+				try {
+					RegistroService.noRegistrarAportacionActual(dbSolicitud);
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+					Messages.error("Se produjo un error al intentar aportar sin registrar la documentación, inténtelo de nuevo.");
+				}
 			}
-
 			
 		}
 		else {
@@ -141,6 +157,25 @@ public class AportacionPresentarController extends AportacionPresentarController
 		
 		presentarSinRegistrarRender(idSolicitud);
 
+	}
+	
+	/**
+	 * Redireccionamos a la página de documentos aportados, ya que por defecto redireccionaba
+	 * a la página de recibos
+	 * @param idSolicitud
+	 */
+	@Util
+	public static void presentarSinRegistrarRender(Long idSolicitud){
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página guardada correctamente");
+		}		
+		Messages.keep();
+		if(Messages.hasErrors()){
+			redirect( "AportacionPresentarController.index" , idSolicitud);
+		}else{
+			redirect( "AportacionAportadosController.index" , idSolicitud);
+		}			
+	
 	}
 	
 }

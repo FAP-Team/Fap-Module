@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 1.1
 
+* Arreglado problema que aparecía al tener mas de un combo de certificados de firma.
+* Se añade la aportación sin registro.
 * Arreglado problema de NullPointer al acceder a la página de aportación.
 * Arreglado fallo en el botón de acceso con certificado electrónico, se duplicaba el mensaje de "comprobando certificado..." si se pulsaba más de una vez.
 * Arreglado error cuando un representante intenta firma la solicitud.
@@ -12,7 +14,8 @@ h3. Versión 1.1
 * Agregado atributo anchoTitulo a los elementos Texto, Combo, AreaTexto y Check, permite especificar el ancho de la etiqueta.
 * Generador actualizado a Xtext 2.0 (Actualizada documentación y librerías del plugin)
 * Se añade la columna "Nombre Solicitante" a la tabla de solicitudes.
-* Añadida anotación validate a los atributos de las entidades, permite validar un atributo de tipo texto mediante una expresión regular, asignar un rango de valores a un atributo de tipo numerico y validar si los atributos de tipo booleano son True.u*Al presentar la solicitud se comprueba si el ciudadano aporto los documentos imprescindibles (si falta alguno no se presenta la solicitud) y se le muestra un aviso si le falta algún documento obligatorio. 
+* Añadida anotación validate a los atributos de las entidades, permite validar un atributo de tipo texto mediante una expresión regular, asignar un rango de valores a un atributo de tipo numerico y validar si los atributos de tipo booleano son True.u
+*Al presentar la solicitud se comprueba si el ciudadano aporto los documentos imprescindibles (si falta alguno no se presenta la solicitud) y se le muestra un aviso si le falta algún documento obligatorio. 
 
 h3. Versión 1.0.2
 

@@ -1,7 +1,10 @@
 package services;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.activation.DataSource;
@@ -281,6 +284,65 @@ public class RegistroService {
 		}
 		
 		
+	}
+	
+	
+	/** Aportación sin registro de los documentos 
+	 * 
+	 * @param solicitud
+	 */
+	public static void noRegistrarAportacionActual (SolicitudGenerica solicitud) {
+		Aportacion aportacion = solicitud.aportaciones.actual; 
+		
+		if ((aportacion.fechaAportacionSinRegistro == null) || (aportacion.fechaAportacionSinRegistro.isAfterNow())) {
+			System.out.println("-> "+aportacion.fechaAportacionSinRegistro);
+	        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	        Date date = new Date();
+			Messages.error("La fecha de incorporación debe ser anterior a "+dateFormat.format(date));
+		}
+		
+		if (aportacion.estado.equals("firmada")) {
+			if (!Messages.hasErrors()){
+				play.Logger.info("Se procede a aportar sin registrar en la solicitud: "+solicitud.id);
+				play.Logger.info("El estado es "+solicitud.estado);
+			
+				/// Establecemos la fecha de registro en todos los documentos de la aportación
+				for (Documento doc: aportacion.documentos) {
+					doc.fechaRegistro = aportacion.fechaAportacionSinRegistro;
+					doc.save();
+				}
+			
+				/// Los documentos temporales se pasan a clasificados, pero sin registrar
+				List<Documento> documentos = new ArrayList<Documento>();
+				documentos.addAll(aportacion.documentos);
+				boolean todosClasificados = AedClient.clasificarDocumentos(solicitud, documentos);
+			
+				if (todosClasificados) {
+					aportacion.estado = "clasificada";
+					aportacion.save();
+					play.Logger.info("Se clasificaron (sin registrar) todos los documentos");
+				}else{
+					Messages.error("Algunos documentos no se pudieron clasificar (sin registrar) correctamente");
+				}
+			
+			}
+		}
+		
+		//Mueve la aportación a la lista de aportaciones clasificadas
+		//Añade los documentos a la lista de documentos
+		if(aportacion.estado.equals("clasificada")){
+			solicitud.aportaciones.registradas.add(aportacion);
+			solicitud.documentacion.documentos.addAll(aportacion.documentos);
+			solicitud.aportaciones.actual = new Aportacion();
+			solicitud.save();
+			// Reseteamos la fecha de aportación sin registro
+			aportacion.fechaAportacionSinRegistro = null;
+			
+			aportacion.estado = "finalizada";
+			aportacion.save();
+			
+			play.Logger.debug("Los documentos de la aportacion se movieron correctamente");
+		}
 	}
 	
 }

@@ -222,7 +222,7 @@ input.file {
 .upload {
 	width: 135px; 
 	height: 26px;
-	background: url("/public/images/botonSubirArchivo.png") no-repeat scroll right center transparent; 
+	background: url("../images/botonSubirArchivo.png") no-repeat scroll right center transparent;	 
 	display: inline; 
 	position: absolute; 
 	overflow: hidden;

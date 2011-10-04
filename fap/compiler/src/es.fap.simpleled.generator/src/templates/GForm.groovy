@@ -158,8 +158,6 @@ public class GForm {
 				${ControllerUtils.permisoContent(permiso)}
 			}
 		"""
-
-		println ("Controlador: <"+controllerMethodName()+"> saveParams: ("+saveParams+")");
 		
 		controllerCode += """
 			${ControllerUtils.validateCopyMethod(this, (EntidadUtils[])entities.toArray())}

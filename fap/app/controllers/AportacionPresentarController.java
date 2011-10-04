@@ -122,27 +122,10 @@ public class AportacionPresentarController extends AportacionPresentarController
 			
 			Aportacion aportacion = dbSolicitud.aportaciones.actual;
 			
-			//Firma si es necesario
-			if(!Messages.hasErrors() && aportacion.estado.equals("borrador")){
-				play.Logger.info("Calculando firmantes");
-				List<Firmante> firmantes = new ArrayList<Firmante>();
-				FirmaService.calcularFirmantes(dbSolicitud.solicitante, firmantes);
-				play.Logger.info("Firmantes " + firmantes);
-				FirmaService.firmar(dbSolicitud.aportaciones.actual.oficial, firmantes, firma);
-				play.Logger.info("Firmada");
-				
-				//La solicitud se firmó correctamente y la firma ya está guardada en el AED
-				if(!Messages.hasErrors()) {
-					aportacion.estado = "firmada";
-					aportacion.save();
-				}
-			}
-			
 			//No Registra la solicitud
 			if(!Messages.hasErrors()){
 				try {
 					RegistroService.noRegistrarAportacionActual(dbSolicitud);
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 					Messages.error("Se produjo un error al intentar aportar sin registrar la documentación, inténtelo de nuevo.");

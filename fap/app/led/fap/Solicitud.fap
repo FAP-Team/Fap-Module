@@ -29,17 +29,6 @@ Formulario Solicitud {
 			Wiki {"Debe registrar los documentos para que se consideren aportados a la solicitud."}
 			Boton titulo="Preparar para registrar"
 		}
-
-		
-		
-
-		
-//		Grupo titulo="Incorporar Documentos sin Registro de Entrada" 
-//			permiso="adminGestorRevisor"
-//		{
-//     		Fecha fechaIncorporacionSinRegistro titulo="Fecha Incorporación" requerido campo="solicitud.documentacionAportada.fechaIncorporacion"
-//			ListaMensajes msgRegistroSinAportacion;
-//		}
 		
 	}
 	
@@ -108,7 +97,7 @@ Formulario Solicitud {
 			Grupo titulo="Incorporar Documentos sin Registro de Entrada" permiso=adminGestorRevisor {
 				Form presentarSinRegistrar redirigir=AportacionRecibos {
 					Fecha fechaAportacionSinRegistrar titulo="Fecha Incorporación" campo=SolicitudGenerica.aportaciones.actual.fechaAportacionSinRegistro requerido
-					FirmaSimple firmarSinRegistrar titulo="Incorporar" documento=SolicitudGenerica.aportaciones.actual.oficial
+					Boton aportarSinRegistrar titulo="Incorporar"
 				}
 			}
 			

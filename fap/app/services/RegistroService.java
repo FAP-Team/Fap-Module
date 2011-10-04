@@ -301,7 +301,7 @@ public class RegistroService {
 			Messages.error("La fecha de incorporación debe ser anterior a "+dateFormat.format(date));
 		}
 		
-		if (aportacion.estado.equals("firmada")) {
+		if (aportacion.estado.equals("borrador")) {
 			if (!Messages.hasErrors()){
 				play.Logger.info("Se procede a aportar sin registrar en la solicitud: "+solicitud.id);
 				play.Logger.info("El estado es "+solicitud.estado);

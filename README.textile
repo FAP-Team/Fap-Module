@@ -1,0 +1,116 @@
+h1. Documentación FAP
+
+h2. Tutorial
+
+# "Introducción":curso-introduccion
+# "Instalación":curso-instalacion
+# "Creación de un proyecto":curso-nuevoProyecto
+# "Generar la aplicación":curso-generar
+# "Modelo de Entidades (entidad)":curso-entidades
+# "Formularios/Páginas (vista)":curso-formularios
+# "Lógica de negocio (controlador)":curso-controladores
+# "Utilizando permisos":curso-permisos
+# "Generación de informes en PDF":curso-informes
+# "Actualización del modulo FAP":tutorial-actualizacionModuloFap
+# "Desplegar la aplicación":curso-deploy
+
+
+h2. "Preguntas Frecuentes":preguntas-frecuentes
+
+h2. DSL
+
+Elementos que pueden ser utilizados en el DSL
+
+h3. Elementos Persistencia y Listas
+
+# "Entidad":dsl-entidad
+# "Atributo":dsl-atributo
+
+h3. Elementos Gráficos
+
+# "texto":dsl-texto
+# "area texto":dsl-areaTexto
+# "check":dsl-check
+# "enlace":dsl-enlace
+# "combo":dsl-combo
+# "grupo":dsl-grupo
+# "wiki":dsl-wiki
+# "pagina":dsl-pagina
+# "popup":dsl-popup
+# "clave valor":dsl-claveValor
+# "fecha":dsl-fecha
+# "firma simple":dsl-firmaPlatinoSimple
+# "agrupar campos":dsl-agruparCampos
+# "menu":dsl-menu
+# "lista":dsl-lista
+# "form":dsl-form
+# "tabla":dsl-tabla
+# "columna":dsl-columna
+# "direccion":dsl-direccion
+# "subir archivo":dsl-subirArchivo
+# "subir archivo AED":dsl-subirArchivoAed
+# "editar archivo AED":dsl-editarArchivoAed
+# "solicitante":dsl-persona
+# "persona":dsl-persona
+# "persona fisica":dsl-personaFisica
+# "persona juridica":dsl-personaJuridica
+# "entidad automática":dsl-entidadAutomatica
+# "formulario":dsl-formulario
+
+h3. Permisos
+
+# "Permisos":permisos
+
+
+h2. Tags
+
+Elementos que pueden ser utilizados en las vista creadas de forma manual. Las vistas creadas por el generador utilizan estos tags.
+
+# "fap.texto":tag-texto
+# "fap.areaTexto":tag-areaTexto
+# "fap.enlace":tag-enlace
+# "fap.combo":tag-combo
+# "fap.grupo":tag-grupo
+# "fap.boton":tag-boton
+# "fap.personaFisica":tag-personaFisica
+# "fap.personaJuridica":tag-personaJuridica
+# "fap.persona":tag-persona
+# "fap.direccion":tag-direccion
+# "fap.camposAutomaticos":tag-camposAutomaticos
+
+
+h3. Tags de Utilidades
+
+# "fap.toJSMapNoValue":tag-toJSMapNoValue
+
+h2. Desarrollo del generador
+
+# "Compilación":generador-compilacion
+# "Nueva versión y distribución":generador-distribucion
+# "Plugin de Eclipse":generador-plugin
+
+h2. "Páginas por defecto":defaultpages
+
+
+h2. Servicios web
+
+Las aplicación FAP utilizan una serie de servicios web externos:
+
+* "Archivo Electrónico de Documento (AED)":ws-aed - Gestor documental
+* "Platino":ws-platino - Firma, registro y gestor documental
+
+h4. Detalles técnicos
+
+* "Generación de librerías a partir de WSDL":ws-cxf
+* "Depuración de peticiones y respuestas":ws-debug
+* "Configuración de un proxy":ws-proxy
+
+h4. JavaDocs
+
+Los JavaDocs de el módulo FAP se pueden consultar "aquí.":/fapapi/
+
+
+
+
+
+

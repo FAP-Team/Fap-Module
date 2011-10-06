@@ -208,6 +208,7 @@ Texto:
 		& ('ayuda' '=' ayuda=STRING)?
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
+		& (duplicar?='duplicar')?
 	)
 ;
 

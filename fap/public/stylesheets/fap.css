@@ -256,6 +256,12 @@ input.file {
 	color: red;
 }
 
+.form-row .duplicateError {
+	font-size: 10px;
+	border-color: red;
+	background-color: #FFB5B5;
+}
+
 .form-row .help {
 	font-size: 10px;
 	color: #1D2A5B;
@@ -521,8 +527,8 @@ li a.menu-activo {
 }
 
 .boton[disabled] {
-	color: #999;
-	cursor: none; 
+
+  cursor: inherit;
 }
 
 div.wikiLista ul li {

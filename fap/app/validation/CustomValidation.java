@@ -328,4 +328,26 @@ public class CustomValidation {
 		return result;
 	}
 
+	/**
+	 * Comprueba que dos campos sean iguales, y si no lo son, añade un error de validación.
+	 * (No se utiliza por ahora ya que se hace mediante javascript)
+	 * @param string
+	 * @param obj1
+	 * @param obj2
+	 * @return
+	 */
+	public static ValidationResult equals(String string, Object obj1, Object obj2) {
+		ValidationResult result = new ValidationResult();
+		String field = string;
+		result.ok = true;
+		if (!obj1.equals(obj2)) {
+			String message = "No coinciden los campos";
+        	String[] variables = new String[0];
+            
+        	Error error = new Error(field, message, variables);
+            Validation.addError(field, message, variables);
+			result.ok = false;
+		}
+		return result;
+	}
 }

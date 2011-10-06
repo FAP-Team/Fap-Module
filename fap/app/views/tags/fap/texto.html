@@ -13,6 +13,7 @@
     _noRow(false)   - true para no envolver el campo en un form-row
     _ancho          - Ancho del campo
     _bloque         - Bloque
+    _duplicado		- Indica si deberemos duplicar el campo, y que ambos valores sean iguales
 }*
 
 %{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
@@ -38,6 +39,7 @@
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
 	def showRow   = _noRow != null? !_noRow : true
 	def anchoTitulo = _anchoTitulo
+	def duplicado = _duplicado ? _duplicado : false
 	
 	String style = '';
 	
@@ -50,11 +52,54 @@
 	
 	if(ancho != null)
 		style += 'width: ' + ancho + ';'
-			
+	
+	def onBlurStr = "";
+	if (duplicado == true) {
+		onBlurStr = "onblur=\'${id}Validate()\'"
+	}
 }%
 
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-		<input id="${id}" type="text" name="${field.name}" value="${value}" ${disabled} #{if style}style="${style}"#{/if}>
+		<input id="${id}" type="text" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 	#{/fap.formrow}
 	
+%{
+
+	label_copy = label+" (verificar)";
+	id_copy = id+"copy";
+}%
+	
+	#{if duplicado == true}
+		#{fap.formrow id:id_copy, label:label_copy, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
+			<input id="${id_copy}" type="text" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+		#{/fap.formrow}
+		
+		<script>
+		var $${id}Button;
+		var $${id}ButtonDisabled;
+		$(document).ready(function() {
+			$${id}Button = $("#${id}").closest("form").find(".boton").first();
+			$${id}ButtonDisabled = $${id}Button.attr("disabled");
+		});
+		
+		
+		function ${id}Validate () {
+			if ($("#${id_copy}").val() != $("#${id}").val()) {
+				$("#${id_copy}").addClass("duplicateError");
+				$("#${id}").addClass("duplicateError");
+				$${id}Button.attr("disabled", "disabled");
+				
+				$("#${id_copy}").parent().children(".messages").children(".duplicate").empty();
+				$("#${id_copy}").parent().children(".messages").append('<span class="error duplicate">Los valores deben coincidir</span>');
+			} else {
+				$("#${id_copy}").removeClass("duplicateError");
+				$("#${id}").removeClass("duplicateError");
+				if ($${id}ButtonDisabled != "disabled") {
+					$${id}Button.removeAttr("disabled");
+				}
+				$("#${id_copy}").parent().children(".messages").children(".duplicate").empty();
+			}
+		}
+		</script>
+	#{/if}
 #{/fap.field}

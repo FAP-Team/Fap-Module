@@ -81,13 +81,21 @@
 	<mkdir dir="dist" />
 	
         <antcall target="build-plugins"/>
-		
+        <antcall target="generate-module"/>
         <antcall target="build-module-unix"/>
         <antcall target="build-module-windows"/>
 		<antcall target="delete-src-from-zip"/>
 		<!--antcall target="ftp-upload"/>
 		<antcall target="svn-tag"/-->
 		
+	</target>
+	
+	<!-- Se generan las clases del módulo. Por ahora se necesita tener python instalado
+	y en el PATH del sistema, para no incluir más librerías-->
+	<target name="generate-module">
+		<exec executable="python">
+			<arg line='generate.py' />
+		</exec>
 	</target>
 	
     <target name="compiler">

@@ -11,23 +11,24 @@ MODULE = 'fap'
 
 # Commands that are specific to your module
 
-COMMANDS = ['fap:hello', 'fap:generate', 'fap:model', 'fap:init', 'fap:version']
+COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version']
+# Eliminamos el comando 'fap:model' de la lista de comandos
 
 def execute(**kargs):
     command = kargs.get("command")
     app = kargs.get("app")
     args = kargs.get("args")
     env = kargs.get("env")
-
+       
     if command == "fap:hello":
         print "~ Hello"
 
     if command == "fap:generate":
         run_generate(app, args)
         
-    if command == "fap:model":
-    	run_model(app, args)
-        
+#    if command == "fap:model":
+#        run_model(app, args)
+            
     if command == "fap:init":
         init_application (app, args)
 
@@ -53,7 +54,7 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     if(moduleDir == None):
         print 'No se encontro la ruta del modulo'
         sys.exit()
-
+    
     generatorDir = os.path.join(moduleDir, 'compiler')
     generatorLibDir = os.path.join(generatorDir, 'lib')
     jars = []

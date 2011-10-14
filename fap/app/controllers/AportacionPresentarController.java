@@ -1,7 +1,14 @@
 package controllers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import org.joda.time.DateTime;
+
+import aed.AedClient;
 
 import messages.Messages;
 import models.*;
@@ -9,6 +16,7 @@ import play.mvc.Util;
 import services.FirmaService;
 import services.RegistroException;
 import services.RegistroService;
+import validation.CustomValidation;
 import controllers.gen.AportacionPresentarControllerGen;
 
 public class AportacionPresentarController extends AportacionPresentarControllerGen {
@@ -97,6 +105,60 @@ public class AportacionPresentarController extends AportacionPresentarController
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
 		}
 		presentarRender(idSolicitud);
+	}
+	
+	
+	/** Presenta la aportación de documentación sin registrar los documentos.
+	 * Deberá realizarlo únicamente un gestor, administrador o revisor. */
+	public static void presentarSinRegistrar(Long idSolicitud, SolicitudGenerica solicitud, platino.Firma firma){
+		checkAuthenticity();
+		if (permisopresentarSinRegistrar("update") || permisopresentarSinRegistrar("create")) {
+		
+			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+			
+
+			CustomValidation.required("solicitud.aportaciones.actual.fechaAportacionSinRegistro", solicitud.aportaciones.actual.fechaAportacionSinRegistro);
+			dbSolicitud.aportaciones.actual.fechaAportacionSinRegistro = solicitud.aportaciones.actual.fechaAportacionSinRegistro;
+			
+			Aportacion aportacion = dbSolicitud.aportaciones.actual;
+			
+			//No Registra la solicitud
+			if(!Messages.hasErrors()){
+				try {
+					RegistroService.noRegistrarAportacionActual(dbSolicitud);
+				} catch (Exception e) {
+					e.printStackTrace();
+					Messages.error("Se produjo un error al intentar aportar sin registrar la documentación, inténtelo de nuevo.");
+				}
+			}
+			
+		}
+		else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+			/* no se hace aqui Messages.keep(); */
+		}
+		
+		presentarSinRegistrarRender(idSolicitud);
+
+	}
+	
+	/**
+	 * Redireccionamos a la página de documentos aportados, ya que por defecto redireccionaba
+	 * a la página de recibos
+	 * @param idSolicitud
+	 */
+	@Util
+	public static void presentarSinRegistrarRender(Long idSolicitud){
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página guardada correctamente");
+		}		
+		Messages.keep();
+		if(Messages.hasErrors()){
+			redirect( "AportacionPresentarController.index" , idSolicitud);
+		}else{
+			redirect( "AportacionAportadosController.index" , idSolicitud);
+		}			
+	
 	}
 	
 }

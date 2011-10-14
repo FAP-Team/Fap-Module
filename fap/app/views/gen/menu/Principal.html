@@ -1,7 +1,0 @@
-<ul>  <li><a class="#{fap.activeRoute href:@SolicitudesController.index(), activeClass:'menu-activo' /}" href=@{SolicitudesController.index()}>Mis Solicitudes</a></li>  
-
-			#{fap.permiso permiso:'administrador'}
-  <li><a class="#{fap.activeRoute href:@UsuariosController.index(), activeClass:'menu-activo' /}" href=@{UsuariosController.index()}>Administración</a></li>  #{/fap.permiso}
-  <li><a class="#{fap.activeRoute href:@SoporteController.index(), activeClass:'menu-activo' /}" href=@{SoporteController.index()}>Ayuda</a></li>  
-         <li><a href="@{fap.SecureController.logout}">Salir</a></li> 
-</ul>

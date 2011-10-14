@@ -222,7 +222,7 @@ input.file {
 .upload {
 	width: 135px; 
 	height: 26px;
-	background: url("/public/images/botonSubirArchivo.png") no-repeat scroll right center transparent; 
+	background: url("../images/botonSubirArchivo.png") no-repeat scroll right center transparent;	 
 	display: inline; 
 	position: absolute; 
 	overflow: hidden;
@@ -254,6 +254,12 @@ input.file {
 .form-row .error {
 	font-size: 10px;
 	color: red;
+}
+
+.form-row .duplicateError {
+	font-size: 10px;
+	border-color: red;
+	background-color: #FFB5B5;
 }
 
 .form-row .help {
@@ -313,7 +319,7 @@ fieldset legend {
 }
 
 /* Login */
-#certificado {
+select.certificado, #certificado {
 	width: 100%;
 	margin: 0;
 }
@@ -521,8 +527,8 @@ li a.menu-activo {
 }
 
 .boton[disabled] {
-	color: #999;
-	cursor: none; 
+
+  cursor: inherit;
 }
 
 div.wikiLista ul li {

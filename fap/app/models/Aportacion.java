@@ -35,6 +35,11 @@ public class Aportacion extends Model {
 	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
 	public InformacionRegistro informacionRegistro;
 	
+	/* Cuando aportamos sin registro, se establece ésta fecha */
+	@org.hibernate.annotations.Columns(columns={@Column(name="fechaAportacionSinRegistro"),@Column(name="fechaAportacionSinRegistroTZ")})
+	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaAportacionSinRegistro;
+	
 	
 	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
 	public Documento borrador;
@@ -81,7 +86,6 @@ public class Aportacion extends Model {
 					
 	}
 		
-	
 	
 
 // === MANUAL REGION START ===

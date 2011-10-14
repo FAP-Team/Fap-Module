@@ -4,7 +4,7 @@
 	<property name="src.dir" value="src" />
 	<property name="lib.dir" value="lib" />
 	<property name="dist.dir" value="dist" />
-	<property name="xtext.lib.dir" value="../../fap/compiler/lib" />
+	<property name="xtext.lib.dir" value="../../lib" />
 	<property name="xtext.project.bin.dir" value="../es.fap.simpleled/bin" />
 	
 	<path id="classpath">

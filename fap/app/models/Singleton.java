@@ -30,7 +30,6 @@ public class Singleton extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 

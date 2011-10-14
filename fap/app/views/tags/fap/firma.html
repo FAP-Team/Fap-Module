@@ -27,6 +27,8 @@
 	def url = utils.AedUtils.crearUrl(uri)
 	def id_boton = id + "_boton";
 	def id_firma = id + "_firma";
+	
+	def id_cert = id.replace('-', '').substring(0, 4);
 }%
 
 #{set 'moreScripts'}
@@ -41,7 +43,7 @@
 
 #{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
 <div class="form-row">
-	<select id="certificado" name="certificado">
+	<select id="${id_cert}certificado" name="certificado" class="certificado">
 		<option disabled="disabled">--Certificados--</option>
 	</select>
 </div>
@@ -53,10 +55,10 @@
 <script>
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
-			Platino.listarCertificados("#certificado", {mensajes: mensajes});
+			Platino.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
 			
 			$('#${id_boton}').click(function(){
-				if(firmarUrl('${url}', 'certificado', {idFirma : '${id_firma}', idError : 'cert-msg'}) != null){
+				if(firmarUrl('${url}', '${id_cert}certificado', {idFirma : '${id_firma}', idError : 'cert-msg'}) != null){
 					var value = $('#${id_firma}').val();
 					
 					//$(this).parent('form').submit();

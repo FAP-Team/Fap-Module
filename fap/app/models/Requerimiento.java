@@ -140,7 +140,6 @@ public class Requerimiento extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 			

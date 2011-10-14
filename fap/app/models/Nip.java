@@ -44,7 +44,6 @@ public class Nip  {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	@Override

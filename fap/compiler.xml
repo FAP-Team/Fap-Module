@@ -1,4 +1,4 @@
-<project name="fap-generator" default="dist">
+<project name="fap-generator" default="compiler">
 
 	<property environment="env"/>
 
@@ -74,20 +74,14 @@
 	    </groovy>
 			
 		<echo message="Version del modulo = ${version}"/>
-			
-		<delete dir="${compiler.compiled}" />
-		<mkdir dir="${compiler.compiled}" />
-		<ant target="dist" antfile="buildCompiler.xml" dir="${grammar.dir}"/>
-		<ant target="dist" antfile="buildCompiler.xml" dir="${generator.dir}" />
 		
-		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar"/>
-		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar"/>
-		
-		<delete dir="dist" />
-		<mkdir dir="dist" />
+        <antcall target="compiler"/>
+
+	<delete dir="dist" />
+	<mkdir dir="dist" />
 	
         <antcall target="build-plugins"/>
-		
+        <antcall target="generate-module"/>
         <antcall target="build-module-unix"/>
         <antcall target="build-module-windows"/>
 		<antcall target="delete-src-from-zip"/>
@@ -95,7 +89,25 @@
 		<antcall target="svn-tag"/-->
 		
 	</target>
-		
+	
+	<!-- Se generan las clases del módulo. Por ahora se necesita tener python instalado
+	y en el PATH del sistema, para no incluir más librerías-->
+	<target name="generate-module">
+		<exec executable="python">
+			<arg line='generate.py' />
+		</exec>
+	</target>
+	
+    <target name="compiler">
+		<delete dir="${compiler.compiled}" />
+		<mkdir dir="${compiler.compiled}" />
+		<ant target="dist" antfile="buildCompiler.xml" dir="${grammar.dir}"/>
+		<ant target="dist" antfile="buildCompiler.xml" dir="${generator.dir}" />	
+		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar"/>
+		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar"/>
+    </target>
+    
+    	
     <target name="build-plugins">
     	<exec executable="eclipse">
 			<arg value="-application"/>

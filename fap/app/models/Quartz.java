@@ -58,7 +58,6 @@ public class Quartz extends Singleton {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 

@@ -5,6 +5,7 @@ h2. Tutorial
 # "Introducción":curso-introduccion
 # "Instalación":curso-instalacion
 # "Creación de un proyecto":curso-nuevoProyecto
+# "Instalación del plugin de Eclipse":curso-plugin
 # "Generar la aplicación":curso-generar
 # "Modelo de Entidades (entidad)":curso-entidades
 # "Formularios/Páginas (vista)":curso-formularios

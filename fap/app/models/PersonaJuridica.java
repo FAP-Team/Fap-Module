@@ -56,7 +56,6 @@ public class PersonaJuridica extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 

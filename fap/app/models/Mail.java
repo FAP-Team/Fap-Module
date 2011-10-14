@@ -65,7 +65,6 @@ public class Mail extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	private Mail render (Map<String,Object> args) {

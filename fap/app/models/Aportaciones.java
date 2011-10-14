@@ -51,7 +51,6 @@ public class Aportaciones extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 			

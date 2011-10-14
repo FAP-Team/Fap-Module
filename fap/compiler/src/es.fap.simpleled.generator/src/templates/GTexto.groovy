@@ -38,6 +38,9 @@ public class GTexto {
 			
 		if(texto.anchoTitulo != null)
 			params.putStr("anchoTitulo", texto.anchoTitulo)
+			
+		if((texto.duplicar != null) && (texto.duplicar == true))
+			params.put ("duplicado", true)
 
 		String view = 
 		"""

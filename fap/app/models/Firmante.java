@@ -55,7 +55,6 @@ public class Firmante extends Model {
 	}
 		
 	
-	
 
 // === MANUAL REGION START ===
 	public void setIdentificador(Nip nip){

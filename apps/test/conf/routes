@@ -38,6 +38,9 @@ GET /Solicitud/combosoverwrite CombosOverwriteController.index
 
 GET /Solicitud/combosoverwrite/comboTestRef CombosOverwriteController.tablacomboTestRef
 POST /Solicitud/combosoverwrite/save CombosOverwriteController.save
+GET /Solicitud/valorespordefecto ValoresPorDefectoController.index
+
+POST /Solicitud/valorespordefecto/save ValoresPorDefectoController.save
 GET /Solicitud/combotestref/{idEntidad}/abrir popups.ComboTestRefController.abrir
 POST /Solicitud/combotestref/{idEntidad}/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/{idEntidad}/borrar popups.ComboTestRefController.borrar

@@ -5,6 +5,7 @@ h2. Tutorial
 # "Introducción":curso-introduccion
 # "Instalación":curso-instalacion
 # "Creación de un proyecto":curso-nuevoProyecto
+# "Instalación del plugin de Eclipse":curso-plugin
 # "Generar la aplicación":curso-generar
 # "Modelo de Entidades (entidad)":curso-entidades
 # "Formularios/Páginas (vista)":curso-formularios
@@ -23,13 +24,14 @@ Elementos que pueden ser utilizados en el DSL
 
 h3. Elementos Persistencia y Listas
 
-# "Entidad":dsl-entidad
-# "Atributo":dsl-atributo
+# "Entidad":dsl-entity
+# "Atributo":dsl-attribute
 
 h3. Elementos Gráficos
 
 # "texto":dsl-texto
 # "area texto":dsl-areaTexto
+# "boton":dsl-boton
 # "check":dsl-check
 # "enlace":dsl-enlace
 # "combo":dsl-combo
@@ -37,7 +39,6 @@ h3. Elementos Gráficos
 # "wiki":dsl-wiki
 # "pagina":dsl-pagina
 # "popup":dsl-popup
-# "clave valor":dsl-claveValor
 # "fecha":dsl-fecha
 # "firma simple":dsl-firmaPlatinoSimple
 # "agrupar campos":dsl-agruparCampos
@@ -108,9 +109,3 @@ h4. Detalles técnicos
 h4. JavaDocs
 
 Los JavaDocs de el módulo FAP se pueden consultar "aquí.":/fapapi/
-
-
-
-
-
-

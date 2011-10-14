@@ -39,17 +39,14 @@ public class GCombo {
 		if(combo.mostrarClave)
 			params.put "mostrarClave", true
 			
-		if(combo.multiple)
-			params.put "multiple", true
-			
 		if(combo.ancho != null)
 			params.putStr "ancho", combo.ancho
 			
 		if(combo.comboTexto != null)
-			params.putStr "comboText", combo.comboTexto
+			params.putStr "comboText", combo.comboTexto.name
 			
 		if(combo.comboValor != null)
-			params.putStr "comboValue", combo.comboValor
+			params.putStr "comboValue", combo.comboValor.name
 			
 		if(combo.anchoTitulo != null)
 			params.putStr("anchoTitulo", combo.anchoTitulo)

@@ -6,71 +6,70 @@ Muestra una tabla con los valores de una lista dada.
 
 h2. Parámetros
 
-* **name** (opcional) - Identificador del elemento
-* **campo** - Atributo donde se encuentra la lista de elementos a mostrar en la tabla
-* **titulo** (opcional) - Etiqueta que se mostrará como cabecera de la tabla, si no se especifica se mostrará el nombre del campo
-* **pagina** (opcional) - Pagina a la cual se redireccionara al editar un elemento de la tabla.
-* **alto** (opcional) - Permite especificar el alto de la tabla
-* **seleccionable** (opcional) - Se añade un check a cada elemento de la tabla que permite seleccionarlo, además se añade un botón en la tabla (con el nombre que se le indique en este parámetro) que obtendrá la lista de elementos seleccionados y llamara al método del controlador.
-* **popup** (opcional) - Asigna popUp a la tabla, se crearan botones en la tabla que permitirán llamar a estos popup dependiendo del parámetro que se defina (popupVer, popupModificar,...) o del tipo que se asigne al popup ("Ver documentación PopUp":dsl-popup). 
-* **permiso** (opcional) - Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla. 
-* **consultaCompleta** - TODO
-* **recargarPagina** (opcional) - Si se define, hace que la pagina se recargue al pulsar el botón actualizar de la tabla. (Por defecto solo se actualiza la tabla)
+* **_[name]_** : Identificador de la tabla.
+* **campo = _[campo]_** : Atributo donde se encuentra la lista de elementos a mostrar en la tabla.
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como cabecera de la tabla, si no se especifica se mostrará el nombre del campo.
+* **pagina = _[pagina]_ | _[string]_** (opcional) : Página a la cual se redireccionará al editar un elemento de la tabla. Puede especificarse mediante el nombre de la página, o a través de un String con el nombre de una property que contenga el nombre de la página, empezando con el símbolo @.
+* **columnasAutomaticas** (opcional) : Simplifica la creación de columnas generando automáticamente una columna para cada uno de los atributos de la entidad especificada en el campo.
+* **alto = _[string]_** (opcional) : Permite especificar el alto de la tabla.
+* **seleccionable = _[string]_** (opcional) : Se añade un check a cada elemento de la tabla que permite seleccionarlo, además se añade un botón en la tabla (con el nombre que se le indique en este parámetro) que obtendrá la lista de elementos seleccionados y llamara al método del controlador.
+* **popup = _[popup]_** (opcional) : Asigna un popup a la tabla, creando todos los botones disponibles para abrirlo. "Ver documentación Popup":dsl-popup.
+* **popupVer = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Ver para abrirlo. "Ver documentación Popup":dsl-popup.
+* **popupModificar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Modificar para abrirlo. "Ver documentación Popup":dsl-popup.
+* **popupCrear = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Crear para abrirlo. "Ver documentación Popup":dsl-popup.
+* **popupBorrar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Borrar para abrirlo. "Ver documentación Popup":dsl-popup.
+* **permiso = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla.
+* **recargarPagina** (opcional) : Si se define, hace que la pagina se recargue al pulsar el botón actualizar de la tabla. (Por defecto solo se actualiza la tabla).
 
 h2. Definición
 
 bc. Tabla:
 	'Tabla' (name=ID)?
 	(
-		('campo' '=' campo=STRING)
+		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
-		& ('pagina' '=' pagina=STRING)?
-        & ('alto' '=' alto=STRING)? 
-        & (seleccionable?="seleccionable" "=" nameSeleccionable=STRING)?
-	    & (	
-	    	('popup' '=' popup=[Popup]) |	
-	    	(
-	    		('popupCrear' '=' popupCrear=[Popup])? 
-	    	 	('popupBorrar' '=' popupBorrar=[Popup])? 
-	    		('popupModificar' '=' popupModificar=[Popup])? 
-	    		('popupVer' '=' popupVer=[Popup])? 
-	    	)
-	    )? 
+		& ('pagina' '=' (pagina=[Pagina|QN] | paginaProperty=STRING))?
+		& ('alto' '=' alto=STRING)? 
+		& (columnasAutomaticas?="columnasAutomaticas")?
+		& ("permiso" "=" permiso=[Permiso])?
+		& (recargarPagina?="recargarPagina")?
+		& (seleccionable?="seleccionable" "=" nameSeleccionable=STRING)?
+		& (	
+			('popup' '=' popup=[Popup])	
+			| (
+				('popupCrear' '=' popupCrear=[Popup])?
+				& ('popupBorrar' '=' popupBorrar=[Popup])?
+				& ('popupModificar' '=' popupModificar=[Popup])?
+				& ('popupVer' '=' popupVer=[Popup])?)
+			)
+		)? 
 	)
-	(permiso?="permiso" "=" namePermiso=STRING)?
-	(consultaCompleta?="consultaCompleta")?
-	(recargarPagina?="recargarPagina")?	
 	'{'
-		(columnas += Columna+ | columnasAutomatica=ColumnasAutomatica)
+		columnas += Columna*
 	'}'
 ;
 
 h2. Columnas
 
-Permite definir los atributos de la entidad que se mostraran en la tabla. La entidad que se especifique en este elemento debe corresponder con el tipo de la lista de entidades que se asigne a la tabla. ("Ver documentación Columnas":dsl-columna)
+Permite definir los atributos de la entidad que se mostraran en la tabla. La entidad que se especifique en este elemento debe corresponder con el tipo de la lista de entidades que se asigne a la tabla. "Ver documentación Columnas":dsl-columna. El parámetro _columnasAutomaticas_ simplifica la creación de columnas ya que dada una entidad (que se pasa como parámetro) genera automáticamente una columna para cada uno de sus atributos.
 
-El elemento columnasAutomaticas simplifica la creación de columnas ya que dada una entidad (que se pasa como parámetro) genera automáticamente una columna para cada una de sus atributos.
-
-h2. Ejemplo de uso
+h2. Ejemplos de uso
 
 
-bc. Tabla listaUsuarios titulo="Usuarios" campo="Agente" 
-			popup=PopupUsuario 
-		{
-			Columna campo="agente.id" titulo="Id" ancho="25"
-			Columna campo="agente.username" titulo="Usuario" expandir
-			Columna campo="agente.name" titulo="Nombre completo" expandir
-			Columna campo="agente.roles" titulo="Roles" expandir
-			Columna campo="agente.email" titulo="Email" ancho="150"
-		}
+bc. Tabla listaUsuarios titulo="Usuarios" campo=Agente popup=PopupUsuario {
+	Columna campo=Agente.id titulo="Id" ancho="25"
+	Columna campo=Agente.username titulo="Usuario" expandir
+	Columna campo=Agente.name titulo="Nombre completo" expandir
+	Columna campo=Agente.roles titulo="Roles" expandir
+	Columna campo=Agente.email titulo="Email" ancho="150"
+}
 		
-bc.  Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio" campo="solicitud.conexiones.conexionesBandaAncha"
-        	popupModificar=PopUpConexionesBandaAncha
-        	popupVer=PopUpConexionesBandaAncha
-        	recargarPagina
-        {
-            Columna campo="ConexionBandaAncha.mes" titulo="Mes" expandir
-            Columna campo="ConexionBandaAncha.directaGCyTF" titulo="Conex. directas TF-GC" expandir
-            Columna campo="ConexionBandaAncha.directaResto" titulo="Conex. directas otras islas" expandir
-            Columna campo="ConexionBandaAncha.indirecta" titulo="Conex. indirectas" expandir
-        }
+bc. Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio" campo=Solicitud.conexiones.conexionesBandaAncha
+	popupModificar=PopUpConexionesBandaAncha
+	popupVer=PopUpConexionesBandaAncha
+	recargarPagina {
+		Columna campo=ConexionBandaAncha.mes titulo="Mes" expandir
+		Columna campo=ConexionBandaAncha.directaGCyTF titulo="Conex. directas TF-GC" expandir
+		Columna campo=ConexionBandaAncha.directaResto titulo="Conex. directas otras islas" expandir
+		Columna campo=ConexionBandaAncha.indirecta titulo="Conex. indirectas" expandir
+}

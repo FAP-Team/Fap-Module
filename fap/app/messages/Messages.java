@@ -58,8 +58,7 @@ public class Messages {
 			
 			// Los parametros no se flashean porque en paginas grandes pueden
 			// superar el limite de 4k de la cookie. Se guardan en cache
-			Cache.set(Session.current().getId(), Params.current().all());
-			
+			Cache.set(Session.current().getId(), Params.current().all(),"5mn");			
 			Validation.current().keep();
 		}
 		current().keep = true;

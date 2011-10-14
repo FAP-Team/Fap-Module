@@ -1,0 +1,282 @@
+h1. Atributo
+
+h2. Descripción
+
+Permite definir un atributo en una entidad.
+
+Sintaxis:
+
+bc. type name parámetros
+
+Ejemplos:
+
+bc. String nombre requerido
+Long numero default = 10
+
+h2. Parámetros
+
+* **_[type]_** : Tipo del atributo y su relación con la entidad. Para más información, ver "Tipos de atributos":#tipos.
+* **_[name]_** : Identificador del atributo.
+* **default = _[string]_** (opcional) : Permite especificar un valor por defecto para ese atributo, en todas las instancias de esa entidad.
+* **transient** (opcional) : El atributo no se persistirá en base de datos.
+* **length = _[int]_** (opcional) : Para atributos tipo String y LongText. Define el máximo de caracteres del atributo en base de datos.
+* **requerido** (opcional) : Si se especifica, indica que el atributo será requerido rellenarlo allá donde se use.
+* **noConstruct** (opcional) : Al inicializar la entidad, no se inicializa una instancia de este atributo.
+* **noCascade** (opcional) : En atributos que sean referencias a otras entidades, indica que no se realizarán operaciones en cascada.
+* **checkWith = _[string]_** (opcional) : Permite realizar una validación manual del atributo, indicándole el nombre completo de la clase validadora. Para más información, ver "Validación manual":#validacionManual.
+* **column = _[string]_** (opcional) : Establece como se llamará la columna en la que se persistirá el atributo.
+* **validate = _[string]_** (opcional) : Permite realizar una validación manual del atributo mediante una expresión regular. Para más información, ver "Validación utilizando una expresión regular":#validacionRegexp.
+
+h2(#tipos). Tipos de atributos
+
+h3. Tipos Simples
+
+Los tipos simples son los siguientes:
+
+bc. "String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText"
+
+Al definirnos un atributo con uno de éstos tipos, se crea en la entidad un atributo con ese nombre y con éste tipo. Ejemplo:
+
+bc. Entidad Prueba {
+	String nombre
+	...
+}
+
+nos crea:
+
+bc. @Entity
+public class Prueba extends Model {
+	public String nombre;
+	...
+}
+
+h3. Tipos especiales
+
+bc. "Cif" | "Telefono" | "Email" | "Moneda" | "DateTime"
+
+Similares a los tipos simples pero en este caso se genera el código necesario para validarlos.
+
+h3. Tipos Compuestos
+
+Existen tres clases de tipos compuestos: las referencias a entidades, las listas y las colecciones.
+
+h4. Referencias a entidades
+
+Atributos de este tipo permiten que una entidad tenga relaciones con otras entidades. Al indicar el tipo del atributo, se especifica el nombre de la entidad a la cual vamos a referenciar, precedido opcionalmente por el tipo de multiplicidad de la relación, que puede ser uno de los siguientes:
+
+h5. OneToOne
+
+Es el valor por defecto si no se indica el tipo de multiplicidad. Relación Uno a Uno, en la cual la entidad padre tiene un solo hijo, y la entidad hija pertenece a un solo padre.
+
+bc. Entidad Verificacion {
+	OneToOne Requerimiento requerimientoProceso
+	...
+}
+
+En la clase Verificación se creará un campo llamado _requerimientoProceso_ que será de tipo _Requerimiento_.
+
+bc. @OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+public Requerimiento requerimientoProceso; 
+
+
+h5. OneToMany
+
+Relación Uno a Muchos, en la cual la entidad padre puede tener varios hijos, pero cada entidad hija pertenece a un solo padre.
+
+bc. Entidad Verificacion {
+	OneToMany Requerimiento requerimientos
+	...
+}
+
+En la clase _Verificacion_ quedará algo como lo siguiente:
+
+bc. @OneToMany(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+@JoinTable(name="verificacion_requerimientos")
+public List<Requerimiento> requerimientos; 
+
+Nótese que requerimientos ahora es una lista, y para la persistencia se utiliza un join con una tabla intermedia <i>verificacion_requerimientos</i>.
+
+h5. ManyToOne
+
+Relación Muchos a Uno, en la cual la entidad padre tiene un solo hijo, y cada entidad hija puede pertenecer a varios padres.
+
+h5. ManyToMany
+
+Relación Muchos a Muchos, en la cual la entidad padre puede tener varios hijos, y cada entidad hija puede pertenecer a varios padres.
+
+h4. Atributos de tipo Lista
+
+bc. Lista nombreLista nombreDelAtributo
+ó
+Lista multiple nombreLista nombreDelAtributo
+
+El atributo que se creará será de tipo _String_, o una colección de _String_ en caso de indicar la opción _multiple_. En ambos casos, el atributo contendrá la clave de uno o varios valores de una lista declarada en otro lugar del DSL. Ejemplo:
+
+bc.. Lista roles {
+	administrador: "Administrador"
+	usuario: "Usuario"
+} 
+..
+Entidad Agente{
+	..
+	Lista multiple roles roles_todos
+	Lista roles rol_activo
+}
+
+p. En este ejemplo se expone una entidad con dos atributos de tipo lista. El primero se llama <i>roles_todos</i>, de tipo _Set< String>_ porque está especificado el modificador _multiple_, y cuyos valores posibles serán las claves definidas en la lista _roles_, es decir, "administrador" y "usuario".
+
+El segundo atributo difiere del anterior en que no aparece el modificador _multiple_, lo que quiere decir que el campo <i>rol_activo</i> será de tipo _String_ y no _Set_.
+
+El código generado para los dos atributos definidos es el siguiente:
+
+bc.. @ElementCollection
+@ValueFromTable("roles")
+public List<String> roles_todos;
+
+@ValueFromTable("roles")
+public String rol_activo; 
+
+h4. Atributos de tipo colección
+
+bc. Set<Tipo_simple> nombreDelAtributo
+ó
+List<Tipo_simple> nombreDelAtributo
+
+Permite definir colecciones _Set_ y _List_ para tipos simples. La diferencia entre usar Set y List es que en las colecciones tipo List se pueden repetir los valores, mientras que en las de tipo Set no. Ejemplo: 
+
+bc. Entidad ejemplo
+	Set<String> setDeString
+	List<Double> ListaDeDoubles
+}
+
+El código que se genera para estos atributos es:
+
+bc.. @ElementCollection
+Set<String> setDeString;
+
+@ElementCollection
+List<Double> ListaDeDoubles;
+
+h2. Anotaciones
+
+h3(#validacionManual). Validación manual
+
+Se puede establecer validación manual para un atributo, indicándole *checkWith="_package.claseCheck_"*. Creando la clase que extienda de _Check_, y con el método *_public boolean isSatisfied(Object validatedObject, Object value)_*. Un ejemplo:
+
+bc. Entidad Contacto {
+	String nombre requerido checkWith="validacion.Checkeo"
+	...
+}
+
+bc. package validacion;
+public class Checkeo extends Check {
+	@Override
+	public boolean isSatisfied(Object validatedObject, Object value) {
+		....
+		return resultValidacion;
+	}
+}
+
+Donde _value_ será el atributo que estamos validando.
+
+h3(#validacionRegexp). Validación utilizando una expresión regular 
+
+Para validar un atributo utilizando una expresión regualar se utiliza el la anotación 
+*vaildate="RegExp"*, esta anotación solo es valida para atributos de tipo String y LongText. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.match* en el fichero de mensajes.
+
+bc. Entidad PersonaFisica Inheritance=joined {
+	String nombre validate="[A-Z].*"
+	String primerApellido validate="[A-Z].*"
+	String segundoApellido validate="[A-Z].*"
+	Nip nip
+}
+
+*NOTA:* la cadena vacía se considera valida.
+
+Si el atributo es de tipo Integer, Double o Long se puede indicar el rango de valores que puede tomar. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.range* en el fichero de mensajes.
+
+
+bc. Entidad Presupuesto {
+	Double total validate="min=0, max=1000"
+}
+
+*NOTA:* El valor null considera valido.
+
+Si el atributo es Booleano se permite validar si su valor es True. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.isTrue* en el fichero de mensajes.
+
+
+bc. Entidad Aceptacion {
+	Boolean acepta validate="true"
+}
+
+*Nota:* Solo se puede validar si el valor es true. Si el valor es null se considera false.
+
+h2. Definición
+
+bc.. Attribute:
+	type=Type name=IDS
+	(
+	("default" "=" defaultValue=STRING)?
+	& (isTransient?="transient")?
+	& (hasLength?="length" "=" length=INT)?
+	& (required?="requerido")?
+	& (noConstruct?="noConstruct")?
+	& (noCascade?="noCascade")?
+	& ("checkWith" "=" checkWith=STRING)?
+	& ("column" "=" column=STRING)?
+	& ("validate" "=" validate=STRING)?
+	)
+;
+
+Type:
+	simple=SimpleType | special=SpecialType | compound=CompoundType
+;
+
+SimpleType:
+	type = ("String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText")
+;
+
+SpecialType:
+	type = ("Cif" | "Telefono" | "Email" | "Moneda" | "DateTime")
+;
+
+CompoundType:
+	((tipoReferencia=AttributeReferences)? entidad=[Entity|IDS])
+	| ('Lista' (multiple?="multiple")? lista=[Lista|IDS])
+	| (collectionType=tipoColeccion"<"collectionReferencia=SimpleType">")
+;
+
+tipoColeccion:
+	"Set" | "List"
+;	
+
+AttributeReferences:
+	"OneToOne" | "OneToMany" | "ManyToOne" | "ManyToMany"
+;
+
+h2. Ejemplo de uso
+
+bc. Entidad Agente Inheritance=joined {
+	String username
+	String password
+	Email email
+	String name
+	Lista multiple roles roles
+	Lista roles rolActivo
+}
+
+bc. Entidad Verificacion {
+	String uriVerificacion
+	String uriProcedimiento
+	String uriTramite
+	String expediente
+	String estado
+	OneToMany VerificacionDocumento documentos transient
+	String uriExclusion
+	String motivoExclusion
+	OneToMany Exclusion codigosExclusion transient
+	OneToOne Requerimiento requerimientoProceso
+	OneToMany Requerimiento requerimientos
+	DateTime fechaCreacion
+	DateTime fechaUltimaActualizacion	
+}

@@ -6,31 +6,31 @@ Nos permitirá insertar de una forma simple los datos de una dirección en un fo
 
 h2. Parámetros
 
-* **name** (opcional) - Identificador del elemento
-* **campo** - Atributo donde se almacenará la dirección (Direccion)
-* **titulo** (opcional) - Título que llevará la agrupación de campos de la dirección
-* **provincia** (opcional) - Si existe, indica que se debe crear un combo que permita la inserción de la misma.
-* **pais** (opcional) - Idem para el país.
-* **requerido** (opcional) - Si se especifica, indica que el campo deberá ser obligatorio rellenarlo
-* **ancho** (opcional) - Ancho para los combos de provincia y país (los demás son establecidos por defecto para que se agrupen de una forma correcta)
+* **_[name]_** (opcional) : Identificador del elemento.
+* **campo = _[campo]_** : Atributo donde se almacenará la dirección. Tiene que ser de tipo Direccion.
+* **titulo = _[string]_** (opcional) : Título que llevará la agrupación de campos de la dirección.
+* **provincia** (opcional) : Si se especifica, indica que se debe crear un combo que permita la inserción de la provincia.
+* **pais** (opcional) : Si se especifica, indica que se debe crear un combo que permita la inserción del país.
+* **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
+* **ancho = _[string]_** (opcional) : Ancho para los combos de provincia y país (los demás son establecidos por defecto para que se agrupen de una forma correcta).
 
 h2. Definición
 
 bc. Direccion:
 	"Direccion" (name=ID)? (
-		("campo" "=" campo=STRING)
+		('campo' '=' campo=Campo)
 		& ("titulo" "=" titulo=STRING)?
 		& (provincia?="provincia")?
 		& (pais?="pais")?
 		& (requerido?="requerido")?
-	    & ('ancho' '=' ancho=STRING)?
+		& ('ancho' '=' ancho=STRING)?
 	)
 ;
 
 
 h2. Ejemplo de uso
 
-bc. Direccion campo="solicitud.solicitante.domicilio" titulo="Domicilio Social" requerido
+bc. Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido
 
 
 h2. Resultado

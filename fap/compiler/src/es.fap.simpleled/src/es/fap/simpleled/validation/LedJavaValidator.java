@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 
 import es.fap.simpleled.led.Attribute;
-import es.fap.simpleled.led.AttributeAnotations;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.CompoundType;
@@ -39,10 +38,10 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	 * @param attributeAnotations
 	 */
 	@Check
-	public void checkLengthOnlyString(AttributeAnotations attributeAnotations) {
-		String tipo = ((Attribute)(attributeAnotations.eContainer())).getType().getSimple();
-		if ((attributeAnotations.isHasLength()) && (tipo == null || !(tipo.equals("String")) || !(tipo.equals("LongTexto")))){
-			error("Anotado con la propiedad \"length\" un atributo que no es del tipo \"String\"", LedPackage.Literals.ATTRIBUTE_ANOTATIONS__HAS_LENGTH);
+	public void checkLengthOnlyString(Attribute attr) {
+		String tipo = attr.getType().getSimple().getType();
+		if ((attr.isHasLength()) && (tipo == null || (!(tipo.equals("String")) && !(tipo.equals("LongTexto"))))){
+			error("Anotado con la propiedad \"length\" un atributo que no es de tipo String o LongText", LedPackage.Literals.ATTRIBUTE__HAS_LENGTH);
 		}
 	}
 

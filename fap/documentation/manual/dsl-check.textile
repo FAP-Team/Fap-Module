@@ -2,24 +2,25 @@ h1. Check
 
 h2. Descripción
 
-Permite definir un check box
+Permite definir un check box.
 
 h2. Parámetros
 
-* **name** - (opcional) - Identificador del elemento
-* **titulo** - Etiqueta que se mostrará al lado del check, si no se especifica se mostrara el nombre del campo
-* **campo** - Atributo donde se almacenará el valor del check
-* **anchoTitulo** (opcional) - Permite indicar el ancho de la etiqueta de titulo.
+* **_[name]_** - (opcional) : Identificador del elemento.
+* **titulo = _[string]_** : Etiqueta que se mostrará al lado del check, si no se especifica se mostrara el nombre del campo.
+* **campo = _[campo]_** : Atributo donde se almacenará el valor del check.
+* **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de título.
 
 h2. Definición
 
 bc. Check:
 	'Check' (name=ID)? (
-		  ('campo' '=' campo=STRING)
-		& ('titulo' '=' titulo=STRING)?	
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?	
 	)
 ;	
 
 h2. Ejemplo de uso
 
-bc. Check titulo="Estoy de acuerdo" campo="solicitud.aceptacion.declaraciones"
+bc. Check titulo="Estoy de acuerdo" campo=Solicitud.aceptacion.declaraciones

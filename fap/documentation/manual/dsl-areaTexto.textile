@@ -2,30 +2,31 @@ h1. Area de texto
 
 h2. Descripción
 
-Permite definir un area de texto
+Permite definir un area de texto.
 
 h2. Parámetros
 
-* **name** (opcional) - Identificador del elemento
-* **campo** - Atributo donde se almacenará el texto
-* **titulo** (opcional) - Etiqueta que se mostrará al lado del campo de texto, si no se especifica se mostrara el nombre del campo
-* **valor** (opcional) - Añade un valor por defecto en el campo de texto, en el caso de que este vacio. 
-* **filas** (opcional) - Permite especificar el numero de filas que tendra el area de texto
-* **requerido** (opcional) - Si se especifica, indica que el campo deberá ser obligatorio rellenarlo
-* **anchoTitulo** (opcional) - Permite indicar el ancho de la etiqueta de titulo.
+* **_[name]_** (opcional) : Identificador del elemento.
+* **campo = _[campo]_** : Atributo donde se almacenará el texto.
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará al lado del campo de texto, si no se especifica se mostrará el nombre del campo.
+* **valor = _[string]_**  (opcional): Añade un valor por defecto en el campo de texto, en el caso de que esté vacío. 
+* **filas = _[int]_** (opcional) : Permite especificar el número de filas que tendrá el área de texto.
+* **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
+* **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de título.
 
 h2. Definición
 
 bc. AreaTexto:
 	'AreaTexto' (name=ID)? (
-		  ('campo' '=' campo=STRING)
+		  ('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('valor' '=' valor=STRING)?
 		& ('filas' '=' filas=INT)?
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 	)
 ;
 
 h2. Ejemplo de uso
 
-bc. AreaTexto campo="mail.content" titulo="Mensaje" requerido
+bc. AreaTexto campo=Mail.content titulo="Mensaje" requerido

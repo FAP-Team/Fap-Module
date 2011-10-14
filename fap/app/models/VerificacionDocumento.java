@@ -64,7 +64,7 @@ public class VerificacionDocumento extends Model {
 	public String motivoRequerimiento;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificaciondocumento_codigosrequerimiento")
 	public List<CodigoRequerimiento> codigosRequerimiento;
 	

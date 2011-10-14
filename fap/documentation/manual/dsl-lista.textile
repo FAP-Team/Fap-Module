@@ -4,26 +4,25 @@ h2. Descripción
 
 Permite crear listas de valores. Cada uno de los valores de la lista puede ser un par key-value o contener solo uno de los elementos de este par, en cuyo caso al elemento no especificado se le asigna el contenido del que sí está presente.  
 
-h2. Parámetros de un elemento de la lista
+h2. Parámetros
 
-* **value** - Elemento valor del par key-value. Es de tipo String y puede contener tildes y espacios.
-* **key** - Elemento clave del par key-value. Puede ser un identificador o un valor entero.
+* **_[name]_** : Identificador de la lista.
 
 h2. Definición
 
-bc. Lista:
+bc.. Lista:
    'Lista' name=ID '{'
       elementos+=ElementoLista+
    '}'
 ;
 
-bc. ElementoLista:
+ElementoLista:
    value=STRING |
    key=ElementoListaKey ':' value=STRING |
    key=ElementoListaKey
 ;
 
-bc. ElementoListaKey:
+ElementoListaKey:
    ID | INT
 ;
 

@@ -3,7 +3,9 @@
  */
 package es.fap.simpleled.ui.contentassist;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
@@ -16,6 +18,7 @@ import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.Keyword;
+import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScopeProvider;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
@@ -24,6 +27,7 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
 import com.google.inject.Inject;
 
 import es.fap.simpleled.led.*;
+import es.fap.simpleled.led.impl.LedFactoryImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.validation.*;
@@ -35,12 +39,9 @@ import es.fap.simpleled.validation.*;
  */
 public class LedProposalProvider extends AbstractLedProposalProvider {
 
-//	@Inject
-//	IResourceDescriptions descriptions;
-	
 	@Inject
 	IScopeProvider scopeProvider;
-
+	
 	public int getCurrentLine(ContentAssistContext context){
 		try {
 			return context.getViewer().getDocument().getLineOfOffset(context.getOffset()) + 1;
@@ -52,12 +53,26 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	@Override
 	public void completeKeyword(Keyword keyword, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		String value = keyword.getValue();
-		if (value.equals(".") || value.equals(context.getPrefix())){
+		if (value.equals(".") || value.equals("agente") || value.equals(context.getPrefix())){
+			return;
+		}
+		if (value.equals("(") || value.equals(")") || value.equals("!")){
+			acceptor.accept(createCompletionProposal(value, context));
+			return;
+		}
+		if (value.equals("action")){
+			acceptor.accept(createCompletionProposal(value, styledProposal(value + "  -  " + "(read, edit, delete, create)"), null, context));
 			return;
 		}
 		char first = value.charAt(0);
+		EObject semantic = context.getCurrentModel();
 		if (value.equals("}") || (Character.isLetter(first) && first == Character.toUpperCase(first))){
 			if (getCurrentLine(context) == context.getLastCompleteNode().getStartLine()){
+				return;
+			}
+		}
+		if (Character.isLetter(first) && first != Character.toUpperCase(first)){
+			if (getCurrentLine(context) != context.getLastCompleteNode().getStartLine() && !(semantic instanceof Tabla)){
 				return;
 			}
 		}
@@ -65,11 +80,22 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	@Override
+	public void completeCompoundType_Entidad(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		if (getCurrentLine(context) == context.getLastCompleteNode().getStartLine()){
+			return;
+		}
+		Set<Entity> entidades = getEntidades(model);
+		for (Entity entidad: entidades){
+			acceptor.accept(createCompletionProposal(entidad.getName(), styledProposal(entidad.getName() + "  -  " + "Entidad"), null, 0, context.getPrefix(), context));
+		}
+	}
+	
+	@Override
 	public void completeCampo_Entidad(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		Campo campo = LedCampoUtils.getCampo(model);
 		LedElementValidator validator = LedCampoUtils.getElementValidator(campo);
 		if (validator != null) {
-			for (String proposal: validator.completeEntidades(getEntidades(campo))) {
+			for (String proposal: validator.completeEntidades(getEntidadesCampo(campo))) {
 				acceptor.accept(createCompletionProposal(proposal.split("-")[0].trim(), styledProposal(proposal), null, context));
 			}
 		}
@@ -106,7 +132,86 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 	}
 
-	public Set<Entity> getEntidades(Campo campo) {
+	@Override
+	public void completeCampoPermiso_Variable(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+	}
+	
+	@Override
+	public void completeCampoPermiso_Action(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+	}
+	
+	@Override
+	public void completeCampoPermiso_Agente(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+	}
+	
+	@Override
+	public void complete_CampoPermiso(EObject model, RuleCall call, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		CampoPermisoValidator validator = new CampoPermisoValidator();
+		for (String proposal: validator.completeVariables(getPermisoVariables(model))) {
+			acceptor.accept(createCompletionProposal(proposal.split("-")[0].trim(), styledProposal(proposal), null, context));
+		}
+	}
+	
+	@Override
+	public void completeCampoPermisoAtributos_Atributo(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		CampoPermisoAtributos atributos = (CampoPermisoAtributos) model;
+		Entity entidad = null;
+		if (atributos.eContainer() instanceof CampoPermiso){
+			CampoPermiso perm = (CampoPermiso) atributos.eContainer();
+			if (perm.isAction()){
+				return;
+			}
+			if (perm.isAgente()){
+				entidad = getAgente(model);
+			}
+			else{
+				entidad = perm.getVariable().getTipo();
+			}
+		}
+		else{
+			Attribute attr = ((CampoPermisoAtributos)atributos.eContainer()).getAtributo();
+			if (LedEntidadUtils.xToOne(attr)){
+				entidad = attr.getType().getCompound().getEntidad();
+			}
+		}
+		if (entidad == null){
+			return;
+		}
+		CampoPermisoValidator validator = new CampoPermisoValidator();
+		for (String proposal: validator.completeEntidad("", entidad)) {
+			acceptor.accept(createCompletionProposal(proposal.split("-")[0].trim(), styledProposal(proposal), null, context));
+		}
+	}
+	
+	@Override
+	public void completePermisoRuleCheck_Permiso(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		for (IEObjectDescription desc : scopeProvider.getScope(model, LedPackage.Literals.PERMISO_RULE_CHECK__PERMISO).getAllElements()) {
+			Permiso perm = (Permiso) desc.getEObjectOrProxy();
+			if (perm.eIsProxy()) {
+				perm = (Permiso) EcoreUtil.resolve(perm, model.eResource());
+			}
+			acceptor.accept(createCompletionProposal(perm.getName(), styledProposal(perm.getName() + "  -  " + "Permiso"), null, 0, context.getPrefix(), context));
+		}
+	}
+	
+	public List<PermisoVar> getPermisoVariables(EObject model) {
+		List<PermisoVar> variables = new ArrayList<PermisoVar>();
+		while (! (model instanceof Permiso)){
+			model = model.eContainer();
+		}
+		Permiso perm = (Permiso) model;
+		if (perm.getVarSection() != null){
+			variables.addAll(perm.getVarSection().getVars());
+		}
+		Entity agente = getAgente(model);
+		PermisoVar agenteVar = new LedFactoryImpl().createPermisoVar();
+		agenteVar.setName("agente");
+		agenteVar.setTipo(agente);
+		variables.add(agenteVar);
+		return variables;
+	}
+	
+	public Set<Entity> getEntidadesCampo(Campo campo) {
 		Set<Entity> entidades = new HashSet<Entity>();
 		EObject container = LedCampoUtils.getElementosContainer(campo);
 		if (container instanceof Tabla){
@@ -124,15 +229,19 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 //			entidades.add(getLastEntity(((Popup)container).getCampo()));
 //			return entidades;
 //		}
+		return getEntidades(campo);
+	}
+	
+	public Set<Entity> getEntidades(EObject object) {
+		Set<Entity> entidades = new HashSet<Entity>();
 //		Set<Entity> referenciadas = new HashSet<Entity>();
 		Entity solicitud = null;
 		Entity solicitudGenerica = null;
-		
 //		for (IEObjectDescription desc : descriptions.getExportedObjectsByType(LedPackage.Literals.ENTITY)) {
-		for (IEObjectDescription desc : scopeProvider.getScope(campo, LedPackage.Literals.CAMPO__ENTIDAD).getAllElements()) {
+		for (IEObjectDescription desc : scopeProvider.getScope(object, LedPackage.Literals.CAMPO__ENTIDAD).getAllElements()) {
 			Entity entidad = (Entity) desc.getEObjectOrProxy();
 			if (entidad.eIsProxy()) {
-				entidad = (Entity) EcoreUtil.resolve(entidad, campo.eResource());
+				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
 			}
 //			for (Attribute attr: getAllDirectAttributes(entidad)){
 //				Entity ref = getEntity(attr);
@@ -171,6 +280,19 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		int index = proposal.indexOf("-");
 		styled.setStyle(index, proposal.length() - index, styler);
 		return styled;
+	}
+	
+	public Entity getAgente(EObject object) {
+		for (IEObjectDescription desc : scopeProvider.getScope(object, LedPackage.Literals.CAMPO__ENTIDAD).getAllElements()) {
+			Entity entidad = (Entity) desc.getEObjectOrProxy();
+			if (entidad.eIsProxy()) {
+				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
+			}
+			if (entidad.getName().equals("Agente")) {
+				return entidad;
+			}
+		}
+		return null;
 	}
 	
 }

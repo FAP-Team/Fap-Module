@@ -37,7 +37,7 @@ Formulario Solicitud {
 		    campo=SolicitudGenerica.documentacion.documentos
 			popupVer=PopUpDocPresentados
 		{
-			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80" 
 			Columna campo=Documento.descripcion titulo="Tipo" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}

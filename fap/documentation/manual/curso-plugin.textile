@@ -1,0 +1,44 @@
+h1. Instalación del plugin de Eclipse
+
+El módulo viene con un plugin de Eclipse para editar los DSL. El plugin cuenta con autocompletado de código y resaltado de sintaxis.
+
+h2. Instrucciones de instalación
+
+El plugin depende de xtext2 para poder funcionar correctamente. En caso de que tu distribución de eclipse no lo tenga instalado deberías instalarlo siguiendo las instrucciones del "Apéndice1 : Instalación de xtext2":#apendix1
+
+Una vez instalado xtext2, ahora debes instalar el plugin copiando en la carpeta ${ECLIPSE_HOME}/dropins, los ficheros:
+
+* ${APP}/modules/plugins/fap-{version}/es.fap.simpleled_1.0.0.jar 
+* ${APP}/modules/plugins/fap-{version}/es.fap.simpleled.ui_1.0.0.jar
+
+Donde ${APP} es el directorio de tu aplicación.
+
+h2. Actualización del plugin
+
+Normalmente cuando actualizamos el módulo introducimos modificaciones en el lenguaje. Por lo tanto es necesario que actualices el editor para que tenga sincronizado estos cambios. Para actualizar el módulo tienes que repetir los pasos de instalación, copiar los nuevos ficheros jar del plugin en la carpeta dropins de eclipse.
+
+
+h2(#apendix1). Apéndice1 : Instalación de xtext2
+
+Existen dos formas de instalar xtext2, puedes elegir la opción que prefieras. La primera utiliza los repositorios de eclipse y la segunda utiliza unos ficheros comprimidos que están disponibles en nuestro servidor.
+
+h3. xtext2 vía asistente de eclipse
+
+Para instalar xtext2 con el asistente de eclipse.
+* Help/Install New software
+* En "work with" añadir la ruta al repositorio de Xtext *http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/*
+* Expandir la categoria *TMF Xtext-2.0.1*
+* Seleccionar:
+** Xbase
+** Xtext runtime
+** Xtext UI
+* Pulsar en Next y continuar con el proceso normal de instalación. 
+
+h3. xtext2 vía ficheros jar
+
+En nuestro servidor tenemos un fichero comprimido con xtext2, disponible para windows y para linux. Para instalarlo descarga el fichero para tu sistema operativo y descomprímelo en la carpeta (${ECLIPSE_HOME}/dropins).
+
+* "Xtext2-eclipse (windows)":http://fap-devel.etsii.ull.es/public/Xtext-eclipse/Xtext2-eclipse.rar 
+* "Xtext2-eclipse-linux (linux)":http://fap-devel.etsii.ull.es/public/Xtext-eclipse/Xtext2-eclipse-linux.rar
+
+

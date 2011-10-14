@@ -72,7 +72,7 @@ public class GSolicitante {
 		
 		if (!noRepresentante) {
 			Grupo grupoCheckRepFisica = new GrupoImpl();
-			MostrarSiComboValues values = new MostrarSiComboValuesImpl();
+			Values values = new ValuesImpl();
 			values.values.add("fisica");
 			grupoCheckRepFisica.setSiComboValues(values);
 			
@@ -138,7 +138,7 @@ public class GSolicitante {
 
 		if (!noRepresentante) {
 			Grupo grupoCheckRepFisica = new GrupoImpl();
-			MostrarSiComboValues values = new MostrarSiComboValuesImpl();
+			Values values = new ValuesImpl();
 			values.values.add("juridica");
 			grupoCheckRepFisica.setSiComboValues(values);
 			

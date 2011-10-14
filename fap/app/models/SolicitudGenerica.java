@@ -36,39 +36,39 @@ public class SolicitudGenerica extends Model {
 	public String estadoUsuario;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Solicitante solicitante;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documentacion documentacion;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documentacion documentacionProceso;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documentacion documentacionAportada;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Registro registro;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public ExpedientePlatino expedientePlatino;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public ExpedienteAed expedienteAed;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Aportaciones aportaciones;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Verificacion verificacion;
 	
 	

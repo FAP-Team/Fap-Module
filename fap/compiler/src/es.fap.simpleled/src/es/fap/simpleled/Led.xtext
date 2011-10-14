@@ -17,45 +17,39 @@ QN: // QualifiedName
 
 IDS: 
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
-	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante"
+	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente"
 ;
 
 Entity:
 	'Entidad' name=IDS
-		("tableName" "=" tableName=STRING)?
-		( "extends" extends=[Entity|IDS])? 
-		anotaciones=EntityAnotations
+		(
+		("extends" extends=[Entity|IDS])?
+		& ('tableName' '=' tableName=STRING)? 
+		& (nonPersist?="nonPersist")?
+		& (embedded?="embeddable")?
+		& (inheritance?="inheritance" "=" "joined")?
+		& (superClass?="superClass")?
+		& (noConstruct?="noConstruct")?
+		& (noAuditable?="noAuditable")?
+		)
 	'{'
 		attributes+=Attribute*
 	'}'
 ;
 
-// Anotaciones permitidas en las entidades
-EntityAnotations:
-	(nonPersist?="nonPersist")?
-	& (embedded?="embeddable")?
-	& (inheritance?="inheritance" "=" "joined")?
-	& (superClass?="superClass")?
-	& (noConstruct?="noConstruct")?
-	& (noAuditable?="noAuditable")?
-;
-
 Attribute:
-	type=Type
-	name=IDS
-	anotaciones=AttributeAnotations
-	(defaultValue=STRING)?
-;
-
-AttributeAnotations:
-	(isTransient?="transient")?
-	& (hasLength?="length" "=" length=INT)?
-	& (required?="requerido")?	// NOTA: No se comprobará en la Entidad, sino en los "validators"
-	& (noConstruct?="noConstruct")? // No crea el new para ese atributo
-	& (noCascade?="noCascade")?
-	& ("checkWith" "=" checkWith=STRING)? // Manual validator
-	& ("column" "=" column=STRING)?
-	& ("validate" "=" validate=STRING)?  // validacion por regexp
+	type=Type name=IDS
+		(
+		("default" "=" defaultValue=STRING)?
+		& (isTransient?="transient")?
+		& (hasLength?="length" "=" length=INT)?
+		& (required?="requerido")?	// NOTA: No se comprobará en la Entidad, sino en los "validators"
+		& (noConstruct?="noConstruct")? // No crea el new para ese atributo
+		& (noCascade?="noCascade")?
+		& ("checkWith" "=" checkWith=STRING)? // Manual validator
+		& ("column" "=" column=STRING)?
+		& ("validate" "=" validate=STRING)?  // validacion por regexp
+		)
 ;
 
 Type:
@@ -63,11 +57,11 @@ Type:
 ;
 
 SimpleType:
-	"String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText"
+	type = ("String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText")
 ;
 
 SpecialType:
-	"Cif" | "Telefono" | "Email" | "Moneda" | "DateTime"
+	type = ("Cif" | "Telefono" | "Email" | "Moneda" | "DateTime")
 ;
 
 CompoundType:
@@ -111,17 +105,17 @@ MenuGrupo:
 ;
 
 MenuEnlace:
-	'Enlace' 
-		titulo=STRING
+	'Enlace' titulo=STRING
+	(
 		("permiso" "=" permiso=[Permiso])?
-		(
+		& (
 			('pagina' '=' pagina=[Pagina|QN]) | 
 			('accion' '=' accion=STRING) |
 			('url' '=' url=STRING) |
 			('popup' '=' popup=[Popup])
 		)?
+	)
 ;
-
 
 Pagina:
 	'Pagina' name=IDS
@@ -157,9 +151,9 @@ Popup:
 Grupo:
 	grupo='Grupo' (name=ID)? (
 		('titulo' '=' titulo=STRING)? &
-		('mostrarSiCombo' siCombo=[Combo|QN] '=' siComboValues=MostrarSiComboValues)? &
+		('mostrarSiCombo' siCombo=[Combo|QN] '=' siComboValues=Values)? &
 		('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false"))? &
-		('mostrarSiCampo' campo=Campo '=' siCampoValues=MostrarSiCampoValues)? &
+		('mostrarSiCampo' campo=Campo '=' siCampoValues=Values)? &
 		('mostrarSiExpresion' siExpresion=STRING)? &
 		('visible' '=' visible=("true" | "false"))? & 
 		("permiso" "=" permiso=[Permiso])?
@@ -175,11 +169,7 @@ AgruparCampos:
 	'}'
 ;	
 
-MostrarSiComboValues:
-	values+=STRING (',' values+=STRING)*
-;
-
-MostrarSiCampoValues:
+Values:
 	values+=STRING (',' values+=STRING)*
 ;
 
@@ -225,10 +215,9 @@ AreaTexto:
 
 Check:
 	'Check' (name=ID)? (
-		  ('campo' '=' campo=Campo)
+		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
-			
 	)
 ;	
 
@@ -241,7 +230,6 @@ Enlace:
 		& ('estilo' '=' estilo=STRING)?
 	)
 ;
-
 
 Wiki:
 	'Wiki' ('estilo' '=' estilo=STRING)? '{'
@@ -259,7 +247,6 @@ Boton:
 	)
 ;
 
-
 Fecha:
 	'Fecha' (name=ID)? (
 		('campo' '=' campo=Campo)
@@ -275,11 +262,10 @@ Combo:
 		& (requerido?='requerido')?
 		& (busqueda?="busqueda")?
 		& (mostrarClave?="mostrarClave")?
-		& (multiple?="multiple")?
 		& ('ancho' '=' ancho=STRING)? 
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
-		& ('comboTexto' '=' comboTexto=STRING)? 
-		& ('comboValor' '=' comboValor=STRING)? 
+		& ('comboTexto' '=' comboTexto=[Attribute|IDS])? 
+		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
 	)
 ;
 
@@ -304,7 +290,6 @@ Tabla:
         & ('alto' '=' alto=STRING)? 
         & (columnasAutomaticas?="columnasAutomaticas")?
         & ("permiso" "=" permiso=[Permiso])?
-		& (consultaCompleta?="consultaCompleta")?
 		& (recargarPagina?="recargarPagina")?
 		& (seleccionable?="seleccionable" "=" nameSeleccionable=STRING)?
 	    & (	
@@ -460,20 +445,20 @@ PermisoVarsSection:
 ;
 
 PermisoVar:
-	tipo=IDS var=PERMISO_VARIABLE
-		(':' 'sql' '(' sql=STRING (',' sqlParams=PermivoVarSqlParameters)? ')') ?
+	tipo=[Entity|IDS] name=ID
+		(':' 'sql' '(' sql=STRING (',' sqlParams=PermisoVarSqlParameters)? ')') ?
 ;
 
-PermivoVarSqlParameters:
-	sqlParams+=PERMISO_ACCESOVARIABLE (',' sqlParams+=PERMISO_ACCESOVARIABLE)*
+PermisoVarSqlParameters:
+	sqlParams+=CampoPermiso (',' sqlParams+=CampoPermiso)*
 ;
 
-PERMISO_VARIABLE:
-	ID
-;	
+CampoPermiso:
+	(variable=[PermisoVar] | action?="action" | agente?="agente") (atributos=CampoPermisoAtributos)?
+;
 
-PERMISO_ACCESOVARIABLE:
-	ID ('.' ID)* 
+CampoPermisoAtributos:
+	"." atributo=[Attribute|IDS] (atributos=CampoPermisoAtributos)?
 ;
 
 PermisoRule:
@@ -494,8 +479,10 @@ PermisoPrimary returns PermisoRule:
 ;
 
 PermisoRuleCheck:
-	left=PERMISO_ACCESOVARIABLE simpleOp=PermisoRuleCheckSimpleOp right=PermisoRuleCheckRight |
-	left=PERMISO_ACCESOVARIABLE groupOp=PermisoRuleCheckGroupOp '(' rightGroup+=PermisoRuleCheckRight (',' rightGroup+=PermisoRuleCheckRight)* ')' 
+	left=CampoPermiso (
+		(simpleOp=PermisoRuleCheckSimpleOp right=PermisoRuleCheckRight)
+		| (groupOp=PermisoRuleCheckGroupOp '(' rightGroup+=PermisoRuleCheckRight (',' rightGroup+=PermisoRuleCheckRight)* ')')
+	)
 	| permiso=[Permiso]
 	| not?="!" permiso=[Permiso] 
 ;
@@ -509,7 +496,7 @@ PermisoRuleCheckGroupOp:
 ;
 
 PermisoRuleCheckRight:
-	PERMISO_ACCESOVARIABLE | STRING  | 'null'
+	campo=CampoPermiso | str=STRING  | nulo?='null'
 ;
 
 

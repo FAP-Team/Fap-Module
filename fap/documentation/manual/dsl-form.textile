@@ -6,22 +6,24 @@ Añade un tag Form dentro de la página. Al controlador de la página se le aña
 
 h2. Parámetros
 
-* **name** - Identificador del elemento. En el controlador de la página correspondiente se creará un método con este nombre.
-* **campo** (opcional) - Especifica un campo de una entidad, con multiplicidad one-to-many o many-to-many. A dicho campo se le añade la primera entidad utilizada dentro del form.
-* **autoenviar** (opcional) - Reenvía el formulario cada vez que un elemento input o select del form cambia de estado.
-* **permiso** (opcional) - Nombre del permiso asociado al form.
+* **_[name]_** : Identificador del elemento. En el controlador de la página correspondiente se creará un método con este nombre.
+* **campo = _[campo]_** (opcional) : Especifica un campo de una entidad, con multiplicidad one-to-many o many-to-many. A dicho campo se le añade la primera entidad utilizada dentro del form.
+* **autoEnviar** (opcional) : Reenvía el formulario cada vez que un elemento input o select del form cambia de estado.
+* **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al form.
+* **redirigir = _[pagina]_** (opcional) : Cuando termina la acción del boton del form, se produce una redirección a la página especificada.
 
 h2. Definición
 
 bc. Form:
-   'Form' (name=ID) (
-      ('campo' '=' campo=STRING)?
-      & (autoEnviar?="autoEnviar")?
-      & (permiso?="permiso" "=" namePermiso=STRING)?		
-   )
-   '{'
-      elementos+=Elemento+
-   '}'
+	'Form' (name=ID) (
+		('campo' '=' campo=Campo)?
+		& (autoEnviar?="autoEnviar")?
+		& ("permiso" "=" permiso=[Permiso])?
+		& ('redirigir' '=' redirigir=[Pagina|QN])?
+	)
+	'{'
+		elementos+=Elemento+
+	'}'
 ;
 
 h2. Ejemplos de uso
@@ -34,7 +36,7 @@ bc. Form presentar {
 
 h3. Form para añadir una entidad a un campo one-to-many de otra entidad
 
-bc. Form anadirDocumentacion campo="solicitud.documentacion.documentos" {		
-   SubirArchivoAed fileAportacion campo="documento" requerido
+bc. Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
+   SubirArchivoAed fileAportacion campo=Documento requerido
    Boton subirDocumento titulo="Añadir documentación"
 }

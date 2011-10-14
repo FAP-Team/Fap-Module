@@ -1,0 +1,36 @@
+h1. Grupo menú
+
+h2. Descripción
+
+Permite añadir un grupo dentro del menú que ha sido especificado. Dentro de un grupo pueden haber enlaces o más grupos anidados.
+
+h2. Parámetros
+
+* **titulo = _[string]_** : Texto que se mostrará en la cabecera del grupo.
+* **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al grupo.
+
+h2. Definición
+
+bc. MenuGrupo:
+	'Grupo' titulo=STRING 
+	("permiso" "=" permiso=[Permiso])?  '{'
+		elementos +=MenuElemento*
+	'}'
+;
+
+h2. Ejemplos de uso
+
+h3. Menu con varios grupos
+
+bc. Menu {
+   
+   Grupo "Solicitud" {
+      Enlace "Solicitante" pagina=Solicitud.Solicitante
+      Enlace "Documentación" pagina=Solicitud.Documentacion
+   }
+   
+   Grupo "Instruccion" permiso=instruccion {
+      Enlace "Aportación de Documentacion" pagina=Solicitud.Aportacion
+   }
+   
+}

@@ -15,6 +15,8 @@ import es.fap.simpleled.led.impl.LedFactoryImpl
 import es.fap.simpleled.led.impl.PaginaImpl
 import es.fap.simpleled.led.impl.TypeImpl
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
@@ -94,6 +96,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 ${FileUtils.addRegion(file, FileUtils.REGION_IMPORT)}	
 ${doc}
 ${auditable}
@@ -327,7 +331,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 					if ((attribute?.type?.compound?.lista != null) && (!attribute?.type?.compound?.isMultiple())) {
 						String tabla = attribute?.type?.compound?.lista.name;
 						String value = attribute.defaultValue;
-						refInit += """if (TableKeyValue.contains("${tabla}", "${value}"))""";
+						// Error al iniciar por primera vez la app -> refInit += """if (TableKeyValue.contains("${tabla}", "${value}"))""";
 						refInit +=  """	${attribute.name} = "${value}";""";
 					} else {
 						println "WARNING: Valor por defecto no permitido en este tipo";
@@ -461,8 +465,14 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			if (defaultValue != null) {
 				if (type.equals("String") || (type.equals("LongText")))
 					defaultValue = "\"${defaultValue}\"";
-				else if (type.equals("DateTime"))
-					defaultValue = "new DateTime (\"${defaultValue}\")";
+				else if (type.equals("DateTime")) {
+					return """try {
+	${name} = new DateTime ((new SimpleDateFormat("dd/MM/yyyy")).parse("${defaultValue}"));
+} catch (ParseException e) {
+	e.printStackTrace();
+}
+					"""
+				}
 				return  """${name} = ${defaultValue};\n"""
 			}
 		}

@@ -61,8 +61,7 @@
     <os family="windows" />
   </condition>
 	
-	<target name="dist">
-		
+	<target name="get-version">
 		<groovy>
 			File file = new File(properties["dependencies.yml"])
 			file.eachLine { line -> 
@@ -72,7 +71,10 @@
 				}
 			}
 	    </groovy>
-			
+		<echo message="Version del modulo = ${version}"/>
+	</target>
+	
+	<target name="dist" depends="get-version">			
 		<echo message="Version del modulo = ${version}"/>
 		
         <antcall target="compiler"/>
@@ -176,19 +178,55 @@
 		</ftp>
 
 	</target>
-		
-	<target name="svn-tag">	
+	
+	<!-- Deprecated!!!!!-->
+	<!--target name="svn-tag">	
 		 <svnSetting id="svnConfig" javahl="${svnant.javahl}" svnkit="${svnant.svnkit}"/> 
-		
 		 <svn refid="svnConfig" >
 		 	<copy srcUrl="${svn.compiler.base.url}" destUrl="${svn.compiler.tag.url}release-${version}" message="Tagging the ${version} release"/>    
 		 </svn>
 		 <echo message="Creado tag del generador"/>
-
 		 <svn refid="svnConfig">
 		 	<copy srcUrl="${svn.module.base.url}" destUrl="${svn.module.tag.url}release-${version}" message="Tagging the ${version} release"/>    
 		 </svn>		
 		 <echo message="Creado tag del modulo"/>
+	</target-->
+	
+	
+	<!-- Git -->
+	<macrodef name="git">
+	    <attribute name="command" />
+	    <attribute name="dir" default="" />
+	    <element name="args" optional="true" />
+	    <sequential>
+	        <echo message="git @{command}" />
+	        <exec executable="git" dir="@{dir}">
+	            <arg value="@{command}" />
+	            <args/>
+	        </exec>
+	    </sequential>
+	</macrodef>
+	
+	<target name="git-status">
+		<git command="status" dir="../"/>
+	</target>
+	
+	<!-- Crea un TAG llamado v${version} con el HEAD que está en el repositorio Git -->
+	<target name="git-create-tag" depends="get-version">
+		<!-- Lo dejaremos igual que nuestro último commit -->
+		<!--git command="stash" dir="../"/-->
+		<!-- Obtenemos los ultimos cambios del repositorio -->
+		<!--git command="pull" dir="../"/-->
+		<!-- Creamos el tag con la version actual -->
+		<git command="tag" dir="../" >
+			<args>
+				<arg value="-a v${version} -m 'Release v${version}'" />
+			</args>
+		</git>
+		<git command="push" args="--tags" dir="../"/>
+		<echo message="Creado el tag v${version}" />
+		<!-- Volvemos al estado del principio -->
+		<!--git command="stash" args="apply" dir=".."/-->
 	</target>
 		
 </project>

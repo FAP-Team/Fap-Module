@@ -29,7 +29,7 @@
 
 	<target name="compile">
 		<mkdir dir="${build.dir}" />
-		<javac destdir="${build.dir}" classpathref="classpath">
+		<javac destdir="${build.dir}" classpathref="classpath" includeantruntime="false">
 			<src path="${src.dir}" />
 			<src path="${src.gen.dir}" />
 		</javac>

@@ -12,6 +12,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 			
@@ -97,8 +99,12 @@ mTelefono = "900 120 120";
 mEmail = "asas@pepe.com";
 mCif = "1234567A";
 mMoneda = 2.1;
-mDateTime = new DateTime ("12/12/2010");
-if (TableKeyValue.contains("ComboTestList", "c"))	mLista = "c";
+try {
+	mDateTime = new DateTime ((new SimpleDateFormat("dd/MM/yyyy")).parse("12/12/2010"));
+} catch (ParseException e) {
+	e.printStackTrace();
+}
+						mLista = "c";
 			if (mEmbebida == null)
 				mEmbebida = new Embebida();
 			

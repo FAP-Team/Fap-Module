@@ -62,7 +62,7 @@ public class JsonDocumentation {
 	}
 	
 	private static void initializeMap(){
-//		mapa = null; // Para debuggear
+//		mapa = null;
 		if (mapa == null){
 			mapa = new HashMap<String, DocElemento>();
 			Gson gson = new Gson();

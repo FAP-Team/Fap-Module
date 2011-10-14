@@ -20,6 +20,7 @@ Utilice el siguiente formulario para notificar una incidencia o realizar cualqui
 			AreaTexto campo=Incidencia.texto titulo="Texto" requerido
 			Boton enviarIncidencia titulo="Enviar"
 		}
+		
 	}
 		
 }

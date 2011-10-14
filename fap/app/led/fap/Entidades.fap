@@ -7,7 +7,7 @@ Entidad TableKeyValue noAuditable{
 Entidad Singleton superClass {
 }
 
-Entidad SolicitudGenerica tableName="solicitud"{
+Entidad SolicitudGenerica tableName = "solicitud"{
 	String estado
 	Lista estadosSolicitud estadoUsuario transient
 	Solicitante solicitante
@@ -248,7 +248,7 @@ Entidad SemillaExpediente extends Singleton{
 //	String footer
 //}
 //
-Entidad Mail tableName="email" {
+Entidad Mail tableName = "email" {
 	String idMail
 	String bcc
 	LongText content

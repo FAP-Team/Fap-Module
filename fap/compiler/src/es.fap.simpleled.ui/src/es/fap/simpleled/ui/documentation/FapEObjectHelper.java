@@ -26,11 +26,10 @@ public class FapEObjectHelper extends EObjectAtOffsetHelper {
 				leaf = NodeModelUtils.findLeafNodeAtOffset(parseResult.getRootNode(), offset - 1);
 			}
 			INode node = leaf;
-			
 			if (node != null){
+				FapDocumentationProvider.node = node;
 				EObject grammarElement = node.getGrammarElement();
 				if (grammarElement instanceof KeywordImpl){
-					FapDocumentationProvider.node = node;
 					return grammarElement;
 				}
 			}
@@ -45,10 +44,6 @@ public class FapEObjectHelper extends EObjectAtOffsetHelper {
 			}
 		}
 		return null;
-	}
-	
-	public static EObject getKeywordContainer(INode node){
-		return NodeModelUtils.findActualSemanticObjectFor(node);
 	}
 	
 }

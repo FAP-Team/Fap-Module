@@ -35,7 +35,7 @@ public class LedEntidadUtils {
 			return false;
 		}
 		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() == null || (!c.getTipoReferencia().equals("OneToMany") && !c.getTipoReferencia().equals("ManyToMany"));
+		return c.getTipoReferencia() == null || c.getTipoReferencia().equals("OneToOne") || c.getTipoReferencia().equals("ManyToOne");
 	}
 
 	// OneToMany o ManyToMany
@@ -47,12 +47,22 @@ public class LedEntidadUtils {
 		return c.getTipoReferencia() != null && (c.getTipoReferencia().equals("OneToMany") || c.getTipoReferencia().equals("ManyToMany"));
 	}
 	
-	// ManyToOne o ManyToMany
-	public static boolean ManyToX (Attribute attr) {
-		if (getEntidad(attr) == null)
+	// OneToOne o OneToMany
+	public static boolean OneToX(Attribute attr) {
+		if (getEntidad(attr) == null) {
 			return false;
+		}
 		CompoundType c = attr.getType().getCompound();
-		return (c.getTipoReferencia() != null && (c.getTipoReferencia().equals("ManyToMany") || c.getTipoReferencia().equals("ManyToOne")));
+		return c.getTipoReferencia() == null || c.getTipoReferencia().equals("OneToOne") || c.getTipoReferencia().equals("OneToMany");
+	}
+
+	// ManyToOne o ManyToMany
+	public static boolean ManyToX(Attribute attr){
+		if (getEntidad(attr) == null){
+			return false;
+		}
+		CompoundType c = attr.getType().getCompound();
+		return c.getTipoReferencia() != null && (c.getTipoReferencia().equals("ManyToOne") || c.getTipoReferencia().equals("ManyToMany"));
 	}
 	
 	public static boolean esLista(Attribute attr){
@@ -81,10 +91,10 @@ public class LedEntidadUtils {
 	
 	public static String getSimpleTipo(Attribute attr){
 		if (attr.getType().getSimple() != null){
-			return attr.getType().getSimple();
+			return attr.getType().getSimple().getType();
 		}	
 		if (attr.getType().getSpecial() != null){
-			return attr.getType().getSpecial();
+			return attr.getType().getSpecial().getType();
 		}
 		return null;
 	}
@@ -111,7 +121,8 @@ public class LedEntidadUtils {
 		Attribute id = factory.createAttribute();
 		id.setName("id");
 		id.setType(factory.createType());
-		id.getType().setSimple("Long");
+		id.getType().setSimple(new LedFactoryImpl().createSimpleType());
+		id.getType().getSimple().setType("Long");
 		entidad.getAttributes().add(id);
 	}
 	
@@ -125,5 +136,7 @@ public class LedEntidadUtils {
 		}
 		return attrs;
 	}
+	
+	
 	
 }

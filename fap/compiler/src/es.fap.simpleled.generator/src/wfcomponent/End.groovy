@@ -55,6 +55,9 @@ public class End implements IWorkflowComponent {
 		permisos();
 		rutas();
 		borrarFicherosAntiguos();
+		if (LedUtils.generatingModule){
+			DocumentationUtils.makeDocumentation();
+		}
 	}
 
 	@Override

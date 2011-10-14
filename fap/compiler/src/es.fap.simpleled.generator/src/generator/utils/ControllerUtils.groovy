@@ -2,6 +2,7 @@ package generator.utils
 
 
 import es.fap.simpleled.led.*
+import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import org.eclipse.emf.ecore.EObject;
 import utils.*;
@@ -429,13 +430,15 @@ class ControllerUtils {
 				if (objeto.isPais())
                 	out += validValueFromTable(campo + ".pais");
 			}
-			if (objeto instanceof Combo && !objeto.multiple){
-				out += validValueFromTable(campo);
+			if (objeto instanceof Combo){
+				Combo combo = (Combo)objeto;
+				if (LedCampoUtils.getUltimoAtributo(combo.campo).type.compound?.multiple){
+					out += validListOfValuesFromTable(campo);
+				}
+				else{
+					out += validValueFromTable(campo);
+				}
 			}
-			if (objeto instanceof Combo && objeto.multiple){
-				out += validListOfValuesFromTable(campo);
-			}
-			
 			if (objeto.metaClass.respondsTo(objeto, "isRequerido") && objeto.isRequerido()) {
 				out += required(campo);
 			}

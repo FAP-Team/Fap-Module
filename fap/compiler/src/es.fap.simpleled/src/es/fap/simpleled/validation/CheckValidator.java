@@ -2,6 +2,7 @@ package es.fap.simpleled.validation;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 
 public class CheckValidator extends LedElementValidator {
 
@@ -12,7 +13,7 @@ public class CheckValidator extends LedElementValidator {
 
 	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
-		return "Boolean".equals(atributo.getType().getSimple());
+		return "Boolean".equals(LedEntidadUtils.getSimpleTipo(atributo));
 	}
 
 	@Override

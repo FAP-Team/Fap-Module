@@ -2,11 +2,11 @@ h1. Agrupar campos
 
 h2. Descripción
 
-Permite agrupar elementos en disposición horizontal
+Permite agrupar elementos en disposición horizontal.
 
 h2. Parámetros
 
-No tiene parámetros
+No tiene parámetros.
 
 h2. Definición
 
@@ -19,6 +19,6 @@ bc. AgruparCampos:
 h2. Ejemplo de uso
 
 bc. AgruparCampos{
-	Texto campo="solicitud.solicitante.fax" titulo="Fax"
-	Texto campo="solicitud.solicitante.email" titulo="Correo electrónico" requerido
+	Texto campo=Solicitud.solicitante.fax titulo="Fax"
+	Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido
 }

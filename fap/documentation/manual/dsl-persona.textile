@@ -6,25 +6,26 @@ Muestra los campos para rellenar los datos de una persona.
 
 h2. Parámetros
 
-* **name** - Identificador del elemento
-* **campo** - Campo de tipo Persona donde se almacenarán los datos
-* **titulo** (Opcional) - Título que aparecerá en la cabecera del grupo
-* **permiso** (Opcional) - Permiso que se le aplicará al PopUp de creación de representantes (cuando la opción seleccionada sea Persona Jurídica).
-* **requerido** (Opcional) - Indica si es obligatorio rellenar los campos "necesarios" de persona física.
+* **_[name]_** : Identificador del elemento.
+* **campo = _[campo]_** : Campo de tipo Persona donde se almacenarán los datos.
+* **titulo = _[string]_** (opcional) : Título que aparecerá en la cabecera del grupo.
+* **permiso = _[permiso]_** (opcional) : Permiso que se le aplicará al Popup de creación de representantes (cuando la opción seleccionada sea Persona Jurídica).
+* **requerido** (opcional) : Indica si es obligatorio rellenar los campos necesarios de persona física.
 
 h2. Definición
 
-bc. 'Persona' (name=ID) (
-		('campo' '=' campo=STRING) & 
+bc. Persona:
+	'Persona' (name=ID) (
+		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
-		(permiso?="permiso" "=" namePermiso=STRING)? &
-		(requerido?='requerido')?
+		(requerido?='requerido')? &
+		("permiso" "=" permiso=[Permiso])?
 	)
 ;
 
 h2. Ejemplo de uso
 
-bc. Persona personaSolicitante campo="solicitud.solicitante" titulo="Datos solicitante" permiso="solicitudEditable" requerido
+bc. Persona personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=solicitudEditable requerido
 
 !images/dsl-persona!
 

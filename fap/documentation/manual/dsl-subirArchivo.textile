@@ -1,4 +1,4 @@
-h1. Subir Archivo AED
+h1. Subir Archivo
 
 h2. Descripción
 
@@ -6,15 +6,15 @@ Elemento para la subida de archivos al servidor de la aplicación.
 
 h2. Parámetros
 
-* **name** - Identificador del elemento.
-* **requerido** (opcional) - Indica la obligatoriedad de la subida de un archivo.
+* **_[name]_** : Identificador del elemento.
+* **requerido** (opcional) : Indica la obligatoriedad de la subida de un archivo.
 
 h2. Definición
 
 bc. SubirArchivo:
-   'SubirArchivo' name=ID (
-      (requerido?='requerido')?
-   )
+	'SubirArchivo' name=ID (
+		(requerido?='requerido')?
+	)
 ;
 
 h2. Ejemplos de uso
@@ -22,7 +22,7 @@ h2. Ejemplos de uso
 h3. Creación de un elemento SubirArchivo con nombre "subir" y requerido
 
 bc. Pagina Subida {
-   Texto campo="solicitud.solicitante.web" titulo="Página web"
+   Texto campo=Solicitud.solicitante.web titulo="Página web"
    SubirArchivo subir requerido
 }
 

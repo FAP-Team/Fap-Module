@@ -1,0 +1,54 @@
+h1. Enlace menú
+
+h2. Descripción
+
+Permite añadir un enlace al menú dentro del cual ha sido especificado.
+
+h2. Parámetros
+
+* **titulo = _[string]_** : Texto que se mostrará en el enlace.
+* **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al enlace.
+* **pagina = _[pagina]_** (opcional) : Indica que el enlace hará referencia a una página de la aplicación. La página puede pertenecer a ese formulario o a otro.
+* **accion = _[string]_** (opcional) : Indica que el enlace hará referencia a una acción de un controlador de la aplicación. Dicha acción será traducida a la URL que la invoca.
+* **url = _[string]_** (opcional) : Indica que el enlace hará referencia a una URL externa.
+* **popup = _[popup]_** (opcional) : Indica que el enlace hará referencia a un popup.
+
+h2. Definición
+
+bc. MenuEnlace:
+	'Enlace' 
+	titulo=STRING
+	("permiso" "=" permiso=[Permiso])?
+	(
+		('pagina' '=' pagina=[Pagina|QN]) | 
+		('accion' '=' accion=STRING) |
+		('url' '=' url=STRING) |
+		('popup' '=' popup=[Popup])
+	)?
+;
+
+h2. Ejemplos de uso
+
+h3. Menú con enlace a una pagina del formulario
+
+bc. Menu {
+   Enlace "Solicitante" pagina=Solicitud.Solicitante
+}
+
+h3. Menú con enlace a una pagina de otro formulario
+
+bc. Menu {
+   Enlace "Volver" pagina=Principal.Solicitudes
+}
+
+h3. Menú con enlace a una URL externa
+
+bc. Menu {
+   Enlace "Ayuda" url="http://www.google.es"
+}
+
+h3. Menú con enlace a una acción
+
+bc. Menu {
+   Enlace "Salir" accion="fap.SecureController.logout"
+}

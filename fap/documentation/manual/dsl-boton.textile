@@ -2,23 +2,26 @@ h1. Boton
 
 h2. Descripción
 
-Permite definir un boton, por defecto al pulsar el boton se llama al metodo del controlador del form que lo contenga. 
+Permite definir un botón, por defecto al pulsar el botón se llama al método del controlador del form que lo contenga. 
 
 h2. Parámetros
 
-* **name** (opcional) - Identificador del elemento
-* **titulo** - Etiqueta que se mostrará dentro del boton
-* **ancho** (opcional) - Ancho en pixeles del boton
-* **popup** (opcional) - Si se especifica, al pulsar el boton se abrira el popup
-* **pagina** (opcional) - Si se especifica, al pulsar el boton se redirige a la pagina
+* **_[name]_** (opcional) : Identificador del elemento.
+* **titulo = _[string]_** : Etiqueta que se mostrará dentro del botón.
+* **ancho = _[string]_** (opcional) : Ancho en píxeles del botón.
+* **popup = _[popup]_** (opcional) : Si se especifica, al pulsar el botón se abrirá el popup indicado.
+* **pagina = _[pagina]_** (opcional) : Si se especifica, al pulsar el botón se redirige a la pagina indicada.
+* **waitPopup** (opcional) : En la navegación, muestra al usuario un popup indicandole que espere hasta que la acción que desemboca el botón haya terminado.
+
 h2. Definición
 
 bc. Boton:
 	'Boton' (name=ID)? (
-	 	('titulo' '=' titulo=STRING)
-	    & ('ancho' '=' ancho=STRING)? 
-	    &('popup' '=' popup=[Popup])?
-	    &('pagina' '=' pagina=STRING)?
+		('titulo' '=' titulo=STRING)
+		& ('ancho' '=' ancho=STRING)? 
+		&('popup' '=' popup=[Popup])?
+		&('pagina' '=' pagina=[Pagina|QN])?
+		& (waitPopup?="waitPopup")?		
 	)
 ;
 
@@ -26,4 +29,4 @@ h2. Ejemplo de uso
 
 bc. Boton subirDocumento titulo="Añadir documentación"
 
-bc. Boton irPresentacion titulo="Ir a Presentación" pagina="Presentacion"
+bc. Boton irPresentacion titulo="Ir a Presentación" pagina=Presentacion

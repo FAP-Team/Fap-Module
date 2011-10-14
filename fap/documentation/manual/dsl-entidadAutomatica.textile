@@ -6,24 +6,22 @@ A partir de una entidad, permite mostrar todos sus atributos como campos.
 
 h2. Parámetros
 
-* **name** - Identificador del elemento
-* **nombreEntidad** - Nombre de la entidad representada en el modelo que queremos mostrar 
-* **campo** - Campo donde está la entidad
-* **permiso** (opcional) - Permite especificar el permiso que tendrá esa entidad
+* **_[name]_** : Identificador del elemento.
+* **campo = _[campo]_** : Campo donde está la entidad.
+* **permiso = _[permiso]_** (opcional) : Permite especificar el permiso que tendrá esa entidad.
 
 h2. Definición
 
 bc. EntidadAutomatica:
 	'EntidadAutomatica' (name=ID) (	
-		('nombreEntidad' '=' entidad=[Entity]) & 
-		('campo' '=' campo=STRING) & 
-		( permiso?="permiso" "=" namePermiso=STRING)?		
+		('campo' '=' campo=Campo) & 
+		("permiso" "=" permiso=[Permiso])?
 	)
 ;
 
 h2. Ejemplo de uso
 
-bc. EntidadAutomatica idcontacto nombreEntidad=Contacto campo="solicitud.datosSolicitante.contacto"
+bc. EntidadAutomatica idcontacto campo=Solicitud.datosSolicitante.contacto
 
 donde la entidad está definida de la siguiente manera:
 

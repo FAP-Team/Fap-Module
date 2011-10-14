@@ -2,30 +2,28 @@ h1. Fecha
 
 h2. Descripción
 
-Nos permitirá insertar una fecha del calendario de una manera simple.
+Permitirá insertar una fecha del calendario de una manera simple.
 
 h2. Parámetros
 
-* **name** (opcional) - Identificador del elemento
-* **campo** - Atributo donde se almacenará la fecha (DateTime)
-* **titulo** (opcional) - Etiqueta que se mostrará al lado de la fecha, si no se especifica se mostrará el nombre del campo
-* **requerido** (opcional) - Si se especifica, indica que el campo deberá ser obligatorio rellenarlo
+* **_[name]_** (opcional) : Identificador del elemento.
+* **campo = _[campo]_** : Atributo donde se almacenará la fecha (DateTime).
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará al lado de la fecha, si no se especifica se mostrará el nombre del campo.
+* **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
 
 h2. Definición
 
 bc. Fecha:
 	'Fecha' (name=ID)? (
-		('campo' '=' campo=STRING)
+		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& (requerido?='requerido')?
 	)
 ;
 
-
 h2. Ejemplo de uso
 
-bc. Fecha campo="solicitud.datosSolicitante.fechaConstitucion" titulo="Fecha constitución" requerido
-
+bc. Fecha campo=Solicitud.documentacion.fechaFirma titulo="Fecha firma" requerido
 
 h2. Resultado
 

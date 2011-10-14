@@ -59,7 +59,7 @@ public abstract class LedElementValidator {
 		List<String> proposals = new ArrayList<String>();
 		for (Entity entidad: entidades){
 			if (aceptaEntidad(entidad)){
-				proposals.add(entidad.getName() + "   -   Entidad");
+				proposals.add(entidad.getName() + "  -  Entidad");
 			}
 			proposals.addAll(completeEntidad(entidad.getName(), entidad));
 		}
@@ -73,7 +73,7 @@ public abstract class LedElementValidator {
 		List<String> proposals = new ArrayList<String>();
 		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(entidad)){
 			if (aceptaAtributo(attr)){
-				proposals.add(prefijo + attr.getName() + "   -   " + getType(attr));
+				proposals.add(prefijo + attr.getName() + "  -  " + getType(attr));
 			}
 			if (LedEntidadUtils.xToOne(attr)){
 				proposals.addAll(completeEntidad(prefijo + attr.getName(), attr.getType().getCompound().getEntidad()));
@@ -95,7 +95,7 @@ public abstract class LedElementValidator {
 			return "Lista " + compound.getLista().getName() + multiple;
 		}
 		if (LedEntidadUtils.esColeccion(attr)){
-			return compound.getCollectionType() + " <" + compound.getCollectionReferencia() + ">";
+			return compound.getCollectionType() + " <" + compound.getCollectionReferencia().getType() + ">";
 		}
 		String referencia = "OneToOne";
 		if (compound.getTipoReferencia() != null){

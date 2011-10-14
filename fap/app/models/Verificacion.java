@@ -43,7 +43,7 @@ public class Verificacion extends Model {
 	public String estado;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_documentos")
 	@Transient
 	public List<VerificacionDocumento> documentos;
@@ -57,17 +57,17 @@ public class Verificacion extends Model {
 	public String motivoExclusion;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_codigosexclusion")
 	@Transient
 	public List<Exclusion> codigosExclusion;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Requerimiento requerimientoProceso;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_requerimientos")
 	public List<Requerimiento> requerimientos;
 	

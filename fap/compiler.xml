@@ -1,66 +1,65 @@
 <project name="fap-generator" default="compiler">
 
-	<property environment="env"/>
+	<property environment="env" />
 
 	<!--property name="compiler.src.dir" value="../compiler-src" /-->
 	<property name="compiler.src.dir" value="compiler/src" />
-	<property name="compiler.compiled" value="compiler/compiled"/>
-	<property name="grammar.dir" value="${compiler.src.dir}/es.fap.simpleled"/>
-	<property name="generator.dir" value="${compiler.src.dir}/es.fap.simpleled.generator"/>
-	<property name="dependencies.yml" value="conf/dependencies.yml"/>
-	
+	<property name="compiler.compiled" value="compiler/compiled" />
+	<property name="grammar.dir" value="${compiler.src.dir}/es.fap.simpleled" />
+	<property name="generator.dir" value="${compiler.src.dir}/es.fap.simpleled.generator" />
+	<property name="dependencies.yml" value="conf/dependencies.yml" />
+
 	<!-- FTP Tasks properties -->
-	<property name="ftp.server" value="fap-devel.etsii.ull.es"/>
-	<property name="ftp.fap.dir" value="/public/fap-sdk2/"/>
-	<property name="ftp.user" value="undefined"/>
-	<property name="ftp.pass" value="undefined"/>
+	<property name="ftp.server" value="fap-devel.etsii.ull.es" />
+	<property name="ftp.fap.dir" value="/public/fap-sdk2/" />
+	<property name="ftp.user" value="undefined" />
+	<property name="ftp.pass" value="undefined" />
 	<!-- FTP Tasks properties -->
-	
+
 	<!-- SVN and SVN-ANT Tasks properties -->
-	<property name="svn.module.base.url" value="http://banot.etsii.ull.es/subversion/faparte/play-module/trunk/fap/"/>
-	<property name="svn.module.tag.url" value="http://banot.etsii.ull.es/subversion/faparte/play-module/tags/"/>
-	<property name="svn.compiler.base.url" value="http://banot.etsii.ull.es/subversion/faparte/play-compiler/trunk/compiler/"/>
-	<property name="svn.compiler.tag.url" value="http://banot.etsii.ull.es/subversion/faparte/play-compiler/tags/"/>
+	<property name="svn.module.base.url" value="http://banot.etsii.ull.es/subversion/faparte/play-module/trunk/fap/" />
+	<property name="svn.module.tag.url" value="http://banot.etsii.ull.es/subversion/faparte/play-module/tags/" />
+	<property name="svn.compiler.base.url" value="http://banot.etsii.ull.es/subversion/faparte/play-compiler/trunk/compiler/" />
+	<property name="svn.compiler.tag.url" value="http://banot.etsii.ull.es/subversion/faparte/play-compiler/tags/" />
 	<!--property name="svnant.lib.dir" location="${env.SVNANT_HOME}/lib"/-->
-	<property name="svnant.lib.dir" location="compiler/lib"/>
+	<property name="svnant.lib.dir" location="compiler/lib" />
 	<property name="svnant.javahl" value="false" />
 	<property name="svnant.svnkit" value="true" />
-	<!-- SVN and SVN-ANT Tasks properties -->	
-	
+	<!-- SVN and SVN-ANT Tasks properties -->
+
 	<!-- Groovy properties -->
 	<!--property name="groovy.lib.dir" location="${env.GROOVY_HOME}/lib"/-->
-	<property name="groovy.lib.dir" location="compiler/lib"/>
-	<!-- Groovy properties -->	
-	
+	<property name="groovy.lib.dir" location="compiler/lib" />
+	<!-- Groovy properties -->
+
 	<path id="svnant.classpath">
-	 <fileset dir="${svnant.lib.dir}">     
-	  <include name="**/*.jar" />
-	 </fileset>
+		<fileset dir="${svnant.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
 	</path>
 
 	<path id="groovy.classpath">
-	 <fileset dir="${groovy.lib.dir}">     
-	  <include name="**/*.jar" />
-	 </fileset>
+		<fileset dir="${groovy.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
 	</path>
 
-	<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy" classpathref="groovy.classpath"/>
-	
-	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
-	
-	
-  <!-- first create our properties -->
-  <condition property="isUnix">
-    <or>
-        <os family="mac" />
-        <os family="unix" />
-    </or>
-  </condition>
+	<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy" classpathref="groovy.classpath" />
 
-  <condition property="isWindows">
-    <os family="windows" />
-  </condition>
-	
+	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
+
+	<!-- first create our properties -->
+	<condition property="isUnix">
+		<or>
+			<os family="mac" />
+			<os family="unix" />
+		</or>
+	</condition>
+
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+
 	<target name="get-version">
 		<groovy>
 			File file = new File(properties["dependencies.yml"])
@@ -73,25 +72,27 @@
 	    </groovy>
 		<echo message="Version del modulo = ${version}"/>
 	</target>
-	
+
 	<target name="dist" depends="get-version">			
 		<echo message="Version del modulo = ${version}"/>
 		
         <antcall target="compiler"/>
 
-	<delete dir="dist" />
-	<mkdir dir="dist" />
+		<delete dir="dist" />
+		<mkdir dir="dist" />
 	
         <antcall target="build-plugins"/>
         <antcall target="generate-module"/>
         <antcall target="build-module-unix"/>
         <antcall target="build-module-windows"/>
 		<antcall target="delete-src-from-zip"/>
-		<!--antcall target="ftp-upload"/>
-		<antcall target="svn-tag"/-->
-		
+
+		<!--
+		<antcall target="ftp-upload"/>
+		<antcall target="svn-tag"/>
+		-->
 	</target>
-	
+
 	<!-- Se generan las clases del módulo. Por ahora se necesita tener python instalado
 	y en el PATH del sistema, para no incluir más librerías-->
 	<target name="generate-module">
@@ -99,86 +100,82 @@
 			<arg line='generate.py' />
 		</exec>
 	</target>
-	
-    <target name="compiler">
+
+	<target name="compiler">
 		<delete dir="${compiler.compiled}" />
 		<mkdir dir="${compiler.compiled}" />
-		<ant target="dist" antfile="buildCompiler.xml" dir="${grammar.dir}"/>
-		<ant target="dist" antfile="buildCompiler.xml" dir="${generator.dir}" />	
-		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar"/>
-		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar"/>
-    </target>
-    
-    	
-    <target name="build-plugins">
-    	<exec executable="eclipse">
-			<arg value="-application"/>
-			<arg value="org.eclipse.ant.core.antRunner"/>
-			<arg value="-f"/>
-			<arg value="${grammar.dir}/exportarPlugin.xml"/>
+		<ant target="dist" antfile="buildCompiler.xml" dir="${grammar.dir}" />
+		<ant target="dist" antfile="buildCompiler.xml" dir="${generator.dir}" />
+		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar" />
+		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar" />
+	</target>
+
+
+	<target name="build-plugins">
+		<exec executable="eclipse">
+			<arg value="-application" />
+			<arg value="org.eclipse.ant.core.antRunner" />
+			<arg value="-f" />
+			<arg value="${grammar.dir}/exportarPlugin.xml" />
 		</exec>
-    </target>
+	</target>
+
+	<!-- Copia los plugins a la carpeta de eclipse -->
+	<target	name="install-plugins">
+		<property environment="env" />
+		<property name="route" value="${env.ECLIPSE_HOME}/dropins" />
+		<echo message="Instalando plugins en ${route}"></echo>
+		<copy todir="${route}">
+			<fileset dir="plugins" >
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+	</target>
 	
 	<target name="build-module-unix" if="isUnix">
-    	<exec executable="play">
-			<arg value="build-module"/>
+		<exec executable="play">
+			<arg value="build-module" />
 		</exec>
-    </target>
+	</target>
 
 
-    <target name="build-module-windows" if="isWindows">
-    	<exec executable="play.bat">
-			<arg value="build-module"/>
+	<target name="build-module-windows" if="isWindows">
+		<exec executable="play.bat">
+			<arg value="build-module" />
 		</exec>
-    </target>
-	
-	<!-- Elimina la carperta de fuentes "src-compiler" del módulo FAP -->	
+	</target>
+
+	<!-- Elimina la carperta de fuentes "src-compiler" del módulo FAP -->
 	<target name="delete-src-from-zip">
 		<delete dir="extraer" />
 		<!--mkdir dir="extraer" /-->
-		<unzip src="dist/fap-${version}.zip" dest="extraer"/>
+		<unzip src="dist/fap-${version}.zip" dest="extraer" />
 		<delete dir="extraer/compiler/src" />
 		<delete dir="dist" />
 		<mkdir dir="dist" />
-		<zip basedir="extraer" destfile="dist/fap-${version}.zip"/>
-		<echo message="Modulo zip creado:  dist/fap-${version}.zip"/>
+		<zip basedir="extraer" destfile="dist/fap-${version}.zip" />
+		<echo message="Modulo zip creado:  dist/fap-${version}.zip" />
 		<delete dir="extraer" />
 	</target>
-		
+
 	<target name="ftp-upload">
-		<ftp action="mkdir"
-		       server="${ftp.server}"
-		       userid="${ftp.user}"
-		       password="${ftp.pass}"
-		       remotedir="${ftp.fap.dir}${version}"
-		/>
+		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version}" />
 
-		<ftp server="${ftp.server}"
-		 	   remotedir="${ftp.fap.dir}${version}/"
-		       userid="${ftp.user}"
-		       password="${ftp.pass}">
-		    <fileset file="dist/fap-${version}.zip"/>
+		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version}/" userid="${ftp.user}" password="${ftp.pass}">
+			<fileset file="dist/fap-${version}.zip" />
 		</ftp>
-		
-		<ftp action="mkdir"
-		       server="${ftp.server}"
-		       userid="${ftp.user}"
-		       password="${ftp.pass}"
-		       remotedir="${ftp.fap.dir}${version}/documentation"
-		/>
 
-		<ftp server="${ftp.server}"
-		 	   remotedir="${ftp.fap.dir}${version}/documentation/"
-		       userid="${ftp.user}"
-		       password="${ftp.pass}">
-		    <fileset dir="documentation">
-		    	<include name="**/*.png"/>
-		    	<include name="**/*.textile"/>
+		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version}/documentation" />
+
+		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version}/documentation/" userid="${ftp.user}" password="${ftp.pass}">
+			<fileset dir="documentation">
+				<include name="**/*.png" />
+				<include name="**/*.textile" />
 			</fileset>
 		</ftp>
 
 	</target>
-	
+
 	<!-- Deprecated!!!!!-->
 	<!--target name="svn-tag">	
 		 <svnSetting id="svnConfig" javahl="${svnant.javahl}" svnkit="${svnant.svnkit}"/> 
@@ -228,7 +225,7 @@
 		<!-- Volvemos al estado del principio -->
 		<!--git command="stash" args="apply" dir=".."/-->
 	</target>
-		
+
 </project>
 
 

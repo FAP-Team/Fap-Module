@@ -51,7 +51,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -72,7 +74,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -93,7 +97,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -114,7 +120,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -135,7 +143,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -156,7 +166,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -177,7 +189,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -198,7 +212,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -219,7 +235,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -240,7 +258,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -261,7 +281,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -282,7 +304,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -314,7 +338,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -335,7 +361,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -372,7 +400,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -393,7 +423,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -414,7 +446,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -435,7 +469,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -456,7 +492,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -477,7 +515,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -498,7 +538,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -519,7 +561,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -540,7 +584,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -561,7 +607,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -582,7 +630,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)
@@ -603,7 +653,9 @@ public class PermissionFapGen  {
 		}else if((ids != null) && (ids.containsKey("idSolicitud"))){
 			solicitud = SolicitudGenerica.findById(ids.get("idSolicitud"));
 		}else if(Singleton.class.isAssignableFrom(SolicitudGenerica.class)){
-			solicitud = SolicitudGenerica.all().first();
+			try {
+				solicitud = (SolicitudGenerica) SolicitudGenerica.class.getMethod("get", Class.class).invoke(null, SolicitudGenerica.class);
+			} catch (Exception e) {}
 		}
 		
 		if (solicitud == null)

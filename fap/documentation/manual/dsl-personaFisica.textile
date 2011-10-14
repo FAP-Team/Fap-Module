@@ -6,24 +6,25 @@ Muestra los campos para rellenar los datos de una persona física.
 
 h2. Parámetros
 
-* **name** - Identificador del elemento
-* **campo** - Campo de tipo PersonaFisica donde se almacenarán los datos
-* **titulo** (Opcional) - Título que aparecerá en la cabecera del grupo
-* **requerido** (Opcional) - Indica si es obligatorio rellenar los campos "necesarios" de persona física.
+* **_[name]_** : Identificador del elemento.
+* **campo = _[campo]_** : Campo de tipo PersonaFisica donde se almacenarán los datos.
+* **titulo = _[string]_** (opcional) : Título que aparecerá en la cabecera del grupo.
+* **requerido** (opcional) : Indica si es obligatorio rellenar los campos necesarios de persona física.
 
 h2. Definición
 
 bc. PersonaFisica:
 	'PersonaFisica' (name=ID) (
-		('campo' '=' campo=STRING) & 
+		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')?
 	)
 ;
 
+
 h2. Ejemplo de uso
 
-bc. PersonaFisica amigo campo="solicitud.datosSolicitante.amigo" titulo="Amigo del solicitante"
+bc. PersonaFisica amigo campo=Solicitud.datosSolicitante.amigo titulo="Amigo del solicitante"
 
 !images/dsl-personaFisica!
 

@@ -69,8 +69,8 @@ public class GEntidadAutomatica {
 	
 	private String generateAttrSimple(Attribute attr) {
 		String out = ""
-		String type = attr.type.simple
-		if (type.equals("LongText")) {
+		String type = attr.type.simple?.type;
+		if ("LongText".equals(type)) {
 			out = generateAreaTexto(attr);
 		}
 		else{
@@ -81,8 +81,8 @@ public class GEntidadAutomatica {
 
 	private String generateAttrSpecial(Attribute attr) {
 		String out = ""
-		String type = attr.type.special
-		if (type.equals("DateTime")) {
+		String type = attr.type.special?.type;
+		if ("DateTime".equals(type)) {
 			out = generateFecha(attr);
 		}
 		else{
@@ -160,14 +160,7 @@ public class GEntidadAutomatica {
 	}
 
 	private boolean esRequerido (Attribute attr) {
-		boolean requerido = false;
-		for (AttributeAnotations anotacion : attr.anotaciones) {
-			if (anotacion.required) {
-				requerido = true;
-				break;
-			}
-		}
-		return requerido;
+		return attr.required;
 	}
 	
 	/* Atributos Compuestos */

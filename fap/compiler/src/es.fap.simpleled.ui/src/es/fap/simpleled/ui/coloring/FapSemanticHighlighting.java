@@ -6,6 +6,7 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.xtext.CrossReference;
+import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.ILocationInFileProvider;
 import org.eclipse.xtext.resource.XtextResource;
@@ -17,6 +18,8 @@ import org.eclipse.xtext.ui.editor.utils.TextStyle;
 import org.eclipse.xtext.util.ITextRegion;
 
 import com.google.inject.Inject;
+
+import es.fap.simpleled.ui.documentation.FapDocumentationProvider;
 
 public class FapSemanticHighlighting extends DefaultHighlightingConfiguration implements ISemanticHighlightingCalculator {
 
@@ -64,9 +67,22 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 		}
 		INode root = resource.getParseResult().getRootNode();
 		for (INode node : root.getAsTreeIterable()) {
-			if (node.getGrammarElement() instanceof CrossReference) {
+			EObject grammar = node.getGrammarElement();
+			if (grammar instanceof CrossReference) {
 				acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
 				continue;
+			}
+			if (grammar instanceof Keyword){
+				Keyword keyword = (Keyword) grammar;
+				if (keyword.getValue().equals("action") || keyword.getValue().equals("agente")){
+					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
+					continue;
+				}
+				String feature = FapDocumentationProvider.getFeature(node);
+				if ("type".equals(feature)){
+					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
+					continue;
+				}
 			}
 			INode node2 = node;
 			while (node2 != null && !node2.hasDirectSemanticElement()) {
@@ -89,5 +105,7 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 			}
 		}
 	}
+	
+	
 
 }

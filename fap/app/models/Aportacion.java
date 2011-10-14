@@ -27,24 +27,24 @@ public class Aportacion extends Model {
 	public String estado;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="aportacion_documentos")
 	public List<Documento> documentos;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public InformacionRegistro informacionRegistro;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento borrador;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento oficial;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento justificante;
 	
 	

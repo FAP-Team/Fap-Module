@@ -23,7 +23,7 @@ import audit.Auditable;
 public class Documentacion extends Model {
 	// Código de los atributos
 	
-	@OneToMany(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="documentacion_documentos")
 	public List<Documento> documentos;
 	

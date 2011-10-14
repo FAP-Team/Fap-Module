@@ -9,3 +9,4 @@
 *.g
 *.tokens
 src-gen/
+/bin

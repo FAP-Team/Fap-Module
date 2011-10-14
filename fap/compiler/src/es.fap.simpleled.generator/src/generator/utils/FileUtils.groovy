@@ -23,7 +23,9 @@ public class FileUtils {
 		LIST : 'app/listas/gen/',
 		MENU_GEN : 'app/views/gen/menu/',
 		PERMISSION: 'app/secure/',
-		PERMISSION_GEN: 'app/secure/gen/'
+		PERMISSION_GEN: 'app/secure/gen/',
+		JSON_DOCUMENTATION: 'compiler/src/es.fap.simpleled.ui/src/es/fap/simpleled/ui/documentation/json/',
+		FAP_DOCUMENTATION: 'documentation/manual/'
 	]
 	
 	public static final HashSet<String> overwrittenFiles = new HashSet<String>();
@@ -74,7 +76,6 @@ public class FileUtils {
 		overwrittenFiles.add(f.getAbsolutePath());
 		if(f.exists()){
 			if (fileIsEqual(filepath, content)){
-				//logger.info("El fichero ${filepath} no ha cambiado, no se sobreescribe");
 				return;	
 			}
 			f.delete();

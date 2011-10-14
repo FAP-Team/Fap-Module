@@ -23,23 +23,23 @@ import audit.Auditable;
 public class Registro extends Model {
 	// Código de los atributos
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento borrador;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento oficial;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento justificante;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public InformacionRegistro informacionRegistro;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public FasesRegistro fasesRegistro;
 	
 	
@@ -47,7 +47,7 @@ public class Registro extends Model {
 	public String tipoFirma;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="registro_firmantes")
 	public List<Firmante> firmantes;
 	

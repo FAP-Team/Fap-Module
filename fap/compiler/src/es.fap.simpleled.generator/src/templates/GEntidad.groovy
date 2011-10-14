@@ -16,6 +16,7 @@ import es.fap.simpleled.led.impl.PaginaImpl
 import es.fap.simpleled.led.impl.TypeImpl
 import java.io.File;
 import org.eclipse.emf.ecore.EObject
+import es.fap.simpleled.led.util.LedDocumentationUtils;
 
 public class GEntidad {
 	
@@ -35,34 +36,34 @@ public class GEntidad {
 		if (entity.getExtends() != null){
 			extendz = "extends "+entity.getExtends().name;
 		} else {
-			if (entity?.anotaciones?.embedded)
+			if (entity.embedded)
 				extendz = "";
 			else
 				extendz = "extends Model";
 		}
 		
-		String doc = LedUtils.findComment(entity);
+		String doc = LedDocumentationUtils.findComment(entity);
 		
 		/// PERSISTENCIA
 		/// Si es una entidad "NonPersist" no debemos establecerle la anotación @Entity
 		String auditable = "@Auditable"
 		String persist = "@Entity";
-		if (entity?.anotaciones?.noAuditable){
+		if (entity.noAuditable){
 			auditable = "";
 		}
-		if (entity?.anotaciones?.nonPersist){
+		if (entity.nonPersist){
 			persist = "";
 			auditable = "";
 		}
-		if (entity?.anotaciones?.embedded){
+		if (entity.embedded){
 			persist = "@Embeddable";
 			auditable = "";
 		}
-		if (entity?.anotaciones?.superClass){
+		if (entity.superClass){
 			persist = "@MappedSuperclass";
 			auditable = "";
 		}
-		if (entity?.anotaciones?.inheritance) {
+		if (entity.inheritance) {
 			// Por ahora solo tenemos este tipo
 			persist += "\n@Inheritance(strategy=InheritanceType.JOINED)";
 		}
@@ -135,11 +136,9 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		List<String> anotaciones = new ArrayList<String>();
 		List<String> columnAnotations = new ArrayList<String>();
 		
-		String cascadeType = "cascade=CascadeType.ALL";
-		String separador = ", "
-		if (attribute?.anotaciones?.noCascade) {
+		String cascadeType = "cascade=CascadeType.ALL,";
+		if (attribute.noCascade) {
 			cascadeType = "";
-			separador = "";
 		}
 		
 		if(attribute.type.compound?.entidad?.name.equals("Nip")){
@@ -148,7 +147,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		
 		if(attribute.type.simple != null){
 			//Atributo de tipo simple
-			type = attribute.type.simple;
+			type = attribute.type.simple.type;
 			if(type.equals("Email")){
 				type = "String";
 				anotaciones.add "@Email";
@@ -168,7 +167,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			prePersistCode += defaultValue(attribute.defaultValue, type, name)
 			
 		} else if (attribute.type.special != null) {
-			type = attribute.type.special;
+			type = attribute.type.special.type;
 			if(type.equals("Email")){
 				type = "String";
 				anotaciones.add "@Email";
@@ -211,18 +210,18 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 					type = "String";
 				}
 				anotaciones.add("@ValueFromTable(\"${compuesto.lista.name}\")");
-			}else if (compuesto?.entidad?.anotaciones?.embedded){
+			}else if (compuesto?.entidad?.embedded){
 				type = compuesto.entidad.name;
 				anotaciones.add "@Embedded";
 			}else if (compuesto.collectionType != null) {
 				//Colecciones
 				anotaciones.add("@ElementCollection");
-				type = "${compuesto.collectionType}<${compuesto.collectionReferencia}>";
+				type = "${compuesto.collectionType}<${compuesto.collectionReferencia.type}>";
 			}
 			else{
 				//Referencia
 				String tipoReferencia = compuesto.tipoReferencia ?: "OneToOne" //Si no especifica tipo es una OneToOne
-				anotaciones.add "@${tipoReferencia}(${cascadeType} ${separador} fetch=FetchType.LAZY)"
+				anotaciones.add "@${tipoReferencia}(${cascadeType} fetch=FetchType.LAZY)"
 				type= compuesto.entidad.name;
 				if(["OneToMany", "ManyToMany"].contains(tipoReferencia)){
 					type = "List<${type}>"
@@ -236,29 +235,29 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			}
 		}
 		
-		if(attribute.anotaciones?.required){
+		if(attribute.required){
 			anotaciones.add "@Required"
 		}
 		
-		if (attribute?.anotaciones?.column != null)
-			anotaciones.add("""@Column(name="${attribute.anotaciones.column}")""");
+		if (attribute.column != null)
+			anotaciones.add("""@Column(name="${attribute.column}")""");
 		
 		// Si el atributo es transient
-		if (attribute?.anotaciones?.isTransient)
+		if (attribute.isTransient)
 			anotaciones.add("@Transient");
 			
 		// Si tiene atributo length (sólo los de tipo String y LongText -> la comprobación se hace en el editor)
-		if (attribute?.anotaciones?.hasLength)
-			columnAnotations.add("length = "+attribute.anotaciones.length);
+		if (attribute.hasLength)
+			columnAnotations.add("length = "+attribute.length);
 
 		// Si tiene atributo validate
-		if ((attribute?.anotaciones?.validate != null) && (attribute.type.simple != null)) {
-			def validType = attribute.type.simple
+		if ((attribute.validate != null) && (attribute.type.simple != null)) {
+			String validType = attribute.type.simple.type;
 			if ((validType.equals("String")) || ((validType.equals("LongText")))) {
-				anotaciones.add("@Match(\"${attribute.anotaciones.validate}\")");
+				anotaciones.add("@Match(\"${attribute.validate}\")");
 			}
 			else if ((validType.equals("Long")) || (validType.equals("Integer")) || (validType.equals("Double"))) {
-				anotaciones.add("@Range(${attribute.anotaciones.validate})")
+				anotaciones.add("@Range(${attribute.validate})")
 			}
 			else if (validType.equals("Boolean")) {
 				anotaciones.add("@IsTrue")
@@ -270,7 +269,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		}
 
 		// Si el atributo tiene comentarios
-		String comments = LedUtils.findComment(attribute);
+		String comments = LedDocumentationUtils.findComment(attribute);
 		
 		String out =
 	"""
@@ -287,7 +286,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		for(Attribute attribute : entity.attributes){
 			CompoundType compuesto = attribute.type.compound;
 			String tipo = compuesto?.entidad?.name;
-			if (compuesto?.entidad?.anotaciones?.embedded){
+			if (compuesto?.entidad?.embedded){
 				refInit += """
 			if (${attribute.name} == null)
 				${attribute.name} = new ${compuesto.entidad.name}();
@@ -299,7 +298,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				${attribute.name} = new HashSet<String>();
 			""";
 			}
-			else if(tipo != null && !attribute.anotaciones?.noConstruct){
+			else if(tipo != null && !attribute.noConstruct){
 				String tipoReferencia = compuesto.tipoReferencia ?: "OneToOne"
 				if(["OneToMany", "ManyToMany"].contains(tipoReferencia)){
 					refInit += """
@@ -320,18 +319,18 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		
 		//Si la clase no tiene referencias miramos si es embedded
 		if(refInit.isEmpty()) {
-			if (entity?.anotaciones?.embedded) {               // hay q inicialiar algun atributo para
+			if (entity?.embedded) {               // hay q inicialiar algun atributo para
 				for(Attribute attribute : entity.attributes){  // que se pueda guardar en BD
 					if (attribute.type.simple != null) {
 						refInit += """
 		if (${attribute.name} == null)
-			${attribute.name} = new ${attribute.type.simple}();""";
+			${attribute.name} = new ${attribute.type.simple.type}();""";
 						break;
 					}
 					if (attribute.type.special != null) {
 						refInit += """
 		if (${attribute.name} == null)
-			${attribute.name} = new ${attribute.type.special}();""";
+			${attribute.name} = new ${attribute.type.special.type}();""";
 						break;
 					}
 				}
@@ -346,7 +345,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		
 		//Constructor para inicializar las referencias
 		String out = ""
-		if (!entity.anotaciones?.noConstruct && !refInit.isEmpty()) {
+		if (!entity.noConstruct && !refInit.isEmpty()) {
 			out += """
 	public ${entity.name} (){
 		init();
@@ -397,7 +396,8 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				continue;
 			}
 			Type tipoBoolean = factory.createType();
-			tipoBoolean.setSimple("Boolean");
+			tipoBoolean.setSimple(factory.createSimpleType());
+			tipoBoolean.getSimple().setType("Boolean");
 			AttributeImpl at = factory.createAttribute();
 			at.setName("pagina" + pag.name);
 			at.setType(tipoBoolean);

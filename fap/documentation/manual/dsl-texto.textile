@@ -2,33 +2,33 @@ h1. Texto
 
 h2. Descripción
 
-Campo de texto
+Campo de texto.
 
 h2. Parámetros
 
-* **name** (opcional) - Identificador del elemento
-* **campo** - Atributo donde se almacenará el texto
-* **titulo** (opcional) - Etiqueta que se mostrará al lado del campo de texto, si no se especifica se mostrará el nombre del campo
-* **ancho** (opcional) - Permite especificar el ancho del campo de texto
-* **ayuda** (opcional) - Muestra, bajo la etiqueta del titulo, el texto de ayuda especificado
-* **requerido** (opcional) - Si se especifica, indica que el campo deberá ser obligatorio rellenarlo
-* **anchoTitulo** (opcional) - Permite indicar el ancho de la etiqueta de titulo.
+* **_[name]_** (opcional) : Identificador del campo de texto.
+* **campo = _[campo]_** : Atributo donde se almacenará el texto.
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará al lado del campo de texto, si no se especifica se mostrará el nombre del campo.
+* **ancho = _[string]_** (opcional) : Permite especificar el ancho del campo de texto.
+* **ayuda = _[string]_** (opcional) : Muestra, bajo la etiqueta del título, el texto de ayuda especificado.
+* **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
+* **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de titulo.
 
 h2. Definición
 
 bc. Texto:
 	'Texto' (name=ID)? (
-		  ('campo' '=' campo=STRING)
+		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('ancho' '=' ancho=STRING)?
 		& ('ayuda' '=' ayuda=STRING)?
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 	)
 ;
 
-
 h2. Ejemplo de uso
 
-bc. Texto campo="solicitud.solicitante.fisica.nombre" titulo="Nombre" requerido
+bc. Texto campo=Solicitud.solicitante.fisica.nombre titulo="Nombre" requerido
 
 !images/dsl-texto!

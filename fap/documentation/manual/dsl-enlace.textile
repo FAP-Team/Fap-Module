@@ -6,24 +6,27 @@ Muestra un enlace a otra pagina.
 
 h2. Parámetros
 
-* **name** - (opcional) - Identificador del elemento
-* **titulo** - (opcional) - Etiqueta que se mostrará en el enlace
-* **pagina** - Pagina a la que apunta el enlace, puede ser externa o interna
-* **campo** - (Opcional)Indica donde se encuentra almacenada la url del enlace.
-* **destino**  (Opcional) - Indica al enlace donde tiene que abrirse (campo target en html)
+* **_[name]_** (opcional) : Identificador del elemento.
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará en el enlace.
+* **pagina = _[pagina]_** (opcional) : Página de la aplicación a la que apunta el enlace.
+* **campo = _[campo]_** (opcional) : Indica un atributo en el que se encuentra almacenada una url.
+* **url = _[string]_** (opcional) : Especifica una url externa a la aplicación.
+* **destino = _[string]_** (opcional) : Indica al enlace donde tiene que abrirse (campo target en html).
+* **estilo = _[string]_** (opcional) : Especifica un estilo CSS para el enlace.
 
 h2. Definición
 
 bc. Enlace:
 	'Enlace' (name=ID)? (
-		  (('pagina' '=' pagina=STRING) | ('campo' '=' campo=STRING)) 
+		(('pagina' '=' pagina=[Pagina|QN]) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING)) 
 		& ('titulo' '=' titulo=STRING)?
 		& ('destino' '=' destino=STRING)?
+		& ('estilo' '=' estilo=STRING)?
 	)
 ;
 
 h2. Ejemplo de uso
 
-bc. Enlace pagina="Presentacion" titulo="Ir a presentación"
+bc. Enlace pagina=Solicitud.Presentacion titulo="Ir a presentación"
 
-bc. Enlace campo="solicitud.urlDescarga" titulo="Obtener solicitud" destino="_blank"
+bc. Enlace campo=Solicitud.aportaciones.actual.borrador.urlDescarga titulo="Obtener solicitud" destino="_blank"

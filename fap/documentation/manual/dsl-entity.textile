@@ -1,0 +1,72 @@
+h1. Entidad
+
+h2. Descripción
+
+Permite definir una entidad, por defecto se creara en base de datos una tabla con los atributos de la entidad.
+
+h2. Parámetros
+
+* **_[name]_** : Identificador de la entidad. Debe empezar por mayúsculas.
+* **extends _[entidad]_** (opcional) : Entidad padre de la que extenderá esta entidad. Heredará todos sus atributos definidos.
+* **tableName = _[string]_** (opcional) : Nombre en base de datos de la tabla que almacena los atributos de la entidad.
+* **nonPersist** (opcional) : La entidad no se almacenara en base de datos.
+* **embedded** (opcional) : No se creara una tabla para almacenar los atributos de la entidad, estos se almacenaran en la tabla de la endidad que la referencie.
+* **inheritance = joined** (opcional) : Hhace que las clases hijas creen su propia tabla para almacenar sus atributos.
+* **superClass** (opcional) : No se creará una tabla en la base de datos para esta entidad, sus atributos se almacenaran en las tablas que creen sus hijos.
+* **noConstruct** (opcional) : No se genera el constructor para esta entidad.
+* **noAuditable** (opcional) : No se realizará un seguimiento de los cambios realizados en los atributos de la entidad.
+
+h3. Entidades Singleton
+
+Aquellas entidades que extiendan de la entidad _Singleton_ tendrán una peculiaridad: en base de datos solo estará permitido como máximo una instancia de la clase generada por esta entidad. Ejemplo:
+
+bc. Entidad Quartz extends Singleton{
+	Boolean execute
+	Boolean mostrarTodasSolicitudes
+	...
+}
+
+En los controladores, para obtener correctamente la instancia, o crearla en caso de que no existiera anteriormente, deberá hacerse uso del método _get_ de dicha clase, al que se le tiene que pasar como parámetro la propia clase. Ejemplo:
+
+bc. Quartz.get(Quartz.class);
+
+h3. Entidad Solicitud
+
+La entidad _Solicitud_ es una entidad especial dentro de las aplicaciones _FAP_, ya que en todas ellas ha de estar definida, y si no lo está, se generará automaticamente. Además, esta entidad extiende (aunque no se indique) de _SolicitudGenerica_, la cual ya viene proveída en el módulo y contiene todos aquellos atributos comunes a las aplicaciones.
+
+h3. "Atributos":dsl-atributo
+
+Se pueden definir uno o varios atributos en la entidad, los cuales crearán los mismos en las clases de esas entidades. Para definir un atributo "véase la documentación correspondiente":dsl-attribute.
+
+
+h2. Definición
+
+bc.. Entity:
+	'Entidad' name=IDS
+		(
+		("extends" extends=[Entity|IDS])?
+		& ('tableName' '=' tableName=STRING)? 
+		& (nonPersist?="nonPersist")?
+		& (embedded?="embeddable")?
+		& (inheritance?="inheritance" "=" "joined")?
+		& (superClass?="superClass")?
+		& (noConstruct?="noConstruct")?
+		& (noAuditable?="noAuditable")?
+		)
+	'{'
+		attributes+=Attribute*
+	'}'
+;
+
+h2. Ejemplos de uso
+
+bc.. Entidad DatosSolicitante {
+	Lista cnae cnaePrincipal
+	PersonaFisica amigo
+	PersonaJuridica amigoJuridico
+	SuperPersona superman
+}
+
+Entidad SuperPersona extends Persona {
+	String unCampo
+}

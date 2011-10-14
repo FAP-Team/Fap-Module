@@ -2,6 +2,8 @@ package es.fap.simpleled.ui.documentation;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
@@ -10,61 +12,150 @@ import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension4;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.xtext.TerminalRule;
+import org.eclipse.xtext.Assignment;
+import org.eclipse.xtext.Keyword;
+import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
-import org.eclipse.xtext.impl.KeywordImpl;
-import org.eclipse.xtext.nodemodel.ICompositeNode;
-import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider;
 
+import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.util.DocElemento;
+import es.fap.simpleled.led.util.DocParametro;
+import es.fap.simpleled.led.util.LedDocumentationUtils;
 
 public class FapDocumentationProvider extends DefaultEObjectHoverProvider implements IEObjectDocumentationProvider {
 
 	public static INode node;
 	public static boolean reference;
 	
-	public String getDocumentation(EObject o) {
-		if (o instanceof KeywordImpl){
-			EObject semantic = FapEObjectHelper.getKeywordContainer(node);
-			return "<b>EObject:</b> " + semantic.getClass().getSimpleName() + "   <b>Keyword:</b> " + ((KeywordImpl)o).getValue();
+	/*
+	 * Reglas de la gramática que están documentadas. Sintaxis: 
+	 * Si la regla y la palabra reservada son distintas ---> nombre_regla:nombre_palabra_reservada
+	 * Si son iguales ---> nombre_regla
+	 */
+	public static String[] docRulesArray = {"Entity:Entidad", "Attribute", "Formulario", "Menu",
+		"MenuGrupo:Grupo", "MenuEnlace:Enlace", "Pagina", "Popup", "Grupo", "AgruparCampos", "Texto",
+		"AreaTexto", "Check", "Enlace", "Wiki", "Boton", "Fecha", "Combo", "Form", "Tabla",
+		"Columna", "SubirArchivo", "SubirArchivoAed", "EditarArchivoAed", "FirmaPlatinoSimple:FirmaSimple",
+		"Direccion", "Nip", "PersonaFisica", "PersonaJuridica", "Persona", "Solicitante",
+		"EntidadAutomatica", "Lista"
+	};
+	
+	public static Map<String, String> docRules = arrayToSet(docRulesArray);
+	
+	public static Map<String, String> arrayToSet(String[] array){
+		Map<String, String> map = new HashMap<String, String>();
+		for (String str: array){
+			if (str.contains(":")){
+				map.put(str.split(":")[0], str.split(":")[1]);
+			}
+			else{
+				map.put(str, str);
+			}
 		}
-		if (o instanceof Entity){
-			return new EntidadDocumentation().getDocumentation(o);
-		}
-		
-		String comment = parse(findComment(o));
-		if (!comment.equals("")){
-			comment = "<p>" + comment + "</p>";
-		}
-		
-		if (reference){
-			return comment + "<b>EObject:</b> " + o.getClass().getSimpleName() + " (referencia)";
-		}
-		return comment + "<b>EObject:</b> " + o.getClass().getSimpleName();
+		return map;
 	}
 	
-	protected String getFirstLine(EObject o) {
-		if (o instanceof Entity){
-			return new EntidadDocumentation().getFirstLine(o);
+	public static EObject getDocRule(EObject semantic){
+		while (semantic != null && !docRules.containsKey(JsonDocumentation.getRuleName(semantic))){
+			semantic = semantic.eContainer();
 		}
-		String label = getLabel(o);
-		if (label == null){
-			label = "";
+		return semantic;
+	}
+	
+	public String getDocumentation(EObject o) {
+		INode node_ = node;
+		node = null;
+		if (o.eIsProxy()){
+			return null;
 		}
-		return o.eClass().getName() + " <b>" + label + "</b>";
+		String feature = getFeature(node_);
+		if ("campo".equals(feature)){
+			if (o instanceof Entity){
+				Entity entidad = (Entity) o;
+				return getDocumentation(entidad, entidad.getName());
+			}
+			if (o instanceof Attribute){
+				Attribute atributo = (Attribute) o;
+				return getDocumentation((Entity) atributo.eContainer(), atributo.getName());
+			}
+		}
+		EObject semantic = null;
+		if (node_ != null){
+			semantic = getDocRule(NodeModelUtils.findActualSemanticObjectFor(node_));
+		}
+		else{
+			semantic = o;
+		}
+		if (semantic == null){
+			return "";
+		}
+		if (o instanceof Keyword){
+			Keyword keyword = (Keyword) o;
+			char first = keyword.getValue().charAt(0);
+			if (!Character.isLetter(first)){
+				return "";
+			}
+			if (first == Character.toUpperCase(first)){
+				DocElemento elemento = JsonDocumentation.getElemento(keyword, semantic);
+				if (elemento != null){
+					return LedDocumentationUtils.getDocumentation(elemento);
+				}
+			}
+			else{
+				DocParametro parametro = JsonDocumentation.getParametro(keyword, semantic);
+				if (parametro != null){
+					return LedDocumentationUtils.getDocumentation(parametro);
+				}
+			}
+		}
+		if (feature != null){
+			DocParametro parametro = JsonDocumentation.getParametro(feature, semantic);
+			if (parametro != null){
+				return LedDocumentationUtils.getDocumentation(parametro);
+			}
+		}
+		return "";
+	}
+	
+	public String getDocumentation(Entity entidad, String name) {
+		String text = NodeModelUtils.getNode(entidad).getText();
+		text = text.trim().replaceAll("\n", "</br>").replaceAll(" ", "&nbsp;").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		return text.replaceFirst(name, "<b>" + name + "</b>");
+	}
+	
+	public static String getFeature(INode node){
+		while (node != null){
+			EObject grammar = node.getGrammarElement();
+			while (grammar != null){
+				if (grammar instanceof Assignment){
+					Assignment assignment = (Assignment) grammar;
+					ParserRule rule = getParserRule(assignment);
+					if (docRules.containsKey(rule.getName())){
+						return assignment.getFeature();
+					}
+				}
+				grammar = grammar.eContainer();
+			}
+			node = node.getParent();
+		}
+		return null;
+	}
+	
+	public static ParserRule getParserRule(Assignment assignment){
+		EObject container = assignment;
+		while (! (container instanceof ParserRule)){
+			container = container.eContainer();
+		}
+		return (ParserRule) container;
 	}
 	
 	protected String getHoverInfoAsHtml(EObject o) {
-//		if (!hasHover(o))
-//			return null;
 		StringBuffer buffer = new StringBuffer();
 		String firstLine = getFirstLine(o);
 		String documentation = getDocumentation(o);
@@ -82,46 +173,11 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 				buffer.append (documentation);
 			}
 		}
-		
-		return buffer.toString();
-	}
-	
-	String ruleName = "ML_COMMENT";
-	String startTag = "/\\*\\*?"; // regular expression
-	String endTag = "\\*/"; // regular expression
-	String linePrefix = "\\** ?"; // regular expression
-	String linePostfix = "\\**"; // regular expression
-	String whitespace = "( |\\t)*"; // regular expression
-	
-	protected String findComment(EObject o) {
-		String returnValue = "";
-		ICompositeNode node = NodeModelUtils.getNode(o);
-		if (node != null) {
-			// get the last multi line comment before a non hidden leaf node
-			for (INode abstractNode : node.getAsTreeIterable()) {
-				if (abstractNode instanceof ILeafNode && !((ILeafNode) abstractNode).isHidden())
-					break;
-				if (abstractNode instanceof ILeafNode && abstractNode.getGrammarElement() instanceof TerminalRule
-						&& ruleName.equalsIgnoreCase(((TerminalRule) abstractNode.getGrammarElement()).getName())) {
-					String comment = ((ILeafNode) abstractNode).getText();
-					if (comment.matches("(?s)" + startTag + ".*")) {
-						returnValue = comment;
-					}
-				}
-			}
+		String bufferString = buffer.toString();
+		if (bufferString.equals("")){
+			return null;
 		}
-		return returnValue;
-	}
-
-	public String parse(String comment) {
-		if (comment != null && !comment.equals("")) {
-			comment = comment.replaceAll("\\A" + startTag, "");
-			comment = comment.replaceAll(endTag + "\\z", "");
-			comment = comment.replaceAll("(?m)^"+ whitespace + linePrefix, "");
-			comment = comment.replaceAll("(?m)" + whitespace + linePostfix + whitespace + "$", "");
-			return comment.trim();
-		} else
-			return "";
+		return bufferString;
 	}
 	
 	private IInformationControlCreator hoverControlCreator;
@@ -140,9 +196,6 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 			fInformationPresenterControlCreator = informationPresenterControlCreator;
 		}
 
-		/*
-		 * @see org.eclipse.jdt.internal.ui.text.java.hover.AbstractReusableInformationControlCreator#doCreateInformationControl(org.eclipse.swt.widgets.Shell)
-		 */
 		@Override
 		public IInformationControl doCreateInformationControl(Shell parent) {
 			String tooltipAffordanceString = EditorsUI.getTooltipAffordanceString();
@@ -165,9 +218,6 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 			}
 		}
 
-		/*
-		 * @see org.eclipse.jdt.internal.ui.text.java.hover.AbstractReusableInformationControlCreator#canReuse(org.eclipse.jface.text.IInformationControl)
-		 */
 		@Override
 		public boolean canReuse(IInformationControl control) {
 			if (!super.canReuse(control))
@@ -190,10 +240,13 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		
 		public void setSize(int width, int height) {
 			Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-			super.setSize(d.width / 4, d.height / 4);
+			super.setSize(d.width / 4, d.height / 5);
 		}
 		
 	}
 	
-
+	protected String getFirstLine(EObject o) {
+		return "";
+	}
+	
 }

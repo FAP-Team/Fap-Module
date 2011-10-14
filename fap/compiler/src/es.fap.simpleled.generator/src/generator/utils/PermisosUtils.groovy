@@ -1,7 +1,5 @@
 package generator.utils;
 
-import wfcomponent.End;
-
 public class PermisosUtils {
 	
 	public static String className(){

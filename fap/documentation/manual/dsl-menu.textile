@@ -2,79 +2,68 @@ h1. Menú
 
 h2. Descripción
 
-Elemento opcional en el formulario, que muestra a la izquierda de sus páginas un menú de navegación que permite incluir enlaces a los siguientes elementos:
-* Páginas del formulario
-* Páginas de otros formularios
-* Popups
-* URLs externas
-* Acciones (método de un controlador)
-Además, varios enlaces pueden ser agrupados para que aparezcan dentro de una misma área rectangular y reciban los mismos permisos.
-
-Dentro de Menú se pueden utilizar los siguientes elementos:
-# "Enlace":dsl-menu-enlace
-# "Grupo":dsl-menu-grupo
+Elemento opcional en el formulario, que muestra a la izquierda de sus páginas un menú de navegación que permite incluir enlaces a los siguientes elementos: páginas de la aplicación, popups, URLs externas, y acciones de controladores. Además, varios enlaces pueden ser agrupados para que aparezcan dentro de una misma área rectangular y reciban los mismos permisos. Dentro de Menú se pueden utilizar los siguientes elementos: "Enlace":dsl-menuEnlace y "Grupo":dsl-menuGrupo.
 
 h2. Parámetros
 
-No tiene parámetros
+No tiene parámetros.
 
 h2. Definición
 
-bc. Menu:
-   'Menu' '{'
-      elementos +=MenuElemento+
-   '}'
+bc.. Menu:
+	'Menu' '{'
+		elementos +=MenuElemento+
+	'}'
 ;
 
-bc. MenuElemento:
-   MenuGrupo | MenuEnlace
+MenuElemento:
+	MenuGrupo | MenuEnlace
 ;	
 
-bc. MenuGrupo:
-   'Grupo' titulo=STRING 
-   (permiso?="permiso" "=" namePermiso=STRING)? '{'
-      elementos +=MenuElemento*
-   '}'
+MenuGrupo:
+	'Grupo' titulo=STRING 
+	("permiso" "=" permiso=[Permiso])?  '{'
+		elementos +=MenuElemento*
+	'}'
 ;
 
-bc. MenuEnlace:
-   'Enlace' 
-      titulo=STRING
-      (permiso?="permiso" "=" namePermiso=STRING)?
-      (
-         ('pagina' '=' pagina=STRING) | 
-         ('accion' '=' accion=STRING) |
-         ('url' '=' url=STRING) |
-         ('popup' '=' popup=[Popup])
-      )?
+MenuEnlace:
+	'Enlace' 
+		titulo=STRING
+		("permiso" "=" permiso=[Permiso])?
+		(
+			('pagina' '=' pagina=[Pagina|QN]) | 
+			('accion' '=' accion=STRING) |
+			('url' '=' url=STRING) |
+			('popup' '=' popup=[Popup])
+		)?
 ;
-
 
 h2. Ejemplos de uso
 
 h3. Menú con un enlace
 
 bc. Menu {
-   Enlace "Solicitante" pagina="Solicitante"
+   Enlace "Solicitante" pagina=Solicitud.Solicitante
 }
 
 h3. Menú con varios enlaces y grupos
 
-bc. Menu {
-   Enlace "Volver" pagina="Principal/Solicitudes"
+bc.. Menu {
+	Enlace "Volver" pagina=Principal.Solicitudes
    
-   Grupo "Solicitud" {
-      Enlace "Solicitante" pagina="Solicitante"
-      Enlace "Documentación" pagina="Documentacion"
-   }
+	Grupo "Solicitud" {
+		Enlace "Solicitante" pagina=Solicitud.Solicitante
+		Enlace "Documentación" pagina=Solicitud.Documentacion
+	}
    
-   Grupo "Instruccion" permiso="instruccion" {
-      Enlace "Aportación de Documentacion" pagina="Aportacion"
-      Enlace "Verificacion"
-      Enlace "Seguimiento"
-   }
+	Grupo "Instruccion" permiso=instruccion {
+		Enlace "Aportación de Documentacion" pagina=Solicitud.Aportacion
+		Enlace "Verificacion"
+		Enlace "Seguimiento"
+	}
    
-   Enlace "Salir" accion="fap.SecureController.logout"
+	Enlace "Salir" accion="fap.SecureController.logout"
 }
 
 h3. Resultado

@@ -2,38 +2,40 @@ h1. Pagina
 
 h2. Descripción
 
-Crear una pagina dentro de un Formulario. Por defecto la pagina define un Form que contendra todos los elementos de la pagina.
-
+Crea una página dentro de un Formulario. Por defecto la pagina define un Form que contendra todos los elementos de la página.
 
 h2. Parámetros
 
-* **name** - Identificador del elemento
-* **noForm** (opcional) - No se crea el Form por defecto, permite definir manualmente Form dentro de la pagina.
-* **noAutenticar** (opcional) - Los usuario no registrados pueden acceder a la pagina. 
-* **guardarParaPreparar** (opcional) - Guarda en base de datos si la pagina fue guardada, sirve para comprobar que todas las paginas fueron guardadas antes de presentar la solicitud. 
-* **permiso** (opcional) - Nombre del permiso asociado a la pagina. 
+* **_[name]_** : Identificador de la página.
+* **noForm** (opcional) : No se crea el Form por defecto, permite definir manualmente Forms dentro de la página.
+* **noAutenticar** (opcional) : Los usuario no registrados pueden acceder a la página. 
+* **guardarParaPreparar** (opcional) : Guarda en base de datos si la página fue guardada, sirve para comprobar que todas las páginas fueron guardadas antes de presentar la solicitud.
+* **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado a la página.
+* **inicial** (opcional) : Establece esta página como la inicial de la aplicación.
+* **titulo = _[string]_** (opcional) : Define un título para la página.
 
 h2. Definición
 
 bc. Pagina:
-	'Pagina' name=ID 
+	'Pagina' name=IDS
 	(
 		(noForm?='noForm')? 
 		& (noAutenticar?='noAutenticar')?
 		& (guardarParaPreparar?="guardarParaPreparar")?
-		& (permiso?="permiso" "=" namePermiso=STRING)? 
+		& ("permiso" "=" permiso=[Permiso])?
+		& (inicial?="inicial")?
+		& (titulo?="titulo" "=" namePagina=STRING)?
 	)
 	'{'
 		elementos+=Elemento*
 	'}'
 ;
 
-
 h2. Ejemplo de uso
 
 h3. Pagina estandar
 
-bc.	Pagina Solicitante {
+bc. Pagina Solicitante {
 	Persona personaSolicitante titulo="Datos solicitante" ...
 	Direccion titulo="Domicilio Social" ... 
 	Texto titulo="Teléfono" ...
@@ -42,7 +44,7 @@ bc.	Pagina Solicitante {
 
 h3. Pagina donde el usuario define Form dentro de la pagina
 
-bc.	Pagina Solicitudes noForm{
+bc. Pagina Solicitudes noForm{
 	....
 	Form nuevaSolicitud {
 		Boton titulo="Nueva Solicitud"

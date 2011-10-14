@@ -10,12 +10,14 @@ public class ComboValidator extends LedElementValidator {
 
 	@Override
 	public boolean aceptaEntidad(Entity entidad) {
-		return false;
+//		return false;
+		return true;
 	}
 
 	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
-		return LedEntidadUtils.esLista(atributo) || LedEntidadUtils.esColeccion(atributo);
+//		return LedEntidadUtils.esLista(atributo) || LedEntidadUtils.esColeccion(atributo);
+		return true;
 	}
 
 	@Override
@@ -23,15 +25,15 @@ public class ComboValidator extends LedElementValidator {
 		return "El campo tiene que ser de tipo lista o coleccion";
 	}
 	
-	@Override
-	public void validateCampo(Campo campo, LedJavaValidator validator) {
-		Attribute attr = LedCampoUtils.getUltimoAtributo(campo);
-		if (attr != null && attr.getType().getSimple() != null){
-//			validator.myWarning("Con un campo de tipo simple, tendrá que rellenar los valores de la lista manualmente", campo, null, 0);
-		}
-		else{
-			super.validateCampo(campo, validator);
-		}
-	}
+//	@Override
+//	public void validateCampo(Campo campo, LedJavaValidator validator) {
+//		Attribute attr = LedCampoUtils.getUltimoAtributo(campo);
+//		if (attr != null && attr.getType().getSimple() != null){
+////			validator.myWarning("Con un campo de tipo simple, tendrá que rellenar los valores de la lista manualmente", campo, null, 0);
+//		}
+//		else{
+//			super.validateCampo(campo, validator);
+//		}
+//	}
 	
 }

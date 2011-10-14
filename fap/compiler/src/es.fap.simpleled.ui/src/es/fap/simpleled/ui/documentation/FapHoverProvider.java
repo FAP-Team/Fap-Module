@@ -41,6 +41,7 @@ public class FapHoverProvider extends DispatchingEObjectTextHover {
 				if(leafNode.isHidden() && leafNode.getOffset() == offset) {
 					leafNode = NodeModelUtils.findLeafNodeAtOffset(resource.getParseResult().getRootNode(), offset - 1);
 				}
+				FapDocumentationProvider.node = leafNode;
 				FapDocumentationProvider.reference = true;
 				return Tuples.create(crossLinkedEObject, (IRegion) new Region(leafNode.getOffset(), leafNode.getLength()));
 			}

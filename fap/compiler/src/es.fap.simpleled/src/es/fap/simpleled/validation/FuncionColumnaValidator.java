@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -50,8 +51,9 @@ public class FuncionColumnaValidator {
 	private static List<Entity> getEntidades(EObject obj){
 		ArrayList<Entity> entidades = new ArrayList<Entity>();
 		for (Resource r: obj.eResource().getResourceSet().getResources()){
-			if (r.getContents().get(0) instanceof Model){
-				Model model = (Model) r.getContents().get(0);
+			EList<EObject> contents = r.getContents(); 
+			if (!contents.isEmpty() && contents.get(0) instanceof Model){
+				Model model = (Model) contents.get(0);
 				for (Entity entidad: model.getEntidades()){
 					entidades.add(entidad);
 				}

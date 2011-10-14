@@ -23,13 +23,14 @@ Elementos que pueden ser utilizados en el DSL
 
 h3. Elementos Persistencia y Listas
 
-# "Entidad":dsl-entidad
-# "Atributo":dsl-atributo
+# "Entidad":dsl-entity
+# "Atributo":dsl-attribute
 
 h3. Elementos Gráficos
 
 # "texto":dsl-texto
 # "area texto":dsl-areaTexto
+# "boton":dsl-boton
 # "check":dsl-check
 # "enlace":dsl-enlace
 # "combo":dsl-combo
@@ -37,7 +38,6 @@ h3. Elementos Gráficos
 # "wiki":dsl-wiki
 # "pagina":dsl-pagina
 # "popup":dsl-popup
-# "clave valor":dsl-claveValor
 # "fecha":dsl-fecha
 # "firma simple":dsl-firmaPlatinoSimple
 # "agrupar campos":dsl-agruparCampos

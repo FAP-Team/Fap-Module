@@ -1,7 +1,9 @@
 package templates;
 
+import java.awt.event.ItemEvent;
 
 import es.fap.simpleled.led.*;
+import generator.utils.CampoPermisoUtils
 import generator.utils.EntidadUtils
 import generator.utils.FileUtils;
 import generator.utils.HashStack;
@@ -23,27 +25,31 @@ public class GPermiso {
 	private String permisoVarsCode(List<PermisoVar> vars){
 		String varStr = "";
 		for(PermisoVar var : vars){
-			String varName = var.getVar();
-			EntidadUtils entity = EntidadUtils.create( var.getTipo());
+			String varName = var.name;
+			EntidadUtils entity = EntidadUtils.create(var.getTipo());
 			
 			if(var.sql== null){
 				//Variable simple
 				varStr += """
-		//${var.var}
+		//${var.name}
 		${entity.clase} ${varName} = null;
 		if((vars != null) && (vars.containsKey("${varName}"))){
 			${varName} = (${entity.clase}) vars.get("${varName}");
 		}else if((ids != null) && (ids.containsKey("${entity.id}"))){
 			${varName} = ${entity.clase}.findById(ids.get("${entity.id}"));
 		}else if(Singleton.class.isAssignableFrom(${entity.clase}.class)){
-			${varName} = ${entity.clase}.all().first();
+			try {
+				${varName} = (${entity.clase}) ${entity.clase}.class.getMethod("get", Class.class).invoke(null, ${entity.clase}.class);
+			} catch (Exception e) {}
 		}
 		
 		if (${varName} == null)
 			return false;
 """
 			}else{
-				String params = var.sqlParams?.sqlParams?.join(",");
+				String params = var.sqlParams?.sqlParams?.collect{
+					return CampoPermisoUtils.create(it).str;
+				}.join(",");
 				if(params != null && !params.trim().isEmpty())
 					params = ", " + params;
 				else
@@ -51,7 +57,7 @@ public class GPermiso {
 					
 			//Variable con consulta
 				varStr += """
-		//${var.var}
+		//${var.name}
 		${entity.clase} ${varName} = ${entity.clase}.find("${var.sql}"${params}).first();
 				"""
 			}
@@ -76,25 +82,43 @@ public class GPermiso {
 			else{
 				out = PermisosUtils.className() + r.getPermiso().getName() + "(action, ids, vars)";
 			}
-		} else if(r.getGroupOp() != null){
-			String realOp = r.getGroupOp().replaceAll("\\s+", "")
-			String group = r.getRightGroup().join(", ");
-			out = "utils.StringUtils.${realOp}(${r.left}.toString(), ${group})"	
-		}else{
-			if ((r.left.equals("null")) || (r.right.equals("null"))) {
-				String op = r.getSimpleOp().equals('=') ? '==' : r.getSimpleOp();
-				out = "${r.left} ${op} ${r.right}";
+		}
+		else{
+			CampoPermisoUtils campo = CampoPermisoUtils.create(r.left);
+			if(r.getGroupOp() != null){
+				String realOp = r.getGroupOp().replaceAll("\\s+", "")
+				String group = r.getRightGroup().collect{
+					return getPermisoRuleCheckRightStr(it);
+				}.join(", ");
+				out = "utils.StringUtils.${realOp}(${campo.str}.toString(), ${group})"	
 			}
-			else if(r.getSimpleOp().equals("=")){
-				out = "${r.left}.toString().equals(${r.right}.toString())";
-			}else{
+			else{
+				String right = getPermisoRuleCheckRightStr(r.right);
+				if ((right.equals("null"))) {
+					String op = r.getSimpleOp().equals('=') ? '==' : r.getSimpleOp();
+					out = "${campo.str} ${op} null";
+				}
+				else if(r.getSimpleOp().equals("=")){
+					out = "${campo.str}.toString().equals(${right}.toString())";
+				}
+				else{
 				// !=
-				out = "!${r.left}.toString().equals(${r.right}.toString())";
+				out = "!${campo.str}.toString().equals(${right}.toString())";
+				}
 			}
 		}
 		return out;
 	}
 
+	private String getPermisoRuleCheckRightStr(PermisoRuleCheckRight right){
+		if (right.str != null){
+			return "\"" + right.str + "\"";
+		}
+		if (right.isNulo()){
+			return "null";
+		}
+		return CampoPermisoUtils.create(right.campo).str;
+	}
 	
 	private String permisoRuleCode(PermisoPrimary r){
 		return "(" + permisoRuleCode(r.getLeft()) + ")";

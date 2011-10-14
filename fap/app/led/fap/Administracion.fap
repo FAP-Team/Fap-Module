@@ -34,7 +34,7 @@ Formulario Administracion permiso=administrador{
 	
 	Popup PopupUsuario campo=Agente modificar crear borrar titulo="Usuario" {
 		Texto campo=Agente.username titulo="Username" requerido
-		Combo campo=Agente.roles titulo="Roles" multiple busqueda requerido 
+		Combo campo=Agente.roles titulo="Roles" busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido
 	}
 	

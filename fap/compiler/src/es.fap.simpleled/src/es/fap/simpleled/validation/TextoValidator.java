@@ -2,6 +2,7 @@ package es.fap.simpleled.validation;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 
 public class TextoValidator extends LedElementValidator{
 
@@ -12,18 +13,17 @@ public class TextoValidator extends LedElementValidator{
 
 	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
-		String simple = atributo.getType().getSimple();
-		String special = atributo.getType().getSpecial();
+		String simple = LedEntidadUtils.getSimpleTipo(atributo);
 		return (
 			"String".equals(simple) ||
 			"Long".equals(simple) ||
 			"Integer".equals(simple) ||
 			"Double".equals(simple) ||
 			"LongText".equals(simple) ||
-			"Telefono".equals(special) ||
-			"Email".equals(special) ||
-			"Moneda".equals(special) ||
-			"Cif".equals(special)
+			"Telefono".equals(simple) ||
+			"Email".equals(simple) ||
+			"Moneda".equals(simple) ||
+			"Cif".equals(simple)
 		);
 	}
 

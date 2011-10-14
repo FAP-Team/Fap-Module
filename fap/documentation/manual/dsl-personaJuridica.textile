@@ -6,26 +6,26 @@ Muestra los campos para rellenar los datos de una persona jurídica.
 
 h2. Parámetros
 
-* **name** - Identificador del elemento
-* **campo** - Campo de tipo PersonaFisica donde se almacenarán los datos
-* **titulo** (Opcional) - Título que aparecerá en la cabecera del grupo
-* **requerido** (Opcional) - Indica si es obligatorio rellenar los campos "necesarios" de persona física.
-* **permiso** (Opcional) - Permiso que se le aplicará al PopUp de creación de representantes
+* **_[name]_** : Identificador del elemento.
+* **campo = _[campo]_** : Campo de tipo PersonaFisica donde se almacenarán los datos.
+* **titulo = _[string]_** (opcional) : Título que aparecerá en la cabecera del grupo.
+* **requerido** (opcional) : Indica si es obligatorio rellenar los campos necesarios de persona física.
+* **permiso** (opcional) : Permiso que se le aplicará al PopUp de creación de representantes.
 
 h2. Definición
 
 bc. PersonaJuridica:
 	'PersonaJuridica' (name=ID) (
-		('campo' '=' campo=STRING) & 
+		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING) &
 		(requerido?='requerido')? &
-		( permiso?="permiso" "=" namePermiso=STRING)?
+		("permiso" "=" permiso=[Permiso])?
 	)
 ;
 
 h2. Ejemplo de uso
 
-bc. PersonaJuridica amigoJuridico campo="solicitud.datosSolicitante.amigoJuridico" titulo="Persona Jurídica"
+bc. PersonaJuridica amigoJuridico campo=Solicitud.datosSolicitante.amigoJuridico titulo="Persona Jurídica"
 
 !images/dsl-personaJuridica!
 

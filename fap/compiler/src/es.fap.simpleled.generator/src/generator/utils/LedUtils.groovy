@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -36,7 +38,8 @@ public class LedUtils {
 		mapNodes = new HashMap<Class, List<EObject>>();
 		
 		for (Resource r: obj.eResource().getResourceSet().getResources()){
-			if (r.getContents().get(0) instanceof Model){
+			EList<EObject> contents = r.getContents();
+			if (!contents.isEmpty() && contents.get(0) instanceof Model){
 				for (EObject o: r.getAllContents()){
 					allNodes.add(o);
 					if (mapNodes.get(o.getClass()) == null){
@@ -95,46 +98,5 @@ public class LedUtils {
 		}
 		return solicitud;
 	}
-	
-	public static String findComment(EObject o) {
-		String ruleName = "ML_COMMENT";
-		String startTag = "/\\*\\*?"; // regular expression
-		
-		String returnValue = "";
-		ICompositeNode node = NodeModelUtils.getNode(o);
-		if (node != null) {
-			// get the last multi line comment before a non hidden leaf node
-			for (INode abstractNode : node.getAsTreeIterable()) {
-				if (abstractNode instanceof ILeafNode && !((ILeafNode) abstractNode).isHidden())
-					break;
-				if (abstractNode instanceof ILeafNode && abstractNode.getGrammarElement() instanceof TerminalRule
-						&& ruleName.equalsIgnoreCase(((TerminalRule) abstractNode.getGrammarElement()).getName())) {
-					String comment = ((ILeafNode) abstractNode).getText();
-					if (comment.matches("(?s)" + startTag + ".*")) {
-						returnValue = comment;
-					}
-				}
-			}
-		}
-		return returnValue;
-	}
-
-	public static String parse(String comment) {
-		String startTag = "/\\*\\*?"; // regular expression
-		String endTag = "\\*/"; // regular expression
-		String linePrefix = "\\** ?"; // regular expression
-		String linePostfix = "\\**"; // regular expression
-		String whitespace = "( |\\t)*"; // regular expression
-		
-		if (comment != null && !comment.equals("")) {
-			comment = comment.replaceAll("\\A" + startTag, "");
-			comment = comment.replaceAll(endTag + "\\z", "");
-			comment = comment.replaceAll("(?m)^"+ whitespace + linePrefix, "");
-			comment = comment.replaceAll("(?m)" + whitespace + linePostfix + whitespace + "\$", "");
-			return comment.trim();
-		} else
-			return "";
-	}
-	
 	
 }

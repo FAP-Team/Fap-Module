@@ -34,7 +34,6 @@ public class Registro extends Model {
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento justificante;
 	
-	
 
 	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
 	public Documento autorizacionFuncionario;

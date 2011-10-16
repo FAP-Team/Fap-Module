@@ -33,23 +33,23 @@ Entidad ComboTestRef {
 
 Entidad ValoresPorDefectoTest {
 	// Tipos Simples
-	String mString "string"
-	Long mLong "2"
-	Integer mInteger "4"
-	Boolean mBoolean "true"
-	Double mDouble "2.345"
-	LongText mLongText "texto largooooo largiiisimo"
+	String mString 
+	Long mLong 
+	Integer mInteger 
+	Boolean mBoolean 
+	Double mDouble 
+	LongText mLongText 
 	
 	// Tipos Especiales 
-	Telefono mTelefono "900 120 120"
-	Email mEmail "asas@pepe.com"
-	Email mEmail2 "as@pepe"
-	Cif mCif "1234567A"
-	Moneda mMoneda "2.10"
-	DateTime mDateTime "12/12/2010"
+	Telefono mTelefono 
+	Email mEmail 
+	Email mEmail2 
+	Cif mCif 
+	Moneda mMoneda 
+	DateTime mDateTime 
 	
 	// Algunos tipos compuestos
-	Lista ComboTestList mLista "c"
+	Lista ComboTestList mLista
 	
 	
 	// Embeddable
@@ -57,5 +57,5 @@ Entidad ValoresPorDefectoTest {
 }
 
 Entidad Embebida embeddable {
-	String algo "pepe"
+	String algo 
 }

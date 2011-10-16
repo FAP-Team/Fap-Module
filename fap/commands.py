@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os, os.path
 import sys
@@ -49,7 +50,7 @@ def version (app, args):
 	
 		
 def execute_workflow(modelPath, targetPath, params, cmd_args, app):
-    moduleDir = getModuleDir(app)
+    moduleDir = getModuleDir(app, cmd_args)
 
     if(moduleDir == None):
         print 'No se encontro la ruta del modulo'
@@ -59,19 +60,15 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     generatorLibDir = os.path.join(generatorDir, 'lib')
     jars = []
 	
+
     #Librerías
-    if("--dev" in cmd_args):
-        if(os.getenv("FAPSDK") == None):
-            print "La variable de entorno FAPSDK no está definida"
-            sys.exit()	
-	
+    if("--dev" in cmd_args):	
         #Desarrollo
-        jars.append(os.path.join(os.getenv("FAPSDK"), "fap/compiler/lib/*")) 
-        jars.append(os.path.join(os.getenv("FAPSDK"), "fap/compiler/src/es.fap.simpleled.generator/bin/"))
-        jars.append(os.path.join(os.getenv("FAPSDK"), "fap/compiler/src/es.fap.simpleled/bin/"))
+        jars.append(os.path.join(moduleDir, "compiler/lib/*")) 
+        jars.append(os.path.join(moduleDir, "compiler/src/es.fap.simpleled.generator/bin/"))
+        jars.append(os.path.join(moduleDir, "compiler/src/es.fap.simpleled/bin/"))
     else:
         #No desarrollo
-        moduleDir =  getModuleDir(app)   
         jars.append(os.path.join(moduleDir, "compiler" ,"lib/*")) 
         jars.append(os.path.join(moduleDir, "compiler", "compiled/*")) 
         
@@ -90,7 +87,7 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     os.chdir(generatorDir);
     class_name = "org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher"
 	
-    fapModelPath = os.path.join(os.getenv("FAPSDK"), "fap", "app", "led");
+    fapModelPath = os.path.join(moduleDir, "app", "led");
     workflow = "workflow.LedGenerator";
     
     cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, params];
@@ -131,17 +128,24 @@ def after(**kargs):
     if command == "new":
         print "Ejecutando new"
         
-def getModuleDir(self):
-    if self.path and os.path.exists(os.path.join(self.path, 'modules')):
-        regexp = re.compile("^fap(-(\d*\.*)*)?$")
-        for m in os.listdir(os.path.join(self.path, 'modules')):
-            mf = os.path.join(os.path.join(self.path, 'modules'), m)
-            base = os.path.basename(mf)
-            if regexp.match(base):
-                if os.path.isdir(mf):
-                    return mf
-                else:
-                    return open(mf, 'r').read().strip()
+def getModuleDir(app, cmd_args):
+    if("--dev" in cmd_args):
+        if(os.getenv("FAPSDK") == None):
+            print "Modo desarrollo (--dev) y la variable de entorno FAPSDK no está definida"
+            sys.exit()  
+
+        return os.path.join(os.getenv("FAPSDK"), "fap")    
+    else:    
+        if app.path and os.path.exists(os.path.join(app.path, 'modules')):
+            regexp = re.compile("^fap(-(\d*\.*)*)?$")
+            for m in os.listdir(os.path.join(app.path, 'modules')):
+                mf = os.path.join(os.path.join(app.path, 'modules'), m)
+                base = os.path.basename(mf)
+                if regexp.match(base):
+                    if os.path.isdir(mf):
+                        return mf
+                    else:
+                        return open(mf, 'r').read().strip()
     return None        
 
 def init_application (app, args):

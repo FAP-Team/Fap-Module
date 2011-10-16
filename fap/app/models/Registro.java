@@ -12,6 +12,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 			
@@ -34,13 +36,12 @@ public class Registro extends Model {
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento justificante;
 	
-
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento autorizacionFuncionario;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
-
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public InformacionRegistro informacionRegistro;
 	
 	

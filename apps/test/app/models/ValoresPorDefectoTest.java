@@ -89,22 +89,7 @@ public class ValoresPorDefectoTest extends Model {
 
 	public void init(){
 		
-		mString = "string";
-mLong = 2L;
-mInteger = 4;
-mBoolean = true;
-mDouble = 2.345;
-mLongText = "texto largooooo largiiisimo";
-mTelefono = "900 120 120";
-mEmail = "asas@pepe.com";
-mCif = "1234567A";
-mMoneda = 2.1;
-try {
-	mDateTime = new DateTime ((new SimpleDateFormat("dd/MM/yyyy")).parse("12/12/2010"));
-} catch (ParseException e) {
-	e.printStackTrace();
-}
-						mLista = "c";
+		
 			if (mEmbebida == null)
 				mEmbebida = new Embebida();
 			

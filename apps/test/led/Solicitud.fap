@@ -28,8 +28,8 @@ Formulario Solicitud {
 		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"
 			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas"
-			Combo campo=Solicitud.comboTest.ref comboTexto="nombre" titulo="Combo de Referencias"
-			Combo campo=Solicitud.comboTest.refMultiple comboTexto="nombre" titulo="Combo de Referencias Múltiples"
+			Combo campo=Solicitud.comboTest.ref comboTexto=nombre titulo="Combo de Referencias"
+			Combo campo=Solicitud.comboTest.refMultiple comboTexto=nombre titulo="Combo de Referencias Múltiples"
 		}
 				
 		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRef titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
@@ -44,8 +44,8 @@ Formulario Solicitud {
 			Combo listaLong campo=Solicitud.comboTest.listOverwriteLong titulo="Combo manual (Long)"
 			Combo listaMultiple campo=Solicitud.comboTest.listMultipleOverwrite titulo="Combo múltiple manual (Set<String>)"
 			Combo listaMultipleLong campo=Solicitud.comboTest.listMultipleOverwriteLong titulo="Combo múltiple manual (Long<Long>)"
-			Combo referencia campo=Solicitud.comboTest.refOverwrite comboTexto="nombre" titulo="Combo de Referencias (Filtrando las que tienen en el nombre a)"
-			Combo referenciaMultiple campo=Solicitud.comboTest.refMultipleOverwrite comboTexto="nombre" titulo="Combo de Referencias Múltiples (Filtrando las que tienen en el nombre a)"
+			Combo referencia campo=Solicitud.comboTest.refOverwrite comboTexto=nombre titulo="Combo de Referencias (Filtrando las que tienen en el nombre a)"
+			Combo referenciaMultiple campo=Solicitud.comboTest.refMultipleOverwrite comboTexto=nombre titulo="Combo de Referencias Múltiples (Filtrando las que tienen en el nombre a)"
 			
 			Combo wsjson campo=Solicitud.comboTest.wsjson titulo="Valor del combo obtenido desde un servicio web en JSON"
 			Combo wsxml campo=Solicitud.comboTest.wsxml titulo="Valor del combo obtenido desde un servicio web en XML"

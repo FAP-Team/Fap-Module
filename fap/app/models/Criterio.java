@@ -28,8 +28,6 @@ public class Criterio extends Model {
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public TipoCriterio tipo;
 	
-	
-	
 	public Double valor;
 	
 	
@@ -59,7 +57,9 @@ public class Criterio extends Model {
 	
 
 // === MANUAL REGION START ===
-			
+	public int getProfundidad(){
+		return this.tipo.jerarquia.split("//.").length - 1;
+	}
 // === MANUAL REGION END ===
 	
 	

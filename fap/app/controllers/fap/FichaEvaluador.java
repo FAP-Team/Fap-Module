@@ -18,17 +18,7 @@ import play.mvc.With;
 public class FichaEvaluador extends Controller {
 
 	public static void fichaEvaluador(){
-		
-		play.Logger.info("FLASH %s", flash);
-		play.Logger.info("FLASH[34] %s", flash.get("criterio[34].valor"));
-		
-		for(play.data.validation.Error e : Validation.errors()){
-			play.Logger.info("Key %s, Message %s", e.getKey(), e.message());
-		}
-		
-		if(Validation.hasErrors()){
-			play.Logger.info("Validation has errors");
-		}
+		//TODO buscar por ID de evaluación
 		
 		if(Evaluacion.count() == 0){
 			initEvaluacion();
@@ -39,7 +29,6 @@ public class FichaEvaluador extends Controller {
 	}
 
 	public static void save(){
-		
 		Evaluacion evaluacion = Evaluacion.findById(params.get("evaluacion.id", Long.class));
 		//Comentarios
 		if(evaluacion.tipo.comentariosAdministracion){
@@ -87,6 +76,10 @@ public class FichaEvaluador extends Controller {
 		}
 		
 		fichaEvaluador();
+	}
+	
+	static void calcularTotales(Evaluacion evaluacion){
+		
 	}
 	
 	private static void addLValores(TipoCriterio tc, Double valor, String descripcion){

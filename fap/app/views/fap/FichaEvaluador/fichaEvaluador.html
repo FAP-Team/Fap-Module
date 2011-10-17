@@ -1,0 +1,106 @@
+#{extends 'fap/template.html' /}
+#{set title:'Ficha Evaluador' /}
+
+%{
+	def hasCriterios = evaluacion.tipo.criterios.size() > 0
+	def hasCEconomicos = evaluacion.tipo.ceconomicos.size() > 0
+}%
+
+#{set 'menu'}
+	<ul>
+		<li><a href="#Evaluacion">Evaluacion</a></li>
+		<li><a href="#Documentos">Documentos</a></li>
+		
+		#{if hasCriterios}
+		<li><a href="#Criterios">Criterios de evaluación</a>
+			<ul>
+			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
+				<li>${tcriterio.jerarquia} - ${tcriterio.nombre}</li>	
+			#{/list}
+			</ul>
+		</li>	
+		#{/if}
+		
+		#{if hasCEconomicos}
+		<li><a href="#CEconomicos">Conceptos económicos</a></li>
+		#{/if}
+	</ul>	
+#{/set}
+
+
+
+#{form @fap.FichaEvaluador.save(), class:'fichaEvaluador'}
+
+<input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>
+
+#{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
+	#{if evaluacion.tipo.comentariosAdministracion}
+		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:evaluacion.comentariosAdministracion /}
+	#{/if}
+	
+	#{if evaluacion.tipo.comentariosSolicitante}
+		#{simple.textarea name:'evaluacion.comentariosSolicitante', label:'Comentarios solicitante', value:evaluacion.comentariosSolicitante /}
+	#{/if}
+		
+#{/fap.grupo}
+
+#{fap.grupo titulo:'Documentos', id:'Documentos'}
+	Lita de documentos visibles para realizar la evaluación	
+#{/fap.grupo}
+
+#{if hasCriterios}
+	#{fap.grupo titulo:'Criterios de evaluación', id:'Criterios'}
+	
+	#{list items:evaluacion.criterios, as:'criterio'}
+		<div class="criterio">
+			<p class="nombre">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</p>
+			<p>Descripcion: ${criterio.tipo.descripcion}</p>
+			<p>Instrucciones: ${criterio.tipo.descripcion}</p>
+			
+			#{if criterio.tipo.claseCriterio.equals("auto")}
+				#{simple.uneditable label:'Valor', value:criterio.valor /}
+			#{/if}
+
+			#{elseif criterio.tipo.claseCriterio.equals("automod")}
+				
+			#{/elseif}
+			
+			#{elseif criterio.tipo.claseCriterio.equals("manual")}
+				#{if criterio.tipo.tipoValor.equals('lista')}
+					#{simple.select label:'Valor', options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:criterio.valor /}
+				#{/if}
+				
+				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
+					cantidad!
+				#{/elseif}
+			#{/elseif}
+			
+			
+			#{if criterio.tipo.comentariosAdministracion}
+				#{simple.textarea label:'Comentarios administración', value: evaluacion.comentariosAdministracion /}
+			#{/if}
+			
+			#{if criterio.tipo.comentariosSolicitante}
+				#{simple.textarea label:'Comentarios solicitante', value: evaluacion.comentariosSolicitante /}
+			#{/if}
+		
+		</div>	
+	#{/list}
+				
+	#{/fap.grupo}
+#{/if}
+
+#{if  hasCEconomicos}
+	#{fap.grupo titulo:'Conceptos económicos', id: 'CEconomicos'}
+		
+	Conceptos económicos
+			
+	#{/fap.grupo}
+#{/if}
+
+<div class="button_container">
+	<input type="submit" class="boton" value="Vista previa">
+	<input type="submit" class="boton" value="Guardar">
+</div>
+
+#{/form}

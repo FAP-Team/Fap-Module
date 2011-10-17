@@ -11,6 +11,11 @@ POST        /login/password                fap.SecureController.authenticate
 POST        /login/cert                    fap.SecureController.authenticateCertificate
 GET         /logout                        fap.SecureController.logout
 
+
+#Baremacion
+GET   /Baremacion/fichaEvaluador           fap.FichaEvaluador.fichaEvaluador
+
+
 #Descarga del AED
 GET         /aed/descargar                 fap.DescargasAedController.descargar
 

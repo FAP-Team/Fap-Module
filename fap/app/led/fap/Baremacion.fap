@@ -1,0 +1,94 @@
+Lista LstClaseCriterio {
+	manual  : "Manual"
+	auto    : "Automático"
+	automod : "Automático modificable"
+}
+
+Lista LstTipoValorCriterio {
+	cantidad : "Cantidad"
+	lista    : "Lista de valores"	
+}
+
+Entidad CriterioListaValores {
+	Double valor
+	String descripcion
+}
+
+Entidad TipoCriterio {
+    String nombre
+    LongText descripcion
+    LongText instrucciones
+    Lista LstClaseCriterio claseCriterio requerido
+    String jerarquia requerido
+    Integer valorPrecision
+    Double valorMaximo
+    Double valorMinimo
+    Lista LstTipoValorCriterio tipoValor requerido
+    OneToMany CriterioListaValores listaValores
+    Boolean transparencia
+    Boolean comentariosAdministracion
+    Boolean comentariosSolicitante
+}
+
+Entidad Criterio {
+	TipoCriterio tipo
+	Double valor
+	LongText comentariosAdministracion
+	LongText comentariosSolicitante	
+}
+
+Entidad TipoCEconomico {
+    String nombre
+    String descripcion
+    String jerarquia
+    Boolean comentariosAdministracion
+    Boolean comentariosSolicitante
+}
+
+Entidad CEconomico {
+	TipoCEconomico tipo
+	Double valorSolicitado
+	Double valorEstimado
+	Double valorPropuesto
+	Double valorConcedido	
+}
+
+Entidad TipoEvaluacion {
+    String nombre
+    List<String> tiposDocumentos
+    OneToMany TipoCriterio criterios
+    
+    //TODO Consultar si esta relacion es ManyToMany
+    OneToMany TipoCEconomico ceconomicos
+    
+    Boolean comentariosAdministracion
+    Boolean comentariosSolicitante
+    String tipoProcedimiento
+    
+    //Número de evaluaciones que hay que realizar de este tipo
+    Long numeroEvaluacion
+}
+
+Entidad Evaluacion {
+	//TODO ¿Por qué se inicializan las many to one??
+	ManyToOne SolicitudGenerica solicitud
+	
+	OneToMany Criterio criterios
+	OneToMany CEconomico ceconomicos
+	
+	//Evaluador
+	//ManyToOne Evaluador evaluador
+	
+	TipoEvaluacion tipo
+	
+	//TODO cambiar por lista con los posibles estados
+	String estado
+	
+	//?Entidades distintas para manejar los cambios de estados??
+	//FechaCambioEstado
+	//ActorDelEstado
+	
+	LongText comentariosAdministracion
+	LongText comentariosSolicitante
+}
+

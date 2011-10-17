@@ -535,3 +535,21 @@ div.wikiLista ul li {
   margin-bottom: 1.3em;
 }
 
+
+#Baremacion
+
+.fichaEvaluador {
+	
+}
+
+.fichaEvaluador p {
+	margin-bottom: 5px;
+}
+
+.fichaEvaluador .criterio, .fichaEvaluador .evaluacion {
+	margin-bottom: 10px;		
+}
+
+.fichaEvaluador .criterio .nombre , .fichaEvaluador .evaluacion .nombre {
+	font-size: 14px;
+}

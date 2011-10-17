@@ -1,0 +1,22 @@
+*{
+	_id
+	_options :
+	_optionsText:
+	_optionsValue:
+	_value
+	_style
+}*
+
+#{simple.row label:_label, id:_id, help:_help, error:_error }
+	<select #{if _id}id="${_id}d:"#{/if} name="${_name}" #{if _style}style="${_style}"#{/if}>
+		<option> </option>
+		#{list items:_options, as:'option'}
+			%{
+				def optionText  = option."${_optionsText}"
+				def optionValue = option."${_optionsValue}"				
+				def selected = optionValue.equals(_value) ? 'selected=selected' : '';
+			}%
+			<option value="${optionValue}" ${selected}>${optionText}</option>
+		#{/list}
+	</select>
+#{/simple.row}

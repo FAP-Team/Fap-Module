@@ -57,9 +57,7 @@ public class Criterio extends Model {
 	
 
 // === MANUAL REGION START ===
-	public int getProfundidad(){
-		return this.tipo.jerarquia.split("//.").length - 1;
-	}
+
 // === MANUAL REGION END ===
 	
 	

@@ -11,15 +11,22 @@ import models.TipoCriterio;
 import models.TipoEvaluacion;
 import play.data.validation.Validation;
 import play.mvc.Controller;
+import play.mvc.Finally;
 import play.mvc.Scope.Flash;
+import play.mvc.Scope.Params;
 import play.mvc.With;
+import services.BaremacionService;
 
-@With(SecureController.class)
 public class FichaEvaluador extends Controller {
-
+	
+	@Finally(only="fichaEvaluador")
+	public static void removeFlash(){
+		play.Logger.info("Borrando flash");
+		Messages.deleteFlash();
+	}
+	
 	public static void fichaEvaluador(){
-		//TODO buscar por ID de evaluación
-		
+		//TODO buscar por ID de evaluación		
 		if(Evaluacion.count() == 0){
 			initEvaluacion();
 		}
@@ -67,19 +74,36 @@ public class FichaEvaluador extends Controller {
 			}
 		}
 
+		//TODO: Calcular totales aunque haya errores de validación?
+		BaremacionService.calcularTotales(evaluacion);
+		
 		if(validation.hasErrors()){
 			play.Logger.info("Errores!");
-			Messages.keep();
+			flash(evaluacion);
+			Validation.keep();
 		}else{
-			//Calcular totales
-			evaluacion.save();
+			
+			if(params.get("save") != null){
+				play.Logger.info("Save");
+				//Guardar
+				evaluacion.save();
+			}else{
+				play.Logger.info("Preview");
+				//Vista previa
+				flash(evaluacion);
+			}
 		}
 		
 		fichaEvaluador();
 	}
 	
-	static void calcularTotales(Evaluacion evaluacion){
-		
+	private static void flash(Evaluacion evaluacion){
+		Messages.setFlash("evaluacion.id", evaluacion.id);
+		Messages.setFlash("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion);
+		Messages.setFlash("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante);
+		for(Criterio c : evaluacion.criterios){
+			Messages.setFlash("criterio[" + c.id + "].valor", c.valor);
+		}
 	}
 	
 	private static void addLValores(TipoCriterio tc, Double valor, String descripcion){

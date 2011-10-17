@@ -56,7 +56,8 @@
 		%{
 			def paramName  = "criterio[${criterio.id}]";
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");
-			def valor = flash.get(paramName + ".valor") ?flash.get(paramName + ".valor") : criterio.valor;
+			def valorFlash = messages.Messages.getFlash(paramName + ".valor") 
+			def valor = valorFlash != null ? valorFlash : criterio.valor;
 			def comentariosAdministracion = flash.get(paramName + ".comentariosAdministracion") ?: criterio.comentariosAdministracion;
 			def comentariosSolicitante = flash.get(paramName + ".comentariosSolicitante") ?: criterio.comentariosSolicitante;
 		}%
@@ -67,7 +68,7 @@
 			<p>Instrucciones: ${criterio.tipo.descripcion}</p>
 			
 			#{if criterio.tipo.claseCriterio.equals("auto")}
-				#{simple.uneditable label:'Valor', value:criterio.valor /}
+				#{simple.uneditable label:'Valor', value:valor /}
 			#{/if}
 
 			#{elseif criterio.tipo.claseCriterio.equals("automod")}
@@ -108,8 +109,8 @@
 #{/if}
 
 <div class="button_container">
-	<input type="submit" class="boton" value="Vista previa">
-	<input type="submit" class="boton" value="Guardar">
+	<input type="submit" class="boton" name="preview" value="Vista previa">
+	<input type="submit" class="boton" name="save" value="Guardar">
 </div>
 
 #{/form}

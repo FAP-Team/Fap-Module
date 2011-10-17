@@ -309,7 +309,7 @@ then
 	
 rule documentoAutorizacionGenerado
 vars 
-	Solicitud solicitud
+	SolicitudGenerica solicitud
 when 
 	(solicitud.registro.autorizacionFuncionario.urlDescarga != null)
 	and
@@ -320,7 +320,7 @@ then
 
 rule visibleFuncionarioAutorizado
 vars
-	Solicitud solicitud
+	SolicitudGenerica solicitud
 when 
 	(agente.funcionario = "true")
 	and
@@ -330,7 +330,7 @@ then
 
 rule noVisibleFuncionarioAutorizado
 vars
-	Solicitud solicitud
+	SolicitudGenerica solicitud
 when 
 	(agente.funcionario = "true")
 	and

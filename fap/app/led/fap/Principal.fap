@@ -17,7 +17,7 @@ Formulario Principal {
 		}
 		
 		Form nuevaSolicitud {
-			Boton titulo="Nueva Solicitud"
+			Boton nueva titulo="Nueva Solicitud"
 		}
 
 	}

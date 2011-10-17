@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,71 +15,53 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
-	
 
 @Auditable
 @Entity
 public class TipoEvaluacion extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
+
 	@ElementCollection
 	public List<String> tiposDocumentos;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tipoevaluacion_criterios")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tipoevaluacion_criterios")
 	public List<TipoCriterio> criterios;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tipoevaluacion_ceconomicos")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tipoevaluacion_ceconomicos")
 	public List<TipoCEconomico> ceconomicos;
-	
-	
-	
+
 	public Boolean comentariosAdministracion;
-	
-	
-	
+
 	public Boolean comentariosSolicitante;
-	
-	
-	
+
 	public String tipoProcedimiento;
-	
-	
-	
+
 	public Long numeroEvaluacion;
-	
-	
-	public TipoEvaluacion (){
+
+	public TipoEvaluacion() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-						if (criterios == null)
-							criterios = new ArrayList<TipoCriterio>();
-						
-						if (ceconomicos == null)
-							ceconomicos = new ArrayList<TipoCEconomico>();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (criterios == null)
+			criterios = new ArrayList<TipoCriterio>();
+
+		if (ceconomicos == null)
+			ceconomicos = new ArrayList<TipoCEconomico>();
+		comentariosAdministracion = false;
+		comentariosSolicitante = false;
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

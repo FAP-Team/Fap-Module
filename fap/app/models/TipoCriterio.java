@@ -90,7 +90,9 @@ public class TipoCriterio extends Model {
 		
 						if (listaValores == null)
 							listaValores = new ArrayList<CriterioListaValores>();
-						
+						comentariosAdministracion = false;
+comentariosSolicitante = false;
+
 	}
 		
 	

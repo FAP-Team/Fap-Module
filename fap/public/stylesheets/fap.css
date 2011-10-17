@@ -5,7 +5,7 @@
 body {
 	background: #B5C5D4;
 	color: #555;
-	font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
+	font: 14px "lucida grande", tahoma, verdana, arial, sans-serif;
 }
 
 a:link,a:active,a:visited {
@@ -514,7 +514,6 @@ li a.menu-activo {
 	font-weight: bold;
 	font-size: 90%;
 	font-family: 'Lucida Grande',Tahoma,Verdana,Arial,sans-serif;
-	font-size: 11px;
 	border-color: #888;
 	background-color: #E4E4E4;
 	border-style: solid;
@@ -551,5 +550,25 @@ div.wikiLista ul li {
 }
 
 .fichaEvaluador .criterio .nombre , .fichaEvaluador .evaluacion .nombre {
+	font-size: 18px;
+}
+
+.fichaEvaluador .form-row {
+	padding: 5px 0;
+}
+
+.error {
+	background-color : #FAE5E3;	
+}
+
+.form-row.error label, .help-inline {
+	color : #9D261D;
+}
+
+.form-row.error label {
 	font-size: 14px;
+}
+
+.form-row .help-inline {
+	font-size: 11px;
 }

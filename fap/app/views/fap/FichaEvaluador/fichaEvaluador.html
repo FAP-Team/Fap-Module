@@ -28,6 +28,7 @@
 #{/set}
 
 
+#{fap.messages /}
 
 #{form @fap.FichaEvaluador.save(), class:'fichaEvaluador'}
 
@@ -52,6 +53,14 @@
 	#{fap.grupo titulo:'Criterios de evaluación', id:'Criterios'}
 	
 	#{list items:evaluacion.criterios, as:'criterio'}
+		%{
+			def paramName  = "criterio[${criterio.id}]";
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");
+			def valor = flash.get(paramName + ".valor") ?flash.get(paramName + ".valor") : criterio.valor;
+			def comentariosAdministracion = flash.get(paramName + ".comentariosAdministracion") ?: criterio.comentariosAdministracion;
+			def comentariosSolicitante = flash.get(paramName + ".comentariosSolicitante") ?: criterio.comentariosSolicitante;
+		}%
+		
 		<div class="criterio">
 			<p class="nombre">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</p>
 			<p>Descripcion: ${criterio.tipo.descripcion}</p>
@@ -67,7 +76,7 @@
 			
 			#{elseif criterio.tipo.claseCriterio.equals("manual")}
 				#{if criterio.tipo.tipoValor.equals('lista')}
-					#{simple.select label:'Valor', options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:criterio.valor /}
+					#{simple.select name:paramName + ".valor", label:'Valor', options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error /}
 				#{/if}
 				
 				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
@@ -77,11 +86,11 @@
 			
 			
 			#{if criterio.tipo.comentariosAdministracion}
-				#{simple.textarea label:'Comentarios administración', value: evaluacion.comentariosAdministracion /}
+				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion /}
 			#{/if}
 			
 			#{if criterio.tipo.comentariosSolicitante}
-				#{simple.textarea label:'Comentarios solicitante', value: evaluacion.comentariosSolicitante /}
+				#{simple.textarea name:paramName + ".comentariosSolicitante", label:'Comentarios solicitante', value: comentariosSolicitante /}
 			#{/if}
 		
 		</div>	

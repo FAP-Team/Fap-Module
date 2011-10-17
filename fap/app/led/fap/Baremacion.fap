@@ -26,8 +26,8 @@ Entidad TipoCriterio {
     Lista LstTipoValorCriterio tipoValor requerido
     OneToMany CriterioListaValores listaValores
     Boolean transparencia
-    Boolean comentariosAdministracion
-    Boolean comentariosSolicitante
+    Boolean comentariosAdministracion default="false"
+    Boolean comentariosSolicitante default="false"
 }
 
 Entidad Criterio {
@@ -41,8 +41,8 @@ Entidad TipoCEconomico {
     String nombre
     String descripcion
     String jerarquia
-    Boolean comentariosAdministracion
-    Boolean comentariosSolicitante
+    Boolean comentariosAdministracion default="false"
+    Boolean comentariosSolicitante default="false"
 }
 
 Entidad CEconomico {
@@ -61,8 +61,8 @@ Entidad TipoEvaluacion {
     //TODO Consultar si esta relacion es ManyToMany
     OneToMany TipoCEconomico ceconomicos
     
-    Boolean comentariosAdministracion
-    Boolean comentariosSolicitante
+    Boolean comentariosAdministracion default="false"
+    Boolean comentariosSolicitante default="false"
     String tipoProcedimiento
     
     //Número de evaluaciones que hay que realizar de este tipo

@@ -2,17 +2,34 @@ package controllers.fap;
 
 import java.util.List;
 
+import messages.Messages;
 import models.CEconomico;
 import models.Criterio;
 import models.CriterioListaValores;
 import models.Evaluacion;
 import models.TipoCriterio;
 import models.TipoEvaluacion;
+import play.data.validation.Validation;
 import play.mvc.Controller;
+import play.mvc.Scope.Flash;
+import play.mvc.With;
 
+@With(SecureController.class)
 public class FichaEvaluador extends Controller {
 
 	public static void fichaEvaluador(){
+		
+		play.Logger.info("FLASH %s", flash);
+		play.Logger.info("FLASH[34] %s", flash.get("criterio[34].valor"));
+		
+		for(play.data.validation.Error e : Validation.errors()){
+			play.Logger.info("Key %s, Message %s", e.getKey(), e.message());
+		}
+		
+		if(Validation.hasErrors()){
+			play.Logger.info("Validation has errors");
+		}
+		
 		if(Evaluacion.count() == 0){
 			initEvaluacion();
 		}
@@ -21,9 +38,54 @@ public class FichaEvaluador extends Controller {
 		render(evaluacion);
 	}
 
-	public static void save(Evaluacion evaluacion, List<Criterio> criterios, List<CEconomico> ceconomicos){
-		play.Logger.info("Evaluacion %s", evaluacion.id);
-		evaluacion.save();
+	public static void save(){
+		
+		Evaluacion evaluacion = Evaluacion.findById(params.get("evaluacion.id", Long.class));
+		//Comentarios
+		if(evaluacion.tipo.comentariosAdministracion){
+			evaluacion.comentariosAdministracion = params.get("evaluacion.comentariosAdministracion");
+		}
+		
+		if(evaluacion.tipo.comentariosSolicitante){
+			evaluacion.comentariosSolicitante = params.get("evaluacion.comentariosSolicitante");
+		}
+		
+		//Criterios de evaluacion
+		for(Criterio criterio : evaluacion.criterios){
+			String param = "criterio[" + criterio.id + "]";
+
+			if(criterio.tipo.claseCriterio.equals("manual")){
+				String key = param + ".valor";
+				Double valor = params.get(key, Double.class);
+				
+				//Validaciones
+				validation.required(key, valor);
+				//TODO validaciones de tamaño máximo
+				
+				
+				criterio.valor = valor;
+			}else if(criterio.tipo.claseCriterio.equals("automod")){
+				//TODO criterio automático modificable
+			}
+			
+			//Comentarios
+			if(criterio.tipo.comentariosAdministracion){
+				criterio.comentariosAdministracion = params.get(param + "comentariosAdministracion");
+			}
+			
+			if(criterio.tipo.comentariosSolicitante){
+				criterio.comentariosSolicitante = params.get(param + "comentariosSolicitante");
+			}
+		}
+
+		if(validation.hasErrors()){
+			play.Logger.info("Errores!");
+			Messages.keep();
+		}else{
+			//Calcular totales
+			evaluacion.save();
+		}
+		
 		fichaEvaluador();
 	}
 	
@@ -47,7 +109,7 @@ public class FichaEvaluador extends Controller {
 		t1_1.jerarquia = "1.1";
 		t1_1.tipoValor = "lista";
 		addLValores(t1_1, 10D, "Si");
-		addLValores(t1_1, 10D, "No");
+		addLValores(t1_1, 0D, "No");
 		
 		TipoCriterio t1_2 = new TipoCriterio();
 		t1_2.nombre = "Sustancia de la solicitud";

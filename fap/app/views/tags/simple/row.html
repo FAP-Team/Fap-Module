@@ -1,4 +1,5 @@
-<div class="form-row">
-	<label #{if _id}for="${_id}"#{/if}>${_label}</label>
-#{doBody /}
+<div class="form-row #{if _error}error#{/if}">
+	<label #{if _id}for="${_id}"#{/if} class="#{if _error}error#{/if}">${_label}</label>
+	#{doBody /}
+	#{if _error}<span class="help-inline">${_error}</span>#{/if}
 </div>

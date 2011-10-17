@@ -45,10 +45,16 @@ public class TipoCEconomico extends Model {
 	public Boolean comentariosSolicitante;
 	
 	
+	public TipoCEconomico (){
+		init();
+	}
+	
 
 	public void init(){
 		
-		
+		comentariosAdministracion = false;
+comentariosSolicitante = false;
+
 	}
 		
 	

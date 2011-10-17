@@ -8,13 +8,13 @@
 }*
 
 #{simple.row label:_label, id:_id, help:_help, error:_error }
-	<select #{if _id}id="${_id}d:"#{/if} name="${_name}" #{if _style}style="${_style}"#{/if}>
+	<select #{if _id}id="${_id}d:"#{/if} name="${_name}">
 		<option> </option>
 		#{list items:_options, as:'option'}
 			%{
 				def optionText  = option."${_optionsText}"
 				def optionValue = option."${_optionsValue}"				
-				def selected = optionValue.equals(_value) ? 'selected=selected' : '';
+				def selected = optionValue?.toString().equals(_value?.toString()) ? 'selected=selected' : '';
 			}%
 			<option value="${optionValue}" ${selected}>${optionText}</option>
 		#{/list}

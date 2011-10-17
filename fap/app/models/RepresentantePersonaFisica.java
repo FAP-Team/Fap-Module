@@ -12,6 +12,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 			
@@ -50,12 +52,12 @@ public class RepresentantePersonaFisica extends Persona {
 // === MANUAL REGION START ===
 	@PostPersist
 	public void print () {
-		System.out.println("Se guardó el representante ["+this.toString()+"]");
+		play.Logger.info("Se guardó el representante ["+this.toString()+"]");
 	}
 	
 	@PrePersist
 	public void printPre () {
-		System.out.println("Se va a guardar el representante ["+this.toString()+"]");
+		play.Logger.info("Se va a guardar el representante ["+this.toString()+"]");
 	}			
 // === MANUAL REGION END ===
 	

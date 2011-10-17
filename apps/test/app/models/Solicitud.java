@@ -25,19 +25,19 @@ import java.text.SimpleDateFormat;
 public class Solicitud extends SolicitudGenerica {
 	// Código de los atributos
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public DireccionTest direccionTest;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public ComboTest comboTest;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public ValoresPorDefectoTest valoresPorDefectoTest;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL ,  fetch=FetchType.LAZY)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public SavePages savePages;
 	
 	

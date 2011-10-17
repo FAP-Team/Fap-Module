@@ -21,6 +21,7 @@ public class HashStack {
 		SAVE_CODE,
 		PERMISSION,
 		SAVE_PARAM,
+		SAVE_BOTON,
 		FIRST_PAGE,
 		SOLICITUD
 	}

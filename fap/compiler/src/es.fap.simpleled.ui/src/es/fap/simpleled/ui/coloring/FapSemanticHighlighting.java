@@ -59,8 +59,6 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 		return textStyle;
 	}
 	
-	
-	
 	public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
 		if (resource == null || resource.getParseResult() == null){
 			return;

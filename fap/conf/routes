@@ -90,6 +90,7 @@ GET /Solicitud/aportacionpresentar AportacionPresentarController.index
 
 POST /Solicitud/aportacionpresentar/modificarBorrador AportacionPresentarController.modificarBorrador
 POST /Solicitud/aportacionpresentar/presentar AportacionPresentarController.presentar
+POST /Solicitud/aportacionpresentar/presentarSinRegistrar AportacionPresentarController.presentarSinRegistrar
 GET /Solicitud/verificacion VerificacionController.index
 
 POST /Solicitud/verificacion/iniciarVerificacion VerificacionController.iniciarVerificacion

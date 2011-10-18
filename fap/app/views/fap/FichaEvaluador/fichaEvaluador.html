@@ -45,9 +45,8 @@
 		
 #{/fap.grupo}
 
-#{fap.grupo titulo:'Documentos', id:'Documentos'}
-	Lita de documentos visibles para realizar la evaluación	
-#{/fap.grupo}
+
+<div id="Documentos"></div>
 
 #{if hasCriterios}
 	#{fap.grupo titulo:'Criterios de evaluación', id:'Criterios'}
@@ -118,3 +117,64 @@
 </div>
 
 #{/form}
+
+<script>
+Ext.onReady(function() {
+	
+	var data = [
+		#{list items:documentos, as:'documento'}
+			['${documento.tipo}', '${documento.descripcion}', '${documento.urlDescarga}']#{if !documento_isLast},#{/if}
+		#{/list}
+	];
+	
+    var store = Ext.create('Ext.data.ArrayStore', {
+        fields: [
+           {name: 'tipo'},
+		   {name : 'descripcion'},
+		   {name : 'urlDescarga'}
+        ],
+        data: data
+    });
+		    
+    var boton_abrir = new Ext.Button({
+    	text: 'Abrir',
+    	disabled: true,
+    	handler : function(){
+    		var url = grid.getSelectionModel().getSelection()[0].data.urlDescarga;
+    		window.open(url);
+    	}
+    });
+
+   	var grid = new Ext.grid.GridPanel({
+		store : store,
+		columns : [
+			{text:'Tipo', dataIndex:'tipo', sortable:true,width:40}, 
+			{text:'Descripción',dataIndex:'descripcion', sortable:true, flex:true} 
+		],
+		renderTo: 'Documentos',
+		height: 350,
+		title: 'Documentos accesibles para la evaluación',
+		dockedItems: [{
+				itemId: 'barraInferior',
+        		xtype: 'toolbar',
+				dock: 'bottom',
+				items: [{
+						  itemId: 'searchbox',
+        				  width: 300,
+        				  fieldLabel: 'Buscar',
+        				  labelWidth: 50,
+        				  xtype: 'searchfield',
+        				  store: store
+    				     },'->', boton_abrir
+				]
+		}]
+	});
+	
+	function selectionChange(){
+		var hasSelection = grid.getSelectionModel().hasSelection();
+    	boton_abrir.setDisabled(!hasSelection);
+	}
+	grid.addListener("selectionchange", selectionChange);
+	selectionChange();
+});
+</script>

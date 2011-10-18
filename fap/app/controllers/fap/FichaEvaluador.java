@@ -6,10 +6,13 @@ import messages.Messages;
 import models.CEconomico;
 import models.Criterio;
 import models.CriterioListaValores;
+import models.Documento;
 import models.Evaluacion;
+import models.TipoCEconomico;
 import models.TipoCriterio;
 import models.TipoEvaluacion;
 import play.data.validation.Validation;
+import play.db.jpa.JPABase;
 import play.mvc.Controller;
 import play.mvc.Finally;
 import play.mvc.Scope.Flash;
@@ -32,7 +35,11 @@ public class FichaEvaluador extends Controller {
 		}
 		
 		Evaluacion evaluacion = Evaluacion.all().first();
-		render(evaluacion);
+		
+		//TODO Filtrar los documentos de la solicitud
+		//que tienen el tipo disponible
+		List<Documento> documentos = Documento.findAll();
+		render(evaluacion, documentos);
 	}
 
 	public static void save(){
@@ -58,19 +65,18 @@ public class FichaEvaluador extends Controller {
 				validation.required(key, valor);
 				//TODO validaciones de tamaño máximo
 				
-				
 				criterio.valor = valor;
 			}else if(criterio.tipo.claseCriterio.equals("automod")){
 				//TODO criterio automático modificable
 			}
 			
 			//Comentarios
-			if(criterio.tipo.comentariosAdministracion){
-				criterio.comentariosAdministracion = params.get(param + "comentariosAdministracion");
+			if(criterio.tipo.comentariosAdministracion){				
+				criterio.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
 			}
 			
 			if(criterio.tipo.comentariosSolicitante){
-				criterio.comentariosSolicitante = params.get(param + "comentariosSolicitante");
+				criterio.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
 			}
 		}
 
@@ -181,6 +187,11 @@ public class FichaEvaluador extends Controller {
 		t1_3.tipoValor = "lista";
 		addLValores(t1_3, 5D, "Si");
 		addLValores(t1_3, 0D, "No");
+		
+		
+		TipoCEconomico c1_1 = new TipoCEconomico();
+		c1_1.nombre = "A";
+		c1_1.jerarquia = "1.1";
 		
 		
 		TipoEvaluacion tEvaluacion = new TipoEvaluacion();

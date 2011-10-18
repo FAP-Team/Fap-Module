@@ -55,9 +55,13 @@
 	#{list items:evaluacion.criterios, as:'criterio'}
 		%{
 			def paramName  = "criterio[${criterio.id}]";
-			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");
-			def valorFlash = messages.Messages.getFlash(paramName + ".valor") 
-			def valor = valorFlash != null ? valorFlash : criterio.valor;
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+			def valor = null;
+			if(messages.Messages.containsFlash(paramName + ".valor")){
+				valor = messages.Messages.getFlash(paramName + ".valor")
+			}else{
+				valor = criterio.valor;
+			}
 			def comentariosAdministracion = flash.get(paramName + ".comentariosAdministracion") ?: criterio.comentariosAdministracion;
 			def comentariosSolicitante = flash.get(paramName + ".comentariosSolicitante") ?: criterio.comentariosSolicitante;
 		}%

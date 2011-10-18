@@ -76,12 +76,26 @@ public class Messages {
     	//Alamacena en cache los parámetro guardados
     	String cached = Cache.get(getCachedNamesKey(), String.class);
     	if(cached == null){
-    		cached = flashName;
+    		cached = id;
     	}else{
-    		cached += "," + flashName;
+    		cached += "," + id;
     	}
     	Cache.set(getCachedNamesKey(), cached);
     }
+    
+    public static boolean containsFlash(String id){
+    	play.Logger.info("Contains!");
+    	String cached = Cache.get(getCachedNamesKey(), String.class);
+    	if(cached != null){
+    		for(String key : cached.split(",")){
+    			play.Logger.info("Cached! %s , %s", key, id);
+    			if(id.equals(key))
+    				return true;
+    		}
+    	}
+    	return false;
+    }
+    
     
     public static String getCachedNamesKey(){
     	return Session.current().getId() + "cachedParams";
@@ -104,6 +118,7 @@ public class Messages {
 	    		Cache.delete(key);
 	    	}
     	}
+    	Cache.delete(getCachedNamesKey());
     }
     
     public static boolean isKeep() {

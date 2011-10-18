@@ -21,8 +21,8 @@ public class FichaEvaluador extends Controller {
 	
 	@Finally(only="fichaEvaluador")
 	public static void removeFlash(){
-		play.Logger.info("Borrando flash");
 		Messages.deleteFlash();
+		play.Logger.info("Borrando flash");
 	}
 	
 	public static void fichaEvaluador(){
@@ -76,19 +76,14 @@ public class FichaEvaluador extends Controller {
 
 		//TODO: Calcular totales aunque haya errores de validación?
 		BaremacionService.calcularTotales(evaluacion);
-		
 		if(validation.hasErrors()){
-			play.Logger.info("Errores!");
 			flash(evaluacion);
 			Validation.keep();
 		}else{
-			
 			if(params.get("save") != null){
-				play.Logger.info("Save");
 				//Guardar
 				evaluacion.save();
 			}else{
-				play.Logger.info("Preview");
 				//Vista previa
 				flash(evaluacion);
 			}

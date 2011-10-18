@@ -238,7 +238,7 @@ Wiki:
 ;
 
 Boton:
-	'Boton' (name=ID)? (
+	'Boton' (name=ID) (
 	 	('titulo' '=' titulo=STRING)
 	    & ('ancho' '=' ancho=STRING)? 
 	    &('popup' '=' popup=[Popup])?

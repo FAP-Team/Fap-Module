@@ -170,6 +170,11 @@ class ControllerUtils {
     }
 
 
+	public static String botonMethodCall(gElemento, boton, EntidadUtils ... entities){
+		return "${gElemento.name}${StringUtils.firstUpper(boton)}(${StringUtils.params(gElemento.saveExtra.collect{it.split(" ")[1]}.unique())});"
+	}
+
+	
 	public static String validateRulesMethod(gElemento, EntidadUtils ... entities){
 		if (entities.length == 0){
 			return "";
@@ -232,6 +237,7 @@ class ControllerUtils {
         return out;
     }
 
+	
     /**
      * Devuelve el codigo de copia de un elemento de la pagina, grupo o popUp
      * @param objeto

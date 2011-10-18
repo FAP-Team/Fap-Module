@@ -1,6 +1,7 @@
 package es.fap.simpleled.validation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -65,8 +66,14 @@ public abstract class LedElementValidator {
 		}
 		return proposals;
 	}
-	
+
 	public List<String> completeEntidad(String prefijo, Entity entidad){
+		HashSet<String> entidadesEnCampo = new HashSet<String>();
+		entidadesEnCampo.add(entidad.getName());
+		return completeEntidad(prefijo, entidad, entidadesEnCampo);
+	}
+	
+	private List<String> completeEntidad(String prefijo, Entity entidad, Set<String> entidadesEnCampo){
 		if (! prefijo.equals("")){
 			prefijo += ".";
 		}
@@ -76,7 +83,11 @@ public abstract class LedElementValidator {
 				proposals.add(prefijo + attr.getName() + "  -  " + getType(attr));
 			}
 			if (LedEntidadUtils.xToOne(attr)){
-				proposals.addAll(completeEntidad(prefijo + attr.getName(), attr.getType().getCompound().getEntidad()));
+				entidad = attr.getType().getCompound().getEntidad();
+				if (!entidadesEnCampo.contains(entidad.getName())){
+					entidadesEnCampo.add(entidad.getName());
+					proposals.addAll(completeEntidad(prefijo + attr.getName(), entidad, entidadesEnCampo));
+				}
 			}
 		}
 		return proposals;

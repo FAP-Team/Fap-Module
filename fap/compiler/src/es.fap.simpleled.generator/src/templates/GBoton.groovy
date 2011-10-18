@@ -4,6 +4,7 @@ import es.fap.simpleled.led.impl.EnlaceImpl;
 
 import es.fap.simpleled.led.Enlace;
 import generator.utils.*;
+import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.Boton;
 
 public class GBoton {
@@ -18,8 +19,7 @@ public class GBoton {
 
     public String view(){
         TagParameters params = new TagParameters();
-        if (boton.name != null)
-            params.putStr("id", boton.name)
+        params.putStr("id", boton.name)
         params.putStr("titulo", boton.titulo)
         if (boton.ancho != null)
             params.put "ancho", boton.ancho
@@ -41,6 +41,7 @@ public class GBoton {
 			result = Expand.expand(enlace)
 		} 
 		else {
+			HashStack.push(HashStackName.SAVE_BOTON, boton.name);
 			result ="""
 #{fap.boton ${params.lista()} /}
 			"""

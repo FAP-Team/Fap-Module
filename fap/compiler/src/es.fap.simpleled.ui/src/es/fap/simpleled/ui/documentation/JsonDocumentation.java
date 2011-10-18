@@ -35,7 +35,7 @@ public class JsonDocumentation {
 		String ruleName = getRuleName(semantic);
 		String key = firstLower(ruleName);
 		DocElemento elemento = mapa.get(key);
-		if (keyword.getValue().equals(FapDocumentationProvider.docRules.get(ruleName))){
+		if (elemento != null && keyword.getValue().equals(FapDocumentationProvider.docRules.get(ruleName))){
 			elemento.keyword = keyword.getValue();
 			return elemento;
 		}
@@ -62,7 +62,6 @@ public class JsonDocumentation {
 	}
 	
 	private static void initializeMap(){
-//		mapa = null;
 		if (mapa == null){
 			mapa = new HashMap<String, DocElemento>();
 			Gson gson = new Gson();

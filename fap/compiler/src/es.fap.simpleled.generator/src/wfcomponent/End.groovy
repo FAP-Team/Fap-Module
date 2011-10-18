@@ -54,10 +54,10 @@ public class End implements IWorkflowComponent {
 		}
 		permisos();
 		rutas();
-		borrarFicherosAntiguos();
 		if (LedUtils.generatingModule){
 			DocumentationUtils.makeDocumentation();
 		}
+		borrarFicherosAntiguos();
 	}
 
 	@Override
@@ -174,6 +174,7 @@ ${defLine} ${extendz} {
 		 dirs.add(new File(FileUtils.getRoute('CONTROLLER_GEN')));
 		 dirs.add(new File(FileUtils.getRoute('CONTROLLER_GEN_POPUP')));
 		 dirs.add(new File(FileUtils.getRoute('LIST')));
+		 dirs.add(new File(FileUtils.getRoute('JSON_DOCUMENTATION')));
 		 //dirs.add(new File(FileUtils.getRoute('MODEL'))); Se puede descomentar.
 		 
 		 for (File dview: new File(FileUtils.getRoute('VIEW')).listFiles()){

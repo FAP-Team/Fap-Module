@@ -4,14 +4,19 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
+import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension4;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.xtext.Assignment;
@@ -21,6 +26,9 @@ import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider;
+import org.eclipse.xtext.ui.editor.hover.html.XtextBrowserInformationControlInput;
+
+import com.google.inject.Inject;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Entity;
@@ -33,12 +41,18 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 	public static INode node;
 	public static boolean reference;
 	
+	@Inject
+	private ILabelProvider labelProvider;
+	
+	private IInformationControlCreator hoverControlCreator;
+	
 	/*
 	 * Reglas de la gramática que están documentadas. Sintaxis: 
 	 * Si la regla y la palabra reservada son distintas ---> nombre_regla:nombre_palabra_reservada
 	 * Si son iguales ---> nombre_regla
 	 */
-	public static String[] docRulesArray = {"Entity:Entidad", "Attribute", "Formulario", "Menu",
+	public static String[] docRulesArray = {
+		"Entity:Entidad", "Attribute", "Formulario", "Menu",
 		"MenuGrupo:Grupo", "MenuEnlace:Enlace", "Pagina", "Popup", "Grupo", "AgruparCampos", "Texto",
 		"AreaTexto", "Check", "Enlace", "Wiki", "Boton", "Fecha", "Combo", "Form", "Tabla",
 		"Columna", "SubirArchivo", "SubirArchivoAed", "EditarArchivoAed", "FirmaPlatinoSimple:FirmaSimple",
@@ -126,7 +140,12 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 	public String getDocumentation(Entity entidad, String name) {
 		String text = NodeModelUtils.getNode(entidad).getText();
 		text = text.trim().replaceAll("\n", "</br>").replaceAll(" ", "&nbsp;").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		return text.replaceFirst(name, "<b>" + name + "</b>");
+		Pattern pa = Pattern.compile("(\\W)" + name + "(\\W)");
+		Matcher m = pa.matcher(text);
+		if (m.find()){
+			return m.replaceFirst(m.group(1) + "<b>" + name + "</b>" + m.group(2));
+		}
+		return text;
 	}
 	
 	public static String getFeature(INode node){
@@ -179,8 +198,6 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		}
 		return bufferString;
 	}
-	
-	private IInformationControlCreator hoverControlCreator;
 	
 	public IInformationControlCreator getHoverControlCreator() {
 		if (hoverControlCreator == null)
@@ -243,6 +260,20 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 			super.setSize(d.width / 4, d.height / 5);
 		}
 		
+	}
+	
+	protected XtextBrowserInformationControlInput getHoverInfo(EObject element, IRegion hoverRegion,
+			XtextBrowserInformationControlInput previous) {
+		String html = getHoverInfoAsHtml(element);
+		if (html != null) {
+			StringBuffer buffer = new StringBuffer(html);
+			HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet());
+			HTMLPrinter.addPageEpilog(buffer);
+			html = buffer.toString();
+			html.replace("ISO-8859-1", "UTF-8");
+			return new XtextBrowserInformationControlInput(previous, element, html, labelProvider);
+		}
+		return null;
 	}
 	
 	protected String getFirstLine(EObject o) {

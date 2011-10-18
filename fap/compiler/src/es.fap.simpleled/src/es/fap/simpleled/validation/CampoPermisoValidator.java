@@ -1,6 +1,7 @@
 package es.fap.simpleled.validation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import es.fap.simpleled.led.Attribute;

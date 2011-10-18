@@ -301,12 +301,12 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			if (attribute.defaultValue != null) {
 				/** Valores por defecto para los tipos simples */
 				if (attribute?.type?.simple != null) { 
-					tipo = attribute?.type?.simple;
+					tipo = attribute?.type?.simple?.type;
 					refInit += defaultValue(attribute.defaultValue, tipo, attribute.name);
 					
 				} else if (attribute?.type?.special != null) {
 					/** Valores por defecto para tipos especiales */
-					tipo = attribute?.type?.special;
+					tipo = attribute?.type?.special?.type;
 					if (tipo.equals("Telefono")) {
 						refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
 					} else if (tipo.equals("Email")) {
@@ -450,7 +450,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	 * @return
 	 */
 	private static String defaultValue(String value, String type, String name) {
-		// println "DefaultValue ("+value+", "+type+", "+name+")";
+		println "DefaultValue ("+value+", "+type+", "+name+")";
 		if ((value != null)) {
 			def defaultValue = value;
 			if (type.equals("Double")) {

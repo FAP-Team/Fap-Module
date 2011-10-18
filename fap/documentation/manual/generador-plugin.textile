@@ -26,7 +26,7 @@ h2. Instalación del plugin
 
 h2. Instalación del plugin (ficheros .jar)
 
-Para instalar el plugin partiendo de los ficheros .jar creados por ant, se debe tener instalado xtext 1.0, para instalarlo seguir las instrucciones que se detallan en "Instalación Xtext":xtext-instalacion). Una vez instalados Xtext se deben copiar los ficheros *es.fap.simpleled_1.0.0.jar* y *es.fap.simpleled.ui_1.0.0.jar* que se encuentran en el módulo fap/plugins dentro del directorio dropins de eclipse (${ECLIPSE_HOME}/dropins).
+Para instalar el plugin partiendo de los ficheros .jar creados por ant, se debe tener instalado xtext 1.0, para instalarlo seguir las instrucciones que se detallan en "Instalación Xtext":xtext-instalacion). Una vez instalado Xtext se deben copiar los ficheros *es.fap.simpleled_1.0.0.jar*, *es.fap.simpleled.ui_1.0.0.jar* y *gson-1.7.1.jar*, que se encuentran en el módulo en fap/plugins, dentro del directorio dropins de eclipse (${ECLIPSE_HOME}/dropins).
 
 h2. Actualizacición del plugin (ficheros .jar)
 

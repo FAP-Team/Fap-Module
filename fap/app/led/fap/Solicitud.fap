@@ -27,7 +27,7 @@ Formulario Solicitud {
 		
 		Form presentar redirigir=AportacionPresentar {
 			Wiki {"Debe registrar los documentos para que se consideren aportados a la solicitud."}
-			Boton titulo="Preparar para registrar"
+			Boton botonPresentar titulo="Preparar para registrar"
 		}
 		
 	}
@@ -78,7 +78,7 @@ Formulario Solicitud {
 		
 			Form modificarBorrador redirigir=Aportacion permiso=aportacionModificar{
 				Wiki {"Puede realizar cambios antes de su presentación definitiva."}
-				Boton titulo="Modificar datos"
+				Boton botonModificarBorrador titulo="Modificar datos"
 			}
 			
 			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio visible=false {

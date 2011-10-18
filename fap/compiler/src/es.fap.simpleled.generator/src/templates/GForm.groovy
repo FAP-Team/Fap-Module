@@ -13,6 +13,7 @@ public class GForm {
 
 	def elementoGramatica;
 	def contenedor;
+	boolean tieneBotonSave;
 	String name;
 	CampoUtils campo;
 	Permiso permiso;
@@ -21,6 +22,7 @@ public class GForm {
 	List<EntidadUtils> entities;
 	List<String> saveExtra;
 	List<String> saveCode;
+	List<String> saveBoton;
 	
 	public static String generate(Form form){
 		GForm g = new GForm();
@@ -64,6 +66,7 @@ public class GForm {
 		int sizeExtra = HashStack.size(HashStackName.SAVE_EXTRA);
 		int sizeEntity = HashStack.size(HashStackName.SAVE_ENTITY);
 		int sizeCode = HashStack.size(HashStackName.SAVE_CODE);
+		int sizeBoton = HashStack.size(HashStackName.SAVE_BOTON);
 		
 		String elementos = "";
 		for(Elemento elemento: elementoGramatica.elementos){
@@ -80,11 +83,13 @@ public class GForm {
 			entities = HashStack.getUntil(HashStackName.SAVE_ENTITY, sizeEntity).unique();
 			saveExtra = HashStack.getUntil(HashStackName.SAVE_EXTRA, sizeExtra);
 			saveCode = HashStack.getUntil(HashStackName.SAVE_CODE, sizeCode);
+			saveBoton = HashStack.getUntil(HashStackName.SAVE_BOTON, sizeBoton);
 		}
 		else{
 			entities = HashStack.allElements(HashStackName.SAVE_ENTITY).unique();
 			saveExtra = HashStack.allElements(HashStackName.SAVE_EXTRA);
 			saveCode = HashStack.allElements(HashStackName.SAVE_CODE);
+			saveBoton = HashStack.allElements(HashStackName.SAVE_BOTON);
 		}
 		
 		//Comprueba si hay elementos de subirArchivo en el formulario para añadir el encttype adecuado
@@ -99,12 +104,18 @@ public class GForm {
 		
 		// SI GENERA BOTONES QUE NO SON, HAY QUE CAMBIAR ESTA CONDICION:
 		if ((entities.size() + saveExtra.size() > 0) && (elementoGramatica instanceof Pagina)) {
+			String nameSaveBoton = "save";
 			saveButtonStr = """
 				<div class="button_container">
-					#{fap.boton titulo:"Guardar" /}
+					#{fap.boton ${nameSaveBoton} titulo:"Guardar" /}
 				</div>
 			""";
+			tieneBotonSave = true;
 		}
+		else {
+			tieneBotonSave = false;	
+		}
+		
 		String view = """
 			#{form @${controllerName()}.${controllerMethodName()}(${padre.getId()}), id:"${name}" ${encTypeStr}}
 				${elementos}
@@ -150,20 +161,53 @@ public class GForm {
 		}else{
 			redirectMethodOk = redirectMethod
 		}
-
 		
-		String controllerCode = """
-			@Util
-			protected static boolean permiso${name}(String accion) {
-				${ControllerUtils.permisoContent(permiso)}
+		String botonCode = "";
+		String botonMethod = "";
+		boolean primero = true;
+		
+		//Si solo tiene un boton se asigna como save
+		if ((saveBoton.size() < 2) && (tieneBotonSave == false)) {
+			saveBoton.clear();
+			tieneBotonSave = true
+		}
+		
+		for (String boton : saveBoton) {
+			if (primero == true) {
+				botonCode += """
+					if (${boton} != null) {
+				"""
+				primero = false
 			}
-		"""
-		
-		controllerCode += """
-			${ControllerUtils.validateCopyMethod(this, (EntidadUtils[])entities.toArray())}
+			else {
+				botonCode += """
+					else if (${boton} != null) {
+				"""
+	
+			}
+			botonCode += """
+					${ControllerUtils.botonMethodCall(this, boton, (EntidadUtils[])entities.toArray())}
+				}
+
+			"""
 			
-			public static void ${controllerMethodName()}(${StringUtils.params(padre.typeId, saveParams, saveExtra)}){
-				checkAuthenticity();
+			botonMethod += """
+			@Util
+			public static void ${controllerMethodName()}${StringUtils.firstUpper(boton)}(${StringUtils.params(saveExtra)}){
+				//Sobreescribir este método para asignar una acción
+			}
+			"""
+		}
+
+		if (tieneBotonSave == true) {
+			if (!saveBoton.isEmpty()) {
+				botonCode += """
+				else {	
+				"""
+			}
+			botonCode += """
+
+				// Save code
 				if (permiso${name}("update") || permiso${name}("create")) {
 				
 					${entities.collect{ "${it.typeDb} = ${ControllerUtils.simpleGetterCall(it, false)};"}.join("\n")}
@@ -177,25 +221,55 @@ public class GForm {
 					if(!validation.hasErrors()){
 						${entities.collect{ "${it.variableDb}.save(); Logger.info(\"Guardando ${it.variable} \" + ${it.variableDb}.id);"}.join("\n")}
 				
-		"""
-		if(campo != null && entities.size() > 0){
-			controllerCode += """
+			"""
+			if(campo != null && entities.size() > 0){
+				botonCode += """
 						${padre.typeDb} = ${ControllerUtils.simpleGetterCall(padre, false)};
 						${padre.variableDb}.${campo.sinEntidad()}.add(${entities.get(0).variableDb});
 						${padre.variableDb}.save();
-			"""
-		}
-		controllerCode += """
+				"""
+			}
+
+			botonCode += """
 					}
 				}
 				else {
 					Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-					/* no se hace aqui Messages.keep(); */
 				}
+
+			"""
+			if (!saveBoton.isEmpty()) {
+				botonCode += """
+				}
+				"""
+			}
+
+		}		
+	
+		
+		String controllerCode = """
+			@Util
+			protected static boolean permiso${name}(String accion) {
+				${ControllerUtils.permisoContent(permiso)}
+			}
+		"""
+		
+		def botonParam = []
+		saveBoton.each{ boton -> botonParam.add("String "+boton)}
+		
+		controllerCode += """
+			${ControllerUtils.validateCopyMethod(this, (EntidadUtils[])entities.toArray())}
+			
+			public static void ${controllerMethodName()}(${StringUtils.params(padre.typeId, saveParams, saveExtra, botonParam)}){
+				checkAuthenticity();
+
+				${botonCode}
 				
 				${controllerMethodName()}Render(${padre.id});
 
 			}
+
+			${botonMethod}
 			
 			${ControllerUtils.validateRulesMethod(this, (EntidadUtils[])entities.toArray())}
 

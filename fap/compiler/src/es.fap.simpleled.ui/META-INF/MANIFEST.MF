@@ -13,9 +13,10 @@ Require-Bundle: es.fap.simpleled;visibility:=reexport,
  org.eclipse.ui,
  org.eclipse.xtext.builder,
  org.antlr.runtime
-Import-Package: org.apache.log4j
+Import-Package: com.google.gson;version="1.7.1",
+ com.google.gson.reflect;version="1.7.1",
+ org.apache.log4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: es.fap.simpleled.ui.contentassist.antlr
 Bundle-Activator: es.fap.simpleled.ui.internal.LedActivator
-Bundle-ClassPath: lib/gson-1.7.1.jar,
- .
+Bundle-ClassPath: .

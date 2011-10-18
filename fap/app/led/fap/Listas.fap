@@ -157,3 +157,8 @@ Lista municipios {
 	380526:	"Vilaflor"                  
 	380532:	"Villa de Mazo"             	
 }
+
+Lista tipoConsulta {
+	tipoSQL: "SQL"
+	tipoJPQL: "JPSQL"
+}

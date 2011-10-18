@@ -138,6 +138,7 @@ public class GPagina {
 		HashStack.remove(HashStackName.SAVE_ENTITY);
 		HashStack.remove(HashStackName.SAVE_EXTRA);
 		HashStack.remove(HashStackName.SAVE_CODE);
+		HashStack.remove(HashStackName.SAVE_BOTON);
 		HashStack.remove(HashStackName.INDEX_ENTITY);
 
 		List<String> renderParams = entities.collect { it.variable };

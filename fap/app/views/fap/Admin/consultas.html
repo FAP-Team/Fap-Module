@@ -1,0 +1,87 @@
+
+#{extends 'fap/template.html' /}
+#{set title:'Consultas' /}
+
+#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+
+			
+#{if play.getVirtualFile("app/views/gen/menu/Administracion.html") != null}
+	#{set 'menu'}
+		#{include 'gen/menu/Administracion.html'/}
+	#{/set}
+#{/if}
+		
+#{fap.messages}
+
+#{fap.permiso }
+			
+#{fap.tabla id:'tablaConsultas', titulo:'Consultas', campo:'Consulta', popup:'PopupConsulta', tipo:'pagina', idProperty:'consulta_id', url:@fap.ConsultasController.tablatablaConsultas(idConsulta)}	
+	#{fap.columna campo:'consulta', cabecera:'Consulta', expandir:true, ancho:200 /}		
+	#{fap.columna campo:'descripcion', cabecera:'Descripción', ancho:350 /}		
+	#{fap.columna campo:'tipo', cabecera:'Tipo', ancho:50 /}
+#{/fap.tabla}
+
+
+<div id="boxConsulta" class="box"  style="display:none" >
+	<h2>Descripción</h2>
+	<p id="descripcion"></p>
+	<br/>
+	<h2>Consulta</h2>
+	<p id="consulta"></p>
+	<br/>
+	<h2>Tipo</h2>
+	<p id="tipo"></p>
+	<br/>
+</div>
+
+#{fap.boton id:'botonEjecutar', titulo:'Ejecutar' /}
+
+<div id="boxResultado" class="box"  style="display:none" >
+	<div id="resultado"></div>
+</div>
+		
+<script>
+
+	var grid;
+	console.log(grid);
+	
+	function getGrid() {
+		grid = $('#tablaConsultas').data('grid');
+		if (typeof grid == "undefined") {
+			var t = setTimeout("getGrid()",1000);
+		}
+	}
+
+	Ext.onReady(function() {
+		getGrid();
+		
+	    grid.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
+	     console.log(selectedRecord.length);
+	   	 if (selectedRecord.length) {
+	       	var consulta = selectedRecord[0].data;
+		    
+			$('#consulta').html(consulta.consulta);
+		    $('#descripcion').html(consulta.descripcion);
+		    $('#tipo').html(consulta.tipo);
+		    
+		    $('#boxConsulta').show();
+		    $('#boxResultado').hide();
+	   	 }
+	 	});
+
+	    $('#botonEjecutar').click(function () {
+	    	var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+	    	var ejecutarConsulta = #{jsAction @fap.ConsultasController.ejecutarConsulta(':id') /};
+	    	
+	    	$('#resultado').load(ejecutarConsulta({id: selected_id}));
+		    $('#boxResultado').show();
+	    });
+	});
+		
+</script>
+
+#{/fap.permiso}
+#{/fap.messages}
+#{/fap.permiso}
+
+		

@@ -12,21 +12,29 @@
 		<li><a href="#Documentos">Documentos</a></li>
 		
 		#{if hasCriterios}
-		<li><a href="#Criterios">Criterios de evaluación</a>
+		<li class="menu-group">
+			<a href="#Criterios" class="menu-header">Criterios de evaluación</a>
 			<ul>
 			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
-				<li>${tcriterio.jerarquia} - ${tcriterio.nombre}</li>	
+				<li><a href="#criterio${tcriterio.jerarquia}">${tcriterio.jerarquia} - ${tcriterio.nombre}</a></li>	
 			#{/list}
 			</ul>
 		</li>	
 		#{/if}
 		
 		#{if hasCEconomicos}
-		<li><a href="#CEconomicos">Conceptos económicos</a></li>
+		<li class="menu-group">
+			<a href="#CEconomicos" class="menu-header">Conceptos económicos</a>
+			<ul>
+			#{list items:evaluacion.tipo.ceconomicos, as:'tceconomico'}
+				<li><a href="#ceconomico${tceconomico.jerarquia}">${tceconomico.jerarquia} - ${tceconomico.nombre}</a></li>	
+			#{/list}
+			</ul>
+		</li>
 		#{/if}
+		
 	</ul>	
 #{/set}
-
 
 #{fap.messages /}
 
@@ -65,7 +73,7 @@
 			def comentariosSolicitante = flash.get(paramName + ".comentariosSolicitante") ?: criterio.comentariosSolicitante;
 		}%
 		
-		<div class="criterio">
+		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
 			<p class="nombre">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</p>
 			<p>Descripcion: ${criterio.tipo.descripcion}</p>
 			<p>Instrucciones: ${criterio.tipo.descripcion}</p>
@@ -106,7 +114,47 @@
 #{if  hasCEconomicos}
 	#{fap.grupo titulo:'Conceptos económicos', id: 'CEconomicos'}
 		
-	Conceptos económicos
+	#{list items:evaluacion.ceconomicos, as:'ceconomico'}
+		%{
+			def paramName  = "ceconomico[${ceconomico.id}]";
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+			
+			def flashOrValue = {name, value -> 
+			 	if(messages.Messages.containsFlash(name)){
+					return messages.Messages.getFlash(name);
+				}else{
+					return value;
+				}
+			}
+			
+			def newValue = {name, label, value -> [name : name, label : label, value : flashOrValue(name, value)]}
+			
+			def valores = [  
+				newValue(paramName + ".valorSolicitado", "Valor Solicitado", ceconomico.valorSolicitado),
+				newValue(paramName + ".valorEstimado", "Valor Estimado", ceconomico.valorEstimado),
+				newValue(paramName + ".valorPropuesto", "Valor Propuesto", ceconomico.valorPropuesto),
+				newValue(paramName + ".valorConcedido", "Valor Concedido", ceconomico.valorConcedido)	
+			]
+			def comentariosAdministracion = flashOrValue(paramName + ".comentariosAdministracion", ceconomico.comentariosAdministracion);
+			def comentariosSolicitante = flashOrValue(paramName + ".comentariosSolicitante", ceconomico.comentariosSolicitante); 
+		}%
+		
+		<div class="ceconomico" id="ceconomico${ceconomico.tipo.jerarquia}">
+			<p class="nombre">${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</p>
+			#{list items:valores, as : 'valor'}
+				#{simple.text name:valor.name, value:valor.value, label:valor.label /}
+			#{/list}
+			
+			#{if ceconomico.tipo.comentariosAdministracion}
+				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion /}
+			#{/if}
+			
+			#{if ceconomico.tipo.comentariosSolicitante}
+				#{simple.textarea name:paramName + ".comentariosSolicitante", label:'Comentarios solicitante', value: comentariosSolicitante /}
+			#{/if}
+		</div>
+		
+	#{/list}
 			
 	#{/fap.grupo}
 #{/if}

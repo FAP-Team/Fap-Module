@@ -84,11 +84,9 @@ public class Messages {
     }
     
     public static boolean containsFlash(String id){
-    	play.Logger.info("Contains!");
     	String cached = Cache.get(getCachedNamesKey(), String.class);
     	if(cached != null){
     		for(String key : cached.split(",")){
-    			play.Logger.info("Cached! %s , %s", key, id);
     			if(id.equals(key))
     				return true;
     		}

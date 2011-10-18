@@ -45,6 +45,14 @@ public class CEconomico extends Model {
 	public Double valorConcedido;
 	
 	
+	@Column(columnDefinition="LONGTEXT")
+	public String comentariosAdministracion;
+	
+	
+	@Column(columnDefinition="LONGTEXT")
+	public String comentariosSolicitante;
+	
+	
 	public CEconomico (){
 		init();
 	}

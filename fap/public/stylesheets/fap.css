@@ -5,7 +5,7 @@
 body {
 	background: #B5C5D4;
 	color: #555;
-	font: 14px "lucida grande", tahoma, verdana, arial, sans-serif;
+	font: 12px "lucida grande", tahoma, verdana, arial, sans-serif;
 }
 
 a:link,a:active,a:visited {
@@ -545,15 +545,15 @@ div.wikiLista ul li {
 	margin-bottom: 5px;
 }
 
-.fichaEvaluador .criterio, .fichaEvaluador .evaluacion {
-	margin-bottom: 10px;		
-}
-
 .fichaEvaluador .x-panel {
 	margin-bottom: 5px;
 }
 
-.fichaEvaluador .criterio .nombre , .fichaEvaluador .evaluacion .nombre {
+.fichaEvaluador .criterio, .fichaEvaluador .economico {
+	margin-bottom: 10px;		
+}
+
+.fichaEvaluador .criterio .nombre , .fichaEvaluador .ceconomico .nombre {
 	border-bottom: 1px solid #DCE8F4; 
 	font-weight: bold;
 	padding-left: 5px;

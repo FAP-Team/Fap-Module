@@ -28,6 +28,8 @@ public class Criterio extends Model {
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public TipoCriterio tipo;
 	
+	
+	
 	public Double valor;
 	
 	

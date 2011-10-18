@@ -135,7 +135,7 @@ public class BaremacionService {
 		int max = -1;
 		for(Object o : elementos){
 			int profundidad = 0;
-			profundidad = getProfundidad((Criterio)o);
+			profundidad = getProfundidad(o);
 			if(profundidad > max){
 				max = profundidad;
 			}

@@ -25,7 +25,6 @@ public class FichaEvaluador extends Controller {
 	@Finally(only="fichaEvaluador")
 	public static void removeFlash(){
 		Messages.deleteFlash();
-		play.Logger.info("Borrando flash");
 	}
 	
 	public static void fichaEvaluador(){
@@ -42,6 +41,12 @@ public class FichaEvaluador extends Controller {
 		render(evaluacion, documentos);
 	}
 
+	private static <T> T getParamRequired(String name, Class<T> clazz){
+		Object value = params.get(name, clazz);
+		validation.required(name, value);
+		return (T)value;
+	}
+	
 	public static void save(){
 		Evaluacion evaluacion = Evaluacion.findById(params.get("evaluacion.id", Long.class));
 		//Comentarios
@@ -80,6 +85,24 @@ public class FichaEvaluador extends Controller {
 			}
 		}
 
+		for(CEconomico ceconomico : evaluacion.ceconomicos){
+			String param = "ceconomico[" + ceconomico.id + "]";
+			
+			ceconomico.valorSolicitado = getParamRequired(param + ".valorSolicitado", Double.class);
+			ceconomico.valorEstimado = params.get(param + ".valorEstimado", Double.class);
+			ceconomico.valorPropuesto = getParamRequired(param + ".valorPropuesto", Double.class);
+			ceconomico.valorConcedido = getParamRequired(param + ".valorConcedido", Double.class);
+
+			//Comentarios
+			if(ceconomico.tipo.comentariosAdministracion){				
+				ceconomico.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
+			}
+			
+			if(ceconomico.tipo.comentariosSolicitante){
+				ceconomico.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
+			}			
+		}
+		
 		//TODO: Calcular totales aunque haya errores de validación?
 		BaremacionService.calcularTotales(evaluacion);
 		if(validation.hasErrors()){
@@ -102,9 +125,18 @@ public class FichaEvaluador extends Controller {
 		Messages.setFlash("evaluacion.id", evaluacion.id);
 		Messages.setFlash("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion);
 		Messages.setFlash("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante);
+		
 		for(Criterio c : evaluacion.criterios){
 			Messages.setFlash("criterio[" + c.id + "].valor", c.valor);
 		}
+		
+		for(CEconomico ce : evaluacion.ceconomicos){
+			Messages.setFlash("ceconomico[" + ce.id + "].valorConcedido", ce.valorConcedido);
+			Messages.setFlash("ceconomico[" + ce.id + "].valorEstimado", ce.valorEstimado);
+			Messages.setFlash("ceconomico[" + ce.id + "].valorSolicitado", ce.valorSolicitado);
+			Messages.setFlash("ceconomico[" + ce.id + "].valorPropuesto", ce.valorPropuesto);
+		}
+		
 	}
 	
 	private static void addLValores(TipoCriterio tc, Double valor, String descripcion){
@@ -193,6 +225,18 @@ public class FichaEvaluador extends Controller {
 		c1_1.nombre = "A";
 		c1_1.jerarquia = "1.1";
 		
+		TipoCEconomico c1_2 = new TipoCEconomico();
+		c1_2.nombre = "B";
+		c1_2.jerarquia = "1.2";
+		
+		TipoCEconomico c1_3 = new TipoCEconomico();
+		c1_3.nombre = "C";
+		c1_3.jerarquia = "1.3";
+		
+		TipoCEconomico c1_4 = new TipoCEconomico();
+		c1_4.nombre = "D";
+		c1_4.jerarquia = "1.4";
+		
 		
 		TipoEvaluacion tEvaluacion = new TipoEvaluacion();
 		tEvaluacion.criterios.add(t1);
@@ -203,6 +247,10 @@ public class FichaEvaluador extends Controller {
 		tEvaluacion.criterios.add(t1_2_4);
 		tEvaluacion.criterios.add(t1_2_5);
 		tEvaluacion.criterios.add(t1_3);
+		tEvaluacion.ceconomicos.add(c1_1);
+		tEvaluacion.ceconomicos.add(c1_2);
+		tEvaluacion.ceconomicos.add(c1_3);
+		tEvaluacion.ceconomicos.add(c1_4);
 		tEvaluacion.comentariosAdministracion = true;
 		tEvaluacion.comentariosSolicitante = true;
 		

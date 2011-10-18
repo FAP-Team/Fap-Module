@@ -47,10 +47,14 @@ Entidad TipoCEconomico {
 
 Entidad CEconomico {
 	TipoCEconomico tipo
+	
 	Double valorSolicitado
 	Double valorEstimado
 	Double valorPropuesto
-	Double valorConcedido	
+	Double valorConcedido
+	
+	LongText comentariosAdministracion
+	LongText comentariosSolicitante	
 }
 
 Entidad TipoEvaluacion {

@@ -8,7 +8,7 @@
 }*
 
 #{simple.row label:_label, id:_id, help:_help, error:_error }
-	<select #{if _id}id="${_id}d:"#{/if} name="${_name}">
+	<select #{if _id}id="${_id}"#{/if} name="${_name}">
 		<option> </option>
 		#{list items:_options, as:'option'}
 			%{

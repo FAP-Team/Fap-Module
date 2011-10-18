@@ -5,7 +5,7 @@
 body {
 	background: #B5C5D4;
 	color: #555;
-	font: 12px "lucida grande", tahoma, verdana, arial, sans-serif;
+	font: 13px "lucida grande", tahoma, verdana, arial, sans-serif;
 }
 
 a:link,a:active,a:visited {
@@ -446,7 +446,6 @@ MENU
 	padding-left: 5px;
 	color: #003366;
 	text-shadow: 0px 1px 0px #fff;
-	line-height: 25px;
 	display: block;
 }
 
@@ -562,6 +561,19 @@ div.wikiLista ul li {
 	color: #036;
 	text-shadow: 0px 1px 0px white;
 	margin-bottom: 10px;
+}
+
+.fichaEvaluador ul{
+	list-style: disc;
+	margin: 0 0 18px 25px;
+}
+
+.fichaEvaluador li {
+	list-style: disc;
+}
+
+.fichaEvaluador strong {
+	font-weight: bold;
 }
 
 .fichaEvaluador .form-row {

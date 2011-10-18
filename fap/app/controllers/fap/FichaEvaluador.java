@@ -152,6 +152,7 @@ public class FichaEvaluador extends Controller {
 		t1.claseCriterio = "auto";
 		t1.jerarquia = "1";
 		t1.tipoValor = "cantidad";
+		t1.descripcion = "Calidad y viabilidad científico tecnológica o capacidad de innovación del proyecto concreto hasta 25 puntos.";
 		
 		TipoCriterio t1_1 = new TipoCriterio();
 		t1_1.nombre = "Duracion";
@@ -160,12 +161,14 @@ public class FichaEvaluador extends Controller {
 		t1_1.tipoValor = "lista";
 		addLValores(t1_1, 10D, "Si");
 		addLValores(t1_1, 0D, "No");
+		t1_1.descripcion = "Si el proyecto tiene una duración a aprobar de 3 años por considerarse un proyecto integral y el añadido de crear, al menos, un puesto estable tecnológico en la empresa: 10 puntos";
 		
 		TipoCriterio t1_2 = new TipoCriterio();
 		t1_2.nombre = "Sustancia de la solicitud";
 		t1_2.claseCriterio = "auto";
 		t1_2.jerarquia = "1.2";
 		t1_2.tipoValor = "cantidad";
+		t1_2.descripcion = "Tiene por objeto valorar la sustancia de la solicitud. A tal efecto, se tendrán en cuenta los siguientes 5 subcriterios.";
 		
 		TipoCriterio t1_2_1 = new TipoCriterio();
 		t1_2_1.nombre = "Grado de definición del proyecto";
@@ -176,6 +179,7 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_2_1, 5D, "Medio");
 		addLValores(t1_2_1, 2D, "Bajo");
 		addLValores(t1_2_1, 0D, "Nulo");
+		t1_2_1.descripcion = "Debe responder a las cuestiones siguientes: <ul><li>Se define el objeto de modo que es posible encajarlo en la tipología de proyectos subvenciones.</li><li>Se motiva la novedad o innovación porque se describe el estado de la técnica y la laguna detectada o el problema a resolver.</li><li>Se constata que el proyecto está estructurado y se definen las fases constituyentes, con concreción de las tareas a realizar y tiempo a investir (debe haber un resumen de tareas clasro)</li></ul>";
 		
 		TipoCriterio t1_2_2 = new TipoCriterio();
 		t1_2_2.nombre = "Nivel del grupo de investigación";
@@ -185,6 +189,7 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_2_2, 8D, "Alto");
 		addLValores(t1_2_2, 5D, "Medio");
 		addLValores(t1_2_2, 2D, "Bajo");
+		t1_2_2.descripcion = "Nivel del grupo de investigación.- tiene por objeto valorar la capacidad de las personas para llevar a cabo el proyecto. A estos efectos, se mirará la titulación de los trabajadores de la empresa o del grupo de investigación (en este último caso, siempre que en la memoria se describa su existencia)";
 		
 		TipoCriterio t1_2_3 = new TipoCriterio();
 		t1_2_3.nombre = "Carácter del proyecto";
@@ -194,6 +199,7 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_2_3, 8D, "Alto. Spinoff o nuevo proyecto");
 		addLValores(t1_2_3, 5D, "Medio. Proyecto iniciado");
 		addLValores(t1_2_3, 2D, "Bajo. Proyecto iniciado y subvencionado");
+		t1_2_3.descripcion = "Tiene por objeto valorar el efecto incentivo que podría producir la subvención en aras a la realización del mismo";
 		
 		TipoCriterio t1_2_4 = new TipoCriterio();
 		t1_2_4.nombre = "Coherencia";
@@ -202,7 +208,7 @@ public class FichaEvaluador extends Controller {
 		t1_2_4.tipoValor = "lista";
 		addLValores(t1_2_4, 8D, "Si");
 		addLValores(t1_2_4, 0D, "No");
-		
+		t1_2_4.descripcion = "Tiene por objeto valorar si se han previsto los costes necesarios para la materialización del proyecto, así como las fuentes de financiación. Así por ejemplo, un proyecto que sólo haya previsto el coste de la persona a contratar, no sería coherente.";
 		
 		TipoCriterio t1_2_5 = new TipoCriterio();
 		t1_2_5.nombre = "Existencia de base endógena";
@@ -211,6 +217,7 @@ public class FichaEvaluador extends Controller {
 		t1_2_5.tipoValor = "lista";
 		addLValores(t1_2_5, 8D, "Si");
 		addLValores(t1_2_5, 0D, "No");
+		t1_2_5.descripcion = "Tiene por objeto primar aquellos proyectos capaces de contribuir a un desarrollo economico más sostenible por basarse en una fortaleza endógena de Canarias. Por ejemplo, el desarrollo de cosméticos a base de endemismos canarios.";
 		
 		TipoCriterio t1_3 =  new TipoCriterio();
 		t1_3.nombre = "Cooperación";
@@ -219,7 +226,7 @@ public class FichaEvaluador extends Controller {
 		t1_3.tipoValor = "lista";
 		addLValores(t1_3, 5D, "Si");
 		addLValores(t1_3, 0D, "No");
-		
+		t1_3.descripcion = "Si el proyecto es de cooperación";
 		
 		TipoCEconomico c1_1 = new TipoCEconomico();
 		c1_1.nombre = "A";

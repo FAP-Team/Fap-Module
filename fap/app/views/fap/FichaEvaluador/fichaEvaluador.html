@@ -75,8 +75,15 @@
 		
 		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
 			<p class="nombre">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</p>
-			<p>Descripcion: ${criterio.tipo.descripcion}</p>
-			<p>Instrucciones: ${criterio.tipo.descripcion}</p>
+			#{if criterio.tipo.descripcion != null}
+				<p><strong>Descripción</strong><p>
+				<p>#{verbatim}${criterio.tipo.descripcion}#{/verbatim}</p>
+			#{/if}
+			
+			#{if criterio.tipo.instrucciones != null}
+				<p><strong>Instrucciones</strong></p> 
+				<p>#{verbatim}${criterio.tipo.instrucciones}#{/verbatim}</p>
+			#{/if}
 			
 			#{if criterio.tipo.claseCriterio.equals("auto")}
 				#{simple.uneditable label:'Valor', value:valor /}

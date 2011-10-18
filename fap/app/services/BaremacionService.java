@@ -2,9 +2,14 @@ package services;
 
 import models.*;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
+import baremacion.Evaluador;
+
 import play.Logger;
+import play.Play;
 
 public class BaremacionService {
 
@@ -23,27 +28,64 @@ public class BaremacionService {
 				//TODO revisar código para automod
 				if(criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod")){
 					List<Criterio> childs = getChilds(criterio, sortedCriterios.get(i + 1));
-					evalCriterio(criterio, childs);
+					invokeEval(criterio.tipo.jerarquia, criterio, childs);
 				}
 			}
 		}
 	}
-
+	
 	/**
-	 * Calcula el valor de un criterio automático en función del valor de sus hijos
-	 * @param parent
-	 * @param childs
+	 * Llama al método que debe calcular el valor del criterio o concepto automático.
+	 * 
+	 * El orden de las llamadas es:
+	 *    - Método específico en clase que hereda de Evaluator
+	 *    - Método por defecto en clase que hereda de Evaluator
+	 *    - Método por defecto en la clase Evaluator
+	 *    
+	 * @param jerarquia Jerarquía que ocupa el padre, necesaria para saber el nombre del método
+	 * @param parent Entidad padre
+	 * @param childs Lista de hijos
+	 * @return
 	 */
-	private static void evalCriterio(Criterio parent, List<Criterio> childs){
-		//Acción por defecto suma de los hijos
-		Double valor = 0D;
-		for(Criterio child : childs){
-			if(child.valor != null){
-				valor += child.valor;
+	private static <T> void invokeEval(String jerarquia, T parent, List<T> childs){
+		Class invokedClass = null;
+		//Busca una clase que herede del evaluador
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(Evaluador.class);
+        if(assignableClasses.size() > 0){
+            invokedClass = assignableClasses.get(0);
+        }
+        
+        String methodName = "eval" + jerarquia.replaceAll("//.", "_");
+        Method method = null;
+
+        if(invokedClass != null){
+	        //Método de la clase evaluador
+	        try {
+	        	method = invokedClass.getDeclaredMethod(methodName, parent.getClass(), List.class);
+			} catch (Exception e) {
 			}
-		}
-		parent.valor = valor;
-		play.Logger.info("Criterio automático %s - valor %s", parent.id, valor);
+	        
+	        //Default de la clase evaluador
+	        if(method == null){
+	        	try {
+	        		method = invokedClass.getDeclaredMethod("evalDefault", parent.getClass(), List.class);
+	        	}catch(Exception e){}
+	        }
+        }
+        
+        //Método por defecto de la clase generica
+        if(method == null){
+        	try {
+        		method = Evaluador.class.getDeclaredMethod("evalDefault", parent.getClass(), List.class);
+        	}catch(Exception e){}
+        }
+        
+        //Llama al método
+        if(method != null){
+        	try {
+        		method.invoke(null, parent, childs);
+			} catch (Exception e) {}
+        }
 	}
 	
 	
@@ -119,5 +161,4 @@ public class BaremacionService {
 		}
 		return null;
 	}
-	
 }

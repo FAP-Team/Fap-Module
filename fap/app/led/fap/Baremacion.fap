@@ -4,6 +4,11 @@ Lista LstClaseCriterio {
 	automod : "Automático modificable"
 }
 
+Lista LstClaseCEconomico {
+	manual  : "Manual"
+	auto    : "Automático"
+}
+
 Lista LstTipoValorCriterio {
 	cantidad : "Cantidad"
 	lista    : "Lista de valores"	
@@ -40,7 +45,9 @@ Entidad Criterio {
 Entidad TipoCEconomico {
     String nombre
     String descripcion
+    String instrucciones
     String jerarquia
+  	Lista LstClaseCEconomico clase
     Boolean comentariosAdministracion default="false"
     Boolean comentariosSolicitante default="false"
 }

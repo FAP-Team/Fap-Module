@@ -34,6 +34,10 @@ public class TipoCEconomico extends Model {
 	
 	
 	
+	public String instrucciones;
+	
+	
+	
 	public String jerarquia;
 	
 	

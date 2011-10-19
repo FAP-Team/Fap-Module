@@ -87,11 +87,7 @@ public class FichaEvaluador extends Controller {
 
 		for(CEconomico ceconomico : evaluacion.ceconomicos){
 			String param = "ceconomico[" + ceconomico.id + "]";
-			
-			ceconomico.valorSolicitado = getParamRequired(param + ".valorSolicitado", Double.class);
 			ceconomico.valorEstimado = params.get(param + ".valorEstimado", Double.class);
-			ceconomico.valorPropuesto = getParamRequired(param + ".valorPropuesto", Double.class);
-			ceconomico.valorConcedido = getParamRequired(param + ".valorConcedido", Double.class);
 
 			//Comentarios
 			if(ceconomico.tipo.comentariosAdministracion){				
@@ -112,6 +108,9 @@ public class FichaEvaluador extends Controller {
 			if(params.get("save") != null){
 				//Guardar
 				evaluacion.save();
+			}else if(params.get("pdf") != null){
+				//Generar PDF
+				renderText("renderizar PDF!");
 			}else{
 				//Vista previa
 				flash(evaluacion);
@@ -127,14 +126,17 @@ public class FichaEvaluador extends Controller {
 		Messages.setFlash("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante);
 		
 		for(Criterio c : evaluacion.criterios){
-			Messages.setFlash("criterio[" + c.id + "].valor", c.valor);
+			String param = "criterio[" + c.id + "]";
+			Messages.setFlash(param + ".valor", c.valor);
+			Messages.setFlash(param + ".comentariosAdministracion", c.comentariosAdministracion);
+			Messages.setFlash(param + ".comentariosSolicitante", c.comentariosSolicitante);
 		}
 		
 		for(CEconomico ce : evaluacion.ceconomicos){
-			Messages.setFlash("ceconomico[" + ce.id + "].valorConcedido", ce.valorConcedido);
-			Messages.setFlash("ceconomico[" + ce.id + "].valorEstimado", ce.valorEstimado);
-			Messages.setFlash("ceconomico[" + ce.id + "].valorSolicitado", ce.valorSolicitado);
-			Messages.setFlash("ceconomico[" + ce.id + "].valorPropuesto", ce.valorPropuesto);
+			String param = "ceconomico[" + ce.id + "]";
+			Messages.setFlash(param + ".valorEstimado", ce.valorEstimado);
+			Messages.setFlash(param + ".comentariosAdministracion", ce.comentariosAdministracion);
+			Messages.setFlash(param + ".comentariosSolicitante", ce.comentariosSolicitante);
 		}
 		
 	}
@@ -153,6 +155,9 @@ public class FichaEvaluador extends Controller {
 		t1.jerarquia = "1";
 		t1.tipoValor = "cantidad";
 		t1.descripcion = "Calidad y viabilidad científico tecnológica o capacidad de innovación del proyecto concreto hasta 25 puntos.";
+		t1.instrucciones = "Instrucciones para rellenar el criterio 1";
+		t1.comentariosAdministracion = true;
+		t1.comentariosSolicitante = true;
 		
 		TipoCriterio t1_1 = new TipoCriterio();
 		t1_1.nombre = "Duracion";
@@ -162,6 +167,9 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_1, 10D, "Si");
 		addLValores(t1_1, 0D, "No");
 		t1_1.descripcion = "Si el proyecto tiene una duración a aprobar de 3 años por considerarse un proyecto integral y el añadido de crear, al menos, un puesto estable tecnológico en la empresa: 10 puntos";
+		t1_1.instrucciones = "Instrucciones para rellenar el criterio 1_1";
+		t1_1.comentariosAdministracion = true;
+		t1_1.comentariosSolicitante = true;
 		
 		TipoCriterio t1_2 = new TipoCriterio();
 		t1_2.nombre = "Sustancia de la solicitud";
@@ -169,6 +177,9 @@ public class FichaEvaluador extends Controller {
 		t1_2.jerarquia = "1.2";
 		t1_2.tipoValor = "cantidad";
 		t1_2.descripcion = "Tiene por objeto valorar la sustancia de la solicitud. A tal efecto, se tendrán en cuenta los siguientes 5 subcriterios.";
+		t1_2.instrucciones = "Instrucciones para rellenar el criterio 1_2";
+		t1_2.comentariosAdministracion = true;
+		t1_2.comentariosSolicitante = true;
 		
 		TipoCriterio t1_2_1 = new TipoCriterio();
 		t1_2_1.nombre = "Grado de definición del proyecto";
@@ -180,6 +191,10 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_2_1, 2D, "Bajo");
 		addLValores(t1_2_1, 0D, "Nulo");
 		t1_2_1.descripcion = "Debe responder a las cuestiones siguientes: <ul><li>Se define el objeto de modo que es posible encajarlo en la tipología de proyectos subvenciones.</li><li>Se motiva la novedad o innovación porque se describe el estado de la técnica y la laguna detectada o el problema a resolver.</li><li>Se constata que el proyecto está estructurado y se definen las fases constituyentes, con concreción de las tareas a realizar y tiempo a investir (debe haber un resumen de tareas clasro)</li></ul>";
+		t1_2_1.instrucciones = "Instrucciones para rellenar el criterio 1_2";
+		t1_2_1.comentariosAdministracion = true;
+		t1_2_1.comentariosSolicitante = true;
+		
 		
 		TipoCriterio t1_2_2 = new TipoCriterio();
 		t1_2_2.nombre = "Nivel del grupo de investigación";
@@ -190,6 +205,10 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_2_2, 5D, "Medio");
 		addLValores(t1_2_2, 2D, "Bajo");
 		t1_2_2.descripcion = "Nivel del grupo de investigación.- tiene por objeto valorar la capacidad de las personas para llevar a cabo el proyecto. A estos efectos, se mirará la titulación de los trabajadores de la empresa o del grupo de investigación (en este último caso, siempre que en la memoria se describa su existencia)";
+		t1_2_2.instrucciones = "Instrucciones para rellenar el criterio 1_2_2";
+		t1_2_2.comentariosAdministracion = true;
+		t1_2_2.comentariosSolicitante = true;
+		
 		
 		TipoCriterio t1_2_3 = new TipoCriterio();
 		t1_2_3.nombre = "Carácter del proyecto";
@@ -200,6 +219,10 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_2_3, 5D, "Medio. Proyecto iniciado");
 		addLValores(t1_2_3, 2D, "Bajo. Proyecto iniciado y subvencionado");
 		t1_2_3.descripcion = "Tiene por objeto valorar el efecto incentivo que podría producir la subvención en aras a la realización del mismo";
+		t1_2_3.instrucciones = "Instrucciones para rellenar el criterio 1_2_3";
+		t1_2_3.comentariosAdministracion = true;
+		t1_2_3.comentariosSolicitante = true;
+		
 		
 		TipoCriterio t1_2_4 = new TipoCriterio();
 		t1_2_4.nombre = "Coherencia";
@@ -209,6 +232,10 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_2_4, 8D, "Si");
 		addLValores(t1_2_4, 0D, "No");
 		t1_2_4.descripcion = "Tiene por objeto valorar si se han previsto los costes necesarios para la materialización del proyecto, así como las fuentes de financiación. Así por ejemplo, un proyecto que sólo haya previsto el coste de la persona a contratar, no sería coherente.";
+		t1_2_4.instrucciones = "Instrucciones para rellenar el criterio 1_2_3";
+		t1_2_4.comentariosAdministracion = true;
+		t1_2_4.comentariosSolicitante = true;
+		
 		
 		TipoCriterio t1_2_5 = new TipoCriterio();
 		t1_2_5.nombre = "Existencia de base endógena";
@@ -218,6 +245,10 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_2_5, 8D, "Si");
 		addLValores(t1_2_5, 0D, "No");
 		t1_2_5.descripcion = "Tiene por objeto primar aquellos proyectos capaces de contribuir a un desarrollo economico más sostenible por basarse en una fortaleza endógena de Canarias. Por ejemplo, el desarrollo de cosméticos a base de endemismos canarios.";
+		t1_2_5.instrucciones = "Instrucciones para rellenar el criterio 1_2_5";
+		t1_2_5.comentariosAdministracion = true;
+		t1_2_5.comentariosSolicitante = true;
+		
 		
 		TipoCriterio t1_3 =  new TipoCriterio();
 		t1_3.nombre = "Cooperación";
@@ -227,31 +258,55 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_3, 5D, "Si");
 		addLValores(t1_3, 0D, "No");
 		t1_3.descripcion = "Si el proyecto es de cooperación";
+		t1_3.instrucciones = "Instrucciones para rellenar el criterio 1_3";
+		t1_3.comentariosAdministracion = true;
+		t1_3.comentariosSolicitante = true;
+		
 		
 		TipoCEconomico c1 = new TipoCEconomico();
 		c1.nombre = "0";
 		c1.jerarquia = "1";
 		c1.clase = "auto";
+		c1.comentariosAdministracion = true;
+		c1.comentariosSolicitante = true;
+		c1.descripcion = "Descripción";
+		c1.instrucciones = "Instrucciones";
 		
 		TipoCEconomico c1_1 = new TipoCEconomico();
 		c1_1.nombre = "A";
 		c1_1.jerarquia = "1.1";
 		c1_1.clase = "manual";
+		c1_1.comentariosAdministracion = true;
+		c1_1.comentariosSolicitante = true;
+		c1_1.descripcion = "Descripción";
+		c1_1.instrucciones = "Instrucciones";
 		
 		TipoCEconomico c1_2 = new TipoCEconomico();
 		c1_2.nombre = "B";
 		c1_2.jerarquia = "1.2";
 		c1_2.clase = "manual";
+		c1_2.comentariosAdministracion = true;
+		c1_2.comentariosSolicitante = true;
+		c1_2.descripcion = "Descripción";
+		c1_2.instrucciones = "Instrucciones";
 		
 		TipoCEconomico c1_3 = new TipoCEconomico();
 		c1_3.nombre = "C";
 		c1_3.jerarquia = "1.3";
 		c1_3.clase = "manual";
+		c1_3.comentariosAdministracion = true;
+		c1_3.comentariosSolicitante = true;
+		c1_3.descripcion = "Descripción";
+		c1_3.instrucciones = "Instrucciones";
 		
 		TipoCEconomico c1_4 = new TipoCEconomico();
 		c1_4.nombre = "D";
 		c1_4.jerarquia = "1.4";
 		c1_4.clase = "manual";
+		c1_4.comentariosAdministracion = true;
+		c1_4.comentariosSolicitante = true;
+		c1_4.descripcion = "Descripción";
+		c1_4.instrucciones = "Instrucciones";
 		
 		TipoEvaluacion tEvaluacion = new TipoEvaluacion();
 		tEvaluacion.criterios.add(t1);

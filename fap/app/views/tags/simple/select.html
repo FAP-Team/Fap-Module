@@ -5,6 +5,7 @@
 	_optionsValue:
 	_value
 	_style
+	_showKeyInLabel
 }*
 
 #{simple.row label:_label, id:_id, help:_help, error:_error }
@@ -16,7 +17,7 @@
 				def optionValue = option."${_optionsValue}"				
 				def selected = optionValue?.toString().equals(_value?.toString()) ? 'selected=selected' : '';
 			}%
-			<option value="${optionValue}" ${selected}>${optionText}</option>
+			<option value="${optionValue}" ${selected}>${optionText}#{if _showKeyInLabel} (${optionValue})#{/if}</option>
 		#{/list}
 	</select>
 #{/simple.row}

@@ -580,6 +580,11 @@ div.wikiLista ul li {
 	padding: 5px 0;
 }
 
+.fichaEvaluador textarea {
+	display : block;
+	width : 100%;
+}
+
 .error {
 	background-color : #FAE5E3;	
 }

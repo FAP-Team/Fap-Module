@@ -119,6 +119,15 @@ public class Messages {
     	Cache.delete(getCachedNamesKey());
     }
     
+    public static Object flashOrValue(String name, Object value){
+	 	if(containsFlash(name)){
+			return getFlash(name);
+		}else{
+			return value;
+		}
+    }
+    
+    
     public static boolean isKeep() {
     	return current().keep;
     }

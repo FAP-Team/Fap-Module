@@ -2,8 +2,8 @@
 #{set title:'Ficha Evaluador' /}
 
 %{
-	def hasCriterios = evaluacion.tipo.criterios.size() > 0
-	def hasCEconomicos = evaluacion.tipo.ceconomicos.size() > 0
+	def hasCriterios = !evaluacion.tipo.criterios.isEmpty()
+	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty()
 }%
 
 #{set 'menu'}
@@ -44,11 +44,11 @@
 
 #{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
 	#{if evaluacion.tipo.comentariosAdministracion}
-		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:evaluacion.comentariosAdministracion /}
+		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion)/}
 	#{/if}
 	
 	#{if evaluacion.tipo.comentariosSolicitante}
-		#{simple.textarea name:'evaluacion.comentariosSolicitante', label:'Comentarios solicitante', value:evaluacion.comentariosSolicitante /}
+		#{simple.textarea name:'evaluacion.comentariosSolicitante', label:'Comentarios solicitante', value:messages.Messages.flashOrValue("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante) /}
 	#{/if}
 		
 #{/fap.grupo}
@@ -61,16 +61,11 @@
 	
 	#{list items:evaluacion.criterios, as:'criterio'}
 		%{
-			def paramName  = "criterio[${criterio.id}]";
-			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
-			def valor = null;
-			if(messages.Messages.containsFlash(paramName + ".valor")){
-				valor = messages.Messages.getFlash(paramName + ".valor")
-			}else{
-				valor = criterio.valor;
-			}
-			def comentariosAdministracion = flash.get(paramName + ".comentariosAdministracion") ?: criterio.comentariosAdministracion;
-			def comentariosSolicitante = flash.get(paramName + ".comentariosSolicitante") ?: criterio.comentariosSolicitante;
+			def paramName  = "criterio[${criterio.id}]"
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",")  
+			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor)
+			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", criterio.comentariosAdministracion);
+			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", criterio.comentariosSolicitante);
 		}%
 		
 		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
@@ -95,7 +90,7 @@
 			
 			#{elseif criterio.tipo.claseCriterio.equals("manual")}
 				#{if criterio.tipo.tipoValor.equals('lista')}
-					#{simple.select name:paramName + ".valor", label:'Valor', options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error /}
+					#{simple.select name:paramName + ".valor", label:'Valor', options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: true/}
 				#{/if}
 				
 				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
@@ -125,33 +120,32 @@
 		%{
 			def paramName  = "ceconomico[${ceconomico.id}]";
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+
+			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+			def valorSolicitado = newValue(paramName + ".valorSolicitado", "Valor Solicitado", ceconomico.valorSolicitado)
+			def valorEstimado   = newValue(paramName + ".valorEstimado", "Valor Estimado", ceconomico.valorEstimado)
 			
-			def flashOrValue = {name, value -> 
-			 	if(messages.Messages.containsFlash(name)){
-					return messages.Messages.getFlash(name);
-				}else{
-					return value;
-				}
-			}
-			
-			def newValue = {name, label, value -> [name : name, label : label, value : flashOrValue(name, value)]}
-			
-			def valores = [  
-				newValue(paramName + ".valorSolicitado", "Valor Solicitado", ceconomico.valorSolicitado),
-				newValue(paramName + ".valorEstimado", "Valor Estimado", ceconomico.valorEstimado),
-				newValue(paramName + ".valorPropuesto", "Valor Propuesto", ceconomico.valorPropuesto),
-				newValue(paramName + ".valorConcedido", "Valor Concedido", ceconomico.valorConcedido)	
-			]
-			def comentariosAdministracion = flashOrValue(paramName + ".comentariosAdministracion", ceconomico.comentariosAdministracion);
-			def comentariosSolicitante = flashOrValue(paramName + ".comentariosSolicitante", ceconomico.comentariosSolicitante); 
+			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", ceconomico.comentariosAdministracion);
+			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", ceconomico.comentariosSolicitante); 
 		}%
 		
 		<div class="ceconomico" id="ceconomico${ceconomico.tipo.jerarquia}">
 			<p class="nombre">${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</p>
-			#{list items:valores, as : 'valor'}
-				#{simple.text name:valor.name, value:valor.value, label:valor.label /}
-			#{/list}
 			
+			#{if criterio.tipo.descripcion != null}
+				<p><strong>Descripción</strong><p>
+				<p>#{verbatim}${ceconomico.tipo.descripcion}#{/verbatim}</p>
+			#{/if}
+			
+			#{if criterio.tipo.instrucciones != null}
+				<p><strong>Instrucciones</strong><p>
+				<p>#{verbatim}${ceconomico.tipo.instrucciones}#{/verbatim}</p>
+			#{/if}
+			
+			
+			#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
+			#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
+				
 			#{if ceconomico.tipo.comentariosAdministracion}
 				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion /}
 			#{/if}
@@ -168,6 +162,7 @@
 
 <div class="button_container">
 	<input type="submit" class="boton" name="preview" value="Vista previa">
+	<input type="submit" class="boton" name="pdf" value="Obtener borrador en PDF">
 	<input type="submit" class="boton" name="save" value="Guardar">
 </div>
 

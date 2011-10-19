@@ -51,7 +51,7 @@ public class ColumnasUtils {
 	
 	private List<Columna> generateEntidadReferencia(Attribute attr) {
 		List<Columna> out = new ArrayList<Columna>()
-		String referencia = attr.type.compound.tipoReferencia;
+		String referencia = attr.type.compound.tipoReferencia?.type;
 		if (referencia == null || referencia.equals("OneToOne") || referencia.equals("ManyToOne")){ 
 			out.addAll(columnas(campo.addAttribute(attr)));
 		}

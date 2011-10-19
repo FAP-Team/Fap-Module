@@ -29,6 +29,11 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 	public static final String REFERENCE_ID = "reference";
 	public static final String NAME_ID = "name";
 	
+	public static final RGB nameColor = new RGB(200, 0, 0);
+	public static final RGB referenceColor = new RGB(32, 0, 183);
+	public static final RGB keywordColor = new RGB(127, 0, 85);
+	public static final RGB stringColor = new RGB(64, 128, 128);
+	
 	public void configure(IHighlightingConfigurationAcceptor acceptor) {
 		super.configure(acceptor);
 		acceptor.acceptDefaultHighlighting(REFERENCE_ID, "Reference", referenceStyle());
@@ -43,7 +48,7 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 	
 	public TextStyle nameStyle() {
 		TextStyle textStyle = new TextStyle();
-		textStyle.setColor(new RGB(200, 0, 0));
+		textStyle.setColor(nameColor);
 		return textStyle;
 	}
 	
@@ -55,7 +60,7 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 	
 	public TextStyle referenceStyle() {
 		TextStyle textStyle = defaultTextStyle().copy();
-		textStyle.setColor(new RGB(32, 0, 183));
+		textStyle.setColor(referenceColor);
 		return textStyle;
 	}
 	

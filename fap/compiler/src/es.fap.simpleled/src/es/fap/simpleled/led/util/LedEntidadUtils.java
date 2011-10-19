@@ -35,7 +35,7 @@ public class LedEntidadUtils {
 			return false;
 		}
 		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() == null || c.getTipoReferencia().equals("OneToOne") || c.getTipoReferencia().equals("ManyToOne");
+		return c.getTipoReferencia() == null || c.getTipoReferencia().getType().equals("OneToOne") || c.getTipoReferencia().getType().equals("ManyToOne");
 	}
 
 	// OneToMany o ManyToMany
@@ -44,7 +44,7 @@ public class LedEntidadUtils {
 			return false;
 		}
 		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() != null && (c.getTipoReferencia().equals("OneToMany") || c.getTipoReferencia().equals("ManyToMany"));
+		return c.getTipoReferencia() != null && (c.getTipoReferencia().getType().equals("OneToMany") || c.getTipoReferencia().getType().equals("ManyToMany"));
 	}
 	
 	// OneToOne o OneToMany
@@ -53,7 +53,7 @@ public class LedEntidadUtils {
 			return false;
 		}
 		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() == null || c.getTipoReferencia().equals("OneToOne") || c.getTipoReferencia().equals("OneToMany");
+		return c.getTipoReferencia() == null || c.getTipoReferencia().getType().equals("OneToOne") || c.getTipoReferencia().getType().equals("OneToMany");
 	}
 
 	// ManyToOne o ManyToMany
@@ -62,7 +62,7 @@ public class LedEntidadUtils {
 			return false;
 		}
 		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() != null && (c.getTipoReferencia().equals("ManyToOne") || c.getTipoReferencia().equals("ManyToMany"));
+		return c.getTipoReferencia() != null && (c.getTipoReferencia().getType().equals("ManyToOne") || c.getTipoReferencia().getType().equals("ManyToMany"));
 	}
 	
 	public static boolean esLista(Attribute attr){

@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.RuleCall;
+import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScopeProvider;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
@@ -81,7 +82,8 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	
 	@Override
 	public void completeCompoundType_Entidad(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		if (getCurrentLine(context) == context.getLastCompleteNode().getStartLine()){
+		INode node = context.getLastCompleteNode();
+		if (getCurrentLine(context) == node.getStartLine() && !(node.getSemanticElement().eContainer() instanceof CompoundType)){
 			return;
 		}
 		Set<Entity> entidades = getEntidades(model);

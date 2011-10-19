@@ -8,9 +8,9 @@ def main():
     targetPath =  os.path.join(directorioOriginal)
     params = "solicitud=false"
     
-    print "Directorio: ",directorioOriginal
-    print "Model: ",modelPath
-    print "Target: ",targetPath
+    #print "Directorio: ",directorioOriginal
+    #print "Model: ",modelPath
+    #print "Target: ",targetPath
     #execute_workflow(modelPath, targetPath, params, args, app)
     
     generatorDir = os.path.join(directorioOriginal, 'compiler')
@@ -39,7 +39,7 @@ def main():
     
     # app.java_path()
     cmd = ["java", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, params];
-    print cmd
+    #print cmd
     subprocess.call(cmd);
 
 

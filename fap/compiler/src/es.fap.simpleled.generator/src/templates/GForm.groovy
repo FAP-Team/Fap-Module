@@ -107,7 +107,7 @@ public class GForm {
 			String nameSaveBoton = "save";
 			saveButtonStr = """
 				<div class="button_container">
-					#{fap.boton ${nameSaveBoton} titulo:"Guardar" /}
+					#{fap.boton id:${nameSaveBoton}, titulo:"Guardar" /}
 				</div>
 			""";
 			tieneBotonSave = true;

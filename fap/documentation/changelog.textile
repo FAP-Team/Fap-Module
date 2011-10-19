@@ -1,11 +1,8 @@
 h2. Changelog
 
-h3. Versión 1.1.1
-
-* Se permiten definir varios botones dentro de un form
-
 h3. Versión 1.1
 
+* Se permiten definir varios botones dentro de un form.
 * En esta versión se introducen muchos cambios relacionados con la forma de escribir el DSL. Para adaptar a la versión 1.1 ficheros DSL escritos con versiones previas, véase la siguiente página de documentación: "Adaptación de los ficheros DSL a la versión 1.1":version1.1DSL.
 * Autocompletado y validación selectivos en campos. Las propuestas del autocompletado dependen del tipo de elemento que contiene al campo.
 * Mejorado el autocompletado en el editor, que ahora distingue donde tiene que autocompletar elementos y donde atributos.

@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 1.1.1
+
+* Se permiten definir varios botones dentro de un form
+
 h3. Versión 1.1
 
 * En esta versión se introducen muchos cambios relacionados con la forma de escribir el DSL. Para adaptar a la versión 1.1 ficheros DSL escritos con versiones previas, véase la siguiente página de documentación: "Adaptación de los ficheros DSL a la versión 1.1":version1.1DSL.

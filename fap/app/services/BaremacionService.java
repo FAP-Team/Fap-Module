@@ -19,19 +19,36 @@ public class BaremacionService {
 	 */
 	public static void calcularTotales(Evaluacion evaluacion){
 		//Ordena los elementos para calcularlos teniendo en cuenta las dependencias
-		List<List<Criterio>> sortedCriterios = sortByProfundidad(evaluacion.criterios);
+//		List<List<Criterio>> sortedCriterios = sortByProfundidad(evaluacion.criterios);
 		List<List<CEconomico>> sortedCEconomicos = sortByProfundidad(evaluacion.ceconomicos);
 		
-		//El nivel más profundo no es necesario calcularlo
-		for(int i = sortedCriterios.size() - 2; i >= 0; i--){
-			for(Criterio criterio : sortedCriterios.get(i)){
-				//TODO revisar código para automod
-				if(criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod")){
-					List<Criterio> childs = getChilds(criterio, sortedCriterios.get(i + 1));
-					invokeEval(criterio.tipo.jerarquia, criterio, childs);
+		//Criterios y conceptos se calculan en orden inverso para tener en cuenta las dependencias
+		
+		//Calculo de los criterios automático
+//		for(int i = sortedCriterios.size() - 2; i >= 0; i--){
+//			for(Criterio criterio : sortedCriterios.get(i)){
+//				//TODO revisar código para automod
+//				if(criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod")){
+//					List<Criterio> childs = getChilds(criterio, sortedCriterios.get(i + 1));
+//					invokeEval(criterio.tipo.jerarquia, criterio, childs);
+//				}
+//			}
+//		}
+		
+//		play.Logger.info("Sorted Criterios %s", sortedCriterios);
+		play.Logger.info("All CEconomicos %s", evaluacion.ceconomicos);
+		play.Logger.info("Sorted CEconomicos %s", sortedCEconomicos);
+		//Cáculo de los conceptos económicos automáticos
+		for(int i = sortedCEconomicos.size() -2; i >= 0; i--){
+			for(CEconomico ceconomico : sortedCEconomicos.get(i)){
+				play.Logger.info("Calculando automático %", ceconomico.tipo.jerarquia);
+				if(ceconomico.tipo.clase.equals("auto")){
+					List<CEconomico> childs = getChilds(ceconomico, sortedCEconomicos.get(i + 1));
+					invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
 				}
 			}
 		}
+		
 	}
 	
 	/**
@@ -112,7 +129,7 @@ public class BaremacionService {
 	 * @return
 	 */
 	private static <T> List<List<T>> sortByProfundidad(List<T> elementos) {
-		if (elementos.size() == 0)
+		if (elementos.isEmpty())
 			return null;
 		
 		long max = maxProfundidad(elementos);

@@ -1,23 +1,39 @@
 package baremacion;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import models.CEconomico;
 import models.Criterio;
 
 public class Evaluador {
-	
-	public static void evalDefault(Criterio criterio, List<Criterio> childs){
-		Double r = 0d;
-		for(Criterio child : childs){
-			if(child.valor != null){
-				r += child.valor;
+
+	public static void evalDefault(Criterio criterio, List<Criterio> childs) {
+		criterio.valor = sumatorio("valor", childs);
+	}
+
+	public static void evalDefault(CEconomico ceconomico, List<CEconomico> childs) {
+		ceconomico.valorConcedido = sumatorio("valorConcedido", childs);
+		ceconomico.valorEstimado = sumatorio("valorEstimado", childs);;
+		ceconomico.valorPropuesto = sumatorio("valorPropuesto", childs);
+		ceconomico.valorSolicitado = sumatorio("valorSolicitado", childs);
+	}
+
+	static Double sumatorio(String fieldName, List<?> list) {
+		Double sum = 0D;
+		for (Object o : list) {
+			try {
+				Class<? extends Object> clazz = o.getClass();
+				Field field;
+				field = clazz.getField(fieldName);
+				Double valor = (Double) field.get(o);
+				if (valor != null) {
+					sum += valor;
+				}
+			} catch (Exception e) {
 			}
 		}
-		criterio.valor = r;
+		return sum;
 	}
-	
-	public static void evalDefault(CEconomico concepto, List<CEconomico> childs){
-		//TODO calculo de los conceptos económicos
-	}
+
 }

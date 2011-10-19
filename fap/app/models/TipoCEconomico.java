@@ -37,6 +37,10 @@ public class TipoCEconomico extends Model {
 	public String jerarquia;
 	
 	
+	@ValueFromTable("LstClaseCEconomico")
+	public String clase;
+	
+	
 	
 	public Boolean comentariosAdministracion;
 	

@@ -228,22 +228,30 @@ public class FichaEvaluador extends Controller {
 		addLValores(t1_3, 0D, "No");
 		t1_3.descripcion = "Si el proyecto es de cooperación";
 		
+		TipoCEconomico c1 = new TipoCEconomico();
+		c1.nombre = "0";
+		c1.jerarquia = "1";
+		c1.clase = "auto";
+		
 		TipoCEconomico c1_1 = new TipoCEconomico();
 		c1_1.nombre = "A";
 		c1_1.jerarquia = "1.1";
+		c1_1.clase = "manual";
 		
 		TipoCEconomico c1_2 = new TipoCEconomico();
 		c1_2.nombre = "B";
 		c1_2.jerarquia = "1.2";
+		c1_2.clase = "manual";
 		
 		TipoCEconomico c1_3 = new TipoCEconomico();
 		c1_3.nombre = "C";
 		c1_3.jerarquia = "1.3";
+		c1_3.clase = "manual";
 		
 		TipoCEconomico c1_4 = new TipoCEconomico();
 		c1_4.nombre = "D";
 		c1_4.jerarquia = "1.4";
-		
+		c1_4.clase = "manual";
 		
 		TipoEvaluacion tEvaluacion = new TipoEvaluacion();
 		tEvaluacion.criterios.add(t1);
@@ -254,6 +262,7 @@ public class FichaEvaluador extends Controller {
 		tEvaluacion.criterios.add(t1_2_4);
 		tEvaluacion.criterios.add(t1_2_5);
 		tEvaluacion.criterios.add(t1_3);
+		tEvaluacion.ceconomicos.add(c1);
 		tEvaluacion.ceconomicos.add(c1_1);
 		tEvaluacion.ceconomicos.add(c1_2);
 		tEvaluacion.ceconomicos.add(c1_3);

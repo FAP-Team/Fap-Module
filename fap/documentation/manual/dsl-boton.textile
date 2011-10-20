@@ -6,7 +6,7 @@ Permite definir un botón, por defecto al pulsar el botón se llama al método d
 
 h2. Parámetros
 
-* **_[name]_** (opcional) : Identificador del elemento.
+* **_[name]_** : Identificador del elemento.
 * **titulo = _[string]_** : Etiqueta que se mostrará dentro del botón.
 * **ancho = _[string]_** (opcional) : Ancho en píxeles del botón.
 * **popup = _[popup]_** (opcional) : Si se especifica, al pulsar el botón se abrirá el popup indicado.

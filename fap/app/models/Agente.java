@@ -96,6 +96,8 @@ public class Agente extends Model {
 			return funcionario;
 		return false;
 	}
+
+	
 	// === MANUAL REGION END ===
 	
 	

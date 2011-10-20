@@ -38,6 +38,7 @@ modules/
 *.rar
 !fap/compiler/src/es.fap.simpleled.generator/lib/*.jar
 !fap/compiler/src/es.fap.simpleled.ui/lib/*.jar
+!fap/plugins/*.jar
 *.tar
 *.zip
 

@@ -41,6 +41,9 @@ DELETE /admin/edit/listas/{id} 		          fap.AdminController.delete
 
 GET /Administracion/logs fap.LoggerController.index
 
+GET /Administracion/consultas fap.consultasController.index
+GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
+
 # === FAPGENERATED ===
 GET /Administracion/usuarios UsuariosController.index
 
@@ -77,6 +80,12 @@ POST /Administracion/popupemail/{idEntidad}/editar popups.PopupEmailController.e
 POST /Administracion/popupemail/{idEntidad}/borrar popups.PopupEmailController.borrar
 POST /Administracion/popupemail/{idEntidad}/crear popups.PopupEmailController.crear
 POST /Administracion/popupemail/{idEntidad}/cancelarcrear popups.PopupEmailController.cancelarCrear
+
+GET /Administracion/popupconsulta/{idEntidad}/abrir popups.PopupConsultaController.abrir
+POST /Administracion/popupconsulta/{idEntidad}/editar popups.PopupConsultaController.editar
+POST /Administracion/popupconsulta/{idEntidad}/borrar popups.PopupConsultaController.borrar
+POST /Administracion/popupconsulta/{idEntidad}/crear popups.PopupConsultaController.crear
+POST /Administracion/popupconsulta/{idEntidad}/cancelarcrear popups.PopupConsultaController.cancelarCrear
 
 GET /Solicitud/aportacion AportacionController.index
 

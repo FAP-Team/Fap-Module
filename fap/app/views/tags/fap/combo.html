@@ -67,9 +67,9 @@
 								ik = row."$comboValue";
 								iv = row."$comboText"?.toString();
 							}catch(Exception e){
-								ik = row.id;
+								ik = row.id.toString();
 								iv = ik;
-							}
+							}							
 							items.add(new tags.ComboItem(ik, iv));
 						}
 					}else{

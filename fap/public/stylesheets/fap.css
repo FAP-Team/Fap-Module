@@ -534,6 +534,30 @@ div.wikiLista ul li {
 }
 
 
+table.consulta {
+	border-width: 1px;
+	border-style: outset;
+	border-color: gray;
+	background-color: white;
+}
+table.consulta th {
+	border-width: 1px;
+	padding: 2px;
+	border-style: inset;
+	border-color: gray;
+	font-weight:bold;
+	color: black;
+	
+}
+table.consulta td {
+	border-width: 1px;
+	padding: 2px;
+	border-style: inset;
+	border-color: gray;
+}
+
+
+
 #Baremacion
 
 .fichaEvaluador {

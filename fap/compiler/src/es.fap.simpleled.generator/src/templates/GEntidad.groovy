@@ -21,6 +21,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
 import es.fap.simpleled.led.util.LedDocumentationUtils;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 
 public class GEntidad {
 	
@@ -195,14 +196,14 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			}else if (compuesto.collectionType != null) {
 				//Colecciones
 				anotaciones.add("@ElementCollection");
-				type = "${compuesto.collectionType}<${compuesto.collectionReferencia.type}>";
+				type = "${compuesto.collectionType.type}<${compuesto.collectionReferencia.type}>";
 			}
 			else{
 				//Referencia
-				String tipoReferencia = compuesto.tipoReferencia ?: "OneToOne" //Si no especifica tipo es una OneToOne
+				String tipoReferencia = compuesto.tipoReferencia?.type ?: "OneToOne" //Si no especifica tipo es una OneToOne
 				anotaciones.add "@${tipoReferencia}(${cascadeType} fetch=FetchType.LAZY)"
 				type= compuesto.entidad.name;
-				if(["OneToMany", "ManyToMany"].contains(tipoReferencia)){
+				if(LedEntidadUtils.xToMany(attribute)){
 					type = "List<${type}>"
 					anotaciones.add """@JoinTable(name="${entity.name.toLowerCase()}_${attribute.name.toLowerCase()}")"""
 				}
@@ -278,8 +279,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			""";
 			}
 			else if(tipo != null && !attribute.noConstruct){
-				String tipoReferencia = compuesto.tipoReferencia ?: "OneToOne"
-				if(["OneToMany", "ManyToMany"].contains(tipoReferencia)){
+				if(LedEntidadUtils.xToMany(attribute)){
 					refInit += """
 						if (${attribute.name} == null)
 							${attribute.name} = new ArrayList<${tipo}>();

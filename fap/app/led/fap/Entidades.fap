@@ -355,3 +355,8 @@ Entidad Requerimiento {
 	DateTime fechaAcusePostal
 }
 
+Entidad Consulta {
+	LongText descripcion
+	LongText consulta
+	Lista tipoConsulta tipo
+}

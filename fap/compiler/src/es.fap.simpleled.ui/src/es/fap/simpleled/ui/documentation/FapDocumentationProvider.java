@@ -3,6 +3,7 @@ package es.fap.simpleled.ui.documentation;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,13 +18,18 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension4;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
+import org.eclipse.xtext.impl.KeywordImpl;
+import org.eclipse.xtext.impl.RuleCallImpl;
+import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.nodemodel.impl.LeafNode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider;
 import org.eclipse.xtext.ui.editor.hover.html.XtextBrowserInformationControlInput;
@@ -35,6 +41,7 @@ import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.util.DocElemento;
 import es.fap.simpleled.led.util.DocParametro;
 import es.fap.simpleled.led.util.LedDocumentationUtils;
+import es.fap.simpleled.ui.coloring.FapSemanticHighlighting;
 
 public class FapDocumentationProvider extends DefaultEObjectHoverProvider implements IEObjectDocumentationProvider {
 
@@ -137,15 +144,152 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		return "";
 	}
 	
+//	public String getDocumentation(Entity entidad, String name) {
+//		String text = NodeModelUtils.getNode(entidad).getText();
+//		text = text.trim().replaceAll("\n", "</br>").replaceAll(" ", "&nbsp;").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+//		Pattern pa = Pattern.compile("(\\W)" + name + "(\\W)");
+//		Matcher m = pa.matcher(text);
+//		if (m.find()){
+//			return m.replaceFirst(m.group(1) + "<b>" + name + "</b>" + m.group(2));
+//		}
+//		return text;
+//	}
+	
+//	public String getDocumentation(Entity entidad, String name) {
+//		String text = NodeModelUtils.getNode(entidad).getText();
+//		
+////		Pattern pa = Pattern.compile("Entidad .+?\\{.*\\}", Pattern.DOTALL);
+////		Matcher m = pa.matcher(text);
+////		if (m.find()){
+////			text = m.group();
+////		}
+//
+//		// comentarios multilinea
+//		Matcher m = Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL).matcher(text);
+//		text = m.replaceAll("");
+//
+//		// comentarios multilinea
+//		m = Pattern.compile("//.*").matcher(text);
+//		text = m.replaceAll("");
+//
+//		// cambiando espacios y tabuladores
+//		text = text.trim().replaceAll("\n", "</br>").replaceAll(" ", "&nbsp;").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+//		
+//		// Entidad
+//		text = Pattern.compile("Entidad").matcher(text).replaceFirst("<b><span style=\"color:#" + rgb2hex(FapSemanticHighlighting.keywordColor) + "\">Entidad</span></b>");
+//		
+//		// Strings
+//		text = Pattern.compile("\".*?\"", Pattern.DOTALL).matcher(text).replaceAll("<span style=\"color:#" + rgb2hex(FapSemanticHighlighting.stringColor) + "\">\"LA DECIMA\"</span>");
+//		
+//		Pattern pa = Pattern.compile("(\\W)" + name + "(\\W)");
+//		m = pa.matcher(text);
+//		if (m.find()){
+//			return m.replaceFirst(m.group(1) + "<b><u>" + name + "</b></u>" + m.group(2));
+//		}
+//		return text;
+//	}
+	
 	public String getDocumentation(Entity entidad, String name) {
-		String text = NodeModelUtils.getNode(entidad).getText();
-		text = text.trim().replaceAll("\n", "</br>").replaceAll(" ", "&nbsp;").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		Pattern pa = Pattern.compile("(\\W)" + name + "(\\W)");
-		Matcher m = pa.matcher(text);
-		if (m.find()){
-			return m.replaceFirst(m.group(1) + "<b>" + name + "</b>" + m.group(2));
+		String result = "</br>";
+		Attribute last = null;
+		boolean atributoNuevo = false;
+		Iterator<ILeafNode> it = NodeModelUtils.getNode(entidad).getLeafNodes().iterator();
+		while (it.hasNext()){
+			ILeafNode ileaf = it.next();
+			if (!ileaf.getClass().getSimpleName().equals("LeafNode")){
+				continue;
+			}
+			LeafNode leaf = (LeafNode) ileaf;
+			String text = leaf.getText();
+			EObject semantic = leaf.getSemanticElement();
+			EObject grammar = leaf.getGrammarElement();
+			if (grammar instanceof KeywordImpl){
+				KeywordImpl keyword = (KeywordImpl) grammar;
+				if (keyword.getValue().equals("<")){
+					result += span(" &lt;" + it.next().getText() + "&gt; </span> ", FapSemanticHighlighting.referenceColor, false); 
+					it.next();
+					continue;
+				}
+				if (keyword.getValue().equals("}")){
+					result += "</br>}";
+					continue;
+				}
+			}
+			Attribute current = getAttribute(semantic);
+			if (last != current){
+				result += "</br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				atributoNuevo = true;
+			}
+			last = current;
+			if (grammar instanceof RuleCallImpl){
+				RuleCallImpl rule = (RuleCallImpl) grammar;
+				String ruleName = rule.getRule().getName();
+				if (semantic instanceof Attribute && ((Attribute)semantic).getName().equals(text)){
+					result += span(text, FapSemanticHighlighting.nameColor, text.equals(name));
+					atributoNuevo = false;
+					continue;
+				}
+				if (semantic instanceof Entity && ((Entity)semantic).getName().equals(text)){
+					result += span(text, FapSemanticHighlighting.nameColor, text.equals(name));
+					continue;
+				}
+				if ("STRING".equals(ruleName)){
+					result += span(text, FapSemanticHighlighting.stringColor, false);
+					continue;
+				}
+				result += span(text, FapSemanticHighlighting.referenceColor, false);
+				continue;
+			}
+			if (atributoNuevo){
+				result += span(text, FapSemanticHighlighting.referenceColor, false);
+				continue;
+			}
+			if (grammar instanceof KeywordImpl){
+				if (Character.isLetter(text.charAt(0))){
+					result += span(text, FapSemanticHighlighting.keywordColor, true);
+					continue;
+				}
+			}
+			result += text + " ";
+			semantic.eAdapters();
 		}
-		return text;
+		return result;
+	}
+
+	public static String span(String text, RGB color, boolean bold){
+		String start = "";
+		String end = "";
+		if (bold){
+			start += "<b>";
+			end += "</b>";
+		}
+		return start + "<span style=\"color:#" + rgb2hex(color) + "\">" + text + "</span>" + end + " ";
+	}
+	
+	public static Attribute getAttribute(EObject semantic){
+		while (semantic != null && ! (semantic instanceof Attribute)){
+			semantic = semantic.eContainer();
+		}
+		return (Attribute) semantic;
+	}
+	
+	public static String rgb2hex(RGB rgb){
+		String all = "";
+		String hex = Integer.toHexString(rgb.red);
+		if (hex.length() == 1){
+			hex = "0" + hex;
+		}
+		all += hex;
+		hex = Integer.toHexString(rgb.green);
+		if (hex.length() == 1){
+			hex = "0" + hex;
+		}
+		all += hex;
+		hex = Integer.toHexString(rgb.blue);
+		if (hex.length() == 1){
+			hex = "0" + hex;
+		}
+		return all + hex;
 	}
 	
 	public static String getFeature(INode node){

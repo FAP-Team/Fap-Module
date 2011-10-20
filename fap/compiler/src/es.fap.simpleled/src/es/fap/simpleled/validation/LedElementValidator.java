@@ -110,7 +110,7 @@ public abstract class LedElementValidator {
 		}
 		String referencia = "OneToOne";
 		if (compound.getTipoReferencia() != null){
-			referencia = compound.getTipoReferencia();
+			referencia = compound.getTipoReferencia().getType();
 		}
 		return referencia + "<" + compound.getEntidad().getName() + ">";
 	}

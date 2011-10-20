@@ -10,7 +10,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Emails" pagina=Emails
 			Enlace "Logs" accion="fap.LoggerController.index"
 			Enlace "Informe" accion="fap.InformeController.index"
-			//			Enlace "Plantilla PDF" pagina="PlantillaPdf"			
+			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
 		}
 		
 		Enlace "Ayuda" pagina=Soporte.Soporte
@@ -145,5 +145,11 @@ En los campos '''Para''' y '''CC''' puede poner varios destinatarios separados p
         AreaTexto campo=Mail.content titulo="Mensaje" requerido
 		AreaTexto campo=Mail.footer titulo="Pie de mensaje"
 
+    }   
+        
+    Popup PopupConsulta campo=Consulta titulo="Consulta" {
+    	AreaTexto campo=Consulta.descripcion titulo="Descripcion" requerido
+    	AreaTexto campo=Consulta.consulta titulo="Consulta" requerido
+    	Combo campo=Consulta.tipo titulo="Tipo" requerido
     }
 }

@@ -71,11 +71,11 @@ CompoundType:
 ;
 
 tipoColeccion:
-	"Set" | "List"
+	type= ("Set" | "List")
 ;	
 
 AttributeReferences:
-	"OneToOne" | "OneToMany" | "ManyToOne" | "ManyToMany"
+	type= ("OneToOne" | "OneToMany" | "ManyToOne" | "ManyToMany")
 ; 
 
 Formulario:

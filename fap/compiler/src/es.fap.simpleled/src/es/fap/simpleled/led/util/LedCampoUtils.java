@@ -54,7 +54,7 @@ public class LedCampoUtils {
 			for (Method method : model.getClass().getMethods()) {
 				if (method.getReturnType().equals(Campo.class)) {
 					try {
-						return (Campo) method.invoke(model, null);
+						return (Campo) method.invoke(model, (Object)null);
 					} catch (Exception e) {
 						return null;
 					}

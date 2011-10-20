@@ -1,0 +1,160 @@
+h1. Adaptación de los ficheros DSL a la versión 1.1
+
+A continuación se muestra la lista de cambios que hay que realizar en los ficheros DSL de una aplicación escritos con versiones previas de la herramienta.
+
+h3. Nombre de los ficheros
+
+El primero de los cambios es en relación al nombre de los ficheros. Anteriormente la extensión de los mismos era _.play_, lo cual no es muy representativo de la herramienta que se ha desarrollado, sino más bien de la tecnología web con la que se ha implementado. A partir de la nueva versión los ficheros pasan a tener la extensión _.fap_.
+
+h3. Ubicación de los ficheros
+
+En las versiones anteriores para que un fichero DSL fuera tenido en cuenta a la hora de generar la aplicación, éste debía estar ubicado dentro del directorio _led/src_ de la aplicación. A partir de la nueva versión la ubicación es el directorio _led_.
+
+h3. Referencias
+
+Uno de los cambios más importantes es como se escriben las referencias en el DSL. Anteriormente se estaba haciendo mediante _STRINGs_ (cadenas de texto encerradas entre comillas simples o dobles), con la desventaja de que el editor no puede proporcionar funcionalidades tales como el autocompletado o la validación mediante este sistema. A partir de la nueva versión las referencias pasan a definirse mediante identificadores. A continuación se muestra una lista con algunos elementos y atributos que han cambiado por este motivo:
+
+*{padding:0} *Listas*:
+
+bc.. antes:
+
+Entidad Agente {
+	Lista "roles" rolActivo
+}
+
+ahora:
+
+Entidad Agente {
+	Lista roles rolActivo
+}
+
+p. 
+*{padding:0} *Campos*:
+
+bc.. antes:
+
+Texto campo="solicitud.solicitante.fax" titulo="Fax"
+
+ahora:
+
+Texto campo=Solicitud.solicitante.fax titulo="Fax"
+
+p. 
+*{padding:0} *Permisos*:
+
+bc.. antes
+
+Enlace "Seguimiento" permiso="noUsuario"
+
+ahora:
+
+Enlace "Seguimiento" permiso=noUsuario
+
+p. 
+*{padding:0} *Paginas*:
+
+bc.. antes:
+
+Enlace "Verificacion" permiso=noUsuario pagina="Solicitud/Verificacion"
+
+ahora:
+
+Enlace "Verificacion" permiso=noUsuario pagina=Solicitud.Verificacion
+
+p. 
+
+p((. Nota: En este ejemplo, _Solicitud_ es el formulario y _Verificacion_ la página. Esta es la forma de especificar el nombre completo de una página.
+
+h3. Definición de entidades
+
+En la nueva versión, los nombres de las entidades que se definan deben empezar con mayúsculas.
+
+h3. Entidades pertenecientes a _Solicitud_
+
+En versiones anteriores, para especificar que una entidad definida pertenece a _Solicitud_ (es decir, que en Solicitud hay una referencia a ella), había que escribir algo como lo siguiente:
+
+bc.. Entidad DatosSolicitante (Solicitud){
+	Lista cnae cnaePrincipal
+	Contacto contacto
+}
+
+p. Esto presenta un problema, y es que mediante este método no es posible definir en _Solicitud_ dos o más referencias distintas a esta entidad. Además, tampoco es posible especificar manualmente el nombre del atributo para la referencia. Para solucionar estas deficiencias, en la nueva versión al definir la entidad no se especifica que pertenece a Solicitud. En lugar de ello, hay que definir la propia entidad _Solicitud_, indicando todas las referencias (atributos) que va a tener. En caso de no definirse una entidad _Solicitud_, automáticamente se creará una, pero sin atributos. Además, en ambos casos, extenderá de _SolicitudGenerica_. El ejemplo anterior, en la nueva versión tendría que escribirse así:
+
+bc.. Entidad Solicitud extends SolicitudGenerica{
+	DatosSolicitante datosSolicitante
+}
+
+Entidad DatosSolicitante{
+	Lista cnae cnaePrincipal
+	Contacto contacto
+}
+
+p. Para referencias múltiples, la adaptación es la siguiente:
+
+bc.. antes:
+
+Entidad Documentos (Solicitud[]){
+	...
+}
+
+despues:
+
+Entidad Solicitud extends SolicitudGenerica{
+	OneToMany Documentos documentos
+}
+
+Entidad Documentos{
+	...
+}
+
+h3. Entidades tipo _Singleton_
+
+bc.. antes:
+
+Entidad Quartz (Singleton){
+	...
+}
+
+despues:
+
+Entidad Quartz extends Singleton{
+	...
+}
+
+h3. Atributos modificados
+
+A continuación se muestra la lista de atributos cuya sintaxis ha sido modificada:
+
+*{padding:0} *atributos de _Entidad_*: todos aquellos atributos de Entidad que empezaban por mayúsculas ahora empiezan por minúsculas. Ejemplo: _embeddable_ (antes: _Embeddable_).
+
+*{padding:0} *atributos de los campos de una entidad*: todos aquellos atributos de los campos de una entidad que empezaban por mayúsculas ahora empiezan por minúsculas. Ejemplo: _transient_ (antes: _Transient_).
+
+*{padding:0} *_campo_ en _Popup_*: Ahora es obligatorio especificarlo.
+
+*{padding:0} *columnas automaticas*: Ver mediante el siguiente ejemplo:
+
+bc.. antes:
+
+Tabla subPublicas titulo="Administración o Ente Público" 
+	campo="solicitud.subvenciones.subvencionesPublicas" 
+	popup=PopUpSubPublicas
+	recargarPagina 
+	{
+		ColumnasAutomatica nombreEntidad=SubvencionPublica
+		campo="subvencionPublica"
+	}
+
+ahora:
+
+Tabla subPublicas titulo="Administración o Ente Público" 
+	campo=Solicitud.subvenciones.subvencionesPublicas
+	popup=PopUpSubPublicas
+	recargarPagina
+	columnasAutomaticas
+{}
+
+h3. Atributos eliminados
+
+* *_nombreEntidad_ de _EntidadAutomatica_*
+* *_multiple_ de _Combo_*: Ahora la decisión de utilizar un combo de selección múltiple se toma en base a la definición del atributo. 
+

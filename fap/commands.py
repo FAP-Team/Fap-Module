@@ -39,7 +39,7 @@ def execute(**kargs):
 
 
 def version (app, args):
-    depsYaml = os.path.join(getModuleDir(app), 'conf/dependencies.yml')
+    depsYaml = os.path.join(getModuleDir(app, args), 'conf/dependencies.yml')
     if os.path.exists(depsYaml):
         deps = open(depsYaml).read()
         try:
@@ -128,7 +128,7 @@ def after(**kargs):
     if command == "new":
         print "Ejecutando new"
         
-def getModuleDir(app, cmd_args):
+def getModuleDir(app, cmd_args=""):
     if("--dev" in cmd_args):
         if(os.getenv("FAPSDK") == None):
             print "Modo desarrollo (--dev) y la variable de entorno FAPSDK no está definida"
@@ -152,7 +152,7 @@ def init_application (app, args):
     srcDir = os.path.join(app.path, "led", "src")
    
     print "Creando el esqueleto basico de una aplicacion FAP "
-    moduleDir =  getModuleDir(app)
+    moduleDir =  getModuleDir(app, args)
     
     conf = os.path.join(app.path, "conf", "application.conf");
     print "Se extiende application.conf con la configuracion necesaria";

@@ -39,8 +39,8 @@ then
 
 Si aplicamos éste permiso a un grupo .....
 
-bc. Grupo titulo="Datos de la persona de contacto" permiso="miPermisoEspecial"{
-	EntidadAutomatica idcontacto nombreEntidad=Contacto campo="solicitud.datosSolicitante.contacto"
+bc. Grupo titulo="Datos de la persona de contacto" permiso=miPermisoEspecial {
+	EntidadAutomatica idcontacto nombreEntidad=Contacto campo=Solicitud.datosSolicitante.contacto
 }
 
 ... el resultado en la aplicación es el siguiente:

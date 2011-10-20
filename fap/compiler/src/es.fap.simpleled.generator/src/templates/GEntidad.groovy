@@ -450,7 +450,6 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	 * @return
 	 */
 	private static String defaultValue(String value, String type, String name) {
-		println "DefaultValue ("+value+", "+type+", "+name+")";
 		if ((value != null)) {
 			def defaultValue = value;
 			if (type.equals("Double")) {

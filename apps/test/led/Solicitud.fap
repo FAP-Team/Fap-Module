@@ -13,6 +13,10 @@ Formulario Solicitud {
 			Enlace "Direccion" pagina=Direcciones
 		}
 		
+		Grupo "Tablas y PopUps" {
+			Enlace "Tablas Simples" pagina=TablasSimples
+		}
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 	
@@ -69,5 +73,23 @@ Formulario Solicitud {
 		Texto mLongText campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText"
 		
 		Texto mEmbeddable campo=Solicitud.valoresPorDefectoTest.mEmbebida.algo titulo="String embeddable" 
+	}
+	
+	Pagina TablasSimples {
+		Tabla tablaNombres campo=Solicitud.tablaDeNombres titulo="Solicitantes"
+		popupCrear=popupNombre
+		popupVer=popupNombre
+		popupModificar=popupNombre
+		popupBorrar=popupNombre
+		{
+			Columna campo=TablaDeNombres.id titulo="ID"
+			Columna campo=TablaDeNombres.nombre titulo="Nombre"
+			Columna campo=TablaDeNombres.apellido titulo="NIF/CIF" 
+		}
+	}
+	
+	Popup popupNombre campo=Solicitud.tablaDeNombres crear modificar borrar ver {
+		Texto campo=TablaDeNombres.nombre titulo="Nombre"
+		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 }

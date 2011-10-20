@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="plugin_export" name="build">
-	<property name="fap.src.dir" value="../../../" />
+	<property environment="env" />
+	<property name="fap.src.dir" value="${env.FAPSDK}/fap" />
 	
 	<target name="plugin_export">
 		<pde.exportPlugins destination="${fap.src.dir}" exportSource="false" exportType="directory" plugins="es.fap.simpleled,es.fap.simpleled.ui" useJARFormat="false"/>

@@ -41,11 +41,21 @@ POST /Solicitud/combosoverwrite/save CombosOverwriteController.save
 GET /Solicitud/valorespordefecto ValoresPorDefectoController.index
 
 POST /Solicitud/valorespordefecto/save ValoresPorDefectoController.save
+GET /Solicitud/tablassimples TablasSimplesController.index
+
+GET /Solicitud/tablassimples/tablaNombres TablasSimplesController.tablatablaNombres
+POST /Solicitud/tablassimples/save TablasSimplesController.save
 GET /Solicitud/combotestref/{idEntidad}/abrir popups.ComboTestRefController.abrir
 POST /Solicitud/combotestref/{idEntidad}/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/{idEntidad}/borrar popups.ComboTestRefController.borrar
 POST /Solicitud/combotestref/{idEntidad}/crear popups.ComboTestRefController.crear
 POST /Solicitud/combotestref/{idEntidad}/cancelarcrear popups.ComboTestRefController.cancelarCrear
+
+GET /Solicitud/popupnombre/{idEntidad}/abrir popups.popupNombreController.abrir
+POST /Solicitud/popupnombre/{idEntidad}/editar popups.popupNombreController.editar
+POST /Solicitud/popupnombre/{idEntidad}/borrar popups.popupNombreController.borrar
+POST /Solicitud/popupnombre/{idEntidad}/crear popups.popupNombreController.crear
+POST /Solicitud/popupnombre/{idEntidad}/cancelarcrear popups.popupNombreController.cancelarCrear
 
 # === END FAPGENERATED ===
 

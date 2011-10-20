@@ -2,8 +2,14 @@ Entidad Solicitud extends SolicitudGenerica {
 	DireccionTest direccionTest
 	ComboTest comboTest
 	ValoresPorDefectoTest valoresPorDefectoTest
+	
+	OneToMany TablaDeNombres tablaDeNombres
 }
 
+Entidad TablaDeNombres {
+	String nombre
+	String apellido
+}
 
 Entidad DireccionTest {
 	Direccion direccion

@@ -37,6 +37,11 @@ public class Solicitud extends SolicitudGenerica {
 	public ValoresPorDefectoTest valoresPorDefectoTest;
 	
 	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="solicitud_tabladenombres")
+	public List<TablaDeNombres> tablaDeNombres;
+	
+	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public SavePages savePages;
 	
@@ -64,6 +69,9 @@ public class Solicitud extends SolicitudGenerica {
 						else
 							valoresPorDefectoTest.init();
 					
+						if (tablaDeNombres == null)
+							tablaDeNombres = new ArrayList<TablaDeNombres>();
+						
 						if (savePages == null)
 							savePages = new SavePages();
 						else

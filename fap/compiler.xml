@@ -2,12 +2,15 @@
 
 	<property environment="env" />
 
-	<!--property name="compiler.src.dir" value="../compiler-src" /-->
-	<property name="compiler.src.dir" value="compiler/src" />
-	<property name="compiler.compiled" value="compiler/compiled" />
+	<!-- Configurado para utilizar rutas absolutas en base a la variable de entorno fapsdk -->
+	<property name="fapsdk" value="${env.FAPSDK}" />
+	<property name="fap" value="${fapsdk}/fap" />
+						
+	<property name="compiler.src.dir" value="${fap}/compiler/src" />
+	<property name="compiler.compiled" value="${fap}/compiler/compiled" />
 	<property name="grammar.dir" value="${compiler.src.dir}/es.fap.simpleled" />
 	<property name="generator.dir" value="${compiler.src.dir}/es.fap.simpleled.generator" />
-	<property name="dependencies.yml" value="conf/dependencies.yml" />
+	<property name="dependencies.yml" value="${fap}/conf/dependencies.yml" />
 
 	<!-- FTP Tasks properties -->
 	<property name="ftp.server" value="fap-devel.etsii.ull.es" />
@@ -109,8 +112,7 @@
 		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar" />
 		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar" />
 	</target>
-
-
+	
 	<target name="build-plugins">
 		<exec executable="eclipse">
 			<arg value="-application" />

@@ -210,6 +210,7 @@ public class SecureController extends Controller {
     	
     	if(!allowed){
     		//Usuario no encontrado
+    		log.warn("Intento de login fallido, user:"+ username+ ", pass:"+cryptoPassword+", IP:"+request.remoteAddress+", URL:"+request.url);
             flash.keep("url");
             Messages.error(play.i18n.Messages.get("fap.login.error.user"));
             Messages.keep();

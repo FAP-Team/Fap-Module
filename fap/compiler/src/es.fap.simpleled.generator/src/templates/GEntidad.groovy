@@ -287,7 +287,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				}else{
 					if(LedEntidadUtils.isOneToOne(attribute)){
 						refInit += """
-							if (${attribute.name} != null)
+							if (${attribute.name} == null)
 								${attribute.name} = new ${tipo}();
 							else
 								${attribute.name}.init();
@@ -295,8 +295,8 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 					}else{ 
 						//Las referencia ManyToOne no se inicializan
 						refInit += """
-							if (${attribute.name} == null)
-							${attribute.name}.init();	
+							if (${attribute.name} != null)
+								${attribute.name}.init();	
 						"""
 					}
 				}

@@ -1,5 +1,10 @@
 h2. Changelog
 
+h3. Versión 1.1.1
+
+* Personalizado el error 404
+* Fixed minor bugs
+
 h3. Versión 1.1
 
 * Se permiten definir varios botones dentro de un form.

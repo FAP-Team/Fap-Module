@@ -36,9 +36,8 @@ public class Embebida  {
 
 	public void init(){
 		
-		
-		if (algo == null)
-			algo = new String();
+		algo = "pepe";
+
 	}
 		
 	

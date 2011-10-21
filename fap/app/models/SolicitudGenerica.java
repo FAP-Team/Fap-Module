@@ -74,6 +74,11 @@ public class SolicitudGenerica extends Model {
 	public Verificacion verificacion;
 	
 	
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="solicitudgenerica_ceconomicos")
+	public List<CEconomico> ceconomicos;
+	
+	
 	public SolicitudGenerica (){
 		init();
 	}
@@ -127,6 +132,9 @@ public class SolicitudGenerica extends Model {
 						else
 							verificacion.init();
 					
+						if (ceconomicos == null)
+							ceconomicos = new ArrayList<CEconomico>();
+						
 	}
 		
 	

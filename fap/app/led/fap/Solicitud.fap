@@ -1,8 +1,25 @@
 Formulario Solicitud {
 
+	Pagina CEconomicos titulo="Conceptos económicos"{
+		Tabla tablaCEconomicos 
+			titulo="Conceptos económicos"
+			campo=SolicitudGenerica.ceconomicos
+			popupModificar=PopupCEConomicos
+		{
+			Columna campo=CEconomico.tipo.nombre titulo="Concepto" expandir
+			Columna campo=CEconomico.valorEstimado titulo="Valor estimado" 		
+		}
+	}
+
+	Popup PopupCEConomicos modificar titulo="Concepto económico" campo=SolicitudGenerica.ceconomicos {
+		Wiki {"
+=${cEconomico.tipo.nombre}= 
+${cEconomico.tipo.descripcion}
+		"} 
+		Texto campo=CEconomico.valorEstimado titulo="Valor estimado"
+	}
+
 	Pagina Aportacion noForm permiso=aportacion {
-		
-		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="boton"
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="boton"
 
@@ -105,25 +122,7 @@ Formulario Solicitud {
 			Wiki {"Nota: La operación de firmar y presentar puede tardar varios minutos."}
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	Pagina Verificacion titulo="Verificación de la documentación" noForm {
 		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
 			Wiki {"

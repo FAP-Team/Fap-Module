@@ -264,7 +264,7 @@ public class FichaEvaluador extends Controller {
 		
 		
 		TipoCEconomico c1 = new TipoCEconomico();
-		c1.nombre = "0";
+		c1.nombre = "Nombre concepto económico 1";
 		c1.jerarquia = "1";
 		c1.clase = "auto";
 		c1.comentariosAdministracion = true;
@@ -273,7 +273,7 @@ public class FichaEvaluador extends Controller {
 		c1.instrucciones = "Instrucciones";
 		
 		TipoCEconomico c1_1 = new TipoCEconomico();
-		c1_1.nombre = "A";
+		c1_1.nombre = "Nombre concepto económico 1.1";
 		c1_1.jerarquia = "1.1";
 		c1_1.clase = "manual";
 		c1_1.comentariosAdministracion = true;
@@ -282,7 +282,7 @@ public class FichaEvaluador extends Controller {
 		c1_1.instrucciones = "Instrucciones";
 		
 		TipoCEconomico c1_2 = new TipoCEconomico();
-		c1_2.nombre = "B";
+		c1_2.nombre = "Nombre concepto económico 1.2";
 		c1_2.jerarquia = "1.2";
 		c1_2.clase = "manual";
 		c1_2.comentariosAdministracion = true;
@@ -291,7 +291,7 @@ public class FichaEvaluador extends Controller {
 		c1_2.instrucciones = "Instrucciones";
 		
 		TipoCEconomico c1_3 = new TipoCEconomico();
-		c1_3.nombre = "C";
+		c1_3.nombre = "Nombre concepto económico 1.3";
 		c1_3.jerarquia = "1.3";
 		c1_3.clase = "manual";
 		c1_3.comentariosAdministracion = true;
@@ -300,7 +300,7 @@ public class FichaEvaluador extends Controller {
 		c1_3.instrucciones = "Instrucciones";
 		
 		TipoCEconomico c1_4 = new TipoCEconomico();
-		c1_4.nombre = "D";
+		c1_4.nombre = "Nombre concepto económico 1.4";
 		c1_4.jerarquia = "1.4";
 		c1_4.clase = "manual";
 		c1_4.comentariosAdministracion = true;

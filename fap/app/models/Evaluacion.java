@@ -16,7 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
 	
 
@@ -84,25 +84,25 @@ public class Evaluacion extends Model {
 	
 
 // === MANUAL REGION START ===
-	public static Evaluacion init(TipoEvaluacion tipo){
+	public static Evaluacion init(TipoEvaluacion tipo) {
 		Evaluacion evaluacion = new Evaluacion();
 		evaluacion.tipo = tipo;
-		
-		for(TipoCriterio tCriterio : tipo.criterios){
+
+		for (TipoCriterio tCriterio : tipo.criterios) {
 			Criterio criterio = new Criterio();
 			criterio.tipo = tCriterio;
 			evaluacion.criterios.add(criterio);
 		}
-		
-		for(TipoCEconomico tCEconomico : tipo.ceconomicos){
+
+		for (TipoCEconomico tCEconomico : tipo.ceconomicos) {
 			CEconomico cEconomico = new CEconomico();
 			cEconomico.tipo = tCEconomico;
 			evaluacion.ceconomicos.add(cEconomico);
 		}
-		
+
 		return evaluacion;
 	}
-// === MANUAL REGION END ===
+	// === MANUAL REGION END ===
 	
 	
 	}

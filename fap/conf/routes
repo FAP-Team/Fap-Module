@@ -45,6 +45,13 @@ GET /Administracion/consultas fap.consultasController.index
 GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
 
 # === FAPGENERATED ===
+GET /Principal/solicitudes SolicitudesController.index
+
+GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
+POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
+GET /Soporte/soporte SoporteController.index
+
+POST /Soporte/soporte/incidencia SoporteController.incidencia
 GET /Administracion/usuarios UsuariosController.index
 
 GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios
@@ -87,6 +94,10 @@ POST /Administracion/popupconsulta/{idEntidad}/borrar popups.PopupConsultaContro
 POST /Administracion/popupconsulta/{idEntidad}/crear popups.PopupConsultaController.crear
 POST /Administracion/popupconsulta/{idEntidad}/cancelarcrear popups.PopupConsultaController.cancelarCrear
 
+GET /Solicitud/ceconomicos CEconomicosController.index
+
+GET /Solicitud/ceconomicos/tablaCEconomicos CEconomicosController.tablatablaCEconomicos
+POST /Solicitud/ceconomicos/save CEconomicosController.save
 GET /Solicitud/aportacion AportacionController.index
 
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
@@ -119,6 +130,12 @@ POST /Solicitud/verificacion/grequerimientoFirmarRequerimiento VerificacionContr
 GET /Solicitud/verificacion/requerimientos VerificacionController.tablarequerimientos
 POST /Solicitud/verificacion/gfinalizarRequerimiento VerificacionController.gfinalizarRequerimiento
 GET /Solicitud/verificacion/registros VerificacionController.tablaregistros
+GET /Solicitud/popupceconomicos/{idEntidad}/abrir popups.PopupCEConomicosController.abrir
+POST /Solicitud/popupceconomicos/{idEntidad}/editar popups.PopupCEConomicosController.editar
+POST /Solicitud/popupceconomicos/{idEntidad}/borrar popups.PopupCEConomicosController.borrar
+POST /Solicitud/popupceconomicos/{idEntidad}/crear popups.PopupCEConomicosController.crear
+POST /Solicitud/popupceconomicos/{idEntidad}/cancelarcrear popups.PopupCEConomicosController.cancelarCrear
+
 GET /Solicitud/popupdocpresentados/{idEntidad}/abrir popups.PopUpDocPresentadosController.abrir
 POST /Solicitud/popupdocpresentados/{idEntidad}/editar popups.PopUpDocPresentadosController.editar
 POST /Solicitud/popupdocpresentados/{idEntidad}/borrar popups.PopUpDocPresentadosController.borrar
@@ -137,11 +154,4 @@ POST /Solicitud/popupdocaportados/{idEntidad}/borrar popups.PopUpDocAportadosCon
 POST /Solicitud/popupdocaportados/{idEntidad}/crear popups.PopUpDocAportadosController.crear
 POST /Solicitud/popupdocaportados/{idEntidad}/cancelarcrear popups.PopUpDocAportadosController.cancelarCrear
 
-GET /Principal/solicitudes SolicitudesController.index
-
-GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
-POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
-GET /Soporte/soporte SoporteController.index
-
-POST /Soporte/soporte/incidencia SoporteController.incidencia
 # === END FAPGENERATED ===			 

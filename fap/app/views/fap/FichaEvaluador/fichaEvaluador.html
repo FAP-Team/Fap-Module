@@ -71,13 +71,17 @@
 		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
 			<p class="nombre">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</p>
 			#{if criterio.tipo.descripcion != null}
-				<p><strong>Descripción</strong><p>
-				<p>#{verbatim}${criterio.tipo.descripcion}#{/verbatim}</p>
+				<div class="clearfix">
+					<h3>Descripción</h3>
+					<p>#{verbatim}${criterio.tipo.descripcion}#{/verbatim}</p>
+				</div>
 			#{/if}
 			
 			#{if criterio.tipo.instrucciones != null}
-				<p><strong>Instrucciones</strong></p> 
-				<p>#{verbatim}${criterio.tipo.instrucciones}#{/verbatim}</p>
+				<div class="clearfix">
+					<h3>Instrucciones</h3> 
+					<p>#{verbatim}${criterio.tipo.instrucciones}#{/verbatim}</p>
+				</div>
 			#{/if}
 			
 			#{if criterio.tipo.claseCriterio.equals("auto")}
@@ -133,13 +137,17 @@
 			<p class="nombre">${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</p>
 			
 			#{if criterio.tipo.descripcion != null}
-				<p><strong>Descripción</strong><p>
-				<p>#{verbatim}${ceconomico.tipo.descripcion}#{/verbatim}</p>
+				<div class="clearfix">
+					<h3>Descripción</h3>
+					<p>#{verbatim}${ceconomico.tipo.descripcion}#{/verbatim}</p>
+				</div>
 			#{/if}
 			
 			#{if criterio.tipo.instrucciones != null}
-				<p><strong>Instrucciones</strong><p>
-				<p>#{verbatim}${ceconomico.tipo.instrucciones}#{/verbatim}</p>
+				<div class="clearfix">
+					<h3>Instrucciones</h3>
+					<p>#{verbatim}${ceconomico.tipo.instrucciones}#{/verbatim}</p>
+				</div>
 			#{/if}
 			
 			
@@ -198,7 +206,7 @@ Ext.onReady(function() {
    	var grid = new Ext.grid.GridPanel({
 		store : store,
 		columns : [
-			{text:'Tipo', dataIndex:'tipo', sortable:true,width:40}, 
+			{text:'Tipo', dataIndex:'tipo', sortable:true,width:200}, 
 			{text:'Descripción',dataIndex:'descripcion', sortable:true, flex:true} 
 		],
 		renderTo: 'Documentos',

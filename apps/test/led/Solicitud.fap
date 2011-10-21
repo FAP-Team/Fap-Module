@@ -17,6 +17,10 @@ Formulario Solicitud {
 			Enlace "Tablas Simples" pagina=TablasSimples
 		}
 		
+		Grupo "Pagina del módulo"{
+			Enlace "Conceptos económicos" pagina=Solicitud.CEconomicos	
+		}
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 	

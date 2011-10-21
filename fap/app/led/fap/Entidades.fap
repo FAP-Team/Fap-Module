@@ -19,6 +19,9 @@ Entidad SolicitudGenerica tableName = "solicitud"{
 	ExpedienteAed expedienteAed
 	Aportaciones aportaciones
 	Verificacion verificacion
+	
+	//Criterios economicos que rellena el solicitante
+	ManyToMany CEconomico ceconomicos	
 }
 
 Entidad Solicitante extends Persona {

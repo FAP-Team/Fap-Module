@@ -1,7 +1,9 @@
 package es.fap.simpleled.led.util;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.TerminalRule;
 import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.eclipse.xtext.nodemodel.ILeafNode;
@@ -70,9 +72,9 @@ public class LedDocumentationUtils {
 			return "";
 		}
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("<b>" + getHref(elemento.nombre, elemento.keyword) + "</b> </span><span style=\"color:#666\">&nbsp;&nbsp;Haz click para ir a la página de documentación</span>");
+		buffer.append("<b>" + getHref(elemento.nombre, elemento.keyword) + "</b> </span><span style=\"color:#666\">&nbsp;&nbsp;Haz click para ir a la pagina de documentacion</span>");
 		buffer.append("<p>" + elemento.descripcion + "</p>");
-		buffer.append("<p><b>Parámetros:</b></p>");
+		buffer.append("<p><b>Parametros:</b></p>");
 		for (DocParametro parametro: elemento.parametros){
 			String param = getStyledNombre(parametro.nombre.split(" ")[0]);
 			String opcional = "";
@@ -111,16 +113,19 @@ public class LedDocumentationUtils {
 		return buffer.toString();
 	}
 
-//	public static String getRuleName(EObject o){
-//		return o.getClass().getSimpleName().replaceFirst("Impl", "");
-//	}
-	
-	private static String getHref(String pagina, String text){
+	public static String getHref(String pagina, String text){
 		return "<a href=\"" + url + "dsl-" + pagina + "\">" + text + "</a>";
 	}
 	
-	private static String getHrefNoDsl(String pagina, String text){
+	public static String getHrefNoDsl(String pagina, String text){
 		return "<a href=\"" + url + pagina + "\">" + text + "</a>";
 	}
-
+	
+	public static String utf(String utf){
+		try {
+			return new String(utf.getBytes(Charset.defaultCharset()), "UTF8");
+		} catch (UnsupportedEncodingException e) {}
+		return "";
+	}
+	
 }

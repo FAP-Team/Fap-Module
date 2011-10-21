@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 
 import es.fap.simpleled.led.util.DocElemento;
 import es.fap.simpleled.led.util.DocParametro;
+import es.fap.simpleled.led.util.LedDocumentationUtils;
 
 public class JsonDocumentation {
 
@@ -81,10 +84,10 @@ public class JsonDocumentation {
 	}
 	
 	public static String convertStreamToString(InputStream is){
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 	    StringBuilder sb = new StringBuilder();
 	    String line = null;
 	    try {
+	    	BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 			while ((line = reader.readLine()) != null) {
 			  sb.append(line + "\n");
 			}
@@ -93,6 +96,6 @@ public class JsonDocumentation {
 			e.printStackTrace();
 		}
 	    return sb.toString();
-	  }
+	}
 	
 }

@@ -78,11 +78,11 @@ public class Solicitante extends Persona {
 			if (domicilio == null)
 				domicilio = new Direccion();
 			
-						if (representante == null)
-							representante = new RepresentantePersonaFisica();
-						else
-							representante.init();
-					
+							if (representante == null)
+								representante = new RepresentantePersonaFisica();
+							else
+								representante.init();
+						
 						if (representantes == null)
 							representantes = new ArrayList<RepresentantePersonaJuridica>();
 						

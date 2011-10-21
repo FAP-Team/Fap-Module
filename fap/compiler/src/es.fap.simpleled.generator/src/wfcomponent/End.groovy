@@ -84,10 +84,15 @@ public class End implements IWorkflowComponent {
 			log.warn("No se indicó una página como inicial");
 			/** Utilizamos la primera encontrada */
 			def myFirstPages = HashStack.allElements(HashStackName.PAGE_NAME);
-			page = myFirstPages.get(0);
-			log.warn("No se indicó una página como inicial, se utiliza: <"+page+">");
+			if (myFirstPages.size > 0){
+				page = myFirstPages.get(0);
+				log.warn("No se indicó una página como inicial, se utiliza: <"+page+">");
+			}
 		}
-		String content = "fap.app.firstPage="+page;
+		String content = "";
+		if (page != null){
+			content = "fap.app.firstPage="+page;
+		}
 		FileUtils.writeInRegion(FileUtils.getRoute('CONF_APPLICATION'), content);
 	}
 	

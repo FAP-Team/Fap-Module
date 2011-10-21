@@ -30,7 +30,7 @@
 
 	<target name="compile">
 		<mkdir dir="${build.dir}" />
-		<javac destdir="${build.dir}" classpathref="classpath" includeantruntime="false">
+		<javac destdir="${build.dir}" classpathref="classpath" includeantruntime="false" encoding="utf-8">
 			<src path="${src.dir}" />
 			<src path="${src.gen.dir}" />
 		</javac>

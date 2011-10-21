@@ -5,8 +5,6 @@ import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
@@ -414,7 +412,7 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 			HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet());
 			HTMLPrinter.addPageEpilog(buffer);
 			html = buffer.toString();
-			html.replace("ISO-8859-1", "UTF-8");
+//			html = html.replace("ISO-8859-1", "UTF-8");
 			return new XtextBrowserInformationControlInput(previous, element, html, labelProvider);
 		}
 		return null;

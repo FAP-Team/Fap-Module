@@ -24,6 +24,7 @@ import play.db.jpa.JPA;
 import play.libs.*;
 import play.utils.*;
 import properties.FapProperties;
+import ugot.recaptcha.Recaptcha;
 
 @With({PropertiesFap.class, MessagesController.class, AgenteController.class})
 public class SecureController extends Controller {
@@ -154,7 +155,41 @@ public class SecureController extends Controller {
 		redirectToOriginalURL();
     }
     
+    /**
+     * Login con usuario y contraseña, con verificacion de captcha
+     * @param username
+     * @param password
+     * @param remember
+     * @param captcha
+     * @throws Throwable
+     */
+    public static void authenticateCaptcha(@Required String username, String password, boolean remember, @Recaptcha String captcha) throws Throwable {
+    	checkAuthenticity();
+
+    	//Si hay errores redirige a la página de login
+    	if(validation.hasErrors()){
+    		flash.keep("url");
+    		Messages.keep();
+    		login();
+    	}
+    	authenticate(username, password, remember);
+    }
+
     
+    /**
+     * Login con usuario y contraseña
+     * @param username
+     * @param password
+     * @param remember
+     * @param captcha
+     * @throws Throwable
+     */
+    public static void authenticateNoCaptcha(@Required String username, String password, boolean remember) throws Throwable {
+    	checkAuthenticity();
+
+    	authenticate(username, password, remember);
+    }
+
     /**
      * Login con usuario y contraseña
      * @param username
@@ -162,16 +197,16 @@ public class SecureController extends Controller {
      * @param remember
      * @throws Throwable
      */
-    public static void authenticate(@Required String username, String password, boolean remember) throws Throwable {
-    	checkAuthenticity();
-    	
+    @Util
+    private static void authenticate(@Required String username, String password, boolean remember) throws Throwable {
+  
     	if(!FapProperties.getBoolean("fap.login.type.user")){
             flash.keep("url");
             Messages.error("El acceso a la aplicación mediante usuario y contraseña está desactivado");
             Messages.keep();
             login();   		
     	}
-    	
+    	    	
     	String cryptoPassword = Crypto.passwordHash(password);
     	log.info("Login con usuario y contraseña. User: " +  username + ", Pass: " + cryptoPassword);
     	// Check tokens
@@ -210,6 +245,13 @@ public class SecureController extends Controller {
     	
     	if(!allowed){
     		//Usuario no encontrado
+    		log.warn("Intento de login fallido, user:"+ username+ ", pass:"+cryptoPassword+", IP:"+request.remoteAddress+", URL:"+request.url);
+            int accesosFallidos = 0;
+            if (session.get("accesoFallido") != null) {
+            	accesosFallidos = new Integer(session.get("accesoFallido"));
+            }
+            session.put("accesoFallido", accesosFallidos+1);
+
             flash.keep("url");
             Messages.error(play.i18n.Messages.get("fap.login.error.user"));
             Messages.keep();
@@ -219,7 +261,9 @@ public class SecureController extends Controller {
 		//Almacena el modo de acceso del agente
 		agente.acceso = "usuario";
 		agente.save();
-		
+
+        session.put("accesoFallido", 0);
+
         // Mark user as connected
         session.put("username", agente.username);
         // Remember if needed
@@ -256,7 +300,7 @@ public class SecureController extends Controller {
 	 * 3) Comprueba los permisos según las anotaciones del método   
 	 * @throws Throwable
 	 */
-    @Before(unless={"login", "authenticate", "logout", "authenticateCertificate"})
+    @Before(unless={"login", "authenticateCaptcha", "authenticateNoCaptcha", "logout", "authenticateCertificate"})
     static void checkAccess() throws Throwable {
         // Authent
         if(!AgenteController.agenteIsConnected()) {

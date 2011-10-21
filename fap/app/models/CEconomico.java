@@ -61,11 +61,11 @@ public class CEconomico extends Model {
 	public void init(){
 		
 		
-						if (tipo == null)
-							tipo = new TipoCEconomico();
-						else
-							tipo.init();
-					
+							if (tipo == null)
+								tipo = new TipoCEconomico();
+							else
+								tipo.init();
+						
 	}
 		
 	

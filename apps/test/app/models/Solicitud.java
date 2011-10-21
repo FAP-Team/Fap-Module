@@ -54,29 +54,29 @@ public class Solicitud extends SolicitudGenerica {
 	public void init(){
 		super.init();
 		
-						if (direccionTest == null)
-							direccionTest = new DireccionTest();
-						else
-							direccionTest.init();
-					
-						if (comboTest == null)
-							comboTest = new ComboTest();
-						else
-							comboTest.init();
-					
-						if (valoresPorDefectoTest == null)
-							valoresPorDefectoTest = new ValoresPorDefectoTest();
-						else
-							valoresPorDefectoTest.init();
-					
+							if (direccionTest == null)
+								direccionTest = new DireccionTest();
+							else
+								direccionTest.init();
+						
+							if (comboTest == null)
+								comboTest = new ComboTest();
+							else
+								comboTest.init();
+						
+							if (valoresPorDefectoTest == null)
+								valoresPorDefectoTest = new ValoresPorDefectoTest();
+							else
+								valoresPorDefectoTest.init();
+						
 						if (tablaDeNombres == null)
 							tablaDeNombres = new ArrayList<TablaDeNombres>();
 						
-						if (savePages == null)
-							savePages = new SavePages();
-						else
-							savePages.init();
-					
+							if (savePages == null)
+								savePages = new SavePages();
+							else
+								savePages.init();
+						
 	}
 		
 	

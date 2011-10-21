@@ -77,7 +77,7 @@ public class ValoresPorDefectoTest extends Model {
 	@ValueFromTable("ComboTestList")
 	public String mLista;
 	
-	
+	/*default = "c"*/
 	@Embedded
 	public Embebida mEmbebida;
 	
@@ -104,7 +104,7 @@ try {
 } catch (ParseException e) {
 	e.printStackTrace();
 }
-						mLista = "c";
+					
 			if (mEmbebida == null)
 				mEmbebida = new Embebida();
 			

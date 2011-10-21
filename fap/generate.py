@@ -1,6 +1,6 @@
+#!/usr/bin/env python
 import os
 import subprocess
-from commands import execute_workflow
 
 def main():
     directorioOriginal = os.getcwd()

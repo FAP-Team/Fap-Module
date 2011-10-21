@@ -11,7 +11,7 @@ require:
     - com.google.guava -> guava r09
     - net.sf.flexjson -> flexjson 2.1
     - play -> pdf 0.6
-    - play -> greenscript 1.2.6j
+    - play -> greenscript 1.2.6k
     - play -> recaptcha 1.2
     - javassist -> javassist 3.8.0.GA:
         transitive: false

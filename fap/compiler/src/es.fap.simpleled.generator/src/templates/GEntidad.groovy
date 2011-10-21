@@ -295,6 +295,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 					}else{ 
 						//Las referencia ManyToOne no se inicializan
 						refInit += """
+							if (${attribute.name} == null)
 							${attribute.name}.init();	
 						"""
 					}

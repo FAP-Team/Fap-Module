@@ -13,7 +13,7 @@ GET         /logout                        fap.SecureController.logout
 
 
 #Baremacion
-GET   /Baremacion/fichaEvaluador           fap.FichaEvaluador.fichaEvaluador
+GET   /Baremacion/fichaEvaluador/           fap.FichaEvaluador.fichaEvaluador
 
 
 #Descarga del AED
@@ -43,6 +43,8 @@ GET /Administracion/logs fap.LoggerController.index
 
 GET /Administracion/consultas fap.consultasController.index
 GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
+
+GET /Baremacion/ConsultaEvaluacion/ 			fap.ConsultarEvaluacionesController.index
 
 # === FAPGENERATED ===
 GET /Principal/solicitudes SolicitudesController.index

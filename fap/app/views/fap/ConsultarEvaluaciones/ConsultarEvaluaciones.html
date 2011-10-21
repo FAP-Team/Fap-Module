@@ -1,0 +1,205 @@
+
+#{extends 'fap/template.html' /}
+#{set title:'ConsultarEvaluaciones' /}
+
+#{fap.permiso }
+			
+#{if play.getVirtualFile("app/views/gen/menu/Solicitud.html") != null}
+	#{set 'menu'}
+		#{include 'gen/menu/Solicitud.html'/}
+	#{/set}
+#{/if}
+		
+#{fap.messages}
+
+#{fap.permiso }
+
+			
+
+<div id="tablaEvaluacionesAsignadas" class="tabla"></div>
+
+
+<script type="text/javascript">
+
+
+	Ext.onReady(function() {
+				if (!Ext.ModelManager.isRegistered('tablaEvaluacionesAsignadas_model')) {
+					Ext.define('tablaEvaluacionesAsignadas_model',{
+								extend : 'Ext.data.Model',
+										fields : [
+												{
+													name : 'id',
+													mapping : 'id'
+												},
+												{
+													name : 'solicitud_solicitante_nombreCompleto',
+													mapping : 'solicitud',
+													convert : function(
+															solicitud, record) {
+														try {
+															if (solicitud.solicitante.nombreCompleto == null)
+																return "";
+															return solicitud.solicitante.nombreCompleto;
+														} catch (e) {
+															return "";
+														}
+													}
+												},
+												{
+													name : 'estado',
+													mapping : 'estado'
+												},
+												{
+													name : 'solicitud_expedienteAed_idAed',
+													mapping : 'solicitud',
+													convert : function(
+															solicitud, record) {
+														try {
+															if (solicitud.expedienteAed.idAed == null)
+																return "";
+															return solicitud.expedienteAed.idAed;
+														} catch (e) {
+															return "";
+														}
+													}
+												},
+												{
+													name : 'solicitud_solicitante_numeroId',
+													mapping : 'solicitud',
+													convert : function(
+															solicitud, record) {
+														try {
+															if (solicitud.solicitante.numeroId == null)
+																return "";
+															return solicitud.solicitante.numeroId;
+														} catch (e) {
+															return "";
+														}
+													}
+												} ]
+									});
+				}
+				var store = Ext.create(
+								'Ext.data.Store',
+								{
+									model : 'tablaEvaluacionesAsignadas_model',
+									autoLoad : true,
+									proxy : {
+										type : 'ajax',
+										url : '/fap.consultarevaluacionescontroller/tablatablaevaluacionesasignadas',
+										reader : {
+											type : 'json',
+											root : 'rows',
+											totalRecords : '@total'
+										}
+									}
+								});
+				
+				var boton_actualizar = new Ext.Button({
+					text : 'Actualizar',
+					handler : function() {
+						grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
+						store.load();
+					}
+				});
+								
+			    var boton_aceptar = new Ext.Button({
+			    	text: 'Aceptar',
+			    	disabled:true,
+		    		handler : function(){
+						var aceptar = #{jsAction @fap.ConsultarEvaluacionesController.aceptar(':idEvaluacion') /}
+		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+		    			$.post(aceptar({idEvaluacion: selected_id}));
+		    			store.load();
+		    		}
+			    });
+
+			    var boton_rechazar = new Ext.Button({
+			    	text: 'Rechazar',
+			    	disabled:true,
+		    		handler : function(){
+						var aceptar = #{jsAction @fap.ConsultarEvaluacionesController.rechazar(':idEvaluacion') /}
+		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+		    			$.post(aceptar({idEvaluacion: selected_id}));
+		    			store.load();
+		    		}
+			    });
+			    
+			    var boton_evaluar = new Ext.Button({
+			    	text: 'Evaluar',
+			    	disabled:true,
+		    		handler : function(){
+		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+		    			window.location.href = "/Baremacion/fichaEvaluador/?idEvaluacion=" + selected_id;
+		    		}
+			    });
+			    
+				var grid = new Ext.grid.GridPanel({
+					store : store,
+					columns : [ {
+						text : 'Expediente',
+						dataIndex : 'solicitud_expedienteAed_idAed',
+						sortable : true,
+						width : 200
+					}, {
+						text : 'NIP/CIF',
+						dataIndex : 'solicitud_solicitante_numeroId',
+						sortable : true,
+						width : 200
+					}, {
+						text : 'Solicitante',
+						dataIndex : 'solicitud_solicitante_nombreCompleto',
+						sortable : true,
+						width : 200
+					}, {
+						text : 'Estado',
+						dataIndex : 'estado',
+						sortable : true,
+						width : 200
+					} ],
+					renderTo : 'tablaEvaluacionesAsignadas',
+					id : 'tablaEvaluacionesAsignadas-grid',
+					height : 350,
+					title : 'Evaluacion',
+					dockedItems : [ {
+						itemId : 'barraInferior',
+						xtype : 'toolbar',
+						dock : 'bottom',
+						items : [ {
+							itemId : 'searchbox',
+							width : 300,
+							fieldLabel : 'Buscar',
+							labelWidth : 50,
+							xtype : 'searchfield',
+							store : store
+						}, '->', boton_evaluar, boton_aceptar, boton_rechazar, boton_actualizar ]
+					} ]
+				});
+				
+				
+				
+			    grid.addListener("selectionchange", function(){
+			    	var hasSelection = grid.getSelectionModel().hasSelection();
+			    	var enTramite = false;
+			    	if (hasSelection) {
+			    		enTramite = !(grid.getSelectionModel().getSelection()[0].data.estado == "EnTramite");
+			    	}
+			    	boton_aceptar.setDisabled(!hasSelection);
+			    	boton_rechazar.setDisabled(!hasSelection);
+			    	boton_evaluar.setDisabled(enTramite);
+			    });
+
+				
+				store.addListener("load", function() {
+					grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
+				});
+				
+				$('#tablaEvaluacionesAsignadas').data('grid', grid);
+			});
+</script>
+		
+#{/fap.permiso}
+#{/fap.messages}
+#{/fap.permiso}
+
+		

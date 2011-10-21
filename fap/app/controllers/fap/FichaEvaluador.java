@@ -27,7 +27,7 @@ public class FichaEvaluador extends Controller {
 		Messages.deleteFlash();
 	}
 	
-	public static void fichaEvaluador(){
+	public static void fichaEvaluador(long idEvaluacion){
 		//TODO buscar por ID de evaluación		
 		if(Evaluacion.count() == 0){
 			initEvaluacion();
@@ -117,7 +117,7 @@ public class FichaEvaluador extends Controller {
 			}
 		}
 		
-		fichaEvaluador();
+		fichaEvaluador(evaluacion.id);
 	}
 	
 	private static void flash(Evaluacion evaluacion){

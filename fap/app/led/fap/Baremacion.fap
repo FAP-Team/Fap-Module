@@ -107,7 +107,7 @@ Formulario Baremacion {
 	Menu {
 		
 		Grupo "Baremación" {
-			Enlace "Consultar" accion="fap.ConsultarEvaluacionesController.index"
+			Enlace "Consultar" accion="/Baremacion/ConsultaEvaluacion/"
 		}
 		
 		Enlace "Ayuda" pagina=Soporte.Soporte

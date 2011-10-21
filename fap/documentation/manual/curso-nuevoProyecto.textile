@@ -17,6 +17,7 @@ require:
     - play
     - fap -> fap 1.0
     - play -> pdf 0.6
+    - play -> recaptcha 1.2
 # Custom repository 
 repositories: 
     - Fap repository:

@@ -87,7 +87,7 @@ public class JsonDocumentation {
 	    StringBuilder sb = new StringBuilder();
 	    String line = null;
 	    try {
-	    	BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+	    	BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 			while ((line = reader.readLine()) != null) {
 			  sb.append(line + "\n");
 			}
@@ -95,7 +95,7 @@ public class JsonDocumentation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	    return LedDocumentationUtils.utf(sb.toString());
+	    return sb.toString();
 	}
 	
 }

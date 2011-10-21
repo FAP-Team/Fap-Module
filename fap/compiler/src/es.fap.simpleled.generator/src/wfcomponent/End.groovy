@@ -89,8 +89,9 @@ public class End implements IWorkflowComponent {
 				log.warn("No se indicó una página como inicial, se utiliza: <"+page+">");
 			}
 		}
+		String content = "";
 		if (page != null){
-			String content = "fap.app.firstPage="+page;
+			content = "fap.app.firstPage="+page;
 		}
 		FileUtils.writeInRegion(FileUtils.getRoute('CONF_APPLICATION'), content);
 	}

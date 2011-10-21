@@ -6,7 +6,7 @@ En esta sección veremos cómo crear y relacionar entidades. Las entidades permi
 
 h2. Crear una entidad
 
-Las entidades se definen en el fichero entidades.play de nuestra aplicación, todas las entidades deben tener un *nombre* y al menos un *atributo*. La definición completa de una entidad se puede ver en "entidad":dsl-entidad.
+Las entidades se definen en el fichero entidades.play de nuestra aplicación, todas las entidades deben tener un *nombre* y al menos un *atributo*. La definición completa de una entidad se puede ver en "entidad":dsl-entity.
 
 !images/curso-2-4-entidad.play!
 

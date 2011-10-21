@@ -268,7 +268,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			String tipo = compuesto?.entidad?.name;
 			if (compuesto?.entidad?.embedded){
 				refInit += """
-			if (${attribute.name} != null)
+			if (${attribute.name} == null)
 				${attribute.name} = new ${compuesto.entidad.name}();
 			""";
 			}
@@ -287,7 +287,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				}else{
 					if(LedEntidadUtils.isOneToOne(attribute)){
 						refInit += """
-							if (${attribute.name} == null)
+							if (${attribute.name} != null)
 								${attribute.name} = new ${tipo}();
 							else
 								${attribute.name}.init();

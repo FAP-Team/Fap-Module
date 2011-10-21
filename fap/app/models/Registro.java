@@ -66,36 +66,36 @@ public class Registro extends Model {
 	public void init(){
 		
 		
-						if (borrador == null)
-							borrador = new Documento();
-						else
-							borrador.init();
-					
-						if (oficial == null)
-							oficial = new Documento();
-						else
-							oficial.init();
-					
-						if (justificante == null)
-							justificante = new Documento();
-						else
-							justificante.init();
-					
-						if (autorizacionFuncionario == null)
-							autorizacionFuncionario = new Documento();
-						else
-							autorizacionFuncionario.init();
-					
-						if (informacionRegistro == null)
-							informacionRegistro = new InformacionRegistro();
-						else
-							informacionRegistro.init();
-					
-						if (fasesRegistro == null)
-							fasesRegistro = new FasesRegistro();
-						else
-							fasesRegistro.init();
-					
+							if (borrador == null)
+								borrador = new Documento();
+							else
+								borrador.init();
+						
+							if (oficial == null)
+								oficial = new Documento();
+							else
+								oficial.init();
+						
+							if (justificante == null)
+								justificante = new Documento();
+							else
+								justificante.init();
+						
+							if (autorizacionFuncionario == null)
+								autorizacionFuncionario = new Documento();
+							else
+								autorizacionFuncionario.init();
+						
+							if (informacionRegistro == null)
+								informacionRegistro = new InformacionRegistro();
+							else
+								informacionRegistro.init();
+						
+							if (fasesRegistro == null)
+								fasesRegistro = new FasesRegistro();
+							else
+								fasesRegistro.init();
+						
 						if (firmantes == null)
 							firmantes = new ArrayList<Firmante>();
 						

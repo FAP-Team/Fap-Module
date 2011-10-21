@@ -42,11 +42,11 @@ public class Aportaciones extends Model {
 	public void init(){
 		
 		
-						if (actual == null)
-							actual = new Aportacion();
-						else
-							actual.init();
-					
+							if (actual == null)
+								actual = new Aportacion();
+							else
+								actual.init();
+						
 						if (registradas == null)
 							registradas = new ArrayList<Aportacion>();
 						

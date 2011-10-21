@@ -40,6 +40,13 @@ GET /Administracion/consultas fap.consultasController.index
 GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
 
 # === FAPGENERATED ===
+GET /Principal/solicitudes SolicitudesController.index
+
+GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
+POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
+GET /Soporte/soporte SoporteController.index
+
+POST /Soporte/soporte/incidencia SoporteController.incidencia
 GET /Administracion/usuarios UsuariosController.index
 
 GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios
@@ -132,11 +139,4 @@ POST /Solicitud/popupdocaportados/{idEntidad}/borrar popups.PopUpDocAportadosCon
 POST /Solicitud/popupdocaportados/{idEntidad}/crear popups.PopUpDocAportadosController.crear
 POST /Solicitud/popupdocaportados/{idEntidad}/cancelarcrear popups.PopUpDocAportadosController.cancelarCrear
 
-GET /Principal/solicitudes SolicitudesController.index
-
-GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
-POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
-GET /Soporte/soporte SoporteController.index
-
-POST /Soporte/soporte/incidencia SoporteController.incidencia
 # === END FAPGENERATED ===			 

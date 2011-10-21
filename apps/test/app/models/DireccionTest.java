@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 @Auditable
 @Entity
 public class DireccionTest extends Model {
-	// Código de los atributos
 	
 	@Embedded
 	public Direccion direccion;

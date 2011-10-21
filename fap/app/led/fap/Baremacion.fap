@@ -102,3 +102,16 @@ Entidad Evaluacion {
 	LongText comentariosAdministracion
 	LongText comentariosSolicitante
 }
+
+Formulario Baremacion {
+	Menu {
+		
+		Grupo "Baremación" {
+			Enlace "Consultar" accion="fap.ConsultarEvaluacionesController.index"
+		}
+		
+		Enlace "Ayuda" pagina=Soporte.Soporte
+		Enlace "Salir" accion="fap.SecureController.logout"
+    }
+	
+}

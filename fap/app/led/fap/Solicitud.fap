@@ -211,9 +211,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}			
 	}
-	
-	
-	
+		
 	
 	
 	

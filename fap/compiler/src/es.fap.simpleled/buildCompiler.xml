@@ -21,7 +21,7 @@
 
 
 	<target name="generate">
-		<java classname="org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher" classpathref="classpath" fork="true">
+		<java classname="org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher" classpathref="classpath" fork="true" failonerror="true">
 			<jvmarg value="-Xmx512m" />
 			<arg value="es.fap.simpleled.Led" />
 			<sysproperty key="file.encoding" value="UTF-8"/>

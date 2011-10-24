@@ -16,7 +16,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-import play.Play;
 import properties.FapProperties;
 			
 // === IMPORT REGION END ===
@@ -50,7 +49,6 @@ public class Propiedades extends Model {
 // === MANUAL REGION START ===
 
 	public String getValor() {
-		play.Logger.info(clave +"="+FapProperties.get(clave));
 		return FapProperties.get(clave);
 	}
 

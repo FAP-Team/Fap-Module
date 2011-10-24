@@ -52,8 +52,6 @@ public class Propiedades extends Model {
 		return FapProperties.get(clave);
 	}
 
-
-
 	public void setValor(String valor) {}
 
 

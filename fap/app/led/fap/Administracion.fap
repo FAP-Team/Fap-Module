@@ -162,7 +162,7 @@ En los campos '''Para''' y '''CC''' puede poner varios destinatarios separados p
         }
     }
 
-    Popup PopupProperties campo=Propiedades titulo="Properties" {
+    Popup PopupProperties campo=Propiedades titulo="Properties"{
         Texto campo=Propiedades.descripcion titulo="Descripción" requerido
         Texto campo=Propiedades.clave titulo="Clave" requerido
     }

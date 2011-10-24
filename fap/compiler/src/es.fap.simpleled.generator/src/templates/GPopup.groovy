@@ -278,12 +278,13 @@ public class GPopup {
             if(almacen != null){
                 borrarBorrarEntidad = """${popupCampo.firstLower()}.remove($entidad.variableDb);
                 ${almacen.variable}.save();
-                ${entidad.variableDb}.delete();
                 """
-            }else{
-                borrarBorrarEntidad = "${entidad.variableDb}.delete();"
             }
-
+			
+			if (!popup.noBorrarEntidad) {
+				borrarBorrarEntidad += "${entidad.variableDb}.delete();"
+			}
+			
             def borrarAbrirCallParams = ['"borrar"', entidad.id]
             if(almacen != null) borrarAbrirCallParams.add(almacen.id)
 

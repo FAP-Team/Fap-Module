@@ -17,6 +17,8 @@ import platino.FirmaClient;
 import platino.InfoCert;
 import play.Play;
 import play.mvc.*;
+import play.mvc.Http.Request;
+import play.mvc.Scope.Params;
 import play.mvc.Scope.Session;
 import play.cache.Cache;
 import play.data.validation.*;
@@ -25,6 +27,8 @@ import play.libs.*;
 import play.utils.*;
 import properties.FapProperties;
 import ugot.recaptcha.Recaptcha;
+import ugot.recaptcha.RecaptchaCheck;
+import ugot.recaptcha.RecaptchaValidator;
 
 @With({PropertiesFap.class, MessagesController.class, AgenteController.class})
 public class SecureController extends Controller {
@@ -153,54 +157,34 @@ public class SecureController extends Controller {
 		session.put("username", agente.username);
 		
 		redirectToOriginalURL();
-    }
-    
+    }    
+
     /**
-     * Login con usuario y contraseña, con verificacion de captcha
+     * Login con usuario y contraseña
      * @param username
      * @param password
      * @param remember
-     * @param captcha
      * @throws Throwable
      */
-    public static void authenticateCaptcha(@Required String username, String password, boolean remember, @Recaptcha String captcha) throws Throwable {
+    public static void authenticate(@Required String username, String password, boolean remember) throws Throwable {
     	checkAuthenticity();
 
-    	//Si hay errores redirige a la página de login
-    	if(validation.hasErrors()){
-    		flash.keep("url");
-    		Messages.keep();
-    		login();
+        int accesosFallidos = 0;
+        if (session.get("accesoFallido") != null) {
+        	accesosFallidos = new Integer(session.get("accesoFallido"));
+        }
+        
+        if (accesosFallidos > 2) {
+        	boolean valido = RecaptchaValidator.checkAnswer(Request.current(), Params.current());
+        	if (valido == false){
+        		flash.keep("url");
+        		Messages.error(play.i18n.Messages.get("validation.recaptcha"));
+        		Messages.keep();
+        		login();
+        	}
     	}
-    	authenticate(username, password, remember);
-    }
 
-    
-    /**
-     * Login con usuario y contraseña
-     * @param username
-     * @param password
-     * @param remember
-     * @param captcha
-     * @throws Throwable
-     */
-    public static void authenticateNoCaptcha(@Required String username, String password, boolean remember) throws Throwable {
-    	checkAuthenticity();
-
-    	authenticate(username, password, remember);
-    }
-
-    /**
-     * Login con usuario y contraseña
-     * @param username
-     * @param password
-     * @param remember
-     * @throws Throwable
-     */
-    @Util
-    private static void authenticate(@Required String username, String password, boolean remember) throws Throwable {
-  
-    	if(!FapProperties.getBoolean("fap.login.type.user")){
+        if(!FapProperties.getBoolean("fap.login.type.user")){
             flash.keep("url");
             Messages.error("El acceso a la aplicación mediante usuario y contraseña está desactivado");
             Messages.keep();
@@ -246,7 +230,7 @@ public class SecureController extends Controller {
     	if(!allowed){
     		//Usuario no encontrado
     		log.warn("Intento de login fallido, user:"+ username+ ", pass:"+cryptoPassword+", IP:"+request.remoteAddress+", URL:"+request.url);
-            int accesosFallidos = 0;
+            accesosFallidos = 0;
             if (session.get("accesoFallido") != null) {
             	accesosFallidos = new Integer(session.get("accesoFallido"));
             }
@@ -300,7 +284,7 @@ public class SecureController extends Controller {
 	 * 3) Comprueba los permisos según las anotaciones del método   
 	 * @throws Throwable
 	 */
-    @Before(unless={"login", "authenticateCaptcha", "authenticateNoCaptcha", "logout", "authenticateCertificate"})
+    @Before(unless={"login", "authenticate", "logout", "authenticateCertificate"})
     static void checkAccess() throws Throwable {
         // Authent
         if(!AgenteController.agenteIsConnected()) {

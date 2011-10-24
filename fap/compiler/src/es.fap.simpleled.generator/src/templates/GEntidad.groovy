@@ -284,17 +284,23 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 						if (${attribute.name} == null)
 							${attribute.name} = new ArrayList<${tipo}>();
 						""";
-				}
-				else{
-					refInit += """
-						if (${attribute.name} == null)
-							${attribute.name} = new ${tipo}();
-						else
-							${attribute.name}.init();
-					""";
+				}else{
+					if(LedEntidadUtils.isOneToOne(attribute)){
+						refInit += """
+							if (${attribute.name} == null)
+								${attribute.name} = new ${tipo}();
+							else
+								${attribute.name}.init();
+						""";
+					}else{ 
+						//Las referencia ManyToOne no se inicializan
+						refInit += """
+							if (${attribute.name} != null)
+								${attribute.name}.init();	
+						"""
+					}
 				}
 			}
-			
 
 			
 			/** Valores por defecto de los atributos */

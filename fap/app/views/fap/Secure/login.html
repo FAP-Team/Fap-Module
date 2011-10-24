@@ -115,34 +115,7 @@
 				} 
 			%}
 			
-			#{if mostrarCaptcha == false}
-			#{form @authenticateNoCaptcha(), id:"authen-form"}
-				<div class="form-row">
-					<label for="username">&{'fap.login.username'}</label>
-					<input type="text" name="username" id="login-username" value="${flash.username}" />
-				</div>
-				<div class="form-row">
-					<label for="password">&{'fap.login.password'}</label>
-					<input type="password" name="password" id="login-password" value="" />
-				</div>
-
-                <div class="form-row">
-					<div class="check">
-                        <label for="remember">
-						<input type="checkbox" name="remember" id="login-remember" ${flash.remember ? 'checked="true"' : ''} />
-                        &{'fap.login.remember'}
-						</label>
-					</div>
-				</div>
-				
-				<div class="button_container">
-					<input class="boton" type="submit" id="signin" value="&{'fap.login.signin'}" />
-				</div>
-
-			#{/form}
-			#{/if}
-			#{else}
-			#{form @authenticateCaptcha(), id:"authen-form"}
+			#{form @authenticate(), id:"authen-form"}
 				<div class="form-row">
 					<label for="username">&{'fap.login.username'}</label>
 					<input type="text" name="username" id="login-username" value="${flash.username}" />
@@ -171,7 +144,6 @@
 					<input class="boton" type="submit" id="signin" value="&{'fap.login.signin'}" />
 				</div>
 			#{/form}
-			#{/else}
 			
 			<script>
 				$(function() {

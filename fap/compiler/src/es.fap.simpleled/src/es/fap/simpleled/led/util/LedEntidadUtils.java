@@ -28,41 +28,89 @@ public class LedEntidadUtils {
 		}
 		return attr.getType().getCompound().getEntidad();
 	}
+
+	public static boolean isReferencia(Attribute attr){
+		return attr != null && attr.getType().getCompound() != null;
+	}
 	
-	// OneToOne o ManyToOne
+	/**
+	 * En el caso de que el atributo sea una referencia, devuelve el tipo
+	 * de la referencia(OneToOne, OneToMany, ManyToOne, ManyToMany)
+	 * El tipo por defecto es OneToOne
+	 * @param attr
+	 * @return
+	 */
+	public static String getTipoReferencia(Attribute attr){
+		if (!isReferencia(attr)) return null;
+		CompoundType c = attr.getType().getCompound();
+		if(c.getTipoReferencia() == null){
+			return "OneToOne";
+		}		
+		return c.getTipoReferencia().getType();
+	}
+	
+	/**
+	 * Comprueba si el attributo attr es una referencia del tipo refType
+	 * @param attr
+	 * @param refType
+	 * @return
+	 */
+	public static boolean isRefType(Attribute attr, String refType){
+		if(attr == null || refType == null) return false;
+		String attrRefType = getTipoReferencia(attr);
+		return refType.equals(attrRefType);
+	}
+
+	public static boolean isOneToOne(Attribute attr){
+		return isRefType(attr, "OneToOne");
+	}
+	
+	public static boolean isOneToMany(Attribute attr){
+		return isRefType(attr, "OneToMany");
+	}
+	
+	public static boolean isManyToOne(Attribute attr){
+		return isRefType(attr, "ManyToOne");
+	}
+	
+	public static boolean isManyToMany(Attribute attr){
+		return isRefType(attr, "ManyToMany");
+	}
+
+	/**
+	 * Comprueba si un atribute es una referencia OneToOne o ManyToOne
+	 * @param attr
+	 * @return
+	 */
 	public static boolean xToOne(Attribute attr) {
-		if (getEntidad(attr) == null) {
-			return false;
-		}
-		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() == null || c.getTipoReferencia().getType().equals("OneToOne") || c.getTipoReferencia().getType().equals("ManyToOne");
+		return isOneToOne(attr) || isManyToOne(attr);
 	}
 
-	// OneToMany o ManyToMany
+	/**
+	 * Comprueba si un atribute es una referencia OneToMnay o ManyToMany
+	 * @param attr
+	 * @return
+	 */
 	public static boolean xToMany(Attribute attr){
-		if (getEntidad(attr) == null){
-			return false;
-		}
-		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() != null && (c.getTipoReferencia().getType().equals("OneToMany") || c.getTipoReferencia().getType().equals("ManyToMany"));
+		return isOneToMany(attr) || isManyToMany(attr);
 	}
 	
-	// OneToOne o OneToMany
+	/**
+	 * Comprueba si un atribute es una referencia OneToOne o OneToMany
+	 * @param attr
+	 * @return
+	 */
 	public static boolean OneToX(Attribute attr) {
-		if (getEntidad(attr) == null) {
-			return false;
-		}
-		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() == null || c.getTipoReferencia().getType().equals("OneToOne") || c.getTipoReferencia().getType().equals("OneToMany");
+		return isOneToOne(attr) || isOneToOne(attr);
 	}
 
-	// ManyToOne o ManyToMany
+	/**
+	 * Comprueba si un atribute es una referencia ManyToOne o ManyToMany
+	 * @param attr
+	 * @return
+	 */
 	public static boolean ManyToX(Attribute attr){
-		if (getEntidad(attr) == null){
-			return false;
-		}
-		CompoundType c = attr.getType().getCompound();
-		return c.getTipoReferencia() != null && (c.getTipoReferencia().getType().equals("ManyToOne") || c.getTipoReferencia().getType().equals("ManyToMany"));
+		return isManyToOne(attr) || isManyToMany(attr);
 	}
 	
 	public static boolean esLista(Attribute attr){

@@ -25,9 +25,9 @@
 
 	<target name="compile">
 		<mkdir dir="${build.dir}" />
-		<javac srcdir="src" destdir="${build.dir}" includeantruntime="true"/>
+		<javac srcdir="src" destdir="${build.dir}" includeantruntime="true" encoding="utf-8"/>
 
-		<groovyc srcdir="${src.dir}" destdir="${build.dir}">
+		<groovyc srcdir="${src.dir}" destdir="${build.dir}" encoding="utf-8">
 			<classpath>
 				<path refid="classpath" />
 			</classpath>

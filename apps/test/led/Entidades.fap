@@ -55,7 +55,7 @@ Entidad ValoresPorDefectoTest {
 	DateTime mDateTime default = "12/12/2010"
 	
 	// Algunos tipos compuestos
-	Lista ComboTestList mLista default = "c"
+	Lista ComboTestList mLista /*default = "c"*/
 	
 	
 	// Embeddable

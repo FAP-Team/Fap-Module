@@ -82,9 +82,9 @@ Formulario Administracion permiso=administrador{
 	    Grupo titulo="Actualizar desde fichero" {
 	        Form actualizarDesdeFichero {
                 Wiki {"
-'''Perderá todas las modificaciones''' que ha hecho y recuperará los valores puestos en la generación.
+**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en la generación.
 
-'''IMPORTANTE''' : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
+**IMPORTANTE** : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
 Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de documentos desde el AED.
                 "}
 
@@ -125,7 +125,7 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
         
          Grupo titulo="Actualizar desde fichero" {
 	        Form actualizarDesdeFichero {
-                Wiki {"'''Perderá todas las modificaciones''' que ha hecho y recuperará los valores puestos en los ficheros .yaml situados en: 'app/emails/initial-data/'."}
+                Wiki {"**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en los ficheros .yaml situados en: 'app/emails/initial-data/'."}
                 Boton botonCargarMails titulo="Borrar todos y leer desde ficheros"
 	        }
 	    }
@@ -133,9 +133,9 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 
     Popup PopupEmail campo=Mail titulo="Email" {
         Wiki {"
-Dentro de los campos puede utilizar variables con ${nombreVariable} y otros elementos que puede consultar en la [http://www.playframework.org/documentation/1.2.1/templates#syntax documentación]
+Dentro de los campos puede utilizar variables con $ {nombreVariable} y otros elementos que puede consultar en la \"documentación\":http://www.playframework.org/documentation/1.2.1/templates#syntax.
 
-En los campos '''Para''' y '''CC''' puede poner varios destinatarios separados por \",\".
+En los campos **Para** y **CC** puede poner varios destinatarios separados por \",\".
         "}
 
         Texto campo=Mail.idMail titulo="Identificador" requerido

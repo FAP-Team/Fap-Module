@@ -2,7 +2,7 @@ h1. Wiki
 
 h2. Descripción
 
-Convierte el texto escrito en formato MediaWiki, en html. El formato MediaWiki es el utilizado en los artículos de la wikipedia. Puedes consultar la sintaxis del formato en el siguiente enlace: <a href="http://www.mediawiki.org/wiki/Help:Formatting">Documentación MediaWiki</a>
+Convierte el texto escrito en formato Textile a HTML. Puedes consultar la sintaxis del formato en el siguiente enlace: <a href="http://thresholdstate.com/articles/4312/the-textile-reference-manual">Documentación Textile</a>.
 
 h2. Parámetros
 
@@ -19,12 +19,11 @@ bc. Wiki:
 h2. Ejemplo de uso
 
 bc. Wiki {
-	"cadena 1"
-	"cadena 2
-		cadena 2.1
-		cadena 2.2"
-	"enlace externo http://www.google.es"
-	"enlace interno [[solicitante]]"
+	"* elemento 1 de la lista"
+	"* elemento 2 de la lista"
+	"**cadena en negrita**"
+	"__cadena en cursiva__"
+	"\"enlace externo\":http://www.google.es"
 }	
 
 !images/dsl-wiki!

@@ -22,3 +22,13 @@ repositories:
 bc. play dependencies --sync
 
 4. Con esto ya tendremos actualizada la version del modulo y la aplicación estaria lista para ser inicializada. 
+
+h2. Borrar el modulo de la cache .ivy2
+
+En algunas ocasiones es necesario borrar la copia del módulo que se queda almacenada en la cache de .ivy2, como por ejemplo cuando el paquete del modulo se descarga con algún error y quieres que lo descargue de nuevo, en ese caso sigue los siguientes pasos:
+
+1. Buscar en el directorio del usuario la carpeta .ivy2 (C:\Users\nombreUsuario\.ivy2)
+
+2. Entrar en la carpeta .ivy2 y luego en cache
+
+3. Buscar la carpeta Fap y borrarla.

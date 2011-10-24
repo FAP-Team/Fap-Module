@@ -1,4 +1,3 @@
-prueba de error de jenkins
 Formulario Administracion permiso=administrador{
 	Menu {
 		Enlace "Mis Solicitudes" pagina=Principal.Solicitudes

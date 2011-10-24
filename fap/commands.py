@@ -91,7 +91,7 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     workflow = "workflow.LedGenerator";
     
     cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, params];
-    subprocess.call(cmd);
+    return subprocess.call(cmd);
         
     
 
@@ -99,13 +99,13 @@ def run_generate(app, args):
     modelPath = os.path.join(app.path, "led")
     targetPath =  app.path + "/"
     params = "solicitud=true"
-    execute_workflow(modelPath, targetPath, params, args, app)
+    exit(execute_workflow(modelPath, targetPath, params, args, app))
 
 def run_model(app, args):
     modelPath = os.path.join(os.getenv("FAPSDK"), "fap", "app", "led", "fap")
     targetPath =  os.path.join(os.getenv("FAPSDK"), "fap/")
     params = "solicitud=false"
-    execute_workflow(modelPath, targetPath, params, args, app)
+    exit(execute_workflow(modelPath, targetPath, params, args, app))
 
     
 # This will be executed before any command (new, run...)

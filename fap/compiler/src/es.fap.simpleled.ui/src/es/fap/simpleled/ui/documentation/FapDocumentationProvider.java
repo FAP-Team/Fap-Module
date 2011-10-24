@@ -142,51 +142,6 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		return "";
 	}
 	
-//	public String getDocumentation(Entity entidad, String name) {
-//		String text = NodeModelUtils.getNode(entidad).getText();
-//		text = text.trim().replaceAll("\n", "</br>").replaceAll(" ", "&nbsp;").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-//		Pattern pa = Pattern.compile("(\\W)" + name + "(\\W)");
-//		Matcher m = pa.matcher(text);
-//		if (m.find()){
-//			return m.replaceFirst(m.group(1) + "<b>" + name + "</b>" + m.group(2));
-//		}
-//		return text;
-//	}
-	
-//	public String getDocumentation(Entity entidad, String name) {
-//		String text = NodeModelUtils.getNode(entidad).getText();
-//		
-////		Pattern pa = Pattern.compile("Entidad .+?\\{.*\\}", Pattern.DOTALL);
-////		Matcher m = pa.matcher(text);
-////		if (m.find()){
-////			text = m.group();
-////		}
-//
-//		// comentarios multilinea
-//		Matcher m = Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL).matcher(text);
-//		text = m.replaceAll("");
-//
-//		// comentarios multilinea
-//		m = Pattern.compile("//.*").matcher(text);
-//		text = m.replaceAll("");
-//
-//		// cambiando espacios y tabuladores
-//		text = text.trim().replaceAll("\n", "</br>").replaceAll(" ", "&nbsp;").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-//		
-//		// Entidad
-//		text = Pattern.compile("Entidad").matcher(text).replaceFirst("<b><span style=\"color:#" + rgb2hex(FapSemanticHighlighting.keywordColor) + "\">Entidad</span></b>");
-//		
-//		// Strings
-//		text = Pattern.compile("\".*?\"", Pattern.DOTALL).matcher(text).replaceAll("<span style=\"color:#" + rgb2hex(FapSemanticHighlighting.stringColor) + "\">\"LA DECIMA\"</span>");
-//		
-//		Pattern pa = Pattern.compile("(\\W)" + name + "(\\W)");
-//		m = pa.matcher(text);
-//		if (m.find()){
-//			return m.replaceFirst(m.group(1) + "<b><u>" + name + "</b></u>" + m.group(2));
-//		}
-//		return text;
-//	}
-	
 	public String getDocumentation(Entity entidad, String name) {
 		String result = "</br>";
 		Attribute last = null;
@@ -201,6 +156,19 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 			String text = leaf.getText();
 			EObject semantic = leaf.getSemanticElement();
 			EObject grammar = leaf.getGrammarElement();
+			if ("extends".equals(getFeature(leaf))){
+				result += span(text, FapSemanticHighlighting.referenceColor, false);
+				continue;
+			}
+			if (semantic instanceof Attribute && ((Attribute)semantic).getName().equals(text)){
+				result += span(text, FapSemanticHighlighting.nameColor, text.equals(name));
+				atributoNuevo = false;
+				continue;
+			}
+			if (semantic instanceof Entity && ((Entity)semantic).getName().equals(text)){
+				result += span(text, FapSemanticHighlighting.nameColor, text.equals(name));
+				continue;
+			}
 			if (grammar instanceof KeywordImpl){
 				KeywordImpl keyword = (KeywordImpl) grammar;
 				if (keyword.getValue().equals("<")){
@@ -222,15 +190,6 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 			if (grammar instanceof RuleCallImpl){
 				RuleCallImpl rule = (RuleCallImpl) grammar;
 				String ruleName = rule.getRule().getName();
-				if (semantic instanceof Attribute && ((Attribute)semantic).getName().equals(text)){
-					result += span(text, FapSemanticHighlighting.nameColor, text.equals(name));
-					atributoNuevo = false;
-					continue;
-				}
-				if (semantic instanceof Entity && ((Entity)semantic).getName().equals(text)){
-					result += span(text, FapSemanticHighlighting.nameColor, text.equals(name));
-					continue;
-				}
 				if ("STRING".equals(ruleName)){
 					result += span(text, FapSemanticHighlighting.stringColor, false);
 					continue;

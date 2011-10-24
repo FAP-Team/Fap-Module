@@ -1,20 +1,19 @@
 package es.fap.simpleled.validation;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.PermisoVar;
+import es.fap.simpleled.led.util.Proposal;
 
 public class CampoPermisoValidator extends LedElementValidator {
 	
-	public List<String> completeVariables(List<PermisoVar> vars) {
-		List<String> proposals = new ArrayList<String>();
+	public List<Proposal> completeVariables(List<PermisoVar> vars) {
+		List<Proposal> proposals = new ArrayList<Proposal>();
 		for (PermisoVar var: vars){
-			proposals.add(var.getName() + "  -  " + var.getTipo().getName());
-			proposals.addAll(completeEntidad(var.getName(), var.getTipo()));
+			proposals.add(new Proposal(var.getName() + "  -  " + var.getTipo().getName(), true));
 		}
 		return proposals;
 	}

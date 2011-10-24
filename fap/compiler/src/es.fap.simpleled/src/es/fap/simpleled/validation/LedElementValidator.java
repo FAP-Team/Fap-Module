@@ -16,6 +16,7 @@ import es.fap.simpleled.led.Popup;
 import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+import es.fap.simpleled.led.util.Proposal;
 
 public abstract class LedElementValidator {
 	
@@ -56,38 +57,52 @@ public abstract class LedElementValidator {
 		}
 	}
 	
-	public List<String> completeEntidades(Set<Entity> entidades) {
-		List<String> proposals = new ArrayList<String>();
-		for (Entity entidad: entidades){
-			if (aceptaEntidad(entidad)){
-				proposals.add(entidad.getName() + "  -  Entidad");
-			}
-			proposals.addAll(completeEntidad(entidad.getName(), entidad));
-		}
-		return proposals;
-	}
-
-	public List<String> completeEntidad(String prefijo, Entity entidad){
-		HashSet<String> entidadesEnCampo = new HashSet<String>();
-		entidadesEnCampo.add(entidad.getName());
-		return completeEntidad(prefijo, entidad, entidadesEnCampo);
+	private boolean aceptaEntidadRecursivo(Entity entidad){
+		return aceptaEntidadRecursivo(entidad, new HashSet<String>());
 	}
 	
-	private List<String> completeEntidad(String prefijo, Entity entidad, Set<String> entidadesEnCampo){
-		if (! prefijo.equals("")){
-			prefijo += ".";
-		}
-		List<String> proposals = new ArrayList<String>();
+	private boolean aceptaEntidadRecursivo(Entity entidad, Set<String> entidadesEnCampo){
 		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(entidad)){
 			if (aceptaAtributo(attr)){
-				proposals.add(prefijo + attr.getName() + "  -  " + getType(attr));
+				return true;
 			}
 			if (LedEntidadUtils.xToOne(attr)){
 				entidad = attr.getType().getCompound().getEntidad();
 				if (!entidadesEnCampo.contains(entidad.getName())){
 					entidadesEnCampo.add(entidad.getName());
-					proposals.addAll(completeEntidad(prefijo + attr.getName(), entidad, entidadesEnCampo));
+					if (aceptaEntidadRecursivo(entidad, entidadesEnCampo)){
+						return true;
+					}
 				}
+			}
+		}
+		return false;
+	}
+	
+	public List<Proposal> completeEntidades(Set<Entity> entidades) {
+		List<Proposal> proposals = new ArrayList<Proposal>();
+		for (Entity entidad: entidades){
+			if (aceptaEntidad(entidad)){
+				proposals.add(new Proposal(entidad.getName() + "  -  Entidad", true));
+			}
+			else if (aceptaEntidadRecursivo(entidad)){
+				proposals.add(new Proposal(entidad.getName() + "  -  Entidad", false));
+			}
+		}
+		return proposals;
+	}
+	
+	public List<Proposal> completeEntidad(String prefijo, Entity entidad){
+		if (! prefijo.equals("")){
+			prefijo += ".";
+		}
+		List<Proposal> proposals = new ArrayList<Proposal>();
+		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(entidad)){
+			if (aceptaAtributo(attr)){
+				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), true));
+			}
+			else if (LedEntidadUtils.xToOne(attr) && aceptaEntidadRecursivo(attr.getType().getCompound().getEntidad())){
+				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), false));
 			}
 		}
 		return proposals;

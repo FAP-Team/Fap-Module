@@ -31,6 +31,7 @@ import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.impl.LedFactoryImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+import es.fap.simpleled.led.util.Proposal;
 import es.fap.simpleled.validation.*;
 
 /**
@@ -62,7 +63,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 			return;
 		}
 		if (value.equals("action")){
-			acceptor.accept(createCompletionProposal(value, styledProposal(value + "  -  " + "(read, edit, delete, create)"), null, context));
+			acceptor.accept(createCompletionProposal(value, styledProposal(value + "  -  " + "(read, edit, delete, create)", null), null, context));
 			return;
 		}
 		char first = value.charAt(0);
@@ -88,7 +89,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 		Set<Entity> entidades = getEntidades(model);
 		for (Entity entidad: entidades){
-			acceptor.accept(createCompletionProposal(entidad.getName(), styledProposal(entidad.getName() + "  -  " + "Entidad"), null, 0, context.getPrefix(), context));
+			acceptor.accept(createCompletionProposal(entidad.getName(), styledProposal(entidad.getName() + "  -  " + "Entidad", null), null, 0, context.getPrefix(), context));
 		}
 	}
 	
@@ -97,8 +98,8 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		Campo campo = LedCampoUtils.getCampo(model);
 		LedElementValidator validator = LedCampoUtils.getElementValidator(campo);
 		if (validator != null) {
-			for (String proposal: validator.completeEntidades(getEntidadesCampo(campo))) {
-				acceptor.accept(createCompletionProposal(proposal.split("-")[0].trim(), styledProposal(proposal), null, context));
+			for (Proposal proposal: validator.completeEntidades(getEntidadesCampo(campo))) {
+				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
 			}
 		}
 		else{
@@ -125,8 +126,8 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 		LedElementValidator validator = LedCampoUtils.getElementValidator(campo);
 		if (validator != null){
-			for (String proposal: validator.completeEntidad("", entidad)) {
-				acceptor.accept(createCompletionProposal(proposal.split("-")[0].trim(), styledProposal(proposal), null, context));
+			for (Proposal proposal: validator.completeEntidad("", entidad)) {
+				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
 			}
 		}
 		else{
@@ -149,8 +150,8 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	@Override
 	public void complete_CampoPermiso(EObject model, RuleCall call, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		CampoPermisoValidator validator = new CampoPermisoValidator();
-		for (String proposal: validator.completeVariables(getPermisoVariables(model))) {
-			acceptor.accept(createCompletionProposal(proposal.split("-")[0].trim(), styledProposal(proposal), null, context));
+		for (Proposal proposal: validator.completeVariables(getPermisoVariables(model))) {
+			acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
 		}
 	}
 	
@@ -180,8 +181,8 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 			return;
 		}
 		CampoPermisoValidator validator = new CampoPermisoValidator();
-		for (String proposal: validator.completeEntidad("", entidad)) {
-			acceptor.accept(createCompletionProposal(proposal.split("-")[0].trim(), styledProposal(proposal), null, context));
+		for (Proposal proposal: validator.completeEntidad("", entidad)) {
+			acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
 		}
 	}
 	
@@ -192,7 +193,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 			if (perm.eIsProxy()) {
 				perm = (Permiso) EcoreUtil.resolve(perm, model.eResource());
 			}
-			acceptor.accept(createCompletionProposal(perm.getName(), styledProposal(perm.getName() + "  -  " + "Permiso"), null, 0, context.getPrefix(), context));
+			acceptor.accept(createCompletionProposal(perm.getName(), styledProposal(perm.getName() + "  -  " + "Permiso", null), null, 0, context.getPrefix(), context));
 		}
 	}
 	
@@ -268,6 +269,9 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	private static Color color = new Color(Display.getCurrent(), 127, 127, 127);
+	private static Color acceptedColor = new Color(Display.getCurrent(), 0, 12, 0);
+	private static Color noAcceptedColor = new Color(Display.getCurrent(), 12, 0, 0);
+	
 	
 	private static Styler styler = new Styler() {
 		
@@ -277,9 +281,52 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 	};
 	
-	private StyledString styledProposal(String proposal){
+	private static Styler acceptedStyler(){
+		return new Styler() {
+			@Override
+			public void applyStyles(TextStyle arg0) {
+				arg0.foreground = new Color(Display.getCurrent(), 0, 120, 0);
+			}
+		};
+	}
+//	SEGUIR PROBANDO COLORES, Y AL FINAL VOLVERLO A PONER STATIC.
+	private static Styler noAcceptedStyler(){
+		return new Styler() {
+			@Override
+			public void applyStyles(TextStyle arg0) {
+				arg0.foreground = new Color(Display.getCurrent(), 120, 0, 0);
+			}
+		};
+	}
+	
+	
+//	private static Styler acceptedStyler = new Styler() {
+//		
+//		@Override
+//		public void applyStyles(TextStyle arg0) {
+//			arg0.foreground = acceptedColor;
+//		}
+//	};
+//	
+//	private static Styler noAcceptedStyler = new Styler() {
+//		
+//		@Override
+//		public void applyStyles(TextStyle arg0) {
+//			arg0.foreground = noAcceptedColor;
+//		}
+//	};
+	
+	private StyledString styledProposal(String proposal, Boolean accepted){
 		StyledString styled = new StyledString(proposal);
 		int index = proposal.indexOf("-");
+		if (accepted != null){
+			if (accepted){
+				styled.setStyle(0, index, acceptedStyler());
+			}
+			else{
+				styled.setStyle(0, index, noAcceptedStyler());
+			}
+		}
 		styled.setStyle(index, proposal.length() - index, styler);
 		return styled;
 	}

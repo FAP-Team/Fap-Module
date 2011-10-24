@@ -87,12 +87,14 @@ public class ComboTest extends Model {
 			if (listMultiple == null)
 				listMultiple = new HashSet<String>();
 			
-							ref.init();	
+							if (ref != null)
+								ref.init();	
 						
 						if (refMultiple == null)
 							refMultiple = new ArrayList<ComboTestRef>();
 						
-							refOverwrite.init();	
+							if (refOverwrite != null)
+								refOverwrite.init();	
 						
 						if (refMultipleOverwrite == null)
 							refMultipleOverwrite = new ArrayList<ComboTestRef>();

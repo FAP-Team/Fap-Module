@@ -40,8 +40,9 @@ def main():
     # app.java_path()
     cmd = ["java", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, params];
     #print cmd
-    subprocess.call(cmd);
+    return subprocess.call(cmd);
 
 
 if __name__ == "__main__":
-    main()
+    exit_code = main()
+    exit(exit_code)

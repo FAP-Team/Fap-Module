@@ -15,7 +15,7 @@ QN: // QualifiedName
 	IDS ('.' IDS)*
 ;
 // Probando un error bruto en la gramática
-IDS: ; 
+IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente"
 ;

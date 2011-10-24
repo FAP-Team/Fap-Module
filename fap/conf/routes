@@ -115,6 +115,9 @@ GET /Administracion/emails EmailsController.index
 
 GET /Administracion/emails/emails EmailsController.tablaemails
 POST /Administracion/emails/actualizarDesdeFichero EmailsController.actualizarDesdeFichero
+GET /Administracion/propiedades PropiedadesController.index
+
+GET /Administracion/propiedades/tablaPropiedades PropiedadesController.tablatablaPropiedades
 GET /Administracion/popupusuario/{idEntidad}/abrir popups.PopupUsuarioController.abrir
 POST /Administracion/popupusuario/{idEntidad}/editar popups.PopupUsuarioController.editar
 POST /Administracion/popupusuario/{idEntidad}/borrar popups.PopupUsuarioController.borrar
@@ -138,5 +141,11 @@ POST /Administracion/popupconsulta/{idEntidad}/editar popups.PopupConsultaContro
 POST /Administracion/popupconsulta/{idEntidad}/borrar popups.PopupConsultaController.borrar
 POST /Administracion/popupconsulta/{idEntidad}/crear popups.PopupConsultaController.crear
 POST /Administracion/popupconsulta/{idEntidad}/cancelarcrear popups.PopupConsultaController.cancelarCrear
+
+GET /Administracion/popupproperties/{idEntidad}/abrir popups.PopupPropertiesController.abrir
+POST /Administracion/popupproperties/{idEntidad}/editar popups.PopupPropertiesController.editar
+POST /Administracion/popupproperties/{idEntidad}/borrar popups.PopupPropertiesController.borrar
+POST /Administracion/popupproperties/{idEntidad}/crear popups.PopupPropertiesController.crear
+POST /Administracion/popupproperties/{idEntidad}/cancelarcrear popups.PopupPropertiesController.cancelarCrear
 
 # === END FAPGENERATED ===			 

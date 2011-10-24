@@ -11,6 +11,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Logs" accion="fap.LoggerController.index"
 			Enlace "Informe" accion="fap.InformeController.index"
 			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
+			Enlace "Properties" pagina=Propiedades
 		}
 		
 		Enlace "Ayuda" pagina=Soporte.Soporte
@@ -146,10 +147,24 @@ En los campos '''Para''' y '''CC''' puede poner varios destinatarios separados p
 		AreaTexto campo=Mail.footer titulo="Pie de mensaje"
 
     }   
-        
+    
     Popup PopupConsulta campo=Consulta titulo="Consulta" {
     	AreaTexto campo=Consulta.descripcion titulo="Descripcion" requerido
     	AreaTexto campo=Consulta.consulta titulo="Consulta" requerido
     	Combo campo=Consulta.tipo titulo="Tipo" requerido
     }
+
+    Pagina Propiedades noForm {
+        Tabla tablaPropiedades titulo="Tabla de properties" campo=Propiedades popup=PopupProperties {
+            Columna campo=Propiedades.descripcion titulo="Descripción"
+            Columna campo=Propiedades.clave titulo="Clave"
+            Columna campo=Propiedades.valor titulo="Valor" expandir
+        }
+    }
+
+    Popup PopupProperties campo=Propiedades titulo="Properties" {
+        Texto campo=Propiedades.descripcion titulo="Descripción" requerido
+        Texto campo=Propiedades.clave titulo="Clave" requerido
+    }
+    
 }

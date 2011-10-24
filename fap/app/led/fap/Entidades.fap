@@ -360,3 +360,9 @@ Entidad Consulta {
 	LongText consulta
 	Lista tipoConsulta tipo
 }
+
+Entidad Propiedades {
+	String descripcion
+	String clave
+	String valor transient
+}

@@ -54,7 +54,7 @@ Entidad TipoCEconomico {
 
 Entidad CEconomico {
 	TipoCEconomico tipo
-	
+
 	Double valorSolicitado
 	Double valorEstimado
 	Double valorPropuesto
@@ -107,11 +107,10 @@ Formulario Baremacion {
 	Menu {
 		
 		Grupo "Baremación" {
-			Enlace "Consultar" accion="/Baremacion/ConsultaEvaluacion/"
+			Enlace "Evaluaciones" accion="fap.ConsultarEvaluacionesController.index"
 		}
 		
 		Enlace "Ayuda" pagina=Soporte.Soporte
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
-	
 }

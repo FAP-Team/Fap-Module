@@ -49,11 +49,11 @@ public class Criterio extends Model {
 	public void init(){
 		
 		
-							if (tipo == null)
-								tipo = new TipoCriterio();
-							else
-								tipo.init();
-						
+						if (tipo == null)
+							tipo = new TipoCriterio();
+						else
+							tipo.init();
+					
 	}
 		
 	

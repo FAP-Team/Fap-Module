@@ -51,7 +51,7 @@ public class PersonaFisica extends Model {
 	public void init(){
 		
 		
-			if (nip == null)
+			if (nip != null)
 				nip = new Nip();
 			
 	}

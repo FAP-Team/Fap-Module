@@ -1,6 +1,6 @@
 Formulario Solicitud {
 
-	Pagina CEconomicos titulo="Conceptos económicos"{
+	Pagina PCEconomicos titulo="Conceptos económicos"{
 		Tabla tablaCEconomicos 
 			titulo="Conceptos económicos"
 			campo=SolicitudGenerica.ceconomicos

@@ -75,14 +75,14 @@ public class Solicitante extends Persona {
 	public void init(){
 		super.init();
 		
-			if (domicilio == null)
+			if (domicilio != null)
 				domicilio = new Direccion();
 			
-							if (representante == null)
-								representante = new RepresentantePersonaFisica();
-							else
-								representante.init();
-						
+						if (representante == null)
+							representante = new RepresentantePersonaFisica();
+						else
+							representante.init();
+					
 						if (representantes == null)
 							representantes = new ArrayList<RepresentantePersonaJuridica>();
 						

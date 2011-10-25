@@ -2,12 +2,13 @@ package controllers;
 
 import java.util.List;
 
+import controllers.gen.PCEconomicosControllerGen;
+
 import models.CEconomico;
 import models.SolicitudGenerica;
 import models.TipoCEconomico;
-import controllers.gen.CEconomicosControllerGen;
 
-public class CEconomicosController extends CEconomicosControllerGen {
+public class CEconomicosController extends PCEconomicosControllerGen {
 
 	public static void index(Long idSolicitud){
 		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);

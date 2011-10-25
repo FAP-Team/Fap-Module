@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 public class ConsultarEvaluacionesController extends GenericController {
 
 	public static void index(Long idSolicitud){
-		renderTemplate( "fap/ConsultarEvaluaciones/ConsultarEvaluaciones.html");
+		renderTemplate( "fap/Baremacion/consultarEvaluaciones.html");
 	}
 
 	@Before
@@ -30,18 +30,16 @@ public class ConsultarEvaluacionesController extends GenericController {
 
 		eva.solicitud.expedienteAed.asignarIdAed();
 		eva.solicitud.solicitante.tipo = "fisica";
+		eva.solicitud.solicitante.fisica.nip = new Nip();
 		eva.solicitud.solicitante.fisica.nip.valor = ran.nextLong()+"";
 		eva.solicitud.solicitante.fisica.nombre = "AAAA";
 		eva.solicitud.solicitante.fisica.primerApellido = "AAAA";
 		eva.solicitud.solicitante.fisica.segundoApellido = "AAAA";
 		eva.save();
 		
-		
-		Long id = idEvaluacion != null? idEvaluacion : idEntidad;
+		//TODO Filtrar las evaluaciones que tiene asignada	
 		java.util.List<Evaluacion> rows = Evaluacion.find( "select evaluacion from Evaluacion evaluacion" ).fetch();
-
 		List<Evaluacion> rowsFiltered = rows; //Tabla sin permisos, no filtra
-
 		tables.TableRenderResponse<Evaluacion> response = new tables.TableRenderResponse<Evaluacion>(rowsFiltered);
 		renderJSON(response.toJSON("solicitud.expedienteAed.idAed", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado", "id"));
 

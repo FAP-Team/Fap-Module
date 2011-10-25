@@ -20,14 +20,14 @@ import play.mvc.Scope.Params;
 import play.mvc.With;
 import services.BaremacionService;
 
-public class FichaEvaluador extends Controller {
+public class FichaEvaluadorController extends Controller {
 	
 	@Finally(only="fichaEvaluador")
 	public static void removeFlash(){
 		Messages.deleteFlash();
 	}
 	
-	public static void fichaEvaluador(long idEvaluacion){
+	public static void index(long idEvaluacion){
 		//TODO buscar por ID de evaluación		
 		if(Evaluacion.count() == 0){
 			initEvaluacion();
@@ -38,7 +38,7 @@ public class FichaEvaluador extends Controller {
 		//TODO Filtrar los documentos de la solicitud
 		//que tienen el tipo disponible
 		List<Documento> documentos = Documento.findAll();
-		render(evaluacion, documentos);
+		renderTemplate( "fap/Baremacion/fichaEvaluador.html", evaluacion, documentos);
 	}
 
 	private static <T> T getParamRequired(String name, Class<T> clazz){
@@ -117,7 +117,7 @@ public class FichaEvaluador extends Controller {
 			}
 		}
 		
-		fichaEvaluador(evaluacion.id);
+		index(evaluacion.id);
 	}
 	
 	private static void flash(Evaluacion evaluacion){

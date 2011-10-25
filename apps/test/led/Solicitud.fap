@@ -18,7 +18,7 @@ Formulario Solicitud {
 		}
 		
 		Grupo "Pagina del módulo"{
-			Enlace "Conceptos económicos" pagina=Solicitud.CEconomicos	
+			Enlace "Titulo" pagina=Solicitud.PCEconomicos	
 		}
 		
 		Enlace "Salir" accion="fap.SecureController.logout"

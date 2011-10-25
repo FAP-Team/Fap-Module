@@ -4,9 +4,10 @@
 
 #{fap.permiso }
 			
-#{if play.getVirtualFile("app/views/gen/menu/Solicitud.html") != null}
+
+#{if play.getVirtualFile("app/views/gen/menu/Administracion.html") != null}
 	#{set 'menu'}
-		#{include 'gen/menu/Solicitud.html'/}
+		#{include 'gen/menu/Baremacion.html'/}
 	#{/set}
 #{/if}
 		
@@ -86,7 +87,7 @@
 									autoLoad : true,
 									proxy : {
 										type : 'ajax',
-										url : '/fap.consultarevaluacionescontroller/tablatablaevaluacionesasignadas',
+										url : '@{fap.ConsultarEvaluacionesController.tablatablaEvaluacionesAsignadas}',
 										reader : {
 											type : 'json',
 											root : 'rows',
@@ -129,8 +130,9 @@
 			    	text: 'Evaluar',
 			    	disabled:true,
 		    		handler : function(){
+		    			var action = #{jsAction @fap.FichaEvaluadorController.index(':idEvaluacion') /}
 		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-		    			window.location.href = "/Baremacion/fichaEvaluador/?idEvaluacion=" + selected_id;
+		    			window.location.href = action({idEvaluacion : selected_id})
 		    		}
 			    });
 			    

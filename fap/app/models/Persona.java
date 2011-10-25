@@ -54,16 +54,16 @@ public class Persona extends Model {
 	public void init(){
 		
 		
-							if (fisica == null)
-								fisica = new PersonaFisica();
-							else
-								fisica.init();
-						
-							if (juridica == null)
-								juridica = new PersonaJuridica();
-							else
-								juridica.init();
-						
+						if (fisica == null)
+							fisica = new PersonaFisica();
+						else
+							fisica.init();
+					
+						if (juridica == null)
+							juridica = new PersonaJuridica();
+						else
+							juridica.init();
+					
 	}
 		
 	

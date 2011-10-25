@@ -13,8 +13,8 @@ GET         /logout                        fap.SecureController.logout
 
 
 #Baremacion
-GET   /Baremacion/fichaEvaluador/           fap.FichaEvaluador.fichaEvaluador
-
+GET   /Baremacion/evaluaciones      								 fap.ConsultarEvaluacionesController.index
+GET   /Baremacion/evaluacion/{idEvaluacion}/fichaevaluador           fap.FichaEvaluadorController.index
 
 #Descarga del AED
 GET         /aed/descargar                 fap.DescargasAedController.descargar
@@ -44,8 +44,8 @@ GET /Administracion/logs fap.LoggerController.index
 GET /Administracion/consultas fap.consultasController.index
 GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
 
-<<<<<<< HEAD
-GET /Baremacion/ConsultaEvaluacion/ 			fap.ConsultarEvaluacionesController.index
+
+
 =======
 # === FAPGENERATED ===
 GET /Principal/solicitudes SolicitudesController.index
@@ -97,10 +97,10 @@ POST /Administracion/popupconsulta/{idEntidad}/borrar popups.PopupConsultaContro
 POST /Administracion/popupconsulta/{idEntidad}/crear popups.PopupConsultaController.crear
 POST /Administracion/popupconsulta/{idEntidad}/cancelarcrear popups.PopupConsultaController.cancelarCrear
 
-GET /Solicitud/ceconomicos CEconomicosController.index
+GET /Solicitud/pceconomicos PCEconomicosController.index
 
-GET /Solicitud/ceconomicos/tablaCEconomicos CEconomicosController.tablatablaCEconomicos
-POST /Solicitud/ceconomicos/save CEconomicosController.save
+GET /Solicitud/pceconomicos/tablaCEconomicos PCEconomicosController.tablatablaCEconomicos
+POST /Solicitud/pceconomicos/save PCEconomicosController.save
 GET /Solicitud/aportacion AportacionController.index
 
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos

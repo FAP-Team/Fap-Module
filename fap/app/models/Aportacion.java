@@ -66,26 +66,26 @@ public class Aportacion extends Model {
 						if (documentos == null)
 							documentos = new ArrayList<Documento>();
 						
-							if (informacionRegistro == null)
-								informacionRegistro = new InformacionRegistro();
-							else
-								informacionRegistro.init();
-						
-							if (borrador == null)
-								borrador = new Documento();
-							else
-								borrador.init();
-						
-							if (oficial == null)
-								oficial = new Documento();
-							else
-								oficial.init();
-						
-							if (justificante == null)
-								justificante = new Documento();
-							else
-								justificante.init();
-						
+						if (informacionRegistro == null)
+							informacionRegistro = new InformacionRegistro();
+						else
+							informacionRegistro.init();
+					
+						if (borrador == null)
+							borrador = new Documento();
+						else
+							borrador.init();
+					
+						if (oficial == null)
+							oficial = new Documento();
+						else
+							oficial.init();
+					
+						if (justificante == null)
+							justificante = new Documento();
+						else
+							justificante.init();
+					
 	}
 		
 	

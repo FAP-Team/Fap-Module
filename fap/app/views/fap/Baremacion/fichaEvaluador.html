@@ -8,6 +8,7 @@
 
 #{set 'menu'}
 	<ul>
+		<li><a href="@{fap.ConsultarEvaluacionesController.index}">Evaluaciones</a>
 		<li><a href="#Evaluacion">Evaluacion</a></li>
 		<li><a href="#Documentos">Documentos</a></li>
 		
@@ -38,7 +39,7 @@
 
 #{fap.messages /}
 
-#{form @fap.FichaEvaluador.save(), class:'fichaEvaluador'}
+#{form @fap.FichaEvaluadorController.save(), class:'fichaEvaluador'}
 
 <input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>
 

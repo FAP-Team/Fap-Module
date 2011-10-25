@@ -98,11 +98,11 @@ public class Verificacion extends Model {
 						if (codigosExclusion == null)
 							codigosExclusion = new ArrayList<Exclusion>();
 						
-							if (requerimientoProceso == null)
-								requerimientoProceso = new Requerimiento();
-							else
-								requerimientoProceso.init();
-						
+						if (requerimientoProceso == null)
+							requerimientoProceso = new Requerimiento();
+						else
+							requerimientoProceso.init();
+					
 						if (requerimientos == null)
 							requerimientos = new ArrayList<Requerimiento>();
 						

@@ -87,51 +87,51 @@ public class SolicitudGenerica extends Model {
 	public void init(){
 		
 		
-							if (solicitante == null)
-								solicitante = new Solicitante();
-							else
-								solicitante.init();
-						
-							if (documentacion == null)
-								documentacion = new Documentacion();
-							else
-								documentacion.init();
-						
-							if (documentacionProceso == null)
-								documentacionProceso = new Documentacion();
-							else
-								documentacionProceso.init();
-						
-							if (documentacionAportada == null)
-								documentacionAportada = new Documentacion();
-							else
-								documentacionAportada.init();
-						
-							if (registro == null)
-								registro = new Registro();
-							else
-								registro.init();
-						
-							if (expedientePlatino == null)
-								expedientePlatino = new ExpedientePlatino();
-							else
-								expedientePlatino.init();
-						
-							if (expedienteAed == null)
-								expedienteAed = new ExpedienteAed();
-							else
-								expedienteAed.init();
-						
-							if (aportaciones == null)
-								aportaciones = new Aportaciones();
-							else
-								aportaciones.init();
-						
-							if (verificacion == null)
-								verificacion = new Verificacion();
-							else
-								verificacion.init();
-						
+						if (solicitante == null)
+							solicitante = new Solicitante();
+						else
+							solicitante.init();
+					
+						if (documentacion == null)
+							documentacion = new Documentacion();
+						else
+							documentacion.init();
+					
+						if (documentacionProceso == null)
+							documentacionProceso = new Documentacion();
+						else
+							documentacionProceso.init();
+					
+						if (documentacionAportada == null)
+							documentacionAportada = new Documentacion();
+						else
+							documentacionAportada.init();
+					
+						if (registro == null)
+							registro = new Registro();
+						else
+							registro.init();
+					
+						if (expedientePlatino == null)
+							expedientePlatino = new ExpedientePlatino();
+						else
+							expedientePlatino.init();
+					
+						if (expedienteAed == null)
+							expedienteAed = new ExpedienteAed();
+						else
+							expedienteAed.init();
+					
+						if (aportaciones == null)
+							aportaciones = new Aportaciones();
+						else
+							aportaciones.init();
+					
+						if (verificacion == null)
+							verificacion = new Verificacion();
+						else
+							verificacion.init();
+					
 						if (ceconomicos == null)
 							ceconomicos = new ArrayList<CEconomico>();
 						

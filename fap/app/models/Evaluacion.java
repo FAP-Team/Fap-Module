@@ -63,20 +63,22 @@ public class Evaluacion extends Model {
 	public void init(){
 		
 		
-							if (solicitud == null)
-							solicitud.init();	
-						
+						if (solicitud == null)
+							solicitud = new SolicitudGenerica();
+						else
+							solicitud.init();
+					
 						if (criterios == null)
 							criterios = new ArrayList<Criterio>();
 						
 						if (ceconomicos == null)
 							ceconomicos = new ArrayList<CEconomico>();
 						
-							if (tipo == null)
-								tipo = new TipoEvaluacion();
-							else
-								tipo.init();
-						
+						if (tipo == null)
+							tipo = new TipoEvaluacion();
+						else
+							tipo.init();
+					
 	}
 		
 	

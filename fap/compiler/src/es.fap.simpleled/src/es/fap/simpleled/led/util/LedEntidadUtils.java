@@ -30,7 +30,7 @@ public class LedEntidadUtils {
 	}
 
 	public static boolean isReferencia(Attribute attr){
-        return attr != null && attr.getType().getCompound() != null && attr.getType().getCompound().getEntidad() != null;
+		return attr != null && attr.getType().getCompound() != null && attr.getType().getCompound().getEntidad() != null;
 	}
 	
 	/**

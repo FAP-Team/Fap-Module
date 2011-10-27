@@ -41,7 +41,7 @@ public class GTabla {
 	}
 
 	private String id(){
-		return tabla.name ?: campo.str;
+		return tabla.name ?: campo.str.replace(".", "_");
 	}
 	
 	public String view(){

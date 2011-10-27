@@ -149,11 +149,20 @@ public class GPopup {
         abrirRenderParams.add(entidad.variable)
         if(almacen != null) abrirRenderParams.add(almacen.id)
 
+		boolean hayTabla = hayTablaEnPopup();
+		String guardarAlCrear = "";
+		if (hayTabla){
+			guardarAlCrear = """${entidad.variable}.save();		
+			${entidad.id} = ${entidad.variable}.id;
+			((Map<String, Long>)tags.TagMapStack.top("idParams")).put("${entidad.id}", ${entidad.id});"""
+		}
+		
         String metodoAbrir = """
 	public static void abrir(${abrirParams.join(",")}){
 		$entidad.clase $entidad.variable;
 		if(accion.equals("crear")){
             $entidad.variable = new $entidad.clase();
+			${guardarAlCrear}
 		}else{
 		    $entidad.variable = $getterCall;
 		}
@@ -220,6 +229,7 @@ public class GPopup {
         if(popup.crear || popupCompleto){
             def crearParams = []
             if(almacen != null) crearParams.add(almacen.typeId)
+			if (hayTabla) crearParams.add(entidad.typeId)
             crearParams.add(entidad.typeVariable);
 
             String crearCrearSaveCall = ""
@@ -236,6 +246,11 @@ public class GPopup {
             def crearAbrirCallParams = ['"crear"', null]
             if(almacen != null) crearAbrirCallParams.add(almacen.id)
 
+			String newEntidad = "${entidad.clase} ${entidad.variableDb} = new ${entidad.clase}();";
+			if (hayTabla){
+				newEntidad = "${entidad.clase} ${entidad.variableDb} = ${entidad.clase}.findById(${entidad.id});";
+			}
+			
             metodoCrear = """
                 public static void crear(${crearParams.join(",")}){
                     checkAuthenticity();
@@ -243,7 +258,7 @@ public class GPopup {
                         Messages.error("No tiene permisos suficientes para realizar la acción");
                     }
 
-                    ${entidad.clase} ${entidad.variableDb} = new ${entidad.clase}();
+                    ${newEntidad}
                     ${ControllerUtils.fullGetterCall(null, almacen)}
 
                     if(!Messages.hasErrors()){
@@ -399,6 +414,24 @@ public class ${controllerName()} extends ${controllerGenName()} {
 			if(! (o instanceof Tabla)){
 				return true;
 			}
+		}
+	}
+	
+	private boolean hayTablaEnPopup(){
+		return hayTabla(popup);
+	}
+	
+	private boolean hayTabla(Object o){
+		if(o.metaClass.respondsTo(o,"getElementos")){
+			for (Object elemento: o.elementos){
+				if (hayTabla(elemento)){
+					return true;
+				}
+			}
+			return false;
+		}
+		if(o instanceof Tabla){
+			return true;
 		}
 	}
 	

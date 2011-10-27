@@ -7,12 +7,7 @@
 	String botonAccion = (action != 'leer') ? play.i18n.Messages.get("fap.tags.popup.boton.${action}") : ""
 	String botonCerrar = play.i18n.Messages.get("fap.tags.popup.boton.cerrar")
 		
-	String idSolicitud  = params.get("idSolicitud");
-	String idEntidad  = params.get("idEntidad");
-	
-	String campo = _campo;
 	String url = play.mvc.Router.reverse("popups.${popup}Controller.${action}");
-	String urlCancelarCrear = play.mvc.Router.reverse("popups.${popup}Controller.cancelarCrear", [idSolicitud: idSolicitud, idEntidad: idEntidad]);
 	String idMensajes = popup + "_mensajes";
 	def visible = true;
 	def editable = true;

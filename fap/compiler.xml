@@ -160,7 +160,7 @@
 		<delete dir="extraer" />
 	</target>
 
-	<target name="ftp-upload">
+	<target name="ftp-upload" depends="get-version">
 		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version}" />
 
 		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version}/" userid="${ftp.user}" password="${ftp.pass}">

@@ -8,12 +8,11 @@ import controllers.gen.AportacionRecibosControllerGen;
 
 public class AportacionRecibosController extends AportacionRecibosControllerGen {
 
-	public static void tablarecibosAportados(Long idSolicitud, Long idEntidad) {
+	public static void tablarecibosAportados(Long idSolicitud) {
 
-		Long id = idSolicitud != null ? idSolicitud : idEntidad;
 		List<Documento> rows = Documento
 				.find("select registradas.justificante from Solicitud solicitud join solicitud.aportaciones.registradas registradas where solicitud.id=?",
-						id).fetch();
+						idSolicitud).fetch();
 		List<Documento> rowsFiltered = rows; // Tabla sin permisos, no filtra
 
 		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(

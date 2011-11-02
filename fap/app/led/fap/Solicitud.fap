@@ -1,4 +1,4 @@
-Formulario Solicitud {
+Formulario Solicitud entidad=SolicitudGenerica permiso=solicitudes{
 
 	Pagina Aportacion noForm permiso=aportacion {
 		

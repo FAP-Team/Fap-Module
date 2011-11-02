@@ -17,7 +17,8 @@ QN: // QualifiedName
 // Probando un error bruto en la gramática
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
-	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente"
+	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
+	"agente" | "entidad"
 ;
 
 Entity:
@@ -67,7 +68,7 @@ SpecialType:
 CompoundType:
 	((tipoReferencia=AttributeReferences)? entidad=[Entity|IDS])
 	| ('Lista' (multiple?="multiple")? lista=[Lista|IDS])
-	| (collectionType=tipoColeccion"<"collectionReferencia=SimpleType">")
+	| (collectionType=tipoColeccion "<" collectionReferencia=SimpleType ">")
 ;
 
 tipoColeccion:
@@ -80,7 +81,8 @@ AttributeReferences:
 
 Formulario:
 	'Formulario' name=IDS
-	("permiso" "=" permiso=[Permiso])? 
+	("entidad" "=" entidad=[Entity|IDS])?
+	& ("permiso" "=" permiso=[Permiso])? 
 	'{'
 		(menu = Menu)?
 		(paginas += Pagina  |  popups += Popup)*
@@ -120,7 +122,8 @@ MenuEnlace:
 Pagina:
 	'Pagina' name=IDS
 	(
-		(noForm?='noForm')? 
+		(noForm?='noForm')?
+		& ("entidad" "=" entidad=[Entity|IDS])?
 		& (noAutenticar?='noAutenticar')?
 		& (guardarParaPreparar?="guardarParaPreparar")?
 		& ("permiso" "=" permiso=[Permiso])?
@@ -433,6 +436,7 @@ ElementoListaKey:
 
 Permiso:
 	'rule' name=ID
+	('mensaje' '=' mensaje=STRING)?
 	(varSection=PermisoVarsSection)?
 	'when'
 		rule = PermisoRule

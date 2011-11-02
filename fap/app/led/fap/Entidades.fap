@@ -240,14 +240,6 @@ Entidad SemillaExpediente extends Singleton{
 	Long semilla
 }
 
-//Entidad Pdf {
-//	String idPdf
-//	String title
-//	LongText content
-//	String header
-//	String footer
-//}
-//
 Entidad Mail tableName = "email" {
 	String idMail
 	String bcc

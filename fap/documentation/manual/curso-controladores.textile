@@ -197,9 +197,9 @@ bc. public static void save(Long idSolicitud, Solicitud solicitud){
 
 * **Métodos de tabla** - Si la página contiene tablas se creara, para cada una de las tablas un método en el controlador encargado de devolver las filas en un JSON. Este método busca en base de datos la lista de instancias de la entidad a la que hace referencia la tabla, se filtran los resultados utilizando los permisos que se asignaron a la tabla y selecciona los datos que se van a enviar (atendiendo a las columnas de la tabla), por último se realizan las tranformaciones necesarias (por ejemplo para el formato de las fechas) y se renderiza como JSON. 
 
-bc. public static void tablasubPublicas(Long idSolicitud, Long idEntidad){
+bc. public static void tablasubPublicas(Long idSolicitud){
    ...
-   List rows = SubvencionPublica.find("select subvencionPublica ...", id ).fetch();
+   List rows = SubvencionPublica.find("select subvencionPublica ...", idSolicitud ).fetch();
    List rowsFiltered = rows; //Tabla sin permisos, no filtra los resultados
    TableRenderResponse response = new TableRenderResponse(rowsFiltered);
    renderJSON(response.toJSON("entidad", "objeto", "situacion", "importe", "id"));

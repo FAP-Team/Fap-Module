@@ -1,13 +1,13 @@
-Formulario Principal {
+Formulario Principal entidad=SolicitudGenerica{
 	Menu {
 		Enlace "Mis Solicitudes" pagina=Solicitudes
 		Enlace "Administración" permiso=administrador pagina=Administracion.Usuarios
 		Enlace "Ayuda" pagina=Soporte.Soporte
 		Enlace "Salir" accion="fap.SecureController.logout"
-    }
+	}
 	
 	Pagina Solicitudes noForm{
-		Tabla listaSolicitudes titulo="Mis Solicitudes" campo=SolicitudGenerica pagina="@fap.app.firstPage" permiso=listaSolicitudes {
+		Tabla listaSolicitudes titulo="Mis Solicitudes" campo=SolicitudGenerica pagina="@fap.app.firstPage" permiso=solicitudes {
 			Columna campo=SolicitudGenerica.id titulo="ID" ancho="40"
 			Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
 			Columna campo=SolicitudGenerica.estado titulo="Estado Interno" ancho="150" permiso=noVisibleUsuario

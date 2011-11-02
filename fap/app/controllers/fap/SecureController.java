@@ -293,19 +293,19 @@ public class SecureController extends Controller {
         }
        
         AgenteController.findAgente(); //Recupera el agente de base de datos
-        Long idSolicitud = null;
 
-        if(params._contains("idSolicitud")){
-        	idSolicitud = Long.parseLong(params.get("idSolicitud"));
-        	Map<String, Long> ids = new HashMap<String, Long>();
-        	ids.put("idSolicitud", idSolicitud);
-			if (!secure.PermissionFap.listaSolicitudes("read", ids, null)) {
-        		Messages.fatal("No tiene permisos para acceder a la solicitud");
-        		//Messages.keep();
-			}
-        	renderArgs.put("idSolicitud", idSolicitud);
-        	renderArgs.put("idEntidad", idSolicitud);
-        }
+//        Long idSolicitud = null;
+//        if(params._contains("idSolicitud")){
+//        	idSolicitud = Long.parseLong(params.get("idSolicitud"));
+//        	Map<String, Long> ids = new HashMap<String, Long>();
+//        	ids.put("idSolicitud", idSolicitud);
+//			if (!secure.PermissionFap.listaSolicitudes("read", ids, null)) {
+//        		Messages.fatal("No tiene permisos para acceder a la solicitud");
+//        		//Messages.keep();
+//			}
+//        	renderArgs.put("idSolicitud", idSolicitud);
+//        	renderArgs.put("idEntidad", idSolicitud);
+//        }
         
     }
 

@@ -51,7 +51,11 @@ public class GTabla {
 		params.putStr 'id', id()
 
 		EntidadUtils entidad = EntidadUtils.create(campo.entidad);
-        params.put 'url', "@${controllerName}.${controllerMethodName()}(${entidad.id})"
+		
+		if(campo.getCampo().getAtributos() != null)
+        	params.put 'url', "@${controllerName}.${controllerMethodName()}(${entidad.id})"
+		else
+			params.put 'url', "@${controllerName}.${controllerMethodName()}()"
 
         if (tabla.titulo){
 			params.putStr 'titulo', tabla.titulo
@@ -224,33 +228,31 @@ public class GTabla {
 
 		//Clase de la entidad que contiene la lista
 		
-		EntidadUtils entidad = EntidadUtils.create(campo.getUltimaEntidad());
+		EntidadUtils entidadHija = EntidadUtils.create(campo.getUltimaEntidad());
 		EntidadUtils entidadRaiz = EntidadUtils.create(campo.getEntidad());
 		
 		//La consulta depende de si se listan todas las entidades de una clase, o se accede a un campo
 		String query = null;
-		if(campo.str.split("\\.").length == 1){ //Lista todas las entidades de ese tipo
+		String param = null;
+		if(campo.getCampo().getAtributos() == null){ //Lista todas las entidades de ese tipo
 			query = """ "select ${entidadRaiz.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable}" """
+			param = "";
 		}else{ //Acceso a los campos de una entidad
-			query = """ "select ${entidad.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable} join ${campo.firstLower()} ${entidad.variable} where ${entidadRaiz.variable}.id=?", id """
+			query = """ "select ${entidadHija.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable} join ${campo.firstLower()} ${entidadHija.variable} where ${entidadRaiz.variable}.id=?", ${entidadRaiz.id} """
+			param = "Long ${entidadRaiz.id}";
 		}
 		
 		String rowsStr = campos.collect { '"' + it.sinEntidad() + '"'  }.join(", ");
 
-		String code = """
-			Long id = ${entidadRaiz.id} != null? ${entidadRaiz.id} : idEntidad;
-			java.util.List<${entidad.clase}> rows = ${entidad.clase}.find(${query}).fetch();
-			${getCodePermiso(entidad)}
-			
-			tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered);
-			renderJSON(response.toJSON($rowsStr));
-				"""
-		
 		return """
-	public static void ${controllerMethodName()}(Long ${entidadRaiz.id}, Long idEntidad){
-		${code}
+	public static void ${controllerMethodName()}(${param}){
+		java.util.List<${entidadHija.clase}> rows = ${entidadHija.clase}.find(${query}).fetch();
+		${getCodePermiso(entidadHija)}
+			
+		tables.TableRenderResponse<${entidadHija.clase}> response = new tables.TableRenderResponse<${entidadHija.clase}>(rowsFiltered);
+		renderJSON(response.toJSON($rowsStr));
 	}
-		"""
+	"""
 	}
 	
 	/**
@@ -262,12 +264,14 @@ public class GTabla {
 	 * @return
 	 */
 	private String getCodePermiso(EntidadUtils entidad) {
-		if(tabla.permiso != null){
+		if(tabla.permiso == null){
+			return """
+		List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra""";
+		}
 		String idsString = "";
-		if (entidad.variable.equals("solicitud")){
+		if(campo.getCampo().getAtributos() != null){ // El método de la tabla recibe un parámetro id"Entidad"
 			idsString = """ids.put("${entidad.id}", ${entidad.id});"""
 		}
-		
 		return """
 		Map<String, Long> ids = new HashMap<String, Long>();
 		${idsString}
@@ -280,10 +284,6 @@ public class GTabla {
 			}
 		}
 		"""
-		}else{
-			return """
-		List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra""";
-		}
 	}
 	
 	private controllerMethodName(){

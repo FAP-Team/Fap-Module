@@ -68,7 +68,11 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 		char first = value.charAt(0);
 		EObject semantic = context.getCurrentModel();
-		if (value.equals("}") || (Character.isLetter(first) && first == Character.toUpperCase(first))){
+		String lastKeyword = "";
+		if (context.getLastCompleteNode().getGrammarElement() instanceof Keyword){
+			lastKeyword = ((Keyword)context.getLastCompleteNode().getGrammarElement()).getValue();
+		}
+		if (value.equals("}") || (Character.isLetter(first) && first == Character.toUpperCase(first) && !lastKeyword.equals("<"))){
 			if (getCurrentLine(context) == context.getLastCompleteNode().getStartLine()){
 				return;
 			}
@@ -99,7 +103,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		LedElementValidator validator = LedCampoUtils.getElementValidator(campo);
 		if (validator != null) {
 			for (Proposal proposal: validator.completeEntidades(getEntidadesCampo(campo))) {
-				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
+				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, proposal.priority, context.getPrefix(), context));
 			}
 		}
 		else{
@@ -118,7 +122,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		else{
 			Attribute attr = ((CampoAtributos)atributos.eContainer()).getAtributo();
 			if (LedEntidadUtils.xToOne(attr)){
-				entidad = attr.getType().getCompound().getEntidad();
+				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
 		if (entidad == null){
@@ -174,7 +178,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		else{
 			Attribute attr = ((CampoPermisoAtributos)atributos.eContainer()).getAtributo();
 			if (LedEntidadUtils.xToOne(attr)){
-				entidad = attr.getType().getCompound().getEntidad();
+				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
 		if (entidad == null){
@@ -217,22 +221,39 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	public Set<Entity> getEntidadesCampo(Campo campo) {
 		Set<Entity> entidades = new HashSet<Entity>();
 		EObject container = LedCampoUtils.getElementosContainer(campo);
-		if (container instanceof Tabla){
-			entidades.add(LedCampoUtils.getUltimaEntidad(((Tabla)container).getCampo()));
-			return entidades;
+		if (!(container instanceof Tabla)){
+			entidades.addAll(getSingletons(campo));
 		}
-		if (container instanceof Popup){
-			Popup popup = (Popup)container;
-			if (popup.getCampo() != null){
-				entidades.add(LedCampoUtils.getUltimaEntidad(popup.getCampo()));
-				return entidades;
+		Campo campoContainer = LedCampoUtils.getCampo(container);
+		if (container instanceof Form && campoContainer == null){
+			while (!(container instanceof Pagina)){
+				container = container.eContainer();
 			}
 		}
-//		if (container instanceof Form){
-//			entidades.add(getLastEntity(((Popup)container).getCampo()));
-//			return entidades;
-//		}
-		return getEntidades(campo);
+		if (container instanceof Tabla || container instanceof Popup || container instanceof Form){
+			entidades.add(LedCampoUtils.getUltimaEntidad(campoContainer));
+		}
+		else if (container instanceof Pagina){
+			Entity entidad = LedEntidadUtils.getEntidad((Pagina)container);
+			if (entidad != null){
+				entidades.add(entidad);
+			}
+		}
+		return entidades;
+	}
+	
+	public Set<Entity> getSingletons(EObject object) {
+		Set<Entity> singletons = new HashSet<Entity>();
+		for (IEObjectDescription desc : scopeProvider.getScope(object, LedPackage.Literals.CAMPO__ENTIDAD).getAllElements()) {
+			Entity entidad = (Entity) desc.getEObjectOrProxy();
+			if (entidad.eIsProxy()) {
+				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
+			}
+			if (LedEntidadUtils.esSingleton(entidad)){
+				singletons.add(entidad);
+			}
+		}
+		return singletons;
 	}
 	
 	public Set<Entity> getEntidades(EObject object) {
@@ -269,8 +290,8 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	private static Color color = new Color(Display.getCurrent(), 127, 127, 127);
-	private static Color acceptedColor = new Color(Display.getCurrent(), 0, 12, 0);
-	private static Color noAcceptedColor = new Color(Display.getCurrent(), 12, 0, 0);
+	private static Color acceptedColor = new Color(Display.getCurrent(), 0, 120, 0);
+	private static Color noAcceptedColor = new Color(Display.getCurrent(), 120, 0, 0);
 	
 	
 	private static Styler styler = new Styler() {
@@ -281,50 +302,31 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 	};
 	
-	private static Styler acceptedStyler(){
-		return new Styler() {
-			@Override
-			public void applyStyles(TextStyle arg0) {
-				arg0.foreground = new Color(Display.getCurrent(), 0, 120, 0);
-			}
-		};
-	}
-//	SEGUIR PROBANDO COLORES, Y AL FINAL VOLVERLO A PONER STATIC.
-	private static Styler noAcceptedStyler(){
-		return new Styler() {
-			@Override
-			public void applyStyles(TextStyle arg0) {
-				arg0.foreground = new Color(Display.getCurrent(), 120, 0, 0);
-			}
-		};
-	}
+	private static Styler acceptedStyler = new Styler() {
+		
+		@Override
+		public void applyStyles(TextStyle arg0) {
+			arg0.foreground = acceptedColor;
+		}
+	};
 	
-	
-//	private static Styler acceptedStyler = new Styler() {
-//		
-//		@Override
-//		public void applyStyles(TextStyle arg0) {
-//			arg0.foreground = acceptedColor;
-//		}
-//	};
-//	
-//	private static Styler noAcceptedStyler = new Styler() {
-//		
-//		@Override
-//		public void applyStyles(TextStyle arg0) {
-//			arg0.foreground = noAcceptedColor;
-//		}
-//	};
+	private static Styler noAcceptedStyler = new Styler() {
+		
+		@Override
+		public void applyStyles(TextStyle arg0) {
+			arg0.foreground = noAcceptedColor;
+		}
+	};
 	
 	private StyledString styledProposal(String proposal, Boolean accepted){
 		StyledString styled = new StyledString(proposal);
 		int index = proposal.indexOf("-");
 		if (accepted != null){
 			if (accepted){
-				styled.setStyle(0, index, acceptedStyler());
+				styled.setStyle(0, index, acceptedStyler);
 			}
 			else{
-				styled.setStyle(0, index, noAcceptedStyler());
+				styled.setStyle(0, index, noAcceptedStyler);
 			}
 		}
 		styled.setStyle(index, proposal.length() - index, styler);

@@ -1,5 +1,9 @@
 package es.fap.simpleled.validation;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
@@ -8,9 +12,15 @@ import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.CompoundType;
+import es.fap.simpleled.led.Elemento;
 import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.Form;
+import es.fap.simpleled.led.Formulario;
+import es.fap.simpleled.led.Grupo;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.impl.EntityImpl;
+import es.fap.simpleled.led.impl.PaginaImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
@@ -64,8 +74,8 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	@Check
 	public void checkReferencesToEntities (Attribute attribute) {
 		Entity father = ((Entity)(attribute.eContainer()));
-		if (EntityImpl.class.isInstance(attribute.getType().getCompound().getEntidad())) {
-			if (father.getName().equals(((EntityImpl)attribute.getType().getCompound().getEntidad()).getName())){
+		if (EntityImpl.class.isInstance(LedEntidadUtils.getEntidad(attribute))) {
+			if (father.getName().equals(((EntityImpl)LedEntidadUtils.getEntidad(attribute)).getName())){
 				error("Las entidades no se deben referenciar a si mismas mediante un atributo", LedPackage.Literals.ATTRIBUTE__TYPE);
 			}
 		}
@@ -81,7 +91,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			CompoundType compound = attribute.getType().getCompound();
 			if (compound != null) {
 				if (compound.getEntidad() != null){
-					warning("Valores por defecto no aplicables sobre el tipo "+attribute.getType().getCompound().getEntidad().getName()+" (solo aplicables a tipos simples)", LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
+					warning("Valores por defecto no aplicables sobre el tipo "+LedEntidadUtils.getEntidad(attribute).getName()+" (solo aplicables a tipos simples)", LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
 				}
 				else if ((compound.getLista() == null) || (compound.isMultiple())) {
 					warning("Valores por defecto no aplicables sobre listas de tipo multiple", LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
@@ -120,6 +130,36 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			validator.validateCampoEntidad(campo, this);
 			validator.validateCampo(campo, this);
 		}
+	}
+	
+	@Check
+	public void checkPaginaEntidad(Pagina pagina){
+		Formulario formulario = (Formulario) pagina.eContainer();
+		if (pagina.getEntidad() == null && formulario.getEntidad() == null && hayCampos(pagina)){
+			error("Tiene que definir la entidad que va a usar en esta página, o en el formulario entero", LedPackage.Literals.PAGINA__NAME);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public EList<Elemento> getElementos(EObject container){
+		try {
+			return (EList<Elemento>) container.getClass().getMethod("getElementos").invoke(container);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public boolean hayCampos(EObject container){
+		EList<Elemento> elementos = getElementos(container);
+		if (elementos != null){
+			for (EObject obj: elementos){
+				if (hayCampos(obj)){
+					return true;
+				}
+			}
+			return false;
+		}
+		return LedCampoUtils.getCampo(container) != null;
 	}
 	
 }

@@ -8,7 +8,7 @@ public class TablaValidator extends LedElementValidator{
 
 	@Override
 	public boolean aceptaEntidad(Entity entidad) {
-		return true;
+		return !LedEntidadUtils.esSingleton(entidad);
 	}
 
 	@Override

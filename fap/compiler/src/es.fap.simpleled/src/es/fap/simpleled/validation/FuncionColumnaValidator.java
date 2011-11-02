@@ -110,7 +110,7 @@ public class FuncionColumnaValidator {
 				entity = null;
 			}
 			else{
-				entity = attr.getType().getCompound().getEntidad();
+				entity = LedEntidadUtils.getEntidad(attr);
 			}
 			attrsResult.setAtributo(attr);
 			if (i < atributos.size() - 1){

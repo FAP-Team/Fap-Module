@@ -384,7 +384,7 @@ public class ${controllerName()} extends ${controllerGenName()} {
 		String idSolicitud = "";
 		if (ModelUtils.isSolicitudForm())
 			idSolicitud = "/{idSolicitud}";
-		return "/${formulario}${idSolicitud}/${popup.name.toLowerCase()}/{idEntidad}";			
+		return "/${formulario}${idSolicitud}/${popup.name.toLowerCase()}";			
 	}
 	
 	public String generateRoutes(){

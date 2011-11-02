@@ -8,7 +8,7 @@ import controllers.gen.VerificacionControllerGen;
 			
 			public class VerificacionController extends VerificacionControllerGen {
 				
-				public static void tablaverificacionDocumentos(Long idSolicitud, Long idEntidad){
+				public static void tablaverificacionDocumentos(Long idSolicitud){
 					
 
 			}

@@ -79,14 +79,20 @@ public class GPagina {
 		Permiso formPermiso = HashStack.top(HashStackName.PERMISSION);
 		if (formPermiso != null) {
 			paramsform.putStr "permiso", formPermiso.name;
-			paramsform.putStr "mensaje", "No tiene suficientes privilegios para acceder a páginas de éste formulario";
+			if (formPermiso.mensaje != null)
+				paramsform.putStr "mensaje", formPermiso.mensaje;
+			else
+				paramsform.putStr "mensaje", "No tiene suficientes privilegios para acceder a páginas de este formulario";
 		}
 
 		TagParameters params = new TagParameters();
 
 		if (pagina.permiso != null) {
 			params.putStr "permiso", "${pagina.permiso.name}";
-			params.putStr "mensaje", "No tiene suficientes privilegios para acceder a ésta página";
+			if (pagina.permiso.mensaje != null)
+				params.putStr "mensaje", pagina.permiso.mensaje;
+			else
+				params.putStr "mensaje", "No tiene suficientes privilegios para acceder a ésta página";
 		}
 		
 		String titulo = pagina.isTitulo() ? pagina.namePagina : pagina.name;
@@ -142,6 +148,8 @@ public class GPagina {
 		HashStack.remove(HashStackName.INDEX_ENTITY);
 
 		List<String> renderParams = entities.collect { it.variable };
+//		renderParams.addAll(entities.collect { it.id });
+		
 		
 		String redirectMethod = '"${controllerName()}.index"';
 		String template = """ "gen/${pagina.name}/${pagina.name}.html" """;
@@ -149,6 +157,7 @@ public class GPagina {
 		EntidadUtils solicitud = EntidadUtils.create();
 		if (ModelUtils.isSolicitudForm()) {
 			solicitud = EntidadUtils.create(LedUtils.findSolicitud());
+			renderParams.add(solicitud.id);  // Cambiar cuando se implemente entidad de pagina.
 		}
 		String controllerGen = """
 			package controllers.gen;

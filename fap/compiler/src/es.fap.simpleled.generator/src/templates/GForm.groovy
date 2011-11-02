@@ -135,7 +135,7 @@ public class GForm {
 			""";
 		}
 		
-		if (permiso != null) {
+		if (permiso != null && !(elementoGramatica instanceof Pagina)) {
 		view = """
 			#{fap.permiso permiso:"${permiso.name}"}
 			

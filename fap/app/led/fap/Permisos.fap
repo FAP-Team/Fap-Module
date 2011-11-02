@@ -187,19 +187,16 @@ when
 then
 	grant
 
-// Permiso lista de Solicitudes visibles para el usuario
-rule listaSolicitudes
+// Permiso que define las solicitudes que son visibles para el usuario
+rule solicitudes
+mensaje = "No tiene suficientes privilegios para acceder a esta solicitud"
 vars
 	SolicitudGenerica solicitud
 	Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 when
-	(action = "read" and agente.rolActivo = "administrador")
+	agente.rolActivo = "administrador"
 	or
-	(
-	action = "read"
-	and
 	participacion != null 			
-	)
 then
 	grant
 

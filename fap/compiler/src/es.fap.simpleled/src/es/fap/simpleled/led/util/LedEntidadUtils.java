@@ -6,7 +6,9 @@ import java.util.List;
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.LedFactory;
+import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.impl.LedFactoryImpl;
 
 public class LedEntidadUtils {
@@ -29,8 +31,18 @@ public class LedEntidadUtils {
 		return attr.getType().getCompound().getEntidad();
 	}
 
+	public static boolean esSingleton(Entity entidad){
+		if (entidad.getExtends() == null){
+			return false;
+		}
+		if (entidad.getExtends().getName().equals("Singleton")){
+			return true;
+		}
+		return esSingleton(entidad.getExtends());
+	}
+	
 	public static boolean isReferencia(Attribute attr){
-		return attr != null && attr.getType().getCompound() != null;
+		return attr != null && attr.getType().getCompound() != null && attr.getType().getCompound().getEntidad() != null;
 	}
 	
 	/**
@@ -185,6 +197,11 @@ public class LedEntidadUtils {
 		return attrs;
 	}
 	
-	
+	public static Entity getEntidad(Pagina pagina){
+		if (pagina.getEntidad() != null){
+			return pagina.getEntidad();
+		}
+		return ((Formulario) pagina.eContainer()).getEntidad();
+	}
 	
 }

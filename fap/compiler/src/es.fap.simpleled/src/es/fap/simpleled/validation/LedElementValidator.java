@@ -11,7 +11,10 @@ import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.Form;
+import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.Popup;
 import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.util.LedCampoUtils;
@@ -30,16 +33,30 @@ public abstract class LedElementValidator {
 	
 	public void validateCampoEntidad(Campo campo, LedJavaValidator validator){
 		EObject container = LedCampoUtils.getElementosContainer(campo);
-		Campo campoContainer = LedCampoUtils.getCampo(container);
-		if (campoContainer == null || !LedCampoUtils.validCampo(campoContainer)){
+		if (LedEntidadUtils.esSingleton(campo.getEntidad()) && !(container instanceof Tabla)){
 			return;
 		}
-		if (container instanceof Tabla || container instanceof Popup){
-			Entity entidadTabla = LedCampoUtils.getUltimaEntidad(campoContainer);
-			if (! entidadTabla.getName().equals(campo.getEntidad().getName())){
-				validator.myError("En este contexto solo se puede utilizar la entidad \"" + entidadTabla.getName() + "\"", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
+		Campo campoContainer = LedCampoUtils.getCampo(container);
+		Entity entidad = null;
+		if (container instanceof Form && campoContainer == null){
+			while (!(container instanceof Pagina)){
+				container = container.eContainer();
 			}
-			return;
+		}
+		if (campoContainer == null || !LedCampoUtils.validCampo(campoContainer)){
+			if (!(container instanceof Pagina)){
+				return;
+			}
+			entidad = LedEntidadUtils.getEntidad((Pagina)container);
+			if (entidad == null){
+				return;
+			}
+		}
+		if (container instanceof Tabla || container instanceof Popup || container instanceof Form){
+			entidad = LedCampoUtils.getUltimaEntidad(campoContainer);
+		}
+		if (! entidad.getName().equals(campo.getEntidad().getName())){
+			validator.myError("En este contexto solo se puede utilizar la entidad \"" + entidad.getName() + "\"", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
 		}
 	}
 	
@@ -67,7 +84,7 @@ public abstract class LedElementValidator {
 				return true;
 			}
 			if (LedEntidadUtils.xToOne(attr)){
-				entidad = attr.getType().getCompound().getEntidad();
+				entidad = LedEntidadUtils.getEntidad(attr);
 				if (!entidadesEnCampo.contains(entidad.getName())){
 					entidadesEnCampo.add(entidad.getName());
 					if (aceptaEntidadRecursivo(entidad, entidadesEnCampo)){
@@ -81,13 +98,26 @@ public abstract class LedElementValidator {
 	
 	public List<Proposal> completeEntidades(Set<Entity> entidades) {
 		List<Proposal> proposals = new ArrayList<Proposal>();
+		List<Proposal> childProposals = null;
 		for (Entity entidad: entidades){
+			String tipo = "Entidad";
+			int priority = 1;
+			if (LedEntidadUtils.esSingleton(entidad)){
+				tipo = "Singleton";
+				priority = 0;
+			}
 			if (aceptaEntidad(entidad)){
-				proposals.add(new Proposal(entidad.getName() + "  -  Entidad", true));
+				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, true, priority));
 			}
 			else if (aceptaEntidadRecursivo(entidad)){
-				proposals.add(new Proposal(entidad.getName() + "  -  Entidad", false));
+				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, false, priority));
+				if (proposals.size() == 1){
+					childProposals = completeEntidad(entidad.getName(), entidad);
+				}
 			}
+		}
+		if (proposals.size() == 1 && childProposals != null && childProposals.size() > 0){
+			return childProposals;
 		}
 		return proposals;
 	}
@@ -97,13 +127,20 @@ public abstract class LedElementValidator {
 			prefijo += ".";
 		}
 		List<Proposal> proposals = new ArrayList<Proposal>();
+		List<Proposal> childProposals = null;
 		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(entidad)){
 			if (aceptaAtributo(attr)){
 				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), true));
 			}
-			else if (LedEntidadUtils.xToOne(attr) && aceptaEntidadRecursivo(attr.getType().getCompound().getEntidad())){
+			else if (LedEntidadUtils.xToOne(attr) && aceptaEntidadRecursivo(LedEntidadUtils.getEntidad(attr))){
 				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), false));
+				if (proposals.size() == 1){
+					childProposals = completeEntidad(prefijo + attr.getName(), LedEntidadUtils.getEntidad(attr));
+				}
 			}
+		}
+		if (proposals.size() == 1 && childProposals != null && childProposals.size() > 0){
+			return childProposals;
 		}
 		return proposals;
 	}

@@ -7,7 +7,8 @@ import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity
 import generator.utils.StringUtils
 import generator.utils.CampoUtils
-import generator.utils.HashStack.HashStackName; 
+import generator.utils.HashStack.HashStackName;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 
 public class EntidadUtils implements Comparable{
 
@@ -55,7 +56,7 @@ public class EntidadUtils implements Comparable{
 	}
 
     public boolean isSingleton(){
-        return entidad?.getExtends()?.getName().equals("Singleton");
+		return LedEntidadUtils.esSingleton(entidad);
     }
 
     public String getId(){

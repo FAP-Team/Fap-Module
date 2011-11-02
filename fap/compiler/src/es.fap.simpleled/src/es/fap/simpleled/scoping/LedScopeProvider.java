@@ -47,7 +47,7 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 		else{
 			Attribute attr = ((CampoAtributos)atributos.eContainer()).getAtributo();
 			if (LedEntidadUtils.xToOne(attr)){
-				entidad = attr.getType().getCompound().getEntidad();
+				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
 		return Scopes.scopeFor(getAllDirectAttributesAndId(entidad));
@@ -67,7 +67,7 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 		else{
 			Attribute attr = ((CampoPermisoAtributos)atributos.eContainer()).getAtributo();
 			if (LedEntidadUtils.xToOne(attr)){
-				entidad = attr.getType().getCompound().getEntidad();
+				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
 		return Scopes.scopeFor(getAllDirectAttributesAndId(entidad));
@@ -77,7 +77,7 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 		Attribute attr = LedCampoUtils.getUltimoAtributo(combo.getCampo());
 		Entity entidad = null;
 		if (LedEntidadUtils.ManyToX(attr)){
-			entidad = attr.getType().getCompound().getEntidad();
+			entidad = LedEntidadUtils.getEntidad(attr);
 		}
 		return Scopes.scopeFor(getAllDirectAttributesAndId(entidad));
 	}

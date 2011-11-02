@@ -25,12 +25,14 @@ def execute(**kargs):
         print "~ Hello"
 
     if command == "fap:generate":
+        version(app, args)
         run_generate(app, args)
         
 #    if command == "fap:model":
 #        run_model(app, args)
             
     if command == "fap:init":
+        version(app, args)
         init_application (app, args)
 
     if command == "fap:version":

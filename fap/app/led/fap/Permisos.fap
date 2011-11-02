@@ -455,3 +455,13 @@ when
 	(solicitud.estado in ("requerida", "requerida plazo vencido"))
 then
 	grant
+	
+	
+rule aportacionNoNull
+vars
+	// TODO: Permitir variables con nombres tales como "documento", .... etc
+	Documento doc
+when
+	doc.uri = null
+then
+	deny

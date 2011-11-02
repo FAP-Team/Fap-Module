@@ -1,5 +1,7 @@
 package es.fap.simpleled.validation;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
@@ -10,6 +12,7 @@ import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.PermisoVar;
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
@@ -119,6 +122,17 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		if (validator != null){
 			validator.validateCampoEntidad(campo, this);
 			validator.validateCampo(campo, this);
+		}
+	}
+	
+	/**
+	 * Comprueba que el nombre de las variables en permiso sea minúscula
+	 * @param permisoVar
+	 */
+	@Check
+	public void checkNameVariableInPermiso (PermisoVar permisoVar) {
+		if (Pattern.compile("^[A-Z]").matcher(permisoVar.getName()).find()) {
+			error("El nombre de la variable en permiso debe comenzar por minúscula", LedPackage.Literals.PERMISO_VAR__NAME);
 		}
 	}
 	

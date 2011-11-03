@@ -2,8 +2,14 @@ Entidad Solicitud extends SolicitudGenerica {
 	DireccionTest direccionTest
 	ComboTest comboTest
 	ValoresPorDefectoTest valoresPorDefectoTest
+	Fechas fechas
 	
 	OneToMany TablaDeNombres tablaDeNombres
+}
+
+Entidad Fechas {
+	DateTime fechaRequerida
+	DateTime fecha
 }
 
 Entidad TablaDeNombres {

@@ -87,7 +87,7 @@ public class LedEntidadUtils {
 	}
 
 	/**
-	 * Comprueba si un atribute es una referencia OneToMnay o ManyToMany
+	 * Comprueba si un atribute es una referencia OneToMany o ManyToMany
 	 * @param attr
 	 * @return
 	 */

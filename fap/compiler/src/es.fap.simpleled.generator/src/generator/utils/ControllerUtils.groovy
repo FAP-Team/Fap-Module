@@ -255,6 +255,12 @@ class ControllerUtils {
         }
 		CampoUtils campo = CampoUtils.create(objeto.campo);
 		
+		// Si la referencia es un ManyToOne o ManyToMany, solo igualamos ella, no sus campos
+		if (campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToOne") ||
+			campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToMany")) {	
+			return copyCampoSimple(campo);
+		}
+			
 		String validOut = "";
         List<String> camposFiltrados;
 		if (objeto instanceof Solicitante) {

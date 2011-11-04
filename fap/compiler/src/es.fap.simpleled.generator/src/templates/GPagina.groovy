@@ -20,12 +20,9 @@ public class GPagina {
 	List<String> saveCode;
 	
 	public static String generate(Pagina pagina){
-		GPagina g = new GPagina();
-		g.pagina = pagina;
-		g.formulario = ModelUtils.getActualContainer().name;
-		g.elementoGramatica = pagina;
+		GPagina g = new GPagina(pagina);
 		HashStack.push(HashStackName.ROUTES, g);
-		HashStack.push(HashStackName.GPAGINA, g);
+		HashStack.push(HashStackName.CONTAINER, g);
 		if (pagina.guardarParaPreparar) {
 			HashStack.push(HashStackName.SAVE_CODE, g);
 		}
@@ -36,9 +33,15 @@ public class GPagina {
 		}
 		g.view();
 		g.controller();
-		HashStack.pop(HashStackName.GPAGINA);
+		HashStack.pop(HashStackName.CONTAINER);
 	}
 
+	public GPagina(Pagina pagina){
+		this.pagina = pagina;
+		this.formulario = ModelUtils.getActualContainer().name;
+		this.elementoGramatica = pagina;
+	}
+	
 	public String controllerName(){
 		return pagina.name + "Controller";
 	}

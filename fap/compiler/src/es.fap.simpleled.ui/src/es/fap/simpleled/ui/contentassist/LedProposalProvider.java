@@ -201,6 +201,39 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 	}
 	
+	@Override
+	public void completeTabla_Popup(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		String entidad = LedCampoUtils.getUltimaEntidad(((Tabla)model).getCampo()).getName();
+		while (!(model instanceof Formulario)){
+			model = model.eContainer();
+		}
+		for (Popup popup: ((Formulario)model).getPopups()){
+			if (entidad.equals(popup.getEntidad().getName())){
+				acceptor.accept(createCompletionProposal(popup.getName(), context));
+			}
+		}
+	}
+	
+	@Override
+	public void completeTabla_PopupCrear(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		completeTabla_Popup(model, assignment, context, acceptor);
+	}
+	
+	@Override
+	public void completeTabla_PopupVer(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		completeTabla_Popup(model, assignment, context, acceptor);
+	}
+	
+	@Override
+	public void completeTabla_PopupModificar(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		completeTabla_Popup(model, assignment, context, acceptor);
+	}
+	
+	@Override
+	public void completeTabla_PopupBorrar(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		completeTabla_Popup(model, assignment, context, acceptor);
+	}
+	
 	public List<PermisoVar> getPermisoVariables(EObject model) {
 		List<PermisoVar> variables = new ArrayList<PermisoVar>();
 		while (! (model instanceof Permiso)){
@@ -224,21 +257,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		if (!(container instanceof Tabla)){
 			entidades.addAll(getSingletons(campo));
 		}
-		Campo campoContainer = LedCampoUtils.getCampo(container);
-		if (container instanceof Form && campoContainer == null){
-			while (!(container instanceof Pagina)){
-				container = container.eContainer();
-			}
-		}
-		if (container instanceof Tabla || container instanceof Popup || container instanceof Form){
-			entidades.add(LedCampoUtils.getUltimaEntidad(campoContainer));
-		}
-		else if (container instanceof Pagina){
-			Entity entidad = LedEntidadUtils.getEntidad((Pagina)container);
-			if (entidad != null){
-				entidades.add(entidad);
-			}
-		}
+		entidades.add(LedCampoUtils.getEntidadValida(campo));
 		return entidades;
 	}
 	
@@ -258,21 +277,13 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	
 	public Set<Entity> getEntidades(EObject object) {
 		Set<Entity> entidades = new HashSet<Entity>();
-//		Set<Entity> referenciadas = new HashSet<Entity>();
 		Entity solicitud = null;
 		Entity solicitudGenerica = null;
-//		for (IEObjectDescription desc : descriptions.getExportedObjectsByType(LedPackage.Literals.ENTITY)) {
 		for (IEObjectDescription desc : scopeProvider.getScope(object, LedPackage.Literals.CAMPO__ENTIDAD).getAllElements()) {
 			Entity entidad = (Entity) desc.getEObjectOrProxy();
 			if (entidad.eIsProxy()) {
 				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
 			}
-//			for (Attribute attr: getAllDirectAttributes(entidad)){
-//				Entity ref = getEntity(attr);
-//				if (ref != null){
-//					referenciadas.add(ref);
-//				}
-//			}
 			if (entidad.getName().equals("SolicitudGenerica")) {
 				solicitudGenerica = entidad;
 			} else {
@@ -285,7 +296,6 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		if (solicitud == null && solicitudGenerica != null) {
 			entidades.add(solicitudGenerica);
 		}
-//		entidades.removeAll(referenciadas);
 		return entidades;
 	}
 	

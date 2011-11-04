@@ -94,6 +94,32 @@ public class LedCampoUtils {
 		return true;
 	}
 	
+	/*
+	 * Devuelve cual es la entidad que se puede usar en ese campo (sin contar
+	 * las Singleton), en función del contexto en que se sitúe dicho campo.
+	 */
+	public static Entity getEntidadValida(Campo campo){
+		EObject container = LedCampoUtils.getElementosContainer(campo);
+		Campo campoContainer = LedCampoUtils.getCampo(container);
+		if (container instanceof Form && campoContainer == null){
+			while (!(container instanceof Pagina)){
+				container = container.eContainer();
+			}
+		}
+		if (campoContainer == null || !LedCampoUtils.validCampo(campoContainer)){
+			if (container instanceof Pagina){
+				return LedEntidadUtils.getEntidad((Pagina)container);
+			}
+			else if (container instanceof Popup){
+				return ((Popup)container).getEntidad();
+			}
+		}
+		if (container instanceof Tabla || container instanceof Form){
+			return LedCampoUtils.getUltimaEntidad(campoContainer);
+		}
+		return null;
+	}
+	
 	public static LedElementValidator getElementValidator(Campo campo){
 		EObject container = campo.eContainer();
 		if (container instanceof Fecha) {
@@ -102,7 +128,7 @@ public class LedCampoUtils {
 		if (container instanceof Columna) {
 			return new ColumnaValidator();
 		}
-		if (container instanceof Tabla || container instanceof Popup) {
+		if (container instanceof Tabla) {
 			return new TablaValidator();
 		}
 		if (container instanceof Form) {

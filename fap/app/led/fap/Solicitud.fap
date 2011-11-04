@@ -58,15 +58,15 @@ Formulario Solicitud entidad=SolicitudGenerica permiso=solicitudes{
 		Enlace titulo="Volver" pagina=Aportacion estilo="boton"
 	}
 	
-	Popup PopUpDocPresentados ver titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {
+	Popup PopUpDocPresentados titulo="Documentación" entidad=Documento {
 		EditarArchivoAed documentoPresentado campo=Documento requerido
 	}
 	
-	Popup PopUpDocProcesos modificar borrar ver titulo="Documentación" campo=SolicitudGenerica.aportaciones.actual.documentos {
+	Popup PopUpDocProcesos titulo="Documentación" entidad=Documento {
 		EditarArchivoAed documentoProceso campo=Documento requerido
 	}
 	
-	Popup PopUpDocAportados ver titulo="Documentación" campo=SolicitudGenerica.documentacionProceso.documentos {
+	Popup PopUpDocAportados titulo="Documentación" entidad=Documento {
 		EditarArchivoAed documentoAportado campo=Documento requerido
 	}
 		

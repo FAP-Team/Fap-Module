@@ -3,13 +3,12 @@
 * Abre un popup
  * @param popup 				Id del popup.
  * @param url   				Url del contenido que se va a cargar.
- * @param action   				Accion que se va a llevar a cabo.
  * @param options.idHijo			Id de la entidad seleccionada en la tabla. (Si el popup se abre desde una tabla)
  * @param options.idPadre			Id de la entidad seleccionada en la tabla. (Si el popup se abre desde una tabla)
  * @param options.idSolicitud	Id de una solicitud
  * @param options.campo			campo mostrado en la tabla
  */
-function popup_open(popup, url, action, options, callback) {
+function popup_open(popup, url, options, callback) {
 	$("body").append("<div id='" + popup + "' class='popup'></div>");
 	var $popup = $("#" + popup);
 	

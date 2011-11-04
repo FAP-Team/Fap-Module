@@ -1,7 +1,5 @@
 package es.fap.simpleled.validation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -14,13 +12,11 @@ import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Elemento;
 import es.fap.simpleled.led.Entity;
-import es.fap.simpleled.led.Form;
 import es.fap.simpleled.led.Formulario;
-import es.fap.simpleled.led.Grupo;
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Pagina;
+import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.impl.EntityImpl;
-import es.fap.simpleled.led.impl.PaginaImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
@@ -137,6 +133,27 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		Formulario formulario = (Formulario) pagina.eContainer();
 		if (pagina.getEntidad() == null && formulario.getEntidad() == null && hayCampos(pagina)){
 			error("Tiene que definir la entidad que va a usar en esta página, o en el formulario entero", LedPackage.Literals.PAGINA__NAME);
+		}
+	}
+	
+	@Check
+	public void checkReferenciasAPopups(Tabla tabla){
+		String entidad = LedCampoUtils.getUltimaEntidad(tabla.getCampo()).getName();
+		String error = "El popup referenciado no es válido para el campo especificado en la tabla";
+		if (tabla.getPopup() != null && !entidad.equals(tabla.getPopup().getEntidad().getName())){
+			error(error, LedPackage.Literals.TABLA__POPUP);
+		}
+		if (tabla.getPopupBorrar() != null && !entidad.equals(tabla.getPopupBorrar().getEntidad().getName())){
+			error(error, LedPackage.Literals.TABLA__POPUP_BORRAR);
+		}
+		if (tabla.getPopupCrear() != null && !entidad.equals(tabla.getPopupCrear().getEntidad().getName())){
+			error(error, LedPackage.Literals.TABLA__POPUP_CREAR);
+		}
+		if (tabla.getPopupModificar() != null && !entidad.equals(tabla.getPopupModificar().getEntidad().getName())){
+			error(error, LedPackage.Literals.TABLA__POPUP_MODIFICAR);
+		}
+		if (tabla.getPopupVer() != null && !entidad.equals(tabla.getPopupVer().getEntidad().getName())){
+			error(error, LedPackage.Literals.TABLA__POPUP_VER);
 		}
 	}
 	

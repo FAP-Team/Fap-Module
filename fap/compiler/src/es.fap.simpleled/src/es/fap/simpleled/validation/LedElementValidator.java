@@ -12,7 +12,6 @@ import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Form;
-import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.Popup;
@@ -36,25 +35,7 @@ public abstract class LedElementValidator {
 		if (LedEntidadUtils.esSingleton(campo.getEntidad()) && !(container instanceof Tabla)){
 			return;
 		}
-		Campo campoContainer = LedCampoUtils.getCampo(container);
-		Entity entidad = null;
-		if (container instanceof Form && campoContainer == null){
-			while (!(container instanceof Pagina)){
-				container = container.eContainer();
-			}
-		}
-		if (campoContainer == null || !LedCampoUtils.validCampo(campoContainer)){
-			if (!(container instanceof Pagina)){
-				return;
-			}
-			entidad = LedEntidadUtils.getEntidad((Pagina)container);
-			if (entidad == null){
-				return;
-			}
-		}
-		if (container instanceof Tabla || container instanceof Popup || container instanceof Form){
-			entidad = LedCampoUtils.getUltimaEntidad(campoContainer);
-		}
+		Entity entidad = LedCampoUtils.getEntidadValida(campo);
 		if (! entidad.getName().equals(campo.getEntidad().getName())){
 			validator.myError("En este contexto solo se puede utilizar la entidad \"" + entidad.getName() + "\"", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
 		}

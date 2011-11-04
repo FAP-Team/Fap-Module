@@ -34,7 +34,7 @@ class ControllerUtils {
 		if (entidad.isSingleton()){
 			return """
 				@Util
-				protected static ${entidad.clase} get${entidad.clase}(){
+				protected static ${entidad.clase} get${entidad.clase}(${byId?"Long id":""}){
 					return ${entidad.clase}.get(${entidad.clase}.class);
 				}
 			"""
@@ -74,6 +74,15 @@ class ControllerUtils {
 			return "get${entidad.clase}()";
 		}
     }
+	
+	public static String newCall(EntidadUtils entidad) {
+		if (entidad.isSingleton()){
+			return "$entidad.variable = ${entidad.clase}.get(${entidad.clase}.class);"
+		}
+		else{
+			return "$entidad.variable = new $entidad.clase();";
+		}
+	}
 
     /**
      * Crea un getter, para una entidad que tiene que buscar en una lista

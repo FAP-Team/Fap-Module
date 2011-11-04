@@ -13,7 +13,7 @@ public class HashStack {
 	 *                 el subirArchivo o el subirArchivoAED
 	 */
 	public enum HashStackName {
-		FORMULARIO, CONTROLLER, ROUTES, PAGE_NAME, GPAGINA, GPOPUP,
+		FORMULARIO, CONTROLLER, ROUTES, PAGE_NAME, CONTAINER,
 		SUBIR_ARCHIVO,
 		SAVE_ENTITY,
 		INDEX_ENTITY,

@@ -32,7 +32,7 @@ public class GForm {
 			g.campo = CampoUtils.create(form.campo);
 		}
 		g.permiso = form.permiso
-		g.contenedor = HashStack.top(HashStackName.GPAGINA);
+		g.contenedor = HashStack.top(HashStackName.CONTAINER);
 		String view = g.view();
 		HashStack.push(HashStackName.CONTROLLER, g);
 		HashStack.push(HashStackName.ROUTES, g);
@@ -45,7 +45,7 @@ public class GForm {
 		g.name = "save";	
 		g.campo = null;
 		g.permiso = pagina.permiso;
-		g.contenedor = HashStack.top(HashStackName.GPAGINA);
+		g.contenedor = HashStack.top(HashStackName.CONTAINER);
 		String view = g.view();
 		HashStack.push(HashStackName.CONTROLLER, g);
 		HashStack.push(HashStackName.ROUTES, g);

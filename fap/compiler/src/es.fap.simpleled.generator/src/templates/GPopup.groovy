@@ -13,9 +13,9 @@ import es.fap.simpleled.led.util.LedEntidadUtils;
 public class GPopup {
 
 	def elementoGramatica;
-	def Popup popup;
+	Popup popup;
 	String name;
-	def	formulario = "";
+	String formulario = "";
 	
 	List<EntidadUtils> saveEntity;
 	List<String> saveExtra;
@@ -25,45 +25,134 @@ public class GPopup {
 	EntidadUtils almacen;
 	EntidadUtils entidad;
 	
-	public static String generate(Popup popup){
-		GPopup g = new GPopup();
-		g.popup = popup;
-		g.elementoGramatica = popup;
-		g.name = popup.name;
-		g.formulario = ModelUtils.getActualContainer().name
-
+	GTabla gtabla;
+	Tabla tabla;
+	
+	boolean ver;
+	boolean crear;
+	boolean modificar;
+	boolean borrar;
+	
+	String popupName;
+	
+	public static GPopup generate(Popup popup, GTabla gtabla, List<String> botones){
+		GPopup g = new GPopup(popup);
+		g.tabla = gtabla.tabla;
+		g.gtabla = gtabla; 
+		g.ver = botones.contains("ver");
+		g.crear = botones.contains("crear");
+		g.modificar = botones.contains("modificar");
+		g.borrar = botones.contains("borrar");
+		g.popupName = g.popupNameForTable();
 		HashStack.push(HashStackName.ROUTES, g)
-		HashStack.push(HashStackName.GPOPUP, g)
-		
-		Attribute attr = LedCampoUtils.getUltimoAtributo(popup.campo);
+		HashStack.push(HashStackName.CONTAINER, g)
+		Attribute attr = LedCampoUtils.getUltimoAtributo(g.tabla.campo);
 		if (LedEntidadUtils.xToMany(attr)){
-			g.almacen = EntidadUtils.create(popup.campo.entidad);
+			g.almacen = EntidadUtils.create(g.tabla.campo.entidad);
 			g.entidad = EntidadUtils.create(LedEntidadUtils.getEntidad(attr));
 		}
 		else{
-			g.entidad = EntidadUtils.create(popup.campo.entidad);
+			g.entidad = EntidadUtils.create(g.tabla.campo.entidad);
 		}
-		
 		g.view();
 		g.controller();
-		
-		HashStack.pop(HashStackName.GPOPUP)
+		HashStack.pop(HashStackName.CONTAINER);
+		return g;
+	}
+	
+	public static Set<String> popupsCreados = new HashSet<String>();
+	
+	public static GPopup generateParaEnlace(Popup popup){
+		GPopup g = new GPopup(popup);
+		g.crear = true;
+		g.popupName = g.popupNameForEnlace();
+		HashStack.push(HashStackName.ROUTES, g)
+		HashStack.push(HashStackName.CONTAINER, g)
+		g.almacen = null;
+		g.entidad = EntidadUtils.create(popup.entidad);
+		if (! popupsCreados.contains(g.popupName)){
+			popupsCreados.add(g.popupName);
+			g.view();
+			g.controller();
+		}
+		HashStack.pop(HashStackName.CONTAINER);
+		return g;
+	}
+	
+//	public static GPopup generateParaBoton(Popup popup){
+//		GPopup g = new GPopup(popup);
+//		g.modificar = true;
+//		g.popupName = g.popupNameForBoton();
+//		HashStack.push(HashStackName.ROUTES, g)
+//		HashStack.push(HashStackName.CONTAINER, g)
+//		g.almacen = null;
+//		g.entidad = EntidadUtils.create(popup.entidad);
+//		if (! popupsCreados.contains(g.popupName)){
+//			popupsCreados.add(g.popupName);
+//			g.view();
+//			g.controller();
+//		}
+//		HashStack.pop(HashStackName.CONTAINER);
+//		return g;
+//	}
+	
+	public GPopup(Popup popup){
+		this.popup = popup;
+		this.elementoGramatica = popup;
+		this.name = popup.name;
+		this.formulario = ModelUtils.getActualContainer().name;
+	}
+	
+	public String popupNameForTable(){
+		String table = StringUtils.firstUpper(gtabla.id());
+		String name = "${table}Popup";
+		if (ver && crear && modificar && borrar){
+			return name;
+		}
+		if (ver)
+			name += "Ver";
+		if (crear)
+			name += "Crear";
+		if (modificar)
+			name += "Modificar";
+		if (borrar)
+			name += "Borrar";
+		return name;
+	}
+	
+	public String popupNameForEnlace(){
+		return "${StringUtils.firstUpper(popup.name)}ParaEnlace";
+	}
+	
+//	public String popupNameForBoton(){
+//		return "${StringUtils.firstUpper(popup.name)}ParaBoton";
+//	}
+	
+	public String url(){
+		String idSolicitud = "";
+		if (ModelUtils.isSolicitudForm())
+			idSolicitud = "/{idSolicitud}";
+		return "/${formulario}${idSolicitud}/${popupName}";
 	}
 	
 	public String controllerName(){
-		return popup.name + "Controller";
+		return "${popupName}Controller";
 	}
 	
 	public String controllerFullName(){
-		return "popups." + controllerName();
+		return "popups.${controllerName()}";
 	}
 	
 	public String controllerGenName(){
-		return controllerName() + "Gen";
+		return "${controllerName()}Gen";
 	}
 	
 	public String controllerGenFullName(){
-		return "popups." + controllerGenName();
+		return "popups.${controllerGenName()}";
+	}
+	
+	public String viewName(){
+		return "${popupName}.html";
 	}
 	
 	public String view(){
@@ -86,7 +175,7 @@ public class GPopup {
 		String titulo = popup.titulo ?: popup.name;
 		
         TagParameters params = new TagParameters();
-        params.putStr("popup", popup.name)
+        params.putStr("popup", popupName)
         params.putStr("titulo", titulo)
         params.put("action", 'accion')
 
@@ -109,11 +198,11 @@ public class GPopup {
 #{/fap.popup}
 		"""
 					
-		FileUtils.overwrite(FileUtils.getRoute('VIEW'), "popups/${popup.name}.html", view);
+		FileUtils.overwrite(FileUtils.getRoute('VIEW'), "popups/${viewName()}", view);
 	}
 	
 	public String controller(){
-	    boolean popupCompleto = !((popup.crear) || (popup.modificar) || (popup.borrar) || (popup.ver));
+	    boolean popupCompleto = !(crear || modificar || borrar || ver);
 
 		//Parámetros del método crear
 		//def saveParamsStr = saveParams != null ? ", " + saveParams.unique().join(",") : "";
@@ -124,7 +213,7 @@ public class GPopup {
 			controllerHS += elemento.controller();
 		}
 
-		CampoUtils popupCampo = CampoUtils.create(popup.campo);
+		CampoUtils popupCampo = CampoUtils.create(tabla?.campo);
 
         //Getters
         String getters;
@@ -144,7 +233,7 @@ public class GPopup {
 
         String getterCall = almacen != null? ControllerUtils.complexGetterCall(almacen, entidad): ControllerUtils.simpleGetterCall(entidad, true)
 
-        def abrirRenderParams = ["\"gen/popups/${popup.name}.html\"", "accion"]
+        def abrirRenderParams = ["\"gen/popups/${viewName()}\"", "accion"]
         abrirRenderParams.add(entidad.id)
         abrirRenderParams.add(entidad.variable)
         if(almacen != null) abrirRenderParams.add(almacen.id)
@@ -161,9 +250,10 @@ public class GPopup {
 	public static void abrir(${abrirParams.join(",")}){
 		$entidad.clase $entidad.variable;
 		if(accion.equals("crear")){
-            $entidad.variable = new $entidad.clase();
+			${ControllerUtils.newCall(entidad)}
 			${guardarAlCrear}
-		}else{
+		}
+		else{
 		    $entidad.variable = $getterCall;
 		}
 
@@ -188,7 +278,7 @@ public class GPopup {
         //Metodo editar
         String metodoEditar = ""
 
-		if ((popup.modificar) || (popupCompleto)) {
+		if (modificar || popupCompleto) {
 
             def editarParams = []
             if(almacen != null) editarParams.add(almacen.typeId)
@@ -226,7 +316,7 @@ public class GPopup {
         }
 
         String metodoCrear = ""
-        if(popup.crear || popupCompleto){
+        if(crear || popupCompleto){
             def crearParams = []
             if(almacen != null) crearParams.add(almacen.typeId)
 			if (hayTabla) crearParams.add(entidad.typeId)
@@ -249,6 +339,9 @@ public class GPopup {
 			String newEntidad = "${entidad.clase} ${entidad.variableDb} = new ${entidad.clase}();";
 			if (hayTabla){
 				newEntidad = "${entidad.clase} ${entidad.variableDb} = ${entidad.clase}.findById(${entidad.id});";
+			}
+			else if (entidad.isSingleton()){
+				newEntidad = "${entidad.clase} ${entidad.variableDb} = ${entidad.clase}.get(${entidad.clase}.class);";
 			}
 			
             metodoCrear = """
@@ -282,7 +375,7 @@ public class GPopup {
 
 
         String metodoBorrar = ""
-        if ((popup.borrar) || (popupCompleto)) {
+        if (borrar || popupCompleto) {
             def borrarParams = []
             if(almacen != null) borrarParams.add(almacen.typeId)
             borrarParams.addAll([entidad.typeId]);
@@ -296,7 +389,7 @@ public class GPopup {
                 """
             }
 			
-			if (!popup.noBorrarEntidad) {
+			if (!tabla.noBorrarEntidad) {
 				borrarBorrarEntidad += "${entidad.variableDb}.delete();"
 			}
 			
@@ -378,13 +471,6 @@ public class ${controllerName()} extends ${controllerGenName()} {
 }
 		"""
 		FileUtils.write(FileUtils.getRoute("CONTROLLER"), controllerFullName().replaceAll("\\.", "/") + ".java", controller);
-	}
-
-	public String url(){
-		String idSolicitud = "";
-		if (ModelUtils.isSolicitudForm())
-			idSolicitud = "/{idSolicitud}";
-		return "/${formulario}${idSolicitud}/${popup.name.toLowerCase()}";			
 	}
 	
 	public String generateRoutes(){

@@ -6,6 +6,7 @@ import com.sun.media.sound.RealTimeSequencer.PlayThread;
 import es.fap.simpleled.led.*
 import es.fap.simpleled.led.impl.*
 import generator.utils.CampoUtils
+import generator.utils.LedUtils
 import generator.utils.HashStack
 import generator.utils.StringUtils
 import generator.utils.TagParameters
@@ -193,8 +194,8 @@ public class GSolicitante {
 		
 		popup.setName "Popup" + StringUtils.firstUpper(name);
 		popup.setTitulo "Representante";
-		popup.setCampo(CampoUtils.addMore(campo, "representantes"));
-		
+		popup.setEntidad(LedUtils.getNode(Entity, "RepresentantePersonaJuridica"));
+			
 		Persona person = new PersonaImpl();
 		
 		person.setCampo(CampoUtils.create("RepresentantePersonaJuridica").campo);

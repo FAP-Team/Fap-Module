@@ -34,8 +34,8 @@ class Expand {
 		if(object instanceof Pagina)
 			return GPagina.generate(object)
 			
-		if(object instanceof Popup)
-			return GPopup.generate(object)
+//		if(object instanceof Popup)
+//			return GPopup.generate(object)
 
 		if(object instanceof Texto)
 			return GTexto.generate(object)

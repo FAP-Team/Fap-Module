@@ -16,7 +16,6 @@ import generator.utils.CampoUtils;
 public class GTabla {
 
 	def Tabla tabla;
-	
 	def contenedor;
 	def tipo;
 	CampoUtils campo;
@@ -26,18 +25,17 @@ public class GTabla {
 		g.tabla = tabla;
 		g.campo = CampoUtils.create(tabla.campo);
 		
-		g.contenedor = HashStack.top(HashStackName.GPAGINA);
-		g.tipo = "pagina";
-		if (g.contenedor == null){
-			g.contenedor = HashStack.top(HashStackName.GPOPUP);
+		g.contenedor = HashStack.top(HashStackName.CONTAINER);
+		if (g.contenedor instanceof GPopup){
 			g.tipo = "popup";
+		}
+		else{
+			g.tipo = "pagina";
 		}
 		
 		HashStack.push(HashStackName.CONTROLLER, g);
 		HashStack.push(HashStackName.ROUTES, g);
 		return g.view();
-		
-		
 	}
 
 	private String id(){
@@ -65,33 +63,47 @@ public class GTabla {
 		if (tabla.alto){
 			params.putStr 'alto', tabla.alto
 		}
-
-				
+		
+		Map<Popup, Set<String>> popups = new HashMap<Popup, Set<String>>();
+		
 		if (tabla.popup != null){
-			params.putStr 'popup', tabla.popup.name;
+			addPopupBoton(popups, tabla.popup, ["ver", "crear", "modificar", "borrar"]);
 			if (tabla.popup.permiso)
 				params.putStr 'permisoPopup', tabla.popup.permiso.name;
 		}
-		
 		if (tabla.popupCrear != null){
-			params.putStr 'popupCrear', tabla.popupCrear.name;
+			addPopupBoton(popups, tabla.popupCrear, ["crear"]);
 			if (tabla.popupCrear.permiso)
 				params.putStr 'permisoPopupCrear', tabla.popupCrear.permiso.name;
 		}
 		if (tabla.popupBorrar != null){
-			params.putStr 'popupBorrar', tabla.popupBorrar.name;
+			addPopupBoton(popups, tabla.popupBorrar, ["borrar"]);
 			if (tabla.popupBorrar.permiso)
 				params.putStr 'permisoPopupBorrar', tabla.popupBorrar.permiso.name;
 		}
 		if (tabla.popupModificar != null){
-			params.putStr 'popupModificar', tabla.popupModificar.name;
+			addPopupBoton(popups, tabla.popupModificar, ["modificar"]);
 			if (tabla.popupModificar.permiso)
 				params.putStr 'permisoPopupModificar', tabla.popupModificar.permiso.name;
 		}
 		if (tabla.popupVer != null){
-			params.putStr 'popupVer', tabla.popupVer.name;
+			addPopupBoton(popups, tabla.popupVer, ["ver"]);
 			if (tabla.popupVer.permiso)
 				params.putStr 'permisoPopupVer', tabla.popupVer.permiso.name;
+		}
+
+		for (Popup p: popups.keySet()){
+			GPopup gpopup = GPopup.generate(p, this, popups.get(p));
+			if (gpopup.popup.equals(tabla.popup))
+				params.putStr 'popup', gpopup.popupName;
+			if (gpopup.popup.equals(tabla.popupCrear))
+				params.putStr 'popupCrear', gpopup.popupName;
+			if (gpopup.popup.equals(tabla.popupBorrar))
+				params.putStr 'popupBorrar', gpopup.popupName;
+			if (gpopup.popup.equals(tabla.popupModificar))
+				params.putStr 'popupModificar', gpopup.popupName;
+			if (gpopup.popup.equals(tabla.popupVer))
+				params.putStr 'popupVer', gpopup.popupName;
 		}
 
 		// Si el enlace es a una página, no a un popUp
@@ -128,6 +140,16 @@ public class GTabla {
 		return view;
 	}
 	
+	private void addPopupBoton(Map popups, Popup popup, List<String> botones){
+		if (popups.get(popup) != null){
+			List last = popups.get(popup);
+			last.addAll(botones);
+			popups.put(popup, last);
+		}
+		else{
+			popups.put(popup, botones);
+		}
+	}
 	
 	private String columnaView(Columna c){
 		List<CampoUtils> campos = GTabla.camposDeColumna(c);

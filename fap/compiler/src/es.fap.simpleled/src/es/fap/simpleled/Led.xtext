@@ -14,7 +14,7 @@ Model:
 QN: // QualifiedName
 	IDS ('.' IDS)*
 ;
-// Probando un error bruto en la gramática
+
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
@@ -81,8 +81,10 @@ AttributeReferences:
 
 Formulario:
 	'Formulario' name=IDS
-	("entidad" "=" entidad=[Entity|IDS])?
-	& ("permiso" "=" permiso=[Permiso])? 
+	(
+		("entidad" "=" entidad=[Entity|IDS])?
+		& ("permiso" "=" permiso=[Permiso])?
+	)
 	'{'
 		(menu = Menu)?
 		(paginas += Pagina  |  popups += Popup)*
@@ -139,13 +141,8 @@ Popup:
 	'Popup' name=ID
 	(
 		('titulo' '=' titulo=STRING)?
-		& ('campo' '=' campo=Campo)
+		& ('entidad' '=' entidad=[Entity|IDS])
 		& ("permiso" "=" permiso=[Permiso])?
-		& (crear?='crear')?
-		& (modificar?='modificar')?
-		& (borrar?='borrar')?
-		& (ver?='ver')?
-		& (noBorrarEntidad?='noBorrarEntidad')?
 	)
 	'{'
 		elementos+=Elemento*
@@ -295,6 +292,7 @@ Tabla:
         & (columnasAutomaticas?="columnasAutomaticas")?
         & ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
+		& (noBorrarEntidad?='noBorrarEntidad')?
 		& (seleccionable?="seleccionable" "=" nameSeleccionable=STRING)?
 	    & (	
 	    	('popup' '=' popup=[Popup])	

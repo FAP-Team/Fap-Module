@@ -126,9 +126,10 @@ out += """
 			ref = "@{${enlace.accion}}"
 		else if(enlace.url != null) //URL
 			ref = enlace.url
-		else if(enlace.popup != null) //Popup
-			ref= "javascript:popup_open('${enlace.popup.name}', '@{popups.${enlace.popup.name}Controller.abrir}', 'general', {id:\${idSolicitud}})"
-			//ref = "@{popups.${enlace.popup.name}Controller.abrir('general', idSolicitud)}"
+		else if(enlace.popup != null){ //Popup
+			GPopup gpopup = GPopup.generateParaEnlace(enlace.popup);
+			ref= "javascript:popup_open('${gpopup.popupName}', '@{popups.${gpopup.popupName}Controller.abrir}', {accion:'crear'})";
+		}
 		else //Enlace por defecto, para prototipado principalmente
 			ref = "#"
 		

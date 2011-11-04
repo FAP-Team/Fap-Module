@@ -24,7 +24,7 @@ Formulario Administracion permiso=administrador{
 		Wiki {"Para asignar roles seleccione el usuario y pulse en editar"}
 
 		Tabla listaUsuarios titulo="Usuarios" campo=Agente 
-			popup=PopupUsuario 
+			popup=PopupUsuario
 		{
 			Columna campo=Agente.id titulo="Id" ancho="25"
 			Columna campo=Agente.username titulo="Usuario" expandir
@@ -35,7 +35,7 @@ Formulario Administracion permiso=administrador{
 		}
 	}
 	
-	Popup PopupUsuario campo=Agente modificar crear borrar titulo="Usuario" {
+	Popup PopupUsuario entidad=Agente titulo="Usuario" {
 		Texto campo=Agente.username titulo="Username" requerido
 		Combo campo=Agente.roles titulo="Roles" busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido
@@ -89,7 +89,7 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 		}
 	}
 
-	Popup PopupTablaDeTablas campo=TableKeyValue {
+	Popup PopupTablaDeTablas entidad=TableKeyValue {
 		Texto campo=TableKeyValue.table titulo="Tabla"
 		Texto campo=TableKeyValue.key titulo="Clave"
 		Texto campo=TableKeyValue.value titulo="Valor"
@@ -109,7 +109,7 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 		}
 	}
 
-	Popup PopupEmail campo=Mail titulo="Email" {
+	Popup PopupEmail entidad=Mail titulo="Email" {
 		Wiki {"
 Dentro de los campos puede utilizar variables con $ {nombreVariable} y otros elementos que puede consultar en la \"documentación\":http://www.playframework.org/documentation/1.2.1/templates#syntax.
 
@@ -126,7 +126,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 
 	}   
     
-	Popup PopupConsulta campo=Consulta titulo="Consulta" {
+	Popup PopupConsulta entidad=Consulta titulo="Consulta" {
 		AreaTexto campo=Consulta.descripcion titulo="Descripcion" requerido
 		AreaTexto campo=Consulta.consulta titulo="Consulta" requerido
 		Combo campo=Consulta.tipo titulo="Tipo" requerido
@@ -140,7 +140,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		}
 	}
 
-	Popup PopupProperties campo=Propiedades titulo="Properties"{
+	Popup PopupProperties entidad=Propiedades titulo="Properties"{
 		Texto campo=Propiedades.descripcion titulo="Descripción" requerido
 		Texto campo=Propiedades.clave titulo="Clave" requerido
 	}

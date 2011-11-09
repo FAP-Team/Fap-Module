@@ -289,7 +289,7 @@ Tabla:
 		& ('titulo' '=' titulo=STRING)?
 		& ('pagina' '=' (pagina=[Pagina|QN] | paginaProperty=STRING))?
         & ('alto' '=' alto=STRING)? 
-        & (columnasAutomaticas?="columnasAutomaticas")?
+        & (columnasAutomaticas?="columnasAutomaticas" ((exc='exclude' '=' exclude=ListaAtributos) | (inc='include' '=' include=ListaAtributos))?)? 
         & ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& (seleccionable?="seleccionable" "=" nameSeleccionable=STRING)?
@@ -312,6 +312,11 @@ Tabla:
 	'{'
 		columnas += Columna*
 	'}'
+;
+
+
+ListaAtributos:
+	atributos+=[Attribute|IDS] (',' atributos+= [Attribute|IDS])*
 ;
 
 Columna:

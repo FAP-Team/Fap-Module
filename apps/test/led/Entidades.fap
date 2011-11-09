@@ -15,6 +15,7 @@ Entidad Fechas {
 Entidad TablaDeNombres {
 	String nombre
 	String apellido
+	OneToOne Fechas fecha
 }
 
 Entidad DireccionTest {

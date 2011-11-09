@@ -10,6 +10,8 @@ import java.util.regex.Pattern
 import generator.utils.*;
 import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.*;
+import es.fap.simpleled.led.util.LedCampoUtils;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 
 import generator.utils.CampoUtils;
 
@@ -101,19 +103,66 @@ public class GTabla {
 		if (tabla.recargarPagina)
 			params.put("recargarPagina", true)
 			
-		if (tabla.columnasAutomaticas)
-			tabla.columnas.addAll(ColumnasUtils.columnas(campo.campo));
-
-		
+	    List <Attribute> excludes, includes;
+	
 		params.putStr('idProperty', idProperty(tabla))
 		
 		params.putStr 'tipo', tipo;
 		
 		StringBuffer columnasView = new StringBuffer();
-		
 			
-		for(Columna c : tabla.columnas){
-			columnasView.append (columnaView(c));
+		
+		if (tabla.columnasAutomaticas){
+			List <Columna> listaAtributos;
+			if (tabla.exclude != null){
+			   excludes = tabla.exclude.atributos;
+			   // listaAtributos: Devuelve la lista de columnas que hay que mostrar (es decir, en este caso, todas menos las excludes)
+			   listaAtributos = ColumnasUtils.columnasExclude(campo.campo, excludes);
+			} else if (tabla.include != null){
+			   includes = tabla.include.atributos;
+			   listaAtributos = ColumnasUtils.columnasInclude(campo.campo, includes);
+			} else{
+			   listaAtributos = ColumnasUtils.columnas(campo.campo);
+			}
+			List <Columna> aux = tabla.columnas;
+			boolean listo=false;
+			if (aux.isEmpty()){
+				tabla.columnas.addAll(listaAtributos);
+			}
+			else{
+				Columna co=null;
+				// Para que en caso de que haya 'columnasAutomaticas' y 'Columna' normal, se coja la 'Columna' normal
+				for(Columna lA : listaAtributos){
+					for(Columna c : tabla.columnas){
+						if ((CampoUtils.create(c.getCampo()).getUltimaEntidad().name.equals(CampoUtils.create(lA.getCampo()).getUltimaEntidad().name))
+							&&(CampoUtils.create(c.getCampo()).getUltimoAtributo().name.equals(CampoUtils.create(lA.getCampo()).getUltimoAtributo().name))){
+							aux.remove(lA);
+							listo=true;
+							co = c;
+							break;
+						}
+						co = null;
+					}
+					if (!listo){
+						if (co != null)
+						   aux.remove(co);
+						aux.add(lA);
+					} else{
+						listo = false;
+					}
+				}
+			}
+			for(Columna c : tabla.columnas){
+				columnasView.append (columnaView(c));
+			}
+	    } else{
+		    for(Columna c : tabla.columnas){
+			   columnasView.append (columnaView(c));
+		    }
+		}
+		
+		if(tabla.columnas.isEmpty()){
+			System.out.println("WARNING: La tabla: <"+tabla.getName()+"> no tiene ninguna columna como visible");
 		}
 
 		String view = """
@@ -200,17 +249,17 @@ public class GTabla {
 		return  "return '" + (c.funcion.replaceAll(/\$\{(.*?)\}/, '\' + record[\'$1\'] + \'')) + "';"
 	}
 	
-	public static List<CampoUtils> uniqueCamposTabla(Tabla tabla){
+	public List<CampoUtils> uniqueCamposTabla(Tabla tabla){
 		List<CampoUtils> campos = new ArrayList<CampoUtils>();
 		for(Columna c : tabla.columnas){
 			campos.addAll(camposDeColumna(c));
 		}
 		//Añade el ID de la entidad
-		campos.add(CampoUtils.create(campos[0].entidad.name + ".id"));
+		campos.add(CampoUtils.create(campo.getUltimaEntidad().name + ".id"));
 		return campos.unique();
 	}
 	
-	public static String idProperty(Tabla tabla){
+	public String idProperty(Tabla tabla){
 		List<CampoUtils> campos = uniqueCamposTabla(tabla);
 		return EntidadUtils.create(campos[0].entidad).variable + "_id";
 	}

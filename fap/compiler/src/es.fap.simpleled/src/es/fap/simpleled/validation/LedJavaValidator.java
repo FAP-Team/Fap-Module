@@ -66,12 +66,14 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	 */
 	@Check
 	public void checkReferencesToEntities (Attribute attribute) {
-		Entity father = ((Entity)(attribute.eContainer()));
-		if (EntityImpl.class.isInstance(attribute.getType().getCompound().getEntidad())) {
-			if (father.getName().equals(((EntityImpl)attribute.getType().getCompound().getEntidad()).getName())){
-				error("Las entidades no se deben referenciar a si mismas mediante un atributo", LedPackage.Literals.ATTRIBUTE__TYPE);
-			}
-		}
+		if (attribute.eContainer() instanceof Entity){
+		   Entity father = ((Entity)(attribute.eContainer()));
+		   if (EntityImpl.class.isInstance(attribute.getType().getCompound().getEntidad())) {
+		      if (father.getName().equals(((EntityImpl)attribute.getType().getCompound().getEntidad()).getName())){
+				  error("Las entidades no se deben referenciar a si mismas mediante un atributo", LedPackage.Literals.ATTRIBUTE__TYPE);
+			  }
+		   }
+	    }
 	}
 	
 	/**
@@ -95,11 +97,13 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Check
 	public void checkSolicitudSimpleAttributos(Attribute attr) {
-		Entity entidad = (Entity) attr.eContainer();
-		if (entidad.getName().equals("Solicitud")){
-			if (LedEntidadUtils.esSimple(attr)){
-				warning("La entidad \"Solicitud\" no debe tener atributos simples", LedPackage.Literals.ATTRIBUTE__TYPE);
-			}
+		if (attr.eContainer() instanceof Entity){
+		   Entity entidad = (Entity) attr.eContainer();
+		   if (entidad.getName().equals("Solicitud")){
+			  if (LedEntidadUtils.esSimple(attr)){
+				  warning("La entidad \"Solicitud\" no debe tener atributos simples", LedPackage.Literals.ATTRIBUTE__TYPE);
+			  }
+		   }
 		}
 	}
 	

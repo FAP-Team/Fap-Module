@@ -25,7 +25,8 @@ import es.fap.simpleled.led.CampoPermisoAtributos;
 import es.fap.simpleled.led.Combo;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedPackage;
-import es.fap.simpleled.led.impl.LedFactoryImpl;
+import es.fap.simpleled.led.ListaAtributos;
+import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
@@ -50,6 +51,13 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 				entidad = attr.getType().getCompound().getEntidad();
 			}
 		}
+		return Scopes.scopeFor(getAllDirectAttributesAndId(entidad));
+	}
+	
+	public IScope scope_ListaAtributos_atributos(ListaAtributos list, EReference ref){
+		Entity entidad = null;
+		Tabla tablaPadre = (Tabla)list.eContainer();
+		entidad = LedCampoUtils.getUltimaEntidad(tablaPadre.getCampo());
 		return Scopes.scopeFor(getAllDirectAttributesAndId(entidad));
 	}
 	

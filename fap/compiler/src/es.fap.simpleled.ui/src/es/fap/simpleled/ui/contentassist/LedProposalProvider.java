@@ -82,6 +82,22 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	@Override
+	public void completeListaAtributos_Atributos(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		Tabla tab = null;
+		if (model instanceof ListaAtributos){
+		   ListaAtributos lA = (ListaAtributos)model;
+		   tab = (Tabla)lA.eContainer();
+		}
+		else if(model instanceof Tabla)
+		   tab = (Tabla)model;
+		LedElementValidator validator = LedCampoUtils.getElementValidator(tab.getCampo());
+		List <Attribute> atributos = LedCampoUtils.getUltimaEntidad(tab.getCampo()).getAttributes();
+		for (Attribute attr: atributos){
+			acceptor.accept(createCompletionProposal(attr.getName(), styledProposal(attr.getName() + "  -  " + validator.getType(attr), true), null, context));
+		}
+	}
+	
+	@Override
 	public void completeCompoundType_Entidad(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		INode node = context.getLastCompleteNode();
 		if (getCurrentLine(context) == node.getStartLine() && !(node.getSemanticElement().eContainer() instanceof CompoundType)){

@@ -87,10 +87,8 @@ Formulario Solicitud {
 		popupVer=popupNombre
 		popupModificar=popupNombre
 		popupBorrar=popupNombre
+		columnasAutomaticas exclude=id, fecha
 		{
-			Columna campo=TablaDeNombres.id titulo="ID"
-			Columna campo=TablaDeNombres.nombre titulo="Nombre"
-			Columna campo=TablaDeNombres.apellido titulo="NIF/CIF" 
 		}
 	}
 	

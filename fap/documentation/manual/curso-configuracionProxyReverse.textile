@@ -1,0 +1,52 @@
+h1. Configuración de Apache, para desplegar aplicaciones
+
+h2. Configuración Proxy Reverse para redireccionar las aplicaciones al desplegarlas en servidor Apache
+
+Para la configuración de Proxy Reverse en el servidor Apache, para poder desplegar aplicaciones y que las rutas se configuren adecuadamente, se deben seguir los siguientes pasos:
+
+**1.-** Descargar el fichero  <mod_proxy_html> (Se supone que ya tenemos instalado un servidor Apache, este tutorial se hizo con la versión Apache 2.2) (Dirección: http://www.apachelounge.com/download/)
+[Versión a 14 de Noviembre de 2011: mod_proxy_html-3.1.2-w32.zip]
+
+**2.-** Descomprimir los archivos que tiene el fichero antes descargado.
+**3.-** Colocar los siguientes archivos descomprimidos en las siguientes carpetas:
+* Copiar archivo **mod_proxy_html.so** a la carpeta **$RUTA_APACHE\modules**
+* Copiar archivo **libxml2.dll** a la carpeta **$RUTA_APACHE\bin**
+* Copiar archivo **proxy_html.conf** a la carpeta **$RUTA_APACHE\conf**
+
+Donde $RUTA_APACHE, es el path(ruta) donde se instaló el servidor Apache que tengamos.
+
+**4.-**  Modificar el archivo **httpd.conf** que está en **$RUTA_APACHE\conf**, para que tengan las siguientes líneas descomentadas:
+
+bc. LoadModule proxy_html_module modules/mod_proxy_html.so
+#LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+LoadModule proxy_connect_module modules/mod_proxy_connect.so
+#LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+
+Y para que tenga las siguientes líneas nuevas, justo debajo de las anteriores:
+
+bc. LoadModule proxy_module modules/mod_proxy.so
+LoadFile bin/libxml2.dll
+
+Descomentar la siguiente línea, si estaba comentada, también en el mismo fichero:
+
+bc. # Virtual hosts
+Include conf/extra/httpd-vhosts.conf
+
+**5.-** En el archivo **httpd-vhosts.conf** que está en **$RUTA_APACHE\conf\extra**, añadir la siguiente línea al inicio del fichero:
+
+bc. Include conf/proxy_html.conf
+
+**6.-** En el archivo **proxy_html.conf** que está en **$RUTA_APACHE\conf\extra**, añadir la siguientes líneas al final del fichero, para indicar el ProxyReverse deseado. Podemos poner tantos ProxyReverse como necesitemos siguiendo la misma fórmula en este fichero:
+
+bc. ProxyRequests Off
+ProxyPass /app1/ http://localhost:9000/
+ProxyPassReverse /app1/ http://localhost:9000/
+ProxyHTMLEnable On
+ProxyHTMLURLMap / /app1/
+
+Donde “/app1/”, es la dirección de nuestra aplicación que queremos que se muestre, y “http://localhost:9000/”, es realmente la dirección donde está la aplicación.
+
+
+

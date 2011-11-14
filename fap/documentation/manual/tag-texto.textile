@@ -9,6 +9,7 @@ h2. Parámetros
 * **_id** - ID
 * **_titulo** - Label
 * **_value**  - Valor a mostrar, si no se especifica busca el valor del campo
+* **_password** - El campo es de tipo contraseña
 * **_campo**  - Campo donde se almacenará el campo de texto
 * **_ayuda**  - Objeto de tipo TagAyuda
 * **_requerido**(false) - El campo es requerido

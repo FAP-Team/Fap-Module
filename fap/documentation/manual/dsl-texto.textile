@@ -9,6 +9,7 @@ h2. Parámetros
 * **_[name]_** (opcional) : Identificador del campo de texto.
 * **campo = _[campo]_** : Atributo donde se almacenará el texto.
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará al lado del campo de texto, si no se especifica se mostrará el nombre del campo.
+* **contraseña** (opcional) : Si se especifica, indica que el campo es una contraseña, y no se mostraran caracteres sino puntos.
 * **ancho = _[string]_** (opcional) : Permite especificar el ancho del campo de texto.
 * **ayuda = _[string]_** (opcional) : Muestra, bajo la etiqueta del título, el texto de ayuda especificado.
 * **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
@@ -19,6 +20,7 @@ h2. Definición
 bc. Texto:
 	'Texto' (name=ID)? (
 		('campo' '=' campo=Campo)
+		& (password?='contraseña')?
 		& ('titulo' '=' titulo=STRING)?
 		& ('ancho' '=' ancho=STRING)?
 		& ('ayuda' '=' ayuda=STRING)?

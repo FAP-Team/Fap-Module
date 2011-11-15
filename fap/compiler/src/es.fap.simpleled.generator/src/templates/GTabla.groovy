@@ -109,7 +109,7 @@ public class GTabla {
 			params.putStr("seleccionable", tabla.seleccionable)
 			params.putStr("urlSeleccionable", "${controllerName}.${seleccionableMethodName()}")
 		}
-		
+
 		params.putStr('idProperty', idProperty(tabla))
 		
 		params.putStr 'tipo', tipo;
@@ -355,55 +355,55 @@ public class GTabla {
 	private String seleccionableMethodName () {
 		return StringUtils.firstLower(tabla.seleccionable.replaceAll(" ", ""))
 	}
-
+			
 	private String seleccionableMethod () {
 		if (tabla.seleccionable) {
 			return """
-				public static void ${seleccionableMethodName()}(List<Long> idsSeleccionados){
-					//Sobreescribir para incorporar funcionalidad
-					//No olvide asignar los permisos
-					//index();
-				}
-				"""
-				}
-				return ""
-			}
-		
-			private String tablaMetod() {
-				List<String> campos = uniqueCamposTabla(tabla);
-		
-				//Clase de la entidad que contiene la lista
-				String clase = CampoUtils.claseEntidadRaiz(tabla.campo)
-				String clasel = StringUtils.firstLower(clase)
-		
-				//Clase de la lista de elementos
-				//Se consulta segÃºn los campos de las columnas
-				String claseLista = CampoUtils.claseEntidadRaiz(campos.get(0))
-				String claseListal = StringUtils.firstLower(claseLista)
-		
-				//La consulta depende de si se listan todas las entidades de una clase, o se accede a un campo
-				String query = null;
-				if(tabla.campo.split("\\.").length == 1){ //Lista todas las entidades de ese tipo
-					query = """ "select ${clasel} from ${clase} ${clasel}" """
-				}else{ //Acceso a los campos de una entidad
-					query = """ "select ${claseListal} from ${clase} ${clasel} join ${tabla.campo} ${claseListal} where ${clasel}.id=?", id """
-				}
-		
-				String rowsStr = campos.collect { '"' + CampoUtils.campoSinEntidad(it) + '"'  }.join(", ");
+		public static void ${seleccionableMethodName()}(List<Long> idsSeleccionados){
+			//Sobreescribir para incorporar funcionalidad
+			//No olvide asignar los permisos
+			//index();
+		}
+		"""
+		}
+		return ""
+	}
 	
-				String code = """
-					Long id = id${CampoUtils.claseEntidadRaiz(tabla.campo)} != null? id${CampoUtils.claseEntidadRaiz(tabla.campo)} : idEntidad;
-					java.util.List<${claseLista}> rows = ${claseLista}.find(${query}).fetch();
-					${getCodePermiso(claseLista)}
+	private String tablaMetod() {
+		List<String> campos = uniqueCamposTabla(tabla);
+
+		//Clase de la entidad que contiene la lista
+		String clase = CampoUtils.claseEntidadRaiz(tabla.campo)
+		String clasel = StringUtils.firstLower(clase)
 		
-					tables.TableRenderResponse<${claseLista}> response = new tables.TableRenderResponse<${claseLista}>(rowsFiltered);
-					renderJSON(response.toJSON($rowsStr));
-						"""
+		//Clase de la lista de elementos
+		//Se consulta según los campos de las columnas
+		String claseLista = CampoUtils.claseEntidadRaiz(campos.get(0))
+		String claseListal = StringUtils.firstLower(claseLista)
+
+		//La consulta depende de si se listan todas las entidades de una clase, o se accede a un campo
+		String query = null;
+		if(tabla.campo.split("\\.").length == 1){ //Lista todas las entidades de ese tipo
+			query = """ "select ${clasel} from ${clase} ${clasel}" """
+		}else{ //Acceso a los campos de una entidad
+			query = """ "select ${claseListal} from ${clase} ${clasel} join ${tabla.campo} ${claseListal} where ${clasel}.id=?", id """
+		}
 		
-				return """
-			public static void ${controllerMethodName()}(Long id${CampoUtils.claseEntidadRaiz(tabla.campo)}, Long idEntidad){
-				${code}
-			}
+		String rowsStr = campos.collect { '"' + CampoUtils.campoSinEntidad(it) + '"'  }.join(", ");
+
+		String code = """
+			Long id = id${CampoUtils.claseEntidadRaiz(tabla.campo)} != null? id${CampoUtils.claseEntidadRaiz(tabla.campo)} : idEntidad;
+			java.util.List<${claseLista}> rows = ${claseLista}.find(${query}).fetch();
+			${getCodePermiso(claseLista)}
+			
+			tables.TableRenderResponse<${claseLista}> response = new tables.TableRenderResponse<${claseLista}>(rowsFiltered);
+			renderJSON(response.toJSON($rowsStr));
 				"""
-			}
+		
+		return """
+	public static void ${controllerMethodName()}(Long id${CampoUtils.claseEntidadRaiz(tabla.campo)}, Long idEntidad){
+		${code}
+	}
+		"""
+	}
 }

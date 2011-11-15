@@ -28,12 +28,11 @@ public class FichaEvaluadorController extends Controller {
 	}
 	
 	public static void index(long idEvaluacion){
-		//TODO buscar por ID de evaluación		
-		if(Evaluacion.count() == 0){
-			initEvaluacion();
+		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+		if(evaluacion.tipo == null){
+			initEvaluacion(evaluacion);
 		}
 		
-		Evaluacion evaluacion = Evaluacion.all().first();
 		
 		//TODO Filtrar los documentos de la solicitud
 		//que tienen el tipo disponible
@@ -148,7 +147,7 @@ public class FichaEvaluadorController extends Controller {
 		tc.listaValores.add(criterioListaValores);
 	}
 	
-	private static void initEvaluacion() {
+	private static void initEvaluacion(Evaluacion evaluacion) {
 		TipoCriterio t1 = new TipoCriterio();
 		t1.nombre = "Calidad y viabilidad";
 		t1.claseCriterio = "auto";
@@ -326,7 +325,7 @@ public class FichaEvaluadorController extends Controller {
 		tEvaluacion.comentariosSolicitante = true;
 		
 		//Inicializa una evaluación a partir de un tipo
-		Evaluacion evaluacion = Evaluacion.init(tEvaluacion);
+		evaluacion.init(tEvaluacion);
 		evaluacion.save();
 	}
 	

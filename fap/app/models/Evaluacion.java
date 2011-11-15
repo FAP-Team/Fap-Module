@@ -61,8 +61,6 @@ public class Evaluacion extends Model {
 	
 
 	public void init(){
-		
-		
 						if (solicitud == null)
 							solicitud = new SolicitudGenerica();
 						else
@@ -72,35 +70,25 @@ public class Evaluacion extends Model {
 							criterios = new ArrayList<Criterio>();
 						
 						if (ceconomicos == null)
-							ceconomicos = new ArrayList<CEconomico>();
-						
-						if (tipo == null)
-							tipo = new TipoEvaluacion();
-						else
-							tipo.init();
-					
+							ceconomicos = new ArrayList<CEconomico>();					
 	}
 		
 	
 
 // === MANUAL REGION START ===
-	public static Evaluacion init(TipoEvaluacion tipo) {
-		Evaluacion evaluacion = new Evaluacion();
-		evaluacion.tipo = tipo;
-
+	public void init(TipoEvaluacion tipo) {
+		this.tipo = tipo;
 		for (TipoCriterio tCriterio : tipo.criterios) {
 			Criterio criterio = new Criterio();
 			criterio.tipo = tCriterio;
-			evaluacion.criterios.add(criterio);
+			this.criterios.add(criterio);
 		}
 
 		for (TipoCEconomico tCEconomico : tipo.ceconomicos) {
 			CEconomico cEconomico = new CEconomico();
 			cEconomico.tipo = tCEconomico;
-			evaluacion.ceconomicos.add(cEconomico);
+			this.ceconomicos.add(cEconomico);
 		}
-
-		return evaluacion;
 	}
 	// === MANUAL REGION END ===
 	

@@ -40,13 +40,15 @@ GET /Administracion/consultas fap.consultasController.index
 GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
 
 # === FAPGENERATED ===
+
+GET /Soporte/soporte SoporteController.index
+
+POST /Soporte/soporte/incidencia SoporteController.incidencia
 GET /Principal/solicitudes SolicitudesController.index
 
 GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
 POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
-GET /Soporte/soporte SoporteController.index
 
-POST /Soporte/soporte/incidencia SoporteController.incidencia
 GET /Solicitud/aportacion AportacionController.index
 
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos

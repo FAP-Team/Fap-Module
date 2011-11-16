@@ -14,10 +14,10 @@ Model:
 QN: // QualifiedName
 	IDS ('.' IDS)*
 ;
-
+// Probando un error bruto en la gramática
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
-	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente"
+	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente" | "documento"
 ;
 
 Entity:
@@ -142,6 +142,7 @@ Popup:
 		& (modificar?='modificar')?
 		& (borrar?='borrar')?
 		& (ver?='ver')?
+		& (noBorrarEntidad?='noBorrarEntidad')?
 	)
 	'{'
 		elementos+=Elemento*
@@ -313,9 +314,10 @@ Tabla:
 		columnas += Columna*
 	'}'
 ;
+
 ListaAtributos:
 	atributos+=[Attribute|IDS] (',' atributos+= [Attribute|IDS])*
-	)
+;
 
 Columna:
 	'Columna' ( 
@@ -511,5 +513,4 @@ PermisoRuleCheckRight:
 
 PermisoThen:
 	'grant' | 'deny'
-	'grant' | 'deny'
-;	
+;

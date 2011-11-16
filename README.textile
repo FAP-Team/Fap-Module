@@ -1,4 +1,17 @@
-h1. Documentación FAP
+         ___         ___                   
+       /'___\      /'___\                  
+  ____/\ \__/     /\ \__/   __     _____   
+ /',__\ \ ,__\    \ \ ,__\/'__`\  /\ '__`\ 
+/\__, `\ \ \_/     \ \ \_/\ \L\.\_\ \ \L\ \
+\/\____/\ \_\       \ \_\\ \__/.\_\\ \ ,__/
+ \/___/  \/_/        \/_/ \/__/\/_/ \ \ \/ 
+                                     \ \_\ 
+                                      \/_/ 
+
+
+h1. Software Factory Fap
+
+h2. Documentación FAP
 
 La documentación FAP se encuentra en el siguiente "enlace":http://fap-devel.etsii.ull.es/home/documentacion/home
 

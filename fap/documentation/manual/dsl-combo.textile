@@ -42,8 +42,8 @@ bc. Combo:
 		& (mostrarClave?="mostrarClave")?
 		& ('ancho' '=' ancho=STRING)? 
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
-		& ('comboTexto' '=' comboTexto=STRING)? 
-		& ('comboValor' '=' comboValor=STRING)? 
+		& ('comboTexto' '=' comboTexto=[Attribute|IDS])? 
+		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
 	)
 ;
 
@@ -78,8 +78,8 @@ Entidad ComboTestRef {
 	String nombre
 }
 
-Combo campo=ComboTest.ref comboTexto="nombre" titulo="Combo de Referencias"
-Combo campo=ComboTest.refMultiple comboTexto="nombre" titulo="Combo de Referencias Múltiples"
+Combo campo=ComboTest.ref comboTexto=nombre titulo="Combo de Referencias"
+Combo campo=ComboTest.refMultiple comboTexto=nombre titulo="Combo de Referencias Múltiples"
 
 
 h2. Método para especificar la lista de elementos
@@ -157,8 +157,8 @@ Entidad ComboTestRef {
 	String nombre
 }
 
-Combo referencia campo=ComboTest.refOverwrite comboTexto="nombre" titulo="Combo de Referencias (Filtrando las que tienen en el nombre a)"
-Combo referenciaMultiple campo=ComboTest.refMultipleOverwrite comboTexto="nombre" titulo="Combo de Referencias Múltiples (Filtrando las que tienen en el nombre a)"
+Combo referencia campo=ComboTest.refOverwrite comboTexto=nombre titulo="Combo de Referencias (Filtrando las que tienen en el nombre a)"
+Combo referenciaMultiple campo=ComboTest.refMultipleOverwrite comboTexto=nombre titulo="Combo de Referencias Múltiples (Filtrando las que tienen en el nombre a)"
 
 //Métodos en el controlador manual 
 public static List<ComboItem> referencia() {

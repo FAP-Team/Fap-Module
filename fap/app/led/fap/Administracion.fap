@@ -5,7 +5,7 @@ Formulario Administracion permiso=administrador{
 		Grupo "Administración" {
 			Enlace "Usuarios" pagina=Usuarios
 			Enlace "Aed" pagina=Aed
-			Enlace "Requerimientos" pagina=Requerimientos
+			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Emails" pagina=Emails
 			Enlace "Logs" accion="fap.LoggerController.index"
@@ -50,7 +50,7 @@ Formulario Administracion permiso=administrador{
 		}
 	}
 	
-	Pagina Requerimientos {
+	Pagina ConfiguracionQuartz titulo="Configuración del Quartz" {
 		Grupo configQuartz titulo="Configuración del quartz" {
 			Wiki {"El quartz es el proceso que se encarga de comprobar los accesos a la sede cuando se emiten los requerimientos y asignar correctamente las fechas de acceso y de vencimiento de los requerimientos"}
 			

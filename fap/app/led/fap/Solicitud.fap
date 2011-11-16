@@ -197,7 +197,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 				Columna titulo="Fecha Registro" campo=Requerimiento.fechaRegistroSalida
 				Columna titulo="Fecha Acceso" campo=Requerimiento.fechaAcceso
 				Columna titulo="Estado" campo=Requerimiento.estado
-				Columna titulo="Documento" campo=Requerimiento.uriDocJustificanteRequerimiento
+				Columna titulo="Documento" campo=Requerimiento.justificante.uri
 			}
 			
 			Form gfinalizarRequerimiento /*permiso=finalizarRequerimiento*/ {

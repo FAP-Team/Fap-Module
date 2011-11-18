@@ -3,6 +3,8 @@ h2. Changelog
 h3. Versión 1.2
 
 * Fixed bug copia de atributos ManyToOne y ManyToMany.
+* Funcionalidad de 'include' y 'exclude' en ColumnasAutomáticas
+* Opción de 'password' en los campos de tipo Texto
 
 h3. Versión 1.1.1
 

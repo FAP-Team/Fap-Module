@@ -78,7 +78,7 @@ Formulario Solicitud {
 		Texto mDouble campo=Solicitud.valoresPorDefectoTest.mDouble titulo="Double"
 		Texto mLongText campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText"
 		
-		Texto mLongText2 campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText 3" contraseña
+		Texto mLongText2 campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText 3" contrasena
 		
 		Texto mEmbeddable campo=Solicitud.valoresPorDefectoTest.mEmbebida.algo titulo="String embeddable" 
 	}

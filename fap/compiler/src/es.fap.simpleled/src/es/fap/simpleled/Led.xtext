@@ -17,7 +17,7 @@ QN: // QualifiedName
 // Probando un error bruto en la gramática
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
-	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente" | "documento"
+	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente" | "documento" | "password"
 ;
 
 Entity:
@@ -200,7 +200,7 @@ Texto:
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 		& (duplicar?='duplicar')?
-		& (password?='contraseña')?
+		& (password?='password')?
 	)
 ;
 

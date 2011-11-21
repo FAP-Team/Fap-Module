@@ -161,6 +161,7 @@ def init_application (app, args):
     FILE = open(conf, "a");
     FILE.write("\n#FAP Configuration\n");
     FILE.write("fap.app.name=" + app.name() + "\n");
+    FILE.write("#fap.ctxPath=\n");
     FILE.write("date.format=dd/MM/yyyy\n");
     FILE.write("fap.login.type.user=true\n");
     FILE.write("app.log.path=log4j-dev.properties\n"); 

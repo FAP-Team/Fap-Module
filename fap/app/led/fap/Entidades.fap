@@ -372,3 +372,7 @@ Entidad Propiedades {
 	String clave
 	String valor transient
 }
+
+Entidad Convocatoria extends Singleton {
+	Lista estadoConvocatoria estado default = "presentacion"
+}

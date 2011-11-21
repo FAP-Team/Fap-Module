@@ -6,7 +6,7 @@ Formulario Principal {
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 	
-	Pagina Solicitudes noForm{
+	Pagina Solicitudes noForm {
 		Tabla listaSolicitudes titulo="Mis Solicitudes" campo=SolicitudGenerica pagina="@fap.app.firstPage" permiso=listaSolicitudes {
 			Columna campo=SolicitudGenerica.id titulo="ID" ancho="40"
 			Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
@@ -16,7 +16,7 @@ Formulario Principal {
 			Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir			
 		}
 		
-		Form nuevaSolicitud {
+		Form nuevaSolicitud permiso=nuevaSolicitud {
 			Boton nueva titulo="Nueva Solicitud"
 		}
 

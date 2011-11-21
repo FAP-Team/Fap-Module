@@ -465,3 +465,13 @@ when
 	doc.uri = null
 then
 	deny
+	
+	
+	
+rule nuevaSolicitud
+vars
+	Convocatoria convocatoria
+when
+	convocatoria.estado = "presentacion"
+then
+	grant			

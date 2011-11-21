@@ -1,52 +1,62 @@
 h1. Configuración de Apache, para desplegar aplicaciones
 
-h2. Configuración Proxy Reverse para redireccionar las aplicaciones al desplegarlas en servidor Apache
+h2. Configuración Context Path, para subsanar el problema de cambio de rutas al redireccionar
 
-Para la configuración de Proxy Reverse en el servidor Apache, para poder desplegar aplicaciones y que las rutas se configuren adecuadamente, se deben seguir los siguientes pasos:
+Para ello en el fichero **application.conf** tenemos una propiedad que se llama **fap.ctxPath** y que está comentada. La descomentamos y ponemos la ruta donde estará nuestra aplicacion, es decir:
 
-**1.-** Descargar el fichero  <mod_proxy_html> (Se supone que ya tenemos instalado un servidor Apache, este tutorial se hizo con la versión Apache 2.2) (Dirección: http://www.apachelounge.com/download/)
-[Versión a 14 de Noviembre de 2011: mod_proxy_html-3.1.2-w32.zip]
+Si queremos que la aplicacion se despliegue en **localhost/app** pondremos la propiedad:
 
-**2.-** Descomprimir los archivos que tiene el fichero antes descargado.
-**3.-** Colocar los siguientes archivos descomprimidos en las siguientes carpetas:
-* Copiar archivo **mod_proxy_html.so** a la carpeta **$RUTA_APACHE\modules**
-* Copiar archivo **libxml2.dll** a la carpeta **$RUTA_APACHE\bin**
-* Copiar archivo **proxy_html.conf** a la carpeta **$RUTA_APACHE\conf**
+bc. fap.ctxPath=/app
 
-Donde $RUTA_APACHE, es el path(ruta) donde se instaló el servidor Apache que tengamos.
-
-**4.-**  Modificar el archivo **httpd.conf** que está en **$RUTA_APACHE\conf**, para que tengan las siguientes líneas descomentadas:
-
-bc. LoadModule proxy_html_module modules/mod_proxy_html.so
-#LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
-#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
-LoadModule proxy_connect_module modules/mod_proxy_connect.so
-#LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
-LoadModule proxy_http_module modules/mod_proxy_http.so
-
-Y para que tenga las siguientes líneas nuevas, justo debajo de las anteriores:
-
-bc. LoadModule proxy_module modules/mod_proxy.so
-LoadFile bin/libxml2.dll
-
-Descomentar la siguiente línea, si estaba comentada, también en el mismo fichero:
-
-bc. # Virtual hosts
-Include conf/extra/httpd-vhosts.conf
-
-**5.-** En el archivo **httpd-vhosts.conf** que está en **$RUTA_APACHE\conf\extra**, añadir la siguiente línea al inicio del fichero:
-
-bc. Include conf/proxy_html.conf
-
-**6.-** En el archivo **proxy_html.conf** que está en **$RUTA_APACHE\conf\extra**, añadir la siguientes líneas al final del fichero, para indicar el ProxyReverse deseado. Podemos poner tantos ProxyReverse como necesitemos siguiendo la misma fórmula en este fichero:
+para después configurar el Proxy Reverse de la siguiente manera:
 
 bc. ProxyRequests Off
-ProxyPass /app1/ http://localhost:9000/
-ProxyPassReverse /app1/ http://localhost:9000/
-ProxyHTMLEnable On
-ProxyHTMLURLMap / /app1/
+ProxyPass /app http://localhost:9000/app
+ProxyPassReverse /app http://localhost:9000/app
 
-Donde “/app1/”, es la dirección de nuestra aplicación que queremos que se muestre, y “http://localhost:9000/”, es realmente la dirección donde está la aplicación.
+y así no tener el problema de las rutas.
+
+h2. Balanceador de Carga
+
+Para configurar Apache de manera que nos permita tener una aplicación desplegada en dos aplicaciones independientes para poder repartir la carga entre ellas y poder subir aplicaciones a producción sin tener que detener el servidor Apache, deberemos hacer los siguientes pasos:
+
+**1.-** En el fichero: **httpd.conf**, que se encuentra en **${RUTA_APACHE}/conf**, incluir:
+
+bc. Include conf/extra/httpd-proxy-balancer.conf
+
+donde **${RUTA_APACHE}** es la ruta de instalación de Apache
+
+**2.-** Ahora deberemos crear el fichero que hemos incluido, es decir, en la carpeta **${RUTA_APACHE}/conf/extra/**, crear el fichero: **httpd-proxy-balancer.conf**
+
+**3.-** Finalmente nos queda editar este fichero, con las reglas del balanceador de cargas:
+
+bc. <VirtualHost ${WEB}:80>
+  ServerName ${WEB}/${APP}/
+  <Location /balancer-manager>
+    SetHandler balancer-manager
+  </Location>
+  <Proxy balancer://mycluster>
+    BalancerMember ${APP1}
+    BalancerMember ${APP2} status=+H    
+  </Proxy>
+  <Proxy *>
+    Order Allow,Deny
+    Allow From All
+  </Proxy>
+  ProxyPreserveHost On
+  ProxyPass /balancer-manager !
+  ProxyPass /${APP}/ balancer://mycluster/
+  ProxyPassReverse /${APP}/ ${APP1} 
+  ProxyPassReverse /${APP}/ ${APP2}
+</VirtualHost>
+
+Donde:
+**${WEB}**  = La web de nuestras aplicaciones (raíz)
+**${APP}**  = Dirección de la aplicación, como queremos que se acceda (rama)
+**${APP1}** = La aplicación en sí, copia principal
+**${APP2}** = La aplicación en sí, copia secundaria 
+
+
 
 
 

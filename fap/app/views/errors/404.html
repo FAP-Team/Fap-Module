@@ -1,6 +1,11 @@
-#{extends 'fap/template.html' /}
-#{set title:'Solicitudes' /}
-
-#{set 'cabeceraUsuario'}
-	<p>ERROR: La página solicitada no existe</p>
-#{/set}
+#{if play.mode.name() == 'DEV'}
+	#{404 result /}
+#{/if}
+#{else}
+	#{extends 'fap/template.html' /}
+	#{set title:'Solicitudes' /}
+	
+	#{set 'cabeceraUsuario'}
+		<p>ERROR: La página solicitada no existe</p>
+	#{/set}
+#{/else}

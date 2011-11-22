@@ -116,6 +116,11 @@
 		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar" />
 	</target>
 	
+	<target name="plugins">
+		<antcall target="build-plugins"/>
+		<antcall target="install-plugins"/>
+	</target>	
+	
 	<target name="build-plugins">
 		<exec executable="eclipse">
 			<arg value="-application" />

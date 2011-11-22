@@ -107,6 +107,10 @@ POST /Administracion/popupproperties/{idEntidad}/borrar popups.PopupPropertiesCo
 POST /Administracion/popupproperties/{idEntidad}/crear popups.PopupPropertiesController.crear
 POST /Administracion/popupproperties/{idEntidad}/cancelarcrear popups.PopupPropertiesController.cancelarCrear
 
+GET /Solicitud/pceconomicos PCEconomicosController.index
+
+GET /Solicitud/pceconomicos/tablaCEconomicos PCEconomicosController.tablatablaCEconomicos
+POST /Solicitud/pceconomicos/save PCEconomicosController.save
 GET /Solicitud/aportacion AportacionController.index
 
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos

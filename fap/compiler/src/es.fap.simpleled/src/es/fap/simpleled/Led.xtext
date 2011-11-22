@@ -14,10 +14,10 @@ Model:
 QN: // QualifiedName
 	IDS ('.' IDS)*
 ;
-
-IDS: 
+// Probando un error bruto en la gramática
+IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
-	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente"
+	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente" | "documento" | "password"
 ;
 
 Entity:
@@ -142,6 +142,7 @@ Popup:
 		& (modificar?='modificar')?
 		& (borrar?='borrar')?
 		& (ver?='ver')?
+		& (noBorrarEntidad?='noBorrarEntidad')?
 	)
 	'{'
 		elementos+=Elemento*
@@ -199,6 +200,7 @@ Texto:
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 		& (duplicar?='duplicar')?
+		& (password?='password')?
 	)
 ;
 
@@ -282,16 +284,16 @@ Form:
 ;	
 
 Tabla:
-	'Tabla' (name=ID)?
+	'Tabla' (name=ID)
 	(
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('pagina' '=' (pagina=[Pagina|QN] | paginaProperty=STRING))?
         & ('alto' '=' alto=STRING)? 
-        & (columnasAutomaticas?="columnasAutomaticas")?
+        & (columnasAutomaticas?="columnasAutomaticas" ((exc='exclude' '=' exclude=ListaAtributos) | (inc='include' '=' include=ListaAtributos))?)?
         & ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
-		& (seleccionable?="seleccionable" "=" nameSeleccionable=STRING)?
+		& ("seleccionable" "=" seleccionable=STRING)?
 	    & (	
 	    	('popup' '=' popup=[Popup])	
 	    	| (('popupCrear' '=' popupCrear=[Popup])
@@ -311,6 +313,10 @@ Tabla:
 	'{'
 		columnas += Columna*
 	'}'
+;
+
+ListaAtributos:
+	atributos+=[Attribute|IDS] (',' atributos+= [Attribute|IDS])*
 ;
 
 Columna:
@@ -426,7 +432,12 @@ ElementoLista:
 	key=ElementoListaKey
 ;
 
+
 ElementoListaKey:
+	first=IdOrInt (("." resto+=IdOrInt)*)
+;
+
+IdOrInt:
 	ID | INT
 ;
 
@@ -445,7 +456,7 @@ PermisoVarsSection:
 ;
 
 PermisoVar:
-	tipo=[Entity|IDS] name=ID
+	tipo=[Entity|IDS] name=IDS
 		(':' 'sql' '(' sql=STRING (',' sqlParams=PermisoVarSqlParameters)? ')') ?
 ;
 
@@ -502,4 +513,4 @@ PermisoRuleCheckRight:
 
 PermisoThen:
 	'grant' | 'deny'
-;	
+;

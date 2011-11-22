@@ -14,6 +14,7 @@ h2. Parámetros
 * **modificar** (opcional) : El popup permite modificar entidades ya existentes.
 * **borrar** (opcional) : El popup permite borrar entidades.
 * **ver** (opcional) : El popup permite ver información de las entidades.
+* **noBorrarEntidad** (opcional) : permite elegir si se quiere borrar la entidad o únicamente borrar la referencia en la lista.
 
 h2. Definición
 

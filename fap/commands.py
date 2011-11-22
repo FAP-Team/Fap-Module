@@ -25,12 +25,14 @@ def execute(**kargs):
         print "~ Hello"
 
     if command == "fap:generate":
+        version(app, args)
         run_generate(app, args)
         
 #    if command == "fap:model":
 #        run_model(app, args)
             
     if command == "fap:init":
+        version(app, args)
         init_application (app, args)
 
     if command == "fap:version":
@@ -91,7 +93,7 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     workflow = "workflow.LedGenerator";
     
     cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, params];
-    subprocess.call(cmd);
+    return subprocess.call(cmd);
         
     
 
@@ -99,13 +101,13 @@ def run_generate(app, args):
     modelPath = os.path.join(app.path, "led")
     targetPath =  app.path + "/"
     params = "solicitud=true"
-    execute_workflow(modelPath, targetPath, params, args, app)
+    exit(execute_workflow(modelPath, targetPath, params, args, app))
 
 def run_model(app, args):
     modelPath = os.path.join(os.getenv("FAPSDK"), "fap", "app", "led", "fap")
     targetPath =  os.path.join(os.getenv("FAPSDK"), "fap/")
     params = "solicitud=false"
-    execute_workflow(modelPath, targetPath, params, args, app)
+    exit(execute_workflow(modelPath, targetPath, params, args, app))
 
     
 # This will be executed before any command (new, run...)
@@ -159,6 +161,8 @@ def init_application (app, args):
     FILE = open(conf, "a");
     FILE.write("\n#FAP Configuration\n");
     FILE.write("fap.app.name=" + app.name() + "\n");
+    FILE.write("#fap.ctxPath=\n");
+    FILE.write("date.format=dd/MM/yyyy\n");
     FILE.write("fap.login.type.user=true\n");
     FILE.write("app.log.path=log4j-dev.properties\n"); 
     FILE.write("%prod.app.log.path=log4j-prod.properties\n");

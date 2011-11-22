@@ -27,6 +27,9 @@ public class GTexto {
 		if(texto.requerido)
 			params.put "requerido", true
 			
+	    if(texto.password)
+			params.put "password", true //<input type="password"> en vez de <input type="text">
+			
 		if(texto.name != null)
 			params.putStr "id", texto.name
 		

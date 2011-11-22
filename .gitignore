@@ -69,3 +69,6 @@ fap/compiler/src/es.fap.simpleled/src-gen/*
 fap/compiler/src/es.fap.simpleled.ui/bin/*
 fap/compiler/src/es.fap.simpleled.ui/src-gen/*
 fap/compiler/src/es.fap.simpleled.generator/bin/*
+
+# Logs eliminar carpeta
+apps/test/logs

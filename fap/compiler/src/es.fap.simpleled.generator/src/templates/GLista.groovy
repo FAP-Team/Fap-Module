@@ -26,7 +26,10 @@ public class GLista {
 	
 	private String generateElemento(ElementoLista el){
 		String table = lista.name;
-		String key = el.key?:StringUtils.id(el.value)
+		String key = el.key ? el.key.getFirst() : StringUtils.id(el.value);
+		for (String rest : el.key.getResto()) {
+			key += "."+rest;
+		}
 		String value = el.value?:el.key;
 		
 		String out = """TableKeyValue(${table}-${key}):

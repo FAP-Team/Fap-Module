@@ -17,6 +17,57 @@ public class ColumnasUtils {
 		return columnas.recorrerEntidad();
 	}
 	
+	public static List<Columna> columnasExclude(Campo campo, List <Attribute> exclude){
+		ColumnasUtils columnas = new ColumnasUtils();
+		columnas.campo = CampoUtils.create(CampoUtils.create(campo).getUltimaEntidad());
+		return columnas.recorrerEntidadExclude(exclude);
+	}
+	
+	public List<Columna> recorrerEntidadExclude(List <Attribute> exclude){
+		List<Columna> out = new ArrayList<Columna>();
+		boolean find=false;
+		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(campo.getUltimaEntidad())){
+			for(Attribute ex: exclude){
+			   if (attr.name.equals(ex.name)){
+			      find = true;
+				  break;
+			   }
+			}
+			if (!find){
+				out.addAll(generateAttr(attr));
+			}
+			find = false;
+		}
+		if (!out.empty)
+		   out.last()?.expandir = true;
+		return out;
+	}
+	
+	public static List<Columna> columnasInclude(Campo campo, List <Attribute> include){
+		ColumnasUtils columnas = new ColumnasUtils();
+		columnas.campo = CampoUtils.create(CampoUtils.create(campo).getUltimaEntidad());
+		return columnas.recorrerEntidadInclude(include);
+	}
+	
+	public List<Columna> recorrerEntidadInclude(List <Attribute> include){
+		List<Columna> out = new ArrayList<Columna>();
+		boolean find=false;
+		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(campo.getUltimaEntidad())){
+			for(Attribute ex: include){
+			   if (attr.name.equals(ex.name)){
+				  find = true;
+				  break;
+			   }
+			}
+			if (find){
+				out.addAll(generateAttr(attr));
+			}
+			find = false;
+		}
+		out.last()?.expandir = true;
+		return out;
+	}
+	
 	public List<Columna> recorrerEntidad(){
 		List<Columna> out = new ArrayList<Columna>();
 		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(campo.getUltimaEntidad())){

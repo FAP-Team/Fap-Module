@@ -30,7 +30,7 @@ public class LedEntidadUtils {
 	}
 
 	public static boolean isReferencia(Attribute attr){
-		return attr != null && attr.getType().getCompound() != null;
+		return attr != null && attr.getType().getCompound() != null && attr.getType().getCompound().getEntidad() != null;
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class LedEntidadUtils {
 	}
 
 	/**
-	 * Comprueba si un atribute es una referencia OneToMnay o ManyToMany
+	 * Comprueba si un atribute es una referencia OneToMany o ManyToMany
 	 * @param attr
 	 * @return
 	 */

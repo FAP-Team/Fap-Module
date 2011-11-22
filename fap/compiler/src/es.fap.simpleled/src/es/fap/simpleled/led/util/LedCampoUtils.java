@@ -50,14 +50,12 @@ public class LedCampoUtils {
 		if (model instanceof Campo) {
 			return (Campo) model;
 		}
-		else {
-			for (Method method : model.getClass().getMethods()) {
-				if (method.getReturnType().equals(Campo.class)) {
-					try {
-						return (Campo) method.invoke(model, (Object)null);
-					} catch (Exception e) {
-						return null;
-					}
+		for (Method method : model.getClass().getMethods()) {
+			if (method.getReturnType().equals(Campo.class)) {
+				try {
+					return (Campo) method.invoke(model);
+				} catch (Exception e) {
+					return null;
 				}
 			}
 		}

@@ -1,0 +1,158 @@
+h1. Modificar estilo de páginas
+
+h2. Cambiar el aspecto de las páginas
+
+Para poder modificar el aspecto visual de las páginas, es necesario seguir una serie de pautas, que veremos a continuación, ya que se debe sobreescribir ciertos ficheros.
+
+h2. Cambiar aspectos en páginas HTML
+
+Todas las páginas HTML generadas por la aplicación siguen como esquema general una plantilla HTML que personaliza dicha página.
+
+Así de esta manera, todas las páginas tienen como elementos en común las mismas cabeceras y pie de páginas con los distintos logos y colores.
+
+Para modificar esta platilla, debemos de crear/modificar el fichero asociada a la misma en nuestro proyecto. Para ello:
+* Debemos posicionarnos en la carpeta del proyecto
+* Ir a la carpeta /app/views
+* Crear (si no existe), dentro de /views, la carpeta /fap
+* Crear (si no existe), el fichero "template.html"
+
+El fichero "template.html", es el fichero del cual extienden todas las demás páginas HTML, por lo que es el que permite personalizar en común nuestras páginas HTML.
+
+Si queremos que un elemento visual se muestre en todas nuestras páginas HTML deberemos de indicarselo en este fichero.
+
+Podemos fijarnos en la estructura del fichero "template.html" por defecto de fap, que se encuentra en:
+* ${APP}/modules/fap/app/views/fap/template.html
+
+Donde ${FAP}, es el directorio de nuestro proyecto.
+
+De esta manera, en la carpeta:
+
+* ${APP}/modules/fap/app/views/
+
+Podemos ver todas las plantillas HTML que utiliza nuestra aplicación, así que si queremos modificar, por ejemplo, la página que saltaría ante un error 404, simplemente debemos fijarnos en que en la carpeta:
+
+* ${APP}/modules/fap/app/views/errors/
+
+Existe una página "404.html", que es la que se muestra en las aplicaciones FAP por defecto antes dicho error. Sobreescribiendo esta página en nuestro proyecto, cambiaríamos este comportamiento y cuando ocurriese el error 404 se mostraría nuestra nueva página de error.
+
+Recordemos que para sobreescribir la página, haremos análogamente lo mismo que lo que hemos explicado para el "template.html":
+* Situarnos en la carpeta del proyecto
+* Ir a la carpeta /app/views
+* En este caso como la página a sobreescribir está en una carpeta denominada /errors pues:
+** Si no existe la carpeta, deberemos crearla, dentro de /views
+** Dentro de ella, deberemos crear el fichero "404.html" si no existe y personalizarlo 
+
+Esto nos permitirá sobreescribir cualquier página HTML que queramos personalizar a nuestro gusto. Como vemos en el siguiente ejemplo:
+
+Imagen 1: tenemos el comportamiento de la plantilla "template.html" por defecto de FAP.
+!images/curso-modificarPlantillaHTML-1!
+
+Imagen 2: tenemos el comportamiento de la plantilla "template.html" sobreescrita por nosotros.
+!images/curso-modificarPlantillaHTML-2!
+
+Como vemos, en la Imagen 2 hemos hecho los siguientes cambios:
+* Actualizar el título de la página a: "Estilo de paginas HTML"
+* Eliminar el pie de página
+* Eliminar la imagen de la bandera de la unión Europea
+* Eliminar la barra de Roles
+* Desplazar la imagen del logo de la ACIISI
+
+En el código que se ha tenido que sobreescribir para lograr dicho comportamiento (que se muestra a continuación), se ha tenido en cuenta como guía la plantilla "template.html" por defecto del FAP.
+
+bc. <!DOCTYPE html>
+<html>
+    <head>
+        <title>Estilo de paginas HTML</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">      
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">     
+        #{stylesheet '960/960-all-min.css'/}
+        #{stylesheet 'jquery-ui.css' /}
+        <link rel="stylesheet" href="@{'/public/javascripts/ext/resources/css/ext-all.css'}" />
+        #{stylesheet 'main.css' /}
+        #{stylesheet 'fap.css' /}         
+        #{get 'moreStyles' /}      
+        #{script src:"jquery/jquery-1.6.1.min.js" /}
+        #{script src:"jquery/jquery-ui.1.8.10.min.js" /}
+        #{script src:"jquery/jquery.ui.datepicker-es.js" /}               
+        #{script 'ext/ext-all.js' /}
+        #{script 'ext/form/SearchFieldFilter.js' /}
+        <link rel="stylesheet" href="@{'/public/javascripts/chosen/chosen.css'}" />
+        #{script 'chosen/chosen.jquery.min.js' /}       
+        #{script 'utils.js' /}
+        #{script 'listas.js' /}
+        #{script 'popup.js' /}
+        #{script 'msg.js' /}
+	#{get 'moreScripts' /}               	
+    </head>
+    <body>
+	<div class="wrapper container_12">
+		<div id="header" class="grid_12">			
+			<div id="banderaue">
+    				<img src="@{'/public/images/aciisi_gris.gif'}" width="147px" height="64px"/>
+    			</div>			
+		</div> 	
+		<div class="clear"></div>    	
+		#{if menu != null}
+			<div class="menuAndContent grid_12">
+				<div class="menu grid_2 alpha">
+					#{get 'menu'/}
+				</div>
+				<div id="content-con-menu" class="grid_10 omega ">
+					#{doLayout /}
+				</div>
+				<div class="clear"></div>
+			</div>
+		#{/if}
+		#{else}
+			<div id="content" class="grid_12">
+				#{doLayout /}
+			</div>
+		#{/else}
+			<div class="clear"></div>
+	 </div>
+    </body>
+</html>
+
+h2. Cambiar estilos CSS
+
+Las páginas HTML utilizan hojas de estilo CSS, que describen las propiedades que deben tener los elementos que aparecen en la página (color, formato de letra, tamaño letra, etc.)
+
+Podemos crear nuestras propias hojas de estilo y cuando sobreescribamos las páginas HTML que queramos modificar, pues indicarle la hoja de estilo que queramos utilizar.
+
+Por defecto se aconseja que la ruta donde se guarden nuestras propias hojas de estilo sea:
+* ${APP}/public/stylesheets/
+
+Se puede dar el caso que sólo se quiera modificar la hoja de estilo y dejar las páginas HTML sin sobreescribir. Pues bien, conociendo la hoja de estilo que deseamos modificar o añadir, simplemente nos bastaría con añadirla al directorio:
+* ${APP}/public/stylesheets/
+
+Para sobreescribirla, y personalizarla a nuestro gusto.
+
+Las hojas de estilo que tiene el FAP por defecto estan en la ruta:
+* ${APP}/modules/fap/public/stylesheets
+
+Podemos verlas y utilizarlas de guía para poder modificar los estilos a nuestro antojo.
+
+Existe una hoja de estilo que usa la plantilla "template.html" por defecto del FAP, denominada "main.css", que está ideada para sobreescribirla. Es decir:
+* Nos situamos en: ${APP}/public/stylesheets/
+* Creamos el fichero "main.css", si no existe
+
+Y en ese fichero podemos sobreescribir cualquier aspecto visual que queramos modificar respecto al estilo por defecto del FAP.
+
+De esta manera podemos, por ejemplo, conseguir modificar el color del pie de página de las páginas HTML de nuestra aplicación, tal y como vemos en las siguientes imagenes:
+
+Imagen 3: Estilos por defecto de las páginas HTML del FAP. (Pie de página de color Amarillo)
+!images/curso-modificarPlantillaHTML-3!
+
+Imagen 4: Estilos sobreescritos de las páginas HTML. (Pie de página de color Azul)
+!images/curso-modificarPlantillaHTML-4!
+
+Para cambiar el color del pie de página de esta manera, simplemente se tiene que sobreescribir el fichero "main.css" del que hablamos, de la siguiente manera:
+
+bc. .footer {
+	background-color: #0077EE;
+}
+
+ 
+
+
+

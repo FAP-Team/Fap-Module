@@ -15,7 +15,7 @@ bc. cd holamundo
 bc. # Dependencias
 require:
     - play
-    - fap -> fap 1.0
+    - fap -> fap 1.1
     - play -> pdf 0.6
     - play -> recaptcha 1.2
 # Custom repository 
@@ -80,7 +80,7 @@ Fichero "dependencies.yml"
 
 bc. require:
     - play
-    - fap -> fap 1.0
+    - fap -> fap 1.1
     - play -> pdf 0.6
 repositories:
     - Fap Local repository:
@@ -91,15 +91,15 @@ repositories:
 
 Debemos tener la variable de entorno FAPSDK
 
-Carga las dependencias del proyecto
+*Carga las dependencias del proyecto*
 
 bc. play dependencies -Dfapsdk="<ruta_al_fapsdk>"
 
-Generación del módulo
+*Generación del módulo*
 
-bc. play fap:model --dev
+La generación del módulo ahora se realiza mediante el fichero python *generate.py*. El comando _"play fap:model --dev"_ ha sido eliminado del módulo.
 
-Generación de la aplicación
+*Generación de la aplicación*
 
 bc. play fap:generate --dev
 

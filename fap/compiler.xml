@@ -63,7 +63,8 @@
 		<os family="windows" />
 	</condition>
 
-	<target name="get-version">
+	<target name="get-version"
+			description="Establece la versión del módulo en la variable \'version\' y la muestra">
 		<groovy>
 			File file = new File(properties["dependencies.yml"])
 			file.eachLine { line -> 
@@ -76,7 +77,8 @@
 		<echo message="Version del modulo = ${version}"/>
 	</target>
 
-	<target name="dist" depends="get-version">			
+	<target name="dist" depends="get-version"
+		description="Crea el fichero .zip del módulo fap">			
 		<echo message="Version del modulo = ${version}"/>
 		
         <antcall target="compiler"/>
@@ -98,7 +100,8 @@
 
 	<!-- Se generan las clases del módulo. Por ahora se necesita tener python instalado
 	y en el PATH del sistema, para no incluir más librerías-->
-	<target name="generate-module">
+	<target name="generate-module"
+		description="Genera el código del modulo FAP a partir de los ficheros .fap del mismo">
 		<exec executable="python">
 			<arg line='generate.py' />
 		</exec>
@@ -148,7 +151,8 @@
 	</target>
 
 	<!-- Elimina la carperta de fuentes "src-compiler" del módulo FAP -->
-	<target name="delete-src-from-zip">
+	<target name="delete-src-from-zip"
+		description="Elimina la carpeta de fuentes src-compiler del módulo FAP (no son necesarias en el .zip)">
 		<delete dir="extraer" />
 		<!--mkdir dir="extraer" /-->
 		<unzip src="dist/fap-${version}.zip" dest="extraer" />
@@ -160,7 +164,8 @@
 		<delete dir="extraer" />
 	</target>
 
-	<target name="ftp-upload">
+	<target name="ftp-upload" depends="get-version"
+		description="Sube la documentación y el módulo al ftp">
 		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version}" />
 
 		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version}/" userid="${ftp.user}" password="${ftp.pass}">

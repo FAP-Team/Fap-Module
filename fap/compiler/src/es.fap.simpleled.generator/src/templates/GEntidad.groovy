@@ -284,17 +284,23 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 						if (${attribute.name} == null)
 							${attribute.name} = new ArrayList<${tipo}>();
 						""";
-				}
-				else{
-					refInit += """
-						if (${attribute.name} == null)
-							${attribute.name} = new ${tipo}();
-						else
-							${attribute.name}.init();
-					""";
+				}else{
+					if(LedEntidadUtils.isOneToOne(attribute)){
+						refInit += """
+							if (${attribute.name} == null)
+								${attribute.name} = new ${tipo}();
+							else
+								${attribute.name}.init();
+						""";
+					}else{ 
+						//Las referencia ManyToOne no se inicializan
+						refInit += """
+							if (${attribute.name} != null)
+								${attribute.name}.init();	
+						"""
+					}
 				}
 			}
-			
 
 			
 			/** Valores por defecto de los atributos */
@@ -450,7 +456,6 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	 * @return
 	 */
 	private static String defaultValue(String value, String type, String name) {
-		println "DefaultValue ("+value+", "+type+", "+name+")";
 		if ((value != null)) {
 			def defaultValue = value;
 			if (type.equals("Double")) {

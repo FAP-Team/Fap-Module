@@ -337,10 +337,16 @@ Entidad Requerimiento {
 	String numeroGeneralRegistroSalida
 	String oficinaRegistroSalida
 	DateTime fechaAcuse
-	String uriDocRequerimiento				//uri del documento de requerimiento oficial, este es el que se firma
-	Boolean docRequerimientoClasificado
-	String uriDocJustificanteRequerimiento	//uri del jsutificante del registro de salida
-	Boolean docJustificanteRequerimientoClasificado	
+	
+	Documento oficial			// documento de requerimiento oficial, este es el que se firma
+	Documento justificante		// justificante del registro de salida
+	
+//	String uriDocRequerimiento				//uri del documento de requerimiento oficial, este es el que se firma
+//	Boolean docRequerimientoClasificado
+//	String urlDescargaDocRequerimiento transient
+//	String uriDocJustificanteRequerimiento	//uri del jsutificante del registro de salida
+//	Boolean docJustificanteRequerimientoClasificado
+//	String urlDescargaJustificanteRequerimiento transient	
 	String uriRequerimiento					//uri del requerimiento (identificador del servicio verificacion)
 
 	//Estos campos estan añadidos a partir del wsdl
@@ -362,4 +368,14 @@ Entidad Consulta {
 	LongText descripcion
 	LongText consulta
 	Lista tipoConsulta tipo
+}
+
+Entidad Propiedades {
+	String descripcion
+	String clave
+	String valor transient
+}
+
+Entidad Convocatoria extends Singleton {
+	Lista estadoConvocatoria estado default = "presentacion"
 }

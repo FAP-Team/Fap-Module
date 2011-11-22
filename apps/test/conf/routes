@@ -27,6 +27,9 @@ GET     /public/                                staticDir:public
 GET /Solicitud/solicitante SolicitanteController.index
 
 POST /Solicitud/solicitante/save SolicitanteController.save
+GET /Solicitud/fechas FechasController.index
+
+POST /Solicitud/fechas/save FechasController.save
 GET /Solicitud/direcciones DireccionesController.index
 
 POST /Solicitud/direcciones/save DireccionesController.save

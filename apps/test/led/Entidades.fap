@@ -2,13 +2,20 @@ Entidad Solicitud extends SolicitudGenerica {
 	DireccionTest direccionTest
 	ComboTest comboTest
 	ValoresPorDefectoTest valoresPorDefectoTest
+	Fechas fechas
 	
 	OneToMany TablaDeNombres tablaDeNombres
+}
+
+Entidad Fechas {
+	DateTime fechaRequerida
+	DateTime fecha
 }
 
 Entidad TablaDeNombres {
 	String nombre
 	String apellido
+	OneToOne Fechas fecha
 }
 
 Entidad DireccionTest {
@@ -55,7 +62,7 @@ Entidad ValoresPorDefectoTest {
 	DateTime mDateTime default = "12/12/2010"
 	
 	// Algunos tipos compuestos
-	Lista ComboTestList mLista default = "c"
+	Lista ComboTestList mLista /*default = "c"*/
 	
 	
 	// Embeddable

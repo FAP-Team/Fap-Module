@@ -18,11 +18,11 @@ Esto nos creara una entidad solicitante cuyo único parámetro será el nombre. 
 
 h2. Asignar un tipo Singleton
 
-Al asignar el tipo *(Singleton)* solo se creara una instancia de la clase generada por esta entidad.
+Al asignar el tipo *extends Singleton* solo se creara una instancia de la clase generada por esta entidad.
 
-bc. Entidad Aceptacion(Solicitud){
-	Boolean compromisos
-	Boolean declaraciones
+bc. Entidad Quartz extends Singleton {
+	Boolean sendMail
+	Boolean sendMsg
 }
 
 h2. Asignar otros tipos

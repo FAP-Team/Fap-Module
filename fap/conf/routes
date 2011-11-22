@@ -60,9 +60,12 @@ POST /Administracion/usuarios/save UsuariosController.save
 GET /Administracion/aed AedController.index
 
 POST /Administracion/aed/tiposDeDocumentos AedController.tiposDeDocumentos
-GET /Administracion/requerimientos RequerimientosController.index
+GET /Administracion/convocatoria ConvocatoriaController.index
 
-POST /Administracion/requerimientos/save RequerimientosController.save
+POST /Administracion/convocatoria/save ConvocatoriaController.save
+GET /Administracion/configuracionquartz ConfiguracionQuartzController.index
+
+POST /Administracion/configuracionquartz/save ConfiguracionQuartzController.save
 GET /Administracion/tabladetablas TablaDeTablasController.index
 
 GET /Administracion/tabladetablas/tabladetablas TablaDeTablasController.tablatabladetablas
@@ -71,6 +74,9 @@ GET /Administracion/emails EmailsController.index
 
 GET /Administracion/emails/emails EmailsController.tablaemails
 POST /Administracion/emails/actualizarDesdeFichero EmailsController.actualizarDesdeFichero
+GET /Administracion/propiedades PropiedadesController.index
+
+GET /Administracion/propiedades/tablaPropiedades PropiedadesController.tablatablaPropiedades
 GET /Administracion/popupusuario/{idEntidad}/abrir popups.PopupUsuarioController.abrir
 POST /Administracion/popupusuario/{idEntidad}/editar popups.PopupUsuarioController.editar
 POST /Administracion/popupusuario/{idEntidad}/borrar popups.PopupUsuarioController.borrar
@@ -95,10 +101,12 @@ POST /Administracion/popupconsulta/{idEntidad}/borrar popups.PopupConsultaContro
 POST /Administracion/popupconsulta/{idEntidad}/crear popups.PopupConsultaController.crear
 POST /Administracion/popupconsulta/{idEntidad}/cancelarcrear popups.PopupConsultaController.cancelarCrear
 
-GET /Solicitud/pceconomicos PCEconomicosController.index
+GET /Administracion/popupproperties/{idEntidad}/abrir popups.PopupPropertiesController.abrir
+POST /Administracion/popupproperties/{idEntidad}/editar popups.PopupPropertiesController.editar
+POST /Administracion/popupproperties/{idEntidad}/borrar popups.PopupPropertiesController.borrar
+POST /Administracion/popupproperties/{idEntidad}/crear popups.PopupPropertiesController.crear
+POST /Administracion/popupproperties/{idEntidad}/cancelarcrear popups.PopupPropertiesController.cancelarCrear
 
-GET /Solicitud/pceconomicos/tablaCEconomicos PCEconomicosController.tablatablaCEconomicos
-POST /Solicitud/pceconomicos/save PCEconomicosController.save
 GET /Solicitud/aportacion AportacionController.index
 
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos

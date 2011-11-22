@@ -4,13 +4,15 @@ Formulario Administracion permiso=administrador{
 		
 		Grupo "Administración" {
 			Enlace "Usuarios" pagina=Usuarios
+			Enlace "Convocatoria" pagina=Convocatoria
 			Enlace "Aed" pagina=Aed
-			Enlace "Requerimientos" pagina=Requerimientos
+			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Emails" pagina=Emails
 			Enlace "Logs" accion="fap.LoggerController.index"
 			Enlace "Informe" accion="fap.InformeController.index"
 			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
+			Enlace "Properties" pagina=Propiedades
 		}
 		
 		Enlace "Ayuda" pagina=Soporte.Soporte
@@ -49,7 +51,12 @@ Formulario Administracion permiso=administrador{
 		}
 	}
 	
-	Pagina Requerimientos {
+	
+	Pagina Convocatoria titulo="Convocatoria"{
+		Combo campo=Convocatoria.estado titulo="Estado de la convocatoria"
+	}
+	
+	Pagina ConfiguracionQuartz titulo="Configuración del Quartz" {
 		Grupo configQuartz titulo="Configuración del quartz" {
 			Wiki {"El quartz es el proceso que se encarga de comprobar los accesos a la sede cuando se emiten los requerimientos y asignar correctamente las fechas de acceso y de vencimiento de los requerimientos"}
 			
@@ -81,9 +88,9 @@ Formulario Administracion permiso=administrador{
 	    Grupo titulo="Actualizar desde fichero" {
 	        Form actualizarDesdeFichero {
                 Wiki {"
-'''Perderá todas las modificaciones''' que ha hecho y recuperará los valores puestos en la generación.
+**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en la generación.
 
-'''IMPORTANTE''' : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
+**IMPORTANTE** : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
 Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de documentos desde el AED.
                 "}
 
@@ -124,7 +131,7 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
         
          Grupo titulo="Actualizar desde fichero" {
 	        Form actualizarDesdeFichero {
-                Wiki {"'''Perderá todas las modificaciones''' que ha hecho y recuperará los valores puestos en los ficheros .yaml situados en: 'app/emails/initial-data/'."}
+                Wiki {"**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en los ficheros .yaml situados en: 'app/emails/initial-data/'."}
                 Boton botonCargarMails titulo="Borrar todos y leer desde ficheros"
 	        }
 	    }
@@ -132,9 +139,9 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 
     Popup PopupEmail campo=Mail titulo="Email" {
         Wiki {"
-Dentro de los campos puede utilizar variables con ${nombreVariable} y otros elementos que puede consultar en la [http://www.playframework.org/documentation/1.2.1/templates#syntax documentación]
+Dentro de los campos puede utilizar variables con $ {nombreVariable} y otros elementos que puede consultar en la \"documentación\":http://www.playframework.org/documentation/1.2.1/templates#syntax.
 
-En los campos '''Para''' y '''CC''' puede poner varios destinatarios separados por \",\".
+En los campos **Para** y **CC** puede poner varios destinatarios separados por \",\".
         "}
 
         Texto campo=Mail.idMail titulo="Identificador" requerido
@@ -146,10 +153,24 @@ En los campos '''Para''' y '''CC''' puede poner varios destinatarios separados p
 		AreaTexto campo=Mail.footer titulo="Pie de mensaje"
 
     }   
-        
+    
     Popup PopupConsulta campo=Consulta titulo="Consulta" {
     	AreaTexto campo=Consulta.descripcion titulo="Descripcion" requerido
     	AreaTexto campo=Consulta.consulta titulo="Consulta" requerido
     	Combo campo=Consulta.tipo titulo="Tipo" requerido
     }
+
+    Pagina Propiedades noForm {
+        Tabla tablaPropiedades titulo="Tabla de properties" campo=Propiedades popup=PopupProperties {
+            Columna campo=Propiedades.descripcion titulo="Descripción"
+            Columna campo=Propiedades.clave titulo="Clave"
+            Columna campo=Propiedades.valor titulo="Valor" expandir
+        }
+    }
+
+    Popup PopupProperties campo=Propiedades titulo="Properties"{
+        Texto campo=Propiedades.descripcion titulo="Descripción" requerido
+        Texto campo=Propiedades.clave titulo="Clave" requerido
+    }
+    
 }

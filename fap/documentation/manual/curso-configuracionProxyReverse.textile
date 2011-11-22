@@ -1,0 +1,62 @@
+h1. Configuración de Apache, para desplegar aplicaciones
+
+h2. Configuración Context Path, para subsanar el problema de cambio de rutas al redireccionar
+
+Para ello en el fichero **application.conf** tenemos una propiedad que se llama **fap.ctxPath** y que está comentada. La descomentamos y ponemos la ruta donde estará nuestra aplicacion, es decir:
+
+Si queremos que la aplicacion se despliegue en **localhost/app** pondremos la propiedad:
+
+bc. fap.ctxPath=/app
+
+para después configurar el Proxy Reverse de la siguiente manera:
+
+bc. ProxyRequests Off
+ProxyPass /app http://localhost:9000/app
+ProxyPassReverse /app http://localhost:9000/app
+
+y así no tener el problema de las rutas.
+
+h2. Balanceador de Carga
+
+Para configurar Apache de manera que nos permita tener una aplicación desplegada en dos aplicaciones independientes para poder repartir la carga entre ellas y poder subir aplicaciones a producción sin tener que detener el servidor Apache, deberemos hacer los siguientes pasos:
+
+**1.-** En el fichero: **httpd.conf**, que se encuentra en **${RUTA_APACHE}/conf**, incluir:
+
+bc. Include conf/extra/httpd-proxy-balancer.conf
+
+donde **${RUTA_APACHE}** es la ruta de instalación de Apache
+
+**2.-** Ahora deberemos crear el fichero que hemos incluido, es decir, en la carpeta **${RUTA_APACHE}/conf/extra/**, crear el fichero: **httpd-proxy-balancer.conf**
+
+**3.-** Finalmente nos queda editar este fichero, con las reglas del balanceador de cargas:
+
+bc. <VirtualHost ${WEB}:80>
+  ServerName ${WEB}/${APP}/
+  <Location /balancer-manager>
+    SetHandler balancer-manager
+  </Location>
+  <Proxy balancer://mycluster>
+    BalancerMember ${APP1}
+    BalancerMember ${APP2} status=+H    
+  </Proxy>
+  <Proxy *>
+    Order Allow,Deny
+    Allow From All
+  </Proxy>
+  ProxyPreserveHost On
+  ProxyPass /balancer-manager !
+  ProxyPass /${APP}/ balancer://mycluster/
+  ProxyPassReverse /${APP}/ ${APP1} 
+  ProxyPassReverse /${APP}/ ${APP2}
+</VirtualHost>
+
+Donde:
+**${WEB}**  = La web de nuestras aplicaciones (raíz)
+**${APP}**  = Dirección de la aplicación, como queremos que se acceda (rama)
+**${APP1}** = La aplicación en sí, copia principal
+**${APP2}** = La aplicación en sí, copia secundaria 
+
+
+
+
+

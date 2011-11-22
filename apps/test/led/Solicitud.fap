@@ -11,6 +11,7 @@ Formulario Solicitud {
 		
 		Grupo "Direccion"{
 			Enlace "Direccion" pagina=Direcciones
+			Enlace "Fecha" pagina=Fechas
 		}
 		
 		Grupo "Tablas y PopUps" {
@@ -25,6 +26,11 @@ Formulario Solicitud {
     }
 	
 	Pagina Solicitante {}
+	
+	Pagina Fechas {
+		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" requerido
+		Fecha campo=Solicitud.fechas.fecha titulo="Fecha" requerido
+	}
 	
 	Pagina Direcciones {
 		Direccion campo=Solicitud.direccionTest.direccion
@@ -76,6 +82,8 @@ Formulario Solicitud {
 		Texto mDouble campo=Solicitud.valoresPorDefectoTest.mDouble titulo="Double"
 		Texto mLongText campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText"
 		
+		Texto mLongText2 campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText 3" password
+		
 		Texto mEmbeddable campo=Solicitud.valoresPorDefectoTest.mEmbebida.algo titulo="String embeddable" 
 	}
 	
@@ -85,10 +93,8 @@ Formulario Solicitud {
 		popupVer=popupNombre
 		popupModificar=popupNombre
 		popupBorrar=popupNombre
+		columnasAutomaticas exclude=id, fecha
 		{
-			Columna campo=TablaDeNombres.id titulo="ID"
-			Columna campo=TablaDeNombres.nombre titulo="Nombre"
-			Columna campo=TablaDeNombres.apellido titulo="NIF/CIF" 
 		}
 	}
 	

@@ -1,5 +1,9 @@
 package es.fap.simpleled.validation;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
@@ -10,6 +14,7 @@ import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.PermisoVar;
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
@@ -63,10 +68,12 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	 */
 	@Check
 	public void checkReferencesToEntities (Attribute attribute) {
-		Entity father = ((Entity)(attribute.eContainer()));
-		if (EntityImpl.class.isInstance(attribute.getType().getCompound().getEntidad())) {
-			if (father.getName().equals(((EntityImpl)attribute.getType().getCompound().getEntidad()).getName())){
-				error("Las entidades no se deben referenciar a si mismas mediante un atributo", LedPackage.Literals.ATTRIBUTE__TYPE);
+		if (attribute.eContainer() instanceof Entity){
+			Entity father = ((Entity)(attribute.eContainer()));
+			if (EntityImpl.class.isInstance(attribute.getType().getCompound().getEntidad())) {
+				if (father.getName().equals(((EntityImpl)attribute.getType().getCompound().getEntidad()).getName())){
+					error("Las entidades no se deben referenciar a si mismas mediante un atributo", LedPackage.Literals.ATTRIBUTE__TYPE);
+				}
 			}
 		}
 	}
@@ -92,10 +99,12 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Check
 	public void checkSolicitudSimpleAttributos(Attribute attr) {
-		Entity entidad = (Entity) attr.eContainer();
-		if (entidad.getName().equals("Solicitud")){
-			if (LedEntidadUtils.esSimple(attr)){
-				warning("La entidad \"Solicitud\" no debe tener atributos simples", LedPackage.Literals.ATTRIBUTE__TYPE);
+		if (attr.eContainer() instanceof Entity){
+			Entity entidad = (Entity) attr.eContainer();
+			if (entidad.getName().equals("Solicitud")){
+				if (LedEntidadUtils.esSimple(attr)){
+					warning("La entidad \"Solicitud\" no debe tener atributos simples", LedPackage.Literals.ATTRIBUTE__TYPE);
+				}
 			}
 		}
 	}
@@ -119,6 +128,34 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		if (validator != null){
 			validator.validateCampoEntidad(campo, this);
 			validator.validateCampo(campo, this);
+		}
+	}
+	
+	/**
+	 * Comprueba que el nombre de las variables en permiso sea minúscula
+	 * @param permisoVar
+	 */
+	@Check
+	public void checkNameVariableInPermiso (PermisoVar permisoVar) {
+		if (Pattern.compile("^[A-Z]").matcher(permisoVar.getName()).find()) {
+			error("El nombre de la variable en permiso debe comenzar por minúscula", LedPackage.Literals.PERMISO_VAR__NAME);
+		}
+	}
+	
+	@Check
+	public void checkExtends(Entity entidad){
+		Set<String> intermedias = new HashSet<String>();
+		Entity father = entidad.getExtends();
+		while (father != null){
+			if (father.getName().equals(entidad.getName())){
+				error(entidad.getName() + " no puede extender de " + entidad.getExtends().getName() + " porque se produce un lazo infinito", LedPackage.Literals.ENTITY__EXTENDS);
+				return;
+			}
+			if (intermedias.contains(father.getName())){
+				return;
+			}
+			intermedias.add(father.getName());
+			father = father.getExtends();
 		}
 	}
 	

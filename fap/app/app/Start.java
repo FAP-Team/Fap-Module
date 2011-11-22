@@ -15,6 +15,7 @@ import play.Play;
 import play.classloading.ApplicationClassloader;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
+import play.mvc.Router;
 import models.SolicitudGenerica;
 import play.test.Fixtures;
 import play.vfs.VirtualFile;
@@ -24,6 +25,13 @@ import properties.FapProperties;
 public class Start extends Job {
 	
 	public void doJob() {
+		
+		// Context Path, para el despliegue de varias aplicaciones en Apache y no tener el problema del Path
+		String ctxPath = FapProperties.get("fap.ctxPath");
+		if (ctxPath != null){
+			Play.ctxPath = ctxPath;
+	        Router.load(Play.ctxPath);
+		}
 		
 		//Carga la configuracion de log4j
 		String log4jPropertyFile = FapProperties.get("app.log.path");

@@ -1,5 +1,20 @@
 h2. Changelog
 
+h3. Versión 1.2
+
+* Fixed bug copia de atributos ManyToOne y ManyToMany.
+* Funcionalidad de 'include' y 'exclude' en ColumnasAutomáticas
+* Opción de 'password' en los campos de tipo Texto
+
+h3. Versión 1.1.1
+
+* ID de tabla requerido.
+* Nombres de variables en permiso arreglado.
+* Página de recibos de aportación arreglada.
+* El elemento Wiki pasa de utilizar WikiMedia a Textile, que es el formato que se está usando en esta propia documentación. 
+* Personalizado el error 404
+* Fixed minor bugs
+
 h3. Versión 1.1
 
 * Se permiten definir varios botones dentro de un form.

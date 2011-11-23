@@ -34,7 +34,7 @@ require:
     - org.apache.santuario -> xmlsec 1.4.3:
         transitive: false
 
-    - es.gobcan.eadmon -> eadmon-aed-cliente 1.0.3:
+    - es.gobcan.eadmon -> eadmon-aed-cliente 1.1:
         transitive: false
 
     - es.gobcan.platino -> platino.pre 1.0:

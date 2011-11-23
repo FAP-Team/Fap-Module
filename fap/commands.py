@@ -25,18 +25,19 @@ def execute(**kargs):
         print "~ Hello"
 
     if command == "fap:generate":
-        version(app, args)
+        versionASCIIART(app, args)
         run_generate(app, args)
         
 #    if command == "fap:model":
 #        run_model(app, args)
             
     if command == "fap:init":
-        version(app, args)
+        versionASCIIART(app, args)
         init_application (app, args)
 
     if command == "fap:version":
         version(app, args)
+        versionASCIIART(app, args)
 
 
 
@@ -49,7 +50,13 @@ def version (app, args):
              print moduleDefinition
         except Exception:
              pass
-    
+
+def versionASCIIART (app, args):
+   readmeFile = os.path.join(getModuleDir(app, args), 'README'); 
+   if os.path.exists(readmeFile):
+      FILE = open(readmeFile).read();
+      print FILE;  
+  
         
 def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     moduleDir = getModuleDir(app, cmd_args)

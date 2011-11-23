@@ -21,7 +21,7 @@ import properties.FapProperties;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 public class ExpedienteAed extends Model {
 	// Código de los atributos

@@ -30,7 +30,7 @@ Entity:
 		& (inheritance?="inheritance" "=" "joined")?
 		& (superClass?="superClass")?
 		& (noConstruct?="noConstruct")?
-		& (noAuditable?="noAuditable")?
+		& (auditable?="auditable" | noAuditable?="noAuditable")?
 		)
 	'{'
 		attributes+=Attribute*

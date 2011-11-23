@@ -23,7 +23,7 @@ import play.mvc.Http.Request;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 @Table(name="solicitud")
 public class SolicitudGenerica extends Model {

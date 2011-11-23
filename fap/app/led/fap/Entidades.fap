@@ -35,7 +35,7 @@ Entidad Solicitante extends Persona {
 	Boolean autorizaFuncionario
 }
 
-Entidad Agente inheritance=joined{
+Entidad Agente inheritance=joined auditable{
 	String username
 	String password
 	Email email

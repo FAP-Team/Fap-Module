@@ -26,7 +26,7 @@ import org.apache.commons.mail.SimpleEmail;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 @Table(name="email")
 public class Mail extends Model {

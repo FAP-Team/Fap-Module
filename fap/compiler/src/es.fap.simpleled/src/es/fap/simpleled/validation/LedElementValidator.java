@@ -127,6 +127,9 @@ public abstract class LedElementValidator {
 		if (compound.getTipoReferencia() != null){
 			referencia = compound.getTipoReferencia().getType();
 		}
+		if (compound.getEntidad().isEmbedded()){
+			referencia = "Embedded";
+		}
 		return referencia + "<" + compound.getEntidad().getName() + ">";
 	}
 	

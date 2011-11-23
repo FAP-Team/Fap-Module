@@ -1,6 +1,7 @@
 package audit;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 
 import models.TableKeyValue;
@@ -43,12 +45,13 @@ public class AuditLogListener implements
 
 
 	public void onPostInsert(PostInsertEvent event) {
+		event.getSession().getPersistenceContext().setFlushing(true);
 		Model entity = (Model) event.getEntity();
 		if (!entity.getClass().isAnnotationPresent(Auditable.class)) {
 			return;
 		}
 		evento = "entidad creada";
-		this.entity = entity.getClass().getName().replaceFirst("models.", "");
+		this.entity = getEntityName(entity);
 		this.entityId = entity.getId().toString();
 		logEntity();
 		
@@ -70,27 +73,33 @@ public class AuditLogListener implements
 			value = getValueAsString(entity, property, values[i]);
 			logProperty();
 		}
+		event.getSession().getPersistenceContext().setFlushing(false);
 	}
 
 	
 	public void onPostUpdate(PostUpdateEvent event) {
+		event.getSession().getPersistenceContext().setFlushing(true);
 		Model entity = (Model) event.getEntity();
 		if (!entity.getClass().isAnnotationPresent(Auditable.class)) {
 			return;
 		}
 		evento = "campo modificado";
-		this.entity = entity.getClass().getName().replaceFirst("models.", "");
+		this.entity = getEntityName(entity);
 		this.entityId = entity.getId().toString();
 		String[] properties = event.getPersister().getPropertyNames();
 		Object[] oldValues = event.getOldState();
 		Object[] values = event.getState();
-		
 		for(int dirtyIndex : event.getDirtyProperties()){
+			if (values[dirtyIndex].getClass().getAnnotation(Embeddable.class) != null) {
+				onPostUpdateEmbeddable(properties[dirtyIndex], values[dirtyIndex], oldValues[dirtyIndex]);
+				continue;
+			}
 			property = properties[dirtyIndex];
 			value = getValueAsString(entity, property, values[dirtyIndex]);
 			oldValue = getValueAsString(entity, property, oldValues[dirtyIndex]);
 			logUpdateProperty();
 		}
+		event.getSession().getPersistenceContext().setFlushing(false);
 	}
 	
 
@@ -100,7 +109,7 @@ public class AuditLogListener implements
 			return;
 		}
 		evento = "entidad borrada";
-		this.entity = entity.getClass().getName().replaceFirst("models.", "");
+		this.entity = getEntityName(entity);
 		this.entityId = entity.getId().toString();
 		logEntity();
 	}
@@ -111,9 +120,10 @@ public class AuditLogListener implements
 		if (!entity.getClass().isAnnotationPresent(Auditable.class)) {
 			return;
 		}
+		event.getSession().getPersistenceContext().setFlushing(true);
 		PersistentCollection collection = event.getCollection();
 		evento = "lista modificada";
-		this.entity = entity.getClass().getName().replaceFirst("models.", "");
+		this.entity = getEntityName(entity);
 		entityId = entity.id.toString();
 		Field[] fields = entity.getClass().getFields();
 		property = null;
@@ -139,10 +149,12 @@ public class AuditLogListener implements
 					añadidos = getValueAsString(field, added);
 					borrados = getValueAsString(field, deleted);
 					logUpdateCollection();
+					event.getSession().getPersistenceContext().setFlushing(false);
 					return;
 				}
 			} catch (Exception e) {}
 		}
+		event.getSession().getPersistenceContext().setFlushing(false);
 	}
 
 	
@@ -151,9 +163,10 @@ public class AuditLogListener implements
 		if (!entity.getClass().isAnnotationPresent(Auditable.class)) {
 			return;
 		}
+		event.getSession().getPersistenceContext().setFlushing(true);
 		PersistentCollection collection = event.getCollection();
 		evento = "lista creada";
-		this.entity = entity.getClass().getName().replaceFirst("models.", "");
+		this.entity = getEntityName(entity);
 		entityId = entity.id.toString();
 		Field[] fields = entity.getClass().getFields();
 		property = null;
@@ -163,10 +176,12 @@ public class AuditLogListener implements
 					property = field.getName();
 					value = getValueAsString(field, collection);
 					logProperty();
+					event.getSession().getPersistenceContext().setFlushing(false);
 					return;
 				}
 			} catch (Exception e) {}
 		}
+		event.getSession().getPersistenceContext().setFlushing(false);
 	}
 	
 	
@@ -175,9 +190,10 @@ public class AuditLogListener implements
 		if (!entity.getClass().isAnnotationPresent(Auditable.class)) {
 			return;
 		}
+		event.getSession().getPersistenceContext().setFlushing(true);
 		PersistentCollection collection = event.getCollection();
 		evento = "lista borrada";
-		this.entity = entity.getClass().getName().replaceFirst("models.", "");
+		this.entity = getEntityName(entity);
 		entityId = entity.id.toString();
 		Field[] fields = entity.getClass().getFields();
 		property = null;
@@ -186,11 +202,12 @@ public class AuditLogListener implements
 				if (field.get(entity) == collection) {
 					property = field.getName();
 					logDelete();
+					event.getSession().getPersistenceContext().setFlushing(false);
 					return;
 				}
 			} catch (Exception e) {}
 		}
-		
+		event.getSession().getPersistenceContext().setFlushing(false);
 	}
 
 	
@@ -198,8 +215,7 @@ public class AuditLogListener implements
 		Field field = null;
 		try {
 			field = entity.getClass().getField(property);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		return getValueAsString(field, value);
 	}
 
@@ -222,7 +238,28 @@ public class AuditLogListener implements
 		if (value instanceof String) {
 			return "\"" + value + "\"";
 		}
+		if (value instanceof Model){
+			/*
+			 * No se puede llamar a value.toString() porque en algunas entidades,
+			 * como Agente, está sobrescrito. Encontrar la clase que tiene la anotación
+			 * @Entity es necesario porque si no, puede imprimirse una clase javasssist
+			 * creada por Hibernate.
+			 */
+			return getEntityName(value) + "[" + ((Model)value).getId() + "]";
+		}
 		return value.toString();
+	}
+	
+	
+	public String getEntityName(Object value){
+		if (value instanceof Model){
+			Class o = value.getClass();
+			while (o != null && o.getAnnotation(javax.persistence.Entity.class) == null)
+				o = o.getSuperclass();
+			if (o != null)
+				return o.getSimpleName();
+		}
+		return value.getClass().getSimpleName(); 
 	}
 	
 	

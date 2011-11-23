@@ -2,9 +2,11 @@ h2. Changelog
 
 h3. Versión 1.2
 
+* Fixed lazy load de collections en AuditLogListener (problemas con los ManyToOne).
 * Fixed bug copia de atributos ManyToOne y ManyToMany.
-* Funcionalidad de 'include' y 'exclude' en ColumnasAutomáticas
-* Opción de 'password' en los campos de tipo Texto
+* Fixed funcionalidad de selección de filas en una tabla mediante checkboxes.
+* Funcionalidad de 'include' y 'exclude' en ColumnasAutomáticas.
+* Opción de 'password' en los campos de tipo Texto.
 
 h3. Versión 1.1.1
 

@@ -10,30 +10,7 @@
 	<ul>
 		<li><a href="@{fap.ConsultarEvaluacionesController.index}">Evaluaciones</a>
 		<li><a href="#Evaluacion">Evaluacion</a></li>
-		<li><a href="#Documentos">Documentos</a></li>
-		
-		#{if hasCriterios}
-		<li class="menu-group">
-			<a href="#Criterios" class="menu-header">Criterios de evaluación</a>
-			<ul>
-			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
-				<li><a href="#criterio${tcriterio.jerarquia}">${tcriterio.jerarquia} - ${tcriterio.nombre}</a></li>	
-			#{/list}
-			</ul>
-		</li>	
-		#{/if}
-		
-		#{if hasCEconomicos}
-		<li class="menu-group">
-			<a href="#CEconomicos" class="menu-header">Conceptos económicos</a>
-			<ul>
-			#{list items:evaluacion.tipo.ceconomicos, as:'tceconomico'}
-				<li><a href="#ceconomico${tceconomico.jerarquia}">${tceconomico.jerarquia} - ${tceconomico.nombre}</a></li>	
-			#{/list}
-			</ul>
-		</li>
-		#{/if}
-		
+		<li><a href="#Documentos">Documentos</a></li>		
 	</ul>	
 #{/set}
 
@@ -51,6 +28,26 @@
 	#{if evaluacion.tipo.comentariosSolicitante}
 		#{simple.textarea name:'evaluacion.comentariosSolicitante', label:'Comentarios solicitante', value:messages.Messages.flashOrValue("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante) /}
 	#{/if}
+	
+	<div id="indice">
+		#{if hasCriterios}
+			<h2>Criterios de evaluacion</h2>
+			<ul>
+			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
+				<li><a href="#criterio${tcriterio.jerarquia}">${tcriterio.jerarquia} - ${tcriterio.nombre}</a></li>	
+			#{/list}
+			</ul>	
+		#{/if}
+		
+		#{if hasCEconomicos}
+			<h2>Conceptos económicos</h2>
+			<ul>
+			#{list items:evaluacion.tipo.ceconomicos, as:'tceconomico'}
+				<li><a href="#ceconomico${tceconomico.jerarquia}">${tceconomico.jerarquia} - ${tceconomico.nombre}</a></li>	
+			#{/list}
+			</ul>		
+		#{/if}
+	</div>
 		
 #{/fap.grupo}
 

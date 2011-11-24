@@ -29,17 +29,9 @@ public class FichaEvaluadorController extends Controller {
 	
 	public static void index(long idEvaluacion){
 		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
-		
-		//TODO Filtrar los documentos de la solicitud que tienen el tipo disponible
-		
-		List<Documento> documentos = Documento.findAll();
-		renderTemplate( "fap/Baremacion/fichaEvaluador.html", evaluacion, documentos);
-	}
-
-	private static <T> T getParamRequired(String name, Class<T> clazz){
-		Object value = params.get(name, clazz);
-		validation.required(name, value);
-		return (T)value;
+		notFoundIfNull(evaluacion);
+		List<Documento> documentos = evaluacion.getDocumentosAccesibles();
+		renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos);
 	}
 	
 	public static void save(){

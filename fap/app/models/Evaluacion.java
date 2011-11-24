@@ -2,6 +2,7 @@
 package models;
 
 import java.util.*;
+
 import javax.persistence.*;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -96,6 +97,25 @@ public class Evaluacion extends Model {
 			this.ceconomicos.add(cEconomico);
 		}
 	}
+	
+	/**
+	 * Filtra de los documentos de la solicitud, los documentos
+	 * cuyo tipo de documento está definido dentro de los 
+	 * tipos de documentos accesibles por la definición 
+	 * del tipo de la evaluación
+	 * @return
+	 */
+	public List<Documento> getDocumentosAccesibles(){
+		JPAQuery jpaQuery = Documento.find("select documento" +
+						" from Solicitud solicitud" +
+						" join solicitud.documentacion.documentos documento" +
+						" where solicitud.id=:id and documento.tipo in (:tipos)");
+		jpaQuery.query.setParameter("id", solicitud.id);
+		jpaQuery.query.setParameter("tipos", tipo.tiposDocumentos);
+		List<Documento> documentosAccesibles = jpaQuery.fetch();
+		return documentosAccesibles;
+	}
+		
 	// === MANUAL REGION END ===
 	
 	

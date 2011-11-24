@@ -498,40 +498,9 @@
         comentariosSolicitante:true
     },
     {
-        nombre:"Personal cualificado",
-        claseCriterio:"auto",
+        nombre:"Calificación de la empresa",
+        claseCriterio:"manual",
         jerarquia:"C.1",
-        tipoValor:"cantidad",
-        descripcion:"",
-        comentariosAdministracion:true,
-        comentariosSolicitante:true
-    },
-    {
-        nombre:"Tipo Empresa",
-        claseCriterio:"manual",
-        jerarquia:"C.1.1",
-        tipoValor:"lista",
-        listaValores:[
-            {
-                valor:6,
-                descripcion:"ALTO"
-            },
-            {
-                valor:3,
-                descripcion:"MEDIO"
-            },
-            {
-                valor:3,
-                descripcion:"NULO"
-            }
-        ],
-        comentariosAdministracion:false,
-        comentariosSolicitante:false
-    },
-    {
-        nombre:"Tipo Empresa",
-        claseCriterio:"manual",
-        jerarquia:"C.1.2",
         tipoValor:"lista",
         listaValores:[
             {
@@ -555,119 +524,18 @@
         comentariosSolicitante:false
     },
     {
-        nombre:"Número de contratos",
+        nombre:"Número de contratos de personal cualificado",
         claseCriterio:"manual",
-        jerarquia:"C.1.3",
-        tipoValor:"lista",
-        listaValores:[
-            {
-                valor:6,
-                descripcion:"2 contratos"
-            },
-            {
-                valor:3,
-                descripcion:"3 contratos"
-            },
-            {
-                valor:3,
-                descripcion:"5 contratos"
-            },
-            {
-                valor:3,
-                descripcion:"10 contratos"
-            },
-            {
-                valor:0,
-                descripcion:"0 contratos"
-            }
-        ],
-        comentariosAdministracion:false,
-        comentariosSolicitante:false
-    },
-    {
-        nombre:"Personal no cualificado",
-        claseCriterio:"auto",
         jerarquia:"C.2",
         tipoValor:"cantidad",
-        descripcion:"",
-        comentariosAdministracion:true,
-        comentariosSolicitante:true
-    },
-    {
-        nombre:"Tipo Empresa",
-        claseCriterio:"manual",
-        jerarquia:"C.2.1",
-        tipoValor:"lista",
-        listaValores:[
-            {
-                valor:6,
-                descripcion:"ALTO"
-            },
-            {
-                valor:3,
-                descripcion:"MEDIO"
-            },
-            {
-                valor:3,
-                descripcion:"NULO"
-            }
-        ],
         comentariosAdministracion:false,
         comentariosSolicitante:false
     },
     {
-        nombre:"Tipo Empresa",
+        nombre:"Número de contratos de personal no cualificado",
         claseCriterio:"manual",
-        jerarquia:"C.2.2",
-        tipoValor:"lista",
-        listaValores:[
-            {
-                valor:6,
-                descripcion:"Mircoempresa"
-            },
-            {
-                valor:3,
-                descripcion:"Pequeña empresa"
-            },
-            {
-                valor:3,
-                descripcion:"Mediana empresa"
-            },
-            {
-                valor:3,
-                descripcion:"Gran empresa"
-            }
-        ],
-        comentariosAdministracion:false,
-        comentariosSolicitante:false
-    },
-    {
-        nombre:"Número de contratos",
-        claseCriterio:"manual",
-        jerarquia:"C.2.3",
-        tipoValor:"lista",
-        listaValores:[
-            {
-                valor:6,
-                descripcion:"2 contratos"
-            },
-            {
-                valor:3,
-                descripcion:"3 contratos"
-            },
-            {
-                valor:3,
-                descripcion:"5 contratos"
-            },
-            {
-                valor:3,
-                descripcion:"10 contratos"
-            },
-            {
-                valor:0,
-                descripcion:"0 contratos"
-            }
-        ],
+        jerarquia:"C.3",
+        tipoValor:"cantidad",
         comentariosAdministracion:false,
         comentariosSolicitante:false
     }

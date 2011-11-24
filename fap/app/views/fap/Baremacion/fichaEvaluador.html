@@ -99,7 +99,7 @@
 				#{/if}
 				
 				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
-					cantidad!
+					#{simple.text name:paramName + ".valor", label:'Valor', value:valor, error: error /}
 				#{/elseif}
 			#{/elseif}
 			
@@ -170,9 +170,9 @@
 #{/if}
 
 <div class="button_container">
-	<input type="submit" class="boton" name="preview" value="&{'baremacion.fichaevaluador.calcular'}">
-	<input type="submit" class="boton" name="pdf" value="&{'baremacion.fichaevaluador.pdf'}">
 	<input type="submit" class="boton" name="save" value="&{'baremacion.fichaevaluador.guardar'}">
+	<input type="submit" class="boton" name="pdf" value="&{'baremacion.fichaevaluador.pdf'}">
+	<input type="submit" class="boton" name="end" value="&{'baremacion.fichaevaluador.end'}">
 </div>
 
 #{/form}

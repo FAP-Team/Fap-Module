@@ -1,0 +1,674 @@
+[
+    {
+        nombre:"Componente inovadora y tecnológica predominante",
+        claseCriterio:"auto",
+        jerarquia:"A",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Carácter de la empresa de base tecnológica",
+        claseCriterio:"manual",
+        jerarquia:"A.1",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:10,
+                descripcion:"Si"
+            },
+            {
+                valor:0,
+                descripcion:"No"
+            }
+        ],
+        descripcion:"Prioridad a empresas de nueva o reciente creación frente a las ya consolidadas",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Grado de innovación del proyecto",
+        claseCriterio:"auto",
+        jerarquia:"A.2",
+        tipoValor:"cantidad",
+        descripcion:"Tiene por objeto priorizar los proyectos que dentro de su temática innovadora queden focalizados en las áreas prioritarias sectoriales y/o abarquen tecnologías transversales en I+D+I.",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Abarca el proyecto tecnologías transversales",
+        claseCriterio:"manual",
+        jerarquia:"A.2.1",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:2,
+                descripcion:"Si"
+            },
+            {
+                valor:0,
+                descripcion:"No"
+            }
+        ],
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Abarca el proyecto áreas prioritarias sectoriales",
+        claseCriterio:"manual",
+        jerarquia:"A.2.2",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:2,
+                descripcion:"Si"
+            },
+            {
+                valor:0,
+                descripcion:"No"
+            }
+        ],
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Nuevos mercados, actividades o empresas tecnológicas. Resultado de programas I+D",
+        claseCriterio:"manual",
+        jerarquia:"A.2.3",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:4,
+                descripcion:"Si"
+            },
+            {
+                valor:0,
+                descripcion:"No"
+            }
+        ],
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Ventajas del proyecto a nivel nacional e internacional",
+        claseCriterio:"manual",
+        jerarquia:"A.3",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:7,
+                descripcion:"EXCELENTE: Mejoras en la tecnología a nivel internacional"
+            },
+            {
+                valor:5,
+                descripcion:"ALTO: Mejoras en la tecnología a nivel nacional"
+            },
+            {
+                valor:2,
+                descripcion:"MEDIO: Mejoras en la tecnología a nivel regional"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: Mejoras únicamente para la empresa"
+            }
+        ],
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Existencia de patentes: Presenta informe tecnológico de patentes",
+        claseCriterio:"manual",
+        jerarquia:"A.4",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:4,
+                descripcion:"ALTA"
+            },
+            {
+                valor:0,
+                descripcion:"BAJA"
+            }
+        ],
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Viabilidad Técnica, Económica y financiera",
+        claseCriterio:"auto",
+        jerarquia:"B",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Viabilidad Técnica",
+        claseCriterio:"auto",
+        jerarquia:"B.1",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Capacidad tecnológica e industrial de la empresa",
+        claseCriterio:"auto",
+        jerarquia:"B.1.1",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Descripción detallada de las actividades, productos y/o servicios e instalaciones",
+        claseCriterio:"manual",
+        jerarquia:"B.1.1.1",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:1,
+                descripcion:"Si"
+            },
+            {
+                valor:0,
+                descripcion:"No"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Es EBT o uso intensivo de la tecnología",
+        claseCriterio:"manual",
+        jerarquia:"B.1.1.2",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:1,
+                descripcion:"Si"
+            },
+            {
+                valor:0,
+                descripcion:"No"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Tiene Patentes o Modelos de Utilidad o software propio",
+        claseCriterio:"manual",
+        jerarquia:"B.1.1.3",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:1,
+                descripcion:"Si"
+            },
+            {
+                valor:0,
+                descripcion:"No"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Posee Certificaciones en Calidad",
+        claseCriterio:"manual",
+        jerarquia:"B.1.1.4",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:1,
+                descripcion:"Si"
+            },
+            {
+                valor:0,
+                descripcion:"No"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Desarrollo de las tecnologías entre empresas de la competencia",
+        claseCriterio:"manual",
+        jerarquia:"B.1.2",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:3,
+                descripcion:"EXCELENTE: Tecnología madura a traves de proveedores habituales"
+            },
+            {
+                valor:2,
+                descripcion:"MEDIO: En fase de desarrollo (prototipo)"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: En fase de investigación"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Tamaño del mercado potencial, conocimiento del mercado",
+        claseCriterio:"manual",
+        jerarquia:"B.1.3",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:5,
+                descripcion:"EXCELENTE: Mercado objetivo internacional identificado"
+            },
+            {
+                valor:3,
+                descripcion:"MEDIO: Mercado objetivo nacional o regional identificado"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: Sin identificar"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Experiencia y cualificación de los recursos humanos",
+        claseCriterio:"manual",
+        jerarquia:"B.1.4",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:3,
+                descripcion:"EXCELENTE: 50% del equipo con mas de 10 de experiencia en el sector"
+            },
+            {
+                valor:2,
+                descripcion:"ALTO: 50% del equipo con > 5 años y ≤ 10 años de experiencia en el sector"
+            },
+            {
+                valor:1,
+                descripcion:"MEDIO: 50% del equipo con > 2 años y ≤ 5 años de experiencia en el sector"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: 50% de equipo con ≤ 2 años de experiencia en el sector"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Viabilidad Económico-Financiera",
+        claseCriterio:"auto",
+        jerarquia:"B.2",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Organización comercial: Descripción y adecuación de la organización comercial y estrategia de venta del producto y/o servicio",
+        claseCriterio:"manual",
+        jerarquia:"B.2.1",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:3,
+                descripcion:"ALTO: Descripción detallada y adecuada"
+            },
+            {
+                valor:2,
+                descripcion:"MEDIO: Breve descrición y/o poca adcuación"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: Ausencia de descripción"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Red de asistencia técnica: Descripción y adecuación de la Red de Asistencia Técnica (estructura y funcionamiento)",
+        claseCriterio:"manual",
+        jerarquia:"B.2.2",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:3,
+                descripcion:"ALTO: Descripción detallada y adecuada, o asistencia técnica innecesaria"
+            },
+            {
+                valor:2,
+                descripcion:"MEDIO: Breve descrición y/o poca adcuación"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: Ausencia de descripción"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Colaboraciones externas: Participación de empresa colaboradora u Organismo Público de investigación",
+        claseCriterio:"manual",
+        jerarquia:"B.2.3",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:3,
+                descripcion:"ALTO: Acuerdo/colaboración específico y firmado"
+            },
+            {
+                valor:2,
+                descripcion:"MEDIO: Borrador Acuerdo/colaboración específico"
+            },
+            {
+                valor:1,
+                descripcion:"BAJO: Otro tipo de acuerdo:carta de intenciones, presupuesto pro forma, etC."
+            },
+            {
+                valor:0,
+                descripcion:"NULO: Sin colaboración"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Organización comercial: Descripción y adecuación de la organización comercial y estrategia de venta del producto y/o servicio",
+        claseCriterio:"manual",
+        jerarquia:"B.2.4",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:5,
+                descripcion:"ALTO: ≥ 50%"
+            },
+            {
+                valor:3,
+                descripcion:"MEDIO: ≥ 25% y < 50%"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: < 25%"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Rentabilidad, siendo: TIR: Tasa Interna de Retorno",
+        claseCriterio:"manual",
+        jerarquia:"B.2.5",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:7,
+                descripcion:"ALTO: TIR ≥ 20"
+            },
+            {
+                valor:5,
+                descripcion:"MEDIO: 5 ≤ TIR < 20"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: TIR < 5"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Capacidad de pago, siendo:VAN: Valor Actual Neto (flujos de caja futuros del proyecto menos la inversión) Pspto: Presupuesto total del proyecto",
+        claseCriterio:"manual",
+        jerarquia:"B.2.6",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:5,
+                descripcion:"ALTO: VAN ≥ 10xPspto"
+            },
+            {
+                valor:3,
+                descripcion:"MEDIO: Pspto < VAN < 10xPspto"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: VAN ≤ Pspto"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Esfuerzo tecnológico: Porcentaje de la inversión a realizar por puesto de trabajo",
+        claseCriterio:"manual",
+        jerarquia:"B.2.7",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:4,
+                descripcion:"ALTO: ≥ 20%"
+            },
+            {
+                valor:2,
+                descripcion:"MEDIO: ≥ 10% y < 20%"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: < 10%"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Valor añadido: Porcentaje del coste de personal anual respecto al coste total del proyecto",
+        claseCriterio:"manual",
+        jerarquia:"B.2.8",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:6,
+                descripcion:"ALTO: ≥ 10%"
+            },
+            {
+                valor:3,
+                descripcion:"BAJO: < 10%"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Empleo generado",
+        claseCriterio:"auto",
+        jerarquia:"C",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Personal cualificado",
+        claseCriterio:"auto",
+        jerarquia:"C.1",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Tipo Empresa",
+        claseCriterio:"manual",
+        jerarquia:"C.1.1",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:6,
+                descripcion:"ALTO"
+            },
+            {
+                valor:3,
+                descripcion:"MEDIO"
+            },
+            {
+                valor:3,
+                descripcion:"NULO"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Tipo Empresa",
+        claseCriterio:"manual",
+        jerarquia:"C.1.2",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:6,
+                descripcion:"Mircoempresa"
+            },
+            {
+                valor:3,
+                descripcion:"Pequeña empresa"
+            },
+            {
+                valor:3,
+                descripcion:"Mediana empresa"
+            },
+            {
+                valor:3,
+                descripcion:"Gran empresa"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Número de contratos",
+        claseCriterio:"manual",
+        jerarquia:"C.1.3",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:6,
+                descripcion:"2 contratos"
+            },
+            {
+                valor:3,
+                descripcion:"3 contratos"
+            },
+            {
+                valor:3,
+                descripcion:"5 contratos"
+            },
+            {
+                valor:3,
+                descripcion:"10 contratos"
+            },
+            {
+                valor:0,
+                descripcion:"0 contratos"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Personal no cualificado",
+        claseCriterio:"auto",
+        jerarquia:"C.2",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Tipo Empresa",
+        claseCriterio:"manual",
+        jerarquia:"C.2.1",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:6,
+                descripcion:"ALTO"
+            },
+            {
+                valor:3,
+                descripcion:"MEDIO"
+            },
+            {
+                valor:3,
+                descripcion:"NULO"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Tipo Empresa",
+        claseCriterio:"manual",
+        jerarquia:"C.2.2",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:6,
+                descripcion:"Mircoempresa"
+            },
+            {
+                valor:3,
+                descripcion:"Pequeña empresa"
+            },
+            {
+                valor:3,
+                descripcion:"Mediana empresa"
+            },
+            {
+                valor:3,
+                descripcion:"Gran empresa"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    },
+    {
+        nombre:"Número de contratos",
+        claseCriterio:"manual",
+        jerarquia:"C.2.3",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:6,
+                descripcion:"2 contratos"
+            },
+            {
+                valor:3,
+                descripcion:"3 contratos"
+            },
+            {
+                valor:3,
+                descripcion:"5 contratos"
+            },
+            {
+                valor:3,
+                descripcion:"10 contratos"
+            },
+            {
+                valor:0,
+                descripcion:"0 contratos"
+            }
+        ],
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    }
+]

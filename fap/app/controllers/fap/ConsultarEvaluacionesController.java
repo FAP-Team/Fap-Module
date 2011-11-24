@@ -23,21 +23,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		renderArgs.put("controllerName", "ConsultarEvaluacionesControllerGen");
 	}
 
-	public static void tablatablaEvaluacionesAsignadas(Long idEvaluacion, Long idEntidad){
-
-		if(Evaluacion.count() == 0){
-				Evaluacion evaluacion = new Evaluacion();
-				Random ran = new Random();
-				evaluacion.solicitud.expedienteAed.asignarIdAed();
-				evaluacion.solicitud.solicitante.tipo = "fisica";
-				evaluacion.solicitud.solicitante.fisica.nip = new Nip();
-				evaluacion.solicitud.solicitante.fisica.nip.valor = ran.nextLong()+"";
-				evaluacion.solicitud.solicitante.fisica.nombre = "AAAA";
-				evaluacion.solicitud.solicitante.fisica.primerApellido = "AAAA";
-				evaluacion.solicitud.solicitante.fisica.segundoApellido = "AAAA";
-				evaluacion.save();
-		}
-		
+	public static void tablatablaEvaluacionesAsignadas(Long idEvaluacion, Long idEntidad){		
 		//TODO Filtrar las evaluaciones que tiene asignada	
 		java.util.List<Evaluacion> rows = Evaluacion.find( "select evaluacion from Evaluacion evaluacion" ).fetch();
 		List<Evaluacion> rowsFiltered = rows; //Tabla sin permisos, no filtra

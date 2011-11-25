@@ -411,3 +411,16 @@ Entidad Propiedades {
 Entidad Convocatoria extends Singleton {
 	Lista estadoConvocatoria estado default = "presentacion"
 }
+
+Entidad TipoDocumento {
+	String uri
+	String nombre
+	String aportadoPor
+	String obligatoriedad
+}
+
+Entidad Tramite {
+	String uri
+	String nombre
+	OneToMany TipoDocumento documentos	
+}

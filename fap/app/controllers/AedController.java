@@ -8,8 +8,8 @@ import controllers.gen.AedControllerGen;
 			
 public class AedController extends AedControllerGen {
 
-	public static void tiposDeDocumentos(){
-		boolean result = TiposDocumentosClient.actualizarTiposDocumentoDB();
+	public static void actualizarTramites(){
+		boolean result = TiposDocumentosClient.actualizarTramites();
 		if(result){
 			Messages.ok("Se actualizaron correctamente los tipos de documentos desde el AED");
 		}else{

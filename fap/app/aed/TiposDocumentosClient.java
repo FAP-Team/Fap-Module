@@ -11,13 +11,16 @@ import javax.xml.ws.Holder;
 
 import org.apache.log4j.Logger;
 
+import messages.Messages;
 import models.ObligatoriedadDocumentos;
 import models.Quartz;
 import models.Singleton;
 import models.TableKeyValue;
 
 import platino.PlatinoProxy;
+import play.db.jpa.JPABase;
 import play.db.jpa.JPAPlugin;
+import play.test.Fixtures;
 import properties.FapProperties;
 
 import es.gobcan.eadmon.aed.ws.Aed;
@@ -34,6 +37,7 @@ import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosInterface;
 import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTiposDocumentosEnTramite;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTramites;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
 import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Tramite;
@@ -71,6 +75,77 @@ public class TiposDocumentosClient {
 		tipos.obtenerVersionServicio(h1, h2);
 		procedimientos.obtenerVersionServicio(h1, h2);
 		return h1.value;
+	}
+	
+	
+	public static boolean actualizarTramites() {
+		String uriProcedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri"); 
+		JPAPlugin.startTx(false);
+
+		try {
+			//Borra los trámites antiguos
+			Fixtures.delete(models.Tramite.class);
+			
+			//Recupera los trámites y los tipos de documentos asociados
+			ListaTramites tramites = procedimientos.consultarTramites(uriProcedimiento);
+			for (Tramite tramite : tramites.getTramites()) {				
+				models.Tramite tramitedb = new models.Tramite();
+				tramitedb.uri = tramite.getUri();
+				tramitedb.nombre = tramite.getNombre();
+				
+				List<TipoDocumentoEnTramite> documentos = procedimientos.
+								consultarTiposDocumentosEnTramite(uriProcedimiento, tramite.getUri()).getTiposDocumentos();
+				
+				for(TipoDocumentoEnTramite tipoDocumento : documentos){
+					models.TipoDocumento tipoDocumentoDb  = new models.TipoDocumento();
+					
+					tipoDocumentoDb.uri = tipoDocumento.getUri();
+					tipoDocumentoDb.aportadoPor = tipoDocumento.getAportadoPor().toString();
+					tipoDocumentoDb.obligatoriedad = tipoDocumento.getObligatoriedad().toString();
+					
+					//Consulta al WS de Tipos de Documentos la descripción
+					TipoDocumento td = tipos.obtenerTipoDocumento(tipoDocumento.getUri());
+					tipoDocumentoDb.nombre = td.getDescripcion();	
+					
+					tramitedb.documentos.add(tipoDocumentoDb);
+				}
+				
+				tramitedb.save();
+			}
+			
+			//Añade el tipo y la descripción a la tabla de tablas
+			List<models.TipoDocumento> tiposDocumentos = models.TipoDocumento.findAll();
+			String table = "tiposDocumentos";
+			TableKeyValue.deleteTable(table);
+			for(models.TipoDocumento tipo : tiposDocumentos){
+				TableKeyValue.setValue(table, tipo.uri, tipo.nombre, false);
+			}
+			TableKeyValue.renewCache(table); //Renueva la cache una única vez
+			
+		} catch (ProcedimientosExcepcion e) {
+			aedError("Se produjo un error en el servicio web de Procedimientos"+ uriProcedimiento, e);
+			JPAPlugin.closeTx(true);
+			return false;
+		} catch(TiposDocumentosExcepcion e){
+			aedError("Se produjo un error en el servicio web de TiposDocumenetos"+ uriProcedimiento, e);
+			JPAPlugin.closeTx(true);
+			return false;
+		}
+		JPAPlugin.closeTx(false);
+		return true;
+	}
+	
+	private static void aedError(String error, ProcedimientosExcepcion e){
+		aedError(error, e.getFaultInfo().getDescripcion());
+	}
+	
+	private static void aedError(String error, TiposDocumentosExcepcion e){
+		aedError(error, e.getFaultInfo().getDescripcion());
+	}
+	
+	private static void aedError(String error, String descripcion){
+		log.error(error + " - descripcion: "+ descripcion);
+		Messages.error(error);		
 	}
 	
 	public static boolean actualizarTiposDocumentoDB() {

@@ -5,7 +5,7 @@
 	<!-- Configurado para utilizar rutas absolutas en base a la variable de entorno fapsdk -->
 	<property name="fapsdk" value="${env.FAPSDK}" />
 	<property name="fap" value="${fapsdk}/fap" />
-
+	
 	<property name="compiler.src.dir" value="${fap}/compiler/src" />
 	<property name="compiler.compiled" value="${fap}/compiler/compiled" />
 	<property name="grammar.dir" value="${compiler.src.dir}/es.fap.simpleled" />

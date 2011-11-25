@@ -162,7 +162,10 @@
 	</target>
 
 	<target name="build-module-unix" if="isUnix">
-		<exec executable="play">
+		<condition property="play.exe" value="${playexe}" else="play">
+			<isset property="playexe" />
+		</condition>
+		<exec executable="${play.exe}">
 			<arg value="build-module" />
 		</exec>
 	</target>

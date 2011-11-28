@@ -107,7 +107,9 @@ public class GPagina {
 			#{/fap.permiso}
 			#{/fap.messages}
 			#{/fap.permiso}
-
+			#{if play.getVirtualFile("../../public/javascripts/$formulario/$titulo"+".js") != null}
+            	#{script '../../public/javascripts/${formulario}/${titulo}.js' /}
+			#{/if}
 		"""
 
 		FileUtils.overwrite(FileUtils.getRoute('VIEW'), "${pagina.name}/${pagina.name}.html", view);

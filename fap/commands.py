@@ -227,16 +227,29 @@ def copy_directory(source, target):
             shutil.copyfile(from_, to_)    
     
 def generateDocumentationHTML(app):
-    print "~ Prueba"
+    print "~ Generando la documentacion ..."
     # Accedo a la carpeta donde estan los ficheros
     ruta_app = app.path.replace("\\", "/")+"/led"
     ruta_modulo = getModuleDir(app, "")
+    ruta_ledFap = ruta_modulo.replace("\\", "/")+"/app/led/fap"
     ruta_htmlDoc = ruta_modulo.replace("\\", "/")+"/documentation/html"
     ruta_clase= ruta_modulo+"\\compiler\\gendocumentation\\bin"
     ruta_plantilla = ruta_modulo.replace("\\", "/")+"/compiler/gendocumentation"
     class_name = "GenerarDocumentacionHTML"
     regexp = re.compile(".fap$")
-    # Recorro la carpeta en busca de los fichero "*.fap"
+    # Primero creo la documentacion de los fichero "*.fap" que vienen por defecto
+    ficheros = os.listdir(ruta_ledFap)
+    for f in ficheros:
+        if (regexp.search(f)): # Si es un fichero "*.fap", creo su documentacion
+            fuente = ruta_ledFap+"\\"+f
+            # Nombre del fichero destino de la documentacion
+            destino = ruta_htmlDoc+"/"+f.replace(".fap", "FAPDocumentacion.html")
+            # Por cada fichero ejecutamos la generacion de su documentacion
+            classpath=ruta_clase+";"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\groovy-all-1.7.5.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-textile.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-wikitext.jar"
+            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente, destino, ruta_plantilla];
+            subprocess.call(cmd);
+            print "~ [CREADO]: "+destino
+    # Recorro la carpeta en busca de los fichero "*.fap", propios del proyecto
     ficheros = os.listdir(ruta_app)
     for f in ficheros:
         if (regexp.search(f)): # Si es un fichero "*.fap", creo su documentacion
@@ -247,4 +260,5 @@ def generateDocumentationHTML(app):
             classpath=ruta_clase+";"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\groovy-all-1.7.5.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-textile.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-wikitext.jar"
             cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente, destino, ruta_plantilla];
             subprocess.call(cmd);
+            print "~ [CREADO]: "+destino
 

@@ -76,9 +76,10 @@ public class BaremacionService {
             invokedClass = assignableClasses.get(0);
         }
         
-        String methodName = "eval" + jerarquia.replaceAll("//.", "_");
+        
+        String methodName = "eval" + jerarquia.replaceAll("\\.", "_");
         Method method = null;
-
+        
         if(invokedClass != null){
 	        //Método de la clase evaluador
 	        try {

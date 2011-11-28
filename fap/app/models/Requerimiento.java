@@ -20,7 +20,7 @@ import utils.AedUtils;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 public class Requerimiento extends Model {
 	// Código de los atributos

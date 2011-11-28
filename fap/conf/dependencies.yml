@@ -11,7 +11,6 @@ require:
     - com.google.guava -> guava r09
     - net.sf.flexjson -> flexjson 2.1
     - play -> pdf 0.6
-    - play -> less 0.3
     - play -> recaptcha 1.2
     - javassist -> javassist 3.8.0.GA:
         transitive: false
@@ -34,7 +33,7 @@ require:
     - org.apache.santuario -> xmlsec 1.4.3:
         transitive: false
 
-    - es.gobcan.eadmon -> eadmon-aed-cliente 1.0.3:
+    - es.gobcan.eadmon.aed.cliente -> eadmon-aed-cliente 1.1:
         transitive: false
 
     - es.gobcan.platino -> platino.pre 1.0:
@@ -61,4 +60,5 @@ repositories:
             - es.gobcan.eadmon.verificacion -> *
             - es.gobcan.eadmon.tiposdocumentos -> *
             - es.gobcan.eadmon -> *
+            - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *

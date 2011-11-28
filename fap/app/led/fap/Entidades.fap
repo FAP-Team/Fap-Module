@@ -1,12 +1,19 @@
+// La entidad "TableKeyValue" la utilizaremos como tabla de tablas.
+// Básicamnte para guardar las listas con clave-valor.
 Entidad TableKeyValue noAuditable{
 	String table column="t"
 	String key column="k"
 	String value column="v"
 }
 
+// Entidad de la que deberán extender las entidades únicas en la aplicación.
+// Es decir, una única entidad para toda la aplicación.
 Entidad Singleton superClass {
 }
 
+// Incluye lo básico que debería tener una solicitud. Deberíamos crear una entidad Solicitud,
+// que extienda de esta, y añadirle lo que se quiera. Así, por defecto, la entidad Solicitud
+// tendrá todos éstos campos por defecto.
 Entidad SolicitudGenerica tableName = "solicitud"{
 	String estado
 	Lista estadosSolicitud estadoUsuario transient
@@ -24,6 +31,7 @@ Entidad SolicitudGenerica tableName = "solicitud"{
 	ManyToMany CEconomico ceconomicos	
 }
 
+// Dátos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
 Entidad Solicitante extends Persona {
 	Direccion domicilio
 	String telefonoFijo
@@ -31,14 +39,15 @@ Entidad Solicitante extends Persona {
 	String fax
 	Email email
 	String web
-	// Datos de los representantes
+	// Es el solicitante el que puede tener representantes. Según el tipo de solicitante puede tener 1, o varios representantes
 	Boolean representado
-	RepresentantePersonaFisica representante //noConstruct
+	RepresentantePersonaFisica representante
 	OneToMany RepresentantePersonaJuridica representantes
 	Boolean autorizaFuncionario
 }
 
-Entidad Agente inheritance=joined{
+// Agentes que pueden acceder a la aplicación
+Entidad Agente inheritance=joined auditable {
 	String username
 	String password
 	Email email
@@ -49,7 +58,8 @@ Entidad Agente inheritance=joined{
 	Boolean funcionario
 }
 
-
+// Entidad que contiene los campos necesarios para una dirección. Se establece como "embeddable", lo que indica
+// que en cada entidad que incluya no creará una relación a una tabla dirección, sino que mapeará sus campos.
 Entidad Direccion embeddable {
 	String calle
 	String numero
@@ -60,7 +70,9 @@ Entidad Direccion embeddable {
 	Lista paises pais
 }
 
+// Entidad que representa un Documento y todo lo necesario para representarlo
 Entidad Documento {
+	// uri del documento en el AED
 	String uri
 	Lista tipoDocumentosCiudadanos tipoCiudadano transient
 	Lista tipoDocumentosOrganismos tipoOrganismo transient
@@ -74,10 +86,11 @@ Entidad Documento {
 	String urlDescarga transient
 }
 
+// La entidad Documentación agrupa aportaciones de documentos
 Entidad Documentacion {
+	// Lista de documentos
 	OneToMany Documento documentos
 	
-	// Ésto se está eliminando de aqui
 	String uriDocOficial
 	String urlDocOficial
 	Boolean docOficialClasificado
@@ -93,6 +106,7 @@ Entidad ObligatoriedadDocumentos extends Singleton {
 	List<String> manuales
 }
 
+// Representación de una persona (tanto física como jurídica)
 Entidad Persona inheritance=joined {
 	PersonaFisica fisica
 	PersonaJuridica juridica
@@ -101,6 +115,7 @@ Entidad Persona inheritance=joined {
 	String nombreCompleto transient
 }
 
+// Representación de una persona física
 Entidad PersonaFisica inheritance=joined {
 	String nombre
 	String primerApellido
@@ -108,6 +123,7 @@ Entidad PersonaFisica inheritance=joined {
 	Nip nip
 }
 
+// Representación de una persona jurídica
 Entidad PersonaJuridica inheritance=joined {
 	String entidad
 	Cif cif
@@ -124,22 +140,27 @@ Entidad RepresentantePersonaFisica extends Persona {
 	Email email
 }
 
+// Un representante de persona jurídica además de lo que tiene un representante de persona física,
+// tiene un tipo de representación
 Entidad RepresentantePersonaJuridica extends RepresentantePersonaFisica {
 	Lista TiposRepresentantes tipoRepresentacion
 }
 
-
+// Representación de NIP
 Entidad Nip embeddable {
 	String tipo
 	String valor
 }
 
+// Participación de los agentes en las solicitudes.
+// Indica de que forma participan los agentes de la aplicación (usuarios) en cada una de las solicitudes
 Entidad Participacion {
 	ManyToOne Agente agente noConstruct
 	ManyToOne SolicitudGenerica solicitud noConstruct
 	Lista TiposParticipacion tipo
 }
 
+// Entidad sigleton que se utilizará para realizar unos u otros trabajos cada cierto tiempo
 Entidad Quartz extends Singleton{
 	Boolean execute
 	Boolean mostrarTodasSolicitudes
@@ -150,16 +171,20 @@ Entidad Quartz extends Singleton{
 	String texto
 }
 
+// Contien información de registro de la solicitud en Platino
 Entidad Registro {
+	// Borrador de la solicitud
 	Documento borrador
+	// Documento oficial de la solicitud
 	Documento oficial
+	// Justificante del registro de la solicitud
 	Documento justificante
 	Documento autorizacionFuncionario
 	
 	InformacionRegistro informacionRegistro
 	
+	// Fase del registro en la que se encuentra
 	FasesRegistro fasesRegistro
-	
 	
 	//En el caso de que firme una persona jurídica
 	//Se almacena si se firma con el certificado de empresa
@@ -170,7 +195,7 @@ Entidad Registro {
 	OneToMany Firmante firmantes
 }
 
-
+// Representación de firmantes
 Entidad Firmante {
 	String nombre
 	String idtipo
@@ -180,6 +205,7 @@ Entidad Firmante {
 	String cardinalidad // unico, multiple
 }
 
+// Información del registro
 Entidad InformacionRegistro {
 	DateTime fechaRegistro
 	String unidadOrganica
@@ -187,6 +213,8 @@ Entidad InformacionRegistro {
 	String numeroRegistroGeneral
 }
 
+// Representamos las fases del registro de una solicitud, para conocer por cual va,
+// y no repetir fases.
 Entidad FasesRegistro {
 	Boolean borrador
 	Boolean firmada
@@ -196,6 +224,7 @@ Entidad FasesRegistro {
 	Boolean clasificarAed
 }
 
+// Representación del expediente en platino
 Entidad ExpedientePlatino {
 	String uri
 	String numero
@@ -204,16 +233,18 @@ Entidad ExpedientePlatino {
 	String ruta	
 }
 
+// Representación del expediente en el AED
 Entidad ExpedienteAed{
 	String idAed	
 }
 
-
+// Representación de las aportaciones de documentos actual y las ya registradas
 Entidad Aportaciones {
 	Aportacion actual
 	OneToMany Aportacion registradas
 }
 
+// Entidad que representa una aportación de documentación realizada en un expediente
 Entidad Aportacion {
 	String estado
 	OneToMany Documento documentos
@@ -227,9 +258,7 @@ Entidad Aportacion {
 	Documento justificante
 }
 
-
-
-
+// Guardamos las incidencias realizadas
 Entidad Incidencia {
     Email email
     String telefono
@@ -251,6 +280,8 @@ Entidad SemillaExpediente extends Singleton{
 //	String footer
 //}
 //
+
+// Plantillas de mails automáticos a enviar
 Entidad Mail tableName = "email" {
 	String idMail
 	String bcc
@@ -270,7 +301,7 @@ Entidad Log nonPersist {
 	String trace
 }
 
-
+// Entidad que permite la verificación de documentación
 Entidad Verificacion {
 	String uriVerificacion
 	String uriProcedimiento
@@ -291,6 +322,7 @@ Entidad Verificacion {
 	DateTime fechaUltimaActualizacion	
 }
 
+// Permite controlar el documento de la verificación, y el estado de la misma
 Entidad VerificacionDocumento {
 	String uriDocumentoVerificacion
 	String uriDocumento
@@ -311,12 +343,14 @@ Entidad VerificacionDocumento {
 	Boolean existe
 }
 
+// Códigos de requerimiento utilizados en la verificación
 Entidad CodigoRequerimiento {
 	String codigo
 	LongText descripcion
 	String descripcionCorta
 }
 
+// Códigos de exclusión
 Entidad Exclusion {
 	String codigo
 	LongText descripcion
@@ -376,6 +410,20 @@ Entidad Propiedades {
 	String valor transient
 }
 
+// Estado de la convocatoria en la aplicación
 Entidad Convocatoria extends Singleton {
 	Lista estadoConvocatoria estado default = "presentacion"
+}
+
+Entidad TipoDocumento {
+	String uri
+	String nombre
+	String aportadoPor
+	String obligatoriedad
+}
+
+Entidad Tramite {
+	String uri
+	String nombre
+	OneToMany TipoDocumento documentos	
 }

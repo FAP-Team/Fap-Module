@@ -59,7 +59,8 @@ GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios
 POST /Administracion/usuarios/save UsuariosController.save
 GET /Administracion/aed AedController.index
 
-POST /Administracion/aed/tiposDeDocumentos AedController.tiposDeDocumentos
+POST /Administracion/aed/actualizarTramites AedController.actualizarTramites
+GET /Administracion/aed/tramites AedController.tablatramites
 GET /Administracion/convocatoria ConvocatoriaController.index
 
 POST /Administracion/convocatoria/save ConvocatoriaController.save
@@ -83,6 +84,13 @@ POST /Administracion/popupusuario/{idEntidad}/borrar popups.PopupUsuarioControll
 POST /Administracion/popupusuario/{idEntidad}/crear popups.PopupUsuarioController.crear
 POST /Administracion/popupusuario/{idEntidad}/cancelarcrear popups.PopupUsuarioController.cancelarCrear
 
+GET /Administracion/popuptramite/{idEntidad}/abrir popups.PopupTramiteController.abrir
+POST /Administracion/popuptramite/{idEntidad}/editar popups.PopupTramiteController.editar
+POST /Administracion/popuptramite/{idEntidad}/borrar popups.PopupTramiteController.borrar
+POST /Administracion/popuptramite/{idEntidad}/crear popups.PopupTramiteController.crear
+POST /Administracion/popuptramite/{idEntidad}/cancelarcrear popups.PopupTramiteController.cancelarCrear
+
+GET /Administracion/popuptramite/{idEntidad}/documentos popups.PopupTramiteController.tabladocumentos
 GET /Administracion/popuptabladetablas/{idEntidad}/abrir popups.PopupTablaDeTablasController.abrir
 POST /Administracion/popuptabladetablas/{idEntidad}/editar popups.PopupTablaDeTablasController.editar
 POST /Administracion/popuptabladetablas/{idEntidad}/borrar popups.PopupTablaDeTablasController.borrar

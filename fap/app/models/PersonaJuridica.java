@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public class PersonaJuridica extends Model {

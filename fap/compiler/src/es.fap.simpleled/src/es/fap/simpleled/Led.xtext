@@ -30,7 +30,7 @@ Entity:
 		& (inheritance?="inheritance" "=" "joined")?
 		& (superClass?="superClass")?
 		& (noConstruct?="noConstruct")?
-		& (noAuditable?="noAuditable")?
+		& (auditable?="auditable" | noAuditable?="noAuditable")?
 		)
 	'{'
 		attributes+=Attribute*
@@ -340,6 +340,8 @@ SubirArchivoAed:
 	'SubirArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
+		& ('tramite' '=' tramite=STRING)?
+		& ('aportadoPor' '=' aportadoPor=STRING)?
 	)
 ;
 

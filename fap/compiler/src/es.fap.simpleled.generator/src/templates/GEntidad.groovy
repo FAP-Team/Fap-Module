@@ -48,10 +48,10 @@ public class GEntidad {
 		
 		/// PERSISTENCIA
 		/// Si es una entidad "NonPersist" no debemos establecerle la anotación @Entity
-		String auditable = "@Auditable"
+		String auditable = ""
 		String persist = "@Entity";
-		if (entity.noAuditable){
-			auditable = "";
+		if (entity.auditable){
+			auditable = "@Auditable";
 		}
 		if (entity.nonPersist){
 			persist = "";
@@ -210,8 +210,8 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 
 			}
 			
-			if ((attribute.defaultValue != null)) {
-				System.out.println("WARNING: A los atributos de tipo compuesto no se les permite indicarle un valor por defecto (Entidad: "+entity.name+", Atributo: "+attribute.name+")")
+			if ((attribute.defaultValue != null) && (compuesto.lista == null)) {
+				System.out.println("WARNING: A los atributos de tipo compuesto que no sean listas no se les permite indicarle un valor por defecto (Entidad: "+entity.name+", Atributo: "+attribute.name+")")
 			}
 		}
 		

@@ -5,7 +5,7 @@
 	<!-- Configurado para utilizar rutas absolutas en base a la variable de entorno fapsdk -->
 	<property name="fapsdk" value="${env.FAPSDK}" />
 	<property name="fap" value="${fapsdk}/fap" />
-						
+	
 	<property name="compiler.src.dir" value="${fap}/compiler/src" />
 	<property name="compiler.compiled" value="${fap}/compiler/compiled" />
 	<property name="grammar.dir" value="${compiler.src.dir}/es.fap.simpleled" />
@@ -13,10 +13,21 @@
 	<property name="dependencies.yml" value="${fap}/conf/dependencies.yml" />
 
 	<!-- FTP Tasks properties -->
-	<property name="ftp.server" value="fap-devel.etsii.ull.es" />
-	<property name="ftp.fap.dir" value="/public/fap-sdk2/" />
-	<property name="ftp.user" value="undefined" />
-	<property name="ftp.pass" value="undefined" />
+	<condition property="ftp.server" value="${ftpservernightly}" else="fap-devel.etsii.ull.es">
+		<isset property="ftpservernightly" />
+	</condition>
+	<condition property="ftp.fap.dir" value="${ftpdirnightly}" else="/public/fap-sdk2/">
+		<isset property="ftpdirnightly" />
+	</condition>
+	<condition property="ftp.user" value="${ftpusernightly}" else="undefined">
+		<isset property="ftpusernightly" />
+	</condition>
+	<condition property="ftp.pass" value="${ftppassnightly}" else="undefined">
+		<isset property="ftppassnightly" />
+	</condition>
+	<condition property="zip.dir" value="dist-nightly" else="dist">
+		<isset property="versionnightly" />
+	</condition>
 	<!-- FTP Tasks properties -->
 
 	<!-- SVN and SVN-ANT Tasks properties -->
@@ -49,7 +60,9 @@
 
 	<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy" classpathref="groovy.classpath" />
 
+
 	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
+
 
 	<!-- first create our properties -->
 	<condition property="isUnix">
@@ -64,7 +77,7 @@
 	</condition>
 
 	<target name="get-version"
-			description="Establece la versión del módulo en la variable \'version\' y la muestra">
+		description="Establece la versión del módulo en la variable \'version\' y la muestra">
 		<groovy>
 			File file = new File(properties["dependencies.yml"])
 			file.eachLine { line -> 
@@ -74,34 +87,44 @@
 				}
 			}
 	    </groovy>
-		<echo message="Version del modulo = ${version}"/>
+		<condition property="version.set" value="nb-${versionnightly}" else="${version}">
+			<isset property="versionnightly" />
+		</condition>
+		<echo message="Version del modulo = ${version.set}" />
+		<echo message="Directorio del ftp = ${ftp.fap.dir}" />
+		<echo message="Server del ftp = ${ftp.server}" />
+		<echo message="User del ftp = ${ftp.user}" />
+		<echo message="Pass del ftp = ${ftp.pass}" />
 	</target>
 
-	<target name="dist" depends="get-version"
-		description="Crea el fichero .zip del módulo fap">			
-		<echo message="Version del modulo = ${version}"/>
-		
-        <antcall target="compiler"/>
+
+
+	<target name="dist" depends="get-version" description="Crea el fichero .zip del módulo fap">
+		<echo message="Version del modulo = ${version.set}" />
+
+		<antcall target="compiler" />
 
 		<delete dir="dist" />
 		<mkdir dir="dist" />
-	
-        <antcall target="build-plugins"/>
-        <antcall target="generate-module"/>
-        <antcall target="build-module-unix"/>
-        <antcall target="build-module-windows"/>
-		<antcall target="delete-src-from-zip"/>
+		<delete dir="dist-nightly" />
+		<mkdir dir="dist-nightly" />
+
+		<antcall target="build-plugins" />
+		<antcall target="generate-module" />
+		<antcall target="build-module-unix" />
+		<antcall target="build-module-windows" />
+		<antcall target="delete-src-from-zip" />
 
 		<!--
 		<antcall target="ftp-upload"/>
+		<antcall target="ftp-upload-doc"/>
 		<antcall target="svn-tag"/>
 		-->
 	</target>
 
 	<!-- Se generan las clases del módulo. Por ahora se necesita tener python instalado
 	y en el PATH del sistema, para no incluir más librerías-->
-	<target name="generate-module"
-		description="Genera el código del modulo FAP a partir de los ficheros .fap del mismo">
+	<target name="generate-module" description="Genera el código del modulo FAP a partir de los ficheros .fap del mismo">
 		<exec executable="python">
 			<arg line='generate.py' />
 		</exec>
@@ -115,12 +138,7 @@
 		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar" />
 		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar" />
 	</target>
-	
-	<target name="plugins">
-		<antcall target="build-plugins"/>
-		<antcall target="install-plugins"/>
-	</target>	
-	
+
 	<target name="build-plugins">
 		<exec executable="eclipse">
 			<arg value="-application" />
@@ -131,19 +149,23 @@
 	</target>
 
 	<!-- Copia los plugins a la carpeta de eclipse -->
-	<target	name="install-plugins">
+	<target name="install-plugins">
 		<property environment="env" />
 		<property name="route" value="${env.ECLIPSE_HOME}/dropins" />
-		<echo message="Instalando plugins en ${route}"></echo>
+		<echo message="Instalando plugins en ${route}">
+		</echo>
 		<copy todir="${route}">
-			<fileset dir="plugins" >
+			<fileset dir="plugins">
 				<include name="*.jar"/>
 			</fileset>
 		</copy>
 	</target>
-	
+
 	<target name="build-module-unix" if="isUnix">
-		<exec executable="play">
+		<condition property="play.exe" value="${playexe}" else="play">
+			<isset property="playexe" />
+		</condition>
+		<exec executable="${play.exe}">
 			<arg value="build-module" />
 		</exec>
 	</target>
@@ -156,27 +178,19 @@
 	</target>
 
 	<!-- Elimina la carperta de fuentes "src-compiler" del módulo FAP -->
-	<target name="delete-src-from-zip"
-		description="Elimina la carpeta de fuentes src-compiler del módulo FAP (no son necesarias en el .zip)">
+	<target name="delete-src-from-zip" depends="get-version" description="Elimina la carpeta de fuentes src-compiler del módulo FAP (no son necesarias en el .zip)">
 		<delete dir="extraer" />
 		<!--mkdir dir="extraer" /-->
 		<unzip src="dist/fap-${version}.zip" dest="extraer" />
 		<delete dir="extraer/compiler/src" />
-		<delete dir="dist" />
-		<mkdir dir="dist" />
-		<zip basedir="extraer" destfile="dist/fap-${version}.zip" />
-		<echo message="Modulo zip creado:  dist/fap-${version}.zip" />
+		<delete dir="dist-nightly" />
+		<mkdir dir="dist-nightly" />
+		<zip basedir="extraer" destfile="dist-nightly/fap-${version.set}.zip" />
+		<echo message="Modulo zip creado:  dist-nightly/fap-${version.set}.zip" />
 		<delete dir="extraer" />
 	</target>
-
-	<target name="ftp-upload" depends="get-version"
-		description="Sube la documentación y el módulo al ftp">
-		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version}" />
-
-		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version}/" userid="${ftp.user}" password="${ftp.pass}">
-			<fileset file="dist/fap-${version}.zip" />
-		</ftp>
-
+	
+	<target name="ftp-upload-doc">
 		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version}/documentation" />
 
 		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version}/documentation/" userid="${ftp.user}" password="${ftp.pass}">
@@ -185,7 +199,15 @@
 				<include name="**/*.textile" />
 			</fileset>
 		</ftp>
+	</target>
 
+	<target name="ftp-upload" depends="get-version" description="Sube la documentación y el módulo al ftp">
+		<echo message="${zip.dir}    -    ${ftp.fap.dir}      -  ${zip.dir}/fap-${version.set}.zip" />
+		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version.set}" />
+
+		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version.set}/" userid="${ftp.user}" password="${ftp.pass}">
+			<fileset file="${zip.dir}/fap-${version.set}.zip" />
+		</ftp>
 	</target>
 
 	<!-- Deprecated!!!!!-->
@@ -200,26 +222,26 @@
 		 </svn>		
 		 <echo message="Creado tag del modulo"/>
 	</target-->
-	
-	
+
+
 	<!-- Git -->
 	<macrodef name="git">
-	    <attribute name="command" />
-	    <attribute name="dir" default="" />
-	    <element name="args" optional="true" />
-	    <sequential>
-	        <echo message="git @{command}" />
-	        <exec executable="git" dir="@{dir}">
-	            <arg value="@{command}" />
-	            <args/>
-	        </exec>
-	    </sequential>
+		<attribute name="command" />
+		<attribute name="dir" default="" />
+		<element name="args" optional="true" />
+		<sequential>
+			<echo message="git @{command}" />
+			<exec executable="git" dir="@{dir}">
+				<arg value="@{command}" />
+				<args />
+			</exec>
+		</sequential>
 	</macrodef>
-	
+
 	<target name="git-status">
 		<git command="status" dir="../"/>
 	</target>
-	
+
 	<!-- Crea un TAG llamado v${version} con el HEAD que está en el repositorio Git -->
 	<target name="git-create-tag" depends="get-version">
 		<!-- Lo dejaremos igual que nuestro último commit -->
@@ -227,7 +249,7 @@
 		<!-- Obtenemos los ultimos cambios del repositorio -->
 		<!--git command="pull" dir="../"/-->
 		<!-- Creamos el tag con la version actual -->
-		<git command="tag" dir="../" >
+		<git command="tag" dir="../">
 			<args>
 				<arg value="-a v${version} -m 'Release v${version}'" />
 			</args>

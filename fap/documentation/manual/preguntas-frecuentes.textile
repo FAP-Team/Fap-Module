@@ -2,17 +2,21 @@ h1. Preguntas Frecuentes
 
 Preguntas frecuentes realizadas al equipo FAP.
 
-h2. ¿Qué significa declarar una entidad con "(Solicitud)"?
+h2. ¿Puedo modificar los ficheros ".fap" del módulo FAP?
 
-Al declarar una entidad con el tipo especial *(Solicitud)*, _Ejemplo: *Entidad EntidadA (Solicitud) { ... }*_, estamos indicando que en la clase _Solicitud_ deberá haber un campo _entidadA_, que referencia a un objeto de la clase _EntidadA_. Así podremos acceder a ese objeto mediante *solicitud.entidadA*.
+Rotundamente NO. Crea y edita tus propios ficheros ".fap" en tu aplicación y considera el módulo FAP como algo externo de tu aplicación, aunque te permitirá extender de sus entidades y demás.
 
 h2. ¿Puedo crear una entidad cuyo nombre sea *Solicitud*?
 
-No, ya que no se permiten crear entidades cuyos nombres ya estén incluidos en el módulo FAP.
+Si, y lo lógico sería hacer que extendiera de *SolicitudGenerica*.
+
+h2. ¿Puedo crear una entidad cuyo nombre sea *SolicitudGenerica*?
+
+No, ya que no se permiten crear entidades ya definidas en el módulo FAP.
 
 h2. ¿Todas las entidades que creo deberán ser referenciadas directa o indirectamente desde la entidad Solicitud?
 
-En principio si, a no ser que sean entidades *Singleton*, las cuales sólo existirá una estancia en toda la aplicación (útil para valores globales a todas las solicitudes).
+No. 
 
 h2. ¿Puedo hacer que una entidad *EntidadA* extienda de otra *EntidadB*?
 
@@ -28,7 +32,7 @@ Entidad EntidadB {
 Así, la entidadA tendrá "internamente" los campos *campoEntidadA* y *campo*.
 
 
-h2. ¿Qué implica la declaración de una entidad en un fichero de tipo ".play"?
+h2. ¿Qué implica la declaración de una entidad en un fichero de tipo ".fap"?
 
 Por defecto una entidad representa una tabla en la base de datos. En la aplicación se crea una clase entity, esta clase se instancia al crear una nueva solicitud, aunque el desarrollador puede crear una instancia en cualquier momento. Si la clase es Singleton solo se crear una instancia de la clase para toda la aplicación. 
 
@@ -64,13 +68,13 @@ Las clases generadas por las entidades extiende de otra clase que provee Play pa
 
 Más información en "The play.db.jpa.Model support class":http://www.playframework.org/documentation/1.2.2/jpa#support
 
-h2. ¿Se puede hacer referencia a formularios que se encuentren en diferentes ficheros ".play" sin necesidad de importar su declaración? 
+h2. ¿Se puede hacer referencia a formularios que se encuentren en diferentes ficheros ".fap" sin necesidad de importar su declaración? 
 
-Siempre que los ficheros ".play" estén definidos dentro de la carpeta (o subcarpetas) "src" pueden ser referenciados entre ellos si necesidad de importarlos. 
+Siempre que los ficheros ".fap" estén definidos dentro de la carpeta (o subcarpetas) "led" pueden ser referenciados entre ellos si necesidad de importarlos. 
 
-h2. ¿El formulario "principal.play" es siempre el punto de entrada de la aplicación? En tal caso, ¿qué pasaría si no se incluyese? 
+h2. ¿El formulario "principal.fap" es siempre el punto de entrada de la aplicación? En tal caso, ¿qué pasaría si no se incluyese? 
 
-principal.play muestra la lista de solicitudes del usuario y un menú para acceder a las páginas de administración, si no se incluye se tendría que crear una página para realizar estas tareas y hacer que las redirecciones que apuntaban a la página principal apunten a la nueva página  
+principal.fap muestra la lista de solicitudes del usuario y un menú para acceder a las páginas de administración, si no se incluye se tendría que crear una página para realizar estas tareas y hacer que las redirecciones que apuntaban a la página principal apunten a la nueva página  
 
 h2. En el elemento "Tabla", parece ser que el atributo "Campo" se mapea con los tipos de datos de cada una de las columnas de la tabla. A este respecto: ¿Se chequea la compatibilidad entre los tipos de datos? ¿Existe algún tipo de compatibilidad entre tipos de datos diferentes? Por ejemplo, ¿un "Integer" se puede asociar a un "Double"?.
 
@@ -87,3 +91,7 @@ h2. Proporcionar la descripción completa de la sintaxis del elemento "Wiki". So
 h2. Atributos del elemento "Grupo", tales como "SiCombo" o "SiCheck". Por ejemplo, nos queda la duda de si existe el elemento "SiText" o algún otro.
 
 "Documentación grupo":dsl-grupo
+
+h2. Al introducir las fechas en la aplicación me indica que el formato es incorrecto, ¿qué pasa?
+
+Probablemente la property *format.date* del fichero _pplication.conf_ de la aplicación no esté correcta. Su valor debería ser: *format.date=dd/MM/yyyy*. 

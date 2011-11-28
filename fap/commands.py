@@ -12,7 +12,7 @@ MODULE = 'fap'
 
 # Commands that are specific to your module
 
-COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version']
+COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation']
 # Eliminamos el comando 'fap:model' de la lista de comandos
 
 def execute(**kargs):
@@ -25,18 +25,22 @@ def execute(**kargs):
         print "~ Hello"
 
     if command == "fap:generate":
-        version(app, args)
+        versionASCIIART(app, args)
         run_generate(app, args)
         
 #    if command == "fap:model":
 #        run_model(app, args)
             
     if command == "fap:init":
-        version(app, args)
+        versionASCIIART(app, args)
         init_application (app, args)
 
     if command == "fap:version":
         version(app, args)
+        versionASCIIART(app, args)
+        
+    if command == "fap:documentation":
+        generateDocumentationHTML(app)
 
 
 
@@ -49,7 +53,13 @@ def version (app, args):
              print moduleDefinition
         except Exception:
              pass
-    
+
+def versionASCIIART (app, args):
+   readmeFile = os.path.join(getModuleDir(app, args), 'README'); 
+   if os.path.exists(readmeFile):
+      FILE = open(readmeFile).read();
+      print FILE;  
+  
         
 def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     moduleDir = getModuleDir(app, cmd_args)
@@ -140,10 +150,17 @@ def getModuleDir(app, cmd_args=""):
     else:    
         if app.path and os.path.exists(os.path.join(app.path, 'modules')):
             regexp = re.compile("^fap(-(\d*\.*)*)?$")
+            regexpNigthly = re.compile("^fap(-nb-(\d*\.*)*)?$")
             for m in os.listdir(os.path.join(app.path, 'modules')):
                 mf = os.path.join(os.path.join(app.path, 'modules'), m)
                 base = os.path.basename(mf)
                 if regexp.match(base):
+                    if os.path.isdir(mf):
+                        return mf
+                    else:
+                        return open(mf, 'r').read().strip()
+                # Nightly build regexp
+                if regexpNigthly.match(base):
                     if os.path.isdir(mf):
                         return mf
                     else:
@@ -207,4 +224,41 @@ def copy_directory(source, target):
             if not os.path.exists(to_directory):
                 os.makedirs(to_directory)
             print "Creando el fichero " + to_
-            shutil.copyfile(from_, to_)
+            shutil.copyfile(from_, to_)    
+    
+def generateDocumentationHTML(app):
+    print "~ Generando la documentacion ..."
+    # Accedo a la carpeta donde estan los ficheros
+    ruta_app = app.path.replace("\\", "/")+"/led"
+    ruta_modulo = getModuleDir(app, "")
+    ruta_ledFap = ruta_modulo.replace("\\", "/")+"/app/led/fap"
+    ruta_htmlDoc = ruta_modulo.replace("\\", "/")+"/documentation/html"
+    ruta_clase= ruta_modulo+"\\compiler\\gendocumentation\\bin"
+    ruta_plantilla = ruta_modulo.replace("\\", "/")+"/compiler/gendocumentation"
+    class_name = "GenerarDocumentacionHTML"
+    regexp = re.compile(".fap$")
+    # Primero creo la documentacion de los fichero "*.fap" que vienen por defecto
+    ficheros = os.listdir(ruta_ledFap)
+    for f in ficheros:
+        if (regexp.search(f)): # Si es un fichero "*.fap", creo su documentacion
+            fuente = ruta_ledFap+"\\"+f
+            # Nombre del fichero destino de la documentacion
+            destino = ruta_htmlDoc+"/"+f.replace(".fap", "FAPDocumentacion.html")
+            # Por cada fichero ejecutamos la generacion de su documentacion
+            classpath=ruta_clase+";"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\groovy-all-1.7.5.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-textile.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-wikitext.jar"
+            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente, destino, ruta_plantilla];
+            subprocess.call(cmd);
+            print "~ [CREADO]: "+destino
+    # Recorro la carpeta en busca de los fichero "*.fap", propios del proyecto
+    ficheros = os.listdir(ruta_app)
+    for f in ficheros:
+        if (regexp.search(f)): # Si es un fichero "*.fap", creo su documentacion
+            fuente = ruta_app+"\\"+f
+            # Nombre del fichero destino de la documentacion
+            destino = ruta_htmlDoc+"/"+f.replace(".fap", "Documentacion.html")
+            # Por cada fichero ejecutamos la generacion de su documentacion
+            classpath=ruta_clase+";"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\groovy-all-1.7.5.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-textile.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-wikitext.jar"
+            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente, destino, ruta_plantilla];
+            subprocess.call(cmd);
+            print "~ [CREADO]: "+destino
+

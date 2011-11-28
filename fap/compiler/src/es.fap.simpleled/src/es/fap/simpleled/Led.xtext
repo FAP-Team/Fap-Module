@@ -17,7 +17,8 @@ QN: // QualifiedName
 // Probando un error bruto en la gramática
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
-	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente" | "documento" | "password"
+	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente" | "documento" | "password" |
+	"aportadoPor"
 ;
 
 Entity:

@@ -25,7 +25,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 
 	public static void tablatablaEvaluacionesAsignadas(Long idEvaluacion, Long idEntidad){		
 		//TODO Filtrar las evaluaciones que tiene asignada	
-		java.util.List<Evaluacion> rows = Evaluacion.find( "select evaluacion from Evaluacion evaluacion" ).fetch();
+		java.util.List<Evaluacion> rows = Evaluacion.find( "select evaluacion from Evaluacion evaluacion order by evaluacion.solicitud.expedienteAed.idAed" ).fetch();
 		List<Evaluacion> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderResponse<Evaluacion> response = new tables.TableRenderResponse<Evaluacion>(rowsFiltered);
 		renderJSON(response.toJSON("solicitud.expedienteAed.idAed", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado", "id"));

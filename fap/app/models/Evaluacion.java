@@ -2,7 +2,6 @@
 package models;
 
 import java.util.*;
-
 import javax.persistence.*;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -21,7 +20,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 public class Evaluacion extends Model {
 	// Código de los atributos
@@ -106,14 +105,18 @@ public class Evaluacion extends Model {
 	 * @return
 	 */
 	public List<Documento> getDocumentosAccesibles(){
-		JPAQuery jpaQuery = Documento.find("select documento" +
-						" from Solicitud solicitud" +
-						" join solicitud.documentacion.documentos documento" +
-						" where solicitud.id=:id and documento.tipo in (:tipos)");
-		jpaQuery.query.setParameter("id", solicitud.id);
-		jpaQuery.query.setParameter("tipos", tipo.tiposDocumentos);
-		List<Documento> documentosAccesibles = jpaQuery.fetch();
-		return documentosAccesibles;
+		if(tipo.tiposDocumentos.size() > 0){
+			JPAQuery jpaQuery = Documento.find("select documento" +
+							" from Solicitud solicitud" +
+							" join solicitud.documentacion.documentos documento" +
+							" where solicitud.id=:id and documento.tipo in (:tipos)");
+			jpaQuery.query.setParameter("id", solicitud.id);
+			jpaQuery.query.setParameter("tipos", tipo.tiposDocumentos);
+			List<Documento> documentosAccesibles = jpaQuery.fetch();
+			return documentosAccesibles;
+		}else{
+			return null;
+		}
 	}
 		
 	// === MANUAL REGION END ===

@@ -8,9 +8,12 @@
 
 #{set 'menu'}
 	<ul>
-		<li><a href="@{fap.ConsultarEvaluacionesController.index}">Evaluaciones</a>
+		<li><a href="@{fap.ConsultarEvaluacionesController.index}">Volver a Evaluaciones</a>
 		<li><a href="#Evaluacion">Evaluacion</a></li>
-		<li><a href="#Documentos">Documentos</a></li>		
+		*{
+		// Evaluación simple sin mostrar el listado de documentos 
+		<li><a href="#Documentos">Documentos</a></li>
+		}*		
 	</ul>	
 #{/set}
 
@@ -52,7 +55,10 @@
 #{/fap.grupo}
 
 
+*{
+// Evaluación simple sin mostrar el listado de documentos 
 <div id="Documentos"></div>
+}*
 
 #{if hasCriterios}
 	#{fap.grupo titulo:'Criterios de evaluación', id:'Criterios'}
@@ -174,6 +180,9 @@
 
 #{/form}
 
+
+*{
+// Evaluación simple sin mostrar el listado de documentos 
 <script>
 Ext.onReady(function() {
 	
@@ -234,3 +243,4 @@ Ext.onReady(function() {
 	selectionChange();
 });
 </script>
+}*

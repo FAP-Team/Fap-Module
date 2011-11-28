@@ -4,12 +4,18 @@ import models.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.*;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import baremacion.Evaluador;
 
 import play.Logger;
 import play.Play;
+import play.vfs.VirtualFile;
+import utils.JsonUtils;
 
 public class BaremacionService {
 
@@ -175,5 +181,15 @@ public class BaremacionService {
 			return ((CEconomico)o).tipo.jerarquia;
 		}
 		return null;
+	}
+	
+	/**
+	 * Carga un tipo de evaluacion a partir del fichero de definición
+	 * en json
+	 * @param path
+	 * @return
+	 */
+	public static TipoEvaluacion loadTipoEvaluacionFromJson(String path){
+		return JsonUtils.loadObjectFromJsonFile(path, TipoEvaluacion.class);
 	}
 }

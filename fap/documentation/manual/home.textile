@@ -15,6 +15,7 @@ h2. Tutorial
 # "Actualización del modulo FAP":tutorial-actualizacionModuloFap
 # "Desplegar la aplicación":curso-deploy
 # "Modificar Estilo de Páginas":curso-modificarPlantillaHTML
+# "Personalizar código JavaScript de las paginas":curso-personalizarJavaScriptPaginas
 # "Configuracion Apache para desplegar las aplicaciones":curso-configuracionProxyReverse
 
 

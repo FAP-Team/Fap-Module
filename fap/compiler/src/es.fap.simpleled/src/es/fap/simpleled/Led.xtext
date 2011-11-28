@@ -340,6 +340,8 @@ SubirArchivoAed:
 	'SubirArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
+		& ('tramite' '=' tramite=STRING)?
+		& ('aportadoPor' '=' aportadoPor=STRING)?
 	)
 ;
 

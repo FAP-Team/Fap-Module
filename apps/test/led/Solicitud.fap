@@ -17,12 +17,14 @@ Formulario Solicitud {
 		Grupo "Tablas y PopUps" {
 			Enlace "Tablas Simples" pagina=TablasSimples
 		}
+	
+		Grupo "SubirArchivo" {
+			Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest 
+		}
 		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
-	
-	Pagina Solicitante {}
-	
+		
 	Pagina Fechas {
 		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" requerido
 		Fecha campo=Solicitud.fechas.fecha titulo="Fecha" requerido
@@ -97,5 +99,12 @@ Formulario Solicitud {
 	Popup popupNombre campo=Solicitud.tablaDeNombres crear modificar borrar ver {
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
+	}
+	
+	Pagina SubirArchivoAedTest noForm {
+		Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
+			SubirArchivoAed fileAportacion campo=Documento requerido
+			Boton subirDocumento titulo="Añadir documentación"
+		}		
 	}
 }

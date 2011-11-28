@@ -18,8 +18,7 @@
 	def anchoTitulo = _anchoTitulo
 	
 	def multiple = _multiple != null? _multiple : false;
-	
-		
+			
 	def style = '';
 	def ancho = _ancho
 	def anchoBloque
@@ -51,7 +50,7 @@
 			def items = null;
 			//Opciones pasadas por parámetro del tag
 			if(_items != null){
-				items = _items
+				items = _items.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")}
 			}else{
 				items = tags.ReflectionUtils.callControllerMethodIfExists(id)
 				if(items == null){

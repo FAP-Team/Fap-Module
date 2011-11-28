@@ -12,7 +12,7 @@ MODULE = 'fap'
 
 # Commands that are specific to your module
 
-COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version']
+COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation']
 # Eliminamos el comando 'fap:model' de la lista de comandos
 
 def execute(**kargs):
@@ -38,6 +38,9 @@ def execute(**kargs):
     if command == "fap:version":
         version(app, args)
         versionASCIIART(app, args)
+        
+    if command == "fap:documentation":
+        generateDocumentationHTML(app)
 
 
 
@@ -223,3 +226,25 @@ def copy_directory(source, target):
             print "Creando el fichero " + to_
             shutil.copyfile(from_, to_)    
     
+def generateDocumentationHTML(app):
+    print "~ Prueba"
+    # Accedo a la carpeta donde estan los ficheros
+    ruta_app = app.path.replace("\\", "/")+"/led"
+    ruta_modulo = getModuleDir(app, "")
+    ruta_htmlDoc = ruta_modulo.replace("\\", "/")+"/documentation/html"
+    ruta_clase= ruta_modulo+"\\compiler\\gendocumentation\\bin"
+    ruta_plantilla = ruta_modulo.replace("\\", "/")+"/compiler/gendocumentation"
+    class_name = "GenerarDocumentacionHTML"
+    regexp = re.compile(".fap$")
+    # Recorro la carpeta en busca de los fichero "*.fap"
+    ficheros = os.listdir(ruta_app)
+    for f in ficheros:
+        if (regexp.search(f)): # Si es un fichero "*.fap", creo su documentacion
+            fuente = ruta_app+"\\"+f
+            # Nombre del fichero destino de la documentacion
+            destino = ruta_htmlDoc+"/"+f.replace(".fap", "Documentacion.html")
+            # Por cada fichero ejecutamos la generacion de su documentacion
+            classpath=ruta_clase+";"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\groovy-all-1.7.5.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-textile.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-wikitext.jar"
+            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente, destino, ruta_plantilla];
+            subprocess.call(cmd);
+

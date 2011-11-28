@@ -127,7 +127,7 @@ public class GForm {
 			view += """
 			<script>
 				\$(function(){
-					\$('#${name} input, #${name} select').change(function(){
+					\$('#${name} input, #${name} select, #${name} textarea').change(function(){
 						\$('#${name}').submit();
 					});
 				});

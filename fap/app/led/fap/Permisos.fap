@@ -465,13 +465,24 @@ when
 	doc.uri = null
 then
 	deny
-	
-	
-	
+		
 rule nuevaSolicitud
 vars
 	Convocatoria convocatoria
 when
 	convocatoria.estado = "presentacion"
 then
-	grant			
+	grant
+	
+//Baremación	
+rule listaEvaluaciones
+when
+	agente.rolActivo in ("administrador", "gestor")
+then
+	grant
+	
+rule evaluacion
+when
+	agente.rolActivo in ("administrador", "gestor")
+then
+	grant	

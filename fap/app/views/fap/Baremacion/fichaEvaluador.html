@@ -1,6 +1,9 @@
 #{extends 'fap/template.html' /}
 #{set title:'Ficha Evaluador' /}
 
+
+#{fap.permiso permiso:'evaluacion', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+
 %{
 	def hasCriterios = !evaluacion.tipo.criterios.isEmpty()
 	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty()
@@ -244,3 +247,5 @@ Ext.onReady(function() {
 });
 </script>
 }*
+
+#{/fap.permiso}

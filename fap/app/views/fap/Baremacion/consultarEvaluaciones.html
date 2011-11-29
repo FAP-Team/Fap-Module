@@ -2,8 +2,7 @@
 #{extends 'fap/template.html' /}
 #{set title:'ConsultarEvaluaciones' /}
 
-#{fap.permiso }
-			
+#{fap.permiso permiso:'listaEvaluaciones', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
 
 #{if play.getVirtualFile("app/views/gen/menu/Principal.html") != null}
 	#{set 'menu'}
@@ -11,12 +10,6 @@
 	#{/set}
 #{/if}
 		
-#{fap.messages}
-
-#{fap.permiso }
-
-			
-
 <div id="tablaEvaluacionesAsignadas" class="tabla"></div>
 
 
@@ -199,9 +192,5 @@
 				$('#tablaEvaluacionesAsignadas').data('grid', grid);
 			});
 </script>
-		
-#{/fap.permiso}
-#{/fap.messages}
-#{/fap.permiso}
 
-		
+#{/fap.permiso}

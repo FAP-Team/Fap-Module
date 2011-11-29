@@ -18,6 +18,7 @@ import play.mvc.Finally;
 import play.mvc.Scope.Flash;
 import play.mvc.Scope.Params;
 import play.mvc.With;
+import secure.PermissionFap;
 import services.BaremacionService;
 
 public class FichaEvaluadorController extends Controller {
@@ -28,93 +29,101 @@ public class FichaEvaluadorController extends Controller {
 	}
 	
 	public static void index(long idEvaluacion){
-		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
-		notFoundIfNull(evaluacion);
-		List<Documento> documentos = evaluacion.getDocumentosAccesibles();
-		renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos);
+		if(PermissionFap.evaluacion("read", null, null)){
+			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+			notFoundIfNull(evaluacion);
+			List<Documento> documentos = evaluacion.getDocumentosAccesibles();
+			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos);
+		}else{
+			forbidden();
+		}
 	}
 	
 	public static void save(){
-		boolean actionSave = params.get("save") != null;
-		boolean actionPdf = params.get("pdf") != null;
-		boolean actionEnd = params.get("end") != null;
-		if(!(actionSave || actionPdf || actionEnd)){
-			//No se específico una acción
-			notFound("Acción no especificada");
-		}
-		
-		Evaluacion evaluacion = Evaluacion.findById(params.get("evaluacion.id", Long.class));
-		if(evaluacion == null){
-			notFound("Evaluación no encontrada");
-		}
-		
-		//Comentarios
-		if(evaluacion.tipo.comentariosAdministracion){
-			evaluacion.comentariosAdministracion = params.get("evaluacion.comentariosAdministracion");
-		}
-		
-		if(evaluacion.tipo.comentariosSolicitante){
-			evaluacion.comentariosSolicitante = params.get("evaluacion.comentariosSolicitante");
-		}
+		if(PermissionFap.evaluacion("update", null, null)){
+			boolean actionSave = params.get("save") != null;
+			boolean actionPdf = params.get("pdf") != null;
+			boolean actionEnd = params.get("end") != null;
+			if(!(actionSave || actionPdf || actionEnd)){
+				//No se específico una acción
+				notFound("Acción no especificada");
+			}
 			
-		//Criterios de evaluacion
-		for(Criterio criterio : evaluacion.criterios){
-			String param = "criterio[" + criterio.id + "]";
-
-			if(criterio.tipo.claseCriterio.equals("manual")){
-				String key = param + ".valor";
-				Double valor = params.get(key, Double.class);
+			Evaluacion evaluacion = Evaluacion.findById(params.get("evaluacion.id", Long.class));
+			if(evaluacion == null){
+				notFound("Evaluación no encontrada");
+			}
+			
+			//Comentarios
+			if(evaluacion.tipo.comentariosAdministracion){
+				evaluacion.comentariosAdministracion = params.get("evaluacion.comentariosAdministracion");
+			}
+			
+			if(evaluacion.tipo.comentariosSolicitante){
+				evaluacion.comentariosSolicitante = params.get("evaluacion.comentariosSolicitante");
+			}
 				
-				// Únicamente valida cuando se va a finalizar
-				// la verificación
-				if(actionEnd){
-					validation.required(key, valor);
-					//TODO validaciones de tamaño máximo
+			//Criterios de evaluacion
+			for(Criterio criterio : evaluacion.criterios){
+				String param = "criterio[" + criterio.id + "]";
+	
+				if(criterio.tipo.claseCriterio.equals("manual")){
+					String key = param + ".valor";
+					Double valor = params.get(key, Double.class);
+					
+					// Únicamente valida cuando se va a finalizar
+					// la verificación
+					if(actionEnd){
+						validation.required(key, valor);
+						//TODO validaciones de tamaño máximo
+					}
+					
+					criterio.valor = valor;
+				}else if(criterio.tipo.claseCriterio.equals("automod")){
+					//TODO criterio automático modificable
 				}
 				
-				criterio.valor = valor;
-			}else if(criterio.tipo.claseCriterio.equals("automod")){
-				//TODO criterio automático modificable
+				//Comentarios
+				if(criterio.tipo.comentariosAdministracion){				
+					criterio.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
+				}
+				
+				if(criterio.tipo.comentariosSolicitante){
+					criterio.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
+				}
+			}
+	
+			for(CEconomico ceconomico : evaluacion.ceconomicos){
+				String param = "ceconomico[" + ceconomico.id + "]";
+				ceconomico.valorEstimado = params.get(param + ".valorEstimado", Double.class);
+	
+				//Comentarios
+				if(ceconomico.tipo.comentariosAdministracion){				
+					ceconomico.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
+				}
+				
+				if(ceconomico.tipo.comentariosSolicitante){
+					ceconomico.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
+				}			
 			}
 			
-			//Comentarios
-			if(criterio.tipo.comentariosAdministracion){				
-				criterio.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
+			BaremacionService.calcularTotales(evaluacion);
+			evaluacion.save();
+			if(validation.hasErrors()){
+				flash(evaluacion);
+				Validation.keep();
 			}
 			
-			if(criterio.tipo.comentariosSolicitante){
-				criterio.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
+			if(actionSave || actionEnd){
+				if(actionEnd && !validation.hasErrors()){
+					Messages.ok("La verificación de la solicitud " + evaluacion.solicitud.id + " finalizó correctamente");
+				}
+				index(evaluacion.id);
+			}else if(actionPdf){	
+				renderText("renderizar PDF!");			
 			}
-		}
-
-		for(CEconomico ceconomico : evaluacion.ceconomicos){
-			String param = "ceconomico[" + ceconomico.id + "]";
-			ceconomico.valorEstimado = params.get(param + ".valorEstimado", Double.class);
-
-			//Comentarios
-			if(ceconomico.tipo.comentariosAdministracion){				
-				ceconomico.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
-			}
-			
-			if(ceconomico.tipo.comentariosSolicitante){
-				ceconomico.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
-			}			
-		}
-		
-		BaremacionService.calcularTotales(evaluacion);
-		evaluacion.save();
-		if(validation.hasErrors()){
-			flash(evaluacion);
-			Validation.keep();
-		}
-		
-		if(actionSave || actionEnd){
-			if(actionEnd && !validation.hasErrors()){
-				Messages.ok("La verificación de la solicitud " + evaluacion.solicitud.id + " finalizó correctamente");
-			}
-			index(evaluacion.id);
-		}else if(actionPdf){	
-			renderText("renderizar PDF!");			
+		}else{
+			forbidden();
 		}
 	}
 	

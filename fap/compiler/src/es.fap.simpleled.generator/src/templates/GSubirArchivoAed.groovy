@@ -1,6 +1,6 @@
 package templates;
 
-import utils.StringUtilsTest;
+import utils.StringUtils;
 import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.impl.CampoListaImpl;
 import generator.utils.HashStack;

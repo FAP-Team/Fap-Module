@@ -23,7 +23,11 @@ Formulario Solicitud {
 		}
 		
 		Grupo "Pagina del módulo"{
-			Enlace "Titulo" pagina=Solicitud.PCEconomicos	
+			Enlace "Titulo" pagina=Solicitud.PCEconomicos
+		}	
+
+		Grupo "Test Grupos" {
+			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
 		}
 		
 		Enlace "Salir" accion="fap.SecureController.logout"
@@ -107,8 +111,18 @@ Formulario Solicitud {
 	
 	Pagina SubirArchivoAedTest noForm {
 		Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
-			SubirArchivoAed fileAportacion campo=Documento requerido
+			SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite" //aportadoPor="Ciudadano"
 			Boton subirDocumento titulo="Añadir documentación"
 		}		
+	}
+	
+	Pagina EjemplosdeGrupos {
+		Grupo testMostrarSiExpresion titulo="Grupo 1: Mostrar Si Expression" mostrarSiExpresion "4 == 4"{
+			Texto ifTexto titulo="Texto" campo=Solicitud.testGrupo.nombre
+ 		}
+ 		
+ 		Grupo test2MostrarSiExpresion titulo="Grupo 1: Mostrar Campo" mostrarSiCampo Solicitud.solicitante.email = "pepe@pepe.com", "juan@juan.com" {
+			Texto if2Texto titulo="Texto" campo=Solicitud.testGrupo.nombre
+ 		}
 	}
 }

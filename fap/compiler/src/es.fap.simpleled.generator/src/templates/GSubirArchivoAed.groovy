@@ -1,6 +1,8 @@
 package templates;
 
+import utils.StringUtilsTest;
 import es.fap.simpleled.led.*;
+import es.fap.simpleled.led.impl.CampoListaImpl;
 import generator.utils.HashStack;
 import generator.utils.HashStack.HashStackName;
 import generator.utils.CampoUtils
@@ -35,7 +37,12 @@ public class GSubirArchivoAed {
 		params.putStr("campo", campo.firstLower())
 		if(subirArchivoAed.requerido != null)
 			params.put("requerido", subirArchivoAed.requerido)
+			
+		if (subirArchivoAed.tramite != null && subirArchivoAed.tramite.trim() != "")
+			params.putStr("tramite", subirArchivoAed.tramite);
 		
+		if (subirArchivoAed.aportadoPor != null && subirArchivoAed.aportadoPor.trim() != "")
+			params.putStr("aportadoPor", subirArchivoAed.aportadoPor)
 		
 		return "#{fap.uploadAed ${params.lista()} /}	"
 	}

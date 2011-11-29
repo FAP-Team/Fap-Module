@@ -3,6 +3,7 @@ Entidad Solicitud extends SolicitudGenerica {
 	ComboTest comboTest
 	ValoresPorDefectoTest valoresPorDefectoTest
 	Fechas fechas
+	TestGrupo testGrupo
 	
 	OneToMany TablaDeNombres tablaDeNombres
 }
@@ -10,6 +11,10 @@ Entidad Solicitud extends SolicitudGenerica {
 Entidad Fechas {
 	DateTime fechaRequerida
 	DateTime fecha
+}
+
+Entidad TestGrupo {
+	String nombre
 }
 
 Entidad TablaDeNombres {

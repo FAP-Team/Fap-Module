@@ -75,7 +75,7 @@ public class Solicitante extends Persona {
 	public void init(){
 		super.init();
 		
-			if (domicilio != null)
+			if (domicilio == null)
 				domicilio = new Direccion();
 			
 							if (representante == null)

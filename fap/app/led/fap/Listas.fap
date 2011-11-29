@@ -1,31 +1,31 @@
-Lista TiposParticipacion {
+Lista TiposParticipacion crearEnumerado {
 	creador : "Creador"
 	solicitante: "Solicitante"
 	representante: "Representante"
 }
 
-Lista TiposRepresentantes {
+Lista TiposRepresentantes crearEnumerado {
 	mancomunado: "Mancomunado"
 	solidario: "Solidario"
 	administradorUnico: "Administrador Único"
 }
 
-Lista roles {
+Lista roles crearEnumerado {
 	administrador: "Administrador"
 	usuario: "Usuario"
 }
 
-Lista tipoFirmaJuridica {
+Lista tipoFirmaJuridica crearEnumerado {
 	cif: "Certificado de empresa"
 	representantes : "Certificados de los representantes"
 }
 
-Lista estadosSolicitud {
+Lista estadosSolicitud crearEnumerado {
 	borrador: "Borrador"
 	iniciada: "Iniciada"	
 }
 
-Lista TipoDePersona {
+Lista TipoDePersona crearEnumerado {
 	fisica: "Persona física"
 	juridica: "Persona jurídica"
 }
@@ -158,12 +158,12 @@ Lista municipios {
 	380532:	"Villa de Mazo"             	
 }
 
-Lista tipoConsulta {
+Lista tipoConsulta crearEnumerado {
 	tipoSQL: "SQL"
 	tipoJPQL: "JPSQL"
 }
 
-Lista estadoConvocatoria {
+Lista estadoConvocatoria crearEnumerado {
 	presentacion : "Presentación"
 	instruccion : "Instrucción"	
 }

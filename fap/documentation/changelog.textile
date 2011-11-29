@@ -2,6 +2,10 @@ h2. Changelog
 
 h3. Versión 1.2 (En desarrollo)
 
+* Permitir creacion de Enumerados Java a partir de Listas FAP
+* Posibilidad de personalizar las páginas mediante código JavaScript
+* Fixed bug AutoEnviar (Form) Area de Texto
+* Generar documentacion HTML de los ficheros *.fap
 * Fixed lazy load de collections en AuditLogListener (problemas con los ManyToOne).
 * Fixed bug copia de atributos ManyToOne y ManyToMany.
 * Fixed funcionalidad de selección de filas en una tabla mediante checkboxes.

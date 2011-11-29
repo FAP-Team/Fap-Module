@@ -24,16 +24,24 @@ import java.text.SimpleDateFormat;
 @Entity
 public class TipoDocumento extends Model {
 	// Código de los atributos
-
+	
+	
 	public String uri;
-		
+	
+	
+	
 	public String nombre;
 	
+	
+	
 	public String aportadoPor;
+	
+	
 	
 	public String obligatoriedad;
 	
 	
+
 	public void init(){
 		
 		

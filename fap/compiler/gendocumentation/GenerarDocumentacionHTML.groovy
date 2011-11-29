@@ -12,12 +12,13 @@ class GenerarDocumentacionHTML {
 	private static String plantillaJST = ""
 	private static File fs, plantilla, fin
 	private static String matcher = "^\\s*//"
-	private static String titulo=''
+	private static String titulo='', ruta='';
 	private static List docs_text = [], code_text=[]
 	private static List sections = []
 	
 	public static void main(String[] args) {
 		plantillaJST = args[2]+"/plantillas/plantillaHTML.jst"
+		ruta=args[3];
 		generarDocumentacionHTML(args[0], args[1])
 	}
 	
@@ -164,7 +165,8 @@ class GenerarDocumentacionHTML {
 	   fin = new File(destino)
 	   def binding = [
 		  title : titulo,
-		  sections: sections
+		  sections: sections, 
+		  ruta: ruta,
 	   ]
 	   def engine = new groovy.text.SimpleTemplateEngine()
 	   String text = '';

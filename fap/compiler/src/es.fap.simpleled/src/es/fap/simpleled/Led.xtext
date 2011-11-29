@@ -428,7 +428,7 @@ EntidadAutomatica:
 ;
 
 Lista:
-	'Lista' name=ID '{'
+	'Lista' name=ID (enumerado?='crearEnumerado')? '{'
 		elementos+=ElementoLista*
 	'}'
 ;

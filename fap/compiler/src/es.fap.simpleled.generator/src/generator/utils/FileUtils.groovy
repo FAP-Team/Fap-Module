@@ -21,6 +21,7 @@ public class FileUtils {
 		CONF_APPLICATION : "conf/application.conf",
 		CONF_ROUTES : "conf/routes",
 		LIST : 'app/listas/gen/',
+		ENUM : 'app/enumerado/gen/',
 		MENU_GEN : 'app/views/gen/menu/',
 		PERMISSION: 'app/secure/',
 		PERMISSION_GEN: 'app/secure/gen/',

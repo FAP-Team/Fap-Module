@@ -19,14 +19,17 @@
 	%{
 		def tiposDocumentos
 		if (tramite == null){
-			tiposDocumentos = models.TipoDocumento.findAll();
+			if (aportadosPor == null)
+				tiposDocumentos = models.TipoDocumento.findAll();
+			else
+				tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(aportadoPor);
 		}else if(aportadoPor == null){
 			tiposDocumentos = models.Tramite.findTipoDocumentosFrom(tramite);
 		}else{
 			tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(tramite, aportadoPor);
-		} 
+		}
 	}%
-	
+
 	#{fap.combo id:comboId, campo:campoTipo, titulo:"Tipo de documento", items:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, ancho:"450px"/}
 	
 	#{fap.grupo visible:false, siCombo:comboId, siComboValue:[tipoDocumentoOtros], siComboReverse:true}

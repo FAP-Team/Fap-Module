@@ -192,6 +192,10 @@ CampoAtributos:
 	"." atributo=[Attribute|IDS] (atributos=CampoAtributos)?
 ;
 
+CampoLista:
+	lista=[Lista] "." elemento=ID
+;
+
 Texto:
 	'Texto' (name=ID)? (
 		('campo' '=' campo=Campo)
@@ -341,8 +345,8 @@ SubirArchivoAed:
 	'SubirArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
-		& ('tramite' '=' tramite=STRING)?
-		& ('aportadoPor' '=' aportadoPor=STRING)?
+		& ('tramite' '=' tramite=STRING)?		
+		& ('aportadoPor' '=' aportadoPor=STRING)?	// ¿Cambiar el tipo?
 	)
 ;
 

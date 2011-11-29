@@ -41,6 +41,10 @@ public class Solicitud extends SolicitudGenerica {
 	public Fechas fechas;
 	
 	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public TestGrupo testGrupo;
+	
+	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="solicitud_tabladenombres")
 	public List<TablaDeNombres> tablaDeNombres;
@@ -77,6 +81,11 @@ public class Solicitud extends SolicitudGenerica {
 								fechas = new Fechas();
 							else
 								fechas.init();
+						
+							if (testGrupo == null)
+								testGrupo = new TestGrupo();
+							else
+								testGrupo.init();
 						
 						if (tablaDeNombres == null)
 							tablaDeNombres = new ArrayList<TablaDeNombres>();

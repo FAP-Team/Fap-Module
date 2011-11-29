@@ -22,6 +22,7 @@ import play.db.jpa.JPABase;
 import play.db.jpa.JPAPlugin;
 import play.test.Fixtures;
 import properties.FapProperties;
+import tags.StringUtils;
 
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedPortType;
@@ -148,40 +149,63 @@ public class TiposDocumentosClient {
 		Messages.error(error);		
 	}
 	
+	
+	/**
+	 * Se actualizará la lista de tipos de documentos para cada trámite.
+	 * 
+	 * Ejemplo: Para el tramite "solicitud", se actualizarán las listas "tipoDocumentosCiudadanosSolicitud"
+	 * 
+	 * @return
+	 */
 	public static boolean actualizarTiposDocumentoDB() {
-		String uriTramite = FapProperties.get("fap.aed.procedimientos.tramite.uri");
+		play.Logger.info("Actualizando los Tipos de Documentos en lA BBDD");
+		//String uriTramite = FapProperties.get("fap.aed.procedimientos.tramite.uri");
 		String uriProcedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri");
-				
-		List<TipoDocumentoEnTramite> listaTodos = new ArrayList<TipoDocumentoEnTramite>();
-		List<TipoDocumentoEnTramite> listaCiudadanos = new ArrayList<TipoDocumentoEnTramite>();
-		List<TipoDocumentoEnTramite> listaOrganismos = new ArrayList<TipoDocumentoEnTramite>();
-		List<TipoDocumentoEnTramite> listaOtrasEntidades = new ArrayList<TipoDocumentoEnTramite>();
-
+		
+		//Recupera los trámites y los tipos de documentos asociados
+		ListaTramites tramites = null;
 		try {
-			listaTodos = procedimientos.consultarTiposDocumentosEnTramite(uriProcedimiento, uriTramite).getTiposDocumentos();
-		}catch(Exception e){
-			log.error("Se produjo un error al consultar los tipos de Documentos", e);
-			return false;
+			tramites = procedimientos.consultarTramites(uriProcedimiento);
+		} catch (ProcedimientosExcepcion e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		boolean result = true;
+		for (Tramite tramite : tramites.getTramites()) {
+			play.Logger.info("Trámite: "+tramite.getNombre());
+				
+			List<TipoDocumentoEnTramite> listaTodos = new ArrayList<TipoDocumentoEnTramite>();
+			List<TipoDocumentoEnTramite> listaCiudadanos = new ArrayList<TipoDocumentoEnTramite>();
+			List<TipoDocumentoEnTramite> listaOrganismos = new ArrayList<TipoDocumentoEnTramite>();
+			List<TipoDocumentoEnTramite> listaOtrasEntidades = new ArrayList<TipoDocumentoEnTramite>();
+
+			try {
+				listaTodos = procedimientos.consultarTiposDocumentosEnTramite(uriProcedimiento, tramite.getUri()).getTiposDocumentos();
+			}catch(Exception e){
+				log.error("Se produjo un error al consultar los tipos de Documentos", e);
+				return false;
+			}
 		
-		for (TipoDocumentoEnTramite tipoDoc : listaTodos) {
-			if (tipoDoc.getAportadoPor() == AportadoPorEnum.CIUDADANO) {
-				listaCiudadanos.add(tipoDoc);
-			}else if (tipoDoc.getAportadoPor() == AportadoPorEnum.ORGANISMO) {
-				listaOrganismos.add(tipoDoc);				
-			}else if (tipoDoc.getAportadoPor() == AportadoPorEnum.OTRAS_ENTIDADES) {
-				listaOtrasEntidades.add(tipoDoc);				
-			}				
+			for (TipoDocumentoEnTramite tipoDoc : listaTodos) {
+				if (tipoDoc.getAportadoPor() == AportadoPorEnum.CIUDADANO) {
+					listaCiudadanos.add(tipoDoc);
+				}else if (tipoDoc.getAportadoPor() == AportadoPorEnum.ORGANISMO) {
+					listaOrganismos.add(tipoDoc);				
+				}else if (tipoDoc.getAportadoPor() == AportadoPorEnum.OTRAS_ENTIDADES) {
+					listaOtrasEntidades.add(tipoDoc);				
+				}				
+			}
+		
+			boolean todos = actualizarDocumentosDB(listaTodos, "tipoDocumentosTodos");
+			boolean ciudadano = actualizarDocumentosDB(listaCiudadanos, "tipoDocumentosCiudadanos"+StringUtils.firstUpper(tramite.getNombre()));
+			boolean organismo = actualizarDocumentosDB(listaOrganismos, "tipoDocumentosOrganismos"+StringUtils.firstUpper(tramite.getNombre()));
+			boolean otrasEntidades = actualizarDocumentosDB(listaOtrasEntidades, "tipoDocumentosOtrasEntidades"+StringUtils.firstUpper(tramite.getNombre()));
+		
+			boolean obligatoriedad = actualizarObligatoriedadDocumentos(listaCiudadanos);
+		
+			result = result && todos && ciudadano && organismo && otrasEntidades && obligatoriedad;
 		}
-		
-		boolean todos = actualizarDocumentosDB(listaTodos, "tipoDocumentosTodos");
-		boolean ciudadano = actualizarDocumentosDB(listaCiudadanos, "tipoDocumentosCiudadanos");
-		boolean organismo = actualizarDocumentosDB(listaOrganismos, "tipoDocumentosOrganismos");
-		boolean otrasEntidades = actualizarDocumentosDB(listaOtrasEntidades, "tipoDocumentosOtrasEntidades");
-		
-		boolean obligatoriedad = actualizarObligatoriedadDocumentos(listaCiudadanos);
-		
-		return todos && ciudadano && organismo && otrasEntidades && obligatoriedad;
+		return result;
 	}
 	
 	public static boolean actualizarDocumentosDB(List<TipoDocumentoEnTramite> lista, String table) {

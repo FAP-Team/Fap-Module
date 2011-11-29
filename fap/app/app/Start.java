@@ -20,6 +20,7 @@ import models.SolicitudGenerica;
 import play.test.Fixtures;
 import play.vfs.VirtualFile;
 import properties.FapProperties;
+import properties.Properties;
 
 @OnApplicationStart
 public class Start extends Job {
@@ -54,11 +55,14 @@ public class Start extends Job {
 			Logger.info("Se cargaron desde fichero " + count + " registros de la tabla emails");
 		}
 
-		SolicitudGenerica generica = new SolicitudGenerica();
-		List<SolicitudGenerica> list = generica.findAll();
-		for (SolicitudGenerica solicitud : list) {
-			solicitud.init();
-			solicitud.save();
+		//Inicializa todas las relaciones a null de la solicitud
+		if(FapProperties.getBoolean("fap.start.initSolicitud")){
+			SolicitudGenerica generica = new SolicitudGenerica();
+			List<SolicitudGenerica> list = generica.findAll();
+			for (SolicitudGenerica solicitud : list) {
+				solicitud.init();
+				solicitud.save();
+			}
 		}
 		
 	}

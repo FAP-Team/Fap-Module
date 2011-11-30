@@ -12,16 +12,7 @@
 	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty()
 }%
 
-#{set 'menu'}
-	<ul>
-		<li><a href="@{fap.ConsultarEvaluacionesController.index}">Volver a Evaluaciones</a>
-		<li><a href="#Evaluacion">Evaluacion</a></li>
-		*{
-		// Evaluación simple sin mostrar el listado de documentos 
-		<li><a href="#Documentos">Documentos</a></li>
-		}*		
-	</ul>	
-#{/set}
+<a href="@{fap.ConsultarEvaluacionesController.index}" class="boton">Volver al listado de evaluaciones</a>
 
 #{fap.messages /}
 

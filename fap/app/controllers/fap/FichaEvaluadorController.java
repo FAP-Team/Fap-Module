@@ -1,6 +1,8 @@
 package controllers.fap;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import messages.Messages;
 import models.CEconomico;
@@ -15,9 +17,12 @@ import play.data.validation.Validation;
 import play.db.jpa.JPABase;
 import play.mvc.Controller;
 import play.mvc.Finally;
+import play.mvc.Router;
+import play.mvc.Router.ActionDefinition;
 import play.mvc.Scope.Flash;
 import play.mvc.Scope.Params;
 import play.mvc.With;
+import properties.FapProperties;
 import secure.PermissionFap;
 import services.BaremacionService;
 
@@ -32,11 +37,23 @@ public class FichaEvaluadorController extends Controller {
 		if(PermissionFap.evaluacion("read", null, null)){
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 			notFoundIfNull(evaluacion);
+			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
 			List<Documento> documentos = evaluacion.getDocumentosAccesibles();
-			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos);
+			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos, expedienteUrl);
 		}else{
 			forbidden();
 		}
+	}
+
+	private static String redirectToFirstPage(Long idSolicitud) {
+		//Url Primera paǵina de la solicitud
+		String firstPage = FapProperties.get("fap.app.firstPage"); 
+		if(firstPage == null){
+			play.Logger.error("No está definida la property fap.app.firstPage que identifica la primera página.");
+			Messages.fatal("Se ha producido un error");
+		}
+		String expedienteUrl = Router.reverse(firstPage + "Controller.index").add("idSolicitud", idSolicitud).url;
+		return expedienteUrl;
 	}
 	
 	public static void save(){

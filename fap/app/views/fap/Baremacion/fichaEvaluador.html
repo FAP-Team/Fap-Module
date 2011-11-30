@@ -4,6 +4,9 @@
 
 #{fap.permiso permiso:'evaluacion', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
 
+<div class="fichaEvaluador">
+
+
 %{
 	def hasCriterios = !evaluacion.tipo.criterios.isEmpty()
 	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty()
@@ -22,7 +25,25 @@
 
 #{fap.messages /}
 
-#{form @fap.FichaEvaluadorController.save(), class:'fichaEvaluador'}
+
+#{fap.grupo titulo:'Información del expediente'}
+	#{simple.row label:'Expediente'}
+		${evaluacion.solicitud.expedienteAed.idAed}
+	#{/simple.row}
+	#{simple.row label:'Nombre:'}
+		${evaluacion.solicitud.solicitante.nombreCompleto}
+	#{/simple.row}
+	#{simple.row label:'DNI/CIF:'}
+		${evaluacion.solicitud.solicitante.numeroId}
+	#{/simple.row}
+	<div class="button_container">
+		<a href="${expedienteUrl}" class="boton">Ver expediente</a>
+	</div>
+#{/fap.grupo}
+
+
+
+#{form @fap.FichaEvaluadorController.save()}
 
 <input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>
 
@@ -76,7 +97,7 @@
 		}%
 		
 		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
-			<p class="nombre">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</p>
+			<h2>${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</h2>
 			#{if criterio.tipo.descripcion != null}
 				<div class="clearfix">
 					<h3>Descripción</h3>
@@ -141,7 +162,7 @@
 		}%
 		
 		<div class="ceconomico" id="ceconomico${ceconomico.tipo.jerarquia}">
-			<p class="nombre">${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</p>
+			<h2>${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</h2>
 			
 			#{if criterio.tipo.descripcion != null}
 				<div class="clearfix">
@@ -247,5 +268,6 @@ Ext.onReady(function() {
 });
 </script>
 }*
-
 #{/fap.permiso}
+
+</div>

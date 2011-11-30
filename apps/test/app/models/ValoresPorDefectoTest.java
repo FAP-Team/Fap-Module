@@ -105,7 +105,7 @@ try {
 	e.printStackTrace();
 }
 					
-			if (mEmbebida != null)
+			if (mEmbebida == null)
 				mEmbebida = new Embebida();
 			
 	}

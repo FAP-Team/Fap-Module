@@ -37,7 +37,7 @@ public class DireccionTest extends Model {
 	public void init(){
 		
 		
-			if (direccion != null)
+			if (direccion == null)
 				direccion = new Direccion();
 			
 	}

@@ -12,8 +12,8 @@
         #{stylesheet '960/960-all-min.css'/}
         #{stylesheet 'jquery-ui.css' /}
         <link rel="stylesheet" href="@{'/public/javascripts/ext/resources/css/ext-all.css'}" />
-        #{stylesheet 'fap.css' /}
         #{stylesheet 'main.css' /}
+        #{stylesheet 'fap.less' /}
           
         #{get 'moreStyles' /}
         
@@ -26,7 +26,7 @@
         #{script 'ext/form/SearchFieldFilter.js' /}
 		
 
-        <link rel="stylesheet" href="@{'/public/javascripts/chosen/chosen.css'}" />
+        <link rel="stylesheet" href ="@{'/public/javascripts/chosen/chosen.css'}" />
         #{script 'chosen/chosen.jquery.min.js' /}
         
         #{script 'utils.js' /}
@@ -77,7 +77,7 @@
 						if (agente != null)
 							user = agente.name ?: agente.username
 					%}	
-					<div class="migas grid_9">
+					<div class="migas grid_8">
 						#{if user != null}
 							#{if solicitud != null}
 								#{fap.breadcrumbs solicitud:solicitud.id, title:title, user:user /}
@@ -91,7 +91,7 @@
 						#{/else}
 					</div>
 					
-					<div class="rol grid_3">
+					<div class="rol grid_4">
 
 						#{if agente != null}
 							#{if agente.roles.size() > 1}
@@ -117,33 +117,28 @@
 	    				
 			#{if menu != null}
 				<div class="menuAndContent grid_12">
-					<div class="menu grid_2 alpha">
+					<div class="menu grid_3 alpha">
 					#{get 'menu'/}
 					</div>
-					<div id="content-con-menu" class="grid_10 omega ">
+					<div id="content" class="grid_7 omega ">
 						#{doLayout /}
 					</div>
 					<div class="clear"></div>
 				</div>
 			#{/if}
 			#{else}
-					<div id="content" class="grid_12">
-						#{doLayout /}
-					</div>
-			#{/else}
-			
-			
-			<div class="footer grid_12">
-				<div class="grid_6 omega">©Gobierno de Canarias</div>
-				<div class="grid_6 alpha avisoLegal">
-					<a href="http://www.gobiernodecanarias.org/avisolegal.html">Aviso Legal </a>
+				<div id="content" class="grid_12">
+					#{doLayout /}
 				</div>
-			</div>
-		
+			#{/else}
+
 			<div class="clear"></div>
 	    </div>
 		
-
+	
+		<div class="footer">
+			©Gobierno de Canarias - <a href="http://www.gobiernodecanarias.org/avisolegal.html">Aviso Legal </a>
+		</div>
 		
 		
 		<script type="text/javascript">			

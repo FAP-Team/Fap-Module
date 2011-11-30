@@ -1,6 +1,11 @@
 package controllers.fap;
 
+
 import java.util.HashMap;
+
+import static play.modules.pdf.PDF.renderPDF;
+
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +20,7 @@ import models.TipoCriterio;
 import models.TipoEvaluacion;
 import play.data.validation.Validation;
 import play.db.jpa.JPABase;
+import play.modules.pdf.PDF.Options;
 import play.mvc.Controller;
 import play.mvc.Finally;
 import play.mvc.Router;
@@ -24,6 +30,7 @@ import play.mvc.Scope.Params;
 import play.mvc.With;
 import properties.FapProperties;
 import secure.PermissionFap;
+import reports.Report;
 import services.BaremacionService;
 
 public class FichaEvaluadorController extends Controller {
@@ -55,7 +62,7 @@ public class FichaEvaluadorController extends Controller {
 		String expedienteUrl = Router.reverse(firstPage + "Controller.index").add("idSolicitud", idSolicitud).url;
 		return expedienteUrl;
 	}
-	
+
 	public static void save(){
 		if(PermissionFap.evaluacion("update", null, null)){
 			boolean actionSave = params.get("save") != null;
@@ -137,7 +144,12 @@ public class FichaEvaluadorController extends Controller {
 				}
 				index(evaluacion.id);
 			}else if(actionPdf){	
-				renderText("renderizar PDF!");			
+				try {
+					new Report("app/views/reports/baremacion/Borrador.html").renderResponse(evaluacion);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}		
 			}
 		}else{
 			forbidden();

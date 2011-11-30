@@ -12,6 +12,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
+
+import java.text.Collator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -97,6 +99,15 @@ public class Agente extends Model {
 		return false;
 	}
 
+	/**
+	 * Devuelve la lista de roles ordenados alfabéticamente
+	 * @return
+	 */
+	public List<String> getSortRoles () {
+		List<String> list = new ArrayList<String>(this.roles);	
+		Collections.sort(list);
+		return list;
+	}
 	
 	// === MANUAL REGION END ===
 	

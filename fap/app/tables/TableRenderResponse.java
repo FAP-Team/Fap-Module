@@ -21,8 +21,12 @@ public class TableRenderResponse<T> {
 	public List<T> rows;
 	
 	public TableRenderResponse(List<T> rows) {		
-		total = rows.size();
-		this.rows = rows;
+		if(rows == null){
+			this.rows = new ArrayList<T>();
+		}else{
+			this.rows = rows;
+		}
+		total = this.rows.size();
 	}
 		
 	public String toJSON(String ... fields){

@@ -99,7 +99,7 @@
 								<input type="hidden" name="url" value="${request.url}">
 								&{'fap.header.rol'}
 									<select id="listaRoles" name="rol" size="1">
-										#{list items:agente.roles, as:'entry'}
+										#{list items:agente.sortRoles, as:'entry'}
 										%{def selected = entry.equals(agente.rolActivo)? 'selected="selected"' : ''%}
 										<option value="${entry}" ${selected}>${models.TableKeyValue.getValue("roles", entry)}</option>
 										#{/list}

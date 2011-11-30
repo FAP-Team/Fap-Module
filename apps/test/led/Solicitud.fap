@@ -30,6 +30,10 @@ Formulario Solicitud {
 			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
 		}
 		
+		Grupo "Test Grupos" {
+			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
+		}
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 		

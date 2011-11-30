@@ -15,10 +15,16 @@ import java.lang.reflect.Field;
 
 public class ConsultarEvaluacionesController extends GenericController {
 
-	public static void index(Long idSolicitud){
-		renderTemplate( "fap/Baremacion/consultarEvaluaciones.html");
+	public static void index(){
+		renderTemplate("fap/Baremacion/consultarEvaluaciones.html");
+
 	}
 
+	@Finally(only="index")
+	public static void removeFlash(){
+		Messages.deleteFlash();
+	}
+	
 	@Before
 	static void beforeMethod() {
 		renderArgs.put("controllerName", "ConsultarEvaluacionesControllerGen");

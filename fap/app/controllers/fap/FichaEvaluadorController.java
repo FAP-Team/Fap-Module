@@ -140,8 +140,16 @@ public class FichaEvaluadorController extends Controller {
 			
 			if(actionSave || actionEnd){
 				if(actionEnd && !validation.hasErrors()){
-					Messages.ok("La verificación de la solicitud " + evaluacion.solicitud.id + " finalizó correctamente");
+					evaluacion.estado = "evaluada";
+					evaluacion.save();
+					Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " finalizó correctamente");
+					ConsultarEvaluacionesController.index();
 				}
+				
+				if(actionSave){
+					Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " se guardó correctamente");
+				}
+				
 				index(evaluacion.id);
 			}else if(actionPdf){	
 				try {

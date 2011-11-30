@@ -9,9 +9,10 @@
 		#{include 'gen/menu/Principal.html'/}
 	#{/set}
 #{/if}
+
+#{fap.messages /}
 		
 <div id="tablaEvaluacionesAsignadas" class="tabla"></div>
-
 
 <script type="text/javascript">
 
@@ -175,13 +176,14 @@
 				
 			    grid.addListener("selectionchange", function(){
 			    	var hasSelection = grid.getSelectionModel().hasSelection();
-			    	var enTramite = false;
+			    	var evaluar_disabled = false;
 			    	if (hasSelection) {
-			    		enTramite = !(grid.getSelectionModel().getSelection()[0].data.estado == "EnTramite");
+			    		var estado = grid.getSelectionModel().getSelection()[0].data.estado;
+			    		evaluar_disabled = !(estado === "EnTramite" || estado === "evaluada");
 			    	}
 			    	boton_aceptar.setDisabled(!hasSelection);
 			    	boton_rechazar.setDisabled(!hasSelection);
-			    	boton_evaluar.setDisabled(enTramite);
+			    	boton_evaluar.setDisabled(evaluar_disabled);
 			    });
 
 				

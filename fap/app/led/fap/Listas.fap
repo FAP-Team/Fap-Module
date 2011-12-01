@@ -13,6 +13,8 @@ Lista TiposRepresentantes crearEnumerado {
 Lista roles crearEnumerado {
 	administrador: "Administrador"
 	usuario: "Usuario"
+	gestor: "Gestor"
+	revisor: "Revisor"
 }
 
 Lista tipoFirmaJuridica crearEnumerado {

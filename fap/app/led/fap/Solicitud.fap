@@ -35,14 +35,14 @@ ${cEconomico.tipo.descripcion}
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
-		Form addDocumento campo=SolicitudGenerica.aportaciones.actual.documentos {		
+		Form addDocumento campo=SolicitudGenerica.aportaciones.actual.documentos permiso=aportacionDocumentos {		
 			Grupo titulo="Añadir documentación" {
 				SubirArchivoAed fileAportacion campo=Documento requerido
 				Boton subirDocumento titulo="Añadir documentación"
 			}
 		}
 		
-		Form presentar redirigir=AportacionPresentar {
+		Form presentar redirigir=AportacionPresentar permiso=aportacionDocumentos {
 			Wiki {"Debe registrar los documentos para que se consideren aportados a la solicitud."}
 			Boton botonPresentar titulo="Preparar para registrar"
 		}

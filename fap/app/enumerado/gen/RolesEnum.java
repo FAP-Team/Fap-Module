@@ -3,7 +3,9 @@ package enumerado.gen;
 public enum RolesEnum{
 
 	administrador("administrador"),
-	usuario("usuario");
+	usuario("usuario"),
+	gestor("gestor"),
+	revisor("revisor");
 
 	private String valor;
 

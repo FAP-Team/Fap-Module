@@ -193,7 +193,7 @@ vars
 	SolicitudGenerica solicitud
 	Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 when
-	(action = "read" and agente.rolActivo = "administrador")
+	(action = "read" and agente.rolActivo in ("administrador", "gestor", "revisor"))
 	or
 	(
 	action = "read"
@@ -217,7 +217,7 @@ rule aportacion
 vars
 	SolicitudGenerica solicitud
 when 
-	(agente.rolActivo in ("administrador", "usuario")) and
+	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
 	(solicitud.estado in ("iniciada", "requerida", "verificado"))
 then 
 	grant
@@ -241,7 +241,7 @@ then
 rule noVisibleUsuario
 when
 	(action = "read") and
-	agente.rolActivo = "usuario"
+	usuario
 then
 	deny
 	
@@ -262,7 +262,7 @@ vars
 when
 	(action = "read")
 	or
-	(agente.rolActivo="administrador")
+	!usuario
 	or
 	(
 	 agente.rolActivo = "usuario"
@@ -279,12 +279,10 @@ rule solicitudEditableDocumentacion
 vars
 	SolicitudGenerica solicitud
 when
-	(agente.rolActivo="administrador")
+	!usuario
 	or
 	(
 	 //agente.rolActivo = "usuario"
-	 usuario
-	 and
 	 solicitud.estado = "borrador"
 	 and
 	 solicitud.registro.fasesRegistro.borrador = "false"

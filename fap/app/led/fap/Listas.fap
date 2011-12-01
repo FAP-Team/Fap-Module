@@ -22,7 +22,8 @@ Lista tipoFirmaJuridica crearEnumerado {
 
 Lista estadosSolicitud crearEnumerado {
 	borrador: "Borrador"
-	iniciada: "Iniciada"	
+	iniciada: "Iniciada"
+	verificado: "Verificado"	
 }
 
 Lista TipoDePersona crearEnumerado {

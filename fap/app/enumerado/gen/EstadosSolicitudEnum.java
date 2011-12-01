@@ -3,7 +3,8 @@ package enumerado.gen;
 public enum EstadosSolicitudEnum{
 
 	borrador("borrador"),
-	iniciada("iniciada");
+	iniciada("iniciada"),
+	verificado("verificado");
 
 	private String valor;
 

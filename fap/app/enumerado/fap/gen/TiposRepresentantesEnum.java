@@ -1,10 +1,10 @@
-package enumerado.gen;
+package enumerado.fap.gen;
 
 public enum TiposRepresentantesEnum{
 
-	mancomunado("mancomunado"),
-	solidario("solidario"),
-	administradorUnico("administradorUnico");
+	mancomunado("Mancomunado"),
+	solidario("Solidario"),
+	administradorUnico("Administrador Único");
 
 	private String valor;
 

@@ -1,9 +1,9 @@
-package enumerado.gen;
+package enumerado.fap.gen;
 
 public enum EstadosSolicitudEnum{
 
-	borrador("borrador"),
-	iniciada("iniciada");
+	borrador("Borrador"),
+	iniciada("Iniciada");
 
 	private String valor;
 

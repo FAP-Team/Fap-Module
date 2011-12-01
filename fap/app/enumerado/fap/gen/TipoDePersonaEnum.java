@@ -1,9 +1,9 @@
-package enumerado.gen;
+package enumerado.fap.gen;
 
 public enum TipoDePersonaEnum{
 
-	fisica("fisica"),
-	juridica("juridica");
+	fisica("Persona física"),
+	juridica("Persona jurídica");
 
 	private String valor;
 

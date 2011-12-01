@@ -1,10 +1,10 @@
-package enumerado.gen;
+package enumerado.fap.gen;
 
 public enum TiposParticipacionEnum{
 
-	creador("creador"),
-	solicitante("solicitante"),
-	representante("representante");
+	creador("Creador"),
+	solicitante("Solicitante"),
+	representante("Representante");
 
 	private String valor;
 

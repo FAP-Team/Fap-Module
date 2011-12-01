@@ -1,9 +1,9 @@
-package enumerado.gen;
+package enumerado.fap.gen;
 
 public enum TipoFirmaJuridicaEnum{
 
-	cif("cif"),
-	representantes("representantes");
+	cif("Certificado de empresa"),
+	representantes("Certificados de los representantes");
 
 	private String valor;
 

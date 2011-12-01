@@ -213,7 +213,10 @@ public class SecureController extends Controller {
     			allowed = true;
     		}else {
     	        /** Si uno de los passwords es vacío */
-    	        if ((password.trim().length() == 0) || (agente.password.trim().length() == 0)) {
+    			if (agente.password == null) {
+    				allowed = false;
+    	        	log.info("No se permite hacer password, porque en BBDD es vacío");
+    			} else if ((password.trim().length() == 0)  || (agente.password.trim().length() == 0)) {
     	        	allowed = false;
     	        	log.info("Uno de los Passwords es vacío");
     	        } else {

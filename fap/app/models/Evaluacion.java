@@ -118,7 +118,18 @@ public class Evaluacion extends Model {
 			return null;
 		}
 	}
-		
+	
+	/**
+	 * Devuelve el criterio que tiene cierta jerarquía
+	 * @param jerarquia
+	 * @return
+	 */
+	public Criterio getCriterio(String jerarquia){
+		return Criterio.find("select criterio from Evaluacion evaluacion " +
+				"join evaluacion.criterios criterio " +
+				"where criterio.tipo.jerarquia=? " +
+				"and evaluacion.id=?", jerarquia, id).first();
+	}
 	// === MANUAL REGION END ===
 	
 	

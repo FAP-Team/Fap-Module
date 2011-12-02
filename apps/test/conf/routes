@@ -48,6 +48,9 @@ POST /Solicitud/tablassimples/save TablasSimplesController.save
 GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
 
 POST /Solicitud/subirarchivoaedtest/anadirDocumentacion SubirArchivoAedTestController.anadirDocumentacion
+GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
+
+POST /Solicitud/ejemplosdegrupos/save EjemplosdeGruposController.save
 GET /Solicitud/combotestref/{idEntidad}/abrir popups.ComboTestRefController.abrir
 POST /Solicitud/combotestref/{idEntidad}/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/{idEntidad}/borrar popups.ComboTestRefController.borrar

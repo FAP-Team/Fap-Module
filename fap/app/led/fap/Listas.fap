@@ -25,6 +25,12 @@ Lista estadosSolicitud crearEnumerado {
 	iniciada: "Iniciada"	
 }
 
+// Lista que se creará a partir de la de estadosSolicitud, e indicará los
+// estados que ve el usuario
+Lista estadosSolicitudUsuario {
+	
+}
+
 Lista TipoDePersona crearEnumerado {
 	fisica: "Persona física"
 	juridica: "Persona jurídica"

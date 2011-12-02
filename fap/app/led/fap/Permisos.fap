@@ -474,4 +474,25 @@ vars
 when
 	convocatoria.estado = "presentacion"
 then
-	grant			
+	grant
+
+
+rule tableKeyOnlyEstadosSolicitud
+vars
+	TableKeyValue tableKeyValue
+when
+	tableKeyValue.table = "estadosSolicitud"
+	and
+	agente.rolActivo = "administrador"
+then
+	grant
+
+rule tableKeyOnlyEstadosSolicitudUsuario
+vars
+	TableKeyValue tableKeyValue
+when
+	tableKeyValue.table = "estadosSolicitudUsuario"
+	and
+	agente.rolActivo = "administrador"
+then
+	grant

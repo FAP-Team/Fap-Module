@@ -1,9 +1,9 @@
-package enumerado.gen;
+package enumerado.fap.gen;
 
 public enum TipoConsultaEnum{
 
-	tipoSQL("tipoSQL"),
-	tipoJPQL("tipoJPQL");
+	tipoSQL("SQL"),
+	tipoJPQL("JPSQL");
 
 	private String valor;
 

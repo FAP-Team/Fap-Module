@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Play manual - ${title}</title>
+        <link rel="stylesheet" href="@{'/public/playmanual/manual.css'}" type="text/css" media="screen">
+        <link rel="stylesheet" href="@{'/public/playmanual/wiki.css'}" type="text/css" media="screen">
+        #{script "jquery/jquery-1.6.1.min.js" /}
+        <script type="text/javascript" src="@{'/public/playmanual/navigation.js'}"></script>
+        
+        <link rel="stylesheet" href="@{'/public/playmanual/prettify/prettify.css'}" type="text/css" media="screen">
+        <script type="text/javascript" src="@{'/public/playmanual/prettify/prettify.js'}"></script>
+        
+    </head>
+    <body>
+        <div class="wrapper">
+
+            <div id="docSidebar">
+                
+
+                <div id="logo">
+                		<img src="@{'/public/playmanual/logo-fap.png'}">
+                    <h2 id="version">Play ${play.version}</h2>
+                </div>
+
+                #{if ficheros}
+                    <h2>Índice ficheros *.fap</h2>
+                    <ul>
+                        #{list ficheros, as:'fichero'}
+                        %{ def nombre = fichero.toString().replaceAll(".html", "") }%
+                            <li>
+                                <a href="/@documentation/html/${nombre}">${nombre}</a>
+                            </li>
+                        #{/list}
+                    </ul>
+                #{/if}
+
+                <h2>Documentación FAP</h2>
+                	<ul>
+                		<a href="/@documentation/modules/fap/home">Volver</a>
+                	</ul>
+
+            </div>
+
+            <div id="pageContent">
+            	<div class="wikistyle">
+            		<h1>Documentacion ficheros FAP</h1>
+            		<h2>Enlaces documentacion FAP</h2>
+            		<ol>
+                		#{list items:ficheros, as:'fichero'}
+                			%{ def nombre = fichero.toString().replaceAll(".html", "") }%
+							<li><a href="/@documentation/html/${nombre}">${nombre}</a></li>
+						#{/list}
+					</ol>
+            	</div>
+            </div>
+
+        </div>
+  
+  		<script>      
+	    	$('pre').addClass("prettyprint");
+	    	$('pre').css('overflow', 'auto');
+			prettyPrint();
+		</script>
+    </body>
+</html>

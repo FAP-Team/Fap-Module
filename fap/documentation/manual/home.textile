@@ -21,6 +21,11 @@ h2. Tutorial
 
 h2. "Preguntas Frecuentes":preguntas-frecuentes
 
+h2. Documentación ficheros *.fap
+
+* "Índice documentación HTML ficheros *.fap":/@documentation/html/index
+* "Generar y acceder a la documentación de los ficheros *.fap":doc-html
+
 h2. DSL
 
 Elementos que pueden ser utilizados en el DSL

@@ -16,6 +16,7 @@ Entidad Singleton superClass {
 // tendrá todos éstos campos por defecto.
 Entidad SolicitudGenerica tableName = "solicitud"{
 	String estado
+	Lista estadosSolicitud estadoValue transient
 	Lista estadosSolicitud estadoUsuario transient
 	Solicitante solicitante
 	Documentacion documentacion

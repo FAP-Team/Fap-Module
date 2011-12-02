@@ -88,6 +88,29 @@ public class LedUtils {
 	}
 	
 	/*
+	* Devuelve los nodos de tipo clazz identificado por name. Si la clase clazz
+	* no tiene un campo name, devuelve null.
+	*/
+   public static List<EObject> getAllNodeBySameName(Class clazz, String name){
+	   try{
+		   Method method = clazz.getMethod("getName", null);
+	   }
+	   catch(Exception e){
+		   return null;
+	   }
+	   List<EObject> nodes = getNodes(clazz);
+	   List<EObject> ret=[];
+	   for (EObject node: nodes){
+		   if (node.name.equals(name)){
+			   ret.add(node);
+		   }
+	   }
+	   if (ret.isEmpty())
+	      return null;
+	   return ret;
+   }
+	
+	/*
 	 * Devuelve la entidad Solicitud, y si no la encuentra (porque se está generando el
 	 * módulo en vez de la aplicación), devuelve la entidad SolicitudGenerica. 
 	 */

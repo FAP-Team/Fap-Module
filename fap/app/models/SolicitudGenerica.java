@@ -35,6 +35,11 @@ public class SolicitudGenerica extends Model {
 	
 	@ValueFromTable("estadosSolicitud")
 	@Transient
+	public String estadoValue;
+	
+	
+	@ValueFromTable("estadosSolicitud")
+	@Transient
 	public String estadoUsuario;
 	
 	
@@ -147,6 +152,12 @@ public class SolicitudGenerica extends Model {
 	}
 
 	public String getEstadoUsuario() {
+		if (!TableKeyValue.contains("estadosSolicitudUsuario", estado))
+			utils.DataBaseUtils.updateEstadosSolicitudUsuario();
+		return TableKeyValue.getValue("estadosSolicitudUsuario", estado);
+	}
+	
+	public String getEstadoValue() {
 		return estado;
 	}
 

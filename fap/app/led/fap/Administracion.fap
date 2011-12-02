@@ -13,6 +13,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Informe" accion="fap.InformeController.index"
 			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
 			Enlace "Properties" pagina=Propiedades
+			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 		}
 		
 		Enlace "Ayuda" pagina=Soporte.Soporte
@@ -192,5 +193,21 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
         Texto campo=Propiedades.descripcion titulo="Descripción" requerido
         Texto campo=Propiedades.clave titulo="Clave" requerido
     }
+    
+    Pagina EstadosVisibles titulo="Visibilidad de Estados" {
+    	Tabla tabladeEstadosSolicitud titulo="Estados de la solicitud visibles para los usuarios" campo=TableKeyValue popupModificar=PopupVisibilidadDeSolicitudes permiso=tableKeyOnlyEstadosSolicitudUsuario {
+	        Columna campo=TableKeyValue.key titulo="Estado Interno"
+	        Columna campo=TableKeyValue.value titulo="Estado Visible por el Usuario" expandir
+	    }
+    	
+    }
+    
+    Popup PopupVisibilidadDeSolicitudes campo=TableKeyValue {
+    	Grupo noEditableGrupo permiso=noEditable visible=false {
+	    	Texto campo=TableKeyValue.table titulo="Tabla"
+	    	Texto campo=TableKeyValue.key titulo="Estado Interno"
+	    }
+	    Combo comboEstadoInterno campo=TableKeyValue.value titulo="Estado que ve el usuario" requerido
+	}
     
 }

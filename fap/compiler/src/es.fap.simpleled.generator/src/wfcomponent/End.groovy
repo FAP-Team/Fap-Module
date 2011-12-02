@@ -180,6 +180,8 @@ ${defLine} ${extendz} {
 		 dirs.add(new File(FileUtils.getRoute('CONTROLLER_GEN_POPUP')));
 		 dirs.add(new File(FileUtils.getRoute('LIST')));
 		 dirs.add(new File(FileUtils.getRoute('JSON_DOCUMENTATION')));
+		 dirs.add(new File(FileUtils.getRoute('ENUM')));
+		 dirs.add(new File(FileUtils.getRoute('ENUM_FAP')));
 		 //dirs.add(new File(FileUtils.getRoute('MODEL'))); Se puede descomentar.
 		 
 		 for (File dview: new File(FileUtils.getRoute('VIEW')).listFiles()){

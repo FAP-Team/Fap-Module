@@ -37,7 +37,7 @@ ${cEconomico.tipo.descripcion}
 		
 		Form addDocumento campo=SolicitudGenerica.aportaciones.actual.documentos permiso=aportacionDocumentos {		
 			Grupo titulo="Añadir documentación" {
-				SubirArchivoAed fileAportacion campo=Documento requerido
+				SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 				Boton subirDocumento titulo="Añadir documentación"
 			}
 		}

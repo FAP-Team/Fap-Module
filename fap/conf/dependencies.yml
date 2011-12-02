@@ -62,3 +62,4 @@ repositories:
             - es.gobcan.eadmon -> *
             - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *
+        

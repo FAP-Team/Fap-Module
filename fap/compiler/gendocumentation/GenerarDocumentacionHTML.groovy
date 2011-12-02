@@ -12,20 +12,20 @@ class GenerarDocumentacionHTML {
 	private static String plantillaJST = ""
 	private static File fs, plantilla, fin
 	private static String matcher = "^\\s*//"
-	private static String titulo='', ruta='';
+	private static String titulo='', ruta=''
 	private static List docs_text = [], code_text=[]
 	private static List sections = []
 	
 	public static void main(String[] args) {
 		plantillaJST = args[2]+"/plantillas/plantillaHTML.jst"
-		ruta=args[3];
+		ruta=args[3]
+		titulo=args[4].replaceAll(".html", "")
 		generarDocumentacionHTML(args[0], args[1])
 	}
 	
 	// Metodo publico que se puede acceder para generar la documentacion en formato HTML
 	// de nuestros ficheros FAP
 	public static void generarDocumentacionHTML(String fuente, String destino){
-		titulo="Fap Documentation"
 		cargarFichero(fuente)
 		generarContenido()
 		generarHTML(destino)
@@ -160,7 +160,7 @@ class GenerarDocumentacionHTML {
 		plantilla= new File(plantillaJST)
 	}
 	
-	// Genera la página HTML, a aprtir de las listas: "code_text" y "docs_text", que contienen el contenido de la pagina
+	// Genera la página HTML, a partir de las listas: "code_text" y "docs_text", que contienen el contenido de la pagina
 	private static void generarHTML (String destino){
 	   fin = new File(destino)
 	   def binding = [

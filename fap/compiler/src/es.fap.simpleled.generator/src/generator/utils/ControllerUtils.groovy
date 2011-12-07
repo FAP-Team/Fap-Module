@@ -428,6 +428,13 @@ class ControllerUtils {
 			if ((objeto instanceof Solicitante)) {
                 out += validValueFromTable(campo + ".tipo");
 				// Debemos validar el representante de la persona física, si lo tiene
+				out += """if (${campol}.isPersonaFisica() && (${campol}.representado != null) && (${campol}.representado)) {
+					${required(campo + ".representante")}
+					${valid(campo + ".representante")}
+				}
+				"""
+			} else if ((objeto instanceof PersonaFisica)) {
+				// Debemos validar el representante de la persona física, si lo tiene
 				out += """if ((${campol}.representado != null) && (${campol}.representado)) {
 					${required(campo + ".representante")}
 					${valid(campo + ".representante")}

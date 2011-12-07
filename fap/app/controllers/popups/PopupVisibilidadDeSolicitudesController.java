@@ -25,7 +25,6 @@ public class PopupVisibilidadDeSolicitudesController extends PopupVisibilidadDeS
 		}
 		
 		if(!Messages.hasErrors()){
-			play.Logger.info("Almaceno nuevo: "+dbTableKeyValue.toString());
 			TableKeyValue.setValue(dbTableKeyValue.table, dbTableKeyValue.key, tableKeyValue.value);
 		}
 

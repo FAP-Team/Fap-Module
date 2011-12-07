@@ -16,7 +16,7 @@ public class DocumentacionHTMLPlugin extends PlayPlugin {
 
     @Override
     public void onRoutesLoaded() {
-        Router.addRoute("GET", "/@documentation/html/{id}", "fap.DocumentacionHTML.index");
+        Router.addRoute("GET", "/@documentation/modules/fap/html/{id}", "fap.DocumentacionHTML.index");
     }
 
 

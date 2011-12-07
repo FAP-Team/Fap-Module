@@ -23,7 +23,7 @@ h2. "Preguntas Frecuentes":preguntas-frecuentes
 
 h2. Documentación ficheros *.fap
 
-* "Índice documentación HTML ficheros *.fap":/@documentation/html/index
+* "Índice documentación HTML ficheros *.fap":html/index
 * "Generar y acceder a la documentación de los ficheros *.fap":doc-html
 
 h2. DSL

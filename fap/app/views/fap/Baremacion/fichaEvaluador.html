@@ -85,6 +85,7 @@
 			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor)
 			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", criterio.comentariosAdministracion);
 			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", criterio.comentariosSolicitante);
+			def tam=500
 		}%
 		
 		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
@@ -103,7 +104,7 @@
 			#{/if}
 			
 			#{if criterio.tipo.claseCriterio.equals("auto")}
-				#{simple.uneditable label:'Valor', value:valor /}
+				#{simple.uneditable value:valor, ancho: tam /}
 			#{/if}
 
 			#{elseif criterio.tipo.claseCriterio.equals("automod")}
@@ -114,11 +115,11 @@
 				#{if criterio.tipo.tipoValor.equals('lista')}
 					%{  def showKeyInlabel = true //criterio.mostrarValor
 					%}
-					#{simple.select name:paramName + ".valor", label:'Valor', options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: showKeyInlabel/}
+					#{simple.select name:paramName + ".valor", options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: showKeyInlabel, ancho: tam/}
 				#{/if}
 				
 				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
-					#{simple.text name:paramName + ".valor", label:'Valor', value:valor, error: error /}
+					#{simple.text name:paramName + ".valor", value:valor, error: error, ancho: tam /}
 				#{/elseif}
 			#{/elseif}
 			

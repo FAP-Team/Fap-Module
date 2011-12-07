@@ -8,8 +8,8 @@
 	_showKeyInLabel
 }*
 
-#{simple.row label:_label, id:_id, help:_help, error:_error }
-	<select #{if _id}id="${_id}"#{/if} name="${_name}">
+#{simple.row label:_label, id:_id, help:_help, error:_error}
+	<select #{if _id}id="${_id}"#{/if} name="${_name}" select style="width: ${_ancho}px">
 		<option> </option>
 		#{list items:_options, as:'option'}
 			%{

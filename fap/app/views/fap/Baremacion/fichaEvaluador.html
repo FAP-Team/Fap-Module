@@ -91,7 +91,6 @@
 			<h2>${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</h2>
 			#{if criterio.tipo.descripcion != null}
 				<div class="clearfix">
-					<h3>Descripción</h3>
 					<p>#{verbatim}${criterio.tipo.descripcion}#{/verbatim}</p>
 				</div>
 			#{/if}
@@ -113,7 +112,9 @@
 			
 			#{elseif criterio.tipo.claseCriterio.equals("manual")}
 				#{if criterio.tipo.tipoValor.equals('lista')}
-					#{simple.select name:paramName + ".valor", label:'Valor', options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: true/}
+					%{  def showKeyInlabel = true //criterio.mostrarValor
+					%}
+					#{simple.select name:paramName + ".valor", label:'Valor', options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: showKeyInlabel/}
 				#{/if}
 				
 				#{elseif criterio.tipo.tipoValor.equals('cantidad')}

@@ -63,6 +63,7 @@ fap/app/controllers/gen/*
 fap/app/secure/gen/*
 fap/app/views/gen/*
 fap/app/listas/gen/*
+fap/app/enumerado/fap/gen/*
 
 fap/compiler/src/es.fap.simpleled/bin/*
 fap/compiler/src/es.fap.simpleled/src-gen/*

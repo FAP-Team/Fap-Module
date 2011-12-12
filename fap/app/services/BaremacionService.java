@@ -66,7 +66,7 @@ public class BaremacionService {
             invokedClass = assignableClasses.get(0);
         }
 		
-		String methodName = "evalPuntuacionTotal";
+		String methodName = "evalTotalCriterios";
         Method method = null;
         
         if(invokedClass != null){

@@ -14,7 +14,7 @@ public class Evaluador {
 	}
 	
 	public static void evalDefault(Evaluacion evaluacion, List<Criterio> childs){
-		evaluacion.puntuacionTotal = sumatorio("valor", childs);
+		evaluacion.totalCriterios = sumatorio("valor", childs);
 	}
 
 	public static void evalDefault(CEconomico ceconomico, List<CEconomico> childs) {

@@ -92,7 +92,7 @@ Entidad Evaluacion {
 	OneToMany Criterio criterios
 	OneToMany CEconomico ceconomicos
 	
-	Double puntuacionTotal
+	Double totalCriterios
 	
 	//Evaluador
 	//ManyToOne Evaluador evaluador

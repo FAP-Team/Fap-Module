@@ -40,7 +40,7 @@ public class Evaluacion extends Model {
 	
 	
 	
-	public Double puntuacionTotal;
+	public Double totalCriterios;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)

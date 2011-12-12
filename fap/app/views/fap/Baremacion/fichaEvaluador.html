@@ -53,7 +53,15 @@
 			<ul>
 			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
 				<li><a href="#criterio${tcriterio.jerarquia}">${tcriterio.jerarquia} - ${tcriterio.nombre}</a></li>	
-			#{/list}
+			#{/list}	
+			</ul>	
+		#{/if}
+		
+		
+		#{if evaluacion.puntuacionTotal}
+		 	<h2>Puntuación total de la evaluación</h2>
+			<ul>
+				<li><a href="#PuntuacionTotal">Puntuación total</a></li>
 			</ul>	
 		#{/if}
 		
@@ -186,6 +194,19 @@
 			
 	#{/fap.grupo}
 #{/if}
+
+
+#{if evaluacion.puntuacionTotal}
+	%{ def valor = evaluacion.puntuacionTotal
+   	   def tam = 500%}
+
+	#{fap.grupo titulo:'Puntuación total de la evaluación', id:'PuntuacionTotal'}
+		#{simple.uneditable value:valor, ancho: tam /}
+	#{/fap.grupo}
+#{/if}
+
+
+
 
 <div class="button_container">
 	<input type="submit" class="boton" name="save" value="&{'baremacion.fichaevaluador.guardar'}">

@@ -86,6 +86,8 @@ public class FichaEvaluadorController extends Controller {
 			if(evaluacion.tipo.comentariosSolicitante){
 				evaluacion.comentariosSolicitante = params.get("evaluacion.comentariosSolicitante");
 			}
+			
+			evaluacion.puntuacionTotal = 10.0;
 				
 			//Criterios de evaluacion
 			for(Criterio criterio : evaluacion.criterios){

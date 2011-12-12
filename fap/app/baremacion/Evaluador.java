@@ -5,11 +5,16 @@ import java.util.List;
 
 import models.CEconomico;
 import models.Criterio;
+import models.Evaluacion;
 
 public class Evaluador {
 
 	public static void evalDefault(Criterio criterio, List<Criterio> childs) {
 		criterio.valor = sumatorio("valor", childs);
+	}
+	
+	public static void evalDefault(Evaluacion evaluacion, List<Criterio> childs){
+		evaluacion.puntuacionTotal = sumatorio("valor", childs);
 	}
 
 	public static void evalDefault(CEconomico ceconomico, List<CEconomico> childs) {

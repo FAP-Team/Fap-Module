@@ -39,6 +39,10 @@ public class Evaluacion extends Model {
 	public List<CEconomico> ceconomicos;
 	
 	
+	
+	public Double puntuacionTotal;
+	
+	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public TipoEvaluacion tipo;
 	

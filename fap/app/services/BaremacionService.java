@@ -29,6 +29,7 @@ public class BaremacionService {
 		
 		if(evaluacion.criterios != null && evaluacion.criterios.size() > 0){
 			List<List<Criterio>> sortedCriterios = sortByProfundidad(evaluacion.criterios);
+			List<Criterio> totales=sortedCriterios.get(0);
 			for(int i = sortedCriterios.size() - 2; i >= 0; i--){
 				for(Criterio criterio : sortedCriterios.get(i)){
 					//TODO revisar código para automod
@@ -38,6 +39,8 @@ public class BaremacionService {
 					}
 				}
 			}
+			// Para calcular la puntuacion total
+			invokeEvalTotal(evaluacion, totales);
 		}
 
 		if(evaluacion.ceconomicos != null && evaluacion.ceconomicos.size() > 0){
@@ -53,6 +56,47 @@ public class BaremacionService {
 			}
 		}
 		
+	}
+	
+	private static void invokeEvalTotal(Evaluacion parent, List<Criterio> childs){
+		Class invokedClass = null;
+		//Busca una clase que herede del evaluador
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(Evaluador.class);
+        if(assignableClasses.size() > 0){
+            invokedClass = assignableClasses.get(0);
+        }
+		
+		String methodName = "evalPuntuacionTotal";
+        Method method = null;
+        
+        if(invokedClass != null){
+	        //Método de la clase evaluador
+	        try {
+	        	method = invokedClass.getDeclaredMethod(methodName, parent.getClass(), List.class);
+			} catch (Exception e) {
+			}
+	        
+	        //Default de la clase evaluador
+	        if(method == null){
+	        	try {
+	        		method = invokedClass.getDeclaredMethod("evalDefault", parent.getClass(), List.class);
+	        	}catch(Exception e){}
+	        }
+        }
+        
+        //Método por defecto de la clase generica
+        if(method == null){
+        	try {
+        		method = Evaluador.class.getDeclaredMethod("evalDefault", parent.getClass(), List.class);
+        	}catch(Exception e){}
+        }
+        
+        //Llama al método
+        if(method != null){
+        	try {
+        		method.invoke(null, parent, childs);
+			} catch (Exception e) {}
+        }
 	}
 	
 	/**
@@ -75,7 +119,6 @@ public class BaremacionService {
         if(assignableClasses.size() > 0){
             invokedClass = assignableClasses.get(0);
         }
-        
         
         String methodName = "eval" + jerarquia.replaceAll("\\.", "_");
         Method method = null;

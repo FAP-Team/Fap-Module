@@ -71,6 +71,10 @@ POST /Administracion/emails/actualizarDesdeFichero EmailsController.actualizarDe
 GET /Administracion/propiedades PropiedadesController.index
 
 GET /Administracion/propiedades/tablaPropiedades PropiedadesController.tablatablaPropiedades
+GET /Administracion/estadosvisibles EstadosVisiblesController.index
+
+GET /Administracion/estadosvisibles/tabladeEstadosSolicitud EstadosVisiblesController.tablatabladeEstadosSolicitud
+POST /Administracion/estadosvisibles/save EstadosVisiblesController.save
 GET /Administracion/popupusuario/{idEntidad}/abrir popups.PopupUsuarioController.abrir
 POST /Administracion/popupusuario/{idEntidad}/editar popups.PopupUsuarioController.editar
 POST /Administracion/popupusuario/{idEntidad}/borrar popups.PopupUsuarioController.borrar
@@ -107,6 +111,12 @@ POST /Administracion/popupproperties/{idEntidad}/editar popups.PopupPropertiesCo
 POST /Administracion/popupproperties/{idEntidad}/borrar popups.PopupPropertiesController.borrar
 POST /Administracion/popupproperties/{idEntidad}/crear popups.PopupPropertiesController.crear
 POST /Administracion/popupproperties/{idEntidad}/cancelarcrear popups.PopupPropertiesController.cancelarCrear
+
+GET /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/abrir popups.PopupVisibilidadDeSolicitudesController.abrir
+POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/editar popups.PopupVisibilidadDeSolicitudesController.editar
+POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/borrar popups.PopupVisibilidadDeSolicitudesController.borrar
+POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/crear popups.PopupVisibilidadDeSolicitudesController.crear
+POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/cancelarcrear popups.PopupVisibilidadDeSolicitudesController.cancelarCrear
 
 GET /Solicitud/pceconomicos PCEconomicosController.index
 

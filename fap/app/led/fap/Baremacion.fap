@@ -28,8 +28,13 @@ Entidad TipoCriterio {
     Integer valorPrecision
     Double valorMaximo
     Double valorMinimo
+    
     Lista LstTipoValorCriterio tipoValor requerido
     OneToMany CriterioListaValores listaValores
+    
+    //Opcion para la visualización: Muestra el valor junto a la descripción en el combo
+    Boolean mostrarValor default="true"
+    
     Boolean transparencia
     Boolean comentariosAdministracion default="false"
     Boolean comentariosSolicitante default="false"

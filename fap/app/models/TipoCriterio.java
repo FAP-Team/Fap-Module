@@ -69,6 +69,10 @@ public class TipoCriterio extends Model {
 	
 	
 	
+	public Boolean mostrarValor;
+	
+	
+	
 	public Boolean transparencia;
 	
 	
@@ -90,7 +94,8 @@ public class TipoCriterio extends Model {
 		
 						if (listaValores == null)
 							listaValores = new ArrayList<CriterioListaValores>();
-						comentariosAdministracion = false;
+						mostrarValor = true;
+comentariosAdministracion = false;
 comentariosSolicitante = false;
 
 	}

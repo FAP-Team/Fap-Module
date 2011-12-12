@@ -113,9 +113,7 @@
 			
 			#{elseif criterio.tipo.claseCriterio.equals("manual")}
 				#{if criterio.tipo.tipoValor.equals('lista')}
-					%{  def showKeyInlabel = true //criterio.mostrarValor
-					%}
-					#{simple.select name:paramName + ".valor", options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: showKeyInlabel, ancho: tam/}
+					#{simple.select name:paramName + ".valor", options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: criterio.tipo.mostrarValor, ancho: tam/}
 				#{/if}
 				
 				#{elseif criterio.tipo.tipoValor.equals('cantidad')}

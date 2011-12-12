@@ -49,7 +49,7 @@ public class GPermiso {
 			}else{
 				String params = var.sqlParams?.sqlParams?.collect{
 					return CampoPermisoUtils.create(it).str;
-				}.join(",");
+				}?.join(",");
 				if(params != null && !params.trim().isEmpty())
 					params = ", " + params;
 				else
@@ -89,7 +89,7 @@ public class GPermiso {
 				String realOp = r.getGroupOp().replaceAll("\\s+", "")
 				String group = r.getRightGroup().collect{
 					return getPermisoRuleCheckRightStr(it);
-				}.join(", ");
+				}?.join(", ");
 				out = "utils.StringUtils.${realOp}(${campo.str}.toString(), ${group})"	
 			}
 			else{

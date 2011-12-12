@@ -155,14 +155,15 @@ public class FichaEvaluadorController extends Controller {
 				try {
 					new Report("app/views/reports/baremacion/Borrador.html").renderResponse(evaluacion);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());
+					Messages.error("Error al generar el borrador del documento");
 				}		
 			}
 		}else{
 			forbidden();
 		}
 	}
+	
 	
 	private static void flash(Evaluacion evaluacion){
 		Messages.setFlash("evaluacion.id", evaluacion.id);

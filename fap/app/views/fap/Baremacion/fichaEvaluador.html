@@ -39,6 +39,9 @@
 <input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>
 
 #{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
+
+	#{simple.uneditable value: evaluacion.totalCriterios, ancho: "500px", label: "Total criterios de evaluación" /}
+
 	#{if evaluacion.tipo.comentariosAdministracion}
 		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion)/}
 	#{/if}
@@ -54,14 +57,6 @@
 			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
 				<li><a href="#criterio${tcriterio.jerarquia}">${tcriterio.jerarquia} - ${tcriterio.nombre}</a></li>	
 			#{/list}	
-			</ul>	
-		#{/if}
-		
-		
-		#{if evaluacion.totalCriterios}
-		 	<h2>Puntuación total de la evaluación</h2>
-			<ul>
-				<li><a href="#PuntuacionTotal">Puntuación total</a></li>
 			</ul>	
 		#{/if}
 		
@@ -143,16 +138,6 @@
 				
 	#{/fap.grupo}
 #{/if}
-
-#{if evaluacion.totalCriterios}
-	%{ def valor = evaluacion.totalCriterios
-   	   def tam = 500%}
-
-	#{fap.grupo titulo:'Puntuación total de la evaluación', id:'PuntuacionTotal'}
-		#{simple.uneditable value:valor, ancho: tam /}
-	#{/fap.grupo}
-#{/if}
-
 
 #{if  hasCEconomicos}
 	#{fap.grupo titulo:'Conceptos económicos', id: 'CEconomicos'}

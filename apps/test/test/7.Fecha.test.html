@@ -1,0 +1,10 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+#{selenium}
+    open('http://localhost:9000/Solicitud/fechas?idSolicitud=1')
+    click('solicitud_fechas_fechaRequerida')
+    click(link=4)
+    click('solicitud_fechas_fecha')
+    click(link=18)
+    clickAndWait(//button[@type='submit'])
+#{/selenium}

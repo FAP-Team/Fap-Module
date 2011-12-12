@@ -1,0 +1,11 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+#{selenium}
+    open('http://localhost:9000/Solicitud/direcciones?idSolicitud=1')
+    click('solicitud_direccionTest_direccion_municipiochzn_o_74')
+    type('solicitud_direccionTest_direccion_codigoPostal', '38390')
+    type('solicitud_direccionTest_direccion_calle','Los Cedros')
+    type('solicitud_direccionTest_direccion_numero','14')
+    type('solicitud_direccionTest_direccion_otros','bj')
+    clickAndWait(//button[@type='submit'])
+#{/selenium}

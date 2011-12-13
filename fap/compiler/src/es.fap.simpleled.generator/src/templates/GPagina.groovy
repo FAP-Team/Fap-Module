@@ -164,9 +164,15 @@ public class GPagina {
 			import java.util.*;
 			import messages.Messages;
 			import java.lang.reflect.Field;
-			
+
+			import secure.Secure;
+			import javax.inject.Inject;
+
 			${withControlador}
 			public class ${controllerGenName()} extends ${controladorPadre} {
+
+				@Inject
+				protected static Secure secure;
 
 				public static void index(${solicitud.typeId}){
 					${entities.collect{"$it.typeVariable = ${ControllerUtils.simpleGetterCall(it, false)};"}.join("\n")}

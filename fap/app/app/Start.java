@@ -37,19 +37,19 @@ public class Start extends Job {
 		String log4jPropertyFile = FapProperties.get("app.log.path");
 		PropertyConfigurator.configure(Play.classloader.getResource(log4jPropertyFile));
 		
-		if (/*Play.mode.isDev() && */Agente.count() == 0){
+		if (Agente.count() == 0){
             Fixtures.delete();
             String agentesFile = "listas/initial-data/agentes.yml";
             Logger.info("Cargando agentes desde %s", agentesFile);
             play.test.Fixtures.loadModels(agentesFile);
         }
 		
-		if(/*Play.mode.isDev() && */TableKeyValue.count() == 0){
+		if(TableKeyValue.count() == 0){
 	        long count = TableKeyValue.loadFromFiles();
 	        Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas");
 		}
 		
-		if (/*Play.mode.isDev() && */Mail.count() == 0){
+		if (Mail.count() == 0){
 			long count = Mails.loadFromFiles();
 			Logger.info("Se cargaron desde fichero " + count + " registros de la tabla emails");
 		}

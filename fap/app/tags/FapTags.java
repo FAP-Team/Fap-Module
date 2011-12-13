@@ -33,6 +33,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import config.InjectorConfig;
+
 import models.Solicitante;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
@@ -57,6 +59,7 @@ import play.mvc.Scope.Flash;
 import play.templates.FastTags;
 import static play.templates.JavaExtensions.*;
 import play.templates.GroovyTemplate.ExecutableTemplate;
+import secure.Secure;
 import validation.Moneda;
 import validation.ValueFromTable;
 
@@ -310,17 +313,10 @@ R
 		
 		boolean hasPermiso = true;
 		if (permiso != null) {
-				Class clazz = secure.PermissionFap.class;
-				Class[] argClass = new Class[] {String.class, Map.class, Map.class};
-				Object[] argValue = new Object[] {"read", tags.TagMapStack.top("idParams"), null};
-				try {
-					Method metodoPermiso = clazz.getMethod(permiso, argClass);
-					hasPermiso = (Boolean) metodoPermiso.invoke(null, argValue);
-				} catch (Exception e) {
-					String msg = "Error al cargar los permisos de la tabla";
-					throw new TemplateExecutionException(template.template, fromLine, msg, new TagInternalException(msg));
-				}
+			Secure secure = InjectorConfig.getInjector().getInstance(Secure.class);
+			hasPermiso = secure.check(permiso, "read", (Map<String, Long>)tags.TagMapStack.top("idParams"), null);
 		}
+		
 		if (hasPermiso) {
 			if(campo == null && funcion == null){
 				String msg = "Especifica un campo o función o renderer + campo";

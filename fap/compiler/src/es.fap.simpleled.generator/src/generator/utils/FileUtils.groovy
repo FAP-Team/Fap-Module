@@ -27,7 +27,8 @@ public class FileUtils {
 		PERMISSION: 'app/secure/',
 		PERMISSION_GEN: 'app/secure/gen/',
 		JSON_DOCUMENTATION: 'compiler/src/es.fap.simpleled.ui/src/es/fap/simpleled/ui/documentation/json/',
-		FAP_DOCUMENTATION: 'documentation/manual/'
+		FAP_DOCUMENTATION: 'documentation/manual/',
+		APP_CONFIG : 'app/config/'
 	]
 	
 	public static final HashSet<String> overwrittenFiles = new HashSet<String>();

@@ -26,6 +26,12 @@ Formulario Solicitud {
 			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
 		}
 		
+		Grupo "Permisos" {
+			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administrador
+			Enlace "Permiso grupo" pagina=PermisoPagina permiso=administrador
+			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable 
+		}
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 		
@@ -37,7 +43,6 @@ Formulario Solicitud {
 	Pagina Direcciones {
 		Direccion campo=Solicitud.direccionTest.direccion
 	}
-	
 	
 	Pagina Combos inicial {
 
@@ -120,5 +125,20 @@ Formulario Solicitud {
  		Grupo test2MostrarSiExpresion titulo="Grupo 1: Mostrar Campo" mostrarSiCampo Solicitud.solicitante.email = "pepe@pepe.com", "juan@juan.com" {
 			Texto if2Texto titulo="Texto" campo=Solicitud.testGrupo.nombre
  		}
+	}
+
+	Pagina PermisoPagina permiso=administrador{
+		Wiki {"Si puedes ver esta página tienes que ser administrador."}
+	}
+	
+	Pagina PermisoGrupo permiso=administrador {
+		Wiki {"La página tiene un grupo que es sólo visible para administradores"}
+		Grupo permiso=administrador {
+			Wiki {"Este grupo es sólo visible para administradores"}	
+		}
+	}
+	
+	Pagina PermisoNoEditable permiso=noEditable {
+		Wiki {"Esta página es no editable"}	
 	}
 }

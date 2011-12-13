@@ -1,6 +1,8 @@
 package generator.utils
 
 
+import java.util.Map;
+
 import es.fap.simpleled.led.*
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
@@ -214,7 +216,7 @@ class ControllerUtils {
         if ((Pagina.class.isInstance(objeto)) || (Grupo.class.isInstance(objeto)) || (Popup.class.isInstance(objeto)) || Form.class.isInstance(objeto) || EntidadAutomatica.class.isInstance(objeto)) {
 			
 			if (objeto.permiso != null){
-                out += """if (${PermisosUtils.className()}${objeto.permiso.name}("update", (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
+                out += """if (secure.check("${objeto.permiso.name}", "update", (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
 				validatedFields.push(new HashSet<String>());
 			}
 			
@@ -471,26 +473,10 @@ class ControllerUtils {
 		String permisoContent = "";
 		if(permiso != null){
 			String name = permiso.name;
-			permisoContent = """
-				if (accion == null) return false;
-	
-				boolean permiso;
-				if (accion.equals("crear")) {
-					permiso = ${PermisosUtils.className()}${name}("create", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-					return permiso;
-				}else if (accion.equals("borrar")) {
-					permiso =  ${PermisosUtils.className()}${name}("delete", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-					return permiso;
-				}else if (accion.equals("editar")) {
-					permiso = ${PermisosUtils.className()}${name}("update", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-					return permiso;
-				}else if (accion.equals("leer")) {
-					permiso = ${PermisosUtils.className()}${name}("read", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-					return permiso;
-				}else{
-					return ${PermisosUtils.className()}${name}(accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-				 }
-			"""
+			permisoContent = """accion = secure.transform(accion);
+				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+				Map<String, Object> vars = null;
+				return secure.check("${name}", accion, ids, vars);"""
 		}else{
 			permisoContent = """//Sobreescribir para incorporar permisos a mano
 			return true;"""

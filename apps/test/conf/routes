@@ -51,6 +51,15 @@ POST /Solicitud/subirarchivoaedtest/anadirDocumentacion SubirArchivoAedTestContr
 GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
 
 POST /Solicitud/ejemplosdegrupos/save EjemplosdeGruposController.save
+GET /Solicitud/permisopagina PermisoPaginaController.index
+
+POST /Solicitud/permisopagina/save PermisoPaginaController.save
+GET /Solicitud/permisogrupo PermisoGrupoController.index
+
+POST /Solicitud/permisogrupo/save PermisoGrupoController.save
+GET /Solicitud/permisonoeditable PermisoNoEditableController.index
+
+POST /Solicitud/permisonoeditable/save PermisoNoEditableController.save
 GET /Solicitud/combotestref/{idEntidad}/abrir popups.ComboTestRefController.abrir
 POST /Solicitud/combotestref/{idEntidad}/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/{idEntidad}/borrar popups.ComboTestRefController.borrar

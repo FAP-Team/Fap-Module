@@ -344,9 +344,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-
+import secure.Secure;
+import javax.inject.Inject;
 
 public class ${controllerGenName()} extends GenericController {
+
+	@Inject
+	protected static Secure secure;
 
     $getters
 

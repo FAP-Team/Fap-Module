@@ -1,0 +1,14 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+#{selenium}
+    open('http://localhost:9000/Solicitud/combosoverwrite?idSolicitud=1')
+    assertValue('lista', 'c')
+    assertValue('listaLong', '3')
+    assertText(//div[@id='listaMultiple_chzn']/ul/li[@id='listaMultiple_chzn_c_0']/span, 'Uno')
+    assertText(//div[@id='listaMultiple_chzn']/ul/li[@id='listaMultiple_chzn_c_1']/span, 'Dos')
+    assertText(//div[@id='listaMultiple_chzn']/ul/li[@id='listaMultiple_chzn_c_2']/span, 'Tres')
+    assertText(//div[@id='listaMultipleLong_chzn']/ul/li[@id='listaMultipleLong_chzn_c_0']/span, 'Uno')
+    assertText(//div[@id='listaMultipleLong_chzn']/ul/li[@id='listaMultipleLong_chzn_c_2']/span, 'Tres')
+    assertValue('wsjson', '2')
+    assertValue('wsxml', '1')
+#{/selenium}

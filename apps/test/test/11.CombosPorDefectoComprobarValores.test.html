@@ -1,0 +1,8 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+#{selenium}
+    open('http://localhost:9000/Solicitud/combos?idSolicitud=1')
+    assertValue('solicitud_comboTest_list', 'c')
+    assertText(//div[@id='solicitud_comboTest_listMultiple_chzn']/ul/li[@id='solicitud_comboTest_listMultiple_chzn_c_0']/span, 'A')
+    assertText(//div[@id='solicitud_comboTest_listMultiple_chzn']/ul/li[@id='solicitud_comboTest_listMultiple_chzn_c_1']/span, 'B')
+#{/selenium}

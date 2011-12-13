@@ -1,0 +1,10 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+#{selenium}
+    open('http://localhost:9000/Solicitud/direcciones?idSolicitud=1')
+    assertText(//div[@id='solicitud_direccionTest_direccion_municipio_chzn']/a/span, 'Santa Úrsula')
+    assertValue('solicitud_direccionTest_direccion_codigoPostal', '38390')
+    assertValue('solicitud_direccionTest_direccion_calle', 'Los Cedros')
+    assertValue('solicitud_direccionTest_direccion_numero', '14')
+    assertValue('solicitud_direccionTest_direccion_otros', 'bj')
+#{/selenium}

@@ -2,6 +2,7 @@
 
 #{selenium}
     open('http://localhost:9000/Solicitud/tablassimples?idSolicitud=1')
+    waitForElementPresent(//div[text()='NombreFAP'])
     mouseOver(//div[text()='NombreFAP']/parent::td/parent::tr)
 	mouseDown(//div[text()='NombreFAP']/parent::td/parent::tr)
 	click('ext-gen1063')

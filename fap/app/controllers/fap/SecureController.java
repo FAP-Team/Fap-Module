@@ -28,7 +28,7 @@ import play.db.jpa.JPA;
 import play.libs.*;
 import play.utils.*;
 import properties.FapProperties;
-import secure.Secure;
+import security.Secure;
 import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;

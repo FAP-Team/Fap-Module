@@ -133,7 +133,7 @@ public class End implements IWorkflowComponent {
 	  	  
 	  // Permisos generados
 		String secureGen = """
-package secure;
+package security;
 
 import java.util.Map;
 
@@ -160,7 +160,7 @@ FileUtils.overwrite(FileUtils.getRoute('PERMISSION'), "${clazzGenName}.java", se
 
   // Permisos manual
   String secure = """
-package secure;
+package security;
 
 import java.util.Map;
 
@@ -226,7 +226,7 @@ public class ${clazzName} extends Secure {
 """
 package config;
 
-import secure.*;
+import security.*;
 
 import com.google.inject.AbstractModule;
 

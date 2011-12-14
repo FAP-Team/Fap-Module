@@ -76,7 +76,7 @@ public class GPermiso {
 	private String permisoRuleCode(PermisoRuleCheck r){
 		String out;
 		if (r.getPermiso() != null) {
-			out = """config.InjectorConfig.getInjector().getInstance(secure.Secure.class).check("${r.getPermiso().getName()}", action, ids, vars)""";
+			out = """config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${r.getPermiso().getName()}", action, ids, vars)""";
 			if (r.isNot()){
 				out = "!" +out;
 			}

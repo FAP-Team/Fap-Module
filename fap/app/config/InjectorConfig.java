@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 import play.Play;
 import play.modules.guice.GuiceSupport;
-import secure.Secure;
+import security.Secure;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;

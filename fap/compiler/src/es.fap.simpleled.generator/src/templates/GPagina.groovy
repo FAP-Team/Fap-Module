@@ -165,7 +165,7 @@ public class GPagina {
 			import messages.Messages;
 			import java.lang.reflect.Field;
 
-			import secure.Secure;
+			import security.Secure;
 			import javax.inject.Inject;
 
 			${withControlador}

@@ -24,8 +24,7 @@ public class FileUtils {
 		ENUM : 'app/enumerado/gen/',
 		ENUM_FAP: 'app/enumerado/fap/gen/',
 		MENU_GEN : 'app/views/gen/menu/',
-		PERMISSION: 'app/secure/',
-		PERMISSION_GEN: 'app/secure/gen/',
+		PERMISSION: 'app/security/',
 		JSON_DOCUMENTATION: 'compiler/src/es.fap.simpleled.ui/src/es/fap/simpleled/ui/documentation/json/',
 		FAP_DOCUMENTATION: 'documentation/manual/',
 		APP_CONFIG : 'app/config/'

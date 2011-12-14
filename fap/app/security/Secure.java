@@ -1,4 +1,4 @@
-package secure;
+package security;
 
 import java.util.Map;
 

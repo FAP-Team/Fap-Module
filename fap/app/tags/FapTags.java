@@ -60,7 +60,7 @@ import play.mvc.Scope.Flash;
 import play.templates.FastTags;
 import static play.templates.JavaExtensions.*;
 import play.templates.GroovyTemplate.ExecutableTemplate;
-import secure.Secure;
+import security.Secure;
 import validation.Moneda;
 import validation.ValueFromTable;
 

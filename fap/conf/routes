@@ -40,13 +40,6 @@ GET /Administracion/consultas fap.consultasController.index
 GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
 
 # === FAPGENERATED ===
-GET /Principal/solicitudes SolicitudesController.index
-
-GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
-POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
-GET /Soporte/soporte SoporteController.index
-
-POST /Soporte/soporte/incidencia SoporteController.incidencia
 GET /Administracion/usuarios UsuariosController.index
 
 GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios
@@ -72,6 +65,10 @@ POST /Administracion/emails/actualizarDesdeFichero EmailsController.actualizarDe
 GET /Administracion/propiedades PropiedadesController.index
 
 GET /Administracion/propiedades/tablaPropiedades PropiedadesController.tablatablaPropiedades
+GET /Administracion/estadosvisibles EstadosVisiblesController.index
+
+GET /Administracion/estadosvisibles/tabladeEstadosSolicitud EstadosVisiblesController.tablatabladeEstadosSolicitud
+POST /Administracion/estadosvisibles/save EstadosVisiblesController.save
 GET /Administracion/popupusuario/{idEntidad}/abrir popups.PopupUsuarioController.abrir
 POST /Administracion/popupusuario/{idEntidad}/editar popups.PopupUsuarioController.editar
 POST /Administracion/popupusuario/{idEntidad}/borrar popups.PopupUsuarioController.borrar
@@ -108,6 +105,12 @@ POST /Administracion/popupproperties/{idEntidad}/editar popups.PopupPropertiesCo
 POST /Administracion/popupproperties/{idEntidad}/borrar popups.PopupPropertiesController.borrar
 POST /Administracion/popupproperties/{idEntidad}/crear popups.PopupPropertiesController.crear
 POST /Administracion/popupproperties/{idEntidad}/cancelarcrear popups.PopupPropertiesController.cancelarCrear
+
+GET /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/abrir popups.PopupVisibilidadDeSolicitudesController.abrir
+POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/editar popups.PopupVisibilidadDeSolicitudesController.editar
+POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/borrar popups.PopupVisibilidadDeSolicitudesController.borrar
+POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/crear popups.PopupVisibilidadDeSolicitudesController.crear
+POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/cancelarcrear popups.PopupVisibilidadDeSolicitudesController.cancelarCrear
 
 GET /Solicitud/aportacion AportacionController.index
 
@@ -159,4 +162,11 @@ POST /Solicitud/popupdocaportados/{idEntidad}/borrar popups.PopUpDocAportadosCon
 POST /Solicitud/popupdocaportados/{idEntidad}/crear popups.PopUpDocAportadosController.crear
 POST /Solicitud/popupdocaportados/{idEntidad}/cancelarcrear popups.PopUpDocAportadosController.cancelarCrear
 
+GET /Principal/solicitudes SolicitudesController.index
+
+GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
+POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
+GET /Soporte/soporte SoporteController.index
+
+POST /Soporte/soporte/incidencia SoporteController.incidencia
 # === END FAPGENERATED ===			 

@@ -32,7 +32,10 @@
 			
 	//Campo de los elementos de la lista a partir del cual se extrae la clave y el valor		
 	def comboValue = _comboValue != null? _comboValue : "key"
-	def comboText = _comboText != null? _comboText : "value"		
+	def comboText = _comboText != null? _comboText : "value"
+	
+	def manyTo = _manyTo;
+	def name = ""	
 }%
 
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
@@ -41,11 +44,16 @@
 			
 			multiple = field.isCollection;
 			
+			// Arreglando lo de los IDs
+			name = field.name;
+			if (manyTo)
+				name = id;
+			
+			
 			if(field.reference){
-				//Añade .id al nombre del campo para que play haga el binding corretamente
-				field.name = field.name + ".id"
 				comboValue = "id";
 			}
+			
 			
 			def items = null;
 			//Opciones pasadas por parámetro del tag
@@ -88,9 +96,10 @@
 					values.addAll(value);
 				}
 			}
+			
 		}%
 		
-		<select class="combo" data-placeholder="Seleccione..." id="${id}" name="${field.name}" #{if multiple} multiple #{/if} ${disabled} #{if style}style="${style}"#{/if}>
+		<select class="combo" data-placeholder="Seleccione..." id="${id}" name="${name}" #{if multiple} multiple #{/if} ${disabled} #{if style}style="${style}"#{/if}>
 			#{if blanco && !multiple}
 			<option> </option>
 			#{/if}

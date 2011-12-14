@@ -2,11 +2,16 @@ package generator.utils
 
 
 import java.util.Map;
+import java.util.ArrayList;
 
 import es.fap.simpleled.led.*
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+
 import org.eclipse.emf.ecore.EObject;
+
+import com.sun.media.sound.RealTimeSequencer.PlayThread;
+
 import utils.*;
 
 /**
@@ -258,11 +263,11 @@ class ControllerUtils {
 		CampoUtils campo = CampoUtils.create(objeto.campo);
 		
 		// Si la referencia es un ManyToOne o ManyToMany, solo igualamos ella, no sus campos
-		if (campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToOne") ||
-			campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToMany")) {	
-			return copyCampoSimple(campo);
+		if (campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToOne")) {
+			return copyCampoMany2One(campo);
+		} else if (campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToMany")) { 
+			return copyCampoMany2Many(campo);
 		}
-			
 		String validOut = "";
         List<String> camposFiltrados;
 		if (objeto instanceof Solicitante) {
@@ -312,7 +317,7 @@ class ControllerUtils {
 			String out = "";
 			for (Attribute at: LedEntidadUtils.getAllDirectAttributesExceptId(entidad)){
 				out += copyCamposTodos(CampoUtils.create(campo.addAttribute(at)));
-			}	
+			}
 			return out;
 		}
 		else{
@@ -332,7 +337,11 @@ class ControllerUtils {
 	}
 	
 	public static String copyCampoSimple(CampoUtils campo) {
-		if (campo.getUltimoAtributo()?.type.compound?.multiple){
+		if (campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToOne"))
+			return copyCampoMany2One(campo);
+		else if (campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToMany"))
+			return copyCampoMany2Many(campo);
+		else if (campo.getUltimoAtributo()?.type.compound?.multiple){
 			return """
 			db${campo.str}.retainAll(${campo.firstLower()});
 			db${campo.str}.addAll(${campo.firstLower()});
@@ -340,6 +349,60 @@ class ControllerUtils {
 		}
 		return "db${campo.str} = ${campo.firstLower()};\n";
 	}
+	
+	/**
+	 * Realiza la copia de los campos Many2One. Cambiada por el problema de los IDs.
+	 * @param campo
+	 * @return
+	 */
+	public static String copyCampoMany2One(CampoUtils campo) {
+		if (campo.getUltimoAtributo()?.type.compound?.multiple){
+			return """
+			db${campo.str}.retainAll(${campo.firstLower()});
+			db${campo.str}.addAll(${campo.firstLower()});
+			"""
+		}
+		String entity = campo.getUltimaEntidad().name;
+		String str_ = campo.getStr_();
+		return """
+			String ${str_} = params.get("$str_");
+			//CustomValidation.validValueFromTable("${campo.str}", ${str_});
+			if ((${str_} != null) && (!${str_}.trim().equals(""))) {
+				$entity ${str_}ctr = ${entity}.findById(Long.parseLong(${str_}.trim()));
+				db${campo.str} = ${str_}ctr;
+			} else {
+				db${campo.str} = null;
+			}
+		"""; 
+	}
+	
+	/**
+	* Realiza la copia de los campos Many2Many. Cambiada por el problema de los IDs.
+	* @param campo
+	* @return
+	*/
+   public static String copyCampoMany2Many(CampoUtils campo) {
+	   if (campo.getUltimoAtributo()?.type.compound?.multiple){
+		   return """
+		   db${campo.str}.retainAll(${campo.firstLower()});
+		   db${campo.str}.addAll(${campo.firstLower()});
+		   """
+	   }
+	   String entity = campo.getUltimaEntidad().name;
+	   String str_ = campo.getStr_();
+	   return """
+		   ArrayList<$entity> ${str_}aCT = new ArrayList<$entity>();
+		   String[] $str_ = params.getAll("$str_");
+		   if ($str_ != null) {
+		   		for (String idString : $str_) {
+		   			$entity ctr = ${entity}.findById(Long.parseLong(idString.trim()));
+					${str_}aCT.add(ctr);
+				}
+		   }
+		   db${campo.str}.clear();
+		   db${campo.str}.addAll(${str_}aCT);
+	   """;
+   }
 	
 	/**
 	 * Codigo de copia y validación si el representante es una persona fisica

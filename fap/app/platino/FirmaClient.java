@@ -84,6 +84,9 @@ public class FirmaClient {
 	public static Boolean verificarPKCS7(String texto, String firma){
 		try {
 			String invokingApp = FapProperties.get("fap.platino.firma.invokingApp");
+			play.Logger.info("invokingApp: "+invokingApp);
+			play.Logger.info("texto: "+texto);
+			play.Logger.info("firma: "+firma);
 			return firmaPlatino.verifyPKCS7Signature(texto.getBytes(), firma.getBytes(), invokingApp);
 		} catch (Exception e) {
 			log.error("Error verificando la firma", e);

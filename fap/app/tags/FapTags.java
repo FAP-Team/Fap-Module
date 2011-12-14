@@ -46,6 +46,7 @@ import models.TableKeyValue;
 import play.Logger;
 import play.data.validation.*;
 import play.data.validation.Error;
+import play.db.jpa.Model;
 import play.exceptions.TagInternalException;
 import play.exceptions.TemplateExecutionException;
 import play.exceptions.TemplateNotFoundException;
@@ -79,10 +80,12 @@ public class FapTags extends FastTags {
 		Map<String,Object> field = new HashMap<String,Object>();
         String _arg = args.get("arg").toString();
         Object obj = args.get("obj");
-        
+               
         field.put("name", _arg);
         field.put("id", _arg.replace('.','_'));
         field.put("flash", Flash.current().get(_arg));
+        
+        play.Logger.info("["+_arg+"] Flash: "+Flash.current().get(_arg));
         
         //Muestra todos los errores
         List<Error> errors = Validation.errors(_arg);
@@ -108,6 +111,7 @@ public class FapTags extends FastTags {
         
         //Comprueba las anotaciones del campo
         Field f = ReflectionUtils.getFieldRecursively(obj.getClass(), _arg);
+        play.Logger.info("->"+obj.getClass()+" --- "+_arg);
         if(f != null){
 	        //Requerido
 	        Required required = f.getAnnotation(Required.class);
@@ -136,9 +140,44 @@ public class FapTags extends FastTags {
 	        	field.put("reference", true);
             	field.put("toMany", true);
 	        	field.put("referenceClass", ReflectionUtils.getListClass(f));
+	        	
+	        	List<Model> listModels = new ArrayList<Model>();
+	        	String conId = _arg.replace('.', '_');
+	        	if (Flash.current().get(conId) != null) { 
+	        		for (String idString : Flash.current().get(conId).split(",")) {
+	        			Object myValue = Long.valueOf(idString);
+		            	Field myF = ReflectionUtils.getFieldByName(_arg);
+	        			Class modelClass = ReflectionUtils.getClassFromGenericField(myF);
+	        			Model model = null;
+	        			try {
+	        				model = (Model) modelClass.getMethod("findById", Object.class).invoke(null, myValue);
+	        				listModels.add(model);
+	        			} catch (Exception e) {
+	        				// TODO Auto-generated catch block
+	        				e.printStackTrace();
+	        			}
+	        		}
+	        		field.put("flash", listModels);
+	        	}
 	        }else if(f.getAnnotation(ManyToOne.class) != null){
             	field.put("reference", true);
 	        	field.put("referenceClass", f.getType());
+
+	            String conId = _arg.replace('.', '_');
+	            if ((Flash.current().get(conId) != null) && (!Flash.current().get(conId).trim().equals(""))) {
+	            	Object myValue = Long.valueOf(Flash.current().get(conId));//ReflectionUtils.getValueRecursively(obj, conId);	            
+	            	Field myF = ReflectionUtils.getFieldByName(_arg);
+	            	String nameClass = ((String)myF.toString()).split(" ")[1].split("\\.")[1];
+	            	Class<Model> modelClass = (Class<Model>) ReflectionUtils.getClassByName(nameClass);
+	            	Model model = null;
+	            	try {
+	            		model = (Model) modelClass.getMethod("findById", Object.class).invoke(null, myValue);
+	            		field.put("flash", model);
+	            	} catch (Exception e) {
+	            		// TODO Auto-generated catch block
+	            		e.printStackTrace();
+	            	}
+	            }
 	        }
         }
 

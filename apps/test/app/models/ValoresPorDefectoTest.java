@@ -97,7 +97,7 @@ mDouble = 2.345;
 mLongText = "texto largooooo largiiisimo";
 mTelefono = "900 120 120";
 mEmail = "asas@pepe.com";
-mCif = "1234567A";
+mCif = "A58818501";
 mMoneda = 2.1;
 try {
 	mDateTime = new DateTime ((new SimpleDateFormat("dd/MM/yyyy")).parse("12/12/2010"));

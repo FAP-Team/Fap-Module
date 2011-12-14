@@ -155,6 +155,7 @@ public class SolicitudGenerica extends Model {
 
 	@Override
 	public <T extends JPABase> T save() {
+		//merge();
 		_save();
 		participacionSolicitud();
 		return (T) this;

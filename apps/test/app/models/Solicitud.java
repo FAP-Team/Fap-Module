@@ -50,6 +50,15 @@ public class Solicitud extends SolicitudGenerica {
 	public List<TablaDeNombres> tablaDeNombres;
 	
 	
+	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public ComboTestRef comboError;
+	
+	
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="solicitud_comboerrormany")
+	public List<ComboTestRef> comboErrorMany;
+	
+	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public SavePages savePages;
 	
@@ -89,6 +98,12 @@ public class Solicitud extends SolicitudGenerica {
 						
 						if (tablaDeNombres == null)
 							tablaDeNombres = new ArrayList<TablaDeNombres>();
+						
+							if (comboError != null)
+								comboError.init();	
+						
+						if (comboErrorMany == null)
+							comboErrorMany = new ArrayList<ComboTestRef>();
 						
 							if (savePages == null)
 								savePages = new SavePages();

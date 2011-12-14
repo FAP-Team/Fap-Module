@@ -175,4 +175,8 @@ public class CampoUtils implements Comparable{
 		return campoStr.substring(campoStr.findIndexOf{ it == '.' } + 1)
 	}
 	
+	public String getStr_() {
+		return StringUtils.firstLower(str.replace('.', '_'));
+	}
+	
 }

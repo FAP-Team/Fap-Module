@@ -70,29 +70,6 @@ when
 then
 	grant
 
-h2. Jerarquía generada
+h2. Permisos avanzados
 
-A partir de la definición de los permisos se generar una serie de clases que tienen los métodos que comprueban los permisos. 
-El módulo fap incorpora una serie de permisos que se utilizan en las páginas que son comunes a todas las aplicaciones.
-
-La jerarquía de clases generada es:
-
-* **secure.Permission** - Clase manual donde se pueden sobreescribir los permisos
-* **secure.gen.PermissionGen** - Clase generada a partir de los permisos definidos por el usuario
-* **fap/secure.PermissionFap** - Clase manual donde se sobreescriben los permisos del módulo
-* **fap/secure.gen.PermissionFapGen** - Clase generada a partir de los permisos definidos en el módulo
-
-h2. Métodos generados
-
-Las clases que controlan los permisos generan unos métodos con está cabecera.
-
-bc. public static boolean nombreDelPermiso (String action, Map<String, Long> ids, Map<String, Object> vars)
-
-Parámetros
-* **action** - Acción del permisos que se está consultando (create, read, update, delete)
-* **ids** - Mapa con clave idNombreVariable y valor el id de la variable que debe recuperar de base de datos
-* **vars** - Mapa con clave nombreDeVariable y valor el objeto que se asignará a la variable
-
-
-A la hora de asignar valores a las variables, se puede utilizar tanto el "ids" como "vars" pero tiene prioridad "vars".
-
+Si la definición de permisos no te permite realizar las comprobaciones que quieres hacer siempre puedes escribir código manual que compruebe los permisos. Puedes consultar cómo hacerlo en la sección "permisos":app-permisos .

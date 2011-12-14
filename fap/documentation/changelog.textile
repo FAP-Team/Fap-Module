@@ -2,6 +2,9 @@ h2. Changelog
 
 h3. Versión 1.2 (En desarrollo)
 
+* Nueva interfaz de permisos que permite sobrescribir los permisos definidos
+en el módulo
+* Inyección de dependencias utilizando Google Guice.
 * Permitir creacion de Enumerados Java a partir de Listas FAP
 * Posibilidad de personalizar las páginas mediante código JavaScript
 * Fixed bug AutoEnviar (Form) Area de Texto

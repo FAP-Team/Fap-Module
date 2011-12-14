@@ -1,5 +1,7 @@
 h1. Documentación FAP
 
+
+
 h2. Tutorial
 
 # "Introducción":curso-introduccion
@@ -21,19 +23,24 @@ h2. Tutorial
 
 h2. "Preguntas Frecuentes":preguntas-frecuentes
 
-h2. Documentación ficheros *.fap
+h2. Documentación generada
 
-* "Índice documentación HTML ficheros *.fap":html/index
+* "Javadocs":/fapapi/
+* "Fapdocs":html/index
 * "Generar y acceder a la documentación de los ficheros *.fap":doc-html
 
 h2. DSL
 
 Elementos que pueden ser utilizados en el DSL
 
-h3. Elementos Persistencia y Listas
+h3. Elementos de persistencia
 
 # "Entidad":dsl-entity
 # "Atributo":dsl-attribute
+
+h3. Listas y enumerados
+
+# "lista":dsl-lista
 
 h3. Elementos Gráficos
 
@@ -51,7 +58,6 @@ h3. Elementos Gráficos
 # "firma simple":dsl-firmaPlatinoSimple
 # "agrupar campos":dsl-agruparCampos
 # "menu":dsl-menu
-# "lista":dsl-lista
 # "form":dsl-form
 # "tabla":dsl-tabla
 # "columna":dsl-columna
@@ -68,10 +74,34 @@ h3. Elementos Gráficos
 
 h3. Permisos
 
-# "Permisos":permisos
+# "Permisos":dsl-permisos 
 
 
-h2. Tags
+h2. Desarrollo de aplicaciones
+
+* "Permisos":app-permisos
+* "Inyección de dependencia":app-guice
+* Servicios web : 
+** "Archivo Electrónico de Documento (AED)":ws-aed - Gestor documental
+** "Platino":ws-platino - Firma, registro y gestor documental
+** "Generación de librerías a partir de WSDL":ws-cxf
+** "Depuración de peticiones y respuestas":ws-debug
+** "Configuración de un proxy":ws-proxy
+
+h2. "Páginas por defecto":defaultpages
+
+
+h2. Desarrollo del generador
+
+Consulta esta sección únicamente si estás trabajando en el desarollo del generador. Si estás utilizando la herramienta para crear aplicaciones no debería hacerte falta consultar esta sección
+
+h3. Compilación y distribución
+
+# "Compilación":generador-compilacion
+# "Nueva versión y distribución":generador-distribucion
+# "Plugin de Eclipse":generador-plugin
+
+h3. Tags
 
 Elementos que pueden ser utilizados en las vista creadas de forma manual. Las vistas creadas por el generador utilizan estos tags.
 
@@ -86,34 +116,8 @@ Elementos que pueden ser utilizados en las vista creadas de forma manual. Las vi
 # "fap.persona":tag-persona
 # "fap.direccion":tag-direccion
 # "fap.camposAutomaticos":tag-camposAutomaticos
-
-
-h3. Tags de Utilidades
-
 # "fap.toJSMapNoValue":tag-toJSMapNoValue
 
-h2. Desarrollo del generador
-
-# "Compilación":generador-compilacion
-# "Nueva versión y distribución":generador-distribucion
-# "Plugin de Eclipse":generador-plugin
-
-h2. "Páginas por defecto":defaultpages
 
 
-h2. Servicios web
 
-Las aplicación FAP utilizan una serie de servicios web externos:
-
-* "Archivo Electrónico de Documento (AED)":ws-aed - Gestor documental
-* "Platino":ws-platino - Firma, registro y gestor documental
-
-h4. Detalles técnicos
-
-* "Generación de librerías a partir de WSDL":ws-cxf
-* "Depuración de peticiones y respuestas":ws-debug
-* "Configuración de un proxy":ws-proxy
-
-h4. JavaDocs
-
-Los JavaDocs de el módulo FAP se pueden consultar "aquí.":/fapapi/

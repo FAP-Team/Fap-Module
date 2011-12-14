@@ -4,7 +4,7 @@ self: play -> fap 1.1.1
  
 require:
     - play 1.2.3
-    - play -> guice 1.2
+    - fap -> guice 1.2.1
     - play -> pdf 0.6
     - play -> recaptcha 1.2
 
@@ -66,4 +66,9 @@ repositories:
             - es.gobcan.eadmon -> *
             - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *
-        
+
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+            - fap -> guice

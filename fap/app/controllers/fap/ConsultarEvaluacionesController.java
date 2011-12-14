@@ -18,11 +18,6 @@ public class ConsultarEvaluacionesController extends GenericController {
 	public static void index(){
 		renderTemplate("fap/Baremacion/consultarEvaluaciones.html");
 	}
-
-	@Finally(only="index")
-	public static void removeFlash(){
-		Messages.deleteFlash();
-	}
 	
 	@Before
 	static void beforeMethod() {

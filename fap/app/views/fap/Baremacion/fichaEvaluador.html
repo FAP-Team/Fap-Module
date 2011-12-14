@@ -3,6 +3,7 @@
 
 
 #{fap.permiso permiso:'evaluacion', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+#{fap.messages}
 
 <div class="fichaEvaluador">
 
@@ -13,8 +14,6 @@
 }%
 
 <a href="@{fap.ConsultarEvaluacionesController.index}" class="boton">Volver al listado de evaluaciones</a>
-
-#{fap.messages /}
 
 
 #{fap.grupo titulo:'Información del expediente'}
@@ -262,6 +261,7 @@ Ext.onReady(function() {
 });
 </script>
 }*
+#{/fap.messages}
 #{/fap.permiso}
 
 </div>

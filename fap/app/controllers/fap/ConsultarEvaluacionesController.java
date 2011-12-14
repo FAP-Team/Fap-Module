@@ -12,12 +12,11 @@ import java.util.*;
 import messages.Messages;
 import java.lang.reflect.Field;
 
-
+@With({SecureController.class, MessagesController.class, AgenteController.class})
 public class ConsultarEvaluacionesController extends GenericController {
 
 	public static void index(){
 		renderTemplate("fap/Baremacion/consultarEvaluaciones.html");
-
 	}
 
 	@Finally(only="index")

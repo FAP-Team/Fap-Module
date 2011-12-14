@@ -33,13 +33,9 @@ import secure.PermissionFap;
 import reports.Report;
 import services.BaremacionService;
 
+@With({SecureController.class, MessagesController.class, AgenteController.class})
 public class FichaEvaluadorController extends Controller {
-	
-	@Finally(only="index")
-	public static void removeFlash(){
-		Messages.deleteFlash();
-	}
-	
+		
 	public static void index(long idEvaluacion){
 		if(PermissionFap.evaluacion("read", null, null)){
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
@@ -150,6 +146,7 @@ public class FichaEvaluadorController extends Controller {
 					Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " se guardó correctamente");
 				}
 				
+				Messages.keep();
 				index(evaluacion.id);
 			}else if(actionPdf){	
 				try {
@@ -157,6 +154,8 @@ public class FichaEvaluadorController extends Controller {
 				} catch (Exception e) {
 					play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());
 					Messages.error("Error al generar el borrador del documento");
+					Messages.keep();
+					index(evaluacion.id);
 				}		
 			}
 		}else{

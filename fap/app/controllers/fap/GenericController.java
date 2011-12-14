@@ -34,7 +34,7 @@ import play.templates.TemplateLoader;
 import play.utils.Java;
 import utils.BinaryResponse;
 
-@With({PropertiesFap.class, SecureController.class})
+@With({PropertiesFap.class, SecureController.class, MessagesController.class, AgenteController.class})
 public class GenericController extends Controller {
 
 	@Before

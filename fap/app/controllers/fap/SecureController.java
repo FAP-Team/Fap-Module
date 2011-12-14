@@ -30,7 +30,6 @@ import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
 
-@With({PropertiesFap.class, MessagesController.class, AgenteController.class})
 public class SecureController extends Controller {
 
 	private static Logger log = Logger.getLogger(SecureController.class);

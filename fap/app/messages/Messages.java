@@ -12,8 +12,9 @@ import play.mvc.Scope.Session;
 public class Messages {
 
     static ThreadLocal<Messages> current = new ThreadLocal<Messages>();
-	public enum MessageType{
-		ERROR,INFO, OK, WARNING, FATAL}
+	
+    public enum MessageType{ERROR,INFO, OK, WARNING, FATAL}
+	
 	private static MessageType[] MessageTypeValues = MessageType.values();
 
 	private HashMap<MessageType, List<String>> messages = new HashMap<MessageType, List<String>>();

@@ -190,32 +190,32 @@
 #{/if}
 
 
-<script>
 
-    // Para poder hacer un POST con los valores de la pagina y abrir el documento PDF en otra pestaña
-
-	function postSave(){
-		var datosParams = {};
-		datosParams["evaluacion.id"] = ${evaluacion.id};
-		var datosPagina = $("select, text, textarea, input");
-		$.each( datosPagina, function(i, l){
-   			datosParams[l.name] = l.value;
- 		});
-		$.post('@{fap.FichaEvaluadorController.save}', datosParams);
-	}
-</script>
 
 <div class="button_container">
 	<input type="submit" class="boton" name="save" value="&{'baremacion.fichaevaluador.guardar'}">
-	<a class="boton"href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank" onClick="postSave();">Obtener borrador en PDF</a>
+	<a id="botonBorrador" class="boton">Obtener borrador en PDF</a>
 	<input type="submit" class="boton" name="end" value="&{'baremacion.fichaevaluador.end'}">
 </div>
+
+<script>
+
+    // Para poder hacer un POST con los valores de la pagina y abrir el documento PDF en otra pestaña
+	
+	$('#botonBorrador').click(function(){
+		$.post('@{fap.FichaEvaluadorController.save}', $.param({'pdf':'true'}) + '&' + $('form').serialize(), 
+			function(){
+				window.open("@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}");
+			});
+	});
+	
+</script>
 
 #{/form}
 
 
 *{
-href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank"
+//href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank"
 
 // Evaluación simple sin mostrar el listado de documentos 
 <script>

@@ -91,7 +91,6 @@ public class FichaEvaluadorController extends Controller {
 	}
 
 	public static void save(){
-		
 		if(PermissionFap.evaluacion("update", null, null)){
 			boolean actionSave = params.get("save") != null;
 			boolean actionPdf = params.get("pdf") != null;
@@ -100,7 +99,6 @@ public class FichaEvaluadorController extends Controller {
 				//No se específico una acción
 				notFound("Acción no especificada");
 			}
-			
 			Evaluacion evaluacion = Evaluacion.findById(params.get("evaluacion.id", Long.class));
 			if(evaluacion == null){
 				notFound("Evaluación no encontrada");
@@ -158,7 +156,6 @@ public class FichaEvaluadorController extends Controller {
 					ceconomico.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
 				}			
 			}
-			
 			BaremacionService.calcularTotales(evaluacion);
 			evaluacion.save();
 			if(validation.hasErrors()){

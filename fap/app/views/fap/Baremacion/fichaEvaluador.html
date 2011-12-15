@@ -11,7 +11,6 @@
 %{
 	def hasCriterios = !evaluacion.tipo.criterios.isEmpty()
 	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty()
-	def colorFondoUneditable="#e4e4e4"
 }%
 
 <a href="@{fap.ConsultarEvaluacionesController.index}" class="boton">Volver al listado de evaluaciones</a>
@@ -40,7 +39,7 @@
 
 #{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
 
-	#{simple.uneditable value: evaluacion.totalCriterios, ancho: "500px", label: "Total criterios de evaluación", backgroundColor:colorFondoUneditable /}
+	#{simple.uneditable value: evaluacion.totalCriterios, ancho: "500px", label: "Total criterios de evaluación"/}
 
 	#{if evaluacion.tipo.comentariosAdministracion}
 		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion)/}
@@ -107,7 +106,7 @@
 			#{/if}
 			
 			#{if criterio.tipo.claseCriterio.equals("auto")}
-				#{simple.uneditable value:valor, ancho: tam, backgroundColor: colorFondoUneditable /}
+				#{simple.uneditable value:valor, ancho: tam/}
 			#{/if}
 
 			#{elseif criterio.tipo.claseCriterio.equals("automod")}
@@ -173,7 +172,7 @@
 			#{/if}
 			
 			
-			#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, backgroundColor:colorFondoUneditable /}
+			#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error/}
 			#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
 				
 			#{if ceconomico.tipo.comentariosAdministracion}

@@ -11,6 +11,7 @@
 %{
 	def hasCriterios = !evaluacion.tipo.criterios.isEmpty()
 	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty()
+	def colorFondoUneditable="#e4e4e4"
 }%
 
 <a href="@{fap.ConsultarEvaluacionesController.index}" class="boton">Volver al listado de evaluaciones</a>
@@ -39,7 +40,7 @@
 
 #{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
 
-	#{simple.uneditable value: evaluacion.totalCriterios, ancho: "500px", label: "Total criterios de evaluación" /}
+	#{simple.uneditable value: evaluacion.totalCriterios, ancho: "500px", label: "Total criterios de evaluación", backgroundColor:colorFondoUneditable /}
 
 	#{if evaluacion.tipo.comentariosAdministracion}
 		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion)/}
@@ -106,7 +107,7 @@
 			#{/if}
 			
 			#{if criterio.tipo.claseCriterio.equals("auto")}
-				#{simple.uneditable value:valor, ancho: tam /}
+				#{simple.uneditable value:valor, ancho: tam, backgroundColor: colorFondoUneditable /}
 			#{/if}
 
 			#{elseif criterio.tipo.claseCriterio.equals("automod")}
@@ -172,7 +173,7 @@
 			#{/if}
 			
 			
-			#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
+			#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, backgroundColor:colorFondoUneditable /}
 			#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
 				
 			#{if ceconomico.tipo.comentariosAdministracion}
@@ -189,9 +190,25 @@
 	#{/fap.grupo}
 #{/if}
 
+
+<script>
+
+    // Para poder hacer un POST con los valores de la pagina y abrir el documento PDF en otra pestaña
+
+	function postSave(){
+		var datosParams = {};
+		datosParams["evaluacion.id"] = ${evaluacion.id};
+		var datosPagina = $("select, text, textarea, input");
+		$.each( datosPagina, function(i, l){
+   			datosParams[l.name] = l.value;
+ 		});
+		$.post('@{fap.FichaEvaluadorController.save}', datosParams);
+	}
+</script>
+
 <div class="button_container">
 	<input type="submit" class="boton" name="save" value="&{'baremacion.fichaevaluador.guardar'}">
-	<input type="submit" class="boton" name="pdf" value="&{'baremacion.fichaevaluador.pdf'}">
+	<a class="boton"href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank" onClick="postSave();">Obtener borrador en PDF</a>
 	<input type="submit" class="boton" name="end" value="&{'baremacion.fichaevaluador.end'}">
 </div>
 
@@ -199,6 +216,8 @@
 
 
 *{
+href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank"
+
 // Evaluación simple sin mostrar el listado de documentos 
 <script>
 Ext.onReady(function() {

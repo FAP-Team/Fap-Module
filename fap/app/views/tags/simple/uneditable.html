@@ -1,3 +1,7 @@
 #{simple.row id:_id, label:_label}
-	<span class="uneditable" select style="width: ${_ancho}px">${_value}</span>
+%{ def colorFondo="#ffffff"
+   if (_backgroundColor)
+     colorFondo=_backgroundColor
+%}
+	<span class="uneditable" select style="width: ${_ancho}px;  background-color: ${colorFondo}">${_value}</span>
 #{/simple.row}

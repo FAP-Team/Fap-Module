@@ -6,6 +6,7 @@ import java.util.HashMap;
 import static play.modules.pdf.PDF.renderPDF;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +59,39 @@ public class FichaEvaluadorController extends Controller {
 		String expedienteUrl = Router.reverse(firstPage + "Controller.index").add("idSolicitud", idSolicitud).url;
 		return expedienteUrl;
 	}
+	
+	public static void generaPDF(Long idEvaluacion){
+		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+		if(evaluacion == null){
+			notFound("Evaluación no encontrada");
+		}
+		
+		// Para el problema del generar el PDF y no muestra los caracteres ≤, ≥
+		List <String> listaDescripcion = new ArrayList<String>();
+		for(Criterio criterio : evaluacion.criterios){
+			if(criterio.tipo.tipoValor.equals("lista")){
+				List <CriterioListaValores> listaCLV = criterio.tipo.listaValores;
+				for (CriterioListaValores clv : listaCLV){
+					if (clv.descripcion.matches(".*≤.*")){
+						listaDescripcion.add(clv.descripcion.replace("≤", "<="));
+					} else if (clv.descripcion.matches(".*≥.*")){
+						listaDescripcion.add(clv.descripcion.replace("≥", ">="));
+					} else {
+						listaDescripcion.add(clv.descripcion);
+					}
+				}
+			}
+		}
+		try {
+			new Report("app/views/reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, listaDescripcion);
+		} catch (Exception e) {
+			play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());
+			Messages.error("Error al generar el borrador del documento");
+		}
+	}
 
 	public static void save(){
+		
 		if(PermissionFap.evaluacion("update", null, null)){
 			boolean actionSave = params.get("save") != null;
 			boolean actionPdf = params.get("pdf") != null;
@@ -148,15 +180,6 @@ public class FichaEvaluadorController extends Controller {
 				
 				Messages.keep();
 				index(evaluacion.id);
-			}else if(actionPdf){	
-				try {
-					new Report("app/views/reports/baremacion/Borrador.html").renderResponse(evaluacion);
-				} catch (Exception e) {
-					play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());
-					Messages.error("Error al generar el borrador del documento");
-					Messages.keep();
-					index(evaluacion.id);
-				}		
 			}
 		}else{
 			forbidden();

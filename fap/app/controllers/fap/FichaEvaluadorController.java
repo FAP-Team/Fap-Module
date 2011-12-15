@@ -65,25 +65,8 @@ public class FichaEvaluadorController extends Controller {
 		if(evaluacion == null){
 			notFound("Evaluación no encontrada");
 		}
-		
-		// Para el problema del generar el PDF y no muestra los caracteres ≤, ≥
-		List <String> listaDescripcion = new ArrayList<String>();
-		for(Criterio criterio : evaluacion.criterios){
-			if(criterio.tipo.tipoValor.equals("lista")){
-				List <CriterioListaValores> listaCLV = criterio.tipo.listaValores;
-				for (CriterioListaValores clv : listaCLV){
-					if (clv.descripcion.matches(".*≤.*")){
-						listaDescripcion.add(clv.descripcion.replace("≤", "<="));
-					} else if (clv.descripcion.matches(".*≥.*")){
-						listaDescripcion.add(clv.descripcion.replace("≥", ">="));
-					} else {
-						listaDescripcion.add(clv.descripcion);
-					}
-				}
-			}
-		}
 		try {
-			new Report("app/views/reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, listaDescripcion);
+			new Report("app/views/reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion);
 		} catch (Exception e) {
 			play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());
 			Messages.error("Error al generar el borrador del documento");

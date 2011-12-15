@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import play.test.UnitTest;
 
-import secure.Secure;
+import security.Secure;
 
 import com.google.inject.Injector;
 

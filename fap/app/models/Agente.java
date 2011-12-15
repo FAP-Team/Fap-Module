@@ -87,6 +87,7 @@ public class Agente extends Model {
 		}else{
 			//El rol activo no está en sesión, usa el de db
 			cambiarRolActivo(this.rolActivo);
+			rol = this.rolActivo;
 		}
 		return rol;
 	}

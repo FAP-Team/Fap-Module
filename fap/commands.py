@@ -5,14 +5,14 @@ import sys
 import subprocess
 import shutil
 import re
-
+from datetime import date
 # Here you can create play commands that are specific to the module, and extend existing commands
 
 MODULE = 'fap'
 
 # Commands that are specific to your module
 
-COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation']
+COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist']
 # Eliminamos el comando 'fap:model' de la lista de comandos
 
 def execute(**kargs):
@@ -41,6 +41,9 @@ def execute(**kargs):
         
     if command == "fap:documentation":
         generateDocumentationHTML(app)
+
+    if command == "fap:dist":
+        dist(app, args)
 
 
 
@@ -271,3 +274,64 @@ def generateDocumentationHTML(app):
             subprocess.call(cmd)
             print "~ [CREADO]: "+destino
 
+
+
+def copytree(source, dest, ignores):
+   shutil.copytree(source, dest, ignore=shutil.ignore_patterns(*ignores))
+
+def makeDirsIfNotExists(source):
+   if not os.path.exists(source):
+      os.makedirs(source)
+
+def dist(app, args):
+   app.check()
+   modules = app.modules()
+   classpath = app.getClasspath()
+
+   # Si no existe la carpeta dist la crea
+   dist_path = os.path.join(app.path, "dist")
+
+   makeDirsIfNotExists(dist_path)
+
+   fecha = date.today().isoformat()
+   dest = os.path.join(dist_path, app.name() + fecha)
+
+   path = {}
+   path['app'] = os.path.join(dest, app.name())
+   path['lib'] = os.path.join(dest, 'lib')
+   path['modules'] = os.path.join(dest, app.name(),'modules')
+
+   ignoreGlobal = ['**logs', '**test*', 'led', 'eclipse', 
+                    '**tmp', '**test-result', 'modules', 
+                    '**precompiled', '.settings', '.classpath', 
+                    'lib', 'nbproject', '**eclipse', '**.svn', '**.git']
+
+   if os.path.exists(path['app']):
+      print "~ [ERROR] - La carpeta de destino %s ya existe" % path['app']
+      exit(1)
+        
+   print "~ Copiando aplicación a " + path['app']
+   ignores = ignoreGlobal + ['dist']
+   copytree(app.path, path['app'], ignores)
+
+   # Copia las librerias de la aplicación y de los módulos
+   # No las librerías de play
+   print "~ Copiando librerías a" + path['lib']
+   makeDirsIfNotExists(path['lib'])
+   playlibs = os.path.join(app.play_env["basedir"], 'framework')
+   for jar in classpath:
+      if jar.endswith('.jar') and jar.find('provided-') == -1:
+         if not jar.startswith(playlibs):
+            jarname = os.path.split(jar)[1]
+            shutil.copyfile(jar, os.path.join(path['lib'], jarname))
+   
+   #copiar módulos
+   print "~ Copiando módulos" + path['modules']
+   makeDirsIfNotExists(path['modules'])
+   ignores = ignoreGlobal + ['dist', 'samples-and-tests', 'build.xml', 
+              'commands.py', 'documentation', '**compiler', 
+              'plugins',  'fap-skel', 'src']
+
+   for module in modules:
+      modulename = os.path.basename(module)
+      copytree(module, os.path.join(path['modules'], modulename), ignores)   

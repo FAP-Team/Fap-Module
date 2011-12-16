@@ -191,25 +191,13 @@
 
 
 
+<a style="font-size: 8pt"> Guardar antes de Obtener el borrador en PDF, para que se vean los cambios.</a>
 
 <div class="button_container">
 	<input type="submit" class="boton" name="save" value="&{'baremacion.fichaevaluador.guardar'}">
-	<a id="botonBorrador" class="boton">Obtener borrador en PDF</a>
+	<a href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank" class="boton">Obtener borrador en PDF</a>
 	<input type="submit" class="boton" name="end" value="&{'baremacion.fichaevaluador.end'}">
 </div>
-
-<script>
-
-    // Para poder hacer un POST con los valores de la pagina y abrir el documento PDF en otra pestaña
-	
-	$('#botonBorrador').click(function(){
-		$.post('@{fap.FichaEvaluadorController.save}', $.param({'pdf':'true'}) + '&' + $('form').serialize(), 
-			function(){
-				window.open("@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}");
-			});
-	});
-	
-</script>
 
 #{/form}
 

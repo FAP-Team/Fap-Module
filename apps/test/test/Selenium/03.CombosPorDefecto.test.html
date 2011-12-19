@@ -1,29 +1,56 @@
-*{ You can use plain selenium command using the selenium tag }*
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().first()
+	
+	def automatic = properties.FapProperties.getBoolean("test.fap.automatic.autotest");
+}%
 
 #{selenium}
 
-    open('http://localhost:9000/Solicitud/combos?idSolicitud=1')
+	open('Principal/solicitudes')
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='borrador'])
+	
+    open('/Solicitud/combos?idSolicitud=${s.id}')
+    waitForPageToLoad()
+    
     select('solicitud_comboTest_list', label=C)
     click('solicitud_comboTest_listMultiplechzn_o_1')
     click('solicitud_comboTest_listMultiplechzn_o_0')
     
-    click('ext-gen1051')
-    waitForElementPresent('comboTestRef_nombre')
-    type('comboTestRef_nombre', 'Referencia1')
-    click(//span[text()="Guardar"])
-    waitForElementNotPresent('comboTestRef_nombre')
+    #{if !automatic}
+    	click(//span[text()="Nuevo"])
+    	waitForElementPresent('comboTestRef_nombre')
+    	type('comboTestRef_nombre', 'Referencia1')
+    	click(//span[text()="Guardar"])
+    	waitForElementNotPresent('comboTestRef_nombre')
     
-    click('ext-gen1051')
-    waitForElementPresent('comboTestRef_nombre')
-    type('comboTestRef_nombre', 'Referencia2')
-    click(//span[text()="Guardar"])
-    waitForElementNotPresent('comboTestRef_nombre')
+    	click(//span[text()="Nuevo"])
+    	waitForElementPresent('comboTestRef_nombre')
+    	type('comboTestRef_nombre', 'Referencia2')
+    	click(//span[text()="Guardar"])
+    	waitForElementNotPresent('comboTestRef_nombre')
     
-    click('ext-gen1051')
-    waitForElementPresent('comboTestRef_nombre')
-    type('comboTestRef_nombre', 'Referencia3')
-    click(//span[text()="Guardar"])
-    waitForElementNotPresent('comboTestRef_nombre')
+    	click(//span[text()="Nuevo"])
+    	waitForElementPresent('comboTestRef_nombre')
+    	type('comboTestRef_nombre', 'Referencia3')
+    	click(//span[text()="Guardar"])
+    	waitForElementNotPresent('comboTestRef_nombre')
+    #{/if}
+    #{else}
+    	// Creamos en la BBDD lo que no pudimos crear en el test
+    	%{
+    		models.ComboTestRef ct = new models.ComboTestRef();
+    		ct.nombre = "Referencia1";
+    		ct.save();
+    		ct = new models.ComboTestRef();
+    		ct.nombre = "Referencia2";
+    		ct.save();
+    		ct = new models.ComboTestRef();
+    		ct.nombre = "Referencia3";
+    		ct.save();
+    	}%
+    #{/else}
     
     *{ Faltan las prueba con los combos de Referencias }*
     

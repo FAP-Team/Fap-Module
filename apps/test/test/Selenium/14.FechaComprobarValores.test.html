@@ -1,7 +1,17 @@
 *{ You can use plain selenium command using the selenium tag }*
 
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().first()
+}%
+
 #{selenium}
-    open('http://localhost:9000/Solicitud/fechas?idSolicitud=1')
+	open(/Principal/solicitudes)
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='borrador'])
+	
+    open('/Solicitud/fechas?idSolicitud=${s.id}')
+    waitForPageToLoad()
     assertValue('solicitud_fechas_fechaRequerida', '04*')
     assertValue('solicitud_fechas_fecha', '18*')
 #{/selenium}

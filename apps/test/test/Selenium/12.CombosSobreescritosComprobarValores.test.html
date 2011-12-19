@@ -1,7 +1,18 @@
 *{ You can use plain selenium command using the selenium tag }*
 
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().first()
+}%
+
 #{selenium}
-    open('http://localhost:9000/Solicitud/combosoverwrite?idSolicitud=1')
+	open(/Principal/solicitudes)
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='borrador'])
+	
+    open('/Solicitud/combosoverwrite?idSolicitud=${s.id}')
+    waitForPageToLoad()
+    
     assertValue('lista', 'c')
     assertValue('listaLong', '3')
     assertText(//div[@id='listaMultiple_chzn']/ul/li[@id='listaMultiple_chzn_c_0']/span, 'Uno')

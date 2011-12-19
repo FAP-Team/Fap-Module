@@ -7,6 +7,7 @@ import org.junit.Test;
 import config.InjectorConfig;
 
 import play.test.UnitTest;
+import security.Secure;
 
 public class SecureTest extends UnitTest {
 
@@ -21,7 +22,5 @@ public class SecureTest extends UnitTest {
 	public void secureIsConfigured(){
 		assertNotNull(secure);
 	}
-	
-	
 	
 }

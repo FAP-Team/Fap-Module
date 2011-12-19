@@ -85,7 +85,6 @@ public class FapTags extends FastTags {
         field.put("id", _arg.replace('.','_'));
         field.put("flash", Flash.current().get(_arg));
         
-        play.Logger.info("["+_arg+"] Flash: "+Flash.current().get(_arg));
         
         //Muestra todos los errores
         List<Error> errors = Validation.errors(_arg);
@@ -111,7 +110,6 @@ public class FapTags extends FastTags {
         
         //Comprueba las anotaciones del campo
         Field f = ReflectionUtils.getFieldRecursively(obj.getClass(), _arg);
-        play.Logger.info("->"+obj.getClass()+" --- "+_arg);
         if(f != null){
 	        //Requerido
 	        Required required = f.getAnnotation(Required.class);
@@ -196,9 +194,7 @@ public class FapTags extends FastTags {
 	public static void _valueFromTable(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
         String campo = args.get("arg").toString();
         String[] pieces = campo.split("\\.");
-        System.out.println(pieces[0]);
         Object obj = body.getProperty(pieces[0]);
-        System.out.println(obj);
         
         String clave = ReflectionUtils.getValueRecursively(obj, campo).toString();
         Field f = ReflectionUtils.getFieldRecursively(obj.getClass(), campo);

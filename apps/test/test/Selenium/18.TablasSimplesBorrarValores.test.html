@@ -1,27 +1,38 @@
-*{ You can use plain selenium command using the selenium tag }*
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().first()
+
+	def automatic = properties.FapProperties.getBoolean("test.fap.automatic.autotest");	
+}%
 
 #{selenium}
-    open('http://localhost:9000/Solicitud/tablassimples?idSolicitud=1')
+	open(/Principal/solicitudes)
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='borrador'])
+    open('/Solicitud/tablassimples?idSolicitud=${s.id}')
+    waitForPageToLoad()
     
-    // Borramos los valores
-    waitForElementPresent(//div[text()='NombreFAP'])
-    mouseOver(//div[text()='NombreFAP']/parent::td/parent::tr)
-	mouseDown(//div[text()='NombreFAP']/parent::td/parent::tr)
-	click('ext-gen1059')
-	waitForElementPresent('tablaDeNombres_nombre')
-	waitForElementPresent('tablaDeNombres_apellido')
-	waitForElementPresent(//span[text()='Borrar'])
-    click(//*[text()='Cerrar']/parent::button/parent::div/button)
-    waitForElementNotPresent('tablaDeNombres_nombre')
+    #{if !automatic}
+    	// Borramos los valores
+    	waitForElementPresent(//div[text()='NombreFAP'])
+    	mouseOver(//div[text()='NombreFAP']/parent::td/parent::tr)
+		mouseDown(//div[text()='NombreFAP']/parent::td/parent::tr)
+		click('ext-gen1059')
+		waitForElementPresent('tablaDeNombres_nombre')
+		waitForElementPresent('tablaDeNombres_apellido')
+		waitForElementPresent(//span[text()='Borrar'])
+    	click(//*[text()='Cerrar']/parent::button/parent::div/button)
+    	waitForElementNotPresent('tablaDeNombres_nombre')
     
-    // Creamos de nuevo el valor
-    waitForElementPresent('tablaNombres-grid')
-    click('ext-gen1051')
-    waitForElementPresent('tablaDeNombres_nombre')
-    waitForElementPresent('tablaDeNombres_apellido')
-    type('tablaDeNombres_nombre', 'NombreFAP')
-    type('tablaDeNombres_apellido', 'ApellidoFAP')
-    click(//span[text()='Guardar'])
-    waitForElementNotPresent('tablaDeNombres_nombre') 
+    	// Creamos de nuevo el valor
+    	waitForElementPresent('tablaNombres-grid')
+    	click('ext-gen1051')
+    	waitForElementPresent('tablaDeNombres_nombre')
+    	waitForElementPresent('tablaDeNombres_apellido')
+    	type('tablaDeNombres_nombre', 'NombreFAP')
+    	type('tablaDeNombres_apellido', 'ApellidoFAP')
+    	click(//span[text()='Guardar'])
+    	waitForElementNotPresent('tablaDeNombres_nombre') 
+	#{/if}
 	
 #{/selenium}

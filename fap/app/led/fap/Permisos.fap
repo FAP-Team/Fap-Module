@@ -475,13 +475,13 @@ then
 //Baremación	
 rule listaEvaluaciones
 when
-	agente.rolActivo in ("administrador", "gestor")
+	agente.rolActivo in ("administrador", "gestor", "revisor")
 then
 	grant
 	
 rule evaluacion
 when
-	agente.rolActivo in ("administrador", "gestor")
+	agente.rolActivo in ("administrador", "gestor", "revisor")
 then
 	grant	
 

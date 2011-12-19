@@ -4,13 +4,15 @@ import models.Agente;
 
 import org.junit.Test;
 
+import play.test.UnitTest;
+
 import tables.TableRenderResponse;
 import java.util.List;
 import java.util.ArrayList;
 
 import junit.framework.Assert;
 
-public class TableRenderResponseTest {
+public class TableRenderResponseTest extends UnitTest {
 
 	@Test
 	public void emptyRows(){

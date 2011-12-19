@@ -6,6 +6,9 @@ Entidad Solicitud extends SolicitudGenerica {
 	TestGrupo testGrupo
 	
 	OneToMany TablaDeNombres tablaDeNombres
+	
+	ManyToOne ComboTestRef comboError
+	ManyToMany ComboTestRef comboErrorMany
 }
 
 Entidad Fechas {
@@ -62,13 +65,12 @@ Entidad ValoresPorDefectoTest {
 	Telefono mTelefono default = "900 120 120"
 	Email mEmail default = "asas@pepe.com"
 	Email mEmail2 default = "as@pepe"
-	Cif mCif default = "1234567A"
+	Cif mCif default = "A58818501"
 	Moneda mMoneda default = "2.10"
 	DateTime mDateTime default = "12/12/2010"
 	
 	// Algunos tipos compuestos
 	Lista ComboTestList mLista /*default = "c"*/
-	
 	
 	// Embeddable
 	Embebida mEmbebida

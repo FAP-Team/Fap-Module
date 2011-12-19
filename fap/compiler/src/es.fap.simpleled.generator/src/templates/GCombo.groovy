@@ -51,6 +51,11 @@ public class GCombo {
 		if(combo.anchoTitulo != null)
 			params.putStr("anchoTitulo", combo.anchoTitulo)
 
+		/// Si el atributo es una referencia Many2One o ManyToMany
+		if (campo.getUltimoAtributo().type?.compound?.tipoReferencia?.type?.equals("ManyToMany")
+			|| campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToOne")) {
+			params.put "manyTo", true
+		}
 				
 		String view = 
 		"""

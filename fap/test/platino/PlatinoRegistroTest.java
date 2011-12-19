@@ -14,17 +14,17 @@ public class PlatinoRegistroTest extends UnitTest {
 
 	@Test
 	public void normalizarDatos() throws Exception{
+		if (!PlatinoActivo.activo)
+			return;
+
 		SolicitudGenerica solicitud = SolicitudGenerica.findById(2L);
 		DatosRegistro datosRegistro = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, solicitud.registro.oficial, solicitud.expedientePlatino);
 		String datosAFirmar = PlatinoRegistro.obtenerDatosAFirmarRegisto(datosRegistro);
-		System.out.println(datosAFirmar);
-		Assert.assertNotNull(datosAFirmar);
-		
 		String firma = FirmaClient.firmarPKCS7(datosAFirmar.getBytes("iso-8859-1"));
-		//Boolean valida = FirmaClient.verificarPKCS7(datosAFirmar, firma);
-		//Assert.assertTrue(valida);
-		
+		Boolean valida = FirmaClient.verificarPKCS7(datosAFirmar, firma);
 		PlatinoRegistro.registroDeEntrada(datosAFirmar, firma);
+		Assert.assertNotNull(datosAFirmar);
+		Assert.assertTrue(valida);
 	}
 	
 	

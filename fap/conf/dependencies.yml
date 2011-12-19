@@ -1,9 +1,10 @@
 # Application dependencies
 
-self: play -> fap 1.1.1
+self: play -> fap 1.2
  
 require:
     - play 1.2.3
+    - fap -> guice 1.2.1
     - org.jadira.usertype -> usertype.jodatime 1.8:
         transitive: false
     - org.jadira.usertype -> usertype.spi 1.8:
@@ -63,3 +64,11 @@ repositories:
             - es.gobcan.eadmon -> *
             - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *
+
+
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+            - fap -> guice
+

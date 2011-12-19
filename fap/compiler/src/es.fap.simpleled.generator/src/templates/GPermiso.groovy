@@ -49,7 +49,7 @@ public class GPermiso {
 			}else{
 				String params = var.sqlParams?.sqlParams?.collect{
 					return CampoPermisoUtils.create(it).str;
-				}.join(",");
+				}?.join(",");
 				if(params != null && !params.trim().isEmpty())
 					params = ", " + params;
 				else
@@ -76,20 +76,17 @@ public class GPermiso {
 	private String permisoRuleCode(PermisoRuleCheck r){
 		String out;
 		if (r.getPermiso() != null) {
+			out = """config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${r.getPermiso().getName()}", action, ids, vars)""";
 			if (r.isNot()){
-				out = "!" + PermisosUtils.className() + r.getPermiso().getName() + "(action, ids, vars)";
+				out = "!" +out;
 			}
-			else{
-				out = PermisosUtils.className() + r.getPermiso().getName() + "(action, ids, vars)";
-			}
-		}
-		else{
+		} else {
 			CampoPermisoUtils campo = CampoPermisoUtils.create(r.left);
 			if(r.getGroupOp() != null){
 				String realOp = r.getGroupOp().replaceAll("\\s+", "")
 				String group = r.getRightGroup().collect{
 					return getPermisoRuleCheckRightStr(it);
-				}.join(", ");
+				}?.join(", ");
 				out = "utils.StringUtils.${realOp}(${campo.str}.toString(), ${group})"	
 			}
 			else{
@@ -138,7 +135,7 @@ public class GPermiso {
 		}
 		
 		String out = """	
-	public static boolean ${permiso.name} (String action, Map<String, Long> ids, Map<String, Object> vars){
+	private boolean ${permiso.name} (String action, Map<String, Long> ids, Map<String, Object> vars){
 		//Variables
 		Agente agente = AgenteController.getAgente();
 		${varStr}

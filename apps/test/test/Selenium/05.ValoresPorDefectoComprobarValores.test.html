@@ -1,0 +1,23 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().first()
+}%
+
+#{selenium}
+	open(/Principal/solicitudes)
+	waitForPageToLoad()
+	pause(1000)   // Necesaria para la carga de solicitudes
+    open('/Solicitud/valorespordefecto?idSolicitud=${s.id}')
+    waitForPageToLoad()
+    
+    assertValue('mString', 'string')
+    assertValue('mLong', '2')
+    assertValue('mInteger', '4')
+    assertValue('mBoolean', 'on')
+    assertValue('mDouble', '2.345')
+    assertValue('mLongText', 'texto largooooo largiiisimo')
+    assertValue('mLongText2', 'texto largooooo largiiisimo')
+    assertValue('mEmbeddable', 'pepe')
+#{/selenium}

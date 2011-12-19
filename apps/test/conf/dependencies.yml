@@ -2,7 +2,8 @@
 
 require:
     - play
-    - fap -> fap 1.1.1
+    - fap -> fap 1.2
+    - fap -> guice 1.2.1
     - play -> pdf 0.6
     - play -> less 0.3
     - play -> recaptcha 1.2

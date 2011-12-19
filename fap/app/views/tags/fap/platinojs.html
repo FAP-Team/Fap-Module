@@ -1,0 +1,12 @@
+#{if properties.FapProperties.get('fap.platino.firma.js').equals("pre")}
+<script src="http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/WS_Full.js" type="text/javascript"></script>
+<script src="http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/sfest.utils.js" type="text/javascript"></script>
+<script src="http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/sfest.base.js" type="text/javascript"></script>	
+#{/if}
+#{else}
+<script src="http://lagos.gobiernodecanarias.net:8080/asf/js/WS_Full.js" type="text/javascript"></script>
+<script src="http://temisas.gobiernodecanarias.net:8080/PlatinoClienteFirma/js/sfest.utils.js" type="text/javascript"></script>
+<script src="http://temisas.gobiernodecanarias.net:8080/PlatinoClienteFirma/js/sfest.base.js" type="text/javascript"></script>
+#{/else}
+<script src="@{'/public/javascripts/platino.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/msg.js'}" type="text/javascript"></script>

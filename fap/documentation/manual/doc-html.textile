@@ -14,10 +14,10 @@ h2. Acceder a la documentación generada
 Para acceder a dicha documentación en el navegador deberemos poner la ruta:
 
 * Si queremos acceder al índice de todos los ficheros *.fap:
-**${DIRECCION}/@documentation/html/index**
+**${DIRECCION}/@documentation/modules/fap/html/index**
 
 * Si queremos acceder directamente a un fichero *.fap concreto:
-**${DIRECCION}/@documentation/html/${NOMBRE_FICHERO}Documentacion**
+**${DIRECCION}/@documentation/modules/fap/html/${NOMBRE_FICHERO}Documentacion**
 
 Donde:
 # **${DIRECCION}**, es la dirección de la aplicación (Ej: localhost/9000)
@@ -25,8 +25,8 @@ Donde:
 * _Nota_: Los Ficheros *.fap, por defecto del módulo FAP, tendrán como nombre: **${NOMBRE_FICHERO}FAP**, para distinguirlos de los de nuestra aplicación.
 			
 Así por ejemplo, si queremos acceder al Fichero **Entidades.fap**, del módulo **FAP** deberemos ir a la dirección (suponiendo que nuestra aplicación esté desplegada en: _http://localhost:9000_):
-* **http://localhost:9000/@documentation/html/EntidadesFAPDocumentacion**
+* **http://localhost:9000/@documentation/modules/fap/html/EntidadesFAPDocumentacion**
 
 Por el contrario, si queremos acceder al fichero **Entidades.fap**, de nuestra **aplicación** (El que nosotros hemos codificado), deberemos ir a la dirección:
-* **http://localhost:9000/@documentation/html/EntidadesDocumentacion**
+* **http://localhost:9000/@documentation/modules/fap/html/EntidadesDocumentacion**
 

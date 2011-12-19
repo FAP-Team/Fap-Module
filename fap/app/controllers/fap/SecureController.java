@@ -3,6 +3,12 @@ package controllers.fap;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
+
+import config.InjectorConfig;
+
+
 import messages.Messages;
 import models.Agente;
 
@@ -24,6 +30,9 @@ import play.mvc.Scope.Session;
 import play.mvc.Util;
 import play.mvc.With;
 import properties.FapProperties;
+import security.Secure;
+import ugot.recaptcha.Recaptcha;
+import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
 
 @With({PropertiesFap.class, MessagesController.class})
@@ -298,7 +307,9 @@ public class SecureController extends Controller {
         	idSolicitud = Long.parseLong(params.get("idSolicitud"));
         	Map<String, Long> ids = new HashMap<String, Long>();
         	ids.put("idSolicitud", idSolicitud);
-			if (!secure.PermissionFap.listaSolicitudes("read", ids, null)) {
+			
+        	Secure secure = InjectorConfig.getInjector().getInstance(Secure.class);
+        	if (!secure.check("listaSolicitudes","read", ids, null)) {
         		Messages.fatal("No tiene permisos para acceder a la solicitud");
         		//Messages.keep();
 			}

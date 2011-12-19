@@ -1,0 +1,10 @@
+h1. Inyección de dependencias
+
+Las aplicaciones fap utilizan "Google Guice":http://code.google.com/p/google-guice/ como sistema de inyección de dependencias. Esta característica se introdujo en la versión 1.2 del módulo. Para tener más información de para qué sirve la inyección de dependencias y cómo funciona Guice puedes consultar la "documentación":http://code.google.com/p/google-guice/wiki/Motivation?tm=6 .
+Para la integración con play utilizamos el módulo "guice":http://www.playframework.org/modules/guice .
+
+h2. Configuración del injector
+
+El módulo fap es el encargado de crear el inyector de dependencias. De ellos se ocupa la clase **config.InjectorConfig**. Lo que hace para configurar el inyector es buscar en la aplicación la clase **config.AppModule**. Esta clase se genera automáticamente junto con otra **config.AppModuleGen**. Siguiendo el mismo patrón que se utiliza en muchos otros sitios del módulo. La clase **AppModule** es la clase manual que hereda de **AppModuleGen** que se genera automáticamente.
+
+Si queremos personalizar la configuración del inyector debemos modificar la clase **config.AppModule**.

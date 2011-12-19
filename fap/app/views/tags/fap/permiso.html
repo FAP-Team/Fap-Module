@@ -17,7 +17,8 @@
 	}
 		
 	if (permiso != null) {
-		def newPermisoUpdate = secure.Permission."$permiso"("update", tags.TagMapStack.top("idParams"), null);
+		def secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+		def newPermisoUpdate = secure.check(permiso, "update", tags.TagMapStack.top("idParams"), null); 
 		if (editablePila != null) {
 			editable = editablePila && newPermisoUpdate;
 		} 
@@ -26,7 +27,8 @@
 		}
 		tags.TagMapStack.push("editable", editable);
 
-		def newPermisoRead = secure.Permission."$permiso"("read", tags.TagMapStack.top("idParams"), null);
+
+		def newPermisoRead = secure.check(permiso, "read", tags.TagMapStack.top("idParams"), null); 
 		if (visiblePila != null) {
 			visible = visiblePila && newPermisoRead;	
 		} 

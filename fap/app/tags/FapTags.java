@@ -33,6 +33,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import config.InjectorConfig;
+
 import models.Solicitante;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
@@ -44,6 +46,7 @@ import models.TableKeyValue;
 import play.Logger;
 import play.data.validation.*;
 import play.data.validation.Error;
+import play.db.jpa.Model;
 import play.exceptions.TagInternalException;
 import play.exceptions.TemplateExecutionException;
 import play.exceptions.TemplateNotFoundException;
@@ -57,6 +60,7 @@ import play.mvc.Scope.Flash;
 import play.templates.FastTags;
 import static play.templates.JavaExtensions.*;
 import play.templates.GroovyTemplate.ExecutableTemplate;
+import security.Secure;
 import validation.Moneda;
 import validation.ValueFromTable;
 
@@ -76,10 +80,11 @@ public class FapTags extends FastTags {
 		Map<String,Object> field = new HashMap<String,Object>();
         String _arg = args.get("arg").toString();
         Object obj = args.get("obj");
-        
+               
         field.put("name", _arg);
         field.put("id", _arg.replace('.','_'));
         field.put("flash", Flash.current().get(_arg));
+        
         
         //Muestra todos los errores
         List<Error> errors = Validation.errors(_arg);
@@ -133,9 +138,44 @@ public class FapTags extends FastTags {
 	        	field.put("reference", true);
             	field.put("toMany", true);
 	        	field.put("referenceClass", ReflectionUtils.getListClass(f));
+	        	
+	        	List<Model> listModels = new ArrayList<Model>();
+	        	String conId = _arg.replace('.', '_');
+	        	if (Flash.current().get(conId) != null) { 
+	        		for (String idString : Flash.current().get(conId).split(",")) {
+	        			Object myValue = Long.valueOf(idString);
+		            	Field myF = ReflectionUtils.getFieldByName(_arg);
+	        			Class modelClass = ReflectionUtils.getClassFromGenericField(myF);
+	        			Model model = null;
+	        			try {
+	        				model = (Model) modelClass.getMethod("findById", Object.class).invoke(null, myValue);
+	        				listModels.add(model);
+	        			} catch (Exception e) {
+	        				// TODO Auto-generated catch block
+	        				e.printStackTrace();
+	        			}
+	        		}
+	        		field.put("flash", listModels);
+	        	}
 	        }else if(f.getAnnotation(ManyToOne.class) != null){
             	field.put("reference", true);
 	        	field.put("referenceClass", f.getType());
+
+	            String conId = _arg.replace('.', '_');
+	            if ((Flash.current().get(conId) != null) && (!Flash.current().get(conId).trim().equals(""))) {
+	            	Object myValue = Long.valueOf(Flash.current().get(conId));//ReflectionUtils.getValueRecursively(obj, conId);	            
+	            	Field myF = ReflectionUtils.getFieldByName(_arg);
+	            	String nameClass = ((String)myF.toString()).split(" ")[1].split("\\.")[1];
+	            	Class<Model> modelClass = (Class<Model>) ReflectionUtils.getClassByName(nameClass);
+	            	Model model = null;
+	            	try {
+	            		model = (Model) modelClass.getMethod("findById", Object.class).invoke(null, myValue);
+	            		field.put("flash", model);
+	            	} catch (Exception e) {
+	            		// TODO Auto-generated catch block
+	            		e.printStackTrace();
+	            	}
+	            }
 	        }
         }
 
@@ -154,9 +194,7 @@ public class FapTags extends FastTags {
 	public static void _valueFromTable(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
         String campo = args.get("arg").toString();
         String[] pieces = campo.split("\\.");
-        System.out.println(pieces[0]);
         Object obj = body.getProperty(pieces[0]);
-        System.out.println(obj);
         
         String clave = ReflectionUtils.getValueRecursively(obj, campo).toString();
         Field f = ReflectionUtils.getFieldRecursively(obj.getClass(), campo);
@@ -310,17 +348,10 @@ R
 		
 		boolean hasPermiso = true;
 		if (permiso != null) {
-				Class clazz = secure.PermissionFap.class;
-				Class[] argClass = new Class[] {String.class, Map.class, Map.class};
-				Object[] argValue = new Object[] {"read", tags.TagMapStack.top("idParams"), null};
-				try {
-					Method metodoPermiso = clazz.getMethod(permiso, argClass);
-					hasPermiso = (Boolean) metodoPermiso.invoke(null, argValue);
-				} catch (Exception e) {
-					String msg = "Error al cargar los permisos de la tabla";
-					throw new TemplateExecutionException(template.template, fromLine, msg, new TagInternalException(msg));
-				}
+			Secure secure = InjectorConfig.getInjector().getInstance(Secure.class);
+			hasPermiso = secure.check(permiso, "read", (Map<String, Long>)tags.TagMapStack.top("idParams"), null);
 		}
+		
 		if (hasPermiso) {
 			if(campo == null && funcion == null){
 				String msg = "Especifica un campo o función o renderer + campo";

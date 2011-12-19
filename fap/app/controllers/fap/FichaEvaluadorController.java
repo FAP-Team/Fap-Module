@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import messages.Messages;
 import models.CEconomico;
 import models.Criterio;
@@ -30,15 +32,18 @@ import play.mvc.Scope.Flash;
 import play.mvc.Scope.Params;
 import play.mvc.With;
 import properties.FapProperties;
-import secure.PermissionFap;
+import security.Secure;
 import reports.Report;
 import services.BaremacionService;
 
 @With({SecureController.class, MessagesController.class, AgenteController.class})
 public class FichaEvaluadorController extends Controller {
+	
+	@Inject
+	protected static Secure secure;
 		
 	public static void index(long idEvaluacion){
-		if(PermissionFap.evaluacion("read", null, null)){
+		if(secure.check("evaluacion", "read", null, null)){
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 			notFoundIfNull(evaluacion);
 			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
@@ -74,7 +79,7 @@ public class FichaEvaluadorController extends Controller {
 	}
 
 	public static void save(){
-		if(PermissionFap.evaluacion("update", null, null)){
+		if(secure.check("evaluacion", "update", null, null)){
 			boolean actionSave = params.get("save") != null;
 			boolean actionPdf = params.get("pdf") != null;
 			boolean actionEnd = params.get("end") != null;

@@ -331,7 +331,7 @@ public class GTabla {
 		for(${entidad.clase} ${entidad.variable}: rows){
 			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.put("${entidad.variable}", ${entidad.variable});
-			if (${PermisosUtils.className()}${tabla.permiso.name}("read", ids, vars)) {
+			if (secure.check("${tabla.permiso.name}","read", ids, vars)) {
 				rowsFiltered.add(${entidad.variable});
 			}
 		}

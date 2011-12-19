@@ -7,6 +7,7 @@ Formulario Solicitud {
 			Enlace "Combos por defecto" pagina=Combos
 			Enlace "Combos sobreescritos" pagina=CombosOverwrite
 			Enlace "Valores por defecto" pagina=ValoresPorDefecto
+			Enlace "ErrorCombos" pagina=PaginaCombosError
 		}
 		
 		Grupo "Direccion"{
@@ -34,6 +35,14 @@ Formulario Solicitud {
 			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
 		}
 		
+
+		Grupo "Permisos" {
+			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administrador
+			Enlace "Permiso grupo" pagina=PermisoPagina permiso=administrador
+			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable 
+		}
+
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 		
@@ -46,7 +55,6 @@ Formulario Solicitud {
 		Direccion campo=Solicitud.direccionTest.direccion
 	}
 	
-	
 	Pagina Combos inicial {
 
 		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
@@ -57,6 +65,7 @@ Formulario Solicitud {
 		}
 				
 		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRef titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
+			Columna campo=ComboTestRef.id
 			Columna campo=ComboTestRef.nombre expandir
 		}
 	}
@@ -76,12 +85,20 @@ Formulario Solicitud {
 		}
 				
 		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRef titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
+			Columna campo=ComboTestRef.id
 			Columna campo=ComboTestRef.nombre expandir
 		}
 	}
 
 	Popup ComboTestRef campo=ComboTestRef {
-		Texto campo=ComboTestRef.nombre	
+		Texto campo=ComboTestRef.nombre
+	}
+	
+	Pagina PaginaCombosError {
+		Wiki { "Error en los combos. Debe autocompletar los combos elegidos desde flash al estar el campo de texto vacío." }
+		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
+		Combo campo=Solicitud.comboError comboTexto=nombre titulo="Error del combo"
+		Combo campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
 	}
 	
 	Pagina ValoresPorDefecto {
@@ -128,5 +145,21 @@ Formulario Solicitud {
  		Grupo test2MostrarSiExpresion titulo="Grupo 1: Mostrar Campo" mostrarSiCampo Solicitud.solicitante.email = "pepe@pepe.com", "juan@juan.com" {
 			Texto if2Texto titulo="Texto" campo=Solicitud.testGrupo.nombre
  		}
+	}
+
+
+	Pagina PermisoPagina permiso=administrador{
+		Wiki {"Si puedes ver esta página tienes que ser administrador."}
+	}
+	
+	Pagina PermisoGrupo permiso=administrador {
+		Wiki {"La página tiene un grupo que es sólo visible para administradores"}
+		Grupo permiso=administrador {
+			Wiki {"Este grupo es sólo visible para administradores"}	
+		}
+	}
+	
+	Pagina PermisoNoEditable permiso=noEditable {
+		Wiki {"Esta página es no editable"}	
 	}
 }

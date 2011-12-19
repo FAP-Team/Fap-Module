@@ -58,6 +58,7 @@ public class End implements IWorkflowComponent {
 			DocumentationUtils.makeDocumentation();
 		}
 		borrarFicherosAntiguos();
+		config();
 	}
 
 	@Override
@@ -102,62 +103,80 @@ public class End implements IWorkflowComponent {
    * en la hashStack
    * @return
    */
-  private String permisos(){
-	  String permisos = "";
-	  String lName = "";
-	  String defLine = "";
-	  String extendz = "";
-	  String generateExtends = "";
+  private String permisos(){	  
+	  String clazzName = LedUtils.generatingModule ? "SecureFap" : "SecureApp"; 
+	  String clazzGenName = clazzName + "Gen";
 	  
-	  // Establecemos la línea de definición de la clase
-	  
-	  // Si estamos generando para el módulo en el modulo
-	  if (!createSolicitud.equals("true")) {
-		  lName = "PermissionFap";
-		  defLine = "public class ${lName}";
-		  extendz = "extends ${lName}Gen"
-	  } else {
-	  	  lName = "Permission";
-	  	  defLine = "public class ${lName}";
-	  	  extendz = "extends ${lName}Gen";
-		  generateExtends = "extends PermissionFap"
-	  }
-	  
+	  def permisos = [];
+	  def permisosCode = "";
+	  def switchCode = "";
 	  for(Object o in HashStack.allElements(HashStackName.PERMISSION)){
-		  GPermiso p = (GPermiso)o;
-	  	  permisos += p.permisoCode();	
+		  GPermiso permiso = (GPermiso)o
+		  permisos.add(permiso)
+	  	  permisosCode += permiso.permisoCode()
+		
+		  String permisoName = permiso.permiso.name;	
+		  if(switchCode.isEmpty()){
+			  	
+		  	switchCode = """
+		if("${permisoName}".equals(id))
+			return ${permisoName}(action, ids, vars);
+"""	
+		  }else{
+		  switchCode += """
+		else if("${permisoName}".equals(id))
+			return ${permisoName}(action, ids, vars);
+	  """
+		  }
 	  }
 	  
+	  	  
 	  // Permisos generados
-		String out = """
-package secure.gen;
+		String secureGen = """
+package security;
 
-import java.util.*;
+import java.util.Map;
+
 import models.*;
 import controllers.fap.AgenteController;
-import secure.*;
-		
-${defLine}Gen ${generateExtends} {	
-${permisos}
+
+public class ${clazzGenName} extends Secure {
+
+	public ${clazzGenName}(Secure next) {
+		super(next);
+	}
+
+	@Override
+	public boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars) {
+${switchCode}		
+		return nextCheck(id, action, ids, vars);
+	}
+	
+	${permisosCode}
 }
 """;
 
-FileUtils.overwrite(FileUtils.getRoute('PERMISSION_GEN'), "${lName}Gen.java", out);
+FileUtils.overwrite(FileUtils.getRoute('PERMISSION'), "${clazzGenName}.java", secureGen);
 
   // Permisos manual
-  String outManual = """
-package secure;
+  String secure = """
+package security;
+
+import java.util.Map;
+
+public class ${clazzName} extends Secure {
+	
+	public ${clazzName}(Secure next) {
+		super(next);
+	}
+
+	@Override
+	public boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars) {		
+		return nextCheck(id, action, ids, vars);
+	}
+}""";
 	  
-import java.util.*;
-import models.*;
-import secure.gen.*;
-import controllers.fap.SecureController;
-			  
-${defLine} ${extendz} {
-}
-""";
-	  
-	  FileUtils.write(FileUtils.getRoute('PERMISSION'), "${lName}.java", outManual);
+	  FileUtils.write(FileUtils.getRoute('PERMISSION'), "${clazzName}.java", secure);
 		}
   
   
@@ -200,5 +219,60 @@ ${defLine} ${extendz} {
 		 } 
 	 }
  
-    
+	private void config(){
+		if(!LedUtils.generatingModule){
+			String appConfigFolder = FileUtils.getRoute('APP_CONFIG');
+			String configGen = 
+"""
+package config;
+
+import security.*;
+
+import com.google.inject.AbstractModule;
+
+/**
+ * Configuración de Guice generada.
+ *
+ * Clase automática, cada vez que se genere la aplicación
+ * se sobreescribirá esta clase. Para personalizar
+ * la configuración consula la clase config.AppModule. 
+ */
+public class AppModuleGen extends AbstractModule {
+	
+	@Override
+	protected void configure() {
+		secure();
+		custom();
+	}
+	
+	protected void secure(){
+		bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
+	}
+
+	protected void custom(){
+	}
+	
+}
+"""
+			FileUtils.overwrite(appConfigFolder, "AppModuleGen.java", configGen);
+			String config = 
+"""
+package config;
+
+/**
+ * Configuración de Guice.
+ * 
+ * En esta clase puedes personalizar la configuración de Guice.
+ * Puedes sobreescribir los métodos ya definidos, como por ejemplo
+ * <secure> para personalizar la cadena de mando
+ * que se va a utilizar para resolver un permiso. Además puedes
+ * añadir configuración adicional utilizando el método <custom>.
+ */
+public class AppModule extends AppModuleGen {
+	
+}
+"""
+			FileUtils.write(appConfigFolder, "AppModule.java", config);
+		}	
+	}  
 }

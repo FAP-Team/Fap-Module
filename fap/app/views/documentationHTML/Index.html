@@ -29,7 +29,7 @@
                         #{list ficheros, as:'fichero'}
                         %{ def nombre = fichero.toString().replaceAll(".html", "") }%
                             <li>
-                                <a href="/@documentation/html/${nombre}">${nombre}</a>
+                                <a href="${nombre}">${nombre}</a>
                             </li>
                         #{/list}
                     </ul>
@@ -37,7 +37,7 @@
 
                 <h2>Documentación FAP</h2>
                 	<ul>
-                		<a href="/@documentation/modules/fap/home">Volver</a>
+                		<a href="../home">Volver</a>
                 	</ul>
 
             </div>
@@ -49,7 +49,7 @@
             		<ol>
                 		#{list items:ficheros, as:'fichero'}
                 			%{ def nombre = fichero.toString().replaceAll(".html", "") }%
-							<li><a href="/@documentation/html/${nombre}">${nombre}</a></li>
+							<li><a href="${nombre}">${nombre}</a></li>
 						#{/list}
 					</ol>
             	</div>

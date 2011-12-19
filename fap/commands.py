@@ -12,7 +12,7 @@ MODULE = 'fap'
 
 # Commands that are specific to your module
 
-COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist']
+COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist', 'fap:winservice']
 # Eliminamos el comando 'fap:model' de la lista de comandos
 
 def execute(**kargs):
@@ -44,6 +44,9 @@ def execute(**kargs):
 
     if command == "fap:dist":
         dist(app, args)
+
+    if command == "fap:winservice":
+        winservice(app, args)    
 
 
 
@@ -284,7 +287,15 @@ def makeDirsIfNotExists(source):
       os.makedirs(source)
 
 def dist(app, args):
-   app.check()
+   # Precompila
+   # TODO ver si se puede cambiar por la llamada directa a la clase
+   # para que no aparezca otra vez el logo de play
+   ret = subprocess.call(["play", "precompile"]);
+   if ret != 0:
+      print "~ Error precompilando la aplicación"
+      exit(ret)
+
+   #
    modules = app.modules()
    classpath = app.getClasspath()
 
@@ -303,7 +314,7 @@ def dist(app, args):
 
    ignoreGlobal = ['**logs', '**test*', 'led', 'eclipse', 
                     '**tmp', '**test-result', 'modules', 
-                    '**precompiled', '.settings', '.classpath', 
+                    '.settings', '.classpath', 
                     'lib', 'nbproject', '**eclipse', '**.svn', '**.git']
 
    if os.path.exists(path['app']):
@@ -329,9 +340,55 @@ def dist(app, args):
    print "~ Copiando módulos" + path['modules']
    makeDirsIfNotExists(path['modules'])
    ignores = ignoreGlobal + ['dist', 'samples-and-tests', 'build.xml', 
-              'commands.py', 'documentation', '**compiler', 
+              'documentation', '**compiler', 
               'plugins',  'fap-skel', 'src']
 
    for module in modules:
       modulename = os.path.basename(module)
       copytree(module, os.path.join(path['modules'], modulename), ignores)   
+
+
+
+def replace_words(text, word_dic):
+    rc = re.compile('|'.join(map(re.escape, word_dic)))
+    def translate(match):
+        return word_dic[match.group(0)]
+    return rc.sub(translate, text)
+
+def replace_in_file(file1, file2, word_dic):
+    fin = open(file1, "r")
+    str1 = fin.read()
+    fin.close()
+
+    str2 = replace_words(str1, word_dic)
+
+    fout = open(file2, "w")
+    fout.write(str2)
+    fout.close()
+
+
+def winservice(app, args):
+    moduleDir = getModuleDir(app, args)
+    winservicepath = os.path.join(moduleDir, "support", "winservice");
+
+    prunsrv = os.path.join(winservicepath, 'commons-daemon-1.0.8-bin-windows', 'prunsrv.exe')
+
+    install_in = os.path.join(winservicepath, "installService.bat")
+    install_out = os.path.join(app.path, "installService.bat")
+    word_dic = {
+        "${app.name}" : app.name(),
+        "${app.path}" : app.path,
+        "${play.path}" : app.play_env['basedir'],
+        "${prunsrv}" : prunsrv
+    }
+    replace_in_file(install_in, install_out, word_dic)
+    print "~ [fap:winservice] Creado installService.bat"
+
+    uninstall_in = os.path.join(winservicepath, "uninstallService.bat")
+    uninstall_out = os.path.join(app.path, "uninstallService.bat")
+    word_dic = {
+        "${app.name}" : app.name(),
+        "${prunsrv}" : prunsrv
+    }
+    replace_in_file(uninstall_in, uninstall_out, word_dic)
+    print "~ [fap:winservice] Creado unistallService.bat"

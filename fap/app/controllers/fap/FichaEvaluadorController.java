@@ -36,7 +36,7 @@ import security.Secure;
 import reports.Report;
 import services.BaremacionService;
 
-@With({SecureController.class, MessagesController.class, AgenteController.class})
+@With({SecureController.class, AgenteController.class})
 public class FichaEvaluadorController extends Controller {
 	
 	@Inject
@@ -79,7 +79,12 @@ public class FichaEvaluadorController extends Controller {
 	}
 
 	public static void save(){
+<<<<<<< HEAD
 		if(secure.check("evaluacion", "update", null, null)){
+=======
+		Messages.deleteFlash();
+		if(PermissionFap.evaluacion("update", null, null)){
+>>>>>>> #90 Arreglado mensajes repetidos
 			boolean actionSave = params.get("save") != null;
 			boolean actionPdf = params.get("pdf") != null;
 			boolean actionEnd = params.get("end") != null;
@@ -148,7 +153,6 @@ public class FichaEvaluadorController extends Controller {
 			evaluacion.save();
 			if(validation.hasErrors()){
 				flash(evaluacion);
-				Validation.keep();
 			}
 			
 			if(actionSave || actionEnd){

@@ -61,6 +61,7 @@ apps/test/tmp/*
 
 fap/app/controllers/gen/*
 fap/app/secure/gen/*
+fap/app/security/SecureFapGen.java
 fap/app/views/gen/*
 fap/app/listas/gen/*
 fap/app/enumerado/fap/gen/*

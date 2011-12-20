@@ -32,8 +32,8 @@ import play.mvc.Scope.Flash;
 import play.mvc.Scope.Params;
 import play.mvc.With;
 import properties.FapProperties;
-import security.Secure;
 import reports.Report;
+import security.Secure;
 import services.BaremacionService;
 
 @With({SecureController.class, AgenteController.class})
@@ -79,12 +79,7 @@ public class FichaEvaluadorController extends Controller {
 	}
 
 	public static void save(){
-<<<<<<< HEAD
 		if(secure.check("evaluacion", "update", null, null)){
-=======
-		Messages.deleteFlash();
-		if(PermissionFap.evaluacion("update", null, null)){
->>>>>>> #90 Arreglado mensajes repetidos
 			boolean actionSave = params.get("save") != null;
 			boolean actionPdf = params.get("pdf") != null;
 			boolean actionEnd = params.get("end") != null;

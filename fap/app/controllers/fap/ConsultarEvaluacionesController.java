@@ -4,6 +4,7 @@ package controllers.fap;
 import play.*;
 import play.mvc.*;
 import controllers.fap.*;
+import security.Secure;
 import tags.ReflectionUtils;
 import validation.*;
 import models.*;
@@ -15,14 +16,12 @@ import java.lang.reflect.Field;
 
 import javax.inject.Inject;
 
-import security.Secure;
-
-@With({SecureController.class, MessagesController.class, AgenteController.class})
+@With({SecureController.class, AgenteController.class})
 public class ConsultarEvaluacionesController extends GenericController {
 	
 	@Inject
 	protected static Secure secure;
-
+	
 	public static void index(){
 		renderTemplate("fap/Baremacion/consultarEvaluaciones.html");
 	}

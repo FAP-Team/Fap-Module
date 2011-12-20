@@ -94,6 +94,9 @@ Entidad Evaluacion {
 	
 	Double totalCriterios
 	
+	Double inversionTotalAprobada
+	Double subvencionTotalConcedida
+	
 	//Evaluador
 	//ManyToOne Evaluador evaluador
 	

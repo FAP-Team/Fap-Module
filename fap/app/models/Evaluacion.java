@@ -7,8 +7,6 @@ import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
-import properties.FapProperties;
-
 import org.joda.time.DateTime;
 import models.*;
 import messages.Messages;
@@ -18,6 +16,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+
+import properties.FapProperties;
 
 // === IMPORT REGION END ===
 	
@@ -44,7 +44,12 @@ public class Evaluacion extends Model {
 	
 	public Double totalCriterios;
 	
+	
+	
 	public Double inversionTotalAprobada;
+	
+	
+	
 	public Double subvencionTotalConcedida;
 	
 	

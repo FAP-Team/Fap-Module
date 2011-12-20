@@ -40,11 +40,12 @@ public class BaremacionService {
 				}
 			}
 			// Para calcular la puntuacion total
-			invokeEvalTotal(evaluacion, totales);
+			invokeEvalTotal(evaluacion, totales, "Criterios");
 		}
 
 		if(evaluacion.ceconomicos != null && evaluacion.ceconomicos.size() > 0){
 			List<List<CEconomico>> sortedCEconomicos = sortByProfundidad(evaluacion.ceconomicos);
+			List<CEconomico> totales=sortedCEconomicos.get(0);
 			for(int i = sortedCEconomicos.size() -2; i >= 0; i--){
 				for(CEconomico ceconomico : sortedCEconomicos.get(i)){
 					play.Logger.info("Calculando automático %", ceconomico.tipo.jerarquia);
@@ -54,11 +55,12 @@ public class BaremacionService {
 					}
 				}
 			}
+			invokeEvalTotal(evaluacion, totales, "CEconomicos");
 		}
 		
 	}
 	
-	private static void invokeEvalTotal(Evaluacion parent, List<Criterio> childs){
+	private static <T> void invokeEvalTotal(Evaluacion parent, List<T> childs, String tipo){
 		Class invokedClass = null;
 		//Busca una clase que herede del evaluador
         List<Class> assignableClasses = Play.classloader.getAssignableClasses(Evaluador.class);
@@ -66,20 +68,20 @@ public class BaremacionService {
             invokedClass = assignableClasses.get(0);
         }
 		
-		String methodName = "evalTotalCriterios";
+		String methodName = "evalTotal"+tipo;
         Method method = null;
         
         if(invokedClass != null){
 	        //Método de la clase evaluador
 	        try {
-	        	method = invokedClass.getDeclaredMethod(methodName, parent.getClass(), List.class);
+	        	method = invokedClass.getDeclaredMethod(methodName, parent.getClass(), List.class, String.class);
 			} catch (Exception e) {
 			}
 	        
 	        //Default de la clase evaluador
 	        if(method == null){
 	        	try {
-	        		method = invokedClass.getDeclaredMethod("evalDefault", parent.getClass(), List.class);
+	        		method = invokedClass.getDeclaredMethod("evalDefault", parent.getClass(), List.class, String.class);
 	        	}catch(Exception e){}
 	        }
         }
@@ -87,14 +89,14 @@ public class BaremacionService {
         //Método por defecto de la clase generica
         if(method == null){
         	try {
-        		method = Evaluador.class.getDeclaredMethod("evalDefault", parent.getClass(), List.class);
+        		method = Evaluador.class.getDeclaredMethod("evalDefault", parent.getClass(), List.class, String.class);
         	}catch(Exception e){}
         }
         
         //Llama al método
         if(method != null){
         	try {
-        		method.invoke(null, parent, childs);
+        		method.invoke(null, parent, childs, tipo);
 			} catch (Exception e) {}
         }
 	}

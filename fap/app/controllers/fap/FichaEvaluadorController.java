@@ -133,7 +133,7 @@ public class FichaEvaluadorController extends Controller {
 	
 			for(CEconomico ceconomico : evaluacion.ceconomicos){
 				String param = "ceconomico[" + ceconomico.id + "]";
-				ceconomico.valorEstimado = params.get(param + ".valorEstimado", Double.class);
+				ceconomico.valorPropuesto = params.get(param + ".valorPropuesto", Double.class);
 	
 				//Comentarios
 				if(ceconomico.tipo.comentariosAdministracion){				

@@ -40,6 +40,8 @@
 #{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
 
 	#{simple.uneditable value: evaluacion.totalCriterios, ancho: "500px", label: "Total criterios de evaluación"/}
+	#{simple.uneditable value: evaluacion.inversionTotalAprobada, ancho: "500px", label: "Inversion Total Aprobada"/}
+	#{simple.uneditable value: evaluacion.subvencionTotalConcedida, ancho: "500px", label: "Subvencion Total Concedida"/}
 
 	#{if evaluacion.tipo.comentariosAdministracion}
 		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion)/}
@@ -61,7 +63,7 @@
 		
 		#{if hasCEconomicos}
 			<h2>Conceptos económicos</h2>
-			<ul>
+			<ul>	
 			#{list items:evaluacion.tipo.ceconomicos, as:'tceconomico'}
 				<li><a href="#ceconomico${tceconomico.jerarquia}">${tceconomico.jerarquia} - ${tceconomico.nombre}</a></li>	
 			#{/list}
@@ -140,16 +142,13 @@
 
 #{if  hasCEconomicos}
 	#{fap.grupo titulo:'Conceptos económicos', id: 'CEconomicos'}
-		
 	#{list items:evaluacion.ceconomicos, as:'ceconomico'}
 		%{
 			def paramName  = "ceconomico[${ceconomico.id}]";
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
-
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
 			def valorSolicitado = newValue(paramName + ".valorSolicitado", "Valor Solicitado", ceconomico.valorSolicitado)
-			def valorEstimado   = newValue(paramName + ".valorEstimado", "Valor Estimado", ceconomico.valorEstimado)
-			
+			def valorPropuesto   = newValue(paramName + ".valorPropuesto", "Valor Propuesto", ceconomico.valorPropuesto)
 			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", ceconomico.comentariosAdministracion);
 			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", ceconomico.comentariosSolicitante); 
 		}%
@@ -171,9 +170,7 @@
 				</div>
 			#{/if}
 			
-			
-			#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error/}
-			#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
+			#{simple.text name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error /}
 				
 			#{if ceconomico.tipo.comentariosAdministracion}
 				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion /}

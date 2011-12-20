@@ -7,6 +7,8 @@ import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
+import properties.FapProperties;
+
 import org.joda.time.DateTime;
 import models.*;
 import messages.Messages;
@@ -41,6 +43,9 @@ public class Evaluacion extends Model {
 	
 	
 	public Double totalCriterios;
+	
+	public Double inversionTotalAprobada;
+	public Double subvencionTotalConcedida;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
@@ -134,6 +139,13 @@ public class Evaluacion extends Model {
 				"where criterio.tipo.jerarquia=? " +
 				"and evaluacion.id=?", jerarquia, id).first();
 	}
+	
+	public Double getSubvencionTotalConcedida(){
+		String porcentajeAyudaString = FapProperties.get("fap.app.baremacion.porcentajeAyuda");
+		Double porcentajeAyuda = Double.valueOf(porcentajeAyudaString);
+		return ((this.inversionTotalAprobada*porcentajeAyuda) /100);
+	}
+	
 	// === MANUAL REGION END ===
 	
 	

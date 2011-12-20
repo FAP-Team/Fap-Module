@@ -1,4 +1,6 @@
 %{
+	@Inject
+	
 	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_url, "url");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");
@@ -48,10 +50,10 @@
 		urlPopupBorrar = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
 		urlPopupVer = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
 		if (_permisoPopup != null) {
-			permisoCrear = secure.Permission."$_permisoPopup"("create", tags.TagMapStack.top("idParams"), null);
-			permisoBorrar = secure.Permission."$_permisoPopup"("delete", tags.TagMapStack.top("idParams"), null);
-			permisoModificar = secure.Permission."$_permisoPopup"("update", tags.TagMapStack.top("idParams"), null);
-			permisoVer = secure.Permission."$_permisoPopup"("read", tags.TagMapStack.top("idParams"), null);
+			permisoCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopup", "create", tags.TagMapStack.top("idParams"), null);
+			permisoBorrar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopup", "delete", tags.TagMapStack.top("idParams"), null);
+			permisoModificar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check ("$_permisoPopup", "update", tags.TagMapStack.top("idParams"), null);
+			permisoVer = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopup", "read", tags.TagMapStack.top("idParams"), null);
 		}
 		else {
 			permisoCrear = permisoModificar = permisoBorrar = permisoVer = true;
@@ -61,21 +63,21 @@
 		if (popupCrear != null) {
 			urlPopupCrear = play.mvc.Router.reverse("popups.${popupCrear}Controller.abrir");
 			if (_permisoPopupCrear != null) 
-				permisoCrear = secure.Permission."$_permisoPopupCrear"("create", tags.TagMapStack.top("idParams"), null);
+				permisoCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupCrear", "create", tags.TagMapStack.top("idParams"), null);
 			else
 				permisoCrear = true;
 		}
 		if (popupBorrar != null) {
 			urlPopupBorrar = play.mvc.Router.reverse("popups.${popupBorrar}Controller.abrir");
 			if (_permisoPopupBorrar != null) 
-				permisoBorrar = secure.Permission."$_permisoPopupBorrar"("delete", tags.TagMapStack.top("idParams"), null);
+				permisoBorrar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupBorrar", "delete", tags.TagMapStack.top("idParams"), null);
 			else
 				permisoBorrar = true;
 		}
 		if (popupModificar != null) {
 			urlPopupModificar = play.mvc.Router.reverse("popups.${popupModificar}Controller.abrir");
 			if (_permisoPopupModificar != null) 
-				permisoModificar = secure.Permission."$_permisoPopupModificar"("update", tags.TagMapStack.top("idParams"), null);
+				permisoModificar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupModificar", "update", tags.TagMapStack.top("idParams"), null);
 			else
 				permisoModificar = true;
 			if ((permisoCrear) || (permisoBorrar))
@@ -84,7 +86,7 @@
 		if (popupVer != null) {
 			urlPopupVer = play.mvc.Router.reverse("popups.${popupVer}Controller.abrir");
 			if (_permisoPopupVer != null) 
-				permisoVer = secure.Permission."$_permisoPopupVer"("read", tags.TagMapStack.top("idParams"), null);
+				permisoVer = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupVer", "read", tags.TagMapStack.top("idParams"), null);
 			else
 				permisoVer = true;
 			if ((permisoCrear) || (permisoBorrar) || (permisoModificar))

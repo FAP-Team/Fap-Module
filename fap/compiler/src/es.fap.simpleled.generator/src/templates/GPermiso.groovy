@@ -8,7 +8,6 @@ import generator.utils.EntidadUtils
 import generator.utils.FileUtils;
 import generator.utils.HashStack;
 import generator.utils.StringUtils;
-import generator.utils.PermisosUtils;
 import generator.utils.HashStack.HashStackName;
 
 public class GPermiso {

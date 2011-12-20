@@ -1,9 +1,11 @@
 h2. Changelog
 
-h3. Versión 1.2 (En desarrollo)
+h3. Versión 1.2
 
-* Nueva interfaz de permisos que permite sobrescribir los permisos definidos
-en el módulo
+* Se recomienda actualizar play a la versión 1.2.4.
+* Fixed minor bugs.
+* Test automáticos (play autotest).
+* Nueva interfaz de permisos que permite sobrescribir los permisos definidos en el módulo
 * Inyección de dependencias utilizando Google Guice.
 * Permitir creacion de Enumerados Java a partir de Listas FAP
 * Posibilidad de personalizar las páginas mediante código JavaScript

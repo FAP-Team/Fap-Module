@@ -185,23 +185,24 @@
 		<delete dir="extraer/compiler/src" />
 		<delete dir="dist-nightly" />
 		<mkdir dir="dist-nightly" />
-		<zip basedir="extraer" destfile="dist-nightly/fap-${version.set}.zip" />
-		<echo message="Modulo zip creado:  dist-nightly/fap-${version.set}.zip" />
+		<zip basedir="extraer" destfile="${zip.dir}/fap-${version.set}.zip" />
+		<echo message="Modulo zip creado:  ${zip.dir}/fap-${version.set}.zip" />
 		<delete dir="extraer" />
 	</target>
 	
-	<target name="ftp-upload-doc">
+	<target name="ftp-upload-doc" depends="ftp-upload" description="Sube el la documentación y el módulo al ftp">
 		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version}/documentation" />
 
 		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version}/documentation/" userid="${ftp.user}" password="${ftp.pass}">
 			<fileset dir="documentation">
 				<include name="**/*.png" />
 				<include name="**/*.textile" />
+				<include name="**/*.html" />
 			</fileset>
 		</ftp>
 	</target>
 
-	<target name="ftp-upload" depends="get-version" description="Sube la documentación y el módulo al ftp">
+	<target name="ftp-upload" depends="get-version" description="Sube el módulo al ftp">
 		<echo message="${zip.dir}    -    ${ftp.fap.dir}      -  ${zip.dir}/fap-${version.set}.zip" />
 		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version.set}" />
 

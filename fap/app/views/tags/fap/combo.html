@@ -31,28 +31,29 @@
 		style += 'width: ' + ancho + ';'
 			
 	//Campo de los elementos de la lista a partir del cual se extrae la clave y el valor		
-	def comboValue = _comboValue != null? _comboValue : "key"
-	def comboText = _comboText != null? _comboText : "value"
+	def comboValue;
+	def comboText;
+	// Si es con "reference" se pasa el id
+	if (field.reference) {
+		comboValue = _comboValue != null? _comboValue : "id"
+		comboText = _comboText != null? _comboText : "id"
+	} else {
+		comboValue = _comboValue != null? _comboValue : "key"
+		comboText = _comboText != null? _comboText : "value"
+	}
 	
 	def manyTo = _manyTo;
 	def name = ""	
 }%
 
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-		%{
-			//
-			
+		%{	
 			multiple = field.isCollection;
 			
 			// Arreglando lo de los IDs
 			name = field.name;
-			if (manyTo)
+			if (manyTo) 
 				name = id;
-			
-			
-			if(field.reference){
-				comboValue = "id";
-			}
 			
 			
 			def items = null;

@@ -5,14 +5,14 @@ import sys
 import subprocess
 import shutil
 import re
-
+from datetime import date
 # Here you can create play commands that are specific to the module, and extend existing commands
 
 MODULE = 'fap'
 
 # Commands that are specific to your module
 
-COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation']
+COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist', 'fap:winservice']
 # Eliminamos el comando 'fap:model' de la lista de comandos
 
 def execute(**kargs):
@@ -41,6 +41,12 @@ def execute(**kargs):
         
     if command == "fap:documentation":
         generateDocumentationHTML(app)
+
+    if command == "fap:dist":
+        dist(app, args)
+
+    if command == "fap:winservice":
+        winservice(app, args)    
 
 
 
@@ -271,3 +277,118 @@ def generateDocumentationHTML(app):
             subprocess.call(cmd)
             print "~ [CREADO]: "+destino
 
+
+
+def copytree(source, dest, ignores):
+   shutil.copytree(source, dest, ignore=shutil.ignore_patterns(*ignores))
+
+def makeDirsIfNotExists(source):
+   if not os.path.exists(source):
+      os.makedirs(source)
+
+def dist(app, args):
+   # Precompila
+   # TODO ver si se puede cambiar por la llamada directa a la clase
+   # para que no aparezca otra vez el logo de play
+   ret = subprocess.call(["play", "precompile"]);
+   if ret != 0:
+      print "~ Error precompilando la aplicación"
+      exit(ret)
+
+   #
+   modules = app.modules()
+   classpath = app.getClasspath()
+
+   # Si no existe la carpeta dist la crea
+   dist_path = os.path.join(app.path, "dist")
+
+   makeDirsIfNotExists(dist_path)
+
+   fecha = date.today().isoformat()
+   dest = os.path.join(dist_path, app.name() + fecha)
+
+   path = {}
+   path['app'] = os.path.join(dest, app.name())
+   path['lib'] = os.path.join(dest, 'lib')
+   path['modules'] = os.path.join(dest, app.name(),'modules')
+
+   ignoreGlobal = ['**logs', '**test*', 'led', 'eclipse', 
+                    '**tmp', '**test-result', 'modules', 
+                    '.settings', '.classpath', 
+                    'lib', 'nbproject', '**eclipse', '**.svn', '**.git']
+
+   if os.path.exists(path['app']):
+      print "~ [ERROR] - La carpeta de destino %s ya existe" % path['app']
+      exit(1)
+        
+   print "~ Copiando aplicación a " + path['app']
+   ignores = ignoreGlobal + ['dist']
+   copytree(app.path, path['app'], ignores)
+
+   # Copia las librerias de la aplicación y de los módulos
+   # No las librerías de play
+   print "~ Copiando librerías a" + path['lib']
+   makeDirsIfNotExists(path['lib'])
+   playlibs = os.path.join(app.play_env["basedir"], 'framework')
+   for jar in classpath:
+      if jar.endswith('.jar') and jar.find('provided-') == -1:
+         if not jar.startswith(playlibs):
+            jarname = os.path.split(jar)[1]
+            shutil.copyfile(jar, os.path.join(path['lib'], jarname))
+   
+   #copiar módulos
+   print "~ Copiando módulos" + path['modules']
+   makeDirsIfNotExists(path['modules'])
+   ignores = ignoreGlobal + ['dist', 'samples-and-tests', 'build.xml', 
+              'documentation', '**compiler', 
+              'plugins',  'fap-skel', 'src']
+
+   for module in modules:
+      modulename = os.path.basename(module)
+      copytree(module, os.path.join(path['modules'], modulename), ignores)   
+
+
+
+def replace_words(text, word_dic):
+    rc = re.compile('|'.join(map(re.escape, word_dic)))
+    def translate(match):
+        return word_dic[match.group(0)]
+    return rc.sub(translate, text)
+
+def replace_in_file(file1, file2, word_dic):
+    fin = open(file1, "r")
+    str1 = fin.read()
+    fin.close()
+
+    str2 = replace_words(str1, word_dic)
+
+    fout = open(file2, "w")
+    fout.write(str2)
+    fout.close()
+
+
+def winservice(app, args):
+    moduleDir = getModuleDir(app, args)
+    winservicepath = os.path.join(moduleDir, "support", "winservice");
+
+    prunsrv = os.path.join(winservicepath, 'commons-daemon-1.0.8-bin-windows', 'prunsrv.exe')
+
+    install_in = os.path.join(winservicepath, "installService.bat")
+    install_out = os.path.join(app.path, "installService.bat")
+    word_dic = {
+        "${app.name}" : app.name(),
+        "${app.path}" : app.path,
+        "${play.path}" : app.play_env['basedir'],
+        "${prunsrv}" : prunsrv
+    }
+    replace_in_file(install_in, install_out, word_dic)
+    print "~ [fap:winservice] Creado installService.bat"
+
+    uninstall_in = os.path.join(winservicepath, "uninstallService.bat")
+    uninstall_out = os.path.join(app.path, "uninstallService.bat")
+    word_dic = {
+        "${app.name}" : app.name(),
+        "${prunsrv}" : prunsrv
+    }
+    replace_in_file(uninstall_in, uninstall_out, word_dic)
+    print "~ [fap:winservice] Creado unistallService.bat"

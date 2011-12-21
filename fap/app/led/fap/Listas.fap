@@ -13,6 +13,8 @@ Lista TiposRepresentantes crearEnumerado {
 Lista roles crearEnumerado {
 	administrador: "Administrador"
 	usuario: "Usuario"
+	gestor: "Gestor"
+	revisor: "Revisor"
 }
 
 Lista tipoFirmaJuridica crearEnumerado {
@@ -22,7 +24,8 @@ Lista tipoFirmaJuridica crearEnumerado {
 
 Lista estadosSolicitud crearEnumerado {
 	borrador: "Borrador"
-	iniciada: "Iniciada"	
+	iniciada: "Iniciada"
+	verificado: "Verificado"	
 }
 
 // Lista que se creará a partir de la de estadosSolicitud, e indicará los

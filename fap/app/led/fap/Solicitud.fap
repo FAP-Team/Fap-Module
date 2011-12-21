@@ -1,8 +1,25 @@
 Formulario Solicitud {
 
+	Pagina PCEconomicos titulo="Conceptos económicos"{
+		Tabla tablaCEconomicos 
+			titulo="Conceptos económicos"
+			campo=SolicitudGenerica.ceconomicos
+			popupModificar=PopupCEConomicos
+		{
+			Columna campo=CEconomico.tipo.nombre titulo="Concepto" expandir
+			Columna campo=CEconomico.valorEstimado titulo="Valor estimado" 		
+		}
+	}
+
+	Popup PopupCEConomicos modificar titulo="Concepto económico" campo=SolicitudGenerica.ceconomicos {
+		Wiki {"
+=${cEconomico.tipo.nombre}= 
+${cEconomico.tipo.descripcion}
+		"} 
+		Texto campo=CEconomico.valorEstimado titulo="Valor estimado"
+	}
+
 	Pagina Aportacion noForm permiso=aportacion {
-		
-		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="boton"
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="boton"
 
@@ -18,14 +35,14 @@ Formulario Solicitud {
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
-		Form addDocumento campo=SolicitudGenerica.aportaciones.actual.documentos {		
+		Form addDocumento campo=SolicitudGenerica.aportaciones.actual.documentos permiso=aportacionDocumentos {		
 			Grupo titulo="Añadir documentación" {
-				SubirArchivoAed fileAportacion campo=Documento requerido
+				SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 				Boton subirDocumento titulo="Añadir documentación"
 			}
 		}
 		
-		Form presentar redirigir=AportacionPresentar {
+		Form presentar redirigir=AportacionPresentar permiso=aportacionDocumentos {
 			Wiki {"Debe registrar los documentos para que se consideren aportados a la solicitud."}
 			Boton botonPresentar titulo="Preparar para registrar"
 		}
@@ -105,25 +122,7 @@ Formulario Solicitud {
 			Wiki {"Nota: La operación de firmar y presentar puede tardar varios minutos."}
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	Pagina Verificacion titulo="Verificación de la documentación" noForm {
 		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
 			Wiki {"
@@ -212,9 +211,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}			
 	}
-	
-	
-	
+		
 	
 	
 	

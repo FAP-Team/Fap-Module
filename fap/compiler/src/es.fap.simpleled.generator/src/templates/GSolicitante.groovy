@@ -150,6 +150,7 @@ public class GSolicitante {
 		
 			Tabla tabla = new TablaImpl();
 			
+			tabla.setPermiso(permiso);
 			tabla.setName(name+"Tabla");
 			tabla.setCampo(CampoUtils.addMore(campo, "representantes"));
 			tabla.setTitulo("Representante");

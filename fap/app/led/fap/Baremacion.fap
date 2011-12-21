@@ -1,0 +1,126 @@
+Lista LstClaseCriterio {
+	manual  : "Manual"
+	auto    : "Automático"
+	automod : "Automático modificable"
+}
+
+Lista LstClaseCEconomico {
+	manual  : "Manual"
+	auto    : "Automático"
+}
+
+Lista LstTipoValorCriterio {
+	cantidad : "Cantidad"
+	lista    : "Lista de valores"	
+}
+
+Entidad CriterioListaValores {
+	Double valor
+	String descripcion
+}
+
+Entidad TipoCriterio {
+    String nombre
+    LongText descripcion
+    LongText instrucciones
+    Lista LstClaseCriterio claseCriterio requerido
+    String jerarquia requerido
+    Integer valorPrecision
+    Double valorMaximo
+    Double valorMinimo
+    
+    Lista LstTipoValorCriterio tipoValor requerido
+    OneToMany CriterioListaValores listaValores
+    
+    //Opcion para la visualización: Muestra el valor junto a la descripción en el combo
+    Boolean mostrarValor default="true"
+    
+    Boolean transparencia
+    Boolean comentariosAdministracion default="false"
+    Boolean comentariosSolicitante default="false"
+}
+
+Entidad Criterio {
+	TipoCriterio tipo
+	Double valor
+	LongText comentariosAdministracion
+	LongText comentariosSolicitante	
+}
+
+Entidad TipoCEconomico {
+    String nombre
+    String descripcion
+    String instrucciones
+    String jerarquia
+  	Lista LstClaseCEconomico clase
+    Boolean comentariosAdministracion default="false"
+    Boolean comentariosSolicitante default="false"
+}
+
+Entidad CEconomico {
+	TipoCEconomico tipo
+
+	Double valorSolicitado
+	Double valorEstimado
+	Double valorPropuesto
+	Double valorConcedido
+	
+	LongText comentariosAdministracion
+	LongText comentariosSolicitante	
+}
+
+Entidad TipoEvaluacion {
+    String nombre
+    List<String> tiposDocumentos
+    OneToMany TipoCriterio criterios
+    
+    //TODO Consultar si esta relacion es ManyToMany
+    OneToMany TipoCEconomico ceconomicos
+    
+    Boolean comentariosAdministracion default="false"
+    Boolean comentariosSolicitante default="false"
+    String tipoProcedimiento
+    
+    //Número de evaluaciones que hay que realizar de este tipo
+    Long numeroEvaluacion
+}
+
+Entidad Evaluacion {
+	//TODO ¿Por qué se inicializan las many to one??
+	ManyToOne SolicitudGenerica solicitud
+	
+	OneToMany Criterio criterios
+	OneToMany CEconomico ceconomicos
+	
+	Double totalCriterios
+	
+	Double inversionTotalAprobada
+	Double subvencionTotalConcedida
+	
+	//Evaluador
+	//ManyToOne Evaluador evaluador
+	
+	TipoEvaluacion tipo
+	
+	//TODO cambiar por lista con los posibles estados
+	String estado
+	
+	//?Entidades distintas para manejar los cambios de estados??
+	//FechaCambioEstado
+	//ActorDelEstado
+	
+	LongText comentariosAdministracion
+	LongText comentariosSolicitante
+}
+
+Formulario Baremacion {
+	Menu {
+		
+		Grupo "Baremación" {
+			Enlace "Evaluaciones" accion="fap.ConsultarEvaluacionesController.index"
+		}
+		
+		Enlace "Ayuda" pagina=Soporte.Soporte
+		Enlace "Salir" accion="fap.SecureController.logout"
+    }
+}

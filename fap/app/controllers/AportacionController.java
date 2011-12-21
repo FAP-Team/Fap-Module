@@ -40,7 +40,6 @@ public class AportacionController extends AportacionControllerGen {
 			if (!validation.hasErrors()) {
 				SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 				
-				
 				Aportacion aportacion = solicitud.aportaciones.actual;
 
 				if(aportacion.documentos.isEmpty()){
@@ -76,7 +75,7 @@ public class AportacionController extends AportacionControllerGen {
 						aportacion.borrador = new Documento();
 						aportacion.borrador.tipo = tipoDocumentoSolicitudAportacion;
 						AedClient.saveDocumentoTemporal(aportacion.borrador, borrador);
-						
+												
 						//Genera el documento oficial
 						File oficial =  new Report("reports/solicitudAportacion.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
 						aportacion.oficial = new Documento();
@@ -84,11 +83,11 @@ public class AportacionController extends AportacionControllerGen {
 						AedClient.saveDocumentoTemporal(aportacion.oficial, oficial);
 						
 						
-						
 						aportacion.estado = "borrador";
 						aportacion.save();
 					}catch(Exception e){
 						Messages.error("Se produjo un error generando el documento de aportación.");
+						play.Logger.error("Error al generar el documento de la aportación: " + e.getLocalizedMessage());
 					}
 				}
 			}
@@ -97,7 +96,7 @@ public class AportacionController extends AportacionControllerGen {
 		}
 		
 		if(!Messages.hasErrors()){
-			Messages.ok("La solicitud de aportación se preparó correctamente");
+			Messages.ok("La solicitud de aportación se preparó correctamente");		
 		}
 		
 		presentarRender(idSolicitud);

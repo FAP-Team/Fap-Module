@@ -26,8 +26,6 @@ import com.google.gson.Gson;
 public class ConsultasController extends GenericController {
 
 	public static void index(){
-
-
 		renderTemplate( "fap/Admin/consultas.html" );
 	}
 
@@ -36,10 +34,7 @@ public class ConsultasController extends GenericController {
 		renderArgs.put("controllerName", "ConsultasControllerGen");
 	}
 
-
-
 	public static void tablatablaConsultas(Long idConsulta, Long idEntidad){
-
 		Long id = idConsulta != null? idConsulta : idEntidad;
 		java.util.List<Consulta> rows = Consulta.find( "select consulta from Consulta consulta" ).fetch();
 
@@ -47,7 +42,6 @@ public class ConsultasController extends GenericController {
 
 		tables.TableRenderResponse<Consulta> response = new tables.TableRenderResponse<Consulta>(rowsFiltered);
 		renderJSON(response.toJSON("consulta", "descripcion", "tipo", "id"));
-
 	}
 
 	@Util
@@ -55,8 +49,6 @@ public class ConsultasController extends GenericController {
 		//Sobreescribir para incorporar permisos a mano
 		return true;
 	}
-
-
 
 	public static void ejecutarConsulta(Long id){
 		Consulta consulta = Consulta.findById(id);

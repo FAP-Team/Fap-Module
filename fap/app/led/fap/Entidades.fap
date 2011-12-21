@@ -27,6 +27,9 @@ Entidad SolicitudGenerica tableName = "solicitud"{
 	ExpedienteAed expedienteAed
 	Aportaciones aportaciones
 	Verificacion verificacion
+	
+	//Criterios economicos que rellena el solicitante
+	ManyToMany CEconomico ceconomicos	
 }
 
 // Dátos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)

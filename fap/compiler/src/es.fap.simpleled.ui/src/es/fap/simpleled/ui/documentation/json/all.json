@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 ["agruparCampos","areaTexto","attribute","boton","check","columna","combo","direccion","editarArchivoAed","enlace","entidadAutomatica","entity","fecha","firmaPlatinoSimple","form","formulario","grupo","lista","menu","menuEnlace","menuGrupo","pagina","permisos","persona","personaFisica","personaJuridica","popup","solicitante","subirArchivo","subirArchivoAed","tabla","texto","wiki"]
+=======
+["columna","check","firmaPlatinoSimple","direccion","formulario","personaJuridica","tabla","areaTexto","attribute","texto","agruparCampos","entity","subirArchivo","menuEnlace","entidadAutomatica","permisos","menuGrupo","enlace","fecha","lista","solicitante","editarArchivoAed","form","wiki","pagina","boton","grupo","popup","personaFisica","subirArchivoAed","persona","combo","menu"]
+>>>>>>> baremacion

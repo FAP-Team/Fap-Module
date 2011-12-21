@@ -23,6 +23,14 @@ Formulario Solicitud {
 			Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest 
 		}
 		
+		Grupo "Pagina del módulo"{
+			Enlace "Titulo" pagina=Solicitud.PCEconomicos
+		}	
+
+		Grupo "Test Grupos" {
+			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
+		}
+		
 		Grupo "Test Grupos" {
 			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
 		}

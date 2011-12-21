@@ -1,0 +1,472 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+// Estilos para tabla de datos
+.table-datos {
+    width:100%;
+}
+
+.table-datos caption {
+	background-color : #ccc;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-datos th {
+	background-color : #ccc;
+	font-weight: bold;
+	width: 150px; 
+	white-space: nowrap;
+	text-align: left;	
+	padding-left: 5px;
+}
+.table-datos td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+
+.table-gris {
+width:100%;
+	border-collapse: collapse;
+}
+
+.table-gris caption{
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+.table-gris thead td {
+	background-color : #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding-left: 2px;
+}
+
+
+.table-gris td {
+	border: 1px solid #000;
+}
+
+.table-info-conexiones {
+    width:100%;
+    font-size: 10px;
+}
+
+.table-info-conexiones th {
+    width:22%;
+    font-style: italic;
+    text-align: right; 
+    vertical-align: top; 
+    font-weight: bold;
+	padding-right: 5px;
+}
+.table-info-conexiones td {
+	text-align: left;
+}
+
+</style>
+
+</head>
+<body>
+
+<h2 style="text-align: center;">ANEXO II</h2>
+<h3 style="text-align: center;">Solicitud para la subvención de la compensación del sobrecoste que afrontan los operadores de telecomunicaciones para desplegar servicios de banda ancha en Canarias - Convocatoria 2011</h3>
+<!-- Solicitante -->
+
+	%{
+		def desMunicipio = models.TableKeyValue.getValue("municipios", solicitud.solicitante.domicilio.municipio);
+		def desCNAE = models.TableKeyValue.getValue("cnae", solicitud.datosSolicitante.cnaePrincipal);
+	}%
+	
+<div id="divDatosPersonalesSolicitante">
+<table id="tblDatosPersonalesSolicitante" class="table-datos" >
+	<caption>SOLICITANTE:</caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>CIF/NIF:</th><td>${solicitud.solicitante.getNumeroId()?.toUpperCase()}</td></tr>
+	<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+	<tr><th>Teléfono:</th><td>${solicitud.solicitante.telefonoFijo}</td></tr>
+	<tr><th>Móvil:</th><td>${solicitud.solicitante.telefonoMovil}</td></tr>
+	<tr><th>Fax:</th><td>${solicitud.solicitante.fax}</td></tr>
+	<tr><th>Correo electrónico:</th><td>${solicitud.solicitante.email}</td></tr>
+	<tr><th>Web: </th><td>${solicitud.solicitante.web}</td></tr>
+  	<tr><th>CNAE:</th><td>${solicitud.datosSolicitante.cnaePrincipal} &nbsp ${desCNAE?.toUpperCase()}</td></tr> 
+</table>
+</div>
+
+<div id="divDatosDireccionSolicitante">
+
+<table id="tblDatosDireccionSolicitante" class="table-datos" >
+	<tr><td colspan="2"><em><b><br>Dirección de ubicación de la entidad en Canarias:</b></em></td></tr>
+	<tr><th >Calle:</th><td>${solicitud.solicitante.domicilio.calle?.toUpperCase()}</td></tr>
+	<tr><th>Número:</th><td>${solicitud.solicitante.domicilio.numero}</td></tr>
+	<tr><th>Puerta/Piso/Otros:</th><td>${solicitud.solicitante.domicilio.otros?.toUpperCase()}</td></tr>	
+	<tr><th>Código Postal:</th><td>${solicitud.solicitante.domicilio.codigoPostal}</td></tr>
+<!--   	<tr><th>Municipio:</th><td>#{fap.valueFromTable "solicitud.solicitante.domicilio.municipio"}${valor?.toUpperCase()}#{/fap.valueFromTable}</td></tr> -->
+ 	<tr><th>Municipio:</th><td>${desMunicipio?.toUpperCase()}</td></tr> 
+ 	 
+</table>
+</div>
+<br/><br/>
+
+<!-- Representantes si los hubiera -->
+
+<div id="divDatosRepresentantes">
+#{if solicitud.solicitante.isPersonaJuridica() && solicitud.solicitante.representantes.size() > 0}
+<table id="tblTituloDatosRepresentantes" class="table-datos">
+	<caption>REPRESENTANTE O REPRESENTANTES LEGALES DE LA ENTIDAD: </caption>
+	<tr><td colspan="2"><br></td></tr>	
+</table>
+
+<table id="tblDatosRepresentantes" class="table-gris" cellspacing="0px" cellpadding="2px" >
+	<thead>
+	  <tr>
+		<td width='20%'>Tipo</td>
+		<td width='45%'>Nombre</td>
+		<td width='12%'>NIP/CIF</td>
+		<td width='23%'>Tipo Representación</td>
+	  </tr>
+	</thead>
+	#{list items:solicitud.solicitante.representantes, as:'representante' }
+		<tr>
+			<td>${models.TableKeyValue.getValue("TipoDePersona", representante.tipo).toUpperCase()}</td>
+			<td>${representante.getNombreCompleto()?.toUpperCase()}</td>
+			<td>${representante.getNumeroId()?.toUpperCase()}</td>
+			<td>${models.TableKeyValue.getValue("TiposRepresentantes",representante.tipoRepresentacion).toUpperCase()}</td>
+		</tr>		
+	#{/list}
+</table>
+#{/if}
+#{elseif solicitud.solicitante.isPersonaFisica() && solicitud.solicitante.representado == true}
+<table id="tblTituloDatosRepresentantes" class="table-datos">
+	<caption>REPRESENTANTE LEGAL DEL SOLICITANTE: </caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>Tipo:</th><td>${models.TableKeyValue.getValue("TipoDePersona", solicitud.solicitante.representante.tipo).toUpperCase()}</td></tr>
+	<tr><th>Nombre:</th><td>${solicitud.solicitante.representante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+	<tr><th>CIF/NIF:</th><td>${solicitud.solicitante.representante.getNumeroId()?.toUpperCase()}</td></tr>
+</table>
+#{/elseif}
+</div>
+<br/><br/>
+
+
+
+<!-- Datos de contacto -->
+<div id="divDatosContacto">
+<table id="tblDatosContacto" class="table-datos">
+	<caption>PERSONA DE CONTACTO:</caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>Nombre:</th><td>${solicitud.datosSolicitante.contacto.nombre?.toUpperCase()} , &nbsp
+				${solicitud.datosSolicitante.contacto.apellido1?.toUpperCase()} &nbsp
+				${solicitud.datosSolicitante.contacto.apellido2?.toUpperCase()}</td>
+	</tr>	
+	<tr><th>Teléfono:</th><td>${solicitud.datosSolicitante.contacto.telefono}</td></tr>
+	<tr><th>Móvil:</th><td>${solicitud.datosSolicitante.contacto.movil}</td></tr>
+	<tr><th>Fax:</th><td>${solicitud.datosSolicitante.contacto.fax}</td></tr>
+	<tr><th>Correo electrónico:</th><td>${solicitud.datosSolicitante.contacto.email}</td></tr>
+</table>
+</div>
+
+<br/><br/>
+
+<!-- Expone -->
+<div id="divExpone">
+<table id="tblExpone" class="table-datos">
+	%{
+		def fecha = models.TableKeyValue.getValue("datosResolucion", "FechaResolucion");
+		def boletin = models.TableKeyValue.getValue("datosResolucion", "NumeroBoletin");
+	}%
+	<caption>EXPONE:</caption>	
+	<tr><td><p>Que a la vista de la Resolución de fecha <b>${fecha}</b> 	
+		por la que se aprueban las bases reguladoras con carácter indefinido del régimen
+		de concesión de ayudas en la forma de subvenciones para compensar el sobrecoste
+		que afrontan los operadores de telecomunicaciones para desplegar servicios de 
+		banda ancha en Canarias, publicada en el Boletín Oficial de Canarias 
+		nº <b><i>${boletin}</i></b> considerando reunir los requisitos exigidos según se muestran en los impresos y documentos que se adjuntan y con la expresa aceptación de todos los términos de la citada convocatoria.
+		</p><br></td></tr>
+	</table>
+</div>
+<!-- Declaraciones -->	
+<div id="divDeclara">
+<!-- Hay que actualizarlas según texto en formulario -->
+<table id="tblDeclara" class="table-datos">
+	<!-- <tr><td  style="width: 100%;" ><b>DECLARA RESPONSABLEMENTE:</b></td></tr> -->
+	<caption>DECLARA RESPONSABLEMENTE:</caption>	
+	<tr><td style="width:100%">
+	<ul>
+		<li><p>Que se halla al corriente en el cumplimiento de las obligaciones tributarias con la Comunidad Autónoma, las obligaciones tributarias estatales y con la Seguridad Social.</p></li>
+		<li><p>Que se encuentran habilitados para la prestación de servicios de comunicaciones electrónicas en España, conforme a lo establecido en la Ley 32/2003, de 3 de noviembre, General de Telecomunicaciones.</p></li>
+		<li><p>Que no ha recibido otras ayudas, ingresos o recursos con la misma finalidad, procedentes de cualesquiera Administraciones públicas o entes públicos o privados, nacionales, de la Unión Europea o de otros organismos internacionales.</p></li>
+		<li><p>Que no ha recibido ayudas u otras atribuciones patrimoniales gratuitas de entidades privadas o particulares para el mismo destino, o en su caso, hace constar el importe de las recibidas.</p></li>
+		<li><p>Que no se halla incurso en las causas de prohibición para ser beneficiario, establecidas en el artículo 13 de la Ley 38/2003, de 17 de noviembre, General de Subvenciones, ni se halla inhabilitado para recibir ayudas o subvenciones de la Administración Pública de la Comunidad Autónoma de Canarias.</p></li>
+		<li><p>Que ha procedido a la justificación de las subvenciones concedidas con anterioridad por los órganos de la Administración Pública de la Comunidad Autónoma en los términos establecidos en el artículo 31 del Decreto 337/1997, de 19 de diciembre.</p></li>
+		<li><p>Que tiene su domicilio social en la Comunidad Autónoma de Canarias o que, al menos, un centro de actividad está ubicado en dicha Comunidad.</p></li>
+	</ul>
+	</td></tr> 
+</table>
+</div>
+<br><br>
+
+<!-- Subvenciones -->
+<div id="divSubvenciones">
+<table id="tblSubvenciones" class="table-datos">
+	<caption>OTRAS SUBVENCIONES CONCEDIDAS Y SOLICITADAS:</caption>
+	<tr><td colspan="2"><br></td></tr>	
+</table>
+</div>
+
+<!-- Subvenciones de cualquier Administración o Ente Público -->
+<div id="divSubvencionesPublicas">
+<table id="tblSubvencionesPublicas" class="table-gris" cellspacing="0px" cellpadding="2px" >
+<caption>Ayudas y subvenciones concedidas o solicitadas con el mismo objeto de cualquier Administración o Ente Público:</caption>
+ <thead>
+	<tr>
+		<td>Admón. o Ente Público</td>
+		<td>Objeto</td>
+		<td>Situación</td>
+		<td>Importe</td>
+	<tr>
+    </thead>
+	#{list items:solicitud.subvenciones.subvencionesPublicas, as:"subvencion"}
+	<tr>
+		<td>${subvencion.entidad?.toUpperCase()}</td>
+		<td>${subvencion.objeto?.toUpperCase()}</td>
+		<td align="center">${subvencion.situacion.toUpperCase()}</td>
+		<td align="center">${subvencion.importe?.format('0.00')} &nbsp €</td>
+	</tr>
+	#{/list}
+</table>
+<br/>
+</div>
+
+<div id="divSubvencionesPublicasTotal">
+<table id="tblSubvencionesPublicasTotal" align="right">
+	<tr><td><i>Total Solicitado:</i></td><td><b>${solicitud.subvenciones.totalSoliAAPP?.format('0.00')} &nbsp €</b></td>	
+	<td><i>Total Concedido:</i></td><td><b>${solicitud.subvenciones.totalConcAAPP?.format('0.00')} &nbsp €</b></td></tr>
+</table>
+</div>
+<br/><br/><br/>
+
+<!-- Subvenciones Privadas -->
+<div id="divSubvencionesPrivadas">
+<table id="tblSubvencionesPrivadas" class="table-gris" cellspacing="0px" cellpadding="2px" >
+<caption>Ayudas u otras atribuciones patrimoniales gratuitas de entidades privadas o particulares para el mismo destino:</caption>
+ <thead>
+	<tr>
+		<td>Admón. o Ente Público</td>
+		<td>Objeto</td>
+		<td>Situación</td>
+		<td>Importe</td>
+	<tr>
+    </thead>
+	#{list items:solicitud.subvenciones.subvencionesPrivadas, as:"subvencion"}
+	<tr>
+		<td>${subvencion.entidad?.toUpperCase()}</td>
+		<td>${subvencion.objeto?.toUpperCase()}</td>
+		<td align="center">${subvencion.situacion.toUpperCase()}</td>
+		<td align="center">${subvencion.importe?.format('0.00')} &nbsp €</td>
+	</tr>
+	#{/list}
+</table>
+</br>
+</div>
+<div id="divSubvencionesPrivadasTotal">
+<table id="tblSubvencionesPrivadasTotal" align="right">
+	<tr><td><i>Total Solicitado:</i> </td><td><b>${solicitud.subvenciones.totalSoliPrivadas?.format('0.00')} &nbsp €</b></td>	
+	<td><i>Total Concedido:</i></td><td><b>${solicitud.subvenciones.totalConcPrivadas?.format('0.00')} &nbsp €</b></td></tr>
+</table>
+</div>
+<br/><br/><br/>
+
+<!-- Subvenciones Minimis -->
+<div id="divSubvencionesMinimis">
+<table id="tblSubvencionesMinimis" class="table-gris" cellspacing="0px" cellpadding="2px" >
+<caption>Ayudas o subvenciones de mínimis concedidas en los últimos 3 años (Reglamento (CE) Nº 1998/2006 de la Comisión, de 15 de diciembre de 2006. DO L 379 de 28/12/2006:</caption>
+ <thead>
+	<tr>
+		<td>Admón. o Ente Público</td>
+		<td>Objeto</td>
+		<td>Situación</td>
+		<td>Importe</td>
+	<tr>
+    </thead>
+	#{list items:solicitud.subvenciones.subvencionesMinimis, as:"subvencion"}
+	<tr>
+		<td>${subvencion.entidad?.toUpperCase()}</td>
+		<td>${subvencion.objeto?.toUpperCase()}</td>
+		<td align="center">${subvencion.situacion.toUpperCase()}</td>
+		<td align="center">${subvencion.importe?.format('0.00')} &nbsp €</td>
+	</tr>
+	#{/list}
+</table>
+</br>
+</div>
+<div id="divSubvencionesMinimisTotal">
+<table id="tblSubvencionesMinimisTotal" align="right">
+	<tr><td><i>Total Solicitado:</i></td><td><b>${solicitud.subvenciones.totalSoliMinimis?.format('0.00')} &nbsp €</b></td>	
+	<td><i>Total Concedido:</i></td><td><b>${solicitud.subvenciones.totalConcMinimis?.format('0.00')} &nbsp €</b></td></tr>
+</table>
+</div>
+<br/><br/><br/>
+<!-- Autorizaciones -->
+<div id="divAutorizaciones">
+<!-- //TODO Pendiente hacer el else -->	
+<table id="tblAutorizaciones" class="table-datos">
+<caption>AUTORIZA A LA AGENCIA CANARIA DE INVESTIGACIÓN , INNOVACIÓN Y SOCIEDAD DE LA INFORMACIÓN A:</caption>
+
+ 	<tr>#{if solicitud.autorizaciones.aeat}<td><img  src=  "@{'/public/images/ckeck_ON.jpg'}"></td>#{/if}#{else}<td><img src="@{'/public/images/ckeck_OFF.jpg'}"></td>#{/else}
+	<td><p>El acceso a la certificación acreditativa de hallarme al corriente de las obligaciones tributarias en la Agencia Estatal de la Administración Tributaria (AEAT)</p></td>
+	</tr>		
+ 	<tr>#{if solicitud.autorizaciones.inss}<td><img  src=  "@{'/public/images/ckeck_ON.jpg'}"></td>#{/if}#{else}<td><img src="@{'/public/images/ckeck_OFF.jpg'}"></td>#{/else}
+				<td><p>El acceso a la certificación acreditativa de hallarme al corriente en la Seguridad Social (INSS)</p></td>
+	</tr>	
+ 	<tr>#{if solicitud.autorizaciones.atc}<td><img  src=  "@{'/public/images/ckeck_ON.jpg'}"></td>#{/if}#{else}<td><img src="@{'/public/images/ckeck_OFF.jpg'}"></td>#{/else}
+		<td><p>El acceso a la certificación acreditativa de hallarme al corriente de las obligaciones tributarias en la Administración Tributaria Canaria (ATC)</p></td>
+	</tr>	
+ 	<tr>#{if solicitud.autorizaciones.dbd}<td><img  src=  "@{'/public/images/ckeck_ON.jpg'}"></td>#{/if}#{else}<td><img src="@{'/public/images/ckeck_OFF.jpg'}"></td>#{/else}
+			<td><p>A efectos de lo previsto en la Ley Orgánica 15/1999, de 13 de Diciembre, de Regulación del Tratamiento Automatizado de los Datos de Carácter Personal, la utilización de la información contenida en la solicitud y memoria anexa así como en los  documentos que acompañan a la misma, para su difusión en bases de datos de la Agencia Canaria de Investigación, Innovación y Sociedad de la Información y en otras bases de datos de I+D+I</p></td>
+	</tr>	
+</table>
+</div>
+</br></br>
+
+<!-- Compromisos -->
+<div id="divCompromisos">
+<table id="tblCompromisos" class="table-datos">
+<caption>SE COMPROMETE:</caption>
+	<tr><td style="width:100%">
+	<ul>
+		<li><p>A cumplir con las disposiciones sobre información y publicidad contenidas en el Reglamento (CE) nº 1828/2006 de la Comisión de 8 de diciembre de 2006.</p></li>
+		<li><p>A observar lo dispuesto en el anexo I del Reglamento 1828/2006, de la Comisión de 8 de diciembre de 2006, que fija normas de desarrollo para el Reglamento (CE) nº 1083/2006 del Consejo, e incluirá la referencia al "Fondo Social Europeo" y la declaración "Canarias objetivo de progreso".</p></li>
+		<li><p>A cumplir con las obligaciones recogidas en el artículo 14 de la Ley 38/2003, de 17 de noviembre, General de Subvenciones, así como con las instrucciones específicas que, en aplicación y cumplimiento de las bases de la convocatoria, comunique la Agencia Canaria de Investigación, Innovación y Sociedad de la Información en materia de ejecución, seguimiento, pago de las ayudas, información y publicidad, justificación y control del gasto.</p></li>
+		<li><p>A aceptar ser incluido en una lista de beneficiarios publicada de conformidad con lo dispuesto en el artículo 7.2.d) del indicado Reglamento 1828/2006, de la Comisión de 8 de diciembre de 2006.</p></li>
+		<li><p>A llevar a cabo una contabilidad separada de la actividad subvencionada.</p></li>
+		<li><p>A conservar la documentación justificativa original hasta el 31 de diciembre de 2017 o durante un plazo mayor.</p></li>
+		<li><p>A cumplir las normas mínimas en materia de medio ambiente.</p></li>						
+		<li><p>A cumplir con lo indicado en las bases de la convocatoria referido al destino de las ayudas.</p></li>												
+		<li><p>A cumplir con las obligaciones de publicidad en las publicaciones, actividades de difusión, páginas Web y otros resultados a los que pueda dar lugar el programa de ayudas.</p></li>	
+		<li><p>A destinar la totalidad de la ayuda recibida a inversiones, en los términos establecidos en la Base Específica Décima del régimen de ayudas, en el periodo comprendido entre su resolución de concesión y el 30 de junio de 2011.</p></li>
+		<li><p>A consultar periódicamente el "Tablón de anuncios" y el apartado "Mis notificaciones" de la sede electrónica de la ACIISI.</p></li>
+	</ul>
+	</td></tr>
+</table>
+</div>
+</br></br>
+
+<!-- Solicita -->
+<div id="divSolicita">
+<table id="tblSolicita" class="table-datos">
+	<caption>SOLICITA:</caption>
+	<tr>
+		<td><p>Acogerse a las ayudas en la forma de subvención  para compensar el sobrecoste que afrontan los operadores de telecomunicaciones para desplegar servicios de banda ancha en Canarias en base a la relación mensual adjunta de conexiones de banda ancha constituidas dentro del plazo indicado en la convocatoria.</p></td>
+	</tr>
+</table>
+</div>
+</br></br>
+
+<!-- Conexiones de Banda Ancha -->
+<div id="divConexionesBandaAncha">
+<table id="tblConexionBandaAnchaTitulo" class="table-datos">
+	<caption>CONEXIONES DE BANDA ANCHA EN SERVICIO:</caption>
+	<tr><td colspan="2"><br></td></tr>	
+</table>
+<table id="tblConexionBandaAncha" class="table-gris" cellspacing="0px" cellpadding="2px" >
+ <thead>
+  <tr>
+		<td>Mes</td>
+		<td>Conexiones Directas TF-GC</td>
+		<td>Conexiones Directas Resto</td>
+		<td>Conexiones Indirectas</td>
+  <tr>
+ </thead>
+   #{list items:solicitud.conexiones.conexionesBandaAncha, as:"conexion"}
+	<tr>
+		<td align="center">${conexion.mes?.toUpperCase()}</td>
+		<td align="center">${conexion.directaGCyTF}</td>
+		<td align="center">${conexion.directaResto}</td>
+		<td align="center">${conexion.indirecta}</td>
+	</tr>
+   #{/list}
+
+   <tr>
+		<td align="right" style="border:0px"><b><i>Total conexiones:</i></b></td>
+		<td align="center"><b>${solicitud.conexiones.directasTFGCTotal}</b></td>
+		<td align="center"><b>${solicitud.conexiones.directasRestoTotal}</b></td>
+		<td align="center"><b>${solicitud.conexiones.indirectasTotal}</b></td>   
+   </tr>
+   <tr>
+		<td align="right" style="border:0px"><b><i>Importe:</i></b></td>
+		<td align="center"><b>${solicitud.conexiones.directasTFGCImporte?.format('0.00')} &nbsp €</b></td>
+		<td align="center"><b>${solicitud.conexiones.directasRestoImporte?.format('0.00')} &nbsp €</b></td>
+		<td align="center"><b>${solicitud.conexiones.indirectasImporte?.format('0.00')} &nbsp €</b></td>   
+   </tr>
+</table>
+</div>
+<br/>
+<div id="divConexionBandaAnchaTotal">
+<table id="tblConexionBandaAnchaTotal" align="right">
+	<tr>
+	<td><b><i>Importe total:</i></b></td> 
+	<td>&nbsp;<b>${solicitud.conexiones.importeTotal?.format('0.00')} &nbsp €</b></td>
+	</tr>
+</table>
+</div>
+<br/><br/>
+<div id="divConexionesBandaInfo">
+<table id="tblConexionBandaAnchaInfo", class="table-info-conexiones">
+	<tr><th>Mes:</th><td>Periodo temporal</td></tr>
+	<tr><th>Conexiones Directas TF-GC:</th><td>Números de conexiones de banda ancha fija, en servicio, prestadas de forma directa o mediante acceso indirecto regional en las islas de Gran Canaria y Tenerife.</td></tr>
+	<tr><th>Conexiones Directas Resto:</th><td>Número de conexiones de banda ancha fija, en servicio, prestadas de forma directa o mediante acceso indirecto regional en el resto de las islas del Archipiélago.</td></tr>
+	<tr><th>Conexiones Indirectas:</th><td>Número de conexiones de banda ancha fija, en servicio, prestadas mediante acceso indirecto regional desde el Punto de Acceso Indirecto (PAI) de Gran Canaria o Tenerife, en el resto de las islas del Archipiélago.</td></tr>
+</table>
+</div>
+<br/><br/>
+
+<div id="divDocumentacion">
+<table id="tblDocumentacionTitulo" class="table-datos">
+    <caption>DOCUMENTACIÓN QUE SE ADJUNTA:</caption> 
+	<tr><td colspan="2"><br></td></tr>	
+</table>
+<table id="tblDocumentacion" class="table-gris" cellspacing="0px" cellpadding="2px" >
+ <thead>
+  <tr>		
+		<td>Documento</td>
+		<td>Hash del documento</td>
+		
+  <tr>
+ </thead>
+	#{list items:solicitud.documentacion.documentos, as:"documento"}
+	<tr>
+<!--  		<td >#{fap.valueFromTable "documento.tipo"}${valor?.toUpperCase()}#{/fap.valueFromTable}</td> -->
+		<td >${documento.descripcion}</td>
+		<td>${documento.hash}</td>
+	</tr>
+   #{/list}
+</table>
+</div>
+<br/><br/><br/>
+<div id="divFinal">
+<table id="tblFinal" >
+	<tr><td>
+		<p><b>ILMO. SR. DIRECTOR DE LA AGENCIA CANARIA DE INVESTIGACIÓN,INNOVACIÓN Y SOCIEDAD DE LA INFORMACIÓN.</b></p>
+	</td></tr>
+	<tr><td style="font-size:10px">
+		<p>Estos datos, salvo en los casos legalmente permitidos, no serán cedidos sin su consentimiento a entidad ni persona alguna. Si así lo desea puede ejercitar los derechos de acceso, rectificación, cancelación y oposición, a través de las solicitudes que se encuentran disponibles en el sitio web www.gobiernodecanarias.org.cpj/igs/temas/proteccion/derechos.html en el Registro electrónico de la ACIISI, lo que se informa en cumplimiento del artículo 5 de la Ley Orgánica 15/1999, de 13 de diciembre, de Protección de Datos de Carácter Personal.</p>
+	</td></tr>	
+</table>
+</div>
+
+
+</body>
+</html>

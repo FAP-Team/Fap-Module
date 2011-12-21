@@ -74,3 +74,9 @@ fap.tags.popup.boton.cerrar=Cerrar
 # Recaptcha
 validation.recaptcha=El texto no se corresponde con la imagen mostrada.
 
+
+
+#Baremacion
+baremacion.fichaevaluador.end=Finalizar verificación
+baremacion.fichaevaluador.guardar=Guardar
+baremacion.fichaevaluador.pdf=Obtener borrador en PDF

@@ -528,11 +528,11 @@ R
 			String idStr = "";
 			if ((idSolicitud != null)&&(!idSolicitud.isEmpty())) {
 				Long id = Long.parseLong(request.params.get("idSolicitud"));
-				SolicitudGenerica solicitud = SolicitudGenerica.findById(id);
-				if ((solicitud == null) || (solicitud.estado.equals("borrador")))
-					idStr = id.toString();
-				else
-					idStr = solicitud.expedienteAed.idAed;
+				if(id != null){
+					SolicitudGenerica solicitud = SolicitudGenerica.findById(id);
+					String expedienteAed = solicitud.expedienteAed.idAed;
+					idStr = expedienteAed == null? id.toString() : expedienteAed;
+				}
 			}
 			miga=" > Solicitud [" + idStr +"] > "+pageName;
 		} else {

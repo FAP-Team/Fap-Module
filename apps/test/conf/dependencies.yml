@@ -5,6 +5,7 @@ require:
     - fap -> fap 1.2
     - fap -> guice 1.2.1
     - play -> pdf 0.6
+    - play -> less 0.3
     - play -> recaptcha 1.2
 
 repositories:
@@ -13,7 +14,6 @@ repositories:
         artifact:   ${fapsdk}/fap
         contains:
             - fap -> *
-            
 #    - Fap repository:
 #        type: http
 #        artifact: "http://fap-devel.etsii.ull.es/public/fap-sdk2/[revision]/[module]-[revision].zip"

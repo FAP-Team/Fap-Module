@@ -130,11 +130,11 @@ public class FirmaService {
 		boolean multiple = true;
 		for(Firmante f : firmantes){
 			//Firmante único que ya ha firmado
-			if(f.tipo.equals("unico") && f.fechaFirma != null)
+			if(f.cardinalidad.equals("unico") && f.fechaFirma != null)
 				return true;
 			
 			//Uno de los firmantes multiples no ha firmado
-			if(f.tipo.equals("multiple") && f.fechaFirma == null)
+			if(f.cardinalidad.equals("multiple") && f.fechaFirma == null)
 				multiple = false;
 		}
 		

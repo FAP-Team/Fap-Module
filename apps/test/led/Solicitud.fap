@@ -123,7 +123,26 @@ Formulario Solicitud {
 		columnasAutomaticas exclude=id, fecha
 		{
 		}
+		Tabla tablaNombres2 campo=Solicitud.peta titulo="Solicitantes"
+		popupCrear=popupNombre2
+		popupVer=popupNombre2
+		popupModificar=popupNombre2
+		popupBorrar=popupNombre2
+		columnasAutomaticas
+		{
+		}
+		
+		
 	}
+	
+	Popup popupNombre2 campo=Solicitud.peta crear modificar borrar ver {
+		Texto campo=Peta.n titulo="Nombre"
+		Texto campo=Peta.d titulo="Apellido"
+		Texto campo=Peta.otro titulo="Otro contacto"
+		Combo campo=Peta.petador titulo="Petador"
+		Fecha campo=Peta.fecha titulo="Fecha"
+	}
+	
 	
 	Popup popupNombre campo=Solicitud.tablaDeNombres crear modificar borrar ver {
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"

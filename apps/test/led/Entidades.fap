@@ -7,8 +7,18 @@ Entidad Solicitud extends SolicitudGenerica {
 	
 	OneToMany TablaDeNombres tablaDeNombres
 	
+	OneToMany Peta peta
+	
 	ManyToOne ComboTestRef comboError
 	ManyToMany ComboTestRef comboErrorMany
+}
+
+Entidad Peta{
+	String n
+	DateTime fecha
+	ManyToMany ComboTestRef petador
+	String d
+	String otro
 }
 
 Entidad Fechas {

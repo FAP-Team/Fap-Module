@@ -41,6 +41,16 @@ POST /Solicitud/combosoverwrite/save CombosOverwriteController.save
 GET /Solicitud/paginacomboserror PaginaCombosErrorController.index
 
 POST /Solicitud/paginacomboserror/save PaginaCombosErrorController.save
+GET /Solicitud/solicitante SolicitanteController.index
+
+GET /Solicitud/popuppersonasolicitantejuridicatabla/{idEntidad}/abrir popups.PopupPersonaSolicitanteJuridicaTablaController.abrir
+POST /Solicitud/popuppersonasolicitantejuridicatabla/{idEntidad}/editar popups.PopupPersonaSolicitanteJuridicaTablaController.editar
+POST /Solicitud/popuppersonasolicitantejuridicatabla/{idEntidad}/borrar popups.PopupPersonaSolicitanteJuridicaTablaController.borrar
+POST /Solicitud/popuppersonasolicitantejuridicatabla/{idEntidad}/crear popups.PopupPersonaSolicitanteJuridicaTablaController.crear
+POST /Solicitud/popuppersonasolicitantejuridicatabla/{idEntidad}/cancelarcrear popups.PopupPersonaSolicitanteJuridicaTablaController.cancelarCrear
+
+GET /Solicitud/solicitante/personaSolicitanteJuridicaTabla SolicitanteController.tablapersonaSolicitanteJuridicaTabla
+POST /Solicitud/solicitante/save SolicitanteController.save
 GET /Solicitud/valorespordefecto ValoresPorDefectoController.index
 
 POST /Solicitud/valorespordefecto/save ValoresPorDefectoController.save

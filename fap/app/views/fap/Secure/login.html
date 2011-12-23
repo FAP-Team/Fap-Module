@@ -16,7 +16,8 @@
 	#{fap.platinojs /}
 #{/set}
 
-<div id="instrucciones" class="grid_6 alpha">
+<div class="row">
+<div id="instrucciones" class="span8 alpha">
 	#{fap.grupo titulo:"Instrucciones"}
 		<p>
 		   En el caso en que no vea su certificado o no pueda acceder a la aplicación, debe seguir los pasos que se indican 
@@ -52,12 +53,12 @@
 	#{/fap.grupo}
 	
 	#{fap.grupo titulo:"Ayuda"}	
-		<a href="#"><button class="boton">Manual de usuario</button></a>
-		<a href="@{SoporteController.index}" class="boton">Preguntas e incidencias</a>
+		<a href="#"><button class="btn">Manual de usuario</button></a>
+		<a href="@{SoporteController.index}" class="btn">Preguntas e incidencias</a>
 	#{/fap.grupo}
 </div>
 
-<div class="grid_6 omega">
+<div class="span8 omega">
 
 #{fap.messages}
 
@@ -77,7 +78,7 @@
 			</div>
 			
 			<div class="button_container">
-				<input type="submit" id="loginsignin" value="&{'fap.login.signin'}" class="boton" />
+				<input type="submit" id="loginsignin" value="&{'fap.login.signin'}" class="btn primary" />
 			</div>
 		#{/form}
 		<div id="cert-msg"></div>
@@ -113,11 +114,11 @@
 			#{form @authenticate(), id:"authen-form"}
 				<div class="form-row">
 					<label for="username">&{'fap.login.username'}</label>
-					<input type="text" name="username" id="login-username" value="${flash.username}" />
+					<input class="xlarge" type="text" name="username" id="login-username" value="${flash.username}" />
 				</div>
 				<div class="form-row">
 					<label for="password">&{'fap.login.password'}</label>
-					<input type="password" name="password" id="login-password" value="" />
+					<input class="xlarge" type="password" name="password" id="login-password" value="" />
 				</div>
 				
 				#{if mostrarCaptcha == true}
@@ -136,7 +137,7 @@
 				</div>
 
 				<div class="button_container">
-					<input class="boton" type="submit" id="signin" value="&{'fap.login.signin'}" />
+					<input class="btn primary" type="submit" id="signin" value="&{'fap.login.signin'}" />
 				</div>
 			#{/form}
 			
@@ -154,4 +155,5 @@
 	
 #{/fap.messages}
 
+</div>
 </div>

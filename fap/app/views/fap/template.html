@@ -10,11 +10,14 @@
         <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
         
 
-        #{stylesheet '960/960-all-min.css'/}
-        #{stylesheet 'jquery-ui.css' /}
         <link rel="stylesheet" href="@{'/public/javascripts/ext/resources/css/ext-all.css'}" />
-        #{stylesheet 'main.css' /}
-        #{stylesheet 'fap.less' /}
+        <!--#{stylesheet 'main.css' /}
+        #{stylesheet 'fap.less' /}-->
+        
+        #{stylesheet 'jquery-ui.css' /}
+        #{stylesheet 'bootstrap.css' /}
+        #{stylesheet 'bootstrap/bootstrap.less' /}
+        #{stylesheet 'jorge.less' /}
           
         #{get 'moreStyles' /}
         
@@ -46,27 +49,27 @@
                	
     </head>
     <body>
-    	<div class="wrapper container_12">
-			<div id="header" class="grid_12">
+    
+    	<div class="container contenido">
+    		<div class="content">
+    	
+			<div class="row">
 			
-				<div id="logoAciisi">
+				<div id="logoAciisi" class="span8">
 					<a href="@{SolicitudesController.index}" title="&{play.configuration.get('fap.app.name', 'Sin Nombre')}">
 						<img src="@{'/public/images/aciisi_gris.gif'}" width="185px" height="75px"/>
 					</a>
 				</div>	
 			
-				<div id="banderaue">
+				<div id="banderaue" class="span8">
 					<img src="@{'/public/images/logo_ue.gif'}" width="147px" height="64px"/>
 				</div>
 			
 	    	</div>
 	    	
-	    	
-	    	<div class="clear"></div>
-	    	
-	    	<div class="cabeceraUsuario">
+	    	<div class="row cabeceraUsuario">
 				#{if cabeceraUsuario}
-					<div class="grid_12 getCabeceraUsuario">
+					<div class="span16">
 						#{get 'cabeceraUsuario' /}
 					</div>
 				#{/if}
@@ -78,7 +81,7 @@
 						if (agente != null)
 							user = agente.name ?: agente.username
 					%}	
-					<div class="migas grid_8">
+					<div class="migas span8">
 						#{if user != null}
 							#{if solicitud != null}
 								#{fap.breadcrumbs solicitud:solicitud.id, title:title, user:user /}
@@ -92,7 +95,8 @@
 						#{/else}
 					</div>
 					
-					<div class="rol grid_4">
+					
+					<div class="rol span7">
 
 						#{if agente != null}
 							#{if agente.roles.size() > 1}
@@ -115,32 +119,38 @@
 					</div>
 				#{/if}
 			</div>
+	 
 	    				
+	    	<div class="row">			
 			#{if menu != null}
-				<div class="menuAndContent grid_12">
-					<div class="menu grid_3 alpha">
+				<div class="span16">
+					<div class="row">
+					<div class="menu span3 alpha">
 					#{get 'menu'/}
 					</div>
-					<div id="content" class="grid_7 omega ">
+					<div id="content" class="span13 omega ">
 						#{doLayout /}
+					</div>
 					</div>
 					<div class="clear"></div>
 				</div>
 			#{/if}
 			#{else}
-				<div id="content" class="grid_12">
+				<div id="content" class="span16">
 					#{doLayout /}
 				</div>
 			#{/else}
+			</div>
 
 			<div class="clear"></div>
-	    </div>
-		
-	
-		<div class="footer">
-			©Gobierno de Canarias - <a href="http://www.gobiernodecanarias.org/avisolegal.html">Aviso Legal </a>
+			
+			<footer>
+				©Gobierno de Canarias - <a href="http://www.gobiernodecanarias.org/avisolegal.html">Aviso Legal </a>
+			</footer>
+			
 		</div>
 		
+		</div>
 		
 		<script type="text/javascript">			
         	$(function(){

@@ -2,12 +2,12 @@
  * Clase que maneja cómo se muestran los mensajes por pantalla
  */
 function Mensajes(renderTo){	
-	var MSG_ERROR_CLASS = 'box-error';
-	var MSG_FATAL_CLASS = 'box-fatal';
-	var MSG_INFO_CLASS = 'box-info';
+	var MSG_ERROR_CLASS = 'alert-message error';
+	var MSG_FATAL_CLASS = 'alert-message error';
+	var MSG_INFO_CLASS = 'alert-message info';
 	var MSG_DEBUG_CLASS = 'debugBoxMessage';
-	var MSG_WARN_CLASS = 'box-warn';
-	var MSG_OK_CLASS = 'box-ok';
+	var MSG_WARN_CLASS = 'alert-message warning';
+	var MSG_OK_CLASS = 'alert-message sucess';
 	var MSG_LOADING_CLASS = "box-loading";
 	var MSG_COMMON_CLASS = 'box'; //Clase que se le añade a todos los divs, para poder seleccionarlos todos y limpiarlos
 	

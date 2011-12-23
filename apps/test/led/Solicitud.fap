@@ -10,6 +10,10 @@ Formulario Solicitud {
 			Enlace "ErrorCombos" pagina=PaginaCombosError
 		}
 		
+		Grupo "Solicitante" {
+			Enlace "Solicitante" pagina=Solicitante
+		}
+		
 		Grupo "Direccion"{
 			Enlace "Direccion" pagina=Direcciones
 			Enlace "Fecha" pagina=Fechas
@@ -99,6 +103,18 @@ Formulario Solicitud {
 		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
 		Combo campo=Solicitud.comboError comboTexto=nombre titulo="Error del combo"
 		Combo campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
+	}
+	
+	Pagina Solicitante guardarParaPreparar inicial permiso=solicitudEditable {
+		Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido
+		
+		Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido
+		
+		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido
+		Texto campo=Solicitud.solicitante.telefonoMovil titulo="Teléfono Móvil"
+		Texto campo=Solicitud.solicitante.fax titulo="Fax"
+		Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar
+		Texto campo=Solicitud.solicitante.web titulo="Página web"
 	}
 	
 	Pagina ValoresPorDefecto {

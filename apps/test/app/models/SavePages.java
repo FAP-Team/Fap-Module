@@ -25,6 +25,10 @@ import java.text.SimpleDateFormat;
 public class SavePages extends Model {
 	// Código de los atributos
 	
+	
+	public Boolean paginaSolicitante;
+	
+	
 
 	public void init(){
 		

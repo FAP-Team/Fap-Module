@@ -147,13 +147,13 @@
 			    
 			    	$box.removeClass("box-error box-info box-fatal box-warn");
 			    	if (log.level == "INFO")
-			    		$box.addClass("box-info");
+			    		$box.addClass("alert-message sucess");
 			    	else if (log.level == "WARN")
-			    		$box.addClass("box-warn");
+			    		$box.addClass("alert-message warning");
 			    	else if (log.level == "ERROR")
-			    		$box.addClass("box-error");
+			    		$box.addClass("alert-message error");
 			    	else if (log.level == "FATAL")
-			    		$box.addClass("box-fatal");
+			    		$box.addClass("alert-message error");
 			    	$box.show();
 		    	 }
 		  	});

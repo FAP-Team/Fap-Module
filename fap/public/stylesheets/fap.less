@@ -3,6 +3,8 @@
 */
 
 @import "mixins.less";
+@import "jquery-ui.less";
+@import "bootstrap.less";
 
 body {
 	background: #B5C5D4;
@@ -176,7 +178,7 @@ a:hover {
 
 .form-row label {
 	font-weight: bold;
-	display: inline-block;
+	display: inline;
 	width: 200px;
 	vertical-align: top;
 }
@@ -667,3 +669,9 @@ textarea {
 .form-row .help-inline {
 	font-size: 11px;
 }
+
+button {
+	.btn
+	color: red;
+}
+

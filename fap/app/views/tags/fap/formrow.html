@@ -30,21 +30,23 @@
 	def styleLabel = _anchoTitulo != null ? "width:${_anchoTitulo}" : ""
 		
 }%
-
+<div class="row">
 #{if visible && !labelRight}
-<div class="form-row" style="${style}">
-	<label for="${id}" style="${styleLabel}">${label}
+<!--div class="span4" style="${style}"-->
+	<label class="span4" for="${id}" style="${styleLabel}">${label}
 		#{if requerido}
 			<span class="required">*</span>
 		#{/if}
 	</label>
+<!--/div-->
 #{/if}
 
-	
+<div class="span6">	
 #{doBody /}
+</div>
 
 #{if visible && labelRight}
-<div class="form-row">
+<div class="span2">
 	<label for="${id}">${label}
 		#{if requerido}
 			<span class="required">*</span>
@@ -59,5 +61,5 @@
 		#{/if}
 		#{fap.ayuda ayuda:ayuda, id:id_help /} 
 	</div>
-</div>
 #{/if}
+</div>

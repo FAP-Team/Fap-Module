@@ -37,7 +37,7 @@ public class GBoton {
 			enlace.name = (boton.name ?: "")+"IDenlace" 
 			enlace.titulo = result
 			enlace.pagina = boton.pagina
-			enlace.estilo = "boton"
+			enlace.estilo = "btn"
 			result = Expand.expand(enlace)
 		} 
 		else {

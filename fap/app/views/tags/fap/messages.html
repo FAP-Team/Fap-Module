@@ -9,7 +9,7 @@
 }%
 
 #{if msgFatal}
-	<div class="box box-fatal">
+	<div class="alert-message error">
 		<ul>
 			#{list items:msgFatal, as:'msg'}
 				<li>${msg}</li>
@@ -19,7 +19,7 @@
 #{/if}
 #{else}
 	#{if msgOK}
-		<div class="box box-ok">
+		<div class="alert-message sucess">
 			<ul>
 				#{list items:msgOK, as:'msg'}
 					<li>${msg}</li>
@@ -28,7 +28,7 @@
 		</div>
 	#{/if}
 	#{if msgInfo}
-		<div class="box box-info">
+		<div class="alert-message info">
 			<ul>
 				#{list items:msgInfo, as:'msg'}
 					<li>${msg}</li>
@@ -37,7 +37,7 @@
 		</div>
 	#{/if}
 	#{if msgWarning}
-		<div class="box box-warn">
+		<div class="alert-message warning">
 			<ul>
 				#{list items:msgWarning, as:'msg'}
 					<li>${msg}</li>
@@ -48,7 +48,7 @@
 	
 	
 	#{if msgError}
-		<div class="box box-error">
+		<div class="alert-message error">
 			<ul>
 				#{list items:msgError, as:'msg'}
 					<li>${msg}</li>
@@ -58,7 +58,7 @@
 	
 	#{ifErrors}
 		#{ifnot msgError != null}
-			<div class="box box-error">
+			<div class="alert-message error">
 		#{/ifnot}
 			<p>
 				&{'fap.page.save.error'} <a href="#" class="errorsMore">&{'fap.page.save.error.more'}</a>

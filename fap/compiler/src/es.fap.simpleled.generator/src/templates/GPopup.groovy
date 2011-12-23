@@ -340,9 +340,7 @@ import messages.Messages;
 import models.*;
 import tags.ReflectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 import security.Secure;
 import javax.inject.Inject;

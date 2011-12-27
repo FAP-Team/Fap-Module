@@ -37,9 +37,11 @@ import es.gobcan.eadmon.procedimientos.ws.Procedimientos;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosInterface;
 import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaProcedimientos;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTiposDocumentosEnTramite;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTramites;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.Procedimiento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Tramite;
 import es.gobcan.eadmon.procedimientos.ws.servicios.ObtenerTramite;
@@ -261,5 +263,47 @@ public class TiposDocumentosClient {
 		JPAPlugin.closeTx(false);
 		return true;
 	}
+	
+	// Más funciones que se han pedido
+	
+	public static List<TipoDocumentoEnTramite> getTiposDocumentosEnTramite(String uriProcedimiento, String uriTramite) {
+        List<TipoDocumentoEnTramite> result = new ArrayList<TipoDocumentoEnTramite>();
+        try {
+            result = procedimientos.consultarTiposDocumentosEnTramite(uriProcedimiento, uriTramite).getTiposDocumentos();
+        } catch (Exception ex) {
+            log.error("Se produjo un error al consultar los tipos de documentos.", ex);
+        }
+        return result;
+    }
+	
+	 public static List<Procedimiento> getProcedimientos() {
+	    List<Procedimiento> result = new ArrayList<Procedimiento>();
+	    try {
+	    	ListaProcedimientos serviceList = procedimientos.consultarProcedimientos();
+	        if (serviceList != null) {
+	        	result = serviceList.getProcedimientos();
+	        }
+	    } catch (Exception ex) {
+	        log.error("Se produjo un error al consultar los tipos de procedimientos.", ex);
+	    }
+        return result;
+    }
+
+	 public static List<Tramite> getTramitesDeProcedimiento(String uriProcedimiento) {
+        List<Tramite> result = new ArrayList<Tramite>();
+        try {
+            ListaTramites servicesList = procedimientos.consultarTramites(uriProcedimiento);
+            if (servicesList != null) {
+                result = servicesList.getTramites();
+            }
+        } catch (Exception ex) {
+            log.error("Se produjo un error al consultar los tipos de trámites.", ex);
+        }
+        return result;
+	 }
+	 
+	 public static TipoDocumento getTipoDocumento(String uriDocumento) throws TiposDocumentosExcepcion {
+        return tipos.obtenerTipoDocumento(uriDocumento);
+	 }
 
 }

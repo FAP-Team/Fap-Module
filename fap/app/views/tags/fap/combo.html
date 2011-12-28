@@ -3,7 +3,7 @@
 #{fap.field _campo, obj:obj}
 
 %{ 
-	def id = _id ?: field.id
+	def id = field.id ?: _id 
 	def label = _titulo ?: play.i18n.Messages.get(field.name)
 	def value = _value ?: field.flashorvalue
 		

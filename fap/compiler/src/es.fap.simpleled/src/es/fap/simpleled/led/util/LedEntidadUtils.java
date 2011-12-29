@@ -14,6 +14,7 @@ public class LedEntidadUtils {
 	public static List<Attribute> getAllDirectAttributes(Entity entidad) {
 		List<Attribute> attrs = new ArrayList<Attribute>();
 		while (entidad != null) {
+			LedEntidadUtils.addId(entidad);
 			for (Attribute attr : entidad.getAttributes()) {
 				attrs.add(attr);
 			}

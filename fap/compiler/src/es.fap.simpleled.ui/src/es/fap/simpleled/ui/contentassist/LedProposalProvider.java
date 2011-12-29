@@ -23,6 +23,7 @@ import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScopeProvider;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext.Builder;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
 
 import com.google.inject.Inject;
@@ -114,7 +115,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		Campo campo = LedCampoUtils.getCampo(model);
 		LedElementValidator validator = LedCampoUtils.getElementValidator(campo);
 		if (validator != null) {
-			for (Proposal proposal: validator.completeEntidades(getEntidadesCampo(campo))) {
+			for (Proposal proposal: validator.completeEntidades(context.getPrefix(), getEntidadesCampo(campo))) {
 				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
 			}
 		}
@@ -142,7 +143,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 		LedElementValidator validator = LedCampoUtils.getElementValidator(campo);
 		if (validator != null){
-			for (Proposal proposal: validator.completeEntidad("", entidad)) {
+			for (Proposal proposal: validator.completeEntidad(context.getPrefix(), entidad, "")) {
 				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
 			}
 		}
@@ -197,7 +198,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 			return;
 		}
 		CampoPermisoValidator validator = new CampoPermisoValidator();
-		for (Proposal proposal: validator.completeEntidad("", entidad)) {
+		for (Proposal proposal: validator.completeEntidad(context.getPrefix(), entidad, "")) {
 			acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
 		}
 	}
@@ -253,21 +254,13 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	
 	public Set<Entity> getEntidades(EObject object) {
 		Set<Entity> entidades = new HashSet<Entity>();
-//		Set<Entity> referenciadas = new HashSet<Entity>();
 		Entity solicitud = null;
 		Entity solicitudGenerica = null;
-//		for (IEObjectDescription desc : descriptions.getExportedObjectsByType(LedPackage.Literals.ENTITY)) {
 		for (IEObjectDescription desc : scopeProvider.getScope(object, LedPackage.Literals.CAMPO__ENTIDAD).getAllElements()) {
 			Entity entidad = (Entity) desc.getEObjectOrProxy();
 			if (entidad.eIsProxy()) {
 				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
 			}
-//			for (Attribute attr: getAllDirectAttributes(entidad)){
-//				Entity ref = getEntity(attr);
-//				if (ref != null){
-//					referenciadas.add(ref);
-//				}
-//			}
 			if (entidad.getName().equals("SolicitudGenerica")) {
 				solicitudGenerica = entidad;
 			} else {
@@ -280,14 +273,12 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		if (solicitud == null && solicitudGenerica != null) {
 			entidades.add(solicitudGenerica);
 		}
-//		entidades.removeAll(referenciadas);
 		return entidades;
 	}
 	
 	private static Color color = new Color(Display.getCurrent(), 127, 127, 127);
-	private static Color acceptedColor = new Color(Display.getCurrent(), 0, 12, 0);
-	private static Color noAcceptedColor = new Color(Display.getCurrent(), 12, 0, 0);
-	
+	private static Color acceptedColor = new Color(Display.getCurrent(), 0, 120, 0);
+	private static Color noAcceptedColor = new Color(Display.getCurrent(), 120, 0, 0);
 	
 	private static Styler styler = new Styler() {
 		
@@ -297,50 +288,29 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 	};
 	
-	private static Styler acceptedStyler(){
-		return new Styler() {
-			@Override
-			public void applyStyles(TextStyle arg0) {
-				arg0.foreground = new Color(Display.getCurrent(), 0, 120, 0);
-			}
-		};
-	}
-//	SEGUIR PROBANDO COLORES, Y AL FINAL VOLVERLO A PONER STATIC.
-	private static Styler noAcceptedStyler(){
-		return new Styler() {
-			@Override
-			public void applyStyles(TextStyle arg0) {
-				arg0.foreground = new Color(Display.getCurrent(), 120, 0, 0);
-			}
-		};
-	}
+	private static Styler acceptedStyler = new Styler() {
+		@Override
+		public void applyStyles(TextStyle arg0) {
+			arg0.foreground = acceptedColor;
+		}
+	};
 	
-	
-//	private static Styler acceptedStyler = new Styler() {
-//		
-//		@Override
-//		public void applyStyles(TextStyle arg0) {
-//			arg0.foreground = acceptedColor;
-//		}
-//	};
-//	
-//	private static Styler noAcceptedStyler = new Styler() {
-//		
-//		@Override
-//		public void applyStyles(TextStyle arg0) {
-//			arg0.foreground = noAcceptedColor;
-//		}
-//	};
+	private static Styler noAcceptedStyler = new Styler() {
+		@Override
+		public void applyStyles(TextStyle arg0) {
+			arg0.foreground = noAcceptedColor;
+		}
+	};
 	
 	private StyledString styledProposal(String proposal, Boolean accepted){
 		StyledString styled = new StyledString(proposal);
 		int index = proposal.indexOf("-");
 		if (accepted != null){
 			if (accepted){
-				styled.setStyle(0, index, acceptedStyler());
+				styled.setStyle(0, index, acceptedStyler);
 			}
 			else{
-				styled.setStyle(0, index, noAcceptedStyler());
+				styled.setStyle(0, index, noAcceptedStyler);
 			}
 		}
 		styled.setStyle(index, proposal.length() - index, styler);

@@ -20,6 +20,7 @@ ${cEconomico.tipo.descripcion}
 	}
 
 	Pagina Aportacion noForm permiso=aportacion {
+		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="boton"
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="boton"
 
@@ -122,7 +123,7 @@ ${cEconomico.tipo.descripcion}
 			Wiki {"Nota: La operación de firmar y presentar puede tardar varios minutos."}
 		}
 	}
-		
+	
 	Pagina Verificacion titulo="Verificación de la documentación" noForm {
 		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
 			Wiki {"

@@ -79,31 +79,44 @@ public abstract class LedElementValidator {
 		return false;
 	}
 	
-	public List<Proposal> completeEntidades(Set<Entity> entidades) {
+	public List<Proposal> completeEntidades(String contextPrefix, Set<Entity> entidades) {
 		List<Proposal> proposals = new ArrayList<Proposal>();
 		for (Entity entidad: entidades){
+			if (!entidad.getName().startsWith(contextPrefix)){
+				continue;
+			}
 			if (aceptaEntidad(entidad)){
-				proposals.add(new Proposal(entidad.getName() + "  -  Entidad", true));
+				proposals.add(new Proposal(entidad.getName() + "  -  Entidad", true, entidad));
 			}
 			else if (aceptaEntidadRecursivo(entidad)){
-				proposals.add(new Proposal(entidad.getName() + "  -  Entidad", false));
+				proposals.add(new Proposal(entidad.getName() + "  -  Entidad", false, entidad));
 			}
+		}
+		if (proposals.size() == 1){
+			Proposal p = proposals.get(0);
+			if (!p.valid)
+				proposals = completeEntidad("", (Entity) p.atributo, p.getEditorText());
 		}
 		return proposals;
 	}
 	
-	public List<Proposal> completeEntidad(String prefijo, Entity entidad){
-		if (! prefijo.equals("")){
-			prefijo += ".";
-		}
+	public List<Proposal> completeEntidad(String contextPrefix, Entity entidad, String prefijo){
 		List<Proposal> proposals = new ArrayList<Proposal>();
 		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(entidad)){
+			if (!attr.getName().startsWith(contextPrefix)){
+				continue;
+			}
 			if (aceptaAtributo(attr)){
-				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), true));
+				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), true, attr));
 			}
 			else if (LedEntidadUtils.xToOne(attr) && aceptaEntidadRecursivo(attr.getType().getCompound().getEntidad())){
-				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), false));
+				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), false, attr));
 			}
+		}
+		if (proposals.size() == 1){
+			Proposal p = proposals.get(0);
+			if (!p.valid)
+				proposals = completeEntidad("", ((Attribute)p.atributo).getType().getCompound().getEntidad(), p.getEditorText());
 		}
 		return proposals;
 	}

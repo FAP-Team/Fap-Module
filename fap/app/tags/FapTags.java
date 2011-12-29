@@ -436,7 +436,8 @@ R
 		Object arg = args.get("arg");
 		
 		if(arg == null)
-			error(template, fromLine, "Parámetro nulo");
+			return; // Para evitar que de error cuando en un PopUp sólo hay una Tabla
+			//error(template, fromLine, "Parámetro nulo");
 		
 		if(!(arg instanceof Map))
 			error(template, fromLine, "El tag hiddens espera como parámetro un map<String, String>");

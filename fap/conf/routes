@@ -46,6 +46,73 @@ GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutar
 
 
 # === FAPGENERATED ===
+GET /Soporte/soporte SoporteController.index
+
+POST /Soporte/soporte/incidencia SoporteController.incidencia
+GET /Principal/solicitudes SolicitudesController.index
+
+GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
+POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
+GET /Solicitud/pceconomicos PCEconomicosController.index
+
+GET /Solicitud/pceconomicos/tablaCEconomicos PCEconomicosController.tablatablaCEconomicos
+POST /Solicitud/pceconomicos/save PCEconomicosController.save
+GET /Solicitud/aportacion AportacionController.index
+
+GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
+POST /Solicitud/aportacion/addDocumento AportacionController.addDocumento
+POST /Solicitud/aportacion/presentar AportacionController.presentar
+GET /Solicitud/aportacionaportados AportacionAportadosController.index
+
+GET /Solicitud/aportacionaportados/documentos AportacionAportadosController.tabladocumentos
+POST /Solicitud/aportacionaportados/save AportacionAportadosController.save
+GET /Solicitud/aportacionrecibos AportacionRecibosController.index
+
+GET /Solicitud/aportacionrecibos/recibosAportados AportacionRecibosController.tablarecibosAportados
+POST /Solicitud/aportacionrecibos/save AportacionRecibosController.save
+GET /Solicitud/aportacionpresentar AportacionPresentarController.index
+
+POST /Solicitud/aportacionpresentar/modificarBorrador AportacionPresentarController.modificarBorrador
+POST /Solicitud/aportacionpresentar/presentar AportacionPresentarController.presentar
+POST /Solicitud/aportacionpresentar/presentarSinRegistrar AportacionPresentarController.presentarSinRegistrar
+GET /Solicitud/verificacion VerificacionController.index
+
+POST /Solicitud/verificacion/iniciarVerificacion VerificacionController.iniciarVerificacion
+GET /Solicitud/verificacion/verificacionDocumentos VerificacionController.tablaverificacionDocumentos
+GET /Solicitud/verificacion/exclusion VerificacionController.tablaexclusion
+POST /Solicitud/verificacion/gnuevoRequerimientoBorradorPreliminar VerificacionController.gnuevoRequerimientoBorradorPreliminar
+POST /Solicitud/verificacion/finalizarTemporal VerificacionController.finalizarTemporal
+POST /Solicitud/verificacion/grequerimientoGuardar VerificacionController.grequerimientoGuardar
+POST /Solicitud/verificacion/frequerimientoSolicitaFirma VerificacionController.frequerimientoSolicitaFirma
+POST /Solicitud/verificacion/gnuevoRequerimientoBorrador VerificacionController.gnuevoRequerimientoBorrador
+POST /Solicitud/verificacion/grequerimientoFirmarRequerimiento VerificacionController.grequerimientoFirmarRequerimiento
+GET /Solicitud/verificacion/requerimientos VerificacionController.tablarequerimientos
+POST /Solicitud/verificacion/gfinalizarRequerimiento VerificacionController.gfinalizarRequerimiento
+GET /Solicitud/verificacion/registros VerificacionController.tablaregistros
+GET /Solicitud/popupceconomicos/{idEntidad}/abrir popups.PopupCEConomicosController.abrir
+POST /Solicitud/popupceconomicos/{idEntidad}/editar popups.PopupCEConomicosController.editar
+POST /Solicitud/popupceconomicos/{idEntidad}/borrar popups.PopupCEConomicosController.borrar
+POST /Solicitud/popupceconomicos/{idEntidad}/crear popups.PopupCEConomicosController.crear
+POST /Solicitud/popupceconomicos/{idEntidad}/cancelarcrear popups.PopupCEConomicosController.cancelarCrear
+
+GET /Solicitud/popupdocpresentados/{idEntidad}/abrir popups.PopUpDocPresentadosController.abrir
+POST /Solicitud/popupdocpresentados/{idEntidad}/editar popups.PopUpDocPresentadosController.editar
+POST /Solicitud/popupdocpresentados/{idEntidad}/borrar popups.PopUpDocPresentadosController.borrar
+POST /Solicitud/popupdocpresentados/{idEntidad}/crear popups.PopUpDocPresentadosController.crear
+POST /Solicitud/popupdocpresentados/{idEntidad}/cancelarcrear popups.PopUpDocPresentadosController.cancelarCrear
+
+GET /Solicitud/popupdocprocesos/{idEntidad}/abrir popups.PopUpDocProcesosController.abrir
+POST /Solicitud/popupdocprocesos/{idEntidad}/editar popups.PopUpDocProcesosController.editar
+POST /Solicitud/popupdocprocesos/{idEntidad}/borrar popups.PopUpDocProcesosController.borrar
+POST /Solicitud/popupdocprocesos/{idEntidad}/crear popups.PopUpDocProcesosController.crear
+POST /Solicitud/popupdocprocesos/{idEntidad}/cancelarcrear popups.PopUpDocProcesosController.cancelarCrear
+
+GET /Solicitud/popupdocaportados/{idEntidad}/abrir popups.PopUpDocAportadosController.abrir
+POST /Solicitud/popupdocaportados/{idEntidad}/editar popups.PopUpDocAportadosController.editar
+POST /Solicitud/popupdocaportados/{idEntidad}/borrar popups.PopUpDocAportadosController.borrar
+POST /Solicitud/popupdocaportados/{idEntidad}/crear popups.PopUpDocAportadosController.crear
+POST /Solicitud/popupdocaportados/{idEntidad}/cancelarcrear popups.PopUpDocAportadosController.cancelarCrear
+
 GET /Administracion/usuarios UsuariosController.index
 
 GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios
@@ -118,71 +185,4 @@ POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/borrar popups.Pop
 POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/crear popups.PopupVisibilidadDeSolicitudesController.crear
 POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/cancelarcrear popups.PopupVisibilidadDeSolicitudesController.cancelarCrear
 
-GET /Solicitud/pceconomicos PCEconomicosController.index
-
-GET /Solicitud/pceconomicos/tablaCEconomicos PCEconomicosController.tablatablaCEconomicos
-POST /Solicitud/pceconomicos/save PCEconomicosController.save
-GET /Solicitud/aportacion AportacionController.index
-
-GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
-POST /Solicitud/aportacion/addDocumento AportacionController.addDocumento
-POST /Solicitud/aportacion/presentar AportacionController.presentar
-GET /Solicitud/aportacionaportados AportacionAportadosController.index
-
-GET /Solicitud/aportacionaportados/documentos AportacionAportadosController.tabladocumentos
-POST /Solicitud/aportacionaportados/save AportacionAportadosController.save
-GET /Solicitud/aportacionrecibos AportacionRecibosController.index
-
-GET /Solicitud/aportacionrecibos/recibosAportados AportacionRecibosController.tablarecibosAportados
-POST /Solicitud/aportacionrecibos/save AportacionRecibosController.save
-GET /Solicitud/aportacionpresentar AportacionPresentarController.index
-
-POST /Solicitud/aportacionpresentar/modificarBorrador AportacionPresentarController.modificarBorrador
-POST /Solicitud/aportacionpresentar/presentar AportacionPresentarController.presentar
-POST /Solicitud/aportacionpresentar/presentarSinRegistrar AportacionPresentarController.presentarSinRegistrar
-GET /Solicitud/verificacion VerificacionController.index
-
-POST /Solicitud/verificacion/iniciarVerificacion VerificacionController.iniciarVerificacion
-GET /Solicitud/verificacion/verificacionDocumentos VerificacionController.tablaverificacionDocumentos
-GET /Solicitud/verificacion/exclusion VerificacionController.tablaexclusion
-POST /Solicitud/verificacion/gnuevoRequerimientoBorradorPreliminar VerificacionController.gnuevoRequerimientoBorradorPreliminar
-POST /Solicitud/verificacion/finalizarTemporal VerificacionController.finalizarTemporal
-POST /Solicitud/verificacion/grequerimientoGuardar VerificacionController.grequerimientoGuardar
-POST /Solicitud/verificacion/frequerimientoSolicitaFirma VerificacionController.frequerimientoSolicitaFirma
-POST /Solicitud/verificacion/gnuevoRequerimientoBorrador VerificacionController.gnuevoRequerimientoBorrador
-POST /Solicitud/verificacion/grequerimientoFirmarRequerimiento VerificacionController.grequerimientoFirmarRequerimiento
-GET /Solicitud/verificacion/requerimientos VerificacionController.tablarequerimientos
-POST /Solicitud/verificacion/gfinalizarRequerimiento VerificacionController.gfinalizarRequerimiento
-GET /Solicitud/verificacion/registros VerificacionController.tablaregistros
-GET /Solicitud/popupceconomicos/{idEntidad}/abrir popups.PopupCEConomicosController.abrir
-POST /Solicitud/popupceconomicos/{idEntidad}/editar popups.PopupCEConomicosController.editar
-POST /Solicitud/popupceconomicos/{idEntidad}/borrar popups.PopupCEConomicosController.borrar
-POST /Solicitud/popupceconomicos/{idEntidad}/crear popups.PopupCEConomicosController.crear
-POST /Solicitud/popupceconomicos/{idEntidad}/cancelarcrear popups.PopupCEConomicosController.cancelarCrear
-
-GET /Solicitud/popupdocpresentados/{idEntidad}/abrir popups.PopUpDocPresentadosController.abrir
-POST /Solicitud/popupdocpresentados/{idEntidad}/editar popups.PopUpDocPresentadosController.editar
-POST /Solicitud/popupdocpresentados/{idEntidad}/borrar popups.PopUpDocPresentadosController.borrar
-POST /Solicitud/popupdocpresentados/{idEntidad}/crear popups.PopUpDocPresentadosController.crear
-POST /Solicitud/popupdocpresentados/{idEntidad}/cancelarcrear popups.PopUpDocPresentadosController.cancelarCrear
-
-GET /Solicitud/popupdocprocesos/{idEntidad}/abrir popups.PopUpDocProcesosController.abrir
-POST /Solicitud/popupdocprocesos/{idEntidad}/editar popups.PopUpDocProcesosController.editar
-POST /Solicitud/popupdocprocesos/{idEntidad}/borrar popups.PopUpDocProcesosController.borrar
-POST /Solicitud/popupdocprocesos/{idEntidad}/crear popups.PopUpDocProcesosController.crear
-POST /Solicitud/popupdocprocesos/{idEntidad}/cancelarcrear popups.PopUpDocProcesosController.cancelarCrear
-
-GET /Solicitud/popupdocaportados/{idEntidad}/abrir popups.PopUpDocAportadosController.abrir
-POST /Solicitud/popupdocaportados/{idEntidad}/editar popups.PopUpDocAportadosController.editar
-POST /Solicitud/popupdocaportados/{idEntidad}/borrar popups.PopUpDocAportadosController.borrar
-POST /Solicitud/popupdocaportados/{idEntidad}/crear popups.PopUpDocAportadosController.crear
-POST /Solicitud/popupdocaportados/{idEntidad}/cancelarcrear popups.PopUpDocAportadosController.cancelarCrear
-
-GET /Principal/solicitudes SolicitudesController.index
-
-GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
-POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
-GET /Soporte/soporte SoporteController.index
-
-POST /Soporte/soporte/incidencia SoporteController.incidencia
 # === END FAPGENERATED ===			 

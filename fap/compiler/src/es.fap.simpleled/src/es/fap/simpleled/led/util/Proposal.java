@@ -14,6 +14,11 @@ public final class Proposal {
 		this.atributo = atributo;
 	}
 	
+	public Proposal(String text, boolean valid) {
+		this.text = text;
+		this.valid = valid;
+	}
+	
 	public String getEditorText(){
 		String dot = "";
 		if (!valid){

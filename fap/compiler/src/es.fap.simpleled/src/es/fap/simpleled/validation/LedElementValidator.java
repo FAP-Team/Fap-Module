@@ -7,15 +7,34 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 
+import es.fap.simpleled.led.AreaTexto;
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
+import es.fap.simpleled.led.Check;
+import es.fap.simpleled.led.Columna;
+import es.fap.simpleled.led.Combo;
 import es.fap.simpleled.led.CompoundType;
+import es.fap.simpleled.led.Direccion;
+import es.fap.simpleled.led.EditarArchivoAed;
+import es.fap.simpleled.led.Enlace;
+import es.fap.simpleled.led.EntidadAutomatica;
 import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.Fecha;
+import es.fap.simpleled.led.FirmaPlatinoSimple;
 import es.fap.simpleled.led.Form;
+import es.fap.simpleled.led.Formulario;
+import es.fap.simpleled.led.Grupo;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.Nip;
 import es.fap.simpleled.led.Pagina;
+import es.fap.simpleled.led.Persona;
+import es.fap.simpleled.led.PersonaFisica;
+import es.fap.simpleled.led.PersonaJuridica;
 import es.fap.simpleled.led.Popup;
+import es.fap.simpleled.led.Solicitante;
+import es.fap.simpleled.led.SubirArchivoAed;
 import es.fap.simpleled.led.Tabla;
+import es.fap.simpleled.led.Texto;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.Proposal;
@@ -31,12 +50,10 @@ public abstract class LedElementValidator {
 
 	
 	public void validateCampoEntidad(Campo campo, LedJavaValidator validator){
-		EObject container = LedCampoUtils.getElementosContainer(campo);
-		if (LedEntidadUtils.esSingleton(campo.getEntidad()) && !(container instanceof Tabla)){
+		if (LedEntidadUtils.esSingleton(campo.getEntidad()))
 			return;
-		}
 		Entity entidad = LedCampoUtils.getEntidadValida(campo);
-		if (! entidad.getName().equals(campo.getEntidad().getName())){
+		if (entidad != null && ! LedEntidadUtils.equals(entidad, campo.getEntidad())){
 			validator.myError("En este contexto solo se puede utilizar la entidad \"" + entidad.getName() + "\"", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
 		}
 	}
@@ -64,7 +81,7 @@ public abstract class LedElementValidator {
 			if (aceptaAtributo(attr)){
 				return true;
 			}
-			if (LedEntidadUtils.xToOne(attr)){
+			if (LedEntidadUtils.xToOne(attr) || ((this instanceof PaginaValidator) && LedEntidadUtils.isReferencia(attr))){
 				entidad = LedEntidadUtils.getEntidad(attr);
 				if (!entidadesEnCampo.contains(entidad.getName())){
 					entidadesEnCampo.add(entidad.getName());
@@ -113,10 +130,12 @@ public abstract class LedElementValidator {
 			if (aceptaAtributo(attr)){
 				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), true));
 			}
-			else if (LedEntidadUtils.xToOne(attr) && aceptaEntidadRecursivo(LedEntidadUtils.getEntidad(attr))){
-				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), false));
-				if (proposals.size() == 1){
-					childProposals = completeEntidad(prefijo + attr.getName(), LedEntidadUtils.getEntidad(attr));
+			else if (LedEntidadUtils.xToOne(attr) || ((this instanceof PaginaValidator) && LedEntidadUtils.isReferencia(attr))){
+				if (aceptaEntidadRecursivo(LedEntidadUtils.getEntidad(attr))){
+					proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), false));
+					if (proposals.size() == 1){
+						childProposals = completeEntidad(prefijo + attr.getName(), LedEntidadUtils.getEntidad(attr));
+					}
 				}
 			}
 		}
@@ -146,6 +165,62 @@ public abstract class LedElementValidator {
 			referencia = compound.getTipoReferencia().getType();
 		}
 		return referencia + "<" + compound.getEntidad().getName() + ">";
+	}
+	
+	public static LedElementValidator getElementValidator(Campo campo){
+		EObject container = campo.eContainer();
+		if (container instanceof Fecha) {
+			return new FechaValidator();
+		}
+		if (container instanceof Columna) {
+			return new ColumnaValidator();
+		}
+		if (container instanceof Tabla) {
+			return new TablaValidator();
+		}
+		if (container instanceof Pagina || container instanceof Formulario || container instanceof Popup) {
+			return new PaginaValidator();
+		}
+		if (container instanceof Texto || container instanceof AreaTexto) {
+			return new TextoValidator();
+		}
+		if (container instanceof Grupo) {
+			return new GrupoValidator();
+		}
+		if (container instanceof Check) {
+			return new CheckValidator();
+		}
+		if (container instanceof Combo) {
+			return new ComboValidator();
+		}
+		if (container instanceof SubirArchivoAed || container instanceof EditarArchivoAed || container instanceof FirmaPlatinoSimple) {
+			return new EntidadValidator("Documento");
+		}
+		if (container instanceof Direccion) {
+			return new EntidadValidator("Direccion");
+		}
+		if (container instanceof Nip) {
+			return new EntidadValidator("Nip");
+		}
+		if (container instanceof Persona) {
+			return new EntidadValidator("Persona");
+		}
+		if (container instanceof PersonaFisica) {
+			return new EntidadValidator("PersonaFisica");
+		}
+		if (container instanceof PersonaJuridica) {
+			return new EntidadValidator("PersonaJuridica");
+		}
+		if (container instanceof Solicitante) {
+			return new EntidadValidator("Solicitante");
+		}
+		if (container instanceof EntidadAutomatica) {
+			return new EntidadAutomaticaValidator();
+		}
+		if (container instanceof Enlace) {
+			return new EnlaceValidator();
+		}
+		return null;
 	}
 	
 }

@@ -4,10 +4,10 @@ package controllers.popups;
 import messages.Messages;
 import models.Agente;
 import play.Logger;
-import controllers.gen.popups.ListaUsuariosPopupControllerGen;
+import controllers.gen.popups.PopupUsuarioControllerGen;
 			
-public class ListaUsuariosPopupController extends ListaUsuariosPopupControllerGen {
-
+public class PopupUsuarioController extends PopupUsuarioControllerGen {
+	
 	public static void editar(Long idAgente,Agente agente){
         checkAuthenticity();
         if(!permiso("update")){
@@ -20,7 +20,7 @@ public class ListaUsuariosPopupController extends ListaUsuariosPopupControllerGe
         }
 
         if(!Messages.hasErrors()){
-            PopupUsuarioValidateCopy(dbagente, agente);;
+            PopupUsuarioValidateCopy(dbagente, agente);
         }
         
         if(!Messages.hasErrors()){
@@ -38,7 +38,7 @@ public class ListaUsuariosPopupController extends ListaUsuariosPopupControllerGe
             renderJSON(utils.RestResponse.ok("Registro actualizado correctamente"));
         }else{
             Messages.keep();
-            abrir("editar",idAgente);
+            index("editar",idAgente);
         }
 
     }
@@ -53,7 +53,7 @@ public class ListaUsuariosPopupController extends ListaUsuariosPopupControllerGe
         
 
         if(!Messages.hasErrors()){
-            PopupUsuarioValidateCopy(dbagente, agente);;
+            PopupUsuarioValidateCopy(dbagente, agente);
         }
 
         if(!Messages.hasErrors()){
@@ -71,9 +71,8 @@ public class ListaUsuariosPopupController extends ListaUsuariosPopupControllerGe
             renderJSON(utils.RestResponse.ok("Registro creado correctamente"));
         }else{
             Messages.keep();
-            abrir("crear",null);
+            index("crear",  null);
         }
     }
-	
 }
 		

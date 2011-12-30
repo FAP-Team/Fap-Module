@@ -5,10 +5,9 @@ import messages.Messages;
 import models.TableKeyValue;
 import play.mvc.Util;
 import validation.CustomValidation;
-import controllers.gen.popups.TabladetablasPopupControllerGen;
+import controllers.gen.popups.PopupTablaDeTablasControllerGen;
 			
-public class TabladetablasPopupController extends TabladetablasPopupControllerGen {
-
+public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGen {
 	public static void crear(TableKeyValue tableKeyValue){
 		checkAuthenticity();
 		if(!permiso("create")){
@@ -30,7 +29,7 @@ public class TabladetablasPopupController extends TabladetablasPopupControllerGe
 			renderJSON(utils.RestResponse.ok("Registro creado correctamente"));
 		}else{
 			Messages.keep();
-			abrir("crear",null);
+			index("crear",null);
 		}
 	}
 
@@ -60,7 +59,7 @@ public class TabladetablasPopupController extends TabladetablasPopupControllerGe
 			renderJSON(utils.RestResponse.ok("Registro actualizado correctamente"));
 		}else{
 			Messages.keep();
-			abrir("editar",idTableKeyValue);
+			index("editar",idTableKeyValue);
 		}
 
 	}
@@ -86,7 +85,7 @@ public class TabladetablasPopupController extends TabladetablasPopupControllerGe
 			renderJSON(utils.RestResponse.ok("Registro borrado correctamente"));
 		}else{
 			Messages.keep();
-			abrir("borrar",idTableKeyValue);
+			index("borrar",idTableKeyValue);
 		}
 	}
 
@@ -97,6 +96,5 @@ public class TabladetablasPopupController extends TabladetablasPopupControllerGe
 		CustomValidation.valid("tableKeyValue", tableKeyValue);
 		CustomValidation.valid("tableKeyValue", tableKeyValue);
 	}
-	
 }
 		

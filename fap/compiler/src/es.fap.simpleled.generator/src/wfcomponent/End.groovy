@@ -20,12 +20,13 @@ import templates.GPagina
 import templates.GPermiso;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Attribute;
+import es.fap.simpleled.led.Formulario
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Type
+import es.fap.simpleled.led.Pagina
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.impl.AttributeImpl;
-import es.fap.simpleled.led.impl.LedFactoryImpl;
 import generator.utils.HashStack.HashStackName;
 
 import generator.utils.*;
@@ -46,8 +47,9 @@ public class End implements IWorkflowComponent {
 	@Override
 	public void invoke(IWorkflowContext ctx) {
 		if (createSolicitud.equals("true")) {
-			if (HashStack.size(HashStackName.SOLICITUD) == 0){
-				log.warn("No se ha creado la entidad Solicitud. Se creará una por defecto.");
+			if (LedUtils.getNode(Entity, "Solicitud") == null){
+				if (LedUtils.getNodes(Formulario, "Solicitud").size() > 1)
+					log.warn("No se ha creado la entidad Solicitud. Se creará una por defecto.");
 				entitySolicitud();
 			}
 			properties();
@@ -69,33 +71,54 @@ public class End implements IWorkflowComponent {
 	private void rutas(){
 		def elementos = HashStack.allElements(HashStackName.ROUTES);
 		String content = elementos.collect{it -> it.generateRoutes()}.join('\n');
+		if (!LedUtils.generatingModule){
+			content = "  # Home page\n" + rutaPaginaInicial() + "\n" + content;
+		}
 		FileUtils.writeInRegion(FileUtils.getRoute('CONF_ROUTES'), content);
 	}
 	
-	private void properties(){
-		def firstPages = HashStack.allElements(HashStackName.FIRST_PAGE);
-		String page;
-		if (firstPages.size() == 1) {
-			page = firstPages.get(0);
-		} else if (firstPages.size() > 1){
-			page = firstPages.get(0);
-			log.warn("Se indicaron mas de una página como inicial, se utiliza: <"+page+">");
-		} else {
-			log.warn("No se indicó una página como inicial");
-			/** Utilizamos la primera encontrada */
-			def myFirstPages = HashStack.allElements(HashStackName.PAGE_NAME);
-			if (myFirstPages.size > 0){
-				page = myFirstPages.get(0);
-				log.warn("No se indicó una página como inicial, se utiliza: <"+page+">");
+	private String rutaPaginaInicial(){
+		List<Formulario> formularios = LedUtils.getNodes(Formulario);
+		Formulario formInicial;
+		Pagina pagInicial;
+		for (Formulario f: formularios){
+			if (f.inicial){
+				formInicial = f;
+				break;
 			}
 		}
-		String content = "";
-		if (page != null){
-			content = "fap.app.firstPage="+page;
+		if (formInicial == null || formInicial.paginas.size() == 0){
+			return Route.to("GET", "/", "SolicitudesController.index");
 		}
-		FileUtils.writeInRegion(FileUtils.getRoute('CONF_APPLICATION'), content);
+		pagInicial = formInicial.paginas.get(0);
+		for (Pagina pag: formInicial.paginas){
+			if (pag.inicial){
+				pagInicial = pag;
+				break;
+			}
+		}
+		return Route.to("GET", "/", pagInicial.name + "Controller.index");
 	}
 	
+	private void properties(){
+		List<Formulario> formsSolicitud = LedUtils.getNodes(Formulario, "Solicitud");
+		Pagina pagInicial;
+		boolean indicada;
+		for (Formulario f: formsSolicitud){
+			for (Pagina pag: f.paginas){
+				if (pagInicial == null){
+					pagInicial = pag;
+				}
+				if (pag.inicial){
+					pagInicial = pag;
+					indicada = true;
+					break;
+				}
+			}
+		}
+		String content = "fap.app.firstPage=" + pagInicial.name;
+		FileUtils.writeInRegion(FileUtils.getRoute('CONF_APPLICATION'), content);
+	}
 
   /**
    * Genera el fichero de permisos a partir de las entidad GPermisos almacenadas
@@ -111,8 +134,8 @@ public class End implements IWorkflowComponent {
 	  
 	  // Establecemos la línea de definición de la clase
 	  
-	  // Si estamos generando para el módulo en el modulo
-	  if (!createSolicitud.equals("true")) {
+	  // Si estamos generando el módulo.
+	  if (LedUtils.generatingModule) {
 		  lName = "PermissionFap";
 		  defLine = "public class ${lName}";
 		  extendz = "extends ${lName}Gen"
@@ -162,11 +185,9 @@ ${defLine} ${extendz} {
   
   
  private void entitySolicitud () {
-	 LedFactoryImpl factory = new LedFactoryImpl();
-	 
-	 EntityImpl solicitud = factory.createEntity();
+	 EntityImpl solicitud = LedFactory.eINSTANCE.createEntity();
 	 solicitud.setName("Solicitud");
-	 EntityImpl solicitudGen = factory.createEntity();
+	 EntityImpl solicitudGen = LedFactory.eINSTANCE.createEntity();
 	 solicitudGen.setName("SolicitudGenerica");
 	 solicitud.setExtends(solicitudGen);
 	 GEntidad.generate(solicitud);

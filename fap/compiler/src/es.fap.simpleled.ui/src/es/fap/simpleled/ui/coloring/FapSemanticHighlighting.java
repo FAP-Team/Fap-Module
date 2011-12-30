@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.xtext.CrossReference;
 import org.eclipse.xtext.Keyword;
@@ -28,21 +29,31 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 	
 	public static final String REFERENCE_ID = "reference";
 	public static final String NAME_ID = "name";
+	public static final String ELEMENT_ID = "element";
 	
 	public static final RGB nameColor = new RGB(200, 0, 0);
 	public static final RGB referenceColor = new RGB(32, 0, 183);
 	public static final RGB keywordColor = new RGB(127, 0, 85);
 	public static final RGB stringColor = new RGB(64, 128, 128);
+	public static final RGB elementColor = new RGB(210, 0, 25);
 	
 	public void configure(IHighlightingConfigurationAcceptor acceptor) {
 		super.configure(acceptor);
 		acceptor.acceptDefaultHighlighting(REFERENCE_ID, "Reference", referenceStyle());
 		acceptor.acceptDefaultHighlighting(NAME_ID, "Name", nameStyle());
+		acceptor.acceptDefaultHighlighting(ELEMENT_ID, "Element", elementStyle());
 	}
 	
 	public TextStyle stringTextStyle() {
 		TextStyle textStyle = new TextStyle();
 		textStyle.setColor(new RGB(64, 128, 128));
+		return textStyle;
+	}
+	
+	public TextStyle elementStyle() {
+		TextStyle textStyle = new TextStyle();
+		textStyle.setColor(elementColor);
+		textStyle.setStyle(SWT.BOLD);
 		return textStyle;
 	}
 	
@@ -81,11 +92,19 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
 					continue;
 				}
-				String feature = FapDocumentationProvider.getFeature(node);
-				if ("type".equals(feature)){
+				if ("type".equals(FapDocumentationProvider.getDocFeature(node))){
 					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
 					continue;
 				}
+				if ("elemento".equals(FapDocumentationProvider.getFeature(node))){
+					acceptor.addPosition(node.getOffset(), node.getLength(), ELEMENT_ID);
+					continue;
+				}
+				
+			}
+			if ("key".equals(FapDocumentationProvider.getFeature(node))){
+				acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
+				continue;
 			}
 			INode node2 = node;
 			while (node2 != null && !node2.hasDirectSemanticElement()) {
@@ -94,7 +113,7 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 			if (node2 != null) {
 				EObject semantic = node2.getSemanticElement();
 				try {
-					if (semantic.getClass().getMethod("getName", null).invoke(semantic, null) == null){
+					if (semantic.getClass().getMethod("getName").invoke(semantic) == null){
 						continue;
 					}
 				} catch (Exception e) {
@@ -109,6 +128,4 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 		}
 	}
 	
-	
-
 }

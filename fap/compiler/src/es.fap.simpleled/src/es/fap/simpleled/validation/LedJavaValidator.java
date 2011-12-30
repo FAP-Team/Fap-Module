@@ -1,16 +1,18 @@
 package es.fap.simpleled.validation;
 
-
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.resource.IContainer;
+import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.validation.Check;
+
+import com.google.inject.Inject;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.CompoundType;
-import es.fap.simpleled.led.Elemento;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.LedPackage;
@@ -19,8 +21,18 @@ import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+import es.fap.simpleled.led.util.ModelUtils;
 
 public class LedJavaValidator extends AbstractLedJavaValidator {
+	
+	@Inject
+	private IQualifiedNameProvider qnProvider;
+	
+	@Inject
+	private ResourceDescriptionsProvider indexProvider;
+	
+	@Inject
+	private IContainer.Manager manager;
 	
 	public void myError(String message, EStructuralFeature feature){
 		error(message, feature);
@@ -121,7 +133,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		if (! LedCampoUtils.validCampo(campo)){ // El error lo detecta LedScopeProvider en el linking
 			return;
 		}
-		LedElementValidator validator = LedCampoUtils.getElementValidator(campo);
+		LedElementValidator validator = LedElementValidator.getElementValidator(campo);
 		if (validator != null){
 			validator.validateCampoEntidad(campo, this);
 			validator.validateCampo(campo, this);
@@ -131,52 +143,108 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	@Check
 	public void checkPaginaEntidad(Pagina pagina){
 		Formulario formulario = (Formulario) pagina.eContainer();
-		if (pagina.getEntidad() == null && formulario.getEntidad() == null && hayCampos(pagina)){
-			error("Tiene que definir la entidad que va a usar en esta página, o en el formulario entero", LedPackage.Literals.PAGINA__NAME);
+		if (pagina.getCampo() == null && formulario.getCampo() == null && LedCampoUtils.hayCamposGuardablesOrTablaOneToMany(pagina)){
+			error("Tiene que definir el campo que va a usar en esta página, o en el formulario entero", LedPackage.Literals.PAGINA__NAME);
 		}
 	}
 	
 	@Check
-	public void checkReferenciasAPopups(Tabla tabla){
-		String entidad = LedCampoUtils.getUltimaEntidad(tabla.getCampo()).getName();
+	public void checkTablaCampo(Tabla tabla){
+		Entity entidad = LedCampoUtils.getUltimaEntidad(tabla.getCampo());
 		String error = "El popup referenciado no es válido para el campo especificado en la tabla";
-		if (tabla.getPopup() != null && !entidad.equals(tabla.getPopup().getEntidad().getName())){
+		if (tabla.getPopup() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopup().getCampo())))
 			error(error, LedPackage.Literals.TABLA__POPUP);
-		}
-		if (tabla.getPopupBorrar() != null && !entidad.equals(tabla.getPopupBorrar().getEntidad().getName())){
+		if (tabla.getPopupBorrar() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopupBorrar().getCampo())))
 			error(error, LedPackage.Literals.TABLA__POPUP_BORRAR);
-		}
-		if (tabla.getPopupCrear() != null && !entidad.equals(tabla.getPopupCrear().getEntidad().getName())){
+		if (tabla.getPopupCrear() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopupCrear().getCampo())))
 			error(error, LedPackage.Literals.TABLA__POPUP_CREAR);
-		}
-		if (tabla.getPopupModificar() != null && !entidad.equals(tabla.getPopupModificar().getEntidad().getName())){
+		if (tabla.getPopupModificar() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopupModificar().getCampo())))
 			error(error, LedPackage.Literals.TABLA__POPUP_MODIFICAR);
-		}
-		if (tabla.getPopupVer() != null && !entidad.equals(tabla.getPopupVer().getEntidad().getName())){
+		if (tabla.getPopupVer() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopupVer().getCampo())))
 			error(error, LedPackage.Literals.TABLA__POPUP_VER);
+		
+		error = "La página referenciada no es válida para el campo especificado en la tabla";
+		if (tabla.getPagina() != null){
+			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPagina());
+			if (!LedEntidadUtils.equals(entidad, entidadPagina))
+				error(error, LedPackage.Literals.TABLA__PAGINA);
+		}
+		if (tabla.getPaginaBorrar() != null){
+			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPaginaBorrar());
+			if (!LedEntidadUtils.equals(entidad, entidadPagina))
+				error(error, LedPackage.Literals.TABLA__PAGINA_BORRAR);
+		}
+		if (tabla.getPaginaCrear() != null){
+			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPaginaCrear());
+			if (!LedEntidadUtils.equals(entidad, entidadPagina))
+				error(error, LedPackage.Literals.TABLA__PAGINA_CREAR);
+		}
+		if (tabla.getPaginaModificar() != null){
+			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPaginaModificar());
+			if (!LedEntidadUtils.equals(entidad, entidadPagina))
+				error(error, LedPackage.Literals.TABLA__PAGINA_MODIFICAR);
+		}
+		if (tabla.getPaginaVer() != null){
+			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPaginaVer());
+			if (!LedEntidadUtils.equals(entidad, entidadPagina))
+				error(error, LedPackage.Literals.TABLA__PAGINA_VER);
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public EList<Elemento> getElementos(EObject container){
-		try {
-			return (EList<Elemento>) container.getClass().getMethod("getElementos").invoke(container);
-		} catch (Exception e) {
-			return null;
+	@Check
+	public void checkNombreEntidadUnico(Entity entidad){
+		for (Entity e : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, indexProvider, manager, entidad.eResource())) {
+			String uri1 = entidad.eResource().getURI().toString();
+			String uri2 = e.eResource().getURI().toString();
+			if (entidad.getName().equals(e.getName()) && !uri1.equals(uri2))
+				error("La entidad " + entidad.getName() + " ya existe", LedPackage.Literals.ENTITY__NAME);
 		}
 	}
 	
-	public boolean hayCampos(EObject container){
-		EList<Elemento> elementos = getElementos(container);
-		if (elementos != null){
-			for (EObject obj: elementos){
-				if (hayCampos(obj)){
-					return true;
+	/*
+	 * Se se llama a cada método que desea comparar dos páginas, para checkear condiciones.
+	 */
+	@Check
+	public void checkPaginasFormularioStuff(Pagina pagina){
+		for (Pagina p : ModelUtils.<Pagina>getVisibleNodes(LedPackage.Literals.PAGINA, indexProvider, manager, pagina.eResource())) {
+			String qn1 = qnProvider.getFullyQualifiedName(pagina).toString();
+			String qn2 = qnProvider.getFullyQualifiedName(p).toString();
+			String uri1 = pagina.eResource().getURI().toString();
+			String uri2 = p.eResource().getURI().toString();
+			if (!qn1.equals(qn2) || !uri1.equals(uri2)){
+				checkNombrePaginaUnico(pagina, p);
+				checkPaginaInicialUnica(pagina, p);
+			}
+		}
+	}
+	
+	@Check
+	public void checkFormularioInicialUnico(Formulario formulario){
+		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, indexProvider, manager, formulario.eResource())) {
+			String qn1 = qnProvider.getFullyQualifiedName(formulario).toString();
+			String qn2 = qnProvider.getFullyQualifiedName(f).toString();
+			String uri1 = formulario.eResource().getURI().toString();
+			String uri2 = f.eResource().getURI().toString();
+			if (!qn1.equals(qn2) || !uri1.equals(uri2)){
+				if (formulario.isInicial() && f.isInicial()){
+					error("Ya existe otro formulario definido como inicial", LedPackage.Literals.FORMULARIO__INICIAL);
 				}
 			}
-			return false;
 		}
-		return LedCampoUtils.getCampo(container) != null;
+	}
+	
+	public void checkNombrePaginaUnico(Pagina pagina, Pagina other){
+		Formulario formulario = (Formulario)other.eContainer();
+		if (pagina.getName().equals(other.getName()))
+			error("La página " + pagina.getName() + " ya existe en el formulario " + formulario.getName(), LedPackage.Literals.PAGINA__NAME);
+	}
+	
+	public void checkPaginaInicialUnica(Pagina pagina, Pagina other){
+		Formulario formulario = (Formulario)pagina.eContainer();
+		Formulario otherForm = (Formulario)other.eContainer();
+		if (pagina.isInicial() && other.isInicial() && formulario.getName().equals(otherForm.getName())){
+			error("Ya existe en el formulario otra página definida como inicial", LedPackage.Literals.PAGINA__INICIAL);
+		}
 	}
 	
 }

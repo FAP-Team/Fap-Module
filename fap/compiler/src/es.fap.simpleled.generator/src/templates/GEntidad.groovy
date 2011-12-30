@@ -11,7 +11,6 @@ import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.impl.AttributeImpl
 import es.fap.simpleled.led.impl.CompoundTypeImpl
 import es.fap.simpleled.led.impl.EntityImpl
-import es.fap.simpleled.led.impl.LedFactoryImpl
 import es.fap.simpleled.led.impl.PaginaImpl
 import es.fap.simpleled.led.impl.TypeImpl
 import java.io.File;
@@ -29,7 +28,6 @@ public class GEntidad {
 	
 	public static String generate(Entity entity){
 		String extendz;
-		String attrSolicitud;
 		
 		if (entity.name.equals("Solicitud")){
 			solicitudStuff(entity);
@@ -381,7 +379,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		out += """
 
 	public void init(){
-		${entity.getExtends() != null? "super.init();": ""}
+		${entity.getExtends()? "super.init();": ""}
 		${refInit}
 	}
 		"""
@@ -412,18 +410,17 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	}
 	
 	private static Entity getEntitySavePages(){
-		LedFactoryImpl factory = new LedFactoryImpl();
-		EntityImpl savePages = factory.createEntity();
+		EntityImpl savePages = LedFactory.eINSTANCE.createEntity();
 		savePages.setName("SavePages");
 	
 		for (PaginaImpl pag: LedUtils.getNodes(PaginaImpl)){
 			if (!pag.guardarParaPreparar){
 				continue;
 			}
-			Type tipoBoolean = factory.createType();
-			tipoBoolean.setSimple(factory.createSimpleType());
+			Type tipoBoolean = LedFactory.eINSTANCE.createType();
+			tipoBoolean.setSimple(LedFactory.eINSTANCE.createSimpleType());
 			tipoBoolean.getSimple().setType("Boolean");
-			AttributeImpl at = factory.createAttribute();
+			AttributeImpl at = LedFactory.eINSTANCE.createAttribute();
 			at.setName("pagina" + pag.name);
 			at.setType(tipoBoolean);
 			savePages.getAttributes().add(at);
@@ -432,7 +429,6 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	}
 	
 	private static void solicitudStuff(Entity solicitud){
-		HashStack.push(HashStackName.SOLICITUD, solicitud);
 		if (!solicitud.getExtends()?.name.equals("SolicitudGenerica")){
 			solicitud.setExtends(LedUtils.getNode(Entity, "SolicitudGenerica"));
 		}

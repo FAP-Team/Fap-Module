@@ -3,8 +3,6 @@
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");
 	String tipo  = com.google.common.base.Preconditions.checkNotNull(_tipo, "tipo");
-	String idProperty = _idProperty;
-	String idParameterName = "id" + tags.StringUtils.firstUpper(idProperty.split("_")[0]);
 
 	//El ancho es siempre del 100%
 	String alto  = _alto  ?: "350";
@@ -16,84 +14,90 @@
 	
 	def obj = _obj ?: _caller.get(campo.split("\\.")[0]);
 
-	play.mvc.Router.ActionDefinition pagina = tags.ParameterUtils.pageParameter(_pagina);
-
 	def seleccionable = _seleccionable;
 	def urlSeleccionable = seleccionable ? play.mvc.Router.reverse(_urlSeleccionable) : null
 		
-	def recargarPagina = _recargarPagina
-	String popup = _popup;
-	String popupCrear = _popupCrear;
-	String popupModificar = _popupModificar;
-	String popupBorrar = _popupBorrar;
-	String popupVer = _popupVer;
-	
-	String urlPopupCrear;
-	String urlPopupModificar;
-	String urlPopupBorrar;
-	String urlPopupVer;
+	def recargarPagina = _recargarPagina;
 	
 	def permisoCrear = false;
-	def permisoModificar = false;
+	def permisoEditar = false;
 	def permisoBorrar = false;
-	def permisoVer = false;
+	def permisoLeer = false;
 	
-	if (popup != null){
-		popupCrear = popup;
-		popupModificar = popup;
-		popupBorrar = popup;
-		popupVer = popup;
-		urlPopupCrear = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
-		urlPopupModificar = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
-		urlPopupBorrar = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
-		urlPopupVer = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
-		if (_permisoPopup != null) {
-			permisoCrear = secure.Permission."$_permisoPopup"("create", tags.TagMapStack.top("idParams"), null);
-			permisoBorrar = secure.Permission."$_permisoPopup"("delete", tags.TagMapStack.top("idParams"), null);
-			permisoModificar = secure.Permission."$_permisoPopup"("update", tags.TagMapStack.top("idParams"), null);
-			permisoVer = secure.Permission."$_permisoPopup"("read", tags.TagMapStack.top("idParams"), null);
-		}
-		else {
-			permisoCrear = permisoModificar = permisoBorrar = permisoVer = true;
-		}
+	String popupCrear = _popupCrear;
+	String popupEditar = _popupEditar;
+	String popupBorrar = _popupBorrar;
+	String popupLeer = _popupLeer;
+	
+	String urlPopupCrear = _urlPopupCrear;
+	String urlPopupEditar = _urlPopupEditar;
+	String urlPopupBorrar = _urlPopupBorrar;
+	String urlPopupLeer = _urlPopupLeer;
+	
+	if (urlPopupCrear != null) {
+		if (_permisoPopupCrear != null) 
+			permisoCrear = secure.Permission."$_permisoPopupCrear"("create", tags.TagMapStack.top("idParams"), null);
+		else
+			permisoCrear = true;
 	}
-	else {
-		if (popupCrear != null) {
-			urlPopupCrear = play.mvc.Router.reverse("popups.${popupCrear}Controller.abrir");
-			if (_permisoPopupCrear != null) 
-				permisoCrear = secure.Permission."$_permisoPopupCrear"("create", tags.TagMapStack.top("idParams"), null);
-			else
-				permisoCrear = true;
-		}
-		if (popupBorrar != null) {
-			urlPopupBorrar = play.mvc.Router.reverse("popups.${popupBorrar}Controller.abrir");
-			if (_permisoPopupBorrar != null) 
-				permisoBorrar = secure.Permission."$_permisoPopupBorrar"("delete", tags.TagMapStack.top("idParams"), null);
-			else
-				permisoBorrar = true;
-		}
-		if (popupModificar != null) {
-			urlPopupModificar = play.mvc.Router.reverse("popups.${popupModificar}Controller.abrir");
-			if (_permisoPopupModificar != null) 
-				permisoModificar = secure.Permission."$_permisoPopupModificar"("update", tags.TagMapStack.top("idParams"), null);
-			else
-				permisoModificar = true;
-			if ((permisoCrear) || (permisoBorrar))
-				permisoModificar = true;
-		}
-		if (popupVer != null) {
-			urlPopupVer = play.mvc.Router.reverse("popups.${popupVer}Controller.abrir");
-			if (_permisoPopupVer != null) 
-				permisoVer = secure.Permission."$_permisoPopupVer"("read", tags.TagMapStack.top("idParams"), null);
-			else
-				permisoVer = true;
-			if ((permisoCrear) || (permisoBorrar) || (permisoModificar))
-				permisoVer = true;
-		}
+	if (urlPopupBorrar != null) {
+		if (_permisoPopupBorrar != null) 
+			permisoBorrar = secure.Permission."$_permisoPopupBorrar"("delete", tags.TagMapStack.top("idParams"), null);
+		else
+			permisoBorrar = true;
+	}
+	if (urlPopupEditar != null) {
+		if (_permisoPopupEditar != null) 
+			permisoEditar = secure.Permission."$_permisoPopupEditar"("update", tags.TagMapStack.top("idParams"), null);
+		else
+			permisoEditar = true;
+		if ((permisoCrear) || (permisoBorrar))
+			permisoEditar = true;
+	}
+	if (urlPopupLeer != null) {
+		if (_permisoPopupLeer != null) 
+			permisoLeer = secure.Permission."$_permisoPopupLeer"("read", tags.TagMapStack.top("idParams"), null);
+		else
+			permisoLeer = true;
+		if ((permisoCrear) || (permisoBorrar) || (permisoEditar))
+			permisoLeer = true;
+	}
+	
+	String urlPaginaCrear = _urlPaginaCrear;
+	String urlPaginaEditar = _urlPaginaEditar;
+	String urlPaginaBorrar = _urlPaginaBorrar;
+	String urlPaginaLeer = _urlPaginaLeer;
+	
+	if (urlPaginaCrear != null) {
+		if (_permisoPaginaCrear != null) 
+			permisoCrear = secure.Permission."$_permisoPaginaCrear"("create", tags.TagMapStack.top("idParams"), null);
+		else
+			permisoCrear = true;
+	}
+	if (urlPaginaBorrar != null) {
+		if (_permisoPaginaBorrar != null) 
+			permisoBorrar = secure.Permission."$_permisoPaginaBorrar"("delete", tags.TagMapStack.top("idParams"), null);
+		else
+			permisoBorrar = true;
+	}
+	if (urlPaginaEditar != null) {
+		if (_permisoPaginaEditar != null) 
+			permisoEditar = secure.Permission."$_permisoPaginaEditar"("update", tags.TagMapStack.top("idParams"), null);
+		else
+			permisoEditar = true;
+		if ((permisoCrear) || (permisoBorrar))
+			permisoEditar = true;
+	}
+	if (urlPaginaLeer != null) {
+		if (_permisoPaginaLeer != null) 
+			permisoLeer = secure.Permission."$_permisoPaginaLeer"("read", tags.TagMapStack.top("idParams"), null);
+		else
+			permisoLeer = true;
+		if ((permisoCrear) || (permisoBorrar) || (permisoEditar))
+			permisoLeer = true;
 	}
 	
 	def modelName = id + "_model";
-	
 	Set<String> campos = new HashSet<String>();
 	campos.add("id"); //El campo id siempre tiene que estar
 	
@@ -101,7 +105,6 @@
 	//Campos en el contexto para que las columnas los rellenen
 	play.templates.TagContext.current().data.put("campos", campos);
 	play.templates.TagContext.current().data.put("columnas", columnas);
-
 %}
 
 	#{doBody /}
@@ -158,13 +161,8 @@
 		        }
 		    });
 
-			#{if permisoModificar}
-			%{
-			   tags.JSMap paramsEditar = new tags.JSMap();
-			   paramsEditar.put(idParameterName, "selected_id");
-			   paramsEditar.putStr("accion", "editar");
-			   paramsEditar.putAll(tags.TagMapStack.top("idParams"));	
-			}%
+			
+			#{if permisoEditar}
 			
 		    var boton_editar = new Ext.Button({
 		    	text: 'Editar',
@@ -172,41 +170,39 @@
 		    	disabled:true,
 		    	handler : function(){
 			   		var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-			   		popup_open(
-			   			"${popupModificar}",
-			   			"${urlPopupModificar}",
-						#{fap.printMap paramsEditar/}
-			   			,
-			   			reload
-			   		);
+			   		#{if urlPopupEditar}
+			   			popup_open(
+			   				"${popupEditar}",
+			   				replaceId("${urlPopupEditar}", "${_idEntidad}", selected_id),
+			   				reload
+			   			);
+			   		#{/if}
+			   		#{elseif urlPaginaEditar}
+						window.location.href = replaceId("${urlPaginaEditar}", "${_idEntidad}", selected_id);
+					#{/elseif}
 		    	}
 		    });
 			
-	    	#{if !pagina}
-		    	var editRow = new Ext.create('Ext.grid.plugin.Editing', {
-    	        	clicksToEdit: 2,
-	    	    	startEdit: function(record, columnHeader) {
-						var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+		    var editRow = new Ext.create('Ext.grid.plugin.Editing', {
+		    	clicksToEdit: 2,
+	    	   	startEdit: function(record, columnHeader) {
+					var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+					#{if urlPopupEditar}
 		   				popup_open(
-		   					"${popupModificar}",
-			   				"${urlPopupModificar}",
-							#{fap.printMap paramsEditar/}
-		   					,
+		   					"${popupEditar}",
+			   				replaceId("${urlPopupEditar}", "${_idEntidad}", selected_id),
 		   					reload
 		   				);
+		   			#{/if}
+					#{elseif urlPaginaEditar}
+						window.location.href = replaceId("${urlPaginaEditar}", "${_idEntidad}", selected_id);
+					#{/elseif}
         			}
-    			});
-	    		#{/if}
-
+    		});
 		    #{/if}
 
-			#{if permisoVer}
-			%{
-			   tags.JSMap paramsVer = new tags.JSMap();
-			   paramsVer.put(idParameterName, "selected_id");
-			   paramsVer.putStr("accion", "leer");
-			   paramsVer.putAll(tags.TagMapStack.top("idParams"));	
-			}%
+		    
+			#{if permisoLeer}
 			
 		    var boton_leer = new Ext.Button({
 				text: 'Ver',
@@ -214,36 +210,38 @@
 	    		disabled:true,
 	    		handler : function(){
 	    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-	    			popup_open(
-	    				"${popupVer}",
-	    				"${urlPopupVer}",
-						#{fap.printMap paramsVer/}
-					)	
+	    			#{if urlPopupLeer}
+	    				popup_open(
+	    					"${popupLeer}",
+	    					replaceId("${urlPopupLeer}", "${_idEntidad}", selected_id)
+						)
+					#{/if}
+			   		#{elseif urlPaginaLeer}
+						window.location.href = replaceId("${urlPaginaLeer}", "${_idEntidad}", selected_id);
+					#{/elseif}
 	    		}
 		    });
 			
-		    	#{if !permisoModificar && !pagina}
-		    	var editRow = new Ext.create('Ext.grid.plugin.Editing', {
-	            	clicksToEdit: 2,
-    	        	startEdit: function(record, columnHeader) {
-    					var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-			   			popup_open(
-			   				"${popupVer}",
-			   				"${urlPopupVer}",
-							#{fap.printMap paramsVer/}
-			   			);
-            		}
-        		});
+		  		#{if !permisoEditar}
+		    		var editRow = new Ext.create('Ext.grid.plugin.Editing', {
+	            		clicksToEdit: 2,
+    	        		startEdit: function(record, columnHeader) {
+    						var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+    						#{if urlPopupLeer}
+			   					popup_open(
+			   						"${popupLeer}",
+			   						replaceId("${urlPopupLeer}", "${_idEntidad}", selected_id)
+			   					);
+			   				#{/if}
+			   				#{elseif urlPaginaLeer}
+								window.location.href = replaceId("${urlPaginaLeer}", "${_idEntidad}", selected_id);
+							#{/elseif}
+            			}
+        			});
 	    		#{/if}
 		    #{/if}
 
 			#{if permisoBorrar}
-			%{
-			   tags.JSMap paramsBorrar = new tags.JSMap();
-			   paramsBorrar.put(idParameterName, "selected_id");
-			   paramsBorrar.putStr("accion", "borrar");
-			   paramsBorrar.putAll(tags.TagMapStack.top("idParams"));	
-			}%			
 			
 		    var boton_borrar = new Ext.Button({
 		    	text: 'Borrar',
@@ -251,33 +249,36 @@
 	    		disabled:true,
 	    		handler : function(){
 	    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-	    			popup_open(
-	    				"${popupBorrar}",
-	    				"${urlPopupBorrar}",
-						#{fap.printMap paramsBorrar/},
-	    				reload
-	    			);
+	    			#{if urlPopupBorrar}
+	    				popup_open(
+	    					"${popupBorrar}",
+	    					replaceId("${urlPopupBorrar}", "${_idEntidad}", selected_id),
+	    					reload
+	    				);
+	    			#{/if}
+	    			#{elseif urlPaginaBorrar}
+						window.location.href = replaceId("${urlPaginaBorrar}", "${_idEntidad}", selected_id);
+					#{/elseif}
 	    		}
 		    });
 		    #{/if}
 
 			#{if permisoCrear}
-		   	%{
-			   tags.JSMap paramsCrear = new tags.JSMap();
-			   paramsCrear.putStr("accion", "crear");
-			   paramsCrear.putAll(tags.TagMapStack.top("idParams"));	
-			}%	
 		   
 		    var boton_crear = new Ext.Button({
 		    	text: 'Nuevo',
 		    	disabled:false,
 	    		handler : function(){
-	    			popup_open(
-	    				"${popupCrear}",
-	    				"${urlPopupCrear}",
-						#{fap.printMap paramsCrear/},
-	    				reload
-	    			);
+	    			#{if urlPopupCrear}
+	    				popup_open(
+	    					"${popupCrear}",
+	    					replaceAmpersand("${urlPopupCrear}"),
+	    					reload
+	    				);
+	    			#{/if}
+	    			#{elseif urlPaginaCrear}
+						window.location.href = replaceAmpersand("${urlPaginaCrear}");
+					#{/elseif}
 	    		}
 		    });
 		    #{/if}
@@ -298,28 +299,6 @@
 		    });
 			#{/if}
 		    
-			#{if pagina}
-			var boton_pagina = new Ext.Button({
-				text: 'Editar',
-				disabled: true,
-		    	icon: '@{'/public/images/table-editar.png'}',
-				handler: function() {
-					var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-					window.location.href = "${pagina}?" + $.param({${idParameterName}: selected_id});
-				}
-			});
-			
-		    var editRow = new Ext.create('Ext.grid.plugin.Editing', {
-                clicksToEdit: 2,
-                startEdit: function(record, columnHeader) {
-	    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-						window.location.href = "${pagina}?" + $.param({${idParameterName}: selected_id});
-                }
-            });
-
-			#{/if}		    
-
-
 		    var boton_actualizar = new Ext.Button({
 		    	text: 'Actualizar',
 		    	handler : function(){
@@ -338,7 +317,7 @@
 				id: '${id}-grid',
 				height: ${alto},
 				title: '${titulo}',
-			    #{if permisoModificar || permisoVer || pagina}
+			    #{if permisoEditar || permisoLeer}
 				plugins: [
 				            editRow
 				      	 ],
@@ -364,18 +343,15 @@
 						#{if permisoCrear}
 			            	boton_crear,
 			            #{/if}
-			           	#{if permisoModificar}
+			           	#{if permisoEditar}
 				        	boton_editar,
 				        #{/if}
 			           	#{if permisoBorrar}
 				        	boton_borrar,
 				        #{/if}
-			           	#{if permisoVer}
+			           	#{if permisoLeer}
 				        	boton_leer,
 				        #{/if}
-			            #{if pagina}
-			            boton_pagina,
-			            #{/if}
 			            boton_actualizar
         				]
     				}
@@ -386,20 +362,13 @@
 				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
 		    });
 		   			   	
-		   	#{if pagina}
+		    #{if ((permisoCrear) || (permisoEditar) || (permisoLeer) || (permisoBorrar))}
 		    grid.addListener("selectionchange", function(){
 		    	var hasSelection = grid.getSelectionModel().hasSelection();
-		    	boton_pagina.setDisabled(!hasSelection);
-		    });
-		   	#{/if}
-
-		    #{if ((permisoCrear) || (permisoModificar) || (permisoVer) || (permisoBorrar))}
-		    grid.addListener("selectionchange", function(){
-		    	var hasSelection = grid.getSelectionModel().hasSelection();
-			    #{if permisoModificar}
+			    #{if permisoEditar}
 		    		boton_editar.setDisabled(!hasSelection);
 			    #{/if}
-			    #{if permisoVer}
+			    #{if permisoLeer}
 		    		boton_leer.setDisabled(!hasSelection);
 			    #{/if}
 			    #{if permisoBorrar}
@@ -408,7 +377,7 @@
 		    });
 		    #{/if}
 
-		    #{if ((permisoCrear) || (permisoModificar) || (permisoVer) || (permisoBorrar))}
+		    #{if ((permisoCrear) || (permisoEditar) || (permisoLeer) || (permisoBorrar))}
 			function reload(){
 				store.load();
 				#{if recargarPagina}

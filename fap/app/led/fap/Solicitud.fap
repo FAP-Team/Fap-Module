@@ -1,6 +1,6 @@
-Formulario Solicitud entidad=SolicitudGenerica permiso=solicitudes{
+Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 
-	Pagina Aportacion noForm permiso=aportacion {
+	Pagina Aportacion permiso=aportacion {
 		
 		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="boton"
@@ -12,17 +12,11 @@ Formulario Solicitud entidad=SolicitudGenerica permiso=solicitudes{
 			popupBorrar=PopUpDocProcesos
 			popupModificar=PopUpDocProcesos  
 			popupVer=PopUpDocProcesos
+			paginaCrear=Documentos
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
 			Columna campo=Documento.descripcion titulo="Tipo" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-		}
-		
-		Form addDocumento campo=SolicitudGenerica.aportaciones.actual.documentos {		
-			Grupo titulo="Añadir documentación" {
-				SubirArchivoAed fileAportacion campo=Documento requerido
-				Boton subirDocumento titulo="Añadir documentación"
-			}
 		}
 		
 		Form presentar redirigir=AportacionPresentar {
@@ -30,6 +24,10 @@ Formulario Solicitud entidad=SolicitudGenerica permiso=solicitudes{
 			Boton botonPresentar titulo="Preparar para registrar"
 		}
 		
+	}
+	
+	Pagina Documentos permiso=aportacion redirigirCrear=Aportacion campo=SolicitudGenerica.aportaciones.actual.documentos {		
+		SubirArchivoAed fileAportacion campo=Documento requerido
 	}
 	
 	Pagina AportacionAportados {		
@@ -58,19 +56,19 @@ Formulario Solicitud entidad=SolicitudGenerica permiso=solicitudes{
 		Enlace titulo="Volver" pagina=Aportacion estilo="boton"
 	}
 	
-	Popup PopUpDocPresentados titulo="Documentación" entidad=Documento {
+	Popup PopUpDocPresentados titulo="Documentación" campo=Documento {
 		EditarArchivoAed documentoPresentado campo=Documento requerido
 	}
 	
-	Popup PopUpDocProcesos titulo="Documentación" entidad=Documento {
+	Popup PopUpDocProcesos titulo="Documentación" campo=Documento {
 		EditarArchivoAed documentoProceso campo=Documento requerido
 	}
 	
-	Popup PopUpDocAportados titulo="Documentación" entidad=Documento {
+	Popup PopUpDocAportados titulo="Documentación" campo=Documento {
 		EditarArchivoAed documentoAportado campo=Documento requerido
 	}
 		
-	Pagina AportacionPresentar noForm {
+	Pagina AportacionPresentar {
 	  	Grupo titulo="Presentar Aportación de Documentos" {
 			Wiki {"Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
 
@@ -124,7 +122,7 @@ Formulario Solicitud entidad=SolicitudGenerica permiso=solicitudes{
 	
 	
 	
-	Pagina Verificacion titulo="Verificación de la documentación" noForm {
+	Pagina Verificacion titulo="Verificación de la documentación" {
 		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
 			Wiki {"
 Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.

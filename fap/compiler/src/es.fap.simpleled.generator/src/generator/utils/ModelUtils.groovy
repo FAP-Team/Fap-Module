@@ -7,8 +7,6 @@ import org.eclipse.emf.ecore.EObject
 
 public class ModelUtils {
 
-	public static String FORM_SOLICITUD = "Solicitud";
-		
 	/**
 	* Devuelve el nombre del formulario actual
 	* @return
@@ -17,18 +15,6 @@ public class ModelUtils {
 	   return HashStack.top(HashStackName.FORMULARIO);
    }
 
-	/**
-	 * Indica si pertenece a el formulario por defecto de la solicitud
-	 * FORM_SOLICITUD
-	 * @return
-	 */
-	public static boolean isSolicitudForm () {
-		Formulario form = getActualContainer();
-		if ((form != null) && (form.name.equals(FORM_SOLICITUD)))
-			return true;
-		return false;
-	}
-	
 	/**
 	 * Indica si la entidad que se le pasa tiene check"Entity", con lo cual
 	 * se le deberá realizar el "validate" 

@@ -15,12 +15,11 @@ Formulario Administracion permiso=administrador{
 			Enlace "Properties" pagina=Propiedades
 		}
 		
-		Enlace "Ayuda" pagina=Soporte.Soporte
+		Enlace "Ayuda" pagina=Soporte.Soporte crear
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 	
-	Pagina Usuarios entidad=Agente {
-
+	Pagina Usuarios {
 		Wiki {"Para asignar roles seleccione el usuario y pulse en editar"}
 
 		Tabla listaUsuarios titulo="Usuarios" campo=Agente 
@@ -35,7 +34,7 @@ Formulario Administracion permiso=administrador{
 		}
 	}
 	
-	Popup PopupUsuario entidad=Agente titulo="Usuario" {
+	Popup PopupUsuario campo=Agente titulo="Usuario" {
 		Texto campo=Agente.username titulo="Username" requerido
 		Combo campo=Agente.roles titulo="Roles" busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido
@@ -51,7 +50,7 @@ Formulario Administracion permiso=administrador{
 		}
 	}
 	
-	Pagina Requerimientos entidad=Quartz {
+	Pagina Requerimientos campo=Quartz {
 		Grupo configQuartz titulo="Configuración del quartz" {
 			Wiki {"El quartz es el proceso que se encarga de comprobar los accesos a la sede cuando se emiten los requerimientos y asignar correctamente las fechas de acceso y de vencimiento de los requerimientos."}
 			
@@ -66,7 +65,7 @@ Formulario Administracion permiso=administrador{
 	}
 
 
-	Pagina TablaDeTablas entidad=TableKeyValue noForm titulo="Tabla de tablas" permiso=administrador {
+	Pagina TablaDeTablas noForm titulo="Tabla de tablas" permiso=administrador {
 		Wiki {"La tabla de tablas almacena la información de la listas. "}
 
 		Tabla tabladetablas titulo="Tabla de tablas" campo=TableKeyValue popup=PopupTablaDeTablas {
@@ -89,13 +88,13 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 		}
 	}
 
-	Popup PopupTablaDeTablas entidad=TableKeyValue {
+	Popup PopupTablaDeTablas campo=TableKeyValue {
 		Texto campo=TableKeyValue.table titulo="Tabla"
 		Texto campo=TableKeyValue.key titulo="Clave"
 		Texto campo=TableKeyValue.value titulo="Valor"
 	}
 
-	Pagina Emails entidad=Mail noForm{
+	Pagina Emails noForm{
 		Tabla emails titulo="Plantillas de emails" campo=Mail popup=PopupEmail {
 			Columna campo=Mail.idMail titulo="Identificador"
 			Columna campo=Mail.content titulo="Contenido" expandir
@@ -109,30 +108,33 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 		}
 	}
 
-	Popup PopupEmail entidad=Mail titulo="Email" {
-		Wiki {"
-Dentro de los campos puede utilizar variables con $ {nombreVariable} y otros elementos que puede consultar en la \"documentación\":http://www.playframework.org/documentation/1.2.1/templates#syntax.
-
-En los campos **Para** y **CC** puede poner varios destinatarios separados por \",\".
-        "}
-
-		Texto campo=Mail.idMail titulo="Identificador" requerido
-		Texto campo=Mail.sender titulo="De"
-		Texto campo=Mail.sendTo titulo="Para" requerido
-		Texto campo=Mail.bcc titulo="CC"
-		Texto campo=Mail.subject titulo="Asunto" requerido
-		AreaTexto campo=Mail.content titulo="Mensaje" requerido
-		AreaTexto campo=Mail.footer titulo="Pie de mensaje"
-
-	}   
+//	Popup PopupEmail entidad=Mail titulo="Email" {
+//		Wiki {"
+//Dentro de los campos puede utilizar variables con $ {nombreVariable} y otros elementos que puede consultar en la \"documentación\":http://www.playframework.org/documentation/1.2.1/templates#syntax.
+//
+//En los campos **Para** y **CC** puede poner varios destinatarios separados por \",\".
+//        "}
+//		Texto campo=Mail.idMail titulo="Identificador" requerido
+//		Texto campo=Mail.sender titulo="De"
+//		Texto campo=Mail.sendTo titulo="Para" requerido
+//		Texto campo=Mail.bcc titulo="CC"
+//		Texto campo=Mail.subject titulo="Asunto" requerido
+//		AreaTexto campo=Mail.content titulo="Mensaje" requerido
+//		AreaTexto campo=Mail.footer titulo="Pie de mensaje"
+//	}   
     
-	Popup PopupConsulta entidad=Consulta titulo="Consulta" {
+    Popup PopupEmail campo=Mail titulo="Email" {
+		Texto campo=Quartz.texto
+		Texto campo=Mail.sender titulo="De"
+	}
+    
+	Popup PopupConsulta campo=Consulta titulo="Consulta" {
 		AreaTexto campo=Consulta.descripcion titulo="Descripcion" requerido
 		AreaTexto campo=Consulta.consulta titulo="Consulta" requerido
 		Combo campo=Consulta.tipo titulo="Tipo" requerido
 	}
 
-	Pagina Propiedades entidad=Propiedades noForm {
+	Pagina Propiedades campo=Propiedades noForm {
 		Tabla tablaPropiedades titulo="Tabla de properties" campo=Propiedades popup=PopupProperties {
 			Columna campo=Propiedades.descripcion titulo="Descripción"
 			Columna campo=Propiedades.clave titulo="Clave"
@@ -140,7 +142,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		}
 	}
 
-	Popup PopupProperties entidad=Propiedades titulo="Properties"{
+	Popup PopupProperties campo=Propiedades titulo="Properties"{
 		Texto campo=Propiedades.descripcion titulo="Descripción" requerido
 		Texto campo=Propiedades.clave titulo="Clave" requerido
 	}

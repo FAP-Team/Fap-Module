@@ -6,7 +6,6 @@ import java.util.List;
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
-import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.impl.LedFactoryImpl;
@@ -59,6 +58,12 @@ public class LedEntidadUtils {
 			return "OneToOne";
 		}		
 		return c.getTipoReferencia().getType();
+	}
+	
+	public static boolean equals(Entity entidad1, Entity entidad2){
+		if (entidad1 == null || entidad2 == null)
+			return entidad1 == entidad2;
+		return entidad1.getName().equals(entidad2.getName());
 	}
 	
 	/**
@@ -197,11 +202,14 @@ public class LedEntidadUtils {
 		return attrs;
 	}
 	
+	/*
+	 * Devuelve la entidad asociada a una pagina, que será la siguiente:
+	 * 		Ultimo atributo del campo definido en la pagina, si no es null
+	 * 		ó: ultimo atributo del campo definido en el formulario, si no es null
+	 * 		ó: null
+	 */
 	public static Entity getEntidad(Pagina pagina){
-		if (pagina.getEntidad() != null){
-			return pagina.getEntidad();
-		}
-		return ((Formulario) pagina.eContainer()).getEntidad();
+		return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampoPagina(pagina));
 	}
 	
 }

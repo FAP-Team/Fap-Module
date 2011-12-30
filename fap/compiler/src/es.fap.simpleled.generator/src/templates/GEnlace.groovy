@@ -35,7 +35,14 @@ public class GEnlace {
 		}
 		
 		if(enlace.pagina){
-			p.put("action", ControllerUtils.refPaginaAction(enlace.pagina))
+			Controller pagUtil = Controller.fromPagina(enlace.pagina.pagina).initialize();
+			p.put("action", pagUtil.getRouteIndex(enlace.pagina.accion));
+		}
+		
+		if(enlace.popup){
+			Controller popupUtil = Controller.fromPopup(enlace.popup.popup).initialize();
+			p.putStr("popup", enlace.popup.popup.name);
+			p.put("action", popupUtil.getRouteIndex(enlace.popup.accion));
 		}
 		
 		if(enlace.campo != null){

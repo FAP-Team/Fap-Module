@@ -4,10 +4,9 @@ package controllers.popups;
 import messages.Messages;
 import models.Documento;
 import play.mvc.Util;
-import controllers.gen.popups.RecibosAportadosPopupVerControllerGen;
+import controllers.gen.popups.PopUpDocPresentadosControllerGen;
 			
-public class RecibosAportadosPopupVerController extends RecibosAportadosPopupVerControllerGen {
-	
+public class PopUpDocPresentadosController extends PopUpDocPresentadosControllerGen {
 	protected static Documento getDocumento(Long idSolicitud, Long idDocumento){
     	System.out.println("hola soy hijo");
         Documento documento = null;
@@ -26,7 +25,7 @@ public class RecibosAportadosPopupVerController extends RecibosAportadosPopupVer
     }
     
     @Util
-	public static void abrir(String accion,Long idDocumento,Long idSolicitud){
+	public static void index(String accion,Long idDocumento,Long idSolicitud){
 		Documento documento;
 		if(accion.equals("crear")){
             documento = new Documento();
@@ -36,8 +35,7 @@ public class RecibosAportadosPopupVerController extends RecibosAportadosPopupVer
 		if (!permiso(accion)){
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
 		}
-		renderTemplate("gen/popups/recibosAportadosPopupVer.html",accion,idDocumento,documento,idSolicitud);
+		renderTemplate("gen/popups/registrosPopupVer.html",accion,idDocumento,documento,idSolicitud);
 	}
-    
 }
 		

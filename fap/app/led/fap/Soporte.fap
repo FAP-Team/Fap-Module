@@ -1,27 +1,23 @@
-Formulario Soporte entidad=Incidencia {
+Formulario Soporte campo=Incidencia {
 	
 	Menu {
 		Enlace "Inicio" accion="fap.SecureController.login"
 		Enlace "Mis Solicitudes" permiso=logeado pagina=Principal.Solicitudes 		
-    	Enlace "Soporte" pagina=Soporte
+    	Enlace "Ayuda" pagina=Soporte crear
     	Enlace "Manuales"
     }
     
-	Pagina Soporte noForm noAutenticar {
+	Pagina Soporte noAutenticar botonCrear="Enviar" redirigirCrear="/" {
 		Wiki {"
 Utilice el siguiente formulario para notificar una incidencia o realizar cualquier consulta respecto a su solicitud. En el tiempo más breve posible se le contestará a la dirección de correo electrónico que indique.
 			"}
 			
-		Form incidencia {
-			Texto campo=Incidencia.email titulo="Email del remitente" requerido
-			Texto campo=Incidencia.telefono titulo="Teléfono" requerido
-			Texto campo=Incidencia.nombre titulo="Nombre" requerido
-			Texto campo=Incidencia.apellidos titulo="Apellidos" requerido
-			Texto campo=Incidencia.asunto titulo="Asunto" requerido
-			AreaTexto campo=Incidencia.texto titulo="Texto" requerido
-			Boton enviarIncidencia titulo="Enviar"
-		}
-		
+		Texto campo=Incidencia.email titulo="Email del remitente" requerido
+		Texto campo=Incidencia.telefono titulo="Teléfono" requerido
+		Texto campo=Incidencia.nombre titulo="Nombre" requerido
+		Texto campo=Incidencia.apellidos titulo="Apellidos" requerido
+		Texto campo=Incidencia.asunto titulo="Asunto" requerido
+		AreaTexto campo=Incidencia.texto titulo="Texto" requerido
 	}
-		
+	
 }

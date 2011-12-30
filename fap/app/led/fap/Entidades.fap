@@ -46,7 +46,6 @@ Entidad Agente inheritance=joined{
 	Boolean funcionario
 }
 
-
 Entidad Direccion embeddable {
 	String calle
 	String numero
@@ -81,7 +80,6 @@ Entidad Documentacion {
 	DateTime fechaFirma
 	String firma transient
 }
-
 
 Entidad ObligatoriedadDocumentos extends Singleton {
 	List<String> imprescindibles
@@ -125,7 +123,6 @@ Entidad RepresentantePersonaJuridica extends RepresentantePersonaFisica {
 	Lista TiposRepresentantes tipoRepresentacion
 }
 
-
 Entidad Nip embeddable {
 	String tipo
 	String valor
@@ -167,7 +164,6 @@ Entidad Registro {
 	OneToMany Firmante firmantes
 }
 
-
 Entidad Firmante {
 	String nombre
 	String idtipo
@@ -205,7 +201,6 @@ Entidad ExpedienteAed{
 	String idAed	
 }
 
-
 Entidad Aportaciones {
 	Aportacion actual
 	OneToMany Aportacion registradas
@@ -223,9 +218,6 @@ Entidad Aportacion {
 	Documento oficial
 	Documento justificante
 }
-
-
-
 
 Entidad Incidencia {
     Email email
@@ -258,7 +250,6 @@ Entidad Log nonPersist {
 	String message
 	String trace
 }
-
 
 Entidad Verificacion {
 	String uriVerificacion
@@ -357,4 +348,8 @@ Entidad Propiedades {
 	String descripcion
 	String clave
 	String valor transient
+}
+
+Entidad Convocatoria extends Singleton {
+	Lista estadoConvocatoria estado default = "presentacion"
 }

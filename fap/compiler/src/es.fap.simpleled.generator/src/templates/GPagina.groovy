@@ -2,9 +2,12 @@ package templates;
 
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject
 
 import es.fap.simpleled.led.*
+import es.fap.simpleled.led.util.LedCampoUtils;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 import generator.utils.*
 import generator.utils.HashStack.HashStackName;
 import generator.utils.EntidadUtils;
@@ -12,24 +15,18 @@ import generator.utils.EntidadUtils;
 
 public class GPagina {
 
-	def elementoGramatica;
+	Controller controller;
 	Pagina pagina;
 	String formulario;
-	List<EntidadUtils> entities;
-	List<String> saveExtra;
-	List<String> saveCode;
+	boolean hasForm;
+	CampoUtils campo;
 	
-	public static String generate(Pagina pagina){
+	public static void generate(Pagina pagina){
 		GPagina g = new GPagina(pagina);
 		HashStack.push(HashStackName.ROUTES, g);
 		HashStack.push(HashStackName.CONTAINER, g);
 		if (pagina.guardarParaPreparar) {
 			HashStack.push(HashStackName.SAVE_CODE, g);
-		}
-		if (pagina.inicial) {
-			HashStack.push(HashStackName.FIRST_PAGE, pagina.name);
-		} else {
-			HashStack.push(HashStackName.PAGE_NAME, pagina.name);
 		}
 		g.view();
 		g.controller();
@@ -38,12 +35,13 @@ public class GPagina {
 
 	public GPagina(Pagina pagina){
 		this.pagina = pagina;
-		this.formulario = ModelUtils.getActualContainer().name;
-		this.elementoGramatica = pagina;
+		this.formulario = pagina.eContainer().name;
+		this.campo = CampoUtils.create(LedCampoUtils.getCampoPagina(pagina));
+		this.hasForm = this.campo != null && !pagina.noForm && !hayForm(pagina);
 	}
 	
 	public String controllerName(){
-		return pagina.name + "Controller";
+		return "${pagina.name}Controller";
 	}
 
 	public String controllerGenName(){
@@ -59,166 +57,96 @@ public class GPagina {
 	}
 
 	public String url(){
-		return "/" + formulario + "/" + pagina.name.toLowerCase();
+		return "/${formulario}/${pagina.name.toLowerCase()}";
 	}
 
 	public String view(){
+		String viewElementos = "";
+		for(Elemento elemento : pagina.getElementos()){
+			viewElementos += Expand.expand(elemento);
+		}
 		
-		String viewElementos;
-		if (pagina.noForm) {
-			String elementos = "";
-			for(Elemento elemento : pagina.getElementos()){
-				elementos += Expand.expand(elemento);
-			}
-			viewElementos = """
-				${elementos}
-			"""
-		}
-		else{
-			viewElementos = GForm.generate(pagina);
-		}
-
-		TagParameters paramsform = new TagParameters();
+		crearControllerUtils();
+		
+		TagParameters params = new TagParameters();
+		
+		//Comprueba si hay elementos de subirArchivo en el formulario para añadir el encttype adecuado
+		boolean hasSubirArchivo = HashStack.allElements(HashStackName.SUBIR_ARCHIVO)?.size() > 0;
+		HashStack.remove(HashStackName.SUBIR_ARCHIVO);
+		if(hasSubirArchivo != null && hasSubirArchivo)
+			params.putStr "encType", "multipart/form-data";
+		else
+			params.putStr "encType", "application/x-www-form-urlencoded";
+			
 		Permiso formPermiso = HashStack.top(HashStackName.PERMISSION);
 		if (formPermiso != null) {
-			paramsform.putStr "permiso", formPermiso.name;
+			params.putStr "permisoFormulario", formPermiso.name;
 			if (formPermiso.mensaje != null)
-				paramsform.putStr "mensaje", formPermiso.mensaje;
+				params.putStr "permisoFormularioMsg", formPermiso.mensaje;
 			else
-				paramsform.putStr "mensaje", "No tiene suficientes privilegios para acceder a páginas de este formulario";
+				params.putStr "permisoFormularioMsg", "No tiene suficientes privilegios para acceder a páginas de este formulario";
 		}
-
-		TagParameters params = new TagParameters();
 
 		if (pagina.permiso != null) {
-			params.putStr "permiso", "${pagina.permiso.name}";
+			params.putStr "permisoPagina", "${pagina.permiso.name}";
 			if (pagina.permiso.mensaje != null)
-				params.putStr "mensaje", pagina.permiso.mensaje;
+				params.putStr "permisoPaginaMsg", pagina.permiso.mensaje;
 			else
-				params.putStr "mensaje", "No tiene suficientes privilegios para acceder a ésta página";
+				params.putStr "permisoPaginaMsg", "No tiene suficientes privilegios para acceder a ésta página";
 		}
 		
-		String titulo = pagina.isTitulo() ? pagina.namePagina : pagina.name;
+		params.put("accion", "accion");
+		params.put("urlEditar", controller.getRouteAccion("editar"));
+		params.put("urlCrear", controller.getRouteAccion("crear"));
+		params.put("urlBorrar", controller.getRouteAccion("borrar"));
+		params.putStr("titulo", pagina.titulo != null ? pagina.titulo : pagina.name);
+		params.putStr("formulario", formulario);
+		params.put("hayForm", hasForm);
+		params.putStr("botonEditar", pagina.botonEditar? pagina.botonEditar : "Editar");
+		params.putStr("botonCrear", pagina.botonCrear? pagina.botonCrear : "Crear");
+		params.putStr("botonBorrar", pagina.botonBorrar? pagina.botonBorrar : "Borrar");
+		
 		String view = """
-			#{extends 'fap/template.html' /}
-			#{set title:'${titulo}' /}
-
-			#{fap.permiso ${paramsform.lista()}}
-
-			${GMenu.getIncludeMenuInPage()}
-
-			#{fap.messages}
-
-			#{fap.permiso ${params.lista()}}
-
-			${viewElementos}
-
-			#{/fap.permiso}
-			#{/fap.messages}
-			#{/fap.permiso}
-
+#{fap.pagina ${params.lista(true)}
+}
+	${viewElementos}
+#{/fap.pagina}
 		"""
-
+		
 		FileUtils.overwrite(FileUtils.getRoute('VIEW'), "${pagina.name}/${pagina.name}.html", view);
 	}
 
-	public String controller(){
+	public void crearControllerUtils(){
+		List<String> saveController = HashStack.allElements(HashStackName.CONTROLLER);
+		List<EntidadUtils> saveEntity = HashStack.allElements(HashStackName.SAVE_ENTITY).unique();
+		List<EntidadUtils> indexEntity = HashStack.allElements(HashStackName.INDEX_ENTITY).unique();
+		List<String> saveExtra = HashStack.allElements(HashStackName.SAVE_EXTRA).unique();
+		List<String> saveCode = HashStack.allElements(HashStackName.SAVE_CODE);
+		List<String> saveBoton = HashStack.allElements(HashStackName.SAVE_BOTON);
 		
-		String controladorPadre = "GenericController"
-		String withControlador = ""
-		if (pagina.noAutenticar) {
-			controladorPadre = "Controller"
-			withControlador = "@With({PropertiesFap.class, MessagesController.class, AgenteController.class})"
-		}
-		
-		String controllerHS = "";
-		for(elemento in HashStack.allElements(HashStackName.CONTROLLER)){
-			controllerHS += elemento.controller()
-		}
 		HashStack.remove(HashStackName.CONTROLLER);
-		entities = HashStack.allElements(HashStackName.SAVE_ENTITY);
-		
-		entities.addAll(HashStack.allElements(HashStackName.INDEX_ENTITY));
-		entities = entities.unique();
-		
-		saveExtra = HashStack.allElements(HashStackName.SAVE_EXTRA);
-		saveCode = HashStack.allElements(HashStackName.SAVE_CODE);
-		
 		HashStack.remove(HashStackName.SAVE_ENTITY);
 		HashStack.remove(HashStackName.SAVE_EXTRA);
 		HashStack.remove(HashStackName.SAVE_CODE);
 		HashStack.remove(HashStackName.SAVE_BOTON);
 		HashStack.remove(HashStackName.INDEX_ENTITY);
-
-		List<String> renderParams = entities.collect { it.variable };
-//		renderParams.addAll(entities.collect { it.id });
 		
-		
-		String redirectMethod = '"${controllerName()}.index"';
-		String template = """ "gen/${pagina.name}/${pagina.name}.html" """;
-
-		EntidadUtils solicitud = EntidadUtils.create();
-		if (ModelUtils.isSolicitudForm()) {
-			solicitud = EntidadUtils.create(LedUtils.findSolicitud());
-			renderParams.add(solicitud.id);  // Cambiar cuando se implemente entidad de pagina.
-		}
-		String controllerGen = """
-			package controllers.gen;
-
-			import play.*;
-			import play.mvc.*;
-			import controllers.fap.*;
-			import tags.ReflectionUtils;
-			import validation.*;
-			import models.*;
-			import java.util.*;
-			import messages.Messages;
-			import java.lang.reflect.Field;
-			
-			${withControlador}
-			public class ${controllerGenName()} extends ${controladorPadre} {
-
-				public static void index(${solicitud.typeId}){
-					${entities.collect{"$it.typeVariable = ${ControllerUtils.simpleGetterCall(it, false)};"}.join("\n")}
-
-					renderTemplate(${StringUtils.params(template, renderParams)});
-				}
-				
-				@Before
-				static void beforeMethod() {
-					renderArgs.put("controllerName", "${controllerGenName()}");
-				}
-	
-		""";
-		
-		for (EntidadUtils entidad: entities){
-			controllerGen += ControllerUtils.simpleGetter(entidad, false);
-		}
-		
-		controllerGen += """
-				${controllerHS}
-			}
-		"""
-		
-		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'), controllerGenName() + ".java", controllerGen);
-		
-		String controller = """
-			package controllers;
-
-			import controllers.gen.${controllerGenName()};
-			
-			public class ${controllerName()} extends ${controllerGenName()} {
-
-			}
-		"""
-		
-		FileUtils.write(FileUtils.getRoute("CONTROLLER"), controllerName() + ".java", controller);
+		controller = Controller.fromPagina(pagina);
+		controller.saveController = saveController;
+		controller.saveExtra = saveExtra;
+		controller.saveCode = saveCode;
+		controller.saveBoton = saveBoton;
+		controller.saveEntities = saveEntity;
+		controller.indexEntities = indexEntity;
+		controller.initialize();
 	}
 
+	public String controller(){
+		controller.controller();
+	}
+	
 	public String generateRoutes(){
-		StringBuffer sb = new StringBuffer();
-		StringUtils.appendln sb, Route.to("GET", url(), controllerName() + ".index")
-		return sb.toString();
+		controller.generateRoutes();
 	}
 
 	public String saveCode(){
@@ -227,6 +155,21 @@ public class GPagina {
 				dbSolicitud.savePages.pagina${pagina.name} = true;
 			}
 		""";
+	}
+	
+	public static boolean hayForm(EObject container){
+		if (container instanceof Form)
+			return true;
+		EList<Elemento> elementos = LedCampoUtils.getElementos(container);
+		if (elementos != null){
+			for (EObject obj: elementos){
+				if (hayForm(obj)){
+					return true;
+				}
+			}
+			return false;
+		}
+		return false;
 	}
 
 }

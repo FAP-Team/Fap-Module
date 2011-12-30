@@ -23,6 +23,8 @@
 	}else{
 		throw new play.exceptions.TagInternalException("el atributo url y accion no pueden ser vacios");
 	}
+	if (_popup != null)
+		url = "javascript:popup_open('${_popup}', '${url}')";
 	
 	def target = _target
 	def stackDisabled = tags.TagMapStack.top("editable")

@@ -5,7 +5,7 @@
   	_id     - ID
   	_titulo - Label
   	_ancho	- ancho
-  	_popup	- popup
+  	
 }*
 
 %{ 
@@ -17,29 +17,10 @@
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'	
 	if(_ancho != null)
 		style += 'width: ' + _ancho + ';'
-	
-	String urlPopup;
-	String popup = _popup;
-	String solicitud = "2";
-	if (popup != null){
-		urlPopup = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
-	}
-	
 }%
 
 	<button type="submit" class="boton" id="${id}" ${disabled} #{if style}style="${style}"#{/if} >${label}</button>
 	
-	#{if popup}
-	<script>
-		$(function(){
-			$("#${id}").click(function(){
-				popup_open('${popup}', '${urlPopup}', 'general', {id:${solicitud}});
-				return false;
-			});
-		});
-	</script>
-	#{/if}
-	#{else}
 	<script>
 		#{if waitPopup}
 		$(function() { 
@@ -49,14 +30,18 @@
 		}); 
 		#{/if}
 		#{else}
-		$(function() { 
-			$('#${id}').parents('form').submit(function(){
+		$(function() {
+			form = $('#${id}').parents('form');
+			form.submit(function(){
 				$('#${id}').attr("disabled", "true");
 			});
-		}); 		
+			$('#${id}').click(function(){
+				input = $("<input>").attr("type", "hidden").attr("name", "${id}").val("${id}");
+				form.append($(input));
+			});
+		});
 		#{/else}
 	</script>
-	#{/else}
 	
 
 	

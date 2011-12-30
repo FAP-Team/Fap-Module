@@ -8,7 +8,7 @@
  * @param options.idSolicitud	Id de una solicitud
  * @param options.campo			campo mostrado en la tabla
  */
-function popup_open(popup, url, options, callback) {
+function popup_open(popup, url, callback) {
 	$("body").append("<div id='" + popup + "' class='popup'></div>");
 	var $popup = $("#" + popup);
 	
@@ -30,7 +30,7 @@ function popup_open(popup, url, options, callback) {
 	if(callback != null)
 		$popup.data('tabla', callback);
 	
-	$.get(url, options, function(data){
+	$.get(url, function(data){
 		cargado = true;
 		if(typeof(data) == 'string'){
 			$popup.html(data);
@@ -92,4 +92,12 @@ function popupWait_open() {
 function popupWait_close() {
 	$popup = $("#popupWait.wait-popup");	
 	$popup.dialog("close");
+}
+
+function replaceId(url, entidad, id) {
+	return url.replace(entidad, id).replace(new RegExp("amp;", 'g'), "");
+}
+
+function replaceAmpersand(url) {
+	return url.replace(new RegExp("amp;", 'g'), "");
 }

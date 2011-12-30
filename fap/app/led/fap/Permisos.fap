@@ -1,31 +1,31 @@
 // Permisos de administracion
-rule administrador
+Permiso administrador
 when
 	agente.rolActivo = "administrador"
 then
 	grant
 
-rule usuario
+Permiso usuario
 when
 	agente.rolActivo = "usuario"
 then
 	grant
 
-rule noUsuario
+Permiso noUsuario
 when
 	agente.rolActivo = "usuario"
 then
 	deny
 		
 		
-rule logeado
+Permiso logeado
 when 
 	agente != null
 then 
 	grant
 		
 // Permisos de la pag presentacion
-rule presentacionPrepararParaFirmar
+Permiso presentacionPrepararParaFirmar
 vars
 	SolicitudGenerica solicitud
 when
@@ -42,7 +42,7 @@ when
 then
 	grant
 
-rule presentacionModificar
+Permiso presentacionModificar
 vars
 	SolicitudGenerica solicitud
 when
@@ -52,7 +52,7 @@ when
 then
 	grant		
 
-rule presentacionObtenerBorrador
+Permiso presentacionObtenerBorrador
 vars
 	SolicitudGenerica solicitud
 when
@@ -63,7 +63,7 @@ then
 	grant
 
 
-rule presentacionFirmar
+Permiso presentacionFirmar
 vars
 	SolicitudGenerica solicitud
 when
@@ -81,7 +81,7 @@ then
 
 
 
-rule presentacionRegistrar
+Permiso presentacionRegistrar
 vars
 	SolicitudGenerica solicitud
 when
@@ -112,7 +112,7 @@ then
 	grant			
 	
 
-rule presentacionRecibo
+Permiso presentacionRecibo
 vars
 	SolicitudGenerica solicitud
 when
@@ -124,7 +124,7 @@ then
 		
 
 
-rule instruccion
+Permiso instruccion
 vars
 	SolicitudGenerica solicitud
 when
@@ -133,7 +133,7 @@ then
 	grant		
 
 	
-rule solicitudPreparadaFirmarYPresentar
+Permiso solicitudPreparadaFirmarYPresentar
 vars
 	SolicitudGenerica solicitud
 when
@@ -147,7 +147,7 @@ when
 then
 	grant
 
-rule editableSiSolicitudIniciada
+Permiso editableSiSolicitudIniciada
 vars
 	SolicitudGenerica solicitud
 when
@@ -156,7 +156,7 @@ when
 then
 	grant
 
-rule solicitudPreparadaFirmar
+Permiso solicitudPreparadaFirmar
 vars
 	SolicitudGenerica solicitud
 when
@@ -171,7 +171,7 @@ when
 then
 	grant
 
-rule solicitudPreparadaPresentar
+Permiso solicitudPreparadaPresentar
 vars
 	SolicitudGenerica solicitud
 when
@@ -188,7 +188,7 @@ then
 	grant
 
 // Permiso que define las solicitudes que son visibles para el usuario
-rule solicitudes
+Permiso solicitudes
 mensaje = "No tiene suficientes privilegios para acceder a esta solicitud"
 vars
 	SolicitudGenerica solicitud
@@ -203,14 +203,14 @@ then
 
 // Permisos pagina de presentacion
 
-rule adminGestorRevisor
+Permiso adminGestorRevisor
 when
 	(action in ("read", "update")) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor"))
 then 
 	grant
 
-rule aportacion
+Permiso aportacion
 vars
 	SolicitudGenerica solicitud
 when 
@@ -219,7 +219,7 @@ when
 then 
 	grant
 
-rule aportacionDocumentos
+Permiso aportacionDocumentos
 vars
 	SolicitudGenerica solicitud
 when
@@ -229,20 +229,20 @@ when
 then
 	grant	
 
-rule noEditable
+Permiso noEditable
 when
 	(action = "update")
 then
 	deny
 
-rule noVisibleUsuario
+Permiso noVisibleUsuario
 when
 	(action = "read") and
 	agente.rolActivo = "usuario"
 then
 	deny
 	
-rule solicitudEnBorrador
+Permiso solicitudEnBorrador
 vars
 	SolicitudGenerica solicitud
 when
@@ -253,7 +253,7 @@ then
 
 // Este permiso lo tienen todas las páginas de la solicitud
 // Controla que los datos no se puedan editar cuando la solicitud está preparada para registrar
-rule solicitudEditable
+Permiso solicitudEditable
 vars
 	SolicitudGenerica solicitud
 when
@@ -272,7 +272,7 @@ then
 	grant	
 
 	
-rule solicitudEditableDocumentacion
+Permiso solicitudEditableDocumentacion
 vars
 	SolicitudGenerica solicitud
 when
@@ -290,21 +290,21 @@ then
 	grant
 
 
-rule visibleSiAccesoCertificado
+Permiso visibleSiAccesoCertificado
 when 
 	agente.acceso = "certificado"
 then 
 	grant
 
 
-rule visibleSiAccesoContrasena
+Permiso visibleSiAccesoContrasena
 when 
 	(agente.acceso = "usuario")
 then 
 	grant
 	
 	
-rule documentoAutorizacionGenerado
+Permiso documentoAutorizacionGenerado
 vars 
 	SolicitudGenerica solicitud
 when 
@@ -315,7 +315,7 @@ then
 	grant
 
 
-rule visibleFuncionarioAutorizado
+Permiso visibleFuncionarioAutorizado
 vars
 	SolicitudGenerica solicitud
 when 
@@ -325,7 +325,7 @@ when
 then 
 	grant
 
-rule noVisibleFuncionarioAutorizado
+Permiso noVisibleFuncionarioAutorizado
 vars
 	SolicitudGenerica solicitud
 when 
@@ -337,7 +337,7 @@ then
 
 	
 /* Se puede moficicar la aportación de documentación cuando está en borrador*/	
-rule aportacionModificar
+Permiso aportacionModificar
 vars
 	SolicitudGenerica solicitud
 when
@@ -351,7 +351,7 @@ then
   al usuario diciendole que hubo un problema, que pulse otra vez el problema para
   completar el registro 
 */	
-rule aportacionMensajeIntermedio
+Permiso aportacionMensajeIntermedio
 vars
 	SolicitudGenerica solicitud
 when
@@ -363,7 +363,7 @@ then
 /* 
  * Permisos de la pagina de presentacion
  */
-rule mensajeVerificacion
+Permiso mensajeVerificacion
 vars
 	SolicitudGenerica solicitud
 when
@@ -374,7 +374,7 @@ then
 	grant
 
 	
-rule iniciarVerificacion
+Permiso iniciarVerificacion
 vars
 	SolicitudGenerica solicitud
 when
@@ -384,7 +384,7 @@ when
 then
 	grant
 
-rule verificarDocumentos
+Permiso verificarDocumentos
 vars
 	SolicitudGenerica solicitud
 when
@@ -403,7 +403,7 @@ when
 then 
 	grant
 	
-rule verificacionRequerimientos
+Permiso verificacionRequerimientos
 vars
 	SolicitudGenerica solicitud
 when
@@ -413,7 +413,7 @@ when
 then
 	grant
 
-rule nuevoRequerimiento
+Permiso nuevoRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
@@ -424,7 +424,7 @@ then
 	grant
 
 
-rule firmarRequerimiento
+Permiso firmarRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
@@ -443,7 +443,7 @@ when
 then
 	grant
 
-rule finalizarRequerimiento
+Permiso finalizarRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
@@ -452,3 +452,21 @@ when
 	(solicitud.estado in ("requerida", "requerida plazo vencido"))
 then
 	grant
+	
+Permiso aportacionNoNull
+vars
+	// TODO: Permitir variables con nombres tales como "documento", .... etc
+	Documento doc
+when
+	doc.uri = null
+then
+	deny
+	
+	
+Permiso nuevaSolicitud
+vars
+	Convocatoria convocatoria
+when
+	convocatoria.estado = "presentacion"
+then
+	grant			

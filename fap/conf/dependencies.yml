@@ -3,7 +3,7 @@
 self: play -> fap 1.1
  
 require:
-    - play 1.2.3
+    - play 1.2.4
     - org.jadira.usertype -> usertype.jodatime 1.8:
         transitive: false
     - org.jadira.usertype -> usertype.spi 1.8:
@@ -11,7 +11,6 @@ require:
     - com.google.guava -> guava r09
     - net.sf.flexjson -> flexjson 2.1
     - play -> pdf 0.6
-    - play -> greenscript 1.2.6k
     - play -> recaptcha 1.2
     - javassist -> javassist 3.8.0.GA:
         transitive: false

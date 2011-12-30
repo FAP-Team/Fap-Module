@@ -4,10 +4,9 @@ package controllers.popups;
 import messages.Messages;
 import models.Documento;
 import play.mvc.Util;
-import controllers.gen.popups.RegistrosPopupVerControllerGen;
+import controllers.gen.popups.PopUpDocAportadosControllerGen;
 			
-public class RegistrosPopupVerController extends RegistrosPopupVerControllerGen {
-
+public class PopUpDocAportadosController extends PopUpDocAportadosControllerGen {
 	protected static Documento getDocumento(Long idSolicitud, Long idDocumento){
     	System.out.println("hola soy hijo");
         Documento documento = null;
@@ -26,7 +25,7 @@ public class RegistrosPopupVerController extends RegistrosPopupVerControllerGen 
     }
     
     @Util
-	public static void abrir(String accion,Long idDocumento,Long idSolicitud){
+	public static void index(String accion,Long idDocumento,Long idSolicitud){
 		Documento documento;
 		if(accion.equals("crear")){
             documento = new Documento();
@@ -38,6 +37,5 @@ public class RegistrosPopupVerController extends RegistrosPopupVerControllerGen 
 		}
 		renderTemplate("gen/popups/registrosPopupVer.html",accion,idDocumento,documento,idSolicitud);
 	}
-	
 }
 		

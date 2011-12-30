@@ -1,8 +1,5 @@
 package es.fap.simpleled.led.util;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.TerminalRule;
 import org.eclipse.xtext.nodemodel.ICompositeNode;

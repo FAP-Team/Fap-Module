@@ -162,3 +162,8 @@ Lista tipoConsulta {
 	tipoSQL: "SQL"
 	tipoJPQL: "JPSQL"
 }
+
+Lista estadoConvocatoria {
+	presentacion : "Presentación"
+	instruccion : "Instrucción"	
+}

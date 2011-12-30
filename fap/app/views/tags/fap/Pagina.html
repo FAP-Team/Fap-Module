@@ -1,0 +1,86 @@
+%{
+	String accion = com.google.common.base.Preconditions.checkNotNull(_accion, "accion");
+	play.mvc.Router.ActionDefinition urlEditar = com.google.common.base.Preconditions.checkNotNull(_urlEditar, "urlEditar");
+	play.mvc.Router.ActionDefinition urlCrear = com.google.common.base.Preconditions.checkNotNull(_urlCrear, "urlCrear");
+	play.mvc.Router.ActionDefinition urlBorrar = com.google.common.base.Preconditions.checkNotNull(_urlBorrar, "urlBorrar");
+	String titulo = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
+	String formulario = com.google.common.base.Preconditions.checkNotNull(_formulario, "formulario");
+	String encType = com.google.common.base.Preconditions.checkNotNull(_encType, "encType");
+	boolean hayForm = com.google.common.base.Preconditions.checkNotNull(_hayForm, "hayForm");
+	String botonEditar = com.google.common.base.Preconditions.checkNotNull(_botonEditar, "botonEditar");
+	String botonCrear = com.google.common.base.Preconditions.checkNotNull(_botonCrear, "botonCrear");
+	String botonBorrar = com.google.common.base.Preconditions.checkNotNull(_botonBorrar, "botonBorrar");
+	
+	play.mvc.Router.ActionDefinition url;
+	String boton;
+	
+	if (accion == "editar"){
+		url = urlEditar;
+		boton = botonEditar;
+	}
+	else if (accion == "crear"){
+		url = urlCrear;
+		boton = botonCrear;
+	}
+	else if (accion == "borrar"){
+		url = urlBorrar;
+		boton = botonBorrar;
+	}
+}%
+		
+
+#{extends 'fap/template.html' /}
+
+#{set title:titulo /}
+
+#{fap.permiso permiso:_permisoFormulario, mensaje:_permisoFormularioMsg }
+			
+#{if play.getVirtualFile("app/views/gen/menu/${formulario}.html") != null}
+	#{set 'menu'}
+		#{include "gen/menu/${formulario}.html"/}
+	#{/set}
+#{/if}
+
+#{fap.messages}
+
+#{if accion != "borrado"}
+
+	#{fap.permiso permiso:_permisoPagina, mensaje:_permisoPaginaMsg }
+	
+	#{if accion != "leer" && hayForm}
+			
+		#{form action:url, method:"POST", id:"${accion}Form", enctype:encType }
+			
+			%{  if (accion == "borrar") tags.TagMapStack.push("editable", false);  }%
+			
+			#{doBody /}
+
+			%{  if (accion == "borrar") tags.TagMapStack.pop("editable");  }%
+
+				<div class="button_container">
+					#{fap.boton id:"${accion}Button", titulo:boton /}
+				</div>
+
+		#{/form}
+	
+	#{/if}
+	
+	#{else}
+	
+		%{  if (accion == "leer") tags.TagMapStack.push("editable", false);  }%
+	
+		#{doBody /}
+		
+		%{  if (accion == "leer") tags.TagMapStack.pop("editable");  }%
+		
+	#{/else}
+	
+	#{/fap.permiso}
+
+#{/if}
+
+#{/fap.messages}
+
+#{/fap.permiso}
+
+		

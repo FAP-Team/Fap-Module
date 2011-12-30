@@ -7,7 +7,7 @@ import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CampoAtributos;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedFactory;
-import es.fap.simpleled.led.impl.LedFactoryImpl;
+import es.fap.simpleled.led.Tabla
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -31,8 +31,7 @@ public class CampoUtils implements Comparable{
 			return null;
 		}
 		CampoUtils campo = new CampoUtils();
-		LedFactory factory = new LedFactoryImpl();
-		campo.campo = factory.createCampo();
+		campo.campo = LedFactory.eINSTANCE.createCampo();
 		campo.campo.setEntidad(entity);
 		campo.campo.setAtributos(null);
 		campo.str = getCampoStr(campo.campo);
@@ -54,13 +53,12 @@ public class CampoUtils implements Comparable{
 				return null;
 			}
 		}
-		LedFactory factory = new LedFactoryImpl();
-		Campo campoResult = factory.createCampo();
+		Campo campoResult = LedFactory.eINSTANCE.createCampo();
 		campoResult.setEntidad(entity);
 		if (atributos.size() == 0){
 			return CampoUtils.create(campoResult);
 		}
-		CampoAtributos attrsResult = factory.createCampoAtributos();
+		CampoAtributos attrsResult = LedFactory.eINSTANCE.createCampoAtributos();
 		campoResult.setAtributos(attrsResult);
 		for (int i = 0; i < atributos.size(); i++){
 			String atributo = atributos.get(i);
@@ -77,7 +75,7 @@ public class CampoUtils implements Comparable{
 				if (LedEntidadUtils.xToMany(attr)){
 					return null;
 				}
-				attrsResult.setAtributos(factory.createCampoAtributos());
+				attrsResult.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
 				attrsResult = attrsResult.getAtributos();
 			}
 		}
@@ -142,6 +140,42 @@ public class CampoUtils implements Comparable{
 	
 	public String sinEntidad(){
 		return sinEntidad(str);
+	}
+	
+	public boolean simple(){
+		return campo.getAtributos() == null;
+	}
+	
+	/*
+	 * Solicitud.documento ----> solicitud?.documento?.id
+	 */
+	public String idWithNullCheck(){
+		return CampoUtils.withNullCheck(firstLower() + '.id');
+	}
+	
+	public static boolean hayCamposGuardables(Object o){
+		if(o.metaClass.respondsTo(o,"getElementos")){
+			for (Object elemento: o.elementos){
+				if (hayCamposGuardables(elemento))
+					return true;
+			}
+			return false;
+		}
+		if(o.metaClass.respondsTo(o,"getCampo")){
+			if(! (o instanceof Tabla))
+				return true;
+		}
+	}
+	
+	/*
+	 * solicitud.documento.uri ----> solicitud?.documento?.uri
+	 */
+	public static String withNullCheck(String campo){
+		String[] segmentos = campo.split("\\.");
+		String result = "";
+		for (int i = 0; i < segmentos.length - 1; i++)
+			result += segmentos[i] + "?.";
+		return result + segmentos[segmentos.length - 1];
 	}
 	
 	@Override

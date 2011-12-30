@@ -12,6 +12,7 @@ import generator.utils.StringUtils
 import generator.utils.TagParameters
 import generator.utils.EntidadUtils
 import generator.utils.HashStack.HashStackName
+import org.eclipse.emf.ecore.EObject
 
 public class GSolicitante {
 	def Solicitante solicitante
@@ -190,11 +191,16 @@ public class GSolicitante {
 	public Popup crearPopup (String name, Campo campo, Permiso permiso) {
 		Popup popup = new PopupImpl();
 
-		popup.permiso = permiso
+		EObject container = campo;
+		while (!(container instanceof Formulario))
+			container = container.eContainer();
+		
+		popup.eContainer = container;
+		popup.permiso = permiso;
 		
 		popup.setName "Popup" + StringUtils.firstUpper(name);
 		popup.setTitulo "Representante";
-		popup.setEntidad(LedUtils.getNode(Entity, "RepresentantePersonaJuridica"));
+		popup.setCampo(CampoUtils.create(LedUtils.getNode(Entity, "RepresentantePersonaJuridica")).campo);
 			
 		Persona person = new PersonaImpl();
 		

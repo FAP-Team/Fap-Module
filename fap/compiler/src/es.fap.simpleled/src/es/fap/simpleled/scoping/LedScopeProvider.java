@@ -6,11 +6,9 @@ package es.fap.simpleled.scoping;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.scoping.IGlobalScopeProvider;
+import org.eclipse.xtext.resource.IContainer;
+import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
@@ -25,9 +23,11 @@ import es.fap.simpleled.led.CampoPermisoAtributos;
 import es.fap.simpleled.led.Combo;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedPackage;
-import es.fap.simpleled.led.impl.LedFactoryImpl;
+import es.fap.simpleled.led.Pagina;
+import es.fap.simpleled.led.Popup;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+import es.fap.simpleled.led.util.ModelUtils;
 
 /**
  * This class contains custom scoping description.
@@ -39,6 +39,12 @@ import es.fap.simpleled.led.util.LedEntidadUtils;
 
 public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 	
+	@Inject
+	private IContainer.Manager manager;
+	
+	@Inject
+	private ResourceDescriptionsProvider indexProvider;
+	
 	public IScope scope_CampoAtributos_atributo(CampoAtributos atributos, EReference ref) {
 		Entity entidad = null;
 		if (atributos.eContainer() instanceof Campo){
@@ -46,7 +52,9 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 		}
 		else{
 			Attribute attr = ((CampoAtributos)atributos.eContainer()).getAtributo();
-			if (LedEntidadUtils.xToOne(attr)){
+			boolean esPagina = LedCampoUtils.getCampoContainer(atributos).eContainer() instanceof Pagina;
+			boolean esPopup = LedCampoUtils.getCampoContainer(atributos).eContainer() instanceof Popup;
+			if (LedEntidadUtils.xToOne(attr) || ((esPagina || esPopup) && LedEntidadUtils.isReferencia(attr))){
 				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
@@ -61,7 +69,9 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 				entidad = permiso.getVariable().getTipo();
 			}
 			else if (permiso.isAgente()){
-				entidad = getAgente(atributos);
+				List<Entity> entidades = ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, "Agente", indexProvider, manager, atributos.eResource());
+				if (entidades.size() > 0)
+					entidad = entidades.get(0);
 			}
 		}
 		else{
@@ -96,22 +106,6 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 			entidad = entidad.getExtends();
 		}
 		return attrs;
-	}
-	
-	@Inject
-	private IGlobalScopeProvider globalScopeProvider;
-	
-	public Entity getAgente(EObject object) {
-		for (IEObjectDescription desc : globalScopeProvider.getScope(object.eResource(), LedPackage.Literals.CAMPO__ENTIDAD, null).getAllElements()) {
-			Entity entidad = (Entity) desc.getEObjectOrProxy();
-			if (entidad.eIsProxy()) {
-				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
-			}
-			if (entidad.getName().equals("Agente")) {
-				return entidad;
-			}
-		}
-		return null;
 	}
 	
 }

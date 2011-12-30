@@ -40,112 +40,115 @@ GET /Administracion/consultas fap.consultasController.index
 GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
 
 # === FAPGENERATED ===
-GET /Administracion/usuarios UsuariosController.index
+GET /Administracion/usuarios/index UsuariosController.index
 
 GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios
-GET /Administracion/ListaUsuariosPopup/abrir popups.ListaUsuariosPopupController.abrir
-POST /Administracion/ListaUsuariosPopup/editar popups.ListaUsuariosPopupController.editar
-POST /Administracion/ListaUsuariosPopup/borrar popups.ListaUsuariosPopupController.borrar
-POST /Administracion/ListaUsuariosPopup/crear popups.ListaUsuariosPopupController.crear
-POST /Administracion/ListaUsuariosPopup/cancelarcrear popups.ListaUsuariosPopupController.cancelarCrear
-
-POST /Administracion/usuarios/save UsuariosController.save
-GET /Administracion/aed AedController.index
+GET /Administracion/aed/index AedController.index
 
 POST /Administracion/aed/tiposDeDocumentos AedController.tiposDeDocumentos
-GET /Administracion/requerimientos RequerimientosController.index
 
-POST /Administracion/requerimientos/save RequerimientosController.save
-GET /Administracion/tabladetablas TablaDeTablasController.index
+GET /Administracion/requerimientos/index RequerimientosController.index
+POST /Administracion/requerimientos/editar RequerimientosController.editar
+
+GET /Administracion/tabladetablas/index TablaDeTablasController.index
 
 GET /Administracion/tabladetablas/tabladetablas TablaDeTablasController.tablatabladetablas
-GET /Administracion/TabladetablasPopup/abrir popups.TabladetablasPopupController.abrir
-POST /Administracion/TabladetablasPopup/editar popups.TabladetablasPopupController.editar
-POST /Administracion/TabladetablasPopup/borrar popups.TabladetablasPopupController.borrar
-POST /Administracion/TabladetablasPopup/crear popups.TabladetablasPopupController.crear
-POST /Administracion/TabladetablasPopup/cancelarcrear popups.TabladetablasPopupController.cancelarCrear
-
 POST /Administracion/tabladetablas/actualizarDesdeFichero TablaDeTablasController.actualizarDesdeFichero
-GET /Administracion/emails EmailsController.index
+
+GET /Administracion/emails/index EmailsController.index
 
 GET /Administracion/emails/emails EmailsController.tablaemails
-GET /Administracion/EmailsPopup/abrir popups.EmailsPopupController.abrir
-POST /Administracion/EmailsPopup/editar popups.EmailsPopupController.editar
-POST /Administracion/EmailsPopup/borrar popups.EmailsPopupController.borrar
-POST /Administracion/EmailsPopup/crear popups.EmailsPopupController.crear
-POST /Administracion/EmailsPopup/cancelarcrear popups.EmailsPopupController.cancelarCrear
-
 POST /Administracion/emails/actualizarDesdeFichero EmailsController.actualizarDesdeFichero
-GET /Administracion/propiedades PropiedadesController.index
+
+GET /Administracion/propiedades/index PropiedadesController.index
 
 GET /Administracion/propiedades/tablaPropiedades PropiedadesController.tablatablaPropiedades
-GET /Administracion/TablaPropiedadesPopup/abrir popups.TablaPropiedadesPopupController.abrir
-POST /Administracion/TablaPropiedadesPopup/editar popups.TablaPropiedadesPopupController.editar
-POST /Administracion/TablaPropiedadesPopup/borrar popups.TablaPropiedadesPopupController.borrar
-POST /Administracion/TablaPropiedadesPopup/crear popups.TablaPropiedadesPopupController.crear
-POST /Administracion/TablaPropiedadesPopup/cancelarcrear popups.TablaPropiedadesPopupController.cancelarCrear
+GET /Administracion/popupusuario/index popups.PopupUsuarioController.index
+POST /Administracion/popupusuario/editar popups.PopupUsuarioController.editar
+POST /Administracion/popupusuario/borrar popups.PopupUsuarioController.borrar
+POST /Administracion/popupusuario/crear popups.PopupUsuarioController.crear
 
-GET /Solicitud/aportacion AportacionController.index
+GET /Administracion/popuptabladetablas/index popups.PopupTablaDeTablasController.index
+POST /Administracion/popuptabladetablas/editar popups.PopupTablaDeTablasController.editar
+POST /Administracion/popuptabladetablas/borrar popups.PopupTablaDeTablasController.borrar
+POST /Administracion/popuptabladetablas/crear popups.PopupTablaDeTablasController.crear
+
+GET /Administracion/popupemail/index popups.PopupEmailController.index
+POST /Administracion/popupemail/editar popups.PopupEmailController.editar
+POST /Administracion/popupemail/borrar popups.PopupEmailController.borrar
+POST /Administracion/popupemail/crear popups.PopupEmailController.crear
+
+GET /Administracion/popupconsulta/index popups.PopupConsultaController.index
+
+GET /Administracion/popupproperties/index popups.PopupPropertiesController.index
+POST /Administracion/popupproperties/editar popups.PopupPropertiesController.editar
+POST /Administracion/popupproperties/borrar popups.PopupPropertiesController.borrar
+POST /Administracion/popupproperties/crear popups.PopupPropertiesController.crear
+
+GET /Solicitud/aportacion/index AportacionController.index
 
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
-GET /Solicitud/DocumentosPopupVerModificarBorrar/abrir popups.DocumentosPopupVerModificarBorrarController.abrir
-POST /Solicitud/DocumentosPopupVerModificarBorrar/editar popups.DocumentosPopupVerModificarBorrarController.editar
-POST /Solicitud/DocumentosPopupVerModificarBorrar/borrar popups.DocumentosPopupVerModificarBorrarController.borrar
-POST /Solicitud/DocumentosPopupVerModificarBorrar/crear popups.DocumentosPopupVerModificarBorrarController.crear
-POST /Solicitud/DocumentosPopupVerModificarBorrar/cancelarcrear popups.DocumentosPopupVerModificarBorrarController.cancelarCrear
-
-POST /Solicitud/aportacion/addDocumento AportacionController.addDocumento
 POST /Solicitud/aportacion/presentar AportacionController.presentar
-GET /Solicitud/aportacionaportados AportacionAportadosController.index
+
+GET /Solicitud/documentos/index DocumentosController.index
+POST /Solicitud/documentos/crear DocumentosController.crear
+
+GET /Solicitud/aportacionaportados/index AportacionAportadosController.index
+POST /Solicitud/aportacionaportados/editar AportacionAportadosController.editar
 
 GET /Solicitud/aportacionaportados/documentos AportacionAportadosController.tabladocumentos
-GET /Solicitud/DocumentosPopupVer/abrir popups.DocumentosPopupVerController.abrir
-POST /Solicitud/DocumentosPopupVer/editar popups.DocumentosPopupVerController.editar
-POST /Solicitud/DocumentosPopupVer/borrar popups.DocumentosPopupVerController.borrar
-POST /Solicitud/DocumentosPopupVer/crear popups.DocumentosPopupVerController.crear
-POST /Solicitud/DocumentosPopupVer/cancelarcrear popups.DocumentosPopupVerController.cancelarCrear
-
-POST /Solicitud/aportacionaportados/save AportacionAportadosController.save
-GET /Solicitud/aportacionrecibos AportacionRecibosController.index
+GET /Solicitud/aportacionrecibos/index AportacionRecibosController.index
+POST /Solicitud/aportacionrecibos/editar AportacionRecibosController.editar
 
 GET /Solicitud/aportacionrecibos/recibosAportados AportacionRecibosController.tablarecibosAportados
-GET /Solicitud/RecibosAportadosPopupVer/abrir popups.RecibosAportadosPopupVerController.abrir
-POST /Solicitud/RecibosAportadosPopupVer/editar popups.RecibosAportadosPopupVerController.editar
-POST /Solicitud/RecibosAportadosPopupVer/borrar popups.RecibosAportadosPopupVerController.borrar
-POST /Solicitud/RecibosAportadosPopupVer/crear popups.RecibosAportadosPopupVerController.crear
-POST /Solicitud/RecibosAportadosPopupVer/cancelarcrear popups.RecibosAportadosPopupVerController.cancelarCrear
-
-POST /Solicitud/aportacionrecibos/save AportacionRecibosController.save
-GET /Solicitud/aportacionpresentar AportacionPresentarController.index
+GET /Solicitud/aportacionpresentar/index AportacionPresentarController.index
 
 POST /Solicitud/aportacionpresentar/modificarBorrador AportacionPresentarController.modificarBorrador
+
 POST /Solicitud/aportacionpresentar/presentar AportacionPresentarController.presentar
+
 POST /Solicitud/aportacionpresentar/presentarSinRegistrar AportacionPresentarController.presentarSinRegistrar
-GET /Solicitud/verificacion VerificacionController.index
+
+GET /Solicitud/verificacion/index VerificacionController.index
 
 POST /Solicitud/verificacion/iniciarVerificacion VerificacionController.iniciarVerificacion
+
 GET /Solicitud/verificacion/verificacionDocumentos VerificacionController.tablaverificacionDocumentos
 GET /Solicitud/verificacion/exclusion VerificacionController.tablaexclusion
 POST /Solicitud/verificacion/gnuevoRequerimientoBorradorPreliminar VerificacionController.gnuevoRequerimientoBorradorPreliminar
+
 POST /Solicitud/verificacion/finalizarTemporal VerificacionController.finalizarTemporal
+
 POST /Solicitud/verificacion/grequerimientoGuardar VerificacionController.grequerimientoGuardar
+
 POST /Solicitud/verificacion/frequerimientoSolicitaFirma VerificacionController.frequerimientoSolicitaFirma
+
 POST /Solicitud/verificacion/gnuevoRequerimientoBorrador VerificacionController.gnuevoRequerimientoBorrador
+
 POST /Solicitud/verificacion/grequerimientoFirmarRequerimiento VerificacionController.grequerimientoFirmarRequerimiento
+
 GET /Solicitud/verificacion/requerimientos VerificacionController.tablarequerimientos
 POST /Solicitud/verificacion/gfinalizarRequerimiento VerificacionController.gfinalizarRequerimiento
-GET /Solicitud/verificacion/registros VerificacionController.tablaregistros
-GET /Solicitud/RegistrosPopupVer/abrir popups.RegistrosPopupVerController.abrir
-POST /Solicitud/RegistrosPopupVer/editar popups.RegistrosPopupVerController.editar
-POST /Solicitud/RegistrosPopupVer/borrar popups.RegistrosPopupVerController.borrar
-POST /Solicitud/RegistrosPopupVer/crear popups.RegistrosPopupVerController.crear
-POST /Solicitud/RegistrosPopupVer/cancelarcrear popups.RegistrosPopupVerController.cancelarCrear
 
-GET /Principal/solicitudes SolicitudesController.index
+GET /Solicitud/verificacion/registros VerificacionController.tablaregistros
+GET /Solicitud/popupdocpresentados/index popups.PopUpDocPresentadosController.index
+
+GET /Solicitud/popupdocprocesos/index popups.PopUpDocProcesosController.index
+POST /Solicitud/popupdocprocesos/editar popups.PopUpDocProcesosController.editar
+POST /Solicitud/popupdocprocesos/borrar popups.PopUpDocProcesosController.borrar
+
+GET /Solicitud/popupdocaportados/index popups.PopUpDocAportadosController.index
+
+GET /Principal/solicitudes/index SolicitudesController.index
 
 GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
-POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
-GET /Soporte/soporte SoporteController.index
+GET /Principal/nuevasolicitud/index NuevaSolicitudController.index
+POST /Principal/nuevasolicitud/crear NuevaSolicitudController.crear
 
-POST /Soporte/soporte/incidencia SoporteController.incidencia
+GET /Principal/editarsolicitud/index EditarSolicitudController.index
+POST /Principal/editarsolicitud/editar EditarSolicitudController.editar
+
+GET /Soporte/soporte/index SoporteController.index
+POST /Soporte/soporte/crear SoporteController.crear
+
 # === END FAPGENERATED ===			 

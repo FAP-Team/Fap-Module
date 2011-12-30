@@ -20,7 +20,7 @@ public class EntidadUtils implements Comparable{
 
 	public static EntidadUtils create(CampoUtils campo){
 		EntidadUtils util = new EntidadUtils();
-		util.entidad = campo?.getEntidad();
+		util.entidad = campo.getEntidad();
 		return util;
 	}
 	
@@ -34,76 +34,80 @@ public class EntidadUtils implements Comparable{
 		return new EntidadUtils();
 	}
 		
+	public boolean nulo(){
+		return entidad == null;
+	}
+	
 	public String getClase(){
+		if (entidad == null)
+			return "";
 		return entidad.getName();
+	}
+	
+	public String getIdCheck(){
+		if (entidad == null)
+			return "";
+		return "${variable}?.id";
 	}
 
     public String getVariable(){
-		if (entidad == null){
+		if (entidad == null)
 			return "";
-		}
-		if (entidad.name.equals("SolicitudGenerica")){
+		if (entidad.name.equals("SolicitudGenerica"))
 			return "solicitud";
-		}
         return StringUtils.firstLower(entidad.name);
     }
 	
 	public String getString(){
-		if (entidad == null){
+		if (entidad == null)
 			return "";
-		}
 		return entidad.name;
 	}
 
     public boolean isSingleton(){
+		if (entidad == null)
+			return false;
 		return LedEntidadUtils.esSingleton(entidad);
     }
 
     public String getId(){
-		if (entidad == null){
+		if (entidad == null)
 			return "";
-		}
-		if (entidad.name.equals("SolicitudGenerica")){
+		if (entidad.name.equals("SolicitudGenerica"))
 			return "idSolicitud";
-		}
         return "id${entidad.name}";
     }
 
     public String getTypeId(){
-		if (entidad == null){
+		if (entidad == null)
 			return "";
-		}
         return "Long $id";
     }
 
     public String getTypeVariable(){
-		if (entidad == null){
+		if (entidad == null)
 			return "";
-		}
         return "$entidad.name ${getVariable()}";
     }
 
 	public String getTypeDb(){
-		if (entidad == null){
+		if (entidad == null)
 			return "";
-		}
 		return "$entidad.name ${getVariableDb()}";
 	}
 	
     public String getVariableDb(){
-		if (entidad == null){
+		if (entidad == null)
 			return "";
-		}
-		if (entidad.name.equals("SolicitudGenerica")){
+		if (entidad.name.equals("SolicitudGenerica"))
 			return "dbSolicitud";
-		}
         return "db" + entidad.name;
     }
 	
 	@Override
 	public boolean equals(Object util){
 		EntidadUtils e = (EntidadUtils)util;
-		return entidad.name.equals(e.entidad.name);
+		return entidad?.name.equals(e.entidad?.name);
 	}
 	
 	@Override

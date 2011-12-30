@@ -49,7 +49,7 @@ public class GPermiso {
 			}else{
 				String params = var.sqlParams?.sqlParams?.collect{
 					return CampoPermisoUtils.create(it).str;
-				}.join(",");
+				}?.join(",");
 				if(params != null && !params.trim().isEmpty())
 					params = ", " + params;
 				else
@@ -83,6 +83,27 @@ public class GPermiso {
 				out = PermisosUtils.className() + r.getPermiso().getName() + "(action, ids, vars)";
 			}
 		}
+		else if (r.left.action){
+			CampoPermisoUtils campo = CampoPermisoUtils.create(r.left);
+			if(r.getGroupOp() != null){
+				String realOp = r.getGroupOp().replaceAll("\\s+", "")
+				String group = r.getRightGroup().collect{
+					return getPermisoRuleCheckRightStr(it);
+				}.join(", ");
+				out = "utils.StringUtils.${realOp}Action(action, ${group})"	
+			}
+			else{
+				String right = getPermisoRuleCheckRightStr(r.right);
+				if ((right.equals("null"))) {
+					String op = r.getSimpleOp().equals('=') ? '==' : r.getSimpleOp();
+					out = "action ${op} null";
+				}
+				else if(r.getSimpleOp().equals("="))
+					out = "Actions.getAction(action).equals(Actions.getAction(${right}.toString()))";
+				else
+					out = "!Actions.getAction(action).equals(Actions.getAction(${right}.toString()))";
+			}
+		}
 		else{
 			CampoPermisoUtils campo = CampoPermisoUtils.create(r.left);
 			if(r.getGroupOp() != null){
@@ -90,7 +111,7 @@ public class GPermiso {
 				String group = r.getRightGroup().collect{
 					return getPermisoRuleCheckRightStr(it);
 				}.join(", ");
-				out = "utils.StringUtils.${realOp}(${campo.str}.toString(), ${group})"	
+				out = "utils.StringUtils.${realOp}(${campo.str}.toString(), ${group})"
 			}
 			else{
 				String right = getPermisoRuleCheckRightStr(r.right);
@@ -98,13 +119,10 @@ public class GPermiso {
 					String op = r.getSimpleOp().equals('=') ? '==' : r.getSimpleOp();
 					out = "${campo.str} ${op} null";
 				}
-				else if(r.getSimpleOp().equals("=")){
+				else if(r.getSimpleOp().equals("="))
 					out = "${campo.str}.toString().equals(${right}.toString())";
-				}
-				else{
-				// !=
-				out = "!${campo.str}.toString().equals(${right}.toString())";
-				}
+				else
+					out = "!${campo.str}.toString().equals(${right}.toString())";
 			}
 		}
 		return out;
@@ -131,7 +149,7 @@ public class GPermiso {
 		}
 		String ruleStr = permisoRuleCode(permiso.rule);
 		String ret;
-		if(permiso.then.equals("grant")){
+		if(permiso.then.then.equals("grant")){
 			ret = "return resultado;"	
 		}else{
 			ret = "return !resultado;";

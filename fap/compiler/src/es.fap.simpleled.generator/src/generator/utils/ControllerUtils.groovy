@@ -31,15 +31,18 @@ class ControllerUtils {
      * @return
      */
     public static String simpleGetter(EntidadUtils entidad, boolean byId) {
+		if (entidad.entidad == null){
+			return "";
+		}
 		if (entidad.isSingleton()){
 			return """
 				@Util
-				protected static ${entidad.clase} get${entidad.clase}(${byId?"Long id":""}){
+				protected static ${entidad.clase} get${entidad.clase}(){
 					return ${entidad.clase}.get(${entidad.clase}.class);
 				}
 			"""
 		}
-		if (entidad.variable.equals("solicitud") || byId){
+		if (byId){
 			return """
 				@Util
 				protected static ${entidad.clase} get${entidad.clase}(${entidad.typeId}){
@@ -56,18 +59,16 @@ class ControllerUtils {
 				}
 			"""
 		}
-		else{
-			return """
-				@Util
-				protected static ${entidad.clase} get${entidad.clase}(){
-					return new ${entidad.clase}();
-				}
-			"""
-		}
+		return """
+			@Util
+			protected static ${entidad.clase} get${entidad.clase}(){
+				return new ${entidad.clase}();
+			}
+		"""
     }
 
     public static String simpleGetterCall(EntidadUtils entidad, boolean byId) {
-		if (entidad.variable.equals("solicitud") || byId){
+		if (byId && !entidad.isSingleton()){
 			return "get${entidad.clase}(${entidad.id})";
 		}
 		else{
@@ -76,6 +77,9 @@ class ControllerUtils {
     }
 	
 	public static String newCall(EntidadUtils entidad) {
+		if (entidad.entidad == null){
+			return "";
+		}
 		if (entidad.isSingleton()){
 			return "$entidad.variable = ${entidad.clase}.get(${entidad.clase}.class);"
 		}
@@ -92,13 +96,19 @@ class ControllerUtils {
      * @return
      */
     public static String complexGetter(EntidadUtils almacen, EntidadUtils entidad, CampoUtils campo) {
-        if (almacen == null)
+        if (almacen?.entidad == null)
             return simpleGetter(entidad, true);
-
+		String singleton = "";
+		EntidadUtils almacenNoSingle = EntidadUtils.create(almacen.entidad);
+		if (almacen.isSingleton()){
+			singleton = "${almacen.typeId} = ${simpleGetterCall(almacen,false)}.id;";
+			almacenNoSingle.entidad = null;
+		}
         return """
 	@Util
-    protected static ${entidad.clase} get${entidad.clase}(${almacen.typeId}, ${entidad.typeId}){
+    protected static ${entidad.clase} get${entidad.clase}(${StringUtils.params(almacenNoSingle.typeId, entidad.typeId)}){
         ${entidad.clase} ${entidad.variable} = null;
+		${singleton}
         if(${almacen.id} == null){
             Messages.fatal("Falta parámetro $almacen.id");
         }else if($entidad.id == null){
@@ -115,47 +125,45 @@ class ControllerUtils {
     }
 
     public static String complexGetterCall(EntidadUtils almacen, EntidadUtils entidad) {
-        if (almacen == null)
-            return simpleGetterCall(entidad, true)
+        if (almacen?.entidad == null || almacen.isSingleton())
+            return simpleGetterCall(entidad, true);
         return "get${entidad.clase}(${almacen.id}, ${entidad.id})";
     }
 
+	public static String almacenGetterCall(AlmacenEntidad almacenEntidad) {
+		if (almacenEntidad.almacen == null)
+			return "";
+		String clase = "${almacenEntidad.almacen.clase} ${almacenEntidad.almacen.variableDb} = ";
+		if (almacenEntidad.almacenAnterior.nulo())
+			return "${clase} ${simpleGetterCall(almacenEntidad.almacen, true)};";
+		return "${clase} ${complexGetterCall(almacenEntidad.almacenAnterior, almacenEntidad.almacen)};";
+	}
 
-    public static String fullGetterCall(EntidadUtils almacen, EntidadUtils entidad) {
-        if(almacen == null && entidad == null) return ""
-
-        if (almacen != null) {
-            return """
-            ${entidad.clase} ${entidad.variableDb} = null;
-            ${almacen.clase} ${almacen.variable} = null;
+    public static String fullGetterCall(EntidadUtils almacen, EntidadUtils entidad, Object ... entities) {
+		def entityList = getEntityList(entities);
+		return """
+			${almacen.entidad? "${almacen.clase} ${almacen.variable} = null;":""}
+            ${entidad.entidad? "${entidad.clase} ${entidad.variableDb} = null;":""}
+			${entityList.collect{"${it.clase} ${it.variableDb} = null;"}.join("\n")}
             if(!Messages.hasErrors()){
-                $entidad.variableDb = ${ControllerUtils.complexGetterCall(almacen, entidad)};
-                $almacen.variable = ${ControllerUtils.simpleGetterCall(almacen, true)};
+				${almacen.entidad? "$almacen.variable = ${ControllerUtils.simpleGetterCall(almacen, true)};":""}
+                ${entidad.entidad? "$entidad.variableDb = ${ControllerUtils.complexGetterCall(almacen, entidad)};":""}
+				${entityList.collect{"$it.variableDb = ${ControllerUtils.simpleGetterCall(it, false)};"}.join("\n")}
             }
-            """
-        } else {
-            return """
-            $entidad.clase $entidad.variableDb = null;
-            if(!Messages.hasErrors()){
-                $entidad.variableDb = ${ControllerUtils.complexGetterCall(almacen, entidad)};
-            }
-            """
-        }
+		"""
     }
 
-	public static String validateCopyMethod(gElemento, EntidadUtils ... entities){
+	public static String validateCopyMethod(gElemento, Object ... entities){
 		if (entities.length == 0){
 			return "";
 		}
 		def params = [];
 		validatedFields = new Stack<Set<String>>();
 		validatedFields.push(new HashSet<String>());
-		
-		entities.each{ entity ->
-			params.add("${entity.typeDb}")
-			params.add("${entity.typeVariable}")
+		getEntityList(entities).each { entidad ->
+			params.add(entidad.typeDb);
+			params.add(entidad.typeVariable);
 		}
-		
 		return """
 			@Util
 			protected static void ${gElemento.name}ValidateCopy(${StringUtils.params(params, gElemento.saveExtra)}){
@@ -166,15 +174,15 @@ class ControllerUtils {
 		"""
 	}
 	
-    public static String validateCopyCall(gElemento, EntidadUtils ... entities){
+    public static String validateCopyCall(gElemento, Object ... entities){
 		if (entities.length == 0){
 			return "";
 		}
-		def params = []
-        entities.each { entity ->
-            params.add(entity.variableDb)
-            params.add(entity.variable)
-        }
+		def params = [];
+		getEntityList(entities).each { entidad ->
+			params.add(entidad.variableDb);
+			params.add(entidad.variable);
+		}
 		return "${gElemento.name}ValidateCopy(${StringUtils.params(params, gElemento.saveExtra.collect{it.split(" ")[1]}.unique())});"
     }
 
@@ -469,23 +477,7 @@ class ControllerUtils {
 			String name = permiso.name;
 			permisoContent = """
 				if (accion == null) return false;
-	
-				boolean permiso;
-				if (accion.equals("crear")) {
-					permiso = ${PermisosUtils.className()}${name}("create", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-					return permiso;
-				}else if (accion.equals("borrar")) {
-					permiso =  ${PermisosUtils.className()}${name}("delete", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-					return permiso;
-				}else if (accion.equals("editar")) {
-					permiso = ${PermisosUtils.className()}${name}("update", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-					return permiso;
-				}else if (accion.equals("leer")) {
-					permiso = ${PermisosUtils.className()}${name}("read", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-					return permiso;
-				}else{
-					return ${PermisosUtils.className()}${name}(accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-				 }
+				return ${PermisosUtils.className()}${name}(accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
 			"""
 		}else{
 			permisoContent = """//Sobreescribir para incorporar permisos a mano
@@ -494,31 +486,6 @@ class ControllerUtils {
 		return permisoContent;
 	}
 	
-	
-	private static refPaginaInternal(Pagina pagina){
-		String ref = "";
-		String entidad = pagina.eContainer().name;
-		String link = pagina.name;
-		
-		// Si conocemos la entidad, la colocamos en el enlace (solo formularios "coj****"
-		if ((entidad != null) && (entidad.equals("Solicitud"))) {
-			ref = "${link}Controller.index(id${entidad})"
-		} else {
-			ref = "${link}Controller.index()"
-		}
-		return ref;
-	}
-	
-	public static refPagina(Pagina pagina) {
-		String ref = refPaginaInternal(pagina);
-		return "@{${ref}}"
-	}
-	
-	public static refPaginaAction(Pagina pagina){
-		String ref = refPaginaInternal(pagina);
-		return "@" + ref;
-	}
-
 	private static String valid(String campo){
 		campo = StringUtils.firstLower(campo);
 		for (Set<String> set: validatedFields){
@@ -543,6 +510,17 @@ class ControllerUtils {
 	private static String validListOfValuesFromTable(String campo){
 		campo = StringUtils.firstLower(campo);
 		return "CustomValidation.validListOfValuesFromTable(\"${campo}\", ${campo});\n";
+	}
+	
+	public static List<EntidadUtils> getEntityList(Object entities){
+		def listEntities = [];
+		entities.each { obj ->
+			if (obj instanceof EntidadUtils)
+				listEntities.add(obj);
+			else if (obj instanceof List<EntidadUtils>)
+				obj.each { e -> listEntities.add(e); }
+		}
+		return listEntities;
 	}
 	
 }

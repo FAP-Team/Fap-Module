@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.StyledString.Styler;
@@ -20,8 +20,8 @@ import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.scoping.IScopeProvider;
+import org.eclipse.xtext.resource.IContainer;
+import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
 
@@ -31,6 +31,7 @@ import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.impl.LedFactoryImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.util.Proposal;
 import es.fap.simpleled.validation.*;
 
@@ -42,7 +43,10 @@ import es.fap.simpleled.validation.*;
 public class LedProposalProvider extends AbstractLedProposalProvider {
 
 	@Inject
-	IScopeProvider scopeProvider;
+	private IContainer.Manager manager;
+	
+	@Inject
+	private ResourceDescriptionsProvider indexProvider;
 	
 	public int getCurrentLine(ContentAssistContext context){
 		try {
@@ -91,7 +95,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		if (getCurrentLine(context) == node.getStartLine() && !(node.getSemanticElement().eContainer() instanceof CompoundType)){
 			return;
 		}
-		Set<Entity> entidades = getEntidades(model);
+		Set<Entity> entidades = getEntidades(model.eResource());
 		for (Entity entidad: entidades){
 			acceptor.accept(createCompletionProposal(entidad.getName(), styledProposal(entidad.getName() + "  -  " + "Entidad", null), null, 0, context.getPrefix(), context));
 		}
@@ -100,7 +104,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	@Override
 	public void completeCampo_Entidad(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		Campo campo = LedCampoUtils.getCampo(model);
-		LedElementValidator validator = LedCampoUtils.getElementValidator(campo);
+		LedElementValidator validator = LedElementValidator.getElementValidator(campo);
 		if (validator != null) {
 			for (Proposal proposal: validator.completeEntidades(getEntidadesCampo(campo))) {
 				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, proposal.priority, context.getPrefix(), context));
@@ -121,14 +125,16 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 		else{
 			Attribute attr = ((CampoAtributos)atributos.eContainer()).getAtributo();
-			if (LedEntidadUtils.xToOne(attr)){
+			boolean esPagina = LedCampoUtils.getCampoContainer(atributos).eContainer() instanceof Pagina;
+			boolean esPopup = LedCampoUtils.getCampoContainer(atributos).eContainer() instanceof Popup;
+			if (LedEntidadUtils.xToOne(attr) || ((esPagina || esPopup) && LedEntidadUtils.isReferencia(attr))){
 				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
 		if (entidad == null){
 			return;
 		}
-		LedElementValidator validator = LedCampoUtils.getElementValidator(campo);
+		LedElementValidator validator = LedElementValidator.getElementValidator(campo);
 		if (validator != null){
 			for (Proposal proposal: validator.completeEntidad("", entidad)) {
 				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
@@ -169,7 +175,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 				return;
 			}
 			if (perm.isAgente()){
-				entidad = getAgente(model);
+				entidad = getAgente(model.eResource());
 			}
 			else{
 				entidad = perm.getVariable().getTipo();
@@ -192,24 +198,42 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	
 	@Override
 	public void completePermisoRuleCheck_Permiso(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
-		for (IEObjectDescription desc : scopeProvider.getScope(model, LedPackage.Literals.PERMISO_RULE_CHECK__PERMISO).getAllElements()) {
-			Permiso perm = (Permiso) desc.getEObjectOrProxy();
-			if (perm.eIsProxy()) {
-				perm = (Permiso) EcoreUtil.resolve(perm, model.eResource());
-			}
+		for (Permiso perm : ModelUtils.<Permiso>getVisibleNodes(LedPackage.Literals.PERMISO, indexProvider, manager, model.eResource()))
 			acceptor.accept(createCompletionProposal(perm.getName(), styledProposal(perm.getName() + "  -  " + "Permiso", null), null, 0, context.getPrefix(), context));
-		}
 	}
 	
 	@Override
 	public void completeTabla_Popup(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
-		String entidad = LedCampoUtils.getUltimaEntidad(((Tabla)model).getCampo()).getName();
-		while (!(model instanceof Formulario)){
+		Entity entidad = LedCampoUtils.getUltimaEntidad(((Tabla)model).getCampo());
+		while (!(model instanceof Formulario))
 			model = model.eContainer();
+		Formulario actual = (Formulario) model;
+		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, indexProvider, manager, model.eResource())){
+			for (Popup popup: f.getPopups()){
+				if (LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(popup.getCampo()))){
+					if (f.getName().equals(actual.getName()))
+						acceptor.accept(createCompletionProposal(popup.getName(), context));
+					else
+						acceptor.accept(createCompletionProposal(f.getName() + "." + popup.getName(), context));
+				}
+			}
 		}
-		for (Popup popup: ((Formulario)model).getPopups()){
-			if (entidad.equals(popup.getEntidad().getName())){
-				acceptor.accept(createCompletionProposal(popup.getName(), context));
+	}
+	
+	@Override
+	public void completeTabla_Pagina(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		Entity entidad = LedCampoUtils.getUltimaEntidad(((Tabla)model).getCampo());
+		while (!(model instanceof Formulario))
+			model = model.eContainer();
+		Formulario actual = (Formulario) model;
+		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, indexProvider, manager, model.eResource())){
+			for (Pagina pagina: f.getPaginas()){
+				if (LedEntidadUtils.equals(entidad, LedEntidadUtils.getEntidad(pagina))){
+					if (f.getName().equals(actual.getName()))
+						acceptor.accept(createCompletionProposal(pagina.getName(), context));
+					else
+						acceptor.accept(createCompletionProposal(f.getName() + "." + pagina.getName(), context));
+				}
 			}
 		}
 	}
@@ -234,6 +258,26 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		completeTabla_Popup(model, assignment, context, acceptor);
 	}
 	
+	@Override
+	public void completeTabla_PaginaCrear(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		completeTabla_Pagina(model, assignment, context, acceptor);
+	}
+	
+	@Override
+	public void completeTabla_PaginaVer(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		completeTabla_Pagina(model, assignment, context, acceptor);
+	}
+	
+	@Override
+	public void completeTabla_PaginaModificar(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		completeTabla_Pagina(model, assignment, context, acceptor);
+	}
+	
+	@Override
+	public void completeTabla_PaginaBorrar(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		completeTabla_Pagina(model, assignment, context, acceptor);
+	}
+	
 	public List<PermisoVar> getPermisoVariables(EObject model) {
 		List<PermisoVar> variables = new ArrayList<PermisoVar>();
 		while (! (model instanceof Permiso)){
@@ -243,7 +287,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		if (perm.getVarSection() != null){
 			variables.addAll(perm.getVarSection().getVars());
 		}
-		Entity agente = getAgente(model);
+		Entity agente = getAgente(model.eResource());
 		PermisoVar agenteVar = new LedFactoryImpl().createPermisoVar();
 		agenteVar.setName("agente");
 		agenteVar.setTipo(agente);
@@ -252,38 +296,33 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	public Set<Entity> getEntidadesCampo(Campo campo) {
-		Set<Entity> entidades = new HashSet<Entity>();
 		EObject container = LedCampoUtils.getElementosContainer(campo);
-		if (!(container instanceof Tabla)){
-			entidades.addAll(getSingletons(campo));
+		Entity entidadValida = LedCampoUtils.getEntidadValida(campo);
+		if (entidadValida == null){ // Es null porque son válidas todas las entidades
+			return getEntidades(campo.eResource());
 		}
-		entidades.add(LedCampoUtils.getEntidadValida(campo));
+		Set<Entity> entidades = new HashSet<Entity>();
+		if (!(container instanceof Tabla)){
+			entidades.addAll(getSingletons(campo.eResource()));
+		}
+		entidades.add(entidadValida);
 		return entidades;
 	}
 	
-	public Set<Entity> getSingletons(EObject object) {
+	public Set<Entity> getSingletons(Resource res) {
 		Set<Entity> singletons = new HashSet<Entity>();
-		for (IEObjectDescription desc : scopeProvider.getScope(object, LedPackage.Literals.CAMPO__ENTIDAD).getAllElements()) {
-			Entity entidad = (Entity) desc.getEObjectOrProxy();
-			if (entidad.eIsProxy()) {
-				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
-			}
-			if (LedEntidadUtils.esSingleton(entidad)){
+		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, indexProvider, manager, res)){
+			if (LedEntidadUtils.esSingleton(entidad))
 				singletons.add(entidad);
-			}
 		}
 		return singletons;
 	}
 	
-	public Set<Entity> getEntidades(EObject object) {
+	public Set<Entity> getEntidades(Resource res) {
 		Set<Entity> entidades = new HashSet<Entity>();
 		Entity solicitud = null;
 		Entity solicitudGenerica = null;
-		for (IEObjectDescription desc : scopeProvider.getScope(object, LedPackage.Literals.CAMPO__ENTIDAD).getAllElements()) {
-			Entity entidad = (Entity) desc.getEObjectOrProxy();
-			if (entidad.eIsProxy()) {
-				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
-			}
+		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, indexProvider, manager, res)){
 			if (entidad.getName().equals("SolicitudGenerica")) {
 				solicitudGenerica = entidad;
 			} else {
@@ -343,16 +382,9 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		return styled;
 	}
 	
-	public Entity getAgente(EObject object) {
-		for (IEObjectDescription desc : scopeProvider.getScope(object, LedPackage.Literals.CAMPO__ENTIDAD).getAllElements()) {
-			Entity entidad = (Entity) desc.getEObjectOrProxy();
-			if (entidad.eIsProxy()) {
-				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
-			}
-			if (entidad.getName().equals("Agente")) {
-				return entidad;
-			}
-		}
+	public Entity getAgente(Resource res) {
+		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, "Agente", indexProvider, manager, res))
+			return entidad;
 		return null;
 	}
 	

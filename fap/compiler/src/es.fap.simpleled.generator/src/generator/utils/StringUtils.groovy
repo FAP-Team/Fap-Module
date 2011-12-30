@@ -42,6 +42,13 @@ class StringUtils {
 		return str.charAt(0).isUpperCase();
 	}
 	
+	/*
+	* Devuelve una lista bien formada de parámetros, en forma de String en el que cada parámetro va separado por una coma.
+	* Ejemplo:
+	* 		Entrada:  "Long id"  "Solicitud solicitud"  "Documento doc"
+	* 		Salida:   "Long id, Solicitud solicitud, Documento doc"
+	* @param params	Lista variable de parámetros. Cada elemento puede ser un String o un List<String>.
+	*/
 	public static String params(Object ... params){
 		String result = "";
 		for (Object p: params){
@@ -50,7 +57,7 @@ class StringUtils {
 			}
 			if (p instanceof List<String>){
 				for (String s: p){
-					if (s ==~ /.*\S.*/){ 
+					if (!s.trim().equals("")){ 
 						if (!result.equals("")){
 							result += ", ";
 						}

@@ -10,6 +10,7 @@ import java.util.regex.Pattern
 import generator.utils.*;
 import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.*;
+import es.fap.simpleled.led.util.LedCampoUtils;
 
 import generator.utils.CampoUtils;
 
@@ -64,65 +65,22 @@ public class GTabla {
 			params.putStr 'alto', tabla.alto
 		}
 		
-		Map<Popup, Set<String>> popups = new HashMap<Popup, Set<String>>();
+		params.putStr("idEntidad", "_${EntidadUtils.create(campo.ultimaEntidad).id}_");
 		
-		if (tabla.popup != null){
-			addPopupBoton(popups, tabla.popup, ["ver", "crear", "modificar", "borrar"]);
-			if (tabla.popup.permiso)
-				params.putStr 'permisoPopup', tabla.popup.permiso.name;
-		}
-		if (tabla.popupCrear != null){
-			addPopupBoton(popups, tabla.popupCrear, ["crear"]);
-			if (tabla.popupCrear.permiso)
-				params.putStr 'permisoPopupCrear', tabla.popupCrear.permiso.name;
-		}
-		if (tabla.popupBorrar != null){
-			addPopupBoton(popups, tabla.popupBorrar, ["borrar"]);
-			if (tabla.popupBorrar.permiso)
-				params.putStr 'permisoPopupBorrar', tabla.popupBorrar.permiso.name;
-		}
-		if (tabla.popupModificar != null){
-			addPopupBoton(popups, tabla.popupModificar, ["modificar"]);
-			if (tabla.popupModificar.permiso)
-				params.putStr 'permisoPopupModificar', tabla.popupModificar.permiso.name;
-		}
-		if (tabla.popupVer != null){
-			addPopupBoton(popups, tabla.popupVer, ["ver"]);
-			if (tabla.popupVer.permiso)
-				params.putStr 'permisoPopupVer', tabla.popupVer.permiso.name;
-		}
-
-		for (Popup p: popups.keySet()){
-			GPopup gpopup = GPopup.generate(p, this, popups.get(p));
-			if (gpopup.popup.equals(tabla.popup))
-				params.putStr 'popup', gpopup.popupName;
-			if (gpopup.popup.equals(tabla.popupCrear))
-				params.putStr 'popupCrear', gpopup.popupName;
-			if (gpopup.popup.equals(tabla.popupBorrar))
-				params.putStr 'popupBorrar', gpopup.popupName;
-			if (gpopup.popup.equals(tabla.popupModificar))
-				params.putStr 'popupModificar', gpopup.popupName;
-			if (gpopup.popup.equals(tabla.popupVer))
-				params.putStr 'popupVer', gpopup.popupName;
-		}
-
-		// Si el enlace es a una página, no a un popUp
-		if (tabla.pagina != null) {
-			params.put 'pagina', "\"@{${ParameterUtils.parameter(tabla.pagina.name)}Controller.index()}\""
-		}
-		else if (tabla.paginaProperty != null) {
-			params.put 'pagina', "\"@{${ParameterUtils.parameter(tabla.paginaProperty)}Controller.index()}\""
-		}
+		botonesPopup(params);
+		botonesPagina(params);
 		
 		if (tabla.recargarPagina)
 			params.put("recargarPagina", true)
 			
+		if (tabla.seleccionable) {
+			params.putStr("seleccionable", tabla.seleccionable);
+			params.putStr("urlSeleccionable", "${controllerName}.${seleccionableMethodName()}")
+		}
+		
 		if (tabla.columnasAutomaticas)
 			tabla.columnas.addAll(ColumnasUtils.columnas(campo.campo));
 
-		
-		params.putStr('idProperty', idProperty(tabla))
-		
 		params.putStr 'tipo', tipo;
 		
 		StringBuffer columnasView = new StringBuffer();
@@ -133,11 +91,84 @@ public class GTabla {
 		}
 
 		String view = """
-#{fap.tabla ${params.lista()}}
+#{fap.tabla ${params.lista(true)}
+}
 	${columnasView}
 #{/fap.tabla}
 """
 		return view;
+	}
+	
+	private void botonesPopup(TagParameters params){
+		if (tabla.popup != null) {
+			Controller popupUtil = Controller.fromPopup(tabla.popup).initialize();
+			params.put 'urlPopupLeer', popupUtil.getRouteIndex("leer", true);
+			params.putStr 'popupLeer', tabla.popup.name;
+			params.put 'urlPopupCrear', popupUtil.getRouteIndex("crear", true);
+			params.putStr 'popupCrear', tabla.popup.name;
+			params.put 'urlPopupEditar', popupUtil.getRouteIndex("editar", true);
+			params.putStr 'popupEditar', tabla.popup.name;
+			params.put 'urlPopupBorrar', popupUtil.getRouteIndex("borrar", true);
+			params.putStr 'popupBorrar', tabla.popup.name;
+			if (tabla.popup.permiso)
+				params.putStr 'permisoPopup', tabla.popup.permiso.name;
+		}
+		if (tabla.popupVer != null) {
+			params.put 'urlPopupLeer', Controller.fromPopup(tabla.popupVer).initialize().getRouteIndex("leer", true);
+			params.putStr 'popupLeer', tabla.popupVer.name;
+			if (tabla.popupVer.permiso)
+				params.putStr 'permisoPopupLeer', tabla.popupVer.permiso.name;
+		}
+		if (tabla.popupCrear != null) {
+			params.put 'urlPopupCrear', Controller.fromPopup(tabla.popupCrear).initialize().getRouteIndex("crear", true);
+			params.putStr 'popupCrear', tabla.popupCrear.name;
+			if (tabla.popupCrear.permiso)
+				params.putStr 'permisoPopupCrear', tabla.popupCrear.permiso.name;
+		}
+		if (tabla.popupModificar != null) {
+			params.put 'urlPopupEditar', Controller.fromPopup(tabla.popupModificar).initialize().getRouteIndex("editar", true);
+			params.putStr 'popupEditar', tabla.popupModificar.name;
+			if (tabla.popupModificar.permiso)
+				params.putStr 'permisoPopupEditar', tabla.popupModificar.permiso.name;
+		}
+		if (tabla.popupBorrar != null) {
+			params.put 'urlPopupBorrar', Controller.fromPopup(tabla.popupBorrar).initialize().getRouteIndex("borrar", true);
+			params.putStr 'popupBorrar', tabla.popupBorrar.name;
+			if (tabla.popupBorrar.permiso)
+			params.putStr 'permisoPopupBorrar', tabla.popupBorrar.permiso.name;
+		}
+	}
+	
+	private void botonesPagina(TagParameters params){
+		if (tabla.pagina != null) {
+			Controller pagUtil = Controller.fromPagina(tabla.pagina).initialize();
+			params.put 'urlPaginaLeer', pagUtil.getRouteIndex("leer", true);
+			params.put 'urlPaginaCrear', pagUtil.getRouteIndex("crear", true);
+			params.put 'urlPaginaEditar', pagUtil.getRouteIndex("editar", true);
+			params.put 'urlPaginaBorrar', pagUtil.getRouteIndex("borrar", true);
+			if (tabla.pagina.permiso)
+				params.putStr 'permisoPagina', tabla.pagina.permiso.name;
+		}
+		if (tabla.paginaVer != null) {
+			params.put 'urlPaginaLeer', Controller.fromPagina(tabla.paginaVer).initialize().getRouteIndex("leer", true);
+			if (tabla.paginaVer.permiso)
+				params.putStr 'permisoPaginaLeer', tabla.paginaVer.permiso.name;
+		}
+		if (tabla.paginaCrear != null) {
+			params.put 'urlPaginaCrear', Controller.fromPagina(tabla.paginaCrear).initialize().getRouteIndex("crear", true);
+			if (tabla.paginaCrear.permiso)
+				params.putStr 'permisoPaginaCrear', tabla.paginaCrear.permiso.name;
+		}
+		if (tabla.paginaModificar != null) {
+			params.put 'urlPaginaEditar', Controller.fromPagina(tabla.paginaModificar).initialize().getRouteIndex("editar", true);
+			if (tabla.paginaModificar.permiso)
+				params.putStr 'permisoPaginaEditar', tabla.paginaModificar.permiso.name;
+		}
+		if (tabla.paginaBorrar != null) {
+			params.put 'urlPaginaBorrar', Controller.fromPagina(tabla.paginaBorrar).initialize().getRouteIndex("borrar", true);
+			if (tabla.paginaBorrar.permiso)
+				params.putStr 'permisoPaginaBorrar', tabla.paginaBorrar.permiso.name;
+		}
 	}
 	
 	private void addPopupBoton(Map popups, Popup popup, List<String> botones){
@@ -226,19 +257,14 @@ public class GTabla {
 		return  "return '" + (c.funcion.replaceAll(/\$\{(.*?)\}/, '\' + record[\'$1\'] + \'')) + "';"
 	}
 	
-	public static List<CampoUtils> uniqueCamposTabla(Tabla tabla){
+	public List<CampoUtils> uniqueCamposTabla(Tabla tabla){
 		List<CampoUtils> campos = new ArrayList<CampoUtils>();
 		for(Columna c : tabla.columnas){
 			campos.addAll(camposDeColumna(c));
 		}
 		//Añade el ID de la entidad
-		campos.add(CampoUtils.create(campos[0].entidad.name + ".id"));
+		campos.add(CampoUtils.create(campo.entidad.name + ".id"));
 		return campos.unique();
-	}
-	
-	public static String idProperty(Tabla tabla){
-		List<CampoUtils> campos = uniqueCamposTabla(tabla);
-		return EntidadUtils.create(campos[0].entidad).variable + "_id";
 	}
 	
 	public String controller(){
@@ -274,6 +300,8 @@ public class GTabla {
 		tables.TableRenderResponse<${entidadHija.clase}> response = new tables.TableRenderResponse<${entidadHija.clase}>(rowsFiltered);
 		renderJSON(response.toJSON($rowsStr));
 	}
+
+	${seleccionableMethod()}
 	"""
 	}
 	
@@ -316,6 +344,22 @@ public class GTabla {
 		String url = contenedor.url() + "/" + id();
 		String action = contenedor.controllerFullName() + "." + controllerMethodName();
 		return Route.to("GET", url, action);
+	}
+	
+	private String seleccionableMethodName () {
+		return StringUtils.firstLower(tabla.seleccionable.replaceAll(" ", ""))
+	}
+
+	private String seleccionableMethod () {
+		if (! tabla.seleccionable)
+			return "";
+		return """
+			public static void ${seleccionableMethodName()}(List<Long> idsSeleccionados){
+				//Sobreescribir para incorporar funcionalidad
+				//No olvide asignar los permisos
+				//index();
+			}
+		"""
 	}
 }
 

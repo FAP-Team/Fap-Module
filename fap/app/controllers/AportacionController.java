@@ -20,23 +20,31 @@ import es.gobcan.eadmon.aed.ws.AedExcepcion;
 			
 public class AportacionController extends AportacionControllerGen {
 
-	public static void index(Long idSolicitud){
-		Documento documento = getDocumento();
-		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
-
+	public static void index(String accion, Long idSolicitud){
+		if (accion == null)
+			accion = "editar";
+		SolicitudGenerica solicitud = null;
+		if(accion.equals("crear")){
+			solicitud = new SolicitudGenerica();
+		}
+		else if (!accion.equals("borrado")){
+			solicitud = getSolicitudGenerica(idSolicitud);
+		}
+		if (!permiso(accion)){
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
 		Aportacion aportacion = solicitud.aportaciones.actual;
 		if(StringUtils.in(aportacion.estado, "borrador", "firmada", "registrada", "clasificada")){
 			Messages.warning("Tiene una aportación pendiente de registro");
 			Messages.keep();
-			redirect("AportacionPresentarController.index", idSolicitud);
-		}else{
-			renderTemplate( "gen/Aportacion/Aportacion.html" , documento, solicitud);	
+			redirect("AportacionPresentarController.index", accion, idSolicitud);
 		}
+		renderTemplate("gen/Aportacion/Aportacion.html", accion, idSolicitud, solicitud);
 	}
 	
 	public static void presentar(Long idSolicitud) {
 		checkAuthenticity();
-		if (permisopresentar("update") || permisopresentar("create")) {
+		if (permisoPresentar("update") || permisoPresentar("create")) {
 			if (!validation.hasErrors()) {
 				SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 				
@@ -102,6 +110,5 @@ public class AportacionController extends AportacionControllerGen {
 		
 		presentarRender(idSolicitud);
 	}
-	
 
 }

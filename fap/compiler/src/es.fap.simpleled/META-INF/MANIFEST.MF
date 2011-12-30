@@ -27,4 +27,6 @@ Export-Package: es.fap.simpleled,
  es.fap.simpleled.parseTreeConstruction,
  es.fap.simpleled.parser.antlr,
  es.fap.simpleled.parser.antlr.internal,
- es.fap.simpleled.validation
+ es.fap.simpleled.validation,
+ es.fap.simpleled.scoping,
+ es.fap.simpleled.formatting

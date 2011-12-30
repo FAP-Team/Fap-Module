@@ -9,10 +9,4 @@ import models.*;
 
 public class UsuariosController extends UsuariosControllerGen {
 
-	public static void index() {
-		List<TableKeyValue> entries = TableKeyValue.findAll();
-		renderTemplate("gen/Usuarios/Usuarios.html", entries);
-	}
-	
-	
 }

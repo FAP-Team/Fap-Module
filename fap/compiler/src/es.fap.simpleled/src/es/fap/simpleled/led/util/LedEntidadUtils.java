@@ -104,7 +104,7 @@ public class LedEntidadUtils {
 	}
 
 	/**
-	 * Comprueba si un atribute es una referencia OneToMnay o ManyToMany
+	 * Comprueba si un atribute es una referencia OneToMany o ManyToMany
 	 * @param attr
 	 * @return
 	 */
@@ -203,10 +203,10 @@ public class LedEntidadUtils {
 	}
 	
 	/*
-	 * Devuelve la entidad asociada a una pagina, que ser√° la siguiente:
+	 * Devuelve la entidad asociada a una pagina, que ser· la siguiente:
 	 * 		Ultimo atributo del campo definido en la pagina, si no es null
-	 * 		√≥: ultimo atributo del campo definido en el formulario, si no es null
-	 * 		√≥: null
+	 * 		Û: ultimo atributo del campo definido en el formulario, si no es null
+	 * 		Û: null
 	 */
 	public static Entity getEntidad(Pagina pagina){
 		return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampoPagina(pagina));

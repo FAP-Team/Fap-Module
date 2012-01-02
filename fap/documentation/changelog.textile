@@ -1,7 +1,14 @@
 h2. Changelog
 
+h3. Versión 1.2
+
+* Fixed bug copia de atributos ManyToOne y ManyToMany.
+
 h3. Versión 1.1.1
 
+* ID de tabla requerido.
+* Nombres de variables en permiso arreglado.
+* Página de recibos de aportación arreglada.
 * El elemento Wiki pasa de utilizar WikiMedia a Textile, que es el formato que se está usando en esta propia documentación. 
 * Personalizado el error 404
 * Fixed minor bugs

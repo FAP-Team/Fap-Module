@@ -11,6 +11,7 @@ Formulario Solicitud {
 		
 		Grupo "Direccion"{
 			Enlace "Direccion" pagina=Direcciones
+			Enlace "Fecha" pagina=Fechas
 		}
 		
 		Grupo "Tablas y PopUps" {
@@ -21,6 +22,11 @@ Formulario Solicitud {
     }
 	
 	Pagina Solicitante {}
+	
+	Pagina Fechas {
+		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" requerido
+		Fecha campo=Solicitud.fechas.fecha titulo="Fecha" requerido
+	}
 	
 	Pagina Direcciones {
 		Direccion campo=Solicitud.direccionTest.direccion

@@ -14,6 +14,7 @@ h2. Tutorial
 # "Generación de informes en PDF":curso-informes
 # "Actualización del modulo FAP":tutorial-actualizacionModuloFap
 # "Desplegar la aplicación":curso-deploy
+# "Modificar Estilo de Páginas":curso-modificarPlantillaHTML
 
 
 h2. "Preguntas Frecuentes":preguntas-frecuentes

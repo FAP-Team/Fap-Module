@@ -168,6 +168,10 @@ public class SolicitudGenerica extends Model {
 	}
 	
 	private void compruebaUsuarioParticipacion(String user, String name, String email){
+		if (user == null) {
+			play.Logger.info("No se comprueba la participación, porque el usuario es: "+user);
+			return;
+		}
 		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).first();
 		if (p == null) {
 			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();

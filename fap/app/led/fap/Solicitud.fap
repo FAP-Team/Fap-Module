@@ -46,7 +46,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	
 	Pagina AportacionRecibos {
 			
-		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos
+		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permiso=aportacionNoNull
 			popupVer=PopUpDocAportados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" expandir

@@ -18,7 +18,7 @@ QN: // Qualified Name
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
-	"agente" | "entidad"
+	"agente" | "documento"
 ;
 
 Entity:
@@ -437,7 +437,12 @@ ElementoLista:
 	key=ElementoListaKey
 ;
 
+
 ElementoListaKey:
+	first=IdOrInt (("." resto+=IdOrInt)*)
+;
+
+IdOrInt:
 	ID | INT
 ;
 
@@ -457,7 +462,7 @@ PermisoVarsSection:
 ;
 
 PermisoVar:
-	tipo=[Entity|IDS] name=ID
+	tipo=[Entity|IDS] name=IDS
 		(':' 'sql' '(' sql=STRING (',' sqlParams=PermisoVarSqlParameters)? ')') ?
 ;
 

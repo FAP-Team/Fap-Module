@@ -25,12 +25,14 @@ def execute(**kargs):
         print "~ Hello"
 
     if command == "fap:generate":
+        version(app, args)
         run_generate(app, args)
         
 #    if command == "fap:model":
 #        run_model(app, args)
             
     if command == "fap:init":
+        version(app, args)
         init_application (app, args)
 
     if command == "fap:version":
@@ -159,6 +161,7 @@ def init_application (app, args):
     FILE = open(conf, "a");
     FILE.write("\n#FAP Configuration\n");
     FILE.write("fap.app.name=" + app.name() + "\n");
+    FILE.write("date.format=dd/MM/yyyy\n");
     FILE.write("fap.login.type.user=true\n");
     FILE.write("app.log.path=log4j-dev.properties\n"); 
     FILE.write("%prod.app.log.path=log4j-prod.properties\n");

@@ -28,12 +28,15 @@
 	}
 	
 	def styleLabel = _anchoTitulo != null ? "width:${_anchoTitulo}" : ""
-		
+	
+	def styleRow = "";
+	if (errores)
+		styleRow = "error";
 }%
-<div class="row">
+<div class="clearfix ${styleRow}">
 #{if visible && !labelRight}
 <!--div class="span4" style="${style}"-->
-	<label class="span4" for="${id}" style="${styleLabel}">${label}
+	<label for="${id}" style="${styleLabel}">${label}
 		#{if requerido}
 			<span class="required">*</span>
 		#{/if}
@@ -41,13 +44,12 @@
 <!--/div-->
 #{/if}
 
-<div class="span6">	
+<div class="input">	
 #{doBody /}
-</div>
 
 #{if visible && labelRight}
-<div class="span2">
-	<label for="${id}">${label}
+	<div class="input">
+		<label for="${id}">${label}
 		#{if requerido}
 			<span class="required">*</span>
 		#{/if}
@@ -55,11 +57,11 @@
 #{/if}
 
 #{if visible}	
-	<div class="messages">
 		#{if errores}
-			<span class="error">${errores}</span>
+			<span class="help-inline">${errores}</span>
 		#{/if}
 		#{fap.ayuda ayuda:ayuda, id:id_help /} 
-	</div>
 #{/if}
 </div>
+</div>
+

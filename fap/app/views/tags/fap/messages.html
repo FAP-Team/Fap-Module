@@ -9,7 +9,8 @@
 }%
 
 #{if msgFatal}
-	<div class="alert-message error">
+	<div class="alert-message block-message error" data-alert="alert">
+		<a class="close" href="#">x</a>
 		<ul>
 			#{list items:msgFatal, as:'msg'}
 				<li>${msg}</li>
@@ -19,36 +20,34 @@
 #{/if}
 #{else}
 	#{if msgOK}
-		<div class="alert-message sucess">
-			<ul>
+		<div class="alert-message block-message success" data-alert="alert">
+			<a class="close" href="#">x</a>
 				#{list items:msgOK, as:'msg'}
-					<li>${msg}</li>
+					<p><strong>${msg}</strong></p>
 				#{/list}
-			</ul>
 		</div>
 	#{/if}
 	#{if msgInfo}
-		<div class="alert-message info">
-			<ul>
+		<div class="alert-message block-message info" data-alert="alert">
+			<a class="close" href="#">x</a>
 				#{list items:msgInfo, as:'msg'}
-					<li>${msg}</li>
+					<p>${msg}</p>
 				#{/list}
-			</ul>
 		</div>
 	#{/if}
 	#{if msgWarning}
-		<div class="alert-message warning">
-			<ul>
+		<div class="alert-message block-message warning" data-alert="alert">
+			<a class="close" href="#">x</a>
 				#{list items:msgWarning, as:'msg'}
-					<li>${msg}</li>
+					<p>${msg}</p>
 				#{/list}
-			</ul>
 		</div>
 	#{/if}
 	
 	
 	#{if msgError}
-		<div class="alert-message error">
+		<div class="alert-message block-message error" data-alert="alert">
+			<a class="close" href="#">x</a>
 			<ul>
 				#{list items:msgError, as:'msg'}
 					<li>${msg}</li>
@@ -58,7 +57,8 @@
 	
 	#{ifErrors}
 		#{ifnot msgError != null}
-			<div class="alert-message error">
+			<div class="alert-message block-message error" data-alert="alert"> 
+			<a class="close" href="#">x</a>
 		#{/ifnot}
 			<p>
 				&{'fap.page.save.error'} <a href="#" class="errorsMore">&{'fap.page.save.error.more'}</a>

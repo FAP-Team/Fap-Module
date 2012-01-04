@@ -271,7 +271,7 @@ public class SecureController extends Controller {
     	Cache.delete(session.getId());
         session.clear();
         response.removeCookie("rememberme");
-        Messages.warning(play.i18n.Messages.get("fap.logout.ok"));
+        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
         Messages.keep();
         redirect("fap.SecureController.login");
     }

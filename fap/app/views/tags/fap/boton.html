@@ -25,10 +25,11 @@
 		urlPopup = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
 	}
 	
-}%
-
-	<button type="submit" class="btn" id="${id}" ${disabled} #{if style}style="${style}"#{/if} >${label}</button>
+	String type = _type 
 	
+}%
+	<input type="submit" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+
 	#{if popup}
 	<script>
 		$(function(){

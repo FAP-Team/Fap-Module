@@ -53,8 +53,8 @@
 	#{/fap.grupo}
 	
 	#{fap.grupo titulo:"Ayuda"}	
-		<a href="#"><button class="btn">Manual de usuario</button></a>
-		<a href="@{SoporteController.index}" class="btn">Preguntas e incidencias</a>
+		<a href="#"><button class="btn primary">Manual de usuario</button></a>
+		<a href="@{SoporteController.index}" class="btn primary">Preguntas e incidencias</a>
 	#{/fap.grupo}
 </div>
 
@@ -71,13 +71,13 @@
 		#{form @authenticateCertificate(), id:"cert-form"}
 			<input type="hidden" id="token" name="token" value="${token}"/>
 			<input type="hidden" id="firma" name="firma" value=""/>
-			<div class="form-row">
+			<div class="form-stacked">
 				<select id="certificado" name="certificado">
 					<option disabled="disabled">--Certificados--</option>
 				</select>
 			</div>
 			
-			<div class="button_container">
+			<div class="actions button_container">
 				<input type="submit" id="loginsignin" value="&{'fap.login.signin'}" class="btn primary" />
 			</div>
 		#{/form}
@@ -112,22 +112,22 @@
 			%}
 			
 			#{form @authenticate(), id:"authen-form"}
-				<div class="form-row">
+				<div class="form-stacked">
 					<label for="username">&{'fap.login.username'}</label>
 					<input class="xlarge" type="text" name="username" id="login-username" value="${flash.username}" />
 				</div>
-				<div class="form-row">
+				<div class="form-stacked">
 					<label for="password">&{'fap.login.password'}</label>
 					<input class="xlarge" type="password" name="password" id="login-password" value="" />
 				</div>
 				
 				#{if mostrarCaptcha == true}
-                <div class="form-row">
+                <div class="form-stacked">
 					<p>#{ugot.recaptcha theme:"clean"/}</p>
 				</div>
 				#{/if}
 
-                <div class="form-row">
+                <div class="form-stacked">
 					<div class="check">
                         <label for="remember">
 						<input type="checkbox" name="remember" id="login-remember" ${flash.remember ? 'checked="true"' : ''} />
@@ -136,7 +136,7 @@
 					</div>
 				</div>
 
-				<div class="button_container">
+				<div class="actions button_container">
 					<input class="btn primary" type="submit" id="signin" value="&{'fap.login.signin'}" />
 				</div>
 			#{/form}

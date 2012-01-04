@@ -250,7 +250,8 @@ Boton:
 	    & ('ancho' '=' ancho=STRING)? 
 	    &('popup' '=' popup=[Popup])?
 	    &('pagina' '=' pagina=[Pagina|QN])?
-		& (waitPopup?="waitPopup")?		
+		& (waitPopup?="waitPopup")?	
+		& ('type' '=' type=('default' | 'primary' | 'info' | 'success' | 'danger'))?	
 	)
 ;
 

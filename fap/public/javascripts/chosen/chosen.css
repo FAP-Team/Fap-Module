@@ -28,7 +28,27 @@ div.chzn-container div.chzn-drop {
 
 /* SINGLE */
 div.chzn-container a.chzn-single {
-  border: 1px solid #8095B9;
+  /*border: 1px solid #8095B9;*/
+  
+  /* Modificando el comportamiento de las cajas para que sea idéntico a las de texto */
+  border: 1px solid #CCC;
+  border-radius: 3px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+-ms-box-sizing: border-box;
+-webkit-box-sizing: border-box;
+
+-webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+-moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+-ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+-o-transition: border linear 0.2s, box-shadow linear 0.2s;
+transition: border linear 0.2s, box-shadow linear 0.2s;
+-webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+-moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+
+
+
   display: block;
   overflow: hidden;
   line-height: 26px;
@@ -78,9 +98,26 @@ div.chzn-container ul.chzn-choices {
   background: #fff;
   margin: 0;
   cursor: text;
-  border: 1px solid #8095B9;
+  /*border: 1px solid #8095B9;*/
   overflow: hidden;
   position: relative;
+  
+  /* Aspecto como los inputs de bootstrap */
+  border: 1px solid #CCC;
+  border-radius: 3px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 div.chzn-container ul.chzn-choices li {

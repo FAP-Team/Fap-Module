@@ -15,6 +15,7 @@ GET         /logout                        fap.SecureController.logout
 #Baremacion
 GET   /Baremacion/evaluaciones      								 fap.ConsultarEvaluacionesController.index
 GET   /Baremacion/evaluacion/{idEvaluacion}/fichaevaluador           fap.FichaEvaluadorController.index
+GET   /Baremacion/evaluacion/{idEvaluacion}/borradorpdf              fap.FichaEvaluadorController.generaPDF
 
 #Descarga del AED
 GET         /aed/descargar                 fap.DescargasAedController.descargar

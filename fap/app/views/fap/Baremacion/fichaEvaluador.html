@@ -39,9 +39,10 @@
 
 #{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
 
-	#{simple.uneditable value: evaluacion.totalCriterios, ancho: "500px", label: "Total criterios de evaluación"/}
-	#{simple.uneditable value: evaluacion.inversionTotalAprobada, ancho: "500px", label: "Inversion Total Aprobada"/}
-	#{simple.uneditable value: evaluacion.subvencionTotalConcedida, ancho: "500px", label: "Subvencion Total Concedida"/}
+	#{simple.uneditable value: evaluacion.totalCriterios, label: "Total puntuación"/}
+	#{simple.uneditable value: evaluacion.inversionTotalAprobada, label: "Inversión total aprobada"/}
+	#{simple.uneditable label:"Porcentaje de la ayuda", value:properties.FapProperties.get("fap.app.baremacion.porcentajeAyuda") + " %" /}
+	#{simple.uneditable value: evaluacion.subvencionTotalConcedida, label: "Subvención total concedida"/}
 
 	#{if evaluacion.tipo.comentariosAdministracion}
 		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion)/}
@@ -171,6 +172,8 @@
 			#{/if}
 			
 			#{simple.text name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error /}
+
+			
 				
 			#{if ceconomico.tipo.comentariosAdministracion}
 				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion /}

@@ -41,7 +41,12 @@ public class FichaEvaluadorController extends Controller {
 	
 	@Inject
 	protected static Secure secure;
-		
+
+	@Finally(only="index")
+	public static void end(){
+		Messages.deleteFlash();
+	}
+	
 	public static void index(long idEvaluacion){
 		if(secure.check("evaluacion", "read", null, null)){
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
@@ -133,7 +138,14 @@ public class FichaEvaluadorController extends Controller {
 	
 			for(CEconomico ceconomico : evaluacion.ceconomicos){
 				String param = "ceconomico[" + ceconomico.id + "]";
-				ceconomico.valorPropuesto = params.get(param + ".valorPropuesto", Double.class);
+
+				String key = param + ".valorPropuesto";
+				Double valor = params.get(key, Double.class);
+				if(actionEnd){
+					validation.required(key, valor);
+				}
+				
+				ceconomico.valorPropuesto = valor;
 	
 				//Comentarios
 				if(ceconomico.tipo.comentariosAdministracion){				

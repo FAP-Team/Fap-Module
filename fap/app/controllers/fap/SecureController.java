@@ -280,9 +280,20 @@ public class SecureController extends Controller {
     static void redirectToOriginalURL() throws Throwable {
         String url = flash.get("url");
         if(url == null) {
-            url = "SolicitudesController.index";
+            url = getDefaultRoute(); 
         }
         redirect(url);
+    }
+
+    private static String getDefaultRoute(){
+    	String defaultRoute = null;
+    	String httpPath = Play.configuration.getProperty("http.path", "/");
+    	if(httpPath != null){
+    		defaultRoute = httpPath + "/";
+    	}else{
+    		defaultRoute = "/";
+    	}
+    	return defaultRoute;
     }
     
 	/**
@@ -293,13 +304,15 @@ public class SecureController extends Controller {
 	 * @throws Throwable
 	 */
     @Before(unless={"login", "authenticate", "logout", "authenticateCertificate"})
-    static void checkAccess() throws Throwable {
-        // Authent
-        if(!AgenteController.agenteIsConnected()) {
-            flash.put("url", request.method == "GET" ? request.url : "/"); // seems a good default
+    static void checkAccess() throws Throwable {    	
+    	if(!AgenteController.agenteIsConnected()) {
+        	String httpPath = Play.configuration.getProperty("http.path", "/");
+        	if(request.method == "GET" && !request.url.equals(httpPath)){
+        		flash.put("url", request.url);
+        	}            	
             SecureController.login();
         }
-       
+    	
         AgenteController.findAgente(); //Recupera el agente de base de datos
         Long idSolicitud = null;
 

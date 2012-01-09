@@ -146,9 +146,13 @@ public class Evaluacion extends Model {
 	}
 	
 	public Double getSubvencionTotalConcedida(){
-		String porcentajeAyudaString = FapProperties.get("fap.app.baremacion.porcentajeAyuda");
-		Double porcentajeAyuda = Double.valueOf(porcentajeAyudaString);
-		return ((this.inversionTotalAprobada*porcentajeAyuda) /100);
+		Double totalConcedida = 0D;
+		if(inversionTotalAprobada != null){
+			String porcentajeAyudaString = FapProperties.get("fap.app.baremacion.porcentajeAyuda");
+			Double porcentajeAyuda = Double.valueOf(porcentajeAyudaString);
+			totalConcedida = ((this.inversionTotalAprobada*porcentajeAyuda)/100D);
+		}
+		return totalConcedida;
 	}
 	
 	// === MANUAL REGION END ===

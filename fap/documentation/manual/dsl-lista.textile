@@ -7,11 +7,12 @@ Permite crear listas de valores. Cada uno de los valores de la lista puede ser u
 h2. Parámetros
 
 * **_[name]_** : Identificador de la lista.
+* **crearEnumerado** (opcional) : Genera la clase Java de tipo Enumerado correspondiente de esa lista, para permitir usar el "IntelliSense" del IDE, y hacer más fácil localizar elementos de la lista.
 
 h2. Definición
 
 bc.. Lista:
-   'Lista' name=ID '{'
+   'Lista' name=ID (enumerado?='crearEnumerado')? '{'
       elementos+=ElementoLista+
    '}'
 ;
@@ -49,6 +50,15 @@ bc. Lista ListaValores {
 h3. Lista con claves y valores
 
 bc. Lista ListaClavesValores {
+   1: "clave1" 
+   2: "clave2"
+   3: "3"
+   cuatro: "4"
+}
+
+h3. Lista con claves y valores, especificando la creacion del Enumerado
+
+bc. Lista ListaClavesValores crearEnumerado {
    1: "clave1" 
    2: "clave2"
    3: "3"

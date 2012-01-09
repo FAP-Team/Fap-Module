@@ -44,6 +44,7 @@ public class ReflectionUtils {
 						} catch (Exception e) {
 							// if there is a problem reading the field we dont
 							// set any value
+							e.printStackTrace();
 						}
 					}
 				} else {
@@ -86,6 +87,8 @@ public class ReflectionUtils {
 		}
 		return model;
 	}
+	
+	
 	
 	public static Class getClassFromGenericField(Field field) {
 		ParameterizedType type = (ParameterizedType) field.getGenericType();
@@ -207,7 +210,6 @@ public class ReflectionUtils {
 		    ParameterizedType aType = (ParameterizedType) genericFieldType;
 		    Type[] fieldArgTypes = aType.getActualTypeArguments();
 		    Class ret = (Class)fieldArgTypes[0];
-		    System.out.println(ret.getSimpleName());
 		    return ret;
 		}
 		return null;

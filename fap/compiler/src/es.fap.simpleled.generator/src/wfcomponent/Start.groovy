@@ -11,6 +11,8 @@ public class Start implements IWorkflowComponent {
 	def String target;
 	String createSolicitud;
 	
+	// True si se está generando el módulo. False si la aplicación.
+	public static boolean generatingModule;
 	
 	@Override
 	public void preInvoke() {}
@@ -18,7 +20,7 @@ public class Start implements IWorkflowComponent {
 	@Override
 	public void invoke(IWorkflowContext ctx) {
 		FileUtils.target = target;
-		LedUtils.generatingModule = !createSolicitud.equals("true");
+		generatingModule = !createSolicitud.equals("true");
 	}
 
 	@Override

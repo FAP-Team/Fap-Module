@@ -5,14 +5,14 @@ import sys
 import subprocess
 import shutil
 import re
-
+from datetime import date
 # Here you can create play commands that are specific to the module, and extend existing commands
 
 MODULE = 'fap'
 
 # Commands that are specific to your module
 
-COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version']
+COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist', 'fap:winservice']
 # Eliminamos el comando 'fap:model' de la lista de comandos
 
 def execute(**kargs):
@@ -25,18 +25,28 @@ def execute(**kargs):
         print "~ Hello"
 
     if command == "fap:generate":
-        version(app, args)
+        versionASCIIART(app, args)
         run_generate(app, args)
         
 #    if command == "fap:model":
 #        run_model(app, args)
             
     if command == "fap:init":
-        version(app, args)
+        versionASCIIART(app, args)
         init_application (app, args)
 
     if command == "fap:version":
         version(app, args)
+        versionASCIIART(app, args)
+        
+    if command == "fap:documentation":
+        generateDocumentationHTML(app)
+
+    if command == "fap:dist":
+        dist(app, args)
+
+    if command == "fap:winservice":
+        winservice(app, args)    
 
 
 
@@ -49,7 +59,13 @@ def version (app, args):
              print moduleDefinition
         except Exception:
              pass
-    
+
+def versionASCIIART (app, args):
+   readmeFile = os.path.join(getModuleDir(app, args), 'README'); 
+   if os.path.exists(readmeFile):
+      FILE = open(readmeFile).read();
+      print FILE;  
+  
         
 def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     moduleDir = getModuleDir(app, cmd_args)
@@ -140,10 +156,17 @@ def getModuleDir(app, cmd_args=""):
     else:    
         if app.path and os.path.exists(os.path.join(app.path, 'modules')):
             regexp = re.compile("^fap(-(\d*\.*)*)?$")
+            regexpNigthly = re.compile("^fap(-nb-(\d*\.*)*)?$")
             for m in os.listdir(os.path.join(app.path, 'modules')):
                 mf = os.path.join(os.path.join(app.path, 'modules'), m)
                 base = os.path.basename(mf)
                 if regexp.match(base):
+                    if os.path.isdir(mf):
+                        return mf
+                    else:
+                        return open(mf, 'r').read().strip()
+                # Nightly build regexp
+                if regexpNigthly.match(base):
                     if os.path.isdir(mf):
                         return mf
                     else:
@@ -161,6 +184,7 @@ def init_application (app, args):
     FILE = open(conf, "a");
     FILE.write("\n#FAP Configuration\n");
     FILE.write("fap.app.name=" + app.name() + "\n");
+    FILE.write("#fap.ctxPath=\n");
     FILE.write("date.format=dd/MM/yyyy\n");
     FILE.write("fap.login.type.user=true\n");
     FILE.write("app.log.path=log4j-dev.properties\n"); 
@@ -190,6 +214,12 @@ def init_application (app, args):
     # Copia todo lo que hay dentro de fap/fap-skel a la nueva aplicacion
     copy_directory(os.path.join(moduleDir, "fap-skel"),  app.path);
     
+    # Para la documentacion de la aplicacion en HTML
+    os.makedirs(os.path.join(app.path, "documentation"));
+    os.makedirs(os.path.join(app.path, "documentation", "html"));
+    os.makedirs(os.path.join(app.path, "documentation", "html", "plantillas"));
+    copy_directory(os.path.join(moduleDir, "documentation/html/plantillas"),  app.path+"/documentation/html/plantillas");
+    
     
     
 def copy_directory(source, target):
@@ -208,3 +238,157 @@ def copy_directory(source, target):
             print "Creando el fichero " + to_
             shutil.copyfile(from_, to_)    
     
+def generateDocumentationHTML(app):
+    print "~ Generando la documentacion ..."
+    # Accedo a la carpeta donde estan los ficheros
+    ruta_app = app.path.replace("\\", "/")+"/led"
+    ruta_modulo = getModuleDir(app, "")
+    ruta_ledFap = ruta_modulo.replace("\\", "/")+"/app/led/fap"
+    ruta_htmlDoc = ruta_modulo.replace("\\", "/")+"/documentation/html"
+    ruta_clase= ruta_modulo+"\\compiler\\gendocumentation\\bin"
+    ruta_plantilla = ruta_modulo.replace("\\", "/")+"/compiler/gendocumentation"
+    class_name = "GenerarDocumentacionHTML"
+    regexp = re.compile(".fap$")
+    # Primero creo la documentacion de los fichero "*.fap" que vienen por defecto
+    ficheros = os.listdir(ruta_ledFap)
+    for f in ficheros:
+        if (regexp.search(f)): # Si es un fichero "*.fap", creo su documentacion
+            fuente = ruta_ledFap+"\\"+f
+            # Nombre del fichero destino de la documentacion
+            nombreDoc = f.replace(".fap", "FAPDocumentacion.html")
+            destino = ruta_htmlDoc+"/"+nombreDoc
+            # Por cada fichero ejecutamos la generacion de su documentacion
+            classpath=ruta_clase+";"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\groovy-all-1.7.5.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-textile.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-wikitext.jar"
+            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente, destino, ruta_plantilla, ruta_modulo.replace("\\", "/"), nombreDoc];
+            subprocess.call(cmd)
+            primero="2"
+            print "~ [CREADO]: "+destino
+    # Recorro la carpeta en busca de los fichero "*.fap", propios del proyecto
+    ficheros = os.listdir(ruta_app)
+    for f in ficheros:
+        if (regexp.search(f)): # Si es un fichero "*.fap", creo su documentacion
+            fuente = ruta_app+"\\"+f
+            # Nombre del fichero destino de la documentacion
+            nombreDoc = f.replace(".fap", "Documentacion.html")
+            destino = app.path.replace("\\", "/")+"/documentation/html"+"/"+nombreDoc
+            # Por cada fichero ejecutamos la generacion de su documentacion
+            classpath=ruta_clase+";"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\groovy-all-1.7.5.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-textile.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-wikitext.jar"
+            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente, destino, ruta_plantilla, ruta_modulo.replace("\\", "/"), nombreDoc];
+            subprocess.call(cmd)
+            print "~ [CREADO]: "+destino
+
+
+
+def copytree(source, dest, ignores):
+   shutil.copytree(source, dest, ignore=shutil.ignore_patterns(*ignores))
+
+def makeDirsIfNotExists(source):
+   if not os.path.exists(source):
+      os.makedirs(source)
+
+def dist(app, args):
+   # Precompila
+   # TODO ver si se puede cambiar por la llamada directa a la clase
+   # para que no aparezca otra vez el logo de play
+   ret = subprocess.call(["play", "precompile"]);
+   if ret != 0:
+      print "~ Error precompilando la aplicación"
+      exit(ret)
+
+   #
+   modules = app.modules()
+   classpath = app.getClasspath()
+
+   # Si no existe la carpeta dist la crea
+   dist_path = os.path.join(app.path, "dist")
+
+   makeDirsIfNotExists(dist_path)
+
+   fecha = date.today().isoformat()
+   dest = os.path.join(dist_path, app.name() + fecha)
+
+   path = {}
+   path['app'] = os.path.join(dest, app.name())
+   path['lib'] = os.path.join(dest, 'lib')
+   path['modules'] = os.path.join(dest, app.name(),'modules')
+
+   ignoreGlobal = ['**logs', '**test*', 'led', 'eclipse', 
+                    '**tmp', '**test-result', 'modules', 
+                    '.settings', '.classpath', 
+                    'lib', 'nbproject', '**eclipse', '**.svn', '**.git']
+
+   if os.path.exists(path['app']):
+      print "~ [ERROR] - La carpeta de destino %s ya existe" % path['app']
+      exit(1)
+        
+   print "~ Copiando aplicación a " + path['app']
+   ignores = ignoreGlobal + ['dist']
+   copytree(app.path, path['app'], ignores)
+
+   # Copia las librerias de la aplicación y de los módulos
+   # No las librerías de play
+   print "~ Copiando librerías a" + path['lib']
+   makeDirsIfNotExists(path['lib'])
+   playlibs = os.path.join(app.play_env["basedir"], 'framework')
+   for jar in classpath:
+      if jar.endswith('.jar') and jar.find('provided-') == -1:
+         if not jar.startswith(playlibs):
+            jarname = os.path.split(jar)[1]
+            shutil.copyfile(jar, os.path.join(path['lib'], jarname))
+   
+   #copiar módulos
+   print "~ Copiando módulos" + path['modules']
+   makeDirsIfNotExists(path['modules'])
+   ignores = ignoreGlobal + ['dist', 'samples-and-tests', 'build.xml', 
+              'documentation', '**compiler', 
+              'plugins',  'fap-skel', 'src']
+
+   for module in modules:
+      modulename = os.path.basename(module)
+      copytree(module, os.path.join(path['modules'], modulename), ignores)   
+
+
+
+def replace_words(text, word_dic):
+    rc = re.compile('|'.join(map(re.escape, word_dic)))
+    def translate(match):
+        return word_dic[match.group(0)]
+    return rc.sub(translate, text)
+
+def replace_in_file(file1, file2, word_dic):
+    fin = open(file1, "r")
+    str1 = fin.read()
+    fin.close()
+
+    str2 = replace_words(str1, word_dic)
+
+    fout = open(file2, "w")
+    fout.write(str2)
+    fout.close()
+
+
+def winservice(app, args):
+    moduleDir = getModuleDir(app, args)
+    winservicepath = os.path.join(moduleDir, "support", "winservice");
+
+    prunsrv = os.path.join(winservicepath, 'commons-daemon-1.0.8-bin-windows', 'prunsrv.exe')
+
+    install_in = os.path.join(winservicepath, "installService.bat")
+    install_out = os.path.join(app.path, "installService.bat")
+    word_dic = {
+        "${app.name}" : app.name(),
+        "${app.path}" : app.path,
+        "${play.path}" : app.play_env['basedir'],
+        "${prunsrv}" : prunsrv
+    }
+    replace_in_file(install_in, install_out, word_dic)
+    print "~ [fap:winservice] Creado installService.bat"
+
+    uninstall_in = os.path.join(winservicepath, "uninstallService.bat")
+    uninstall_out = os.path.join(app.path, "uninstallService.bat")
+    word_dic = {
+        "${app.name}" : app.name(),
+        "${prunsrv}" : prunsrv
+    }
+    replace_in_file(uninstall_in, uninstall_out, word_dic)
+    print "~ [fap:winservice] Creado unistallService.bat"

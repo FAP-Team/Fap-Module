@@ -23,7 +23,7 @@ import play.mvc.Http.Request;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 @Table(name="solicitud")
 public class SolicitudGenerica extends Model {
@@ -31,6 +31,11 @@ public class SolicitudGenerica extends Model {
 	
 	
 	public String estado;
+	
+	
+	@ValueFromTable("estadosSolicitud")
+	@Transient
+	public String estadoValue;
 	
 	
 	@ValueFromTable("estadosSolicitud")
@@ -72,6 +77,11 @@ public class SolicitudGenerica extends Model {
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Verificacion verificacion;
+	
+	
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="solicitudgenerica_ceconomicos")
+	public List<CEconomico> ceconomicos;
 	
 	
 	public SolicitudGenerica (){
@@ -127,6 +137,9 @@ public class SolicitudGenerica extends Model {
 							else
 								verificacion.init();
 						
+						if (ceconomicos == null)
+							ceconomicos = new ArrayList<CEconomico>();
+						
 	}
 		
 	
@@ -139,11 +152,18 @@ public class SolicitudGenerica extends Model {
 	}
 
 	public String getEstadoUsuario() {
+		if (!TableKeyValue.contains("estadosSolicitudUsuario", estado))
+			utils.DataBaseUtils.updateEstadosSolicitudUsuario();
+		return TableKeyValue.getValue("estadosSolicitudUsuario", estado);
+	}
+	
+	public String getEstadoValue() {
 		return estado;
 	}
 
 	@Override
 	public <T extends JPABase> T save() {
+		//merge();
 		_save();
 		participacionSolicitud();
 		return (T) this;

@@ -13,13 +13,8 @@
 
 
 #{set 'moreScripts'}
-	<script language="javascript" src="http://www.gobiernodecanarias.org/platino/servicios/sfst/js/WS_Full.js" type="text/javascript"></script>
-	<script language="javascript" src="http://www.gobiernodecanarias.org/platino/servicios/sfst/js/sfest.utils.js" type="text/javascript"></script>
-	<script language="javascript" src="http://www.gobiernodecanarias.org/platino/servicios/sfst/js/sfest.base.js" type="text/javascript"></script>
-	<script language="javascript" src="@{'/public/javascripts/platino.js'}" type="text/javascript"></script>
-	<script language="javascript" src="@{'/public/javascripts/msg.js'}" type="text/javascript"></script>
+	#{fap.platinojs /}
 #{/set}
-
 
 <div id="instrucciones" class="grid_6 alpha">
 	#{fap.grupo titulo:"Instrucciones"}
@@ -58,7 +53,7 @@
 	
 	#{fap.grupo titulo:"Ayuda"}	
 		<a href="#"><button class="boton">Manual de usuario</button></a>
-		<a href="@{SoporteController.index("crear")}" class="boton">Preguntas e incidencias</a>
+		<a href="${play.mvc.Router.reverse("SoporteController.index" , ['accion':'crear', 'redirigir': 'anterior'])}" class="boton">Preguntas e incidencias</a>
 	#{/fap.grupo}
 </div>
 

@@ -12,8 +12,9 @@ import play.mvc.Scope.Session;
 public class Messages {
 
     static ThreadLocal<Messages> current = new ThreadLocal<Messages>();
-	public enum MessageType{
-		ERROR,INFO, OK, WARNING, FATAL}
+	
+    public enum MessageType{ERROR,INFO, OK, WARNING, FATAL}
+	
 	private static MessageType[] MessageTypeValues = MessageType.values();
 
 	private HashMap<MessageType, List<String>> messages = new HashMap<MessageType, List<String>>();
@@ -63,6 +64,70 @@ public class Messages {
 		}
 		current().keep = true;
     }
+    
+    /**
+     * Mantiene los parámetros flash para la siguiente petición
+     * Los parametros no se almacen en Flash porque en paginas grandes pueden
+     * superar el limite de 4k de la cookie. Se guardan en cache
+     */
+    public static void setFlash(String id, Object o){	
+    	String flashName = getFlashName(id);
+    	Cache.set(flashName, o, "5mn");
+    	
+    	//Alamacena en cache los parámetro guardados
+    	String cached = Cache.get(getCachedNamesKey(), String.class);
+    	if(cached == null){
+    		cached = id;
+    	}else{
+    		cached += "," + id;
+    	}
+    	Cache.set(getCachedNamesKey(), cached);
+    }
+    
+    public static boolean containsFlash(String id){
+    	String cached = Cache.get(getCachedNamesKey(), String.class);
+    	if(cached != null){
+    		for(String key : cached.split(",")){
+    			if(id.equals(key))
+    				return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    
+    public static String getCachedNamesKey(){
+    	return Session.current().getId() + "cachedParams";
+    }
+    
+    public static Object getFlash(String id){
+    	Object o = Cache.get(getFlashName(id));
+    	return o;
+    }
+    
+    private static String getFlashName(String id){
+    	String sessionId = Session.current().getId();
+    	return sessionId + "-cacheParam-" + id;
+    }
+    
+    public static void deleteFlash(){
+    	String cached =  Cache.get(getCachedNamesKey(), String.class);
+    	if(cached != null){
+	    	for(String key : cached.split(",")){
+	    		Cache.delete(key);
+	    	}
+    	}
+    	Cache.delete(getCachedNamesKey());
+    }
+    
+    public static Object flashOrValue(String name, Object value){
+	 	if(containsFlash(name)){
+			return getFlash(name);
+		}else{
+			return value;
+		}
+    }
+    
     
     public static boolean isKeep() {
     	return current().keep;

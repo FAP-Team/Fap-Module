@@ -1,21 +1,22 @@
 package es.fap.simpleled.led.util;
 
+import org.eclipse.emf.ecore.EObject;
+
 public final class Proposal {
 
 	public String text;
 	public boolean valid;
-	public Integer priority;
-
+	public EObject atributo;
+	
+	public Proposal(String text, boolean valid, EObject atributo) {
+		this.text = text;
+		this.valid = valid;
+		this.atributo = atributo;
+	}
+	
 	public Proposal(String text, boolean valid) {
 		this.text = text;
 		this.valid = valid;
-		this.priority = 0;
-	}
-	
-	public Proposal(String text, boolean valid, int priority) {
-		this.text = text;
-		this.valid = valid;
-		this.priority = priority;
 	}
 	
 	public String getEditorText(){

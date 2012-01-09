@@ -24,9 +24,6 @@ GET     /public/                                staticDir:public
 
 # Dentro de esta region se van a escribir todas las rutas generadas
 # === FAPGENERATED ===
-GET /Solicitud/solicitante SolicitanteController.index
-
-POST /Solicitud/solicitante/save SolicitanteController.save
 GET /Solicitud/fechas FechasController.index
 
 POST /Solicitud/fechas/save FechasController.save
@@ -41,6 +38,9 @@ GET /Solicitud/combosoverwrite CombosOverwriteController.index
 
 GET /Solicitud/combosoverwrite/comboTestRef CombosOverwriteController.tablacomboTestRef
 POST /Solicitud/combosoverwrite/save CombosOverwriteController.save
+GET /Solicitud/paginacomboserror PaginaCombosErrorController.index
+
+POST /Solicitud/paginacomboserror/save PaginaCombosErrorController.save
 GET /Solicitud/valorespordefecto ValoresPorDefectoController.index
 
 POST /Solicitud/valorespordefecto/save ValoresPorDefectoController.save
@@ -48,6 +48,21 @@ GET /Solicitud/tablassimples TablasSimplesController.index
 
 GET /Solicitud/tablassimples/tablaNombres TablasSimplesController.tablatablaNombres
 POST /Solicitud/tablassimples/save TablasSimplesController.save
+GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
+
+POST /Solicitud/subirarchivoaedtest/anadirDocumentacion SubirArchivoAedTestController.anadirDocumentacion
+GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
+
+POST /Solicitud/ejemplosdegrupos/save EjemplosdeGruposController.save
+GET /Solicitud/permisopagina PermisoPaginaController.index
+
+POST /Solicitud/permisopagina/save PermisoPaginaController.save
+GET /Solicitud/permisogrupo PermisoGrupoController.index
+
+POST /Solicitud/permisogrupo/save PermisoGrupoController.save
+GET /Solicitud/permisonoeditable PermisoNoEditableController.index
+
+POST /Solicitud/permisonoeditable/save PermisoNoEditableController.save
 GET /Solicitud/combotestref/{idEntidad}/abrir popups.ComboTestRefController.abrir
 POST /Solicitud/combotestref/{idEntidad}/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/{idEntidad}/borrar popups.ComboTestRefController.borrar

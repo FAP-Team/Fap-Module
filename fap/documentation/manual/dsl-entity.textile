@@ -14,7 +14,8 @@ h2. Parámetros
 * **inheritance = joined** (opcional) : Hhace que las clases hijas creen su propia tabla para almacenar sus atributos.
 * **superClass** (opcional) : No se creará una tabla en la base de datos para esta entidad, sus atributos se almacenaran en las tablas que creen sus hijos.
 * **noConstruct** (opcional) : No se genera el constructor para esta entidad.
-* **noAuditable** (opcional) : No se realizará un seguimiento de los cambios realizados en los atributos de la entidad.
+* **noAuditable** (porDefecto) : No se realizará un seguimiento de los cambios realizados en los atributos de la entidad.
+* **auditable** (opcional) : Se realizará un seguimiento de los cambios realizados en los atributos de la entidad.
 
 h3. Entidades Singleton
 
@@ -51,7 +52,7 @@ bc.. Entity:
 		& (inheritance?="inheritance" "=" "joined")?
 		& (superClass?="superClass")?
 		& (noConstruct?="noConstruct")?
-		& (noAuditable?="noAuditable")?
+		& (auditable?="auditable" | noAuditable?="noAuditable")?
 		)
 	'{'
 		attributes+=Attribute*

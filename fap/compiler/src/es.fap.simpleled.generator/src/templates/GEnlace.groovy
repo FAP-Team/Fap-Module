@@ -3,6 +3,7 @@ package templates;
 
 import generator.utils.*;
 import es.fap.simpleled.led.*;
+import generator.utils.HashStack.HashStackName;
 
 public class GEnlace {
 
@@ -32,6 +33,11 @@ public class GEnlace {
 		
 		if(enlace.url){
 			p.putStr("url", enlace.url)
+		}
+		
+		if(enlace.anterior){
+			p.put("anterior", true)
+			p.putStr("container", HashStack.top(HashStackName.CONTAINER).name);
 		}
 		
 		if(enlace.pagina){

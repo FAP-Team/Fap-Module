@@ -7,6 +7,7 @@ import es.fap.simpleled.led.*
 import es.fap.simpleled.led.impl.*
 import generator.utils.CampoUtils
 import generator.utils.LedUtils
+import es.fap.simpleled.led.util.ModelUtils;
 import generator.utils.HashStack
 import generator.utils.StringUtils
 import generator.utils.TagParameters
@@ -152,6 +153,7 @@ public class GSolicitante {
 		
 			Tabla tabla = new TablaImpl();
 			
+			tabla.setPermiso(permiso);
 			tabla.setName(name+"Tabla");
 			tabla.setCampo(CampoUtils.addMore(campo, "representantes"));
 			tabla.setTitulo("Representante");
@@ -200,7 +202,7 @@ public class GSolicitante {
 		
 		popup.setName "Popup" + StringUtils.firstUpper(name);
 		popup.setTitulo "Representante";
-		popup.setCampo(CampoUtils.create(LedUtils.getNode(Entity, "RepresentantePersonaJuridica")).campo);
+		popup.setCampo(CampoUtils.create(ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "RepresentantePersonaJuridica", LedUtils.resource)).campo);
 			
 		Persona person = new PersonaImpl();
 		

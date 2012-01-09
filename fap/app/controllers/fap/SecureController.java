@@ -1,31 +1,36 @@
 package controllers.fap;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
+import config.InjectorConfig;
+
 
 import messages.Messages;
-import models.*;
+import models.Agente;
+
+import org.apache.log4j.Logger;
 
 import platino.FirmaClient;
 import platino.InfoCert;
 import play.Play;
-import play.mvc.*;
+import play.cache.Cache;
+import play.data.validation.Required;
+import play.libs.Codec;
+import play.libs.Crypto;
+import play.mvc.Before;
+import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Http.Request;
 import play.mvc.Scope.Params;
 import play.mvc.Scope.Session;
-import play.cache.Cache;
-import play.data.validation.*;
-import play.db.jpa.JPA;
-import play.libs.*;
-import play.utils.*;
+import play.mvc.Util;
+import play.mvc.With;
 import properties.FapProperties;
+import security.Secure;
 import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
@@ -213,7 +218,10 @@ public class SecureController extends GenericController{
     			allowed = true;
     		}else {
     	        /** Si uno de los passwords es vacío */
-    	        if ((password.trim().length() == 0) || (agente.password.trim().length() == 0)) {
+    			if (agente.password == null) {
+    				allowed = false;
+    	        	log.info("No se permite hacer password, porque en BBDD es vacío");
+    			} else if ((password.trim().length() == 0)  || (agente.password.trim().length() == 0)) {
     	        	allowed = false;
     	        	log.info("Uno de los Passwords es vacío");
     	        } else {

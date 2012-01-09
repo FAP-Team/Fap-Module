@@ -21,7 +21,7 @@ import controllers.fap.AgenteController;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 public class Solicitante extends Persona {
 	// Código de los atributos

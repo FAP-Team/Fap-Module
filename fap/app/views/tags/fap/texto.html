@@ -8,6 +8,7 @@
   	_campo  - Campo donde se almacenará el campo de texto
   	_ayuda  - Objeto de tipo TagAyuda
   	_requerido(false) - El campo es requerido
+  	_password - El campo es un password
     _obj     - Objeto a partir del cual se accede al value. 
     		  Usar en el caso de que se llame desde otro tag
     _noRow(false)   - true para no envolver el campo en un form-row
@@ -34,6 +35,11 @@
 	else
 		requerido = false
 	
+	def passwordText;
+	if(_password != null)
+	   passwordText = "password";
+	else
+	   passwordText = "text";
 	
 	def stackDisabled = tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
@@ -60,7 +66,7 @@
 }%
 
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-		<input id="${id}" type="text" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+    	<input id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 	#{/fap.formrow}
 	
 %{
@@ -71,7 +77,7 @@
 	
 	#{if duplicado == true}
 		#{fap.formrow id:id_copy, label:label_copy, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-			<input id="${id_copy}" type="text" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+			<input id="${id_copy}" type="${passwordText}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 		#{/fap.formrow}
 		
 		<script>

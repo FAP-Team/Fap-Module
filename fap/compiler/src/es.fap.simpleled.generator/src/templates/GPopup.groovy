@@ -17,6 +17,7 @@ public class GPopup {
 	Popup popup;
 	String formulario;
 	CampoUtils campo;
+	String name;
 	
 	public static void generate(Popup popup){
 		GPopup g = new GPopup(popup);
@@ -29,6 +30,7 @@ public class GPopup {
 	
 	public GPopup(Popup popup){
 		this.popup = popup;
+		this.name = popup.name;
 		this.formulario = popup.eContainer().name;
 		this.campo = CampoUtils.create(popup.campo);
 	}

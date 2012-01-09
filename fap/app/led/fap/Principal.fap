@@ -2,6 +2,7 @@ Formulario Principal {
 	Menu {
 		Enlace "Mis Solicitudes" pagina=Solicitudes
 		Enlace "Administración" permiso=administrador pagina=Administracion.Usuarios
+		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
 		Enlace "Ayuda" pagina=Soporte.Soporte crear
 		Enlace "Salir" accion="fap.SecureController.logout"
 	}
@@ -11,8 +12,9 @@ Formulario Principal {
 		Tabla listaSolicitudes titulo="Mis Solicitudes" campo=SolicitudGenerica paginaModificar=EditarSolicitud paginaCrear=NuevaSolicitud permiso=solicitudes {
 			Columna campo=SolicitudGenerica.id titulo="ID" ancho="40"
 			Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
-			Columna campo=SolicitudGenerica.estado titulo="Estado Interno" ancho="150" permiso=noVisibleUsuario
-			Columna campo=SolicitudGenerica.estadoUsuario titulo="Estado" ancho="150"
+			Columna campo=SolicitudGenerica.estado titulo="Estado Interno" ancho="80" permiso=noVisibleUsuario
+			Columna campo=SolicitudGenerica.estadoValue titulo="Estado" ancho="80" permiso=noVisibleUsuario
+			Columna campo=SolicitudGenerica.estadoUsuario titulo="Estado Usuario" ancho="150"
 			Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" expandir
 			Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir			
 		}

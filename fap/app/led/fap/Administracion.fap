@@ -5,14 +5,16 @@ Formulario Administracion permiso=administrador{
 		
 		Grupo "Administración" {
 			Enlace "Usuarios" pagina=Usuarios
+			Enlace "Convocatoria" pagina=Convocatoria
 			Enlace "Aed" pagina=Aed
-			Enlace "Requerimientos" pagina=Requerimientos
+			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Emails" pagina=Emails
 			Enlace "Logs" accion="fap.LoggerController.index"
 			Enlace "Informe" accion="fap.InformeController.index"
 			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
 			Enlace "Properties" pagina=Propiedades
+			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 		}
 		
 		Enlace "Ayuda" pagina=Soporte.Soporte crear
@@ -22,7 +24,7 @@ Formulario Administracion permiso=administrador{
 	Pagina Usuarios {
 		Wiki {"Para asignar roles seleccione el usuario y pulse en editar"}
 
-		Tabla listaUsuarios titulo="Usuarios" campo=Agente 
+		Tabla listaUsuarios titulo="Usuarios" campo=Agente
 			popup=PopupUsuario
 		{
 			Columna campo=Agente.id titulo="Id" ancho="25"
@@ -43,14 +45,39 @@ Formulario Administracion permiso=administrador{
 		
 	Pagina Aed noForm permiso=administrador  {
 		Grupo titulo="Tipos de documentos" {
-			Wiki {"Busca en el archivo electrónico los tipos de documento y los almacena en la base de datos. Los tipos almacenados en la base de datos serán los que aparecen en el combo de la página de documentación."}
-			Form tiposDeDocumentos {
-				Boton botonTiposDocumentos titulo="Actualizar tipos de documentos desde el AED"
+			Wiki {
+"Actualiza a partir del servicio web del Aed la definición de los trámites y los tipos de documentos asociados a cada trámite.
+Actualiza las tablas **ConfiguracionAed**, **Trámite** y **TiposDocumentos**.
+También actualiza la tabla de tablas, añadiendo los tipos de documentos en la tabla **tiposdocumentos**.
+"}
+			Form actualizarTramites {
+				Boton actualizarTramites titulo="Actualizar trámites"
+			}
+			
+			Tabla tramites campo=Tramite popupVer=PopupTramite titulo="Trámites pertenecientes al procedimiento"{
+				Columna titulo="Nombre" campo=Tramite.nombre ancho="250"
+				Columna titulo="URI" campo=Tramite.uri expandir
 			}
 		}
 	}
 	
-	Pagina Requerimientos campo=Quartz {
+	Popup PopupTramite campo=Tramite {
+		Texto campo=Tramite.nombre
+		Texto campo=Tramite.uri
+		
+		Tabla documentos campo=Tramite.documentos titulo="Documentos pertenecientes al trámite" {
+			Columna titulo="Nombre" campo=TipoDocumento.nombre ancho="250"
+			Columna titulo="Aportado Por" campo=TipoDocumento.aportadoPor ancho="250"
+			Columna titulo="Obligatoriedad" campo=TipoDocumento.obligatoriedad ancho="250"
+			Columna titulo="URI" campo=TipoDocumento.uri ancho="600"
+		}	
+	}
+	
+	Pagina Convocatoria campo=Convocatoria titulo="Convocatoria"{
+		Combo campo=Convocatoria.estado titulo="Estado de la convocatoria"
+	}
+	
+	Pagina ConfiguracionQuartz titulo="Configuración del Quartz" {
 		Grupo configQuartz titulo="Configuración del quartz" {
 			Wiki {"El quartz es el proceso que se encarga de comprobar los accesos a la sede cuando se emiten los requerimientos y asignar correctamente las fechas de acceso y de vencimiento de los requerimientos."}
 			
@@ -108,25 +135,22 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 		}
 	}
 
-//	Popup PopupEmail entidad=Mail titulo="Email" {
-//		Wiki {"
-//Dentro de los campos puede utilizar variables con $ {nombreVariable} y otros elementos que puede consultar en la \"documentación\":http://www.playframework.org/documentation/1.2.1/templates#syntax.
-//
-//En los campos **Para** y **CC** puede poner varios destinatarios separados por \",\".
-//        "}
-//		Texto campo=Mail.idMail titulo="Identificador" requerido
-//		Texto campo=Mail.sender titulo="De"
-//		Texto campo=Mail.sendTo titulo="Para" requerido
-//		Texto campo=Mail.bcc titulo="CC"
-//		Texto campo=Mail.subject titulo="Asunto" requerido
-//		AreaTexto campo=Mail.content titulo="Mensaje" requerido
-//		AreaTexto campo=Mail.footer titulo="Pie de mensaje"
-//	}   
-    
     Popup PopupEmail campo=Mail titulo="Email" {
-		Texto campo=Quartz.texto
-		Texto campo=Mail.sender titulo="De"
-	}
+        Wiki {"
+Dentro de los campos puede utilizar variables con $ {nombreVariable} y otros elementos que puede consultar en la \"documentación\":http://www.playframework.org/documentation/1.2.1/templates#syntax.
+
+En los campos **Para** y **CC** puede poner varios destinatarios separados por \",\".
+        "}
+
+        Texto campo=Mail.idMail titulo="Identificador" requerido
+        Texto campo=Mail.sender titulo="De"
+        Texto campo=Mail.sendTo titulo="Para" requerido
+        Texto campo=Mail.bcc titulo="CC"
+        Texto campo=Mail.subject titulo="Asunto" requerido
+        AreaTexto campo=Mail.content titulo="Mensaje" requerido
+		AreaTexto campo=Mail.footer titulo="Pie de mensaje"
+
+    }
     
 	Popup PopupConsulta campo=Consulta titulo="Consulta" {
 		AreaTexto campo=Consulta.descripcion titulo="Descripcion" requerido
@@ -145,6 +169,22 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 	Popup PopupProperties campo=Propiedades titulo="Properties"{
 		Texto campo=Propiedades.descripcion titulo="Descripción" requerido
 		Texto campo=Propiedades.clave titulo="Clave" requerido
+	}
+    
+    Pagina EstadosVisibles titulo="Visibilidad de Estados" {
+    	Tabla tabladeEstadosSolicitud titulo="Estados de la solicitud visibles para los usuarios" campo=TableKeyValue popupModificar=PopupVisibilidadDeSolicitudes permiso=tableKeyOnlyEstadosSolicitudUsuario {
+	        Columna campo=TableKeyValue.key titulo="Estado Interno"
+	        Columna campo=TableKeyValue.value titulo="Estado Visible por el Usuario" expandir
+	    }
+    	
+    }
+    
+    Popup PopupVisibilidadDeSolicitudes campo=TableKeyValue {
+    	Grupo noEditableGrupo permiso=noEditable visible=false {
+	    	Texto campo=TableKeyValue.table titulo="Tabla"
+	    	Texto campo=TableKeyValue.key titulo="Estado Interno"
+	    }
+	    Combo comboEstadoInterno campo=TableKeyValue.value titulo="Estado que ve el usuario" requerido
 	}
     
 }

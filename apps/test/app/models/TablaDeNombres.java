@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 public class TablaDeNombres extends Model {
 	// Código de los atributos
@@ -33,10 +33,23 @@ public class TablaDeNombres extends Model {
 	public String apellido;
 	
 	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Fechas fecha;
+	
+	
+	public TablaDeNombres (){
+		init();
+	}
+	
 
 	public void init(){
 		
 		
+							if (fecha == null)
+								fecha = new Fechas();
+							else
+								fecha.init();
+						
 	}
 		
 	

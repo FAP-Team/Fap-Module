@@ -11,6 +11,11 @@ POST        /login/password                fap.SecureController.authenticate
 POST        /login/cert                    fap.SecureController.authenticateCertificate
 GET         /logout                        fap.SecureController.logout
 
+
+#Baremacion
+GET   /Baremacion/evaluaciones      								 fap.ConsultarEvaluacionesController.index
+GET   /Baremacion/evaluacion/{idEvaluacion}/fichaevaluador           fap.FichaEvaluadorController.index
+
 #Descarga del AED
 GET         /aed/descargar                 fap.DescargasAedController.descargar
 
@@ -39,16 +44,20 @@ GET /Administracion/logs fap.LoggerController.index
 GET /Administracion/consultas fap.consultasController.index
 GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
 
+
 # === FAPGENERATED ===
 GET /Administracion/usuarios/index UsuariosController.index
 
 GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios
 GET /Administracion/aed/index AedController.index
 
-POST /Administracion/aed/tiposDeDocumentos AedController.tiposDeDocumentos
+POST /Administracion/aed/actualizarTramites AedController.actualizarTramites
 
-GET /Administracion/requerimientos/index RequerimientosController.index
-POST /Administracion/requerimientos/editar RequerimientosController.editar
+GET /Administracion/aed/tramites AedController.tablatramites
+GET /Administracion/convocatoria/index ConvocatoriaController.index
+POST /Administracion/convocatoria/editar ConvocatoriaController.editar
+
+GET /Administracion/configuracionquartz/index ConfiguracionQuartzController.index
 
 GET /Administracion/tabladetablas/index TablaDeTablasController.index
 
@@ -63,11 +72,17 @@ POST /Administracion/emails/actualizarDesdeFichero EmailsController.actualizarDe
 GET /Administracion/propiedades/index PropiedadesController.index
 
 GET /Administracion/propiedades/tablaPropiedades PropiedadesController.tablatablaPropiedades
+GET /Administracion/estadosvisibles/index EstadosVisiblesController.index
+
+GET /Administracion/estadosvisibles/tabladeEstadosSolicitud EstadosVisiblesController.tablatabladeEstadosSolicitud
 GET /Administracion/popupusuario/index popups.PopupUsuarioController.index
 POST /Administracion/popupusuario/editar popups.PopupUsuarioController.editar
 POST /Administracion/popupusuario/borrar popups.PopupUsuarioController.borrar
 POST /Administracion/popupusuario/crear popups.PopupUsuarioController.crear
 
+GET /Administracion/popuptramite/index popups.PopupTramiteController.index
+
+GET /Administracion/popuptramite/documentos popups.PopupTramiteController.tabladocumentos
 GET /Administracion/popuptabladetablas/index popups.PopupTablaDeTablasController.index
 POST /Administracion/popuptabladetablas/editar popups.PopupTablaDeTablasController.editar
 POST /Administracion/popuptabladetablas/borrar popups.PopupTablaDeTablasController.borrar
@@ -85,6 +100,12 @@ POST /Administracion/popupproperties/editar popups.PopupPropertiesController.edi
 POST /Administracion/popupproperties/borrar popups.PopupPropertiesController.borrar
 POST /Administracion/popupproperties/crear popups.PopupPropertiesController.crear
 
+GET /Administracion/popupvisibilidaddesolicitudes/index popups.PopupVisibilidadDeSolicitudesController.index
+POST /Administracion/popupvisibilidaddesolicitudes/editar popups.PopupVisibilidadDeSolicitudesController.editar
+
+GET /Solicitud/pceconomicos/index PCEconomicosController.index
+
+GET /Solicitud/pceconomicos/tablaCEconomicos PCEconomicosController.tablatablaCEconomicos
 GET /Solicitud/aportacion/index AportacionController.index
 
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
@@ -131,6 +152,9 @@ GET /Solicitud/verificacion/requerimientos VerificacionController.tablarequerimi
 POST /Solicitud/verificacion/gfinalizarRequerimiento VerificacionController.gfinalizarRequerimiento
 
 GET /Solicitud/verificacion/registros VerificacionController.tablaregistros
+GET /Solicitud/popupceconomicos/index popups.PopupCEConomicosController.index
+POST /Solicitud/popupceconomicos/editar popups.PopupCEConomicosController.editar
+
 GET /Solicitud/popupdocpresentados/index popups.PopUpDocPresentadosController.index
 
 GET /Solicitud/popupdocprocesos/index popups.PopUpDocProcesosController.index

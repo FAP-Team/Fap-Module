@@ -3,17 +3,12 @@
  */
 package es.fap.simpleled.scoping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.xtext.resource.IContainer;
-import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
-
-import com.google.inject.Inject;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
@@ -25,6 +20,8 @@ import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.Popup;
+import es.fap.simpleled.led.ListaAtributos;
+import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
@@ -39,12 +36,6 @@ import es.fap.simpleled.led.util.ModelUtils;
 
 public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 	
-	@Inject
-	private IContainer.Manager manager;
-	
-	@Inject
-	private ResourceDescriptionsProvider indexProvider;
-	
 	public IScope scope_CampoAtributos_atributo(CampoAtributos atributos, EReference ref) {
 		Entity entidad = null;
 		if (atributos.eContainer() instanceof Campo){
@@ -58,7 +49,14 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
-		return Scopes.scopeFor(getAllDirectAttributesAndId(entidad));
+		return Scopes.scopeFor(LedEntidadUtils.getAllDirectAttributes(entidad));
+	}
+	
+	public IScope scope_ListaAtributos_atributos(ListaAtributos list, EReference ref){
+		Entity entidad = null;
+		Tabla tablaPadre = (Tabla)list.eContainer();
+		entidad = LedCampoUtils.getUltimaEntidad(tablaPadre.getCampo());
+		return Scopes.scopeFor(LedEntidadUtils.getAllDirectAttributes(entidad));
 	}
 	
 	public IScope scope_CampoPermisoAtributos_atributo(CampoPermisoAtributos atributos, EReference ref) {
@@ -69,7 +67,7 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 				entidad = permiso.getVariable().getTipo();
 			}
 			else if (permiso.isAgente()){
-				List<Entity> entidades = ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, "Agente", indexProvider, manager, atributos.eResource());
+				List<Entity> entidades = ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, "Agente", atributos.eResource());
 				if (entidades.size() > 0)
 					entidad = entidades.get(0);
 			}
@@ -80,7 +78,7 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
-		return Scopes.scopeFor(getAllDirectAttributesAndId(entidad));
+		return Scopes.scopeFor(LedEntidadUtils.getAllDirectAttributes(entidad));
 	}
 	
 	public IScope scope_Combo_comboTexto(Combo combo, EReference ref) {
@@ -89,23 +87,11 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 		if (LedEntidadUtils.ManyToX(attr)){
 			entidad = LedEntidadUtils.getEntidad(attr);
 		}
-		return Scopes.scopeFor(getAllDirectAttributesAndId(entidad));
+		return Scopes.scopeFor(LedEntidadUtils.getAllDirectAttributes(entidad));
 	}
 	
 	public IScope scope_Combo_comboValor(Combo combo, EReference ref) {
 		return scope_Combo_comboTexto(combo, ref);
-	}
-	
-	public static List<Attribute> getAllDirectAttributesAndId(Entity entidad){
-		List<Attribute> attrs = new ArrayList<Attribute>();
-		while (entidad != null){
-			LedEntidadUtils.addId(entidad);
-			for (Attribute attr: entidad.getAttributes()){
-				attrs.add(attr);
-			}
-			entidad = entidad.getExtends();
-		}
-		return attrs;
 	}
 	
 }

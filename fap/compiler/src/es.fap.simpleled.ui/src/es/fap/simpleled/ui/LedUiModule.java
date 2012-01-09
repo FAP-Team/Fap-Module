@@ -5,6 +5,7 @@ package es.fap.simpleled.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
+import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalPostProcessor;
 import org.eclipse.xtext.ui.editor.contentassist.FQNPrefixMatcher.LastSegmentFinder;
 import org.eclipse.xtext.ui.editor.hover.DispatchingEObjectTextHover;
 import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider;
@@ -15,6 +16,7 @@ import com.google.inject.Binder;
 
 import es.fap.simpleled.ui.coloring.FapSemanticHighlighting;
 import es.fap.simpleled.ui.contentassist.MyLastSegmentFinder;
+import es.fap.simpleled.ui.contentassist.FapCompletionProposalPostProcessor;
 import es.fap.simpleled.ui.documentation.FapDocumentationProvider;
 import es.fap.simpleled.ui.documentation.FapHoverProvider;
 
@@ -28,10 +30,10 @@ public class LedUiModule extends es.fap.simpleled.ui.AbstractLedUiModule {
 		super(plugin);
 	}
 	
-//	public Provider<IAllContainersState> provideIAllContainersState() {
-//		return org.eclipse.xtext.ui.shared.Access.getWorkspaceProjectsState();
-//	}
-	
+	public Class<? extends ICompletionProposalPostProcessor> bindICompletionProposalPostProcessor() {
+		return FapCompletionProposalPostProcessor.class;
+	}
+		
 	public Class<? extends LastSegmentFinder> bindLastSegmentFinder() {
 		return MyLastSegmentFinder.class;
 	}

@@ -7,7 +7,8 @@ Formulario Soporte campo=Incidencia {
     	Enlace "Manuales"
     }
     
-	Pagina Soporte noAutenticar botonCrear="Enviar" redirigirCrear="/" {
+	Pagina Soporte noAutenticar {
+		Accion crear boton="Enviar" redirigir=anterior mensajeOk="Incidencia enviada correctamente"
 		Wiki {"
 Utilice el siguiente formulario para notificar una incidencia o realizar cualquier consulta respecto a su solicitud. En el tiempo más breve posible se le contestará a la dirección de correo electrónico que indique.
 			"}

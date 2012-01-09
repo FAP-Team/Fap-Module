@@ -1,0 +1,32 @@
+h1. Documentacion de los ficheros *.fap
+
+h2. Generar documentación de los ficheros *.fap
+
+Para los ficheros *.fap, es posible crear su documentación partiendo de los comentarios que se ponen en el código de los mismos. Para ello, simplemente hay que hacer en la carpeta de nuestra aplicacion
+* **> play fap:documentation**
+
+Y él sólo se encargará de generar una documentación en formato .html. Dicha documentación se dividirá en dos partes:
+* La documentación propia del módulo FAP (Ficheros *.fap por defecto que trae el módulo)
+* La documentación propia de la Aplicación (Ficheros *.fap que nosotros mismos creamos)
+
+h2. Acceder a la documentación generada
+
+Para acceder a dicha documentación en el navegador deberemos poner la ruta:
+
+* Si queremos acceder al índice de todos los ficheros *.fap:
+**${DIRECCION}/@documentation/modules/fap/html/index**
+
+* Si queremos acceder directamente a un fichero *.fap concreto:
+**${DIRECCION}/@documentation/modules/fap/html/${NOMBRE_FICHERO}Documentacion**
+
+Donde:
+# **${DIRECCION}**, es la dirección de la aplicación (Ej: localhost/9000)
+# **${NOMBRE_FICHERO}**, es el nombre del fichero .fap
+* _Nota_: Los Ficheros *.fap, por defecto del módulo FAP, tendrán como nombre: **${NOMBRE_FICHERO}FAP**, para distinguirlos de los de nuestra aplicación.
+			
+Así por ejemplo, si queremos acceder al Fichero **Entidades.fap**, del módulo **FAP** deberemos ir a la dirección (suponiendo que nuestra aplicación esté desplegada en: _http://localhost:9000_):
+* **http://localhost:9000/@documentation/modules/fap/html/EntidadesFAPDocumentacion**
+
+Por el contrario, si queremos acceder al fichero **Entidades.fap**, de nuestra **aplicación** (El que nosotros hemos codificado), deberemos ir a la dirección:
+* **http://localhost:9000/@documentation/modules/fap/html/EntidadesDocumentacion**
+

@@ -1,0 +1,343 @@
+<html>
+
+<head>
+
+
+<style media="print">
+
+
+
+/*-------------------------------------------------------------------------
+
+Estilo general ...*/
+
+
+
+body {
+
+	font-family: Arial, sans-serif;
+
+	font-size: 12px;
+
+}
+
+p {
+
+	text-align: justify;
+
+}
+
+
+
+/*-------------------------------------------------------------------------
+
+SALTO DE PÃGINAS*/
+
+.div-saltoPagina{
+
+page-break-after:always;
+
+}
+
+.Criterio{
+	page-break-inside:avoid; 
+	page-break-after:auto;
+}
+
+
+/*-------------------------------------------------------------------------
+
+TABLA PARA TEXTOS y LISTAS GENERICA */
+
+
+
+.table-datos {
+
+    width:100%;
+
+    border:1px solid #ccc;
+    
+    page-break-inside:auto;
+
+
+}
+
+
+
+.table-datos caption {
+
+	background-color : #ccc;
+
+	font-weight: bold;
+
+	text-align: left;
+
+	padding-left: 5px;
+
+}
+
+
+
+.table-datos th {
+
+	background-color : #ccc;
+
+	font-weight: bold;
+
+	width: 150px;
+
+	text-align: left;
+	
+	vertical-align: text-top;
+
+	padding-left: 5px;
+
+}
+
+.table-datos td {
+
+	text-align: left;
+
+	padding-left: 5px;
+
+}
+
+
+/*-------------------------------------------------------------------------
+
+
+TABLAS CON GRID*/
+
+
+
+.table-grid {
+
+	width:100%;
+
+	border-collapse: collapse;
+
+	cellspacing:0px;
+
+	cellpadding:2px;
+
+	-fs-table-paginate: paginate;
+	
+	page-break-inside: avoid;
+
+}
+
+
+
+.table-grid caption{
+
+	text-align: left;
+
+	font-style: italic;
+
+	font-weight: bold;
+
+	padding-bottom: 5px;
+
+}
+
+.table-grid thead td {
+
+	border: 1px solid gray;
+
+	background-color : #ccc;
+
+	text-align: center;
+
+	font-weight: bold;
+
+	padding: 6px;
+
+}
+
+.table-grid th {
+
+	background-color : #ddd;
+
+	font-weight: bold;
+
+	width: 500px;
+
+	text-align: left;
+
+	padding-left: 5px;
+
+}
+
+.table-grid td {
+
+	border: 1px solid #ccc;
+
+	padding: 8px;
+	
+	text-align: center;
+
+}
+
+
+/*-------------------------------------------------------------------------
+
+ESTILO DE SECCIÃ“N */
+
+
+
+.table-seccion {
+
+    width:100%;
+
+}
+
+
+
+.table-seccion caption {
+
+	background-color : #ccc;
+
+	border:2px solid gray;
+
+	font-weight: bold;
+
+	text-align: left;
+
+	padding: 6px;
+
+}
+
+.table-seccion td {
+
+	text-align: left;
+
+	padding-left: 5px;
+
+}
+
+
+
+/*-------------------------------------------------------------------------
+
+
+
+</style>
+
+</head>
+
+<body>
+
+<!-- TITULO -->
+<div id="divTitulo">
+	<h2 style="text-align: center;">Borrador en PDF</h2>
+</div>
+
+<!-- SOLICITANTE -->
+<table id="tblSolcitanteTitulo" class="table-seccion">
+
+    	<caption>Solicitante: </caption>
+    	
+    	<tr><td colspan="1"></td></tr>
+
+	</table>
+
+<table id="tblDatosPersonalesSolicitante" class="table-datos">
+
+    
+	#{if (evaluacion.solicitud.solicitante.fisica)}
+	<tr><th>CIF/NIF: *</th><td>FISICa</td></tr>
+	#{/if}
+
+	#{if (evaluacion.solicitud.solicitante.juridica)}
+	<tr><th>CIF/NIF: *</th><td>JURIDICA</td></tr>
+	#{/if}
+
+	
+
+</table>
+
+
+</br>
+<!-- Evaluacion -->
+<table id="tblEvaluacionTitulo" class="table-seccion">
+
+    	<caption>Evaluación: </caption>
+
+		<tr><td colspan="1"></td></tr>
+
+	</table>
+<table id="tblEvaluacion" class="table-datos">
+	<tr><th>Comentarios administracion: </th><td>${evaluacion.comentariosAdministracion}</td></tr>
+	<tr><th>Comentarios solicitante: </th><td>${evaluacion.comentariosSolicitante}</td></tr>
+</table>
+
+</br>
+</br>
+
+<!-- Tabla criterios resumida -->
+
+	<table id="tblCriteriosResumidosTitulo" class="table-seccion">
+
+    	<caption>Criterios de evaluación Resumidos: </caption>
+
+		<tr><td colspan="1"></td></tr>
+		
+	</table>
+
+	<table id="tblCriteriosEvaluacionResumida" class="table-grid">
+	<thead>
+  		<tr>
+			<td>Criterio</td>
+			<td>Valor</td>
+  		<tr>
+ 	</thead>
+
+	#{list items:evaluacion.criterios, as:'criterio'}
+		%{
+			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor)
+			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", criterio.comentariosAdministracion);
+			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", criterio.comentariosSolicitante);
+		}%
+		<tr><th>${criterio.tipo.jerarquia} - ${criterio.tipo.nombre} </th><td>${valor}</td></tr>
+    #{/list}
+    <tr><th>Total puntuación de la evaluacion </th><td>${evaluacion.totalCriterios}</td></tr>
+    </table>
+
+</br>
+</br>
+
+<!-- Criterios de Evaluacion -->
+<table id="tblCriteriosTitulo" class="table-seccion">
+
+    	<caption>Criterios de evaluación: </caption>
+    	
+    	<tr><td colspan="1"></td></tr>
+
+	</table>
+    #{list items:evaluacion.criterios, as:'criterio'}
+		%{
+			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor)
+			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", criterio.comentariosAdministracion);
+			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", criterio.comentariosSolicitante);
+		}%
+		 <div class="Criterio">
+			<p class="nombre">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</p>
+			<table id="tblCriteriosEvaluacion"+${criterio.id} class="table-datos">
+				#{if (criterio.tipo.descripcion)}
+				   <tr><th>Descripcion: </th><td>${criterio.tipo.descripcion}</td></tr>
+				#{/if}
+				<tr><th>Valor: </th><td>${valor}</td></tr>
+				#{if (comentariosAdministracion)}
+					<tr><th>Comentarios administracion: </th><td>${comentariosAdministracion}</td></tr>
+				#{/if}
+				#{if (comentariosSolicitante)}
+	   		 		<tr><th>Comentarios solicitante: </th><td>${comentariosSolicitante}</td></tr>
+	   		 	#{/if}
+	  	    </table>
+         </div>
+    #{/list}
+
+
+</body>
+
+</html>

@@ -6,14 +6,16 @@ import models.Agente;
 import models.Incidencia;
 import play.Logger;
 import play.mvc.Router;
+import play.mvc.Scope;
 import play.mvc.Router.Route;
+import play.mvc.Scope.Session;
 import play.mvc.Util;
 import controllers.fap.AgenteController;
 import controllers.fap.SecureController;
 import controllers.gen.SoporteControllerGen;
 
 public class SoporteController extends SoporteControllerGen {
-
+	
 	public static void crear(Incidencia incidencia){
 		checkAuthenticity();
 		if(!permiso("create")){
@@ -33,8 +35,10 @@ public class SoporteController extends SoporteControllerGen {
 		Long idIncidencia;
 		if(!Messages.hasErrors()){
 			Agente agente = AgenteController.getAgente();
-			dbIncidencia.email = agente.email;
-			dbIncidencia.nombre = agente.name;
+			if (agente != null){
+				dbIncidencia.email = agente.email;
+				dbIncidencia.nombre = agente.name;
+			}
 			emails.Mails.enviar("incidencia",incidencia);
 			dbIncidencia.save();
 			

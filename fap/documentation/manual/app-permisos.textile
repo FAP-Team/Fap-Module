@@ -1,0 +1,82 @@
+h1. Permisos
+
+En estas sección se detallan los elementos que tienen que ver con la comprobación de los permisos en el desarrollo de la aplicación. Si quieres ver cómo definir los permisos en el dsl cónsulta "definición de permisos":dsl-permisos
+
+h2. Jerarquía generada
+
+A partir de la definición de los permisos se generar una serie de clases que comprueban los permisos generados. 
+El módulo fap incorpora una serie de permisos que se utilizan en las páginas que son comunes a todas las aplicaciones y que pueden ser reutilizados en las aplicaciones.
+
+Las clases que intervienen en la definición de los permisos son:
+
+* Módulo
+** **security.Secure** - Clase padre de la que heredan todas las clases que controlan los permisos.
+** **security.SecureFap** - Clase manual donde se sobreescriben los permisos del módulo
+** **security.SecureFapGen** - Clase generada a partir de los permisos definidos en el módulo
+* Applicación
+** **security.SecureApp** - Clase manual donde se sobreescriben los permisos del módulo
+** **security.SecureAppGen** - Clase generada a partir de los permisos definidos en la aplicación
+
+h2. Cadena de mando 
+
+Para poder sobreescribir los permisos definidos en el módulo en las aplicaciones o poder sobreescribir de forma manual los permisos generados se ha implementando un sistema de cadena de mando. La cadena de mando que se genera por defecto es la siguiente:
+
+bc. SecureApp --> SecureAppGen --> SecureFap --> SecureFapGen --> [false]
+
+A la hora de realizar la comprobación de un permiso, se utiliza la cadena de mando para resolver el permiso. Si por ejemplo se quiere consultar el permiso "administrador". Se empezará por el principio de la cadena, preguntando a SecureApp si sabe cómo evaluar el permiso "administrador". Si sabe cómo evaluarlo, será quien de la respuesta. Si no sabe cómo evaluarlo, delegará en el siguiente elemento de la cadena SecureAppGen. Así sucesivamente por toda la cadena. En caso de que ningún elemento elemento sepa cómo evaluar el permiso solicitado se devolverá "false" indicando que no se tiene permiso. Si se llega hasta este punto normalmente índica que tenemos un fallo en la aplicación, porque estamos intentando evaluar un permiso que no está definido.
+
+
+h3. Personalización de la cadena de mando
+
+La estructura que tiene la cadena de mando se define en el fichero de configuración del inyector de dependencias **config.AppModuleGen** en el método **secure**. El código que se genera por defecto es:
+
+bc.. protected void secure(){
+   bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
+}
+
+p. que se corresponde con la cadena de mando:
+
+bc. bc. SecureApp --> SecureAppGen --> SecureFap --> SecureFapGen --> [false]
+
+El parámetro que recibe como constructor es el siguiente elemento de la cadena de mando.
+
+Si queremos personalizar la cadena de mando, tenemos que sobreescribir esta configuración. En el fichero **config.AppModule** sobrescribimos el método **secure**. Por ejemplo si quisieramos utilizar únicamente los permisos de la aplicación definiríamos algo así:
+
+
+bc.. @Override
+protected void secure(){
+   bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(null)));
+}
+
+h2. Metódo de control de permisos
+
+Las clases que controlan los permisos heredan de la clase **security.Secure** e implementan el método **check** que se encarga de validar un permiso.
+
+bc. public boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars);
+
+El método debe devolver true/false en función de si se cumple la validación del permiso.
+
+Los parámetros del método son:
+* **id** - Nombre del permiso que se va a comprobar
+* **action** - Acción del permisos que se está consultando (create, read, update, delete)
+* **ids** - Mapa con clave idNombreVariable y valor el id de la variable que debe recuperar de base de datos
+* **vars** - Mapa con clave nombreDeVariable y valor el objeto que se asignará a la variable
+
+A la hora de asignar valores a las variables, se puede utilizar tanto el "ids" como "vars" pero tiene prioridad "vars".
+
+h2. Sobrescribiendo un permiso de forma manual
+
+Si por ejemplo queremos sobrescribir el permiso **administrador** lo que debemos hacer es modificar el método **check** de la clase **security.SecureApp**.
+
+bc.. 	@Override
+public boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars) {		
+  
+   if("administrador".equals(id)){
+      //Añadir código manual para hacer la comprobación del permiso
+      return <devolver true o false>;
+   }
+
+   return nextCheck(id, action, ids, vars);
+}
+
+

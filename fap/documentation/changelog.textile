@@ -2,7 +2,20 @@ h2. Changelog
 
 h3. Versión 1.2
 
+* Se recomienda actualizar play a la versión 1.2.4.
+* Fixed minor bugs.
+* Test automáticos (play autotest).
+* Nueva interfaz de permisos que permite sobrescribir los permisos definidos en el módulo
+* Inyección de dependencias utilizando Google Guice.
+* Permitir creacion de Enumerados Java a partir de Listas FAP
+* Posibilidad de personalizar las páginas mediante código JavaScript
+* Fixed bug AutoEnviar (Form) Area de Texto
+* Generar documentacion HTML de los ficheros *.fap
+* Fixed lazy load de collections en AuditLogListener (problemas con los ManyToOne).
 * Fixed bug copia de atributos ManyToOne y ManyToMany.
+* Fixed funcionalidad de selección de filas en una tabla mediante checkboxes.
+* Funcionalidad de 'include' y 'exclude' en ColumnasAutomáticas.
+* Opción de 'password' en los campos de tipo Texto.
 
 h3. Versión 1.1.1
 

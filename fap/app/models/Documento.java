@@ -21,7 +21,7 @@ import properties.FapProperties;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 public class Documento extends Model {
 	// Código de los atributos
@@ -99,7 +99,8 @@ public class Documento extends Model {
 		//Si no es de tipo otros, pone la despcrión igual al tipo
 		//El AED da error con descripción null
 		if(!isOtros()){
-			descripcion = TableKeyValue.getValue("tipoDocumentosTodos", tipo);
+			play.Logger.info("Preparando para subir documento del tipo %s", tipo);
+			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}
 	}
 	

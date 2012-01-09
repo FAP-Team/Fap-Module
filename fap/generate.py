@@ -7,12 +7,7 @@ def main():
     modelPath = os.path.join(directorioOriginal, "app", "led", "fap")
     targetPath =  os.path.join(directorioOriginal)
     params = "solicitud=false"
-    
-    #print "Directorio: ",directorioOriginal
-    #print "Model: ",modelPath
-    #print "Target: ",targetPath
-    #execute_workflow(modelPath, targetPath, params, args, app)
-    
+        
     generatorDir = os.path.join(directorioOriginal, 'compiler')
     generatorLibDir = os.path.join(generatorDir, 'lib')
     jars = []
@@ -40,9 +35,7 @@ def main():
     # app.java_path()
     cmd = ["java", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, params];
     #print cmd
-    return subprocess.call(cmd);
-
+    subprocess.call(cmd);
 
 if __name__ == "__main__":
-    exit_code = main()
-    exit(exit_code)
+    main()

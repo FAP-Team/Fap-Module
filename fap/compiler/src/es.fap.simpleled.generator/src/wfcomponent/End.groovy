@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import es.fap.simpleled.led.impl.AttributeImpl;
 
 import org.apache.log4j.Logger;
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowComponent;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
 
@@ -27,6 +28,7 @@ import es.fap.simpleled.led.Type
 import es.fap.simpleled.led.Pagina
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.impl.AttributeImpl;
+import es.fap.simpleled.led.util.ModelUtils;
 import generator.utils.HashStack.HashStackName;
 
 import generator.utils.*;
@@ -47,8 +49,9 @@ public class End implements IWorkflowComponent {
 	@Override
 	public void invoke(IWorkflowContext ctx) {
 		if (createSolicitud.equals("true")) {
-			if (LedUtils.getNode(Entity, "Solicitud") == null){
-				if (LedUtils.getNodes(Formulario, "Solicitud").size() > 1)
+			Resource res = LedUtils.resource;
+			if (ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "Solicitud", res) == null){
+				if (ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, "Solicitud", res).size() > 1)
 					log.warn("No se ha creado la entidad Solicitud. Se creará una por defecto.");
 				entitySolicitud();
 			}
@@ -56,10 +59,11 @@ public class End implements IWorkflowComponent {
 		}
 		permisos();
 		rutas();
-		if (LedUtils.generatingModule){
+		if (Start.generatingModule){
 			DocumentationUtils.makeDocumentation();
 		}
 		borrarFicherosAntiguos();
+		config();
 	}
 
 	@Override
@@ -71,14 +75,14 @@ public class End implements IWorkflowComponent {
 	private void rutas(){
 		def elementos = HashStack.allElements(HashStackName.ROUTES);
 		String content = elementos.collect{it -> it.generateRoutes()}.join('\n');
-		if (!LedUtils.generatingModule){
+		if (!Start.generatingModule){
 			content = "  # Home page\n" + rutaPaginaInicial() + "\n" + content;
 		}
 		FileUtils.writeInRegion(FileUtils.getRoute('CONF_ROUTES'), content);
 	}
 	
 	private String rutaPaginaInicial(){
-		List<Formulario> formularios = LedUtils.getNodes(Formulario);
+		List<Formulario> formularios = ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, LedUtils.resource);
 		Formulario formInicial;
 		Pagina pagInicial;
 		for (Formulario f: formularios){
@@ -101,7 +105,7 @@ public class End implements IWorkflowComponent {
 	}
 	
 	private void properties(){
-		List<Formulario> formsSolicitud = LedUtils.getNodes(Formulario, "Solicitud");
+		List<Formulario> formsSolicitud = ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, "Solicitud", LedUtils.resource);
 		Pagina pagInicial;
 		boolean indicada;
 		for (Formulario f: formsSolicitud){
@@ -125,66 +129,84 @@ public class End implements IWorkflowComponent {
    * en la hashStack
    * @return
    */
-  private String permisos(){
-	  String permisos = "";
-	  String lName = "";
-	  String defLine = "";
-	  String extendz = "";
-	  String generateExtends = "";
+  private String permisos(){	  
+	  String clazzName = Start.generatingModule ? "SecureFap" : "SecureApp"; 
+	  String clazzGenName = clazzName + "Gen";
 	  
-	  // Establecemos la línea de definición de la clase
-	  
-	  // Si estamos generando el módulo.
-	  if (LedUtils.generatingModule) {
-		  lName = "PermissionFap";
-		  defLine = "public class ${lName}";
-		  extendz = "extends ${lName}Gen"
-	  } else {
-	  	  lName = "Permission";
-	  	  defLine = "public class ${lName}";
-	  	  extendz = "extends ${lName}Gen";
-		  generateExtends = "extends PermissionFap"
-	  }
-	  
+	  def permisos = [];
+	  def permisosCode = "";
+	  def switchCode = "";
 	  for(Object o in HashStack.allElements(HashStackName.PERMISSION)){
-		  GPermiso p = (GPermiso)o;
-	  	  permisos += p.permisoCode();	
+		  GPermiso permiso = (GPermiso)o
+		  permisos.add(permiso)
+	  	  permisosCode += permiso.permisoCode()
+		
+		  String permisoName = permiso.permiso.name;	
+		  if(switchCode.isEmpty()){
+			  	
+		  	switchCode = """
+		if("${permisoName}".equals(id))
+			return ${permisoName}(action, ids, vars);
+"""	
+		  }else{
+		  switchCode += """
+		else if("${permisoName}".equals(id))
+			return ${permisoName}(action, ids, vars);
+	  """
+		  }
 	  }
 	  
+	  	  
 	  // Permisos generados
-		String out = """
-package secure.gen;
+		String secureGen = """
+package security;
 
-import java.util.*;
+import java.util.Map;
+
 import models.*;
 import controllers.fap.AgenteController;
-import secure.*;
-		
-${defLine}Gen ${generateExtends} {	
-${permisos}
+
+public class ${clazzGenName} extends Secure {
+
+	public ${clazzGenName}(Secure next) {
+		super(next);
+	}
+
+	@Override
+	public boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars) {
+${switchCode}		
+		return nextCheck(id, action, ids, vars);
+	}
+	
+	${permisosCode}
 }
 """;
 
-FileUtils.overwrite(FileUtils.getRoute('PERMISSION_GEN'), "${lName}Gen.java", out);
+FileUtils.overwrite(FileUtils.getRoute('PERMISSION'), "${clazzGenName}.java", secureGen);
 
   // Permisos manual
-  String outManual = """
-package secure;
+  String secure = """
+package security;
+
+import java.util.Map;
+
+public class ${clazzName} extends Secure {
+	
+	public ${clazzName}(Secure next) {
+		super(next);
+	}
+
+	@Override
+	public boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars) {		
+		return nextCheck(id, action, ids, vars);
+	}
+}""";
 	  
-import java.util.*;
-import models.*;
-import secure.gen.*;
-import controllers.fap.SecureController;
-			  
-${defLine} ${extendz} {
-}
-""";
-	  
-	  FileUtils.write(FileUtils.getRoute('PERMISSION'), "${lName}.java", outManual);
+	  FileUtils.write(FileUtils.getRoute('PERMISSION'), "${clazzName}.java", secure);
 		}
   
   
- private void entitySolicitud () {
+ private void entitySolicitud() {
 	 EntityImpl solicitud = LedFactory.eINSTANCE.createEntity();
 	 solicitud.setName("Solicitud");
 	 EntityImpl solicitudGen = LedFactory.eINSTANCE.createEntity();
@@ -201,6 +223,8 @@ ${defLine} ${extendz} {
 		 dirs.add(new File(FileUtils.getRoute('CONTROLLER_GEN_POPUP')));
 		 dirs.add(new File(FileUtils.getRoute('LIST')));
 		 dirs.add(new File(FileUtils.getRoute('JSON_DOCUMENTATION')));
+		 dirs.add(new File(FileUtils.getRoute('ENUM')));
+		 dirs.add(new File(FileUtils.getRoute('ENUM_FAP')));
 		 //dirs.add(new File(FileUtils.getRoute('MODEL'))); Se puede descomentar.
 		 
 		 for (File dview: new File(FileUtils.getRoute('VIEW')).listFiles()){
@@ -219,5 +243,60 @@ ${defLine} ${extendz} {
 		 } 
 	 }
  
-    
+	private void config(){
+		if(!Start.generatingModule){
+			String appConfigFolder = FileUtils.getRoute('APP_CONFIG');
+			String configGen = 
+"""
+package config;
+
+import security.*;
+
+import com.google.inject.AbstractModule;
+
+/**
+ * Configuración de Guice generada.
+ *
+ * Clase automática, cada vez que se genere la aplicación
+ * se sobreescribirá esta clase. Para personalizar
+ * la configuración consula la clase config.AppModule. 
+ */
+public class AppModuleGen extends AbstractModule {
+	
+	@Override
+	protected void configure() {
+		secure();
+		custom();
+	}
+	
+	protected void secure(){
+		bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
+	}
+
+	protected void custom(){
+	}
+	
+}
+"""
+			FileUtils.overwrite(appConfigFolder, "AppModuleGen.java", configGen);
+			String config = 
+"""
+package config;
+
+/**
+ * Configuración de Guice.
+ * 
+ * En esta clase puedes personalizar la configuración de Guice.
+ * Puedes sobreescribir los métodos ya definidos, como por ejemplo
+ * <secure> para personalizar la cadena de mando
+ * que se va a utilizar para resolver un permiso. Además puedes
+ * añadir configuración adicional utilizando el método <custom>.
+ */
+public class AppModule extends AppModuleGen {
+	
+}
+"""
+			FileUtils.write(appConfigFolder, "AppModule.java", config);
+		}	
+	}  
 }

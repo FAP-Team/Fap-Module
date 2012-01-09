@@ -51,3 +51,20 @@ Grupo titulo="Persona física" mostrarSiCombo combotipoSolicitante = "fisica" {
 	Texto campo=Solicitud.solicitante.fisica.segundoApellido titulo="Segundo Apellido"
 	Nip campo=Solicitud.solicitante.fisica.nip titulo="NIP" requerido
 }
+
+h3. Grupo con mostrarSiExpresion
+
+Permite mostrar el grupo si la expresión que se le asigna es verdadera (Ej: _"4 == 4", "true", ...) o un valor válido para el *if* de los templates de play ("Ver aquí":http://www.playframework.org/documentation/1.2.3/tags#if).
+
+bc. 	Grupo testSiExpresion titulo="Grupo 1: Mostrar Si Expression" mostrarSiExpresion "4 == 4"{
+	Texto ifTexto titulo="Texto" campo=Solicitud.testGrupo.nombre
+} 
+
+
+h3. Grupo con mostrarSiCampo
+
+Permitirá mostrar el grupo si el campo tiene uno de los valores incluidos. Un ejemplo, si el email del solicitante es _"pepe@pepe.com"_ o _"juan@juan.com"_.
+
+bc.  	Grupo test2SiExpresion titulo="Grupo 2: Mostrar Campo" mostrarSiCampo Solicitud.solicitante.email = "pepe@pepe.com", "juan@juan.com" {
+	Texto if2Texto titulo="Texto" campo=Solicitud.testGrupo.nombre
+}

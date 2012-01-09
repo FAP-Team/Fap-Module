@@ -11,6 +11,7 @@ import generator.utils.*;
 import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.util.LedCampoUtils;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 
 import generator.utils.CampoUtils;
 
@@ -51,7 +52,7 @@ public class GTabla {
 
 		EntidadUtils entidad = EntidadUtils.create(campo.entidad);
 		
-		if(campo.getCampo().getAtributos() != null)
+		if(campo.getCampo().getAtributos() != null && !entidad.isSingleton())
         	params.put 'url', "@${controllerName}.${controllerMethodName()}(${entidad.id})"
 		else
 			params.put 'url', "@${controllerName}.${controllerMethodName()}()"
@@ -73,21 +74,69 @@ public class GTabla {
 		if (tabla.recargarPagina)
 			params.put("recargarPagina", true)
 			
+	    List <Attribute> excludes, includes;
+	
 		if (tabla.seleccionable) {
-			params.putStr("seleccionable", tabla.seleccionable);
+			params.putStr("seleccionable", tabla.seleccionable)
 			params.putStr("urlSeleccionable", "${controllerName}.${seleccionableMethodName()}")
 		}
-		
-		if (tabla.columnasAutomaticas)
-			tabla.columnas.addAll(ColumnasUtils.columnas(campo.campo));
 
 		params.putStr 'tipo', tipo;
 		
 		StringBuffer columnasView = new StringBuffer();
-		
 			
-		for(Columna c : tabla.columnas){
-			columnasView.append (columnaView(c));
+		
+		if (tabla.columnasAutomaticas){
+			List <Columna> listaAtributos;
+			if (tabla.exclude != null){
+			   excludes = tabla.exclude.atributos;
+			   // listaAtributos: Devuelve la lista de columnas que hay que mostrar (es decir, en este caso, todas menos las excludes)
+			   listaAtributos = ColumnasUtils.columnasExclude(campo.campo, excludes);
+			} else if (tabla.include != null){
+			   includes = tabla.include.atributos;
+			   listaAtributos = ColumnasUtils.columnasInclude(campo.campo, includes);
+			} else{
+			   listaAtributos = ColumnasUtils.columnas(campo.campo);
+			}
+			List <Columna> aux = tabla.columnas;
+			boolean listo=false;
+			if (aux.isEmpty()){
+				tabla.columnas.addAll(listaAtributos);
+			}
+			else{
+				Columna co=null;
+				// Para que en caso de que haya 'columnasAutomaticas' y 'Columna' normal, se coja la 'Columna' normal
+				for(Columna lA : listaAtributos){
+					for(Columna c : tabla.columnas){
+						if ((CampoUtils.create(c.getCampo()).getUltimaEntidad().name.equals(CampoUtils.create(lA.getCampo()).getUltimaEntidad().name))
+							&&(CampoUtils.create(c.getCampo()).getUltimoAtributo().name.equals(CampoUtils.create(lA.getCampo()).getUltimoAtributo().name))){
+							aux.remove(lA);
+							listo=true;
+							co = c;
+							break;
+						}
+						co = null;
+					}
+					if (!listo){
+						if (co != null)
+						   aux.remove(co);
+						aux.add(lA);
+					} else{
+						listo = false;
+					}
+				}
+			}
+			for(Columna c : tabla.columnas){
+				columnasView.append (columnaView(c));
+			}
+	    } else{
+		    for(Columna c : tabla.columnas){
+			   columnasView.append (columnaView(c));
+		    }
+		}
+		
+		if(tabla.columnas.isEmpty()){
+			System.out.println("WARNING: La tabla: <"+tabla.getName()+"> no tiene ninguna columna como visible");
 		}
 
 		String view = """
@@ -263,7 +312,7 @@ public class GTabla {
 			campos.addAll(camposDeColumna(c));
 		}
 		//Añade el ID de la entidad
-		campos.add(CampoUtils.create(campo.entidad.name + ".id"));
+		campos.add(CampoUtils.create(campo.getUltimaEntidad().name + ".id"));
 		return campos.unique();
 	}
 	
@@ -281,19 +330,24 @@ public class GTabla {
 		
 		//La consulta depende de si se listan todas las entidades de una clase, o se accede a un campo
 		String query = null;
-		String param = null;
+		String param = "";
+		String idSingleton = "";
 		if(campo.getCampo().getAtributos() == null){ //Lista todas las entidades de ese tipo
 			query = """ "select ${entidadRaiz.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable}" """
-			param = "";
-		}else{ //Acceso a los campos de una entidad
+		}
+		else{ //Acceso a los campos de una entidad
 			query = """ "select ${entidadHija.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable} join ${campo.firstLower()} ${entidadHija.variable} where ${entidadRaiz.variable}.id=?", ${entidadRaiz.id} """
-			param = "Long ${entidadRaiz.id}";
+			if (entidadRaiz.isSingleton())
+				idSingleton = "${entidadRaiz.typeId} = ${entidadRaiz.clase}.get(${entidadRaiz.clase}.class).id;";
+			else
+				param = entidadRaiz.typeId;
 		}
 		
 		String rowsStr = campos.collect { '"' + it.sinEntidad() + '"'  }.join(", ");
 
 		return """
 	public static void ${controllerMethodName()}(${param}){
+		${idSingleton}
 		java.util.List<${entidadHija.clase}> rows = ${entidadHija.clase}.find(${query}).fetch();
 		${getCodePermiso(entidadHija)}
 			
@@ -316,23 +370,19 @@ public class GTabla {
 	private String getCodePermiso(EntidadUtils entidad) {
 		if(tabla.permiso == null){
 			return """
-		List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra""";
-		}
-		String idsString = "";
-		if(campo.getCampo().getAtributos() != null){ // El método de la tabla recibe un parámetro id"Entidad"
-			idsString = """ids.put("${entidad.id}", ${entidad.id});"""
+				List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra
+			""";
 		}
 		return """
-		Map<String, Long> ids = new HashMap<String, Long>();
-		${idsString}
-		List<${entidad.clase}> rowsFiltered = new ArrayList<${entidad.clase}>();
-		for(${entidad.clase} ${entidad.variable}: rows){
-			Map<String, Object> vars = new HashMap<String, Object>();
-			vars.put("${entidad.variable}", ${entidad.variable});
-			if (${PermisosUtils.className()}${tabla.permiso.name}("read", ids, vars)) {
-				rowsFiltered.add(${entidad.variable});
+			Map<String, Long> ids = new HashMap<String, Long>();
+			List<${entidad.clase}> rowsFiltered = new ArrayList<${entidad.clase}>();
+			for(${entidad.clase} ${entidad.variable}: rows){
+				Map<String, Object> vars = new HashMap<String, Object>();
+				vars.put("${entidad.variable}", ${entidad.variable});
+				if (secure.check("${tabla.permiso.name}","read", ids, vars)) {
+					rowsFiltered.add(${entidad.variable});
+				}
 			}
-		}
 		"""
 	}
 	
@@ -362,4 +412,3 @@ public class GTabla {
 		"""
 	}
 }
-

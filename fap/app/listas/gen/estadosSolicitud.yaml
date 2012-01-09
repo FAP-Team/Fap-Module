@@ -8,3 +8,8 @@ TableKeyValue(estadosSolicitud-iniciada):
   key: 'iniciada'
   value: 'Iniciada'
 
+TableKeyValue(estadosSolicitud-verificado):
+  table: 'estadosSolicitud'
+  key: 'verificado'
+  value: 'Verificado'
+

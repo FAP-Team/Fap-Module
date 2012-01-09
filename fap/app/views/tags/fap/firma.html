@@ -32,11 +32,7 @@
 }%
 
 #{set 'moreScripts'}
-	<script language="javascript" src="http://www.gobiernodecanarias.org/platino/servicios/sfst/js/WS_Full.js" type="text/javascript"></script>
-	<script language="javascript" src="http://www.gobiernodecanarias.org/platino/servicios/sfst/js/sfest.utils.js" type="text/javascript"></script>
-	<script language="javascript" src="http://www.gobiernodecanarias.org/platino/servicios/sfst/js/sfest.base.js" type="text/javascript"></script>
-	<script language="javascript" src="@{'/public/javascripts/platino.js'}" type="text/javascript"></script>
-	<script language="javascript" src="@{'/public/javascripts/msg.js'}" type="text/javascript"></script>
+	#{fap.platinojs /}
 #{/set}
 
 <input type="hidden" id="${id_firma}" name="${firma}"/>

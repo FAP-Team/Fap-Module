@@ -194,7 +194,7 @@ vars
 	SolicitudGenerica solicitud
 	Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 when
-	agente.rolActivo = "administrador"
+	(/*action = "read" and */agente.rolActivo in ("administrador", "gestor", "revisor"))
 	or
 	participacion != null 			
 then
@@ -214,8 +214,8 @@ Permiso aportacion
 vars
 	SolicitudGenerica solicitud
 when 
-	(agente.rolActivo in ("administrador", "usuario")) and
-	(solicitud.estado in ("iniciada", "requerida"))
+	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
+	(solicitud.estado in ("iniciada", "requerida", "verificado"))
 then 
 	grant
 
@@ -238,7 +238,7 @@ then
 Permiso noVisibleUsuario
 when
 	(action = "read") and
-	agente.rolActivo = "usuario"
+	usuario
 then
 	deny
 	
@@ -259,7 +259,7 @@ vars
 when
 	(action = "read")
 	or
-	(agente.rolActivo="administrador")
+	!usuario
 	or
 	(
 	 agente.rolActivo = "usuario"
@@ -276,12 +276,10 @@ Permiso solicitudEditableDocumentacion
 vars
 	SolicitudGenerica solicitud
 when
-	(agente.rolActivo="administrador")
+	!usuario
 	or
 	(
 	 //agente.rolActivo = "usuario"
-	 usuario
-	 and
 	 solicitud.estado = "borrador"
 	 and
 	 solicitud.registro.fasesRegistro.borrador = "false"
@@ -461,12 +459,45 @@ when
 	doc.uri = null
 then
 	deny
-	
-	
+		
 Permiso nuevaSolicitud
 vars
 	Convocatoria convocatoria
 when
 	convocatoria.estado = "presentacion"
 then
-	grant			
+	grant
+	
+//Baremación	
+Permiso listaEvaluaciones
+when
+	agente.rolActivo in ("administrador", "gestor", "revisor")
+then
+	grant
+	
+Permiso evaluacion
+when
+	agente.rolActivo in ("administrador", "gestor", "revisor")
+then
+	grant	
+
+
+Permiso tableKeyOnlyEstadosSolicitud
+vars
+	TableKeyValue tableKeyValue
+when
+	tableKeyValue.table = "estadosSolicitud"
+	and
+	agente.rolActivo = "administrador"
+then
+	grant
+
+Permiso tableKeyOnlyEstadosSolicitudUsuario
+vars
+	TableKeyValue tableKeyValue
+when
+	tableKeyValue.table = "estadosSolicitudUsuario"
+	and
+	agente.rolActivo = "administrador"
+then
+	grant

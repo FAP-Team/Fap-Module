@@ -23,7 +23,7 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 		for(Documento documento: rows){
 			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.put("doc", documento);
-			if (secure.PermissionFap.aportacionNoNull("read", ids, vars)) {
+			if (secure.check("aportacionNoNull", "read", ids, vars)) {
 				rowsFiltered.add(documento);
 			}
 		}

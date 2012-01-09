@@ -8,6 +8,7 @@ import generator.utils.HashStack.HashStackName;
 import generator.utils.StringUtils;
 
 import es.fap.simpleled.led.*;
+import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.impl.AttributeImpl
 import es.fap.simpleled.led.impl.CompoundTypeImpl
 import es.fap.simpleled.led.impl.EntityImpl
@@ -46,10 +47,10 @@ public class GEntidad {
 		
 		/// PERSISTENCIA
 		/// Si es una entidad "NonPersist" no debemos establecerle la anotación @Entity
-		String auditable = "@Auditable"
+		String auditable = ""
 		String persist = "@Entity";
-		if (entity.noAuditable){
-			auditable = "";
+		if (entity.auditable){
+			auditable = "@Auditable";
 		}
 		if (entity.nonPersist){
 			persist = "";
@@ -208,8 +209,8 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 
 			}
 			
-			if ((attribute.defaultValue != null)) {
-				System.out.println("WARNING: A los atributos de tipo compuesto no se les permite indicarle un valor por defecto (Entidad: "+entity.name+", Atributo: "+attribute.name+")")
+			if ((attribute.defaultValue != null) && (compuesto.lista == null)) {
+				System.out.println("WARNING: A los atributos de tipo compuesto que no sean listas no se les permite indicarle un valor por defecto (Entidad: "+entity.name+", Atributo: "+attribute.name+")")
 			}
 		}
 		
@@ -387,25 +388,19 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	}
 	
 	private static String savePagesPrepared(Entity entity) {
-		if (!entity.name.equals("Solicitud")){
+		if (!entity.name.equals("Solicitud"))
 			return "";
-		}
-		String out = "";
-		out += """
-		
-		public void savePagesPrepared () {
-			"""
-		for (PaginaImpl pag: LedUtils.getNodes(PaginaImpl)){
-			if (!pag.guardarParaPreparar){
+		String out = "public void savePagesPrepared () {"
+		for (PaginaImpl pag: ModelUtils.getVisibleNodes(LedPackage.Literals.PAGINA, LedUtils.resource)){
+			if (!pag.guardarParaPreparar)
 				continue;
-			}
 			String name = "pagina" + pag.name;
-			out += """if ((savePages.${name} == null) || (!savePages.${name}))
+			out += """
+				if ((savePages.${name} == null) || (!savePages.${name}))
 					Messages.error("La página ${name.substring(6)} no fue guardada correctamente");
 			"""
 		}
-		out += """}
-			""";
+		out += "}";
 		return out;
 	}
 	
@@ -413,7 +408,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		EntityImpl savePages = LedFactory.eINSTANCE.createEntity();
 		savePages.setName("SavePages");
 	
-		for (PaginaImpl pag: LedUtils.getNodes(PaginaImpl)){
+		for (PaginaImpl pag: ModelUtils.getVisibleNodes(LedPackage.Literals.PAGINA, LedUtils.resource)){
 			if (!pag.guardarParaPreparar){
 				continue;
 			}
@@ -429,9 +424,8 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	}
 	
 	private static void solicitudStuff(Entity solicitud){
-		if (!solicitud.getExtends()?.name.equals("SolicitudGenerica")){
-			solicitud.setExtends(LedUtils.getNode(Entity, "SolicitudGenerica"));
-		}
+		if (!solicitud.getExtends()?.name.equals("SolicitudGenerica"))
+			solicitud.setExtends(ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "SolicitudGenerica", LedUtils.resource));
 		Entity savePages = getEntitySavePages();
 		GEntidad.generate(savePages);
 		Type tipo = new TypeImpl();

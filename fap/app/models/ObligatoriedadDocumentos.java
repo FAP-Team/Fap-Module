@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 public class ObligatoriedadDocumentos extends Singleton {
 	// Código de los atributos

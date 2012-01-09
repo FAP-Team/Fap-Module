@@ -3,8 +3,22 @@ Entidad Solicitud extends SolicitudGenerica {
 	ComboTest comboTest
 	ValoresPorDefectoTest valoresPorDefectoTest
 	Fechas fechas
+	TestGrupo testGrupo
 	
 	OneToMany TablaDeNombres tablaDeNombres
+	
+	OneToMany Peta peta
+	
+	ManyToOne ComboTestRef comboError
+	ManyToMany ComboTestRef comboErrorMany
+}
+
+Entidad Peta{
+	String n
+	DateTime fecha
+	ManyToMany ComboTestRef petador
+	String d
+	String otro
 }
 
 Entidad Fechas {
@@ -12,9 +26,14 @@ Entidad Fechas {
 	DateTime fecha
 }
 
+Entidad TestGrupo {
+	String nombre
+}
+
 Entidad TablaDeNombres {
 	String nombre
 	String apellido
+	OneToOne Fechas fecha
 }
 
 Entidad DireccionTest {
@@ -56,13 +75,12 @@ Entidad ValoresPorDefectoTest {
 	Telefono mTelefono default = "900 120 120"
 	Email mEmail default = "asas@pepe.com"
 	Email mEmail2 default = "as@pepe"
-	Cif mCif default = "1234567A"
+	Cif mCif default = "A58818501"
 	Moneda mMoneda default = "2.10"
 	DateTime mDateTime default = "12/12/2010"
 	
 	// Algunos tipos compuestos
 	Lista ComboTestList mLista /*default = "c"*/
-	
 	
 	// Embeddable
 	Embebida mEmbebida

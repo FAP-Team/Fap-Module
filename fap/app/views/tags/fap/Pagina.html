@@ -83,4 +83,8 @@
 
 #{/fap.permiso}
 
+#{if play.getVirtualFile("../../public/javascripts/${formulario}/${titulo}"+".js") != null}
+	#{script '../../public/javascripts/${formulario}/${titulo}.js' /}
+#{/if}
+
 		

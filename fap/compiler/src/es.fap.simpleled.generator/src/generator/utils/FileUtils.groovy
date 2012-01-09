@@ -21,11 +21,13 @@ public class FileUtils {
 		CONF_APPLICATION : "conf/application.conf",
 		CONF_ROUTES : "conf/routes",
 		LIST : 'app/listas/gen/',
+		ENUM : 'app/enumerado/gen/',
+		ENUM_FAP: 'app/enumerado/fap/gen/',
 		MENU_GEN : 'app/views/gen/menu/',
-		PERMISSION: 'app/secure/',
-		PERMISSION_GEN: 'app/secure/gen/',
+		PERMISSION: 'app/security/',
 		JSON_DOCUMENTATION: 'compiler/src/es.fap.simpleled.ui/src/es/fap/simpleled/ui/documentation/json/',
-		FAP_DOCUMENTATION: 'documentation/manual/'
+		FAP_DOCUMENTATION: 'documentation/manual/',
+		APP_CONFIG : 'app/config/'
 	]
 	
 	public static final HashSet<String> overwrittenFiles = new HashSet<String>();

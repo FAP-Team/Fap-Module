@@ -11,14 +11,18 @@ import javax.xml.ws.Holder;
 
 import org.apache.log4j.Logger;
 
+import messages.Messages;
 import models.ObligatoriedadDocumentos;
 import models.Quartz;
 import models.Singleton;
 import models.TableKeyValue;
 
 import platino.PlatinoProxy;
+import play.db.jpa.JPABase;
 import play.db.jpa.JPAPlugin;
+import play.test.Fixtures;
 import properties.FapProperties;
+import tags.StringUtils;
 
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedPortType;
@@ -33,8 +37,11 @@ import es.gobcan.eadmon.procedimientos.ws.Procedimientos;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosInterface;
 import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaProcedimientos;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTiposDocumentosEnTramite;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTramites;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.Procedimiento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Tramite;
 import es.gobcan.eadmon.procedimientos.ws.servicios.ObtenerTramite;
@@ -73,40 +80,134 @@ public class TiposDocumentosClient {
 		return h1.value;
 	}
 	
-	public static boolean actualizarTiposDocumentoDB() {
-		String uriTramite = FapProperties.get("fap.aed.procedimientos.tramite.uri");
-		String uriProcedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri");
-				
-		List<TipoDocumentoEnTramite> listaTodos = new ArrayList<TipoDocumentoEnTramite>();
-		List<TipoDocumentoEnTramite> listaCiudadanos = new ArrayList<TipoDocumentoEnTramite>();
-		List<TipoDocumentoEnTramite> listaOrganismos = new ArrayList<TipoDocumentoEnTramite>();
-		List<TipoDocumentoEnTramite> listaOtrasEntidades = new ArrayList<TipoDocumentoEnTramite>();
+	
+	public static boolean actualizarTramites() {
+		String uriProcedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri"); 
+		JPAPlugin.startTx(false);
 
 		try {
-			listaTodos = procedimientos.consultarTiposDocumentosEnTramite(uriProcedimiento, uriTramite).getTiposDocumentos();
-		}catch(Exception e){
-			log.error("Se produjo un error al consultar los tipos de Documentos", e);
+			//Borra los trámites antiguos
+			Fixtures.delete(models.Tramite.class);
+			
+			//Recupera los trámites y los tipos de documentos asociados
+			ListaTramites tramites = procedimientos.consultarTramites(uriProcedimiento);
+			for (Tramite tramite : tramites.getTramites()) {				
+				models.Tramite tramitedb = new models.Tramite();
+				tramitedb.uri = tramite.getUri();
+				tramitedb.nombre = tramite.getNombre();
+				
+				List<TipoDocumentoEnTramite> documentos = procedimientos.
+								consultarTiposDocumentosEnTramite(uriProcedimiento, tramite.getUri()).getTiposDocumentos();
+				
+				for(TipoDocumentoEnTramite tipoDocumento : documentos){
+					models.TipoDocumento tipoDocumentoDb  = new models.TipoDocumento();
+					
+					tipoDocumentoDb.uri = tipoDocumento.getUri();
+					tipoDocumentoDb.aportadoPor = tipoDocumento.getAportadoPor().toString();
+					tipoDocumentoDb.obligatoriedad = tipoDocumento.getObligatoriedad().toString();
+					
+					//Consulta al WS de Tipos de Documentos la descripción
+					TipoDocumento td = tipos.obtenerTipoDocumento(tipoDocumento.getUri());
+					tipoDocumentoDb.nombre = td.getDescripcion();	
+					
+					tramitedb.documentos.add(tipoDocumentoDb);
+				}
+				
+				tramitedb.save();
+			}
+			
+			//Añade el tipo y la descripción a la tabla de tablas
+			List<models.TipoDocumento> tiposDocumentos = models.TipoDocumento.findAll();
+			String table = "tiposDocumentos";
+			TableKeyValue.deleteTable(table);
+			for(models.TipoDocumento tipo : tiposDocumentos){
+				TableKeyValue.setValue(table, tipo.uri, tipo.nombre, false);
+			}
+			TableKeyValue.renewCache(table); //Renueva la cache una única vez
+			
+		} catch (ProcedimientosExcepcion e) {
+			aedError("Se produjo un error en el servicio web de Procedimientos"+ uriProcedimiento, e);
+			JPAPlugin.closeTx(true);
+			return false;
+		} catch(TiposDocumentosExcepcion e){
+			aedError("Se produjo un error en el servicio web de TiposDocumenetos"+ uriProcedimiento, e);
+			JPAPlugin.closeTx(true);
 			return false;
 		}
+		JPAPlugin.closeTx(false);
+		return true;
+	}
+	
+	private static void aedError(String error, ProcedimientosExcepcion e){
+		aedError(error, e.getFaultInfo().getDescripcion());
+	}
+	
+	private static void aedError(String error, TiposDocumentosExcepcion e){
+		aedError(error, e.getFaultInfo().getDescripcion());
+	}
+	
+	private static void aedError(String error, String descripcion){
+		log.error(error + " - descripcion: "+ descripcion);
+		Messages.error(error);		
+	}
+	
+	
+	/**
+	 * Se actualizará la lista de tipos de documentos para cada trámite.
+	 * 
+	 * Ejemplo: Para el tramite "solicitud", se actualizarán las listas "tipoDocumentosCiudadanosSolicitud"
+	 * 
+	 * @return
+	 */
+	public static boolean actualizarTiposDocumentoDB() {
+		play.Logger.info("Actualizando los Tipos de Documentos en lA BBDD");
+		//String uriTramite = FapProperties.get("fap.aed.procedimientos.tramite.uri");
+		String uriProcedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri");
 		
-		for (TipoDocumentoEnTramite tipoDoc : listaTodos) {
-			if (tipoDoc.getAportadoPor() == AportadoPorEnum.CIUDADANO) {
-				listaCiudadanos.add(tipoDoc);
-			}else if (tipoDoc.getAportadoPor() == AportadoPorEnum.ORGANISMO) {
-				listaOrganismos.add(tipoDoc);				
-			}else if (tipoDoc.getAportadoPor() == AportadoPorEnum.OTRAS_ENTIDADES) {
-				listaOtrasEntidades.add(tipoDoc);				
-			}				
+		//Recupera los trámites y los tipos de documentos asociados
+		ListaTramites tramites = null;
+		try {
+			tramites = procedimientos.consultarTramites(uriProcedimiento);
+		} catch (ProcedimientosExcepcion e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		boolean result = true;
+		for (Tramite tramite : tramites.getTramites()) {
+			play.Logger.info("Trámite: "+tramite.getNombre());
+				
+			List<TipoDocumentoEnTramite> listaTodos = new ArrayList<TipoDocumentoEnTramite>();
+			List<TipoDocumentoEnTramite> listaCiudadanos = new ArrayList<TipoDocumentoEnTramite>();
+			List<TipoDocumentoEnTramite> listaOrganismos = new ArrayList<TipoDocumentoEnTramite>();
+			List<TipoDocumentoEnTramite> listaOtrasEntidades = new ArrayList<TipoDocumentoEnTramite>();
+
+			try {
+				listaTodos = procedimientos.consultarTiposDocumentosEnTramite(uriProcedimiento, tramite.getUri()).getTiposDocumentos();
+			}catch(Exception e){
+				log.error("Se produjo un error al consultar los tipos de Documentos", e);
+				return false;
+			}
 		
-		boolean todos = actualizarDocumentosDB(listaTodos, "tipoDocumentosTodos");
-		boolean ciudadano = actualizarDocumentosDB(listaCiudadanos, "tipoDocumentosCiudadanos");
-		boolean organismo = actualizarDocumentosDB(listaOrganismos, "tipoDocumentosOrganismos");
-		boolean otrasEntidades = actualizarDocumentosDB(listaOtrasEntidades, "tipoDocumentosOtrasEntidades");
+			for (TipoDocumentoEnTramite tipoDoc : listaTodos) {
+				if (tipoDoc.getAportadoPor() == AportadoPorEnum.CIUDADANO) {
+					listaCiudadanos.add(tipoDoc);
+				}else if (tipoDoc.getAportadoPor() == AportadoPorEnum.ORGANISMO) {
+					listaOrganismos.add(tipoDoc);				
+				}else if (tipoDoc.getAportadoPor() == AportadoPorEnum.OTRAS_ENTIDADES) {
+					listaOtrasEntidades.add(tipoDoc);				
+				}				
+			}
 		
-		boolean obligatoriedad = actualizarObligatoriedadDocumentos(listaCiudadanos);
+			boolean todos = actualizarDocumentosDB(listaTodos, "tipoDocumentosTodos");
+			boolean ciudadano = actualizarDocumentosDB(listaCiudadanos, "tipoDocumentosCiudadanos"+StringUtils.firstUpper(tramite.getNombre()));
+			boolean organismo = actualizarDocumentosDB(listaOrganismos, "tipoDocumentosOrganismos"+StringUtils.firstUpper(tramite.getNombre()));
+			boolean otrasEntidades = actualizarDocumentosDB(listaOtrasEntidades, "tipoDocumentosOtrasEntidades"+StringUtils.firstUpper(tramite.getNombre()));
 		
-		return todos && ciudadano && organismo && otrasEntidades && obligatoriedad;
+			boolean obligatoriedad = actualizarObligatoriedadDocumentos(listaCiudadanos);
+		
+			result = result && todos && ciudadano && organismo && otrasEntidades && obligatoriedad;
+		}
+		return result;
 	}
 	
 	public static boolean actualizarDocumentosDB(List<TipoDocumentoEnTramite> lista, String table) {
@@ -162,5 +263,47 @@ public class TiposDocumentosClient {
 		JPAPlugin.closeTx(false);
 		return true;
 	}
+	
+	// Más funciones que se han pedido
+	
+	public static List<TipoDocumentoEnTramite> getTiposDocumentosEnTramite(String uriProcedimiento, String uriTramite) {
+        List<TipoDocumentoEnTramite> result = new ArrayList<TipoDocumentoEnTramite>();
+        try {
+            result = procedimientos.consultarTiposDocumentosEnTramite(uriProcedimiento, uriTramite).getTiposDocumentos();
+        } catch (Exception ex) {
+            log.error("Se produjo un error al consultar los tipos de documentos.", ex);
+        }
+        return result;
+    }
+	
+	 public static List<Procedimiento> getProcedimientos() {
+	    List<Procedimiento> result = new ArrayList<Procedimiento>();
+	    try {
+	    	ListaProcedimientos serviceList = procedimientos.consultarProcedimientos();
+	        if (serviceList != null) {
+	        	result = serviceList.getProcedimientos();
+	        }
+	    } catch (Exception ex) {
+	        log.error("Se produjo un error al consultar los tipos de procedimientos.", ex);
+	    }
+        return result;
+    }
+
+	 public static List<Tramite> getTramitesDeProcedimiento(String uriProcedimiento) {
+        List<Tramite> result = new ArrayList<Tramite>();
+        try {
+            ListaTramites servicesList = procedimientos.consultarTramites(uriProcedimiento);
+            if (servicesList != null) {
+                result = servicesList.getTramites();
+            }
+        } catch (Exception ex) {
+            log.error("Se produjo un error al consultar los tipos de trámites.", ex);
+        }
+        return result;
+	 }
+	 
+	 public static TipoDocumento getTipoDocumento(String uriDocumento) throws TiposDocumentosExcepcion {
+        return tipos.obtenerTipoDocumento(uriDocumento);
+	 }
 
 }

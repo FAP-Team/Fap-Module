@@ -1,0 +1,43 @@
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().first()
+	
+	def automatic = properties.FapProperties.getBoolean("test.fap.automatic.autotest");
+	play.Logger.info("17. Automatic: "+automatic);
+}%
+
+#{selenium}
+	open(/Principal/solicitudes)
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='borrador'])
+	
+    open('/Solicitud/tablassimples?idSolicitud=${s.id}')
+    waitForPageToLoad()
+    
+    #{if !automatic}
+    	// Editamos los valores
+    	waitForElementPresent(//div[text()='NombreFAP'])
+    	mouseOver(//div[text()='NombreFAP']/parent::td/parent::tr)
+		mouseDown(//div[text()='NombreFAP']/parent::td/parent::tr)
+		click('ext-gen1055')
+		waitForElementPresent('tablaDeNombres_nombre')
+		waitForElementPresent('tablaDeNombres_apellido')
+		type('tablaDeNombres_nombre', 'NombreFAPModificado')
+    	type('tablaDeNombres_apellido', 'ApellidoFAPModificado')
+    	click(//span[text()='Guardar'])
+    	waitForElementNotPresent('tablaDeNombres_nombre')
+    
+    	// Editamos los valores como estaban al principio
+    	waitForElementPresent(//div[text()='NombreFAPModificado'])
+    	mouseOver(//div[text()='NombreFAPModificado']/parent::td/parent::tr)
+		mouseDown(//div[text()='NombreFAPModificado']/parent::td/parent::tr)
+		click('ext-gen1055')
+		waitForElementPresent('tablaDeNombres_nombre')
+		waitForElementPresent('tablaDeNombres_apellido')
+		type('tablaDeNombres_nombre', 'NombreFAP')
+    	type('tablaDeNombres_apellido', 'ApellidoFAP')
+    	click(//span[text()='Guardar'])
+    	waitForElementNotPresent('tablaDeNombres_nombre')
+    #{/if}
+	
+#{/selenium}

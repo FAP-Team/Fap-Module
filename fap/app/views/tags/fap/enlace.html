@@ -17,10 +17,19 @@
 	def url;
 	if(_url != null){
 		url = _url;
-	}else if(_action != null){
+	}
+	else if(_action != null){
 		play.mvc.Router.ActionDefinition action = _action;
 		url = action.url;
-	}else{
+	}
+	else if (_anterior){
+		String key = "redirigir${_container}";
+		if (play.mvc.Controller.response.cookies.containsKey(key))
+			url = play.mvc.Controller.response.cookies.get(key).value;
+		else if (play.mvc.Controller.request.cookies.containsKey(key))
+			url = play.mvc.Controller.request.cookies.get(key).value;
+	}
+	else{
 		throw new play.exceptions.TagInternalException("el atributo url y accion no pueden ser vacios");
 	}
 	if (_popup != null)
@@ -32,6 +41,8 @@
 	def estilo = _estilo;
 }%
 
-<div class="form-row">
-	<a id="${id}" href="${url}" #{if target}target="${target}"#{/if} ${disabled} #{if estilo}class="${estilo}"#{/if}>${label}</a>		
-</div>	
+#{if url != null}
+	<div class="form-row">
+		<a id="${id}" href="${url}" #{if target}target="${target}"#{/if} ${disabled} #{if estilo}class="${estilo}"#{/if}>${label}</a>		
+	</div>
+#{/if}

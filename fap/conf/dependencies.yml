@@ -1,17 +1,20 @@
 # Application dependencies
 
 self: play -> fap 1.2
- 
+
 require:
     - play 1.2.4
+    - play -> pdf 0.6
+    - play -> less 0.3
+    - play -> recaptcha 1.2
+    - fap -> guice 1.2.1
+
     - org.jadira.usertype -> usertype.jodatime 1.8:
         transitive: false
     - org.jadira.usertype -> usertype.spi 1.8:
         transitive: false
     - com.google.guava -> guava r09
     - net.sf.flexjson -> flexjson 2.1
-    - play -> pdf 0.6
-    - play -> recaptcha 1.2
     - javassist -> javassist 3.8.0.GA:
         transitive: false
     - joda-time -> joda-time-hibernate 1.2:
@@ -23,7 +26,7 @@ require:
     - xalan -> xalan 2.7.1:
         transitive: false
     - commons-io -> commons-io 2.0.1
-        
+
     - org.apache.ws.security -> wss4j 1.5.4:
         transitive: false
     - org.apache.cxf -> cxf-bundle 2.2.6:
@@ -33,9 +36,8 @@ require:
     - org.apache.santuario -> xmlsec 1.4.3:
         transitive: false
 
-    - es.gobcan.eadmon -> eadmon-aed-cliente 1.0.3:
+    - es.gobcan.eadmon.aed.cliente -> eadmon-aed-cliente 1.1:
         transitive: false
-
     - es.gobcan.platino -> platino.pre 1.0:
         transitive: false
     - es.gobcan.platino.servicios -> firma.pre 1.0:
@@ -46,9 +48,8 @@ require:
         transitive: false
     - es.gobcan.eadmon.tiposdocumentos -> tiposdocumentos 1.0:
         transitive: false
-        
     - platinowssinterceptor -> platinowssinterceptor 2
-    
+
 repositories:
     - Fap nexus:
         type: iBiblio
@@ -60,4 +61,13 @@ repositories:
             - es.gobcan.eadmon.verificacion -> *
             - es.gobcan.eadmon.tiposdocumentos -> *
             - es.gobcan.eadmon -> *
+            - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *
+
+
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+            - fap -> guice
+

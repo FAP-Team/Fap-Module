@@ -8,8 +8,11 @@ import es.fap.simpleled.led.CampoAtributos;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.Tabla
+import es.fap.simpleled.led.util.ModelUtils;
+import es.fap.simpleled.led.LedPackage;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+
 
 public class CampoUtils implements Comparable{
 
@@ -44,10 +47,10 @@ public class CampoUtils implements Comparable{
 		if (atributos.get(0).equals("")){
 			atributos.clear();
 		}
-		Entity entity = LedUtils.getNode(Entity, entidad);
+		Entity entity = ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, entidad, LedUtils.resource);
 		if (entity == null){
 			if (entidad.equals("Solicitud")){
-				entity = LedUtils.findSolicitud();
+				entity = EntidadUtils.findSolicitud();
 			}
 			else{
 				return null;
@@ -207,6 +210,10 @@ public class CampoUtils implements Comparable{
 			return "";
 		}
 		return campoStr.substring(campoStr.findIndexOf{ it == '.' } + 1)
+	}
+	
+	public String getStr_() {
+		return StringUtils.firstLower(str.replace('.', '_'));
 	}
 	
 }

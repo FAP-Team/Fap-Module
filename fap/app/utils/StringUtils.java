@@ -2,7 +2,7 @@ package utils;
 
 import java.util.Random;
 
-import secure.Actions;
+import security.Actions;
 
 public class StringUtils {
 

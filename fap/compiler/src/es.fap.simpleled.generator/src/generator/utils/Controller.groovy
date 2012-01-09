@@ -1,5 +1,6 @@
 package generator.utils;
 
+import es.fap.simpleled.led.Accion
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Boton
 import es.fap.simpleled.led.Campo;
@@ -13,10 +14,15 @@ import es.fap.simpleled.led.PaginaAccion
 import es.fap.simpleled.led.Permiso
 import es.fap.simpleled.led.Popup
 import es.fap.simpleled.led.Tabla
+import es.fap.simpleled.led.util.ModelUtils;
+import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.LedFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
+
 import templates.GForm
 import templates.GPagina
 import templates.GPopup
@@ -51,18 +57,13 @@ public class Controller {
 	public List<EntidadUtils> saveEntities;
 	public List<EntidadUtils> indexEntities;
 	public EObject elementoGramatica;
-	public PaginaAccion redirigirEditar;
-	public PaginaAccion redirigirCrear;
-	public PaginaAccion redirigirBorrar;
-	public String redirigirEditarUrl;
-	public String redirigirCrearUrl;
-	public String redirigirBorrarUrl;
 	
 	// Lista de atributos que son calculados en esta clase
 	private EntidadUtils almacen;
-	private EntidadUtils almacenNoSingle;  // entidad vale null cuando el almacen es Singleton
+	private EntidadUtils almacenNoSingle;  // nulo() retorna true cuando el almacen es Singleton
 	private EntidadUtils entidad;
-	private EntidadUtils entidadPagina;
+	private EntidadUtils entidadNoSingle;  // nulo() retorna true cuando la entidad es Singleton
+	private EntidadUtils entidadPagina;		// Si no hay campos guardables nulo() sera true
 	private List<EntidadUtils> intermedias;
 	private boolean hayTabla;
 	private boolean xToMany;
@@ -72,6 +73,9 @@ public class Controller {
 	private String sufijoBoton;
 	private List<AlmacenEntidad> campos;  // No incluye el ultimo
 	private List<AlmacenEntidad> camposTodos;
+	private Accion accionCrear;
+	private Accion accionEditar;
+	private Accion accionBorrar;
 	
 	public Controller initialize(){
 		campos = calcularSubcampos(campo?.campo);
@@ -129,6 +133,10 @@ public class Controller {
 		almacenNoSingle = EntidadUtils.create(almacen.entidad);
 		if (almacen.isSingleton()){
 			almacenNoSingle.entidad = null;
+		}
+		entidadNoSingle = EntidadUtils.create(entidad.entidad);
+		if (entidad.isSingleton()){
+			entidadNoSingle.entidad = null;
 		}
 		return this;
 	}
@@ -243,8 +251,14 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoIndex(){
+		String redirigir = """
+			if (request.params.data.containsKey("redirigir") && "anterior".equals(request.params.data.get("redirigir")[0])){
+				if (request.headers.get("referer") != null)
+					response.setCookie("redirigir${name}", request.headers.get("referer").value().replaceFirst("redirigir=anterior", "redirigir=no"));
+			}
+		"""
 		String guardarAlCrear = "";
-		if (hayTabla && !entidad.nulo()){
+		if (hayTabla && !entidadNoSingle.nulo()){
 			guardarAlCrear = """
 				${entidad.variable}.save();
 				${entidad.id} = ${entidad.variable}.id;
@@ -257,10 +271,11 @@ public class ${controllerName} extends ${controllerGenName} {
 				"String accion",
 				intermedias.collect{it.typeId},
 				almacenNoSingle.typeId,
-				entidad.typeId
+				entidadNoSingle.typeId
 			)}){
 				if (accion == null)
 					accion = "editar";
+				${redirigir}
 				${entidad.entidad? "$entidad.clase $entidad.variable = null;" : ""}
 				if(accion.equals("crear")){
 					${ControllerUtils.newCall(entidad)}
@@ -282,7 +297,7 @@ public class ${controllerName} extends ${controllerGenName} {
 					intermedias.collect{it.variable},
 					almacenNoSingle.id,
 					almacen.variable,
-					entidad.id,
+					entidadNoSingle.id,
 					entidad.variable,
 					indexEntities.collect{it.variable},
 					saveEntities.collect{it.variable}
@@ -294,7 +309,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String metodoEditar(){
 		String metodoEditar = "";
 		if (editar || isForm()) {
-			String editarRenderCall = "${nameEditar}Render(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});";
+			String editarRenderCall = "${nameEditar}Render(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
 			String botonCode = "";
 			List<String> saveBotones = new ArrayList<String>(saveBoton);
 			if (isForm() && saveBotones.size() == 1){
@@ -323,7 +338,7 @@ public class ${controllerName} extends ${controllerGenName} {
 				public static void ${nameEditar}(${StringUtils.params(
 					intermedias.collect{it.typeId},
 					almacenNoSingle.typeId,
-					entidad.typeId,
+					entidadNoSingle.typeId,
 					entidadPagina.typeVariable,
 					saveEntities.collect{it.typeVariable},
 					saveExtra,
@@ -466,26 +481,30 @@ public class ${controllerName} extends ${controllerGenName} {
 			String redirectMethod = "\"${controllerFullName}.index\"";
 			String redirectMethodOk = redirectMethod;
 			String redirectActionOk = "\"editar\"";
-			if (redirigirEditar != null){
-				redirectMethodOk = "\"${new GPagina(redirigirEditar.pagina).controllerName()}.index\"";
-				redirectActionOk = "\"${Actions.getAccion(redirigirEditar.accion)}\"";
+			if (accionEditar.redirigir != null){
+				redirectMethodOk = "\"${new GPagina(accionEditar.redirigir.pagina).controllerName()}.index\"";
+				redirectActionOk = "\"${Actions.getAccion(accionEditar.redirigir.accion)}\"";
 			}
+			String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
+			if (accionEditar.redirigirUrl)
+				redirigirOk = "redirect(\"${accionEditar.redirigirUrl}\");";
+			else if (accionEditar.anterior)
+				redirigirOk = redirigirOkCode(redirigirOk);
 			String mensajeEditadoOk;
 			if (isPopup())
-				mensajeEditadoOk = """renderJSON(utils.RestResponse.ok("Registro actualizado correctamente"));""";
+				mensajeEditadoOk = """renderJSON(utils.RestResponse.ok("${accionEditar.mensajeOk}"));""";
 			else
-				mensajeEditadoOk = """Messages.ok("Página editada correctamente");""";
+				mensajeEditadoOk = """Messages.ok("${accionEditar.mensajeOk}");""";
 			metodoEditarRender = """
 				@Util
-				public static void ${nameEditar}Render(${StringUtils.params(intermedias.collect{it.typeId}, almacenNoSingle.typeId, entidad.typeId)}){
+				public static void ${nameEditar}Render(${StringUtils.params(intermedias.collect{it.typeId}, almacenNoSingle.typeId, entidadNoSingle.typeId)}){
 					if (!Messages.hasMessages()) {
 						${mensajeEditadoOk}
 						Messages.keep();
-						${redirigirEditarUrl? "" : "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});"}
-						${redirigirEditarUrl? "redirect(\"${redirigirEditarUrl}\");" : ""}
+						${redirigirOk}
 					}
 					Messages.keep();
-					redirect(${StringUtils.params(redirectMethod, "\"editar\"", intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
+					redirect(${StringUtils.params(redirectMethod, "\"editar\"", intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});
 				}
 			"""
 		}
@@ -498,22 +517,25 @@ public class ${controllerName} extends ${controllerGenName} {
 			String redirectMethod = "\"${controllerFullName}.index\"";
 			String redirectMethodOk = redirectMethod;
 			String redirectActionOk = "\"editar\"";
-			if (redirigirCrear != null){
-				redirectMethodOk = "\"${new GPagina(redirigirCrear.pagina).controllerName()}.index\"";
-				redirectActionOk = "\"${Actions.getAccion(redirigirCrear.accion)}\"";
+			if (accionCrear.redirigir != null){
+				redirectMethodOk = "\"${new GPagina(accionCrear.redirigir.pagina).controllerName()}.index\"";
+				redirectActionOk = "\"${Actions.getAccion(accionCrear.redirigir.accion)}\"";
 			}
+			String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});";
+			if (accionCrear.redirigirUrl)
+				redirigirOk = "redirect(\"${accionCrear.redirigirUrl}\");";
+			else if (accionCrear.anterior)
+				redirigirOk = redirigirOkCode(redirigirOk);
 			String mensajeCreadoOk;
 			if (isPagina()){
 				mensajeCreadoOk = """
-					Messages.ok("Página creada correctamente");
+					Messages.ok("${accionCrear.mensajeOk}");
 					Messages.keep();
-					${redirigirCrearUrl? "" : "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});"}
-					${redirigirCrearUrl? "redirect(\"${redirigirCrearUrl}\");" : ""}
+					${redirigirOk}
 				""";
 			}
-			else if (isPopup()){
-				mensajeCreadoOk = """renderJSON(utils.RestResponse.ok("Registro creado correctamente"));""";
-			}
+			else if (isPopup())
+				mensajeCreadoOk = """renderJSON(utils.RestResponse.ok("${accionCrear.mensajeOk}"));""";
 			metodoCrearRender = """
 				@Util
 				public static void crearRender(${StringUtils.params(intermedias.collect{it.typeId}, almacenNoSingle.typeId, entidad.typeId)}){
@@ -534,25 +556,27 @@ public class ${controllerName} extends ${controllerGenName} {
 			String redirectMethod = "\"${controllerFullName}.index\"";
 			String redirectMethodOk = redirectMethod;
 			String redirectActionOk = "\"borrado\"";
-			if (redirigirBorrar != null){
-				redirectMethodOk = "\"${new GPagina(redirigirBorrar.pagina).controllerName()}.index\"";
-				redirectActionOk = "\"${Actions.getAccion(redirigirBorrar.accion)}\"";
+			if (accionBorrar.redirigir != null){
+				redirectMethodOk = "\"${new GPagina(accionBorrar.redirigir.pagina).controllerName()}.index\"";
+				redirectActionOk = "\"${Actions.getAccion(accionBorrar.redirigir.accion)}\"";
 			}
+			String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id)});";
+			if (accionBorrar.redirigirUrl)
+				redirigirOk = "redirect(\"${accionBorrar.redirigirUrl}\");";
+			else if (accionBorrar.anterior)
+				redirigirOk = redirigirOkCode(redirigirOk);
 			String mensajeBorradoOk;
-			if (isPagina()){
-				mensajeBorradoOk = """Messages.ok("Página borrada correctamente");""";
-			}
-			else if (isPopup()){
-				mensajeBorradoOk = """renderJSON(utils.RestResponse.ok("Registro borrado correctamente"));""";
-			}
+			if (isPagina())
+				mensajeBorradoOk = """Messages.ok("${accionBorrar.mensajeOk}");""";
+			else if (isPopup())
+				mensajeBorradoOk = """renderJSON(utils.RestResponse.ok("${accionBorrar.mensajeOk}"));""";
 			metodoBorrarRender = """
 				@Util
 				public static void borrarRender(${StringUtils.params(intermedias.collect{it.typeId}, almacenNoSingle.typeId, entidad.typeId)}){
 					if (!Messages.hasMessages()) {
 						${mensajeBorradoOk}
 						Messages.keep();
-						${redirigirBorrarUrl? "" : "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id)});"}
-						${redirigirBorrarUrl? "redirect(\"${redirigirBorrarUrl}\");" : ""}
+						${redirigirOk}
 					}
 					Messages.keep();
 					redirect(${StringUtils.params(redirectMethod, '"borrar"', intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
@@ -562,6 +586,15 @@ public class ${controllerName} extends ${controllerGenName} {
 		return metodoBorrarRender;
 	}
 		
+	private String redirigirOkCode(String redirigirOk){
+		return """
+			if (request.cookies.containsKey("redirigir${name}"))
+				redirect(request.cookies.get("redirigir${name}").value);
+			else
+				${redirigirOk}
+		""";
+	} 
+	
 	private String metodoEditarValidateRules(){
 		String metodoEditarValidateRules = "";
 		if (editar || isForm()) {
@@ -673,15 +706,13 @@ public class ${controllerName} extends ${controllerGenName} {
 	private static boolean hayTabla(Object o){
 		if(o.metaClass.respondsTo(o,"getElementos")){
 			for (Object elemento: o.elementos){
-				if (hayTabla(elemento)){
+				if (hayTabla(elemento))
 					return true;
-				}
 			}
 			return false;
 		}
-		if(o instanceof Tabla){
+		if(o instanceof Tabla)
 			return true;
-		}
 	}
 	
 	public boolean isPopup(){
@@ -699,6 +730,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	public static Controller fromPagina(Pagina pagina){
 		GPagina pag = new GPagina(pagina);
 		Controller controller = new Controller();
+		controller.createOpcionesAccion(pagina);
 		controller.container = pagina;
 		controller.index = true;
 		controller.findPaginaReferencias(pagina);
@@ -716,7 +748,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.url = pag.url();
 		controller.packageName = "controllers";
 		controller.packageGenName = "controllers.gen";
-		controller.noBorrarEntidad = pagina.noBorrarEntidad;
+		controller.noBorrarEntidad = controller.accionBorrar?.noBorrarEntidad? true : false;
 		controller.noAutenticar = pagina.noAutenticar;
 		controller.name = pagina.name;
 		controller.saveExtra = [];
@@ -724,18 +756,13 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.saveEntities = [];
 		controller.indexEntities = [];
 		controller.elementoGramatica = pagina;
-		controller.redirigirEditar = pagina.redirigirEditar;
-		controller.redirigirCrear = pagina.redirigirCrear;
-		controller.redirigirBorrar = pagina.redirigirBorrar;
-		controller.redirigirEditarUrl = pagina.redirigirEditarUrl;
-		controller.redirigirCrearUrl = pagina.redirigirCrearUrl;
-		controller.redirigirBorrarUrl = pagina.redirigirBorrarUrl;
 		return controller;
 	}
 	
 	public static Controller fromPopup(Popup popup){
 		GPopup gpopup = new GPopup(popup);
 		Controller controller = new Controller();
+		controller.createOpcionesAccion(popup);
 		controller.container = popup;
 		controller.index = true;
 		controller.findPopupReferencias(popup);
@@ -750,7 +777,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.url = gpopup.url();
 		controller.packageName = "controllers.popups";
 		controller.packageGenName = "controllers.gen.popups";
-		controller.noBorrarEntidad = popup.noBorrarEntidad;
+		controller.noBorrarEntidad = controller.accionBorrar?.noBorrarEntidad? true : false;
 		controller.noAutenticar = false;
 		controller.name = popup.name;
 		controller.saveExtra = [];
@@ -770,6 +797,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		else if (container instanceof Popup)
 			containerController = Controller.fromPopup(container);
 		Controller controller = new Controller();
+		controller.createOpcionesAccion(null);
 		controller.container = form;
 		controller.editar = true;
 		controller.saveController = [];
@@ -791,13 +819,61 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.saveEntities = [];
 		controller.indexEntities = [];
 		controller.elementoGramatica = form;
-		controller.redirigirEditar = containerController.redirigirEditar;
-		controller.redirigirCrear = containerController.redirigirCrear;
-		controller.redirigirBorrar = containerController.redirigirBorrar;
-		controller.redirigirEditarUrl = containerController.redirigirEditarUrl;
-		controller.redirigirCrearUrl = containerController.redirigirCrearUrl;
-		controller.redirigirBorrarUrl = containerController.redirigirBorrarUrl;
 		return controller;
+	}
+	
+	public void createOpcionesAccion(Object o){
+		if (o != null)
+			findOpcionesAccion(o);
+		
+		if (accionCrear == null)
+			accionCrear = LedFactory.eINSTANCE.createAccion();
+		if (accionCrear.boton == null)
+			accionCrear.boton = "Crear";
+		if (accionCrear.mensajeOk == null){
+			if (o instanceof Popup)
+				accionCrear.mensajeOk = "Registro creado correctamente";
+			else
+				accionCrear.mensajeOk = "Página creada correctamente";
+		}
+		
+		if (accionEditar == null)
+			accionEditar = LedFactory.eINSTANCE.createAccion();
+		if (accionEditar.boton == null)
+			accionEditar.boton = "Editar";
+		if (accionEditar.mensajeOk == null){
+			if (o instanceof Popup)
+				accionEditar.mensajeOk = "Registro actualizado correctamente";
+			else
+				accionEditar.mensajeOk = "Página editada correctamente";
+		}
+		
+		if (accionBorrar == null)
+			accionBorrar = LedFactory.eINSTANCE.createAccion();
+		if (accionBorrar.boton == null)
+			accionBorrar.boton = "Borrar";
+		if (accionBorrar.mensajeOk == null){
+			if (o instanceof Popup)
+				accionBorrar.mensajeOk = "Registro borrado correctamente";
+			else
+				accionBorrar.mensajeOk = "Página borrada correctamente";
+		}
+	}
+	
+	private void findOpcionesAccion(Object o){
+		if(o.metaClass.respondsTo(o,"getElementos")){
+			for (Object elemento: o.elementos)
+				findOpcionesAccion(elemento);
+		}
+		if(o instanceof Accion){
+			Accion accion = (Accion)o;
+			if ("crear".equals(accion.name))
+				accionCrear = accion;
+			if ("editar".equals(accion.name))
+				accionEditar = accion;
+			if ("borrar".equals(accion.name))
+				accionBorrar = accion;
+		}
 	}
 
 	public void checkReferencia(String accion){
@@ -809,24 +885,27 @@ public class ${controllerName} extends ${controllerGenName} {
 		
 	public void findPaginaReferencias(Pagina pagina){
 		editar = crear = borrar = false;
-		for (MenuEnlace enlace: LedUtils.getNodes(MenuEnlace))
+		
+		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE))
 			if (enlace.pagina != null && enlace.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(enlace.pagina.accion);
-		for (Enlace enlace: LedUtils.getNodes(Enlace))
+		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE))
 			if (enlace.pagina != null && enlace.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(enlace.pagina.accion);
-		for (Boton boton: LedUtils.getNodes(Boton))
+		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON))
 			if (boton.pagina != null && boton.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(boton.pagina.accion);
-		for (Pagina p: LedUtils.getNodes(Pagina)){
-			if (p.redirigirCrear != null && p.redirigirCrear.pagina.name.equals(pagina.name))
-				checkReferencia(p.redirigirCrear.accion);
-			if (p.redirigirEditar != null && p.redirigirEditar.pagina.name.equals(pagina.name))
-				checkReferencia(p.redirigirEditar.accion);
-			if (p.redirigirBorrar != null && p.redirigirBorrar.pagina.name.equals(pagina.name))
-				checkReferencia(p.redirigirBorrar.accion);
+		for (Pagina p: LedUtils.getNodes(LedPackage.Literals.PAGINA)){
+			Controller c = new Controller();
+			c.createOpcionesAccion(pagina);
+			if (c.accionCrear.redirigir?.pagina?.name.equals(pagina.name))
+				checkReferencia(c.accionCrear.redirigir.accion);
+			if (c.accionEditar.redirigir?.pagina?.name.equals(pagina.name))
+				checkReferencia(c.accionEditar.redirigir.accion);
+			if (c.accionBorrar.redirigir?.pagina?.name.equals(pagina.name))
+				checkReferencia(c.accionBorrar.redirigir.accion);
 		}
-		for (Tabla tabla: LedUtils.getNodes(Tabla)){
+		for (Tabla tabla: LedUtils.getNodes(LedPackage.Literals.TABLA)){
 			if (tabla.pagina != null && tabla.pagina.name.equals(pagina.name))
 				crear = borrar = editar = true;
 			if (tabla.paginaCrear != null && tabla.paginaCrear.name.equals(pagina.name))
@@ -841,16 +920,16 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	public void findPopupReferencias(Popup popup){
 		editar = crear = borrar = false;
-		for (MenuEnlace enlace: LedUtils.getNodes(MenuEnlace))
+		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE))
 			if (enlace.popup != null && enlace.popup.popup.name.equals(popup.name))
 				checkReferencia(enlace.popup.accion);
-		for (Enlace enlace: LedUtils.getNodes(Enlace))
+		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE))
 			if (enlace.popup != null && enlace.popup.popup.name.equals(popup.name))
 				checkReferencia(enlace.popup.accion);
-		for (Boton boton: LedUtils.getNodes(Boton))
+		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON))
 			if (boton.popup != null && boton.popup.popup.name.equals(popup.name))
 				checkReferencia(boton.popup.accion);
-		for (Tabla tabla: LedUtils.getNodes(Tabla)){
+		for (Tabla tabla: LedUtils.getNodes(LedPackage.Literals.TABLA)){
 			if (tabla.popup != null && tabla.popup.name.equals(popup.name))
 				crear = borrar = editar = true;
 			if (tabla.popupCrear != null && tabla.popupCrear.name.equals(popup.name))
@@ -883,8 +962,9 @@ public class ${controllerName} extends ${controllerGenName} {
 					entidadId = "'${entidad.id}':${campo.idWithNullCheck()}";
 			}
 		}
+		String redirigirAnterior = "'redirigir': 'anterior'";
 		List<String> intermediasStr = intermedias.collect {"'${it.id}':${it.idCheck}"};
-		String ids = ", [${StringUtils.params(accionParam, almacenId, entidadId, intermediasStr)}]";
+		String ids = ", [${StringUtils.params(accionParam, almacenId, entidadId, intermediasStr, redirigirAnterior)}]";
 		String link = """play.mvc.Router.reverse("${controllerFullName}.index" ${ids})""";
 		return link;
 	}

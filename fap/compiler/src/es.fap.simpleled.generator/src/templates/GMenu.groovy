@@ -8,7 +8,6 @@ import generator.utils.FileUtils;
 import generator.utils.HashStack;
 import generator.utils.StringUtils
 import generator.utils.HashStack.HashStackName;
-import generator.utils.ModelUtils;
 import es.fap.simpleled.led.util.LedCampoUtils
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
@@ -165,7 +164,7 @@ out += """
 		return """
 			%{
 				${scriptEntidades}
-				${url};
+				${url}
 			%}
 		""";
 	}

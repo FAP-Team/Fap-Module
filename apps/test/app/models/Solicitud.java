@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 public class Solicitud extends SolicitudGenerica {
 	// Código de los atributos
@@ -41,9 +41,27 @@ public class Solicitud extends SolicitudGenerica {
 	public Fechas fechas;
 	
 	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public TestGrupo testGrupo;
+	
+	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="solicitud_tabladenombres")
 	public List<TablaDeNombres> tablaDeNombres;
+	
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="solicitud_peta")
+	public List<Peta> peta;
+	
+	
+	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public ComboTestRef comboError;
+	
+	
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="solicitud_comboerrormany")
+	public List<ComboTestRef> comboErrorMany;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
@@ -78,8 +96,22 @@ public class Solicitud extends SolicitudGenerica {
 							else
 								fechas.init();
 						
+							if (testGrupo == null)
+								testGrupo = new TestGrupo();
+							else
+								testGrupo.init();
+						
 						if (tablaDeNombres == null)
 							tablaDeNombres = new ArrayList<TablaDeNombres>();
+						
+						if (peta == null)
+							peta = new ArrayList<Peta>();
+						
+							if (comboError != null)
+								comboError.init();	
+						
+						if (comboErrorMany == null)
+							comboErrorMany = new ArrayList<ComboTestRef>();
 						
 							if (savePages == null)
 								savePages = new SavePages();

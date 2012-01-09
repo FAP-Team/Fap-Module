@@ -1,6 +1,8 @@
 package es.fap.simpleled.led.util;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -75,9 +77,8 @@ public class LedCampoUtils {
 		EList<Elemento> elementos = getElementos(container);
 		if (elementos != null){
 			for (EObject obj: elementos){
-				if (hayCamposGuardables(obj)){
+				if (hayCamposGuardables(obj))
 					return true;
-				}
 			}
 			return false;
 		}
@@ -88,9 +89,8 @@ public class LedCampoUtils {
 		EList<Elemento> elementos = getElementos(container);
 		if (elementos != null){
 			for (EObject obj: elementos){
-				if (hayCamposGuardablesOrTablaOneToMany(obj)){
+				if (hayCamposGuardablesOrTablaOneToMany(obj))
 					return true;
-				}
 			}
 			return false;
 		}
@@ -99,14 +99,13 @@ public class LedCampoUtils {
 		return getCampo(container) != null;
 	}
 	
-	public static Campo getCampo(EObject model) {
-		if (model instanceof Campo) {
-			return (Campo) model;
-		}
-		for (Method method : model.getClass().getMethods()) {
+	public static Campo getCampo(EObject object) {
+		if (object instanceof Campo) 
+			return (Campo) object;
+		for (Method method : object.getClass().getMethods()) {
 			if (method.getReturnType().equals(Campo.class)) {
 				try {
-					return (Campo) method.invoke(model);
+					return (Campo) method.invoke(object);
 				} catch (Exception e) {
 					return null;
 				}
@@ -165,13 +164,9 @@ public class LedCampoUtils {
 	/*
 	 * Devuelve cual es la entidad que se puede usar en ese campo (sin contar
 	 * las Singleton), en función del contexto en que se sitúe dicho campo.
-	 * Si el container es Model (para Formularios y Paginas), se devuelve NULL,
-	 * ya que ambos aceptan cualquier entidad.
 	 */
-	public static Entity getEntidadValida(Campo campo){
-		EObject container = LedCampoUtils.getElementosContainer(campo);
-		if (container instanceof Model)
-			return null;
+	public static Entity getEntidadPaginaOrPopupOrTabla(EObject element){
+		EObject container = LedCampoUtils.getElementosContainer(element);
 		if (container instanceof Pagina)
 			return LedEntidadUtils.getEntidad((Pagina)container);
 		if (container instanceof Tabla || container instanceof Popup)
@@ -179,6 +174,43 @@ public class LedCampoUtils {
 		return null;
 	}
 	
+	public static Map<String, Entity> getEntidadesValidas(Campo campo){
+		EObject container = LedCampoUtils.getElementosContainer(campo);
+		Map<String, Entity> entidades = new HashMap<String, Entity>();
+		if (container instanceof Model || campo.eContainer() instanceof Tabla){
+			for (Entity e: ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, campo.eResource()))
+				entidades.put(e.getName(), e);	
+			return entidades;
+		}
+		if (container instanceof Pagina){
+			Entity entidadPagina = LedEntidadUtils.getEntidad((Pagina)container);
+			if (entidadPagina != null)
+				entidades.put(entidadPagina.getName(), entidadPagina);
+		}
+		if (container instanceof Tabla || container instanceof Popup){
+			Entity ultimaEntidad = LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampo(container));
+			entidades.put(ultimaEntidad.getName(), ultimaEntidad);
+		}
+		if (! (container instanceof Tabla)){
+			for (Entity single: LedEntidadUtils.getSingletons(campo.eResource()))
+				entidades.put(single.getName(), single);
+		}
+		return entidades;
+	}
+	
+//	public Set<Entity> getEntidadesCampo(Campo campo) {
+//		EObject container = LedCampoUtils.getElementosContainer(campo);
+//		Entity entidadValida = LedCampoUtils.getEntidadValida(campo);
+//		if (entidadValida == null){ // Es null porque son v�lidas todas las entidades
+//			return LedEntidadUtils.getEntidades(campo.eResource());
+//		}
+//		Set<Entity> entidades = new HashSet<Entity>();
+//		if (!(container instanceof Tabla)){
+//			entidades.addAll(LedEntidadUtils.getSingletons(campo.eResource()));
+//		}
+//		entidades.add(entidadValida);
+//		return entidades;
+//	}
 	
 	
 }

@@ -16,11 +16,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+import utils.AedUtils;
 // === IMPORT REGION END ===
 	
 
-@Auditable
+
 @Entity
 public class Requerimiento extends Model {
 	// Código de los atributos
@@ -67,20 +67,12 @@ public class Requerimiento extends Model {
 	public DateTime fechaAcuse;
 	
 	
-	
-	public String uriDocRequerimiento;
-	
-	
-	
-	public Boolean docRequerimientoClasificado;
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Documento oficial;
 	
 	
-	
-	public String uriDocJustificanteRequerimiento;
-	
-	
-	
-	public Boolean docJustificanteRequerimientoClasificado;
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Documento justificante;
 	
 	
 	
@@ -135,16 +127,30 @@ public class Requerimiento extends Model {
 	public DateTime fechaAcusePostal;
 	
 	
+	public Requerimiento (){
+		init();
+	}
+	
 
 	public void init(){
 		
 		
+							if (oficial == null)
+								oficial = new Documento();
+							else
+								oficial.init();
+						
+							if (justificante == null)
+								justificante = new Documento();
+							else
+								justificante.init();
+						
 	}
 		
 	
 
 // === MANUAL REGION START ===
-			
+
 // === MANUAL REGION END ===
 	
 	

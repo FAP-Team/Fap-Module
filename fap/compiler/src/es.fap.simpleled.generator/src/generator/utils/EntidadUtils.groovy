@@ -2,6 +2,8 @@ package generator.utils;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.resource.Resource;
+
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity
@@ -9,6 +11,8 @@ import generator.utils.StringUtils
 import generator.utils.CampoUtils
 import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+import es.fap.simpleled.led.util.ModelUtils;
+import es.fap.simpleled.led.LedPackage;
 
 public class EntidadUtils implements Comparable{
 
@@ -118,6 +122,17 @@ public class EntidadUtils implements Comparable{
 		}
 		return 1;
 	}
+	
+	/*
+	* Devuelve la entidad Solicitud, y si no la encuentra (porque se está generando el
+	* módulo en vez de la aplicación), devuelve la entidad SolicitudGenerica.
+	*/
+   public static Entity findSolicitud(){
+	   Entity solicitud = ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "Solicitud", LedUtils.resource);
+	   if (solicitud == null)
+		   solicitud = ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "SolicitudGenerica", LedUtils.resource);
+	   return solicitud;
+   }
 	
 	public static void addToSaveEntity(String campo){
 		EntidadUtils.create(campo).addToSaveEntity();

@@ -1,12 +1,12 @@
 package es.fap.simpleled.validation;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.resource.IContainer;
-import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.validation.Check;
 
 import com.google.inject.Inject;
@@ -30,12 +30,6 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Inject
 	private IQualifiedNameProvider qnProvider;
-	
-	@Inject
-	private ResourceDescriptionsProvider indexProvider;
-	
-	@Inject
-	private IContainer.Manager manager;
 	
 	public void myError(String message, EStructuralFeature feature){
 		error(message, feature);
@@ -113,10 +107,12 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Check
 	public void checkSolicitudSimpleAttributos(Attribute attr) {
-		Entity entidad = (Entity) attr.eContainer();
-		if (entidad.getName().equals("Solicitud")){
-			if (LedEntidadUtils.esSimple(attr)){
-				warning("La entidad \"Solicitud\" no debe tener atributos simples", LedPackage.Literals.ATTRIBUTE__TYPE);
+		if (attr.eContainer() instanceof Entity){
+			Entity entidad = (Entity) attr.eContainer();
+			if (entidad.getName().equals("Solicitud")){
+				if (LedEntidadUtils.esSimple(attr)){
+					warning("La entidad \"Solicitud\" no debe tener atributos simples", LedPackage.Literals.ATTRIBUTE__TYPE);
+				}
 			}
 		}
 	}
@@ -147,6 +143,23 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	public void checkNameVariableInPermiso(PermisoVar permisoVar) {
 		if (Pattern.compile("^[A-Z]").matcher(permisoVar.getName()).find()) {
 			error("El nombre de la variable en permiso debe comenzar por minúscula", LedPackage.Literals.PERMISO_VAR__NAME);
+		}
+	}
+	
+	@Check
+	public void checkExtends(Entity entidad){
+		Set<String> intermedias = new HashSet<String>();
+		Entity father = entidad.getExtends();
+		while (father != null){
+			if (father.getName().equals(entidad.getName())){
+				error(entidad.getName() + " no puede extender de " + entidad.getExtends().getName() + " porque se produce un lazo infinito", LedPackage.Literals.ENTITY__EXTENDS);
+				return;
+			}
+			if (intermedias.contains(father.getName())){
+				return;
+			}
+			intermedias.add(father.getName());
+			father = father.getExtends();
 		}
 	}
 	
@@ -202,7 +215,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Check
 	public void checkNombreEntidadUnico(Entity entidad){
-		for (Entity e : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, indexProvider, manager, entidad.eResource())) {
+		for (Entity e : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, entidad.eResource())) {
 			String uri1 = entidad.eResource().getURI().toString();
 			String uri2 = e.eResource().getURI().toString();
 			if (entidad.getName().equals(e.getName()) && !uri1.equals(uri2))
@@ -215,7 +228,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	 */
 	@Check
 	public void checkPaginasFormularioStuff(Pagina pagina){
-		for (Pagina p : ModelUtils.<Pagina>getVisibleNodes(LedPackage.Literals.PAGINA, indexProvider, manager, pagina.eResource())) {
+		for (Pagina p : ModelUtils.<Pagina>getVisibleNodes(LedPackage.Literals.PAGINA, pagina.eResource())) {
 			String qn1 = qnProvider.getFullyQualifiedName(pagina).toString();
 			String qn2 = qnProvider.getFullyQualifiedName(p).toString();
 			String uri1 = pagina.eResource().getURI().toString();
@@ -229,7 +242,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Check
 	public void checkFormularioInicialUnico(Formulario formulario){
-		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, indexProvider, manager, formulario.eResource())) {
+		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, formulario.eResource())) {
 			String qn1 = qnProvider.getFullyQualifiedName(formulario).toString();
 			String qn2 = qnProvider.getFullyQualifiedName(f).toString();
 			String uri1 = formulario.eResource().getURI().toString();

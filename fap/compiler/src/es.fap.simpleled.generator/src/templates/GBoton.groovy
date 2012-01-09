@@ -44,6 +44,14 @@ public class GBoton {
 			enlace.estilo = "boton";
 			result = Expand.expand(enlace);
 		}
+		else if (boton.anterior) {
+			Enlace enlace = new EnlaceImpl();
+			enlace.name = (boton.name ?: "")+"IDenlace";
+			enlace.titulo = boton.titulo;
+			enlace.anterior = true;
+			enlace.estilo = "boton";
+			result = Expand.expand(enlace);
+		}
 		else {
 			HashStack.push(HashStackName.SAVE_BOTON, boton.name);
 			result ="""

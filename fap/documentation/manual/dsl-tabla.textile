@@ -11,6 +11,8 @@ h2. Parámetros
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como cabecera de la tabla, si no se especifica se mostrará el nombre del campo.
 * **pagina = _[pagina]_ | _[string]_** (opcional) : Página a la cual se redireccionará al editar un elemento de la tabla. Puede especificarse mediante el nombre de la página, o a través de un String con el nombre de una property que contenga el nombre de la página, empezando con el símbolo @.
 * **columnasAutomaticas** (opcional) : Simplifica la creación de columnas generando automáticamente una columna para cada uno de los atributos de la entidad especificada en el campo.
+* **exclude = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la exclusión de aquellos atributos de las columnas de la tabla que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
+* **include = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la inclusión en las columnas de la tabla, sólo de aquellos atributos que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
 * **alto = _[string]_** (opcional) : Permite especificar el alto de la tabla.
 * **seleccionable = _[string]_** (opcional) : Se añade un check a cada elemento de la tabla que permite seleccionarlo, además se añade un botón en la tabla (con el nombre que se le indique en este parámetro) que obtendrá la lista de elementos seleccionados y llamara al método del controlador.
 * **popup = _[popup]_** (opcional) : Asigna un popup a la tabla, creando todos los botones disponibles para abrirlo. "Ver documentación Popup":dsl-popup.
@@ -31,7 +33,7 @@ bc. Tabla:
 		& ('titulo' '=' titulo=STRING)?
 		& ('pagina' '=' (pagina=[Pagina|QN] | paginaProperty=STRING))?
 		& ('alto' '=' alto=STRING)? 
-		& (columnasAutomaticas?="columnasAutomaticas")?
+		& (columnasAutomaticas?="columnasAutomaticas" ((exc='exclude' '=' exclude=ListaAtributos) | (inc='include' '=' include=ListaAtributos))?)?
 		& ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& (noBorrarEntidad?='noBorrarEntidad')?
@@ -53,7 +55,7 @@ bc. Tabla:
 
 h2. Columnas
 
-Permite definir los atributos de la entidad que se mostraran en la tabla. La entidad que se especifique en este elemento debe corresponder con el tipo de la lista de entidades que se asigne a la tabla. "Ver documentación Columnas":dsl-columna. El parámetro _columnasAutomaticas_ simplifica la creación de columnas ya que dada una entidad (que se pasa como parámetro) genera automáticamente una columna para cada uno de sus atributos.
+Permite definir los atributos de la entidad que se mostraran en la tabla. La entidad que se especifique en este elemento debe corresponder con el tipo de la lista de entidades que se asigne a la tabla. "Ver documentación Columnas":dsl-columna. El parámetro _columnasAutomaticas_ simplifica la creación de columnas ya que dada una entidad (que se pasa como parámetro) genera automáticamente una columna para cada uno de sus atributos. Además utilizando _exclude_ o _include_, podemos decir que esta generación automática no introduzca ciertos atributos o sólo introduzca unos determinados atributos, respectivamente. En caso de usar _columnasAutomaticas_ y la definición normal de _Columnas_, este último será más restrictivo, es decir, si se usa _columnasAutomaticas_ y después se define una _Columna_, se tendrán en cuenta los formatos de la _Columna_ definida, no de la generada por _columnasAutomaticas_.
 
 h2. Ejemplos de uso
 
@@ -66,7 +68,7 @@ bc. Tabla listaUsuarios titulo="Usuarios" campo=Agente popup=PopupUsuario {
 	Columna campo=Agente.email titulo="Email" ancho="150"
 }
 		
-bc. Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio" campo=Solicitud.conexiones.conexionesBandaAncha
+Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio" campo=Solicitud.conexiones.conexionesBandaAncha
 	popupModificar=PopUpConexionesBandaAncha
 	popupVer=PopUpConexionesBandaAncha
 	recargarPagina {
@@ -74,4 +76,9 @@ bc. Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio
 		Columna campo=ConexionBandaAncha.directaGCyTF titulo="Conex. directas TF-GC" expandir
 		Columna campo=ConexionBandaAncha.directaResto titulo="Conex. directas otras islas" expandir
 		Columna campo=ConexionBandaAncha.indirecta titulo="Conex. indirectas" expandir
+}
+
+bc. Tabla tablaNombres campo=Solicitud.tablaDeNombres titulo="Solicitantes"
+	popupVer=popupNombre	
+	columnasAutomaticas exclude = id, apellido {
 }

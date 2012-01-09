@@ -1,12 +1,18 @@
 package es.fap.simpleled.led.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.eclipse.emf.ecore.resource.Resource;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedFactory;
+import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.impl.LedFactoryImpl;
 
@@ -15,6 +21,7 @@ public class LedEntidadUtils {
 	public static List<Attribute> getAllDirectAttributes(Entity entidad) {
 		List<Attribute> attrs = new ArrayList<Attribute>();
 		while (entidad != null) {
+			LedEntidadUtils.addId(entidad);
 			for (Attribute attr : entidad.getAttributes()) {
 				attrs.add(attr);
 			}
@@ -203,13 +210,50 @@ public class LedEntidadUtils {
 	}
 	
 	/*
-	 * Devuelve la entidad asociada a una pagina, que será la siguiente:
+	 * Devuelve la entidad asociada a una pagina, que serï¿½ la siguiente:
 	 * 		Ultimo atributo del campo definido en la pagina, si no es null
-	 * 		ó: ultimo atributo del campo definido en el formulario, si no es null
-	 * 		ó: null
+	 * 		ï¿½: ultimo atributo del campo definido en el formulario, si no es null
+	 * 		ï¿½: null
 	 */
 	public static Entity getEntidad(Pagina pagina){
 		return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampoPagina(pagina));
 	}
+	
+	public static Set<Entity> getSingletons(Resource res) {
+		Set<Entity> singletons = new HashSet<Entity>();
+		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, res)){
+			if (LedEntidadUtils.esSingleton(entidad))
+				singletons.add(entidad);
+		}
+		return singletons;
+	}
+	
+	public static Map<String, Entity> eliminaSolicitudGenerica(Map<String, Entity> entidades){
+		if (entidades.containsKey("Solicitud"))
+			entidades.remove("SolicitudGenerica");
+		return entidades;
+	}
+	
+//	/*
+//	 * Si la entidad Solicitud estÃ¡ presente, no incluye SolicitudGenerica,
+//	 * con el propÃ³sito de que no aparezca como opciÃ³n en el autocompletado.
+//	 */
+//	public static Set<Entity> getEntidades(Resource res) {
+//		Set<Entity> entidades = new HashSet<Entity>();
+//		Entity solicitud = null;
+//		Entity solicitudGenerica = null;
+//		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, res)){
+//			if (entidad.getName().equals("SolicitudGenerica"))
+//				solicitudGenerica = entidad;
+//			else {
+//				entidades.add(entidad);
+//				if (entidad.getName().equals("Solicitud"))
+//					solicitud = entidad;
+//			}
+//		}
+//		if (solicitud == null && solicitudGenerica != null)
+//			entidades.add(solicitudGenerica);
+//		return entidades;
+//	}
 	
 }

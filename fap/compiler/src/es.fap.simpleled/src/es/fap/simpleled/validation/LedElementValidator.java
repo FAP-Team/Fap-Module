@@ -1,6 +1,7 @@
 package es.fap.simpleled.validation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,6 @@ import es.fap.simpleled.led.EntidadAutomatica;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Fecha;
 import es.fap.simpleled.led.FirmaPlatinoSimple;
-import es.fap.simpleled.led.Form;
 import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.Grupo;
 import es.fap.simpleled.led.LedPackage;
@@ -41,6 +41,9 @@ import es.fap.simpleled.led.util.Proposal;
 
 public abstract class LedElementValidator {
 	
+	public EObject element;
+	public Entity raiz;
+	
 	
 	public abstract boolean aceptaEntidad(Entity entidad);
 	
@@ -49,13 +52,19 @@ public abstract class LedElementValidator {
 	public abstract String mensajeError();
 
 	
+	public LedElementValidator(EObject element){
+		this.element = element;
+	}
+	
 	public void validateCampoEntidad(Campo campo, LedJavaValidator validator){
-		if (LedEntidadUtils.esSingleton(campo.getEntidad()))
-			return;
-		Entity entidad = LedCampoUtils.getEntidadValida(campo);
-		if (entidad != null && ! LedEntidadUtils.equals(entidad, campo.getEntidad())){
-			validator.myError("En este contexto solo se puede utilizar la entidad \"" + entidad.getName() + "\"", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
-		}
+//		if (LedEntidadUtils.esSingleton(campo.getEntidad()))
+//			return;
+//		Entity entidad = LedCampoUtils.getEntidadValida(campo);
+//		if (entidad != null && ! LedEntidadUtils.equals(entidad, campo.getEntidad())){
+//			validator.myError("En este contexto solo se puede utilizar la entidad \"" + entidad.getName() + "\"", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
+//		}
+		if (!LedCampoUtils.getEntidadesValidas(campo).containsKey(campo.getEntidad().getName()))
+			validator.myError("En este contexto no se puede utilizar esta entidad", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
 	}
 	
 	public void validateCampo(Campo campo, LedJavaValidator validator) {
@@ -94,53 +103,48 @@ public abstract class LedElementValidator {
 		return false;
 	}
 	
-	public List<Proposal> completeEntidades(Set<Entity> entidades) {
+	public List<Proposal> completeEntidades(String contextPrefix, Collection<Entity> entidades) {
 		List<Proposal> proposals = new ArrayList<Proposal>();
-		List<Proposal> childProposals = null;
 		for (Entity entidad: entidades){
-			String tipo = "Entidad";
-			int priority = 1;
-			if (LedEntidadUtils.esSingleton(entidad)){
-				tipo = "Singleton";
-				priority = 0;
+			raiz = entidad;
+			if (!entidad.getName().startsWith(contextPrefix)){
+				continue;
 			}
+			String tipo = "Entidad";
+			if (LedEntidadUtils.esSingleton(entidad))
+				tipo = "Singleton";
 			if (aceptaEntidad(entidad)){
-				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, true, priority));
+				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, true, entidad));
 			}
 			else if (aceptaEntidadRecursivo(entidad)){
-				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, false, priority));
-				if (proposals.size() == 1){
-					childProposals = completeEntidad(entidad.getName(), entidad);
-				}
+				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, false, entidad));
 			}
 		}
-		if (proposals.size() == 1 && childProposals != null && childProposals.size() > 0){
-			return childProposals;
+		if (proposals.size() == 1){
+			Proposal p = proposals.get(0);
+			if (!p.valid)
+				proposals = completeEntidad("", (Entity) p.atributo, p.getEditorText());
 		}
 		return proposals;
 	}
 	
-	public List<Proposal> completeEntidad(String prefijo, Entity entidad){
-		if (! prefijo.equals("")){
-			prefijo += ".";
-		}
+	public List<Proposal> completeEntidad(String contextPrefix, Entity entidad, String prefijo){
 		List<Proposal> proposals = new ArrayList<Proposal>();
-		List<Proposal> childProposals = null;
 		for (Attribute attr: LedEntidadUtils.getAllDirectAttributes(entidad)){
-			if (aceptaAtributo(attr)){
-				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), true));
+			if (!attr.getName().startsWith(contextPrefix)){
+				continue;
 			}
-			else if (LedEntidadUtils.xToOne(attr) || ((this instanceof PaginaValidator) && LedEntidadUtils.isReferencia(attr))){
-				if (aceptaEntidadRecursivo(LedEntidadUtils.getEntidad(attr))){
-					proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), false));
-					if (proposals.size() == 1){
-						childProposals = completeEntidad(prefijo + attr.getName(), LedEntidadUtils.getEntidad(attr));
-					}
-				}
+			if (aceptaAtributo(attr)){
+				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), true, attr));
+			}
+			else if ((LedEntidadUtils.xToOne(attr) || ((this instanceof PaginaValidator) && LedEntidadUtils.isReferencia(attr))) && aceptaEntidadRecursivo(LedEntidadUtils.getEntidad(attr))){
+				proposals.add(new Proposal(prefijo + attr.getName() + "  -  " + getType(attr), false, attr));
 			}
 		}
-		if (proposals.size() == 1 && childProposals != null && childProposals.size() > 0){
-			return childProposals;
+		if (proposals.size() == 1){
+			Proposal p = proposals.get(0);
+			if (!p.valid)
+				proposals = completeEntidad("", ((Attribute)p.atributo).getType().getCompound().getEntidad(), p.getEditorText());
 		}
 		return proposals;
 	}
@@ -164,61 +168,64 @@ public abstract class LedElementValidator {
 		if (compound.getTipoReferencia() != null){
 			referencia = compound.getTipoReferencia().getType();
 		}
+		if (compound.getEntidad().isEmbedded()){
+			referencia = "Embedded";
+		}
 		return referencia + "<" + compound.getEntidad().getName() + ">";
 	}
 	
 	public static LedElementValidator getElementValidator(Campo campo){
 		EObject container = campo.eContainer();
 		if (container instanceof Fecha) {
-			return new FechaValidator();
+			return new FechaValidator(container);
 		}
 		if (container instanceof Columna) {
-			return new ColumnaValidator();
+			return new ColumnaValidator(container);
 		}
 		if (container instanceof Tabla) {
-			return new TablaValidator();
+			return new TablaValidator(container);
 		}
 		if (container instanceof Pagina || container instanceof Formulario || container instanceof Popup) {
-			return new PaginaValidator();
+			return new PaginaValidator(container);
 		}
 		if (container instanceof Texto || container instanceof AreaTexto) {
-			return new TextoValidator();
+			return new TextoValidator(container);
 		}
 		if (container instanceof Grupo) {
-			return new GrupoValidator();
+			return new GrupoValidator(container);
 		}
 		if (container instanceof Check) {
-			return new CheckValidator();
+			return new CheckValidator(container);
 		}
 		if (container instanceof Combo) {
-			return new ComboValidator();
+			return new ComboValidator(container);
 		}
 		if (container instanceof SubirArchivoAed || container instanceof EditarArchivoAed || container instanceof FirmaPlatinoSimple) {
-			return new EntidadValidator("Documento");
+			return new EntidadValidator(container, "Documento");
 		}
 		if (container instanceof Direccion) {
-			return new EntidadValidator("Direccion");
+			return new EntidadValidator(container, "Direccion");
 		}
 		if (container instanceof Nip) {
-			return new EntidadValidator("Nip");
+			return new EntidadValidator(container, "Nip");
 		}
 		if (container instanceof Persona) {
-			return new EntidadValidator("Persona");
+			return new EntidadValidator(container, "Persona");
 		}
 		if (container instanceof PersonaFisica) {
-			return new EntidadValidator("PersonaFisica");
+			return new EntidadValidator(container, "PersonaFisica");
 		}
 		if (container instanceof PersonaJuridica) {
-			return new EntidadValidator("PersonaJuridica");
+			return new EntidadValidator(container, "PersonaJuridica");
 		}
 		if (container instanceof Solicitante) {
-			return new EntidadValidator("Solicitante");
+			return new EntidadValidator(container, "Solicitante");
 		}
 		if (container instanceof EntidadAutomatica) {
-			return new EntidadAutomaticaValidator();
+			return new EntidadAutomaticaValidator(container);
 		}
 		if (container instanceof Enlace) {
-			return new EnlaceValidator();
+			return new EnlaceValidator(container);
 		}
 		return null;
 	}

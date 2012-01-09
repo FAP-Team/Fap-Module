@@ -1,0 +1,20 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().first()
+}%
+
+#{selenium}
+	open(/Principal/solicitudes)
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='borrador'])
+	
+    open('/Solicitud/direcciones?idSolicitud=${s.id}')
+    waitForPageToLoad()
+    assertText(//div[@id='solicitud_direccionTest_direccion_municipio_chzn']/a/span, 'Santa Úrsula')
+    assertValue('solicitud_direccionTest_direccion_codigoPostal', '38390')
+    assertValue('solicitud_direccionTest_direccion_calle', 'Los Cedros')
+    assertValue('solicitud_direccionTest_direccion_numero', '14')
+    assertValue('solicitud_direccionTest_direccion_otros', 'bj')
+#{/selenium}

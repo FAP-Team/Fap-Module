@@ -1,0 +1,21 @@
+<project default="compile" basedir="../">
+	<path id="classpath">
+		<fileset dir="src/es.fap.simpleled.generator/lib/">
+			<include name="groovy-all-1.7.5.jar" />
+			<include name="jj-textile.jar" />
+			<include name="jj-wikitext.jar" />
+		</fileset>
+	</path>
+	
+	<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath"/>
+	
+	<target name="compile">
+		    <mkdir dir="gendocumentation/bin" />
+			<groovyc srcdir="gendocumentation/" destdir="gendocumentation/bin" encoding="utf-8">
+				<classpath>
+					<path refid="classpath" />
+				</classpath>
+				<javac source="1.5" target="1.5" debug="on" />
+			</groovyc>
+	</target>
+</project>

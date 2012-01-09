@@ -1,0 +1,75 @@
+h1. Permisos
+
+h2. Ambito
+
+Los permisos se podrán aplicar a páginas, grupos, forms, tablas, al menú (tanto grupos como elementos individuales).
+Cuando se comprueba un permiso se le consulta para una acción en concreto.Las posibles acciones son:
+
+* **create** : Aplicable a tablas
+* **read**   : Aplicable a tablas y elementos visuales
+* **update** : Aplicable a tablas y elementos visual
+* **delete** : Aplicable a tablas
+
+
+
+Los permisos que se aplican a las tablas limitan los botones que aparecen en las tablas y añaden seguridad en los métodos de actualización.
+En los permisos que se aplican a los forms se consulta si tiene permiso de "update" o de "create" para poder ejecutar la acción asociada al form.
+
+h2. Sintaxis
+
+h3. Variables por defecto
+
+Para la definición de permisos se tendrán una serie de variables especiales.
+*  **agente** : Agente conectado actualmente
+*  **action** : Accion para la que se está consulta el permiso (read, edit, delete, create)
+
+h3. Varibles definidas por el usuario
+
+Para la definición de los permisos se necesita consulta valores de las entidades. Todas las entidades que necesitemos consultar las tenemos que declarar en la zona "vars:".
+Para definirlas tenemos dos opciones:
+* **Tipo nombreVariable** : Especificando únicamente el nombre de la entidad. Se consulta la variable que se ha pasado por parámetro. Bien sea el objeto o el identificador.
+* **Tipo nombreVariable + consultaJPQL** : Podemos especificar una consulta sql que queramos realizar. Esto permite una mayor flexibilidad. 
+
+h3. DSL
+
+bc. rule rule_name
+vars
+   Tipo1 var1
+   Tipo2 var2 : sql("Consulta sql...con parametros ?", var1);
+   Tipo3 var3 : sql("Consulta sql...con parametros ?", var1, var2);
+when
+	var1.campo = "valor" and
+	var1.campo2 in ("valor1", "valor") or
+	var2.campo = var1.campo and
+	var1.campo != "valor" or var2.campo not in ("valor1", "valor2") ) and
+	var3 != null
+then
+	grant || deny
+
+h4. Operaciones
+
+* **=, !=** : Comprueba si un campo tiene, o no, un determinado valor
+* **in, not in**: Comprueba si un valor está, o no, dentro de una lista de valores
+* **= null, != null** : Comprueba si una variable es null
+* **and, or** : Concatenan reglas
+
+h3. Ejemplos
+
+bc. rule listaSolicitudes
+vars
+	Solicitud solicitud
+	Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
+when
+	(action = "read" and agente.rolActivo.nombre = "administrador")
+	or
+	(
+	action = "read"
+	and 
+	(participacion != null and agente.rolActivo.id = participacion.agente.id)
+	)
+then
+	grant
+
+h2. Permisos avanzados
+
+Si la definición de permisos no te permite realizar las comprobaciones que quieres hacer siempre puedes escribir código manual que compruebe los permisos. Puedes consultar cómo hacerlo en la sección "permisos":app-permisos .

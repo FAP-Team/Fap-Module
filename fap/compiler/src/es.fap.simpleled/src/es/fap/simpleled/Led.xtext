@@ -18,7 +18,7 @@ QN: // Qualified Name
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
-	"agente" | "documento"
+	"agente" | "documento" | "password" | "aportadoPor"
 ;
 
 Entity:
@@ -31,7 +31,7 @@ Entity:
 		& (inheritance?="inheritance" "=" "joined")?
 		& (superClass?="superClass")?
 		& (noConstruct?="noConstruct")?
-		& (noAuditable?="noAuditable")?
+		& (auditable?="auditable" | noAuditable?="noAuditable")?
 		)
 	'{'
 		attributes+=Attribute*
@@ -130,23 +130,28 @@ PopupAccion:
 	popup=[Popup|QN] accion=("leer" | "crear" | "editar" | "borrar")?
 ;
 
+Accion:
+	elemento="Accion" name=("crear"  | "editar" | "borrar")
+	(
+		("boton" "=" boton=STRING)?
+		& ('redirigir' '=' (anterior?="anterior" | redirigir=PaginaAccion | redirigirUrl=STRING))?
+		& ("mensajeOk" "=" mensajeOk=STRING)?
+		& ("mensajeError" "=" mensajeError=STRING)?
+		& (noBorrarEntidad?='noBorrarEntidad')?
+		& (crearSiempre?="crearSiempre")?
+	)
+;
+
 Pagina:
 	elemento='Pagina' name=IDS
 	(
-		(noForm?='noForm')?
+		("titulo" "=" titulo=STRING)?
 		& ("campo" "=" campo=Campo)?
+		& ("permiso" "=" permiso=[Permiso])?
+		& (noForm?='noForm')?
 		& (noAutenticar?='noAutenticar')?
 		& (guardarParaPreparar?="guardarParaPreparar")?
-		& (noBorrarEntidad?='noBorrarEntidad')?
-		& ("permiso" "=" permiso=[Permiso])?
 		& (inicial?="inicial")?
-		& ("titulo" "=" titulo=STRING)?
-		& ("botonEditar" "=" botonEditar=STRING)?
-		& ("botonCrear" "=" botonCrear=STRING)?
-		& ("botonBorrar" "=" botonBorrar=STRING)?
-		& ('redirigirEditar' '=' (redirigirEditar=PaginaAccion | redirigirEditarUrl=STRING))?
-		& ('redirigirCrear' '=' (redirigirCrear=PaginaAccion | redirigirCrearUrl=STRING))?
-		& ('redirigirBorrar' '=' (redirigirBorrar=PaginaAccion | redirigirBorrarUrl=STRING))?
 	)
 	'{'
 		elementos+=Elemento*
@@ -159,7 +164,6 @@ Popup:
 		('titulo' '=' titulo=STRING)?
 		& ("campo" "=" campo=Campo)
 		& ("permiso" "=" permiso=[Permiso])?
-		& (noBorrarEntidad?='noBorrarEntidad')?
 	)
 	'{'
 		elementos+=Elemento*
@@ -197,7 +201,7 @@ Elemento:
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivoAed | EditarArchivoAed | FirmaPlatinoSimple | 
-	EntidadAutomatica
+	EntidadAutomatica | Accion
 ;
 
 Campo:
@@ -217,6 +221,7 @@ Texto:
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 		& (duplicar?='duplicar')?
+		& (password?='password')?
 	)
 ;
 
@@ -242,7 +247,7 @@ Check:
 
 Enlace:
 	elemento='Enlace' (name=ID)? (
-		(('pagina' '=' pagina=PaginaAccion) | ('popup' '=' popup=PopupAccion) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING)) 
+		(('pagina' '=' pagina=PaginaAccion) | ('popup' '=' popup=PopupAccion) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING) | (anterior?="anterior")) 
 		& ('titulo' '=' titulo=STRING)?
 		& ('destino' '=' destino=STRING)?
 		& ('estilo' '=' estilo=STRING)?
@@ -261,6 +266,7 @@ Boton:
 	    & ('ancho' '=' ancho=STRING)? 
 	    & ('pagina' '=' pagina=PaginaAccion)?
 	    & ('popup' '=' popup=PopupAccion)?
+	    & (anterior?="anterior")?
 		& (waitPopup?="waitPopup")?		
 	)
 ;
@@ -304,7 +310,7 @@ Tabla:
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
         & ('alto' '=' alto=STRING)? 
-        & (columnasAutomaticas?="columnasAutomaticas")?
+        & (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
         & ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('seleccionable' "=" seleccionable=STRING)?
@@ -322,6 +328,10 @@ Tabla:
 	'{'
 		columnas += Columna*
 	'}'
+;
+
+ListaAtributos:
+	atributos+=[Attribute|IDS] (',' atributos+= [Attribute|IDS])*
 ;
 
 Columna:
@@ -345,6 +355,8 @@ SubirArchivoAed:
 	elemento='SubirArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
+		& ('tramite' '=' tramite=STRING)?		
+		& ('aportadoPor' '=' aportadoPor=STRING)?	// ¿Cambiar el tipo?
 	)
 ;
 
@@ -426,7 +438,7 @@ EntidadAutomatica:
 ;
 
 Lista:
-	elemento='Lista' name=ID '{'
+	elemento='Lista' name=ID (enumerado?='crearEnumerado')? '{'
 		elementos+=ElementoLista*
 	'}'
 ;
@@ -518,4 +530,4 @@ PermisoRuleCheckRight:
 
 PermisoThen:
 	then=('grant' | 'deny')
-;	
+;

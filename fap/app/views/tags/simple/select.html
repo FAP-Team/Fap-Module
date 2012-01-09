@@ -1,0 +1,23 @@
+*{
+	_id
+	_options :
+	_optionsText:
+	_optionsValue:
+	_value
+	_style
+	_showKeyInLabel
+}*
+
+#{simple.row label:_label, id:_id, help:_help, error:_error}
+	<select #{if _id}id="${_id}"#{/if} name="${_name}" select style="width: ${_ancho}px">
+		<option> </option>
+		#{list items:_options, as:'option'}
+			%{
+				def optionText  = option."${_optionsText}"
+				def optionValue = option."${_optionsValue}"				
+				def selected = optionValue?.toString().equals(_value?.toString()) ? 'selected=selected' : '';
+			}%
+			<option value="${optionValue}" ${selected}>${optionText}#{if _showKeyInLabel} (${optionValue})#{/if}</option>
+		#{/list}
+	</select>
+#{/simple.row}

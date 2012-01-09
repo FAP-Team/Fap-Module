@@ -20,6 +20,7 @@ public class GPagina {
 	String formulario;
 	boolean hasForm;
 	CampoUtils campo;
+	String name;
 	
 	public static void generate(Pagina pagina){
 		GPagina g = new GPagina(pagina);
@@ -35,6 +36,7 @@ public class GPagina {
 
 	public GPagina(Pagina pagina){
 		this.pagina = pagina;
+		this.name = pagina.name;
 		this.formulario = pagina.eContainer().name;
 		this.campo = CampoUtils.create(LedCampoUtils.getCampoPagina(pagina));
 		this.hasForm = this.campo != null && !pagina.noForm && !hayForm(pagina);
@@ -94,7 +96,6 @@ public class GPagina {
 			else
 				params.putStr "permisoPaginaMsg", "No tiene suficientes privilegios para acceder a ésta página";
 		}
-		
 		params.put("accion", "accion");
 		params.put("urlEditar", controller.getRouteAccion("editar"));
 		params.put("urlCrear", controller.getRouteAccion("crear"));
@@ -102,9 +103,9 @@ public class GPagina {
 		params.putStr("titulo", pagina.titulo != null ? pagina.titulo : pagina.name);
 		params.putStr("formulario", formulario);
 		params.put("hayForm", hasForm);
-		params.putStr("botonEditar", pagina.botonEditar? pagina.botonEditar : "Editar");
-		params.putStr("botonCrear", pagina.botonCrear? pagina.botonCrear : "Crear");
-		params.putStr("botonBorrar", pagina.botonBorrar? pagina.botonBorrar : "Borrar");
+		params.putStr("botonEditar", controller.accionEditar.boton);
+		params.putStr("botonCrear", controller.accionCrear.boton);
+		params.putStr("botonBorrar", controller.accionBorrar.boton);
 		
 		String view = """
 #{fap.pagina ${params.lista(true)}

@@ -1,10 +1,17 @@
 package generator.utils
 
 
+import java.util.Map;
+import java.util.ArrayList;
+
 import es.fap.simpleled.led.*
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+
 import org.eclipse.emf.ecore.EObject;
+
+import com.sun.media.sound.RealTimeSequencer.PlayThread;
+
 import utils.*;
 
 /**
@@ -231,7 +238,7 @@ class ControllerUtils {
         if ((Pagina.class.isInstance(objeto)) || (Grupo.class.isInstance(objeto)) || (Popup.class.isInstance(objeto)) || Form.class.isInstance(objeto) || EntidadAutomatica.class.isInstance(objeto)) {
 			
 			if (objeto.permiso != null){
-                out += """if (${PermisosUtils.className()}${objeto.permiso.name}("update", (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
+                out += """if (secure.check("${objeto.permiso.name}", "update", (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
 				validatedFields.push(new HashSet<String>());
 			}
 			
@@ -273,11 +280,11 @@ class ControllerUtils {
 		CampoUtils campo = CampoUtils.create(objeto.campo);
 		
 		// Si la referencia es un ManyToOne o ManyToMany, solo igualamos ella, no sus campos
-		if (campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToOne") ||
-			campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToMany")) {	
-			return copyCampoSimple(campo);
+		if (LedEntidadUtils.isManyToOne(campo.getUltimoAtributo())) {
+			return copyCampoMany2One(campo);
+		} else if (LedEntidadUtils.isManyToMany(campo.getUltimoAtributo())) { 
+			return copyCampoMany2Many(campo);
 		}
-			
 		String validOut = "";
         List<String> camposFiltrados;
 		if (objeto instanceof Solicitante) {
@@ -327,7 +334,7 @@ class ControllerUtils {
 			String out = "";
 			for (Attribute at: LedEntidadUtils.getAllDirectAttributesExceptId(entidad)){
 				out += copyCamposTodos(CampoUtils.create(campo.addAttribute(at)));
-			}	
+			}
 			return out;
 		}
 		else{
@@ -347,7 +354,11 @@ class ControllerUtils {
 	}
 	
 	public static String copyCampoSimple(CampoUtils campo) {
-		if (campo.getUltimoAtributo()?.type.compound?.multiple){
+		if (LedEntidadUtils.isManyToOne(campo.getUltimoAtributo()))
+			return copyCampoMany2One(campo);
+		else if (LedEntidadUtils.isManyToMany(campo.getUltimoAtributo()))
+			return copyCampoMany2Many(campo);
+		else if (campo.getUltimoAtributo()?.type.compound?.multiple){
 			return """
 			db${campo.str}.retainAll(${campo.firstLower()});
 			db${campo.str}.addAll(${campo.firstLower()});
@@ -355,6 +366,60 @@ class ControllerUtils {
 		}
 		return "db${campo.str} = ${campo.firstLower()};\n";
 	}
+	
+	/**
+	 * Realiza la copia de los campos Many2One. Cambiada por el problema de los IDs.
+	 * @param campo
+	 * @return
+	 */
+	public static String copyCampoMany2One(CampoUtils campo) {
+		if (campo.getUltimoAtributo()?.type.compound?.multiple){
+			return """
+			db${campo.str}.retainAll(${campo.firstLower()});
+			db${campo.str}.addAll(${campo.firstLower()});
+			"""
+		}
+		String entity = campo.getUltimaEntidad().name;
+		String str_ = campo.getStr_();
+		return """
+			String ${str_} = params.get("$str_");
+			//CustomValidation.validValueFromTable("${campo.str}", ${str_});
+			if ((${str_} != null) && (!${str_}.trim().equals(""))) {
+				$entity ${str_}ctr = ${entity}.findById(Long.parseLong(${str_}.trim()));
+				db${campo.str} = ${str_}ctr;
+			} else {
+				db${campo.str} = null;
+			}
+		"""; 
+	}
+	
+	/**
+	* Realiza la copia de los campos Many2Many. Cambiada por el problema de los IDs.
+	* @param campo
+	* @return
+	*/
+   public static String copyCampoMany2Many(CampoUtils campo) {
+	   if (campo.getUltimoAtributo()?.type.compound?.multiple){
+		   return """
+		   db${campo.str}.retainAll(${campo.firstLower()});
+		   db${campo.str}.addAll(${campo.firstLower()});
+		   """
+	   }
+	   String entity = campo.getUltimaEntidad().name;
+	   String str_ = campo.getStr_();
+	   return """
+		   ArrayList<$entity> ${str_}aCT = new ArrayList<$entity>();
+		   String[] $str_ = params.getAll("$str_");
+		   if ($str_ != null) {
+		   		for (String idString : $str_) {
+		   			$entity ctr = ${entity}.findById(Long.parseLong(idString.trim()));
+					${str_}aCT.add(ctr);
+				}
+		   }
+		   db${campo.str}.clear();
+		   db${campo.str}.addAll(${str_}aCT);
+	   """;
+   }
 	
 	/**
 	 * Codigo de copia y validación si el representante es una persona fisica
@@ -418,6 +483,23 @@ class ControllerUtils {
 	}
 	
 	/**
+	* Indica si la entidad que se le pasa tiene check"Entity", con lo cual
+	* se le deberá realizar el "validate"
+	* @param entity
+	* @return
+	*/
+   public static boolean isCheckEntity (EObject entity) {
+	   if ((entity != null) && (
+		   (entity instanceof Persona)
+		   || (entity instanceof PersonaFisica)
+		   || (entity instanceof PersonaJuridica)
+		   || (entity instanceof Direccion)
+		   ))
+		   return true;
+	   return false;
+   }
+	
+	/**
      * Devuelve el código de validación para un objeto
      * @param object
      * @return
@@ -429,7 +511,7 @@ class ControllerUtils {
 			String campo = CampoUtils.create(objeto.campo).str;
 			String campol = StringUtils.firstLower(campo);
 			
-			if (ModelUtils.isCheckEntity(objeto)) {
+			if (isCheckEntity(objeto)) {
                 out += valid(campo);
             } else {
                 // Debemos validar normalmente (sus entidades padre)
@@ -444,6 +526,13 @@ class ControllerUtils {
 			
 			if ((objeto instanceof Solicitante)) {
                 out += validValueFromTable(campo + ".tipo");
+				// Debemos validar el representante de la persona física, si lo tiene
+				out += """if (${campol}.isPersonaFisica() && (${campol}.representado != null) && (${campol}.representado)) {
+					${required(campo + ".representante")}
+					${valid(campo + ".representante")}
+				}
+				"""
+			} else if ((objeto instanceof PersonaFisica)) {
 				// Debemos validar el representante de la persona física, si lo tiene
 				out += """if ((${campol}.representado != null) && (${campol}.representado)) {
 					${required(campo + ".representante")}
@@ -481,10 +570,10 @@ class ControllerUtils {
 		String permisoContent = "";
 		if(permiso != null){
 			String name = permiso.name;
-			permisoContent = """
-				if (accion == null) return false;
-				return ${PermisosUtils.className()}${name}(accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
-			"""
+			permisoContent = """accion = secure.transform(accion);
+				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+				Map<String, Object> vars = null;
+				return secure.check("${name}", accion, ids, vars);"""
 		}else{
 			permisoContent = """//Sobreescribir para incorporar permisos a mano
 			return true;"""

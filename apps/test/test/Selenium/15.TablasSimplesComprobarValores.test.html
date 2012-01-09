@@ -1,0 +1,26 @@
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().first()
+	
+	def automatic = properties.FapProperties.getBoolean("test.fap.automatic.autotest");
+	play.Logger.info("15. Automatic: "+automatic);
+}%
+
+#{selenium}
+	open(/Principal/solicitudes)
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='borrador'])
+	
+    open('/Solicitud/tablassimples?idSolicitud=${s.id}')
+    waitForPageToLoad()
+    
+    #{if !automatic}
+    	waitForElementPresent(//div[text()='NombreFAP'])
+    	mouseOver(//div[text()='NombreFAP']/parent::td/parent::tr)
+		mouseDown(//div[text()='NombreFAP']/parent::td/parent::tr)
+		click('ext-gen1063')
+		waitForElementPresent('tablaDeNombres_nombre')
+		assertValue('tablaDeNombres_nombre', 'NombreFAP')
+		assertValue('tablaDeNombres_apellido', 'ApellidoFAP')
+	#{/if}
+#{/selenium}

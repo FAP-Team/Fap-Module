@@ -1,0 +1,270 @@
+#{extends 'fap/template.html' /}
+#{set title:'Ficha Evaluador' /}
+
+
+#{fap.permiso permiso:'evaluacion', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+#{fap.messages}
+
+<div class="fichaEvaluador">
+
+
+%{
+	def hasCriterios = !evaluacion.tipo.criterios.isEmpty()
+	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty()
+}%
+
+<a href="@{fap.ConsultarEvaluacionesController.index}" class="boton">Volver al listado de evaluaciones</a>
+
+
+#{fap.grupo titulo:'Información del expediente'}
+	#{simple.row label:'Expediente'}
+		${evaluacion.solicitud.expedienteAed.idAed}
+	#{/simple.row}
+	#{simple.row label:'Nombre:'}
+		${evaluacion.solicitud.solicitante.nombreCompleto}
+	#{/simple.row}
+	#{simple.row label:'DNI/CIF:'}
+		${evaluacion.solicitud.solicitante.numeroId}
+	#{/simple.row}
+	<div class="button_container">
+		<a href="${expedienteUrl}" class="boton">Ver expediente</a>
+	</div>
+#{/fap.grupo}
+
+
+
+#{form @fap.FichaEvaluadorController.save()}
+
+<input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>
+
+#{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
+
+	#{simple.uneditable value: evaluacion.totalCriterios, ancho: "500px", label: "Total criterios de evaluación"/}
+	#{simple.uneditable value: evaluacion.inversionTotalAprobada, ancho: "500px", label: "Inversion Total Aprobada"/}
+	#{simple.uneditable value: evaluacion.subvencionTotalConcedida, ancho: "500px", label: "Subvencion Total Concedida"/}
+
+	#{if evaluacion.tipo.comentariosAdministracion}
+		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion)/}
+	#{/if}
+	
+	#{if evaluacion.tipo.comentariosSolicitante}
+		#{simple.textarea name:'evaluacion.comentariosSolicitante', label:'Comentarios solicitante', value:messages.Messages.flashOrValue("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante) /}
+	#{/if}
+	
+	<div id="indice">
+		#{if hasCriterios}
+			<h2>Criterios de evaluacion</h2>
+			<ul>
+			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
+				<li><a href="#criterio${tcriterio.jerarquia}">${tcriterio.jerarquia} - ${tcriterio.nombre}</a></li>	
+			#{/list}	
+			</ul>	
+		#{/if}
+		
+		#{if hasCEconomicos}
+			<h2>Conceptos económicos</h2>
+			<ul>	
+			#{list items:evaluacion.tipo.ceconomicos, as:'tceconomico'}
+				<li><a href="#ceconomico${tceconomico.jerarquia}">${tceconomico.jerarquia} - ${tceconomico.nombre}</a></li>	
+			#{/list}
+			</ul>		
+		#{/if}
+	</div>
+		
+#{/fap.grupo}
+
+
+*{
+// Evaluación simple sin mostrar el listado de documentos 
+<div id="Documentos"></div>
+}*
+
+#{if hasCriterios}
+	#{fap.grupo titulo:'Criterios de evaluación', id:'Criterios'}
+	
+	#{list items:evaluacion.criterios, as:'criterio'}
+		%{
+			def paramName  = "criterio[${criterio.id}]"
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",")  
+			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor)
+			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", criterio.comentariosAdministracion);
+			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", criterio.comentariosSolicitante);
+			def tam=500
+		}%
+		
+		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
+			<h2>${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</h2>
+			#{if criterio.tipo.descripcion != null}
+				<div class="clearfix">
+					<p>#{verbatim}${criterio.tipo.descripcion}#{/verbatim}</p>
+				</div>
+			#{/if}
+			
+			#{if criterio.tipo.instrucciones != null}
+				<div class="clearfix">
+					<h3>Instrucciones</h3> 
+					<p>#{verbatim}${criterio.tipo.instrucciones}#{/verbatim}</p>
+				</div>
+			#{/if}
+			
+			#{if criterio.tipo.claseCriterio.equals("auto")}
+				#{simple.uneditable value:valor, ancho: tam/}
+			#{/if}
+
+			#{elseif criterio.tipo.claseCriterio.equals("automod")}
+				
+			#{/elseif}
+			
+			#{elseif criterio.tipo.claseCriterio.equals("manual")}
+				#{if criterio.tipo.tipoValor.equals('lista')}
+					#{simple.select name:paramName + ".valor", options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: criterio.tipo.mostrarValor, ancho: tam/}
+				#{/if}
+				
+				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
+					#{simple.text name:paramName + ".valor", value:valor, error: error, ancho: tam /}
+				#{/elseif}
+			#{/elseif}
+			
+			
+			#{if criterio.tipo.comentariosAdministracion}
+				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion /}
+			#{/if}
+			
+			#{if criterio.tipo.comentariosSolicitante}
+				#{simple.textarea name:paramName + ".comentariosSolicitante", label:'Comentarios solicitante', value: comentariosSolicitante /}
+			#{/if}
+		
+		</div>	
+	#{/list}
+				
+	#{/fap.grupo}
+#{/if}
+
+#{if  hasCEconomicos}
+	#{fap.grupo titulo:'Conceptos económicos', id: 'CEconomicos'}
+	#{list items:evaluacion.ceconomicos, as:'ceconomico'}
+		%{
+			def paramName  = "ceconomico[${ceconomico.id}]";
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+			def valorSolicitado = newValue(paramName + ".valorSolicitado", "Valor Solicitado", ceconomico.valorSolicitado)
+			def valorPropuesto   = newValue(paramName + ".valorPropuesto", "Valor Propuesto", ceconomico.valorPropuesto)
+			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", ceconomico.comentariosAdministracion);
+			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", ceconomico.comentariosSolicitante); 
+		}%
+		
+		<div class="ceconomico" id="ceconomico${ceconomico.tipo.jerarquia}">
+			<h2>${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</h2>
+			
+			#{if criterio.tipo.descripcion != null}
+				<div class="clearfix">
+					<h3>Descripción</h3>
+					<p>#{verbatim}${ceconomico.tipo.descripcion}#{/verbatim}</p>
+				</div>
+			#{/if}
+			
+			#{if criterio.tipo.instrucciones != null}
+				<div class="clearfix">
+					<h3>Instrucciones</h3>
+					<p>#{verbatim}${ceconomico.tipo.instrucciones}#{/verbatim}</p>
+				</div>
+			#{/if}
+			
+			#{simple.text name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error /}
+				
+			#{if ceconomico.tipo.comentariosAdministracion}
+				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion /}
+			#{/if}
+			
+			#{if ceconomico.tipo.comentariosSolicitante}
+				#{simple.textarea name:paramName + ".comentariosSolicitante", label:'Comentarios solicitante', value: comentariosSolicitante /}
+			#{/if}
+		</div>
+		
+	#{/list}
+			
+	#{/fap.grupo}
+#{/if}
+
+
+
+<a style="font-size: 8pt"> Guardar antes de Obtener el borrador en PDF, para que se vean los cambios.</a>
+
+<div class="button_container">
+	<input type="submit" class="boton" name="save" value="&{'baremacion.fichaevaluador.guardar'}">
+	<a href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank" class="boton">Obtener borrador en PDF</a>
+	<input type="submit" class="boton" name="end" value="&{'baremacion.fichaevaluador.end'}">
+</div>
+
+#{/form}
+
+
+*{
+//href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank"
+
+// Evaluación simple sin mostrar el listado de documentos 
+<script>
+Ext.onReady(function() {
+	
+	var data = [
+		#{list items:documentos, as:'documento'}
+			['${documento.tipo}', '${documento.descripcion}', '${documento.urlDescarga}']#{if !documento_isLast},#{/if}
+		#{/list}
+	];
+	
+    var store = Ext.create('Ext.data.ArrayStore', {
+        fields: [
+           {name: 'tipo'},
+		   {name : 'descripcion'},
+		   {name : 'urlDescarga'}
+        ],
+        data: data
+    });
+		    
+    var boton_abrir = new Ext.Button({
+    	text: 'Abrir',
+    	disabled: true,
+    	handler : function(){
+    		var url = grid.getSelectionModel().getSelection()[0].data.urlDescarga;
+    		window.open(url);
+    	}
+    });
+
+   	var grid = new Ext.grid.GridPanel({
+		store : store,
+		columns : [
+			{text:'Tipo', dataIndex:'tipo', sortable:true,width:200}, 
+			{text:'Descripción',dataIndex:'descripcion', sortable:true, flex:true} 
+		],
+		renderTo: 'Documentos',
+		height: 350,
+		title: 'Documentos accesibles para la evaluación',
+		dockedItems: [{
+				itemId: 'barraInferior',
+        		xtype: 'toolbar',
+				dock: 'bottom',
+				items: [{
+						  itemId: 'searchbox',
+        				  width: 300,
+        				  fieldLabel: 'Buscar',
+        				  labelWidth: 50,
+        				  xtype: 'searchfield',
+        				  store: store
+    				     },'->', boton_abrir
+				]
+		}]
+	});
+	
+	function selectionChange(){
+		var hasSelection = grid.getSelectionModel().hasSelection();
+    	boton_abrir.setDisabled(!hasSelection);
+	}
+	grid.addListener("selectionchange", selectionChange);
+	selectionChange();
+});
+</script>
+}*
+#{/fap.messages}
+#{/fap.permiso}
+
+</div>

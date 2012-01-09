@@ -1,0 +1,13 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+#{selenium}
+    // Open the home page, and check that no error occured
+   	open(/Principal/solicitudes)
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='borrador'])
+	
+	mouseOver(//div[text()='1']/parent::td/parent::tr)
+	mouseDown(//div[text()='1']/parent::td/parent::tr)
+    //clickAndWait('ext-gen1051')
+    click(//span[text()="Editar"])
+#{/selenium}

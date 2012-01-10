@@ -177,5 +177,7 @@ Formulario Solicitud {
 	
 	Pagina PermisoNoEditable permiso=noEditable {
 		Wiki {"Esta página es no editable"}	
+		Texto ifTexto titulo="Texto" campo=Solicitud.solicitante.nombreCompleto
+		Boton noHagoNada titulo="No hago Nada"
 	}
 }

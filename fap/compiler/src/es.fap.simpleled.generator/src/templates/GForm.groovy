@@ -106,9 +106,9 @@ public class GForm {
 		if ((entities.size() + saveExtra.size() > 0) && (elementoGramatica instanceof Pagina)) {
 			String nameSaveBoton = "save";
 			saveButtonStr = """
-				<div class="actions button_container">
-					#{fap.boton id:${nameSaveBoton}, titulo:"Guardar", type:"info"/}
-				</div>
+				<!--div class="actions button_container"-->
+					#{fap.boton id:${nameSaveBoton}, titulo:"Guardar", type:"default", fondo:"true"/}
+				<!--/div-->
 			""";
 			tieneBotonSave = true;
 		}

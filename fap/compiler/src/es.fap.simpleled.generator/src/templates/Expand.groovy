@@ -1,5 +1,7 @@
 package templates
 
+import javax.management.InstanceOfQueryExp;
+
 import org.eclipse.emf.ecore.EObject;
 
 import es.fap.simpleled.led.*;
@@ -114,5 +116,8 @@ class Expand {
 		
 		if(object instanceof FirmaPlatinoSimple)
 			return GFirmaPlatinoSimple.generate(object)
+			
+		if(object instanceof AgrupaBotones)
+			return GAgrupaBotones.generate(object)
 	}
 }

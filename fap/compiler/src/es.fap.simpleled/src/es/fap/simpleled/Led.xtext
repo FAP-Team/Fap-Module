@@ -177,7 +177,7 @@ Values:
 
 Elemento:
 	Grupo | AgruparCampos | 
-	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check |
+	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check | AgrupaBotones |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivoAed | EditarArchivoAed | FirmaPlatinoSimple | 
@@ -241,6 +241,12 @@ Enlace:
 Wiki:
 	'Wiki' ('estilo' '=' estilo=STRING)? '{'
 		wikiData+=STRING+
+	'}'
+;
+
+AgrupaBotones:
+	'AgrupaBotones' '{'
+		botones+=Boton+
 	'}'
 ;
 

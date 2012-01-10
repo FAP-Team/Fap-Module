@@ -19,7 +19,7 @@ Formulario Principal {
 		}
 		
 		Form nuevaSolicitud permiso=nuevaSolicitud {
-			Boton nueva titulo="Nueva Solicitud" type=primary
+			Boton nueva titulo="Nueva Solicitud"
 		}
 
 	}

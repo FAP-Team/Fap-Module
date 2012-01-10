@@ -158,7 +158,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Combo campo=Consulta.tipo titulo="Tipo" requerido
 	}
 
-	Pagina Propiedades campo=Propiedades noForm {
+	Pagina Propiedades {
 		Tabla tablaPropiedades titulo="Tabla de properties" campo=Propiedades popup=PopupProperties {
 			Columna campo=Propiedades.descripcion titulo="Descripción"
 			Columna campo=Propiedades.clave titulo="Clave"

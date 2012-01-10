@@ -19,7 +19,7 @@ ${cEconomico.tipo.descripcion}
 		Texto campo=CEconomico.valorEstimado titulo="Valor estimado"
 	}
 
-	Pagina Aportacion permiso=aportacion {
+	Pagina Aportacion {
 		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="boton"
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="boton"
@@ -44,7 +44,7 @@ ${cEconomico.tipo.descripcion}
 		
 	}
 	
-	Pagina DocumentosAportacion campo=SolicitudGenerica.aportaciones.actual.documentos permiso=aportacionDocumentos {
+	Pagina DocumentosAportacion campo=SolicitudGenerica.aportaciones.actual.documentos{
 		Accion crear redirigir=Aportacion	
 		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
@@ -75,15 +75,15 @@ ${cEconomico.tipo.descripcion}
 		Enlace titulo="Volver" pagina=Aportacion estilo="boton"
 	}
 	
-	Popup PopUpDocPresentados titulo="Documentación" campo=Documento {
+	Popup PopUpDocPresentados titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos{
 		EditarArchivoAed documentoPresentado campo=Documento requerido
 	}
 	
-	Popup PopUpDocProcesos titulo="Documentación" campo=Documento {
+	Popup PopUpDocProcesos titulo="Documentación" campo=SolicitudGenerica.aportaciones.actual.documentos{
 		EditarArchivoAed documentoProceso campo=Documento requerido
 	}
 	
-	Popup PopUpDocAportados titulo="Documentación" campo=Documento {
+	Popup PopUpDocAportados titulo="Documentación" campo=SolicitudGenerica.documentacionAportada.documentos {
 		EditarArchivoAed documentoAportado campo=Documento requerido
 	}
 		

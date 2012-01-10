@@ -10,6 +10,10 @@ Formulario Solicitud {
 			Enlace "ErrorCombos" pagina=PaginaCombosError
 		}
 		
+		Grupo "Solicitante" {
+			Enlace "Solicitante" pagina=Solicitante
+		}
+		
 		Grupo "Direccion"{
 			Enlace "Direccion" pagina=Direcciones
 			Enlace "Fecha" pagina=Fechas
@@ -101,6 +105,18 @@ Formulario Solicitud {
 		Combo campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
 	}
 	
+	Pagina Solicitante guardarParaPreparar inicial permiso=solicitudEditable {
+		Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido
+		
+		Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido
+		
+		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido
+		Texto campo=Solicitud.solicitante.telefonoMovil titulo="Teléfono Móvil"
+		Texto campo=Solicitud.solicitante.fax titulo="Fax"
+		Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar
+		Texto campo=Solicitud.solicitante.web titulo="Página web"
+	}
+	
 	Pagina ValoresPorDefecto {
 		Texto mString campo=Solicitud.valoresPorDefectoTest.mString titulo="String"
 		Texto mLong campo=Solicitud.valoresPorDefectoTest.mLong titulo="Long"
@@ -180,5 +196,7 @@ Formulario Solicitud {
 	
 	Pagina PermisoNoEditable permiso=noEditable {
 		Wiki {"Esta página es no editable"}	
+		Texto ifTexto titulo="Texto" campo=Solicitud.solicitante.nombreCompleto
+		Boton noHagoNada titulo="No hago Nada"
 	}
 }

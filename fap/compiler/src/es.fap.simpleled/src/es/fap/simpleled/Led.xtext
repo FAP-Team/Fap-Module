@@ -177,7 +177,7 @@ Values:
 
 Elemento:
 	Grupo | AgruparCampos | 
-	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check |
+	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check | AgrupaBotones |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivoAed | EditarArchivoAed | FirmaPlatinoSimple | 
@@ -244,13 +244,20 @@ Wiki:
 	'}'
 ;
 
+AgrupaBotones:
+	'AgrupaBotones' '{'
+		botones+=Boton+
+	'}'
+;
+
 Boton:
 	'Boton' (name=ID) (
 	 	('titulo' '=' titulo=STRING)
 	    & ('ancho' '=' ancho=STRING)? 
 	    &('popup' '=' popup=[Popup])?
 	    &('pagina' '=' pagina=[Pagina|QN])?
-		& (waitPopup?="waitPopup")?		
+		& (waitPopup?="waitPopup")?	
+		& ('type' '=' type=('default' | 'primary' | 'info' | 'success' | 'danger'))?	
 	)
 ;
 

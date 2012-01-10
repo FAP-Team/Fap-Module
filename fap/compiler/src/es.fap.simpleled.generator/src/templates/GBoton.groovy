@@ -27,7 +27,9 @@ public class GBoton {
             params.putStr "popup", boton.popup.name
 		if (boton.isWaitPopup())
 			params.put "waitPopup", boton.isWaitPopup()
-
+		if (boton.type != null)
+			params.putStr "type", boton.type
+		
 		//params.put "idSolicitud", "idSolicitud"
 			
 		String result = ""
@@ -37,7 +39,7 @@ public class GBoton {
 			enlace.name = (boton.name ?: "")+"IDenlace" 
 			enlace.titulo = result
 			enlace.pagina = boton.pagina
-			enlace.estilo = "boton"
+			enlace.estilo = "btn ${boton.type}"
 			result = Expand.expand(enlace)
 		} 
 		else {

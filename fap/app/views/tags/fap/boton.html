@@ -6,6 +6,8 @@
   	_titulo - Label
   	_ancho	- ancho
   	_popup	- popup
+  	_ type  - tipo del botón (cambia su color)
+  	_fondo  - Se indica que el botón se coloca solo y con el fondo gris 
 }*
 
 %{ 
@@ -25,10 +27,20 @@
 		urlPopup = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
 	}
 	
+	String type = _type 
+	def fondo = _fondo
 }%
 
-	<button type="submit" class="boton" id="${id}" ${disabled} #{if style}style="${style}"#{/if} >${label}</button>
+	#{if fondo}
+		<div class="actions button_container">
+	#{/if}
 	
+	<input type="submit" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+	
+	#{if fondo}
+		</div>
+	#{/if}
+
 	#{if popup}
 	<script>
 		$(function(){

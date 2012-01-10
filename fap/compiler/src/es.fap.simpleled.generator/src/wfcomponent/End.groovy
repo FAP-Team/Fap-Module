@@ -16,7 +16,6 @@ import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowComponent;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
 
 import templates.GEntidad;
-import templates.GPagina
 import templates.GPermiso;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Attribute;
@@ -69,7 +68,8 @@ public class End implements IWorkflowComponent {
 	
 	private void rutas(){
 		def elementos = HashStack.allElements(HashStackName.ROUTES);
-		String content = elementos.collect{it -> it.generateRoutes()}.join('\n');
+		def sortedElementos = elementos.sort{p1, p2 -> p1.getNameRoute().compareToIgnoreCase(p2.getNameRoute())};
+		String content = sortedElementos.collect{it -> it.generateRoutes()}.join('\n');
 		FileUtils.writeInRegion(FileUtils.getRoute('CONF_ROUTES'), content);
 	}
 	

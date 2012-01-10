@@ -10,10 +10,10 @@
         <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
         
 
-        #{stylesheet '960/960-all-min.css'/}
-        #{stylesheet 'jquery-ui.css' /}
         <link rel="stylesheet" href="@{'/public/javascripts/ext/resources/css/ext-all.css'}" />
-        #{stylesheet 'main.css' /}
+        
+        #{stylesheet 'jquery-ui.css' /}
+        #{stylesheet 'bootstrap/bootstrap.less' /}
         #{stylesheet 'fap.less' /}
           
         #{get 'moreStyles' /}
@@ -22,6 +22,9 @@
         #{script src:"jquery/jquery-ui.1.8.10.min.js" /}
         #{script src:"jquery/jquery.ui.datepicker-es.js" /}
         
+        #{script src:"bootstrap/bootstrap-alerts.js" /}
+        #{script src:"bootstrap/bootstrap-modal.js" /}
+        #{script src:"bootstrap/bootstrap-dropdown.js" /}
         
         #{script 'ext/ext-all.js' /}
         #{script 'ext/form/SearchFieldFilter.js' /}
@@ -46,39 +49,38 @@
                	
     </head>
     <body>
-    	<div class="wrapper container_12">
-			<div id="header" class="grid_12">
+    
+    	<div class="container contenido">
+    		<div class="content">
+    	
+			<div class="row">
 			
-				<div id="logoAciisi">
+				<div id="logoAciisi" class="span8">
 					<a href="@{SolicitudesController.index}" title="&{play.configuration.get('fap.app.name', 'Sin Nombre')}">
 						<img src="@{'/public/images/aciisi_gris.gif'}" width="185px" height="75px"/>
 					</a>
 				</div>	
 			
-				<div id="banderaue">
+				<div id="banderaue" class="span8">
 					<img src="@{'/public/images/logo_ue.gif'}" width="147px" height="64px"/>
 				</div>
 			
 	    	</div>
-	    	
-	    	
-	    	<div class="clear"></div>
-	    	
-	    	<div class="cabeceraUsuario">
-				#{if cabeceraUsuario}
-					<div class="grid_12 getCabeceraUsuario">
-						#{get 'cabeceraUsuario' /}
-					</div>
-				#{/if}
-				#{if cabeceraUsuario == null}
-					%{
-						l : {
-						def agente = controllers.fap.AgenteController.getAgente();
-						def user = null;
-						if (agente != null)
-							user = agente.name ?: agente.username
-					%}	
-					<div class="migas grid_8">
+	 
+	 <div class="topbar-wrapper" style="z-index: 5;">
+	 <div class="topbar">
+	 <div class="topbar-inner" data-dropdown="dropdown">
+        <div class="container">
+         #{if cabeceraUsuario == null}
+         	%{
+				l : {
+					def agente = controllers.fap.AgenteController.getAgente();
+					def user = null;
+					if (agente != null)
+						user = agente.name ?: agente.username
+			%}	
+         
+          <h3><a href="#">
 						#{if user != null}
 							#{if solicitud != null}
 								#{fap.breadcrumbs solicitud:solicitud.id, title:title, user:user /}
@@ -89,58 +91,72 @@
 						#{/if}
 						#{else}
 							#{fap.breadcrumbs title:title/}
-						#{/else}
-					</div>
-					
-					<div class="rol grid_4">
+						#{/else}</a></h3>
+         
+          <ul class="nav secondary-nav">
+            #{form @fap.SecureController.changeRol(), id:"changeRolForm2"}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle">${models.TableKeyValue.getValue("roles", agente.rolActivo)}</a>
+              <input type="hidden" name="url" value="${request.url}">
+              <ul class="dropdown-menu">
+				#{list items:agente.sortRoles, as:'entry'}
+				%{def selected = entry.equals(agente.rolActivo)? 'selected="selected"' : ''%}
+				#{ifnot entry.equals(agente.rolActivo)}
+					<input type="hidden" name="rol" value="${entry}">
+					<li><a onclick="$('#changeRolForm2').submit()">${models.TableKeyValue.getValue("roles", entry)}</a></li>
+				#{/ifnot}
+				#{/list}
+				<li class="divider"></li>
+				<li>
+            		#{a @fap.SecureController.logout()}&{'fap.header.logout'}#{/a}
+            	</li>
+              </ul>
+            </li>
+            #{/form}
+          </ul>
 
-						#{if agente != null}
-							#{if agente.roles.size() > 1}
-								#{form @fap.SecureController.changeRol(), id:"changeRolForm"}
-								<input type="hidden" name="url" value="${request.url}">
-								&{'fap.header.rol'}
-									<select id="listaRoles" name="rol" size="1">
-										#{list items:agente.sortRoles, as:'entry'}
-										%{def selected = entry.equals(agente.rolActivo)? 'selected="selected"' : ''%}
-										<option value="${entry}" ${selected}>${models.TableKeyValue.getValue("roles", entry)}</option>
-										#{/list}
-									</select>
-								#{/form}
-							#{/if}
-							#{a @fap.SecureController.logout()}&{'fap.header.logout'}#{/a}
-						#{/if}
-					%{	
-						}
-					%}	
-					</div>
-				#{/if}
-			</div>
+			%{	
+					}
+			%}
+		#{/if}
+            	
+        </div>
+      </div><!-- /topbar-inner -->
+      </div>
+      </div>
+	 
+	 
 	    				
+	    	<div class="row">			
 			#{if menu != null}
-				<div class="menuAndContent grid_12">
-					<div class="menu grid_3 alpha">
+				<div class="span16">
+					<div class="row">
+					<div class="menu span3 alpha">
 					#{get 'menu'/}
 					</div>
-					<div id="content" class="grid_7 omega ">
+					<div id="content" class="span13 omega ">				
 						#{doLayout /}
+					</div>
 					</div>
 					<div class="clear"></div>
 				</div>
 			#{/if}
 			#{else}
-				<div id="content" class="grid_12">
+				<div id="content" class="span16">
 					#{doLayout /}
 				</div>
 			#{/else}
+			</div>
 
 			<div class="clear"></div>
-	    </div>
-		
-	
-		<div class="footer">
-			©Gobierno de Canarias - <a href="http://www.gobiernodecanarias.org/avisolegal.html">Aviso Legal </a>
+			
+			<footer>
+				©Gobierno de Canarias - <a href="http://www.gobiernodecanarias.org/avisolegal.html">Aviso Legal </a>
+			</footer>
+			
 		</div>
 		
+		</div>
 		
 		<script type="text/javascript">			
         	$(function(){

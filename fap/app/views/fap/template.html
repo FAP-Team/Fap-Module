@@ -11,13 +11,10 @@
         
 
         <link rel="stylesheet" href="@{'/public/javascripts/ext/resources/css/ext-all.css'}" />
-        <!--#{stylesheet 'main.css' /}
-        #{stylesheet 'fap.less' /}-->
         
         #{stylesheet 'jquery-ui.css' /}
-        #{stylesheet 'bootstrap.css' /}
         #{stylesheet 'bootstrap/bootstrap.less' /}
-        #{stylesheet 'jorge.less' /}
+        #{stylesheet 'fap.less' /}
           
         #{get 'moreStyles' /}
         
@@ -27,6 +24,7 @@
         
         #{script src:"bootstrap/bootstrap-alerts.js" /}
         #{script src:"bootstrap/bootstrap-modal.js" /}
+        #{script src:"bootstrap/bootstrap-dropdown.js" /}
         
         #{script 'ext/ext-all.js' /}
         #{script 'ext/form/SearchFieldFilter.js' /}
@@ -68,22 +66,21 @@
 				</div>
 			
 	    	</div>
-	    	
-	    	<div class="row cabeceraUsuario">
-				#{if cabeceraUsuario}
-					<div class="span16">
-						#{get 'cabeceraUsuario' /}
-					</div>
-				#{/if}
-				#{if cabeceraUsuario == null}
-					%{
-						l : {
-						def agente = controllers.fap.AgenteController.getAgente();
-						def user = null;
-						if (agente != null)
-							user = agente.name ?: agente.username
-					%}	
-					<div class="migas span8">
+	 
+	 <div class="topbar-wrapper" style="z-index: 5;">
+	 <div class="topbar">
+	 <div class="topbar-inner" data-dropdown="dropdown">
+        <div class="container">
+         #{if cabeceraUsuario == null}
+         	%{
+				l : {
+					def agente = controllers.fap.AgenteController.getAgente();
+					def user = null;
+					if (agente != null)
+						user = agente.name ?: agente.username
+			%}	
+         
+          <h3><a href="#">
 						#{if user != null}
 							#{if solicitud != null}
 								#{fap.breadcrumbs solicitud:solicitud.id, title:title, user:user /}
@@ -94,33 +91,40 @@
 						#{/if}
 						#{else}
 							#{fap.breadcrumbs title:title/}
-						#{/else}
-					</div>
-					
-					
-					<div class="rol span7">
+						#{/else}</a></h3>
+         
+          <ul class="nav secondary-nav">
+            #{form @fap.SecureController.changeRol(), id:"changeRolForm2"}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle">${models.TableKeyValue.getValue("roles", agente.rolActivo)}</a>
+              <input type="hidden" name="url" value="${request.url}">
+              <ul class="dropdown-menu">
+				#{list items:agente.sortRoles, as:'entry'}
+				%{def selected = entry.equals(agente.rolActivo)? 'selected="selected"' : ''%}
+				#{ifnot entry.equals(agente.rolActivo)}
+					<input type="hidden" name="rol" value="${entry}">
+					<li><a onclick="$('#changeRolForm2').submit()">${models.TableKeyValue.getValue("roles", entry)}</a></li>
+				#{/ifnot}
+				#{/list}
+				<li class="divider"></li>
+				<li>
+            		#{a @fap.SecureController.logout()}&{'fap.header.logout'}#{/a}
+            	</li>
+              </ul>
+            </li>
+            #{/form}
+          </ul>
 
-						#{if agente != null}
-							#{if agente.roles.size() > 1}
-								#{form @fap.SecureController.changeRol(), id:"changeRolForm"}
-								<input type="hidden" name="url" value="${request.url}">
-								&{'fap.header.rol'}
-									<select id="listaRoles" name="rol" size="1">
-										#{list items:agente.sortRoles, as:'entry'}
-										%{def selected = entry.equals(agente.rolActivo)? 'selected="selected"' : ''%}
-										<option value="${entry}" ${selected}>${models.TableKeyValue.getValue("roles", entry)}</option>
-										#{/list}
-									</select>
-								#{/form}
-							#{/if}
-							#{a @fap.SecureController.logout()}&{'fap.header.logout'}#{/a}
-						#{/if}
-					%{	
-						}
-					%}	
-					</div>
-				#{/if}
-			</div>
+			%{	
+					}
+			%}
+		#{/if}
+            	
+        </div>
+      </div><!-- /topbar-inner -->
+      </div>
+      </div>
+	 
 	 
 	    				
 	    	<div class="row">			

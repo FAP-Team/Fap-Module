@@ -2,14 +2,41 @@
  * Repeatable UI elements outside the base styles provided from the scaffolding
  * ---------------------------------------------------------------------------- */
 
+@letra: #003366;
+@fondo: #DCE8F4;
+@fondoOscuro: #CBD7E3;
+@fondoMasOscuro: #BAC6D2;
+@rojo: #FF0000;
+
+// Jorge
+.row {
+  zoom: 1;
+  margin-left: -20px;
+}
+.row:before, .row:after {
+  display: table;
+  content: "";
+  zoom: 1;
+}
+.row:after {
+  clear: both;
+}
+.row > [class*="span"] {
+  display: inline;
+  float: left;
+  margin-left: 20px;
+}
+
 
 // TOPBAR
 // ------
 
 // Topbar for Branding and Nav
 .topbar {
+	margin-top:10px;
+  margin-bottom: 20px;
   height: 40px;
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   right: 0;
@@ -18,8 +45,9 @@
 
   // Links get text shadow
   a {
-    color: @grayLight;
-    text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+    color: @letra;
+    //margin-top: 8px;
+    text-shadow: 0 -1px 0 rgba(255,255,255,.25);
   }
 
   // Hover and active states
@@ -29,7 +57,7 @@
   ul .active > a {
     background-color: #333;
     background-color: rgba(255,255,255,.05);
-    color: @white;
+    color: @letra;
     text-decoration: none;
   }
 
@@ -42,11 +70,11 @@
   .brand {
     float: left;
     display: block;
-    padding: 8px 20px 12px;
-    margin-left: -20px; // negative indent to left-align the text down the page
-    color: @white;
-    font-size: 20px;
-    font-weight: 200;
+    padding: 15px 20px 12px;
+    margin-left: 0px; // negative indent to left-align the text down the page
+    color: @letra;
+    font-size: 80%;
+    //font-weight: 200;
     line-height: 1;
   }
 
@@ -56,7 +84,7 @@
     line-height: 40px;
     a:hover {
       background-color: transparent;
-      color: @white;
+      color: @letra;
     }
   }
 
@@ -115,8 +143,9 @@
 // For backwards compatibility, include .topbar .fill
 .topbar-inner,
 .topbar .fill {
-  background-color: #222;
-  #gradient > .vertical(#333, #222);
+  height: 40px;
+  background-color: @fondo;
+  #gradient > .vertical(@fondo, @fondo);
   @shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
   .box-shadow(@shadow);
 }
@@ -146,8 +175,8 @@
     line-height: 19px;
     text-decoration: none;
     &:hover {
-      color: @white;
-      text-decoration: none;
+      color: @letra;
+      text-decoration: underline;
     }
   }
   .active > a {
@@ -160,6 +189,7 @@
     float: right;
     margin-left: 10px;
     margin-right: 0;
+    height: 40px;
     // backwards compatibility
     .menu-dropdown,
     .dropdown-menu {
@@ -173,36 +203,36 @@
   li.open .menu,
   .dropdown-toggle:hover,
   .dropdown.open .dropdown-toggle {
-    background: #444;
-    background: rgba(255,255,255,.05);
+    background: @letra;
+    background: @fondoOscuro; //rgba(255,255,255,.05);
   }
   // .menu-dropdown for backwards compatibility
   .menu-dropdown,
   .dropdown-menu {
-    background-color: #333;
+    background-color: @fondoOscuro;
     // a.menu for backwards compatibility
     a.menu,
     .dropdown-toggle {
-      color: @white;
+      color: @letra;
       &.open {
         background: #444;
-        background: rgba(255,255,255,.05);
+        background: @fondo; //rgba(255,255,255,.05);
       }
     }
     li a {
-      color: #999;
-      text-shadow: 0 1px 0 rgba(0,0,0,.5);
+      color: @letra;
+      text-shadow: 0 1px 0 rgba(255,255,255,.5);
       &:hover {
-        #gradient > .vertical(#292929,#191919);
-        color: @white;
+        #gradient > .vertical(@fondoMasOscuro,@fondoMasOscuro);
+        color: @letra;
       }
     }
     .active a {
-      color: @white;
+      color: @letra;
     }
     .divider {
-      background-color: #222;
-      border-color: #444;
+      background-color: @fondoMasOscuro;
+      border-color: @fondoMasOscuro;
     }
   }
 }
@@ -219,6 +249,7 @@
 li.menu,
 .dropdown {
   position: relative;
+  margin-top: -4px;
 }
 // The link that is clicked to toggle the dropdown
 // a.menu for backwards compatibility
@@ -227,15 +258,15 @@ a.menu:after,
   width: 0;
   height: 0;
   display: inline-block;
-  content: "&darr;";
+  content: '&darr;';
   text-indent: -99999px;
   vertical-align: top;
   margin-top: 8px;
   margin-left: 4px;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 4px solid @white;
-  .opacity(50);
+  border-top: 4px solid @letra;
+  //.opacity(50);
 }
 // The dropdown menu (ul)
 // .menu-dropdown for backwards compatibility
@@ -245,7 +276,7 @@ a.menu:after,
   float: left;
   display: none; // None by default, but block on "open" of the menu
   position: absolute;
-  top: 40px;
+  top: 34px;
   z-index: 900;
   min-width: 160px;
   max-width: 220px;
@@ -295,7 +326,7 @@ a.menu:after,
       #gradient > .vertical(#eeeeee, #dddddd);
       color: @grayDark;
       text-decoration: none;
-      @shadow: inset 0 1px 0 rgba(0,0,0,.025), inset 0 -1px rgba(0,0,0,.025);
+      @shadow: inset 0 1px 0 rgba(255,255,255,.025), inset 0 -1px rgba(255,255,255,.025);
       .box-shadow(@shadow);
     }
   }
@@ -308,9 +339,9 @@ a.menu:after,
   // .menu for backwards compatibility
   .menu,
   .dropdown-toggle {
-    color: @white;
+    color: @letra;
     background: #ccc;
-    background: rgba(0,0,0,.3);
+    background: @fondo; //rgba(0,0,0,.3);
   }
   // .menu-dropdown for backwards compatibility
   .menu-dropdown,
@@ -457,7 +488,7 @@ a.menu:after,
   }
   .divider {
     padding: 0 5px;
-    color: @grayLight;
+    color: @letra;
   }
   .active a {
     color: @grayDark;

@@ -100,7 +100,7 @@ public class InformeController extends GenericController {
 	
 	
 	public static void exportarPdf(List<String> campos,List<Integer> valores){
-		Documentos.enviarDocumentoSimple("informes/informe.html", "Informe", campos, valores);
+		Documentos.enviarDocumentoSimple("reports/informe.html", "Informe", campos, valores);
 	}
 	
 }

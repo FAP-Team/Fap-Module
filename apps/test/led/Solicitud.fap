@@ -20,7 +20,7 @@ Formulario Solicitud {
 		}
 	
 		Grupo "SubirArchivo" {
-			Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest 
+			Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
 		}
 		
 		Grupo "Pagina del módulo"{
@@ -46,16 +46,16 @@ Formulario Solicitud {
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 		
-	Pagina Fechas {
+	Pagina Fechas campo=Solicitud{
 		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" requerido
 		Fecha campo=Solicitud.fechas.fecha titulo="Fecha" requerido
 	}
 	
-	Pagina Direcciones {
+	Pagina Direcciones campo=Solicitud{
 		Direccion campo=Solicitud.direccionTest.direccion
 	}
 	
-	Pagina Combos inicial {
+	Pagina Combos inicial campo=Solicitud{
 
 		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"
@@ -70,7 +70,7 @@ Formulario Solicitud {
 		}
 	}
 
-	Pagina CombosOverwrite {
+	Pagina CombosOverwrite campo=Solicitud{
 		
 		Grupo titulo="Combos sobreescritos en el controlador manual" {
 			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)"
@@ -94,14 +94,14 @@ Formulario Solicitud {
 		Texto campo=ComboTestRef.nombre
 	}
 	
-	Pagina PaginaCombosError {
+	Pagina PaginaCombosError campo=Solicitud{
 		Wiki { "Error en los combos. Debe autocompletar los combos elegidos desde flash al estar el campo de texto vacío." }
 		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
 		Combo campo=Solicitud.comboError comboTexto=nombre titulo="Error del combo"
 		Combo campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
 	}
 	
-	Pagina ValoresPorDefecto {
+	Pagina ValoresPorDefecto campo=Solicitud{
 		Texto mString campo=Solicitud.valoresPorDefectoTest.mString titulo="String"
 		Texto mLong campo=Solicitud.valoresPorDefectoTest.mLong titulo="Long"
 		Texto mInteger campo=Solicitud.valoresPorDefectoTest.mInteger titulo="Integer"
@@ -114,7 +114,7 @@ Formulario Solicitud {
 		Texto mEmbeddable campo=Solicitud.valoresPorDefectoTest.mEmbebida.algo titulo="String embeddable" 
 	}
 	
-	Pagina TablasSimples {
+	Pagina TablasSimples campo=Solicitud{
 		Tabla tablaNombres campo=Solicitud.tablaDeNombres titulo="Solicitantes"
 		popupCrear=popupNombre
 		popupVer=popupNombre
@@ -135,7 +135,7 @@ Formulario Solicitud {
 		
 	}
 	
-	Popup popupNombre2 campo=Solicitud.peta crear modificar borrar ver {
+	Popup popupNombre2 campo=Solicitud.peta {
 		Texto campo=Peta.n titulo="Nombre"
 		Texto campo=Peta.d titulo="Apellido"
 		Texto campo=Peta.otro titulo="Otro contacto"
@@ -144,19 +144,23 @@ Formulario Solicitud {
 	}
 	
 	
-	Popup popupNombre campo=Solicitud.tablaDeNombres crear modificar borrar ver {
+	Popup popupNombre campo=Solicitud.tablaDeNombres {
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 	
-	Pagina SubirArchivoAedTest noForm {
-		Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
-			SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite" //aportadoPor="Ciudadano"
-			Boton subirDocumento titulo="Añadir documentación"
-		}		
+	Pagina Documentos campo=Solicitud.documentacion.documentos  permiso=aportacionDocumentos {
+		Accion crear redirigir=SubirArchivoAedTest	
+		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
 	
-	Pagina EjemplosdeGrupos {
+	Pagina SubirArchivoAedTest campo=Solicitud{
+		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos{
+			Columna campo=Documento.id
+		}	
+	}
+	
+	Pagina EjemplosdeGrupos campo=Solicitud{
 		Grupo testMostrarSiExpresion titulo="Grupo 1: Mostrar Si Expression" mostrarSiExpresion "4 == 4"{
 			Texto ifTexto titulo="Texto" campo=Solicitud.testGrupo.nombre
  		}
@@ -167,18 +171,18 @@ Formulario Solicitud {
 	}
 
 
-	Pagina PermisoPagina permiso=administrador{
+	Pagina PermisoPagina campo=Solicitud permiso=administrador{
 		Wiki {"Si puedes ver esta página tienes que ser administrador."}
 	}
 	
-	Pagina PermisoGrupo permiso=administrador {
+	Pagina PermisoGrupo campo=Solicitud permiso=administrador {
 		Wiki {"La página tiene un grupo que es sólo visible para administradores"}
 		Grupo permiso=administrador {
 			Wiki {"Este grupo es sólo visible para administradores"}	
 		}
 	}
 	
-	Pagina PermisoNoEditable permiso=noEditable {
+	Pagina PermisoNoEditable campo=Solicitud permiso=noEditable {
 		Wiki {"Esta página es no editable"}	
 	}
 }

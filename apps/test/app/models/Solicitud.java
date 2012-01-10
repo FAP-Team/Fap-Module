@@ -120,11 +120,7 @@ public class Solicitud extends SolicitudGenerica {
 						
 	}
 		
-	
-		
-		public void savePagesPrepared () {
-			}
-			
+	public void savePagesPrepared () {}
 
 // === MANUAL REGION START ===
 		public Solicitud(Agente agente) {

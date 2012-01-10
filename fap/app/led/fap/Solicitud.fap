@@ -30,7 +30,7 @@ ${cEconomico.tipo.descripcion}
 			popupBorrar=PopUpDocProcesos
 			popupModificar=PopUpDocProcesos  
 			popupVer=PopUpDocProcesos
-			paginaCrear=Documentos
+			paginaCrear=DocumentosAportacion
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
 			Columna campo=Documento.descripcion titulo="Tipo" expandir
@@ -44,7 +44,7 @@ ${cEconomico.tipo.descripcion}
 		
 	}
 	
-	Pagina Documentos campo=SolicitudGenerica.aportaciones.actual.documentos permiso=aportacionDocumentos {
+	Pagina DocumentosAportacion campo=SolicitudGenerica.aportaciones.actual.documentos permiso=aportacionDocumentos {
 		Accion crear redirigir=Aportacion	
 		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}

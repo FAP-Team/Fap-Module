@@ -22,7 +22,7 @@
 // Styled patterns and elements
 @import "type.less";
 @import "forms.less";
-@import "tables.less";
+//@import "tables.less";
 @import "patterns.less";
 
 
@@ -34,6 +34,6 @@
 	padding: 0px;
 }
 // Ocultar la fila vacía (crea siempre una fila vacía)
-.x-grid-table tbody tr:first-of-type th {
-	display: none;
+.x-grid-table tbody tr:first-child {
+	display: collapse;
 }

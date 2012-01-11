@@ -102,7 +102,7 @@ Formulario Solicitud {
 		Wiki { "Error en los combos. Debe autocompletar los combos elegidos desde flash al estar el campo de texto vacío." }
 		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
 		Combo campo=Solicitud.comboError comboTexto=nombre titulo="Error del combo"
-		Combo campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
+		Combo nombre campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
 	}
 	
 	Pagina Solicitante guardarParaPreparar inicial permiso=solicitudEditable {
@@ -179,6 +179,12 @@ Formulario Solicitud {
  		
  		Grupo test2MostrarSiExpresion titulo="Grupo 1: Mostrar Campo" mostrarSiCampo Solicitud.solicitante.email = "pepe@pepe.com", "juan@juan.com" {
 			Texto if2Texto titulo="Texto" campo=Solicitud.testGrupo.nombre
+ 		}
+ 		
+ 		Combo comboMostrarSi campo=Solicitud.comboTest.list titulo="Prueba para mostrarSiCombo"
+ 		
+ 		Grupo titulo="Grupo 1: Mostrar Si Combo" mostrarSiCombo comboMostrarSi = "a"{
+ 			Wiki {"El combo tiene un valor seleccionado igual a 'A'"}
  		}
 	}
 

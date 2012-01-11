@@ -33,8 +33,9 @@
 	if (errores)
 		styleRow = "error";
 }%
-<div class="clearfix ${styleRow}">
+
 #{if visible && !labelRight}
+<div class="clearfix ${styleRow}">
 <!--div class="span4" style="${style}"-->
 	<label for="${id}" style="${styleLabel}">${label}
 		#{if requerido}
@@ -42,9 +43,10 @@
 		#{/if}
 	</label>
 <!--/div-->
+<div class="input">
 #{/if}
 
-<div class="input">	
+
 #{doBody /}
 
 #{if visible && labelRight}
@@ -54,14 +56,17 @@
 			<span class="required">*</span>
 		#{/if}
 	</label>
+	<div class="input">
 #{/if}
 
 #{if visible}	
 		#{if errores}
 			<span class="help-inline">${errores}</span>
 		#{/if}
-		#{fap.ayuda ayuda:ayuda, id:id_help /} 
+		#{fap.ayuda ayuda:ayuda, id:id_help /}
+</div> 
+</div>
 #{/if}
-</div>
-</div>
+
+
 

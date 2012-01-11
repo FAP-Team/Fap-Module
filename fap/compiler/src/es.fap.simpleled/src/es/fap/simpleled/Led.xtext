@@ -245,7 +245,8 @@ Wiki:
 ;
 
 AgrupaBotones:
-	'AgrupaBotones' '{'
+	'AgrupaBotones' (type=('normal' | 'well'))?
+	'{'
 		botones+=Boton+
 	'}'
 ;
@@ -257,7 +258,7 @@ Boton:
 	    &('popup' '=' popup=[Popup])?
 	    &('pagina' '=' pagina=[Pagina|QN])?
 		& (waitPopup?="waitPopup")?	
-		& ('type' '=' type=('default' | 'primary' | 'info' | 'success' | 'danger'))?	
+		& ('type' '=' type=('default' | 'primary' | 'info' | 'success' | 'danger'))?
 	)
 ;
 

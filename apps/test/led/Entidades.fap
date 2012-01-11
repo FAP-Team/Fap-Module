@@ -60,6 +60,7 @@ Entidad ComboTest {
 
 Entidad ComboTestRef {
 	String nombre
+	Lista ComboTestList list
 }
 
 Entidad ValoresPorDefectoTest {

@@ -91,10 +91,13 @@ Formulario Solicitud {
 		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRef titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
 			Columna campo=ComboTestRef.id
 			Columna campo=ComboTestRef.nombre expandir
+			
 		}
 	}
 
 	Popup ComboTestRef campo=ComboTestRef {
+		Texto campo=ComboTestRef.nombre
+		Combo campo=ComboTestRef.list titulo="Combo"
 		Texto campo=ComboTestRef.nombre
 	}
 	
@@ -166,9 +169,11 @@ Formulario Solicitud {
 	}
 	
 	Pagina SubirArchivoAedTest noForm {
-		Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
-			SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite" //aportadoPor="Ciudadano"
-			Boton subirDocumento titulo="Añadir documentación"
+		Grupo titulo="Añadir Documentación" {
+			Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
+				SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite" //aportadoPor="Ciudadano"
+				Boton subirDocumento titulo="Añadir documentación"
+			}
 		}		
 	}
 	

@@ -12,6 +12,7 @@ public class GAgrupaBotones {
 	
 	AgrupaBotones agrupaB;
 	
+	
 	public static String generate(AgrupaBotones grupoBotones){
 		GAgrupaBotones g = new GAgrupaBotones();
 		g.agrupaB = grupoBotones;
@@ -19,8 +20,11 @@ public class GAgrupaBotones {
 	}
 
     public String view(){
+		String clazz = "actions button_container";
+		if (agrupaB.type == "well")
+			clazz = "well";
 		String result = ""
-		result += """<div class="actions button_container">
+		result += """<div class="${clazz}">
 		"""
 		for (Boton b : agrupaB.botones) {
 			result += GBoton.generate(b);

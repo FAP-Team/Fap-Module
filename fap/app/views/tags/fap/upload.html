@@ -2,28 +2,10 @@
 	id = _id;
 %}
 
-<div class="formrow">
-	<input class="file" disabled="disabled">
-	<div class="upload">
-		<input id='${id}' name='${id}' type='file'>
-	</div>
+<div class="clearfix">
+<label for="${id}">Fichero</label>
+<div class="input">
+	<input class="input-file" id='${id}' name='${id}' type='file'>
 </div>
-
-<script>
-	$(document).ready(function(){
-		var self = $('#${id}');
-		if ($.browser.mozilla) {
-            if (/Win/.test(navigator.platform)) {
-                $(self).css("margin-left", "-142px");                    
-            } else {
-                $(self).css("margin-left", "-168px");                    
-            };
-        };
-        
-        $(self).bind("change", function() {
-            $(".file").val($(self).val());
-        });
-  
-	});
-</script>
+</div>
 

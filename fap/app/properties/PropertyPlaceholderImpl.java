@@ -1,5 +1,7 @@
 package properties;
 
+import javax.inject.Singleton;
+
 
 /**
  * Wrapper para inyectar las properties
@@ -8,6 +10,7 @@ package properties;
  * testear de forma mas fácil sin añadir tantas dependencias
  * 
  */
+@Singleton
 public class PropertyPlaceholderImpl implements PropertyPlaceholder {
 
 	@Override

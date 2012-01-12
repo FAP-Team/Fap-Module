@@ -47,6 +47,10 @@ import es.gobcan.eadmon.procedimientos.ws.dominio.Tramite;
 import es.gobcan.eadmon.procedimientos.ws.servicios.ObtenerTramite;
 import es.gobcan.eadmon.verificacion.ws.dominio.ListaDocumentosVerificacion;
 
+/**
+ * @deprecated Utilizar tiposDocumentoService o procedimientosService con la nueva forma de inyectar dependencias
+ */
+@Deprecated
 public class TiposDocumentosClient {
 
 	private static TiposDocumentosInterface tipos;
@@ -69,7 +73,6 @@ public class TiposDocumentosClient {
 		bpProcedimientos.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, FapProperties.get("fap.aed.procedimientos.url"));
 		
 		PlatinoProxy.setProxy(procedimientos);
-		
 	}
 
 	public static String getVersion() throws Exception {

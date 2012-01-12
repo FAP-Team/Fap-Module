@@ -47,6 +47,7 @@ POST /Solicitud/valorespordefecto/save ValoresPorDefectoController.save
 GET /Solicitud/tablassimples TablasSimplesController.index
 
 GET /Solicitud/tablassimples/tablaNombres TablasSimplesController.tablatablaNombres
+GET /Solicitud/tablassimples/tablaNombres2 TablasSimplesController.tablatablaNombres2
 POST /Solicitud/tablassimples/save TablasSimplesController.save
 GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
 
@@ -68,6 +69,12 @@ POST /Solicitud/combotestref/{idEntidad}/editar popups.ComboTestRefController.ed
 POST /Solicitud/combotestref/{idEntidad}/borrar popups.ComboTestRefController.borrar
 POST /Solicitud/combotestref/{idEntidad}/crear popups.ComboTestRefController.crear
 POST /Solicitud/combotestref/{idEntidad}/cancelarcrear popups.ComboTestRefController.cancelarCrear
+
+GET /Solicitud/popupnombre2/{idEntidad}/abrir popups.popupNombre2Controller.abrir
+POST /Solicitud/popupnombre2/{idEntidad}/editar popups.popupNombre2Controller.editar
+POST /Solicitud/popupnombre2/{idEntidad}/borrar popups.popupNombre2Controller.borrar
+POST /Solicitud/popupnombre2/{idEntidad}/crear popups.popupNombre2Controller.crear
+POST /Solicitud/popupnombre2/{idEntidad}/cancelarcrear popups.popupNombre2Controller.cancelarCrear
 
 GET /Solicitud/popupnombre/{idEntidad}/abrir popups.popupNombreController.abrir
 POST /Solicitud/popupnombre/{idEntidad}/editar popups.popupNombreController.editar

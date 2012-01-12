@@ -55,9 +55,14 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
+
+#Ficheros temporales
+apps/test/tmp/*
+fap/tmp/*
+
 # Listas
 apps/test/app/listas/gen/*
-apps/test/tmp/*
+
 
 fap/app/controllers/gen/*
 fap/app/secure/gen/*

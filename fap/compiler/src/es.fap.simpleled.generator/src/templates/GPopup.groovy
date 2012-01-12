@@ -348,6 +348,8 @@ import java.util.HashMap;
 import security.Secure;
 import javax.inject.Inject;
 
+import services.*;
+
 public class ${controllerGenName()} extends GenericController {
 
 	@Inject

@@ -167,6 +167,7 @@ public class GPagina {
 
 			import security.Secure;
 			import javax.inject.Inject;
+			import services.*;
 
 			${withControlador}
 			public class ${controllerGenName()} extends ${controladorPadre} {

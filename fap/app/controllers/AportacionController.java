@@ -3,6 +3,8 @@ package controllers;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
 import aed.AedClient;
 
 import messages.Messages;
@@ -11,15 +13,20 @@ import models.Documento;
 import models.SolicitudGenerica;
 
 import play.Logger;
+import play.modules.guice.InjectSupport;
 import play.mvc.Util;
 import properties.FapProperties;
 import reports.Report;
+import services.AedService;
 import utils.StringUtils;
 import controllers.gen.AportacionControllerGen;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 			
 public class AportacionController extends AportacionControllerGen {
-
+	
+	@Inject
+	static AedService aedService;
+	
 	public static void index(Long idSolicitud){
 		Documento documento = getDocumento();
 		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
@@ -63,8 +70,8 @@ public class AportacionController extends AportacionControllerGen {
 						aportacion.save();
 						
 						try {
-							AedClient.borrarDocumento(borradorOld);
-							AedClient.borrarDocumento(oficialOld);
+							aedService.borrarDocumento(borradorOld);
+							aedService.borrarDocumento(oficialOld);
 						}catch(AedExcepcion e){
 							//Error? no importa, son temporales...
 							play.Logger.info("Error borrando los documento temporales desde el aed");
@@ -74,13 +81,13 @@ public class AportacionController extends AportacionControllerGen {
 						File borrador = new Report("reports/solicitudAportacion.html").header("reports/header.html").footer("reports/footer-borrador.html").renderTmpFile(solicitud);
 						aportacion.borrador = new Documento();
 						aportacion.borrador.tipo = tipoDocumentoSolicitudAportacion;
-						AedClient.saveDocumentoTemporal(aportacion.borrador, borrador);
+						aedService.saveDocumentoTemporal(aportacion.borrador, borrador);
 												
 						//Genera el documento oficial
 						File oficial =  new Report("reports/solicitudAportacion.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
 						aportacion.oficial = new Documento();
 						aportacion.oficial.tipo = tipoDocumentoSolicitudAportacion;
-						AedClient.saveDocumentoTemporal(aportacion.oficial, oficial);
+						aedService.saveDocumentoTemporal(aportacion.oficial, oficial);
 						
 						
 						aportacion.estado = "borrador";

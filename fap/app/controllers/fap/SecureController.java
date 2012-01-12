@@ -280,10 +280,22 @@ public class SecureController extends GenericController{
     static void redirectToOriginalURL() throws Throwable {
         String url = flash.get("url");
         if(url == null) {
-            url = "/";
+            url = getDefaultRoute(); 
         }
         redirect(url);
     }
+
+    private static String getDefaultRoute(){
+        String defaultRoute = null;
+        String httpPath = Play.configuration.getProperty("http.path", null);
+        if(httpPath != null){
+            defaultRoute = httpPath + "/";
+        }else{
+        	defaultRoute = "/";
+        }
+        return defaultRoute;
+    }
+    
     
     /**
      * Cambia el rol del usuario

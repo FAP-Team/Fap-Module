@@ -30,6 +30,12 @@ public class GBoton {
 		if (boton.type != null)
 			params.putStr "type", boton.type
 		
+		if (boton.ayuda != null) {
+			if ((boton.tipoAyuda != null) && (boton.tipoAyuda.type.equals("propover")))
+				params.put "ayuda", "tags.TagAyuda.popover('${boton.ayuda}')"
+			else
+				params.put "ayuda", "tags.TagAyuda.texto('${boton.ayuda}')"
+		}
 		//params.put "idSolicitud", "idSolicitud"
 			
 		String result = ""

@@ -7,12 +7,15 @@
   	_ancho	- ancho
   	_popup	- popup
   	_ type  - tipo del botón (cambia su color)
-  	_fondo  - Se indica que el botón se coloca solo y con el fondo gris 
+  	_fondo  - Se indica que el botón se coloca solo y con el fondo gris
+  	_ayuda  - Objeto de tipo TagAyuda
 }*
 
 %{ 
 	def id = _id ?: play.libs.Codec.UUID()
 	def label = _titulo
+	def ayuda = _ayuda
+	def id_help = id+"-help"
 	String style = '';
 	def waitPopup = _waitPopup
 	def stackDisabled = tags.TagMapStack.top("editable")
@@ -36,6 +39,7 @@
 	#{/if}
 	
 	<input type="submit" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+	#{fap.ayuda ayuda:ayuda, id:id_help /}
 	
 	#{if fondo}
 		</div>

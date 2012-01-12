@@ -51,6 +51,13 @@ public class GCombo {
 		if(combo.anchoTitulo != null)
 			params.putStr("anchoTitulo", combo.anchoTitulo)
 
+		if (combo.ayuda != null) {
+			if ((combo.tipoAyuda != null) && (combo.tipoAyuda.type.equals("propover")))
+				params.put "ayuda", "tags.TagAyuda.popover('${combo.ayuda}')"
+			else
+				params.put "ayuda", "tags.TagAyuda.texto('${combo.ayuda}')"
+		}
+			
 		/// Si el atributo es una referencia Many2One o ManyToMany
 		if (campo.getUltimoAtributo().type?.compound?.tipoReferencia?.type?.equals("ManyToMany")
 			|| campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToOne")) {

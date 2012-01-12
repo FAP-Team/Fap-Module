@@ -89,6 +89,12 @@ GET /Solicitud/tablassimples TablasSimplesController.index
 POST /Solicitud/tablassimples/save TablasSimplesController.save
 GET /Solicitud/tablassimples/tablaNombres TablasSimplesController.tablatablaNombres
 GET /Solicitud/tablassimples/tablaNombres2 TablasSimplesController.tablatablaNombres2
+GET /Solicitud/tipodeayudapopover TipoDeAyudaPopoverController.index
+
+POST /Solicitud/tipodeayudapopover/save TipoDeAyudaPopoverController.save
+GET /Solicitud/tipodeayudatexto TipoDeAyudaTextoController.index
+
+POST /Solicitud/tipodeayudatexto/save TipoDeAyudaTextoController.save
 GET /Solicitud/valorespordefecto ValoresPorDefectoController.index
 
 POST /Solicitud/valorespordefecto/save ValoresPorDefectoController.save

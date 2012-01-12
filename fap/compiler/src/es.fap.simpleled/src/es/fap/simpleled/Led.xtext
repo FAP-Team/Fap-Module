@@ -18,7 +18,7 @@ QN: // QualifiedName
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente" | "documento" | "password" |
-	"aportadoPor"
+	"aportadoPor" | "texto"
 ;
 
 Entity:
@@ -196,12 +196,16 @@ CampoLista:
 	lista=[Lista] "." elemento=ID
 ;
 
+TipoDeAyuda:
+	'(' type=('texto' | 'propover') ')'
+;
+
 Texto:
 	'Texto' (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('ancho' '=' ancho=STRING)?
-		& ('ayuda' '=' ayuda=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 		& (duplicar?='duplicar')?
@@ -259,6 +263,7 @@ Boton:
 	    &('pagina' '=' pagina=[Pagina|QN])?
 		& (waitPopup?="waitPopup")?	
 		& ('type' '=' type=('default' | 'primary' | 'info' | 'success' | 'danger'))?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 
@@ -267,6 +272,7 @@ Fecha:
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& (requerido?='requerido')?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 
@@ -281,6 +287,7 @@ Combo:
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& ('comboTexto' '=' comboTexto=[Attribute|IDS])? 
 		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 

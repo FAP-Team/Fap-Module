@@ -25,6 +25,8 @@
         #{script src:"bootstrap/bootstrap-alerts.js" /}
         #{script src:"bootstrap/bootstrap-modal.js" /}
         #{script src:"bootstrap/bootstrap-dropdown.js" /}
+        #{script src:"bootstrap/bootstrap-twipsy.js" /}
+        #{script src:"bootstrap/bootstrap-popover.js" /}
         
         #{script 'ext/ext-all.js' /}
         #{script 'ext/form/SearchFieldFilter.js' /}
@@ -165,7 +167,10 @@
 	          	//Envia el formulario de roles al seleccionar uno
 	        	$('#listaRoles').change(function(){
 					$('#changeRolForm').submit();        	
-	        	});      	
+	        	});
+	          	
+	        	
+	        	$("[rel=popover]").popover({offset: 10});
         	});
         </script>
         

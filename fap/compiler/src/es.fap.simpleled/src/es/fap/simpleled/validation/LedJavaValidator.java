@@ -5,22 +5,14 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.validation.Check;
 
 import com.google.inject.Inject;
 
-import es.fap.simpleled.led.Attribute;
-import es.fap.simpleled.led.Campo;
-import es.fap.simpleled.led.Columna;
-import es.fap.simpleled.led.CompoundType;
-import es.fap.simpleled.led.Entity;
-import es.fap.simpleled.led.Formulario;
-import es.fap.simpleled.led.LedPackage;
-import es.fap.simpleled.led.PermisoVar;
-import es.fap.simpleled.led.Pagina;
-import es.fap.simpleled.led.Tabla;
+import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
@@ -170,47 +162,37 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
+	public void checkTablaCampoPopup(Tabla tabla, Popup popup, Campo concatenado, EReference ref){
+		if (popup != null && !LedCampoUtils.equals(tabla.getCampo(), popup.getCampo()) && !LedCampoUtils.equals(concatenado, popup.getCampo()))
+			error( "El popup referenciado no es válido para el campo especificado en la tabla", ref);
+	}
+	
+	public void checkTablaCampoPagina(Tabla tabla, Pagina pagina, Campo concatenado, EReference ref){
+		if (pagina != null && !LedCampoUtils.equals(tabla.getCampo(), LedCampoUtils.getCampoPagina(pagina)) && !LedCampoUtils.equals(concatenado, LedCampoUtils.getCampoPagina(pagina)))
+			error("La página referenciada no es válida para el campo especificado en la tabla", ref);
+	}
+	
 	@Check
 	public void checkTablaCampo(Tabla tabla){
-		Entity entidad = LedCampoUtils.getUltimaEntidad(tabla.getCampo());
-		String error = "El popup referenciado no es válido para el campo especificado en la tabla";
-		if (tabla.getPopup() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopup().getCampo())))
-			error(error, LedPackage.Literals.TABLA__POPUP);
-		if (tabla.getPopupBorrar() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopupBorrar().getCampo())))
-			error(error, LedPackage.Literals.TABLA__POPUP_BORRAR);
-		if (tabla.getPopupCrear() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopupCrear().getCampo())))
-			error(error, LedPackage.Literals.TABLA__POPUP_CREAR);
-		if (tabla.getPopupModificar() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopupModificar().getCampo())))
-			error(error, LedPackage.Literals.TABLA__POPUP_MODIFICAR);
-		if (tabla.getPopupVer() != null && !LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(tabla.getPopupVer().getCampo())))
-			error(error, LedPackage.Literals.TABLA__POPUP_VER);
+		EObject container = LedCampoUtils.getElementosContainer(tabla);
+		Campo campoContainer;
+		if (container instanceof Pagina)
+			campoContainer = LedCampoUtils.getCampoPagina((Pagina) container);
+		else
+			campoContainer = LedCampoUtils.getCampo(container);
+		Campo concatenado = LedCampoUtils.concatena(campoContainer, tabla.getCampo());
 		
-		error = "La página referenciada no es válida para el campo especificado en la tabla";
-		if (tabla.getPagina() != null){
-			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPagina());
-			if (!LedEntidadUtils.equals(entidad, entidadPagina))
-				error(error, LedPackage.Literals.TABLA__PAGINA);
-		}
-		if (tabla.getPaginaBorrar() != null){
-			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPaginaBorrar());
-			if (!LedEntidadUtils.equals(entidad, entidadPagina))
-				error(error, LedPackage.Literals.TABLA__PAGINA_BORRAR);
-		}
-		if (tabla.getPaginaCrear() != null){
-			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPaginaCrear());
-			if (!LedEntidadUtils.equals(entidad, entidadPagina))
-				error(error, LedPackage.Literals.TABLA__PAGINA_CREAR);
-		}
-		if (tabla.getPaginaModificar() != null){
-			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPaginaModificar());
-			if (!LedEntidadUtils.equals(entidad, entidadPagina))
-				error(error, LedPackage.Literals.TABLA__PAGINA_MODIFICAR);
-		}
-		if (tabla.getPaginaVer() != null){
-			Entity entidadPagina = LedEntidadUtils.getEntidad(tabla.getPaginaVer());
-			if (!LedEntidadUtils.equals(entidad, entidadPagina))
-				error(error, LedPackage.Literals.TABLA__PAGINA_VER);
-		}
+		checkTablaCampoPopup(tabla, tabla.getPopup(), concatenado, LedPackage.Literals.TABLA__POPUP);
+		checkTablaCampoPopup(tabla, tabla.getPopupBorrar(), concatenado, LedPackage.Literals.TABLA__POPUP_BORRAR);
+		checkTablaCampoPopup(tabla, tabla.getPopupCrear(), concatenado, LedPackage.Literals.TABLA__POPUP_CREAR);
+		checkTablaCampoPopup(tabla, tabla.getPopupModificar(), concatenado, LedPackage.Literals.TABLA__POPUP_MODIFICAR);
+		checkTablaCampoPopup(tabla, tabla.getPopupVer(), concatenado, LedPackage.Literals.TABLA__POPUP_VER);
+		
+		checkTablaCampoPagina(tabla, tabla.getPagina(), concatenado, LedPackage.Literals.TABLA__PAGINA);
+		checkTablaCampoPagina(tabla, tabla.getPaginaBorrar(), concatenado, LedPackage.Literals.TABLA__PAGINA_BORRAR);
+		checkTablaCampoPagina(tabla, tabla.getPaginaCrear(), concatenado, LedPackage.Literals.TABLA__PAGINA_CREAR);
+		checkTablaCampoPagina(tabla, tabla.getPaginaModificar(), concatenado, LedPackage.Literals.TABLA__PAGINA_MODIFICAR);
+		checkTablaCampoPagina(tabla, tabla.getPaginaVer(), concatenado, LedPackage.Literals.TABLA__PAGINA_VER);
 	}
 	
 	@Check
@@ -266,6 +248,18 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		Formulario otherForm = (Formulario)other.eContainer();
 		if (pagina.isInicial() && other.isInicial() && formulario.getName().equals(otherForm.getName())){
 			error("Ya existe en el formulario otra página definida como inicial", LedPackage.Literals.PAGINA__INICIAL);
+		}
+	}
+	
+	@Check
+	public void checkPermisoAction(PermisoRuleCheck rule){
+		if (!rule.getLeft().isAction())
+			return;
+		if (rule.getRight() != null && rule.getRight().getAction() == null)
+			error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", LedPackage.Literals.PERMISO_RULE_CHECK__RIGHT);
+		for (PermisoRuleCheckRight right: rule.getRightGroup()){
+			if (right.getAction() == null)
+				error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", LedPackage.Literals.PERMISO_RULE_CHECK__LEFT);
 		}
 	}
 	

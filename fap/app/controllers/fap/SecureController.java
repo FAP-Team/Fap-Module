@@ -284,16 +284,13 @@ public class SecureController extends GenericController{
         }
         redirect(url);
     }
-
+    
     private static String getDefaultRoute(){
-        String defaultRoute = null;
-        String httpPath = Play.configuration.getProperty("http.path", null);
-        if(httpPath != null){
-            defaultRoute = httpPath + "/";
-        }else{
-        	defaultRoute = "/";
-        }
-        return defaultRoute;
+    	String httpPath = Play.configuration.getProperty("http.path", null);
+    	if (httpPath != null)
+    		return httpPath + "/";
+    	else
+    		return "/";
     }
     
     

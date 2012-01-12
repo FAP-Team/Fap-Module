@@ -15,7 +15,7 @@ public class PopupVisibilidadDeSolicitudesController extends PopupVisibilidadDeS
 
 	public static void editar(Long idTableKeyValue,TableKeyValue tableKeyValue){
 		checkAuthenticity();
-		if(!permiso("update")){
+		if(!permiso("editar")){
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 

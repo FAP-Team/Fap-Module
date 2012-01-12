@@ -13,7 +13,7 @@ import controllers.gen.NuevaSolicitudControllerGen;
 public class NuevaSolicitudController extends NuevaSolicitudControllerGen {
 
 	public static void index(String accion, Long idSolicitud){
-		if (permiso("update") || permiso("create")) {
+		if (permiso("editar") || permiso("crear")) {
 			if(!validation.hasErrors()){
 				try {
 					SolicitudGenerica sol = (SolicitudGenerica) InitController.inicialize();

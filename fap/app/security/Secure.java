@@ -34,25 +34,7 @@ abstract public class Secure {
 		return result;
 	}
 	
-	/**
-	 * Método para mantener la compatibilidad con los nombres de las acciones.
-	 * En los popups se utilizan nombres en español (leer, borrar, editar, crear) mientras
-	 * que en los permisos se utilizan nombres en inglés (read, delete, update, create).
-	 * 
-	 * Este método traduce el nombre en español al inglés.
-	 * 
-	 * En futuras versiones debería adoptarse la nomenclatura inglés en todos sitios y este
-	 * método no hara falta.
-	 * 
-	 * @param action
-	 * @return
-	 */
-	public String transform(String action){
-		String actionResult = action;
-		if("leer".equals(action)) actionResult="read";
-		else if("borrar".equals(action)) actionResult="delete";
-		else if("editar".equals(action)) actionResult="edit";
-		else if("crear".equals(action)) actionResult="create";
-		return actionResult;
+	public static boolean checkAction(String action){
+		return ("leer".equals(action) || "editar".equals(action) || "crear".equals(action) || "borrar".equals(action));
 	}
 }

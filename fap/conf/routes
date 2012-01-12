@@ -46,6 +46,18 @@ GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutar
 
 
 # === FAPGENERATED ===
+GET /Principal/solicitudes/index SolicitudesController.index
+
+GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
+GET /Principal/nuevasolicitud/index NuevaSolicitudController.index
+POST /Principal/nuevasolicitud/crear NuevaSolicitudController.crear
+
+GET /Principal/editarsolicitud/index EditarSolicitudController.index
+POST /Principal/editarsolicitud/editar EditarSolicitudController.editar
+
+GET /Soporte/soporte/index SoporteController.index
+POST /Soporte/soporte/crear SoporteController.crear
+
 GET /Administracion/usuarios/index UsuariosController.index
 
 GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios
@@ -94,6 +106,9 @@ POST /Administracion/popupemail/borrar popups.PopupEmailController.borrar
 POST /Administracion/popupemail/crear popups.PopupEmailController.crear
 
 GET /Administracion/popupconsulta/index popups.PopupConsultaController.index
+POST /Administracion/popupconsulta/editar popups.PopupConsultaController.editar
+POST /Administracion/popupconsulta/borrar popups.PopupConsultaController.borrar
+POST /Administracion/popupconsulta/crear popups.PopupConsultaController.crear
 
 GET /Administracion/popupproperties/index popups.PopupPropertiesController.index
 POST /Administracion/popupproperties/editar popups.PopupPropertiesController.editar
@@ -162,17 +177,5 @@ POST /Solicitud/popupdocprocesos/editar popups.PopUpDocProcesosController.editar
 POST /Solicitud/popupdocprocesos/borrar popups.PopUpDocProcesosController.borrar
 
 GET /Solicitud/popupdocaportados/index popups.PopUpDocAportadosController.index
-
-GET /Principal/solicitudes/index SolicitudesController.index
-
-GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
-GET /Principal/nuevasolicitud/index NuevaSolicitudController.index
-POST /Principal/nuevasolicitud/crear NuevaSolicitudController.crear
-
-GET /Principal/editarsolicitud/index EditarSolicitudController.index
-POST /Principal/editarsolicitud/editar EditarSolicitudController.editar
-
-GET /Soporte/soporte/index SoporteController.index
-POST /Soporte/soporte/crear SoporteController.crear
 
 # === END FAPGENERATED ===			 

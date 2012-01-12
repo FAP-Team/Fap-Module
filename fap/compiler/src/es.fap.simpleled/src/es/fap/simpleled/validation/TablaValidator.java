@@ -15,7 +15,7 @@ public class TablaValidator extends LedElementValidator{
 
 	@Override
 	public boolean aceptaEntidad(Entity entidad) {
-		return /*!LedEntidadUtils.esSingleton(entidad)*/ true;
+		return true;
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class TablaValidator extends LedElementValidator{
 
 	@Override
 	public String mensajeError() {
-		return "El campo tiene que ser una entidad no singleton, o una referencia múltiple";
+		return "El campo tiene que ser una entidad o una referencia múltiple";
 	}
 	
 }

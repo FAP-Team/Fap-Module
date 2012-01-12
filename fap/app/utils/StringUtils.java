@@ -2,8 +2,6 @@ package utils;
 
 import java.util.Random;
 
-import security.Actions;
-
 public class StringUtils {
 
 	/**
@@ -23,17 +21,6 @@ public class StringUtils {
 		return false;
 	}
 	
-	public static boolean inAction(String str, String...list){
-		for(String s : list){
-			if(str == null){
-				if(s == null) return true;
-			}else if(Actions.getAction(str).equals(Actions.getAction(s))){
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	/**
 	 * Comprueba si un string no están en una lista
 	 * @param str Cadena a comprobar
@@ -42,10 +29,6 @@ public class StringUtils {
 	 */
 	public static boolean notin(String str, String...list){
 		return !in(str, list);
-	}
-	
-	public static boolean notinAction(String str, String...list){
-		return !inAction(str, list);
 	}
 	
 	/**

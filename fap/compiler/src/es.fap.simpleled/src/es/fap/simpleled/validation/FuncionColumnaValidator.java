@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
@@ -16,9 +14,9 @@ import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
-import es.fap.simpleled.led.Model;
 import es.fap.simpleled.led.impl.LedFactoryImpl;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+import es.fap.simpleled.led.util.ModelUtils;
 
 public class FuncionColumnaValidator {
 
@@ -34,32 +32,6 @@ public class FuncionColumnaValidator {
 				validator.myError("El campo \"" + campo + "\" no es valido.", LedPackage.Literals.COLUMNA__FUNCION);
 			}
 		}
-	}
-	
-	private static Entity buscarEntidad(String entidad, EObject obj){
-		List<Entity> entidades = getEntidades(obj);
-		Entity resultado = null;
-		for (Entity e: entidades){
-			if (e.getName().equals(entidad)){
-				resultado = e;
-				break;
-			}
-		}
-		return resultado;
-	}
-	
-	private static List<Entity> getEntidades(EObject obj){
-		ArrayList<Entity> entidades = new ArrayList<Entity>();
-		for (Resource r: obj.eResource().getResourceSet().getResources()){
-			EList<EObject> contents = r.getContents(); 
-			if (!contents.isEmpty() && contents.get(0) instanceof Model){
-				Model model = (Model) contents.get(0);
-				for (Entity entidad: model.getEntidades()){
-					entidades.add(entidad);
-				}
-			}
-		}
-		return entidades;
 	}
 	
 	public static Campo create(String campoStr, EObject obj){
@@ -85,7 +57,8 @@ public class FuncionColumnaValidator {
 		if (!campo2.equals(campoStr)){
 			return null;
 		}
-		Entity entity = buscarEntidad(entidad, obj);
+		
+		Entity entity = ModelUtils.<Entity>getVisibleNode(LedPackage.Literals.ENTITY, entidad, obj.eResource());
 		if (entity == null){
 			return null;
 		}

@@ -37,7 +37,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 	
 	public static void modificarBorrador(Long idSolicitud){
 		checkAuthenticity();
-		if (permisoModificarBorrador("update") || permisoModificarBorrador("create")) {
+		if (permisoModificarBorrador("editar") || permisoModificarBorrador("crear")) {
 			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 			Aportacion aportacion = solicitud.aportaciones.actual;
 			aportacion.estado = null;
@@ -57,7 +57,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 	 */
 	public static void presentar(Long idSolicitud, platino.Firma firma) {
 		checkAuthenticity();
-		if (permisoPresentar("update") || permisoPresentar("create")) {
+		if (permisoPresentar("editar") || permisoPresentar("crear")) {
 			
 			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 			Aportacion aportacion = solicitud.aportaciones.actual;
@@ -112,7 +112,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 	 * Deberá realizarlo únicamente un gestor, administrador o revisor. */
 	public static void presentarSinRegistrar(Long idSolicitud, SolicitudGenerica solicitud){
 		checkAuthenticity();
-		if (permisoPresentarSinRegistrar("update") || permisoPresentarSinRegistrar("create")) {
+		if (permisoPresentarSinRegistrar("editar") || permisoPresentarSinRegistrar("crear")) {
 		
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			

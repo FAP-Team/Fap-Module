@@ -126,18 +126,14 @@ public class GTabla {
 					}
 				}
 			}
-			for(Columna c : tabla.columnas){
-				columnasView.append (columnaView(c));
-			}
-	    } else{
-		    for(Columna c : tabla.columnas){
-			   columnasView.append (columnaView(c));
-		    }
-		}
-		
+	    }
 		if(tabla.columnas.isEmpty()){
-			System.out.println("WARNING: La tabla: <"+tabla.getName()+"> no tiene ninguna columna como visible");
+			Columna c = LedFactory.eINSTANCE.createColumna();
+			c.campo = CampoUtils.create("${LedCampoUtils.getUltimaEntidad(tabla.campo).name}.id").campo;
+			tabla.columnas.add(c);
 		}
+		for(Columna c : tabla.columnas)
+			columnasView.append (columnaView(c));
 
 		String view = """
 #{fap.tabla ${params.lista(true)}
@@ -379,7 +375,7 @@ public class GTabla {
 			for(${entidad.clase} ${entidad.variable}: rows){
 				Map<String, Object> vars = new HashMap<String, Object>();
 				vars.put("${entidad.variable}", ${entidad.variable});
-				if (secure.check("${tabla.permiso.name}","read", ids, vars)) {
+				if (secure.check("${tabla.permiso.name}","leer", ids, vars)) {
 					rowsFiltered.add(${entidad.variable});
 				}
 			}

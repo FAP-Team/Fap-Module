@@ -197,20 +197,46 @@ public class LedCampoUtils {
 		}
 		return entidades;
 	}
-	
-//	public Set<Entity> getEntidadesCampo(Campo campo) {
-//		EObject container = LedCampoUtils.getElementosContainer(campo);
-//		Entity entidadValida = LedCampoUtils.getEntidadValida(campo);
-//		if (entidadValida == null){ // Es null porque son v�lidas todas las entidades
-//			return LedEntidadUtils.getEntidades(campo.eResource());
-//		}
-//		Set<Entity> entidades = new HashSet<Entity>();
-//		if (!(container instanceof Tabla)){
-//			entidades.addAll(LedEntidadUtils.getSingletons(campo.eResource()));
-//		}
-//		entidades.add(entidadValida);
-//		return entidades;
-//	}
-	
+
+	/*
+	 * Concatena dos campos, siempre y cuando la ultima entidad del primer campo sea la misma
+	 * que la primera entidad del segundo campo.
+	 */
+	public static Campo concatena(Campo primero, Campo segundo){
+		if (primero == null || segundo == null)
+			return null;
+		if (!LedEntidadUtils.equals(getUltimaEntidad(primero), segundo.getEntidad()))
+			return null;
+		Campo result = LedFactory.eINSTANCE.createCampo();
+		result.setEntidad(primero.getEntidad());
+		CampoAtributos atributos = primero.getAtributos();
+		CampoAtributos attrs = null;
+		while (atributos != null){
+			if (attrs == null){
+				result.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
+				attrs = result.getAtributos();
+			}
+			else{
+				attrs.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
+				attrs = attrs.getAtributos();
+			}
+			attrs.setAtributo(atributos.getAtributo());
+			atributos = atributos.getAtributos();
+		}
+		atributos = segundo.getAtributos();
+		while (atributos != null){
+			if (attrs == null){
+				result.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
+				attrs = result.getAtributos();
+			}
+			else{
+				attrs.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
+				attrs = attrs.getAtributos();
+			}
+			attrs.setAtributo(atributos.getAtributo());
+			atributos = atributos.getAtributos();
+		}
+		return result;
+	}
 	
 }

@@ -1,5 +1,4 @@
 %{
-	@Inject
 	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_url, "url");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");
@@ -37,19 +36,19 @@
 	
 	if (urlPopupCrear != null) {
 		if (_permisoPopupCrear != null) 
-			permisoCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupCrear", "create", tags.TagMapStack.top("idParams"), null);
+			permisoCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupCrear", "crear", tags.TagMapStack.top("idParams"), null);
 		else
 			permisoCrear = true;
 	}
 	if (urlPopupBorrar != null) {
 		if (_permisoPopupBorrar != null) 
-			permisoBorrar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupBorrar", "delete", tags.TagMapStack.top("idParams"), null);
+			permisoBorrar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupBorrar", "borrar", tags.TagMapStack.top("idParams"), null);
 		else
 			permisoBorrar = true;
 	}
 	if (urlPopupEditar != null) {
 		if (_permisoPopupEditar != null) 
-			permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupEditar", "update", tags.TagMapStack.top("idParams"), null);
+			permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupEditar", "editar", tags.TagMapStack.top("idParams"), null);
 		else
 			permisoEditar = true;
 		if ((permisoCrear) || (permisoBorrar))
@@ -57,7 +56,7 @@
 	}
 	if (urlPopupLeer != null) {
 		if (_permisoPopupLeer != null) 
-			permisoLeer = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupLeer", "read", tags.TagMapStack.top("idParams"), null);
+			permisoLeer = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupLeer", "leer", tags.TagMapStack.top("idParams"), null);
 		else
 			permisoLeer = true;
 		if ((permisoCrear) || (permisoBorrar) || (permisoEditar))
@@ -71,19 +70,19 @@
 	
 	if (urlPaginaCrear != null) {
 		if (_permisoPaginaCrear != null) 
-			permisoCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaCrear", "create", tags.TagMapStack.top("idParams"), null);
+			permisoCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaCrear", "crear", tags.TagMapStack.top("idParams"), null);
 		else
 			permisoCrear = true;
 	}
 	if (urlPaginaBorrar != null) {
 		if (_permisoPaginaBorrar != null) 
-			permisoBorrar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaBorrar", "delete", tags.TagMapStack.top("idParams"), null);
+			permisoBorrar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaBorrar", "borrar", tags.TagMapStack.top("idParams"), null);
 		else
 			permisoBorrar = true;
 	}
 	if (urlPaginaEditar != null) {
 		if (_permisoPaginaEditar != null) 
-			permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaEditar", "update", tags.TagMapStack.top("idParams"), null);
+			permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaEditar", "editar", tags.TagMapStack.top("idParams"), null);
 		else
 			permisoEditar = true;
 		if ((permisoCrear) || (permisoBorrar))
@@ -91,7 +90,7 @@
 	}
 	if (urlPaginaLeer != null) {
 		if (_permisoPaginaLeer != null) 
-			permisoLeer = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaLeer", "read", tags.TagMapStack.top("idParams"), null);
+			permisoLeer = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaLeer", "leer", tags.TagMapStack.top("idParams"), null);
 		else
 			permisoLeer = true;
 		if ((permisoCrear) || (permisoBorrar) || (permisoEditar))

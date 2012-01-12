@@ -26,7 +26,7 @@ public class DataBaseUtils {
 		for(TableKeyValue tableKeyValue: rows){
 			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.put("tableKeyValue", tableKeyValue);
-			if (secure.check("tableKeyOnlyEstadosSolicitud","read", ids, vars)) {
+			if (secure.check("tableKeyOnlyEstadosSolicitud","leer", ids, vars)) {
 				rowsFiltered.add(tableKeyValue);
 			}
 		}	

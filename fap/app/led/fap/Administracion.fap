@@ -153,6 +153,10 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
     }
     
 	Popup PopupConsulta campo=Consulta titulo="Consulta" {
+		Accion borrar crearSiempre
+		Accion crear crearSiempre
+		Accion editar crearSiempre
+		
 		AreaTexto campo=Consulta.descripcion titulo="Descripcion" requerido
 		AreaTexto campo=Consulta.consulta titulo="Consulta" requerido
 		Combo campo=Consulta.tipo titulo="Tipo" requerido

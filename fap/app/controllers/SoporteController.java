@@ -18,7 +18,7 @@ public class SoporteController extends SoporteControllerGen {
 	
 	public static void crear(Incidencia incidencia){
 		checkAuthenticity();
-		if(!permiso("create")){
+		if(!permiso("crear")){
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		Incidencia dbIncidencia = null;

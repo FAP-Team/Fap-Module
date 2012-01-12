@@ -10,7 +10,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
 	
 	public static void editar(Long idAgente,Agente agente){
         checkAuthenticity();
-        if(!permiso("update")){
+        if(!permiso("editar")){
             Messages.error("No tiene permisos suficientes para realizar la acción");
         }
         
@@ -45,7 +45,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
 	
 	public static void crear(Agente agente){
         checkAuthenticity();
-        if(!permiso("create")){
+        if(!permiso("crear")){
             Messages.error("No tiene permisos suficientes para realizar la acción");
         }
 

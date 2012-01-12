@@ -238,7 +238,7 @@ class ControllerUtils {
         if ((Pagina.class.isInstance(objeto)) || (Grupo.class.isInstance(objeto)) || (Popup.class.isInstance(objeto)) || Form.class.isInstance(objeto) || EntidadAutomatica.class.isInstance(objeto)) {
 			
 			if (objeto.permiso != null){
-                out += """if (secure.check("${objeto.permiso.name}", "update", (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
+                out += """if (secure.check("${objeto.permiso.name}", "editar", (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
 				validatedFields.push(new HashSet<String>());
 			}
 			
@@ -570,13 +570,16 @@ class ControllerUtils {
 		String permisoContent = "";
 		if(permiso != null){
 			String name = permiso.name;
-			permisoContent = """accion = secure.transform(accion);
+			permisoContent = """
 				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 				Map<String, Object> vars = null;
-				return secure.check("${name}", accion, ids, vars);"""
+				return secure.check("${name}", accion, ids, vars);
+			"""
 		}else{
-			permisoContent = """//Sobreescribir para incorporar permisos a mano
-			return true;"""
+			permisoContent = """
+				//Sobreescribir para incorporar permisos a mano
+				return true;
+			"""
 		}
 		return permisoContent;
 	}

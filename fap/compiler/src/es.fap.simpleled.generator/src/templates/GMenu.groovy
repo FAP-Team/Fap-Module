@@ -44,12 +44,12 @@ public class GMenu {
 			menuName = f.name + ".html";
 		}
 		return """
-		#{if play.getVirtualFile("app/views/gen/menu/$menuName") != null}
-			#{set 'menu'}
-					#{include 'gen/menu/${menuName}'/}
-			#{/set}
-		#{/if}
-		"""
+			#{if play.getVirtualFile("app/views/gen/menu/$menuName") != null}
+				#{set 'menu'}
+						#{include 'gen/menu/${menuName}'/}
+				#{/set}
+			#{/if}
+		""";
 	}
 	
 	public String generateView(){
@@ -65,35 +65,28 @@ public class GMenu {
 
 
 	public String generateElemento(MenuGrupo grupo){
-		
 		String out = "";
 		if (grupo.permiso != null) {
 			out += """
-			#{fap.permiso permiso:'${grupo.permiso.name}'}
-"""
+				#{fap.permiso permiso:'${grupo.permiso.name}'}
+			""";
 		}
-		
 		out += """
-   <li class="menu-group"><span class="menu-header">${grupo.titulo}</span>
-      <ul>
-""";
-
+				<li class="menu-group"><span class="menu-header">${grupo.titulo}</span>
+			<ul>
+		""";
 		for(MenuElemento elemento : grupo.elementos){
 			out += generateElemento(elemento);
 		}
-
-		 
-out += """
-      </ul>
-   </li>	
-"""
-
-	if (grupo.permiso != null) {
 		out += """
-		#{/fap.permiso}
-"""
+				</ul>
+			</li>	
+		""";
+		if (grupo.permiso != null) {
+			out += """
+				#{/fap.permiso}
+			""";
 		}
-
 		return out;
 	}
 
@@ -106,9 +99,9 @@ out += """
 		
 		if (enlace.permiso != null) {
 			permisoBefore = """
-			#{fap.permiso permiso:'${enlace.permiso.name}'}
-"""
-			permisoAfter = """#{/fap.permiso}"""
+				#{fap.permiso permiso:'${enlace.permiso.name}'}
+			""";
+			permisoAfter = "#{/fap.permiso}";
 		}
 		
 		if(enlace.pagina != null){
@@ -124,10 +117,14 @@ out += """
 		if(enlace.accion != null) //Accion
 			ref = "@{${enlace.accion}}"
 		else if(enlace.url != null) //URL
-			ref = enlace.url
+			ref = enlace.url;
 		else if(enlace.popup != null){ //Popup
 			script = "${scriptUrl(Controller.fromPopup(enlace.popup.popup).initialize(), enlace.popup.accion)}";
 			ref= "javascript:popup_open('${enlace.popup.popup.name}', '\${url}')";
+		}
+		else if(enlace.anterior != null){
+			script = "${scriptAnterior()}";
+			ref= "\${urlAnterior}";
 		}
 		else //Enlace por defecto, para prototipado principalmente
 			ref = "#"
@@ -165,6 +162,26 @@ out += """
 			%{
 				${scriptEntidades}
 				${url}
+			%}
+		""";
+	}
+	
+	private String scriptAnterior(){
+		String url = "";
+		String key = "key";
+		if (!scriptVariables.contains("urlAnterior")){
+			url = "String urlAnterior;";
+			key = "String key";
+			scriptVariables.add("urlAnterior");
+		}
+		return """
+			%{
+				${url}
+				${key} = "redirigir\${play.mvc.Controller.renderArgs.get("container")}";
+				if (play.mvc.Controller.response.cookies.containsKey(key))
+					urlAnterior = play.mvc.Controller.response.cookies.get(key).value;
+				else if (play.mvc.Controller.request.cookies.containsKey(key))
+					urlAnterior = play.mvc.Controller.request.cookies.get(key).value;
 			%}
 		""";
 	}

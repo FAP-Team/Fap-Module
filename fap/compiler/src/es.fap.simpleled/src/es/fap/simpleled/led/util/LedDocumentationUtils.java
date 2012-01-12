@@ -118,11 +118,4 @@ public class LedDocumentationUtils {
 		return "<a href=\"" + url + pagina + "\">" + text + "</a>";
 	}
 	
-//	public static String utf(String utf){
-//		try {
-//			return new String(utf.getBytes(Charset.defaultCharset()), "UTF8");
-//		} catch (UnsupportedEncodingException e) {}
-//		return "";
-//	}
-	
 }

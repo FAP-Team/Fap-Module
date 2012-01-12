@@ -57,12 +57,6 @@ public abstract class LedElementValidator {
 	}
 	
 	public void validateCampoEntidad(Campo campo, LedJavaValidator validator){
-//		if (LedEntidadUtils.esSingleton(campo.getEntidad()))
-//			return;
-//		Entity entidad = LedCampoUtils.getEntidadValida(campo);
-//		if (entidad != null && ! LedEntidadUtils.equals(entidad, campo.getEntidad())){
-//			validator.myError("En este contexto solo se puede utilizar la entidad \"" + entidad.getName() + "\"", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
-//		}
 		if (!LedCampoUtils.getEntidadesValidas(campo).containsKey(campo.getEntidad().getName()))
 			validator.myError("En este contexto no se puede utilizar esta entidad", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
 	}

@@ -10,7 +10,7 @@ import controllers.gen.popups.PopupTablaDeTablasControllerGen;
 public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGen {
 	public static void crear(TableKeyValue tableKeyValue){
 		checkAuthenticity();
-		if(!permiso("create")){
+		if(!permiso("crear")){
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
@@ -37,7 +37,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 
 	public static void editar(Long idTableKeyValue,TableKeyValue tableKeyValue){
 		checkAuthenticity();
-		if(!permiso("update")){
+		if(!permiso("editar")){
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
@@ -68,7 +68,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 
 	public static void borrar(Long idTableKeyValue){
 		checkAuthenticity();
-		if(!permiso("delete")){
+		if(!permiso("borrar")){
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 

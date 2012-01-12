@@ -80,27 +80,6 @@ public class GPermiso {
 				out = "!" +out;
 			}
 		}
-		else if (r.left.action){
-			CampoPermisoUtils campo = CampoPermisoUtils.create(r.left);
-			if(r.getGroupOp() != null){
-				String realOp = r.getGroupOp().replaceAll("\\s+", "")
-				String group = r.getRightGroup().collect{
-					return getPermisoRuleCheckRightStr(it);
-				}.join(", ");
-				out = "utils.StringUtils.${realOp}Action(action, ${group})"	
-			}
-			else{
-				String right = getPermisoRuleCheckRightStr(r.right);
-				if ((right.equals("null"))) {
-					String op = r.getSimpleOp().equals('=') ? '==' : r.getSimpleOp();
-					out = "action ${op} null";
-				}
-				else if(r.getSimpleOp().equals("="))
-					out = "Actions.getAction(action).equals(Actions.getAction(${right}.toString()))";
-				else
-					out = "!Actions.getAction(action).equals(Actions.getAction(${right}.toString()))";
-			}
-		}
 		else{
 			CampoPermisoUtils campo = CampoPermisoUtils.create(r.left);
 			if(r.getGroupOp() != null){
@@ -126,12 +105,12 @@ public class GPermiso {
 	}
 
 	private String getPermisoRuleCheckRightStr(PermisoRuleCheckRight right){
-		if (right.str != null){
+		if (right.action != null)
+			return "\"" + right.action + "\"";
+		if (right.str != null)
 			return "\"" + right.str + "\"";
-		}
-		if (right.isNulo()){
+		if (right.isNulo())
 			return "null";
-		}
 		return CampoPermisoUtils.create(right.campo).str;
 	}
 	

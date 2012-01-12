@@ -66,6 +66,7 @@ public class Controller {
 	private EntidadUtils entidadPagina;		// Si no hay campos guardables nulo() sera true
 	private List<EntidadUtils> intermedias;
 	private boolean hayTabla;
+	private boolean hayAnterior;
 	private boolean xToMany;
 	private EntidadUtils entidadSiTabla;  // entidad vale null si no hay una tabla en la pagina o popup
 	private String nameEditar;
@@ -89,7 +90,8 @@ public class Controller {
 			intermedias.add(subcampo.almacen);
 		
 		hayTabla = hayTabla(container);
-		
+		hayAnterior = hayAnterior(container);
+			
 		entidad = EntidadUtils.create(campo?.getUltimaEntidad());
 		entidadPagina = EntidadUtils.create(entidad.entidad);
 		if (!LedCampoUtils.hayCamposGuardables(container))
@@ -163,6 +165,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
@@ -194,6 +198,8 @@ ${metodoBorrarValidateRules()}
 ${botonesMethods()}
 
 ${getters()}
+
+${metodoCheckRedirigir()}
 
 ${metodosHashStack()}
 
@@ -251,12 +257,6 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoIndex(){
-		String redirigir = """
-			if (request.params.data.containsKey("redirigir") && "anterior".equals(request.params.data.get("redirigir")[0])){
-				if (request.headers.get("referer") != null)
-					response.setCookie("redirigir${name}", request.headers.get("referer").value().replaceFirst("redirigir=anterior", "redirigir=no"));
-			}
-		"""
 		String guardarAlCrear = "";
 		if (hayTabla && !entidadNoSingle.nulo()){
 			guardarAlCrear = """
@@ -273,9 +273,12 @@ public class ${controllerName} extends ${controllerGenName} {
 				almacenNoSingle.typeId,
 				entidadNoSingle.typeId
 			)}){
-				if (accion == null)
+				if (!secure.checkAction(accion)){
+					if (accion != null)
+						Messages.warning("La acción especificada en la url no es válida. Se utilizará la acción por defecto.");
 					accion = "editar";
-				${redirigir}
+				}
+				${hayAnterior? "checkRedirigir();" : ""}
 				${entidad.entidad? "$entidad.clase $entidad.variable = null;" : ""}
 				if(accion.equals("crear")){
 					${ControllerUtils.newCall(entidad)}
@@ -400,7 +403,7 @@ public class ${controllerName} extends ${controllerGenName} {
 					saveExtra
 				)}){
 					checkAuthenticity();
-					if(!permiso("create")){
+					if(!permiso("crear")){
 						Messages.error("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar la acción"}");
 					}
 					${entidad.clase} ${entidad.variableDb} = null;
@@ -455,7 +458,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			metodoBorrar = """
 				public static void borrar(${StringUtils.params(intermedias.collect{it.typeId}, almacenNoSingle.typeId, entidad.typeId)}){
 					checkAuthenticity();
-					if(!permiso("delete")){
+					if(!permiso("borrar")){
 						Messages.error("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar la acción"}");
 					}
 
@@ -595,6 +598,35 @@ public class ${controllerName} extends ${controllerGenName} {
 		""";
 	} 
 	
+	private String metodoCheckRedirigir(){
+		if (!hayAnterior)
+			return "";
+		return """
+			@Util
+			public static void checkRedirigir(){
+				renderArgs.put("container", "${name}");
+				if (request.params.data.containsKey("redirigir") && "anterior".equals(request.params.data.get("redirigir")[0])){
+					if (request.headers.get("referer") != null){
+						String referer = request.headers.get("referer").value();
+						try {
+							URL url = new URL(referer);
+							String refererHost = url.getHost();
+							if (url.getPort() != -1)
+								refererHost += ":" + url.getPort();
+							else
+								refererHost += ":80";
+							String host = request.host;
+							if (host.indexOf(":") == -1)
+								host += ":80";
+							if (refererHost.equals(host))
+								response.setCookie("redirigir${name}", referer.replaceFirst("redirigir=anterior", "redirigir=no"));
+						} catch (MalformedURLException e) {}
+					}
+				}
+			}
+		""";
+	}
+	
 	private String metodoEditarValidateRules(){
 		String metodoEditarValidateRules = "";
 		if (editar || isForm()) {
@@ -703,6 +735,26 @@ public class ${controllerName} extends ${controllerGenName} {
 		return botonesMethod;
 	}
 	
+	private static boolean hayAnterior(Object o){
+		if(o instanceof Popup || o instanceof Pagina){
+			if (o.eContainer().menu){
+				if (hayAnterior(o.eContainer().menu))
+					return true;
+			}
+		}
+		if(o.metaClass.respondsTo(o,"getElementos")){
+			for (Object elemento: o.elementos){
+				if (hayAnterior(elemento))
+					return true;
+			}
+			return false;
+		}
+		if(o instanceof Accion || o instanceof Boton || o instanceof Enlace || o instanceof MenuEnlace){
+			if (o.anterior)
+				return true;
+		}
+	}
+	
 	private static boolean hayTabla(Object o){
 		if(o.metaClass.respondsTo(o,"getElementos")){
 			for (Object elemento: o.elementos){
@@ -734,9 +786,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.container = pagina;
 		controller.index = true;
 		controller.findPaginaReferencias(pagina);
-		controller.crear = controller.crear && pag.hasForm;
-		controller.editar = controller.editar && pag.hasForm;
-		controller.borrar = controller.borrar && pag.hasForm;
+		controller.crear = controller.crear && pag.hasForm || controller.accionCrear.crearSiempre;
+		controller.editar = controller.editar && pag.hasForm || controller.accionEditar.crearSiempre;
+		controller.borrar = controller.borrar && pag.hasForm || controller.accionBorrar.crearSiempre;
 		controller.saveController = [];
 		controller.campo = pag.campo;
 		controller.renderView = "\"gen/${pagina.name}/${pagina.name}.html\"";
@@ -766,6 +818,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.container = popup;
 		controller.index = true;
 		controller.findPopupReferencias(popup);
+		controller.crear = controller.crear || controller.accionCrear.crearSiempre;
+		controller.editar = controller.editar || controller.accionEditar.crearSiempre;
+		controller.borrar = controller.borrar || controller.accionBorrar.crearSiempre;
 		controller.saveController = [];
 		controller.campo = gpopup.campo;
 		controller.renderView = "\"gen/popups/${gpopup.viewName()}\"";
@@ -825,7 +880,6 @@ public class ${controllerName} extends ${controllerGenName} {
 	public void createOpcionesAccion(Object o){
 		if (o != null)
 			findOpcionesAccion(o);
-		
 		if (accionCrear == null)
 			accionCrear = LedFactory.eINSTANCE.createAccion();
 		if (accionCrear.boton == null)
@@ -836,7 +890,6 @@ public class ${controllerName} extends ${controllerGenName} {
 			else
 				accionCrear.mensajeOk = "Página creada correctamente";
 		}
-		
 		if (accionEditar == null)
 			accionEditar = LedFactory.eINSTANCE.createAccion();
 		if (accionEditar.boton == null)
@@ -847,7 +900,6 @@ public class ${controllerName} extends ${controllerGenName} {
 			else
 				accionEditar.mensajeOk = "Página editada correctamente";
 		}
-		
 		if (accionBorrar == null)
 			accionBorrar = LedFactory.eINSTANCE.createAccion();
 		if (accionBorrar.boton == null)
@@ -885,7 +937,6 @@ public class ${controllerName} extends ${controllerGenName} {
 		
 	public void findPaginaReferencias(Pagina pagina){
 		editar = crear = borrar = false;
-		
 		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE))
 			if (enlace.pagina != null && enlace.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(enlace.pagina.accion);
@@ -915,7 +966,10 @@ public class ${controllerName} extends ${controllerGenName} {
 			if (tabla.paginaBorrar != null && tabla.paginaBorrar.name.equals(pagina.name))
 				borrar = true;
 		}
-		// LOS FORMS   $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+		for (Form form: LedUtils.getNodes(LedPackage.Literals.FORM)){
+			if (form.redirigir != null && form.redirigir.pagina.name.equals(pagina.name))
+				checkReferencia(form.redirigir.accion);
+		}
 	}
 	
 	public void findPopupReferencias(Popup popup){

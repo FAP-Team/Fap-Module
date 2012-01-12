@@ -23,6 +23,6 @@ Formulario Principal {
 	
 	Pagina NuevaSolicitud campo=SolicitudGenerica permiso=nuevaSolicitud {}
 	
-	Pagina EditarSolicitud campo=SolicitudGenerica permiso=solicitudes {}
+	Pagina EditarSolicitud campo=SolicitudGenerica {}
 	
 }

@@ -44,7 +44,7 @@ public class AportacionController extends AportacionControllerGen {
 	
 	public static void presentar(Long idSolicitud) {
 		checkAuthenticity();
-		if (permisoPresentar("update") || permisoPresentar("create")) {
+		if (permisoPresentar("editar") || permisoPresentar("crear")) {
 			if (!validation.hasErrors()) {
 				SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 				

@@ -88,7 +88,8 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 			}
 			if (grammar instanceof Keyword){
 				Keyword keyword = (Keyword) grammar;
-				if (keyword.getValue().equals("action") || keyword.getValue().equals("agente")){
+				String val = keyword.getValue();
+				if (val.equals("accion") || val.equals("agente") || val.equals("editar") || val.equals("crear") || val.equals("leer") || val.equals("borrar")){
 					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
 					continue;
 				}
@@ -107,23 +108,20 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 				continue;
 			}
 			INode node2 = node;
-			while (node2 != null && !node2.hasDirectSemanticElement()) {
+			while (node2 != null && !node2.hasDirectSemanticElement())
 				node2 = node2.getParent();
-			}
 			if (node2 != null) {
 				EObject semantic = node2.getSemanticElement();
 				try {
-					if (semantic.getClass().getMethod("getName").invoke(semantic) == null){
-						continue;
+					if (semantic.getClass().getMethod("getName").invoke(semantic) != null){
+						ITextRegion region = locationInFileProvider.getSignificantTextRegion(semantic);
+						IRegion region2 = new Region(region.getOffset(), region.getLength());
+						if (TextUtilities.overlaps(region2, new Region(node.getOffset(), 0))){
+							acceptor.addPosition(node.getOffset(), node.getLength(), NAME_ID);
+							continue;
+						}
 					}
-				} catch (Exception e) {
-					continue;
-				}
-				ITextRegion region = locationInFileProvider.getSignificantTextRegion(semantic);
-				IRegion region2 = new Region(region.getOffset(), region.getLength());
-				if (TextUtilities.overlaps(region2, new Region(node.getOffset(), 0))){
-					acceptor.addPosition(node.getOffset(), node.getLength(), NAME_ID);
-				}
+				} catch (Exception e) {}
 			}
 		}
 	}

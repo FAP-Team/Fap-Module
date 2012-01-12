@@ -54,8 +54,8 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 			acceptor.accept(createCompletionProposal(value, context));
 			return;
 		}
-		if (value.equals("action")){
-			acceptor.accept(createCompletionProposal(value, styledProposal(value + "  -  " + "(read, edit, delete, create)", null), null, context));
+		if (value.equals("accion")){
+			acceptor.accept(createCompletionProposal(value, styledProposal(value + "  -  " + "(leer, editar, crear, borrar)", null), null, context));
 			return;
 		}
 		char first = value.charAt(0);
@@ -297,20 +297,6 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		variables.add(agenteVar);
 		return variables;
 	}
-	
-//	public Set<Entity> getEntidadesCampo(Campo campo) {
-//		EObject container = LedCampoUtils.getElementosContainer(campo);
-//		Entity entidadValida = LedCampoUtils.getEntidadValida(campo);
-//		if (entidadValida == null){ // Es null porque son v�lidas todas las entidades
-//			return LedEntidadUtils.getEntidades(campo.eResource());
-//		}
-//		Set<Entity> entidades = new HashSet<Entity>();
-//		if (!(container instanceof Tabla)){
-//			entidades.addAll(LedEntidadUtils.getSingletons(campo.eResource()));
-//		}
-//		entidades.add(entidadValida);
-//		return entidades;
-//	}
 	
 	private static Color color = new Color(Display.getCurrent(), 127, 127, 127);
 	private static Color acceptedColor = new Color(Display.getCurrent(), 0, 120, 0);

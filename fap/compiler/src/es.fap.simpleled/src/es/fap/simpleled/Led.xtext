@@ -117,7 +117,8 @@ MenuEnlace:
 			('pagina' '=' pagina=PaginaAccion) |
 			('popup' '=' popup=PopupAccion) |
 			('accion' '=' accion=STRING) |
-			('url' '=' url=STRING)
+			('url' '=' url=STRING) |
+			(anterior?="anterior")
 		)?
 	)
 ;
@@ -136,7 +137,6 @@ Accion:
 		("boton" "=" boton=STRING)?
 		& ('redirigir' '=' (anterior?="anterior" | redirigir=PaginaAccion | redirigirUrl=STRING))?
 		& ("mensajeOk" "=" mensajeOk=STRING)?
-		& ("mensajeError" "=" mensajeError=STRING)?
 		& (noBorrarEntidad?='noBorrarEntidad')?
 		& (crearSiempre?="crearSiempre")?
 	)
@@ -297,7 +297,7 @@ Form:
 	elemento='Form' (name=ID) (
 		(autoEnviar?="autoEnviar")?
 		& ("permiso" "=" permiso=[Permiso])?
-		& ('redirigir' '=' redirigir=[Pagina|QN])?
+		& ('redirigir' '=' redirigir=PaginaAccion)?
 	)
 	'{'
 		elementos+=Elemento+
@@ -483,7 +483,7 @@ PermisoVarSqlParameters:
 ;
 
 CampoPermiso:
-	(variable=[PermisoVar] | action?="action" | agente?="agente") (atributos=CampoPermisoAtributos)?
+	(variable=[PermisoVar] | action?="accion" | agente?="agente") (atributos=CampoPermisoAtributos)?
 ;
 
 CampoPermisoAtributos:
@@ -525,7 +525,7 @@ PermisoRuleCheckGroupOp:
 ;
 
 PermisoRuleCheckRight:
-	campo=CampoPermiso | str=STRING  | nulo?='null'
+	campo=CampoPermiso | str=STRING  | nulo?='null' | action=("leer" | "editar" | "crear" | "borrar") 
 ;
 
 PermisoThen:

@@ -234,26 +234,4 @@ public class LedEntidadUtils {
 		return entidades;
 	}
 	
-//	/*
-//	 * Si la entidad Solicitud está presente, no incluye SolicitudGenerica,
-//	 * con el propósito de que no aparezca como opción en el autocompletado.
-//	 */
-//	public static Set<Entity> getEntidades(Resource res) {
-//		Set<Entity> entidades = new HashSet<Entity>();
-//		Entity solicitud = null;
-//		Entity solicitudGenerica = null;
-//		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, res)){
-//			if (entidad.getName().equals("SolicitudGenerica"))
-//				solicitudGenerica = entidad;
-//			else {
-//				entidades.add(entidad);
-//				if (entidad.getName().equals("Solicitud"))
-//					solicitud = entidad;
-//			}
-//		}
-//		if (solicitud == null && solicitudGenerica != null)
-//			entidades.add(solicitudGenerica);
-//		return entidades;
-//	}
-	
 }

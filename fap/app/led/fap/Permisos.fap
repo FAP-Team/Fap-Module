@@ -30,13 +30,13 @@ vars
 	SolicitudGenerica solicitud
 when
 	(
-		action = "update" and
+		accion = editar and
 		(agente.rolActivo in ("administrador", "usuario")) and
 		solicitud.registro.fasesRegistro.borrador = "false"
 	)	
 	or
 	(
-		action = "read" and
+		accion = leer and
 		(agente.rolActivo in ("administrador", "usuario"))
 	)	
 then
@@ -46,9 +46,9 @@ Permiso presentacionModificar
 vars
 	SolicitudGenerica solicitud
 when
-	action = "read"
+	accion = leer
 	or
-	(action = "update" and solicitud.registro.fasesRegistro.registro = "false")
+	(accion = editar and solicitud.registro.fasesRegistro.registro = "false")
 then
 	grant		
 
@@ -72,9 +72,9 @@ when
 		solicitud.registro.fasesRegistro.borrador = "true"
 	and
 	(
-		(action = "update" and solicitud.registro.fasesRegistro.firmada= "false")
+		(accion = editar and solicitud.registro.fasesRegistro.firmada= "false")
 		or	
-		(action = "read")
+		(accion = leer)
 	)	
 then
 	grant
@@ -89,7 +89,7 @@ when
 	and
 	(
 		(
-			action = "update"
+			accion = editar
 			and
 			(
 				(
@@ -106,7 +106,7 @@ when
 			)
 		)
 		or	
-			action = "read"
+			accion = leer
 	)
 then
 	grant			
@@ -137,12 +137,12 @@ Permiso solicitudPreparadaFirmarYPresentar
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "update" and
+	(accion = editar and
 	(agente.rolActivo in ("administrador", "usuario")) and
 	solicitud.estado = "borrador" and
 	solicitud.registro.fasesRegistro.borrador = "true")
 	or
-	(action = "read" and
+	(accion = leer and
 	(agente.rolActivo in ("administrador", "usuario")))
 then
 	grant
@@ -151,7 +151,7 @@ Permiso editableSiSolicitudIniciada
 vars
 	SolicitudGenerica solicitud
 when
-	action = "update" and
+	accion = editar and
 	solicitud.estado in ("Iniciada", "Requerida", "Requerida plazo vencido", "En verificación", "Pendiente requerimiento", "Excluido", "Plazo vencido", "Verificado")
 then
 	grant
@@ -160,13 +160,13 @@ Permiso solicitudPreparadaFirmar
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "update" and
+	(accion = editar and
 	(agente.rolActivo in ("administrador", "usuario")) and
 	solicitud.estado = "borrador"  and
 	solicitud.registro.fasesRegistro.borrador != null and
 	solicitud.registro.fasesRegistro.borrador = "true")
 	or
-	(action = "read" and
+	(accion = leer and
 	(agente.rolActivo in ("administrador", "usuario")))
 then
 	grant
@@ -175,14 +175,14 @@ Permiso solicitudPreparadaPresentar
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "update" and
+	(accion = editar and
 	(agente.rolActivo in ("administrador", "usuario")) and
 	solicitud.estado = "borrador" and
 	solicitud.registro.fasesRegistro.borrador != null and
 	solicitud.registro.fasesRegistro.borrador = "true" and
 	solicitud.registro.fasesRegistro.firmada = "true")
 	or
-	(action = "read" and
+	(accion = leer and
 	(agente.rolActivo in ("administrador", "usuario")))
 then
 	grant
@@ -194,7 +194,7 @@ vars
 	SolicitudGenerica solicitud
 	Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 when
-	(/*action = "read" and */agente.rolActivo in ("administrador", "gestor", "revisor"))
+	(agente.rolActivo in ("administrador", "gestor", "revisor"))
 	or
 	participacion != null 			
 then
@@ -205,7 +205,7 @@ then
 
 Permiso adminGestorRevisor
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor"))
 then 
 	grant
@@ -223,7 +223,7 @@ Permiso aportacionDocumentos
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "read") and 
+	(accion = leer) and 
 	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
 	(solicitud.estado in ("iniciada", "requerida", "requerida plazo vencido"))
 then
@@ -231,13 +231,13 @@ then
 
 Permiso noEditable
 when
-	(action = "update")
+	(accion = editar)
 then
 	deny
 
 Permiso noVisibleUsuario
 when
-	(action = "read") and
+	(accion = leer) and
 	usuario
 then
 	deny
@@ -257,7 +257,7 @@ Permiso solicitudEditable
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "read")
+	(accion = leer)
 	or
 	!usuario
 	or
@@ -365,7 +365,7 @@ Permiso mensajeVerificacion
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "read") and 
+	(accion = leer) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado = "requerida plazo vencido")
 then
@@ -376,7 +376,7 @@ Permiso iniciarVerificacion
 vars
 	SolicitudGenerica solicitud
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado = "iniciada")
 then
@@ -389,12 +389,12 @@ when
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(
 		(
-			(action = "read") and 
+			(accion = leer) and 
 			(solicitud.estado in ("requerida", "pendiente requerimiento", "requerida plazo vencido", "en verificacion"))
 		)
 		or
 		(
-			(action = "update") and
+			(accion = editar) and
 			(solicitud.estado = "en verificacion") 
 		)
 	)
@@ -405,7 +405,7 @@ Permiso verificacionRequerimientos
 vars
 	SolicitudGenerica solicitud
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido"))
 then
@@ -415,7 +415,7 @@ Permiso nuevoRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado = "pendiente requerimiento")
 then
@@ -429,12 +429,12 @@ when
 	(solicitud.estado = "pendiente requerimiento") and
 	(
 		(
-			(action = "read") and 
+			(accion = leer) and 
 			(agente.rolActivo in ("administrador", "gestor", "revisor"))		
 		)
 		or 
 		(
-			(action = "update") and 
+			(accion = editar) and 
 			(agente.rolActivo in ("administrador", "gestor"))		
 		)
 	)
@@ -445,7 +445,7 @@ Permiso finalizarRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado in ("requerida", "requerida plazo vencido"))
 then

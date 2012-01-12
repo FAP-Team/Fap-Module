@@ -95,6 +95,8 @@
 						#{/else}</a></h3>
          
           <ul class="nav secondary-nav">
+          
+          #{if agente.roles.size() > 1}
             #{form @fap.SecureController.changeRol(), id:"changeRolForm2"}
             <li class="dropdown">
               <a href="#" class="dropdown-toggle">${models.TableKeyValue.getValue("roles", agente.rolActivo)}</a>
@@ -114,6 +116,12 @@
               </ul>
             </li>
             #{/form}
+          #{/if}
+          #{else}
+          		<li>
+            		#{a @fap.SecureController.logout()}&{'fap.header.logout'}#{/a}
+            	</li>
+          #{/else}
           </ul>
 
 			%{	

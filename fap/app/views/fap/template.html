@@ -72,7 +72,12 @@
 	 <div class="topbar">
 	 <div class="topbar-inner" data-dropdown="dropdown">
         <div class="container">
-         #{if cabeceraUsuario == null}
+		#{if cabeceraUsuario}
+		<h3><a href="#">
+			#{get 'cabeceraUsuario' /}
+		</a></h3>
+		#{/if}
+        #{if cabeceraUsuario == null}
          	%{
 				l : {
 					def agente = controllers.fap.AgenteController.getAgente();
@@ -91,7 +96,7 @@
 							#{/else}
 						#{/if}
 						#{else}
-							#{fap.breadcrumbs title:title/}
+							#{fap.breadcrumbs title:title/}pepe
 						#{/else}</a></h3>
          
           <ul class="nav secondary-nav">

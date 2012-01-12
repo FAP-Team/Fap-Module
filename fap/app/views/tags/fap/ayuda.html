@@ -15,12 +15,10 @@
 	def button_id = id + '-button'
 	
 	def strAyudaPopover = "";
-	play.Logger.info("Ayuda");
 	if (ayuda?.popover) {
 		// Tendrá un popover de ayuda. El título será hasta el primer punto, y si no tiene el título será "Ayuda"
 		String title = "";
 		String rest = "";
-		play.Logger.info("Ayuda de popover");
 		def position = ayuda.popover.indexOf(".");
 		if (position != -1) { 
 			title = ayuda.popover.substring(0, position);
@@ -29,10 +27,7 @@
 			title = "Ayuda";
 			rest = ayuda.popover;
 		}
-		play.Logger.info("title: "+title);
-		play.Logger.info("rest : "+rest);
 		strAyudaPopover = "rel=\"popover\" data-content=\"${rest}\" data-original-title=\"${title}\""
-		play.Logger.info("-> "+strAyudaPopover);
 	}
 }%
 

@@ -1,6 +1,6 @@
 package generator.utils
 
-import es.fap.simpleled.parseTreeConstruction.LedParsetreeConstructor.ThisRootNode;
+import es.fap.simpleled.parseTreeConstruction.LedParsetreeConstructor.*;
 
 class AlmacenEntidad {
 

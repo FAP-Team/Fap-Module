@@ -9,7 +9,7 @@ import es.fap.simpleled.led.*;
 import generator.utils.EntidadUtils;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
-import es.fap.simpleled.parseTreeConstruction.LedParsetreeConstructor.ThisRootNode;
+import es.fap.simpleled.parseTreeConstruction.LedParsetreeConstructor.*;
 
 public class GPopup {
 

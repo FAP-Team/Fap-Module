@@ -6,7 +6,8 @@ import java.util.Iterator;
 public class TagParameters extends HashMap<String, String> {
 	
 	public void putStr(String key, String value){
-		put(key, "'${value}'");
+		value = "'${value}'";
+		put(key, value);
 	}
 	
 	public void putList(String key, List lista){
@@ -21,15 +22,18 @@ public class TagParameters extends HashMap<String, String> {
 		put(key, '[' + out + ']');
 	}
 	
-	public String lista(){
+	/*
+	 * Si el parámetro variasLineas es true, cada parámetro de la lista será escrito en una nueva linea.
+	 */
+	public String lista(boolean variasLineas = false){
+		String nuevaLinea = "";
+		if (variasLineas) nuevaLinea = "\n     ";
 		String out = "";
-		
-		Iterator<String> iterador = keySet().iterator()
+		Iterator<String> iterador = keySet().sort().iterator()
 		while(iterador.hasNext()){
 			String key = iterador.next();
 			String value = get(key);
-			
-			out += "$key:$value"
+			out += "$nuevaLinea$key:$value"
 			if(iterador.hasNext()){
 				out += ", "
 			}

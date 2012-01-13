@@ -99,7 +99,6 @@ Entidad Documentacion {
 	String firma transient
 }
 
-
 Entidad ObligatoriedadDocumentos extends Singleton {
 	List<String> imprescindibles
 	List<String> obligatorias
@@ -273,14 +272,6 @@ Entidad SemillaExpediente extends Singleton{
 	Long semilla
 }
 
-//Entidad Pdf {
-//	String idPdf
-//	String title
-//	LongText content
-//	String header
-//	String footer
-//}
-//
 
 // Plantillas de mails automáticos a enviar
 Entidad Mail tableName = "email" {

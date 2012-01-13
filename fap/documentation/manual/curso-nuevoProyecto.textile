@@ -15,7 +15,7 @@ bc. cd holamundo
 bc. # Dependencias
 require:
     - play
-    - fap -> fap 1.1
+    - fap -> fap 1.2.1
     - play -> pdf 0.6
     - play -> recaptcha 1.2
 # Custom repository 
@@ -80,7 +80,7 @@ Fichero "dependencies.yml"
 
 bc. require:
     - play
-    - fap -> fap 1.1
+    - fap-module -> fap 1.2.1
     - play -> pdf 0.6
 repositories:
     - Fap Local repository:

@@ -35,8 +35,8 @@ import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
 
-@With({PropertiesFap.class, MessagesController.class})
-public class SecureController extends Controller {
+
+public class SecureController extends GenericController{
 
 	private static Logger log = Logger.getLogger(SecureController.class);
 	
@@ -280,45 +280,20 @@ public class SecureController extends Controller {
     static void redirectToOriginalURL() throws Throwable {
         String url = flash.get("url");
         if(url == null) {
-            url = "SolicitudesController.index";
+            url = getDefaultRoute(); 
         }
         redirect(url);
     }
     
-	/**
-	 * 1) Comprueba que el usuario está logueado en páginas que requieran login
-	 * 2) Si es una petición de una solicitud (Ej /solicitud/{id}/...)
-	 *    Comprueba que el usuario tenga permisos para ver la solicitud
-	 * 3) Comprueba los permisos según las anotaciones del método   
-	 * @throws Throwable
-	 */
-    @Before(unless={"login", "authenticate", "logout", "authenticateCertificate"})
-    static void checkAccess() throws Throwable {
-        // Authent
-        if(!AgenteController.agenteIsConnected()) {
-            flash.put("url", request.method == "GET" ? request.url : "/"); // seems a good default
-            SecureController.login();
-        }
-       
-        AgenteController.findAgente(); //Recupera el agente de base de datos
-        Long idSolicitud = null;
-
-        if(params._contains("idSolicitud")){
-        	idSolicitud = Long.parseLong(params.get("idSolicitud"));
-        	Map<String, Long> ids = new HashMap<String, Long>();
-        	ids.put("idSolicitud", idSolicitud);
-			
-        	Secure secure = InjectorConfig.getInjector().getInstance(Secure.class);
-        	if (!secure.check("listaSolicitudes","read", ids, null)) {
-        		Messages.fatal("No tiene permisos para acceder a la solicitud");
-        		//Messages.keep();
-			}
-        	renderArgs.put("idSolicitud", idSolicitud);
-        	renderArgs.put("idEntidad", idSolicitud);
-        }
-        
+    private static String getDefaultRoute(){
+    	String httpPath = Play.configuration.getProperty("http.path", null);
+    	if (httpPath != null)
+    		return httpPath + "/";
+    	else
+    		return "/";
     }
-
+    
+    
     /**
      * Cambia el rol del usuario
      * Se comprueba que el usuario conectado tenga el rol que se quiera cambiar

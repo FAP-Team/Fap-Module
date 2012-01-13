@@ -1,5 +1,7 @@
 package es.fap.simpleled.validation;
 
+import org.eclipse.emf.ecore.EObject;
+
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.util.LedEntidadUtils;
@@ -8,7 +10,8 @@ public class EntidadValidator extends LedElementValidator{
 
 	private String nameEntidad;
 	
-	public EntidadValidator(String nameEntidad){
+	public EntidadValidator(EObject element, String nameEntidad){
+		super(element);
 		this.nameEntidad = nameEntidad;
 	}
 	

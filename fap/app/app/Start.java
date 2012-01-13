@@ -47,12 +47,14 @@ public class Start extends Job {
 		
 		if(TableKeyValue.count() == 0){
 	        long count = TableKeyValue.loadFromFiles();
-	        Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas");
+	        if (count > 0)
+	        	Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas");
 		}
 		
 		if (Mail.count() == 0){
 			long count = Mails.loadFromFiles();
-			Logger.info("Se cargaron desde fichero " + count + " registros de la tabla emails");
+	        if (count > 0)
+	        	Logger.info("Se cargaron desde fichero " + count + " registros de la tabla emails");
 		}
 
 		//Inicializa todas las relaciones a null de la solicitud

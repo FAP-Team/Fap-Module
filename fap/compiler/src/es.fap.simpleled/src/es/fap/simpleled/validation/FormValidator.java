@@ -1,10 +1,16 @@
 package es.fap.simpleled.validation;
 
+import org.eclipse.emf.ecore.EObject;
+
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
 public class FormValidator extends LedElementValidator{
+
+	public FormValidator(EObject element) {
+		super(element);
+	}
 
 	@Override
 	public boolean aceptaEntidad(Entity entidad) {

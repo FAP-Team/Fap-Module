@@ -1,24 +1,26 @@
 package es.fap.simpleled.led.util;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 import es.fap.simpleled.led.*;
-import es.fap.simpleled.validation.*;
 
 public class LedCampoUtils {
 	
 	public static Entity getUltimaEntidad(Campo campo){
+		if (campo == null){
+			return null;
+		}
 		Entity result = campo.getEntidad();
 		CampoAtributos attrs = campo.getAtributos();
 		while (attrs != null){
 			Attribute attr = attrs.getAtributo();
 			if (LedEntidadUtils.getEntidad(attr) != null){
 				result = LedEntidadUtils.getEntidad(attr);
-			}
-			if (! LedEntidadUtils.xToOne(attr)){
-				return result;
 			}
 			attrs = attrs.getAtributos();
 		}
@@ -46,14 +48,64 @@ public class LedCampoUtils {
 		return attrs;
 	}
 	
-	public static Campo getCampo(EObject model) {
-		if (model instanceof Campo) {
-			return (Campo) model;
+	@SuppressWarnings("unchecked")
+	public static EList<Elemento> getElementos(EObject container){
+		try {
+			return (EList<Elemento>) container.getClass().getMethod("getElementos").invoke(container);
+		} catch (Exception e) {
+			return null;
 		}
-		for (Method method : model.getClass().getMethods()) {
+	}
+	
+	public static boolean equals(Campo campo1, Campo campo2){
+		if (campo1 == null || campo2 == null)
+			return campo1 == campo2;
+		if (!campo1.getEntidad().getName().equals(campo2.getEntidad().getName()))
+			return false;
+		CampoAtributos atributos1 = campo1.getAtributos();
+		CampoAtributos atributos2 = campo2.getAtributos();
+		while (atributos1 != null && atributos2 != null){
+			if (!atributos1.getAtributo().getName().equals(atributos2.getAtributo().getName()))
+				return false;
+			atributos1 = atributos1.getAtributos();
+			atributos2 = atributos2.getAtributos();
+		}
+		return atributos1 == atributos2;
+	}
+	
+	public static boolean hayCamposGuardables(EObject container){
+		EList<Elemento> elementos = getElementos(container);
+		if (elementos != null){
+			for (EObject obj: elementos){
+				if (hayCamposGuardables(obj))
+					return true;
+			}
+			return false;
+		}
+		return (!((container instanceof Tabla) || (container instanceof FirmaPlatinoSimple))) && getCampo(container) != null;
+	}
+	
+	public static boolean hayCamposGuardablesOrTablaOneToMany(EObject container){
+		EList<Elemento> elementos = getElementos(container);
+		if (elementos != null){
+			for (EObject obj: elementos){
+				if (hayCamposGuardablesOrTablaOneToMany(obj))
+					return true;
+			}
+			return false;
+		}
+		if (container instanceof Tabla)
+			return LedCampoUtils.getUltimoAtributo(getCampo(container)) != null;
+		return getCampo(container) != null;
+	}
+	
+	public static Campo getCampo(EObject object) {
+		if (object instanceof Campo) 
+			return (Campo) object;
+		for (Method method : object.getClass().getMethods()) {
 			if (method.getReturnType().equals(Campo.class)) {
 				try {
-					return (Campo) method.invoke(model);
+					return (Campo) method.invoke(object);
 				} catch (Exception e) {
 					return null;
 				}
@@ -69,10 +121,12 @@ public class LedCampoUtils {
 		return (Campo) atributos.eContainer();
 	}
 	
-	public static EObject getElementosContainer(Campo campo){
-		EObject container = campo.eContainer().eContainer();
+	public static EObject getElementosContainer(EObject obj){
+		EObject container = obj.eContainer();
+		if (obj instanceof Campo)
+			container = container.eContainer();
 		while (container != null){
-			if (container instanceof Tabla || container instanceof Pagina || container instanceof Popup || container instanceof Form){
+			if (container instanceof Tabla || container instanceof Pagina || container instanceof Popup || container instanceof Model){
 				return container;
 			}
 			container = container.eContainer();
@@ -94,59 +148,95 @@ public class LedCampoUtils {
 		return true;
 	}
 	
-	public static LedElementValidator getElementValidator(Campo campo){
-		EObject container = campo.eContainer();
-		if (container instanceof Fecha) {
-			return new FechaValidator();
+	/*
+	 * Devuelve el campo asociado a una página, que será:
+	 * 		el definido en el elemento Pagina.
+	 * 		ó: el definido en el elemento Formulario de la página.
+	 * 		ó: null
+	 */
+	public static Campo getCampoPagina(Pagina pagina){
+		if (pagina.getCampo() != null){
+			return pagina.getCampo();
 		}
-		if (container instanceof Columna) {
-			return new ColumnaValidator();
-		}
-		if (container instanceof Tabla || container instanceof Popup) {
-			return new TablaValidator();
-		}
-		if (container instanceof Form) {
-			return new FormValidator();
-		}
-		if (container instanceof Texto || container instanceof AreaTexto) {
-			return new TextoValidator();
-		}
-		if (container instanceof Grupo) {
-			return new GrupoValidator();
-		}
-		if (container instanceof Check) {
-			return new CheckValidator();
-		}
-		if (container instanceof Combo) {
-			return new ComboValidator();
-		}
-		if (container instanceof SubirArchivoAed || container instanceof EditarArchivoAed || container instanceof FirmaPlatinoSimple) {
-			return new EntidadValidator("Documento");
-		}
-		if (container instanceof Direccion) {
-			return new EntidadValidator("Direccion");
-		}
-		if (container instanceof Nip) {
-			return new EntidadValidator("Nip");
-		}
-		if (container instanceof Persona) {
-			return new EntidadValidator("Persona");
-		}
-		if (container instanceof PersonaFisica) {
-			return new EntidadValidator("PersonaFisica");
-		}
-		if (container instanceof PersonaJuridica) {
-			return new EntidadValidator("PersonaJuridica");
-		}
-		if (container instanceof Solicitante) {
-			return new EntidadValidator("Solicitante");
-		}
-		if (container instanceof EntidadAutomatica) {
-			return new EntidadAutomaticaValidator();
-		}
-		if (container instanceof Enlace) {
-			return new EnlaceValidator();
-		}
+		return ((Formulario) pagina.eContainer()).getCampo();
+	}
+	
+	/*
+	 * Devuelve cual es la entidad que se puede usar en ese campo (sin contar
+	 * las Singleton), en función del contexto en que se sitúe dicho campo.
+	 */
+	public static Entity getEntidadPaginaOrPopupOrTabla(EObject element){
+		EObject container = LedCampoUtils.getElementosContainer(element);
+		if (container instanceof Pagina)
+			return LedEntidadUtils.getEntidad((Pagina)container);
+		if (container instanceof Tabla || container instanceof Popup)
+			return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampo(container));
 		return null;
 	}
+	
+	public static Map<String, Entity> getEntidadesValidas(Campo campo){
+		EObject container = LedCampoUtils.getElementosContainer(campo);
+		Map<String, Entity> entidades = new HashMap<String, Entity>();
+		if (container instanceof Model || campo.eContainer() instanceof Tabla){
+			for (Entity e: ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, campo.eResource()))
+				entidades.put(e.getName(), e);	
+			return entidades;
+		}
+		if (container instanceof Pagina){
+			Entity entidadPagina = LedEntidadUtils.getEntidad((Pagina)container);
+			if (entidadPagina != null)
+				entidades.put(entidadPagina.getName(), entidadPagina);
+		}
+		if (container instanceof Tabla || container instanceof Popup){
+			Entity ultimaEntidad = LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampo(container));
+			entidades.put(ultimaEntidad.getName(), ultimaEntidad);
+		}
+		if (! (container instanceof Tabla)){
+			for (Entity single: LedEntidadUtils.getSingletons(campo.eResource()))
+				entidades.put(single.getName(), single);
+		}
+		return entidades;
+	}
+
+	/*
+	 * Concatena dos campos, siempre y cuando la ultima entidad del primer campo sea la misma
+	 * que la primera entidad del segundo campo.
+	 */
+	public static Campo concatena(Campo primero, Campo segundo){
+		if (primero == null || segundo == null)
+			return null;
+		if (!LedEntidadUtils.equals(getUltimaEntidad(primero), segundo.getEntidad()))
+			return null;
+		Campo result = LedFactory.eINSTANCE.createCampo();
+		result.setEntidad(primero.getEntidad());
+		CampoAtributos atributos = primero.getAtributos();
+		CampoAtributos attrs = null;
+		while (atributos != null){
+			if (attrs == null){
+				result.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
+				attrs = result.getAtributos();
+			}
+			else{
+				attrs.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
+				attrs = attrs.getAtributos();
+			}
+			attrs.setAtributo(atributos.getAtributo());
+			atributos = atributos.getAtributos();
+		}
+		atributos = segundo.getAtributos();
+		while (atributos != null){
+			if (attrs == null){
+				result.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
+				attrs = result.getAtributos();
+			}
+			else{
+				attrs.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
+				attrs = attrs.getAtributos();
+			}
+			attrs.setAtributo(atributos.getAtributo());
+			atributos = atributos.getAtributos();
+		}
+		return result;
+	}
+	
 }

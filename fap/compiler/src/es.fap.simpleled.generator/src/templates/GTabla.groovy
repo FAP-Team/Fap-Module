@@ -18,7 +18,6 @@ import generator.utils.CampoUtils;
 public class GTabla {
 
 	def Tabla tabla;
-	
 	def contenedor;
 	def tipo;
 	CampoUtils campo;
@@ -28,18 +27,17 @@ public class GTabla {
 		g.tabla = tabla;
 		g.campo = CampoUtils.create(tabla.campo);
 		
-		g.contenedor = HashStack.top(HashStackName.GPAGINA);
-		g.tipo = "pagina";
-		if (g.contenedor == null){
-			g.contenedor = HashStack.top(HashStackName.GPOPUP);
+		g.contenedor = HashStack.top(HashStackName.CONTAINER);
+		if (g.contenedor instanceof GPopup){
 			g.tipo = "popup";
+		}
+		else{
+			g.tipo = "pagina";
 		}
 		
 		HashStack.push(HashStackName.CONTROLLER, g);
 		HashStack.push(HashStackName.ROUTES, g);
 		return g.view();
-		
-		
 	}
 
 	private String id(){
@@ -53,7 +51,11 @@ public class GTabla {
 		params.putStr 'id', id()
 
 		EntidadUtils entidad = EntidadUtils.create(campo.entidad);
-        params.put 'url', "@${controllerName}.${controllerMethodName()}(${entidad.id})"
+		
+		if(campo.getCampo().getAtributos() != null && !entidad.isSingleton())
+        	params.put 'url', "@${controllerName}.${controllerMethodName()}(${entidad.id})"
+		else
+			params.put 'url', "@${controllerName}.${controllerMethodName()}()"
 
         if (tabla.titulo){
 			params.putStr 'titulo', tabla.titulo
@@ -63,42 +65,11 @@ public class GTabla {
 		if (tabla.alto){
 			params.putStr 'alto', tabla.alto
 		}
-
-				
-		if (tabla.popup != null){
-			params.putStr 'popup', tabla.popup.name;
-			if (tabla.popup.permiso)
-				params.putStr 'permisoPopup', tabla.popup.permiso.name;
-		}
 		
-		if (tabla.popupCrear != null){
-			params.putStr 'popupCrear', tabla.popupCrear.name;
-			if (tabla.popupCrear.permiso)
-				params.putStr 'permisoPopupCrear', tabla.popupCrear.permiso.name;
-		}
-		if (tabla.popupBorrar != null){
-			params.putStr 'popupBorrar', tabla.popupBorrar.name;
-			if (tabla.popupBorrar.permiso)
-				params.putStr 'permisoPopupBorrar', tabla.popupBorrar.permiso.name;
-		}
-		if (tabla.popupModificar != null){
-			params.putStr 'popupModificar', tabla.popupModificar.name;
-			if (tabla.popupModificar.permiso)
-				params.putStr 'permisoPopupModificar', tabla.popupModificar.permiso.name;
-		}
-		if (tabla.popupVer != null){
-			params.putStr 'popupVer', tabla.popupVer.name;
-			if (tabla.popupVer.permiso)
-				params.putStr 'permisoPopupVer', tabla.popupVer.permiso.name;
-		}
-
-		// Si el enlace es a una página, no a un popUp
-		if (tabla.pagina != null) {
-			params.put 'pagina', "\"@{${ParameterUtils.parameter(tabla.pagina.name)}Controller.index()}\""
-		}
-		else if (tabla.paginaProperty != null) {
-			params.put 'pagina', "\"@{${ParameterUtils.parameter(tabla.paginaProperty)}Controller.index()}\""
-		}
+		params.putStr("idEntidad", "_${EntidadUtils.create(campo.ultimaEntidad).id}_");
+		
+		botonesPopup(params);
+		botonesPagina(params);
 		
 		if (tabla.recargarPagina)
 			params.put("recargarPagina", true)
@@ -110,8 +81,6 @@ public class GTabla {
 			params.putStr("urlSeleccionable", "${controllerName}.${seleccionableMethodName()}")
 		}
 
-		params.putStr('idProperty', idProperty(tabla))
-		
 		params.putStr 'tipo', tipo;
 		
 		StringBuffer columnasView = new StringBuffer();
@@ -157,27 +126,106 @@ public class GTabla {
 					}
 				}
 			}
-			for(Columna c : tabla.columnas){
-				columnasView.append (columnaView(c));
-			}
-	    } else{
-		    for(Columna c : tabla.columnas){
-			   columnasView.append (columnaView(c));
-		    }
-		}
-		
+	    }
 		if(tabla.columnas.isEmpty()){
-			System.out.println("WARNING: La tabla: <"+tabla.getName()+"> no tiene ninguna columna como visible");
+			Columna c = LedFactory.eINSTANCE.createColumna();
+			c.campo = CampoUtils.create("${LedCampoUtils.getUltimaEntidad(tabla.campo).name}.id").campo;
+			tabla.columnas.add(c);
 		}
+		for(Columna c : tabla.columnas)
+			columnasView.append (columnaView(c));
 
 		String view = """
-#{fap.tabla ${params.lista()}}
+#{fap.tabla ${params.lista(true)}
+}
 	${columnasView}
 #{/fap.tabla}
 """
 		return view;
 	}
 	
+	private void botonesPopup(TagParameters params){
+		if (tabla.popup != null) {
+			Controller popupUtil = Controller.fromPopup(tabla.popup).initialize();
+			params.put 'urlPopupLeer', popupUtil.getRouteIndex("leer", true);
+			params.putStr 'popupLeer', tabla.popup.name;
+			params.put 'urlPopupCrear', popupUtil.getRouteIndex("crear", true);
+			params.putStr 'popupCrear', tabla.popup.name;
+			params.put 'urlPopupEditar', popupUtil.getRouteIndex("editar", true);
+			params.putStr 'popupEditar', tabla.popup.name;
+			params.put 'urlPopupBorrar', popupUtil.getRouteIndex("borrar", true);
+			params.putStr 'popupBorrar', tabla.popup.name;
+			if (tabla.popup.permiso)
+				params.putStr 'permisoPopup', tabla.popup.permiso.name;
+		}
+		if (tabla.popupVer != null) {
+			params.put 'urlPopupLeer', Controller.fromPopup(tabla.popupVer).initialize().getRouteIndex("leer", true);
+			params.putStr 'popupLeer', tabla.popupVer.name;
+			if (tabla.popupVer.permiso)
+				params.putStr 'permisoPopupLeer', tabla.popupVer.permiso.name;
+		}
+		if (tabla.popupCrear != null) {
+			params.put 'urlPopupCrear', Controller.fromPopup(tabla.popupCrear).initialize().getRouteIndex("crear", true);
+			params.putStr 'popupCrear', tabla.popupCrear.name;
+			if (tabla.popupCrear.permiso)
+				params.putStr 'permisoPopupCrear', tabla.popupCrear.permiso.name;
+		}
+		if (tabla.popupModificar != null) {
+			params.put 'urlPopupEditar', Controller.fromPopup(tabla.popupModificar).initialize().getRouteIndex("editar", true);
+			params.putStr 'popupEditar', tabla.popupModificar.name;
+			if (tabla.popupModificar.permiso)
+				params.putStr 'permisoPopupEditar', tabla.popupModificar.permiso.name;
+		}
+		if (tabla.popupBorrar != null) {
+			params.put 'urlPopupBorrar', Controller.fromPopup(tabla.popupBorrar).initialize().getRouteIndex("borrar", true);
+			params.putStr 'popupBorrar', tabla.popupBorrar.name;
+			if (tabla.popupBorrar.permiso)
+			params.putStr 'permisoPopupBorrar', tabla.popupBorrar.permiso.name;
+		}
+	}
+	
+	private void botonesPagina(TagParameters params){
+		if (tabla.pagina != null) {
+			Controller pagUtil = Controller.fromPagina(tabla.pagina).initialize();
+			params.put 'urlPaginaLeer', pagUtil.getRouteIndex("leer", true);
+			params.put 'urlPaginaCrear', pagUtil.getRouteIndex("crear", true);
+			params.put 'urlPaginaEditar', pagUtil.getRouteIndex("editar", true);
+			params.put 'urlPaginaBorrar', pagUtil.getRouteIndex("borrar", true);
+			if (tabla.pagina.permiso)
+				params.putStr 'permisoPagina', tabla.pagina.permiso.name;
+		}
+		if (tabla.paginaVer != null) {
+			params.put 'urlPaginaLeer', Controller.fromPagina(tabla.paginaVer).initialize().getRouteIndex("leer", true);
+			if (tabla.paginaVer.permiso)
+				params.putStr 'permisoPaginaLeer', tabla.paginaVer.permiso.name;
+		}
+		if (tabla.paginaCrear != null) {
+			params.put 'urlPaginaCrear', Controller.fromPagina(tabla.paginaCrear).initialize().getRouteIndex("crear", true);
+			if (tabla.paginaCrear.permiso)
+				params.putStr 'permisoPaginaCrear', tabla.paginaCrear.permiso.name;
+		}
+		if (tabla.paginaModificar != null) {
+			params.put 'urlPaginaEditar', Controller.fromPagina(tabla.paginaModificar).initialize().getRouteIndex("editar", true);
+			if (tabla.paginaModificar.permiso)
+				params.putStr 'permisoPaginaEditar', tabla.paginaModificar.permiso.name;
+		}
+		if (tabla.paginaBorrar != null) {
+			params.put 'urlPaginaBorrar', Controller.fromPagina(tabla.paginaBorrar).initialize().getRouteIndex("borrar", true);
+			if (tabla.paginaBorrar.permiso)
+				params.putStr 'permisoPaginaBorrar', tabla.paginaBorrar.permiso.name;
+		}
+	}
+	
+	private void addPopupBoton(Map popups, Popup popup, List<String> botones){
+		if (popups.get(popup) != null){
+			List last = popups.get(popup);
+			last.addAll(botones);
+			popups.put(popup, last);
+		}
+		else{
+			popups.put(popup, botones);
+		}
+	}
 	
 	private String columnaView(Columna c){
 		List<CampoUtils> campos = GTabla.camposDeColumna(c);
@@ -264,11 +312,6 @@ public class GTabla {
 		return campos.unique();
 	}
 	
-	public String idProperty(Tabla tabla){
-		List<CampoUtils> campos = uniqueCamposTabla(tabla);
-		return EntidadUtils.create(campos[0].entidad).variable + "_id";
-	}
-	
 	public String controller(){
 		List<CampoUtils> campos = uniqueCamposTabla(tabla);
 				
@@ -278,35 +321,38 @@ public class GTabla {
 
 		//Clase de la entidad que contiene la lista
 		
-		EntidadUtils entidad = EntidadUtils.create(campo.getUltimaEntidad());
+		EntidadUtils entidadHija = EntidadUtils.create(campo.getUltimaEntidad());
 		EntidadUtils entidadRaiz = EntidadUtils.create(campo.getEntidad());
 		
 		//La consulta depende de si se listan todas las entidades de una clase, o se accede a un campo
 		String query = null;
-		if(campo.str.split("\\.").length == 1){ //Lista todas las entidades de ese tipo
+		String param = "";
+		String idSingleton = "";
+		if(campo.getCampo().getAtributos() == null){ //Lista todas las entidades de ese tipo
 			query = """ "select ${entidadRaiz.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable}" """
-		}else{ //Acceso a los campos de una entidad
-			query = """ "select ${entidad.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable} join ${campo.firstLower()} ${entidad.variable} where ${entidadRaiz.variable}.id=?", id """
+		}
+		else{ //Acceso a los campos de una entidad
+			query = """ "select ${entidadHija.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable} join ${campo.firstLower()} ${entidadHija.variable} where ${entidadRaiz.variable}.id=?", ${entidadRaiz.id} """
+			if (entidadRaiz.isSingleton())
+				idSingleton = "${entidadRaiz.typeId} = ${entidadRaiz.clase}.get(${entidadRaiz.clase}.class).id;";
+			else
+				param = entidadRaiz.typeId;
 		}
 		
 		String rowsStr = campos.collect { '"' + it.sinEntidad() + '"'  }.join(", ");
 
-		String code = """
-			Long id = ${entidadRaiz.id} != null? ${entidadRaiz.id} : idEntidad;
-			java.util.List<${entidad.clase}> rows = ${entidad.clase}.find(${query}).fetch();
-			${getCodePermiso(entidad)}
-			
-			tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered);
-			renderJSON(response.toJSON($rowsStr));
-				"""
-		
 		return """
-	public static void ${controllerMethodName()}(Long ${entidadRaiz.id}, Long idEntidad){
-		${code}
+	public static void ${controllerMethodName()}(${param}){
+		${idSingleton}
+		java.util.List<${entidadHija.clase}> rows = ${entidadHija.clase}.find(${query}).fetch();
+		${getCodePermiso(entidadHija)}
+			
+		tables.TableRenderResponse<${entidadHija.clase}> response = new tables.TableRenderResponse<${entidadHija.clase}>(rowsFiltered);
+		renderJSON(response.toJSON($rowsStr));
 	}
 
 	${seleccionableMethod()}
-		"""
+	"""
 	}
 	
 	/**
@@ -318,28 +364,22 @@ public class GTabla {
 	 * @return
 	 */
 	private String getCodePermiso(EntidadUtils entidad) {
-		if(tabla.permiso != null){
-		String idsString = "";
-		if (entidad.variable.equals("solicitud")){
-			idsString = """ids.put("${entidad.id}", ${entidad.id});"""
-		}
-		
-		return """
-		Map<String, Long> ids = new HashMap<String, Long>();
-		${idsString}
-		List<${entidad.clase}> rowsFiltered = new ArrayList<${entidad.clase}>();
-		for(${entidad.clase} ${entidad.variable}: rows){
-			Map<String, Object> vars = new HashMap<String, Object>();
-			vars.put("${entidad.variable}", ${entidad.variable});
-			if (secure.check("${tabla.permiso.name}","read", ids, vars)) {
-				rowsFiltered.add(${entidad.variable});
-			}
-		}
-		"""
-		}else{
+		if(tabla.permiso == null){
 			return """
-		List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra""";
+				List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra
+			""";
 		}
+		return """
+			Map<String, Long> ids = new HashMap<String, Long>();
+			List<${entidad.clase}> rowsFiltered = new ArrayList<${entidad.clase}>();
+			for(${entidad.clase} ${entidad.variable}: rows){
+				Map<String, Object> vars = new HashMap<String, Object>();
+				vars.put("${entidad.variable}", ${entidad.variable});
+				if (secure.check("${tabla.permiso.name}","leer", ids, vars)) {
+					rowsFiltered.add(${entidad.variable});
+				}
+			}
+		"""
 	}
 	
 	private controllerMethodName(){
@@ -359,18 +399,16 @@ public class GTabla {
 	private String seleccionableMethodName () {
 		return StringUtils.firstLower(tabla.seleccionable.replaceAll(" ", ""))
 	}
-			
+
 	private String seleccionableMethod () {
-		if (tabla.seleccionable) {
-			return """
-		public static void ${seleccionableMethodName()}(List<Long> idsSeleccionados){
-			//Sobreescribir para incorporar funcionalidad
-			//No olvide asignar los permisos
-			//index();
-		}
+		if (! tabla.seleccionable)
+			return "";
+		return """
+			public static void ${seleccionableMethodName()}(List<Long> idsSeleccionados){
+				//Sobreescribir para incorporar funcionalidad
+				//No olvide asignar los permisos
+				//index();
+			}
 		"""
-		}
-		return ""
 	}
-	
 }

@@ -7,11 +7,6 @@ import generator.utils.HashStack.HashStackName;
 class GFormulario {
 
 	public static String generate(Formulario formulario){
-		
-		if (formulario.name.equals("SolicitudGenerico")){
-			formulario.name = "Solicitud";
-		}
-		
 		HashStack.push(HashStackName.FORMULARIO, formulario)
 		
 		if ((formulario.permiso != null)) {

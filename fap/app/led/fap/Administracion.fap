@@ -1,4 +1,5 @@
 Formulario Administracion permiso=administrador{
+	
 	Menu {
 		Enlace "Mis Solicitudes" pagina=Principal.Solicitudes
 		
@@ -16,16 +17,15 @@ Formulario Administracion permiso=administrador{
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 		}
 		
-		Enlace "Ayuda" pagina=Soporte.Soporte
+		Enlace "Ayuda" pagina=Soporte.Soporte crear
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 	
 	Pagina Usuarios {
-
 		Wiki {"Para asignar roles seleccione el usuario y pulse en editar"}
 
-		Tabla listaUsuarios titulo="Usuarios" campo=Agente 
-			popup=PopupUsuario 
+		Tabla listaUsuarios titulo="Usuarios" campo=Agente
+			popup=PopupUsuario
 		{
 			Columna campo=Agente.id titulo="Id" ancho="25"
 			Columna campo=Agente.username titulo="Usuario" expandir
@@ -36,7 +36,7 @@ Formulario Administracion permiso=administrador{
 		}
 	}
 	
-	Popup PopupUsuario campo=Agente modificar crear borrar titulo="Usuario" {
+	Popup PopupUsuario campo=Agente titulo="Usuario" {
 		Texto campo=Agente.username titulo="Username" requerido
 		Combo campo=Agente.roles titulo="Roles" busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido
@@ -61,7 +61,7 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 		}
 	}
 	
-	Popup PopupTramite campo=Tramite ver {
+	Popup PopupTramite campo=Tramite {
 		Texto campo=Tramite.nombre
 		Texto campo=Tramite.uri
 		
@@ -73,13 +73,13 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 		}	
 	}
 	
-	Pagina Convocatoria titulo="Convocatoria"{
+	Pagina Convocatoria campo=Convocatoria titulo="Convocatoria"{
 		Combo campo=Convocatoria.estado titulo="Estado de la convocatoria"
 	}
 	
 	Pagina ConfiguracionQuartz titulo="Configuración del Quartz" {
 		Grupo configQuartz titulo="Configuración del quartz" {
-			Wiki {"El quartz es el proceso que se encarga de comprobar los accesos a la sede cuando se emiten los requerimientos y asignar correctamente las fechas de acceso y de vencimiento de los requerimientos"}
+			Wiki {"El quartz es el proceso que se encarga de comprobar los accesos a la sede cuando se emiten los requerimientos y asignar correctamente las fechas de acceso y de vencimiento de los requerimientos."}
 			
 			Check campo=Quartz.execute titulo="Permitir ejecutar el quartz"
 			Check campo=Quartz.mostrarTodasSolicitudes titulo="Mostrar los datos de todas las solicitudes (para pruebas)"
@@ -92,71 +92,48 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 	}
 
 
-	Pagina TablaDeTablas noForm titulo="Tabla de tablas" permiso=administrador
+	Pagina TablaDeTablas noForm titulo="Tabla de tablas" permiso=administrador {
+		Wiki {"La tabla de tablas almacena la información de la listas. "}
 
-	{
+		Tabla tabladetablas titulo="Tabla de tablas" campo=TableKeyValue popup=PopupTablaDeTablas {
+			Columna campo=TableKeyValue.table titulo="Tabla"
+			Columna campo=TableKeyValue.key titulo="Clave"
+			Columna campo=TableKeyValue.value titulo="Valor" expandir
+		}
 
-	       Wiki {"La tabla de tablas almacena la información de la listas. "}
-
-
-
-	    Tabla tabladetablas titulo="Tabla de tablas" campo=TableKeyValue popup=PopupTablaDeTablas {
-	        Columna campo=TableKeyValue.table titulo="Tabla"
-	        Columna campo=TableKeyValue.key titulo="Clave"
-	        Columna campo=TableKeyValue.value titulo="Valor" expandir
-	    }
-
-	    Grupo titulo="Actualizar desde fichero" {
-	        Form actualizarDesdeFichero {
-                Wiki {"
+		Grupo titulo="Actualizar desde fichero" {
+			Form actualizarDesdeFichero {
+				Wiki {"
 **Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en la generación.
 
 **IMPORTANTE** : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
 Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de documentos desde el AED.
                 "}
 
-                Boton botonCargarTablaDeTablas titulo="Borrar todas y leer desde ficheros"
-	        }
-	    }
+				Boton botonCargarTablaDeTablas titulo="Borrar todas y leer desde ficheros"
+			}
+		}
 	}
 
 	Popup PopupTablaDeTablas campo=TableKeyValue {
-	    Texto campo=TableKeyValue.table titulo="Tabla"
-	    Texto campo=TableKeyValue.key titulo="Clave"
-	    Texto campo=TableKeyValue.value titulo="Valor"
+		Texto campo=TableKeyValue.table titulo="Tabla"
+		Texto campo=TableKeyValue.key titulo="Clave"
+		Texto campo=TableKeyValue.value titulo="Valor"
 	}
 
-//	Pagina PlantillaPdf noForm {
-//	    Tabla  titulo="Plantillas de PDF" campo="pdf" popup=popupPlantillaPdf{
-//	        Columna campo="pdf.idPdf" titulo="Identificador"
-//	        Columna campo="pdf.title" titulo="Titulo" expandir
-//	    }
-//	    Form descargarpdf {
-//	    	Boton titulo="Descargar PDF"
-//	    }
-//	}
-	
-//	Popup popupPlantillaPdf titulo="Plantilla PDF"{
-//	    Texto campo="pdf.idPdf" titulo="Identificador"
-//	    Texto campo="pdf.title" titulo="Titulo"
-//	    AreaTexto campo="pdf.content" titulo="Contenido"
-//	    Texto campo="pdf.header" titulo="Cabecera"
-//	    Texto campo="pdf.footer" titulo="Pie de Página"
-//	}
-
-    Pagina Emails noForm{
-        Tabla emails titulo="Plantillas de emails" campo=Mail popup=PopupEmail {
-            Columna campo=Mail.idMail titulo="Identificador"
-            Columna campo=Mail.content titulo="Contenido" expandir
-        }
+	Pagina Emails noForm{
+		Tabla emails titulo="Plantillas de emails" campo=Mail popup=PopupEmail {
+			Columna campo=Mail.idMail titulo="Identificador"
+			Columna campo=Mail.content titulo="Contenido" expandir
+		}
         
-         Grupo titulo="Actualizar desde fichero" {
-	        Form actualizarDesdeFichero {
-                Wiki {"**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en los ficheros .yaml situados en: 'app/emails/initial-data/'."}
-                Boton botonCargarMails titulo="Borrar todos y leer desde ficheros"
-	        }
-	    }
-    }
+		Grupo titulo="Actualizar desde fichero" {
+			Form actualizarDesdeFichero {
+				Wiki {"**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en los ficheros .yaml situados en: 'app/emails/initial-data/'."}
+				Boton botonCargarMails titulo="Borrar todos y leer desde ficheros"
+			}
+		}
+	}
 
     Popup PopupEmail campo=Mail titulo="Email" {
         Wiki {"
@@ -173,26 +150,30 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
         AreaTexto campo=Mail.content titulo="Mensaje" requerido
 		AreaTexto campo=Mail.footer titulo="Pie de mensaje"
 
-    }   
+    }
     
-    Popup PopupConsulta campo=Consulta titulo="Consulta" {
-    	AreaTexto campo=Consulta.descripcion titulo="Descripcion" requerido
-    	AreaTexto campo=Consulta.consulta titulo="Consulta" requerido
-    	Combo campo=Consulta.tipo titulo="Tipo" requerido
-    }
+	Popup PopupConsulta campo=Consulta titulo="Consulta" {
+		Accion borrar crearSiempre
+		Accion crear crearSiempre
+		Accion editar crearSiempre
+		
+		AreaTexto campo=Consulta.descripcion titulo="Descripcion" requerido
+		AreaTexto campo=Consulta.consulta titulo="Consulta" requerido
+		Combo campo=Consulta.tipo titulo="Tipo" requerido
+	}
 
-    Pagina Propiedades noForm {
-        Tabla tablaPropiedades titulo="Tabla de properties" campo=Propiedades popup=PopupProperties {
-            Columna campo=Propiedades.descripcion titulo="Descripción"
-            Columna campo=Propiedades.clave titulo="Clave"
-            Columna campo=Propiedades.valor titulo="Valor" expandir
-        }
-    }
+	Pagina Propiedades {
+		Tabla tablaPropiedades titulo="Tabla de properties" campo=Propiedades popup=PopupProperties {
+			Columna campo=Propiedades.descripcion titulo="Descripción"
+			Columna campo=Propiedades.clave titulo="Clave"
+			Columna campo=Propiedades.valor titulo="Valor" expandir
+		}
+	}
 
-    Popup PopupProperties campo=Propiedades titulo="Properties"{
-        Texto campo=Propiedades.descripcion titulo="Descripción" requerido
-        Texto campo=Propiedades.clave titulo="Clave" requerido
-    }
+	Popup PopupProperties campo=Propiedades titulo="Properties"{
+		Texto campo=Propiedades.descripcion titulo="Descripción" requerido
+		Texto campo=Propiedades.clave titulo="Clave" requerido
+	}
     
     Pagina EstadosVisibles titulo="Visibilidad de Estados" {
     	Tabla tabladeEstadosSolicitud titulo="Estados de la solicitud visibles para los usuarios" campo=TableKeyValue popupModificar=PopupVisibilidadDeSolicitudes permiso=tableKeyOnlyEstadosSolicitudUsuario {

@@ -11,12 +11,11 @@ import controllers.gen.AportacionRecibosControllerGen;
 
 public class AportacionRecibosController extends AportacionRecibosControllerGen {
 
-	public static void tablarecibosAportados(Long idSolicitud, Long idEntidad) {
+	public static void tablarecibosAportados(Long idSolicitud) {
 
-		Long id = idSolicitud != null ? idSolicitud : idEntidad;
 		List<Documento> rows = Documento
 				.find("select registradas.justificante from Solicitud solicitud join solicitud.aportaciones.registradas registradas where solicitud.id=?",
-						id).fetch();
+						idSolicitud).fetch();
 		//List<Documento> rowsFiltered = rows; // Tabla sin permisos, no filtra
 		
 		Map<String, Long> ids = new HashMap<String, Long>();
@@ -24,7 +23,7 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 		for(Documento documento: rows){
 			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.put("doc", documento);
-			if (secure.check("aportacionNoNull", "read", ids, vars)) {
+			if (secure.check("aportacionNoNull", "leer", ids, vars)) {
 				rowsFiltered.add(documento);
 			}
 		}

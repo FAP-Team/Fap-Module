@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import es.fap.simpleled.led.impl.AttributeImpl;
 
 import org.apache.log4j.Logger;
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowComponent;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
 
@@ -19,12 +20,14 @@ import templates.GEntidad;
 import templates.GPermiso;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Attribute;
+import es.fap.simpleled.led.Formulario
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Type
+import es.fap.simpleled.led.Pagina
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.impl.AttributeImpl;
-import es.fap.simpleled.led.impl.LedFactoryImpl;
+import es.fap.simpleled.led.util.ModelUtils;
 import generator.utils.HashStack.HashStackName;
 
 import generator.utils.*;
@@ -45,15 +48,17 @@ public class End implements IWorkflowComponent {
 	@Override
 	public void invoke(IWorkflowContext ctx) {
 		if (createSolicitud.equals("true")) {
-			if (HashStack.size(HashStackName.SOLICITUD) == 0){
-				log.warn("No se ha creado la entidad Solicitud. Se creará una por defecto.");
+			Resource res = LedUtils.resource;
+			if (ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "Solicitud", res) == null){
+				if (ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, "Solicitud", res).size() > 1)
+					log.warn("No se ha creado la entidad Solicitud. Se creará una por defecto.");
 				entitySolicitud();
 			}
 			properties();
 		}
 		permisos();
 		rutas();
-		if (LedUtils.generatingModule){
+		if (Start.generatingModule){
 			DocumentationUtils.makeDocumentation();
 		}
 		borrarFicherosAntiguos();
@@ -70,33 +75,54 @@ public class End implements IWorkflowComponent {
 		def elementos = HashStack.allElements(HashStackName.ROUTES);
 		def sortedElementos = elementos.sort{p1, p2 -> p1.getNameRoute().compareToIgnoreCase(p2.getNameRoute())};
 		String content = sortedElementos.collect{it -> it.generateRoutes()}.join('\n');
+		if (!Start.generatingModule){
+			content = "  # Home page\n" + rutaPaginaInicial() + "\n" + content;
+		}
 		FileUtils.writeInRegion(FileUtils.getRoute('CONF_ROUTES'), content);
 	}
 	
-	private void properties(){
-		def firstPages = HashStack.allElements(HashStackName.FIRST_PAGE);
-		String page;
-		if (firstPages.size() == 1) {
-			page = firstPages.get(0);
-		} else if (firstPages.size() > 1){
-			page = firstPages.get(0);
-			log.warn("Se indicaron mas de una página como inicial, se utiliza: <"+page+">");
-		} else {
-			log.warn("No se indicó una página como inicial");
-			/** Utilizamos la primera encontrada */
-			def myFirstPages = HashStack.allElements(HashStackName.PAGE_NAME);
-			if (myFirstPages.size > 0){
-				page = myFirstPages.get(0);
-				log.warn("No se indicó una página como inicial, se utiliza: <"+page+">");
+	private String rutaPaginaInicial(){
+		List<Formulario> formularios = ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, LedUtils.resource);
+		Formulario formInicial;
+		Pagina pagInicial;
+		for (Formulario f: formularios){
+			if (f.inicial){
+				formInicial = f;
+				break;
 			}
 		}
-		String content = "";
-		if (page != null){
-			content = "fap.app.firstPage="+page;
+		if (formInicial == null || formInicial.paginas.size() == 0){
+			return Route.to("GET", "/", "SolicitudesController.index");
 		}
-		FileUtils.writeInRegion(FileUtils.getRoute('CONF_APPLICATION'), content);
+		pagInicial = formInicial.paginas.get(0);
+		for (Pagina pag: formInicial.paginas){
+			if (pag.inicial){
+				pagInicial = pag;
+				break;
+			}
+		}
+		return Route.to("GET", "/", pagInicial.name + "Controller.index");
 	}
 	
+	private void properties(){
+		List<Formulario> formsSolicitud = ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, "Solicitud", LedUtils.resource);
+		Pagina pagInicial;
+		boolean indicada;
+		for (Formulario f: formsSolicitud){
+			for (Pagina pag: f.paginas){
+				if (pagInicial == null){
+					pagInicial = pag;
+				}
+				if (pag.inicial){
+					pagInicial = pag;
+					indicada = true;
+					break;
+				}
+			}
+		}
+		String content = "fap.app.firstPage=" + pagInicial.name;
+		FileUtils.writeInRegion(FileUtils.getRoute('CONF_APPLICATION'), content);
+	}
 
   /**
    * Genera el fichero de permisos a partir de las entidad GPermisos almacenadas
@@ -104,7 +130,7 @@ public class End implements IWorkflowComponent {
    * @return
    */
   private String permisos(){	  
-	  String clazzName = LedUtils.generatingModule ? "SecureFap" : "SecureApp"; 
+	  String clazzName = Start.generatingModule ? "SecureFap" : "SecureApp"; 
 	  String clazzGenName = clazzName + "Gen";
 	  
 	  def permisos = [];
@@ -180,12 +206,10 @@ public class ${clazzName} extends Secure {
 		}
   
   
- private void entitySolicitud () {
-	 LedFactoryImpl factory = new LedFactoryImpl();
-	 
-	 EntityImpl solicitud = factory.createEntity();
+ private void entitySolicitud() {
+	 EntityImpl solicitud = LedFactory.eINSTANCE.createEntity();
 	 solicitud.setName("Solicitud");
-	 EntityImpl solicitudGen = factory.createEntity();
+	 EntityImpl solicitudGen = LedFactory.eINSTANCE.createEntity();
 	 solicitudGen.setName("SolicitudGenerica");
 	 solicitud.setExtends(solicitudGen);
 	 GEntidad.generate(solicitud);
@@ -220,7 +244,7 @@ public class ${clazzName} extends Secure {
 	 }
  
 	private void config(){
-		if(!LedUtils.generatingModule){
+		if(!Start.generatingModule){
 			String appConfigFolder = FileUtils.getRoute('APP_CONFIG');
 			String configGen = 
 """

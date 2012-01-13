@@ -3,6 +3,7 @@ package templates;
 
 import generator.utils.*;
 import es.fap.simpleled.led.*;
+import generator.utils.HashStack.HashStackName;
 
 public class GEnlace {
 
@@ -34,8 +35,20 @@ public class GEnlace {
 			p.putStr("url", enlace.url)
 		}
 		
+		if(enlace.anterior){
+			p.put("anterior", true)
+			p.putStr("container", HashStack.top(HashStackName.CONTAINER).name);
+		}
+		
 		if(enlace.pagina){
-			p.put("action", ControllerUtils.refPaginaAction(enlace.pagina))
+			Controller pagUtil = Controller.fromPagina(enlace.pagina.pagina).initialize();
+			p.put("action", pagUtil.getRouteIndex(enlace.pagina.accion));
+		}
+		
+		if(enlace.popup){
+			Controller popupUtil = Controller.fromPopup(enlace.popup.popup).initialize();
+			p.putStr("popup", enlace.popup.popup.name);
+			p.put("action", popupUtil.getRouteIndex(enlace.popup.accion));
 		}
 		
 		if(enlace.campo != null){

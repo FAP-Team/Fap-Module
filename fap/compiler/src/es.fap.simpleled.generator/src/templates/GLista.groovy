@@ -3,7 +3,9 @@ package templates
 import generator.utils.FileUtils;
 import generator.utils.StringUtils;
 import generator.utils.LedUtils;
+import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.*;
+import wfcomponent.Start;
 
 public class GLista {
 	
@@ -14,7 +16,7 @@ public class GLista {
 		g.lista = lista;
 		g.generateFile();
 		if (lista.enumerado){
-		   if (LedUtils.generatingModule)
+		   if (Start.generatingModule)
 		      g.generateEnum(true);
 		   else
 		      g.generateEnum(false);
@@ -82,7 +84,7 @@ public class GLista {
 		
 			FileUtils.overwrite(FileUtils.getRoute('ENUM_FAP'), clase + ".java", contenido);
 		} else{ // Si la lista es de la Aplicacion
-				List listas = LedUtils.getAllNodeBySameName(Lista, lista.name);
+				List listas = ModelUtils.getVisibleNode(LedPackage.Literals.LISTA, lista.name, LedUtils.resource);
 				List listaAll = [];
 				List insertar = lista.elementos;
 				if (listas.size > 1){

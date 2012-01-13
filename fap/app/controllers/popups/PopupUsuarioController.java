@@ -7,10 +7,10 @@ import play.Logger;
 import controllers.gen.popups.PopupUsuarioControllerGen;
 			
 public class PopupUsuarioController extends PopupUsuarioControllerGen {
-
+	
 	public static void editar(Long idAgente,Agente agente){
         checkAuthenticity();
-        if(!permiso("update")){
+        if(!permiso("editar")){
             Messages.error("No tiene permisos suficientes para realizar la acción");
         }
         
@@ -20,7 +20,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
         }
 
         if(!Messages.hasErrors()){
-            PopupUsuarioValidateCopy(dbagente, agente);;
+            PopupUsuarioValidateCopy(dbagente, agente);
         }
         
         if(!Messages.hasErrors()){
@@ -38,14 +38,14 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
             renderJSON(utils.RestResponse.ok("Registro actualizado correctamente"));
         }else{
             Messages.keep();
-            abrir("editar",idAgente);
+            index("editar",idAgente);
         }
 
     }
 	
 	public static void crear(Agente agente){
         checkAuthenticity();
-        if(!permiso("create")){
+        if(!permiso("crear")){
             Messages.error("No tiene permisos suficientes para realizar la acción");
         }
 
@@ -53,7 +53,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
         
 
         if(!Messages.hasErrors()){
-            PopupUsuarioValidateCopy(dbagente, agente);;
+            PopupUsuarioValidateCopy(dbagente, agente);
         }
 
         if(!Messages.hasErrors()){
@@ -71,9 +71,8 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
             renderJSON(utils.RestResponse.ok("Registro creado correctamente"));
         }else{
             Messages.keep();
-            abrir("crear",null);
+            index("crear",  null);
         }
     }
-	
 }
 		

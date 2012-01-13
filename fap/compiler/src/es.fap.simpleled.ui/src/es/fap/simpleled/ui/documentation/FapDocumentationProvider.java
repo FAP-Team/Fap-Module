@@ -93,7 +93,7 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		if (o.eIsProxy()){
 			return null;
 		}
-		String feature = getFeature(node_);
+		String feature = getDocFeature(node_);
 		if ("campo".equals(feature)){
 			if (o instanceof Entity){
 				Entity entidad = (Entity) o;
@@ -156,17 +156,23 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 			String text = leaf.getText();
 			EObject semantic = leaf.getSemanticElement();
 			EObject grammar = leaf.getGrammarElement();
-			if ("extends".equals(getFeature(leaf))){
+			if ("extends".equals(getDocFeature(leaf))){
 				result += span(text, FapSemanticHighlighting.referenceColor, false);
 				continue;
 			}
 			if (semantic instanceof Attribute && ((Attribute)semantic).getName().equals(text)){
-				result += span(text, FapSemanticHighlighting.nameColor, text.equals(name));
+				if (text.equals(name))
+					result += span(text, new RGB(0,0,0), false, true);
+				else
+					result += span(text, FapSemanticHighlighting.nameColor, false);
 				atributoNuevo = false;
 				continue;
 			}
 			if (semantic instanceof Entity && ((Entity)semantic).getName().equals(text)){
-				result += span(text, FapSemanticHighlighting.nameColor, text.equals(name));
+				if (text.equals(name))
+					result += span(text, new RGB(0,0,0), false, true);
+				else
+					result += span(text, FapSemanticHighlighting.nameColor, false);
 				continue;
 			}
 			if (grammar instanceof KeywordImpl){
@@ -202,6 +208,11 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 				continue;
 			}
 			if (grammar instanceof KeywordImpl){
+				Keyword keyword = (Keyword) grammar;
+				if ("Entidad".equals(keyword.getValue())){
+					result += span(text, FapSemanticHighlighting.elementColor, true);
+					continue;
+				}
 				if (Character.isLetter(text.charAt(0))){
 					result += span(text, FapSemanticHighlighting.keywordColor, true);
 					continue;
@@ -214,11 +225,19 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 	}
 
 	public static String span(String text, RGB color, boolean bold){
+		return span(text, color, bold, false);
+	}
+	
+	public static String span(String text, RGB color, boolean bold, boolean italic){
 		String start = "";
 		String end = "";
 		if (bold){
 			start += "<b>";
 			end += "</b>";
+		}
+		if (italic){
+			start += "<i>";
+			end += "</i>";
 		}
 		return start + "<span style=\"color:#" + rgb2hex(color) + "\">" + text + "</span>" + end + " ";
 	}
@@ -249,7 +268,7 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		return all + hex;
 	}
 	
-	public static String getFeature(INode node){
+	public static String getDocFeature(INode node){
 		while (node != null){
 			EObject grammar = node.getGrammarElement();
 			while (grammar != null){
@@ -260,6 +279,19 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 						return assignment.getFeature();
 					}
 				}
+				grammar = grammar.eContainer();
+			}
+			node = node.getParent();
+		}
+		return null;
+	}
+	
+	public static String getFeature(INode node){
+		while (node != null){
+			EObject grammar = node.getGrammarElement();
+			while (grammar != null){
+				if (grammar instanceof Assignment)
+					return ((Assignment) grammar).getFeature();
 				grammar = grammar.eContainer();
 			}
 			node = node.getParent();

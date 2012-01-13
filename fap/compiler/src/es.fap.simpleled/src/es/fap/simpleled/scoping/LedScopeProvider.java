@@ -3,16 +3,12 @@
  */
 package es.fap.simpleled.scoping;
 
-import org.eclipse.emf.ecore.EObject;
+import java.util.List;
+
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.scoping.IGlobalScopeProvider;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
-
-import com.google.inject.Inject;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
@@ -22,10 +18,13 @@ import es.fap.simpleled.led.CampoPermisoAtributos;
 import es.fap.simpleled.led.Combo;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.Pagina;
+import es.fap.simpleled.led.Popup;
 import es.fap.simpleled.led.ListaAtributos;
 import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
+import es.fap.simpleled.led.util.ModelUtils;
 
 /**
  * This class contains custom scoping description.
@@ -44,8 +43,10 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 		}
 		else{
 			Attribute attr = ((CampoAtributos)atributos.eContainer()).getAtributo();
-			if (LedEntidadUtils.xToOne(attr)){
-				entidad = attr.getType().getCompound().getEntidad();
+			boolean esPagina = LedCampoUtils.getCampoContainer(atributos).eContainer() instanceof Pagina;
+			boolean esPopup = LedCampoUtils.getCampoContainer(atributos).eContainer() instanceof Popup;
+			if (LedEntidadUtils.xToOne(attr) || ((esPagina || esPopup) && LedEntidadUtils.isReferencia(attr))){
+				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
 		return Scopes.scopeFor(LedEntidadUtils.getAllDirectAttributes(entidad));
@@ -66,13 +67,15 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 				entidad = permiso.getVariable().getTipo();
 			}
 			else if (permiso.isAgente()){
-				entidad = getAgente(atributos);
+				List<Entity> entidades = ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, "Agente", atributos.eResource());
+				if (entidades.size() > 0)
+					entidad = entidades.get(0);
 			}
 		}
 		else{
 			Attribute attr = ((CampoPermisoAtributos)atributos.eContainer()).getAtributo();
 			if (LedEntidadUtils.xToOne(attr)){
-				entidad = attr.getType().getCompound().getEntidad();
+				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
 		return Scopes.scopeFor(LedEntidadUtils.getAllDirectAttributes(entidad));
@@ -82,29 +85,13 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 		Attribute attr = LedCampoUtils.getUltimoAtributo(combo.getCampo());
 		Entity entidad = null;
 		if (LedEntidadUtils.ManyToX(attr)){
-			entidad = attr.getType().getCompound().getEntidad();
+			entidad = LedEntidadUtils.getEntidad(attr);
 		}
 		return Scopes.scopeFor(LedEntidadUtils.getAllDirectAttributes(entidad));
 	}
 	
 	public IScope scope_Combo_comboValor(Combo combo, EReference ref) {
 		return scope_Combo_comboTexto(combo, ref);
-	}
-	
-	@Inject
-	private IGlobalScopeProvider globalScopeProvider;
-	
-	public Entity getAgente(EObject object) {
-		for (IEObjectDescription desc : globalScopeProvider.getScope(object.eResource(), LedPackage.Literals.CAMPO__ENTIDAD, null).getAllElements()) {
-			Entity entidad = (Entity) desc.getEObjectOrProxy();
-			if (entidad.eIsProxy()) {
-				entidad = (Entity) EcoreUtil.resolve(entidad, object.eResource());
-			}
-			if (entidad.getName().equals("Agente")) {
-				return entidad;
-			}
-		}
-		return null;
 	}
 	
 }

@@ -1,12 +1,19 @@
 package es.fap.simpleled.led.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.eclipse.emf.ecore.resource.Resource;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedFactory;
+import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.impl.LedFactoryImpl;
 
 public class LedEntidadUtils {
@@ -30,6 +37,16 @@ public class LedEntidadUtils {
 		return attr.getType().getCompound().getEntidad();
 	}
 
+	public static boolean esSingleton(Entity entidad){
+		if (entidad.getExtends() == null){
+			return false;
+		}
+		if (entidad.getExtends().getName().equals("Singleton")){
+			return true;
+		}
+		return esSingleton(entidad.getExtends());
+	}
+	
 	public static boolean isReferencia(Attribute attr){
 		return attr != null && attr.getType().getCompound() != null && attr.getType().getCompound().getEntidad() != null;
 	}
@@ -48,6 +65,12 @@ public class LedEntidadUtils {
 			return "OneToOne";
 		}		
 		return c.getTipoReferencia().getType();
+	}
+	
+	public static boolean equals(Entity entidad1, Entity entidad2){
+		if (entidad1 == null || entidad2 == null)
+			return entidad1 == entidad2;
+		return entidad1.getName().equals(entidad2.getName());
 	}
 	
 	/**
@@ -186,6 +209,29 @@ public class LedEntidadUtils {
 		return attrs;
 	}
 	
+	/*
+	 * Devuelve la entidad asociada a una pagina, que ser� la siguiente:
+	 * 		Ultimo atributo del campo definido en la pagina, si no es null
+	 * 		�: ultimo atributo del campo definido en el formulario, si no es null
+	 * 		�: null
+	 */
+	public static Entity getEntidad(Pagina pagina){
+		return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampoPagina(pagina));
+	}
 	
+	public static Set<Entity> getSingletons(Resource res) {
+		Set<Entity> singletons = new HashSet<Entity>();
+		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, res)){
+			if (LedEntidadUtils.esSingleton(entidad))
+				singletons.add(entidad);
+		}
+		return singletons;
+	}
+	
+	public static Map<String, Entity> eliminaSolicitudGenerica(Map<String, Entity> entidades){
+		if (entidades.containsKey("Solicitud"))
+			entidades.remove("SolicitudGenerica");
+		return entidades;
+	}
 	
 }

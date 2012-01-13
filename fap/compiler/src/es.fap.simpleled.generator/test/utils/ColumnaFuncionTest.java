@@ -8,15 +8,12 @@ import org.junit.Test;
 import templates.GTabla;
 import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.LedFactory;
-import es.fap.simpleled.led.impl.LedFactoryImpl;
 
 public class ColumnaFuncionTest {
-
-	LedFactory factory = LedFactoryImpl.init();
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void test0(){
-		Columna c = factory.createColumna();
+		Columna c = LedFactory.eINSTANCE.createColumna();
 		Assert.assertNotNull(c);
 		GTabla.camposDeColumna(c);
 	}
@@ -61,7 +58,7 @@ public class ColumnaFuncionTest {
 	
 	@Test
 	public void test4(){
-		Columna c = factory.createColumna();
+		Columna c = LedFactory.eINSTANCE.createColumna();
 		Assert.assertNotNull(c);
 		c.setFuncion("${campo0} y ${campo1}");
 		

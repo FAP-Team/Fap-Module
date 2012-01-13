@@ -22,6 +22,7 @@ h2. Parámetros
 * **popupBorrar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Borrar para abrirlo. "Ver documentación Popup":dsl-popup.
 * **permiso = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla.
 * **recargarPagina** (opcional) : Si se define, hace que la pagina se recargue al pulsar el botón actualizar de la tabla. (Por defecto solo se actualiza la tabla).
+* **noBorrarEntidad** (opcional) : permite elegir si se quiere borrar la entidad o únicamente borrar la referencia en la lista.
 
 h2. Definición
 
@@ -35,6 +36,7 @@ bc. Tabla:
 		& (columnasAutomaticas?="columnasAutomaticas" ((exc='exclude' '=' exclude=ListaAtributos) | (inc='include' '=' include=ListaAtributos))?)?
 		& ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
+		& (noBorrarEntidad?='noBorrarEntidad')?
 		& (seleccionable?="seleccionable" "=" nameSeleccionable=STRING)?
 		& (	
 			('popup' '=' popup=[Popup])	

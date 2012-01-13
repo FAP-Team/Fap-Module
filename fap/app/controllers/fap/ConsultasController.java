@@ -34,8 +34,7 @@ public class ConsultasController extends GenericController {
 		renderArgs.put("controllerName", "ConsultasControllerGen");
 	}
 
-	public static void tablatablaConsultas(Long idConsulta, Long idEntidad){
-		Long id = idConsulta != null? idConsulta : idEntidad;
+	public static void tablatablaConsultas(Long idConsulta){
 		java.util.List<Consulta> rows = Consulta.find( "select consulta from Consulta consulta" ).fetch();
 
 		List<Consulta> rowsFiltered = rows; //Tabla sin permisos, no filtra

@@ -54,7 +54,7 @@
 	
 	#{fap.grupo titulo:"Ayuda"}	
 		<a href="#"><button class="btn primary">Manual de usuario</button></a>
-		<a href="@{SoporteController.index}" class="btn primary">Preguntas e incidencias</a>
+		<a href="${play.mvc.Router.reverse("SoporteController.index" , ['accion':'crear', 'redirigir': 'anterior'])}" class="btn primary">Preguntas e incidencias</a>
 	#{/fap.grupo}
 </div>
 

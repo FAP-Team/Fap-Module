@@ -21,7 +21,7 @@ import controllers.gen.AportacionPresentarControllerGen;
 
 public class AportacionPresentarController extends AportacionPresentarControllerGen {
 
-	public static void index(Long idSolicitud){
+	public static void index(String accion, Long idSolicitud){
 		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 		Aportacion aportacion = solicitud.aportaciones.actual;
 		
@@ -29,15 +29,15 @@ public class AportacionPresentarController extends AportacionPresentarController
 			//Si la aportación no esta preparada, vuelve a la página para subir documentos
 			Messages.warning("Su aportación de documentación no está preparada para el registro. Pulse el botón 'Registrar Aportacion'");
 			Messages.keep();
-			redirect("AportacionController.index", idSolicitud);
+			redirect("AportacionController.index", accion, idSolicitud);
 		}else{
-			renderTemplate( "gen/AportacionPresentar/AportacionPresentar.html" , solicitud);
+			renderTemplate("gen/AportacionPresentar/AportacionPresentar.html", accion, idSolicitud, solicitud);
 		}
 	}
 	
 	public static void modificarBorrador(Long idSolicitud){
 		checkAuthenticity();
-		if (permisomodificarBorrador("update") || permisomodificarBorrador("create")) {
+		if (permisoModificarBorrador("editar") || permisoModificarBorrador("crear")) {
 			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 			Aportacion aportacion = solicitud.aportaciones.actual;
 			aportacion.estado = null;
@@ -57,7 +57,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 	 */
 	public static void presentar(Long idSolicitud, platino.Firma firma) {
 		checkAuthenticity();
-		if (permisopresentar("update") || permisopresentar("create")) {
+		if (permisoPresentar("editar") || permisoPresentar("crear")) {
 			
 			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 			Aportacion aportacion = solicitud.aportaciones.actual;
@@ -110,9 +110,9 @@ public class AportacionPresentarController extends AportacionPresentarController
 	
 	/** Presenta la aportación de documentación sin registrar los documentos.
 	 * Deberá realizarlo únicamente un gestor, administrador o revisor. */
-	public static void presentarSinRegistrar(Long idSolicitud, SolicitudGenerica solicitud, platino.Firma firma){
+	public static void presentarSinRegistrar(Long idSolicitud, SolicitudGenerica solicitud){
 		checkAuthenticity();
-		if (permisopresentarSinRegistrar("update") || permisopresentarSinRegistrar("create")) {
+		if (permisoPresentarSinRegistrar("editar") || permisoPresentarSinRegistrar("crear")) {
 		
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			
@@ -154,9 +154,9 @@ public class AportacionPresentarController extends AportacionPresentarController
 		}		
 		Messages.keep();
 		if(Messages.hasErrors()){
-			redirect( "AportacionPresentarController.index" , idSolicitud);
+			redirect("AportacionPresentarController.index", "editar", idSolicitud);
 		}else{
-			redirect( "AportacionAportadosController.index" , idSolicitud);
+			redirect("AportacionAportadosController.index", "editar", idSolicitud);
 		}			
 	
 	}

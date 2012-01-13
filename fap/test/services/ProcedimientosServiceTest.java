@@ -11,6 +11,7 @@ import models.TableKeyValue;
 import models.Tramite;
 
 import org.apache.log4j.Logger;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -40,11 +41,10 @@ public class ProcedimientosServiceTest extends UnitTest {
 	
 	static boolean hasConnecion = false;
 	
-	private static Logger logger = Logger.getLogger(ProcedimientosServiceTest.class); 
 	
 	@BeforeClass
 	public static void init() throws Exception {
-		TiposDocumentosService tiposDocumentosServiceStub = mock(TiposDocumentosService.class);
+		TiposDocumentosService tiposDocumentosServiceStub = mock(TiposDocumentosServiceImpl.class);
 		
 		TipoDocumento tipoDocumentoStub = new TipoDocumento(); 
 		tipoDocumentoStub.setDescripcion(NOMBRE_DOCUMENTO_TEST);
@@ -52,22 +52,21 @@ public class ProcedimientosServiceTest extends UnitTest {
 		
 		procedimientosService = new ProcedimientosServiceImpl(propertyPlaceholder, tiposDocumentosServiceStub);
 		
-		try {
-			hasConnecion = procedimientosService.getVersion() != null;
-		}catch(Exception e){
-			logger.warn("No hay conexión a "+ procedimientosService.getEndPoint() + " , saltando los tests de AedServiceTest");
-		}
+		hasConnecion = procedimientosService.hasConnection();
+	}
+	
+	@Before
+	public void before(){
+		assumeTrue(hasConnecion);
 	}
 	
 	@Test
 	public void getVersion() throws Exception {
-		assumeTrue(hasConnecion);
 		procedimientosService.getVersion();
 	}
 	
 	@Test
 	public void obtenerDocumentosEnTramite() throws Exception {
-		assumeTrue(hasConnecion);
 		String procedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri");
 		String tramiteSolicitud = "eadmon://gobcan.es/tramitesProcedimientos/TRP000000000000000012";
 		List<models.TipoDocumento> documentos = procedimientosService.obtenerDocumentosEnTramite(procedimiento, tramiteSolicitud);
@@ -86,21 +85,17 @@ public class ProcedimientosServiceTest extends UnitTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void obtenerDocumentosEnTramiteNull() throws Exception {
-		assumeTrue(hasConnecion);
 		String procedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri");
 		procedimientosService.obtenerDocumentosEnTramite(procedimiento, null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void obtenerDocumentosEnTramiteProcedimientoNull() throws Exception {
-		assumeTrue(hasConnecion);
 		procedimientosService.obtenerDocumentosEnTramite(null, "tramite");
 	}
 	
 	@Test
 	public void obtenerTramiteActual() throws Exception {
-		assumeTrue(hasConnecion);
-		
 		List<Tramite> tramites = procedimientosService.obtenerTramites();
 		assertTramitesNotNull(tramites);
 	}
@@ -118,19 +113,16 @@ public class ProcedimientosServiceTest extends UnitTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void obtenerTramiteNull() throws Exception {
-		assumeTrue(hasConnecion);
 		procedimientosService.obtenerTramites(null);
 	}
 	
 	@Test(expected=ProcedimientosExcepcion.class)
 	public void obtenerTramiteNoExistente() throws Exception {
-		assumeTrue(hasConnecion);
 		procedimientosService.obtenerTramites("no existe");
 	}
 	
 	@Test
 	public void actualizarTramitesFromEmpty() throws Exception {
-		assumeTrue(hasConnecion);
 		deleteTramitesTables();
 		
 		boolean result = procedimientosService.actualizarTramites();
@@ -157,7 +149,6 @@ public class ProcedimientosServiceTest extends UnitTest {
 
 	@Test
 	public void actualizarTramitesFromNonEmpty() {
-		assumeTrue(hasConnecion);
 		deleteTramitesTables();
 		Tramite t = new Tramite();
 		t.save();
@@ -178,13 +169,11 @@ public class ProcedimientosServiceTest extends UnitTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void actualizarTramitesProcedimientoNull(){
-		assumeTrue(hasConnecion);
 		procedimientosService.actualizarTramites(null);
 	}
 	
 	@Test
 	public void actualizarTramitesProcedimientoNoExistente(){
-		assumeTrue(hasConnecion);
 		Messages.clear();
 		boolean result = procedimientosService.actualizarTramites("http://no/existe");
 		assertFalse(result);
@@ -194,7 +183,6 @@ public class ProcedimientosServiceTest extends UnitTest {
 	
 	@Test
 	public void getProcedimientos(){
-		assumeTrue(hasConnecion);
 		List<Procedimiento> procedimientos = procedimientosService.getProcedimientos();
 		assertNotNull(procedimientos);
 		assertTrue(procedimientos.size() > 0);

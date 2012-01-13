@@ -93,6 +93,17 @@ public class AedServiceImpl implements AedService {
 		return version.value;
 	}
 
+	@Override
+	public boolean hasConnection() {
+		boolean hasConnection = false;
+		try {
+			hasConnection = getVersion() != null;
+		}catch(Exception e){
+			log.info("El servicio no tiene coneccion con " + getEndPoint());
+		}
+		return hasConnection;
+	}
+	
 	/* (non-Javadoc)
 	 * @see services.AedService#getPort()
 	 */

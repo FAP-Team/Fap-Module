@@ -8,11 +8,10 @@ import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcep
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Procedimiento;
 
-public interface ProcedimientosService {
+public interface ProcedimientosService extends WSService {
 
 	public String getVersion() throws Exception;
 
-	public String getEndPoint();
 
 	public List<models.Tramite> obtenerTramites()
 			throws TiposDocumentosExcepcion, ProcedimientosExcepcion;

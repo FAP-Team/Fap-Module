@@ -1,5 +1,7 @@
 package services;
 
+import static org.junit.Assume.assumeTrue;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,32 +11,15 @@ import javax.inject.Inject;
 import models.Documento;
 
 import org.apache.log4j.Logger;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import play.Play;
 import play.modules.guice.InjectSupport;
 import play.test.Fixtures;
 import play.test.UnitTest;
-import play.vfs.VirtualFile;
 import properties.FapProperties;
-import properties.MapPropertyPlaceholder;
-import properties.PropertyPlaceholder;
-import utils.FileUtils;
-
-import aed.AedClient;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
-import config.InjectorConfig;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
-
-import static org.junit.Assume.*;
 
 @InjectSupport
 public class AedServiceTest extends UnitTest {
@@ -42,9 +27,7 @@ public class AedServiceTest extends UnitTest {
 	@Inject
 	private static AedService aedService;
 	
-	private static boolean hasConnection = false;
-	
-	private static Logger logger = Logger.getLogger(AedServiceTest.class); 
+	private static boolean hasConnection = false; 
 	
 	private static final String TMP_FILE_CONTENT = "Contenido del fichero temporal";
 	
@@ -52,16 +35,12 @@ public class AedServiceTest extends UnitTest {
 	
 	@BeforeClass
 	public static void configure() throws Exception {
-		//Comprueba si tiene conección con el AED para poder realizar las pruebas
-		try {
-			hasConnection = aedService.getVersion() != null;
-		}catch(Exception e){
-			logger.warn("No hay conexión a "+ aedService.getEndPoint() + " , saltando los tests de AedServiceTest");
-		}
+		hasConnection = aedService.hasConnection();
 	}
 	
 	@Before
 	public void before(){
+		assumeTrue(hasConnection);
 		Fixtures.delete(Documento.class);
 	}
 	
@@ -74,7 +53,6 @@ public class AedServiceTest extends UnitTest {
 	
 	@Test
 	public void getVersion() throws Exception {
-		assumeTrue(hasConnection);
 		assertNotNull(aedService.getVersion());
 	}
 
@@ -83,9 +61,7 @@ public class AedServiceTest extends UnitTest {
 	 */
 	
 	@Test
-	public void saveDocumentoTemporal() throws Exception{
-		assumeTrue(hasConnection);
-		
+	public void saveDocumentoTemporal() throws Exception{		
 		Documento documento = new Documento();
 		documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.base");
 		documento.descripcion = "prueba";
@@ -96,9 +72,7 @@ public class AedServiceTest extends UnitTest {
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void saveDocumentoTemporalDebeFallarSiDocumentoNoTieneTipo() throws Exception {
-		assumeTrue(hasConnection);
-		
+	public void saveDocumentoTemporalDebeFallarSiDocumentoNoTieneTipo() throws Exception {	
 		Documento documento = new Documento();
 		documento.descripcion = "prueba";
 
@@ -107,9 +81,7 @@ public class AedServiceTest extends UnitTest {
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void saveDocumentoTemporalDebeFallarSiDocumentoTipoOtrosNoTieneDescripcion() throws Exception {
-		assumeTrue(hasConnection);
-		
+	public void saveDocumentoTemporalDebeFallarSiDocumentoTipoOtrosNoTieneDescripcion() throws Exception {		
 		Documento documento = new Documento();
 		documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.otros");
 
@@ -119,8 +91,6 @@ public class AedServiceTest extends UnitTest {
 
 	@Test
 	public void isClasificado(){
-		assumeTrue(hasConnection);
-		
 		String uri = "http://uri/prueba"; 
 		Documento d = new Documento();
 		d.uri = uri;
@@ -137,8 +107,6 @@ public class AedServiceTest extends UnitTest {
 	
 	@Test
 	public void obtenerDocBytes() throws Exception {
-		assumeTrue(hasConnection);
-		
 		Documento d = uploadTestDocumento();
 		assertNotNull(d.uri);
 		byte[] aedBytes = aedService.obtenerDocBytes(d.uri);
@@ -151,8 +119,6 @@ public class AedServiceTest extends UnitTest {
 	
 	@Test
 	public void obtenerPropiedades() throws Exception {
-		assumeTrue(hasConnection);
-		
 		Documento d = uploadTestDocumento();
 		PropiedadesDocumento propiedades = aedService.obtenerPropiedades(d.uri);
 		assertNotNull(propiedades);

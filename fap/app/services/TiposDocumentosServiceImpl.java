@@ -77,6 +77,17 @@ public class TiposDocumentosServiceImpl implements TiposDocumentosService {
 		return h1.value;
 	}
 	
+	@Override
+	public boolean hasConnection() {
+		boolean hasConnection = false;
+		try {
+			hasConnection = getVersion() != null;
+		}catch(Exception e){
+			log.info("El servicio no tiene coneccion con " + getEndPoint());
+		}
+		return hasConnection;
+	}
+	
 	public TipoDocumento getTipoDocumento(String uri) throws TiposDocumentosExcepcion {
 		if(uri == null)
 			throw new IllegalArgumentException("La uri no puede ser nula");

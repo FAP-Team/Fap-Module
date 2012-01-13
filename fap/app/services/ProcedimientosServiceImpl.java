@@ -29,7 +29,7 @@ import es.gobcan.eadmon.procedimientos.ws.dominio.Tramite;
 
 public class ProcedimientosServiceImpl implements ProcedimientosService {
 
-	private static Logger logger = Logger.getLogger(ProcedimientosServiceImpl.class);
+	private static Logger log = Logger.getLogger(ProcedimientosServiceImpl.class);
 	
 	private ProcedimientosInterface procedimientos;
 	
@@ -56,6 +56,17 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 		Holder<String> h2 = new Holder<String>();
 		procedimientos.obtenerVersionServicio(h1, h2);
 		return h1.value;
+	}
+	
+	@Override
+	public boolean hasConnection() {
+		boolean hasConnection = false;
+		try {
+			hasConnection = getVersion() != null;
+		}catch(Exception e){
+			log.info("El servicio no tiene coneccion con " + getEndPoint());
+		}
+		return hasConnection;
 	}
 	
 	/* (non-Javadoc)
@@ -170,7 +181,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 	        	result = serviceList.getProcedimientos();
 	        }
 	    } catch (Exception ex) {
-	        logger.error("Se produjo un error al consultar los tipos de procedimientos.", ex);
+	        log.error("Se produjo un error al consultar los tipos de procedimientos.", ex);
 	    }
         return result;		
 	}

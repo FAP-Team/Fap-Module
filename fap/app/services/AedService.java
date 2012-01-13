@@ -16,11 +16,9 @@ import es.gobcan.eadmon.aed.ws.AedPortType;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAdministrativas;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 
-public interface AedService {
+public interface AedService extends WSService {
 
 	public abstract PropertyPlaceholder getPropertyPlaceholder();
-
-	public abstract String getEndPoint();
 
 	public abstract String getVersion() throws AedExcepcion;
 

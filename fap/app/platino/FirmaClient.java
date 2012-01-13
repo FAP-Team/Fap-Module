@@ -44,6 +44,7 @@ import es.gobcan.platino.servicios.sfst.PlatinoSignatureServerBean;
 import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
 import es.gobcan.platino.servicios.sfst.ValidateCertResult;
 
+@Deprecated
 public class FirmaClient {
 	private static Logger log = Logger.getLogger(FirmaClient.class);
 	private static PlatinoSignatureServerBean firmaPlatino;

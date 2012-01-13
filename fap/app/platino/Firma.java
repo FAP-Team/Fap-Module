@@ -17,12 +17,9 @@ public class Firma {
 
 	public String firma;
 
+	@Deprecated
 	/**
-	 * Valida la firma y devuelve el firmante del documento
-	 * @param documento
-	 * @return firmante del documento, null si se produjo un error
-	 * @throws IOException 
-	 * @throws AedExcepcion 
+ 	 * @deprectad Utilizar FirmaService.getFirmante
 	 */
 	public Firmante validaFirmayObtieneFirmante(Documento documento) {
 		if(firma == null || firma.isEmpty()){
@@ -43,9 +40,6 @@ public class Firma {
 			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri);
 			Messages.error("Error validando la firma");
 		}
-		
-
-		
 		return firmante;		
 	}
 	

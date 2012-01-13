@@ -5,16 +5,10 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import aed.AedClient;
-
 import messages.Messages;
 import models.Aportacion;
 import models.Documento;
 import models.SolicitudGenerica;
-
-import play.Logger;
-import play.modules.guice.InjectSupport;
-import play.mvc.Util;
 import properties.FapProperties;
 import reports.Report;
 import services.AedService;

@@ -1,7 +1,6 @@
 package audit;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,9 +16,18 @@ import models.TableKeyValue;
 
 import org.apache.log4j.Logger;
 import org.hibernate.collection.PersistentCollection;
-import org.hibernate.event.*;
-
-import aed.AedClient;
+import org.hibernate.event.PostCollectionRecreateEvent;
+import org.hibernate.event.PostCollectionRecreateEventListener;
+import org.hibernate.event.PostCollectionRemoveEvent;
+import org.hibernate.event.PostCollectionRemoveEventListener;
+import org.hibernate.event.PostCollectionUpdateEvent;
+import org.hibernate.event.PostCollectionUpdateEventListener;
+import org.hibernate.event.PostDeleteEvent;
+import org.hibernate.event.PostDeleteEventListener;
+import org.hibernate.event.PostInsertEvent;
+import org.hibernate.event.PostInsertEventListener;
+import org.hibernate.event.PostUpdateEvent;
+import org.hibernate.event.PostUpdateEventListener;
 
 import play.db.jpa.Model;
 import validation.ValueFromTable;

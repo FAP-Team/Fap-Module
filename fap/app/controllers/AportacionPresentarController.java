@@ -1,17 +1,12 @@
 package controllers;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
-
-import aed.AedClient;
-
 import messages.Messages;
-import models.*;
+import models.Aportacion;
+import models.Firmante;
+import models.SolicitudGenerica;
 import play.mvc.Util;
 import services.FirmaService;
 import services.RegistroException;

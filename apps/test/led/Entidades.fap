@@ -11,6 +11,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	
 	ManyToOne ComboTestRef comboError
 	ManyToMany ComboTestRef comboErrorMany
+	
+	ManyToOne PaginasTab paginas
 }
 
 Entidad Peta{
@@ -19,6 +21,35 @@ Entidad Peta{
 	ManyToMany ComboTestRef petador
 	String d
 	String otro
+}
+
+Entidad PaginasTab{
+	String nombre
+	OneToMany TablaPaginasTab tpaginas
+}
+
+
+
+Entidad TablaPaginasTab{
+	String nombre
+	Integer numero
+	ManyToMany ComboTestRef comboMul
+	DateTime fecha
+	OneToMany TablaPaginasTabTab ttpaginas
+}
+
+Entidad TablaPaginasTabTab{
+	String nombre
+	ManyToMany ComboTestRef comboMul
+	Lista ComboTestList list
+	OneToMany TablaPaginasTabTabTab tttpaginas
+}
+
+Entidad TablaPaginasTabTabTab{
+	String nombre
+	Integer numero
+	DateTime fecha
+	Lista ComboTestList list
 }
 
 Entidad Fechas {

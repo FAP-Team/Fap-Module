@@ -64,6 +64,10 @@ public class Solicitud extends SolicitudGenerica {
 	public List<ComboTestRef> comboErrorMany;
 	
 	
+	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public PaginasTab paginas;
+	
+	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public SavePages savePages;
 	
@@ -113,6 +117,9 @@ public class Solicitud extends SolicitudGenerica {
 						if (comboErrorMany == null)
 							comboErrorMany = new ArrayList<ComboTestRef>();
 						
+							if (paginas != null)
+								paginas.init();	
+						
 							if (savePages == null)
 								savePages = new SavePages();
 							else
@@ -120,7 +127,10 @@ public class Solicitud extends SolicitudGenerica {
 						
 	}
 		
-	public void savePagesPrepared () {}
+	public void savePagesPrepared () {
+				if ((savePages.paginaSolicitante == null) || (!savePages.paginaSolicitante))
+					Messages.error("La página Solicitante no fue guardada correctamente");
+			}
 
 // === MANUAL REGION START ===
 		public Solicitud(Agente agente) {

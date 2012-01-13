@@ -39,6 +39,11 @@ Formulario Solicitud {
 			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
 		}
 		
+		Grupo "Paginas" {
+			Enlace "1. Combo Tablas Paginas" pagina=ComboTablasPaginas
+			Enlace "2. Tablas con páginas" pagina=PaginasTablas
+		}
+		
 		Grupo "Tipos de Ayuda" {
 			Enlace "Ayuda Texto" pagina=TipoDeAyudaTexto
 			Enlace "Ayuda Popover" pagina=TipoDeAyudaPopover
@@ -186,6 +191,69 @@ Formulario Solicitud {
  			Wiki {"El combo tiene un valor seleccionado igual a 'A'"}
  		}
 	}
+	
+	Pagina CrearPaginasTab campo=PaginasTab{
+		Accion crear redirigir=ComboTablasPaginas
+		Texto campo=PaginasTab.nombre titulo="Nombre"
+	}
+	
+	Pagina ComboTablasPaginas campo=Solicitud{
+		Grupo titulo="Para poder usar la pagina: Tablas con páginas (Nivel 1)"{
+			Combo campo=Solicitud.paginas titulo="Combo ManyToOne" comboTexto=nombre
+		}
+		
+		Tabla comboTP campo=PaginasTab paginaCrear=CrearPaginasTab  titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
+			Columna campo=PaginasTab.nombre
+		}
+	}
+	
+	Pagina CrearPaginasTTT campo=Solicitud.paginas.tpaginas.ttpaginas.tttpaginas{
+		Accion crear redirigir=CrearPaginasTT
+		Accion editar redirigir=CrearPaginasTT
+		Accion borrar redirigir=CrearPaginasTT	
+		Texto titulo="Nombre nivel 3" campo=TablaPaginasTabTabTab.nombre
+		Texto titulo="Numero nivel 3" campo=TablaPaginasTabTabTab.numero
+		Fecha campo=TablaPaginasTabTabTab.fecha titulo="Fecha nivel 3"
+		Combo campo=TablaPaginasTabTabTab.list titulo="Lista seleccion nivel 3"
+	}
+	
+	Pagina CrearPaginasTT campo=Solicitud.paginas.tpaginas.ttpaginas{
+		Accion crear redirigir=CrearPaginasT
+		Accion editar redirigir=CrearPaginasT
+		Accion borrar redirigir=CrearPaginasT		
+		Texto titulo="Nombre" campo=TablaPaginasTabTab.nombre
+		Combo campo=TablaPaginasTabTab.comboMul comboTexto=nombre titulo="Combo nivel 2"
+		Combo campo=TablaPaginasTabTab.list titulo="Lista seleccion nivel 2"
+		Grupo titulo="Tabla visible si estamos en modo NO CREACION" permiso=paginaTablaVer{
+			Tabla paginasT2 campo=TablaPaginasTabTab.tttpaginas paginaCrear=CrearPaginasTTT paginaModificar=CrearPaginasTTT paginaBorrar=CrearPaginasTTT titulo="Tabla con paginas nivel 3" columnasAutomaticas exclude=id{}
+		}
+	}
+	
+	Pagina CrearPaginasT campo=Solicitud.paginas.tpaginas {
+		Accion crear redirigir=PaginasTablas
+		Accion editar redirigir=PaginasTablas
+		Accion borrar redirigir=PaginasTablas	
+		Texto titulo="Nombre" campo=TablaPaginasTab.nombre
+		Texto titulo="Numero entero" campo=TablaPaginasTab.numero
+		Combo campo=TablaPaginasTab.comboMul comboTexto=nombre titulo="Combo"
+		Fecha campo=TablaPaginasTab.fecha titulo="Fecha"
+		Grupo titulo="Tabla visible si estamos en modo NO CREACION" permiso=paginaTablaVer{
+			Tabla paginasT2 campo=TablaPaginasTab.ttpaginas paginaCrear=CrearPaginasTT paginaModificar=CrearPaginasTT paginaBorrar=CrearPaginasTT titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
+		}
+	}
+	
+	Pagina VerPaginasT campo=Solicitud.paginas.tpaginas {
+		Texto titulo="Nombre" campo=TablaPaginasTab.nombre
+		Texto titulo="Numero entero" campo=TablaPaginasTab.numero
+		Combo campo=TablaPaginasTab.comboMul comboTexto=nombre titulo="Combo"
+		Fecha campo=TablaPaginasTab.fecha titulo="Fecha"
+		Tabla paginasT2 campo=TablaPaginasTab.ttpaginas titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
+	}
+	
+	Pagina PaginasTablas campo=Solicitud{
+		Texto titulo="Titulo" campo=Solicitud.paginas.nombre
+		Tabla paginasT campo=Solicitud.paginas.tpaginas paginaVer=VerPaginasT paginaCrear=CrearPaginasT paginaModificar=CrearPaginasT paginaBorrar=CrearPaginasT titulo="Tabla con paginas" columnasAutomaticas exclude=id{}	
+	}
 
 
 	Pagina PermisoPagina campo=Solicitud permiso=administrador{
@@ -205,7 +273,17 @@ Formulario Solicitud {
 		Boton noHagoNada titulo="No hago Nada"
 	}
 	
-	Pagina TipoDeAyudaTexto {
+	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=solicitudEditable {
+	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido	
+	    Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido  	
+	    Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido  	
+	    Texto campo=Solicitud.solicitante.telefonoMovil titulo="Teléfono Móvil"  	
+	    Texto campo=Solicitud.solicitante.fax titulo="Fax"  	
+	    Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar  	
+	    Texto campo=Solicitud.solicitante.web titulo="Página web"
+	}
+	
+	Pagina TipoDeAyudaTexto campo=Solicitud{
 		Grupo ayudasDeTexto titulo="Ayudas de tipo texto simples"{
 			Texto campo=Solicitud.solicitante.telefonoFijo titulo="Texto" requerido ayuda="Ésto es una ayudita"
 			Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" ayuda="Ayuda de fecha"
@@ -215,7 +293,7 @@ Formulario Solicitud {
 		}
 	}
 	
-	Pagina TipoDeAyudaPopover {
+	Pagina TipoDeAyudaPopover campo=Solicitud{
 		Grupo ayudasDePopover titulo="Ayudas de tipo popover"{
 			Texto campo=Solicitud.solicitante.telefonoMovil titulo="Texto" requerido ayuda="Titulo de la Ayuda. Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)
 			Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" ayuda="Titulo de la Ayuda de fecha.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)

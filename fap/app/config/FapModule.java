@@ -10,6 +10,8 @@ import security.SecureFapGen;
 import services.AedService;
 import services.AedServiceImpl;
 import services.AedServiceImpl;
+import services.FirmaService;
+import services.FirmaServiceImpl;
 import services.ProcedimientosService;
 import services.ProcedimientosServiceImpl;
 import services.TiposDocumentosService;
@@ -39,6 +41,11 @@ public class FapModule extends AbstractModule {
 	@Provides @Singleton
 	final ProcedimientosService getProcedimientosService(PropertyPlaceholder propertyPlaceholder, TiposDocumentosService tiposDocumentosService){
 		return new ProcedimientosServiceImpl(propertyPlaceholder, tiposDocumentosService);
+	}
+	
+	@Provides @Singleton
+	final FirmaService getFirmaService(PropertyPlaceholder propertyPlaceholder, AedService aedService){
+		return new FirmaServiceImpl(propertyPlaceholder, aedService);
 	}
 	
 	void secure(){

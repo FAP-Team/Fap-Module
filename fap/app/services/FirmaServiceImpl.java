@@ -2,6 +2,7 @@ package services;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.ConnectException;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import messages.Messages;
 import models.Documento;
@@ -21,11 +23,13 @@ import models.RepresentantePersonaJuridica;
 import models.Solicitante;
 import net.java.dev.jaxb.array.StringArray;
 
+import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
 
 import platino.Firma;
 import platino.FirmanteCertificado;
@@ -36,6 +40,7 @@ import platino.PlatinoProxy;
 import play.libs.Codec;
 import properties.PropertyPlaceholder;
 import sun.security.pkcs.PKCS7;
+import utils.WSUtils;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.platino.servicios.sfst.FirmaService;
 import es.gobcan.platino.servicios.sfst.PlatinoSignatureServerBean;
@@ -64,25 +69,14 @@ public class FirmaServiceImpl implements services.FirmaService {
 		
 		URL wsdlURL = FirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma-pre.wsdl");
 		firmaPlatino = new FirmaService(wsdlURL).getFirmaService();
-		
-		BindingProvider bp = (BindingProvider) firmaPlatino;
-		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, getEndPoint());
-		
-		String backoffice = propertyPlaceholder.get("fap.platino.security.backoffice.uri");
-		String certificado = propertyPlaceholder.get("fap.platino.security.certificado.alias");
-		
-		PlatinoCXFSecurityHeaders.addSoapWSSHeader(
-				firmaPlatino,
-				PlatinoCXFSecurityHeaders.SOAP_11,
-				backoffice,certificado,
-				KeystoreCallbackHandler.class.getName(), null);
-		
+
+		WSUtils.configureEndPoint(firmaPlatino, getEndPoint());
+		WSUtils.configureSecurityHeaders(firmaPlatino, propertyPlaceholder);
+
 		PlatinoProxy.setProxy(firmaPlatino, propertyPlaceholder);
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#hasConnection()
-	 */
+
 	@Override
 	public boolean hasConnection() {
 		boolean hasConnection = false;
@@ -94,25 +88,19 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return hasConnection; 
 	}
 
-	/* (non-Javadoc)
-	 * @see services.FirmaService#getEndPoint()
-	 */
+
 	@Override
 	public String getEndPoint() {
 		return propertyPlaceholder.get("fap.platino.firma.url");
 	}
 
-	/* (non-Javadoc)
-	 * @see services.FirmaService#getVersion()
-	 */
+
 	@Override
 	public String getVersion(){
 		return firmaPlatino.getVersion();
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#verificarPKCS7(java.lang.String, java.lang.String)
-	 */
+
 	@Override
 	public boolean verificarPKCS7(String texto, String firma){
 		boolean result = false;
@@ -125,9 +113,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#verificarContentSignature(byte[], byte[])
-	 */
+
 	@Override
 	public boolean verificarContentSignature(byte[] content, byte[] signature) {
 		boolean result = false;
@@ -140,17 +126,13 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#firmarPKCS7(java.lang.String)
-	 */
+
 	@Override
 	public String firmarPKCS7(String texto){
 		return firmarPKCS7(texto.getBytes());
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#firmarPKCS7(byte[])
-	 */
+
 	@Override
 	public String firmarPKCS7(byte[] bytes){
 		String firma = null;
@@ -164,9 +146,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return firma;		
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#extraerCertificadoDeFirma(java.lang.String)
-	 */
+
 	@Override
 	public String extraerCertificadoDeFirma(String firma){
 		String certificado = null;
@@ -181,9 +161,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return certificado;
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#validarCertificado(java.lang.String)
-	 */
+
 	@Override
 	public boolean validarCertificado(String certificado){
 		String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
@@ -207,9 +185,6 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#extraerInformacion(java.lang.String)
-	 */
 	@Override
 	public InfoCert extraerInformacion(String certificado){
 		try {
@@ -223,9 +198,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#extraerInfoFromFirma(java.lang.String)
-	 */
+
 	@Override
 	public HashMap<String,String> extraerInfoFromFirma(String firma) {
 		try {
@@ -259,9 +232,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#getCertInfo(java.lang.String)
-	 */
+
 	@Override
 	public List<StringArray> getCertInfo(String certificado) throws Exception {
 		try {
@@ -273,9 +244,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#validateXMLSignature(byte[], java.lang.String)
-	 */
+
 	@Override
 	public Firmante validateXMLSignature(byte[] contenidoDoc, String firma) {
 		try {
@@ -376,14 +345,10 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#firmar(models.Documento, java.util.List, platino.Firma)
-	 */
 	@Override
 	public void firmar(Documento documento, List<Firmante> firmantes, Firma firma){	
 		firmar(documento, firmantes, firma, null);
 	}
-	
 	
 	private Firmante getFirmante(String firma, Documento documento){
 		if(firma == null || firma.isEmpty()){
@@ -404,9 +369,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return firmante;
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#firmar(models.Documento, java.util.List, platino.Firma, java.lang.String)
-	 */
+
 	@Override
 	public void firmar(Documento documento, List<Firmante> firmantes, Firma firma, String valorDocumentofirmanteSolicitado){		
 		Firmante firmanteCertificado = getFirmante(firma.firma, documento);
@@ -450,11 +413,6 @@ public class FirmaServiceImpl implements services.FirmaService {
 		}
 	}
 
-	
-	
-	/* (non-Javadoc)
-	 * @see services.FirmaService#firmarFH(models.Documento, platino.Firma)
-	 */
 	@Override
 	public void firmarFH(Documento documento, Firma firma){		
 		Firmante firmante = getFirmante(firma.firma, documento);
@@ -482,14 +440,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		}
 	}
 
-	
-	/**
-	 * Comprueba que al menos uno de los firmantes únicos ha firmado
-	 * o que hayan firmado todos los firmantes multiples
-	 * @param firmantes Lista de firmantes
-	 * @return
-	 */
-	public static boolean hanFirmadoTodos(List<Firmante> firmantes){
+	public boolean hanFirmadoTodos(List<Firmante> firmantes){
 		boolean multiple = true;
 		for(Firmante f : firmantes){
 			//Firmante único que ya ha firmado
@@ -510,7 +461,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 	 * Borra una lista de firmantes, borrando cada uno de los firmantes y vaciando la lista
 	 * @param firmantes
 	 */
-	public static void borrarFirmantes(List<Firmante> firmantes){
+	public void borrarFirmantes(List<Firmante> firmantes){
 		List<Firmante> firmantesBack = new ArrayList<Firmante>(firmantes);
 		firmantes.clear();
 		
@@ -518,55 +469,32 @@ public class FirmaServiceImpl implements services.FirmaService {
 			f.delete();
 	}
 	
-	/**
-	 * Dado el solicitante, calcula la lista de persona
-	 * que pueden firmar la solicitud
-	 * 
-	 * @param solicitante
-	 * @param firmantes
-	 */
-	public static void calcularFirmantes(Solicitante solicitante, List<Firmante> firmantes){
-		if(solicitante.isPersonaFisica()){
-			//Firma con el certificado del representante
-			Firmante f = new Firmante();
-			f.nombre = solicitante.fisica.getNombreCompleto();
-			f.tipo = "personafisica";
-			f.cardinalidad = "unico";
-			f.setIdentificador(solicitante.fisica.nip);
-			firmantes.add(f);
-			//Añade el representante
-			if (solicitante.representado) {
-				RepresentantePersonaFisica r = solicitante.representante;
-				Firmante fr = new Firmante();
-				fr.nombre = r.getNombreCompleto();
-				fr.tipo = "representante";
-				fr.cardinalidad = "unico";
-				fr.setIdentificador(r);
-				firmantes.add(fr);
-			}
+	public void calcularFirmantes(Solicitante solicitante, List<Firmante> firmantes){
+		if(solicitante == null) throw new IllegalArgumentException("Solicitante null");
+		if(firmantes == null) throw new IllegalArgumentException("firmantes null");
+		
+		//Solicitante de la solicitud
+		Firmante firmanteSolicitante = new Firmante(solicitante, "unico");
+		firmantes.add(firmanteSolicitante);
+		
+		//Comprueba los representantes
+		if(solicitante.isPersonaFisica() && solicitante.representado){
+			// Representante de persona física
+			Firmante representante = new Firmante(solicitante.representante, "representante", "unico");
+			firmantes.add(representante);
 		}else if(solicitante.isPersonaJuridica()){
-			//Firma con certificado de empresa
-			Firmante f = new Firmante();
-			f.nombre = solicitante.juridica.entidad;
-			f.tipo = "personajuridica";
-			f.cardinalidad = "unico";
-			f.setIdentificador(solicitante.getNumeroId());
-			firmantes.add(f);
-			
-			//Añade los representantes
+			//Representantes de la persona jurídica
 			for(RepresentantePersonaJuridica r : solicitante.representantes){
-				Firmante fr = new Firmante();
-				fr.nombre = r.getNombreCompleto();
-				fr.tipo = "representante";
-				if(r.tipo.equals("mancomunado")){
-					fr.cardinalidad = "multiple";
-				}else if((r.tipo.equals("solidario")) || (r.tipo.equals("administradorUnico"))){
-					fr.cardinalidad = "unico";
+				String cardinalidad = null;
+				if(r.tipoRepresentacion.equals("mancomunado")){
+					cardinalidad = "multiple";
+				}else if((r.tipoRepresentacion.equals("solidario")) || (r.tipoRepresentacion.equals("administradorUnico"))){
+					cardinalidad = "unico";
 				}
-				fr.setIdentificador(r);
-				firmantes.add(fr);
+				Firmante firmante = new Firmante(r, "representante", cardinalidad);
+				firmantes.add(firmante);
 			}
-		}		
+		}
 	}	
 	
 }

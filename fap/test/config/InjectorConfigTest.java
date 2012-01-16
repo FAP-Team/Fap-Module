@@ -10,6 +10,7 @@ import security.Secure;
 import services.AedService;
 import services.AedServiceImpl;
 import services.AedServiceImpl;
+import services.FirmaService;
 import services.ProcedimientosService;
 import services.TiposDocumentosService;
 
@@ -24,6 +25,7 @@ public class InjectorConfigTest extends UnitTest {
 		assertInjectedSingleton(PropertyPlaceholder.class);
 		assertInjectedSingleton(ProcedimientosService.class);
 		assertInjectedSingleton(TiposDocumentosService.class);
+		assertInjectedSingleton(FirmaService.class);
 	}
 		
 	private void assertInjected(Class clazz){

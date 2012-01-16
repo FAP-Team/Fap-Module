@@ -3,6 +3,8 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import messages.Messages;
 import models.Aportacion;
 import models.Firmante;
@@ -16,6 +18,12 @@ import controllers.gen.AportacionPresentarControllerGen;
 
 public class AportacionPresentarController extends AportacionPresentarControllerGen {
 
+	@Inject
+	static FirmaService firmaService;
+	
+	@Inject
+	static RegistroService registroService;
+	
 	public static void index(Long idSolicitud){
 		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 		Aportacion aportacion = solicitud.aportaciones.actual;
@@ -67,11 +75,11 @@ public class AportacionPresentarController extends AportacionPresentarController
 				
 				List<Firmante> firmantes = new ArrayList<Firmante>();
 				
-				FirmaService.calcularFirmantes(solicitud.solicitante, firmantes);
+				firmaService.calcularFirmantes(solicitud.solicitante, firmantes);
 				
 				play.Logger.info("Firmantes " + firmantes);
 				
-				FirmaService.firmar(solicitud.aportaciones.actual.oficial, firmantes, firma);
+				firmaService.firmar(solicitud.aportaciones.actual.oficial, firmantes, firma);
 				
 				play.Logger.info("Firmada");
 				
@@ -85,7 +93,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 			//Registra la solicitud
 			if(!Messages.hasErrors()){
 				try {
-					RegistroService.registrarAportacionActual(solicitud);
+					registroService.registrarAportacionActual(solicitud);
 				} catch (RegistroException e) {
 					e.printStackTrace();
 					Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");
@@ -120,7 +128,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 			//No Registra la solicitud
 			if(!Messages.hasErrors()){
 				try {
-					RegistroService.noRegistrarAportacionActual(dbSolicitud);
+					registroService.noRegistrarAportacionActual(dbSolicitud);
 				} catch (Exception e) {
 					e.printStackTrace();
 					Messages.error("Se produjo un error al intentar aportar sin registrar la documentación, inténtelo de nuevo.");

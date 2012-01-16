@@ -5,25 +5,42 @@ import java.util.List;
 
 import models.Documento;
 import models.Firmante;
+import models.Solicitante;
 import net.java.dev.jaxb.array.StringArray;
 import platino.Firma;
 import platino.InfoCert;
 
-public interface FirmaService {
+public interface FirmaService extends WSService {
 
-	public boolean hasConnection();
-
-	public String getEndPoint();
-
+	/**
+	 * Obtiene la versión del servicio
+	 * @return
+	 */
 	public String getVersion();
 
+	/**
+	 * Firma pkcs7 de una cadena
+	 * @param texto
+	 * @return
+	 */
+	public String firmarPKCS7(String texto);
+
+	/**
+	 * Firma pkcs7 de un array de bytes
+	 * @param bytes
+	 * @return
+	 */
+	public String firmarPKCS7(byte[] bytes);
+	
+	/**
+	 * Verifica si una firma es correcta
+	 * @param texto Texto firmado
+	 * @param firma Firma del texto
+	 * @return
+	 */
 	public boolean verificarPKCS7(String texto, String firma);
 
 	public boolean verificarContentSignature(byte[] content, byte[] signature);
-
-	public String firmarPKCS7(String texto);
-
-	public String firmarPKCS7(byte[] bytes);
 
 	public String extraerCertificadoDeFirma(String firma);
 
@@ -71,4 +88,27 @@ public interface FirmaService {
 	 */
 	public void firmarFH(Documento documento, Firma firma);
 
+	
+	/**
+	 * Comprueba que al menos uno de los firmantes únicos ha firmado
+	 * o que hayan firmado todos los firmantes multiples
+	 * @param firmantes Lista de firmantes
+	 * @return
+	 */
+	public boolean hanFirmadoTodos(List<Firmante> firmantes);
+	
+	/**
+	 * Borra una lista de firmantes, borrando cada uno de los firmantes y vaciando la lista
+	 * @param firmantes
+	 */
+	public void borrarFirmantes(List<Firmante> firmantes);
+	
+	/**
+	 * Dado el solicitante, calcula la lista de persona
+	 * que pueden firmar la solicitud
+	 * 
+	 * @param solicitante
+	 * @param firmantes
+	 */
+	public void calcularFirmantes(Solicitante solicitante, List<Firmante> firmantes);
 }

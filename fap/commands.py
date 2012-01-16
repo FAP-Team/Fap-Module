@@ -5,14 +5,16 @@ import sys
 import subprocess
 import shutil
 import re
+import getopt
 from datetime import date
+
 # Here you can create play commands that are specific to the module, and extend existing commands
 
 MODULE = 'fap'
 
 # Commands that are specific to your module
 
-COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist', 'fap:winservice']
+COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist', 'fap:winservice', "fap:copyplatinoconf"]
 # Eliminamos el comando 'fap:model' de la lista de comandos
 
 def execute(**kargs):
@@ -47,8 +49,9 @@ def execute(**kargs):
 
     if command == "fap:winservice":
         winservice(app, args)    
-
-
+    
+    if command == "fap:copyplatinoconf":
+        copyplatinoconf(app, args)
 
 def version (app, args):
     depsYaml = os.path.join(getModuleDir(app, args), 'conf/dependencies.yml')
@@ -392,3 +395,64 @@ def winservice(app, args):
     }
     replace_in_file(uninstall_in, uninstall_out, word_dic)
     print "~ [fap:winservice] Creado unistallService.bat"
+
+def copyplatinoconf(app, args):
+    fromPath = None
+    try:
+        optlist, args = getopt.getopt(args, '', ['from='])
+        for o, a in optlist:
+            if o in ('--from'):
+                fromPath = a
+    except getopt.GetoptError, err:
+        print "~ %s" % str(err)
+        
+    if not fromPath:
+        print "~ Especifica la carpeta donde está la configuracion de platino con --from"
+        print "~ "
+        sys.exit(-1)
+    
+    copytree_improved(fromPath, app.path, ignore=shutil.ignore_patterns('application.conf'))
+
+    platinoApplicationConf = os.path.join(fromPath, "conf", "application.conf")
+    appApplicationConf = os.path.join(app.path, "conf", "application.conf")
+    append_content(platinoApplicationConf, appApplicationConf)
+
+def copytree_improved(src, dst, symlinks=False, ignore=None):
+    names = os.listdir(src)
+    if ignore is not None:
+        ignored_names = ignore(src, names)
+    else:
+        ignored_names = set()
+    
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+
+    errors = []
+    for name in names:
+        if name in ignored_names:
+            continue
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+
+        if symlinks and os.path.islink(srcname):
+            linkto = os.readlink(srcname)
+            os.symlink(linkto, dstname)
+        elif os.path.isdir(srcname):
+            copytree_improved(srcname, dstname, symlinks, ignore)
+        else:
+            print "~ copy %s -> %s" % (srcname, dstname)
+            shutil.copy2(srcname, dstname)
+
+    shutil.copystat(src, dst)
+
+def append_content(src, dst):
+    if (os.path.exists(src)):
+        print "~ append content %s -> %s" % (src, dst)
+
+        from_f = open(src , 'r')
+        from_content = from_f.read()
+        from_f.close()
+        
+        to_f = open(dst, 'a')
+        to_f.write(from_content)
+        to_f.close() 

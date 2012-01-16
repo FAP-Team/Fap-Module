@@ -7,16 +7,18 @@ Crea un formulario, dentro del cual se pueden definir páginas y popups. Se pued
 h2. Parámetros
 
 * **_[name]_** : Identificador del Formulario. 
+* **campo = _[campo]_** (opcional) : Entidad asociada a todas las paginas de ese formulario.
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al formulario.
 * **entidad = _[entidad]_** (opcional) : Define la entidad que se puede usar en los campos que se sitúen dentro de las páginas definidas en este formulario. Si no se especifica este parámetro, tendrá que ser especificado en cada una de las páginas del formulario.
 
 h2. Definición
 
 bc. Formulario:
-	'Formulario' name=IDS
+	elemento='Formulario' name=IDS
 	(
-		("entidad" "=" entidad=[Entity|IDS])?
+		("campo" "=" campo=Campo)?
 		& ("permiso" "=" permiso=[Permiso])?
+		& (inicial?="inicial")?
 	)
 	'{'
 		(menu = Menu)?
@@ -30,7 +32,7 @@ h3. Formulario sin menú
 
 bc.. Formulario Solicitud {
 	
-	Pagina Aportacion noForm permiso=aportacion {
+	Pagina Solicitante campo=Solicitud {
 		....
 	}
 	
@@ -49,10 +51,24 @@ bc.. Formulario Solicitud permiso=administrador {
 		Enlace "Salir" accion="fap.SecureController.logout"
 	}
 	
-	Pagina Solicitante {
+	Pagina Solicitante campo=Solicitud {
 		Persona personaSolicitante campo=Persona titulo="Datos solicitante" permiso=solicitudEditable requerido
 		Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido 
 	}
+}
+
+h3. Formulario con campo
+
+bc.. Formulario Solicitud campo=Solicitud {
+	
+	...
+	
+	Pagina Solicitante {
+		....
+	}
+	
+	...
+	
 }
 
 p. 

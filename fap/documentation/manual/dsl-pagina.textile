@@ -11,22 +11,22 @@ h2. Parámetros
 * **noAutenticar** (opcional) : Los usuario no registrados pueden acceder a la página. 
 * **guardarParaPreparar** (opcional) : Guarda en base de datos si la página fue guardada, sirve para comprobar que todas las páginas fueron guardadas antes de presentar la solicitud.
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado a la página.
-* **entidad = _[entidad]_** (opcional) : Define la entidad que se puede usar en los campos que se sitúen dentro de la página. Si no se especifica este parámetro, tendrá que se especificado en el formulario que contiene a esta página.
+* **campo = _[campo]_** (opcional) : Define la entidad que se puede usar en los campos que se sitúen dentro de la página. Si no se especifica este parámetro, tendrá que ser especificado en el formulario que contiene a esta página.
 * **inicial** (opcional) : Establece esta página como la inicial de la aplicación.
 * **titulo = _[string]_** (opcional) : Define un título para la página.
 
 h2. Definición
 
 bc. Pagina:
-	'Pagina' name=IDS
+	elemento='Pagina' name=IDS
 	(
-		(noForm?='noForm')?
-		& ("entidad" "=" entidad=[Entity|IDS])?
+		("titulo" "=" titulo=STRING)?
+		& ("campo" "=" campo=Campo)?
+		& ("permiso" "=" permiso=[Permiso])?
+		& (noForm?='noForm')?
 		& (noAutenticar?='noAutenticar')?
 		& (guardarParaPreparar?="guardarParaPreparar")?
-		& ("permiso" "=" permiso=[Permiso])?
 		& (inicial?="inicial")?
-		& (titulo?="titulo" "=" namePagina=STRING)?
 	)
 	'{'
 		elementos+=Elemento*
@@ -37,7 +37,7 @@ h2. Ejemplo de uso
 
 h3. Pagina estandar
 
-bc. Pagina Solicitante {
+bc. Pagina Solicitante campo=Solicitud{
 	Persona personaSolicitante titulo="Datos solicitante" ...
 	Direccion titulo="Domicilio Social" ... 
 	Texto titulo="Teléfono" ...
@@ -46,7 +46,7 @@ bc. Pagina Solicitante {
 
 h3. Pagina donde el usuario define Form dentro de la pagina
 
-bc. Pagina Solicitudes noForm{
+bc. Pagina Solicitudes noForm campo=Solicitud{
 	....
 	Form nuevaSolicitud {
 		Boton titulo="Nueva Solicitud"
@@ -54,4 +54,19 @@ bc. Pagina Solicitudes noForm{
 	Form borrarSolicitud {
 		Boton titulo="Borrar Solicitud"
 	}
+}
+
+h3. Pagina sin especificar campo
+
+_*¡Ojo!:* al no especificar el 'campo', se debe especificar en el Formulario que contiene a esta pagina, indicando que *todas* las paginas de ese formulario utilizan la Entidad especificada en dicho Formulario_
+
+bc. Formulario Solicitud campo=Solicitud {
+	... 
+	Pagina Solicitante {
+		Persona personaSolicitante titulo="Datos solicitante" ...
+		Direccion titulo="Domicilio Social" ... 
+		Texto titulo="Teléfono" ...
+		Texto titulo="Teléfono Móvil" ...
+	}
+	...
 }

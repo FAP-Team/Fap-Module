@@ -55,9 +55,9 @@ Popup popupNombre campo=Solicitud.tablaDeNombres {
 
 p. 
 
-h3. Subida de documentos AED
+h3. Añadir una entidad a un campo one-to-many de otra entidad
 
-Hasta ahora la subida de documentos al AED, se realizaba utilizando un form. Con el nuevo DSL, se puede realizar de una manera mucho más sencilla, como vemos a continuación:
+Hasta ahora, para añadir una entidad a un campo one-to-many de otra entidad (como por ejemplo la Subida de Archivos al AED), se realizaba utilizando un form. Con el nuevo DSL, se puede realizar de una manera mucho más sencilla, como vemos a continuación:
 
 
 bc.. Antes:

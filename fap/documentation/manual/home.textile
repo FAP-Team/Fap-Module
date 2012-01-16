@@ -69,6 +69,9 @@ h3. Elementos Gráficos
 # "persona juridica":dsl-personaJuridica
 # "entidad automática":dsl-entidadAutomatica
 # "formulario":dsl-formulario
+
+h3. Acciones
+
 # "accion":dsl-accion
 
 h3. Permisos

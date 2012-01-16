@@ -1,0 +1,38 @@
+h1. Accion
+
+h2. Descripción
+
+Permite definir un elemento Accion. Los elementos Accion no generan ningún elemento gráfico, sino que sirve para configurar cada una de las acciones (crear, modificar y borrar) de las páginas y los pop-ups.
+
+h2. Parámetros
+
+* **_[name]_**: Identificador del elemento (crear, editar o borrar).
+* **boton = _[string]_** (opcional): Permite personalizar la etiqueta del botón. Si no se le especifica pondrá en la etiqueta el _name_
+* **redirigir = _[string]_ | _[Pagina]_** (opcional): Permite redirigir a una Página en concreto, a la página anterior o a una URL, al darle al botón de la acción, siempre y cuando la acción en cuestión se haya podido realizar con éxito, en otro caso, redirigiría a la misma página.
+* **mensajesOk = _[string]_** (opcional): Permite personalizar los mensajes de éxito que apareceran en la página al realizar sin problemas la acción en cuestión.
+* **noBorrarEntidad** (opcional): En la acción de borrar, no se borra la entidad que estamos borrando, sino sólo se desenlaza de la lista en la que estaba. Por ejemplo, si la entidad está un OneToMany, la quita del OneToMany, pero no la elimina de memoria.
+* **crearSiempre** (opcional): Indica que crearemos por defecto en el controlador, los métodos correspondientes a las acciones ('crear', 'editar' y 'borrar') aunque estas acciones no se utilicen nunca en la página o pop-up en que se declare. 
+
+h2. Definición
+
+bc. Accion:
+	elemento="Accion" name=("crear"  | "editar" | "borrar")
+	(
+		("boton" "=" boton=STRING)?
+		& ('redirigir' '=' (anterior?="anterior" | redirigir=PaginaAccion | redirigirUrl=STRING))?
+		& ("mensajeOk" "=" mensajeOk=STRING)?
+		& (noBorrarEntidad?='noBorrarEntidad')?
+		& (crearSiempre?="crearSiempre")?
+	)
+;
+
+h2. Ejemplo de uso
+
+bc.. Pagina CrearTablaPaginas campo=Solicitud.tablaPaginas.tpaginas{
+	Accion editar redirigir=PaginaTablas
+	Texto titulo="Nombre tabla con pagina" 
+}
+
+Pagina PaginaTablas campo=Solicitud {
+	Tabla TablaConPaginas campo=TablaPaginas.tpaginas paginaModificar=ModificarTablaPaginas titulo="Tabla con paginas" columnasAutomaticas include=id{}
+}

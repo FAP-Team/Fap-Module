@@ -1,7 +1,5 @@
 h1. Documentación FAP
 
-# "2.0":version2.0DSL
-
 h2. Tutorial
 
 # "Introducción":curso-introduccion
@@ -71,6 +69,7 @@ h3. Elementos Gráficos
 # "persona juridica":dsl-personaJuridica
 # "entidad automática":dsl-entidadAutomatica
 # "formulario":dsl-formulario
+# "accion":dsl-accion
 
 h3. Permisos
 

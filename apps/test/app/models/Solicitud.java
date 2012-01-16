@@ -68,6 +68,11 @@ public class Solicitud extends SolicitudGenerica {
 	public PaginasTab paginas;
 	
 	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="solicitud_popuppaginas")
+	public List<TablaPopUpPaginas> popupPaginas;
+	
+	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public SavePages savePages;
 	
@@ -119,6 +124,9 @@ public class Solicitud extends SolicitudGenerica {
 						
 							if (paginas != null)
 								paginas.init();	
+						
+						if (popupPaginas == null)
+							popupPaginas = new ArrayList<TablaPopUpPaginas>();
 						
 							if (savePages == null)
 								savePages = new SavePages();

@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 
 
 @Entity
-public class TablaPaginasTabTabTab extends Model {
+public class TablaPopUpPaginas extends Model {
 	// Código de los atributos
 	
 	
@@ -30,24 +30,19 @@ public class TablaPaginasTabTabTab extends Model {
 	
 	
 	
-	public Integer numero;
+	public String apellido;
 	
 	
-	@org.hibernate.annotations.Columns(columns={@Column(name="fecha"),@Column(name="fechaTZ")})
-	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
-	public DateTime fecha;
-	
-	
-	@ValueFromTable("ComboTestList")
-	public String list;
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Fechas fecha;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginastabtabtab_tabladenombres")
-	public List<TablaDeNombres> tablaDeNombres;
+	@JoinTable(name="tablapopuppaginas_tttpaginas")
+	public List<TablaPaginasTabTabTab> tttpaginas;
 	
 	
-	public TablaPaginasTabTabTab (){
+	public TablaPopUpPaginas (){
 		init();
 	}
 	
@@ -55,8 +50,13 @@ public class TablaPaginasTabTabTab extends Model {
 	public void init(){
 		
 		
-						if (tablaDeNombres == null)
-							tablaDeNombres = new ArrayList<TablaDeNombres>();
+							if (fecha == null)
+								fecha = new Fechas();
+							else
+								fecha.init();
+						
+						if (tttpaginas == null)
+							tttpaginas = new ArrayList<TablaPaginasTabTabTab>();
 						
 	}
 		

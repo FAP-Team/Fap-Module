@@ -40,8 +40,8 @@ Formulario Solicitud {
 		}
 		
 		Grupo "Paginas" {
-			Enlace "1. Combo Tablas Paginas" pagina=ComboTablasPaginas
-			Enlace "2. Tablas con páginas" pagina=PaginasTablas
+			Enlace "Combo ManytoOne" pagina=ComboTablasPaginas
+			Enlace "Tablas con páginas" pagina=PaginasTablas
 		}
 		
 		Grupo "Tipos de Ayuda" {
@@ -207,6 +207,16 @@ Formulario Solicitud {
 		}
 	}
 	
+	Popup popupNombreTablas campo=Solicitud.paginas.tpaginas.ttpaginas.tttpaginas.tablaDeNombres {
+		Texto campo=TablaDeNombres.nombre titulo="Nombre"
+		Texto campo=TablaDeNombres.apellido titulo="Apellido"
+	}
+	
+	Popup popupNombreTablasPaginas campo=Solicitud.popupPaginas.tttpaginas.tablaDeNombres {
+		Texto campo=TablaDeNombres.nombre titulo="Nombre"
+		Texto campo=TablaDeNombres.apellido titulo="Apellido"
+	}
+	
 	Pagina CrearPaginasTTT campo=Solicitud.paginas.tpaginas.ttpaginas.tttpaginas{
 		Accion crear redirigir=CrearPaginasTT
 		Accion editar redirigir=CrearPaginasTT
@@ -215,6 +225,14 @@ Formulario Solicitud {
 		Texto titulo="Numero nivel 3" campo=TablaPaginasTabTabTab.numero
 		Fecha campo=TablaPaginasTabTabTab.fecha titulo="Fecha nivel 3"
 		Combo campo=TablaPaginasTabTabTab.list titulo="Lista seleccion nivel 3"
+		Tabla tablaNombres campo=TablaPaginasTabTabTab.tablaDeNombres titulo="Solicitantes"
+		popupCrear=popupNombreTablas
+		popupVer=popupNombreTablas
+		popupModificar=popupNombreTablas
+		popupBorrar=popupNombreTablas
+		columnasAutomaticas exclude=id, fecha
+		{
+		}
 	}
 	
 	Pagina CrearPaginasTT campo=Solicitud.paginas.tpaginas.ttpaginas{
@@ -250,9 +268,47 @@ Formulario Solicitud {
 		Tabla paginasT2 campo=TablaPaginasTab.ttpaginas titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
 	}
 	
+	Pagina CrearPaginasPopUpPagina campo=Solicitud.popupPaginas.tttpaginas{
+		Accion crear redirigir=PaginasTablas
+		Accion editar redirigir=PaginasTablas
+		Accion borrar redirigir=PaginasTablas
+		Texto titulo="Nombre tabla con pagina en popUp" campo=TablaPaginasTabTabTab.nombre
+		Texto titulo="Numero tabla con pagina en popUp" campo=TablaPaginasTabTabTab.numero
+		Fecha campo=TablaPaginasTabTabTab.fecha titulo="Fecha tabla con pagina en popUp"
+		Combo campo=TablaPaginasTabTabTab.list titulo="Lista seleccion tabla con pagina en popUp"
+		Tabla tablaNombres campo=TablaPaginasTabTabTab.tablaDeNombres titulo="Solicitantes tabla con pagina en popUp"
+		popupCrear=popupNombreTablasPaginas
+		popupVer=popupNombreTablasPaginas
+		popupModificar=popupNombreTablasPaginas
+		popupBorrar=popupNombreTablasPaginas
+		columnasAutomaticas exclude=id, fecha
+		{
+		}
+	}
+	
+	Popup popupPagina campo=Solicitud.popupPaginas {
+		Texto campo=TablaPopUpPaginas.nombre titulo="Nombre popUp"
+		Texto campo=TablaPopUpPaginas.apellido titulo="Apellido popUp"
+		Tabla paginasT2 campo=TablaPopUpPaginas.tttpaginas paginaCrear=CrearPaginasPopUpPagina paginaModificar=CrearPaginasPopUpPagina paginaBorrar=CrearPaginasPopUpPagina titulo="Tabla con paginas dentro de popUp" columnasAutomaticas exclude=id{}
+	}
+	
 	Pagina PaginasTablas campo=Solicitud{
-		Texto titulo="Titulo" campo=Solicitud.paginas.nombre
-		Tabla paginasT campo=Solicitud.paginas.tpaginas paginaVer=VerPaginasT paginaCrear=CrearPaginasT paginaModificar=CrearPaginasT paginaBorrar=CrearPaginasT titulo="Tabla con paginas" columnasAutomaticas exclude=id{}	
+		Grupo titulo="Tablas con paginas"{
+			Texto titulo="Titulo" campo=Solicitud.paginas.nombre
+			Wiki {"Para poder usar esta tabla, es necesario haber seleccionado un valor del combo en la pagina: 'Combo ManyToOne'"}
+			Boton irComboManyToOne titulo="Ir a Combo ManyToOne" pagina=ComboTablasPaginas
+			Tabla paginasT campo=Solicitud.paginas.tpaginas paginaVer=VerPaginasT paginaCrear=CrearPaginasT paginaModificar=CrearPaginasT paginaBorrar=CrearPaginasT titulo="Tabla con paginas" columnasAutomaticas exclude=id{}
+		}
+		Grupo titulo="Tablas con popups y paginas"{
+			Tabla tablaNombres campo=Solicitud.popupPaginas titulo="Solicitantes"
+			popupCrear=popupPagina
+			popupVer=popupPagina
+			popupModificar=popupPagina
+			popupBorrar=popupPagina
+			columnasAutomaticas exclude=id
+		{
+		}
+		}	
 	}
 
 

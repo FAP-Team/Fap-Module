@@ -13,6 +13,7 @@ Entidad Solicitud extends SolicitudGenerica {
 	ManyToMany ComboTestRef comboErrorMany
 	
 	ManyToOne PaginasTab paginas
+	OneToMany TablaPopUpPaginas popupPaginas
 }
 
 Entidad Peta{
@@ -50,6 +51,14 @@ Entidad TablaPaginasTabTabTab{
 	Integer numero
 	DateTime fecha
 	Lista ComboTestList list
+	OneToMany TablaDeNombres tablaDeNombres
+}
+
+Entidad TablaPopUpPaginas {
+	String nombre
+	String apellido
+	OneToOne Fechas fecha
+	OneToMany TablaPaginasTabTabTab tttpaginas
 }
 
 Entidad Fechas {

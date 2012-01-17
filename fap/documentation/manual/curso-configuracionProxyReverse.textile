@@ -1,12 +1,12 @@
 h1. Configuración de Apache, para desplegar aplicaciones
 
-h2. Configuración Context Path, para subsanar el problema de cambio de rutas al redireccionar
+h2. Configuración Path aplicacion, para subsanar el problema de cambio de rutas al redireccionar
 
-Para ello en el fichero **application.conf** tenemos una propiedad que se llama **fap.ctxPath** y que está comentada. La descomentamos y ponemos la ruta donde estará nuestra aplicacion, es decir:
+Para ello en el fichero **application.conf** tenemos una propiedad que se llama **http.path** y que está comentada. La descomentamos y ponemos la ruta donde estará nuestra aplicacion, es decir:
 
 Si queremos que la aplicacion se despliegue en **localhost/app** pondremos la propiedad:
 
-bc. fap.ctxPath=/app
+bc. http.path=/app
 
 para después configurar el Proxy Reverse de la siguiente manera:
 

@@ -27,7 +27,7 @@ Como usuarios del módulo FAP, podemos añadir páginas, un menú y permisos al 
 En este caso incluiremos una página *Solicitante*, un menu de navegación con el enlace a la página solicitante y otro a la página de *Aportación* (que por defecto provee el módulo FAP). Quedando nuestro fichero de la siguiente manera:
 
 bc. 
-Formulario Solicitud {
+Formulario Solicitud campo=Solicitud{
 	
     Menu {
     	Enlace "Volver" pagina=Principal.Solicitudes
@@ -89,7 +89,7 @@ La creación de otros formularios en nuestra aplicación se hará básicemente d
 
 h3. Añadir popups a los formularios
 
-Los "Popups":dsl-popup en las aplicaciones FAP pueden ser utilizadon en los enlaces del menú, en los botones de la aplicación web y por último, pero más importante, en las tablas. En este caso, utilizaremos los Popups para mostrar, editar o eliminar información de cada una de las "filas" de la tabla, es decir de sus elementos. Más información sobre las tablas "aquí":dsl-tabla (TODO).
+Los "Popups":dsl-popup en las aplicaciones FAP pueden ser utilizadon en los enlaces del menú, en los botones de la aplicación web y por último, pero más importante, en las tablas. En este caso, utilizaremos los Popups para mostrar, editar o eliminar información de cada una de las "filas" de la tabla, es decir de sus elementos. Más información sobre las tablas "aquí":dsl-tabla.
 
 Pongamos un ejemplo, supongamos que tenemos una tabla en la cual llevaremos la cuenta de los pagos que vamos haciendo, con las columas concepto y cantidad. Lo primero será crear las entidades, la cual llamaremos *Pago* que tendrá dos atributos, *concepto* y *cantidad* (cuyos tipos serán _String_ y _Moneda_ respectivamente).
 
@@ -142,6 +142,8 @@ Podemos insertar varios pagos, y la tabla nos quedará algo así:
 !images/curso_formulario_9-ejemploTablaPagos3!
 
 Los pagos ya creados los podremos editar, borrar y ver (mediante el mismo PopUp). *NOTA:* También podemos utilizar diferentes popups para las diferentes acciones de la tabla, asignando los popups mediante *popupCrear*, *popupModificar*, *popupVer* y *popupBorrar*.
+
+*NOTA:* Las tablas tambien se pueden gestionar con páginas, a parte de con Pop-Ups, a partir de la versión 2.0. Más información sobre las tablas "aquí":dsl-tabla.
 
 h2. Ciclo de vida de los formularios
 
@@ -216,7 +218,7 @@ bc. Formulario Soporte {
 		Enlace "Mis Solicitudes" permiso=logeado pagina=Solicitudes
     		Enlace "Soporte" pagina=Soporte
     	}
-	Pagina Soporte noForm noAutenticar {
+	Pagina Soporte noForm noAutenticar campo=Incidencia{
 		Wiki {"
 			Utilice el siguiente formulario para notificar una incidencia o realizar cualquier consulta respecto a su solicitud.
 			En el tiempo más breve posible se le contestará a la dirección de correo electrónico que indique."

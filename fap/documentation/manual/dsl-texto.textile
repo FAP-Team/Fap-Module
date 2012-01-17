@@ -19,11 +19,11 @@ h2. Parámetros
 h2. Definición
 
 bc. Texto:
-	'Texto' (name=ID)? (
+	elemento='Texto' (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('ancho' '=' ancho=STRING)?
-		& ('ayuda' '=' ayuda=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 		& (duplicar?='duplicar')?

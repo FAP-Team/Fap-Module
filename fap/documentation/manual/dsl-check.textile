@@ -14,10 +14,10 @@ h2. Parámetros
 h2. Definición
 
 bc. Check:
-	'Check' (name=ID)? (
+	elemento='Check' (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
-		& ('anchoTitulo' '=' anchoTitulo=STRING)?	
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 	)
 ;	
 

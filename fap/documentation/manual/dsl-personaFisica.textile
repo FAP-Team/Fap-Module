@@ -14,7 +14,7 @@ h2. Parámetros
 h2. Definición
 
 bc. PersonaFisica:
-	'PersonaFisica' (name=ID) (
+	elemento='PersonaFisica' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')?

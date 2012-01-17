@@ -17,7 +17,7 @@ h2. Parámetros
 h2. Definición
 
 bc. AreaTexto:
-	'AreaTexto' (name=ID)? (
+	elemento='AreaTexto' (name=ID)? (
 		  ('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('valor' '=' valor=STRING)?

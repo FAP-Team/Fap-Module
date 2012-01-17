@@ -11,7 +11,7 @@ No tiene parámetros.
 h2. Definición
 
 bc. AgruparCampos:
-	'AgruparCampos' '{'
+	elemento='AgruparCampos' '{'
 		elementos+=Elemento*
 	'}'
 ;

@@ -21,22 +21,24 @@ MenuElemento:
 ;	
 
 MenuGrupo:
-	'Grupo' titulo=STRING 
+	elemento='Grupo' titulo=STRING 
 	("permiso" "=" permiso=[Permiso])?  '{'
 		elementos +=MenuElemento*
 	'}'
 ;
 
 MenuEnlace:
-	'Enlace' 
-		titulo=STRING
+	elemento='Enlace' titulo=STRING
+	(
 		("permiso" "=" permiso=[Permiso])?
-		(
-			('pagina' '=' pagina=[Pagina|QN]) | 
+		& (
+			('pagina' '=' pagina=PaginaAccion) |
+			('popup' '=' popup=PopupAccion) |
 			('accion' '=' accion=STRING) |
 			('url' '=' url=STRING) |
-			('popup' '=' popup=[Popup])
+			(anterior?="anterior")
 		)?
+	)
 ;
 
 h2. Ejemplos de uso

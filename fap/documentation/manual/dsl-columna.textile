@@ -16,12 +16,12 @@ h2. Parámetros
 h2. Definición
 
 bc. Columna:
-	'Columna' ( 
-		( ('campo' '=' campo=Campo) | ('funcion' '=' funcion=STRING) )
-		& ('titulo' '=' titulo=STRING)? 
-		& ('ancho' '=' ancho=STRING)? 
+	elemento='Columna' ( 
+	   ( ('campo' '=' campo=Campo) | ('funcion' '=' funcion=STRING) )
+	   & ('titulo' '=' titulo=STRING)? 
+	   & ('ancho' '=' ancho=STRING)? 
 		& ("permiso" "=" permiso=[Permiso])?
-		& (expandir?='expandir')?
+	   & (expandir?='expandir')?
 	)
 ;
 

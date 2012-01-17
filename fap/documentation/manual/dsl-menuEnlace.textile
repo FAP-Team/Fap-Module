@@ -12,19 +12,22 @@ h2. Parámetros
 * **accion = _[string]_** (opcional) : Indica que el enlace hará referencia a una acción de un controlador de la aplicación. Dicha acción será traducida a la URL que la invoca.
 * **url = _[string]_** (opcional) : Indica que el enlace hará referencia a una URL externa.
 * **popup = _[popup]_** (opcional) : Indica que el enlace hará referencia a un popup.
+* **anterior** (opcional) : Para redirigir a la pagina anterior
 
 h2. Definición
 
 bc. MenuEnlace:
-	'Enlace' 
-	titulo=STRING
-	("permiso" "=" permiso=[Permiso])?
+	elemento='Enlace' titulo=STRING
 	(
-		('pagina' '=' pagina=[Pagina|QN]) | 
-		('accion' '=' accion=STRING) |
-		('url' '=' url=STRING) |
-		('popup' '=' popup=[Popup])
-	)?
+		("permiso" "=" permiso=[Permiso])?
+		& (
+			('pagina' '=' pagina=PaginaAccion) |
+			('popup' '=' popup=PopupAccion) |
+			('accion' '=' accion=STRING) |
+			('url' '=' url=STRING) |
+			(anterior?="anterior")
+		)?
+	)
 ;
 
 h2. Ejemplos de uso

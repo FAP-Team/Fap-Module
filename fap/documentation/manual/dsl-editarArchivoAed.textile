@@ -13,7 +13,7 @@ h2. Parámetros
 h2. Definición
 
 bc. EditarArchivoAed:
-	'EditarArchivoAed' name=ID (
+	elemento='EditarArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 	)

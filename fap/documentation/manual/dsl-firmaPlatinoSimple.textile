@@ -13,9 +13,11 @@ h2. Parámetros
 h2. Definición
 
 bc. FirmaPlatinoSimple:
-	"FirmaSimple" (name=ID)
-	"titulo" "=" titulo=STRING
-	("documento" "=" campo=Campo)
+	elemento="FirmaSimple" (name=ID)
+		"titulo" "=" titulo=STRING
+		(
+			"documento" "=" campo=Campo
+		)
 ;
 
 h2. Ejemplo de uso

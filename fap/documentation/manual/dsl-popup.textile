@@ -9,16 +9,16 @@ h2. Parámetros
 * **_[name]_** : Identificador del elemento.
 * **titulo = _[string]_** (opcional) : Texto que se mostrara como título del Popup. 
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al Popup.
-* **entidad = _[entidad]_** : Define la entidad que se puede usar en los campos que se sitúen dentro del popup.
+* **campo = _[campo]_** : Define la entidad que se puede usar en los campos que se sitúen dentro del popup.
 
 
 h2. Definición
 
 bc. Popup:
-	'Popup' name=ID
+	elemento='Popup' name=ID
 	(
 		('titulo' '=' titulo=STRING)?
-		& ('entidad' '=' entidad=[Entity|IDS])
+		& ("campo" "=" campo=Campo)
 		& ("permiso" "=" permiso=[Permiso])?
 	)
 	'{'

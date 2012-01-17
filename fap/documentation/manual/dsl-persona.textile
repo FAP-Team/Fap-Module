@@ -15,7 +15,7 @@ h2. Parámetros
 h2. Definición
 
 bc. Persona:
-	'Persona' (name=ID) (
+	elemento='Persona' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &

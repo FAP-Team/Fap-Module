@@ -12,10 +12,10 @@ h2. Parámetros
 h2. Definición
 
 bc. SubirArchivo:
-	'SubirArchivo' name=ID (
+	elemento='SubirArchivo' name=ID (
 		(requerido?='requerido')?
 	)
-;
+;	
 
 h2. Ejemplos de uso
 

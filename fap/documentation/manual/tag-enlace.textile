@@ -1,0 +1,18 @@
+h1. Tag enlace
+
+h2. Descripción
+
+Tag que muestra un enlace.
+
+h2. Parámetros
+
+* **_id**     - ID
+* **_Titulo**  - Texto a mostrar, si no se especifica se muestra la URL
+* **_url**	- Url del enlace
+* **_action** - Accion de un controlador  
+* **_destino**- Indica al enlace donde tiene que abrirse (campo target en html)
+
+h2. Ejemplo de uso
+
+bc. #{fap.enlace action:play.mvc.Router.reverse("AportacionAportadosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'redirigir': 'anterior']), estilo:'boton', titulo:'Consultar documentos ya aportados' /}
+

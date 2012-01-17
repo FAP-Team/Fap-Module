@@ -1,0 +1,15 @@
+h1. Tag ayuda
+
+h2. Descripción
+
+Tag que muestra una ayuda.
+
+h2. Parámetros
+
+* **_id**     - ID del campo que es la ayuda
+* **_ayuda**  - Objeto de la clase ayuda, con alguna de las 3 opciones seteadas
+
+h2. Ejemplo de uso
+
+bc. #{fap.ayuda ayuda:tags.TagAyuda.popover('Ésto es un ejemplo de la ayuda de tipo popover', id:"identificador" /}
+

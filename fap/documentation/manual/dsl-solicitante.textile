@@ -28,12 +28,3 @@ bc. Solicitante:
 h2. Ejemplo de uso
 
 bc. Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=solicitudEditable requerido
-
-
-
-
-
-
-
-
-

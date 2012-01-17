@@ -10,8 +10,13 @@ h2. Parámetros
 
 * **_id** - ID. Opcional, en el caso de que no se especifique un ID se creará uno automáticamente utilizando play.libs.Codec.UUID().
 * **_titulo** - Título que aparecerá en la cabecera del grupo.
-* **_siCombo** - ID del combo cuyo valor hará que el grupo se muester o no.
+* **_siCombo** - ID del combo cuyo valor hará que el grupo se muestre o no.
 * **_siComboValue**  - Lista de valores del combo con los que se mostrará el grupo. Si se especifíca el parámetro siCombo, este parámetro es obligatorio.
+* **_siCheck** - ID del check cuyo valor hará que el grupo se muestre o no.
+* **_siCheckValue**  - Valor del check con el que se mostrará el grupo.
+* **_siCampo** - ID del campo cuyo valor hará que el grupo se muestre o no.
+* **_siCampoValue**  - Lista de valores del campo con los que se mostrará el grupo. Si se especifíca el parámetro siCampo, este parámetro es obligatorio.
+* **_permiso** - Permisos para restringir el acceso al contenido del grupo
 
 h2. Ejemplo de uso
 

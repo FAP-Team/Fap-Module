@@ -9,6 +9,9 @@ h2. Parámetros
 * **_id** - ID
 * **_titulo** - Label
 * **_ancho**  - Ancho del campo
+* **_ type**  - tipo del botón (cambia su color)
+* **_fondo**  - Se indica que el botón se coloca solo y con el fondo gris
+* **_ayuda**  - Objeto de tipo TagAyuda
 
 h2. Ejemplo de uso
 

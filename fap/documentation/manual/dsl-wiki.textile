@@ -25,5 +25,3 @@ bc. Wiki {
 	"__cadena en cursiva__"
 	"\"enlace externo\":http://www.google.es"
 }	
-
-!images/dsl-wiki!

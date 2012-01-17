@@ -1,0 +1,17 @@
+h1. Tag check
+
+h2. Descripción
+
+Tag que muestra un check.
+
+h2. Parámetros
+
+* **_id**     - ID
+* **_titulo** - Titulo de la etiqueta asociada al check
+* **_campo**  - Campo asociado al check, el que va a guardar el valor.
+* **_ayuda**  - Objeto de tipo TagAyuda
+
+h2. Ejemplo de uso
+
+bc. #{fap.check campo:'agente.funcionario', titulo:'Funcionario habilitado' /}	
+

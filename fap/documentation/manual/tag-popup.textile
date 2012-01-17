@@ -1,0 +1,34 @@
+h1. Tag popup
+
+h2. Descripción
+
+Tag que muestra un popup.
+
+h2. Parámetros
+
+* **_accion**     - Accion del popup
+* **_popup**	  - Nombre del popup
+* **_titulo** 	  - Titulo del popup
+* **_urlBorrar**  - URL encargada de la gestión de la acción borrar
+* **_urlCrear**   - URL encargada de la gestión de la acción crear
+* **_urlEditar**  - URL encargada de la gestión de la acción editar
+
+h2. Ejemplo de uso
+
+bc.. #{fap.popup 
+     accion:accion, 
+     popup:'PopupConsulta', 
+     titulo:'Consulta', 
+     urlBorrar:play.mvc.Router.reverse('popups.PopupConsultaController.borrar' , ['idConsulta':consulta?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.PopupConsultaController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('popups.PopupConsultaController.editar' , ['idConsulta':consulta?.id])
+}
+	
+	#{fap.areaTexto campo:'consulta.descripcion', requerido:true, titulo:'Descripcion' /}		
+		
+	#{fap.areaTexto campo:'consulta.consulta', requerido:true, titulo:'Consulta' /}		
+		
+	#{fap.combo campo:'consulta.tipo', requerido:true, titulo:'Tipo' /}		
+		
+#{/fap.popup}
+

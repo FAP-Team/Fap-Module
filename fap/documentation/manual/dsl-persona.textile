@@ -27,12 +27,3 @@ h2. Ejemplo de uso
 
 bc. Persona personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=solicitudEditable requerido
 
-!images/dsl-persona!
-
-
-
-
-
-
-
-

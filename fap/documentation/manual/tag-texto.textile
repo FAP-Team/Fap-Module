@@ -16,6 +16,8 @@ h2. Parámetros
 * **_obj**     - Objeto a partir del cual se accede al value. Usar en el caso de que se llame desde otro tag
 * **_noRow**(false)   - true para no envolver el campo en un form-row
 * **_ancho**          - Ancho del campo
+* **_bloque**         - Bloque
+* **_duplicado**      - Indica si deberemos duplicar el campo, y que ambos valores sean iguales
 
 h2. Ejemplo de uso
 

@@ -107,18 +107,27 @@ h3. Tags
 
 Elementos que pueden ser utilizados en las vista creadas de forma manual. Las vistas creadas por el generador utilizan estos tags.
 
-# "fap.texto":tag-texto
 # "fap.areaTexto":tag-areaTexto
-# "fap.enlace":tag-enlace
-# "fap.combo":tag-combo
-# "fap.grupo":tag-grupo
+# "fap.ayuda":tag-ayuda
 # "fap.boton":tag-boton
+# "fap.camposAutomaticos":tag-camposAutomaticos
+# "fap.check":tag-check
+# "fap.combo":tag-combo
+# "fap.direccion":tag-direccion
+# "fap.enlace":tag-enlace
+# "fap.fecha":tag-fecha
+# "fap.firma":tag-firma
+# "fap.grupo":tag-grupo
+# "fap.messages":tag-messages
+# "fap.nip":tag-nip
+# "fap.pagina":tag-pagina
+# "fap.permiso":tag-permiso
 # "fap.personaFisica":tag-personaFisica
 # "fap.personaJuridica":tag-personaJuridica
-# "fap.persona":tag-persona
-# "fap.direccion":tag-direccion
-# "fap.camposAutomaticos":tag-camposAutomaticos
-# "fap.toJSMapNoValue":tag-toJSMapNoValue
+# "fap.popup":tag-popup
+# "fap.tabla":tag-tabla
+# "fap.texto":tag-texto
+# "fap.uploadAED":tag-uploadAED
 
 
 

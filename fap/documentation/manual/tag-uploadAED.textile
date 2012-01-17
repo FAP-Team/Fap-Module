@@ -1,0 +1,21 @@
+h1. Tag uploadAED
+
+h2. Descripción
+
+Tag que muestra un uploadAED.
+
+h2. Parámetros
+
+* **_id**     - ID
+* **_requerido** - Si es requerido o no
+* **_titulo** - Titulo de la etiqueta asociada al upload
+* **_campo**  - Campo asociado al upload, el que va a guardar el valor.
+* **_upload**  - Sirve para indicar que se puede subir el documento o no
+* **_download** - Si puede ser descargado el documento una vez subido o no
+* **_tramite** - Tramite al que pertenece el documento a subir
+* **_aportadoPor** - Tipo de persona que aporta dicho documento
+
+h2. Ejemplo de uso
+
+bc. #{fap.uploadAed campo:'documento', download:false, id:'documentoAportado', requerido:true, tipo:'tipoCiudadano', upload:true /}		
+

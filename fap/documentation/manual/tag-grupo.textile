@@ -4,7 +4,7 @@ h2. Descripción
 
 Muestra un grupo de elemento en la página.
 
-El grupo se puede mostrar u ocultar según los valores de un combo utilizando los parámetros "siCombo" y "siComboValue".
+El grupo se puede mostrar u ocultar según los valores de un combo utilizando los parámetros: "siCombo" y "siComboValue", o "siCheck" y "siCheckValue", o "siCampo" y "siCampoValue".
 
 h2. Parámetros
 

@@ -13,10 +13,10 @@ h2. Parámetros
 * **_encType** 		- Paramatro de encriptacion de HTML 
 * **_formulario** 	- Formulario al que está asociado la pagina 
 * **_hayForm** 		- Indica si la pagina tiene Form o no 
-* **titulo** 		- Titulo de la pagina 
-* **urlBorrar**		- Url encargada de gestionar la acción de borrar 
-* **urlCrear**		- Url encargada de gestionar la acción de crear
-* **urlEditar** 	- Url encargada de gestionar la acción de editar
+* **_titulo** 		- Titulo de la pagina 
+* **_urlBorrar**		- Url encargada de gestionar la acción de borrar 
+* **_urlCrear**		- Url encargada de gestionar la acción de crear
+* **_urlEditar** 	- Url encargada de gestionar la acción de editar
 
 h2. Ejemplo de uso
 

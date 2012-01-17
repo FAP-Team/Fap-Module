@@ -1,4 +1,4 @@
-h1. Tag texto
+h1. Tag boton
 
 h2. Descripción
 

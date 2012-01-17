@@ -34,18 +34,18 @@ bc. Tabla:
 	(
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
-      & ('alto' '=' alto=STRING)? 
-      & (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
-      & ("permiso" "=" permiso=[Permiso])?
+		& ('alto' '=' alto=STRING)?
+		& (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
+		& ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('seleccionable' "=" seleccionable=STRING)?
-	   & ('popup' '=' popup=[Popup|QN])?
-	   & ('popupCrear' '=' popupCrear=[Popup|QN])?
+		& ('popup' '=' popup=[Popup|QN])?
+		& ('popupCrear' '=' popupCrear=[Popup|QN])?
 	   	& ('popupBorrar' '=' popupBorrar=[Popup|QN])?
 	   	& ('popupModificar' '=' popupModificar=[Popup|QN])?
 	   	& ('popupVer' '=' popupVer=[Popup|QN])?
 	   	& ('pagina' '=' pagina=[Pagina|QN])?
-	   & ('paginaCrear' '=' paginaCrear=[Pagina|QN])?
+	   	& ('paginaCrear' '=' paginaCrear=[Pagina|QN])?
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|QN])?
 	   	& ('paginaModificar' '=' paginaModificar=[Pagina|QN])?
 	   	& ('paginaVer' '=' paginaVer=[Pagina|QN])?
@@ -57,7 +57,13 @@ bc. Tabla:
 
 h2. Columnas
 
-Permite definir los atributos de la entidad que se mostraran en la tabla. La entidad que se especifique en este elemento debe corresponder con el tipo de la lista de entidades que se asigne a la tabla. "Ver documentación Columnas":dsl-columna. El parámetro _columnasAutomaticas_ simplifica la creación de columnas ya que dada una entidad (que se pasa como parámetro) genera automáticamente una columna para cada uno de sus atributos. Además utilizando _exclude_ o _include_, podemos decir que esta generación automática no introduzca ciertos atributos o sólo introduzca unos determinados atributos, respectivamente. En caso de usar _columnasAutomaticas_ y la definición normal de _Columnas_, este último será más restrictivo, es decir, si se usa _columnasAutomaticas_ y después se define una _Columna_, se tendrán en cuenta los formatos de la _Columna_ definida, no de la generada por _columnasAutomaticas_.
+Permite definir los atributos de la entidad que se mostraran en la tabla. La entidad que se especifique en este elemento debe corresponder con el tipo de la lista de entidades que se asigne a la tabla. "Ver documentación Columnas":dsl-columna. 
+
+El parámetro _columnasAutomaticas_ simplifica la creación de columnas ya que dada una entidad (que se pasa como parámetro) genera automáticamente una columna para cada uno de sus atributos.
+
+Además utilizando _exclude_ o _include_, podemos decir que esta generación automática no introduzca ciertos atributos o sólo introduzca unos determinados atributos, respectivamente. 
+
+En caso de usar _columnasAutomaticas_ y la definición normal de _Columnas_, este último será más restrictivo, es decir, si se usa _columnasAutomaticas_ y después se define una _Columna_, se tendrán en cuenta los formatos de la _Columna_ definida, no de la generada por _columnasAutomaticas_.
 
 h2. Ejemplos de uso
 

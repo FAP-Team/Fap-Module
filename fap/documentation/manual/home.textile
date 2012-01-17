@@ -112,6 +112,7 @@ Elementos que pueden ser utilizados en las vista creadas de forma manual. Las vi
 # "fap.boton":tag-boton
 # "fap.camposAutomaticos":tag-camposAutomaticos
 # "fap.check":tag-check
+# "fap.columna":tag-columna
 # "fap.combo":tag-combo
 # "fap.direccion":tag-direccion
 # "fap.enlace":tag-enlace
@@ -127,6 +128,7 @@ Elementos que pueden ser utilizados en las vista creadas de forma manual. Las vi
 # "fap.popup":tag-popup
 # "fap.tabla":tag-tabla
 # "fap.texto":tag-texto
+# "fap.toJSMapNoValue":tag-toJSMapNoValue
 # "fap.uploadAED":tag-uploadAED
 
 

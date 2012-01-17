@@ -71,7 +71,7 @@ public class AedServiceTest extends UnitTest {
 		assertNotNull(uri);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void saveDocumentoTemporalDebeFallarSiDocumentoNoTieneTipo() throws Exception {	
 		Documento documento = new Documento();
 		documento.descripcion = "prueba";
@@ -80,7 +80,7 @@ public class AedServiceTest extends UnitTest {
 		aedService.saveDocumentoTemporal(documento, tmp);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void saveDocumentoTemporalDebeFallarSiDocumentoTipoOtrosNoTieneDescripcion() throws Exception {		
 		Documento documento = new Documento();
 		documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.otros");

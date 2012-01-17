@@ -50,7 +50,7 @@ public class TiposDocumentosServiceTest extends UnitTest {
 		assertNotNull(documentoBase);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void getTipoDocumentoNull() throws Exception {
 		tiposDocumentosService.getTipoDocumento(null);
 	}

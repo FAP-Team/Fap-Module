@@ -90,7 +90,7 @@ public class TiposDocumentosServiceImpl implements TiposDocumentosService {
 	
 	public TipoDocumento getTipoDocumento(String uri) throws TiposDocumentosExcepcion {
 		if(uri == null)
-			throw new IllegalArgumentException("La uri no puede ser nula");
+			throw new NullPointerException();
 		
 		return tipos.obtenerTipoDocumento(uri);
 	}

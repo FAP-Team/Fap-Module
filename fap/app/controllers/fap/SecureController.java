@@ -3,6 +3,8 @@ package controllers.fap;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -14,7 +16,6 @@ import models.Agente;
 
 import org.apache.log4j.Logger;
 
-import platino.FirmaClient;
 import platino.InfoCert;
 import play.Play;
 import play.cache.Cache;
@@ -31,6 +32,7 @@ import play.mvc.Util;
 import play.mvc.With;
 import properties.FapProperties;
 import security.Secure;
+import services.FirmaService;
 import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
@@ -38,10 +40,11 @@ import ugot.recaptcha.RecaptchaValidator;
 @With({PropertiesFap.class, MessagesController.class})
 public class SecureController extends Controller {
 
+	@Inject
+	private static FirmaService firmaService;
+	
 	private static Logger log = Logger.getLogger(SecureController.class);
 	
-	
-
     // ~~~ Login
     public static void login() throws Throwable {
     	Http.Cookie remember = request.cookies.get("rememberme");
@@ -87,14 +90,13 @@ public class SecureController extends Controller {
     	String serverToken = (String)Cache.get(sessionid + "login.cert.token");
     	
     	//Comprueba que el token firmado sea el correcto
-    	log.debug("Server token " + serverToken + " token " + token);
     	if(!token.equals(serverToken)) validation.addError("login-certificado", "El token firmado no es correcto");
     	
     	//Comprueba que la firma es correcta
     	if(!validation.hasErrors()){
     		log.debug("Validando firma");
     		
-    		Boolean firmaCorrecta = FirmaClient.verificarPKCS7(token, firma);
+    		Boolean firmaCorrecta = firmaService.verificarPKCS7(token, firma);
     		if(!firmaCorrecta){
     			validation.addError("login-certificado", "La firma no es correcta");
     			log.debug("Firma validada");
@@ -106,8 +108,8 @@ public class SecureController extends Controller {
     	String certificadoExtraido = null;
     	if(!validation.hasErrors()){
     		log.debug("Validando certificado");
-    		certificadoExtraido = FirmaClient.extraerCertificadoDeFirma(firma);
-    		Boolean certificadoValido = FirmaClient.validarCertificado(certificadoExtraido);
+    		certificadoExtraido = firmaService.extraerCertificadoDeFirma(firma);
+    		Boolean certificadoValido = firmaService.validarCertificado(certificadoExtraido);
     		if(!certificadoValido) validation.addError("login-certificado", "El certificado no es válido");
     		log.debug("Certificado validado");
     	}
@@ -117,7 +119,7 @@ public class SecureController extends Controller {
     	String name = null;
     	if(!validation.hasErrors()){
     		log.debug("Extrayendo información del certificado");
-    		InfoCert info = FirmaClient.extraerInformacion(certificadoExtraido);
+    		InfoCert info = firmaService.extraerInformacion(certificadoExtraido);
     		if(info == null) {
     			validation.addError("login-certificado", "No se pudo extraer la información del certificado");
     		}else{

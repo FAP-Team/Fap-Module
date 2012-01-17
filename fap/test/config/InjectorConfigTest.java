@@ -1,17 +1,15 @@
 package config;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import play.test.UnitTest;
 import properties.PropertyPlaceholder;
-
 import security.Secure;
 import services.AedService;
-import services.AedServiceImpl;
-import services.AedServiceImpl;
 import services.FirmaService;
+import services.GestorDocumentalService;
 import services.ProcedimientosService;
+import services.RegistroService;
 import services.TiposDocumentosService;
 
 import com.google.inject.Injector;
@@ -26,14 +24,10 @@ public class InjectorConfigTest extends UnitTest {
 		assertInjectedSingleton(ProcedimientosService.class);
 		assertInjectedSingleton(TiposDocumentosService.class);
 		assertInjectedSingleton(FirmaService.class);
+		assertInjectedSingleton(RegistroService.class);
+		assertInjectedSingleton(GestorDocumentalService.class);
 	}
 		
-	private void assertInjected(Class clazz){
-		Injector injector = InjectorConfig.getInjector();
-		Object instance = injector.getInstance(clazz);
-		assertNotNull(instance);
-	}
-	
 	private void assertInjectedSingleton(Class clazz){
 		Injector injector = InjectorConfig.getInjector();
 		Object instance = injector.getInstance(clazz);

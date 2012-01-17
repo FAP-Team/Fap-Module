@@ -1,4 +1,4 @@
-package platino;
+package services;
 
 import java.net.URL;
 import java.util.UUID;
@@ -6,19 +6,20 @@ import java.util.UUID;
 import javax.activation.DataHandler;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.ws.BindingProvider;
 import javax.xml.ws.soap.MTOMFeature;
 
 import models.ExpedientePlatino;
 
 import org.apache.log4j.Logger;
 
-import properties.FapProperties;
-
+import platino.DatosDocumento;
+import platino.DatosFirmante;
+import platino.DatosRegistro;
+import platino.PlatinoProxy;
+import properties.PropertyPlaceholder;
+import utils.WSUtils;
 import es.gobcan.platino.servicios.registro.Documento;
 import es.gobcan.platino.servicios.registro.Documentos;
-import es.gobcan.platino.servicios.sfst.FirmaService;
-import es.gobcan.platino.servicios.sfst.PlatinoSignatureServerBean;
 import es.gobcan.platino.servicios.sgrde.DocumentoBase;
 import es.gobcan.platino.servicios.sgrde.DocumentoExpediente;
 import es.gobcan.platino.servicios.sgrde.ErrorInternoException;
@@ -28,40 +29,56 @@ import es.gobcan.platino.servicios.sgrde.InformacionFirmaElectronica;
 import es.gobcan.platino.servicios.sgrde.SGRDEServicePortType;
 import es.gobcan.platino.servicios.sgrde.SGRDEServiceProxy;
 
-/**
- * @deprecated Utilizar GestorDocumentalService con la nueva forma de inyectar servicios
- */
-
-@Deprecated
-public class PlatinoGestorDocumentalClient {
-	private static Logger log = Logger.getLogger(PlatinoGestorDocumentalClient.class);
-	private static SGRDEServicePortType gestorDocumental;
-
-	static {
-		URL wsdlURL = FirmaClient.class.getClassLoader().getResource("wsdl/sgrde.wsdl");
-		gestorDocumental = new SGRDEServiceProxy(wsdlURL).getSGRDEServiceProxyPort(new MTOMFeature());
-
-		BindingProvider bp = (BindingProvider)gestorDocumental;
-		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				FapProperties.get("fap.platino.gestordocumental.url"));
-
-		PlatinoCXFSecurityHeaders.addSoapWSSHeader(
-				gestorDocumental,
-				PlatinoCXFSecurityHeaders.SOAP_11,
-				FapProperties.get(
-						"fap.platino.security.backoffice.uri"),
-						FapProperties.get(
-						"fap.platino.security.certificado.alias"),
-				KeystoreCallbackHandler.class.getName(), null);
-
+public class GestorDocumentalServiceImpl implements GestorDocumentalService {
+	private static Logger log = Logger.getLogger(GestorDocumentalService.class);
+	
+	private final String endPoint;
+	private final PropertyPlaceholder propertyPlaceholder;
+	private final SGRDEServicePortType gestorDocumental;
+	
+	public GestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder){
+		if(propertyPlaceholder == null)
+			throw new NullPointerException();
 		
-		PlatinoProxy.setProxy(gestorDocumental);
+		this.propertyPlaceholder = propertyPlaceholder;
+		
+		endPoint = propertyPlaceholder.get("fap.platino.gestordocumental.url");
+		if(endPoint == null)
+			throw new IllegalStateException();
+		
+		URL wsdlURL = GestorDocumentalServiceImpl.class.getClassLoader().getResource("wsdl/sgrde.wsdl");
+		gestorDocumental = new SGRDEServiceProxy(wsdlURL).getSGRDEServiceProxyPort(new MTOMFeature());
+		
+		WSUtils.configureEndPoint(gestorDocumental, endPoint);
+		WSUtils.configureSecurityHeaders(gestorDocumental, propertyPlaceholder);
+		PlatinoProxy.setProxy(gestorDocumental, propertyPlaceholder);
+	}
+	
+	@Override
+	public boolean hasConnection() {
+		boolean result = false;
+		try {
+			result = getVersion() != null;
+		}catch(Exception e){
+			log.error("El servicio web del gestor documental no tiene conexion con " + endPoint );
+		}
+		return result;
+	}
+
+	@Override
+	public String getEndPoint() {
+		return endPoint;
+	}
+
+	
+	public String getVersion(){
+		return gestorDocumental.getVersion();
 	}
 	
 	/**
 	 * Crea un expediente en el Gestor Documental de Platino
 	 */
-	public static void crearExpediente(ExpedientePlatino exp) throws Exception {
+	public void crearExpediente(ExpedientePlatino exp) throws Exception {
 		log.info("CrearExpediente Platino -> IN");
 		
 		Expediente expediente = new Expediente();
@@ -71,7 +88,7 @@ public class PlatinoGestorDocumentalClient {
 		
 		expediente.setNumeroExp(exp.getNumero());
 		
-		String descripcion = FapProperties.get("fap.platino.gestordocumental.expediente.descripcion");
+		String descripcion = propertyPlaceholder.get("fap.platino.gestordocumental.expediente.descripcion");
 		expediente.setDescExp(descripcion);
 		
 		try {
@@ -87,7 +104,7 @@ public class PlatinoGestorDocumentalClient {
 			if (e instanceof ErrorInternoException) {
 				mensajeError += ": " + ((ErrorInternoException) e).getFaultInfo().getMessage();
 			}
-			log.error("CrearExpediente -> EXIT ERROR "+e);
+			log.error("CrearExpediente -> EXIT ERROR "+ mensajeError);
 			throw e;
 		}
 	}
@@ -95,7 +112,7 @@ public class PlatinoGestorDocumentalClient {
 	/**
 	 * Crea un documento en el Gestor Documental de Platino
 	 */
-	public static DocumentoExpediente guardarDocumento(String expedientePlatinoRuta,DatosDocumento documentoRegistrar) throws Exception {
+	public DocumentoExpediente guardarDocumento(String expedientePlatinoRuta,DatosDocumento documentoRegistrar) throws Exception {
 		try {
 		    // Metainformación  
 		    DocumentoExpediente documentoExpediente = new DocumentoExpediente();
@@ -150,7 +167,7 @@ public class PlatinoGestorDocumentalClient {
 	/**
 	 * Devuelve la lista de documentos preparados para registrar
 	 */
-	public static Documentos guardarSolicitudEnGestorDocumental(String expedienteGestorDocumentalRuta, DatosDocumento documentoRegistrar) throws Exception {
+	public Documentos guardarSolicitudEnGestorDocumental(String expedienteGestorDocumentalRuta, DatosDocumento documentoRegistrar) throws Exception {
 		log.info("GuardarSolicitudEnGestorDocumental -> IN");
 		Documentos documentosGestorDocumental = new Documentos();
 		// 2A) Insertar Documento de la Solicitud en el Gestor Documental (en el expediente creado)

@@ -13,6 +13,7 @@ import models.Tramite;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -34,29 +35,23 @@ public class ProcedimientosServiceTest extends UnitTest {
 
 	private static final String TKVT_TABLE_TIPOS_DOCUMENTOS = "tiposDocumentos";
 
-	static ProcedimientosService procedimientosService;
+	ProcedimientosService procedimientosService;
 	
 	@Inject
 	static PropertyPlaceholder propertyPlaceholder;
 	
-	static boolean hasConnecion = false;
+	boolean hasConnecion = false;
 	
 	
-	@BeforeClass
-	public static void init() throws Exception {
-		TiposDocumentosService tiposDocumentosServiceStub = mock(TiposDocumentosServiceImpl.class);
-		
+	@Before
+	public void setUp() throws Exception {
+		TiposDocumentosService tiposDocumentosServiceStub = mock(TiposDocumentosService.class);
 		TipoDocumento tipoDocumentoStub = new TipoDocumento(); 
 		tipoDocumentoStub.setDescripcion(NOMBRE_DOCUMENTO_TEST);
 		when(tiposDocumentosServiceStub.getTipoDocumento(anyString())).thenReturn(tipoDocumentoStub);
 		
 		procedimientosService = new ProcedimientosServiceImpl(propertyPlaceholder, tiposDocumentosServiceStub);
-		
 		hasConnecion = procedimientosService.hasConnection();
-	}
-	
-	@Before
-	public void before(){
 		assumeTrue(hasConnecion);
 	}
 	
@@ -65,6 +60,7 @@ public class ProcedimientosServiceTest extends UnitTest {
 		procedimientosService.getVersion();
 	}
 	
+	@Ignore
 	@Test
 	public void obtenerDocumentosEnTramite() throws Exception {
 		String procedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri");
@@ -83,13 +79,13 @@ public class ProcedimientosServiceTest extends UnitTest {
 		
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void obtenerDocumentosEnTramiteNull() throws Exception {
 		String procedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri");
 		procedimientosService.obtenerDocumentosEnTramite(procedimiento, null);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void obtenerDocumentosEnTramiteProcedimientoNull() throws Exception {
 		procedimientosService.obtenerDocumentosEnTramite(null, "tramite");
 	}
@@ -111,7 +107,7 @@ public class ProcedimientosServiceTest extends UnitTest {
 		}
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void obtenerTramiteNull() throws Exception {
 		procedimientosService.obtenerTramites(null);
 	}
@@ -167,7 +163,7 @@ public class ProcedimientosServiceTest extends UnitTest {
 		assertNull(TableKeyValue.getValue(TKVT_TABLE_TIPOS_DOCUMENTOS, test_key));
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void actualizarTramitesProcedimientoNull(){
 		procedimientosService.actualizarTramites(null);
 	}

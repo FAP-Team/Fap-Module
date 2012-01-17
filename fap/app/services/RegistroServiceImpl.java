@@ -38,7 +38,6 @@ import platino.DatosRegistro;
 
 import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
-import platino.PlatinoGestorDocumentalClient;
 import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
 import properties.FapProperties;
@@ -64,20 +63,29 @@ public class RegistroServiceImpl implements RegistroService {
 
 	private static Logger log = Logger.getLogger(RegistroService.class);
 
-	private PropertyPlaceholder propertyPlaceholder;
+	private final PropertyPlaceholder propertyPlaceholder;
 
-	private AedService aedService;
+	private final AedService aedService;
 
-	private Registro registro;
+	private final Registro registro;
 
-	private FirmaService firmaService;
+	private final FirmaService firmaService;
 
+	private final GestorDocumentalService gestorDocumentalService;
+	
 	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder,
-			AedService aedService, FirmaService firmaService) {
+			AedService aedService, FirmaService firmaService,
+			GestorDocumentalService gestorDocumentalService) {
+
+		if (propertyPlaceholder == null || aedService == null
+				|| firmaService == null || gestorDocumentalService == null)
+			throw new NullPointerException();
+
 		this.propertyPlaceholder = propertyPlaceholder;
 		this.aedService = aedService;
 		this.firmaService = firmaService;
-
+		this.gestorDocumentalService = gestorDocumentalService;
+		
 		URL wsdlURL = Registro_Service.class.getClassLoader().getResource(
 				"wsdl/registro.wsdl");
 		registro = new Registro_Service(wsdlURL).getRegistroPort();
@@ -274,7 +282,7 @@ public class RegistroServiceImpl implements RegistroService {
 
 		// 2) Guardar documentos en Gestor Documental de Platino. El documento
 		// que se guarda es el informe con pie de firma reducido
-		Documentos documentosRegistrar = PlatinoGestorDocumentalClient
+		Documentos documentosRegistrar = gestorDocumentalService
 				.guardarSolicitudEnGestorDocumental(datosRegistro
 						.getExpediente().getRuta(), datosRegistro
 						.getDocumento());
@@ -407,8 +415,7 @@ public class RegistroServiceImpl implements RegistroService {
 		// Crea el expediente en el archivo electrónico de platino
 		if (!solicitud.registro.fasesRegistro.expedientePlatino) {
 			try {
-				PlatinoGestorDocumentalClient
-						.crearExpediente(solicitud.expedientePlatino);
+				gestorDocumentalService.crearExpediente(solicitud.expedientePlatino);
 
 				solicitud.registro.fasesRegistro.expedientePlatino = true;
 				solicitud.registro.fasesRegistro.save();

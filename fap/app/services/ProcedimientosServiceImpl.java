@@ -75,7 +75,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 	@Override
 	public List<models.TipoDocumento> obtenerDocumentosEnTramite(String uriProcedimiento, String uriTramite) throws TiposDocumentosExcepcion, ProcedimientosExcepcion{
 		if(uriProcedimiento == null || uriTramite == null){
-			throw new IllegalArgumentException("uriProcedimiento o uriTramite no pueden ser null");
+			throw new NullPointerException();
 		}
 		
 		List<models.TipoDocumento> result = new ArrayList<models.TipoDocumento>();
@@ -107,7 +107,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 	@Override
 	public List<models.Tramite> obtenerTramites(String uriProcedimiento) throws TiposDocumentosExcepcion, ProcedimientosExcepcion {
 		if(uriProcedimiento == null)
-			throw new IllegalArgumentException("Uri del procedimiento no puede ser null");
+			throw new NullPointerException();
 		
 		
 		List<models.Tramite> result = new ArrayList<models.Tramite>();

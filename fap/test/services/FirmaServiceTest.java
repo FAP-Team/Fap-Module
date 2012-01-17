@@ -1,5 +1,7 @@
 package services;
 
+import static org.junit.Assume.assumeTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +16,13 @@ import models.Solicitante;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import platino.PlatinoActivo;
+import platino.InfoCert;
 import play.modules.guice.InjectSupport;
 import play.test.UnitTest;
-
-import static org.junit.Assume.*;
 
 @InjectSupport
 public class FirmaServiceTest extends UnitTest {
@@ -58,12 +57,36 @@ public class FirmaServiceTest extends UnitTest {
 		firmaryvalidar("Texto con tildes áéíóúÁÉÍÓÚ");
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	
+	@Test
+	public void validarCertificado(){
+		String texto = "Texto de prueba para firma";
+		String firma = firmaService.firmarPKCS7(texto);
+		String certificado = firmaService.extraerCertificadoDeFirma(firma);
+		Boolean certificadoValido = firmaService.validarCertificado(certificado);
+		Assert.assertNotNull(firma);
+		Assert.assertNotNull(certificado);
+		Assert.assertTrue(certificadoValido);
+	}
+
+	@Test
+	public void extraerInformacion(){
+		String texto = "Texto de prueba para firma";
+		String firma = firmaService.firmarPKCS7(texto);
+		Assert.assertNotNull(firma);
+		String certificado = firmaService.extraerCertificadoDeFirma(firma);
+		Assert.assertNotNull(certificado);
+		InfoCert info = firmaService.extraerInformacion(certificado);
+		Assert.assertNotNull(info);
+	}
+	
+	
+	@Test(expected=NullPointerException.class)
 	public void calcularFirmantesNullSolicitante(){
 		firmaService.calcularFirmantes(null, new ArrayList<Firmante>());
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void calcularFirmantesNullFirmantes(){
 		firmaService.calcularFirmantes(null, null);
 	}

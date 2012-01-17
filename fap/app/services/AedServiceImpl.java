@@ -121,7 +121,7 @@ public class AedServiceImpl implements AedService {
 		documento.prepararParaSubir();
 		
 		if(documento.tipo == null || documento.descripcion == null){
-			throw new IllegalArgumentException("El tipo(" + documento.tipo + ") o la descripcion(" + documento.descripcion + ") del documento no pueden ser nulos");
+			throw new NullPointerException();
 		}
 		
 		Documento documentoAed = new Documento();

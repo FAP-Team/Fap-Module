@@ -470,8 +470,8 @@ public class FirmaServiceImpl implements services.FirmaService {
 	}
 	
 	public void calcularFirmantes(Solicitante solicitante, List<Firmante> firmantes){
-		if(solicitante == null) throw new IllegalArgumentException("Solicitante null");
-		if(firmantes == null) throw new IllegalArgumentException("firmantes null");
+		if(solicitante == null) throw new NullPointerException();
+		if(firmantes == null) throw new NullPointerException();
 		
 		//Solicitante de la solicitud
 		Firmante firmanteSolicitante = new Firmante(solicitante, "unico");

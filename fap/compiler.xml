@@ -7,6 +7,7 @@
 	<property name="fap" value="${fapsdk}/fap" />
 	
 	<property name="compiler.src.dir" value="${fap}/compiler/src" />
+	<property name="documentationHTML" value="${fap}/compiler/gendocumentation" />
 	<property name="compiler.compiled" value="${fap}/compiler/compiled" />
 	<property name="grammar.dir" value="${compiler.src.dir}/es.fap.simpleled" />
 	<property name="generator.dir" value="${compiler.src.dir}/es.fap.simpleled.generator" />
@@ -129,12 +130,17 @@
 			<arg line='generate.py' />
 		</exec>
 	</target>
+	
+	<target name="generate-docHTML" description="Genera las clases necesarias para despues generar la documentacion HTML">
+		<ant target="compile" antfile="${documentationHTML}/build.xml" />
+	</target>
 
 	<target name="compiler">
 		<delete dir="${compiler.compiled}" />
 		<mkdir dir="${compiler.compiled}" />
 		<ant target="dist" antfile="buildCompiler.xml" dir="${grammar.dir}" />
 		<ant target="dist" antfile="buildCompiler.xml" dir="${generator.dir}" />
+		<antcall target="generate-docHTML" />
 		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar" />
 		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar" />
 	</target>

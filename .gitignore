@@ -83,3 +83,6 @@ apps/test/test-result
 
 # Generated sources
 *Gen.java
+
+# Configuración de platino
+apps/test/conf/platino

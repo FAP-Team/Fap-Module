@@ -39,7 +39,7 @@ function popup_open(popup, url, callback) {
 	});
 	
 	// Mostramos el popup ahora
-	$popup.modal( {show : true, backdrop: true} );
+	$popup.modal( {show : true, backdrop: "static"} );
 	
 	//En el caso de que la petición esté tardando muestra el elemento de cargando
 	setTimeout(function(){

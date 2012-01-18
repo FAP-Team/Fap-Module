@@ -1,0 +1,62 @@
+.animation_content {
+	margin-left: 214px;
+	text-align: center;
+	width: 128px;
+	height: 91px;
+}
+
+#facebookG{
+}
+
+.facebook_blockG{
+background-color:#DCE8F4;
+border:1px solid #003366;
+float:left;
+height:91px;
+margin-left:5px;
+width:24px;
+-webkit-animation-name:bounceG;
+-webkit-animation-duration:1.3s;
+-webkit-animation-iteration-count:infinite;
+-webkit-animation-direction:linear;
+-webkit-transform:scale(0.91);
+-moz-animation-name:bounceG;
+-moz-animation-duration:1.3s;
+-moz-animation-iteration-count:infinite;
+-moz-animation-direction:linear;
+-moz-transform:scale(0.91);
+opacity:0.1}
+
+#blockG_1{
+-webkit-animation-delay:0.39s;
+-moz-animation-delay:0.39s}
+
+#blockG_2{
+-webkit-animation-delay:0.52s;
+-moz-animation-delay:0.52s}
+
+#blockG_3{
+-webkit-animation-delay:0.65s;
+-moz-animation-delay:0.65s}
+
+@-webkit-keyframes bounceG{
+0%{
+-webkit-transform:scale(1.2);
+opacity:1}
+
+100%{
+-webkit-transform:scale(0.7);
+opacity:0.1}
+
+}
+
+@-moz-keyframes bounceG{
+0%{
+-moz-transform:scale(1.2);
+opacity:1}
+
+100%{
+-moz-transform:scale(0.7);
+opacity:0.1}
+
+}

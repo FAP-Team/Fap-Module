@@ -105,9 +105,8 @@ Formulario Solicitud {
 	}
 
 	Popup ComboTestRef campo=ComboTestRef {
-		Texto campo=ComboTestRef.nombre
+		Texto campo=ComboTestRef.nombre requerido
 		Combo campo=ComboTestRef.list titulo="Combo"
-		Texto campo=ComboTestRef.nombre
 	}
 	
 	Pagina PaginaCombosError campo=Solicitud{

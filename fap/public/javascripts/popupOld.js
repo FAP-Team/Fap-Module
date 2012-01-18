@@ -9,12 +9,19 @@
  * @param options.campo			campo mostrado en la tabla
  */
 function popup_open(popup, url, callback) {
-	$("body").append("<div id=\""+popup+"\" class=\"modal hide fade in\"></div>");
-
+	$("body").append("<div id='" + popup + "' class='popup'></div>");
 	var $popup = $("#" + popup);
 	
-	$('#'+popup).bind('hidden', function () {
-		$('#'+popup).remove();
+	var optionsContent = {position: "center", width: "650", height: "auto"};
+	var optionsLoading = {position: "center", width: "150", height: "150", title: "Cargando..."};
+	
+	$popup.dialog({ 	
+		autoOpen: false,
+		modal: true,
+		resizable: false,
+		close:  function(event, ui){
+			$popup.remove();
+		}
 	});
 			
 	var cargado = false;
@@ -25,29 +32,36 @@ function popup_open(popup, url, callback) {
 	
 	$.get(url, function(data){
 		cargado = true;
-		console.log('es el get');
 		if(typeof(data) == 'string'){
 			$popup.html(data);
 		}else{
 			//Si el contenido viene el json hubo un error
 			if(!data.success){
-				//var msg = new Mensajes("#" + popup + "Messages");
-				//msg.error(data.message);
+				$popup.dialog( "option", "title", 'Error' );
+				var msg = new Mensajes("#" + popup);
+				msg.error(data.message);
 			}
 		}
-		console.log('Fin del get');
+
+		$popup.dialog("option", optionsContent);		
+		if(loadingShowed){
+			$popup.removeClass("loading-popup");
+		}else{
+			$popup.dialog("open");
+		}
+		
 	});
-	
-	// Mostramos el popup ahora
-	$popup.modal( {show : true, backdrop: true} );
 	
 	//En el caso de que la petición esté tardando muestra el elemento de cargando
 	setTimeout(function(){
 		if(!cargado){
 			loadingShowed = true;
-			popupAddWait(popup);
+			$popup.html("");
+			$popup.addClass("loading-popup");
+			$popup.dialog("option", optionsLoading);
+			$popup.dialog("open");
 		}
-	}, 100);
+	}, 400);
 }
 
 function popupWait_open() {
@@ -86,41 +100,4 @@ function replaceId(url, entidad, id) {
 
 function replaceAmpersand(url) {
 	return url.replace(new RegExp("amp;", 'g'), "");
-}
-
-/**
- * Añade los botones especificados en el map, con su función. Se le añade el botón cancelar también
- * @param popup
- */
-function popupButtons (popup, buttons, type, cancelButton) {
-	if (cancelButton) {
-		// Añadimos el botón de cancelar
-		popupAddButton (popup, "Cancelar", "$('#"+popup+"').modal('hide');", "secondary");
-	}
-	for (var button in buttons) {
-		popupAddButton (popup, button, buttons[button], type);
-	}
-}
-
-function popupAddButton (popup, textButton, functionButton, type) {
-	var $popup = $('#' + popup);
-	var typeLocal = type;
-	if (textButton == 'Borrar')
-		typeLocal = 'danger';
-	$popup.find('.modal-footer').append("<a href=\"#\" id=\""+textButton+"_id\" onclick=\""+functionButton+";\" class=\"btn "+typeLocal+"\" data-loading-text=\"Enviando...\">"+textButton+"</a>");
-}
-
-function popupTitle (popup, title) {
-	var $popup = $('#' + popup);
-	$popup.find('.modal-header').html("<a href=\"#\" class=\"close\">×</a><h3>"+title+"</h3>");
-}
-
-function popupAddWait (popup) {
-	var $popup = $('#' + popup);
-	$popup.html("<div class=\"modal-header\"><a href=\"#\" class=\"close\">×</a></div><div id=\""+popup+"modal_body\" class=\"modal-body\"><div class=\"animation_content\"><div id=\"facebookG\"><div id=\"block_1\" class=\"facebook_blockG\"></div><div id=\"blockG_2\" class=\"facebook_blockG\"></div><div id=\"blockG_3\" class=\"facebook_blockG\"></div></div></div></div>");
-}
-
-function popupMessages (popup, idMessages) {
-	var $popup = $('#' + popup);
-	$popup.find('.modal-body').append("<div id=\""+idMessages+"\"></div>");
 }

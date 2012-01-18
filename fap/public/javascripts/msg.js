@@ -8,7 +8,7 @@ function Mensajes(renderTo){
 	var MSG_DEBUG_CLASS = 'debugBoxMessage';
 	var MSG_WARN_CLASS = 'alert-message block-message warning';
 	var MSG_OK_CLASS = 'alert-message block-message success';
-	var MSG_LOADING_CLASS = "box-loading";
+	var MSG_LOADING_CLASS = "block-message info";
 	var MSG_COMMON_CLASS = 'box'; //Clase que se le añade a todos los divs, para poder seleccionarlos todos y limpiarlos
 	
 	if(renderTo == null) return null;

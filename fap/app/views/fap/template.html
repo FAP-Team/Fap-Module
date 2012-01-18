@@ -15,6 +15,7 @@
         #{stylesheet 'jquery-ui.css' /}
         #{stylesheet 'bootstrap/bootstrap.less' /}
         #{stylesheet 'fap.less' /}
+        #{stylesheet 'loading.css' /}
           
         #{get 'moreStyles' /}
         
@@ -27,6 +28,7 @@
         #{script src:"bootstrap/bootstrap-dropdown.js" /}
         #{script src:"bootstrap/bootstrap-twipsy.js" /}
         #{script src:"bootstrap/bootstrap-popover.js" /}
+        #{script src:"bootstrap/bootstrap-buttons.js" /}
         
         #{script 'ext/ext-all.js' /}
         #{script 'ext/form/SearchFieldFilter.js' /}
@@ -148,7 +150,7 @@
 					<div class="menu span3 alpha">
 					#{get 'menu'/}
 					</div>
-					<div id="content" class="span13 omega ">				
+					<div id="content" class="span13 omega ">			
 						#{doLayout /}
 					</div>
 					</div>

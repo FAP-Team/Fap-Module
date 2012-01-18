@@ -54,56 +54,48 @@
 	tags.TagMapStack.push("editable", editable);
 	tags.TagMapStack.push("visible", visible);
 
-	play.Logger.info("url: "+url);
-	play.Logger.info("Accion: "+accion);
 }%
 
 #{if visible}
 
-<!--div id="${idMensajes}"></div-->
-
-<div class="modal-header">
-	<a href="#" class="close">×</a>
-    <h3>${titulo}</h3>
-</div>
-
 #{fap.messages}
 
-<form action="${url}" method="post" enctype="multipart/form-data">
-	<div class="modal-body">
-		#{authenticityToken /}
+<div id="${idMensajes}"></div>
 
-        #{doBody /}			
-	</div>
-    <div class="modal-footer">
-    	#{if (accion == 'borrar')}
+
+<form action="${url}" method="post" enctype="multipart/form-data">
+		#{authenticityToken /}
+			
+		#{doBody /}		
+
+		#{if (accion == 'borrar')}
 		<div class='form-row'>
 			<label class='mensajeBorrar'>¿Desea borrar la entrada seleccionada?</label>
 		</div>
 		#{/if}
-	</div>
-</form>
+				
+</form>	
 	
 <script type="text/javascript">
 $(document).ready(function(){
-	var idPopup = "${popup}_popup";
-	var $popup = $("#${popup}_popup");
-  	popupMessages (idPopup, "${popup}_mensajes");
+	var $popup = $("#${popup}.popup");
 	//Div donde mostrar mensajes
-	var mensajes = new Mensajes("#${popup}_mensajes");
-	console.log("Los mensajes se muestran en: ${popup}_mensajes");
+	var mensajes = new Mensajes("#${idMensajes}");
+	//Título del popup
+	$popup.dialog("option", "title", '${titulo}');
+
 	
 	var buttons = {};
 	
 	#{if (accion != 'leer')}
-		${botonAccion} = function(){
-			$('#${botonAccion}_id').button('loading');
-  			var data = $('#'+idPopup+' form').serialize();
+		buttons["${botonAccion}"] = function(){
+  			var data = $('#${popup}.popup form').serialize();
+  			mensajes.loading("Enviando...");
 			$.post(replaceAmpersand('${url}'), data, function(data){
  				mensajes.clear(); //Quita los mensajes
 				if(typeof(data)=='string'){
 					//Si viene HTML posible error de validación
-					$popup.html(data);
+					$popup.html(data);							
 				}else{
 					if(!data.success){
 						//Error JSON
@@ -114,19 +106,18 @@ $(document).ready(function(){
 							callback();
 						
 						//Todo correcto, cierra el popup
-						$('#'+idPopup).modal('hide');
+						$popup.dialog('close');
 					}
 				}
-				$('#${botonAccion}_id').button('complete');
 			});
 		};
-	  	popupButtons (idPopup, {"${botonAccion}": "${botonAccion}()"}, "primary", true);
   	#{/if}
-  	#{else}
-  		popupButtons (idPopup, {}, "primary", true);
-  	#{/else}
-  	popupTitle(idPopup, "${titulo}");
-
+		
+  	//buttons["${botonCerrar}"] = function(){
+  	//	$popup.dialog('close');
+  	//}
+  	
+	//$popup.dialog('option', 'buttons', buttons);
 
 });
 </script>

@@ -172,7 +172,7 @@
 			   		var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
 			   		#{if urlPopupEditar}
 			   			popup_open(
-			   				"${popupEditar}",
+			   				"${popupEditar}_popup",
 			   				replaceId("${urlPopupEditar}", "${_idEntidad}", selected_id),
 			   				reload
 			   			);
@@ -183,16 +183,19 @@
 		    	}
 		    });
 			
+
+		    
 		    var editRow = new Ext.create('Ext.grid.plugin.Editing', {
 		    	clicksToEdit: 2,
 	    	   	startEdit: function(record, columnHeader) {
 					var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
 					#{if urlPopupEditar}
 		   				popup_open(
-		   					"${popupEditar}",
+		   					"${popupEditar}_popup",
 			   				replaceId("${urlPopupEditar}", "${_idEntidad}", selected_id),
 		   					reload
 		   				);
+		   				
 		   			#{/if}
 					#{elseif urlPaginaEditar}
 						window.location.href = replaceId("${urlPaginaEditar}", "${_idEntidad}", selected_id);
@@ -212,7 +215,7 @@
 	    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
 	    			#{if urlPopupLeer}
 	    				popup_open(
-	    					"${popupLeer}",
+	    					"${popupLeer}_popup",
 	    					replaceId("${urlPopupLeer}", "${_idEntidad}", selected_id)
 						)
 					#{/if}
@@ -229,7 +232,7 @@
     						var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
     						#{if urlPopupLeer}
 			   					popup_open(
-			   						"${popupLeer}",
+			   						"${popupLeer}_popup",
 			   						replaceId("${urlPopupLeer}", "${_idEntidad}", selected_id)
 			   					);
 			   				#{/if}
@@ -251,7 +254,7 @@
 	    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
 	    			#{if urlPopupBorrar}
 	    				popup_open(
-	    					"${popupBorrar}",
+	    					"${popupBorrar}_popup",
 	    					replaceId("${urlPopupBorrar}", "${_idEntidad}", selected_id),
 	    					reload
 	    				);
@@ -270,8 +273,8 @@
 		    	disabled:false,
 	    		handler : function(){
 	    			#{if urlPopupCrear}
-	    				popup_open(
-	    					"${popupCrear}",
+  	    				popup_open(
+	    					"${popupCrear}_popup",
 	    					replaceAmpersand("${urlPopupCrear}"),
 	    					reload
 	    				);
@@ -387,6 +390,8 @@
 		    #{/if}
 		    
 		   	$('#${id}').data('grid', grid);
+		   	
+
 
 		});
 </script>

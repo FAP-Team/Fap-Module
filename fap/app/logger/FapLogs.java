@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import emails.Mails;
 
 import play.Logger;
+import play.Play;
 import play.PlayPlugin;
 import play.classloading.ApplicationClasses.ApplicationClass;
 
@@ -27,7 +28,11 @@ public class FapLogs extends PlayPlugin {
 		} else {
 			pattern = (String) args[0];
 		}
-    	Mails.enviar("LogFatal", pattern);		
+		
+		if(Play.mode.isProd()){
+			Mails.enviar("LogFatal", pattern);
+		}
+		
 		if(throwable != null) {
 			Logger.fatal(throwable, pattern, handleLogArgs(args, 2));
 		}
@@ -43,7 +48,9 @@ public class FapLogs extends PlayPlugin {
 		if(args.length == 2) {
 			throwable = (Throwable) args[1];
 		}
-    	Mails.enviar("LogFatal", msg);		
+		if(Play.mode.isProd()){
+			Mails.enviar("LogFatal", msg);
+		}
 		if(throwable != null) {
 			Logger.fatal(throwable, msg);
 		}

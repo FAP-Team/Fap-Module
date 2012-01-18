@@ -246,53 +246,32 @@ public class ${clazzName} extends Secure {
 	private void config(){
 		if(!Start.generatingModule){
 			String appConfigFolder = FileUtils.getRoute('APP_CONFIG');
-			String configGen = 
+			String config = 
 """
 package config;
 
 import security.*;
 
-import com.google.inject.AbstractModule;
-
-/**
- * Configuración de Guice generada.
- *
- * Clase automática, cada vez que se genere la aplicación
- * se sobreescribirá esta clase. Para personalizar
- * la configuración consula la clase config.AppModule. 
- */
-public class AppModuleGen extends AbstractModule {
-	
-	@Override
-	protected void configure() {
-		secure();
-		custom();
-	}
-	
-	protected void secure(){
-		bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
-	}
-
-	protected void custom(){
-	}
-	
-}
-"""
-			FileUtils.overwrite(appConfigFolder, "AppModuleGen.java", configGen);
-			String config = 
-"""
-package config;
-
 /**
  * Configuración de Guice.
  * 
  * En esta clase puedes personalizar la configuración de Guice.
- * Puedes sobreescribir los métodos ya definidos, como por ejemplo
- * <secure> para personalizar la cadena de mando
- * que se va a utilizar para resolver un permiso. Además puedes
- * añadir configuración adicional utilizando el método <custom>.
+ * 
+ * La configuración por defecto personaliza el método secure para
+ * configurar correctamente los permisos.
+ * 
+ * Si quieres añadir nueva configuración de guice puede
+ * sobreescribir el metodo <config> (recuerda llamar al super)
+ * 
+ * Si quieres descartar la configuración del módulo y únicamente
+ * utilizar la tuya elimina el "extends FapModule".
  */
-public class AppModule extends AppModuleGen {
+public class AppModule extends FapModule {
+	
+	@Override
+	void secure() {
+		bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
+	}
 	
 }
 """

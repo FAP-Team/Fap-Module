@@ -34,9 +34,7 @@ public class Start extends Job {
 	        Router.load(Play.ctxPath);
 		}
 		
-		//Carga la configuracion de log4j
-		String log4jPropertyFile = FapProperties.get("app.log.path");
-		PropertyConfigurator.configure(Play.classloader.getResource(log4jPropertyFile));
+		loadLog4Config();
 		
 		if (Agente.count() == 0){
             Fixtures.delete();
@@ -67,6 +65,21 @@ public class Start extends Job {
 			}
 		}
 		
+	}
+	
+	/**
+	 * Carga la configuracion de log4j 
+	 * a partir del fichero definido en "app.log.path"
+	 * si la property existe y el fichero está definido
+	 */
+	private void loadLog4Config(){
+		String log4jPropertyFile = FapProperties.get("app.log.path");
+		if(log4jPropertyFile != null){
+			URL resource = Play.classloader.getResource(log4jPropertyFile);
+			if(resource != null){
+				PropertyConfigurator.configure(resource);
+			}
+		}
 	}
 }
 	

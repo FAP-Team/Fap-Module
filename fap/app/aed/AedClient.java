@@ -48,6 +48,10 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Propiedades
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
 
+/**
+ * @deprecated Utilizar AedService con la nueva forma de inyectar dependencias
+ */
+@Deprecated
 public class AedClient {
 
 	private static AedPortType aed;

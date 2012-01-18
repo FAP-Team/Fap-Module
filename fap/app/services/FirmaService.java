@@ -1,39 +1,74 @@
 package services;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import messages.Messages;
 import models.Documento;
 import models.Firmante;
-import models.Persona;
-import models.RepresentantePersonaFisica;
-import models.RepresentantePersonaJuridica;
 import models.Solicitante;
-
-
-import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-
+import net.java.dev.jaxb.array.StringArray;
 import platino.Firma;
+import platino.InfoCert;
 
-import aed.AedClient;
-import es.gobcan.eadmon.aed.ws.AedExcepcion;
+public interface FirmaService extends WSService {
 
-public class FirmaService {
+	/**
+	 * Obtiene la versión del servicio
+	 * @return
+	 */
+	public String getVersion();
 
-	private static Logger log = Logger.getLogger(FirmaService.class);
+	/**
+	 * Firma pkcs7 de una cadena
+	 * @param texto
+	 * @return
+	 */
+	public String firmarPKCS7(String texto);
+
+	/**
+	 * Firma pkcs7 de un array de bytes
+	 * @param bytes
+	 * @return
+	 */
+	public String firmarPKCS7(byte[] bytes);
 	
+	/**
+	 * Verifica si una firma es correcta
+	 * @param texto Texto firmado
+	 * @param firma Firma del texto
+	 * @return
+	 */
+	public boolean verificarPKCS7(String texto, String firma);
+
+	public boolean verificarContentSignature(byte[] content, byte[] signature);
+
+	public String extraerCertificadoDeFirma(String firma);
+
+	public boolean validarCertificado(String certificado);
+
+	public InfoCert extraerInformacion(String certificado);
+
+	public HashMap<String, String> extraerInfoFromFirma(String firma);
+
+	public List<StringArray> getCertInfo(String certificado) throws Exception;
+
+	/**
+	 * Valida la firma y extrae la informacion del firmante
+	 * @param contenidoDoc Contenido del documento firmado
+	 * @param firma Firma
+	 * @return Informacion del firmante
+	 */
+	public Firmante validateXMLSignature(byte[] contenidoDoc, String firma);
+
 	/**
 	 * Valida la firma y la almacena en el AED
 	 * @param documento Documento firmado
 	 * @param firmantes Lista de firmantes. Se comprueba que la persona no haya firmado ya.
 	 * @param firma Firma
 	 */
-	public static void firmar(Documento documento, List<Firmante> firmantes, Firma firma){	
-		firmar(documento, firmantes, firma, null);
-	}
-	
+	public void firmar(Documento documento, List<Firmante> firmantes,
+			Firma firma);
+
 	/**
 	 * Valida la firma y la almacena en el AED
 	 * @param documento Documento firmado
@@ -41,51 +76,9 @@ public class FirmaService {
 	 * @param firma Firma
 	 * @param valorDocumentofirmanteSolicitado En el caso de que sea != null se comprueba que el certificado del firmante coincida
 	 */
-	public static void firmar(Documento documento, List<Firmante> firmantes, Firma firma, String valorDocumentofirmanteSolicitado){		
-		Firmante firmanteCertificado = firma.validaFirmayObtieneFirmante(documento);
-		
-		if(firmanteCertificado != null){
-			System.out.println("Firmante validado");
-			log.info("Firmante validado");
-			
-			int index = firmantes.indexOf(firmanteCertificado);
-			Firmante firmante = null;
-			if(index == -1){
-				Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud.");
-			}else{
-				firmante = firmantes.get(index);
-				if(firmante.fechaFirma != null){
-					Messages.error("Ya ha firmado la solicitud");
-				}
-				
-				log.info("Firmante encontrado " + firmante.idvalor );
-				log.info("Esperado " + valorDocumentofirmanteSolicitado);
-				if(valorDocumentofirmanteSolicitado != null && !firmante.idvalor.equalsIgnoreCase(valorDocumentofirmanteSolicitado)){
-					Messages.error("Se esperaba la firma de " + valorDocumentofirmanteSolicitado);
-				}
-			}
-			
-			if(!Messages.hasErrors()){
-				// Guarda la firma en el AED
-				try {
-					log.info("Guardando firma en el aed");
-					firmante.fechaFirma = new DateTime();
-					AedClient.agregarFirma(documento.uri, firmante, firma.firma);
-					firmante.save();
-					
-					log.info("Firma del documento " + documento.uri + " guardada en el AED");
-				}catch(AedExcepcion e){
-					log.error("Error guardando la firma en el aed");
-					Messages.error("Error al guardar la firma");
-				}				
-			}
-		}else{
-			log.error("firmanteCertificado == null????");
-		}
-	}
+	public void firmar(Documento documento, List<Firmante> firmantes,
+			Firma firma, String valorDocumentofirmanteSolicitado);
 
-	
-	
 	/**
 	 * Permite a un funcionario habilitado firmar, valida la firma y la almacena en el AED
 	 * @param documento Documento firmado
@@ -93,31 +86,7 @@ public class FirmaService {
 	 * @param firma Firma
 	 * @param valorDocumentofirmanteSolicitado En el caso de que sea != null se comprueba que el certificado del firmante coincida
 	 */
-	public static void firmarFH(Documento documento, Firma firma){		
-		Firmante firmante = firma.validaFirmayObtieneFirmante(documento);
-		
-		if((firmante != null)&&(firmante.esFuncionarioHabilitado())){
-			log.info("Funcionario habilitado validado");
-			log.info("Firmante encontrado " + firmante.idvalor );
-			
-			if(!Messages.hasErrors()){
-				// Guarda la firma en el AED
-				try {
-					log.info("Guardando firma en el aed");
-					firmante.fechaFirma = new DateTime();
-					AedClient.agregarFirma(documento.uri, firmante, firma.firma);
-					firmante.save();
-					
-					log.info("Firma del documento " + documento.uri + " guardada en el AED");
-				}catch(AedExcepcion e){
-					log.error("Error guardando la firma en el aed");
-					Messages.error("Error al guardar la firma");
-				}				
-			}
-		}else{
-			Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud.");
-		}
-	}
+	public void firmarFH(Documento documento, Firma firma);
 
 	
 	/**
@@ -126,34 +95,13 @@ public class FirmaService {
 	 * @param firmantes Lista de firmantes
 	 * @return
 	 */
-	public static boolean hanFirmadoTodos(List<Firmante> firmantes){
-		boolean multiple = true;
-		for(Firmante f : firmantes){
-			//Firmante único que ya ha firmado
-			if(f.cardinalidad.equals("unico") && f.fechaFirma != null)
-				return true;
-			
-			//Uno de los firmantes multiples no ha firmado
-			if(f.cardinalidad.equals("multiple") && f.fechaFirma == null)
-				multiple = false;
-		}
-		
-		//En el caso de que no haya firmado ningún único
-		//Se devuelve true si todos los múltiples han firmado
-		return multiple;
-	}
+	public boolean hanFirmadoTodos(List<Firmante> firmantes);
 	
 	/**
 	 * Borra una lista de firmantes, borrando cada uno de los firmantes y vaciando la lista
 	 * @param firmantes
 	 */
-	public static void borrarFirmantes(List<Firmante> firmantes){
-		List<Firmante> firmantesBack = new ArrayList<Firmante>(firmantes);
-		firmantes.clear();
-		
-		for(Firmante f : firmantesBack)
-			f.delete();
-	}
+	public void borrarFirmantes(List<Firmante> firmantes);
 	
 	/**
 	 * Dado el solicitante, calcula la lista de persona
@@ -162,48 +110,5 @@ public class FirmaService {
 	 * @param solicitante
 	 * @param firmantes
 	 */
-	public static void calcularFirmantes(Solicitante solicitante, List<Firmante> firmantes){
-		if(solicitante.isPersonaFisica()){
-			//Firma con el certificado del representante
-			Firmante f = new Firmante();
-			f.nombre = solicitante.fisica.getNombreCompleto();
-			f.tipo = "personafisica";
-			f.cardinalidad = "unico";
-			f.setIdentificador(solicitante.fisica.nip);
-			firmantes.add(f);
-			//Añade el representante
-			if (solicitante.representado) {
-				RepresentantePersonaFisica r = solicitante.representante;
-				Firmante fr = new Firmante();
-				fr.nombre = r.getNombreCompleto();
-				fr.tipo = "representante";
-				fr.cardinalidad = "unico";
-				fr.setIdentificador(r);
-				firmantes.add(fr);
-			}
-		}else if(solicitante.isPersonaJuridica()){
-			//Firma con certificado de empresa
-			Firmante f = new Firmante();
-			f.nombre = solicitante.juridica.entidad;
-			f.tipo = "personajuridica";
-			f.cardinalidad = "unico";
-			f.setIdentificador(solicitante.getNumeroId());
-			firmantes.add(f);
-			
-			//Añade los representantes
-			for(RepresentantePersonaJuridica r : solicitante.representantes){
-				Firmante fr = new Firmante();
-				fr.nombre = r.getNombreCompleto();
-				fr.tipo = "representante";
-				if(r.tipo.equals("mancomunado")){
-					fr.cardinalidad = "multiple";
-				}else if((r.tipo.equals("solidario")) || (r.tipo.equals("administradorUnico"))){
-					fr.cardinalidad = "unico";
-				}
-				fr.setIdentificador(r);
-				firmantes.add(fr);
-			}
-		}		
-	}
-	
+	public void calcularFirmantes(Solicitante solicitante, List<Firmante> firmantes);
 }

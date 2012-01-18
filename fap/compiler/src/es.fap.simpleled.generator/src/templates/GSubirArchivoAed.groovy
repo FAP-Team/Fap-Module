@@ -52,7 +52,8 @@ public class GSubirArchivoAed {
 
 		if(!validation.hasErrors()){
 			try {
-				aed.AedClient.saveDocumentoTemporal(dbDocumento, ${subirArchivoAed.name});
+				services.AedService aedService = config.InjectorConfig.getInjector().getInstance(services.AedService.class);
+				aedService.saveDocumentoTemporal(dbDocumento, ${subirArchivoAed.name});
 			}catch(es.gobcan.eadmon.aed.ws.AedExcepcion e){
 				validation.addError("", "Error al subir el documento al Archivo Electrónico");
 			}

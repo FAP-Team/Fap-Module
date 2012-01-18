@@ -19,6 +19,11 @@ import javax.inject.Inject;
 @With({SecureController.class, AgenteController.class})
 public class ConsultarEvaluacionesController extends GenericController {
 	
+	@Finally(only="index")
+	public static void end(){
+		Messages.deleteFlash();
+	}
+	
 	@Inject
 	protected static Secure secure;
 	

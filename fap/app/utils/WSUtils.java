@@ -1,0 +1,67 @@
+package utils;
+
+import javax.xml.ws.BindingProvider;
+
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+import org.apache.log4j.Logger;
+
+import messages.Messages;
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
+import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
+
+import platino.KeystoreCallbackHandler;
+import platino.PlatinoCXFSecurityHeaders;
+import properties.FapProperties;
+import properties.PropertyPlaceholder;
+
+public class WSUtils {
+
+	private static Logger logger = Logger.getLogger(WSUtils.class);
+	
+	public static void configureEndPoint(Object service, String endPoint){
+		BindingProvider bpService = (BindingProvider) service;
+		bpService.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endPoint);
+	}
+	
+	public static void configureSecurityHeaders(Object service, PropertyPlaceholder propertyPlaceholder){
+		String backoffice = propertyPlaceholder.get("fap.platino.security.backoffice.uri");
+		String certificadoalias = propertyPlaceholder.get("fap.platino.security.certificado.alias");
+		
+		PlatinoCXFSecurityHeaders.addSoapWSSHeader(
+				service,
+				PlatinoCXFSecurityHeaders.SOAP_11,
+				backoffice,certificadoalias,
+				KeystoreCallbackHandler.class.getName(), null);		
+	}
+	
+	public static void aedError(String error, ProcedimientosExcepcion e){
+		aedError(error, e.getFaultInfo().getDescripcion());
+	}
+	
+	public static void aedError(String error, TiposDocumentosExcepcion e){
+		aedError(error, e.getFaultInfo().getDescripcion());
+	}
+	
+	private static void aedError(String error, String descripcion){
+		logger.error(error + " : " + descripcion);
+		Messages.error(error);		
+	}
+	
+	public static void configureDebug(Object service){
+		Client client = ClientProxy.getClient(service);
+		client.getInInterceptors().add(new LoggingInInterceptor());
+		client.getOutInterceptors().add(new LoggingOutInterceptor());
+		
+		HTTPConduit http = (HTTPConduit) client.getConduit();
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(36000);
+		httpClientPolicy.setAllowChunking(false);
+		httpClientPolicy.setContentType("text/xml; charset=ISO-8859-1;");
+		http.setClient(httpClientPolicy);
+	}
+}

@@ -52,6 +52,10 @@ import models.SolicitudGenerica;
 
 import java.util.*;
 
+/**
+ * @deprecated Utilizar services.RegistroService con la nueva forma de inyectar servicios
+ */
+@Deprecated
 public class PlatinoRegistro {
 	
 	private static Logger log = Logger.getLogger(PlatinoRegistro.class);

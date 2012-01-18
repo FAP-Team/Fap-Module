@@ -59,6 +59,38 @@ public class Firmante extends Model {
 	
 
 // === MANUAL REGION START ===
+	public Firmante(){
+		init();
+	}
+	
+	public Firmante(Persona persona, String cardinalidad){
+		String tipo = getTipoRepresentanteFromPersona(persona);
+		constructor(persona, tipo, cardinalidad);
+	}
+
+	public Firmante(Persona persona, String tipo, String cardinalidad){
+		constructor(persona, tipo, cardinalidad);
+	}
+	
+	private void constructor(Persona persona, String tipo, String cardinalidad){
+		init();
+		this.nombre = persona.getNombreCompleto();
+		setIdentificador(persona);
+		this.tipo = tipo;
+		this.cardinalidad = cardinalidad;
+	}
+	
+	private static String getTipoRepresentanteFromPersona(Persona persona){
+		String tipo = null;
+		if(persona.isPersonaFisica()){
+			tipo = "personafisica";
+		}else if(persona.isPersonaJuridica()){
+			tipo = "personajuridica";
+		}	
+		return tipo;
+	}
+	
+	
 	public void setIdentificador(Nip nip){
 		idtipo = nip.tipo;
 		idvalor = nip.valor;

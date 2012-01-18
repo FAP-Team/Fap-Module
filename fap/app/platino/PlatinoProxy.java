@@ -7,23 +7,41 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 import play.Logger;
 import properties.FapProperties;
-
+import properties.PropertyPlaceholder;
 
 public class PlatinoProxy {
 
-	public static void setProxy(Object service){
-		if(FapProperties.getBoolean("fap.proxy.enable")){
-			System.out.println("Proxy");
-			Client client = ClientProxy.getClient(service);
-			HTTPConduit http = (HTTPConduit) client.getConduit();
-			HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-			httpClientPolicy.setAutoRedirect(false);
-			httpClientPolicy.setAllowChunking(false);
-			httpClientPolicy.setConnectionTimeout(400000);
-			httpClientPolicy.setProxyServer(FapProperties.get("fap.proxy.server"));
-			httpClientPolicy.setProxyServerPort(FapProperties.getInt("fap.proxy.port"));
-			http.setClient(httpClientPolicy);
+	private static final String PROP_ENABLE = "fap.proxy.enable";
+	private static final String PROP_SERVER = "fap.proxy.server";
+	private static final String PROP_PORT = "fap.proxy.port";
+
+	public static void setProxy(Object service) {
+		boolean enable = FapProperties.getBoolean(PROP_ENABLE);
+		if (enable) {
+			String server = FapProperties.get(PROP_SERVER);
+			int port = FapProperties.getInt(PROP_PORT);
+			enableProxy(service, server, port);
 		}
 	}
-	
+
+	public static void setProxy(Object service, PropertyPlaceholder propertyPlaceholder) {
+		boolean enable = propertyPlaceholder.getBoolean(PROP_ENABLE);
+		if (enable) {
+			String server = propertyPlaceholder.get(PROP_SERVER);
+			int port = propertyPlaceholder.getInt(PROP_PORT);
+			enableProxy(service, server, port);
+		}
+	}
+
+	private static void enableProxy(Object service, String server, int port) {
+		Client client = ClientProxy.getClient(service);
+		HTTPConduit http = (HTTPConduit) client.getConduit();
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setAutoRedirect(false);
+		httpClientPolicy.setAllowChunking(false);
+		httpClientPolicy.setConnectionTimeout(400000);
+		httpClientPolicy.setProxyServer(server);
+		httpClientPolicy.setProxyServerPort(port);
+		http.setClient(httpClientPolicy);
+	}
 }

@@ -28,6 +28,11 @@ import es.gobcan.platino.servicios.sgrde.InformacionFirmaElectronica;
 import es.gobcan.platino.servicios.sgrde.SGRDEServicePortType;
 import es.gobcan.platino.servicios.sgrde.SGRDEServiceProxy;
 
+/**
+ * @deprecated Utilizar GestorDocumentalService con la nueva forma de inyectar servicios
+ */
+
+@Deprecated
 public class PlatinoGestorDocumentalClient {
 	private static Logger log = Logger.getLogger(PlatinoGestorDocumentalClient.class);
 	private static SGRDEServicePortType gestorDocumental;

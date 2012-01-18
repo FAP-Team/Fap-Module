@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.activation.DataHandler;
+import javax.inject.Inject;
 
 import org.joda.time.DateTime;
 
@@ -16,6 +17,7 @@ import play.mvc.Router;
 import play.mvc.Router.ActionDefinition;
 import play.mvc.Util;
 
+import services.AedService;
 import utils.AedUtils;
 import utils.BinaryResponse;
 
@@ -23,7 +25,11 @@ import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import aed.AedClient;
 import models.*;
 
+
 public class DescargasAedController extends GenericController {
+	
+	@Inject
+	static AedService aedService;
 	
 	/**
 	 * Descarga un documento del archivo electrónico
@@ -35,7 +41,7 @@ public class DescargasAedController extends GenericController {
 		
 		if(uri != null){
 			try {
-				BinaryResponse bresp = AedClient.obtenerDoc(uri);
+				BinaryResponse bresp = aedService.obtenerDoc(uri);
 				if(bresp == null){
 					notFound();
 				}

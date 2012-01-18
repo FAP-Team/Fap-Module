@@ -53,6 +53,7 @@ import play.db.Model;
 import play.exceptions.UnexpectedException;
 import play.exceptions.YAMLException;
 import play.vfs.VirtualFile;
+import properties.FapProperties;
 
 public class Fixtures extends play.test.Fixtures {
 	
@@ -82,7 +83,10 @@ public class Fixtures extends play.test.Fixtures {
 	
 	public static void loadFolderFromAppAndFap(String path){
 		loadFolder(path);
-		loadFolder(utils.FileUtils.join(Play.modules.get("fap").getRealFile().getAbsolutePath(), path));
+		
+		if(FapProperties.isApplication()){
+			loadFolder(utils.FileUtils.join(Play.modules.get("fap").getRealFile().getAbsolutePath(), path));
+		}
 	}
 	
     public static void delete(Class<? extends Model>... types) {

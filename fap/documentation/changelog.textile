@@ -9,7 +9,7 @@ Para adaptar las aplicaciones a esta versión es necesario realizar cambios en e
 * Se permite crear página que no dependen de la solicitud.
 * Inyección de servicios utilizando google guice.
 * Cambio de estilos utilizando twitter-bootstrap.
-
+* Página simplificada de baremación. (Baremación utilizada en proyectos de innovación). No actualices si estás trabajando en algo relacionado con la baremación o tendrás conflictos en las entidades.
 
 h3. Versión 1.2
 

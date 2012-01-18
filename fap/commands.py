@@ -128,7 +128,25 @@ def run_model(app, args):
     params = "solicitud=false"
     exit(execute_workflow(modelPath, targetPath, params, args, app))
 
-    
+# Para comprobar si en el sistema (WINDOWS) existe un proceso con un determinado
+# PID y un determinado NAME
+def exist_process (pid, name):
+    # Comando que filtra los servicios arrancados con un determinado PID y NAME
+    cmd = ["tasklist",  "/FI",  "PID eq "+pid, "/FI",  "IMAGENAME eq "+name]
+    # Creamos una expresion regular con el formato de la salida que dará la consola
+    # al no encontrar el servicio con el PID y NAME que queremos
+    regexp = re.compile("^INFORMACI.*")
+    # Ejecutamos el comando redirigiendo la salida a una variable para poder parsearla
+    output = subprocess.Popen(cmd, stdout=subprocess.PIPE) 
+    # Si la salida coincide con que no encontró ningun servicio con el PID y NAME que queremos
+    # Devolvemos FALSE 
+    if regexp.match(output.communicate()[0]):
+        return False
+    # Si, si existe el servicio arrancado con ese PID y ese NAME
+    # Devolvemos TRUE
+    else:
+        return True
+
 # This will be executed before any command (new, run...)
 def before(**kargs):
     command = kargs.get("command")
@@ -137,7 +155,38 @@ def before(**kargs):
     if command == "dependencies":
         args.append('-Dfapsdk='+os.getenv("FAPSDK"))
         env = kargs.get("env")
-
+    # Para que no se quede colgado el server.pid, tras ocurrir alguna incidencia con el servicio
+    if command == "start":
+        # Path del ficherito que play utiliza para saber el PID del servicio que arranca
+        serverpidPath = app.path+"\server.pid"
+        # Si existe dicho ficherito, pues comprobamos que no sea por una incidencia
+        if os.path.exists(serverpidPath):
+            # Leemos el PID que contiene dicho ficherito
+            serverpid = open(serverpidPath, "r")
+            pid = serverpid.read()
+            # Cerramos el ficherito, por si despues hay que borrarlo
+            serverpid.close()
+            # Si no existe el proceso con el PID del ficherito y NAME de un proceso java
+            # De esta manera filtramos algun servicio que haya podido coger justamente el mismo PID
+            # que tenía nuestro servicio play, antes de quedarse 'colgado'
+            # NOTA: Es verdad que de esta forma puede darse la circunstancia de que un servicio java y que
+            # no se play, puede coger el mismo PID que se quedó cuando sucedió la incidencia. Pero asumimos
+            # el riesgo de que eso ocurra.
+            if not exist_process(pid, "java.exe"):
+                # Eliminamos el ficherito, para que play pueda arrancar el servicio correctamente tras la incidencia
+                os.remove(serverpidPath)
+            # Si existe un proceso que play ya arranco con ese PID y ese NAME
+            # En este caso puede ser por dos circunstacias (una controlada y otra que no es deseable):
+            #    - DESEABLE: que ya se haya arrancado el proceso, y estemos haciendo otra vez un 'play start'.
+            #                En este caso, Play además nos mostrará un mensajito de que el servicio ya está arrancado previamente
+            #    - NO DESEABLE: que otro proceso que no sea el de Play, pero que sea de java, haya cogido el mismo PID que tenía
+            #                   el servicio de Play anteriormente a la incidencia. Este caso debemos asumir que pueda ocurrir, 
+            #                   y lo que sucederá es que Play no podrá arrancar el servicio. La única forma es borrando el ficherito
+            #                   a mano.
+            else:
+                # Mostramos un mensajito diciendo que ya existe dicho proceso, como comentamos antes
+                print "~ Ya existe un proceso con PID: "+pid
+            
 
 # This will be executed after any command (new, run...)
 def after(**kargs):

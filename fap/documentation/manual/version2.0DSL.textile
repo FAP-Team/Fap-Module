@@ -1,4 +1,6 @@
-h1. Adaptación de los ficheros DSL a la versión 2.0
+h1. Migración de aplicaciones a la versión 2.0
+
+h2. Cambios en los DSL
 
 A continuación se muestra la lista de cambios que hay que realizar en los ficheros DSL de una aplicación escritos con versiones previas de la herramienta.
 
@@ -81,3 +83,42 @@ Pagina SubirArchivoAedTest campo=Solicitud {
 		Columna campo=Documento.id
 	}	
 }
+
+h2. Cambios en la aplicación
+
+h3. Añadir dependencia de google guice
+
+Las aplicaciones ahora tienen una nueva dependencia "google-guice". Para añadir esta dependencia, en el fichero conf/dependencies.yml añade en la sección require:
+
+bc. require:
+    - fap -> guice 1.2.1
+
+Este módulo no es exactamente el que está en el repositorio de módulo de google guice, sino que es una adaptación, debido a un bug de módulo que impedia ejecutar los tests.
+
+Si tienes problemas a la hora de encontrar la dependencia, puede que te haga falta incluir el repositorio donde está la dependencia. Añade en el fichero conf/dependencies.yml
+
+bc. repositories:
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+            - fap -> guice
+
+
+h3. Configuración de google guice  
+
+Si ya estabas utilizando la versión 1.2.1 es necesario que borres los ficheros app/config/AppModule.java y app/config/AppModuleGen.java de la aplicación. Cuando vuelvas a generar se volverá a generar el fichero app/config/AppModule.java configurado de la forma correcta. Heredando de la configuración que está definida en el módulo donde se declaran todos los servicios.
+
+bc. public class AppModule extends FapModule { 
+
+h3. Utilización de servicios
+
+Ahora los servicios se inyectan en las clases en las que vas a utilizarlos. Para inyectar un servicio tienes que utilizar la anotacion @Inject.
+
+bc. public class AedController extends AedControllerGen {
+  
+	@Inject
+	static ProcedimientosService procedimientosService;
+	
+
+Las clases de servicios anteriores con métodos estáticos se han mantenido por compatibilidad, pero están deprecated. Es recomendar utilizar las nuevas clases que son las que se mantendrán actualizadas.

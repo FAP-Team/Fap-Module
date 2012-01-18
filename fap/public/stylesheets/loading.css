@@ -1,3 +1,8 @@
+/* No se muestra el margen inferior en el form del popup */
+.modal form {
+	margin-bottom: 0px;
+}
+
 .animation_content {
 	margin-left: 214px;
 	text-align: center;

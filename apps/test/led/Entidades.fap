@@ -14,6 +14,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	
 	ManyToOne PaginasTab paginas
 	OneToMany TablaPopUpPaginas popupPaginas
+	
+	PersonaFisica amigo
 }
 
 Entidad Peta{

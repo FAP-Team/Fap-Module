@@ -74,6 +74,10 @@ public class Solicitud extends SolicitudGenerica {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public PersonaFisica amigo;
+	
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public SavePages savePages;
 	
 	
@@ -127,6 +131,11 @@ public class Solicitud extends SolicitudGenerica {
 						
 						if (popupPaginas == null)
 							popupPaginas = new ArrayList<TablaPopUpPaginas>();
+						
+							if (amigo == null)
+								amigo = new PersonaFisica();
+							else
+								amigo.init();
 						
 							if (savePages == null)
 								savePages = new SavePages();

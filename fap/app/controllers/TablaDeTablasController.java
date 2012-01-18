@@ -7,7 +7,7 @@ import play.mvc.Util;
 
 public class TablaDeTablasController extends TablaDeTablasControllerGen {
 
-    public static void actualizarDesdeFichero() {
+    public static void actualizarDesdeFichero(Long idTableKeyValue) {
         TableKeyValue.deleteAll();
         long count = TableKeyValue.loadFromFiles();
         Messages.ok("Se cargaron desde fichero " + count + " registros");

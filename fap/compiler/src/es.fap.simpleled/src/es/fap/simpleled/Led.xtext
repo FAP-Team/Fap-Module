@@ -11,18 +11,18 @@ Model:
 	 ) *
 ;
 
-QN: // QualifiedName
+QN: // Qualified Name
 	IDS ('.' IDS)*
 ;
-// Probando un error bruto en la gramática
+
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
-	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" | "agente" | "documento" | "password" |
-	"aportadoPor"
+	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
+	"agente" | "documento" | "password" | "aportadoPor" | "texto"
 ;
 
 Entity:
-	'Entidad' name=IDS
+	elemento='Entidad' name=IDS
 		(
 		("extends" extends=[Entity|IDS])?
 		& ('tableName' '=' tableName=STRING)? 
@@ -68,7 +68,7 @@ SpecialType:
 CompoundType:
 	((tipoReferencia=AttributeReferences)? entidad=[Entity|IDS])
 	| ('Lista' (multiple?="multiple")? lista=[Lista|IDS])
-	| (collectionType=tipoColeccion"<"collectionReferencia=SimpleType">")
+	| (collectionType=tipoColeccion "<" collectionReferencia=SimpleType ">")
 ;
 
 tipoColeccion:
@@ -80,8 +80,12 @@ AttributeReferences:
 ; 
 
 Formulario:
-	'Formulario' name=IDS
-	("permiso" "=" permiso=[Permiso])? 
+	elemento='Formulario' name=IDS
+	(
+		("campo" "=" campo=Campo)?
+		& ("permiso" "=" permiso=[Permiso])?
+		& (inicial?="inicial")?
+	)
 	'{'
 		(menu = Menu)?
 		(paginas += Pagina  |  popups += Popup)*
@@ -89,7 +93,7 @@ Formulario:
 ;
 
 Menu:
-	'Menu' '{'
+	elemento='Menu' '{'
 		elementos +=MenuElemento+
 	'}'
 ;
@@ -99,34 +103,55 @@ MenuElemento:
 ;	
 
 MenuGrupo:
-	'Grupo' titulo=STRING 
+	elemento='Grupo' titulo=STRING 
 	("permiso" "=" permiso=[Permiso])?  '{'
 		elementos +=MenuElemento*
 	'}'
 ;
 
 MenuEnlace:
-	'Enlace' titulo=STRING
+	elemento='Enlace' titulo=STRING
 	(
 		("permiso" "=" permiso=[Permiso])?
 		& (
-			('pagina' '=' pagina=[Pagina|QN]) | 
+			('pagina' '=' pagina=PaginaAccion) |
+			('popup' '=' popup=PopupAccion) |
 			('accion' '=' accion=STRING) |
 			('url' '=' url=STRING) |
-			('popup' '=' popup=[Popup])
+			(anterior?="anterior")
 		)?
 	)
 ;
 
-Pagina:
-	'Pagina' name=IDS
+PaginaAccion:
+	pagina=[Pagina|QN] accion=("leer" | "crear" | "editar" | "borrar")?
+;
+
+PopupAccion:
+	popup=[Popup|QN] accion=("leer" | "crear" | "editar" | "borrar")?
+;
+
+Accion:
+	elemento="Accion" name=("crear"  | "editar" | "borrar")
 	(
-		(noForm?='noForm')? 
+		("boton" "=" boton=STRING)?
+		& ('redirigir' '=' (anterior?="anterior" | redirigir=PaginaAccion | redirigirUrl=STRING))?
+		& ("mensajeOk" "=" mensajeOk=STRING)?
+		& (noBorrarEntidad?='noBorrarEntidad')?
+		& (crearSiempre?="crearSiempre")?
+	)
+;
+
+Pagina:
+	elemento='Pagina' name=IDS
+	(
+		("titulo" "=" titulo=STRING)?
+		& ("campo" "=" campo=Campo)?
+		& ("permiso" "=" permiso=[Permiso])?
+		& (noForm?='noForm')?
 		& (noAutenticar?='noAutenticar')?
 		& (guardarParaPreparar?="guardarParaPreparar")?
-		& ("permiso" "=" permiso=[Permiso])?
 		& (inicial?="inicial")?
-		& (titulo?="titulo" "=" namePagina=STRING)?
 	)
 	'{'
 		elementos+=Elemento*
@@ -134,16 +159,11 @@ Pagina:
 ;
 
 Popup:
-	'Popup' name=ID
+	elemento='Popup' name=ID
 	(
 		('titulo' '=' titulo=STRING)?
-		& ('campo' '=' campo=Campo)
+		& ("campo" "=" campo=Campo)
 		& ("permiso" "=" permiso=[Permiso])?
-		& (crear?='crear')?
-		& (modificar?='modificar')?
-		& (borrar?='borrar')?
-		& (ver?='ver')?
-		& (noBorrarEntidad?='noBorrarEntidad')?
 	)
 	'{'
 		elementos+=Elemento*
@@ -151,7 +171,7 @@ Popup:
 ;
 
 Grupo:
-	grupo='Grupo' (name=ID)? (
+	elemento='Grupo' (name=ID)? (
 		('titulo' '=' titulo=STRING)? &
 		('mostrarSiCombo' siCombo=[Combo|QN] '=' siComboValues=Values)? &
 		('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false"))? &
@@ -166,7 +186,7 @@ Grupo:
 ;	
 
 AgruparCampos:
-	agrupar='AgruparCampos' '{'
+	elemento='AgruparCampos' '{'
 		elementos+=Elemento*
 	'}'
 ;	
@@ -177,11 +197,11 @@ Values:
 
 Elemento:
 	Grupo | AgruparCampos | 
-	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check |
+	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check | AgrupaBotones |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivoAed | EditarArchivoAed | FirmaPlatinoSimple | 
-	EntidadAutomatica
+	EntidadAutomatica | Accion
 ;
 
 Campo:
@@ -192,16 +212,16 @@ CampoAtributos:
 	"." atributo=[Attribute|IDS] (atributos=CampoAtributos)?
 ;
 
-CampoLista:
-	lista=[Lista] "." elemento=ID
+TipoDeAyuda:
+	'(' type=('texto' | 'propover') ')'
 ;
 
 Texto:
-	'Texto' (name=ID)? (
+	elemento='Texto' (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('ancho' '=' ancho=STRING)?
-		& ('ayuda' '=' ayuda=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 		& (duplicar?='duplicar')?
@@ -210,7 +230,7 @@ Texto:
 ;
 
 AreaTexto:
-	'AreaTexto' (name=ID)? (
+	elemento='AreaTexto' (name=ID)? (
 		  ('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('valor' '=' valor=STRING)?
@@ -221,7 +241,7 @@ AreaTexto:
 ;
 
 Check:
-	'Check' (name=ID)? (
+	elemento='Check' (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
@@ -230,8 +250,8 @@ Check:
 
 
 Enlace:
-	'Enlace' (name=ID)? (
-		(('pagina' '=' pagina=[Pagina|QN]) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING)) 
+	elemento='Enlace' (name=ID)? (
+		(('pagina' '=' pagina=PaginaAccion) | ('popup' '=' popup=PopupAccion) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING) | (anterior?="anterior")) 
 		& ('titulo' '=' titulo=STRING)?
 		& ('destino' '=' destino=STRING)?
 		& ('estilo' '=' estilo=STRING)?
@@ -239,31 +259,42 @@ Enlace:
 ;
 
 Wiki:
-	'Wiki' ('estilo' '=' estilo=STRING)? '{'
+	elemento='Wiki' ('estilo' '=' estilo=STRING)? '{'
 		wikiData+=STRING+
 	'}'
 ;
 
+AgrupaBotones:
+	'AgrupaBotones' (type=('normal' | 'well'))?
+	'{'
+		botones+=Boton+
+	'}'
+;
+
 Boton:
-	'Boton' (name=ID) (
+	elemento='Boton' (name=ID) (
 	 	('titulo' '=' titulo=STRING)
 	    & ('ancho' '=' ancho=STRING)? 
-	    &('popup' '=' popup=[Popup])?
-	    &('pagina' '=' pagina=[Pagina|QN])?
-		& (waitPopup?="waitPopup")?		
+	    & ('pagina' '=' pagina=PaginaAccion)?
+	    & ('popup' '=' popup=PopupAccion)?
+	    & (anterior?="anterior")?
+		& (waitPopup?="waitPopup")?	
+		& ('type' '=' type=('default' | 'primary' | 'info' | 'success' | 'danger'))?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 
 Fecha:
-	'Fecha' (name=ID)? (
+	elemento='Fecha' (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& (requerido?='requerido')?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 
 Combo:
-	'Combo' (name=ID)? (
+	elemento='Combo' (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& (requerido?='requerido')?
@@ -273,15 +304,15 @@ Combo:
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& ('comboTexto' '=' comboTexto=[Attribute|IDS])? 
 		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 
 Form:
-	'Form' (name=ID) (
-		('campo' '=' campo=Campo)?
-		& (autoEnviar?="autoEnviar")?
+	elemento='Form' (name=ID) (
+		(autoEnviar?="autoEnviar")?
 		& ("permiso" "=" permiso=[Permiso])?
-		& ('redirigir' '=' redirigir=[Pagina|QN])?
+		& ('redirigir' '=' redirigir=PaginaAccion)?
 	)
 	'{'
 		elementos+=Elemento+
@@ -289,31 +320,25 @@ Form:
 ;	
 
 Tabla:
-	'Tabla' (name=ID)
+	elemento='Tabla' name=ID
 	(
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
-		& ('pagina' '=' (pagina=[Pagina|QN] | paginaProperty=STRING))?
         & ('alto' '=' alto=STRING)? 
-        & (columnasAutomaticas?="columnasAutomaticas" ((exc='exclude' '=' exclude=ListaAtributos) | (inc='include' '=' include=ListaAtributos))?)?
+        & (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
         & ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
-		& ("seleccionable" "=" seleccionable=STRING)?
-	    & (	
-	    	('popup' '=' popup=[Popup])	
-	    	| (('popupCrear' '=' popupCrear=[Popup])
-	    		(('popupBorrar' '=' popupBorrar=[Popup])? & ('popupModificar' '=' popupModificar=[Popup])? & ('popupVer' '=' popupVer=[Popup])?)
-	    	)
-	    	| (('popupBorrar' '=' popupBorrar=[Popup])
-	    		(('popupCrear' '=' popupCrear=[Popup])? & ('popupModificar' '=' popupModificar=[Popup])? & ('popupVer' '=' popupVer=[Popup])?) 
-	    	)
-	    	| (('popupModificar' '=' popupModificar=[Popup])
-	    		(('popupBorrar' '=' popupBorrar=[Popup])? & ('popupCrear' '=' popupCrear=[Popup])? & ('popupVer' '=' popupVer=[Popup])?)
-	    	)
-	    	| (('popupVer' '=' popupVer=[Popup])
-	    		(('popupBorrar' '=' popupBorrar=[Popup])? & ('popupModificar' '=' popupModificar=[Popup])? & ('popupCrear' '=' popupCrear=[Popup])?)
-	    	)
-	    )? 
+		& ('seleccionable' "=" seleccionable=STRING)?
+	    & ('popup' '=' popup=[Popup|QN])?
+	    & ('popupCrear' '=' popupCrear=[Popup|QN])?
+	   	& ('popupBorrar' '=' popupBorrar=[Popup|QN])?
+	   	& ('popupModificar' '=' popupModificar=[Popup|QN])?
+	   	& ('popupVer' '=' popupVer=[Popup|QN])?
+	   	& ('pagina' '=' pagina=[Pagina|QN])?
+	    & ('paginaCrear' '=' paginaCrear=[Pagina|QN])?
+	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|QN])?
+	   	& ('paginaModificar' '=' paginaModificar=[Pagina|QN])?
+	   	& ('paginaVer' '=' paginaVer=[Pagina|QN])?
 	)
 	'{'
 		columnas += Columna*
@@ -325,7 +350,7 @@ ListaAtributos:
 ;
 
 Columna:
-	'Columna' ( 
+	elemento='Columna' ( 
 	       ( ('campo' '=' campo=Campo) | ('funcion' '=' funcion=STRING) )
 	       & ('titulo' '=' titulo=STRING)? 
 	       & ('ancho' '=' ancho=STRING)? 
@@ -336,13 +361,13 @@ Columna:
 
 
 SubirArchivo:
-	'SubirArchivo' name=ID (
+	elemento='SubirArchivo' name=ID (
 		(requerido?='requerido')?
 	)
 ;	
 
 SubirArchivoAed:
-	'SubirArchivoAed' name=ID (
+	elemento='SubirArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 		& ('tramite' '=' tramite=STRING)?		
@@ -351,14 +376,14 @@ SubirArchivoAed:
 ;
 
 EditarArchivoAed:
-	'EditarArchivoAed' name=ID (
+	elemento='EditarArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 	)
 ;
 
 FirmaPlatinoSimple:
-	"FirmaSimple" (name=ID)
+	elemento="FirmaSimple" (name=ID)
 		"titulo" "=" titulo=STRING
 		(
 			"documento" "=" campo=Campo
@@ -366,7 +391,7 @@ FirmaPlatinoSimple:
 ;
 
 Direccion:
-	"Direccion" (name=ID)? (
+	elemento="Direccion" (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ("titulo" "=" titulo=STRING)?
 		& (provincia?="provincia")?
@@ -377,7 +402,7 @@ Direccion:
 ;
 
 Nip:
-	'Nip' (name=ID)? (
+	elemento='Nip' (name=ID)? (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING) &
 		(requerido?='requerido')?
@@ -385,7 +410,7 @@ Nip:
 ;
 
 PersonaFisica:
-	'PersonaFisica' (name=ID) (
+	elemento='PersonaFisica' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')?
@@ -393,7 +418,7 @@ PersonaFisica:
 ;
 
 PersonaJuridica:
-	'PersonaJuridica' (name=ID) (
+	elemento='PersonaJuridica' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING) &
 		(requerido?='requerido')? &
@@ -402,7 +427,7 @@ PersonaJuridica:
 ;
 
 Persona:
-	'Persona' (name=ID) (
+	elemento='Persona' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
@@ -411,7 +436,7 @@ Persona:
 ;
 
 Solicitante:
-	'Solicitante' (name=ID) (
+	elemento='Solicitante' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
@@ -421,14 +446,14 @@ Solicitante:
 ;
 
 EntidadAutomatica:
-	'EntidadAutomatica' (name=ID) (	
+	elemento='EntidadAutomatica' (name=ID) (	
 		('campo' '=' campo=Campo) & 
 		("permiso" "=" permiso=[Permiso])?
 	)
 ;
 
 Lista:
-	'Lista' name=ID (enumerado?='crearEnumerado')? '{'
+	elemento='Lista' name=ID (enumerado?='crearEnumerado')? '{'
 		elementos+=ElementoLista*
 	'}'
 ;
@@ -449,7 +474,8 @@ IdOrInt:
 ;
 
 Permiso:
-	'rule' name=ID
+	elemento='Permiso' name=ID
+	('mensaje' '=' mensaje=STRING)?
 	(varSection=PermisoVarsSection)?
 	'when'
 		rule = PermisoRule
@@ -472,7 +498,7 @@ PermisoVarSqlParameters:
 ;
 
 CampoPermiso:
-	(variable=[PermisoVar] | action?="action" | agente?="agente") (atributos=CampoPermisoAtributos)?
+	(variable=[PermisoVar] | action?="accion" | agente?="agente") (atributos=CampoPermisoAtributos)?
 ;
 
 CampoPermisoAtributos:
@@ -514,10 +540,9 @@ PermisoRuleCheckGroupOp:
 ;
 
 PermisoRuleCheckRight:
-	campo=CampoPermiso | str=STRING  | nulo?='null'
+	campo=CampoPermiso | str=STRING  | nulo?='null' | action=("leer" | "editar" | "crear" | "borrar") 
 ;
 
-
 PermisoThen:
-	'grant' | 'deny'
+	then=('grant' | 'deny')
 ;

@@ -12,7 +12,7 @@ h2. Parámetros
 h2. Definición
 
 bc. MenuGrupo:
-	'Grupo' titulo=STRING 
+	elemento='Grupo' titulo=STRING 
 	("permiso" "=" permiso=[Permiso])?  '{'
 		elementos +=MenuElemento*
 	'}'

@@ -11,7 +11,7 @@ h2. Parámetros
 h2. Definición
 
 bc. Wiki:
-	'Wiki' ('estilo' '=' estilo=STRING)? '{'
+	elemento='Wiki' ('estilo' '=' estilo=STRING)? '{'
 		wikiData+=STRING+
 	'}'
 ;
@@ -25,5 +25,3 @@ bc. Wiki {
 	"__cadena en cursiva__"
 	"\"enlace externo\":http://www.google.es"
 }	
-
-!images/dsl-wiki!

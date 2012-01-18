@@ -43,7 +43,7 @@ Se pueden definir uno o varios atributos en la entidad, los cuales crearán los 
 h2. Definición
 
 bc.. Entity:
-	'Entidad' name=IDS
+	elemento='Entidad' name=IDS
 		(
 		("extends" extends=[Entity|IDS])?
 		& ('tableName' '=' tableName=STRING)? 

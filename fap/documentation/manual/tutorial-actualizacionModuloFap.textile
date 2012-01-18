@@ -2,12 +2,15 @@ h1. Actualización del modulo FAP
 
 Para actualizar la version del modulo FAP con la que trabaja una aplicacion se deben seguir los siguientes pasos:
 
-1. Cambiamos el número de version del modulo FAP en el fichero "dependencies.yml", en este caso la version a la que se va a actualizar es la 1.1
+1. Cambiamos el número de version del modulo FAP en el fichero "dependencies.yml", en este caso la version a la que se va a actualizar es la 2.0
 
 bc. require:
     - play
-    - fap -> fap 1.1
+    - fap -> fap 2.0
+    - fap -> guice 1.2.1
     - play -> pdf 0.6
+    - play -> less 0.3
+    - play -> recaptcha 1.2
 repositories:
     - Fap repository:
         type: http

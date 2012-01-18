@@ -1,0 +1,9 @@
+
+package controllers.popups;
+
+import controllers.gen.popups.PopupPersonaSolicitanteJuridicaTablaControllerGen;
+			
+public class PopupPersonaSolicitanteJuridicaTablaController extends PopupPersonaSolicitanteJuridicaTablaControllerGen {
+
+}
+		

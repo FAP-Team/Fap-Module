@@ -2,7 +2,6 @@ package templates;
 
 import utils.StringUtils;
 import es.fap.simpleled.led.*;
-import es.fap.simpleled.led.impl.CampoListaImpl;
 import generator.utils.HashStack;
 import generator.utils.HashStack.HashStackName;
 import generator.utils.CampoUtils
@@ -53,7 +52,7 @@ public class GSubirArchivoAed {
 
 		if(!validation.hasErrors()){
 			try {
-				AedService aedService = config.InjectorConfig.getInjector().getInstance(AedService.class);
+				services.AedService aedService = config.InjectorConfig.getInjector().getInstance(services.AedService.class);
 				aedService.saveDocumentoTemporal(dbDocumento, ${subirArchivoAed.name});
 			}catch(es.gobcan.eadmon.aed.ws.AedExcepcion e){
 				validation.addError("", "Error al subir el documento al Archivo Electrónico");

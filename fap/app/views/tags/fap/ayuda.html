@@ -14,34 +14,27 @@
 	def ayuda = _ayuda
 	def button_id = id + '-button'
 	
-	def dialog_id
-	def dialog_title
-	if(ayuda?.refPopup)
-		dialog_id = ayuda.refPopUp
-	else if(ayuda?.textoPopup){
-		dialog_id = id + '-popup'
-		dialog_title = 'Ayuda'
-	}	
+	def strAyudaPopover = "";
+	if (ayuda?.popover) {
+		// Tendrá un popover de ayuda. El título será hasta el primer punto, y si no tiene el título será "Ayuda"
+		String title = "";
+		String rest = "";
+		def position = ayuda.popover.indexOf(".");
+		if (position != -1) { 
+			title = ayuda.popover.substring(0, position);
+			rest = ayuda.popover.substring(position+1, ayuda.popover.size());
+		} else {
+			title = "Ayuda";
+			rest = ayuda.popover;
+		}
+		strAyudaPopover = "rel=\"popover\" data-content=\"${rest}\" data-original-title=\"${title}\""
+	}
 }%
 
 #{if ayuda?.texto}
-	<span class="help">${ayuda.texto}</span>	
+	<span class="help-block">${ayuda.texto}</span>	
 #{/if}
 
-#{if ayuda?.textoPopup || ayuda?.refPopup}
-	<span id="${button_id}" class="help">Ayuda</span>
-	<script type="text/javascript">
-		$(function(){			
-			$('#${button_id}').click(function(){
-				$('#${dialog_id}').dialog('open');
-				return false;
-			});			
-		});
-	</script>
-#{/if}
-
-#{if ayuda?.textoPopup}	
-	#{fap.popup id:dialog_id, titulo:dialog_title}
-		${ayuda.textoPopup}
-	#{/fap.popup}
+#{if ayuda?.popover}
+	<img src="@{'/public/images/help-icon.jpg'}" style="position:relative; top: 4px;" ${strAyudaPopover.raw()} />
 #{/if}

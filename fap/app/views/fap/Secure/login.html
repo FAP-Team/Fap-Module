@@ -3,7 +3,7 @@
 #{set title:configfap.get('fap.app.name')/}
 
 #{set 'cabeceraUsuario'}
-	<p>&{'fap.login.welcome', configfap.get('fap.app.name')}</p>
+	&{'fap.login.welcome', configfap.get('fap.app.name')}
 #{/set}
 
 %{
@@ -16,7 +16,8 @@
 	#{fap.platinojs /}
 #{/set}
 
-<div id="instrucciones" class="grid_6 alpha">
+<div class="row">
+<div id="instrucciones" class="span8 alpha">
 	#{fap.grupo titulo:"Instrucciones"}
 		<p>
 		   En el caso en que no vea su certificado o no pueda acceder a la aplicación, debe seguir los pasos que se indican 
@@ -52,12 +53,12 @@
 	#{/fap.grupo}
 	
 	#{fap.grupo titulo:"Ayuda"}	
-		<a href="#"><button class="boton">Manual de usuario</button></a>
-		<a href="@{SoporteController.index}" class="boton">Preguntas e incidencias</a>
+		<a href="#"><button class="btn primary">Manual de usuario</button></a>
+		<a href="${play.mvc.Router.reverse("SoporteController.index" , ['accion':'crear', 'redirigir': 'anterior'])}" class="btn primary">Preguntas e incidencias</a>
 	#{/fap.grupo}
 </div>
 
-<div class="grid_6 omega">
+<div class="span8 omega">
 
 #{fap.messages}
 
@@ -70,14 +71,14 @@
 		#{form @authenticateCertificate(), id:"cert-form"}
 			<input type="hidden" id="token" name="token" value="${token}"/>
 			<input type="hidden" id="firma" name="firma" value=""/>
-			<div class="form-row">
+			<div class="form-stacked">
 				<select id="certificado" name="certificado">
 					<option disabled="disabled">--Certificados--</option>
 				</select>
 			</div>
 			
-			<div class="button_container">
-				<input type="submit" id="loginsignin" value="&{'fap.login.signin'}" class="boton" />
+			<div class="actions button_container">
+				<input type="submit" id="loginsignin" value="&{'fap.login.signin'}" class="btn primary" />
 			</div>
 		#{/form}
 		<div id="cert-msg"></div>
@@ -111,22 +112,22 @@
 			%}
 			
 			#{form @authenticate(), id:"authen-form"}
-				<div class="form-row">
+				<div class="form-stacked">
 					<label for="username">&{'fap.login.username'}</label>
-					<input type="text" name="username" id="login-username" value="${flash.username}" />
+					<input class="xlarge" type="text" name="username" id="login-username" value="${flash.username}" />
 				</div>
-				<div class="form-row">
+				<div class="form-stacked">
 					<label for="password">&{'fap.login.password'}</label>
-					<input type="password" name="password" id="login-password" value="" />
+					<input class="xlarge" type="password" name="password" id="login-password" value="" />
 				</div>
 				
 				#{if mostrarCaptcha == true}
-                <div class="form-row">
+                <div class="form-stacked">
 					<p>#{ugot.recaptcha theme:"clean"/}</p>
 				</div>
 				#{/if}
 
-                <div class="form-row">
+                <div class="form-stacked">
 					<div class="check">
                         <label for="remember">
 						<input type="checkbox" name="remember" id="login-remember" ${flash.remember ? 'checked="true"' : ''} />
@@ -135,8 +136,8 @@
 					</div>
 				</div>
 
-				<div class="button_container">
-					<input class="boton" type="submit" id="signin" value="&{'fap.login.signin'}" />
+				<div class="actions button_container">
+					<input class="btn primary" type="submit" id="signin" value="&{'fap.login.signin'}" />
 				</div>
 			#{/form}
 			
@@ -154,4 +155,5 @@
 	
 #{/fap.messages}
 
+</div>
 </div>

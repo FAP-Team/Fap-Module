@@ -1,0 +1,20 @@
+h1. Tag nip
+
+h2. Descripción
+
+Tag que muestra un nip.
+
+h2. Parámetros
+
+* **_id**     - ID
+* **_titulo** - Titulo de la etiqueta asociada al nip
+* **_campo**  - Campo asociado al nip, el que va a guardar el valor.
+* **_ayuda**  - Objeto de tipo TagAyuda
+* **_requerido(false)** - El campo es requerido
+* **_obj**     - Objeto a partir del cual se accede al value. Usar en el caso de que se llame desde otro tag
+* **_noRow(false)**   - true para no envolver el campo en un form-row
+
+h2. Ejemplo de uso
+
+bc. #{fap.nip id:'identificador', titulo:"DNI", campo:Solicitud.datos.dni, requerido:requerido /}	
+

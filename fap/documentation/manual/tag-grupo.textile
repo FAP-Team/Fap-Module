@@ -4,14 +4,19 @@ h2. Descripción
 
 Muestra un grupo de elemento en la página.
 
-El grupo se puede mostrar u ocultar según los valores de un combo utilizando los parámetros "siCombo" y "siComboValue".
+El grupo se puede mostrar u ocultar según los valores de un combo utilizando los parámetros: "siCombo" y "siComboValue", o "siCheck" y "siCheckValue", o "siCampo" y "siCampoValue".
 
 h2. Parámetros
 
 * **_id** - ID. Opcional, en el caso de que no se especifique un ID se creará uno automáticamente utilizando play.libs.Codec.UUID().
 * **_titulo** - Título que aparecerá en la cabecera del grupo.
-* **_siCombo** - ID del combo cuyo valor hará que el grupo se muester o no.
+* **_siCombo** - ID del combo cuyo valor hará que el grupo se muestre o no.
 * **_siComboValue**  - Lista de valores del combo con los que se mostrará el grupo. Si se especifíca el parámetro siCombo, este parámetro es obligatorio.
+* **_siCheck** - ID del check cuyo valor hará que el grupo se muestre o no.
+* **_siCheckValue**  - Valor del check con el que se mostrará el grupo.
+* **_siCampo** - ID del campo cuyo valor hará que el grupo se muestre o no.
+* **_siCampoValue**  - Lista de valores del campo con los que se mostrará el grupo. Si se especifíca el parámetro siCampo, este parámetro es obligatorio.
+* **_permiso** - Permisos para restringir el acceso al contenido del grupo
 
 h2. Ejemplo de uso
 

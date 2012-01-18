@@ -33,8 +33,12 @@ public class GTexto {
 		if(texto.name != null)
 			params.putStr "id", texto.name
 		
-		if (texto.ayuda != null)
-			params.put "ayuda", "tags.TagAyuda.texto('${texto.ayuda}')"
+		if (texto.ayuda != null) {
+			if ((texto.tipoAyuda != null) && (texto.tipoAyuda.type.equals("propover")))
+				params.put "ayuda", "tags.TagAyuda.popover('${texto.ayuda}')"
+			else
+				params.put "ayuda", "tags.TagAyuda.texto('${texto.ayuda}')"
+		}
 			
 		if(texto.ancho != null)
 			params.putStr "ancho", texto.ancho

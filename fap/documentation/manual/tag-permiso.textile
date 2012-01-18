@@ -1,0 +1,15 @@
+h1. Tag permiso
+
+h2. Descripción
+
+Tag que habilita un determinado permiso
+
+h2. Parámetros
+
+* **_permiso**  - Nombre del permiso que se aplica
+* **_mensaje**  - Mensaje que se muestra si la persona que está intentando acceder no tiene los permisos definidos en _permiso
+
+h2. Ejemplo de uso
+
+bc. #{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a ésta página'}	
+

@@ -29,6 +29,10 @@ public class ComboTestRef extends Model {
 	public String nombre;
 	
 	
+	@ValueFromTable("ComboTestList")
+	public String list;
+	
+	
 
 	public void init(){
 		

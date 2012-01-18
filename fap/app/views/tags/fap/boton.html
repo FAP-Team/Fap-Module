@@ -5,41 +5,38 @@
   	_id     - ID
   	_titulo - Label
   	_ancho	- ancho
-  	_popup	- popup
+  	
+  	_ type  - tipo del botón (cambia su color)
+  	_fondo  - Se indica que el botón se coloca solo y con el fondo gris
+  	_ayuda  - Objeto de tipo TagAyuda
 }*
 
 %{ 
 	def id = _id ?: play.libs.Codec.UUID()
 	def label = _titulo
+	def ayuda = _ayuda
+	def id_help = id+"-help"
 	String style = '';
 	def waitPopup = _waitPopup
 	def stackDisabled = tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'	
 	if(_ancho != null)
 		style += 'width: ' + _ancho + ';'
-	
-	String urlPopup;
-	String popup = _popup;
-	String solicitud = "2";
-	if (popup != null){
-		urlPopup = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
-	}
-	
+	String type = _type 
+	def fondo = _fondo
 }%
 
-	<button type="submit" class="boton" id="${id}" ${disabled} #{if style}style="${style}"#{/if} >${label}</button>
-	
-	#{if popup}
-	<script>
-		$(function(){
-			$("#${id}").click(function(){
-				popup_open('${popup}', '${urlPopup}', 'general', {id:${solicitud}});
-				return false;
-			});
-		});
-	</script>
+	#{if fondo}
+		<div class="actions button_container">
 	#{/if}
-	#{else}
+	
+	<input type="submit" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+	#{fap.ayuda ayuda:ayuda, id:id_help /}
+	
+	#{if fondo}
+		</div>
+	#{/if}
+
 	<script>
 		#{if waitPopup}
 		$(function() { 
@@ -49,14 +46,18 @@
 		}); 
 		#{/if}
 		#{else}
-		$(function() { 
-			$('#${id}').parents('form').submit(function(){
+		$(function() {
+			form = $('#${id}').parents('form');
+			form.submit(function(){
 				$('#${id}').attr("disabled", "true");
 			});
-		}); 		
+			$('#${id}').click(function(){
+				input = $("<input>").attr("type", "hidden").attr("name", "${id}").val("${id}");
+				form.append($(input));
+			});
+		});
 		#{/else}
 	</script>
-	#{/else}
 	
 
 	

@@ -66,7 +66,7 @@
 }%
 
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-    	<input id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+    	<input class="xlarge" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 	#{/fap.formrow}
 	
 %{
@@ -77,7 +77,7 @@
 	
 	#{if duplicado == true}
 		#{fap.formrow id:id_copy, label:label_copy, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-			<input id="${id_copy}" type="${passwordText}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+			<input id="${id_copy}" class="xlarge" type="${passwordText}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 		#{/fap.formrow}
 		
 		<script>
@@ -91,19 +91,19 @@
 		
 		function ${id}Validate () {
 			if ($("#${id_copy}").val() != $("#${id}").val()) {
-				$("#${id_copy}").addClass("duplicateError");
-				$("#${id}").addClass("duplicateError");
+				$("#${id_copy}").parent().parent().addClass("error");
+				$("#${id}").parent().parent().addClass("error");
 				$${id}Button.attr("disabled", "disabled");
 				
-				$("#${id_copy}").parent().children(".messages").children(".duplicate").empty();
-				$("#${id_copy}").parent().children(".messages").append('<span class="error duplicate">Los valores deben coincidir</span>');
+				$("#${id_copy}").parent().children(".help-inline").empty();
+				$("#${id_copy}").parent().append('<span class="help-inline">Los valores deben coincidir</span>');
 			} else {
-				$("#${id_copy}").removeClass("duplicateError");
-				$("#${id}").removeClass("duplicateError");
+				$("#${id_copy}").parent().parent().removeClass("error");
+				$("#${id}").parent().parent().removeClass("error");
 				if ($${id}ButtonDisabled != "disabled") {
 					$${id}Button.removeAttr("disabled");
 				}
-				$("#${id_copy}").parent().children(".messages").children(".duplicate").empty();
+				$("#${id_copy}").parent().children(".help-inline").empty();
 			}
 		}
 		</script>

@@ -17,13 +17,13 @@ h2. Parámetros
 h2. Definición
 
 bc. Direccion:
-	"Direccion" (name=ID)? (
+	elemento="Direccion" (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ("titulo" "=" titulo=STRING)?
 		& (provincia?="provincia")?
 		& (pais?="pais")?
 		& (requerido?="requerido")?
-		& ('ancho' '=' ancho=STRING)?
+	   & ('ancho' '=' ancho=STRING)?
 	)
 ;
 

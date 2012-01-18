@@ -170,9 +170,9 @@ public class GEntidadAutomatica {
 		Combo combo = new ComboImpl();
 		combo.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
 		combo.requerido = esRequerido(attr);
-		if (attr.type.getCompound()?.isMultiple()){
-			combo.multiple = true;
-		}
+//		if (attr.type.getCompound()?.isMultiple()){
+//			combo.multiple = true;
+//		}
 		out = GCombo.generate(combo);
 		entidadAutomatica.elementos.add(combo)
 		return out;

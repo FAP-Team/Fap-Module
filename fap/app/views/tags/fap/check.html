@@ -30,9 +30,24 @@
 	def styleLabel = _anchoTitulo != null ? "width:${_anchoTitulo}" : ""
 	
 }%
-	<div class="form-row">
+	<!--div class="clearfix">
 		<div class="check">
             <label for="${id}" style="${styleLabel}"><input type="checkbox" id="${id}" name="${field.name}" ${checked} ${disabled}></input>${label}</label>
+		</div>
+	</div-->
+	
+	<div class="clearfix">
+
+		<div class="input">
+			<ul class="inputs-list">
+				<li>
+					<label>
+						<input type="checkbox" id="${id}" name="${field.name}" ${checked} ${disabled}/>
+						<span>${label}</span>
+					</label>
+				</li>
+				
+			</ul>
 		</div>
 	</div>
 	

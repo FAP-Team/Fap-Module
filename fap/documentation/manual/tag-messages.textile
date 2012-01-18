@@ -1,0 +1,24 @@
+h1. Tag messages
+
+h2. Descripción
+
+Tag que habilita los mensajes por pantalla.
+
+Tipo de mensajes que muestra FAP:
+
+* Ok
+* Error
+* Info
+* Warning
+* Fatal
+
+Todos estos mensajes son configurables por el propio desarrollador, mediante la clase pertinente que los gestiona.
+
+h2. Parámetros
+
+_Sin Parámetros_
+
+h2. Ejemplo de uso
+
+bc. #{fap.messages}	
+

@@ -27,6 +27,13 @@ class GFecha {
 		if(fecha.requerido)
 			params.put "requerido", true
 		
+		if (fecha.ayuda != null) {
+			if ((fecha.tipoAyuda != null) && (fecha.tipoAyuda.type.equals("propover")))
+				params.put "ayuda", "tags.TagAyuda.popover('${fecha.ayuda}')"
+			else
+				params.put "ayuda", "tags.TagAyuda.texto('${fecha.ayuda}')"
+		}
+			
 		String view = 
 		"""
 #{fap.fecha ${params.lista()} /}		

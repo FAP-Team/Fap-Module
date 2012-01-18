@@ -145,15 +145,16 @@
 			    	$('#mensajeMensaje').html(log.message);
 			    	$('#mensajeTraza').html(log.trace);
 			    
-			    	$box.removeClass("box-error box-info box-fatal box-warn");
+			    	$box.removeClass("box box-error box-info box-fatal box-warn");
 			    	if (log.level == "INFO")
-			    		$box.addClass("box-info");
+			    		$box.addClass("alert-message block-message success");
 			    	else if (log.level == "WARN")
-			    		$box.addClass("box-warn");
+			    		$box.addClass("alert-message block-message warning");
 			    	else if (log.level == "ERROR")
-			    		$box.addClass("box-error");
+			    		$box.addClass("alert-message block-message error");
 			    	else if (log.level == "FATAL")
-			    		$box.addClass("box-fatal");
+			    		$box.addClass("alert-message block-message error");
+			    	$box.attr('data-alert', 'alert');
 			    	$box.show();
 		    	 }
 		  	});

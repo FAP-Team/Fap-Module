@@ -9,7 +9,6 @@ h2. Parámetros
 * **_[name]_** : Identificador de la tabla.
 * **campo = _[campo]_** : Atributo donde se encuentra la lista de elementos a mostrar en la tabla.
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como cabecera de la tabla, si no se especifica se mostrará el nombre del campo.
-* **pagina = _[pagina]_ | _[string]_** (opcional) : Página a la cual se redireccionará al editar un elemento de la tabla. Puede especificarse mediante el nombre de la página, o a través de un String con el nombre de una property que contenga el nombre de la página, empezando con el símbolo @.
 * **columnasAutomaticas** (opcional) : Simplifica la creación de columnas generando automáticamente una columna para cada uno de los atributos de la entidad especificada en el campo.
 * **exclude = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la exclusión de aquellos atributos de las columnas de la tabla que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
 * **include = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la inclusión en las columnas de la tabla, sólo de aquellos atributos que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
@@ -22,29 +21,34 @@ h2. Parámetros
 * **popupBorrar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Borrar para abrirlo. "Ver documentación Popup":dsl-popup.
 * **permiso = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla.
 * **recargarPagina** (opcional) : Si se define, hace que la pagina se recargue al pulsar el botón actualizar de la tabla. (Por defecto solo se actualiza la tabla).
+* **pagina = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando todos los botones disponibles. "Ver documentación Pagina":dsl-pagina.
+* **paginaVer = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Ver para abrirla. "Ver documentación Pagina":dsl-pagina.
+* **paginaModificar = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Modificar para abrirla. "Ver documentación Pagina":dsl-pagina.
+* **paginaCrear = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Crear para abrirla. "Ver documentación Pagina":dsl-pagina.
+* **paginaBorrar = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Borrar para abrirla. "Ver documentación Pagina":dsl-pagina.
 
 h2. Definición
 
 bc. Tabla:
-	'Tabla' (name=ID)?
+	elemento='Tabla' name=ID
 	(
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
-		& ('pagina' '=' (pagina=[Pagina|QN] | paginaProperty=STRING))?
-		& ('alto' '=' alto=STRING)? 
-		& (columnasAutomaticas?="columnasAutomaticas" ((exc='exclude' '=' exclude=ListaAtributos) | (inc='include' '=' include=ListaAtributos))?)?
+		& ('alto' '=' alto=STRING)?
+		& (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
 		& ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
-		& (seleccionable?="seleccionable" "=" nameSeleccionable=STRING)?
-		& (	
-			('popup' '=' popup=[Popup])	
-			| (
-				('popupCrear' '=' popupCrear=[Popup])?
-				& ('popupBorrar' '=' popupBorrar=[Popup])?
-				& ('popupModificar' '=' popupModificar=[Popup])?
-				& ('popupVer' '=' popupVer=[Popup])?)
-			)
-		)? 
+		& ('seleccionable' "=" seleccionable=STRING)?
+		& ('popup' '=' popup=[Popup|QN])?
+		& ('popupCrear' '=' popupCrear=[Popup|QN])?
+	   	& ('popupBorrar' '=' popupBorrar=[Popup|QN])?
+	   	& ('popupModificar' '=' popupModificar=[Popup|QN])?
+	   	& ('popupVer' '=' popupVer=[Popup|QN])?
+	   	& ('pagina' '=' pagina=[Pagina|QN])?
+	   	& ('paginaCrear' '=' paginaCrear=[Pagina|QN])?
+	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|QN])?
+	   	& ('paginaModificar' '=' paginaModificar=[Pagina|QN])?
+	   	& ('paginaVer' '=' paginaVer=[Pagina|QN])?
 	)
 	'{'
 		columnas += Columna*
@@ -53,10 +57,17 @@ bc. Tabla:
 
 h2. Columnas
 
-Permite definir los atributos de la entidad que se mostraran en la tabla. La entidad que se especifique en este elemento debe corresponder con el tipo de la lista de entidades que se asigne a la tabla. "Ver documentación Columnas":dsl-columna. El parámetro _columnasAutomaticas_ simplifica la creación de columnas ya que dada una entidad (que se pasa como parámetro) genera automáticamente una columna para cada uno de sus atributos. Además utilizando _exclude_ o _include_, podemos decir que esta generación automática no introduzca ciertos atributos o sólo introduzca unos determinados atributos, respectivamente. En caso de usar _columnasAutomaticas_ y la definición normal de _Columnas_, este último será más restrictivo, es decir, si se usa _columnasAutomaticas_ y después se define una _Columna_, se tendrán en cuenta los formatos de la _Columna_ definida, no de la generada por _columnasAutomaticas_.
+Permite definir los atributos de la entidad que se mostraran en la tabla. La entidad que se especifique en este elemento debe corresponder con el tipo de la lista de entidades que se asigne a la tabla. "Ver documentación Columnas":dsl-columna. 
+
+El parámetro _columnasAutomaticas_ simplifica la creación de columnas ya que dada una entidad (que se pasa como parámetro) genera automáticamente una columna para cada uno de sus atributos.
+
+Además utilizando _exclude_ o _include_, podemos decir que esta generación automática no introduzca ciertos atributos o sólo introduzca unos determinados atributos, respectivamente. 
+
+En caso de usar _columnasAutomaticas_ y la definición normal de _Columnas_, este último será más restrictivo, es decir, si se usa _columnasAutomaticas_ y después se define una _Columna_, se tendrán en cuenta los formatos de la _Columna_ definida, no de la generada por _columnasAutomaticas_.
 
 h2. Ejemplos de uso
 
+h3. Tablas utilizando Pop-Ups (Todas las acciones (crear, ver, modificar y borrar) para el Pop-Up)
 
 bc. Tabla listaUsuarios titulo="Usuarios" campo=Agente popup=PopupUsuario {
 	Columna campo=Agente.id titulo="Id" ancho="25"
@@ -65,8 +76,12 @@ bc. Tabla listaUsuarios titulo="Usuarios" campo=Agente popup=PopupUsuario {
 	Columna campo=Agente.roles titulo="Roles" expandir
 	Columna campo=Agente.email titulo="Email" ancho="150"
 }
-		
-Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio" campo=Solicitud.conexiones.conexionesBandaAncha
+
+
+h3. Tablas utilizando Pop-Ups (Sólo permite Modificar y Ver las filas con Pop-Ups)
+
+
+bc. Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio" campo=Solicitud.conexiones.conexionesBandaAncha
 	popupModificar=PopUpConexionesBandaAncha
 	popupVer=PopUpConexionesBandaAncha
 	recargarPagina {
@@ -76,7 +91,24 @@ Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio" ca
 		Columna campo=ConexionBandaAncha.indirecta titulo="Conex. indirectas" expandir
 }
 
+p.  
+
+h3. Columnas automaticas utilizando exclude
+
 bc. Tabla tablaNombres campo=Solicitud.tablaDeNombres titulo="Solicitantes"
 	popupVer=popupNombre	
 	columnasAutomaticas exclude = id, apellido {
+}
+
+h3. Tablas utilizando Paginas
+
+bc. ... 
+Pagina CrearTablaPaginas campo=Solicitud.tablaPaginas.tpaginas{
+	Accion crear redirigir=PaginaTablas
+	Texto titulo="Nombre tabla con pagina" ...
+	Texto titulo="Numero tabla con pagina " ...
+}
+...
+Pagina PaginaTablas campo=Solicitud {
+	Tabla TablaConPaginas campo=TablaPaginas.tpaginas paginaCrear=CrearTablaPaginas paginaModificar=ModificarTablaPaginas paginaBorrar=BorrarTablaPaginas titulo="Tabla con paginas" columnasAutomaticas include=id{}
 }

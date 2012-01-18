@@ -1,8 +1,5 @@
 package es.fap.simpleled.led.util;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.TerminalRule;
 import org.eclipse.xtext.nodemodel.ICompositeNode;
@@ -120,12 +117,5 @@ public class LedDocumentationUtils {
 	public static String getHrefNoDsl(String pagina, String text){
 		return "<a href=\"" + url + pagina + "\">" + text + "</a>";
 	}
-	
-//	public static String utf(String utf){
-//		try {
-//			return new String(utf.getBytes(Charset.defaultCharset()), "UTF8");
-//		} catch (UnsupportedEncodingException e) {}
-//		return "";
-//	}
 	
 }

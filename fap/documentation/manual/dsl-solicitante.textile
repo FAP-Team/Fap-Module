@@ -16,7 +16,7 @@ h2. Parámetros
 h2. Definición
 
 bc. Solicitante:
-	'Solicitante' (name=ID) (
+	elemento='Solicitante' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
@@ -28,12 +28,3 @@ bc. Solicitante:
 h2. Ejemplo de uso
 
 bc. Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=solicitudEditable requerido
-
-
-
-
-
-
-
-
-

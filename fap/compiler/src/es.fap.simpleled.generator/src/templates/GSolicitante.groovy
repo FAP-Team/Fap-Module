@@ -6,11 +6,14 @@ import com.sun.media.sound.RealTimeSequencer.PlayThread;
 import es.fap.simpleled.led.*
 import es.fap.simpleled.led.impl.*
 import generator.utils.CampoUtils
+import generator.utils.LedUtils
+import es.fap.simpleled.led.util.ModelUtils;
 import generator.utils.HashStack
 import generator.utils.StringUtils
 import generator.utils.TagParameters
 import generator.utils.EntidadUtils
 import generator.utils.HashStack.HashStackName
+import org.eclipse.emf.ecore.EObject
 
 public class GSolicitante {
 	def Solicitante solicitante
@@ -190,12 +193,17 @@ public class GSolicitante {
 	public Popup crearPopup (String name, Campo campo, Permiso permiso) {
 		Popup popup = new PopupImpl();
 
-		popup.permiso = permiso
+		EObject container = campo;
+		while (!(container instanceof Formulario))
+			container = container.eContainer();
+		
+		popup.eContainer = container;
+		popup.permiso = permiso;
 		
 		popup.setName "Popup" + StringUtils.firstUpper(name);
 		popup.setTitulo "Representante";
-		popup.setCampo(CampoUtils.addMore(campo, "representantes"));
-		
+		popup.setCampo(CampoUtils.create(ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "RepresentantePersonaJuridica", LedUtils.resource)).campo);
+			
 		Persona person = new PersonaImpl();
 		
 		person.setCampo(CampoUtils.create("RepresentantePersonaJuridica").campo);

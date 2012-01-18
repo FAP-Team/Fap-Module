@@ -1,0 +1,71 @@
+h1. Tag tabla
+
+h2. Descripción
+
+Tag que muestra una tabla.
+
+h2. Parámetros
+
+* **_id**     - ID
+* **_idEntidad** - ID de la Entidad que está asociada a la tabla
+* **_titulo** - Titulo de la tabla
+* **_campo**  - Campo asociado a la tabla, el que va a guardar el valor.
+* **_tipo**   - Tipo de la tabla
+* **_alto**   - Alto de la tabla (el anchoi siempre va a ser 100%)
+* **_seleccionable** - Si es seleccionable o no
+* **_recargarPagina** - Para recargar la pagina al modificar la tabla, en vez de sólo la tabla
+* **_url** - URL encargada de gestionar la tabla
+* **_popupCrear** - Nombre del Pop-Up que se encarga de Crear un elemento en la tabla
+* **_popupEditar** - Nombre del Pop-Up que se encarga de Editar un elemento en la tabla
+* **_popupBorrar** - Nombre del Pop-Up que se encarga de Borrar un elemento en la tabla
+* **_popupLeer** -Nombre del Pop-Up que se encarga de Leer un elemento en la tabla
+* **_urlPopupCrear** - URL encargada de la creación de un elemento de la tabla a través de un Pop-Up
+* **_urlPopupEditar** - URL encargada de la edición de un elemento de la tabla a través de un Pop-Up
+* **_urlPopupBorrar** - URL encargada de la eliminación de un elemento de la tabla a través de un Pop-Up
+* **_urlPopupLeer** - URL encargada de la lectura de un elemento de la tabla a través de un Pop-Up
+* **_urlPaginaCrear** - URL encargada de la creación de un elemento de la tabla a través de un Página
+* **_urlPaginaEditar** - URL encargada de la edición de un elemento de la tabla a través de un Página
+* **_urlPaginaBorrar** - URL encargada de la elminación de un elemento de la tabla a través de un Página
+* **_urlPaginaLeer** - URL encargada de la lectura de un elemento de la tabla a través de un Página
+
+h2. Ejemplo de uso
+
+h3. Tabla utilizando Pop-Ups para su gestión
+
+bc. #{fap.tabla
+	id:'tablaConsultas',
+	titulo:'Consultas',
+	campo:'Consulta',
+	idEntidad:'_idConsulta_',
+	popupBorrar:'PopupConsulta',
+	popupCrear:'PopupConsulta', 
+	popupEditar:'PopupConsulta', 
+	popupLeer:'PopupConsulta', 
+	tipo:'pagina',
+	url:@fap.ConsultasController.tablatablaConsultas(idConsulta),
+	urlPopupBorrar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'borrar', 'idConsulta':'_idConsulta_']), 
+	urlPopupCrear:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'crear']), 
+	urlPopupEditar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'editar', 'idConsulta':'_idConsulta_']), 
+	urlPopupLeer:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'leer', 'idConsulta':'_idConsulta_'])
+}	
+	#{fap.columna campo:'consulta', cabecera:'Consulta', expandir:true, ancho:200 /}		
+	#{fap.columna campo:'descripcion', cabecera:'Descripción', ancho:350 /}		
+	#{fap.columna campo:'tipo', cabecera:'Tipo', ancho:50 /}
+#{/fap.tabla}
+
+h3. Tabla utilizando Páginas para su gestión
+
+bc. #{fap.tabla 
+     campo:'TablaPaginasTab.ttpaginas', 
+     id:'paginasT2', 
+     idEntidad:'_idTablaPaginasTabTab_', 
+     tipo:'pagina', 
+     titulo:'Tabla con paginas nivel 2', 
+     url:@CrearPaginasTController.tablapaginasT2(idTablaPaginasTab), 
+     urlPaginaBorrar:play.mvc.Router.reverse("CrearPaginasTTController.index" , ['accion':'borrar', 'idTablaPaginasTab':tablaPaginasTab?.id, 'idTablaPaginasTabTab':'_idTablaPaginasTabTab_', 'idSolicitud':solicitud?.id, 'redirigir': 'anterior']), 
+     urlPaginaCrear:play.mvc.Router.reverse("CrearPaginasTTController.index" , ['accion':'crear', 'idTablaPaginasTab':tablaPaginasTab?.id, 'idSolicitud':solicitud?.id, 'redirigir': 'anterior']), 
+     urlPaginaEditar:play.mvc.Router.reverse("CrearPaginasTTController.index" , ['accion':'editar', 'idTablaPaginasTab':tablaPaginasTab?.id, 'idTablaPaginasTabTab':'_idTablaPaginasTabTab_', 'idSolicitud':solicitud?.id, 'redirigir': 'anterior'])
+}
+	#{fap.columna ancho:90, cabecera:'nombre', campo:'nombre' /}	
+	#{fap.columna ancho:60, cabecera:'list', campo:'list', expandir:true /}	
+#{/fap.tabla}

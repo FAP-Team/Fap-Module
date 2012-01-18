@@ -12,19 +12,24 @@ h2. Parámetros
 h2. Definición
 
 bc.. Lista:
-   'Lista' name=ID (enumerado?='crearEnumerado')? '{'
-      elementos+=ElementoLista+
-   '}'
+	elemento='Lista' name=ID (enumerado?='crearEnumerado')? '{'
+		elementos+=ElementoLista*
+	'}'
 ;
 
 ElementoLista:
-   value=STRING |
-   key=ElementoListaKey ':' value=STRING |
-   key=ElementoListaKey
+	value=STRING |
+	key=ElementoListaKey ':' value=STRING |
+	key=ElementoListaKey
 ;
 
+
 ElementoListaKey:
-   ID | INT
+	first=IdOrInt (("." resto+=IdOrInt)*)
+;
+
+IdOrInt:
+	ID | INT
 ;
 
 h2. Ejemplos de uso

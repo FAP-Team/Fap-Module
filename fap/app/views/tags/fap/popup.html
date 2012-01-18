@@ -1,40 +1,51 @@
 %{
-	String popup = com.google.common.base.Preconditions.checkNotNull(_popup, "popup");
-	String action  = com.google.common.base.Preconditions.checkNotNull(_action, "action");
-	String titulo  = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
-	String mensaje = "No tiene permisos suficientes para realizar esta acción"
-
-	String botonAccion = (action != 'leer') ? play.i18n.Messages.get("fap.tags.popup.boton.${action}") : ""
-	String botonCerrar = play.i18n.Messages.get("fap.tags.popup.boton.cerrar")
+	String accion = com.google.common.base.Preconditions.checkNotNull(_accion, "accion");
+	play.mvc.Router.ActionDefinition urlEditar = com.google.common.base.Preconditions.checkNotNull(_urlEditar, "urlEditar");
+	play.mvc.Router.ActionDefinition urlCrear = com.google.common.base.Preconditions.checkNotNull(_urlCrear, "urlCrear");
+	play.mvc.Router.ActionDefinition urlBorrar = com.google.common.base.Preconditions.checkNotNull(_urlBorrar, "urlBorrar");
+	String titulo = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
+	
+	play.mvc.Router.ActionDefinition url;
+	if (accion == "editar")
+		url = urlEditar;
+	else if (accion == "crear")
+		url = urlCrear;
+	else if (accion == "borrar")
+		url = urlBorrar;
 		
-	String url = play.mvc.Router.reverse("popups.${popup}Controller.${action}");
+	String popup = com.google.common.base.Preconditions.checkNotNull(_popup, "popup");
+	String mensaje = "No tiene permisos suficientes para realizar esta acción";
+
+	String botonAccion = (accion != 'leer') ? play.i18n.Messages.get("fap.tags.popup.boton.${accion}") : "";
+	String botonCerrar = play.i18n.Messages.get("fap.tags.popup.boton.cerrar");
+
 	String idMensajes = popup + "_mensajes";
 	def visible = true;
 	def editable = true;
-	if ((action == "leer") || (action == "borrar"))
+	if ((accion == "leer") || (accion == "borrar"))
 		editable = false;
-		
-	String permiso = _permiso
-	
+
+	String permiso = _permiso;
+
 	if (permiso != null) {
 		def newPermiso;
-		if (action == "crear") {
-			newPermiso = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${permiso}", "create", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
+		if (accion == "crear") {
+			newPermiso = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${permiso}", "crear", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
 			visible = newPermiso
 			editable = newPermiso
 		}
-		else if (action == "editar") {
-			newPermiso = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${permiso}", "update", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
+		else if (accion == "editar") {
+			newPermiso = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${permiso}", "editar", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
 			visible = newPermiso
 			editable = newPermiso
 		}
-		else if (action == "borrar") {
-			newPermiso =  config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${permiso}", "delete", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
+		else if (accion == "borrar") {
+			newPermiso =  config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${permiso}", "borrar", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
 			visible = newPermiso
 			editable = false
 		}
-		else if (action == "leer") {
-			newPermiso = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${permiso}", "read", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
+		else if (accion == "leer") {
+			newPermiso = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${permiso}", "leer", (Map<String, Long>) tags.TagMapStack.top("idParams"), null);
 			visible = newPermiso
 			editable = false
 		}
@@ -42,7 +53,7 @@
 
 	tags.TagMapStack.push("editable", editable);
 	tags.TagMapStack.push("visible", visible);
-	
+
 }%
 
 #{if visible}
@@ -54,12 +65,10 @@
 
 <form action="${url}" method="post" enctype="multipart/form-data">
 		#{authenticityToken /}
-		#{fap.hiddens _hidden/}
-			
 			
 		#{doBody /}		
 
-		#{if (action == 'borrar')}
+		#{if (accion == 'borrar')}
 		<div class='form-row'>
 			<label class='mensajeBorrar'>¿Desea borrar la entrada seleccionada?</label>
 		</div>
@@ -78,11 +87,11 @@ $(document).ready(function(){
 	
 	var buttons = {};
 	
-	#{if (action != 'leer')}
+	#{if (accion != 'leer')}
 		buttons["${botonAccion}"] = function(){
   			var data = $('#${popup}.popup form').serialize();
   			mensajes.loading("Enviando...");
-			$.post('${url}', data, function(data){
+			$.post(replaceAmpersand('${url}'), data, function(data){
  				mensajes.clear(); //Quita los mensajes
 				if(typeof(data)=='string'){
 					//Si viene HTML posible error de validación

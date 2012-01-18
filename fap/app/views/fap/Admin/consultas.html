@@ -15,7 +15,22 @@
 
 #{fap.permiso }
 			
-#{fap.tabla id:'tablaConsultas', titulo:'Consultas', campo:'Consulta', popup:'PopupConsulta', tipo:'pagina', idProperty:'consulta_id', url:@fap.ConsultasController.tablatablaConsultas(idConsulta)}	
+#{fap.tabla
+	id:'tablaConsultas',
+	titulo:'Consultas',
+	campo:'Consulta',
+	idEntidad:'_idConsulta_',
+	popupBorrar:'PopupConsulta',
+	popupCrear:'PopupConsulta', 
+	popupEditar:'PopupConsulta', 
+	popupLeer:'PopupConsulta', 
+	tipo:'pagina',
+	url:@fap.ConsultasController.tablatablaConsultas(idConsulta),
+	urlPopupBorrar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'borrar', 'idConsulta':'_idConsulta_']), 
+	urlPopupCrear:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'crear']), 
+	urlPopupEditar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'editar', 'idConsulta':'_idConsulta_']), 
+	urlPopupLeer:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'leer', 'idConsulta':'_idConsulta_'])
+}	
 	#{fap.columna campo:'consulta', cabecera:'Consulta', expandir:true, ancho:200 /}		
 	#{fap.columna campo:'descripcion', cabecera:'Descripción', ancho:350 /}		
 	#{fap.columna campo:'tipo', cabecera:'Tipo', ancho:50 /}

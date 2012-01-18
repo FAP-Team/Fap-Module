@@ -32,7 +32,10 @@ public class ValueFromTableTransformer  extends AbstractTransformer {
 		else{
 			result = TableKeyValue.getValue(tabla, object.toString());
 		}
-		getContext().writeQuoted(result);
+		if (result == null)
+			getContext().write("null");
+		else
+			getContext().writeQuoted(result);
 	}
 
 }

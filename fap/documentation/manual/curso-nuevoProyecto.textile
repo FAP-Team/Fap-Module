@@ -15,8 +15,10 @@ bc. cd holamundo
 bc. # Dependencias
 require:
     - play
-    - fap -> fap 1.1
+    - fap -> fap 2.0
+    - fap -> guice 1.2.1
     - play -> pdf 0.6
+    - play -> less 0.3
     - play -> recaptcha 1.2
 # Custom repository 
 repositories: 
@@ -38,7 +40,7 @@ bc. play fap:init
 8. Edita el fichero *led/src/Solicitud.play* y añade un nuevo mensaje
 
 bc. Formulario Solicitud {
-	Pagina Solicitante inicial  {
+	Pagina Solicitante inicial {
 		Wiki {"Hola Mundo!"}		
 	}
 }
@@ -80,8 +82,10 @@ Fichero "dependencies.yml"
 
 bc. require:
     - play
-    - fap -> fap 1.1
+    - fap -> guice 1.2.1
     - play -> pdf 0.6
+    - play -> less 0.3
+    - play -> recaptcha 1.2
 repositories:
     - Fap Local repository:
         type:       local

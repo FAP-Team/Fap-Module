@@ -42,7 +42,7 @@ public class GWiki {
 //		//TODO: Problemas al cargar imagenes, solucion: overwrite the WikiModel#parseInternalImageLink()
 //		WikiModel wikiModel = new WikiModel("@{/public/images/\${image}}","@{\${title}Controller.index(idSolicitud)}");
 
-		String estilo =  wiki.estilo != null? wiki.estilo: "";
+		String estilo =  wiki.estilo? wiki.estilo: "";
 		
 		String view =
 		"""

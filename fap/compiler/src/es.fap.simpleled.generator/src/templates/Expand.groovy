@@ -1,10 +1,11 @@
 package templates
 
-import org.eclipse.emf.ecore.EObject;
+import javax.management.InstanceOfQueryExp;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource
 import es.fap.simpleled.led.*;
 import generator.utils.HashStack;
-import generator.utils.LedUtils;
 
 class Expand {
 
@@ -17,13 +18,11 @@ class Expand {
 		return fileResource.getAbsolutePath().startsWith(filePath.getAbsolutePath());
 	}
 	
-	def static expand(Object object){
+	public static expand(Object object){
+		generator.utils.LedUtils.setFapResources(object);
 		
-		LedUtils.setFapResources(object);
-				
-		if (!inPath(object)){
+		if (!inPath(object))
 			return;
-		}
 			
 		if(object instanceof Entity)
 			return GEntidad.generate(object)
@@ -114,5 +113,10 @@ class Expand {
 		
 		if(object instanceof FirmaPlatinoSimple)
 			return GFirmaPlatinoSimple.generate(object)
+			
+		if(object instanceof AgrupaBotones)
+			return GAgrupaBotones.generate(object)
+			
+		return "";
 	}
 }

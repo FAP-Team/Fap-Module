@@ -17,8 +17,8 @@ h2. Parámetros
 h2. Definición
 
 bc. Enlace:
-	'Enlace' (name=ID)? (
-		(('pagina' '=' pagina=[Pagina|QN]) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING)) 
+	elemento='Enlace' (name=ID)? (
+		(('pagina' '=' pagina=PaginaAccion) | ('popup' '=' popup=PopupAccion) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING) | (anterior?="anterior")) 
 		& ('titulo' '=' titulo=STRING)?
 		& ('destino' '=' destino=STRING)?
 		& ('estilo' '=' estilo=STRING)?

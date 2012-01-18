@@ -17,6 +17,10 @@ h2. Parámetros
 * **_items**  - Lista de objetos fap.ComboItem que serán las posibles opciones del combo si no se especifica, busca en el campo la anotación @valuesFromTable
 * **_blanco**(true) - Si true, la primera opción es una entrada co
 * **_ancho**  - Ancho del campo
+* **_anchoTitulo**  - Ancho de la etiqueta titulo
+* **_mostrarClave(false)** - Indica si mostramos las claves del combo junto al valor (true), o sólo el valor (false)
+* **_searchable** - Permite poner una caja de búsqueda en el combo para filtrar los items del mismo.
+* **_multiple** - Permite indicar si el combo es de múltiple elección, es decir, poder seleccionar varios valores del mismo.
 
 h2. Ejemplo de uso
 

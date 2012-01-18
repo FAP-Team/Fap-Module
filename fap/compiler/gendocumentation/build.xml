@@ -1,6 +1,15 @@
-<project default="compile" basedir="../">
+<project default="compile">
+	
+	<property environment="env" />
+
+	<!-- Configurado para utilizar rutas absolutas en base a la variable de entorno fapsdk -->
+	<property name="fapsdk" value="${env.FAPSDK}" />
+	<property name="fap" value="${fapsdk}/fap" />
+	
+	<property name="ruta" value="${fap}/compiler"/>
+	
 	<path id="classpath">
-		<fileset dir="src/es.fap.simpleled.generator/lib/">
+		<fileset dir="${ruta}/src/es.fap.simpleled.generator/lib/">
 			<include name="groovy-all-1.7.5.jar" />
 			<include name="jj-textile.jar" />
 			<include name="jj-wikitext.jar" />
@@ -10,8 +19,9 @@
 	<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath"/>
 	
 	<target name="compile">
-		    <mkdir dir="gendocumentation/bin" />
-			<groovyc srcdir="gendocumentation/" destdir="gendocumentation/bin" encoding="utf-8">
+			<echo message="${ruta}"/>
+		    <mkdir dir="${ruta}/gendocumentation/bin" />
+			<groovyc srcdir="${ruta}/gendocumentation/" destdir="${ruta}/gendocumentation/bin" encoding="utf-8">
 				<classpath>
 					<path refid="classpath" />
 				</classpath>

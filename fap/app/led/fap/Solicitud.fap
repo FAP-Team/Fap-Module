@@ -1,4 +1,4 @@
-Formulario Solicitud {
+Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 
 	Pagina PCEconomicos titulo="Conceptos económicos"{
 		Tabla tablaCEconomicos 
@@ -11,7 +11,7 @@ Formulario Solicitud {
 		}
 	}
 
-	Popup PopupCEConomicos modificar titulo="Concepto económico" campo=SolicitudGenerica.ceconomicos {
+	Popup PopupCEConomicos titulo="Concepto económico" campo=SolicitudGenerica.ceconomicos {
 		Wiki {"
 =${cEconomico.tipo.nombre}= 
 ${cEconomico.tipo.descripcion}
@@ -19,7 +19,7 @@ ${cEconomico.tipo.descripcion}
 		Texto campo=CEconomico.valorEstimado titulo="Valor estimado"
 	}
 
-	Pagina Aportacion noForm permiso=aportacion {
+	Pagina Aportacion {
 		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="boton"
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="boton"
@@ -30,17 +30,11 @@ ${cEconomico.tipo.descripcion}
 			popupBorrar=PopUpDocProcesos
 			popupModificar=PopUpDocProcesos  
 			popupVer=PopUpDocProcesos
+			paginaCrear=DocumentosAportacion
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
 			Columna campo=Documento.descripcion titulo="Tipo" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-		}
-		
-		Form addDocumento campo=SolicitudGenerica.aportaciones.actual.documentos permiso=aportacionDocumentos {		
-			Grupo titulo="Añadir documentación" {
-				SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
-				Boton subirDocumento titulo="Añadir documentación"
-			}
 		}
 		
 		Form presentar redirigir=AportacionPresentar permiso=aportacionDocumentos {
@@ -48,6 +42,11 @@ ${cEconomico.tipo.descripcion}
 			Boton botonPresentar titulo="Preparar para registrar"
 		}
 		
+	}
+	
+	Pagina DocumentosAportacion campo=SolicitudGenerica.aportaciones.actual.documentos{
+		Accion crear redirigir=Aportacion	
+		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
 	
 	Pagina AportacionAportados {		
@@ -76,19 +75,19 @@ ${cEconomico.tipo.descripcion}
 		Enlace titulo="Volver" pagina=Aportacion estilo="boton"
 	}
 	
-	Popup PopUpDocPresentados ver titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {
+	Popup PopUpDocPresentados titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos{
 		EditarArchivoAed documentoPresentado campo=Documento requerido
 	}
 	
-	Popup PopUpDocProcesos modificar borrar ver titulo="Documentación" campo=SolicitudGenerica.aportaciones.actual.documentos {
+	Popup PopUpDocProcesos titulo="Documentación" campo=SolicitudGenerica.aportaciones.actual.documentos{
 		EditarArchivoAed documentoProceso campo=Documento requerido
 	}
 	
-	Popup PopUpDocAportados ver titulo="Documentación" campo=SolicitudGenerica.documentacionProceso.documentos {
+	Popup PopUpDocAportados titulo="Documentación" campo=SolicitudGenerica.documentacionAportada.documentos {
 		EditarArchivoAed documentoAportado campo=Documento requerido
 	}
 		
-	Pagina AportacionPresentar noForm {
+	Pagina AportacionPresentar {
 	  	Grupo titulo="Presentar Aportación de Documentos" {
 			Wiki {"Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
 
@@ -124,7 +123,7 @@ ${cEconomico.tipo.descripcion}
 		}
 	}
 	
-	Pagina Verificacion titulo="Verificación de la documentación" noForm {
+	Pagina Verificacion titulo="Verificación de la documentación" {
 		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
 			Wiki {"
 Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.

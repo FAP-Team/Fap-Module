@@ -4,26 +4,18 @@ import java.util.*;
 
 public class HashStack {
 	
-	/**
-	 * 
-	 * SUBIR_ARCHIVO - Almacena los elementos SubirArchivo y SubirArchivoAED para generar código
-	 *                 específico en el controlador
-	 *                 
-	 * SAVE_PARAM    - Parámetros que se van a añadir al método save, se utiliza en casos como
-	 *                 el subirArchivo o el subirArchivoAED
-	 */
 	public enum HashStackName {
-		FORMULARIO, CONTROLLER, ROUTES, PAGE_NAME, GPAGINA, GPOPUP,
-		SUBIR_ARCHIVO,
-		SAVE_ENTITY,
-		INDEX_ENTITY,
-		SAVE_EXTRA,
-		SAVE_CODE,
-		PERMISSION,
-		SAVE_PARAM,
-		SAVE_BOTON,
-		FIRST_PAGE,
-		SOLICITUD
+		FORMULARIO,  // Formulario actual.
+		CONTROLLER,  // Lista de elementos que generan codigo en un controlador (Por ejemplo una tabla).
+		ROUTES,  // Lista de elementos que generan rutas en el fichero routes.
+		CONTAINER,  // Pila con la pagina o popup que contiene al elemento actual. 
+		SUBIR_ARCHIVO,	// Almacena los elementos SubirArchivo y SubirArchivoAED para generar código específico en el controlador.
+		SAVE_ENTITY,  // Lista con las entidades que van a ser guardadas en los metodos de guardado ("save" o nombre del form) del controlador.
+		INDEX_ENTITY,  // Lista con las entidades que, junto con las de SAVE_ENTITY, van a usarse en el metodo "index" del controlador de la pagina. 
+		SAVE_EXTRA,  // Parámetros que se van a añadir al método save, se utiliza en casos como el subirArchivo o el subirArchivoAED.
+		SAVE_CODE,  // Elementos que requieren que se ejecute su metodo saveCode() para añadir código al metodo de guardado del controlador.
+		PERMISSION,  // Pila de permisos.
+		SAVE_BOTON  // Pila con los nombres de los botones.
 	}
 	
 	private static HashMap<HashStackName, Stack<Object>> hash = new HashMap<HashStackName, Stack<Object>>();

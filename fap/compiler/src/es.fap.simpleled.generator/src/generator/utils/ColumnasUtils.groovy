@@ -103,8 +103,11 @@ public class ColumnasUtils {
 	private List<Columna> generateEntidadReferencia(Attribute attr) {
 		List<Columna> out = new ArrayList<Columna>()
 		String referencia = attr.type.compound.tipoReferencia?.type;
-		if (referencia == null || referencia.equals("OneToOne") || referencia.equals("ManyToOne")){ 
-			out.addAll(columnas(campo.addAttribute(attr)));
+		if (referencia == null || referencia.equals("OneToOne") || referencia.equals("ManyToOne")){
+			CampoUtils anterior = campo;
+			campo = CampoUtils.create(campo.addAttribute(attr));
+			out.addAll(recorrerEntidad());
+			campo = anterior;
 		}
 		return out;
 	}

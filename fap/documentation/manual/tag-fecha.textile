@@ -1,0 +1,22 @@
+h1. Tag fecha
+
+h2. Descripción
+
+Tag que muestra una fecha.
+
+h2. Parámetros
+
+* **_id**     - ID
+* **_titulo** - Titulo de la etiqueta asociada a la fecha
+* **_campo**  - Campo asociado a la fecha, el que va a guardar el valor
+* **_value**  - Valor a mostrar, si no se especifica busca el valor del campo
+* **_ayuda**  - Objeto de tipo TagAyuda
+* **_requerido(false)**	- El campo es requerido
+* **_obj**		- Objeto a partir del cual se accede al value. 
+    		   	  Usar en el caso de que se llame desde otro tag.
+* **_noRow(false)**	- true para no envolver el campo en un form-row
+
+h2. Ejemplo de uso
+
+bc. #{fap.fecha campo:'solicitud.fechas.fechaInicio', requerido:true, titulo:'Fecha Incorporación'/}	
+

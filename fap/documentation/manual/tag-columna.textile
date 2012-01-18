@@ -1,0 +1,20 @@
+h1. Tag columna
+
+h2. Descripción
+
+Tag que muestra una columna, sólo es posible utilizarlo en una tabla.
+
+h2. Parámetros
+
+* **_campo**  - Campo asociado a la columna, el que va a guardar el valor
+* **_funcion**  - Funcion para permitir cosas más complejas que un simple atributo campo, pasandole una función
+* **_renderer** - 
+* **_cabecera** - Titulo que va a ir en la cabecera de la columna
+* **_ancho** - Valor que va a tomar de ancho la columna
+* **_expandir** - Coge de ancho el máximo valor posible
+* **_permiso** - Permiso asociado a esa columna
+
+h2. Ejemplo de uso
+
+bc. #{fap.columna ancho:90, cabecera:'nombre', campo:'nombre' /}
+

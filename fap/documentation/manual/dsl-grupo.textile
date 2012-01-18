@@ -18,7 +18,7 @@ h2. Parámetros
 h2. Definición
 
 bc. Grupo:
-	grupo='Grupo' (name=ID)? (
+	elemento='Grupo' (name=ID)? (
 		('titulo' '=' titulo=STRING)? &
 		('mostrarSiCombo' siCombo=[Combo|QN] '=' siComboValues=Values)? &
 		('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false"))? &
@@ -30,7 +30,7 @@ bc. Grupo:
 	'{'
 		elementos+=Elemento*
 	'}'
-;
+;	
 
 h2. Ejemplos de uso
 

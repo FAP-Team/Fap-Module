@@ -3,7 +3,7 @@
 #{fap.field _campo, obj:obj}
 
 %{ 
-	def id = field.id ?: _id 
+	def id = _id ?: field.id
 	def label = _titulo ?: play.i18n.Messages.get(field.name)
 	def value = _value ?: field.flashorvalue
 		
@@ -53,7 +53,7 @@
 			// Arreglando lo de los IDs
 			name = field.name;
 			if (manyTo) 
-				name = id;
+				name = field.id ?: _id ;
 			
 			
 			def items = null;

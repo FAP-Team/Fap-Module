@@ -1,0 +1,83 @@
+h1. Adaptación de los ficheros DSL a la versión 2.0
+
+A continuación se muestra la lista de cambios que hay que realizar en los ficheros DSL de una aplicación escritos con versiones previas de la herramienta.
+
+h3. Indicar la entidad que usa una página
+
+Ahora, en la declaración de las páginas del DSL, se le ha de indicar la Entidad que se va a usar para almacenar los datos de una página, por ello, hay que añadir un parámetro más a las declaraciones de Páginas en nuestros DSL.
+
+bc.. Antes:
+
+Pagina Fechas {
+	Fecha campo=Solicitud.fechas.inicio titulo="Fecha de Inicio" requerido
+	Fecha campo=Solicitud.fechas.finalizacion titulo="Fecha de Finalización"
+}
+
+Ahora:
+
+Pagina Fechas campo=Solicitud {
+	Fecha campo=Solicitud.fechas.inicio titulo="Fecha de Inicio" requerido
+	Fecha campo=Solicitud.fechas.finalizacion titulo="Fecha de Finalización"
+}
+
+p. 
+
+Si tenemos claro que todo nuestro Formulario va a tirar de una Entidad en concreto, en vez de ir poniendo el nuevo parámetro en la definición de cada Página, podemos ponerlo en el Formulario que contiene a esas páginas, y así indicamos que cada una de las Páginas contenidas en ese Formulario utilizaran como Entidad base, la que definamos en el Formulario.
+
+bc. Formulario Solicitud campo=Solicitud {
+	... 
+	Pagina Fechas {
+		Fecha campo=Solicitud.fechas.inicio titulo="Fecha de Inicio" requerido
+		Fecha campo=Solicitud.fechas.finalizacion titulo="Fecha de Finalización"
+	}
+	...
+}
+
+p.  
+
+h3. Cambios en la declaraciones de los Pop-Ups
+
+Hasta el momento, al declarar un Pop-Up, se tenía que especificar que acciones podría realizar ese Pop-Up. Con la versión 2.0, eso ya no hará falta, debido a que FAP, será lo suficientemente inteligente para buscar las referencias a ese Pop-Up en todo el DSL, y saber que acciones puede realizar en función de como lo referencien.
+
+bc.. Antes:
+
+Popup popupNombre campo=Solicitud.tablaDeNombres crear modificar ver {
+	Texto campo=TablaDeNombres.nombre titulo="Nombre"
+	Texto campo=TablaDeNombres.apellido titulo="Apellido"
+}
+
+Ahora:
+
+Popup popupNombre campo=Solicitud.tablaDeNombres {
+	Texto campo=TablaDeNombres.nombre titulo="Nombre"
+	Texto campo=TablaDeNombres.apellido titulo="Apellido"
+}
+
+p. 
+
+h3. Añadir una entidad a un campo one-to-many de otra entidad
+
+Hasta ahora, para añadir una entidad a un campo one-to-many de otra entidad (como por ejemplo la Subida de Archivos al AED), se realizaba utilizando un form. Con el nuevo DSL, se puede realizar de una manera mucho más sencilla, como vemos a continuación:
+
+
+bc.. Antes:
+
+Pagina SubirArchivoAedTest noForm {
+	Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
+		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite"
+		Boton subirDocumento titulo="Añadir documentación"
+	}		
+}
+
+Ahora:
+
+Pagina Documentos campo=Solicitud.documentacion.documentos {
+	Accion crear redirigir=SubirArchivoAedTest	
+	SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud"
+}
+	
+Pagina SubirArchivoAedTest campo=Solicitud {
+	Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos{
+		Columna campo=Documento.id
+	}	
+}

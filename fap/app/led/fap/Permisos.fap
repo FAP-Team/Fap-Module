@@ -1,58 +1,58 @@
 // Permisos de administracion
-rule administrador
+Permiso administrador
 when
 	agente.rolActivo = "administrador"
 then
 	grant
 
-rule usuario
+Permiso usuario
 when
 	agente.rolActivo = "usuario"
 then
 	grant
 
-rule noUsuario
+Permiso noUsuario
 when
 	agente.rolActivo = "usuario"
 then
 	deny
 		
 		
-rule logeado
+Permiso logeado
 when 
 	agente != null
 then 
 	grant
 		
 // Permisos de la pag presentacion
-rule presentacionPrepararParaFirmar
+Permiso presentacionPrepararParaFirmar
 vars
 	SolicitudGenerica solicitud
 when
 	(
-		action = "update" and
+		accion = editar and
 		(agente.rolActivo in ("administrador", "usuario")) and
 		solicitud.registro.fasesRegistro.borrador = "false"
 	)	
 	or
 	(
-		action = "read" and
+		accion = leer and
 		(agente.rolActivo in ("administrador", "usuario"))
 	)	
 then
 	grant
 
-rule presentacionModificar
+Permiso presentacionModificar
 vars
 	SolicitudGenerica solicitud
 when
-	action = "read"
+	accion = leer
 	or
-	(action = "update" and solicitud.registro.fasesRegistro.registro = "false")
+	(accion = editar and solicitud.registro.fasesRegistro.registro = "false")
 then
 	grant		
 
-rule presentacionObtenerBorrador
+Permiso presentacionObtenerBorrador
 vars
 	SolicitudGenerica solicitud
 when
@@ -63,7 +63,7 @@ then
 	grant
 
 
-rule presentacionFirmar
+Permiso presentacionFirmar
 vars
 	SolicitudGenerica solicitud
 when
@@ -72,16 +72,16 @@ when
 		solicitud.registro.fasesRegistro.borrador = "true"
 	and
 	(
-		(action = "update" and solicitud.registro.fasesRegistro.firmada= "false")
+		(accion = editar and solicitud.registro.fasesRegistro.firmada= "false")
 		or	
-		(action = "read")
+		(accion = leer)
 	)	
 then
 	grant
 
 
 
-rule presentacionRegistrar
+Permiso presentacionRegistrar
 vars
 	SolicitudGenerica solicitud
 when
@@ -89,7 +89,7 @@ when
 	and
 	(
 		(
-			action = "update"
+			accion = editar
 			and
 			(
 				(
@@ -106,13 +106,13 @@ when
 			)
 		)
 		or	
-			action = "read"
+			accion = leer
 	)
 then
 	grant			
 	
 
-rule presentacionRecibo
+Permiso presentacionRecibo
 vars
 	SolicitudGenerica solicitud
 when
@@ -124,7 +124,7 @@ then
 		
 
 
-rule instruccion
+Permiso instruccion
 vars
 	SolicitudGenerica solicitud
 when
@@ -133,87 +133,84 @@ then
 	grant		
 
 	
-rule solicitudPreparadaFirmarYPresentar
+Permiso solicitudPreparadaFirmarYPresentar
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "update" and
+	(accion = editar and
 	(agente.rolActivo in ("administrador", "usuario")) and
 	solicitud.estado = "borrador" and
 	solicitud.registro.fasesRegistro.borrador = "true")
 	or
-	(action = "read" and
+	(accion = leer and
 	(agente.rolActivo in ("administrador", "usuario")))
 then
 	grant
 
-rule editableSiSolicitudIniciada
+Permiso editableSiSolicitudIniciada
 vars
 	SolicitudGenerica solicitud
 when
-	action = "update" and
+	accion = editar and
 	solicitud.estado in ("Iniciada", "Requerida", "Requerida plazo vencido", "En verificación", "Pendiente requerimiento", "Excluido", "Plazo vencido", "Verificado")
 then
 	grant
 
-rule solicitudPreparadaFirmar
+Permiso solicitudPreparadaFirmar
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "update" and
+	(accion = editar and
 	(agente.rolActivo in ("administrador", "usuario")) and
 	solicitud.estado = "borrador"  and
 	solicitud.registro.fasesRegistro.borrador != null and
 	solicitud.registro.fasesRegistro.borrador = "true")
 	or
-	(action = "read" and
+	(accion = leer and
 	(agente.rolActivo in ("administrador", "usuario")))
 then
 	grant
 
-rule solicitudPreparadaPresentar
+Permiso solicitudPreparadaPresentar
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "update" and
+	(accion = editar and
 	(agente.rolActivo in ("administrador", "usuario")) and
 	solicitud.estado = "borrador" and
 	solicitud.registro.fasesRegistro.borrador != null and
 	solicitud.registro.fasesRegistro.borrador = "true" and
 	solicitud.registro.fasesRegistro.firmada = "true")
 	or
-	(action = "read" and
+	(accion = leer and
 	(agente.rolActivo in ("administrador", "usuario")))
 then
 	grant
 
-// Permiso lista de Solicitudes visibles para el usuario
-rule listaSolicitudes
+// Permiso que define las solicitudes que son visibles para el usuario
+Permiso solicitudes
+mensaje = "No tiene suficientes privilegios para acceder a esta solicitud"
 vars
 	SolicitudGenerica solicitud
 	Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 when
-	(action = "read" and agente.rolActivo in ("administrador", "gestor", "revisor"))
+	(agente.rolActivo in ("administrador", "gestor", "revisor"))
 	or
-	(
-	action = "read"
-	and
 	participacion != null 			
-	)
 then
 	grant
 
 
 // Permisos pagina de presentacion
 
-rule adminGestorRevisor
+Permiso adminGestorRevisor
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor"))
 then 
 	grant
 
-rule aportacion
+Permiso aportacion
 vars
 	SolicitudGenerica solicitud
 when 
@@ -222,30 +219,30 @@ when
 then 
 	grant
 
-rule aportacionDocumentos
+Permiso aportacionDocumentos
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "read") and 
+	(accion = leer) and 
 	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
 	(solicitud.estado in ("iniciada", "requerida", "requerida plazo vencido"))
 then
 	grant	
 
-rule noEditable
+Permiso noEditable
 when
-	(action = "update")
+	(accion = editar)
 then
 	deny
 
-rule noVisibleUsuario
+Permiso noVisibleUsuario
 when
-	(action = "read") and
+	(accion = leer) and
 	usuario
 then
 	deny
 	
-rule solicitudEnBorrador
+Permiso solicitudEnBorrador
 vars
 	SolicitudGenerica solicitud
 when
@@ -256,11 +253,11 @@ then
 
 // Este permiso lo tienen todas las páginas de la solicitud
 // Controla que los datos no se puedan editar cuando la solicitud está preparada para registrar
-rule solicitudEditable
+Permiso solicitudEditable
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "read")
+	(accion = leer)
 	or
 	!usuario
 	or
@@ -275,7 +272,7 @@ then
 	grant	
 
 	
-rule solicitudEditableDocumentacion
+Permiso solicitudEditableDocumentacion
 vars
 	SolicitudGenerica solicitud
 when
@@ -291,21 +288,21 @@ then
 	grant
 
 
-rule visibleSiAccesoCertificado
+Permiso visibleSiAccesoCertificado
 when 
 	agente.acceso = "certificado"
 then 
 	grant
 
 
-rule visibleSiAccesoContrasena
+Permiso visibleSiAccesoContrasena
 when 
 	(agente.acceso = "usuario")
 then 
 	grant
 	
 	
-rule documentoAutorizacionGenerado
+Permiso documentoAutorizacionGenerado
 vars 
 	SolicitudGenerica solicitud
 when 
@@ -316,7 +313,7 @@ then
 	grant
 
 
-rule visibleFuncionarioAutorizado
+Permiso visibleFuncionarioAutorizado
 vars
 	SolicitudGenerica solicitud
 when 
@@ -326,7 +323,7 @@ when
 then 
 	grant
 
-rule noVisibleFuncionarioAutorizado
+Permiso noVisibleFuncionarioAutorizado
 vars
 	SolicitudGenerica solicitud
 when 
@@ -338,7 +335,7 @@ then
 
 	
 /* Se puede moficicar la aportación de documentación cuando está en borrador*/	
-rule aportacionModificar
+Permiso aportacionModificar
 vars
 	SolicitudGenerica solicitud
 when
@@ -352,7 +349,7 @@ then
   al usuario diciendole que hubo un problema, que pulse otra vez el problema para
   completar el registro 
 */	
-rule aportacionMensajeIntermedio
+Permiso aportacionMensajeIntermedio
 vars
 	SolicitudGenerica solicitud
 when
@@ -364,98 +361,97 @@ then
 /* 
  * Permisos de la pagina de presentacion
  */
-rule mensajeVerificacion
+Permiso mensajeVerificacion
 vars
 	SolicitudGenerica solicitud
 when
-	(action = "read") and 
+	(accion = leer) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado = "requerida plazo vencido")
 then
 	grant
 
 	
-rule iniciarVerificacion
+Permiso iniciarVerificacion
 vars
 	SolicitudGenerica solicitud
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado = "iniciada")
 then
 	grant
 
-rule verificarDocumentos
+Permiso verificarDocumentos
 vars
 	SolicitudGenerica solicitud
 when
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(
 		(
-			(action = "read") and 
+			(accion = leer) and 
 			(solicitud.estado in ("requerida", "pendiente requerimiento", "requerida plazo vencido", "en verificacion"))
 		)
 		or
 		(
-			(action = "update") and
+			(accion = editar) and
 			(solicitud.estado = "en verificacion") 
 		)
 	)
 then 
 	grant
 	
-rule verificacionRequerimientos
+Permiso verificacionRequerimientos
 vars
 	SolicitudGenerica solicitud
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido"))
 then
 	grant
 
-rule nuevoRequerimiento
+Permiso nuevoRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado = "pendiente requerimiento")
 then
 	grant
 
 
-rule firmarRequerimiento
+Permiso firmarRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
 	(solicitud.estado = "pendiente requerimiento") and
 	(
 		(
-			(action = "read") and 
+			(accion = leer) and 
 			(agente.rolActivo in ("administrador", "gestor", "revisor"))		
 		)
 		or 
 		(
-			(action = "update") and 
+			(accion = editar) and 
 			(agente.rolActivo in ("administrador", "gestor"))		
 		)
 	)
 then
 	grant
 
-rule finalizarRequerimiento
+Permiso finalizarRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
-	(action in ("read", "update")) and 
+	(accion in (leer, editar)) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(solicitud.estado in ("requerida", "requerida plazo vencido"))
 then
 	grant
 	
-	
-rule aportacionNoNull
+Permiso aportacionNoNull
 vars
 	// TODO: Permitir variables con nombres tales como "documento", .... etc
 	Documento doc
@@ -464,7 +460,7 @@ when
 then
 	deny
 		
-rule nuevaSolicitud
+Permiso nuevaSolicitud
 vars
 	Convocatoria convocatoria
 when
@@ -473,20 +469,20 @@ then
 	grant
 	
 //Baremación	
-rule listaEvaluaciones
+Permiso listaEvaluaciones
 when
 	agente.rolActivo in ("administrador", "gestor", "revisor")
 then
 	grant
 	
-rule evaluacion
+Permiso evaluacion
 when
 	agente.rolActivo in ("administrador", "gestor", "revisor")
 then
 	grant	
 
 
-rule tableKeyOnlyEstadosSolicitud
+Permiso tableKeyOnlyEstadosSolicitud
 vars
 	TableKeyValue tableKeyValue
 when
@@ -496,7 +492,7 @@ when
 then
 	grant
 
-rule tableKeyOnlyEstadosSolicitudUsuario
+Permiso tableKeyOnlyEstadosSolicitudUsuario
 vars
 	TableKeyValue tableKeyValue
 when

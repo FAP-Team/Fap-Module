@@ -8,5 +8,5 @@ import controllers.gen.UsuariosControllerGen;
 import models.*;
 
 public class UsuariosController extends UsuariosControllerGen {
-	
+
 }

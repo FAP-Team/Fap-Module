@@ -12,16 +12,22 @@ h2. Parámetros
 * **popup = _[popup]_** (opcional) : Si se especifica, al pulsar el botón se abrirá el popup indicado.
 * **pagina = _[pagina]_** (opcional) : Si se especifica, al pulsar el botón se redirige a la pagina indicada.
 * **waitPopup** (opcional) : En la navegación, muestra al usuario un popup indicandole que espere hasta que la acción que desemboca el botón haya terminado.
+* **type** : Tipo de botón
+* **anterior** : Para redirigir a la pagina anterior en la que estabamos
+* **ayuda** : Ayuda asociada al botón
 
 h2. Definición
 
 bc. Boton:
-	'Boton' (name=ID)? (
-		('titulo' '=' titulo=STRING)
-		& ('ancho' '=' ancho=STRING)? 
-		&('popup' '=' popup=[Popup])?
-		&('pagina' '=' pagina=[Pagina|QN])?
-		& (waitPopup?="waitPopup")?		
+	elemento='Boton' (name=ID) (
+	 	('titulo' '=' titulo=STRING)
+	    & ('ancho' '=' ancho=STRING)? 
+	    & ('pagina' '=' pagina=PaginaAccion)?
+	    & ('popup' '=' popup=PopupAccion)?
+	    & (anterior?="anterior")?
+		 & (waitPopup?="waitPopup")?	
+		 & ('type' '=' type=('default' | 'primary' | 'info' | 'success' | 'danger'))?
+		 & ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 

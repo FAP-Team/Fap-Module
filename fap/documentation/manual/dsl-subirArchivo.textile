@@ -12,10 +12,10 @@ h2. Parámetros
 h2. Definición
 
 bc. SubirArchivo:
-	'SubirArchivo' name=ID (
+	elemento='SubirArchivo' name=ID (
 		(requerido?='requerido')?
 	)
-;
+;	
 
 h2. Ejemplos de uso
 
@@ -31,6 +31,6 @@ h3. Resultado
 !images/dsl-subirArchivo!
 
 El archivo se crea en la siguiente ruta relativa a la aplicación:
-\tmp\uploads\1311252086233_0000000001\subir\main.css
+* \tmp\uploads\1311252086233_0000000001\subir\main.css
 
 

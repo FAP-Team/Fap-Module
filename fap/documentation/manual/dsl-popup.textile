@@ -9,25 +9,17 @@ h2. Parámetros
 * **_[name]_** : Identificador del elemento.
 * **titulo = _[string]_** (opcional) : Texto que se mostrara como título del Popup. 
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al Popup.
-* **campo = _[campo]_** (opcional) : En el caso de que las entidades se guarden en una lista, se debe especificar la ruta de la lista.
-* **crear** (opcional) : El popup permite crear entidades nuevas.
-* **modificar** (opcional) : El popup permite modificar entidades ya existentes.
-* **borrar** (opcional) : El popup permite borrar entidades.
-* **ver** (opcional) : El popup permite ver información de las entidades.
-* **noBorrarEntidad** (opcional) : permite elegir si se quiere borrar la entidad o únicamente borrar la referencia en la lista.
+* **campo = _[campo]_** : Define la entidad que se puede usar en los campos que se sitúen dentro del popup.
+
 
 h2. Definición
 
 bc. Popup:
-	'Popup' name=ID
+	elemento='Popup' name=ID
 	(
 		('titulo' '=' titulo=STRING)?
-		& ('campo' '=' campo=Campo)
+		& ("campo" "=" campo=Campo)
 		& ("permiso" "=" permiso=[Permiso])?
-		& (crear?='crear')?
-		& (modificar?='modificar')?
-		& (borrar?='borrar')?
-		& (ver?='ver')?
 	)
 	'{'
 		elementos+=Elemento*
@@ -37,16 +29,7 @@ bc. Popup:
 
 h2. Ejemplo de uso
 
-h3. Popup estandar
-
-bc. Popup PopupUsuario titulo="Usuario" {
-	Texto campo=Agente.username titulo="Username" requerido
-	Texto campo=Agente.email titulo="Email" requerido
-}
-
-h3. PopUp solo para crear y borrar
-
-bc. Popup PopupUsuario crear borrar titulo="Usuario" {
+bc. Popup PopupUsuario entidad=Agente titulo="Usuario" {
 	Texto campo=Agente.username titulo="Username" requerido
 	Texto campo=Agente.email titulo="Email" requerido
 }

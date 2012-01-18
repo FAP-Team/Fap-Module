@@ -37,8 +37,8 @@ import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
 
-@With({PropertiesFap.class, MessagesController.class})
-public class SecureController extends Controller {
+
+public class SecureController extends GenericController{
 
 	@Inject
 	private static FirmaService firmaService;
@@ -273,7 +273,7 @@ public class SecureController extends Controller {
     	Cache.delete(session.getId());
         session.clear();
         response.removeCookie("rememberme");
-        Messages.warning(play.i18n.Messages.get("fap.logout.ok"));
+        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
         Messages.keep();
         redirect("fap.SecureController.login");
     }
@@ -288,52 +288,13 @@ public class SecureController extends Controller {
     }
 
     private static String getDefaultRoute(){
-    	String defaultRoute = null;
-    	String httpPath = Play.configuration.getProperty("http.path", "/");
-    	if(httpPath != null){
-    		defaultRoute = httpPath + "/";
-    	}else{
-    		defaultRoute = "/";
-    	}
-    	return defaultRoute;
+    	String httpPath = Play.configuration.getProperty("http.path", null);
+    	if (httpPath != null)
+    		return httpPath + "/";
+    	else
+    		return "/";
     }
     
-	/**
-	 * 1) Comprueba que el usuario está logueado en páginas que requieran login
-	 * 2) Si es una petición de una solicitud (Ej /solicitud/{id}/...)
-	 *    Comprueba que el usuario tenga permisos para ver la solicitud
-	 * 3) Comprueba los permisos según las anotaciones del método   
-	 * @throws Throwable
-	 */
-    @Before(unless={"login", "authenticate", "logout", "authenticateCertificate"})
-    static void checkAccess() throws Throwable {    	
-    	if(!AgenteController.agenteIsConnected()) {
-        	String httpPath = Play.configuration.getProperty("http.path", "/");
-        	if(request.method == "GET" && !request.url.equals(httpPath)){
-        		flash.put("url", request.url);
-        	}            	
-            SecureController.login();
-        }
-    	
-        AgenteController.findAgente(); //Recupera el agente de base de datos
-        Long idSolicitud = null;
-
-        if(params._contains("idSolicitud")){
-        	idSolicitud = Long.parseLong(params.get("idSolicitud"));
-        	Map<String, Long> ids = new HashMap<String, Long>();
-        	ids.put("idSolicitud", idSolicitud);
-			
-        	Secure secure = InjectorConfig.getInjector().getInstance(Secure.class);
-        	if (!secure.check("listaSolicitudes","read", ids, null)) {
-        		Messages.fatal("No tiene permisos para acceder a la solicitud");
-        		//Messages.keep();
-			}
-        	renderArgs.put("idSolicitud", idSolicitud);
-        	renderArgs.put("idEntidad", idSolicitud);
-        }
-        
-    }
-
     /**
      * Cambia el rol del usuario
      * Se comprueba que el usuario conectado tenga el rol que se quiera cambiar

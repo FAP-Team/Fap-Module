@@ -14,7 +14,6 @@ import models.Participacion;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
-
 import play.Play;
 import play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer;
 import play.data.validation.Required;
@@ -34,9 +33,16 @@ import play.templates.TemplateLoader;
 import play.utils.Java;
 import utils.BinaryResponse;
 
-@With({PropertiesFap.class, SecureController.class, AgenteController.class})
+import security.Secure;
+import javax.inject.Inject;
+
+
+@With({PropertiesFap.class, MessagesController.class, AgenteController.class})
 public class GenericController extends Controller {
 
+	@Inject
+	protected static Secure secure;
+	
 	@Before
 	protected static void packageParams() throws Exception {
 		//Añade a la pila todos los parámetros que empiezan por id

@@ -121,7 +121,6 @@ public class DocumentationUtils {
 	}
 
 	private static String processText(DocElemento elemento, String text){
-//		text = text.replace(" _", "<i>").replace("_ ", "</i>")
 		Pattern p = Pattern.compile("\"(.*?)\":(#?(\\w|-)+)");
 		Matcher matcher = p.matcher(text);
 		while (matcher.find()){

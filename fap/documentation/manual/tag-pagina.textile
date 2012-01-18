@@ -1,0 +1,36 @@
+h1. Tag pagina
+
+h2. Descripción
+
+Tag que muestra una pagina.
+
+h2. Parámetros
+
+* **_accion** 		- Accion de la pagina  
+* **_botonBorrar** 	- Nombre asociado al boton Borrar 
+* **_botonCrear** 	- Nombre asociado al boton Crear  
+* **_botonEditar** 	- Nombre asociado al boton Editar 
+* **_encType** 		- Paramatro de encriptacion de HTML 
+* **_formulario** 	- Formulario al que está asociado la pagina 
+* **_hayForm** 		- Indica si la pagina tiene Form o no 
+* **_titulo** 		- Titulo de la pagina 
+* **_urlBorrar**		- Url encargada de gestionar la acción de borrar 
+* **_urlCrear**		- Url encargada de gestionar la acción de crear
+* **_urlEditar** 	- Url encargada de gestionar la acción de editar
+
+h2. Ejemplo de uso
+
+bc. #{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Crear', 
+     botonEditar:'Editar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Principal', 
+     hayForm:false, 
+     titulo:'Solicitudes', 
+     urlBorrar:play.mvc.Router.reverse('SolicitudesController.borrar' ), 
+     urlCrear:play.mvc.Router.reverse('SolicitudesController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('SolicitudesController.editar' )
+}	
+

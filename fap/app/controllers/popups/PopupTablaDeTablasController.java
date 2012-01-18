@@ -1,17 +1,16 @@
 
 package controllers.popups;
 
-import play.mvc.Util;
-import validation.CustomValidation;
 import messages.Messages;
 import models.TableKeyValue;
+import play.mvc.Util;
+import validation.CustomValidation;
 import controllers.gen.popups.PopupTablaDeTablasControllerGen;
-
+			
 public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGen {
-
 	public static void crear(TableKeyValue tableKeyValue){
 		checkAuthenticity();
-		if(!permiso("create")){
+		if(!permiso("crear")){
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
@@ -30,7 +29,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 			renderJSON(utils.RestResponse.ok("Registro creado correctamente"));
 		}else{
 			Messages.keep();
-			abrir("crear",null);
+			index("crear",null);
 		}
 	}
 
@@ -38,7 +37,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 
 	public static void editar(Long idTableKeyValue,TableKeyValue tableKeyValue){
 		checkAuthenticity();
-		if(!permiso("update")){
+		if(!permiso("editar")){
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
@@ -60,7 +59,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 			renderJSON(utils.RestResponse.ok("Registro actualizado correctamente"));
 		}else{
 			Messages.keep();
-			abrir("editar",idTableKeyValue);
+			index("editar",idTableKeyValue);
 		}
 
 	}
@@ -69,7 +68,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 
 	public static void borrar(Long idTableKeyValue){
 		checkAuthenticity();
-		if(!permiso("delete")){
+		if(!permiso("borrar")){
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
@@ -86,7 +85,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 			renderJSON(utils.RestResponse.ok("Registro borrado correctamente"));
 		}else{
 			Messages.keep();
-			abrir("borrar",idTableKeyValue);
+			index("borrar",idTableKeyValue);
 		}
 	}
 
@@ -97,5 +96,5 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 		CustomValidation.valid("tableKeyValue", tableKeyValue);
 		CustomValidation.valid("tableKeyValue", tableKeyValue);
 	}
-
 }
+		

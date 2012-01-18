@@ -537,21 +537,19 @@ public class AedServiceImpl implements AedService {
 	 */
 	@Override
 	public void borrarDocumento(models.Documento documento) throws AedExcepcion {
-		if(documento == null || documento.uri == null){
-			//Nothing to do here, bye
-			return;
+		if(documento == null || documento.uri == null || documento.clasificado == null){
+			throw new NullPointerException();
 		}
-		log.debug("Borrando documento con uri " + documento.uri);
 		
+		log.debug("Borrando documento con uri " + documento.uri);
 		if(documento.clasificado){
 			//No puedes borrar un documento clasificado
 			log.info("Intentando borrar un documento ya clasificado, con uri = " + documento.uri);
-			return;
+			throw new IllegalStateException();
 		}
 		
 		aed.suprimirDocumentoNoClasificado(documento.uri);
-		documento.delete();
-		log.debug("Documento borrado");
+		log.debug("Documento borrado del aed");
 	}
 	
 	/* (non-Javadoc)

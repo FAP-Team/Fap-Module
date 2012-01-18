@@ -19,6 +19,8 @@ import play.modules.guice.InjectSupport;
 import play.test.Fixtures;
 import play.test.UnitTest;
 import properties.FapProperties;
+import es.gobcan.eadmon.aed.ws.AedExcepcion;
+import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 
 @InjectSupport
@@ -116,7 +118,6 @@ public class AedServiceTest extends UnitTest {
 		assertNull(aedService.obtenerDocBytes(URI_NOT_IN_DB));
 	}
 	
-	
 	@Test
 	public void obtenerPropiedades() throws Exception {
 		Documento d = uploadTestDocumento();
@@ -125,6 +126,36 @@ public class AedServiceTest extends UnitTest {
 		assertNull(aedService.obtenerPropiedades(URI_NOT_IN_DB));
 	}
 	
+	
+	@Test(expected=NullPointerException.class)
+	public void borrarDocumentoNullDocumento() throws Exception {
+		aedService.borrarDocumento(null);
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void borrarDocumentoNullUri() throws Exception {
+		Documento documento = new Documento();
+		documento.uri = null;
+		aedService.borrarDocumento(null);
+	}
+	
+	@Test
+	public void borrarDocumento() throws Exception {
+		Documento documento = uploadTestDocumento();
+		aedService.borrarDocumento(documento);
+		try {
+			aedService.obtenerDoc(documento.uri);
+		}catch(AedExcepcion e){
+			assertEquals(CodigoErrorEnum.DOCUMENTO_NO_EXISTE, e.getFaultInfo().getCodigoError());
+		}
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void borrarDocumentoClasificado() throws Exception {
+		Documento documento = uploadTestDocumento();
+		documento.clasificado = true;
+		aedService.borrarDocumento(documento);
+	}
 	
 	private Documento uploadTestDocumento() throws Exception {
 		Documento d = new Documento();

@@ -150,7 +150,7 @@ public class GMenu {
 		for (EntidadUtils entidad: entidades){
 			if (!scriptVariables.contains(entidad.variable)){
 				scriptVariables.add(entidad.variable);
-				scriptEntidades += """models.${entidad.clase} ${entidad.variable} = play.mvc.Controller.renderArgs.get("${entidad.variable}");\n""";
+				scriptEntidades += """models.${entidad.clase} ${entidad.variable} = play.mvc.Scope.RenderArgs.current().get("${entidad.variable}");\n""";
 			}
 		}
 		String url = "url = ${link};";
@@ -177,7 +177,7 @@ public class GMenu {
 		return """
 			%{
 				${url}
-				${key} = "redirigir\${play.mvc.Controller.renderArgs.get("container")}";
+				${key} = "redirigir\${play.mvc.Scope.RenderArgs.current().get("container")}";
 				if (play.mvc.Controller.response.cookies.containsKey(key))
 					urlAnterior = play.mvc.Controller.response.cookies.get(key).value;
 				else if (play.mvc.Controller.request.cookies.containsKey(key))

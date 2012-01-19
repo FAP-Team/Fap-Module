@@ -13,27 +13,23 @@
 	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty()
 }%
 
-<a href="@{fap.ConsultarEvaluacionesController.index}" class="boton">Volver al listado de evaluaciones</a>
+<div class="clearfix">
+	<a href="@{fap.ConsultarEvaluacionesController.index}" class="btn">Volver al listado de evaluaciones</a>
+</div>
 
-
+<form>
 #{fap.grupo titulo:'Información del expediente'}
-	#{simple.row label:'Expediente'}
-		${evaluacion.solicitud.expedienteAed.idAed}
-	#{/simple.row}
-	#{simple.row label:'Nombre:'}
-		${evaluacion.solicitud.solicitante.nombreCompleto}
-	#{/simple.row}
-	#{simple.row label:'DNI/CIF:'}
-		${evaluacion.solicitud.solicitante.numeroId}
-	#{/simple.row}
+	#{simple.uneditable value: evaluacion.solicitud.expedienteAed.idAed, label: "Expediente"/}
+	#{simple.uneditable value: evaluacion.solicitud.solicitante.nombreCompleto, label: "Nombre"/}
+	#{simple.uneditable value: evaluacion.solicitud.solicitante.numeroId, label: "DNI/CIF"/}
 	<div class="button_container">
-		<a href="${expedienteUrl}" class="boton">Ver expediente</a>
+		<a href="${expedienteUrl}" class="btn">Ver expediente</a>
 	</div>
 #{/fap.grupo}
+</form>
 
 
-
-#{form @fap.FichaEvaluadorController.save()}
+#{form @fap.FichaEvaluadorController.save(), class:"form-stacked"}
 
 <input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>
 
@@ -54,7 +50,7 @@
 	
 	<div id="indice">
 		#{if hasCriterios}
-			<h2>Criterios de evaluacion</h2>
+			<div class="name">Criterios de evaluacion</div>
 			<ul>
 			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
 				<li><a href="#criterio${tcriterio.jerarquia}">${tcriterio.jerarquia} - ${tcriterio.nombre}</a></li>	
@@ -63,7 +59,7 @@
 		#{/if}
 		
 		#{if hasCEconomicos}
-			<h2>Conceptos económicos</h2>
+			<div class="name">Conceptos económicos</div>
 			<ul>	
 			#{list items:evaluacion.tipo.ceconomicos, as:'tceconomico'}
 				<li><a href="#ceconomico${tceconomico.jerarquia}">${tceconomico.jerarquia} - ${tceconomico.nombre}</a></li>	
@@ -94,7 +90,7 @@
 		}%
 		
 		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
-			<h2>${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</h2>
+			<div class="name">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</div>
 			#{if criterio.tipo.descripcion != null}
 				<div class="clearfix">
 					<p>#{verbatim}${criterio.tipo.descripcion}#{/verbatim}</p>
@@ -155,7 +151,7 @@
 		}%
 		
 		<div class="ceconomico" id="ceconomico${ceconomico.tipo.jerarquia}">
-			<h2>${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</h2>
+			<div class="name">${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</div>
 			
 			#{if criterio.tipo.descripcion != null}
 				<div class="clearfix">
@@ -193,10 +189,10 @@
 
 <a style="font-size: 8pt"> Guardar antes de Obtener el borrador en PDF, para que se vean los cambios.</a>
 
-<div class="button_container">
-	<input type="submit" class="boton" name="save" value="&{'baremacion.fichaevaluador.guardar'}">
-	<a href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank" class="boton">Obtener borrador en PDF</a>
-	<input type="submit" class="boton" name="end" value="&{'baremacion.fichaevaluador.end'}">
+<div class="actions">
+	<input type="submit" class="btn" name="save" value="&{'baremacion.fichaevaluador.guardar'}">
+	<a href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id)}" target="_blank" class="btn">Obtener borrador en PDF</a>
+	<input type="submit" class="btn" name="end" value="&{'baremacion.fichaevaluador.end'}">
 </div>
 
 #{/form}

@@ -1,7 +1,11 @@
-<div class="form-row #{if _error}error#{/if}">
+<div class="clearfix #{if _error}error#{/if}">
     #{if _label}
 		<label #{if _id}for="${_id}"#{/if} class="#{if _error}error#{/if}">${_label}</label>
+    	<div class="input">
     #{/if}
-	#{doBody /}
-	#{if _error}<span class="help-inline">${_error}</span>#{/if}
+		#{doBody /}
+		#{if _error}<span class="help-inline">${_error}</span>#{/if}
+	#{if _label}	
+	</div>
+	#{/if}
 </div>

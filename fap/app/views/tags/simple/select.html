@@ -6,10 +6,11 @@
 	_value
 	_style
 	_showKeyInLabel
+	_class
 }*
 
 #{simple.row label:_label, id:_id, help:_help, error:_error}
-	<select #{if _id}id="${_id}"#{/if} name="${_name}" select style="width: ${_ancho}px">
+	<select #{if _id}id="${_id}"#{/if} name="${_name}" #{if _class}class="${_class}"#{/if}>
 		<option> </option>
 		#{list items:_options, as:'option'}
 			%{

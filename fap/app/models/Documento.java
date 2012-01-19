@@ -94,12 +94,17 @@ public class Documento extends Model {
 	
 	/**
 	 * Prepara un documento para subir al AED
+	 * 
+	 * - Los documentos para subir al aed deben tener tipo y descripción. Si el 
+	 *   documento no tiene descripción y no es de tipo otros, la asigna según
+	 *   el tipo de documento.
+	 *   
 	 */
 	public void prepararParaSubir(){
-		//Si no es de tipo otros, pone la despcrión igual al tipo
-		//El AED da error con descripción null
-		if(!isOtros()){
-			play.Logger.info("Preparando para subir documento del tipo %s", tipo);
+		// Si no tiene descripción y no es de tipo otros, pone como tipo
+		// el nombre del tipo de documento
+		play.Logger.debug("Preparando para subir documento del tipo %s", tipo);
+		if(descripcion == null && !isOtros()){
 			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}
 	}

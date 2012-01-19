@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import javax.inject.Inject;
 
 import models.Documento;
+import models.TableKeyValue;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -19,6 +20,7 @@ import play.modules.guice.InjectSupport;
 import play.test.Fixtures;
 import play.test.UnitTest;
 import properties.FapProperties;
+import utils.BinaryResponse;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
@@ -64,13 +66,40 @@ public class AedServiceTest extends UnitTest {
 	
 	@Test
 	public void saveDocumentoTemporal() throws Exception{		
+		String uriTipoDocumento = FapProperties.get("fap.aed.tiposdocumentos.solicitud"); 
+		String descripcion = "prueba";
+		
 		Documento documento = new Documento();
-		documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.base");
-		documento.descripcion = "prueba";
+		documento.tipo = uriTipoDocumento;
+		documento.descripcion = descripcion;
 		
 		File tmp = createTmpFile();
 		String uri = aedService.saveDocumentoTemporal(documento, tmp);
 		assertNotNull(uri);
+		
+		PropiedadesDocumento propiedades = aedService.obtenerPropiedades(uri, false);
+		assertEquals(uriTipoDocumento, propiedades.getUriTipoDocumento());
+		assertEquals(descripcion, propiedades.getDescripcion());
+	}
+	
+	@Test
+	public void saveDocumentoTemporalDescripcionSegunTipo() throws Exception {
+		String uriTipoDocumento = FapProperties.get("fap.aed.tiposdocumentos.solicitud"); 
+		String descripcion = "descripcion simulada segun tipo";
+		TableKeyValue.setValue("tiposDocumentos", uriTipoDocumento, descripcion, true);
+
+		Documento documento = new Documento();
+		documento.tipo = uriTipoDocumento;
+		
+		File tmp = createTmpFile();
+		String uri = aedService.saveDocumentoTemporal(documento, tmp);
+		assertNotNull(uri);
+		
+		PropiedadesDocumento propiedades = aedService.obtenerPropiedades(uri, false);
+		assertEquals(uriTipoDocumento, propiedades.getUriTipoDocumento());
+		
+		String dsc= TableKeyValue.getValue("tiposDocumentos", uriTipoDocumento);
+		assertEquals(dsc, propiedades.getDescripcion());		
 	}
 	
 	@Test(expected=NullPointerException.class)

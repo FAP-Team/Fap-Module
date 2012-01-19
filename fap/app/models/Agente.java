@@ -136,7 +136,7 @@ public class Agente extends Model {
 	 * Devuelve la lista de roles ordenados alfabéticamente
 	 * @return
 	 */
-	public List<String> getSortRoles () {
+	public List<String> getSortRoles() {
 		List<String> list = new ArrayList<String>(this.roles);	
 		Collections.sort(list);
 		return list;

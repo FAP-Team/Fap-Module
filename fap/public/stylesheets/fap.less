@@ -13,15 +13,11 @@ body {
 /* The white background content wrapper */
 .container > .content {
     background-color: #ffffff;
-    padding: 20px;
+    padding: 10px 20px;
     margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
     
     .border-radius(0 0 6px 6px);
-    
- 
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-            box-shadow: 0 1px 2px rgba(0,0,0,.15);
+    .box-shadow(0 1px 2px rgba(0,0,0,.15));
 }
 
 /* Give a quick and non-cross-browser friendly divider */
@@ -224,39 +220,102 @@ div ul.errorsDetails li {
 	color: #000000;
 }
 
-/* Modificamos el comportamiento de la barra superior de navegación */
-/*.topbar-wrapper {
-	position: relative;
-	margin-left: 20px;
-	margin-bottom: 50px;
-}
-.topbar-wrapper .topbar {
-	position: absolute;
-}
-
-
-.topbar-inner .container {
-	background-color: #DCE8F4;
-}
-
-.topbar h3 > a, .topbar h3 > a:hover, .topbar .brand {
-	color: #003366;
-}
-
-.topbar a {
-	color: #003366;
-}
-
-
-.topbar-wrapper .topbar .topbar-inner div h3 {
-	padding-left: 20px;
-}*/
-
 .error {
 	background-color : #FAE5E3;	
 }
 
+// Topbar
+//--------------
 
+/* Topbar special styles
+-------------------------------------------------- */
+.topbar-wrapper {
+  position: relative;
+  height: 40px;
+  margin: 5px 0 15px;
+}
+.topbar-wrapper .topbar {
+  position: absolute;
+  margin: 0 -20px;
+}
+.topbar-wrapper .topbar .topbar-inner {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.topbar-inner, .topbar .fill {
+	background-color: whiteSmoke;
+	#gradient > .vertical(#fafafa, #eaeaea);
+	border-top: 1px solid #cacaca;
+	border-bottom: 1px solid #cacaca;
+	.box-shadow(inset 0 1px 0 #ffffff);
+}
+
+@topbarLinkHover : #0069D6;
+
+.topbar div > ul,
+.nav {
+  a {
+    color: #444;
+    text-shadow: none;
+    font-weight: bold;
+    &:hover {
+      color: @topbarLinkHover;
+    }
+  }
+  
+  // Secondary (floated right) nav in topbar
+  &.secondary-nav {
+    .menu-dropdown,
+    .dropdown-menu {
+      border: 1px solid #cacaca;
+    }
+  }
+  
+  a.menu:hover,
+  li.open .menu,
+  .dropdown-toggle:hover,
+  .dropdown.open .dropdown-toggle {
+    background: none;
+    color: @topbarLinkHover;
+  }
+  
+  .menu-dropdown,
+  .dropdown-menu {
+    background-color: #fff;
+    border: 1px solid #ccc;
+   
+    a.menu,
+    .dropdown-toggle {
+      color: #fff;
+      &.open {
+        background: #444;
+        background: rgba(255,255,255,.05);
+      }
+    }
+    li a {
+      color: #444;
+      text-shadow: none;
+      &:hover {
+        #gradient > .vertical(#fafafa, #eaeaea);
+        color: #444;
+      }
+    }
+    .active a {
+      color: #fff;
+    }
+    .divider {
+      background-color: #222;
+      border-color: #444;
+    }
+  }
+}
+
+// Color de la flecha del dropdown
+a.menu:after,
+.dropdown-toggle:after {
+  border-top: 4px solid #111;
+}
 
 // Baremacion
 .fichaEvaluador {

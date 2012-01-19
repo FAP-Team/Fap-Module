@@ -33,7 +33,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.google.common.base.Joiner;
+
 import config.InjectorConfig;
+import controllers.fap.SecureController;
 
 import models.Solicitante;
 import models.SolicitudGenerica;
@@ -61,6 +64,7 @@ import play.templates.FastTags;
 import static play.templates.JavaExtensions.*;
 import play.templates.GroovyTemplate.ExecutableTemplate;
 import security.Secure;
+import utils.RoutesUtils;
 import validation.Moneda;
 import validation.ValueFromTable;
 
@@ -505,55 +509,75 @@ R
 	   }
 	
 	
+	private static String breadcrumbLi(String content){
+		return "<li>" + content + "<li>";
+	}
+	
+	private static String breadcrumbLi(String content, String url){
+		return breadcrumbLi("<a href=\"" + url +"\">" + content + "</a>");
+	}
+	
 	/**
 	 * Para información de migas de pan
 	 */
-	public static void _breadcrumbs (Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
-		String user = "";
-		String miga = "";
-		Request request = Http.Request.current();
-		// Si la acción pertenece a la Solicitud mostramos:
-		// 		- Solicitud[id]/Pagina
-		// Si no pertenece a las solicitudes:
-		//		- Pagina
-
-		if (request.url.contains("Solicitud")) {
-			String pageName;
-			if (args.containsKey("title")) {
-				pageName = (String) args.get("title");
-			} else {
-				pageName = request.controller.replace("Controller", "");
-			}
+	public static void _breadcrumbs(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+		List<String> crumbs = new ArrayList<String>();
+		
+		
+		if(!RoutesUtils.isDefaultRoute()){
+			String url = RoutesUtils.getDefaultRoute();
+			crumbs.add(breadcrumbLi("Inicio",  url));
+		}
+		
+		Long idSolicitud = (Long)args.get("idSolicitud");
+		if(idSolicitud != null){
+			String identificador = idSolicitud.toString();
+			String idAed = (String)args.get("idAed");
+			if(idAed != null)
+				identificador = idAed;
 			
-			String idSolicitud = request.params.get("idSolicitud");
-			String idStr = "";
-			if ((idSolicitud != null)&&(!idSolicitud.isEmpty())) {
-				Long id = Long.parseLong(request.params.get("idSolicitud"));
-				if(id != null){
-					SolicitudGenerica solicitud = SolicitudGenerica.findById(id);
-					String expedienteAed = solicitud.expedienteAed.idAed;
-					idStr = expedienteAed == null? id.toString() : expedienteAed;
-				}
-			}
-			miga=" > Solicitud [" + idStr +"] > "+pageName;
-		} else {
-			if (args.containsKey("title")) {
-				miga = (String) args.get("title");
-			} else {
-				miga = request.controller.replace("Controller", "");
-			}
+			String url = RoutesUtils.getPrimeraPaginaSolicitud(idSolicitud);
+			crumbs.add(breadcrumbLi("Solicitud " + identificador, url));
 		}
-		if (args.containsKey("user")) {
-			user = args.get("user").toString();
-			if ((user+miga).length() > 100) {
-				int userlength = user.length() - ((user+miga).length()-100);
-				if (userlength > 10)
-					user = user.substring(0, userlength) + "... ";
-				else
-					user = user.substring(0, 10)+ "... ";
-			}
-			user = play.i18n.Messages.get("fap.header.user", user);
+		
+		Object title = args.get("title");			
+		String controllerName = Http.Request.current().controller.replace("Controller", "");
+		String pageName = title != null? title.toString() : controllerName;
+		crumbs.add(breadcrumbLi("<a href=\"#\">" + pageName + "</a>"));
+		
+		
+		Joiner joiner = Joiner.on("<p>/</p>").skipNulls();
+		out.write(joiner.join(crumbs));
+	}
+	
+	
+	/**
+	 * Recupera el valor de un elemento de la tabla de tablas
+	 * @param args
+	 * @param body
+	 * @param out
+	 * @param template
+	 * @param fromLine
+	 */
+	public static void _tableOfTableValue(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+		Map<String, ?> arguments = (Map<String, ?>)args; 
+		Object argTable = arguments.get("table");
+		if(!(argTable instanceof String)){
+			String msg = "El parámetro 'table' debe de ser un string";
+			throw new TemplateExecutionException(template.template, fromLine, msg, new TagInternalException(msg));
+	
 		}
-		out.print(user+miga);
-	}	
+		Object argKey = arguments.get("key");
+		if(!(argKey instanceof String)){
+			String msg = "El parámetro 'key' debe de ser un string";
+			throw new TemplateExecutionException(template.template, fromLine, msg, new TagInternalException(msg));
+	
+		}
+		String table = (String) argTable;
+		String key = (String) argKey;
+		out.print(TableKeyValue.getValue(table, key));
+	}
+	
+	
+	
 }

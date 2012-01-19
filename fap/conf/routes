@@ -11,6 +11,7 @@ POST        /login/password                fap.SecureController.authenticate
 POST        /login/cert                    fap.SecureController.authenticateCertificate
 GET         /logout                        fap.SecureController.logout
 
+POST        /changerol                     fap.SecureController.changeRol
 
 #Baremacion
 GET   /Baremacion/evaluaciones      								 fap.ConsultarEvaluacionesController.index

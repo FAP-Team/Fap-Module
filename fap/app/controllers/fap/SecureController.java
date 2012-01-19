@@ -36,6 +36,7 @@ import services.FirmaService;
 import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
+import utils.RoutesUtils;
 
 
 public class SecureController extends GenericController{
@@ -282,18 +283,12 @@ public class SecureController extends GenericController{
     static void redirectToOriginalURL() throws Throwable {
         String url = flash.get("url");
         if(url == null) {
-            url = getDefaultRoute(); 
+            url = RoutesUtils.getDefaultRoute(); 
         }
         redirect(url);
     }
 
-    private static String getDefaultRoute(){
-    	String httpPath = Play.configuration.getProperty("http.path", null);
-    	if (httpPath != null)
-    		return httpPath + "/";
-    	else
-    		return "/";
-    }
+
     
     /**
      * Cambia el rol del usuario
@@ -303,6 +298,7 @@ public class SecureController extends GenericController{
      */
     @Util
     public static void changeRol(String url, String rol){
+    	checkAuthenticity();
     	log.debug("Cambiando rol a :" + rol);
     	AgenteController.getAgente().cambiarRolActivo(rol);
     	log.debug("Redirigiendo a :" + url);

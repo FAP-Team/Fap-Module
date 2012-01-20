@@ -69,9 +69,6 @@ public class GPopup {
 				
         TagParameters params = new TagParameters();
 
-		if (popup.permiso != null)
-			params.putStr('permiso', popup.permiso.name);
-
 		params.putStr("popup", popup.name);
 		params.put("accion", "accion");
 		params.put("urlEditar", controller.getRouteAccion("editar"));

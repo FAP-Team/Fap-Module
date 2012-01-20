@@ -225,7 +225,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	public String generateRoutes(){
 		StringBuffer sb = new StringBuffer();
 		if (index)
-			StringUtils.appendln sb, Route.to("GET", url + "/index", controllerFullName + ".index");
+			StringUtils.appendln sb, Route.to("GET", url, controllerFullName + ".index");
 		if (editar || isForm())
 			StringUtils.appendln sb, Route.to("POST", url + "/${nameEditar}", controllerFullName + ".${nameEditar}");
 		if (borrar)

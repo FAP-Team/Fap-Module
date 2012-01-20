@@ -10,7 +10,7 @@
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='borrador'])
 	
-    open('/Solicitud/fechas?idSolicitud=${s.id}')
+    open('/Solicitud/fechas?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
     assertValue('solicitud_fechas_fechaRequerida', '04*')
     assertValue('solicitud_fechas_fecha', '18*')

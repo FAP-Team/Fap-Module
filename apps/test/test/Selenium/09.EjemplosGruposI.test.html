@@ -10,9 +10,9 @@
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='borrador'])
 
-    open('/Solicitud/ejemplosdegrupos?idSolicitud=${s.id}')
+    open('/Solicitud/ejemplosdegrupos?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
     
     type('ifTexto', 'PruebaFAP')
-    clickAndWait(//button[@type='submit'])
+    clickAndWait(//input[@type='submit'])
 #{/selenium}

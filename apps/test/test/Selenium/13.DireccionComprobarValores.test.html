@@ -10,9 +10,9 @@
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='borrador'])
 	
-    open('/Solicitud/direcciones?idSolicitud=${s.id}')
+    open('/Solicitud/direcciones?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
-    assertText(//div[@id='solicitud_direccionTest_direccion_municipio_chzn']/a/span, 'Santa Úrsula')
+    assertSelectedLabel('solicitud_direccionTest_direccion_municipio', 'Santa Úrsula')
     assertValue('solicitud_direccionTest_direccion_codigoPostal', '38390')
     assertValue('solicitud_direccionTest_direccion_calle', 'Los Cedros')
     assertValue('solicitud_direccionTest_direccion_numero', '14')

@@ -1,13 +1,21 @@
 *{ You can use plain selenium command using the selenium tag }*
 
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().first()
+	
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
+}%
+
+
 #{selenium}
     // Open the home page, and check that no error occured
    	open(/Principal/solicitudes)
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='borrador'])
 	
-	mouseOver(//div[text()='1']/parent::td/parent::tr)
-	mouseDown(//div[text()='1']/parent::td/parent::tr)
+	mouseOver(//div[text()='${s.id}']/parent::td/parent::tr)
+	mouseDown(//div[text()='${s.id}']/parent::td/parent::tr)
     //clickAndWait('ext-gen1051')
     click(//span[text()="Editar"])
 #{/selenium}

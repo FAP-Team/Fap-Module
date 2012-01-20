@@ -2,7 +2,7 @@
 	// Obtenemos al ultima solicitud, sobre la que trabajamos
 	models.Solicitud s = models.Solicitud.all().first()
 	
-	def automatic = properties.FapProperties.getBoolean("test.fap.automatic.autotest");
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
 }%
 
 #{selenium}
@@ -11,12 +11,14 @@
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='borrador'])
 	
-    open('/Solicitud/combos?idSolicitud=${s.id}')
+    open('/Solicitud/combos?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
     
-    select('solicitud_comboTest_list', label=C)
-    click('solicitud_comboTest_listMultiplechzn_o_1')
-    click('solicitud_comboTest_listMultiplechzn_o_0')
+    select('solicitud_comboTest_list', label=B)
+    addSelection('solicitud_comboTest_listMultiple', label=A)
+    addSelection('solicitud_comboTest_listMultiple', label=C)
+
+
     
     #{if !automatic}
     	click(//span[text()="Nuevo"])
@@ -54,6 +56,6 @@
     
     *{ Faltan las prueba con los combos de Referencias }*
     
-    clickAndWait(//button[@type='submit'])
+    clickAndWait(//input[@type='submit'])
     
 #{/selenium}

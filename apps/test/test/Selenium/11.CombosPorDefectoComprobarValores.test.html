@@ -10,10 +10,9 @@
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='borrador'])
 	
-    open('/Solicitud/combos?idSolicitud=${s.id}')
+    open('/Solicitud/combos?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
     
-    assertValue('solicitud_comboTest_list', 'c')
-    assertText(//div[@id='solicitud_comboTest_listMultiple_chzn']/ul/li[@id='solicitud_comboTest_listMultiple_chzn_c_0']/span, 'A')
-    assertText(//div[@id='solicitud_comboTest_listMultiple_chzn']/ul/li[@id='solicitud_comboTest_listMultiple_chzn_c_1']/span, 'B')
+    assertValue('solicitud_comboTest_list', 'b')
+    assertSelectedLabels('solicitud_comboTest_listMultiple', 'A,C')
 #{/selenium}

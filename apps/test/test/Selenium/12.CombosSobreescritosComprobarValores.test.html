@@ -10,16 +10,14 @@
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='borrador'])
 	
-    open('/Solicitud/combosoverwrite?idSolicitud=${s.id}')
+    open('/Solicitud/combosoverwrite?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
     
     assertValue('lista', 'c')
     assertValue('listaLong', '3')
-    assertText(//div[@id='listaMultiple_chzn']/ul/li[@id='listaMultiple_chzn_c_0']/span, 'Uno')
-    assertText(//div[@id='listaMultiple_chzn']/ul/li[@id='listaMultiple_chzn_c_1']/span, 'Dos')
-    assertText(//div[@id='listaMultiple_chzn']/ul/li[@id='listaMultiple_chzn_c_2']/span, 'Tres')
-    assertText(//div[@id='listaMultipleLong_chzn']/ul/li[@id='listaMultipleLong_chzn_c_0']/span, 'Uno')
-    assertText(//div[@id='listaMultipleLong_chzn']/ul/li[@id='listaMultipleLong_chzn_c_2']/span, 'Tres')
+    assertSelectedLabels('listaMultiple', 'Uno,Dos,Tres')
+    assertSelectedLabels('listaMultipleLong', 'Uno,Tres')
+    
     assertValue('wsjson', '2')
     assertValue('wsxml', '1')
 #{/selenium}

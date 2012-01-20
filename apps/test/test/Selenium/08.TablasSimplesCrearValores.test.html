@@ -4,7 +4,7 @@
 	// Obtenemos al ultima solicitud, sobre la que trabajamos
 	models.Solicitud s = models.Solicitud.all().first()
 	
-	def automatic = properties.FapProperties.getBoolean("test.fap.automatic.autotest");
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
 }%
 
 #{selenium}
@@ -14,7 +14,7 @@
 	open(/Principal/solicitudes)
 	waitForPageToLoad()
 	pause(1000)   // Necesaria para la carga de solicitudes
-    open('/Solicitud/tablassimples?idSolicitud=${s.id}')
+    open('/Solicitud/tablassimples?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
     
    	#{if !automatic}
@@ -36,7 +36,7 @@
     		s.tablaDeNombres.add(tn);
     		s.save();
     	}%
-    	open('/Solicitud/tablassimples?idSolicitud=${s.id}')
+    	open('/Solicitud/tablassimples?idSolicitud=${s.id}&accion=editar')
     	waitForPageToLoad()
     #{/else}
     

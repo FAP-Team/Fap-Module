@@ -2,8 +2,7 @@
 	// Obtenemos al ultima solicitud, sobre la que trabajamos
 	models.Solicitud s = models.Solicitud.all().first()
 	
-	def automatic = properties.FapProperties.getBoolean("test.fap.automatic.autotest");
-	play.Logger.info("15. Automatic: "+automatic);
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
 }%
 
 #{selenium}

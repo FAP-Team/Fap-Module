@@ -4,7 +4,7 @@
 	// Obtenemos al ultima solicitud, sobre la que trabajamos
 	models.Solicitud s = models.Solicitud.all().first()
 	
-	def automatic = properties.FapProperties.getBoolean("test.fap.automatic.autotest");
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
 }%
 
 #{selenium}
@@ -12,21 +12,16 @@
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='borrador'])
 
-    open('/Solicitud/combos?idSolicitud=${s.id}')
+    open('/Solicitud/combos?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
     waitForElementPresent(solicitud_comboTest_ref)
 	
-		select('id=solicitud_comboTest_ref', 'label=Referencia1')
-		click('id=solicitud_comboTest_refMultiplechzn_o_2')
-		click('id=solicitud_comboTest_refMultiplechzn_o_1')
-		clickAndWait(//div[3]/button)
-		assertSelectedValue('id=solicitud_comboTest_ref', '1')
-		assertText(//div[@id='solicitud_comboTest_refMultiple_chzn']/ul/li[@id='solicitud_comboTest_refMultiple_chzn_c_1']/span, 'Referencia2')
-		assertText(//div[@id='solicitud_comboTest_refMultiple_chzn']/ul/li[@id='solicitud_comboTest_refMultiple_chzn_c_2']/span, 'Referencia3')
-		assertText(//div[@id='solicitud_comboTest_refMultiple_chzn']/div[@class='chzn-drop']/ul/li[@id='solicitud_comboTest_refMultiplechzn_o_0'], 'Referencia1')
-		assertText(//div[@id='solicitud_comboTest_refMultiple_chzn']/div[@class='chzn-drop']/ul/li[@id='solicitud_comboTest_refMultiplechzn_o_1'][@class='result-selected'], 'Referencia2')
-		assertText(//div[@id='solicitud_comboTest_refMultiple_chzn']/div[@class='chzn-drop']/ul/li[@id='solicitud_comboTest_refMultiplechzn_o_2'][@class='result-selected'], 'Referencia3')
-	
+	select('id=solicitud_comboTest_ref', 'label=Referencia1')
+	addSelection('id=solicitud_comboTest_refMultiple', label=Referencia2)
+	addSelection('id=solicitud_comboTest_refMultiple', label=Referencia3)
+	clickAndWait(//input[@type='submit'])
+	assertSelectedValue('id=solicitud_comboTest_ref', '1')
+	assertSelectedLabels('id=solicitud_comboTest_refMultiple', 'Referencia2,Referencia3')
 	
 	open(/Principal/solicitudes)
 	waitForPageToLoad()
@@ -35,23 +30,19 @@
     waitForPageToLoad()
 	
 	select('id=solicitud_comboError', 'label=Referencia3')
-	click(css=ul.chzn-choices)
-	click(id=solicitud_comboErrorManychzn_o_1)
-	click(css=input.default)
-	click(id=solicitud_comboErrorManychzn_o_0)
+	addSelection('id=solicitud_comboErrorMany', 'label=Referencia2')
+	addSelection('id=solicitud_comboErrorMany', 'label=Referencia1')
 	type(id=solicitud_solicitante_telefonoFijo, '')
-	clickAndWait(//button[@type='submit'])
+	clickAndWait(//input[@type='submit'])
 	verifyTextPresent('Error al guardar. La página contiene errores.')
-	verifyText(//div[@id='content-con-menu']/div/ul/li/a[@href='#solicitud_solicitante_telefonoFijo'], 'Requerido')
+	verifyText(//input[@id='solicitud_solicitante_telefonoFijo']/../span[@class='help-inline'], 'Requerido')
 	verifyValue(//input[@id='solicitud_solicitante_telefonoFijo'], '')
 	assertSelectedValue('id=solicitud_comboError', '3')
-	assertText(//div[@id='solicitud_comboErrorMany_chzn']/ul/li[@id='solicitud_comboErrorMany_chzn_c_0']/span, 'Referencia1')
-	assertText(//div[@id='solicitud_comboErrorMany_chzn']/ul/li[@id='solicitud_comboErrorMany_chzn_c_1']/span, 'Referencia2')
+	assertSelectedLabels('id=solicitud_comboErrorMany', 'Referencia1,Referencia2')
 	type(id=solicitud_solicitante_telefonoFijo, '900900900')
-	clickAndWait(//button[@type='submit'])
+	clickAndWait(//input[@type='submit'])
 	assertSelectedValue(id=solicitud_comboError, '3')
-	assertText(//div[@id='solicitud_comboErrorMany_chzn']/ul/li[@id='solicitud_comboErrorMany_chzn_c_0']/span, 'Referencia1')
-	assertText(//div[@id='solicitud_comboErrorMany_chzn']/ul/li[@id='solicitud_comboErrorMany_chzn_c_1']/span, 'Referencia2')
+	assertSelectedLabels('id=solicitud_comboErrorMany', 'Referencia1,Referencia2')
 	assertValue('id=solicitud_solicitante_telefonoFijo', '900900900')
 
 	

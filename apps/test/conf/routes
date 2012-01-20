@@ -26,129 +26,129 @@ GET     /public/                                staticDir:public
 # === FAPGENERATED ===
   # Home page
 GET / SolicitudesController.index
-GET /Solicitud/combos/index CombosController.index
+GET /Solicitud/combos CombosController.index
 POST /Solicitud/combos/editar CombosController.editar
 
 GET /Solicitud/combos/comboTestRef CombosController.tablacomboTestRef
-GET /Solicitud/combosoverwrite/index CombosOverwriteController.index
+GET /Solicitud/combosoverwrite CombosOverwriteController.index
 POST /Solicitud/combosoverwrite/editar CombosOverwriteController.editar
 
 GET /Solicitud/combosoverwrite/comboTestRef CombosOverwriteController.tablacomboTestRef
-GET /Solicitud/combotablaspaginas/index ComboTablasPaginasController.index
+GET /Solicitud/combotablaspaginas ComboTablasPaginasController.index
 POST /Solicitud/combotablaspaginas/editar ComboTablasPaginasController.editar
 
 GET /Solicitud/combotablaspaginas/comboTP ComboTablasPaginasController.tablacomboTP
-GET /Solicitud/combotestref/index popups.ComboTestRefController.index
+GET /Solicitud/combotestref popups.ComboTestRefController.index
 POST /Solicitud/combotestref/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/borrar popups.ComboTestRefController.borrar
 POST /Solicitud/combotestref/crear popups.ComboTestRefController.crear
 
-GET /Solicitud/crearpaginaspopuppagina/index CrearPaginasPopUpPaginaController.index
+GET /Solicitud/crearpaginaspopuppagina CrearPaginasPopUpPaginaController.index
 POST /Solicitud/crearpaginaspopuppagina/editar CrearPaginasPopUpPaginaController.editar
 POST /Solicitud/crearpaginaspopuppagina/borrar CrearPaginasPopUpPaginaController.borrar
 POST /Solicitud/crearpaginaspopuppagina/crear CrearPaginasPopUpPaginaController.crear
 
 GET /Solicitud/crearpaginaspopuppagina/tablaNombres CrearPaginasPopUpPaginaController.tablatablaNombres
-GET /Solicitud/crearpaginast/index CrearPaginasTController.index
+GET /Solicitud/crearpaginast CrearPaginasTController.index
 POST /Solicitud/crearpaginast/editar CrearPaginasTController.editar
 POST /Solicitud/crearpaginast/borrar CrearPaginasTController.borrar
 POST /Solicitud/crearpaginast/crear CrearPaginasTController.crear
 
 GET /Solicitud/crearpaginast/paginasT2 CrearPaginasTController.tablapaginasT2
-GET /Solicitud/crearpaginastab/index CrearPaginasTabController.index
+GET /Solicitud/crearpaginastab CrearPaginasTabController.index
 POST /Solicitud/crearpaginastab/crear CrearPaginasTabController.crear
 
-GET /Solicitud/crearpaginastt/index CrearPaginasTTController.index
+GET /Solicitud/crearpaginastt CrearPaginasTTController.index
 POST /Solicitud/crearpaginastt/editar CrearPaginasTTController.editar
 POST /Solicitud/crearpaginastt/borrar CrearPaginasTTController.borrar
 POST /Solicitud/crearpaginastt/crear CrearPaginasTTController.crear
 
 GET /Solicitud/crearpaginastt/paginasT2 CrearPaginasTTController.tablapaginasT2
-GET /Solicitud/crearpaginasttt/index CrearPaginasTTTController.index
+GET /Solicitud/crearpaginasttt CrearPaginasTTTController.index
 POST /Solicitud/crearpaginasttt/editar CrearPaginasTTTController.editar
 POST /Solicitud/crearpaginasttt/borrar CrearPaginasTTTController.borrar
 POST /Solicitud/crearpaginasttt/crear CrearPaginasTTTController.crear
 
 GET /Solicitud/crearpaginasttt/tablaNombres CrearPaginasTTTController.tablatablaNombres
-GET /Solicitud/direcciones/index DireccionesController.index
+GET /Solicitud/direcciones DireccionesController.index
 POST /Solicitud/direcciones/editar DireccionesController.editar
 
-GET /Solicitud/documentos/index DocumentosController.index
+GET /Solicitud/documentos DocumentosController.index
 POST /Solicitud/documentos/crear DocumentosController.crear
 
-GET /Solicitud/ejemplosdegrupos/index EjemplosdeGruposController.index
+GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
 POST /Solicitud/ejemplosdegrupos/editar EjemplosdeGruposController.editar
 
-GET /Solicitud/fechas/index FechasController.index
+GET /Solicitud/fechas FechasController.index
 POST /Solicitud/fechas/editar FechasController.editar
 
-GET /Solicitud/paginacomboserror/index PaginaCombosErrorController.index
+GET /Solicitud/paginacomboserror PaginaCombosErrorController.index
 POST /Solicitud/paginacomboserror/editar PaginaCombosErrorController.editar
 
-GET /Solicitud/paginastablas/index PaginasTablasController.index
+GET /Solicitud/paginastablas PaginasTablasController.index
 POST /Solicitud/paginastablas/editar PaginasTablasController.editar
 
 GET /Solicitud/paginastablas/paginasT PaginasTablasController.tablapaginasT
 GET /Solicitud/paginastablas/tablaNombres PaginasTablasController.tablatablaNombres
-GET /Solicitud/permisogrupo/index PermisoGrupoController.index
+GET /Solicitud/permisogrupo PermisoGrupoController.index
 
-GET /Solicitud/permisonoeditable/index PermisoNoEditableController.index
+GET /Solicitud/permisonoeditable PermisoNoEditableController.index
 POST /Solicitud/permisonoeditable/editar PermisoNoEditableController.editar
 
-GET /Solicitud/permisopagina/index PermisoPaginaController.index
+GET /Solicitud/permisopagina PermisoPaginaController.index
 POST /Solicitud/permisopagina/editar PermisoPaginaController.editar
 
-GET /Solicitud/popupnombre/index popups.popupNombreController.index
+GET /Solicitud/popupnombre popups.popupNombreController.index
 POST /Solicitud/popupnombre/editar popups.popupNombreController.editar
 POST /Solicitud/popupnombre/borrar popups.popupNombreController.borrar
 POST /Solicitud/popupnombre/crear popups.popupNombreController.crear
 
-GET /Solicitud/popupnombre2/index popups.popupNombre2Controller.index
+GET /Solicitud/popupnombre2 popups.popupNombre2Controller.index
 POST /Solicitud/popupnombre2/editar popups.popupNombre2Controller.editar
 POST /Solicitud/popupnombre2/borrar popups.popupNombre2Controller.borrar
 POST /Solicitud/popupnombre2/crear popups.popupNombre2Controller.crear
 
-GET /Solicitud/popupnombretablas/index popups.popupNombreTablasController.index
+GET /Solicitud/popupnombretablas popups.popupNombreTablasController.index
 POST /Solicitud/popupnombretablas/editar popups.popupNombreTablasController.editar
 POST /Solicitud/popupnombretablas/borrar popups.popupNombreTablasController.borrar
 POST /Solicitud/popupnombretablas/crear popups.popupNombreTablasController.crear
 
-GET /Solicitud/popupnombretablaspaginas/index popups.popupNombreTablasPaginasController.index
+GET /Solicitud/popupnombretablaspaginas popups.popupNombreTablasPaginasController.index
 POST /Solicitud/popupnombretablaspaginas/editar popups.popupNombreTablasPaginasController.editar
 POST /Solicitud/popupnombretablaspaginas/borrar popups.popupNombreTablasPaginasController.borrar
 POST /Solicitud/popupnombretablaspaginas/crear popups.popupNombreTablasPaginasController.crear
 
-GET /Solicitud/popuppagina/index popups.popupPaginaController.index
+GET /Solicitud/popuppagina popups.popupPaginaController.index
 POST /Solicitud/popuppagina/editar popups.popupPaginaController.editar
 POST /Solicitud/popuppagina/borrar popups.popupPaginaController.borrar
 POST /Solicitud/popuppagina/crear popups.popupPaginaController.crear
 
 GET /Solicitud/popuppagina/paginasT2 popups.popupPaginaController.tablapaginasT2
-GET /Solicitud/popuppersonasolicitantejuridicatabla/index popups.PopupPersonaSolicitanteJuridicaTablaController.index
+GET /Solicitud/popuppersonasolicitantejuridicatabla popups.PopupPersonaSolicitanteJuridicaTablaController.index
 
-GET /Solicitud/solicitante/index SolicitanteController.index
+GET /Solicitud/solicitante SolicitanteController.index
 POST /Solicitud/solicitante/editar SolicitanteController.editar
 
 GET /Solicitud/solicitante/personaSolicitanteJuridicaTabla SolicitanteController.tablapersonaSolicitanteJuridicaTabla
-GET /Solicitud/subirarchivoaedtest/index SubirArchivoAedTestController.index
+GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
 POST /Solicitud/subirarchivoaedtest/editar SubirArchivoAedTestController.editar
 
 GET /Solicitud/subirarchivoaedtest/documentos SubirArchivoAedTestController.tabladocumentos
-GET /Solicitud/tablassimples/index TablasSimplesController.index
+GET /Solicitud/tablassimples TablasSimplesController.index
 POST /Solicitud/tablassimples/editar TablasSimplesController.editar
 
 GET /Solicitud/tablassimples/tablaNombres TablasSimplesController.tablatablaNombres
 GET /Solicitud/tablassimples/tablaNombres2 TablasSimplesController.tablatablaNombres2
-GET /Solicitud/tipodeayudapopover/index TipoDeAyudaPopoverController.index
+GET /Solicitud/tipodeayudapopover TipoDeAyudaPopoverController.index
 POST /Solicitud/tipodeayudapopover/editar TipoDeAyudaPopoverController.editar
 
-GET /Solicitud/tipodeayudatexto/index TipoDeAyudaTextoController.index
+GET /Solicitud/tipodeayudatexto TipoDeAyudaTextoController.index
 POST /Solicitud/tipodeayudatexto/editar TipoDeAyudaTextoController.editar
 
-GET /Solicitud/valorespordefecto/index ValoresPorDefectoController.index
+GET /Solicitud/valorespordefecto ValoresPorDefectoController.index
 POST /Solicitud/valorespordefecto/editar ValoresPorDefectoController.editar
 
-GET /Solicitud/verpaginast/index VerPaginasTController.index
+GET /Solicitud/verpaginast VerPaginasTController.index
 
 GET /Solicitud/verpaginast/paginasT2 VerPaginasTController.tablapaginasT2
 # === END FAPGENERATED ===

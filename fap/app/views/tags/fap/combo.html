@@ -118,7 +118,9 @@
 
 	#{if multiple}
 		<script>
+		#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
 			$("#${id}.combo").chosen();
+		#{/if}
 		</script>
 
 	#{/if}	
@@ -126,7 +128,9 @@
 		<script>
 			var $combo = $("#${id}.combo");
 			if ($combo.attr('disabled') != "disabled") {
+				#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
 				$combo.chosen();
+				#{/if}
 			}
 		</script>
 	#{/elseif}

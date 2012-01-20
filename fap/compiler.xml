@@ -173,6 +173,7 @@
 		</condition>
 		<exec executable="${play.exe}">
 			<arg value="build-module" />
+			<arg value="--require=1.2.4" />
 		</exec>
 	</target>
 

@@ -27,7 +27,7 @@ public class SecureAppGen extends Secure {
 				
 				Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 				
-				if (action.toString().equals("crear".toString()))
+				if (!action.toString().equals("crear".toString()))
 					return checkIsEditableOrLess(_permiso);
 			
 				return false;

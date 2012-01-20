@@ -273,7 +273,15 @@
 				title: '${titulo}',
 			    #{if botonEditar || botonLeer}
 				plugins: [
-					editRow, readRow
+					#{if botonEditar}
+					editRow
+					#{/if}
+					#{if botonEditar && botonLeer}
+					,
+					#{/if}
+					#{if botonLeer}
+					readRow
+					#{/if}
 				],
 	            #{/if}
 				dockedItems: [

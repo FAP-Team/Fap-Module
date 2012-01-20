@@ -54,7 +54,7 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 				Boton actualizarTramites titulo="Actualizar trámites"
 			}
 			
-			Tabla tramites campo=Tramite popupVer=PopupTramite titulo="Trámites pertenecientes al procedimiento"{
+			Tabla tramites campo=Tramite popupLeer=PopupTramite titulo="Trámites pertenecientes al procedimiento"{
 				Columna titulo="Nombre" campo=Tramite.nombre ancho="250"
 				Columna titulo="URI" campo=Tramite.uri expandir
 			}
@@ -176,7 +176,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	}
     
     Pagina EstadosVisibles titulo="Visibilidad de Estados" {
-    	Tabla tabladeEstadosSolicitud titulo="Estados de la solicitud visibles para los usuarios" campo=TableKeyValue popupModificar=PopupVisibilidadDeSolicitudes permiso=tableKeyOnlyEstadosSolicitudUsuario {
+    	Tabla tabladeEstadosSolicitud titulo="Estados de la solicitud visibles para los usuarios" campo=TableKeyValue popupEditar=PopupVisibilidadDeSolicitudes permiso=tableKeyOnlyEstadosSolicitudUsuario {
 	        Columna campo=TableKeyValue.key titulo="Estado Interno"
 	        Columna campo=TableKeyValue.value titulo="Estado Visible por el Usuario" expandir
 	    }
@@ -184,7 +184,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
     }
     
     Popup PopupVisibilidadDeSolicitudes campo=TableKeyValue {
-    	Grupo noEditableGrupo permiso=noEditable visible=false {
+    	Grupo noEditableGrupo permiso=noEditable borde=false {
 	    	Texto campo=TableKeyValue.table titulo="Tabla"
 	    	Texto campo=TableKeyValue.key titulo="Estado Interno"
 	    }

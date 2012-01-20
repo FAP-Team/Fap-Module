@@ -44,8 +44,8 @@ public class GGrupo {
 			params.put("mostrarSi", grupo.siExpresion)
 		}
 		
-		if (grupo.visible) {
-			params.put("visible", grupo.visible.toBoolean());
+		if (grupo.borde) {
+			params.put("borde", grupo.borde.toBoolean());
 		}
 		
 

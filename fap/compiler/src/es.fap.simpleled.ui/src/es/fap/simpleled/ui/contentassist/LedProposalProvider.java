@@ -247,12 +247,12 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	@Override
-	public void completeTabla_PopupVer(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+	public void completeTabla_PopupLeer(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
 		completeTabla_Popup(model, assignment, context, acceptor);
 	}
 	
 	@Override
-	public void completeTabla_PopupModificar(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+	public void completeTabla_PopupEditar(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
 		completeTabla_Popup(model, assignment, context, acceptor);
 	}
 	
@@ -267,12 +267,12 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	@Override
-	public void completeTabla_PaginaVer(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+	public void completeTabla_PaginaLeer(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
 		completeTabla_Pagina(model, assignment, context, acceptor);
 	}
 	
 	@Override
-	public void completeTabla_PaginaModificar(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+	public void completeTabla_PaginaEditar(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
 		completeTabla_Pagina(model, assignment, context, acceptor);
 	}
 	

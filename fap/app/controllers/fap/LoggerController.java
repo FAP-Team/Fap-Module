@@ -66,9 +66,9 @@ public class LoggerController extends GenericController {
 		
 		List<Log> rowsFiltered = rows; //Tabla sin permisos, no filtra
 
-		tables.TableRenderResponse<Log> response = new tables.TableRenderResponse<Log>(rowsFiltered);
+		tables.TableRenderNoPermisos<Log> response = new tables.TableRenderNoPermisos<Log>(rowsFiltered);
 
-		flexjson.JSONSerializer flex = new flexjson.JSONSerializer().include("total", "rows.level", "rows.time", "rows.class_", "rows.user", "rows.message", "rows.trace").transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class).exclude("*");
+		flexjson.JSONSerializer flex = new flexjson.JSONSerializer().include("rows.level", "rows.time", "rows.class_", "rows.user", "rows.message", "rows.trace").transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class).exclude("*");
 		String serialize = flex.serialize(response);
 		renderJSON(serialize);
 

@@ -18,35 +18,19 @@ import models.TableKeyValue;
 import tags.ReflectionUtils;
 import validation.ValueFromTable;
 
-public class TableRenderResponse<T> {
-	public List<TableRecord<T>> rows;
+public class TableRenderNoPermisos<T> {
+	public List<T> rows;
 	
-	public TableRenderResponse(List<TableRecord<T>> rows) {
+	public TableRenderNoPermisos(List<T> rows) {
 		this.rows = rows;
-	}
-	
-	public static <T> TableRenderResponse<T> sinPermisos(List<T> rows) {
-		List<TableRecord<T>> result = new ArrayList<TableRecord<T>>();
-		for (T row: rows){
-			TableRecord<T> record = new TableRecord<T>();
-			result.add(record);
-			record.objeto = row;
-			record.permisoLeer = true;
-			record.permisoEditar = true;
-			record.permisoBorrar = true;
-		}
-		return new TableRenderResponse<T>(result);
 	}
 	
 	public String toJSON(String ... fields){
 		Set<String> fieldsSet = new HashSet<String>(Arrays.asList(fields));
 		
-		String[] includeParams = new String[fields.length + 3];
+		String[] includeParams = new String[fields.length];
 		for(int i = 0; i < fields.length; i++)
-			includeParams[i] = "rows.objeto." + fields[i];
-		includeParams[fields.length] = "rows.permisoLeer";
-		includeParams[fields.length + 1] = "rows.permisoEditar";
-		includeParams[fields.length + 2] = "rows.permisoBorrar";
+			includeParams[i] = "rows." + fields[i];
 		
 		Map<String,List<String>> valueFromTable = getValueFromTableField();
 		JSONSerializer flex = new JSONSerializer()
@@ -56,7 +40,7 @@ public class TableRenderResponse<T> {
 		for (String table : valueFromTable.keySet())
 			for (String field : valueFromTable.get(table))
 				if (fieldsSet.contains(field))
-					flex = flex.transform(new serializer.ValueFromTableTransformer(table), "rows.objeto." + field);
+					flex = flex.transform(new serializer.ValueFromTableTransformer(table), "rows." + field);
 					
 		flex = flex.exclude("*");
 
@@ -67,7 +51,7 @@ public class TableRenderResponse<T> {
 	public HashMap<String,List<String>> getValueFromTableField() {
 		HashMap<String,List<String>> valueFromTable = new HashMap<String,List<String>>();
 		if ((rows != null) && (!rows.isEmpty())) {
-			T row = rows.get(0).objeto;
+			T row = rows.get(0);
 			java.util.List<String> fields = ReflectionUtils.getFieldsNamesForClass(row.getClass());
 			for (String field : fields) {
 				Field f = null;

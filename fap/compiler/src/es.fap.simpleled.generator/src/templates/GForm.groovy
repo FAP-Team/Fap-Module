@@ -62,7 +62,7 @@ public class GForm {
 		
 		if (form.permiso != null) {
 			view = """
-				#{fap.permiso permiso:"${form.permiso.name}"}
+				#{fap.permiso permiso:"${form.permiso.name}", accion:accion}
 					$view
 				#{/fap.permiso}		
 			""";

@@ -39,7 +39,7 @@ public class ConsultasController extends GenericController {
 
 		List<Consulta> rowsFiltered = rows; //Tabla sin permisos, no filtra
 
-		tables.TableRenderResponse<Consulta> response = new tables.TableRenderResponse<Consulta>(rowsFiltered);
+		tables.TableRenderResponse<Consulta> response = tables.TableRenderResponse.<Consulta>sinPermisos(rowsFiltered);
 		renderJSON(response.toJSON("consulta", "descripcion", "tipo", "id"));
 	}
 

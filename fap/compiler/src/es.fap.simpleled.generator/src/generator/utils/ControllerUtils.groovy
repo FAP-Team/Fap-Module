@@ -173,7 +173,7 @@ class ControllerUtils {
 		}
 		return """
 			@Util
-			protected static void ${gElemento.name}ValidateCopy(${StringUtils.params(params, gElemento.saveExtra)}){
+			protected static void ${gElemento.name}ValidateCopy(String accion, ${StringUtils.params(params, gElemento.saveExtra)}){
 				CustomValidation.clearValidadas();
 				${validateCopy(gElemento.elementoGramatica)}
 				${gElemento.saveCode.collect{ it.saveCode() }.join(";")}
@@ -181,7 +181,7 @@ class ControllerUtils {
 		"""
 	}
 	
-    public static String validateCopyCall(gElemento, Object ... entities){
+    public static String validateCopyCall(String accion, gElemento, Object ... entities){
 		if (entities.length == 0){
 			return "";
 		}
@@ -190,7 +190,7 @@ class ControllerUtils {
 			params.add(entidad.variableDb);
 			params.add(entidad.variable);
 		}
-		return "${gElemento.name}ValidateCopy(${StringUtils.params(params, gElemento.saveExtra.collect{it.split(" ")[1]}.unique())});"
+		return """${gElemento.name}ValidateCopy(${StringUtils.params(accion, params, gElemento.saveExtra.collect{it.split(" ")[1]}.unique())});""";
     }
 
 
@@ -238,7 +238,7 @@ class ControllerUtils {
         if ((Pagina.class.isInstance(objeto)) || (Grupo.class.isInstance(objeto)) || (Popup.class.isInstance(objeto)) || Form.class.isInstance(objeto) || EntidadAutomatica.class.isInstance(objeto)) {
 			
 			if (objeto.permiso != null){
-                out += """if (secure.check("${objeto.permiso.name}", "editar", (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
+                out += """if (secure.check("${objeto.permiso.name}", "editable", accion, (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
 				validatedFields.push(new HashSet<String>());
 			}
 			
@@ -566,7 +566,7 @@ class ControllerUtils {
 			permisoContent = """
 				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 				Map<String, Object> vars = null;
-				return secure.check("${name}", accion, ids, vars);
+				return secure.check("${name}", "none", accion, ids, vars);
 			"""
 		}else{
 			permisoContent = """

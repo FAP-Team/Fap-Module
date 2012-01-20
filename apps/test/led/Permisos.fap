@@ -1,5 +1,4 @@
-Permiso paginaTablaVer
-when
-	accion = crear
-then
-	deny
+Permiso paginaTablaVer{
+	when accion = crear
+	return editable
+}

@@ -12,7 +12,6 @@ import controllers.gen.AportacionRecibosControllerGen;
 public class AportacionRecibosController extends AportacionRecibosControllerGen {
 
 	public static void tablarecibosAportados(Long idSolicitud) {
-
 		List<Documento> rows = Documento
 				.find("select registradas.justificante from Solicitud solicitud join solicitud.aportaciones.registradas registradas where solicitud.id=?",
 						idSolicitud).fetch();
@@ -23,20 +22,22 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 		for(Documento documento: rows){
 			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.put("doc", documento);
-			if (secure.check("aportacionNoNull", "leer", ids, vars)) {
+			if (secure.check("aportacionNoNull", "visible", "editar", ids, vars)) {
 				rowsFiltered.add(documento);
 			}
 		}
 
-		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(
-				rowsFiltered);
-		java.util.Map<String, List<String>> valueFromTable = response
-				.getValueFromTableField();
+		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(tablarecibosAportadosPermisos(rowsFiltered));
+		java.util.Map<String, List<String>> valueFromTable = response.getValueFromTableField();
 
 		flexjson.JSONSerializer flex = new flexjson.JSONSerializer().include(
-				"total", "rows.fechaSubida", "rows.urlDescarga", "rows.id")
-				.transform(new serializer.DateTimeTransformer(),
-						org.joda.time.DateTime.class);
+			"rows.objeto.fechaSubida",
+			"rows.objeto.urlDescarga",
+			"rows.objeto.id",
+			"rows.permisoLeer",
+			"rows.permisoEditar",
+			"rows.permisoBorrar"
+			).transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class);
 		for (String table : valueFromTable.keySet())
 			for (String field : valueFromTable.get(table))
 				if ((field.equals("fechaSubida"))
@@ -44,12 +45,11 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 						|| (field.equals("id")))
 					flex = flex.transform(
 							new serializer.ValueFromTableTransformer(table),
-							"rows." + field);
+							"rows.objeto." + field);
 		flex = flex.exclude("*");
 
 		String serialize = flex.serialize(response);
 		renderJSON(serialize);
-
 	}
 
 }

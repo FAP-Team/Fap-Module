@@ -20,7 +20,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
         }
 
         if(!Messages.hasErrors()){
-            PopupUsuarioValidateCopy(dbagente, agente);
+            PopupUsuarioValidateCopy("editar", dbagente, agente);
         }
         
         if(!Messages.hasErrors()){
@@ -53,7 +53,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
         
 
         if(!Messages.hasErrors()){
-            PopupUsuarioValidateCopy(dbagente, agente);
+            PopupUsuarioValidateCopy("crear", dbagente, agente);
         }
 
         if(!Messages.hasErrors()){

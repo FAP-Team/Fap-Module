@@ -7,12 +7,12 @@ import play.mvc.Util;
 
 public class TablaDeTablasController extends TablaDeTablasControllerGen {
 
-    public static void actualizarDesdeFichero(Long idTableKeyValue) {
+    public static void actualizarDesdeFichero() {
         TableKeyValue.deleteAll();
         long count = TableKeyValue.loadFromFiles();
         Messages.ok("Se cargaron desde fichero " + count + " registros");
         Messages.keep();
-        redirect("TablaDeTablasController.index");
+        redirect("TablaDeTablasController.index", "editar");
     }
 
 }

@@ -48,7 +48,7 @@ public class FichaEvaluadorController extends Controller {
 	}
 	
 	public static void index(long idEvaluacion){
-		if(secure.check("evaluacion", "leer", null, null)){
+		if(secure.check("evaluacion", "visible", null, null, null)){
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 			notFoundIfNull(evaluacion);
 			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
@@ -84,7 +84,7 @@ public class FichaEvaluadorController extends Controller {
 	}
 
 	public static void save(){
-		if(secure.check("evaluacion", "editar", null, null)){
+		if(secure.check("evaluacion", "none", "editar", null, null)){
 			boolean actionSave = params.get("save") != null;
 			boolean actionPdf = params.get("pdf") != null;
 			boolean actionEnd = params.get("end") != null;

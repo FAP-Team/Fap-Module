@@ -89,7 +89,17 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 			if (grammar instanceof Keyword){
 				Keyword keyword = (Keyword) grammar;
 				String val = keyword.getValue();
-				if (val.equals("accion") || val.equals("agente") || val.equals("editar") || val.equals("crear") || val.equals("leer") || val.equals("borrar")){
+				if (val.equals("accion")
+					|| val.equals("agente")
+					|| val.equals("editar")
+					|| val.equals("crear")
+					|| val.equals("leer")
+					|| val.equals("borrar")
+					|| val.equals("editable")
+					|| val.equals("visible")
+					|| val.equals("none")
+					|| val.equals("_permiso")
+				){
 					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
 					continue;
 				}

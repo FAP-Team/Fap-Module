@@ -12,7 +12,7 @@ import generator.utils.HashStack.HashStackName;
 
 public class GPermiso {
 
-	def Permiso permiso;
+	Permiso permiso;
 
 	public static String generate(Permiso permiso){
 		GPermiso g = new GPermiso();
@@ -26,44 +26,29 @@ public class GPermiso {
 		for(PermisoVar var : vars){
 			String varName = var.name;
 			EntidadUtils entity = EntidadUtils.create(var.getTipo());
-			
-			if(var.sql== null){
-				//Variable simple
-				varStr += """
-		//${var.name}
-		${entity.clase} ${varName} = null;
-		if((vars != null) && (vars.containsKey("${varName}"))){
-			${varName} = (${entity.clase}) vars.get("${varName}");
-		}else if((ids != null) && (ids.containsKey("${entity.id}"))){
-			${varName} = ${entity.clase}.findById(ids.get("${entity.id}"));
-		}else if(Singleton.class.isAssignableFrom(${entity.clase}.class)){
-			try {
-				${varName} = (${entity.clase}) ${entity.clase}.class.getMethod("get", Class.class).invoke(null, ${entity.clase}.class);
-			} catch (Exception e) {}
-		}
-		
-		if (${varName} == null)
-			return false;
-"""
-			}else{
+			if(var.sql != null){
 				String params = var.sqlParams?.sqlParams?.collect{
 					return CampoPermisoUtils.create(it).str;
 				}?.join(",");
 				if(params != null && !params.trim().isEmpty())
 					params = ", " + params;
 				else
-					params = "";	
+					params = "";
 					
-			//Variable con consulta
+				//Variable con consulta
 				varStr += """
-		//${var.name}
-		${entity.clase} ${varName} = ${entity.clase}.find("${var.sql}"${params}).first();
-				"""
+					${entity.clase} ${varName} = ${entity.clase}.find("${var.sql}"${params}).first();
+				""";
+			}
+			else{
+				varStr += """
+					${entity.clase} ${varName} = get${entity.clase}(ids, vars);
+				""";
 			}
 		}
 		return varStr;
 	}
-
+	
 	private String permisoRuleCode(PermisoRuleOr r){
 		return permisoRuleCode(r.getLeft()) + " || " + permisoRuleCode(r.getRight());
 	}
@@ -74,11 +59,13 @@ public class GPermiso {
 
 	private String permisoRuleCode(PermisoRuleCheck r){
 		String out;
-		if (r.getPermiso() != null) {
-			out = """config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("${r.getPermiso().getName()}", action, ids, vars)""";
-			if (r.isNot()){
+		if (r.permiso != null) {
+			String _permiso = r.result;
+			if (!_permiso.equals("_permiso"))
+				_permiso = """ "${_permiso}" """;
+			out = """secure.check("${r.getPermiso().getName()}", ${_permiso}, action, ids, vars)""";
+			if ("is-not".equals(r.op))
 				out = "!" +out;
-			}
 		}
 		else{
 			CampoPermisoUtils campo = CampoPermisoUtils.create(r.left);
@@ -119,27 +106,44 @@ public class GPermiso {
 	}
 	
 	public String permisoCode(){
-		String varStr = "";
-		if (permiso.varSection?.vars != null) {
-			varStr = permisoVarsCode(permiso.getVarSection().getVars());
-		}
-		String ruleStr = permisoRuleCode(permiso.rule);
-		String ret;
-		if(permiso.then.then.equals("grant")){
-			ret = "return resultado;"	
-		}else{
-			ret = "return !resultado;";
-		}
+		String vars = "";
+		if (permiso.varSection?.vars != null)
+			vars = permisoVarsCode(permiso.getVarSection().getVars());
 		
-		String out = """	
-	private boolean ${permiso.name} (String action, Map<String, Long> ids, Map<String, Object> vars){
-		//Variables
-		Agente agente = AgenteController.getAgente();
-		${varStr}
-		boolean resultado = ${ruleStr};
-		${ret}
+		String condiciones = "";
+		if (permiso.ret)
+			condiciones += "return ${getMetodoCheck(permiso.ret)}(_permiso);";
+		for (PermisoWhen when: permiso.whens){
+			condiciones += """
+				if (${permisoRuleCode(when.rule)})
+					return ${getMetodoCheck(when.ret)}(_permiso);
+			""";
+		}
+		String elseCondicion = "";
+		if (permiso.getElse())
+			elseCondicion = "return ${getMetodoCheck(permiso.getElse())}(_permiso);";
+		else if(permiso.ret == null)
+			elseCondicion = "return false;";
+				
+		return """	
+			private boolean ${permiso.name} (String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars){
+				//Variables
+				Agente agente = AgenteController.getAgente();
+				${vars}
+				Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+				${condiciones}
+				${elseCondicion}
+			}
+		""";
 	}
-""";
-	return out;
+	
+	private static String getMetodoCheck(PermisoReturn p){
+		if(p.ret.equals("editable"))
+			return "checkIsEditableOrLess";
+		if(p.ret.equals("visible"))
+			return "checkIsVisibleOrLess";
+		if(p.ret.equals("none"))
+			return "checkIsNone";
 	}
+	
 }

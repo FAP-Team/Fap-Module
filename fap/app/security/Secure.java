@@ -22,18 +22,33 @@ abstract public class Secure {
 		this.next = next;
 	}
 
-	public abstract boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars);
+	public abstract boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars);
 	
-	protected boolean nextCheck(String id, String action, Map<String, Long> ids, Map<String, Object> vars){
+	protected boolean nextCheck(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars){
 		boolean result = false;
 		if(next != null){
-			result = next.check(id, action, ids, vars);
+			result = next.check(id, _permiso, action, ids, vars);
 		}else{
 			logger.error("[" + id + "] - nextCheck con next = null. Se asume que el permiso no se cumple.");
 		}
 		return result;
 	}
 	
+	public static boolean checkIsEditableOrLess(String _permiso){
+		return "editable".equals(_permiso) || "visible".equals(_permiso) || "none".equals(_permiso);
+	}
+	
+	public static boolean checkIsVisibleOrLess(String _permiso){
+		return "visible".equals(_permiso) || "none".equals(_permiso);
+	}
+	
+	public static boolean checkIsNone(String _permiso){
+		return "none".equals(_permiso);
+	}
+	
+	/*
+	 * Comprueba que el String action contiene uno de los 4 posibles valores válidos
+	 */
 	public static boolean checkAction(String action){
 		return ("leer".equals(action) || "editar".equals(action) || "crear".equals(action) || "borrar".equals(action));
 	}

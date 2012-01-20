@@ -19,7 +19,7 @@
 	if(siCampo != null && siCampoValue == null)
 		throw new play.exceptions.TagInternalException("SiCampoValue no definido");
 			
-	def visible = _visible != null? _visible : true
+	def borde = _borde != null? _borde : true
 	
 	def valueCampo = null
 	if (siCampo != null) {
@@ -37,7 +37,7 @@
 
 	#{fap.permiso permiso:permiso}
 
-	#{if visible}
+	#{if borde}
 		<div id="${id}" class="grupo">
 			#{if _titulo}
 				<p class="grupo-header">${_titulo}</p>

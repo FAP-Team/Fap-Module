@@ -23,10 +23,12 @@ import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Formulario
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.PermisoVar
 import es.fap.simpleled.led.Type
 import es.fap.simpleled.led.Pagina
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.impl.AttributeImpl;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
 import generator.utils.HashStack.HashStackName;
 
@@ -129,40 +131,56 @@ public class End implements IWorkflowComponent {
    * en la hashStack
    * @return
    */
-  private String permisos(){	  
-	  String clazzName = Start.generatingModule ? "SecureFap" : "SecureApp"; 
-	  String clazzGenName = clazzName + "Gen";
+	private String permisos(){	  
+		String clazzName = Start.generatingModule ? "SecureFap" : "SecureApp"; 
+		String clazzGenName = clazzName + "Gen";
+		def permisos = [];
+		def permisosCode = "";
+		def switchCode = "";
+		Map<String, Entity> variables = new HashMap<String, Entity>();
 	  
-	  def permisos = [];
-	  def permisosCode = "";
-	  def switchCode = "";
-	  for(Object o in HashStack.allElements(HashStackName.PERMISSION)){
-		  GPermiso permiso = (GPermiso)o
-		  permisos.add(permiso)
-	  	  permisosCode += permiso.permisoCode()
-		
-		  String permisoName = permiso.permiso.name;	
-		  if(switchCode.isEmpty()){
-			  	
-		  	switchCode = """
-		if("${permisoName}".equals(id))
-			return ${permisoName}(action, ids, vars);
-"""	
-		  }else{
-		  switchCode += """
-		else if("${permisoName}".equals(id))
-			return ${permisoName}(action, ids, vars);
-	  """
-		  }
-	  }
-	  
+		for(Object o in HashStack.allElements(HashStackName.PERMISSION)){
+			GPermiso permiso = (GPermiso)o;
+			if (permiso.permiso.varSection != null){
+				for(PermisoVar var : permiso.permiso.varSection.vars)
+					variables.put(var.tipo.name, var.tipo);
+			}
+			permisos.add(permiso)
+			permisosCode += permiso.permisoCode();
+			String permisoName = permiso.permiso.name;	
+			if(switchCode.isEmpty()){
+				switchCode = """
+					if("${permisoName}".equals(id))
+						return ${permisoName}(_permiso, action, ids, vars);
+				""";	
+			}
+			else{
+				switchCode += """
+					else if("${permisoName}".equals(id))
+						return ${permisoName}(_permiso, action, ids, vars);
+				"""
+			}
+		}
 	  	  
-	  // Permisos generados
+		String vars = "";
+		for (Entity e: variables.values()){
+			EntidadUtils entidad = EntidadUtils.create(e);
+			vars += """
+				public ${entidad.clase} get${entidad.clase}(Map<String, Long> ids, Map<String, Object> vars){
+					if (vars != null && vars.containsKey("${entidad.variable}"))
+						return (${entidad.clase}) vars.get("${entidad.variable}");
+					else if (ids != null && ids.containsKey("${entidad.id}"))
+						return ${entidad.clase}.findById(ids.get("${entidad.id}"));
+					${entidad.isSingleton()? "return ${entidad.clase}.get(${entidad.clase}.class);" : "return null;"}
+				}
+			""";
+		}
+		
+		// Permisos generados
 		String secureGen = """
 package security;
 
 import java.util.Map;
-
 import models.*;
 import controllers.fap.AgenteController;
 
@@ -173,19 +191,21 @@ public class ${clazzGenName} extends Secure {
 	}
 
 	@Override
-	public boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars) {
-${switchCode}		
-		return nextCheck(id, action, ids, vars);
+	public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {
+		${switchCode}		
+		return nextCheck(id, _permiso, action, ids, vars);
 	}
 	
 	${permisosCode}
+
+	${vars}
 }
 """;
 
-FileUtils.overwrite(FileUtils.getRoute('PERMISSION'), "${clazzGenName}.java", secureGen);
-
-  // Permisos manual
-  String secure = """
+		FileUtils.overwrite(FileUtils.getRoute('PERMISSION'), "${clazzGenName}.java", secureGen);
+		
+		// Permisos manual
+		String secure = """
 package security;
 
 import java.util.Map;
@@ -197,23 +217,24 @@ public class ${clazzName} extends Secure {
 	}
 
 	@Override
-	public boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars) {		
-		return nextCheck(id, action, ids, vars);
+	public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {		
+		return nextCheck(id, _permiso, action, ids, vars);
 	}
-}""";
-	  
-	  FileUtils.write(FileUtils.getRoute('PERMISSION'), "${clazzName}.java", secure);
-		}
+}
+""";
+
+		FileUtils.write(FileUtils.getRoute('PERMISSION'), "${clazzName}.java", secure);
+	}
   
   
- private void entitySolicitud() {
-	 EntityImpl solicitud = LedFactory.eINSTANCE.createEntity();
-	 solicitud.setName("Solicitud");
-	 EntityImpl solicitudGen = LedFactory.eINSTANCE.createEntity();
-	 solicitudGen.setName("SolicitudGenerica");
-	 solicitud.setExtends(solicitudGen);
-	 GEntidad.generate(solicitud);
- }
+	private void entitySolicitud() {
+		EntityImpl solicitud = LedFactory.eINSTANCE.createEntity();
+		solicitud.setName("Solicitud");
+		EntityImpl solicitudGen = LedFactory.eINSTANCE.createEntity();
+		solicitudGen.setName("SolicitudGenerica");
+		solicitud.setExtends(solicitudGen);
+		GEntidad.generate(solicitud);
+	}
  
  
  	private void borrarFicherosAntiguos(){

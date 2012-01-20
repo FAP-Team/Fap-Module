@@ -158,6 +158,7 @@ import controllers.fap.*;
 import validation.*;
 import messages.Messages;
 
+import tables.TableRecord;
 import models.*;
 import tags.ReflectionUtils;
 
@@ -355,7 +356,7 @@ public class ${controllerName} extends ${controllerGenName} {
 					${!entidad.nulo()? "${entidad.clase} $entidad.variableDb = ${ControllerUtils.complexGetterCall(almacen, entidad)};":""}
 					${ControllerUtils.fullGetterCall(EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
 					if(!Messages.hasErrors()){
-						${editar && !entidadPagina.nulo()? ControllerUtils.validateCopyCall(this, entidad, saveEntities) : ""}
+						${editar && !entidadPagina.nulo()? ControllerUtils.validateCopyCall("\"editar\"", this, entidad, saveEntities) : ""}
 					}
 					if(!Messages.hasErrors()){
 						${nameEditar}ValidateRules(${StringUtils.params(
@@ -413,7 +414,7 @@ public class ${controllerName} extends ${controllerGenName} {
 					${ControllerUtils.almacenGetterCall(ultimoAlmacen);}
 					${ControllerUtils.fullGetterCall(EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
 					if(!Messages.hasErrors()){
-						${!entidadPagina.nulo()? ControllerUtils.validateCopyCall(this, entidad, saveEntities) : ""}
+						${!entidadPagina.nulo()? ControllerUtils.validateCopyCall("\"crear\"", this, entidad, saveEntities) : ""}
 					}
 					if(!Messages.hasErrors()){
 						crearValidateRules(${StringUtils.params(
@@ -786,9 +787,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.container = pagina;
 		controller.index = true;
 		controller.findPaginaReferencias(pagina);
-		controller.crear = controller.crear && pag.hasForm || controller.accionCrear.crearSiempre;
-		controller.editar = controller.editar && pag.hasForm || controller.accionEditar.crearSiempre;
-		controller.borrar = controller.borrar && pag.hasForm || controller.accionBorrar.crearSiempre;
+		controller.crear = controller.crear && (pag.hasForm || controller.accionCrear.crearSiempre);
+		controller.editar = (controller.editar || controller.crear) && (pag.hasForm || controller.accionEditar.crearSiempre);
+		controller.borrar = controller.borrar && (pag.hasForm || controller.accionBorrar.crearSiempre);
 		controller.saveController = [];
 		controller.campo = pag.campo;
 		controller.renderView = "\"gen/${pagina.name}/${pagina.name}.html\"";
@@ -893,7 +894,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (accionEditar == null)
 			accionEditar = LedFactory.eINSTANCE.createAccion();
 		if (accionEditar.boton == null)
-			accionEditar.boton = "Editar";
+			accionEditar.boton = "Guardar";
 		if (accionEditar.mensajeOk == null){
 			if (o instanceof Popup)
 				accionEditar.mensajeOk = "Registro actualizado correctamente";
@@ -961,7 +962,7 @@ public class ${controllerName} extends ${controllerGenName} {
 				crear = borrar = editar = true;
 			if (tabla.paginaCrear != null && tabla.paginaCrear.name.equals(pagina.name))
 				crear = true;
-			if (tabla.paginaModificar != null && tabla.paginaModificar.name.equals(pagina.name))
+			if (tabla.paginaEditar != null && tabla.paginaEditar.name.equals(pagina.name))
 				editar = true;
 			if (tabla.paginaBorrar != null && tabla.paginaBorrar.name.equals(pagina.name))
 				borrar = true;
@@ -988,11 +989,18 @@ public class ${controllerName} extends ${controllerGenName} {
 				crear = borrar = editar = true;
 			if (tabla.popupCrear != null && tabla.popupCrear.name.equals(popup.name))
 				crear = true;
-			if (tabla.popupModificar != null && tabla.popupModificar.name.equals(popup.name))
+			if (tabla.popupEditar != null && tabla.popupEditar.name.equals(popup.name))
 				editar = true;
 			if (tabla.popupBorrar != null && tabla.popupBorrar.name.equals(popup.name))
 				borrar = true;
 		}
+	}
+	
+	public Accion getAccion(String accion){
+		if ("editar".equals(accion)) return accionEditar;
+		if ("crear".equals(accion)) return accionCrear;
+		if ("borrar".equals(accion)) return accionBorrar;
+		return null;
 	}
 	
 	/*
@@ -1016,7 +1024,9 @@ public class ${controllerName} extends ${controllerGenName} {
 					entidadId = "'${entidad.id}':${campo.idWithNullCheck()}";
 			}
 		}
-		String redirigirAnterior = "'redirigir': 'anterior'";
+		String redirigirAnterior = "";
+		if (getAccion(accion)?.anterior)
+			redirigirAnterior = "'redirigir': 'anterior'";
 		List<String> intermediasStr = intermedias.collect {"'${it.id}':${it.idCheck}"};
 		String ids = ", [${StringUtils.params(accionParam, almacenId, entidadId, intermediasStr, redirigirAnterior)}]";
 		String link = """play.mvc.Router.reverse("${controllerFullName}.index" ${ids})""";

@@ -185,14 +185,14 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		checkTablaCampoPopup(tabla, tabla.getPopup(), concatenado, LedPackage.Literals.TABLA__POPUP);
 		checkTablaCampoPopup(tabla, tabla.getPopupBorrar(), concatenado, LedPackage.Literals.TABLA__POPUP_BORRAR);
 		checkTablaCampoPopup(tabla, tabla.getPopupCrear(), concatenado, LedPackage.Literals.TABLA__POPUP_CREAR);
-		checkTablaCampoPopup(tabla, tabla.getPopupModificar(), concatenado, LedPackage.Literals.TABLA__POPUP_MODIFICAR);
-		checkTablaCampoPopup(tabla, tabla.getPopupVer(), concatenado, LedPackage.Literals.TABLA__POPUP_VER);
+		checkTablaCampoPopup(tabla, tabla.getPopupEditar(), concatenado, LedPackage.Literals.TABLA__POPUP_EDITAR);
+		checkTablaCampoPopup(tabla, tabla.getPopupLeer(), concatenado, LedPackage.Literals.TABLA__POPUP_LEER);
 		
 		checkTablaCampoPagina(tabla, tabla.getPagina(), concatenado, LedPackage.Literals.TABLA__PAGINA);
 		checkTablaCampoPagina(tabla, tabla.getPaginaBorrar(), concatenado, LedPackage.Literals.TABLA__PAGINA_BORRAR);
 		checkTablaCampoPagina(tabla, tabla.getPaginaCrear(), concatenado, LedPackage.Literals.TABLA__PAGINA_CREAR);
-		checkTablaCampoPagina(tabla, tabla.getPaginaModificar(), concatenado, LedPackage.Literals.TABLA__PAGINA_MODIFICAR);
-		checkTablaCampoPagina(tabla, tabla.getPaginaVer(), concatenado, LedPackage.Literals.TABLA__PAGINA_VER);
+		checkTablaCampoPagina(tabla, tabla.getPaginaEditar(), concatenado, LedPackage.Literals.TABLA__PAGINA_EDITAR);
+		checkTablaCampoPagina(tabla, tabla.getPaginaLeer(), concatenado, LedPackage.Literals.TABLA__PAGINA_LEER);
 	}
 	
 	@Check

@@ -3,42 +3,37 @@
 	def mensaje = _mensaje; // Mensaje que se muestra si no es visible
 	def visible = true;
 	def editable = true;
+	def accion = play.mvc.Controller.renderArgs.get("accion");
+	
+	if (accion == null)
+		accion = "editar";
 	
 	// Siempre miramos primero el permiso que esté en la pila
 	def visiblePila = tags.TagMapStack.top("visible");
-	if ((visiblePila != null) && (visiblePila != true)) {
+	if ((visiblePila != null) && (visiblePila != true))
 		visible = false;
-	}
-	
 	
 	def editablePila = tags.TagMapStack.top("editable");
-	if ((editablePila != null) && (editablePila != true)) {
+	if ((editablePila != null) && (editablePila != true))
 		editable = false;
-	}
 		
 	if (permiso != null) {
 		def secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
-		def newPermisoUpdate = secure.check(permiso, "editar", tags.TagMapStack.top("idParams"), null); 
-		if (editablePila != null) {
+		def newPermisoUpdate = secure.check(permiso, "editable", accion, tags.TagMapStack.top("idParams"), null); 
+		if (editablePila != null)
 			editable = editablePila && newPermisoUpdate;
-		} 
-		else {
+		else
 			editable = newPermisoUpdate;
-		}
 		tags.TagMapStack.push("editable", editable);
 
-
-		def newPermisoRead = secure.check(permiso, "leer", tags.TagMapStack.top("idParams"), null); 
-		if (visiblePila != null) {
+		def newPermisoRead = secure.check(permiso, "visible", accion, tags.TagMapStack.top("idParams"), null); 
+		if (visiblePila != null)
 			visible = visiblePila && newPermisoRead;	
-		} 
-		else {
+		else
 			visible = newPermisoRead;
-		}
 		tags.TagMapStack.push("visible", visible);
 	}
-	visible = visible || editable
-	
+	visible = visible || editable;
 %}
 
 #{if visible}

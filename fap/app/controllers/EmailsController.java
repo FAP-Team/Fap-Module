@@ -9,12 +9,12 @@ import emails.Mails;
 			
 public class EmailsController extends EmailsControllerGen {
 
-    public static void actualizarDesdeFichero(Long idMail) {
+    public static void actualizarDesdeFichero() {
         Mail.deleteAll();
         long count = Mails.loadFromFiles();
         Messages.ok("Se cargaron desde fichero " + count + " registros");
         Messages.keep();
-        redirect( "EmailsController.index");
+        redirect( "EmailsController.index", "editar");
     }
 	
 }

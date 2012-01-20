@@ -12,7 +12,7 @@
 	def siComboValue = _siComboValue	
 }%
 	
-	#{fap.grupo titulo:label, siCombo:siCombo, siComboValue:siComboValue, visible:grupoVisible}
+	#{fap.grupo titulo:label, siCombo:siCombo, siComboValue:siComboValue, borde:grupoVisible}
 		#{fap.texto id:id + '_entidad', titulo:play.i18n.Messages.get('fap.tags.personajuridica.entidad'), campo:campo + '.entidad', requerido:requerido, obj:obj /}		
 		#{fap.texto id:id + '_cif', titulo:play.i18n.Messages.get('fap.tags.personajuridica.cif'), campo:campo + '.cif', requerido:requerido, obj:obj /}
 	#{/fap.grupo}

@@ -19,10 +19,6 @@
 		
 	def recargarPagina = _recargarPagina;
 	
-	def permisoCrear = false;
-	def permisoEditar = false;
-	def permisoBorrar = false;
-	def permisoLeer = false;
 	
 	String popupCrear = _popupCrear;
 	String popupEditar = _popupEditar;
@@ -34,68 +30,18 @@
 	String urlPopupBorrar = _urlPopupBorrar;
 	String urlPopupLeer = _urlPopupLeer;
 	
-	if (urlPopupCrear != null) {
-		if (_permisoPopupCrear != null) 
-			permisoCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupCrear", "crear", tags.TagMapStack.top("idParams"), null);
-		else
-			permisoCrear = true;
-	}
-	if (urlPopupBorrar != null) {
-		if (_permisoPopupBorrar != null) 
-			permisoBorrar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupBorrar", "borrar", tags.TagMapStack.top("idParams"), null);
-		else
-			permisoBorrar = true;
-	}
-	if (urlPopupEditar != null) {
-		if (_permisoPopupEditar != null) 
-			permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupEditar", "editar", tags.TagMapStack.top("idParams"), null);
-		else
-			permisoEditar = true;
-		if ((permisoCrear) || (permisoBorrar))
-			permisoEditar = true;
-	}
-	if (urlPopupLeer != null) {
-		if (_permisoPopupLeer != null) 
-			permisoLeer = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPopupLeer", "leer", tags.TagMapStack.top("idParams"), null);
-		else
-			permisoLeer = true;
-		if ((permisoCrear) || (permisoBorrar) || (permisoEditar))
-			permisoLeer = true;
-	}
-	
 	String urlPaginaCrear = _urlPaginaCrear;
 	String urlPaginaEditar = _urlPaginaEditar;
 	String urlPaginaBorrar = _urlPaginaBorrar;
 	String urlPaginaLeer = _urlPaginaLeer;
 	
-	if (urlPaginaCrear != null) {
-		if (_permisoPaginaCrear != null) 
-			permisoCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaCrear", "crear", tags.TagMapStack.top("idParams"), null);
-		else
-			permisoCrear = true;
-	}
-	if (urlPaginaBorrar != null) {
-		if (_permisoPaginaBorrar != null) 
-			permisoBorrar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaBorrar", "borrar", tags.TagMapStack.top("idParams"), null);
-		else
-			permisoBorrar = true;
-	}
-	if (urlPaginaEditar != null) {
-		if (_permisoPaginaEditar != null) 
-			permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaEditar", "editar", tags.TagMapStack.top("idParams"), null);
-		else
-			permisoEditar = true;
-		if ((permisoCrear) || (permisoBorrar))
-			permisoEditar = true;
-	}
-	if (urlPaginaLeer != null) {
-		if (_permisoPaginaLeer != null) 
-			permisoLeer = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoPaginaLeer", "leer", tags.TagMapStack.top("idParams"), null);
-		else
-			permisoLeer = true;
-		if ((permisoCrear) || (permisoBorrar) || (permisoEditar))
-			permisoLeer = true;
-	}
+	boolean botonCrear = urlPaginaCrear || urlPopupCrear;
+	boolean botonEditar = urlPaginaEditar || urlPopupEditar;
+	boolean botonBorrar = urlPaginaBorrar || urlPopupBorrar;
+	boolean botonLeer = urlPaginaLeer || urlPopupLeer;
+	
+	if (_permisoCrear != null)
+		botonCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoCrear", "none", "crear", tags.TagMapStack.top("idParams"), null);
 	
 	def modelName = id + "_model";
 	Set<String> campos = new HashSet<String>();
@@ -116,12 +62,13 @@
 			if (!Ext.ModelManager.isRegistered('${modelName}')){
 				Ext.define('${modelName}',{
         			extend: 'Ext.data.Model',
+        			idProperty: 'objeto.id',
         			fields:[
 						#{list campos, as:'columna_campo'}
 			    			{
 			    				%{def columna_campo_split = columna_campo.split("\\.")}%
 								name : '#{fap.campo2id columna_campo /}',
-			    			    mapping : '${columna_campo_split[0]}'
+			    			    mapping : 'objeto.${columna_campo_split[0]}'
 			    			    #{if columna_campo_split.length > 1}
 			    			    ,
 			    			    convert : function(${columna_campo_split[0]}, record){
@@ -134,11 +81,11 @@
 			    			    	}
 			    			    }
 			    			    #{/if}
-			    			}
-			    			#{if !columna_campo_isLast}
-			    			,
-							#{/if}
+			    			},
 			    		#{/list}
+			    		{name: 'permisoLeer', mapping: 'permisoLeer'},
+			    		{name: 'permisoEditar', mapping: 'permisoEditar'},
+			    		{name: 'permisoBorrar', mapping: 'permisoBorrar'}
 					]
 		    	});
 			}
@@ -162,7 +109,7 @@
 		    });
 
 			
-			#{if permisoEditar}
+			#{if botonEditar}
 			
 		    var boton_editar = new Ext.Button({
 		    	text: 'Editar',
@@ -183,29 +130,31 @@
 		    	}
 		    });
 			
-
-		    
-		    var editRow = new Ext.create('Ext.grid.plugin.Editing', {
+			var editRow = new Ext.create('Ext.grid.plugin.Editing', {
 		    	clicksToEdit: 2,
 	    	   	startEdit: function(record, columnHeader) {
 					var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+					var registro = store.getAt(store.find("id", selected_id));
+		    		if (registro.get("permisoEditar")){
 					#{if urlPopupEditar}
 		   				popup_open(
 		   					"${popupEditar}_popup",
 			   				replaceId("${urlPopupEditar}", "${_idEntidad}", selected_id),
 		   					reload
 		   				);
-		   				
+
 		   			#{/if}
 					#{elseif urlPaginaEditar}
 						window.location.href = replaceId("${urlPaginaEditar}", "${_idEntidad}", selected_id);
 					#{/elseif}
         			}
+        		}
     		});
+		
 		    #{/if}
 
 		    
-			#{if permisoLeer}
+			#{if botonLeer}
 			
 		    var boton_leer = new Ext.Button({
 				text: 'Ver',
@@ -225,26 +174,28 @@
 	    		}
 		    });
 			
-		  		#{if !permisoEditar}
-		    		var editRow = new Ext.create('Ext.grid.plugin.Editing', {
-	            		clicksToEdit: 2,
-    	        		startEdit: function(record, columnHeader) {
-    						var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-    						#{if urlPopupLeer}
-			   					popup_open(
-			   						"${popupLeer}_popup",
-			   						replaceId("${urlPopupLeer}", "${_idEntidad}", selected_id)
-			   					);
-			   				#{/if}
-			   				#{elseif urlPaginaLeer}
-								window.location.href = replaceId("${urlPaginaLeer}", "${_idEntidad}", selected_id);
-							#{/elseif}
-            			}
-        			});
-	    		#{/if}
+		    var readRow = new Ext.create('Ext.grid.plugin.Editing', {
+		    	clicksToEdit: 2,
+				startEdit: function(record, columnHeader) {
+    				var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+    				var registro = store.getAt(store.find("id", selected_id));
+		    		if (!registro.get("permisoEditar") && registro.get("permisoLeer")){	
+    				#{if urlPopupLeer}
+			   			popup_open(
+			   				"${popupLeer}_popup",
+			   				replaceId("${urlPopupLeer}", "${_idEntidad}", selected_id)
+			   			);
+			   		#{/if}
+					#{elseif urlPaginaLeer}
+						window.location.href = replaceId("${urlPaginaLeer}", "${_idEntidad}", selected_id);
+					#{/elseif}
+            		}
+				}
+			});
+			
 		    #{/if}
 
-			#{if permisoBorrar}
+			#{if botonBorrar}
 			
 		    var boton_borrar = new Ext.Button({
 		    	text: 'Borrar',
@@ -266,7 +217,7 @@
 		    });
 		    #{/if}
 
-			#{if permisoCrear}
+			#{if botonCrear}
 		   
 		    var boton_crear = new Ext.Button({
 		    	text: 'Nuevo',
@@ -320,10 +271,10 @@
 				id: '${id}-grid',
 				height: ${alto},
 				title: '${titulo}',
-			    #{if permisoEditar || permisoLeer}
+			    #{if botonEditar || botonLeer}
 				plugins: [
-				            editRow
-				      	 ],
+					editRow, readRow
+				],
 	            #{/if}
 				dockedItems: [
 					{
@@ -343,16 +294,16 @@
 						#{if seleccionable}
 				            boton_select,
 			            #{/if}
-						#{if permisoCrear}
+						#{if botonCrear }
 			            	boton_crear,
 			            #{/if}
-			           	#{if permisoEditar}
+			           	#{if botonEditar}
 				        	boton_editar,
 				        #{/if}
-			           	#{if permisoBorrar}
+			           	#{if botonBorrar}
 				        	boton_borrar,
 				        #{/if}
-			           	#{if permisoLeer}
+			           	#{if botonLeer}
 				        	boton_leer,
 				        #{/if}
 			            boton_actualizar
@@ -365,29 +316,41 @@
 				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
 		    });
 		   			   	
-		    #{if ((permisoCrear) || (permisoEditar) || (permisoLeer) || (permisoBorrar))}
 		    grid.addListener("selectionchange", function(){
-		    	var hasSelection = grid.getSelectionModel().hasSelection();
-			    #{if permisoEditar}
-		    		boton_editar.setDisabled(!hasSelection);
-			    #{/if}
-			    #{if permisoLeer}
-		    		boton_leer.setDisabled(!hasSelection);
-			    #{/if}
-			    #{if permisoBorrar}
-		    		boton_borrar.setDisabled(!hasSelection);
-			    #{/if}
+		    
+		    	if ( grid.getSelectionModel().hasSelection()){
+		    		var registro = store.getAt(store.find("id", grid.getSelectionModel().getSelection()[0].internalId));
+		    		
+		    		#{if botonLeer}
+		    		boton_leer.setDisabled(!registro.get("permisoLeer"));
+			    	#{/if}
+		    		#{if botonEditar}
+		    		boton_editar.setDisabled(!registro.get("permisoEditar"));
+			    	#{/if}
+			    	#{if botonBorrar}
+		    		boton_borrar.setDisabled(!registro.get("permisoBorrar"));
+			    	#{/if}
+		    	}
+		    	else{
+		    		#{if botonLeer}
+		    		boton_leer.setDisabled(true);
+			    	#{/if}
+		    		#{if botonEditar}
+		    		boton_editar.setDisabled(true);
+			    	#{/if}
+			    	#{if botonBorrar}
+		    		boton_borrar.setDisabled(true);
+			    	#{/if}
+		    	}
+		 
 		    });
-		    #{/if}
 
-		    #{if ((permisoCrear) || (permisoEditar) || (permisoLeer) || (permisoBorrar))}
 			function reload(){
 				store.load();
 				#{if recargarPagina}
 					window.location.reload();
 				#{/if}
 			};
-		    #{/if}
 		    
 		   	$('#${id}').data('grid', grid);
 		   	

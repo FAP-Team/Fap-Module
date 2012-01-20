@@ -30,7 +30,7 @@ public class SoporteController extends SoporteControllerGen {
 		}
 
 		if(!Messages.hasErrors()){
-			SoporteValidateCopy(dbIncidencia, incidencia);
+			SoporteValidateCopy("crear", dbIncidencia, incidencia);
 		}
 		Long idIncidencia;
 		if(!Messages.hasErrors()){

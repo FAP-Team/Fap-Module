@@ -9,7 +9,7 @@ Formulario Principal {
 	
 	Pagina Solicitudes{
 		
-		Tabla listaSolicitudes titulo="Mis Solicitudes" campo=SolicitudGenerica paginaModificar=EditarSolicitud paginaCrear=NuevaSolicitud permiso=solicitudes {
+		Tabla listaSolicitudes titulo="Mis Solicitudes" campo=SolicitudGenerica paginaLeer=LeerSolicitud paginaEditar=EditarSolicitud paginaCrear=NuevaSolicitud permiso=solicitudes {
 			Columna campo=SolicitudGenerica.id titulo="ID" ancho="40"
 			Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
 			Columna campo=SolicitudGenerica.estado titulo="Estado Interno" ancho="80" permiso=noVisibleUsuario
@@ -23,6 +23,8 @@ Formulario Principal {
 	
 	Pagina NuevaSolicitud campo=SolicitudGenerica permiso=nuevaSolicitud {}
 	
-	Pagina EditarSolicitud campo=SolicitudGenerica {}
+	Pagina EditarSolicitud campo=SolicitudGenerica permiso=editarSolicitud {}
+	
+	Pagina LeerSolicitud campo=SolicitudGenerica {}
 	
 }

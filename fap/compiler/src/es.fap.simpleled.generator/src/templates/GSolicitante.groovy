@@ -83,7 +83,7 @@ public class GSolicitante {
 			c.setName("${combo}");
 			
 			grupoCheckRepFisica.setSiCombo(c);
-			grupoCheckRepFisica.setVisible("false");
+			grupoCheckRepFisica.setBorde("false");
 			
 			Check check = new CheckImpl();
 			check.setName("checkRepresentante");
@@ -93,7 +93,7 @@ public class GSolicitante {
 			Grupo grupoRepFisica = new GrupoImpl();
 			grupoRepFisica.setSiCheck(check);
 			grupoRepFisica.setSiCheckValues("true");
-			grupoRepFisica.setVisible("false");
+			grupoRepFisica.setBorde("false");
 			
 			Persona persona = new PersonaImpl();
 			persona.setTitulo("Representante");
@@ -149,7 +149,7 @@ public class GSolicitante {
 			c.setName("${combo}");
 			
 			grupoCheckRepFisica.setSiCombo(c);
-			grupoCheckRepFisica.setVisible("false");
+			grupoCheckRepFisica.setBorde("false");
 		
 			Tabla tabla = new TablaImpl();
 			

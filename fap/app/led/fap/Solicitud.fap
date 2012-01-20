@@ -4,7 +4,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Tabla tablaCEconomicos 
 			titulo="Conceptos económicos"
 			campo=SolicitudGenerica.ceconomicos
-			popupModificar=PopupCEConomicos
+			popupEditar=PopupCEConomicos
 		{
 			Columna campo=CEconomico.tipo.nombre titulo="Concepto" expandir
 			Columna campo=CEconomico.valorEstimado titulo="Valor estimado" 		
@@ -28,8 +28,8 @@ ${cEconomico.tipo.descripcion}
 		    titulo="Documentos nuevos pendientes de aportar" 
 		    campo=SolicitudGenerica.aportaciones.actual.documentos
 			popupBorrar=PopUpDocProcesos
-			popupModificar=PopUpDocProcesos  
-			popupVer=PopUpDocProcesos
+			popupEditar=PopUpDocProcesos  
+			popupLeer=PopUpDocProcesos
 			paginaCrear=DocumentosAportacion
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
@@ -52,7 +52,7 @@ ${cEconomico.tipo.descripcion}
 	Pagina AportacionAportados {		
 		Tabla documentos titulo="Documentos Presentados" 
 		    campo=SolicitudGenerica.documentacion.documentos
-			popupVer=PopUpDocPresentados
+			popupLeer=PopUpDocPresentados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80" 
 			Columna campo=Documento.descripcion titulo="Tipo" expandir
@@ -66,7 +66,7 @@ ${cEconomico.tipo.descripcion}
 	Pagina AportacionRecibos {
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permiso=aportacionNoNull
-			popupVer=PopUpDocAportados
+			popupLeer=PopUpDocAportados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
@@ -98,7 +98,7 @@ ${cEconomico.tipo.descripcion}
 				Boton botonModificarBorrador titulo="Modificar datos"
 			}
 			
-			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio visible=false {
+			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
 				Wiki estilo ="box-warn box" {
 					"Se produjo un error en la presentación de la aportación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
 				}
@@ -124,7 +124,7 @@ ${cEconomico.tipo.descripcion}
 	}
 	
 	Pagina Verificacion titulo="Verificación de la documentación" {
-		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
+		Grupo verificacionMensaje borde=false/*permiso=mensajeVerificacion*/ {
 			Wiki {"
 Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
 				"}
@@ -205,7 +205,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 		}
 					
 		Tabla registros titulo="Aportación de documentación y subsanaciones" campo=SolicitudGenerica.documentacionAportada.documentos
-			popupVer=PopUpDocAportados
+			popupLeer=PopUpDocAportados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"

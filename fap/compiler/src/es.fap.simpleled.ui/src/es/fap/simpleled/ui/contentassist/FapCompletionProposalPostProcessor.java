@@ -6,8 +6,8 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalPostProcesso
 public class FapCompletionProposalPostProcessor implements ICompletionProposalPostProcessor{
 
 	/*
-	 * Se ha comentado ese extracto de la función para modificar el comportamiento por defecto del autocompletado de Xtext
-	 * en lo referente a no insertar automaticamente la propuesta de autocompletado cuando ésta es única.
+	 * Se ha comentado ese extracto de la funciÃ³n para modificar el comportamiento por defecto del autocompletado de Xtext
+	 * en lo referente a no insertar automaticamente la propuesta de autocompletado cuando esta es Ãºnica.
 	 */
 	public ICompletionProposal[] postProcess(ICompletionProposal[] proposals) {
 //		if (proposals.length == 1) {

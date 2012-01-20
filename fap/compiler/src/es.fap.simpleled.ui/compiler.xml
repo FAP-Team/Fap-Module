@@ -1,0 +1,53 @@
+<project name="fap-generator" default="clean-compile">
+	<property name="build.dir" value="bin" />
+	<property name="src.dir" value="src" />
+	<property name="src.gen.dir" value="src-gen" />
+	<property name="dist.dir" value="dist" />
+	<property name="xtext.lib.dir" value="../../lib" />
+	<property name="xtext.project.bin.dir" value="../es.fap.simpleled/bin" />
+	
+	<path id="classpath">
+		<fileset dir="${xtext.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement path="${xtext.project.bin.dir}" />
+	</path>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${build.dir}" />
+		<javac destdir="${build.dir}" classpathref="classpath"
+			includeantruntime="false" encoding="utf-8">
+			<src path="${src.dir}" />
+			<src path="${src.gen.dir}" />
+		</javac>
+		<copy todir="${build.dir}">
+			<fileset dir=".">
+				<include name="META-INF/MANIFEST.MF" />
+				<include name="plugin.xml" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="clean-compile">
+		<antcall target="clean" />
+		<antcall target="compile" />
+	</target>
+
+	<target name="dist">
+		<antcall target="clean-compile" />
+		<property name="manifestFile" value="META-INF/MANIFEST.MF" />
+		<jar destfile="${dist.dir}/es.fap.simpleled.ui.jar" basedir="${build.dir}"
+			manifest="${manifestFile}" />
+
+		<!-- <antcall target="clean-all" /> <delete dir="${dist.dir}" /> <mkdir 
+			dir="${dist.dir}" /> <property name="manifestFile" value="META-INF/MANIFEST.MF" 
+			/> <jar destfile="${dist.dir}/es.fap.simpleled.jar" basedir="${build.dir}" 
+			manifest="${manifestFile}" /> -->
+	</target>
+
+
+</project>

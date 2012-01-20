@@ -5,8 +5,6 @@
 	<property name="src.gen.dir" value="src-gen" />
 	<property name="dist.dir" value="dist" />
 	<property name="xtext.lib.dir" value="../../lib" />
-	<!--property name="xtext.lib.dir" value="../../fap/compiler/lib" /-->
-
 
 	<path id="classpath">
 		<fileset dir="${xtext.lib.dir}">
@@ -19,12 +17,11 @@
 		<delete dir="${build.dir}" />
 	</target>
 
-
 	<target name="generate">
 		<java classname="org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher" classpathref="classpath" fork="true" failonerror="true">
 			<jvmarg value="-Xmx512m" />
 			<arg value="es.fap.simpleled.Led" />
-			<sysproperty key="file.encoding" value="UTF-8"/>
+			<sysproperty key="file.encoding" value="UTF-8" />
 		</java>
 	</target>
 
@@ -38,7 +35,6 @@
 		<copy todir="${build.dir}">
 			<fileset dir="${src.dir}">
 				<include name="**/*.xtext" />
-
 			</fileset>
 			<fileset dir="${src.gen.dir}">
 				<include name="**/*.ecore" />
@@ -46,8 +42,11 @@
 				<include name="**/*.xmi" />
 				<include name="**/*.tokens" />
 			</fileset>
+			<fileset dir=".">
+				<include name="META-INF/MANIFEST.MF" />
+				<include name="plugin.xml" />
+			</fileset>
 		</copy>
-
 	</target>
 
 	<target name="all">
@@ -62,9 +61,11 @@
 
 	<target name="dist">
 		<antcall target="clean-all" />
-		<delete dir="${dist.dir}"/>
-		<mkdir dir="${dist.dir}"/>
-		<jar destfile="${dist.dir}/es.fap.simpleled.jar" basedir="${build.dir}"/>
+		<delete dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<property name="manifestFile" value="META-INF/MANIFEST.MF" />
+		<jar destfile="${dist.dir}/es.fap.simpleled.jar" basedir="${build.dir}" manifest="${manifestFile}" />
 	</target>
-	
+
+
 </project>

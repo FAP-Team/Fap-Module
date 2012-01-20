@@ -14,7 +14,7 @@
 		<fileset dir="${xtext.lib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
-		<pathelement path="${xtext.project.bin.dir}"/>
+		<pathelement path="${xtext.project.bin.dir}" />
 	</path>
 
 	<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath" />

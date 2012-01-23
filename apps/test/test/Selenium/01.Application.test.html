@@ -3,5 +3,6 @@
 #{selenium}
     // Open the home page, and check that no error occured
     open('Principal/solicitudes')
+    waitForPageToLoad()
     assertNotTitle('Application error')
 #{/selenium}

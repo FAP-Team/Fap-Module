@@ -1,5 +1,7 @@
 package json;
 
+
+
 import models.Agente;
 
 import org.junit.Test;
@@ -18,7 +20,7 @@ public class TableRenderResponseTest extends UnitTest {
 	public void emptyRows(){
 		TableRenderResponse<TableRenderResponseTestMock> response = new TableRenderResponse<TableRenderResponseTestMock>(null);
 		String json = response.toJSON("campo1", "campo2");
-		Assert.assertEquals("{\"rows\":[],\"total\":0}", json);
+		Assert.assertEquals("{\"rows\":null}", json); 
 	}
 
 	@Test
@@ -28,6 +30,6 @@ public class TableRenderResponseTest extends UnitTest {
 		mocks.add(new TableRenderResponseTestMock("c", "d"));
 		TableRenderResponse<TableRenderResponseTestMock> response = TableRenderResponse.<TableRenderResponseTestMock>sinPermisos(mocks);
 		String json = response.toJSON("campo1", "campo2");
-		Assert.assertEquals("{\"rows\":[{\"campo1\":\"a\",\"campo2\":\"b\"},{\"campo1\":\"c\",\"campo2\":\"d\"}],\"total\":2}", json);
+		Assert.assertEquals("{\"rows\":[{\"objeto\":{\"campo1\":\"a\",\"campo2\":\"b\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true},{\"objeto\":{\"campo1\":\"c\",\"campo2\":\"d\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true}]}", json);
 	}	
 }

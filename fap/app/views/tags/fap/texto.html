@@ -69,15 +69,16 @@
     	<input class="xlarge" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 	#{/fap.formrow}
 	
-%{
-
-	label_copy = label+" (verificar)";
-	id_copy = id+"copy";
-}%
-	
 	#{if duplicado == true}
+		%{
+			label_copy = label+" (verificar)";
+			id_copy = id+"copy";
+			def value_copy = value;
+			if (messages.Messages.getErrorMessages(id.replaceAll("_", ".")))
+				value_copy = field.copy;
+		}%
 		#{fap.formrow id:id_copy, label:label_copy, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-			<input id="${id_copy}" class="xlarge" type="${passwordText}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+			<input id="${id_copy}" class="xlarge" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 		#{/fap.formrow}
 		
 		<script>

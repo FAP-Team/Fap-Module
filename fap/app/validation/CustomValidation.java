@@ -350,4 +350,18 @@ public class CustomValidation {
 		}
 		return result;
 	}
+	
+	public static ValidationResult compare(String comprobar, String copia) {
+		ValidationResult result = new ValidationResult();
+		System.out.println(comprobar+" - "+copia);
+		if (comprobar.equals(copia))
+			result.ok = true;
+		else {
+			String message = "No coinciden los campos";
+        	String[] variables = new String[0];
+            Validation.addError("solicitud.solicitante.email", message, variables);
+			result.ok = false;
+		}
+		return result;
+    }
 }

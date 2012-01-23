@@ -36,6 +36,12 @@ public class Messages {
         return current().messages.values().toString() + Validation.current().errorsMap();
     }
     
+    public static boolean getErrorMessages (String field){
+    	if (Validation.current().error(field) != null)
+    		return true;
+    	return false;
+    }
+    
     private static List<String> messages(MessageType key) {
         return current().messages.get(key);
     }

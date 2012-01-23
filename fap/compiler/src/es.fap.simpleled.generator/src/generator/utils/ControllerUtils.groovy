@@ -255,6 +255,7 @@ class ControllerUtils {
             if (objeto.campo != null) {
                 out += validate(objeto);
                 out += copy(objeto);
+				//
             }
         }
 
@@ -553,6 +554,9 @@ class ControllerUtils {
 			if (objeto.metaClass.respondsTo(objeto, "isRequerido") && objeto.isRequerido()) {
 				out += required(campo);
 			}
+			if (objeto.metaClass.respondsTo(objeto, "isDuplicar") && (objeto.isDuplicar())){
+				out += duplicated(campo);
+			}
 
         }
         return out;
@@ -601,6 +605,12 @@ class ControllerUtils {
 	private static String validListOfValuesFromTable(String campo){
 		campo = StringUtils.firstLower(campo);
 		return "CustomValidation.validListOfValuesFromTable(\"${campo}\", ${campo});\n";
+	}
+	
+	private static String duplicated (String campo){
+		campo = StringUtils.firstLower(campo);
+		String campo_ = campo.replaceAll("\\.", "_");
+		return "CustomValidation.compare(${campo}, params.get(\"${campo_}copy\"));\n";
 	}
 	
 	public static List<EntidadUtils> getEntityList(Object entities){

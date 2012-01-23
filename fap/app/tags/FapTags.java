@@ -190,7 +190,8 @@ public class FapTags extends FastTags {
         }
         
         field.put("flashorvalue", flashOrValue);
-        
+        String copiar = Flash.current().get(field.get("id").toString()+"copy");
+        field.put("copy", copiar);
         body.setProperty("field", field);
         body.call();
     }

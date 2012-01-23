@@ -35,10 +35,6 @@ Formulario Solicitud {
 			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
 		}
 		
-		Grupo "Test Grupos" {
-			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
-		}
-		
 		Grupo "Paginas" {
 			Enlace "Combo ManytoOne" pagina=ComboTablasPaginas
 			Enlace "Tablas con páginas" pagina=PaginasTablas

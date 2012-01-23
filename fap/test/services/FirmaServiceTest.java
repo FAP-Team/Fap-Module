@@ -60,6 +60,7 @@ public class FirmaServiceTest extends UnitTest {
 	
 	@Test
 	public void validarCertificado(){
+		assumeTrue(hasConnection);
 		String texto = "Texto de prueba para firma";
 		String firma = firmaService.firmarPKCS7(texto);
 		String certificado = firmaService.extraerCertificadoDeFirma(firma);
@@ -71,6 +72,7 @@ public class FirmaServiceTest extends UnitTest {
 
 	@Test
 	public void extraerInformacion(){
+		assumeTrue(hasConnection);
 		String texto = "Texto de prueba para firma";
 		String firma = firmaService.firmarPKCS7(texto);
 		Assert.assertNotNull(firma);

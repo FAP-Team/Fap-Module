@@ -8,6 +8,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -69,7 +70,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		
 		URL wsdlURL = FirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma-pre.wsdl");
 		firmaPlatino = new FirmaService(wsdlURL).getFirmaService();
-
+		
 		WSUtils.configureEndPoint(firmaPlatino, getEndPoint());
 		WSUtils.configureSecurityHeaders(firmaPlatino, propertyPlaceholder);
 
@@ -82,8 +83,9 @@ public class FirmaServiceImpl implements services.FirmaService {
 		boolean hasConnection = false;
 		try {
 			hasConnection = getVersion() != null;
+			log.info("El servicio tiene conexion con " + getEndPoint() + "? :"+hasConnection);
 		}catch(Exception e){
-			log.info("El servicio no tiene coneccion con " + getEndPoint());
+			log.info("El servicio no tiene conexion con " + getEndPoint());
 		}
 		return hasConnection; 
 	}
@@ -96,8 +98,13 @@ public class FirmaServiceImpl implements services.FirmaService {
 
 
 	@Override
-	public String getVersion(){
-		return firmaPlatino.getVersion();
+	public String getVersion() {
+		try {
+			return firmaPlatino.getVersion();
+		} catch (Exception e) {
+			play.Logger.error("firmaPlatino not version: "+e.getMessage());
+		}
+		return null;
 	}
 	
 

@@ -353,7 +353,6 @@ public class CustomValidation {
 	
 	public static ValidationResult compare(String comprobar, String copia) {
 		ValidationResult result = new ValidationResult();
-		System.out.println(comprobar+" - "+copia);
 		if (comprobar.equals(copia))
 			result.ok = true;
 		else {

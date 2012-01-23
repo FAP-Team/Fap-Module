@@ -22,8 +22,6 @@ public interface AedService extends WSService {
 
 	public String getVersion() throws AedExcepcion;
 
-	public AedPortType getPort();
-
 	/**
 	 * Sube un documento a la carpeta temporal del AED El documento debe tener
 	 * tipo
@@ -34,6 +32,51 @@ public interface AedService extends WSService {
 	public String saveDocumentoTemporal(models.Documento documento, File file)
 			throws AedExcepcion;
 
+	/**
+	 * Crea una carpeta donde se van a almacenar los documentos temporales que
+	 * su suban en el archivo.
+	 * 
+	 * El método del servicio no crea carpeta en varios niveles de profundidad
+	 * hay que ir creando la carpeta de cada nivel.
+	 * 
+	 * @param carpeta
+	 * @throws AedExcepcion
+	 */
+	public void crearCarpetaTemporal(String carpeta) throws AedExcepcion;
+
+	/**
+	 * Crea la carpeta temporal en el aed que está configurada en las properties
+	 * 
+	 * @throws AedExcepcion
+	 */
+	public void crearCarpetaTemporal() throws AedExcepcion;
+
+	/**
+	 * Comprueba si existe uan carpeta no clasificada en el archivo
+	 * 
+	 * @param carpeta
+	 *            Ruta de la carpeta que se va a comprobar
+	 * @return
+	 * @throws AedExcepcion
+	 */
+	public boolean existeCarpetaTemporal(String carpeta) throws AedExcepcion;
+
+	/**
+	 * Comprueba si existe la carpeta temporal definida en la property
+	 * "fap.aed.temporales"
+	 * 
+	 * @return
+	 * @throws AedExcepcion
+	 */
+	public boolean existeCarpetaTemporal() throws AedExcepcion;
+
+	/**
+	 * Borra una carpeta temporal
+	 * @param carpeta
+	 * @throws AedExcepcion
+	 */
+	public void borrarCarpetaTemporal(String carpeta) throws AedExcepcion;
+	
 	/**
 	 * Comprueba si un documento está clasificado según el estado de la base de
 	 * datos
@@ -141,8 +184,11 @@ public interface AedService extends WSService {
 
 	/**
 	 * Actualiza las propiedades de un documento
-	 * @param propiedades. Propiedades que se actualizarán. Debe estar seteado el campo y
-	 *                     debe pertenecer a un documento que exista en la base de datos.
+	 * 
+	 * @param propiedades
+	 *            . Propiedades que se actualizarán. Debe estar seteado el campo
+	 *            y debe pertenecer a un documento que exista en la base de
+	 *            datos.
 	 * @throws AedExcepcion
 	 */
 	public void actualizarPropiedades(PropiedadesDocumento propiedades)
@@ -150,6 +196,7 @@ public interface AedService extends WSService {
 
 	/**
 	 * Actualiza las propiedades de un documento
+	 * 
 	 * @param propiedades
 	 * @param clasificado
 	 * @throws AedExcepcion
@@ -159,9 +206,10 @@ public interface AedService extends WSService {
 
 	/**
 	 * Borra un documento del Aed.
-	 * @param documento. Documento que se va a borrar. Debe tener seteados los campos:
-	 *    - uri
-	 *    - clasificado
+	 * 
+	 * @param documento
+	 *            . Documento que se va a borrar. Debe tener seteados los
+	 *            campos: - uri - clasificado
 	 * @throws AedExcepcion
 	 */
 	public void borrarDocumento(models.Documento documento) throws AedExcepcion;

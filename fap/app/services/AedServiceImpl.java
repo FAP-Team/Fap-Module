@@ -41,6 +41,7 @@ import es.gobcan.eadmon.aed.ws.AedPortType;
 import es.gobcan.eadmon.aed.ws.dominio.DocumentoEnUbicacion;
 import es.gobcan.eadmon.aed.ws.dominio.Expediente;
 import es.gobcan.eadmon.aed.ws.dominio.Ubicaciones;
+import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Contenido;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Documento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
@@ -107,7 +108,6 @@ public class AedServiceImpl implements AedService {
 	/* (non-Javadoc)
 	 * @see services.AedService#getPort()
 	 */
-	@Override
 	public AedPortType getPort() {
 		return aed;
 	}
@@ -146,6 +146,7 @@ public class AedServiceImpl implements AedService {
 		documentoAed.setContenido(contenido);
 
 		String ruta = propertyPlaceholder.get("fap.aed.temporales");
+		
 		String uriDocumentoTemporal = aed.crearDocumentoNoClasificado(ruta, documentoAed);
 		
 		documento.uri = uriDocumentoTemporal;
@@ -181,6 +182,107 @@ public class AedServiceImpl implements AedService {
 		DataHandler dataHandler = new DataHandler(dataSource);
 		return dataHandler;
 	}
+	
+
+	/**
+	 * Crea una carpeta donde se van a almacenar los documentos temporales
+	 * que su suban en el archivo.
+	 * 
+	 * El método del servicio no crea carpeta en varios niveles de profundidad
+	 * hay que ir creando la carpeta de cada nivel.
+	 * 
+	 * @param carpeta
+	 * @throws AedExcepcion
+	 */
+	public void crearCarpetaTemporal(String carpeta) throws AedExcepcion {
+		if(carpeta == null)
+			throw new NullPointerException();
+		if(carpeta.isEmpty())
+			throw new IllegalArgumentException();
+		
+		String[] splits = carpeta.split("/");
+		String ruta = "";
+		for(String s : splits){
+			aed.crearCarpetaNoClasificada(ruta, s, null);
+			ruta = ruta.isEmpty() ? s  : ruta + "/" + s;
+		}
+	}
+	
+	/**
+	 * Crea la carpeta temporal en el aed que está configurada
+	 * en la property "fap.aed.temporales"
+	 * 
+	 * @throws AedExcepcion
+	 */
+	public void crearCarpetaTemporal() throws AedExcepcion {
+		String carpeta = propertyPlaceholder.get("fap.aed.temporales");
+		if (carpeta == null || carpeta.isEmpty()) {
+			throw new IllegalStateException(
+					"La property fap.aed.temporales no está configurada en el application.conf");
+		}
+		crearCarpetaTemporal(carpeta);
+	}
+
+	/**
+	 * Comprueba si existe uan carpeta no clasificada en el archivo
+	 * @param carpeta Ruta de la carpeta que se va a comprobar
+	 */
+	public boolean existeCarpetaTemporal(String carpeta) throws AedExcepcion {
+		if(carpeta == null)
+			throw new NullPointerException();
+		if(carpeta.isEmpty())
+			throw new IllegalArgumentException();
+		
+		boolean result = false;
+		try {
+			aed.obtenerCarpetasNoClasificadas(carpeta);
+			//Si no da una excepción, la carpeta existe
+			result = true;
+		}catch(AedExcepcion e){
+			if(e.getFaultInfo().getCodigoError() != CodigoErrorEnum.CARPETA_NO_EXISTE){
+				throw e;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Comprueba si existe la carpeta temporal definida en la property
+	 * "fap.aed.temporales"
+	 */
+	public boolean existeCarpetaTemporal() throws AedExcepcion {
+		String carpeta = propertyPlaceholder.get("fap.aed.temporales");
+		return existeCarpetaTemporal(carpeta);
+	}
+	
+	/**
+	 * Borra una carpeta temporal
+	 * @param carpeta
+	 * @throws AedExcepcion
+	 */
+	public void borrarCarpetaTemporal(String carpeta) throws AedExcepcion {
+		if(carpeta == null)
+			throw new NullPointerException();
+		if(carpeta.isEmpty())
+			throw new IllegalArgumentException();
+		
+		String path, folder;
+		if(carpeta.contains("/")){
+			int index = carpeta.lastIndexOf('/');
+			path = carpeta.substring(0, index - 1);
+			folder = carpeta.substring(index + 1, carpeta.length());
+		}else{
+			path = "";
+			folder = carpeta;
+		}
+		try {
+			aed.suprimirCarpetaNoClasificada(path, folder);
+		} catch(AedExcepcion e){
+			if(e.getFaultInfo().getCodigoError() != CodigoErrorEnum.CARPETA_NO_EXISTE)
+				throw e;
+		}
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see services.AedService#isClasificado(java.lang.String)

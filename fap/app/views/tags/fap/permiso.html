@@ -3,7 +3,7 @@
 	def mensaje = _mensaje; // Mensaje que se muestra si no es visible
 	def visible = true;
 	def editable = true;
-	def accion = play.mvc.Controller.renderArgs.get("accion");
+	def accion = play.mvc.Scope.RenderArgs.current().get("accion");
 	
 	if (accion == null)
 		accion = "editar";

@@ -1,8 +1,9 @@
-*{ You can use plain selenium command using the selenium tag }*
-
 %{
 	// Obtenemos al ultima solicitud, sobre la que trabajamos
-	models.Solicitud s = models.Solicitud.all().first()
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	
+	play.mvc.Controller.session.put("username", "admin");
+	controllers.fap.AgenteController.findAgente();
 }%
 
 #{selenium}

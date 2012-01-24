@@ -1,5 +1,7 @@
-*{ You can use plain selenium command using the selenium tag }*
-
+%{
+        play.mvc.Controller.session.put("username", "admin");
+        controllers.fap.AgenteController.findAgente();
+}%
 #{selenium}
     // Open the home page, and check that no error occured
     open('Principal/solicitudes')

@@ -29,7 +29,7 @@ bc. Popup:
 
 h2. Ejemplo de uso
 
-bc. Popup PopupUsuario entidad=Agente titulo="Usuario" {
+bc. Popup PopupUsuario campo=Agente titulo="Usuario" {
 	Texto campo=Agente.username titulo="Username" requerido
 	Texto campo=Agente.email titulo="Email" requerido
 }

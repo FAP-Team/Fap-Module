@@ -12,7 +12,7 @@ h2. Parámetros
 * **accion = _[string]_** (opcional) : Indica que el enlace hará referencia a una acción de un controlador de la aplicación. Dicha acción será traducida a la URL que la invoca.
 * **url = _[string]_** (opcional) : Indica que el enlace hará referencia a una URL externa.
 * **popup = _[popup]_** (opcional) : Indica que el enlace hará referencia a un popup.
-* **anterior** (opcional) : Para redirigir a la pagina anterior
+* **anterior** (opcional) : Para redirigir a la pagina anterior.
 
 h2. Definición
 

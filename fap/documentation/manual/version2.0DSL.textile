@@ -2,69 +2,70 @@ h1. Migración de aplicaciones a la versión 2.0
 
 h2. Cambios en los DSL
 
-A continuación se muestra la lista de cambios que hay que realizar en los ficheros DSL de una aplicación escritos con versiones previas de la herramienta.
+A continuación se muestra una lista de cambios que hay que realizar en los ficheros DSL de una aplicación escritos con versiones previas de la herramienta.
 
-h3. Indicar la entidad que usa una página
+h3. Indicar el campo que se usa en las páginas
 
-Ahora, en la declaración de las páginas del DSL, se le ha de indicar la Entidad que se va a usar para almacenar los datos de una página, por ello, hay que añadir un parámetro más a las declaraciones de Páginas en nuestros DSL.
+Al igual que sucedía en los popups en versiones previas, ahora en las páginas hay que especificar el campo que se quiere utilizar en su ámbito. Este campo determinará la entidad por la que empiezan los campos de los elementos contenidos en la página. Algunos ejemplos son:
 
-bc.. Antes:
+1) A partir de un campo definido por una entidad. En este caso la entidad especificada es la misma que la que se define en el comienzo de los campos que se usen dentro de la página:
 
-Pagina Fechas {
+bc. Pagina Fechas campo=Solicitud {
 	Fecha campo=Solicitud.fechas.inicio titulo="Fecha de Inicio" requerido
-	Fecha campo=Solicitud.fechas.finalizacion titulo="Fecha de Finalización"
 }
 
-Ahora:
+2) A partir de un campo correspondiente a un oneToMany. En este caso la entidad que se puede usar dentro de la página corresponde a aquella que está contenida en el oneToMany (Solicitud.documentos es una lista de entidades Documento):
 
-Pagina Fechas campo=Solicitud {
-	Fecha campo=Solicitud.fechas.inicio titulo="Fecha de Inicio" requerido
-	Fecha campo=Solicitud.fechas.finalizacion titulo="Fecha de Finalización"
+bc.. Pagina Documento campo=Solicitud.documentos {
+	Texto campo=Documento.descripcion titulo="Descripción" requerido
 }
 
 p. 
 
-Si tenemos claro que todo nuestro Formulario va a tirar de una Entidad en concreto, en vez de ir poniendo el nuevo parámetro en la definición de cada Página, podemos ponerlo en el Formulario que contiene a esas páginas, y así indicamos que cada una de las Páginas contenidas en ese Formulario utilizaran como Entidad base, la que definamos en el Formulario.
+Si se da la circunstancia de que todas las páginas de un formulario van a utilizar el mismo campo, se puede especificar dicho campo en la cabecera del formulario, y de esta manera no es necesario especificarlo en cada página:
 
-bc. Formulario Solicitud campo=Solicitud {
-	... 
-	Pagina Fechas {
+bc.. Formulario Solicitud campo=Solicitud {
+	Pagina FechaInicio {
 		Fecha campo=Solicitud.fechas.inicio titulo="Fecha de Inicio" requerido
+	}
+	
+	Pagina FechaFin {
 		Fecha campo=Solicitud.fechas.finalizacion titulo="Fecha de Finalización"
 	}
-	...
 }
 
-p.  
+p. En las páginas y popups, aparte de la entidad definida, se puede utilizar como entidad base de los campos todas aquellas que hayan sido definidas como Singleton:
 
-h3. Cambios en la declaraciones de los Pop-Ups
+bc. Pagina Documento campo=Solicitud.documentos {
+	Texto campo=Documento.descripcion titulo="Descripción" requerido
+	Combo campo=Convocatoria.estado // Convocatoria es un Singleton
+}
 
-Hasta el momento, al declarar un Pop-Up, se tenía que especificar que acciones podría realizar ese Pop-Up. Con la versión 2.0, eso ya no hará falta, debido a que FAP, será lo suficientemente inteligente para buscar las referencias a ese Pop-Up en todo el DSL, y saber que acciones puede realizar en función de como lo referencien.
+Si por el contrario no se especifica un campo en la página, solo se podrán utilizar los campos correspondientes a un Singleton, y además la página no tendrá los botones correspondientes a las acciones __editar__, __crear__, ni __borrar__.
 
-bc.. Antes:
+h3. Cambios en la declaraciones de los Popups
 
-Popup popupNombre campo=Solicitud.tablaDeNombres crear modificar ver {
+Hasta el momento, al declarar un Popup, se tenía que especificar que acciones podía realizar. Con la versión 2.0, esto ya no hará falta, debido a que se hace una búsqueda de las referencias a ese Popup en todo el DSL, y se generan aquellas acciones que se hayan encontrado en uso.
+
+Antes:
+
+bc. Popup popupNombre campo=Solicitud.tablaDeNombres crear modificar ver {
 	Texto campo=TablaDeNombres.nombre titulo="Nombre"
-	Texto campo=TablaDeNombres.apellido titulo="Apellido"
 }
 
 Ahora:
 
-Popup popupNombre campo=Solicitud.tablaDeNombres {
+bc. Popup popupNombre campo=Solicitud.tablaDeNombres {
 	Texto campo=TablaDeNombres.nombre titulo="Nombre"
-	Texto campo=TablaDeNombres.apellido titulo="Apellido"
 }
 
-p. 
+h3. Subida de archivos
 
-h3. Añadir una entidad a un campo one-to-many de otra entidad
+Hasta ahora, para realizar una subida de archivos al servidor (por ejemplo utilizando el elemento __SubirArchivoAed__), era necesario realizarlo dentro de un Form de una página, sin poder mostrar una tabla con la lista de archivos subidos, ya que la solución más intuitiva en ese momento (mediante un popup que crease un nuevo documento de una tabla), no se podía realizar debido a que nuestra subida de archivos no funciona mediante ajax, y en consecuencia, no funciona en los popups. En la versión 2.0, como pueden abrirse páginas a partir de tablas, la solución es utilizar una tabla y una página.
 
-Hasta ahora, para añadir una entidad a un campo one-to-many de otra entidad (como por ejemplo la Subida de Archivos al AED), se realizaba utilizando un form. Con el nuevo DSL, se puede realizar de una manera mucho más sencilla, como vemos a continuación:
+Antes:
 
-
-bc.. Antes:
-
-Pagina SubirArchivoAedTest noForm {
+bc. Pagina SubirArchivoAedTest noForm {
 	Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
 		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite"
 		Boton subirDocumento titulo="Añadir documentación"
@@ -73,18 +74,88 @@ Pagina SubirArchivoAedTest noForm {
 
 Ahora:
 
-Pagina Documentos campo=Solicitud.documentacion.documentos {
+bc.. Pagina Documentos campo=Solicitud.documentacion.documentos {
 	Accion crear redirigir=SubirArchivoAedTest	
 	SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud"
 }
 	
 Pagina SubirArchivoAedTest campo=Solicitud {
-	Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos{
-		Columna campo=Documento.id
-	}	
+	Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos{}	
 }
 
+h3. Definición de los permisos
+
+La definición de los permisos en el DSL ha cambiado sensiblemente, debido a lo cual se muestra a continuación la lista de cambios que hay que realizar, y finalmente un ejemplo de un permiso escrito de la manera anterior, y su equivalente nuevo.
+
+* La palabra __rule__ cambia a __Permiso__.
+* A continuación del nombre del permiso, unas llaves encierran el resto de la definición del permiso.
+* La palabra __then__ cambia a __return__.
+* Las palabras __deny__ y __grant__ desaparecen. El equivalente de __deny__ es __none__. Los de __grant__ pueden ser __editable__ y __visible__, y el uso de uno u otro depende del significado del permiso y lo que el usuario quiera restringir con él.
+* La palabra __action__ cambia a __accion__.
+* La variable __accion__ ya no puede ser comparada con un String que contenga cualquier cadena. A partir de ahora, solo podrá ser comparada con las palabras __leer__, __editar__, __crear__ y __borrar__.
+
+Ejemplo de definición de un permiso, antes:
+
+bc.. rule solicitudEditable
+when
+	!usuario
+	or
+	action = "read"
+then
+	grant
+
+p. Ejemplo de definición del mismo permiso, despues:
+
+bc.. Permiso solicitudEditable{
+	when
+		usuario is-not visible
+		or
+		accion = leer
+	return editable
+}	
+
+h3. Otros elementos que cambian en el DSL
+
+* __popupModificar__ pasa a llamarse __popupEditar__.
+* __popupVer__ pasa a llamarse __popupLeer__.
+* __paginaModificar__ pasa a llamarse __paginaEditar__.
+* __paginaVer__ pasa a llamarse __paginaLeer__.
+* el atributo __visible__ de __Grupo__ pasa a llamarse __borde__.
+* el atributo __noBorrarEntidad__ pasa de pertenecer a __Pagina__ a pertenecer a __Accion__.
+
 h2. Cambios en la aplicación
+
+h3. Adaptación del código manual de la aplicación
+
+Un paso importante a realizar dentro de la migración a la versión 2.0 de las aplicaciones de versiones anteriores consiste en revisar todo el código manual que se haya escrito en la aplicación, para corregir todo aquello que no sea válido en la nueva versión. Hay que tener en cuenta que no basta con buscar y corregir los errores de compilación que aparezcan en el proyecto, ya que tambien pueden existir partes de código que, aún no teniendo ningún error de compilación, produzcan errores en la nueva versión. Una técnica que puede resultar útil y efectiva para buscar y corregir estos errores consiste en comparar el código sobreescrito con su correspondiente generado. Esto ayuda a ver y comprender mejor como se están haciendo las cosas en la versión 2.0 y que cosas son necesario cambiar. A continuación se ofrece un listado con las partes del código que más frecuentemente deban ser adaptadas:
+
+* Nombres de algunos métodos de los controladores: por ejemplo el método que es invocado para guardar los campos de una página, que antes se llamaba __save()__, ahora se llama __editar()__.
+* El método __index()__ recibe siempre un parámetro nuevo: __String accion__.
+* Los métodos __index()__, __editar()__, __crear()__, __borrar()__, etc, cambian en relación a los parámetros correspondientes a las entidades que reciben, y sus identificadores.
+* Asimismo como han cambiado los parámetros de algunos métodos, también tienen que cambiar las llamadas a dichos métodos. Normalmente esto se detectará viendo los errores de compilación, pero si la llamada es un __redirect()__, el cual recibe el nombre de la acción a redirigir y una número variable de parámetros, en este caso no habrá error de compilación y los parámetros suministrados estarán en el orden incorrecto.
+* Las llamadas a los métodos de los permisos contienen dos parámetros de tipo String que solo aceptan un número de palabras determinadas. En versiones anteriores existía una compatibilidad de nombres que permitía utilizar distintos nombres para referirse a una misma cosa. Esta compatibilidad ya no existe, por lo cual las siguientes variables tienen que utilizar los siguientes nombres:
+** __accion__: "leer", "editar", "crear" y "borrar".
+** ___permiso__: "editable", "visible" y "none".
+
+h3. Modificación en el código generado de los permisos
+
+Si la versión desde la que está actualizando es lo suficientemente reciente como para tener la clase __security.SecureApp__, hay que hacer una modificación en el método __check()__ que en ella se encuentra.
+
+Código anterior:
+
+bc.. @Override
+public boolean check(String id, String action, Map<String, Long> ids, Map<String, Object> vars) {		
+	return nextCheck(id, action, ids, vars);
+}
+
+p. Código de sustitución:
+
+bc.. @Override
+public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {		
+	return nextCheck(id, _permiso, action, ids, vars);
+}
+
+p. Si por el contrario el paquete __security__ no existe, y en lugar de él se encuentra el paquete __secure__, hay que borrarlo completo, y generar la aplicación. Si existía código manual dentro del paquete __secure__, será necesario copiarlo y adaptarlo dentro de la nueva clase manual que se provee.
 
 h3. Añadir dependencia de google guice
 

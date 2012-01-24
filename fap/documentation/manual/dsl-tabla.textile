@@ -15,15 +15,15 @@ h2. Parámetros
 * **alto = _[string]_** (opcional) : Permite especificar el alto de la tabla.
 * **seleccionable = _[string]_** (opcional) : Se añade un check a cada elemento de la tabla que permite seleccionarlo, además se añade un botón en la tabla (con el nombre que se le indique en este parámetro) que obtendrá la lista de elementos seleccionados y llamara al método del controlador.
 * **popup = _[popup]_** (opcional) : Asigna un popup a la tabla, creando todos los botones disponibles para abrirlo. "Ver documentación Popup":dsl-popup.
-* **popupVer = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Ver para abrirlo. "Ver documentación Popup":dsl-popup.
-* **popupModificar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Modificar para abrirlo. "Ver documentación Popup":dsl-popup.
+* **popupLeer = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Ver para abrirlo. "Ver documentación Popup":dsl-popup.
+* **popupEditar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Editar para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupCrear = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Crear para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupBorrar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Borrar para abrirlo. "Ver documentación Popup":dsl-popup.
 * **permiso = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla.
 * **recargarPagina** (opcional) : Si se define, hace que la pagina se recargue al pulsar el botón actualizar de la tabla. (Por defecto solo se actualiza la tabla).
 * **pagina = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando todos los botones disponibles. "Ver documentación Pagina":dsl-pagina.
-* **paginaVer = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Ver para abrirla. "Ver documentación Pagina":dsl-pagina.
-* **paginaModificar = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Modificar para abrirla. "Ver documentación Pagina":dsl-pagina.
+* **paginaLeer = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Ver para abrirla. "Ver documentación Pagina":dsl-pagina.
+* **paginaEditar = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Editar para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaCrear = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Crear para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaBorrar = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Borrar para abrirla. "Ver documentación Pagina":dsl-pagina.
 
@@ -42,13 +42,13 @@ bc. Tabla:
 		& ('popup' '=' popup=[Popup|QN])?
 		& ('popupCrear' '=' popupCrear=[Popup|QN])?
 	   	& ('popupBorrar' '=' popupBorrar=[Popup|QN])?
-	   	& ('popupModificar' '=' popupModificar=[Popup|QN])?
-	   	& ('popupVer' '=' popupVer=[Popup|QN])?
+	   	& ('popupEditar' '=' popupEditar=[Popup|QN])?
+	   	& ('popupLeer' '=' popupLeer=[Popup|QN])?
 	   	& ('pagina' '=' pagina=[Pagina|QN])?
 	   	& ('paginaCrear' '=' paginaCrear=[Pagina|QN])?
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|QN])?
-	   	& ('paginaModificar' '=' paginaModificar=[Pagina|QN])?
-	   	& ('paginaVer' '=' paginaVer=[Pagina|QN])?
+	   	& ('paginaEditar' '=' paginaEditar=[Pagina|QN])?
+	   	& ('paginaLeer' '=' paginaLeer=[Pagina|QN])?
 	)
 	'{'
 		columnas += Columna*
@@ -67,7 +67,7 @@ En caso de usar _columnasAutomaticas_ y la definición normal de _Columnas_, est
 
 h2. Ejemplos de uso
 
-h3. Tablas utilizando Pop-Ups (Todas las acciones (crear, ver, modificar y borrar) para el Pop-Up)
+h3. Tablas utilizando Pop-Ups (Todas las acciones (crear, leer, editar y borrar) para el Pop-Up)
 
 bc. Tabla listaUsuarios titulo="Usuarios" campo=Agente popup=PopupUsuario {
 	Columna campo=Agente.id titulo="Id" ancho="25"
@@ -78,12 +78,12 @@ bc. Tabla listaUsuarios titulo="Usuarios" campo=Agente popup=PopupUsuario {
 }
 
 
-h3. Tablas utilizando Pop-Ups (Sólo permite Modificar y Ver las filas con Pop-Ups)
+h3. Tablas utilizando Pop-Ups (Sólo permite Editar y Leer las filas con Pop-Ups)
 
 
 bc. Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio" campo=Solicitud.conexiones.conexionesBandaAncha
-	popupModificar=PopUpConexionesBandaAncha
-	popupVer=PopUpConexionesBandaAncha
+	popupEditar=PopUpConexionesBandaAncha
+	popupLeer=PopUpConexionesBandaAncha
 	recargarPagina {
 		Columna campo=ConexionBandaAncha.mes titulo="Mes" expandir
 		Columna campo=ConexionBandaAncha.directaGCyTF titulo="Conex. directas TF-GC" expandir
@@ -96,7 +96,7 @@ p.
 h3. Columnas automaticas utilizando exclude
 
 bc. Tabla tablaNombres campo=Solicitud.tablaDeNombres titulo="Solicitantes"
-	popupVer=popupNombre	
+	popupLeer=popupNombre	
 	columnasAutomaticas exclude = id, apellido {
 }
 
@@ -110,5 +110,5 @@ Pagina CrearTablaPaginas campo=Solicitud.tablaPaginas.tpaginas{
 }
 ...
 Pagina PaginaTablas campo=Solicitud {
-	Tabla TablaConPaginas campo=TablaPaginas.tpaginas paginaCrear=CrearTablaPaginas paginaModificar=ModificarTablaPaginas paginaBorrar=BorrarTablaPaginas titulo="Tabla con paginas" columnasAutomaticas include=id{}
+	Tabla TablaConPaginas campo=TablaPaginas.tpaginas paginaCrear=CrearTablaPaginas paginaEditar=ModificarTablaPaginas paginaBorrar=BorrarTablaPaginas titulo="Tabla con paginas" columnasAutomaticas include=id{}
 }

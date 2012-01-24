@@ -7,9 +7,8 @@ Crea un formulario, dentro del cual se pueden definir páginas y popups. Se pued
 h2. Parámetros
 
 * **_[name]_** : Identificador del Formulario. 
-* **campo = _[campo]_** (opcional) : Entidad asociada a todas las paginas de ese formulario.
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al formulario.
-* **entidad = _[entidad]_** (opcional) : Define la entidad que se puede usar en los campos que se sitúen dentro de las páginas definidas en este formulario. Si no se especifica este parámetro, tendrá que ser especificado en cada una de las páginas del formulario.
+* **campo = _[campo]_** (opcional) : Define la entidad que se puede usar en los campos que se sitúen dentro de las páginas definidas en este formulario. Si no se especifica este parámetro, tendrá que ser especificado en cada una de las páginas del formulario.
 
 h2. Definición
 

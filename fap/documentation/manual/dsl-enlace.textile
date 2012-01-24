@@ -9,8 +9,10 @@ h2. Parámetros
 * **_[name]_** (opcional) : Identificador del elemento.
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará en el enlace.
 * **pagina = _[pagina]_** (opcional) : Página de la aplicación a la que apunta el enlace.
+* **popup = _[popup]_** (opcional) : Popup de la aplicación a la que apunta el enlace.
 * **campo = _[campo]_** (opcional) : Indica un atributo en el que se encuentra almacenada una url.
 * **url = _[string]_** (opcional) : Especifica una url externa a la aplicación.
+* **anterior** : Para redirigir a la pagina anterior en la que estabamos.
 * **destino = _[string]_** (opcional) : Indica al enlace donde tiene que abrirse (campo target en html).
 * **estilo = _[string]_** (opcional) : Especifica un estilo CSS para el enlace.
 

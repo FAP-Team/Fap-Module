@@ -1,59 +1,87 @@
 h1. Utilizando permisos
 
-Todo esto que he visto está muy bien, ... pero ... ¿todas las partes de la aplicación son vistas por todos los usuarios? ¿qué pasa si necesitamos que en la aplicación algunos usuarios puedan ver o efectuar cosas que otros no? ¿Se puede hacer esto en una aplicación FAP? .... Claro!!
+Todo esto que se ha visto está muy bien, pero ¿Todas las partes de la aplicación son vistas por todos los usuarios? ¿qué pasa si necesitamos que en la aplicación algunos usuarios puedan ver o efectuar cosas que otros no? ¿Se puede hacer esto en una aplicación FAP? La respuesta es sí. Para ello existen los *permisos*, los cuales se declaran mediante la siguiente sintaxis:
 
-Para ello existen los *permisos*, los cuales se declaran mediante la siguiente sintaxis:
-
-bc. 'rule' name
-	(VarsSection)?
+bc. 'Permiso' name{
+	'vars'
+		variables
 	'when'
-		PermisoRule
-	'then'
-		'grant' | 'deny'
-;
-
-La sección *VarsSection* permite declarar variables que serán utilizadas en la sección *PermisoRule*, donde se utilizarán expresiones para realizar el cálculo de permisos. Existen variables por defecto, las cuales no hará falta declarar (_agente_ y _action_), más info "aqui":permisos.
-
-Los permisos se podrán aplicar a páginas, grupos, forms, tablas, al menú (tanto grupos como elementos individuales). Cuando se comprueba un permiso se le consulta para una acción en concreto. Las posibles acciones son:
-
-* **create** : Aplicable a tablas
-* **read**   : Aplicable a tablas y elementos visuales
-* **update** : Aplicable a tablas y elementos visual
-* **delete** : Aplicable a tablas
-
-Supongamos que queremos que un _Grupo_ (que dentro tiene varios elementos, Texto, Combo, ...) sea editable para los administradores, y que los usuarios únicamente puedan verlo. Así, la representación gráfica del permiso sería algo como:
-
-!images/curso_permisos_1!
-
-¿Cómo definiríamos éste permiso? .... Pensemos un poco. Para el usuario con rol activo *administrador*, permitiremos tanto la acción *read* como *update* (o lo que es lo mismo, desde que sea *administrador*, autorizaremos la acción). Mientras que para los usuarios con rol activo *usuario*, sólo concederemos acceso si la acción es *read*, quedando el permiso de la siguiente manera:
-
-bc. rule miPermisoEspecial
-when
-	(agente.rolActivo = "administrador")
-	or
-		((agente.rolActivo = "usuario")
-		and (action = "read")
-		)
-then
-	grant
-
-Si aplicamos éste permiso a un grupo .....
-
-bc. Grupo titulo="Datos de la persona de contacto" permiso=miPermisoEspecial {
-	EntidadAutomatica idcontacto nombreEntidad=Contacto campo=Solicitud.datosSolicitante.contacto
+		condiciones
+	'return'
+		'editable' | 'visible' | 'none'
 }
 
-... el resultado en la aplicación es el siguiente:
+La sección *vars* permite declarar variables que serán utilizadas en la sección *condiciones*, donde se utilizarán expresiones para realizar el cálculo de permisos. Existen variables por defecto, las cuales no hará falta declarar (_agente_ y _accion_, ___permiso__).
 
-!images/curso_permisos_2!
+La sección *when* contiene el conjunto de condiciones que se van a comprobar a la hora de consultar un permiso. Pueden existir multiples secciones _when_ dentro de un permiso. Si al comprobar una de ellas, se cumplen todas las condiciones, entonces no se siguen comprobando las demás que estén a continuación.
 
-*NOTA:* En la aplicación web los nombres de los roles son *Administrador* y *Usuario* (ámbas con la primera en mayúscula), pero en el permiso utilizamos los roles *administrador* y *usuario* (con minúscula). ¿Por qué? ...... La explicación está en la lista de roles que utilizamos, que es la siguiente:
+Los permisos se podrán aplicar a páginas, popups, grupos, forms, tablas, y al menú (tanto grupos como elementos individuales). Cuando se comprueba un permiso se le consulta para una acción y para un modo concretos. 
 
-bc. Lista roles {
-	administrador: "Administrador"
-	usuario: "Usuario"
+Para consultar por una acción en concreto es necesario utilizar la variable predefinida __accion__. Las posibles acciones son:
+
+* **leer** : permitir la navegación a páginas y popups cuando la acción es __leer__. Esta acción permite únicamente visualizar el contenido.
+* **crear** : permitir la navegación a páginas y popups cuando la acción es __crear__. Esta acción incluye un botón para crear en base de datos una entidad con los datos suministrados en el formulario.
+* **editar** : permitir la navegación a páginas y popups cuando la acción es __editar__. Esta acción incluye un botón para editar una entidad ya existente a partir de los datos suministrados en el formulario.
+* **borrar** : permitir la navegación a páginas y popups cuando la acción es __borrar__. Esta acción incluye un botón para borrar de base de datos la entidad que se está visualizando en el formulario.
+
+Para consultar por un modo de presentación en concreto es necesario utilizar la variable predefinida ___permiso__. Los posibles modos son:
+
+* **editable** : permite que todos los controles gráficos web sobre los que está actuando el permiso sean visibles y editables.
+* **visible** : permite que todos los controles gráficos web sobre los que está actuando el permiso sean visibles, pero no editables.
+* **none** : deshabilita el renderizado de todos los controles gráficos web sobre los que está actuando el permiso.
+
+La sección *return* establece lo que el permiso va a devolver cuando se cumplan las condiciones que están justo encima. Si se está consultando con ___permiso__ igual a _editable_  y el permiso define _return editable_, el método del permiso devolverá _true_. Si por el contrario el permiso define _return visible_ o _return none_, devolverá _false_. La jerarquía de permisos es la siguiente:
+
+bc. Editable > Visible > None
+
+Los permisos son mucho más potentes que lo que hemos explicado aquí, pudiendo referirnos a las entidades utilizadas en la aplicación, utilizar variables a partir de una consulta SQL, referirnos dentro de un permiso a otro, etc. Más información sobre los mismos "aquí":dsl-permisos.
+
+h2. Ejemplo práctico
+
+En el siguiente se mostrará la definición DSL de dos permisos y su utilización en una página, para demostrar su uso y visualizar el resultado en la web.
+
+bc. Permiso ejemplo1{
+	when accion = crear
+	return none
+	else return editable
 }
 
-Con el formato *clave: "Valor"*, así las comparaciones se harán con las claves (en minúscula), mientras que para mostrar en la aplicación utilizaremos el valor.
+bc. Permiso ejemplo2{
+	when accion = editar
+	return visible
+	else return editable
+}
 
-Los permisos son mucho más potentes que lo que hemos explicado aquí, pudiendo referirnos a las entidades utilizadas en la aplicación, utilizar variables a partir de una consulta SQL, referirnos dentro de un permiso a otro, ... Más información sobre los mismos "aquí":permisos.
+bc.. Pagina PaginaEj campo=Document {
+		
+	Grupo permiso=ejemplo1 borde=false{
+		Tabla tabla1 campo=Document.valores columnasAutomaticas{}
+	}
+		
+	Grupo permiso=ejemplo2 borde=false{
+		Texto campo=Document.nombre
+	}
+		
+	Texto campo=Document.Descripcion
+}
+
+p. En la página expuesta existen tres elementos diferenciados:
+* En primer lugar se define una tabla que está restringida por el permiso _ejemplo1_. Dicho permiso establece que cuando la accion es crear no permite ni visible ni editable. En caso contrario permite ambas cosas.
+
+* A continuación se define un campo de texto restringido con el permiso _ejemplo2_. En este caso, el permiso establece que cuando la accion es editar solo permite visible. En caso contrario lo permite todo (editable).
+
+* Por último se define otro campo de texto, pero que en este caso no está restringido por ningún permiso.
+
+A continuación se muestra el resultado visual de dicha página, en dos casos distintos: cuando la acción es crear y cuando la acción es editar.
+
+Cuando la acción es *crear* :
+
+!images/curso_permisos_crear!
+
+Se observa como efectivamente la tabla no es visible, ya que no ha sido renderizada.
+
+Cuando la acción es *editar* :
+
+!images/curso_permisos_editar!
+
+En este caso la tabla si aparece, pero el campo de texto que se encuentra a continuación no es editable, solo visible.

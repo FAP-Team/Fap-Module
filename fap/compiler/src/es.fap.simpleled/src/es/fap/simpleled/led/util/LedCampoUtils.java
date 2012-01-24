@@ -203,8 +203,12 @@ public class LedCampoUtils {
 	 * que la primera entidad del segundo campo.
 	 */
 	public static Campo concatena(Campo primero, Campo segundo){
-		if (primero == null || segundo == null)
+		if (primero == null && segundo == null)
 			return null;
+		if (primero == null && segundo != null)
+			return segundo;
+		if (primero != null && segundo == null)
+			return primero;
 		if (!LedEntidadUtils.equals(getUltimaEntidad(primero), segundo.getEntidad()))
 			return null;
 		Campo result = LedFactory.eINSTANCE.createCampo();

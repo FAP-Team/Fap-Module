@@ -41,6 +41,10 @@ require:
         transitive: false
     - org.apache.santuario -> xmlsec 1.4.3:
         transitive: false
+    
+    # XmlGregorianCalendar    
+    - xerces -> xercesImpl 2.9.1
+
 
     - es.gobcan.eadmon.aed.cliente -> eadmon-aed-cliente 1.1:
         transitive: false

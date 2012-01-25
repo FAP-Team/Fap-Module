@@ -26,6 +26,7 @@ import es.gobcan.platino.servicios.sgrde.ErrorInternoException;
 import es.gobcan.platino.servicios.sgrde.Expediente;
 import es.gobcan.platino.servicios.sgrde.FirmasElectronicas;
 import es.gobcan.platino.servicios.sgrde.InformacionFirmaElectronica;
+import es.gobcan.platino.servicios.sgrde.MetaInformacionException;
 import es.gobcan.platino.servicios.sgrde.SGRDEServicePortType;
 import es.gobcan.platino.servicios.sgrde.SGRDEServiceProxy;
 
@@ -121,23 +122,26 @@ public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 		    documentoExpediente.setDescDoc(documentoRegistrar.getDescripcion());
 		    documentoExpediente.setTipoMime(documentoRegistrar.getTipoMime());
 		    documentoExpediente.setAdmiteVersionado(documentoRegistrar.isAdmiteVersionado());
+
 		    
-		    //Firma normal o paralela
-		    FirmasElectronicas firmasElec = new FirmasElectronicas();
-		    firmasElec.setFirma(documentoRegistrar.getFirmaXml());
-		    
-		    // Copiamos firmantes
-		    for (DatosFirmante firmante : documentoRegistrar.getFirmantes()) {
-		    	InformacionFirmaElectronica infoFirma = new InformacionFirmaElectronica();
-		    	infoFirma.setDescFirmante(firmante.getDescFirmante());
-		    	infoFirma.setFechaFirma(firmante.getFechaFirma());
-		    	infoFirma.setIdFirmante(firmante.getIdFirmante());
-		    	infoFirma.setCargoFirmante(firmante.getCargoFirmante());
-		    	infoFirma.setURIFirmante(firmante.getUriFirmante());
-		    	
-		    	firmasElec.getInformacionFirmaElectronica().add(infoFirma);
-		    }
-		    documentoExpediente.setFirmasElectronicas(firmasElec);
+		   // if(documentoRegistrar.getFirmantes() != null){
+			    //Firma normal o paralela
+			    FirmasElectronicas firmasElec = new FirmasElectronicas();
+			    firmasElec.setFirma(documentoRegistrar.getFirmaXml());
+			    
+			    // Copiamos firmantes
+			    for (DatosFirmante firmante : documentoRegistrar.getFirmantes()) {
+			    	InformacionFirmaElectronica infoFirma = new InformacionFirmaElectronica();
+			    	infoFirma.setDescFirmante(firmante.getDescFirmante());
+			    	infoFirma.setFechaFirma(firmante.getFechaFirma());
+			    	infoFirma.setIdFirmante(firmante.getIdFirmante());
+			    	infoFirma.setCargoFirmante(firmante.getCargoFirmante());
+			    	infoFirma.setURIFirmante(firmante.getUriFirmante());
+			    	
+			    	firmasElec.getInformacionFirmaElectronica().add(infoFirma);
+			    }
+			    documentoExpediente.setFirmasElectronicas(firmasElec);
+		    //}
 		    
 		    // Ruta
 		    UUID uuidDocumento = UUID.randomUUID();	
@@ -160,6 +164,12 @@ public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 	    	if (e instanceof ErrorInternoException) {
 	    		mensaje += ". ErrorInternoException: " + ((ErrorInternoException) e).getFaultInfo().getMessage();
 	    	}
+	    	if(e instanceof MetaInformacionException){
+	    		MetaInformacionException mie = (MetaInformacionException)e;
+	    		mensaje += mie.getFaultInfo().getMessage();
+	    	}
+	    	
+	    	play.Logger.error(mensaje);
 	    	throw e;
 	    }
 	}

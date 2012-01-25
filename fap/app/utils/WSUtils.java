@@ -1,5 +1,11 @@
 package utils;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
 
 import org.apache.cxf.endpoint.Client;
@@ -63,5 +69,17 @@ public class WSUtils {
 		httpClientPolicy.setAllowChunking(false);
 		httpClientPolicy.setContentType("text/xml; charset=ISO-8859-1;");
 		http.setClient(httpClientPolicy);
+	}
+	
+	/**
+	 * 
+	 * @param date
+	 * @return
+	 * @throws DatatypeConfigurationException
+	 */
+	public static XMLGregorianCalendar getXmlGregorianCalendar(Date date) throws DatatypeConfigurationException {
+		GregorianCalendar gregorianCalendar = new GregorianCalendar();
+		gregorianCalendar.setTime(date);
+		return DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
 	}
 }

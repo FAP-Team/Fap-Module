@@ -75,6 +75,8 @@ public class FirmaServiceImpl implements services.FirmaService {
 		WSUtils.configureSecurityHeaders(firmaPlatino, propertyPlaceholder);
 
 		PlatinoProxy.setProxy(firmaPlatino, propertyPlaceholder);
+		
+
 	}
 	
 
@@ -153,6 +155,18 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return firma;		
 	}
 	
+	
+	public String firmarContentSignature(byte[] content) {
+		String firma = null;
+		try {
+			String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
+			String alias = propertyPlaceholder.get("fap.platino.firma.alias");
+			firma = firmaPlatino.signContent(content, invokingApp, alias);
+		} catch (SignatureServiceException_Exception e) {
+			log.error("Error al firmar contenido", e);
+		}
+		return firma;
+	}
 
 	@Override
 	public String extraerCertificadoDeFirma(String firma){

@@ -45,6 +45,7 @@ import properties.PropertyPlaceholder;
 import utils.BinaryResponse;
 import utils.CharsetUtils;
 import utils.WSUtils;
+import utils.WSUtils;
 import messages.Messages;
 import models.Aportacion;
 import models.Documento;
@@ -129,12 +130,12 @@ public class RegistroServiceImpl implements RegistroService {
 
 		DatosRegistro datosRegistro = new DatosRegistro();
 
-		XMLGregorianCalendar fecha = toXmlGregorian(expediente.fechaApertura);
+		XMLGregorianCalendar fechaApertura = toXmlGregorian(expediente.fechaApertura);
 
 		// Rellenamos datos expediente
 		DatosExpediente datosExp = new DatosExpediente();
 		datosExp.setNumero(expediente.numero);
-		datosExp.setFechaApertura(fecha);
+		datosExp.setFechaApertura(fechaApertura);
 		datosExp.setCreadoPlatino(expediente.getCreado());
 		datosExp.setRuta(expediente.ruta);
 
@@ -142,9 +143,13 @@ public class RegistroServiceImpl implements RegistroService {
 		DatosDocumento datosDoc = new DatosDocumento();
 		datosDoc.setTipoDoc("SOL");
 		datosDoc.setTipoMime("application/pdf");
-		datosDoc.setDescripcion("Solicitud "
-				+ propertyPlaceholder.get("application.name"));
-		datosDoc.setFecha(fecha);
+		
+		documento.prepararParaSubir();
+		if(documento.descripcion == null)
+			throw new NullPointerException();
+		
+		datosDoc.setDescripcion(documento.descripcion);
+		datosDoc.setFecha(fechaApertura);
 
 		String uriSolicitud = documento.uri;
 		PropiedadesDocumento propsDoc = aedService
@@ -154,16 +159,13 @@ public class RegistroServiceImpl implements RegistroService {
 		Firma firmaAed = propsAdmin.getFirma();
 
 		if (firmaAed != null) {
-			log.info("El documento a registrar está firmado");
+			play.Logger.info("El documento a registrar está firmado");
 			String firmaDoc = firmaAed.getContenido();
 			datosDoc.setFirmaXml(firmaDoc);
 			datosDoc.setFirmantes(getDatosFirmantesAED(firmaAed));
 		} else {
-			log.info("No se registrará informacion sobre la firma ya que no tiene firma asociada");
+			play.Logger.info("No se registrará informacion sobre la firma ya que no tiene firma asociada");
 		}
-
-		log.debug("================Size firmantes en AED "
-				+ datosDoc.getFirmantes().size());
 
 		BinaryResponse contentResponse = aedService.obtenerDoc(uriSolicitud);
 		DataSource dataSource = contentResponse.contenido.getDataSource();
@@ -203,11 +205,7 @@ public class RegistroServiceImpl implements RegistroService {
 			DatosFirmante datFirm = new DatosFirmante();
 			datFirm.setIdFirmante(firmante.getFirmanteNif());
 			datFirm.setDescFirmante(firmante.getFirmanteNombre());
-
-			GregorianCalendar gregCal = new GregorianCalendar();
-			gregCal.setTime(firmante.getFecha());
-			datFirm.setFechaFirma(DatatypeFactory.newInstance()
-					.newXMLGregorianCalendar(gregCal));
+			datFirm.setFechaFirma(WSUtils.getXmlGregorianCalendar(firmante.getFecha()));
 
 			// TODO: Cambiar cuando se use BD de terceros platino
 			datFirm.setCargoFirmante("Solicitante");

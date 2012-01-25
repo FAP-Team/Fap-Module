@@ -32,6 +32,8 @@ public interface FirmaService extends WSService {
 	 */
 	public String firmarPKCS7(byte[] bytes);
 	
+	public String firmarContentSignature(byte[] content);
+	
 	/**
 	 * Verifica si una firma es correcta
 	 * @param texto Texto firmado

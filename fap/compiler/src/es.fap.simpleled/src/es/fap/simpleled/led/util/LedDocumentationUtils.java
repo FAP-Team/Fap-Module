@@ -12,7 +12,7 @@ import es.fap.simpleled.led.util.DocParametro;
 
 public class LedDocumentationUtils {
 
-	public static String url = "http://localhost:9003/@documentation/modules/fap/";
+	public static String url = "http://fap-devel.etsii.ull.es/home/documentacion/";
 	
 	public static String findComment(EObject o) {
 		String ruleName = "ML_COMMENT";

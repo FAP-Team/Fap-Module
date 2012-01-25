@@ -2,7 +2,7 @@ Formulario Soporte campo=Incidencia {
 	
 	Menu {
 		Enlace "Inicio" accion="fap.SecureController.login"
-		Enlace "Mis Solicitudes" permiso=logeado pagina=Principal.Solicitudes 		
+		Enlace "Mis Solicitudes" permiso=logeado pagina=Solicitudes 		
     	Enlace "Ayuda" pagina=Soporte crear
     	Enlace "Manuales"
     }

@@ -5,6 +5,7 @@ package es.fap.simpleled.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
+import org.eclipse.xtext.ui.editor.contentassist.AbstractJavaBasedContentProposalProvider.ReferenceProposalCreator;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalPostProcessor;
 import org.eclipse.xtext.ui.editor.contentassist.FQNPrefixMatcher.LastSegmentFinder;
 import org.eclipse.xtext.ui.editor.hover.DispatchingEObjectTextHover;
@@ -17,6 +18,7 @@ import com.google.inject.Binder;
 import es.fap.simpleled.ui.coloring.FapSemanticHighlighting;
 import es.fap.simpleled.ui.contentassist.MyLastSegmentFinder;
 import es.fap.simpleled.ui.contentassist.FapCompletionProposalPostProcessor;
+import es.fap.simpleled.ui.contentassist.MyReferenceProposalCreator;
 import es.fap.simpleled.ui.documentation.FapDocumentationProvider;
 import es.fap.simpleled.ui.documentation.FapHoverProvider;
 
@@ -36,6 +38,10 @@ public class LedUiModule extends es.fap.simpleled.ui.AbstractLedUiModule {
 		
 	public Class<? extends LastSegmentFinder> bindLastSegmentFinder() {
 		return MyLastSegmentFinder.class;
+	}
+	
+	public Class<? extends ReferenceProposalCreator> bindReferenceProposalCreator() {
+		return MyReferenceProposalCreator.class;
 	}
 	
 	public Class<? extends DispatchingEObjectTextHover> bindDispatchingEObjectTextHover() {

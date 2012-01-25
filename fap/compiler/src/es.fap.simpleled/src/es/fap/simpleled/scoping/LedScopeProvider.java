@@ -5,6 +5,7 @@ package es.fap.simpleled.scoping;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
@@ -35,6 +36,16 @@ import es.fap.simpleled.led.util.ModelUtils;
  */
 
 public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
+	
+	public IScope scope_Pagina(EObject ctx, EReference ref){
+		List<Pagina> paginas = ModelUtils.<Pagina>getVisibleNodes(LedPackage.Literals.PAGINA, ctx.eResource());
+		return Scopes.scopeFor(paginas);
+	}
+	
+	public IScope scope_Popup(EObject ctx, EReference ref){
+		List<Popup> popups = ModelUtils.<Popup>getVisibleNodes(LedPackage.Literals.POPUP, ctx.eResource());
+		return Scopes.scopeFor(popups);
+	}
 	
 	public IScope scope_CampoAtributos_atributo(CampoAtributos atributos, EReference ref) {
 		Entity entidad = null;

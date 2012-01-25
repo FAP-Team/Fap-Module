@@ -1,7 +1,7 @@
 Formulario Administracion permiso=administrador{
 	
 	Menu {
-		Enlace "Mis Solicitudes" pagina=Principal.Solicitudes
+		Enlace "Mis Solicitudes" pagina=Solicitudes
 		
 		Grupo "Administración" {
 			Enlace "Usuarios" pagina=Usuarios
@@ -17,7 +17,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 		}
 		
-		Enlace "Ayuda" pagina=Soporte.Soporte crear
+		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 	

@@ -120,7 +120,7 @@ Formulario Baremacion {
 			Enlace "Evaluaciones" accion="fap.ConsultarEvaluacionesController.index"
 		}
 		
-		Enlace "Ayuda" pagina=Soporte.Soporte crear
+		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 }

@@ -114,6 +114,20 @@ bc.. Permiso solicitudEditable{
 	return editable
 }	
 
+h3. Referencias a páginas y popups
+
+En las referencias a popups y páginas, ahora ya no puede aparecer el segmento del nombre correspondiente al formulario en el que se encuentra el elemento.
+
+Antes:
+
+bc. Enlace "Mis Solicitudes" permiso=logeado pagina=Principal.Solicitudes 	
+
+Ahora:
+
+bc. Enlace "Mis Solicitudes" permiso=logeado pagina=Solicitudes
+
+Nota: esto no supone ningún inconveniente, ya que está establecido que no pueden existir varias páginas con el mismo nombre, ni siquiera en formularios distintos.
+
 h3. Otros elementos que cambian en el DSL
 
 * __popupModificar__ pasa a llamarse __popupEditar__.

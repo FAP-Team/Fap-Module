@@ -57,12 +57,12 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 	 * Si son iguales ---> nombre_regla
 	 */
 	public static String[] docRulesArray = {
-		"Entity:Entidad", "Attribute", "Formulario", "Menu",
-		"MenuGrupo:Grupo", "MenuEnlace:Enlace", "Pagina", "Popup", "Grupo", "AgruparCampos", "Texto",
-		"AreaTexto", "Check", "Enlace", "Wiki", "Boton", "Fecha", "Combo", "Form", "Tabla",
-		"Columna", "SubirArchivo", "SubirArchivoAed", "EditarArchivoAed", "FirmaPlatinoSimple:FirmaSimple",
-		"Direccion", "Nip", "PersonaFisica", "PersonaJuridica", "Persona", "Solicitante",
-		"EntidadAutomatica", "Lista"
+		"Entity:Entidad", "Attribute", "Formulario", "Menu", "MenuGrupo:Grupo", 
+		"MenuEnlace:Enlace", "Accion", "Pagina", "Popup", "Grupo", "AgruparCampos",
+		"Texto", "AreaTexto", "Check", "Enlace", "Wiki", "Boton", "Fecha", "Combo",
+		"Form", "Tabla", "Columna", "SubirArchivo", "SubirArchivoAed", "EditarArchivoAed",
+		"FirmaPlatinoSimple:FirmaSimple", "Direccion", "Nip", "PersonaFisica",
+		"PersonaJuridica", "Persona", "Solicitante", "EntidadAutomatica", "Lista"
 	};
 	
 	public static Map<String, String> docRules = arrayToSet(docRulesArray);

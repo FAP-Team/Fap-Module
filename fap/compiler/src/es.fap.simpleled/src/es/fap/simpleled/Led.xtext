@@ -124,11 +124,11 @@ MenuEnlace:
 ;
 
 PaginaAccion:
-	pagina=[Pagina|QN] accion=("leer" | "crear" | "editar" | "borrar")?
+	pagina=[Pagina|IDS] accion=("leer" | "crear" | "editar" | "borrar")?
 ;
 
 PopupAccion:
-	popup=[Popup|QN] accion=("leer" | "crear" | "editar" | "borrar")?
+	popup=[Popup|IDS] accion=("leer" | "crear" | "editar" | "borrar")?
 ;
 
 Accion:
@@ -329,16 +329,16 @@ Tabla:
         & ("permiso" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('seleccionable' "=" seleccionable=STRING)?
-	    & ('popup' '=' popup=[Popup|QN])?
-	    & ('popupCrear' '=' popupCrear=[Popup|QN])?
-	   	& ('popupBorrar' '=' popupBorrar=[Popup|QN])?
-	   	& ('popupEditar' '=' popupEditar=[Popup|QN])?
-	   	& ('popupLeer' '=' popupLeer=[Popup|QN])?
-	   	& ('pagina' '=' pagina=[Pagina|QN])?
-	    & ('paginaCrear' '=' paginaCrear=[Pagina|QN])?
-	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|QN])?
-	   	& ('paginaEditar' '=' paginaEditar=[Pagina|QN])?
-	   	& ('paginaLeer' '=' paginaLeer=[Pagina|QN])?
+	    & ('popup' '=' popup=[Popup|IDS])?
+	    & ('popupCrear' '=' popupCrear=[Popup|IDS])?
+	   	& ('popupBorrar' '=' popupBorrar=[Popup|IDS])?
+	   	& ('popupEditar' '=' popupEditar=[Popup|IDS])?
+	   	& ('popupLeer' '=' popupLeer=[Popup|IDS])?
+	   	& ('pagina' '=' pagina=[Pagina|IDS])?
+	    & ('paginaCrear' '=' paginaCrear=[Pagina|IDS])?
+	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|IDS])?
+	   	& ('paginaEditar' '=' paginaEditar=[Pagina|IDS])?
+	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
 	)
 	'{'
 		columnas += Columna*

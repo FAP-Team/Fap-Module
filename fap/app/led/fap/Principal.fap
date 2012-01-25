@@ -1,9 +1,9 @@
 Formulario Principal {
 	Menu {
 		Enlace "Mis Solicitudes" pagina=Solicitudes
-		Enlace "Administración" permiso=administrador pagina=Administracion.Usuarios
+		Enlace "Administración" permiso=administrador pagina=Usuarios
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
-		Enlace "Ayuda" pagina=Soporte.Soporte crear
+		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion="fap.SecureController.logout"
 	}
 	

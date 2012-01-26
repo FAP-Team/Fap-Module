@@ -42,7 +42,7 @@ public class Messages {
     	return false;
     }
     
-    private static List<String> messages(MessageType key) {
+    public static List<String> messages(MessageType key) {
         return current().messages.get(key);
     }
 

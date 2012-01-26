@@ -13,6 +13,7 @@ import play.db.jpa.Model;
 
 import flexjson.JSONSerializer;
 
+import messages.Messages;
 import models.Firmante;
 import models.TableKeyValue;
 import tags.ReflectionUtils;
@@ -20,9 +21,28 @@ import validation.ValueFromTable;
 
 public class TableRenderResponse<T> {
 	public List<TableRecord<T>> rows;
+	public class Mensajes {
+		
+		public List <String> error;
+		public List <String> fatal;
+		public List <String> info;
+		public List <String> ok;
+		public List <String> warning;
+	}
+	
+	public Mensajes mensajes = new Mensajes();
+	
+	public class Obj {
+		public List<TableRecord<T>> rows;
+		public Mensajes mensajes;
+	}
+	
+	public Obj obj;
 	
 	public TableRenderResponse(List<TableRecord<T>> rows) {
 		this.rows = rows;
+		this.obj = new Obj();
+		obj.rows = this.rows;
 	}
 	
 	public static <T> TableRenderResponse<T> sinPermisos(List<T> rows) {
@@ -40,13 +60,18 @@ public class TableRenderResponse<T> {
 	
 	public String toJSON(String ... fields){
 		Set<String> fieldsSet = new HashSet<String>(Arrays.asList(fields));
-		
-		String[] includeParams = new String[fields.length + 3];
+		obj.mensajes = this.mensajes;
+		String[] includeParams = new String[fields.length + 8];
 		for(int i = 0; i < fields.length; i++)
-			includeParams[i] = "rows.objeto." + fields[i];
-		includeParams[fields.length] = "rows.permisoLeer";
-		includeParams[fields.length + 1] = "rows.permisoEditar";
-		includeParams[fields.length + 2] = "rows.permisoBorrar";
+			includeParams[i] = "obj.rows.objeto." + fields[i];
+		includeParams[fields.length] = "obj.rows.permisoLeer";
+		includeParams[fields.length + 1] = "obj.rows.permisoEditar";
+		includeParams[fields.length + 2] = "obj.rows.permisoBorrar";
+		includeParams[fields.length + 3] = "obj.mensajes.error";
+		includeParams[fields.length + 4] = "obj.mensajes.warning";
+		includeParams[fields.length + 5] = "obj.mensajes.fatal";
+		includeParams[fields.length + 6] = "obj.mensajes.ok";
+		includeParams[fields.length + 7] = "obj.mensajes.info";
 		
 		Map<String,List<String>> valueFromTable = getValueFromTableField();
 		JSONSerializer flex = new JSONSerializer()
@@ -56,7 +81,7 @@ public class TableRenderResponse<T> {
 		for (String table : valueFromTable.keySet())
 			for (String field : valueFromTable.get(table))
 				if (fieldsSet.contains(field))
-					flex = flex.transform(new serializer.ValueFromTableTransformer(table), "rows.objeto." + field);
+					flex = flex.transform(new serializer.ValueFromTableTransformer(table), "obj.rows.objeto." + field);
 					
 		flex = flex.exclude("*");
 

@@ -157,6 +157,7 @@ import play.db.jpa.Model;
 import controllers.fap.*;
 import validation.*;
 import messages.Messages;
+import messages.Messages.MessageType;
 
 import tables.TableRecord;
 import models.*;

@@ -55,16 +55,55 @@
 
 	#{doBody /}
 	
+	
+	<div id="${id}_GFatal">
+		<div id="${id}_Fatal" class="alert-message block-message error" data-alert="alert">
+		</div>
+	</div>
+	
+	<div id="${id}_GError">
+		<div id="${id}_Error" class="alert-message block-message error" data-alert="alert">
+		</div>
+	</div>
+	
+	<div id="${id}_GWarning">
+		<div id="${id}_Warning" class="alert-message block-message warning" data-alert="alert">
+		</div>
+	</div>
+	
+	<div id="${id}_GOk">
+		<div id="${id}_Ok" class="alert-message block-message success" data-alert="alert">
+		</div>
+	</div>
+	
+	<div id="${id}_GInfo">
+		<div id="${id}_Info" class="alert-message block-message info" data-alert="alert">
+		</div>
+	</div>
+	
 	<div id="${id}" class="tabla"></div>
 
 	<script>
+	
+		// Ocultamos primero todos los DIV de mensajes de error, y despues
+		// dependiendo de lo que nos llegue por Ajax, mostraremos los pertinentes
+		function ocultarMensajes${id}(){
+			document.getElementById("${id}_Fatal").style.display = "none";
+			document.getElementById("${id}_Error").style.display = "none";
+			document.getElementById("${id}_Warning").style.display = "none";
+			document.getElementById("${id}_Ok").style.display = "none";
+			document.getElementById("${id}_Info").style.display = "none";
+		}
+		
+		ocultarMensajes${id}();
+		
 		Ext.onReady(function() {
 			if (!Ext.ModelManager.isRegistered('${modelName}')){
 				Ext.define('${modelName}',{
         			extend: 'Ext.data.Model',
         			idProperty: 'objeto.id',
         			fields:[
-						#{list campos, as:'columna_campo'}
+        				#{list campos, as:'columna_campo'}
 			    			{
 			    				%{def columna_campo_split = columna_campo.split("\\.")}%
 								name : '#{fap.campo2id columna_campo /}',
@@ -89,25 +128,134 @@
 					]
 		    	});
 			}
-
-			#{if seleccionable}
-				var sm = Ext.create('Ext.selection.CheckboxModel');
-			#{/if}
 			
-			var store = Ext.create('Ext.data.Store', {
-		        model: '${modelName}',
-		        autoLoad: true,
+			var store${id} = Ext.create('Ext.data.Store', {
+				autoLoad: true,
+				model: '${modelName}',
+		        data: [],
 		        proxy: {
-		            type: 'ajax',
-		            url:  '${actionDef.url}',
-		            reader: {
+		        	type: 'memory',
+		        	reader: {
 		                type: 'json',
-		                root: 'rows',
 		                totalRecords: '@total'
 		            }
 		        }
 		    });
+			
+			var error=[];
+			var warning=[];
+			var ok=[];
+			var fatal=[];
+			var info=[];
+			
+			// Funciones que crean los mensajes a partir de los contenedores G{tipoMensaje}
+			// Por si el usuario lo ha cerrado en tiempo de ejecución
+			function creaMensaje${id}(tipo, clase){
+				var id = "${id}_"+tipo;
+				var content = '<div id="'+id+'" class="'+clase+'" data-alert="alert"> </div>';
+				$('#${id}_G'+tipo).html(content);
+			}
+			function crearMensajes${id}(){
+				if (!document.getElementById("${id}_Fatal"))
+					creaMensaje${id}("Fatal", "alert-message block-message error");
+				if (!document.getElementById("${id}_Error"))
+					creaMensaje${id}("Error", "alert-message block-message error");
+				if (!document.getElementById("${id}_Warning"))
+					creaMensaje${id}("Warning", "alert-message block-message warning");
+				if (!document.getElementById("${id}_Ok"))
+					creaMensaje${id}("Ok", "alert-message block-message success");
+				if (!document.getElementById("${id}_Info"))
+					creaMensaje${id}("Info", "alert-message block-message info");
+			}
+			
+			function resetMessages${id}(){
+				error=[];
+				warning=[];
+				ok=[];
+				fatal=[];
+				info=[];
+			}
+			
+			function writeMessage${id}(name, data){
+				if (data.length > 0){
+					document.getElementById("${id}_"+name).style.display = "";
+			    	var content = '<a class="close" href="#">x</a>';
+			    	if (name == "Error" || name == "Fatal"){
+			       		content += '<ul>';
+			       		for(i=0; i < data.length; i++){
+			       			content += '<li>'+data[i]+'</li>';
+			       		}
+						content += '</ul>';
+			       	} else{
+			       		for(i=0; i < data.length; i++){
+			       			content += '<p>'+data[i]+'</p>';
+			       		}
+			       	}
+			       	$('#${id}_'+name).html(content);
+			       	return true;
+			   }
+			   return false;
+			}
+				
+			function writeAllMessages${id}(){
+				// Si hay un mensaje fatal, no se muestran el resto de mensajes
+				if (writeMessage${id}('Fatal', fatal))
+					return;
+				writeMessage${id}('Error', error);
+			   	writeMessage${id}('Warning', warning);
+			   	writeMessage${id}('Ok', ok);
+			   	writeMessage${id}('Info', info);
+			}
 
+			#{if seleccionable}
+				var sm = Ext.create('Ext.selection.CheckboxModel');
+			#{/if}	
+		
+			function loadMessages${id}(data){
+				resetMessages${id}();
+				// Para recuperar los mensajes, si es que hay
+				if (data.obj.mensajes.error)
+					error = data.obj.mensajes.error;
+				if (data.obj.mensajes.warning)
+					warning = data.obj.mensajes.warning;
+				if (data.obj.mensajes.fatal)
+					fatal = data.obj.mensajes.fatal;
+				if (data.obj.mensajes.ok)
+					ok = data.obj.mensajes.ok;
+				if (data.obj.mensajes.info)
+					info = data.obj.mensajes.info;
+			}
+			
+			function ajax2Data (data){
+				var filas=[];
+				var aux;
+				for (var i=0; i<data.length; i++){
+					aux = {};
+				 	#{list campos, as:'columna_campo'}
+				 		aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo};
+				 	#{/list}
+				 	aux['permisoLeer']=data[i].permisoLeer;
+				 	aux['permisoEditar']=data[i].permisoEditar;
+				 	aux['permisoBorrar']=data[i].permisoBorrar;
+				 	filas[i] = aux;
+				}
+				return filas;				
+			}
+
+			function peticionJSON${id}(){
+				crearMensajes${id}();
+				ocultarMensajes${id}();
+				$.ajax("${actionDef.url}").done(function (data){
+													// Para los mensajes
+				 									loadMessages${id}(data);
+		        									writeAllMessages${id}(); 
+		        									// Para las filas de la tabla
+				 									store${id}.loadData(ajax2Data(data.obj.rows));
+												});
+		    }
+		    
+		    // Para cuando se entra a la pagina
+		    peticionJSON${id}();
 			
 			#{if botonEditar}
 			
@@ -116,7 +264,7 @@
 		    	icon: '@{'/public/images/table-editar.png'}',
 		    	disabled:true,
 		    	handler : function(){
-			   		var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+			   		var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
 			   		#{if urlPopupEditar}
 			   			popup_open(
 			   				"${popupEditar}_popup",
@@ -133,8 +281,8 @@
 			var editRow = new Ext.create('Ext.grid.plugin.Editing', {
 		    	clicksToEdit: 2,
 	    	   	startEdit: function(record, columnHeader) {
-					var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-					var registro = store.getAt(store.find("id", selected_id));
+					var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+					var registro = store${id}.getAt(store${id}.find("id", selected_id));
 		    		if (registro.get("permisoEditar")){
 					#{if urlPopupEditar}
 		   				popup_open(
@@ -161,7 +309,7 @@
 	    		icon: '@{'/public/images/table-leer.png'}',
 	    		disabled:true,
 	    		handler : function(){
-	    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+	    			var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
 	    			#{if urlPopupLeer}
 	    				popup_open(
 	    					"${popupLeer}_popup",
@@ -177,8 +325,8 @@
 		    var readRow = new Ext.create('Ext.grid.plugin.Editing', {
 		    	clicksToEdit: 2,
 				startEdit: function(record, columnHeader) {
-    				var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-    				var registro = store.getAt(store.find("id", selected_id));
+    				var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+    				var registro = store${id}.getAt(store${id}.find("id", selected_id));
 		    		if (!registro.get("permisoEditar") && registro.get("permisoLeer")){	
     				#{if urlPopupLeer}
 			   			popup_open(
@@ -202,7 +350,7 @@
 	    		icon: '@{'/public/images/table-borrar.png'}',
 	    		disabled:true,
 	    		handler : function(){
-	    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+	    			var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
 	    			#{if urlPopupBorrar}
 	    				popup_open(
 	    					"${popupBorrar}_popup",
@@ -246,7 +394,7 @@
 		    		var selected = sm.getSelection();
 		    		var params = new Array();
 		    		for (var i in selected) {
-		    			params[i] = "idsSeleccionados="+selected[i].internalId;
+		    			params[i] = "idsSeleccionados="+selected[i].data.id;
 		    		}
 		    		createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
 			   	}
@@ -257,12 +405,12 @@
 		    	text: 'Actualizar',
 		    	handler : function(){
 		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
-		    		store.load();
+		    		peticionJSON${id}();
 		    	}
 		    });
 
 		   	var grid = new Ext.grid.GridPanel({
-				store : store,
+				store : store${id},
 				#{if seleccionable}
 				selModel: sm,
 	            #{/if}
@@ -296,7 +444,7 @@
                 				fieldLabel: 'Buscar',
                 				labelWidth: 50,
                 				xtype: 'searchfield',
-                				store: store
+                				store: store${id}
             				},
 			            '->',
 						#{if seleccionable}
@@ -320,15 +468,15 @@
 				]
 			});
 	
-		    store.addListener("load", function(){
-				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
+		    store${id}.addListener("datachanged", function(){
+		    	store${id}.sync();
+		    	grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();	
 		    });
-		   			   	
+		    
 		    grid.addListener("selectionchange", function(){
 		    
 		    	if ( grid.getSelectionModel().hasSelection()){
-		    		var registro = store.getAt(store.find("id", grid.getSelectionModel().getSelection()[0].internalId));
-		    		
+		    		var registro = store${id}.getAt(store${id}.find("id", grid.getSelectionModel().getSelection()[0].data.id));
 		    		#{if botonLeer}
 		    		boton_leer.setDisabled(!registro.get("permisoLeer"));
 			    	#{/if}
@@ -354,15 +502,13 @@
 		    });
 
 			function reload(){
-				store.load();
+				peticionJSON${id}();
 				#{if recargarPagina}
 					window.location.reload();
 				#{/if}
 			};
-		    
-		   	$('#${id}').data('grid', grid);
-		   	
 
+		   	$('#${id}').data('grid', grid);
 
 		});
 </script>

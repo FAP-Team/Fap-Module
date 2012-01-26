@@ -47,9 +47,9 @@ abstract public class Secure {
 	}
 	
 	/*
-	 * Comprueba que el String action contiene uno de los 4 posibles valores válidos
+	 * Comprueba que el String action contiene uno de los 5 posibles valores válidos
 	 */
 	public static boolean checkAction(String action){
-		return ("leer".equals(action) || "editar".equals(action) || "crear".equals(action) || "borrar".equals(action));
+		return "leer".equals(action) || "editar".equals(action) || "crear".equals(action) || "borrar".equals(action)  || "borrado".equals(action);
 	}
 }

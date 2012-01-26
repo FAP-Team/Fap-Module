@@ -25,6 +25,7 @@ public class Report {
 	private String template;
 	private String header;
 	private String footer;
+	private String fileName;
 	private PageSize pageSize;
 
 	/**
@@ -73,6 +74,15 @@ public class Report {
 		return this;
 	}
 	
+	/**
+	 * @param filename Nombre asociado al archivo PDF a generar
+	 * @return
+	 */
+	public Report fileName(String filename) {
+		this.fileName = filename;
+		return this;
+	}
+	
 	private MultiPDFDocuments getRenderOptions(){
 		MultiPDFDocuments m = new MultiPDFDocuments();
 		Options opciones = new Options();
@@ -81,6 +91,9 @@ public class Report {
 
 		if (header != null)
 			opciones.HEADER_TEMPLATE = header;
+		
+		if (fileName != null)
+			m.filename = fileName;
 
 		opciones.pageSize = pageSize;
 		m.add(template, opciones);

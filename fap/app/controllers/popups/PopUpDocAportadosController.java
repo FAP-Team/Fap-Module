@@ -7,7 +7,9 @@ import play.mvc.Util;
 import controllers.gen.popups.PopUpDocAportadosControllerGen;
 			
 public class PopUpDocAportadosController extends PopUpDocAportadosControllerGen {
-	protected static Documento getDocumento(Long idSolicitud, Long idDocumento){
+	
+	@Util
+	public static Documento getDocumento(Long idSolicitud, Long idDocumento){
     	System.out.println("hola soy hijo");
         Documento documento = null;
         if(idSolicitud == null){

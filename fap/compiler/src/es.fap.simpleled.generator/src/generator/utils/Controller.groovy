@@ -158,7 +158,7 @@ import controllers.fap.*;
 import validation.*;
 import messages.Messages;
 import messages.Messages.MessageType;
-
+import controllers.${controllerFullName};
 import tables.TableRecord;
 import models.*;
 import tags.ReflectionUtils;
@@ -243,7 +243,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		String getters = "";
 		if(almacen.entidad != null){
 			for (AlmacenEntidad subcampo: camposTodos)
-				getters += ControllerUtils.complexGetter(subcampo.almacen, subcampo.entidad, subcampo.campo);
+				getters += ControllerUtils.complexGetter(controllerName, subcampo.almacen, subcampo.entidad, subcampo.campo);
 			getters += ControllerUtils.simpleGetter(camposTodos.get(0).almacen, true);
 			if(hayTabla && crear && !almacen.isSingleton())
 				getters += ControllerUtils.simpleGetter(entidad, true);
@@ -292,12 +292,12 @@ public class ${controllerName} extends ${controllerGenName} {
 					${guardarAlCrear}
 				}
 				else if (!accion.equals("borrado")){
-					${entidad.entidad? "$entidad.variable = ${ControllerUtils.complexGetterCall(almacen, entidad)};" : ""}
+					${entidad.entidad? "$entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};" : ""}
 				}
-				${primerAlmacen.entidad? "$primerAlmacen.clase $primerAlmacen.variable = ${ControllerUtils.simpleGetterCall(primerAlmacen, true)};" : ""}
-				${campos.collect{"$it.entidad.clase $it.entidad.variable = ${ControllerUtils.complexGetterCall(it.almacen, it.entidad)};"}.join("\n")}
-				${indexEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(it, false)};"}.join("\n")}
-				${saveEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(it, false)};"}.join("\n")}
+				${primerAlmacen.entidad? "$primerAlmacen.clase $primerAlmacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, primerAlmacen, true)};" : ""}
+				${campos.collect{"$it.entidad.clase $it.entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, it.almacen, it.entidad)};"}.join("\n")}
+				${indexEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
+				${saveEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
 				renderTemplate(${StringUtils.params(
 					renderView,
 					"accion",
@@ -316,7 +316,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String metodoEditar(){
 		String metodoEditar = "";
 		if (editar || isForm()) {
-			String editarRenderCall = "${nameEditar}Render(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
+			String editarRenderCall = "${controllerName}.${nameEditar}Render(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
 			String botonCode = "";
 			List<String> saveBotones = new ArrayList<String>(saveBoton);
 			if (isForm() && saveBotones.size() == 1){
@@ -332,7 +332,7 @@ public class ${controllerName} extends ${controllerGenName} {
 					else
 						botonCode += "else if (${boton} != null) {"
 						botonCode += """
-							${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
+							${controllerName}.${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
 								intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
 								entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
 							)});
@@ -356,14 +356,14 @@ public class ${controllerName} extends ${controllerGenName} {
 						Messages.error("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar la acción"}");
 					}
 					${botonCode}
-					${!entidad.nulo()? "${entidad.clase} $entidad.variableDb = ${ControllerUtils.complexGetterCall(almacen, entidad)};":""}
-					${ControllerUtils.fullGetterCall(EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
-					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(this, entidad, saveEntities) : ""}
+					${!entidad.nulo()? "${entidad.clase} $entidad.variableDb = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};":""}
+					${ControllerUtils.fullGetterCall(controllerName, EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
+					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(controllerName, this, entidad, saveEntities) : ""}
 					if(!Messages.hasErrors()){
-						${editar && !entidadPagina.nulo()? ControllerUtils.validateCopyCall("\"editar\"", this, entidad, saveEntities) : ""}
+						${editar && !entidadPagina.nulo()? ControllerUtils.validateCopyCall(controllerName, "\"editar\"", this, entidad, saveEntities) : ""}
 					}
 					if(!Messages.hasErrors()){
-						${nameEditar}ValidateRules(${StringUtils.params(
+						${controllerName}.${nameEditar}ValidateRules(${StringUtils.params(
 							entidad.variableDb, saveEntities.collect{it.variableDb}, entidadPagina.variable,
 							saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
 						)});
@@ -413,16 +413,16 @@ public class ${controllerName} extends ${controllerGenName} {
 					}
 					${entidad.clase} ${entidad.variableDb} = null;
 					if(!Messages.hasErrors()){
-						${entidad.variableDb} = ${ControllerUtils.simpleGetterCall(entidad, hayTabla)};
+						${entidad.variableDb} = ${ControllerUtils.simpleGetterCall(controllerName, entidad, hayTabla)};
 					}
-					${ControllerUtils.almacenGetterCall(ultimoAlmacen);}
-					${ControllerUtils.fullGetterCall(EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
-					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(this, entidad, saveEntities) : ""}
+					${ControllerUtils.almacenGetterCall(controllerName, ultimoAlmacen)}
+					${ControllerUtils.fullGetterCall(controllerName, EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
+					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(controllerName, this, entidad, saveEntities) : ""}
 					if(!Messages.hasErrors()){
-						${!entidadPagina.nulo()? ControllerUtils.validateCopyCall("\"crear\"", this, entidad, saveEntities) : ""}
+						${!entidadPagina.nulo()? ControllerUtils.validateCopyCall(controllerName, "\"crear\"", this, entidad, saveEntities) : ""}
 					}
 					if(!Messages.hasErrors()){
-						crearValidateRules(${StringUtils.params(
+						${controllerName}.crearValidateRules(${StringUtils.params(
 							entidad.variableDb, saveEntities.collect{it.variableDb}, entidadPagina.variable,
 							saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
 						)});
@@ -432,7 +432,7 @@ public class ${controllerName} extends ${controllerGenName} {
 						$crearSaveCall
 						${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
 					}
-					crearRender(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
+					${controllerName}.crearRender(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
 				}
 			"""
 		}
@@ -467,17 +467,15 @@ public class ${controllerName} extends ${controllerGenName} {
 					if(!permiso("borrar")){
 						Messages.error("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar la acción"}");
 					}
-
-					${ControllerUtils.almacenGetterCall(ultimoAlmacen);}
-					${entidad.clase} ${entidad.variableDb} = ${ControllerUtils.complexGetterCall(almacen, entidad)};
+					${ControllerUtils.almacenGetterCall(controllerName, ultimoAlmacen)}
+					${entidad.clase} ${entidad.variableDb} = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};
 					if(!Messages.hasErrors()){
-						borrarValidateRules(${StringUtils.params(entidad.variableDb)});
+						${controllerName}.borrarValidateRules(${StringUtils.params(entidad.variableDb)});
 					}
 					if(!Messages.hasErrors()){
 						$borrarEntidad
 					}
-
-					borrarRender(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
+					${controllerName}.borrarRender(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
 				}
 			"""
 		}
@@ -638,7 +636,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (editar || isForm()) {
 			metodoEditarValidateRules = """
 				@Util
-				protected static void ${nameEditar}ValidateRules(${StringUtils.params(
+				public static void ${nameEditar}ValidateRules(${StringUtils.params(
 					entidad.typeDb,
 					saveEntities.collect{it.typeDb},
 					entidadPagina.typeVariable,
@@ -657,7 +655,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (crear) {
 			metodoCrearValidateRules = """
 				@Util
-				protected static void crearValidateRules(${StringUtils.params(
+				public static void crearValidateRules(${StringUtils.params(
 					entidad.typeDb,
 					saveEntities.collect{it.typeDb},
 					entidadPagina.typeVariable,
@@ -676,7 +674,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (borrar) {
 			metodoBorrarValidateRules = """
 				@Util
-				protected static void borrarValidateRules(${StringUtils.params(entidad.typeDb)}){
+				public static void borrarValidateRules(${StringUtils.params(entidad.typeDb)}){
 					//Sobreescribir para validar las reglas de negocio
 				}
 			""";
@@ -687,7 +685,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String metodoPermiso(){
 		return """
 			@Util
-			protected static boolean permiso${sufijoPermiso}(String accion) {
+			public static boolean permiso${sufijoPermiso}(String accion) {
 				${ControllerUtils.permisoContent(permiso)}
 			}
 		"""

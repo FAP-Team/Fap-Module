@@ -372,7 +372,7 @@ public class GTabla {
 				${idSingleton}
 				java.util.List<${entidad.clase}> rows = ${entidad.clase}.find(${query}).fetch();
 				${getCodePermiso(entidad)}
-				tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(${controllerMethodName()}Permisos(rowsFiltered));
+				tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(${contenedor.controller.controllerName}.${controllerMethodName()}Permisos(rowsFiltered));
 				response.mensajes.error=Messages.messages(MessageType.ERROR);
 				response.mensajes.warning=Messages.messages(MessageType.WARNING);
 				response.mensajes.fatal=Messages.messages(MessageType.FATAL);

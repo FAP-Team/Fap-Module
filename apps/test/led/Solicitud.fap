@@ -1,7 +1,7 @@
 Formulario Solicitud {
 	
     Menu {
-    	Enlace "Volver" pagina=Principal.Solicitudes
+    	Enlace "Volver" pagina=Solicitudes
     	
     	Grupo "Combos" {
 			Enlace "Combos por defecto" pagina=Combos
@@ -28,7 +28,7 @@ Formulario Solicitud {
 		}
 		
 		Grupo "Pagina del módulo"{
-			Enlace "Titulo" pagina=Solicitud.PCEconomicos
+			Enlace "Titulo" pagina=PCEconomicos
 		}	
 
 		Grupo "Test Grupos" {

@@ -170,7 +170,7 @@ public class Messages {
     }
 
     public static boolean hasErrors(){
-    	return current().hasMessages(MessageType.ERROR) || Validation.current().hasErrors();
+    	return current().hasMessages(MessageType.ERROR) || current().hasMessages(MessageType.FATAL) || Validation.current().hasErrors();
     }
     
     public static void clear() {

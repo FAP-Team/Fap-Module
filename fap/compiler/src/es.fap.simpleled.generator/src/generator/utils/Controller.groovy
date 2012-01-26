@@ -282,9 +282,12 @@ public class ${controllerName} extends ${controllerGenName} {
 						Messages.warning("La acción especificada en la url no es válida. Se utilizará la acción por defecto.");
 					accion = "editar";
 				}
+				if (!permiso(accion)){
+					Messages.fatal("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar esta acción"}");
+				}
 				${hayAnterior? "checkRedirigir();" : ""}
 				${entidad.entidad? "$entidad.clase $entidad.variable = null;" : ""}
-				if(accion.equals("crear")){
+				if(accion.equals("crear") && !Messages.hasErrors()){
 					${ControllerUtils.newCall(entidad)}
 					${guardarAlCrear}
 				}
@@ -295,9 +298,6 @@ public class ${controllerName} extends ${controllerGenName} {
 				${campos.collect{"$it.entidad.clase $it.entidad.variable = ${ControllerUtils.complexGetterCall(it.almacen, it.entidad)};"}.join("\n")}
 				${indexEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(it, false)};"}.join("\n")}
 				${saveEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(it, false)};"}.join("\n")}
-				if (!permiso(accion)){
-					Messages.fatal("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar esta acción"}");
-				}
 				renderTemplate(${StringUtils.params(
 					renderView,
 					"accion",

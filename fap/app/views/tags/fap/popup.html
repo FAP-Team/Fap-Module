@@ -35,6 +35,8 @@
 
 #{fap.messages}
 
+#{fap.permiso permiso:_permisoPopup, mensaje:_permisoPopupMsg }
+
 <form action="${url}" method="post" enctype="multipart/form-data">
 	<div class="modal-body">
 		#{authenticityToken /}
@@ -86,17 +88,19 @@ $(document).ready(function(){
 				$('#${botonAccion}_id').button('complete');
 			});
 		};
-	  	popupButtons (idPopup, {"${botonAccion}": "${botonAccion}()"}, "primary", true);
+	  	popupButtons (idPopup, {"${botonAccion}": "${botonAccion}()"}, "primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"});
   	#{/if}
   	#{else}
-  		popupButtons (idPopup, {}, "primary", true);
+  		popupButtons (idPopup, {}, "primary", true, true);
   	#{/else}
   	popupTitle(idPopup, "${titulo}");
 
 
 });
 </script>
-		
+
+#{/fap.permiso}
+
 #{/fap.messages}
 
 %{

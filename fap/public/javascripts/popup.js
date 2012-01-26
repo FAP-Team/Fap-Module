@@ -25,7 +25,6 @@ function popup_open(popup, url, callback) {
 	
 	$.get(url, function(data){
 		cargado = true;
-		console.log('es el get');
 		if(typeof(data) == 'string'){
 			$popup.html(data);
 		}else{
@@ -35,7 +34,6 @@ function popup_open(popup, url, callback) {
 				//msg.error(data.message);
 			}
 		}
-		console.log('Fin del get');
 	});
 	
 	// Mostramos el popup ahora
@@ -92,22 +90,28 @@ function replaceAmpersand(url) {
  * Añade los botones especificados en el map, con su función. Se le añade el botón cancelar también
  * @param popup
  */
-function popupButtons (popup, buttons, type, cancelButton) {
+function popupButtons (popup, buttons, type, cancelButton, enable) {
 	if (cancelButton) {
 		// Añadimos el botón de cancelar
-		popupAddButton (popup, "Cancelar", "$('#"+popup+"').modal('hide');", "secondary");
+		popupAddButton (popup, "Cancelar", "$('#"+popup+"').modal('hide');", "secondary", true);
 	}
 	for (var button in buttons) {
-		popupAddButton (popup, button, buttons[button], type);
+		popupAddButton (popup, button, buttons[button], type, enable);
 	}
 }
 
-function popupAddButton (popup, textButton, functionButton, type) {
+function popupAddButton (popup, textButton, functionButton, type, enable) {
+	var disabled = " ";
+	var onClick = "onclick=\""+functionButton+";\"";
+	if (enable == false) {
+		disabled = "disabled=true";
+		onClick = "";
+	}
 	var $popup = $('#' + popup);
 	var typeLocal = type;
 	if (textButton == 'Borrar')
 		typeLocal = 'danger';
-	$popup.find('.modal-footer').append("<a href=\"#\" id=\""+textButton+"_id\" onclick=\""+functionButton+";\" class=\"btn "+typeLocal+"\" data-loading-text=\"Enviando...\">"+textButton+"</a>");
+	$popup.find('.modal-footer').append("<a href=\"#\" id=\""+textButton+"_id\""+onClick+disabled+" class=\"btn "+typeLocal+"\" data-loading-text=\"Enviando...\">"+textButton+"</a>");
 }
 
 function popupTitle (popup, title) {

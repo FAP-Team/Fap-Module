@@ -48,7 +48,8 @@ Formulario Solicitud {
 		Grupo "Permisos" {
 			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administrador
 			Enlace "Permiso grupo" pagina=PermisoPagina permiso=administrador
-			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable 
+			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable
+			Enlace "Permiso tablas" pagina=PermisoEnTablas 
 		}
 
 		
@@ -322,6 +323,19 @@ Formulario Solicitud {
 		Wiki {"Esta página es no editable"}	
 		Texto ifTexto titulo="Texto" campo=Solicitud.solicitante.nombreCompleto
 		Boton noHagoNada titulo="No hago Nada"
+	}
+	
+	Pagina PermisoEnTablas campo=Solicitud permiso=editAdminVisibleUser {
+		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono"
+		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRefPermiso titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
+			Columna campo=ComboTestRef.id
+			Columna campo=ComboTestRef.nombre expandir
+		}
+	}
+	
+	Popup ComboTestRefPermiso campo=ComboTestRef permiso=editAdminVisibleUser {
+		Texto campo=ComboTestRef.nombre requerido
+		Combo campo=ComboTestRef.list titulo="Combo"
 	}
 	
 	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=solicitudEditable {

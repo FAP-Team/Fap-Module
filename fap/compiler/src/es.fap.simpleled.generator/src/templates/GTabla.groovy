@@ -386,9 +386,9 @@ public class GTabla {
 					records.add(record);
 					record.objeto = ${entidad.variable};
 					vars.put("${entidad.variable}", ${entidad.variable});
-					record.permisoLeer = ${permisoBotonLeer? "secure.check(\"${permisoBotonLeer}\", \"none\", \"leer\", ids, vars)" : botonLeer};
-					record.permisoEditar = ${permisoBotonEditar? "secure.check(\"${permisoBotonEditar}\", \"none\", \"editar\", ids, vars)" : botonEditar};
-					record.permisoBorrar = ${permisoBotonBorrar? "secure.check(\"${permisoBotonBorrar}\", \"none\", \"borrar\", ids, vars)" : botonBorrar};
+					record.permisoLeer = ${permisoBotonLeer? "secure.check(\"${permisoBotonLeer}\", \"visible\", \"leer\", ids, vars)" : botonLeer};
+					record.permisoEditar = ${permisoBotonEditar? "secure.check(\"${permisoBotonEditar}\", \"visible\", \"editar\", ids, vars)" : botonEditar};
+					record.permisoBorrar = ${permisoBotonBorrar? "secure.check(\"${permisoBotonBorrar}\", \"visible\", \"borrar\", ids, vars)" : botonBorrar};
 				}
 				return records;
 			}	

@@ -233,23 +233,62 @@ Permiso editarSolicitud{
 	return visible
 }
 
-// Este permiso lo tienen todas las páginas de la solicitud
-// Controla que los datos no se puedan editar cuando la solicitud está preparada para registrar
-Permiso solicitudEditable{
+
+Permiso participacionEnSolicitud {
+	vars
+		SolicitudGenerica solicitud
+		Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
+	when
+		participacion != null
+	return editable
+	
+	else return none
+}
+
+// Indica el permiso que se tiene sobre la solicitud
+// 	+ Administrador: editable
+// 	+ usuario con participación: editable
+// 	+ resto: none
+Permiso permisoSolicitud {
 	vars
 		SolicitudGenerica solicitud
 	when
-		usuario is-not visible
-		or (
+		administrador is _permiso
+	return editable
+	
+	when
+		participacionEnSolicitud is _permiso
+	return editable
+	
+	else
+	return none
+}
+
+// Este permiso lo tienen todas las páginas de la solicitud
+// Controla que los datos no se puedan editar cuando la solicitud está preparada para registrar
+Permiso solicitudEditable {
+	vars
+		SolicitudGenerica solicitud
+	when
+		administrador is _permiso
+	return editable
+	
+	when
+		permisoSolicitud is _permiso and (
 	 		agente.rolActivo = "usuario" and
 	 		solicitud.estado = "borrador" and
 	 		solicitud.registro.fasesRegistro.borrador = "false"
 		)
 	return editable
 	
+	when
+		permisoSolicitud is _permiso
+	return
+		visible
+	
 	else
-	return visible
-}	
+	return none
+}
 	
 Permiso solicitudEditableDocumentacion{
 	vars
@@ -447,4 +486,29 @@ Permiso tableKeyOnlyEstadosSolicitudUsuario{
 		tableKeyValue.table = "estadosSolicitudUsuario" and
 		agente.rolActivo = "administrador"
 	return editable
+}
+
+// Editable administrador
+// Visible para el usuario
+Permiso editAdminVisibleUser {
+	vars
+		SolicitudGenerica solicitud
+	when
+		accion = editar and
+		administrador is visible
+	return editable
+
+	when
+		accion = leer and
+		administrador is visible
+	return visible
+	
+	when
+		(accion = leer or accion = editar)and
+		usuario is visible
+	return visible
+	
+	
+	else
+		return none
 }

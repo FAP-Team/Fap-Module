@@ -60,12 +60,8 @@ public class GPopup {
 	}
 	
 	public String view(){
-		String elementos = "";
-		for(Elemento elemento : popup.getElementos()){
-			elementos += Expand.expand(elemento);
-		}
 		
-		crearControllerUtils();
+		String elementos = crearControllerUtils();
 				
         TagParameters params = new TagParameters();
 
@@ -75,6 +71,13 @@ public class GPopup {
 		params.put("urlCrear", controller.getRouteAccion("crear"));
 		params.put("urlBorrar", controller.getRouteAccion("borrar"));
 		params.putStr("titulo", popup.titulo ?: popup.name);
+		if (popup.permiso != null) {
+			params.putStr "permisoPopup", "${popup.permiso.name}";
+			if (popup.permiso.mensaje != null)
+				params.putStr "permisoPopupMsg", popup.permiso.mensaje;
+			else
+				params.putStr "permisoPopupMsg", "No tiene suficientes privilegios para acceder a éste popup";
+		}
 			
 		String view = """
 #{fap.popup ${params.lista(true)}
@@ -86,20 +89,25 @@ public class GPopup {
 		FileUtils.overwrite(FileUtils.getRoute('VIEW'), "popups/${viewName()}", view);
 	}
 	
-	public void crearControllerUtils(){
-		List<String> saveController = HashStack.allElements(HashStackName.CONTROLLER);
-		List<EntidadUtils> saveEntity = HashStack.allElements(HashStackName.SAVE_ENTITY).unique();
-		List<EntidadUtils> indexEntity = HashStack.allElements(HashStackName.INDEX_ENTITY).unique();
-		List<String> saveExtra = HashStack.allElements(HashStackName.SAVE_EXTRA).unique();
-		List<String> saveCode = HashStack.allElements(HashStackName.SAVE_CODE);
-		List<String> saveBoton = HashStack.allElements(HashStackName.SAVE_BOTON);
+	public String crearControllerUtils(){
+		int sizeExtra = HashStack.size(HashStackName.SAVE_EXTRA);
+		int sizeEntity = HashStack.size(HashStackName.SAVE_ENTITY);
+		int sizeCode = HashStack.size(HashStackName.SAVE_CODE);
+		int sizeBoton = HashStack.size(HashStackName.SAVE_BOTON);
+		int sizeIndex = HashStack.size(HashStackName.INDEX_ENTITY);
+		int sizeController = HashStack.size(HashStackName.CONTROLLER);
 		
-		HashStack.remove(HashStackName.CONTROLLER);
-		HashStack.remove(HashStackName.SAVE_ENTITY);
-		HashStack.remove(HashStackName.SAVE_EXTRA);
-		HashStack.remove(HashStackName.SAVE_CODE);
-		HashStack.remove(HashStackName.SAVE_BOTON);
-		HashStack.remove(HashStackName.INDEX_ENTITY);
+		String elementos = "";
+		for(Elemento elemento: popup.elementos){
+			elementos += Expand.expand(elemento);
+		}
+
+		List<EntidadUtils> saveEntity = HashStack.popUntil(HashStackName.SAVE_ENTITY, sizeEntity).unique();
+		List<String> saveExtra = HashStack.popUntil(HashStackName.SAVE_EXTRA, sizeExtra).unique();
+		List<String> saveCode = HashStack.popUntil(HashStackName.SAVE_CODE, sizeCode);
+		List<String> saveBoton = HashStack.popUntil(HashStackName.SAVE_BOTON, sizeBoton);
+		List<EntidadUtils> indexEntity = HashStack.popUntil(HashStackName.INDEX_ENTITY, sizeIndex).unique();
+		List<String> saveController = HashStack.popUntil(HashStackName.CONTROLLER, sizeController);
 		
 		controller = Controller.fromPopup(popup);
 		controller.saveController = saveController;
@@ -109,6 +117,7 @@ public class GPopup {
 		controller.saveEntities = saveEntity;
 		controller.indexEntities = indexEntity;
 		controller.initialize();
+		return elementos;
 	}
 	
 	public String controller(){

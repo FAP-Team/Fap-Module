@@ -202,7 +202,22 @@ public class GSolicitante {
 		
 		popup.setName "Popup" + StringUtils.firstUpper(name);
 		popup.setTitulo "Representante";
-		popup.setCampo(CampoUtils.create(ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "RepresentantePersonaJuridica", LedUtils.resource)).campo);
+		popup.setCampo(CampoUtils.create("Solicitud.solicitante.representantes").campo);
+		
+		// Debemos crear las acciones para el popup, ya que no son referenciados en la tabla
+		// y se lo debemos indicar de esta forma.
+		Accion action = new AccionImpl();
+		action.setName("crear");
+		action.setCrearSiempre(true);
+		popup.getElementos().add(action);
+		action = new AccionImpl();
+		action.setName("editar");
+		action.setCrearSiempre(true);
+		popup.getElementos().add(action);
+		action = new AccionImpl();
+		action.setName("borrar");
+		action.setCrearSiempre(true);
+		popup.getElementos().add(action);
 			
 		Persona person = new PersonaImpl();
 		
@@ -221,9 +236,9 @@ public class GSolicitante {
 		tipo.setRequerido(true)
 		
 		popup.getElementos().add(tipo);
-		
+
 		Expand.expand(popup);
-		
+
 		return popup;
 	}
 

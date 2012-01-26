@@ -41,7 +41,7 @@
 	boolean botonLeer = urlPaginaLeer || urlPopupLeer;
 	
 	if (_permisoCrear != null)
-		botonCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoCrear", "none", "crear", tags.TagMapStack.top("idParams"), null);
+		botonCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).check("$_permisoCrear", "visible", "crear", tags.TagMapStack.top("idParams"), null);
 	
 	def modelName = id + "_model";
 	Set<String> campos = new HashSet<String>();

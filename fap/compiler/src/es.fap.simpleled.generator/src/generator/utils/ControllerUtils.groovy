@@ -570,7 +570,7 @@ class ControllerUtils {
 			permisoContent = """
 				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 				Map<String, Object> vars = null;
-				return secure.check("${name}", "none", accion, ids, vars);
+				return secure.check("${name}", "visible", accion, ids, vars);
 			"""
 		}else{
 			permisoContent = """

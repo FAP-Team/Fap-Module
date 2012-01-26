@@ -14,13 +14,6 @@ import com.sun.media.sound.RealTimeSequencer.PlayThread;
 
 import utils.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: fap
- * Date: 21/06/11
- * Time: 10:11
- * To change this template use File | Settings | File Templates.
- */
 class ControllerUtils {
 
 	static List<String> camposSolicitante = "tipo,fisica.nombre,fisica.primerApellido,fisica.segundoApellido,fisica.nip,juridica.cif,juridica.entidad,representado".split(',')
@@ -161,9 +154,8 @@ class ControllerUtils {
     }
 
 	public static String validateCopyMethod(gElemento, Object ... entities){
-		if (entities.length == 0){
+		if (entities.length == 0)
 			return "";
-		}
 		def params = [];
 		validatedFields = new Stack<Set<String>>();
 		validatedFields.push(new HashSet<String>());
@@ -182,9 +174,8 @@ class ControllerUtils {
 	}
 	
     public static String validateCopyCall(String accion, gElemento, Object ... entities){
-		if (entities.length == 0){
+		if (entities.length == 0)
 			return "";
-		}
 		def params = [];
 		getEntityList(entities).each { entidad ->
 			params.add(entidad.variableDb);
@@ -193,6 +184,13 @@ class ControllerUtils {
 		return """${gElemento.name}ValidateCopy(${StringUtils.params(accion, params, gElemento.saveExtra.collect{it.split(" ")[1]}.unique())});""";
     }
 
+	public static String bindReferencesCall(gElemento, Object ... entities){
+		if (entities.length == 0)
+			return "";
+		def params = [];
+		getEntityList(entities).each { entidad -> params.add(entidad.variable); }
+		return """${gElemento.name}BindReferences(${StringUtils.params(params, gElemento.saveExtra.collect{it.split(" ")[1]}.unique())});""";
+	}
 
 	public static String botonMethodCall(gElemento, boton, EntidadUtils ... entities){
 		return "${gElemento.name}${StringUtils.firstUpper(boton)}(${StringUtils.params(gElemento.saveExtra.collect{it.split(" ")[1]}.unique())});"
@@ -236,16 +234,13 @@ class ControllerUtils {
     private static String validateCopy(objeto) {
         String out = "";
         if ((Pagina.class.isInstance(objeto)) || (Grupo.class.isInstance(objeto)) || (Popup.class.isInstance(objeto)) || Form.class.isInstance(objeto) || EntidadAutomatica.class.isInstance(objeto)) {
-			
 			if (objeto.permiso != null){
                 out += """if (secure.check("${objeto.permiso.name}", "editable", accion, (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
 				validatedFields.push(new HashSet<String>());
 			}
-			
 			for (Elemento elemento: objeto.elementos) {
 				out += validateCopy(elemento);
 			}
-			
             if (objeto.permiso != null) {
                 out += "\n}\n"
 				validatedFields.pop();
@@ -255,70 +250,147 @@ class ControllerUtils {
             if (objeto.campo != null) {
                 out += validate(objeto);
                 out += copy(objeto);
-				//
             }
         }
-
         return out;
     }
 
+	public static String bindReferencesMethod(gElemento, Object ... entities){
+		if (entities.length == 0)
+			return "";
+		def params = [];
+		getEntityList(entities).each { entidad -> params.add(entidad.typeVariable); }
+		return """
+			@Util
+			protected static void ${gElemento.name}BindReferences(${StringUtils.params(params, gElemento.saveExtra)}){
+				${bindReferences(gElemento.elementoGramatica)}
+			}
+		"""
+	}
+	
+	private static String bindReferences(objeto) {
+		String out = "";
+		if ((Pagina.class.isInstance(objeto)) || (Grupo.class.isInstance(objeto)) || (Popup.class.isInstance(objeto)) || Form.class.isInstance(objeto) || EntidadAutomatica.class.isInstance(objeto)) {
+			for (Elemento elemento: objeto.elementos)
+				out += bindReferences(elemento);
+		}
+		else if (objeto.metaClass.respondsTo(objeto, "getCampo")) {
+			if (objeto.campo != null)
+				out += bindReference(objeto);
+		}
+		return out;
+	}
 	
     /**
      * Devuelve el codigo de copia de un elemento de la pagina, grupo o popUp
      * @param objeto
      * @return
      */
-    public static String copy(EObject objeto) {
+    public static String bindReference(EObject objeto) {
         if ((Grupo.class.isInstance(objeto)) || (Pagina.class.isInstance(objeto))
                 || (Popup.class.isInstance(objeto)) || (Wiki.class.isInstance(objeto))
                 || (SubirArchivo.class.isInstance(objeto)) || (Tabla.class.isInstance(objeto))) {
             return "";
         }
 
-        if (objeto.campo == null) {
+        if (objeto.campo == null)
             return "";
-        }
 		CampoUtils campo = CampoUtils.create(objeto.campo);
-		
 		// Si la referencia es un ManyToOne o ManyToMany, solo igualamos ella, no sus campos
 		if (LedEntidadUtils.isManyToOne(campo.getUltimoAtributo())) {
-			return copyCampoMany2One(campo);
+			return bindCampoMany2One(campo);
 		} else if (LedEntidadUtils.isManyToMany(campo.getUltimoAtributo())) { 
-			return copyCampoMany2Many(campo);
+			return bindCampoMany2Many(campo);
 		}
-		String validOut = "";
-        List<String> camposFiltrados;
-		if (objeto instanceof Solicitante) {
-			camposFiltrados = camposSolicitante
-			if (!((Solicitante) objeto).isNoRepresentante()) {
-				validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
-				"""
-				validOut += copyRepresentanteFisica (campo.str)
-				validOut += copyRepresentanteJuridica (campo.str)
-				validOut += """\n}""";
-			}
-		} else if (objeto instanceof Persona) {
-			camposFiltrados = camposPersona
-        } else if (objeto instanceof PersonaFisica) {
-            camposFiltrados = camposPersonaFisica
-        } else if (objeto instanceof PersonaJuridica) {
-            camposFiltrados = camposPersonaJuridica
-        } else if(objeto instanceof SubirArchivoAed){
-			camposFiltrados = camposAed
-		} else if(objeto instanceof EditarArchivoAed) {
-			camposFiltrados = camposAed
-		}
-
-		String out = "";
-		if (camposFiltrados == null) {
-			out = copyCamposTodos(campo);
-		} else {
-			out = copyCamposFiltrados(campo, camposFiltrados);
-		}
-		
-        return out + validOut;
+		return "";
     }
+	
+	public static String bindCampoMany2One(CampoUtils campo) {
+		String entity = campo.getUltimaEntidad().name;
+		String str_ = campo.getStr_();
+		return """
+			String ${str_} = params.get("$str_");
+			if ((${str_} != null) && (!${str_}.trim().equals(""))) {
+				$entity ${str_}ctr = ${entity}.findById(Long.parseLong(${str_}.trim()));
+				${campo.firstLower()} = ${str_}ctr;
+			}
+			else
+				${campo.firstLower()} = null;
+		""";
+	}
+	
+	public static String bindCampoMany2Many(CampoUtils campo) {
+		String entity = campo.getUltimaEntidad().name;
+		String str_ = campo.getStr_();
+		return """
+			ArrayList<$entity> ${str_}aCT = new ArrayList<$entity>();
+			String[] $str_ = params.getAll("$str_");
+			if ($str_ != null) {
+				for (String idString : $str_) {
+					$entity ctr = ${entity}.findById(Long.parseLong(idString.trim()));
+					${str_}aCT.add(ctr);
+				}
+			}
+			${campo.firstLower()} = ${str_}aCT;
+		""";
+	}
 
+	/**
+	* Devuelve el codigo de copia de un elemento de la pagina, grupo o popUp
+	* @param objeto
+	* @return
+	*/
+   public static String copy(EObject objeto) {
+	   if ((Grupo.class.isInstance(objeto)) || (Pagina.class.isInstance(objeto))
+			   || (Popup.class.isInstance(objeto)) || (Wiki.class.isInstance(objeto))
+			   || (SubirArchivo.class.isInstance(objeto)) || (Tabla.class.isInstance(objeto))) {
+		   return "";
+	   }
+
+	   if (objeto.campo == null) {
+		   return "";
+	   }
+	   CampoUtils campo = CampoUtils.create(objeto.campo);
+	   
+	   // Si la referencia es un ManyToOne o ManyToMany, solo igualamos ella, no sus campos
+	   if (LedEntidadUtils.isManyToOne(campo.getUltimoAtributo())) {
+		   return copyCampoMany2One(campo);
+	   } else if (LedEntidadUtils.isManyToMany(campo.getUltimoAtributo())) {
+		   return copyCampoMany2Many(campo);
+	   }
+	   String validOut = "";
+	   List<String> camposFiltrados;
+	   if (objeto instanceof Solicitante) {
+		   camposFiltrados = camposSolicitante
+		   if (!((Solicitante) objeto).isNoRepresentante()) {
+			   validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
+			   """
+			   validOut += copyRepresentanteFisica (campo.str)
+			   validOut += copyRepresentanteJuridica (campo.str)
+			   validOut += """\n}""";
+		   }
+	   } else if (objeto instanceof Persona) {
+		   camposFiltrados = camposPersona
+	   } else if (objeto instanceof PersonaFisica) {
+		   camposFiltrados = camposPersonaFisica
+	   } else if (objeto instanceof PersonaJuridica) {
+		   camposFiltrados = camposPersonaJuridica
+	   } else if(objeto instanceof SubirArchivoAed){
+		   camposFiltrados = camposAed
+	   } else if(objeto instanceof EditarArchivoAed) {
+		   camposFiltrados = camposAed
+	   }
+
+	   String out = "";
+	   if (camposFiltrados == null) {
+		   out = copyCamposTodos(campo);
+	   } else {
+		   out = copyCamposFiltrados(campo, camposFiltrados);
+	   }
+	   
+	   return out + validOut;
+   }
+	
 	public static String copyCamposTodos(CampoUtils campo) {
 		Entity entidad;
 		Attribute last = campo.getUltimoAtributo();
@@ -374,24 +446,7 @@ class ControllerUtils {
 	 * @return
 	 */
 	public static String copyCampoMany2One(CampoUtils campo) {
-		if (campo.getUltimoAtributo()?.type.compound?.multiple){
-			return """
-			db${campo.str}.retainAll(${campo.firstLower()});
-			db${campo.str}.addAll(${campo.firstLower()});
-			"""
-		}
-		String entity = campo.getUltimaEntidad().name;
-		String str_ = campo.getStr_();
-		return """
-			String ${str_} = params.get("$str_");
-			//CustomValidation.validValueFromTable("${campo.str}", ${str_});
-			if ((${str_} != null) && (!${str_}.trim().equals(""))) {
-				$entity ${str_}ctr = ${entity}.findById(Long.parseLong(${str_}.trim()));
-				db${campo.str} = ${str_}ctr;
-			} else {
-				db${campo.str} = null;
-			}
-		"""; 
+		return "db${campo.str} = ${campo.firstLower()};";
 	}
 	
 	/**
@@ -399,29 +454,13 @@ class ControllerUtils {
 	* @param campo
 	* @return
 	*/
-   public static String copyCampoMany2Many(CampoUtils campo) {
-	   if (campo.getUltimoAtributo()?.type.compound?.multiple){
-		   return """
-		   db${campo.str}.retainAll(${campo.firstLower()});
-		   db${campo.str}.addAll(${campo.firstLower()});
-		   """
-	   }
-	   String entity = campo.getUltimaEntidad().name;
-	   String str_ = campo.getStr_();
-	   return """
-		   ArrayList<$entity> ${str_}aCT = new ArrayList<$entity>();
-		   String[] $str_ = params.getAll("$str_");
-		   if ($str_ != null) {
-		   		for (String idString : $str_) {
-		   			$entity ctr = ${entity}.findById(Long.parseLong(idString.trim()));
-					${str_}aCT.add(ctr);
-				}
-		   }
-		   db${campo.str}.clear();
-		   db${campo.str}.addAll(${str_}aCT);
-	   """;
-   }
-	
+	public static String copyCampoMany2Many(CampoUtils campo) {
+		return """
+			db${campo.str}.retainAll(${campo.firstLower()});
+			db${campo.str}.addAll(${campo.firstLower()});
+		"""
+	}
+   
 	/**
 	 * Codigo de copia y validación si el representante es una persona fisica
 	 * @param campo

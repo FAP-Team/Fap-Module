@@ -105,10 +105,11 @@ public class GForm {
 		return """
 			${controller.metodoEditar()}
 			${controller.metodoEditarRender()}
-			${controller.validateCopyMethod()}
+			${controller.metodoValidateCopy()}
 			${controller.metodoEditarValidateRules()}
 			${controller.metodoPermiso()}
 			${controller.botonesMethods()}
+			${controller.metodoBindReferences()}
 		"""; 
 	}
 

@@ -181,7 +181,7 @@ ${metodoCrear()}
 
 ${metodoBorrar()}
 
-${validateCopyMethod()}
+${metodoValidateCopy()}
 
 ${metodoPermiso()}
 
@@ -196,6 +196,8 @@ ${metodoEditarValidateRules()}
 ${metodoCrearValidateRules()}
 
 ${metodoBorrarValidateRules()}
+
+${metodoBindReferences()}
 
 ${botonesMethods()}
 
@@ -356,6 +358,7 @@ public class ${controllerName} extends ${controllerGenName} {
 					${botonCode}
 					${!entidad.nulo()? "${entidad.clase} $entidad.variableDb = ${ControllerUtils.complexGetterCall(almacen, entidad)};":""}
 					${ControllerUtils.fullGetterCall(EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
+					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(this, entidad, saveEntities) : ""}
 					if(!Messages.hasErrors()){
 						${editar && !entidadPagina.nulo()? ControllerUtils.validateCopyCall("\"editar\"", this, entidad, saveEntities) : ""}
 					}
@@ -414,6 +417,7 @@ public class ${controllerName} extends ${controllerGenName} {
 					}
 					${ControllerUtils.almacenGetterCall(ultimoAlmacen);}
 					${ControllerUtils.fullGetterCall(EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
+					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(this, entidad, saveEntities) : ""}
 					if(!Messages.hasErrors()){
 						${!entidadPagina.nulo()? ControllerUtils.validateCopyCall("\"crear\"", this, entidad, saveEntities) : ""}
 					}
@@ -706,9 +710,16 @@ public class ${controllerName} extends ${controllerGenName} {
 		""";
 	}	
 	
-	private String validateCopyMethod(){
+	private String metodoValidateCopy(){
 		if ((editar || crear) && !entidadPagina.nulo()){
 			return "${ControllerUtils.validateCopyMethod(this, entidad, saveEntities)}";
+		}
+		return "";
+	}
+	
+	private String metodoBindReferences(){
+		if ((editar || crear) && !entidadPagina.nulo()){
+			return "${ControllerUtils.bindReferencesMethod(this, entidad, saveEntities)}";
 		}
 		return "";
 	}
@@ -726,7 +737,7 @@ public class ${controllerName} extends ${controllerGenName} {
 					intermedias.collect{it.typeId},
 					almacenNoSingle.typeId,
 					entidad.typeId,
-					entidad.typeVariable,
+					entidadPagina.typeVariable,
 					saveEntities.collect{it.typeVariable},
 					saveExtra
 				)}){

@@ -30,30 +30,53 @@ import es.gobcan.platino.servicios.sgrde.MetaInformacionException;
 import es.gobcan.platino.servicios.sgrde.SGRDEServicePortType;
 import es.gobcan.platino.servicios.sgrde.SGRDEServiceProxy;
 
+/**
+ * GestorDocumentalServiceImpl
+ * 
+ * El servicio esta preparado para inicializarse de forma lazy.
+ * Por lo tanto siempre que se vaya a consumir el servicio web
+ * se deberia acceder a "getGestorDocumentalPort" en lugar de acceder directamente
+ * a la property
+ * 
+ */
 public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 	private static Logger log = Logger.getLogger(GestorDocumentalService.class);
 	
-	private final String endPoint;
-	private final PropertyPlaceholder propertyPlaceholder;
-	private final SGRDEServicePortType gestorDocumental;
+	private String endPoint;
+	private PropertyPlaceholder propertyPlaceholder;
+	private SGRDEServicePortType gestorDocumentalPort;
 	
 	public GestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder){
+		init(propertyPlaceholder);
+	}
+
+	public GestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder, boolean eagerInitialization){
+		init(propertyPlaceholder);
+		if(eagerInitialization)
+			getGestorDocumentalPort();
+	}
+	
+	private void init(PropertyPlaceholder propertyPlaceholder){
 		if(propertyPlaceholder == null)
 			throw new NullPointerException();
-		
 		this.propertyPlaceholder = propertyPlaceholder;
-		
 		endPoint = propertyPlaceholder.get("fap.platino.gestordocumental.url");
 		if(endPoint == null)
-			throw new IllegalStateException();
-		
-		URL wsdlURL = GestorDocumentalServiceImpl.class.getClassLoader().getResource("wsdl/sgrde.wsdl");
-		gestorDocumental = new SGRDEServiceProxy(wsdlURL).getSGRDEServiceProxyPort(new MTOMFeature());
-		
-		WSUtils.configureEndPoint(gestorDocumental, endPoint);
-		WSUtils.configureSecurityHeaders(gestorDocumental, propertyPlaceholder);
-		PlatinoProxy.setProxy(gestorDocumental, propertyPlaceholder);
+			throw new IllegalStateException();		
 	}
+	
+	private SGRDEServicePortType getGestorDocumentalPort(){
+		if(gestorDocumentalPort == null){
+			URL wsdlURL = GestorDocumentalServiceImpl.class.getClassLoader().getResource("wsdl/sgrde.wsdl");
+			gestorDocumentalPort = new SGRDEServiceProxy(wsdlURL).getSGRDEServiceProxyPort(new MTOMFeature());
+			
+			WSUtils.configureEndPoint(gestorDocumentalPort, endPoint);
+			WSUtils.configureSecurityHeaders(gestorDocumentalPort, propertyPlaceholder);
+			PlatinoProxy.setProxy(gestorDocumentalPort, propertyPlaceholder);
+		}
+		return gestorDocumentalPort;
+	}
+	
 	
 	@Override
 	public boolean hasConnection() {
@@ -73,7 +96,7 @@ public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 
 	
 	public String getVersion(){
-		return gestorDocumental.getVersion();
+		return getGestorDocumentalPort().getVersion();
 	}
 	
 	/**
@@ -93,7 +116,7 @@ public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 		expediente.setDescExp(descripcion);
 		
 		try {
-			String uri = gestorDocumental.crearExpediente(exp.getRuta(), expediente);
+			String uri = getGestorDocumentalPort().crearExpediente(exp.getRuta(), expediente);
 			exp.uri = uri;
 			exp.creado = true;
 			exp.save();
@@ -151,7 +174,7 @@ public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 		    // Insertar documento en el Gestor Documental
 		    DataHandler dataHandler = new DataHandler(documentoRegistrar.getContenido());
 		    log.info("Inserta documento en el gestor documental");
-			String urn = gestorDocumental.insertarDocumento(dataHandler, ruta, documentoExpediente); // Metainformación
+			String urn = getGestorDocumentalPort().insertarDocumento(dataHandler, ruta, documentoExpediente); // Metainformación
 			log.info("Documento insertado");
 			
 			documentoExpediente.setURI(urn);

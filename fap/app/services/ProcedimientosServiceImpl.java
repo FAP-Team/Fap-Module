@@ -27,24 +27,49 @@ import es.gobcan.eadmon.procedimientos.ws.dominio.Procedimiento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Tramite;
 
+/**
+ * ProcedimientosServiceImpl
+ * 
+ * El servicio esta preparado para inicializarse de forma lazy.
+ * Por lo tanto siempre que se vaya a consumir el servicio web
+ * se deberia acceder a "getProcedimientosPort" en lugar de acceder directamente
+ * a la property
+ * 
+ */
 public class ProcedimientosServiceImpl implements ProcedimientosService {
 
 	private static Logger log = Logger.getLogger(ProcedimientosServiceImpl.class);
 	
-	private ProcedimientosInterface procedimientos;
+	private ProcedimientosInterface procedimientosPort;
 	
 	private PropertyPlaceholder propertyPlaceholder;
 
 	private TiposDocumentosService tiposDocumentosService;
 	
 	public ProcedimientosServiceImpl(PropertyPlaceholder propertyPlaceholder, TiposDocumentosService tiposDocumentosService) {
+		init(propertyPlaceholder, tiposDocumentosService, false);
+	}
+	
+	public ProcedimientosServiceImpl(PropertyPlaceholder propertyPlaceholder, TiposDocumentosService tiposDocumentosService, boolean eagerInitialization) {
+		init(propertyPlaceholder, tiposDocumentosService, eagerInitialization);
+	}
+	
+	private void init(PropertyPlaceholder propertyPlaceholder, TiposDocumentosService tiposDocumentosService, boolean eagerInitialization){
 		this.propertyPlaceholder = propertyPlaceholder;
 		this.tiposDocumentosService = tiposDocumentosService;
-		
-		URL wsdlProcedimientosURL = Aed.class.getClassLoader().getResource ("wsdl/procedimientos/procedimientos.wsdl");
-		procedimientos = new Procedimientos(wsdlProcedimientosURL).getProcedimientos();
-		WSUtils.configureEndPoint(procedimientos, getEndPoint());
-		PlatinoProxy.setProxy(procedimientos, propertyPlaceholder);
+		if(eagerInitialization){
+			getProcedimientosPort();
+		}
+	}
+	
+	private ProcedimientosInterface getProcedimientosPort(){
+		if(procedimientosPort == null){
+			URL wsdlProcedimientosURL = Aed.class.getClassLoader().getResource ("wsdl/procedimientos/procedimientos.wsdl");
+			procedimientosPort = new Procedimientos(wsdlProcedimientosURL).getProcedimientos();
+			WSUtils.configureEndPoint(procedimientosPort, getEndPoint());
+			PlatinoProxy.setProxy(procedimientosPort, propertyPlaceholder);			
+		}
+		return procedimientosPort;
 	}
 	
 	public String getEndPoint(){
@@ -54,7 +79,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 	public String getVersion() throws Exception {
 		Holder<String> h1 = new Holder<String>();
 		Holder<String> h2 = new Holder<String>();
-		procedimientos.obtenerVersionServicio(h1, h2);
+		getProcedimientosPort().obtenerVersionServicio(h1, h2);
 		return h1.value;
 	}
 	
@@ -79,7 +104,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 		}
 		
 		List<models.TipoDocumento> result = new ArrayList<models.TipoDocumento>();
-		List<TipoDocumentoEnTramite> documentos = procedimientos.consultarTiposDocumentosEnTramite(uriProcedimiento, uriTramite).getTiposDocumentos();
+		List<TipoDocumentoEnTramite> documentos = getProcedimientosPort().consultarTiposDocumentosEnTramite(uriProcedimiento, uriTramite).getTiposDocumentos();
 		for(TipoDocumentoEnTramite tipoDocumento : documentos){
 			models.TipoDocumento tipoDocumentoDb  = new models.TipoDocumento();
 			
@@ -112,7 +137,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 		
 		List<models.Tramite> result = new ArrayList<models.Tramite>();
 		
-		ListaTramites tramites = procedimientos.consultarTramites(uriProcedimiento);
+		ListaTramites tramites = getProcedimientosPort().consultarTramites(uriProcedimiento);
 		for (Tramite tramite : tramites.getTramites()) {
 			models.Tramite tramitedb = new models.Tramite();
 			tramitedb.uri = tramite.getUri();
@@ -176,7 +201,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 	public List<Procedimiento> getProcedimientos(){
 		List<Procedimiento> result = new ArrayList<Procedimiento>();
 	    try {
-	    	ListaProcedimientos serviceList = procedimientos.consultarProcedimientos();
+	    	ListaProcedimientos serviceList = getProcedimientosPort().consultarProcedimientos();
 	        if (serviceList != null) {
 	        	result = serviceList.getProcedimientos();
 	        }

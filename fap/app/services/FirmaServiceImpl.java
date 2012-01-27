@@ -48,14 +48,22 @@ import es.gobcan.platino.servicios.sfst.PlatinoSignatureServerBean;
 import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
 import es.gobcan.platino.servicios.sfst.ValidateCertResult;
 
+/**
+ * FirmaServiceImpl
+ * 
+ * El servicio esta preparado para inicializarse de forma lazy.
+ * Por lo tanto siempre que se vaya a consumir el servicio web
+ * se deberia acceder a "getFirmaPort" en lugar de acceder directamente
+ * a la property
+ * 
+ */
 public class FirmaServiceImpl implements services.FirmaService {
 
 	private static Logger log = Logger.getLogger(FirmaServiceImpl.class);
 	
-	private PlatinoSignatureServerBean firmaPlatino;
-
-	private PropertyPlaceholder propertyPlaceholder;
-	private AedService aedService;
+	private PlatinoSignatureServerBean firmaPort;
+	private final PropertyPlaceholder propertyPlaceholder;
+	private final AedService aedService;
 	
 	private static final int CERT_OK = 6;
 	private static final int CERT_NO_VALIDO = 2;
@@ -67,18 +75,27 @@ public class FirmaServiceImpl implements services.FirmaService {
 	public FirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, AedService aedService){
 		this.propertyPlaceholder = propertyPlaceholder;
 		this.aedService = aedService;
-		
-		URL wsdlURL = FirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma-pre.wsdl");
-		firmaPlatino = new FirmaService(wsdlURL).getFirmaService();
-		
-		WSUtils.configureEndPoint(firmaPlatino, getEndPoint());
-		WSUtils.configureSecurityHeaders(firmaPlatino, propertyPlaceholder);
+	}
 
-		PlatinoProxy.setProxy(firmaPlatino, propertyPlaceholder);
-		
-
+	public FirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, AedService aedService, boolean eagerInitialization){
+		this.propertyPlaceholder = propertyPlaceholder;
+		this.aedService = aedService;
+		if(eagerInitialization)
+			getFirmaPort();
 	}
 	
+	private PlatinoSignatureServerBean getFirmaPort(){
+		if(firmaPort == null){
+			URL wsdlURL = FirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma-pre.wsdl");
+			firmaPort = new FirmaService(wsdlURL).getFirmaService();
+			
+			WSUtils.configureEndPoint(firmaPort, getEndPoint());
+			WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
+
+			PlatinoProxy.setProxy(firmaPort, propertyPlaceholder);			
+		}
+		return firmaPort;
+	}
 
 	@Override
 	public boolean hasConnection() {
@@ -102,7 +119,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 	@Override
 	public String getVersion() {
 		try {
-			return firmaPlatino.getVersion();
+			return getFirmaPort().getVersion();
 		} catch (Exception e) {
 			play.Logger.error("firmaPlatino not version: "+e.getMessage());
 		}
@@ -115,7 +132,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		boolean result = false;
 		try {
 			String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
-			result = firmaPlatino.verifyPKCS7Signature(texto.getBytes(), firma.getBytes(), invokingApp);
+			result = getFirmaPort().verifyPKCS7Signature(texto.getBytes(), firma.getBytes(), invokingApp);
 		} catch (Exception e) {
 			log.error("Error verificando la firma", e);
 		}
@@ -128,7 +145,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		boolean result = false;
 		try {
 			String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
-			result = firmaPlatino.verifyContentSignature(content, signature, invokingApp);
+			result = getFirmaPort().verifyContentSignature(content, signature, invokingApp);
 		} catch (SignatureServiceException_Exception e) {
 			log.error("Error verificando el contenido de la firma", e);
 		}
@@ -148,7 +165,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		try {
 			String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
 			String alias = propertyPlaceholder.get("fap.platino.firma.alias");
-			firma = firmaPlatino.signPKCS7(bytes, invokingApp, alias);
+			firma = getFirmaPort().signPKCS7(bytes, invokingApp, alias);
 		} catch (SignatureServiceException_Exception e) {
 			log.error("Error al hacer la firma pkcs7", e);
 		} 
@@ -161,7 +178,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		try {
 			String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
 			String alias = propertyPlaceholder.get("fap.platino.firma.alias");
-			firma = firmaPlatino.signContent(content, invokingApp, alias);
+			firma = getFirmaPort().signContent(content, invokingApp, alias);
 		} catch (SignatureServiceException_Exception e) {
 			log.error("Error al firmar contenido", e);
 		}
@@ -187,7 +204,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 	public boolean validarCertificado(String certificado){
 		String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
 		try {
-			ValidateCertResult result = firmaPlatino.validateCert(certificado, invokingApp);
+			ValidateCertResult result = getFirmaPort().validateCert(certificado, invokingApp);
 			return result.getCode() == 6; //Codigo 6 Certificado OK
 		} catch (SignatureServiceException_Exception e) {
 			log.error("Error validando certificado", e);
@@ -199,7 +216,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
 		ValidateCertResult result = null;
 		try {
-			result = firmaPlatino.validateCert(certificado, invokingApp);
+			result = getFirmaPort().validateCert(certificado, invokingApp);
 		} catch (SignatureServiceException_Exception e) {
 			log.error("Error al recuperar la información del certificado", e);
 		}
@@ -210,7 +227,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 	public InfoCert extraerInformacion(String certificado){
 		try {
 			String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
-			List<StringArray> certInfo = firmaPlatino.getCertInfo(certificado, invokingApp);
+			List<StringArray> certInfo = getFirmaPort().getCertInfo(certificado, invokingApp);
 			InfoCert infoCert = new InfoCert(certInfo);
 			return infoCert;
 		} catch (Exception e) {
@@ -258,7 +275,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 	public List<StringArray> getCertInfo(String certificado) throws Exception {
 		try {
 			String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
-			return firmaPlatino.getCertInfo(certificado, invokingApp);
+			return getFirmaPort().getCertInfo(certificado, invokingApp);
 		} catch (Exception e) {
 			log.error("Error al recuperar la información del certificado"+e);
 		}

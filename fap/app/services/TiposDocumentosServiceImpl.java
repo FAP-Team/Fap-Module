@@ -49,21 +49,46 @@ import es.gobcan.eadmon.procedimientos.ws.dominio.Tramite;
 import es.gobcan.eadmon.procedimientos.ws.servicios.ObtenerTramite;
 import es.gobcan.eadmon.verificacion.ws.dominio.ListaDocumentosVerificacion;
 
+/**
+ * TiposDocumentosServiceImpl
+ * 
+ * El servicio esta preparado para inicializarse de forma lazy.
+ * Por lo tanto siempre que se vaya a consumir el servicio web
+ * se deberia acceder a "tiposPort" en lugar de acceder directamente
+ * a la property
+ * 
+ */
 public class TiposDocumentosServiceImpl implements TiposDocumentosService {
 
 	private static Logger log = Logger.getLogger(TiposDocumentosServiceImpl.class);
 
 	private PropertyPlaceholder propertyPlaceholder;
 	
-	private TiposDocumentosInterface tipos;
+	private TiposDocumentosInterface tiposPort;
 	
 	public TiposDocumentosServiceImpl(PropertyPlaceholder propertyPlaceholder){
+		init(propertyPlaceholder, false);
+	}
+	
+	public TiposDocumentosServiceImpl(PropertyPlaceholder propertyPlaceholder, boolean eagerInitialization){
+		init(propertyPlaceholder, eagerInitialization);
+	}
+	
+	private void init(PropertyPlaceholder propertyPlaceholder, boolean eagerInitialization){
 		this.propertyPlaceholder = propertyPlaceholder;
-		
-		URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("wsdl/tipos-documentos/tipos-documentos.wsdl");
-		tipos = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
-		WSUtils.configureEndPoint(tipos, getEndPoint());
-		PlatinoProxy.setProxy(tipos, propertyPlaceholder);
+		if(eagerInitialization){
+			getTiposPort();
+		}
+	}
+	
+	private TiposDocumentosInterface getTiposPort(){
+		if(tiposPort == null){
+			URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("wsdl/tipos-documentos/tipos-documentos.wsdl");
+			tiposPort = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
+			WSUtils.configureEndPoint(tiposPort, getEndPoint());
+			PlatinoProxy.setProxy(tiposPort, propertyPlaceholder);
+		}
+		return tiposPort;
 	}
 	
 	public String getEndPoint(){
@@ -73,7 +98,7 @@ public class TiposDocumentosServiceImpl implements TiposDocumentosService {
 	public String getVersion() throws Exception {
 		Holder<String> h1 = new Holder<String>();
 		Holder<String> h2 = new Holder<String>();
-		tipos.obtenerVersionServicio(h1, h2);
+		getTiposPort().obtenerVersionServicio(h1, h2);
 		return h1.value;
 	}
 	
@@ -92,7 +117,7 @@ public class TiposDocumentosServiceImpl implements TiposDocumentosService {
 		if(uri == null)
 			throw new NullPointerException();
 		
-		return tipos.obtenerTipoDocumento(uri);
+		return getTiposPort().obtenerTipoDocumento(uri);
 	}
 
 }

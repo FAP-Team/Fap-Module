@@ -14,6 +14,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Stage;
 
 import controllers.fap.InitController;
 
@@ -26,7 +27,13 @@ public class InjectorConfig extends GuiceSupport {
 	
 	@Override
 	protected Injector configure() {
-		injector = Guice.createInjector(modulesToLoad()); 
+		Stage stage;
+		if(Play.mode.isDev()){
+			stage = Stage.DEVELOPMENT;
+		}else{
+			stage = Stage.PRODUCTION;
+		}
+		injector = Guice.createInjector(stage, modulesToLoad()); 
 		return injector;
 	}
 

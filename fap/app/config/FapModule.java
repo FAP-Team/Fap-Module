@@ -22,6 +22,7 @@ import services.TiposDocumentosServiceImpl;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Stage;
 
 public class FapModule extends AbstractModule {
 
@@ -33,47 +34,55 @@ public class FapModule extends AbstractModule {
 
 	@Provides
 	@Singleton
-	final AedService getAedService(PropertyPlaceholder propertyPlaceholder) {
-		return new AedServiceImpl(propertyPlaceholder);
+	final AedService getAedService(PropertyPlaceholder propertyPlaceholder,
+			Stage stage) {
+		return new AedServiceImpl(propertyPlaceholder,
+				stage.equals(Stage.PRODUCTION));
 	}
 
 	@Provides
 	@Singleton
 	final TiposDocumentosService getTiposDocumentoService(
-			PropertyPlaceholder propertyPlaceholder) {
-		return new TiposDocumentosServiceImpl(propertyPlaceholder);
+			PropertyPlaceholder propertyPlaceholder, Stage stage) {
+		return new TiposDocumentosServiceImpl(propertyPlaceholder,
+				stage.equals(Stage.PRODUCTION));
 	}
 
 	@Provides
 	@Singleton
 	final ProcedimientosService getProcedimientosService(
 			PropertyPlaceholder propertyPlaceholder,
-			TiposDocumentosService tiposDocumentosService) {
+			TiposDocumentosService tiposDocumentosService, Stage stage) {
 		return new ProcedimientosServiceImpl(propertyPlaceholder,
-				tiposDocumentosService);
+				tiposDocumentosService, stage.equals(Stage.PRODUCTION));
 	}
 
 	@Provides
 	@Singleton
 	final FirmaService getFirmaService(PropertyPlaceholder propertyPlaceholder,
-			AedService aedService) {
-		return new FirmaServiceImpl(propertyPlaceholder, aedService);
+			AedService aedService, Stage stage) {
+		return new FirmaServiceImpl(propertyPlaceholder, aedService,
+				stage.equals(Stage.PRODUCTION));
 	}
 
 	@Provides
 	@Singleton
 	final RegistroService getRegistroService(
 			PropertyPlaceholder propertyPlaceholder, AedService aedService,
-			FirmaService firmaService, GestorDocumentalService gestorDocumentalService) {
+			FirmaService firmaService,
+			GestorDocumentalService gestorDocumentalService, Stage stage) {
 		return new RegistroServiceImpl(propertyPlaceholder, aedService,
-				firmaService, gestorDocumentalService);
+				firmaService, gestorDocumentalService,
+				stage.equals(Stage.PRODUCTION));
 	}
 
 	@Provides
 	@Singleton
 	final GestorDocumentalService getGestorDocumentalService(
-			PropertyPlaceholder propertyPlaceholder, AedService aedService) {
-		return new GestorDocumentalServiceImpl(propertyPlaceholder);
+			PropertyPlaceholder propertyPlaceholder, AedService aedService,
+			Stage stage) {
+		return new GestorDocumentalServiceImpl(propertyPlaceholder,
+				stage.equals(Stage.PRODUCTION));
 	}
 
 	void secure() {

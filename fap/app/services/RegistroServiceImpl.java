@@ -60,24 +60,45 @@ import models.Solicitante;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
 
+/**
+ * RegistroServiceImpl
+ * 
+ * El servicio esta preparado para inicializarse de forma lazy.
+ * Por lo tanto siempre que se vaya a consumir el servicio web
+ * se deberia acceder a "getRegistroPort" en lugar de acceder directamente
+ * a la property
+ * 
+ */
 public class RegistroServiceImpl implements RegistroService {
 
 	private static Logger log = Logger.getLogger(RegistroService.class);
 
-	private final PropertyPlaceholder propertyPlaceholder;
+	private PropertyPlaceholder propertyPlaceholder;
 
-	private final AedService aedService;
+	private AedService aedService;
 
-	private final Registro registro;
+	private Registro registroPort;
 
-	private final FirmaService firmaService;
+	private FirmaService firmaService;
 
-	private final GestorDocumentalService gestorDocumentalService;
+	private GestorDocumentalService gestorDocumentalService;
 	
 	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder,
 			AedService aedService, FirmaService firmaService,
 			GestorDocumentalService gestorDocumentalService) {
+		init(propertyPlaceholder, aedService, firmaService, gestorDocumentalService, false);
+	}
 
+	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder,
+			AedService aedService, FirmaService firmaService,
+			GestorDocumentalService gestorDocumentalService, boolean eagerInitialization) {
+		init(propertyPlaceholder, aedService, firmaService, gestorDocumentalService, eagerInitialization);
+	}
+	
+	private void init(PropertyPlaceholder propertyPlaceholder,
+			AedService aedService, FirmaService firmaService,
+			GestorDocumentalService gestorDocumentalService, boolean eagerInitialization){
+		
 		if (propertyPlaceholder == null || aedService == null
 				|| firmaService == null || gestorDocumentalService == null)
 			throw new NullPointerException();
@@ -87,15 +108,23 @@ public class RegistroServiceImpl implements RegistroService {
 		this.firmaService = firmaService;
 		this.gestorDocumentalService = gestorDocumentalService;
 		
-		URL wsdlURL = Registro_Service.class.getClassLoader().getResource(
-				"wsdl/registro.wsdl");
-		registro = new Registro_Service(wsdlURL).getRegistroPort();
-
-		WSUtils.configureEndPoint(registro, getEndPoint());
-		WSUtils.configureSecurityHeaders(registro, propertyPlaceholder);
-		PlatinoProxy.setProxy(registro);
+		if(eagerInitialization)
+			getRegistroPort();
 	}
+	
+	private Registro getRegistroPort(){
+		if(registroPort == null){
+			URL wsdlURL = Registro_Service.class.getClassLoader().getResource(
+					"wsdl/registro.wsdl");
+			registroPort = new Registro_Service(wsdlURL).getRegistroPort();
 
+			WSUtils.configureEndPoint(registroPort, getEndPoint());
+			WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder);
+			PlatinoProxy.setProxy(registroPort);			
+		}
+		return registroPort;
+	}
+	
 	@Override
 	public boolean hasConnection() {
 		boolean hasConnection = false;
@@ -114,7 +143,7 @@ public class RegistroServiceImpl implements RegistroService {
 	}
 
 	public String getVersion() {
-		return registro.getVersion();
+		return getRegistroPort().getVersion();
 	}
 
 	private static XMLGregorianCalendar toXmlGregorian(DateTime time)
@@ -260,7 +289,7 @@ public class RegistroServiceImpl implements RegistroService {
 
 		String passwdEncripted = PlatinoSecurityUtils
 				.encriptarPassword(password);
-		return registro.registrarEntrada(username, passwdEncripted,
+		return getRegistroPort().registrarEntrada(username, passwdEncripted,
 				datosAFirmar, datosFirmados, aliasServidor, null, null);
 	}
 
@@ -311,7 +340,7 @@ public class RegistroServiceImpl implements RegistroService {
 
 		String datosAFirmar = null;
 		try {
-			datosAFirmar = registro.normalizaDatosFirmados(
+			datosAFirmar = getRegistroPort().normalizaDatosFirmados(
 					Long.valueOf(organismo), // Organismo
 					asunto, // Asunto
 					nombre, // Nombre remitente

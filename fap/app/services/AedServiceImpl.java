@@ -50,9 +50,18 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Propiedades
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
 
+/**
+ * AedServiceImpl
+ * 
+ * El servicio esta preparado para inicializarse de forma lazy.
+ * Por lo tanto siempre que se vaya a consumir el servicio web
+ * se deberia acceder a "getAedPort" en lugar de acceder directamente
+ * a la property
+ * 
+ */
 public class AedServiceImpl implements AedService {
 
-	private AedPortType aed;
+	private AedPortType aedPort;
 
 	private final PropertyPlaceholder propertyPlaceholder;
 
@@ -60,11 +69,22 @@ public class AedServiceImpl implements AedService {
 	
 	public AedServiceImpl(PropertyPlaceholder propertyPlaceholder){
 		this.propertyPlaceholder = propertyPlaceholder;
-		
-		URL wsdlURL = Aed.class.getClassLoader().getResource("aed/aed.wsdl");
-		aed = new Aed(wsdlURL).getAed(new MTOMFeature());
-		WSUtils.configureEndPoint(aed, getEndPoint());
-		PlatinoProxy.setProxy(aed, propertyPlaceholder);
+	}
+	
+	public AedServiceImpl(PropertyPlaceholder propertyPlaceholder, boolean eagerInitialization){
+		this.propertyPlaceholder = propertyPlaceholder;
+		if(eagerInitialization)
+			getAedPort();
+	}
+	
+	private AedPortType getAedPort(){
+		if(aedPort == null){
+			URL wsdlURL = Aed.class.getClassLoader().getResource("aed/aed.wsdl");
+			aedPort = new Aed(wsdlURL).getAed(new MTOMFeature());
+			WSUtils.configureEndPoint(aedPort, getEndPoint());
+			PlatinoProxy.setProxy(aedPort, propertyPlaceholder);			
+		}
+		return aedPort;
 	}
 	
 	/* (non-Javadoc)
@@ -90,7 +110,7 @@ public class AedServiceImpl implements AedService {
 	public String getVersion() throws AedExcepcion {
 		Holder<String> version = new Holder<String>();
 		Holder<String> revision = new Holder<String>();
-		aed.obtenerVersionServicio(version, revision);
+		getAedPort().obtenerVersionServicio(version, revision);
 		return version.value;
 	}
 
@@ -105,12 +125,6 @@ public class AedServiceImpl implements AedService {
 		return hasConnection;
 	}
 	
-	/* (non-Javadoc)
-	 * @see services.AedService#getPort()
-	 */
-	public AedPortType getPort() {
-		return aed;
-	}
 	
 	/* (non-Javadoc)
 	 * @see services.AedService#saveDocumentoTemporal(models.Documento, java.io.InputStream, java.lang.String)
@@ -147,14 +161,14 @@ public class AedServiceImpl implements AedService {
 
 		String ruta = propertyPlaceholder.get("fap.aed.temporales");
 		
-		String uriDocumentoTemporal = aed.crearDocumentoNoClasificado(ruta, documentoAed);
+		String uriDocumentoTemporal = getAedPort().crearDocumentoNoClasificado(ruta, documentoAed);
 		
 		documento.uri = uriDocumentoTemporal;
 		documento.fechaSubida = new DateTime();
 		documento.clasificado = false;
 		
 		// Almacena el Hash del documento
-		PropiedadesDocumento pro  = aed.obtenerDocumentoPropiedadesNoClasificado(uriDocumentoTemporal);
+		PropiedadesDocumento pro  = getAedPort().obtenerDocumentoPropiedadesNoClasificado(uriDocumentoTemporal);
 		String hashAux = ((PropiedadesAdministrativas)pro.getPropiedadesAvanzadas()).getSellado().getHash();
 		documento.hash=hashAux;
 		
@@ -203,7 +217,7 @@ public class AedServiceImpl implements AedService {
 		String[] splits = carpeta.split("/");
 		String ruta = "";
 		for(String s : splits){
-			aed.crearCarpetaNoClasificada(ruta, s, null);
+			getAedPort().crearCarpetaNoClasificada(ruta, s, null);
 			ruta = ruta.isEmpty() ? s  : ruta + "/" + s;
 		}
 	}
@@ -235,7 +249,7 @@ public class AedServiceImpl implements AedService {
 		
 		boolean result = false;
 		try {
-			aed.obtenerCarpetasNoClasificadas(carpeta);
+			getAedPort().obtenerCarpetasNoClasificadas(carpeta);
 			//Si no da una excepción, la carpeta existe
 			result = true;
 		}catch(AedExcepcion e){
@@ -276,7 +290,7 @@ public class AedServiceImpl implements AedService {
 			folder = carpeta;
 		}
 		try {
-			aed.suprimirCarpetaNoClasificada(path, folder);
+			getAedPort().suprimirCarpetaNoClasificada(path, folder);
 		} catch(AedExcepcion e){
 			if(e.getFaultInfo().getCodigoError() != CodigoErrorEnum.CARPETA_NO_EXISTE)
 				throw e;
@@ -310,9 +324,9 @@ public class AedServiceImpl implements AedService {
 		try {
 			Documento doc;
 			if (!clasificado)
-				doc = aed.obtenerDocumentoNoClasificado(uri);
+				doc = getAedPort().obtenerDocumentoNoClasificado(uri);
 			else
-				doc = aed.obtenerDocumento(uri);
+				doc = getAedPort().obtenerDocumento(uri);
 			
 			response.contenido = doc.getContenido().getFichero();
 			response.nombre = doc.getContenido().getNombre();
@@ -355,9 +369,9 @@ public class AedServiceImpl implements AedService {
 	public PropiedadesDocumento obtenerPropiedades(String uri, Boolean clasificado) throws AedExcepcion {
 		PropiedadesDocumento propiedades;
 		if(clasificado){
-			propiedades = aed.obtenerDocumentoPropiedades(uri);
+			propiedades = getAedPort().obtenerDocumentoPropiedades(uri);
 		}else{
-			propiedades = aed.obtenerDocumentoPropiedadesNoClasificado(uri);
+			propiedades = getAedPort().obtenerDocumentoPropiedadesNoClasificado(uri);
 		}
 		return propiedades;
 		
@@ -382,10 +396,10 @@ public class AedServiceImpl implements AedService {
 		if (documento.clasificado != null && documento.clasificado.booleanValue()) {
 			log.debug("Actualizando tipo y descripción de un documento clasificado");
 			log.debug("Obteniendo propiedades");
-			PropiedadesDocumento props = aed.obtenerDocumentoPropiedades(documento.uri);
+			PropiedadesDocumento props = getAedPort().obtenerDocumentoPropiedades(documento.uri);
 			
 			log.debug("Obteniendo ubicaciones");
-			List<DocumentoEnUbicacion> ubicaciones = aed.obtenerDocumentoRutas(documento.uri);
+			List<DocumentoEnUbicacion> ubicaciones = getAedPort().obtenerDocumentoRutas(documento.uri);
 			if (ubicaciones.size() == 0) {
 				log.error("No se pudieron obtener las ubicaciones del documento " + documento.uri);
 				throw new AedExcepcion();
@@ -402,15 +416,15 @@ public class AedServiceImpl implements AedService {
 			props.setUriTipoDocumento(documento.tipo);
 			
 			log.debug("Actualizando Propiedades Clasificado");
-			aed.actualizarDocumentoPropiedades(props, newUbicaciones);
+			getAedPort().actualizarDocumentoPropiedades(props, newUbicaciones);
 		}else{
 			log.info("Actualizando tipo y descripción de un documento no clasificado");
 			log.debug("Obteniendo propiedades");
-			PropiedadesDocumento props = aed.obtenerDocumentoPropiedadesNoClasificado(documento.uri);
+			PropiedadesDocumento props = getAedPort().obtenerDocumentoPropiedadesNoClasificado(documento.uri);
 			props.setDescripcion(documento.descripcion);
 			props.setUriTipoDocumento(documento.tipo);
 			log.debug("Actualizando PropiedadesNoClasificado");
-			aed.actualizarDocumentoPropiedadesNoClasificado(props);
+			getAedPort().actualizarDocumentoPropiedadesNoClasificado(props);
 		}
 	}
 	
@@ -426,7 +440,7 @@ public class AedServiceImpl implements AedService {
 			expediente.getInteresados().add(interesadoNif.get(i));
 			expediente.getInteresadosNombre().add(interesadoNombre.get(i));
 		}
-		aed.crearExpediente(expediente);
+		getAedPort().crearExpediente(expediente);
 		log.info("Expediente creado con id: " + idExpediente);
 		return expediente.getIdExterno();
 	}
@@ -520,7 +534,7 @@ public class AedServiceImpl implements AedService {
 		ubicaciones.add(ubicacionExpediente);
 
 		// Clasificar documento al expediente
-		aed.clasificarDocumento(documento.uri, propiedadesDocumento, ubicaciones);
+		getAedPort().clasificarDocumento(documento.uri, propiedadesDocumento, ubicaciones);
 		documento.clasificado = true;
 		documento.save();
 		
@@ -630,7 +644,7 @@ public class AedServiceImpl implements AedService {
 			//TODO falta ver las ubicaciones y si se incrementa la versión del documento
 			//aed.actualizarDocumentoPropiedades(propiedades, arg1)
 		}else{
-			aed.actualizarDocumentoPropiedadesNoClasificado(propiedades);
+			getAedPort().actualizarDocumentoPropiedadesNoClasificado(propiedades);
 		}
 	}
 	
@@ -650,7 +664,7 @@ public class AedServiceImpl implements AedService {
 			throw new IllegalStateException();
 		}
 		
-		aed.suprimirDocumentoNoClasificado(documento.uri);
+		getAedPort().suprimirDocumentoNoClasificado(documento.uri);
 		log.debug("Documento borrado del aed");
 	}
 	
@@ -659,7 +673,7 @@ public class AedServiceImpl implements AedService {
 	 */
 	@Override
 	public List<String> obtenerUrisDocumentosEnExpediente(String expediente) throws AedExcepcion {
-		List<PropiedadesDocumento> lista = aed.buscarDocumentos(FapProperties.get("fap.aed.procedimiento"), expediente, null, null, null, null, null, null, null);
+		List<PropiedadesDocumento> lista = getAedPort().buscarDocumentos(FapProperties.get("fap.aed.procedimiento"), expediente, null, null, null, null, null, null, null);
 		
 		if (lista == null || lista.size() == 0) return null;
 		

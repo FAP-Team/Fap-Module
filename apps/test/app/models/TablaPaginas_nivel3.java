@@ -22,16 +22,20 @@ import java.text.SimpleDateFormat;
 
 
 @Entity
-public class TablaPaginasTabTab extends Model {
+public class TablaPaginas_nivel3 extends Model {
 	// Código de los atributos
 	
 	
 	public String nombre;
 	
 	
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginastabtab_combomul")
-	public List<ComboTestRef> comboMul;
+	
+	public Integer numero;
+	
+	
+	@org.hibernate.annotations.Columns(columns={@Column(name="fecha"),@Column(name="fechaTZ")})
+	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fecha;
 	
 	
 	@ValueFromTable("ComboTestList")
@@ -39,11 +43,11 @@ public class TablaPaginasTabTab extends Model {
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginastabtab_tttpaginas")
-	public List<TablaPaginasTabTabTab> tttpaginas;
+	@JoinTable(name="tablapaginas_nivel3_tabladenombres")
+	public List<TablaDeNombres> tablaDeNombres;
 	
 	
-	public TablaPaginasTabTab (){
+	public TablaPaginas_nivel3 (){
 		init();
 	}
 	
@@ -51,11 +55,8 @@ public class TablaPaginasTabTab extends Model {
 	public void init(){
 		
 		
-						if (comboMul == null)
-							comboMul = new ArrayList<ComboTestRef>();
-						
-						if (tttpaginas == null)
-							tttpaginas = new ArrayList<TablaPaginasTabTabTab>();
+						if (tablaDeNombres == null)
+							tablaDeNombres = new ArrayList<TablaDeNombres>();
 						
 	}
 		

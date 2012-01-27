@@ -38,8 +38,8 @@ public class TablaPopUpPaginas extends Model {
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapopuppaginas_tttpaginas")
-	public List<TablaPaginasTabTabTab> tttpaginas;
+	@JoinTable(name="tablapopuppaginas_tpaginas_nivel3")
+	public List<TablaPaginas_nivel3> tpaginas_nivel3;
 	
 	
 	public TablaPopUpPaginas (){
@@ -55,8 +55,8 @@ public class TablaPopUpPaginas extends Model {
 							else
 								fecha.init();
 						
-						if (tttpaginas == null)
-							tttpaginas = new ArrayList<TablaPaginasTabTabTab>();
+						if (tpaginas_nivel3 == null)
+							tpaginas_nivel3 = new ArrayList<TablaPaginas_nivel3>();
 						
 	}
 		

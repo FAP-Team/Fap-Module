@@ -30,8 +30,8 @@ public class PaginasTab extends Model {
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="paginastab_tpaginas")
-	public List<TablaPaginasTab> tpaginas;
+	@JoinTable(name="paginastab_tpaginas_nivel1")
+	public List<TablaPaginas_nivel1> tpaginas_nivel1;
 	
 	
 	public PaginasTab (){
@@ -42,8 +42,8 @@ public class PaginasTab extends Model {
 	public void init(){
 		
 		
-						if (tpaginas == null)
-							tpaginas = new ArrayList<TablaPaginasTab>();
+						if (tpaginas_nivel1 == null)
+							tpaginas_nivel1 = new ArrayList<TablaPaginas_nivel1>();
 						
 	}
 		

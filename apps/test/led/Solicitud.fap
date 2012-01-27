@@ -47,7 +47,7 @@ Formulario Solicitud {
 
 		Grupo "Permisos" {
 			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administrador
-			Enlace "Permiso grupo" pagina=PermisoPagina permiso=administrador
+			Enlace "Permiso grupo" pagina=PermisoGrupo permiso=administrador
 			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable
 			Enlace "Permiso tablas" pagina=PermisoEnTablas 
 		}
@@ -138,27 +138,8 @@ Formulario Solicitud {
 		columnasAutomaticas exclude=id, fecha
 		{
 		}
-		Tabla tablaNombres2 campo=Solicitud.peta titulo="Solicitantes"
-		popupCrear=popupNombre2
-		popupLeer=popupNombre2
-		popupEditar=popupNombre2
-		popupBorrar=popupNombre2
-		columnasAutomaticas
-		{
-		}
-		
-		
 	}
-	
-	Popup popupNombre2 campo=Solicitud.peta {
-		Texto campo=Peta.n titulo="Nombre"
-		Texto campo=Peta.d titulo="Apellido"
-		Texto campo=Peta.otro titulo="Otro contacto"
-		Combo campo=Peta.petador titulo="Petador"
-		Fecha campo=Peta.fecha titulo="Fecha"
-	}
-	
-	
+
 	Popup popupNombre campo=Solicitud.tablaDeNombres {
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
@@ -191,7 +172,7 @@ Formulario Solicitud {
  		}
 	}
 	
-	Pagina CrearPaginasTab campo=PaginasTab{
+	Pagina Paginas_Combo_niveles campo=PaginasTab{
 		Accion crear redirigir=ComboTablasPaginas
 		Texto campo=PaginasTab.nombre titulo="Nombre"
 	}
@@ -201,30 +182,30 @@ Formulario Solicitud {
 			Combo campo=Solicitud.paginas titulo="Combo ManyToOne" comboTexto=nombre
 		}
 		
-		Tabla comboTP campo=PaginasTab paginaCrear=CrearPaginasTab  titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
+		Tabla comboTP campo=PaginasTab paginaCrear=Paginas_Combo_niveles  titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
 			Columna campo=PaginasTab.nombre
 		}
 	}
 	
-	Popup popupNombreTablas campo=Solicitud.paginas.tpaginas.ttpaginas.tttpaginas.tablaDeNombres {
+	Popup popupNombreTablas campo=Solicitud.paginas.tpaginas_nivel1.tpaginas_nivel2.tpaginas_nivel3.tablaDeNombres {
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 	
-	Popup popupNombreTablasPaginas campo=Solicitud.popupPaginas.tttpaginas.tablaDeNombres {
+	Popup popupNombreTablasPaginas campo=Solicitud.popupPaginas.tpaginas_nivel3.tablaDeNombres {
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 	
-	Pagina CrearPaginasTTT campo=Solicitud.paginas.tpaginas.ttpaginas.tttpaginas{
-		Accion crear redirigir=CrearPaginasTT
-		Accion editar redirigir=CrearPaginasTT
-		Accion borrar redirigir=CrearPaginasTT	
-		Texto titulo="Nombre nivel 3" campo=TablaPaginasTabTabTab.nombre
-		Texto titulo="Numero nivel 3" campo=TablaPaginasTabTabTab.numero
-		Fecha campo=TablaPaginasTabTabTab.fecha titulo="Fecha nivel 3"
-		Combo campo=TablaPaginasTabTabTab.list titulo="Lista seleccion nivel 3"
-		Tabla tablaNombres campo=TablaPaginasTabTabTab.tablaDeNombres titulo="Solicitantes"
+	Pagina Paginas_nivel3 campo=Solicitud.paginas.tpaginas_nivel1.tpaginas_nivel2.tpaginas_nivel3{
+		Accion crear redirigir=Paginas_nivel2
+		Accion editar redirigir=Paginas_nivel2
+		Accion borrar redirigir=Paginas_nivel2	
+		Texto titulo="Nombre nivel 3" campo=TablaPaginas_nivel3.nombre
+		Texto titulo="Numero nivel 3" campo=TablaPaginas_nivel3.numero
+		Fecha campo=TablaPaginas_nivel3.fecha titulo="Fecha nivel 3"
+		Combo campo=TablaPaginas_nivel3.list titulo="Lista seleccion nivel 3"
+		Tabla tablaNombres campo=TablaPaginas_nivel3.tablaDeNombres titulo="Solicitantes"
 		popupCrear=popupNombreTablas
 		popupLeer=popupNombreTablas
 		popupEditar=popupNombreTablas
@@ -234,48 +215,48 @@ Formulario Solicitud {
 		}
 	}
 	
-	Pagina CrearPaginasTT campo=Solicitud.paginas.tpaginas.ttpaginas{
-		Accion crear redirigir=CrearPaginasT
-		Accion editar redirigir=CrearPaginasT
-		Accion borrar redirigir=CrearPaginasT		
-		Texto titulo="Nombre" campo=TablaPaginasTabTab.nombre
-		Combo campo=TablaPaginasTabTab.comboMul comboTexto=nombre titulo="Combo nivel 2"
-		Combo campo=TablaPaginasTabTab.list titulo="Lista seleccion nivel 2"
+	Pagina Paginas_nivel2 campo=Solicitud.paginas.tpaginas_nivel1.tpaginas_nivel2{
+		Accion crear redirigir=Paginas_nivel1
+		Accion editar redirigir=Paginas_nivel1
+		Accion borrar redirigir=Paginas_nivel1		
+		Texto titulo="Nombre" campo=TablaPaginas_nivel2.nombre
+		Combo campo=TablaPaginas_nivel2.comboMul comboTexto=nombre titulo="Combo nivel 2"
+		Combo campo=TablaPaginas_nivel2.list titulo="Lista seleccion nivel 2"
 		Grupo titulo="Tabla visible si estamos en modo NO CREACION" permiso=paginaTablaVer{
-			Tabla paginasT2 campo=TablaPaginasTabTab.tttpaginas paginaCrear=CrearPaginasTTT paginaEditar=CrearPaginasTTT paginaBorrar=CrearPaginasTTT titulo="Tabla con paginas nivel 3" columnasAutomaticas exclude=id{}
+			Tabla paginasT2 campo=TablaPaginas_nivel2.tpaginas_nivel3 paginaCrear=Paginas_nivel3 paginaEditar=Paginas_nivel3 paginaBorrar=Paginas_nivel3 titulo="Tabla con paginas nivel 3" columnasAutomaticas exclude=id{}
 		}
 	}
 	
-	Pagina CrearPaginasT campo=Solicitud.paginas.tpaginas {
+	Pagina Paginas_nivel1 campo=Solicitud.paginas.tpaginas_nivel1 {
 		Accion crear redirigir=PaginasTablas
 		Accion editar redirigir=PaginasTablas
 		Accion borrar redirigir=PaginasTablas	
-		Texto titulo="Nombre" campo=TablaPaginasTab.nombre
-		Texto titulo="Numero entero" campo=TablaPaginasTab.numero
-		Combo campo=TablaPaginasTab.comboMul comboTexto=nombre titulo="Combo"
-		Fecha campo=TablaPaginasTab.fecha titulo="Fecha"
+		Texto titulo="Nombre" campo=TablaPaginas_nivel1.nombre
+		Texto titulo="Numero entero" campo=TablaPaginas_nivel1.numero
+		Combo campo=TablaPaginas_nivel1.comboMul comboTexto=nombre titulo="Combo"
+		Fecha campo=TablaPaginas_nivel1.fecha titulo="Fecha"
 		Grupo titulo="Tabla visible si estamos en modo NO CREACION" permiso=paginaTablaVer{
-			Tabla paginasT2 campo=TablaPaginasTab.ttpaginas paginaCrear=CrearPaginasTT paginaEditar=CrearPaginasTT paginaBorrar=CrearPaginasTT titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
+			Tabla paginasT2 campo=TablaPaginas_nivel1.tpaginas_nivel2 paginaCrear=Paginas_nivel2 paginaEditar=Paginas_nivel2 paginaBorrar=Paginas_nivel2 titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
 		}
 	}
 	
-	Pagina VerPaginasT campo=Solicitud.paginas.tpaginas {
-		Texto titulo="Nombre" campo=TablaPaginasTab.nombre
-		Texto titulo="Numero entero" campo=TablaPaginasTab.numero
-		Combo campo=TablaPaginasTab.comboMul comboTexto=nombre titulo="Combo"
-		Fecha campo=TablaPaginasTab.fecha titulo="Fecha"
-		Tabla paginasT2 campo=TablaPaginasTab.ttpaginas titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
+	Pagina VerPaginas_nivel1 campo=Solicitud.paginas.tpaginas_nivel1 {
+		Texto titulo="Nombre" campo=TablaPaginas_nivel1.nombre
+		Texto titulo="Numero entero" campo=TablaPaginas_nivel1.numero
+		Combo campo=TablaPaginas_nivel1.comboMul comboTexto=nombre titulo="Combo"
+		Fecha campo=TablaPaginas_nivel1.fecha titulo="Fecha"
+		Tabla paginasT2 campo=TablaPaginas_nivel1.tpaginas_nivel2 titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
 	}
 	
-	Pagina CrearPaginasPopUpPagina campo=Solicitud.popupPaginas.tttpaginas{
+	Pagina CrearPaginasPopUpPagina campo=Solicitud.popupPaginas.tpaginas_nivel3{
 		Accion crear redirigir=PaginasTablas
 		Accion editar redirigir=PaginasTablas
 		Accion borrar redirigir=PaginasTablas
-		Texto titulo="Nombre tabla con pagina en popUp" campo=TablaPaginasTabTabTab.nombre
-		Texto titulo="Numero tabla con pagina en popUp" campo=TablaPaginasTabTabTab.numero
-		Fecha campo=TablaPaginasTabTabTab.fecha titulo="Fecha tabla con pagina en popUp"
-		Combo campo=TablaPaginasTabTabTab.list titulo="Lista seleccion tabla con pagina en popUp"
-		Tabla tablaNombres campo=TablaPaginasTabTabTab.tablaDeNombres titulo="Solicitantes tabla con pagina en popUp"
+		Texto titulo="Nombre tabla con pagina en popUp" campo=TablaPaginas_nivel3.nombre
+		Texto titulo="Numero tabla con pagina en popUp" campo=TablaPaginas_nivel3.numero
+		Fecha campo=TablaPaginas_nivel3.fecha titulo="Fecha tabla con pagina en popUp"
+		Combo campo=TablaPaginas_nivel3.list titulo="Lista seleccion tabla con pagina en popUp"
+		Tabla tablaNombres campo=TablaPaginas_nivel3.tablaDeNombres titulo="Solicitantes tabla con pagina en popUp"
 		popupCrear=popupNombreTablasPaginas
 		popupLeer=popupNombreTablasPaginas
 		popupEditar=popupNombreTablasPaginas
@@ -288,7 +269,7 @@ Formulario Solicitud {
 	Popup popupPagina campo=Solicitud.popupPaginas {
 		Texto campo=TablaPopUpPaginas.nombre titulo="Nombre popUp"
 		Texto campo=TablaPopUpPaginas.apellido titulo="Apellido popUp"
-		Tabla paginasT2 campo=TablaPopUpPaginas.tttpaginas paginaCrear=CrearPaginasPopUpPagina paginaEditar=CrearPaginasPopUpPagina paginaBorrar=CrearPaginasPopUpPagina titulo="Tabla con paginas dentro de popUp" columnasAutomaticas exclude=id{}
+		Tabla paginasT3 campo=TablaPopUpPaginas.tpaginas_nivel3 paginaCrear=CrearPaginasPopUpPagina paginaEditar=CrearPaginasPopUpPagina paginaBorrar=CrearPaginasPopUpPagina titulo="Tabla con paginas dentro de popUp" columnasAutomaticas exclude=id{}
 	}
 	
 	Pagina PaginasTablas campo=Solicitud{
@@ -296,7 +277,7 @@ Formulario Solicitud {
 			Texto titulo="Titulo" campo=Solicitud.paginas.nombre
 			Wiki {"Para poder usar esta tabla, es necesario haber seleccionado un valor del combo en la pagina: 'Combo ManyToOne'"}
 			Boton irComboManyToOne titulo="Ir a Combo ManyToOne" pagina=ComboTablasPaginas
-			Tabla paginasT campo=Solicitud.paginas.tpaginas paginaLeer=VerPaginasT paginaCrear=CrearPaginasT paginaEditar=CrearPaginasT paginaBorrar=CrearPaginasT titulo="Tabla con paginas" columnasAutomaticas exclude=id{}
+			Tabla paginasT campo=Solicitud.paginas.tpaginas_nivel1 paginaLeer=VerPaginas_nivel1 paginaCrear=Paginas_nivel1 paginaEditar=Paginas_nivel1 paginaBorrar=Paginas_nivel1 titulo="Tabla con paginas" columnasAutomaticas exclude=id{}
 		}
 		Grupo titulo="Tablas con popups y paginas"{
 			Tabla tablaNombres campo=Solicitud.popupPaginas titulo="Solicitantes"

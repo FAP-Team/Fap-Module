@@ -22,33 +22,28 @@ import java.text.SimpleDateFormat;
 
 
 @Entity
-public class TablaPaginasTab extends Model {
+public class TablaPaginas_nivel2 extends Model {
 	// Código de los atributos
 	
 	
 	public String nombre;
 	
 	
-	
-	public Integer numero;
-	
-	
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginastab_combomul")
+	@JoinTable(name="tablapaginas_nivel2_combomul")
 	public List<ComboTestRef> comboMul;
 	
 	
-	@org.hibernate.annotations.Columns(columns={@Column(name="fecha"),@Column(name="fechaTZ")})
-	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
-	public DateTime fecha;
+	@ValueFromTable("ComboTestList")
+	public String list;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginastab_ttpaginas")
-	public List<TablaPaginasTabTab> ttpaginas;
+	@JoinTable(name="tablapaginas_nivel2_tpaginas_nivel3")
+	public List<TablaPaginas_nivel3> tpaginas_nivel3;
 	
 	
-	public TablaPaginasTab (){
+	public TablaPaginas_nivel2 (){
 		init();
 	}
 	
@@ -59,8 +54,8 @@ public class TablaPaginasTab extends Model {
 						if (comboMul == null)
 							comboMul = new ArrayList<ComboTestRef>();
 						
-						if (ttpaginas == null)
-							ttpaginas = new ArrayList<TablaPaginasTabTab>();
+						if (tpaginas_nivel3 == null)
+							tpaginas_nivel3 = new ArrayList<TablaPaginas_nivel3>();
 						
 	}
 		

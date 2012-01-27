@@ -6,9 +6,7 @@ Entidad Solicitud extends SolicitudGenerica {
 	TestGrupo testGrupo
 	
 	OneToMany TablaDeNombres tablaDeNombres
-	
-	OneToMany Peta peta
-	
+
 	ManyToOne ComboTestRef comboError
 	ManyToMany ComboTestRef comboErrorMany
 	
@@ -18,37 +16,27 @@ Entidad Solicitud extends SolicitudGenerica {
 	PersonaFisica amigo
 }
 
-Entidad Peta{
-	String n
-	DateTime fecha
-	ManyToMany ComboTestRef petador
-	String d
-	String otro
-}
-
 Entidad PaginasTab{
 	String nombre
-	OneToMany TablaPaginasTab tpaginas
+	OneToMany TablaPaginas_nivel1 tpaginas_nivel1
 }
 
-
-
-Entidad TablaPaginasTab{
+Entidad TablaPaginas_nivel1{
 	String nombre
 	Integer numero
 	ManyToMany ComboTestRef comboMul
 	DateTime fecha
-	OneToMany TablaPaginasTabTab ttpaginas
+	OneToMany TablaPaginas_nivel2 tpaginas_nivel2
 }
 
-Entidad TablaPaginasTabTab{
+Entidad TablaPaginas_nivel2{
 	String nombre
 	ManyToMany ComboTestRef comboMul
 	Lista ComboTestList list
-	OneToMany TablaPaginasTabTabTab tttpaginas
+	OneToMany TablaPaginas_nivel3 tpaginas_nivel3
 }
 
-Entidad TablaPaginasTabTabTab{
+Entidad TablaPaginas_nivel3{
 	String nombre
 	Integer numero
 	DateTime fecha
@@ -60,7 +48,7 @@ Entidad TablaPopUpPaginas {
 	String nombre
 	String apellido
 	OneToOne Fechas fecha
-	OneToMany TablaPaginasTabTabTab tttpaginas
+	OneToMany TablaPaginas_nivel3 tpaginas_nivel3
 }
 
 Entidad Fechas {

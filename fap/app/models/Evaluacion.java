@@ -145,6 +145,13 @@ public class Evaluacion extends Model {
 				"and evaluacion.id=?", jerarquia, id).first();
 	}
 	
+	public CEconomico getCEconomico(String jerarquia){
+		return CEconomico.find("select ceconomico from Evaluacion evaluacion " +
+				"join evaluacion.ceconomicos ceconomico " +
+				"where ceconomico.tipo.jerarquia=? " +
+				"and evaluacion.id=?", jerarquia, id).first();		
+	}
+	
 	public Double getSubvencionTotalConcedida(){
 		Double totalConcedida = 0D;
 		if(inversionTotalAprobada != null){

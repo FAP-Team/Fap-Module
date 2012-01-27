@@ -61,12 +61,7 @@ public class BaremacionService {
 	}
 	
 	private static <T> void invokeEvalTotal(Evaluacion parent, List<T> childs, String tipo){
-		Class invokedClass = null;
-		//Busca una clase que herede del evaluador
-        List<Class> assignableClasses = Play.classloader.getAssignableClasses(Evaluador.class);
-        if(assignableClasses.size() > 0){
-            invokedClass = assignableClasses.get(0);
-        }
+		Class invokedClass = getEvaluadorClass();
 		
 		String methodName = "evalTotal"+tipo;
         Method method = null;
@@ -115,12 +110,7 @@ public class BaremacionService {
 	 * @return
 	 */
 	private static <T> void invokeEval(String jerarquia, T parent, List<T> childs){
-		Class invokedClass = null;
-		//Busca una clase que herede del evaluador
-        List<Class> assignableClasses = Play.classloader.getAssignableClasses(Evaluador.class);
-        if(assignableClasses.size() > 0){
-            invokedClass = assignableClasses.get(0);
-        }
+		Class invokedClass = getEvaluadorClass();
         
         String methodName = "eval" + jerarquia.replaceAll("\\.", "_");
         Method method = null;
@@ -237,5 +227,37 @@ public class BaremacionService {
 	 */
 	public static TipoEvaluacion loadTipoEvaluacionFromJson(String path){
 		return JsonUtils.loadObjectFromJsonFile(path, TipoEvaluacion.class);
+	}
+	
+	/**
+	 * Se encarga de buscar una clase evaluador si existe y si existe el 
+	 * método getDatoAdicional lo llama.
+	 * 
+	 * @param dato
+	 * @param evaluacion
+	 * @return
+	 */
+	public static Object getDatoAdicional(String dato, Evaluacion evaluacion){
+		Class invokedClass = getEvaluadorClass();
+		Object result = null;
+        if(invokedClass != null){
+	        try {
+	        	Method method = invokedClass.getDeclaredMethod("getDatoAdicional", String.class, Evaluacion.class);
+	        	result = method.invoke(null, dato, evaluacion);
+			} catch (Exception e) {
+				result = "";
+			}
+		}
+		return result;
+	}
+                
+	private static Class getEvaluadorClass() {
+		Class invokedClass = null;
+		//Busca una clase que herede del evaluador
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(Evaluador.class);
+        if(assignableClasses.size() > 0){
+            invokedClass = assignableClasses.get(0);
+        }
+		return invokedClass;
 	}
 }

@@ -69,6 +69,21 @@ Entidad CEconomico {
 	LongText comentariosSolicitante	
 }
 
+// Tipo de la información adicional
+// que hace falta para la evaluacion
+Entidad TipoDatoAdicional {
+	// Se utiliza para ordenar cómo aparecen
+	// lo criterios en la página
+	Integer orden
+	
+	// Identificador para poder
+	// referenciarlo en el cálculo	
+	String nombre 
+	
+	// Texto que se mostrará en la página
+	LongText descripcion
+}
+
 Entidad TipoEvaluacion {
     String nombre
     List<String> tiposDocumentos
@@ -83,10 +98,11 @@ Entidad TipoEvaluacion {
     
     //Número de evaluaciones que hay que realizar de este tipo
     Long numeroEvaluacion
+    
+    OneToMany TipoDatoAdicional datosAdicionales
 }
 
 Entidad Evaluacion {
-	//TODO ¿Por qué se inicializan las many to one??
 	ManyToOne SolicitudGenerica solicitud
 	
 	OneToMany Criterio criterios

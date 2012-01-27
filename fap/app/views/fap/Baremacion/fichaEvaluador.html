@@ -37,8 +37,10 @@
 
 	#{simple.uneditable value: evaluacion.totalCriterios, label: "Total puntuación"/}
 	#{simple.uneditable value: evaluacion.inversionTotalAprobada, label: "Inversión total aprobada"/}
-	#{simple.uneditable label:"Porcentaje de la ayuda", value:properties.FapProperties.get("fap.app.baremacion.porcentajeAyuda") + " %" /}
-	#{simple.uneditable value: evaluacion.subvencionTotalConcedida, label: "Subvención total concedida"/}
+	
+	#{list items:evaluacion.tipo.datosAdicionales, as:"tipoDatoAdicional"}
+		#{simple.uneditable value:services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion), label: tipoDatoAdicional.descripcion /}	
+	#{/list}
 
 	#{if evaluacion.tipo.comentariosAdministracion}
 		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion)/}

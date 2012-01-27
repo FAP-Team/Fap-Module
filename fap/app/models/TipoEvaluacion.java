@@ -59,6 +59,11 @@ public class TipoEvaluacion extends Model {
 	public Long numeroEvaluacion;
 	
 	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="tipoevaluacion_datosadicionales")
+	public List<TipoDatoAdicional> datosAdicionales;
+	
+	
 	public TipoEvaluacion (){
 		init();
 	}
@@ -75,6 +80,9 @@ public class TipoEvaluacion extends Model {
 						comentariosAdministracion = false;
 comentariosSolicitante = false;
 
+						if (datosAdicionales == null)
+							datosAdicionales = new ArrayList<TipoDatoAdicional>();
+						
 	}
 		
 	

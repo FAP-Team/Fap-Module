@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import play.Logger;
+import play.Play;
 import play.db.jpa.GenericModel.JPAQuery;
 import play.libs.IO;
 import play.libs.WS;
@@ -28,6 +29,7 @@ import play.libs.XPath;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.utils.NoOpEntityResolver;
+import properties.FapProperties;
 
 import models.ComboTest;
 import models.ComboTestRef;
@@ -100,26 +102,22 @@ public class CombosOverwriteController extends CombosOverwriteControllerGen {
 		List<ComboItem> result = new ArrayList<ComboItem>();
 		JsonObject root = null;
 		
-		// ==========================
-		// Código para prueba
-		//===========================
-		Response response = FunctionalTest.GET("/api/json");
-		String content = FunctionalTest.getContent(response);
-		String json = content;
-		try {
-			root = new JsonParser().parse(json).getAsJsonObject();
-		} catch (Exception e) {
+		if (Play.mode == Play.mode.DEV) {
+			Response response = FunctionalTest.GET("/api/json");
+			String content = FunctionalTest.getContent(response);
+			String json = content;
+			try {
+				root = new JsonParser().parse(json).getAsJsonObject();
+			} catch (Exception e) {
+			}
+		} else {
+			// Modo producción
+			String endPoint = "/api/json";
+			String applicationPath = (FapProperties.get("http.path") != null) ? FapProperties.get("http.path") : "";
+			String url = "http://"+request.host+applicationPath+endPoint;
+			HttpResponse wsResponse = WS.url(url).get();
+			root = wsResponse.getJson().getAsJsonObject();
 		}
-		
-		// end Codigo prueba
-		
-		
-		//==========================
-		// Código real - No funciona en el mismo dominio en desarrollo
-		//==========================
-		//HttpResponse wsResponse = WS.url("http://localhost:9000/api/json").get();
-		//root = wsResponse.getJson().getAsJsonObject();
-		
 		
 		JsonArray list = root.get("list").getAsJsonArray();
 		Iterator<JsonElement> iterator = list.iterator();
@@ -135,25 +133,24 @@ public class CombosOverwriteController extends CombosOverwriteControllerGen {
 	public static List<ComboItem> wsxml() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
 
-		// ==========================
-		// Código para prueba
-		//===========================
 		Document xml = null;
-		try {
-			Response response = FunctionalTest.GET("/api/xml");
-			String content = FunctionalTest.getContent(response);
-			xml = XML.getDocument(content);
-		} catch (RuntimeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (Play.mode == Play.mode.DEV) {
+			try {
+				Response response = FunctionalTest.GET("/api/xml");
+				String content = FunctionalTest.getContent(response);
+				xml = XML.getDocument(content);
+			} catch (RuntimeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			// Modo producción
+			String endPoint = "/api/xml";
+			String applicationPath = (FapProperties.get("http.path") != null) ? FapProperties.get("http.path") : "";
+			String url = "http://"+request.host+applicationPath+endPoint;
+			HttpResponse wsResponse = WS.url(url).get();
+			xml = wsResponse.getXml();
 		}
-		// end Codigo prueba
-		
-		//==========================
-		// Código real - No funciona en el mismo dominio en desarrollo
-		//==========================
-		//HttpResponse wsResponse = WS.url("http://localhost:9000/api/json").get();
-		//Document xml = wsResponse.getXml();
 		
 		for(Node node : XPath.selectNodes("ws.WSEmulatorResult/list/ws.WSEmulatorResultListItem", xml)){
 			Long id = Long.parseLong(XPath.selectText("id", node));

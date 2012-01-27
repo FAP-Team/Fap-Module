@@ -609,7 +609,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			@Util
 			public static void checkRedirigir(){
 				renderArgs.put("container", "${name}");
-				if (request.params.data.containsKey("redirigir") && "anterior".equals(request.params.data.get("redirigir")[0])){
+				if (params._contains("redirigir") && "anterior".equals(params.get("redirigir"))){
 					if (request.headers.get("referer") != null){
 						String referer = request.headers.get("referer").value();
 						try {

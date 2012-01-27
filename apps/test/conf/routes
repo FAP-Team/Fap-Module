@@ -92,6 +92,10 @@ POST /Solicitud/fechas/editar FechasController.editar
 GET /Solicitud/paginacomboserror PaginaCombosErrorController.index
 POST /Solicitud/paginacomboserror/editar PaginaCombosErrorController.editar
 
+GET /Solicitud/paginafirma PaginaFirmaController.index
+
+POST /Solicitud/paginafirma/form PaginaFirmaController.form
+
 GET /Solicitud/paginastablas PaginasTablasController.index
 POST /Solicitud/paginastablas/editar PaginasTablasController.editar
 

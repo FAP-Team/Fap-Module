@@ -25,8 +25,9 @@
 	def uri = _uri ?: "No hay URI"
 	def firma = _firma ?: ""
 	def url = utils.AedUtils.crearUrl(uri)
-	def id_boton = id + "_boton";
+	def id_boton = id;// + "_boton";
 	def id_firma = id + "_firma";
+	def id_row = id + "_row";
 	
 	def id_cert = id.replace('-', '').substring(0, 4);
 }%
@@ -37,12 +38,10 @@
 
 <input type="hidden" id="${id_firma}" name="${firma}"/>
 
-#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
-<div class="form-row">
-	<select id="${id_cert}certificado" name="certificado" class="certificado">
-		<option disabled="disabled">--Certificados--</option>
-	</select>
-</div>
+#{fap.formrow id:id_row, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
+<select id="${id_cert}certificado" name="certificado" class="certificado">
+	<option disabled="disabled">--Certificados--</option>
+</select>
 #{/fap.formrow}
 
 <div id="cert-msg"></div>
@@ -51,9 +50,12 @@
 <script>
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
+			var form = $('#${id}').parents('form');
 			Platino.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
 			
 			$('#${id_boton}').click(function(){
+				input = $("<input>").attr("type", "hidden").attr("name", "${id}").val("${id}");
+				form.append($(input));
 				if(firmarUrl('${url}', '${id_cert}certificado', {idFirma : '${id_firma}', idError : 'cert-msg'}) != null){
 					var value = $('#${id_firma}').val();
 					

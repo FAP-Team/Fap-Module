@@ -15,7 +15,8 @@ public class HashStack {
 		SAVE_EXTRA,  // Parámetros que se van a añadir al método save, se utiliza en casos como el subirArchivo o el subirArchivoAED.
 		SAVE_CODE,  // Elementos que requieren que se ejecute su metodo saveCode() para añadir código al metodo de guardado del controlador.
 		PERMISSION,  // Pila de permisos.
-		SAVE_BOTON  // Pila con los nombres de los botones.
+		SAVE_BOTON,  // Pila con los nombres de los botones.
+		FIRMA_BOTON	// Pila con los elementos de Firma
 	}
 	
 	private static HashMap<HashStackName, Stack<Object>> hash = new HashMap<HashStackName, Stack<Object>>();

@@ -26,9 +26,11 @@ public class GFirmaPlatinoSimple {
 		if (firmaPlatino.titulo)
 			params.putStr("titulo", firmaPlatino.getTitulo());
 		
-
+		params.putStr("id", firmaPlatino.name);
 		params.putStr("firma", "firma.firma");
 		params.put("uri", campo.firstLower());
+		
+		HashStack.push(HashStackName.FIRMA_BOTON, firmaPlatino.name);
 		
 		String view = 
 		"""

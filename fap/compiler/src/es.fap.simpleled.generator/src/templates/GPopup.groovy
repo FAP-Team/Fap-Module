@@ -94,6 +94,7 @@ public class GPopup {
 		int sizeEntity = HashStack.size(HashStackName.SAVE_ENTITY);
 		int sizeCode = HashStack.size(HashStackName.SAVE_CODE);
 		int sizeBoton = HashStack.size(HashStackName.SAVE_BOTON);
+		int sizeFirma = HashStack.size(HashStackName.FIRMA_BOTON);
 		int sizeIndex = HashStack.size(HashStackName.INDEX_ENTITY);
 		int sizeController = HashStack.size(HashStackName.CONTROLLER);
 		
@@ -106,6 +107,7 @@ public class GPopup {
 		List<String> saveExtra = HashStack.popUntil(HashStackName.SAVE_EXTRA, sizeExtra).unique();
 		List<String> saveCode = HashStack.popUntil(HashStackName.SAVE_CODE, sizeCode);
 		List<String> saveBoton = HashStack.popUntil(HashStackName.SAVE_BOTON, sizeBoton);
+		List<String> firmaBoton = HashStack.popUntil(HashStackName.FIRMA_BOTON, sizeFirma);
 		List<EntidadUtils> indexEntity = HashStack.popUntil(HashStackName.INDEX_ENTITY, sizeIndex).unique();
 		List<String> saveController = HashStack.popUntil(HashStackName.CONTROLLER, sizeController);
 		
@@ -114,6 +116,7 @@ public class GPopup {
 		controller.saveExtra = saveExtra;
 		controller.saveCode = saveCode;
 		controller.saveBoton = saveBoton;
+		controller.firmaBoton = firmaBoton;
 		controller.saveEntities = saveEntity;
 		controller.indexEntities = indexEntity;
 		controller.initialize();

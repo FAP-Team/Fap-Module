@@ -54,6 +54,7 @@ public class Controller {
 	public List<String> saveExtra;
 	public List<String> saveCode;
 	public List<String> saveBoton;
+	public List<String> firmaBoton;
 	public List<EntidadUtils> saveEntities;
 	public List<EntidadUtils> indexEntities;
 	public EObject elementoGramatica;
@@ -319,6 +320,9 @@ public class ${controllerName} extends ${controllerGenName} {
 			String editarRenderCall = "${controllerName}.${nameEditar}Render(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
 			String botonCode = "";
 			List<String> saveBotones = new ArrayList<String>(saveBoton);
+			// Le añadimos los botones de firma
+			List<String> firmaBotones = new ArrayList<String>(firmaBoton);
+			saveBotones.addAll(firmaBotones);
 			if (isForm() && saveBotones.size() == 1){
 				saveBotones.clear();
 			}
@@ -725,6 +729,9 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String botonesMethods(){
 		String botonesMethod = "";
 		List<String> saveBotones = new ArrayList<String>(saveBoton);
+		// Le añadimos los botones de firma
+		List<String> firmaBotones = new ArrayList<String>(firmaBoton);
+		saveBotones.addAll(firmaBotones);
 		if (isForm() && saveBotones.size() == 1){
 			saveBotones.clear();
 		}

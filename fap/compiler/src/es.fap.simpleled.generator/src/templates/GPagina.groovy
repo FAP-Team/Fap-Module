@@ -124,12 +124,14 @@ public class GPagina {
 		List<String> saveExtra = HashStack.allElements(HashStackName.SAVE_EXTRA).unique();
 		List<String> saveCode = HashStack.allElements(HashStackName.SAVE_CODE);
 		List<String> saveBoton = HashStack.allElements(HashStackName.SAVE_BOTON);
+		List<String> firmaBoton = HashStack.allElements(HashStackName.FIRMA_BOTON);
 		
 		HashStack.remove(HashStackName.CONTROLLER);
 		HashStack.remove(HashStackName.SAVE_ENTITY);
 		HashStack.remove(HashStackName.SAVE_EXTRA);
 		HashStack.remove(HashStackName.SAVE_CODE);
 		HashStack.remove(HashStackName.SAVE_BOTON);
+		HashStack.remove(HashStackName.FIRMA_BOTON);
 		HashStack.remove(HashStackName.INDEX_ENTITY);
 		
 		controller = Controller.fromPagina(pagina);
@@ -137,6 +139,7 @@ public class GPagina {
 		controller.saveExtra = saveExtra;
 		controller.saveCode = saveCode;
 		controller.saveBoton = saveBoton;
+		controller.firmaBoton = firmaBoton;
 		controller.saveEntities = saveEntity;
 		controller.indexEntities = indexEntity;
 		controller.initialize();

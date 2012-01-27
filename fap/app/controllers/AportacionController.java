@@ -60,14 +60,13 @@ public class AportacionController extends AportacionControllerGen {
 					aportacion.save();
 				}
 				
-				
 				if(!Messages.hasErrors() && aportacion.estado == null){
 					try {
 						String tipoDocumentoSolicitudAportacion = FapProperties.get("fap.aed.tiposdocumentos.aportacion.solicitud");
 						
 						//Si los documentos ya estaban creados los borra
 						Documento borradorOld = aportacion.borrador;
-						Documento oficialOld = aportacion.oficial;
+						Documento oficialOld = aportacion.oficial;						
 						aportacion.borrador = null;
 						aportacion.oficial = null;
 						aportacion.save();
@@ -79,6 +78,12 @@ public class AportacionController extends AportacionControllerGen {
 							//Error? no importa, son temporales...
 							play.Logger.info("Error borrando los documento temporales desde el aed");
 						}
+						
+						// Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
+						if ((borradorOld != null) && (borradorOld.delete() == null))
+							play.Logger.info("Error borrando los documento temporales generados para el borrador");
+						if ((oficialOld != null) && (oficialOld.delete() == null))
+							play.Logger.info("Error borrando los documento temporales generados para el documento oficial");
 						
 						//Genera el borrador
 						File borrador = new Report("reports/solicitudAportacion.html").header("reports/header.html").footer("reports/footer-borrador.html").renderTmpFile(solicitud);

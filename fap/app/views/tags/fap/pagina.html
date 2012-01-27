@@ -65,15 +65,19 @@
 	
 	#{/if}
 	
-	#{elseif accion == "leer" && hayForm}
+	#{elseif accion == "leer"}
 	
 		%{tags.TagMapStack.push("editable", false);  }%
 	
-		<form> *{ Es necesario este form para que bootstrap ponga correctamente el estilo a los campos no editables }*
-
-			#{doBody /}
+		#{if hayForm}
+			<form> *{ Es necesario este form para que bootstrap ponga correctamente el estilo a los campos no editables }*
+		#{/if}
 		
-		</form>
+		#{doBody /}
+		
+		#{if hayForm}
+			</form>
+		#{/if}
 		
 		%{tags.TagMapStack.pop("editable");  }%
 		

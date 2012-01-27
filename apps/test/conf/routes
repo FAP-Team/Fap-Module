@@ -136,9 +136,6 @@ POST /Solicitud/popuppagina/crear popups.popupPaginaController.crear
 
 GET /Solicitud/popuppagina/paginasT2 popups.popupPaginaController.tablapaginasT2
 GET /Solicitud/popuppersonasolicitantejuridicatabla popups.PopupPersonaSolicitanteJuridicaTablaController.index
-POST /Solicitud/popuppersonasolicitantejuridicatabla/editar popups.PopupPersonaSolicitanteJuridicaTablaController.editar
-POST /Solicitud/popuppersonasolicitantejuridicatabla/borrar popups.PopupPersonaSolicitanteJuridicaTablaController.borrar
-POST /Solicitud/popuppersonasolicitantejuridicatabla/crear popups.PopupPersonaSolicitanteJuridicaTablaController.crear
 
 GET /Solicitud/solicitante SolicitanteController.index
 POST /Solicitud/solicitante/editar SolicitanteController.editar

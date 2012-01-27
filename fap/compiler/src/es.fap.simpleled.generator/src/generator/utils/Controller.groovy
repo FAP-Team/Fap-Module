@@ -1035,7 +1035,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			}
 		}
 		String redirigirAnterior = "";
-		if (getAccion(accion)?.anterior)
+		if (hayAnterior)
 			redirigirAnterior = "'redirigir': 'anterior'";
 		List<String> intermediasStr = intermedias.collect {"'${it.id}':${it.idCheck}"};
 		String ids = ", [${StringUtils.params(accionParam, almacenId, entidadId, intermediasStr, redirigirAnterior)}]";

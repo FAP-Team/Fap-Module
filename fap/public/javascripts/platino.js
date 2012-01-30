@@ -45,11 +45,7 @@ var Platino = {
 		} catch (err) {
 			//mensajes.debug(err);
 			mensajes.error("No se ha podido listar los certificados. Error al acceder al servicio electrónico de Platino.");
-			
-			if (!$.browser.msie && !$.browser.mozilla) {
-				mensajes.warn("Es necesario utilizar Internet Explorer o Mozilla Firefox.");
-			}
-			
+				
 		}		
 	},
 
@@ -162,10 +158,6 @@ function actualizarCertificadosValidos(elementId, options) {
 	} catch (err) {
 		console.log(err);
 		MSGError(options.idError, "No se ha podido listar los certificados. Error al acceder al servicio electrónico de Platino.");
-		
-		if (!jQuery.browser.msie && !jQuery.browser.mozilla) {
-			MSGWarn(options.idError, "Es necesario utilizar Internet Explorer o Mozilla Firefox.");
-		}
 		
 	}
 }

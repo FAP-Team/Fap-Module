@@ -35,7 +35,7 @@ public class GBoton {
 		if (boton.pagina != null) {   // envolvemos el botón dentro de un enlace (tag <a>)
 			Enlace enlace = new EnlaceImpl();
 			enlace.name = (boton.name ?: "")+"IDenlace" 
-			enlace.titulo = result
+			enlace.titulo = boton.titulo
 			enlace.pagina = boton.pagina
 			enlace.estilo = "boton"
 			result = Expand.expand(enlace)

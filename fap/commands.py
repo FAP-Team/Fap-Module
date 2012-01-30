@@ -239,10 +239,13 @@ def init_application (app, args):
     FILE.write("#fap.ctxPath=\n");
     FILE.write("date.format=dd/MM/yyyy\n");
     FILE.write("fap.login.type.user=true\n");
-    FILE.write("app.log.path=log4j-dev.properties\n"); 
-    FILE.write("%prod.app.log.path=log4j-prod.properties\n");
+    
+    # Configuración de los Loggers
+    FILE.write("%test.app.log.path=/log4j-test.properties");
+    FILE.write("%prod.application.log.path=/log4j-prod.properties");
+    FILE.write("application.log.path=/log4j-dev.properties");
     FILE.write("db=mem\n");
-    FILE.write("%prod.jpa.ddl=create" + "\n");
+    FILE.write("%prod.jpa.ddl=none     # La primera vez que lo ejecutes debes ponerlo a 'create'" + "\n");
     
     
     FILE.write("\n\n# === FAPGENERATED ===\n");
@@ -256,6 +259,10 @@ def init_application (app, args):
 
     log4jFile_a = os.path.join(moduleDir, "conf", "log4j-prod.properties");
     log4jFile_b = os.path.join(app.path, "conf", "log4j-prod.properties");
+    shutil.copy2(log4jFile_a, log4jFile_b);
+    
+    log4jFile_a = os.path.join(moduleDir, "conf", "log4j-test.properties");
+    log4jFile_b = os.path.join(app.path, "conf", "log4j-test.properties");
     shutil.copy2(log4jFile_a, log4jFile_b);
     
     shutil.rmtree(os.path.join(app.path, "app", "views"), ignore_errors=True)

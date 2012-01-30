@@ -36,7 +36,6 @@
 #{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
 
 	#{simple.uneditable value: evaluacion.totalCriterios, label: "Total puntuación"/}
-	#{simple.uneditable value: evaluacion.inversionTotalAprobada, label: "Inversión total aprobada"/}
 	
 	#{list items:evaluacion.tipo.datosAdicionales, as:"tipoDatoAdicional"}
 		#{simple.uneditable value:services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion), label: tipoDatoAdicional.descripcion /}	

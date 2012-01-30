@@ -9,14 +9,14 @@ import play.libs.IO;
 import play.mvc.Controller;
 import play.vfs.VirtualFile;
 
-public class FapAPI extends Controller {
+public class AppAPI extends Controller {
 
 	public static void index() throws Exception {
         page("index.html");
     }
 
     public static void page(String id) throws Exception {
-        File page = new File(Play.modules.get("fap").getRealFile(), "javadoc/"+id);
+        File page = new File(Play.applicationPath, "javadoc/"+id);
         if(!page.exists()) {
             notFound("API page for "+id+" not found");
         }

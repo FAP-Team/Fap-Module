@@ -48,7 +48,7 @@ public class AuditLogListener implements
 	private String property;
 	private String value;
 	private String oldValue;
-	private String añadidos; 
+	private String agregados; 
 	private String borrados; 
 
 
@@ -154,7 +154,7 @@ public class AuditLogListener implements
 							added.add(o);
 						}
 					}
-					añadidos = getValueAsString(field, added);
+					agregados = getValueAsString(field, added);
 					borrados = getValueAsString(field, deleted);
 					logUpdateCollection();
 					event.getSession().getPersistenceContext().setFlushing(false);
@@ -347,8 +347,8 @@ public class AuditLogListener implements
 	
 	
 	private void logUpdateCollection() {
-		String msg = "%s ~ %s[%s].%s, añadidos: %s, borrados: %s";
-		log.debug(String.format(msg, evento, entity, entityId, property, añadidos, borrados));
+		String msg = "%s ~ %s[%s].%s, agregados: %s, borrados: %s";
+		log.debug(String.format(msg, evento, entity, entityId, property, agregados, borrados));
 	}
 
 	

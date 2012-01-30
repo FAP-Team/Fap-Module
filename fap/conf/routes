@@ -39,6 +39,9 @@ DELETE /admin/edit/listas/{id} 		          fap.AdminController.delete
 *		/fapapi/					fap.FapAPI.index
 *		/fapapi/{id}				fap.FapAPI.page
 *		/fapapi/{<.+>id}			fap.FapAPI.page
+*		/api/						fap.AppAPI.index
+*		/api/{id}					fap.AppAPI.page
+*		/api/{<.+>id}				fap.AppAPI.page
 %{ } }%
 
 GET /Administracion/logs fap.LoggerController.index

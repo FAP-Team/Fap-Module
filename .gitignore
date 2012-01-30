@@ -78,6 +78,10 @@ fap/compiler/src/es.fap.simpleled.ui/bin/*
 fap/compiler/src/es.fap.simpleled.ui/src-gen/*
 fap/compiler/src/es.fap.simpleled.generator/bin/*
 
+apps/test/javadoc/*
+fap/javadoc/*
+fap/logs/*
+
 # Logs eliminar carpeta
 apps/test/logs
 apps/test/test-result

@@ -132,7 +132,9 @@ public class Report {
 	 * @throws Exception
 	 */
 	public File renderTmpFile(Map<String, Object> args) throws Exception {
-		File tmp = File.createTempFile("report_", ".pdf", Play.tmpDir);
+		String prefix = fileName != null? fileName : "report";
+			
+		File tmp = File.createTempFile(prefix + "_", ".pdf", Play.tmpDir);
 		
 		//Añade todos los parámetros a renderArgs
 		RenderArgs renderArgs = Scope.RenderArgs.current();

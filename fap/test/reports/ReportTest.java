@@ -11,6 +11,8 @@ import org.junit.Test;
 
 public class ReportTest extends UnitTest {
 	
+	private static final String TEST_FILENAME = "TEST";
+
 	@Test
 	public void renderTmpFile() throws Exception {
 		Map<String, Object> args = new HashMap<String, Object>();
@@ -22,4 +24,17 @@ public class ReportTest extends UnitTest {
 		assertEquals(Play.tmpDir.getAbsolutePath(), f.getParentFile().getAbsolutePath());
 	}
 	
+	@Test
+	public void renderTmpFileWithFilename() throws Exception {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("name", "fap");
+		File f = new Report("/test/reports/reportTest.html").fileName(TEST_FILENAME).renderTmpFile(args);
+		//Comprueba que el fichero existe
+		assertTrue(f.exists());
+		//Comprueba que el fichero se cree en la carpeta temporal de la aplicación
+		assertEquals(Play.tmpDir.getAbsolutePath(), f.getParentFile().getAbsolutePath());
+		
+		//Comprueba que el fichero comience por el filename puesto
+		assertTrue(f.getName().startsWith(TEST_FILENAME));
+	}
 }

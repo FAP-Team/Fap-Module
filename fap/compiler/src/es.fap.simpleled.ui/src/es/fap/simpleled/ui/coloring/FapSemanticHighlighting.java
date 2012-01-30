@@ -98,6 +98,7 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 					|| val.equals("editable")
 					|| val.equals("visible")
 					|| val.equals("none")
+					|| val.equals("all")
 					|| val.equals("_permiso")
 				){
 					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);

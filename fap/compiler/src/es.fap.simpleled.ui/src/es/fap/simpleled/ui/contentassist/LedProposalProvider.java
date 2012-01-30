@@ -200,9 +200,15 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	@Override
-	public void completePermisoRuleCheck_Permiso(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
-		for (Permiso perm : ModelUtils.<Permiso>getVisibleNodes(LedPackage.Literals.PERMISO, model.eResource()))
-			acceptor.accept(createCompletionProposal(perm.getName(), styledProposal(perm.getName() + "  -  " + "Permiso", null), null, 0, context.getPrefix(), context));
+	public void completePermisoRuleCheck_PermisoGrafico(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		for (PermisoGrafico perm : ModelUtils.<PermisoGrafico>getVisibleNodes(LedPackage.Literals.PERMISO_GRAFICO, model.eResource()))
+			acceptor.accept(createCompletionProposal(perm.getName(), styledProposal(perm.getName() + "  -  " + "Permiso gráfico", null), null, 0, context.getPrefix(), context));
+	}
+	
+	@Override
+	public void completePermisoRuleCheck_PermisoAcceso(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
+		for (PermisoAcceso perm : ModelUtils.<PermisoAcceso>getVisibleNodes(LedPackage.Literals.PERMISO_ACCESO, model.eResource()))
+			acceptor.accept(createCompletionProposal(perm.getName(), styledProposal(perm.getName() + "  -  " + "Permiso acceso", null), null, 0, context.getPrefix(), context));
 	}
 	
 	@Override
@@ -283,12 +289,17 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	
 	public List<PermisoVar> getPermisoVariables(EObject model) {
 		List<PermisoVar> variables = new ArrayList<PermisoVar>();
-		while (! (model instanceof Permiso)){
+		while (! (model instanceof PermisoGrafico) && ! (model instanceof PermisoAcceso))
 			model = model.eContainer();
+		if (model instanceof PermisoGrafico){
+			PermisoGrafico perm = (PermisoGrafico) model;
+			if (perm.getVarSection() != null)
+				variables.addAll(perm.getVarSection().getVars());
 		}
-		Permiso perm = (Permiso) model;
-		if (perm.getVarSection() != null){
-			variables.addAll(perm.getVarSection().getVars());
+		else if (model instanceof PermisoAcceso){
+			PermisoAcceso perm = (PermisoAcceso) model;
+			if (perm.getVarSection() != null)
+				variables.addAll(perm.getVarSection().getVars());
 		}
 		Entity agente = getAgente(model.eResource());
 		PermisoVar agenteVar = new LedFactoryImpl().createPermisoVar();

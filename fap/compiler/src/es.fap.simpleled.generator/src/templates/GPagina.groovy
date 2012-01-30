@@ -80,7 +80,7 @@ public class GPagina {
 		else
 			params.putStr "encType", "application/x-www-form-urlencoded";
 			
-		Permiso formPermiso = HashStack.top(HashStackName.PERMISSION);
+		PermisoAcceso formPermiso = HashStack.top(HashStackName.PERMISSION);
 		if (formPermiso != null) {
 			params.putStr "permisoFormulario", formPermiso.name;
 			if (formPermiso.mensaje != null)

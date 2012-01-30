@@ -263,4 +263,20 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
+	@Check
+	public void checkPermisoGraficoNombreUnico(PermisoGrafico permiso){
+		for (PermisoAcceso p : ModelUtils.<PermisoAcceso>getVisibleNodes(LedPackage.Literals.PERMISO_ACCESO, permiso.eResource())) {
+			if (permiso.getName().equals(p.getName()))
+				error("Existe un permiso de acceso con el mismo nombre", LedPackage.Literals.PERMISO_GRAFICO__NAME);
+		}
+	}
+	
+	@Check
+	public void checkPermisoAccesoNombreUnico(PermisoAcceso permiso){
+		for (PermisoGrafico p : ModelUtils.<PermisoGrafico>getVisibleNodes(LedPackage.Literals.PERMISO_GRAFICO, permiso.eResource())) {
+			if (permiso.getName().equals(p.getName()))
+				error("Existe un permiso gráfico con el mismo nombre", LedPackage.Literals.PERMISO_ACCESO__NAME);
+		}
+	}
+	
 }

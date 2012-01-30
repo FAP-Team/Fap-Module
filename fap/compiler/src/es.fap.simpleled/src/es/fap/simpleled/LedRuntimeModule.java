@@ -3,9 +3,12 @@
  */
 package es.fap.simpleled;
 
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+
 import com.google.inject.Binder;
 
 import es.fap.simpleled.led.util.ModelUtils;
+import es.fap.simpleled.scoping.MyQualifiedNameProvider;
 
 /**
  * Use this class to register components to be used at runtime / without the
@@ -17,6 +20,10 @@ public class LedRuntimeModule extends es.fap.simpleled.AbstractLedRuntimeModule 
 	public void configure(Binder binder) {
 		binder.requestStaticInjection(ModelUtils.class);
 		super.configure(binder);
+	}
+	
+	public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
+		return MyQualifiedNameProvider.class;
 	}
 	
 }

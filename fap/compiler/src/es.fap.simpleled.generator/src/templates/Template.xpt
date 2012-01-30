@@ -13,6 +13,10 @@
 	«expand(this)»
 «ENDDEFINE»
 
-«DEFINE main FOR Permiso-»
+«DEFINE main FOR PermisoGrafico-»
+	«expand(this)»
+«ENDDEFINE»
+
+«DEFINE main FOR PermisoAcceso-»
 	«expand(this)»
 «ENDDEFINE»

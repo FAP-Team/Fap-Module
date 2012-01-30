@@ -562,25 +562,6 @@ class ControllerUtils {
         return out;
     }
 	
-	
-    public static String permisoContent(Permiso permiso) {
-		String permisoContent = "";
-		if(permiso != null){
-			String name = permiso.name;
-			permisoContent = """
-				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-				Map<String, Object> vars = null;
-				return secure.check("${name}", "visible", accion, ids, vars);
-			"""
-		}else{
-			permisoContent = """
-				//Sobreescribir para incorporar permisos a mano
-				return true;
-			"""
-		}
-		return permisoContent;
-	}
-	
 	private static String valid(String campo){
 		campo = StringUtils.firstLower(campo);
 		for (Set<String> set: validatedFields){

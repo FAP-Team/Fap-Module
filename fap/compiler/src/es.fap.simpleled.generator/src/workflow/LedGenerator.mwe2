@@ -40,8 +40,13 @@ Workflow {
 		}
 		
 		load = {
-			slot = "permisos"
-			type = "Permiso"
+			slot = "permisosGrafico"
+			type = "PermisoGrafico"
+		}
+		
+		load = {
+			slot = "permisosAcceso"
+			type = "PermisoAcceso"
 		}
 		
 	}
@@ -82,9 +87,19 @@ Workflow {
 		fileEncoding = fileEncoding
 	}
 	
-	//Expande los permisos
+	//Expande los permisos graficos
 	component = org.eclipse.xpand2.Generator {
-		expand = "templates::Template::main FOREACH permisos"
+		expand = "templates::Template::main FOREACH permisosGrafico"
+		outlet = {
+			path = targetPath
+		}
+		
+		fileEncoding = fileEncoding
+	}
+	
+	//Expande los permisos de acceso
+	component = org.eclipse.xpand2.Generator {
+		expand = "templates::Template::main FOREACH permisosAcceso"
 		outlet = {
 			path = targetPath
 		}

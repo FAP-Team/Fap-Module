@@ -11,7 +11,7 @@ import es.fap.simpleled.led.MenuEnlace
 import es.fap.simpleled.led.Enlace
 import es.fap.simpleled.led.Pagina
 import es.fap.simpleled.led.PaginaAccion
-import es.fap.simpleled.led.Permiso
+import es.fap.simpleled.led.PermisoAcceso
 import es.fap.simpleled.led.Popup
 import es.fap.simpleled.led.Tabla
 import es.fap.simpleled.led.util.ModelUtils;
@@ -40,7 +40,7 @@ public class Controller {
 	public List<Object> saveController;
 	public CampoUtils campo;
 	public String renderView;
-	public Permiso permiso;
+	public PermisoAcceso permiso;
 	public String controllerGenName;
 	public String controllerName;
 	public String controllerGenFullName;
@@ -278,14 +278,10 @@ public class ${controllerName} extends ${controllerGenName} {
 				almacenNoSingle.typeId,
 				entidadNoSingle.typeId
 			)}){
-				if (!secure.checkAction(accion)){
-					if (accion != null)
-						Messages.warning("La acción especificada en la url no es válida. Se utilizará la acción por defecto.");
-					accion = "editar";
-				}
-				if (!permiso(accion)){
+				if (accion == null)
+					accion = accion();
+				if (!secure.checkAction(accion) || !permiso(accion))
 					Messages.fatal("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar esta acción"}");
-				}
 				${hayAnterior? "checkRedirigir();" : ""}
 				${entidad.entidad? "$entidad.clase $entidad.variable = null;" : ""}
 				if(accion.equals("crear") && !Messages.hasErrors()){
@@ -690,9 +686,39 @@ public class ${controllerName} extends ${controllerGenName} {
 		return """
 			@Util
 			public static boolean permiso${sufijoPermiso}(String accion) {
-				${ControllerUtils.permisoContent(permiso)}
+				${permisoCheckContent()}
+			}
+
+			@Util
+			public static String accion${sufijoPermiso}() {
+				${permisoAccionContent()}
 			}
 		"""
+	}
+	
+	public String permisoCheckContent() {
+		if(permiso){
+			return """
+				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+				return secure.check("${permiso.name}", "visible", accion, ids, null);
+			""";
+		}
+		return """
+			//Sobreescribir para incorporar permisos a mano
+			return true;
+		""";
+	}
+	
+	public String permisoAccionContent() {
+		if(permiso){
+			return """
+				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+				return secure.accion("${permiso.name}", "visible", ids, null);
+			""";
+		}
+		return """
+			return "editar";
+		""";
 	}
 	
 	private String metodosHashStack(){
@@ -811,6 +837,8 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.campo = pag.campo;
 		controller.renderView = "\"gen/${pagina.name}/${pagina.name}.html\"";
 		controller.permiso = pagina.permiso;
+		if (pagina.permiso == null)
+			controller.permiso = pagina.eContainer().permiso;
 		controller.controllerGenName = pag.controllerGenName();
 		controller.controllerName = pag.controllerName();
 		controller.controllerGenFullName = pag.controllerGenFullName();
@@ -843,6 +871,8 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.campo = gpopup.campo;
 		controller.renderView = "\"gen/popups/${gpopup.viewName()}\"";
 		controller.permiso = popup.permiso;
+		if (popup.permiso == null)
+			controller.permiso = popup.eContainer().permiso;
 		controller.controllerGenName = gpopup.controllerGenName();
 		controller.controllerName = gpopup.controllerName();
 		controller.controllerGenFullName = gpopup.controllerGenFullName();
@@ -876,7 +906,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.saveController = [];
 		controller.campo = containerController.campo;
 		controller.renderView = containerController.renderView;
-		controller.permiso = form.permiso;
+		controller.permiso = null; //form.permiso; TEMPORAL
 		controller.controllerGenName = containerController.controllerGenName;
 		controller.controllerName = containerController.controllerName;
 		controller.controllerGenFullName = containerController.controllerGenFullName;
@@ -1026,11 +1056,11 @@ public class ${controllerName} extends ${controllerGenName} {
 	 * de la entidad no se conoce hasta que el usuario selecciona una fila en la tabla.  
 	 */
 	public String getRouteIndex(String accion, boolean forTabla = false){
-		accion = Actions.getAccion(accion);
-		String accionParam = "'accion':'${accion}'";
+		String accionParam = "";
+		if (accion) accionParam = "'accion':'${accion}'";
 		String almacenId = (almacen.nulo() || almacen.isSingleton())? "" : "'${almacen.id}':${almacen.idCheck}";
 		String entidadId = "";
-		if (!entidad.nulo() && !entidad.isSingleton() && !accion.equals("crear")){
+		if (!entidad.nulo() && !entidad.isSingleton() && !"crear".equals(accion)){
 			if (forTabla){
 				entidadId = "'${entidad.id}':'_${entidad.id}_'";
 			}
@@ -1045,7 +1075,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (hayAnterior)
 			redirigirAnterior = "'redirigir': 'anterior'";
 		List<String> intermediasStr = intermedias.collect {"'${it.id}':${it.idCheck}"};
-		String ids = ", [${StringUtils.params(accionParam, almacenId, entidadId, intermediasStr, redirigirAnterior)}]";
+		String params = StringUtils.params(accionParam, almacenId, entidadId, intermediasStr, redirigirAnterior);
+		String ids = "";
+		if (! params.equals("")) ids = ", [${params}]";
 		String link = """play.mvc.Router.reverse("${controllerFullName}.index" ${ids})""";
 		return link;
 	}

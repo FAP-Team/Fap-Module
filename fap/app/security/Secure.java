@@ -24,12 +24,24 @@ abstract public class Secure {
 
 	public abstract boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars);
 	
+	public abstract String accion(String id, String _permiso, Map<String, Long> ids, Map<String, Object> vars);
+	
 	protected boolean nextCheck(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars){
 		boolean result = false;
 		if(next != null){
 			result = next.check(id, _permiso, action, ids, vars);
 		}else{
 			logger.error("[" + id + "] - nextCheck con next = null. Se asume que el permiso no se cumple.");
+		}
+		return result;
+	}
+	
+	protected String nextAccion(String id, String _permiso, Map<String, Long> ids, Map<String, Object> vars){
+		String result = null;
+		if(next != null){
+			result = next.accion(id, _permiso, ids, vars);
+		}else{
+			logger.error("[" + id + "] - nextAccion con next = null. Se asume que el permiso no se cumple.");
 		}
 		return result;
 	}

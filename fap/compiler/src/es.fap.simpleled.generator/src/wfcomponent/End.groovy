@@ -23,6 +23,7 @@ import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Formulario
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.PermisoAcceso
 import es.fap.simpleled.led.PermisoVar
 import es.fap.simpleled.led.Type
 import es.fap.simpleled.led.Pagina
@@ -134,9 +135,11 @@ public class End implements IWorkflowComponent {
 	private String permisos(){	  
 		String clazzName = Start.generatingModule ? "SecureFap" : "SecureApp"; 
 		String clazzGenName = clazzName + "Gen";
-		def permisos = [];
-		def permisosCode = "";
-		def switchCode = "";
+		String permisosCode = "";
+		String switchCode = "";
+		String switchAccionCode = "";
+		String els = "";
+		String elseAccion = "";
 		Map<String, Entity> variables = new HashMap<String, Entity>();
 	  
 		for(Object o in HashStack.allElements(HashStackName.PERMISSION)){
@@ -145,21 +148,20 @@ public class End implements IWorkflowComponent {
 				for(PermisoVar var : permiso.permiso.varSection.vars)
 					variables.put(var.tipo.name, var.tipo);
 			}
-			permisos.add(permiso)
 			permisosCode += permiso.permisoCode();
 			String permisoName = permiso.permiso.name;	
-			if(switchCode.isEmpty()){
-				switchCode = """
-					if("${permisoName}".equals(id))
-						return ${permisoName}(_permiso, action, ids, vars);
-				""";	
+			switchCode += """
+				${els} if("${permisoName}".equals(id))
+					return ${permisoName}(_permiso, action, ids, vars);
+			""";
+			if (permiso.permiso instanceof PermisoAcceso){
+				switchAccionCode += """
+					${elseAccion} if("${permisoName}".equals(id))
+						return ${permisoName}Accion(_permiso, ids, vars);
+				""";
+				elseAccion = "else";
 			}
-			else{
-				switchCode += """
-					else if("${permisoName}".equals(id))
-						return ${permisoName}(_permiso, action, ids, vars);
-				"""
-			}
+			els = "else";
 		}
 	  	  
 		String vars = "";
@@ -183,6 +185,8 @@ package security;
 import java.util.Map;
 import models.*;
 import controllers.fap.AgenteController;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ${clazzGenName} extends Secure {
 
@@ -194,6 +198,12 @@ public class ${clazzGenName} extends Secure {
 	public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {
 		${switchCode}		
 		return nextCheck(id, _permiso, action, ids, vars);
+	}
+
+	@Override
+	public String accion(String id, String _permiso, Map<String, Long> ids, Map<String, Object> vars) {
+		${switchAccionCode}		
+		return nextAccion(id, _permiso, ids, vars);
 	}
 	
 	${permisosCode}
@@ -219,6 +229,11 @@ public class ${clazzName} extends Secure {
 	@Override
 	public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {		
 		return nextCheck(id, _permiso, action, ids, vars);
+	}
+
+	@Override
+	public boolean check(String id, String _permiso, Map<String, Long> ids, Map<String, Object> vars) {		
+		return nextCheckAccion(id, _permiso, ids, vars);
 	}
 }
 """;

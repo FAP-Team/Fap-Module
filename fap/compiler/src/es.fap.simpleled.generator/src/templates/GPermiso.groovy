@@ -12,9 +12,9 @@ import generator.utils.HashStack.HashStackName;
 
 public class GPermiso {
 
-	Permiso permiso;
+	def permiso;
 
-	public static String generate(Permiso permiso){
+	public static String generate(def permiso){
 		GPermiso g = new GPermiso();
 		g.permiso = permiso;
 		HashStack.push(HashStackName.PERMISSION, g);
@@ -59,13 +59,15 @@ public class GPermiso {
 
 	private String permisoRuleCode(PermisoRuleCheck r){
 		String out;
-		if (r.permiso != null) {
+		if (r.permisoGrafico || r.permisoAcceso) {
 			String _permiso = r.result;
-			if (!_permiso.equals("_permiso"))
+			if (!_permiso.equals("_permiso") && !_permiso.equals("accion"))
 				_permiso = """ "${_permiso}" """;
-			out = """secure.check("${r.getPermiso().getName()}", ${_permiso}, action, ids, vars)""";
-			if ("is-not".equals(r.op))
-				out = "!" +out;
+			String name = r.permisoGrafico?.name;
+			if (!name) name = r.permisoAcceso.name;
+			out = """secure.check("${name}", ${_permiso}, accion, ids, vars)""";
+			if (r.not)
+				out = "!" + out;
 		}
 		else{
 			CampoPermisoUtils campo = CampoPermisoUtils.create(r.left);
@@ -106,27 +108,34 @@ public class GPermiso {
 	}
 	
 	public String permisoCode(){
+		return """
+			${metodoCheck()}
+			${metodoAccion()}
+		""";
+	}
+	
+	public String metodoCheck(){
 		String vars = "";
-		if (permiso.varSection?.vars != null)
-			vars = permisoVarsCode(permiso.getVarSection().getVars());
+		if (permiso.varSection?.vars)
+			vars = permisoVarsCode(permiso.varSection.vars);
 		
 		String condiciones = "";
 		if (permiso.ret)
-			condiciones += "return ${getMetodoCheck(permiso.ret)}(_permiso);";
-		for (PermisoWhen when: permiso.whens){
+			condiciones += "${getCheck(permiso.ret)}";
+		for (def when: permiso.whens){
 			condiciones += """
-				if (${permisoRuleCode(when.rule)})
-					return ${getMetodoCheck(when.ret)}(_permiso);
+				if (${permisoRuleCode(when.rule)}){
+					${getCheck(when.ret)}
+				}
 			""";
 		}
 		String elseCondicion = "";
 		if (permiso.getElse())
-			elseCondicion = "return ${getMetodoCheck(permiso.getElse())}(_permiso);";
+			elseCondicion = "${getCheck(permiso.else)}";
 		else if(permiso.ret == null)
-			elseCondicion = "return false;";
-				
+			elseCondicion = "return false;";	
 		return """	
-			private boolean ${permiso.name} (String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars){
+			private boolean ${permiso.name} (String _permiso, String accion, Map<String, Long> ids, Map<String, Object> vars){
 				//Variables
 				Agente agente = AgenteController.getAgente();
 				${vars}
@@ -137,13 +146,92 @@ public class GPermiso {
 		""";
 	}
 	
-	private static String getMetodoCheck(PermisoReturn p){
-		if(p.ret.equals("editable"))
-			return "checkIsEditableOrLess";
-		if(p.ret.equals("visible"))
-			return "checkIsVisibleOrLess";
-		if(p.ret.equals("none"))
-			return "checkIsNone";
+	public String metodoAccion(){
+		if (! (permiso instanceof PermisoAcceso))
+			return "";
+		String vars = "";
+		if (permiso.varSection?.vars)
+			vars = permisoVarsCode(permiso.varSection.vars);
+		
+		String condiciones = "";
+		if (permiso.ret)
+			condiciones += "return ${getPrimeraAccion(permiso.ret)};";
+		for (PermisoWhenAcceso when: permiso.whens){
+			condiciones += """
+				acciones.clear();
+				${getAcciones(when.ret)}
+				for (String accion: acciones){
+					if (${permisoRuleCode(when.rule)})
+						return accion;
+				}
+			""";
+		}
+		String elseCondicion = "";
+		if (permiso.getElse())
+			elseCondicion = "return ${getPrimeraAccion(permiso.else)};";
+		else if(permiso.ret == null)
+			elseCondicion = "return null;";
+		String acciones = "";
+		return """
+			private String ${permiso.name}Accion (String _permiso, Map<String, Long> ids, Map<String, Object> vars){
+				//Variables
+				Agente agente = AgenteController.getAgente();
+				${vars}
+				Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+				List<String> acciones = new ArrayList<String>();
+				${condiciones}
+				${elseCondicion}
+			}
+		""";
+	}
+	
+	private static String getCheck(def p){
+		if (p instanceof PermisoReturnGrafico){
+			String metodo;
+			if(p.ret.equals("editable"))
+				metodo = "checkIsEditableOrLess";
+			if(p.ret.equals("visible"))
+				metodo = "checkIsVisibleOrLess";
+			if(p.ret.equals("none"))
+				metodo = "checkIsNone";
+			return "return ${metodo}(_permiso);";
+		}
+		if (p instanceof PermisoReturnAcceso){
+			String checks = "";
+			if(p.all || p.acciones.contains("leer"))
+				checks += 'if ("leer".equals(accion)) return true;\n';
+			if(p.all || p.acciones.contains("editar"))
+				checks += 'if ("editar".equals(accion)) return true;\n';
+			if(p.all || p.acciones.contains("crear"))
+				checks += 'if ("crear".equals(accion)) return true;\n';
+			if(p.all || p.acciones.contains("borrar"))
+				checks += 'if ("borrar".equals(accion)) return true;\n';
+			checks += 'return false;\n';
+			return checks;
+		}
+	}
+	
+	private static String getAcciones(PermisoReturnAcceso p){
+		String adds = "";
+		if(p.all){
+			return """
+				acciones.add("editar");
+				acciones.add("leer");
+				acciones.add("crear");
+				acciones.add("borrar");
+			""";
+		}
+		for (String accion: p.acciones)
+			adds += """ acciones.add("${accion}");\n """;
+		return adds;
+	}
+	
+	private static String getPrimeraAccion(PermisoReturnAcceso p){
+		if(p.all)
+			return '"editar"';
+		if(p.acciones.size() > 0)
+			return '"${p.acciones.get(0)}"';
+		return "null";
 	}
 	
 }

@@ -25,19 +25,27 @@ import java.text.SimpleDateFormat;
 public class ObligatoriedadDocumentos extends Singleton {
 	// Código de los atributos
 	
+	
 	@ElementCollection
+	
 	public List<String> imprescindibles;
 	
 	
+	
 	@ElementCollection
+	
 	public List<String> obligatorias;
 	
 	
+	
 	@ElementCollection
+	
 	public List<String> automaticas;
 	
 	
+	
 	@ElementCollection
+	
 	public List<String> manuales;
 	
 	

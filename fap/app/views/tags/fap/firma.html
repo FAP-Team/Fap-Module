@@ -24,7 +24,7 @@
 	
 	def uri = _uri ?: "No hay URI"
 	def firma = _firma ?: ""
-	def url = utils.AedUtils.crearUrl(uri)
+	def url = utils.AedUtils.crearFullUrl(uri)
 	def id_boton = id;// + "_boton";
 	def id_firma = id + "_firma";
 	def id_row = id + "_row";
@@ -36,6 +36,8 @@
 	#{fap.platinojs /}
 #{/set}
 
+<p>Documento que debemos firmar: ${uri}</p>
+
 <input type="hidden" id="${id_firma}" name="${firma}"/>
 
 #{fap.formrow id:id_row, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
@@ -46,7 +48,7 @@
 
 <div id="cert-msg"></div>
 
-#{fap.boton id:id_boton, titulo:titulo, waitPopup:true/}
+#{fap.boton id:id_boton, titulo:titulo/}
 <script>
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
@@ -59,8 +61,7 @@
 				if(firmarUrl('${url}', '${id_cert}certificado', {idFirma : '${id_firma}', idError : 'cert-msg'}) != null){
 					var value = $('#${id_firma}').val();
 					
-					//$(this).parent('form').submit();
-					//return false;
+					alert("Firmado: "+value);
 				}
 			});
 		});

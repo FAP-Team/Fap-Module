@@ -6,8 +6,8 @@
   	_titulo - Label
   	_ancho	- ancho
   	
-  	_ type  - tipo del botón (cambia su color)
-  	_fondo  - Se indica que el botón se coloca solo y con el fondo gris
+  	_ type  - tipo del botï¿½n (cambia su color)
+  	_fondo  - Se indica que el botï¿½n se coloca solo y con el fondo gris
   	_ayuda  - Objeto de tipo TagAyuda
 }*
 
@@ -24,13 +24,19 @@
 		style += 'width: ' + _ancho + ';'
 	String type = _type 
 	def fondo = _fondo
+	def noSubmit = _noSubmit
 }%
 
 	#{if fondo}
 		<div class="actions button_container">
 	#{/if}
 	
-	<input type="submit" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+	#{if noSubmit == true}
+		<input type="button" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+	#{/if}
+	#{else}
+		<input type="submit" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+	#{/else}
 	#{fap.ayuda ayuda:ayuda, id:id_help /}
 	
 	#{if fondo}

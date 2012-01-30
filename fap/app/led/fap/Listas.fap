@@ -17,6 +17,17 @@ Lista roles crearEnumerado {
 	revisor: "Revisor"
 }
 
+Lista FaseRegistro crearEnumerado {
+	borrador: "Borrador"
+	preparada: "Preparada"
+	preparadaFuncionario: "Preparada Funcionario"
+	firmada: "Firmada"
+	expedientePlatino: "Expediente Platino"
+	registro: "Registro"
+	expedienteAed: "Expediente AED"
+	clasificarAed: "Clasificar AED"
+}
+
 Lista tipoFirmaJuridica crearEnumerado {
 	cif: "Certificado de empresa"
 	representantes : "Certificados de los representantes"

@@ -26,20 +26,28 @@ public class TablaPaginas_nivel2 extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
 	
 	
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tablapaginas_nivel2_combomul")
+	
+	
 	public List<ComboTestRef> comboMul;
 	
 	
+	
 	@ValueFromTable("ComboTestList")
+	
 	public String list;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tablapaginas_nivel2_tpaginas_nivel3")
+	
+	
 	public List<TablaPaginas_nivel3> tpaginas_nivel3;
 	
 	

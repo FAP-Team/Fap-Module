@@ -47,6 +47,11 @@ Entidad Solicitante extends Persona {
 	Boolean autorizaFuncionario
 }
 
+Entidad FuncionariosHabilitados extends Singleton {
+	String texto
+//	OneToMany Firmante firmantes transient
+}
+
 // Agentes que pueden acceder a la aplicación
 Entidad Agente inheritance=joined auditable {
 	String username
@@ -219,6 +224,9 @@ Entidad FasesRegistro {
 	Boolean registro
 	Boolean expedienteAed
 	Boolean clasificarAed
+	
+	// Probando
+	String fase
 }
 
 // Representación del expediente en platino

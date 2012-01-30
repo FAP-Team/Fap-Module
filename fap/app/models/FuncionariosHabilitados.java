@@ -16,52 +16,43 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-import properties.FapProperties;
-			
+
 // === IMPORT REGION END ===
 	
 
 
 @Entity
-public class Propiedades extends Model {
+public class FuncionariosHabilitados extends Singleton {
 	// Código de los atributos
 	
 	
 	
 	
-	public String descripcion;
-	
-	
-	
-	
-	
-	public String clave;
-	
-	
-	
-	
-	@Transient
-	public String valor;
+	public String texto;
 	
 	
 
 	public void init(){
-		
+		super.init();
 		
 	}
 		
 	
 
 // === MANUAL REGION START ===
-
-	public String getValor() {
-		return FapProperties.get(clave);
+	public static List<Firmante> getFirmantes () {
+		play.Logger.info("getFirmantes");
+		List<Firmante> todos = new ArrayList<Firmante>();
+		List< models.Agente> agentes =  models.Agente.findAll();
+		for ( models.Agente agent : agentes) {
+			if (agent.funcionario) {
+				Firmante firmante = new Firmante(agent);
+				todos.add(firmante);
+			}
+		}
+		return todos;
 	}
-
-	public void setValor(String valor) {}
-
-
-// === MANUAL REGION END ===
+	// === MANUAL REGION END ===
 	
 	
 	}

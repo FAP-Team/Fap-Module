@@ -25,8 +25,12 @@ import java.text.SimpleDateFormat;
 public class Incidencia extends Model {
 	// Código de los atributos
 	
+	
 	@Email
+	
 	public String email;
+	
+	
 	
 	
 	
@@ -34,7 +38,11 @@ public class Incidencia extends Model {
 	
 	
 	
+	
+	
 	public String nombre;
+	
+	
 	
 	
 	
@@ -42,10 +50,14 @@ public class Incidencia extends Model {
 	
 	
 	
+	
+	
 	public String asunto;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String texto;
 	
 	

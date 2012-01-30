@@ -26,7 +26,11 @@ public class TablaDeNombres extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
+	
+	
 	
 	
 	
@@ -34,6 +38,8 @@ public class TablaDeNombres extends Model {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public Fechas fecha;
 	
 	

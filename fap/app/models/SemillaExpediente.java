@@ -26,6 +26,8 @@ public class SemillaExpediente extends Singleton {
 	// Código de los atributos
 	
 	
+	
+	
 	public Long semilla;
 	
 	

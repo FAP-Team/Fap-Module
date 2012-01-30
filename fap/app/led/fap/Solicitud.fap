@@ -108,7 +108,7 @@ ${cEconomico.tipo.descripcion}
 			Wiki {"La solicitud de aportación será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud pulsando el enlace 'Obtener recibo'." }
 			
 			Form presentar redirigir=AportacionRecibos {
-				FirmaSimple firmarRepresentante titulo="Firmar y presentar" documento=SolicitudGenerica.aportaciones.actual.oficial
+				FirmaSimple firmarRepresentante titulo="Firmar y presentar" documento=SolicitudGenerica.aportaciones.actual.oficial listaFirmantes=SolicitudGenerica.registro.firmantes
 			}
 			
 			Grupo titulo="Incorporar Documentos sin Registro de Entrada" permiso=adminGestorRevisor {

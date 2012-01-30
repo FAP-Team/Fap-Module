@@ -26,11 +26,15 @@ public class Aportaciones extends Model {
 	// Código de los atributos
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public Aportacion actual;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="aportaciones_registradas")
+	
+	
 	public List<Aportacion> registradas;
 	
 	

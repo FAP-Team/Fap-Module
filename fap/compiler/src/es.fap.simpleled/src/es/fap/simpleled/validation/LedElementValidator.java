@@ -194,7 +194,7 @@ public abstract class LedElementValidator {
 		if (container instanceof Combo) {
 			return new ComboValidator(container);
 		}
-		if (container instanceof SubirArchivoAed || container instanceof EditarArchivoAed || container instanceof FirmaPlatinoSimple) {
+		if (container instanceof SubirArchivoAed || container instanceof EditarArchivoAed ) { //|| container instanceof FirmaPlatinoSimple) {
 			return new EntidadValidator(container, "Documento");
 		}
 		if (container instanceof Direccion) {

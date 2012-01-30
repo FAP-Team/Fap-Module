@@ -26,11 +26,17 @@ public class Exclusion extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String codigo;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String descripcion;
+	
+	
 	
 	
 	

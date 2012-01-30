@@ -25,15 +25,21 @@ import java.text.SimpleDateFormat;
 public class Consulta extends Model {
 	// Código de los atributos
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String descripcion;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String consulta;
 	
 	
+	
 	@ValueFromTable("tipoConsulta")
+	
 	public String tipo;
 	
 	

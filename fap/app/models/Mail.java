@@ -33,15 +33,23 @@ public class Mail extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String idMail;
+	
+	
 	
 	
 	
 	public String bcc;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String content;
+	
+	
 	
 	
 	
@@ -49,11 +57,17 @@ public class Mail extends Model {
 	
 	
 	
+	
+	
 	public String sendTo;
 	
 	
 	
+	
+	
 	public String sender;
+	
+	
 	
 	
 	

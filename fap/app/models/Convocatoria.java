@@ -25,7 +25,9 @@ import java.text.SimpleDateFormat;
 public class Convocatoria extends Singleton {
 	// Código de los atributos
 	
+	
 	@ValueFromTable("estadoConvocatoria")
+	
 	public String estado;
 	
 	

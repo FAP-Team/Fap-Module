@@ -73,7 +73,15 @@ POST /Solicitud/paginacomboserror/editar PaginaCombosErrorController.editar
 
 GET /Solicitud/paginafirma PaginaFirmaController.index
 
-POST /Solicitud/paginafirma/form PaginaFirmaController.form
+GET /Solicitud/paginafirma/firmaSimpleFirmantes PaginaFirmaController.tablafirmaSimpleFirmantes
+GET /Solicitud/paginafirma/firmaSimpleFuncionarioFirmantes PaginaFirmaController.tablafirmaSimpleFuncionarioFirmantes
+POST /Solicitud/paginafirma/formFirma PaginaFirmaController.formFirma
+
+POST /Solicitud/paginafirma/formFirmaFuncionario PaginaFirmaController.formFirmaFuncionario
+
+POST /Solicitud/paginafirma/formModificarEstado PaginaFirmaController.formModificarEstado
+
+POST /Solicitud/paginafirma/formPreparar PaginaFirmaController.formPreparar
 
 GET /Solicitud/paginas_combo_niveles Paginas_Combo_nivelesController.index
 POST /Solicitud/paginas_combo_niveles/editar Paginas_Combo_nivelesController.editar

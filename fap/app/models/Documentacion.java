@@ -27,7 +27,11 @@ public class Documentacion extends Model {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="documentacion_documentos")
+	
+	
 	public List<Documento> documentos;
+	
+	
 	
 	
 	
@@ -35,16 +39,24 @@ public class Documentacion extends Model {
 	
 	
 	
+	
+	
 	public String urlDocOficial;
+	
+	
 	
 	
 	
 	public Boolean docOficialClasificado;
 	
 	
+	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaFirma"),@Column(name="fechaFirmaTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fechaFirma;
+	
+	
 	
 	
 	@Transient

@@ -27,6 +27,8 @@ public class Documento extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String uri;
 	
 	
@@ -35,7 +37,11 @@ public class Documento extends Model {
 	
 	
 	
+	
+	
 	public String descripcion;
+	
+	
 	
 	
 	
@@ -43,17 +49,25 @@ public class Documento extends Model {
 	
 	
 	
+	
+	
 	public String hash;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaSubida"),@Column(name="fechaSubidaTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fechaSubida;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaRegistro"),@Column(name="fechaRegistroTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fechaRegistro;
+	
+	
 	
 	
 	@Transient

@@ -26,7 +26,11 @@ public class CEconomico extends Model {
 	// Código de los atributos
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public TipoCEconomico tipo;
+	
+	
 	
 	
 	
@@ -34,7 +38,11 @@ public class CEconomico extends Model {
 	
 	
 	
+	
+	
 	public Double valorEstimado;
+	
+	
 	
 	
 	
@@ -42,14 +50,20 @@ public class CEconomico extends Model {
 	
 	
 	
+	
+	
 	public Double valorConcedido;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String comentariosAdministracion;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String comentariosSolicitante;
 	
 	

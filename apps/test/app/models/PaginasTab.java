@@ -26,11 +26,15 @@ public class PaginasTab extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="paginastab_tpaginas_nivel1")
+	
+	
 	public List<TablaPaginas_nivel1> tpaginas_nivel1;
 	
 	

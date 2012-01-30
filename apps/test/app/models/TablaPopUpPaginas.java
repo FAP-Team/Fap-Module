@@ -26,7 +26,11 @@ public class TablaPopUpPaginas extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
+	
+	
 	
 	
 	
@@ -34,11 +38,15 @@ public class TablaPopUpPaginas extends Model {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public Fechas fecha;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tablapopuppaginas_tpaginas_nivel3")
+	
+	
 	public List<TablaPaginas_nivel3> tpaginas_nivel3;
 	
 	

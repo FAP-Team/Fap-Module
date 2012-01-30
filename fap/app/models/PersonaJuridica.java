@@ -27,15 +27,23 @@ public class PersonaJuridica extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String entidad;
 	
 	
+	
 	@CheckWith(CifCheck.class)
+	
 	public String cif;
 	
 	
+	
 	@Email
+	
 	public String email;
+	
+	
 	
 	
 	
@@ -43,11 +51,15 @@ public class PersonaJuridica extends Model {
 	
 	
 	
+	
+	
 	public String telefonoMovil;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaFirma"),@Column(name="fechaFirmaTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fechaFirma;
 	
 	

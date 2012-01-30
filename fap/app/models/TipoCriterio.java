@@ -26,24 +26,36 @@ public class TipoCriterio extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String descripcion;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String instrucciones;
+	
 	
 	
 	@ValueFromTable("LstClaseCriterio")
 	@Required
+	
 	public String claseCriterio;
 	
 	
+	
 	@Required
+	
 	public String jerarquia;
+	
+	
 	
 	
 	
@@ -51,21 +63,31 @@ public class TipoCriterio extends Model {
 	
 	
 	
+	
+	
 	public Double valorMaximo;
+	
+	
 	
 	
 	
 	public Double valorMinimo;
 	
 	
+	
 	@ValueFromTable("LstTipoValorCriterio")
 	@Required
+	
 	public String tipoValor;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tipocriterio_listavalores")
+	
+	
 	public List<CriterioListaValores> listaValores;
+	
+	
 	
 	
 	
@@ -73,11 +95,17 @@ public class TipoCriterio extends Model {
 	
 	
 	
+	
+	
 	public Boolean transparencia;
 	
 	
 	
+	
+	
 	public Boolean comentariosAdministracion;
+	
+	
 	
 	
 	

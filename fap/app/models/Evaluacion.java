@@ -28,17 +28,25 @@ public class Evaluacion extends Model {
 	// Código de los atributos
 	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public SolicitudGenerica solicitud;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="evaluacion_criterios")
+	
+	
 	public List<Criterio> criterios;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="evaluacion_ceconomicos")
+	
+	
 	public List<CEconomico> ceconomicos;
+	
+	
 	
 	
 	
@@ -46,7 +54,11 @@ public class Evaluacion extends Model {
 	
 	
 	
+	
+	
 	public Double inversionTotalAprobada;
+	
+	
 	
 	
 	
@@ -54,18 +66,26 @@ public class Evaluacion extends Model {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public TipoEvaluacion tipo;
+	
+	
 	
 	
 	
 	public String estado;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String comentariosAdministracion;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String comentariosSolicitante;
 	
 	

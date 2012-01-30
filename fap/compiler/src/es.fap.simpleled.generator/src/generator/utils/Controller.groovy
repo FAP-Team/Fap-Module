@@ -7,6 +7,7 @@ import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CampoAtributos;
 import es.fap.simpleled.led.Entity
 import es.fap.simpleled.led.Form
+import es.fap.simpleled.led.FirmaPlatinoSimple;
 import es.fap.simpleled.led.MenuEnlace
 import es.fap.simpleled.led.Enlace
 import es.fap.simpleled.led.Pagina
@@ -20,6 +21,7 @@ import es.fap.simpleled.led.LedFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 
@@ -69,6 +71,7 @@ public class Controller {
 	private boolean hayTabla;
 	private boolean hayAnterior;
 	private boolean xToMany;
+	private boolean firmaServiceIncluded;
 	private EntidadUtils entidadSiTabla;  // entidad vale null si no hay una tabla en la pagina o popup
 	private String nameEditar;
 	private String sufijoPermiso;
@@ -163,6 +166,7 @@ import controllers.${controllerFullName};
 import tables.TableRecord;
 import models.*;
 import tags.ReflectionUtils;
+import platino.FirmaUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -171,8 +175,13 @@ import java.util.ArrayList;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import services.FirmaService;
+import com.google.inject.Inject;
+
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
+
+${declaredServices()}
 
 ${metodoIndex()}
 
@@ -317,10 +326,22 @@ public class ${controllerName} extends ${controllerGenName} {
 			String botonCode = "";
 			List<String> saveBotones = new ArrayList<String>(saveBoton);
 			// Le añadimos los botones de firma
-			List<String> firmaBotones = new ArrayList<String>(firmaBoton);
-			saveBotones.addAll(firmaBotones);
+			List<FirmaPlatinoSimple> firmaBotones = new ArrayList<FirmaPlatinoSimple>(firmaBoton);
+			for (FirmaPlatinoSimple _firma: firmaBotones) {
+				saveBotones.add(_firma.name);
+			}
 			if (isForm() && saveBotones.size() == 1){
 				saveBotones.clear();
+				if (firmaBotones.size() > 0) {
+					String _name = firmaBotones.get(0).name;
+					// Un único boton de firma
+					botonCode = """
+					${controllerName}.${StringUtils.firstLower(_name)}${sufijoBoton}(${StringUtils.params(
+						intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
+						entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
+					)});
+					"""
+				}
 			}
 			else if (saveBotones.size() > 0){
 				boolean primero = true;
@@ -772,9 +793,6 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String botonesMethods(){
 		String botonesMethod = "";
 		List<String> saveBotones = new ArrayList<String>(saveBoton);
-		// Le añadimos los botones de firma
-		List<String> firmaBotones = new ArrayList<String>(firmaBoton);
-		saveBotones.addAll(firmaBotones);
 		if (isForm() && saveBotones.size() == 1){
 			saveBotones.clear();
 		}
@@ -790,6 +808,61 @@ public class ${controllerName} extends ${controllerGenName} {
 					saveExtra
 				)}){
 					//Sobreescribir este método para asignar una acción
+				}
+			""";
+		}
+		return botonesMethod;
+	}
+	
+	private String metodosDeFirma(){		
+		String botonesMethod = "";
+		List<FirmaPlatinoSimple> firmaBotones = new ArrayList<FirmaPlatinoSimple>(firmaBoton);
+		for (FirmaPlatinoSimple _firma: firmaBotones){
+			CampoUtils documento = CampoUtils.create(_firma.campo);
+			
+			String previousCampoFirmantes = """List<Firmante> firmantes = new ArrayList<Firmante>();
+				FirmaUtils.calcularFirmantes(solicitud.solicitante, firmantes);
+			""";
+			String strCampoFirmantes = "firmantes";
+			if (_firma.firmantes != null) {
+				CampoUtils firmantes = CampoUtils.create(_firma.firmantes);
+				strCampoFirmantes = "${firmantes.firstLower()}";
+				previousCampoFirmantes = "";
+			}
+			String strCampoToTrue = "";
+			if (_firma.setToTrue != null) {
+				CampoUtils campoToTrue = CampoUtils.create(_firma.setToTrue);
+				strCampoToTrue = """${campoToTrue.firstLower()} = true;
+						${campoToTrue.sinUltimoAtributo()}.save();
+				""";
+			}
+			String strCampoSetTo = "";
+			if ((_firma.setCampos != null) && (_firma.setCampos.size() > 0)) {
+				for (int i = 0; i < _firma.setCampos.size(); i++) {
+					CampoUtils campoSetTo = CampoUtils.create(_firma.setCampos[i]);
+					strCampoSetTo += """${campoSetTo.firstLower()} = "${_firma.value[i]}";
+						${campoSetTo.sinUltimoAtributo()}.save();
+				""";
+				}
+			}			
+			botonesMethod += """
+				@Util
+				public static void ${StringUtils.firstLower(_firma.name)}${sufijoBoton}(${StringUtils.params(
+					intermedias.collect{it.typeId},
+					almacenNoSingle.typeId,
+					entidad.typeId,
+					entidadPagina.typeVariable,
+					saveEntities.collect{it.typeVariable},
+					saveExtra
+				)}){
+					${entidad.entidad? "$entidad.entidad.name $entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};" : ""}
+					${previousCampoFirmantes}
+					FirmaUtils.firmar(${documento.firstLower()}, ${strCampoFirmantes}, firma, null);
+					if (!Messages.hasErrors()) {
+						${strCampoToTrue}
+						${strCampoSetTo}
+						${entidad.variable}.save();
+					}
 				}
 			""";
 		}
@@ -1151,6 +1224,15 @@ public class ${controllerName} extends ${controllerGenName} {
 			}
 		}
 		return code;
+	}
+	
+	private String declaredServices () {
+		String strServices = "";
+			strServices += """
+				@Inject
+				protected static FirmaService firmaService;
+				"""
+		return strServices;
 	}
 			
 }

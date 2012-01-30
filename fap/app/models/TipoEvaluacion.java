@@ -26,21 +26,31 @@ public class TipoEvaluacion extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
 	
 	
+	
 	@ElementCollection
+	
 	public List<String> tiposDocumentos;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tipoevaluacion_criterios")
+	
+	
 	public List<TipoCriterio> criterios;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tipoevaluacion_ceconomicos")
+	
+	
 	public List<TipoCEconomico> ceconomicos;
+	
+	
 	
 	
 	
@@ -48,11 +58,17 @@ public class TipoEvaluacion extends Model {
 	
 	
 	
+	
+	
 	public Boolean comentariosSolicitante;
 	
 	
 	
+	
+	
 	public String tipoProcedimiento;
+	
+	
 	
 	
 	
@@ -61,6 +77,8 @@ public class TipoEvaluacion extends Model {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tipoevaluacion_datosadicionales")
+	
+	
 	public List<TipoDatoAdicional> datosAdicionales;
 	
 	

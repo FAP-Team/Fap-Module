@@ -26,7 +26,11 @@ public class Tramite extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String uri;
+	
+	
 	
 	
 	
@@ -35,6 +39,8 @@ public class Tramite extends Model {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tramite_documentos")
+	
+	
 	public List<TipoDocumento> documentos;
 	
 	

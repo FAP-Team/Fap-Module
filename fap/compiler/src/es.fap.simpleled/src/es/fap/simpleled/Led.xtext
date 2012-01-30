@@ -206,7 +206,10 @@ Elemento:
 ;
 
 Campo:
-	entidad=[Entity|IDS] (atributos=CampoAtributos)?
+	(entidad=[Entity|IDS] (
+		(atributos=CampoAtributos)?
+	))
+	| method=STRING
 ;
 
 CampoAtributos:
@@ -387,7 +390,15 @@ FirmaPlatinoSimple:
 	elemento="FirmaSimple" (name=ID)
 		"titulo" "=" titulo=STRING
 		(
-			"documento" "=" campo=Campo
+			( documento?="documento" "=" campo=Campo)
+			(("listaFirmantes" "=" firmantes=Campo)?
+			//& (permitirFuncionario?="permitirFuncionarioHabilitado")?
+			& ("setTrue" "=" setToTrue=Campo)?)
+			& ("setCamposTo" '{'
+				setCampos+=Campo "to" value+=STRING
+				(',' setCampos+=Campo "to" value+=STRING)*
+				'}'
+			)?
 		)
 ;
 

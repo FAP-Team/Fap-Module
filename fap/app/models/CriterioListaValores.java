@@ -26,7 +26,11 @@ public class CriterioListaValores extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public Double valor;
+	
+	
 	
 	
 	

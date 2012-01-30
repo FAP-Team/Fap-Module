@@ -26,24 +26,34 @@ public class TablaPaginas_nivel3 extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
+	
+	
 	
 	
 	
 	public Integer numero;
 	
 	
+	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fecha"),@Column(name="fechaTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fecha;
 	
 	
+	
 	@ValueFromTable("ComboTestList")
+	
 	public String list;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tablapaginas_nivel3_tabladenombres")
+	
+	
 	public List<TablaDeNombres> tablaDeNombres;
 	
 	

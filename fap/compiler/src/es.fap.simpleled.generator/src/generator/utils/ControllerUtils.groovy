@@ -394,6 +394,10 @@ class ControllerUtils {
 	}
 	
 	public static String copyCampoSimple(CampoUtils campo) {
+		// SI el campo es un método, no hacemos nada
+		if (campo.isMethod()) {
+			return "";
+		}
 		if (LedEntidadUtils.isManyToOne(campo.getUltimoAtributo()))
 			return copyCampoMany2One(campo);
 		else if (LedEntidadUtils.isManyToMany(campo.getUltimoAtributo()))
@@ -517,6 +521,10 @@ class ControllerUtils {
         if (objeto.metaClass.respondsTo(objeto, "getCampo") && (!Tabla.class.isInstance(objeto))) {
 			String campo = CampoUtils.create(objeto.campo).str;
 			String campol = StringUtils.firstLower(campo);
+			
+			if (CampoUtils.create(objeto.campo).isMethod()) {
+				return "";
+			}
 			
 			if (isCheckEntity(objeto)) {
                 out += valid(campo);

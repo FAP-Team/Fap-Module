@@ -112,6 +112,14 @@ public class FapTags extends FastTags {
         Object value = ReflectionUtils.getValueRecursively(obj, _arg);
         field.put("value", value);
         
+        // El valor está en una llamada a un método
+        if (obj == null) {
+        	field.put("flashorvalue", value);
+            body.setProperty("field", field);
+            body.call();
+            return;
+        }
+        
         //Comprueba las anotaciones del campo
         Field f = ReflectionUtils.getFieldRecursively(obj.getClass(), _arg);
         if(f != null){

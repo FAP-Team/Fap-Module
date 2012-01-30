@@ -25,22 +25,32 @@ import java.text.SimpleDateFormat;
 public class ComboTest extends Model {
 	// Código de los atributos
 	
+	
 	@ValueFromTable("ComboTestList")
+	
 	public String list;
+	
 	
 	
 	@ElementCollection
 	@ValueFromTable("ComboTestList")
+	
 	public Set<String> listMultiple;
 	
 	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public ComboTestRef ref;
 	
 	
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="combotest_refmultiple")
+	
+	
 	public List<ComboTestRef> refMultiple;
+	
+	
 	
 	
 	
@@ -48,28 +58,42 @@ public class ComboTest extends Model {
 	
 	
 	
+	
+	
 	public Long listOverwriteLong;
 	
 	
+	
 	@ElementCollection
+	
 	public Set<String> listMultipleOverwrite;
 	
 	
+	
 	@ElementCollection
+	
 	public List<Long> listMultipleOverwriteLong;
 	
 	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public ComboTestRef refOverwrite;
 	
 	
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="combotest_refmultipleoverwrite")
+	
+	
 	public List<ComboTestRef> refMultipleOverwrite;
 	
 	
 	
+	
+	
 	public Long wsjson;
+	
+	
 	
 	
 	

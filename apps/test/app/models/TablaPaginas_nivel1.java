@@ -26,7 +26,11 @@ public class TablaPaginas_nivel1 extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
+	
+	
 	
 	
 	
@@ -35,16 +39,22 @@ public class TablaPaginas_nivel1 extends Model {
 	
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tablapaginas_nivel1_combomul")
+	
+	
 	public List<ComboTestRef> comboMul;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fecha"),@Column(name="fechaTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fecha;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tablapaginas_nivel1_tpaginas_nivel2")
+	
+	
 	public List<TablaPaginas_nivel2> tpaginas_nivel2;
 	
 	

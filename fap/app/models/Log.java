@@ -26,7 +26,11 @@ public class Log extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String time;
+	
+	
 	
 	
 	
@@ -34,7 +38,11 @@ public class Log extends Model {
 	
 	
 	
+	
+	
 	public String class_;
+	
+	
 	
 	
 	
@@ -42,7 +50,11 @@ public class Log extends Model {
 	
 	
 	
+	
+	
 	public String message;
+	
+	
 	
 	
 	

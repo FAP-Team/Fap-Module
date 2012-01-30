@@ -64,7 +64,8 @@ Formulario Solicitud {
 		Fecha campo=Solicitud.fechas.fecha titulo="Fecha" requerido
 	}
 	
-	Pagina Direcciones campo=Solicitud{
+	Pagina Direcciones campo=Solicitud {
+		Texto  campo="utils.TemporalUtils.getMyString()" titulo="Texto"
 		Direccion campo=Solicitud.direccionTest.direccion
 	}
 	
@@ -360,13 +361,37 @@ Formulario Solicitud {
 	}
 	
 	Pagina PaginaFirma campo=Solicitud {
-		Wiki { "Botónm simple y botón de firma, que no hacen nada" }
-		Form form {
-			AgrupaBotones well {
-				Boton botonSimple titulo="Botón que no hace nada"
-				Boton botonSimple2 titulo="Botón 2 que nada"
+		Texto titulo="Texto" campo="utils.TemporalUtils.getMyString()"
+		Grupo prepararFirmar titulo="Paso 1. Preparar para firmar" mostrarSiCampo Solicitud.registro.fasesRegistro.fase = "Borrador" {
+			Wiki { "Se deberá preparar para firmar la solicitud. " }
+			Form formPreparar {
+				AgrupaBotones well {
+					Boton prepararParaFirmar titulo="Preparar para Firmar"
+					Boton prepararParaFirmarFuncionarioHabilitado titulo="Prepar para Funcionario*" ayuda="Preparar para Funcionario. Prepara la solicitud para que pueda ser firmada por el funcionario habilitado, pero antes deberá descargar el documento que autoriza al funcionario, firmarlo e incluirlo en la documentación de la solicitud" (propover)
+				}
+				Wiki { "_NOTA_: Si pulsas sobre preparar para firmar ...... bla bla" }
 			}
-			FirmaSimple firmaSimple titulo="Firma Simple (por ahora no hace nada)" documento=Solicitud.registro.oficial
+		}
+		Grupo volverFasePreparar titulo="Paso 2. Modificar estado de la solicitud para volver a anterior" mostrarSiCampo Solicitud.registro.fasesRegistro.fase = "Preparada", "Preparada Funcionario" {
+			Form formModificarEstado {
+				AgrupaBotones well {
+					Boton botonModificar titulo="Volver al estado anterior"
+				}
+			}
+		}
+		Grupo grupoFirma titulo="Paso 3. Firma de la solicitud" permiso=autorizaFuncionario mostrarSiCampo Solicitud.registro.fasesRegistro.fase = "Preparada" {
+			Form formFirma {
+				FirmaSimple firmaSimple titulo="Firma Simple" documento=Solicitud.registro.oficial listaFirmantes=Solicitud.registro.firmantes setTrue=Solicitud.registro.fasesRegistro.firmada setCamposTo { Solicitud.registro.fasesRegistro.fase to "Firmada"}
+			}
+		
+		}
+		Grupo grupoFirmaFuncionario titulo="Paso 3. Firma de la solicitud por Funcionario Habilitado" permiso=autorizaFuncionario mostrarSiCampo Solicitud.registro.fasesRegistro.fase = "Preparada Funcionario" {
+			Form formFirmaFuncionario {
+				FirmaSimple firmaSimpleFuncionario titulo="Firma Simple" documento=Solicitud.registro.oficial listaFirmantes=Solicitud.registro.firmantes setTrue=Solicitud.registro.fasesRegistro.firmada setCamposTo { Solicitud.registro.fasesRegistro.fase to "Firmada"}
+			}
+		}
+		Grupo grupoYaFirmada titulo="Otro Paso. Después de la solicitud" mostrarSiCampo Solicitud.registro.fasesRegistro.fase = "Firmada" {
+			Wiki { "La solicitud ya ha sido firmada" }
 		}
 	}
 }

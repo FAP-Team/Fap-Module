@@ -27,7 +27,11 @@ public class PersonaFisica extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
+	
+	
 	
 	
 	
@@ -35,11 +39,15 @@ public class PersonaFisica extends Model {
 	
 	
 	
+	
+	
 	public String segundoApellido;
+	
 	
 	
 	@CheckWith(NipCheck.class)
 	@Embedded
+	
 	public Nip nip;
 	
 	

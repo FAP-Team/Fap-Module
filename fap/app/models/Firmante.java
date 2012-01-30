@@ -26,7 +26,11 @@ public class Firmante extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
+	
+	
 	
 	
 	
@@ -34,16 +38,24 @@ public class Firmante extends Model {
 	
 	
 	
+	
+	
 	public String idvalor;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaFirma"),@Column(name="fechaFirmaTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fechaFirma;
 	
 	
 	
+	
+	
 	public String tipo;
+	
+	
 	
 	
 	
@@ -70,6 +82,26 @@ public class Firmante extends Model {
 
 	public Firmante(Persona persona, String tipo, String cardinalidad){
 		constructor(persona, tipo, cardinalidad);
+	}
+	
+	public Firmante(Agente agente) {
+		init();
+		this.nombre = agente.name;
+		this.cardinalidad = "unico";
+		this.idvalor = agente.username;
+		// Comprobamos el tipo
+		StringBuilder texto = new StringBuilder();
+		if (CifCheck.validaCif(agente.username, texto)) {
+			this.tipo = "personafisica";
+		} else {
+			Nip nip = new Nip();
+			nip.valor = agente.username;
+			if (NipCheck.validaNip(nip, texto)) {
+				this.tipo = "personajuridica";
+			} else {
+				play.Logger.error("El firmante creado a partir del Agente no tiene tipo (username: "+agente.username+")");
+			}
+		}
 	}
 	
 	private void constructor(Persona persona, String tipo, String cardinalidad){

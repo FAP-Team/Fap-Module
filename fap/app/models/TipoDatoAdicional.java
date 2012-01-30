@@ -26,14 +26,20 @@ public class TipoDatoAdicional extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public Integer orden;
+	
+	
 	
 	
 	
 	public String nombre;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String descripcion;
 	
 	

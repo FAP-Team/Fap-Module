@@ -26,7 +26,11 @@ public class Nip  {
 	// Código de los atributos
 	
 	
+	
+	
 	public String tipo;
+	
+	
 	
 	
 	

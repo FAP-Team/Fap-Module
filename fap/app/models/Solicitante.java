@@ -26,8 +26,12 @@ import controllers.fap.AgenteController;
 public class Solicitante extends Persona {
 	// Código de los atributos
 	
+	
 	@Embedded
+	
 	public Direccion domicilio;
+	
+	
 	
 	
 	
@@ -35,15 +39,23 @@ public class Solicitante extends Persona {
 	
 	
 	
+	
+	
 	public String telefonoMovil;
+	
+	
 	
 	
 	
 	public String fax;
 	
 	
+	
 	@Email
+	
 	public String email;
+	
+	
 	
 	
 	
@@ -51,16 +63,24 @@ public class Solicitante extends Persona {
 	
 	
 	
+	
+	
 	public Boolean representado;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public RepresentantePersonaFisica representante;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="solicitante_representantes")
+	
+	
 	public List<RepresentantePersonaJuridica> representantes;
+	
+	
 	
 	
 	

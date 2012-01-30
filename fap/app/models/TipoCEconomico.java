@@ -26,7 +26,11 @@ public class TipoCEconomico extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String nombre;
+	
+	
 	
 	
 	
@@ -34,19 +38,29 @@ public class TipoCEconomico extends Model {
 	
 	
 	
+	
+	
 	public String instrucciones;
+	
+	
 	
 	
 	
 	public String jerarquia;
 	
 	
+	
 	@ValueFromTable("LstClaseCEconomico")
+	
 	public String clase;
 	
 	
 	
+	
+	
 	public Boolean comentariosAdministracion;
+	
+	
 	
 	
 	

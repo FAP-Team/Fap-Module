@@ -26,7 +26,11 @@ public class VerificacionDocumento extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String uriDocumentoVerificacion;
+	
+	
 	
 	
 	
@@ -34,7 +38,11 @@ public class VerificacionDocumento extends Model {
 	
 	
 	
+	
+	
 	public String uriTipoDocumento;
+	
+	
 	
 	
 	
@@ -42,16 +50,24 @@ public class VerificacionDocumento extends Model {
 	
 	
 	
+	
+	
 	public String descripcion;
+	
+	
 	
 	
 	
 	public String estadoDocumentoVerificacion;
 	
 	
+	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaPresentacion"),@Column(name="fechaPresentacionTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fechaPresentacion;
+	
+	
 	
 	
 	
@@ -59,16 +75,24 @@ public class VerificacionDocumento extends Model {
 	
 	
 	
+	
+	
 	public Integer version;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String motivoRequerimiento;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificaciondocumento_codigosrequerimiento")
+	
+	
 	public List<CodigoRequerimiento> codigosRequerimiento;
+	
+	
 	
 	
 	

@@ -26,7 +26,11 @@ public class Quartz extends Singleton {
 	// Código de los atributos
 	
 	
+	
+	
 	public Boolean execute;
+	
+	
 	
 	
 	
@@ -34,7 +38,11 @@ public class Quartz extends Singleton {
 	
 	
 	
+	
+	
 	public Boolean mostrarSolicitudesRequeridas;
+	
+	
 	
 	
 	
@@ -42,11 +50,17 @@ public class Quartz extends Singleton {
 	
 	
 	
+	
+	
 	public Boolean cambiarEstadoPlazoVencido;
 	
 	
 	
+	
+	
 	public Boolean sendMail;
+	
+	
 	
 	
 	

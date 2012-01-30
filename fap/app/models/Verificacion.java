@@ -26,7 +26,11 @@ public class Verificacion extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String uriVerificacion;
+	
+	
 	
 	
 	
@@ -34,7 +38,11 @@ public class Verificacion extends Model {
 	
 	
 	
+	
+	
 	public String uriTramite;
+	
+	
 	
 	
 	
@@ -42,13 +50,17 @@ public class Verificacion extends Model {
 	
 	
 	
+	
+	
 	public String estado;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="verificacion_documentos")
+	
+	
 	@Transient
 	public List<VerificacionDocumento> documentos;
+	
+	
 	
 	
 	
@@ -56,31 +68,41 @@ public class Verificacion extends Model {
 	
 	
 	
+	
+	
 	public String motivoExclusion;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="verificacion_codigosexclusion")
+	
+	
 	@Transient
 	public List<Exclusion> codigosExclusion;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public Requerimiento requerimientoProceso;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_requerimientos")
+	
+	
 	public List<Requerimiento> requerimientos;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaCreacion"),@Column(name="fechaCreacionTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fechaCreacion;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaUltimaActualizacion"),@Column(name="fechaUltimaActualizacionTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fechaUltimaActualizacion;
 	
 	
@@ -92,12 +114,6 @@ public class Verificacion extends Model {
 	public void init(){
 		
 		
-						if (documentos == null)
-							documentos = new ArrayList<VerificacionDocumento>();
-						
-						if (codigosExclusion == null)
-							codigosExclusion = new ArrayList<Exclusion>();
-						
 							if (requerimientoProceso == null)
 								requerimientoProceso = new Requerimiento();
 							else

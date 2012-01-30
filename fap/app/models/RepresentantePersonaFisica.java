@@ -26,7 +26,11 @@ public class RepresentantePersonaFisica extends Persona {
 	// Código de los atributos
 	
 	
+	
+	
 	public String telefonoFijo;
+	
+	
 	
 	
 	
@@ -34,10 +38,14 @@ public class RepresentantePersonaFisica extends Persona {
 	
 	
 	
+	
+	
 	public String fax;
 	
 	
+	
 	@Email
+	
 	public String email;
 	
 	

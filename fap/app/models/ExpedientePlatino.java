@@ -27,20 +27,30 @@ public class ExpedientePlatino extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String uri;
+	
+	
 	
 	
 	
 	public String numero;
 	
 	
+	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaApertura"),@Column(name="fechaAperturaTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime fechaApertura;
 	
 	
 	
+	
+	
 	public Boolean creado;
+	
+	
 	
 	
 	

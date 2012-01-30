@@ -26,7 +26,11 @@ public class ValoresPorDefectoTest extends Model {
 	// Código de los atributos
 	
 	
+	
+	
 	public String mString;
+	
+	
 	
 	
 	
@@ -34,7 +38,11 @@ public class ValoresPorDefectoTest extends Model {
 	
 	
 	
+	
+	
 	public Integer mInteger;
+	
+	
 	
 	
 	
@@ -42,43 +50,63 @@ public class ValoresPorDefectoTest extends Model {
 	
 	
 	
+	
+	
 	public Double mDouble;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String mLongText;
+	
+	
 	
 	
 	
 	public String mTelefono;
 	
 	
+	
 	@Email
+	
 	public String mEmail;
 	
 	
+	
 	@Email
+	
 	public String mEmail2;
 	
 	
+	
 	@CheckWith(CifCheck.class)
+	
 	public String mCif;
 	
 	
+	
 	@Moneda
+	
 	public Double mMoneda;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="mDateTime"),@Column(name="mDateTimeTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	
 	public DateTime mDateTime;
 	
 	
+	
 	@ValueFromTable("ComboTestList")
+	
 	public String mLista;
 	
 	/*default = "c"*/
+	
 	@Embedded
+	
 	public Embebida mEmbebida;
 	
 	

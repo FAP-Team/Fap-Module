@@ -26,18 +26,26 @@ public class Criterio extends Model {
 	// Código de los atributos
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public TipoCriterio tipo;
+	
+	
 	
 	
 	
 	public Double valor;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String comentariosAdministracion;
 	
 	
+	
 	@Column(columnDefinition="LONGTEXT")
+	
 	public String comentariosSolicitante;
 	
 	

@@ -27,19 +27,29 @@ public class Persona extends Model {
 	// Código de los atributos
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public PersonaFisica fisica;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public PersonaJuridica juridica;
 	
 	
+	
 	@ValueFromTable("TipoDePersona")
+	
 	public String tipo;
+	
+	
 	
 	
 	@Transient
 	public String numeroId;
+	
+	
 	
 	
 	@Transient

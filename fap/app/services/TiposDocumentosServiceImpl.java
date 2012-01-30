@@ -64,7 +64,7 @@ public class TiposDocumentosServiceImpl implements TiposDocumentosService {
 
 	private PropertyPlaceholder propertyPlaceholder;
 	
-	private TiposDocumentosInterface tiposPort;
+	private volatile TiposDocumentosInterface tiposPort;
 	
 	public TiposDocumentosServiceImpl(PropertyPlaceholder propertyPlaceholder){
 		init(propertyPlaceholder, false);
@@ -82,13 +82,20 @@ public class TiposDocumentosServiceImpl implements TiposDocumentosService {
 	}
 	
 	private TiposDocumentosInterface getTiposPort(){
-		if(tiposPort == null){
-			URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("wsdl/tipos-documentos/tipos-documentos.wsdl");
-			tiposPort = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
-			WSUtils.configureEndPoint(tiposPort, getEndPoint());
-			PlatinoProxy.setProxy(tiposPort, propertyPlaceholder);
+		//Double-check idiom for lazy initialization
+		TiposDocumentosInterface result = tiposPort;
+		if(result == null){
+			synchronized (this) {
+				result = tiposPort;
+				if(result == null){
+					URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("wsdl/tipos-documentos/tipos-documentos.wsdl");
+					result = tiposPort = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
+					WSUtils.configureEndPoint(tiposPort, getEndPoint());
+					PlatinoProxy.setProxy(tiposPort, propertyPlaceholder);					
+				}
+			}
 		}
-		return tiposPort;
+		return result;
 	}
 	
 	public String getEndPoint(){

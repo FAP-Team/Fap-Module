@@ -77,11 +77,11 @@ public class RegistroServiceImpl implements RegistroService {
 
 	private AedService aedService;
 
-	private Registro registroPort;
+	private volatile Registro registroPort;
 
 	private FirmaService firmaService;
 
-	private GestorDocumentalService gestorDocumentalService;
+	private  GestorDocumentalService gestorDocumentalService;
 	
 	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder,
 			AedService aedService, FirmaService firmaService,
@@ -113,16 +113,22 @@ public class RegistroServiceImpl implements RegistroService {
 	}
 	
 	private Registro getRegistroPort(){
-		if(registroPort == null){
-			URL wsdlURL = Registro_Service.class.getClassLoader().getResource(
-					"wsdl/registro.wsdl");
-			registroPort = new Registro_Service(wsdlURL).getRegistroPort();
-
-			WSUtils.configureEndPoint(registroPort, getEndPoint());
-			WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder);
-			PlatinoProxy.setProxy(registroPort);			
+		//Double-check idiom for lazy initialization
+		Registro result = registroPort;
+		if(result == null){
+			synchronized(this){
+				result = registroPort;
+				if(result == null){
+					URL wsdlURL = Registro_Service.class.getClassLoader().getResource(
+							"wsdl/registro.wsdl");
+					result = registroPort = new Registro_Service(wsdlURL).getRegistroPort();
+					WSUtils.configureEndPoint(registroPort, getEndPoint());
+					WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder);
+					PlatinoProxy.setProxy(registroPort);					
+				}
+			}
 		}
-		return registroPort;
+		return result;
 	}
 	
 	@Override

@@ -61,7 +61,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 
 	private static Logger log = Logger.getLogger(FirmaServiceImpl.class);
 	
-	private PlatinoSignatureServerBean firmaPort;
+	private volatile PlatinoSignatureServerBean firmaPort;
 	private final PropertyPlaceholder propertyPlaceholder;
 	private final AedService aedService;
 	
@@ -85,16 +85,21 @@ public class FirmaServiceImpl implements services.FirmaService {
 	}
 	
 	private PlatinoSignatureServerBean getFirmaPort(){
-		if(firmaPort == null){
-			URL wsdlURL = FirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma-pre.wsdl");
-			firmaPort = new FirmaService(wsdlURL).getFirmaService();
-			
-			WSUtils.configureEndPoint(firmaPort, getEndPoint());
-			WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
-
-			PlatinoProxy.setProxy(firmaPort, propertyPlaceholder);			
+		//Double-check idiom for lazy initialization
+		PlatinoSignatureServerBean result = firmaPort;
+		if(result == null){
+			synchronized(this){
+				result = firmaPort;
+				if(result == null){
+					URL wsdlURL = FirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma-pre.wsdl");
+					result = firmaPort = new FirmaService(wsdlURL).getFirmaService();
+					WSUtils.configureEndPoint(firmaPort, getEndPoint());
+					WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
+					PlatinoProxy.setProxy(firmaPort, propertyPlaceholder);					
+				}
+			}
 		}
-		return firmaPort;
+		return result;
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 
 	private static Logger log = Logger.getLogger(ProcedimientosServiceImpl.class);
 	
-	private ProcedimientosInterface procedimientosPort;
+	private volatile ProcedimientosInterface procedimientosPort;
 	
 	private PropertyPlaceholder propertyPlaceholder;
 
@@ -63,13 +63,20 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 	}
 	
 	private ProcedimientosInterface getProcedimientosPort(){
-		if(procedimientosPort == null){
-			URL wsdlProcedimientosURL = Aed.class.getClassLoader().getResource ("wsdl/procedimientos/procedimientos.wsdl");
-			procedimientosPort = new Procedimientos(wsdlProcedimientosURL).getProcedimientos();
-			WSUtils.configureEndPoint(procedimientosPort, getEndPoint());
-			PlatinoProxy.setProxy(procedimientosPort, propertyPlaceholder);			
+		//Double-check idiom for lazy initialization
+		ProcedimientosInterface result = procedimientosPort;
+		if(result == null){
+			synchronized(this){
+				result = procedimientosPort;
+				if(result == null){
+					URL wsdlProcedimientosURL = Aed.class.getClassLoader().getResource ("wsdl/procedimientos/procedimientos.wsdl");
+					result = procedimientosPort = new Procedimientos(wsdlProcedimientosURL).getProcedimientos();
+					WSUtils.configureEndPoint(procedimientosPort, getEndPoint());
+					PlatinoProxy.setProxy(procedimientosPort, propertyPlaceholder);	
+				}
+			}
 		}
-		return procedimientosPort;
+		return result;
 	}
 	
 	public String getEndPoint(){

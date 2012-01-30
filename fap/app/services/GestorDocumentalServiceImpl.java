@@ -44,7 +44,7 @@ public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 	
 	private String endPoint;
 	private PropertyPlaceholder propertyPlaceholder;
-	private SGRDEServicePortType gestorDocumentalPort;
+	private volatile SGRDEServicePortType gestorDocumentalPort;
 	
 	public GestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder){
 		init(propertyPlaceholder);
@@ -66,15 +66,22 @@ public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 	
 	private SGRDEServicePortType getGestorDocumentalPort(){
-		if(gestorDocumentalPort == null){
-			URL wsdlURL = GestorDocumentalServiceImpl.class.getClassLoader().getResource("wsdl/sgrde.wsdl");
-			gestorDocumentalPort = new SGRDEServiceProxy(wsdlURL).getSGRDEServiceProxyPort(new MTOMFeature());
-			
-			WSUtils.configureEndPoint(gestorDocumentalPort, endPoint);
-			WSUtils.configureSecurityHeaders(gestorDocumentalPort, propertyPlaceholder);
-			PlatinoProxy.setProxy(gestorDocumentalPort, propertyPlaceholder);
+		//Double-check idiom for lazy initialization
+		SGRDEServicePortType result = gestorDocumentalPort;
+		if(result == null){
+			synchronized(this){
+				result = gestorDocumentalPort;
+				if(result == null){
+					URL wsdlURL = GestorDocumentalServiceImpl.class.getClassLoader().getResource("wsdl/sgrde.wsdl");
+					result = gestorDocumentalPort = new SGRDEServiceProxy(wsdlURL).getSGRDEServiceProxyPort(new MTOMFeature());
+					
+					WSUtils.configureEndPoint(gestorDocumentalPort, endPoint);
+					WSUtils.configureSecurityHeaders(gestorDocumentalPort, propertyPlaceholder);
+					PlatinoProxy.setProxy(gestorDocumentalPort, propertyPlaceholder);					
+				}
+			}
 		}
-		return gestorDocumentalPort;
+		return result;
 	}
 	
 	

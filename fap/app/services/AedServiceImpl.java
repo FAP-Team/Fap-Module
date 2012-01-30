@@ -61,7 +61,7 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropied
  */
 public class AedServiceImpl implements AedService {
 
-	private AedPortType aedPort;
+	private volatile AedPortType aedPort;
 
 	private final PropertyPlaceholder propertyPlaceholder;
 
@@ -78,13 +78,20 @@ public class AedServiceImpl implements AedService {
 	}
 	
 	private AedPortType getAedPort(){
-		if(aedPort == null){
-			URL wsdlURL = Aed.class.getClassLoader().getResource("aed/aed.wsdl");
-			aedPort = new Aed(wsdlURL).getAed(new MTOMFeature());
-			WSUtils.configureEndPoint(aedPort, getEndPoint());
-			PlatinoProxy.setProxy(aedPort, propertyPlaceholder);			
+		//Double-check idiom for lazy initialization
+		AedPortType result = aedPort;
+		if(result == null){
+			synchronized(this){
+				result = aedPort;
+				if(result == null){
+					URL wsdlURL = Aed.class.getClassLoader().getResource("aed/aed.wsdl");
+					result = aedPort = new Aed(wsdlURL).getAed(new MTOMFeature());
+					WSUtils.configureEndPoint(aedPort, getEndPoint());
+					PlatinoProxy.setProxy(aedPort, propertyPlaceholder);
+				}
+			}
 		}
-		return aedPort;
+		return result;
 	}
 	
 	/* (non-Javadoc)

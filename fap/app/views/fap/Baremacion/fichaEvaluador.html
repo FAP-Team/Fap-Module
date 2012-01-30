@@ -37,7 +37,7 @@
 
 	#{simple.uneditable value: evaluacion.totalCriterios, label: "Total puntuación"/}
 	
-	#{list items:evaluacion.tipo.datosAdicionales, as:"tipoDatoAdicional"}
+	#{list items:evaluacion.tipo.getSortedDatosAdicionales(), as:"tipoDatoAdicional"}
 		#{simple.uneditable value:services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion), label: tipoDatoAdicional.descripcion /}	
 	#{/list}
 

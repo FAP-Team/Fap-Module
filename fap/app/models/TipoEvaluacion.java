@@ -88,7 +88,10 @@ comentariosSolicitante = false;
 	
 
 // === MANUAL REGION START ===
-
+	public List<TipoDatoAdicional> getSortedDatosAdicionales(){
+		List<TipoDatoAdicional> sortedDatosAdicionales = TipoDatoAdicional.find("select tda from TipoEvaluacion te join te.datosAdicionales tda where te.id=? order by tda.orden", this.id).fetch();
+		return sortedDatosAdicionales;
+	}
 	// === MANUAL REGION END ===
 	
 	

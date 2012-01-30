@@ -25,7 +25,6 @@ function popup_open(popup, url, callback) {
 	
 	$.get(url, function(data){
 		cargado = true;
-		console.log(data);
 		if(typeof(data) == 'string'){
 			$popup.html(data);
 		}else{

@@ -25,6 +25,7 @@ function popup_open(popup, url, callback) {
 	
 	$.get(url, function(data){
 		cargado = true;
+		console.log(data);
 		if(typeof(data) == 'string'){
 			$popup.html(data);
 		}else{
@@ -49,32 +50,29 @@ function popup_open(popup, url, callback) {
 }
 
 function popupWait_open() {
-	$("body").append("" +
-			"<div id='popupWait' class='wait-popup'>" +
-				"<div class='img'></div>" +
-				"<div class='text'>Espere mientras se realiza la acción solicitada...</div>"+
-				"<div class='adv'>Esta acción puede tardar varios minutos</div>"+
-				"<div class='rec'>Por favor, no pulse ninguna tecla mientras se realiza la operación</div>"+
-			"</div>");
-	$popup = $("#popupWait.wait-popup");
+	$("body").append("<div id=\"popupWait_popup\" class=\"modal hide fade in\">"+
+					 "<div class=\"modal-header\">"+
+					   	"<a href=\"#\" class=\"close\">×</a>"+
+    					"<h3>En proceso ...</h3>"+
+					 "</div>"+
+					 "<div class=\"modal-body\">"+
+					 	"<div class='text'>Espere mientras se realiza la acción solicitada...</div>"+
+						"<div class='adv'>Esta acción puede tardar varios minutos</div>"+
+						"<div class='rec'>Por favor, no pulse ninguna tecla mientras se realiza la operación</div>"+
+					 "</div>"+
+					 "</div>");
+					 
+	$popup = $("#popupWait_popup");
 	
-	var optionsLoading = {position: "center", width: "350", height: "180", title: "Cargando..."};
-	
-	$popup.dialog({ 	
-		autoOpen: false,
-		modal: true,
-		resizable: false,
-		close:  function(event, ui){
-			$popup.remove();
-		}
+	$("#popupWait_popup").bind('hidden', function () {
+		$("#popupWait_popup").remove();
 	});
-			
-	$popup.dialog("option", optionsLoading);
-	$popup.dialog("open");
+	
+	$popup.modal( {show : true, backdrop: "static"} );
 }
 
 function popupWait_close() {
-	$popup = $("#popupWait.wait-popup");	
+	$popup = $("#popupWait_popup");	
 	$popup.dialog("close");
 }
 

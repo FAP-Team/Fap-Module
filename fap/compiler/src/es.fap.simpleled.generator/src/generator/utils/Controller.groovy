@@ -284,11 +284,11 @@ public class ${controllerName} extends ${controllerGenName} {
 					Messages.fatal("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar esta acción"}");
 				${hayAnterior? "checkRedirigir();" : ""}
 				${entidad.entidad? "$entidad.clase $entidad.variable = null;" : ""}
-				if(accion.equals("crear") && !Messages.hasErrors()){
+				if("crear".equals(accion) && !Messages.hasErrors()){
 					${ControllerUtils.newCall(entidad)}
 					${guardarAlCrear}
 				}
-				else if (!accion.equals("borrado")){
+				else if (!"borrado".equals(accion)){
 					${entidad.entidad? "$entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};" : ""}
 				}
 				${primerAlmacen.entidad? "$primerAlmacen.clase $primerAlmacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, primerAlmacen, true)};" : ""}

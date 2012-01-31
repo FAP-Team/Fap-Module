@@ -46,9 +46,9 @@ Formulario Solicitud {
 		}
 
 		Grupo "Permisos" {
-			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administrador
-			Enlace "Permiso grupo" pagina=PermisoGrupo permiso=administrador
-			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable
+			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administradorGr
+			Enlace "Permiso grupo" pagina=PermisoGrupo permiso=administradorGr
+			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditableGr
 			Enlace "Permiso tablas" pagina=PermisoEnTablas 
 		}
 
@@ -145,7 +145,7 @@ Formulario Solicitud {
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 	
-	Pagina Documentos campo=Solicitud.documentacion.documentos  permiso=aportacionDocumentos {
+	Pagina Documentos campo=Solicitud.documentacion.documentos{
 		Accion crear redirigir=SubirArchivoAedTest	
 		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
@@ -298,7 +298,7 @@ Formulario Solicitud {
 	
 	Pagina PermisoGrupo campo=Solicitud permiso=administrador {
 		Wiki {"La página tiene un grupo que es sólo visible para administradores"}
-		Grupo permiso=administrador {
+		Grupo permiso=administradorGr {
 			Wiki {"Este grupo es sólo visible para administradores"}	
 		}
 	}
@@ -309,7 +309,7 @@ Formulario Solicitud {
 		Boton noHagoNada titulo="No hago Nada"
 	}
 	
-	Pagina PermisoEnTablas campo=Solicitud permiso=editAdminVisibleUser {
+	Pagina PermisoEnTablas campo=Solicitud{
 		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono"
 		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRefPermiso titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
 			Columna campo=ComboTestRef.id
@@ -322,7 +322,7 @@ Formulario Solicitud {
 		Combo campo=ComboTestRef.list titulo="Combo"
 	}
 	
-	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=solicitudEditable {
+	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {
 	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido	
 	    Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido  	
 	    Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido  	

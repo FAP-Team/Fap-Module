@@ -25,7 +25,7 @@ public class CampoPermisoUtils {
 			return null;
 		}
 		if (campo.isAction()){
-			return "action";
+			return "accion";
 		}
 		String campoStr = "";
 		if (campo.isAgente()){

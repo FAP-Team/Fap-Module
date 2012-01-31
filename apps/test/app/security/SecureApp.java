@@ -3,7 +3,7 @@ package security;
 
 import java.util.Map;
 
-public class SecureApp extends Secure {
+public class SecureApp extends SecureAppGen {
 	
 	public SecureApp(Secure next) {
 		super(next);

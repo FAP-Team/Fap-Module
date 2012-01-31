@@ -198,7 +198,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
     }
     
     Popup PopupVisibilidadDeSolicitudes campo=TableKeyValue {
-    	Grupo permiso=noEditable borde=false {
+    	Grupo permiso=noEditableGr borde=false {
 	    	Texto campo=TableKeyValue.table titulo="Tabla"
 	    	Texto campo=TableKeyValue.key titulo="Estado Interno"
 	    }

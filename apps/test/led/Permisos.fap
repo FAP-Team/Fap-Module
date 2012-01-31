@@ -1,4 +1,4 @@
-Permiso paginaTablaVer{
+PermisoGrafico paginaTablaVer{
 	when accion != crear
 	return editable
 }

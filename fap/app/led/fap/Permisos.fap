@@ -115,58 +115,111 @@ PermisoGrafico instruccion{
 	return editable		
 }
 	
-//Permiso solicitudPreparadaFirmarYPresentar{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		agente.rolActivo in ("administrador", "usuario") and
-//		solicitud.estado = "borrador" and
-//		solicitud.registro.fasesRegistro.borrador = "true"
-//	return editable
-//	
-//	when
-//		agente.rolActivo in ("administrador", "usuario")
-//	return visible
-//}
+PermisoAcceso solicitudPreparadaFirmarYPresentar{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "usuario") and
+		solicitud.estado = "borrador" and
+		solicitud.registro.fasesRegistro.borrador = "true"
+	return all
+	
+	when
+		agente.rolActivo in ("administrador", "usuario")
+	return {leer}
+}
 
-//Permiso editableSiSolicitudIniciada{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		solicitud.estado in ("Iniciada", "Requerida", "Requerida plazo vencido", "En verificación", "Pendiente requerimiento", "Excluido", "Plazo vencido", "Verificado")
-//	return editable
-//}
+PermisoGrafico solicitudPreparadaFirmarYPresentarGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "usuario") and
+		solicitud.estado = "borrador" and
+		solicitud.registro.fasesRegistro.borrador = "true"
+	return editable
+	
+	when
+		agente.rolActivo in ("administrador", "usuario")
+	return visible
+}
 
-//Permiso solicitudPreparadaFirmar{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		agente.rolActivo in ("administrador", "usuario") and
-//		solicitud.estado = "borrador"  and
-//		solicitud.registro.fasesRegistro.borrador != null and
-//		solicitud.registro.fasesRegistro.borrador = "true"
-//	return editable
-//	
-//	when
-//		agente.rolActivo in ("administrador", "usuario")
-//	return visible
-//}
+PermisoAcceso editableSiSolicitudIniciada{
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud.estado in ("Iniciada", "Requerida", "Requerida plazo vencido", "En verificación", "Pendiente requerimiento", "Excluido", "Plazo vencido", "Verificado")
+	return all
+}
 
-//Permiso solicitudPreparadaPresentar{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		agente.rolActivo in ("administrador", "usuario") and
-//		solicitud.estado = "borrador" and
-//		solicitud.registro.fasesRegistro.borrador != null and
-//		solicitud.registro.fasesRegistro.borrador = "true" and
-//		solicitud.registro.fasesRegistro.firmada = "true"
-//	return editable
-//
-//	when
-//		agente.rolActivo in ("administrador", "usuario")
-//	return visible
-//}
+PermisoGrafico editableSiSolicitudIniciadaGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud.estado in ("Iniciada", "Requerida", "Requerida plazo vencido", "En verificación", "Pendiente requerimiento", "Excluido", "Plazo vencido", "Verificado")
+	return editable
+}
+
+PermisoAcceso solicitudPreparadaFirmar{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "usuario") and
+		solicitud.estado = "borrador"  and
+		solicitud.registro.fasesRegistro.borrador != null and
+		solicitud.registro.fasesRegistro.borrador = "true"
+	return all
+	
+	when
+		agente.rolActivo in ("administrador", "usuario")
+	return {leer}
+}
+
+PermisoGrafico solicitudPreparadaFirmarGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "usuario") and
+		solicitud.estado = "borrador"  and
+		solicitud.registro.fasesRegistro.borrador != null and
+		solicitud.registro.fasesRegistro.borrador = "true"
+	return editable
+	
+	when
+		agente.rolActivo in ("administrador", "usuario")
+	return visible
+}
+
+PermisoAcceso solicitudPreparadaPresentar{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "usuario") and
+		solicitud.estado = "borrador" and
+		solicitud.registro.fasesRegistro.borrador != null and
+		solicitud.registro.fasesRegistro.borrador = "true" and
+		solicitud.registro.fasesRegistro.firmada = "true"
+	return all
+
+	when
+		agente.rolActivo in ("administrador", "usuario")
+	return {leer}
+}
+
+PermisoGrafico solicitudPreparadaPresentarGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "usuario") and
+		solicitud.estado = "borrador" and
+		solicitud.registro.fasesRegistro.borrador != null and
+		solicitud.registro.fasesRegistro.borrador = "true" and
+		solicitud.registro.fasesRegistro.firmada = "true"
+	return editable
+
+	when
+		agente.rolActivo in ("administrador", "usuario")
+	return visible
+}
 
 // Permiso que define las solicitudes que son visibles para el usuario
 PermisoAcceso solicitudes{
@@ -202,15 +255,24 @@ PermisoGrafico adminGestorRevisor{
 	return editable
 }
 
-//Permiso aportacion{
-//	vars
-//		SolicitudGenerica solicitud
-//	when 
-//		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
-//		solicitud.estado in ("iniciada", "requerida", "verificado")
-//	return editable
-//}
-//
+PermisoAcceso aportacion{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
+		solicitud.estado in ("iniciada", "requerida", "verificado")
+	return all
+}
+
+PermisoGrafico aportacionGr{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
+		solicitud.estado in ("iniciada", "requerida", "verificado")
+	return editable
+}
+
 PermisoGrafico aportacionDocumentos{
 	vars
 		SolicitudGenerica solicitud
@@ -220,9 +282,14 @@ PermisoGrafico aportacionDocumentos{
 	return editable
 }
 
-PermisoGrafico noEditable{
+PermisoGrafico noEditableGr{
 	return visible
 }
+
+PermisoAcceso noEditable{
+	return {leer}
+}
+
 
 PermisoGrafico noVisibleUsuario{
 	when
@@ -231,14 +298,21 @@ PermisoGrafico noVisibleUsuario{
 	else return editable
 }
 
-//
-//Permiso solicitudEnBorrador{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		solicitud.estado = "borrador"	
-//	return editable
-//}
+PermisoAcceso solicitudEnBorrador{
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud.estado = "borrador"	
+	return all
+}
+
+PermisoGrafico solicitudEnBorradorGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud.estado = "borrador"	
+	return editable
+}
 
 PermisoAcceso editarSolicitud{
 	vars
@@ -263,24 +337,48 @@ PermisoAcceso participacionEnSolicitud {
 	return all
 }
 
+PermisoGrafico participacionEnSolicitudGr {
+	vars
+		SolicitudGenerica solicitud
+		Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
+	when
+		participacion != null
+	return editable
+}
+
 // Indica el permiso que se tiene sobre la solicitud
 // 	+ Administrador: editable
 // 	+ usuario con participación: editable
 // 	+ resto: none
-//Permiso permisoSolicitud {
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		administrador is _permiso
-//	return editable
-//	
-//	when
-//		participacionEnSolicitud is _permiso
-//	return editable
-//	
-//	else
-//	return none
-//}
+PermisoAcceso permisoSolicitud {
+	vars
+		SolicitudGenerica solicitud
+	when
+		administrador contains accion
+	return all
+	
+	when
+		participacionEnSolicitud contains accion
+	return all
+	
+	else
+	return {}
+}
+
+PermisoGrafico permisoSolicitudGr {
+	vars
+		SolicitudGenerica solicitud
+	when
+		administradorGr is _permiso
+	return editable
+	
+	when
+		participacionEnSolicitudGr is _permiso
+	return editable
+	
+	else
+	return none
+}
 
 // Este permiso lo tienen todas las páginas de la solicitud
 // Controla que los datos no se puedan editar cuando la solicitud está preparada para registrar
@@ -343,45 +441,84 @@ PermisoAcceso subirDocumentos{
 	return {crear}
 }
 
-//Permiso visibleSiAccesoCertificado{
-//	when 
-//		agente.acceso = "certificado"
-//	return editable
-//}
-//
-//Permiso visibleSiAccesoContrasena{
-//	when 
-//		agente.acceso = "usuario"
-//	return editable
-//}
-//	
-//Permiso documentoAutorizacionGenerado{
-//	vars 
-//		SolicitudGenerica solicitud
-//	when 
-//		solicitud.registro.autorizacionFuncionario.urlDescarga != null and
-//		agente.funcionario != "true"
-//	return editable
-//}
-//
-//Permiso visibleFuncionarioAutorizado{
-//	vars
-//		SolicitudGenerica solicitud
-//	when 
-//		agente.funcionario = "true" and
-//		solicitud.solicitante.autorizaFuncionario = "true"
-//	return editable
-//}
-//
-//Permiso noVisibleFuncionarioAutorizado{
-//	vars
-//		SolicitudGenerica solicitud
-//	when 
-//		agente.funcionario = "true" and
-//		solicitud.solicitante.autorizaFuncionario = "true"
-//	return editable
-//}
-//	
+PermisoAcceso visibleSiAccesoCertificado{
+	when 
+		agente.acceso = "certificado"
+	return all
+}
+
+PermisoGrafico visibleSiAccesoCertificadoGr{
+	when 
+		agente.acceso = "certificado"
+	return editable
+}
+
+PermisoAcceso visibleSiAccesoContrasena{
+	when 
+		agente.acceso = "usuario"
+	return all
+}
+
+PermisoGrafico visibleSiAccesoContrasenaGr{
+	when 
+		agente.acceso = "usuario"
+	return editable
+}
+
+PermisoAcceso documentoAutorizacionGenerado{
+	vars 
+		SolicitudGenerica solicitud
+	when 
+		solicitud.registro.autorizacionFuncionario.urlDescarga != null and
+		agente.funcionario != "true"
+	return all
+}
+	
+PermisoGrafico documentoAutorizacionGeneradoGr{
+	vars 
+		SolicitudGenerica solicitud
+	when 
+		solicitud.registro.autorizacionFuncionario.urlDescarga != null and
+		agente.funcionario != "true"
+	return editable
+}
+
+PermisoAcceso visibleFuncionarioAutorizado{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		agente.funcionario = "true" and
+		solicitud.solicitante.autorizaFuncionario = "true"
+	return all
+}
+
+PermisoGrafico visibleFuncionarioAutorizadoGr{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		agente.funcionario = "true" and
+		solicitud.solicitante.autorizaFuncionario = "true"
+	return editable
+}
+
+PermisoAcceso noVisibleFuncionarioAutorizado{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		agente.funcionario = "true" and
+		solicitud.solicitante.autorizaFuncionario = "true"
+	return all
+}
+
+PermisoGrafico noVisibleFuncionarioAutorizadoGr{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		agente.funcionario = "true" and
+		solicitud.solicitante.autorizaFuncionario = "true"
+	return editable
+}
+	
 ///* Se puede moficicar la aportación de documentación cuando está en borrador*/	
 PermisoGrafico aportacionModificar{
 	vars
@@ -407,80 +544,157 @@ PermisoGrafico aportacionMensajeIntermedio{
 ///* 
 // * Permisos de la pagina de presentacion
 // */
-//Permiso mensajeVerificacion{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		agente.rolActivo in ("administrador", "gestor", "revisor") and
-//		solicitud.estado = "requerida plazo vencido"
-//	return visible
-//}
-//	
-//Permiso iniciarVerificacion{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		agente.rolActivo in ("administrador", "gestor", "revisor") and
-//		solicitud.estado = "iniciada"
-//	return editable
-//}
-//
-//Permiso verificarDocumentos{
-//	vars
-//		SolicitudGenerica solicitud
-//		when
-//			agente.rolActivo in ("administrador", "gestor", "revisor") and
-//			solicitud.estado = "en verificacion"
-//		return editable
-//		
-//		when
-//			agente.rolActivo in ("administrador", "gestor", "revisor") and
-//			solicitud.estado in ("requerida", "pendiente requerimiento", "requerida plazo vencido", "en verificacion")
-//		return visible
-//}	
-//	
-//Permiso verificacionRequerimientos{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		agente.rolActivo in ("administrador", "gestor", "revisor") and
-//		solicitud.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido")
-//	return editable
-//}
-//
-//Permiso nuevoRequerimiento{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		agente.rolActivo in ("administrador", "gestor", "revisor") and
-//		solicitud.estado = "pendiente requerimiento"
-//	return editable
-//}
-//
-//Permiso firmarRequerimiento{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		solicitud.estado = "pendiente requerimiento" and
-//		agente.rolActivo in ("administrador", "gestor")
-//	return editable
-//	
-//	when
-//		solicitud.estado = "pendiente requerimiento"
-//		and
-//		agente.rolActivo in ("administrador", "gestor", "revisor")
-//	return visible
-//}
-//
-//Permiso finalizarRequerimiento{
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		agente.rolActivo in ("administrador", "gestor", "revisor") and
-//		solicitud.estado in ("requerida", "requerida plazo vencido")
-//	return editable 
-//}
-//	
+
+PermisoAcceso mensajeVerificacion{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado = "requerida plazo vencido"
+	return {leer}
+}
+
+PermisoGrafico mensajeVerificacionGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado = "requerida plazo vencido"
+	return visible
+}
+
+PermisoAcceso iniciarVerificacion{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado = "iniciada"
+	return all
+}
+
+
+PermisoGrafico iniciarVerificacionGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado = "iniciada"
+	return editable
+}
+
+PermisoAcceso verificarDocumentos{
+	vars
+		SolicitudGenerica solicitud
+		when
+			agente.rolActivo in ("administrador", "gestor", "revisor") and
+			solicitud.estado = "en verificacion"
+		return all
+		
+		when
+			agente.rolActivo in ("administrador", "gestor", "revisor") and
+			solicitud.estado in ("requerida", "pendiente requerimiento", "requerida plazo vencido", "en verificacion")
+		return {leer}
+}
+
+PermisoGrafico verificarDocumentosGr{
+	vars
+		SolicitudGenerica solicitud
+		when
+			agente.rolActivo in ("administrador", "gestor", "revisor") and
+			solicitud.estado = "en verificacion"
+		return editable
+		
+		when
+			agente.rolActivo in ("administrador", "gestor", "revisor") and
+			solicitud.estado in ("requerida", "pendiente requerimiento", "requerida plazo vencido", "en verificacion")
+		return visible
+}
+	
+PermisoAcceso verificacionRequerimientos{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido")
+	return all
+}
+
+PermisoGrafico verificacionRequerimientosGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido")
+	return editable
+}
+
+PermisoAcceso nuevoRequerimiento{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado = "pendiente requerimiento"
+	return all
+}
+
+PermisoGrafico nuevoRequerimientoGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado = "pendiente requerimiento"
+	return editable
+}
+
+PermisoAcceso firmarRequerimiento{
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud.estado = "pendiente requerimiento" and
+		agente.rolActivo in ("administrador", "gestor")
+	return all
+	
+	when
+		solicitud.estado = "pendiente requerimiento"
+		and
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+	return {leer}
+}
+
+PermisoGrafico firmarRequerimientoGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud.estado = "pendiente requerimiento" and
+		agente.rolActivo in ("administrador", "gestor")
+	return editable
+	
+	when
+		solicitud.estado = "pendiente requerimiento"
+		and
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+	return visible
+}
+
+PermisoAcceso finalizarRequerimiento{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado in ("requerida", "requerida plazo vencido")
+	return all 
+}
+
+PermisoGrafico finalizarRequerimientoGr{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud.estado in ("requerida", "requerida plazo vencido")
+	return editable 
+}
+
+	
 PermisoGrafico aportacionNoNull{
 	vars
 		Documento doc
@@ -504,21 +718,36 @@ PermisoGrafico listaEvaluaciones{
 	return editable
 }
 
-//Permiso evaluacion{
-//	when
-//		agente.rolActivo in ("administrador", "gestor", "revisor")
-//	return editable
-//}
-//
-//Permiso tableKeyOnlyEstadosSolicitud{
-//	vars
-//		TableKeyValue tableKeyValue
-//	when
-//		tableKeyValue.table = "estadosSolicitud" and
-//		agente.rolActivo = "administrador"
-//	return editable
-//}
-//
+PermisoAcceso evaluacion{
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+	return all
+}
+
+PermisoGrafico evaluacionGr{
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+	return editable
+}
+
+PermisoAcceso tableKeyOnlyEstadosSolicitud{
+	vars
+		TableKeyValue tableKeyValue
+	when
+		tableKeyValue.table = "estadosSolicitud" and
+		agente.rolActivo = "administrador"
+	return all
+}
+
+PermisoGrafico tableKeyOnlyEstadosSolicitudGr{
+	vars
+		TableKeyValue tableKeyValue
+	when
+		tableKeyValue.table = "estadosSolicitud" and
+		agente.rolActivo = "administrador"
+	return editable
+}
+
 PermisoGrafico tableKeyOnlyEstadosSolicitudUsuario{
 	vars
 		TableKeyValue tableKeyValue
@@ -527,28 +756,25 @@ PermisoGrafico tableKeyOnlyEstadosSolicitudUsuario{
 		agente.rolActivo = "administrador"
 	return editable
 }
-//
-//// Editable administrador
-//// Visible para el usuario
-//Permiso editAdminVisibleUser {
-//	vars
-//		SolicitudGenerica solicitud
-//	when
-//		accion = editar and
-//		administrador is visible
-//	return editable
-//
-//	when
-//		accion = leer and
-//		administrador is visible
-//	return visible
-//	
-//	when
-//		(accion = leer or accion = editar)and
-//		usuario is visible
-//	return visible
-//	
-//	
-//	else
-//		return none
-//}
+
+// Editable administrador
+// Visible para el usuario
+PermisoAcceso editAdminVisibleUser {
+	
+	when
+		accion = leer and
+		administradorGr is visible
+	return {leer}
+	
+	when
+		administradorGr is visible
+	return all
+	
+	when
+		accion = leer and
+		usuario is visible
+	return {leer}
+	
+	else
+		return {}
+}

@@ -6,13 +6,17 @@ import models.Agente;
 
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import play.test.UnitTest;
 
 import tables.TableRenderResponse;
 import java.util.List;
 import java.util.ArrayList;
 
-import junit.framework.Assert;
+import static junit.framework.Assert.*;
 
 public class TableRenderResponseTest extends UnitTest {
 
@@ -20,7 +24,7 @@ public class TableRenderResponseTest extends UnitTest {
 	public void emptyRows(){
 		TableRenderResponse<TableRenderResponseTestMock> response = new TableRenderResponse<TableRenderResponseTestMock>(null);
 		String json = response.toJSON("campo1", "campo2");
-		Assert.assertEquals("{\"obj\":{\"mensajes\":{\"error\":null,\"fatal\":null,\"info\":null,\"ok\":null,\"warning\":null},\"rows\":null}}", json); 
+		assertEqualsJson("{\"obj\":{\"mensajes\":{\"error\":null,\"fatal\":null,\"info\":null,\"ok\":null,\"warning\":null},\"rows\":null}}", json); 
 	}
 
 	@Test
@@ -30,6 +34,21 @@ public class TableRenderResponseTest extends UnitTest {
 		mocks.add(new TableRenderResponseTestMock("c", "d"));
 		TableRenderResponse<TableRenderResponseTestMock> response = TableRenderResponse.<TableRenderResponseTestMock>sinPermisos(mocks);
 		String json = response.toJSON("campo1", "campo2");
-		Assert.assertEquals("{\"obj\":{\"mensajes\":{\"error\":null,\"fatal\":null,\"info\":null,\"ok\":null,\"warning\":null},\"rows\":[{\"objeto\":{\"campo1\":\"a\",\"campo2\":\"b\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true},{\"objeto\":{\"campo1\":\"c\",\"campo2\":\"d\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true}]}}", json);
-	}	
+		assertEqualsJson("{\"obj\":{\"mensajes\":{\"error\":null,\"fatal\":null,\"info\":null,\"ok\":null,\"warning\":null},\"rows\":[{\"objeto\":{\"campo1\":\"a\",\"campo2\":\"b\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true},{\"objeto\":{\"campo1\":\"c\",\"campo2\":\"d\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true}]}}", json);
+	}
+	
+	
+	/**
+	 * Compara dos json sin importar el orden de sus campos
+	 * @param expected
+	 * @param actual
+	 * @return
+	 */
+	private void assertEqualsJson(String jsonExpected, String jsonActual){
+		JsonParser parser = new JsonParser();
+		JsonElement expected = parser.parse(jsonExpected);
+		JsonElement actual = parser.parse(jsonActual);
+		assertEquals(expected, actual);
+	}
+	
 }

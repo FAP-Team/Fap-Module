@@ -48,16 +48,34 @@ public class GSolicitante {
 		if(solicitante.requerido)
 			requerido = true;
 		
-		fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante())
-		juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante())
-		
-		def out = """
-	#{fap.grupo titulo:${titulo}}
-		#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
-		${fisica}
-		${juridica}
-	#{/fap.grupo}
-"""
+		def out = "";
+		if (solicitante.elemento == "SolicitantePersonaFisica") {
+			fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante())
+			out = """
+				#{fap.grupo titulo:${titulo}}
+					${fisica}
+				#{/fap.grupo}
+		"""
+			return out;
+		} else if (solicitante.elemento == "SolicitantePersonaJuridica") {
+			juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante())
+			out = """
+			#{fap.grupo titulo:${titulo}}
+				${juridica}
+			#{/fap.grupo}
+		"""
+			return out;
+		} else{
+			fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante())
+			juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante())
+			out = """
+			#{fap.grupo titulo:${titulo}}
+				#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
+				${fisica}
+				${juridica}
+			#{/fap.grupo}
+		"""
+		}
 		return out;	
 	}
 	
@@ -68,25 +86,36 @@ public class GSolicitante {
 		fisica.setCampo(CampoUtils.addMore(solicitante.campo, "fisica"));
 		fisica.setRequerido(solicitante.requerido? true:false);
 		fisicaStr = Expand.expand(fisica);
+		boolean soloFisica = false;
 		
-		String params = ", siCombo:'${combo}', siComboValue:['fisica'], grupoVisible:false";
+		String params = "";
+		
+		if (solicitante.elemento == "Solicitante"){
+			params = ", siCombo:'${combo}', siComboValue:['fisica'], grupoVisible:false";
+		}
+		else{
+			params = ", grupoVisible:false";
+			soloFisica =  true;
+		}
 		
 		fisicaStr = fisicaStr.replaceAll(/(\#\{fap\.personaFisica.+?)(\/\})/, '$1' + params + '$2')
 		
 		if (!noRepresentante) {
 			Grupo grupoCheckRepFisica = new GrupoImpl();
-			Values values = new ValuesImpl();
-			values.values.add("fisica");
-			grupoCheckRepFisica.setSiComboValues(values);
+			if (!soloFisica){
+				Values values = new ValuesImpl();
+				values.values.add("fisica");
+				grupoCheckRepFisica.setSiComboValues(values);
 			
-			Combo c = new ComboImpl();
-			c.setName("${combo}");
+				Combo c = new ComboImpl();
+				c.setName("${combo}");
 			
-			grupoCheckRepFisica.setSiCombo(c);
+				grupoCheckRepFisica.setSiCombo(c);
+			}
 			grupoCheckRepFisica.setBorde("false");
 			
 			Check check = new CheckImpl();
-			check.setName("checkRepresentante");
+			check.setName("checkRepresentante_"+solicitante.name);
 			check.setTitulo("Representante");
 			check.setCampo(CampoUtils.addMore(solicitante.campo, "representado"));
 			
@@ -97,7 +126,7 @@ public class GSolicitante {
 			
 			Persona persona = new PersonaImpl();
 			persona.setTitulo("Representante");
-			persona.setName("representanteDelSolicitante")
+			persona.setName("representanteDelSolicitante_"+solicitante.name)
 			persona.setCampo(CampoUtils.addMore(solicitante.campo, "representante"));
 			grupoRepFisica.getElementos().add(persona);
 			
@@ -122,33 +151,46 @@ public class GSolicitante {
 		juridica.setCampo(CampoUtils.addMore(solicitante.campo, "juridica"));
 		juridica.setRequerido(solicitante.requerido ? true:false);
 		juridica.permiso = permiso;
+		boolean soloJuridica=false;
+		
+		
+		String params;
+		if (solicitante.elemento == "Solicitante"){
+			params = ", siCombo:'${combo}', siComboValue:['juridica'], visible:false, grupoVisible:false";
+		} else{
+			params = ", grupoVisible:false";
+			soloJuridica = true;
+		}
 		
 		juridicaStr = Expand.expand(juridica);
 
 		if (!noRepresentante) {
-			juridicaStr += crearTablaRepresentantes(juridica.name, solicitante.campo, permiso, combo, noRepresentante);
+			juridicaStr += crearTablaRepresentantes(juridica.name, solicitante.campo, permiso, combo, noRepresentante, soloJuridica);
 		}
 		
-		String params = ", siCombo:'${combo}', siComboValue:['juridica'], visible:false, grupoVisible:false";
+		
+			
 		juridicaStr = juridicaStr.replaceAll(/(\#\{fap\.personaJuridica.+?)(\/\})/, '$1' + params + '$2')
 		juridicaStr = juridicaStr.replaceAll(/(.*\#\{fap\.grupo.+?)(\})/, '$1' + params + '$2')
 		
 		return juridicaStr;
 	}
 	
-	public String crearTablaRepresentantes (String name, Campo campo, PermisoGrafico permiso, String combo, boolean noRepresentante) {
+	public String crearTablaRepresentantes (String name, Campo campo, PermisoGrafico permiso, String combo, boolean noRepresentante, boolean soloJuridica) {
 		String tablaStr = "";
 
 		if (!noRepresentante) {
 			Grupo grupoCheckRepFisica = new GrupoImpl();
-			Values values = new ValuesImpl();
-			values.values.add("juridica");
-			grupoCheckRepFisica.setSiComboValues(values);
+			if (!soloJuridica){
+				Values values = new ValuesImpl();
+				values.values.add("juridica");
+				grupoCheckRepFisica.setSiComboValues(values);
 			
-			Combo c = new ComboImpl();
-			c.setName("${combo}");
+				Combo c = new ComboImpl();
+				c.setName("${combo}");
 			
-			grupoCheckRepFisica.setSiCombo(c);
+				grupoCheckRepFisica.setSiCombo(c);
+			}
 			grupoCheckRepFisica.setBorde("false");
 		
 			Tabla tabla = new TablaImpl();

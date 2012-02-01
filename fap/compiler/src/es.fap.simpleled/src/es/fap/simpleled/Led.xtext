@@ -437,7 +437,7 @@ Persona:
 ;
 
 Solicitante:
-	elemento='Solicitante' (name=ID) (
+	elemento=('Solicitante' | 'SolicitantePersonaFisica' | 'SolicitantePersonaJuridica') (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &

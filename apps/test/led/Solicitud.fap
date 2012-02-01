@@ -323,7 +323,7 @@ Formulario Solicitud {
 	}
 	
 	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {
-	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido	
+	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido
 	    Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido  	
 	    Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido  	
 	    Texto campo=Solicitud.solicitante.telefonoMovil titulo="Teléfono Móvil"  	
@@ -332,6 +332,9 @@ Formulario Solicitud {
 	    Texto campo=Solicitud.solicitante.web titulo="Página web"
 
 	    PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física"
+	    
+	    SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Solicitante Persona Fisica"
+	 	SolicitantePersonaJuridica personaSolicitantePersonaJuridica campo=Solicitud.solicitantePersonaJuridica titulo="Solicitante Persona Juridica"
 	}
 	
 	Pagina TipoDeAyudaTexto campo=Solicitud{

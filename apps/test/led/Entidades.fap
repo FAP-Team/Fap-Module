@@ -13,8 +13,12 @@ Entidad Solicitud extends SolicitudGenerica {
 	ManyToOne PaginasTab paginas
 	OneToMany TablaPopUpPaginas popupPaginas
 	
+	Solicitante solicitantePersonaFisica
+	Solicitante solicitantePersonaJuridica
+	
 	PersonaFisica amigo
 }
+
 
 Entidad PaginasTab{
 	String nombre

@@ -141,16 +141,22 @@ class ControllerUtils {
 
     public static String fullGetterCall(String controllerName, EntidadUtils almacen, EntidadUtils entidad, Object ... entities) {
 		def entityList = getEntityList(entities);
-		return """
+		def ret = """
 			${almacen.entidad? "${almacen.clase} ${almacen.variable} = null;":""}
             ${entidad.entidad? "${entidad.clase} ${entidad.variableDb} = null;":""}
 			${entityList.collect{"${it.clase} ${it.variableDb} = null;"}.join("\n")}
-            if(!Messages.hasErrors()){
+        """
+		if ((almacen.entidad) || (entidad.entidad)){
+			ret += """
+			if(!Messages.hasErrors()){
 				${almacen.entidad? "$almacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, almacen, true)};":""}
-                ${entidad.entidad? "$entidad.variableDb = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};":""}
+				${entidad.entidad? "$entidad.variableDb = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};":""}
 				${entityList.collect{"$it.variableDb = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
-            }
+			}
 		"""
+		}
+   
+		return ret;
     }
 
 	public static String validateCopyMethod(gElemento, Object ... entities){

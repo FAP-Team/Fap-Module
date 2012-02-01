@@ -359,22 +359,33 @@ public class ${controllerName} extends ${controllerGenName} {
 					${!entidad.nulo()? "${entidad.clase} $entidad.variableDb = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};":""}
 					${ControllerUtils.fullGetterCall(controllerName, EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
 					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(controllerName, this, entidad, saveEntities) : ""}
+		   """;
+		    // Para no ir creando IF {} Vacios
+		    if (editar && !entidadPagina.nulo())
+				metodoEditar += """	
 					if(!Messages.hasErrors()){
 						${editar && !entidadPagina.nulo()? ControllerUtils.validateCopyCall(controllerName, "\"editar\"", this, entidad, saveEntities) : ""}
 					}
-					if(!Messages.hasErrors()){
+			""";
+			metodoEditar += """	
+				    if(!Messages.hasErrors()){
 						${controllerName}.${nameEditar}ValidateRules(${StringUtils.params(
 							entidad.variableDb, saveEntities.collect{it.variableDb}, entidadPagina.variable,
 							saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
 						)});
 					}
+			""";
+			if (entidadPagina.entidad)
+				metodoEditar += """	
 					if(!Messages.hasErrors()){
 						${entidadPagina.entidad? "${entidad.variableDb}.save();" : ""}
 						${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
 					}
-					${editarRenderCall}
+			""";
+			metodoEditar += """	
+				    ${editarRenderCall}
 				}
-			"""
+			""";
 		}
 		return metodoEditar;
 	}
@@ -388,8 +399,8 @@ public class ${controllerName} extends ${controllerGenName} {
 			else
 				ultimoAlmacen = new AlmacenEntidad();
 			String crearSaveCall = """
-				${entidad.variableDb}.save();
-				${entidad.id} = ${entidad.variableDb}.id;
+						${entidad.variableDb}.save();
+						${entidad.id} = ${entidad.variableDb}.id;
 			""";
 			if(almacen.entidad != null){
 				if (xToMany)
@@ -418,9 +429,15 @@ public class ${controllerName} extends ${controllerGenName} {
 					${ControllerUtils.almacenGetterCall(controllerName, ultimoAlmacen)}
 					${ControllerUtils.fullGetterCall(controllerName, EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
 					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(controllerName, this, entidad, saveEntities) : ""}
+			""";	
+			// Para no ir creando IF {} Vacios
+			if (!entidadPagina.nulo())	
+				metodoCrear += """	
 					if(!Messages.hasErrors()){
 						${!entidadPagina.nulo()? ControllerUtils.validateCopyCall(controllerName, "\"crear\"", this, entidad, saveEntities) : ""}
 					}
+			""";
+			metodoCrear += """	
 					if(!Messages.hasErrors()){
 						${controllerName}.crearValidateRules(${StringUtils.params(
 							entidad.variableDb, saveEntities.collect{it.variableDb}, entidadPagina.variable,

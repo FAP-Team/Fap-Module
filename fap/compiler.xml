@@ -118,7 +118,7 @@
 		<delete dir="dist-nightly" />
 		<mkdir dir="dist-nightly" />
 
-		<antcall target="build-plugins" />
+		<!-- Eliminada antcall target="build-plugins" /-->
 		<antcall target="generate-module" />
 		<antcall target="build-module-unix" />
 		<antcall target="build-module-windows" />

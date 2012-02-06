@@ -470,7 +470,10 @@
 	
 		    store${id}.addListener("datachanged", function(){
 		    	store${id}.sync();
-		    	grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();	
+		    });
+		    
+		    store${id}.addListener("load", function(){
+				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
 		    });
 		    
 		    grid.addListener("selectionchange", function(){

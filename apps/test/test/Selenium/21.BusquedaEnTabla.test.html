@@ -1,0 +1,24 @@
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
+	
+	play.mvc.Controller.session.put("username", "admin");
+	controllers.fap.AgenteController.findAgente();
+}%
+
+#{selenium}
+
+	#{if !automatic}
+		open(/Principal/solicitudes)
+		waitForPageToLoad()
+		waitForElementPresent(//div[text()='borrador'])
+   		open('/Solicitud/tablassimples?idSolicitud=${s.id}')
+    	waitForPageToLoad()
+    	waitForElementPresent('ext-gen1012')
+    	type('ext-gen1012', 'prueba')
+    	click('ext-gen1035')
+		waitForElementNotPresent(//table)
+	#{/if}
+	
+#{/selenium}

@@ -52,10 +52,11 @@ public class GSubirArchivoAed {
 
 		if(!validation.hasErrors()){
 			try {
-				services.AedService aedService = config.InjectorConfig.getInjector().getInstance(services.AedService.class);
-				aedService.saveDocumentoTemporal(dbDocumento, ${subirArchivoAed.name});
-			}catch(es.gobcan.eadmon.aed.ws.AedExcepcion e){
-				validation.addError("", "Error al subir el documento al Archivo Electrónico");
+				services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
+				gestorDocumentalService.saveDocumentoTemporal(dbDocumento, ${subirArchivoAed.name});
+			}catch(services.GestorDocumentalServiceException e){
+                play.Logger.error(e, "Error al subir el documento al Gestor Documental");
+				validation.addError("", "Error al subir el documento al Gestor Documental");
 			}
 		}
 		"""

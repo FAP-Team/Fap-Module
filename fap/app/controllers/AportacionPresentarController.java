@@ -11,7 +11,7 @@ import models.Firmante;
 import models.SolicitudGenerica;
 import play.mvc.Util;
 import services.FirmaService;
-import services.RegistroException;
+import services.RegistroServiceException;
 import services.RegistroService;
 import validation.CustomValidation;
 import controllers.gen.AportacionPresentarControllerGen;
@@ -94,7 +94,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 			if(!Messages.hasErrors()){
 				try {
 					registroService.registrarAportacionActual(solicitud);
-				} catch (RegistroException e) {
+				} catch (RegistroServiceException e) {
 					e.printStackTrace();
 					Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");
 				}

@@ -9,7 +9,7 @@ require:
     - play -> pdf 0.9
     - play -> less 0.3
     - play -> recaptcha 1.2
-    - fap -> guice 1.2.1
+    - fap -> guice 1.3
 
     # Versión nueva de junit para solucionar bug asumme + expected
     - junit 4.10

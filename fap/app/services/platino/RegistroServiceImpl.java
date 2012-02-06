@@ -1,4 +1,4 @@
-package services;
+package services.platino;
 
 import java.io.IOException;
 import java.net.URL;
@@ -42,6 +42,11 @@ import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import services.GestorDocumentalService;
+import services.FirmaService;
+import services.GestorDocumentalServiceException;
+import services.RegistroServiceException;
+import services.RegistroService;
 import utils.BinaryResponse;
 import utils.CharsetUtils;
 import utils.WSUtils;
@@ -75,29 +80,29 @@ public class RegistroServiceImpl implements RegistroService {
 
 	private PropertyPlaceholder propertyPlaceholder;
 
-	private AedService aedService;
+	private GestorDocumentalService aedService;
 
 	private volatile Registro registroPort;
 
 	private FirmaService firmaService;
 
-	private  GestorDocumentalService gestorDocumentalService;
+	private  GestorDocumentalPlatinoService gestorDocumentalService;
 	
 	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder,
-			AedService aedService, FirmaService firmaService,
-			GestorDocumentalService gestorDocumentalService) {
+			GestorDocumentalService aedService, FirmaService firmaService,
+			GestorDocumentalPlatinoService gestorDocumentalService) {
 		init(propertyPlaceholder, aedService, firmaService, gestorDocumentalService, false);
 	}
 
 	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder,
-			AedService aedService, FirmaService firmaService,
-			GestorDocumentalService gestorDocumentalService, boolean eagerInitialization) {
+			GestorDocumentalService aedService, FirmaService firmaService,
+			GestorDocumentalPlatinoService gestorDocumentalService, boolean eagerInitialization) {
 		init(propertyPlaceholder, aedService, firmaService, gestorDocumentalService, eagerInitialization);
 	}
 	
 	private void init(PropertyPlaceholder propertyPlaceholder,
-			AedService aedService, FirmaService firmaService,
-			GestorDocumentalService gestorDocumentalService, boolean eagerInitialization){
+			GestorDocumentalService aedService, FirmaService firmaService,
+			GestorDocumentalPlatinoService gestorDocumentalService, boolean eagerInitialization){
 		
 		if (propertyPlaceholder == null || aedService == null
 				|| firmaService == null || gestorDocumentalService == null)
@@ -131,7 +136,7 @@ public class RegistroServiceImpl implements RegistroService {
 		return result;
 	}
 	
-	@Override
+
 	public boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
@@ -143,7 +148,7 @@ public class RegistroServiceImpl implements RegistroService {
 		return hasConnection;
 	}
 
-	@Override
+
 	public String getEndPoint() {
 		return propertyPlaceholder.get("fap.platino.registro.url");
 	}
@@ -186,23 +191,14 @@ public class RegistroServiceImpl implements RegistroService {
 		datosDoc.setDescripcion(documento.descripcion);
 		datosDoc.setFecha(fechaApertura);
 
-		String uriSolicitud = documento.uri;
-		PropiedadesDocumento propsDoc = aedService
-				.obtenerPropiedades(uriSolicitud);
-		PropiedadesAdministrativas propsAdmin = ((PropiedadesAdministrativas) propsDoc
-				.getPropiedadesAvanzadas());
-		Firma firmaAed = propsAdmin.getFirma();
-
-		if (firmaAed != null) {
-			play.Logger.info("El documento a registrar está firmado");
-			String firmaDoc = firmaAed.getContenido();
-			datosDoc.setFirmaXml(firmaDoc);
-			datosDoc.setFirmantes(getDatosFirmantesAED(firmaAed));
+        models.Firma firma = aedService.getFirma(documento);		
+		if (firma != null) {
+		    datosDoc.setFirma(firma);
 		} else {
 			play.Logger.info("No se registrará informacion sobre la firma ya que no tiene firma asociada");
 		}
 
-		BinaryResponse contentResponse = aedService.obtenerDoc(uriSolicitud);
+		BinaryResponse contentResponse = aedService.getDocumento(documento);
 		DataSource dataSource = contentResponse.contenido.getDataSource();
 		datosDoc.setContenido(dataSource);
 
@@ -223,31 +219,6 @@ public class RegistroServiceImpl implements RegistroService {
 			datosRegistro.setTipoDocumento("C");// CIF
 		}
 		return datosRegistro;
-	}
-
-	/**
-	 * A partir de la firma del AED rellena una lista de firmantes que se
-	 * utilizan en lso procesos de registro
-	 * 
-	 * @param firmaAed
-	 * @return Listt<DatosFirmante>
-	 * @throws DatatypeConfigurationException
-	 */
-	private List<DatosFirmante> getDatosFirmantesAED(Firma firmaAed)
-			throws DatatypeConfigurationException {
-		List<DatosFirmante> listFirmantes = new ArrayList<DatosFirmante>();
-		for (Firmante firmante : firmaAed.getFirmantes()) {
-			DatosFirmante datFirm = new DatosFirmante();
-			datFirm.setIdFirmante(firmante.getFirmanteNif());
-			datFirm.setDescFirmante(firmante.getFirmanteNombre());
-			datFirm.setFechaFirma(WSUtils.getXmlGregorianCalendar(firmante.getFecha()));
-
-			// TODO: Cambiar cuando se use BD de terceros platino
-			datFirm.setCargoFirmante("Solicitante");
-			datFirm.setUriFirmante("URITest");
-			listFirmantes.add(datFirm);
-		}
-		return listFirmantes;
 	}
 
 	public JustificanteRegistro registroDeEntrada(DatosRegistro datosRegistro)
@@ -386,19 +357,18 @@ public class RegistroServiceImpl implements RegistroService {
 	/**
 	 * Registra la solicitud
 	 * 
-	 * @throws RegistroException
+	 * @throws RegistroServiceException
 	 */
-	public void registrarSolicitud(SolicitudGenerica solicitud)
-			throws RegistroException {
+	public void registrarSolicitud(SolicitudGenerica solicitud) throws RegistroServiceException {
 		if (!solicitud.registro.fasesRegistro.borrador) {
 			Messages.error("Intentando registrar una solicitud que no se ha preparado para firmar");
-			throw new RegistroException(
+			throw new RegistroServiceException(
 					"Intentando registrar una solicitud que no se ha preparado para firmar");
 		}
 
 		if (!solicitud.registro.fasesRegistro.firmada) {
 			Messages.error("Intentando registrar una solicitud que no ha sido firmada");
-			throw new RegistroException(
+			throw new RegistroServiceException(
 					"Intentando registrar una solicitud que no ha sido firmada");
 		}
 
@@ -424,7 +394,7 @@ public class RegistroServiceImpl implements RegistroService {
 				Messages.error("Documento \"" + descripcion
 						+ "\" es imprescindible");
 			}
-			throw new RegistroException("Faltan documentos imprescindibles");
+			throw new RegistroServiceException("Faltan documentos imprescindibles");
 		}
 		if (!docObli.obligatorias.isEmpty()) {
 			for (String uri : docObli.obligatorias) {
@@ -454,7 +424,7 @@ public class RegistroServiceImpl implements RegistroService {
 				solicitud.registro.fasesRegistro.save();
 			} catch (Exception e) {
 				Messages.error("Error creando expediente en el gestor documental de platino");
-				throw new RegistroException(
+				throw new RegistroServiceException(
 						"Error creando expediente en el gestor documental de platino");
 			}
 		} else {
@@ -513,7 +483,7 @@ public class RegistroServiceImpl implements RegistroService {
 
 			} catch (Exception e) {
 				Messages.error("Error al registrar de entrada la solicitud");
-				throw new RegistroException(
+				throw new RegistroServiceException(
 						"Error al obtener el justificante del registro de entrada");
 			}
 		} else {
@@ -523,9 +493,13 @@ public class RegistroServiceImpl implements RegistroService {
 
 		// Crea el expediente en el AED
 		if (!solicitud.registro.fasesRegistro.expedienteAed) {
-			aedService.crearExpediente(solicitud);
-			solicitud.registro.fasesRegistro.expedienteAed = true;
-			solicitud.registro.fasesRegistro.save();
+			try {
+			    aedService.crearExpediente(solicitud);
+			    solicitud.registro.fasesRegistro.expedienteAed = true;
+			    solicitud.registro.fasesRegistro.save();
+			}catch(GestorDocumentalServiceException e){
+			    throw new RegistroServiceException("Error creando el expediente", e);
+			}
 		} else {
 			play.Logger
 					.debug("El expediente del aed para la solicitud %s ya está creado",
@@ -541,20 +515,28 @@ public class RegistroServiceImpl implements RegistroService {
 
 		// Clasifica los documentos en el AED
 		if (!solicitud.registro.fasesRegistro.clasificarAed) {
-			// Clasifica los documentos sin registro
+			boolean todosClasificados = true;
+		    
+		    // Clasifica los documentos sin registro
 			List<Documento> documentos = new ArrayList<Documento>();
 			documentos.addAll(solicitud.documentacion.documentos);
 			documentos.add(solicitud.registro.justificante);
-			boolean todosClasificados = aedService.clasificarDocumentos(
-					solicitud, documentos);
+			
+			try {
+			    aedService.clasificarDocumentos(solicitud, documentos);
+			}catch(GestorDocumentalServiceException e){
+			    todosClasificados = false;
+			}
 
 			// Clasifica los documentos con registro de entrada
 			List<Documento> documentosRegistrados = new ArrayList<Documento>();
 			documentosRegistrados.add(solicitud.registro.oficial);
-			todosClasificados = todosClasificados
-					&& aedService.clasificarDocumentos(solicitud,
-							documentosRegistrados,
-							solicitud.registro.informacionRegistro);
+			
+			try {
+			    aedService.clasificarDocumentos(solicitud,documentosRegistrados,solicitud.registro.informacionRegistro);
+			}catch(GestorDocumentalServiceException e){
+			    todosClasificados = false;
+			} 
 
 			if (todosClasificados) {
 				solicitud.registro.fasesRegistro.clasificarAed = true;
@@ -563,14 +545,12 @@ public class RegistroServiceImpl implements RegistroService {
 				Messages.error("Algunos documentos no se pudieron clasificar correctamente");
 			}
 		} else {
-			play.Logger
-					.debug("Ya están clasificados todos los documentos de la solicitud %s",
-							solicitud.id);
+			play.Logger.debug("Ya están clasificados todos los documentos de la solicitud %s",solicitud.id);
 		}
 	}
 
 	public void registrarAportacionActual(SolicitudGenerica solicitud)
-			throws RegistroException {
+			throws RegistroServiceException {
 		// Registra la solicitud
 
 		Aportacion aportacion = solicitud.aportaciones.actual;
@@ -617,7 +597,7 @@ public class RegistroServiceImpl implements RegistroService {
 			} catch (Exception e) {
 				e.printStackTrace();
 				Messages.error("Error al registrar de entrada la solicitud");
-				throw new RegistroException(
+				throw new RegistroServiceException(
 						"Error al obtener el justificante del registro de entrada");
 			}
 		} else {
@@ -627,20 +607,31 @@ public class RegistroServiceImpl implements RegistroService {
 
 		// Clasifica los documentos
 		if (aportacion.estado.equals("registrada")) {
-			// Clasifica los documentos sin registro
+			boolean todosClasificados = true;
+		    
+		    // Clasifica los documentos sin registro
 			List<Documento> documentos = new ArrayList<Documento>();
 			documentos.addAll(aportacion.documentos);
 			documentos.add(aportacion.justificante);
-			boolean todosClasificados = aedService.clasificarDocumentos(
-					solicitud, documentos);
+			
+			
+			try {
+			    aedService.clasificarDocumentos(solicitud, documentos);
+			}catch(GestorDocumentalServiceException e){
+			    todosClasificados = false;
+			}
 
 			// Clasifica los documentos con registro de entrada
 			List<Documento> documentosRegistrados = new ArrayList<Documento>();
 			documentosRegistrados.add(aportacion.oficial);
-			todosClasificados = todosClasificados
-					&& aedService.clasificarDocumentos(solicitud,
-							documentosRegistrados,
-							aportacion.informacionRegistro);
+			
+			try {
+			    aedService.clasificarDocumentos(solicitud,
+                        documentosRegistrados,
+                        aportacion.informacionRegistro);
+			}catch(Exception e){
+			    todosClasificados = false;
+			}
 
 			if (todosClasificados) {
 				aportacion.estado = "clasificada";
@@ -706,8 +697,12 @@ public class RegistroServiceImpl implements RegistroService {
 				// registrar
 				List<Documento> documentos = new ArrayList<Documento>();
 				documentos.addAll(aportacion.documentos);
-				boolean todosClasificados = aedService.clasificarDocumentos(
-						solicitud, documentos);
+				boolean todosClasificados = true;
+				try {
+				    aedService.clasificarDocumentos(solicitud, documentos);
+				}catch(Exception e){
+				    todosClasificados = false;
+				}
 
 				if (todosClasificados) {
 					aportacion.estado = "clasificada";

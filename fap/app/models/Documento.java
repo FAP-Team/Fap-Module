@@ -121,6 +121,11 @@ public class Documento extends Model {
 		this.tipo = tipoCiudadano;
 	}
 	
+	public static Documento findByUri(String uri){
+		Documento documento = models.Documento.find("byUri", uri).first();
+		return documento;
+	}
+	
 // === MANUAL REGION END ===
 	
 	

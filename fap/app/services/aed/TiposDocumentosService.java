@@ -1,9 +1,10 @@
-package services;
+package services.aed;
+
 
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 
-public interface TiposDocumentosService extends WSService {
+public interface TiposDocumentosService {
 	
 	public String getVersion() throws Exception;
 	

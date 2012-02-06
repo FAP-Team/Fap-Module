@@ -5,12 +5,12 @@ import org.junit.Test;
 import play.test.UnitTest;
 import properties.PropertyPlaceholder;
 import security.Secure;
-import services.AedService;
-import services.FirmaService;
 import services.GestorDocumentalService;
-import services.ProcedimientosService;
+import services.FirmaService;
 import services.RegistroService;
-import services.TiposDocumentosService;
+import services.aed.ProcedimientosService;
+import services.aed.TiposDocumentosService;
+import services.platino.GestorDocumentalPlatinoService;
 
 import com.google.inject.Injector;
 
@@ -19,13 +19,13 @@ public class InjectorConfigTest extends UnitTest {
 	@Test
 	public void injectOk(){
 		assertInjectedSingleton(Secure.class);
-		assertInjectedSingleton(AedService.class);
+		assertInjectedSingleton(GestorDocumentalService.class);
 		assertInjectedSingleton(PropertyPlaceholder.class);
 		assertInjectedSingleton(ProcedimientosService.class);
 		assertInjectedSingleton(TiposDocumentosService.class);
 		assertInjectedSingleton(FirmaService.class);
 		assertInjectedSingleton(RegistroService.class);
-		assertInjectedSingleton(GestorDocumentalService.class);
+		assertInjectedSingleton(GestorDocumentalPlatinoService.class);
 	}
 		
 	private void assertInjectedSingleton(Class clazz){

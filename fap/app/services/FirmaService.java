@@ -10,7 +10,7 @@ import net.java.dev.jaxb.array.StringArray;
 import platino.Firma;
 import platino.InfoCert;
 
-public interface FirmaService extends WSService {
+public interface FirmaService {
 
 	/**
 	 * Obtiene la versión del servicio

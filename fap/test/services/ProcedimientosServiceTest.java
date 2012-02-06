@@ -22,6 +22,9 @@ import play.test.Fixtures;
 import play.test.UnitTest;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import services.aed.ProcedimientosService;
+import services.aed.ProcedimientosServiceImpl;
+import services.aed.TiposDocumentosService;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Procedimiento;
@@ -51,7 +54,7 @@ public class ProcedimientosServiceTest extends UnitTest {
 		when(tiposDocumentosServiceStub.getTipoDocumento(anyString())).thenReturn(tipoDocumentoStub);
 		
 		procedimientosService = new ProcedimientosServiceImpl(propertyPlaceholder, tiposDocumentosServiceStub);
-		hasConnecion = procedimientosService.hasConnection();
+		//hasConnecion = procedimientosService.hasConnection();
 		assumeTrue(hasConnecion);
 	}
 	

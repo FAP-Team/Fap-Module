@@ -15,6 +15,7 @@ import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import messages.Messages;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
@@ -75,11 +76,21 @@ public class WSUtils {
 	 * 
 	 * @param date
 	 * @return
-	 * @throws DatatypeConfigurationException
+	 * @throws RuntimeException
 	 */
-	public static XMLGregorianCalendar getXmlGregorianCalendar(Date date) throws DatatypeConfigurationException {
+	public static XMLGregorianCalendar getXmlGregorianCalendar(Date date) {
 		GregorianCalendar gregorianCalendar = new GregorianCalendar();
 		gregorianCalendar.setTime(date);
-		return DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
+		XMLGregorianCalendar result;
+		try {
+		    result = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
+		}catch(DatatypeConfigurationException e){
+		    throw new RuntimeException(e);
+		}
+		return result;
+	}
+	
+	public static XMLGregorianCalendar getXmlGregorianCalendar(DateTime date) {
+	    return getXmlGregorianCalendar(date.toDate()); 
 	}
 }

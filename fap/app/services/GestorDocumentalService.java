@@ -1,20 +1,47 @@
 package services;
 
-import platino.DatosDocumento;
-import es.gobcan.platino.servicios.registro.Documentos;
-import es.gobcan.platino.servicios.sgrde.DocumentoExpediente;
-import models.ExpedientePlatino;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
-public interface GestorDocumentalService extends WSService {
+import models.Documento;
+import models.Firma;
+import models.Firmante;
+import models.InformacionRegistro;
+import models.SolicitudGenerica;
+import properties.PropertyPlaceholder;
+import utils.BinaryResponse;
 
-	public String getVersion();
+public interface GestorDocumentalService {
 
-	public void crearExpediente(ExpedientePlatino exp) throws Exception;
+    public void configure() throws GestorDocumentalServiceException;
 
-	public DocumentoExpediente guardarDocumento(String expedientePlatinoRuta,
-			DatosDocumento documentoRegistrar) throws Exception;
+    public boolean isConfigured();
 
-	public Documentos guardarSolicitudEnGestorDocumental(
-			String expedienteGestorDocumentalRuta,
-			DatosDocumento documentoRegistrar) throws Exception;
+    public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
+
+    public List<String> getDocumentosEnExpediente(String expediente) throws GestorDocumentalServiceException;
+
+    public BinaryResponse getDocumento(Documento documento) throws GestorDocumentalServiceException;
+
+    public String saveDocumentoTemporal(models.Documento documento, InputStream inputStream, String filename)
+            throws GestorDocumentalServiceException;
+
+    public String saveDocumentoTemporal(models.Documento documento, File file) throws GestorDocumentalServiceException;
+
+    public void updateDocumento(Documento documento) throws GestorDocumentalServiceException;
+
+    public void deleteDocumento(Documento documento) throws GestorDocumentalServiceException;
+
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos,
+            InformacionRegistro informacionRegistro) throws GestorDocumentalServiceException;
+
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos)
+            throws GestorDocumentalServiceException;
+
+    public void agregarFirma(Documento documento, Firma firma) throws GestorDocumentalServiceException;
+    
+    public Firma getFirma(Documento documento) throws GestorDocumentalServiceException;
+
 }

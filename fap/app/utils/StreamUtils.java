@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+
+import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
+
 public class StreamUtils {
 
 	public static byte[] is2byteArray(InputStream is) throws IOException{
@@ -22,4 +27,9 @@ public class StreamUtils {
         is.close();
 	}
 	
+    public static DataHandler getDataHandler(InputStream inputStream, String mimetype) {
+        DataSource dataSource = new InputStreamDataSource(inputStream, mimetype);
+        DataHandler dataHandler = new DataHandler(dataSource);
+        return dataHandler;
+    }
 }

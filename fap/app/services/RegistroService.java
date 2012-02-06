@@ -9,7 +9,7 @@ import models.Solicitante;
 import models.SolicitudGenerica;
 import platino.DatosRegistro;
 
-public interface RegistroService extends WSService {
+public interface RegistroService {
 	public String getVersion();
 
 	public DatosRegistro getDatosRegistro(Solicitante solicitante,
@@ -27,10 +27,10 @@ public interface RegistroService extends WSService {
 	public DateTime getRegistroDateTime(JustificanteRegistro justificante);
 	
 	public void registrarSolicitud(SolicitudGenerica solicitud)
-			throws RegistroException;
+			throws RegistroServiceException;
 	
 	public void registrarAportacionActual(SolicitudGenerica solicitud)
-			throws RegistroException;
+			throws RegistroServiceException;
 	
 	public void noRegistrarAportacionActual(SolicitudGenerica solicitud);
 }

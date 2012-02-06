@@ -1,4 +1,4 @@
-package services;
+package services.aed;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -90,7 +90,6 @@ public class ProcedimientosServiceImpl implements ProcedimientosService {
 		return h1.value;
 	}
 	
-	@Override
 	public boolean hasConnection() {
 		boolean hasConnection = false;
 		try {

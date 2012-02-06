@@ -93,6 +93,18 @@ public class Persona extends Model {
 		return null;
 	}
 	
+	public static Persona createPersonaFisica(){
+	    Persona p = new Persona();
+	    p.tipo = "fisica";
+	    return p;
+	}
+	
+	public static Persona createPersonaJuridica(){
+	    Persona p = new Persona();
+	    p.tipo = "juridica";
+	    return p;
+	}
+	
 // === MANUAL REGION END ===
 	
 	

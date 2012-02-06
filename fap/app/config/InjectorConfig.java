@@ -27,12 +27,6 @@ public class InjectorConfig extends GuiceSupport {
 	
 	@Override
 	protected Injector configure() {
-		Stage stage;
-		if(Play.mode.isDev()){
-			stage = Stage.DEVELOPMENT;
-		}else{
-			stage = Stage.PRODUCTION;
-		}
 		injector = Guice.createInjector(stage, modulesToLoad()); 
 		return injector;
 	}

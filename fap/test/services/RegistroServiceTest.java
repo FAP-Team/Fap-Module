@@ -29,6 +29,7 @@ import play.modules.guice.InjectSupport;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
 import properties.FapProperties;
+import services.platino.GestorDocumentalPlatinoService;
 
 
 @InjectSupport
@@ -41,14 +42,14 @@ public class RegistroServiceTest extends UnitTest {
 	static FirmaService firmaService;
 	
 	@Inject
-	static AedService aedService;
+	static GestorDocumentalService aedService;
 	
 	@Inject
-	static GestorDocumentalService gestorDocumentalService;
+	static GestorDocumentalPlatinoService gestorDocumentalService;
 	
 	@Before
 	public void before(){
-		assumeTrue(registroService.hasConnection());
+		//assumeTrue(registroService.hasConnection());
 	}
 	
 	@Test
@@ -80,13 +81,13 @@ public class RegistroServiceTest extends UnitTest {
 		
 		Firmante firmante = new Firmante(solicitante, "unico");
 		firmante.fechaFirma = new DateTime(2003, 1, 1, 12, 15);
-		aedService.agregarFirma(documento.uri, firmante, firmaDocumento);
+		//aedService.agregarFirma(documento.uri, firmante, firmaDocumento);
 		play.Logger.info("Firma añadida al documento");
 		
 		String firmaDocumento2 = firmaService.firmarContentSignature(content);
 		play.Logger.info("Documento firmado");
 		
-		aedService.agregarFirma(documento.uri, firmante, firmaDocumento2);
+		//aedService.agregarFirma(documento.uri, firmante, firmaDocumento2);
 		play.Logger.info("Firma2 añadida al documento");
 		
 		

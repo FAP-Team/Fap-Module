@@ -35,7 +35,7 @@ public class FirmaServiceTest extends UnitTest {
 	@Ignore
 	@BeforeClass
 	public static void beforeClass(){
-		hasConnection = firmaService.hasConnection(); 
+		//hasConnection = firmaService.hasConnection(); 
 	}
 	
 	private void firmaryvalidar(String texto){

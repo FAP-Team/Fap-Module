@@ -13,11 +13,12 @@ import javax.inject.Inject;
 import org.joda.time.DateTime;
 
 import play.libs.Codec;
+import play.libs.IO;
 import play.mvc.Router;
 import play.mvc.Router.ActionDefinition;
 import play.mvc.Util;
 
-import services.AedService;
+import services.GestorDocumentalService;
 import utils.AedUtils;
 import utils.BinaryResponse;
 
@@ -29,7 +30,7 @@ import models.*;
 public class DescargasAedController extends GenericController {
 	
 	@Inject
-	static AedService aedService;
+	static GestorDocumentalService aedService;
 	
 	/**
 	 * Descarga un documento del archivo electrónico
@@ -41,11 +42,12 @@ public class DescargasAedController extends GenericController {
 		
 		if(uri != null){
 			try {
-				BinaryResponse bresp = aedService.obtenerDoc(uri);
-				if(bresp == null){
-					notFound();
-				}
+			    Documento documento = Documento.findByUri(uri);
+				if(documento == null)
+				    notFound();
 				
+			    BinaryResponse bresp = aedService.getDocumento(documento);
+			    
 	            response.setHeader("Content-Disposition", "inline; filename=\"" + bresp.nombre + "\"");
 	            response.contentType = bresp.contenido.getContentType();
 	            
@@ -53,15 +55,7 @@ public class DescargasAedController extends GenericController {
 //	            if(request.secure && isIE(request))
 //	            	response.setHeader("Cache-Control", "");
 				
-				InputStream is = bresp.contenido.getInputStream();
-                byte[] buffer = new byte[8092];
-                int count = 0;
-                while ((count = is.read(buffer)) > 0) {
-                    response.out.write(buffer, 0, count);
-                }
-                is.close();
-				
-				
+	            IO.write(bresp.contenido.getInputStream(), response.out);
 			} catch (Exception e) {
 				play.Logger.error(e, "Se produjo un error recuperando el documento del AED");
 			}

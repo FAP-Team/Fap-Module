@@ -1,4 +1,4 @@
-package services;
+package services.platino;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -40,7 +40,10 @@ import platino.PlatinoCXFSecurityHeaders;
 import platino.PlatinoProxy;
 import play.libs.Codec;
 import properties.PropertyPlaceholder;
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import sun.security.pkcs.PKCS7;
+import utils.BinaryResponse;
 import utils.WSUtils;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.platino.servicios.sfst.FirmaService;
@@ -63,7 +66,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 	
 	private volatile PlatinoSignatureServerBean firmaPort;
 	private final PropertyPlaceholder propertyPlaceholder;
-	private final AedService aedService;
+	private final GestorDocumentalService aedService;
 	
 	private static final int CERT_OK = 6;
 	private static final int CERT_NO_VALIDO = 2;
@@ -72,12 +75,12 @@ public class FirmaServiceImpl implements services.FirmaService {
 	private static final int CERT_NO_VERIFICADO = 5;
 	private static final int CADENA_CERT_NO_VALIDA = 25;
 	
-	public FirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, AedService aedService){
+	public FirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, GestorDocumentalService aedService){
 		this.propertyPlaceholder = propertyPlaceholder;
 		this.aedService = aedService;
 	}
 
-	public FirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, AedService aedService, boolean eagerInitialization){
+	public FirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, GestorDocumentalService aedService, boolean eagerInitialization){
 		this.propertyPlaceholder = propertyPlaceholder;
 		this.aedService = aedService;
 		if(eagerInitialization)
@@ -102,7 +105,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 		return result;
 	}
 
-	@Override
+
 	public boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
@@ -115,7 +118,7 @@ public class FirmaServiceImpl implements services.FirmaService {
 	}
 
 
-	@Override
+
 	public String getEndPoint() {
 		return propertyPlaceholder.get("fap.platino.firma.url");
 	}
@@ -400,7 +403,8 @@ public class FirmaServiceImpl implements services.FirmaService {
 		}	
 		Firmante firmante = null;
 		try {
-			byte[] contenido = aedService.obtenerDocBytes(documento.uri);
+		    BinaryResponse response = aedService.getDocumento(documento);
+			byte[] contenido = response.getBytes();
 			firmante = validateXMLSignature(contenido, firma);
 			if(firmante == null){
 				Messages.error("Error validando la firma");
@@ -442,11 +446,11 @@ public class FirmaServiceImpl implements services.FirmaService {
 				try {
 					log.info("Guardando firma en el aed");
 					firmante.fechaFirma = new DateTime();
-					aedService.agregarFirma(documento.uri, firmante, firma.firma);
+					aedService.agregarFirma(documento, new models.Firma(firma.firma, firmantes));
 					firmante.save();
 					
 					log.info("Firma del documento " + documento.uri + " guardada en el AED");
-				}catch(AedExcepcion e){
+				}catch(GestorDocumentalServiceException e){
 					log.error("Error guardando la firma en el aed");
 					Messages.error("Error al guardar la firma");
 				}				
@@ -469,11 +473,11 @@ public class FirmaServiceImpl implements services.FirmaService {
 				try {
 					log.info("Guardando firma en el aed");
 					firmante.fechaFirma = new DateTime();
-					aedService.agregarFirma(documento.uri, firmante, firma.firma);
+					aedService.agregarFirma(documento, new models.Firma(firma.firma, firmante));
 					firmante.save();
 					
 					log.info("Firma del documento " + documento.uri + " guardada en el AED");
-				}catch(AedExcepcion e){
+				}catch(GestorDocumentalServiceException e){
 					log.error("Error guardando la firma en el aed");
 					Messages.error("Error al guardar la firma");
 				}				

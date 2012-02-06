@@ -150,8 +150,8 @@ Formulario Solicitud {
 		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
 	
-	Pagina SubirArchivoAedTest campo=Solicitud{
-		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos{
+	Pagina SubirArchivoAedTest campo=Solicitud {
+		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos {
 			Columna campo=Documento.id
 		}	
 	}

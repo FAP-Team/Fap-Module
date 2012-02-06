@@ -1,6 +1,7 @@
-package services;
+package services.aed;
 
 import java.util.List;
+
 
 import models.TipoDocumento;
 import models.Tramite;
@@ -8,7 +9,7 @@ import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcep
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Procedimiento;
 
-public interface ProcedimientosService extends WSService {
+public interface ProcedimientosService {
 
 	public String getVersion() throws Exception;
 

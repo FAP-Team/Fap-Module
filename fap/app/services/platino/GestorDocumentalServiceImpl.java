@@ -1,4 +1,4 @@
-package services;
+package services.platino;
 
 import java.net.URL;
 import java.util.UUID;
@@ -39,8 +39,8 @@ import es.gobcan.platino.servicios.sgrde.SGRDEServiceProxy;
  * a la property
  * 
  */
-public class GestorDocumentalServiceImpl implements GestorDocumentalService {
-	private static Logger log = Logger.getLogger(GestorDocumentalService.class);
+public class GestorDocumentalServiceImpl implements GestorDocumentalPlatinoService {
+	private static Logger log = Logger.getLogger(GestorDocumentalPlatinoService.class);
 	
 	private String endPoint;
 	private PropertyPlaceholder propertyPlaceholder;
@@ -85,7 +85,7 @@ public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 	
 	
-	@Override
+
 	public boolean hasConnection() {
 		boolean result = false;
 		try {
@@ -96,7 +96,6 @@ public class GestorDocumentalServiceImpl implements GestorDocumentalService {
 		return result;
 	}
 
-	@Override
 	public String getEndPoint() {
 		return endPoint;
 	}

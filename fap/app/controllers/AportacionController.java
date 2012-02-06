@@ -2,6 +2,7 @@
 package controllers;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 import javax.inject.Inject;
 
@@ -11,7 +12,8 @@ import models.Documento;
 import models.SolicitudGenerica;
 import properties.FapProperties;
 import reports.Report;
-import services.AedService;
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import utils.StringUtils;
 import controllers.gen.AportacionControllerGen;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
@@ -20,7 +22,7 @@ public class AportacionController extends AportacionControllerGen {
 
 	
 	@Inject
-	static AedService aedService;
+	static GestorDocumentalService gestorDocumentalService;
 
 	public static void index(String accion, Long idSolicitud){
 		if (accion == null)
@@ -71,13 +73,8 @@ public class AportacionController extends AportacionControllerGen {
 						aportacion.oficial = null;
 						aportacion.save();
 						
-						try {
-							aedService.borrarDocumento(borradorOld);
-							aedService.borrarDocumento(oficialOld);
-						}catch(AedExcepcion e){
-							//Error? no importa, son temporales...
-							play.Logger.info("Error borrando los documento temporales desde el aed");
-						}
+						gestorDocumentalService.deleteDocumento(borradorOld);
+						gestorDocumentalService.deleteDocumento(oficialOld);
 						
 						// Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
 						if ((borradorOld != null) && (borradorOld.delete() == null))
@@ -89,14 +86,14 @@ public class AportacionController extends AportacionControllerGen {
 						File borrador = new Report("reports/solicitudAportacion.html").header("reports/header.html").footer("reports/footer-borrador.html").renderTmpFile(solicitud);
 						aportacion.borrador = new Documento();
 						aportacion.borrador.tipo = tipoDocumentoSolicitudAportacion;
-						aedService.saveDocumentoTemporal(aportacion.borrador, borrador);
+						
+						gestorDocumentalService.saveDocumentoTemporal(aportacion.borrador, new FileInputStream(borrador), borrador.getName());
 												
 						//Genera el documento oficial
 						File oficial =  new Report("reports/solicitudAportacion.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
 						aportacion.oficial = new Documento();
 						aportacion.oficial.tipo = tipoDocumentoSolicitudAportacion;
-						aedService.saveDocumentoTemporal(aportacion.oficial, oficial);
-						
+						gestorDocumentalService.saveDocumentoTemporal(aportacion.oficial, new FileInputStream(oficial), oficial.getName());
 						
 						aportacion.estado = "borrador";
 						aportacion.save();

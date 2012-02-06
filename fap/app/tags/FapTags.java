@@ -196,6 +196,13 @@ public class FapTags extends FastTags {
         body.call();
     }
 	
+	public static void _valueFromTableTables(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+        String table = args.get("arg").toString();
+        System.out.println(table);
+        //String value = TableKeyValue.getValue(table, clave);
+    	//body.setProperty("valor", value);
+	}
+	
 	public static void _valueFromTable(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
         String campo = args.get("arg").toString();
         String[] pieces = campo.split("\\.");
@@ -302,7 +309,7 @@ R
 		String js = "{";
 		while(iterator.hasNext()){
 			String key = iterator.next();
-			js += "'" + key + "':' " + map.get(key) +"'";
+			js += "'" + key + "':'" + map.get(key) +"'";
 			if(iterator.hasNext()){
 				js += ", ";
 			}

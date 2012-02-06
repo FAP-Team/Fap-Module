@@ -306,6 +306,7 @@ Combo:
 		& ('comboTexto' '=' comboTexto=[Attribute|IDS])? 
 		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& ('dependeDe' '=' dependeDe=[Combo])?
 	)
 ;
 
@@ -461,10 +462,16 @@ Lista:
 
 ElementoLista:
 	value=STRING |
-	key=ElementoListaKey ':' value=STRING |
-	key=ElementoListaKey
+	key=ElementoListaKey (':' value=STRING)? |
+	key=ElementoListaKey ':' '{'
+		elementosDependientes+=ElementoListaDependiente*
+	'}'
 ;
 
+ElementoListaDependiente:
+	value=STRING |
+	key=ElementoListaKey (':' value=STRING)?
+;
 
 ElementoListaKey:
 	first=IdOrInt (("." resto+=IdOrInt)*)

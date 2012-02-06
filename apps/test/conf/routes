@@ -67,6 +67,9 @@ POST /Solicitud/ejemplosdegrupos/editar EjemplosdeGruposController.editar
 GET /Solicitud/fechas FechasController.index
 POST /Solicitud/fechas/editar FechasController.editar
 
+GET /Solicitud/paginacombosdependientes PaginaCombosDependientesController.index
+POST /Solicitud/paginacombosdependientes/editar PaginaCombosDependientesController.editar
+
 GET /Solicitud/paginacomboserror PaginaCombosErrorController.index
 POST /Solicitud/paginacomboserror/editar PaginaCombosErrorController.editar
 

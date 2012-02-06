@@ -1,0 +1,22 @@
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
+	
+	play.mvc.Controller.session.put("username", "admin");
+	controllers.fap.AgenteController.findAgente();
+}%
+
+#{selenium}
+
+	open(/Solicitud/paginacombosdependientes?idSolicitud=${s.id})
+	waitForPageToLoad()
+	select('id=paises', 'label=España')
+	select('id=comunidades', 'label=Galicia')
+	select('id=provincias', 'label=La Coruña')
+	
+	assertSelectedValue('id=paises', 'espana')
+	assertSelectedValue('id=comunidades', 'galicia')
+	assertSelectedValue('id=provincias', 'lacoruna')
+
+#{/selenium}

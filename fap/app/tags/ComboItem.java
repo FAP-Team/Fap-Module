@@ -6,6 +6,7 @@ import java.util.List;
 import play.Logger;
 
 import models.TableKeyValue;
+import models.TableKeyValueDependency;
 
 public class ComboItem {
 	Object key;

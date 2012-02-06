@@ -1,440 +1,880 @@
-TableKeyValue(municipios-350017):
+TableKeyValue(municipios-laspalmas-350017):
   table: 'municipios'
   key: '350017'
   value: 'Agaete'
 
-TableKeyValue(municipios-350022):
+TableKeyValueDependency(municipios-laspalmas-350017):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350017'
+
+TableKeyValue(municipios-laspalmas-350022):
   table: 'municipios'
   key: '350022'
   value: 'Agüimes'
 
-TableKeyValue(municipios-350206):
+TableKeyValueDependency(municipios-laspalmas-350022):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350022'
+
+TableKeyValue(municipios-laspalmas-350206):
   table: 'municipios'
   key: '350206'
   value: 'La Aldea de San Nicolás'
 
-TableKeyValue(municipios-350038):
+TableKeyValueDependency(municipios-laspalmas-350206):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350206'
+
+TableKeyValue(municipios-laspalmas-350038):
   table: 'municipios'
   key: '350038'
   value: 'Antigua'
 
-TableKeyValue(municipios-350043):
+TableKeyValueDependency(municipios-laspalmas-350038):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350038'
+
+TableKeyValue(municipios-laspalmas-350043):
   table: 'municipios'
   key: '350043'
   value: 'Arrecife'
 
-TableKeyValue(municipios-350056):
+TableKeyValueDependency(municipios-laspalmas-350043):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350043'
+
+TableKeyValue(municipios-laspalmas-350056):
   table: 'municipios'
   key: '350056'
   value: 'Artenara'
 
-TableKeyValue(municipios-350069):
+TableKeyValueDependency(municipios-laspalmas-350056):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350056'
+
+TableKeyValue(municipios-laspalmas-350069):
   table: 'municipios'
   key: '350069'
   value: 'Arucas'
 
-TableKeyValue(municipios-350075):
+TableKeyValueDependency(municipios-laspalmas-350069):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350069'
+
+TableKeyValue(municipios-laspalmas-350075):
   table: 'municipios'
   key: '350075'
   value: 'Betancuria'
 
-TableKeyValue(municipios-350081):
+TableKeyValueDependency(municipios-laspalmas-350075):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350075'
+
+TableKeyValue(municipios-laspalmas-350081):
   table: 'municipios'
   key: '350081'
   value: 'Firgas'
 
-TableKeyValue(municipios-350094):
+TableKeyValueDependency(municipios-laspalmas-350081):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350081'
+
+TableKeyValue(municipios-laspalmas-350094):
   table: 'municipios'
   key: '350094'
   value: 'Gáldar'
 
-TableKeyValue(municipios-350108):
+TableKeyValueDependency(municipios-laspalmas-350094):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350094'
+
+TableKeyValue(municipios-laspalmas-350108):
   table: 'municipios'
   key: '350108'
   value: 'Haría'
 
-TableKeyValue(municipios-350115):
+TableKeyValueDependency(municipios-laspalmas-350108):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350108'
+
+TableKeyValue(municipios-laspalmas-350115):
   table: 'municipios'
   key: '350115'
   value: 'Ingenio'
 
-TableKeyValue(municipios-350120):
+TableKeyValueDependency(municipios-laspalmas-350115):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350115'
+
+TableKeyValue(municipios-laspalmas-350120):
   table: 'municipios'
   key: '350120'
   value: 'Mogán'
 
-TableKeyValue(municipios-350136):
+TableKeyValueDependency(municipios-laspalmas-350120):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350120'
+
+TableKeyValue(municipios-laspalmas-350136):
   table: 'municipios'
   key: '350136'
   value: 'Moya'
 
-TableKeyValue(municipios-350141):
+TableKeyValueDependency(municipios-laspalmas-350136):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350136'
+
+TableKeyValue(municipios-laspalmas-350141):
   table: 'municipios'
   key: '350141'
   value: 'La Oliva'
 
-TableKeyValue(municipios-350154):
+TableKeyValueDependency(municipios-laspalmas-350141):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350141'
+
+TableKeyValue(municipios-laspalmas-350154):
   table: 'municipios'
   key: '350154'
   value: 'Pájara'
 
-TableKeyValue(municipios-350167):
+TableKeyValueDependency(municipios-laspalmas-350154):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350154'
+
+TableKeyValue(municipios-laspalmas-350167):
   table: 'municipios'
   key: '350167'
   value: 'Las Palmas de Gran Canaria'
 
-TableKeyValue(municipios-350173):
+TableKeyValueDependency(municipios-laspalmas-350167):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350167'
+
+TableKeyValue(municipios-laspalmas-350173):
   table: 'municipios'
   key: '350173'
   value: 'Puerto del Rosario'
 
-TableKeyValue(municipios-350189):
+TableKeyValueDependency(municipios-laspalmas-350173):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350173'
+
+TableKeyValue(municipios-laspalmas-350189):
   table: 'municipios'
   key: '350189'
   value: 'San Bartolomé'
 
-TableKeyValue(municipios-350192):
+TableKeyValueDependency(municipios-laspalmas-350189):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350189'
+
+TableKeyValue(municipios-laspalmas-350192):
   table: 'municipios'
   key: '350192'
   value: 'San Bartolomé de Tirajana'
 
-TableKeyValue(municipios-350213):
+TableKeyValueDependency(municipios-laspalmas-350192):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350192'
+
+TableKeyValue(municipios-laspalmas-350213):
   table: 'municipios'
   key: '350213'
   value: 'Santa Brígida'
 
-TableKeyValue(municipios-350228):
+TableKeyValueDependency(municipios-laspalmas-350213):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350213'
+
+TableKeyValue(municipios-laspalmas-350228):
   table: 'municipios'
   key: '350228'
   value: 'Santa Lucía de Tirajana'
 
-TableKeyValue(municipios-350234):
+TableKeyValueDependency(municipios-laspalmas-350228):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350228'
+
+TableKeyValue(municipios-laspalmas-350234):
   table: 'municipios'
   key: '350234'
   value: 'Santa María de Guía de Gran Canaria'
 
-TableKeyValue(municipios-350249):
+TableKeyValueDependency(municipios-laspalmas-350234):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350234'
+
+TableKeyValue(municipios-laspalmas-350249):
   table: 'municipios'
   key: '350249'
   value: 'Teguise'
 
-TableKeyValue(municipios-350252):
+TableKeyValueDependency(municipios-laspalmas-350249):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350249'
+
+TableKeyValue(municipios-laspalmas-350252):
   table: 'municipios'
   key: '350252'
   value: 'Tejeda'
 
-TableKeyValue(municipios-350265):
+TableKeyValueDependency(municipios-laspalmas-350252):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350252'
+
+TableKeyValue(municipios-laspalmas-350265):
   table: 'municipios'
   key: '350265'
   value: 'Telde'
 
-TableKeyValue(municipios-350271):
+TableKeyValueDependency(municipios-laspalmas-350265):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350265'
+
+TableKeyValue(municipios-laspalmas-350271):
   table: 'municipios'
   key: '350271'
   value: 'Teror'
 
-TableKeyValue(municipios-350287):
+TableKeyValueDependency(municipios-laspalmas-350271):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350271'
+
+TableKeyValue(municipios-laspalmas-350287):
   table: 'municipios'
   key: '350287'
   value: 'Tías'
 
-TableKeyValue(municipios-350290):
+TableKeyValueDependency(municipios-laspalmas-350287):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350287'
+
+TableKeyValue(municipios-laspalmas-350290):
   table: 'municipios'
   key: '350290'
   value: 'Tinajo'
 
-TableKeyValue(municipios-350304):
+TableKeyValueDependency(municipios-laspalmas-350290):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350290'
+
+TableKeyValue(municipios-laspalmas-350304):
   table: 'municipios'
   key: '350304'
   value: 'Tuineje'
 
-TableKeyValue(municipios-350326):
+TableKeyValueDependency(municipios-laspalmas-350304):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350304'
+
+TableKeyValue(municipios-laspalmas-350326):
   table: 'municipios'
   key: '350326'
   value: 'Valleseco'
 
-TableKeyValue(municipios-350311):
+TableKeyValueDependency(municipios-laspalmas-350326):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350326'
+
+TableKeyValue(municipios-laspalmas-350311):
   table: 'municipios'
   key: '350311'
   value: 'Valsequillo de Gran Canaria'
 
-TableKeyValue(municipios-350332):
+TableKeyValueDependency(municipios-laspalmas-350311):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350311'
+
+TableKeyValue(municipios-laspalmas-350332):
   table: 'municipios'
   key: '350332'
   value: 'Vega de San Mateo'
 
-TableKeyValue(municipios-350347):
+TableKeyValueDependency(municipios-laspalmas-350332):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350332'
+
+TableKeyValue(municipios-laspalmas-350347):
   table: 'municipios'
   key: '350347'
   value: 'Yaiza'
 
-TableKeyValue(municipios-380012):
+TableKeyValueDependency(municipios-laspalmas-350347):
+  table: 'municipios'
+  dependency: 'laspalmas'
+  key: '350347'
+
+TableKeyValue(municipios-tenerife-380012):
   table: 'municipios'
   key: '380012'
   value: 'Adeje'
 
-TableKeyValue(municipios-380027):
+TableKeyValueDependency(municipios-tenerife-380012):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380012'
+
+TableKeyValue(municipios-tenerife-380027):
   table: 'municipios'
   key: '380027'
   value: 'Agulo'
 
-TableKeyValue(municipios-380033):
+TableKeyValueDependency(municipios-tenerife-380027):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380027'
+
+TableKeyValue(municipios-tenerife-380033):
   table: 'municipios'
   key: '380033'
   value: 'Alajeró'
 
-TableKeyValue(municipios-380048):
+TableKeyValueDependency(municipios-tenerife-380033):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380033'
+
+TableKeyValue(municipios-tenerife-380048):
   table: 'municipios'
   key: '380048'
   value: 'Arafo'
 
-TableKeyValue(municipios-380051):
+TableKeyValueDependency(municipios-tenerife-380048):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380048'
+
+TableKeyValue(municipios-tenerife-380051):
   table: 'municipios'
   key: '380051'
   value: 'Arico'
 
-TableKeyValue(municipios-380064):
+TableKeyValueDependency(municipios-tenerife-380051):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380051'
+
+TableKeyValue(municipios-tenerife-380064):
   table: 'municipios'
   key: '380064'
   value: 'Arona'
 
-TableKeyValue(municipios-380070):
+TableKeyValueDependency(municipios-tenerife-380064):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380064'
+
+TableKeyValue(municipios-tenerife-380070):
   table: 'municipios'
   key: '380070'
   value: 'Barlovento'
 
-TableKeyValue(municipios-380086):
+TableKeyValueDependency(municipios-tenerife-380070):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380070'
+
+TableKeyValue(municipios-tenerife-380086):
   table: 'municipios'
   key: '380086'
   value: 'Breña Alta'
 
-TableKeyValue(municipios-380099):
+TableKeyValueDependency(municipios-tenerife-380086):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380086'
+
+TableKeyValue(municipios-tenerife-380099):
   table: 'municipios'
   key: '380099'
   value: 'Breña Baja'
 
-TableKeyValue(municipios-380103):
+TableKeyValueDependency(municipios-tenerife-380099):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380099'
+
+TableKeyValue(municipios-tenerife-380103):
   table: 'municipios'
   key: '380103'
   value: 'Buenavista del Norte'
 
-TableKeyValue(municipios-380110):
+TableKeyValueDependency(municipios-tenerife-380103):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380103'
+
+TableKeyValue(municipios-tenerife-380110):
   table: 'municipios'
   key: '380110'
   value: 'Candelaria'
 
-TableKeyValue(municipios-380125):
+TableKeyValueDependency(municipios-tenerife-380110):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380110'
+
+TableKeyValue(municipios-tenerife-380125):
   table: 'municipios'
   key: '380125'
   value: 'Fasnia'
 
-TableKeyValue(municipios-380131):
+TableKeyValueDependency(municipios-tenerife-380125):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380125'
+
+TableKeyValue(municipios-tenerife-380131):
   table: 'municipios'
   key: '380131'
   value: 'Frontera'
 
-TableKeyValue(municipios-380146):
+TableKeyValueDependency(municipios-tenerife-380131):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380131'
+
+TableKeyValue(municipios-tenerife-380146):
   table: 'municipios'
   key: '380146'
   value: 'Fuencaliente de la Palma'
 
-TableKeyValue(municipios-380159):
+TableKeyValueDependency(municipios-tenerife-380146):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380146'
+
+TableKeyValue(municipios-tenerife-380159):
   table: 'municipios'
   key: '380159'
   value: 'Garachico'
 
-TableKeyValue(municipios-380162):
+TableKeyValueDependency(municipios-tenerife-380159):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380159'
+
+TableKeyValue(municipios-tenerife-380162):
   table: 'municipios'
   key: '380162'
   value: 'Garafía'
 
-TableKeyValue(municipios-380178):
+TableKeyValueDependency(municipios-tenerife-380162):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380162'
+
+TableKeyValue(municipios-tenerife-380178):
   table: 'municipios'
   key: '380178'
   value: 'Granadilla de Abona'
 
-TableKeyValue(municipios-380184):
+TableKeyValueDependency(municipios-tenerife-380178):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380178'
+
+TableKeyValue(municipios-tenerife-380184):
   table: 'municipios'
   key: '380184'
   value: 'La Guancha'
 
-TableKeyValue(municipios-380197):
+TableKeyValueDependency(municipios-tenerife-380184):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380184'
+
+TableKeyValue(municipios-tenerife-380197):
   table: 'municipios'
   key: '380197'
   value: 'Guía de Isora'
 
-TableKeyValue(municipios-380201):
+TableKeyValueDependency(municipios-tenerife-380197):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380197'
+
+TableKeyValue(municipios-tenerife-380201):
   table: 'municipios'
   key: '380201'
   value: 'Güímar'
 
-TableKeyValue(municipios-380218):
+TableKeyValueDependency(municipios-tenerife-380201):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380201'
+
+TableKeyValue(municipios-tenerife-380218):
   table: 'municipios'
   key: '380218'
   value: 'Hermigua'
 
-TableKeyValue(municipios-380223):
+TableKeyValueDependency(municipios-tenerife-380218):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380218'
+
+TableKeyValue(municipios-tenerife-380223):
   table: 'municipios'
   key: '380223'
   value: 'Icod de los Vinos'
 
-TableKeyValue(municipios-380244):
+TableKeyValueDependency(municipios-tenerife-380223):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380223'
+
+TableKeyValue(municipios-tenerife-380244):
   table: 'municipios'
   key: '380244'
   value: 'Los Llanos de Aridane'
 
-TableKeyValue(municipios-380257):
+TableKeyValueDependency(municipios-tenerife-380244):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380244'
+
+TableKeyValue(municipios-tenerife-380257):
   table: 'municipios'
   key: '380257'
   value: 'La Matanza de Acentejo'
 
-TableKeyValue(municipios-380260):
+TableKeyValueDependency(municipios-tenerife-380257):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380257'
+
+TableKeyValue(municipios-tenerife-380260):
   table: 'municipios'
   key: '380260'
   value: 'La Orotava'
 
-TableKeyValue(municipios-380276):
+TableKeyValueDependency(municipios-tenerife-380260):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380260'
+
+TableKeyValue(municipios-tenerife-380276):
   table: 'municipios'
   key: '380276'
   value: 'El Paso'
 
-TableKeyValue(municipios-389013):
+TableKeyValueDependency(municipios-tenerife-380276):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380276'
+
+TableKeyValue(municipios-tenerife-389013):
   table: 'municipios'
   key: '389013'
   value: 'El Pinar de El Hierro'
 
-TableKeyValue(municipios-380282):
+TableKeyValueDependency(municipios-tenerife-389013):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '389013'
+
+TableKeyValue(municipios-tenerife-380282):
   table: 'municipios'
   key: '380282'
   value: 'Puerto de la Cruz'
 
-TableKeyValue(municipios-380295):
+TableKeyValueDependency(municipios-tenerife-380282):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380282'
+
+TableKeyValue(municipios-tenerife-380295):
   table: 'municipios'
   key: '380295'
   value: 'Puntagorda'
 
-TableKeyValue(municipios-380309):
+TableKeyValueDependency(municipios-tenerife-380295):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380295'
+
+TableKeyValue(municipios-tenerife-380309):
   table: 'municipios'
   key: '380309'
   value: 'Puntallana'
 
-TableKeyValue(municipios-380316):
+TableKeyValueDependency(municipios-tenerife-380309):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380309'
+
+TableKeyValue(municipios-tenerife-380316):
   table: 'municipios'
   key: '380316'
   value: 'Los Realejos'
 
-TableKeyValue(municipios-380321):
+TableKeyValueDependency(municipios-tenerife-380316):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380316'
+
+TableKeyValue(municipios-tenerife-380321):
   table: 'municipios'
   key: '380321'
   value: 'El Rosario'
 
-TableKeyValue(municipios-380337):
+TableKeyValueDependency(municipios-tenerife-380321):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380321'
+
+TableKeyValue(municipios-tenerife-380337):
   table: 'municipios'
   key: '380337'
   value: 'San Andrés y Sauces'
 
-TableKeyValue(municipios-380239):
+TableKeyValueDependency(municipios-tenerife-380337):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380337'
+
+TableKeyValue(municipios-tenerife-380239):
   table: 'municipios'
   key: '380239'
   value: 'San Cristóbal de La Laguna'
 
-TableKeyValue(municipios-380342):
+TableKeyValueDependency(municipios-tenerife-380239):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380239'
+
+TableKeyValue(municipios-tenerife-380342):
   table: 'municipios'
   key: '380342'
   value: 'San Juan de la Rambla'
 
-TableKeyValue(municipios-380355):
+TableKeyValueDependency(municipios-tenerife-380342):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380342'
+
+TableKeyValue(municipios-tenerife-380355):
   table: 'municipios'
   key: '380355'
   value: 'San Miguel de Abona'
 
-TableKeyValue(municipios-380368):
+TableKeyValueDependency(municipios-tenerife-380355):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380355'
+
+TableKeyValue(municipios-tenerife-380368):
   table: 'municipios'
   key: '380368'
   value: 'San Sebastián de la Gomera'
 
-TableKeyValue(municipios-380374):
+TableKeyValueDependency(municipios-tenerife-380368):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380368'
+
+TableKeyValue(municipios-tenerife-380374):
   table: 'municipios'
   key: '380374'
   value: 'Santa Cruz de la Palma'
 
-TableKeyValue(municipios-380380):
+TableKeyValueDependency(municipios-tenerife-380374):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380374'
+
+TableKeyValue(municipios-tenerife-380380):
   table: 'municipios'
   key: '380380'
   value: 'Santa Cruz de Tenerife'
 
-TableKeyValue(municipios-380393):
+TableKeyValueDependency(municipios-tenerife-380380):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380380'
+
+TableKeyValue(municipios-tenerife-380393):
   table: 'municipios'
   key: '380393'
   value: 'Santa Úrsula'
 
-TableKeyValue(municipios-380407):
+TableKeyValueDependency(municipios-tenerife-380393):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380393'
+
+TableKeyValue(municipios-tenerife-380407):
   table: 'municipios'
   key: '380407'
   value: 'Santiago del Teide'
 
-TableKeyValue(municipios-380414):
+TableKeyValueDependency(municipios-tenerife-380407):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380407'
+
+TableKeyValue(municipios-tenerife-380414):
   table: 'municipios'
   key: '380414'
   value: 'El Sauzal'
 
-TableKeyValue(municipios-380429):
+TableKeyValueDependency(municipios-tenerife-380414):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380414'
+
+TableKeyValue(municipios-tenerife-380429):
   table: 'municipios'
   key: '380429'
   value: 'Los Silos'
 
-TableKeyValue(municipios-380435):
+TableKeyValueDependency(municipios-tenerife-380429):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380429'
+
+TableKeyValue(municipios-tenerife-380435):
   table: 'municipios'
   key: '380435'
   value: 'Tacoronte'
 
-TableKeyValue(municipios-380440):
+TableKeyValueDependency(municipios-tenerife-380435):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380435'
+
+TableKeyValue(municipios-tenerife-380440):
   table: 'municipios'
   key: '380440'
   value: 'El Tanque'
 
-TableKeyValue(municipios-380453):
+TableKeyValueDependency(municipios-tenerife-380440):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380440'
+
+TableKeyValue(municipios-tenerife-380453):
   table: 'municipios'
   key: '380453'
   value: 'Tazacorte'
 
-TableKeyValue(municipios-380466):
+TableKeyValueDependency(municipios-tenerife-380453):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380453'
+
+TableKeyValue(municipios-tenerife-380466):
   table: 'municipios'
   key: '380466'
   value: 'Tegueste'
 
-TableKeyValue(municipios-380472):
+TableKeyValueDependency(municipios-tenerife-380466):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380466'
+
+TableKeyValue(municipios-tenerife-380472):
   table: 'municipios'
   key: '380472'
   value: 'Tijarafe'
 
-TableKeyValue(municipios-380491):
+TableKeyValueDependency(municipios-tenerife-380472):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380472'
+
+TableKeyValue(municipios-tenerife-380491):
   table: 'municipios'
   key: '380491'
   value: 'Valle Gran Rey'
 
-TableKeyValue(municipios-380504):
+TableKeyValueDependency(municipios-tenerife-380491):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380491'
+
+TableKeyValue(municipios-tenerife-380504):
   table: 'municipios'
   key: '380504'
   value: 'Vallehermoso'
 
-TableKeyValue(municipios-380488):
+TableKeyValueDependency(municipios-tenerife-380504):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380504'
+
+TableKeyValue(municipios-tenerife-380488):
   table: 'municipios'
   key: '380488'
   value: 'Valverde'
 
-TableKeyValue(municipios-380511):
+TableKeyValueDependency(municipios-tenerife-380488):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380488'
+
+TableKeyValue(municipios-tenerife-380511):
   table: 'municipios'
   key: '380511'
   value: 'La Victoria de Acentejo'
 
-TableKeyValue(municipios-380526):
+TableKeyValueDependency(municipios-tenerife-380511):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380511'
+
+TableKeyValue(municipios-tenerife-380526):
   table: 'municipios'
   key: '380526'
   value: 'Vilaflor'
 
-TableKeyValue(municipios-380532):
+TableKeyValueDependency(municipios-tenerife-380526):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380526'
+
+TableKeyValue(municipios-tenerife-380532):
   table: 'municipios'
   key: '380532'
   value: 'Villa de Mazo'
+
+TableKeyValueDependency(municipios-tenerife-380532):
+  table: 'municipios'
+  dependency: 'tenerife'
+  key: '380532'
 

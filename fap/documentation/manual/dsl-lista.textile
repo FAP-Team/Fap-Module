@@ -70,3 +70,33 @@ bc. Lista ListaClavesValores crearEnumerado {
    cuatro: "4"
 }
 
+h3. Listas para utilizarlas en combos dependientes
+
+bc.. Lista paises {
+	espana : "España"
+	francia : "Francia"
+	granbretana : "Gran Bretaña"
+	italia : "Italia"
+	...
+}
+
+Lista comunidadesAutonomas {
+	espana : {
+		canarias : "Canarias"
+		larioja: "La Rioja"
+		galicia: "Galicia"
+		...
+	}
+	francia : {
+	   ...
+	}
+}
+
+Lista provincias {
+	canarias : {
+		laspalmas: "Las Palmas"
+		tenerife: "Santa Cruz de Tenerife"
+	}
+	...
+}
+

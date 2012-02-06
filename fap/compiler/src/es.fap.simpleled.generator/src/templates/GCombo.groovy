@@ -57,6 +57,9 @@ public class GCombo {
 			else
 				params.put "ayuda", "tags.TagAyuda.texto('${combo.ayuda}')"
 		}
+		
+		if (combo.dependeDe != null)
+			params.putStr "dependeDe", combo.dependeDe.name
 			
 		/// Si el atributo es una referencia Many2One o ManyToMany
 		if (campo.getUltimoAtributo().type?.compound?.tipoReferencia?.type?.equals("ManyToMany")

@@ -75,6 +75,11 @@ Entidad DireccionTest {
 }
 
 Entidad ComboTest {
+	Lista provincias provincias
+	Lista comunidadesAutonomas comunidades
+	Lista paises paises
+	Lista municipios municipios
+
 	Lista ComboTestList list
 	Lista multiple ComboTestList listMultiple
 	ManyToOne ComboTestRef ref

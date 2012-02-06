@@ -49,6 +49,12 @@ public class Start extends Job {
 	        	Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas");
 		}
 		
+		if(TableKeyValueDependency.count() == 0){
+			long count = TableKeyValueDependency.loadFromFiles();
+	        if (count > 0)
+	        	Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas de Dependencias");
+		}
+		
 		if (Mail.count() == 0){
 			long count = Mails.loadFromFiles();
 	        if (count > 0)

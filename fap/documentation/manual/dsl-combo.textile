@@ -16,7 +16,8 @@ h2. Parámetros
 * **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de título.
 * **comboTexto = _[atributo]_** (opcional) : Indica el atributo que se va a visualizar en cada elemento mostrado en el combo.
 * **comboValor = _[atributo]_** (opcional) : Indica el atributo que se va a utilizar como clave identificativa de cada elemento mostrado en el combo.
-* **ayuda = _[string]_** (opcional) : Ayuda asociada al combo
+* **ayuda = _[string]_** (opcional) : Ayuda asociada al combo.
+* **dependeDe = _[combo]_** (opcional): Indica que el combo es un combo dependiente del combo que se especifica, o sea que los valores que se mostraran en dicho combo, para sus selección, dependeran del valor seleccionado en el combo del que depende.
 
 h2(#atributosPermitidos). Tipos de atributos permitidos
 
@@ -46,6 +47,7 @@ bc. Combo:
 		& ('comboTexto' '=' comboTexto=[Attribute|IDS])? 
 		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& ('dependeDe' '=' dependeDe=[Combo])?
 	)
 ;
 
@@ -82,6 +84,54 @@ Entidad ComboTestRef {
 
 Combo campo=ComboTest.ref comboTexto=nombre titulo="Combo de Referencias"
 Combo campo=ComboTest.refMultiple comboTexto=nombre titulo="Combo de Referencias Múltiples"
+
+h3. Combos dependientes
+
+bc.. Entidad ComboDependientes {
+	Lista paises paises
+	Lista comunidadesAutonomas comunidades
+	Lista provincias provincias
+	Lista municipios municipios
+} 
+	
+	
+Lista paises {
+	espana : "España"
+	francia : "Francia"
+	granbretana : "Gran Bretaña"
+	italia : "Italia"
+	...
+}
+
+Lista comunidadesAutonomas {
+	espana : {
+		canarias : "Canarias"
+		larioja: "La Rioja"
+		galicia: "Galicia"
+		...
+	}
+	francia : {
+	   ...
+	}
+}
+
+Lista provincias {
+	canarias : {
+		laspalmas: "Las Palmas"
+		tenerife: "Santa Cruz de Tenerife"
+	}
+	...
+}
+
+Lista municipios {
+	...
+}
+
+
+Combo paises campo=Solicitud.comboTest.paises titulo="Paises"
+Combo comunidades campo=Solicitud.comboTest.comunidades titulo="Comunidades Autónomas" dependeDe=paises
+Combo provincias campo=Solicitud.comboTest.provincias titulo="Provincias" dependeDe=comunidades
+Combo municipios campo=Solicitud.comboTest.municipios titulo="Municipios" dependeDe=provincias
 
 
 h2. Método para especificar la lista de elementos

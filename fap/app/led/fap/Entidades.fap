@@ -6,6 +6,14 @@ Entidad TableKeyValue noAuditable{
 	String value column="v"
 }
 
+// La entidad "TableKeyValueDependency" la utilizaremos como tabla de tablas de las listas con dependencias.
+// Básicamnte para guardar las listas con clave-valor-dependencia, para los combos dependientes.
+Entidad TableKeyValueDependency noAuditable{
+	String table column="t"
+	String dependency column="d"
+	String key column="k"
+}
+
 // Entidad de la que deberán extender las entidades únicas en la aplicación.
 // Es decir, una única entidad para toda la aplicación.
 Entidad Singleton superClass {

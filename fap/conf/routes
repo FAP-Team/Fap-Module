@@ -91,6 +91,11 @@ POST /Administracion/popuptabladetablas/editar popups.PopupTablaDeTablasControll
 POST /Administracion/popuptabladetablas/borrar popups.PopupTablaDeTablasController.borrar
 POST /Administracion/popuptabladetablas/crear popups.PopupTablaDeTablasController.crear
 
+GET /Administracion/popuptabladetablasdependency popups.PopupTablaDeTablasDependencyController.index
+POST /Administracion/popuptabladetablasdependency/editar popups.PopupTablaDeTablasDependencyController.editar
+POST /Administracion/popuptabladetablasdependency/borrar popups.PopupTablaDeTablasDependencyController.borrar
+POST /Administracion/popuptabladetablasdependency/crear popups.PopupTablaDeTablasDependencyController.crear
+
 GET /Administracion/popuptramite popups.PopupTramiteController.index
 
 GET /Administracion/popuptramite/documentos popups.PopupTramiteController.tabladocumentos
@@ -110,6 +115,7 @@ GET /Administracion/tabladetablas TablaDeTablasController.index
 POST /Administracion/tabladetablas/actualizarDesdeFichero TablaDeTablasController.actualizarDesdeFichero
 
 GET /Administracion/tabladetablas/tabladetablas TablaDeTablasController.tablatabladetablas
+GET /Administracion/tabladetablas/tabladetablasdependency TablaDeTablasController.tablatabladetablasdependency
 GET /Administracion/usuarios UsuariosController.index
 
 GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios

@@ -8,3 +8,12 @@ Lista ComboTestList {
 	e : "E"
 	f : "F"
 }
+
+Lista paises{
+	francia: "Francia"
+	alemania: "Alemania"
+	portugal: "Portugal"
+	reinounido: "Reino Unido"
+	italia: "Italia"
+}
+

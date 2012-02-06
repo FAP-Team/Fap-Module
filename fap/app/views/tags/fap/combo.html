@@ -18,6 +18,8 @@
 	def anchoTitulo = _anchoTitulo
 	
 	def multiple = _multiple != null? _multiple : false;
+	
+	def dependencia = _dependeDe
 			
 	def style = '';
 	def ancho = _ancho
@@ -43,9 +45,12 @@
 	}
 	
 	def manyTo = _manyTo;
-	def name = ""	
+	def name = ""
+	// Obtenemos la lista con los valores de las dependencias del combo, si tuviera
+	def listaDependencias = models.TableKeyValueDependency.findByTableAsMap("${field.table}");
+	def listaTKV = models.TableKeyValue.findByTableAsMap("${field.table}");
 }%
-
+    
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
 		%{	
 			multiple = field.isCollection;
@@ -97,14 +102,13 @@
 					values.addAll(value);
 				}
 			}
-			
 		}%
-		
+
 		<select class="combo" data-placeholder="Seleccione..." id="${id}" name="${name}" #{if multiple} multiple #{/if} ${disabled} #{if style}style="${style}"#{/if}>
 			#{if blanco && !multiple}
 			<option> </option>
 			#{/if}
-			
+
 			#{list items:items, as:'entry'}
 				%{				
 					def clave = entry.key
@@ -115,6 +119,38 @@
 			#{/list}
 		</select>
 	#{/fap.formrow}
+	
+	#{if dependencia}
+		
+		<script>
+			// Para los combos dependientes
+			function CargarValoresComboDependiente${id}(){
+				var valorDependencia${id} = $('select[id=${dependencia}]').val();
+                var elementos${id} = #{fap.toJSMap listaDependencias/};
+                var elementosTKV${id} = #{fap.toJSMap listaTKV/};
+                // Rellenar el select con options, segun los valores que le correspondan
+				var contenido${id} = '<option> </option>';
+				for (var el in elementos${id}){
+					// Calcular los valores de la lista segun el valor dependiente
+					if (elementos${id}[el] === valorDependencia${id}){
+						var selected = ""
+						// Para recuperar el valor seleccionado, si lo habia
+						if ($('select[id=${id}]').val() == el)
+							selected = "selected=\"selected\"";
+					    contenido${id}+='<option value="'+el+'" '+selected+'>#{if mostrarClave}'+elementos${id}[el]+' - #{/if}'+elementosTKV${id}[el]+'</option>';
+					}
+				}
+				$('#${id}').html(contenido${id});
+				// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
+				$('#${id}').change();
+			}
+			// Para cada vez que se renderiza la pagina, calculamos los posibles valores de ese combo
+			CargarValoresComboDependiente${id}();
+			// Para cada vez que cambie un combo del que depende otro, actualizar la lista de valores de ese otro
+			$('#${dependencia}').change(function(){CargarValoresComboDependiente${id}();});	
+		</script>
+		
+	#{/if}
 
 	#{if multiple}
 		<script>

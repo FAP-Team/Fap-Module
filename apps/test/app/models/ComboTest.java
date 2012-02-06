@@ -25,6 +25,22 @@ import java.text.SimpleDateFormat;
 public class ComboTest extends Model {
 	// Código de los atributos
 	
+	@ValueFromTable("provincias")
+	public String provincias;
+	
+	
+	@ValueFromTable("comunidadesAutonomas")
+	public String comunidades;
+	
+	
+	@ValueFromTable("paises")
+	public String paises;
+	
+	
+	@ValueFromTable("municipios")
+	public String municipios;
+	
+	
 	@ValueFromTable("ComboTestList")
 	public String list;
 	

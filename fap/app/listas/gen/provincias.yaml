@@ -1,0 +1,520 @@
+TableKeyValue(provincias-andalucia-almeria):
+  table: 'provincias'
+  key: 'almeria'
+  value: 'Almería'
+
+TableKeyValueDependency(provincias-andalucia-almeria):
+  table: 'provincias'
+  dependency: 'andalucia'
+  key: 'almeria'
+
+TableKeyValue(provincias-andalucia-cadiz):
+  table: 'provincias'
+  key: 'cadiz'
+  value: 'Cádiz'
+
+TableKeyValueDependency(provincias-andalucia-cadiz):
+  table: 'provincias'
+  dependency: 'andalucia'
+  key: 'cadiz'
+
+TableKeyValue(provincias-andalucia-cordoba):
+  table: 'provincias'
+  key: 'cordoba'
+  value: 'Córdoba'
+
+TableKeyValueDependency(provincias-andalucia-cordoba):
+  table: 'provincias'
+  dependency: 'andalucia'
+  key: 'cordoba'
+
+TableKeyValue(provincias-andalucia-granada):
+  table: 'provincias'
+  key: 'granada'
+  value: 'Granada'
+
+TableKeyValueDependency(provincias-andalucia-granada):
+  table: 'provincias'
+  dependency: 'andalucia'
+  key: 'granada'
+
+TableKeyValue(provincias-andalucia-huelva):
+  table: 'provincias'
+  key: 'huelva'
+  value: 'Huelva'
+
+TableKeyValueDependency(provincias-andalucia-huelva):
+  table: 'provincias'
+  dependency: 'andalucia'
+  key: 'huelva'
+
+TableKeyValue(provincias-andalucia-jaen):
+  table: 'provincias'
+  key: 'jaen'
+  value: 'Jaén'
+
+TableKeyValueDependency(provincias-andalucia-jaen):
+  table: 'provincias'
+  dependency: 'andalucia'
+  key: 'jaen'
+
+TableKeyValue(provincias-andalucia-malaga):
+  table: 'provincias'
+  key: 'malaga'
+  value: 'Málaga'
+
+TableKeyValueDependency(provincias-andalucia-malaga):
+  table: 'provincias'
+  dependency: 'andalucia'
+  key: 'malaga'
+
+TableKeyValue(provincias-andalucia-sevilla):
+  table: 'provincias'
+  key: 'sevilla'
+  value: 'Sevilla'
+
+TableKeyValueDependency(provincias-andalucia-sevilla):
+  table: 'provincias'
+  dependency: 'andalucia'
+  key: 'sevilla'
+
+TableKeyValue(provincias-aragon-huesca):
+  table: 'provincias'
+  key: 'huesca'
+  value: 'Huesca'
+
+TableKeyValueDependency(provincias-aragon-huesca):
+  table: 'provincias'
+  dependency: 'aragon'
+  key: 'huesca'
+
+TableKeyValue(provincias-aragon-teruel):
+  table: 'provincias'
+  key: 'teruel'
+  value: 'Teruel'
+
+TableKeyValueDependency(provincias-aragon-teruel):
+  table: 'provincias'
+  dependency: 'aragon'
+  key: 'teruel'
+
+TableKeyValue(provincias-aragon-zaragoza):
+  table: 'provincias'
+  key: 'zaragoza'
+  value: 'Zaragoza'
+
+TableKeyValueDependency(provincias-aragon-zaragoza):
+  table: 'provincias'
+  dependency: 'aragon'
+  key: 'zaragoza'
+
+TableKeyValue(provincias-baleares-islasbaleares):
+  table: 'provincias'
+  key: 'islasbaleares'
+  value: 'Islas Baleares'
+
+TableKeyValueDependency(provincias-baleares-islasbaleares):
+  table: 'provincias'
+  dependency: 'baleares'
+  key: 'islasbaleares'
+
+TableKeyValue(provincias-canarias-laspalmas):
+  table: 'provincias'
+  key: 'laspalmas'
+  value: 'Las Palmas'
+
+TableKeyValueDependency(provincias-canarias-laspalmas):
+  table: 'provincias'
+  dependency: 'canarias'
+  key: 'laspalmas'
+
+TableKeyValue(provincias-canarias-tenerife):
+  table: 'provincias'
+  key: 'tenerife'
+  value: 'Santa Cruz de Tenerife'
+
+TableKeyValueDependency(provincias-canarias-tenerife):
+  table: 'provincias'
+  dependency: 'canarias'
+  key: 'tenerife'
+
+TableKeyValue(provincias-cantabria-cantabria):
+  table: 'provincias'
+  key: 'cantabria'
+  value: 'Cantabria'
+
+TableKeyValueDependency(provincias-cantabria-cantabria):
+  table: 'provincias'
+  dependency: 'cantabria'
+  key: 'cantabria'
+
+TableKeyValue(provincias-castillalamancha-albacete):
+  table: 'provincias'
+  key: 'albacete'
+  value: 'Albacete'
+
+TableKeyValueDependency(provincias-castillalamancha-albacete):
+  table: 'provincias'
+  dependency: 'castillalamancha'
+  key: 'albacete'
+
+TableKeyValue(provincias-castillalamancha-ciudadreal):
+  table: 'provincias'
+  key: 'ciudadreal'
+  value: 'Ciudad Real'
+
+TableKeyValueDependency(provincias-castillalamancha-ciudadreal):
+  table: 'provincias'
+  dependency: 'castillalamancha'
+  key: 'ciudadreal'
+
+TableKeyValue(provincias-castillalamancha-cuenca):
+  table: 'provincias'
+  key: 'cuenca'
+  value: 'Cuenca'
+
+TableKeyValueDependency(provincias-castillalamancha-cuenca):
+  table: 'provincias'
+  dependency: 'castillalamancha'
+  key: 'cuenca'
+
+TableKeyValue(provincias-castillalamancha-guadalajara):
+  table: 'provincias'
+  key: 'guadalajara'
+  value: 'Guadalajara'
+
+TableKeyValueDependency(provincias-castillalamancha-guadalajara):
+  table: 'provincias'
+  dependency: 'castillalamancha'
+  key: 'guadalajara'
+
+TableKeyValue(provincias-castillalamancha-toledo):
+  table: 'provincias'
+  key: 'toledo'
+  value: 'Toledo'
+
+TableKeyValueDependency(provincias-castillalamancha-toledo):
+  table: 'provincias'
+  dependency: 'castillalamancha'
+  key: 'toledo'
+
+TableKeyValue(provincias-castillaleon-avila):
+  table: 'provincias'
+  key: 'avila'
+  value: 'Ávila'
+
+TableKeyValueDependency(provincias-castillaleon-avila):
+  table: 'provincias'
+  dependency: 'castillaleon'
+  key: 'avila'
+
+TableKeyValue(provincias-castillaleon-burgos):
+  table: 'provincias'
+  key: 'burgos'
+  value: 'Burgos'
+
+TableKeyValueDependency(provincias-castillaleon-burgos):
+  table: 'provincias'
+  dependency: 'castillaleon'
+  key: 'burgos'
+
+TableKeyValue(provincias-castillaleon-leon):
+  table: 'provincias'
+  key: 'leon'
+  value: 'León'
+
+TableKeyValueDependency(provincias-castillaleon-leon):
+  table: 'provincias'
+  dependency: 'castillaleon'
+  key: 'leon'
+
+TableKeyValue(provincias-castillaleon-palencia):
+  table: 'provincias'
+  key: 'palencia'
+  value: 'Palencia'
+
+TableKeyValueDependency(provincias-castillaleon-palencia):
+  table: 'provincias'
+  dependency: 'castillaleon'
+  key: 'palencia'
+
+TableKeyValue(provincias-castillaleon-salamanca):
+  table: 'provincias'
+  key: 'salamanca'
+  value: 'Salamanca'
+
+TableKeyValueDependency(provincias-castillaleon-salamanca):
+  table: 'provincias'
+  dependency: 'castillaleon'
+  key: 'salamanca'
+
+TableKeyValue(provincias-castillaleon-segovia):
+  table: 'provincias'
+  key: 'segovia'
+  value: 'Segovia'
+
+TableKeyValueDependency(provincias-castillaleon-segovia):
+  table: 'provincias'
+  dependency: 'castillaleon'
+  key: 'segovia'
+
+TableKeyValue(provincias-castillaleon-soria):
+  table: 'provincias'
+  key: 'soria'
+  value: 'Soria'
+
+TableKeyValueDependency(provincias-castillaleon-soria):
+  table: 'provincias'
+  dependency: 'castillaleon'
+  key: 'soria'
+
+TableKeyValue(provincias-castillaleon-valladolid):
+  table: 'provincias'
+  key: 'valladolid'
+  value: 'Valladolid'
+
+TableKeyValueDependency(provincias-castillaleon-valladolid):
+  table: 'provincias'
+  dependency: 'castillaleon'
+  key: 'valladolid'
+
+TableKeyValue(provincias-castillaleon-zamora):
+  table: 'provincias'
+  key: 'zamora'
+  value: 'Zamora'
+
+TableKeyValueDependency(provincias-castillaleon-zamora):
+  table: 'provincias'
+  dependency: 'castillaleon'
+  key: 'zamora'
+
+TableKeyValue(provincias-cataluna-barcelona):
+  table: 'provincias'
+  key: 'barcelona'
+  value: 'Barcelona'
+
+TableKeyValueDependency(provincias-cataluna-barcelona):
+  table: 'provincias'
+  dependency: 'cataluna'
+  key: 'barcelona'
+
+TableKeyValue(provincias-cataluna-gerona):
+  table: 'provincias'
+  key: 'gerona'
+  value: 'Gerona'
+
+TableKeyValueDependency(provincias-cataluna-gerona):
+  table: 'provincias'
+  dependency: 'cataluna'
+  key: 'gerona'
+
+TableKeyValue(provincias-cataluna-lerida):
+  table: 'provincias'
+  key: 'lerida'
+  value: 'Lérida'
+
+TableKeyValueDependency(provincias-cataluna-lerida):
+  table: 'provincias'
+  dependency: 'cataluna'
+  key: 'lerida'
+
+TableKeyValue(provincias-cataluna-tarragona):
+  table: 'provincias'
+  key: 'tarragona'
+  value: 'Tarragona'
+
+TableKeyValueDependency(provincias-cataluna-tarragona):
+  table: 'provincias'
+  dependency: 'cataluna'
+  key: 'tarragona'
+
+TableKeyValue(provincias-ceuta-ceuta):
+  table: 'provincias'
+  key: 'ceuta'
+  value: 'Ceuta'
+
+TableKeyValueDependency(provincias-ceuta-ceuta):
+  table: 'provincias'
+  dependency: 'ceuta'
+  key: 'ceuta'
+
+TableKeyValue(provincias-comunidadvalenciana-alicante):
+  table: 'provincias'
+  key: 'alicante'
+  value: 'Alicante'
+
+TableKeyValueDependency(provincias-comunidadvalenciana-alicante):
+  table: 'provincias'
+  dependency: 'comunidadvalenciana'
+  key: 'alicante'
+
+TableKeyValue(provincias-comunidadvalenciana-castellon):
+  table: 'provincias'
+  key: 'castellon'
+  value: 'Castellón'
+
+TableKeyValueDependency(provincias-comunidadvalenciana-castellon):
+  table: 'provincias'
+  dependency: 'comunidadvalenciana'
+  key: 'castellon'
+
+TableKeyValue(provincias-comunidadvalenciana-valencia):
+  table: 'provincias'
+  key: 'valencia'
+  value: 'Valencia'
+
+TableKeyValueDependency(provincias-comunidadvalenciana-valencia):
+  table: 'provincias'
+  dependency: 'comunidadvalenciana'
+  key: 'valencia'
+
+TableKeyValue(provincias-comunidadmadrid-madrid):
+  table: 'provincias'
+  key: 'madrid'
+  value: 'Madrid'
+
+TableKeyValueDependency(provincias-comunidadmadrid-madrid):
+  table: 'provincias'
+  dependency: 'comunidadmadrid'
+  key: 'madrid'
+
+TableKeyValue(provincias-extremadura-badajoz):
+  table: 'provincias'
+  key: 'badajoz'
+  value: 'Badajoz'
+
+TableKeyValueDependency(provincias-extremadura-badajoz):
+  table: 'provincias'
+  dependency: 'extremadura'
+  key: 'badajoz'
+
+TableKeyValue(provincias-extremadura-caceres):
+  table: 'provincias'
+  key: 'caceres'
+  value: 'Cáceres'
+
+TableKeyValueDependency(provincias-extremadura-caceres):
+  table: 'provincias'
+  dependency: 'extremadura'
+  key: 'caceres'
+
+TableKeyValue(provincias-galicia-lacoruna):
+  table: 'provincias'
+  key: 'lacoruna'
+  value: 'La Coruña'
+
+TableKeyValueDependency(provincias-galicia-lacoruna):
+  table: 'provincias'
+  dependency: 'galicia'
+  key: 'lacoruna'
+
+TableKeyValue(provincias-galicia-lugo):
+  table: 'provincias'
+  key: 'lugo'
+  value: 'Lugo'
+
+TableKeyValueDependency(provincias-galicia-lugo):
+  table: 'provincias'
+  dependency: 'galicia'
+  key: 'lugo'
+
+TableKeyValue(provincias-galicia-orense):
+  table: 'provincias'
+  key: 'orense'
+  value: 'Orense'
+
+TableKeyValueDependency(provincias-galicia-orense):
+  table: 'provincias'
+  dependency: 'galicia'
+  key: 'orense'
+
+TableKeyValue(provincias-galicia-pontevedra):
+  table: 'provincias'
+  key: 'pontevedra'
+  value: 'Pontevedra'
+
+TableKeyValueDependency(provincias-galicia-pontevedra):
+  table: 'provincias'
+  dependency: 'galicia'
+  key: 'pontevedra'
+
+TableKeyValue(provincias-larioja-rioja):
+  table: 'provincias'
+  key: 'rioja'
+  value: 'La rioja'
+
+TableKeyValueDependency(provincias-larioja-rioja):
+  table: 'provincias'
+  dependency: 'larioja'
+  key: 'rioja'
+
+TableKeyValue(provincias-melilla-meilla):
+  table: 'provincias'
+  key: 'meilla'
+  value: 'Melilla'
+
+TableKeyValueDependency(provincias-melilla-meilla):
+  table: 'provincias'
+  dependency: 'melilla'
+  key: 'meilla'
+
+TableKeyValue(provincias-navarra-navarra):
+  table: 'provincias'
+  key: 'navarra'
+  value: 'Navarra'
+
+TableKeyValueDependency(provincias-navarra-navarra):
+  table: 'provincias'
+  dependency: 'navarra'
+  key: 'navarra'
+
+TableKeyValue(provincias-paisvasco-alava):
+  table: 'provincias'
+  key: 'alava'
+  value: 'Álava'
+
+TableKeyValueDependency(provincias-paisvasco-alava):
+  table: 'provincias'
+  dependency: 'paisvasco'
+  key: 'alava'
+
+TableKeyValue(provincias-paisvasco-guipuzcoa):
+  table: 'provincias'
+  key: 'guipuzcoa'
+  value: 'Guipúzcoa'
+
+TableKeyValueDependency(provincias-paisvasco-guipuzcoa):
+  table: 'provincias'
+  dependency: 'paisvasco'
+  key: 'guipuzcoa'
+
+TableKeyValue(provincias-paisvasco-vizcaya):
+  table: 'provincias'
+  key: 'vizcaya'
+  value: 'Vizcaya'
+
+TableKeyValueDependency(provincias-paisvasco-vizcaya):
+  table: 'provincias'
+  dependency: 'paisvasco'
+  key: 'vizcaya'
+
+TableKeyValue(provincias-principadoasturias-asturias):
+  table: 'provincias'
+  key: 'asturias'
+  value: 'Asturias'
+
+TableKeyValueDependency(provincias-principadoasturias-asturias):
+  table: 'provincias'
+  dependency: 'principadoasturias'
+  key: 'asturias'
+
+TableKeyValue(provincias-regionmurcia-murcia):
+  table: 'provincias'
+  key: 'murcia'
+  value: 'Región de Murcia'
+
+TableKeyValueDependency(provincias-regionmurcia-murcia):
+  table: 'provincias'
+  dependency: 'regionmurcia'
+  key: 'murcia'
+

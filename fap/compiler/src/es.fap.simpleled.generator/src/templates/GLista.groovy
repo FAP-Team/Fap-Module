@@ -27,7 +27,16 @@ public class GLista {
 		String contenido = "";
 		
 		for(ElementoLista el : lista.elementos){
-			contenido += generateElemento(el);
+			// Distinguir si el elemento es de tipo 'normal' o 'dependiente' para generarlo de una forma u otra
+			if (el.value){
+				// Generacion de tipo 'normal'
+				contenido += generateElemento(el);
+			}
+			else {
+				// Generación de tipo 'dependiente
+				contenido += generateElementoDependiente(el);
+				// Nombre generado de la tabla : table-key-key
+			}
 		}
 		
 		FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + ".yaml", contenido);
@@ -158,6 +167,45 @@ public class GLista {
   value: '${value}'
 
 """
+	}
+	
+	private String generateElementoDependiente(ElementoLista el){
+		String table = lista.name;
+		String key = el.key.getFirst();
+		String keyDep = "";
+		String valueDep = "";
+		// Calculamos el nombre de la clave del elemento dependiente
+		for (String rest : el.key.getResto()) {
+			key += "."+rest;
+		}
+		String out = "";
+		// Recorremos todos los elementos que tiene el elemento Dependiente
+		for (ElementoListaDependiente elDep : el.elementosDependientes){
+			// Calculamos el nombre de la clave de cada uno de los elementos
+			keyDep = elDep.key ? elDep.key.getFirst() : StringUtils.id(elDep.value);
+			for (String rest : elDep.key.getResto()) {
+				keyDep += "."+rest;
+			}
+			// Calculamos que valor va a tener asociado cada clave
+			valueDep = elDep.value?:elDep.key;
+			// Empezamos a crear la salida
+			// Para la tabla TKV
+			out += """TableKeyValue(${table}-${key}-${keyDep}):
+  table: '${table}'
+  key: '${keyDep}'
+  value: '${valueDep}'
+
+"""
+			// Para la tabla TKVDependency
+			out += """TableKeyValueDependency(${table}-${key}-${keyDep}):
+  table: '${table}'
+  dependency: '${key}'
+  key: '${keyDep}'
+
+"""
+		}
+		//String value = el.value?:el.key;
+		return out;
 	}
 	
 }

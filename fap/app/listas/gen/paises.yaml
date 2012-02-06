@@ -1,0 +1,5 @@
+TableKeyValue(paises-espana):
+  table: 'paises'
+  key: 'espana'
+  value: 'España'
+

@@ -8,6 +8,7 @@ Formulario Solicitud {
 			Enlace "Combos sobreescritos" pagina=CombosOverwrite
 			Enlace "Valores por defecto" pagina=ValoresPorDefecto
 			Enlace "ErrorCombos" pagina=PaginaCombosError
+			Enlace "Combos dependientes" pagina=PaginaCombosDependientes
 		}
 		
 		Grupo "Solicitante" {
@@ -114,6 +115,15 @@ Formulario Solicitud {
 		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
 		Combo campo=Solicitud.comboError comboTexto=nombre titulo="Error del combo"
 		Combo campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
+	}
+	
+	Pagina PaginaCombosDependientes campo=Solicitud{
+		Grupo titulo="Combos dependendientes"{
+			Combo paises campo=Solicitud.comboTest.paises titulo="Paises"
+			Combo comunidades campo=Solicitud.comboTest.comunidades titulo="Comunidades Autónomas" dependeDe=paises
+			Combo provincias campo=Solicitud.comboTest.provincias titulo="Provincias" dependeDe=comunidades
+			Combo municipios campo=Solicitud.comboTest.municipios titulo="Municipios" dependeDe=provincias
+		}
 	}
 	
 	Pagina ValoresPorDefecto campo=Solicitud{

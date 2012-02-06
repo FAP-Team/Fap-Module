@@ -114,6 +114,12 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 			Columna campo=TableKeyValue.key titulo="Clave"
 			Columna campo=TableKeyValue.value titulo="Valor" expandir
 		}
+		
+		Tabla tabladetablasdependency titulo="Tabla de tablas de dependencias" campo=TableKeyValueDependency popup=PopupTablaDeTablasDependency {
+			Columna campo=TableKeyValueDependency.table titulo="Tabla"
+			Columna campo=TableKeyValueDependency.dependency titulo="Dependencia"
+			Columna campo=TableKeyValueDependency.key titulo="Clave" expandir
+		}
 
 		Grupo titulo="Actualizar desde fichero" {
 			Form actualizarDesdeFichero {
@@ -133,6 +139,12 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 		Texto campo=TableKeyValue.table titulo="Tabla"
 		Texto campo=TableKeyValue.key titulo="Clave"
 		Texto campo=TableKeyValue.value titulo="Valor"
+	}
+	
+	Popup PopupTablaDeTablasDependency campo=TableKeyValueDependency {
+		Texto campo=TableKeyValueDependency.table titulo="Tabla"
+		Texto campo=TableKeyValueDependency.dependency titulo="Dependencia"
+		Texto campo=TableKeyValueDependency.key titulo="Clave"
 	}
 
 	Pagina Emails noForm{

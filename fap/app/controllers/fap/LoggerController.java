@@ -41,26 +41,42 @@ public class LoggerController extends GenericController {
 		Date date = new Date(fecha);
 		
 		Gson gson = new Gson();
-		BufferedReader br = null;
+		BufferedReader brDaily = null, brAuditable = null;
 		try {
-			FileReader file = new FileReader(nombreFichero(date));
-			br = new BufferedReader(file);
+			FileReader file = new FileReader(nombreFichero(date, "Daily"));
+			brDaily = new BufferedReader(file);
 		} catch (FileNotFoundException e) {
-			Logger.error(e,"Fichero de log no encontrado");
-		}	
+			Logger.error(e,"Fichero de log del Daily no encontrado");
+		}
+		
+		try {
+			FileReader file = new FileReader(nombreFichero(date, "Auditable"));
+			brAuditable = new BufferedReader(file);
+		} catch (FileNotFoundException e) {
+			Logger.error(e,"Fichero de log Auditable no encontrado");
+		}
 		
 		java.util.List<Log> rows = new ArrayList<Log>();
 
-		if (br != null) {
+		if ((brDaily != null) && (brAuditable != null)){
 			String linea;
 			try {
-				while ((linea = br.readLine()) != null) {
+				while ((linea = brDaily.readLine()) != null) {
 					rows.add(gson.fromJson(linea, Log.class)); 
 				}
 			} catch (JsonSyntaxException e) {
-				Logger.error(e,"Error de formato en el fichero de log");
+				Logger.error(e,"Error de formato en el fichero de log Daily");
 			} catch (IOException e) {
-				Logger.error(e,"Error al leer el fichero de log");
+				Logger.error(e,"Error al leer el fichero de log Daily");
+			}
+			try {
+				while ((linea = brAuditable.readLine()) != null) {
+					rows.add(gson.fromJson(linea, Log.class)); 
+				}
+			} catch (JsonSyntaxException e) {
+				Logger.error(e,"Error de formato en el fichero de log Auditable");
+			} catch (IOException e) {
+				Logger.error(e,"Error al leer el fichero de log Auditable");
 			}
 		}
 		
@@ -85,10 +101,10 @@ public class LoggerController extends GenericController {
 
 	
 	@Util
-	private static String nombreFichero(Date date) {
+	private static String nombreFichero(Date date, String loggerName) {
 		
 		String fileName = null;
-		org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
+		org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("app");
 		
 		// busca entre los appenders uno que sea de tipo DailyRollingFile,
 		// preferentemente aquel cuyo nombre es "Daily", que es el configurado inicialmente en
@@ -98,7 +114,7 @@ public class LoggerController extends GenericController {
 			Appender appender = e.nextElement();
 			if (appender instanceof DailyRollingFileAppender){
 				fileName = ((DailyRollingFileAppender)appender).getFile();
-				if (((DailyRollingFileAppender)appender).getName().equals("Daily")){
+				if (((DailyRollingFileAppender)appender).getName().equals(loggerName)){
 					break;
 				}
 			}

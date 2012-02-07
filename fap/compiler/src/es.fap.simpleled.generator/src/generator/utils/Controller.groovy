@@ -170,9 +170,13 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
+
+	private static Logger log = Logger.getLogger(${controllerGenName}.class);
 
 ${metodoIndex()}
 
@@ -295,6 +299,7 @@ public class ${controllerName} extends ${controllerGenName} {
 				${campos.collect{"$it.entidad.clase $it.entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, it.almacen, it.entidad)};"}.join("\n")}
 				${indexEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
 				${saveEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
+				log.info("Visitando página: "+${renderView});
 				renderTemplate(${StringUtils.params(
 					renderView,
 					"accion",
@@ -378,10 +383,15 @@ public class ${controllerName} extends ${controllerGenName} {
 			if (entidadPagina.entidad)
 				metodoEditar += """	
 					if(!Messages.hasErrors()){
+						log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito");
 						${entidadPagina.entidad? "${entidad.variableDb}.save();" : ""}
 						${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
+					} else{
+						log.info("Acción Editar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 					}
 			""";
+			else
+				metodoEditar += """ log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito pero no hay nada que guardar"); """;
 			metodoEditar += """	
 				    ${editarRenderCall}
 				}
@@ -446,8 +456,11 @@ public class ${controllerName} extends ${controllerGenName} {
 					}
 					${entidadSiTabla.nulo()? "${entidad.typeId} = null;" : ""}
 					if(!Messages.hasErrors()){
+						log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito");
 						$crearSaveCall
 						${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
+					} else{
+						log.info("Acción Crear de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 					}
 					${controllerName}.crearRender(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
 				}
@@ -490,7 +503,10 @@ public class ${controllerName} extends ${controllerGenName} {
 						${controllerName}.borrarValidateRules(${StringUtils.params(entidad.variableDb)});
 					}
 					if(!Messages.hasErrors()){
+						log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito");
 						$borrarEntidad
+					} else{
+						log.info("Acción Borrar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 					}
 					${controllerName}.borrarRender(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
 				}

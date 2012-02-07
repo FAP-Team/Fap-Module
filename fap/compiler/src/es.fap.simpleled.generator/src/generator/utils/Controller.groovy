@@ -176,7 +176,7 @@ import org.apache.log4j.MDC;
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
 
-	private static Logger log = Logger.getLogger(${controllerGenName}.class);
+	private static Logger log = Logger.getLogger("Paginas");
 
 ${metodoIndex()}
 

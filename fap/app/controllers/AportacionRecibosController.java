@@ -22,7 +22,7 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 		for(Documento documento: rows){
 			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.put("doc", documento);
-			if (secure.check("aportacionNoNull", "visible", "editar", ids, vars)) {
+			if (secure.checkGrafico("aportacionNoNull", "visible", "editar", ids, vars)) {
 				rowsFiltered.add(documento);
 			}
 		}

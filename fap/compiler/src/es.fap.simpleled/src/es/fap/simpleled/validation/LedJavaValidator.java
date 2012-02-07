@@ -264,19 +264,24 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	}
 	
 	@Check
-	public void checkPermisoGraficoNombreUnico(PermisoGrafico permiso){
-		for (PermisoAcceso p : ModelUtils.<PermisoAcceso>getVisibleNodes(LedPackage.Literals.PERMISO_ACCESO, permiso.eResource())) {
-			if (permiso.getName().equals(p.getName()))
-				error("Existe un permiso de acceso con el mismo nombre", LedPackage.Literals.PERMISO_GRAFICO__NAME);
+	public void checkPermisoReturn(PermisoReturn permisoReturn){
+		if (permisoReturn.getPares().size() == 0) return;
+		Set<String> allAcciones = new HashSet<String>();
+		for (AccionesGrafico acciones: permisoReturn.getPares()){
+			for (String accion: acciones.getAcciones().getAcciones()){
+				if (allAcciones.contains(accion))
+					error("No se pueden repetir acciones", acciones, LedPackage.Literals.ACCIONES_GRAFICO__ACCIONES, 0);
+				else
+					allAcciones.add(accion);
+			}
 		}
+		
 	}
 	
 	@Check
-	public void checkPermisoAccesoNombreUnico(PermisoAcceso permiso){
-		for (PermisoGrafico p : ModelUtils.<PermisoGrafico>getVisibleNodes(LedPackage.Literals.PERMISO_GRAFICO, permiso.eResource())) {
-			if (permiso.getName().equals(p.getName()))
-				error("Existe un permiso gráfico con el mismo nombre", LedPackage.Literals.PERMISO_ACCESO__NAME);
-		}
+	public void checkAcciones(Acciones acciones){
+		if (acciones.isMultiple() && acciones.getAcciones().size() == 0)
+			error("La lista de acciones no puede ser vacía", LedPackage.Literals.ACCIONES__ACCIONES);
 	}
 	
 }

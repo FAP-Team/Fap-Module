@@ -43,7 +43,9 @@ public class Messages {
     }
     
     public static List<String> messages(MessageType key) {
-        return current().messages.get(key);
+    	List<String> result = current().messages.get(key);
+    	if (result == null) result = new ArrayList<String>();
+        return result;
     }
 
     private static void add(MessageType key, String message) {
@@ -170,7 +172,7 @@ public class Messages {
     }
 
     public static boolean hasErrors(){
-    	return current().hasMessages(MessageType.ERROR) || current().hasMessages(MessageType.FATAL) || Validation.current().hasErrors();
+    	return current().hasMessages(MessageType.ERROR) || Validation.current().hasErrors();
     }
     
     public static void clear() {

@@ -65,7 +65,7 @@ ${cEconomico.tipo.descripcion}
 	
 	Pagina AportacionRecibos {
 			
-		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permiso=aportacionNoNull
+		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
 			popupLeer=PopUpDocAportados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" expandir

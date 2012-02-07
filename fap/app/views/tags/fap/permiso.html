@@ -19,14 +19,14 @@
 		
 	if (permiso != null) {
 		def secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
-		def newPermisoUpdate = secure.check(permiso, "editable", accion, tags.TagMapStack.top("idParams"), null); 
+		def newPermisoUpdate = secure.checkGrafico(permiso, "editable", accion, tags.TagMapStack.top("idParams"), null); 
 		if (editablePila != null)
 			editable = editablePila && newPermisoUpdate;
 		else
 			editable = newPermisoUpdate;
 		tags.TagMapStack.push("editable", editable);
 
-		def newPermisoRead = secure.check(permiso, "visible", accion, tags.TagMapStack.top("idParams"), null); 
+		def newPermisoRead = secure.checkGrafico(permiso, "visible", accion, tags.TagMapStack.top("idParams"), null); 
 		if (visiblePila != null)
 			visible = visiblePila && newPermisoRead;	
 		else

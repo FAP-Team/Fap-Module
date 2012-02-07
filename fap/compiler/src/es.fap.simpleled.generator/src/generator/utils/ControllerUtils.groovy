@@ -48,8 +48,10 @@ class ControllerUtils {
 				public static ${entidad.clase} get${entidad.clase}(${entidad.typeId}){
 					${entidad.clase} ${entidad.variable} = null;
 					if(${entidad.id} == null){
-						Messages.fatal("Falta parámetro ${entidad.id}");
-					}else{
+						if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro ${entidad.id}"))
+							Messages.fatal("Falta parámetro ${entidad.id}");
+					}
+					else{
 						${entidad.variable} = ${entidad.clase}.findById($entidad.id);
 						if($entidad.variable == null){
 							Messages.fatal("Error al recuperar ${entidad.clase}");
@@ -110,10 +112,14 @@ class ControllerUtils {
         ${entidad.clase} ${entidad.variable} = null;
 		${singleton}
         if(${almacen.id} == null){
-            Messages.fatal("Falta parámetro $almacen.id");
-        }else if($entidad.id == null){
-            Messages.fatal("Falta parámetro $entidad.id");
-        }else{
+			if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro $almacen.id"))
+            	Messages.fatal("Falta parámetro $almacen.id");
+        }
+		if($entidad.id == null){
+			if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro $entidad.id"))
+            	Messages.fatal("Falta parámetro $entidad.id");
+        }
+		if(${almacen.id} != null && $entidad.id != null){
             $entidad.variable = ${entidad.clase}.find("select $entidad.variable from $almacen.clase $almacen.variable join ${campo.firstLower()} $entidad.variable where ${almacen.variable}.id=? and ${entidad.variable}.id=?", $almacen.id, $entidad.id).first();
             if($entidad.variable == null){
                 Messages.fatal("Error al recuperar ${entidad.clase}");
@@ -202,7 +208,7 @@ class ControllerUtils {
         String out = "";
         if ((Pagina.class.isInstance(objeto)) || (Grupo.class.isInstance(objeto)) || (Popup.class.isInstance(objeto)) || Form.class.isInstance(objeto) || EntidadAutomatica.class.isInstance(objeto)) {
 			if (objeto.permiso != null){
-                out += """if (secure.check("${objeto.permiso.name}", "editable", accion, (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
+                out += """if (secure.checkGrafico("${objeto.permiso.name}", "editable", accion, (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
 				validatedFields.push(new HashSet<String>());
 			}
 			for (Elemento elemento: objeto.elementos) {

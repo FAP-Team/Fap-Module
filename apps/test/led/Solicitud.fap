@@ -47,9 +47,9 @@ Formulario Solicitud {
 		}
 
 		Grupo "Permisos" {
-			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administradorGr
-			Enlace "Permiso grupo" pagina=PermisoGrupo permiso=administradorGr
-			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditableGr
+			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administrador
+			Enlace "Permiso grupo" pagina=PermisoGrupo permiso=administrador
+			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable
 			Enlace "Permiso tablas" pagina=PermisoEnTablas 
 		}
 
@@ -308,7 +308,7 @@ Formulario Solicitud {
 	
 	Pagina PermisoGrupo campo=Solicitud permiso=administrador {
 		Wiki {"La página tiene un grupo que es sólo visible para administradores"}
-		Grupo permiso=administradorGr {
+		Grupo permiso=administrador {
 			Wiki {"Este grupo es sólo visible para administradores"}	
 		}
 	}

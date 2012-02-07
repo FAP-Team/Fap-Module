@@ -11,7 +11,7 @@ import controllers.gen.EditarSolicitudControllerGen;
 public class EditarSolicitudController extends EditarSolicitudControllerGen {
 
 	public static void index(String accion, Long idSolicitud){
-		if (secure.check("solicitud", "editable", "editar", (Map<String, Long>) tags.TagMapStack.top("idParams"), null))
+		if (secure.checkAcceso("solicitud", "editar", (Map<String, Long>) tags.TagMapStack.top("idParams"), null))
 			redirect(FapProperties.get("fap.app.firstPage") + "Controller.index", "editar", idSolicitud);
 		else
 			redirect(FapProperties.get("fap.app.firstPage") + "Controller.index", "leer", idSolicitud);

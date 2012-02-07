@@ -22,46 +22,43 @@ abstract public class Secure {
 		this.next = next;
 	}
 
-	public abstract boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars);
 	
-	public abstract String accion(String id, String _permiso, Map<String, Long> ids, Map<String, Object> vars);
+	public abstract ResultadoPermiso check(String id, String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars);
 	
-	protected boolean nextCheck(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars){
-		boolean result = false;
-		if(next != null){
-			result = next.check(id, _permiso, action, ids, vars);
-		}else{
-			logger.error("[" + id + "] - nextCheck con next = null. Se asume que el permiso no se cumple.");
-		}
-		return result;
+	public abstract ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars);
+	
+	
+	public boolean checkGrafico(String id, String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars){
+		ResultadoPermiso resultado = check(id, grafico, accion, ids, vars);
+		if (resultado == null) return false;
+		return resultado.checkGrafico(grafico);
 	}
 	
-	protected String nextAccion(String id, String _permiso, Map<String, Long> ids, Map<String, Object> vars){
-		String result = null;
-		if(next != null){
-			result = next.accion(id, _permiso, ids, vars);
-		}else{
-			logger.error("[" + id + "] - nextAccion con next = null. Se asume que el permiso no se cumple.");
-		}
-		return result;
+	public boolean checkAcceso(String id, String accion, Map<String, Long> ids, Map<String, Object> vars){
+		if (accion.equals("borrado")) return true;
+		ResultadoPermiso resultado = check(id, "visible", accion, ids, vars);
+		if (resultado == null) return false;
+		return resultado.checkAcceso(accion);
 	}
 	
-	public static boolean checkIsEditableOrLess(String _permiso){
-		return "editable".equals(_permiso) || "visible".equals(_permiso) || "none".equals(_permiso);
+	public String getPrimeraAccion(String id, Map<String, Long> ids, Map<String, Object> vars){
+		ResultadoPermiso resultado = accion(id, ids, vars);
+		if (resultado == null) return "editar";
+		return resultado.getPrimeraAccion();
 	}
 	
-	public static boolean checkIsVisibleOrLess(String _permiso){
-		return "visible".equals(_permiso) || "none".equals(_permiso);
+	protected ResultadoPermiso nextCheck(String id, String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars){
+		if(next != null)
+			return next.check(id, grafico, accion, ids, vars);
+		logger.error("[" + id + "] - nextCheck con next = null. Se asume que el permiso no se cumple.");
+		return null;
 	}
 	
-	public static boolean checkIsNone(String _permiso){
-		return "none".equals(_permiso);
+	protected ResultadoPermiso nextAccion(String id, Map<String, Long> ids, Map<String, Object> vars){
+		if(next != null)
+			return next.accion(id, ids, vars);
+		logger.error("[" + id + "] - nextAccion con next = null. Se asume que el permiso no se cumple.");
+		return null;
 	}
 	
-	/*
-	 * Comprueba que el String action contiene uno de los 5 posibles valores válidos
-	 */
-	public static boolean checkAction(String action){
-		return "leer".equals(action) || "editar".equals(action) || "crear".equals(action) || "borrar".equals(action)  || "borrado".equals(action);
-	}
 }

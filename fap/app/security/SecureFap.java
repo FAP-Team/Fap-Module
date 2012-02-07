@@ -10,12 +10,13 @@ public class SecureFap extends Secure {
 	}
 
 	@Override
-	public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {		
+	public ResultadoPermiso check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {		
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
 	@Override
-	public String accion(String id, String _permiso, Map<String, Long> ids, Map<String, Object> vars) {
-		return nextAccion(id, _permiso, ids, vars);
+	public ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {
+		return nextAccion(id, ids, vars);
 	}
+
 }

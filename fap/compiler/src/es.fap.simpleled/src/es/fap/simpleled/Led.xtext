@@ -7,8 +7,7 @@ Model:
 		(entidades += Entity) |
 	 	(formularios += Formulario) |
 	 	(listas += Lista) |
-	 	(permisosGrafico += PermisoGrafico) | 
-	 	(permisosAcceso += PermisoAcceso)
+	 	(permisos += Permiso)
 	 ) *
 ;
 
@@ -84,7 +83,7 @@ Formulario:
 	elemento='Formulario' name=IDS
 	(
 		("campo" "=" campo=Campo)?
-		& ("permiso" "=" permiso=[PermisoAcceso])?
+		& ("permiso" "=" permiso=[Permiso])?
 		& (inicial?="inicial")?
 	)
 	'{'
@@ -105,7 +104,7 @@ MenuElemento:
 
 MenuGrupo:
 	elemento='Grupo' titulo=STRING 
-	("permiso" "=" permiso=[PermisoGrafico])?  '{'
+	("permiso" "=" permiso=[Permiso])?  '{'
 		elementos +=MenuElemento*
 	'}'
 ;
@@ -113,7 +112,7 @@ MenuGrupo:
 MenuEnlace:
 	elemento='Enlace' titulo=STRING
 	(
-		("permiso" "=" permiso=[PermisoGrafico])?
+		("permiso" "=" permiso=[Permiso])?
 		& (
 			('pagina' '=' pagina=PaginaAccion) |
 			('popup' '=' popup=PopupAccion) |
@@ -148,7 +147,7 @@ Pagina:
 	(
 		("titulo" "=" titulo=STRING)?
 		& ("campo" "=" campo=Campo)?
-		& ("permiso" "=" permiso=[PermisoAcceso])?
+		& ("permiso" "=" permiso=[Permiso])?
 		& (noForm?='noForm')?
 		& (noAutenticar?='noAutenticar')?
 		& (guardarParaPreparar?="guardarParaPreparar")?
@@ -164,7 +163,7 @@ Popup:
 	(
 		('titulo' '=' titulo=STRING)?
 		& ("campo" "=" campo=Campo)
-		& ("permiso" "=" permiso=[PermisoAcceso])?
+		& ("permiso" "=" permiso=[Permiso])?
 	)
 	'{'
 		elementos+=Elemento*
@@ -179,7 +178,7 @@ Grupo:
 		('mostrarSiCampo' campo=Campo '=' siCampoValues=Values)? &
 		('mostrarSiExpresion' siExpresion=STRING)? &
 		('borde' '=' borde=("true" | "false"))? & 
-		("permiso" "=" permiso=[PermisoGrafico])?
+		("permiso" "=" permiso=[Permiso])?
 	)
 	'{'
 		elementos+=Elemento*
@@ -313,7 +312,7 @@ Combo:
 Form:
 	elemento='Form' (name=ID) (
 		(autoEnviar?="autoEnviar")?
-		& ("permiso" "=" permiso=[PermisoGrafico])?
+		& ("permiso" "=" permiso=[Permiso])?
 		& ('redirigir' '=' redirigir=PaginaAccion)?
 	)
 	'{'
@@ -328,7 +327,7 @@ Tabla:
 		& ('titulo' '=' titulo=STRING)?
         & ('alto' '=' alto=STRING)? 
         & (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
-        & ("permiso" "=" permiso=[PermisoGrafico])?
+        & ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('seleccionable' "=" seleccionable=STRING)?
 	    & ('popup' '=' popup=[Popup|IDS])?
@@ -356,7 +355,7 @@ Columna:
 	       ( ('campo' '=' campo=Campo) | ('funcion' '=' funcion=STRING) )
 	       & ('titulo' '=' titulo=STRING)? 
 	       & ('ancho' '=' ancho=STRING)? 
-		   & ("permiso" "=" permiso=[PermisoGrafico])?
+		   & ("permiso" "=" permiso=[Permiso])?
 	       & (expandir?='expandir')?
 	)
 ;
@@ -424,7 +423,7 @@ PersonaJuridica:
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING) &
 		(requerido?='requerido')? &
-		("permiso" "=" permiso=[PermisoGrafico])?
+		("permiso" "=" permiso=[Permiso])?
 	)
 ;
 
@@ -433,7 +432,7 @@ Persona:
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
-		("permiso" "=" permiso=[PermisoGrafico])?
+		("permiso" "=" permiso=[Permiso])?
 	)
 ;
 
@@ -442,7 +441,7 @@ Solicitante:
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
-		("permiso" "=" permiso=[PermisoGrafico])?
+		("permiso" "=" permiso=[Permiso])?
 		& (noRepresentante?='noRepresentante')?
 	)
 ;
@@ -450,7 +449,7 @@ Solicitante:
 EntidadAutomatica:
 	elemento='EntidadAutomatica' (name=ID) (	
 		('campo' '=' campo=Campo) & 
-		("permiso" "=" permiso=[PermisoGrafico])?
+		("permiso" "=" permiso=[Permiso])?
 	)
 ;
 
@@ -481,56 +480,46 @@ IdOrInt:
 	ID | INT
 ;
 
-PermisoGrafico:
-	elemento='PermisoGrafico' name=ID "{"
+Permiso:
+	elemento='Permiso' name=ID "{"
 		('mensaje' '=' mensaje=STRING)?
 		(varSection = PermisoVarsSection)?
 		(
-			("return" ret = PermisoReturnGrafico) 	
+			("return" ret = PermisoReturn) 	
 			|
 			(
-				whens += PermisoWhenGrafico+
-				("else" "return" else=PermisoReturnGrafico)? 			
+				whens += PermisoWhen+
+				("else" "return" else=PermisoReturn)? 			
 			)
 		)
 	"}"
 ;
 
-PermisoWhenGrafico:
+PermisoWhen:
 	'when'
 		rule = PermisoRule
 	'return'
-		ret = PermisoReturnGrafico
+		ret = PermisoReturn
 ;
 
-PermisoReturnGrafico:
-	ret = ("editable" | "visible" | "none")
+PermisoReturn:
+	denegar?= "denegar" |
+	(all?= "all" (":" grafico=Grafico)?) | 
+	(pares += AccionesGrafico ("," pares += AccionesGrafico)*) |
+	grafico=Grafico
 ;
 
-PermisoAcceso:
-	elemento='PermisoAcceso' name=ID "{"
-		('mensaje' '=' mensaje=STRING)?
-		(varSection = PermisoVarsSection)?
-		(
-			("return" ret = PermisoReturnAcceso) 	
-			|
-			(
-				whens += PermisoWhenAcceso+
-				("else" "return" else=PermisoReturnAcceso)? 			
-			)
-		)
-	"}"
+AccionesGrafico:
+	acciones=Acciones (":" grafico=Grafico)?
 ;
 
-PermisoWhenAcceso:
-	'when'
-		rule = PermisoRule
-	'return'
-		ret = PermisoReturnAcceso
+Acciones:
+	(multiple?= "[" (acciones+="leer"? & acciones+="editar"? & acciones+="crear"? & acciones+="borrar"?) "]") |
+	(acciones+="leer" | acciones+="editar" | acciones+="crear" | acciones+="borrar")
 ;
 
-PermisoReturnAcceso:
-	all?= "all" | (acceso?= "{" (acciones+="leer"? & acciones+="editar"? & acciones+="crear"? & acciones+="borrar"?) "}")
+Grafico:
+	permiso=("editable" | "visible" | "oculto")
 ;
 
 PermisoVarsSection:
@@ -548,11 +537,11 @@ PermisoVarSqlParameters:
 ;
 
 CampoPermiso:
-	(variable=[PermisoVar] | action?="accion" | agente?="agente") (atributos=CampoPermisoAtributos)?
+	(variable=[PermisoVar] | action?="_accion" | agente?="agente") ( nullCheck?="?"? atributos=CampoPermisoAtributos)?
 ;
 
 CampoPermisoAtributos:
-	"." atributo=[Attribute|IDS] (atributos=CampoPermisoAtributos)?
+	"." atributo=[Attribute|IDS] (nullCheck?="?"? atributos=CampoPermisoAtributos)?
 ;
 
 PermisoRule:
@@ -578,20 +567,20 @@ PermisoRuleCheck:
 		| (groupOp=PermisoRuleCheckGroupOp '(' rightGroup+=PermisoRuleCheckRight (',' rightGroup+=PermisoRuleCheckRight)* ')')
 	)
 	| 
-	((not?="!")?
+	(not?="!"? permiso=[Permiso]
 		(
-			(permisoGrafico=[PermisoGrafico] "is" result=("editable" | "visible" | "none" | "_permiso"))
-			| (permisoAcceso=[PermisoAcceso] "contains" result=("leer" | "editar" | "crear" | "borrar" | "accion"))
+			(op = "is" result=("editable" | "visible" | "oculto" | "_grafico")) |
+			(op = "contains" result=("leer" | "editar" | "crear" | "borrar" | "_accion"))
 		)
 	)
 ;
 
 PermisoRuleCheckSimpleOp:
-	'=' | '!='
+	op = ('=' | '!=')
 ;
 
 PermisoRuleCheckGroupOp:
-	'in' | 'not in'
+	op = ('in' | 'not in')
 ;
 
 PermisoRuleCheckRight:

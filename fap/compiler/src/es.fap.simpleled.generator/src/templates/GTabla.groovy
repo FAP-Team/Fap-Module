@@ -391,9 +391,9 @@ public class GTabla {
 					records.add(record);
 					record.objeto = ${entidad.variable};
 					vars.put("${entidad.variable}", ${entidad.variable});
-					record.permisoLeer = ${permisoBotonLeer? "secure.check(\"${permisoBotonLeer}\", \"visible\", \"leer\", ids, vars)" : botonLeer};
-					record.permisoEditar = ${permisoBotonEditar? "secure.check(\"${permisoBotonEditar}\", \"visible\", \"editar\", ids, vars)" : botonEditar};
-					record.permisoBorrar = ${permisoBotonBorrar? "secure.check(\"${permisoBotonBorrar}\", \"visible\", \"borrar\", ids, vars)" : botonBorrar};
+					record.permisoLeer = ${permisoBotonLeer? "secure.checkAcceso(\"${permisoBotonLeer}\", \"leer\", ids, vars)" : botonLeer};
+					record.permisoEditar = ${permisoBotonEditar? "secure.checkAcceso(\"${permisoBotonEditar}\", \"editar\", ids, vars)" : botonEditar};
+					record.permisoBorrar = ${permisoBotonBorrar? "secure.checkAcceso(\"${permisoBotonBorrar}\", \"borrar\", ids, vars)" : botonBorrar};
 				}
 				return records;
 			}	
@@ -422,7 +422,7 @@ public class GTabla {
 			for(${entidad.clase} ${entidad.variable}: rows){
 				Map<String, Object> vars = new HashMap<String, Object>();
 				vars.put("${entidad.variable}", ${entidad.variable});
-				if (secure.check("${tabla.permiso.name}","visible", "leer", ids, vars)) {
+				if (secure.checkAcceso("${tabla.permiso.name}", "leer", ids, vars)) {
 					rowsFiltered.add(${entidad.variable});
 				}
 			}

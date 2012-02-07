@@ -42,4 +42,24 @@ public class CampoPermisoUtils {
 		return campoStr;
 	}
 	
+	public List<String> nullCheckList(){
+		List<String> list = new ArrayList<String>();
+		if (campo == null || campo.isAction()) return list;
+		String campoStr = "";
+		if (campo.isAgente())
+			campoStr += "agente";
+		else
+			campoStr = campo.getVariable().getName();
+		if (campo.nullCheck)
+			list.add(campoStr);
+		CampoPermisoAtributos attrs = campo.getAtributos();
+		while (attrs != null){
+			campoStr += "." + attrs.getAtributo().getName();
+			if (attrs.nullCheck)
+				list.add(campoStr);
+			attrs = attrs.getAtributos();
+		}
+		return list;
+	}
+	
 }

@@ -14,36 +14,63 @@ public class SecureAppGen extends Secure {
 	}
 
 	@Override
-	public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {
+	public ResultadoPermiso check(String id, String grafico, String action, Map<String, Long> ids, Map<String, Object> vars) {
 		
 				 if("paginaTablaVer".equals(id))
-					return paginaTablaVer(_permiso, action, ids, vars);
+					return paginaTablaVer(grafico, action, ids, vars);
 					
-		return nextCheck(id, _permiso, action, ids, vars);
+		return nextCheck(id, grafico, action, ids, vars);
 	}
 
 	@Override
-	public String accion(String id, String _permiso, Map<String, Long> ids, Map<String, Object> vars) {
-				
-		return nextAccion(id, _permiso, ids, vars);
+	public ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {
+		
+				 if("paginaTablaVer".equals(id))
+					return paginaTablaVerAccion(ids, vars);
+					
+		return nextAccion(id, ids, vars);
 	}
 	
 	
 				
-			private boolean paginaTablaVer (String _permiso, String accion, Map<String, Long> ids, Map<String, Object> vars){
+			private ResultadoPermiso paginaTablaVer (String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars){
 				//Variables
 				Agente agente = AgenteController.getAgente();
 				
 				Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 				
 				if (!accion.toString().equals("crear".toString())){
-					return checkIsEditableOrLess(_permiso);
+					return new ResultadoPermiso(Grafico.Editable);
+
 				}
 			
-				return false;
+				return null;
 			}
 		
 			
+			private ResultadoPermiso paginaTablaVerAccion (Map<String, Long> ids, Map<String, Object> vars){
+				String grafico = "visible";
+				//Variables
+				Agente agente = AgenteController.getAgente();
+				
+				Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+				List<String> acciones = new ArrayList<String>();
+				
+					acciones.clear();
+					
+				acciones.add("editar");
+				acciones.add("leer");
+				acciones.add("crear");
+				acciones.add("borrar");
+			
+					for (String accion: acciones){
+						if (!accion.toString().equals("crear".toString()))
+							return new ResultadoPermiso(Accion.parse(accion));
+					}
+				
+				return null;
+			}
+		
 		
 
 	

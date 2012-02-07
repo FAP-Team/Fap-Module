@@ -143,7 +143,7 @@ public class GSolicitante {
 		return fisicaStr;
 	}
 	
-	public String crearPersonaJuridica(String combo, PermisoGrafico permiso, boolean noRepresentante) {
+	public String crearPersonaJuridica(String combo, Permiso permiso, boolean noRepresentante) {
 		String juridicaStr = "";
 		
 		PersonaJuridica juridica = new PersonaJuridicaImpl();
@@ -176,7 +176,7 @@ public class GSolicitante {
 		return juridicaStr;
 	}
 	
-	public String crearTablaRepresentantes (String name, Campo campo, PermisoGrafico permiso, String combo, boolean noRepresentante, boolean soloJuridica) {
+	public String crearTablaRepresentantes (String name, Campo campo, Permiso permiso, String combo, boolean noRepresentante, boolean soloJuridica) {
 		String tablaStr = "";
 
 		if (!noRepresentante) {
@@ -232,7 +232,7 @@ public class GSolicitante {
 		return tablaStr;
 	}
 
-	public Popup crearPopup (String name, Campo campo, PermisoGrafico permiso) {
+	public Popup crearPopup (String name, Campo campo, Permiso permiso) {
 		Popup popup = new PopupImpl();
 
 		EObject container = campo;

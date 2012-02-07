@@ -80,7 +80,7 @@ public class GPersona {
 		return fisicaStr;
 	}
 	
-	public String crearPersonaJuridica(String combo, PermisoGrafico permiso) {
+	public String crearPersonaJuridica(String combo, Permiso permiso) {
 		String juridicaStr = "";
 		
 		PersonaJuridica juridica = new PersonaJuridicaImpl();

@@ -361,7 +361,7 @@ R
 		boolean hasPermiso = true;
 		if (permiso != null) {
 			Secure secure = InjectorConfig.getInjector().getInstance(Secure.class);
-			hasPermiso = secure.check(permiso, "visible", "editar", (Map<String, Long>)tags.TagMapStack.top("idParams"), null);
+			hasPermiso = secure.checkGrafico(permiso, "visible", "editar", (Map<String, Long>)tags.TagMapStack.top("idParams"), null);
 		}
 		
 		if (hasPermiso) {

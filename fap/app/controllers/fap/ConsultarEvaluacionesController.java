@@ -38,7 +38,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 
 	public static void tablatablaEvaluacionesAsignadas(Long idEvaluacion, Long idEntidad){		
 		//TODO Filtrar las evaluaciones que tiene asignada	
-		if(secure.check("listaEvaluaciones", "visible", null, null, null)){
+		if(secure.checkGrafico("listaEvaluaciones", "visible", "leer", null, null)){
 			java.util.List<Evaluacion> rows = Evaluacion.find( "select evaluacion from Evaluacion evaluacion order by evaluacion.solicitud.expedienteAed.idAed" ).fetch();
 			List<Evaluacion> rowsFiltered = rows; //Tabla sin permisos, no filtra
 			tables.TableRenderNoPermisos<Evaluacion> response = new tables.TableRenderNoPermisos<Evaluacion>(rowsFiltered);
@@ -49,7 +49,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 	}
 	
 	public static void aceptar(Long idEvaluacion){
-		if(secure.check("listaEvaluaciones", "editable", null, null, null)){
+		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
 			if (eval != null) {
 				eval.estado = "EnTramite";
@@ -62,7 +62,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		
 	
 	public static void rechazar(Long idEvaluacion){
-		if(secure.check("listaEvaluaciones", "editable", null, null, null)){
+		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
 			if (eval != null) {
 				eval.estado = "Rechazada";

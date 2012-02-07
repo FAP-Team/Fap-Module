@@ -97,9 +97,11 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 					|| val.equals("borrar")
 					|| val.equals("editable")
 					|| val.equals("visible")
-					|| val.equals("none")
+					|| val.equals("oculto")
 					|| val.equals("all")
-					|| val.equals("_permiso")
+					|| val.equals("_grafico")
+					|| val.equals("_accion")
+					|| val.equals("denegar")
 				){
 					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
 					continue;

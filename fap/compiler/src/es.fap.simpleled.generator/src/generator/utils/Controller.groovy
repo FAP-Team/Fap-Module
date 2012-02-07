@@ -11,8 +11,10 @@ import es.fap.simpleled.led.MenuEnlace
 import es.fap.simpleled.led.Enlace
 import es.fap.simpleled.led.Pagina
 import es.fap.simpleled.led.PaginaAccion
-import es.fap.simpleled.led.PermisoAcceso
+import es.fap.simpleled.led.Permiso
+import es.fap.simpleled.led.PermisoWhen
 import es.fap.simpleled.led.Popup
+import es.fap.simpleled.led.PopupAccion
 import es.fap.simpleled.led.Tabla
 import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.LedPackage;
@@ -26,6 +28,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import templates.GForm
 import templates.GPagina
 import templates.GPopup
+import templates.GPermiso
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.LedCampoUtils;
 
@@ -40,7 +43,7 @@ public class Controller {
 	public List<Object> saveController;
 	public CampoUtils campo;
 	public String renderView;
-	public PermisoAcceso permiso;
+	public Permiso permiso;
 	public String controllerGenName;
 	public String controllerName;
 	public String controllerGenFullName;
@@ -163,6 +166,7 @@ import controllers.${controllerFullName};
 import tables.TableRecord;
 import models.*;
 import tags.ReflectionUtils;
+import security.Accion;
 
 import java.util.List;
 import java.util.Map;
@@ -189,6 +193,8 @@ ${metodoBorrar()}
 ${metodoValidateCopy()}
 
 ${metodoPermiso()}
+
+${metodoPrimeraAccion()}
 
 ${metodoEditarRender()}
 
@@ -283,22 +289,28 @@ public class ${controllerName} extends ${controllerGenName} {
 				entidadNoSingle.typeId
 			)}){
 				if (accion == null)
-					accion = accion();
-				if (!secure.checkAction(accion) || !permiso(accion))
+					accion = getAccion();
+				if (!permiso(accion)){
 					Messages.fatal("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar esta acción"}");
+					renderTemplate(${renderView});
+				}
 				${hayAnterior? "checkRedirigir();" : ""}
+				${primerAlmacen.entidad? "$primerAlmacen.clase $primerAlmacen.variable = null;" : ""}
+				${campos.collect{"$it.entidad.clase $it.entidad.variable = null;"}.join("\n")}
 				${entidad.entidad? "$entidad.clase $entidad.variable = null;" : ""}
-				if("crear".equals(accion) && !Messages.hasErrors()){
+				${indexEntities.collect{"$it.clase $it.variable = null;"}.join("\n")}
+				${saveEntities.collect{"$it.clase $it.variable = null;"}.join("\n")}
+				if("crear".equals(accion)){
 					${ControllerUtils.newCall(entidad)}
 					${guardarAlCrear}
 				}
 				else if (!"borrado".equals(accion)){
+					${primerAlmacen.entidad? "$primerAlmacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, primerAlmacen, true)};" : ""}
+					${campos.collect{"$it.entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, it.almacen, it.entidad)};"}.join("\n")}
 					${entidad.entidad? "$entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};" : ""}
+					${indexEntities.collect{"$it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
+					${saveEntities.collect{"$it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
 				}
-				${primerAlmacen.entidad? "$primerAlmacen.clase $primerAlmacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, primerAlmacen, true)};" : ""}
-				${campos.collect{"$it.entidad.clase $it.entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, it.almacen, it.entidad)};"}.join("\n")}
-				${indexEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
-				${saveEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
 				log.info("Visitando página: "+${renderView});
 				renderTemplate(${StringUtils.params(
 					renderView,
@@ -366,34 +378,37 @@ public class ${controllerName} extends ${controllerGenName} {
 					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(controllerName, this, entidad, saveEntities) : ""}
 		   """;
 		    // Para no ir creando IF {} Vacios
-		    if (editar && !entidadPagina.nulo())
+		    if (editar && !entidadPagina.nulo()){
 				metodoEditar += """	
 					if(!Messages.hasErrors()){
 						${editar && !entidadPagina.nulo()? ControllerUtils.validateCopyCall(controllerName, "\"editar\"", this, entidad, saveEntities) : ""}
 					}
-			""";
+				""";
+		    }
 			metodoEditar += """	
-				    if(!Messages.hasErrors()){
-						${controllerName}.${nameEditar}ValidateRules(${StringUtils.params(
-							entidad.variableDb, saveEntities.collect{it.variableDb}, entidadPagina.variable,
-							saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
-						)});
-					}
+				if(!Messages.hasErrors()){
+					${controllerName}.${nameEditar}ValidateRules(${StringUtils.params(
+						entidad.variableDb, saveEntities.collect{it.variableDb}, entidadPagina.variable,
+						saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
+					)});
+				}
 			""";
-			if (entidadPagina.entidad)
+			if (entidadPagina.entidad){
 				metodoEditar += """	
 					if(!Messages.hasErrors()){
 						log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito");
 						${entidadPagina.entidad? "${entidad.variableDb}.save();" : ""}
 						${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
-					} else{
+					}
+					else{
 						log.info("Acción Editar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 					}
-			""";
+				""";
+			}
 			else
-				metodoEditar += """ log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito pero no hay nada que guardar"); """;
+				metodoEditar += """log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito pero no hay nada que guardar");""";
 			metodoEditar += """	
-				    ${editarRenderCall}
+					${editarRenderCall}
 				}
 			""";
 		}
@@ -409,8 +424,8 @@ public class ${controllerName} extends ${controllerGenName} {
 			else
 				ultimoAlmacen = new AlmacenEntidad();
 			String crearSaveCall = """
-						${entidad.variableDb}.save();
-						${entidad.id} = ${entidad.variableDb}.id;
+				${entidad.variableDb}.save();
+				${entidad.id} = ${entidad.variableDb}.id;
 			""";
 			if(almacen.entidad != null){
 				if (xToMany)
@@ -441,12 +456,13 @@ public class ${controllerName} extends ${controllerGenName} {
 					${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(controllerName, this, entidad, saveEntities) : ""}
 			""";	
 			// Para no ir creando IF {} Vacios
-			if (!entidadPagina.nulo())	
+			if (!entidadPagina.nulo()){
 				metodoCrear += """	
 					if(!Messages.hasErrors()){
 						${!entidadPagina.nulo()? ControllerUtils.validateCopyCall(controllerName, "\"crear\"", this, entidad, saveEntities) : ""}
 					}
-			""";
+				""";
+			}
 			metodoCrear += """	
 					if(!Messages.hasErrors()){
 						${controllerName}.crearValidateRules(${StringUtils.params(
@@ -459,12 +475,13 @@ public class ${controllerName} extends ${controllerGenName} {
 						log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito");
 						$crearSaveCall
 						${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
-					} else{
+					}
+					else{
 						log.info("Acción Crear de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 					}
 					${controllerName}.crearRender(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
 				}
-			"""
+			""";
 		}
 		return metodoCrear;
 	}
@@ -523,7 +540,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			String redirectActionOk = "\"editar\"";
 			if (accionEditar.redirigir != null){
 				redirectMethodOk = "\"${new GPagina(accionEditar.redirigir.pagina).controllerName()}.index\"";
-				redirectActionOk = "\"${Actions.getAccion(accionEditar.redirigir.accion)}\"";
+				redirectActionOk = getAccion(accionEditar.redirigir);
 			}
 			String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
 			if (accionEditar.redirigirUrl)
@@ -559,7 +576,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			String redirectActionOk = "\"editar\"";
 			if (accionCrear.redirigir != null){
 				redirectMethodOk = "\"${new GPagina(accionCrear.redirigir.pagina).controllerName()}.index\"";
-				redirectActionOk = "\"${Actions.getAccion(accionCrear.redirigir.accion)}\"";
+				redirectActionOk = getAccion(accionCrear.redirigir);
 			}
 			String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});";
 			if (accionCrear.redirigirUrl)
@@ -598,7 +615,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			String redirectActionOk = "\"borrado\"";
 			if (accionBorrar.redirigir != null){
 				redirectMethodOk = "\"${new GPagina(accionBorrar.redirigir.pagina).controllerName()}.index\"";
-				redirectActionOk = "\"${Actions.getAccion(accionBorrar.redirigir.accion)}\"";
+				redirectActionOk = getAccion(accionBorrar.redirigir);
 			}
 			String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id)});";
 			if (accionBorrar.redirigirUrl)
@@ -716,42 +733,47 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoPermiso(){
+		String content;
+		if(permiso){
+			content = """
+				if (Accion.parse(accion) == null) return false;
+				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+				return secure.checkAcceso("${permiso.name}", accion, ids, null);
+			""";
+		}
+		else{
+			content =  """
+				//Sobreescribir para incorporar permisos a mano
+				return true;
+			""";
+		}
 		return """
 			@Util
 			public static boolean permiso${sufijoPermiso}(String accion) {
-				${permisoCheckContent()}
+				${content}
 			}
-
+		""";
+	}
+	
+	private String metodoPrimeraAccion(){
+		String content;
+		if(permiso){
+			content = """
+				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+				return secure.getPrimeraAccion("${permiso.name}", ids, null);
+			""";
+		}
+		else{
+			content = """
+				return "editar";
+			""";
+		}
+		return """
 			@Util
-			public static String accion${sufijoPermiso}() {
-				${permisoAccionContent()}
+			public static String getAccion() {
+				${content}
 			}
 		"""
-	}
-	
-	public String permisoCheckContent() {
-		if(permiso){
-			return """
-				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-				return secure.check("${permiso.name}", "visible", accion, ids, null);
-			""";
-		}
-		return """
-			//Sobreescribir para incorporar permisos a mano
-			return true;
-		""";
-	}
-	
-	public String permisoAccionContent() {
-		if(permiso){
-			return """
-				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-				return secure.accion("${permiso.name}", "visible", ids, null);
-			""";
-		}
-		return """
-			return "editar";
-		""";
 	}
 	
 	private String metodosHashStack(){
@@ -810,6 +832,12 @@ public class ${controllerName} extends ${controllerGenName} {
 			""";
 		}
 		return botonesMethod;
+	}
+	
+	public static String getAccion(PaginaAccion paginaAccion){
+		if (paginaAccion.accion)
+			return "\"${paginaAccion.accion}\"";
+		return "controllers.${paginaAccion.pagina.name}Controller.getAccion()";
 	}
 	
 	private static boolean hayAnterior(Object o){
@@ -939,7 +967,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.saveController = [];
 		controller.campo = containerController.campo;
 		controller.renderView = containerController.renderView;
-		controller.permiso = null; //form.permiso; TEMPORAL
+		controller.permiso = form.permiso;
 		controller.controllerGenName = containerController.controllerGenName;
 		controller.controllerName = containerController.controllerName;
 		controller.controllerGenFullName = containerController.controllerGenFullName;
@@ -1009,33 +1037,54 @@ public class ${controllerName} extends ${controllerGenName} {
 		}
 	}
 
-	public void checkReferencia(String accion){
-		accion = Actions.getAccion(accion);
-		if ("editar".equals(accion)) editar = true;
-		if ("crear".equals(accion)) crear = true;
-		if ("borrar".equals(accion)) borrar = true;
+	/*
+	 * elementoAccion puede ser un PaginaAccion o un PopupAccion
+	 */
+	public void checkReferencia(def elementoAccion){
+		List<String> acciones = new ArrayList<String>();
+		if (elementoAccion.accion)
+			acciones.add(elementoAccion.accion);
+		else{
+			Permiso permiso;
+			if (elementoAccion instanceof PaginaAccion) permiso = elementoAccion.pagina.permiso;
+			if (elementoAccion instanceof PopupAccion) permiso = elementoAccion.popup.permiso;
+			if (!permiso) acciones.add("editar");
+			else{
+				if (permiso.ret)
+					acciones.add(GPermiso.getPrimeraAccion(permiso.ret));
+				for (PermisoWhen when: permiso.whens)
+					acciones.add(GPermiso.getPrimeraAccion(when.ret));
+				if (permiso.getElse())
+					acciones.add(GPermiso.getPrimeraAccion(permiso.getElse()));
+			}
+		}
+		for (String accion: acciones){
+			if ("editar".equals(accion)) editar = true;
+			if ("crear".equals(accion)) crear = true;
+			if ("borrar".equals(accion)) borrar = true;
+		}
 	}
 		
 	public void findPaginaReferencias(Pagina pagina){
 		editar = crear = borrar = false;
 		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE))
 			if (enlace.pagina != null && enlace.pagina.pagina.name.equals(pagina.name))
-				checkReferencia(enlace.pagina.accion);
+				checkReferencia(enlace.pagina);
 		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE))
 			if (enlace.pagina != null && enlace.pagina.pagina.name.equals(pagina.name))
-				checkReferencia(enlace.pagina.accion);
+				checkReferencia(enlace.pagina);
 		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON))
 			if (boton.pagina != null && boton.pagina.pagina.name.equals(pagina.name))
-				checkReferencia(boton.pagina.accion);
+				checkReferencia(boton.pagina);
 		for (Pagina p: LedUtils.getNodes(LedPackage.Literals.PAGINA)){
 			Controller c = new Controller();
 			c.createOpcionesAccion(pagina);
 			if (c.accionCrear.redirigir?.pagina?.name.equals(pagina.name))
-				checkReferencia(c.accionCrear.redirigir.accion);
+				checkReferencia(c.accionCrear.redirigir);
 			if (c.accionEditar.redirigir?.pagina?.name.equals(pagina.name))
-				checkReferencia(c.accionEditar.redirigir.accion);
+				checkReferencia(c.accionEditar.redirigir);
 			if (c.accionBorrar.redirigir?.pagina?.name.equals(pagina.name))
-				checkReferencia(c.accionBorrar.redirigir.accion);
+				checkReferencia(c.accionBorrar.redirigir);
 		}
 		for (Tabla tabla: LedUtils.getNodes(LedPackage.Literals.TABLA)){
 			if (tabla.pagina != null && tabla.pagina.name.equals(pagina.name))
@@ -1049,7 +1098,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		}
 		for (Form form: LedUtils.getNodes(LedPackage.Literals.FORM)){
 			if (form.redirigir != null && form.redirigir.pagina.name.equals(pagina.name))
-				checkReferencia(form.redirigir.accion);
+				checkReferencia(form.redirigir);
 		}
 	}
 	
@@ -1057,13 +1106,13 @@ public class ${controllerName} extends ${controllerGenName} {
 		editar = crear = borrar = false;
 		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE))
 			if (enlace.popup != null && enlace.popup.popup.name.equals(popup.name))
-				checkReferencia(enlace.popup.accion);
+				checkReferencia(enlace.popup);
 		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE))
 			if (enlace.popup != null && enlace.popup.popup.name.equals(popup.name))
-				checkReferencia(enlace.popup.accion);
+				checkReferencia(enlace.popup);
 		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON))
 			if (boton.popup != null && boton.popup.popup.name.equals(popup.name))
-				checkReferencia(boton.popup.accion);
+				checkReferencia(boton.popup);
 		for (Tabla tabla: LedUtils.getNodes(LedPackage.Literals.TABLA)){
 			if (tabla.popup != null && tabla.popup.name.equals(popup.name))
 				crear = borrar = editar = true;

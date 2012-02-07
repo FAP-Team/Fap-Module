@@ -99,12 +99,9 @@ class Expand {
 		if(object instanceof AgruparCampos)
 			return GAgruparCampos.generate(object)
 		
-		if(object instanceof PermisoAcceso)
+		if(object instanceof Permiso)
 			return GPermiso.generate(object)
 		
-		if(object instanceof PermisoGrafico)
-			return GPermiso.generate(object)
-				
 		if(object instanceof Form)
 			return GForm.generate(object)
 	

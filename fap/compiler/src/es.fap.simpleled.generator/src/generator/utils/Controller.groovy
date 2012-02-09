@@ -295,21 +295,17 @@ public class ${controllerName} extends ${controllerGenName} {
 					renderTemplate(${renderView});
 				}
 				${hayAnterior? "checkRedirigir();" : ""}
-				${primerAlmacen.entidad? "$primerAlmacen.clase $primerAlmacen.variable = null;" : ""}
-				${campos.collect{"$it.entidad.clase $it.entidad.variable = null;"}.join("\n")}
+				${primerAlmacen.entidad? "$primerAlmacen.clase $primerAlmacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, primerAlmacen, true)};" : ""}
+				${campos.collect{"$it.entidad.clase $it.entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, it.almacen, it.entidad)};"}.join("\n")}
+				${indexEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
+				${saveEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
 				${entidad.entidad? "$entidad.clase $entidad.variable = null;" : ""}
-				${indexEntities.collect{"$it.clase $it.variable = null;"}.join("\n")}
-				${saveEntities.collect{"$it.clase $it.variable = null;"}.join("\n")}
 				if("crear".equals(accion)){
 					${ControllerUtils.newCall(entidad)}
 					${guardarAlCrear}
 				}
 				else if (!"borrado".equals(accion)){
-					${primerAlmacen.entidad? "$primerAlmacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, primerAlmacen, true)};" : ""}
-					${campos.collect{"$it.entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, it.almacen, it.entidad)};"}.join("\n")}
 					${entidad.entidad? "$entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};" : ""}
-					${indexEntities.collect{"$it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
-					${saveEntities.collect{"$it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
 				}
 				log.info("Visitando página: "+${renderView});
 				renderTemplate(${StringUtils.params(

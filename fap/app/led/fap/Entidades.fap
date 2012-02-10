@@ -22,7 +22,7 @@ Entidad Singleton superClass {
 // Incluye lo básico que debería tener una solicitud. Deberíamos crear una entidad Solicitud,
 // que extienda de esta, y añadirle lo que se quiera. Así, por defecto, la entidad Solicitud
 // tendrá todos éstos campos por defecto.
-Entidad SolicitudGenerica tableName = "solicitud"{
+Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	String estado
 	Lista estadosSolicitud estadoValue transient
 	Lista estadosSolicitud estadoUsuario transient
@@ -41,7 +41,7 @@ Entidad SolicitudGenerica tableName = "solicitud"{
 }
 
 // Dátos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
-Entidad Solicitante extends Persona {
+Entidad Solicitante extends Persona auditable{
 	Direccion domicilio
 	String telefonoFijo
 	String telefonoMovil
@@ -69,7 +69,7 @@ Entidad Agente inheritance=joined auditable {
 
 // Entidad que contiene los campos necesarios para una dirección. Se establece como "embeddable", lo que indica
 // que en cada entidad que incluya no creará una relación a una tabla dirección, sino que mapeará sus campos.
-Entidad Direccion embeddable {
+Entidad Direccion embeddable auditable{
 	String calle
 	String numero
 	String otros
@@ -115,7 +115,7 @@ Entidad ObligatoriedadDocumentos extends Singleton {
 }
 
 // Representación de una persona (tanto física como jurídica)
-Entidad Persona inheritance=joined {
+Entidad Persona inheritance=joined auditable{
 	PersonaFisica fisica
 	PersonaJuridica juridica
 	Lista TipoDePersona tipo
@@ -124,7 +124,7 @@ Entidad Persona inheritance=joined {
 }
 
 // Representación de una persona física
-Entidad PersonaFisica inheritance=joined {
+Entidad PersonaFisica inheritance=joined auditable{
 	String nombre
 	String primerApellido
 	String segundoApellido
@@ -132,7 +132,7 @@ Entidad PersonaFisica inheritance=joined {
 }
 
 // Representación de una persona jurídica
-Entidad PersonaJuridica inheritance=joined {
+Entidad PersonaJuridica inheritance=joined auditable{
 	String entidad
 	Cif cif
 	Email email
@@ -141,7 +141,7 @@ Entidad PersonaJuridica inheritance=joined {
 	DateTime fechaFirma
 }
 
-Entidad RepresentantePersonaFisica extends Persona {
+Entidad RepresentantePersonaFisica extends Persona auditable{
 	String telefonoFijo
 	String telefonoMovil
 	String fax
@@ -150,19 +150,19 @@ Entidad RepresentantePersonaFisica extends Persona {
 
 // Un representante de persona jurídica además de lo que tiene un representante de persona física,
 // tiene un tipo de representación
-Entidad RepresentantePersonaJuridica extends RepresentantePersonaFisica {
+Entidad RepresentantePersonaJuridica extends RepresentantePersonaFisica auditable{
 	Lista TiposRepresentantes tipoRepresentacion
 }
 
 // Representación de NIP
-Entidad Nip embeddable {
+Entidad Nip embeddable auditable{
 	String tipo
 	String valor
 }
 
 // Participación de los agentes en las solicitudes.
 // Indica de que forma participan los agentes de la aplicación (usuarios) en cada una de las solicitudes
-Entidad Participacion {
+Entidad Participacion auditable{
 	ManyToOne Agente agente noConstruct
 	ManyToOne SolicitudGenerica solicitud noConstruct
 	Lista TiposParticipacion tipo
@@ -204,7 +204,7 @@ Entidad Registro {
 }
 
 // Representación de firmantes
-Entidad Firmante {
+Entidad Firmante auditable{
 	String nombre
 	String idtipo
 	String idvalor
@@ -214,7 +214,7 @@ Entidad Firmante {
 }
 
 // Información del registro
-Entidad InformacionRegistro {
+Entidad InformacionRegistro auditable{
 	DateTime fechaRegistro
 	String unidadOrganica
 	String numeroRegistro
@@ -233,7 +233,7 @@ Entidad FasesRegistro {
 }
 
 // Representación del expediente en platino
-Entidad ExpedientePlatino {
+Entidad ExpedientePlatino auditable{
 	String uri
 	String numero
 	DateTime fechaApertura
@@ -242,7 +242,7 @@ Entidad ExpedientePlatino {
 }
 
 // Representación del expediente en el AED
-Entidad ExpedienteAed{
+Entidad ExpedienteAed auditable{
 	String idAed	
 }
 
@@ -357,7 +357,7 @@ Entidad Exclusion {
 	String descripcionCorta
 }
 
-Entidad Requerimiento {
+Entidad Requerimiento auditable{
 	String firma transient					//Guarda firma del requerimiento
 	String urlDocRequerimiento transient		//Guarda url del doc oficial, publicado en el servlet
 	String estado 					 	//Rellenar a mano

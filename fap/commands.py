@@ -279,7 +279,10 @@ def init_application (app, args):
     os.makedirs(os.path.join(app.path, "documentation", "html", "plantillas"));
     copy_directory(os.path.join(moduleDir, "documentation/html/plantillas"),  app.path+"/documentation/html/plantillas");
     
-    
+    # Para las carpetas de backups de los logs
+    os.makedirs(os.path.join(app.path, "logs", "backups"));
+    os.makedirs(os.path.join(app.path, "logs", "backups", "Auditable"));
+    os.makedirs(os.path.join(app.path, "logs", "backups", "Daily"));
     
 def copy_directory(source, target):
     if not os.path.exists(target):

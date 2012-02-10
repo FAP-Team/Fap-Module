@@ -26,6 +26,7 @@ import java.lang.reflect.Field;
 import org.apache.log4j.Appender;
 import org.apache.log4j.DailyRollingFileAppender;
 import org.apache.log4j.FileAppender;
+import org.apache.log4j.Logger;
 import org.apache.log4j.config.PropertyGetter.PropertyCallback;
 import org.joda.time.DateTime;
 
@@ -40,6 +41,8 @@ import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
 
 public class InformeController extends GenericController {
 
+	private static Logger log = Logger.getLogger("Paginas");
+	
 	public static void index(){
 		Map<String, Integer> valores = new HashMap<String, Integer>();
 		List<String> labels;
@@ -49,7 +52,7 @@ public class InformeController extends GenericController {
 		
 		
 		labels = new ArrayList<String>(valores.keySet());
-		
+		log.info("Visitando página: fap/Admin/informe.html" );
 		renderTemplate( "fap/Admin/informe.html", valores, labels);
 	}
 	

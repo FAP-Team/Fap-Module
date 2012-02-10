@@ -12,7 +12,10 @@
 #{fap.messages}
 
 #{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a ésta página'}
-				
+
+<div id="mensajeContadorLogs" class="alert-message block-message info" data-alert="alert" style="display:none">
+</div>
+		
 <div id="tablaLogs" class="tabla"></div>
 
 <div id="mensajeLogs" class="box"  style="display:none" >
@@ -52,6 +55,9 @@
 			}
 
 	    	var logAction = #{jsAction @fap.LoggerController.logs(':fecha') /}
+	    	
+	    	var logsDaily;
+	    	var logsAuditable;
 	    	
 			var store = Ext.create('Ext.data.Store', {
 		        model: 'modelLogs',
@@ -174,8 +180,44 @@
 		    });
 
 		   	store.addListener("load", function(){
+		   	    contadorLogs();
 				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
-		    });	  	
+		    });
+		    
+		    function contadorLogs (){
+		    	var datos = store.data.items;
+		   	    logsDaily=0;
+		   	    logsAuditable=0;
+		   	    for (var i in datos){
+		   	       if (datos[i].data.class_ != "audit.AuditLogListener")
+		   	          logsDaily++;
+		   	       else
+		   	          logsAuditable++;
+		   	    }
+		   	    var content="";
+		   	    var date = grid.getComponent('barraInferior').getComponent('fechabox').value;
+		   	    var d  = date.getDate();
+				var day = (d < 10) ? '0' + d : d;
+				var m = date.getMonth() + 1;
+				var month = (m < 10) ? '0' + m : m;
+				var yy = date.getYear();
+				var year = (yy < 1000) ? yy + 1900 : yy;
+		   	    var fecha = day+"-"+month+"-"+year;
+		   	    if ((logsDaily!=0) || (logsAuditable!=0)){
+		   	    	if (logsDaily==0)
+		   	       		content+="<b>No existen Logs Generales del día "+fecha+"</b></br>";
+		   	    	else
+		   	       		content+="<b>Logs Generales:</b> "+logsDaily+"</br>";
+		   	       		
+	            	if (logsAuditable==0)
+		   	       		content+="<b>No existen Logs de Auditoría del día "+fecha+"</b></br>";
+		   	    	else
+		   	       		content+="<b>Logs de Auditoría:</b> "+logsAuditable+"</br>";
+		   	    } else
+		   	    	content+="<b>No existen ni Logs Generales, ni Logs de Auditoría del día "+fecha+"</b></br>";
+		   	    $('#mensajeContadorLogs').html(content);
+		   	    $('#mensajeContadorLogs').css({display:""});
+		    }
 		  	
 		});
 </script>

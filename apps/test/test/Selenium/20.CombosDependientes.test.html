@@ -12,7 +12,6 @@
 	open(/Solicitud/paginacombosdependientes?idSolicitud=${s.id})
 	waitForPageToLoad()
 	select('id=paises', 'label=España')
-	runScript("$('#comunidades').html('<option value=\"galicia\">Galicia</option>');")
 	waitForElementPresent(//option[text()='Galicia'])
 	select('id=comunidades', 'label=Galicia')
 	waitForElementPresent(//option[text()='La Coruña'])

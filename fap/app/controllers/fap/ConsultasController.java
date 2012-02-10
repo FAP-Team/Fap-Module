@@ -20,12 +20,17 @@ import java.lang.reflect.Field;
 
 import javax.persistence.Query;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 
 
 public class ConsultasController extends GenericController {
 
+	private static Logger log = Logger.getLogger("Paginas");
+	
 	public static void index(){
+		log.info("Visitando página: fap/Admin/logs.html" );
 		renderTemplate( "fap/Admin/consultas.html" );
 	}
 

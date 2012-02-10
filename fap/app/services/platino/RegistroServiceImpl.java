@@ -228,8 +228,10 @@ public class RegistroServiceImpl implements RegistroService {
 		String datosAFirmar = obtenerDatosAFirmarRegisto(datosRegistro);
 		log.info(datosAFirmar);
 
-		String datosFirmados = firmaService.firmarPKCS7(datosAFirmar
-				.getBytes("iso-8859-1"));
+		//TODO DESCOMENTAR!!!!
+		String datosFirmados ="";
+		//String datosFirmados = firmaService.firmarPKCS7(datosAFirmar
+		//		.getBytes("iso-8859-1"));
 		log.info("Datos normalizados firmados");
 
 		// 6) Registrar
@@ -373,6 +375,7 @@ public class RegistroServiceImpl implements RegistroService {
 		}
 
 		// mira si se aportaron todos los documentos necesarios
+		/* TODO ESTO SE DEBERíA HACER EN OTRO SITIO
 		ObligatoriedadDocumentos docObli = ObligatoriedadDocumentos
 				.get(ObligatoriedadDocumentos.class);
 		for (Documento doc : solicitud.documentacion.documentos) {
@@ -387,6 +390,7 @@ public class RegistroServiceImpl implements RegistroService {
 			}
 		}
 
+		
 		if (!docObli.imprescindibles.isEmpty()) {
 			for (String uri : docObli.imprescindibles) {
 				String descripcion = TableKeyValue.getValue(
@@ -414,6 +418,8 @@ public class RegistroServiceImpl implements RegistroService {
 				}
 			}
 		}
+*/
+
 
 		// Crea el expediente en el archivo electrónico de platino
 		if (!solicitud.registro.fasesRegistro.expedientePlatino) {

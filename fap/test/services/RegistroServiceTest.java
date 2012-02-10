@@ -34,7 +34,7 @@ import services.platino.GestorDocumentalPlatinoService;
 
 @InjectSupport
 public class RegistroServiceTest extends UnitTest {
-
+/*
 	@Inject
 	static RegistroService registroService;
 
@@ -143,5 +143,5 @@ public class RegistroServiceTest extends UnitTest {
 		
 		return vf.getRealFile();
 	}
-	
+*/	
 }

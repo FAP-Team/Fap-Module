@@ -6,4 +6,7 @@ public class FirmaServiceException extends Exception {
 		super(msg);
 	}
 	
+	public FirmaServiceException(String message, Throwable cause){
+        super(message, cause);
+    }
 }

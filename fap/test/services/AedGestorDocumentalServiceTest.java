@@ -21,6 +21,7 @@ import models.RepresentantePersonaJuridica;
 import models.Solicitante;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
+import models.Tramite;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -32,6 +33,7 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
+import play.Play;
 import play.libs.Codec;
 import play.libs.IO;
 import play.modules.guice.InjectSupport;
@@ -47,16 +49,17 @@ import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 
-public class AedGestorDocumentalServiceTest extends org.junit.Assert {
+public class AedGestorDocumentalServiceTest extends UnitTest {
 	private static final String TEST_FILENAME = "testfile.txt";
     private static GestorDocumentalService gestorDocumentalService;
 	private static boolean isConfigured = false;
 	private static final String TEST_FILE_CONTENT = "Contenido del fichero temporal";
 	private static final String URI_NOT_IN_DB = "http://uri/notindb";
+    private static PropertyPlaceholder propertyPlaceholder;
 
 	@BeforeClass
 	public static void configure() throws Exception {
-	    PropertyPlaceholder propertyPlaceholder = getPropertyPlaceholder();
+	    propertyPlaceholder = getPropertyPlaceholder();
 	    gestorDocumentalService = new AedGestorDocumentalServiceImpl(propertyPlaceholder);
 		isConfigured = gestorDocumentalService.isConfigured();
 	}
@@ -79,7 +82,7 @@ public class AedGestorDocumentalServiceTest extends org.junit.Assert {
     @Test
     public void crearExpedientePersonaFisica() throws Exception {
         String idExpediente = "TEST" + Codec.UUID();
-        SolicitudGenerica solicitud = mockSolicitud(idExpediente);
+        SolicitudGenerica solicitud = stubSolicitud(idExpediente);
         mockPersonaFisica(solicitud.solicitante);
         String idExpedienteCreado = gestorDocumentalService.crearExpediente(solicitud);
         assertNotNull(idExpedienteCreado);
@@ -87,13 +90,13 @@ public class AedGestorDocumentalServiceTest extends org.junit.Assert {
     
     @Test(expected=NullPointerException.class)
     public void crearExpedienteFailsOnNullSolicitante() throws Exception {
-        SolicitudGenerica solicitud = mockSolicitud("TEST" + Codec.UUID());
+        SolicitudGenerica solicitud = stubSolicitud("TEST" + Codec.UUID());
         gestorDocumentalService.crearExpediente(solicitud);
     }
     
     @Test(expected=NullPointerException.class)
     public void crearExpedienteFailsOnNullRepresentante() throws Exception {
-        SolicitudGenerica solicitud = mockSolicitud("TEST" + Codec.UUID());
+        SolicitudGenerica solicitud = stubSolicitud("TEST" + Codec.UUID());
         mockPersonaFisica(solicitud.solicitante);
         solicitud.solicitante.representado = true;
         gestorDocumentalService.crearExpediente(solicitud);        
@@ -101,7 +104,7 @@ public class AedGestorDocumentalServiceTest extends org.junit.Assert {
     
     @Test
     public void crearExpedientePersonaJuridica() throws Exception {
-        SolicitudGenerica solicitud = mockSolicitud("TEST" + Codec.UUID());
+        SolicitudGenerica solicitud = stubSolicitud("TEST" + Codec.UUID());
         mockPersonaJuridica(solicitud.solicitante);
         
         RepresentantePersonaJuridica representante1 = new RepresentantePersonaJuridica();
@@ -117,14 +120,14 @@ public class AedGestorDocumentalServiceTest extends org.junit.Assert {
 
     @Test(expected=NullPointerException.class)
     public void crearExpedientePersonaJuridicaNullRepresentante() throws Exception {
-        SolicitudGenerica solicitud = mockSolicitud("TEST" + Codec.UUID());
+        SolicitudGenerica solicitud = stubSolicitud("TEST" + Codec.UUID());
         mockPersonaJuridica(solicitud.solicitante);
         RepresentantePersonaJuridica representante1 = new RepresentantePersonaJuridica();
         solicitud.solicitante.representantes.add(representante1); 
         gestorDocumentalService.crearExpediente(solicitud);
     }
     
-    private SolicitudGenerica mockSolicitud(String idExpediente){
+    private SolicitudGenerica stubSolicitud(String idExpediente){
         SolicitudGenerica solicitud = new SolicitudGenerica();
         ExpedienteAed expediente = mock(ExpedienteAed.class);
         solicitud.expedienteAed = expediente;
@@ -151,21 +154,87 @@ public class AedGestorDocumentalServiceTest extends org.junit.Assert {
     public void saveDocumentoTemporal() throws Exception {
         InputStream is = new ByteArrayInputStream(TEST_FILE_CONTENT.getBytes()); 
         
-        Documento documento = mock(Documento.class);
+        Documento documento = stubDocumento();
         String uri = gestorDocumentalService.saveDocumentoTemporal(documento, is, TEST_FILENAME);
+        assertUriAndNoClasificado(documento, uri);
+    }
+    
+    @Test
+    public void saveDocumentoTemporalByFile() throws Exception {
+        Documento documento = stubDocumento();
+        File f = Play.getVirtualFile("/test/services/aedTest.txt").getRealFile();
+        String uri = gestorDocumentalService.saveDocumentoTemporal(documento, f);
+        assertUriAndNoClasificado(documento, uri);
+    }
+    
+    private Documento stubDocumento(){
+        Documento documento = new Documento();
+        documento.tipo = propertyPlaceholder.get("fap.aed.tiposdocumentos.base");
+        documento.descripcion = "descripcion";
+        return documento;
+    }
+    
+    private void assertUriAndNoClasificado(Documento documento, String uri){
         assertNotNull(uri);
         assertNotNull(documento.uri);
         assertEquals(uri, documento.uri);
-        assertFalse(documento.clasificado);
-        verify(documento).save();
+        assertFalse(documento.clasificado);        
     }
     
     @Test(expected=GestorDocumentalServiceException.class)
     public void saveDocumentoTemporalFailsIfUri() throws Exception {
-        Documento documento = mock(Documento.class);
+        Documento documento = stubDocumento();
         documento.uri = "uri ya seteada";
         InputStream is = new ByteArrayInputStream("".getBytes());
-        gestorDocumentalService.saveDocumentoTemporal(documento, is , "");
+        gestorDocumentalService.saveDocumentoTemporal(documento, is , TEST_FILENAME);
+    }
+    
+    @Test(expected=NullPointerException.class)
+    public void saveDocumentoTemporalFailsIfNotTipo() throws Exception {
+        Documento documento = stubDocumento();
+        documento.tipo = null;
+        InputStream is = new ByteArrayInputStream("".getBytes());
+        gestorDocumentalService.saveDocumentoTemporal(documento, is , TEST_FILENAME);
+    }
+    
+    @Test(expected=NullPointerException.class)
+    public void saveDocumentoTemporalFailsIfOtrosAndNullDescription() throws Exception {
+        Documento documento = new Documento();
+        documento.tipo = propertyPlaceholder.get("fap.aed.tiposdocumentos.otros");
+        documento.descripcion = null;
+        InputStream is = new ByteArrayInputStream("".getBytes());
+        gestorDocumentalService.saveDocumentoTemporal(documento, is , TEST_FILENAME);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void saveDocumentoTemporalFailsIEmptyTipo() throws Exception {
+        Documento documento = new Documento();
+        documento.tipo = "";
+        documento.descripcion = "despcripcion";
+        InputStream is = new ByteArrayInputStream("".getBytes());
+        gestorDocumentalService.saveDocumentoTemporal(documento, is , TEST_FILENAME);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void saveDocumentoTemporalFailsIfOtrosAndEmptyDescripcion() throws Exception {
+        Documento documento = new Documento();
+        documento.tipo = propertyPlaceholder.get("fap.aed.tiposdocumentos.otros");
+        documento.descripcion = "";
+        InputStream is = new ByteArrayInputStream("".getBytes());
+        gestorDocumentalService.saveDocumentoTemporal(documento, is , TEST_FILENAME);
+    }
+    
+    @Test(expected=GestorDocumentalServiceException.class)
+    public void saveDocumentoTemporalFailsIfEmptyStream() throws Exception {
+        Documento documento = stubDocumento();
+        InputStream is = new ByteArrayInputStream("".getBytes());
+        gestorDocumentalService.saveDocumentoTemporal(documento, is , TEST_FILENAME);
+    }
+    
+    @Test(expected=NullPointerException.class)
+    public void saveDocumentoTemporalFailsIfNullStream() throws Exception {
+        Documento documento = stubDocumento();
+        gestorDocumentalService.saveDocumentoTemporal(documento, null , TEST_FILENAME);
     }
     
     @Test
@@ -173,7 +242,7 @@ public class AedGestorDocumentalServiceTest extends org.junit.Assert {
         Documento d = saveTmpDocumento(TEST_FILE_CONTENT, TEST_FILENAME);
         
         BinaryResponse response = gestorDocumentalService.getDocumento(d);
-        assertEquals(d.uri, response.nombre);
+        assertEquals(TEST_FILENAME, response.nombre);
         
         String responseContent = IO.readContentAsString(response.contenido.getInputStream());
         assertEquals(TEST_FILE_CONTENT, responseContent);
@@ -183,13 +252,13 @@ public class AedGestorDocumentalServiceTest extends org.junit.Assert {
     public void getDocumentoClasificado() throws Exception {
         Documento documento = clasificarDocumentoDeTest(TEST_FILE_CONTENT);
         BinaryResponse response = gestorDocumentalService.getDocumento(documento);
-        assertEquals(documento.uri, response.nombre);
+        assertEquals(TEST_FILENAME, response.nombre);
         assertEquals(TEST_FILE_CONTENT, IO.readContentAsString(response.contenido.getInputStream()));
     }
     
     private Documento saveTmpDocumento(String fileContent, String filename) throws Exception {
         InputStream is = new ByteArrayInputStream(fileContent.getBytes()); 
-        Documento documento = mock(Documento.class);
+        Documento documento = stubDocumento();
         gestorDocumentalService.saveDocumentoTemporal(documento, is, filename);
         return documento;
     }
@@ -206,11 +275,15 @@ public class AedGestorDocumentalServiceTest extends org.junit.Assert {
         List<Documento> documentos = new ArrayList<Documento>();
         documentos.add(documento);
         
-        SolicitudGenerica solicitud = mockSolicitud(Codec.UUID());
+        SolicitudGenerica solicitud = new SolicitudGenerica();
+        solicitud.expedienteAed.idAed = "TEST" + Codec.UUID();
+        mockPersonaJuridica(solicitud.solicitante);
         gestorDocumentalService.crearExpediente(solicitud);
         gestorDocumentalService.clasificarDocumentos(solicitud, documentos);
         return documento;
     }
+    
+    
     
     @Test
     public void deleteDocumentoTemporal() throws Exception {
@@ -224,176 +297,17 @@ public class AedGestorDocumentalServiceTest extends org.junit.Assert {
         gestorDocumentalService.deleteDocumento(documento);
     }
         
+    @Test
+    public void getTramites() throws Exception {
+        List<Tramite> tramites = gestorDocumentalService.getTramites();
+        assertNotNull(tramites);
+        assertTrue(tramites.size() > 0);
+        for(Tramite tramite : tramites){
+            assertNotNull(tramite.nombre);
+            assertNotNull(tramite.uri);
+            assertNotNull(tramite.documentos);
+            assertTrue(tramite.documentos.size() > 0);
+        }
+    }
     
-  
-    
-	/*
-	@Test
-	public void saveDocumentoTemporal() throws Exception {
-		String uriTipoDocumento = FapProperties
-				.get("fap.aed.tiposdocumentos.solicitud");
-		String descripcion = "prueba";
-
-		Documento documento = new Documento();
-		documento.tipo = uriTipoDocumento;
-		documento.descripcion = descripcion;
-
-		File tmp = createTmpFile();
-		String uri = gestorDocumentalService.saveDocumentoTemporal(documento, tmp);
-		assertNotNull(uri);
-
-		PropiedadesDocumento propiedades = gestorDocumentalService.obtenerPropiedades(uri,
-				false);
-		assertEquals(uriTipoDocumento, propiedades.getUriTipoDocumento());
-		assertEquals(descripcion, propiedades.getDescripcion());
-	}
-	
-	
-	@Test
-	public void saveDocumentoTemporalDescripcionSegunTipo() throws Exception {
-		String uriTipoDocumento = FapProperties
-				.get("fap.aed.tiposdocumentos.solicitud");
-		String descripcion = "descripcion simulada segun tipo";
-		TableKeyValue.setValue("tiposDocumentos", uriTipoDocumento,
-				descripcion, true);
-
-		Documento documento = new Documento();
-		documento.tipo = uriTipoDocumento;
-
-		File tmp = createTmpFile();
-		String uri = gestorDocumentalService.saveDocumentoTemporal(documento, tmp);
-		assertNotNull(uri);
-
-		PropiedadesDocumento propiedades = gestorDocumentalService.obtenerPropiedades(uri,
-				false);
-		assertEquals(uriTipoDocumento, propiedades.getUriTipoDocumento());
-
-		String dsc = TableKeyValue
-				.getValue("tiposDocumentos", uriTipoDocumento);
-		assertEquals(dsc, propiedades.getDescripcion());
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void saveDocumentoTemporalDebeFallarSiDocumentoNoTieneTipo()
-			throws Exception {
-		Documento documento = new Documento();
-		documento.descripcion = "prueba";
-
-		File tmp = createTmpFile();
-		gestorDocumentalService.saveDocumentoTemporal(documento, tmp);
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void saveDocumentoTemporalDebeFallarSiDocumentoTipoOtrosNoTieneDescripcion()
-			throws Exception {
-		Documento documento = new Documento();
-		documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.otros");
-
-		File tmp = createTmpFile();
-		gestorDocumentalService.saveDocumentoTemporal(documento, tmp);
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void crearCarpetaTemporalDebeFallarSiCarpetaNull() throws Exception {
-		gestorDocumentalService.crearCarpetaTemporal(null);
-	}
-
-	@Test
-	public void crearCarpetaTemporal() throws Exception {
-		String firstPath = "faptest";
-		String path = firstPath + "/b/c";
-
-		gestorDocumentalService.borrarCarpetaTemporal(firstPath);
-
-		Assert.assertFalse(gestorDocumentalService.existeCarpetaTemporal(path));
-		gestorDocumentalService.crearCarpetaTemporal(path);
-		Assert.assertTrue(gestorDocumentalService.existeCarpetaTemporal(path));
-
-		gestorDocumentalService.borrarCarpetaTemporal(firstPath);
-	}
-
-	@Test
-	public void isClasificado() {
-		String uri = "http://uri/prueba";
-		Documento d = new Documento();
-		d.uri = uri;
-		d.save();
-
-		// Por defecto los documentos son no clasificado
-		assertFalse(gestorDocumentalService.isClasificado(uri));
-
-		d.clasificado = true;
-		assertTrue(gestorDocumentalService.isClasificado(uri));
-
-		assertNull(gestorDocumentalService.isClasificado(URI_NOT_IN_DB));
-	}
-
-	@Test
-	public void obtenerDocBytes() throws Exception {
-		Documento d = uploadTestDocumento();
-		assertNotNull(d.uri);
-		byte[] aedBytes = gestorDocumentalService.obtenerDocBytes(d.uri);
-		assertEquals(TMP_FILE_CONTENT, new String(aedBytes));
-
-		assertNull(gestorDocumentalService.obtenerDocBytes(null));
-		assertNull(gestorDocumentalService.obtenerDocBytes(URI_NOT_IN_DB));
-	}
-
-	@Test
-	public void obtenerPropiedades() throws Exception {
-		Documento d = uploadTestDocumento();
-		PropiedadesDocumento propiedades = gestorDocumentalService.obtenerPropiedades(d.uri);
-		assertNotNull(propiedades);
-		assertNull(gestorDocumentalService.obtenerPropiedades(URI_NOT_IN_DB));
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void borrarDocumentoNullDocumento() throws Exception {
-		gestorDocumentalService.borrarDocumento(null);
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void borrarDocumentoNullUri() throws Exception {
-		Documento documento = new Documento();
-		documento.uri = null;
-		gestorDocumentalService.borrarDocumento(null);
-	}
-
-	@Test
-	public void borrarDocumento() throws Exception {
-		Documento documento = uploadTestDocumento();
-		gestorDocumentalService.borrarDocumento(documento);
-		try {
-			gestorDocumentalService.obtenerDoc(documento.uri);
-		} catch (AedExcepcion e) {
-			assertEquals(CodigoErrorEnum.DOCUMENTO_NO_EXISTE, e.getFaultInfo()
-					.getCodigoError());
-		}
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void borrarDocumentoClasificado() throws Exception {
-		Documento documento = uploadTestDocumento();
-		documento.clasificado = true;
-		gestorDocumentalService.borrarDocumento(documento);
-	}
-
-	private Documento uploadTestDocumento() throws Exception {
-		Documento d = new Documento();
-		d.tipo = FapProperties.get("fap.aed.tiposdocumentos.base");
-		d.descripcion = "prueba";
-
-		File tmp = createTmpFile();
-		gestorDocumentalService.saveDocumentoTemporal(d, tmp);
-		return d;
-	}
-
-	private File createTmpFile() throws Exception {
-		File tmp = File.createTempFile("tmp", ".txt");
-		BufferedWriter out = new BufferedWriter(new FileWriter(tmp));
-		out.write(TMP_FILE_CONTENT);
-		out.close();
-		return tmp;
-	}
-*/
 }

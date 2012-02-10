@@ -55,7 +55,7 @@ GET /Administracion/aed AedController.index
 
 POST /Administracion/aed/actualizarTramites AedController.actualizarTramites
 
-POST /Administracion/aed/crearCarpetaTemporal AedController.crearCarpetaTemporal
+POST /Administracion/aed/configurar AedController.configurar
 
 GET /Administracion/aed/tramites AedController.tablatramites
 GET /Administracion/configuracionquartz ConfiguracionQuartzController.index

@@ -26,11 +26,6 @@ function Mensajes(renderTo){
 			if(this.id != null){
 				$('<div class="' + styleclass + ' ' + MSG_COMMON_CLASS+'" data-alert="alert"><a class="close" href="#">x</a>' + msg +'</div>').hide().appendTo(this.id).fadeIn();
 			}
-			
-			if(typeof console  != "undefined"){
-				console.log(this.id);
-				console.log('[' + styleclass + ']:' + msg);
-			}
 		},
 	
 		info: function(msg){

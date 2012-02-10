@@ -8,34 +8,34 @@ import validation.ValueFromTable;
 
 import flexjson.transformer.AbstractTransformer;
 
-public class ValueFromTableTransformer  extends AbstractTransformer {
-	
-	String tabla = "";
-	
-	public ValueFromTableTransformer(String tabla) {
-		super();
-		this.tabla = tabla;
-	}
+public class ValueFromTableTransformer extends AbstractTransformer {
 
-	public void transform(Object object) {
-		String result = "";
-		if (object instanceof java.util.Set){
-			for (String value: (Set<String>) object){
-				if (result.equals("")){
-					result = TableKeyValue.getValue(tabla, value);
-				}
-				else{
-					result += ", " + TableKeyValue.getValue(tabla, value);
-				}
-			}
-		}
-		else{
-			result = TableKeyValue.getValue(tabla, object.toString());
-		}
-		if (result == null)
-			getContext().write("null");
-		else
-			getContext().writeQuoted(result);
-	}
+    String tabla = "";
+
+    public ValueFromTableTransformer(String tabla) {
+        super();
+        this.tabla = tabla;
+    }
+
+    public void transform(Object object) {
+        String result = "";
+        if (object instanceof java.util.Set) {
+            for (String key : (Set<String>) object) {
+                if (result.equals("")) {
+                    result = TableKeyValue.getValue(tabla, key);
+                } else {
+                    result += ", " + TableKeyValue.getValue(tabla, key);
+                }
+            }
+        } else {
+            result = TableKeyValue.getValue(tabla, object.toString());
+        }
+        if (result == null){
+            getContext().write("null");
+        }else{
+            getContext().writeQuoted(result);
+        }
+        System.out.println("table" + tabla + " key " + object  + " result " + result);
+    }
 
 }

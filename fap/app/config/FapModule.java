@@ -1,29 +1,17 @@
 package config;
 
-import javax.inject.Singleton;
-
 import play.modules.guice.PlayAbstractModule;
 import properties.PropertyPlaceholder;
 import properties.PropertyPlaceholderImpl;
 import security.Secure;
 import security.SecureFap;
 import security.SecureFapGen;
-import services.GestorDocumentalService;
 import services.FirmaService;
+import services.GestorDocumentalService;
 import services.RegistroService;
 import services.aed.AedGestorDocumentalServiceImpl;
-import services.aed.ProcedimientosService;
-import services.aed.ProcedimientosServiceImpl;
-import services.aed.TiposDocumentosService;
-import services.aed.TiposDocumentosServiceImpl;
-import services.platino.FirmaServiceImpl;
-import services.platino.GestorDocumentalPlatinoService;
-import services.platino.GestorDocumentalServiceImpl;
+import services.platino.PlatinoFirmaServiceImpl;
 import services.platino.RegistroServiceImpl;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Stage;
 
 public class FapModule extends PlayAbstractModule {
 
@@ -41,7 +29,7 @@ public class FapModule extends PlayAbstractModule {
 	}
 	
 	protected void firma(){
-	    bindLazySingletonOnDev(FirmaService.class, FirmaServiceImpl.class);
+	    bindLazySingletonOnDev(FirmaService.class, PlatinoFirmaServiceImpl.class);
 	}
 
 	protected void registro(){

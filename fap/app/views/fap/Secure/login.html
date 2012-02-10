@@ -66,9 +66,6 @@
 
 #{if showCert}
 
-	
-
-
 	#{fap.grupo titulo:"Login"}
 		#{form @authenticateCertificate(), id:"cert-form"}
 			<input type="hidden" id="token" name="token" value="${token}"/>
@@ -90,15 +87,12 @@
 	<script>
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
-			Platino.listarCertificados("#certificado", {mensajes: mensajes});
-						
-			$('#cert-form').submit(function(e){
-				$('#loginsignin').attr("disabled", "true");
-				Platino.firmarTexto("#certificado", "#token", "#firma", {mensajes: mensajes});
-				mensajes.loading("Comprobando certificado electrónico...");
-			});
+			Firma.listarCertificados("#certificado", {mensajes: mensajes});
 			
-			mensajes.error("#{error 'login-certificado'/}");
+			$('#cert-form').submit(function(e){
+				mensajes.clear();
+				firma = Firma.firmarTexto("#certificado", "#token", "#firma", {mensajes: mensajes});
+			});
 		});
 	</script>
 #{/if}	

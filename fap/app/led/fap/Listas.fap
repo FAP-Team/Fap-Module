@@ -38,29 +38,11 @@ Lista TipoDePersona crearEnumerado {
 	fisica: "Persona física"
 	juridica: "Persona jurídica"
 }
-
-
-Lista tipoDocumentosCiudadanos {
-	
-}
-
-Lista tipoDocumentosOrganismos {
-	
-}
-
-Lista tipoDocumentosOtrasEntidades {
-	
-}
-
-Lista tipoDocumentosUsuario{
-	// Los elementos de esta lista se obtienen
-	// dinamicamente a traves del WS.	
-}
-
-Lista tipoDocumentosTodos{
+Lista tiposDocumentos {
 	// Los elementos de esta lista se obtienen
 	// dinamicamente a traves del WS.
 }
+
 
 Lista obligatoriedadDocumentos{
 	// Los elementos de esta lista se obtienen

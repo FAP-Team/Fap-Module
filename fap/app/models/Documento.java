@@ -30,22 +30,7 @@ public class Documento extends Model {
 	public String uri;
 	
 	
-	@ValueFromTable("tipoDocumentosCiudadanos")
-	@Transient
-	public String tipoCiudadano;
-	
-	
-	@ValueFromTable("tipoDocumentosOrganismos")
-	@Transient
-	public String tipoOrganismo;
-	
-	
-	@ValueFromTable("tipoDocumentosOtrasEntidades")
-	@Transient
-	public String tipoOtraEntidad;
-	
-	
-	@ValueFromTable("tipoDocumentosTodos")
+	@ValueFromTable("tiposDocumentos")
 	public String tipo;
 	
 	
@@ -103,22 +88,16 @@ public class Documento extends Model {
 	public void prepararParaSubir(){
 		// Si no tiene descripción y no es de tipo otros, pone como tipo
 		// el nombre del tipo de documento
-		play.Logger.debug("Preparando para subir documento del tipo %s", tipo);
-		if(descripcion == null && !isOtros()){
+		play.Logger.info("Preparando para subir documento del tipo %s", tipo);
+		if((descripcion == null || descripcion.isEmpty()) && !isOtros()){
+		    play.Logger.info("Asignando descripción según tipo de documento");
 			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}
+		play.Logger.info("Descripcion %s", descripcion);
 	}
 	
 	public String getUrlDescarga(){
 		return AedUtils.crearUrl(uri);
-	}
-	
-	public String getTipoCiudadano() {
-		return tipo;
-	}
-
-	public void setTipoCiudadano(String tipoCiudadano) {
-		this.tipo = tipoCiudadano;
 	}
 	
 	public static Documento findByUri(String uri){

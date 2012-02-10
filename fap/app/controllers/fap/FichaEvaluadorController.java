@@ -48,15 +48,15 @@ public class FichaEvaluadorController extends Controller {
 	}
 	
 	public static void index(long idEvaluacion){
-		if(secure.check("evaluacion", "visible", null, null, null)){
+		//if(secure.check("evaluacion", "visible", null, null, null)){
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 			notFoundIfNull(evaluacion);
 			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
 			List<Documento> documentos = evaluacion.getDocumentosAccesibles();
 			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos, expedienteUrl);
-		}else{
-			forbidden();
-		}
+		//}else{
+		//	forbidden();
+		//}
 	}
 
 	private static String redirectToFirstPage(Long idSolicitud) {

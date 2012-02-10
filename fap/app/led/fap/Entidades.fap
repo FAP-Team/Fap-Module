@@ -75,10 +75,7 @@ Entidad Direccion embeddable {
 Entidad Documento {
 	// uri del documento en el AED
 	String uri
-	Lista tipoDocumentosCiudadanos tipoCiudadano transient
-	Lista tipoDocumentosOrganismos tipoOrganismo transient
-	Lista tipoDocumentosOtrasEntidades tipoOtraEntidad transient
-	Lista tipoDocumentosTodos tipo
+	Lista tiposDocumentos tipo
 	String descripcion
 	Boolean clasificado
 	String hash

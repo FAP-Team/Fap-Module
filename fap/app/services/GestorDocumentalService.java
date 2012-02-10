@@ -10,6 +10,7 @@ import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
 import models.SolicitudGenerica;
+import models.Tramite;
 import properties.PropertyPlaceholder;
 import utils.BinaryResponse;
 
@@ -44,4 +45,6 @@ public interface GestorDocumentalService {
     
     public Firma getFirma(Documento documento) throws GestorDocumentalServiceException;
 
+    public List<Tramite> getTramites() throws GestorDocumentalServiceException;
+    
 }

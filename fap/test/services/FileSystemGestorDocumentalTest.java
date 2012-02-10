@@ -24,10 +24,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import play.libs.IO;
-import services.filesystem.FileSystemGestorDocumentalImpl;
+import play.test.UnitTest;
+import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import utils.BinaryResponse;
 
-public class FileSystemGestorDocumentalTest extends org.junit.Assert {
+public class FileSystemGestorDocumentalTest extends UnitTest {
     static GestorDocumentalService gestorDocumentalService;
     static File base;
     
@@ -35,7 +36,7 @@ public class FileSystemGestorDocumentalTest extends org.junit.Assert {
     public static void setup() throws GestorDocumentalServiceException {        
         base = new File(System.getProperty("java.io.tmpdir") + "/fap/test");
         base.delete();
-        gestorDocumentalService = new FileSystemGestorDocumentalImpl(base);
+        gestorDocumentalService = new FileSystemGestorDocumentalServiceImpl(base);
         gestorDocumentalService.configure();
         assumeTrue(gestorDocumentalService.isConfigured());
         assertExistsFile("temporal");
@@ -86,14 +87,13 @@ public class FileSystemGestorDocumentalTest extends org.junit.Assert {
         String fileName = "testfile.txt";
         InputStream is = new ByteArrayInputStream(fileContent.getBytes()); 
         
-        Documento documento = mock(Documento.class);
+        Documento documento = new Documento();
         String uri = gestorDocumentalService.saveDocumentoTemporal(documento, is, fileName);
         assertNotNull(uri);
         assertNotNull(documento.uri);
         assertEquals(uri, documento.uri);
         assertTrue(documento.uri.endsWith(fileName));
         assertFalse(documento.clasificado);
-        verify(documento).save();
         
         String resultPath = "temporal/" + uri;
         assertExistsFile(resultPath);
@@ -101,7 +101,7 @@ public class FileSystemGestorDocumentalTest extends org.junit.Assert {
     
     @Test(expected=GestorDocumentalServiceException.class)
     public void saveDocumentoTemporalFailsIfUri() throws Exception {
-        Documento documento = mock(Documento.class);
+        Documento documento = new Documento();
         documento.uri = "uri ya seteada";
         InputStream is = new ByteArrayInputStream("".getBytes());
         gestorDocumentalService.saveDocumentoTemporal(documento, is , "");
@@ -132,7 +132,7 @@ public class FileSystemGestorDocumentalTest extends org.junit.Assert {
     
     private Documento saveTmpDocumento(String fileContent, String filename) throws Exception {
         InputStream is = new ByteArrayInputStream(fileContent.getBytes()); 
-        Documento documento = mock(Documento.class);
+        Documento documento = new Documento();
         gestorDocumentalService.saveDocumentoTemporal(documento, is, filename);
         return documento;
     }

@@ -51,7 +51,7 @@
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
 			var form = $('#${id}').parents('form');
-			Platino.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
+			Firma.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
 			
 			$('#${id_boton}').click(function(){
 				input = $("<input>").attr("type", "hidden").attr("name", "${id}").val("${id}");

@@ -75,11 +75,13 @@ public class AportacionPresentarController extends AportacionPresentarController
 				
 				List<Firmante> firmantes = new ArrayList<Firmante>();
 				
-				firmaService.calcularFirmantes(solicitud.solicitante, firmantes);
+				//TODO DESCOMENTAR!!!!
+				//firmaService.calcularFirmantes(solicitud.solicitante, firmantes);
 				
 				play.Logger.info("Firmantes " + firmantes);
 				
-				firmaService.firmar(solicitud.aportaciones.actual.oficial, firmantes, firma);
+				//TODO DESCOMENTAR!!!!
+				//firmaService.firmar(solicitud.aportaciones.actual.oficial, firmantes, firma);
 				
 				play.Logger.info("Firmada");
 				

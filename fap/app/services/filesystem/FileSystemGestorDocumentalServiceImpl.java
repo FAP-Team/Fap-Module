@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +23,8 @@ import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
 import models.SolicitudGenerica;
+import models.TipoDocumento;
+import models.Tramite;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import utils.BinaryResponse;
@@ -29,7 +32,7 @@ import utils.BinaryResponse;
 /**
  * Gestor documental en sistema de ficheros
  */
-public class FileSystemGestorDocumentalImpl implements GestorDocumentalService {
+public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalService {
     
     private final File temporalPath;
     
@@ -38,7 +41,7 @@ public class FileSystemGestorDocumentalImpl implements GestorDocumentalService {
     /**
      * @param path Carpeta donde irán las carpetas para los ficheros temporales y clasificados 
      */
-    public FileSystemGestorDocumentalImpl(File path){
+    public FileSystemGestorDocumentalServiceImpl(File path){
         this.temporalPath = new File(path, "temporal");
         this.clasificadoPath = new File(path, "clasificado");
     }
@@ -111,7 +114,7 @@ public class FileSystemGestorDocumentalImpl implements GestorDocumentalService {
     }
 
     private File getDocumentoFolder(Documento documento){
-        if(documento.clasificado){
+        if(documento.clasificado.booleanValue()){
             return clasificadoPath;
         }else{
             return temporalPath;
@@ -260,6 +263,32 @@ public class FileSystemGestorDocumentalImpl implements GestorDocumentalService {
         return null;
     }
 
+    @Override
+    public List<Tramite> getTramites() throws GestorDocumentalServiceException {
+        Tramite tramite = new Tramite();
+        tramite.nombre = "solicitud";
+        tramite.uri = "fs://";
+        //tramite.documentos
+
+        tramite.documentos.add(newTipoDocumento("1"));
+        tramite.documentos.add(newTipoDocumento("2"));
+        tramite.documentos.add(newTipoDocumento("3"));
+        
+        ArrayList<Tramite> tramites = new ArrayList<Tramite>();
+        tramites.add(tramite);
+        return tramites;
+    }
+    
+    private TipoDocumento newTipoDocumento(String nombre){
+        TipoDocumento tipoDocumento = new TipoDocumento();
+        tipoDocumento.nombre = "FileSystem " + nombre;
+        tipoDocumento.uri="fs://type" + nombre;
+        tipoDocumento.aportadoPor = "Ciudadano";
+        tipoDocumento.obligatoriedad = "Opcional";
+        return tipoDocumento;
+    }
+    
+    
     
     
 }

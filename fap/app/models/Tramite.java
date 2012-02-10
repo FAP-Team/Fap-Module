@@ -72,6 +72,15 @@ public class Tramite extends Model {
 				"join tramite.documentos tipoDocumento where tipoDocumento.aportadoPor = ?", aportadoPor).fetch();
 		return tiposDocumentos;
 	}
+	
+    public static void deleteAllTramitesAndTipoDocumentos() {
+        List<Tramite> tramites = Tramite.findAll();
+        for(Tramite tramite : tramites){
+            tramite.documentos = null;
+            tramite.delete();
+        }
+        TipoDocumento.deleteAll();
+    }
 // === MANUAL REGION END ===
 	
 	

@@ -7,6 +7,7 @@ require:
     - play -> pdf 0.6
     - play -> less 0.3
     - play -> recaptcha 1.2
+    - play -> mockito 0.1
 
 repositories:
     - Fap Local repository:

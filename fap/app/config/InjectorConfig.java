@@ -35,6 +35,10 @@ public class InjectorConfig extends GuiceSupport {
 		return injector;
 	}
 	
+	public static <T> T getBean(Class<T> clazz){
+	    return injector.getInstance(clazz);
+	}
+	
 	private List<AbstractModule> modulesToLoad(){
 		List<Class> modules = Play.classloader.getAssignableClasses(AbstractModule.class);
 		

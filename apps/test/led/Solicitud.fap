@@ -131,28 +131,30 @@ Formulario Solicitud {
 	
 	Pagina TablasSimples campo=Solicitud{
 		Tabla tablaNombres campo=Solicitud.tablaDeNombres titulo="Solicitantes"
-		popupCrear=popupNombre
-		popupLeer=popupNombre
-		popupEditar=popupNombre
-		popupBorrar=popupNombre
+		popup=popupNombre
 		columnasAutomaticas exclude=id, fecha
 		{
 		}
 	}
 
 	Popup popupNombre campo=Solicitud.tablaDeNombres {
-		Texto campo=TablaDeNombres.nombre titulo="Nombre"
+		Texto campo=TablaDeNombres.nombre titulo="Nombre" requerido
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 	
 	Pagina Documentos campo=Solicitud.documentacion.documentos{
-		Accion crear redirigir=SubirArchivoAedTest	
+		Accion crear redirigir=SubirArchivoAedTest
+		Accion editar redirigir=SubirArchivoAedTest
+		Accion borrar redirigir=SubirArchivoAedTest
 		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
 	
 	Pagina SubirArchivoAedTest campo=Solicitud {
-		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos {
-			Columna campo=Documento.id
+		Tabla documentos campo=Solicitud.documentacion.documentos pagina=Documentos {
+			Columna campo=Documento.id titulo="ID"
+			Columna campo=Documento.tipo titulo="Tipo"
+			Columna campo=Documento.descripcion titulo="Descripción" expandir
+			Columna funcion="<a href=\"${Documento.urlDescarga}\">Descargar</a>" titulo=""
 		}	
 	}
 	

@@ -59,6 +59,7 @@ POST /Solicitud/direcciones/editar DireccionesController.editar
 
 GET /Solicitud/documentos DocumentosController.index
 POST /Solicitud/documentos/editar DocumentosController.editar
+POST /Solicitud/documentos/borrar DocumentosController.borrar
 POST /Solicitud/documentos/crear DocumentosController.crear
 
 GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index

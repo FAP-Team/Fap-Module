@@ -80,8 +80,9 @@ public class TableRenderResponse<T> {
 											
 		for (String table : valueFromTable.keySet())
 			for (String field : valueFromTable.get(table))
-				if (fieldsSet.contains(field))
+				if (fieldsSet.contains(field)){
 					flex = flex.transform(new serializer.ValueFromTableTransformer(table), "obj.rows.objeto." + field);
+				}
 					
 		flex = flex.exclude("*");
 

@@ -11,7 +11,7 @@ import services.GestorDocumentalService;
 import services.RegistroService;
 import services.aed.AedGestorDocumentalServiceImpl;
 import services.platino.PlatinoFirmaServiceImpl;
-import services.platino.RegistroServiceImpl;
+import services.platino.PlatinoRegistroServiceImpl;
 
 public class FapModule extends PlayAbstractModule {
 
@@ -33,7 +33,7 @@ public class FapModule extends PlayAbstractModule {
 	}
 
 	protected void registro(){
-	    bindLazySingletonOnDev(RegistroService.class, RegistroServiceImpl.class);
+	    bindLazySingletonOnDev(RegistroService.class, PlatinoRegistroServiceImpl.class);
 	}
 	
 	protected void secure() {

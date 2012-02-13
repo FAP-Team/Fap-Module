@@ -30,19 +30,22 @@ import play.modules.guice.InjectSupport;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
 import properties.FapProperties;
+import properties.PropertyPlaceholder;
 
 
 @InjectSupport
-public class RegistroServiceTest extends UnitTest {
+public abstract class RegistroServiceTest extends UnitTest {
+
+	protected static RegistroService registroService;
 
 	@Inject
-	static RegistroService registroService;
-
-	@Inject
-	static FirmaService firmaService;
+	protected static PropertyPlaceholder propertyPlaceholder;
 	
 	@Inject
-	static GestorDocumentalService aedService;
+	protected static FirmaService firmaService;
+	
+	@Inject
+	protected static GestorDocumentalService gestorDocumentalService;
 		
 	@Before
 	public void before(){
@@ -74,10 +77,10 @@ public class RegistroServiceTest extends UnitTest {
 		firmante.fechaFirma = new DateTime(2003, 1, 1, 12, 15);
 
 		models.Firma firma = new models.Firma(firmaDocumento, firmante);
-		aedService.agregarFirma(documento, firma);
+		gestorDocumentalService.agregarFirma(documento, firma);
 		
 		String firma2Documento = firmaService.firmarDocumento(content);
-		aedService.agregarFirma(documento, new Firma(firma2Documento, firmante));
+		gestorDocumentalService.agregarFirma(documento, new Firma(firma2Documento, firmante));
 		
 		//Registra el documento
 		ExpedientePlatino expediente = new ExpedientePlatino();
@@ -95,7 +98,7 @@ public class RegistroServiceTest extends UnitTest {
 		d.tipo = FapProperties.get("fap.aed.tiposdocumentos.base");
 		d.descripcion = "prueba";
 
-		aedService.saveDocumentoTemporal(d, file);
+		gestorDocumentalService.saveDocumentoTemporal(d, file);
 		return d;
 	}
 

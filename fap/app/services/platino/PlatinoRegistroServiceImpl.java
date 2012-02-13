@@ -75,7 +75,7 @@ import models.TableKeyValue;
  * a la property
  * 
  */
-public class RegistroServiceImpl implements RegistroService {
+public class PlatinoRegistroServiceImpl implements RegistroService {
 
 	private static Logger log = Logger.getLogger(RegistroService.class);
 
@@ -97,7 +97,7 @@ public class RegistroServiceImpl implements RegistroService {
 	private final long UNIDAD_ORGANICA;
 	
 	@Inject
-	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder, FirmaService firmaService, GestorDocumentalService gestorDocumentalService){
+	public PlatinoRegistroServiceImpl(PropertyPlaceholder propertyPlaceholder, FirmaService firmaService, GestorDocumentalService gestorDocumentalService){
 	    this.propertyPlaceholder = propertyPlaceholder;
 	    this.firmaService = firmaService;
 	    this.gestorDocumentalService = gestorDocumentalService;

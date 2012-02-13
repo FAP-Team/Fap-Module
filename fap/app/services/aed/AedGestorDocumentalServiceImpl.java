@@ -502,10 +502,13 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	
     @Override
     public void agregarFirma(models.Documento documento, models.Firma firma) throws GestorDocumentalServiceException {
-        try { 
-            if(!firma.isFirmaSimple())
-                throw new GestorDocumentalServiceException("La firma debe tener un único firmante");
-            
+        if(firma.getContenido() == null)
+            throw new GestorDocumentalServiceException("La firma está vacia");
+        
+        if(!firma.isFirmaSimple())
+            throw new GestorDocumentalServiceException("La firma debe tener un único firmante");
+        
+        try {
             PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(documento.uri, documento.clasificado);
             PropiedadesAdministrativas propiedadesAdministrativas = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
             Firma firmaActual = propiedadesAdministrativas.getFirma();

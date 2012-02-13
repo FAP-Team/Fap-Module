@@ -28,10 +28,10 @@ public class AppModule extends FapModule {
         bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
     }
 
-    @Override
-    protected void gestorDocumental() {
-        bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
-    }
+//    @Override
+//    protected void gestorDocumental() {
+//        bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
+//    }
 
 //    @Override
 //    protected void firma() {

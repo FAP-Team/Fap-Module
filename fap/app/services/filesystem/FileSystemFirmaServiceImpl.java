@@ -27,15 +27,14 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
     
     @Override
     public String firmarTexto(byte[] texto) throws FirmaServiceException {
-        FSFirma fsFirma = new FSFirma("APP", "appnif", new String(texto));
+        FileSystemFirma fsFirma = FileSystemFirma.encode("APP", "APPNIF", new String(texto));
         return fsFirma.encode();
     }
 
     @Override
     public boolean validarFirmaTexto(byte[] texto, String firma) throws FirmaServiceException {
-        FSFirma decodeFirma = FSFirma.decode(firma);
-        play.Logger.info("texto %s firma %s", texto, decodeFirma.firma);
-        return new String(texto).equals(decodeFirma.firma);
+        FileSystemFirma decodeFirma = FileSystemFirma.decode(firma);
+        return new String(texto).equals(decodeFirma.getFirma());
     }
     
     @Override
@@ -50,39 +49,12 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 
     @Override
     public InfoCert extraerCertificado(String firma) throws FirmaServiceException {
-        FSFirma decode = FSFirma.decode(firma);
+        FileSystemFirma decode = FileSystemFirma.decode(firma);
         InfoCert info = new InfoCert();
-        info.nombrecompleto = decode.nombre;
-        info.nif = decode.nif;
+        info.nombrecompleto = decode.getNombre();
+        info.nif = decode.getNif();
         return info;
     }
 
-    private static class FSFirma {
-        private String nombre;
-        private String nif;
-        private String firma;
-        
-        public FSFirma(String nombre, String nif, String firma){
-            this.nombre = nombre;
-            this.nif = nif;
-            this.firma = firma;
-        }
-        
-        private String encode(){
-            return String.format("%s#%s#%s", nombre, nif, firma);
-        }
-        
-        public String toString(){
-            return encode();
-        }
-        
-        public static FSFirma decode(String firma) throws FirmaServiceException {
-            String decode = new String(Codec.decodeBASE64(firma));
-            String[] splitted = decode.split("#");
-            if(splitted.length != 3)
-                throw new FirmaServiceException("La firma no es correta");
-            return new FSFirma(splitted[0], splitted[1], splitted[2]);
-        }
-        
-    }
+ 
 }

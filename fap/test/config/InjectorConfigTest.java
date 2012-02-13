@@ -10,7 +10,6 @@ import services.FirmaService;
 import services.RegistroService;
 import services.aed.ProcedimientosService;
 import services.aed.TiposDocumentosService;
-import services.platino.GestorDocumentalPlatinoService;
 
 import com.google.inject.Injector;
 
@@ -21,11 +20,8 @@ public class InjectorConfigTest extends UnitTest {
 		assertInjectedSingleton(Secure.class);
 		assertInjectedSingleton(GestorDocumentalService.class);
 		assertInjectedSingleton(PropertyPlaceholder.class);
-		assertInjectedSingleton(ProcedimientosService.class);
-		assertInjectedSingleton(TiposDocumentosService.class);
 		assertInjectedSingleton(FirmaService.class);
 		assertInjectedSingleton(RegistroService.class);
-		assertInjectedSingleton(GestorDocumentalPlatinoService.class);
 	}
 		
 	private void assertInjectedSingleton(Class clazz){

@@ -12,27 +12,27 @@ public class Firma {
     }
     
     public Firma(String contenido, Firmante firmante){
-        contenido = this.contenido;
-        firmantes = new ArrayList<Firmante>();
-        firmantes.add(firmante);
+        this.contenido = contenido;
+        this.firmantes = new ArrayList<Firmante>();
+        this.firmantes.add(firmante);
     }
     
     public Firma(String contenido, List<Firmante> firmantes){
-        contenido = this.contenido;
-        firmantes = new ArrayList<Firmante>(firmantes);
+        this.contenido = contenido;
+        this.firmantes = new ArrayList<Firmante>(firmantes);
     }
 
     public String getContenido(){
-        return contenido;
+        return this.contenido;
     }
     
     public List<Firmante> getFirmantes(){
-        return firmantes;
+        return this.firmantes;
     }
     
     public void addFirmante(Firmante firmante){
         if(firmante != null) throw new NullPointerException();
-        firmantes.add(firmante);
+        this.firmantes.add(firmante);
     }
     
     /**
@@ -40,7 +40,7 @@ public class Firma {
      * @return
      */
     public boolean isFirmaSimple(){
-        return contenido != null && firmantes.size() == 1;
+        return firmantes.size() == 1;
     }
     
 }

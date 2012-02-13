@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.activation.DataSource;
+import javax.inject.Inject;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -78,289 +79,260 @@ public class RegistroServiceImpl implements RegistroService {
 
 	private static Logger log = Logger.getLogger(RegistroService.class);
 
-	private PropertyPlaceholder propertyPlaceholder;
+	private final PropertyPlaceholder propertyPlaceholder;
 
-	private GestorDocumentalService aedService;
+	private final Registro registroPort;
 
-	private volatile Registro registroPort;
+	private final FirmaService firmaService;
 
-	private FirmaService firmaService;
-
-	private  GestorDocumentalPlatinoService gestorDocumentalService;
+	private final GestorDocumentalService gestorDocumentalService;
 	
-	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder,
-			GestorDocumentalService aedService, FirmaService firmaService,
-			GestorDocumentalPlatinoService gestorDocumentalService) {
-		init(propertyPlaceholder, aedService, firmaService, gestorDocumentalService, false);
-	}
-
-	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder,
-			GestorDocumentalService aedService, FirmaService firmaService,
-			GestorDocumentalPlatinoService gestorDocumentalService, boolean eagerInitialization) {
-		init(propertyPlaceholder, aedService, firmaService, gestorDocumentalService, eagerInitialization);
-	}
+	private final PlatinoGestorDocumentalService platinoGestorDocumentalService;
 	
-	private void init(PropertyPlaceholder propertyPlaceholder,
-			GestorDocumentalService aedService, FirmaService firmaService,
-			GestorDocumentalPlatinoService gestorDocumentalService, boolean eagerInitialization){
-		
-		if (propertyPlaceholder == null || aedService == null
-				|| firmaService == null || gestorDocumentalService == null)
-			throw new NullPointerException();
-
-		this.propertyPlaceholder = propertyPlaceholder;
-		this.aedService = aedService;
-		this.firmaService = firmaService;
-		this.gestorDocumentalService = gestorDocumentalService;
-		
-		if(eagerInitialization)
-			getRegistroPort();
-	}
+	private final String USERNAME;
+	private final String PASSWORD;
+	private final String PASSWORD_ENC;
+	private final String ALIAS;
+	private final String ASUNTO;
+	private final long UNIDAD_ORGANICA;
 	
-	private Registro getRegistroPort(){
-		//Double-check idiom for lazy initialization
-		Registro result = registroPort;
-		if(result == null){
-			synchronized(this){
-				result = registroPort;
-				if(result == null){
-					URL wsdlURL = Registro_Service.class.getClassLoader().getResource(
-							"wsdl/registro.wsdl");
-					result = registroPort = new Registro_Service(wsdlURL).getRegistroPort();
-					WSUtils.configureEndPoint(registroPort, getEndPoint());
-					WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder);
-					PlatinoProxy.setProxy(registroPort);					
-				}
-			}
-		}
-		return result;
+	@Inject
+	public RegistroServiceImpl(PropertyPlaceholder propertyPlaceholder, FirmaService firmaService, GestorDocumentalService gestorDocumentalService){
+	    this.propertyPlaceholder = propertyPlaceholder;
+	    this.firmaService = firmaService;
+	    this.gestorDocumentalService = gestorDocumentalService;
+	    
+        URL wsdlURL = Registro_Service.class.getClassLoader().getResource("wsdl/registro.wsdl");
+        registroPort = new Registro_Service(wsdlURL).getRegistroPort();
+        WSUtils.configureEndPoint(registroPort, getEndPoint());
+        WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder);
+        PlatinoProxy.setProxy(registroPort); 
+        
+        USERNAME = FapProperties.get("fap.platino.registro.username");
+        PASSWORD = FapProperties.get("fap.platino.registro.password");
+        ALIAS = FapProperties.get("fap.platino.registro.aliasServidor");
+        PASSWORD_ENC = encriptarPassword(PASSWORD);
+        ASUNTO = FapProperties.get("fap.platino.registro.asunto");
+        UNIDAD_ORGANICA = FapProperties.getLong("fap.platino.registro.unidadOrganica");
+        
+        this.platinoGestorDocumentalService = new PlatinoGestorDocumentalService(propertyPlaceholder);
 	}
 	
-
+	private String encriptarPassword(String password){
+        try {
+            return PlatinoSecurityUtils.encriptarPassword(password);
+        } catch (Exception e) {
+            throw new RuntimeException("Error encriptando la contraseña");
+        }	    
+	}
+	
+	public boolean isConfigured(){
+	    return hasConnection() && platinoGestorDocumentalService.hasConnection();
+	}
+	
 	public boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
 			hasConnection = getVersion() != null;
 		} catch (Exception e) {
-			log.info("RegistroServiceImpl no tiene coneccion con "
-					+ getEndPoint());
+			log.info("RegistroServiceImpl no tiene coneccion con " + getEndPoint());
 		}
 		return hasConnection;
 	}
 
-
-	public String getEndPoint() {
+	private String getEndPoint() {
 		return propertyPlaceholder.get("fap.platino.registro.url");
 	}
 
-	public String getVersion() {
-		return getRegistroPort().getVersion();
+	private String getVersion() {
+		return registroPort.getVersion();
 	}
 
-	private static XMLGregorianCalendar toXmlGregorian(DateTime time)
-			throws Exception {
-		return DatatypeFactory.newInstance().newXMLGregorianCalendar(
-				time.toGregorianCalendar());
+	@Override
+	public models.JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento, ExpedientePlatino expediente) throws RegistroServiceException{
+	    DatosRegistro datosRegistro = getDatosRegistro(solicitante, documento, expediente);
+	    String datos = getDatosRegistroNormalizados(expediente, datosRegistro);
+	    String datosFirmados = firmarDatosRegistro(datos);
+        JustificanteRegistro justificantePlatino = registroDeEntrada(datos, datosFirmados);
+        models.JustificanteRegistro justificante = getJustificanteRegistroModel(justificantePlatino);
+        return justificante;
 	}
+	
+    private DatosRegistro getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente) throws RegistroServiceException {
+        XMLGregorianCalendar fechaApertura = WSUtils.getXmlGregorianCalendar(expediente.fechaApertura); 
 
-	public DatosRegistro getDatosRegistro(Solicitante solicitante,
-			Documento documento, ExpedientePlatino expediente) throws Exception {
-		log.debug("Obteniendo los datos de registro del documento "
-				+ documento.uri);
+        // Rellenamos datos expediente
+        DatosExpediente datosExp = new DatosExpediente();
+        datosExp.setNumero(expediente.numero);
+        datosExp.setFechaApertura(fechaApertura);
+        datosExp.setCreadoPlatino(expediente.getCreado());
+        datosExp.setRuta(expediente.ruta);
 
-		DatosRegistro datosRegistro = new DatosRegistro();
+        // Rellenamos datos Documento
+        DatosDocumento datosDoc = new DatosDocumento();
+        datosDoc.setTipoDoc("SOL");
+        datosDoc.setTipoMime("application/pdf");
 
-		XMLGregorianCalendar fechaApertura = toXmlGregorian(expediente.fechaApertura);
+        documento.prepararParaSubir();
+        if (documento.descripcion == null)
+            throw new NullPointerException();
 
-		// Rellenamos datos expediente
-		DatosExpediente datosExp = new DatosExpediente();
-		datosExp.setNumero(expediente.numero);
-		datosExp.setFechaApertura(fechaApertura);
-		datosExp.setCreadoPlatino(expediente.getCreado());
-		datosExp.setRuta(expediente.ruta);
+        datosDoc.setDescripcion(documento.descripcion);
+        datosDoc.setFecha(fechaApertura);
 
-		// Rellenamos datos Documento
-		DatosDocumento datosDoc = new DatosDocumento();
-		datosDoc.setTipoDoc("SOL");
-		datosDoc.setTipoMime("application/pdf");
-		
-		documento.prepararParaSubir();
-		if(documento.descripcion == null)
-			throw new NullPointerException();
-		
-		datosDoc.setDescripcion(documento.descripcion);
-		datosDoc.setFecha(fechaApertura);
+        try {
+            models.Firma firma = gestorDocumentalService.getFirma(documento);
+            if (firma != null){
+                play.Logger.info("Poniendo firma");
+                datosDoc.setFirma(firma);
+            }else{
+                play.Logger.info("El documento no está firmado");
+            }
+        }catch(Exception e){
+            throw new RegistroServiceException("Error recuperando la firma del documento", e);
+        }
 
-        models.Firma firma = aedService.getFirma(documento);		
-		if (firma != null) {
-		    datosDoc.setFirma(firma);
-		} else {
-			play.Logger.info("No se registrará informacion sobre la firma ya que no tiene firma asociada");
-		}
+        try {
+            BinaryResponse contentResponse = gestorDocumentalService.getDocumento(documento);
+            DataSource dataSource = contentResponse.contenido.getDataSource();
+            datosDoc.setContenido(dataSource);
+        }catch(Exception e){
+            throw new RegistroServiceException("Error recuperando el documento del gestor documental", e);
+        }
+        
+        
+        log.info("Contenido del documento obtenido");
+        DatosRegistro datosRegistro = new DatosRegistro();
+        datosRegistro.setExpediente(datosExp);
+        datosRegistro.setDocumento(datosDoc);
 
-		BinaryResponse contentResponse = aedService.getDocumento(documento);
-		DataSource dataSource = contentResponse.contenido.getDataSource();
-		datosDoc.setContenido(dataSource);
+        if (solicitante.isPersonaFisica()) {
+            PersonaFisica solFisica = solicitante.fisica;
+            datosRegistro.setNombreRemitente(solFisica.getNombreCompleto());
+            datosRegistro.setNumeroDocumento(solFisica.nip.valor);
+            datosRegistro.setTipoDocumento(solFisica.nip.getPlatinoTipoDocumento());
+        } else if (solicitante.isPersonaJuridica()) {
+            PersonaJuridica solJuridica = solicitante.juridica;
+            datosRegistro.setNombreRemitente(solJuridica.entidad);
+            datosRegistro.setNumeroDocumento(solJuridica.cif);
+            datosRegistro.setTipoDocumento("C");// CIF
+        }
+        return datosRegistro;
+    }
+	
+    private String getDatosRegistroNormalizados(ExpedientePlatino expedientePlatino, DatosRegistro datosRegistro) throws RegistroServiceException {
+        log.info("Ruta expediente " + datosRegistro.getExpediente().getRuta());
+        
+        crearExpedienteSiNoExiste(expedientePlatino);
+        
+        // Documento que se va a registrar
+        es.gobcan.platino.servicios.registro.Documento doc = insertarDocumentoGestorDocumentalPlatino(expedientePlatino, datosRegistro.getDocumento());
+        Documentos documentosRegistrar = new Documentos();
+        documentosRegistrar.getDocumento().add(doc);
+              
+        // 3) Normalizamos los datos
+        // Interesado: IP
+        String nombre = datosRegistro.getNombreRemitente();
+        String numeroDocumento = datosRegistro.getNumeroDocumento();
 
-		log.info("Contenido del documento obtenido");
-		datosRegistro.setExpediente(datosExp);
-		datosRegistro.setDocumento(datosDoc);
+        // Se ha de indicar porque si no pone NIF por defecto
+        String tipoDocumento = datosRegistro.getTipoDocumento();
 
-		if (solicitante.isPersonaFisica()) {
-			PersonaFisica solFisica = solicitante.fisica;
-			datosRegistro.setNombreRemitente(solFisica.getNombreCompleto());
-			datosRegistro.setNumeroDocumento(solFisica.nip.valor);
-			datosRegistro.setTipoDocumento(solFisica.nip
-					.getPlatinoTipoDocumento());
-		} else if (solicitante.isPersonaJuridica()) {
-			PersonaJuridica solJuridica = solicitante.juridica;
-			datosRegistro.setNombreRemitente(solJuridica.entidad);
-			datosRegistro.setNumeroDocumento(solJuridica.cif);
-			datosRegistro.setTipoDocumento("C");// CIF
-		}
-		return datosRegistro;
-	}
+        // Poner fecha en la que se produce la solicitud
+        XMLGregorianCalendar fecha = WSUtils.getXmlGregorianCalendar(new Date()); 
+        Asunto asunto = new Asunto();
+        asunto.getContent().add(ASUNTO);
 
-	public JustificanteRegistro registroDeEntrada(DatosRegistro datosRegistro)
-			throws Exception {
-		log.info("Preparando registro de entrada");
+        try {
+            String datosAFirmar = registroPort.normalizaDatosFirmados(
+                    UNIDAD_ORGANICA, // Organismo
+                    asunto, // Asunto
+                    nombre, // Nombre remitente
+                    null, // TipoTransporte (opcional)
+                    tipoDocumento, // TipoDocumento (opcional)
+                    numeroDocumento, // NIF remitente
+                    fecha, // Fecha en la que se produce la solicitud
+                    documentosRegistrar);
+            datosAFirmar = CharsetUtils.fromISO2UTF8(datosAFirmar);
+            return datosAFirmar;
+        } catch (Exception e) {
+            log.error("Error normalizando los datos " + e.getMessage());
+            log.error("RegistrarEntrada -> EXIT ERROR");
+            throw new RegistroServiceException("Error normalizando los datos de registro", e);
+        }
+    }
 
-		String datosAFirmar = obtenerDatosAFirmarRegisto(datosRegistro);
-		log.info(datosAFirmar);
-
-		//TODO DESCOMENTAR!!!!
-		String datosFirmados ="";
-		//String datosFirmados = firmaService.firmarPKCS7(datosAFirmar
-		//		.getBytes("iso-8859-1"));
-		log.info("Datos normalizados firmados");
-
-		// 6) Registrar
-		try {
-			JustificanteRegistro justificante = registroDeEntrada(datosAFirmar,
-					datosFirmados);
-			log.info("Registro de entrada realizado con justificante con NDE "
-					+ justificante.getNDE()
-					+ " Numero Registro General: "
-					+ justificante.getDatosFirmados().getNúmeroRegistro()
-							.getContent().get(0)
-					+ " Nº Registro Oficina: "
-					+ justificante.getDatosFirmados().getNúmeroRegistro()
-							.getOficina()
-					+ " / "
-					+ justificante.getDatosFirmados().getNúmeroRegistro()
-							.getNumOficina());
-			log.info("RegistrarEntrada -> EXIT OK");
-			return justificante;
-		} catch (Exception e) {
-			log.error("Error al obtener el justificante y EXIT " + e);
-			log.error("RegistrarEntrada -> EXIT ERROR");
-			throw e;
-		}
-	}
-
-	public JustificanteRegistro registroDeEntrada(String datosAFirmar,
-			String datosFirmados) throws Exception {
-		// Se realiza el registro de Entrada, obteniendo el justificante
-		String username = FapProperties.get("fap.platino.registro.username");
-		String password = FapProperties.get("fap.platino.registro.password");
-		String aliasServidor = FapProperties
-				.get("fap.platino.registro.aliasServidor");
-
-		String passwdEncripted = PlatinoSecurityUtils
-				.encriptarPassword(password);
-		return getRegistroPort().registrarEntrada(username, passwdEncripted,
-				datosAFirmar, datosFirmados, aliasServidor, null, null);
-	}
-
-	/**
-	 * Se almacena el documento en el gestor documental. Se normalizan los datos
-	 * de registro.
-	 * 
-	 * *** LOS DATOS DE REGISTRO SE DEVUELVEN EN codificación iso-8859-1
-	 * 
-	 * @param datosRegistro
-	 * @return
-	 * @throws Exception
-	 */
-	public String obtenerDatosAFirmarRegisto(DatosRegistro datosRegistro)
-			throws Exception {
-		log.info("Ruta expediente " + datosRegistro.getExpediente().getRuta());
-
-		// 2) Guardar documentos en Gestor Documental de Platino. El documento
-		// que se guarda es el informe con pie de firma reducido
-		Documentos documentosRegistrar = gestorDocumentalService
-				.guardarSolicitudEnGestorDocumental(datosRegistro
-						.getExpediente().getRuta(), datosRegistro
-						.getDocumento());
-		log.info("Documento guardado en Gestor Documental Platino");
-
-		// 3) Normalizamos los datos
-		// Interesado: IP
-
-		String nombre = datosRegistro.getNombreRemitente();
-		String numeroDocumento = datosRegistro.getNumeroDocumento();
-
-		// Se ha de indicar porque si no pone NIF por defecto
-		String tipoDocumento = datosRegistro.getTipoDocumento();
-
-		// Poner fecha en la que se produce la solicitud
-		XMLGregorianCalendar fecha = DatatypeFactory.newInstance()
-				.newXMLGregorianCalendar(new GregorianCalendar());
-
-		Asunto asunto = new Asunto();
-
-		String asuntoProperty = FapProperties
-				.get("fap.platino.registro.asunto");
-
-		asunto.getContent().add(asuntoProperty);
-
-		Long organismo = FapProperties
-				.getLong("fap.platino.registro.unidadOrganica");
-
-		String datosAFirmar = null;
-		try {
-			datosAFirmar = getRegistroPort().normalizaDatosFirmados(
-					Long.valueOf(organismo), // Organismo
-					asunto, // Asunto
-					nombre, // Nombre remitente
-					null, // TipoTransporte (opcional)
-					tipoDocumento, // TipoDocumento (opcional)
-					numeroDocumento, // NIF remitente
-					fecha, // Fecha en la que se produce la solicitud
-					documentosRegistrar);
-			datosAFirmar = CharsetUtils.fromISO2UTF8(datosAFirmar);
-		} catch (Exception e) {
-			log.error("Error normalizando los datos " + e.getMessage());
-			log.error("RegistrarEntrada -> EXIT ERROR");
-			throw e;
-		}
-
-		log.info("Datos normalizados");
-		return datosAFirmar;
-	}
-
-	/**
-	 * Devuelve la fecha de registro
-	 * 
-	 * @param justificante
-	 * @return
-	 */
-	public DateTime getRegistroDateTime(JustificanteRegistro justificante) {
-		XMLGregorianCalendar fecha = justificante.getDatosFirmados()
-				.getFechaRegistro();
-		XMLGregorianCalendar fechaHora = justificante.getDatosFirmados()
-				.getHoraRegistro();
-		DateTime dateTime = new DateTime(fecha.getYear(), fecha.getMonth(),
-				fecha.getDay(), fechaHora.getHour(), fechaHora.getMinute(),
-				fechaHora.getSecond(), fechaHora.getMillisecond());
-		return dateTime;
-	}
-
+    private void crearExpedienteSiNoExiste(ExpedientePlatino expedientePlatino) throws RegistroServiceException {
+        if(!expedientePlatino.creado){
+            try {
+                platinoGestorDocumentalService.crearExpediente(expedientePlatino);
+            }catch(Exception e){
+                throw new RegistroServiceException("Error al crear el expediente en el gestor documental de platino", e);
+            }
+        }
+    }
+    
+    private es.gobcan.platino.servicios.registro.Documento insertarDocumentoGestorDocumentalPlatino(
+            ExpedientePlatino expedientePlatino, DatosDocumento datosDocumento)
+            throws RegistroServiceException {
+        try {
+            String uri = platinoGestorDocumentalService.guardarDocumento(expedientePlatino.ruta, datosDocumento);
+            es.gobcan.platino.servicios.registro.Documento doc = DatosRegistro.documentoSGRDEToRegistro(datosDocumento.getContenido(), uri);
+            return doc;
+        }catch(Exception e){
+            throw new RegistroServiceException("Error al insertar el documento a registrar en el gestor documental de platino", e);
+        }
+    }
+    
+    private String firmarDatosRegistro(String datosAFirmar) throws RegistroServiceException {
+        try {
+            String datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
+            return datosFirmados;
+        }catch(Exception e){
+            throw new RegistroServiceException("Error firmando los datos de registro", e);
+        }
+    }
+    
+    private JustificanteRegistro registroDeEntrada(String datos, String datosFirmados) throws RegistroServiceException {
+        try {
+            JustificanteRegistro justificante = registroPort.registrarEntrada(USERNAME,  PASSWORD_ENC, datos, datosFirmados, ALIAS, null, null);
+            return justificante;
+        }catch(Exception e){
+            throw new RegistroServiceException("Error en la llamada de registro de entrada", e);
+        }
+    }
+    
+    private models.JustificanteRegistro getJustificanteRegistroModel(JustificanteRegistro justificantePlatino) {
+        DateTime fechaRegistro = getRegistroDateTime(justificantePlatino);
+        String numeroRegistro = justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0);
+        
+        BinaryResponse documento = new BinaryResponse();
+        documento.contenido = justificantePlatino.getReciboPdf();
+        documento.nombre = "Justificante";
+        models.JustificanteRegistro result = new models.JustificanteRegistro(numeroRegistro, fechaRegistro, documento);
+        return result;
+    }
+	
+    /**
+     * Calcula la fecha y hora a partir del justificante de platino
+     * @param justificante
+     * @return
+     */
+    private DateTime getRegistroDateTime(JustificanteRegistro justificante) {
+        XMLGregorianCalendar fecha = justificante.getDatosFirmados() .getFechaRegistro();
+        XMLGregorianCalendar fechaHora = justificante.getDatosFirmados().getHoraRegistro();
+        DateTime dateTime = new DateTime(fecha.getYear(), fecha.getMonth(),
+                fecha.getDay(), fechaHora.getHour(), fechaHora.getMinute(),
+                fechaHora.getSecond(), fechaHora.getMillisecond());
+        return dateTime;
+    }
+	
+	
 	/**
 	 * Registra la solicitud
 	 * 
 	 * @throws RegistroServiceException
-	 */
+
 	public void registrarSolicitud(SolicitudGenerica solicitud) throws RegistroServiceException {
 		if (!solicitud.registro.fasesRegistro.borrador) {
 			Messages.error("Intentando registrar una solicitud que no se ha preparado para firmar");
@@ -418,7 +390,7 @@ public class RegistroServiceImpl implements RegistroService {
 				}
 			}
 		}
-*/
+
 
 
 		// Crea el expediente en el archivo electrónico de platino
@@ -667,12 +639,9 @@ public class RegistroServiceImpl implements RegistroService {
 		}
 
 	}
-
-	/**
 	 * Aportación sin registro de los documentos
 	 * 
 	 * @param solicitud
-	 */
 	public void noRegistrarAportacionActual(SolicitudGenerica solicitud) {
 		Aportacion aportacion = solicitud.aportaciones.actual;
 
@@ -739,5 +708,5 @@ public class RegistroServiceImpl implements RegistroService {
 					.debug("Los documentos de la aportacion se movieron correctamente");
 		}
 	}
-
+    */
 }

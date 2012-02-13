@@ -82,17 +82,19 @@ public class DatosDocumento {
 	public void setFirma(models.Firma firma){
 	    this.firmaXml = firma.getContenido();
      	firmantes = new ArrayList<DatosFirmante>();
-	    for (models.Firmante firmante : firma.getFirmantes()) {
-            DatosFirmante datFirm = new DatosFirmante();
-            datFirm.setIdFirmante(firmante.idvalor);
-            datFirm.setDescFirmante(firmante.nombre);
-            datFirm.setFechaFirma(WSUtils.getXmlGregorianCalendar(firmante.fechaFirma));
-            
-            // TODO: Cambiar cuando se use BD de terceros platino
-            datFirm.setCargoFirmante("Solicitante");
-            datFirm.setUriFirmante("URITest");
-            firmantes.add(datFirm);
-	    }
+     	if(firma.getFirmantes() != null){
+    	    for (models.Firmante firmante : firma.getFirmantes()) {
+                DatosFirmante datFirm = new DatosFirmante();
+                datFirm.setIdFirmante(firmante.idvalor);
+                datFirm.setDescFirmante(firmante.nombre);
+                datFirm.setFechaFirma(WSUtils.getXmlGregorianCalendar(firmante.fechaFirma));
+                
+                // TODO: Cambiar cuando se use BD de terceros platino
+                datFirm.setCargoFirmante("Solicitante");
+                datFirm.setUriFirmante("URITest");
+                firmantes.add(datFirm);
+    	    }
+     	}
 	}
 	
 }

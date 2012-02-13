@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import models.Documento;
 import models.ExpedientePlatino;
+import models.Firma;
 import models.Firmante;
 import models.Solicitante;
 import models.SolicitudGenerica;
@@ -29,12 +30,11 @@ import play.modules.guice.InjectSupport;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
 import properties.FapProperties;
-import services.platino.GestorDocumentalPlatinoService;
 
 
 @InjectSupport
 public class RegistroServiceTest extends UnitTest {
-/*
+
 	@Inject
 	static RegistroService registroService;
 
@@ -43,18 +43,14 @@ public class RegistroServiceTest extends UnitTest {
 	
 	@Inject
 	static GestorDocumentalService aedService;
-	
-	@Inject
-	static GestorDocumentalPlatinoService gestorDocumentalService;
-	
+		
 	@Before
 	public void before(){
-		//assumeTrue(registroService.hasConnection());
+		assumeTrue(registroService.isConfigured());
 	}
 	
 	@Test
 	public void registroDeEntrada() throws Exception {
-		
 		//Solicitante
 		Solicitante solicitante = new Solicitante();
 		solicitante.tipo = "fisica";
@@ -64,66 +60,33 @@ public class RegistroServiceTest extends UnitTest {
 		solicitante.fisica.nip.tipo = "nif";
 		solicitante.fisica.nip.valor = "78574424F";
 		
-		//Documento a registrar
-		//TODO falta añadir firmas
-		
 		File f = documentoARegistrar();
 		
 		Documento documento = uploadTestDocumento(f);
 		assertNotNull(documento.uri);
-		play.Logger.info("Documento temporal subido al aed");
-		
 		
 		//Firma el documento
 		byte[] content = IO.readContent(f);
-		String firmaDocumento = firmaService.firmarContentSignature(content);
-		play.Logger.info("Documento firmado");
+		String firmaDocumento = firmaService.firmarDocumento(content);
+		assertNotNull(firmaDocumento);
 		
 		Firmante firmante = new Firmante(solicitante, "unico");
 		firmante.fechaFirma = new DateTime(2003, 1, 1, 12, 15);
-		//aedService.agregarFirma(documento.uri, firmante, firmaDocumento);
-		play.Logger.info("Firma añadida al documento");
+
+		models.Firma firma = new models.Firma(firmaDocumento, firmante);
+		aedService.agregarFirma(documento, firma);
 		
-		String firmaDocumento2 = firmaService.firmarContentSignature(content);
-		play.Logger.info("Documento firmado");
+		String firma2Documento = firmaService.firmarDocumento(content);
+		aedService.agregarFirma(documento, new Firma(firma2Documento, firmante));
 		
-		//aedService.agregarFirma(documento.uri, firmante, firmaDocumento2);
-		play.Logger.info("Firma2 añadida al documento");
+		//Registra el documento
+		ExpedientePlatino expediente = new ExpedientePlatino();
+		models.JustificanteRegistro justificante = registroService.registrarEntrada(solicitante, documento, expediente);
+		assertNotNull(justificante.getNumeroRegistro());
+		assertNotNull(justificante.getFechaRegistro());
 		
-		
-		//Expediente platino
-		ExpedientePlatino expedientePlatino = new ExpedientePlatino();
-		gestorDocumentalService.crearExpediente(expedientePlatino);
-		assertTrue(expedientePlatino.creado);
-		assertNotNull(expedientePlatino.uri);
-		play.Logger.info("Expediente de platino creado");
-		
-		//Datos de registro
-		DatosRegistro datosRegistro = registroService.getDatosRegistro(solicitante, documento, expedientePlatino);
-		play.Logger.info("Calculados datos de registro");
-		
-		//Datos de registro en formato que se pueden firmar
-		String datosAFirmar = registroService.obtenerDatosAFirmarRegisto(datosRegistro);
-		Assert.assertNotNull(datosAFirmar);
-		
-		//Firma los datos de registro
-		String firma = firmaService.firmarPKCS7(datosAFirmar.getBytes("iso-8859-1"));
-		Assert.assertNotNull(firma);
-		play.Logger.info("Datos de registro firmados");
-		
-		//Comprueba que la firma fue correcta
-		Boolean valida = firmaService.verificarPKCS7(datosAFirmar, firma);
-		Assert.assertTrue(valida);
-		play.Logger.info("Firma de los datos de registro válida");
-		
-		//Registra
-		JustificanteRegistro justificanteRegistro = registroService.registroDeEntrada(datosAFirmar, firma);
-		assertNotNull(justificanteRegistro);
-		play.Logger.info("Justificante recuperado");
-		
-		
-		File justificanteTmp = File.createTempFile("justificante_", ".pdf", Play.tmpDir);
-		IO.write(justificanteRegistro.getReciboPdf().getInputStream(), justificanteTmp);
+	    File justificanteTmp = File.createTempFile("justificante_", ".pdf", Play.tmpDir);
+	    IO.write(justificante.getDocumento().getBytes(), justificanteTmp);
 	}
 	
 	
@@ -143,5 +106,5 @@ public class RegistroServiceTest extends UnitTest {
 		
 		return vf.getRealFile();
 	}
-*/	
+
 }

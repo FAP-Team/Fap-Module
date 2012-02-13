@@ -93,14 +93,14 @@ public class AportacionPresentarController extends AportacionPresentarController
 			}
 			
 			//Registra la solicitud
-			if(!Messages.hasErrors()){
-				try {
-					registroService.registrarAportacionActual(solicitud);
-				} catch (RegistroServiceException e) {
-					e.printStackTrace();
-					Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");
-				}
-			}
+//			if(!Messages.hasErrors()){
+//				try {
+//					//registroService.registrarAportacionActual(solicitud);
+//				} catch (RegistroServiceException e) {
+//					e.printStackTrace();
+//					Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");
+//				}
+//			}
 	
 			if(!Messages.hasErrors()){
 				Messages.ok("Su solicitud de aportación de documentación se registró correctamente");
@@ -129,12 +129,12 @@ public class AportacionPresentarController extends AportacionPresentarController
 			
 			//No Registra la solicitud
 			if(!Messages.hasErrors()){
-				try {
-					registroService.noRegistrarAportacionActual(dbSolicitud);
-				} catch (Exception e) {
-					e.printStackTrace();
-					Messages.error("Se produjo un error al intentar aportar sin registrar la documentación, inténtelo de nuevo.");
-				}
+//				try {
+//					registroService.noRegistrarAportacionActual(dbSolicitud);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//					Messages.error("Se produjo un error al intentar aportar sin registrar la documentación, inténtelo de nuevo.");
+//				}
 			}
 			
 		}

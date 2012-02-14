@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,55 +15,42 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class TablaPaginas_nivel2 extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginas_nivel2_combomul")
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tablapaginas_nivel2_combomul")
 	public List<ComboTestRef> comboMul;
-	
-	
+
 	@ValueFromTable("ComboTestList")
 	public String list;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginas_nivel2_tpaginas_nivel3")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tablapaginas_nivel2_tpaginas_nivel3")
 	public List<TablaPaginas_nivel3> tpaginas_nivel3;
-	
-	
-	public TablaPaginas_nivel2 (){
+
+	public TablaPaginas_nivel2() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-						if (comboMul == null)
-							comboMul = new ArrayList<ComboTestRef>();
-						
-						if (tpaginas_nivel3 == null)
-							tpaginas_nivel3 = new ArrayList<TablaPaginas_nivel3>();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (comboMul == null)
+			comboMul = new ArrayList<ComboTestRef>();
+
+		if (tpaginas_nivel3 == null)
+			tpaginas_nivel3 = new ArrayList<TablaPaginas_nivel3>();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

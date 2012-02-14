@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,38 +15,29 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class DireccionTest extends Model {
 	// Código de los atributos
-	
+
 	@Embedded
 	public Direccion direccion;
-	
-	
-	public DireccionTest (){
+
+	public DireccionTest() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-			if (direccion == null)
-				direccion = new Direccion();
-			
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (direccion == null)
+			direccion = new Direccion();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

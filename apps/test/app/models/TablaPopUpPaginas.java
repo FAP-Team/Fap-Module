@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,56 +15,42 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class TablaPopUpPaginas extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
-	
+
 	public String apellido;
-	
-	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Fechas fecha;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapopuppaginas_tpaginas_nivel3")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tablapopuppaginas_tpaginas_nivel3")
 	public List<TablaPaginas_nivel3> tpaginas_nivel3;
-	
-	
-	public TablaPopUpPaginas (){
+
+	public TablaPopUpPaginas() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-							if (fecha == null)
-								fecha = new Fechas();
-							else
-								fecha.init();
-						
-						if (tpaginas_nivel3 == null)
-							tpaginas_nivel3 = new ArrayList<TablaPaginas_nivel3>();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (fecha == null)
+			fecha = new Fechas();
+		else
+			fecha.init();
+
+		if (tpaginas_nivel3 == null)
+			tpaginas_nivel3 = new ArrayList<TablaPaginas_nivel3>();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

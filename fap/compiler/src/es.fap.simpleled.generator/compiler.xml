@@ -16,7 +16,6 @@
 		</fileset>
 		<pathelement path="${xtext.project.bin.dir}" />
 	</path>
-
 	<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath" />
 
 	<target name="clean">
@@ -25,7 +24,7 @@
 
 	<target name="compile">
 		<mkdir dir="${build.dir}" />
-		<javac srcdir="src" destdir="${build.dir}" includeantruntime="true" encoding="utf-8"/>
+		<javac srcdir="src" destdir="${build.dir}" includeantruntime="true" encoding="utf-8" includes="${xtext.lib.dir}"/>
 
 		<groovyc srcdir="${src.dir}" destdir="${build.dir}" encoding="utf-8">
 			<classpath>

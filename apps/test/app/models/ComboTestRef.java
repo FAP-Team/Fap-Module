@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,35 +15,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class ComboTestRef extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
+
 	@ValueFromTable("ComboTestList")
 	public String list;
-	
-	
 
-	public void init(){
-		
-		
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

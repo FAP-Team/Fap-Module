@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,48 +15,35 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class TablaDeNombres extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
-	
+
 	public String apellido;
-	
-	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Fechas fecha;
-	
-	
-	public TablaDeNombres (){
+
+	public TablaDeNombres() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-							if (fecha == null)
-								fecha = new Fechas();
-							else
-								fecha.init();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (fecha == null)
+			fecha = new Fechas();
+		else
+			fecha.init();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

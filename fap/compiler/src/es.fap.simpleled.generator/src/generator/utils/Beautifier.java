@@ -14,6 +14,7 @@ import org.eclipse.text.edits.TextEdit;
 
 public class Beautifier {
         
+		@SuppressWarnings("unchecked")
         public static String formatear(String code) throws MalformedTreeException, BadLocationException{
         	
         	// take default Eclipse formatting options

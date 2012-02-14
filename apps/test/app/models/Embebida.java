@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,36 +15,27 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Embeddable
-public class Embebida  {
+public class Embebida {
 	// Código de los atributos
-	
-	
+
 	public String algo;
-	
-	
-	public Embebida (){
+
+	public Embebida() {
 		init();
 	}
-	
 
-	public void init(){
-		
+	public void init() {
+
 		algo = "pepe";
 
 	}
-		
-	
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

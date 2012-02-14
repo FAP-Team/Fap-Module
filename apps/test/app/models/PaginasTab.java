@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,43 +15,32 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class PaginasTab extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="paginastab_tpaginas_nivel1")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "paginastab_tpaginas_nivel1")
 	public List<TablaPaginas_nivel1> tpaginas_nivel1;
-	
-	
-	public PaginasTab (){
+
+	public PaginasTab() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-						if (tpaginas_nivel1 == null)
-							tpaginas_nivel1 = new ArrayList<TablaPaginas_nivel1>();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (tpaginas_nivel1 == null)
+			tpaginas_nivel1 = new ArrayList<TablaPaginas_nivel1>();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

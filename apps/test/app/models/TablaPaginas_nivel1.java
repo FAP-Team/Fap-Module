@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,60 +15,46 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class TablaPaginas_nivel1 extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
-	
+
 	public Integer numero;
-	
-	
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginas_nivel1_combomul")
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tablapaginas_nivel1_combomul")
 	public List<ComboTestRef> comboMul;
-	
-	
-	@org.hibernate.annotations.Columns(columns={@Column(name="fecha"),@Column(name="fechaTZ")})
-	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fecha"),
+			@Column(name = "fechaTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fecha;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginas_nivel1_tpaginas_nivel2")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tablapaginas_nivel1_tpaginas_nivel2")
 	public List<TablaPaginas_nivel2> tpaginas_nivel2;
-	
-	
-	public TablaPaginas_nivel1 (){
+
+	public TablaPaginas_nivel1() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-						if (comboMul == null)
-							comboMul = new ArrayList<ComboTestRef>();
-						
-						if (tpaginas_nivel2 == null)
-							tpaginas_nivel2 = new ArrayList<TablaPaginas_nivel2>();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (comboMul == null)
+			comboMul = new ArrayList<ComboTestRef>();
+
+		if (tpaginas_nivel2 == null)
+			tpaginas_nivel2 = new ArrayList<TablaPaginas_nivel2>();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,56 +15,42 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class TablaPaginas_nivel3 extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
-	
+
 	public Integer numero;
-	
-	
-	@org.hibernate.annotations.Columns(columns={@Column(name="fecha"),@Column(name="fechaTZ")})
-	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fecha"),
+			@Column(name = "fechaTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fecha;
-	
-	
+
 	@ValueFromTable("ComboTestList")
 	public String list;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tablapaginas_nivel3_tabladenombres")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tablapaginas_nivel3_tabladenombres")
 	public List<TablaDeNombres> tablaDeNombres;
-	
-	
-	public TablaPaginas_nivel3 (){
+
+	public TablaPaginas_nivel3() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-						if (tablaDeNombres == null)
-							tablaDeNombres = new ArrayList<TablaDeNombres>();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (tablaDeNombres == null)
+			tablaDeNombres = new ArrayList<TablaDeNombres>();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

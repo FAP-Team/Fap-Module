@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,31 +15,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
-	
 
-
+@Auditable
 @Entity
 public class RepresentantePersonaJuridica extends RepresentantePersonaFisica {
 	// Código de los atributos
-	
+
 	@ValueFromTable("TiposRepresentantes")
 	public String tipoRepresentacion;
-	
-	
 
-	public void init(){
+	public void init() {
 		super.init();
-		
-	}
-		
-	
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

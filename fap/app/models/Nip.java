@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,71 +15,59 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Embeddable
-public class Nip  {
+public class Nip {
 	// Código de los atributos
-	
-	
+
 	public String tipo;
-	
-	
-	
+
 	public String valor;
-	
-	
-	public Nip (){
+
+	public Nip() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
+	public void init() {
+
 		if (tipo == null)
 			tipo = new String();
 	}
-		
-	
 
-// === MANUAL REGION START ===
+	// === MANUAL REGION START ===
 	@Override
-	public boolean equals(Object otro){
-		if (otro == null || !(otro instanceof Nip)){
+	public boolean equals(Object otro) {
+		if (otro == null || !(otro instanceof Nip)) {
 			return false;
 		}
 		Nip nip = (Nip) otro;
 		return nip.tipo.equals(tipo) && nip.valor.equals(valor);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Nip [tipo=" + tipo + ", valor=" + valor + "]";
 	}
-	
-	public boolean isNif(){
+
+	public boolean isNif() {
 		return tipo.equals("nif");
 	}
-	
-	public boolean isNie(){
+
+	public boolean isNie() {
 		return tipo.equals("nie");
 	}
-	
-	public String getPlatinoTipoDocumento(){
-		if(isNif()){
+
+	public String getPlatinoTipoDocumento() {
+		if (isNif()) {
 			return "N";
-		}else if(isNie()){
+		} else if (isNie()) {
 			return "E";
 		}
-		
+
 		return null;
 	}
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION END ===
+
+}

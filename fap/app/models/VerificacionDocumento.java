@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,84 +15,57 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class VerificacionDocumento extends Model {
 	// Código de los atributos
-	
-	
+
 	public String uriDocumentoVerificacion;
-	
-	
-	
+
 	public String uriDocumento;
-	
-	
-	
+
 	public String uriTipoDocumento;
-	
-	
-	
+
 	public String etiquetaTipoDocumento;
-	
-	
-	
+
 	public String descripcion;
-	
-	
-	
+
 	public String estadoDocumentoVerificacion;
-	
-	
-	@org.hibernate.annotations.Columns(columns={@Column(name="fechaPresentacion"),@Column(name="fechaPresentacionTZ")})
-	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+
+	@org.hibernate.annotations.Columns(columns = {
+			@Column(name = "fechaPresentacion"),
+			@Column(name = "fechaPresentacionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaPresentacion;
-	
-	
-	
+
 	public String identificadorMultiple;
-	
-	
-	
+
 	public Integer version;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String motivoRequerimiento;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="verificaciondocumento_codigosrequerimiento")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "verificaciondocumento_codigosrequerimiento")
 	public List<CodigoRequerimiento> codigosRequerimiento;
-	
-	
-	
+
 	public Boolean existe;
-	
-	
-	public VerificacionDocumento (){
+
+	public VerificacionDocumento() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-						if (codigosRequerimiento == null)
-							codigosRequerimiento = new ArrayList<CodigoRequerimiento>();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (codigosRequerimiento == null)
+			codigosRequerimiento = new ArrayList<CodigoRequerimiento>();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

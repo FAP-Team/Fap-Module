@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,35 +15,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class CriterioListaValores extends Model {
 	// Código de los atributos
-	
-	
+
 	public Double valor;
-	
-	
-	
+
 	public String descripcion;
-	
-	
 
-	public void init(){
-		
-		
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

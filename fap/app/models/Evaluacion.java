@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -20,82 +19,62 @@ import java.text.SimpleDateFormat;
 import properties.FapProperties;
 
 // === IMPORT REGION END ===
-	
-
 
 @Entity
 public class Evaluacion extends Model {
 	// Código de los atributos
-	
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SolicitudGenerica solicitud;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="evaluacion_criterios")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "evaluacion_criterios")
 	public List<Criterio> criterios;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="evaluacion_ceconomicos")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "evaluacion_ceconomicos")
 	public List<CEconomico> ceconomicos;
-	
-	
-	
+
 	public Double totalCriterios;
-	
-	
-	
+
 	public Double inversionTotalAprobada;
-	
-	
-	
+
 	public Double subvencionTotalConcedida;
-	
-	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public TipoEvaluacion tipo;
-	
-	
-	
+
 	public String estado;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String comentariosAdministracion;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String comentariosSolicitante;
-	
-	
-	public Evaluacion (){
+
+	public Evaluacion() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-							if (solicitud != null)
-								solicitud.init();	
-						
-						if (criterios == null)
-							criterios = new ArrayList<Criterio>();
-						
-						if (ceconomicos == null)
-							ceconomicos = new ArrayList<CEconomico>();
-						
-							if (tipo == null)
-								tipo = new TipoEvaluacion();
-							else
-								tipo.init();
-						
+	public void init() {
+
+		if (solicitud != null)
+			solicitud.init();
+
+		if (criterios == null)
+			criterios = new ArrayList<Criterio>();
+
+		if (ceconomicos == null)
+			ceconomicos = new ArrayList<CEconomico>();
+
+		if (tipo == null)
+			tipo = new TipoEvaluacion();
+		else
+			tipo.init();
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
+	// === MANUAL REGION START ===
 	public void init(TipoEvaluacion tipo) {
 		this.tipo = tipo;
 		for (TipoCriterio tCriterio : tipo.criterios) {
@@ -110,7 +89,7 @@ public class Evaluacion extends Model {
 			this.ceconomicos.add(cEconomico);
 		}
 	}
-	
+
 	/**
 	 * Filtra de los documentos de la solicitud, los documentos
 	 * cuyo tipo de documento está definido dentro de los 
@@ -118,52 +97,53 @@ public class Evaluacion extends Model {
 	 * del tipo de la evaluación
 	 * @return
 	 */
-	public List<Documento> getDocumentosAccesibles(){
-		if(tipo.tiposDocumentos.size() > 0){
-			JPAQuery jpaQuery = Documento.find("select documento" +
-							" from Solicitud solicitud" +
-							" join solicitud.documentacion.documentos documento" +
-							" where solicitud.id=:id and documento.tipo in (:tipos)");
+	public List<Documento> getDocumentosAccesibles() {
+		if (tipo.tiposDocumentos.size() > 0) {
+			JPAQuery jpaQuery = Documento.find("select documento"
+					+ " from Solicitud solicitud"
+					+ " join solicitud.documentacion.documentos documento"
+					+ " where solicitud.id=:id and documento.tipo in (:tipos)");
 			jpaQuery.query.setParameter("id", solicitud.id);
 			jpaQuery.query.setParameter("tipos", tipo.tiposDocumentos);
 			List<Documento> documentosAccesibles = jpaQuery.fetch();
 			return documentosAccesibles;
-		}else{
+		} else {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Devuelve el criterio que tiene cierta jerarquía
 	 * @param jerarquia
 	 * @return
 	 */
-	public Criterio getCriterio(String jerarquia){
-		return Criterio.find("select criterio from Evaluacion evaluacion " +
-				"join evaluacion.criterios criterio " +
-				"where criterio.tipo.jerarquia=? " +
-				"and evaluacion.id=?", jerarquia, id).first();
+	public Criterio getCriterio(String jerarquia) {
+		return Criterio.find(
+				"select criterio from Evaluacion evaluacion "
+						+ "join evaluacion.criterios criterio "
+						+ "where criterio.tipo.jerarquia=? "
+						+ "and evaluacion.id=?", jerarquia, id).first();
 	}
-	
-	public CEconomico getCEconomico(String jerarquia){
-		return CEconomico.find("select ceconomico from Evaluacion evaluacion " +
-				"join evaluacion.ceconomicos ceconomico " +
-				"where ceconomico.tipo.jerarquia=? " +
-				"and evaluacion.id=?", jerarquia, id).first();		
+
+	public CEconomico getCEconomico(String jerarquia) {
+		return CEconomico.find(
+				"select ceconomico from Evaluacion evaluacion "
+						+ "join evaluacion.ceconomicos ceconomico "
+						+ "where ceconomico.tipo.jerarquia=? "
+						+ "and evaluacion.id=?", jerarquia, id).first();
 	}
-	
-	public Double getSubvencionTotalConcedida(){
+
+	public Double getSubvencionTotalConcedida() {
 		Double totalConcedida = 0D;
-		if(inversionTotalAprobada != null){
-			String porcentajeAyudaString = FapProperties.get("fap.app.baremacion.porcentajeAyuda");
+		if (inversionTotalAprobada != null) {
+			String porcentajeAyudaString = FapProperties
+					.get("fap.app.baremacion.porcentajeAyuda");
 			Double porcentajeAyuda = Double.valueOf(porcentajeAyudaString);
-			totalConcedida = ((this.inversionTotalAprobada*porcentajeAyuda)/100D);
+			totalConcedida = ((this.inversionTotalAprobada * porcentajeAyuda) / 100D);
 		}
 		return totalConcedida;
 	}
-	
+
 	// === MANUAL REGION END ===
-	
-	
-	}
-		
+
+}

@@ -208,7 +208,7 @@ public class ${clazzGenName} extends Secure {
 }
 """;
 
-		FileUtils.overwrite(FileUtils.getRoute('PERMISSION'), "${clazzGenName}.java", secureGen);
+		FileUtils.overwrite(FileUtils.getRoute('PERMISSION'), "${clazzGenName}.java", Beautifier.formatear(secureGen));
 		
 		// Permisos manual
 		String secure = """
@@ -234,7 +234,7 @@ public class ${clazzName} extends Secure {
 }
 """;
 
-		FileUtils.write(FileUtils.getRoute('PERMISSION'), "${clazzName}.java", secure);
+		FileUtils.write(FileUtils.getRoute('PERMISSION'), "${clazzName}.java", Beautifier.formatear(secure));
 	}
   
   
@@ -307,7 +307,7 @@ public class AppModule extends FapModule {
 	
 }
 """
-			FileUtils.write(appConfigFolder, "AppModule.java", config);
+			FileUtils.write(appConfigFolder, "AppModule.java", Beautifier.formatear(config));
 		}	
 	}  
 }

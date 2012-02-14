@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,48 +15,38 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class Aportaciones extends Model {
 	// Código de los atributos
-	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Aportacion actual;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="aportaciones_registradas")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "aportaciones_registradas")
 	public List<Aportacion> registradas;
-	
-	
-	public Aportaciones (){
+
+	public Aportaciones() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-							if (actual == null)
-								actual = new Aportacion();
-							else
-								actual.init();
-						
-						if (registradas == null)
-							registradas = new ArrayList<Aportacion>();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (actual == null)
+			actual = new Aportacion();
+		else
+			actual.init();
+
+		if (registradas == null)
+			registradas = new ArrayList<Aportacion>();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

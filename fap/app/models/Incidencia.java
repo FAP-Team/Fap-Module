@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,51 +15,33 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class Incidencia extends Model {
 	// Código de los atributos
-	
+
 	@Email
 	public String email;
-	
-	
-	
+
 	public String telefono;
-	
-	
-	
+
 	public String nombre;
-	
-	
-	
+
 	public String apellidos;
-	
-	
-	
+
 	public String asunto;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String texto;
-	
-	
 
-	public void init(){
-		
-		
+	public void init() {
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
+	// === MANUAL REGION START ===
 
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION END ===
+
+}

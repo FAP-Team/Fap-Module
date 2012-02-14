@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,59 +15,46 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
-	
 
-
+@Auditable
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class PersonaFisica extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
-	
+
 	public String primerApellido;
-	
-	
-	
+
 	public String segundoApellido;
-	
-	
+
 	@CheckWith(NipCheck.class)
 	@Embedded
 	public Nip nip;
-	
-	
-	public PersonaFisica (){
+
+	public PersonaFisica() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-			if (nip == null)
-				nip = new Nip();
-			
+	public void init() {
+
+		if (nip == null)
+			nip = new Nip();
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
+	// === MANUAL REGION START ===
 	/**
 	 * Nombre completo: Unión de nombre, primerApellido y segundoApellido
 	 * @return
 	 */
-	public String getNombreCompleto(){
-		return utils.StringUtils.join(" ", nombre, primerApellido, segundoApellido);
+	public String getNombreCompleto() {
+		return utils.StringUtils.join(" ", nombre, primerApellido,
+				segundoApellido);
 	}
-	
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+
+	// === MANUAL REGION END ===
+
+}

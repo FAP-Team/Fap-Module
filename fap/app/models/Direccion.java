@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,61 +15,42 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Embeddable
-public class Direccion  {
+public class Direccion {
 	// Código de los atributos
-	
-	
+
 	public String calle;
-	
-	
-	
+
 	public String numero;
-	
-	
-	
+
 	public String otros;
-	
-	
-	
+
 	public String codigoPostal;
-	
-	
+
 	@ValueFromTable("municipios")
 	public String municipio;
-	
-	
+
 	@ValueFromTable("provincias")
 	public String provincia;
-	
-	
+
 	@ValueFromTable("paises")
 	public String pais;
-	
-	
-	public Direccion (){
+
+	public Direccion() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
+	public void init() {
+
 		if (calle == null)
 			calle = new String();
 	}
-		
-	
 
-// === MANUAL REGION START ===
+	// === MANUAL REGION START ===
 
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION END ===
+
+}

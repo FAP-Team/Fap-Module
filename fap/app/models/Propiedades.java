@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -17,46 +16,33 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import properties.FapProperties;
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class Propiedades extends Model {
 	// Código de los atributos
-	
-	
+
 	public String descripcion;
-	
-	
-	
+
 	public String clave;
-	
-	
+
 	@Transient
 	public String valor;
-	
-	
 
-	public void init(){
-		
-		
+	public void init() {
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
+	// === MANUAL REGION START ===
 
 	public String getValor() {
 		return FapProperties.get(clave);
 	}
 
-	public void setValor(String valor) {}
-
-
-// === MANUAL REGION END ===
-	
-	
+	public void setValor(String valor) {
 	}
-		
+
+	// === MANUAL REGION END ===
+
+}

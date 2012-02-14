@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.generator.IFileSystemAccess
+import org.eclipse.xtext.generator.IGenerator
 
 import templates.GForm
 import templates.GPagina
@@ -32,7 +34,7 @@ import templates.GPermiso
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.LedCampoUtils;
 
-public class Controller {
+public class Controller{
 	
 	// Lista de atributos que tienen que recibirse como parámetros
 	public EObject container; // Elemento Popup, Pagina o Form
@@ -222,8 +224,7 @@ ${beforeMethod()}
 
 }
 """
-		
-		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", controllerGen);
+		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", Beautifier.formatear(controllerGen));
 			
 		String controller = """
 package ${packageName};
@@ -234,7 +235,7 @@ public class ${controllerName} extends ${controllerGenName} {
 
 }
 		"""
-		FileUtils.write(FileUtils.getRoute('CONTROLLER'), controllerFullName.replaceAll("\\.", "/") + ".java", controller);
+		FileUtils.write(FileUtils.getRoute('CONTROLLER'), controllerFullName.replaceAll("\\.", "/") + ".java", Beautifier.formatear(controller));
 	}
 	
 	public String generateRoutes(){

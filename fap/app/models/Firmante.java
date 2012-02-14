@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,93 +15,76 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
-	
 
-
+@Auditable
 @Entity
 public class Firmante extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
-	
+
 	public String idtipo;
-	
-	
-	
+
 	public String idvalor;
-	
-	
-	@org.hibernate.annotations.Columns(columns={@Column(name="fechaFirma"),@Column(name="fechaFirmaTZ")})
-	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+
+	@org.hibernate.annotations.Columns(columns = {
+			@Column(name = "fechaFirma"), @Column(name = "fechaFirmaTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaFirma;
-	
-	
-	
+
 	public String tipo;
-	
-	
-	
+
 	public String cardinalidad;
-	
-	
 
-	public void init(){
-		
-		
+	public void init() {
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
-	public Firmante(){
+	// === MANUAL REGION START ===
+	public Firmante() {
 		init();
 	}
-	
-	public Firmante(Persona persona, String cardinalidad){
+
+	public Firmante(Persona persona, String cardinalidad) {
 		String tipo = getTipoRepresentanteFromPersona(persona);
 		constructor(persona, tipo, cardinalidad);
 	}
 
-	public Firmante(Persona persona, String tipo, String cardinalidad){
+	public Firmante(Persona persona, String tipo, String cardinalidad) {
 		constructor(persona, tipo, cardinalidad);
 	}
-	
-	private void constructor(Persona persona, String tipo, String cardinalidad){
+
+	private void constructor(Persona persona, String tipo, String cardinalidad) {
 		init();
 		this.nombre = persona.getNombreCompleto();
 		setIdentificador(persona);
 		this.tipo = tipo;
 		this.cardinalidad = cardinalidad;
 	}
-	
-	private static String getTipoRepresentanteFromPersona(Persona persona){
+
+	private static String getTipoRepresentanteFromPersona(Persona persona) {
 		String tipo = null;
-		if(persona.isPersonaFisica()){
+		if (persona.isPersonaFisica()) {
 			tipo = "personafisica";
-		}else if(persona.isPersonaJuridica()){
+		} else if (persona.isPersonaJuridica()) {
 			tipo = "personajuridica";
-		}	
+		}
 		return tipo;
 	}
-	
-	
-	public void setIdentificador(Nip nip){
+
+	public void setIdentificador(Nip nip) {
 		idtipo = nip.tipo;
 		idvalor = nip.valor;
 	}
-	
-	public void setIdentificador(String cif){
+
+	public void setIdentificador(String cif) {
 		idtipo = "cif";
 		idvalor = cif;
 	}
 
-	
-	public void setIdentificador(Persona p){
+	public void setIdentificador(Persona p) {
 		if (p.isPersonaFisica())
 			setIdentificador(p.fisica.nip);
 		else if (p.isPersonaJuridica())
@@ -126,19 +108,21 @@ public class Firmante extends Model {
 			return false;
 		Firmante other = (Firmante) obj;
 
-		if (idtipo != null && other.idtipo != null && idvalor != null && other.idvalor != null) {
+		if (idtipo != null && other.idtipo != null && idvalor != null
+				&& other.idvalor != null) {
 			//Por alguna razon los certificados no distingeun entre NIE Y NIF 
 			//y se ponen los dos en el mismo campo como NIF
-			
+
 			String tipo = idtipo;
 			if (tipo.equalsIgnoreCase("nie"))
 				tipo = "nif";
 			String otherTipo = other.idtipo;
-			if(otherTipo.equalsIgnoreCase("nie")){
+			if (otherTipo.equalsIgnoreCase("nie")) {
 				otherTipo = "nif";
 			}
-			
-			return tipo.equalsIgnoreCase(otherTipo) && idvalor.equalsIgnoreCase(other.idvalor);
+
+			return tipo.equalsIgnoreCase(otherTipo)
+					&& idvalor.equalsIgnoreCase(other.idvalor);
 		}
 		return false;
 	}
@@ -149,17 +133,14 @@ public class Firmante extends Model {
 				+ ", idvalor=" + idvalor + ", fechaFirma=" + fechaFirma
 				+ ", tipo=" + tipo + "]";
 	}
-	
-	
+
 	public boolean esFuncionarioHabilitado() {
 		Agente agente = Agente.find("byUsername", idvalor).first();
 		if ((agente != null) && (agente.funcionario))
 			return true;
 		return false;
 	}
-	
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+
+	// === MANUAL REGION END ===
+
+}

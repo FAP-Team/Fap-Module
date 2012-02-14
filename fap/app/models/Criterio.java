@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,52 +15,39 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class Criterio extends Model {
 	// Código de los atributos
-	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public TipoCriterio tipo;
-	
-	
-	
+
 	public Double valor;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String comentariosAdministracion;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String comentariosSolicitante;
-	
-	
-	public Criterio (){
+
+	public Criterio() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-							if (tipo == null)
-								tipo = new TipoCriterio();
-							else
-								tipo.init();
-						
+	public void init() {
+
+		if (tipo == null)
+			tipo = new TipoCriterio();
+		else
+			tipo.init();
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
+	// === MANUAL REGION START ===
 
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION END ===
+
+}

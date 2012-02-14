@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,61 +15,41 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class TipoCEconomico extends Model {
 	// Código de los atributos
-	
-	
+
 	public String nombre;
-	
-	
-	
+
 	public String descripcion;
-	
-	
-	
+
 	public String instrucciones;
-	
-	
-	
+
 	public String jerarquia;
-	
-	
+
 	@ValueFromTable("LstClaseCEconomico")
 	public String clase;
-	
-	
-	
+
 	public Boolean comentariosAdministracion;
-	
-	
-	
+
 	public Boolean comentariosSolicitante;
-	
-	
-	public TipoCEconomico (){
+
+	public TipoCEconomico() {
 		init();
 	}
-	
 
-	public void init(){
-		
+	public void init() {
+
 		comentariosAdministracion = false;
-comentariosSolicitante = false;
+		comentariosSolicitante = false;
 
 	}
-		
-	
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

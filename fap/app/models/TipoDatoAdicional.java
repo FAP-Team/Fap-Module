@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,48 +15,35 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class TipoDatoAdicional extends Model {
 	// Código de los atributos
-	
-	
+
 	public Integer orden;
-	
-	
-	
+
 	public String nombre;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String descripcion;
-	
-	
 
-	public void init(){
-		
-		
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-	public TipoDatoAdicional(){
-		
 	}
-	
-	public TipoDatoAdicional(int orden, String nombre, String descripcion){
+
+	// === MANUAL REGION START ===
+	public TipoDatoAdicional() {
+
+	}
+
+	public TipoDatoAdicional(int orden, String nombre, String descripcion) {
 		this.orden = orden;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 	}
-	
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+
+	// === MANUAL REGION END ===
+
+}

@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,38 +15,28 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
-	
 
-
+@Auditable
 @Entity
 public class Participacion extends Model {
 	// Código de los atributos
-	
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Agente agente;
-	
-	
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SolicitudGenerica solicitud;
-	
-	
+
 	@ValueFromTable("TiposParticipacion")
 	public String tipo;
-	
-	
 
-	public void init(){
-		
-		
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-// === MANUAL REGION END ===
-	
-	
 	}
-		
+
+	// === MANUAL REGION START ===
+	// === MANUAL REGION END ===
+
+}

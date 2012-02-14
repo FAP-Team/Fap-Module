@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,55 +15,34 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class Quartz extends Singleton {
 	// Código de los atributos
-	
-	
+
 	public Boolean execute;
-	
-	
-	
+
 	public Boolean mostrarTodasSolicitudes;
-	
-	
-	
+
 	public Boolean mostrarSolicitudesRequeridas;
-	
-	
-	
+
 	public Boolean ejecutarCambioDeFecha;
-	
-	
-	
+
 	public Boolean cambiarEstadoPlazoVencido;
-	
-	
-	
+
 	public Boolean sendMail;
-	
-	
-	
+
 	public String texto;
-	
-	
 
-	public void init(){
+	public void init() {
 		super.init();
-		
-	}
-		
-	
 
-// === MANUAL REGION START ===
-
-// === MANUAL REGION END ===
-	
-	
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

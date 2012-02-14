@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,64 +15,45 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class CEconomico extends Model {
 	// Código de los atributos
-	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public TipoCEconomico tipo;
-	
-	
-	
+
 	public Double valorSolicitado;
-	
-	
-	
+
 	public Double valorEstimado;
-	
-	
-	
+
 	public Double valorPropuesto;
-	
-	
-	
+
 	public Double valorConcedido;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String comentariosAdministracion;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String comentariosSolicitante;
-	
-	
-	public CEconomico (){
+
+	public CEconomico() {
 		init();
 	}
-	
 
-	public void init(){
-		
-		
-							if (tipo == null)
-								tipo = new TipoCEconomico();
-							else
-								tipo.init();
-						
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
+		if (tipo == null)
+			tipo = new TipoCEconomico();
+		else
+			tipo.init();
+
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

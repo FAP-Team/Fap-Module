@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,64 +15,43 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class FasesRegistro extends Model {
 	// Código de los atributos
-	
-	
+
 	public Boolean borrador;
-	
-	
-	
+
 	public Boolean firmada;
-	
-	
-	
+
 	public Boolean expedientePlatino;
-	
-	
-	
+
 	public Boolean registro;
-	
-	
-	
+
 	public Boolean expedienteAed;
-	
-	
-	
+
 	public Boolean clasificarAed;
-	
-	
 
-	public void init(){
-		
-		
+	public void init() {
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
-public FasesRegistro() {
-	reiniciar();
-}
-
-public void reiniciar(){
-	borrador = false;
-	firmada = false;
-	expedientePlatino = false;
-	registro = false;
-	expedienteAed = false;
-	clasificarAed = false;	
-}
-
-
-// === MANUAL REGION END ===
-	
-	
+	// === MANUAL REGION START ===
+	public FasesRegistro() {
+		reiniciar();
 	}
-		
+
+	public void reiniciar() {
+		borrador = false;
+		firmada = false;
+		expedientePlatino = false;
+		registro = false;
+		expedienteAed = false;
+		clasificarAed = false;
+	}
+
+	// === MANUAL REGION END ===
+
+}

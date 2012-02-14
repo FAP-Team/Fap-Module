@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,35 +15,27 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class Convocatoria extends Singleton {
 	// Código de los atributos
-	
+
 	@ValueFromTable("estadoConvocatoria")
 	public String estado;
-	
-	
-	public Convocatoria (){
+
+	public Convocatoria() {
 		init();
 	}
-	
 
-	public void init(){
+	public void init() {
 		super.init();
-			estado = "presentacion";
+		estado = "presentacion";
 	}
-		
-	
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

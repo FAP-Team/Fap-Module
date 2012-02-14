@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,53 +15,38 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
-	
 
-
+@Auditable
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class PersonaJuridica extends Model {
 	// Código de los atributos
-	
-	
+
 	public String entidad;
-	
-	
+
 	@CheckWith(CifCheck.class)
 	public String cif;
-	
-	
+
 	@Email
 	public String email;
-	
-	
-	
+
 	public String telefonoFijo;
-	
-	
-	
+
 	public String telefonoMovil;
-	
-	
-	@org.hibernate.annotations.Columns(columns={@Column(name="fechaFirma"),@Column(name="fechaFirmaTZ")})
-	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+
+	@org.hibernate.annotations.Columns(columns = {
+			@Column(name = "fechaFirma"), @Column(name = "fechaFirmaTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaFirma;
-	
-	
 
-	public void init(){
-		
-		
+	public void init() {
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
+	// === MANUAL REGION START ===
 
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION END ===
+
+}

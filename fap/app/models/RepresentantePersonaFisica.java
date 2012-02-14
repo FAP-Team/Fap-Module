@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,51 +15,40 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
-	
 
-
+@Auditable
 @Entity
 public class RepresentantePersonaFisica extends Persona {
 	// Código de los atributos
-	
-	
+
 	public String telefonoFijo;
-	
-	
-	
+
 	public String telefonoMovil;
-	
-	
-	
+
 	public String fax;
-	
-	
+
 	@Email
 	public String email;
-	
-	
 
-	public void init(){
+	public void init() {
 		super.init();
-		
-	}
-		
-	
 
-// === MANUAL REGION START ===
+	}
+
+	// === MANUAL REGION START ===
 	@PostPersist
-	public void print () {
-		play.Logger.info("Se guardó el representante ["+this.toString()+"]");
+	public void print() {
+		play.Logger
+				.info("Se guardó el representante [" + this.toString() + "]");
 	}
-	
+
 	@PrePersist
-	public void printPre () {
-		play.Logger.info("Se va a guardar el representante ["+this.toString()+"]");
-	}			
-// === MANUAL REGION END ===
-	
-	
+	public void printPre() {
+		play.Logger.info("Se va a guardar el representante [" + this.toString()
+				+ "]");
 	}
-		
+	// === MANUAL REGION END ===
+
+}

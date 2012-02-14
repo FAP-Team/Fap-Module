@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,43 +15,36 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @MappedSuperclass
 public class Singleton extends Model {
 	// Código de los atributos
-	
 
-	public void init(){
-		
-		
+	public void init() {
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
+	// === MANUAL REGION START ===
 
-	public static <T extends Singleton> T get(Class<?> clazz){
+	public static <T extends Singleton> T get(Class<?> clazz) {
 		T first = null;
-		try{
-			JPAQuery q = (JPAQuery) clazz.getMethod("all", null).invoke(null, null);
+		try {
+			JPAQuery q = (JPAQuery) clazz.getMethod("all", null).invoke(null,
+					null);
 			first = q.first();
-			if (first == null){
+			if (first == null) {
 				first = (T) clazz.getConstructor(null).newInstance(null);
 				first.save();
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		};
+		}
+		;
 		return first;
 	}
-	
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+
+	// === MANUAL REGION END ===
+
+}

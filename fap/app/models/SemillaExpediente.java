@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,45 +15,36 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class SemillaExpediente extends Singleton {
 	// Código de los atributos
-	
-	
+
 	public Long semilla;
-	
-	
 
-	public void init(){
+	public void init() {
 		super.init();
-		
-	}
-		
-	
 
-// === MANUAL REGION START ===
-	
+	}
+
+	// === MANUAL REGION START ===
+
 	//Obtiene un ID de expediente, el ID debe ser único para todos los expedientes
-	public static synchronized Long obtenerId(){
+	public static synchronized Long obtenerId() {
 		SemillaExpediente semilla = SemillaExpediente.all().first();
-		if(semilla == null){
+		if (semilla == null) {
 			semilla = new SemillaExpediente();
 			semilla.semilla = 1L; // Debe comenzar en 1 (Issue 54)
 		}
-		
+
 		Long semillaActual = semilla.semilla;
 		semilla.semilla++;
 		semilla.save();
 		return semillaActual;
 	}
-	
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+
+	// === MANUAL REGION END ===
+
+}

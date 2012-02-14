@@ -6,6 +6,7 @@ import generator.utils.LedUtils;
 import generator.utils.HashStack;
 import generator.utils.HashStack.HashStackName;
 import generator.utils.StringUtils;
+import generator.utils.Beautifier;
 
 import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.util.ModelUtils;
@@ -112,7 +113,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	}
 		"""
 		
-		FileUtils.overwrite(file, out);
+		FileUtils.overwrite(file, Beautifier.formatear(out));
 		return;
 	}
 	

@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -17,95 +16,72 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import controllers.fap.AgenteController;
-			
+
 // === IMPORT REGION END ===
-	
 
-
+@Auditable
 @Entity
 public class Solicitante extends Persona {
 	// Código de los atributos
-	
+
 	@Embedded
 	public Direccion domicilio;
-	
-	
-	
+
 	public String telefonoFijo;
-	
-	
-	
+
 	public String telefonoMovil;
-	
-	
-	
+
 	public String fax;
-	
-	
+
 	@Email
 	public String email;
-	
-	
-	
+
 	public String web;
-	
-	
-	
+
 	public Boolean representado;
-	
-	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public RepresentantePersonaFisica representante;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="solicitante_representantes")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "solicitante_representantes")
 	public List<RepresentantePersonaJuridica> representantes;
-	
-	
-	
+
 	public Boolean autorizaFuncionario;
-	
-	
-	public Solicitante (){
+
+	public Solicitante() {
 		init();
 	}
-	
 
-	public void init(){
+	public void init() {
 		super.init();
-		
-			if (domicilio == null)
-				domicilio = new Direccion();
-			
-							if (representante == null)
-								representante = new RepresentantePersonaFisica();
-							else
-								representante.init();
-						
-						if (representantes == null)
-							representantes = new ArrayList<RepresentantePersonaJuridica>();
-						
-	}
-		
-	
 
-// === MANUAL REGION START ===
+		if (domicilio == null)
+			domicilio = new Direccion();
+
+		if (representante == null)
+			representante = new RepresentantePersonaFisica();
+		else
+			representante.init();
+
+		if (representantes == null)
+			representantes = new ArrayList<RepresentantePersonaJuridica>();
+
+	}
+
+	// === MANUAL REGION START ===
 	public Boolean getRepresentado() {
 		if (representado != null)
 			return representado;
 		return false;
 	}
-	
+
 	public Boolean getAutorizaFuncionario() {
 		if (autorizaFuncionario != null)
 			return autorizaFuncionario;
 		return false;
 	}
 
-	
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION END ===
+
+}

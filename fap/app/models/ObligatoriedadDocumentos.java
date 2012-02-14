@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,42 +15,33 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class ObligatoriedadDocumentos extends Singleton {
 	// Código de los atributos
-	
+
 	@ElementCollection
 	public List<String> imprescindibles;
-	
-	
+
 	@ElementCollection
 	public List<String> obligatorias;
-	
-	
+
 	@ElementCollection
 	public List<String> automaticas;
-	
-	
+
 	@ElementCollection
 	public List<String> manuales;
-	
-	
 
-	public void init(){
+	public void init() {
 		super.init();
-		
-	}
-		
-	
 
-// === MANUAL REGION START ===
-	
-	public ObligatoriedadDocumentos (){
+	}
+
+	// === MANUAL REGION START ===
+
+	public ObligatoriedadDocumentos() {
 		if (imprescindibles == null)
 			imprescindibles = new ArrayList<String>();
 		if (obligatorias == null)
@@ -61,16 +51,14 @@ public class ObligatoriedadDocumentos extends Singleton {
 		if (manuales == null)
 			manuales = new ArrayList<String>();
 	}
-	
-	public void clear(){
+
+	public void clear() {
 		imprescindibles.clear();
 		obligatorias.clear();
 		automaticas.clear();
 		manuales.clear();
 	}
-	
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+
+	// === MANUAL REGION END ===
+
+}

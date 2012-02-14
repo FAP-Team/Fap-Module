@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,51 +15,30 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
-	
-
-
 
 public class Log extends Model {
 	// Código de los atributos
-	
-	
+
 	public String time;
-	
-	
-	
+
 	public String level;
-	
-	
-	
+
 	public String class_;
-	
-	
-	
+
 	public String user;
-	
-	
-	
+
 	public String message;
-	
-	
-	
+
 	public String trace;
-	
-	
 
-	public void init(){
-		
-		
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

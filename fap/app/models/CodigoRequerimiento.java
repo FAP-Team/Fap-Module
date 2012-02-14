@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,39 +15,26 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
-// === IMPORT REGION END ===
-	
 
+// === IMPORT REGION END ===
 
 @Entity
 public class CodigoRequerimiento extends Model {
 	// Código de los atributos
-	
-	
+
 	public String codigo;
-	
-	
-	@Column(columnDefinition="LONGTEXT")
+
+	@Column(columnDefinition = "LONGTEXT")
 	public String descripcion;
-	
-	
-	
+
 	public String descripcionCorta;
-	
-	
 
-	public void init(){
-		
-		
-	}
-		
-	
+	public void init() {
 
-// === MANUAL REGION START ===
-			
-// === MANUAL REGION END ===
-	
-	
 	}
-		
+
+	// === MANUAL REGION START ===
+
+	// === MANUAL REGION END ===
+
+}

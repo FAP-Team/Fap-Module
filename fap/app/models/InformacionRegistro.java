@@ -59,11 +59,11 @@ public class InformacionRegistro extends Model {
 	
 
 // === MANUAL REGION START ===
-	public void setDataFromJustificante(es.gobcan.platino.servicios.registro.JustificanteRegistro justificante){
-		fechaRegistro = new DateTime(justificante.getDatosFirmados().getFechaRegistro().toGregorianCalendar());
-		unidadOrganica = justificante.getDatosFirmados().getNúmeroRegistro().getOficina();
-		numeroRegistro = justificante.getDatosFirmados().getNúmeroRegistro().getNumOficina().toString();
-		numeroRegistroGeneral = justificante.getDatosFirmados().getNúmeroRegistro().getContent().get(0);
+	public void setDataFromJustificante(models.JustificanteRegistro justificante){
+		fechaRegistro = justificante.getFechaRegistro();
+		unidadOrganica = justificante.getUnidadOrganica();
+		numeroRegistro = justificante.getUnidadOrganica();
+		numeroRegistroGeneral = justificante.getNumeroRegistroGeneral();
 		save();
 	}
 // === MANUAL REGION END ===

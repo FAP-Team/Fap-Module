@@ -1,5 +1,7 @@
 package services.filesystem;
 
+import javax.inject.Inject;
+
 import org.joda.time.DateTime;
 
 import play.libs.Codec;
@@ -18,6 +20,7 @@ public class FileSystemRegistroService implements RegistroService {
 
     private final GestorDocumentalService gestorDocumentalService;
 
+    @Inject
     public FileSystemRegistroService(GestorDocumentalService gestorDocumentalService) {
         this.gestorDocumentalService = gestorDocumentalService;
     }
@@ -41,7 +44,10 @@ public class FileSystemRegistroService implements RegistroService {
         String numeroRegistro = "FileSystemRegistro - " + Codec.UUID();
         DateTime fechaRegistro = new DateTime();
         BinaryResponse binaryResponse = getDocumentoFromGestorDocumental(documento);
-        JustificanteRegistro justificante = new JustificanteRegistro(numeroRegistro, fechaRegistro, binaryResponse);
+        String unidadOrganica = "fs";
+        String numeroRegistroRegeneral = "FileSystemNRegistroGeneral - " + Codec.UUID();
+        
+        JustificanteRegistro justificante = new JustificanteRegistro(binaryResponse, fechaRegistro, unidadOrganica, numeroRegistro, numeroRegistroRegeneral);
         return justificante;
     }
 
@@ -49,6 +55,7 @@ public class FileSystemRegistroService implements RegistroService {
         try {
             return gestorDocumentalService.getDocumento(documento);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegistroServiceException("Error recuperando el documento del gestor documental", e);
         }
     }

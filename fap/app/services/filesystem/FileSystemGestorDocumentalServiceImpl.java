@@ -190,6 +190,9 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
      */
     @Override
     public void deleteDocumento(Documento documento) throws GestorDocumentalServiceException {
+        if(documento.uri == null)
+            return; //El documento no está en el gestor documental
+        
         if(documento.clasificado)
             throw new GestorDocumentalServiceException("No se puede eliminar un documento clasificado");
         

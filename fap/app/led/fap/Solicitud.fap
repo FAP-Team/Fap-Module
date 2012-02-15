@@ -21,8 +21,8 @@ ${cEconomico.tipo.descripcion}
 
 	Pagina Aportacion {
 		
-		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="boton"
-		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="boton"
+		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="btn"
+		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="btn"
 
 		Tabla documentos 
 		    titulo="Documentos nuevos pendientes de aportar" 
@@ -59,7 +59,7 @@ ${cEconomico.tipo.descripcion}
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
-		Enlace titulo="Volver" pagina=Aportacion estilo="boton"
+		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
 	}
 	
 	
@@ -72,7 +72,7 @@ ${cEconomico.tipo.descripcion}
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
-		Enlace titulo="Volver" pagina=Aportacion estilo="boton"
+		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
 	}
 	
 	Popup PopUpDocPresentados titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos{

@@ -58,8 +58,20 @@ var getSelectedCert = function(elCombo){
 	return selected;
 }
 
-Firma.firmarDocumento = function(url, opciones){
-	var firma = Firma._firmarDocumento(url);
-	//TODO error handling
+Firma.firmarDocumento = function(elCertificado, url, elFirma, opciones){
+	var firma = null;
+	if(opciones == null) opciones = {};
+	var mensajes = opciones.mensajes != null? opciones.mensajes : new Mensajes();
+	
+	var certificadoSeleccionado = getSelectedCert(elCertificado);
+	
+	if(certificadoSeleccionado == null){
+		mensajes.error('No hay seleccionado ningún certificado');
+	}else{
+		var $firma = $(elFirma);
+		
+		firma = Firma._firmarDocumento(url, certificadoSeleccionado);
+		$firma.val(firma);
+	}
 	return firma;
 }

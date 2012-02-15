@@ -3,8 +3,10 @@ package config;
 import security.*;
 import services.FirmaService;
 import services.GestorDocumentalService;
+import services.RegistroService;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
+import services.filesystem.FileSystemRegistroService;
 import services.platino.PlatinoFirmaServiceImpl;
 
 /**
@@ -28,14 +30,19 @@ public class AppModule extends FapModule {
         bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
     }
 
-//    @Override
-//    protected void gestorDocumental() {
-//        bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
-//    }
+    @Override
+    protected void gestorDocumental() {
+        bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
+    }
 
-//    @Override
-//    protected void firma() {
-//        bindLazySingletonOnDev(FirmaService.class, FileSystemFirmaServiceImpl.class);
-//    }
+    @Override
+    protected void firma() {
+        bindLazySingletonOnDev(FirmaService.class, FileSystemFirmaServiceImpl.class);
+    }
+    
+    @Override
+    protected void registro(){
+        bindLazySingletonOnDev(RegistroService.class, FileSystemRegistroService.class);
+    }
 
 }

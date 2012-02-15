@@ -6,29 +6,46 @@ import utils.BinaryResponse;
 
 public class JustificanteRegistro {
 
-    private String numeroRegistro;
+    private BinaryResponse documento;
     
     private DateTime fechaRegistro;
     
-    private BinaryResponse documento;
+    private String unidadOrganica;
+    
+    private String numeroRegistro;
+    
+    private String numeroRegistroGeneral;
 
-    public JustificanteRegistro(String numeroRegistro, DateTime fechaRegistro, BinaryResponse documento) {
+    public JustificanteRegistro(BinaryResponse documento, DateTime fechaRegistro, String unidadOrganica,
+            String numeroRegistro, String numeroRegistroGeneral) {
         super();
-        this.numeroRegistro = numeroRegistro;
-        this.fechaRegistro = fechaRegistro;
         this.documento = documento;
+        this.fechaRegistro = fechaRegistro;
+        this.unidadOrganica = unidadOrganica;
+        this.numeroRegistro = numeroRegistro;
+        this.numeroRegistroGeneral = numeroRegistroGeneral;
     }
 
-    public String getNumeroRegistro() {
-        return numeroRegistro;
+    public BinaryResponse getDocumento() {
+        return documento;
     }
 
     public DateTime getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public BinaryResponse getDocumento() {
-        return documento;
+    public String getUnidadOrganica() {
+        return unidadOrganica;
     }
+
+    public String getNumeroRegistro() {
+        return numeroRegistro;
+    }
+
+    public String getNumeroRegistroGeneral() {
+        return numeroRegistroGeneral;
+    }
+
+    
     
 }

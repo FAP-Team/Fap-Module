@@ -56,6 +56,10 @@ Formulario Solicitud {
 			Enlace "Presentación" pagina=PaginaFirma
 		}
 		
+		Grupo "Aportaciones" {
+			Enlace "Aportaciones" pagina=Aportacion
+		}
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 		
@@ -326,7 +330,7 @@ Formulario Solicitud {
 		Combo campo=ComboTestRef.list titulo="Combo"
 	}
 	
-	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {
+	Pagina Solicitante guardarParaPreparar campo=Solicitud {
 	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido
 	    Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido  	
 	    Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido  	

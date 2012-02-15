@@ -1,6 +1,6 @@
 Firma._getCertificados = function(){
 	var certificados = [];
-	certificados.push(new Certificado('1', 'Luke Skywalker'));
+	certificados.push(new Certificado('11111111H', 'Luke Skywalker'));
 	certificados.push(new Certificado('2', 'Darth Vader'));
 	return certificados;
 }
@@ -16,17 +16,6 @@ var addCertInfo = function(data, certificado){
 }
 
 Firma._firmarDocumento = function(url, certificado){
-	var that = this;
-	var data;
-    $.ajax({
-            async: false,
-            url: 'doop.php',
-            type: 'GET',
-            success: function(resp) {
-            	that.data = resp;
-            }
-    });
-    if(data == null)
-    	return null;
-    return Firma._firmarTexto(data);
+	//Firma la url en vez del contenido del fichero
+    return Firma._firmarTexto(url, certificado);
 }

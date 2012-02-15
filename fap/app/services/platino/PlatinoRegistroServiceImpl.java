@@ -304,12 +304,15 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     
     private models.JustificanteRegistro getJustificanteRegistroModel(JustificanteRegistro justificantePlatino) {
         DateTime fechaRegistro = getRegistroDateTime(justificantePlatino);
-        String numeroRegistro = justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0);
+        
+        String unidadOrganica = justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina();
+        String numeroRegistro = justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina().toString();
+        String numeroRegistroGeneral = justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0);
         
         BinaryResponse documento = new BinaryResponse();
         documento.contenido = justificantePlatino.getReciboPdf();
         documento.nombre = "Justificante";
-        models.JustificanteRegistro result = new models.JustificanteRegistro(numeroRegistro, fechaRegistro, documento);
+        models.JustificanteRegistro result = new models.JustificanteRegistro(documento, fechaRegistro, unidadOrganica, numeroRegistro, numeroRegistroGeneral);
         return result;
     }
 	
@@ -526,187 +529,5 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 			play.Logger.debug("Ya están clasificados todos los documentos de la solicitud %s",solicitud.id);
 		}
 	}
-
-	public void registrarAportacionActual(SolicitudGenerica solicitud)
-			throws RegistroServiceException {
-		// Registra la solicitud
-
-		Aportacion aportacion = solicitud.aportaciones.actual;
-
-		if (aportacion.estado == null) {
-			Messages.error("La solicitud no está firmada");
-		}
-
-		// Registro de entrada en platino
-		if (aportacion.estado.equals("firmada")) {
-			try {
-				DatosRegistro datos = getDatosRegistro(solicitud.solicitante,
-						aportacion.oficial, solicitud.expedientePlatino);
-				// Registra la solicitud
-				JustificanteRegistro justificante = registroDeEntrada(datos);
-				play.Logger
-						.info("Se ha registrado la solicitud de aportacion de la solicitud %s en platino",
-								solicitud.id);
-
-				// Almacena la información de registro
-				aportacion.informacionRegistro
-						.setDataFromJustificante(justificante);
-				play.Logger
-						.info("Almacenada la información del registro en la base de datos");
-
-				// Guarda el justificante en el AED
-				play.Logger
-						.info("Se procede a guardar el justificante de la solicitud %s en el AED",
-								solicitud.id);
-				Documento documento = aportacion.justificante;
-				documento.tipo = FapProperties
-						.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitud");
-				documento.descripcion = "Justificante de registro de la solicitud";
-				documento.save();
-				aedService.saveDocumentoTemporal(documento, justificante
-						.getReciboPdf().getInputStream(),
-						"JustificanteSolicitudPDF" + solicitud.id + ".pdf");
-
-				aportacion.estado = "registrada";
-				aportacion.save();
-				Mails.enviar("aportacionRealizada", solicitud);
-
-				play.Logger.info("Justificante almacenado en el AED");
-			} catch (Exception e) {
-				e.printStackTrace();
-				Messages.error("Error al registrar de entrada la solicitud");
-				throw new RegistroServiceException(
-						"Error al obtener el justificante del registro de entrada");
-			}
-		} else {
-			play.Logger.debug("La solicitud %s ya está registrada",
-					solicitud.id);
-		}
-
-		// Clasifica los documentos
-		if (aportacion.estado.equals("registrada")) {
-			boolean todosClasificados = true;
-		    
-		    // Clasifica los documentos sin registro
-			List<Documento> documentos = new ArrayList<Documento>();
-			documentos.addAll(aportacion.documentos);
-			documentos.add(aportacion.justificante);
-			
-			
-			try {
-			    aedService.clasificarDocumentos(solicitud, documentos);
-			}catch(GestorDocumentalServiceException e){
-			    todosClasificados = false;
-			}
-
-			// Clasifica los documentos con registro de entrada
-			List<Documento> documentosRegistrados = new ArrayList<Documento>();
-			documentosRegistrados.add(aportacion.oficial);
-			
-			try {
-			    aedService.clasificarDocumentos(solicitud,
-                        documentosRegistrados,
-                        aportacion.informacionRegistro);
-			}catch(Exception e){
-			    todosClasificados = false;
-			}
-
-			if (todosClasificados) {
-				aportacion.estado = "clasificada";
-				aportacion.save();
-				play.Logger.info("Se clasificaron todos los documentos");
-			} else {
-				Messages.error("Algunos documentos no se pudieron clasificar correctamente");
-			}
-		} else {
-			play.Logger
-					.debug("Ya están clasificados todos los documentos de la solicitud %s",
-							solicitud.id);
-		}
-
-		// Mueve la aportación a la lista de aportaciones clasificadas
-		// Añade los documentos a la lista de documentos
-		if (aportacion.estado.equals("clasificada")) {
-			solicitud.aportaciones.registradas.add(aportacion);
-			solicitud.documentacion.documentos.addAll(aportacion.documentos);
-			solicitud.aportaciones.actual = new Aportacion();
-			solicitud.save();
-			aportacion.estado = "finalizada";
-			aportacion.save();
-
-			play.Logger
-					.debug("Los documentos de la aportacion se movieron correctamente");
-		}
-
-	}
-	 * Aportación sin registro de los documentos
-	 * 
-	 * @param solicitud
-	public void noRegistrarAportacionActual(SolicitudGenerica solicitud) {
-		Aportacion aportacion = solicitud.aportaciones.actual;
-
-		if ((aportacion.fechaAportacionSinRegistro == null)
-				|| (aportacion.fechaAportacionSinRegistro.isAfterNow())) {
-			System.out.println("-> " + aportacion.fechaAportacionSinRegistro);
-			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			Date date = new Date();
-			Messages.error("La fecha de incorporación debe ser anterior a "
-					+ dateFormat.format(date));
-		}
-
-		if (aportacion.estado.equals("borrador")) {
-			if (!Messages.hasErrors()) {
-				play.Logger
-						.info("Se procede a aportar sin registrar en la solicitud: "
-								+ solicitud.id);
-				play.Logger.info("El estado es " + solicitud.estado);
-
-				// / Establecemos la fecha de registro en todos los documentos
-				// de la aportación
-				for (Documento doc : aportacion.documentos) {
-					doc.fechaRegistro = aportacion.fechaAportacionSinRegistro;
-					doc.save();
-				}
-
-				// / Los documentos temporales se pasan a clasificados, pero sin
-				// registrar
-				List<Documento> documentos = new ArrayList<Documento>();
-				documentos.addAll(aportacion.documentos);
-				boolean todosClasificados = true;
-				try {
-				    aedService.clasificarDocumentos(solicitud, documentos);
-				}catch(Exception e){
-				    todosClasificados = false;
-				}
-
-				if (todosClasificados) {
-					aportacion.estado = "clasificada";
-					aportacion.save();
-					play.Logger
-							.info("Se clasificaron (sin registrar) todos los documentos");
-				} else {
-					Messages.error("Algunos documentos no se pudieron clasificar (sin registrar) correctamente");
-				}
-
-			}
-		}
-
-		// Mueve la aportación a la lista de aportaciones clasificadas
-		// Añade los documentos a la lista de documentos
-		if (aportacion.estado.equals("clasificada")) {
-			solicitud.aportaciones.registradas.add(aportacion);
-			solicitud.documentacion.documentos.addAll(aportacion.documentos);
-			solicitud.aportaciones.actual = new Aportacion();
-			solicitud.save();
-			// Reseteamos la fecha de aportación sin registro
-			aportacion.fechaAportacionSinRegistro = null;
-
-			aportacion.estado = "finalizada";
-			aportacion.save();
-
-			play.Logger
-					.debug("Los documentos de la aportacion se movieron correctamente");
-		}
-	}
-    */
+*/
 }

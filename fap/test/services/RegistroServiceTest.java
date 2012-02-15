@@ -87,6 +87,8 @@ public abstract class RegistroServiceTest extends UnitTest {
 		models.JustificanteRegistro justificante = registroService.registrarEntrada(solicitante, documento, expediente);
 		assertNotNull(justificante.getNumeroRegistro());
 		assertNotNull(justificante.getFechaRegistro());
+		assertNotNull(justificante.getNumeroRegistroGeneral());
+		assertNotNull(justificante.getUnidadOrganica());
 		
 	    File justificanteTmp = File.createTempFile("justificante_", ".pdf", Play.tmpDir);
 	    IO.write(justificante.getDocumento().getBytes(), justificanteTmp);

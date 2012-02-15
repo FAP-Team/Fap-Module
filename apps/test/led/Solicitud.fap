@@ -118,6 +118,7 @@ Formulario Solicitud {
 	}
 	
 	Pagina ValoresPorDefecto campo=Solicitud{
+		Texto titulo="Texto de un método" campo="utils.TemporalUtils.getMyString()"
 		Texto mString campo=Solicitud.valoresPorDefectoTest.mString titulo="String"
 		Texto mLong campo=Solicitud.valoresPorDefectoTest.mLong titulo="Long"
 		Texto mInteger campo=Solicitud.valoresPorDefectoTest.mInteger titulo="Integer"
@@ -361,7 +362,6 @@ Formulario Solicitud {
 	}
 	
 	Pagina PaginaFirma campo=Solicitud {
-		Texto titulo="Texto" campo="utils.TemporalUtils.getMyString()"
 		Grupo prepararFirmar titulo="Paso 1. Preparar para firmar" mostrarSiCampo Solicitud.registro.fasesRegistro.fase = "Borrador" {
 			Wiki { "Se deberá preparar para firmar la solicitud. " }
 			Form formPreparar {
@@ -380,12 +380,19 @@ Formulario Solicitud {
 			}
 		}
 		Grupo grupoFirma titulo="Paso 3. Firma de la solicitud" permiso=autorizaFuncionario mostrarSiCampo Solicitud.registro.fasesRegistro.fase = "Preparada" {
+			// Documento que firmamos
+			AgrupaBotones well {
+				Enlace descargaDocumento campo=Solicitud.registro.oficial.urlDescarga titulo="Descargar documento a firmar"
+			}
 			Form formFirma {
 				FirmaSimple firmaSimple titulo="Firma Simple" documento=Solicitud.registro.oficial listaFirmantes=Solicitud.registro.firmantes setTrue=Solicitud.registro.fasesRegistro.firmada setCamposTo { Solicitud.registro.fasesRegistro.fase to "Firmada"}
 			}
 		
 		}
 		Grupo grupoFirmaFuncionario titulo="Paso 3. Firma de la solicitud por Funcionario Habilitado" permiso=autorizaFuncionario mostrarSiCampo Solicitud.registro.fasesRegistro.fase = "Preparada Funcionario" {
+			AgrupaBotones well {
+				Enlace descargaDocumento campo=Solicitud.registro.oficial.urlDescarga titulo="Descargar documento a firmar" estilo="btn"
+			}
 			Form formFirmaFuncionario {
 				FirmaSimple firmaSimpleFuncionario titulo="Firma Simple" documento=Solicitud.registro.oficial listaFirmantes=Solicitud.registro.firmantes setTrue=Solicitud.registro.fasesRegistro.firmada setCamposTo { Solicitud.registro.fasesRegistro.fase to "Firmada"}
 			}

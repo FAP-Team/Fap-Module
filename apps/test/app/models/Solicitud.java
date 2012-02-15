@@ -89,14 +89,20 @@ public class Solicitud extends SolicitudGenerica {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public Solicitante solicitantePersonaFisica;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public Solicitante solicitantePersonaJuridica;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public PersonaFisica amigo;
 	
 	

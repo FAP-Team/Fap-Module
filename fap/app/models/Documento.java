@@ -32,7 +32,9 @@ public class Documento extends Model {
 	public String uri;
 	
 	
+	
 	@ValueFromTable("tiposDocumentos")
+	
 	public String tipo;
 	
 	

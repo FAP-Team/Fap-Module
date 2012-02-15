@@ -271,7 +271,7 @@ Wiki:
 AgrupaBotones:
 	'AgrupaBotones' (type=('normal' | 'well'))?
 	'{'
-		botones+=Boton+
+		(botones+=(Boton|Enlace))+
 	'}'
 ;
 

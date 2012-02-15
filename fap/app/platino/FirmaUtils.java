@@ -1,6 +1,7 @@
 package platino;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.inject.Inject;
@@ -18,8 +19,8 @@ import play.modules.guice.InjectSupport;
 import play.mvc.Controller;
 import properties.FapProperties;
 import reports.Report;
-import services.AedService;
 import services.FirmaService;
+import services.GestorDocumentalService;
 import services.RegistroService;
 
 @InjectSupport
@@ -32,7 +33,7 @@ public class FirmaUtils {
 	static RegistroService registroService;
 	
 	@Inject
-	static AedService aedService;
+	static GestorDocumentalService gestorDocumentalService;
 	
 	/**
 	 * Firma el documento
@@ -42,7 +43,7 @@ public class FirmaUtils {
 	 * @param valorDocumentofirmanteSolicitado
 	 */
 	public static void firmar(Documento documento, List<Firmante> listaFirmantes, platino.Firma firma, String valorDocumentofirmanteSolicitado){
-		firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		//firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
 		
 		if (documento == null) {
 			Messages.error("No existe ningún documento para firmar");
@@ -54,12 +55,12 @@ public class FirmaUtils {
 			return;
 		}
 		
-		firmaService.firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
+		firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
 		
 		if (!Messages.hasMessages()) {
 			Messages.ok("La solicitud se firmó correctamente");
 			
-			if(firmaService.hanFirmadoTodos(listaFirmantes)){
+			if(hanFirmadoTodos(listaFirmantes)){
 				Messages.ok("La solicitud está preparada para el registro");
 			}
 		}
@@ -73,7 +74,7 @@ public class FirmaUtils {
 	 * @return
 	 */
 	public static void generarOficial (SolicitudGenerica solicitud, boolean create) {
-		aedService = InjectorConfig.getInjector().getInstance(AedService.class);
+		//gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		if ((create) || (solicitud.registro.oficial == null) || (solicitud.registro.oficial.uri == null)) {
 			try {
 				//Genera el documento oficial
@@ -82,7 +83,7 @@ public class FirmaUtils {
 				solicitud.registro.oficial.tipo = FapProperties.get("fap.aed.tiposdocumentos.solicitud");
 				solicitud.registro.oficial.descripcion = "Descripción del documento";
 				solicitud.registro.fasesRegistro.borrador = true;
-				aedService.saveDocumentoTemporal(solicitud.registro.oficial, oficial);
+				gestorDocumentalService.saveDocumentoTemporal(solicitud.registro.oficial, oficial);
 				solicitud.save();
 				play.Logger.info("Documento creado y subido al AED: ");
 			} catch (Exception e) {
@@ -127,5 +128,36 @@ public class FirmaUtils {
 				firmantes.add(firmante);
 			}
 		}
-	}	
+	}
+	
+	/**
+	 * Borra una lista de firmantes, borrando cada uno de los firmantes y vaciando la lista
+	 * @param firmantes
+	 */
+	public static void borrarFirmantes(List<Firmante> firmantes){
+		List<Firmante> firmantesBack = new ArrayList<Firmante>(firmantes);
+		firmantes.clear();
+		
+		for(Firmante f : firmantesBack)
+			f.delete();
+	}
+	
+	public static boolean hanFirmadoTodos(List<Firmante> firmantes){
+		boolean multiple = true;
+		for(Firmante f : firmantes){
+			//Firmante único que ya ha firmado
+			if(f.cardinalidad.equals("unico") && f.fechaFirma != null)
+				return true;
+			
+			//Uno de los firmantes multiples no ha firmado
+			if(f.cardinalidad.equals("multiple") && f.fechaFirma == null)
+				multiple = false;
+		}
+		
+		//En el caso de que no haya firmado ningún único
+		//Se devuelve true si todos los múltiples han firmado
+		return multiple;
+	}
+	
+	
 }

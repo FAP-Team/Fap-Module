@@ -16,8 +16,8 @@ import play.modules.guice.InjectSupport;
 import play.mvc.Util;
 import properties.FapProperties;
 import reports.Report;
-import services.AedService;
 import services.FirmaService;
+import services.GestorDocumentalService;
 
 import com.google.inject.Inject;
 
@@ -25,14 +25,10 @@ import config.InjectorConfig;
 import controllers.gen.PaginaFirmaControllerGen;
 import enumerado.fap.gen.FaseRegistroEnum;
 
-@InjectSupport
 public class PaginaFirmaController extends PaginaFirmaControllerGen {
 	
 	@Inject
-	static public FirmaService firmaService;
-	
-	@Inject
-	static AedService aedService;
+	protected static GestorDocumentalService gestorDocumentalService;
 	
 	
 	@Util
@@ -55,10 +51,10 @@ public class PaginaFirmaController extends PaginaFirmaControllerGen {
 			List<Firmante> firmantesBack = new ArrayList<Firmante>(dbSolicitud.registro.firmantes);
 			dbSolicitud.registro.firmantes.clear();
 			dbSolicitud.registro.save();
-			firmaService.borrarFirmantes(firmantesBack);
+			FirmaUtils.borrarFirmantes(firmantesBack);
 		
 			//Calcula quién puede firmar la solicitud
-			firmaService.calcularFirmantes(dbSolicitud.solicitante, dbSolicitud.registro.firmantes);
+			dbSolicitud.registro.firmantes = dbSolicitud.solicitante.calcularFirmantes();
 			
 			//dbSolicitud.solicitante.autorizaFuncionario = true;
 			dbSolicitud.registro.save();
@@ -84,7 +80,7 @@ public class PaginaFirmaController extends PaginaFirmaControllerGen {
 			List<Firmante> firmantesBack = new ArrayList<Firmante>(dbSolicitud.registro.firmantes);
 			dbSolicitud.registro.firmantes.clear();
 			dbSolicitud.registro.save();
-			firmaService.borrarFirmantes(firmantesBack);
+			FirmaUtils.borrarFirmantes(firmantesBack);
 		
 			//Calcula quién puede firmar la solicitud (los funcionarios habilitados)
 			dbSolicitud.registro.firmantes = FuncionariosHabilitados.getFirmantes();
@@ -116,7 +112,6 @@ public class PaginaFirmaController extends PaginaFirmaControllerGen {
 	public static void botonSimpleForm(Long idSolicitud, platino.Firma firma){
 		// Realizamos la creación del documento y lo subimos al AED
 		Solicitud solicitud = getSolicitud(idSolicitud);
-		aedService = InjectorConfig.getInjector().getInstance(AedService.class);
 		
 		if ((solicitud.registro.oficial == null) || (solicitud.registro.oficial.uri == null)) {
 			try {//Genera el documento oficial
@@ -125,7 +120,7 @@ public class PaginaFirmaController extends PaginaFirmaControllerGen {
 				solicitud.registro.oficial = new Documento();
 				solicitud.registro.oficial.tipo = FapProperties.get("fap.aed.tiposdocumentos.solicitud");
 				solicitud.registro.oficial.descripcion = "Descripción del documento incluida a mano";
-				aedService.saveDocumentoTemporal(solicitud.registro.oficial, oficial);
+				gestorDocumentalService.saveDocumentoTemporal(solicitud.registro.oficial, oficial);
 				play.Logger.info("Documento creado y subido al AED: ");
 				play.Logger.info("uri -> "+solicitud.registro.oficial.uri);
 				play.Logger.info("url -> "+solicitud.registro.oficial.urlDescarga);

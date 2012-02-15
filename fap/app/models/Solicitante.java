@@ -123,7 +123,34 @@ public class Solicitante extends Persona {
 		return false;
 	}
 
-	
+	public List<Firmante> calcularFirmantes(){
+		//if(solicitante == null) throw new NullPointerException();
+		//if(firmantes == null) throw new NullPointerException();
+		List<Firmante> firmantes = new ArrayList<Firmante>();
+		//Solicitante de la solicitud
+		Firmante firmanteSolicitante = new Firmante(this, "unico");
+		firmantes.add(firmanteSolicitante);
+		
+		//Comprueba los representantes
+		if(this.isPersonaFisica() && this.representado){
+			// Representante de persona física
+			Firmante representante = new Firmante(this.representante, "representante", "unico");
+			firmantes.add(representante);
+		}else if(this.isPersonaJuridica()){
+			//Representantes de la persona jurídica
+			for(RepresentantePersonaJuridica r : this.representantes){
+				String cardinalidad = null;
+				if(r.tipoRepresentacion.equals("mancomunado")){
+					cardinalidad = "multiple";
+				}else if((r.tipoRepresentacion.equals("solidario")) || (r.tipoRepresentacion.equals("administradorUnico"))){
+					cardinalidad = "unico";
+				}
+				Firmante firmante = new Firmante(r, "representante", cardinalidad);
+				firmantes.add(firmante);
+			}
+		}
+		return firmantes;
+	}
 // === MANUAL REGION END ===
 	
 	

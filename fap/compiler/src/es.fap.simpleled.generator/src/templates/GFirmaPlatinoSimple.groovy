@@ -4,7 +4,6 @@ import es.fap.simpleled.led.Campo
 import es.fap.simpleled.led.Check
 import es.fap.simpleled.led.Columna
 import es.fap.simpleled.led.FirmaPlatinoSimple
-import es.fap.simpleled.led.Permiso
 import es.fap.simpleled.led.Tabla
 import es.fap.simpleled.led.Texto
 import es.fap.simpleled.led.impl.CheckImpl;

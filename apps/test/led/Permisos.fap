@@ -1,9 +1,9 @@
-PermisoGrafico paginaTablaVer{
+PermisoGrafico paginaTablaVer {
 	when accion != crear
 	return editable
 }
 
-Permiso autorizaFuncionario {
+PermisoGrafico autorizaFuncionario {
 	vars
 		SolicitudGenerica solicitud
 	when

@@ -5,6 +5,7 @@
 	play.mvc.Router.ActionDefinition urlBorrar = com.google.common.base.Preconditions.checkNotNull(_urlBorrar, "urlBorrar");
 	String titulo = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
 	String formulario = com.google.common.base.Preconditions.checkNotNull(_formulario, "formulario");
+	String pagina = com.google.common.base.Preconditions.checkNotNull(_pagina, "pagina");
 	String encType = com.google.common.base.Preconditions.checkNotNull(_encType, "encType");
 	boolean hayForm = com.google.common.base.Preconditions.checkNotNull(_hayForm, "hayForm");
 	String botonEditar = com.google.common.base.Preconditions.checkNotNull(_botonEditar, "botonEditar");
@@ -49,7 +50,9 @@
 	
 	#{if url != null && accion != "leer" && hayForm}
 			
-		#{form action:url, method:"POST", id:"${accion}Form", enctype:encType }
+		#{form action:url, method:"POST", id:"${pagina}${accion}Form", enctype:encType}
+			
+			#{authenticityToken /}
 			
 			%{  if (accion == "borrar") tags.TagMapStack.push("editable", false);  }%
 			
@@ -61,7 +64,7 @@
 					#{fap.boton id:"${accion}Button", titulo:boton, type:"default", fondo:"true" /}
 				</div>
 
-		#{/form}
+		#{/form} 
 	
 	#{/if}
 	

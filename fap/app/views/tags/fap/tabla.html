@@ -1,12 +1,12 @@
 %{
-	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_url, "url");
+	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlTabla, "urlTabla");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");
-	String tipo  = com.google.common.base.Preconditions.checkNotNull(_tipo, "tipo");
+	String tipoContainer  = com.google.common.base.Preconditions.checkNotNull(_tipoContainer, "tipoContainer");
 
 	//El ancho es siempre del 100%
 	String alto  = _alto  ?: "350";
-	if (tipo == "popup"){
+	if (tipoContainer == "popup"){
 		alto  = _alto  ?: "250";
 	}
 	
@@ -19,26 +19,17 @@
 		
 	def recargarPagina = _recargarPagina;
 	
-	
 	String popupCrear = _popupCrear;
 	String popupEditar = _popupEditar;
 	String popupBorrar = _popupBorrar;
 	String popupLeer = _popupLeer;
 	
-	String urlPopupCrear = _urlPopupCrear;
-	String urlPopupEditar = _urlPopupEditar;
-	String urlPopupBorrar = _urlPopupBorrar;
-	String urlPopupLeer = _urlPopupLeer;
+	String urlCrear = _urlCrear;
+	String urlEditar = _urlEditar;
+	String urlBorrar = _urlBorrar;
+	String urlLeer = _urlLeer;
 	
-	String urlPaginaCrear = _urlPaginaCrear;
-	String urlPaginaEditar = _urlPaginaEditar;
-	String urlPaginaBorrar = _urlPaginaBorrar;
-	String urlPaginaLeer = _urlPaginaLeer;
-	
-	boolean botonCrear = urlPaginaCrear || urlPopupCrear;
-	boolean botonEditar = urlPaginaEditar || urlPopupEditar;
-	boolean botonBorrar = urlPaginaBorrar || urlPopupBorrar;
-	boolean botonLeer = urlPaginaLeer || urlPopupLeer;
+	boolean botonCrear = urlCrear;
 	
 	if (_permisoCrear != null)
 		botonCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("$_permisoCrear", "crear", tags.TagMapStack.top("idParams"), null);
@@ -98,6 +89,7 @@
 		ocultarMensajes${id}();
 		
 		Ext.onReady(function() {
+		
 			if (!Ext.ModelManager.isRegistered('${modelName}')){
 				Ext.define('${modelName}',{
         			extend: 'Ext.data.Model',
@@ -242,22 +234,24 @@
 				return filas;				
 			}
 
+			var urlTabla = "${actionDef.url}";
+
 			function peticionJSON${id}(){
 				crearMensajes${id}();
 				ocultarMensajes${id}();
-				$.ajax("${actionDef.url}").done(function (data){
-													// Para los mensajes
-				 									loadMessages${id}(data);
-		        									writeAllMessages${id}(); 
-		        									// Para las filas de la tabla
-				 									store${id}.loadData(ajax2Data(data.obj.rows));
-												});
+				$.ajax(urlTabla).done(function (data){
+					// Para los mensajes
+				 	loadMessages${id}(data);
+		        	writeAllMessages${id}(); 
+		        	// Para las filas de la tabla
+				 	store${id}.loadData(ajax2Data(data.obj.rows));
+				});
 		    }
 		    
 		    // Para cuando se entra a la pagina
 		    peticionJSON${id}();
 			
-			#{if botonEditar}
+			#{if urlEditar}
 			
 		    var boton_editar = new Ext.Button({
 		    	text: 'Editar',
@@ -265,18 +259,20 @@
 		    	disabled:true,
 		    	handler : function(){
 			   		var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
-			   		#{if urlPopupEditar}
+			   		#{if popupEditar}
 			   			popup_open(
 			   				"${popupEditar}_popup",
-			   				replaceId("${urlPopupEditar}", "${_idEntidad}", selected_id),
+			   				replaceId("${urlEditar}", "_${_idEntidad}_", selected_id),
 			   				reload
 			   			);
 			   		#{/if}
-			   		#{elseif urlPaginaEditar}
-						window.location.href = replaceId("${urlPaginaEditar}", "${_idEntidad}", selected_id);
-					#{/elseif}
+			   		#{else}
+						window.location.href = replaceId("${urlEditar}", "_${_idEntidad}_", selected_id);
+					#{/else}
 		    	}
 		    });
+			
+			
 			
 			var editRow = new Ext.create('Ext.grid.plugin.Editing', {
 		    	clicksToEdit: 2,
@@ -284,17 +280,17 @@
 					var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
 					var registro = store${id}.getAt(store${id}.find("id", selected_id));
 		    		if (registro.get("permisoEditar")){
-					#{if urlPopupEditar}
+					#{if popupEditar}
 		   				popup_open(
 		   					"${popupEditar}_popup",
-			   				replaceId("${urlPopupEditar}", "${_idEntidad}", selected_id),
+			   				replaceId("${urlEditar}", "_${_idEntidad}_", selected_id),
 		   					reload
 		   				);
 
 		   			#{/if}
-					#{elseif urlPaginaEditar}
-						window.location.href = replaceId("${urlPaginaEditar}", "${_idEntidad}", selected_id);
-					#{/elseif}
+					#{else}
+						window.location.href = replaceId("${urlEditar}", "_${_idEntidad}_", selected_id);
+					#{/else}
         			}
         		}
     		});
@@ -302,7 +298,7 @@
 		    #{/if}
 
 		    
-			#{if botonLeer}
+			#{if urlLeer}
 			
 		    var boton_leer = new Ext.Button({
 				text: 'Ver',
@@ -310,15 +306,15 @@
 	    		disabled:true,
 	    		handler : function(){
 	    			var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
-	    			#{if urlPopupLeer}
+	    			#{if popupLeer}
 	    				popup_open(
 	    					"${popupLeer}_popup",
-	    					replaceId("${urlPopupLeer}", "${_idEntidad}", selected_id)
+	    					replaceId("${urlLeer}", "_${_idEntidad}_", selected_id)
 						)
 					#{/if}
-			   		#{elseif urlPaginaLeer}
-						window.location.href = replaceId("${urlPaginaLeer}", "${_idEntidad}", selected_id);
-					#{/elseif}
+			   		#{else}
+						window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
+					#{/else}
 	    		}
 		    });
 			
@@ -328,22 +324,22 @@
     				var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
     				var registro = store${id}.getAt(store${id}.find("id", selected_id));
 		    		if (!registro.get("permisoEditar") && registro.get("permisoLeer")){	
-    				#{if urlPopupLeer}
+    				#{if popupLeer}
 			   			popup_open(
 			   				"${popupLeer}_popup",
-			   				replaceId("${urlPopupLeer}", "${_idEntidad}", selected_id)
+			   				replaceId("${urlLeer}", "_${_idEntidad}_", selected_id)
 			   			);
 			   		#{/if}
-					#{elseif urlPaginaLeer}
-						window.location.href = replaceId("${urlPaginaLeer}", "${_idEntidad}", selected_id);
-					#{/elseif}
+					#{else}
+						window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
+					#{/else}
             		}
 				}
 			});
 			
 		    #{/if}
 
-			#{if botonBorrar}
+			#{if urlBorrar}
 			
 		    var boton_borrar = new Ext.Button({
 		    	text: 'Borrar',
@@ -351,16 +347,16 @@
 	    		disabled:true,
 	    		handler : function(){
 	    			var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
-	    			#{if urlPopupBorrar}
+	    			#{if popupBorrar}
 	    				popup_open(
 	    					"${popupBorrar}_popup",
-	    					replaceId("${urlPopupBorrar}", "${_idEntidad}", selected_id),
+	    					replaceId("${urlBorrar}", "_${_idEntidad}_", selected_id),
 	    					reload
 	    				);
 	    			#{/if}
-	    			#{elseif urlPaginaBorrar}
-						window.location.href = replaceId("${urlPaginaBorrar}", "${_idEntidad}", selected_id);
-					#{/elseif}
+	    			#{else}
+						window.location.href = replaceId("${urlBorrar}", "_${_idEntidad}_", selected_id);
+					#{/else}
 	    		}
 		    });
 		    #{/if}
@@ -371,16 +367,65 @@
 		    	text: 'Nuevo',
 		    	disabled:false,
 	    		handler : function(){
-	    			#{if urlPopupCrear}
-  	    				popup_open(
-	    					"${popupCrear}_popup",
-	    					replaceAmpersand("${urlPopupCrear}"),
-	    					reload
-	    				);
+	    			var urlCrear = replaceAmpersand("${urlCrear}");
+					var funcionCrear = function(){
+						#{if popupCrear}
+	    					popup_open(
+	    						"${popupCrear}_popup",
+	    						urlCrear,
+	    						reload
+	    					);
+	    				#{/if}
+	    				#{else}
+							window.location.href = urlCrear;
+						#{/else}
+					}	
+
+	    			#{if _crearEntidad}
+	    			
+	    				if ($('#${_idEntidad}').length == 0){
+	    					var data = $('#${_nameContainer}crearForm').serialize();
+							$.post(replaceAmpersand("${_urlCrearEntidad}"), data, function(data){
+	    						if (data.id == "none"){
+	    							#{if tipoContainer == "popup"}
+	    								$.get(replaceAmpersand('${_urlContainerCrear}'), function(data){
+											$('#${_nameContainer}_popup').html(data);
+										});
+	    							#{/if}
+	    							#{else}	
+	    								window.location.href = replaceAmpersand('${_urlContainerCrear}');
+	    							#{/else}
+	    							return;
+	    						}
+	    					
+	    						urlCrear = replaceId(urlCrear, "_${_idContainer}_", data.id);
+	    						var urlContainerEditar = replaceId("${_urlContainerEditar}", "_${_idContainer}_", data.id);
+	    						urlCrear = replaceRedirigirAnterior(urlCrear, escape(urlContainerEditar));
+	    					
+	    						urlTabla += "?${_idContainer}=" + data.id;
+	    						var input = document.createElement("input");
+								input.setAttribute("type", "hidden");
+								input.setAttribute("name", "${_idContainer}");
+								input.setAttribute("id", "${_idEntidad}");
+								input.setAttribute("value", data.id);
+								$('#${_nameContainer}crearForm').append(input);
+								
+								funcionCrear();
+	    					});
+	    				}
+	    				else{
+	    					var dataId = $('#${_idEntidad}').get(0).value;
+	    					urlCrear = replaceId(urlCrear, "_${_idContainer}_", dataId);
+	    					var urlContainerEditar = replaceId("${_urlContainerEditar}", "_${_idContainer}_", dataId);
+	    					urlCrear = replaceRedirigirAnterior(urlCrear, escape(urlContainerEditar));
+	    					funcionCrear();
+	    				}
+	    				
 	    			#{/if}
-	    			#{elseif urlPaginaCrear}
-						window.location.href = replaceAmpersand("${urlPaginaCrear}");
-					#{/elseif}
+	    			
+	    			#{else}
+						funcionCrear();
+					#{/else}
 	    		}
 		    });
 		    #{/if}
@@ -419,15 +464,15 @@
 				id: '${id}-grid',
 				height: ${alto},
 				title: '${titulo}',
-			    #{if botonEditar || botonLeer}
+			    #{if urlEditar || urlLeer}
 				plugins: [
-					#{if botonEditar}
+					#{if urlEditar}
 					editRow
 					#{/if}
-					#{if botonEditar && botonLeer}
+					#{if urlEditar && urlLeer}
 					,
 					#{/if}
-					#{if botonLeer}
+					#{if urlLeer}
 					readRow
 					#{/if}
 				],
@@ -453,13 +498,13 @@
 						#{if botonCrear }
 			            	boton_crear,
 			            #{/if}
-			           	#{if botonEditar}
+			           	#{if urlEditar}
 				        	boton_editar,
 				        #{/if}
-			           	#{if botonBorrar}
+			           	#{if urlBorrar}
 				        	boton_borrar,
 				        #{/if}
-			           	#{if botonLeer}
+			           	#{if urlLeer}
 				        	boton_leer,
 				        #{/if}
 			            boton_actualizar
@@ -480,24 +525,24 @@
 		    
 		    	if ( grid.getSelectionModel().hasSelection()){
 		    		var registro = store${id}.getAt(store${id}.find("id", grid.getSelectionModel().getSelection()[0].data.id));
-		    		#{if botonLeer}
+		    		#{if urlLeer}
 		    		boton_leer.setDisabled(!registro.get("permisoLeer"));
 			    	#{/if}
-		    		#{if botonEditar}
+		    		#{if urlEditar}
 		    		boton_editar.setDisabled(!registro.get("permisoEditar"));
 			    	#{/if}
-			    	#{if botonBorrar}
+			    	#{if urlBorrar}
 		    		boton_borrar.setDisabled(!registro.get("permisoBorrar"));
 			    	#{/if}
 		    	}
 		    	else{
-		    		#{if botonLeer}
+		    		#{if urlLeer}
 		    		boton_leer.setDisabled(true);
 			    	#{/if}
-		    		#{if botonEditar}
+		    		#{if urlEditar}
 		    		boton_editar.setDisabled(true);
 			    	#{/if}
-			    	#{if botonBorrar}
+			    	#{if urlBorrar}
 		    		boton_borrar.setDisabled(true);
 			    	#{/if}
 		    	}

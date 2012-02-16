@@ -243,4 +243,26 @@ public class LedCampoUtils {
 		return result;
 	}
 	
+	/*
+	 * campo = Solicitud.documentos, start = Solicitud ---> true
+	 * campo = Solicitud.documentos, start = Documento ---> false
+	 */
+	public static boolean startsWith(Campo campo, Campo start){
+		if (campo == null || start == null)
+			return campo == start;
+		if (!campo.getEntidad().getName().equals(start.getEntidad().getName()))
+			return false;
+		CampoAtributos campoAttrs = campo.getAtributos();
+		CampoAtributos startAttrs = start.getAtributos();
+		while (startAttrs != null){
+			if (campoAttrs == null)
+				return false;
+			if (!campoAttrs.getAtributo().getName().equals(startAttrs.getAtributo().getName()))
+				return false;
+			campoAttrs = campoAttrs.getAtributos();
+			startAttrs = startAttrs.getAtributos();
+		}
+		return true;
+	}
+	
 }

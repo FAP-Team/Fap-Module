@@ -5,7 +5,6 @@
 	List<String> msgInfo = current.messages(messages.Messages.MessageType.INFO)
 	List<String> msgWarning = current.messages(messages.Messages.MessageType.WARNING)
 	List<String> msgFatal = current.messages(messages.Messages.MessageType.FATAL)
-	
 }%
 
 #{if msgFatal}
@@ -44,7 +43,6 @@
 		</div>
 	#{/if}
 	
-	
 	#{if msgError}
 		<div class="alert-message block-message error" data-alert="alert">
 			<a class="close" href="#">x</a>
@@ -56,7 +54,7 @@
 	#{/if}
 	
 	#{ifErrors}
-		#{ifnot msgError != null}
+		#{ifnot msgError}
 			<div class="alert-message block-message error" data-alert="alert"> 
 			<a class="close" href="#">x</a>
 		#{/ifnot}
@@ -77,10 +75,11 @@
 	          
 	          if(!item.message().equals('Validation failed')){
 	}%      
-	        <li><a href="#${item.getKey().replace('.','_')}">${item.message()}</a></li>
+	        <li><a href="#${item.getKey().replace('.','_')}">${item.message()}</a></li>	
 	%{
 	        }} 
 	}% 
+		</ul>
 		#{ifnot msgError}
 			</div>
 		#{/ifnot}

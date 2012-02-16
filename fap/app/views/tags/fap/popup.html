@@ -16,7 +16,7 @@
 	String popup = com.google.common.base.Preconditions.checkNotNull(_popup, "popup");
 
 	String botonAccion = (accion != 'leer') ? play.i18n.Messages.get("fap.tags.popup.boton.${accion}") : "";
-	String botonCerrar = play.i18n.Messages.get("fap.tags.popup.boton.cerrar");
+	String idBotonAccion = popup + botonAccion;
 
 	String idMensajes = popup + "_mensajes";
 	def editable = true;
@@ -37,7 +37,7 @@
 
 #{fap.permiso permiso:_permisoPopup, mensaje:_permisoPopupMsg }
 
-<form action="${url}" method="post" enctype="multipart/form-data">
+<form action="${url}" id="${popup}${accion}Form" method="post" enctype="multipart/form-data">
 	<div class="modal-body">
 		#{authenticityToken /}
 
@@ -64,8 +64,8 @@ $(document).ready(function(){
 	var buttons = {};
 	
 	#{if (accion != 'leer')}
-		${botonAccion} = function(){
-			$('#${botonAccion}_id').button('loading');
+		${idBotonAccion} = function(){
+			$('#${idBotonAccion}').button('loading');
   			var data = $('#'+idPopup+' form').serialize();
 			$.post(replaceAmpersand('${url}'), data, function(data){
  				mensajes.clear(); //Quita los mensajes
@@ -85,10 +85,10 @@ $(document).ready(function(){
 						$('#'+idPopup).modal('hide');
 					}
 				}
-				$('#${botonAccion}_id').button('complete');
+				$('#${idBotonAccion}').button('complete');
 			});
 		};
-	  	popupButtons (idPopup, {"${botonAccion}": "${botonAccion}()"}, "primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"});
+	  	popupButtons (idPopup, {"${botonAccion}": "${idBotonAccion}()"}, "primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"});
   	#{/if}
   	#{else}
   		popupButtons (idPopup, {}, "primary", true, true);

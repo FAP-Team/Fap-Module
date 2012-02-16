@@ -145,24 +145,10 @@ class ControllerUtils {
 		return "${clase} ${complexGetterCall(controllerName, almacenEntidad.almacenAnterior, almacenEntidad.almacen)};";
 	}
 
-    public static String fullGetterCall(String controllerName, EntidadUtils almacen, EntidadUtils entidad, Object ... entities) {
-		def entityList = getEntityList(entities);
-		def ret = """
-			${almacen.entidad? "${almacen.clase} ${almacen.variable} = null;":""}
-            ${entidad.entidad? "${entidad.clase} ${entidad.variableDb} = null;":""}
-			${entityList.collect{"${it.clase} ${it.variableDb} = null;"}.join("\n")}
-        """
-		if ((almacen.entidad) || (entidad.entidad)){
-			ret += """
-			if(!Messages.hasErrors()){
-				${almacen.entidad? "$almacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, almacen, true)};":""}
-				${entidad.entidad? "$entidad.variableDb = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};":""}
-				${entityList.collect{"$it.variableDb = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
-			}
-		"""
-		}
-   
-		return ret;
+    public static String listGetterCall(String controllerName, Object ... entities) {
+		return """
+			${getEntityList(entities).collect{"$it.clase $it.variableDb = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
+		""";
     }
 
 	public static String validateCopyMethod(gElemento, Object ... entities){
@@ -609,10 +595,13 @@ class ControllerUtils {
 	public static List<EntidadUtils> getEntityList(Object entities){
 		def listEntities = [];
 		entities.each { obj ->
-			if (obj instanceof EntidadUtils)
+			if (obj instanceof EntidadUtils && !obj.nulo())
 				listEntities.add(obj);
 			else if (obj instanceof List<EntidadUtils>)
-				obj.each { e -> listEntities.add(e); }
+				obj.each {e ->
+					if (!e.nulo())
+						listEntities.add(e);
+				}
 		}
 		return listEntities;
 	}

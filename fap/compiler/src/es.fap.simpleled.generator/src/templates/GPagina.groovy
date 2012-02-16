@@ -102,6 +102,7 @@ public class GPagina {
 		params.put("urlBorrar", controller.getRouteAccion("borrar"));
 		params.putStr("titulo", pagina.titulo != null ? pagina.titulo : pagina.name);
 		params.putStr("formulario", formulario);
+		params.putStr("pagina", name);
 		params.put("hayForm", hasForm);
 		params.putStr("botonEditar", controller.accionEditar.boton);
 		params.putStr("botonCrear", controller.accionCrear.boton);

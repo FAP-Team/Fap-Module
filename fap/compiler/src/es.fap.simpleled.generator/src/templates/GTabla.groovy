@@ -19,6 +19,7 @@ public class GTabla {
 
 	Tabla tabla;
 	def contenedor;
+	Controller controller;
 	String tipo;
 	CampoUtils campo;
 	String permisoBotonLeer;
@@ -36,9 +37,11 @@ public class GTabla {
 		g.contenedor = HashStack.top(HashStackName.CONTAINER);
 		if (g.contenedor instanceof GPopup){
 			g.tipo = "popup";
+			g.controller = Controller.fromPopup(g.contenedor.popup).initialize();
 		}
 		else{
 			g.tipo = "pagina";
+			g.controller = Controller.fromPagina(g.contenedor.pagina).initialize();
 		}
 		
 		HashStack.push(HashStackName.CONTROLLER, g);
@@ -59,10 +62,10 @@ public class GTabla {
 		EntidadUtils entidad = EntidadUtils.create(campo.entidad);
 		
 		if(campo.getCampo().getAtributos() != null && !entidad.isSingleton())
-        	params.put 'url', "@${controllerName}.${controllerMethodName()}(${entidad.id})"
+        	params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id})"
 		else
-			params.put 'url', "@${controllerName}.${controllerMethodName()}()"
-
+			params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}()"
+			
         if (tabla.titulo){
 			params.putStr 'titulo', tabla.titulo
 		}
@@ -71,8 +74,6 @@ public class GTabla {
 		if (tabla.alto){
 			params.putStr 'alto', tabla.alto
 		}
-		
-		params.putStr("idEntidad", "_${EntidadUtils.create(campo.ultimaEntidad).id}_");
 		
 		botonesPopup(params);
 		botonesPagina(params);
@@ -87,10 +88,19 @@ public class GTabla {
 			params.putStr("urlSeleccionable", "${controllerName}.${seleccionableMethodName()}")
 		}
 
-		params.putStr 'tipo', tipo;
+		params.putStr 'tipoContainer', tipo;
+		params.putStr("idEntidad", "${EntidadUtils.create(campo.ultimaEntidad).id}");
+	
+		if (tabla.campo.entidad.name.equals(controller.campo?.ultimaEntidad?.name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear)){
+			params.put 'crearEntidad', "accion == 'crear'";
+			params.putStr 'nameContainer', contenedor.name;
+			params.putStr 'idContainer', controller.entidad.id;
+			params.put 'urlContainerCrear', controller.getRouteIndex("crear", false, false);
+			params.put 'urlContainerEditar', controller.getRouteIndex("editar", false, true);
+			params.put 'urlCrearEntidad', controller.getRouteAccion("crearForTablas");
+		}
 		
 		StringBuffer columnasView = new StringBuffer();
-			
 		
 		if (tabla.columnasAutomaticas){
 			List <Columna> listaAtributos;
@@ -105,7 +115,7 @@ public class GTabla {
 			   listaAtributos = ColumnasUtils.columnas(campo.campo);
 			}
 			List <Columna> aux = tabla.columnas;
-			boolean listo=false;
+			boolean listo = false;
 			if (aux.isEmpty()){
 				tabla.columnas.addAll(listaAtributos);
 			}
@@ -153,13 +163,13 @@ public class GTabla {
 	private void botonesPopup(TagParameters params){
 		if (tabla.popup != null) {
 			Controller popupUtil = Controller.fromPopup(tabla.popup).initialize();
-			params.put 'urlPopupLeer', popupUtil.getRouteIndex("leer", true);
+			params.put 'urlLeer', popupUtil.getRouteIndex("leer", true, true);
 			params.putStr 'popupLeer', tabla.popup.name;
-			params.put 'urlPopupCrear', popupUtil.getRouteIndex("crear", true);
+			params.put 'urlCrear', popupUtil.getRouteIndex("crear", true, true);
 			params.putStr 'popupCrear', tabla.popup.name;
-			params.put 'urlPopupEditar', popupUtil.getRouteIndex("editar", true);
+			params.put 'urlEditar', popupUtil.getRouteIndex("editar", true, true);
 			params.putStr 'popupEditar', tabla.popup.name;
-			params.put 'urlPopupBorrar', popupUtil.getRouteIndex("borrar", true);
+			params.put 'urlBorrar', popupUtil.getRouteIndex("borrar", true, true);
 			params.putStr 'popupBorrar', tabla.popup.name;
 			botonLeer = true;
 			botonEditar = true;
@@ -172,27 +182,27 @@ public class GTabla {
 			}
 		}
 		if (tabla.popupLeer != null) {
-			params.put 'urlPopupLeer', Controller.fromPopup(tabla.popupLeer).initialize().getRouteIndex("leer", true);
+			params.put 'urlLeer', Controller.fromPopup(tabla.popupLeer).initialize().getRouteIndex("leer", true, true);
 			params.putStr 'popupLeer', tabla.popupLeer.name;
 			botonLeer = true;
 			if (tabla.popupLeer.permiso)
 				permisoBotonLeer = tabla.popupLeer.permiso.name;
 		}
 		if (tabla.popupCrear != null) {
-			params.put 'urlPopupCrear', Controller.fromPopup(tabla.popupCrear).initialize().getRouteIndex("crear", true);
+			params.put 'urlCrear', Controller.fromPopup(tabla.popupCrear).initialize().getRouteIndex("crear", true, true);
 			params.putStr 'popupCrear', tabla.popupCrear.name;
 			if (tabla.popupCrear.permiso)
 				params.putStr 'permisoCrear', tabla.popupCrear.permiso.name;
 		}
 		if (tabla.popupEditar != null) {
-			params.put 'urlPopupEditar', Controller.fromPopup(tabla.popupEditar).initialize().getRouteIndex("editar", true);
+			params.put 'urlEditar', Controller.fromPopup(tabla.popupEditar).initialize().getRouteIndex("editar", true, true);
 			params.putStr 'popupEditar', tabla.popupEditar.name;
 			botonEditar = true;
 			if (tabla.popupEditar.permiso)
 				permisoBotonEditar = tabla.popupEditar.permiso.name;
 		}
 		if (tabla.popupBorrar != null) {
-			params.put 'urlPopupBorrar', Controller.fromPopup(tabla.popupBorrar).initialize().getRouteIndex("borrar", true);
+			params.put 'urlBorrar', Controller.fromPopup(tabla.popupBorrar).initialize().getRouteIndex("borrar", true, true);
 			params.putStr 'popupBorrar', tabla.popupBorrar.name;
 			botonBorrar = true;
 			if (tabla.popupBorrar.permiso)
@@ -203,10 +213,10 @@ public class GTabla {
 	private void botonesPagina(TagParameters params){
 		if (tabla.pagina != null) {
 			Controller pagUtil = Controller.fromPagina(tabla.pagina).initialize();
-			params.put 'urlPaginaLeer', pagUtil.getRouteIndex("leer", true);
-			params.put 'urlPaginaCrear', pagUtil.getRouteIndex("crear", true);
-			params.put 'urlPaginaEditar', pagUtil.getRouteIndex("editar", true);
-			params.put 'urlPaginaBorrar', pagUtil.getRouteIndex("borrar", true);
+			params.put 'urlLeer', pagUtil.getRouteIndex("leer", true, true);
+			params.put 'urlCrear', pagUtil.getRouteIndex("crear", true, true);
+			params.put 'urlEditar', pagUtil.getRouteIndex("editar", true, true);
+			params.put 'urlBorrar', pagUtil.getRouteIndex("borrar", true, true);
 			botonLeer = true;
 			botonEditar = true;
 			botonBorrar = true;
@@ -218,24 +228,24 @@ public class GTabla {
 			}
 		}
 		if (tabla.paginaLeer != null) {
-			params.put 'urlPaginaLeer', Controller.fromPagina(tabla.paginaLeer).initialize().getRouteIndex("leer", true);
+			params.put 'urlLeer', Controller.fromPagina(tabla.paginaLeer).initialize().getRouteIndex("leer", true, true);
 			botonLeer = true;
 			if (tabla.paginaLeer.permiso)
 				permisoBotonLeer = tabla.paginaLeer.permiso.name;
 		}
 		if (tabla.paginaCrear != null) {
-			params.put 'urlPaginaCrear', Controller.fromPagina(tabla.paginaCrear).initialize().getRouteIndex("crear", true);
+			params.put 'urlCrear', Controller.fromPagina(tabla.paginaCrear).initialize().getRouteIndex("crear", true, true);
 			if (tabla.paginaCrear.permiso)
 				params.putStr 'permisoCrear', tabla.paginaCrear.permiso.name;
 		}
 		if (tabla.paginaEditar != null) {
-			params.put 'urlPaginaEditar', Controller.fromPagina(tabla.paginaEditar).initialize().getRouteIndex("editar", true);
+			params.put 'urlEditar', Controller.fromPagina(tabla.paginaEditar).initialize().getRouteIndex("editar", true, true);
 			botonEditar = true;
 			if (tabla.paginaEditar.permiso)
 				permisoBotonEditar = tabla.paginaEditar.permiso.name;
 		}
 		if (tabla.paginaBorrar != null) {
-			params.put 'urlPaginaBorrar', Controller.fromPagina(tabla.paginaBorrar).initialize().getRouteIndex("borrar", true);
+			params.put 'urlBorrar', Controller.fromPagina(tabla.paginaBorrar).initialize().getRouteIndex("borrar", true, true);
 			botonBorrar = true;
 			if (tabla.paginaBorrar.permiso)
 				permisoBotonBorrar = tabla.paginaBorrar.permiso.name;
@@ -372,7 +382,7 @@ public class GTabla {
 				${idSingleton}
 				java.util.List<${entidad.clase}> rows = ${entidad.clase}.find(${query}).fetch();
 				${getCodePermiso(entidad)}
-				tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(${contenedor.controller.controllerName}.${controllerMethodName()}Permisos(rowsFiltered));
+				tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(${controller.controllerName}.${controllerMethodName()}Permisos(rowsFiltered));
 				response.mensajes.error=Messages.messages(MessageType.ERROR);
 				response.mensajes.warning=Messages.messages(MessageType.WARNING);
 				response.mensajes.fatal=Messages.messages(MessageType.FATAL);

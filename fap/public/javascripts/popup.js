@@ -79,6 +79,10 @@ function replaceId(url, entidad, id) {
 	return url.replace(entidad, id).replace(new RegExp("amp;", 'g'), "");
 }
 
+function replaceRedirigirAnterior(url, urlRedirigir) {
+	return url.replace("redirigir=anterior", "redirigir=" + urlRedirigir);
+}
+
 function replaceAmpersand(url) {
 	return url.replace(new RegExp("amp;", 'g'), "");
 }

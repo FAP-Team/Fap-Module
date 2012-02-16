@@ -54,6 +54,12 @@ public class EntidadUtils implements Comparable{
 		return "${variable}?.id";
 	}
 
+	public String getIdNoCheck(){
+		if (entidad == null)
+			return "";
+		return "${variable}.id";
+	}
+	
     public String getVariable(){
 		if (entidad == null)
 			return "";

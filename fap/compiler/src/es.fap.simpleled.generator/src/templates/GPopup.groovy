@@ -399,6 +399,10 @@ public class ${controllerName()} extends ${controllerGenName()} {
 		return sb.toString();
 	}
 	
+	public String getNameRoute() {
+		return url();
+	}
+	
 	private boolean hayCamposEnPopup(){
 		return hayCampos(popup);
 	}

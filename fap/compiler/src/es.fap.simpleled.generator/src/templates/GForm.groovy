@@ -316,4 +316,8 @@ public class GForm {
 		return Route.to("POST", contenedor.url() + "/" + name, contenedor.controllerFullName() + "." + controllerMethodName())
 	}
 	
+	public String getNameRoute() {
+		return contenedor.url() + "/" + name;
+	}
+	
 }

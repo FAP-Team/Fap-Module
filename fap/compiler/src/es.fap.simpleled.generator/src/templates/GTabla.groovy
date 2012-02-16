@@ -352,6 +352,10 @@ public class GTabla {
 		return Route.to("GET", url, action);
 	}
 	
+	public String getNameRoute () {
+		return (contenedor.url() + "/" + id());
+	}
+	
 	private String seleccionableMethodName () {
 		return StringUtils.firstLower(tabla.seleccionable.replaceAll(" ", ""))
 	}

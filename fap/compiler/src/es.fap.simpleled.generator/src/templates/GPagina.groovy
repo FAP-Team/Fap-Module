@@ -216,6 +216,10 @@ public class GPagina {
 		StringUtils.appendln sb, Route.to("GET", url(), controllerName() + ".index")
 		return sb.toString();
 	}
+	
+	public String getNameRoute() {
+		return url();
+	}
 
 	public String saveCode(){
 		return """

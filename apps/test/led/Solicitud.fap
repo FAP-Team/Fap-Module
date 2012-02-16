@@ -90,7 +90,7 @@ Formulario Solicitud {
 		Wiki { "Error en los combos. Debe autocompletar los combos elegidos desde flash al estar el campo de texto vacío." }
 		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
 		Combo campo=Solicitud.comboError comboTexto=nombre titulo="Error del combo"
-		Combo nombre campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
+		Combo campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
 	}
 	
 	Pagina ValoresPorDefecto {

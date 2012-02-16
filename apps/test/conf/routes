@@ -24,12 +24,6 @@ GET     /public/                                staticDir:public
 
 # Dentro de esta region se van a escribir todas las rutas generadas
 # === FAPGENERATED ===
-GET /Solicitud/fechas FechasController.index
-
-POST /Solicitud/fechas/save FechasController.save
-GET /Solicitud/direcciones DireccionesController.index
-
-POST /Solicitud/direcciones/save DireccionesController.save
 GET /Solicitud/combos CombosController.index
 
 GET /Solicitud/combos/comboTestRef CombosController.tablacomboTestRef
@@ -38,43 +32,56 @@ GET /Solicitud/combosoverwrite CombosOverwriteController.index
 
 GET /Solicitud/combosoverwrite/comboTestRef CombosOverwriteController.tablacomboTestRef
 POST /Solicitud/combosoverwrite/save CombosOverwriteController.save
-GET /Solicitud/paginacomboserror PaginaCombosErrorController.index
-
-POST /Solicitud/paginacomboserror/save PaginaCombosErrorController.save
-GET /Solicitud/valorespordefecto ValoresPorDefectoController.index
-
-POST /Solicitud/valorespordefecto/save ValoresPorDefectoController.save
-GET /Solicitud/tablassimples TablasSimplesController.index
-
-GET /Solicitud/tablassimples/tablaNombres TablasSimplesController.tablatablaNombres
-POST /Solicitud/tablassimples/save TablasSimplesController.save
-GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
-
-POST /Solicitud/subirarchivoaedtest/anadirDocumentacion SubirArchivoAedTestController.anadirDocumentacion
-GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
-
-POST /Solicitud/ejemplosdegrupos/save EjemplosdeGruposController.save
-GET /Solicitud/permisopagina PermisoPaginaController.index
-
-POST /Solicitud/permisopagina/save PermisoPaginaController.save
-GET /Solicitud/permisogrupo PermisoGrupoController.index
-
-POST /Solicitud/permisogrupo/save PermisoGrupoController.save
-GET /Solicitud/permisonoeditable PermisoNoEditableController.index
-
-POST /Solicitud/permisonoeditable/save PermisoNoEditableController.save
 GET /Solicitud/combotestref/{idEntidad}/abrir popups.ComboTestRefController.abrir
 POST /Solicitud/combotestref/{idEntidad}/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/{idEntidad}/borrar popups.ComboTestRefController.borrar
 POST /Solicitud/combotestref/{idEntidad}/crear popups.ComboTestRefController.crear
 POST /Solicitud/combotestref/{idEntidad}/cancelarcrear popups.ComboTestRefController.cancelarCrear
 
+GET /Solicitud/direcciones DireccionesController.index
+
+POST /Solicitud/direcciones/save DireccionesController.save
+GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
+
+POST /Solicitud/ejemplosdegrupos/save EjemplosdeGruposController.save
+GET /Solicitud/fechas FechasController.index
+
+POST /Solicitud/fechas/save FechasController.save
+GET /Solicitud/paginacomboserror PaginaCombosErrorController.index
+
+POST /Solicitud/paginacomboserror/save PaginaCombosErrorController.save
+GET /Solicitud/permisogrupo PermisoGrupoController.index
+
+POST /Solicitud/permisogrupo/save PermisoGrupoController.save
+GET /Solicitud/permisonoeditable PermisoNoEditableController.index
+
+POST /Solicitud/permisonoeditable/save PermisoNoEditableController.save
+GET /Solicitud/permisopagina PermisoPaginaController.index
+
+POST /Solicitud/permisopagina/save PermisoPaginaController.save
 GET /Solicitud/popupnombre/{idEntidad}/abrir popups.popupNombreController.abrir
 POST /Solicitud/popupnombre/{idEntidad}/editar popups.popupNombreController.editar
 POST /Solicitud/popupnombre/{idEntidad}/borrar popups.popupNombreController.borrar
 POST /Solicitud/popupnombre/{idEntidad}/crear popups.popupNombreController.crear
 POST /Solicitud/popupnombre/{idEntidad}/cancelarcrear popups.popupNombreController.cancelarCrear
 
+GET /Solicitud/popupnombre2/{idEntidad}/abrir popups.popupNombre2Controller.abrir
+POST /Solicitud/popupnombre2/{idEntidad}/editar popups.popupNombre2Controller.editar
+POST /Solicitud/popupnombre2/{idEntidad}/borrar popups.popupNombre2Controller.borrar
+POST /Solicitud/popupnombre2/{idEntidad}/crear popups.popupNombre2Controller.crear
+POST /Solicitud/popupnombre2/{idEntidad}/cancelarcrear popups.popupNombre2Controller.cancelarCrear
+
+GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
+
+POST /Solicitud/subirarchivoaedtest/anadirDocumentacion SubirArchivoAedTestController.anadirDocumentacion
+GET /Solicitud/tablassimples TablasSimplesController.index
+
+POST /Solicitud/tablassimples/save TablasSimplesController.save
+GET /Solicitud/tablassimples/tablaNombres TablasSimplesController.tablatablaNombres
+GET /Solicitud/tablassimples/tablaNombres2 TablasSimplesController.tablatablaNombres2
+GET /Solicitud/valorespordefecto ValoresPorDefectoController.index
+
+POST /Solicitud/valorespordefecto/save ValoresPorDefectoController.save
 # === END FAPGENERATED ===
 
 # Catch all

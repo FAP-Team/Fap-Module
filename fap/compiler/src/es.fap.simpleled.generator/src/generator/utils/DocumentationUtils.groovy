@@ -38,7 +38,7 @@ public class DocumentationUtils {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-		FileUtils.overwrite(FileUtils.getRoute('JSON_DOCUMENTATION'), "all.json", new Gson().toJson(elementos));
+		FileUtils.overwrite(FileUtils.getRoute('JSON_DOCUMENTATION'), "all.json", new Gson().toJson(elementos.sort()));
 	}
 	
 	private static void getElemento (String filename) {

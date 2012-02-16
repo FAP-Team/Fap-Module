@@ -50,6 +50,11 @@ public class Solicitud extends SolicitudGenerica {
 	public List<TablaDeNombres> tablaDeNombres;
 	
 	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="solicitud_peta")
+	public List<Peta> peta;
+	
+	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public ComboTestRef comboError;
 	
@@ -98,6 +103,9 @@ public class Solicitud extends SolicitudGenerica {
 						
 						if (tablaDeNombres == null)
 							tablaDeNombres = new ArrayList<TablaDeNombres>();
+						
+						if (peta == null)
+							peta = new ArrayList<Peta>();
 						
 							if (comboError != null)
 								comboError.init();	

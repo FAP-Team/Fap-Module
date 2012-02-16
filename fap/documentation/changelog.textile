@@ -1,6 +1,22 @@
 h2. Changelog
 
-h3. Versión 1.2 (En desarrollo)
+h3. Versión 1.2.2
+
+* Fixed bug al generar la validación de la Persona Física.
+* Fixed bug en el texto de los botones enlazados a páginas.
+* La url de descargas de los documentos ahora es relativa.
+* Fixed bug en los combos ManyToOne.
+* Direcciones correctas en los JS de platino (PRO y PRE).
+
+
+h3. Versión 1.2.1
+
+* Fixed bug en combos de referencia sin comboTexto.
+* Fixed bug en permisos en Popups.
+* Fixed bug en firma de mancomunados.
+* Fixed bug en generación (Faltaba "import java.util.ArrayList").
+
+h3. Versión 1.2
 
 * Nueva interfaz de permisos que permite sobrescribir los permisos definidos
 en el módulo

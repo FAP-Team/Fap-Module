@@ -19,7 +19,7 @@ public interface GestorDocumentalService {
     public void configure() throws GestorDocumentalServiceException;
 
     public boolean isConfigured();
-
+    
     public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
 
     public List<String> getDocumentosEnExpediente(String expediente) throws GestorDocumentalServiceException;

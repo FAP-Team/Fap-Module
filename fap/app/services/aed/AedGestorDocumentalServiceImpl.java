@@ -3,6 +3,7 @@ package services.aed;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDoc
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * 
@@ -258,20 +261,20 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      */
 	@Override
 	public String saveDocumentoTemporal(models.Documento documento, InputStream contenido, String filename) throws GestorDocumentalServiceException {
-		//Preparamos el documento para subir al AED
-		documento.prepararParaSubir();
-		
-		if(documento.tipo == null || documento.descripcion == null || contenido == null || filename == null){
-			throw new NullPointerException();
-		}
-		
-		if(documento.tipo.isEmpty() || documento.descripcion.isEmpty() || filename.isEmpty()){
-		    throw new IllegalArgumentException();
-		}
-		
-		if(documento.uri != null){
-		    throw new GestorDocumentalServiceException("El documento ya tiene uri " + documento.uri + ". Puede que ya está subido?");
-		}
+		//Preparamos el documento para subir al AED		
+        documento.prepararParaSubir();
+
+        checkNotNull(documento.tipo, "tipo del documento no puede ser null");
+        checkNotNull(documento.descripcion, "descripcion del documento no puede ser null");
+        checkNotNull(contenido, "contenido no puede ser null");
+        checkNotNull(filename, "filename del documento no puede ser null");
+        
+        checkArgument(!documento.tipo.isEmpty(), "El tipo de documento no puede estar vacío");
+        checkArgument(!documento.descripcion.isEmpty(), "La descripción del documento no puede estar vacía");
+        checkArgument(!filename.isEmpty(), "El filename no puede estar vacío");
+        
+        checkDocumentoNotInGestorDocumental(documento);
+        checkNotEmptyImputStream(contenido);
 		
 		Documento documentoAed = crearDocumentoTemporal(documento.tipo, documento.descripcion, filename, contenido);
 		
@@ -296,6 +299,22 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		
 		return uri;		
 	}
+	
+    private void checkDocumentoNotInGestorDocumental(models.Documento documento) throws GestorDocumentalServiceException {
+        if(documento.uri != null){
+            throw new GestorDocumentalServiceException("El documento ya tiene uri, ya está subido al gestor documental");
+        }        
+    }
+    
+    private void checkNotEmptyImputStream(InputStream is) throws GestorDocumentalServiceException {
+        try {
+            if(is.available() <= 0){
+                throw new GestorDocumentalServiceException("El fichero está vacio");
+            }
+        } catch (IOException e) {
+            throw new GestorDocumentalServiceException("Error al comprobar si el fichero está disponible");
+        }
+    }
 	
 	@Override
     public String saveDocumentoTemporal(models.Documento documento, File file) throws GestorDocumentalServiceException {
@@ -725,7 +744,5 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                 throw e;
         }
     }
-
-
 	
 }

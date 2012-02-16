@@ -28,7 +28,7 @@ public class GFirmaPlatinoSimple {
 		CampoUtils campo = CampoUtils.create(firmaPlatino.getCampo(), "uri");
 		EntidadUtils.addToIndexEntity(campo);
 		
-		HashStack.push(HashStackName.SAVE_EXTRA, "platino.Firma firma");
+		HashStack.push(HashStackName.SAVE_EXTRA, "String firma");
 		
 		TagParameters params = new TagParameters();
 		if (firmaPlatino.titulo)

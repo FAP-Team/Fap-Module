@@ -33,7 +33,7 @@ ${cEconomico.tipo.descripcion}
 			paginaCrear=DocumentosAportacion
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
-			Columna campo=Documento.descripcion titulo="Tipo" expandir
+			Columna campo=Documento.descripcion titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
@@ -55,7 +55,7 @@ ${cEconomico.tipo.descripcion}
 			popupLeer=PopUpDocPresentados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80" 
-			Columna campo=Documento.descripcion titulo="Tipo" expandir
+			Columna campo=Documento.descripcion titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
@@ -66,9 +66,9 @@ ${cEconomico.tipo.descripcion}
 	Pagina AportacionRecibos {
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permiso=aportacionNoNull
-			popupLeer=PopUpDocAportados
 		{
-			Columna campo=Documento.fechaSubida titulo="Fecha" expandir
+			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+			Columna campo=Documento.descripcion titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
@@ -91,7 +91,7 @@ ${cEconomico.tipo.descripcion}
 	  	Grupo titulo="Presentar Aportación de Documentos" {
 			Wiki {"Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
 
-			Enlace campo=SolicitudGenerica.aportaciones.actual.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+			Enlace campo=SolicitudGenerica.aportaciones.actual.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="btn"
 		
 			Form modificarBorrador redirigir=Aportacion permiso=aportacionModificar{
 				Wiki {"Puede realizar cambios antes de su presentación definitiva."}

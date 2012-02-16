@@ -305,7 +305,7 @@ public class AportacionPresentarController extends AportacionPresentarController
         }else{
             Messages.fatal("No tiene permisos suficientes para realizar esta acción");
         }
-        presentarSinRegistrarRender(idSolicitud);
+        presentarRender(idSolicitud);
     }
 
     private static void validateDateIsAfterNow(DateTime fecha) {
@@ -355,7 +355,7 @@ public class AportacionPresentarController extends AportacionPresentarController
      * @param idSolicitud
      */
     @Util
-    public static void presentarSinRegistrarRender(Long idSolicitud) {
+    public static void presentarRender(Long idSolicitud) {
         if (!Messages.hasMessages()) {
             Messages.ok("Página guardada correctamente");
         }
@@ -363,7 +363,7 @@ public class AportacionPresentarController extends AportacionPresentarController
         if (Messages.hasErrors()) {
             redirect("AportacionPresentarController.index", "editar", idSolicitud);
         } else {
-            redirect("AportacionAportadosController.index", "editar", idSolicitud);
+            redirect("AportacionRecibosController.index", "editar", idSolicitud);
         }
     }
 

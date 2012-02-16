@@ -19,7 +19,7 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 					  "where solicitud.id=?",
 					  idSolicitud).fetch();
 	    TableRenderResponse<Documento> response = TableRenderResponse.sinPermisos(rows);
-	    renderJSON(response.toJSON("id", "fechaSubida", "urlDescarga"));
+	    renderJSON(response.toJSON("id", "fechaSubida", "descripcion", "urlDescarga"));
 	}
 
 }

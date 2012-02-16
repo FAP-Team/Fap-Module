@@ -87,6 +87,7 @@ public class AportacionController extends AportacionControllerGen {
 						File borrador = new Report("reports/solicitudAportacion.html").header("reports/header.html").footer("reports/footer-borrador.html").renderTmpFile(solicitud);
 						aportacion.borrador = new Documento();
 						aportacion.borrador.tipo = tipoDocumentoSolicitudAportacion;
+						aportacion.borrador.descripcion = "Borrador solicitud aportación";
 						
 						gestorDocumentalService.saveDocumentoTemporal(aportacion.borrador, new FileInputStream(borrador), borrador.getName());
 												
@@ -94,6 +95,8 @@ public class AportacionController extends AportacionControllerGen {
 						File oficial =  new Report("reports/solicitudAportacion.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
 						aportacion.oficial = new Documento();
 						aportacion.oficial.tipo = tipoDocumentoSolicitudAportacion;
+						aportacion.oficial.descripcion = "Solicitud aportación";
+						
 						gestorDocumentalService.saveDocumentoTemporal(aportacion.oficial, new FileInputStream(oficial), oficial.getName());
 						
 						aportacion.estado = "borrador";

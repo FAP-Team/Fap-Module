@@ -10,12 +10,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
+
+import com.google.common.base.Preconditions;
 
 import play.Play;
 import play.libs.Codec;
+import play.libs.Crypto;
 import play.libs.IO;
 import play.vfs.VirtualFile;
+import properties.FapProperties;
 import properties.PropertyPlaceholder;
 
 import models.Documento;
@@ -29,21 +36,36 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import utils.BinaryResponse;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * Gestor documental en sistema de ficheros
  */
 public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalService {
     
+    private static final int URI_KEY_SIZE = 4;
+
     private final File temporalPath;
     
     private final File clasificadoPath;
 
+    private final PropertyPlaceholder propertyPlaceholder;
+    
     /**
      * @param path Carpeta donde irán las carpetas para los ficheros temporales y clasificados 
      */
-    public FileSystemGestorDocumentalServiceImpl(File path){
+    @Inject
+    public FileSystemGestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder){
+        String propertyPath = checkNotNull(propertyPlaceholder.get("fap.fs.gestorDocumental.path"));
+        File path = Play.getFile(propertyPath);
         this.temporalPath = new File(path, "temporal");
         this.clasificadoPath = new File(path, "clasificado");
+        
+        play.Logger.info("Configurado FileSystem Gestor Documental");
+        play.Logger.info("ruta documentos temporales %s", this.temporalPath.getAbsolutePath());
+        play.Logger.info("ruta documentos clasificados %s", this.clasificadoPath.getAbsolutePath());
+        
+        this.propertyPlaceholder = propertyPlaceholder;
     }
         
     /**
@@ -75,6 +97,17 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
      */
     @Override
     public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
+        if(solicitud.solicitante == null)
+            throw new NullPointerException();
+        
+        if(solicitud.solicitante.isPersonaFisica() && solicitud.solicitante.representado != null && solicitud.solicitante.representado){
+            throw new NullPointerException();
+        }
+        
+        if(solicitud.solicitante.isPersonaJuridica() && solicitud.solicitante.representantes == null){
+            throw new NullPointerException();
+        }
+        
         String expediente = solicitud.expedienteAed.asignarIdAed();
         File folder = getExpedienteFolder(expediente);
         try {
@@ -110,7 +143,13 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     @Override
     public BinaryResponse getDocumento(Documento documento) throws GestorDocumentalServiceException {
         File file = getFile(documento);
-        return BinaryResponse.fromFile(file);
+        BinaryResponse response = BinaryResponse.fromFile(file);
+        
+        //Elimina el uuid
+        String fileName = file.getName();
+        response.nombre = fileName.substring(4, fileName.length());
+        
+        return response;
     }
 
     private File getDocumentoFolder(Documento documento){
@@ -145,21 +184,53 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     public String saveDocumentoTemporal(Documento documento, InputStream contenido, String filename)
             throws GestorDocumentalServiceException {
         
-        if(documento.uri != null)
-            throw new GestorDocumentalServiceException("El documento ya tiene uri " + documento.uri);
+        documento.prepararParaSubir();
+
+        checkNotNull(documento.tipo, "tipo del documento no puede ser null");
+        checkNotNull(documento.descripcion, "descripcion del documento no puede ser null");
+        checkNotNull(contenido, "contenido no puede ser null");
+        checkNotNull(filename, "filename del documento no puede ser null");
         
-        String uri = Codec.UUID() + filename;
+        checkArgument(!documento.tipo.isEmpty(), "El tipo de documento no puede estar vacío");
+        checkArgument(!documento.descripcion.isEmpty(), "La descripción del documento no puede estar vacía");
+        checkArgument(!filename.isEmpty(), "El filename no puede estar vacío");
+        
+        checkDocumentoNotInGestorDocumental(documento);
+        checkNotEmptyImputStream(contenido);
+        
+        
+        String uri = Codec.UUID().substring(0, URI_KEY_SIZE) + filename;
+        
         File file = new File(temporalPath, uri);
             
         IO.write(contenido, file);
         
         documento.uri = uri;
         documento.clasificado = false;
+        documento.hash = Codec.UUID();
+        documento.fechaSubida = new DateTime();
+        
         documento.save();
         
         return uri;
     }
 
+    private void checkDocumentoNotInGestorDocumental(Documento documento) throws GestorDocumentalServiceException {
+        if(documento.uri != null){
+            throw new GestorDocumentalServiceException("El documento ya tiene uri, ya está subido al gestor documental");
+        }        
+    }
+    
+    private void checkNotEmptyImputStream(InputStream is) throws GestorDocumentalServiceException {
+        try {
+            if(is.available() <= 0){
+                throw new GestorDocumentalServiceException("El fichero está vacio");
+            }
+        } catch (IOException e) {
+            throw new GestorDocumentalServiceException("Error al comprobar si el fichero está disponible");
+        }
+    }
+    
     @Override
     public String saveDocumentoTemporal(Documento documento, File file) throws GestorDocumentalServiceException {
         try {
@@ -196,10 +267,13 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         if(documento.clasificado)
             throw new GestorDocumentalServiceException("No se puede eliminar un documento clasificado");
         
-        File file = getFile(documento);
-        boolean deleted = file.delete();
-        if(!deleted)
-            throw new GestorDocumentalServiceException("Error borrando el documento " + file.getAbsolutePath());
+        File folder = getDocumentoFolder(documento);
+        File file = new File(folder, documento.uri);
+        if(file.exists()){
+            boolean deleted = file.delete();
+            if(!deleted)
+                throw new GestorDocumentalServiceException("Error borrando el documento " + file.getAbsolutePath());
+        }
     }
 
     /**
@@ -271,27 +345,24 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         Tramite tramite = new Tramite();
         tramite.nombre = "solicitud";
         tramite.uri = "fs://";
-        //tramite.documentos
 
-        tramite.documentos.add(newTipoDocumento("1"));
-        tramite.documentos.add(newTipoDocumento("2"));
-        tramite.documentos.add(newTipoDocumento("3"));
+        tramite.documentos.add(newTipoDocumento("FileSystem1","fs://type1"));
+        tramite.documentos.add(newTipoDocumento("FileSystem2", "fs://type2"));
+        tramite.documentos.add(newTipoDocumento("FileSystem3", "fs://type3"));
+        tramite.documentos.add(newTipoDocumento("Otros", propertyPlaceholder.get("fap.aed.tiposdocumentos.otros")));
         
         ArrayList<Tramite> tramites = new ArrayList<Tramite>();
         tramites.add(tramite);
         return tramites;
     }
     
-    private TipoDocumento newTipoDocumento(String nombre){
+    private TipoDocumento newTipoDocumento(String nombre, String tipo){
         TipoDocumento tipoDocumento = new TipoDocumento();
         tipoDocumento.nombre = "FileSystem " + nombre;
-        tipoDocumento.uri="fs://type" + nombre;
+        tipoDocumento.uri=tipo;
         tipoDocumento.aportadoPor = "Ciudadano";
         tipoDocumento.obligatoriedad = "Opcional";
         return tipoDocumento;
     }
-    
-    
-    
-    
+
 }

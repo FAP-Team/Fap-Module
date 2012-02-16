@@ -75,6 +75,26 @@ public class Firmante extends Model {
         init();
     }
 
+    public Firmante(Agente agente) {
+        init();
+        this.nombre = agente.name;
+        this.cardinalidad = "unico";
+        this.idvalor = agente.username;
+        // Comprobamos el tipo
+        StringBuilder texto = new StringBuilder();
+        if (CifCheck.validaCif(agente.username, texto)) {
+            this.tipo = "personafisica";
+        } else {
+            Nip nip = new Nip();
+            nip.valor = agente.username;
+            if (NipCheck.validaNip(nip, texto)) {
+                this.tipo = "personajuridica";
+            } else {
+                play.Logger.error("El firmante creado a partir del Agente no tiene tipo (username: "+agente.username+")");
+            }
+        }
+    }
+    
     public Firmante(Persona persona, String cardinalidad) {
         String tipo = getTipoRepresentanteFromPersona(persona);
         constructor(persona, tipo, cardinalidad);

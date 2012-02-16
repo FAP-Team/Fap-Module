@@ -59,6 +59,7 @@ public class AedServiceTest extends UnitTest {
 
 	@Test
 	public void initOk() {
+		System.out.println("ENDPOINT: " + aedService.getEndPoint());
 		assertNotNull(aedService);
 		assertNotNull(aedService.getEndPoint());
 	}
@@ -71,7 +72,7 @@ public class AedServiceTest extends UnitTest {
 	@Test
 	public void saveDocumentoTemporal() throws Exception {
 		String uriTipoDocumento = FapProperties
-				.get("fap.aed.tiposdocumentos.solicitud");
+				.get("fap.aed.tiposdocumentos.base");
 		String descripcion = "prueba";
 
 		Documento documento = new Documento();

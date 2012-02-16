@@ -15,21 +15,7 @@
 
 #{fap.permiso }
 			
-#{fap.tabla
-	campo:'Consulta',
-	id:'tablaConsultas',
-	idEntidad:'_idConsulta_',
-	tipoContainer:'pagina',
-	titulo:'Consultas',
-	popupBorrar:'PopupConsulta',
-	popupCrear:'PopupConsulta', 
-	popupEditar:'PopupConsulta', 
-	popupLeer:'PopupConsulta', 
-	urlBorrar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'borrar', 'idConsulta':'_idConsulta_']), 
-	urlCrear:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'crear']), 
-	urlEditar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'editar', 'idConsulta':'_idConsulta_']), 
-	urlLeer:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'leer', 'idConsulta':'_idConsulta_']),
-	urlTabla:@fap.ConsultasController.tablatablaConsultas(idConsulta)
+#{fap.tabla campo:'Consulta', id:'tablaConsultas', idEntidad:'_idConsulta_', tipoContainer:'pagina', titulo:'Consultas', popupBorrar:'PopupConsulta', popupCrear:'PopupConsulta', popupEditar:'PopupConsulta', popupLeer:'PopupConsulta', urlBorrar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'borrar', 'idConsulta':'_idConsulta_']), urlCrear:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'crear']), urlEditar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'editar', 'idConsulta':'_idConsulta_']), urlLeer:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'leer', 'idConsulta':'_idConsulta_']), urlTabla:@fap.ConsultasController.tablatablaConsultas(idConsulta) 
 }	
 	#{fap.columna campo:'consulta', cabecera:'Consulta', expandir:true, ancho:200 /}		
 	#{fap.columna campo:'descripcion', cabecera:'Descripción', ancho:350 /}		

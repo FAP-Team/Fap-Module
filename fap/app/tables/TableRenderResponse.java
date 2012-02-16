@@ -77,14 +77,13 @@ public class TableRenderResponse<T> {
 		JSONSerializer flex = new JSONSerializer()
 			.include(includeParams)
 			.transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class);
-											
+		
 		for (String table : valueFromTable.keySet())
 			for (String field : valueFromTable.get(table))
 				if (fieldsSet.contains(field))
 					flex = flex.transform(new serializer.ValueFromTableTransformer(table), "obj.rows.objeto." + field);
 					
 		flex = flex.exclude("*");
-
 		String serialize = flex.serialize(this);
 		return serialize;
 	}

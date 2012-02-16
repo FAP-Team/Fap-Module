@@ -1,0 +1,36 @@
+%{
+   Integer anios = duracion;
+%}
+
+
+#{fap.popup 
+     accion:accion, 
+     popup:'PopupCEConomicos', 
+     titulo:'Concepto económico', 
+     urlBorrar:play.mvc.Router.reverse('popups.PopupCEConomicosController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.PopupCEConomicosController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('popups.PopupCEConomicosController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'duracion':anios])
+}
+	
+<div class="wiki ">
+	<p>
+		<b>${cEconomico.tipo.nombre}</b>
+		<br/>
+		${cEconomico.tipo.descripcion}
+		<br/>		
+	</p>
+</div>
+
+#{list items:0..anios, as:'i'}
+	%{
+		def paramName="cEconomico.valores[${i}]";
+		def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+		def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+		def anioLabel = "Año "+(i+1);
+		def valorEstimado=newValue(paramName + ".valorEstimado", anioLabel, cEconomico.valores[i].valorEstimado);
+	%}
+	#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
+#{/list}		
+		
+#{/fap.popup}
+		

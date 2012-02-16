@@ -25,13 +25,9 @@ public class CEconomico extends Model {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public TipoCEconomico tipo;
 
-	public Double valorSolicitado;
-
-	public Double valorEstimado;
-
-	public Double valorPropuesto;
-
-	public Double valorConcedido;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "ceconomico_valores")
+	public List<ValoresCEconomico> valores;
 
 	@Column(columnDefinition = "LONGTEXT")
 	public String comentariosAdministracion;
@@ -49,6 +45,9 @@ public class CEconomico extends Model {
 			tipo = new TipoCEconomico();
 		else
 			tipo.init();
+
+		if (valores == null)
+			valores = new ArrayList<ValoresCEconomico>();
 
 	}
 

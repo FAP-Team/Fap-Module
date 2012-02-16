@@ -60,13 +60,17 @@ Entidad TipoCEconomico {
 Entidad CEconomico {
 	TipoCEconomico tipo
 
+	OneToMany ValoresCEconomico valores
+	
+	LongText comentariosAdministracion
+	LongText comentariosSolicitante	
+}
+
+Entidad ValoresCEconomico {
 	Double valorSolicitado
 	Double valorEstimado
 	Double valorPropuesto
 	Double valorConcedido
-	
-	LongText comentariosAdministracion
-	LongText comentariosSolicitante	
 }
 
 // Tipo de la información adicional
@@ -100,6 +104,8 @@ Entidad TipoEvaluacion {
     Long numeroEvaluacion
     
     OneToMany TipoDatoAdicional datosAdicionales
+    
+    Integer duracion
 }
 
 Entidad Evaluacion {

@@ -47,6 +47,8 @@ public class TipoEvaluacion extends Model {
 	@JoinTable(name = "tipoevaluacion_datosadicionales")
 	public List<TipoDatoAdicional> datosAdicionales;
 
+	public Integer duracion;
+
 	public TipoEvaluacion() {
 		init();
 	}

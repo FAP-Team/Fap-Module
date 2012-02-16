@@ -198,7 +198,6 @@ public class FapTags extends FastTags {
 	
 	public static void _valueFromTableTables(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
         String table = args.get("arg").toString();
-        System.out.println(table);
         //String value = TableKeyValue.getValue(table, clave);
     	//body.setProperty("valor", value);
 	}
@@ -433,9 +432,9 @@ R
 			if(rendererFunctionContent != null)
 				params.put("renderer", "function(value, meta, record){" + rendererFunctionContent + " }");
 			
-			Set<String> camposTabla = (Set<String>)TagContext.parent().data.get("campos");
+			Set<String> camposTabla = (Set<String>)TagContext.parent("fap.tabla").data.get("campos");
 			camposTabla.addAll(campos);
-			List<String> columnasTabla = (List<String>)TagContext.parent().data.get("columnas");
+			List<String> columnasTabla = (List<String>)TagContext.parent("fap.tabla").data.get("columnas");
 			columnasTabla.add(params.getMap());
 		}	
 	}

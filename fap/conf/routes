@@ -49,6 +49,9 @@ GET /Administracion/logs fap.LoggerController.index
 GET /Administracion/consultas fap.consultasController.index
 GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutarConsulta
 
+GET /popups.popupceconomicoscontroller popups.PopupCEConomicosController.index
+POST /popups.popupceconomicoscontroller/editar popups.PopupCEConomicosController.editar
+
 
 # === FAPGENERATED ===
 GET /Administracion/aed AedController.index
@@ -157,10 +160,6 @@ POST /Solicitud/documentosaportacion/editar DocumentosAportacionController.edita
 POST /Solicitud/documentosaportacion/crear DocumentosAportacionController.crear
 
 GET /Solicitud/pceconomicos PCEconomicosController.index
-
-GET /Solicitud/pceconomicos/tablaCEconomicos PCEconomicosController.tablatablaCEconomicos
-GET /Solicitud/popupceconomicos popups.PopupCEConomicosController.index
-POST /Solicitud/popupceconomicos/editar popups.PopupCEConomicosController.editar
 
 GET /Solicitud/popupdocaportados popups.PopUpDocAportadosController.index
 

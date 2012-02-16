@@ -1,0 +1,47 @@
+%{
+	Integer d = duracion-1;
+%}
+
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Crear', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:true, 
+     permisoFormulario:'solicitudes', 
+     permisoFormularioMsg:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Conceptos económicos', 
+     urlBorrar:play.mvc.Router.reverse('PCEconomicosController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('PCEconomicosController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('PCEconomicosController.editar' , ['idSolicitud':solicitud?.id])
+}
+	
+#{fap.tabla 
+     campo:'Solicitud.ceconomicos', 
+     id:'tablaCEconomicos', 
+     idEntidad:'_idCEconomico_', 
+     popupEditar:'PopupCEConomicos', 
+     tipo:'pagina', 
+     titulo:'Conceptos económicos', 
+     url:@PCEconomicosController.tablatablaCEconomicos('idSolicitud':solicitud?.id), 
+     urlPopupEditar:play.mvc.Router.reverse("popups.PopupCEConomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d])
+}
+
+	#{fap.columna ancho:200, cabecera:'Concepto', campo:'tipo.nombre', expandir:true /}
+	
+	#{list items:0..d, as:'i'}
+		%{	
+	  		String aux = "valores[${i}].valorEstimado";
+	  		String label = "Año "+(i+1);
+		%}
+		#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true /}
+	#{/list}
+
+		
+#{/fap.tabla}
+
+#{/fap.pagina}
+		

@@ -97,8 +97,10 @@
         			fields:[
         				#{list campos, as:'columna_campo'}
 			    			{
-			    				%{def columna_campo_split = columna_campo.split("\\.")}%
-								name : '#{fap.campo2id columna_campo /}',
+			    				%{def columna_campo_split = columna_campo.split("\\.");
+			    				  columna_campo_split[0] = columna_campo_split[0].replaceAll("\\[","").replaceAll("\\]","");
+			    				}%
+								name : 'columna_campo',
 			    			    mapping : 'objeto.${columna_campo_split[0]}'
 			    			    #{if columna_campo_split.length > 1}
 			    			    ,
@@ -219,6 +221,7 @@
 			}
 			
 			function ajax2Data (data){
+				console.log(data);
 				var filas=[];
 				var aux;
 				for (var i=0; i<data.length; i++){

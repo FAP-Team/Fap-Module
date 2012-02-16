@@ -1,23 +1,9 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 
 	Pagina PCEconomicos titulo="Conceptos económicos"{
-		Tabla tablaCEconomicos 
-			titulo="Conceptos económicos"
-			campo=SolicitudGenerica.ceconomicos
-			popupEditar=PopupCEConomicos
-		{
-			Columna campo=CEconomico.tipo.nombre titulo="Concepto" expandir
-			Columna campo=CEconomico.valorEstimado titulo="Valor estimado" 		
-		}
+
 	}
 
-	Popup PopupCEConomicos titulo="Concepto económico" campo=SolicitudGenerica.ceconomicos {
-		Wiki {"
-=${cEconomico.tipo.nombre}= 
-${cEconomico.tipo.descripcion}
-		"} 
-		Texto campo=CEconomico.valorEstimado titulo="Valor estimado"
-	}
 
 	Pagina Aportacion {
 		

@@ -42,7 +42,7 @@ public class FirmaUtils {
 	 * @param firma
 	 * @param valorDocumentofirmanteSolicitado
 	 */
-	public static void firmar(Documento documento, List<Firmante> listaFirmantes, platino.Firma firma, String valorDocumentofirmanteSolicitado){
+	public static void firmar(Documento documento, List<Firmante> listaFirmantes, String firma, String valorDocumentofirmanteSolicitado){
 		//firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
 		
 		if (documento == null) {

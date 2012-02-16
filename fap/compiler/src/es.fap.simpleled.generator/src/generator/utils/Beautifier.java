@@ -24,6 +24,7 @@ public class Beautifier {
     		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
     		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
     		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+    		options.put(JavaCore.FORMATTER_LINE_SPLIT, String.valueOf(9999));
     		
     		// change the option to wrap each enum constant on a new line
     		options.put(

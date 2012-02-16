@@ -107,6 +107,8 @@ public class Solicitud extends SolicitudGenerica {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	
 	public SavePages savePages;
 	
 	

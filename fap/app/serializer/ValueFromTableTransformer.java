@@ -35,7 +35,6 @@ public class ValueFromTableTransformer extends AbstractTransformer {
         }else{
             getContext().writeQuoted(result);
         }
-        System.out.println("table" + tabla + " key " + object  + " result " + result);
     }
 
 }

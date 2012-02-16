@@ -89,7 +89,7 @@ public class Documento extends Model {
 		clasificado = false;
 	}
 	
-	public boolean isOtros(){
+	public boolean isOtros(){	    
 		return (tipo != null && tipo.equals(FapProperties.get("fap.aed.tiposdocumentos.otros")));
 	}
 	
@@ -104,12 +104,9 @@ public class Documento extends Model {
 	public void prepararParaSubir(){
 		// Si no tiene descripción y no es de tipo otros, pone como tipo
 		// el nombre del tipo de documento
-		play.Logger.info("Preparando para subir documento del tipo %s", tipo);
 		if((descripcion == null || descripcion.isEmpty()) && !isOtros()){
-		    play.Logger.info("Asignando descripción según tipo de documento");
 			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}
-		play.Logger.info("Descripcion %s", descripcion);
 	}
 	
 	public String getUrlDescarga(){

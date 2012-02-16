@@ -71,14 +71,19 @@ public class GPopup {
 		params.put("urlCrear", controller.getRouteAccion("crear"));
 		params.put("urlBorrar", controller.getRouteAccion("borrar"));
 		params.putStr("titulo", popup.titulo ?: popup.name);
+		
 		if (popup.permiso != null) {
-			params.putStr "permisoPopup", "${popup.permiso.name}";
+			params.putStr "permiso", "${popup.permiso.name}";
 			if (popup.permiso.mensaje != null)
-				params.putStr "permisoPopupMsg", popup.permiso.mensaje;
-			else
-				params.putStr "permisoPopupMsg", "No tiene suficientes privilegios para acceder a éste popup";
+				params.putStr "permisoMensaje", popup.permiso.mensaje;
 		}
-			
+		if (HashStack.top(HashStackName.PERMISSION) != null) {
+			Permiso formPermiso = HashStack.top(HashStackName.PERMISSION);
+			params.putStr "permiso", formPermiso.name;
+			if (formPermiso.mensaje != null)
+				params.putStr "permisoMensaje", formPermiso.mensaje;
+		}
+		
 		String view = """
 #{fap.popup ${params.lista(true)}
 }

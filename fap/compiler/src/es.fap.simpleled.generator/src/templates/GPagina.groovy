@@ -79,23 +79,20 @@ public class GPagina {
 			params.putStr "encType", "multipart/form-data";
 		else
 			params.putStr "encType", "application/x-www-form-urlencoded";
-			
-		Permiso formPermiso = HashStack.top(HashStackName.PERMISSION);
-		if (formPermiso != null) {
-			params.putStr "permisoFormulario", formPermiso.name;
-			if (formPermiso.mensaje != null)
-				params.putStr "permisoFormularioMsg", formPermiso.mensaje;
-			else
-				params.putStr "permisoFormularioMsg", "No tiene suficientes privilegios para acceder a páginas de este formulario";
-		}
 
 		if (pagina.permiso != null) {
-			params.putStr "permisoPagina", "${pagina.permiso.name}";
+			params.putStr "permiso", "${pagina.permiso.name}";
 			if (pagina.permiso.mensaje != null)
-				params.putStr "permisoPaginaMsg", pagina.permiso.mensaje;
-			else
-				params.putStr "permisoPaginaMsg", "No tiene suficientes privilegios para acceder a ésta página";
+				params.putStr "permisoMensaje", pagina.permiso.mensaje;
+//				params.putStr "permisoMensaje", "No tiene suficientes privilegios para acceder a ésta página";
 		}
+		if (HashStack.top(HashStackName.PERMISSION) != null) {
+			Permiso formPermiso = HashStack.top(HashStackName.PERMISSION);
+			params.putStr "permiso", formPermiso.name;
+			if (formPermiso.mensaje != null)
+				params.putStr "permisoMensaje", formPermiso.mensaje;
+		}
+		
 		params.put("accion", "accion");
 		params.put("urlEditar", controller.getRouteAccion("editar"));
 		params.put("urlCrear", controller.getRouteAccion("crear"));

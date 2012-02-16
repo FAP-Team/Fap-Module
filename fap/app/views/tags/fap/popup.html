@@ -12,6 +12,8 @@
 		url = urlCrear;
 	else if (accion == "borrar")
 		url = urlBorrar;
+
+	String permisoMensaje = _permisoMensaje? _permisoMensaje : "No tiene suficientes privilegios para acceder a éste popup";
 		
 	String popup = com.google.common.base.Preconditions.checkNotNull(_popup, "popup");
 
@@ -35,7 +37,7 @@
 
 #{fap.messages}
 
-#{fap.permiso permiso:_permisoPopup, mensaje:_permisoPopupMsg }
+#{fap.permiso permiso:_permiso, mensaje:permisoMensaje }
 
 <form action="${url}" id="${popup}${accion}Form" method="post" enctype="multipart/form-data">
 	<div class="modal-body">

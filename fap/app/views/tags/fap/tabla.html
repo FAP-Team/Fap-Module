@@ -1,3 +1,17 @@
+*{
+  Tabla
+  ==================================
+  Algunos argumentos
+  	- crearEntidad: indica, cuando se lanza el evento del boton 'nuevo', si va a ser necesario llamar por ajax a la accion que crea la entidad
+  		de la página o popup que contiene a la tabla. Los parámetros idContainer, nameContainer, urlContainerCrear, urlContainerEditar y urlCrearEntidad
+  		solo es necesario especificarlos cuando crearEntidad es true.
+  	- idContainer: contiene el string del parámetro id de la entidad de la página o popup. Ejemplo: "idSolicitud".
+  	- nameContainer: contiene el nombre de la página o popup.
+  	- urlContainerCrear: url del index correspondiente a la accion crear de la página o popup.
+  	- urlContainerEditar: url del index correspondiente a la accion editar de la página o popup.
+  	- urlCrearEntidad: url de la accion que crea la entidad.
+}*
+
 %{
 	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlTabla, "urlTabla");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");

@@ -86,11 +86,11 @@ public class Evaluacion extends Model {
 		for (TipoCEconomico tCEconomico : tipo.ceconomicos) {
 			CEconomico cEconomico = new CEconomico();
 			cEconomico.tipo = tCEconomico;
-			for (int i = 0; i < tipo.duracion; i++){
+			for (int i = 0; i < tipo.duracion; i++) {
 				ValoresCEconomico vCEconomico = new ValoresCEconomico();
 				vCEconomico.initValues();
 				cEconomico.valores.add(vCEconomico);
-			}	
+			}
 			this.ceconomicos.add(cEconomico);
 		}
 	}

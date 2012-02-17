@@ -21,10 +21,10 @@ public class Evaluador {
 	}
 
 	public static void evalDefault(CEconomico ceconomico, List<CEconomico> childs) {
-		ceconomico.valorConcedido = sumatorio("valorConcedido", childs);
-		ceconomico.valorEstimado = sumatorio("valorEstimado", childs);
-		ceconomico.valorPropuesto = sumatorio("valorPropuesto", childs);
-		ceconomico.valorSolicitado = sumatorio("valorSolicitado", childs);
+//		ceconomico.valorConcedido = sumatorio("valorConcedido", childs);
+//		ceconomico.valorEstimado = sumatorio("valorEstimado", childs);
+//		ceconomico.valorPropuesto = sumatorio("valorPropuesto", childs);
+//		ceconomico.valorSolicitado = sumatorio("valorSolicitado", childs);
 	}
 
 	static Double sumatorio(String fieldName, List<?> list) {

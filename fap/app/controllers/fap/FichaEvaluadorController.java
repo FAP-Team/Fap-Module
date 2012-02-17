@@ -145,7 +145,7 @@ public class FichaEvaluadorController extends Controller {
 					validation.required(key, valor);
 				}
 				
-				ceconomico.valorPropuesto = valor;
+//				ceconomico.valorPropuesto = valor;
 	
 				//Comentarios
 				if(ceconomico.tipo.comentariosAdministracion){				
@@ -197,7 +197,7 @@ public class FichaEvaluadorController extends Controller {
 		
 		for(CEconomico ce : evaluacion.ceconomicos){
 			String param = "ceconomico[" + ce.id + "]";
-			Messages.setFlash(param + ".valorEstimado", ce.valorEstimado);
+//			Messages.setFlash(param + ".valorEstimado", ce.valorEstimado);
 			Messages.setFlash(param + ".comentariosAdministracion", ce.comentariosAdministracion);
 			Messages.setFlash(param + ".comentariosSolicitante", ce.comentariosSolicitante);
 		}

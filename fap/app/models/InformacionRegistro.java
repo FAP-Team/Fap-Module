@@ -23,8 +23,7 @@ import java.text.SimpleDateFormat;
 public class InformacionRegistro extends Model {
 	// Código de los atributos
 
-	@org.hibernate.annotations.Columns(columns = {
-			@Column(name = "fechaRegistro"), @Column(name = "fechaRegistroTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRegistro"), @Column(name = "fechaRegistroTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaRegistro;
 
@@ -39,16 +38,11 @@ public class InformacionRegistro extends Model {
 	}
 
 	// === MANUAL REGION START ===
-	public void setDataFromJustificante(
-			es.gobcan.platino.servicios.registro.JustificanteRegistro justificante) {
-		fechaRegistro = new DateTime(justificante.getDatosFirmados()
-				.getFechaRegistro().toGregorianCalendar());
-		unidadOrganica = justificante.getDatosFirmados().getNúmeroRegistro()
-				.getOficina();
-		numeroRegistro = justificante.getDatosFirmados().getNúmeroRegistro()
-				.getNumOficina().toString();
-		numeroRegistroGeneral = justificante.getDatosFirmados()
-				.getNúmeroRegistro().getContent().get(0);
+	public void setDataFromJustificante(es.gobcan.platino.servicios.registro.JustificanteRegistro justificante) {
+		fechaRegistro = new DateTime(justificante.getDatosFirmados().getFechaRegistro().toGregorianCalendar());
+		unidadOrganica = justificante.getDatosFirmados().getNúmeroRegistro().getOficina();
+		numeroRegistro = justificante.getDatosFirmados().getNúmeroRegistro().getNumOficina().toString();
+		numeroRegistroGeneral = justificante.getDatosFirmados().getNúmeroRegistro().getContent().get(0);
 		save();
 	}
 	// === MANUAL REGION END ===

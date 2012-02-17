@@ -51,8 +51,7 @@ public class PersonaFisica extends Model {
 	 * @return
 	 */
 	public String getNombreCompleto() {
-		return utils.StringUtils.join(" ", nombre, primerApellido,
-				segundoApellido);
+		return utils.StringUtils.join(" ", nombre, primerApellido, segundoApellido);
 	}
 
 	// === MANUAL REGION END ===

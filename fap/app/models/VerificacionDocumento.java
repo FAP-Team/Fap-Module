@@ -34,9 +34,7 @@ public class VerificacionDocumento extends Model {
 
 	public String estadoDocumentoVerificacion;
 
-	@org.hibernate.annotations.Columns(columns = {
-			@Column(name = "fechaPresentacion"),
-			@Column(name = "fechaPresentacionTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaPresentacion"), @Column(name = "fechaPresentacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaPresentacion;
 

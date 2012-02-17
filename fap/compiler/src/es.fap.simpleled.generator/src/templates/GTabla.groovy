@@ -91,7 +91,7 @@ public class GTabla {
 		params.putStr 'tipoContainer', tipo;
 		params.putStr("idEntidad", "${EntidadUtils.create(campo.ultimaEntidad).id}");
 	
-		if (tabla.campo.entidad.name.equals(controller.campo?.ultimaEntidad?.name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear)){
+		if (tabla.campo.entidad.name.equals(controller.campo?.ultimaEntidad?.name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear) && !controller.entidad.isSingleton()){
 			params.put 'crearEntidad', "accion == 'crear'";
 			params.putStr 'nameContainer', contenedor.name;
 			params.putStr 'idContainer', controller.entidad.id;

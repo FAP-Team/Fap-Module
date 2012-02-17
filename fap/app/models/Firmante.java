@@ -29,8 +29,7 @@ public class Firmante extends Model {
 
 	public String idvalor;
 
-	@org.hibernate.annotations.Columns(columns = {
-			@Column(name = "fechaFirma"), @Column(name = "fechaFirmaTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFirma"), @Column(name = "fechaFirmaTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaFirma;
 
@@ -108,8 +107,7 @@ public class Firmante extends Model {
 			return false;
 		Firmante other = (Firmante) obj;
 
-		if (idtipo != null && other.idtipo != null && idvalor != null
-				&& other.idvalor != null) {
+		if (idtipo != null && other.idtipo != null && idvalor != null && other.idvalor != null) {
 			//Por alguna razon los certificados no distingeun entre NIE Y NIF 
 			//y se ponen los dos en el mismo campo como NIF
 
@@ -121,17 +119,14 @@ public class Firmante extends Model {
 				otherTipo = "nif";
 			}
 
-			return tipo.equalsIgnoreCase(otherTipo)
-					&& idvalor.equalsIgnoreCase(other.idvalor);
+			return tipo.equalsIgnoreCase(otherTipo) && idvalor.equalsIgnoreCase(other.idvalor);
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return "Firmante [nombre=" + nombre + ", idtipo=" + idtipo
-				+ ", idvalor=" + idvalor + ", fechaFirma=" + fechaFirma
-				+ ", tipo=" + tipo + "]";
+		return "Firmante [nombre=" + nombre + ", idtipo=" + idtipo + ", idvalor=" + idvalor + ", fechaFirma=" + fechaFirma + ", tipo=" + tipo + "]";
 	}
 
 	public boolean esFuncionarioHabilitado() {

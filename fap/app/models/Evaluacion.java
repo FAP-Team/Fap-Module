@@ -104,10 +104,7 @@ public class Evaluacion extends Model {
 	 */
 	public List<Documento> getDocumentosAccesibles() {
 		if (tipo.tiposDocumentos.size() > 0) {
-			JPAQuery jpaQuery = Documento.find("select documento"
-					+ " from Solicitud solicitud"
-					+ " join solicitud.documentacion.documentos documento"
-					+ " where solicitud.id=:id and documento.tipo in (:tipos)");
+			JPAQuery jpaQuery = Documento.find("select documento" + " from Solicitud solicitud" + " join solicitud.documentacion.documentos documento" + " where solicitud.id=:id and documento.tipo in (:tipos)");
 			jpaQuery.query.setParameter("id", solicitud.id);
 			jpaQuery.query.setParameter("tipos", tipo.tiposDocumentos);
 			List<Documento> documentosAccesibles = jpaQuery.fetch();
@@ -123,26 +120,17 @@ public class Evaluacion extends Model {
 	 * @return
 	 */
 	public Criterio getCriterio(String jerarquia) {
-		return Criterio.find(
-				"select criterio from Evaluacion evaluacion "
-						+ "join evaluacion.criterios criterio "
-						+ "where criterio.tipo.jerarquia=? "
-						+ "and evaluacion.id=?", jerarquia, id).first();
+		return Criterio.find("select criterio from Evaluacion evaluacion " + "join evaluacion.criterios criterio " + "where criterio.tipo.jerarquia=? " + "and evaluacion.id=?", jerarquia, id).first();
 	}
 
 	public CEconomico getCEconomico(String jerarquia) {
-		return CEconomico.find(
-				"select ceconomico from Evaluacion evaluacion "
-						+ "join evaluacion.ceconomicos ceconomico "
-						+ "where ceconomico.tipo.jerarquia=? "
-						+ "and evaluacion.id=?", jerarquia, id).first();
+		return CEconomico.find("select ceconomico from Evaluacion evaluacion " + "join evaluacion.ceconomicos ceconomico " + "where ceconomico.tipo.jerarquia=? " + "and evaluacion.id=?", jerarquia, id).first();
 	}
 
 	public Double getSubvencionTotalConcedida() {
 		Double totalConcedida = 0D;
 		if (inversionTotalAprobada != null) {
-			String porcentajeAyudaString = FapProperties
-					.get("fap.app.baremacion.porcentajeAyuda");
+			String porcentajeAyudaString = FapProperties.get("fap.app.baremacion.porcentajeAyuda");
 			Double porcentajeAyuda = Double.valueOf(porcentajeAyudaString);
 			totalConcedida = ((this.inversionTotalAprobada * porcentajeAyuda) / 100D);
 		}

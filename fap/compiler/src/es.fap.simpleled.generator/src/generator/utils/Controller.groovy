@@ -860,7 +860,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodosCrearForTablas(){
-		if (!crear || !hayTablasDeEntidad(container))
+		if (!crear || !hayTablasDeEntidad(container) || entidad.isSingleton())
 			return "";
 		return """
 			public static void crearForTablas(${StringUtils.params(

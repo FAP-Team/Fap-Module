@@ -43,29 +43,17 @@ public class Tramite extends Model {
 
 	// === MANUAL REGION START ===
 	public static List<TipoDocumento> findTipoDocumentosFrom(String tramite) {
-		List<TipoDocumento> tiposDocumentos = TipoDocumento
-				.find("select tipoDocumento from Tramite tramite "
-						+ "join tramite.documentos tipoDocumento where tramite.nombre=?",
-						tramite).fetch();
+		List<TipoDocumento> tiposDocumentos = TipoDocumento.find("select tipoDocumento from Tramite tramite " + "join tramite.documentos tipoDocumento where tramite.nombre=?", tramite).fetch();
 		return tiposDocumentos;
 	}
 
-	public static List<TipoDocumento> findTipoDocumentosAportadosPor(
-			String tramite, String aportadoPor) {
-		List<TipoDocumento> tiposDocumentos = TipoDocumento
-				.find("select tipoDocumento from Tramite tramite "
-						+ "join tramite.documentos tipoDocumento where tramite.nombre=? "
-						+ "and tipoDocumento.aportadoPor = ?", tramite,
-						aportadoPor).fetch();
+	public static List<TipoDocumento> findTipoDocumentosAportadosPor(String tramite, String aportadoPor) {
+		List<TipoDocumento> tiposDocumentos = TipoDocumento.find("select tipoDocumento from Tramite tramite " + "join tramite.documentos tipoDocumento where tramite.nombre=? " + "and tipoDocumento.aportadoPor = ?", tramite, aportadoPor).fetch();
 		return tiposDocumentos;
 	}
 
-	public static List<TipoDocumento> findTipoDocumentosAportadosPor(
-			String aportadoPor) {
-		List<TipoDocumento> tiposDocumentos = TipoDocumento
-				.find("select tipoDocumento from Tramite tramite "
-						+ "join tramite.documentos tipoDocumento where tipoDocumento.aportadoPor = ?",
-						aportadoPor).fetch();
+	public static List<TipoDocumento> findTipoDocumentosAportadosPor(String aportadoPor) {
+		List<TipoDocumento> tiposDocumentos = TipoDocumento.find("select tipoDocumento from Tramite tramite " + "join tramite.documentos tipoDocumento where tipoDocumento.aportadoPor = ?", aportadoPor).fetch();
 		return tiposDocumentos;
 	}
 	// === MANUAL REGION END ===

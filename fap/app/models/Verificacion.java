@@ -53,14 +53,11 @@ public class Verificacion extends Model {
 	@JoinTable(name = "verificacion_requerimientos")
 	public List<Requerimiento> requerimientos;
 
-	@org.hibernate.annotations.Columns(columns = {
-			@Column(name = "fechaCreacion"), @Column(name = "fechaCreacionTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaCreacion"), @Column(name = "fechaCreacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaCreacion;
 
-	@org.hibernate.annotations.Columns(columns = {
-			@Column(name = "fechaUltimaActualizacion"),
-			@Column(name = "fechaUltimaActualizacionTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaUltimaActualizacion"), @Column(name = "fechaUltimaActualizacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaUltimaActualizacion;
 

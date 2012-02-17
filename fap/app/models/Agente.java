@@ -98,8 +98,7 @@ public class Agente extends Model {
 			rol = roles.iterator().next();
 		} else {
 			//TODO mejorar esta excepción
-			throw new RuntimeException(
-					"Intentando establecer un rolActivo que no tiene el usuario");
+			throw new RuntimeException("Intentando establecer un rolActivo que no tiene el usuario");
 		}
 		return rol;
 	}

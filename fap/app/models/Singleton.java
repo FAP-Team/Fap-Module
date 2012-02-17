@@ -31,8 +31,7 @@ public class Singleton extends Model {
 	public static <T extends Singleton> T get(Class<?> clazz) {
 		T first = null;
 		try {
-			JPAQuery q = (JPAQuery) clazz.getMethod("all", null).invoke(null,
-					null);
+			JPAQuery q = (JPAQuery) clazz.getMethod("all", null).invoke(null, null);
 			first = q.first();
 			if (first == null) {
 				first = (T) clazz.getConstructor(null).newInstance(null);

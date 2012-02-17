@@ -29,6 +29,7 @@ abstract public class Secure {
 	
 	
 	public boolean checkGrafico(String id, String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars){
+		if (accion.equals("borrado")) return true;
 		ResultadoPermiso resultado = check(id, grafico, accion, ids, vars);
 		if (resultado == null) return false;
 		return resultado.checkGrafico(grafico);

@@ -124,10 +124,8 @@ public class TableKeyValue extends Model {
 	 * @param value
 	 * @param renewCache
 	 */
-	public static void setValue(String table, String key, String value,
-			boolean renewCache) {
-		TableKeyValue first = TableKeyValue.find("byTableAndKey", table, key)
-				.first();
+	public static void setValue(String table, String key, String value, boolean renewCache) {
+		TableKeyValue first = TableKeyValue.find("byTableAndKey", table, key).first();
 		if (first == null) {
 			first = new TableKeyValue(table, key, value);
 		} else {
@@ -223,21 +221,17 @@ public class TableKeyValue extends Model {
 	 * @param value
 	 * @param renewCache
 	 */
-	public static void updateValue(String oldTable, String oldKey,
-			String newTable, String newKey, String newValue, boolean renewCache) {
+	public static void updateValue(String oldTable, String oldKey, String newTable, String newKey, String newValue, boolean renewCache) {
 		removeValue(oldTable, oldKey, renewCache);
 		setValue(newTable, newKey, newValue, renewCache);
 	}
 
 	public static void updateValue(TableKeyValue oldTkv, TableKeyValue newTkv) {
-		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key,
-				newTkv.value, true);
+		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.value, true);
 	}
 
-	public static void updateValue(TableKeyValue oldTkv, TableKeyValue newTkv,
-			boolean renewCache) {
-		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key,
-				newTkv.value, renewCache);
+	public static void updateValue(TableKeyValue oldTkv, TableKeyValue newTkv, boolean renewCache) {
+		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.value, renewCache);
 	}
 
 	/**
@@ -282,8 +276,7 @@ public class TableKeyValue extends Model {
 
 	@Override
 	public String toString() {
-		return "TableKeyValue [table=" + table + ", key=" + key + ", value="
-				+ value + ", id=" + id + "]";
+		return "TableKeyValue [table=" + table + ", key=" + key + ", value=" + value + ", id=" + id + "]";
 	}
 
 	// === MANUAL REGION END ===

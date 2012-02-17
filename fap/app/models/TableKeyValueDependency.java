@@ -65,8 +65,7 @@ public class TableKeyValueDependency extends Model {
 	public static void renewCache(String table) {
 		Logger.debug("Renovando cache de " + table);
 
-		List<TableKeyValueDependency> list = TableKeyValueDependency.find(
-				"byTable", table).fetch();
+		List<TableKeyValueDependency> list = TableKeyValueDependency.find("byTable", table).fetch();
 		Logger.debug("Nºde filas encontradas " + list.size());
 		Cache.set(CACHEPREFIXLIST + table, list);
 		Map<String, String> m = new HashMap<String, String>();
@@ -107,8 +106,7 @@ public class TableKeyValueDependency extends Model {
 	 * @return
 	 */
 	public static List<TableKeyValueDependency> findByTable(String table) {
-		List<TableKeyValueDependency> m = Cache.get(CACHEPREFIXLIST + table,
-				List.class);
+		List<TableKeyValueDependency> m = Cache.get(CACHEPREFIXLIST + table, List.class);
 		if (m == null) {
 			renewCache(table); //Almacena la tabla en cache
 			m = Cache.get(CACHEPREFIXLIST + table, List.class);
@@ -126,10 +124,8 @@ public class TableKeyValueDependency extends Model {
 	 * @param dependency
 	 * @param renewCache
 	 */
-	public static void setValue(String table, String key, String dependency,
-			boolean renewCache) {
-		TableKeyValue first = TableKeyValueDependency.find("byTableAndKey",
-				table, key).first();
+	public static void setValue(String table, String key, String dependency, boolean renewCache) {
+		TableKeyValue first = TableKeyValueDependency.find("byTableAndKey", table, key).first();
 		if (first == null) {
 			first = new TableKeyValue(table, key, dependency);
 		} else {
@@ -209,8 +205,7 @@ public class TableKeyValueDependency extends Model {
 		removeValue(tkv.table, tkv.key, true);
 	}
 
-	public static void removeVDependency(TableKeyValueDependency tkv,
-			boolean renewCache) {
+	public static void removeVDependency(TableKeyValueDependency tkv, boolean renewCache) {
 		removeValue(tkv.table, tkv.key, renewCache);
 	}
 
@@ -226,23 +221,17 @@ public class TableKeyValueDependency extends Model {
 	 * @param dependency
 	 * @param renewCache
 	 */
-	public static void updateValue(String oldTable, String oldKey,
-			String newTable, String newKey, String newDependency,
-			boolean renewCache) {
+	public static void updateValue(String oldTable, String oldKey, String newTable, String newKey, String newDependency, boolean renewCache) {
 		removeValue(oldTable, oldKey, renewCache);
 		setValue(newTable, newKey, newDependency, renewCache);
 	}
 
-	public static void updateValue(TableKeyValueDependency oldTkv,
-			TableKeyValueDependency newTkv) {
-		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key,
-				newTkv.dependency, true);
+	public static void updateValue(TableKeyValueDependency oldTkv, TableKeyValueDependency newTkv) {
+		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.dependency, true);
 	}
 
-	public static void updateValue(TableKeyValueDependency oldTkv,
-			TableKeyValueDependency newTkv, boolean renewCache) {
-		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key,
-				newTkv.dependency, renewCache);
+	public static void updateValue(TableKeyValueDependency oldTkv, TableKeyValueDependency newTkv, boolean renewCache) {
+		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.dependency, renewCache);
 	}
 
 	/**
@@ -287,8 +276,7 @@ public class TableKeyValueDependency extends Model {
 
 	@Override
 	public String toString() {
-		return "TableKeyValueDependency [table=" + table + ", key=" + key
-				+ ", dependency=" + dependency + ", id=" + id + "]";
+		return "TableKeyValueDependency [table=" + table + ", key=" + key + ", dependency=" + dependency + ", id=" + id + "]";
 	}
 
 	// === MANUAL REGION END ===

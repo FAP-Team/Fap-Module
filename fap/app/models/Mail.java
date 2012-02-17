@@ -78,12 +78,9 @@ public class Mail extends Model {
 
 			if (render.sender != null) {
 				try {
-					InternetAddress iAddress = new InternetAddress(
-							render.sender);
-					emailBcc.setFrom(iAddress.getAddress(),
-							iAddress.getPersonal());
-					emailTo.setFrom(iAddress.getAddress(),
-							iAddress.getPersonal());
+					InternetAddress iAddress = new InternetAddress(render.sender);
+					emailBcc.setFrom(iAddress.getAddress(), iAddress.getPersonal());
+					emailTo.setFrom(iAddress.getAddress(), iAddress.getPersonal());
 				} catch (Exception e) {
 					emailBcc.setFrom(render.sender);
 					emailTo.setFrom(render.sender);
@@ -94,10 +91,8 @@ public class Mail extends Model {
 			if (render.sendTo != null) {
 				for (String recipient : StringUtils.split(render.sendTo, ",")) {
 					try {
-						InternetAddress iAddress = new InternetAddress(
-								recipient);
-						emailTo.addTo(iAddress.getAddress(),
-								iAddress.getPersonal());
+						InternetAddress iAddress = new InternetAddress(recipient);
+						emailTo.addTo(iAddress.getAddress(), iAddress.getPersonal());
 					} catch (Exception e) {
 						emailTo.addTo(recipient.toString());
 					}
@@ -107,10 +102,8 @@ public class Mail extends Model {
 			if (render.bcc != null) {
 				for (String recipient : StringUtils.split(render.bcc, ",")) {
 					try {
-						InternetAddress iAddress = new InternetAddress(
-								recipient);
-						emailBcc.addTo(iAddress.getAddress(),
-								iAddress.getPersonal());
+						InternetAddress iAddress = new InternetAddress(recipient);
+						emailBcc.addTo(iAddress.getAddress(), iAddress.getPersonal());
 					} catch (Exception e) {
 						emailBcc.addTo(recipient.toString());
 					}

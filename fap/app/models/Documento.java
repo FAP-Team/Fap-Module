@@ -47,13 +47,11 @@ public class Documento extends Model {
 
 	public String hash;
 
-	@org.hibernate.annotations.Columns(columns = {
-			@Column(name = "fechaSubida"), @Column(name = "fechaSubidaTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaSubida"), @Column(name = "fechaSubidaTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaSubida;
 
-	@org.hibernate.annotations.Columns(columns = {
-			@Column(name = "fechaRegistro"), @Column(name = "fechaRegistroTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRegistro"), @Column(name = "fechaRegistroTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaRegistro;
 
@@ -70,8 +68,7 @@ public class Documento extends Model {
 	}
 
 	public boolean isOtros() {
-		return (tipo != null && tipo.equals(FapProperties
-				.get("fap.aed.tiposdocumentos.otros")));
+		return (tipo != null && tipo.equals(FapProperties.get("fap.aed.tiposdocumentos.otros")));
 	}
 
 	/**

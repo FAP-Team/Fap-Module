@@ -32,8 +32,7 @@ public class Documentacion extends Model {
 
 	public Boolean docOficialClasificado;
 
-	@org.hibernate.annotations.Columns(columns = {
-			@Column(name = "fechaFirma"), @Column(name = "fechaFirmaTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFirma"), @Column(name = "fechaFirmaTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaFirma;
 

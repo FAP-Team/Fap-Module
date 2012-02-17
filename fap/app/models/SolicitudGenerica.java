@@ -127,8 +127,7 @@ public class SolicitudGenerica extends Model {
 	// === MANUAL REGION START ===
 
 	public static String getEstadoById(Long idSolicitud) {
-		Query query = JPA.em().createQuery(
-				"select estado from Solicitud s where s.id=" + idSolicitud);
+		Query query = JPA.em().createQuery("select estado from Solicitud s where s.id=" + idSolicitud);
 		return (String) query.getSingleResult();
 	}
 
@@ -153,42 +152,28 @@ public class SolicitudGenerica extends Model {
 	public void participacionSolicitud() {
 		if ((solicitante != null) && (solicitante.tipo != null)) {
 			if (solicitante.isPersonaFisica()) {
-				compruebaUsuarioParticipacion(solicitante.fisica.nip.valor,
-						solicitante.getNombreCompleto(), solicitante.email);
+				compruebaUsuarioParticipacion(solicitante.fisica.nip.valor, solicitante.getNombreCompleto(), solicitante.email);
 				if (solicitante.representado) {
-					compruebaUsuarioParticipacion(
-							solicitante.representante.getNumeroId(),
-							solicitante.representante.getNombreCompleto(),
-							solicitante.representante.email);
+					compruebaUsuarioParticipacion(solicitante.representante.getNumeroId(), solicitante.representante.getNombreCompleto(), solicitante.representante.email);
 				}
 			} else {
-				compruebaUsuarioParticipacion(solicitante.juridica.cif,
-						solicitante.getNombreCompleto(), solicitante.email);
+				compruebaUsuarioParticipacion(solicitante.juridica.cif, solicitante.getNombreCompleto(), solicitante.email);
 				for (RepresentantePersonaJuridica representante : solicitante.representantes) {
-					compruebaUsuarioParticipacion(representante.getNumeroId(),
-							representante.getNombreCompleto(),
-							representante.email);
+					compruebaUsuarioParticipacion(representante.getNumeroId(), representante.getNombreCompleto(), representante.email);
 				}
 
 			}
 		}
 	}
 
-	private void compruebaUsuarioParticipacion(String user, String name,
-			String email) {
+	private void compruebaUsuarioParticipacion(String user, String name, String email) {
 		if (user == null) {
-			play.Logger
-					.info("No se comprueba la participación, porque el usuario es: "
-							+ user);
+			play.Logger.info("No se comprueba la participación, porque el usuario es: " + user);
 			return;
 		}
-		Participacion p = Participacion
-				.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?",
-						user, this.id).first();
+		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).first();
 		if (p == null) {
-			Agente agente = Agente.find(
-					"select agente from Agente agente where agente.username=?",
-					user).first();
+			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
 
 			if (agente == null) {
 				agente = new Agente();
@@ -207,9 +192,7 @@ public class SolicitudGenerica extends Model {
 			p.solicitud = this;
 			p.tipo = "solicitante";
 			p.save();
-			play.Logger
-					.info("Asignada la participación del agente %s en la solicitud %s",
-							agente.username, this.id);
+			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
 		}
 	}
 

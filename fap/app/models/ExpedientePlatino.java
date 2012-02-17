@@ -28,8 +28,7 @@ public class ExpedientePlatino extends Model {
 
 	public String numero;
 
-	@org.hibernate.annotations.Columns(columns = {
-			@Column(name = "fechaApertura"), @Column(name = "fechaAperturaTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaApertura"), @Column(name = "fechaAperturaTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaApertura;
 
@@ -67,10 +66,8 @@ public class ExpedientePlatino extends Model {
 
 	public String getRuta() {
 		if (ruta == null) {
-			String procedimiento = FapProperties
-					.get("fap.platino.gestordocumental.procedimiento");
-			ruta = "expedientes/" + procedimiento + "/"
-					+ fechaApertura.getYear() + "/" + getNumero();
+			String procedimiento = FapProperties.get("fap.platino.gestordocumental.procedimiento");
+			ruta = "expedientes/" + procedimiento + "/" + fechaApertura.getYear() + "/" + getNumero();
 			save();
 		}
 		return ruta;

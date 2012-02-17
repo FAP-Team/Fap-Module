@@ -37,7 +37,7 @@ public class PaginaFirmaController extends PaginaFirmaControllerGen {
 		Solicitud dbSolicitud = PaginaFirmaController.getSolicitud(idSolicitud);
 
 		play.Logger.info("Preparamos para firmar");
-		firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
 		
 		FirmaUtils.generarOficial (dbSolicitud);
 		

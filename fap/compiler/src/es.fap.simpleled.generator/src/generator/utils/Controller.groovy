@@ -71,7 +71,6 @@ public class Controller {
 	private boolean hayTabla;
 	private boolean hayAnterior;
 	private boolean xToMany;
-	private boolean firmaServiceIncluded;
 	private EntidadUtils entidadSiTabla;  // entidad vale null si no hay una tabla en la pagina o popup
 	private String nameEditar;
 	private String sufijoPermiso;
@@ -180,8 +179,6 @@ import com.google.inject.Inject;
 
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
-
-${declaredServices()}
 
 ${metodoIndex()}
 
@@ -1224,15 +1221,6 @@ public class ${controllerName} extends ${controllerGenName} {
 			}
 		}
 		return code;
-	}
-	
-	private String declaredServices () {
-		String strServices = "";
-			strServices += """
-				@Inject
-				protected static FirmaService firmaService;
-				"""
-		return strServices;
 	}
 			
 }

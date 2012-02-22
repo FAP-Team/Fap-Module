@@ -1,0 +1,73 @@
+h1. Puesta en producción
+
+En esta sección se comentan los pasos que hay que seguir para poner una aplicación en producción.
+
+h2. Preparar el servidor
+
+El servidor debe tener instalado Java y la versión de Play utiliza la aplicación.
+
+h2. Preparar las properties
+
+Configura la aplicación en el @application.conf@ utilizando el prefijo @%prod@ para los valores de las properties que sean distintos en el servidor donde se va a desplegar la aplicación.
+
+Por ejemplo:
+
+bc. fap.login.type.user=true
+%prod.fap.login.type.user=false
+
+Deshabilita el login por usuario y contraseña en el modo producción.
+
+h2. Configuración de los logs
+
+Es importante configurar los logs cuando la aplicación se pone en modo producción. En "esta":app-logs sección se explica como realizar esta configuración.
+
+Alguna de las configuraciones que utilizamos nosotros es:
+
+* Crear un fichero de logs distinto por cada día
+* Configurar un fichero distinto para los errores fatales
+* Enviar los errores fatales mediante email
+
+h2. Comprobar que todo funciona en local
+
+Antes de desplegar la aplicación es neceasrio comprobar que todo funciona correctamente en modo de producción. 
+
+bc.. play run --%prod
+
+h2. Empaquetado de la aplicación
+
+El comando para empaquetar la aplicación es
+
+bc. play fap:dist
+
+Los pasos que se realiza este comando son:
+
+* Precompilar la aplicación
+* Crear la carpeta @dist/%app_name%%date%/@ con las carpetas
+** @lib@ - Esta carpeta contiene las librerías
+** @%app_name%@ - Es carpeta contiene la aplicación precompilada.
+
+La razón de separar las librerías y la aplicación es que normalmente, cuando se quiere subir una nueva versión de la aplicación no es necesario volver a subir las librerías. 
+
+Dentro de @%app_name%@ se copia el código completo de los módulos para no tener que gestionar el repositorio de dependencias en el servidor.
+
+h2. Arrancar la aplicación
+
+Para iniciar y parar la aplicación en segundo plano se puede utilizar los comandos
+
+bc.. play start
+play stop
+
+p. Cuando se ejecuta el comando @start@ se crea un fichero @server.pid@ que contiene el pid del proceso del servidor. Mientras este fichero exista, la aplicación no se podrá volver a arrancar. Con el comando @play stop@, el servidor se para y se elimina este fichero. Si el servidor se para de forma incorrecta y el fichero server.pid no se borra es necesario borrarlo a mano antes de poder volver a arrancar la aplicación. 
+
+h2. Instalar la aplicación como un servicio de windows
+
+Utilizando el comando en el servidor
+
+bc. play fap:winservice
+
+Se generan los fichero @installService.bat@ y @unistallService.bat@. 
+
+Por defecto @installService.bat@ crea un servicio que ejecuta el comando
+
+bc. play start --%%prod -Dprecompiled=true
+

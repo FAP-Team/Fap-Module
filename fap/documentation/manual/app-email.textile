@@ -1,0 +1,62 @@
+h1. Envío de emails
+
+Fap incluye clases de ayuda para enviar emails utilizando un sistema de plantillas.
+
+h2. Plantillas
+
+Las plantillas se definen en la entidad Mail que tiene la siguiente definición.
+
+bc.. Entidad Mail tableName = "email" {
+	String idMail
+	String bcc
+	LongText content
+	String footer
+	String sendTo
+	String sender
+	String subject
+}
+
+p. En las plantillas se utiliza @${variable}@ para realizar sustitución de variables.
+
+Las plantillas se pueden crear a partir de un fichero yml en la carpeta @emails/initial-data/@
+
+bc.. Mail(incidencia):
+   idMail: "incidencia"
+   sender: "sender@gmail.com"
+   sendTo: "sendTo@gmail.com"
+   bcc: ""
+   subject: "Asunto"
+   content: "Mensaje enviado por ${incidencia.nombre} ${incidencia.apellidos}, Email: ${incidencia.email}, Teléfono: ${incidencia.telefono}
+
+${incidencia.texto}"   
+   footer: ""
+   
+p. Las plantillas se insertan en la base de datos al iniciar la aplicación siempre que no existan ninguno en la base de datos.
+
+
+También existe una página en la sección de Administración para poder editar/crear las entidades de tipo Mail.
+
+h2. Envio de mails
+
+Desde el código manual, para enviar un emails se utiliza la clase @emails.Mails@ en concreto el método @enviar(String idMail, Object... args)@. La lista de argumentos se utiliza en la sustitución de variables.
+
+bc. Mails.enviar("incidencia", incidencia)
+
+En este caso se enviará el email con id "incidencia" (el que definimos en la sección anterior) y se le pasa la variable incidencia para realizar la sustitución de variables.
+
+h2. Configuración del servidor de envio de correos
+
+En el fichero @application.conf@ se configura el servidor de envio de correo
+
+bc.. # Mail configuration
+# ~~~~~ 
+# Default is to use a mock Mailer
+mail.smtp=mock
+
+# Or, specify mail host configuration
+mail.smtp.host=undefined.com
+mail.smtp.user=undefined
+mail.smtp.pass=undefined
+mail.smtp.port=25
+
+ 

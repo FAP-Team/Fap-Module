@@ -1,11 +1,6 @@
 h1. Documentación FAP
 
-h2. Aplicación FAP de prueba
-
-* "Prueba las cosas que puedes hacer con FAP":/test
-_*NOTA:* Para poder acceder debes poner en acceso mediante usuario y contraseña:_
-* _NIP / E-Mail:_ *admin*
-* _Contraseña:_ *a*
+Puedes ver una aplicación de ejemplo creada con fap en "Aplicación de ejemplo":otros-testapp
 
 h2. Tutorial
 

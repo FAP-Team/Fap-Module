@@ -1,0 +1,14 @@
+h1. Aplicación de pruebas
+
+Tenemos una aplicación de pruebas donde vamos añadiendo páginas para probar los diferentes elementos del lenguaje. La aplicación es pública y puedes accederla en:
+
+"http://fap-devel.etsii.ull.es/test/":http://fap-devel.etsii.ull.es/test/
+
+Para poder acceder debes poner en acceso mediante usuario y contraseña:
+
+	* _NIP / E-Mail:_ *admin*
+	* _Contraseña:_ *a*
+	
+El código fuente de esta aplicación está disponible en:
+
+"https://github.com/FAP-Team/Fap-Module/tree/master/apps/test":https://github.com/FAP-Team/Fap-Module/tree/master/apps/test	

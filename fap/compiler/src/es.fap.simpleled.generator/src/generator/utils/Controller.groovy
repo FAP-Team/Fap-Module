@@ -119,7 +119,7 @@ public class Controller {
 			sufijoPermiso = StringUtils.firstUpper(name);
 			sufijoBoton = StringUtils.firstUpper(name);
 		}
-			
+					
 		if (hayTabla)
 			entidadSiTabla = EntidadUtils.create(entidad.entidad);
 			
@@ -264,6 +264,18 @@ public class ${controllerName} extends ${controllerGenName} {
 			getters += ControllerUtils.simpleGetter(entity, false);
 		for (EntidadUtils entity: indexEntities)
 			getters += ControllerUtils.simpleGetter(entity, false);
+		return getters;
+	}
+	
+	private String gettersForm(Controller c){
+		List<String> saveContainer = new ArrayList<String>();
+		for (EntidadUtils entity: c.saveEntities)
+			saveContainer.add(entity.variable);
+		String getters = "";
+		for (EntidadUtils entity: saveEntities){
+			if (!saveContainer.contains(entity.variable))
+				getters += ControllerUtils.simpleGetter(entity, false);
+		}
 		return getters;
 	}
 	

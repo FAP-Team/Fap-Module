@@ -105,6 +105,7 @@ public class GForm {
 	}
 	
 	public String controller(){
+		Controller container = HashStack.top(HashStackName.CONTAINER).controller;
 		return """
 			${controller.metodoEditar()}
 			${controller.metodoEditarRender()}
@@ -115,6 +116,7 @@ public class GForm {
 			${controller.metodosHashStack()}
 			${controller.metodosDeFirma()}
 			${controller.metodoBindReferences()}
+			${controller.gettersForm(container)}
 		"""; 
 	}
 

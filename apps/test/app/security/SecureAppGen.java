@@ -13,8 +13,7 @@ public class SecureAppGen extends Secure {
 	}
 
 	@Override
-	public ResultadoPermiso check(String id, String grafico, String action,
-			Map<String, Long> ids, Map<String, Object> vars) {
+	public ResultadoPermiso check(String id, String grafico, String action, Map<String, Long> ids, Map<String, Object> vars) {
 
 		if ("paginaTablaVer".equals(id))
 			return paginaTablaVer(grafico, action, ids, vars);
@@ -23,8 +22,7 @@ public class SecureAppGen extends Secure {
 	}
 
 	@Override
-	public ResultadoPermiso accion(String id, Map<String, Long> ids,
-			Map<String, Object> vars) {
+	public ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {
 
 		if ("paginaTablaVer".equals(id))
 			return paginaTablaVerAccion(ids, vars);
@@ -32,13 +30,11 @@ public class SecureAppGen extends Secure {
 		return nextAccion(id, ids, vars);
 	}
 
-	private ResultadoPermiso paginaTablaVer(String grafico, String accion,
-			Map<String, Long> ids, Map<String, Object> vars) {
+	private ResultadoPermiso paginaTablaVer(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
 		//Variables
 		Agente agente = AgenteController.getAgente();
 
-		Secure secure = config.InjectorConfig.getInjector().getInstance(
-				security.Secure.class);
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 
 		if (!accion.toString().equals("crear".toString())) {
 			return new ResultadoPermiso(Grafico.Editable);
@@ -48,14 +44,12 @@ public class SecureAppGen extends Secure {
 		return null;
 	}
 
-	private ResultadoPermiso paginaTablaVerAccion(Map<String, Long> ids,
-			Map<String, Object> vars) {
+	private ResultadoPermiso paginaTablaVerAccion(Map<String, Long> ids, Map<String, Object> vars) {
 		String grafico = "visible";
 		//Variables
 		Agente agente = AgenteController.getAgente();
 
-		Secure secure = config.InjectorConfig.getInjector().getInstance(
-				security.Secure.class);
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 		List<String> acciones = new ArrayList<String>();
 
 		acciones.clear();

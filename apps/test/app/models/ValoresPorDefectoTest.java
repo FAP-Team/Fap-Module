@@ -49,8 +49,7 @@ public class ValoresPorDefectoTest extends Model {
 	@Moneda
 	public Double mMoneda;
 
-	@org.hibernate.annotations.Columns(columns = { @Column(name = "mDateTime"),
-			@Column(name = "mDateTimeTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "mDateTime"), @Column(name = "mDateTimeTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime mDateTime;
 
@@ -78,8 +77,7 @@ public class ValoresPorDefectoTest extends Model {
 		mCif = "A58818501";
 		mMoneda = 2.1;
 		try {
-			mDateTime = new DateTime(
-					(new SimpleDateFormat("dd/MM/yyyy")).parse("12/12/2010"));
+			mDateTime = new DateTime((new SimpleDateFormat("dd/MM/yyyy")).parse("12/12/2010"));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

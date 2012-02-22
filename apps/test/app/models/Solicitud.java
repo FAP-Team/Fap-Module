@@ -137,8 +137,7 @@ public class Solicitud extends SolicitudGenerica {
 	}
 
 	public void savePagesPrepared() {
-		if ((savePages.paginaSolicitante == null)
-				|| (!savePages.paginaSolicitante))
+		if ((savePages.paginaSolicitante == null) || (!savePages.paginaSolicitante))
 			Messages.error("La página Solicitante no fue guardada correctamente");
 	}
 

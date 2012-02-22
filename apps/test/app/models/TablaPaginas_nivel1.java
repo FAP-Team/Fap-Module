@@ -30,8 +30,7 @@ public class TablaPaginas_nivel1 extends Model {
 	@JoinTable(name = "tablapaginas_nivel1_combomul")
 	public List<ComboTestRef> comboMul;
 
-	@org.hibernate.annotations.Columns(columns = { @Column(name = "fecha"),
-			@Column(name = "fechaTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fecha"), @Column(name = "fechaTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fecha;
 

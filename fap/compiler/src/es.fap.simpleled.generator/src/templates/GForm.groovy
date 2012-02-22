@@ -105,6 +105,7 @@ public class GForm {
 	}
 	
 	public String controller(){
+		Controller container = HashStack.top(HashStackName.CONTAINER).controller;
 		return """
 			${controller.metodoEditar()}
 			${controller.metodoEditarRender()}
@@ -113,6 +114,7 @@ public class GForm {
 			${controller.metodoPermiso()}
 			${controller.botonesMethods()}
 			${controller.metodoBindReferences()}
+			${controller.gettersForm(container)}
 		"""; 
 	}
 

@@ -117,7 +117,7 @@ public class Controller{
 			sufijoPermiso = StringUtils.firstUpper(name);
 			sufijoBoton = StringUtils.firstUpper(name);
 		}
-			
+					
 		for (int i = 0; i < saveEntities.size(); i++){
 			if (saveEntities.get(i).equals(entidad)){
 				saveEntities.remove(i);
@@ -174,7 +174,7 @@ import org.apache.log4j.MDC;
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
 
-	private static Logger log = Logger.getLogger("Paginas");
+	protected static Logger log = Logger.getLogger("Paginas");
 
 ${metodoIndex()}
 
@@ -263,6 +263,18 @@ public class ${controllerName} extends ${controllerGenName} {
 			getters += ControllerUtils.simpleGetter(entity, false);
 		for (EntidadUtils entity: indexEntities)
 			getters += ControllerUtils.simpleGetter(entity, false);
+		return getters;
+	}
+	
+	private String gettersForm(Controller c){
+		List<String> saveContainer = new ArrayList<String>();
+		for (EntidadUtils entity: c.saveEntities)
+			saveContainer.add(entity.variable);
+		String getters = "";
+		for (EntidadUtils entity: saveEntities){
+			if (!saveContainer.contains(entity.variable))
+				getters += ControllerUtils.simpleGetter(entity, false);
+		}
 		return getters;
 	}
 	

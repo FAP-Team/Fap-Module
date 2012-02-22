@@ -26,8 +26,7 @@ public class TablaPaginas_nivel3 extends Model {
 
 	public Integer numero;
 
-	@org.hibernate.annotations.Columns(columns = { @Column(name = "fecha"),
-			@Column(name = "fechaTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fecha"), @Column(name = "fechaTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fecha;
 

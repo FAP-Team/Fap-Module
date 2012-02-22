@@ -31,7 +31,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	}
 	
 	Pagina DocumentosAportacion campo=SolicitudGenerica.aportaciones.actual.documentos{
-		Accion crear redirigir=Aportacion	
+		Accion crear redirigir=Aportacion
 		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
 	

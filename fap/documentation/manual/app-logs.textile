@@ -1,0 +1,23 @@
+h1. Configuración de logs
+
+Para los logs de las aplicaciones se utiliza log4j. La documentación completa de la configuración de la librería está en "http://logging.apache.org/log4j/1.2/manual.html":http://logging.apache.org/log4j/1.2/manual.html.
+
+En este sección se resumen algunas configuraciones que pueden ser útiles:
+
+h2. Separar los ficheros de logs por día
+
+bc.. log4j.appender.Daily=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.Daily.File=logs/filename.log
+log4j.appender.Daily.DatePattern='.'yyyy-MM-dd
+log4j.appender.Daily.append=true
+
+h2. Enviar logs vía email
+
+bc.. log4j.appender.Mail=org.apache.log4j.net.SMTPAppender
+log4j.appender.Mail.BufferSize=10
+log4j.appender.Mail.SMTPHost=smtp_servidor.com
+log4j.appender.Mail.SMTPUsername=tu_usuario
+log4j.appender.Mail.SMTPPassword=tu_password_usuario
+log4j.appender.Mail.From=noreply@tu_servidor.com
+log4j.appender.Mail.To=cuenta_soporte@tu_servidor.com
+log4j.appender.Mail.Subject=Notificación de la aplicación

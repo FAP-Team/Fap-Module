@@ -39,22 +39,60 @@ public class GSolicitante {
 			
 		if(solicitante.titulo != null)
 			titulo = "'${solicitante.titulo}'";
-		else
-			titulo = "play.i18n.Messages.get('fap.tags.persona.grupo.titulo')"
-			
+		else {// No tendrá grupo
+			//titulo = "play.i18n.Messages.get('fap.tags.persona.grupo.titulo')"
+		}	
 		if(solicitante.requerido)
 			requerido = true;
-		
-		fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante())
-		juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante())
-		
-		def out = """
-	#{fap.grupo titulo:${titulo}}
-		#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
-		${fisica}
-		${juridica}
-	#{/fap.grupo}
-"""
+
+		def out = "";
+		if (solicitante.elemento == "SolicitantePersonaFisica") {
+			fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante())
+			if (solicitante.titulo != null) {
+			out = """
+				#{fap.grupo titulo:${titulo}}
+					${fisica}
+				#{/fap.grupo}
+		"""
+			} else {
+				out = """
+				${fisica}
+			"""
+			}
+			return out;
+		} else if (solicitante.elemento == "SolicitantePersonaJuridica") {
+			juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante())
+			if (solicitante.titulo != null) {
+				out = """
+			#{fap.grupo titulo:${titulo}}
+				${juridica}
+			#{/fap.grupo}
+		"""
+			} else {
+				out = """
+					${juridica}
+			"""
+			}
+			return out;
+		} else{
+			fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante())
+			juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante())
+			if (solicitante.titulo != null) {
+				out = """
+			#{fap.grupo titulo:${titulo}}
+				#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
+				${fisica}
+				${juridica}
+			#{/fap.grupo}
+				"""
+			} else {
+				out = """
+			#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
+			${fisica}
+			${juridica}
+			"""
+			}
+		}
 		return out;	
 	}
 	

@@ -2,7 +2,7 @@
 #{fap.field _campo, obj:obj}
 %{ 
 	def id = _id ?: field.id
-	def label = _titulo ?: play.i18n.Messages.get('fap.tags.personajuridica.grupo.titulo')
+	def label = _titulo
 	def requerido = _requerido != null? _requerido : false;
 	def stackDisabled = tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
@@ -12,9 +12,16 @@
 	def siComboValue = _siComboValue	
 }%
 	
-	#{fap.grupo titulo:label, siCombo:siCombo, siComboValue:siComboValue, visible:grupoVisible}
-		#{fap.texto id:id + '_entidad', titulo:play.i18n.Messages.get('fap.tags.personajuridica.entidad'), campo:campo + '.entidad', requerido:requerido, obj:obj /}		
-		#{fap.texto id:id + '_cif', titulo:play.i18n.Messages.get('fap.tags.personajuridica.cif'), campo:campo + '.cif', requerido:requerido, obj:obj /}
-	#{/fap.grupo}
-	
+	#{if label != null}
+		#{fap.grupo titulo:label, siCombo:siCombo, siComboValue:siComboValue, borde:grupoVisible}
+			#{fap.texto id:id + '_entidad', titulo:play.i18n.Messages.get('fap.tags.personajuridica.entidad'), campo:campo + '.entidad', requerido:requerido, obj:obj /}		
+			#{fap.texto id:id + '_cif', titulo:play.i18n.Messages.get('fap.tags.personajuridica.cif'), campo:campo + '.cif', requerido:requerido, obj:obj /}
+		#{/fap.grupo}
+	#{/if}
+	#{else}
+		#{fap.grupo siCombo:siCombo, siComboValue:siComboValue, borde:false}
+			#{fap.texto id:id + '_entidad', titulo:play.i18n.Messages.get('fap.tags.personajuridica.entidad'), campo:campo + '.entidad', requerido:requerido, obj:obj /}		
+			#{fap.texto id:id + '_cif', titulo:play.i18n.Messages.get('fap.tags.personajuridica.cif'), campo:campo + '.cif', requerido:requerido, obj:obj /}
+		#{/fap.grupo}
+	#{/else}
 #{/fap.field}

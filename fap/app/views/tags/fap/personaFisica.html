@@ -2,7 +2,7 @@
 #{fap.field _campo, obj:obj}
 %{ 
 	def id = _id ?: field.id
-	def label = _titulo ?: play.i18n.Messages.get('fap.tags.personafisica.grupo.titulo')
+	def label = _titulo
 	def requerido = _requerido != null? _requerido : false;
 	def stackDisabled = tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
@@ -11,13 +11,22 @@
 	def siCombo = _siCombo
 	def siComboValue = _siComboValue
 }%
-	
-	#{fap.grupo titulo:label, siCombo:siCombo, siComboValue:siComboValue, visible:grupoVisible}
-		#{fap.texto id:id + '_nombre', titulo:play.i18n.Messages.get('fap.tags.personafisica.nombre'), campo:campo + '.nombre', requerido:requerido, obj:obj /}		
-		#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
-		#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}		
-		#{fap.nip id:id + '_nip', titulo:play.i18n.Messages.get('fap.tags.personafisica.nip'), campo:campo + '.nip', requerido:requerido, obj:obj /}
-		
+
+	#{if label != null}
+		#{fap.grupo titulo:label, siCombo:siCombo, siComboValue:siComboValue, borde:grupoVisible}
+			#{fap.texto id:id + '_nombre', titulo:play.i18n.Messages.get('fap.tags.personafisica.nombre'), campo:campo + '.nombre', requerido:requerido, obj:obj /}		
+			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
+			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}		
+			#{fap.nip id:id + '_nip', titulo:play.i18n.Messages.get('fap.tags.personafisica.nip'), campo:campo + '.nip', requerido:requerido, obj:obj /}
+		#{/fap.grupo}
+	#{/if}
+	#{else}
+		#{fap.grupo siCombo:siCombo, siComboValue:siComboValue, borde:false}
+			#{fap.texto id:id + '_nombre', titulo:play.i18n.Messages.get('fap.tags.personafisica.nombre'), campo:campo + '.nombre', requerido:requerido, obj:obj /}		
+			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
+			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}		
+			#{fap.nip id:id + '_nip', titulo:play.i18n.Messages.get('fap.tags.personafisica.nip'), campo:campo + '.nip', requerido:requerido, obj:obj /}
 	#{/fap.grupo}
+	#{/else}
 	
 #{/fap.field}

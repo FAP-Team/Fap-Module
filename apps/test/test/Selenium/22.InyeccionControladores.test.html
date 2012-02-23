@@ -1,0 +1,12 @@
+%{
+	models.Solicitud s = new models.Solicitud()
+	s.save()
+	
+	play.mvc.Controller.session.put("username", "admin");
+	controllers.fap.AgenteController.findAgente();
+}%
+
+#{selenium}
+	open(/Solicitud/paginainject?idSolicitud=s.id)
+	assertTextPresent('Se inyectó correctamente el servicio en el controlador');	
+#{/selenium}

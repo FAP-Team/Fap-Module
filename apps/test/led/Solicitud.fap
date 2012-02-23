@@ -57,6 +57,10 @@ Formulario Solicitud {
 			Enlace "Presentación" pagina=PaginaFirma
 		}
 		
+		Grupo "Anotación Inject"{
+			Enlace "Inject" pagina=PaginaInject
+		}
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 		
@@ -382,4 +386,9 @@ Formulario Solicitud {
 			FirmaSimple firmaSimple titulo="Firma Simple (por ahora no hace nada)" documento=Solicitud.registro.oficial
 		}
 	}
+	
+	Pagina PaginaInject campo=Solicitud {
+		Wiki {"Se inyectó correctamente el servicio en el controlador"}
+	}
+	
 }

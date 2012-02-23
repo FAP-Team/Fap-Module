@@ -75,7 +75,7 @@ Entidad Documento {
 	Lista tipoDocumentosCiudadanos tipoCiudadano transient
 	Lista tipoDocumentosOrganismos tipoOrganismo transient
 	Lista tipoDocumentosOtrasEntidades tipoOtraEntidad transient
-	Lista tipoDocumentosTodos tipo
+	Lista tipoDocumentos tipo
 	String descripcion
 	Boolean clasificado
 	String hash

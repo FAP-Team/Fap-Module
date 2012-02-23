@@ -59,6 +59,11 @@ Lista tipoDocumentosTodos{
 	// dinamicamente a traves del WS.
 }
 
+Lista tipoDocumentos{
+	// Los elementos de esta lista se obtienen
+	// dinamicamente a traves del WS.
+}
+
 Lista obligatoriedadDocumentos{
 	// Los elementos de esta lista se obtienen
 	// dinamicamente a traves del WS.

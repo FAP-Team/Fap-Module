@@ -86,6 +86,7 @@ public class TiposDocumentosClient {
 		try {
 			//Borra los trámites antiguos
 			Fixtures.delete(models.Tramite.class);
+			Fixtures.delete(models.TipoDocumento.class);
 			
 			//Recupera los trámites y los tipos de documentos asociados
 			ListaTramites tramites = procedimientos.consultarTramites(uriProcedimiento);
@@ -196,7 +197,7 @@ public class TiposDocumentosClient {
 				}				
 			}
 		
-			boolean todos = actualizarDocumentosDB(listaTodos, "tipoDocumentosTodos");
+			boolean todos = actualizarDocumentosDB(listaTodos, "tipoDocumentos");
 			boolean ciudadano = actualizarDocumentosDB(listaCiudadanos, "tipoDocumentosCiudadanos"+StringUtils.firstUpper(tramite.getNombre()));
 			boolean organismo = actualizarDocumentosDB(listaOrganismos, "tipoDocumentosOrganismos"+StringUtils.firstUpper(tramite.getNombre()));
 			boolean otrasEntidades = actualizarDocumentosDB(listaOtrasEntidades, "tipoDocumentosOtrasEntidades"+StringUtils.firstUpper(tramite.getNombre()));

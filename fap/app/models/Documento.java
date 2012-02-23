@@ -45,7 +45,7 @@ public class Documento extends Model {
 	public String tipoOtraEntidad;
 	
 	
-	@ValueFromTable("tipoDocumentosTodos")
+	@ValueFromTable("tipoDocumentos")
 	public String tipo;
 	
 	
@@ -98,8 +98,8 @@ public class Documento extends Model {
 	public void prepararParaSubir(){
 		//Si no es de tipo otros, pone la despcrión igual al tipo
 		//El AED da error con descripción null
-		if(!isOtros()){
-			descripcion = TableKeyValue.getValue("tipoDocumentosTodos", tipo);
+		if(!isOtros() && (descripcion.trim().equals(""))){
+			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}
 	}
 	

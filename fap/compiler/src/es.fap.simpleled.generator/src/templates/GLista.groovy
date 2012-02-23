@@ -84,7 +84,7 @@ public class GLista {
 		
 			FileUtils.overwrite(FileUtils.getRoute('ENUM_FAP'), clase + ".java", contenido);
 		} else{ // Si la lista es de la Aplicacion
-				List listas = ModelUtils.getVisibleNode(LedPackage.Literals.LISTA, lista.name, LedUtils.resource);
+				List listas = ModelUtils.getVisibleNodes(LedPackage.Literals.LISTA, lista.name, LedUtils.resource);
 				List listaAll = [];
 				List insertar = lista.elementos;
 				if (listas.size > 1){

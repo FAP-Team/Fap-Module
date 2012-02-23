@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +41,7 @@ public class TableRenderResponse<T> {
             TableRecord<T> record = new TableRecord<T>();
             result.add(record);
             record.objeto = row;
+            play.Logger.info("Objeto: "+row);
             record.permisoLeer = true;
             record.permisoEditar = true;
             record.permisoBorrar = true;
@@ -62,7 +64,7 @@ public class TableRenderResponse<T> {
         includeParams[fields.length + 6] = "obj.mensajes.ok";
         includeParams[fields.length + 7] = "obj.mensajes.info";
 
-        Map<String, List<String>> valueFromTable = getValueFromTableField();
+        Map<String, List<String>> valueFromTable = getValueFromTableField(fieldsSet);
         JSONSerializer flex = new JSONSerializer().include(includeParams).transform(
                 new serializer.DateTimeTransformer(), org.joda.time.DateTime.class);
 
@@ -79,30 +81,34 @@ public class TableRenderResponse<T> {
         String serialize = flex.serialize(this);
         return serialize;
     }
-
-    public HashMap<String, List<String>> getValueFromTableField() {
-        HashMap<String, List<String>> valueFromTable = new HashMap<String, List<String>>();
+    
+    public HashMap<String, List<String>> getValueFromTableField(Set<String> fieldsSet) {
+    	HashMap<String, List<String>> valueFromTable = new HashMap<String, List<String>>();
+    	
         if ((rows != null) && (!rows.isEmpty())) {
             T row = rows.get(0).objeto;
-            java.util.List<String> fields = ReflectionUtils.getFieldsNamesForClass(row.getClass());
-            for (String field : fields) {
-                Field f = null;
-                try {
-                    f = row.getClass().getField(field);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (f != null) {
-                    ValueFromTable annotation = f.getAnnotation(ValueFromTable.class);
-                    if (annotation != null) {
-                        if (!valueFromTable.containsKey(annotation.value()))
-                            valueFromTable.put(annotation.value(), new ArrayList<String>());
-                        valueFromTable.get(annotation.value()).add(field);
-                    }
-                }
+            
+            Iterator it = fieldsSet.iterator();
+            while(it.hasNext()) {
+            	String _it = (String) it.next();
+            
+            	Field f = null;
+            	try {
+            		f = ReflectionUtils.getFieldRecursivelyFromClass(row.getClass(), _it);
+            	} catch (Exception e) {
+            		e.printStackTrace();
+            	}
+            	if (f != null) {
+            		ValueFromTable annotation = f.getAnnotation(ValueFromTable.class);
+            		if (annotation != null) {
+            			if (!valueFromTable.containsKey(annotation.value()))
+            				valueFromTable.put(annotation.value(), new ArrayList<String>());
+            			valueFromTable.get(annotation.value()).add(_it);
+            		}
+            	}
             }
         }
-        return valueFromTable;
+    	return valueFromTable;
     }
 
     public class Obj {

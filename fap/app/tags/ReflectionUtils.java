@@ -105,7 +105,7 @@ public class ReflectionUtils {
 		}
 		return names;
 	}
-
+	
 	/**
 	 * Dada una clase, y un acceso a parametros deveuelve el Field 
 	 * Ejemplo:
@@ -123,6 +123,42 @@ public class ReflectionUtils {
 		
 		if (pieces.length > 1) {
 			for (int i = 1; i < pieces.length; i++) {
+				try {
+					String campoActual = pieces[i];
+					Field f = clazzActual.getField(campoActual);
+					if (i == (pieces.length - 1)) {
+						return f;
+					} else {
+						clazzActual = f.getType();
+					}
+				} catch (Exception e) {
+					//e.printStackTrace();
+				}
+			}
+		} else {
+			// TODO posible problema, cuando se renderice un campo simple
+			return null;
+		}
+		return null;
+	}
+	
+	/**
+	 * Dada una clase, y un acceso a parametros deveuelve el Field 
+	 * Ejemplo:
+	 *    getFieldRecusivelyFromClass(Solicitud.class, "solicitante.fisica.nombre")
+	 * 
+	 * @param clazz
+	 * @param field
+	 * @return
+	 */
+	public static Field getFieldRecursivelyFromClass(Class clazz, String field) {
+		String[] pieces = field.split("\\.");
+		Class clazzActual = clazz;
+		
+		if(clazz == null) throw new IllegalArgumentException("clazz no puede ser nulo");
+		
+		if (pieces.length > 0) {
+			for (int i = 0; i < pieces.length; i++) {
 				try {
 					String campoActual = pieces[i];
 					Field f = clazzActual.getField(campoActual);

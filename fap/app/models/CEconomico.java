@@ -53,6 +53,16 @@ public class CEconomico extends Model {
 
 	// === MANUAL REGION START ===
 
+	public CEconomico(CEconomico cEconomico) {
+		this.tipo = new TipoCEconomico(cEconomico.tipo);
+		this.valores = new ArrayList<ValoresCEconomico>();
+		for (ValoresCEconomico valoresCEconomico : cEconomico.valores) {
+			this.valores.add(new ValoresCEconomico(valoresCEconomico));
+		}
+		this.comentariosAdministracion = cEconomico.comentariosAdministracion;
+		this.comentariosSolicitante = cEconomico.comentariosSolicitante;
+	}
+
 	// === MANUAL REGION END ===
 
 }

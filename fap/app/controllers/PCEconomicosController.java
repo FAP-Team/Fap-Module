@@ -70,8 +70,7 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 		}
 		int duracion = tipoEvaluacion.duracion;
 		log.info("Visitando página: " + "fap/PCEconomicos/PCEconomicos.html");		
-		renderTemplate("fap/PCEconomicos/PCEconomicos.html", accion,
-				idSolicitud, solicitud, duracion);
+		renderTemplate("fap/PCEconomicos/PCEconomicos.html", accion, idSolicitud, solicitud, duracion);
 	}
 
 	public static void tablatablaCEconomicos(Long idSolicitud) {
@@ -88,7 +87,7 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 		response.mensajes.fatal = Messages.messages(MessageType.FATAL);
 		response.mensajes.ok = Messages.messages(MessageType.OK);
 		response.mensajes.info = Messages.messages(MessageType.INFO);
-		renderJSON(response.toJSON("tipo.nombre", "valores.valorEstimado", "id"));
+		renderJSON(response.toJSON("tipo.nombre", "valores.valorSolicitado", "id"));
 	}
 
 	@Util

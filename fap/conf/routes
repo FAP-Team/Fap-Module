@@ -54,6 +54,10 @@ POST /popups.popupceconomicoscontroller/editar popups.PopupCEConomicosController
 
 
 # === FAPGENERATED ===
+GET /Administracion/activarbaremacion ActivarBaremacionController.index
+
+POST /Administracion/activarbaremacion/activarFormBaremacion ActivarBaremacionController.activarFormBaremacion
+
 GET /Administracion/aed AedController.index
 
 POST /Administracion/aed/actualizarTramites AedController.actualizarTramites

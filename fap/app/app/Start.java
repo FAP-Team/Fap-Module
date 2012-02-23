@@ -1,5 +1,6 @@
 package app;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -21,6 +22,7 @@ import play.test.Fixtures;
 import play.vfs.VirtualFile;
 import properties.FapProperties;
 import properties.Properties;
+import services.BaremacionService;
 
 @OnApplicationStart
 public class Start extends Job {
@@ -70,7 +72,15 @@ public class Start extends Job {
 				solicitud.save();
 			}
 		}
-		
+		//Inicializa o recupera el tipo de evaluacion
+		TipoEvaluacion tipoEvaluacion = null;
+		if((TipoEvaluacion.count() == 0) && (new File("conf/initial-data/tipoEvaluacion.json").exists())){
+			tipoEvaluacion = BaremacionService.loadTipoEvaluacionFromJson("/conf/initial-data/tipoEvaluacion.json");
+			tipoEvaluacion.save();
+			Logger.info("Tipo de Baremación cargada correctamente desde fichero");
+		}else if (!new File("conf/initial-data/tipoEvaluacion.json").exists()){
+			Logger.info("No se puede leer el fichero que contiene los parámetros de la Evaluacion (/conf/initial-data/tipoEvaluacion.json)");
+		} 
 	}
 	
 	/**

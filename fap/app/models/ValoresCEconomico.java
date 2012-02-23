@@ -35,6 +35,18 @@ public class ValoresCEconomico extends Model {
 	}
 
 	// === MANUAL REGION START ===
+
+	public ValoresCEconomico() {
+		initValues();
+	}
+
+	public ValoresCEconomico(ValoresCEconomico valoresCEconomico) {
+		this.valorConcedido = valoresCEconomico.valorConcedido;
+		this.valorEstimado = valoresCEconomico.valorEstimado;
+		this.valorPropuesto = valoresCEconomico.valorPropuesto;
+		this.valorSolicitado = valoresCEconomico.valorSolicitado;
+	}
+
 	public void initValues() {
 		valorSolicitado = 0.0;
 		valorEstimado = 0.0;

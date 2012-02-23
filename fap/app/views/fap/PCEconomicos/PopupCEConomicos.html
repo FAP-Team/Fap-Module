@@ -27,9 +27,9 @@
 		def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
 		def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
 		def anioLabel = "Año "+(i+1);
-		def valorEstimado=newValue(paramName + ".valorEstimado", anioLabel, cEconomico.valores[i].valorEstimado);
+		def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
 	%}
-	#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
+	#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
 #{/list}		
 		
 #{/fap.popup}

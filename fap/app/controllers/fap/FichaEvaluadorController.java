@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import messages.Messages;
+import messages.Messages.MessageType;
 import models.CEconomico;
 import models.Criterio;
 import models.CriterioListaValores;
@@ -27,6 +28,7 @@ import play.modules.pdf.PDF.Options;
 import play.mvc.Controller;
 import play.mvc.Finally;
 import play.mvc.Router;
+import play.mvc.Util;
 import play.mvc.Router.ActionDefinition;
 import play.mvc.Scope.Flash;
 import play.mvc.Scope.Params;
@@ -35,8 +37,9 @@ import properties.FapProperties;
 import reports.Report;
 import security.Secure;
 import services.BaremacionService;
+import tables.TableRecord;
 
-@With({SecureController.class, AgenteController.class})
+@With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class FichaEvaluadorController extends Controller {
 	
 	@Inject
@@ -48,12 +51,15 @@ public class FichaEvaluadorController extends Controller {
 	}
 	
 	public static void index(long idEvaluacion){
+		
 		if(secure.checkGrafico("evaluacion", "visible", "leer", null, null)){
+			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 			notFoundIfNull(evaluacion);
 			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
 			List<Documento> documentos = evaluacion.getDocumentosAccesibles();
-			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos, expedienteUrl);
+			int duracion = tipoEvaluacion.duracion-1;
+			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos, expedienteUrl, duracion, idEvaluacion);
 		}else{
 			forbidden();
 		}
@@ -70,13 +76,13 @@ public class FichaEvaluadorController extends Controller {
 		return expedienteUrl;
 	}
 	
-	public static void generaPDF(Long idEvaluacion){
+	public static void generaPDF(Long idEvaluacion, Integer duracion){
 		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 		if(evaluacion == null){
 			notFound("Evaluación no encontrada");
 		}
 		try {
-			new Report("app/views/reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion);
+			new Report("app/views/reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, duracion);
 		} catch (Exception e) {
 			play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());
 			Messages.error("Error al generar el borrador del documento");
@@ -135,27 +141,6 @@ public class FichaEvaluadorController extends Controller {
 					criterio.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
 				}
 			}
-	
-			for(CEconomico ceconomico : evaluacion.ceconomicos){
-				String param = "ceconomico[" + ceconomico.id + "]";
-
-				String key = param + ".valorPropuesto";
-				Double valor = params.get(key, Double.class);
-				if(actionEnd){
-					validation.required(key, valor);
-				}
-				
-//				ceconomico.valorPropuesto = valor;
-	
-				//Comentarios
-				if(ceconomico.tipo.comentariosAdministracion){				
-					ceconomico.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
-				}
-				
-				if(ceconomico.tipo.comentariosSolicitante){
-					ceconomico.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
-				}			
-			}
 			BaremacionService.calcularTotales(evaluacion);
 			evaluacion.save();
 			if(validation.hasErrors()){
@@ -170,7 +155,7 @@ public class FichaEvaluadorController extends Controller {
 					ConsultarEvaluacionesController.index();
 				}
 				
-				if(actionSave){
+				if(actionSave && !validation.hasErrors()){
 					Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " se guardó correctamente");
 				}
 				
@@ -184,23 +169,69 @@ public class FichaEvaluadorController extends Controller {
 	
 	
 	private static void flash(Evaluacion evaluacion){
-		Messages.setFlash("evaluacion.id", evaluacion.id);
-		Messages.setFlash("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion);
-		Messages.setFlash("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante);
+		Messages.setFlash("evaluacion.id", params.get("evaluacion.id", String.class));
+		Messages.setFlash("evaluacion.comentariosAdministracion", params.get("evaluacion.comentariosAdministracion", String.class));
+		Messages.setFlash("evaluacion.comentariosSolicitante", params.get("evaluacion.comentariosSolicitante", String.class));
 		
 		for(Criterio c : evaluacion.criterios){
 			String param = "criterio[" + c.id + "]";
-			Messages.setFlash(param + ".valor", c.valor);
-			Messages.setFlash(param + ".comentariosAdministracion", c.comentariosAdministracion);
-			Messages.setFlash(param + ".comentariosSolicitante", c.comentariosSolicitante);
+			Messages.setFlash(param + ".valor", params.get(param + ".valor", String.class));
+			Messages.setFlash(param + ".comentariosAdministracion", params.get(param + ".comentariosAdministracion", String.class));
+			Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
 		}
-		
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 		for(CEconomico ce : evaluacion.ceconomicos){
 			String param = "ceconomico[" + ce.id + "]";
-//			Messages.setFlash(param + ".valorEstimado", ce.valorEstimado);
-			Messages.setFlash(param + ".comentariosAdministracion", ce.comentariosAdministracion);
-			Messages.setFlash(param + ".comentariosSolicitante", ce.comentariosSolicitante);
+			for (int i = 0; i < tipoEvaluacion.duracion; i++){
+				Messages.setFlash(param + ".valores["+i+"].valorEstimado", params.get(param + ".valores["+i+"].valorEstimado", String.class));
+				Messages.setFlash(param + ".valores["+i+"].valorSolicitado", params.get(param + ".valores["+i+"].valorSolicitado", String.class));
+				Messages.setFlash(param + ".valores["+i+"].valorPropuesto", params.get(param + ".valores["+i+"].valorPropuesto", String.class));
+				Messages.setFlash(param + ".valores["+i+"].valorConcedido", params.get(param + ".valores["+i+"].valorConcedido", String.class));
+			}
+			Messages.setFlash(param + ".comentariosAdministracion", params.get(param + ".comentariosAdministracion", String.class));
+			Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
 		}
+	}
+	
+	public static void tablatablaCEconomicos(Long idEvaluacion) {
+		
+		java.util.List<CEconomico> rows = CEconomico
+				.find("select cEconomico from Evaluacion evaluacion join evaluacion.ceconomicos cEconomico where evaluacion.id=?",
+						idEvaluacion).fetch();
+		
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+
+		List<CEconomico> rowsFiltered = rows; //Tabla sin permisos, no filtra
+		List <Map<String, String>> columnasCEconomicos = new ArrayList <Map <String, String>>();
+		for (CEconomico cEconomico : rowsFiltered) {
+			 Map<String, String> columna = new HashMap<String, String>();
+			 columna.put("id", cEconomico.id.toString());
+			 for (int i=0; i<tipoEvaluacion.duracion; i++){
+				columna.put("valorConcedido"+i, cEconomico.valores.get(i).valorConcedido.toString());
+				columna.put("valorSolicitado"+i, cEconomico.valores.get(i).valorSolicitado.toString());
+				columna.put("valorPropuesto"+i, cEconomico.valores.get(i).valorPropuesto.toString());
+				columna.put("valorEstimado"+i, cEconomico.valores.get(i).valorEstimado.toString());
+			 }
+		  	 columna.put("nombre", cEconomico.tipo.nombre);
+		  	 columnasCEconomicos.add(columna);
+		}
+		renderJSON(columnasCEconomicos);
+	}
+
+	@Util
+	public static List<TableRecord<CEconomico>> tablatablaCEconomicosPermisos(List<CEconomico> rowsFiltered) {
+		List<TableRecord<CEconomico>> records = new ArrayList<TableRecord<CEconomico>>();
+		Map<String, Object> vars = new HashMap<String, Object>();
+		for (CEconomico cEconomico : rowsFiltered) {
+			TableRecord<CEconomico> record = new TableRecord<CEconomico>();
+			records.add(record);
+			record.objeto = cEconomico;
+			vars.put("cEconomico", cEconomico);
+			record.permisoLeer = false;
+			record.permisoEditar = true;
+			record.permisoBorrar = false;
+		}
+		return records;
 	}
 		
 }

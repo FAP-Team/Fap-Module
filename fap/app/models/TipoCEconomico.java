@@ -50,6 +50,16 @@ public class TipoCEconomico extends Model {
 
 	// === MANUAL REGION START ===
 
+	public TipoCEconomico(TipoCEconomico tipoCEconomico) {
+		this.clase = tipoCEconomico.clase;
+		this.comentariosAdministracion = tipoCEconomico.comentariosAdministracion;
+		this.comentariosSolicitante = tipoCEconomico.comentariosSolicitante;
+		this.descripcion = tipoCEconomico.clase;
+		this.instrucciones = tipoCEconomico.instrucciones;
+		this.jerarquia = tipoCEconomico.jerarquia;
+		this.nombre = tipoCEconomico.nombre;
+	}
+
 	// === MANUAL REGION END ===
 
 }

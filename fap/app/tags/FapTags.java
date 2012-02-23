@@ -423,6 +423,7 @@ R
 			params.put("sortable", true);
 			
 			
+			
 			if(expandir){
 				params.put("flex", true);
 			}else{
@@ -431,7 +432,6 @@ R
 			
 			if(rendererFunctionContent != null)
 				params.put("renderer", "function(value, meta, record){" + rendererFunctionContent + " }");
-			
 			Set<String> camposTabla = (Set<String>)TagContext.parent("fap.tabla").data.get("campos");
 			camposTabla.addAll(campos);
 			List<String> columnasTabla = (List<String>)TagContext.parent("fap.tabla").data.get("columnas");

@@ -7,6 +7,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Usuarios" pagina=Usuarios
 			Enlace "Convocatoria" pagina=Convocatoria
 			Enlace "Aed" pagina=Aed
+			Enlace "Activar Baremación" pagina=ActivarBaremacion
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Emails" pagina=Emails
@@ -19,6 +20,14 @@ Formulario Administracion permiso=administrador{
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion="fap.SecureController.logout"
+    }
+    
+    Pagina ActivarBaremacion{
+    	Wiki {"Para activar la baremación es necesario pulsar el siguiente botón, que generará todos los datos oportunos, y activando las secciones de la aplicación destinadas a la Baremación"}
+    	Wiki {"*No olvides que una vez activada la Baremación, no la debes volver a activar por el bien de la integridad de la base de datos*"}
+    	Form activarFormBaremacion{
+    		Boton activarBaremacionBoton titulo="Activar Baremación"
+    	}
     }
 	
 	Pagina Usuarios {

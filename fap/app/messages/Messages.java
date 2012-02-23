@@ -129,7 +129,7 @@ public class Messages {
     }
     
     public static Object flashOrValue(String name, Object value){
-	 	if(containsFlash(name)){
+    	if(containsFlash(name)){
 			return getFlash(name);
 		}else{
 			return value;

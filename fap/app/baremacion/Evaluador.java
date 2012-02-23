@@ -6,6 +6,7 @@ import java.util.List;
 import models.CEconomico;
 import models.Criterio;
 import models.Evaluacion;
+import models.TipoEvaluacion;
 
 public class Evaluador {
 
@@ -16,15 +17,24 @@ public class Evaluador {
 	public static <T> void evalDefault(Evaluacion evaluacion, List<T> childs, String tipo){
 		if (tipo.equals("Criterios"))
 			evaluacion.totalCriterios = sumatorio("valor", childs);
-		else if(tipo.equals("CEconomicos"))
-			evaluacion.inversionTotalAprobada = sumatorio("valorPropuesto", childs);
+		else if(tipo.equals("CEconomicos")){
+			double sumaParcial = 0.0;
+			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+			for (int i = 0; i < tipoEvaluacion.duracion; i++){
+				sumaParcial += sumatorio("valores["+i+"].valorPropuesto", childs);
+			}
+			evaluacion.inversionTotalAprobada = sumaParcial;
+		}
 	}
 
 	public static void evalDefault(CEconomico ceconomico, List<CEconomico> childs) {
-//		ceconomico.valorConcedido = sumatorio("valorConcedido", childs);
-//		ceconomico.valorEstimado = sumatorio("valorEstimado", childs);
-//		ceconomico.valorPropuesto = sumatorio("valorPropuesto", childs);
-//		ceconomico.valorSolicitado = sumatorio("valorSolicitado", childs);
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+		for (int i = 0; i < tipoEvaluacion.duracion; i++){
+			ceconomico.valores.get(i).valorPropuesto = sumatorio("valores["+i+"].valorPropuesto", childs);
+			ceconomico.valores.get(i).valorConcedido = sumatorio("valores["+i+"].valorConcedido", childs);
+			ceconomico.valores.get(i).valorEstimado = sumatorio("valores["+i+"].valorEstimado", childs);
+			ceconomico.valores.get(i).valorSolicitado = sumatorio("valores["+i+"].valorSolicitado", childs);
+		}
 	}
 
 	static Double sumatorio(String fieldName, List<?> list) {

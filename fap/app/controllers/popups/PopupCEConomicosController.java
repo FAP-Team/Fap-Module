@@ -8,7 +8,10 @@ import javax.inject.Inject;
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.CEconomico;
+import models.Criterio;
+import models.Evaluacion;
 import models.SolicitudGenerica;
+import models.TipoEvaluacion;
 
 import org.apache.log4j.Logger;
 
@@ -32,6 +35,11 @@ public class PopupCEConomicosController extends Controller{
 	protected static Secure secure;
 	
 	private static Logger log = Logger.getLogger("Paginas");
+	
+	@Finally(only="index")
+	public static void end(){
+		Messages.deleteFlash();
+	}
 
 	public static void index(String accion, Long idSolicitud, Long idCEconomico, Integer duracion) {
 		if (accion == null)
@@ -50,7 +58,7 @@ public class PopupCEConomicosController extends Controller{
 	}
 
 	public static void editar(Long idSolicitud, Long idCEconomico, CEconomico cEconomico, Integer duracion) {
-		
+
 		checkAuthenticity();
 		if (!permiso("editar")) {
 			Messages.error("No tiene suficientes privilegios para acceder a esta solicitud");
@@ -75,6 +83,7 @@ public class PopupCEConomicosController extends Controller{
 			dbCEconomico.save();
 
 		} else {
+			flash();
 			log.info("Acción Editar de página: "
 					+ "fap/PCEconomico/PopupCEConomicos.html"
 					+ " , intentada sin éxito (Problemas de Validación)");
@@ -183,6 +192,20 @@ public class PopupCEConomicosController extends Controller{
 	@Before
 	static void beforeMethod() {
 		renderArgs.put("controllerName", "PopupCEConomicosController");
+	}
+	
+	@Util
+	private static void flash(){
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+		String param = "cEconomico";
+		for (int i = 0; i < tipoEvaluacion.duracion; i++){
+			Messages.setFlash(param + ".valores["+i+"].valorEstimado", params.get(param + ".valores["+i+"].valorEstimado", String.class));
+			Messages.setFlash(param + ".valores["+i+"].valorSolicitado", params.get(param + ".valores["+i+"].valorSolicitado", String.class));
+			Messages.setFlash(param + ".valores["+i+"].valorPropuesto", params.get(param + ".valores["+i+"].valorPropuesto", String.class));
+			Messages.setFlash(param + ".valores["+i+"].valorConcedido", params.get(param + ".valores["+i+"].valorConcedido", String.class));
+		}
+		Messages.setFlash(param + ".comentariosAdministracion", params.get(param + ".comentariosAdministracion", String.class));
+		Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
 	}
 }
 		

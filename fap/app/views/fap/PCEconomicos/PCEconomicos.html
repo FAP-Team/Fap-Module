@@ -20,7 +20,7 @@
 }
 	
 #{fap.tabla 
-     campo:'Solicitud.ceconomicos', 
+	 campo:'Solicitud.ceconomicos', 
      id:'tablaCEconomicos', 
      idEntidad:'_idCEconomico_', 
      popupEditar:'PopupCEConomicos', 
@@ -34,7 +34,7 @@
 	
 	#{list items:0..d, as:'i'}
 		%{	
-	  		String aux = "valores[${i}].valorEstimado";
+	  		String aux = "valores[${i}].valorSolicitado";
 	  		String label = "Año "+(i+1);
 		%}
 		#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true /}

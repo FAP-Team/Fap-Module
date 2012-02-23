@@ -1,0 +1,36 @@
+
+#{fap.popup 
+     accion:accion, 
+     popup:'PopupCEConomicosEvaluador', 
+     titulo:'Concepto económico', 
+     urlCrear:play.mvc.Router.reverse('popups.PopupCEConomicosEvaluadorController.crear' , ['idEvaluacion':evaluacion?.id, 'idCEconomico':cEconomico?.id]),
+     urlBorrar:play.mvc.Router.reverse('popups.PopupCEConomicosEvaluadorController.borrar' , ['idEvaluacion':evaluacion?.id]), 
+     urlEditar:play.mvc.Router.reverse('popups.PopupCEConomicosEvaluadorController.editar' , ['idEvaluacion':evaluacion?.id, 'idCEconomico':cEconomico?.id, 'duracion':duracion])
+}
+	
+<div class="wiki ">
+	<p>
+		<b>${cEconomico.tipo.nombre}</b>
+		<br/>
+		${cEconomico.tipo.descripcion}
+		<br/>		
+	</p>
+</div>
+	#{list items:0..duracion, as:'anio'}
+		<b>Año ${anio}</b>
+		%{
+			def paramName="cEconomico.valores[${anio}]";
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+			def valorSolicitado= newValue(paramName + ".valorSolicitado", "Valor Solicitado", cEconomico.valores[anio].valorSolicitado);
+			def valorPropuesto = newValue(paramName + ".valorPropuesto", "Valor Propuesto", cEconomico.valores[anio].valorPropuesto);
+			def valorEstimado = newValue(paramName + ".valorEstimado", "Valor Estimado", cEconomico.valores[anio].valorEstimado);
+			def valorConcedido = newValue(paramName + ".valorConcedido", "Valor Concedido", cEconomico.valores[anio].valorConcedido);
+		%}
+		#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
+		#{simple.text name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error /}
+		#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
+		#{simple.text name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value, error:valorConcedido.error /}		
+	#{/list}
+#{/fap.popup}
+		

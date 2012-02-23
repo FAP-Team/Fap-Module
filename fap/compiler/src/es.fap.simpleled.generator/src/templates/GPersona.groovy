@@ -37,8 +37,6 @@ public class GPersona {
 			
 		if(persona.titulo != null)
 			titulo = "'${persona.titulo}'";
-		else
-			titulo = "play.i18n.Messages.get('fap.tags.persona.grupo.titulo')"
 			
 		if(persona.requerido)
 			requerido = true;
@@ -47,14 +45,22 @@ public class GPersona {
 		
 		juridica = crearPersonaJuridica(combo, persona.permiso)
 		
-		def out = """
+		def out;
+		if (persona.titulo != null) {
+			out = """
 	#{fap.grupo titulo:${titulo}}
 		#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
 		${fisica}
 		${juridica}
 	#{/fap.grupo}
 """
-		
+		} else {
+			out = """
+		#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
+		${fisica}
+		${juridica}
+		"""
+		}
 		return out;	
 	}
 	

@@ -1,19 +1,25 @@
 %{
 	// Obtenemos al ultima solicitud, sobre la que trabajamos
-	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
-	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
 	
-	play.mvc.Controller.session.put("username", "admin");
-	controllers.fap.AgenteController.findAgente();
+	models.Solicitud solicitud = new models.Solicitud()
+	solicitud.save()
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest")
+	
+	play.mvc.Controller.session.put("username", "admin")
+	controllers.fap.AgenteController.findAgente()
+	controllers.fap.AgenteController.getAgente().cambiarRolActivo('admin')
 }%
 
 #{selenium}
 
-	open(/Solicitud/paginacombosdependientes?idSolicitud=${s.id})
+	open(/Solicitud/paginacombosdependientes?idSolicitud=${solicitud.id})
 	waitForPageToLoad()
+	
 	select('id=paises', 'label=España')
+
 	waitForElementPresent(//option[text()='Galicia'])
 	select('id=comunidades', 'label=Galicia')
+	
 	waitForElementPresent(//option[text()='La Coruña'])
 	select('id=provincias', 'label=La Coruña')
 	

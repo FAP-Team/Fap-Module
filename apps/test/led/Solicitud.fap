@@ -180,6 +180,11 @@ Formulario Solicitud {
  		Grupo titulo="Grupo 1: Mostrar Si Combo" mostrarSiCombo comboMostrarSi = "a"{
  			Wiki {"El combo tiene un valor seleccionado igual a 'A'"}
  		}
+ 		
+ 		Grupo titulo="Grupo 1: Mostrar Si Combo" mostrarSiCombo comboMostrarSi != "a" {
+ 			Wiki {"El combo tiene un valor distinto a 'A'"}
+ 		}
+ 		
 	}
 	
 	Pagina Paginas_Combo_niveles campo=PaginasTab{

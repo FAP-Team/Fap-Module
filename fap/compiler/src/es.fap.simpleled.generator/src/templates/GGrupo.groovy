@@ -26,7 +26,9 @@ public class GGrupo {
 		
 		if(grupo.siCombo != null){
 			params.putStr("siCombo", grupo.siCombo.name) 
-			params.put("siComboValue", ListUtils.list2GroovyListString(grupo.siComboValues.values))	
+			params.put("siComboValue", ListUtils.list2GroovyListString(grupo.siComboValues.values))
+            if(grupo.signoSiCombo.equals("!="))
+                params.put("reverse", true);	
 		}
 		
 		if(grupo.siCheck != null){
@@ -37,7 +39,9 @@ public class GGrupo {
 		if(grupo.campo != null){
 			def valores = ListUtils.list2GroovyListString(grupo.siCampoValues.values);
 			CampoUtils campo = CampoUtils.create(grupo.campo);
-			params.put("mostrarSi",  "${valores}.contains(${campo.firstLower()})")	
+			params.put("mostrarSi",  "${valores}.contains(${campo.firstLower()})")
+            if(grupo.signoSiCampo.equals("!="))
+                params.put("reverse", true);
 		}
 
 		if(grupo.siExpresion != null){

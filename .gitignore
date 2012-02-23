@@ -88,6 +88,11 @@ apps/test/test-result
 
 # Generated sources
 *Gen.java
+fap/app/enumerado/fap/gen
+apps/*/app/enumerado
+
+apps/*/dist
+apps/*/gestorDocumental
 
 # Configuración de platino
 apps/test/conf/platino

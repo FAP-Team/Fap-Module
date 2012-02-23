@@ -13,7 +13,7 @@ class StringUtils {
 	}
 	
 	public static String noBlank(String string){
-		return string.replaceAll("\\s+", "-");
+		return string.replaceAll("\\s+", "_");
 	}
 	
 	public static String id(String string){

@@ -1,5 +1,7 @@
 package templates
 
+import org.eclipse.emf.common.util.EList;
+
 import generator.utils.FileUtils;
 import generator.utils.StringUtils;
 import generator.utils.LedUtils;
@@ -16,10 +18,7 @@ public class GLista {
 		g.lista = lista;
 		g.generateFile();
 		if (lista.enumerado){
-		   if (Start.generatingModule)
-		      g.generateEnum(true);
-		   else
-		      g.generateEnum(false);
+		      g.generateEnum();
 		}
 	}
 	
@@ -42,124 +41,132 @@ public class GLista {
 		FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + ".yaml", contenido);
 	}
 	
-	// Comprueba en una Lista de ElementoLista, que no este un determinado elemento ya introducido
-	private Boolean findElementoLista (ElementoLista el, List Lista){
-		def key1 = el.key ? el.key.getFirst() : StringUtils.id(el.value);
-		Boolean ret=false;
-		Lista.each{
-			def key2 = it.key ? it.key.getFirst() : StringUtils.id(it.value);
-			if (key1 == key2){
-				ret = true;
-			}
-		}
-		return ret;
-	}
-	
-	
-	// Para generar los ficheros .java con los enumerados
-	// tipo = true: si esta generando las listas de FAP, false: generando la listas de la aplicacion
-	public String generateEnum(boolean tipo){
-		String contenido = "";
-		String clase=lista.name.charAt(0).toUpperCase();
-		for (int i=1; i<lista.name.length(); i++){
-			clase+=lista.name.charAt(i);
-		}
-		clase+="Enum";
-		Boolean existenElementos=false;
-		String key, claveEnum;
-		if (tipo){ // Si es lista FAP, lo creo en un directorio distinto y con marcadores comentados para propiciar el añadir despues si la sobreescribimos con una lista de aplicacion
-			contenido+="package enumerado.fap.gen;\n\npublic enum ${clase}{\n\n";
-			int cont=1;
-			for(ElementoLista el : lista.elementos){
-				key = el.key ? el.key.getFirst() : StringUtils.id(el.value);
-				for (String rest : el.key.getResto()) {
-					key += "."+rest;
-				}
-				claveEnum = generateClaveEnum(key);
-				if (cont != lista.elementos.size){
-					contenido+="\t${claveEnum}(\"${el.value}\"),\n";
-					cont++;
-				} else{
-					contenido+="\t${claveEnum}(\"${el.value}\");\n";
-					cont=0;
-				}
-				existenElementos=true;
-			
-			}
-			if (!existenElementos){
-				return "";
-			}
-			contenido+="\n\tprivate String valor;\n\n\tprivate ${clase}(String valor){\n\t\tthis.valor = valor;\n\t}\n\n\t@Override\n\tpublic String toString() {\n\t\treturn this.valor;\n\t}\n}";
-		
-			FileUtils.overwrite(FileUtils.getRoute('ENUM_FAP'), clase + ".java", contenido);
+        
+    /**
+     * Genera el enum a partir de la definición de la lista
+     * 
+     * En caso de que se esté generando en la aplicación y exista una lista
+     * en el módulo con el mismo nombre, se mezclan las dos listas, teniendo
+     * más prioridad la definida por el usuario.
+     */
+    public void generateEnum(){
+        if(lista.elementos.size() == 0) return;
+        
+        String ppackage;
+        String route;
+        String elementos;
+		if (Start.generatingModule){ // Si es lista FAP, lo creo en un directorio distinto y con marcadores comentados para propiciar el añadir despues si la sobreescribimos con una lista de aplicacion
+            ppackage = "enumerado.fap.gen";
+            route = FileUtils.getRoute('ENUM_FAP');
+            elementos = getEnumElementsDefinition(lista.elementos);
 		} else{ // Si la lista es de la Aplicacion
-				List listas = ModelUtils.getVisibleNode(LedPackage.Literals.LISTA, lista.name, LedUtils.resource);
-				List listaAll = [];
-				List insertar = lista.elementos;
-				if (listas.size > 1){
-					listas.each{
-						for(ElementoLista el : it.elementos){
-							listaAll.add(el);
-						}
-					}
-					for (ElementoLista el: listaAll){
-						if (findElementoLista(el, insertar) == false){
-							insertar.add(el);
-						}
-					}
-				}
-				contenido+="package enumerado.gen;\n\npublic enum ${clase}{\n\n";
-				int cont=1;
-				for(ElementoLista el : insertar){
-					key = el.key ? el.key.getFirst() : StringUtils.id(el.value);
-					for (String rest : el.key.getResto()) {
-						key += "."+rest;
-					}
-					claveEnum = generateClaveEnum(key);
-					if (cont != insertar.size){
-						contenido+="\t${claveEnum}(\"${el.value}\"),\n";
-						cont++;
-					} else{
-						contenido+="\t${claveEnum}(\"${el.value}\");\n";
-						cont=0;
-					}
-					existenElementos=true;
-			
-				}
-				if (!existenElementos){
-					return "";
-				}
-				contenido+="\n\tprivate String valor;\n\n\tprivate ${clase}(String valor){\n\t\tthis.valor = valor;\n\t}\n\n\t@Override\n\tpublic String toString() {\n\t\treturn this.valor;\n\t}\n}";
-		
-				FileUtils.overwrite(FileUtils.getRoute('ENUM'), clase + ".java", contenido);
-			}
+            ppackage = "enumerado.gen";
+            route = FileUtils.getRoute('ENUM');
+            List<ElementoLista> merged = elementosListaMergedWithModule();
+            elementos = getEnumElementsDefinition(lista.elementos);
+		}
+        String className = getEnumClassName();
+        String classContent = getEnumClassBody(ppackage, className, elementos);
+        FileUtils.overwrite(route, className + ".java", classContent);
 	}
 	
-	private String generateClaveEnum(String clave){
-		String dev="";
-		if (Character.isDigit(clave.charAt(0))){
-			dev+="_"+clave.charAt(0);
-		} else{
-			dev+=clave.charAt(0);
-		}
-		for (int i=1; i<clave.length(); i++){
-			if (clave.charAt(i)=='.'){
-			   dev+='_';
-			}
-			else {
-			   dev+=clave.charAt(i);
-			}
-		}
-		return dev;
-	}
-	
+    private String getEnumClassName(){
+        return StringUtils.firstUpper(lista.name) + "Enum";
+    }
+    
+    private String getEnumElementKey(ElementoLista el){
+        String key;
+        if(el.key == null){
+            key = StringUtils.id(el.value);
+        }else{
+            key = el.key.getFirst();
+            for(String resto : el.key.getResto()){
+                key += "." + resto;
+            }
+            
+        }
+        return escapeKey(key);
+    }
+    
+    private String escapeKey(String clave){
+        String result = clave;
+        if (Character.isDigit(clave.charAt(0))){
+            result = "_" + result;
+        }
+        return result.replaceAll('\\.', '_');
+    }
+    
+    private String getEnumElementValue(ElementoLista el){
+        return el.value?: getEnumElementKey(el);
+    }
+
+    private String getEnumElementsDefinition(List<ElementoLista> elementos){
+        List<String> enumElementsDef = new ArrayList<String>();
+        for(ElementoLista el : lista.elementos){
+            String key = getEnumElementKey(el);
+            String value = getEnumElementValue(el);
+            enumElementsDef.add("""${key}("${value}")""")
+        }
+        return enumElementsDef.join(",")
+    }
+    
+    private String getEnumClassBody(String ppackage, String className, String elements){
+        String body = """
+            package ${ppackage};
+            
+            public enum ${className}{
+                ${elements};
+            
+                private String value;
+            
+                private ${className}(String value){
+                    this.value = value;
+                }
+                
+                public String value(){
+                    return value;
+                }
+            
+                @Override
+                public String toString(){
+                    return this.name() + "[" + this.value() + "]";
+                }
+            }
+            """
+        return body;
+    }
+    
+    private List<ElementoLista> elementosListaMergedWithModule(){
+        List listas = ModelUtils.getVisibleNodes(LedPackage.Literals.LISTA, lista.name, LedUtils.resource);
+        List merged = lista.elementos;
+        for(Lista lista : listas){
+            for(ElementoLista elemento : lista.elementos){
+                if (listContainsElementoLista(elemento, merged) == false){
+                    merged.add(elemento);
+                }
+            }
+        }
+        return merged
+    }
+        
+    // Comprueba en una Lista de ElementoLista, que no este un determinado elemento ya introducido
+    private boolean listContainsElementoLista(ElementoLista el, List<ElementoLista> lista){
+        def key1 = el.key ? el.key.getFirst() : StringUtils.id(el.value);
+        boolean ret = false;
+        
+        for(ElementoLista el2 : lista){
+            def key2 = el2.key ? el2.key.getFirst() : StringUtils.id(el2.value);
+            if (key1 == key2){
+                return true;
+            }
+        }
+        return false;
+    }
+
 	private String generateElemento(ElementoLista el){
 		String table = lista.name;
-		String key = el.key ? el.key.getFirst() : StringUtils.id(el.value);
-		for (String rest : el.key.getResto()) {
-			key += "."+rest;
-		}
-		String value = el.value?:el.key;
+		String key = getEnumElementKey(el); 
+        String value = getEnumElementValue(el);
 		
 		String out = """TableKeyValue(${table}-${key}):
   table: '${table}'

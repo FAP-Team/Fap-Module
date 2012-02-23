@@ -169,7 +169,7 @@ Permiso solicitudes{
 		SolicitudGenerica solicitud
 		Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 	when
-		agente.rolActivo in ("administdrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "revisor")
 		or
 		participacion != null 			
 	return all

@@ -3,6 +3,8 @@ Formulario Solicitud {
     Menu {
     	Enlace "Volver" pagina=Principal.Solicitudes
     	
+    	Enlace "Solicitante" pagina=Solicitante
+    	
     	Grupo "Combos" {
 			Enlace "Combos por defecto" pagina=Combos
 			Enlace "Combos sobreescritos" pagina=CombosOverwrite
@@ -36,6 +38,10 @@ Formulario Solicitud {
 
 		
 		Enlace "Salir" accion="fap.SecureController.logout"
+    }
+    
+    Pagina Solicitante {
+    	Solicitante persona campo=Solicitud.solicitante
     }
 		
 	Pagina Fechas {

@@ -71,6 +71,16 @@ POST /Solicitud/popupnombre2/{idEntidad}/borrar popups.popupNombre2Controller.bo
 POST /Solicitud/popupnombre2/{idEntidad}/crear popups.popupNombre2Controller.crear
 POST /Solicitud/popupnombre2/{idEntidad}/cancelarcrear popups.popupNombre2Controller.cancelarCrear
 
+GET /Solicitud/popuppersonajuridicatabla/{idEntidad}/abrir popups.PopupPersonaJuridicaTablaController.abrir
+POST /Solicitud/popuppersonajuridicatabla/{idEntidad}/editar popups.PopupPersonaJuridicaTablaController.editar
+POST /Solicitud/popuppersonajuridicatabla/{idEntidad}/borrar popups.PopupPersonaJuridicaTablaController.borrar
+POST /Solicitud/popuppersonajuridicatabla/{idEntidad}/crear popups.PopupPersonaJuridicaTablaController.crear
+POST /Solicitud/popuppersonajuridicatabla/{idEntidad}/cancelarcrear popups.PopupPersonaJuridicaTablaController.cancelarCrear
+
+GET /Solicitud/solicitante SolicitanteController.index
+
+GET /Solicitud/solicitante/personaJuridicaTabla SolicitanteController.tablapersonaJuridicaTabla
+POST /Solicitud/solicitante/save SolicitanteController.save
 GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
 
 POST /Solicitud/subirarchivoaedtest/anadirDocumentacion SubirArchivoAedTestController.anadirDocumentacion

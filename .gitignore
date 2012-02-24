@@ -59,6 +59,11 @@ Thumbs.db
 apps/test/app/listas/gen/*
 apps/test/tmp/*
 
+apps/test/javadoc/
+apps/test/precompiled/
+fap/javadoc/
+fap/logs/
+
 fap/app/controllers/gen/*
 fap/app/secure/gen/*
 fap/app/security/SecureFapGen.java

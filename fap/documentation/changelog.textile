@@ -1,5 +1,11 @@
 h2. Changelog
 
+h3. Versión 1.2.3
+
+* Ahora se borran los tipos de documentos cuando actualiza los cambios
+* Fixed bug con los plugins de eclipse
+* Fixed bug de subida documentos AED
+
 h3. Versión 1.2.2
 
 * Fixed bug al generar la validación de la Persona Física.

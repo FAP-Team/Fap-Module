@@ -15,7 +15,8 @@ bc. cd holamundo
 bc. # Dependencias
 require:
     - play
-    - fap -> fap 1.1
+    - fap -> fap 1.2.3
+    - fap -> guice 1.2.1
     - play -> pdf 0.6
     - play -> recaptcha 1.2
 # Custom repository 
@@ -25,6 +26,12 @@ repositories:
         artifact: "http://fap-devel.etsii.ull.es/public/fap-sdk2/[revision]/[module]-[revision].zip"
         contains:
             - fap -> fap
+
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+           - fap -> guice
             
 
 4. Carga las dependencias del proyecto

@@ -8,9 +8,9 @@ El plugin depende de xtext2 para poder funcionar correctamente. En caso de que t
 
 Una vez instalado xtext2, ahora debes instalar el plugin copiando en la carpeta ${ECLIPSE_HOME}/dropins, los ficheros:
 
-* ${APP}/modules/plugins/fap-{version}/es.fap.simpleled_1.0.0.jar 
-* ${APP}/modules/plugins/fap-{version}/es.fap.simpleled.ui_1.0.0.jar
-* ${APP}/modules/plugins/fap-{version}/gson-1.7.1.jar
+* ${APP}/modules/fap-{version}/plugins/es.fap.simpleled_1.0.0.jar 
+* ${APP}/modules/fap-{version}/plugins/es.fap.simpleled.ui_1.0.0.jar
+* ${APP}/modules/fap-{version}/plugins/gson-1.7.1.jar
 
 Donde ${APP} es el directorio de tu aplicación.
 

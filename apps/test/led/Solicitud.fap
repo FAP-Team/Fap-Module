@@ -25,6 +25,7 @@ Formulario Solicitud {
 	
 		Grupo "SubirArchivo" {
 			Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
+			Enlace "SubirArchivoAed2" pagina=SubirArchivoTabla
 		}
 		
 		Grupo "Pagina del módulo"{
@@ -149,19 +150,38 @@ Formulario Solicitud {
 	}
 	
 	Pagina Documentos campo=Solicitud.documentacion.documentos{
-		Accion crear redirigir=SubirArchivoAedTest
+		Accion crear redirigir=SubirArchivoAedTest mensajeOk="Documento creado en el gestor documental"
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" acepta= "image/*", "application/pdf"
+	}
+	
+	Pagina EditarDocumentos campo=Solicitud.documentacion.documentos{
 		Accion editar redirigir=SubirArchivoAedTest
-		Accion borrar redirigir=SubirArchivoAedTest
-		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+		EditarArchivo fileAportacion campo=Documento
 	}
 	
 	Pagina SubirArchivoAedTest campo=Solicitud {
-		Tabla documentos campo=Solicitud.documentacion.documentos pagina=Documentos {
+		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos paginaEditar=EditarDocumentos {
 			Columna campo=Documento.id titulo="ID"
 			Columna campo=Documento.tipo titulo="Tipo"
 			Columna campo=Documento.descripcion titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\">Descargar</a>" titulo=""
 		}	
+	}
+	
+	Pagina SubirArchivoTabla {
+		Tabla solicitudes campo=Solicitud paginaCrear=SubirArchivoCrear paginaEditar=SubirArchivoEditar {
+			Columna campo=Solicitud.doc.tipo
+			Columna campo=Solicitud.doc.descripcion
+			Columna campo=Solicitud.doc.urlDescarga
+		}
+	}
+	
+	Pagina SubirArchivoCrear campo=Solicitud {
+		SubirArchivo subirArchivo campo=Solicitud.doc requerido acepta= "image/*", "application/pdf"
+	}
+	
+	Pagina SubirArchivoEditar campo=Solicitud {
+		EditarArchivo editarArchivo campo=Solicitud.doc requerido
 	}
 	
 	Pagina EjemplosdeGrupos campo=Solicitud{

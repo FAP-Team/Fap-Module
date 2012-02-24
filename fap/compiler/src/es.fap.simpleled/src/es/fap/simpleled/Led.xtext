@@ -198,10 +198,10 @@ Values:
 
 Elemento:
 	Grupo | AgruparCampos | 
-	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check | AgrupaBotones |
+	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
 	AreaTexto | Enlace | Form |
-	SubirArchivoAed | EditarArchivoAed | FirmaPlatinoSimple | 
+	SubirArchivo | EditarArchivo | FirmaPlatinoSimple | 
 	EntidadAutomatica | Accion
 ;
 
@@ -363,24 +363,18 @@ Columna:
 	)
 ;
 
-
 SubirArchivo:
 	elemento='SubirArchivo' name=ID (
-		(requerido?='requerido')?
-	)
-;	
-
-SubirArchivoAed:
-	elemento='SubirArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 		& ('tramite' '=' tramite=STRING)?		
 		& ('aportadoPor' '=' aportadoPor=STRING)?	// ¿Cambiar el tipo?
+		& ('acepta' '=' mimes+=STRING ("," mimes+=STRING)*)?
 	)
 ;
 
-EditarArchivoAed:
-	elemento='EditarArchivoAed' name=ID (
+EditarArchivo:
+	elemento='EditarArchivo' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 	)

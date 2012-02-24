@@ -1,4 +1,4 @@
-%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+%{def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
 
 #{fap.field _campo, obj:obj}
 %{ 
@@ -32,7 +32,7 @@
 
 	#{fap.combo id:comboId, campo:campoTipo, titulo:"Tipo de documento", items:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, ancho:"450px"/}
 	
-	#{fap.grupo visible:false, siCombo:comboId, siComboValue:[tipoDocumentoOtros], siComboReverse:true}
+	#{fap.grupo borde:false, siCombo:comboId, siComboValue:[tipoDocumentoOtros], siComboReverse:true}
 		#{fap.texto campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
 	#{/fap.grupo}
 	
@@ -42,7 +42,7 @@
 	
 	#{if download}
 		<div class="clearfix">
-			<a href="${obj.urlDescarga}" class="btn">Descargar documento desde el AED</a>
+			<a href="${field.value.urlDescarga}" class="btn">Descargar documento desde el gestor documental</a>
 		</div>
 	#{/if}
 	

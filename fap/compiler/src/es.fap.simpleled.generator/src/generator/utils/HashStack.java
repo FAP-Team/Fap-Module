@@ -9,7 +9,7 @@ public class HashStack {
 		CONTROLLER,  // Lista de elementos que generan codigo en un controlador (Por ejemplo una tabla).
 		ROUTES,  // Lista de elementos que generan rutas en el fichero routes.
 		CONTAINER,  // Pila con la pagina o popup que contiene al elemento actual. 
-		SUBIR_ARCHIVO,	// Almacena los elementos SubirArchivo y SubirArchivoAED para generar código específico en el controlador.
+		SUBIR_ARCHIVO,	// Almacena los elementos SubirArchivo para poner en el <form> el parámetro enctype correcto para subida de archivos.
 		SAVE_ENTITY,  // Lista con las entidades que van a ser guardadas en los metodos de guardado ("save" o nombre del form) del controlador.
 		INDEX_ENTITY,  // Lista con las entidades que, junto con las de SAVE_ENTITY, van a usarse en el metodo "index" del controlador de la pagina. 
 		SAVE_EXTRA,  // Parámetros que se van a añadir al método save, se utiliza en casos como el subirArchivo o el subirArchivoAED.

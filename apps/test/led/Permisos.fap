@@ -17,3 +17,13 @@ PermisoGrafico autorizaFuncionario {
 	else
 	return editable
 }
+
+PermisoGrafico _editar{
+	when accion = editar
+	return editable
+}
+
+PermisoGrafico _crear{
+	when accion = crear
+	return editable
+}

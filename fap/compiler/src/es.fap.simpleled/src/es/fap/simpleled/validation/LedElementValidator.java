@@ -16,12 +16,11 @@ import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.Combo;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Direccion;
-import es.fap.simpleled.led.EditarArchivoAed;
+import es.fap.simpleled.led.EditarArchivo;
 import es.fap.simpleled.led.Enlace;
 import es.fap.simpleled.led.EntidadAutomatica;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Fecha;
-import es.fap.simpleled.led.FirmaPlatinoSimple;
 import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.Grupo;
 import es.fap.simpleled.led.LedPackage;
@@ -32,7 +31,7 @@ import es.fap.simpleled.led.PersonaFisica;
 import es.fap.simpleled.led.PersonaJuridica;
 import es.fap.simpleled.led.Popup;
 import es.fap.simpleled.led.Solicitante;
-import es.fap.simpleled.led.SubirArchivoAed;
+import es.fap.simpleled.led.SubirArchivo;
 import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.Texto;
 import es.fap.simpleled.led.util.LedCampoUtils;
@@ -194,7 +193,7 @@ public abstract class LedElementValidator {
 		if (container instanceof Combo) {
 			return new ComboValidator(container);
 		}
-		if (container instanceof SubirArchivoAed || container instanceof EditarArchivoAed ) { //|| container instanceof FirmaPlatinoSimple) {
+		if (container instanceof SubirArchivo || container instanceof EditarArchivo ) { //|| container instanceof FirmaPlatinoSimple) {
 			return new EntidadValidator(container, "Documento");
 		}
 		if (container instanceof Direccion) {

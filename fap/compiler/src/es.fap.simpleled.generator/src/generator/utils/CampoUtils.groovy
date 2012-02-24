@@ -125,6 +125,10 @@ public class CampoUtils implements Comparable{
 		return campoStr;
 	}
 	
+	public String dbStr(){
+		return "db" + str;
+	}
+	
 	public String firstLower(){
 		return StringUtils.firstLower(str);
 	}

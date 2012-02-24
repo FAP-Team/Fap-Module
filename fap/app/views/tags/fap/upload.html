@@ -2,7 +2,7 @@
 	id = _id;
 %}
 
-<div class="clearfix">
+<div class="clearfix ${play.mvc.Controller.validation.current().hasError(id)? "error" : ""}" >
 <label for="${id}">Fichero</label>
 <div class="input">
 	<input class="input-file" id='${id}' name='${id}' type='file'>

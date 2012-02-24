@@ -46,7 +46,7 @@ ${cEconomico.tipo.descripcion}
 	
 	Pagina DocumentosAportacion campo=SolicitudGenerica.aportaciones.actual.documentos{
 		Accion crear redirigir=Aportacion	
-		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
 	
 	Pagina AportacionAportados {		
@@ -76,15 +76,15 @@ ${cEconomico.tipo.descripcion}
 	}
 	
 	Popup PopUpDocPresentados titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos{
-		EditarArchivoAed documentoPresentado campo=Documento requerido
+		EditarArchivo documentoPresentado campo=Documento requerido
 	}
 	
 	Popup PopUpDocProcesos titulo="Documentación" campo=SolicitudGenerica.aportaciones.actual.documentos{
-		EditarArchivoAed documentoProceso campo=Documento requerido
+		EditarArchivo documentoProceso campo=Documento requerido
 	}
 	
 	Popup PopUpDocAportados titulo="Documentación" campo=SolicitudGenerica.documentacionAportada.documentos {
-		EditarArchivoAed documentoAportado campo=Documento requerido
+		EditarArchivo documentoAportado campo=Documento requerido
 	}
 		
 	Pagina AportacionPresentar {

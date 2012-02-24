@@ -256,7 +256,7 @@ class ControllerUtils {
     public static String bindReference(EObject objeto) {
         if ((Grupo.class.isInstance(objeto)) || (Pagina.class.isInstance(objeto))
                 || (Popup.class.isInstance(objeto)) || (Wiki.class.isInstance(objeto))
-                || (SubirArchivo.class.isInstance(objeto)) || (Tabla.class.isInstance(objeto))) {
+                || (Tabla.class.isInstance(objeto))) {
             return "";
         }
 
@@ -310,7 +310,7 @@ class ControllerUtils {
    public static String copy(EObject objeto) {
 	   if ((Grupo.class.isInstance(objeto)) || (Pagina.class.isInstance(objeto))
 			   || (Popup.class.isInstance(objeto)) || (Wiki.class.isInstance(objeto))
-			   || (SubirArchivo.class.isInstance(objeto)) || (Tabla.class.isInstance(objeto))) {
+			   || (Tabla.class.isInstance(objeto))) {
 		   return "";
 	   }
 
@@ -342,9 +342,9 @@ class ControllerUtils {
 		   camposFiltrados = camposPersonaFisica
 	   } else if (objeto instanceof PersonaJuridica) {
 		   camposFiltrados = camposPersonaJuridica
-	   } else if(objeto instanceof SubirArchivoAed){
+	   } else if(objeto instanceof SubirArchivo){
 		   camposFiltrados = camposAed
-	   } else if(objeto instanceof EditarArchivoAed) {
+	   } else if(objeto instanceof EditarArchivo) {
 		   camposFiltrados = camposAed
 	   }
 

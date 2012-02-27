@@ -243,9 +243,7 @@ Formulario Solicitud {
 		Texto titulo="Nombre" campo=TablaPaginas_nivel2.nombre
 		Combo campo=TablaPaginas_nivel2.comboMul comboTexto=nombre titulo="Combo nivel 2"
 		Combo campo=TablaPaginas_nivel2.list titulo="Lista seleccion nivel 2"
-		Grupo titulo="Tabla visible si estamos en modo NO CREACION" permiso=paginaTablaVer{
-			Tabla paginasT2 campo=TablaPaginas_nivel2.tpaginas_nivel3 paginaCrear=Paginas_nivel3 paginaEditar=Paginas_nivel3 paginaBorrar=Paginas_nivel3 titulo="Tabla con paginas nivel 3" columnasAutomaticas exclude=id{}
-		}
+		Tabla paginasT2 campo=TablaPaginas_nivel2.tpaginas_nivel3 paginaCrear=Paginas_nivel3 paginaEditar=Paginas_nivel3 paginaBorrar=Paginas_nivel3 titulo="Tabla con paginas nivel 3" columnasAutomaticas exclude=id{}
 	}
 	
 	Pagina Paginas_nivel1 campo=Solicitud.paginas.tpaginas_nivel1 {
@@ -256,7 +254,7 @@ Formulario Solicitud {
 		Texto titulo="Numero entero" campo=TablaPaginas_nivel1.numero
 		Combo campo=TablaPaginas_nivel1.comboMul comboTexto=nombre titulo="Combo"
 		Fecha campo=TablaPaginas_nivel1.fecha titulo="Fecha"
-		Grupo titulo="Tabla visible si estamos en modo NO CREACION" permiso=paginaTablaVer{
+		Grupo{
 			Tabla paginasT2 campo=TablaPaginas_nivel1.tpaginas_nivel2 paginaCrear=Paginas_nivel2 paginaEditar=Paginas_nivel2 paginaBorrar=Paginas_nivel2 titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
 		}
 	}

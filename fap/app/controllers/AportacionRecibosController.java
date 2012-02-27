@@ -27,7 +27,7 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 			}
 		}
 
-		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(tablarecibosAportadosPermisos(rowsFiltered));
+		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered);
 		java.util.Map<String, List<String>> valueFromTable = response.getValueFromTableField();
 
 		flexjson.JSONSerializer flex = new flexjson.JSONSerializer().include(

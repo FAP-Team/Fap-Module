@@ -41,7 +41,7 @@ public class TableRenderResponse<T> {
 	
 	public Obj obj;
 	
-	// Constructor con Permisos y Sin Permisos, tener en cuenta
+	// Constructor con Permisos
 	public TableRenderResponse(List<T> rows) {
 		List<TableRecord<T>> rowsPermisos = tablaPermisos(rows);
 		this.rows = rowsPermisos;
@@ -54,18 +54,30 @@ public class TableRenderResponse<T> {
 		this.mensajes.info = Messages.messages(MessageType.INFO);
 	}
 	
-//	public static <T> TableRenderResponse<T> sinPermisos(List<T> rows) {
-//		List<TableRecord<T>> result = new ArrayList<TableRecord<T>>();
-//		for (T row: rows){
-//			TableRecord<T> record = new TableRecord<T>();
-//			result.add(record);
-//			record.objeto = row;
-//			record.permisoLeer = true;
-//			record.permisoEditar = true;
-//			record.permisoBorrar = true;
-//		}
-//		return new TableRenderResponse<T>(result);
-//	}
+	// Constructor sin Permisos
+	public TableRenderResponse(List<TableRecord<T>> rows, boolean SinPermisos) {
+		this.rows = rows;
+		this.obj = new Obj();
+		obj.rows = this.rows;
+		this.mensajes.error = Messages.messages(MessageType.ERROR);
+		this.mensajes.warning = Messages.messages(MessageType.WARNING);
+		this.mensajes.fatal = Messages.messages(MessageType.FATAL);
+		this.mensajes.ok = Messages.messages(MessageType.OK);
+		this.mensajes.info = Messages.messages(MessageType.INFO);
+	}
+	
+	public static <T> TableRenderResponse<T> sinPermisos(List<T> rows) {
+		List<TableRecord<T>> result = new ArrayList<TableRecord<T>>();
+		for (T row: rows){
+			TableRecord<T> record = new TableRecord<T>();
+			result.add(record);
+			record.objeto = row;
+			record.permisoLeer = true;
+			record.permisoEditar = true;
+			record.permisoBorrar = true;
+		}
+		return new TableRenderResponse<T>(result, true);
+	}
 	
 	public String toJSON(String ... fields){
 		Set<String> fieldsSet = new HashSet<String>(Arrays.asList(fields));
@@ -127,7 +139,8 @@ public class TableRenderResponse<T> {
 			TableRecord<T> record = new TableRecord<T>();
 			records.add(record);
 			record.objeto = tablaTipo;
-			vars.put("tablaDeNombres", tablaTipo);
+			String[] nombre = tablaTipo.getClass().getName().split("\\.");
+			vars.put(nombre[nombre.length-1], tablaTipo);
 			record.permisoLeer = true;
 			record.permisoEditar = true;
 			record.permisoBorrar = true;

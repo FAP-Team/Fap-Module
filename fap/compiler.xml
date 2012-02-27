@@ -19,10 +19,10 @@
 	<condition property="ftp.fap.dir" value="${ftpdirnightly}" else="/public/fap-sdk2/">
 		<isset property="ftpdirnightly" />
 	</condition>
-	<condition property="ftp.user" value="${ftpusernightly}" else="undefined">
+	<condition property="ftp.user" value="${ftpusernightly}" else="jorge">
 		<isset property="ftpusernightly" />
 	</condition>
-	<condition property="ftp.pass" value="${ftppassnightly}" else="undefined">
+	<condition property="ftp.pass" value="${ftppassnightly}" else="jorge">
 		<isset property="ftppassnightly" />
 	</condition>
 	<condition property="zip.dir" value="dist-nightly" else="dist">
@@ -193,6 +193,10 @@
 	</target>
 	
 	<target name="ftp-upload-doc"  depends="get-version">
+		<copy todir="documentation/javadoc">
+		    <fileset dir="javadoc"/>
+		</copy>
+		
 		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version}/documentation" />
 
 		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version}/documentation/" userid="${ftp.user}" password="${ftp.pass}">

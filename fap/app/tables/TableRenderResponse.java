@@ -10,10 +10,12 @@ import java.util.Map;
 import java.util.Set;
 
 import play.db.jpa.Model;
+import play.mvc.Util;
 
 import flexjson.JSONSerializer;
 
 import messages.Messages;
+import messages.Messages.MessageType;
 import models.Firmante;
 import models.TableKeyValue;
 import tags.ReflectionUtils;
@@ -39,24 +41,31 @@ public class TableRenderResponse<T> {
 	
 	public Obj obj;
 	
-	public TableRenderResponse(List<TableRecord<T>> rows) {
-		this.rows = rows;
+	// Constructor con Permisos y Sin Permisos, tener en cuenta
+	public TableRenderResponse(List<T> rows) {
+		List<TableRecord<T>> rowsPermisos = tablaPermisos(rows);
+		this.rows = rowsPermisos;
 		this.obj = new Obj();
 		obj.rows = this.rows;
+		this.mensajes.error = Messages.messages(MessageType.ERROR);
+		this.mensajes.warning = Messages.messages(MessageType.WARNING);
+		this.mensajes.fatal = Messages.messages(MessageType.FATAL);
+		this.mensajes.ok = Messages.messages(MessageType.OK);
+		this.mensajes.info = Messages.messages(MessageType.INFO);
 	}
 	
-	public static <T> TableRenderResponse<T> sinPermisos(List<T> rows) {
-		List<TableRecord<T>> result = new ArrayList<TableRecord<T>>();
-		for (T row: rows){
-			TableRecord<T> record = new TableRecord<T>();
-			result.add(record);
-			record.objeto = row;
-			record.permisoLeer = true;
-			record.permisoEditar = true;
-			record.permisoBorrar = true;
-		}
-		return new TableRenderResponse<T>(result);
-	}
+//	public static <T> TableRenderResponse<T> sinPermisos(List<T> rows) {
+//		List<TableRecord<T>> result = new ArrayList<TableRecord<T>>();
+//		for (T row: rows){
+//			TableRecord<T> record = new TableRecord<T>();
+//			result.add(record);
+//			record.objeto = row;
+//			record.permisoLeer = true;
+//			record.permisoEditar = true;
+//			record.permisoBorrar = true;
+//		}
+//		return new TableRenderResponse<T>(result);
+//	}
 	
 	public String toJSON(String ... fields){
 		Set<String> fieldsSet = new HashSet<String>(Arrays.asList(fields));
@@ -108,6 +117,22 @@ public class TableRenderResponse<T> {
 			}
 		}
 		return valueFromTable;
+	}
+	
+	@Util
+	public static <T> List<TableRecord<T>> tablaPermisos(List<T> rowsFiltered) {
+		List<TableRecord<T>> records = new ArrayList<TableRecord<T>>();
+		Map<String, Object> vars = new HashMap<String, Object>();
+		for (T tablaTipo : rowsFiltered) {
+			TableRecord<T> record = new TableRecord<T>();
+			records.add(record);
+			record.objeto = tablaTipo;
+			vars.put("tablaDeNombres", tablaTipo);
+			record.permisoLeer = true;
+			record.permisoEditar = true;
+			record.permisoBorrar = true;
+		}
+		return records;
 	}
 	
 	

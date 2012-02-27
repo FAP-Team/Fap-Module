@@ -383,11 +383,6 @@ public class GTabla {
 				java.util.List<${entidad.clase}> rows = ${entidad.clase}.find(${query}).fetch();
 				${getCodePermiso(entidad)}
 				tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(${controller.controllerName}.${controllerMethodName()}Permisos(rowsFiltered));
-				response.mensajes.error=Messages.messages(MessageType.ERROR);
-				response.mensajes.warning=Messages.messages(MessageType.WARNING);
-				response.mensajes.fatal=Messages.messages(MessageType.FATAL);
-				response.mensajes.ok=Messages.messages(MessageType.OK);
-				response.mensajes.info=Messages.messages(MessageType.INFO);
 				renderJSON(response.toJSON($rowsStr));
 			}
 

@@ -30,6 +30,8 @@ public class ValoresPorDefectoTest extends Model {
 
 	public Boolean mBoolean;
 
+	public Boolean otroBoolean;
+
 	public Double mDouble;
 
 	@Column(columnDefinition = "LONGTEXT")

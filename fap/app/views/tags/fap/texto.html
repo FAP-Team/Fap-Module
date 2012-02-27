@@ -66,7 +66,7 @@
 }%
 
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-    	<input class="xlarge" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+    	<input class="input-xlarge" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 	#{/fap.formrow}
 	
 	#{if duplicado == true}
@@ -78,7 +78,7 @@
 				value_copy = field.copy;
 		}%
 		#{fap.formrow id:id_copy, label:label_copy, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-			<input id="${id_copy}" class="xlarge" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+			<input id="${id_copy}" class="input-xlarge" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 		#{/fap.formrow}
 		
 		<script>

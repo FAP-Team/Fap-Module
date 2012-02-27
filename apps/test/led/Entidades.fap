@@ -109,6 +109,7 @@ Entidad ValoresPorDefectoTest {
 	Long mLong default = "2"
 	Integer mInteger default = "4"
 	Boolean mBoolean default = "true"
+	Boolean otroBoolean
 	Double mDouble default = "2.345"
 	LongText mLongText default = "texto largooooo largiiisimo"
 	

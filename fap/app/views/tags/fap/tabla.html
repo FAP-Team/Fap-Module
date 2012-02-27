@@ -61,27 +61,27 @@
 	#{doBody /}
 	
 	<div id="${id}_GFatal">
-		<div id="${id}_Fatal" class="alert-message block-message error" data-alert="alert">
+		<div id="${id}_Fatal" class="alert-message block-message error" data-dismiss="alert">
 		</div>
 	</div>
 	
 	<div id="${id}_GError">
-		<div id="${id}_Error" class="alert-message block-message error" data-alert="alert">
+		<div id="${id}_Error" class="alert-message block-message error" data-dismiss="alert">
 		</div>
 	</div>
 	
 	<div id="${id}_GWarning">
-		<div id="${id}_Warning" class="alert-message block-message warning" data-alert="alert">
+		<div id="${id}_Warning" class="alert-message block-message warning" data-dismiss="alert">
 		</div>
 	</div>
 	
 	<div id="${id}_GOk">
-		<div id="${id}_Ok" class="alert-message block-message success" data-alert="alert">
+		<div id="${id}_Ok" class="alert-message block-message success" data-dismiss="alert">
 		</div>
 	</div>
 	
 	<div id="${id}_GInfo">
-		<div id="${id}_Info" class="alert-message block-message info" data-alert="alert">
+		<div id="${id}_Info" class="alert-message block-message info" data-dismiss="alert">
 		</div>
 	</div>
 	
@@ -159,7 +159,7 @@
 			// Por si el usuario lo ha cerrado en tiempo de ejecución
 			function creaMensaje${id}(tipo, clase){
 				var id = "${id}_"+tipo;
-				var content = '<div id="'+id+'" class="'+clase+'" data-alert="alert"> </div>';
+				var content = '<div id="'+id+'" class="'+clase+'" data-dismiss="alert"> </div>';
 				$('#${id}_G'+tipo).html(content);
 			}
 			function crearMensajes${id}(){

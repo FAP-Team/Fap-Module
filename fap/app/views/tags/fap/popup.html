@@ -31,7 +31,7 @@
 <!--div id="${idMensajes}"></div-->
 
 <div class="modal-header">
-	<a href="#" class="close">×</a>
+	<a data-dismiss="modal" class="close">×</a>
     <h3>${titulo}</h3>
 </div>
 
@@ -90,10 +90,10 @@ $(document).ready(function(){
 				$('#${idBotonAccion}').button('complete');
 			});
 		};
-	  	popupButtons (idPopup, {"${botonAccion}": "${idBotonAccion}()"}, "primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"});
+	  	popupButtons (idPopup, {"${botonAccion}": "${idBotonAccion}()"}, "btn-primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"});
   	#{/if}
   	#{else}
-  		popupButtons (idPopup, {}, "primary", true, true);
+  		popupButtons (idPopup, {}, "btn-primary", true, true);
   	#{/else}
   	popupTitle(idPopup, "${titulo}");
 

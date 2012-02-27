@@ -13,22 +13,22 @@
         <link rel="stylesheet" href="@{'/public/javascripts/ext/resources/css/ext-all.css'}" />
         
         #{stylesheet 'jquery-ui.css' /}
-        #{stylesheet 'bootstrap/bootstrap.css' /}
-        
-        #{stylesheet 'bootstrap/bootstrap-responsive.css' /}
-        
-        #{stylesheet 'fap.less' /}
+        #{stylesheet 'bootstrapFap.css' /}
+
+        #{stylesheet 'tablas.less' /}
         #{stylesheet 'loading.css' /}
           
         #{get 'moreStyles' /}
         
-        #{script src:"jquery/jquery-1.6.1.min.js" /}
+        #{script src:"jquery/jquery-1.7.1.min.js" /}
         #{script src:"jquery/jquery-ui.1.8.10.min.js" /}
         #{script src:"jquery/jquery.ui.datepicker-es.js" /}
-                
-        #{script src:"bootstrap/bootstrap.js" /}
-        #{script src:"bootstrap/bootstrap.js" /}
-        
+              
+        #{script src:"bootstrap/bootstrap-dropdown.js" /}
+        #{script src:"bootstrap/bootstrap-modal.js" /}
+        #{script src:"bootstrap/bootstrap-alert.js" /}
+        #{script src:"bootstrap/bootstrap-tooltip.js" /}
+        #{script src:"bootstrap/bootstrap-popover.js" /}
         
         #{script 'ext/ext-all.js' /}
         #{script 'ext/form/SearchFieldFilter.js' /}
@@ -58,13 +58,13 @@
     	
 			<div class="row">
 			
-				<div id="logoAciisi" class="span8">
+				<div id="logoAciisi" class="span6">
 					<a href="@{SolicitudesController.index}" title="&{play.configuration.get('fap.app.name', 'Sin Nombre')}">
 						<img src="@{'/public/images/aciisi_gris.gif'}" width="185px" height="75px"/>
 					</a>
 				</div>	
 			
-				<div id="banderaue" class="span8">
+				<div id="banderaue" class="span6">
 					<img src="@{'/public/images/logo_ue.gif'}" width="147px" height="64px"/>
 				</div>
 			
@@ -73,7 +73,7 @@
 
 
 %{
-	topbarscope : { //Ámbito
+	topbarscope : { //�?mbito
 		def agente = controllers.fap.AgenteController.getAgente();
 		def roles;
 		def user;
@@ -84,9 +84,9 @@
 			user = agente.name ?: agente.username
 		}
 }%
-<div class="topbar-wrapper" style="z-index: 5;">
-    <div class="topbar" data-dropdown="dropdown">
-      <div class="topbar-inner">
+<!-- div class="navbar-wrapper" style="margin-top: 10px;"-->
+    <div class="navbar"  style="margin-top: 10px;">
+      <div class="navbar-inner">
         <div class="container">        
        		#{if cabeceraUsuario != null}
 				#{get 'cabeceraUsuario' /}
@@ -97,12 +97,13 @@
 	          	</ul>
 
 				#{if agente != null}
-				<ul class="nav secondary-nav">
+				<ul class="nav pull-right">
 					#{if agente.roles?.size() > 0}
 						<li><p>${user}</p></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle">
 								#{fap.tableOfTableValue table:'roles', key:agente.rolActivo /}
+								<b class="caret"></b>
 							</a>
 							<ul class="dropdown-menu">
 								#{list items:roles, as:'role'}
@@ -122,18 +123,20 @@
 	    </div><!-- /container -->
       </div><!-- /topbar-inner -->
     </div><!-- /topbar -->
-  </div>
+  <!--/div-->
 %{
 	}
 %}	    				
 	    	<div class="row">			
 			#{if menu != null}
-				<div class="span16">
+				<div class="span12">
 					<div class="row">
-					<div class="menu span3 alpha">
+					<div class="well span3 alpha" style="padding: 8px 0;">
+					<!--ul class="nav nav-list"-->
 					#{get 'menu'/}
+					<!--/ul-->
 					</div>
-					<div id="content" class="span13 omega ">			
+					<div id="content" class="span9 omega ">	
 						#{doLayout /}
 					</div>
 					</div>
@@ -141,15 +144,13 @@
 				</div>
 			#{/if}
 			#{else}
-				<div id="content" class="span16">
+				<div id="content" class="span12">
 					#{doLayout /}
 				</div>
 			#{/else}
 			</div>
 
 			<!--div class="clear"></div-->
-			
-
 			
 		</div>
 		
@@ -167,6 +168,7 @@
 					$('#changeRolForm').submit();        	
 	        	});
 	          	
+	        	$('.dropdown-toggle').dropdown();
 	        	
 	        	$("[rel=popover]").popover({offset: 10});
         	});

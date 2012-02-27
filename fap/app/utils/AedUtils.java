@@ -41,4 +41,10 @@ public class AedUtils {
 		params.put("k", encriptarUri(uri));
 		return Router.reverse("fap.DescargasAedController.descargar", params).toString();		
 	}
+	
+	public static String crearFullUrl(String uri){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("k", encriptarUri(uri));
+		return Router.getFullUrl("fap.DescargasAedController.descargar", params).toString();		
+	}
 }

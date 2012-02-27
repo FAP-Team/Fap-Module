@@ -53,7 +53,7 @@ public class GMenu {
 	}
 	
 	public String generateView(){
-		String view = "<ul>"
+		String view = "<ul class='nav nav-list'>"
 		for(MenuElemento elemento : menu.elementos){
 			view += generateElemento(elemento);
 		}
@@ -72,15 +72,13 @@ public class GMenu {
 			""";
 		}
 		out += """
-				<li class="menu-group"><span class="menu-header">${grupo.titulo}</span>
-			<ul>
+				<li class="nav-header">${grupo.titulo}</li>
 		""";
 		for(MenuElemento elemento : grupo.elementos){
 			out += generateElemento(elemento);
 		}
 		out += """
-				</ul>
-			</li>	
+		<li class="nav-separator"></li>	
 		""";
 		if (grupo.permiso != null) {
 			out += """
@@ -108,7 +106,7 @@ public class GMenu {
 			return """
 				${permisoBefore}
 				${scriptUrl(Controller.fromPagina(enlace.pagina.pagina).initialize(), enlace.pagina.accion)}
-				<li><a class="#{fap.activeRoute href:url, activeClass:'menu-activo' /}" href='\${url}'>${titulo}</a></li>
+				<li class="#{fap.activeRoute href:url, activeClass:'active' /}"><a href='\${url}'>${titulo}</a></li>
 				${permisoAfter}
 			""";
 		}

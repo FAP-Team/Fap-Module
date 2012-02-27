@@ -13,7 +13,7 @@
 	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty();
 }%
 
-<div class="clearfix">
+<div class="control-group">
 	<a href="@{fap.ConsultarEvaluacionesController.index}" class="btn">Volver al listado de evaluaciones</a>
 </div>
 
@@ -93,13 +93,13 @@
 		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
 			<div class="name">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</div>
 			#{if criterio.tipo.descripcion != null}
-				<div class="clearfix">
+				<div class="control-group">
 					<p>#{verbatim}${criterio.tipo.descripcion}#{/verbatim}</p>
 				</div>
 			#{/if}
 			
 			#{if criterio.tipo.instrucciones != null}
-				<div class="clearfix">
+				<div class="control-group">
 					<h3>Instrucciones</h3> 
 					<p>#{verbatim}${criterio.tipo.instrucciones}#{/verbatim}</p>
 				</div>

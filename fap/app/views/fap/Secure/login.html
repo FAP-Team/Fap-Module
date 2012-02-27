@@ -3,9 +3,11 @@
 #{set title:configfap.get('fap.app.name')/}
 
 #{set 'cabeceraUsuario'}
-	<p>
-	&{'fap.login.welcome', configfap.get('fap.app.name')}
-	</p>
+	<ul class="nav">
+	<li>
+	<a href="#" >&{'fap.login.welcome', configfap.get('fap.app.name')}</a>
+	</li>
+	</ul>
 #{/set}
 
 %{
@@ -19,7 +21,7 @@
 #{/set}
 
 <div class="row">
-<div id="instrucciones" class="span8 alpha">
+<div id="instrucciones" class="span6 alpha">
 	#{fap.grupo titulo:"Instrucciones"}
 		<p>
 		   En el caso en que no vea su certificado o no pueda acceder a la aplicación, debe seguir los pasos que se indican 
@@ -60,7 +62,7 @@
 	#{/fap.grupo}
 </div>
 
-<div class="span8 omega">
+<div class="span6 omega">
 
 #{fap.messages}
 
@@ -73,13 +75,13 @@
 		#{form @authenticateCertificate(), id:"cert-form"}
 			<input type="hidden" id="token" name="token" value="${token}"/>
 			<input type="hidden" id="firma" name="firma" value=""/>
-			<div class="form-stacked">
+			<div class="form-vertical">
 				<select id="certificado" name="certificado">
 					<option disabled="disabled">--Certificados--</option>
 				</select>
 			</div>
 			
-			<div class="actions button_container">
+			<div class="form-actions">
 				<input type="submit" id="loginsignin" value="&{'fap.login.signin'}" class="btn " />
 			</div>
 		#{/form}
@@ -114,33 +116,27 @@
 			%}
 			
 			#{form @authenticate(), id:"authen-form"}
-				<div class="form-stacked">
+			<div class="form-vertical">
+
 					<label for="username">&{'fap.login.username'}</label>
-					<input class="xlarge" type="text" name="username" id="login-username" value="${flash.username}" />
-				</div>
-				<div class="form-stacked">
+					<input class="input-xlarge" type="text" name="username" id="login-username" value="${flash.username}" />
+
 					<label for="password">&{'fap.login.password'}</label>
-					<input class="xlarge" type="password" name="password" id="login-password" value="" />
-				</div>
+					<input class="input-xlarge" type="password" name="password" id="login-password" value="" />
 				
 				#{if mostrarCaptcha == true}
-                <div class="form-stacked">
 					<p>#{ugot.recaptcha theme:"clean"/}</p>
-				</div>
 				#{/if}
 
-                <div class="form-stacked">
-					<div class="check">
-                        <label for="remember">
+                    <label class="checkbox" for="remember">
 						<input type="checkbox" name="remember" id="login-remember" ${flash.remember ? 'checked="true"' : ''} />
                         &{'fap.login.remember'}
-						</label>
-					</div>
-				</div>
+					</label>
 
-				<div class="actions button_container">
+				<div class="form-actions">
 					<input class="btn " type="submit" id="signin" value="&{'fap.login.signin'}" />
 				</div>
+			</div>
 			#{/form}
 			
 			<script>

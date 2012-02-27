@@ -59,7 +59,7 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 		CEconomico dbCEconomico = PopupCEConomicosEvaluadorController.getCEconomico(idEvaluacion, idCEconomico);
 
 		if (!Messages.hasErrors()) {
-			PopupCEConomicosEvaluadorController.PopupCEConomicosEvaluadorValidateCopy("editar", dbCEconomico, cEconomico);
+			PopupCEConomicosEvaluadorController.PopupCEConomicosEvaluadorValidateCopy("editar", dbCEconomico, cEconomico, duracion);
 		}
 
 
@@ -80,10 +80,14 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 	}
 
 	@Util
-	public static void PopupCEConomicosEvaluadorValidateCopy(String accion, CEconomico dbCEconomico, CEconomico cEconomico) {
+	public static void PopupCEConomicosEvaluadorValidateCopy(String accion, CEconomico dbCEconomico, CEconomico cEconomico, Integer duracion) {
 		CustomValidation.clearValidadas();
 		CustomValidation.valid("cEconomico", cEconomico);
-		dbCEconomico.valores = cEconomico.valores;
+		for (int i=0; i<duracion; i++){
+			dbCEconomico.valores.get(i).valorConcedido = cEconomico.valores.get(i).valorConcedido;
+			dbCEconomico.valores.get(i).valorEstimado = cEconomico.valores.get(i).valorEstimado;
+			dbCEconomico.valores.get(i).valorPropuesto = cEconomico.valores.get(i).valorPropuesto;
+		}
 	}
 
 	@Util

@@ -77,6 +77,9 @@ GET /Solicitud/paginafirma PaginaFirmaController.index
 
 POST /Solicitud/paginafirma/form PaginaFirmaController.form
 
+GET /Solicitud/paginainject PaginaInjectController.index
+POST /Solicitud/paginainject/editar PaginaInjectController.editar
+
 GET /Solicitud/paginas_combo_niveles Paginas_Combo_nivelesController.index
 POST /Solicitud/paginas_combo_niveles/editar Paginas_Combo_nivelesController.editar
 POST /Solicitud/paginas_combo_niveles/crear Paginas_Combo_nivelesController.crear

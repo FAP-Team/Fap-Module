@@ -17,13 +17,18 @@ public class EntidadValidator extends LedElementValidator{
 	
 	@Override
 	public boolean aceptaEntidad(Entity entidad) {
-		return entidad.getName().equals(nameEntidad);
+		while (entidad != null){
+			if (entidad.getName().equals(nameEntidad))
+				return true;
+			entidad = entidad.getExtends();
+		}
+		return false;
 	}
 
 	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
-		Entity e = LedEntidadUtils.getEntidad(atributo);
-		if (e != null && e.getName().equals(nameEntidad)){
+		Entity entidad = LedEntidadUtils.getEntidad(atributo);
+		if (entidad != null && aceptaEntidad(entidad)){
 			return true;
 		}
 		return false;

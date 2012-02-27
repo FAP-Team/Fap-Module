@@ -17,8 +17,8 @@
 	</p>
 </div>
 	#{list items:0..duracion, as:'anio'}
-		<b>Año ${anio}</b>
 		%{
+			def anioLabel = "Año "+(anio+1);
 			def paramName="cEconomico.valores[${anio}]";
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
@@ -27,7 +27,8 @@
 			def valorEstimado = newValue(paramName + ".valorEstimado", "Valor Estimado", cEconomico.valores[anio].valorEstimado);
 			def valorConcedido = newValue(paramName + ".valorConcedido", "Valor Concedido", cEconomico.valores[anio].valorConcedido);
 		%}
-		#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
+		<b>${anioLabel}</b>
+		#{simple.uneditable value:valorSolicitado.value, label:valorSolicitado.label /}
 		#{simple.text name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error /}
 		#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
 		#{simple.text name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value, error:valorConcedido.error /}		

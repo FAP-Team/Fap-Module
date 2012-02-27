@@ -43,8 +43,12 @@ public class TableRenderResponse<T> {
 	
 	// Constructor con Permisos
 	public TableRenderResponse(List<T> rows) {
-		List<TableRecord<T>> rowsPermisos = tablaPermisos(rows);
-		this.rows = rowsPermisos;
+		if (rows != null){
+			List<TableRecord<T>> rowsPermisos = tablaPermisos(rows);
+			this.rows = rowsPermisos;
+		} else{
+			this.rows = null;
+		}
 		this.obj = new Obj();
 		obj.rows = this.rows;
 		this.mensajes.error = Messages.messages(MessageType.ERROR);

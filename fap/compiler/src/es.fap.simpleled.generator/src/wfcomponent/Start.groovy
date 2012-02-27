@@ -19,9 +19,7 @@ public class Start implements IWorkflowComponent {
 
 	@Override
 	public void invoke(IWorkflowContext ctx) {
-        System.out.println("setting properties")
         System.setProperty("line.separator", "\n");
-        
         FileUtils.target = target;
 		generatingModule = !createSolicitud.equals("true");
 	}

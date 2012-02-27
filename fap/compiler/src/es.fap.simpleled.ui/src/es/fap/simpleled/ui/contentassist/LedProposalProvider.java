@@ -70,7 +70,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 			}
 		}
 		if (Character.isLetter(first) && first != Character.toUpperCase(first)){
-			if (getCurrentLine(context) != context.getLastCompleteNode().getStartLine() && !(semantic instanceof Tabla)){
+			if (getCurrentLine(context) != context.getLastCompleteNode().getStartLine() && !((semantic instanceof Tabla) || (semantic instanceof Permiso) || (semantic instanceof PermisoWhen))){
 				return;
 			}
 		}

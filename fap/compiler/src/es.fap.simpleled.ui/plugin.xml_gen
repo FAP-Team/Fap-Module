@@ -71,6 +71,19 @@
         </page>
     </extension>
     <extension
+            point="org.eclipse.ui.propertyPages">
+        <page
+            class="es.fap.simpleled.ui.LedExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+            id="es.fap.simpleled.Led"
+            name="Led">
+            <keywordReference id="es.fap.simpleled.ui.keyword_Led"/>
+            <enabledWhen>
+	            <adapt type="org.eclipse.core.resources.IProject"/>
+			</enabledWhen>
+	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
+        </page>
+    </extension>
+    <extension
         point="org.eclipse.ui.keywords">
         <keyword
             id="es.fap.simpleled.ui.keyword_Led"

@@ -151,7 +151,7 @@ Formulario Solicitud {
 	
 	Pagina Documentos campo=Solicitud.documentacion.documentos{
 		Accion crear redirigir=SubirArchivoAedTest mensajeOk="Documento creado en el gestor documental"
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" acepta= "image/*", "application/pdf"
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" acepta= "application/pdf", "image/*"
 	}
 	
 	Pagina EditarDocumentos campo=Solicitud.documentacion.documentos{

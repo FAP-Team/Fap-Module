@@ -31,6 +31,7 @@ public class GSubirArchivo {
 		params.putStr("id", subirArchivo.name)
 		params.putStr("tipo", "tipoCiudadano")
 		params.putStr("campo", campo.firstLower())
+		params.putStr("accept", subirArchivo.mimes.join(","))
 		if(subirArchivo.requerido != null)
 			params.put("requerido", subirArchivo.requerido)
 		if (subirArchivo.tramite != null && subirArchivo.tramite.trim() != "")

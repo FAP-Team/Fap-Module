@@ -220,13 +220,51 @@ class ControllerUtils {
         String out = "";
         if ((Pagina.class.isInstance(objeto)) || (Grupo.class.isInstance(objeto)) || (Popup.class.isInstance(objeto)) || Form.class.isInstance(objeto) || EntidadAutomatica.class.isInstance(objeto)) {
 			
+			if (Grupo.class.isInstance(objeto)) {
+				// Si es un grupo debemos incluir lood IF de los mostrarSiCheck, mostrarSiCampo, ...
+				if (objeto.siCombo != null) {
+					if (Combo.class.isInstance(objeto.siCombo)) {
+						String arrayName = "mArray"+StringUtils.getRandomName();
+						CampoUtils campo = CampoUtils.create(objeto.siCombo.campo);
+						out += "String[] ${arrayName} = new String[] {"+objeto.siComboValues.values.collect { '"'+it+'"' }.join(',')+"};\n";
+						out += "if (Arrays.asList(${arrayName}).contains(${campo.firstLower()})) {\n";
+					}
+				}
+				else if (objeto.siCheck != null) {
+					println ("Hay un check");
+					CampoUtils campo = CampoUtils.create(objeto.siCheck.campo);
+					out += "if ((${campo.firstLower()} != null) && (${campo.firstLower()} == ${objeto.siCheckValues})) {\n";
+				}
+				else if (objeto.campo != null) {
+					String arrayName = "mArray"+StringUtils.getRandomName();
+					CampoUtils campo = CampoUtils.create(objeto.campo);
+					out += "String[] ${arrayName} = new String[] {"+objeto.siCampoValues.values.collect { '"'+it+'"' }.join(',')+"};\n";
+					out += "if (Arrays.asList(${arrayName}).contains(${campo.firstLower()})) {\n";
+				}
+				else if (objeto.siExpresion != null) {
+					out += "if (${objeto.siExpresion}) {"
+				}
+			}
+			
 			if (objeto.permiso != null){
                 out += """if (secure.check("${objeto.permiso.name}", "update", (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n"""
 				validatedFields.push(new HashSet<String>());
 			}
-			
+					
 			for (Elemento elemento: objeto.elementos) {
 				out += validateCopy(elemento);
+			}
+			
+			if (Grupo.class.isInstance(objeto)) {
+				// Si es un grupo debemos incluir lood IF de los mostrarSiCheck, mostrarSiCampo, ...
+				if (objeto.siCombo != null) {
+					if (Combo.class.isInstance(objeto.siCombo)) {
+						out += "\n}";
+					}
+				}
+				if ((objeto.siCheck != null) || (objeto.campo != null) || (objeto.siExpresion != null)) {
+					out += "\n}"
+				}
 			}
 			
             if (objeto.permiso != null) {

@@ -153,10 +153,12 @@ Popup:
 Grupo:
 	grupo='Grupo' (name=ID)? (
 		('titulo' '=' titulo=STRING)? &
-		('mostrarSiCombo' siCombo=[Combo|QN] '=' siComboValues=Values)? &
-		('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false"))? &
-		('mostrarSiCampo' campo=Campo '=' siCampoValues=Values)? &
-		('mostrarSiExpresion' siExpresion=STRING)? &
+		(
+			('mostrarSiCombo' siCombo=[Combo|QN] '=' siComboValues=Values) |
+			('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false")) |
+			('mostrarSiCampo' campo=Campo '=' siCampoValues=Values) |
+			('mostrarSiExpresion' siExpresion=STRING)
+		)? &
 		('visible' '=' visible=("true" | "false"))? & 
 		("permiso" "=" permiso=[Permiso])?
 	)

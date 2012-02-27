@@ -62,4 +62,8 @@ class StringUtils {
 		return result;
 	}
 	
+	public static String getRandomName () {
+		Random random = new Random();
+		return Long.toHexString(random.nextLong());
+	}
 }

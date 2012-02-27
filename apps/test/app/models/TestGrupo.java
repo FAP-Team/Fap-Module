@@ -29,6 +29,10 @@ public class TestGrupo extends Model {
 	public String nombre;
 	
 	
+	
+	public Boolean myCheck;
+	
+	
 
 	public void init(){
 		

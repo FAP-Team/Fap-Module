@@ -159,15 +159,23 @@ Formulario Solicitud {
 			Texto ifTexto titulo="Texto" campo=Solicitud.testGrupo.nombre
  		}
  		
- 		Grupo test2MostrarSiExpresion titulo="Grupo 1: Mostrar Campo" mostrarSiCampo Solicitud.solicitante.email = "pepe@pepe.com", "juan@juan.com" {
+ 		Grupo test2MostrarSiExpresion titulo="Grupo 1: Mostrar Si Campo" mostrarSiCampo Solicitud.solicitante.email = "pepe@pepe.com", "juan@juan.com" {
 			Texto if2Texto titulo="Texto" campo=Solicitud.testGrupo.nombre
  		}
  		
+ 		Check checkMostrar1 campo=Solicitud.testGrupo.myCheck titulo="Prueba visibilidad conjunta"
  		Combo comboMostrarSi campo=Solicitud.comboTest.list titulo="Prueba para mostrarSiCombo"
  		
- 		Grupo titulo="Grupo 1: Mostrar Si Combo" mostrarSiCombo comboMostrarSi = "a"{
- 			Wiki {"El combo tiene un valor seleccionado igual a 'A'"}
+ 		Grupo titulo="Grupo 1: Mostrar Si Check" mostrarSiCheck checkMostrar1 = true {
+ 			Wiki {"El check está seleccionado"}
+ 			Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
  		}
+ 		
+ 		Grupo titulo="Grupo 1: Mostrar Si Combo" mostrarSiCombo comboMostrarSi = "a", "b" {
+ 			Wiki {"El combo tiene un valor seleccionado igual a 'A' o 'B'"}
+ 			Texto campo=Solicitud.solicitante.telefonoMovil titulo="Telefono Móvil" requerido
+ 		}
+ 		
 	}
 
 

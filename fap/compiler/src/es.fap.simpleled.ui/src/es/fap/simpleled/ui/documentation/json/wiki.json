@@ -1,1 +1,1 @@
-{"nombre":"wiki","descripcion":"","parametros":[]}
+{"nombre":"wiki","descripcion":"Convierte el texto escrito en formato Textile a HTML. Puedes consultar la sintaxis del formato en el siguiente enlace: \u003ca href\u003d\"http://thresholdstate.com/articles/4312/the-textile-reference-manual\"\u003eDocumentación Textile\u003c/a\u003e.","parametros":[{"nombre":"estilo","keyword":"estilo","tipo":"opcional","descripcion":"Especifica un estilo CSS para el wiki."}]}

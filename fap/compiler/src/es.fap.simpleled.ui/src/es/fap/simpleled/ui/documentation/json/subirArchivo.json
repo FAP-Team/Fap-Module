@@ -1,1 +1,1 @@
-{"nombre":"subirArchivo","descripcion":"Elemento para la subida de archivos al servidor de la aplicación.","parametros":[{"nombre":"_[name]_","keyword":"name","tipo":"requerido","descripcion":"Identificador del elemento."},{"nombre":"requerido","keyword":"requerido","tipo":"opcional","descripcion":"Indica la obligatoriedad de la subida de un archivo."}]}
+{"nombre":"subirArchivo","descripcion":"","parametros":[]}

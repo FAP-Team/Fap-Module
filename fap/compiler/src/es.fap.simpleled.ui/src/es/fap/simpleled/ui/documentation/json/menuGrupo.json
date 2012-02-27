@@ -1,1 +1,1 @@
-{"nombre":"menuGrupo","descripcion":"Permite añadir un grupo dentro del menú que ha sido especificado. Dentro de un grupo pueden haber enlaces o más grupos anidados.","parametros":[{"nombre":"titulo \u003d _[string]_","keyword":"titulo","tipo":"requerido","descripcion":"Texto que se mostrará en la cabecera del grupo."},{"nombre":"permiso \u003d _[permiso]_","keyword":"permiso","tipo":"opcional","descripcion":"Nombre del permiso asociado al grupo."}]}
+{"nombre":"menuGrupo","descripcion":"","parametros":[]}

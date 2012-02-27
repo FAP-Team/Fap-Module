@@ -12,7 +12,8 @@ import generator.utils.EntidadUtils;
 
 public class GSubirArchivoAed {
 
-	def SubirArchivoAed subirArchivoAed
+	SubirArchivoAed subirArchivoAed
+	CampoUtils campo;
 	
 	public static String generate(SubirArchivoAed subirArchivoAed){
 		def g = new GSubirArchivoAed();
@@ -22,7 +23,9 @@ public class GSubirArchivoAed {
 	
 	
 	public String view(){
-		EntidadUtils.addToSaveEntity("Documento");
+		// Añado la entidad que lo engloba a los parametros del Save
+		campo = CampoUtils.create(subirArchivoAed.campo);
+		EntidadUtils.addToSaveEntity(campo);
 		
 		HashStack.push(HashStackName.SAVE_EXTRA, "java.io.File ${subirArchivoAed.name}")
 		HashStack.push(HashStackName.SAVE_CODE, this);
@@ -33,7 +36,6 @@ public class GSubirArchivoAed {
 		
 		params.putStr("id", subirArchivoAed.name)
 		params.putStr("tipo", "tipoCiudadano")
-		CampoUtils campo = CampoUtils.create(subirArchivoAed.campo)
 		params.putStr("campo", campo.firstLower())
 		if(subirArchivoAed.requerido != null)
 			params.put("requerido", subirArchivoAed.requerido)
@@ -53,7 +55,7 @@ public class GSubirArchivoAed {
 
 		if(!validation.hasErrors()){
 			try {
-				aed.AedClient.saveDocumentoTemporal(dbDocumento, ${subirArchivoAed.name});
+				aed.AedClient.saveDocumentoTemporal(db${campo.str}, ${subirArchivoAed.name});
 			}catch(es.gobcan.eadmon.aed.ws.AedExcepcion e){
 				validation.addError("", "Error al subir el documento al Archivo Electrónico");
 			}

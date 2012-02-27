@@ -62,6 +62,7 @@ Entidad Fechas {
 
 Entidad TestGrupo {
 	String nombre
+	Boolean myCheck
 }
 
 Entidad TablaDeNombres {

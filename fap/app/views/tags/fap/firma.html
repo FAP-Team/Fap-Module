@@ -47,20 +47,19 @@
 <div id="cert-msg"></div>
 
 #{fap.boton id:id_boton, titulo:titulo, waitPopup:true/}
+
 <script>
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
 			var form = $('#${id}').parents('form');
-			Platino.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
-			
-			$('#${id_boton}').click(function(){
-				input = $("<input>").attr("type", "hidden").attr("name", "${id}").val("${id}");
-				form.append($(input));
-				if(firmarUrl('${url}', '${id_cert}certificado', {idFirma : '${id_firma}', idError : 'cert-msg'}) != null){
-					var value = $('#${id_firma}').val();
-					
+			Firma.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
+						
+			$('#${id_boton}').click(function(e){
+				mensajes.clear();
+				var firma = Firma.firmarDocumento('#${id_cert}certificado','${url}', '#${id_firma}', {mensajes: mensajes});
+				if(firma == null){
 					//$(this).parent('form').submit();
-					//return false;
+					return false;
 				}
 			});
 		});

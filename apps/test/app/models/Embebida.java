@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 public class Embebida {
 	// Código de los atributos
 
+	
+	
 	public String algo;
 
 	public Embebida() {

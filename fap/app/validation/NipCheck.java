@@ -26,7 +26,7 @@ public class NipCheck extends Check {
 		return true;
 	}
 	
-	public boolean validaNip (Nip nip, StringBuilder texto) {
+	public static boolean validaNip (Nip nip, StringBuilder texto) {
 		if(nip.tipo.isEmpty() && nip.valor.isEmpty()) //Tipo y valor vacios, no valida
 			return true; 
 		
@@ -103,7 +103,7 @@ public class NipCheck extends Check {
 		return true;
 	}
 
-	private boolean checkNifNieLetter(String numero){
+	private static boolean checkNifNieLetter(String numero){
 		int digitosNif = Integer.parseInt(numero.substring(0,8));
 		int letraEsperada = NIF_NIE_ASOCIATION.charAt(digitosNif % 23); 
 		int letraActual = numero.charAt(8);

@@ -203,15 +203,18 @@ Values:
 
 Elemento:
 	Grupo | AgruparCampos | 
-	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check | AgrupaBotones |
+	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
 	AreaTexto | Enlace | Form |
-	SubirArchivoAed | EditarArchivoAed | FirmaPlatinoSimple | 
+	SubirArchivo | EditarArchivo | FirmaPlatinoSimple | 
 	EntidadAutomatica | Accion
 ;
 
 Campo:
-	entidad=[Entity|IDS] (atributos=CampoAtributos)?
+	(entidad=[Entity|IDS] (
+		(atributos=CampoAtributos)?
+	))
+	| method=STRING
 ;
 
 CampoAtributos:
@@ -273,7 +276,7 @@ Wiki:
 AgrupaBotones:
 	'AgrupaBotones' (type=('normal' | 'well'))?
 	'{'
-		botones+=Boton+
+		(botones+=(Boton|Enlace))+
 	'}'
 ;
 
@@ -366,24 +369,18 @@ Columna:
 	)
 ;
 
-
 SubirArchivo:
 	elemento='SubirArchivo' name=ID (
-		(requerido?='requerido')?
-	)
-;	
-
-SubirArchivoAed:
-	elemento='SubirArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 		& ('tramite' '=' tramite=STRING)?		
 		& ('aportadoPor' '=' aportadoPor=STRING)?	// ¿Cambiar el tipo?
+		& ('acepta' '=' mimes+=STRING ("," mimes+=STRING)*)?
 	)
 ;
 
-EditarArchivoAed:
-	elemento='EditarArchivoAed' name=ID (
+EditarArchivo:
+	elemento='EditarArchivo' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 	)
@@ -393,7 +390,15 @@ FirmaPlatinoSimple:
 	elemento="FirmaSimple" (name=ID)
 		"titulo" "=" titulo=STRING
 		(
-			"documento" "=" campo=Campo
+			( documento?="documento" "=" campo=Campo)
+			(("listaFirmantes" "=" firmantes=Campo)?
+			//& (permitirFuncionario?="permitirFuncionarioHabilitado")?
+			& ("setTrue" "=" setToTrue=Campo)?)
+			& ("setCamposTo" '{'
+				setCampos+=Campo "to" value+=STRING
+				(',' setCampos+=Campo "to" value+=STRING)*
+				'}'
+			)?
 		)
 ;
 

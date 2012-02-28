@@ -15,11 +15,13 @@ import es.gobcan.platino.servicios.registro.Asunto;
 import play.modules.guice.InjectSupport;
 import play.test.UnitTest;
 import properties.PropertyPlaceholder;
+import services.aed.TiposDocumentosService;
 import static org.junit.Assume.*;
 import static org.mockito.Mockito.*;
 @InjectSupport
 public class TiposDocumentosServiceTest extends UnitTest {
 
+    /*
 	@Inject
 	static TiposDocumentosService tiposDocumentosService;
 	
@@ -30,7 +32,7 @@ public class TiposDocumentosServiceTest extends UnitTest {
 		
 	@BeforeClass
 	public static void init(){
-		hasConnecion = tiposDocumentosService.hasConnection();
+		//hasConnecion = tiposDocumentosService.hasConnection();
 	}
 	
 	@Before
@@ -59,5 +61,5 @@ public class TiposDocumentosServiceTest extends UnitTest {
 	public void getTipoDocumentoNoExistente() throws Exception{
 		tiposDocumentosService.getTipoDocumento("http://not/correct");
 	}
-	
+	*/
 }

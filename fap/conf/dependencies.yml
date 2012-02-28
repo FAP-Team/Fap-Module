@@ -9,12 +9,11 @@ require:
     - play -> pdf 0.9
     - play -> less 0.3
     - play -> recaptcha 1.2
-    - fap -> guice 1.2.1
+    - fap -> guice 1.3
+    - play -> mockito 0.1
 
     # Versión nueva de junit para solucionar bug asumme + expected
     - junit 4.10
-    - org.mockito -> mockito-all 1.9.0
-
     - org.jadira.usertype -> usertype.jodatime 1.8:
         transitive: false
     - org.jadira.usertype -> usertype.spi 1.8:

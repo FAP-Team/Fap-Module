@@ -17,6 +17,7 @@ Entidad Solicitud extends SolicitudGenerica {
 	Solicitante solicitantePersonaJuridica
 	
 	PersonaFisica amigo
+	Documento doc
 }
 
 

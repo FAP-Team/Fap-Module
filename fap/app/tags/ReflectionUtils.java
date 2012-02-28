@@ -179,6 +179,26 @@ public class ReflectionUtils {
 			} else {
 				return obj;
 			}
+		} else {
+			return getValueFromMethod(field);
+		}
+
+		return null;
+	}
+	
+	private static Object getValueFromMethod (String routeToMethod) {
+		// Debemos realizar la llamada al método que contiene el string
+		// defino el nombre de clase
+		String sClass = routeToMethod.substring(0, routeToMethod.lastIndexOf("."));
+		String _method = "";
+		try {
+			Class clazz = Class.forName(sClass);
+			Object object = clazz.newInstance();
+			_method = routeToMethod.substring(routeToMethod.lastIndexOf(".")+1, routeToMethod.lastIndexOf("("));
+			Method m1 = clazz.getMethod(_method, null);
+			return m1.invoke(object, null);
+		} catch (Exception e) {
+			System.out.println("El método no se pudo ejecutar"+routeToMethod+" class=\""+sClass+"\" method=\""+_method+"\"");
 		}
 		return null;
 	}

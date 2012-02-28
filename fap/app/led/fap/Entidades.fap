@@ -55,6 +55,11 @@ Entidad Solicitante extends Persona auditable{
 	Boolean autorizaFuncionario
 }
 
+Entidad FuncionariosHabilitados extends Singleton {
+	String texto
+//	OneToMany Firmante firmantes transient
+}
+
 // Agentes que pueden acceder a la aplicación
 Entidad Agente inheritance=joined auditable {
 	String username
@@ -83,10 +88,7 @@ Entidad Direccion embeddable auditable{
 Entidad Documento {
 	// uri del documento en el AED
 	String uri
-	Lista tipoDocumentosCiudadanos tipoCiudadano transient
-	Lista tipoDocumentosOrganismos tipoOrganismo transient
-	Lista tipoDocumentosOtrasEntidades tipoOtraEntidad transient
-	Lista tipoDocumentosTodos tipo
+	Lista tiposDocumentos tipo
 	String descripcion
 	Boolean clasificado
 	String hash
@@ -230,6 +232,9 @@ Entidad FasesRegistro {
 	Boolean registro
 	Boolean expedienteAed
 	Boolean clasificarAed
+	
+	// Probando
+	String fase
 }
 
 // Representación del expediente en platino

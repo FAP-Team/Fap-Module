@@ -301,7 +301,7 @@ import security.*;
 public class AppModule extends FapModule {
 	
 	@Override
-	void secure() {
+	protected void secure() {
 		bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
 	}
 	

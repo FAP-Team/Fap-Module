@@ -1,4 +1,4 @@
-package services;
+package services.aed;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ import play.db.jpa.JPAPlugin;
 import play.test.Fixtures;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import services.GestorDocumentalServiceException;
 import tags.StringUtils;
 import utils.WSUtils;
 
@@ -58,73 +59,32 @@ import es.gobcan.eadmon.verificacion.ws.dominio.ListaDocumentosVerificacion;
  * a la property
  * 
  */
-public class TiposDocumentosServiceImpl implements TiposDocumentosService {
+public class TiposDocumentosService {
 
-	private static Logger log = Logger.getLogger(TiposDocumentosServiceImpl.class);
-
-	private PropertyPlaceholder propertyPlaceholder;
+	private final PropertyPlaceholder propertyPlaceholder;
 	
-	private volatile TiposDocumentosInterface tiposPort;
+	private final TiposDocumentosInterface tiposPort;
 	
-	public TiposDocumentosServiceImpl(PropertyPlaceholder propertyPlaceholder){
-		init(propertyPlaceholder, false);
+	public TiposDocumentosService(PropertyPlaceholder propertyPlaceholder){
+	    this.propertyPlaceholder = propertyPlaceholder;
+        URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("wsdl/tipos-documentos/tipos-documentos.wsdl");
+        tiposPort = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
+        WSUtils.configureEndPoint(tiposPort, getEndPoint());
+        PlatinoProxy.setProxy(tiposPort, propertyPlaceholder);  
 	}
-	
-	public TiposDocumentosServiceImpl(PropertyPlaceholder propertyPlaceholder, boolean eagerInitialization){
-		init(propertyPlaceholder, eagerInitialization);
-	}
-	
-	private void init(PropertyPlaceholder propertyPlaceholder, boolean eagerInitialization){
-		this.propertyPlaceholder = propertyPlaceholder;
-		if(eagerInitialization){
-			getTiposPort();
-		}
-	}
-	
-	private TiposDocumentosInterface getTiposPort(){
-		//Double-check idiom for lazy initialization
-		TiposDocumentosInterface result = tiposPort;
-		if(result == null){
-			synchronized (this) {
-				result = tiposPort;
-				if(result == null){
-					URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("wsdl/tipos-documentos/tipos-documentos.wsdl");
-					result = tiposPort = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
-					WSUtils.configureEndPoint(tiposPort, getEndPoint());
-					PlatinoProxy.setProxy(tiposPort, propertyPlaceholder);					
-				}
-			}
-		}
-		return result;
-	}
-	
+		
 	public String getEndPoint(){
 		return propertyPlaceholder.get("fap.aed.tiposdocumentos.url");
 	}
-	
-	public String getVersion() throws Exception {
-		Holder<String> h1 = new Holder<String>();
-		Holder<String> h2 = new Holder<String>();
-		getTiposPort().obtenerVersionServicio(h1, h2);
-		return h1.value;
-	}
-	
-	@Override
-	public boolean hasConnection() {
-		boolean hasConnection = false;
-		try {
-			hasConnection = getVersion() != null;
-		}catch(Exception e){
-			log.info("El servicio no tiene coneccion con " + getEndPoint());
-		}
-		return hasConnection;
-	}
-	
-	public TipoDocumento getTipoDocumento(String uri) throws TiposDocumentosExcepcion {
+		
+	public TipoDocumento getTipoDocumento(String uri) throws GestorDocumentalServiceException {
 		if(uri == null)
 			throw new NullPointerException();
-		
-		return getTiposPort().obtenerTipoDocumento(uri);
+		try {
+		    return tiposPort.obtenerTipoDocumento(uri);
+		}catch(TiposDocumentosExcepcion e){
+		    throw new GestorDocumentalServiceException("Error recuperando el tipo de documento : " + e.getFaultInfo().getDescripcion(), e);
+		}
 	}
 
 }

@@ -113,6 +113,8 @@ public class GForm {
 			${controller.metodoEditarValidateRules()}
 			${controller.metodoPermiso()}
 			${controller.botonesMethods()}
+			${controller.metodosHashStack()}
+			${controller.metodosDeFirma()}
 			${controller.metodoBindReferences()}
 			${controller.gettersForm(container)}
 		"""; 

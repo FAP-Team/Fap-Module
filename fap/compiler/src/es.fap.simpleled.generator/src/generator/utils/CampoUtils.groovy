@@ -12,6 +12,7 @@ import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.LedPackage;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import java.util.regex.Pattern.First;
 
 
 public class CampoUtils implements Comparable{
@@ -25,7 +26,11 @@ public class CampoUtils implements Comparable{
 		}
 		CampoUtils field = new CampoUtils();
 		field.campo = campo;
-		field.str = getCampoStr(campo);
+		if (campo.method != null) {
+			field.str = campo.method;
+		} else {
+			field.str = getCampoStr(campo);
+		}
 		return field;
 	}
 	
@@ -97,6 +102,13 @@ public class CampoUtils implements Comparable{
 		return campo?.getEntidad();
 	}
 	
+	
+	public boolean isMethod () {
+		if (str.indexOf("(") != -1)
+			return true;
+		return false;
+	}
+	
 	public static String getCampoStr(Campo campo){
 		if (campo == null){
 			return null;
@@ -111,6 +123,10 @@ public class CampoUtils implements Comparable{
 			attrs = attrs.getAtributos();
 		}
 		return campoStr;
+	}
+	
+	public String dbStr(){
+		return "db" + str;
 	}
 	
 	public String firstLower(){
@@ -211,6 +227,14 @@ public class CampoUtils implements Comparable{
 		}
 		return campoStr.substring(campoStr.findIndexOf{ it == '.' } + 1)
 	}
+	
+	public String sinUltimoAtributo ()  {
+		int last = str.lastIndexOf('.');
+		if (last == -1)
+			return StringUtils.firstLower(str);
+		return StringUtils.firstLower(str).substring(0, last);
+	}
+
 	
 	public String getStr_() {
 		return StringUtils.firstLower(str.replace('.', '_'));

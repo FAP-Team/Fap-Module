@@ -52,17 +52,18 @@ Formulario Administracion permiso=administrador{
 		Check campo=Agente.funcionario titulo="Funcionario habilitado"
 	}
 		
-	Pagina Aed noForm permiso=administrador  {
+	Pagina Aed noForm permiso=administrador titulo="Gestor Documental"{
 		
-		Grupo titulo="Carpeta temporal" {
+		Grupo titulo="Configurar" {
 			Wiki {
-"La carpeta temporal es el lugar donde se guardan los documentos que todavia no se han clasificado."
-"La carpeta debe de estar creada antes de subir un documento, si no es así se producirá un error."
-"Si la carpeta ya existe, mostrará un warning."
+"Antés de poder subir un archivo es necesario que el gestor documental esté configurado. La configuración del
+servicio depende de la implementación que tengas configurada. Por ejemplo, la configuración de la implementación
+del Aed crea una carpeta en el servidor donde almacenará los documentos temporales. La implementación de sistema de ficheros
+crea la carpeta"
 			}
 			
-			Form crearCarpetaTemporal {
-				Boton crearCarpetaTemporal titulo="Crear carpeta temporal"	
+			Form configurar {
+				Boton configurar titulo="Configurar gestor documental"	
 			}
 		}
 		

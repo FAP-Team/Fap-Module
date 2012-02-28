@@ -1,10 +1,16 @@
 package platino;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import utils.WSUtils;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante;
 
 public class DatosDocumento {
 	private XMLGregorianCalendar fecha;
@@ -73,4 +79,22 @@ public class DatosDocumento {
 		this.firmaXml = firmaXml;
 	}
 
+	public void setFirma(models.Firma firma){
+	    this.firmaXml = firma.getContenido();
+     	firmantes = new ArrayList<DatosFirmante>();
+     	if(firma.getFirmantes() != null){
+    	    for (models.Firmante firmante : firma.getFirmantes()) {
+                DatosFirmante datFirm = new DatosFirmante();
+                datFirm.setIdFirmante(firmante.idvalor);
+                datFirm.setDescFirmante(firmante.nombre);
+                datFirm.setFechaFirma(WSUtils.getXmlGregorianCalendar(firmante.fechaFirma));
+                
+                // TODO: Cambiar cuando se use BD de terceros platino
+                datFirm.setCargoFirmante("Solicitante");
+                datFirm.setUriFirmante("URITest");
+                firmantes.add(datFirm);
+    	    }
+     	}
+	}
+	
 }

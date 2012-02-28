@@ -1,9 +1,14 @@
 package properties;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import play.utils.Properties;
 
 public class MapPropertyPlaceholder implements PropertyPlaceholder {
 
@@ -16,7 +21,28 @@ public class MapPropertyPlaceholder implements PropertyPlaceholder {
 	}
 	
 	public MapPropertyPlaceholder(Map<String, String> map){
-		this.map = map;
+	    play.Logger.info("Cargadas " + map.size() + " properties");
+	    this.map = new HashMap(map);
+	}
+	
+	public static MapPropertyPlaceholder loadFromFile(File file){
+	    Properties properties = new Properties();
+	    try {
+	        properties.load(new FileInputStream(file));
+	    }catch(Exception e){
+	        throw new RuntimeException("Error cargando properties desde " + file);
+	    }
+	    return new MapPropertyPlaceholder(properties);
+	}
+	
+	public static MapPropertyPlaceholder load(InputStream is){
+	    Properties properties = new Properties();
+        try {
+            properties.load(is);
+        }catch(Exception e){
+            throw new RuntimeException("Error cargando properties desde");
+        }
+        return new MapPropertyPlaceholder(properties);
 	}
 	
 	public MapPropertyPlaceholder(String ... props){

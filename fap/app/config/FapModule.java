@@ -1,97 +1,47 @@
 package config;
 
-import javax.inject.Singleton;
-
+import play.modules.guice.PlayAbstractModule;
 import properties.PropertyPlaceholder;
 import properties.PropertyPlaceholderImpl;
 import security.Secure;
 import security.SecureFap;
 import security.SecureFapGen;
-import services.AedService;
-import services.AedServiceImpl;
 import services.FirmaService;
-import services.FirmaServiceImpl;
 import services.GestorDocumentalService;
-import services.GestorDocumentalServiceImpl;
-import services.ProcedimientosService;
-import services.ProcedimientosServiceImpl;
 import services.RegistroService;
-import services.RegistroServiceImpl;
-import services.TiposDocumentosService;
-import services.TiposDocumentosServiceImpl;
+import services.aed.AedGestorDocumentalServiceImpl;
+import services.platino.PlatinoFirmaServiceImpl;
+import services.platino.PlatinoRegistroServiceImpl;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Stage;
-
-public class FapModule extends AbstractModule {
+public class FapModule extends PlayAbstractModule {
 
 	@Override
 	protected void configure() {
 		secure();
 		propertyPlaceholder();
+		gestorDocumental();
+		firma();
+		registro();
+	}
+	
+	protected void gestorDocumental(){
+	    bindLazySingletonOnDev(GestorDocumentalService.class, AedGestorDocumentalServiceImpl.class);
+	}
+	
+	protected void firma(){
+	    bindLazySingletonOnDev(FirmaService.class, PlatinoFirmaServiceImpl.class);
 	}
 
-	@Provides
-	@Singleton
-	final AedService getAedService(PropertyPlaceholder propertyPlaceholder,
-			Stage stage) {
-		return new AedServiceImpl(propertyPlaceholder,
-				stage.equals(Stage.PRODUCTION));
+	protected void registro(){
+	    bindLazySingletonOnDev(RegistroService.class, PlatinoRegistroServiceImpl.class);
 	}
-
-	@Provides
-	@Singleton
-	final TiposDocumentosService getTiposDocumentoService(
-			PropertyPlaceholder propertyPlaceholder, Stage stage) {
-		return new TiposDocumentosServiceImpl(propertyPlaceholder,
-				stage.equals(Stage.PRODUCTION));
-	}
-
-	@Provides
-	@Singleton
-	final ProcedimientosService getProcedimientosService(
-			PropertyPlaceholder propertyPlaceholder,
-			TiposDocumentosService tiposDocumentosService, Stage stage) {
-		return new ProcedimientosServiceImpl(propertyPlaceholder,
-				tiposDocumentosService, stage.equals(Stage.PRODUCTION));
-	}
-
-	@Provides
-	@Singleton
-	final FirmaService getFirmaService(PropertyPlaceholder propertyPlaceholder,
-			AedService aedService, Stage stage) {
-		return new FirmaServiceImpl(propertyPlaceholder, aedService,
-				stage.equals(Stage.PRODUCTION));
-	}
-
-	@Provides
-	@Singleton
-	final RegistroService getRegistroService(
-			PropertyPlaceholder propertyPlaceholder, AedService aedService,
-			FirmaService firmaService,
-			GestorDocumentalService gestorDocumentalService, Stage stage) {
-		return new RegistroServiceImpl(propertyPlaceholder, aedService,
-				firmaService, gestorDocumentalService,
-				stage.equals(Stage.PRODUCTION));
-	}
-
-	@Provides
-	@Singleton
-	final GestorDocumentalService getGestorDocumentalService(
-			PropertyPlaceholder propertyPlaceholder, AedService aedService,
-			Stage stage) {
-		return new GestorDocumentalServiceImpl(propertyPlaceholder,
-				stage.equals(Stage.PRODUCTION));
-	}
-
-	void secure() {
+	
+	protected void secure() {
 		bind(Secure.class).toInstance(new SecureFap(new SecureFapGen(null)));
 	}
 
-	void propertyPlaceholder() {
-		bind(PropertyPlaceholder.class).toInstance(
-				new PropertyPlaceholderImpl());
+	protected void propertyPlaceholder() {
+		bind(PropertyPlaceholder.class).toInstance(new PropertyPlaceholderImpl());
 	}
 
 }

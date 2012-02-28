@@ -27,18 +27,16 @@ public class InjectorConfig extends GuiceSupport {
 	
 	@Override
 	protected Injector configure() {
-		Stage stage;
-		if(Play.mode.isDev()){
-			stage = Stage.DEVELOPMENT;
-		}else{
-			stage = Stage.PRODUCTION;
-		}
 		injector = Guice.createInjector(stage, modulesToLoad()); 
 		return injector;
 	}
 
 	public static Injector getInjector(){
 		return injector;
+	}
+	
+	public static <T> T getBean(Class<T> clazz){
+	    return injector.getInstance(clazz);
 	}
 	
 	private List<AbstractModule> modulesToLoad(){

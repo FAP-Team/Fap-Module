@@ -30,6 +30,15 @@
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
 	def showRow   = _noRow != null? !_noRow : true
 	
+	def propertyFormatDate = properties.FapProperties.get("date.format") ?: null;
+	def formatDate = "";
+	if ((propertyFormatDate != null) && (!propertyFormatDate.equals("dd/MM/yyyy"))){
+		formatDate = propertyFormatDate.replace("yyyy", "yy");
+		formatDate = "dateFormat: '" + formatDate + "'"
+		formatDate = formatDate.toLowerCase();
+	}
+	play.Logger.debug("Format Date: "+formatDate);
+	
 }%
 
 
@@ -38,7 +47,7 @@
 	
 	<script type="text/javascript">
 		$(function(){
-			$('#${id}').datepicker();	
+			$('#${id}').datepicker({${formatDate}});	
 		});
 	</script>
 

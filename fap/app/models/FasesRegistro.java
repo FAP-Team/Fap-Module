@@ -1,3 +1,4 @@
+
 package models;
 
 import java.util.*;
@@ -15,43 +16,95 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+import enumerado.fap.gen.*;
 
 // === IMPORT REGION END ===
+	
+
 
 @Entity
 public class FasesRegistro extends Model {
 	// Código de los atributos
-
+	
+	
+	
+	
 	public Boolean borrador;
-
+	
+	
+	
+	
+	
 	public Boolean firmada;
-
+	
+	
+	
+	
+	
 	public Boolean expedientePlatino;
-
+	
+	
+	
+	
+	
 	public Boolean registro;
-
+	
+	
+	
+	
+	
 	public Boolean expedienteAed;
-
+	
+	
+	
+	
+	
 	public Boolean clasificarAed;
+	
+	
+	
+	
+	
+	public String fase;
+	
+	
 
-	public void init() {
-
+	public void init(){
+		
+		
 	}
+		
+	
 
-	// === MANUAL REGION START ===
-	public FasesRegistro() {
-		reiniciar();
-	}
-
-	public void reiniciar() {
-		borrador = false;
-		firmada = false;
-		expedientePlatino = false;
-		registro = false;
-		expedienteAed = false;
-		clasificarAed = false;
-	}
-
-	// === MANUAL REGION END ===
-
+// === MANUAL REGION START ===
+public void setFase (FaseRegistroEnum f) {
+	//play.Logger.info("setFase: "+f.toString());
+	fase = f.toString();
 }
+public FaseRegistroEnum getFaseEnum() {
+	//play.Logger.info("getValue ("+fase+")"+": "+FaseRegistroEnum.valueOf(fase));
+	return FaseRegistroEnum.valueOf(fase);
+}
+
+	
+public FasesRegistro() {
+	setFase(FaseRegistroEnum.borrador);
+	reiniciar();
+}
+
+public void reiniciar(){
+	setFase(FaseRegistroEnum.borrador);
+	borrador = false;
+	firmada = false;
+	expedientePlatino = false;
+	registro = false;
+	expedienteAed = false;
+	clasificarAed = false;	
+}
+
+
+// === MANUAL REGION END ===
+	
+	
+	}
+		

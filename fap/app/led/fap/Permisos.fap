@@ -231,6 +231,13 @@ Permiso editarSolicitud{
 	 		solicitud.registro.fasesRegistro.borrador = "false"
 		)
 	return [editar leer]
+	when
+		!usuario is visible
+		or (
+	 		agente.rolActivo = "usuario" and
+	 		solicitud.estado = "borrador"
+		)
+	return [leer]
 }
 
 

@@ -1,11 +1,14 @@
 %{
 	id = _id;
+	String accept = "";
+	if (_accept)
+		accept = "accept='${_accept}'";
 %}
 
-<div class="clearfix">
-<label for="${id}">Fichero</label>
-<div class="input">
-	<input class="input-file" id='${id}' name='${id}' type='file'>
-</div>
+<div class="clearfix ${play.mvc.Controller.validation.current().hasError(id)? "error" : ""}" >
+	<label for="${id}">Fichero</label>
+	<div class="input">
+		<input class="input-file" id='${id}' name='${id}' type='file' ${accept}>
+	</div>
 </div>
 

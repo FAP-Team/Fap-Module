@@ -7,6 +7,7 @@ import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CampoAtributos;
 import es.fap.simpleled.led.Entity
 import es.fap.simpleled.led.Form
+import es.fap.simpleled.led.FirmaPlatinoSimple;
 import es.fap.simpleled.led.MenuEnlace
 import es.fap.simpleled.led.Enlace
 import es.fap.simpleled.led.Pagina
@@ -22,6 +23,7 @@ import es.fap.simpleled.led.LedFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
@@ -161,6 +163,7 @@ import tables.TableRecord;
 import models.*;
 import tags.ReflectionUtils;
 import security.Accion;
+import platino.FirmaUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -170,6 +173,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+
+import services.FirmaService;
+import com.google.inject.Inject;
 
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
@@ -332,9 +338,24 @@ public class ${controllerName} extends ${controllerGenName} {
 		String editarRenderCall = "${controllerName}.${nameEditar}Render(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
 		String botonCode = "";
 		List<String> saveBotones = new ArrayList<String>(saveBoton);
-		saveBotones.addAll(firmaBoton);
-		if (isForm() && saveBotones.size() == 1)
+		// Le añadimos los botones de firma
+		List<FirmaPlatinoSimple> firmaBotones = new ArrayList<FirmaPlatinoSimple>(firmaBoton);
+		for (FirmaPlatinoSimple _firma: firmaBotones) {
+			saveBotones.add(_firma.name);
+		}
+		if (isForm() && saveBotones.size() == 1){
 			saveBotones.clear();
+			if (firmaBotones.size() > 0) {
+				String _name = firmaBotones.get(0).name;
+				// Un único boton de firma
+				botonCode = """
+				${controllerName}.${StringUtils.firstLower(_name)}${sufijoBoton}(${StringUtils.params(
+					intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
+					entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
+				)});
+				"""
+			}
+		}
 		else if (saveBotones.size() > 0){
 			boolean primero = true;
 			for (String boton : saveBotones) {
@@ -344,16 +365,17 @@ public class ${controllerName} extends ${controllerGenName} {
 				}
 				else
 					botonCode += "else if (${boton} != null) {"
-					botonCode += """
-						${controllerName}.${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
-							intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
-							entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
-						)});
-						${editarRenderCall}
-					}
-				""";
-			}
+				botonCode += """
+					${controllerName}.${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
+						intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
+						entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
+					)});
+					${editarRenderCall}
+				}
+			""";
 		}
+
+
 		metodoEditar = """
 			@Util // Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 			public static void ${nameEditar}(${StringUtils.params(
@@ -821,9 +843,6 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String botonesMethods(){
 		String botonesMethod = "";
 		List<String> saveBotones = new ArrayList<String>(saveBoton);
-		// Le añadimos los botones de firma
-		List<String> firmaBotones = new ArrayList<String>(firmaBoton);
-		saveBotones.addAll(firmaBotones);
 		if (isForm() && saveBotones.size() == 1){
 			saveBotones.clear();
 		}
@@ -849,6 +868,61 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (paginaAccion.accion)
 			return "\"${paginaAccion.accion}\"";
 		return "controllers.${paginaAccion.pagina.name}Controller.getAccion()";
+	}
+	
+	private String metodosDeFirma(){		
+		String botonesMethod = "";
+		List<FirmaPlatinoSimple> firmaBotones = new ArrayList<FirmaPlatinoSimple>(firmaBoton);
+		for (FirmaPlatinoSimple _firma: firmaBotones){
+			CampoUtils documento = CampoUtils.create(_firma.campo);
+			
+			String previousCampoFirmantes = """List<Firmante> firmantes = new ArrayList<Firmante>();
+				FirmaUtils.calcularFirmantes(solicitud.solicitante, firmantes);
+			""";
+			String strCampoFirmantes = "firmantes";
+			if (_firma.firmantes != null) {
+				CampoUtils firmantes = CampoUtils.create(_firma.firmantes);
+				strCampoFirmantes = "${firmantes.firstLower()}";
+				previousCampoFirmantes = "";
+			}
+			String strCampoToTrue = "";
+			if (_firma.setToTrue != null) {
+				CampoUtils campoToTrue = CampoUtils.create(_firma.setToTrue);
+				strCampoToTrue = """${campoToTrue.firstLower()} = true;
+						${campoToTrue.sinUltimoAtributo()}.save();
+				""";
+			}
+			String strCampoSetTo = "";
+			if ((_firma.setCampos != null) && (_firma.setCampos.size() > 0)) {
+				for (int i = 0; i < _firma.setCampos.size(); i++) {
+					CampoUtils campoSetTo = CampoUtils.create(_firma.setCampos[i]);
+					strCampoSetTo += """${campoSetTo.firstLower()} = "${_firma.value[i]}";
+						${campoSetTo.sinUltimoAtributo()}.save();
+				""";
+				}
+			}			
+			botonesMethod += """
+				@Util
+				public static void ${StringUtils.firstLower(_firma.name)}${sufijoBoton}(${StringUtils.params(
+					intermedias.collect{it.typeId},
+					almacenNoSingle.typeId,
+					entidad.typeId,
+					entidadPagina.typeVariable,
+					saveEntities.collect{it.typeVariable},
+					saveExtra
+				)}){
+					${entidad.entidad? "$entidad.entidad.name $entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};" : ""}
+					${previousCampoFirmantes}
+					FirmaUtils.firmar(${documento.firstLower()}, ${strCampoFirmantes}, firma, null);
+					if (!Messages.hasErrors()) {
+						${strCampoToTrue}
+						${strCampoSetTo}
+						${entidad.variable}.save();
+					}
+				}
+			""";
+		}
+		return botonesMethod;
 	}
 	
 	private static boolean hayAnterior(Object o){

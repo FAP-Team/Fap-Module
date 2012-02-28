@@ -25,6 +25,7 @@ import play.libs.Crypto;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
+import play.mvc.Scope;
 import play.mvc.Http.Request;
 import play.mvc.Scope.Params;
 import play.mvc.Scope.Session;
@@ -33,6 +34,7 @@ import play.mvc.With;
 import properties.FapProperties;
 import security.Secure;
 import services.FirmaService;
+import services.FirmaServiceException;
 import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
@@ -47,7 +49,7 @@ public class SecureController extends GenericController{
 	private static Logger log = Logger.getLogger(SecureController.class);
 	
     // ~~~ Login
-    public static void login() throws Throwable {
+    public static void login() {
     	Http.Cookie remember = request.cookies.get("rememberme");
         if(remember != null && remember.value.indexOf("-") > 0) {
             String sign = remember.value.substring(0, remember.value.indexOf("-"));
@@ -77,7 +79,7 @@ public class SecureController extends GenericController{
      * @param certificado
      * @throws Throwable
      */
-    public static void authenticateCertificate(String certificado, String token, String firma) throws Throwable {
+    public static void authenticateCertificate(String certificado, String token, String firma) {
     	checkAuthenticity(); //Comprueba token de autenticidad
     	
     	if(!FapProperties.getBoolean("fap.login.type.cert")){
@@ -92,46 +94,32 @@ public class SecureController extends GenericController{
     	
     	//Comprueba que el token firmado sea el correcto
     	if(!token.equals(serverToken)) validation.addError("login-certificado", "El token firmado no es correcto");
-    	
-    	//Comprueba que la firma es correcta
+    	 
+    	//Valida la firma
     	if(!validation.hasErrors()){
-    		log.debug("Validando firma");
-    		
-    		Boolean firmaCorrecta = firmaService.verificarPKCS7(token, firma);
-    		if(!firmaCorrecta){
-    			validation.addError("login-certificado", "La firma no es correcta");
-    			log.debug("Firma validada");
-    		}
-    		
+    	    try {
+    	        boolean firmaCorrecta = firmaService.validarFirmaTexto(token.getBytes(), firma);
+    	        if(!firmaCorrecta)
+    	            validation.addError("login-certificado", "La firma no es válida");
+    	    }catch(Exception e){
+    	        validation.addError("login-certificado", "Error validando la firma");
+    	    }
     	}
     	
-    	//Valida el certificado
-    	String certificadoExtraido = null;
-    	if(!validation.hasErrors()){
-    		log.debug("Validando certificado");
-    		certificadoExtraido = firmaService.extraerCertificadoDeFirma(firma);
-    		Boolean certificadoValido = firmaService.validarCertificado(certificadoExtraido);
-    		if(!certificadoValido) validation.addError("login-certificado", "El certificado no es válido");
-    		log.debug("Certificado validado");
-    	}
-    	
-    	//Extrae la información del certificado
-    	String username = null;
-    	String name = null;
-    	if(!validation.hasErrors()){
-    		log.debug("Extrayendo información del certificado");
-    		InfoCert info = firmaService.extraerInformacion(certificadoExtraido);
-    		if(info == null) {
-    			validation.addError("login-certificado", "No se pudo extraer la información del certificado");
-    		}else{
-    			username = info.getId();
-    			name = info.getNombreCompleto();
-    			if(username == null) validation.addError("login-certificado", "No se pudo extraer la información del certificado");
-    			
-    			log.debug("Información del certificado" + info);
-    		}
-    		
-    	}
+    	//Obtiene información del certificado
+        String username = null;
+        String name = null;
+        if (!validation.hasErrors()) {
+            try {
+                InfoCert cert = firmaService.extraerCertificado(firma);
+                username = cert.getId();
+                name = cert.getNombreCompleto();
+            } catch (FirmaServiceException e) {
+                log.error(e);
+                validation.addError("login-certificado", "El certificado no es válido");
+            }
+        }
+
     	
     	//Si hay errores redirige a la página de login
     	if(validation.hasErrors()){
@@ -175,8 +163,8 @@ public class SecureController extends GenericController{
      * @throws Throwable
      */
     public static void authenticate(@Required String username, String password, boolean remember) throws Throwable {
-    	checkAuthenticity();
-
+        checkAuthenticity();
+        
         int accesosFallidos = 0;
         if (session.get("accesoFallido") != null) {
         	accesosFallidos = new Integer(session.get("accesoFallido"));
@@ -280,14 +268,18 @@ public class SecureController extends GenericController{
     }
     
     @Util
-    static void redirectToOriginalURL() throws Throwable {
+    static void redirectToOriginalURL() {
         String url = flash.get("url");
+        redirectToUrlOrOriginal(url);
+        redirect(url);
+    }
+    
+    static void redirectToUrlOrOriginal(String url) {
         if(url == null) {
             url = RoutesUtils.getDefaultRoute(); 
         }
         redirect(url);
     }
-
 
     
     /**
@@ -299,10 +291,8 @@ public class SecureController extends GenericController{
     @Util
     public static void changeRol(String url, String rol){
     	checkAuthenticity();
-    	log.debug("Cambiando rol a :" + rol);
     	AgenteController.getAgente().cambiarRolActivo(rol);
-    	log.debug("Redirigiendo a :" + url);
-    	redirect(url);
+    	redirectToUrlOrOriginal(url);
     }
         
 }

@@ -1,396 +1,293 @@
-Formulario Solicitud {
-	
-    Menu {
-    	Enlace "Volver" pagina=Solicitudes
-    	
-    	Grupo "Combos" {
-			Enlace "Combos por defecto" pagina=Combos
-			Enlace "Combos sobreescritos" pagina=CombosOverwrite
-			Enlace "Valores por defecto" pagina=ValoresPorDefecto
-			Enlace "ErrorCombos" pagina=PaginaCombosError
-			Enlace "Combos dependientes" pagina=PaginaCombosDependientes
-		}
-		
-		Grupo "Solicitante" {
-			Enlace "Solicitante" pagina=Solicitante
-		}
-		
-		Grupo "Direccion"{
-			Enlace "Direccion" pagina=Direcciones
-			Enlace "Fecha" pagina=Fechas
-		}
-		
-		Grupo "Tablas y PopUps" {
-			Enlace "Tablas Simples" pagina=TablasSimples
-		}
-	
-		Grupo "SubirArchivo" {
-			Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
-		}
-		
-		Grupo "Pagina del módulo"{
-			Enlace "Titulo" pagina=PCEconomicos
-		}	
-
-		Grupo "Test Grupos" {
-			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
-		}
-		
-		Grupo "Paginas" {
-			Enlace "Combo ManytoOne" pagina=ComboTablasPaginas
-			Enlace "Tablas con páginas" pagina=PaginasTablas
-		}
-		
-		Grupo "Tipos de Ayuda" {
-			Enlace "Ayuda Texto" pagina=TipoDeAyudaTexto
-			Enlace "Ayuda Popover" pagina=TipoDeAyudaPopover
-		}
-
-		Grupo "Permisos" {
-			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administrador
-			Enlace "Permiso grupo" pagina=PermisoGrupo permiso=administrador
-			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable
-			Enlace "Permiso tablas" pagina=PermisoEnTablas 
-		}
-
-		Grupo "Páginas Especiales" {
-			Enlace "Presentación" pagina=PaginaFirma
-		}
-		
-		Grupo "Anotación Inject"{
-			Enlace "Inject" pagina=PaginaInject
-		}
-		
-		Enlace "Salir" accion="fap.SecureController.logout"
-    }
-		
-	Pagina Fechas campo=Solicitud{
-		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" requerido
-		Fecha campo=Solicitud.fechas.fecha titulo="Fecha" requerido
-	}
-	
-	Pagina Direcciones campo=Solicitud{
-		Direccion campo=Solicitud.direccionTest.direccion
-	}
-	
-	Pagina Combos inicial campo=Solicitud{
-
-		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
-			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"
-			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas"
-			Combo campo=Solicitud.comboTest.ref comboTexto=nombre titulo="Combo de Referencias"
-			Combo campo=Solicitud.comboTest.refMultiple comboTexto=nombre titulo="Combo de Referencias Múltiples"
-		}
-				
-		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRef titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
-			Columna campo=ComboTestRef.id
-			Columna campo=ComboTestRef.nombre expandir
-		}
-	}
-
-	Pagina CombosOverwrite campo=Solicitud{
-		
-		Grupo titulo="Combos sobreescritos en el controlador manual" {
-			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)"
-			Combo listaLong campo=Solicitud.comboTest.listOverwriteLong titulo="Combo manual (Long)"
-			Combo listaMultiple campo=Solicitud.comboTest.listMultipleOverwrite titulo="Combo múltiple manual (Set<String>)"
-			Combo listaMultipleLong campo=Solicitud.comboTest.listMultipleOverwriteLong titulo="Combo múltiple manual (Long<Long>)"
-			Combo referencia campo=Solicitud.comboTest.refOverwrite comboTexto=nombre titulo="Combo de Referencias (Filtrando las que tienen en el nombre a)"
-			Combo referenciaMultiple campo=Solicitud.comboTest.refMultipleOverwrite comboTexto=nombre titulo="Combo de Referencias Múltiples (Filtrando las que tienen en el nombre a)"
-			
-			Combo wsjson campo=Solicitud.comboTest.wsjson titulo="Valor del combo obtenido desde un servicio web en JSON"
-			Combo wsxml campo=Solicitud.comboTest.wsxml titulo="Valor del combo obtenido desde un servicio web en XML"
-		}
-				
-		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRef titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
-			Columna campo=ComboTestRef.id
-			Columna campo=ComboTestRef.nombre expandir
-			
-		}
-	}
-
-	Popup ComboTestRef campo=ComboTestRef {
-		Texto campo=ComboTestRef.nombre requerido
-		Combo campo=ComboTestRef.list titulo="Combo"
-	}
-	
-	Pagina PaginaCombosError campo=Solicitud{
-		Wiki { "Error en los combos. Debe autocompletar los combos elegidos desde flash al estar el campo de texto vacío." }
-		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
-		Combo campo=Solicitud.comboError comboTexto=nombre titulo="Error del combo"
-		Combo campo=Solicitud.comboErrorMany comboTexto=nombre titulo="Error del combo Many"
-	}
-	
-	Pagina PaginaCombosDependientes campo=Solicitud{
-		Grupo titulo="Combos dependendientes"{
-			Combo paises campo=Solicitud.comboTest.paises titulo="Paises"
-			Combo comunidades campo=Solicitud.comboTest.comunidades titulo="Comunidades Autónomas" dependeDe=paises
-			Combo provincias campo=Solicitud.comboTest.provincias titulo="Provincias" dependeDe=comunidades
-			Combo municipios campo=Solicitud.comboTest.municipios titulo="Municipios" dependeDe=provincias
-		}
-	}
-	
-	Pagina ValoresPorDefecto campo=Solicitud{
-		Texto mString campo=Solicitud.valoresPorDefectoTest.mString titulo="String"
-		Texto mLong campo=Solicitud.valoresPorDefectoTest.mLong titulo="Long"
-		Texto mInteger campo=Solicitud.valoresPorDefectoTest.mInteger titulo="Integer"
-		Check mBoolean campo=Solicitud.valoresPorDefectoTest.mBoolean titulo="Boolean"
-		Texto mDouble campo=Solicitud.valoresPorDefectoTest.mDouble titulo="Double"
-		Texto mLongText campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText"
-		
-		Texto mLongText2 campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText 3" password
-		
-		Texto mEmbeddable campo=Solicitud.valoresPorDefectoTest.mEmbebida.algo titulo="String embeddable" 
-	}
-	
-	Pagina TablasSimples campo=Solicitud{
-		Tabla tablaNombres campo=Solicitud.tablaDeNombres titulo="Solicitantes"
-		popupCrear=popupNombre
-		popupLeer=popupNombre
-		popupEditar=popupNombre
-		popupBorrar=popupNombre
-		columnasAutomaticas exclude=id, fecha
-		{
-		}
-	}
-
-	Popup popupNombre campo=Solicitud.tablaDeNombres {
-		Texto campo=TablaDeNombres.nombre titulo="Nombre"
-		Texto campo=TablaDeNombres.apellido titulo="Apellido"
-	}
-	
-	Pagina Documentos campo=Solicitud.documentacion.documentos{
-		Accion crear redirigir=SubirArchivoAedTest	
-		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
-	}
-	
-	Pagina SubirArchivoAedTest campo=Solicitud{
-		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos{
-			Columna campo=Documento.id
-		}	
-	}
-	
-	Pagina EjemplosdeGrupos campo=Solicitud{
-		Grupo testMostrarSiExpresion titulo="Grupo 1: Mostrar Si Expression" mostrarSiExpresion "4 == 4"{
-			Texto ifTexto titulo="Texto" campo=Solicitud.testGrupo.nombre
- 		}
- 		
- 		Grupo test2MostrarSiExpresion titulo="Grupo 1: Mostrar Si Campo" mostrarSiCampo Solicitud.solicitante.email = "pepe@pepe.com", "juan@juan.com" {
-			Texto if2Texto titulo="Texto" campo=Solicitud.testGrupo.nombre
- 		}
- 		
- 		Check checkMostrar1 campo=Solicitud.testGrupo.myCheck titulo="Prueba visibilidad conjunta"
- 		Combo comboMostrarSi campo=Solicitud.comboTest.list titulo="Prueba para mostrarSiCombo"
- 		
- 		Grupo titulo="Grupo 1: Mostrar Si Check" mostrarSiCheck checkMostrar1 = true {
- 			Wiki {"El check está seleccionado"}
- 			Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
- 		}
- 		
- 		Grupo titulo="Grupo 1: Mostrar Si Combo" mostrarSiCombo comboMostrarSi != "a" {
- 			Wiki {"El combo tiene un valor distinto a 'A'"}
- 		}
- 		
-	}
-	
-	Pagina Paginas_Combo_niveles campo=PaginasTab{
-		Accion crear redirigir=ComboTablasPaginas
-		Texto campo=PaginasTab.nombre titulo="Nombre"
-	}
-	
-	Pagina ComboTablasPaginas campo=Solicitud{
-		Grupo titulo="Para poder usar la pagina: Tablas con páginas (Nivel 1)"{
-			Combo campo=Solicitud.paginas titulo="Combo ManyToOne" comboTexto=nombre
-		}
-		
-		Tabla comboTP campo=PaginasTab paginaCrear=Paginas_Combo_niveles  titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
-			Columna campo=PaginasTab.nombre
-		}
-	}
-	
-	Popup popupNombreTablas campo=Solicitud.paginas.tpaginas_nivel1.tpaginas_nivel2.tpaginas_nivel3.tablaDeNombres {
-		Texto campo=TablaDeNombres.nombre titulo="Nombre"
-		Texto campo=TablaDeNombres.apellido titulo="Apellido"
-	}
-	
-	Popup popupNombreTablasPaginas campo=Solicitud.popupPaginas.tpaginas_nivel3.tablaDeNombres {
-		Texto campo=TablaDeNombres.nombre titulo="Nombre"
-		Texto campo=TablaDeNombres.apellido titulo="Apellido"
-	}
-	
-	Pagina Paginas_nivel3 campo=Solicitud.paginas.tpaginas_nivel1.tpaginas_nivel2.tpaginas_nivel3{
-		Accion crear redirigir=Paginas_nivel2
-		Accion editar redirigir=Paginas_nivel2
-		Accion borrar redirigir=Paginas_nivel2	
-		Texto titulo="Nombre nivel 3" campo=TablaPaginas_nivel3.nombre
-		Texto titulo="Numero nivel 3" campo=TablaPaginas_nivel3.numero
-		Fecha campo=TablaPaginas_nivel3.fecha titulo="Fecha nivel 3"
-		Combo campo=TablaPaginas_nivel3.list titulo="Lista seleccion nivel 3"
-		Tabla tablaNombres campo=TablaPaginas_nivel3.tablaDeNombres titulo="Solicitantes"
-		popupCrear=popupNombreTablas
-		popupLeer=popupNombreTablas
-		popupEditar=popupNombreTablas
-		popupBorrar=popupNombreTablas
-		columnasAutomaticas exclude=id, fecha
-		{
-		}
-	}
-	
-	Pagina Paginas_nivel2 campo=Solicitud.paginas.tpaginas_nivel1.tpaginas_nivel2{
-		Accion crear redirigir=Paginas_nivel1
-		Accion editar redirigir=Paginas_nivel1
-		Accion borrar redirigir=Paginas_nivel1		
-		Texto titulo="Nombre" campo=TablaPaginas_nivel2.nombre
-		Combo campo=TablaPaginas_nivel2.comboMul comboTexto=nombre titulo="Combo nivel 2"
-		Combo campo=TablaPaginas_nivel2.list titulo="Lista seleccion nivel 2"
-		Grupo titulo="Tabla visible si estamos en modo NO CREACION" permiso=paginaTablaVer{
-			Tabla paginasT2 campo=TablaPaginas_nivel2.tpaginas_nivel3 paginaCrear=Paginas_nivel3 paginaEditar=Paginas_nivel3 paginaBorrar=Paginas_nivel3 titulo="Tabla con paginas nivel 3" columnasAutomaticas exclude=id{}
-		}
-	}
-	
-	Pagina Paginas_nivel1 campo=Solicitud.paginas.tpaginas_nivel1 {
-		Accion crear redirigir=PaginasTablas
-		Accion editar redirigir=PaginasTablas
-		Accion borrar redirigir=PaginasTablas	
-		Texto titulo="Nombre" campo=TablaPaginas_nivel1.nombre
-		Texto titulo="Numero entero" campo=TablaPaginas_nivel1.numero
-		Combo campo=TablaPaginas_nivel1.comboMul comboTexto=nombre titulo="Combo"
-		Fecha campo=TablaPaginas_nivel1.fecha titulo="Fecha"
-		Grupo titulo="Tabla visible si estamos en modo NO CREACION" permiso=paginaTablaVer{
-			Tabla paginasT2 campo=TablaPaginas_nivel1.tpaginas_nivel2 paginaCrear=Paginas_nivel2 paginaEditar=Paginas_nivel2 paginaBorrar=Paginas_nivel2 titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
-		}
-	}
-	
-	Pagina VerPaginas_nivel1 campo=Solicitud.paginas.tpaginas_nivel1 {
-		Texto titulo="Nombre" campo=TablaPaginas_nivel1.nombre
-		Texto titulo="Numero entero" campo=TablaPaginas_nivel1.numero
-		Combo campo=TablaPaginas_nivel1.comboMul comboTexto=nombre titulo="Combo"
-		Fecha campo=TablaPaginas_nivel1.fecha titulo="Fecha"
-		Tabla paginasT2 campo=TablaPaginas_nivel1.tpaginas_nivel2 titulo="Tabla con paginas nivel 2" columnasAutomaticas exclude=id{}
-	}
-	
-	Pagina CrearPaginasPopUpPagina campo=Solicitud.popupPaginas.tpaginas_nivel3{
-		Accion crear redirigir=PaginasTablas
-		Accion editar redirigir=PaginasTablas
-		Accion borrar redirigir=PaginasTablas
-		Texto titulo="Nombre tabla con pagina en popUp" campo=TablaPaginas_nivel3.nombre
-		Texto titulo="Numero tabla con pagina en popUp" campo=TablaPaginas_nivel3.numero
-		Fecha campo=TablaPaginas_nivel3.fecha titulo="Fecha tabla con pagina en popUp"
-		Combo campo=TablaPaginas_nivel3.list titulo="Lista seleccion tabla con pagina en popUp"
-		Tabla tablaNombres campo=TablaPaginas_nivel3.tablaDeNombres titulo="Solicitantes tabla con pagina en popUp"
-		popupCrear=popupNombreTablasPaginas
-		popupLeer=popupNombreTablasPaginas
-		popupEditar=popupNombreTablasPaginas
-		popupBorrar=popupNombreTablasPaginas
-		columnasAutomaticas exclude=id, fecha
-		{
-		}
-	}
-	
-	Popup popupPagina campo=Solicitud.popupPaginas {
-		Texto campo=TablaPopUpPaginas.nombre titulo="Nombre popUp"
-		Texto campo=TablaPopUpPaginas.apellido titulo="Apellido popUp"
-		Tabla paginasT3 campo=TablaPopUpPaginas.tpaginas_nivel3 paginaCrear=CrearPaginasPopUpPagina paginaEditar=CrearPaginasPopUpPagina paginaBorrar=CrearPaginasPopUpPagina titulo="Tabla con paginas dentro de popUp" columnasAutomaticas exclude=id{}
-	}
-	
-	Pagina PaginasTablas campo=Solicitud{
-		Grupo titulo="Tablas con paginas"{
-			Texto titulo="Titulo" campo=Solicitud.paginas.nombre
-			Wiki {"Para poder usar esta tabla, es necesario haber seleccionado un valor del combo en la pagina: 'Combo ManyToOne'"}
-			Boton irComboManyToOne titulo="Ir a Combo ManyToOne" pagina=ComboTablasPaginas
-			Tabla paginasT campo=Solicitud.paginas.tpaginas_nivel1 paginaLeer=VerPaginas_nivel1 paginaCrear=Paginas_nivel1 paginaEditar=Paginas_nivel1 paginaBorrar=Paginas_nivel1 titulo="Tabla con paginas" columnasAutomaticas exclude=id{}
-		}
-		Grupo titulo="Tablas con popups y paginas"{
-			Tabla tablaNombres campo=Solicitud.popupPaginas titulo="Solicitantes"
-			popupCrear=popupPagina
-			popupLeer=popupPagina
-			popupEditar=popupPagina
-			popupBorrar=popupPagina
-			columnasAutomaticas exclude=id
-		{
-		}
-		}	
-	}
-
-
-	Pagina PermisoPagina campo=Solicitud permiso=administrador{
-		Wiki {"Si puedes ver esta página tienes que ser administrador."}
-	}
-	
-	Pagina PermisoGrupo campo=Solicitud permiso=administrador {
-		Wiki {"La página tiene un grupo que es sólo visible para administradores"}
-		Grupo permiso=administrador {
-			Wiki {"Este grupo es sólo visible para administradores"}	
-		}
-	}
-	
-	Pagina PermisoNoEditable campo=Solicitud permiso=noEditable {
-		Wiki {"Esta página es no editable"}	
-		Texto ifTexto titulo="Texto" campo=Solicitud.solicitante.nombreCompleto
-		Boton noHagoNada titulo="No hago Nada"
-	}
-	
-	Pagina PermisoEnTablas campo=Solicitud{
-		Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono"
-		Tabla comboTestRef campo=ComboTestRef popup=ComboTestRefPermiso titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
-			Columna campo=ComboTestRef.id
-			Columna campo=ComboTestRef.nombre expandir
-		}
-	}
-	
-	Popup ComboTestRefPermiso campo=ComboTestRef permiso=editAdminVisibleUser {
-		Texto campo=ComboTestRef.nombre requerido
-		Combo campo=ComboTestRef.list titulo="Combo"
-	}
-	
-	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {
-	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido
-	    Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido  	
-	    Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido  	
-	    Texto campo=Solicitud.solicitante.telefonoMovil titulo="Teléfono Móvil"  	
-	    Texto campo=Solicitud.solicitante.fax titulo="Fax"  	
-	    Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar  	
-	    Texto campo=Solicitud.solicitante.web titulo="Página web"
-
-	    PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física"
-	    
-	    SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Solicitante Persona Fisica"
-	 	SolicitantePersonaJuridica personaSolicitantePersonaJuridica campo=Solicitud.solicitantePersonaJuridica titulo="Solicitante Persona Juridica"
-	}
-	
-	Pagina TipoDeAyudaTexto campo=Solicitud{
-		Grupo ayudasDeTexto titulo="Ayudas de tipo texto simples"{
-			Texto campo=Solicitud.solicitante.telefonoFijo titulo="Texto" requerido ayuda="Ésto es una ayudita"
-			Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" ayuda="Ayuda de fecha"
-			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas" ayuda="Ayuda del combo simple"
-			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas" ayuda="Ayuda del otro combo" requerido
-			Boton noHagoNada titulo="Guardar desde aquí" ayuda="Ayuda del botón"
-		}
-	}
-	
-	Pagina TipoDeAyudaPopover campo=Solicitud{
-		Grupo ayudasDePopover titulo="Ayudas de tipo popover"{
-			Texto campo=Solicitud.solicitante.telefonoMovil titulo="Texto" requerido ayuda="Titulo de la Ayuda. Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)
-			Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" ayuda="Titulo de la Ayuda de fecha.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)
-			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas" ayuda="Ayuda del combo simple.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)
-			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas" ayuda="Ayuda del otro combo.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover) requerido
-			Boton noHagoNada titulo="Guardar desde aquí" ayuda="Titulo de la Ayuda del botón.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)
-		}
-	}
-	
-	Pagina PaginaFirma campo=Solicitud {
-		Wiki { "Botónm simple y botón de firma, que no hacen nada" }
-		Form form {
-			AgrupaBotones well {
-				Boton botonSimple titulo="Botón que no hace nada"
-				Boton botonSimple2 titulo="Botón 2 que nada"
-			}
-			FirmaSimple firmaSimple titulo="Firma Simple (por ahora no hace nada)" documento=Solicitud.registro.oficial
-		}
-	}
-	
-	Pagina PaginaInject campo=Solicitud {
-		Wiki {"Se inyectó correctamente el servicio en el controlador"}
-	}
-	
-}
+Formulario Solicitud { Menu { Enlace "Volver" pagina = Solicitudes Grupo
+"Combos" { Enlace "Combos por defecto" pagina = Combos Enlace
+"Combos sobreescritos" pagina = CombosOverwrite Enlace "Valores por defecto"
+pagina = ValoresPorDefecto Enlace "ErrorCombos" pagina = PaginaCombosError
+Enlace "Combos dependientes" pagina = PaginaCombosDependientes } Grupo
+"Solicitante" { Enlace "Solicitante" pagina = Solicitante } Grupo "Direccion" {
+Enlace "Direccion" pagina = Direcciones Enlace "Fecha" pagina = Fechas } Grupo
+"Tablas y PopUps" { Enlace "Tablas Simples" pagina = TablasSimples } Grupo
+"SubirArchivo" { Enlace "SubirArchivoAed" pagina = SubirArchivoAedTest Enlace
+"SubirArchivoAed2" pagina = SubirArchivoTabla } Grupo "Pagina del módulo" {
+Enlace "Titulo" pagina = PCEconomicos } Grupo "Test Grupos" { Enlace
+"Ejemplos Grupos I" pagina = EjemplosdeGrupos } Grupo "Paginas" { Enlace
+"Combo ManytoOne" pagina = ComboTablasPaginas Enlace "Tablas con páginas"
+pagina = PaginasTablas } Grupo "Tipos de Ayuda" { Enlace "Ayuda Texto" pagina =
+TipoDeAyudaTexto Enlace "Ayuda Popover" pagina = TipoDeAyudaPopover } Grupo
+"Permisos" { Enlace "Permiso pagina" pagina = PermisoPagina permiso =
+administrador Enlace "Permiso grupo" pagina = PermisoGrupo permiso =
+administrador Enlace "Permiso no editable" pagina = PermisoNoEditable permiso =
+noEditable Enlace "Permiso tablas" pagina = PermisoEnTablas } Grupo
+"Páginas Especiales" { Enlace "Presentación" pagina = PaginaFirma } Grupo
+"Anotación Inject" { Enlace "Inject" pagina = PaginaInject } Grupo
+"Aportaciones" { Enlace "Aportaciones" pagina = Aportacion } Enlace "Salir"
+accion = "fap.SecureController.logout" } Pagina Fechas campo = Solicitud {
+Fecha campo = Solicitud . fechas . fechaRequerida titulo = "Fecha Obligatoria"
+requerido Fecha campo = Solicitud . fechas . fecha titulo = "Fecha" requerido }
+Pagina Direcciones campo = Solicitud { Texto campo =
+"utils.TemporalUtils.getMyString()" titulo = "Texto" Direccion campo =
+Solicitud . direccionTest . direccion } Pagina Combos inicial campo = Solicitud
+{ Grupo titulo = "Campos sin sobreescribir los controladores manuales" { Combo
+campo = Solicitud . comboTest . list titulo = "Combo de Tabla de Tablas" Combo
+campo = Solicitud . comboTest . listMultiple titulo =
+"Combo Múltiple de Tabla de Tablas" Combo campo = Solicitud . comboTest . ref
+comboTexto = nombre titulo = "Combo de Referencias" Combo campo = Solicitud .
+comboTest . refMultiple comboTexto = nombre titulo =
+"Combo de Referencias Múltiples" } Tabla comboTestRef campo = ComboTestRef
+popup = ComboTestRef titulo =
+"Referencias de combos (Los combos no se actualizan automáticamente)" { Columna
+campo = ComboTestRef . id Columna campo = ComboTestRef . nombre expandir } }
+Pagina CombosOverwrite campo = Solicitud { Grupo titulo =
+"Combos sobreescritos en el controlador manual" { Combo lista campo = Solicitud
+. comboTest . listOverwrite titulo = "Combo manual (String)" Combo listaLong
+campo = Solicitud . comboTest . listOverwriteLong titulo =
+"Combo manual (Long)" Combo listaMultiple campo = Solicitud . comboTest .
+listMultipleOverwrite titulo = "Combo múltiple manual (Set<String>)" Combo
+listaMultipleLong campo = Solicitud . comboTest . listMultipleOverwriteLong
+titulo = "Combo múltiple manual (Long<Long>)" Combo referencia campo =
+Solicitud . comboTest . refOverwrite comboTexto = nombre titulo =
+"Combo de Referencias (Filtrando las que tienen en el nombre a)" Combo
+referenciaMultiple campo = Solicitud . comboTest . refMultipleOverwrite
+comboTexto = nombre titulo =
+"Combo de Referencias Múltiples (Filtrando las que tienen en el nombre a)"
+Combo wsjson campo = Solicitud . comboTest . wsjson titulo =
+"Valor del combo obtenido desde un servicio web en JSON" Combo wsxml campo =
+Solicitud . comboTest . wsxml titulo =
+"Valor del combo obtenido desde un servicio web en XML" } Tabla comboTestRef
+campo = ComboTestRef popup = ComboTestRef titulo =
+"Referencias de combos (Los combos no se actualizan automáticamente)" { Columna
+campo = ComboTestRef . id Columna campo = ComboTestRef . nombre expandir } }
+Popup ComboTestRef campo = ComboTestRef { Texto campo = ComboTestRef . nombre
+requerido Combo campo = ComboTestRef . list titulo = "Combo" } Pagina
+PaginaCombosError campo = Solicitud { Wiki {
+"Error en los combos. Debe autocompletar los combos elegidos desde flash al estar el campo de texto vacío."
+} Texto campo = Solicitud . solicitante . telefonoFijo titulo = "Telefono"
+requerido Combo campo = Solicitud . comboError comboTexto = nombre titulo =
+"Error del combo" Combo campo = Solicitud . comboErrorMany comboTexto = nombre
+titulo = "Error del combo Many" } Pagina PaginaCombosDependientes campo =
+Solicitud { Grupo titulo = "Combos dependendientes" { Combo paises campo =
+Solicitud . comboTest . paises titulo = "Paises" Combo comunidades campo =
+Solicitud . comboTest . comunidades titulo = "Comunidades Autónomas" dependeDe
+= paises Combo provincias campo = Solicitud . comboTest . provincias titulo =
+"Provincias" dependeDe = comunidades Combo municipios campo = Solicitud .
+comboTest . municipios titulo = "Municipios" dependeDe = provincias } } Pagina
+ValoresPorDefecto campo = Solicitud { Texto titulo = "Texto de un método" campo
+= "utils.TemporalUtils.getMyString()" Texto mString campo = Solicitud .
+valoresPorDefectoTest . mString titulo = "String" Texto mLong campo = Solicitud
+. valoresPorDefectoTest . mLong titulo = "Long" Texto mInteger campo =
+Solicitud . valoresPorDefectoTest . mInteger titulo = "Integer" Check mBoolean
+campo = Solicitud . valoresPorDefectoTest . mBoolean titulo = "Boolean" Texto
+mDouble campo = Solicitud . valoresPorDefectoTest . mDouble titulo = "Double"
+Texto mLongText campo = Solicitud . valoresPorDefectoTest . mLongText titulo =
+"LongText" Texto mLongText2 campo = Solicitud . valoresPorDefectoTest .
+mLongText titulo = "LongText 3" password Texto mEmbeddable campo = Solicitud .
+valoresPorDefectoTest . mEmbebida . algo titulo = "String embeddable" } Pagina
+TablasSimples campo = Solicitud { Tabla tablaNombres campo = Solicitud .
+tablaDeNombres titulo = "Solicitantes" popup = popupNombre columnasAutomaticas
+exclude = id , fecha { } } Popup popupNombre campo = Solicitud . tablaDeNombres
+{ Texto campo = TablaDeNombres . nombre titulo = "Nombre" requerido Texto campo
+= TablaDeNombres . apellido titulo = "Apellido" } Pagina Documentos campo =
+Solicitud . documentacion . documentos { Accion crear redirigir =
+SubirArchivoAedTest mensajeOk = "Documento creado en el gestor documental"
+SubirArchivo fileAportacion campo = Documento requerido tramite = "Solicitud"
+aportadoPor = "CIUDADANO" acepta = "application/pdf" , "image/*" } Pagina
+EditarDocumentos campo = Solicitud . documentacion . documentos { Accion editar
+redirigir = SubirArchivoAedTest EditarArchivo fileAportacion campo = Documento
+} Pagina SubirArchivoAedTest campo = Solicitud { Tabla documentos campo =
+Solicitud . documentacion . documentos paginaCrear = Documentos paginaEditar =
+EditarDocumentos { Columna campo = Documento . id titulo = "ID" Columna campo =
+Documento . tipo titulo = "Tipo" Columna campo = Documento . descripcion titulo
+= "Descripción" expandir Columna funcion =
+"<a href=\"${Documento.urlDescarga}\">Descargar</a>" titulo = "" } } Pagina
+SubirArchivoTabla { Tabla solicitudes campo = Solicitud paginaCrear =
+SubirArchivoCrear paginaEditar = SubirArchivoEditar { Columna campo = Solicitud
+. doc . tipo Columna campo = Solicitud . doc . descripcion Columna campo =
+Solicitud . doc . urlDescarga } } Pagina SubirArchivoCrear campo = Solicitud {
+SubirArchivo subirArchivo campo = Solicitud . doc requerido acepta = "image/*"
+, "application/pdf" } Pagina SubirArchivoEditar campo = Solicitud {
+EditarArchivo editarArchivo campo = Solicitud . doc requerido } Pagina
+EjemplosdeGrupos campo = Solicitud { Grupo testMostrarSiExpresion titulo =
+"Grupo 1: Mostrar Si Expression" mostrarSiExpresion "4 == 4" { Texto ifTexto
+titulo = "Texto" campo = Solicitud . testGrupo . nombre } Grupo
+test2MostrarSiExpresion titulo = "Grupo 1: Mostrar Si Campo" mostrarSiCampo
+Solicitud . solicitante . email = "pepe@pepe.com" , "juan@juan.com" { Texto
+if2Texto titulo = "Texto" campo = Solicitud . testGrupo . nombre } Check
+checkMostrar1 campo = Solicitud . testGrupo . myCheck titulo =
+"Prueba visibilidad conjunta" Combo comboMostrarSi campo = Solicitud .
+comboTest . list titulo = "Prueba para mostrarSiCombo" Grupo titulo =
+"Grupo 1: Mostrar Si Check" mostrarSiCheck checkMostrar1 = true { Wiki {
+"El check está seleccionado" } Texto campo = Solicitud . solicitante .
+telefonoFijo titulo = "Telefono" requerido } Grupo titulo =
+"Grupo 1: Mostrar Si Combo" mostrarSiCombo comboMostrarSi != "a" { Wiki {
+"El combo tiene un valor distinto a 'A'" } } } Pagina Paginas_Combo_niveles
+campo = PaginasTab { Accion crear redirigir = ComboTablasPaginas Texto campo =
+PaginasTab . nombre titulo = "Nombre" } Pagina ComboTablasPaginas campo =
+Solicitud { Grupo titulo =
+"Para poder usar la pagina: Tablas con páginas (Nivel 1)" { Combo campo =
+Solicitud . paginas titulo = "Combo ManyToOne" comboTexto = nombre } Tabla
+comboTP campo = PaginasTab paginaCrear = Paginas_Combo_niveles titulo =
+"Referencias de combos (Los combos no se actualizan automáticamente)" { Columna
+campo = PaginasTab . nombre } } Popup popupNombreTablas campo = Solicitud .
+paginas . tpaginas_nivel1 . tpaginas_nivel2 . tpaginas_nivel3 . tablaDeNombres
+{ Texto campo = TablaDeNombres . nombre titulo = "Nombre" Texto campo =
+TablaDeNombres . apellido titulo = "Apellido" } Popup popupNombreTablasPaginas
+campo = Solicitud . popupPaginas . tpaginas_nivel3 . tablaDeNombres { Texto
+campo = TablaDeNombres . nombre titulo = "Nombre" Texto campo = TablaDeNombres
+. apellido titulo = "Apellido" } Pagina Paginas_nivel3 campo = Solicitud .
+paginas . tpaginas_nivel1 . tpaginas_nivel2 . tpaginas_nivel3 { Accion crear
+redirigir = Paginas_nivel2 Accion editar redirigir = Paginas_nivel2 Accion
+borrar redirigir = Paginas_nivel2 Texto titulo = "Nombre nivel 3" campo =
+TablaPaginas_nivel3 . nombre Texto titulo = "Numero nivel 3" campo =
+TablaPaginas_nivel3 . numero Fecha campo = TablaPaginas_nivel3 . fecha titulo =
+"Fecha nivel 3" Combo campo = TablaPaginas_nivel3 . list titulo =
+"Lista seleccion nivel 3" Tabla tablaNombres campo = TablaPaginas_nivel3 .
+tablaDeNombres titulo = "Solicitantes" popupCrear = popupNombreTablas popupLeer
+= popupNombreTablas popupEditar = popupNombreTablas popupBorrar =
+popupNombreTablas columnasAutomaticas exclude = id , fecha { } } Pagina
+Paginas_nivel2 campo = Solicitud . paginas . tpaginas_nivel1 . tpaginas_nivel2
+{ Accion crear redirigir = Paginas_nivel1 Accion editar redirigir =
+Paginas_nivel1 Accion borrar redirigir = Paginas_nivel1 Texto titulo = "Nombre"
+campo = TablaPaginas_nivel2 . nombre Combo campo = TablaPaginas_nivel2 .
+comboMul comboTexto = nombre titulo = "Combo nivel 2" Combo campo =
+TablaPaginas_nivel2 . list titulo = "Lista seleccion nivel 2" Grupo titulo =
+"Tabla visible si estamos en modo NO CREACION" permiso = paginaTablaVer { Tabla
+paginasT2 campo = TablaPaginas_nivel2 . tpaginas_nivel3 paginaCrear =
+Paginas_nivel3 paginaEditar = Paginas_nivel3 paginaBorrar = Paginas_nivel3
+titulo = "Tabla con paginas nivel 3" columnasAutomaticas exclude = id { } } }
+Pagina Paginas_nivel1 campo = Solicitud . paginas . tpaginas_nivel1 { Accion
+crear redirigir = PaginasTablas Accion editar redirigir = PaginasTablas Accion
+borrar redirigir = PaginasTablas Texto titulo = "Nombre" campo =
+TablaPaginas_nivel1 . nombre Texto titulo = "Numero entero" campo =
+TablaPaginas_nivel1 . numero Combo campo = TablaPaginas_nivel1 . comboMul
+comboTexto = nombre titulo = "Combo" Fecha campo = TablaPaginas_nivel1 . fecha
+titulo = "Fecha" Grupo titulo = "Tabla visible si estamos en modo NO CREACION"
+permiso = paginaTablaVer { Tabla paginasT2 campo = TablaPaginas_nivel1 .
+tpaginas_nivel2 paginaCrear = Paginas_nivel2 paginaEditar = Paginas_nivel2
+paginaBorrar = Paginas_nivel2 titulo = "Tabla con paginas nivel 2"
+columnasAutomaticas exclude = id { } } } Pagina VerPaginas_nivel1 campo =
+Solicitud . paginas . tpaginas_nivel1 { Texto titulo = "Nombre" campo =
+TablaPaginas_nivel1 . nombre Texto titulo = "Numero entero" campo =
+TablaPaginas_nivel1 . numero Combo campo = TablaPaginas_nivel1 . comboMul
+comboTexto = nombre titulo = "Combo" Fecha campo = TablaPaginas_nivel1 . fecha
+titulo = "Fecha" Tabla paginasT2 campo = TablaPaginas_nivel1 . tpaginas_nivel2
+titulo = "Tabla con paginas nivel 2" columnasAutomaticas exclude = id { } }
+Pagina CrearPaginasPopUpPagina campo = Solicitud . popupPaginas .
+tpaginas_nivel3 { Accion crear redirigir = PaginasTablas Accion editar
+redirigir = PaginasTablas Accion borrar redirigir = PaginasTablas Texto titulo
+= "Nombre tabla con pagina en popUp" campo = TablaPaginas_nivel3 . nombre Texto
+titulo = "Numero tabla con pagina en popUp" campo = TablaPaginas_nivel3 .
+numero Fecha campo = TablaPaginas_nivel3 . fecha titulo =
+"Fecha tabla con pagina en popUp" Combo campo = TablaPaginas_nivel3 . list
+titulo = "Lista seleccion tabla con pagina en popUp" Tabla tablaNombres campo =
+TablaPaginas_nivel3 . tablaDeNombres titulo =
+"Solicitantes tabla con pagina en popUp" popupCrear = popupNombreTablasPaginas
+popupLeer = popupNombreTablasPaginas popupEditar = popupNombreTablasPaginas
+popupBorrar = popupNombreTablasPaginas columnasAutomaticas exclude = id , fecha
+{ } } Popup popupPagina campo = Solicitud . popupPaginas { Texto campo =
+TablaPopUpPaginas . nombre titulo = "Nombre popUp" Texto campo =
+TablaPopUpPaginas . apellido titulo = "Apellido popUp" Tabla paginasT3 campo =
+TablaPopUpPaginas . tpaginas_nivel3 paginaCrear = CrearPaginasPopUpPagina
+paginaEditar = CrearPaginasPopUpPagina paginaBorrar = CrearPaginasPopUpPagina
+titulo = "Tabla con paginas dentro de popUp" columnasAutomaticas exclude = id {
+} } Pagina PaginasTablas campo = Solicitud { Grupo titulo =
+"Tablas con paginas" { Texto titulo = "Titulo" campo = Solicitud . paginas .
+nombre Wiki {
+"Para poder usar esta tabla, es necesario haber seleccionado un valor del combo en la pagina: 'Combo ManyToOne'"
+} Boton irComboManyToOne titulo = "Ir a Combo ManyToOne" pagina =
+ComboTablasPaginas Tabla paginasT campo = Solicitud . paginas . tpaginas_nivel1
+paginaLeer = VerPaginas_nivel1 paginaCrear = Paginas_nivel1 paginaEditar =
+Paginas_nivel1 paginaBorrar = Paginas_nivel1 titulo = "Tabla con paginas"
+columnasAutomaticas exclude = id { } } Grupo titulo =
+"Tablas con popups y paginas" { Tabla tablaNombres campo = Solicitud .
+popupPaginas titulo = "Solicitantes" popupCrear = popupPagina popupLeer =
+popupPagina popupEditar = popupPagina popupBorrar = popupPagina
+columnasAutomaticas exclude = id { } } } Pagina PermisoPagina campo = Solicitud
+permiso = administrador { Wiki {
+"Si puedes ver esta página tienes que ser administrador." } } Pagina
+PermisoGrupo campo = Solicitud permiso = administrador { Wiki {
+"La página tiene un grupo que es sólo visible para administradores" } Grupo
+permiso = administrador { Wiki {
+"Este grupo es sólo visible para administradores" } } } Pagina
+PermisoNoEditable campo = Solicitud permiso = noEditable { Wiki {
+"Esta página es no editable" } Texto ifTexto titulo = "Texto" campo = Solicitud
+. solicitante . nombreCompleto Boton noHagoNada titulo = "No hago Nada" }
+Pagina PermisoEnTablas campo = Solicitud { Texto campo = Solicitud .
+solicitante . telefonoFijo titulo = "Telefono" Tabla comboTestRef campo =
+ComboTestRef popup = ComboTestRefPermiso titulo =
+"Referencias de combos (Los combos no se actualizan automáticamente)" { Columna
+campo = ComboTestRef . id Columna campo = ComboTestRef . nombre expandir } }
+Popup ComboTestRefPermiso campo = ComboTestRef permiso = editAdminVisibleUser {
+Texto campo = ComboTestRef . nombre requerido Combo campo = ComboTestRef . list
+titulo = "Combo" } Pagina Solicitante guardarParaPreparar campo = Solicitud {
+Solicitante personaSolicitante campo = Solicitud . solicitante titulo =
+"Solicitante" requerido Direccion campo = Solicitud . solicitante . domicilio
+titulo = "Domicilio Social" requerido Texto campo = Solicitud . solicitante .
+telefonoFijo titulo = "Teléfono" requerido Texto campo = Solicitud .
+solicitante . telefonoMovil titulo = "Teléfono Móvil" Texto campo = Solicitud .
+solicitante . fax titulo = "Fax" Texto campo = Solicitud . solicitante . email
+titulo = "Correo electrónico" requerido duplicar Texto campo = Solicitud .
+solicitante . web titulo = "Página web" PersonaFisica personita campo =
+Solicitud . amigo titulo = "Amigo es Persona Física" SolicitantePersonaFisica
+personaSolicitantePersonaFisica campo = Solicitud . solicitantePersonaFisica
+titulo = "Solicitante Persona Fisica" SolicitantePersonaJuridica
+personaSolicitantePersonaJuridica campo = Solicitud .
+solicitantePersonaJuridica titulo = "Solicitante Persona Juridica" } Pagina
+TipoDeAyudaTexto campo = Solicitud { Grupo ayudasDeTexto titulo =
+"Ayudas de tipo texto simples" { Texto campo = Solicitud . solicitante .
+telefonoFijo titulo = "Texto" requerido ayuda = "Ésto es una ayudita" Fecha
+campo = Solicitud . fechas . fechaRequerida titulo = "Fecha Obligatoria" ayuda
+= "Ayuda de fecha" Combo campo = Solicitud . comboTest . list titulo =
+"Combo de Tabla de Tablas" ayuda = "Ayuda del combo simple" Combo campo =
+Solicitud . comboTest . listMultiple titulo =
+"Combo Múltiple de Tabla de Tablas" ayuda = "Ayuda del otro combo" requerido
+Boton noHagoNada titulo = "Guardar desde aquí" ayuda = "Ayuda del botón" } }
+Pagina TipoDeAyudaPopover campo = Solicitud { Grupo ayudasDePopover titulo =
+"Ayudas de tipo popover" { Texto campo = Solicitud . solicitante .
+telefonoMovil titulo = "Texto" requerido ayuda =
+"Titulo de la Ayuda. Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!."
+( propover ) Fecha campo = Solicitud . fechas . fechaRequerida titulo =
+"Fecha Obligatoria" ayuda =
+"Titulo de la Ayuda de fecha.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!."
+( propover ) Combo campo = Solicitud . comboTest . list titulo =
+"Combo de Tabla de Tablas" ayuda =
+"Ayuda del combo simple.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!."
+( propover ) Combo campo = Solicitud . comboTest . listMultiple titulo =
+"Combo Múltiple de Tabla de Tablas" ayuda =
+"Ayuda del otro combo.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!."
+( propover ) requerido Boton noHagoNada titulo = "Guardar desde aquí" ayuda =
+"Titulo de la Ayuda del botón.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!."
+( propover ) } } Pagina PaginaFirma campo = Solicitud { Grupo prepararFirmar
+titulo = "Paso 1. Preparar para firmar" mostrarSiCampo Solicitud . registro .
+fasesRegistro . fase = "Borrador" { Wiki {
+"Se deberá preparar para firmar la solicitud. " } Form formPreparar {
+AgrupaBotones well { Boton prepararParaFirmar titulo = "Preparar para Firmar"
+Boton prepararParaFirmarFuncionarioHabilitado titulo =
+"Prepar para Funcionario*" ayuda =
+"Preparar para Funcionario. Prepara la solicitud para que pueda ser firmada por el funcionario habilitado, pero antes deberá descargar el documento que autoriza al funcionario, firmarlo e incluirlo en la documentación de la solicitud"
+( propover ) } Wiki {
+"_NOTA_: Si pulsas sobre preparar para firmar ...... bla bla" } } } Grupo
+volverFasePreparar titulo =
+"Paso 2. Modificar estado de la solicitud para volver a anterior"
+mostrarSiCampo Solicitud . registro . fasesRegistro . fase = "Preparada" ,
+"Preparada Funcionario" { Form formModificarEstado { AgrupaBotones well { Boton
+botonModificar titulo = "Volver al estado anterior" } } } Grupo grupoFirma
+titulo = "Paso 3. Firma de la solicitud" permiso = autorizaFuncionario
+mostrarSiCampo Solicitud . registro . fasesRegistro . fase = "Preparada" { // Documento que firmamos
+AgrupaBotones well { Enlace descargaDocumento campo = Solicitud . registro .
+oficial . urlDescarga titulo = "Descargar documento a firmar" } Form formFirma
+{ FirmaSimple firmaSimple titulo = "Firma Simple" documento = Solicitud .
+registro . oficial listaFirmantes = Solicitud . registro . firmantes setTrue =
+Solicitud . registro . fasesRegistro . firmada setCamposTo { Solicitud .
+registro . fasesRegistro . fase to "Firmada" } } } Grupo grupoFirmaFuncionario
+titulo = "Paso 3. Firma de la solicitud por Funcionario Habilitado" permiso =
+autorizaFuncionario mostrarSiCampo Solicitud . registro . fasesRegistro . fase
+= "Preparada Funcionario" { AgrupaBotones well { Enlace descargaDocumento campo
+= Solicitud . registro . oficial . urlDescarga titulo =
+"Descargar documento a firmar" estilo = "btn" } Form formFirmaFuncionario {
+FirmaSimple firmaSimpleFuncionario titulo = "Firma Simple" documento =
+Solicitud . registro . oficial listaFirmantes = Solicitud . registro .
+firmantes setTrue = Solicitud . registro . fasesRegistro . firmada setCamposTo
+{ Solicitud . registro . fasesRegistro . fase to "Firmada" } } } Grupo
+grupoYaFirmada titulo = "Otro Paso. Después de la solicitud" mostrarSiCampo
+Solicitud . registro . fasesRegistro . fase = "Firmada" { Wiki {
+"La solicitud ya ha sido firmada" } } } Pagina PaginaInject campo = Solicitud {
+Wiki { "Se inyectó correctamente el servicio en el controlador" } } }

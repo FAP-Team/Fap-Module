@@ -7,8 +7,8 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 
 	Pagina Aportacion {
 		
-		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="boton"
-		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="boton"
+		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="btn"
+		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="btn"
 
 		Tabla documentos 
 		    titulo="Documentos nuevos pendientes de aportar" 
@@ -19,7 +19,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			paginaCrear=DocumentosAportacion
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
-			Columna campo=Documento.descripcion titulo="Tipo" expandir
+			Columna campo=Documento.descripcion titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
@@ -32,7 +32,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	
 	Pagina DocumentosAportacion campo=SolicitudGenerica.aportaciones.actual.documentos{
 		Accion crear redirigir=Aportacion
-		SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
 	
 	Pagina AportacionAportados {		
@@ -41,43 +41,43 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			popupLeer=PopUpDocPresentados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80" 
-			Columna campo=Documento.descripcion titulo="Tipo" expandir
+			Columna campo=Documento.descripcion titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
-		Enlace titulo="Volver" pagina=Aportacion estilo="boton"
+		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
 	}
 	
 	
 	Pagina AportacionRecibos {
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
-			popupLeer=PopUpDocAportados
 		{
-			Columna campo=Documento.fechaSubida titulo="Fecha" expandir
+			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+			Columna campo=Documento.descripcion titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		
-		Enlace titulo="Volver" pagina=Aportacion estilo="boton"
+		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
 	}
 	
 	Popup PopUpDocPresentados titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos{
-		EditarArchivoAed documentoPresentado campo=Documento requerido
+		EditarArchivo documentoPresentado campo=Documento requerido
 	}
 	
 	Popup PopUpDocProcesos titulo="Documentación" campo=SolicitudGenerica.aportaciones.actual.documentos{
-		EditarArchivoAed documentoProceso campo=Documento requerido
+		EditarArchivo documentoProceso campo=Documento requerido
 	}
 	
 	Popup PopUpDocAportados titulo="Documentación" campo=SolicitudGenerica.documentacionAportada.documentos {
-		EditarArchivoAed documentoAportado campo=Documento requerido
+		EditarArchivo documentoAportado campo=Documento requerido
 	}
 		
 	Pagina AportacionPresentar {
 	  	Grupo titulo="Presentar Aportación de Documentos" {
 			Wiki {"Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
 
-			Enlace campo=SolicitudGenerica.aportaciones.actual.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+			Enlace campo=SolicitudGenerica.aportaciones.actual.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="btn"
 		
 			Form modificarBorrador redirigir=Aportacion permiso=aportacionModificar{
 				Wiki {"Puede realizar cambios antes de su presentación definitiva."}
@@ -94,7 +94,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			Wiki {"La solicitud de aportación será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud pulsando el enlace 'Obtener recibo'." }
 			
 			Form presentar redirigir=AportacionRecibos {
-				FirmaSimple firmarRepresentante titulo="Firmar y presentar" documento=SolicitudGenerica.aportaciones.actual.oficial
+				FirmaSimple firmarRepresentante titulo="Firmar y presentar" documento=SolicitudGenerica.aportaciones.actual.oficial listaFirmantes=SolicitudGenerica.registro.firmantes
 			}
 			
 			Grupo titulo="Incorporar Documentos sin Registro de Entrada" permiso=adminGestorRevisor {

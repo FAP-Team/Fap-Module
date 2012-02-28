@@ -284,4 +284,13 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			error("La lista de acciones no puede ser vacía", LedPackage.Literals.ACCIONES__ACCIONES);
 	}
 	
+	@Check
+	public void checkSubirArchivoMimeTypes(SubirArchivo subirArchivo){
+		Pattern pattern = Pattern.compile("[\\w-]+/(\\*|[\\w-]+)");
+		for (int i = 0; i < subirArchivo.getMimes().size(); i++){
+			if (!pattern.matcher(subirArchivo.getMimes().get(i)).matches())
+				error("El tipo mime especificado no es válido. Tiene que ser tipo/subtipo o tipo/*. Por ejemplo: application/pdf", LedPackage.Literals.SUBIR_ARCHIVO__MIMES, i);
+		}
+	}
+	
 }

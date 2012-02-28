@@ -57,6 +57,7 @@ public class ValoresPorDefectoTest extends Model {
 	public String mLista;
 
 	/*default = "c"*/
+
 	@Embedded
 	public Embebida mEmbebida;
 

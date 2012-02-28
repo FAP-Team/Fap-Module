@@ -367,16 +367,15 @@ public class ${controllerName} extends ${controllerGenName} {
 				else
 					botonCode += "else if (${boton} != null) {"
 				botonCode += """
-					${controllerName}.${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
-						intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
-						entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
-					)});
-					${editarRenderCall}
-				}
-			""";
+						${controllerName}.${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
+							intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
+							entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
+						)});
+						${editarRenderCall}
+					}
+				""";
+			}
 		}
-
-
 		metodoEditar = """
 			@Util // Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 			public static void ${nameEditar}(${StringUtils.params(

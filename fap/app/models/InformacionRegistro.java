@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -16,58 +15,36 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+
 // === IMPORT REGION END ===
-	
 
-
+@Auditable
 @Entity
 public class InformacionRegistro extends Model {
 	// Código de los atributos
-	
-	
-	@org.hibernate.annotations.Columns(columns={@Column(name="fechaRegistro"),@Column(name="fechaRegistroTZ")})
-	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
-	
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRegistro"), @Column(name = "fechaRegistroTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaRegistro;
-	
-	
-	
-	
-	
+
 	public String unidadOrganica;
-	
-	
-	
-	
-	
+
 	public String numeroRegistro;
-	
-	
-	
-	
-	
+
 	public String numeroRegistroGeneral;
-	
-	
 
-	public void init(){
-		
-		
+	public void init() {
+
 	}
-		
-	
 
-// === MANUAL REGION START ===
-	public void setDataFromJustificante(models.JustificanteRegistro justificante){
+	// === MANUAL REGION START ===
+	public void setDataFromJustificante(models.JustificanteRegistro justificante) {
 		fechaRegistro = justificante.getFechaRegistro();
 		unidadOrganica = justificante.getUnidadOrganica();
 		numeroRegistro = justificante.getUnidadOrganica();
 		numeroRegistroGeneral = justificante.getNumeroRegistroGeneral();
 		save();
 	}
-// === MANUAL REGION END ===
-	
-	
-	}
-		
+	// === MANUAL REGION END ===
+
+}

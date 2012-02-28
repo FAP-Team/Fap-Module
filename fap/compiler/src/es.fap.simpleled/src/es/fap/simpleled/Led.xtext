@@ -391,8 +391,7 @@ FirmaPlatinoSimple:
 		"titulo" "=" titulo=STRING
 		(
 			( documento?="documento" "=" campo=Campo)
-			(("listaFirmantes" "=" firmantes=Campo)?
-			//& (permitirFuncionario?="permitirFuncionarioHabilitado")?
+			(("listaFirmantes" "=" firmantes=Campo)
 			& ("setTrue" "=" setToTrue=Campo)?)
 			& ("setCamposTo" '{'
 				setCampos+=Campo "to" value+=STRING

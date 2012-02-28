@@ -61,9 +61,6 @@ GET /Solicitud/documentos DocumentosController.index
 POST /Solicitud/documentos/editar DocumentosController.editar
 POST /Solicitud/documentos/crear DocumentosController.crear
 
-GET /Solicitud/editardocumentos EditarDocumentosController.index
-POST /Solicitud/editardocumentos/editar EditarDocumentosController.editar
-
 GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
 POST /Solicitud/ejemplosdegrupos/editar EjemplosdeGruposController.editar
 
@@ -79,14 +76,7 @@ POST /Solicitud/paginacomboserror/editar PaginaCombosErrorController.editar
 GET /Solicitud/paginafirma PaginaFirmaController.index
 
 GET /Solicitud/paginafirma/firmaSimpleFirmantes PaginaFirmaController.tablafirmaSimpleFirmantes
-GET /Solicitud/paginafirma/firmaSimpleFuncionarioFirmantes PaginaFirmaController.tablafirmaSimpleFuncionarioFirmantes
-POST /Solicitud/paginafirma/formFirma PaginaFirmaController.formFirma
-
-POST /Solicitud/paginafirma/formFirmaFuncionario PaginaFirmaController.formFirmaFuncionario
-
-POST /Solicitud/paginafirma/formModificarEstado PaginaFirmaController.formModificarEstado
-
-POST /Solicitud/paginafirma/formPreparar PaginaFirmaController.formPreparar
+POST /Solicitud/paginafirma/form PaginaFirmaController.form
 
 GET /Solicitud/paginainject PaginaInjectController.index
 POST /Solicitud/paginainject/editar PaginaInjectController.editar
@@ -171,16 +161,6 @@ GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
 POST /Solicitud/subirarchivoaedtest/editar SubirArchivoAedTestController.editar
 
 GET /Solicitud/subirarchivoaedtest/documentos SubirArchivoAedTestController.tabladocumentos
-GET /Solicitud/subirarchivocrear SubirArchivoCrearController.index
-POST /Solicitud/subirarchivocrear/editar SubirArchivoCrearController.editar
-POST /Solicitud/subirarchivocrear/crear SubirArchivoCrearController.crear
-
-GET /Solicitud/subirarchivoeditar SubirArchivoEditarController.index
-POST /Solicitud/subirarchivoeditar/editar SubirArchivoEditarController.editar
-
-GET /Solicitud/subirarchivotabla SubirArchivoTablaController.index
-
-GET /Solicitud/subirarchivotabla/solicitudes SubirArchivoTablaController.tablasolicitudes
 GET /Solicitud/tablassimples TablasSimplesController.index
 POST /Solicitud/tablassimples/editar TablasSimplesController.editar
 

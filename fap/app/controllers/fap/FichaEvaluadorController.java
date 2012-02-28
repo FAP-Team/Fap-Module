@@ -60,9 +60,9 @@ public class FichaEvaluadorController extends Controller {
 			List<Documento> documentos = evaluacion.getDocumentosAccesibles();
 			int duracion = tipoEvaluacion.duracion-1;
 			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos, expedienteUrl, duracion, idEvaluacion);
-		//}else{
-		//	forbidden();
-		//}
+		}else{
+			forbidden();
+		}
 	}
 
 	private static String redirectToFirstPage(Long idSolicitud) {

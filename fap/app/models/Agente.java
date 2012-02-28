@@ -25,40 +25,24 @@ import play.mvc.Scope.Session;
 public class Agente extends Model {
 	// Código de los atributos
 
-	
-	
 	public String username;
 
-	
-	
 	public String password;
 
-	
 	@Email
-	
 	public String email;
 
-	
-	
 	public String name;
 
-	
 	@ElementCollection
 	@ValueFromTable("roles")
-	
 	public Set<String> roles;
 
-	
 	@ValueFromTable("roles")
-	
 	public String rolActivo;
 
-	
-	
 	public String acceso;
 
-	
-	
 	public Boolean funcionario;
 
 	public Agente() {

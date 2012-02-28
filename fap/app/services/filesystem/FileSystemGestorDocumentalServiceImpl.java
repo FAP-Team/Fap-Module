@@ -203,7 +203,9 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         
         File file = new File(temporalPath, uri);
             
+        try{
         IO.write(contenido, file);
+        }catch(Exception e){e.printStackTrace();};
         
         documento.uri = uri;
         documento.clasificado = false;

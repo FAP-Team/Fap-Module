@@ -3,7 +3,7 @@ Permiso paginaTablaVer{
 	return editable
 }
 
-PermisoGrafico autorizaFuncionario {
+Permiso autorizaFuncionario {
 	vars
 		SolicitudGenerica solicitud
 	when
@@ -12,18 +12,8 @@ PermisoGrafico autorizaFuncionario {
 	return editable
 	
 	when solicitud.solicitante.autorizaFuncionario = "true"
-	return none
+	return denegar
 	
 	else
-	return editable
-}
-
-PermisoGrafico _editar{
-	when accion = editar
-	return editable
-}
-
-PermisoGrafico _crear{
-	when accion = crear
 	return editable
 }

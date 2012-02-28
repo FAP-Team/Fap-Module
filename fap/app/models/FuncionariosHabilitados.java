@@ -1,4 +1,3 @@
-
 package models;
 
 import java.util.*;
@@ -18,33 +17,24 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION START ===
 
 // === IMPORT REGION END ===
-	
-
 
 @Entity
 public class FuncionariosHabilitados extends Singleton {
 	// Código de los atributos
-	
-	
-	
-	
+
 	public String texto;
-	
-	
 
-	public void init(){
+	public void init() {
 		super.init();
-		
-	}
-		
-	
 
-// === MANUAL REGION START ===
-	public static List<Firmante> getFirmantes () {
+	}
+
+	// === MANUAL REGION START ===
+	public static List<Firmante> getFirmantes() {
 		play.Logger.info("getFirmantes");
 		List<Firmante> todos = new ArrayList<Firmante>();
-		List< models.Agente> agentes =  models.Agente.findAll();
-		for ( models.Agente agent : agentes) {
+		List<models.Agente> agentes = models.Agente.findAll();
+		for (models.Agente agent : agentes) {
 			if (agent.funcionario) {
 				Firmante firmante = new Firmante(agent);
 				todos.add(firmante);
@@ -53,7 +43,5 @@ public class FuncionariosHabilitados extends Singleton {
 		return todos;
 	}
 	// === MANUAL REGION END ===
-	
-	
-	}
-		
+
+}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class TableRenderNoPermisos<T> {
 		for(int i = 0; i < fields.length; i++)
 			includeParams[i] = "rows." + fields[i];
 		
-		Map<String,List<String>> valueFromTable = getValueFromTableField();
+		Map<String,List<String>> valueFromTable = getValueFromTableField(fieldsSet);
 		JSONSerializer flex = new JSONSerializer()
 			.include(includeParams)
 			.transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class);
@@ -48,21 +49,22 @@ public class TableRenderNoPermisos<T> {
 		return serialize;
 	}
 	
-	public HashMap<String,List<String>> getValueFromTableField() {
+	public HashMap<String,List<String>> getValueFromTableField(Set<String> fieldsSet) {
 		HashMap<String,List<String>> valueFromTable = new HashMap<String,List<String>>();
 		if ((rows != null) && (!rows.isEmpty())) {
 			T row = rows.get(0);
-			java.util.List<String> fields = ReflectionUtils.getFieldsNamesForClass(row.getClass());
-			for (String field : fields) {
+			 Iterator it = fieldsSet.iterator();
+	            while(it.hasNext()) {
+	            	String _it = (String) it.next();
 				Field f = null;
-				try { f = row.getClass().getField(field);} 
+				try { f = ReflectionUtils.getFieldRecursivelyFromClass(row.getClass(), _it);} 
 				catch (Exception e) {e.printStackTrace();}
 				if (f != null) {
 					ValueFromTable annotation = f.getAnnotation(ValueFromTable.class);
 					if(annotation != null){
 						if (!valueFromTable.containsKey(annotation.value()))
 							valueFromTable.put(annotation.value(), new ArrayList<String>());
-						valueFromTable.get(annotation.value()).add(field);
+						valueFromTable.get(annotation.value()).add(_it);
 					}
 				}
 			}

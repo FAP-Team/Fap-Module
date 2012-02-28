@@ -27,7 +27,7 @@
 	
 }%
 
-	<button type="submit" class="boton" id="${id}" ${disabled} #{if style}style="${style}"#{/if} >${label}</button>
+	<input type="submit" class="boton" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
 	
 	#{if popup}
 	<script>
@@ -49,11 +49,16 @@
 		}); 
 		#{/if}
 		#{else}
-		$(function() { 
-			$('#${id}').parents('form').submit(function(){
+		$(function() {
+			form = $('#${id}').parents('form');
+			form.submit(function(){
 				$('#${id}').attr("disabled", "true");
 			});
-		}); 		
+			$('#${id}').click(function(){
+				input = $("<input>").attr("type", "hidden").attr("name", "${id}").val("${id}");
+				form.append($(input));
+			});
+		});		
 		#{/else}
 	</script>
 	#{/else}

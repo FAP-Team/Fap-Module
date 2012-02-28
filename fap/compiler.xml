@@ -218,6 +218,10 @@
 	</target>
 	
 	<target name="ftp-upload-doc" depends="ftp-upload" description="Sube el la documentación y el módulo al ftp">
+		<copy todir="documentation/javadoc">
+ 			<fileset dir="javadoc"/>
+		</copy>
+		
 		<ftp action="mkdir" server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.fap.dir}${version}/documentation" />
 
 		<ftp server="${ftp.server}" remotedir="${ftp.fap.dir}${version}/documentation/" userid="${ftp.user}" password="${ftp.pass}">

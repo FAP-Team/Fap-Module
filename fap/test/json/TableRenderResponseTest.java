@@ -27,7 +27,7 @@ public class TableRenderResponseTest extends Assert {
 	public void emptyRows(){
 		TableRenderResponse<TableRenderResponseTestMock> response = new TableRenderResponse<TableRenderResponseTestMock>(null);
 		String json = response.toJSON("campo1", "campo2");
-		assertEqualsJson("{\"obj\":{\"mensajes\":{\"error\":null,\"fatal\":null,\"info\":null,\"ok\":null,\"warning\":null},\"rows\":null}}", json); 
+		assertEqualsJson("{\"obj\":{\"mensajes\":{\"error\":[],\"fatal\":[],\"info\":[],\"ok\":[],\"warning\":[]},\"rows\":null}}", json); 
 	}
 
 	@Test
@@ -37,7 +37,7 @@ public class TableRenderResponseTest extends Assert {
 		mocks.add(new TableRenderResponseTestMock("c", "d"));
 		TableRenderResponse<TableRenderResponseTestMock> response = TableRenderResponse.sinPermisos(mocks);
 		String json = response.toJSON("campo1", "campo2");
-		assertEqualsJson("{\"obj\":{\"mensajes\":{\"error\":null,\"fatal\":null,\"info\":null,\"ok\":null,\"warning\":null},\"rows\":[{\"objeto\":{\"campo1\":\"a\",\"campo2\":\"b\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true},{\"objeto\":{\"campo1\":\"c\",\"campo2\":\"d\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true}]}}", json);
+		assertEqualsJson("{\"obj\":{\"mensajes\":{\"error\":[],\"fatal\":[],\"info\":[],\"ok\":[],\"warning\":[]},\"rows\":[{\"objeto\":{\"campo1\":\"a\",\"campo2\":\"b\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true},{\"objeto\":{\"campo1\":\"c\",\"campo2\":\"d\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true}]}}", json);
 	}
 	
 	@Test

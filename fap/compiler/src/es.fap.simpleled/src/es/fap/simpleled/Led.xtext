@@ -260,6 +260,8 @@ Fecha:
 	'Fecha' (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
+		& ('ancho' '=' ancho=STRING)? 
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 	)
 ;

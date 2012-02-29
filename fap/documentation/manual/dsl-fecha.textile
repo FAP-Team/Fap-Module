@@ -10,6 +10,8 @@ h2. Parámetros
 * **campo = _[campo]_** : Atributo donde se almacenará la fecha (DateTime).
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará al lado de la fecha, si no se especifica se mostrará el nombre del campo.
 * **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
+* **ancho** (opcional): Si queremos darle un ancho fijo al input de la Fecha
+* **anchoTitulo** (opcional): Si queremos darle un ancho fijo a la etiqueta de la Fecha (Al titulo)
 
 h2. Definición
 
@@ -17,6 +19,8 @@ bc. Fecha:
 	'Fecha' (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
+		& ('ancho' '=' ancho=STRING)? 
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
 	)
 ;

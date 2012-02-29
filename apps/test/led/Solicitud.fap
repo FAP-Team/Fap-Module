@@ -45,7 +45,7 @@ Formulario Solicitud {
     }
 		
 	Pagina Fechas {
-		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" requerido
+		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" ancho="30px" anchoTitulo="60px" requerido
 		Fecha campo=Solicitud.fechas.fecha titulo="Fecha" requerido
 	}
 	

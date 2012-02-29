@@ -10,6 +10,8 @@
 	_obj		- Objeto a partir del cual se accede al value. 
     		   	  Usar en el caso de que se llame desde otro tag.
  	_noRow(false)	- true para no envolver el campo en un form-row
+ 	_ancho          - Ancho del campo
+ 	_anchoTitulo          - Ancho del titulo (label)
 
 }*
 
@@ -20,6 +22,8 @@
 %{ 
 	def id = _id ?: field.id
 	def label = _titulo ?: field.name
+	def anchoTitulo = _anchoTitulo
+	def ancho = _ancho
 	def value = _value ?: field.flashorvalue
 	if(value instanceof org.joda.time.DateTime) //Formatea la fecha
 		value = value.format()
@@ -33,7 +37,7 @@
 }%
 
 
-#{fap.texto id:id, titulo:label, value:value, campo:field.name, ayuda:ayuda, requerido:requerido, obj:obj}
+#{fap.texto id:id, titulo:label, value:value, campo:field.name, ayuda:ayuda, requerido:requerido, ancho:ancho, anchoTitulo:anchoTitulo, obj:obj}
 #{/fap.texto}
 	
 	<script type="text/javascript">

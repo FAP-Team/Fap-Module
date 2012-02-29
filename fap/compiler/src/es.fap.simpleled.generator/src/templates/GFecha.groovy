@@ -24,6 +24,12 @@ class GFecha {
 		if(fecha.titulo != null)
 			params.putStr("titulo", fecha.titulo)
 		
+		if(fecha.ancho != null)
+			params.putStr("ancho", fecha.ancho)
+			
+		if(fecha.anchoTitulo != null)
+			params.putStr("anchoTitulo", fecha.anchoTitulo)
+			
 		if(fecha.requerido)
 			params.put "requerido", true
 		

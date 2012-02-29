@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 h1. Configuración de logs
 
 Para los logs de las aplicaciones se utiliza log4j. La documentación completa de la configuración de la librería está en "http://logging.apache.org/log4j/1.2/manual.html":http://logging.apache.org/log4j/1.2/manual.html.
@@ -22,6 +21,3 @@ log4j.appender.Mail.SMTPPassword=tu_password_usuario
 log4j.appender.Mail.From=noreply@tu_servidor.com
 log4j.appender.Mail.To=cuenta_soporte@tu_servidor.com
 log4j.appender.Mail.Subject=Notificación de la aplicación
-=======
-h1. Configuración de logs
->>>>>>> 7318c34... Documentacion deploy

@@ -50,6 +50,14 @@ public class GCombo {
 			
 		if(combo.anchoTitulo != null)
 			params.putStr("anchoTitulo", combo.anchoTitulo)
+		
+			
+		if (combo.ordenar != null) {
+			if (combo.ordenar.equals("ordenarPorClave"))
+				params.put "ordenarPorClave", true
+			else if (combo.ordenar.equals("ordenarPorValor"))
+				params.put "ordenarPorTexto", true
+		}
 
 		/// Si el atributo es una referencia Many2One o ManyToMany
 		if (campo.getUltimoAtributo().type?.compound?.tipoReferencia?.type?.equals("ManyToMany")

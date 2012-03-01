@@ -277,6 +277,7 @@ Combo:
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& ('comboTexto' '=' comboTexto=[Attribute|IDS])? 
 		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
+		& (ordenar = ('ordenarPorClave' | 'ordenarPorValor'))?
 	)
 ;
 

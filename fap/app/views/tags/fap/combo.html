@@ -16,6 +16,9 @@
 	def searchable = _searchable != null? _searchable : false
 	def mostrarClave = _mostrarClave != null? _mostrarClave : false
 	def anchoTitulo = _anchoTitulo
+	def ordenarPorClave = _ordenarPorClave ?: null
+	def ordenarPorTexto = _ordenarPorTexto ?: null
+	def ordenar = (ordenarPorClave || ordenarPorTexto) ?: false
 	
 	def multiple = _multiple != null? _multiple : false;
 			
@@ -55,7 +58,6 @@
 			if (manyTo) 
 				name = field.id ?: _id ;
 			
-			
 			def items = null;
 			//Opciones pasadas por parámetro del tag
 			if(_items != null){
@@ -82,10 +84,16 @@
 						}
 					}else{
 						//Opciones desde tabla de tablas
-						items = tags.ComboItem.listFromTableOfTable(field.table)					
+						items = tags.ComboItem.listFromTableOfTable(field.table)				
 					}
 				}
 			}
+			// Ordenamos si se especifica
+			if (ordenar)
+				if (ordenarPorClave)
+					items.sort{it.key}
+				else
+					items.sort{it.value}
 			
 			//Values
 			def values = [];			

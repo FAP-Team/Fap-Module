@@ -81,7 +81,7 @@ Formulario Solicitud {
 		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"
 			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas"
-			Combo campo=Solicitud.comboTest.ref comboTexto=nombre titulo="Combo de Referencias"
+			Combo campo=Solicitud.comboTest.ref comboTexto=nombre titulo="Combo de Referencias" ordenarPorValor
 			Combo campo=Solicitud.comboTest.refMultiple comboTexto=nombre titulo="Combo de Referencias Múltiples"
 		}
 				

@@ -315,6 +315,7 @@ Combo:
 		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& ('dependeDe' '=' dependeDe=[Combo])?
+		& (ordenar = ('ordenarPorClave' | 'ordenarPorValor'))?
 	)
 ;
 

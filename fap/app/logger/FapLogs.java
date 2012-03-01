@@ -9,6 +9,8 @@ import play.Logger;
 import play.Play;
 import play.PlayPlugin;
 import play.classloading.ApplicationClasses.ApplicationClass;
+import play.classloading.enhancers.LocalvariablesNamesEnhancer;
+import play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesSupport;
 
 public class FapLogs extends PlayPlugin {
 	
@@ -17,7 +19,7 @@ public class FapLogs extends PlayPlugin {
 		if ((!applicationClass.name.contains("logger.FapLogsEnhancer")) && (!applicationClass.name.equals("logger.FapLogs"))){
 			new FapLogsEnhancer().enhanceThisClass(applicationClass);
 		}
-	}    
+	}
     
 	public static void logPlay(Object[] args) {
 		Throwable throwable = null;
@@ -30,6 +32,9 @@ public class FapLogs extends PlayPlugin {
 		}
 		
 		if(Play.mode.isProd()){
+			// TODO: Ver porque falla sin la siguient elínea
+			// Insertamos la variable directamente, porque no funciona con el implements
+			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pattern", pattern);
 			Mails.enviar("LogFatal", pattern);
 		}
 		
@@ -43,19 +48,22 @@ public class FapLogs extends PlayPlugin {
 	
 	public static void logLog4j(Object[] args) {
 		Throwable throwable = null;
-		String msg = "";
-		msg = (String) args[0];
+		String pattern = "";
+		pattern = (String) args[0];
 		if(args.length == 2) {
 			throwable = (Throwable) args[1];
 		}
 		if(Play.mode.isProd()){
-			Mails.enviar("LogFatal", msg);
+			// TODO: Ver porque falla sin la siguient elínea
+			// Insertamos la variable directamente, porque no funciona con el implements
+			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pattern", pattern);
+	    	Mails.enviar("LogFatal", pattern);
 		}
 		if(throwable != null) {
-			Logger.fatal(throwable, msg);
+			Logger.fatal(throwable, pattern);
 		}
 		else{
-			Logger.fatal(msg);
+			Logger.fatal(pattern);
 		}
 	}
 

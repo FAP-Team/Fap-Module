@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.h2.constant.SysProperties;
+
 import antlr.StringUtils;
 
 import messages.Messages;
@@ -206,8 +208,9 @@ public class CustomValidation {
 			result.ok = applyCheck(check, key, o).ok && result.ok;
 
     		if (o instanceof Persona) {
-    			if(((Persona) o).isPersonaFisica())
+    			if(((Persona) o).isPersonaFisica()){
     				result.ok = valid(key + ".fisica", ((Persona) o).fisica).ok && result.ok;
+    			}
     			if(((Persona) o).isPersonaJuridica())
     				result.ok = valid(key + ".juridica", ((Persona) o).juridica).ok && result.ok;
     			return result;

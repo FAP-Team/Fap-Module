@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 1.2.4
 
+* Los representantes de un Solicitante (ya sea un Solicitante, un SolicitantePersonaFisica o un SolicitantePersonaJuridica), podemos indicar en el DSL que sean sólo del tipo PersonaFísica, o como hasta ahora, por defecto, que salga un combo para elegir entre PersonaFisica o PersonaJuridica.
+* En el DSL se puede especificar que el Solicitante sólo sea PersonaFisica o PersonaJurídica
 * Elemento fecha, tiene nuevos parámetros: ancho y anchoTitulo
 * Agregado comando fap:dist
 * Agregado comando fap:winservice

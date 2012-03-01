@@ -24,6 +24,8 @@ import utils.*;
 class ControllerUtils {
 
 	static List<String> camposSolicitante = "tipo,fisica.nombre,fisica.primerApellido,fisica.segundoApellido,fisica.nip,juridica.cif,juridica.entidad,representado".split(',')
+	static List<String> camposSolicitantePersonaFisica = "tipo,fisica.nombre,fisica.primerApellido,fisica.segundoApellido,fisica.nip,representado".split(',');
+	static List<String> camposSolicitantePersonaJuridica = "tipo,juridica.cif,juridica.entidad,representado".split(',');
 	static List<String> camposPersona = "tipo,fisica.nombre,fisica.primerApellido,fisica.segundoApellido,fisica.nip,juridica.cif,juridica.entidad".split(',')
 	static List<String> camposPersonaFisica = "nombre,primerApellido,segundoApellido,nip".split(",")
 	static List<String> camposPersonaJuridica = "cif,entidad".split(',')
@@ -274,6 +276,21 @@ class ControllerUtils {
         }
 		else if (objeto.metaClass.respondsTo(objeto, "getCampo")) {
             if (objeto.campo != null) {
+				if (objeto instanceof Solicitante) {
+					CampoUtils campo = CampoUtils.create(objeto.campo);
+					if (((Solicitante) objeto).representantePersonaFisica){
+						out += """${campo.firstLower()}.representante.tipo = "fisica";
+						"""
+					}
+					if (((Solicitante) objeto).elemento == "SolicitantePersonaFisica"){
+						out += """${campo.firstLower()}.tipo = "fisica";
+						"""
+					}
+					else if (((Solicitante) objeto).elemento == "SolicitantePersonaJuridica"){
+						out += """${campo.firstLower()}.tipo = "juridica";
+						"""
+					}
+				}
                 out += validate(objeto);
                 out += copy(objeto);
             }
@@ -309,13 +326,38 @@ class ControllerUtils {
 		String validOut = "";
         List<String> camposFiltrados;
 		if (objeto instanceof Solicitante) {
-			camposFiltrados = camposSolicitante
-			if (!((Solicitante) objeto).isNoRepresentante()) {
-				validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
-				"""
-				validOut += copyRepresentanteFisica (campo.str)
-				validOut += copyRepresentanteJuridica (campo.str)
-				validOut += """\n}""";
+			if (((Solicitante) objeto).elemento == "Solicitante"){
+				camposFiltrados = camposSolicitante
+				if (!((Solicitante) objeto).isNoRepresentante()) {
+					validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
+					"""
+					validOut += copyRepresentanteFisica (campo.str)
+					if (!((Solicitante) objeto).representantePersonaFisica)
+						validOut += copyRepresentanteJuridica (campo.str)
+					validOut += """\n}""";
+				}
+			}
+			else if (((Solicitante) objeto).elemento == "SolicitantePersonaFisica"){
+				camposFiltrados = camposSolicitantePersonaFisica
+				if (!((Solicitante) objeto).isNoRepresentante()) {
+					validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
+					"""
+					validOut += copyRepresentanteFisica (campo.str)
+					if (!((Solicitante) objeto).representantePersonaFisica)
+						validOut += copyRepresentanteJuridica (campo.str)
+					validOut += """\n}""";
+				}
+			}
+			else if (((Solicitante) objeto).elemento == "SolicitantePersonaJuridica"){
+				camposFiltrados = camposSolicitantePersonaJuridica
+				if (!((Solicitante) objeto).isNoRepresentante()) {
+					validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
+					"""
+					validOut += copyRepresentanteFisica (campo.str)
+					if (!((Solicitante) objeto).representantePersonaFisica)
+						validOut += copyRepresentanteJuridica (campo.str)
+					validOut += """\n}""";
+				}
 			}
 		} else if (objeto instanceof Persona) {
 			camposFiltrados = camposPersona

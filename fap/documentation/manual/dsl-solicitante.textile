@@ -12,16 +12,17 @@ h2. Parámetros
 * **permiso = _[permiso]_** (opcional) : Permiso que se le aplicará al Popup de creación de representantes (cuando la opción seleccionada sea Persona Jurídica).
 * **requerido** (opcional) : Indica si es obligatorio rellenar los campos necesarios de persona física.
 * **noRepresentante** (opcional) : En caso de estar presente, no se le permitirá asociar un representante al solicitante.
+* **representantePersonaFisica** (opcional) : Indica que en el caso de que haya representantes, estos sólo pueden ser de tipo PersonaFisica.
 
 h2. Definición
 
 bc. Solicitante:
-	'Solicitante' (name=ID) (
+	elemento=('Solicitante' | 'SolicitantePersonaFisica' | 'SolicitantePersonaJuridica') (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
 		("permiso" "=" permiso=[Permiso])?
-		& (noRepresentante?='noRepresentante')?
+		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
 	)
 ;
 

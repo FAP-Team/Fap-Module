@@ -26,6 +26,14 @@ import java.text.SimpleDateFormat;
 public class PersonaJuridica extends Model {
 	// Código de los atributos
 	
+	@Transient
+	public String nombreCompleto;
+	
+	
+	@Transient
+	public String numeroId;
+	
+	
 	
 	public String entidad;
 	

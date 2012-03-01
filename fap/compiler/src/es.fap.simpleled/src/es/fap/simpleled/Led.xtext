@@ -415,12 +415,12 @@ Persona:
 ;
 
 Solicitante:
-	'Solicitante' (name=ID) (
+	elemento=('Solicitante' | 'SolicitantePersonaFisica' | 'SolicitantePersonaJuridica') (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
 		("permiso" "=" permiso=[Permiso])?
-		& (noRepresentante?='noRepresentante')?
+		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
 	)
 ;
 

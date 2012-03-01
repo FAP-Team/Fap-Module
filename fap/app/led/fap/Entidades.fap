@@ -115,6 +115,8 @@ Entidad Persona inheritance=joined {
 
 // Representación de una persona física
 Entidad PersonaFisica inheritance=joined {
+	String nombreCompleto transient
+	String numeroId transient
 	String nombre
 	String primerApellido
 	String segundoApellido
@@ -123,6 +125,8 @@ Entidad PersonaFisica inheritance=joined {
 
 // Representación de una persona jurídica
 Entidad PersonaJuridica inheritance=joined {
+	String nombreCompleto transient
+	String numeroId transient
 	String entidad
 	Cif cif
 	Email email

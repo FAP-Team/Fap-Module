@@ -29,17 +29,15 @@
 	
 	
 	def mostrarSi = _mostrarSi != null? _mostrarSi : true
-	
 %}
 
 
 #{if mostrarSi}
-
 	#{fap.permiso permiso:permiso}
 
 	#{if visible}
 		<div id="${id}" class="grupo">
-			#{if _titulo}
+			#{if _titulo != null}
 				<p class="grupo-header">${_titulo}</p>
 			#{/if}
 			<div class="grupo-content">

@@ -26,6 +26,14 @@ import java.text.SimpleDateFormat;
 public class PersonaFisica extends Model {
 	// Código de los atributos
 	
+	@Transient
+	public String nombreCompleto;
+	
+	
+	@Transient
+	public String numeroId;
+	
+	
 	
 	public String nombre;
 	
@@ -67,6 +75,9 @@ public class PersonaFisica extends Model {
 		return utils.StringUtils.join(" ", nombre, primerApellido, segundoApellido);
 	}
 	
+	public String getNumeroId(){
+		return nip.valor;
+	}
 // === MANUAL REGION END ===
 	
 	

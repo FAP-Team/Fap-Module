@@ -25,6 +25,7 @@
 	String type = _type 
 	def fondo = _fondo
 	def noSubmit = _noSubmit
+	id = id+Long.toHexString(new Random().nextLong());
 }%
 
 	#{if fondo}

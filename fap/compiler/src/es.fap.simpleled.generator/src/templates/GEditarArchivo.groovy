@@ -30,6 +30,10 @@ public class GEditarArchivo {
 		params.putStr("campo", campo.firstLower())
 		if(editarArchivo.requerido != null)
 			params.put("requerido", editarArchivo.requerido)
+		if (editarArchivo.tramite != null && editarArchivo.tramite.trim() != "")
+			params.putStr("tramite", editarArchivo.tramite);
+		if (editarArchivo.aportadoPor != null && editarArchivo.aportadoPor.trim() != "")
+			params.putStr("aportadoPor", editarArchivo.aportadoPor)
 		params.put("upload", false);
 		params.put("download", true);
 		params.putStr("tipo", "tipoCiudadano")

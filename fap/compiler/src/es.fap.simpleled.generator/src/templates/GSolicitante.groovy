@@ -1,4 +1,3 @@
-
 package templates;
 
 import com.sun.media.sound.RealTimeSequencer.PlayThread;
@@ -78,9 +77,9 @@ public class GSolicitante {
 			}
 			return out;
 		} else{
+			fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, false)
+			juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, false)
 			if (solicitante.titulo != null) {
-				fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, false)
-				juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, false)
 				out = """
 						#{fap.grupo titulo:${titulo}}
 							#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}

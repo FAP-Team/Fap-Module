@@ -3,6 +3,10 @@ h1. Solicitante
 h2. Descripción
 
 Muestra los campos para rellenar los datos de un solicitante.
+Se le pueden especificar tres tipos de Solicitantes:
+* **Solicitante** (Es el solicitante común, el que posee un combo para discernir el tipo entre si es Persona Física o Persona Jurídica)
+* **SolicitantePersonaFisica** (Es un Solicitante que es forzosamente de tipo Persona Física)
+* **SolicitantePersonaJuridica** (Es un Solicitante que es forzosamente de tipo Persona Jurídica)
 
 h2. Parámetros
 
@@ -28,4 +32,18 @@ bc. Solicitante:
 
 h2. Ejemplo de uso
 
+h3. Solicitante con posibilidad de elegir el tipo de Persona que es
+
 bc. Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=solicitudEditable requerido
+
+h3. Solicitante Persona Física
+
+bc. SolicitantePersonaFisica personaSolicitanteFisica campo=Solicitud.solicitante titulo="Datos Solicitante" permiso=solicitudEditable requerido
+
+h3. Solicitante Persona Jurídica, sin representantes
+
+bc. SolicitantePersonaJuridica personaSolicitanteJuridica campo=Solicitud.solicitante titulo="Datos Solicitante" permiso=solicitudEditable noRepresentante requerido
+
+h3. Solicitante Persona Jurídica, pero cuyo representante es forzosamente una Persona Física
+
+bc. SolicitantePersonaJuridica personaSolicitanteJuridica campo=Solicitud.solicitante titulo="Datos Solicitante" permiso=solicitudEditable representantePersonaFisica requerido

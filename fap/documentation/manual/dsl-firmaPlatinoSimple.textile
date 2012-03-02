@@ -9,6 +9,9 @@ h2. Parámetros
 * **_[name]_** : Identificador del elemento.
 * **titulo = _[string]_** : Etiqueta que se mostrará en el botón que realiza la acción de firmar.
 * **documento = _[campo]_** : Campo donde estará el documento que se va a firmar.
+* **listaFirmantes = _[campo]_** : Donde va a estar la lista de los firmantes del documento (OneToMany o ManyToMany de Firmantes).
+* **setTrue = _[campo]_** : Una vez se firme bien, el campo indicado se pone a true.
+* **setCamposTo = _[setCampos]_** : Una vez que se firme bien, se ponen esos campos al valor indicado.
 
 h2. Definición
 
@@ -16,7 +19,14 @@ bc. FirmaPlatinoSimple:
 	elemento="FirmaSimple" (name=ID)
 		"titulo" "=" titulo=STRING
 		(
-			"documento" "=" campo=Campo
+			( documento?="documento" "=" campo=Campo)
+			(("listaFirmantes" "=" firmantes=Campo)
+			& ("setTrue" "=" setToTrue=Campo)?)
+			& ("setCamposTo" '{'
+				setCampos+=Campo "to" value+=STRING
+				(',' setCampos+=Campo "to" value+=STRING)*
+				'}'
+			)?
 		)
 ;
 

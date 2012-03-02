@@ -63,9 +63,8 @@ h3. Elementos Gráficos
 # "columna":dsl-columna
 # "direccion":dsl-direccion
 # "subir archivo":dsl-subirArchivo
-# "subir archivo AED":dsl-subirArchivoAed
-# "editar archivo AED":dsl-editarArchivoAed
-# "solicitante":dsl-persona
+# "editar archivo":dsl-editarArchivo
+# "solicitante":dsl-solicitante
 # "persona":dsl-persona
 # "persona fisica":dsl-personaFisica
 # "persona juridica":dsl-personaJuridica
@@ -133,7 +132,6 @@ Elementos que pueden ser utilizados en las vista creadas de forma manual. Las vi
 # "fap.tabla":tag-tabla
 # "fap.texto":tag-texto
 # "fap.toJSMapNoValue":tag-toJSMapNoValue
-# "fap.uploadAED":tag-uploadAED
 
 
 

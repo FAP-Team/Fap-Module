@@ -19,7 +19,7 @@ h2. Parámetros
 * **popupEditar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Editar para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupCrear = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Crear para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupBorrar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Borrar para abrirlo. "Ver documentación Popup":dsl-popup.
-* **permiso = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla.
+* **permisoFilas = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla.
 * **recargarPagina** (opcional) : Si se define, hace que la pagina se recargue al pulsar el botón actualizar de la tabla. (Por defecto solo se actualiza la tabla).
 * **pagina = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando todos los botones disponibles. "Ver documentación Pagina":dsl-pagina.
 * **paginaLeer = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Ver para abrirla. "Ver documentación Pagina":dsl-pagina.
@@ -36,7 +36,7 @@ bc. Tabla:
 		& ('titulo' '=' titulo=STRING)?
 		& ('alto' '=' alto=STRING)?
 		& (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
-		& ("permiso" "=" permiso=[Permiso])?
+		& ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('seleccionable' "=" seleccionable=STRING)?
 		& ('popup' '=' popup=[Popup|QN])?

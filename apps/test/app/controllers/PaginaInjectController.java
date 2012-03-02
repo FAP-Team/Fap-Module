@@ -19,7 +19,7 @@ public class PaginaInjectController extends PaginaInjectControllerGen {
             Messages.fatal("El servicio no se inyectó correctamente");
         }
         
-        Solicitud solicitud = null;
+        Solicitud solicitud = getSolicitud(idSolicitud);
         renderTemplate("gen/PaginaInject/PaginaInject.html", accion, idSolicitud, solicitud);
     }
 }

@@ -23,7 +23,7 @@ bc. Direccion:
 		& (provincia?="provincia")?
 		& (pais?="pais")?
 		& (requerido?="requerido")?
-	   & ('ancho' '=' ancho=STRING)?
+		& ('ancho' '=' ancho=STRING)?
 	)
 ;
 

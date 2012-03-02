@@ -11,8 +11,11 @@ Formulario Solicitud {
 			Enlace "Combos dependientes" pagina=PaginaCombosDependientes
 		}
 		
-		Grupo "Solicitante" {
-			Enlace "Solicitante" pagina=Solicitante
+		Grupo "Solicitantes" {
+			Enlace "S. Normal" pagina=Solicitante
+			Enlace "S. PersonaFisica" pagina=SolicitantePF
+			Enlace "S. PersonaJuridica" pagina=SolicitantePJ
+			Enlace "Persona Fisica" pagina=PersonaF
 		}
 		
 		Grupo "Direccion"{
@@ -342,18 +345,27 @@ Formulario Solicitud {
 	}
 	
 	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {
-	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido
+		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
+	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido representantePersonaFisica
 	    Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido  	
 	    Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido  	
 	    Texto campo=Solicitud.solicitante.telefonoMovil titulo="Teléfono Móvil"  	
 	    Texto campo=Solicitud.solicitante.fax titulo="Fax"  	
 	    Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar  	
 	    Texto campo=Solicitud.solicitante.web titulo="Página web"
-
-	    PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física"
-	    
-	    SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Solicitante Persona Fisica"
-	 	SolicitantePersonaJuridica personaSolicitantePersonaJuridica campo=Solicitud.solicitantePersonaJuridica titulo="Solicitante Persona Juridica"
+	}
+	
+	Pagina SolicitantePF campo=Solicitud{
+		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
+		SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Solicitante Persona Fisica" representantePersonaFisica
+	}
+	
+	Pagina SolicitantePJ campo=Solicitud{
+		SolicitantePersonaJuridica personaSolicitantePersonaJuridica campo=Solicitud.solicitantePersonaJuridica titulo="Solicitante Persona Juridica"
+	}
+	
+	Pagina PersonaF campo=Solicitud{
+		PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física"
 	}
 	
 	Pagina TipoDeAyudaTexto campo=Solicitud{

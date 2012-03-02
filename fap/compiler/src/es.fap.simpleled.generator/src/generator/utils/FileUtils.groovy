@@ -55,8 +55,8 @@ public class FileUtils {
 		File f = new File(fullPath);
 		if(!f.exists()){
 			createFolders(fullPath);
-			logger.info("Escribiendo en ${filepath}")
 			f.write(content, "UTF-8");
+			logger.info("Escribiendo en ${filepath}");
 		}else{
 			//logger.info("El fichero ${filepath} ya existe, no se sobreescribe");
 		}

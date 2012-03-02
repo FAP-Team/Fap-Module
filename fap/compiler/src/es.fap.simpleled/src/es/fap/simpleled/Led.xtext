@@ -452,7 +452,7 @@ Solicitante:
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
 		("permiso" "=" permiso=[Permiso])?
-		& (noRepresentante?='noRepresentante')?
+		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
 	)
 ;
 

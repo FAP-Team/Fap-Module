@@ -33,6 +33,11 @@ import static org.mockito.Mockito.*;
 @InjectSupport
 public class ProcedimientosServiceTest extends UnitTest {
 
+	@Test
+	public void paraQueNoFalle() throws Exception {
+		
+	}
+	
     /*
 	private static final String NOMBRE_DOCUMENTO_TEST = "nombreDocumentoTest";
 

@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 @InjectSupport
 public class TiposDocumentosServiceTest extends UnitTest {
 
-    /*
+    
 	@Inject
 	static TiposDocumentosService tiposDocumentosService;
 	
@@ -40,10 +40,10 @@ public class TiposDocumentosServiceTest extends UnitTest {
 		assumeTrue(hasConnecion);
 	}
 	
-	@Test
-	public void getVersion() throws Exception {
-		tiposDocumentosService.getVersion();
-	}
+//	@Test
+//	public void getVersion() throws Exception {
+//		tiposDocumentosService.getVersion();
+//	}
 	
 	@Test
 	public void getTipoDocumentoBase() throws Exception {		
@@ -61,5 +61,5 @@ public class TiposDocumentosServiceTest extends UnitTest {
 	public void getTipoDocumentoNoExistente() throws Exception{
 		tiposDocumentosService.getTipoDocumento("http://not/correct");
 	}
-	*/
+	
 }

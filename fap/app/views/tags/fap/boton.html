@@ -24,6 +24,7 @@
 	if (popup != null){
 		urlPopup = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
 	}
+	id = id+Long.toHexString(new Random().nextLong());
 	
 }%
 

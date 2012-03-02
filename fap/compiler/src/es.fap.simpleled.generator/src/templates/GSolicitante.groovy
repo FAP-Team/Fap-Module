@@ -47,36 +47,61 @@ public class GSolicitante {
 
 		def out = "";
 		if (solicitante.elemento == "SolicitantePersonaFisica") {
-			fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, solicitante.titulo, true)
-			out = """
-				${fisica}
-			"""
+			fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, true)
+			if (solicitante.titulo != null) {
+				out = """
+					#{fap.grupo titulo:${titulo}}
+						${fisica}
+					#{/fap.grupo}
+				"""
+			} else {
+				out = """
+					${fisica}
+				"""
+			}
 			return out;
 		} else if (solicitante.elemento == "SolicitantePersonaJuridica") {
-			juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante(), solicitante.titulo, solicitante.representantePersonaFisica, true)
-			out = """
-				${juridica}
-			"""
+			juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, true)
+			if (solicitante.titulo != null) {
+				out = """
+					#{fap.grupo titulo:${titulo}}
+						${juridica}
+					#{/fap.grupo}
+				"""
+			} else {
+				out = """
+					${juridica}
+				"""
+			}
 			return out;
 		} else{
-			fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, solicitante.titulo, false)
-			juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante(), solicitante.titulo, solicitante.representantePersonaFisica, false)
-			out = """
-				#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
-				${fisica}
-				${juridica}
-			"""
+			fisica = crearPersonaFisica(combo, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, false)
+			juridica = crearPersonaJuridica(combo, solicitante.permiso, solicitante.isNoRepresentante(), solicitante.representantePersonaFisica, false)
+			if (solicitante.titulo != null) {
+				out = """
+						#{fap.grupo titulo:${titulo}}
+							#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
+							${fisica}
+							${juridica}
+						#{/fap.grupo}
+				"""
+			} else {
+				out = """
+						#{fap.combo id:'${combo}', titulo:play.i18n.Messages.get('fap.tags.persona.tipo'), campo:'${campo.firstLower()}.tipo', requerido:${requerido} /}
+							${fisica}
+							${juridica}
+				"""
+			}
 		}
 		return out;	
 	}
 	
-	public String crearPersonaFisica(String combo, boolean noRepresentante, boolean soloRepresentantePersonaFisica, String titulo, boolean soloFisica) {
+	public String crearPersonaFisica(String combo, boolean noRepresentante, boolean soloRepresentantePersonaFisica, boolean soloFisica) {
 		String fisicaStr = "";
 		PersonaFisica fisica = new PersonaFisicaImpl();
 		fisica.setName(solicitante.name+"Fisica");
 		fisica.setCampo(CampoUtils.addMore(solicitante.campo, "fisica"));
 		fisica.setRequerido(solicitante.requerido? true:false);
-		fisica.setTitulo(titulo);
 		fisicaStr = Expand.expand(fisica);
 		String params = "";
 		if (!soloFisica)
@@ -93,6 +118,7 @@ public class GSolicitante {
 			
 				Combo c = new ComboImpl();
 				c.setName("${combo}");
+				grupoCheckRepFisica.setSiCombo(c);
 			}
 			
 			grupoCheckRepFisica.setVisible("false");
@@ -129,11 +155,12 @@ public class GSolicitante {
 			fisicaStr += Expand.expand(grupoCheckRepFisica);
 		}
 
+		params = ", grupoVisible:false";
 		fisicaStr = fisicaStr.replaceAll(/(\#\{fap\.personaJuridica.+?)(\/\})/, '$1' + params + '$2');
 		return fisicaStr;
 	}
 	
-	public String crearPersonaJuridica(String combo, Permiso permiso, boolean noRepresentante, String titulo, boolean soloRepresentantePersonaFisica, boolean soloJuridica) {
+	public String crearPersonaJuridica(String combo, Permiso permiso, boolean noRepresentante, boolean soloRepresentantePersonaFisica, boolean soloJuridica) {
 		String juridicaStr = "";
 		
 		PersonaJuridica juridica = new PersonaJuridicaImpl();
@@ -141,7 +168,6 @@ public class GSolicitante {
 		juridica.setCampo(CampoUtils.addMore(solicitante.campo, "juridica"));
 		juridica.setRequerido(solicitante.requerido ? true:false);
 		juridica.permiso = permiso;
-		juridica.setTitulo(titulo);
 		juridicaStr = Expand.expand(juridica);
 
 		String params = "";

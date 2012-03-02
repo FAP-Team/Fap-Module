@@ -3,13 +3,18 @@ Formulario Solicitud {
     Menu {
     	Enlace "Volver" pagina=Principal.Solicitudes
     	
-    	Enlace "Solicitante" pagina=Solicitante
-    	
     	Grupo "Combos" {
 			Enlace "Combos por defecto" pagina=Combos
 			Enlace "Combos sobreescritos" pagina=CombosOverwrite
 			Enlace "Valores por defecto" pagina=ValoresPorDefecto
 			Enlace "ErrorCombos" pagina=PaginaCombosError
+		}
+		
+		
+		Grupo "Solicitantes" {
+			Enlace "S. Normal" pagina=Solicitante
+			Enlace "S. PersonaFisica" pagina=SolicitantePF
+			Enlace "S. PersonaJuridica" pagina=SolicitantePJ
 		}
 		
 		Grupo "Direccion"{
@@ -43,6 +48,15 @@ Formulario Solicitud {
     Pagina Solicitante {
     	Solicitante persona campo=Solicitud.solicitante
     }
+    
+    Pagina SolicitantePF {
+		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
+		SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.pf titulo="Solicitante Persona Fisica" representantePersonaFisica
+	}
+
+	Pagina SolicitantePJ {
+		SolicitantePersonaJuridica personaSolicitantePersonaJuridica campo=Solicitud.pj titulo="Solicitante Persona Juridica"
+	}
 		
 	Pagina Fechas {
 		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" ancho="30px" anchoTitulo="60px" requerido

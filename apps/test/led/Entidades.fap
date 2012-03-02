@@ -9,6 +9,9 @@ Entidad Solicitud extends SolicitudGenerica {
 	
 	OneToMany Peta peta
 	
+	Solicitante pf
+	Solicitante pj
+	
 	ManyToOne ComboTestRef comboError
 	ManyToMany ComboTestRef comboErrorMany
 }

@@ -55,6 +55,14 @@ public class Solicitud extends SolicitudGenerica {
 	public List<Peta> peta;
 	
 	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Solicitante pf;
+	
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Solicitante pj;
+	
+	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public ComboTestRef comboError;
 	
@@ -106,6 +114,16 @@ public class Solicitud extends SolicitudGenerica {
 						
 						if (peta == null)
 							peta = new ArrayList<Peta>();
+						
+							if (pf == null)
+								pf = new Solicitante();
+							else
+								pf.init();
+						
+							if (pj == null)
+								pj = new Solicitante();
+							else
+								pj.init();
 						
 							if (comboError != null)
 								comboError.init();	

@@ -1,6 +1,4 @@
-%{
-	@Inject
-	
+%{	
 	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_url, "url");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");

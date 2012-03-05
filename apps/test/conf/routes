@@ -59,6 +59,12 @@ POST /Solicitud/permisonoeditable/save PermisoNoEditableController.save
 GET /Solicitud/permisopagina PermisoPaginaController.index
 
 POST /Solicitud/permisopagina/save PermisoPaginaController.save
+GET /Solicitud/popupdoceditar/{idEntidad}/abrir popups.PopUpDocEditarController.abrir
+POST /Solicitud/popupdoceditar/{idEntidad}/editar popups.PopUpDocEditarController.editar
+POST /Solicitud/popupdoceditar/{idEntidad}/borrar popups.PopUpDocEditarController.borrar
+POST /Solicitud/popupdoceditar/{idEntidad}/crear popups.PopUpDocEditarController.crear
+POST /Solicitud/popupdoceditar/{idEntidad}/cancelarcrear popups.PopUpDocEditarController.cancelarCrear
+
 GET /Solicitud/popupnombre/{idEntidad}/abrir popups.popupNombreController.abrir
 POST /Solicitud/popupnombre/{idEntidad}/editar popups.popupNombreController.editar
 POST /Solicitud/popupnombre/{idEntidad}/borrar popups.popupNombreController.borrar
@@ -97,6 +103,7 @@ POST /Solicitud/solicitantepj/save SolicitantePJController.save
 GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
 
 POST /Solicitud/subirarchivoaedtest/anadirDocumentacion SubirArchivoAedTestController.anadirDocumentacion
+GET /Solicitud/subirarchivoaedtest/documentos SubirArchivoAedTestController.tabladocumentos
 GET /Solicitud/tablassimples TablasSimplesController.index
 
 POST /Solicitud/tablassimples/save TablasSimplesController.save

@@ -34,6 +34,10 @@ public class GEditarArchivoAed {
 		
 		if(editarArchivoAed.requerido != null)
 			params.put("requerido", editarArchivoAed.requerido)
+		if (editarArchivoAed.tramite != null && editarArchivoAed.tramite.trim() != "")
+			params.putStr("tramite", editarArchivoAed.tramite);
+		if (editarArchivoAed.aportadoPor != null && editarArchivoAed.aportadoPor.trim() != "")
+			params.putStr("aportadoPor", editarArchivoAed.aportadoPor)
 		
 		params.put("upload", false);
 		params.put("download", true);

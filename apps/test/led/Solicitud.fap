@@ -163,9 +163,22 @@ Formulario Solicitud {
 	
 	Pagina SubirArchivoAedTest noForm {
 		Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
-			SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite" //aportadoPor="Ciudadano"
+			SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite" aportadoPor="Ciudadano"
 			Boton subirDocumento titulo="Añadir documentación"
 		}		
+		Tabla documentos 
+			    titulo="Documentos" 
+		    	campo=Solicitud.documentacion.documentos
+				popupModificar=PopUpDocEditar  
+			{
+				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+				Columna campo=Documento.descripcion titulo="Tipo" expandir
+				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			}
+	}
+	
+	Popup PopUpDocEditar modificar borrar ver titulo="Documentación" campo=Solicitud.documentacion.documentos {
+		EditarArchivoAed documentoEditable campo=Documento requerido tramite="Tramite" aportadoPor="Ciudadano"
 	}
 	
 	Pagina EjemplosdeGrupos {

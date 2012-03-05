@@ -9,11 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.*;
 
+import play.Play;
 import play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer;
 
 public class ZipUtils {
 
 	public static boolean comprimirEnZip (String[] nombresAComprimir, String nombreComprimido) {
+		return comprimirEnZip(nombresAComprimir, nombreComprimido, Play.applicationPath+"");
+	}
+	
+	public static boolean comprimirEnZip (String[] nombresAComprimir, String nombreComprimido, String rootPath) {
 		// Ficheros a incluir en el archivo ZIP
 		String[] filenames = nombresAComprimir;
 
@@ -23,14 +28,14 @@ public class ZipUtils {
 		try {
 		    // El fichero ZIP resultante
 		    String outFilename = nombreComprimido;
-		    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(outFilename));
+		    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(rootPath+outFilename));
 
 		    // Comprimimos los ficheros
 		    for (int i=0; i<filenames.length; i++) {
-		        FileInputStream in = new FileInputStream(filenames[i]);
+		        FileInputStream in = new FileInputStream(rootPath+filenames[i]);
 
 		        // Añadimos el fichero al ZIP
-		        out.putNextEntry(new ZipEntry(filenames[i]));
+		        out.putNextEntry(new ZipEntry(rootPath+filenames[i]));
 
 		        // Empezamos a transferir el contenido del fichero al ZIP
 		        int len;

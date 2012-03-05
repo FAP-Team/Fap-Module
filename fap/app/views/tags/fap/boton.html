@@ -24,6 +24,7 @@
 	if (popup != null){
 		urlPopup = play.mvc.Router.reverse("popups.${popup}Controller.abrir");
 	}
+	def idSolo = id;
 	id = id+Long.toHexString(new Random().nextLong());
 	
 }%
@@ -56,7 +57,7 @@
 				$('#${id}').attr("disabled", "true");
 			});
 			$('#${id}').click(function(){
-				input = $("<input>").attr("type", "hidden").attr("name", "${id}").val("${id}");
+				input = $("<input>").attr("type", "hidden").attr("name", "${idSolo}").val("${id}");
 				form.append($(input));
 			});
 		});		

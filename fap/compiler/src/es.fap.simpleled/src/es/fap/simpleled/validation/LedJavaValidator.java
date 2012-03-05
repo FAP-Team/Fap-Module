@@ -1,6 +1,7 @@
 package es.fap.simpleled.validation;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -292,5 +293,31 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 				error("El tipo mime especificado no es válido. Tiene que ser tipo/subtipo o tipo/*. Por ejemplo: application/pdf", LedPackage.Literals.SUBIR_ARCHIVO__MIMES, i);
 		}
 	}
+	// TODO: Hacerlo pero haciendo el chek sobre Paginas y PopUps, en vez de sobre campos, para evitar que resulte pesado
+	// TODO: Para ello serían 2 metodos. Uno que recibiese una Pagina, y otro un PopUp.
+	// TODO: LedCampoUtils.hayCamposGuardables, utilizar su codigo para fijarse a la hora de buscar los elementos con campos recursivamente.
+	// Para comprobar que no se utilicen dos campos en diferentes elementos de la misma Pagina
+	@Check
+	public void checkCampoUsadoEnPagina (Pagina pagina){
+		checkCampoUsado(pagina);
+	}
 	
+	@Check
+	public void checkCampoUsadoEnPopups (Popup popup){
+		checkCampoUsado(popup);
+	}
+	
+	public void checkCampoUsado (EObject obj){
+		List<Campo> campos = LedCampoUtils.buscarCamposRecursivos (obj);
+		Set<String> unicos = new HashSet<String>();
+		String campoStr = "";
+		for (Campo campo: campos){
+			campoStr = LedCampoUtils.getCampoStr(campo);
+			if (!unicos.contains(campoStr)){
+				unicos.add(campoStr);
+			} else {
+				warning("El campo esta siendo utilizado por otro elemento en la misma pagina", campo, LedPackage.Literals.CAMPO__ATRIBUTOS, 0);
+			}
+		}
+	}
 }

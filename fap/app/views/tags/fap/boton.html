@@ -25,6 +25,7 @@
 	String type = _type 
 	def fondo = _fondo
 	def noSubmit = _noSubmit
+	def idSolo = id;
 	id = id+Long.toHexString(new Random().nextLong());
 }%
 
@@ -59,7 +60,7 @@
 				$('#${id}').attr("disabled", "true");
 			});
 			$('#${id}').click(function(){
-				input = $("<input>").attr("type", "hidden").attr("name", "${id}").val("${id}");
+				input = $("<input>").attr("type", "hidden").attr("name", "${idSolo}").val("${id}");
 				form.append($(input));
 			});
 		});

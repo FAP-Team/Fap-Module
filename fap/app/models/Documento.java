@@ -74,6 +74,17 @@ public class Documento extends Model {
 			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}
 	}
+	
+	/**
+	 * Modifica la descripcion si el tipo de documentos no es Otro
+	 * 
+	*/
+
+	public void modificarDescripcion(){
+		if(!isOtros()){
+			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
+		}
+	}
 
 	public String getUrlDescarga() {
 		return AedUtils.crearUrl(uri);

@@ -312,7 +312,7 @@ def dist(app, args):
    path['lib'] = os.path.join(dest, 'lib')
    path['modules'] = os.path.join(dest, app.name(),'modules')
 
-   ignoreGlobal = ['**logs', '**test*', 'led', 'eclipse', 
+   ignoreGlobal = ['**logs', 'test', 'led', 'eclipse', 
                     '**tmp', '**test-result', 'modules', 
                     '.settings', '.classpath', 
                     'lib', 'nbproject', '**eclipse', '**.svn', '**.git']

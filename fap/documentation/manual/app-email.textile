@@ -44,6 +44,10 @@ bc. Mails.enviar("incidencia", incidencia)
 
 En este caso se enviará el email con id "incidencia" (el que definimos en la sección anterior) y se le pasa la variable incidencia para realizar la sustitución de variables.
 
+h2. Envío de mails cuando suceden Errores Fatales
+
+Debemos crear en la página de Administración, en la página de emails, un Email con ID = LogFatal. De esa forma se nos enviaran los mensajes Fatales de la aplicación al correo que configuremos con dicho ID.
+
 h2. Configuración del servidor de envio de correos
 
 En el fichero @application.conf@ se configura el servidor de envio de correo
@@ -58,5 +62,7 @@ mail.smtp.host=undefined.com
 mail.smtp.user=undefined
 mail.smtp.pass=undefined
 mail.smtp.port=25
+
+
 
  

@@ -371,10 +371,13 @@ def dist(app, args):
 
    path = {}
    path['app'] = os.path.join(dest, app.name())
+   path['logs'] = os.path.join(path['app'], 'logs')
+   path['Daily'] = os.path.join(path['logs'], 'Daily')
+   path['Auditable'] = os.path.join(path['logs'], 'Auditable')
    path['lib'] = os.path.join(dest, 'lib')
    path['modules'] = os.path.join(dest, app.name(),'modules')
 
-   ignoreGlobal = ['**logs', '**test*', 'led', 'eclipse', 
+   ignoreGlobal = ['**logs', 'test', 'led', 'eclipse', 
                     '**tmp', '**test-result', 'modules', 
                     '.settings', '.classpath', 
                     'lib', 'nbproject', '**eclipse', '**.svn', '**.git']
@@ -386,7 +389,11 @@ def dist(app, args):
    print "~ Copiando aplicación a " + path['app']
    ignores = ignoreGlobal + ['dist']
    copytree(app.path, path['app'], ignores)
-
+   makeDirsIfNotExists(path['logs'])
+   makeDirsIfNotExists(path['Daily'])
+   makeDirsIfNotExists(path['Auditable'])
+       
+       
    # Copia las librerias de la aplicación y de los módulos
    # No las librerías de play
    print "~ Copiando librerías a" + path['lib']

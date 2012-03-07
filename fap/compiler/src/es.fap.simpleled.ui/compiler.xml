@@ -40,7 +40,7 @@
 	<target name="dist">
 		<antcall target="clean-compile" />
 		<property name="manifestFile" value="META-INF/MANIFEST.MF" />
-		<jar destfile="${dist.dir}/es.fap.simpleled.ui.jar" basedir="${build.dir}"
+		<jar destfile="${dist.dir}/es.fap.simpleled.ui_1.0.0.jar" basedir="${build.dir}"
 			manifest="${manifestFile}" />
 
 		<!-- <antcall target="clean-all" /> <delete dir="${dist.dir}" /> <mkdir 

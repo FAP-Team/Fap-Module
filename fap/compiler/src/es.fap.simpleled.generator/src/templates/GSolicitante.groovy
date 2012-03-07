@@ -101,7 +101,7 @@ public class GSolicitante {
 	public String crearPersonaFisica(String combo, boolean noRepresentante, boolean soloRepresentantePersonaFisica, boolean soloFisica) {
 		String fisicaStr = "";
 		PersonaFisica fisica = new PersonaFisicaImpl();
-		fisica.setName(solicitante.name+"Fisica");
+		fisica.setName(solicitante.name + "Fisica");
 		fisica.setCampo(CampoUtils.addMore(solicitante.campo, "fisica"));
 		fisica.setRequerido(solicitante.requerido? true:false);
 		fisicaStr = Expand.expand(fisica);

@@ -19,6 +19,11 @@ public class TablaValidator extends LedElementValidator{
 	}
 
 	@Override
+	public boolean aceptaString() {
+		return false;
+	}
+	
+	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
 		Entity valida = LedCampoUtils.getEntidadPaginaOrPopupOrTabla(element);
 		Entity actual = LedCampoUtils.getCampo(element).getEntidad();

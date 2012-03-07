@@ -211,9 +211,7 @@ Elemento:
 ;
 
 Campo:
-	(entidad=[Entity|IDS] (
-		(atributos=CampoAtributos)?
-	))
+	(entidad=[Entity|IDS] (atributos=CampoAtributos)?)
 	| method=STRING
 ;
 
@@ -394,17 +392,34 @@ EditarArchivo:
 
 FirmaPlatinoSimple:
 	elemento="FirmaSimple" (name=ID)
-		"titulo" "=" titulo=STRING
-		(
-			( documento?="documento" "=" campo=Campo)
-			(("listaFirmantes" "=" firmantes=Campo)
-			& ("setTrue" "=" setToTrue=Campo)?)
-			& ("setCamposTo" '{'
-				setCampos+=Campo "to" value+=STRING
-				(',' setCampos+=Campo "to" value+=STRING)*
-				'}'
-			)?
-		)
+	(
+		("titulo" "=" titulo=STRING)
+		& (documento=FirmaDocumento)
+		& (firmantes=FirmaFirmantes)
+		& (setToTrue=FirmaSetTrue)?
+	)
+	(
+		"setCamposTo" '{'
+			setCampos+=FirmaSetCampo
+			(',' setCampos+=FirmaSetCampo)*
+		'}'
+	)?
+;
+
+FirmaDocumento:
+	"documento" "=" campo=Campo	
+;
+
+FirmaFirmantes:
+	"listaFirmantes" "=" campo=Campo
+;
+
+FirmaSetCampo:
+	campo=Campo "to" value=STRING
+;
+
+FirmaSetTrue:
+	"setTrue" "=" campo=Campo
 ;
 
 Direccion:
@@ -454,10 +469,10 @@ Persona:
 
 Solicitante:
 	elemento=('Solicitante' | 'SolicitantePersonaFisica' | 'SolicitantePersonaJuridica') (name=ID) (
-		('campo' '=' campo=Campo) & 
-		('titulo' '=' titulo=STRING)? &
-		(requerido?='requerido')? &
-		("permiso" "=" permiso=[Permiso])?
+		('campo' '=' campo=Campo) 
+		& ('titulo' '=' titulo=STRING)?
+		& (requerido?='requerido')?
+		& ("permiso" "=" permiso=[Permiso])?
 		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
 	)
 ;

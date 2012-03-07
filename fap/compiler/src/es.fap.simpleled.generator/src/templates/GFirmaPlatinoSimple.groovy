@@ -4,6 +4,7 @@ import es.fap.simpleled.led.Campo
 import es.fap.simpleled.led.Check
 import es.fap.simpleled.led.Columna
 import es.fap.simpleled.led.FirmaPlatinoSimple
+import es.fap.simpleled.led.FirmaSetCampo
 import es.fap.simpleled.led.Tabla
 import es.fap.simpleled.led.Texto
 import es.fap.simpleled.led.impl.CheckImpl;
@@ -24,31 +25,22 @@ public class GFirmaPlatinoSimple {
 	}
 	
 	public String view(){
-		
-		CampoUtils campo = CampoUtils.create(firmaPlatino.getCampo(), "uri");
-		EntidadUtils.addToIndexEntity(campo);
-		
+		CampoUtils documentoUri = CampoUtils.create(firmaPlatino.documento.campo, "uri");
 		HashStack.push(HashStackName.SAVE_EXTRA, "String firma");
-		
 		TagParameters params = new TagParameters();
 		if (firmaPlatino.titulo)
-			params.putStr("titulo", firmaPlatino.getTitulo());
-		
+			params.putStr("titulo", firmaPlatino.titulo);
 		params.putStr("id", firmaPlatino.name);
 		params.putStr("firma", "firma.firma");
-		params.put("uri", '"${'+campo.firstLower()+'}"');
-		
+		params.put("uri", '"${' + documentoUri.firstLower() + '}"');
 		String view = "";
-		
 		// Debemos crear la tabla de firmantes en ESPERA, en caso de que sea el solicitante persona jurídica
 		//CampoUtils firmantes = CampoUtils.create(firmaPlatino.getFirmantes());	
-		view += crearTablaFirmantes(firmaPlatino.name, firmaPlatino.getFirmantes());
-		
+		view += crearTablaFirmantes(firmaPlatino.name);
 		HashStack.push(HashStackName.FIRMA_BOTON, firmaPlatino);
-		
 		view += """
-#{fap.firma ${params.lista()} /}
-		"""
+			#{fap.firma ${params.lista()} /}
+		""";
 		return view;
 	}
 	
@@ -58,12 +50,10 @@ public class GFirmaPlatinoSimple {
 	 * @param campo
 	 * @return
 	 */
-	public String crearTablaFirmantes (String name, Campo campo) {
+	public String crearTablaFirmantes(String name) {
 		Tabla tabla = new TablaImpl();
-		
-		//tabla.setPermiso(permiso);
-		tabla.setName(name+"Firmantes");
-		tabla.setCampo(campo);
+		tabla.setName(name + "Firmantes");
+		tabla.setCampo(CampoUtils.create("Firmante").campo);
 		tabla.setTitulo("Firmantes");
 				
 		Columna idValor = new ColumnaImpl();
@@ -90,7 +80,6 @@ public class GFirmaPlatinoSimple {
 		tabla.getColumnas().add(nombre);
 		tabla.getColumnas().add(cardinalidad);
 		tabla.getColumnas().add(fechaFirma);
-		
 		return Expand.expand(tabla);
 	}
 	

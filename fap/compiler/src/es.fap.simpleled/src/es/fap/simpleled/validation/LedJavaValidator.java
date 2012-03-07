@@ -122,10 +122,9 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Check
 	public void checkCampo(Campo campo){
-		if (! LedCampoUtils.validCampo(campo)){ // El error lo detecta LedScopeProvider en el linking
-			return;
-		}
-		LedElementValidator validator = LedElementValidator.getElementValidator(campo);
+		if (! LedCampoUtils.validCampo(campo))
+			return; // El error lo detecta LedScopeProvider en el linking
+		LedElementValidator validator = LedElementValidator.getElementValidator(campo.eContainer());
 		if (validator != null){
 			validator.validateCampoEntidad(campo, this);
 			validator.validateCampo(campo, this);

@@ -26,6 +26,48 @@ GET     /public/                                staticDir:public
 # === FAPGENERATED ===
   # Home page
 GET / SolicitudesController.index
+GET /Pepe/firma1 Firma1Controller.index
+POST /Pepe/firma1/editar Firma1Controller.editar
+POST /Pepe/firma1/crear Firma1Controller.crear
+
+GET /Pepe/firma1/fFirmantes Firma1Controller.tablafFirmantes
+GET /Pepe/firma2 Firma2Controller.index
+POST /Pepe/firma2/editar Firma2Controller.editar
+POST /Pepe/firma2/crear Firma2Controller.crear
+
+GET /Pepe/firma2/fFirmantes Firma2Controller.tablafFirmantes
+GET /Pepe/juan JuanController.index
+POST /Pepe/juan/editar JuanController.editar
+POST /Pepe/juan/crear JuanController.crear
+
+GET /Pepe/juan/fFirmantes JuanController.tablafFirmantes
+GET /Pepe/juan/NdameJuridicaTabla JuanController.tablaNdameJuridicaTabla
+GET /Pepe/juan/pepe JuanController.tablapepe
+GET /Pepe/popu popups.popuController.index
+
+GET /Pepe/popupndamejuridicatabla popups.PopupNdameJuridicaTablaController.index
+POST /Pepe/popupndamejuridicatabla/editar popups.PopupNdameJuridicaTablaController.editar
+POST /Pepe/popupndamejuridicatabla/borrar popups.PopupNdameJuridicaTablaController.borrar
+POST /Pepe/popupndamejuridicatabla/crear popups.PopupNdameJuridicaTablaController.crear
+
+GET /Pepe/popupsolicitantejuridicatabla popups.PopupSolicitanteJuridicaTablaController.index
+POST /Pepe/popupsolicitantejuridicatabla/editar popups.PopupSolicitanteJuridicaTablaController.editar
+POST /Pepe/popupsolicitantejuridicatabla/borrar popups.PopupSolicitanteJuridicaTablaController.borrar
+POST /Pepe/popupsolicitantejuridicatabla/crear popups.PopupSolicitanteJuridicaTablaController.crear
+
+GET /Pepe/popupsolicitantejurjuridicatabla popups.PopupSolicitanteJurJuridicaTablaController.index
+POST /Pepe/popupsolicitantejurjuridicatabla/editar popups.PopupSolicitanteJurJuridicaTablaController.editar
+POST /Pepe/popupsolicitantejurjuridicatabla/borrar popups.PopupSolicitanteJurJuridicaTablaController.borrar
+POST /Pepe/popupsolicitantejurjuridicatabla/crear popups.PopupSolicitanteJurJuridicaTablaController.crear
+
+GET /Pepe/probando ProbandoController.index
+POST /Pepe/probando/editar ProbandoController.editar
+POST /Pepe/probando/borrar ProbandoController.borrar
+POST /Pepe/probando/crear ProbandoController.crear
+
+GET /Pepe/probando/solicitanteJuridicaTabla ProbandoController.tablasolicitanteJuridicaTabla
+GET /Pepe/probando/solicitanteJurJuridicaTabla ProbandoController.tablasolicitanteJurJuridicaTabla
+GET /Pepe/probando/tabla ProbandoController.tablatabla
 GET /Solicitud/combos CombosController.index
 POST /Solicitud/combos/editar CombosController.editar
 

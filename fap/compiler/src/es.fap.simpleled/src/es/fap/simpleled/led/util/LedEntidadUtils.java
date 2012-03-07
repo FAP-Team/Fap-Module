@@ -9,7 +9,6 @@ import java.util.Set;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import es.fap.simpleled.led.Attribute;
-import es.fap.simpleled.led.CampoAtributos;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedFactory;
@@ -233,6 +232,15 @@ public class LedEntidadUtils {
 		if (entidades.containsKey("Solicitud"))
 			entidades.remove("SolicitudGenerica");
 		return entidades;
+	}
+	
+	public static boolean extend(Entity entidad, String extend) {
+		while (entidad != null){
+			if (entidad.getName().equals(extend))
+				return true;
+			entidad = entidad.getExtends();
+		}
+		return false;
 	}
 
 }

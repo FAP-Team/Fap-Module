@@ -40,9 +40,6 @@ public class ValoresPorDefectoTest extends Model {
 	@Email
 	public String mEmail;
 
-	@Email
-	public String mEmail2;
-
 	@CheckWith(CifCheck.class)
 	public String mCif;
 

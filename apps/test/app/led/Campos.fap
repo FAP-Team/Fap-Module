@@ -1,0 +1,24 @@
+Formulario Pepe campo=Solicitud {
+	
+	Pagina Juan{
+		
+		Accion editar crearSiempre
+		Accion crear crearSiempre
+		
+		Solicitante Ndame campo=Solicitud.solicitante
+		
+		Texto campo=Solicitud.estado 
+		Tabla pepe campo=Solicitud.aportaciones.registradas {
+			Columna campo=Aportacion.estado
+		}
+		Texto campo=FuncionariosHabilitados.texto
+		FirmaSimple f documento=Solicitud.aportaciones.actual.borrador listaFirmantes=Solicitud.registro.firmantes setTrue=Quartz.sendMail
+			titulo="Titulo" setCamposTo{
+				Solicitud.amigo.nombre to "Value1",
+				DocumentoSingle.desc to "Value2",
+				FirmanteSingle.cadena to "Value3",
+				FirmanteSingle.otros to "Value3"
+			}
+	}
+	
+}

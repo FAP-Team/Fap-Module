@@ -20,6 +20,16 @@ Entidad Solicitud extends SolicitudGenerica {
 	Documento doc
 }
 
+Entidad FirmanteSingle extends Singleton{
+	OneToMany Firmante firmantes
+	String cadena
+	String otros
+}
+
+Entidad DocumentoSingle extends Singleton{
+	Documento doc
+	String desc
+}
 
 Entidad PaginasTab{
 	String nombre
@@ -116,7 +126,6 @@ Entidad ValoresPorDefectoTest {
 	// Tipos Especiales 
 	Telefono mTelefono default = "900 120 120"
 	Email mEmail default = "asas@pepe.com"
-	Email mEmail2 default = "as@pepe"
 	Cif mCif default = "A58818501"
 	Moneda mMoneda default = "2.10"
 	DateTime mDateTime default = "12/12/2010"

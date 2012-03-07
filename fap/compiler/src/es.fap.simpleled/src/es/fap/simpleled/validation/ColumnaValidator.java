@@ -16,6 +16,11 @@ public class ColumnaValidator extends LedElementValidator {
 	public boolean aceptaEntidad(Entity entidad) {
 		return false;
 	}
+	
+	@Override
+	public boolean aceptaString() {
+		return false;
+	}
 
 	@Override
 	public boolean aceptaAtributo(Attribute atributo) {

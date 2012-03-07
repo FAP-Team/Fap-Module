@@ -16,9 +16,8 @@ public class GGrupo {
 	
 	public String view(){
 		String elementos = "";
-		for(Elemento elemento : grupo.getElementos()){
+		for(Elemento elemento : grupo.getElementos())
 			elementos += Expand.expand(elemento);
-		}
 		
 		TagParameters params = new TagParameters();
 		if(grupo.titulo != null)
@@ -44,26 +43,20 @@ public class GGrupo {
                 params.put("reverse", true);
 		}
 
-		if(grupo.siExpresion != null){
+		if(grupo.siExpresion != null)
 			params.put("mostrarSi", grupo.siExpresion)
-		}
 		
-		if (grupo.borde) {
+		if (grupo.borde)
 			params.put("borde", grupo.borde.toBoolean());
-		}
-		
 
-		if (grupo.permiso != null) {
+		if (grupo.permiso != null)
 			params.putStr("permiso", grupo.permiso.name);
-		}
-		
 		
 		def out = """
-#{fap.grupo ${params.lista()}}
-	${elementos}
-#{/fap.grupo}
-"""
-	
+			#{fap.grupo ${params.lista()}}
+				${elementos}
+			#{/fap.grupo}
+		""";
 		return out;	
 	}
 

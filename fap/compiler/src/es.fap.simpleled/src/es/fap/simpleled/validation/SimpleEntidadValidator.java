@@ -6,30 +6,26 @@ import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
-public class EntidadValidator extends LedElementValidator{
+public class SimpleEntidadValidator extends LedElementValidator{
 
 	private String nameEntidad;
 	
-	public EntidadValidator(EObject element, String nameEntidad){
+	public SimpleEntidadValidator(EObject element, String nameEntidad){
 		super(element);
 		this.nameEntidad = nameEntidad;
 	}
 	
 	@Override
 	public boolean aceptaEntidad(Entity entidad) {
-		while (entidad != null){
-			if (entidad.getName().equals(nameEntidad))
-				return true;
-			entidad = entidad.getExtends();
-		}
-		return false;
+		return LedEntidadUtils.extend(entidad, nameEntidad);
 	}
 
 	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
-		Entity entidad = LedEntidadUtils.getEntidad(atributo);
-		if (entidad != null && aceptaEntidad(entidad)){
-			return true;
+		if (LedEntidadUtils.xToOne(atributo)){
+			Entity entidad = LedEntidadUtils.getEntidad(atributo);
+			if (entidad != null && LedEntidadUtils.extend(entidad, nameEntidad))
+				return true;
 		}
 		return false;
 	}

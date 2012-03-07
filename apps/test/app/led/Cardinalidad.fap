@@ -1,0 +1,56 @@
+Formulario Pepe campo=Agente {
+	
+	Popup popu campo=Aportaciones{
+		
+	}
+	
+	Pagina Firma1 campo=Solicitud {
+		Accion crear crearSiempre
+		Accion editar crearSiempre
+//		Form novena{
+			FirmaSimple f documento=Solicitud.doc listaFirmantes=Solicitud.registro.firmantes titulo="Titulo"
+//		}
+	}
+	
+	Pagina Firma2 campo=Documento {
+		Accion crear crearSiempre
+		Accion editar crearSiempre
+			FirmaSimple f documento=DocumentoSingle.doc listaFirmantes=FirmanteSingle.firmantes titulo="Titulo" setTrue=Quartz.execute setCamposTo{
+				FuncionariosHabilitados.texto to "Value"
+			}
+	}
+	
+	// Object.class.getMethods();
+	
+	Pagina Probando campo=Solicitud {
+		Accion crear crearSiempre
+		Accion editar crearSiempre
+		Accion borrar crearSiempre
+//		Grupo grupo mostrarSiCampo Quartz.execute = "pepe" {}
+		Texto text campo=Convocatoria.id
+		AreaTexto area campo=FuncionariosHabilitados.texto
+		Check check campo=Solicitud.doc.clasificado
+		Enlace enlace titulo="Titulo" destino="Destino" estilo=" " campo=Solicitud.estado
+		Fecha fecha campo=Solicitud.doc.fechaRegistro
+		Combo campo=Solicitud.ceconomicos
+		Tabla tabla campo=Agente{
+			Columna campo=Agente.acceso
+		}
+		SubirArchivo subir campo=Solicitud.doc
+		EditarArchivo edita campo=Solicitud.doc
+//		FirmaSimple firma   titulo="Titulo"
+//			listaFirmantes=Solicitud.registro.firmantes
+//			documento=Solicitud.doc setTrue=Quartz.execute
+//			setCamposTo{Convocatoria.id to "Value"}
+		Direccion campo=Solicitud.solicitante.domicilio
+		Nip titulo="Titulo" campo=Solicitud.amigo.nip
+		PersonaFisica fisica campo=Solicitud.amigo
+		PersonaJuridica juridica campo=Solicitud.solicitante.juridica titulo="Titulo"
+		Persona person campo=Solicitud.solicitantePersonaJuridica 
+		Solicitante solicitante campo=Solicitud.solicitante
+		SolicitantePersonaFisica solicitanteFis campo=Solicitud.solicitante
+		SolicitantePersonaJuridica solicitanteJur campo=Solicitud.solicitante
+		EntidadAutomatica auto campo=Convocatoria
+	}
+	
+}

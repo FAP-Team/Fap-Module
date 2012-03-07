@@ -109,7 +109,7 @@ public class PaginaFirmaController extends PaginaFirmaControllerGen {
 	
 	
 	@Util
-	public static void botonSimpleForm(Long idSolicitud, platino.Firma firma){
+	public static void botonSimpleForm(Long idSolicitud, String firma){
 		// Realizamos la creación del documento y lo subimos al AED
 		Solicitud solicitud = getSolicitud(idSolicitud);
 		

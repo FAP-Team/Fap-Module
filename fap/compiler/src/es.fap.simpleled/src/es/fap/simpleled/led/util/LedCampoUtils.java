@@ -137,6 +137,8 @@ public class LedCampoUtils {
 	}
 	
 	public static boolean validCampo(Campo campo){
+		if (campo.getMethod() != null)
+			return true;
 		if (campo.getEntidad() == null || campo.getEntidad().getName() == null){
 			return false;
 		}
@@ -176,11 +178,11 @@ public class LedCampoUtils {
 		return null;
 	}
 	
-	public static Map<String, Entity> getEntidadesValidas(Campo campo){
-		EObject container = LedCampoUtils.getElementosContainer(campo);
+	public static Map<String, Entity> getEntidadesValidas(EObject elemento){
+		EObject container = LedCampoUtils.getElementosContainer(elemento);
 		Map<String, Entity> entidades = new HashMap<String, Entity>();
-		if (container instanceof Model || campo.eContainer() instanceof Tabla){
-			for (Entity e: ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, campo.eResource()))
+		if (container instanceof Model || elemento instanceof Tabla){
+			for (Entity e: ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, elemento.eResource()))
 				entidades.put(e.getName(), e);	
 			return entidades;
 		}
@@ -194,7 +196,7 @@ public class LedCampoUtils {
 			entidades.put(ultimaEntidad.getName(), ultimaEntidad);
 		}
 		if (! (container instanceof Tabla)){
-			for (Entity single: LedEntidadUtils.getSingletons(campo.eResource()))
+			for (Entity single: LedEntidadUtils.getSingletons(elemento.eResource()))
 				entidades.put(single.getName(), single);
 		}
 		return entidades;

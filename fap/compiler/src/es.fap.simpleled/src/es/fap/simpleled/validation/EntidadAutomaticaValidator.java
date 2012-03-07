@@ -18,6 +18,11 @@ public class EntidadAutomaticaValidator extends LedElementValidator{
 	}
 
 	@Override
+	public boolean aceptaString() {
+		return false;
+	}
+	
+	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
 		return LedEntidadUtils.xToOne(atributo);
 	}

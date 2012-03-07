@@ -200,22 +200,17 @@ class ControllerUtils {
 				// Si es un grupo debemos incluir lood IF de los mostrarSiCheck, mostrarSiCampo, ...
 				if (objeto.siCombo != null) {
 					if (Combo.class.isInstance(objeto.siCombo)) {
-						String arrayName = "mArray"+StringUtils.getRandomName();
 						CampoUtils campo = CampoUtils.create(objeto.siCombo.campo);
-						out += "String[] ${arrayName} = new String[] {"+objeto.siComboValues.values.collect { '"'+it+'"' }.join(',')+"};\n";
-						out += "if (Arrays.asList(${arrayName}).contains(${campo.firstLower()})) {\n";
+						out += """if (Arrays.asList(new String[] {${objeto.siComboValues.values.collect{"\"${it}\""}.join(',')}}).contains(${campo.dbStr()})){\n""";
 					}
 				}
 				else if (objeto.siCheck != null) {
-					println ("Hay un check");
 					CampoUtils campo = CampoUtils.create(objeto.siCheck.campo);
 					out += "if ((${campo.firstLower()} != null) && (${campo.firstLower()} == ${objeto.siCheckValues})) {\n";
 				}
 				else if (objeto.campo != null) {
-					String arrayName = "mArray"+StringUtils.getRandomName();
 					CampoUtils campo = CampoUtils.create(objeto.campo);
-					out += "String[] ${arrayName} = new String[] {"+objeto.siCampoValues.values.collect { '"'+it+'"' }.join(',')+"};\n";
-					out += "if (Arrays.asList(${arrayName}).contains(${campo.firstLower()})) {\n";
+					out += """if (Arrays.asList(new String[] {${objeto.siCampoValues.values.collect{"\"${it}\""}.join(',')}}).contains(${campo.dbStr()})){\n""";
 				}
 				else if (objeto.siExpresion != null) {
 					out += "if (${objeto.siExpresion}) {"

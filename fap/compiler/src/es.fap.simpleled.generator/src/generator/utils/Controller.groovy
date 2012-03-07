@@ -6,6 +6,7 @@ import es.fap.simpleled.led.Boton
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CampoAtributos;
 import es.fap.simpleled.led.Entity
+import es.fap.simpleled.led.FirmaSetCampo
 import es.fap.simpleled.led.Form
 import es.fap.simpleled.led.FirmaPlatinoSimple;
 import es.fap.simpleled.led.MenuEnlace
@@ -61,7 +62,7 @@ public class Controller{
 	public List<String> saveExtra;
 	public List<String> saveCode;
 	public List<String> saveBoton;
-	public List<String> firmaBoton;
+	public List<FirmaPlatinoSimple> firmaBoton;
 	public List<EntidadUtils> saveEntities;
 	public List<EntidadUtils> indexEntities;
 	public EObject elementoGramatica;
@@ -123,12 +124,6 @@ public class Controller{
 		for (int i = 0; i < saveEntities.size(); i++){
 			if (saveEntities.get(i).equals(entidad)){
 				saveEntities.remove(i);
-				break;
-			}
-		}
-		for (int i = 0; i < indexEntities.size(); i++){
-			if (indexEntities.get(i).equals(entidad)){
-				indexEntities.remove(i);
 				break;
 			}
 		}
@@ -216,15 +211,17 @@ ${metodoBorrarValidateRules()}
 
 ${metodoBindReferences()}
 
-${botonesMethods()}
+${metodosBotones()}
 
-${getters()}
+${metodosDeFirma()}
+
+${metodosGetters()}
 
 ${metodoCheckRedirigir()}
 
 ${metodosHashStack()}
 
-${beforeMethod()}
+${metodoBefore()}
 
 }
 """
@@ -255,7 +252,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		return sb.toString();
 	}
 	
-	private String getters(){
+	private String metodosGetters(){
 		String getters = "";
 		if(almacen.entidad != null){
 			for (AlmacenEntidad subcampo: camposTodos)
@@ -269,12 +266,10 @@ public class ${controllerName} extends ${controllerGenName} {
 			getters += ControllerUtils.simpleGetter(entidad, false); // get sin parametros, que dentro hace un new()
 		for (EntidadUtils entity: saveEntities)
 			getters += ControllerUtils.simpleGetter(entity, false);
-		for (EntidadUtils entity: indexEntities)
-			getters += ControllerUtils.simpleGetter(entity, false);
 		return getters;
 	}
 	
-	private String gettersForm(Controller c){
+	private String metodosGettersForm(Controller c){
 		List<String> saveContainer = new ArrayList<String>();
 		for (EntidadUtils entity: c.saveEntities)
 			saveContainer.add(entity.variable);
@@ -314,7 +309,6 @@ public class ${controllerName} extends ${controllerGenName} {
 				${hayAnterior? "checkRedirigir();" : ""}
 				${primerAlmacen.entidad? "$primerAlmacen.clase $primerAlmacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, primerAlmacen, true)};" : ""}
 				${campos.collect{"$it.entidad.clase $it.entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, it.almacen, it.entidad)};"}.join("\n")}
-				${indexEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
 				${saveEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
 				${getEntidad}
 				log.info("Visitando página: "+${renderView});
@@ -326,7 +320,6 @@ public class ${controllerName} extends ${controllerGenName} {
 					almacen.variable,
 					entidadNoSingle.id,
 					entidad.variable,
-					indexEntities.collect{it.variable},
 					saveEntities.collect{it.variable}
 				)});
 			}
@@ -339,44 +332,30 @@ public class ${controllerName} extends ${controllerGenName} {
 		String metodoEditar = "";
 		String editarRenderCall = "${controllerName}.${nameEditar}Render(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
 		String botonCode = "";
-		List<String> saveBotones = new ArrayList<String>(saveBoton);
-		// Le añadimos los botones de firma
-		List<FirmaPlatinoSimple> firmaBotones = new ArrayList<FirmaPlatinoSimple>(firmaBoton);
-		for (FirmaPlatinoSimple _firma: firmaBotones) {
-			saveBotones.add(_firma.name);
-		}
-		if (isForm() && saveBotones.size() == 1){
-			saveBotones.clear();
-			if (firmaBotones.size() > 0) {
-				String _name = firmaBotones.get(0).name;
-				// Un único boton de firma
-				botonCode = """
-				${controllerName}.${StringUtils.firstLower(_name)}${sufijoBoton}(${StringUtils.params(
-					intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
-					entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
-				)});
-				"""
-			}
-		}
-		else if (saveBotones.size() > 0){
-			boolean primero = true;
-			for (String boton : saveBotones) {
-				if (primero == true) {
-					botonCode += "if (${boton} != null) {";
-					primero = false;
+		for (String boton: saveBoton) {
+			botonCode += """
+				if (${boton} != null){
+					${controllerName}.${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
+						intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
+						entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
+					)});
+					${editarRenderCall}
 				}
-				else
-					botonCode += "else if (${boton} != null) {"
-				botonCode += """
-						${controllerName}.${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
-							intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
-							entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
-						)});
-						${editarRenderCall}
-					}
-				""";
-			}
+			""";
 		}
+		for (FirmaPlatinoSimple boton: firmaBoton) {
+			botonCode += """
+				if (${boton.name} != null){
+					${controllerName}.${StringUtils.firstLower(boton.name)}${sufijoBoton}(${StringUtils.params(
+						intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
+						saveExtra.collect{it.split(" ")[1]}
+					)});
+					${editarRenderCall}
+				}
+			""";
+		}
+		if (isForm() && saveBoton.size() == 1 && firmaBoton.size() == 0)
+			botonCode = "";
 		metodoEditar = """
 			@Util // Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 			public static void ${nameEditar}(${StringUtils.params(
@@ -386,16 +365,17 @@ public class ${controllerName} extends ${controllerGenName} {
 				entidadPagina.typeVariable,
 				saveEntities.collect{it.typeVariable},
 				saveExtra,
-				saveBotones.collect{"String ${it}"}
+				saveBoton.collect{"String ${it}"},
+				firmaBoton.collect{"String ${it.name}"}
 			)}){
 				checkAuthenticity();
 				if(!permiso${sufijoPermiso}("editar")){
 					Messages.error("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar la acción"}");
 				}
-				${botonCode}
 				${!entidad.nulo()? "${entidad.clase} $entidad.variableDb = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};":""}
 				${ControllerUtils.listGetterCall(controllerName, EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
 				${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(controllerName, this, entidad, saveEntities) : ""}
+				${botonCode}
 	   """;
 	    if (editar && !entidadPagina.nulo()){
 			metodoEditar += """	
@@ -496,8 +476,6 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String metodoCrear(){
 		if (!crear)
 			return "";
-		List<String> saveBotones = new ArrayList<String>(saveBoton);
-		saveBotones.addAll(firmaBoton);
 		return """
 			public static void crear(${StringUtils.params(
 				intermedias.collect{it.typeId},
@@ -515,7 +493,8 @@ public class ${controllerName} extends ${controllerGenName} {
 						entidadPagina.variable, 
 						saveEntities.collect{it.variable},
 						saveExtra.collect{it.split(" ")[1]},
-						saveBotones.collect{"null"}
+						saveBoton.collect{"null"},
+						firmaBoton.collect{"null"}
 					)});
 				else{
 					${entidad.id} = ${controllerName}.crearLogica(${StringUtils.params(
@@ -818,7 +797,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		return controllerHS;
 	}
 	
-	private String beforeMethod(){
+	private String metodoBefore(){
 		return """
 			@Before
 			static void beforeMethod() {
@@ -841,13 +820,11 @@ public class ${controllerName} extends ${controllerGenName} {
 		return "";
 	}
 	
-	private String botonesMethods(){
+	private String metodosBotones(){
+		if (isForm() && saveBoton.size() == 1)
+			return "";
 		String botonesMethod = "";
-		List<String> saveBotones = new ArrayList<String>(saveBoton);
-		if (isForm() && saveBotones.size() == 1){
-			saveBotones.clear();
-		}
-		for (String boton: saveBotones){
+		for (String boton: saveBoton){
 			botonesMethod += """
 				@Util
 				public static void ${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
@@ -865,56 +842,49 @@ public class ${controllerName} extends ${controllerGenName} {
 		return botonesMethod;
 	}
 	
-	public static String getAccion(PaginaAccion paginaAccion){
-		if (paginaAccion.accion)
-			return "\"${paginaAccion.accion}\"";
-		return "controllers.${paginaAccion.pagina.name}Controller.getAccion()";
-	}
-	
 	private String metodosDeFirma(){		
 		String botonesMethod = "";
-		List<FirmaPlatinoSimple> firmaBotones = new ArrayList<FirmaPlatinoSimple>(firmaBoton);
-		for (FirmaPlatinoSimple _firma: firmaBotones){
-			CampoUtils documento = CampoUtils.create(_firma.campo);
-			
-			String previousCampoFirmantes = """List<Firmante> firmantes = new ArrayList<Firmante>();
-				FirmaUtils.calcularFirmantes(solicitud.solicitante, firmantes);
-			""";
-			String strCampoFirmantes = "firmantes";
-			if (_firma.firmantes != null) {
-				CampoUtils firmantes = CampoUtils.create(_firma.firmantes);
-				strCampoFirmantes = "${firmantes.firstLower()}";
-				previousCampoFirmantes = "";
-			}
+		for (FirmaPlatinoSimple _firma: firmaBoton){
+			Map<String, EntidadUtils> entidades = new HashMap<String, EntidadUtils>();
+			CampoUtils documento = CampoUtils.create(_firma.documento.campo);
+			entidades.put(documento.getEntidad().name, EntidadUtils.create(documento.getEntidad()));
+			CampoUtils firmantes = CampoUtils.create(_firma.firmantes.campo);
+			entidades.put(firmantes.getEntidad().name, EntidadUtils.create(firmantes.getEntidad()));
+			String strCampoFirmantes = "${firmantes.firstLower()}";
 			String strCampoToTrue = "";
 			if (_firma.setToTrue != null) {
-				CampoUtils campoToTrue = CampoUtils.create(_firma.setToTrue);
-				strCampoToTrue = """${campoToTrue.firstLower()} = true;
+				CampoUtils campoToTrue = CampoUtils.create(_firma.setToTrue.campo);
+				entidades.put(campoToTrue.getEntidad().name, EntidadUtils.create(campoToTrue.getEntidad()));
+				strCampoToTrue = """
+						${campoToTrue.firstLower()} = true;
 						${campoToTrue.sinUltimoAtributo()}.save();
 				""";
 			}
 			String strCampoSetTo = "";
-			if ((_firma.setCampos != null) && (_firma.setCampos.size() > 0)) {
-				for (int i = 0; i < _firma.setCampos.size(); i++) {
-					CampoUtils campoSetTo = CampoUtils.create(_firma.setCampos[i]);
-					strCampoSetTo += """${campoSetTo.firstLower()} = "${_firma.value[i]}";
-						${campoSetTo.sinUltimoAtributo()}.save();
+			for (FirmaSetCampo setCampo: _firma.setCampos){
+				CampoUtils campoSetTo = CampoUtils.create(setCampo.campo);
+				entidades.put(campoSetTo.getEntidad().name, EntidadUtils.create(campoSetTo.getEntidad()));
+				strCampoSetTo += """
+					${campoSetTo.firstLower()} = "${setCampo.value}";
+					${campoSetTo.sinUltimoAtributo()}.save();
 				""";
-				}
-			}			
+			}
+			String getters = "";
+			for (EntidadUtils e: entidades.values()){
+				if (!e.equals(entidad))
+					getters += """${e.clase} ${e.variable} = ${e.clase}.get(${e.clase}.class);""";
+			}	
 			botonesMethod += """
 				@Util
 				public static void ${StringUtils.firstLower(_firma.name)}${sufijoBoton}(${StringUtils.params(
 					intermedias.collect{it.typeId},
 					almacenNoSingle.typeId,
 					entidad.typeId,
-					entidadPagina.typeVariable,
-					saveEntities.collect{it.typeVariable},
 					saveExtra
 				)}){
-					${entidad.entidad? "$entidad.entidad.name $entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};" : ""}
-					${previousCampoFirmantes}
-					FirmaUtils.firmar(${documento.firstLower()}, ${strCampoFirmantes}, firma, null);
+					${!entidad.nulo()? "${entidad.clase} $entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};":""}
+					${getters}
+					FirmaUtils.firmar(${documento.firstLower()}, ${firmantes.firstLower()}, firma, null);
 					if (!Messages.hasErrors()) {
 						${strCampoToTrue}
 						${strCampoSetTo}
@@ -924,6 +894,12 @@ public class ${controllerName} extends ${controllerGenName} {
 			""";
 		}
 		return botonesMethod;
+	}
+	
+	public static String getAccion(PaginaAccion paginaAccion){
+		if (paginaAccion.accion)
+			return "\"${paginaAccion.accion}\"";
+		return "controllers.${paginaAccion.pagina.name}Controller.getAccion()";
 	}
 	
 	private static boolean hayAnterior(Object o){
@@ -1012,9 +988,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.container = pagina;
 		controller.index = true;
 		controller.findPaginaReferencias(pagina);
-		controller.crear = controller.crear && (pag.hasForm || controller.accionCrear.crearSiempre);
-		controller.editar = (controller.editar || controller.crear) && (pag.hasForm || controller.accionEditar.crearSiempre);
-		controller.borrar = controller.borrar && (pag.hasForm || controller.accionBorrar.crearSiempre);
+		controller.crear = pag.hasForm && (controller.crear || controller.accionCrear.crearSiempre);
+		controller.editar = pag.hasForm && (controller.editar || controller.crear || controller.accionEditar.crearSiempre);
+		controller.borrar = pag.hasForm && (controller.borrar || controller.accionBorrar.crearSiempre);
 		controller.saveController = [];
 		controller.campo = pag.campo;
 		controller.renderView = "\"gen/${pagina.name}/${pagina.name}.html\"";
@@ -1034,7 +1010,6 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.saveExtra = [];
 		controller.saveCode = [];
 		controller.saveEntities = [];
-		controller.indexEntities = [];
 		controller.elementoGramatica = pagina;
 		return controller;
 	}
@@ -1068,7 +1043,6 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.saveExtra = [];
 		controller.saveCode = [];
 		controller.saveEntities = [];
-		controller.indexEntities = [];
 		controller.elementoGramatica = popup;
 		return controller;
 	}
@@ -1102,7 +1076,6 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.saveExtra = [];
 		controller.saveCode = [];
 		controller.saveEntities = [];
-		controller.indexEntities = [];
 		controller.elementoGramatica = form;
 		return controller;
 	}

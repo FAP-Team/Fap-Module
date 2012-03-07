@@ -325,11 +325,10 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 					if (tipo.equals("Telefono")) {
 						refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
 					} else if (tipo.equals("Email")) {
-						if (isValidEmailAddress((String)attribute.defaultValue)) {
+						if (isValidEmailAddress((String)attribute.defaultValue))
 							refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
-						} else {
-							println "WARNING: El valor por defecto para email no es correcto";
-						}
+						else
+							println """WARNING: "${attribute.defaultValue}" no es una dirección email válida para ${entity.name}.${attribute.name}""";
 					} else if (tipo.equals("Cif")) {
 						// TODO: Validar el CIF
 						refInit += defaultValue(attribute.defaultValue, "String", attribute.name);

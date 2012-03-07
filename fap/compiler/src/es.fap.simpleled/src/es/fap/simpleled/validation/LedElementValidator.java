@@ -21,6 +21,11 @@ import es.fap.simpleled.led.Enlace;
 import es.fap.simpleled.led.EntidadAutomatica;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Fecha;
+import es.fap.simpleled.led.FirmaDocumento;
+import es.fap.simpleled.led.FirmaFirmantes;
+import es.fap.simpleled.led.FirmaPlatinoSimple;
+import es.fap.simpleled.led.FirmaSetCampo;
+import es.fap.simpleled.led.FirmaSetTrue;
 import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.Grupo;
 import es.fap.simpleled.led.LedPackage;
@@ -50,17 +55,25 @@ public abstract class LedElementValidator {
 	
 	public abstract String mensajeError();
 
+	public boolean aceptaString(){
+		return true;
+	}
 	
 	public LedElementValidator(EObject element){
 		this.element = element;
 	}
 	
 	public void validateCampoEntidad(Campo campo, LedJavaValidator validator){
-		if (!LedCampoUtils.getEntidadesValidas(campo).containsKey(campo.getEntidad().getName()))
+		if (campo.getMethod() == null && !LedCampoUtils.getEntidadesValidas(campo.eContainer()).containsKey(campo.getEntidad().getName()))
 			validator.myError("En este contexto no se puede utilizar esta entidad", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
 	}
 	
 	public void validateCampo(Campo campo, LedJavaValidator validator) {
+		if (campo.getMethod() != null){
+			if (!aceptaString())
+				validator.myError("En este contexto no se puede utilizar un String para el campo", campo, null, 0);
+			return;
+		}
 		Attribute attr = LedCampoUtils.getUltimoAtributo(campo);
 		if (attr != null){
 			if (!aceptaAtributo(attr)){
@@ -167,8 +180,7 @@ public abstract class LedElementValidator {
 		return referencia + "<" + compound.getEntidad().getName() + ">";
 	}
 	
-	public static LedElementValidator getElementValidator(Campo campo){
-		EObject container = campo.eContainer();
+	public static LedElementValidator getElementValidator(EObject container){
 		if (container instanceof Fecha) {
 			return new FechaValidator(container);
 		}
@@ -193,32 +205,44 @@ public abstract class LedElementValidator {
 		if (container instanceof Combo) {
 			return new ComboValidator(container);
 		}
-		if (container instanceof SubirArchivo || container instanceof EditarArchivo ) { //|| container instanceof FirmaPlatinoSimple) {
-			return new EntidadValidator(container, "Documento");
+		if (container instanceof SubirArchivo || container instanceof EditarArchivo) {
+			return new SimpleEntidadValidator(container, "Documento");
 		}
 		if (container instanceof Direccion) {
-			return new EntidadValidator(container, "Direccion");
+			return new SimpleEntidadValidator(container, "Direccion");
 		}
 		if (container instanceof Nip) {
-			return new EntidadValidator(container, "Nip");
+			return new SimpleEntidadValidator(container, "Nip");
 		}
 		if (container instanceof Persona) {
-			return new EntidadValidator(container, "Persona");
+			return new SimpleEntidadValidator(container, "Persona");
 		}
 		if (container instanceof PersonaFisica) {
-			return new EntidadValidator(container, "PersonaFisica");
+			return new SimpleEntidadValidator(container, "PersonaFisica");
 		}
 		if (container instanceof PersonaJuridica) {
-			return new EntidadValidator(container, "PersonaJuridica");
+			return new SimpleEntidadValidator(container, "PersonaJuridica");
 		}
 		if (container instanceof Solicitante) {
-			return new EntidadValidator(container, "Solicitante");
+			return new SimpleEntidadValidator(container, "Solicitante");
 		}
 		if (container instanceof EntidadAutomatica) {
 			return new EntidadAutomaticaValidator(container);
 		}
 		if (container instanceof Enlace) {
 			return new EnlaceValidator(container);
+		}
+		if (container instanceof FirmaDocumento) {
+			return new SimpleEntidadValidator(container, "Documento");
+		}
+		if (container instanceof FirmaFirmantes) {
+			return new ListaEntidadValidator(container, "Firmante");
+		}
+		if (container instanceof FirmaSetCampo || container instanceof FirmaPlatinoSimple) {
+			return new TextoValidator(container);
+		}
+		if (container instanceof FirmaSetTrue) {
+			return new CheckValidator(container);
 		}
 		return null;
 	}

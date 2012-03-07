@@ -76,7 +76,6 @@ public class GForm {
 		int sizeCode = HashStack.size(HashStackName.SAVE_CODE);
 		int sizeBoton = HashStack.size(HashStackName.SAVE_BOTON);
 		int sizeFirma = HashStack.size(HashStackName.FIRMA_BOTON);
-		int sizeIndex = HashStack.size(HashStackName.INDEX_ENTITY);
 		int sizeController = HashStack.size(HashStackName.CONTROLLER);
 		
 		String elementos = "";
@@ -89,7 +88,6 @@ public class GForm {
 		List<String> saveCode = HashStack.popUntil(HashStackName.SAVE_CODE, sizeCode);
 		List<String> saveBoton = HashStack.popUntil(HashStackName.SAVE_BOTON, sizeBoton);
 		List<String> firmaBoton = HashStack.popUntil(HashStackName.FIRMA_BOTON, sizeFirma);
-		List<EntidadUtils> indexEntity = HashStack.popUntil(HashStackName.INDEX_ENTITY, sizeIndex).unique();
 		List<String> saveController = HashStack.popUntil(HashStackName.CONTROLLER, sizeController);
 		
 		controller = Controller.fromForm(form);
@@ -99,7 +97,6 @@ public class GForm {
 		controller.saveBoton = saveBoton;
 		controller.firmaBoton = firmaBoton;
 		controller.saveEntities = saveEntity;
-		controller.indexEntities = indexEntity;
 		controller.initialize();
 		return elementos;
 	}
@@ -112,11 +109,11 @@ public class GForm {
 			${controller.metodoValidateCopy()}
 			${controller.metodoEditarValidateRules()}
 			${controller.metodoPermiso()}
-			${controller.botonesMethods()}
+			${controller.metodosBotones()}
 			${controller.metodosHashStack()}
 			${controller.metodosDeFirma()}
 			${controller.metodoBindReferences()}
-			${controller.gettersForm(container)}
+			${controller.metodosGettersForm(container)}
 		"""; 
 	}
 

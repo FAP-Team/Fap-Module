@@ -316,7 +316,8 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			if (!unicos.contains(campoStr)){
 				unicos.add(campoStr);
 			} else {
-				warning("El campo esta siendo utilizado por otro elemento en la misma pagina", campo, LedPackage.Literals.CAMPO__ATRIBUTOS, 0);
+				if (campo != null)
+					warning("El campo esta siendo utilizado por otro elemento en la misma pagina", campo, LedPackage.Literals.CAMPO__ATRIBUTOS, 0);
 			}
 		}
 	}

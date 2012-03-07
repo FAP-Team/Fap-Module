@@ -9,9 +9,9 @@ import security.SecureFapGen;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.RegistroService;
-import services.aed.AedGestorDocumentalServiceImpl;
-import services.platino.PlatinoFirmaServiceImpl;
-import services.platino.PlatinoRegistroServiceImpl;
+import services.filesystem.FileSystemFirmaServiceImpl;
+import services.filesystem.FileSystemGestorDocumentalServiceImpl;
+import services.filesystem.FileSystemRegistroService;
 
 public class FapModule extends PlayAbstractModule {
 
@@ -24,16 +24,16 @@ public class FapModule extends PlayAbstractModule {
 		registro();
 	}
 	
-	protected void gestorDocumental(){
-	    bindLazySingletonOnDev(GestorDocumentalService.class, AedGestorDocumentalServiceImpl.class);
-	}
-	
-	protected void firma(){
-	    bindLazySingletonOnDev(FirmaService.class, PlatinoFirmaServiceImpl.class);
+	protected void gestorDocumental() {
+		bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
 	}
 
+	protected void firma() {
+		bindLazySingletonOnDev(FirmaService.class, FileSystemFirmaServiceImpl.class);
+	}
+	   
 	protected void registro(){
-	    bindLazySingletonOnDev(RegistroService.class, PlatinoRegistroServiceImpl.class);
+		bindLazySingletonOnDev(RegistroService.class, FileSystemRegistroService.class);
 	}
 	
 	protected void secure() {

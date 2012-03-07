@@ -1,0 +1,13 @@
+/*
+ * Descomente las lineas que hay a continuacion para
+ * empezar a crear la entidad Solicitud y sus referencias.
+ * 
+ * Si se deja comentada, al generar se creará la entidad
+ * Solicitud sin ningún campo.
+ */
+
+/*
+Entidad Solicitud extends SolicitudGenerica{
+	
+}
+*/

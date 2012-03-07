@@ -74,6 +74,7 @@ public class AedClient {
 	
 	public static String saveDocumentoTemporal(models.Documento documento, InputStream is, String filename) throws AedExcepcion {
 		//Preparamos el documento para subir al AED
+		System.out.println("Descripcion: "+documento.descripcion);
 		documento.prepararParaSubir();
 		
 		Documento documentoAed = new Documento();
@@ -222,7 +223,7 @@ public class AedClient {
 	 */
 	public static void actualizarTipoDescripcion(models.Documento documento) throws AedExcepcion {
 		if(documento.uri == null) throw new IllegalArgumentException("La uri del documneto no puede ser null");
-		documento.modificarDescripcion();
+		documento.actualizaDescripcion();
 		if (documento.clasificado != null && documento.clasificado.booleanValue()) {
 			log.debug("Actualizando tipo y descripción de un documento clasificado");
 			log.debug("Obteniendo propiedades");

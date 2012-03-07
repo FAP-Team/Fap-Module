@@ -98,17 +98,17 @@ public class Documento extends Model {
 	public void prepararParaSubir(){
 		//Si no es de tipo otros, pone la despcrión igual al tipo
 		//El AED da error con descripción null
-		if(!isOtros() && (descripcion.trim().equals(""))){
+		if(!isOtros() && ((descripcion == null) || (descripcion.trim().equals("")))){
 			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}
 	}
 	
 	/**
-	 * Modifica la descripcion si el tipo de documentos no es Otro
+	 * Actualiza la descripcion si el tipo de documentos no es Otro
 	 * 
 	*/
 	
-	public void modificarDescripcion(){
+	public void actualizaDescripcion(){
 		if(!isOtros()){
 			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}

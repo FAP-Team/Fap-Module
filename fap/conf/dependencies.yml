@@ -42,8 +42,6 @@ require:
 
     - es.gobcan.platino -> platino.pre 1.0:
         transitive: false
-    - es.gobcan.platino.servicios -> firma.pre 1.0:
-        transitive: false    
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false
     - es.gobcan.eadmon -> procedimientos 1.0:

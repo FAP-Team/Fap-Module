@@ -57,7 +57,7 @@ public class FirmaClient {
 
 	static {
 		URL wsdlURL = FirmaClient.class.getClassLoader().getResource(
-				"wsdl/firma-pre.wsdl");
+				"wsdl/firma.wsdl");
 		firmaPlatino = new FirmaService(wsdlURL).getFirmaService();
 
 		BindingProvider bp = (BindingProvider) firmaPlatino;

@@ -44,13 +44,10 @@ require:
     # XmlGregorianCalendar    
     - xerces -> xercesImpl 2.9.1
 
-
     - es.gobcan.eadmon.aed.cliente -> eadmon-aed-cliente 1.1:
         transitive: false
     - es.gobcan.platino -> platino.pre 1.0:
-        transitive: false
-    - es.gobcan.platino.servicios -> firma.pre 1.0:
-        transitive: false    
+        transitive: false   
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false
     - es.gobcan.eadmon -> procedimientos 1.0:
@@ -79,4 +76,3 @@ repositories:
         artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
         contains:
             - fap -> guice
-

@@ -580,6 +580,7 @@ class ControllerUtils {
 		   || (entity instanceof PersonaFisica)
 		   || (entity instanceof PersonaJuridica)
 		   || (entity instanceof Direccion)
+		   || (entity instanceof Solicitante)
 		   ))
 		   return true;
 	   return false;

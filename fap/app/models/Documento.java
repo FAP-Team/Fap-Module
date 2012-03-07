@@ -76,11 +76,11 @@ public class Documento extends Model {
 	}
 
 	/**
-	 * Modifica la descripcion si el tipo de documentos no es Otro
+	 * Actualiza la descripcion si el tipo de documentos no es Otro
 	 * 
 	 */
 
-	public void modificarDescripcion() {
+	public void actualizaDescripcion() {
 		if (!isOtros()) {
 			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}

@@ -375,8 +375,11 @@ SubirArchivo:
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 		& ('tramite' '=' tramite=STRING)?		
-		& ('aportadoPor' '=' aportadoPor=STRING)?	// ¿Cambiar el tipo?
-		& ('acepta' '=' mimes+=STRING ("," mimes+=STRING)*)?
+		& ('aportadoPor' '=' aportadoPor=STRING)?
+		& (
+			('mimes' '=' mimes+=STRING ("," mimes+=STRING)*) |
+			('extensiones' '=' extensiones+=STRING ("," extensiones+=STRING)*)
+		)?
 	)
 ;
 

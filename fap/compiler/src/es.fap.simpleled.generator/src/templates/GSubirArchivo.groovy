@@ -21,7 +21,6 @@ public class GSubirArchivo {
 	}
 	
 	public String view(){
-		// Añado la entidad que lo engloba a los parametros del Save
 		campo = CampoUtils.create(subirArchivo.campo);
 		EntidadUtils.addToSaveEntity(campo);
 		HashStack.push(HashStackName.SAVE_EXTRA, "java.io.File ${subirArchivo.name}")
@@ -60,29 +59,54 @@ public class GSubirArchivo {
 	}
 	
 	public String saveCode(){
-		String mimesCheck = "";
+		String checkFile = "";
 		if (subirArchivo.mimes.size > 0){
+			String check = "";
 			for (String type: typesAccepted()){
-				if (!mimesCheck.equals(""))
-					mimesCheck += " && ";
-				mimesCheck += """!type.equals("${type}")""";
+				if (!check.equals(""))
+					check += " && ";
+				check += """!type.equals("${type}")""";
 			}
 			for (String mime: mimesAccepted()){
-				if (!mimesCheck.equals(""))
-					mimesCheck += " && ";
-				mimesCheck += """!mimeType.equals("${mime}")""";
+				if (!check.equals(""))
+					check += " && ";
+				check += """!mimeType.equals("${mime}")""";
 			}
+			checkFile = """
+				String mimeType = play.libs.MimeTypes.getMimeType(${subirArchivo.name}.getAbsolutePath());
+				String type = mimeType.split("/")[0];
+				if (${check})
+					validation.addError("${subirArchivo.name}", "El tipo mime \\"" + mimeType + "\\" no es aceptado por el servidor");
+			""";
 		}
-		else
-			mimesCheck = "!utils.MimeUtils.acceptMime(mimeType)";
+		else if (subirArchivo.extensiones.size > 0){
+			String check = "";
+			for (String extension: subirArchivo.extensiones){
+				if (!check.equals(""))
+					check += " && ";
+				check += """!extension.equals("${extension}")""";
+			}
+			checkFile = """
+				String extension = GestorDocumentalUtils.getExtension(${subirArchivo.name});
+				if (${check})
+					validation.addError("${subirArchivo.name}", "La extensión de fichero \\"" + extension + "\\" no es aceptada por el servidor");
+			""";
+		}
+		else{
+			checkFile = """
+				String extension = GestorDocumentalUtils.getExtension(${subirArchivo.name});
+				String mimeType = play.libs.MimeTypes.getMimeType(${subirArchivo.name}.getAbsolutePath());
+				if (!utils.GestorDocumentalUtils.acceptExtension(extension))
+					validation.addError("${subirArchivo.name}", "La extensión de fichero \\"" + extension + "\\" no es aceptada por el servidor");
+				if (!utils.GestorDocumentalUtils.acceptMime(mimeType))
+					validation.addError("${subirArchivo.name}", "El tipo mime \\"" + mimeType + "\\" no es aceptado por el servidor");
+			""";
+		}
 		return """
 			if(${subirArchivo.name} == null)
 				validation.addError("${subirArchivo.name}", "Archivo requerido");
 			else{
-				String mimeType = play.libs.MimeTypes.getMimeType(${subirArchivo.name}.getAbsolutePath());
-				String type = mimeType.split("/")[0];
-				if (${mimesCheck})
-					validation.addError("${subirArchivo.name}", "El tipo mime del archivo no es aceptado por el servidor");
+				${checkFile}
 			}
 			if(!validation.hasErrors()){
 				try {

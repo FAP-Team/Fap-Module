@@ -56,6 +56,7 @@ public class TableRenderResponseTest extends Assert {
         
         String json = response.toJSON("campo1", "campo2");
         assertEqualsJson("{\"obj\":{\"mensajes\":{\"error\":[\"mensaje error\"],\"fatal\":[\"mensaje fatal\"],\"info\":[\"mensaje info\"],\"ok\":[\"mensaje ok\"],\"warning\":[\"mensaje warning\"]},\"rows\":[{\"objeto\":{\"campo1\":\"a\",\"campo2\":\"b\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true},{\"objeto\":{\"campo1\":\"c\",\"campo2\":\"d\"},\"permisoBorrar\":true,\"permisoEditar\":true,\"permisoLeer\":true}]}}", json);
+        Messages.clear();
 	}
 	
 	

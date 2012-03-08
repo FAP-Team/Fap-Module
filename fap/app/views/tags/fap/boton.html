@@ -10,6 +10,7 @@
 
 %{ 
 	def id = _id ?: play.libs.Codec.UUID()
+	def idFijo = _idFijo 
 	def label = _titulo
 	String style = '';
 	def waitPopup = _waitPopup
@@ -26,6 +27,12 @@
 	}
 	def idSolo = id;
 	id = id+Long.toHexString(new Random().nextLong());
+	
+	// Por si es llamado desde un elemento firma
+	if (idFijo) {
+		idSolo = idFijo;
+		id = idFijo;
+	}
 	
 }%
 

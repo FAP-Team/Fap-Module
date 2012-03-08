@@ -2,6 +2,7 @@ Formulario Solicitud {
 	
     Menu {
     	Enlace "Volver" pagina=Solicitudes
+    	Enlace "Popup" popup=pop
     	
     	Grupo "Combos" {
 			Enlace "Combos por defecto" pagina=Combos

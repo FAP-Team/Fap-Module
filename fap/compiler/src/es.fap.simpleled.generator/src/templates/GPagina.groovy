@@ -38,7 +38,7 @@ public class GPagina {
 		this.pagina = pagina;
 		this.name = pagina.name;
 		this.formulario = pagina.eContainer().name;
-		this.campo = CampoUtils.create(LedCampoUtils.getCampoPagina(pagina));
+		this.campo = CampoUtils.create(LedCampoUtils.getCampoPaginaPopup(pagina));
 		this.hasForm = this.campo != null && !pagina.noForm && !hayForm(pagina);
 	}
 	

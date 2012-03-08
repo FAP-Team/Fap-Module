@@ -155,32 +155,20 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
-	public void checkPaginaEntidad(Pagina pagina){
-		Formulario formulario = (Formulario) pagina.eContainer();
-		if (pagina.getCampo() == null && formulario.getCampo() == null && LedCampoUtils.hayCamposGuardablesOrTablaOneToMany(pagina)){
-			error("Tiene que definir el campo que va a usar en esta página, o en el formulario entero", LedPackage.Literals.PAGINA__NAME);
-		}
-	}
-	
 	public void checkTablaCampoPopup(Tabla tabla, Popup popup, Campo concatenado, EReference ref){
-		if (popup != null && !LedCampoUtils.equals(tabla.getCampo(), popup.getCampo()) && !LedCampoUtils.equals(concatenado, popup.getCampo()))
+		if (popup != null && !LedCampoUtils.equals(tabla.getCampo(), LedCampoUtils.getCampoPaginaPopup(popup)) && !LedCampoUtils.equals(concatenado, LedCampoUtils.getCampoPaginaPopup(popup)))
 			error( "El popup referenciado no es válido para el campo especificado en la tabla", ref);
 	}
 	
 	public void checkTablaCampoPagina(Tabla tabla, Pagina pagina, Campo concatenado, EReference ref){
-		if (pagina != null && !LedCampoUtils.equals(tabla.getCampo(), LedCampoUtils.getCampoPagina(pagina)) && !LedCampoUtils.equals(concatenado, LedCampoUtils.getCampoPagina(pagina)))
+		if (pagina != null && !LedCampoUtils.equals(tabla.getCampo(), LedCampoUtils.getCampoPaginaPopup(pagina)) && !LedCampoUtils.equals(concatenado, LedCampoUtils.getCampoPaginaPopup(pagina)))
 			error("La página referenciada no es válida para el campo especificado en la tabla", ref);
 	}
 	
 	@Check
 	public void checkTablaCampo(Tabla tabla){
 		EObject container = LedCampoUtils.getElementosContainer(tabla);
-		Campo campoContainer;
-		if (container instanceof Pagina)
-			campoContainer = LedCampoUtils.getCampoPagina((Pagina) container);
-		else
-			campoContainer = LedCampoUtils.getCampo(container);
-		Campo concatenado = LedCampoUtils.concatena(campoContainer, tabla.getCampo());
+		Campo concatenado = LedCampoUtils.concatena(LedCampoUtils.getCampoPaginaPopup(container), tabla.getCampo());
 		
 		checkTablaCampoPopup(tabla, tabla.getPopup(), concatenado, LedPackage.Literals.TABLA__POPUP);
 		checkTablaCampoPopup(tabla, tabla.getPopupBorrar(), concatenado, LedPackage.Literals.TABLA__POPUP_BORRAR);
@@ -209,7 +197,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	 * Se se llama a cada método que desea comparar dos páginas, para checkear condiciones.
 	 */
 	@Check
-	public void checkPaginasFormularioStuff(Pagina pagina){
+	public void checkPaginasStuff(Pagina pagina){
 		for (Pagina p : ModelUtils.<Pagina>getVisibleNodes(LedPackage.Literals.PAGINA, pagina.eResource())) {
 			String qn1 = qnProvider.getFullyQualifiedName(pagina).toString();
 			String qn2 = qnProvider.getFullyQualifiedName(p).toString();
@@ -219,6 +207,21 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 				checkNombrePaginaUnico(pagina, p);
 				checkPaginaInicialUnica(pagina, p);
 			}
+		}
+	}
+	
+	/*
+	 * Se se llama a cada método que desea comparar dos popups, para checkear condiciones.
+	 */
+	@Check
+	public void checkPopupsStuff(Popup popup){
+		for (Popup p : ModelUtils.<Popup>getVisibleNodes(LedPackage.Literals.POPUP, popup.eResource())) {
+			String qn1 = qnProvider.getFullyQualifiedName(popup).toString();
+			String qn2 = qnProvider.getFullyQualifiedName(p).toString();
+			String uri1 = popup.eResource().getURI().toString();
+			String uri2 = p.eResource().getURI().toString();
+			if (!qn1.equals(qn2) || !uri1.equals(uri2))
+				checkNombrePopupUnico(popup, p);
 		}
 	}
 	
@@ -241,6 +244,12 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		Formulario formulario = (Formulario)other.eContainer();
 		if (pagina.getName().equals(other.getName()))
 			error("La página " + pagina.getName() + " ya existe en el formulario " + formulario.getName(), LedPackage.Literals.PAGINA__NAME);
+	}
+	
+	public void checkNombrePopupUnico(Popup popup, Popup other){
+		Formulario formulario = (Formulario)other.eContainer();
+		if (popup.getName().equals(other.getName()))
+			error("El popup " + popup.getName() + " ya existe en el formulario " + formulario.getName(), LedPackage.Literals.POPUP__NAME);
 	}
 	
 	public void checkPaginaInicialUnica(Pagina pagina, Pagina other){
@@ -299,29 +308,25 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			error("FirmaSimple no puede llamarse \"firma\"", LedPackage.Literals.FIRMA_PLATINO_SIMPLE__NAME);
 	}
 	
-	// TODO: Hacerlo pero haciendo el chek sobre Paginas y PopUps, en vez de sobre campos, para evitar que resulte pesado
-	// TODO: Para ello serían 2 metodos. Uno que recibiese una Pagina, y otro un PopUp.
-	// TODO: LedCampoUtils.hayCamposGuardables, utilizar su codigo para fijarse a la hora de buscar los elementos con campos recursivamente.
-	// Para comprobar que no se utilicen dos campos en diferentes elementos de la misma Pagina
 	@Check
-	public void checkCampoUsadoEnPagina (Pagina pagina){
+	public void checkCampoUsadoEnPagina(Pagina pagina){
 		checkCampoUsado(pagina);
 	}
 	
 	@Check
-	public void checkCampoUsadoEnPopups (Popup popup){
+	public void checkCampoUsadoEnPopups(Popup popup){
 		checkCampoUsado(popup);
 	}
 	
-	public void checkCampoUsado (EObject obj){
+	public void checkCampoUsado(EObject obj){
 		List<Campo> campos = LedCampoUtils.buscarCamposRecursivos (obj);
 		Set<String> unicos = new HashSet<String>();
 		String campoStr = "";
 		for (Campo campo: campos){
 			campoStr = LedCampoUtils.getCampoStr(campo);
-			if (!unicos.contains(campoStr)){
+			if (!unicos.contains(campoStr))
 				unicos.add(campoStr);
-			} else {
+			else{
 				if (campo != null)
 					warning("El campo esta siendo utilizado por otro elemento en la misma pagina", campo, LedPackage.Literals.CAMPO__ATRIBUTOS, 0);
 			}

@@ -1,5 +1,6 @@
 Formulario Pepe campo=Solicitud {
 	
+	
 	Pagina Antes {
 		Tabla sss campo=Agente pagina=MiAgente{}
 	}
@@ -54,9 +55,9 @@ Entidad Principal {
 }
 
 
-Formulario Primero{
+Formulario Primero /*inicial*/ {
 
-   Pagina Primera inicial {
+   Pagina Primera /*inicial*/ {
        Tabla entidades campo=Principal columnasAutomaticas 
            pagina=PaginaPrincipal1
        {

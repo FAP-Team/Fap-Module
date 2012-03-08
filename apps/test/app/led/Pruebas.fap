@@ -1,0 +1,12 @@
+Formulario Pruebas{
+	
+	Pagina pag{
+		Texto campo=Quartz.texto
+	}
+	
+	Popup pop{
+		Texto campo=FirmanteSingle.cadena
+	}
+	
+	
+}

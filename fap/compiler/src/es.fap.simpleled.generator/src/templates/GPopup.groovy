@@ -32,7 +32,7 @@ public class GPopup {
 		this.popup = popup;
 		this.name = popup.name;
 		this.formulario = popup.eContainer().name;
-		this.campo = CampoUtils.create(popup.campo);
+		this.campo = CampoUtils.create(LedCampoUtils.getCampoPaginaPopup(popup));
 	}
 	
 	public String url(){

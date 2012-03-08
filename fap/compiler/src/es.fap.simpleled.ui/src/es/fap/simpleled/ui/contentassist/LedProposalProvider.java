@@ -250,7 +250,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		Formulario actual = (Formulario) model;
 		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, model.eResource())){
 			for (Popup popup: f.getPopups()){
-				if (LedEntidadUtils.equals(entidad, LedCampoUtils.getUltimaEntidad(popup.getCampo()))){
+				if (LedEntidadUtils.equals(entidad, LedEntidadUtils.getEntidadPaginaPopup(popup))){
 					if (f.getName().equals(actual.getName()))
 						acceptor.accept(createCompletionProposal(popup.getName(), context));
 					else
@@ -268,7 +268,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		Formulario actual = (Formulario) model;
 		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, model.eResource())){
 			for (Pagina pagina: f.getPaginas()){
-				if (LedEntidadUtils.equals(entidad, LedEntidadUtils.getEntidad(pagina))){
+				if (LedEntidadUtils.equals(entidad, LedEntidadUtils.getEntidadPaginaPopup(pagina))){
 					if (f.getName().equals(actual.getName()))
 						acceptor.accept(createCompletionProposal(pagina.getName(), context));
 					else

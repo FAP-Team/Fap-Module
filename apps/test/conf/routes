@@ -71,6 +71,11 @@ POST /Primero/paginaprincipal2/crear PaginaPrincipal2Controller.crear
 GET /Primero/primera PrimeraController.index
 
 GET /Primero/primera/entidades PrimeraController.tablaentidades
+GET /Pruebas/pag pagController.index
+
+GET /Pruebas/pop popups.popController.index
+POST /Pruebas/pop/editar popups.popController.editar
+
 GET /Solicitud/combos CombosController.index
 POST /Solicitud/combos/editar CombosController.editar
 

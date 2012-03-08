@@ -162,7 +162,7 @@ Popup:
 	elemento='Popup' name=ID
 	(
 		('titulo' '=' titulo=STRING)?
-		& ("campo" "=" campo=Campo)
+		& ("campo" "=" campo=Campo)?
 		& ("permiso" "=" permiso=[Permiso])?
 	)
 	'{'

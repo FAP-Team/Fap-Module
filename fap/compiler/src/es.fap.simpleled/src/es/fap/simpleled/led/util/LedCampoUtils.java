@@ -153,16 +153,18 @@ public class LedCampoUtils {
 	}
 	
 	/*
-	 * Devuelve el campo asociado a una página, que será:
-	 * 		el definido en el elemento Pagina.
-	 * 		ó: el definido en el elemento Formulario de la página.
-	 * 		ó: null
+	 * Devuelve el campo asociado a una página o a un popup, que será el que tengan definido, o si es null el que
+	 * haya definido en el Formulario que lo contiene.
 	 */
-	public static Campo getCampoPagina(Pagina pagina){
-		if (pagina.getCampo() != null){
-			return pagina.getCampo();
-		}
-		return ((Formulario) pagina.eContainer()).getCampo();
+	public static Campo getCampoPaginaPopup(EObject paginaPopup){
+		Campo campo = null;
+		if (paginaPopup instanceof Pagina)
+			campo = ((Pagina)paginaPopup).getCampo();
+		if (paginaPopup instanceof Popup)
+			campo = ((Popup)paginaPopup).getCampo();
+		if (campo != null)
+			return campo;
+		return ((Formulario) paginaPopup.eContainer()).getCampo();
 	}
 	
 	/*
@@ -171,9 +173,9 @@ public class LedCampoUtils {
 	 */
 	public static Entity getEntidadPaginaOrPopupOrTabla(EObject element){
 		EObject container = LedCampoUtils.getElementosContainer(element);
-		if (container instanceof Pagina)
-			return LedEntidadUtils.getEntidad((Pagina)container);
-		if (container instanceof Tabla || container instanceof Popup)
+		if (container instanceof Pagina || container instanceof Popup)
+			return LedEntidadUtils.getEntidadPaginaPopup(container);
+		if (container instanceof Tabla)
 			return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampo(container));
 		return null;
 	}
@@ -186,16 +188,16 @@ public class LedCampoUtils {
 				entidades.put(e.getName(), e);	
 			return entidades;
 		}
-		if (container instanceof Pagina){
-			Entity entidadPagina = LedEntidadUtils.getEntidad((Pagina)container);
-			if (entidadPagina != null)
-				entidades.put(entidadPagina.getName(), entidadPagina);
+		if (container instanceof Pagina || container instanceof Popup){
+			Entity entidad = LedEntidadUtils.getEntidadPaginaPopup(container);
+			if (entidad != null)
+				entidades.put(entidad.getName(), entidad);
 		}
-		if (container instanceof Tabla || container instanceof Popup){
+		if (container instanceof Tabla){
 			Entity ultimaEntidad = LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampo(container));
 			entidades.put(ultimaEntidad.getName(), ultimaEntidad);
 		}
-		if (! (container instanceof Tabla)){
+		else{
 			for (Entity single: LedEntidadUtils.getSingletons(elemento.eResource()))
 				entidades.put(single.getName(), single);
 		}

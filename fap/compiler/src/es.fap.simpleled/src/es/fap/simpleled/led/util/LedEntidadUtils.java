@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import es.fap.simpleled.led.Attribute;
@@ -215,8 +216,8 @@ public class LedEntidadUtils {
 	 * 		�: ultimo atributo del campo definido en el formulario, si no es null
 	 * 		�: null
 	 */
-	public static Entity getEntidad(Pagina pagina){
-		return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampoPagina(pagina));
+	public static Entity getEntidadPaginaPopup(EObject paginaPopup){
+		return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampoPaginaPopup(paginaPopup));
 	}
 	
 	public static Set<Entity> getSingletons(Resource res) {

@@ -13,6 +13,7 @@
 
 %{ 
 	def id = _id ?: play.libs.Codec.UUID()
+	def idFijo = _idFijo 
 	def label = _titulo
 	def ayuda = _ayuda
 	def id_help = id+"-help"
@@ -27,6 +28,13 @@
 	def noSubmit = _noSubmit
 	def idSolo = id;
 	id = id+Long.toHexString(new Random().nextLong());
+	
+	// Por si es llamado desde un elemento firma
+	if (idFijo) {
+		idSolo = idFijo;
+		id = idFijo;
+	}
+	
 }%
 
 	#{if fondo}

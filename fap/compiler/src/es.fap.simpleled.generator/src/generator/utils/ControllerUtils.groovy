@@ -427,6 +427,20 @@ class ControllerUtils {
 			db${campo.str}.addAll(${campo.firstLower()});
 			"""
 		}
+		// Para convertir el CIF o el NIP a Mayusculas, i guardarlo homogeneamente en la BBDD
+		if ((campo != null) && 
+			(campo.getUltimoAtributo() != null) && 
+			(campo.getUltimoAtributo().getType() != null) && 
+			(campo.getUltimoAtributo().getType().getCompound() != null) && 
+			(campo.getUltimoAtributo().getType().getCompound().getEntidad() != null) && 
+			(campo.getUltimoAtributo().getType().getCompound().getEntidad().getName().equals("Nip"))){
+				String out = "${campo.firstLower()}.valor = ${campo.firstLower()}.valor.toUpperCase();\n";
+				out += "db${campo.str} = ${campo.firstLower()};\n";
+				return out;
+		}
+		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Cif")){
+				return "db${campo.str} = ${campo.firstLower()}.toUpperCase();\n";
+		}
 		return "db${campo.str} = ${campo.firstLower()};\n";
 	}
 	

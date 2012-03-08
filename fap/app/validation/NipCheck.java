@@ -48,14 +48,14 @@ public class NipCheck extends Check {
 			}
 			
 			//Comprueba el formato
-			Matcher matcher = NIF_PATTERN.matcher(nip.valor);
+			Matcher matcher = NIF_PATTERN.matcher(nip.valor.toUpperCase());
 			if(!matcher.find()){
 				texto.append("validation.nip.nif.format");
 				return false;
 			}
 			
 			//Comprueba la letra
-			if(!checkNifNieLetter(nip.valor)){
+			if(!checkNifNieLetter(nip.valor.toUpperCase())){
 				texto.append("validation.nip.nif.letter");
 				return false;
 			}
@@ -70,7 +70,7 @@ public class NipCheck extends Check {
 			}
 			
 			//Comprueba el formato
-			Matcher matcher = NIE_PATTERN.matcher(nip.valor);
+			Matcher matcher = NIE_PATTERN.matcher(nip.valor.toUpperCase());
 			if(!matcher.find()){
 				texto.append("validation.nip.nie.format");
 				return false;
@@ -78,7 +78,7 @@ public class NipCheck extends Check {
 			
 			//Comprueba la letra
 			char charInicial = ' ';
-			char firstLetter = nip.valor.charAt(0);
+			char firstLetter = nip.valor.toUpperCase().charAt(0);
 			if (firstLetter == 'X') 
 				charInicial = '0';
 			else if (firstLetter == 'Y')

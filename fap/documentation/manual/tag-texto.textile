@@ -18,6 +18,7 @@ h2. Parámetros
 * **_ancho**          - Ancho del campo
 * **_bloque**         - Bloque
 * **_duplicado**      - Indica si deberemos duplicar el campo, y que ambos valores sean iguales
+* **_format**      - Indica el formato que queremos que se visualice el texto (Este formato se lo indicaremos como una property más en application.conf. Por ejemplo para el formato de los doubles, en la property pondremos: fap.format._double_=0.00 y en este tag, indicaremos format:'_double_'
 
 h2. Ejemplo de uso
 

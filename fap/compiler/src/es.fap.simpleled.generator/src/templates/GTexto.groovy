@@ -3,6 +3,7 @@ package templates;
 import es.fap.simpleled.led.Texto
 import generator.utils.*
 import generator.utils.HashStack.HashStackName
+import es.fap.simpleled.led.util.LedEntidadUtils
 
 public class GTexto {
 
@@ -18,9 +19,10 @@ public class GTexto {
 		// Añado la entidad que lo engloba a los parametros del Save
 		CampoUtils campo = CampoUtils.create(texto.campo);
 		EntidadUtils.addToSaveEntity(campo);
-		
 		TagParameters params = new TagParameters();
 		params.putStr("campo", campo.firstLower())
+		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Double"))
+			params.putStr ("format", "double")
 		if(texto.titulo != null)
 			params.putStr("titulo", texto.titulo)
 		

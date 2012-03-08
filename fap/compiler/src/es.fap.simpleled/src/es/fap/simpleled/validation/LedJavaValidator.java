@@ -292,6 +292,13 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 				error("El tipo mime especificado no es válido. Tiene que ser tipo/subtipo o tipo/*. Por ejemplo: application/pdf", LedPackage.Literals.SUBIR_ARCHIVO__MIMES, i);
 		}
 	}
+	
+	@Check
+	public void checkFirmaPlatinoSimple(FirmaPlatinoSimple firma){
+		if ("firma".equals(firma.getName()))
+			error("FirmaSimple no puede llamarse \"firma\"", LedPackage.Literals.FIRMA_PLATINO_SIMPLE__NAME);
+	}
+	
 	// TODO: Hacerlo pero haciendo el chek sobre Paginas y PopUps, en vez de sobre campos, para evitar que resulte pesado
 	// TODO: Para ello serían 2 metodos. Uno que recibiese una Pagina, y otro un PopUp.
 	// TODO: LedCampoUtils.hayCamposGuardables, utilizar su codigo para fijarse a la hora de buscar los elementos con campos recursivamente.

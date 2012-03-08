@@ -3,7 +3,6 @@
 # ~~~~
 
 # Home page
-GET        /                SolicitudesController.index
 GET        /api/xml         WebServiceEmulator.xml
 GET        /api/json        WebServiceEmulator.json
 
@@ -25,7 +24,10 @@ GET     /public/                                staticDir:public
 # Dentro de esta region se van a escribir todas las rutas generadas
 # === FAPGENERATED ===
   # Home page
-GET / SolicitudesController.index
+GET / PrimeraController.index
+GET /Pepe/antes AntesController.index
+
+GET /Pepe/antes/sss AntesController.tablasss
 GET /Pepe/firma1 Firma1Controller.index
 POST /Pepe/firma1/editar Firma1Controller.editar
 POST /Pepe/firma1/crear Firma1Controller.crear
@@ -43,31 +45,32 @@ POST /Pepe/juan/crear JuanController.crear
 GET /Pepe/juan/fFirmantes JuanController.tablafFirmantes
 GET /Pepe/juan/NdameJuridicaTabla JuanController.tablaNdameJuridicaTabla
 GET /Pepe/juan/pepe JuanController.tablapepe
-GET /Pepe/popu popups.popuController.index
+GET /Pepe/miagente MiAgenteController.index
+POST /Pepe/miagente/editar MiAgenteController.editar
+POST /Pepe/miagente/borrar MiAgenteController.borrar
+POST /Pepe/miagente/crear MiAgenteController.crear
 
 GET /Pepe/popupndamejuridicatabla popups.PopupNdameJuridicaTablaController.index
 POST /Pepe/popupndamejuridicatabla/editar popups.PopupNdameJuridicaTablaController.editar
 POST /Pepe/popupndamejuridicatabla/borrar popups.PopupNdameJuridicaTablaController.borrar
 POST /Pepe/popupndamejuridicatabla/crear popups.PopupNdameJuridicaTablaController.crear
 
-GET /Pepe/popupsolicitantejuridicatabla popups.PopupSolicitanteJuridicaTablaController.index
-POST /Pepe/popupsolicitantejuridicatabla/editar popups.PopupSolicitanteJuridicaTablaController.editar
-POST /Pepe/popupsolicitantejuridicatabla/borrar popups.PopupSolicitanteJuridicaTablaController.borrar
-POST /Pepe/popupsolicitantejuridicatabla/crear popups.PopupSolicitanteJuridicaTablaController.crear
-
-GET /Pepe/popupsolicitantejurjuridicatabla popups.PopupSolicitanteJurJuridicaTablaController.index
-POST /Pepe/popupsolicitantejurjuridicatabla/editar popups.PopupSolicitanteJurJuridicaTablaController.editar
-POST /Pepe/popupsolicitantejurjuridicatabla/borrar popups.PopupSolicitanteJurJuridicaTablaController.borrar
-POST /Pepe/popupsolicitantejurjuridicatabla/crear popups.PopupSolicitanteJurJuridicaTablaController.crear
-
 GET /Pepe/probando ProbandoController.index
-POST /Pepe/probando/editar ProbandoController.editar
-POST /Pepe/probando/borrar ProbandoController.borrar
-POST /Pepe/probando/crear ProbandoController.crear
 
-GET /Pepe/probando/solicitanteJuridicaTabla ProbandoController.tablasolicitanteJuridicaTabla
-GET /Pepe/probando/solicitanteJurJuridicaTabla ProbandoController.tablasolicitanteJurJuridicaTabla
-GET /Pepe/probando/tabla ProbandoController.tablatabla
+GET /Pepe/singletons SingletonsController.index
+
+GET /Primero/paginaprincipal1 PaginaPrincipal1Controller.index
+POST /Primero/paginaprincipal1/editar PaginaPrincipal1Controller.editar
+POST /Primero/paginaprincipal1/borrar PaginaPrincipal1Controller.borrar
+POST /Primero/paginaprincipal1/crear PaginaPrincipal1Controller.crear
+
+GET /Primero/paginaprincipal2 PaginaPrincipal2Controller.index
+POST /Primero/paginaprincipal2/editar PaginaPrincipal2Controller.editar
+POST /Primero/paginaprincipal2/crear PaginaPrincipal2Controller.crear
+
+GET /Primero/primera PrimeraController.index
+
+GET /Primero/primera/entidades PrimeraController.tablaentidades
 GET /Solicitud/combos CombosController.index
 POST /Solicitud/combos/editar CombosController.editar
 

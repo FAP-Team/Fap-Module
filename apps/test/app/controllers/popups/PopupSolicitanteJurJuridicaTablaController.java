@@ -1,7 +1,0 @@
-package controllers.popups;
-
-import controllers.gen.popups.PopupSolicitanteJurJuridicaTablaControllerGen;
-
-public class PopupSolicitanteJurJuridicaTablaController extends PopupSolicitanteJurJuridicaTablaControllerGen {
-
-}

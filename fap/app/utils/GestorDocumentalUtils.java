@@ -47,8 +47,8 @@ public class GestorDocumentalUtils {
 	}
 	
 	/*
-	 * C:\documentos\doc.txt	--> "txt"
-	 * C:\documentos\doc  		--> ""
+	 * "C:\documentos\doc.txt"	--> "txt"
+	 * "C:\documentos\doc"  	--> ""
 	 */
 	public static String getExtension(File file){
 		String name = file.getName();

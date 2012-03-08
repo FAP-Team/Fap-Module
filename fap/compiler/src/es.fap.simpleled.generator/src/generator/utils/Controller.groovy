@@ -1161,15 +1161,22 @@ public class ${controllerName} extends ${controllerGenName} {
 		
 	public void findPaginaReferencias(Pagina pagina){
 		editar = crear = borrar = false;
-		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE))
+		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE)){
 			if (enlace.pagina != null && enlace.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(enlace.pagina);
-		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE))
+		}
+		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE)){
 			if (enlace.pagina != null && enlace.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(enlace.pagina);
-		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON))
+		}
+		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON)){
 			if (boton.pagina != null && boton.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(boton.pagina);
+		}
+		for (Accion accion: LedUtils.getNodes(LedPackage.Literals.ACCION)){
+			if (accion.redirigir != null && accion.redirigir.pagina.name.equals(pagina.name))
+				checkReferencia(accion.redirigir);
+		}
 		for (Pagina p: LedUtils.getNodes(LedPackage.Literals.PAGINA)){
 			Controller c = new Controller();
 			c.createOpcionesAccion(pagina);
@@ -1198,15 +1205,18 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	public void findPopupReferencias(Popup popup){
 		editar = crear = borrar = false;
-		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE))
+		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE)){
 			if (enlace.popup != null && enlace.popup.popup.name.equals(popup.name))
 				checkReferencia(enlace.popup);
-		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE))
+		}
+		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE)){
 			if (enlace.popup != null && enlace.popup.popup.name.equals(popup.name))
 				checkReferencia(enlace.popup);
-		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON))
+		}
+		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON)){
 			if (boton.popup != null && boton.popup.popup.name.equals(popup.name))
 				checkReferencia(boton.popup);
+		}
 		for (Tabla tabla: LedUtils.getNodes(LedPackage.Literals.TABLA)){
 			if (tabla.popup != null && tabla.popup.name.equals(popup.name))
 				crear = borrar = editar = true;

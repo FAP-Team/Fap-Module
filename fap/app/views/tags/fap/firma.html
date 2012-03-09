@@ -24,7 +24,7 @@
 	
 	def uri = _uri ?: "No hay URI"
 	def firma = _firma ?: ""
-	def url = utils.AedUtils.crearUrl(uri)
+	def url = utils.AedUtils.crearFullUrl(uri)
 	def id_boton = id + "_boton";
 	def id_firma = id + "_firma";
 	

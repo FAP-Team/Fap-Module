@@ -15,6 +15,7 @@ import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.PermisoVar;
+import es.fap.simpleled.led.SubirArchivoAed;
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
@@ -156,6 +157,15 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			}
 			intermedias.add(father.getName());
 			father = father.getExtends();
+		}
+	}
+	
+	@Check
+	public void checkSubirArchivoMimeTypes(SubirArchivoAed subirArchivo){
+		Pattern pattern = Pattern.compile("[\\w-]+/(\\*|[\\w-]+)");
+		for (int i = 0; i < subirArchivo.getMimes().size(); i++){
+			if (!pattern.matcher(subirArchivo.getMimes().get(i)).matches())
+				error("El tipo mime especificado no es válido. Tiene que ser tipo/subtipo o tipo/*. Por ejemplo: application/pdf", LedPackage.Literals.SUBIR_ARCHIVO_AED__MIMES, i);
 		}
 	}
 	

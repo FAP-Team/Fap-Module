@@ -164,6 +164,7 @@ public class GPagina {
 			import java.util.*;
 			import messages.Messages;
 			import java.lang.reflect.Field;
+			import utils.GestorDocumentalUtils;
 
 			import security.Secure;
 			import javax.inject.Inject;

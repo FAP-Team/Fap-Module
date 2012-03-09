@@ -352,6 +352,10 @@ SubirArchivoAed:
 		& (requerido?='requerido')?
 		& ('tramite' '=' tramite=STRING)?		
 		& ('aportadoPor' '=' aportadoPor=STRING)?	// ¿Cambiar el tipo?
+		& (
+			('mimes' '=' mimes+=STRING ("," mimes+=STRING)*) |
+			('extensiones' '=' extensiones+=STRING ("," extensiones+=STRING)*)
+		)?
 	)
 ;
 

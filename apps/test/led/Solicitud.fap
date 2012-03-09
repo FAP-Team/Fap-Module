@@ -163,7 +163,7 @@ Formulario Solicitud {
 	
 	Pagina SubirArchivoAedTest noForm {
 		Form anadirDocumentacion campo=Solicitud.documentacion.documentos {		
-			SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite" aportadoPor="Ciudadano"
+			SubirArchivoAed fileAportacion campo=Documento requerido tramite="Tramite" aportadoPor="Ciudadano" //extensiones="pdf", "png"
 			Boton subirDocumento titulo="Añadir documentación"
 		}		
 		Tabla documentos 

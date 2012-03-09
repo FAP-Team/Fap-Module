@@ -1,6 +1,7 @@
 Formulario Pruebas{
 	
-	Pagina pag{
+	Pagina pag campo=Solicitud.solicitante.fisica{
+		Texto campo=Solicitud.solicitante.email
 		Texto campo=Quartz.texto
 	}
 	

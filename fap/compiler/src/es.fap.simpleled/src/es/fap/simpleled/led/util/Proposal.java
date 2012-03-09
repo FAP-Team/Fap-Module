@@ -7,6 +7,14 @@ public final class Proposal {
 	public String text;
 	public boolean valid;
 	public EObject atributo;
+	public int prio = 0;
+	
+	public Proposal(String text, boolean valid, EObject atributo, int prio) {
+		this.text = text;
+		this.valid = valid;
+		this.atributo = atributo;
+		this.prio = prio;
+	}
 	
 	public Proposal(String text, boolean valid, EObject atributo) {
 		this.text = text;
@@ -21,9 +29,8 @@ public final class Proposal {
 	
 	public String getEditorText(){
 		String dot = "";
-		if (!valid){
+		if (!valid)
 			dot = ".";
-		}
 		return text.split("-")[0].trim() + dot;
 	}
 

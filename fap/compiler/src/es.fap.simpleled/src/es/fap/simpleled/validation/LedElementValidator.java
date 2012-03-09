@@ -109,22 +109,24 @@ public abstract class LedElementValidator {
 		return false;
 	}
 	
-	public List<Proposal> completeEntidades(String contextPrefix, Collection<Entity> entidades) {
+	public List<Proposal> completeEntidades(String contextPrefix, Collection<Entity> entidades, EObject elemento) {
 		List<Proposal> proposals = new ArrayList<Proposal>();
+		EObject container = LedCampoUtils.getElementosContainer(elemento);
+		List<Entity> prios = null;
+		if (container instanceof Pagina || container instanceof Popup)
+			prios = LedEntidadUtils.getEntidadesPaginaPopup(container);
 		for (Entity entidad: entidades){
 			raiz = entidad;
-			if (!entidad.getName().startsWith(contextPrefix)){
+			if (!entidad.getName().startsWith(contextPrefix))
 				continue;
-			}
 			String tipo = "Entidad";
 			if (LedEntidadUtils.esSingleton(entidad))
 				tipo = "Singleton";
-			if (aceptaEntidad(entidad)){
-				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, true, entidad));
-			}
-			else if (aceptaEntidadRecursivo(entidad)){
-				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, false, entidad));
-			}
+			int prio = prios.indexOf(entidad) + 2;
+			if (aceptaEntidad(entidad))
+				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, true, entidad, prio));
+			else if (aceptaEntidadRecursivo(entidad))
+				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, false, entidad, prio));
 		}
 		if (proposals.size() == 1){
 			Proposal p = proposals.get(0);

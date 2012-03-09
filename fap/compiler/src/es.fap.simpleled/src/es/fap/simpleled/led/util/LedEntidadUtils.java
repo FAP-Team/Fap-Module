@@ -10,6 +10,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import es.fap.simpleled.led.Attribute;
+import es.fap.simpleled.led.Campo;
+import es.fap.simpleled.led.CampoAtributos;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedFactory;
@@ -23,28 +25,24 @@ public class LedEntidadUtils {
 		List<Attribute> attrs = new ArrayList<Attribute>();
 		while (entidad != null) {
 			LedEntidadUtils.addId(entidad);
-			for (Attribute attr : entidad.getAttributes()) {
+			for (Attribute attr : entidad.getAttributes())
 				attrs.add(attr);
-			}
 			entidad = entidad.getExtends();
 		}
 		return attrs;
 	}
 	
 	public static Entity getEntidad(Attribute attr) {
-		if (attr == null || attr.getType().getCompound() == null) {
+		if (attr == null || attr.getType().getCompound() == null)
 			return null;
-		}
 		return attr.getType().getCompound().getEntidad();
 	}
 
 	public static boolean esSingleton(Entity entidad){
-		if (entidad.getExtends() == null){
+		if (entidad.getExtends() == null)
 			return false;
-		}
-		if (entidad.getExtends().getName().equals("Singleton")){
+		if (entidad.getExtends().getName().equals("Singleton"))
 			return true;
-		}
 		return esSingleton(entidad.getExtends());
 	}
 	
@@ -211,13 +209,30 @@ public class LedEntidadUtils {
 	}
 	
 	/*
-	 * Devuelve la entidad asociada a una pagina, que ser� la siguiente:
+	 * Devuelve la entidad asociada a una pagina, que sera la siguiente:
 	 * 		Ultimo atributo del campo definido en la pagina, si no es null
 	 * 		�: ultimo atributo del campo definido en el formulario, si no es null
 	 * 		�: null
 	 */
 	public static Entity getEntidadPaginaPopup(EObject paginaPopup){
 		return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampoPaginaPopup(paginaPopup));
+	}
+	
+	/*
+	 * Solicitud.documentos --> {Solicitud, Documento}
+	 */
+	public static List<Entity> getEntidadesPaginaPopup(EObject paginaPopup){
+		Campo campo = LedCampoUtils.getCampoPaginaPopup(paginaPopup);
+		List<Entity> entidades = new ArrayList<Entity>();
+		if (campo == null)
+			return entidades;
+		entidades.add(campo.getEntidad());
+		CampoAtributos atributos = campo.getAtributos();
+		while (atributos != null){
+			entidades.add(getEntidad(atributos.getAtributo()));
+			atributos = atributos.getAtributos();
+		}
+		return entidades;
 	}
 	
 	public static Set<Entity> getSingletons(Resource res) {

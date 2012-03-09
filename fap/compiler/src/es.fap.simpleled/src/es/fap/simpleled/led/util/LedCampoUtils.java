@@ -189,8 +189,7 @@ public class LedCampoUtils {
 			return entidades;
 		}
 		if (container instanceof Pagina || container instanceof Popup){
-			Entity entidad = LedEntidadUtils.getEntidadPaginaPopup(container);
-			if (entidad != null)
+			for (Entity entidad: LedEntidadUtils.getEntidadesPaginaPopup(container))
 				entidades.put(entidad.getName(), entidad);
 		}
 		if (container instanceof Tabla){

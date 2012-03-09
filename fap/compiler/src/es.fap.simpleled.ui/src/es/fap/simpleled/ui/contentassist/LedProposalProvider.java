@@ -152,13 +152,11 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	public void completeCampo_Entidad(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		LedElementValidator validator = LedElementValidator.getElementValidator(model);
 		if (validator != null) {
-			for (Proposal proposal: validator.completeEntidades(context.getPrefix(), LedEntidadUtils.eliminaSolicitudGenerica(LedCampoUtils.getEntidadesValidas(model)).values())) {
-				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
-			}
+			for (Proposal proposal: validator.completeEntidades(context.getPrefix(), LedEntidadUtils.eliminaSolicitudGenerica(LedCampoUtils.getEntidadesValidas(model)).values(), model))
+				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, proposal.prio, context.getPrefix(), context));
 		}
-		else{
+		else
 			super.completeCampo_Entidad(model, assignment, context, acceptor);
-		}
 	}
 	
 	@Override
@@ -177,18 +175,15 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 				entidad = LedEntidadUtils.getEntidad(attr);
 			}
 		}
-		if (entidad == null){
+		if (entidad == null)
 			return;
-		}
 		LedElementValidator validator = LedElementValidator.getElementValidator(campo.eContainer());
 		if (validator != null){
-			for (Proposal proposal: validator.completeEntidad(context.getPrefix(), entidad, "")) {
+			for (Proposal proposal: validator.completeEntidad(context.getPrefix(), entidad, ""))
 				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
-			}
 		}
-		else{
+		else
 			super.completeCampoAtributos_Atributo(atributos, assignment, context, acceptor);
-		}
 	}
 
 	@Override

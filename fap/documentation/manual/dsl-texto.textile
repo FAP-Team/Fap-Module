@@ -15,6 +15,7 @@ h2. Parámetros
 * **password** (opcional) : Si se especifica, indica que el campo es una contraseña, y no se mostraran caracteres sino puntos.
 * **duplicar** (opcional) : Si se especifica, indica que se duplicará la caja de texto justo debajo de la original
 * **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de titulo.
+* **_format**      - Indica el formato que queremos que se visualice el texto (Este formato se lo indicaremos como una property más en application.conf. Por ejemplo para el formato de los doubles, en la property pondremos: fap.format._double_=0.00 y en este tag, indicaremos format:'_double_'
 
 h2. Definición
 

@@ -9,7 +9,8 @@ from datetime import date
 # Here you can create play commands that are specific to the module, and extend existing commands
 
 MODULE = 'fap'
-
+VAR_ENTORNO = "FAPSDK"
+#VAR_ENTORNO = "FAPSDKv12"
 # Commands that are specific to your module
 
 COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist', 'fap:winservice']
@@ -120,8 +121,8 @@ def run_generate(app, args):
     exit(execute_workflow(modelPath, targetPath, params, args, app))
 
 def run_model(app, args):
-    modelPath = os.path.join(os.getenv("FAPSDK"), "fap", "app", "led", "fap")
-    targetPath =  os.path.join(os.getenv("FAPSDK"), "fap/")
+    modelPath = os.path.join(os.getenv(VAR_ENTORNO), "fap", "app", "led", "fap")
+    targetPath =  os.path.join(os.getenv(VAR_ENTORNO), "fap/")
     params = "solicitud=false"
     exit(execute_workflow(modelPath, targetPath, params, args, app))
 
@@ -132,7 +133,7 @@ def before(**kargs):
     app = kargs.get("app")
     args = kargs.get("args")
     if command == "dependencies":
-        args.append('-Dfapsdk='+os.getenv("FAPSDK"))
+        args.append('-Dfapsdk='+os.getenv(VAR_ENTORNO))
         env = kargs.get("env")
 
 
@@ -148,11 +149,11 @@ def after(**kargs):
         
 def getModuleDir(app, cmd_args=""):
     if("--dev" in cmd_args):
-        if(os.getenv("FAPSDK") == None):
+        if(os.getenv(VAR_ENTORNO) == None):
             print "Modo desarrollo (--dev) y la variable de entorno FAPSDK no está definida"
             sys.exit()  
 
-        return os.path.join(os.getenv("FAPSDK"), "fap")    
+        return os.path.join(os.getenv(VAR_ENTORNO), "fap")    
     else:    
         if app.path and os.path.exists(os.path.join(app.path, 'modules')):
             regexp = re.compile("^fap(-(\d*\.*)*)?$")

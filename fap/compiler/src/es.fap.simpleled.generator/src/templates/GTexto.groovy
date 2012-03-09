@@ -1,6 +1,7 @@
 package templates;
 
 import es.fap.simpleled.led.Texto
+import es.fap.simpleled.led.util.LedEntidadUtils
 import generator.utils.*
 import generator.utils.HashStack.HashStackName
 
@@ -21,6 +22,9 @@ public class GTexto {
 		
 		TagParameters params = new TagParameters();
 		params.putStr("campo", campo.firstLower())
+		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Double")){
+			params.putStr ("format", "double")
+		}
 		if(texto.titulo != null)
 			params.putStr("titulo", texto.titulo)
 		

@@ -1,7 +1,6 @@
 <project name="fap-generator" default="compiler">
 
 	<property environment="env" />
-
 	<!-- Configurado para utilizar rutas absolutas en base a la variable de entorno fapsdk -->
 	<property name="fapsdk" value="${env.FAPSDK}" />
 	<property name="fap" value="${fapsdk}/fap" />

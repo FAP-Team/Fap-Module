@@ -1,5 +1,16 @@
 h2. Changelog
 
+h3. Versión 1.2.5
+
+* Fixed bug con problemas del path de las aplicaciones en producción
+* Fixed bug en la URL del documento a firmar
+* Filtrado en la subida de documento por tipo Mime y por extensión
+* Formato de los tipos doubles configurable
+* Homogeneizando el formato del CIF y NIP en Base de Datos
+* Fixed Bug en validación de CIF y NIP
+* Fixed Bug en la descripción de los documentos a subir
+
+
 h3. Versión 1.2.4
 
 * En los elementos Solicitante, PersonaFisica, Persona, etc. Si no se le indica un título, por defecto no se le estableces el grupo que lo englobaría.

@@ -64,9 +64,13 @@
 		onBlurStr = "onblur=\'${id}Validate()\'"
 	}
 	def valuebd = value;
-    if (_format != null){
+	if (_format != null){
 	   String formato = properties.FapProperties.get("fap.format."+_format);
-	   value = value.format("${formato}");
+	   try{
+	      value = value.toDouble().format("${formato}");
+	   } catch (Exception e){
+	      // Value tiene un fallo de validación, no se le da formato, dejandolo como estaba
+	   }
 	}
 }%
 	

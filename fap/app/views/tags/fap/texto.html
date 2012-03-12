@@ -67,7 +67,8 @@
     if (_format != null){
 	   String formato = properties.FapProperties.get("fap.format."+_format);
 	   try{
-	      value = value.toDouble().format("${formato}");
+	   	  if ((formato != null) && (!formato.equals("none")))
+	         value = value.toDouble().format("${formato}");
 	   } catch (Exception e){
 	      // Value tiene un fallo de validación, no se le da formato, dejandolo como estaba
 	   }

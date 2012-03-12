@@ -72,7 +72,8 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
 
     @Test(expected=NullPointerException.class)
     public void crearExpedienteFailOnNullSolicitud() throws GestorDocumentalServiceException {
-        gestorDocumentalService.crearExpediente(null);
+    	SolicitudGenerica sol = null;
+        gestorDocumentalService.crearExpediente(sol);
     }
 	
     @Test
@@ -131,6 +132,13 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
         when(expediente.asignarIdAed()).thenReturn(idExpediente);
         solicitud.expedienteAed.idAed = idExpediente;
         return solicitud;
+    }
+    
+    private ExpedienteAed stubExpediente(String idExpediente){
+        ExpedienteAed expedienteAed = mock(ExpedienteAed.class);
+        when(expedienteAed.asignarIdAed()).thenReturn(idExpediente);
+        expedienteAed.idAed = idExpediente;
+        return expedienteAed;
     }
     
     private void mockPersonaFisica(Persona personaFisica){
@@ -317,6 +325,20 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
             assertNotNull(tramite.documentos);
             assertTrue(tramite.documentos.size() > 0);
         }
+    }
+    
+    @Test
+    public void modificarExpedientePersonaFisica() throws Exception {
+        String idExpediente = "TEST" + Codec.UUID();
+        ExpedienteAed exp = stubExpediente(idExpediente);
+        String idExpedienteCreado = gestorDocumentalService.crearExpediente(exp);
+        assertNotNull(idExpedienteCreado);
+        play.Logger.info("Expediente creado");
+        
+        SolicitudGenerica solicitud = stubSolicitud(idExpediente);
+        mockPersonaFisica(solicitud.solicitante);
+        String idExpedienteCreado2 = gestorDocumentalService.modificarInteresados(exp, solicitud);
+        assertEquals(idExpedienteCreado, idExpedienteCreado2);
     }
     
 }

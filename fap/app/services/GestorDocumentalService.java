@@ -6,12 +6,14 @@ import java.io.InputStream;
 import java.util.List;
 
 import models.Documento;
+import models.ExpedienteAed;
 import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
 import models.SolicitudGenerica;
 import models.Tramite;
 import properties.PropertyPlaceholder;
+import services.aed.Interesados;
 import utils.BinaryResponse;
 
 public interface GestorDocumentalService {
@@ -46,5 +48,12 @@ public interface GestorDocumentalService {
     public Firma getFirma(Documento documento) throws GestorDocumentalServiceException;
 
     public List<Tramite> getTramites() throws GestorDocumentalServiceException;
+
+	String crearExpediente(ExpedienteAed expedienteAed)
+			throws GestorDocumentalServiceException;
+
+	String modificarInteresados(ExpedienteAed expedienteAed,
+			SolicitudGenerica solicitud)
+			throws GestorDocumentalServiceException;
     
 }

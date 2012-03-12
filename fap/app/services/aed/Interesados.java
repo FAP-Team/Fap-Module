@@ -33,6 +33,13 @@ public class Interesados {
         documentos.add(personaJuridica.cif);
     }
     
+    public void add(String nombre, String documento) {
+    	if (nombre.trim().equals("") || documento.trim().equals(""))
+    		play.Logger.error("No se añade ningún interesado porque su información en vacía: ["+nombre+", "+documento+"]");
+    	nombres.add(nombre);
+    	documentos.add(documento);
+    }
+    
     public List<String> getNombres(){
         return nombres;
     }

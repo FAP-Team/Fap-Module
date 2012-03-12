@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.xml.ws.Holder;
 import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import models.ExpedienteAed;
 import models.InformacionRegistro;
 import models.RepresentantePersonaJuridica;
 import models.SolicitudGenerica;
@@ -25,6 +27,7 @@ import org.joda.time.DateTime;
 
 import platino.PlatinoProxy;
 import play.libs.MimeTypes;
+import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
@@ -184,6 +187,23 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                 interesados.add(representante);
             }
         }
+        return interesados;
+    }
+    
+    /**
+     * Devuelve el interesado por defecto que se indica en las properties:
+     * 
+     * 	<b>fap.aed.documentonoclasificado.interesado.nif</b>
+     *  <b>fap.aed.documentonoclasificado.interesado.nombre</b>
+     *  
+     * @return Lista con el interesado
+     */
+    private Interesados getInteresadosPorDefecto(){
+        Interesados interesados = new Interesados();
+        String nombre = FapProperties.get("fap.aed.documentonoclasificado.interesado.nombre");
+        String documento = FapProperties.get("fap.aed.documentonoclasificado.interesado.nif");
+        interesados.add(nombre, documento);
+        
         return interesados;
     }
     
@@ -744,5 +764,70 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                 throw e;
         }
     }
+    
+	/**
+	 * Crea un expediente, que unicamente tendrá 
+	 * 
+	 * Al expediente se le asignaran como interesado el interesado por defecto de la aplicación
+	 * 
+	 * @param  expedienteAed
+	 * @return número de expediente asignado
+	 * 
+	 * @throws GestorDocumentalServiceException Si el servicio web dió error                             
+	 */
+	@Override
+    public String crearExpediente(ExpedienteAed expedienteAed) throws GestorDocumentalServiceException {        
+        Interesados interesados = getInteresadosPorDefecto();
+        String numeroExpediente = expedienteAed.asignarIdAed();
+        String procedimiento = propertyPlaceholder.get("fap.aed.procedimiento");
+        String convocatoria = propertyPlaceholder.get("fap.aed.convocatoria");
+
+        Expediente expediente = new Expediente();
+        expediente.setIdExterno(numeroExpediente);
+        expediente.setProcedimiento(procedimiento);
+        expediente.setValorModalidad(convocatoria);
+        expediente.getInteresados().addAll(interesados.getDocumentos());
+        expediente.getInteresadosNombre().addAll(interesados.getNombres());
+        
+        try {
+            aedPort.crearExpediente(expediente);
+            log.info("Creado expediente " + numeroExpediente + " para el expediente local " + expedienteAed.id);
+        }catch(AedExcepcion e){
+            throw new GestorDocumentalServiceException("Error creando expediente " + numeroExpediente + " para el expediente " + expedienteAed.id, e);
+        }
+        return numeroExpediente;
+    }
+	
+	/**
+	 * Actualizará los interesados de un expediente, a partir de la solicitud
+	 * @param expedienteAed
+	 * @return
+	 * @throws GestorDocumentalServiceException
+	 */
+	@Override
+	public String modificarInteresados (ExpedienteAed expedienteAed, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
+        if ((expedienteAed.idAed == null) || (expedienteAed.idAed.trim().equals("")))
+        	throw new GestorDocumentalServiceException("Error modificando expediente para el expediente (id: " + expedienteAed.id+"): No tiene idAed");
+        
+        Interesados interesados = getInteresados(solicitud);
+        String numeroExpediente = expedienteAed.idAed;
+        String procedimiento = propertyPlaceholder.get("fap.aed.procedimiento");
+        String convocatoria = propertyPlaceholder.get("fap.aed.convocatoria");
+
+        Expediente expediente = new Expediente();
+        expediente.setIdExterno(numeroExpediente);
+        expediente.setProcedimiento(procedimiento);
+        expediente.setValorModalidad(convocatoria);
+        expediente.getInteresados().addAll(interesados.getDocumentos());
+        expediente.getInteresadosNombre().addAll(interesados.getNombres());
+        
+        try {
+            aedPort.actualizarExpediente(expediente);
+            log.info("Actualizado expediente " + numeroExpediente + " para el expediente local " + expedienteAed.id);
+        }catch(AedExcepcion e){
+            throw new GestorDocumentalServiceException("Error actualizandondo expediente " + numeroExpediente + " para el expediente " + expedienteAed.id, e);
+        }
+		return numeroExpediente;
+	}
 	
 }

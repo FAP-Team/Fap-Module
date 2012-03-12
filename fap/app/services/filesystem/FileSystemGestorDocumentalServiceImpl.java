@@ -26,6 +26,7 @@ import properties.FapProperties;
 import properties.PropertyPlaceholder;
 
 import models.Documento;
+import models.ExpedienteAed;
 import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
@@ -34,6 +35,7 @@ import models.TipoDocumento;
 import models.Tramite;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import services.aed.Interesados;
 import utils.BinaryResponse;
 
 import static com.google.common.base.Preconditions.*;
@@ -366,5 +368,38 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tipoDocumento.obligatoriedad = "Opcional";
         return tipoDocumento;
     }
+
+	@Override
+	public String crearExpediente(ExpedienteAed expedienteAed)
+			throws GestorDocumentalServiceException {
+        String expediente = expedienteAed.asignarIdAed();
+        File folder = getExpedienteFolder(expediente);
+        try {
+            FileUtils.forceMkdir(folder);
+        }catch(IOException e){
+            throw new GestorDocumentalServiceException("Error al crear la carpeta " + folder.getAbsolutePath());
+        }
+        return expediente;
+	}
+
+	@Override
+	public String modificarInteresados(ExpedienteAed expedienteAed,
+			SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
+        if(solicitud.solicitante == null)
+            throw new NullPointerException();
+        
+        if(solicitud.solicitante.isPersonaFisica() && solicitud.solicitante.representado != null && solicitud.solicitante.representado){
+            throw new NullPointerException();
+        }
+        
+        if(solicitud.solicitante.isPersonaJuridica() && solicitud.solicitante.representantes == null){
+            throw new NullPointerException();
+        }
+		String expediente = expedienteAed.asignarIdAed();
+		File folder = getExpedienteFolder(expediente);
+		if (!folder.exists() || (expediente.trim().equals("")))
+			throw new GestorDocumentalServiceException("Error modificando expediente para el expediente (id: " + expedienteAed.id+"): No existe la carpeta o no tiene idAed.");
+		return expediente;
+	}
 
 }

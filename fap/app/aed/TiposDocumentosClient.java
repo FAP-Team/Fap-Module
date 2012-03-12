@@ -47,9 +47,9 @@ import es.gobcan.eadmon.verificacion.ws.dominio.ListaDocumentosVerificacion;
 
 public class TiposDocumentosClient {
 
-	private static TiposDocumentosInterface tipos;
-	private static ProcedimientosInterface procedimientos;
-	private static Logger log = Logger.getLogger(TiposDocumentosClient.class);
+	protected static TiposDocumentosInterface tipos;
+	protected static ProcedimientosInterface procedimientos;
+	protected static Logger log = Logger.getLogger(TiposDocumentosClient.class);
 	static {		
 		URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("wsdl/tipos-documentos/tipos-documentos.wsdl");
 		tipos = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
@@ -137,15 +137,15 @@ public class TiposDocumentosClient {
 		return true;
 	}
 	
-	private static void aedError(String error, ProcedimientosExcepcion e){
+	protected static void aedError(String error, ProcedimientosExcepcion e){
 		aedError(error, e.getFaultInfo().getDescripcion());
 	}
 	
-	private static void aedError(String error, TiposDocumentosExcepcion e){
+	protected static void aedError(String error, TiposDocumentosExcepcion e){
 		aedError(error, e.getFaultInfo().getDescripcion());
 	}
 	
-	private static void aedError(String error, String descripcion){
+	protected static void aedError(String error, String descripcion){
 		log.error(error + " - descripcion: "+ descripcion);
 		Messages.error(error);		
 	}

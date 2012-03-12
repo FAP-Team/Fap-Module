@@ -50,9 +50,9 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropied
 
 public class AedClient {
 
-	private static AedPortType aed;
+	protected static AedPortType aed;
 	
-	private static Logger log = Logger.getLogger(AedClient.class);
+	protected static Logger log = Logger.getLogger(AedClient.class);
 	
 	static {		
 		URL wsdlURL = Aed.class.getClassLoader().getResource ("aed/aed.wsdl");

@@ -7,6 +7,8 @@ import controllers.fap.*;
 import tags.ReflectionUtils;
 import validation.*;
 import models.*;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import messages.Messages;
@@ -43,65 +45,85 @@ public class LoggerController extends GenericController {
 	}
 
 
-	public static void logs(long fecha) throws IOException{
-		Date date = new Date(fecha);
+	public static void logs(long fecha1, long fecha2) throws IOException{
+		Date date1 = new Date(fecha1);
+		Date date2 = new Date(fecha2);
 		int logsD=0, logsA=0;
-		String borrarDaily=null, borrarAuditable=null;
-		FileReader fileAuditable=null, fileDaily=null;
+		ArrayList<String> borrarDaily = new ArrayList<String>();
+		ArrayList<String> borrarAuditable = new ArrayList<String>();
 		Gson gson = new Gson();
-		BufferedReader brDaily = null, brAuditable = null;
-		try {
-			String ficheroLogs = nombreFichero(date, "Daily");
-			if (ficheroLogs != null){
-				// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
-				if (!esHoy(date)){
-					if (utils.ZipUtils.descomprimirEnZip("logs/backups/Daily/"+ficheroLogs.replace("logs/", "")+".zip", ficheroLogs)){
-						// Lo anotamos para despues borrarlo, y no dejar basura
-						borrarDaily=ficheroLogs;
-					} else{
-						play.Logger.error("Descompresión de 'logs/backups/Daily/"+ficheroLogs.replace("logs/", "")+".zip' fallida o no existe el fichero");
+		ArrayList<BufferedReader> brDaily = new ArrayList<BufferedReader>();
+		ArrayList<BufferedReader> brAuditable = new ArrayList<BufferedReader>();
+		ArrayList<FileReader> ficherosACerrar = new ArrayList<FileReader>();
+		boolean seguirLeyendo=true, error;
+		Date date = date1;
+		while (seguirLeyendo){
+			try {
+				String ficheroLogs = nombreFichero(date, "Daily");
+				if (ficheroLogs != null){
+					error = false;
+					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
+					if (!esHoy(date)){
+						if (utils.ZipUtils.descomprimirEnZip("logs/backups/Daily/"+ficheroLogs.replace("logs/", "")+".zip", ficheroLogs)){
+							// Lo anotamos para despues borrarlo, y no dejar basura
+							borrarDaily.add(ficheroLogs);
+						} else{
+							error = true;
+							play.Logger.error("Descompresión de 'logs/backups/Daily/"+ficheroLogs.replace("logs/", "")+".zip' fallida o no existe el fichero");
+						}
+					}
+					if (!error){
+						if ((new File(ficheroLogs)).exists()){
+							FileReader ficheroDaily = new FileReader(ficheroLogs);
+							brDaily.add(new BufferedReader(ficheroDaily));
+							ficherosACerrar.add(ficheroDaily);
+						} else {
+							play.Logger.error("Fichero '"+ficheroLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
+						}
 					}
 				}
-				if ((new File(ficheroLogs)).exists()){
-					fileDaily = new FileReader(ficheroLogs);
-					brDaily = new BufferedReader(fileDaily);
-				} else {
-					play.Logger.error("Fichero '"+ficheroLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
-				}
+			} catch (FileNotFoundException e) {
+				play.Logger.error(e,"Fichero de log del Daily no encontrado");
 			}
-		} catch (FileNotFoundException e) {
-			play.Logger.error(e,"Fichero de log del Daily no encontrado");
-		}
-		
-		try {
-			String ficheroLogs = nombreFichero(date, "Auditable");
-			if (ficheroLogs != null){
-				// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
-				if (!esHoy(date)){
-					if (utils.ZipUtils.descomprimirEnZip("logs/backups/Auditable/"+ficheroLogs.replace("logs/", "")+".zip", ficheroLogs)){
-						// Lo anotamos para despues borrarlo, y no dejar basura
-						borrarAuditable=ficheroLogs;
-					} else{
-						play.Logger.error("Descompresión de 'logs/backups/Auditable/"+ficheroLogs.replace("logs/", "")+".zip' fallida o no existe el fichero");
+			
+			try {
+				String ficheroLogs = nombreFichero(date, "Auditable");
+				if (ficheroLogs != null){
+					error = false;
+					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
+					if (!esHoy(date)){
+						if (utils.ZipUtils.descomprimirEnZip("logs/backups/Auditable/"+ficheroLogs.replace("logs/", "")+".zip", ficheroLogs)){
+							// Lo anotamos para despues borrarlo, y no dejar basura
+							borrarAuditable.add(ficheroLogs);
+						} else{
+							error = true;
+							play.Logger.error("Descompresión de 'logs/backups/Auditable/"+ficheroLogs.replace("logs/", "")+".zip' fallida o no existe el fichero");
+						}
+					}
+					if (!error){
+						if ((new File(ficheroLogs)).exists()){
+							FileReader ficheroAuditable = new FileReader(ficheroLogs);
+							brAuditable.add(new BufferedReader(ficheroAuditable));
+							ficherosACerrar.add(ficheroAuditable);
+						} else {
+							play.Logger.error("Fichero '"+ficheroLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
+						}
 					}
 				}
-				if ((new File(ficheroLogs)).exists()){
-					fileAuditable = new FileReader(ficheroLogs);
-					brAuditable = new BufferedReader(fileAuditable);
-				} else {
-					play.Logger.error("Fichero '"+ficheroLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
-				}
+			} catch (FileNotFoundException e) {
+				play.Logger.error(e,"Fichero de log Auditable no encontrado");
 			}
-		} catch (FileNotFoundException e) {
-			play.Logger.error(e,"Fichero de log Auditable no encontrado");
+			if (diaSiguiente(date).before(date2)){
+				date = diaSiguiente(date);
+			} else {
+				seguirLeyendo=false;
+			}
 		}
-		
 		java.util.List<Log> rows = new ArrayList<Log>();
-
-		if (brDaily != null){
+		for (int i=0; i<brDaily.size(); i++){
 			String linea;
 			try {
-				while ((linea = brDaily.readLine()) != null) {
+				while ((linea = brDaily.get(i).readLine()) != null) {
 					rows.add(gson.fromJson(linea, Log.class));
 					logsD++;
 				}
@@ -111,10 +133,10 @@ public class LoggerController extends GenericController {
 				play.Logger.error(e,"Error al leer el fichero de log Daily");
 			}
 		}
-		if (brAuditable != null) {
+		for (int i=0; i<brAuditable.size(); i++){
 			String linea;
 			try {
-				while ((linea = brAuditable.readLine()) != null) {
+				while ((linea = brAuditable.get(i).readLine()) != null) {
 					rows.add(gson.fromJson(linea, Log.class)); 
 					logsA++;
 				}
@@ -130,15 +152,15 @@ public class LoggerController extends GenericController {
 		flexjson.JSONSerializer flex = new flexjson.JSONSerializer().include("rows.level", "rows.time", "rows.class_", "rows.user", "rows.message", "rows.trace").transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class).exclude("*");
 		String serialize = flex.serialize(response);
 		// Antes de renderizar la página, eliminamos los ficheros descomprimidos, para no dejar basura, si los hay.
-		if (borrarDaily != null){
-			// Cerramos los FileReader usados, antes de borrar, si no daria fallo.
-			fileDaily.close();
-			File borrado = new File(borrarDaily);
+		for(int i=0; i<ficherosACerrar.size(); i++){
+			ficherosACerrar.get(i).close();
+		}
+		for(int i=0; i<borrarDaily.size(); i++){
+			File borrado = new File(borrarDaily.get(i));
 			borrado.delete();
 		}
-		if (borrarAuditable!= null){
-			fileAuditable.close();
-			File borrado = new File(borrarAuditable);
+		for(int i=0; i<borrarAuditable.size(); i++){
+			File borrado = new File(borrarAuditable.get(i));
 			borrado.delete();
 		}
 		renderJSON(serialize);
@@ -187,6 +209,14 @@ public class LoggerController extends GenericController {
 			fileName += date.getDate();
 		}
 		return fileName;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static Date diaSiguiente (Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, 1);
+		return cal.getTime();
 	}
 	
 }

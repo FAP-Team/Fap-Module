@@ -71,3 +71,20 @@ Por defecto @installService.bat@ crea un servicio que ejecuta el comando
 
 bc. play start --%%prod -Dprecompiled=true
 
+h3. Posible error al arrancar el servicio (Se inicia y se apaga al instante)
+
+Puede que tengamos problemas a la hora de arrancarel servicio (que arranque y se pare automaticamente). Esto creemos que se debe a políticas de seguridad del propio Windows. Para solucuonarlo haremos:
+
+* Debemos cerciorarnos de que el archivo server.pid de la aplicación está eliminado
+* Vamos a los SERVICIOS de Windows
+* Buscamos nuestro servicio creado
+* Boton derecho sobre él y le damos a PROPIEDADES
+* Vamos a la pestaña LOG ON
+* Seleccionamos el checkbox de 'This account'
+* En la selección de usuario (Presionamos el botón Browse...), buscamos el usuario de nuestro ordenador (Escribiendo el nombre del mismo en el area de Texto y presionando Check Names, para confirmar el usuario)
+* Presionamos OK
+* Ponemos el PASSWORD que tenga el usuario
+* Confirmamos el PASSWORD del usuario
+* Presionamos OK
+* Ahora podremos arrancar el servicio, y si todo va bien ¡FUNCIONARÁ!
+

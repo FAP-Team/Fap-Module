@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 1.2.6
+
+* Fixed Bug en redirección después de login
+* Fixed Bug en formato de los doubles si no se especifica
+* Fixed #228: Añadidos métodos al AEDClient.
+* Fixed #229: Métodos y variables protected.
+
 h3. Versión 1.2.5
 
 * Fixed bug con problemas del path de las aplicaciones en producción
@@ -48,8 +55,7 @@ h3. Versión 1.2.1
 
 h3. Versión 1.2
 
-* Nueva interfaz de permisos que permite sobrescribir los permisos definidos
-en el módulo
+* Nueva interfaz de permisos que permite sobrescribir los permisos definidos en el módulo
 * Inyección de dependencias utilizando Google Guice.
 * Permitir creacion de Enumerados Java a partir de Listas FAP
 * Posibilidad de personalizar las páginas mediante código JavaScript

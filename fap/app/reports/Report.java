@@ -1,8 +1,11 @@
 package reports;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 import org.allcolor.yahp.converter.IHtmlToPdfTransformer;
 import org.allcolor.yahp.converter.IHtmlToPdfTransformer.PageSize;
@@ -68,6 +71,17 @@ public class Report {
 		// TODO guardar en carpeta temporal de play
 		File tmp = File.createTempFile("report_", ".pdf");
 		PDF.renderTemplateAsPDF(new FileOutputStream(tmp), getRenderOptions(), args);
+		return tmp;
+	}
+	
+	public File renderTestTmpFile (Object... args) throws Exception {
+		play.Logger.debug("Render temp file como servicio");
+		File tmp = File.createTempFile("reportTest_", ".txt");
+		play.Logger.debug("Creamos el fichero temporal en "+tmp.getAbsolutePath());
+		Writer output = new BufferedWriter(new FileWriter(tmp));
+		output.write("hola probando escribir en temporal en el fichero: "+tmp.getAbsolutePath());
+		output.close();
+		play.Logger.debug("Se realizó el renderTestTemplate al fichero "+tmp.getAbsolutePath());
 		return tmp;
 	}
 	

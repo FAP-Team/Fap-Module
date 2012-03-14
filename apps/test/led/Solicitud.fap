@@ -205,6 +205,30 @@ Formulario Solicitud {
  		
 	}
 
+	Pagina Documentacion noForm titulo="Documentación" permiso=solicitudEditable {
+ 
+            Tabla documentacion titulo="Documentación" campo=Solicitud.documentacion.documentos
+                  popupBorrar=PopUpDocumentacion
+                  popupModificar=PopUpDocumentacion
+                  popupVer=PopUpDocumentacion
+            {
+                  Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+                  Columna campo=Documento.descripcion titulo="Tipo" expandir
+                  Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+            }
+            
+           Grupo titulo="Añadir documentación" permiso=solicitudEditableDocumentacion {
+                  Form anadirDocumentacion campo=Solicitud.documentacion.documentos {
+                        SubirArchivoAed fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" tramite="SOLICITUD"
+                        Boton subirDocumento titulo="Añadir documentación"
+                  }
+            }
+
+    }
+    
+       Popup PopUpDocumentacion modificar borrar ver titulo="Documentación" campo=Solicitud.documentacion.documentos {
+            EditarArchivoAed modificarDocumento campo=Documento requerido
+      }
 
 	Pagina PermisoPagina permiso=administrador{
 		Wiki {"Si puedes ver esta página tienes que ser administrador."}

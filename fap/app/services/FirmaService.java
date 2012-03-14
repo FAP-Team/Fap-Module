@@ -41,7 +41,8 @@ public class FirmaService {
 	 * @param firma Firma
 	 * @param valorDocumentofirmanteSolicitado En el caso de que sea != null se comprueba que el certificado del firmante coincida
 	 */
-	public static void firmar(Documento documento, List<Firmante> firmantes, Firma firma, String valorDocumentofirmanteSolicitado){		
+	public static void firmar(Documento documento, List<Firmante> firmantes, Firma firma, String valorDocumentofirmanteSolicitado){
+		play.Logger.debug("Firmar -> documento: "+documento.uri+", valorDocumento: "+valorDocumentofirmanteSolicitado);
 		Firmante firmanteCertificado = firma.validaFirmayObtieneFirmante(documento);
 		
 		if(firmanteCertificado != null){

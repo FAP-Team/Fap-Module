@@ -41,6 +41,10 @@ POST /Solicitud/combotestref/{idEntidad}/cancelarcrear popups.ComboTestRefContro
 GET /Solicitud/direcciones DireccionesController.index
 
 POST /Solicitud/direcciones/save DireccionesController.save
+GET /Solicitud/documentacion DocumentacionController.index
+
+POST /Solicitud/documentacion/anadirDocumentacion DocumentacionController.anadirDocumentacion
+GET /Solicitud/documentacion/documentacion DocumentacionController.tabladocumentacion
 GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
 
 POST /Solicitud/ejemplosdegrupos/save EjemplosdeGruposController.save
@@ -64,6 +68,12 @@ POST /Solicitud/popupdoceditar/{idEntidad}/editar popups.PopUpDocEditarControlle
 POST /Solicitud/popupdoceditar/{idEntidad}/borrar popups.PopUpDocEditarController.borrar
 POST /Solicitud/popupdoceditar/{idEntidad}/crear popups.PopUpDocEditarController.crear
 POST /Solicitud/popupdoceditar/{idEntidad}/cancelarcrear popups.PopUpDocEditarController.cancelarCrear
+
+GET /Solicitud/popupdocumentacion/{idEntidad}/abrir popups.PopUpDocumentacionController.abrir
+POST /Solicitud/popupdocumentacion/{idEntidad}/editar popups.PopUpDocumentacionController.editar
+POST /Solicitud/popupdocumentacion/{idEntidad}/borrar popups.PopUpDocumentacionController.borrar
+POST /Solicitud/popupdocumentacion/{idEntidad}/crear popups.PopUpDocumentacionController.crear
+POST /Solicitud/popupdocumentacion/{idEntidad}/cancelarcrear popups.PopUpDocumentacionController.cancelarCrear
 
 GET /Solicitud/popupnombre/{idEntidad}/abrir popups.popupNombreController.abrir
 POST /Solicitud/popupnombre/{idEntidad}/editar popups.popupNombreController.editar

@@ -18,6 +18,7 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Holder;
 import javax.xml.ws.soap.MTOMFeature;
 
+import models.ExpedienteAed;
 import models.Firmante;
 import models.InformacionRegistro;
 import models.RepresentantePersonaJuridica;
@@ -76,6 +77,7 @@ public class AedClient {
 		//Preparamos el documento para subir al AED
 		System.out.println("Descripcion: "+documento.descripcion);
 		documento.prepararParaSubir();
+		System.out.println("Descripcion ahora: "+documento.descripcion);
 		documento.save();
 		
 		Documento documentoAed = new Documento();
@@ -300,6 +302,65 @@ public class AedClient {
 			log.warn("El expediente del AED con id " + solicitud.expedienteAed.idAed + " ya estaba creado");
 		}
 	}
+	
+	/**
+	 * Crea un expediente con el interesado por defecto:
+	 * 
+	 * <b>fap.aed.documentonoclasificado.interesado.nombre</b>
+	 * <b>fap.aed.documentonoclasificado.interesado.nif</b>
+	 * 
+	 * @param expedienteAed
+	 */
+	public static void crearExpediente (ExpedienteAed expedienteAed) {
+		List<String> interesadosDocumentos = new ArrayList<String>();
+		List<String> interesadosNombres = new ArrayList<String>();
+		
+		interesadosDocumentos.add(FapProperties.get("fap.aed.documentonoclasificado.interesado.nif"));
+		interesadosDocumentos.add(FapProperties.get("fap.aed.documentonoclasificado.interesado.nombre"));
+		
+		//Obtiene un ID de expediente nuevo
+		if(expedienteAed.idAed == null){				
+			expedienteAed.asignarIdAed();
+		}
+		
+		try {
+			crearExpediente(expedienteAed.idAed, interesadosDocumentos, interesadosNombres);
+		}catch(AedExcepcion e){
+			log.warn("El expediente del AED con id " + expedienteAed.idAed + " ya estaba creado");
+		}
+	}
+	
+	public static void modificarInteresados(ExpedienteAed expedienteAed, SolicitudGenerica solicitud) {
+		List<String> interesadosDocumentos = new ArrayList<String>();
+		List<String> interesadosNombres = new ArrayList<String>();
+		
+		asignarInteresados(solicitud, interesadosDocumentos, interesadosNombres);
+		
+		//Obtiene un ID de expediente nuevo
+		if(expedienteAed.idAed == null){				
+			log.error("El expediente "+expedienteAed+"no tiene idAed.");
+			return;
+		}
+		
+		String procedimiento = FapProperties.get("fap.aed.procedimiento");
+		String convocatoria = FapProperties.get("fap.aed.convocatoria");
+		
+		Expediente expediente = new Expediente();
+		expediente.setIdExterno(expedienteAed.idAed);
+		expediente.setProcedimiento(procedimiento);
+		expediente.setValorModalidad(convocatoria);
+		for (int i = 0; i < interesadosDocumentos.size(); i++) {
+			expediente.getInteresados().add(interesadosDocumentos.get(i));
+			expediente.getInteresadosNombre().add(interesadosNombres.get(i));
+		}
+		try {
+			aed.actualizarExpediente(expediente);
+			log.info("Expediente modificado con id: " + expedienteAed.idAed);
+		} catch (AedExcepcion e) {
+			log.error("Modificando el expediente "+expedienteAed.idAed, e);
+		}
+	}
+		
 	
 	/**
 	 * Rellena lista con los nombres y los nip/cif de los interesados

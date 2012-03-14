@@ -221,12 +221,15 @@ public class FirmaClient {
 		try {
 
 			String certificado = extraerCertificado(firma);
+			play.Logger.debug("Certificado extraido de la firma");
 			ValidateCertResult result = validarCertificadoVR(certificado);
+			play.Logger.debug("Validar certificadoVR");
 			
 			if (result.getCode() == CERT_OK) {
 				//Valida la firma
+				play.Logger.debug("Resultado de Validar certificadoVR OK");
 				if (verificarContentSignature(contenidoDoc, firma.getBytes())) {
-					
+					play.Logger.debug("Firma válida ");
 					//Firma válida, extrae la informacion del certificado
 					HashMap<String,String> certData = extraerInfoFromFirma(firma);
 					Firmante firmante = null;
@@ -269,6 +272,7 @@ public class FirmaClient {
 							firmante.nombre = nombre;
 						}
 					}
+					play.Logger.debug("El firmante es "+firmante.idvalor);
 					return firmante;
 				}
 				return null;

@@ -2,6 +2,7 @@ h2. Changelog
 
 h3. Versión 1.2.6
 
+* Fixed Bug en la generación del Validate Copy del Agrupar Campos
 * Fixed Bug en redirección después de login
 * Fixed Bug en formato de los doubles si no se especifica
 * Fixed #228: Añadidos métodos al AEDClient.
@@ -16,7 +17,6 @@ h3. Versión 1.2.5
 * Homogeneizando el formato del CIF y NIP en Base de Datos
 * Fixed Bug en validación de CIF y NIP
 * Fixed Bug en la descripción de los documentos a subir
-
 
 h3. Versión 1.2.4
 
@@ -44,7 +44,6 @@ h3. Versión 1.2.2
 * La url de descargas de los documentos ahora es relativa.
 * Fixed bug en los combos ManyToOne.
 * Direcciones correctas en los JS de platino (PRO y PRE).
-
 
 h3. Versión 1.2.1
 

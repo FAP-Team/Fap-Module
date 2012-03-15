@@ -242,7 +242,12 @@ class ControllerUtils {
                 out += "\n}\n"
 				validatedFields.pop();
 			}
-        }
+        } 
+		else if (AgruparCampos.class.isInstance(objeto)) {
+				for (Elemento elemento: objeto.elementos) {
+					out += validateCopy(elemento);
+				}
+		}
 		else if (objeto.metaClass.respondsTo(objeto, "getCampo")) {
             if (objeto.campo != null) {
 				if (objeto instanceof Solicitante) {

@@ -11,6 +11,13 @@
 %{
 	showCert = configfap.getBoolean('fap.login.type.cert')
 	showUser = configfap.getBoolean('fap.login.type.user')
+	manualApp = configfap.get('fap.manual.aplicacion')
+	if (manualApp == null)
+	   manualApp = '#'
+	else
+	   manualApp = "/public/"+manualApp
+	   
+	print manualApp
 %}
 
 
@@ -55,7 +62,7 @@
 	#{/fap.grupo}
 	
 	#{fap.grupo titulo:"Ayuda"}	
-		<a href="#"><button class="btn ">Manual de usuario</button></a>
+		<a href="${manualApp}"><button class="btn ">Manual de usuario</button></a>
 		<a href="${play.mvc.Router.reverse("SoporteController.index" , ['accion':'crear', 'redirigir': 'anterior'])}" class="btn ">Preguntas e incidencias</a>
 	#{/fap.grupo}
 </div>

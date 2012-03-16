@@ -350,9 +350,9 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tramite.nombre = "solicitud";
         tramite.uri = "fs://";
 
-        tramite.documentos.add(newTipoDocumento("FileSystem1","fs://type1"));
-        tramite.documentos.add(newTipoDocumento("FileSystem2", "fs://type2"));
-        tramite.documentos.add(newTipoDocumento("FileSystem3", "fs://type3"));
+        tramite.documentos.add(newTipoDocumento("FileSystem1","fs://type1/v01"));
+        tramite.documentos.add(newTipoDocumento("FileSystem2", "fs://type2/v01"));
+        tramite.documentos.add(newTipoDocumento("FileSystem3", "fs://type3/v01"));
         tramite.documentos.add(newTipoDocumento("Otros", propertyPlaceholder.get("fap.aed.tiposdocumentos.otros")));
         
         ArrayList<Tramite> tramites = new ArrayList<Tramite>();
@@ -365,7 +365,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tipoDocumento.nombre = "FileSystem " + nombre;
         tipoDocumento.uri=tipo;
         tipoDocumento.aportadoPor = "Ciudadano";
-        tipoDocumento.obligatoriedad = "Opcional";
+        tipoDocumento.obligatoriedad = "Obligatorio";
         return tipoDocumento;
     }
 

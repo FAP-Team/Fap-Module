@@ -176,7 +176,10 @@ Formulario Solicitud {
 		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos paginaEditar=DocumentosEditar{
 			Columna campo=Documento.id
 			Columna campo=Documento.tipo
-		}	
+		}
+		Grupo botonObligatorios titulo="Comprobar que estan aportados todos los documentos obligatorios"{
+			Boton comprobarDocumentosObligatorios titulo="Comprobar Obligatorios"
+		}
 	}
 	
 	Pagina EjemplosdeGrupos campo=Solicitud{

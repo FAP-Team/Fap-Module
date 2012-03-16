@@ -32,8 +32,21 @@
 }%
 	<div class="form-row">
 		<div class="check">
-            <label for="${id}" style="${styleLabel}"><input type="checkbox" id="${id}" name="${field.name}" ${checked} ${disabled}></input>${label}</label>
+            <label for="${id}" style="${styleLabel}"><input type="checkbox" id="${id}" name="${field.name}" ${checked.raw()} ${disabled}></input>${label}</label>
 		</div>
 	</div>
+	
+	<script>
+    	$(function() {
+        	form = $('#${id}').parents('form');
+            form.submit(function(){
+            	if (! $('#${id}').attr('checked')) {
+                   $('#${id}').val("off");
+               	}
+            	$('#${id}').attr("checked", "checked");
+            	var value = $('#${id}').attr("checked");
+        	});
+        });
+    </script>
 	
 #{/fap.field}

@@ -9,6 +9,7 @@ Las plantillas se definen en la entidad Mail que tiene la siguiente definición.
 bc.. Entidad Mail tableName = "email" {
 	String idMail
 	String bcc
+	String cc
 	LongText content
 	String footer
 	String sendTo
@@ -25,6 +26,7 @@ bc.. Mail(incidencia):
    sender: "sender@gmail.com"
    sendTo: "sendTo@gmail.com"
    bcc: ""
+   cc: ""
    subject: "Asunto"
    content: "Mensaje enviado por ${incidencia.nombre} ${incidencia.apellidos}, Email: ${incidencia.email}, Teléfono: ${incidencia.telefono}
 

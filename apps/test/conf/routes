@@ -112,6 +112,10 @@ POST /Solicitud/documentoseditar/editar DocumentosEditarController.editar
 GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
 POST /Solicitud/ejemplosdegrupos/editar EjemplosdeGruposController.editar
 
+GET /Solicitud/enviomails EnvioMailsController.index
+
+POST /Solicitud/enviomails/enviarMail EnvioMailsController.enviarMail
+
 GET /Solicitud/fechas FechasController.index
 POST /Solicitud/fechas/editar FechasController.editar
 

@@ -64,6 +64,10 @@ Formulario Solicitud {
 			Enlace "Inject" pagina=PaginaInject
 		}
 		
+		Grupo "Envío de Mails"{
+			Enlace "Envío de Mails" pagina=EnvioMails
+		}
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
 		
@@ -414,5 +418,12 @@ Formulario Solicitud {
 	Pagina PaginaInject campo=Solicitud {
 		Wiki {"Se inyectó correctamente el servicio en el controlador"}
 	}
+	
+	Pagina EnvioMails noForm{
+		Wiki {"Pulse en botón para enviar un mail de prueba siguiendo la configuracion descrita en la pagina de Administración"}	
+		Form enviarMail {
+        	Boton enviarBoton titulo="Enviar Mail"
+        }
+    }
 	
 }

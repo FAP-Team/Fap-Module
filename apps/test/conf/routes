@@ -102,6 +102,9 @@ POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/{idEntidad}/
 POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/{idEntidad}/crear popups.PopupPersonaSolicitantePersonaJuridicaJuridicaTablaController.crear
 POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/{idEntidad}/cancelarcrear popups.PopupPersonaSolicitantePersonaJuridicaJuridicaTablaController.cancelarCrear
 
+GET /Solicitud/presentacion PresentacionController.index
+
+POST /Solicitud/presentacion/myFormPres PresentacionController.myFormPres
 GET /Solicitud/solicitante SolicitanteController.index
 
 GET /Solicitud/solicitante/personaJuridicaTabla SolicitanteController.tablapersonaJuridicaTabla

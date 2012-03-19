@@ -45,6 +45,11 @@ Formulario Solicitud {
 			Enlace "Envío de Mails" pagina=EnvioMails
 		}
 		
+		Grupo "Otras" {
+			Enlace "Presentacion" pagina=Presentacion
+			Enlace "Documentacion" pagina=Documentacion
+		}
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
     
@@ -247,11 +252,16 @@ Formulario Solicitud {
 	Pagina PermisoNoEditable permiso=noEditable {
 		Wiki {"Esta página es no editable"}	
 	}
-	
+
 	Pagina EnvioMails noForm{
 		Wiki {"Pulse en botón para enviar un mail de prueba siguiendo la configuracion descrita en la pagina de Administración"}	
 		Form enviarMail {
         	Boton enviarBoton titulo="Enviar Mail"
         }
+    }
+	Pagina Presentacion noForm {
+		Form myFormPres {
+			FirmaSimple firmaSimple titulo="Firmar" documento=Solicitud.registro.oficial
+		}
 	}
 }

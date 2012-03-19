@@ -1,5 +1,14 @@
 h2. Changelog
 
+h3. Versión 1.2.7
+
+* Fixed bug en NipCheck nulos.
+* Añadida properties para la configuración de PerserveHost de Apache.
+* Añadido campo CC en la plantilla de los mails.
+* Fixed Bug en el envío de los checkbox unchecked.
+* Añadida clase para Verificar la aportacion de los documentos obligatorios.
+* Fixed #230: Property para enlazar el manual de la aplicación "fap.manual.aplicacion".
+
 h3. Versión 1.2.6
 
 * Fixed Bug en la generación del Validate Copy del Agrupar Campos

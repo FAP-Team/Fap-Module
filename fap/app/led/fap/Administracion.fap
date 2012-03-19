@@ -162,13 +162,14 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
         Wiki {"
 Dentro de los campos puede utilizar variables con $ {nombreVariable} y otros elementos que puede consultar en la \"documentación\":http://www.playframework.org/documentation/1.2.1/templates#syntax.
 
-En los campos **Para** y **CC** puede poner varios destinatarios separados por \",\".
+En los campos **Para**, **CC** y **CCO** puede poner varios destinatarios separados por \",\".
         "}
 
         Texto campo=Mail.idMail titulo="Identificador" requerido
         Texto campo=Mail.sender titulo="De"
         Texto campo=Mail.sendTo titulo="Para" requerido
-        Texto campo=Mail.bcc titulo="CC"
+        Texto campo=Mail.cc titulo="CC"
+        Texto campo=Mail.bcc titulo="CCO"
         Texto campo=Mail.subject titulo="Asunto" requerido
         AreaTexto campo=Mail.content titulo="Mensaje" requerido
 		AreaTexto campo=Mail.footer titulo="Pie de mensaje"

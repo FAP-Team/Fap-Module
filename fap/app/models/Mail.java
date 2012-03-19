@@ -40,6 +40,10 @@ public class Mail extends Model {
 	public String bcc;
 	
 	
+	
+	public String cc;
+	
+	
 	@Column(columnDefinition="LONGTEXT")
 	public String content;
 	
@@ -73,6 +77,8 @@ public class Mail extends Model {
 		Mail mail = new Mail();
 		if (!bcc.isEmpty())
 			mail.bcc = TemplateLoader.loadString(bcc).render(args);
+		if (!cc.isEmpty())
+			mail.cc = TemplateLoader.loadString(cc).render(args);
 		if (!sender.isEmpty())
 			mail.sender = TemplateLoader.loadString(sender).render(args);
 		if (!sendTo.isEmpty())
@@ -117,6 +123,17 @@ public class Mail extends Model {
 			        }
 			    }
 			} 
+			
+			if (render.cc  != null) {
+			    for (String recipient : StringUtils.split(render.cc, ",")) {
+			        try {
+			            InternetAddress iAddress = new InternetAddress(recipient);
+			            emailTo.addTo(iAddress.getAddress(), iAddress.getPersonal());
+			        } catch (Exception e) {
+			            emailTo.addTo(recipient.toString());
+			        }
+			    }
+			}
 
 			if (render.bcc != null) {
 			    for (String recipient : StringUtils.split(render.bcc, ",")) {

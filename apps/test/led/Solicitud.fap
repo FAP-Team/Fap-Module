@@ -41,6 +41,9 @@ Formulario Solicitud {
 			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable 
 		}
 
+		Grupo "Envío de Mails"{
+			Enlace "Envío de Mails" pagina=EnvioMails
+		}
 		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
@@ -243,5 +246,12 @@ Formulario Solicitud {
 	
 	Pagina PermisoNoEditable permiso=noEditable {
 		Wiki {"Esta página es no editable"}	
+	}
+	
+	Pagina EnvioMails noForm{
+		Wiki {"Pulse en botón para enviar un mail de prueba siguiendo la configuracion descrita en la pagina de Administración"}	
+		Form enviarMail {
+        	Boton enviarBoton titulo="Enviar Mail"
+        }
 	}
 }

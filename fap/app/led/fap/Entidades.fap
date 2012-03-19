@@ -287,6 +287,7 @@ Entidad SemillaExpediente extends Singleton{
 Entidad Mail tableName = "email" {
 	String idMail
 	String bcc
+	String cc
 	LongText content
 	String footer
 	String sendTo

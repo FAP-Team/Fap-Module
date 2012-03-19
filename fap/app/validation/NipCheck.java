@@ -27,7 +27,7 @@ public class NipCheck extends Check {
 	}
 	
 	public boolean validaNip (Nip nip, StringBuilder texto) {
-		if(nip.tipo.isEmpty() && nip.valor.isEmpty()) //Tipo y valor vacios, no valida
+		if ((nip.tipo == null || nip.tipo.isEmpty()) && ((nip.valor == null) || (nip.valor.isEmpty()))) 
 			return true; 
 		
 		if(nip.tipo.isEmpty()){ //Falta tipo

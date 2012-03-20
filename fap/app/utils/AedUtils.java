@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import play.libs.Crypto;
 import play.mvc.Router;
+import properties.FapProperties;
 
 public class AedUtils {
 
@@ -46,5 +47,22 @@ public class AedUtils {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("k", encriptarUri(uri));
 		return Router.getFullUrl("fap.DescargasAedController.descargar", params).toString();		
+	}
+	
+	/**
+	 * Si existe un servidor Apache delante, y no tiene configurado el ProxyPreserveHost;
+	 * es decir: ProxyPreserveHost Off
+	 * @param uri
+	 * @return
+	 */
+	public static String crearExternalFullUrl(String uri) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("k", encriptarUri(uri));
+        Router.ActionDefinition rd = Router.reverse("fap.DescargasAedController.descargar", params);
+        
+        String urlCompleta = FapProperties.get("application.baseUrl");
+        urlCompleta += rd.url;
+        
+        return urlCompleta;                
 	}
 }

@@ -25,6 +25,10 @@
 	def uri = _uri ?: "No hay URI"
 	def firma = _firma ?: ""
 	def url = utils.AedUtils.crearFullUrl(uri)
+	if (properties.FapProperties.get("fap.proxy.preserve.host").equals("off")) {
+		play.Logger.info("change url from: <"+url+"> -> <"+utils.AedUtils.crearExternalFullUrl(uri)+">");
+		url = utils.AedUtils.crearExternalFullUrl(uri);
+	}
 	def id_boton = id;// + "_boton";
 	def id_firma = id + "_firma";
 	def id_row = id + "_row";

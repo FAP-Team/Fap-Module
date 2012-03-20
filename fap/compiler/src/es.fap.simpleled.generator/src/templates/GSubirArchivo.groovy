@@ -76,7 +76,7 @@ public class GSubirArchivo {
 				String mimeType = play.libs.MimeTypes.getMimeType(${subirArchivo.name}.getAbsolutePath());
 				String type = mimeType.split("/")[0];
 				if (${check})
-					validation.addError("${subirArchivo.name}", "El tipo mime \\"" + mimeType + "\\" no es aceptado por el servidor");
+					validation.addError("${subirArchivo.name}", "El tipo mime \\"" + mimeType + "\\" del documento a incorporar, no es válido. Compruebe los formatos de documentos aceptados.");
 			""";
 		}
 		else if (subirArchivo.extensiones.size > 0){
@@ -89,7 +89,7 @@ public class GSubirArchivo {
 			checkFile = """
 				String extension = GestorDocumentalUtils.getExtension(${subirArchivo.name});
 				if (${check})
-					validation.addError("${subirArchivo.name}", "La extensión de fichero \\"" + extension + "\\" no es aceptada por el servidor");
+					validation.addError("${subirArchivo.name}", "La extensión \\"" + extension + "\\" del documento a incorporar, no es válida. Compruebe los formatos de documentos aceptados.");
 			""";
 		}
 		else{
@@ -97,9 +97,9 @@ public class GSubirArchivo {
 				String extension = GestorDocumentalUtils.getExtension(${subirArchivo.name});
 				String mimeType = play.libs.MimeTypes.getMimeType(${subirArchivo.name}.getAbsolutePath());
 				if (!utils.GestorDocumentalUtils.acceptExtension(extension))
-					validation.addError("${subirArchivo.name}", "La extensión de fichero \\"" + extension + "\\" no es aceptada por el servidor");
+					validation.addError("${subirArchivo.name}", "La extensión \\"" + extension + "\\" del documento a incorporar, no es válida. Compruebe los formatos de documentos aceptados.");
 				if (!utils.GestorDocumentalUtils.acceptMime(mimeType))
-					validation.addError("${subirArchivo.name}", "El tipo mime \\"" + mimeType + "\\" no es aceptado por el servidor");
+					validation.addError("${subirArchivo.name}", "El tipo mime \\"" + mimeType + "\\" del documento a incorporar, no es válido. Compruebe los formatos de documentos aceptados.");
 			""";
 		}
 		return """

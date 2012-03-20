@@ -75,6 +75,5 @@ public class AedGestorDocumentalServiceTest extends GestorDocumentalServiceTest 
     protected String getTipoDocumentoOtros() {
         return propertyPlaceholder.get("fap.aed.tiposdocumentos.otros");
     }
-
     
 }

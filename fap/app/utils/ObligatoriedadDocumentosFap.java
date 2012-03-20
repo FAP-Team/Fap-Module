@@ -10,7 +10,7 @@ import models.Tramite;
  * es de tipo: OBLIGATORIO, CONDICIONADO_AUTOMATICO, IMPRESCINDIBLE y CONDICIONADO_MANUAL
  */
 
-public class ObligatoriedadDocumentosExtend {
+public class ObligatoriedadDocumentosFap {
 	
 	// Para saber el trámite sobre el que se está trabajando
 	static public Tramite tramite;
@@ -26,7 +26,7 @@ public class ObligatoriedadDocumentosExtend {
 
 	// Constructor de la clase que tiene como parámetros el tramite, para calcular los documentos
 	// que son obligatorios en él.
-	public ObligatoriedadDocumentosExtend(Tramite tramite) {
+	public ObligatoriedadDocumentosFap(Tramite tramite) {
 		// Guardamos localmente, el trámite sobre el que trabajará la instancia de la clase
 		this.tramite=tramite;
 		// Se calculan los documentos obligatorios de dicho trámite
@@ -35,7 +35,7 @@ public class ObligatoriedadDocumentosExtend {
 
 	// Constructor de la clase que tiene como parámetros el nombre del tramite, para calcular los documentos
 	// que son obligatorios en él.
-	public ObligatoriedadDocumentosExtend(String strTramite) {
+	public ObligatoriedadDocumentosFap(String strTramite) {
 		// Guardamos localmente, el trámite sobre el que trabajará la instancia de la clase.
 		// Este tramite lo calcularemos a partir de su nombre, que es el que nos pasan por parametro, mediante una
 		// consulta a la base de datos

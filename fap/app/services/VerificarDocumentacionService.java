@@ -3,7 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 import messages.Messages;
-import utils.ObligatoriedadDocumentosExtend;
+import utils.ObligatoriedadDocumentosFap;
 import models.TableKeyValue;
 import models.Documento;
 import models.Tramite;
@@ -17,7 +17,7 @@ public class VerificarDocumentacionService {
 
 	// Clase que contendrá, en principio, todos los documentos obligatorios de dicho trámite
 	//                    , y finalmente, todos los documentos obligatorios que el usuario NO ha aportado
-	private static ObligatoriedadDocumentosExtend docObligatoriedad;
+	private static ObligatoriedadDocumentosFap docObligatoriedad;
 	
 	// Lista con todos los documentos que el usuario ha aportado
 	private static List<Documento> lstDocumentosSubidos=new ArrayList<Documento>();
@@ -27,7 +27,7 @@ public class VerificarDocumentacionService {
 	// 		* lstDocumentosSubidos: Lista que contiene los documentos que el usuario a aportado    
 	public VerificarDocumentacionService(Tramite tramite, List<Documento> lstDocumentosSubidos) {
 		// Se calculan los documentos obligatorios a adjuntar, a raíz del trámite que nos llega por parámetros
-		this.docObligatoriedad=new ObligatoriedadDocumentosExtend(tramite);
+		this.docObligatoriedad=new ObligatoriedadDocumentosFap(tramite);
 		// Guardamos en una variable local a la clase, la lista de documentos que el usuario ha aportado, para despues comparar
 		// con la lista de documentos obligatorios al trámite (docObligatoriedad), y así ver si falta o no algun documento obligatorio a aportar 
 		this.lstDocumentosSubidos=lstDocumentosSubidos;
@@ -39,7 +39,7 @@ public class VerificarDocumentacionService {
 	// 		* lstDocumentosSubidos: Lista que contiene los documentos que el usuario a aportado 
 	public VerificarDocumentacionService(String strTramite, List<Documento> lstDocumentosSubidos) {
 		// Se calculan los documentos obligatorios a adjuntar, a raíz del trámite que nos llega por parámetros
-		this.docObligatoriedad=new ObligatoriedadDocumentosExtend(strTramite);
+		this.docObligatoriedad=new ObligatoriedadDocumentosFap(strTramite);
 		// Guardamos en una variable local a la clase, la lista de documentos que el usuario ha aportado, para despues comparar
 		// con la lista de documentos obligatorios al trámite (docObligatoriedad), y así ver si falta o no algun documento obligatorio a aportar 
 		this.lstDocumentosSubidos=lstDocumentosSubidos;

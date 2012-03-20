@@ -125,7 +125,7 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
         gestorDocumentalService.crearExpediente(solicitud);
     }
     
-    private SolicitudGenerica stubSolicitud(String idExpediente){
+    protected SolicitudGenerica stubSolicitud(String idExpediente){
         SolicitudGenerica solicitud = new SolicitudGenerica();
         ExpedienteAed expediente = mock(ExpedienteAed.class);
         solicitud.expedienteAed = expediente;
@@ -134,14 +134,13 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
         return solicitud;
     }
     
-    private ExpedienteAed stubExpediente(String idExpediente){
-        ExpedienteAed expedienteAed = mock(ExpedienteAed.class);
-        when(expedienteAed.asignarIdAed()).thenReturn(idExpediente);
+    protected ExpedienteAed stubExpediente(String idExpediente){
+        ExpedienteAed expedienteAed = new ExpedienteAed();
         expedienteAed.idAed = idExpediente;
         return expedienteAed;
     }
     
-    private void mockPersonaFisica(Persona personaFisica){
+    protected void mockPersonaFisica(Persona personaFisica){
         personaFisica.tipo = "fisica";
         personaFisica.fisica.nombre = "Luke";
         personaFisica.fisica.primerApellido = "Sky";
@@ -176,7 +175,9 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
     @Test
     public void saveDocumentoTemporalFechaSubidaNow() throws Exception {
         DateTime t1 = new DateTime(); 
+        Thread.sleep(1000);
         Documento documento = saveTmpDocumento(TEST_FILE_CONTENT, TEST_FILENAME);
+        Thread.sleep(1000);
         DateTime t2 = new DateTime();
         assertTrue(documento.fechaSubida.isAfter(t1));
         assertTrue(documento.fechaSubida.isBefore(t2));

@@ -102,16 +102,16 @@ public class Mail extends Model {
 					}
 				}
 			}
-			
-			if (render.cc  != null) {
-			    for (String recipient : StringUtils.split(render.cc, ",")) {
-			        try {
-			            InternetAddress iAddress = new InternetAddress(recipient);
-			            emailTo.addTo(iAddress.getAddress(), iAddress.getPersonal());
-			        } catch (Exception e) {
-			            emailTo.addTo(recipient.toString());
-			        }
-			    }
+
+			if (render.cc != null) {
+				for (String recipient : StringUtils.split(render.cc, ",")) {
+					try {
+						InternetAddress iAddress = new InternetAddress(recipient);
+						emailTo.addTo(iAddress.getAddress(), iAddress.getPersonal());
+					} catch (Exception e) {
+						emailTo.addTo(recipient.toString());
+					}
+				}
 			}
 
 			if (render.bcc != null) {

@@ -335,7 +335,7 @@ Permiso noVisibleFuncionarioAutorizado{
 	when 
 		agente.funcionario = "true" and
 		solicitud?.solicitante.autorizaFuncionario = "true"
-	return all
+	return denegar
 }
 
 ///* Se puede moficicar la aportación de documentación cuando está en borrador*/	

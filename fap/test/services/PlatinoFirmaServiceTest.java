@@ -19,8 +19,8 @@ public class PlatinoFirmaServiceTest extends FirmaServiceTest {
     
     @BeforeClass
     public static void beforeClass(){
-        firmaService = new PlatinoFirmaServiceImpl(propertyPlaceholder);
-        hasConnection = firmaService.isConfigured();
+        //firmaService = new PlatinoFirmaServiceImpl(propertyPlaceholder);
+        //hasConnection = firmaService.isConfigured();
     }
 
     @Override

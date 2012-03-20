@@ -3988,6 +3988,26 @@ a.thumbnail:hover {
 .invisible {
   visibility: hidden;
 }
+.x-grid-cell.x-grid-clean-cell {
+  padding: 0px;
+}
+.x-grid-table tbody tr:first-child {
+  display: collapse;
+}
+.x-panel-header-text-default {
+  font-family: Arial, sans-serif;
+  color: #003366;
+}
+.x-panel-header-default {
+  background-image: -webkit-linear-gradient(top, #dce8f4, #dce8f4);
+  border-color: #bac6d2;
+}
+.x-grid-header-ct {
+  border-color: #bac6d2;
+}
+.x-panel .x-grid-body {
+  border-color: #bac6d2;
+}
 body {
   background: #B5C5D4;
 }

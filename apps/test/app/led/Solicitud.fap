@@ -425,7 +425,7 @@ Formulario Solicitud {
 		Wiki {"Se inyectó correctamente el servicio en el controlador"}
 	}
 	
-	Pagina EnvioMails noForm{
+	Pagina EnvioMails noForm campo=Solicitud{
 		Wiki {"Pulse en botón para enviar un mail de prueba siguiendo la configuracion descrita en la pagina de Administración"}	
 		Form enviarMail {
         	Boton enviarBoton titulo="Enviar Mail"

@@ -28,9 +28,9 @@ public class ValoresPorDefectoTest extends Model {
 
 	public Integer mInteger;
 
-	public Boolean mBoolean;
-
 	public Boolean otroBoolean;
+
+	public Boolean mBoolean;
 
 	public Double mDouble;
 

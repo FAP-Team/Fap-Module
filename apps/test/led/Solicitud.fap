@@ -55,6 +55,7 @@ Formulario Solicitud {
     
     Pagina Solicitante {
     	Solicitante persona campo=Solicitud.solicitante
+    	Texto email campo=Solicitud.solicitante.email
     }
     
     Pagina SolicitantePF {
@@ -259,7 +260,7 @@ Formulario Solicitud {
         	Boton enviarBoton titulo="Enviar Mail"
         }
     }
-	Pagina Presentacion noForm permiso=adminGestorRevisor{
+	Pagina Presentacion{
 		Form myFormPres {
 			FirmaSimple firmaSimple titulo="Firmar" documento=Solicitud.registro.oficial
 		}

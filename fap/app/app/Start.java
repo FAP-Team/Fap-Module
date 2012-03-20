@@ -26,12 +26,14 @@ public class Start extends Job {
 	
 	public void doJob() {
 		
+		/* ESTO CREO QUE YA NO HARIA FALTA  ¿? */
 		// Context Path, para el despliegue de varias aplicaciones en Apache y no tener el problema del Path
 		String ctxPath = FapProperties.get("fap.ctxPath");
 		if (ctxPath != null){
 			Play.ctxPath = ctxPath;
 	        Router.load(Play.ctxPath);
 		}
+		/* ---------------------------------- */
 		
 		//Carga la configuracion de log4j
 		String log4jPropertyFile = FapProperties.get("app.log.path");

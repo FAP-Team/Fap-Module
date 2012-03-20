@@ -105,6 +105,7 @@ POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/{idEntidad}/
 GET /Solicitud/presentacion PresentacionController.index
 
 POST /Solicitud/presentacion/myFormPres PresentacionController.myFormPres
+POST /Solicitud/presentacion/save PresentacionController.save
 GET /Solicitud/solicitante SolicitanteController.index
 
 GET /Solicitud/solicitante/personaJuridicaTabla SolicitanteController.tablapersonaJuridicaTabla

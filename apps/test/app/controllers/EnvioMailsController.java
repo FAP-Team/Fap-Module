@@ -25,8 +25,13 @@ public class EnvioMailsController extends EnvioMailsControllerGen {
 		}
 		if (!Messages.hasErrors()) {
 			Map<String, Object> argsVacios = new HashMap<String, Object>();
-			Mails.loadFromFiles();
-			Mails.enviar("pruebaInitialData", argsVacios);
+			try{
+				Mails.enviar("prueba", argsVacios);
+			} catch (IllegalArgumentException e){
+				play.Logger.error("No se encontró el ID del mail en la base de datos");
+			} catch (Exception e){
+				play.Logger.error("Problemas con la plantilla del mail de presentar aportación, puede que esté mal construida");
+			}
 			log.info("Enviar mail de página: " + "gen/EnvioMails/EnvioMails.html" + " , intentado con éxito");
 		} else
 			log.info("Acción Editar de página: " + "gen/EnvioMails/EnvioMails.html" + " , intentada sin éxito (Problemas de Validación)");

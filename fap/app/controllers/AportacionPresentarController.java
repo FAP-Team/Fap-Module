@@ -102,7 +102,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 			if(!Messages.hasErrors()){
 				Messages.ok("Su solicitud de aportación de documentación se registró correctamente");
 				try{
-					Mails.enviar("aportacionPresentar", solicitud);
+					Mails.enviar("aportacionRealizada", solicitud);
 				} catch (IllegalArgumentException e){
 					Logger.error("No se encontró el ID del mail en la base de datos");
 				} catch (Exception e){

@@ -259,7 +259,7 @@ Formulario Solicitud {
         	Boton enviarBoton titulo="Enviar Mail"
         }
     }
-	Pagina Presentacion noForm {
+	Pagina Presentacion noForm permiso=adminGestorRevisor{
 		Form myFormPres {
 			FirmaSimple firmaSimple titulo="Firmar" documento=Solicitud.registro.oficial
 		}

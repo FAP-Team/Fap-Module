@@ -63,10 +63,6 @@ public class Solicitud extends SolicitudGenerica {
 	public Solicitante pj;
 	
 	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	public PersonaFisica personaf;
-	
-	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public ComboTestRef comboError;
 	
@@ -128,11 +124,6 @@ public class Solicitud extends SolicitudGenerica {
 								pj = new Solicitante();
 							else
 								pj.init();
-						
-							if (personaf == null)
-								personaf = new PersonaFisica();
-							else
-								personaf.init();
 						
 							if (comboError != null)
 								comboError.init();	

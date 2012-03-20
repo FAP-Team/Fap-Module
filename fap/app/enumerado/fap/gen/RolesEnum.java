@@ -3,7 +3,9 @@ package enumerado.fap.gen;
 public enum RolesEnum{
 
 	administrador("Administrador"),
-	usuario("Usuario");
+	usuario("Usuario"),
+	gestor("Gestor"),
+	revisor("Revisor");
 
 	private String valor;
 

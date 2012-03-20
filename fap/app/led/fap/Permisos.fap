@@ -193,7 +193,7 @@ vars
 	SolicitudGenerica solicitud
 	Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 when
-	(action = "read" and agente.rolActivo = "administrador")
+	(action = "read" and agente.rolActivo in ("administrador", "gestor", "revisor"))
 	or
 	(
 	action = "read"
@@ -217,7 +217,7 @@ rule aportacion
 vars
 	SolicitudGenerica solicitud
 when 
-	(agente.rolActivo in ("administrador", "usuario")) and
+	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
 	(solicitud.estado in ("iniciada", "requerida"))
 then 
 	grant
@@ -475,6 +475,21 @@ when
 	convocatoria.estado = "presentacion"
 then
 	grant
+
+//Baremación	
+rule listaEvaluaciones
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+	then
+		grant
+
+
+rule evaluacion
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+	then
+		grant
+
 
 
 rule tableKeyOnlyEstadosSolicitud

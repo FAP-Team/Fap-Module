@@ -71,6 +71,8 @@ fap/app/views/gen/*
 fap/app/listas/gen/*
 fap/app/enumerado/fap/gen/*
 
+apps/test/app/enumerado/gen/*
+
 fap/compiler/src/es.fap.simpleled/bin/*
 fap/compiler/src/es.fap.simpleled/src-gen/*
 fap/compiler/src/es.fap.simpleled.ui/bin/*

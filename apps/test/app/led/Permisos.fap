@@ -1,0 +1,19 @@
+Permiso paginaTablaVer{
+	when _accion != crear
+	return editable
+}
+
+Permiso autorizaFuncionario {
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud.solicitante.autorizaFuncionario = "true"
+		and agente.funcionario = "true"
+	return editable
+	
+	when solicitud.solicitante.autorizaFuncionario = "true"
+	return denegar
+	
+	else
+	return editable
+}

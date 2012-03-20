@@ -12,21 +12,27 @@ bc. cd holamundo
 
 3. Sobreescribe las dependencias en el fichero "conf/dependencies.yml" (Nota: Cambia el número de versión por la última versión disponible del módulo)
 
-bc. # Dependencias
-require:
+bc. require:
     - play
     - fap -> fap 2.0
-    - fap -> guice 1.2.1
+    - fap -> guice 1.3
     - play -> pdf 0.6
     - play -> less 0.3
     - play -> recaptcha 1.2
-# Custom repository 
-repositories: 
+    - play -> mockito 0.1
+    - play -> webdrive 0.2:
+        transitive: false
+repositories:
     - Fap repository:
         type: http
         artifact: "http://fap-devel.etsii.ull.es/public/fap-sdk2/[revision]/[module]-[revision].zip"
         contains:
             - fap -> fap
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+            - fap -> guice
             
 
 4. Carga las dependencias del proyecto

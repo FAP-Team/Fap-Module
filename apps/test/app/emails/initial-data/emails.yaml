@@ -1,0 +1,9 @@
+Mail(pruebaInitialData):
+   idMail: "pruebaInitialData"
+   sender: "fap@gmail.com"
+   sendTo: "destinatarioFAP@gmail.com"
+   cc: "destinatarioCC1@gmail.com, destinatarioCC2@gmail.com"
+   bcc: "destinatarioCCO@gmail.com"
+   subject: "Asunto"
+   content: "Mensaje enviado en la aplicacion TEST de prueba"   
+   footer: "Saludos Cordiales Faperos"

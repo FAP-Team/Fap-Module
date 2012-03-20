@@ -10,6 +10,7 @@ package app;
 import java.io.File;
 
 import play.Logger;
+import play.Play;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
 import play.jobs.On;
@@ -22,14 +23,15 @@ public class CompressLogs extends Job {
 	
 	public void doJob() {
 		// Preparamos una variable para gestionar el directorio de logs
-		File directorioLogs = new File("logs");
+		File directorioLogs = new File(Play.applicationPath+"/logs");
+		play.Logger.info("Directorio se supone está en: "+directorioLogs.getAbsolutePath());
 		// Buscamos en dicho directorio ficheros cuyos nombres tengan fechas, que indicaran que son de dias anteriores
 		for (File fichero : directorioLogs.listFiles()){
 			// Si es un fichero antiguo, lo comprimimos, dependiendo del tipo que sea Daily o Auditable, para colocarlo en su carpeta
 			// Para los de tipo Auditable
 			if (fichero.getName().matches(".*Auditable\\.log\\.\\d\\d\\d\\d\\-\\d\\d\\-\\d\\d$")){
 				// Si se comprime bien, borramos el fichero
-				if (!(new File("logs/backups/Auditable/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"logs/"+fichero.getName()}, "logs/backups/Auditable/"+fichero.getName()+".zip"))){
+				if (!(new File(Play.applicationPath+"/logs/backups/Auditable/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"/logs/"+fichero.getName()}, "/logs/backups/Auditable/"+fichero.getName()+".zip"))){
 					Logger.info("BackUps Logs: Fichero '"+fichero.getName()+"' comprimido en la carpeta <logs/backups/Auditable>");
 					fichero.delete();
 				}
@@ -39,7 +41,7 @@ public class CompressLogs extends Job {
 				// Para los de tipo Daily
 				if (fichero.getName().matches(".*log\\.\\d\\d\\d\\d\\-\\d\\d\\-\\d\\d$")){
 					// Si se comprime bien, borramos el fichero
-					if (!(new File("logs/backups/Daily/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"logs/"+fichero.getName()}, "logs/backups/Daily/"+fichero.getName()+".zip"))){
+					if (!(new File(Play.applicationPath+"/logs/backups/Daily/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"/logs/"+fichero.getName()}, "/logs/backups/Daily/"+fichero.getName()+".zip"))){
 						Logger.info("BackUps Logs: Fichero '"+fichero.getName()+"' comprimido en la carpeta <logs/backups/Daily>");
 						fichero.delete();
 					}

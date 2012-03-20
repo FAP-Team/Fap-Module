@@ -1,7 +1,9 @@
 package es.fap.simpleled.led.util;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
@@ -135,6 +137,8 @@ public class LedCampoUtils {
 	}
 	
 	public static boolean validCampo(Campo campo){
+		if (campo.getMethod() != null)
+			return true;
 		if (campo.getEntidad() == null || campo.getEntidad().getName() == null){
 			return false;
 		}
@@ -174,11 +178,11 @@ public class LedCampoUtils {
 		return null;
 	}
 	
-	public static Map<String, Entity> getEntidadesValidas(Campo campo){
-		EObject container = LedCampoUtils.getElementosContainer(campo);
+	public static Map<String, Entity> getEntidadesValidas(EObject elemento){
+		EObject container = LedCampoUtils.getElementosContainer(elemento);
 		Map<String, Entity> entidades = new HashMap<String, Entity>();
-		if (container instanceof Model || campo.eContainer() instanceof Tabla){
-			for (Entity e: ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, campo.eResource()))
+		if (container instanceof Model || elemento instanceof Tabla){
+			for (Entity e: ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, elemento.eResource()))
 				entidades.put(e.getName(), e);	
 			return entidades;
 		}
@@ -192,7 +196,7 @@ public class LedCampoUtils {
 			entidades.put(ultimaEntidad.getName(), ultimaEntidad);
 		}
 		if (! (container instanceof Tabla)){
-			for (Entity single: LedEntidadUtils.getSingletons(campo.eResource()))
+			for (Entity single: LedEntidadUtils.getSingletons(elemento.eResource()))
 				entidades.put(single.getName(), single);
 		}
 		return entidades;
@@ -263,6 +267,37 @@ public class LedCampoUtils {
 			startAttrs = startAttrs.getAtributos();
 		}
 		return true;
+	}
+	
+	// Convierte un campo en su equivalente en String
+	
+	public static String getCampoStr(Campo campo){
+		if (campo == null){
+			return null;
+		}
+		String campoStr = campo.getEntidad().getName();
+		if (campoStr.equals("SolicitudGenerica")){
+			campoStr = "Solicitud";
+		}
+		CampoAtributos attrs = campo.getAtributos();
+		while (attrs != null){
+			campoStr += "." + attrs.getAtributo().getName();
+			attrs = attrs.getAtributos();
+		}
+		return campoStr;
+	}
+	
+	public static List<Campo> buscarCamposRecursivos (EObject container){
+		EList<Elemento> elementos = LedCampoUtils.getElementos(container);
+		List<Campo> campos = new ArrayList<Campo>();
+		if (elementos != null){
+			for (EObject obj: elementos){
+				campos.addAll(buscarCamposRecursivos(obj));
+			}
+		} else {
+			campos.add(LedCampoUtils.getCampo(container));
+		}
+		return campos;
 	}
 	
 }

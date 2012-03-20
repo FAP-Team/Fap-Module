@@ -22,6 +22,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.ParserRule;
+import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.impl.KeywordImpl;
 import org.eclipse.xtext.impl.RuleCallImpl;
@@ -36,6 +37,9 @@ import com.google.inject.Inject;
 
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.FirmaDocumento;
+import es.fap.simpleled.led.FirmaFirmantes;
+import es.fap.simpleled.led.FirmaSetTrue;
 import es.fap.simpleled.led.util.DocElemento;
 import es.fap.simpleled.led.util.DocParametro;
 import es.fap.simpleled.led.util.LedDocumentationUtils;
@@ -60,9 +64,10 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		"Entity:Entidad", "Attribute", "Formulario", "Menu", "MenuGrupo:Grupo", 
 		"MenuEnlace:Enlace", "Accion", "Pagina", "Popup", "Grupo", "AgruparCampos",
 		"Texto", "AreaTexto", "Check", "Enlace", "Wiki", "Boton", "Fecha", "Combo",
-		"Form", "Tabla", "Columna", "SubirArchivo", "SubirArchivoAed", "EditarArchivoAed",
+		"Form", "Tabla", "Columna", "SubirArchivo",
 		"FirmaPlatinoSimple:FirmaSimple", "Direccion", "Nip", "PersonaFisica",
-		"PersonaJuridica", "Persona", "Solicitante", "EntidadAutomatica", "Lista"
+		"PersonaJuridica", "Persona", "Solicitante", "EntidadAutomatica", "Lista",
+		"FirmaDocumento", "FirmaFirmantes", "FirmaSetCampo", "FirmaSetTrue"
 	};
 	
 	public static Map<String, String> docRules = arrayToSet(docRulesArray);
@@ -93,8 +98,8 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		if (o.eIsProxy()){
 			return null;
 		}
-		String feature = getDocFeature(node_);
-		if ("campo".equals(feature)){
+		Assignment assign = getDocFeature(node_);
+		if (assign != null && (assign.getTerminal() instanceof RuleCall) && "Campo".equals(((RuleCall)assign.getTerminal()).getRule().getName())){
 			if (o instanceof Entity){
 				Entity entidad = (Entity) o;
 				return getDocumentation(entidad, entidad.getName());
@@ -114,6 +119,8 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		if (semantic == null){
 			return "";
 		}
+		if (semantic instanceof FirmaDocumento || semantic instanceof FirmaFirmantes || semantic instanceof FirmaSetTrue)
+			semantic = semantic.eContainer();
 		if (o instanceof Keyword){
 			Keyword keyword = (Keyword) o;
 			char first = keyword.getValue().charAt(0);
@@ -133,8 +140,8 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 				}
 			}
 		}
-		if (feature != null){
-			DocParametro parametro = JsonDocumentation.getParametro(feature, semantic);
+		if (assign != null){
+			DocParametro parametro = JsonDocumentation.getParametro(assign.getFeature(), semantic);
 			if (parametro != null){
 				return LedDocumentationUtils.getDocumentation(parametro);
 			}
@@ -156,7 +163,8 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 			String text = leaf.getText();
 			EObject semantic = leaf.getSemanticElement();
 			EObject grammar = leaf.getGrammarElement();
-			if ("extends".equals(getDocFeature(leaf))){
+			Assignment assign = getDocFeature(leaf);
+			if (assign != null && "extends".equals(assign.getFeature())){
 				result += span(text, FapSemanticHighlighting.referenceColor, false);
 				continue;
 			}
@@ -268,7 +276,7 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		return all + hex;
 	}
 	
-	public static String getDocFeature(INode node){
+	public static Assignment getDocFeature(INode node){
 		while (node != null){
 			EObject grammar = node.getGrammarElement();
 			while (grammar != null){
@@ -276,7 +284,7 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 					Assignment assignment = (Assignment) grammar;
 					ParserRule rule = getParserRule(assignment);
 					if (docRules.containsKey(rule.getName())){
-						return assignment.getFeature();
+						return assignment;
 					}
 				}
 				grammar = grammar.eContainer();
@@ -285,6 +293,24 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		}
 		return null;
 	}
+	
+//	public static String getDocFeature(INode node){
+//		while (node != null){
+//			EObject grammar = node.getGrammarElement();
+//			while (grammar != null){
+//				if (grammar instanceof Assignment){
+//					Assignment assignment = (Assignment) grammar;
+//					ParserRule rule = getParserRule(assignment);
+//					if (docRules.containsKey(rule.getName())){
+//						return assignment.getFeature();
+//					}
+//				}
+//				grammar = grammar.eContainer();
+//			}
+//			node = node.getParent();
+//		}
+//		return null;
+//	}
 	
 	public static String getFeature(INode node){
 		while (node != null){

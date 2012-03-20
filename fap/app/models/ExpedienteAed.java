@@ -35,12 +35,15 @@ public class ExpedienteAed extends Model {
 	/**
 	 * Asigna un ID de expediente único
 	 */
-	public void asignarIdAed() {
-		Long id = SemillaExpediente.obtenerId();
-		java.text.NumberFormat formatter = new java.text.DecimalFormat("0000");
-		String prefijo = FapProperties.get("fap.aed.expediente.prefijo");
-		idAed = prefijo + formatter.format(id);
-		save();
+	public String asignarIdAed() {
+		if (idAed == null) {
+			Long id = SemillaExpediente.obtenerId();
+			java.text.NumberFormat formatter = new java.text.DecimalFormat("0000");
+			String prefijo = FapProperties.get("fap.aed.expediente.prefijo");
+			idAed = prefijo + formatter.format(id);
+			save();
+		}
+		return idAed;
 	}
 
 	// === MANUAL REGION END ===

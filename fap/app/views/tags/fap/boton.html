@@ -6,13 +6,14 @@
   	_titulo - Label
   	_ancho	- ancho
   	
-  	_ type  - tipo del botón (cambia su color)
-  	_fondo  - Se indica que el botón se coloca solo y con el fondo gris
+  	_ type  - tipo del botï¿½n (cambia su color)
+  	_fondo  - Se indica que el botï¿½n se coloca solo y con el fondo gris
   	_ayuda  - Objeto de tipo TagAyuda
 }*
 
 %{ 
 	def id = _id ?: play.libs.Codec.UUID()
+	def idFijo = _idFijo 
 	def label = _titulo
 	def ayuda = _ayuda
 	def id_help = id+"-help"
@@ -24,13 +25,28 @@
 		style += 'width: ' + _ancho + ';'
 	String type = _type 
 	def fondo = _fondo
+	def noSubmit = _noSubmit
+	def idSolo = id;
+	id = id+Long.toHexString(new Random().nextLong());
+	
+	// Por si es llamado desde un elemento firma
+	if (idFijo) {
+		idSolo = idFijo;
+		id = idFijo;
+	}
+	
 }%
 
 	#{if fondo}
 		<div class="actions button_container">
 	#{/if}
 	
-	<input type="submit" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+	#{if noSubmit == true}
+		<input type="button" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+	#{/if}
+	#{else}
+		<input type="submit" class="btn ${type}" id="${id}" ${disabled} #{if style}style="${style}"#{/if} value="${label}"></input>
+	#{/else}
 	#{fap.ayuda ayuda:ayuda, id:id_help /}
 	
 	#{if fondo}
@@ -52,7 +68,7 @@
 				$('#${id}').attr("disabled", "true");
 			});
 			$('#${id}').click(function(){
-				input = $("<input>").attr("type", "hidden").attr("name", "${id}").val("${id}");
+				input = $("<input>").attr("type", "hidden").attr("name", "${idSolo}").val("${idSolo}");
 				form.append($(input));
 			});
 		});

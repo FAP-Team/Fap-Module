@@ -234,4 +234,13 @@ public class LedEntidadUtils {
 		return entidades;
 	}
 	
+	public static boolean extend(Entity entidad, String extend) {
+		while (entidad != null){
+			if (entidad.getName().equals(extend))
+				return true;
+			entidad = entidad.getExtends();
+		}
+		return false;
+	}
+
 }

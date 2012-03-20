@@ -12,6 +12,7 @@ import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.LedPackage;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import java.util.regex.Pattern.First;
 
 
 public class CampoUtils implements Comparable{
@@ -20,9 +21,7 @@ public class CampoUtils implements Comparable{
 	String str;
 	
 	public static CampoUtils create(Campo campo){
-		if (campo == null){
-			return null;
-		}
+		if (campo == null) return null;
 		CampoUtils field = new CampoUtils();
 		field.campo = campo;
 		field.str = getCampoStr(campo);
@@ -30,9 +29,7 @@ public class CampoUtils implements Comparable{
 	}
 	
 	public static CampoUtils create(Entity entity){
-		if (entity == null){
-			return null;
-		}
+		if (entity == null) return null;
 		CampoUtils campo = new CampoUtils();
 		campo.campo = LedFactory.eINSTANCE.createCampo();
 		campo.campo.setEntidad(entity);
@@ -44,40 +41,29 @@ public class CampoUtils implements Comparable{
 	public static CampoUtils create(String campoStr){
 		String entidad = entidadRaiz(campoStr);
 		List<String> atributos = sinEntidad(campoStr).split("\\.");
-		if (atributos.get(0).equals("")){
+		if (atributos.get(0).equals(""))
 			atributos.clear();
-		}
 		Entity entity = ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, entidad, LedUtils.resource);
 		if (entity == null){
-			if (entidad.equals("Solicitud")){
+			if (entidad.equals("Solicitud"))
 				entity = EntidadUtils.findSolicitud();
-			}
-			else{
-				return null;
-			}
+			else return null;
 		}
 		Campo campoResult = LedFactory.eINSTANCE.createCampo();
 		campoResult.setEntidad(entity);
-		if (atributos.size() == 0){
+		if (atributos.size() == 0)
 			return CampoUtils.create(campoResult);
-		}
 		CampoAtributos attrsResult = LedFactory.eINSTANCE.createCampoAtributos();
 		campoResult.setAtributos(attrsResult);
 		for (int i = 0; i < atributos.size(); i++){
 			String atributo = atributos.get(i);
-			if (entity == null){
-				return null;
-			}
+			if (entity == null) return null;
 			Attribute attr = LedEntidadUtils.getAttribute(entity, atributo);
-			if (attr == null){
-				return null;
-			}
+			if (attr == null) return null;
 			entity = attr.getType().getCompound()?.getEntidad();
 			attrsResult.setAtributo(attr);
 			if (i < atributos.size() - 1){
-				if (LedEntidadUtils.xToMany(attr)){
-					return null;
-				}
+				if (LedEntidadUtils.xToMany(attr)) return null;
 				attrsResult.setAtributos(LedFactory.eINSTANCE.createCampoAtributos());
 				attrsResult = attrsResult.getAtributos();
 			}
@@ -97,14 +83,17 @@ public class CampoUtils implements Comparable{
 		return campo?.getEntidad();
 	}
 	
+	
+	public boolean isMethod(){
+		return campo.method != null;
+	}
+	
 	public static String getCampoStr(Campo campo){
-		if (campo == null){
-			return null;
-		}
+		if (campo == null) return null;
+		if (campo.method) return campo.method;
 		String campoStr = campo.getEntidad().getName();
-		if (campoStr.equals("SolicitudGenerica")){
+		if (campoStr.equals("SolicitudGenerica"))
 			campoStr = "Solicitud";
-		}
 		CampoAtributos attrs = campo.getAtributos();
 		while (attrs != null){
 			campoStr += "." + attrs.getAtributo().getName();
@@ -113,7 +102,12 @@ public class CampoUtils implements Comparable{
 		return campoStr;
 	}
 	
+	public String dbStr(){
+		return "db" + str;
+	}
+	
 	public String firstLower(){
+		if (campo.method) return str;
 		return StringUtils.firstLower(str);
 	}
 	
@@ -190,29 +184,30 @@ public class CampoUtils implements Comparable{
 	@Override
 	public int compareTo(Object campo){
 		CampoUtils f = (CampoUtils)campo;
-		if (equals(f)){
-			return 0;
-		}
+		if (equals(f)) return 0;
 		return 1;
 	}
 	
 	private static String entidadRaiz(String campoStr){
 		def matcher = ( campoStr =~ /([^.]+).*/ )
-		if (matcher.matches()) {
-			return matcher[0][1];
-		}
+		if (matcher.matches()) return matcher[0][1];
 		return null;
 	}
 	
 	private static String sinEntidad(String campoStr){
 		int index = campoStr.findIndexOf{ it == '.' };
-		if(index == -1){
-			return "";
-		}
+		if(index == -1) return "";
 		return campoStr.substring(campoStr.findIndexOf{ it == '.' } + 1)
 	}
 	
-	public String getStr_() {
+	public String sinUltimoAtributo(){
+		int last = str.lastIndexOf('.');
+		if (last == -1) return StringUtils.firstLower(str);
+		return StringUtils.firstLower(str).substring(0, last);
+	}
+
+	
+	public String getStr_(){
 		return StringUtils.firstLower(str.replace('.', '_'));
 	}
 	

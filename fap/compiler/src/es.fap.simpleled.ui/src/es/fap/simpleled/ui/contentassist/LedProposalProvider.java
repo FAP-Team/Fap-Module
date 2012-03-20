@@ -14,8 +14,11 @@ import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.xtext.Alternatives;
 import org.eclipse.xtext.Assignment;
+import org.eclipse.xtext.CompoundElement;
 import org.eclipse.xtext.Keyword;
+import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
@@ -74,20 +77,50 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 				return;
 			}
 		}
+		String cardinalidad = null;
+		if (Character.isLetter(first) && first != Character.toUpperCase(first)){
+			EObject container = keyword.eContainer();
+			while (container != null){
+				if (container instanceof CompoundElement || container instanceof Assignment){
+					String c;
+					if (container instanceof CompoundElement)
+						c = ((CompoundElement) container).getCardinality();
+					else
+						c = ((Assignment) container).getCardinality();
+					if ((container instanceof Alternatives) || ("?".equals(c) || "*".equals(c))){
+						cardinalidad = "opcional";
+						break;
+					}
+				}
+				if (container instanceof ParserRule){
+					cardinalidad = "obligatorio";
+					break;
+				}
+				container = container.eContainer();
+			}
+		}
+		if (cardinalidad != null){
+			// Excepciones
+			if ("setTrue".equals(value) || "vars".equals(value) || "when".equals(value)) 
+				cardinalidad = "opcional";
+			int prio = 0;
+			if ("multiple".equals(value))
+				prio = 10000;
+			acceptor.accept(createCompletionProposal(value, styledProposal(value + "  -  " + cardinalidad, "opcional".equals(cardinalidad)), null, prio, "", context));
+			return;
+		}
 		super.completeKeyword(keyword, context, acceptor);
 	}
 	
 	@Override
 	public void completeListaAtributos_Atributos(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		Tabla tab = null;
-		if (model instanceof ListaAtributos){
-		   ListaAtributos lA = (ListaAtributos)model;
-		   tab = (Tabla)lA.eContainer();
-		}
-		else if(model instanceof Tabla)
-		   tab = (Tabla)model;
-		LedElementValidator validator = LedElementValidator.getElementValidator(tab.getCampo());
-		List <Attribute> atributos = LedCampoUtils.getUltimaEntidad(tab.getCampo()).getAttributes();
+		Tabla tabla = null;
+		if (model instanceof ListaAtributos)
+		   tabla = (Tabla) model.eContainer();
+		else if (model instanceof Tabla)
+		   tabla = (Tabla) model;
+		LedElementValidator validator = LedElementValidator.getElementValidator(tabla);
+		List <Attribute> atributos = LedCampoUtils.getUltimaEntidad(tabla.getCampo()).getAttributes();
 		for (Attribute attr: atributos){
 			acceptor.accept(createCompletionProposal(attr.getName(), styledProposal(attr.getName() + "  -  " + validator.getType(attr), true), null, context));
 		}
@@ -105,11 +138,21 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	@Override
+	public void complete_STRING(EObject model, RuleCall rule, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		if ((rule.eContainer() instanceof Assignment) && ((Assignment)rule.eContainer()).getFeature().equals("method")){
+			LedElementValidator validator = LedElementValidator.getElementValidator(model);
+			if (validator != null && validator.aceptaString())
+				acceptor.accept(createCompletionProposal("\"metodoJava()\"", styledProposal("\"metodoJava()\" - Llamada a un método Java", true), null, 0, context.getPrefix(), context));
+			return;
+		}
+		super.complete_STRING(model, rule, context, acceptor);
+	}
+	
+	@Override
 	public void completeCampo_Entidad(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		Campo campo = LedCampoUtils.getCampo(model);
-		LedElementValidator validator = LedElementValidator.getElementValidator(campo);
+		LedElementValidator validator = LedElementValidator.getElementValidator(model);
 		if (validator != null) {
-			for (Proposal proposal: validator.completeEntidades(context.getPrefix(), LedEntidadUtils.eliminaSolicitudGenerica(LedCampoUtils.getEntidadesValidas(campo)).values())) {
+			for (Proposal proposal: validator.completeEntidades(context.getPrefix(), LedEntidadUtils.eliminaSolicitudGenerica(LedCampoUtils.getEntidadesValidas(model)).values())) {
 				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));
 			}
 		}
@@ -137,7 +180,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		if (entidad == null){
 			return;
 		}
-		LedElementValidator validator = LedElementValidator.getElementValidator(campo);
+		LedElementValidator validator = LedElementValidator.getElementValidator(campo.eContainer());
 		if (validator != null){
 			for (Proposal proposal: validator.completeEntidad(context.getPrefix(), entidad, "")) {
 				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, context));

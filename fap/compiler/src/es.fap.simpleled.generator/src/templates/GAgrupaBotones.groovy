@@ -27,7 +27,10 @@ public class GAgrupaBotones {
 		result += """<div class="${clazz}">
 		"""
 		for (Boton b : agrupaB.botones) {
-			result += GBoton.generate(b);
+			if(b instanceof Boton)
+				result += GBoton.generate(b);
+			else if(b instanceof Enlace)
+				result += GEnlace.generate(b);
 		}
 		result += """</div>
 		"""

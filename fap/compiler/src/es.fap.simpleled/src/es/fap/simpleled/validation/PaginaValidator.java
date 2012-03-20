@@ -13,6 +13,11 @@ public class PaginaValidator extends LedElementValidator{
 	}
 
 	@Override
+	public boolean aceptaString() {
+		return false;
+	}
+	
+	@Override
 	public boolean aceptaEntidad(Entity entidad) {
 		return true;
 	}

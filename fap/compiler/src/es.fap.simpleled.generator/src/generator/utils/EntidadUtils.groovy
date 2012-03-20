@@ -144,22 +144,8 @@ public class EntidadUtils implements Comparable{
 		EntidadUtils.create(campo).addToSaveEntity();
 	}
 	
-	public static void addToIndexEntity(String campo){
-		EntidadUtils.create(campo).addToIndexEntity();
-	}
-	
 	public static void addToSaveEntity(CampoUtils campo){
 		EntidadUtils.create(campo).addToSaveEntity();
-	}
-	
-	public static void addToIndexEntity(CampoUtils campo){
-		EntidadUtils.create(campo).addToIndexEntity();
-	}
-	
-	public void addToIndexEntity(){
-		if (entidad != null){
-			HashStack.push(HashStackName.INDEX_ENTITY, this);
-		}
 	}
 	
 	public void addToSaveEntity(){

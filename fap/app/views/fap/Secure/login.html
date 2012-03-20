@@ -13,6 +13,11 @@
 %{
 	showCert = configfap.getBoolean('fap.login.type.cert')
 	showUser = configfap.getBoolean('fap.login.type.user')
+	manualApp = configfap.get('fap.manual.aplicacion')
+	if (manualApp == null)
+	   manualApp = '#'
+	else
+	   manualApp = "/public/"+manualApp
 %}
 
 
@@ -57,7 +62,7 @@
 	#{/fap.grupo}
 	
 	#{fap.grupo titulo:"Ayuda"}	
-		<a href="#"><button class="btn ">Manual de usuario</button></a>
+		<a href="${manualApp}" class="btn ">Manual de usuario</a>
 		<a href="${play.mvc.Router.reverse("SoporteController.index" , ['accion':'crear', 'redirigir': 'anterior'])}" class="btn ">Preguntas e incidencias</a>
 	#{/fap.grupo}
 </div>
@@ -67,9 +72,6 @@
 #{fap.messages}
 
 #{if showCert}
-
-	
-
 
 	#{fap.grupo titulo:"Login"}
 		#{form @authenticateCertificate(), id:"cert-form"}
@@ -92,15 +94,12 @@
 	<script>
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
-			Platino.listarCertificados("#certificado", {mensajes: mensajes});
-						
-			$('#cert-form').submit(function(e){
-				$('#loginsignin').attr("disabled", "true");
-				Platino.firmarTexto("#certificado", "#token", "#firma", {mensajes: mensajes});
-				mensajes.loading("Comprobando certificado electrónico...");
-			});
+			Firma.listarCertificados("#certificado", {mensajes: mensajes});
 			
-			mensajes.error("#{error 'login-certificado'/}");
+			$('#cert-form').submit(function(e){
+				mensajes.clear();
+				firma = Firma.firmarTexto("#certificado", "#token", "#firma", {mensajes: mensajes});
+			});
 		});
 	</script>
 #{/if}	

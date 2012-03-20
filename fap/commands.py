@@ -117,7 +117,7 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     
 
 def run_generate(app, args):
-    modelPath = os.path.join(app.path, "led")
+    modelPath = os.path.join(app.path, "app", "led")
     targetPath =  app.path + "/"
     params = "solicitud=true"
     exit(execute_workflow(modelPath, targetPath, params, args, app))
@@ -226,7 +226,7 @@ def getModuleDir(app, cmd_args=""):
     return None        
 
 def init_application (app, args):
-    srcDir = os.path.join(app.path, "led", "src")
+    srcDir = os.path.join(app.path, "app", "led", "src")
    
     print "Creando el esqueleto basico de una aplicacion FAP "
     moduleDir =  getModuleDir(app, args)
@@ -241,9 +241,9 @@ def init_application (app, args):
     FILE.write("fap.login.type.user=true\n");
     
     # Configuración de los Loggers
-    FILE.write("%test.app.log.path=/log4j-test.properties");
-    FILE.write("%prod.application.log.path=/log4j-prod.properties");
-    FILE.write("application.log.path=/log4j-dev.properties");
+    FILE.write("%test.app.log.path=/log4j-test.properties\n");
+    FILE.write("%prod.application.log.path=/log4j-prod.properties\n");
+    FILE.write("application.log.path=/log4j-dev.properties\n");
     FILE.write("db=mem\n");
     FILE.write("%prod.jpa.ddl=none     # La primera vez que lo ejecutes debes ponerlo a 'create'" + "\n");
     
@@ -303,7 +303,7 @@ def copy_directory(source, target):
 def generateDocumentationHTML(app):
     print "~ Generando la documentacion ..."
     # Accedo a la carpeta donde estan los ficheros
-    ruta_app = app.path.replace("\\", "/")+"/led"
+    ruta_app = app.path.replace("\\", "/")+"/app/led"
     ruta_modulo = getModuleDir(app, "")
     ruta_ledFap = ruta_modulo.replace("\\", "/")+"/app/led/fap"
     ruta_htmlDoc = ruta_modulo.replace("\\", "/")+"/documentation/html"
@@ -371,10 +371,13 @@ def dist(app, args):
 
    path = {}
    path['app'] = os.path.join(dest, app.name())
+   path['logs'] = os.path.join(path['app'], 'logs')
+   path['Daily'] = os.path.join(path['logs'], 'Daily')
+   path['Auditable'] = os.path.join(path['logs'], 'Auditable')
    path['lib'] = os.path.join(dest, 'lib')
    path['modules'] = os.path.join(dest, app.name(),'modules')
 
-   ignoreGlobal = ['**logs', '**test*', 'led', 'eclipse', 
+   ignoreGlobal = ['**logs', 'test', 'led', 'eclipse', 
                     '**tmp', '**test-result', 'modules', 
                     '.settings', '.classpath', 
                     'lib', 'nbproject', '**eclipse', '**.svn', '**.git']
@@ -386,7 +389,11 @@ def dist(app, args):
    print "~ Copiando aplicación a " + path['app']
    ignores = ignoreGlobal + ['dist']
    copytree(app.path, path['app'], ignores)
-
+   makeDirsIfNotExists(path['logs'])
+   makeDirsIfNotExists(path['Daily'])
+   makeDirsIfNotExists(path['Auditable'])
+       
+       
    # Copia las librerias de la aplicación y de los módulos
    # No las librerías de play
    print "~ Copiando librerías a" + path['lib']

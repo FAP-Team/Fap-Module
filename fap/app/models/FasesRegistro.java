@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+import enumerado.fap.gen.*;
 
 // === IMPORT REGION END ===
 
@@ -34,16 +35,30 @@ public class FasesRegistro extends Model {
 
 	public Boolean clasificarAed;
 
+	public String fase;
+
 	public void init() {
 
 	}
 
 	// === MANUAL REGION START ===
+	public void setFase(FaseRegistroEnum f) {
+		//play.Logger.info("setFase: "+f.toString());
+		fase = f.toString();
+	}
+
+	public FaseRegistroEnum getFaseEnum() {
+		//play.Logger.info("getValue ("+fase+")"+": "+FaseRegistroEnum.valueOf(fase));
+		return FaseRegistroEnum.valueOf(fase);
+	}
+
 	public FasesRegistro() {
+		setFase(FaseRegistroEnum.borrador);
 		reiniciar();
 	}
 
 	public void reiniciar() {
+		setFase(FaseRegistroEnum.borrador);
 		borrador = false;
 		firmada = false;
 		expedientePlatino = false;

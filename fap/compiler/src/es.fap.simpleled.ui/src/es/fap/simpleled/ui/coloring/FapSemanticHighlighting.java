@@ -6,6 +6,7 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.CrossReference;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.nodemodel.INode;
@@ -106,7 +107,8 @@ public class FapSemanticHighlighting extends DefaultHighlightingConfiguration im
 					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
 					continue;
 				}
-				if ("type".equals(FapDocumentationProvider.getDocFeature(node))){
+				Assignment assign = FapDocumentationProvider.getDocFeature(node);
+				if (assign != null && "type".equals(assign.getFeature())){
 					acceptor.addPosition(node.getOffset(), node.getLength(), REFERENCE_ID);
 					continue;
 				}

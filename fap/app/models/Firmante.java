@@ -46,6 +46,26 @@ public class Firmante extends Model {
 		init();
 	}
 
+	public Firmante(Agente agente) {
+		init();
+		this.nombre = agente.name;
+		this.cardinalidad = "unico";
+		this.idvalor = agente.username;
+		// Comprobamos el tipo
+		StringBuilder texto = new StringBuilder();
+		if (CifCheck.validaCif(agente.username, texto)) {
+			this.tipo = "personafisica";
+		} else {
+			Nip nip = new Nip();
+			nip.valor = agente.username;
+			if (NipCheck.validaNip(nip, texto)) {
+				this.tipo = "personajuridica";
+			} else {
+				play.Logger.error("El firmante creado a partir del Agente no tiene tipo (username: " + agente.username + ")");
+			}
+		}
+	}
+
 	public Firmante(Persona persona, String cardinalidad) {
 		String tipo = getTipoRepresentanteFromPersona(persona);
 		constructor(persona, tipo, cardinalidad);
@@ -108,8 +128,8 @@ public class Firmante extends Model {
 		Firmante other = (Firmante) obj;
 
 		if (idtipo != null && other.idtipo != null && idvalor != null && other.idvalor != null) {
-			//Por alguna razon los certificados no distingeun entre NIE Y NIF 
-			//y se ponen los dos en el mismo campo como NIF
+			// Por alguna razon los certificados no distingeun entre NIE Y NIF
+			// y se ponen los dos en el mismo campo como NIF
 
 			String tipo = idtipo;
 			if (tipo.equalsIgnoreCase("nie"))

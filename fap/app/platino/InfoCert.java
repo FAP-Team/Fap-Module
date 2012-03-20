@@ -13,6 +13,8 @@ public class InfoCert {
 	public String nif;
 	public String cif;
 	
+	public InfoCert(){}
+	
 	public InfoCert(List<StringArray> certInfo){
 		if (certInfo != null) {
 			for (StringArray array : certInfo) {

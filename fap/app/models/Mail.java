@@ -34,6 +34,8 @@ public class Mail extends Model {
 
 	public String bcc;
 
+	public String cc;
+
 	@Column(columnDefinition = "LONGTEXT")
 	public String content;
 
@@ -52,6 +54,8 @@ public class Mail extends Model {
 	// === MANUAL REGION START ===
 	private Mail render(Map<String, Object> args) {
 		Mail mail = new Mail();
+		if (!cc.isEmpty())
+			mail.cc = TemplateLoader.loadString(cc).render(args);
 		if (!bcc.isEmpty())
 			mail.bcc = TemplateLoader.loadString(bcc).render(args);
 		if (!sender.isEmpty())
@@ -97,6 +101,17 @@ public class Mail extends Model {
 						emailTo.addTo(recipient.toString());
 					}
 				}
+			}
+			
+			if (render.cc  != null) {
+			    for (String recipient : StringUtils.split(render.cc, ",")) {
+			        try {
+			            InternetAddress iAddress = new InternetAddress(recipient);
+			            emailTo.addTo(iAddress.getAddress(), iAddress.getPersonal());
+			        } catch (Exception e) {
+			            emailTo.addTo(recipient.toString());
+			        }
+			    }
 			}
 
 			if (render.bcc != null) {

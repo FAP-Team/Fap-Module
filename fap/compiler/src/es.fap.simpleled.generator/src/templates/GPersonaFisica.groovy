@@ -16,24 +16,18 @@ public class GPersonaFisica {
 	public String view(){
 		// Añado la entidad que lo engloba a los parametros del Save
 		CampoUtils campo = CampoUtils.create(personaFisica.campo);
+//		System.out.println("CAMPO1 ${personaFisica.campo}");
+//		System.out.println("CAMPO2 ${campo}");
 		EntidadUtils.addToSaveEntity(campo);
-		
 		TagParameters params = new TagParameters();
-		
 		params.putStr("id", personaFisica.name);
-
-		params.putStr "campo", campo.firstLower()
-		
+		params.putStr "campo", campo.firstLower();
 		if(personaFisica.titulo != null)
 			params.putStr("titulo", personaFisica.titulo);
-
-		if(personaFisica.requerido)
+		if (personaFisica.requerido)
 			params.put("requerido", true);
-			
-		def out = """
-#{fap.personaFisica ${params.lista()} /}
-"""
-	
-		return out;	
+		return """
+			#{fap.personaFisica ${params.lista()} /}
+		""";
 	}
 }

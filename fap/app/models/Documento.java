@@ -26,19 +26,7 @@ public class Documento extends Model {
 
 	public String uri;
 
-	@ValueFromTable("tipoDocumentosCiudadanos")
-	@Transient
-	public String tipoCiudadano;
-
-	@ValueFromTable("tipoDocumentosOrganismos")
-	@Transient
-	public String tipoOrganismo;
-
-	@ValueFromTable("tipoDocumentosOtrasEntidades")
-	@Transient
-	public String tipoOtraEntidad;
-
-	@ValueFromTable("tipoDocumentosTodos")
+	@ValueFromTable("tiposDocumentos")
 	public String tipo;
 
 	public String descripcion;
@@ -82,8 +70,18 @@ public class Documento extends Model {
 	public void prepararParaSubir() {
 		// Si no tiene descripción y no es de tipo otros, pone como tipo
 		// el nombre del tipo de documento
-		play.Logger.debug("Preparando para subir documento del tipo %s", tipo);
-		if (descripcion == null && !isOtros()) {
+		if ((descripcion == null || descripcion.isEmpty()) && !isOtros()) {
+			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
+		}
+	}
+
+	/**
+	 * Actualiza la descripcion si el tipo de documentos no es Otro
+	 * 
+	 */
+
+	public void actualizaDescripcion() {
+		if (!isOtros()) {
 			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
 		}
 	}
@@ -92,12 +90,9 @@ public class Documento extends Model {
 		return AedUtils.crearUrl(uri);
 	}
 
-	public String getTipoCiudadano() {
-		return tipo;
-	}
-
-	public void setTipoCiudadano(String tipoCiudadano) {
-		this.tipo = tipoCiudadano;
+	public static Documento findByUri(String uri) {
+		Documento documento = models.Documento.find("byUri", uri).first();
+		return documento;
 	}
 
 	// === MANUAL REGION END ===

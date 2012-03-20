@@ -92,7 +92,11 @@ fap/app/enumerado/fap/gen
 apps/*/app/enumerado
 
 apps/*/dist
-apps/*/gestorDocumental
+# apps/*/gestorDocumental
 
 # Configuración de platino
 apps/test/conf/platino
+
+#Gestor documental FileSystem
+# apps/test/gestorDocumental
+apps/test/gestorDocumental/temporal/*

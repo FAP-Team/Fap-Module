@@ -3,7 +3,6 @@
 # ~~~~
 
 # Home page
-GET        /                SolicitudesController.index
 GET        /api/xml         WebServiceEmulator.xml
 GET        /api/json        WebServiceEmulator.json
 
@@ -26,6 +25,52 @@ GET     /public/                                staticDir:public
 # === FAPGENERATED ===
   # Home page
 GET / SolicitudesController.index
+GET /Pepe/antes AntesController.index
+
+GET /Pepe/antes/sss AntesController.tablasss
+GET /Pepe/firma1 Firma1Controller.index
+POST /Pepe/firma1/editar Firma1Controller.editar
+POST /Pepe/firma1/crear Firma1Controller.crear
+
+GET /Pepe/firma1/fFirmantes Firma1Controller.tablafFirmantes
+GET /Pepe/firma2 Firma2Controller.index
+POST /Pepe/firma2/editar Firma2Controller.editar
+POST /Pepe/firma2/crear Firma2Controller.crear
+
+GET /Pepe/firma2/fFirmantes Firma2Controller.tablafFirmantes
+GET /Pepe/juan JuanController.index
+POST /Pepe/juan/editar JuanController.editar
+POST /Pepe/juan/crear JuanController.crear
+
+GET /Pepe/juan/fFirmantes JuanController.tablafFirmantes
+GET /Pepe/juan/NdameJuridicaTabla JuanController.tablaNdameJuridicaTabla
+GET /Pepe/juan/pepe JuanController.tablapepe
+GET /Pepe/miagente MiAgenteController.index
+POST /Pepe/miagente/editar MiAgenteController.editar
+POST /Pepe/miagente/borrar MiAgenteController.borrar
+POST /Pepe/miagente/crear MiAgenteController.crear
+
+GET /Pepe/popupndamejuridicatabla popups.PopupNdameJuridicaTablaController.index
+POST /Pepe/popupndamejuridicatabla/editar popups.PopupNdameJuridicaTablaController.editar
+POST /Pepe/popupndamejuridicatabla/borrar popups.PopupNdameJuridicaTablaController.borrar
+POST /Pepe/popupndamejuridicatabla/crear popups.PopupNdameJuridicaTablaController.crear
+
+GET /Pepe/probando ProbandoController.index
+
+GET /Pepe/singletons SingletonsController.index
+
+GET /Primero/paginaprincipal1 PaginaPrincipal1Controller.index
+POST /Primero/paginaprincipal1/editar PaginaPrincipal1Controller.editar
+POST /Primero/paginaprincipal1/borrar PaginaPrincipal1Controller.borrar
+POST /Primero/paginaprincipal1/crear PaginaPrincipal1Controller.crear
+
+GET /Primero/paginaprincipal2 PaginaPrincipal2Controller.index
+POST /Primero/paginaprincipal2/editar PaginaPrincipal2Controller.editar
+POST /Primero/paginaprincipal2/crear PaginaPrincipal2Controller.crear
+
+GET /Primero/primera PrimeraController.index
+
+GET /Primero/primera/entidades PrimeraController.tablaentidades
 GET /Solicitud/combos CombosController.index
 POST /Solicitud/combos/editar CombosController.editar
 
@@ -61,8 +106,15 @@ GET /Solicitud/documentos DocumentosController.index
 POST /Solicitud/documentos/editar DocumentosController.editar
 POST /Solicitud/documentos/crear DocumentosController.crear
 
+GET /Solicitud/documentoseditar DocumentosEditarController.index
+POST /Solicitud/documentoseditar/editar DocumentosEditarController.editar
+
 GET /Solicitud/ejemplosdegrupos EjemplosdeGruposController.index
 POST /Solicitud/ejemplosdegrupos/editar EjemplosdeGruposController.editar
+
+GET /Solicitud/enviomails EnvioMailsController.index
+
+POST /Solicitud/enviomails/enviarMail EnvioMailsController.enviarMail
 
 GET /Solicitud/fechas FechasController.index
 POST /Solicitud/fechas/editar FechasController.editar
@@ -75,6 +127,7 @@ POST /Solicitud/paginacomboserror/editar PaginaCombosErrorController.editar
 
 GET /Solicitud/paginafirma PaginaFirmaController.index
 
+GET /Solicitud/paginafirma/firmaSimpleFirmantes PaginaFirmaController.tablafirmaSimpleFirmantes
 POST /Solicitud/paginafirma/form PaginaFirmaController.form
 
 GET /Solicitud/paginainject PaginaInjectController.index
@@ -120,6 +173,9 @@ POST /Solicitud/permisonoeditable/editar PermisoNoEditableController.editar
 GET /Solicitud/permisopagina PermisoPaginaController.index
 POST /Solicitud/permisopagina/editar PermisoPaginaController.editar
 
+GET /Solicitud/personaf PersonaFController.index
+POST /Solicitud/personaf/editar PersonaFController.editar
+
 GET /Solicitud/popupnombre popups.popupNombreController.index
 POST /Solicitud/popupnombre/editar popups.popupNombreController.editar
 POST /Solicitud/popupnombre/borrar popups.popupNombreController.borrar
@@ -155,7 +211,13 @@ GET /Solicitud/solicitante SolicitanteController.index
 POST /Solicitud/solicitante/editar SolicitanteController.editar
 
 GET /Solicitud/solicitante/personaSolicitanteJuridicaTabla SolicitanteController.tablapersonaSolicitanteJuridicaTabla
-GET /Solicitud/solicitante/personaSolicitantePersonaJuridicaJuridicaTabla SolicitanteController.tablapersonaSolicitantePersonaJuridicaJuridicaTabla
+GET /Solicitud/solicitantepf SolicitantePFController.index
+POST /Solicitud/solicitantepf/editar SolicitantePFController.editar
+
+GET /Solicitud/solicitantepj SolicitantePJController.index
+POST /Solicitud/solicitantepj/editar SolicitantePJController.editar
+
+GET /Solicitud/solicitantepj/personaSolicitantePersonaJuridicaJuridicaTabla SolicitantePJController.tablapersonaSolicitantePersonaJuridicaJuridicaTabla
 GET /Solicitud/subirarchivoaedtest SubirArchivoAedTestController.index
 POST /Solicitud/subirarchivoaedtest/editar SubirArchivoAedTestController.editar
 

@@ -1,4 +1,0 @@
-Permiso paginaTablaVer{
-	when _accion != crear
-	return editable
-}

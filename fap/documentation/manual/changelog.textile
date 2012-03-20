@@ -6,6 +6,12 @@ Para adaptar las aplicaciones a esta versión es necesario realizar cambios en e
 
 **"Migración de aplicaciones a la versión 2.0":version2.0DSL**
 
+* Compresión de logs de manera automática, al tener un día de antigüedad
+* División de los logs en Daily y Auditable
+* Agregado Boton de Iniciar Baremacion en la pagina Administracion
+* Creación de la tabla de Conceptos Económicos dependiendo del 'json' de la evaluación
+* Formateador incorporado para los ficheros .fap (CTRL+SHIFT+F)
+* Formateador para los ficheros Generados
 * Mayor flexiblidad a la hora de crear aplicaciones: 
 ** Integración completa de páginas y popups con campos de entidades, lo cual permite fácilmente la creación, edición, lectura y borrado mediante formularios de cualquier esquema de bases de datos que se modele a partir de entidades creadas con la herramienta. 
 ** Se permite la navegación a páginas a partir de los botones de una tabla.
@@ -16,6 +22,38 @@ Para adaptar las aplicaciones a esta versión es necesario realizar cambios en e
 * Mejorado el syntax highlighting de los DSL en el plugin de eclipse.
 * Cambio de estilos utilizando twitter-bootstrap.
 * Página simplificada de baremación. (Baremación utilizada en proyectos de innovación). No actualices si estás trabajando en algo relacionado con la baremación o tendrás conflictos en las entidades.
+
+h3. Versión 1.2.4
+
+* Los representantes de un Solicitante (ya sea un Solicitante, un SolicitantePersonaFisica o un SolicitantePersonaJuridica), podemos indicar en el DSL que sean sólo del tipo PersonaFísica, o como hasta ahora, por defecto, que salga un combo para elegir entre PersonaFisica o PersonaJuridica.
+* En el DSL se puede especificar que el Solicitante sólo sea PersonaFisica o PersonaJurídica
+* Elemento fecha, tiene nuevos parámetros: ancho y anchoTitulo
+* Agregado comando fap:dist
+* Agregado comando fap:winservice
+* Agregada Documentación para configurar emails
+* Agregada Documentación para configurar logs
+* Agregada Documentación para configurar el deploy
+
+h3. Versión 1.2.3
+
+* Ahora se borran los tipos de documentos cuando actualiza los cambios
+* Fixed bug con los plugins de eclipse
+* Fixed bug de subida documentos AED
+
+h3. Versión 1.2.2
+
+* Fixed bug al generar la validación de la Persona Física.
+* Fixed bug en el texto de los botones enlazados a páginas.
+* La url de descargas de los documentos ahora es relativa.
+* Fixed bug en los combos ManyToOne.
+* Direcciones correctas en los JS de platino (PRO y PRE).
+
+h3. Versión 1.2.1
+
+* Fixed bug en combos de referencia sin comboTexto.
+* Fixed bug en permisos en Popups.
+* Fixed bug en firma de mancomunados.
+* Fixed bug en generación (Faltaba "import java.util.ArrayList").
 
 h3. Versión 1.2
 

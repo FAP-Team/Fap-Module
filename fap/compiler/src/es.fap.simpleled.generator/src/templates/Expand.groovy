@@ -57,9 +57,6 @@ class Expand {
 		if(object instanceof Menu)
 			return GMenu.generate(object)		
 
-		if(object instanceof SubirArchivo)
-			return GSubirArchivo.generate(object)
-			
 		if(object instanceof Nip)
 			return GNip.generate(object)
 			
@@ -105,12 +102,12 @@ class Expand {
 		if(object instanceof Form)
 			return GForm.generate(object)
 	
-		if(object instanceof SubirArchivoAed)
-			return GSubirArchivoAed.generate(object)
+		if(object instanceof SubirArchivo)
+			return GSubirArchivo.generate(object)
 			
-		if(object instanceof EditarArchivoAed)
-			return GEditarArchivoAed.generate(object)
-		
+		if(object instanceof EditarArchivo)
+			return GEditarArchivo.generate(object)
+			
 		if(object instanceof FirmaPlatinoSimple)
 			return GFirmaPlatinoSimple.generate(object)
 			

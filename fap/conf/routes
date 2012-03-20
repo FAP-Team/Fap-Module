@@ -62,7 +62,7 @@ GET /Administracion/aed AedController.index
 
 POST /Administracion/aed/actualizarTramites AedController.actualizarTramites
 
-POST /Administracion/aed/crearCarpetaTemporal AedController.crearCarpetaTemporal
+POST /Administracion/aed/configurar AedController.configurar
 
 GET /Administracion/aed/tramites AedController.tablatramites
 GET /Administracion/configuracionquartz ConfiguracionQuartzController.index
@@ -149,6 +149,7 @@ POST /Solicitud/aportacionaportados/editar AportacionAportadosController.editar
 GET /Solicitud/aportacionaportados/documentos AportacionAportadosController.tabladocumentos
 GET /Solicitud/aportacionpresentar AportacionPresentarController.index
 
+GET /Solicitud/aportacionpresentar/firmarRepresentanteFirmantes AportacionPresentarController.tablafirmarRepresentanteFirmantes
 POST /Solicitud/aportacionpresentar/modificarBorrador AportacionPresentarController.modificarBorrador
 
 POST /Solicitud/aportacionpresentar/presentar AportacionPresentarController.presentar

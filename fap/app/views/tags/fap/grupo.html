@@ -4,8 +4,6 @@
 	def siComboValue = _siComboValue;
 	def siCheck = _siCheck
 	def siCheckValue = _siCheckValue
-	def siCampo = _siCampo;
-	def siCampoValue = _siCampoValue;
 	def permiso = _permiso
 	
 	def reverse = _reverse ?: false;
@@ -16,20 +14,9 @@
 	if(siCheck != null && siCheckValue == null)
 		throw new play.exceptions.TagInternalException("SiCheckValue no definido");
 
-	if(siCampo != null && siCampoValue == null)
-		throw new play.exceptions.TagInternalException("SiCampoValue no definido");
-			
 	def borde = _borde != null? _borde : true
 	
-	def valueCampo = null
-	if (siCampo != null) {
-		def objCampo = _caller.get(siCampo.split("\\.")[0])
-		valueCampo = tags.ReflectionUtils.getValueRecursively(objCampo, siCampo)
-	}
-	
-	
 	def mostrarSi = _mostrarSi != null? _mostrarSi : true
-	
 %}
 
 

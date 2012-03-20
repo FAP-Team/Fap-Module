@@ -54,7 +54,7 @@
 		    	});
 			}
 
-	    	var logAction = #{jsAction @fap.LoggerController.logs(':fecha') /}
+	    	var logAction = #{jsAction @fap.LoggerController.logs(':fecha1', ':fecha2') /}
 	    	
 	    	var logsDaily;
 	    	var logsAuditable;
@@ -64,7 +64,7 @@
 		        autoLoad: true,
 		        proxy: {
 		            type: 'ajax',
-		            url: logAction({fecha: new Date().getTime()}),
+		            url: logAction({fecha1: new Date().getTime(), fecha2: new Date().getTime()}),
 		            reader: {
 		                type: 'json',
 		                root: 'rows',
@@ -115,10 +115,20 @@
 			                				store: store
 			            				},
 			        		   	        {
-			  								itemId: 'fechabox',
+			  								itemId: 'fechabox1',
 			        		   	            xtype: 'datefield',
 			                				width: 150,
-			        		   	            fieldLabel: 'Fecha',
+			        		   	            fieldLabel: 'Desde',
+			                				labelWidth: 50,
+			        		   	            format: 'Y-m-d',
+			        		   	            maxValue: new Date(),
+			        		   	            value: new Date()
+			        		   	        },
+			        		   	        {
+			  								itemId: 'fechabox2',
+			        		   	            xtype: 'datefield',
+			                				width: 150,
+			        		   	            fieldLabel: 'Hasta',
 			                				labelWidth: 50,
 			        		   	            format: 'Y-m-d',
 			        		   	            maxValue: new Date(),
@@ -165,11 +175,43 @@
 		    	 }
 		  	});
 
-	   		grid.getComponent('barraInferior').getComponent('fechabox').addListener("change", function(){
-		   		fecha = grid.getComponent('barraInferior').getComponent('fechabox').value
+	   		grid.getComponent('barraInferior').getComponent('fechabox1').addListener("change", function(){
+		   		fecha1 = grid.getComponent('barraInferior').getComponent('fechabox1').value
+		   		fecha2 = grid.getComponent('barraInferior').getComponent('fechabox2').value
+		   		if (fecha1 > fecha2){
+		   			fecha2 = fecha1;
+		   			grid.getComponent('barraInferior').getComponent('fechabox2').setValue(fecha1);
+		   		}
 		   		grid.store.setProxy(new Ext.data.proxy.Ajax({
 		            type: 'ajax',
-		            url: logAction({fecha: fecha.getTime()}),
+		            url: logAction({fecha1: fecha1.getTime(), fecha2: fecha2.getTime()}),
+		            reader: {
+		                type: 'json',
+		                root: 'rows',
+		                totalRecords: 'total'
+		            }
+		   		}));
+		   		store.load();
+		    });
+		    
+		    grid.getComponent('barraInferior').getComponent('searchbox').addListener("change", function(){
+		    	grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
+		    	if (grid.getComponent('barraInferior').getComponent('searchbox').value != "")
+		   	    	contadorLogs(1);
+		   	    else
+		   	     	contadorLogs(0);
+		    });
+		    
+		    grid.getComponent('barraInferior').getComponent('fechabox2').addListener("change", function(){
+		   		fecha1 = grid.getComponent('barraInferior').getComponent('fechabox1').value
+		   		fecha2 = grid.getComponent('barraInferior').getComponent('fechabox2').value
+		   		if (fecha1 > fecha2){
+		   			fecha1 = fecha2;
+		   			grid.getComponent('barraInferior').getComponent('fechabox1').setValue(fecha2);
+		   		}
+		   		grid.store.setProxy(new Ext.data.proxy.Ajax({
+		            type: 'ajax',
+		            url: logAction({fecha1: fecha1.getTime(), fecha2: fecha2.getTime()}),
 		            reader: {
 		                type: 'json',
 		                root: 'rows',
@@ -180,11 +222,14 @@
 		    });
 
 		   	store.addListener("load", function(){
-		   	    contadorLogs();
-				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
+		   		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
+		   		if (grid.getComponent('barraInferior').getComponent('searchbox').value != "")
+		   	    	contadorLogs(1);
+		   	    else
+		   	     	contadorLogs(0);
 		    });
 		    
-		    function contadorLogs (){
+		    function contadorLogs (busqueda){
 		    	var datos = store.data.items;
 		   	    logsDaily=0;
 		   	    logsAuditable=0;
@@ -195,7 +240,7 @@
 		   	          logsAuditable++;
 		   	    }
 		   	    var content="";
-		   	    var date = grid.getComponent('barraInferior').getComponent('fechabox').value;
+		   	    var date = grid.getComponent('barraInferior').getComponent('fechabox1').value;
 		   	    var d  = date.getDate();
 				var day = (d < 10) ? '0' + d : d;
 				var m = date.getMonth() + 1;
@@ -204,21 +249,43 @@
 				var year = (yy < 1000) ? yy + 1900 : yy;
 		   	    var fecha = day+"-"+month+"-"+year;
 		   	    if ((logsDaily!=0) || (logsAuditable!=0)){
-		   	    	if (logsDaily==0)
-		   	       		content+="<b>No existen Logs Generales del día "+fecha+"</b></br>";
+		   	    	if (logsDaily==0){
+		   	    		if (busqueda == 0)
+		   	       			content+="<b>No existen Logs Generales del día "+fecha+"</b></br>";
+		   	       		else
+		   	       			content+="<b>No existen Logs Generales del día "+fecha+" con esos criterios de búsqueda </b></br>";
+		   	       	} else {
+		   	       		if (busqueda == 0)
+		   	       			content+="<b>Logs Generales:</b> "+logsDaily+"</br>";
+		   	       		else
+		   	       			content+="<b>Logs Generales:</b> "+logsDaily+" teniendo en cuenta los criterios de búsqueda </br>";
+		   	       	}	
+	            	if (logsAuditable==0){
+	            		if (busqueda == 0)
+		   	       			content+="<b>No existen Logs de Auditoría del día "+fecha+"</b></br>";
+		   	       		else
+		   	       			content+="<b>No existen Logs de Auditoría del día con esos criterios de búsqueda </b></br>";
+		   	       	} else {
+		   	       		if (busqueda == 0)
+		   	       			content+="<b>Logs de Auditoría:</b> "+logsAuditable+"</br>";
+		   	       		else
+		   	       			content+="<b>Logs de Auditoría:</b> "+logsAuditable+" teniendo en cuenta los criterios de búsqueda </br>";
+		   	       	}
+		   	    } else {
+		   	    	if (busqueda == 0)
+		   	    		content+="<b>No existen ni Logs Generales, ni Logs de Auditoría del día "+fecha+"</b></br>";
 		   	    	else
-		   	       		content+="<b>Logs Generales:</b> "+logsDaily+"</br>";
-		   	       		
-	            	if (logsAuditable==0)
-		   	       		content+="<b>No existen Logs de Auditoría del día "+fecha+"</b></br>";
-		   	    	else
-		   	       		content+="<b>Logs de Auditoría:</b> "+logsAuditable+"</br>";
-		   	    } else
-		   	    	content+="<b>No existen ni Logs Generales, ni Logs de Auditoría del día "+fecha+"</b></br>";
+		   	    		content+="<b>No existen ni Logs Generales, ni Logs de Auditoría del día "+fecha+" teniendo en cuenta los criterios de búsqueda </b></br>";
+		   	    }
+		   	    var logs = logsDaily+logsAuditable;
+		   	    if (busqueda == 1){
+		   	    	content+="</br><b>Logs Totales encontrados con los parametros de búsqueda: "+logs+"</b></br>";
+		   	    } else {
+		   	    	content+="</br><b>Logs Totales: "+logs+"</b></br>";
+		   	    }
 		   	    $('#mensajeContadorLogs').html(content);
 		   	    $('#mensajeContadorLogs').css({display:""});
 		    }
-		  	
 		});
 </script>
 			

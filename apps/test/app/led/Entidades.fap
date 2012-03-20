@@ -1,0 +1,143 @@
+Entidad Solicitud extends SolicitudGenerica {
+	DireccionTest direccionTest
+	ComboTest comboTest
+	ValoresPorDefectoTest valoresPorDefectoTest
+	Fechas fechas
+	TestGrupo testGrupo
+	
+	OneToMany TablaDeNombres tablaDeNombres
+
+	ManyToOne ComboTestRef comboError
+	ManyToMany ComboTestRef comboErrorMany
+	
+	ManyToOne PaginasTab paginas
+	OneToMany TablaPopUpPaginas popupPaginas
+	
+	Solicitante solicitantePersonaFisica
+	Solicitante solicitantePersonaJuridica
+	
+	PersonaFisica amigo
+	Documento doc
+}
+
+Entidad FirmanteSingle extends Singleton{
+	OneToMany Firmante firmantes
+	String cadena
+	String otros
+}
+
+Entidad DocumentoSingle extends Singleton{
+	Documento doc
+	String desc
+}
+
+Entidad PaginasTab{
+	String nombre
+	OneToMany TablaPaginas_nivel1 tpaginas_nivel1
+}
+
+Entidad TablaPaginas_nivel1{
+	String nombre
+	Integer numero
+	ManyToMany ComboTestRef comboMul
+	DateTime fecha
+	OneToMany TablaPaginas_nivel2 tpaginas_nivel2
+}
+
+Entidad TablaPaginas_nivel2{
+	String nombre
+	ManyToMany ComboTestRef comboMul
+	Lista ComboTestList list
+	OneToMany TablaPaginas_nivel3 tpaginas_nivel3
+}
+
+Entidad TablaPaginas_nivel3{
+	String nombre
+	Integer numero
+	DateTime fecha
+	Lista ComboTestList list
+	OneToMany TablaDeNombres tablaDeNombres
+}
+
+Entidad TablaPopUpPaginas {
+	String nombre
+	String apellido
+	OneToOne Fechas fecha
+	OneToMany TablaPaginas_nivel3 tpaginas_nivel3
+}
+
+Entidad Fechas {
+	DateTime fechaRequerida
+	DateTime fecha
+}
+
+Entidad TestGrupo {
+	String nombre
+	Boolean myCheck
+}
+
+Entidad TablaDeNombres {
+	String nombre
+	String apellido
+	OneToOne Fechas fecha
+}
+
+Entidad DireccionTest {
+	Direccion direccion
+}
+
+Entidad ComboTest {
+	Lista provincias provincias
+	Lista comunidadesAutonomas comunidades
+	Lista paises paises
+	Lista municipios municipios
+
+	Lista ComboTestList list
+	Lista multiple ComboTestList listMultiple
+	ManyToOne ComboTestRef ref
+	ManyToMany ComboTestRef refMultiple
+	
+	
+	String listOverwrite
+	Long listOverwriteLong
+	Set<String> listMultipleOverwrite
+	List<Long> listMultipleOverwriteLong
+	ManyToOne ComboTestRef refOverwrite
+	ManyToMany ComboTestRef refMultipleOverwrite
+	
+	Long wsjson
+	Long wsxml
+}
+
+Entidad ComboTestRef {
+	String nombre
+	Lista ComboTestList list
+}
+
+Entidad ValoresPorDefectoTest {
+	// Tipos Simples
+	String mString default = "string"
+	Long mLong default = "2"
+	Integer mInteger default = "4"
+	Boolean otroBoolean
+	Boolean mBoolean default = "true"
+	Double mDouble default = "2.345"
+	LongText mLongText default = "texto largooooo largiiisimo"
+	
+	// Tipos Especiales 
+	Telefono mTelefono default = "900 120 120"
+	Email mEmail default = "asas@pepe.com"
+	Cif mCif default = "A58818501"
+	Moneda mMoneda default = "2.10"
+	DateTime mDateTime default = "12/12/2010"
+	
+	// Algunos tipos compuestos
+	Lista ComboTestList mLista /*default = "c"*/
+	
+	// Embeddable
+	Embebida mEmbebida
+}
+
+Entidad Embebida embeddable {
+	String algo default = "pepe"
+}

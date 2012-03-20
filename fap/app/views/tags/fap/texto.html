@@ -63,12 +63,34 @@
 	if (duplicado == true) {
 		onBlurStr = "onblur=\'${id}Validate()\'"
 	}
+	def valuebd = value;
+	if (_format != null){
+	   String formato = properties.FapProperties.get("fap.format."+_format);
+	   try{
+	      if ((formato != null) && (!formato.equals("none")))
+	         value = value.toDouble().format("${formato}");
+	   } catch (Exception e){
+	      // Value tiene un fallo de validación, no se le da formato, dejandolo como estaba
+	   }
+	}
 }%
-
+	
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
     	<input class="input-xlarge" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
 	#{/fap.formrow}
-	
+	#{if _format != null}
+		<script>
+			// Solución para el formato, que no guarde el valor con el cambio de formato realizado, sino como esta en BBDD
+			$(function() {
+				form = $('#${id}').parents('form');
+				form.submit(function(){
+					if ("${value}" == $('#${id}').val()){
+						$('#${id}').val("${valuebd}");
+					}
+				});
+			});
+		</script>
+	#{/if}
 	#{if duplicado == true}
 		%{
 			label_copy = label+" (verificar)";

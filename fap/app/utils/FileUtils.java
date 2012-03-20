@@ -10,6 +10,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+
+import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
 import org.apache.log4j.Logger;
 
 import play.vfs.VirtualFile;
@@ -165,4 +169,6 @@ public class FileUtils {
 	
 	}
     
+
+	
 }

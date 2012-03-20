@@ -20,7 +20,7 @@ bc. Columna:
 	   ( ('campo' '=' campo=Campo) | ('funcion' '=' funcion=STRING) )
 	   & ('titulo' '=' titulo=STRING)? 
 	   & ('ancho' '=' ancho=STRING)? 
-		& ("permiso" "=" permiso=[Permiso])?
+	   & ("permiso" "=" permiso=[Permiso])?
 	   & (expandir?='expandir')?
 	)
 ;

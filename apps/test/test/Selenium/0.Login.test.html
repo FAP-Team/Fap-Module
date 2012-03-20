@@ -4,7 +4,8 @@
     // Open the home page, and check that no error occured
     open('login')
     waitForPageToLoad()
-    type('login-username','admin')
-    type('login-password','a')
+    waitForElementPresent(//input['login-username'])
+    type('id=login-username','admin')
+    type('id=login-password','a')
     clickAndWait('signin')
 #{/selenium}

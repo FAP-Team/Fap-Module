@@ -26,7 +26,7 @@ public class NipCheck extends Check {
 		return true;
 	}
 	
-	public boolean validaNip (Nip nip, StringBuilder texto) {
+	public static boolean validaNip (Nip nip, StringBuilder texto) {
 		if(nip.tipo.isEmpty() && nip.valor.isEmpty()) //Tipo y valor vacios, no valida
 			return true; 
 		
@@ -48,14 +48,14 @@ public class NipCheck extends Check {
 			}
 			
 			//Comprueba el formato
-			Matcher matcher = NIF_PATTERN.matcher(nip.valor);
+			Matcher matcher = NIF_PATTERN.matcher(nip.valor.toUpperCase());
 			if(!matcher.find()){
 				texto.append("validation.nip.nif.format");
 				return false;
 			}
 			
 			//Comprueba la letra
-			if(!checkNifNieLetter(nip.valor)){
+			if(!checkNifNieLetter(nip.valor.toUpperCase())){
 				texto.append("validation.nip.nif.letter");
 				return false;
 			}
@@ -70,7 +70,7 @@ public class NipCheck extends Check {
 			}
 			
 			//Comprueba el formato
-			Matcher matcher = NIE_PATTERN.matcher(nip.valor);
+			Matcher matcher = NIE_PATTERN.matcher(nip.valor.toUpperCase());
 			if(!matcher.find()){
 				texto.append("validation.nip.nie.format");
 				return false;
@@ -78,7 +78,7 @@ public class NipCheck extends Check {
 			
 			//Comprueba la letra
 			char charInicial = ' ';
-			char firstLetter = nip.valor.charAt(0);
+			char firstLetter = nip.valor.toUpperCase().charAt(0);
 			if (firstLetter == 'X') 
 				charInicial = '0';
 			else if (firstLetter == 'Y')
@@ -103,7 +103,7 @@ public class NipCheck extends Check {
 		return true;
 	}
 
-	private boolean checkNifNieLetter(String numero){
+	private static boolean checkNifNieLetter(String numero){
 		int digitosNif = Integer.parseInt(numero.substring(0,8));
 		int letraEsperada = NIF_NIE_ASOCIATION.charAt(digitosNif % 23); 
 		int letraActual = numero.charAt(8);

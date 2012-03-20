@@ -17,6 +17,8 @@ import utils.*;
 class ControllerUtils {
 
 	static List<String> camposSolicitante = "tipo,fisica.nombre,fisica.primerApellido,fisica.segundoApellido,fisica.nip,juridica.cif,juridica.entidad,representado".split(',')
+	static List<String> camposSolicitantePersonaFisica = "tipo,fisica.nombre,fisica.primerApellido,fisica.segundoApellido,fisica.nip,representado".split(',');
+	static List<String> camposSolicitantePersonaJuridica = "tipo,juridica.cif,juridica.entidad,representado".split(',');
 	static List<String> camposPersona = "tipo,fisica.nombre,fisica.primerApellido,fisica.segundoApellido,fisica.nip,juridica.cif,juridica.entidad".split(',')
 	static List<String> camposPersonaFisica = "nombre,primerApellido,segundoApellido,nip".split(",")
 	static List<String> camposPersonaJuridica = "cif,entidad".split(',')
@@ -198,22 +200,17 @@ class ControllerUtils {
 				// Si es un grupo debemos incluir lood IF de los mostrarSiCheck, mostrarSiCampo, ...
 				if (objeto.siCombo != null) {
 					if (Combo.class.isInstance(objeto.siCombo)) {
-						String arrayName = "mArray"+StringUtils.getRandomName();
 						CampoUtils campo = CampoUtils.create(objeto.siCombo.campo);
-						out += "String[] ${arrayName} = new String[] {"+objeto.siComboValues.values.collect { '"'+it+'"' }.join(',')+"};\n";
-						out += "if (Arrays.asList(${arrayName}).contains(${campo.firstLower()})) {\n";
+						out += """if (Arrays.asList(new String[] {${objeto.siComboValues.values.collect{"\"${it}\""}.join(',')}}).contains(${campo.dbStr()})){\n""";
 					}
 				}
 				else if (objeto.siCheck != null) {
-					println ("Hay un check");
 					CampoUtils campo = CampoUtils.create(objeto.siCheck.campo);
 					out += "if ((${campo.firstLower()} != null) && (${campo.firstLower()} == ${objeto.siCheckValues})) {\n";
 				}
 				else if (objeto.campo != null) {
-					String arrayName = "mArray"+StringUtils.getRandomName();
 					CampoUtils campo = CampoUtils.create(objeto.campo);
-					out += "String[] ${arrayName} = new String[] {"+objeto.siCampoValues.values.collect { '"'+it+'"' }.join(',')+"};\n";
-					out += "if (Arrays.asList(${arrayName}).contains(${campo.firstLower()})) {\n";
+					out += """if (Arrays.asList(new String[] {${objeto.siCampoValues.values.collect{"\"${it}\""}.join(',')}}).contains(${campo.dbStr()})){\n""";
 				}
 				else if (objeto.siExpresion != null) {
 					out += "if (${objeto.siExpresion}) {"
@@ -245,9 +242,29 @@ class ControllerUtils {
                 out += "\n}\n"
 				validatedFields.pop();
 			}
-        }
+        } 
+		else if (AgruparCampos.class.isInstance(objeto)) {
+				for (Elemento elemento: objeto.elementos) {
+					out += validateCopy(elemento);
+				}
+		}
 		else if (objeto.metaClass.respondsTo(objeto, "getCampo")) {
             if (objeto.campo != null) {
+				if (objeto instanceof Solicitante) {
+					CampoUtils campo = CampoUtils.create(objeto.campo);
+					if (((Solicitante) objeto).representantePersonaFisica){
+						out += """${campo.firstLower()}.representante.tipo = "fisica";
+						"""
+					}
+					if (((Solicitante) objeto).elemento == "SolicitantePersonaFisica"){
+						out += """${campo.firstLower()}.tipo = "fisica";
+						"""
+					}
+					else if (((Solicitante) objeto).elemento == "SolicitantePersonaJuridica"){
+						out += """${campo.firstLower()}.tipo = "juridica";
+						"""
+					}
+				}
                 out += validate(objeto);
                 out += copy(objeto);
             }
@@ -289,7 +306,7 @@ class ControllerUtils {
     public static String bindReference(EObject objeto) {
         if ((Grupo.class.isInstance(objeto)) || (Pagina.class.isInstance(objeto))
                 || (Popup.class.isInstance(objeto)) || (Wiki.class.isInstance(objeto))
-                || (SubirArchivo.class.isInstance(objeto)) || (Tabla.class.isInstance(objeto))) {
+                || (Tabla.class.isInstance(objeto))) {
             return "";
         }
 
@@ -343,7 +360,7 @@ class ControllerUtils {
    public static String copy(EObject objeto) {
 	   if ((Grupo.class.isInstance(objeto)) || (Pagina.class.isInstance(objeto))
 			   || (Popup.class.isInstance(objeto)) || (Wiki.class.isInstance(objeto))
-			   || (SubirArchivo.class.isInstance(objeto)) || (Tabla.class.isInstance(objeto))) {
+			   || (Tabla.class.isInstance(objeto))) {
 		   return "";
 	   }
 
@@ -361,13 +378,38 @@ class ControllerUtils {
 	   String validOut = "";
 	   List<String> camposFiltrados;
 	   if (objeto instanceof Solicitante) {
-		   camposFiltrados = camposSolicitante
-		   if (!((Solicitante) objeto).isNoRepresentante()) {
-			   validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
-			   """
-			   validOut += copyRepresentanteFisica (campo.str)
-			   validOut += copyRepresentanteJuridica (campo.str)
-			   validOut += """\n}""";
+		   if (((Solicitante) objeto).elemento == "Solicitante"){
+			   camposFiltrados = camposSolicitante
+			   if (!((Solicitante) objeto).isNoRepresentante()) {
+				   validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
+				   """
+				   validOut += copyRepresentanteFisica (campo.str)
+				   if (!((Solicitante) objeto).representantePersonaFisica)
+					   validOut += copyRepresentanteJuridica (campo.str)
+				   validOut += """\n}""";
+			   }
+		   }
+		   else if (((Solicitante) objeto).elemento == "SolicitantePersonaFisica"){
+			   camposFiltrados = camposSolicitantePersonaFisica
+			   if (!((Solicitante) objeto).isNoRepresentante()) {
+				   validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
+				   """
+				   validOut += copyRepresentanteFisica (campo.str)
+				   if (!((Solicitante) objeto).representantePersonaFisica)
+					   validOut += copyRepresentanteJuridica (campo.str)
+				   validOut += """\n}""";
+			   }
+		   }
+		   else if (((Solicitante) objeto).elemento == "SolicitantePersonaJuridica"){
+			   camposFiltrados = camposSolicitantePersonaJuridica
+			   if (!((Solicitante) objeto).isNoRepresentante()) {
+				   validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
+				   """
+				   validOut += copyRepresentanteFisica (campo.str)
+				   if (!((Solicitante) objeto).representantePersonaFisica)
+					   validOut += copyRepresentanteJuridica (campo.str)
+				   validOut += """\n}""";
+			   }
 		   }
 	   } else if (objeto instanceof Persona) {
 		   camposFiltrados = camposPersona
@@ -375,9 +417,9 @@ class ControllerUtils {
 		   camposFiltrados = camposPersonaFisica
 	   } else if (objeto instanceof PersonaJuridica) {
 		   camposFiltrados = camposPersonaJuridica
-	   } else if(objeto instanceof SubirArchivoAed){
+	   } else if(objeto instanceof SubirArchivo){
 		   camposFiltrados = camposAed
-	   } else if(objeto instanceof EditarArchivoAed) {
+	   } else if(objeto instanceof EditarArchivo) {
 		   camposFiltrados = camposAed
 	   }
 
@@ -427,6 +469,10 @@ class ControllerUtils {
 	}
 	
 	public static String copyCampoSimple(CampoUtils campo) {
+		// SI el campo es un método, no hacemos nada
+		if (campo.isMethod()) {
+			return "";
+		}
 		if (LedEntidadUtils.isManyToOne(campo.getUltimoAtributo()))
 			return copyCampoMany2One(campo);
 		else if (LedEntidadUtils.isManyToMany(campo.getUltimoAtributo()))
@@ -436,6 +482,20 @@ class ControllerUtils {
 			db${campo.str}.retainAll(${campo.firstLower()});
 			db${campo.str}.addAll(${campo.firstLower()});
 			"""
+		}
+		// Para convertir el CIF o el NIP a Mayusculas, y guardarlo homogeneamente en la BBDD
+		if ((campo != null) &&
+			(campo.getUltimoAtributo() != null) &&
+			(campo.getUltimoAtributo().getType() != null) &&
+			(campo.getUltimoAtributo().getType().getCompound() != null) &&
+			(campo.getUltimoAtributo().getType().getCompound().getEntidad() != null) &&
+			(campo.getUltimoAtributo().getType().getCompound().getEntidad().getName().equals("Nip"))){
+				String out = "${campo.firstLower()}.valor = ${campo.firstLower()}.valor.toUpperCase();\n";
+				out += "db${campo.str} = ${campo.firstLower()};\n";
+				return out;
+		}
+		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Cif")){
+				return "db${campo.str} = ${campo.firstLower()}.toUpperCase();\n";
 		}
 		return "db${campo.str} = ${campo.firstLower()};\n";
 	}
@@ -534,6 +594,7 @@ class ControllerUtils {
 		   || (entity instanceof PersonaFisica)
 		   || (entity instanceof PersonaJuridica)
 		   || (entity instanceof Direccion)
+		   || (entity instanceof Solicitante)
 		   ))
 		   return true;
 	   return false;
@@ -550,6 +611,10 @@ class ControllerUtils {
         if (objeto.metaClass.respondsTo(objeto, "getCampo") && (!Tabla.class.isInstance(objeto))) {
 			String campo = CampoUtils.create(objeto.campo).str;
 			String campol = StringUtils.firstLower(campo);
+			
+			if (CampoUtils.create(objeto.campo).isMethod()) {
+				return "";
+			}
 			
 			if (isCheckEntity(objeto)) {
                 out += valid(campo);

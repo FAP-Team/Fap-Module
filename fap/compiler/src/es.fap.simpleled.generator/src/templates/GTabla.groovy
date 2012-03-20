@@ -382,31 +382,9 @@ public class GTabla {
 				${idSingleton}
 				java.util.List<${entidad.clase}> rows = ${entidad.clase}.find(${query}).fetch();
 				${getCodePermiso(entidad)}
-				tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(${controller.controllerName}.${controllerMethodName()}Permisos(rowsFiltered));
-				response.mensajes.error=Messages.messages(MessageType.ERROR);
-				response.mensajes.warning=Messages.messages(MessageType.WARNING);
-				response.mensajes.fatal=Messages.messages(MessageType.FATAL);
-				response.mensajes.ok=Messages.messages(MessageType.OK);
-				response.mensajes.info=Messages.messages(MessageType.INFO);
+				tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered);
 				renderJSON(response.toJSON($rowsStr));
 			}
-
-			@Util
-			public static List<TableRecord<${entidad.clase}>> ${controllerMethodName()}Permisos(List<${entidad.clase}> rowsFiltered){
-				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-				List<TableRecord<${entidad.clase}>> records = new ArrayList<TableRecord<${entidad.clase}>>();
-				Map<String, Object> vars = new HashMap<String, Object>();
-				for (${entidad.clase} ${entidad.variable}: rowsFiltered){
-					TableRecord<${entidad.clase}> record = new TableRecord<${entidad.clase}>();
-					records.add(record);
-					record.objeto = ${entidad.variable};
-					vars.put("${entidad.variable}", ${entidad.variable});
-					record.permisoLeer = ${permisoBotonLeer? "secure.checkAcceso(\"${permisoBotonLeer}\", \"leer\", ids, vars)" : botonLeer};
-					record.permisoEditar = ${permisoBotonEditar? "secure.checkAcceso(\"${permisoBotonEditar}\", \"editar\", ids, vars)" : botonEditar};
-					record.permisoBorrar = ${permisoBotonBorrar? "secure.checkAcceso(\"${permisoBotonBorrar}\", \"borrar\", ids, vars)" : botonBorrar};
-				}
-				return records;
-			}	
 
 			${seleccionableMethod()}
 		"""

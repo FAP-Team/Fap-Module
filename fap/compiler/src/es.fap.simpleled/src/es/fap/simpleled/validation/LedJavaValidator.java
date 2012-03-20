@@ -1,6 +1,7 @@
 package es.fap.simpleled.validation;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -121,10 +122,9 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Check
 	public void checkCampo(Campo campo){
-		if (! LedCampoUtils.validCampo(campo)){ // El error lo detecta LedScopeProvider en el linking
-			return;
-		}
-		LedElementValidator validator = LedElementValidator.getElementValidator(campo);
+		if (! LedCampoUtils.validCampo(campo))
+			return; // El error lo detecta LedScopeProvider en el linking
+		LedElementValidator validator = LedElementValidator.getElementValidator(campo.eContainer());
 		if (validator != null){
 			validator.validateCampoEntidad(campo, this);
 			validator.validateCampo(campo, this);
@@ -284,4 +284,47 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			error("La lista de acciones no puede ser vacía", LedPackage.Literals.ACCIONES__ACCIONES);
 	}
 	
+	@Check
+	public void checkSubirArchivoMimeTypes(SubirArchivo subirArchivo){
+		Pattern pattern = Pattern.compile("[\\w-]+/(\\*|[\\w-]+)");
+		for (int i = 0; i < subirArchivo.getMimes().size(); i++){
+			if (!pattern.matcher(subirArchivo.getMimes().get(i)).matches())
+				error("El tipo mime especificado no es válido. Tiene que ser tipo/subtipo o tipo/*. Por ejemplo: application/pdf", LedPackage.Literals.SUBIR_ARCHIVO__MIMES, i);
+		}
+	}
+	
+	@Check
+	public void checkFirmaPlatinoSimple(FirmaPlatinoSimple firma){
+		if ("firma".equals(firma.getName()))
+			error("FirmaSimple no puede llamarse \"firma\"", LedPackage.Literals.FIRMA_PLATINO_SIMPLE__NAME);
+	}
+	
+	// TODO: Hacerlo pero haciendo el chek sobre Paginas y PopUps, en vez de sobre campos, para evitar que resulte pesado
+	// TODO: Para ello serían 2 metodos. Uno que recibiese una Pagina, y otro un PopUp.
+	// TODO: LedCampoUtils.hayCamposGuardables, utilizar su codigo para fijarse a la hora de buscar los elementos con campos recursivamente.
+	// Para comprobar que no se utilicen dos campos en diferentes elementos de la misma Pagina
+	@Check
+	public void checkCampoUsadoEnPagina (Pagina pagina){
+		checkCampoUsado(pagina);
+	}
+	
+	@Check
+	public void checkCampoUsadoEnPopups (Popup popup){
+		checkCampoUsado(popup);
+	}
+	
+	public void checkCampoUsado (EObject obj){
+		List<Campo> campos = LedCampoUtils.buscarCamposRecursivos (obj);
+		Set<String> unicos = new HashSet<String>();
+		String campoStr = "";
+		for (Campo campo: campos){
+			campoStr = LedCampoUtils.getCampoStr(campo);
+			if (!unicos.contains(campoStr)){
+				unicos.add(campoStr);
+			} else {
+				if (campo != null)
+					warning("El campo esta siendo utilizado por otro elemento en la misma pagina", campo, LedPackage.Literals.CAMPO__ATRIBUTOS, 0);
+			}
+		}
+	}
 }

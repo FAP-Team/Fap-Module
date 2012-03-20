@@ -21,13 +21,13 @@ h2. Definición
 bc. Boton:
 	elemento='Boton' (name=ID) (
 	 	('titulo' '=' titulo=STRING)
-	    & ('ancho' '=' ancho=STRING)? 
-	    & ('pagina' '=' pagina=PaginaAccion)?
-	    & ('popup' '=' popup=PopupAccion)?
-	    & (anterior?="anterior")?
-		 & (waitPopup?="waitPopup")?	
-		 & ('type' '=' type=('primary' | 'info' | 'success' | 'danger' | 'warning' | 'inverse'))?
-		 & ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+	 	& ('ancho' '=' ancho=STRING)? 
+	 	& ('pagina' '=' pagina=PaginaAccion)?
+	 	& ('popup' '=' popup=PopupAccion)?
+	 	& (anterior?="anterior")?
+		& (waitPopup?="waitPopup")?	
+		& ('type' '=' type=('primary' | 'info' | 'success' | 'danger' | 'warning' | 'inverse'))?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 

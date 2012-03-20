@@ -64,7 +64,7 @@
 		<delete dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}" />
 		<property name="manifestFile" value="META-INF/MANIFEST.MF" />
-		<jar destfile="${dist.dir}/es.fap.simpleled.jar" basedir="${build.dir}" manifest="${manifestFile}" />
+		<jar destfile="${dist.dir}/es.fap.simpleled_1.0.0.jar" basedir="${build.dir}" manifest="${manifestFile}" />
 	</target>
 
 

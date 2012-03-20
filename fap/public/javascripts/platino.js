@@ -1,3 +1,45 @@
+Firma._getCertificados = function(){
+		try {			
+			initPlatinoWebSigner();
+			arrCAs = new Array(
+					'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
+					'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
+					'CN=AC DNIE 001, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
+					'OU=AC APE, O=FNMT-RCM, C=ES',
+					'CN=Chambers of Commerce Root, OU=http://www.chambersign.org, O=AC Camerfirma SA CIF A82743287, C=EU',
+					'CN=AC RAIZ DNIE, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
+					'OU=AC RAIZ FNMT-RCM, O=FNMT-RCM, C=ES',
+					'EMAILADDRESS=ca@firmaprofesional.com, CN=Autoridad de Certificacion Firmaprofesional CIF A62634068, L=C/ Muntaner 244 Barcelona, C=ES',
+					'CN=AC DNIE 002, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
+					'CN=AC Firmaprofesional - CA1, O=Firmaprofesional S.A. NIF A-62634068, OU=Jerarquia de Certificacion Firmaprofesional, OU=Consulte http://www.firmaprofesional.com, L=C/ Muntaner 244 Barcelona, EMAILADDRESS=ca1@firmaprofesional.com, C=ES',
+					'CN=AC Camerfirma Certificados Camerales, O=AC Camerfirma SA, SERIALNUMBER=A82743287, L=Madrid (see current address at www.camerfirma.com/address), EMAILADDRESS=ac_camerfirma_cc@camerfirma.com, C=ES');
+
+			arrRestrictions = new Array(new Array('', ''), new Array('', ''),
+					new Array('', ''), new Array('', ''), new Array('', ''),
+					new Array('', ''), new Array('', ''), new Array('', ''),
+					new Array('', ''), new Array('', ''), new Array('', ''));
+			
+			var arrValidCertificates = getTrustedCertificates('PLATINO', 'verificar', 'PLATINO');
+
+			var certificados = [];
+			for ( var i = 0; i < arrValidCertificates.length; i++) {
+				var cert = arrValidCertificates[i];
+				certificados.push(new Certificado(cert[0], cert[1]));
+			}
+			return certificados;
+		} catch (err) {
+			return null;
+		}			
+}
+
+Firma._firmarTexto = function(texto, certificado){
+	return signPKCS7(certificado.clave, texto);
+}
+
+Firma._firmarUrl = function(url, certificado){
+	return signFile(certificado.clave, url);
+}
+
 var Platino = {
 	
 	listarCertificados : function(combo, opciones){

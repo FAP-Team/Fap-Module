@@ -81,7 +81,7 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 
 		List<CEconomico> rowsFiltered = rows; //Tabla sin permisos, no filtra
 
-		tables.TableRenderResponse<CEconomico> response = new tables.TableRenderResponse<CEconomico>(PCEconomicosController.tablatablaCEconomicosPermisos(rowsFiltered));
+		tables.TableRenderResponse<CEconomico> response = new tables.TableRenderResponse<CEconomico>(rowsFiltered);
 		response.mensajes.error = Messages.messages(MessageType.ERROR);
 		response.mensajes.warning = Messages.messages(MessageType.WARNING);
 		response.mensajes.fatal = Messages.messages(MessageType.FATAL);

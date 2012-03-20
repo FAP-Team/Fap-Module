@@ -192,6 +192,11 @@ public class Messages {
     	current().add(MessageType.ERROR,msg);
     }
 
+    public static void error(String msg, Throwable e){
+        play.Logger.error(msg, e);
+        error(msg);
+    }
+    
     public static void warning(String msg) {
     	current().add(MessageType.WARNING,msg);
     }

@@ -203,15 +203,16 @@ Values:
 
 Elemento:
 	Grupo | AgruparCampos | 
-	Texto | Fecha | Combo | Tabla | SubirArchivo | Boton | Check | AgrupaBotones |
+	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
 	AreaTexto | Enlace | Form |
-	SubirArchivoAed | EditarArchivoAed | FirmaPlatinoSimple | 
+	SubirArchivo | EditarArchivo | FirmaPlatinoSimple | 
 	EntidadAutomatica | Accion
 ;
 
 Campo:
-	entidad=[Entity|IDS] (atributos=CampoAtributos)?
+	(entidad=[Entity|IDS] (atributos=CampoAtributos)?)
+	| method=STRING
 ;
 
 CampoAtributos:
@@ -273,7 +274,7 @@ Wiki:
 AgrupaBotones:
 	'AgrupaBotones' (type=('normal' | 'well'))?
 	'{'
-		botones+=Boton+
+		(botones+=(Boton|Enlace))+
 	'}'
 ;
 
@@ -312,6 +313,7 @@ Combo:
 		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& ('dependeDe' '=' dependeDe=[Combo])?
+		& (ordenar = ('ordenarPorClave' | 'ordenarPorValor'))?
 	)
 ;
 
@@ -366,35 +368,58 @@ Columna:
 	)
 ;
 
-
 SubirArchivo:
 	elemento='SubirArchivo' name=ID (
-		(requerido?='requerido')?
-	)
-;	
-
-SubirArchivoAed:
-	elemento='SubirArchivoAed' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 		& ('tramite' '=' tramite=STRING)?		
-		& ('aportadoPor' '=' aportadoPor=STRING)?	// ¿Cambiar el tipo?
+		& ('aportadoPor' '=' aportadoPor=STRING)?
+		& (
+			('mimes' '=' mimes+=STRING ("," mimes+=STRING)*) |
+			('extensiones' '=' extensiones+=STRING ("," extensiones+=STRING)*)
+		)?
 	)
 ;
 
-EditarArchivoAed:
-	elemento='EditarArchivoAed' name=ID (
+EditarArchivo:
+	elemento='EditarArchivo' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
+		& ('tramite' '=' tramite=STRING)?		
+		& ('aportadoPor' '=' aportadoPor=STRING)?
 	)
 ;
 
 FirmaPlatinoSimple:
 	elemento="FirmaSimple" (name=ID)
-		"titulo" "=" titulo=STRING
-		(
-			"documento" "=" campo=Campo
-		)
+	(
+		("titulo" "=" titulo=STRING)
+		& (documento=FirmaDocumento)
+		& (firmantes=FirmaFirmantes)
+		& (setToTrue=FirmaSetTrue)?
+	)
+	(
+		"setCamposTo" '{'
+			setCampos+=FirmaSetCampo
+			(',' setCampos+=FirmaSetCampo)*
+		'}'
+	)?
+;
+
+FirmaDocumento:
+	"documento" "=" campo=Campo	
+;
+
+FirmaFirmantes:
+	"listaFirmantes" "=" campo=Campo
+;
+
+FirmaSetCampo:
+	campo=Campo "to" value=STRING
+;
+
+FirmaSetTrue:
+	"setTrue" "=" campo=Campo
 ;
 
 Direccion:
@@ -444,11 +469,11 @@ Persona:
 
 Solicitante:
 	elemento=('Solicitante' | 'SolicitantePersonaFisica' | 'SolicitantePersonaJuridica') (name=ID) (
-		('campo' '=' campo=Campo) & 
-		('titulo' '=' titulo=STRING)? &
-		(requerido?='requerido')? &
-		("permiso" "=" permiso=[Permiso])?
-		& (noRepresentante?='noRepresentante')?
+		('campo' '=' campo=Campo) 
+		& ('titulo' '=' titulo=STRING)?
+		& (requerido?='requerido')?
+		& ("permiso" "=" permiso=[Permiso])?
+		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
 	)
 ;
 

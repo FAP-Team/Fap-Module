@@ -32,8 +32,6 @@ public class Verificacion extends Model {
 
 	public String estado;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "verificacion_documentos")
 	@Transient
 	public List<VerificacionDocumento> documentos;
 
@@ -41,8 +39,6 @@ public class Verificacion extends Model {
 
 	public String motivoExclusion;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "verificacion_codigosexclusion")
 	@Transient
 	public List<Exclusion> codigosExclusion;
 
@@ -66,12 +62,6 @@ public class Verificacion extends Model {
 	}
 
 	public void init() {
-
-		if (documentos == null)
-			documentos = new ArrayList<VerificacionDocumento>();
-
-		if (codigosExclusion == null)
-			codigosExclusion = new ArrayList<Exclusion>();
 
 		if (requerimientoProceso == null)
 			requerimientoProceso = new Requerimiento();

@@ -25,7 +25,7 @@ h2. "Preguntas Frecuentes":preguntas-frecuentes
 
 h2. Documentación generada
 
-* "Javadocs":/fapapi/
+* "Javadocs":fapapi/
 * "Fapdocs":html/index
 * "Generar y acceder a la documentación de los ficheros *.fap":doc-html
 
@@ -63,9 +63,8 @@ h3. Elementos Gráficos
 # "columna":dsl-columna
 # "direccion":dsl-direccion
 # "subir archivo":dsl-subirArchivo
-# "subir archivo AED":dsl-subirArchivoAed
-# "editar archivo AED":dsl-editarArchivoAed
-# "solicitante":dsl-persona
+# "editar archivo":dsl-editarArchivo
+# "solicitante":dsl-solicitante
 # "persona":dsl-persona
 # "persona fisica":dsl-personaFisica
 # "persona juridica":dsl-personaJuridica
@@ -86,6 +85,7 @@ h2. Desarrollo de aplicaciones
 * "Permisos":app-permisos
 * "Inyección de dependencia":app-guice
 * "Envío de emails":app-email
+* "Properties del application.conf":doc-properties
 * Servicios web : 
 ** "Archivo Electrónico de Documento (AED)":ws-aed - Gestor documental
 ** "Platino":ws-platino - Firma, registro y gestor documental
@@ -133,7 +133,6 @@ Elementos que pueden ser utilizados en las vista creadas de forma manual. Las vi
 # "fap.tabla":tag-tabla
 # "fap.texto":tag-texto
 # "fap.toJSMapNoValue":tag-toJSMapNoValue
-# "fap.uploadAED":tag-uploadAED
 
 
 

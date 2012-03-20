@@ -1,0 +1,42 @@
+h1. Properties relevantes para la Aplicación
+
+Consideraciones previas:
+
+* La properties se pueden configurar en entornos, así de esta manera podemos diferenciar cuando queremos usar unas properties y cuando otras, o simplemente que una misma property tenga valores distintos dependiendo el entorno de ejecución de la aplicación. Si arrancamos la aplicación con:
+** play run (ó bien play start): Esto indicará el entorno por defecto, y se utilizarán en él las properties cuyo nombre este descrito tal cual.
+** play run --%ENTORNO (ó bien play start --%ENTORNO): Esto indicaran que se utilizarán además de las de por defecto, las properties que esten construidas con el nombre: %ENTORNO.NOMBRE_PROPERTY, de este modo podemos tener una property llamada 'prod', que represente la aplicación en modo producción, y arrancar la misma de la forma: _play run --%prod_, y utilizará como properties las definidas por defecto y las propias que empiecen por %prod.NOMBRE_PROPERTY.
+
+h2. Properties más útiles de Play!
+
+# Configurar el modo del framework: *application.mode=* _[prod | test | ...]_
+# Formato de las fechas: *date.format=* _dd/MM/yyyy_
+# Configuración de la base de datos: *db=* _Configuración_
+# Configurar la raiz (path) de la Aplicacion: *http.path=* _Ruta_
+# Puerto servidor HTTP: *http.port=* _Numero de Puerto_
+# Arranque de la base de datos (Patrón DDL de generación): *jpa.ddl=* _[ create | drop |...]_
+# Pools de ejecución a utilizar: *play.pool=* _Numero del tamaño del pool de ejecución_
+
+Para más información de las properties de Play!, así como un listado con todas las disponibles, visite su "documentación":http://playdoces.appspot.com/documentation/1.2.4/configuration
+
+h2. Properties originarias de FAP
+
+* Configurar los logs: *app.log.path=* _Ruta del log4j de configuración_
+** Ejemplo: _app.log.path=/log4j-logsApp.properties_
+* Configurar filtro por tipo MIMES: *fap.gestordocumental.mimes=* _Tipos mimes_
+** Ejemplo: _fap.gestordocumental.mimes=image/png, image/jpg, application/pdf_
+* Configurar filtro por extensiones: *fap.gestordocumental.extensions=* _Extensiones_
+** Ejemplo: _fap.gestordocumental.extensions=pdf, png, jpg_
+* Ruta del manual de la aplicación (A partir de /public/): *fap.manual.aplicacion=* _RUTA_
+** Ejemplo: _fap.manual.aplicacion=manuales/manualApp1.pdf_
+* Pagina inicial de la aplicación: *fap.app.firstPage=* _Nombre pagina DSL_
+** Ejemplo: _fap.app.firstPage=DatosProyecto_
+* Configurar el formato de los doubles: *fap.format.double=* _Formato_
+** Ejemplo: _fap.format.double=0.00_
+* Configurar Login con Usuario y Contraseña: *fap.login.type.user=* _[true | false]_
+** Ejemplo: _fap.login.type.user=true_
+* Nombre de la aplicación: *fap.app.name=* _NOMBRE_
+** Ejemplo: _fap.app.name=Tueri_
+* Configuración del AED: *fap.aed.[...]* 
+** Más información sobre la configuración del AED, "aquí":ws-aed
+* Configuración de Platino: *fap.platino.[...]*
+** Más información sobre la configuración de Platino, "aquí":ws-platino

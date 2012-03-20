@@ -44,7 +44,24 @@ h4. Operaciones
 * **= null, != null** : Comprueba si una variable es null
 * **and, or** : Concatenan reglas
 
-h3. Ejemplos
+h2. Definición
+
+bc. Permiso:
+	elemento='Permiso' name=ID "{"
+		('mensaje' '=' mensaje=STRING)?
+		(varSection = PermisoVarsSection)?
+		(
+			("return" ret = PermisoReturn) 	
+			|
+			(
+				whens += PermisoWhen+
+				("else" "return" else=PermisoReturn)? 			
+			)
+		)
+	"}"
+;
+
+h2. Ejemplos
 
 bc. Permiso listaSolicitudes{
 	vars
@@ -58,8 +75,7 @@ bc. Permiso listaSolicitudes{
 			and 
 			(participacion != null and agente.rolActivo.id = participacion.agente.id)
 		)
-	return
-	editable
+	return editable
 }
 
 h2. Permisos avanzados

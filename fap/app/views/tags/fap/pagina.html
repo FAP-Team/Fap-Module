@@ -51,7 +51,7 @@
 
 	#{if url != null && accion != "leer" && hayForm}
 			
-		#{form action:url, method:"POST", id:"${pagina}${accion}Form", enctype:encType}
+		#{form action:url, method:"POST", id:"${pagina}${accion}Form", enctype:encType, class:"form-horizontal"}
 			
 			#{authenticityToken /}
 			

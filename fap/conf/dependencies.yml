@@ -7,7 +7,7 @@ require:
          exclude:
           - junit
     - play -> pdf 0.9
-    - play -> less 0.3
+    - play -> less 0.9
     - play -> recaptcha 1.2
     - fap -> guice 1.3
     - play -> mockito 0.1

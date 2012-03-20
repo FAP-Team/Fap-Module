@@ -35,28 +35,28 @@
 }%
 
 #{if visible && !labelRight}
-<div class="clearfix ${styleRow}">
+<div class="control-group ${styleRow}">
 <!--div class="span4" style="${style}"-->
-	<label for="${id}" style="${styleLabel}">${label}
+	<label class="control-label" for="${id}" style="${styleLabel}">${label}
 		#{if requerido}
 			<span class="required">*</span>
 		#{/if}
 	</label>
 <!--/div-->
-<div class="input">
+<div class="controls">
 #{/if}
 
 
 #{doBody /}
 
 #{if visible && labelRight}
-	<div class="input">
-		<label for="${id}">${label}
+	<div class="controls">
+		<label class="control-label" for="${id}">${label}
 		#{if requerido}
 			<span class="required">*</span>
 		#{/if}
 	</label>
-	<div class="input">
+	<div class="controls">
 #{/if}
 
 #{if visible}	

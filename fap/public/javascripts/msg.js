@@ -2,12 +2,12 @@
  * Clase que maneja cómo se muestran los mensajes por pantalla
  */
 function Mensajes(renderTo){	
-	var MSG_ERROR_CLASS = 'alert-message block-message error';
-	var MSG_FATAL_CLASS = 'alert-message block-message error';
-	var MSG_INFO_CLASS = 'alert-message block-message info';
+	var MSG_ERROR_CLASS = 'alert alert-error';
+	var MSG_FATAL_CLASS = 'alert alert-error';
+	var MSG_INFO_CLASS = 'alert alert-info';
 	var MSG_DEBUG_CLASS = 'debugBoxMessage';
-	var MSG_WARN_CLASS = 'alert-message block-message warning';
-	var MSG_OK_CLASS = 'alert-message block-message success';
+	var MSG_WARN_CLASS = 'alert alert-warning';
+	var MSG_OK_CLASS = 'alert alert-success';
 	var MSG_LOADING_CLASS = "block-message info";
 	var MSG_COMMON_CLASS = 'box'; //Clase que se le añade a todos los divs, para poder seleccionarlos todos y limpiarlos
 	
@@ -24,7 +24,7 @@ function Mensajes(renderTo){
 		show: function(msg, styleclass){
 			if(msg == null || $.trim(msg).length == 0) return null;
 			if(this.id != null){
-				$('<div class="' + styleclass + ' ' + MSG_COMMON_CLASS+'" data-alert="alert"><a class="close" href="#">x</a>' + msg +'</div>').hide().appendTo(this.id).fadeIn();
+				$('<div class="' + styleclass + ' ' + MSG_COMMON_CLASS+'"><a class="close" data-dismiss="alert" href="#">x</a>' + msg +'</div>').hide().appendTo(this.id).fadeIn();
 			}
 		},
 	

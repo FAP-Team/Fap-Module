@@ -77,7 +77,7 @@ Formulario Solicitud {
 	}
 	
 	Pagina Direcciones campo=Solicitud{
-		Direccion campo=Solicitud.direccionTest.direccion
+		Direccion titulo="La Dirección" campo=Solicitud.direccionTest.direccion
 	}
 	
 	Pagina Combos inicial campo=Solicitud{
@@ -142,6 +142,7 @@ Formulario Solicitud {
 		Texto mLong campo=Solicitud.valoresPorDefectoTest.mLong titulo="Long"
 		Texto mInteger campo=Solicitud.valoresPorDefectoTest.mInteger titulo="Integer"
 		Check mBoolean campo=Solicitud.valoresPorDefectoTest.mBoolean titulo="Boolean"
+		Check m2Boolean campo=Solicitud.valoresPorDefectoTest.otroBoolean titulo="Otro sin valor por defecto Boolean"
 		Texto mDouble campo=Solicitud.valoresPorDefectoTest.mDouble titulo="Double"
 		Texto mLongText campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText"
 		
@@ -200,6 +201,11 @@ Formulario Solicitud {
  		
  		Grupo titulo="Grupo 1: Mostrar Si Check" mostrarSiCheck checkMostrar1 = true {
  			Wiki {"El check está seleccionado"}
+ 			Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
+ 		}
+ 		
+ 		 Grupo titulo="Grupo 1: Mostrar Si Check" mostrarSiCheck checkMostrar1 = false {
+ 			Wiki {"El check NO está seleccionado"}
  			Texto campo=Solicitud.solicitante.telefonoFijo titulo="Telefono" requerido
  		}
  		

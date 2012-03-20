@@ -26,7 +26,7 @@ public class GBoton {
 		if (boton.isWaitPopup())
 			params.put "waitPopup", boton.isWaitPopup()
 		if (boton.type != null)
-			params.putStr "type", boton.type
+			params.putStr "type", "btn "+boton.type
 		
 		if (boton.ayuda != null) {
 			if ((boton.tipoAyuda != null) && (boton.tipoAyuda.type.equals("propover")))
@@ -41,7 +41,8 @@ public class GBoton {
 			enlace.name = (boton.name ?: "")+"IDenlace";
 			enlace.titulo = boton.titulo;
 			enlace.pagina = boton.pagina;
-			enlace.estilo = "btn ${boton.type}";
+			String btnType = (boton.type!= null && (!boton.type.equals("default"))) ? "btn-"+boton.type : "" 
+			enlace.estilo = "btn ${btnType}";
 			result = Expand.expand(enlace);
 		}
 		else if (boton.popup != null) {
@@ -49,7 +50,8 @@ public class GBoton {
 			enlace.name = (boton.name ?: "")+"IDenlace";
 			enlace.titulo = boton.titulo;
 			enlace.popup = boton.popup;
-			enlace.estilo = "btn ${boton.type}";
+			String btnType = (boton.type!= null && (!boton.type.equals("default"))) ? "btn-"+boton.type : ""
+			enlace.estilo = "btn ${btnType}";
 			result = Expand.expand(enlace);
 		}
 		else if (boton.anterior) {
@@ -57,7 +59,8 @@ public class GBoton {
 			enlace.name = (boton.name ?: "")+"IDenlace";
 			enlace.titulo = boton.titulo;
 			enlace.anterior = true;
-			enlace.estilo = "btn ${boton.type}";
+			String btnType = (boton.type!= null && (!boton.type.equals("default"))) ? "btn-"+boton.type : ""
+			enlace.estilo = "btn ${btnType}";
 			result = Expand.expand(enlace);
 		}
 		else {

@@ -92,12 +92,12 @@ function replaceAmpersand(url) {
  * @param popup
  */
 function popupButtons (popup, buttons, type, cancelButton, enable) {
-	if (cancelButton) {
-		// Añadimos el botón de cancelar
-		popupAddButton (popup, "Cancelar", "$('#"+popup+"').modal('hide');", "secondary", true);
-	}
 	for (var button in buttons) {
 		popupAddButton (popup, button, buttons[button], type, enable);
+	}
+	if (cancelButton) {
+		// Añadimos el botón de cancelar
+		popupAddButton (popup, "Cancelar", "$('#"+popup+"').modal('hide');", "btn-secondary", true);
 	}
 }
 
@@ -111,7 +111,7 @@ function popupAddButton (popup, textButton, functionButton, type, enable) {
 	var $popup = $('#' + popup);
 	var typeLocal = type;
 	if (textButton == 'Borrar')
-		typeLocal = 'danger';
+		typeLocal = 'btn-danger';
 	$popup.find('.modal-footer').append("<a href=\"#\" id=\""+textButton+"_id\""+onClick+disabled+" class=\"btn "+typeLocal+"\" data-loading-text=\"Enviando...\">"+textButton+"</a>");
 }
 

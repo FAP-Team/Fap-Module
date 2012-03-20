@@ -13,7 +13,7 @@
 
 #{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a ésta página'}
 
-<div id="mensajeContadorLogs" class="alert-message block-message info" data-alert="alert" style="display:none">
+<div id="mensajeContadorLogs" class="alert-message block-message info" data-dismiss="alert" style="display:none">
 </div>
 		
 <div id="tablaLogs" class="tabla"></div>
@@ -170,7 +170,7 @@
 			    		$box.addClass("alert-message block-message error");
 			    	else if (log.level == "FATAL")
 			    		$box.addClass("alert-message block-message error");
-			    	$box.attr('data-alert', 'alert');
+			    	$box.attr('data-dismiss', 'alert');
 			    	$box.show();
 		    	 }
 		  	});

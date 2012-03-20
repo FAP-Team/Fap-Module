@@ -1,7 +1,7 @@
-<div class="clearfix #{if _error}error#{/if}">
+<div class="control-group #{if _error}error#{/if}">
     #{if _label}
 		<label #{if _id}for="${_id}"#{/if} class="#{if _error}error#{/if}">${_label}</label>
-    	<div class="input">
+    	<div class="controls">
     #{/if}
 		#{doBody /}
 		#{if _error}<span class="help-inline">${_error}</span>#{/if}

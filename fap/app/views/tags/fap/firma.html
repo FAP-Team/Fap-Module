@@ -25,7 +25,6 @@
 	def uri = _uri ?: "No hay URI"
 	def firma = _firma ?: ""
 	def url = utils.AedUtils.crearFullUrl(uri)
-	print properties.FapProperties.get("fap.proxy.preserve.host")
 	if (properties.FapProperties.get("fap.proxy.preserve.host").equals("off")) {
 		play.Logger.info("change url from: <"+url+"> -> <"+utils.AedUtils.crearExternalFullUrl(uri)+">");
 		url = utils.AedUtils.crearExternalFullUrl(uri);

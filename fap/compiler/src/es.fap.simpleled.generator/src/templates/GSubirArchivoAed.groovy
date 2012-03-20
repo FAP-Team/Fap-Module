@@ -83,7 +83,7 @@ public class GSubirArchivoAed {
 				String mimeType = play.libs.MimeTypes.getMimeType(${subirArchivoAed.name}.getAbsolutePath());
 				String type = mimeType.split("/")[0];
 				if (${check})
-					validation.addError("${subirArchivoAed.name}", "El tipo mime \\"" + mimeType + "\\" no es aceptado por el servidor");
+					validation.addError("${subirArchivoAed.name}", "El tipo mime \\"" + mimeType + "\\" del documento a incorporar, no es válido. Compruebe los formatos de documentos aceptados.");
 			""";
 		}
 		else if (subirArchivoAed.extensiones.size > 0){
@@ -96,7 +96,7 @@ public class GSubirArchivoAed {
 			checkFile = """
 				String extension = GestorDocumentalUtils.getExtension(${subirArchivoAed.name});
 				if (${check})
-					validation.addError("${subirArchivoAed.name}", "La extensión de fichero \\"" + extension + "\\" no es aceptada por el servidor");
+					validation.addError("${subirArchivoAed.name}", "La extensión \\"" + extension + "\\" del documento a incorporar, no es válida. Compruebe los formatos de documentos aceptados.");
 			""";
 		}
 		else{
@@ -104,9 +104,9 @@ public class GSubirArchivoAed {
 				String extension = GestorDocumentalUtils.getExtension(${subirArchivoAed.name});
 				String mimeType = play.libs.MimeTypes.getMimeType(${subirArchivoAed.name}.getAbsolutePath());
 				if (!utils.GestorDocumentalUtils.acceptExtension(extension))
-					validation.addError("${subirArchivoAed.name}", "La extensión de fichero \\"" + extension + "\\" no es aceptada por el servidor");
+					validation.addError("${subirArchivoAed.name}", "La extensión \\"" + extension + "\\" del documento a incorporar, no es válida. Compruebe los formatos de documentos aceptados.");
 				if (!utils.GestorDocumentalUtils.acceptMime(mimeType))
-					validation.addError("${subirArchivoAed.name}", "El tipo mime \\"" + mimeType + "\\" no es aceptado por el servidor");
+					validation.addError("${subirArchivoAed.name}", "El tipo mime \\"" + mimeType + "\\" del documento a incorporar, no es válido. Compruebe los formatos de documentos aceptados.");
 			""";
 		}
 		

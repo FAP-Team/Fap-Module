@@ -83,7 +83,7 @@
 				columns: [
 				          {header: 'Fecha',  dataIndex: 'time', field: 'textfield', width:150},
 				          {header: 'Tipo',  dataIndex: 'level', field: 'textfield', width:50},
-				          {header: 'Mensaje',  dataIndex: 'message', flex:1, field: 'textfield',  height: "5"},
+				          {header: 'Mensaje',  dataIndex: 'message', flex:1, field: 'textfield'/*,  height: "5"*/},
 				          {header: 'Usuario',  dataIndex: 'user', field: 'textfield', width:80},
 				          {header: 'Clase',  dataIndex: 'class_', field: 'textfield', width:180}
 				          ],
@@ -128,7 +128,7 @@
 		    Ext.create('Ext.Panel', {
 		        frame: true,
 		        title: 'Logs',
-		        height: 400,
+		        height: 200,
 		        layout: 'border',
 		        items: [grid]
 		    });

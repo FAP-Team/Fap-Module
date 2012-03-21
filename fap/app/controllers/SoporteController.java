@@ -1,6 +1,12 @@
 
 package controllers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.joda.time.DateTime;
+
 import messages.Messages;
 import models.Agente;
 import models.Incidencia;
@@ -31,6 +37,8 @@ public class SoporteController extends SoporteControllerGen {
 		Incidencia dbincidencia = getIncidencia();
 
 		incidenciaValidateCopy(dbincidencia, incidencia);
+		DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); 
+		dbincidencia.fecha = df.format(new Date());
 
 		if(!validation.hasErrors()){
 			emails.Mails.enviar("incidencia",incidencia);

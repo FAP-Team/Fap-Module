@@ -12,6 +12,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Logs" accion="fap.LoggerController.index"
 			Enlace "Informe" accion="fap.InformeController.index"
 			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
+			Enlace "Incidencias" accion="fap.IncidenciasController.index"
 			Enlace "Properties" pagina=Propiedades
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 		}

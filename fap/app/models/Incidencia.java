@@ -30,6 +30,10 @@ public class Incidencia extends Model {
 	
 	
 	
+	public String fecha;
+	
+	
+	
 	public String telefono;
 	
 	

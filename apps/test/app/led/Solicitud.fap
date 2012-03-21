@@ -141,7 +141,7 @@ Formulario Solicitud {
 		Texto mString campo=Solicitud.valoresPorDefectoTest.mString titulo="String"
 		Texto mLong campo=Solicitud.valoresPorDefectoTest.mLong titulo="Long"
 		Texto mInteger campo=Solicitud.valoresPorDefectoTest.mInteger titulo="Integer"
-		Check mBoolean campo=Solicitud.valoresPorDefectoTest.mBoolean titulo="Boolean"
+		Check mBoolean campo=Solicitud.valoresPorDefectoTest.mBoolean titulo="Boolean de la Clase Boolean"
 		Check m2Boolean campo=Solicitud.valoresPorDefectoTest.otroBoolean titulo="Otro sin valor por defecto Boolean"
 		Texto mDouble campo=Solicitud.valoresPorDefectoTest.mDouble titulo="Double"
 		Texto mLongText campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText"
@@ -149,6 +149,9 @@ Formulario Solicitud {
 		Texto mLongText2 campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText 3" password
 		
 		Texto mEmbeddable campo=Solicitud.valoresPorDefectoTest.mEmbebida.algo titulo="String embeddable" 
+		
+		Check mbooleanNuevo campo=Solicitud.valoresPorDefectoTest.mbooleanNuevo titulo="boolean de tipo boolean"
+		Check otrobooleanNuevo campo=Solicitud.valoresPorDefectoTest.otrobooleanNuevo titulo="Boolean de tipo boolean a true por defecto"
 	}
 	
 	Pagina TablasSimples campo=Solicitud{
@@ -220,7 +223,7 @@ Formulario Solicitud {
 	
 	Pagina Paginas_Combo_niveles campo=PaginasTab{
 		Accion crear redirigir=ComboTablasPaginas
-		Texto campo=PaginasTab.nombre titulo="Nombre"
+		Accion editar redirigir=ComboTablasPaginas
 	}
 	
 	Pagina ComboTablasPaginas campo=Solicitud{
@@ -228,7 +231,7 @@ Formulario Solicitud {
 			Combo campo=Solicitud.paginas titulo="Combo ManyToOne" comboTexto=nombre
 		}
 		
-		Tabla comboTP campo=PaginasTab paginaCrear=Paginas_Combo_niveles  titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
+		Tabla comboTP campo=PaginasTab paginaCrear=Paginas_Combo_niveles paginaEditar=Paginas_Combo_niveles  titulo="Referencias de combos (Los combos no se actualizan automáticamente)"{
 			Columna campo=PaginasTab.nombre
 		}
 	}

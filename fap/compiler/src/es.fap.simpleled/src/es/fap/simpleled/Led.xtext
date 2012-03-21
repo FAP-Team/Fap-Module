@@ -58,7 +58,7 @@ Type:
 ;
 
 SimpleType:
-	type = ("String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText")
+	type = ("String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText" | "boolean")
 ;
 
 SpecialType:

@@ -32,6 +32,10 @@ public class ValoresPorDefectoTest extends Model {
 
 	public Boolean mBoolean;
 
+	public boolean mbooleanNuevo;
+
+	public boolean otrobooleanNuevo;
+
 	public Double mDouble;
 
 	@Column(columnDefinition = "LONGTEXT")
@@ -70,6 +74,7 @@ public class ValoresPorDefectoTest extends Model {
 		mLong = 2L;
 		mInteger = 4;
 		mBoolean = true;
+		otrobooleanNuevo = true;
 		mDouble = 2.345;
 		mLongText = "texto largooooo largiiisimo";
 		mTelefono = "900 120 120";

@@ -19,12 +19,15 @@ public class CheckValidator extends LedElementValidator {
 
 	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
-		return "Boolean".equals(LedEntidadUtils.getSimpleTipo(atributo));
+		if (("Boolean".equals(LedEntidadUtils.getSimpleTipo(atributo))) || ("boolean".equals(LedEntidadUtils.getSimpleTipo(atributo))))
+			return true;
+		else
+			return false;
 	}
 
 	@Override
 	public String mensajeError() {
-		return "El campo tiene que ser de tipo Boolean";
+		return "El campo tiene que ser de tipo Boolean o boolean";
 	}
 	
 }

@@ -236,7 +236,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			else if ((validType.equals("Long")) || (validType.equals("Integer")) || (validType.equals("Double"))) {
 				anotaciones.add("@Range(${attribute.validate})")
 			}
-			else if (validType.equals("Boolean")) {
+			else if (validType.equals("Boolean") || validType.equals("boolean")) {
 				anotaciones.add("@IsTrue")
 			}
 		}

@@ -112,9 +112,18 @@ public class GMenu {
 		}
 		
 		String script = "";
-		if(enlace.accion != null) //Accion
+		String seleccion = "";
+		if(enlace.accion != null){ //Accion
+			String link = """play.mvc.Router.reverse("${enlace.accion}")"""
+			String url = "url = ${link};";
+			script = """
+			%{
+				${url}
+			%}
+			""";
 			ref = "@{${enlace.accion}}"
-		else if(enlace.url != null) //URL
+			seleccion = """class="#{fap.activeRoute href:url, activeClass:'active' /}" """
+	    } else if(enlace.url != null) //URL
 			ref = enlace.url;
 		else if(enlace.popup != null){ //Popup
 			script = "${scriptUrl(Controller.fromPopup(enlace.popup.popup).initialize(), enlace.popup.accion)}";
@@ -131,7 +140,7 @@ public class GMenu {
 		return """
 			${permisoBefore}
 			${script}
-			<li><a href="${ref}">${titulo}</a></li>
+			<li ${seleccion}><a href="${ref}">${titulo}</a></li>
 			${permisoAfter}
 		""";
 	}

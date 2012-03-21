@@ -127,6 +127,13 @@
 		    	 if (selectedRecord.length) {
 		        	var incidencia = selectedRecord[0].data;
 		        	var $box = $('#mensajeIncidencia');
+		        	
+		        	$('#incidenciaFecha').html("");
+			        $('#incidenciaNombre').html("");
+			        $('#incidenciaEmail').html("");
+			        $('#incidenciaTelefono').html("");
+			        $('#incidenciaAsunto').html("");
+			        $('#incidenciaTexto').html("");
 			        
 			        if (incidencia.fecha != null)
 						$('#incidenciaFecha').html(incidencia.fecha);

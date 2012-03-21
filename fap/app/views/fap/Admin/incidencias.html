@@ -1,0 +1,171 @@
+
+#{extends 'fap/template.html' /}
+#{set title:'Incidencias' /}
+
+#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
+
+			
+#{set 'menu'}
+	#{include 'gen/menu/Administracion.html'/}
+#{/set}
+		
+#{fap.messages}
+
+#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a ésta página'}
+				
+<div id="tablaIncidencias" class="tabla"></div>
+
+<div id="mensajeIncidencia" class="alert"  style="display:none" >
+	<h2>Fecha</h2>
+	<p id="incidenciaFecha"></p>
+	<br/>
+	<h2>Nombre</h2>
+	<p id="incidenciaNombre"></p>
+	<br/>
+	<h2>Email</h2>
+	<p id="incidenciaEmail"></p>
+	<br/>
+	<h2>Teléfono</h2>
+	<p id="incidenciaTelefono"></p>
+	<br/>
+	<h2>Asunto</h2>
+	<p id="incidenciaAsunto"></p>
+	<br/>
+	<h2>Texto</h2>
+	<p id="incidenciaTexto"></p>
+	<br/>
+</div>
+
+
+<script>
+	Ext.onReady(function() {
+		if (!Ext.ModelManager.isRegistered('modelIncidencias')){
+			Ext.define('modelIncidencias',{
+        		extend: 'Ext.data.Model',
+					fields:['email', 
+					        'fecha', 
+					        'telefono', 
+					        'nombre', 
+					        'apellidos', 
+					        'asunto',
+					        'texto']
+		    	});
+			}
+
+	    	var logAction = #{jsAction @fap.IncidenciasController.incidencias() /}
+	    	
+			var store = Ext.create('Ext.data.Store', {
+		        model: 'modelIncidencias',
+		        autoLoad: true,
+		        proxy: {
+		            type: 'ajax',
+		            url: logAction(),
+		            reader: {
+		                type: 'json',
+		                root: 'rows',
+		                totalRecords: 'total'
+		            }
+		        }
+		    });
+
+			store.sort('fecha', 'DESC');
+
+		    var boton_actualizar = new Ext.Button({
+		    	text: 'Actualizar',
+		    	handler : function(){
+		    		store.load();
+		    	}
+		    });
+		    
+		    var grid = Ext.create('Ext.grid.Panel', {
+		        store: store,
+		        title: 'Incidencias',
+				renderTo: 'tablaIncidencias',
+				columns: [
+				          {header: 'Fecha',  dataIndex: 'fecha', field: 'textfield', width:120},
+				          {header: 'Nombre',  dataIndex: 'nombre', field: 'textfield', width:150},
+				          {header: 'Apellidos',  dataIndex: 'apellidos', field: 'textfield', width:150},
+				          {header: 'Asunto',  dataIndex: 'asunto', field: 'textfield', width:350}
+				          ],
+				id: 'tablaIncidencias-grid',
+		        height: 400,
+		        viewConfig: {
+		            forceFit: true
+		        },
+		        split: true,
+		        region: 'center',
+				dockedItems: [
+								{
+									itemId: 'barraInferior',
+			                		xtype: 'toolbar',
+			        				dock: 'bottom',
+			        				items: [
+			  							 {
+			  								itemId: 'searchbox',
+			                				width: 300,
+			                				fieldLabel: 'Buscar',
+			                				labelWidth: 50,
+			                				xtype: 'searchfield',
+			                				store: store
+			            				},
+						            '->',
+						            boton_actualizar
+			        				]
+			    				}
+							]
+		    });
+		        		    
+		    Ext.create('Ext.Panel', {
+		        frame: true,
+		        title: 'Incidencias',
+		        height: 400,
+		        layout: 'border',
+		        items: [grid]
+		    });
+		    
+		    grid.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
+		    	 if (selectedRecord.length) {
+		        	var incidencia = selectedRecord[0].data;
+		        	var $box = $('#mensajeIncidencia');
+			        
+			        $('#incidenciaFecha').html("");
+			        $('#incidenciaNombre').html("");
+			        $('#incidenciaEmail').html("");
+			        $('#incidenciaTelefono').html("");
+			        $('#incidenciaAsunto').html("");
+			        $('#incidenciaTexto').html("");
+			        
+			        if (incidencia.fecha != null)
+						$('#incidenciaFecha').html(incidencia.fecha);
+					if ((incidencia.nombre != null) && (incidencia.apellidos != null)) 
+			    		$('#incidenciaNombre').html(incidencia.nombre+" "+incidencia.apellidos);
+			    	else if (incidencia.nombre != null)
+			    		$('#incidenciaNombre').html(incidencia.nombre);
+			    	if (incidencia.email != null)	
+			    		$('#incidenciaEmail').html(incidencia.email);
+			    	if (incidencia.telefono != null)
+			    		$('#incidenciaTelefono').html(incidencia.telefono);
+			    	if (incidencia.asunto != null)
+			    		$('#incidenciaAsunto').html(incidencia.asunto);
+			    	if (incidencia.texto != null)
+			    		$('#incidenciaTexto').html(incidencia.texto);
+			    
+			    	$box.removeClass("alert alert-info");
+			    	$box.addClass("alert alert-info");
+			    	$box.show();
+		    	 }
+		  	});
+
+		   	store.addListener("load", function(data){
+				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
+		    });	  	
+		  	
+		});
+</script>
+			
+
+#{/fap.permiso}
+#{/fap.messages}
+#{/fap.permiso}
+
+		

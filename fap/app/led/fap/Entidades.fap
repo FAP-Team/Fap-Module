@@ -276,6 +276,7 @@ Entidad Aportacion {
 // Guardamos las incidencias realizadas
 Entidad Incidencia {
     Email email
+    String fecha
     String telefono
     String nombre
     String apellidos

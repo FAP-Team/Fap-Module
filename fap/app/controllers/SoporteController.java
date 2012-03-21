@@ -1,6 +1,10 @@
 
 package controllers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import messages.Messages;
 import models.Agente;
 import models.Incidencia;
@@ -39,6 +43,8 @@ public class SoporteController extends SoporteControllerGen {
 				dbIncidencia.email = agente.email;
 				dbIncidencia.nombre = agente.name;
 			}
+			DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); 
+			dbIncidencia.fecha= df.format(new Date());
 			emails.Mails.enviar("incidencia",incidencia);
 			dbIncidencia.save();
 			

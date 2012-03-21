@@ -25,6 +25,8 @@ public class Incidencia extends Model {
 	@Email
 	public String email;
 
+	public String fecha;
+
 	public String telefono;
 
 	public String nombre;

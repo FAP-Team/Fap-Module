@@ -18,7 +18,7 @@
 		
 <div id="tablaLogs" class="tabla"></div>
 
-<div id="mensajeLogs" class="alert alert-info"  style="display:none; color:black" >
+<div id="mensajeLogs" class="alert"  style="display:none; color:black" >
 	<h2>Fecha</h2>
 	<p id="mensajeFecha"></p>
 	<br/>
@@ -89,7 +89,7 @@
 				columns: [
 				          {header: 'Fecha',  dataIndex: 'time', field: 'textfield', width:150},
 				          {header: 'Tipo',  dataIndex: 'level', field: 'textfield', width:50},
-				          {header: 'Mensaje',  dataIndex: 'message', flex:1, field: 'textfield',  height: "5"},
+				          {header: 'Mensaje',  dataIndex: 'message', flex:1, field: 'textfield'/*,  height: "5"*/},
 				          {header: 'Usuario',  dataIndex: 'user', field: 'textfield', width:80},
 				          {header: 'Clase',  dataIndex: 'class_', field: 'textfield', width:180}
 				          ],
@@ -161,15 +161,15 @@
 			    	$('#mensajeMensaje').html(log.message);
 			    	$('#mensajeTraza').html(log.trace);
 			    
-			    	$box.removeClass("box box-error box-info box-fatal box-warn");
+			    	$box.removeClass("alert alert-info alert-error alert-warning alert-success");
 			    	if (log.level == "INFO")
-			    		$box.addClass("alert-message block-message success");
+			    		$box.addClass("alert alert-success");
 			    	else if (log.level == "WARN")
-			    		$box.addClass("alert-message block-message warning");
+			    		$box.addClass("alert alert-warning");
 			    	else if (log.level == "ERROR")
-			    		$box.addClass("alert-message block-message error");
+			    		$box.addClass("alert alert-error");
 			    	else if (log.level == "FATAL")
-			    		$box.addClass("alert-message block-message error");
+			    		$box.addClass("alert alert-error");
 			    	$box.attr('data-dismiss', 'alert');
 			    	$box.show();
 		    	 }

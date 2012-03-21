@@ -90,9 +90,7 @@ public class FirmaService {
 	/**
 	 * Permite a un funcionario habilitado firmar, valida la firma y la almacena en el AED
 	 * @param documento Documento firmado
-	 * @param firmantes Lista de firmantes. Se comprueba que la persona no haya firmado ya.
 	 * @param firma Firma
-	 * @param valorDocumentofirmanteSolicitado En el caso de que sea != null se comprueba que el certificado del firmante coincida
 	 */
 	public static void firmarFH(Documento documento, Firma firma){		
 		Firmante firmante = firma.validaFirmayObtieneFirmante(documento);

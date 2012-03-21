@@ -11,6 +11,13 @@ when
 then
 	grant
 
+rule adminOrGestor
+when
+	agente.rolActivo = "administrador"
+	or agente.rolActivo = "gestor"
+then
+	grant
+
 rule noUsuario
 when
 	agente.rolActivo = "usuario"

@@ -19,9 +19,16 @@ Formulario Solicitud {
 			}
 		
 			Form addDocumento campo=SolicitudGenerica.aportaciones.actual.documentos {		
-				Grupo titulo="Añadir documentación" {
+				Grupo titulo="Añadir documentación" permiso=usuario {
 					SubirArchivoAed fileAportacion campo=Documento requerido aportadoPor="CIUDADANO"
 					Boton subirDocumento titulo="Añadir documentación"
+				}
+			}
+			
+			Form addDocumentoGestor campo=SolicitudGenerica.aportaciones.actual.documentos {		
+				Grupo titulo="Añadir documentación por Gestor" permiso=adminOrGestor {
+					SubirArchivoAed fileAportacionGestor campo=Documento requerido
+					Boton subirDocumentoGestor titulo="Añadir documentación"
 				}
 			}
 		}

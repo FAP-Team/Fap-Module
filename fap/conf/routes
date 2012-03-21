@@ -119,6 +119,7 @@ POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
 GET /Solicitud/aportacion AportacionController.index
 
 POST /Solicitud/aportacion/addDocumento AportacionController.addDocumento
+POST /Solicitud/aportacion/addDocumentoGestor AportacionController.addDocumentoGestor
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
 POST /Solicitud/aportacion/presentar AportacionController.presentar
 GET /Solicitud/aportacionaportados AportacionAportadosController.index

@@ -13,8 +13,3 @@ TableKeyValue(roles-gestor):
   key: 'gestor'
   value: 'Gestor'
 
-TableKeyValue(roles-revisor):
-  table: 'roles'
-  key: 'revisor'
-  value: 'Revisor'
-

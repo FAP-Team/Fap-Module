@@ -237,6 +237,9 @@ public class RegistroService {
 				Mails.enviar("aportacionRealizada", solicitud);
 				
 				play.Logger.info("Justificante almacenado en el AED");
+			} catch (IllegalArgumentException e){
+				play.Logger.warn("No se encontró el ID del mail en la base de datos");
+				play.Logger.info("Justificante almacenado en el AED");
 			} catch (Exception e) {
 				e.printStackTrace();
 				Messages.error("Error al registrar de entrada la solicitud");
@@ -295,7 +298,6 @@ public class RegistroService {
 		Aportacion aportacion = solicitud.aportaciones.actual; 
 		
 		if ((aportacion.fechaAportacionSinRegistro == null) || (aportacion.fechaAportacionSinRegistro.isAfterNow())) {
-			System.out.println("-> "+aportacion.fechaAportacionSinRegistro);
 	        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	        Date date = new Date();
 			Messages.error("La fecha de incorporación debe ser anterior a "+dateFormat.format(date));

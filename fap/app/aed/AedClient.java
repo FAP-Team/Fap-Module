@@ -75,9 +75,7 @@ public class AedClient {
 	
 	public static String saveDocumentoTemporal(models.Documento documento, InputStream is, String filename) throws AedExcepcion {
 		//Preparamos el documento para subir al AED
-		System.out.println("Descripcion: "+documento.descripcion);
 		documento.prepararParaSubir();
-		System.out.println("Descripcion ahora: "+documento.descripcion);
 		documento.save();
 		
 		Documento documentoAed = new Documento();

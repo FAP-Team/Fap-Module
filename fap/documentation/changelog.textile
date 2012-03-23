@@ -1,5 +1,15 @@
 h2. Changelog
 
+h3. Versión 1.2.8
+
+* Borrado automaticamente de los ficheros PDF temporales cada cierto tiempo
+* Rol gestor añadido al módulo FAP.
+* Aportación de Documentos diferente para usuarios y gestores.
+* Página de incidencias y fecha en las mismas.
+* Fixed bug aportación de documentación.
+* Eliminado print del elemento firma.
+* Fixed bug tabla de logs en IE8.
+
 h3. Versión 1.2.7
 
 * Fixed bug en NipCheck nulos.

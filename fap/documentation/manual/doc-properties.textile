@@ -40,3 +40,7 @@ h2. Properties originarias de FAP
 ** Más información sobre la configuración del AED, "aquí":ws-aed
 * Configuración de Platino: *fap.platino.[...]*
 ** Más información sobre la configuración de Platino, "aquí":ws-platino
+* Configuración del borrado de los pdf temporales: *fap.delete.temporals=* _[true | false]_
+** Ejemplo: _fap.delete.temporals=true_ (Activa el borrado, por defecto es false)
+* Vejez de los pdf temporales a borrar: *fap.delete.temporals.old=* _[Xd | Xh |Xm]_
+** Ejemplo: _fap.delete.temporals.old=3h_ (Borrar PDF temporales con más de 3 horas de antiguedad)

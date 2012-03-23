@@ -2,7 +2,7 @@
 
 	<property environment="env" />
 	<!-- Configurado para utilizar rutas absolutas en base a la variable de entorno fapsdk -->
-	<property name="fapsdk" value="${env.FAPSDKv12}" />
+	<property name="fapsdk" value="${env.FAPSDK}" />
 	<property name="fap" value="${fapsdk}/fap" />
 	
 	<property name="compiler.src.dir" value="${fap}/compiler/src" />

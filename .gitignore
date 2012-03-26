@@ -94,6 +94,10 @@ apps/*/app/enumerado
 apps/*/dist
 # apps/*/gestorDocumental
 
+# Patch generado
+apps/test/app/DiffGen.patch
+fap/app/DiffGen.patch
+
 # Configuración de platino
 apps/test/conf/platino
 

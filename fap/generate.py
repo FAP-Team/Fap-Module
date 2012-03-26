@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import subprocess
+import sys
 
 def main():
     directorioOriginal = os.getcwd()
@@ -21,6 +22,13 @@ def main():
     separador = ':'
     if os.name == 'nt':
         separador = ';'
+
+    if os.path.exists(os.path.join(targetPath, "app/DiffGen.patch")):
+            os.remove(os.path.join(targetPath, "app/DiffGen.patch"))
+    diffParam = "false"
+    for elements in sys.argv:
+        if (elements == "--diff"):
+            diffParam = "true"
     
     classpath = separador.join(str(x) for x in jars)
 
@@ -33,7 +41,7 @@ def main():
     workflow = "workflow.LedGenerator";
     
     # app.java_path()
-    cmd = ["java", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, params];
+    cmd = ["java", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
     #print cmd
     subprocess.call(cmd);
 

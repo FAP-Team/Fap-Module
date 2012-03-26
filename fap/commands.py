@@ -92,6 +92,14 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
         #No desarrollo
         jars.append(os.path.join(moduleDir, "compiler" ,"lib/*")) 
         jars.append(os.path.join(moduleDir, "compiler", "compiled/*")) 
+     
+    # Borramos el posible fichero .patch, si existe. Así se genera uno nuevo, si pasamos --diff, o lo borramos para quitar basura si no.
+    if os.path.exists(os.path.join(targetPath, "app/DiffGen.patch")):
+            os.remove(os.path.join(targetPath, "app/DiffGen.patch"))
+    diffParam = "false"   
+    # Para generar el Patch con las diferencias de los ficheros generados, primero eliminamos la posibilidad de que exista el fichero resultado
+    if("--diff" in cmd_args):
+        diffParam = "true"
         
     #Variables para ejecutar el script  
     separador = ':'
@@ -110,8 +118,7 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     
     fapModelPath = os.path.join(moduleDir, "app", "led");
     workflow = "workflow.LedGenerator";
-    
-    cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, params];
+    cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
     return subprocess.call(cmd);
         
     
@@ -236,7 +243,6 @@ def init_application (app, args):
     FILE = open(conf, "a");
     FILE.write("\n#FAP Configuration\n");
     FILE.write("fap.app.name=" + app.name() + "\n");
-    FILE.write("#fap.ctxPath=\n");
     FILE.write("date.format=dd/MM/yyyy\n");
     FILE.write("fap.login.type.user=true\n");
     

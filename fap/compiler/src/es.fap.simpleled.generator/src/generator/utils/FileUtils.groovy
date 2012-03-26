@@ -1,12 +1,14 @@
 package generator.utils
 
 import java.io.File;
+import difflib.*;
 
 import org.apache.log4j.Logger;
 
 public class FileUtils {
 	
 	def static String target = "";
+	def static boolean diffPatchActive = false;
 	
 	private static Logger logger = Logger.getLogger("FileUtil")
 	
@@ -71,18 +73,76 @@ public class FileUtils {
 	 * Sobreescribe en el fichero
 	 * @param filepath Ruta
 	 * @param content  Contenido
+	 * @param diff, para indicar si queremos generar el patch diferencias o no
 	 */
 	public static void overwrite(String filepath, String content){
 		String fullPath = filepath;
 		File f = new File(fullPath);
 		overwrittenFiles.add(f.getAbsolutePath());
 		if(f.exists()){
-			if (fileIsEqual(filepath, content)){
+			if (fileIsEqual(filepath, content)){ // Si el fichero Generado no ha cambiado, no hacemos nada
+				// Para borrar posibles ficheros antiguos del que se calcularon las diferencias, si existen
+				String path = fullPath.split("/[^/]*\\.java")[0];
+				String fullPathDiff = path+"/diff";
+				String file = fullPath.split(".*/")[1];
+				String pathOld = fullPathDiff+"/"+file+"Old";
+				File fold = new File(pathOld);
+				if (fold.exists())
+					fold.delete();
 				return;	
 			}
-			f.delete();
+			if (diffPatchActive){ // Si queremos crear el fichero Patch (fichero con las diferencias respecto a la version anterior Generada)
+				// Calculamos los distintos path necesarios
+				// El Path de la carpeta donde está el fichero generado
+				String path = fullPath.split("/[^/]*\\.java")[0];
+				// El nombre del fichero que estamos generando
+				String file = fullPath.split(".*/")[1];
+				// El Path de la carpeta que contendra una copia de lso ficheros generados que van a cambiar
+				String fullPathDiff = path+"/diff";
+				// El path de la copia del fichero generado que va a cambiar
+				String pathOld = fullPathDiff+"/"+file+"Old";
+				File folder = new File(fullPathDiff);
+				// Si no existe la carpeta que contiene las copias de lso ficheros generados que van a cambiar, la creamos
+				if (!folder.exists())
+					createFolders(fullPathDiff);
+				File fold = new File(pathOld);
+				// Si existe la copia del fichero generado que va a cambiar, una copia antigua, la borramos
+				if (fold.exists())
+					fold.delete();
+				// Escribimos una copia del fichero que va a cambiar en el path correspondiente
+				write(fold.toString(), f.getText());
+				// Eliminamos el fichero que va a cambiar (ya tenemos su copia, que es lo que queriamos)
+				f.delete();
+				// Escribimos el fichero cambiado, la generación nueva
+				write(filepath, content);
+				// Para sacar las diferencias respecto al que tenemos nuevo generado, y al antiguo (la copia que almacenamos)
+				String patch = PatchDiff.generarPatch(pathOld, fullPath);
+				// Calculamos el path del fichero .patch que tendrá las diferencias dichas previamente
+				String pathDiff = fullPath.split("/app.*")[0]+"/app/DiffGen.patch";
+				File fdiff = new File(pathDiff);
+				// Si el fichero .patch ya existe, lo que haremos será escribirlo desde la última posición, ya que indicará que otro fichero generado previamente lo ha creado
+				if (fdiff.exists()){
+					try{
+						// Escribimos el fichero .patch (lo que sería un Append, añadir contenido al final)
+						FileWriter fstream = new FileWriter(pathDiff, true);
+						BufferedWriter out = new BufferedWriter(fstream);
+						out.write(patch);
+						out.close();
+						logger.info("Fichero patch: "+pathDiff+" sobreescrito correctamente con las diferencias de: "+fullPath);
+					}catch (Exception e){//Catch exception
+						logger.error("Error al escribir de nuevo en el fichero de patch: " + e.getMessage());
+					}
+				}
+				else{ // Si el fichero .patch no existe, indicará que es la primera vez que pasamos por aquí, así que lo creamos
+					write (pathDiff, patch);
+					logger.info("Fichero patch: "+pathDiff+" escrito correctamente con las diferencias de: "+fullPath);
+				}
+				return; // Salimos de la función, está todo listo
+			} else { // Si no queremos el fichero .patch
+				f.delete(); // Eliminamos el fichero antiguo que habia guardado de una generación anterior
+			}
 		}
-		write(filepath, content)
+		write(filepath, content); // Escribimos el nuevo fichero generado (Este caso es cuando no queremos crear el .patch)
 	}
 	
 	public static void overwrite(String path, String file, String content){
@@ -102,6 +162,20 @@ public class FileUtils {
 		}
 		String fileContent = f.getText();
 		return content.equals(fileContent);		
+	}
+	
+	private static List<String> fileToLines(String filename) {
+		List<String> lines = new LinkedList<String>();
+		String line = "";
+		try {
+			BufferedReader inB = new BufferedReader(new FileReader(filename));
+			while ((line = inB.readLine()) != null) {
+					lines.add(line);
+			}
+		} catch (IOException e) {
+				e.printStackTrace();
+		}
+		return lines;
 	}
 	
 	public static void writeInRegion(String filepath, String content){

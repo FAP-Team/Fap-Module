@@ -8,14 +8,13 @@ var modelPath
 var fapModelPath
 var targetPath
 var solicitud
+var diffParam
 
 Workflow {
 
 	component = org.eclipse.xtext.mwe.Reader {
 		// lookup all resources on the classpath
 		useJavaClassPath = true
-
-		
 
 		// or define search scope explicitly
 		path = modelPath
@@ -50,6 +49,7 @@ Workflow {
 		path = modelPath
 		target = targetPath
 		createSolicitud = solicitud
+		diff = diffParam
 	}
 
 	//Expande los formularios

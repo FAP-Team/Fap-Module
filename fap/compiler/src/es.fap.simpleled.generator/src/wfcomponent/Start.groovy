@@ -10,6 +10,7 @@ public class Start implements IWorkflowComponent {
 	static path;
 	def String target;
 	String createSolicitud;
+	String diff;
 	
 	// True si se está generando el módulo. False si la aplicación.
 	public static boolean generatingModule;
@@ -22,6 +23,7 @@ public class Start implements IWorkflowComponent {
         System.setProperty("line.separator", "\n");
         FileUtils.target = target;
 		generatingModule = !createSolicitud.equals("true");
+		FileUtils.diffPatchActive = diff.equals("true");
 	}
 
 	@Override

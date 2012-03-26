@@ -63,7 +63,7 @@ public class Solicitud extends SolicitudGenerica {
 	public Solicitante pj;
 	
 	
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
 	public ComboTestRef comboError;
 	
 	

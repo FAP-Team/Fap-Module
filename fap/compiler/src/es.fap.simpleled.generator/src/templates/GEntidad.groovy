@@ -201,7 +201,11 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			else{
 				//Referencia
 				String tipoReferencia = compuesto.tipoReferencia?.type ?: "OneToOne" //Si no especifica tipo es una OneToOne
-				anotaciones.add "@${tipoReferencia}(${cascadeType} fetch=FetchType.LAZY)"
+				if (tipoReferencia.equals("ManyToOne")) { // Si es ManyToOne, no ponemos la anotacion de cascade
+					anotaciones.add "@${tipoReferencia}(fetch=FetchType.LAZY)"
+				} else {
+					anotaciones.add "@${tipoReferencia}(${cascadeType} fetch=FetchType.LAZY)"
+				}
 				type= compuesto.entidad.name;
 				if(LedEntidadUtils.xToMany(attribute)){
 					type = "List<${type}>"

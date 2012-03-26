@@ -34,7 +34,7 @@ public class ComboTest extends Model {
 	public Set<String> listMultiple;
 	
 	
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
 	public ComboTestRef ref;
 	
 	
@@ -59,7 +59,7 @@ public class ComboTest extends Model {
 	public List<Long> listMultipleOverwriteLong;
 	
 	
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
 	public ComboTestRef refOverwrite;
 	
 	

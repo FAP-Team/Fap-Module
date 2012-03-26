@@ -170,7 +170,7 @@ En los campos **Para**, **CC** y **CCO** puede poner varios destinatarios separa
         Texto campo=Mail.sender titulo="De"
         Texto campo=Mail.sendTo titulo="Para" requerido
         Texto campo=Mail.cc titulo="CC"
-        Texto campo=Mail.bcc titulo="CCO"
+        Texto campo=Mail.bcc titulo="BCC"
         Texto campo=Mail.subject titulo="Asunto" requerido
         AreaTexto campo=Mail.content titulo="Mensaje" requerido
 		AreaTexto campo=Mail.footer titulo="Pie de mensaje"

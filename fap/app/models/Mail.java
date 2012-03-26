@@ -54,13 +54,13 @@ public class Mail extends Model {
 	// === MANUAL REGION START ===
 	private Mail render(Map<String, Object> args) {
 		Mail mail = new Mail();
-		if (!cc.isEmpty())
+		if ((cc != null) && (!cc.isEmpty()))
 			mail.cc = TemplateLoader.loadString(cc).render(args);
-		if (!bcc.isEmpty())
+		if ((bcc != null) && (!bcc.isEmpty()))
 			mail.bcc = TemplateLoader.loadString(bcc).render(args);
-		if (!sender.isEmpty())
+		if ((sender != null) && (!sender.isEmpty()))
 			mail.sender = TemplateLoader.loadString(sender).render(args);
-		if (!sendTo.isEmpty())
+		if ((sendTo != null) && (!sendTo.isEmpty()))
 			mail.sendTo = TemplateLoader.loadString(sendTo).render(args);
 		mail.content = TemplateLoader.loadString(content).render(args);
 		mail.footer = TemplateLoader.loadString(footer).render(args);

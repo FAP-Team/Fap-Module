@@ -41,14 +41,14 @@ public class Solicitud extends SolicitudGenerica {
 	@JoinTable(name = "solicitud_tabladenombres")
 	public List<TablaDeNombres> tablaDeNombres;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public ComboTestRef comboError;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitud_comboerrormany")
 	public List<ComboTestRef> comboErrorMany;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public PaginasTab paginas;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

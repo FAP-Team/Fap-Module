@@ -24,7 +24,7 @@ import properties.FapProperties;
 public class Evaluacion extends Model {
 	// Código de los atributos
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public SolicitudGenerica solicitud;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

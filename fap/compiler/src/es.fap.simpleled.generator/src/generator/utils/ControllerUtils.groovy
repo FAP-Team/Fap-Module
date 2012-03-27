@@ -617,7 +617,10 @@ class ControllerUtils {
 			}
 			
 			if (isCheckEntity(objeto)) {
-                out += valid(campo);
+                if (objeto instanceof Solicitante)
+					out += validSolicitante(campo); // Para que valide el representante
+				else
+					out += valid(campo);
             } else {
                 // Debemos validar normalmente (sus entidades padre)
                 int dotPlace = campol.length();
@@ -665,6 +668,19 @@ class ControllerUtils {
         }
         return out;
     }
+	
+	private static String validSolicitante(String campo){
+		campo = StringUtils.firstLower(campo);
+		for (Set<String> set: validatedFields){
+			if (set.contains(campo)){
+				return "";
+			}
+		}
+		validatedFields.peek().add(campo);
+		String campoFirstUpper = campo;
+		campoFirstUpper = campo.substring(0, 1).toUpperCase() + campo.substring(1, campo.length());
+		return "CustomValidation.valid(\"${campo}\", ${campo}, db${campoFirstUpper}.representantes);\n";
+	}
 	
 	private static String valid(String campo){
 		campo = StringUtils.firstLower(campo);

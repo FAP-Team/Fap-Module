@@ -2,6 +2,7 @@ h2. Changelog
 
 h3. Versión 1.2.8
 
+* Validacion de que el solicitante no se tenga a él mismo como representante
 * Mejorado el control de participaciones en las solicitudes.
 * Limpieza de campos de persona no seleccionados.
 * Borrado automaticamente de los ficheros PDF temporales cada cierto tiempo

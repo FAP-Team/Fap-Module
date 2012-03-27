@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 1.2.8
 
+* Mejorado el control de participaciones en las solicitudes.
+* Limpieza de campos de persona no seleccionados.
 * Borrado automaticamente de los ficheros PDF temporales cada cierto tiempo
 * Rol gestor añadido al módulo FAP.
 * Aportación de Documentos diferente para usuarios y gestores.

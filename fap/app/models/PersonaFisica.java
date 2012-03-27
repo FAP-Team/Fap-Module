@@ -78,6 +78,17 @@ public class PersonaFisica extends Model {
 	public String getNumeroId(){
 		return nip.valor;
 	}
+	
+	/**
+	 * Limpia los datos que se muestran por defecto.
+	 */
+	public void clearData () {
+		nombre = "";
+		primerApellido = "";
+		segundoApellido= "";
+		nip.tipo = "";
+		nip.valor = "";
+	}
 // === MANUAL REGION END ===
 	
 	

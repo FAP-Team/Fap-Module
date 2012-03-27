@@ -58,7 +58,7 @@ public class RepresentantePersonaFisica extends Persona {
 	@PrePersist
 	public void printPre () {
 		play.Logger.info("Se va a guardar el representante ["+this.toString()+"]");
-	}			
+	}
 // === MANUAL REGION END ===
 	
 	

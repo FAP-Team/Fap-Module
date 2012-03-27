@@ -2,6 +2,7 @@ Lista TiposParticipacion crearEnumerado {
 	creador : "Creador"
 	solicitante: "Solicitante"
 	representante: "Representante"
+	otro: "Otro"
 }
 
 Lista TiposRepresentantes crearEnumerado {

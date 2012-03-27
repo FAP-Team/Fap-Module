@@ -68,7 +68,17 @@ public class PersonaJuridica extends Model {
 	
 
 // === MANUAL REGION START ===
-
+	/**
+	 * Limpia los datos que se muestran por defecto.
+	 */
+	public void clearData () {
+		entidad = "";
+		cif = "";
+		email = "";
+		telefonoFijo = "";
+		telefonoMovil = "";
+		fechaFirma = null;
+	}
 // === MANUAL REGION END ===
 	
 	

@@ -93,6 +93,14 @@ public class Persona extends Model {
 		return null;
 	}
 	
+	/**
+	 * Limpia los datos que se muestran por defecto.
+	 */
+	public void clearData () {
+		fisica.clearData();
+		juridica.clearData();
+		tipo = "";
+	}
 // === MANUAL REGION END ===
 	
 	

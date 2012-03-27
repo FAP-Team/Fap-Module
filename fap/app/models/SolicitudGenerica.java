@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import controllers.fap.SecureController;
+import enumerado.fap.gen.TiposParticipacionEnum;
 import play.db.jpa.JPABase;
 import play.mvc.Http.Request;
 
@@ -157,29 +158,102 @@ public class SolicitudGenerica extends Model {
 	public <T extends JPABase> T save() {
 		//merge();
 		_save();
-		participacionSolicitud();
+		participacionesSolicitud();
 		return (T) this;
 	}
 
 	public void participacionSolicitud() {
 		if ((solicitante != null) && (solicitante.tipo != null)) {
 			if (solicitante.isPersonaFisica()) {
-				compruebaUsuarioParticipacion(solicitante.fisica.nip.valor, solicitante.getNombreCompleto(), solicitante.email);
+				compruebaUsuarioParticipacionSolicitante(solicitante.fisica.nip.valor, solicitante.getNombreCompleto(), solicitante.email);
 				if (solicitante.representado) {
-					compruebaUsuarioParticipacion(solicitante.representante.getNumeroId(), solicitante.representante.getNombreCompleto(), solicitante.representante.email);
-				}	
+					compruebaUsuarioParticipacionRepresentante(solicitante.representante.getNumeroId(), solicitante.representante.getNombreCompleto(), solicitante.representante.email);
+				}
 			}
 			else {
-				compruebaUsuarioParticipacion(solicitante.juridica.cif, solicitante.getNombreCompleto(), solicitante.email);
+				compruebaUsuarioParticipacionSolicitante(solicitante.juridica.cif, solicitante.getNombreCompleto(), solicitante.email);
 				for (RepresentantePersonaJuridica representante: solicitante.representantes){
-					compruebaUsuarioParticipacion(representante.getNumeroId(), representante.getNombreCompleto(), representante.email);
+					compruebaUsuarioParticipacionRepresentante(representante.getNumeroId(), representante.getNombreCompleto(), representante.email);
 				}
 				
 			}
 		}
 	}
 	
-	private void compruebaUsuarioParticipacion(String user, String name, String email){
+	public void participacionesSolicitud () {
+		if ((solicitante != null) && (solicitante.tipo != null)) {
+			// Participación del Solicitante
+			Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.solicitud.id=? and participacion.tipo='solicitante'", this.id).first();
+			if ((p != null) && (solicitante != null) && solicitante.getNumeroId() != null && solicitante.getNumeroId().equals(p.agente.username)) {
+				play.Logger.info("El Solicitante <"+solicitante.getNumeroId()+"> ya tiene participación en la solicitud "+this.id);
+			} else {
+				if (p != null) {
+					play.Logger.info("Eliminamos la participación "+p.agente.username+" de la solicitud "+p.solicitud.id);
+					p.delete();
+				}
+				compruebaUsuarioParticipacionSolicitante(solicitante.getNumeroId(), solicitante.getNombreCompleto(), solicitante.email);
+			}
+			// Participaciones de los representantes
+			List<Participacion> listP = Participacion.find("select participacion from Participacion participacion where participacion.solicitud.id=? and participacion.tipo='representante'", this.id).fetch();
+			boolean _yaExiste = false;
+			if (solicitante.isPersonaFisica()) {
+				for (Participacion part: listP) {
+					if (solicitante.representado && (part != null) && solicitante.representante.getNumeroId().equals(part.agente.username)) {
+						play.Logger.info("El representante <"+solicitante.representante.getNumeroId()+"> ya tiene participación en la solicitud "+this.id);
+						_yaExiste = true;
+					} else {
+						if (part != null) {
+							play.Logger.info("Eliminamos la participación "+part.agente.username+" de la solicitud "+part.solicitud.id);
+							part.delete();
+						}
+					}
+					if (!_yaExiste && solicitante.representado) {
+						compruebaUsuarioParticipacionRepresentante(solicitante.representante.getNumeroId(), solicitante.representante.getNombreCompleto(), solicitante.representante.email);
+					}
+				}
+			}
+			
+			if (solicitante.isPersonaJuridica()) {
+				// Eliminamos las participaciones que sobran
+				for (Participacion part: listP) {
+					boolean deletePart = true;
+					for (RepresentantePersonaJuridica rep : solicitante.representantes) {
+						if (rep.getNumeroId().equals(part.agente.username)) {
+							play.Logger.info("El representante <"+rep.getNumeroId()+"> ya tiene participación en la solicitud "+this.id);
+							deletePart = false;
+						}
+					}
+					if (deletePart) {
+						play.Logger.info("Eliminamos la participación "+part.agente.username+" de la solicitud "+part.solicitud.id);
+						part.delete();
+					}
+				}
+				// Añadimos las participaciones de los representantes que faltan
+				for (RepresentantePersonaJuridica rep : solicitante.representantes) {
+					boolean createPart = true;
+					for (Participacion part: listP) {
+						if (rep.numeroId.equals(part.agente.username)) {
+							createPart = false;
+						}
+					}
+					if (createPart) {
+						compruebaUsuarioParticipacionRepresentante(rep.getNumeroId(), rep.getNombreCompleto(), rep.email);
+					}
+				}
+			}
+			
+		}
+	}
+	
+	private void compruebaUsuarioParticipacionSolicitante (String user, String name, String email) {
+		compruebaUsuarioParticipacion(user, name, email, "solicitante");
+	}
+	
+	private void compruebaUsuarioParticipacionRepresentante (String user, String name, String email) {
+		compruebaUsuarioParticipacion(user, name, email, "representante");
+	}
+	
+	private void compruebaUsuarioParticipacion(String user, String name, String email, String tipo){
 		if (user == null) {
 			play.Logger.info("No se comprueba la participación, porque el usuario es: "+user);
 			return;
@@ -203,9 +277,21 @@ public class SolicitudGenerica extends Model {
 			p = new Participacion();
 			p.agente = agente;
 			p.solicitud = this;
-			p.tipo = "solicitante";
+			p.tipo = tipo;
 			p.save();
 			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
+		}	
+	}
+	
+	private void clearUsuarioParticipacion(String user, String name, String email){
+		if (user == null) {
+			play.Logger.info("No se comprueba la participación, porque el usuario es: "+user);
+			return;
+		}
+		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).first();
+		if (p != null) {
+			p.delete();
+			play.Logger.info("Eliminada la participación del agente %s en la solicitud %s", user, this.id);
 		}	
 	}
 	

@@ -335,11 +335,15 @@ class ControllerUtils {
 				camposFiltrados = camposSolicitante
 				if (!((Solicitante) objeto).isNoRepresentante()) {
 					validOut += """if (${campo.firstLower()}.isPersonaFisica()) {
+						db${campo.getStr()}.juridica.clearData(); // clear juridica
 					"""
 					validOut += copyRepresentanteFisica (campo.str)
 					if (!((Solicitante) objeto).representantePersonaFisica)
 						validOut += copyRepresentanteJuridica (campo.str)
 					validOut += """\n}""";
+					validOut += """if (${campo.firstLower()}.isPersonaJuridica()) {
+						db${campo.getStr()}.fisica.clearData(); // clear física
+					}""";
 				}
 			}
 			else if (((Solicitante) objeto).elemento == "SolicitantePersonaFisica"){
@@ -529,6 +533,12 @@ class ControllerUtils {
 		validOut += "if (db${campo}${persona}.representante == null) db${campo}${persona}.representante = ${campol}${persona}.representante;\n"
 		camposFJ.each {field -> validOut += "db${campo}${persona}.representante.fisica.${field} = ${campol}${persona}.representante.fisica.${field};\n"}
 		validOut += "\n}";
+		validOut += """
+			// Clear Data del representante
+			if ((${campol}${persona}.representado == null) || (${campol}${persona}.representado == false)) {
+				db${campo}${persona}.representante.clearData();
+			}
+		"""
 	}
 	
 	/**

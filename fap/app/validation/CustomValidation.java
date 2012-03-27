@@ -18,6 +18,7 @@ import models.Nip;
 import models.Persona;
 import models.PersonaFisica;
 import models.PersonaJuridica;
+import models.RepresentantePersonaJuridica;
 import models.Solicitante;
 import models.TableKeyValue;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
@@ -134,6 +135,29 @@ public class CustomValidation {
         }
     }
 	
+    static ValidationResult applyCheck(RepresentanteCheck check, String key, Object o, Object o2) {
+    	StringBuilder texto = new StringBuilder();
+        try {
+            ValidationResult result = new ValidationResult();
+            if (!check.validaRepresentante((Solicitante)o, (List<RepresentantePersonaJuridica>)o2, texto)) {
+            	
+            	String field = key;
+            	String message = texto.toString();
+            	String[] variables = new String[0];
+                
+            	Error error = new Error(field, message, variables);
+                Validation.addError(field, message, variables);
+                
+                result.error = error;
+                result.ok = false;
+            } else {
+                result.ok = true;
+            }
+            return result;
+        } catch (Exception e) {
+            throw new UnexpectedException(e);
+        }
+    }
     
     public static ValidationResult required(String key, Object o) {
     	CustomRequiredCheck requiredCheck = new CustomRequiredCheck();
@@ -195,6 +219,17 @@ public class CustomValidation {
         }
         return "";
     }
+    public static ValidationResult valid(String key, Object o, Object o2) { // o2 tiene la lista de representantes
+    	ValidationResult result = new ValidationResult();
+		if (o instanceof Solicitante){ // Para validar que el representante de un solicitante no es el propio solicitante
+			RepresentanteCheck checkRepresentante = new RepresentanteCheck();
+			result.ok = true;
+			result.ok = applyCheck(checkRepresentante, key, o, o2).ok && result.ok;
+			if (!result.ok)
+				return result;
+		}
+    	return valid(key, o);
+    }
     
     
     public static ValidationResult valid(String key, Object o) {
@@ -206,7 +241,6 @@ public class CustomValidation {
 			ValidationResult result = new ValidationResult();
 			result.ok = true;
 			result.ok = applyCheck(check, key, o).ok && result.ok;
-
     		if (o instanceof Persona) {
     			if(((Persona) o).isPersonaFisica()){
     				result.ok = valid(key + ".fisica", ((Persona) o).fisica).ok && result.ok;

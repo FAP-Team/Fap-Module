@@ -180,3 +180,9 @@ Lista estadoConvocatoria crearEnumerado {
 	presentacion : "Presentación"
 	instruccion : "Instrucción"	
 }
+
+Lista estadosDocumentoVerificacion crearEnumerado {
+	noPresentado: "No Presentado"
+	noVerificado: "No Verificado"
+	noProcede: "No Procede"
+}

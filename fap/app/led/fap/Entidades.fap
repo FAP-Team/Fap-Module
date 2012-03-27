@@ -27,6 +27,7 @@ Entidad SolicitudGenerica tableName = "solicitud"{
 	ExpedienteAed expedienteAed
 	Aportaciones aportaciones
 	Verificacion verificacion
+	OneToMany Verificacion verificaciones
 }
 
 // Dátos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -307,17 +308,18 @@ Entidad Log nonPersist {
 
 // Entidad que permite la verificación de documentación
 Entidad Verificacion {
-	String uriVerificacion
-	String uriProcedimiento
-	String uriTramite
-	String expediente
-	String estado
-		
-	OneToMany VerificacionDocumento documentos transient
+	String uriVerificacion	// Uri específica de la verificación actual
+	String uriProcedimiento	// Uri del procedimiento
+	String uriTramite		// Uri del trámite al que pertenece
+	String expediente		// Expediente al que pertenece
+	String estado			// Estado de la verificación
+	
+	// El atributo no es transient ahora
+	OneToMany VerificacionDocumento documentos
 		
 	String uriExclusion
 	String motivoExclusion
-	OneToMany Exclusion codigosExclusion transient
+	OneToMany Exclusion codigosExclusion
 		 
 	OneToOne Requerimiento requerimientoProceso
 	OneToMany Requerimiento requerimientos
@@ -335,7 +337,8 @@ Entidad VerificacionDocumento {
 	String etiquetaTipoDocumento
 	String descripcion
 		
-	String estadoDocumentoVerificacion
+	//String estadoDocumentoVerificacion
+	List estadosDocumentoVerificacion estadoDocumentoVerificacion
 	DateTime fechaPresentacion
 	String identificadorMultiple
 	Integer version

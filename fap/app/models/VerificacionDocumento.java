@@ -45,7 +45,7 @@ public class VerificacionDocumento extends Model {
 	public String descripcion;
 	
 	
-	
+	@ValueFromTable("estadosDocumentoVerificacion")
 	public String estadoDocumentoVerificacion;
 	
 	

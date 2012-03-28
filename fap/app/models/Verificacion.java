@@ -47,7 +47,6 @@ public class Verificacion extends Model {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_documentos")
-	@Transient
 	public List<VerificacionDocumento> documentos;
 	
 	
@@ -61,7 +60,6 @@ public class Verificacion extends Model {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_codigosexclusion")
-	@Transient
 	public List<Exclusion> codigosExclusion;
 	
 	

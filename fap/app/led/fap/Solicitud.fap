@@ -126,20 +126,77 @@ Formulario Solicitud {
 	
 	
 	
+	/***************************************************************************************************/
 	
+	Pagina AccesoVerificaciones titulo="Verificaciones" noForm {
+		Tabla verificacionesFinalizadas titulo="Verificaciones Finalizadas" campo=SolicitudGenerica.verificaciones
+			popupVer=PopUpVerificacionVer  
+			{
+				Columna titulo="Uri" campo=Verificacion.uriVerificacion ancho="150"
+				Columna titulo="Expediente" campo=Verificacion.expediente ancho="150"
+				Columna titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion ancho="150" 
+				Columna titulo="Fecha creación" campo=Verificacion.fechaCreacion ancho="150"
+				Columna titulo="Fecha actualización" campo=Verificacion.fechaUltimaActualizacion ancho="150"
+				Columna titulo="Estado" campo=Verificacion.estado ancho="100"
+			}
+		Grupo gVerificacionActual titulo="Acceder a la verificacion actual" permiso=hayVerificacionEnCurso {
+			Form verificacionActual {
+				Wiki {"Pulse el botón para acceder a la verificación que está actualmente en curso."}
+				Boton botonIraVerificacion titulo="Ir a verificación" pagina=Verificacion
+			}
+		}
+		
+		Grupo gVerificacionNueva titulo="Crear una nueva verificación" permiso=noHayVerificacionEnCurso{
+			Form verificacionNueva {
+				Wiki {"Pulse el botón para crear una nueva verificación."}
+				Boton botonIniciarVerificacion titulo="Nueva verificación" pagina=Verificacion
+			}
+		}
+	}
 	
+	Popup PopUpVerificacionVer ver titulo="Verificación" campo=SolicitudGenerica.verificaciones {
+		Texto uri titulo="Uri" campo=Verificacion.uriVerificacion
+		Texto expediente titulo="Expediente" campo=Verificacion.expediente
+		Texto exclusion titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion
+		Fecha fechaCreacion titulo="Fecha creación" campo=Verificacion.fechaCreacion
+		Fecha fechaActualizacion titulo="Fecha actualización" campo=Verificacion.fechaUltimaActualizacion
+		Texto estado titulo="Estado" campo=Verificacion.estado
+		Tabla documentosVerificacion titulo="Documentación" campo=Verificacion.documentos
+			popupVer=PopUpDocumentacionVerificacionVer  
+			{
+				Columna titulo="Tipo" campo=VerificacionDocumento.etiquetaTipoDocumento ancho="150"
+				Columna titulo="Descripción" campo=VerificacionDocumento.descripcion ancho="150"
+				Columna titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion ancho="150" 
+				Columna titulo="Versión" campo=VerificacionDocumento.version ancho="50"
+				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
+			}
+	}
 	
+	Popup PopUpDocumentacionVerificacionVer ver titulo="Documentación" campo=Verificacion.documentos {
+		Texto titulo="Tipo" campo=VerificacionDocumento.etiquetaTipoDocumento
+		Texto titulo="Descripción" campo=VerificacionDocumento.descripcion
+		Fecha titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion 
+		Texto titulo="Versión" campo=VerificacionDocumento.version
+		Combo titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
+		Tabla requerimientosVerificacion titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
+			popupVer=PopUpRequerimientosVerificacionVer  
+			{
+				Columna titulo="Código" campo=CodigoRequerimiento.codigo ancho="150"
+				Columna titulo="Descripción" campo=CodigoRequerimiento.descripcionCorta expandir
+			}
+	}
 	
+	Popup PopUpRequerimientosVerificacionVer ver titulo="Documentación" campo=VerificacionDocumento.codigosRequerimiento {
+		Texto codigo titulo="Código" campo=CodigoRequerimiento.codigo
+		Texto descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta
+		AreaTexto descripcion titulo="Descripción" campo=CodigoRequerimiento.descripcion
+	}
 	
-	
-	
-	
-	
-	
+	/***************************************************************************************************/
 	
 	
 	Pagina Verificacion titulo="Verificación de la documentación" noForm {
-		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
+		Grupo verificacionMensaje visible=false /*permiso=mensajeVerificacion*/ {
 			Wiki {"
 Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
 				"}
@@ -183,7 +240,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 		}
 		
 		Grupo grequerimientos titulo="Requerimientos" /*permiso=verificacionRequerimientos*/ {
-			Grupo gnuevoRequerimiento titulo="Añadir requerimiento" /*permiso=nuevoRequerimiento*/ {				
+			Grupo gnuevoRequerimiento titulo="Añadir requerimiento" /*permiso=nuevoRequerimiento*/{				
 				Form grequerimientoGuardar { 
 					AreaTexto requerimientoCrearMotivo titulo="Motivo del requerimiento" campo=SolicitudGenerica.verificacion.requerimientoProceso.motivo
 					Boton requerimientoGuardar titulo="Guardar motivo del requerimiento"

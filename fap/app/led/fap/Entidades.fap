@@ -338,7 +338,7 @@ Entidad VerificacionDocumento {
 	String descripcion
 		
 	//String estadoDocumentoVerificacion
-	List estadosDocumentoVerificacion estadoDocumentoVerificacion
+	Lista estadosDocumentoVerificacion estadoDocumentoVerificacion
 	DateTime fechaPresentacion
 	String identificadorMultiple
 	Integer version

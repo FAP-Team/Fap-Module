@@ -518,3 +518,19 @@ when
 	agente.rolActivo = "administrador"
 then
 	grant
+
+rule noHayVerificacionEnCurso
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado = null) 
+then
+    grant
+	
+rule hayVerificacionEnCurso
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado != null) 
+then
+    grant

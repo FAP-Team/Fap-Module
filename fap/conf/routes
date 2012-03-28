@@ -116,6 +116,11 @@ GET /Principal/solicitudes SolicitudesController.index
 
 GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
 POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
+GET /Solicitud/accesoverificaciones AccesoVerificacionesController.index
+
+POST /Solicitud/accesoverificaciones/verificacionActual AccesoVerificacionesController.verificacionActual
+GET /Solicitud/accesoverificaciones/verificacionesFinalizadas AccesoVerificacionesController.tablaverificacionesFinalizadas
+POST /Solicitud/accesoverificaciones/verificacionNueva AccesoVerificacionesController.verificacionNueva
 GET /Solicitud/aportacion AportacionController.index
 
 POST /Solicitud/aportacion/addDocumento AportacionController.addDocumento
@@ -153,6 +158,26 @@ POST /Solicitud/popupdocprocesos/{idEntidad}/borrar popups.PopUpDocProcesosContr
 POST /Solicitud/popupdocprocesos/{idEntidad}/crear popups.PopUpDocProcesosController.crear
 POST /Solicitud/popupdocprocesos/{idEntidad}/cancelarcrear popups.PopUpDocProcesosController.cancelarCrear
 
+GET /Solicitud/popupdocumentacionverificacionver/{idEntidad}/abrir popups.PopUpDocumentacionVerificacionVerController.abrir
+POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/editar popups.PopUpDocumentacionVerificacionVerController.editar
+POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/borrar popups.PopUpDocumentacionVerificacionVerController.borrar
+POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/crear popups.PopUpDocumentacionVerificacionVerController.crear
+POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/cancelarcrear popups.PopUpDocumentacionVerificacionVerController.cancelarCrear
+
+GET /Solicitud/popupdocumentacionverificacionver/{idEntidad}/requerimientosVerificacion popups.PopUpDocumentacionVerificacionVerController.tablarequerimientosVerificacion
+GET /Solicitud/popuprequerimientosverificacionver/{idEntidad}/abrir popups.PopUpRequerimientosVerificacionVerController.abrir
+POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/editar popups.PopUpRequerimientosVerificacionVerController.editar
+POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/borrar popups.PopUpRequerimientosVerificacionVerController.borrar
+POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/crear popups.PopUpRequerimientosVerificacionVerController.crear
+POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/cancelarcrear popups.PopUpRequerimientosVerificacionVerController.cancelarCrear
+
+GET /Solicitud/popupverificacionver/{idEntidad}/abrir popups.PopUpVerificacionVerController.abrir
+POST /Solicitud/popupverificacionver/{idEntidad}/editar popups.PopUpVerificacionVerController.editar
+POST /Solicitud/popupverificacionver/{idEntidad}/borrar popups.PopUpVerificacionVerController.borrar
+POST /Solicitud/popupverificacionver/{idEntidad}/crear popups.PopUpVerificacionVerController.crear
+POST /Solicitud/popupverificacionver/{idEntidad}/cancelarcrear popups.PopUpVerificacionVerController.cancelarCrear
+
+GET /Solicitud/popupverificacionver/{idEntidad}/documentosVerificacion popups.PopUpVerificacionVerController.tabladocumentosVerificacion
 GET /Solicitud/verificacion VerificacionController.index
 
 GET /Solicitud/verificacion/exclusion VerificacionController.tablaexclusion

@@ -10,6 +10,7 @@ Formulario Solicitud {
 			Enlace "ErrorCombos" pagina=PaginaCombosError
 		}
 		
+		Enlace "Verificacion" pagina=Solicitud.AccesoVerificaciones
 		
 		Grupo "Solicitantes" {
 			Enlace "S. Normal" pagina=Solicitante

@@ -19,7 +19,7 @@
 	%{
 		def tiposDocumentos
 		if (tramite == null){
-			if (aportadosPor == null)
+			if (aportadoPor == null)
 				tiposDocumentos = models.TipoDocumento.findAll();
 			else
 				tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(aportadoPor);

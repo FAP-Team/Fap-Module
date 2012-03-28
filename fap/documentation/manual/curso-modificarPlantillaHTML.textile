@@ -8,7 +8,10 @@ h2. Cambiar aspectos en páginas HTML
 
 Todas las páginas HTML generadas por la aplicación siguen como esquema general una plantilla HTML que personaliza dicha página.
 
-Así de esta manera, todas las páginas tienen como elementos en común las mismas cabeceras y pie de páginas con los distintos logos y colores.
+Así de esta manera, todas las páginas tienen como elementos en común las mismas cabeceras y pie de páginas con los distintos logos y colores, como podemos ver en la siguiente imagen que muestra la estructura visual que implementa cualquier pagina de FAP.
+
+Imagen: Estructura visual de una página html de FAP
+!images/curso-modificarPlantillaHTML-EstructuraPlantilla!
 
 Para modificar esta platilla, debemos de crear/modificar el fichero asociada a la misma en nuestro proyecto. Para ello:
 * Debemos posicionarnos en la carpeta del proyecto
@@ -18,7 +21,7 @@ Para modificar esta platilla, debemos de crear/modificar el fichero asociada a l
 
 El fichero "template.html", es el fichero del cual extienden todas las demás páginas HTML, por lo que es el que permite personalizar en común nuestras páginas HTML.
 
-Si queremos que un elemento visual se muestre en todas nuestras páginas HTML deberemos de indicarselo en este fichero.
+Si queremos que un elemento visual se muestre en todas nuestras páginas HTML deberemos de indicarselo en este fichero, o en los ficheros de cabecera y de pie de pagina (header.html y footer.html), que también se indican en este fichero, por lo que el header y el footer siempre aparecerán en cualquier pagina html generada por FAP, tal y como se explicó visualmente antes en la primera imagen.
 
 Podemos fijarnos en la estructura del fichero "template.html" por defecto de fap, que se encuentra en:
 * ${APP}/modules/fap/app/views/fap/template.html
@@ -86,10 +89,8 @@ bc. <!DOCTYPE html>
     </head>
     <body>
 	<div class="wrapper container_12">
-		<div id="header" class="grid_12">			
-			<div id="banderaue">
-    				<img src="@{'/public/images/aciisi_gris.gif'}" width="147px" height="64px"/>
-    			</div>			
+		<div id="header" class="grid_12">
+			#{include 'fap/header.html' /}			
 		</div> 	
 		<div class="clear"></div>    	
 		#{if menu != null}
@@ -112,6 +113,12 @@ bc. <!DOCTYPE html>
 	 </div>
     </body>
 </html>
+
+Y en el fichero de cabecera del template.html, el fichero 'header.html', se ha sobreescrito como sigue
+
+bc. <div id="banderaue">
+   <img src="@{'/public/images/aciisi_gris.gif'}" width="147px" height="64px"/>
+</div>		
 
 h2. Cambiar estilos CSS
 
@@ -151,6 +158,28 @@ Para cambiar el color del pie de página de esta manera, simplemente se tiene qu
 bc. .footer {
 	background-color: #0077EE;
 }
+
+h2. Cambiar el aspecto de login.html
+
+Existe la posibilidad de personalizar la página de login (primera página de cualquier aplicación), para poner a parte de las cabeceras y pies de paginas (header y footer), que vimos antes y existen en cualquier pagina FAP, que queramos.
+
+La estructura de la pagina de login, visualmente hablando es la siguiente:
+
+!images/curso-modificarPlantillaHTML-Login!
+
+De esta manera vemos que existen dos secciones totalmente personalizables de dicha página como son, Intrucciones y Ayuda. Sobreescribiendo dichas plantillas (instrucciones.html y help.html), podemos poner en esos sitios lo que realmente nos plazca.
+
+Estas plantillas deberán crearse, si no existen, en el path: 
+* Debemos posicionarnos en la carpeta del proyecto
+* Ir a la carpeta /app/views
+* Crear (si no existe), dentro de /views, la carpeta /fap
+* Crear (si no existe), dentro de /views/fap, la carpeta /Secure
+* Crear (si no existe), el fichero "instrucciones.html" y "help.html"
+
+O directamente podemos sobreescibir, conociendo los riesgos que eso conlleva, las plantillas que trae el módulo FAP para esas secciones. Estas plantillas se encuentran en:
+* ${APP}/modules/fap/app/views/Secure/
+
+
 
  
 

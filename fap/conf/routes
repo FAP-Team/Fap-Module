@@ -192,6 +192,8 @@ POST /Solicitud/verificacion/iniciarVerificacion VerificacionController.iniciarV
 GET /Solicitud/verificacion/registros VerificacionController.tablaregistros
 GET /Solicitud/verificacion/requerimientos VerificacionController.tablarequerimientos
 GET /Solicitud/verificacion/verificacionDocumentos VerificacionController.tablaverificacionDocumentos
+GET /Solicitud/verificacion/verificacionTipos VerificacionController.tablaverificacionTipos
+POST /Solicitud/verificacion/verificaTipos VerificacionController.verificaTipos
 GET /Soporte/soporte SoporteController.index
 
 POST /Soporte/soporte/incidencia SoporteController.incidencia

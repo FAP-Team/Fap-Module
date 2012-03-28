@@ -51,6 +51,11 @@ Formulario Solicitud {
 			Enlace "Documentacion" pagina=Documentacion
 		}
 		
+		Grupo "Instruccion" {
+			Enlace "Aportación" pagina=Solicitud.Aportacion
+			Enlace "Verificación" pagina=Solicitud.Verificacion
+		}
+		
 		Enlace "Salir" accion="fap.SecureController.logout"
     }
     

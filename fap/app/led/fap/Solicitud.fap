@@ -120,12 +120,7 @@ Formulario Solicitud {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
+
 	/***************************************************************************************************/
 	
 	Pagina AccesoVerificaciones titulo="Verificaciones" noForm {
@@ -160,7 +155,7 @@ Formulario Solicitud {
 		Texto exclusion titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion
 		Fecha fechaCreacion titulo="Fecha creación" campo=Verificacion.fechaCreacion
 		Fecha fechaActualizacion titulo="Fecha actualización" campo=Verificacion.fechaUltimaActualizacion
-		Texto estado titulo="Estado" campo=Verificacion.estado
+		Combo estado titulo="Estado" campo=Verificacion.estado
 		Tabla documentosVerificacion titulo="Documentación" campo=Verificacion.documentos
 			popupVer=PopUpDocumentacionVerificacionVer  
 			{
@@ -194,21 +189,33 @@ Formulario Solicitud {
 	
 	/***************************************************************************************************/
 	
-	
+
 	Pagina Verificacion titulo="Verificación de la documentación" noForm {
-		Grupo verificacionMensaje visible=false /*permiso=mensajeVerificacion*/ {
-			Wiki {"
-Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
-				"}
-		}
+//		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
+//			Wiki {"
+//Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
+//				"}
+//		}
+
 		
-		Grupo giniciarVerificacion titulo="Iniciar la verificación" /*permiso=iniciarVerificacion*/ {
+		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {
 			Form iniciarVerificacion {
+				Combo titulo="Seleccione el trámite" campo=SolicitudGenerica.verificacion.tramiteNombre comboTexto=nombre
 				Wiki {"Si la solicitud está lista para iniciar la verificación, pulse el siguiente botón."}
 				Boton botonIniciarVerificacion titulo="Iniciar la verificación"
 			}
 		}
 		
+		Grupo tiposProceso titulo="Verificación de Tipos de Documentos" permiso=verificarTiposDocumentos {
+			Tabla verificacionTipos titulo="Documentación Aún No Verificada" campo=SolicitudGenerica.documentacion.documentos {
+				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+				Columna campo=Documento.descripcion titulo="Tipo" expandir
+				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			}
+			Form verificaTipos {
+				Boton finalizaVerificarTipos titulo="Finaliza verificación de tipos"
+			}
+		}
 		
 		Grupo verificacionProceso titulo="Verificación de la documentación" /*permiso=verificarDocumentos*/ { 
 			Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos

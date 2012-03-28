@@ -33,7 +33,11 @@ public class Verificacion extends Model {
 	public String uriProcedimiento;
 	
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	public Tramite tramiteNombre;
 	
+	
+	@Transient
 	public String uriTramite;
 	
 	
@@ -41,7 +45,7 @@ public class Verificacion extends Model {
 	public String expediente;
 	
 	
-	
+	@ValueFromTable("estadosVerificacion")
 	public String estado;
 	
 	
@@ -90,6 +94,9 @@ public class Verificacion extends Model {
 	public void init(){
 		
 		
+							if (tramiteNombre != null)
+								tramiteNombre.init();	
+						
 						if (documentos == null)
 							documentos = new ArrayList<VerificacionDocumento>();
 						
@@ -109,7 +116,9 @@ public class Verificacion extends Model {
 	
 
 // === MANUAL REGION START ===
-			
+	public String getUriTramite () {
+		return tramiteNombre.uri;
+	}
 // === MANUAL REGION END ===
 	
 	

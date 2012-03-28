@@ -390,7 +390,19 @@ vars
 when
 	(action in ("read", "update")) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
-	(solicitud.estado = "iniciada")
+	(solicitud.estado = "iniciada") and
+	(solicitud.verificacion.estado != null and solicitud.verificacion.estado = "iniciada")
+then
+	grant
+
+rule verificarTiposDocumentos
+vars
+	SolicitudGenerica solicitud
+when
+	(action in ("read", "update")) and 
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+	(solicitud.estado = "iniciada") and
+	(solicitud.verificacion.estado != null and solicitud.verificacion.estado = "verificandoTipos")
 then
 	grant
 

@@ -24,6 +24,7 @@ import org.joda.time.DateTime;
 import properties.FapProperties;
 
 
+import services.RegistroException;
 import utils.BinaryResponse;
 import utils.CharsetUtils;
 
@@ -91,11 +92,30 @@ public class PlatinoRegistro {
 //		http.setClient(httpClientPolicy);
 	}
 	
+	/**
+	 * Obtiene los datos del registro de un documento.
+	 * @see #getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion)
+	 * @param solicitante
+	 * @param documento
+	 * @param expediente
+	 * @return
+	 * @throws Exception
+	 */
 	@Deprecated
 	public static DatosRegistro getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente) throws Exception {
 		return getDatosRegistro(solicitante, documento, expediente, null);
 	}
 	
+	
+	/**
+	 * Obtiene los datos del registro de un documento.
+	 * @param solicitante
+	 * @param documento
+	 * @param expediente
+	 * @param descripcion Si descripción = null, se utilizará: "Solicitud " + FapProperties.get("application.name")
+	 * @return
+	 * @throws Exception
+	 */
 	public static DatosRegistro getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion) throws Exception {
 			log.debug("Obteniendo los datos de registro del documento " + documento.uri);
 			
@@ -114,7 +134,6 @@ public class PlatinoRegistro {
 			DatosDocumento datosDoc = new DatosDocumento();
 			datosDoc.setTipoDoc("SOL");
 			datosDoc.setTipoMime("application/pdf");
-			//"Solicitud de aportación de documentación " + FapProperties.get("application.name")
 			if (descripcion == null)
 				descripcion = "Solicitud " + FapProperties.get("application.name");
 			datosDoc.setDescripcion(descripcion);

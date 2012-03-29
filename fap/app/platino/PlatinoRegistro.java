@@ -91,7 +91,12 @@ public class PlatinoRegistro {
 //		http.setClient(httpClientPolicy);
 	}
 	
+	@Deprecated
 	public static DatosRegistro getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente) throws Exception {
+		return getDatosRegistro(solicitante, documento, expediente, null);
+	}
+	
+	public static DatosRegistro getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion) throws Exception {
 			log.debug("Obteniendo los datos de registro del documento " + documento.uri);
 			
 			DatosRegistro datosRegistro = new DatosRegistro();
@@ -109,7 +114,10 @@ public class PlatinoRegistro {
 			DatosDocumento datosDoc = new DatosDocumento();
 			datosDoc.setTipoDoc("SOL");
 			datosDoc.setTipoMime("application/pdf");
-			datosDoc.setDescripcion("Solicitud " + FapProperties.get("application.name"));
+			//"Solicitud de aportación de documentación " + FapProperties.get("application.name")
+			if (descripcion == null)
+				descripcion = "Solicitud " + FapProperties.get("application.name");
+			datosDoc.setDescripcion(descripcion);
 			datosDoc.setFecha(fecha);
 
 			

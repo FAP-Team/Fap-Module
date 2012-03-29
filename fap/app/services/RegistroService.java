@@ -49,12 +49,16 @@ public class RegistroService {
 	
 	private static Logger log = Logger.getLogger(RegistroService.class);
 	
+	@Deprecated
+	public static void registrarSolicitud(SolicitudGenerica solicitud) throws RegistroException {
+		registrarSolicitud(solicitud, null);
+	}
 	
 	/**
 	 * Registra la solicitud
 	 * @throws RegistroException
 	 */
-	public static void registrarSolicitud(SolicitudGenerica solicitud) throws RegistroException {
+	public static void registrarSolicitud(SolicitudGenerica solicitud, String descripcion) throws RegistroException {
 		if(!solicitud.registro.fasesRegistro.borrador){
 			Messages.error("Intentando registrar una solicitud que no se ha preparado para firmar");
 			throw new RegistroException("Intentando registrar una solicitud que no se ha preparado para firmar");
@@ -78,22 +82,22 @@ public class RegistroService {
 		
 		if (!docObli.imprescindibles.isEmpty()) {
 			for (String uri : docObli.imprescindibles) {
-				String descripcion = TableKeyValue.getValue("tipoDocumentosCiudadanos", uri);
-				Messages.error("Documento \""+ descripcion + "\" es imprescindible");
+				String _descripcion = TableKeyValue.getValue("tipoDocumentosCiudadanos", uri);
+				Messages.error("Documento \""+ _descripcion + "\" es imprescindible");
 			}
 			throw new RegistroException("Faltan documentos imprescindibles");
 		}
 		if (!docObli.obligatorias.isEmpty()) {
 			for (String uri : docObli.obligatorias) {
-				String descripcion = TableKeyValue.getValue("tipoDocumentosCiudadanos", uri);
-				Messages.warning("Documento \""+ descripcion + "\" pendiente de aportación 1");
+				String _descripcion = TableKeyValue.getValue("tipoDocumentosCiudadanos", uri);
+				Messages.warning("Documento \""+ _descripcion + "\" pendiente de aportación 1");
 			}
 		}
 		if (!docObli.automaticas.isEmpty()) {
 			for (String uri : docObli.automaticas) {
 				if (solicitud.documentoEsObligatorio(uri)) {
-					String descripcion = TableKeyValue.getValue("tipoDocumentosCiudadanos", uri);
-					Messages.warning("Documento \""+ descripcion + "\" pendiente de aportación 2");
+					String _descripcion = TableKeyValue.getValue("tipoDocumentosCiudadanos", uri);
+					Messages.warning("Documento \""+ _descripcion + "\" pendiente de aportación 2");
 				}
 			}
 		}
@@ -117,7 +121,7 @@ public class RegistroService {
 		//Registra la solicitud
 		if(!solicitud.registro.fasesRegistro.registro){
 			try {
-				DatosRegistro datos = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, solicitud.registro.oficial, solicitud.expedientePlatino);
+				DatosRegistro datos = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, solicitud.registro.oficial, solicitud.expedientePlatino, descripcion);
 				//Registra la solicitud
 				JustificanteRegistro justificante = PlatinoRegistro.registroDeEntrada(datos);
 				play.Logger.info("Se ha registrado la solicitud %s en platino, solicitud.id");
@@ -202,8 +206,13 @@ public class RegistroService {
 		}
 	}	 
 	
-
+	@Deprecated
 	public static void registrarAportacionActual(SolicitudGenerica solicitud) throws RegistroException {
+		registrarAportacionActual(solicitud, null);
+	}
+	
+
+	public static void registrarAportacionActual(SolicitudGenerica solicitud, String descripcion) throws RegistroException {
 		//Registra la solicitud
 		
 		Aportacion aportacion = solicitud.aportaciones.actual; 
@@ -215,7 +224,7 @@ public class RegistroService {
 		//Registro de entrada en platino
 		if(aportacion.estado.equals("firmada")){
 			try {
-				DatosRegistro datos = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, aportacion.oficial, solicitud.expedientePlatino);
+				DatosRegistro datos = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, aportacion.oficial, solicitud.expedientePlatino, descripcion);
 				//Registra la solicitud
 				JustificanteRegistro justificante = PlatinoRegistro.registroDeEntrada(datos);
 				play.Logger.info("Se ha registrado la solicitud de aportacion de la solicitud %s en platino", solicitud.id);

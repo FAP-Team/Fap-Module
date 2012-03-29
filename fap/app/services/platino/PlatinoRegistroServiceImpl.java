@@ -148,9 +148,15 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 		return registroPort.getVersion();
 	}
 
+	@Deprecated
 	@Override
 	public models.JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento, ExpedientePlatino expediente) throws RegistroServiceException{
-	    DatosRegistro datosRegistro = getDatosRegistro(solicitante, documento, expediente);
+	    return registrarEntrada(solicitante, documento, expediente, null);
+	}
+		
+	@Override
+	public models.JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion) throws RegistroServiceException{
+	    DatosRegistro datosRegistro = getDatosRegistro(solicitante, documento, expediente, descripcion);
 	    String datos = getDatosRegistroNormalizados(expediente, datosRegistro);
 	    String datosFirmados = firmarDatosRegistro(datos);
         JustificanteRegistro justificantePlatino = registroDeEntrada(datos, datosFirmados);
@@ -158,7 +164,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         return justificante;
 	}
 	
-    private DatosRegistro getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente) throws RegistroServiceException {
+    private DatosRegistro getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion) throws RegistroServiceException {
         XMLGregorianCalendar fechaApertura = WSUtils.getXmlGregorianCalendar(expediente.fechaApertura); 
 
         // Rellenamos datos expediente
@@ -176,8 +182,11 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         documento.prepararParaSubir();
         if (documento.descripcion == null)
             throw new NullPointerException();
+        
+        if (descripcion == null)
+        	descripcion=documento.descripcion+" "+FapProperties.get("application.name");
 
-        datosDoc.setDescripcion(documento.descripcion);
+        datosDoc.setDescripcion(descripcion);
         datosDoc.setFecha(fechaApertura);
 
         try {

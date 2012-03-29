@@ -177,7 +177,7 @@ public class AportacionPresentarController extends AportacionPresentarController
             try {
                 // Registra la solicitud
                 JustificanteRegistro justificante = registroService.registrarEntrada(solicitud.solicitante,
-                        aportacion.oficial, solicitud.expedientePlatino);
+                        aportacion.oficial, solicitud.expedientePlatino, null);
                 play.Logger.info("Se ha registrado la solicitud de aportacion de la solicitud %s en platino",
                         solicitud.id);
 

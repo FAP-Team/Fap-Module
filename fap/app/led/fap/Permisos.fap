@@ -38,7 +38,7 @@ vars
 when
 	(
 		action = "update" and
-		(agente.rolActivo in ("administrador", "usuario")) and
+		(agente.rolActivo in ("administrador", "usuario", "gestor")) and
 		solicitud.registro.fasesRegistro.borrador = "false"
 	)	
 	or
@@ -63,7 +63,7 @@ rule presentacionObtenerBorrador
 vars
 	SolicitudGenerica solicitud
 when
-	(agente.rolActivo in ("administrador", "usuario"))
+	(agente.rolActivo in ("administrador", "usuario", "gestor"))
 	and
 	solicitud.registro.fasesRegistro.borrador = "true"
 then
@@ -74,7 +74,7 @@ rule presentacionFirmar
 vars
 	SolicitudGenerica solicitud
 when
-	(agente.rolActivo in ("administrador", "usuario"))
+	(agente.rolActivo in ("administrador", "usuario", "gestor"))
 	and 
 		solicitud.registro.fasesRegistro.borrador = "true"
 	and
@@ -106,7 +106,7 @@ when
 				)
 				or
 				(
-					agente.rolActivo = "administrador"
+					agente.rolActivo in ("administrador", "gestor")
 					and
 					solicitud.registro.fasesRegistro.clasificarAed = "false"
 				)
@@ -123,7 +123,7 @@ rule presentacionRecibo
 vars
 	SolicitudGenerica solicitud
 when
-	(agente.rolActivo in ("administrador", "usuario"))
+	(agente.rolActivo in ("administrador", "usuario", "gestor"))
 	and
 	solicitud.registro.fasesRegistro.registro = "true"
 then
@@ -145,12 +145,12 @@ vars
 	SolicitudGenerica solicitud
 when
 	(action = "update" and
-	(agente.rolActivo in ("administrador", "usuario")) and
+	(agente.rolActivo in ("administrador", "usuario", "gestor")) and
 	solicitud.estado = "borrador" and
 	solicitud.registro.fasesRegistro.borrador = "true")
 	or
 	(action = "read" and
-	(agente.rolActivo in ("administrador", "usuario")))
+	(agente.rolActivo in ("administrador", "usuario", "gestor")))
 then
 	grant
 
@@ -168,13 +168,13 @@ vars
 	SolicitudGenerica solicitud
 when
 	(action = "update" and
-	(agente.rolActivo in ("administrador", "usuario")) and
+	(agente.rolActivo in ("administrador", "usuario", "gestor")) and
 	solicitud.estado = "borrador"  and
 	solicitud.registro.fasesRegistro.borrador != null and
 	solicitud.registro.fasesRegistro.borrador = "true")
 	or
 	(action = "read" and
-	(agente.rolActivo in ("administrador", "usuario")))
+	(agente.rolActivo in ("administrador", "usuario", "gestor")))
 then
 	grant
 
@@ -183,14 +183,14 @@ vars
 	SolicitudGenerica solicitud
 when
 	(action = "update" and
-	(agente.rolActivo in ("administrador", "usuario")) and
+	(agente.rolActivo in ("administrador", "usuario", "gestor")) and
 	solicitud.estado = "borrador" and
 	solicitud.registro.fasesRegistro.borrador != null and
 	solicitud.registro.fasesRegistro.borrador = "true" and
 	solicitud.registro.fasesRegistro.firmada = "true")
 	or
 	(action = "read" and
-	(agente.rolActivo in ("administrador", "usuario")))
+	(agente.rolActivo in ("administrador", "usuario", "gestor")))
 then
 	grant
 
@@ -269,7 +269,7 @@ vars
 when
 	(action = "read")
 	or
-	(agente.rolActivo="administrador")
+	(agente.rolActivo in ("administrador", "gestor"))
 	or
 	(
 	 agente.rolActivo = "usuario"
@@ -286,7 +286,7 @@ rule solicitudEditableDocumentacion
 vars
 	SolicitudGenerica solicitud
 when
-	(agente.rolActivo="administrador")
+	(agente.rolActivo in ("administrador", "gestor"))
 	or
 	(
 	 //agente.rolActivo = "usuario"

@@ -92,7 +92,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 			//Registra la solicitud
 			if(!Messages.hasErrors()){
 				try {
-					RegistroService.registrarAportacionActual(solicitud);
+					RegistroService.registrarAportacionActual(solicitud, null);
 				} catch (RegistroException e) {
 					e.printStackTrace();
 					Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");

@@ -365,7 +365,7 @@ Formulario Solicitud {
 		}
 	}
 	
-	Popup ComboTestRefPermiso campo=ComboTestRef permiso=editAdminVisibleUser {
+	Popup ComboTestRefPermiso campo=ComboTestRef permiso=editAdminGestorVisibleUser {
 		Texto campo=ComboTestRef.nombre requerido
 		Combo campo=ComboTestRef.list titulo="Combo"
 	}

@@ -5,6 +5,12 @@ Permiso administrador{
 	return all
 }
 
+Permiso adminOrGestor{
+	when
+		agente.rolActivo in ("administrador", "gestor")
+	return all
+}
+
 Permiso usuario{
 	when
 		agente.rolActivo = "usuario"
@@ -28,12 +34,12 @@ Permiso presentacionPrepararParaFirmar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario") and
+		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.registro.fasesRegistro.borrador = "false"
 	return editable
 	
 	when
-		agente.rolActivo in ("administrador", "usuario")
+		agente.rolActivo in ("administrador", "usuario", "gestor")
 	return visible
 }
 
@@ -52,7 +58,7 @@ Permiso presentacionObtenerBorrador{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario") and
+		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.registro.fasesRegistro.borrador = "true"
 	return editable
 }
@@ -61,13 +67,13 @@ Permiso presentacionFirmar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario") and 
+		agente.rolActivo in ("administrador", "usuario", "gestor") and 
 		solicitud?.registro.fasesRegistro.borrador = "true" and
 		solicitud.registro.fasesRegistro.firmada = "false"
 	return editable
 	
 	when
-		agente.rolActivo in ("administrador", "usuario") and
+		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.registro.fasesRegistro.borrador = "true"
 	return visible
 }
@@ -82,7 +88,7 @@ Permiso presentacionRegistrar{
 			solicitud.registro.fasesRegistro.registro = "false"
 		) or
 		(
-			agente.rolActivo = "administrador" and
+			agente.rolActivo in ("administrador", "gestor") and
 			solicitud.registro.fasesRegistro.clasificarAed = "false"
 		)
 	return editable
@@ -96,7 +102,7 @@ Permiso presentacionRecibo{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario") and
+		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.registro.fasesRegistro.registro = "true"
 	return editable	
 }	
@@ -113,13 +119,13 @@ Permiso solicitudPreparadaFirmarYPresentar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario") and
+		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.estado = "borrador" and
 		solicitud.registro.fasesRegistro.borrador = "true"
 	return all
 	
 	when
-		agente.rolActivo in ("administrador", "usuario")
+		agente.rolActivo in ("administrador", "usuario", "gestor")
 	return leer
 }
 
@@ -135,14 +141,14 @@ Permiso solicitudPreparadaFirmar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario") and
+		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.estado = "borrador"  and
 		solicitud.registro.fasesRegistro.borrador != null and
 		solicitud.registro.fasesRegistro.borrador = "true"
 	return all
 	
 	when
-		agente.rolActivo in ("administrador", "usuario")
+		agente.rolActivo in ("administrador", "usuario", "gestor")
 	return leer
 }
 
@@ -150,7 +156,7 @@ Permiso solicitudPreparadaPresentar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario") and
+		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.estado = "borrador" and
 		solicitud.registro.fasesRegistro.borrador != null and
 		solicitud.registro.fasesRegistro.borrador = "true" and
@@ -158,7 +164,7 @@ Permiso solicitudPreparadaPresentar{
 	return all
 
 	when
-		agente.rolActivo in ("administrador", "usuario")
+		agente.rolActivo in ("administrador", "usuario", "gestor")
 	return leer
 }
 
@@ -258,7 +264,7 @@ Permiso permisoSolicitud {
 	vars
 		SolicitudGenerica solicitud
 	when
-		administrador contains _accion
+		adminOrGestor contains _accion
 	return all
 	
 	when
@@ -272,7 +278,7 @@ Permiso solicitud {
 	vars
 		SolicitudGenerica solicitud
 	when
-		administrador contains _accion
+		adminOrGestor contains _accion
 	return editar
 
 	when
@@ -291,7 +297,7 @@ Permiso subirDocumentos{
 	vars
 		SolicitudGenerica solicitud
 	when
-		administrador contains _accion
+		adminOrGestor contains _accion
 		or (
 	 		solicitud?.estado = "borrador" and
 	 		solicitud.registro.fasesRegistro.borrador = "false"
@@ -487,9 +493,9 @@ Permiso tableKeyOnlyEstadosSolicitudUsuario{
 
 // Editable administrador
 // Visible para el usuario
-Permiso editAdminVisibleUser {
+Permiso editAdminGestorVisibleUser {
 	when
-		administrador is visible
+		adminOrGestor is visible
 	return all
 	
 	when

@@ -12,13 +12,14 @@
 	def stackDisabled = tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
 	def showRow   = _noRow != null? !_noRow : true
-	def blanco    = _blanco != null? blanco : true
+	def blanco    = _blanco != null? _blanco : true
 	def searchable = _searchable != null? _searchable : false
 	def mostrarClave = _mostrarClave != null? _mostrarClave : false
 	def anchoTitulo = _anchoTitulo
 	def ordenarPorClave = _ordenarPorClave ?: null
 	def ordenarPorTexto = _ordenarPorTexto ?: null
 	def ordenar = (ordenarPorClave || ordenarPorTexto) ?: false
+	def eliminarDuplicados = _eliminarDuplicados != null? _eliminarDuplicados : false
 	
 	def multiple = _multiple != null? _multiple : false;
 			
@@ -87,6 +88,24 @@
 						items = tags.ComboItem.listFromTableOfTable(field.table)				
 					}
 				}
+			}
+			// Para eliminar los valores duplicados que pueda haber en la lista de seleccion, si el usuario lo ha indicado en el .fap, 
+			// o por defecto para los Tipos de Documentos en la subida de archivos
+			if (eliminarDuplicados){
+				Set sinDuplicados = new LinkedHashSet(); // Hash Set pero ordenado por como se inserte en él
+				sinDuplicados.addAll(items.value);
+				List itemsCopia = new ArrayList();
+				itemsCopia.addAll(items);
+				items.clear();
+				for(recorre in sinDuplicados){
+					for(comprueba in itemsCopia){
+					   if(recorre.equals(comprueba.value)){
+					      items.add(comprueba);
+					      break;
+					   }
+					}
+				}
+			    
 			}
 			// Ordenamos si se especifica
 			if (ordenar)

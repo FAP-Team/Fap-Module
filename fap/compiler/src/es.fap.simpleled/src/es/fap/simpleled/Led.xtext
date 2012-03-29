@@ -278,6 +278,7 @@ Combo:
 		& ('comboTexto' '=' comboTexto=[Attribute|IDS])? 
 		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
 		& (ordenar = ('ordenarPorClave' | 'ordenarPorValor'))?
+		& (eliminarDuplicados?="eliminarDuplicados")?
 	)
 ;
 

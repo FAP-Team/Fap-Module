@@ -29,6 +29,10 @@ public class ComboTest extends Model {
 	public String list;
 	
 	
+	@ValueFromTable("ComboTestList")
+	public String listSinDuplicados;
+	
+	
 	@ElementCollection
 	@ValueFromTable("ComboTestList")
 	public Set<String> listMultiple;

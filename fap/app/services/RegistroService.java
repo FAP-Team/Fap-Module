@@ -49,6 +49,12 @@ public class RegistroService {
 	
 	private static Logger log = Logger.getLogger(RegistroService.class);
 	
+	/**
+	 * Registra la solicitud, pasandole como descripcion null
+	 * @see #registrarSolicitud(SolicitudGenerica solicitud, String descripcion)
+	 * @param solicitud
+	 * @throws RegistroException
+	 */
 	@Deprecated
 	public static void registrarSolicitud(SolicitudGenerica solicitud) throws RegistroException {
 		registrarSolicitud(solicitud, null);
@@ -56,6 +62,8 @@ public class RegistroService {
 	
 	/**
 	 * Registra la solicitud
+	 * @param solicitud
+	 * @param descripcion
 	 * @throws RegistroException
 	 */
 	public static void registrarSolicitud(SolicitudGenerica solicitud, String descripcion) throws RegistroException {
@@ -206,12 +214,25 @@ public class RegistroService {
 		}
 	}	 
 	
+	/**
+	 * Registra la aportación actual a partir de la solicitud.
+	 * 
+	 * @see #registrarAportacionActual(SolicitudGenerica solicitud, String descripcion)
+	 * @param solicitud
+	 * @throws RegistroException
+	 */
 	@Deprecated
 	public static void registrarAportacionActual(SolicitudGenerica solicitud) throws RegistroException {
 		registrarAportacionActual(solicitud, null);
 	}
 	
 
+	/**
+	 * Registra la aportación actual a partir de la solicitud.
+	 * @param solicitud
+	 * @param descripcion Si descripción = null, se utilizará: "Solicitud de Aportación de Documentación " + FapProperties.get("application.name");
+	 * @throws RegistroException
+	 */
 	public static void registrarAportacionActual(SolicitudGenerica solicitud, String descripcion) throws RegistroException {
 		//Registra la solicitud
 		
@@ -224,7 +245,10 @@ public class RegistroService {
 		//Registro de entrada en platino
 		if(aportacion.estado.equals("firmada")){
 			try {
-				DatosRegistro datos = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, aportacion.oficial, solicitud.expedientePlatino, descripcion);
+				String _descripcion = descripcion;
+				if (_descripcion == null)
+					_descripcion = "Solicitud de Aportación de Documentación " + FapProperties.get("application.name");
+				DatosRegistro datos = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, aportacion.oficial, solicitud.expedientePlatino, _descripcion);
 				//Registra la solicitud
 				JustificanteRegistro justificante = PlatinoRegistro.registroDeEntrada(datos);
 				play.Logger.info("Se ha registrado la solicitud de aportacion de la solicitud %s en platino", solicitud.id);

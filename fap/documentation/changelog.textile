@@ -1,5 +1,15 @@
 h2. Changelog
 
+h3. Version 1.2.9
+
+* Fixed Bug al actualizar el Tipo y la Descripción del Documento clasificado en el AED.
+* Fixed Bug al enviar Mail en los errores Fatales.
+* Se separa en distintos html, la pagina de login.html para su personalización.
+* Fixed bug en subir documento.
+* Se permite editar la descripción en los registros de entrada.
+* Se permite eliminar valores duplicados de los combos.
+* En el subir archivo se eliminan los elementos duplicados en el combo.
+
 h3. Versión 1.2.8
 
 * Validacion de que el solicitante no se tenga a él mismo como representante

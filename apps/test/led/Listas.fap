@@ -3,6 +3,9 @@
 Lista ComboTestList {
 	a : "A"
 	b : "B"
+	b1 : "B"
 	c : "C"
 	d : "D"
+	d1 : "D"
+	d2 : "D"
 }

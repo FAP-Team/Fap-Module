@@ -35,7 +35,11 @@ public class FapLogs extends PlayPlugin {
 			// TODO: Ver porque falla sin la siguient elínea
 			// Insertamos la variable directamente, porque no funciona con el implements
 			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pattern", pattern);
-			Mails.enviar("LogFatal", pattern);
+			try{
+	    		Mails.enviar("LogFatal", pattern);
+	    	} catch (IllegalArgumentException e){
+	    		play.Logger.warn("No se encontró el ID del mail en la base de datos, por lo que no se pudo enviar por correo el error FATAL");
+	    	}
 		}
 		
 		if(throwable != null) {

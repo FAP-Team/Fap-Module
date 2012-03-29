@@ -314,6 +314,7 @@ Combo:
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& ('dependeDe' '=' dependeDe=[Combo])?
 		& (ordenar = ('ordenarPorClave' | 'ordenarPorValor'))?
+		& (eliminarDuplicados?="eliminarDuplicados")?
 	)
 ;
 

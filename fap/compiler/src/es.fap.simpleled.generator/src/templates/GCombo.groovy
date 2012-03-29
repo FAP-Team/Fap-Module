@@ -68,6 +68,9 @@ public class GCombo {
 		
 		if (combo.dependeDe != null)
 			params.putStr "dependeDe", combo.dependeDe.name
+		
+		if(combo.eliminarDuplicados)
+			params.put "eliminarDuplicados", true
 			
 		/// Si el atributo es una referencia Many2One o ManyToMany
 		if (campo.getUltimoAtributo().type?.compound?.tipoReferencia?.type?.equals("ManyToMany")

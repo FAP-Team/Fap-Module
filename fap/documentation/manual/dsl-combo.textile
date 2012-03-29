@@ -18,6 +18,7 @@ h2. Parámetros
 * **comboValor = _[atributo]_** (opcional) : Indica el atributo que se va a utilizar como clave identificativa de cada elemento mostrado en el combo.
 * **ayuda = _[string]_** (opcional) : Ayuda asociada al combo.
 * **dependeDe = _[combo]_** (opcional): Indica que el combo es un combo dependiente del combo que se especifica, o sea que los valores que se mostraran en dicho combo, para sus selección, dependeran del valor seleccionado en el combo del que depende.
+* **eliminarDuplicados** (opcional) : Los elementos del combo, nunca tendran valores repetidos, por lo que se filtraran si esto ocurriese.
 
 h2(#atributosPermitidos). Tipos de atributos permitidos
 
@@ -48,6 +49,7 @@ bc. Combo:
 		& ('comboValor' '=' comboValor=[Attribute|IDS])? 
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& ('dependeDe' '=' dependeDe=[Combo])?
+		& (eliminarDuplicados?="eliminarDuplicados")?
 	)
 ;
 

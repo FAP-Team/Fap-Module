@@ -258,8 +258,8 @@ public class TableKeyValue extends Model {
 		}
 		return keys;
 	}
-	
-	public static long loadFromFiles(){
+
+	public static long loadFromFiles() {
 		return loadFromFiles(false);
 	}
 

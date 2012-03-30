@@ -116,6 +116,8 @@ POST /Solicitud/paginafirma/form PaginaFirmaController.form
 GET /Solicitud/paginafirma/firmaSimpleFirmantes PaginaFirmaController.tablafirmaSimpleFirmantes
 GET /Solicitud/paginainject PaginaInjectController.index
 POST /Solicitud/paginainject/editar PaginaInjectController.editar
+GET /Solicitud/enviomails EnvioMailsController.index
+POST /Solicitud/enviomails/enviarMail EnvioMailsController.enviarMail
 GET /Pruebas/pag pagController.index
 POST /Pruebas/pag/editar pagController.editar
 POST /Pruebas/pag/borrar pagController.borrar

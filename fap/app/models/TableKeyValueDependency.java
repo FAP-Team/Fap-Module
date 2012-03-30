@@ -259,10 +259,10 @@ public class TableKeyValueDependency extends Model {
 		return keys;
 	}
 
-	public static long loadFromFiles(){
+	public static long loadFromFiles() {
 		return loadFromFiles(false);
 	}
-	
+
 	public static long loadFromFiles(boolean cargadoPreviamente) {
 		// Si antes de hacer esta llamada se realiza la homologa en TableKeyValue o similar, para que no duplique las entradas
 		if (!cargadoPreviamente)

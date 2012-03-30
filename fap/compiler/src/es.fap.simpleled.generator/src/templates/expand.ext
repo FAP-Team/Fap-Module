@@ -1,4 +1,4 @@
 import org::eclipse::emf::ecore;
 
 Void expand(EObject object) : JAVA
-	templates.Expand.expand(java.lang.Object);
+	templates.Expand.expand(org.eclipse.emf.ecore.EObject);

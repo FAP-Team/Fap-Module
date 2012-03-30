@@ -32,11 +32,6 @@ import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.util.Proposal;
 import es.fap.simpleled.validation.*;
 
-/**
- * see
- * http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on
- * how to customize content assistant
- */
 public class LedProposalProvider extends AbstractLedProposalProvider {
 
 	public int getCurrentLine(ContentAssistContext context){
@@ -47,12 +42,21 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		}
 	}
 	
+	public boolean letterUpper(char letter){
+		return Character.isLetter(letter) && letter == Character.toUpperCase(letter);
+	}
+	
+	public boolean letterLower(char letter){
+		return Character.isLetter(letter) && letter != Character.toUpperCase(letter);
+	}
+	
 	@Override
 	public void completeKeyword(Keyword keyword, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		String value = keyword.getValue();
-		if (value.equals(".") || value.equals("agente") || value.equals(context.getPrefix())){
+		if (!value.startsWith(context.getPrefix()))
 			return;
-		}
+		if (value.equals(".") || value.equals("agente") || value.equals(context.getPrefix()))
+			return;
 		if (value.equals("(") || value.equals(")") || value.equals("!")){
 			acceptor.accept(createCompletionProposal(value, context));
 			return;
@@ -62,23 +66,23 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 			return;
 		}
 		char first = value.charAt(0);
+		char firstPrefix = " ".charAt(0);
+		if (!context.getPrefix().equals(""))
+			firstPrefix = context.getPrefix().charAt(0);
 		EObject semantic = context.getCurrentModel();
 		String lastKeyword = "";
-		if (context.getLastCompleteNode().getGrammarElement() instanceof Keyword){
+		if (context.getLastCompleteNode().getGrammarElement() instanceof Keyword)
 			lastKeyword = ((Keyword)context.getLastCompleteNode().getGrammarElement()).getValue();
-		}
-		if (value.equals("}") || (Character.isLetter(first) && first == Character.toUpperCase(first) && !lastKeyword.equals("<"))){
-			if (getCurrentLine(context) == context.getLastCompleteNode().getStartLine()){
+		if (value.equals("}") || (letterUpper(first) && !lastKeyword.equals("<"))){
+			if (getCurrentLine(context) == context.getLastCompleteNode().getStartLine() && !letterUpper(firstPrefix))
 				return;
-			}
 		}
-		if (Character.isLetter(first) && first != Character.toUpperCase(first)){
-			if (getCurrentLine(context) != context.getLastCompleteNode().getStartLine() && !((semantic instanceof Tabla) || (semantic instanceof Permiso) || (semantic instanceof PermisoWhen))){
+		if (letterLower(first)){
+			if (getCurrentLine(context) != context.getLastCompleteNode().getStartLine() && !(letterLower(firstPrefix) || (semantic instanceof Tabla) || (semantic instanceof Permiso) || (semantic instanceof PermisoWhen)))
 				return;
-			}
 		}
 		String cardinalidad = null;
-		if (Character.isLetter(first) && first != Character.toUpperCase(first)){
+		if (letterLower(first)){
 			EObject container = keyword.eContainer();
 			while (container != null){
 				if (container instanceof CompoundElement || container instanceof Assignment){
@@ -239,13 +243,13 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	
 	@Override
 	public void completeTabla_Popup(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
-		Entity entidad = LedCampoUtils.getUltimaEntidad(((Tabla)model).getCampo());
+		Tabla tabla = (Tabla)model;
 		while (!(model instanceof Formulario))
 			model = model.eContainer();
 		Formulario actual = (Formulario) model;
 		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, model.eResource())){
 			for (Popup popup: f.getPopups()){
-				if (LedEntidadUtils.equals(entidad, LedEntidadUtils.getEntidadPaginaPopup(popup))){
+				if (validTablaCampoPopup(tabla, popup)){
 					if (f.getName().equals(actual.getName()))
 						acceptor.accept(createCompletionProposal(popup.getName(), context));
 					else
@@ -257,13 +261,13 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	
 	@Override
 	public void completeTabla_Pagina(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor){
-		Entity entidad = LedCampoUtils.getUltimaEntidad(((Tabla)model).getCampo());
+		Tabla tabla = (Tabla)model;
 		while (!(model instanceof Formulario))
 			model = model.eContainer();
 		Formulario actual = (Formulario) model;
 		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, model.eResource())){
 			for (Pagina pagina: f.getPaginas()){
-				if (LedEntidadUtils.equals(entidad, LedEntidadUtils.getEntidadPaginaPopup(pagina))){
+				if (validTablaCampoPagina(tabla, pagina)){
 					if (f.getName().equals(actual.getName()))
 						acceptor.accept(createCompletionProposal(pagina.getName(), context));
 					else
@@ -271,6 +275,28 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 				}
 			}
 		}
+	}
+	
+	public boolean validTablaCampoPagina(Tabla tabla, Pagina pagina){
+		EObject container = LedCampoUtils.getCampoScope(tabla);
+		Campo concatenado = LedCampoUtils.concatena(LedCampoUtils.getCampoPaginaPopup(container), tabla.getCampo());
+		if (pagina == null) return false;
+		Campo campo = LedCampoUtils.getCampoPaginaPopup(pagina);
+		if (campo == null) return false;
+		if (!LedCampoUtils.equals(tabla.getCampo(), campo) && !LedCampoUtils.equals(concatenado, campo))
+			return false;
+		return true;
+	}
+	
+	public boolean validTablaCampoPopup(Tabla tabla, Popup popup){
+		EObject container = LedCampoUtils.getCampoScope(tabla);
+		Campo concatenado = LedCampoUtils.concatena(LedCampoUtils.getCampoPaginaPopup(container), tabla.getCampo());
+		if (popup == null) return false;
+		Campo campo = LedCampoUtils.getCampoPaginaPopup(popup);
+		if (campo == null) return false;
+		if (!LedCampoUtils.equals(tabla.getCampo(), campo) && !LedCampoUtils.equals(concatenado, campo))
+			return false;
+		return true;
 	}
 	
 	@Override

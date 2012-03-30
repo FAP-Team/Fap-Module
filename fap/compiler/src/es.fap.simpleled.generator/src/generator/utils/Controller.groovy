@@ -5,10 +5,11 @@ import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Boton
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CampoAtributos;
+import es.fap.simpleled.led.Elemento
 import es.fap.simpleled.led.Entity
 import es.fap.simpleled.led.FirmaSetCampo
 import es.fap.simpleled.led.Form
-import es.fap.simpleled.led.FirmaPlatinoSimple;
+import es.fap.simpleled.led.FirmaSimple;
 import es.fap.simpleled.led.MenuEnlace
 import es.fap.simpleled.led.Enlace
 import es.fap.simpleled.led.Pagina
@@ -30,22 +31,27 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
 import org.eclipse.xtext.generator.IGenerator
 
-import templates.GForm
-import templates.GPagina
-import templates.GPopup
-import templates.GPermiso
+import templates.GBoton;
+import templates.GElement
+import templates.GFirmaSimple;
+import templates.GForm;
+import templates.GPagina;
+import templates.GPermiso;
+import templates.GPopup;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.LedCampoUtils;
 
-public class Controller{
+public class Controller implements Comparator<Entidad>{
+	
+	static private Map<EObject, Controller> cache;
 	
 	// Lista de atributos que tienen que recibirse como parámetros
-	public EObject container; // Elemento Popup, Pagina o Form
+	public EObject element; // Popup, Pagina o Form
+	public GElement gElement; // GPopup, GPagina o GForm
 	public boolean index;
 	public boolean crear;
 	public boolean editar;
 	public boolean borrar;
-	public List<Object> saveController;
 	public CampoUtils campo;
 	public String renderView;
 	public Permiso permiso;
@@ -58,59 +64,43 @@ public class Controller{
 	public String packageGenName;
 	public boolean noBorrarEntidad;
 	public boolean noAutenticar;
-	public String name;
-	public List<String> saveExtra;
-	public List<String> saveCode;
-	public List<String> saveBoton;
-	public List<FirmaPlatinoSimple> firmaBoton;
-	public List<EntidadUtils> saveEntities;
-	public List<EntidadUtils> indexEntities;
-	public EObject elementoGramatica;
+	public String name;	
 	
 	// Lista de atributos que son calculados en esta clase
-	private EntidadUtils almacen;
-	private EntidadUtils almacenNoSingle;  // nulo() retorna true cuando el almacen es Singleton
-	private EntidadUtils entidad;
-	private EntidadUtils entidadNoSingle;  // nulo() retorna true cuando la entidad es Singleton
-	private EntidadUtils entidadPagina;		// Si no hay campos guardables nulo() sera true
-	private List<EntidadUtils> intermedias;
+	private boolean initialized;
+	private Set<Entidad> allEntities;
+	private Set<Entidad> saveDbEntities;
+	private Set<Entidad> saveEntities;
+	private Set<Entidad> dbEntities;
+	private List<String> extraParams;
+	private Entidad almacen;
+	private Entidad entidad;
 	private boolean hayAnterior;
-	private boolean xToMany;
 	private String nameEditar;
 	private String sufijoPermiso;
 	private String sufijoBoton;
-	private List<AlmacenEntidad> campos;  // No incluye el ultimo
-	private List<AlmacenEntidad> camposTodos;
+	private CampoUtils lastSubcampo;
 	private Accion accionCrear;
 	private Accion accionEditar;
 	private Accion accionBorrar;
 	
 	public Controller initialize(){
-		campos = calcularSubcampos(campo?.campo);
-		camposTodos = new ArrayList<AlmacenEntidad>(campos);
-		if (campos.size() > 0){
-			campo = campos.get(campos.size() - 1).campo;
-			campos.remove(campos.size() - 1);
-		}
-		intermedias = new ArrayList<EntidadUtils>();
-		for (AlmacenEntidad subcampo: campos)
-			intermedias.add(subcampo.almacen);
+		saveEntities = gElement.saveEntities();
+		dbEntities = gElement.dbEntities();
+		extraParams = gElement.extraParams();
 		
-		hayAnterior = hayAnterior(container);
-			
-		entidad = EntidadUtils.create(campo?.getUltimaEntidad());
-		entidadPagina = EntidadUtils.create(entidad.entidad);
-		if (!LedCampoUtils.hayCamposGuardables(container))
-			entidadPagina = EntidadUtils.create((Entity)null);
-		almacen = EntidadUtils.create((Entity)null);
-		
-		if (campo?.campo?.atributos != null){
-			almacen = EntidadUtils.create(campo.getEntidad());
-			if (LedEntidadUtils.xToMany(campo?.getUltimoAtributo()))
-				xToMany = true;
-			else
-				xToMany = false;
+		List<EntidadInfo> subcampos = CampoUtils.calcularSubcampos(campo?.campo);
+		if (subcampos.size() > 0){
+			EntidadInfo last = subcampos.get(subcampos.size() - 1);
+			entidad = last.entidad;
+			almacen = last.almacen;
+			lastSubcampo = last.campo;
 		}
+		else{
+			entidad = Entidad.create((Entity) null);
+			almacen = Entidad.create((Entity) null);
+		}
+		hayAnterior = hayAnterior(element);
 		
 		nameEditar = "editar";
 		sufijoPermiso = "";
@@ -120,21 +110,18 @@ public class Controller{
 			sufijoPermiso = StringUtils.firstUpper(name);
 			sufijoBoton = StringUtils.firstUpper(name);
 		}
-					
-		for (int i = 0; i < saveEntities.size(); i++){
-			if (saveEntities.get(i).equals(entidad)){
-				saveEntities.remove(i);
-				break;
-			}
-		}
-		almacenNoSingle = EntidadUtils.create(almacen.entidad);
-		if (almacen.isSingleton()){
-			almacenNoSingle.entidad = null;
-		}
-		entidadNoSingle = EntidadUtils.create(entidad.entidad);
-		if (entidad.isSingleton()){
-			entidadNoSingle.entidad = null;
-		}
+		allEntities = new TreeSet<Entidad>(this);
+		if (subcampos.size() > 0 && !subcampos.get(0).almacen.nulo())
+			allEntities.add(subcampos.get(0).almacen);
+		for (EntidadInfo subcampo: subcampos)
+			allEntities.add(subcampo.entidad);
+		allEntities.addAll(saveEntities);
+		allEntities.addAll(dbEntities);
+		saveDbEntities = new TreeSet<Entidad>(this);
+		saveDbEntities.addAll(saveEntities);
+		saveDbEntities.addAll(dbEntities);
+		
+		initialized = true;
 		return this;
 	}
 	
@@ -211,21 +198,17 @@ ${metodoBorrarValidateRules()}
 
 ${metodoBindReferences()}
 
-${metodosBotones()}
-
-${metodosDeFirma()}
-
 ${metodosGetters()}
 
 ${metodoCheckRedirigir()}
 
-${metodosHashStack()}
+${metodosControllerElementos()}
 
 ${metodoBefore()}
 
 }
 """
-		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", Beautifier.formatear(controllerGen));
+		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controllerGen));
 			
 		String controller = """
 package ${packageName};
@@ -236,70 +219,62 @@ public class ${controllerName} extends ${controllerGenName} {
 
 }
 		"""
-		FileUtils.write(FileUtils.getRoute('CONTROLLER'), controllerFullName.replaceAll("\\.", "/") + ".java", Beautifier.formatear(controller));
+		FileUtils.write(FileUtils.getRoute('CONTROLLER'), controllerFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controller));
 	}
 	
 	public String generateRoutes(){
 		StringBuffer sb = new StringBuffer();
 		if (index)
-			StringUtils.appendln sb, Route.to("GET", url, controllerFullName + ".index");
+			StringUtils.appendln sb, RouteUtils.to("GET", url, controllerFullName + ".index");
 		if (editar || isForm())
-			StringUtils.appendln sb, Route.to("POST", url + "/${nameEditar}", controllerFullName + ".${nameEditar}");
+			StringUtils.appendln sb, RouteUtils.to("POST", url + "/${nameEditar}", controllerFullName + ".${nameEditar}");
 		if (borrar)
-			StringUtils.appendln sb, Route.to("POST", url + "/borrar", controllerFullName + ".borrar");
+			StringUtils.appendln sb, RouteUtils.to("POST", url + "/borrar", controllerFullName + ".borrar");
 		if (crear)
-			StringUtils.appendln sb, Route.to("POST", url + "/crear", controllerFullName + ".crear");
-		return sb.toString();
+			StringUtils.appendln sb, RouteUtils.to("POST", url + "/crear", controllerFullName + ".crear");
+		
+		String routes = sb.toString();
+		for(Elemento elemento : element.getElementos())
+			routes += gElement.getInstance(elemento).routes();
+		return routes;
 	}
 	
 	private String metodosGetters(){
 		String getters = "";
-		if(almacen.entidad != null){
-			for (AlmacenEntidad subcampo: camposTodos)
-				getters += ControllerUtils.complexGetter(controllerName, subcampo.almacen, subcampo.entidad, subcampo.campo);
-			getters += ControllerUtils.simpleGetter(camposTodos.get(0).almacen, true);
-		}
-		else{
-			getters += ControllerUtils.simpleGetter(entidad, true);
-		}
+		for (Entidad entity: allEntities)
+			getters += complexGetter(entity);
 		if (!entidad.isSingleton())
-			getters += ControllerUtils.simpleGetter(entidad, false); // get sin parametros, que dentro hace un new()
-		for (EntidadUtils entity: saveEntities)
-			getters += ControllerUtils.simpleGetter(entity, false);
+			getters += simpleGetter(entidad, false); // get sin parametros, que dentro hace un new()
+		
 		return getters;
 	}
 	
 	private String metodosGettersForm(Controller c){
-		List<String> saveContainer = new ArrayList<String>();
-		for (EntidadUtils entity: c.saveEntities)
-			saveContainer.add(entity.variable);
 		String getters = "";
-		for (EntidadUtils entity: saveEntities){
-			if (!saveContainer.contains(entity.variable))
-				getters += ControllerUtils.simpleGetter(entity, false);
+		for (Entidad entity: saveDbEntities){
+			if (!c.allEntities.contains(entity))
+				getters += complexGetter(entity);
 		}
 		return getters;
 	}
 	
 	private String metodoIndex(){
-		EntidadUtils primerAlmacen = camposTodos.size() > 0? camposTodos.get(0).almacen : EntidadUtils.create((Entity)null);
 		String getEntidad = "";
 		if (!entidad.nulo()){
-			getEntidad = """
-				$entidad.clase $entidad.variable = null;
-				if("crear".equals(accion))
-					${ControllerUtils.newCall(entidad)}
-				else if (!"borrado".equals(accion))
-					$entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};
-			""";
+			if (!entidad.isSingleton()){
+				getEntidad = """
+					$entidad.clase $entidad.variable = null;
+					if("crear".equals(accion))
+						$entidad.variable = ${simpleGetterCall(entidad, false)};
+					else if (!"borrado".equals(accion))
+						$entidad.variable = ${complexGetterCall(entidad)};
+				""";
+			}
+			else
+				getEntidad = """$entidad.clase $entidad.variable = ${simpleGetterCall(entidad, false)};""";
 		}
 		return """
-			public static void index(${StringUtils.params(
-				"String accion",
-				intermedias.collect{it.typeId},
-				almacenNoSingle.typeId,
-				entidadNoSingle.typeId
-			)}){
+			public static void index(${StringUtils.params("String accion", allEntities.collect{it.typeId})}){
 				if (accion == null)
 					accion = getAccion();
 				if (!permiso(accion)){
@@ -307,92 +282,88 @@ public class ${controllerName} extends ${controllerGenName} {
 					renderTemplate(${renderView});
 				}
 				${hayAnterior? "checkRedirigir();" : ""}
-				${primerAlmacen.entidad? "$primerAlmacen.clase $primerAlmacen.variable = ${ControllerUtils.simpleGetterCall(controllerName, primerAlmacen, true)};" : ""}
-				${campos.collect{"$it.entidad.clase $it.entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, it.almacen, it.entidad)};"}.join("\n")}
-				${saveEntities.collect{"$it.clase $it.variable = ${ControllerUtils.simpleGetterCall(controllerName, it, false)};"}.join("\n")}
+				${allEntities.collect{
+					if (it != entidad)
+						return "$it.clase $it.variable = ${complexGetterCall(it)};"
+					else return "";
+				}.join("\n")}
 				${getEntidad}
 				log.info("Visitando página: "+${renderView});
 				renderTemplate(${StringUtils.params(
 					renderView,
 					"accion",
-					intermedias.collect{it.variable},
-					almacenNoSingle.id,
-					almacen.variable,
-					entidadNoSingle.id,
-					entidad.variable,
-					saveEntities.collect{it.variable}
+					allEntities.collect{it.id},
+					allEntities.collect{it.variable}
 				)});
 			}
-		"""
+		""";
 	}
 	
 	private String metodoEditar(){
 		if (!editar && !isForm())
 			return "";
+		
+		List<GBoton> botones = gElement.getInstancesOf(GBoton.class);
+		List<GFirmaSimple> botonesFirma = gElement.getInstancesOf(GFirmaSimple.class);
+			
 		String metodoEditar = "";
-		String editarRenderCall = "${controllerName}.${nameEditar}Render(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
+		String editarRenderCall = "${controllerName}.${nameEditar}Render(${StringUtils.params(allEntities.collect{it.id})});";
 		String botonCode = "";
-		for (String boton: saveBoton) {
+		for (GBoton boton: botones) {
 			botonCode += """
-				if (${boton} != null){
-					${controllerName}.${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
-						intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
-						entidadPagina.variable, saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
+				if (${boton.boton.name} != null){
+					${controllerName}.${StringUtils.firstLower(boton.boton.name)}${sufijoBoton}(${StringUtils.params(
+						allEntities.collect{it.id}, saveEntities.collect{it.variable}, extraParams.collect{it.split(" ")[1]}
 					)});
 					${editarRenderCall}
 				}
 			""";
 		}
-		for (FirmaPlatinoSimple boton: firmaBoton) {
+		for (GFirmaSimple boton: botonesFirma) {
 			botonCode += """
-				if (${boton.name} != null){
-					${controllerName}.${StringUtils.firstLower(boton.name)}${sufijoBoton}(${StringUtils.params(
-						intermedias.collect{it.id}, almacenNoSingle.id, entidad.id,
-						saveExtra.collect{it.split(" ")[1]}
+				if (${boton.firmaSimple.name} != null){
+					${controllerName}.${StringUtils.firstLower(boton.firmaSimple.name)}${sufijoBoton}(${StringUtils.params(
+						allEntities.collect{it.id}, extraParams.collect{it.split(" ")[1]}
 					)});
 					${editarRenderCall}
 				}
 			""";
 		}
-		if (isForm() && saveBoton.size() == 1 && firmaBoton.size() == 0)
+		if (isForm() && botones.size() == 1 && botonesFirma.size() == 0)
 			botonCode = "";
 		metodoEditar = """
 			@Util // Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 			public static void ${nameEditar}(${StringUtils.params(
-				intermedias.collect{it.typeId},
-				almacenNoSingle.typeId,
-				entidadNoSingle.typeId,
-				entidadPagina.typeVariable,
+				allEntities.collect{it.typeId},
 				saveEntities.collect{it.typeVariable},
-				saveExtra,
-				saveBoton.collect{"String ${it}"},
-				firmaBoton.collect{"String ${it.name}"}
+				extraParams,
+				botones.collect{"String ${it.boton.name}"},
+				botonesFirma.collect{"String ${it.firmaSimple.name}"}
 			)}){
 				checkAuthenticity();
 				if(!permiso${sufijoPermiso}("editar")){
 					Messages.error("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar la acción"}");
 				}
-				${!entidad.nulo()? "${entidad.clase} $entidad.variableDb = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};":""}
-				${ControllerUtils.listGetterCall(controllerName, EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
-				${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(controllerName, this, entidad, saveEntities) : ""}
+				${saveDbEntities.collect{"$it.clase $it.variableDb = ${complexGetterCall(it)};"}.join("\n")}
+				${saveEntities.size() > 0? bindReferencesCall() : ""}
 				${botonCode}
 	   """;
-	    if (editar && !entidadPagina.nulo()){
+	    if (editar){
 			metodoEditar += """	
 				if(!Messages.hasErrors()){
-					${ControllerUtils.validateCopyCall(controllerName, "\"editar\"", this, entidad, saveEntities)}
+					${validateCopyCall("\"editar\"")}
 				}
 			""";
 		}
-		metodoEditar += """	
+		metodoEditar += """
 			if(!Messages.hasErrors()){
 				${controllerName}.${nameEditar}ValidateRules(${StringUtils.params(
-					entidad.variableDb, saveEntities.collect{it.variableDb}, entidadPagina.variable,
-					saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
+					saveEntities.collect{it.variableDb},
+					saveEntities.collect{it.variable},
+					extraParams.collect{it.split(" ")[1]}
 				)});
 			}
 			if(!Messages.hasErrors()){
-				${entidadPagina.entidad? "${entidad.variableDb}.save();" : ""}
 				${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
 				log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito");
 			}
@@ -406,63 +377,63 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String metodoCrearLogica(){
 		if (!crear)
 			return "";
+		entidad.singletonsId = true;
 		String metodoCrearLogica = "";
-		AlmacenEntidad ultimoAlmacen;
-		if (camposTodos.size() > 0)
-			ultimoAlmacen = camposTodos.get(camposTodos.size() - 1);
-		else
-			ultimoAlmacen = new AlmacenEntidad();
 		String crearSaveCall = """
 			${entidad.variableDb}.save();
 			${entidad.id} = ${entidad.variableDb}.id;
 		""";
-		if(almacen.entidad != null){
-			if (xToMany)
-				crearSaveCall += "db${campo.str}.add(${entidad.variableDb});\n";
+		if(!almacen.nulo()){
+			if (LedCampoUtils.xToMany(lastSubcampo?.campo))
+				crearSaveCall += "db${lastSubcampo.str}.add(${entidad.variableDb});\n";
 			else
-				crearSaveCall += "db${campo.str} = ${entidad.variableDb};\n";
+				crearSaveCall += "db${lastSubcampo.str} = ${entidad.variableDb};\n";
 			crearSaveCall += "${almacen.variableDb}.save();\n";
 		}
 		metodoCrearLogica = """
 			@Util
 			public static Long crearLogica(${StringUtils.params(
-				intermedias.collect{it.typeId},
-				almacenNoSingle.typeId,
-				entidadPagina.typeVariable,
+				allEntities.collect{if (it != entidad) it.typeId},
 				saveEntities.collect{it.typeVariable},
-				saveExtra
+				extraParams
 			)}){
 				checkAuthenticity();
 				if(!permiso("crear")){
 					Messages.error("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar la acción"}");
 				}
-				${entidad.clase} ${entidad.variableDb} = null;
-				if(!Messages.hasErrors()){
-					${entidad.variableDb} = ${ControllerUtils.simpleGetterCall(controllerName, entidad, false)};
-				}
-				${ControllerUtils.almacenGetterCall(controllerName, ultimoAlmacen)}
-				${ControllerUtils.listGetterCall(controllerName, EntidadUtils.create(null), EntidadUtils.create(null), saveEntities)}
-				${!entidadPagina.nulo()? ControllerUtils.bindReferencesCall(controllerName, this, entidad, saveEntities) : ""}
+				$entidad.clase $entidad.variableDb = ${simpleGetterCall(entidad, false)};
+				${almacen.nulo()? "": "$almacen.clase $almacen.variableDb = ${complexGetterCall(almacen)};"}
+				${saveDbEntities.collect{
+					if (!it.equals(entidad) && !it.equals(almacen))
+						return "$it.clase $it.variableDb = ${complexGetterCall(it)};";
+					else return "";
+				}.join("\n")}
+				${saveEntities.size() > 0? bindReferencesCall() : ""}
 		""";
-		if (!entidadPagina.nulo()){
+		if (saveEntities.size() > 0){
 			metodoCrearLogica += """
 				if(!Messages.hasErrors()){
-					${ControllerUtils.validateCopyCall(controllerName, "\"crear\"", this, entidad, saveEntities)}
+					${validateCopyCall("\"crear\"")}
 				}
 			""";
 		}
 		metodoCrearLogica += """
 				if(!Messages.hasErrors()){
 					${controllerName}.crearValidateRules(${StringUtils.params(
-						entidad.variableDb, saveEntities.collect{it.variableDb}, entidadPagina.variable,
-						saveEntities.collect{it.variable}, saveExtra.collect{it.split(" ")[1]}
+						saveEntities.collect{it.variableDb},
+						saveEntities.collect{it.variable},
+						extraParams.collect{it.split(" ")[1]}
 					)});
 				}
 				${entidad.typeId} = null;
 				if(!Messages.hasErrors()){
-					log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito");
 					$crearSaveCall
-					${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
+					${saveEntities.collect{
+						if (!it.equals(entidad))
+							return "${it.variableDb}.save();";
+						else return "";
+					}.join("\n")}
+					log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito");
 				}
 				else{
 					log.info("Acción Crear de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
@@ -470,41 +441,48 @@ public class ${controllerName} extends ${controllerGenName} {
 				return ${entidad.id};
 			}
 		""";
+		entidad.singletonsId = false;
 		return metodoCrearLogica;
 	}
 	
 	private String metodoCrear(){
 		if (!crear)
 			return "";
-		return """
+		
+		String crearLogica = """
+			${entidad.isSingleton()? "": "${entidad.id} = "}${controllerName}.crearLogica(${StringUtils.params(
+				allEntities.collect{if (it != entidad) it.id},
+				saveEntities.collect{it.variable},
+				extraParams.collect{it.split(" ")[1]}
+			)});
+			${controllerName}.crearRender(${StringUtils.params(allEntities.collect{it.id})});
+		""";
+		String crearCabecera = """
 			public static void crear(${StringUtils.params(
-				intermedias.collect{it.typeId},
-				almacenNoSingle.typeId,
-				entidadPagina.typeVariable,
-				entidad.typeId, 
+				allEntities.collect{it.typeId},
 				saveEntities.collect{it.typeVariable},
-				saveExtra
+				extraParams
 			)}){
+		""";
+		if (entidad.isSingleton()){
+			return """
+				${crearCabecera}
+					${crearLogica}
+				}
+			""";
+		}
+		return """
+			${crearCabecera}
 				if (${entidad.id} != null)
 					${controllerName}.editar(${StringUtils.params(
-						intermedias.collect{it.id},
-						almacenNoSingle.id,
-						entidadNoSingle.id,
-						entidadPagina.variable, 
+						allEntities.collect{it.id},
 						saveEntities.collect{it.variable},
-						saveExtra.collect{it.split(" ")[1]},
-						saveBoton.collect{"null"},
-						firmaBoton.collect{"null"}
+						extraParams.collect{it.split(" ")[1]},
+						gElement.getInstancesOf(GBoton.class).collect{"null"},
+						gElement.getInstancesOf(GFirmaSimple.class).collect{"null"}
 					)});
 				else{
-					${entidad.id} = ${controllerName}.crearLogica(${StringUtils.params(
-						intermedias.collect{it.id},
-						almacenNoSingle.id,
-						entidadPagina.variable, 
-						saveEntities.collect{it.variable},
-						saveExtra.collect{it.split(" ")[1]}
-					)});
-					${controllerName}.crearRender(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
+					${crearLogica}
 				}
 			}
 		""";
@@ -513,17 +491,12 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String metodoBorrar(){
 		if (!borrar)
 			return "";
-		AlmacenEntidad ultimoAlmacen;
-		if (camposTodos.size() > 0)
-			ultimoAlmacen = camposTodos.get(camposTodos.size() - 1);
-		else
-			ultimoAlmacen = new AlmacenEntidad();
 		def borrarEntidad = "";
-		if(almacen.entidad != null){
-			if (xToMany)
-				borrarEntidad += "db${campo.str}.remove(${entidad.variableDb});\n";
+		if (!almacen.nulo()){
+			if (LedCampoUtils.xToMany(lastSubcampo?.campo))
+				borrarEntidad += "db${lastSubcampo.str}.remove(${entidad.variableDb});\n";
 			else
-				borrarEntidad += "db${campo.str} = null;\n";
+				borrarEntidad += "db${lastSubcampo.str} = null;\n";
 			borrarEntidad += "${almacen.variableDb}.save();\n";
 		}
 		if (!noBorrarEntidad) {
@@ -533,23 +506,23 @@ public class ${controllerName} extends ${controllerGenName} {
 			""";
 		}
 		return """
-			public static void borrar(${StringUtils.params(intermedias.collect{it.typeId}, almacenNoSingle.typeId, entidadNoSingle.typeId)}){
+			public static void borrar(${StringUtils.params(allEntities.collect{it.typeId})}){
 				checkAuthenticity();
 				if(!permiso("borrar")){
 					Messages.error("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar la acción"}");
 				}
-				${ControllerUtils.almacenGetterCall(controllerName, ultimoAlmacen)}
-				${entidad.clase} ${entidad.variableDb} = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};
+				$entidad.clase $entidad.variableDb = ${complexGetterCall(entidad)};
+				${almacen.nulo()? "": "$almacen.clase $almacen.variableDb = ${complexGetterCall(almacen)};"}
 				if(!Messages.hasErrors()){
 					${controllerName}.borrarValidateRules(${StringUtils.params(entidad.variableDb)});
 				}
 				if(!Messages.hasErrors()){
-					log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito");
 					$borrarEntidad
+					log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito");
 				} else{
 					log.info("Acción Borrar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 				}
-				${controllerName}.borrarRender(${StringUtils.params(intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});
+				${controllerName}.borrarRender(${StringUtils.params(allEntities.collect{it.id})});
 			}
 		""";
 	}
@@ -561,10 +534,10 @@ public class ${controllerName} extends ${controllerGenName} {
 		String redirectMethodOk = redirectMethod;
 		String redirectActionOk = "\"editar\"";
 		if (accionEditar.redirigir != null){
-			redirectMethodOk = "\"${new GPagina(accionEditar.redirigir.pagina).controllerName()}.index\"";
+			redirectMethodOk = "\"${GElement.getInstance(accionEditar.redirigir.pagina, null).controllerName()}.index\"";
 			redirectActionOk = getAccion(accionEditar.redirigir);
 		}
-		String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});";
+		String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, allEntities.collect{it.id})});";
 		if (accionEditar.redirigirUrl)
 			redirigirOk = "redirect(\"${accionEditar.redirigirUrl}\");";
 		else if (accionEditar.anterior)
@@ -576,14 +549,14 @@ public class ${controllerName} extends ${controllerGenName} {
 			mensajeEditadoOk = """Messages.ok("${accionEditar.mensajeOk}");""";
 		return """
 			@Util
-			public static void ${nameEditar}Render(${StringUtils.params(intermedias.collect{it.typeId}, almacenNoSingle.typeId, entidadNoSingle.typeId)}){
+			public static void ${nameEditar}Render(${StringUtils.params(allEntities.collect{it.typeId})}){
 				if (!Messages.hasMessages()) {
 					${mensajeEditadoOk}
 					Messages.keep();
 					${redirigirOk}
 				}
 				Messages.keep();
-				redirect(${StringUtils.params(redirectMethod, "\"editar\"", intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});
+				redirect(${StringUtils.params(redirectMethod, "\"editar\"", allEntities.collect{it.id})});
 			}
 		""";
 	}
@@ -595,10 +568,10 @@ public class ${controllerName} extends ${controllerGenName} {
 		String redirectMethodOk = redirectMethod;
 		String redirectActionOk = "\"editar\"";
 		if (accionCrear.redirigir != null){
-			redirectMethodOk = "\"${new GPagina(accionCrear.redirigir.pagina).controllerName()}.index\"";
+			redirectMethodOk = "\"${GElement.getInstance(accionCrear.redirigir.pagina, null).controllerName()}.index\"";
 			redirectActionOk = getAccion(accionCrear.redirigir);
 		}
-		String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});";
+		String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, allEntities.collect{it.id})});";
 		if (accionCrear.redirigirUrl)
 			redirigirOk = "redirect(\"${accionCrear.redirigirUrl}\");";
 		else if (accionCrear.anterior)
@@ -615,12 +588,12 @@ public class ${controllerName} extends ${controllerGenName} {
 			mensajeCreadoOk = """renderJSON(utils.RestResponse.ok("${accionCrear.mensajeOk}"));""";
 		return """
 			@Util
-			public static void crearRender(${StringUtils.params(intermedias.collect{it.typeId}, almacenNoSingle.typeId, entidad.typeId)}){
+			public static void crearRender(${StringUtils.params(allEntities.collect{it.typeId})}){
 				if (!Messages.hasMessages()) {
 					${mensajeCreadoOk}
 				}
 				Messages.keep();
-				redirect(${StringUtils.params(redirectMethod, '"crear"', intermedias.collect{it.id}, almacenNoSingle.id, entidad.id)});
+				redirect(${StringUtils.params(redirectMethod, '"crear"', allEntities.collect{it.id})});
 			}
 		""";
 	}
@@ -632,10 +605,10 @@ public class ${controllerName} extends ${controllerGenName} {
 		String redirectMethodOk = redirectMethod;
 		String redirectActionOk = "\"borrado\"";
 		if (accionBorrar.redirigir != null){
-			redirectMethodOk = "\"${new GPagina(accionBorrar.redirigir.pagina).controllerName()}.index\"";
+			redirectMethodOk = "\"${GElement.getInstance(accionBorrar.redirigir.pagina, null).controllerName()}.index\"";
 			redirectActionOk = getAccion(accionBorrar.redirigir);
 		}
-		String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, intermedias.collect{it.id}, almacenNoSingle.id)});";
+		String redirigirOk = "redirect(${StringUtils.params(redirectMethodOk, redirectActionOk, allEntities.collect{if (entidad != it) it.id})});";
 		if (accionBorrar.redirigirUrl)
 			redirigirOk = "redirect(\"${accionBorrar.redirigirUrl}\");";
 		else if (accionBorrar.anterior)
@@ -647,14 +620,14 @@ public class ${controllerName} extends ${controllerGenName} {
 			mensajeBorradoOk = """renderJSON(utils.RestResponse.ok("${accionBorrar.mensajeOk}"));""";
 		return """
 			@Util
-			public static void borrarRender(${StringUtils.params(intermedias.collect{it.typeId}, almacenNoSingle.typeId, entidadNoSingle.typeId)}){
+			public static void borrarRender(${StringUtils.params(allEntities.collect{it.typeId})}){
 				if (!Messages.hasMessages()) {
 					${mensajeBorradoOk}
 					Messages.keep();
 					${redirigirOk}
 				}
 				Messages.keep();
-				redirect(${StringUtils.params(redirectMethod, '"borrar"', intermedias.collect{it.id}, almacenNoSingle.id, entidadNoSingle.id)});
+				redirect(${StringUtils.params(redirectMethod, '"borrar"', allEntities.collect{it.id})});
 			}
 		""";
 	}
@@ -706,11 +679,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		return """
 			@Util
 			public static void ${nameEditar}ValidateRules(${StringUtils.params(
-				entidad.typeDb,
 				saveEntities.collect{it.typeDb},
-				entidadPagina.typeVariable,
 				saveEntities.collect{it.typeVariable},
-				saveExtra
+				extraParams
 			)}){
 				//Sobreescribir para validar las reglas de negocio
 			}
@@ -723,11 +694,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		return """
 			@Util
 			public static void crearValidateRules(${StringUtils.params(
-				entidad.typeDb,
 				saveEntities.collect{it.typeDb},
-				entidadPagina.typeVariable,
 				saveEntities.collect{it.typeVariable},
-				saveExtra
+				extraParams
 			)}){
 				//Sobreescribir para validar las reglas de negocio
 			}
@@ -789,12 +758,11 @@ public class ${controllerName} extends ${controllerGenName} {
 		"""
 	}
 	
-	private String metodosHashStack(){
-		String controllerHS = "";
-		for(elemento in saveController){
-			controllerHS += elemento.controller();
-		}
-		return controllerHS;
+	private String metodosControllerElementos(){
+		String controllers = "";
+		for(Elemento elemento : element.getElementos())
+			controllers += gElement.getInstance(elemento).controller();
+		return controllers;
 	}
 	
 	private String metodoBefore(){
@@ -806,94 +774,59 @@ public class ${controllerName} extends ${controllerGenName} {
 		""";
 	}	
 	
-	private String metodoValidateCopy(){
-		if ((editar || crear) && !entidadPagina.nulo()){
-			return "${ControllerUtils.validateCopyMethod(this, entidad, saveEntities)}";
-		}
-		return "";
+	public String bindReferencesCall(){
+		if (saveEntities.size() == 0) return "";
+		return """
+			${controllerName}.${name}BindReferences(${StringUtils.params(
+				saveEntities.collect{ it.variable },
+				extraParams.collect{it.split(" ")[1]}.unique()
+			)});
+		""";
 	}
 	
-	private String metodoBindReferences(){
-		if ((editar || crear) && !entidadPagina.nulo()){
-			return "${ControllerUtils.bindReferencesMethod(this, entidad, saveEntities)}";
-		}
-		return "";
+	public String validateCopyCall(String accion){
+		if (saveEntities.size() == 0) return "";
+		return """
+			${controllerName}.${name}ValidateCopy(${StringUtils.params(
+				accion,
+				saveDbEntities.collect{
+					if (saveEntities.contains(it)) return "${it.variableDb}, ${it.variable}";
+					else return "${it.variableDb}";
+				},	
+				extraParams.collect{it.split(" ")[1]}.unique())}
+			);
+		""";
 	}
 	
-	private String metodosBotones(){
-		if (isForm() && saveBoton.size() == 1)
+	public String metodoValidateCopy(){
+		if (saveEntities.size() == 0 || (!editar && !crear)) return "";
+		return """
+			@Util
+			public static void ${name}ValidateCopy(String accion, ${StringUtils.params(
+				saveDbEntities.collect{
+					if (saveEntities.contains(it)) return "${it.typeDb}, ${it.typeVariable}";
+					else return "${it.typeDb}";
+				},
+				extraParams
+			)}){
+				CustomValidation.clearValidadas();
+				${gElement.validateCopy()}
+				${gElement.saveCode()}
+			}
+		"""
+	}
+	
+	public String metodoBindReferences(){
+		if ((!editar && !crear) || saveEntities.size() == 0)
 			return "";
-		String botonesMethod = "";
-		for (String boton: saveBoton){
-			botonesMethod += """
-				@Util
-				public static void ${StringUtils.firstLower(boton)}${sufijoBoton}(${StringUtils.params(
-					intermedias.collect{it.typeId},
-					almacenNoSingle.typeId,
-					entidad.typeId,
-					entidadPagina.typeVariable,
-					saveEntities.collect{it.typeVariable},
-					saveExtra
-				)}){
-					//Sobreescribir este método para asignar una acción
-				}
-			""";
-		}
-		return botonesMethod;
-	}
-	
-	private String metodosDeFirma(){		
-		String botonesMethod = "";
-		for (FirmaPlatinoSimple _firma: firmaBoton){
-			Map<String, EntidadUtils> entidades = new HashMap<String, EntidadUtils>();
-			CampoUtils documento = CampoUtils.create(_firma.documento.campo);
-			entidades.put(documento.getEntidad().name, EntidadUtils.create(documento.getEntidad()));
-			CampoUtils firmantes = CampoUtils.create(_firma.firmantes.campo);
-			entidades.put(firmantes.getEntidad().name, EntidadUtils.create(firmantes.getEntidad()));
-			String strCampoFirmantes = "${firmantes.firstLower()}";
-			String strCampoToTrue = "";
-			if (_firma.setToTrue != null) {
-				CampoUtils campoToTrue = CampoUtils.create(_firma.setToTrue.campo);
-				entidades.put(campoToTrue.getEntidad().name, EntidadUtils.create(campoToTrue.getEntidad()));
-				strCampoToTrue = """
-						${campoToTrue.firstLower()} = true;
-						${campoToTrue.sinUltimoAtributo()}.save();
-				""";
+		return """
+			@Util
+			public static void ${name}BindReferences(${StringUtils.params(
+				saveEntities.collect{it.typeVariable}, extraParams)}
+			){
+				${gElement.bindReferences()}
 			}
-			String strCampoSetTo = "";
-			for (FirmaSetCampo setCampo: _firma.setCampos){
-				CampoUtils campoSetTo = CampoUtils.create(setCampo.campo);
-				entidades.put(campoSetTo.getEntidad().name, EntidadUtils.create(campoSetTo.getEntidad()));
-				strCampoSetTo += """
-					${campoSetTo.firstLower()} = "${setCampo.value}";
-					${campoSetTo.sinUltimoAtributo()}.save();
-				""";
-			}
-			String getters = "";
-			for (EntidadUtils e: entidades.values()){
-				if (!e.equals(entidad))
-					getters += """${e.clase} ${e.variable} = ${e.clase}.get(${e.clase}.class);""";
-			}	
-			botonesMethod += """
-				@Util
-				public static void ${StringUtils.firstLower(_firma.name)}${sufijoBoton}(${StringUtils.params(
-					intermedias.collect{it.typeId},
-					almacenNoSingle.typeId,
-					entidad.typeId,
-					saveExtra
-				)}){
-					${!entidad.nulo()? "${entidad.clase} $entidad.variable = ${ControllerUtils.complexGetterCall(controllerName, almacen, entidad)};":""}
-					${getters}
-					FirmaUtils.firmar(${documento.firstLower()}, ${firmantes.firstLower()}, firma, null);
-					if (!Messages.hasErrors()) {
-						${strCampoToTrue}
-						${strCampoSetTo}
-						${entidad.variable}.save();
-					}
-				}
-			""";
-		}
-		return botonesMethod;
+		""";
 	}
 	
 	public static String getAccion(PaginaAccion paginaAccion){
@@ -923,22 +856,18 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodosCrearForTablas(){
-		if (!crear || !hayTablasDeEntidad(container) || entidad.isSingleton())
+		if (!crear || !hayTablasDeEntidad(element) || entidad.isSingleton())
 			return "";
 		return """
 			public static void crearForTablas(${StringUtils.params(
-				intermedias.collect{it.typeId},
-				almacenNoSingle.typeId,
-				entidadPagina.typeVariable,
+				allEntities.collect{if (entidad != it) it.typeId},
 				saveEntities.collect{it.typeVariable},
-				saveExtra
+				extraParams
 			)}){
 				${entidad.typeId} = ${controllerName}.crearLogica(${StringUtils.params(
-					intermedias.collect{it.id},
-					almacenNoSingle.id,
-					entidadPagina.variable,
+					allEntities.collect{if (entidad != it) it.id},
 					saveEntities.collect{it.variable},
-					saveExtra.collect{it.split(" ")[1]}
+					extraParams.collect{it.split(" ")[1]}
 				)});
 				Map<String, Object> json = new HashMap<String, Object>();
 				if (!Messages.hasMessages()) {
@@ -963,106 +892,109 @@ public class ${controllerName} extends ${controllerGenName} {
 		}
 		else if (o instanceof Tabla){
 			Tabla tabla = o;
-			if (tabla.campo.entidad.name.equals(campo.getUltimaEntidad().name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear))
+			if (tabla.campo.entidad.name.equals(lastSubcampo.getUltimaEntidad().name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear))
 				return true;
 		}
 		return false;
 	}
 	
 	public boolean isPopup(){
-		return container instanceof Popup;
+		return element instanceof Popup;
 	}
 	
 	public boolean isPagina(){
-		return container instanceof Pagina;
+		return element instanceof Pagina;
 	}
 	
 	public boolean isForm(){
-		return container instanceof Form;
+		return element instanceof Form;
 	}
 	
-	public static Controller fromPagina(Pagina pagina){
-		GPagina pag = new GPagina(pagina);
-		Controller controller = new Controller();
-		controller.createOpcionesAccion(pagina);
-		controller.container = pagina;
+	private static Controller getFromCache(EObject container){
+		if (cache == null)
+			cache = new HashMap<EObject, Controller>();
+		if (cache.get(container) == null)
+			cache.put(container, new Controller());
+		return cache.get(container);
+	}
+	
+	public static Controller create(GPagina gpag){
+		Controller controller = getFromCache(gpag.pagina);
+		if (controller.initialized)
+			return controller;
+		
+		controller.createOpcionesAccion(gpag.pagina);
+		controller.gElement = gpag;
+		controller.element = gpag.pagina;
 		controller.index = true;
-		controller.findPaginaReferencias(pagina);
-		controller.crear = pag.hasForm && (controller.crear || controller.accionCrear.crearSiempre);
-		controller.editar = pag.hasForm && (controller.editar || controller.crear || controller.accionEditar.crearSiempre);
-		controller.borrar = pag.hasForm && (controller.borrar || controller.accionBorrar.crearSiempre);
-		controller.saveController = [];
-		controller.campo = pag.campo;
-		controller.renderView = "\"gen/${pagina.name}/${pagina.name}.html\"";
-		controller.permiso = pagina.permiso;
-		if (pagina.permiso == null)
-			controller.permiso = pagina.eContainer().permiso;
-		controller.controllerGenName = pag.controllerGenName();
-		controller.controllerName = pag.controllerName();
-		controller.controllerGenFullName = pag.controllerGenFullName();
-		controller.controllerFullName = pag.controllerFullName();
-		controller.url = pag.url();
+		controller.findPaginaReferencias(gpag.pagina);
+		controller.crear = gpag.hasForm && (controller.crear || controller.accionCrear.crearSiempre);
+		controller.editar = gpag.hasForm && (controller.editar || controller.crear || controller.accionEditar.crearSiempre);
+		controller.borrar = gpag.hasForm && (controller.borrar || controller.accionBorrar.crearSiempre);
+		controller.campo = gpag.campo;
+		controller.renderView = "\"gen/${gpag.pagina.name}/${gpag.pagina.name}.html\"";
+		controller.permiso = gpag.pagina.permiso;
+		if (gpag.pagina.permiso == null)
+			controller.permiso = gpag.pagina.eContainer().permiso;
+		controller.controllerGenName = gpag.controllerGenName();
+		controller.controllerName = gpag.controllerName();
+		controller.controllerGenFullName = gpag.controllerGenFullName();
+		controller.controllerFullName = gpag.controllerFullName();
+		controller.url = gpag.url();
 		controller.packageName = "controllers";
 		controller.packageGenName = "controllers.gen";
 		controller.noBorrarEntidad = controller.accionBorrar?.noBorrarEntidad? true : false;
-		controller.noAutenticar = pagina.noAutenticar;
-		controller.name = pagina.name;
-		controller.saveExtra = [];
-		controller.saveCode = [];
-		controller.saveEntities = [];
-		controller.elementoGramatica = pagina;
+		controller.noAutenticar = gpag.pagina.noAutenticar;
+		controller.name = gpag.pagina.name;
+		controller.initialize();
 		return controller;
 	}
 	
-	public static Controller fromPopup(Popup popup){
-		GPopup gpopup = new GPopup(popup);
-		Controller controller = new Controller();
-		controller.createOpcionesAccion(popup);
-		controller.container = popup;
+	public static Controller create(GPopup gpop){
+		Controller controller = getFromCache(gpop.popup);
+		if (controller.initialized)
+			return controller;
+		
+		controller.createOpcionesAccion(gpop.popup);
+		controller.gElement = gpop;
+		controller.element = gpop.popup;
 		controller.index = true;
-		controller.findPopupReferencias(popup);
+		controller.findPopupReferencias(gpop.popup);
 		controller.crear = controller.crear || controller.accionCrear.crearSiempre;
 		controller.editar = controller.editar || controller.accionEditar.crearSiempre;
 		controller.borrar = controller.borrar || controller.accionBorrar.crearSiempre;
-		controller.saveController = [];
-		controller.campo = gpopup.campo;
-		controller.renderView = "\"gen/popups/${gpopup.viewName()}\"";
-		controller.permiso = popup.permiso;
-		if (popup.permiso == null)
-			controller.permiso = popup.eContainer().permiso;
-		controller.controllerGenName = gpopup.controllerGenName();
-		controller.controllerName = gpopup.controllerName();
-		controller.controllerGenFullName = gpopup.controllerGenFullName();
-		controller.controllerFullName = gpopup.controllerFullName();
-		controller.url = gpopup.url();
+		controller.campo = gpop.campo;
+		controller.renderView = "\"gen/popups/${gpop.viewName()}\"";
+		controller.permiso = gpop.popup.permiso;
+		if (gpop.popup.permiso == null)
+			controller.permiso = gpop.popup.eContainer().permiso;
+		controller.controllerGenName = gpop.controllerGenName();
+		controller.controllerName = gpop.controllerName();
+		controller.controllerGenFullName = gpop.controllerGenFullName();
+		controller.controllerFullName = gpop.controllerFullName();
+		controller.url = gpop.url();
 		controller.packageName = "controllers.popups";
 		controller.packageGenName = "controllers.gen.popups";
 		controller.noBorrarEntidad = controller.accionBorrar?.noBorrarEntidad? true : false;
 		controller.noAutenticar = false;
-		controller.name = popup.name;
-		controller.saveExtra = [];
-		controller.saveCode = [];
-		controller.saveEntities = [];
-		controller.elementoGramatica = popup;
+		controller.name = gpop.popup.name;
+		controller.initialize();
 		return controller;
 	}
 	
-	public static Controller fromForm(Form form){
-		GForm gform = new GForm(form);
-		EObject container = LedCampoUtils.getElementosContainer(form);
-		Controller containerController;
-		if (container instanceof Pagina)
-			containerController = Controller.fromPagina(container);
-		else if (container instanceof Popup)
-			containerController = Controller.fromPopup(container);
-		Controller controller = new Controller();
+	public static Controller create(GForm gform){
+		Controller controller = getFromCache(gform.form);
+		if (controller.initialized)
+			return controller;
+
+		Controller containerController = create(gform.getPaginaOrPopupContainer());
 		controller.createOpcionesAccion(null);
-		controller.container = form;
+		controller.gElement = gform;
+		controller.element = gform.form;
 		controller.editar = true;
-		controller.saveController = [];
 		controller.campo = containerController.campo;
 		controller.renderView = containerController.renderView;
-		controller.permiso = form.permiso;
+		controller.permiso = gform.form.permiso;
 		controller.controllerGenName = containerController.controllerGenName;
 		controller.controllerName = containerController.controllerName;
 		controller.controllerGenFullName = containerController.controllerGenFullName;
@@ -1072,11 +1004,8 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.packageGenName = containerController.packageGenName;
 		controller.noBorrarEntidad = containerController.noBorrarEntidad;
 		controller.noAutenticar = containerController.noAutenticar;
-		controller.name = StringUtils.firstLower(form.name);
-		controller.saveExtra = [];
-		controller.saveCode = [];
-		controller.saveEntities = [];
-		controller.elementoGramatica = form;
+		controller.name = StringUtils.firstLower(gform.form.name);
+		controller.initialize();
 		return controller;
 	}
 	
@@ -1140,8 +1069,8 @@ public class ${controllerName} extends ${controllerGenName} {
 			acciones.add(elementoAccion.accion);
 		else{
 			Permiso permiso;
-			if (elementoAccion instanceof PaginaAccion) permiso = elementoAccion.pagina.permiso;
-			if (elementoAccion instanceof PopupAccion) permiso = elementoAccion.popup.permiso;
+			if (elementoAccion instanceof PaginaAccion) permiso = (Permiso)elementoAccion.pagina.permiso;
+			if (elementoAccion instanceof PopupAccion) permiso = (Permiso)elementoAccion.popup.permiso;
 			if (!permiso) acciones.add("editar");
 			else{
 				if (permiso.ret)
@@ -1244,27 +1173,27 @@ public class ${controllerName} extends ${controllerGenName} {
 	public String getRouteIndex(String accion, boolean redirigir, boolean forTabla){
 		String accionParam = "";
 		if (accion) accionParam = "'accion':'${accion}'";
-		String almacenId = (almacen.nulo() || almacen.isSingleton())? "" : "'${almacen.id}':${almacen.idCheck}? ${almacen.idNoCheck}:'_${almacen.id}_'";
-		String entidadId = "";
-		if (!entidad.nulo() && !entidad.isSingleton() && !"crear".equals(accion)){
-			if (forTabla){
-				entidadId = "'${entidad.id}':'_${entidad.id}_'";
-			}
-			else{
-				if (xToMany)
-					entidadId = "'${entidad.id}':${entidad.idCheck}";
-				else
-					entidadId = "'${entidad.id}':${campo.idWithNullCheck()}";
-			}
-		}
+		List<String> idParams = allEntities.collect {
+			if (it.isSingleton() || (entidad.equals(it) && "crear".equals(accion)))
+				return "";
+			EntidadInfo info = it.getInfo(campo?.campo);	
+			String id;
+			if (info.campo && !LedCampoUtils.xToMany(info.campo.campo))
+				id = "${info.campo.idWithNullCheck()}";
+			else
+				id = "${it.idCheck}";
+			if (forTabla)
+				return "'${it.id}':${id}? ${id}:'_${it.id}_'";
+			else
+				return "'${it.id}':${id}";
+		};
 		String redirigirAnterior = "";
 		if (hayAnterior && redirigir)
 			redirigirAnterior = "'redirigir': 'anterior'";
-		List<String> intermediasStr = intermedias.collect {"'${it.id}':${it.idCheck}? ${it.idNoCheck}:'_${it.id}_'"};
-		String params = StringUtils.params(accionParam, almacenId, entidadId, intermediasStr, redirigirAnterior);
-		String ids = "";
-		if (! params.equals("")) ids = ", [${params}]";
-		return """play.mvc.Router.reverse("${controllerFullName}.index" ${ids})""";
+		String params = StringUtils.params(accionParam, idParams, redirigirAnterior);
+		String map = "";
+		if (! params.equals("")) map = ", [${params}]";
+		return """play.mvc.Router.reverse("${controllerFullName}.index" ${map})""";
 	}
 	
 	public String getRouteIndex(String accion){
@@ -1272,42 +1201,20 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	public String getRouteAccion(String accion){
-		String almacenId = (almacen.nulo() || almacen.isSingleton())? "" : "'${almacen.id}':${almacen.idCheck}";
-		String entidadId = "";
-		if (!entidad.nulo() && !entidad.isSingleton() && !accion.startsWith("crear")){
-			if (xToMany)
-				entidadId = "'${entidad.id}':${entidad.idCheck}";
+		List<String> idParams = allEntities.collect {
+			if (it.isSingleton() || (entidad.equals(it) && "crear".startsWith(accion)))
+				return "";
+			EntidadInfo info = it.getInfo(campo?.campo);
+			if (info.campo && !LedCampoUtils.xToMany(info.campo.campo))
+				return "'${it.id}':${info.campo.idWithNullCheck()}";
 			else
-				entidadId = "'${entidad.id}':${campo.idWithNullCheck()}";
-		}
-		List<String> intermediasStr = intermedias.collect {"'${it.id}':${it.idCheck}"};
-		String params = StringUtils.params(almacenId, entidadId, intermediasStr);
-		String ids = "";
+				return "'${it.id}':${it.idCheck}";
+		};
+		String params = StringUtils.params(idParams);
+		String map = "";
 		if (params != "")
-			ids = ", [${params}]";
-		return "play.mvc.Router.reverse('${controllerFullName}.${accion}' ${ids})";
-	}
-	
-	private static List<AlmacenEntidad> calcularSubcampos(Campo campo){
-		List<AlmacenEntidad> lista = new ArrayList<AlmacenEntidad>();
-		if (campo == null || campo.atributos == null) return lista;
-		String campoStr = campo.getEntidad().getName();
-		EntidadUtils almacen = EntidadUtils.create(campo.getEntidad());
-		EntidadUtils almacenAnterior = EntidadUtils.create((Entity)null);
-		CampoAtributos atributos = campo.atributos;
-		while (atributos != null){
-			Attribute attr = atributos.getAtributo();
-			campoStr += "." + attr.getName();
-			if (LedEntidadUtils.xToMany(attr) || atributos.getAtributos() == null){
-				EntidadUtils entidad = EntidadUtils.create(LedEntidadUtils.getEntidad(attr));
-				lista.add(new AlmacenEntidad(CampoUtils.create(campoStr), almacenAnterior, almacen, entidad));
-				campoStr = entidad.getClase();
-				almacenAnterior = almacen;
-				almacen = entidad;
-			}
-			atributos = atributos.getAtributos();
-		}
-		return lista;
+			map = ", [${params}]";
+		return "play.mvc.Router.reverse('${controllerFullName}.${accion}' ${map})";
 	}
 	
 	/*
@@ -1322,6 +1229,118 @@ public class ${controllerName} extends ${controllerGenName} {
 			}
 		}
 		return code;
+	}
+	
+	public String complexGetter(Entidad entidad) {
+		EntidadInfo info = entidad.getInfo(campo?.campo);
+		if (info.almacen.nulo())
+			return simpleGetter(entidad, true);
+		Entidad almacen = Entidad.create(info.almacen.entidad);
+		almacen.singletonsId = true;
+		String singleton = "";
+		String noSingleton = "";
+		if (almacen.isSingleton()){
+			singleton = "${almacen.typeId} = ${simpleGetterCall(almacen, false)}.id;";
+		}
+		else{
+			noSingleton = """
+				if(${almacen.id} == null){
+					if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro ${almacen.id}"))
+					Messages.fatal("Falta parámetro ${almacen.id}");
+				}
+			""";
+		}
+		return """
+			@Util
+			public static ${entidad.clase} get${entidad.clase}(${StringUtils.params(info.almacen.typeId, entidad.typeId)}){
+				${entidad.clase} ${entidad.variable} = null;
+				${singleton}
+				${noSingleton}
+				if(${entidad.id} == null){
+					if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro ${entidad.id}"))
+						Messages.fatal("Falta parámetro ${entidad.id}");
+				}
+				if(${almacen.id} != null && $entidad.id != null){
+					$entidad.variable = ${entidad.clase}.find("select $entidad.variable from ${almacen.clase} ${almacen.variable} join ${info.campo.firstLower()} $entidad.variable where ${almacen.variable}.id=? and ${entidad.variable}.id=?", ${almacen.id}, $entidad.id).first();
+					if($entidad.variable == null)
+						Messages.fatal("Error al recuperar ${entidad.clase}");
+				}
+				return $entidad.variable;
+			}
+		""";
+	}
+
+	public String complexGetterCall(Entidad entidad) {
+		EntidadInfo info = entidad.getInfo(campo?.campo);
+		if (info.almacen.nulo() || info.almacen.isSingleton())
+			return simpleGetterCall(entidad, true);
+		return "${controllerName}.get${entidad.clase}(${info.almacen.id}, ${entidad.id})";
+	}
+	
+	public String simpleGetter(Entidad entidad, boolean byId) {
+		if (entidad.entidad == null){
+			return "";
+		}
+		if (entidad.isSingleton()){
+			return """
+				@Util
+				public static ${entidad.clase} get${entidad.clase}(){
+					return ${entidad.clase}.get(${entidad.clase}.class);
+				}
+			"""
+		}
+		if (byId){
+			return """
+				@Util
+				public static ${entidad.clase} get${entidad.clase}(${entidad.typeId}){
+					${entidad.clase} ${entidad.variable} = null;
+					if(${entidad.id} == null){
+						if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro ${entidad.id}"))
+							Messages.fatal("Falta parámetro ${entidad.id}");
+					}
+					else{
+						${entidad.variable} = ${entidad.clase}.findById($entidad.id);
+						if($entidad.variable == null){
+							Messages.fatal("Error al recuperar ${entidad.clase}");
+						}
+					}
+					return ${entidad.variable};
+				}
+			"""
+		}
+		return """
+			@Util
+			public static ${entidad.clase} get${entidad.clase}(){
+				return new ${entidad.clase}();
+			}
+		"""
+	}
+
+	public String simpleGetterCall(Entidad entidad, boolean byId) {
+		if (byId && !entidad.isSingleton()){
+			return "${controllerName}.get${entidad.clase}(${entidad.id})";
+		}
+		else{
+			return "${controllerName}.get${entidad.clase}()";
+		}
+	}
+
+	public int compare(Entidad e1, Entidad e2) {
+		if (e1.equals(e2)) return 0;
+		if (campo?.campo){
+			int index1 = campo.indexOf(e1);
+			int index2 = campo.indexOf(e2);
+			if (index1 != index2){
+				if (index1 == -1 || index2 == -1)
+					return index2 - index1;
+				return index1 - index2;
+			}
+		}
+		String s1 = e1?.entidad?.name;
+		String s2 = e2?.entidad?.name;
+		if (!s1) s1 = "";
+		if (!s2) s2 = "";
+		return s1.compareTo(s2);
 	}
 			
 }

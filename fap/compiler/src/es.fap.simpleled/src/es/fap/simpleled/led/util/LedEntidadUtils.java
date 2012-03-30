@@ -16,7 +16,6 @@ import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
-import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.impl.LedFactoryImpl;
 
 public class LedEntidadUtils {
@@ -229,7 +228,12 @@ public class LedEntidadUtils {
 		entidades.add(campo.getEntidad());
 		CampoAtributos atributos = campo.getAtributos();
 		while (atributos != null){
-			entidades.add(getEntidad(atributos.getAtributo()));
+			Attribute attr = atributos.getAtributo();
+			if (xToMany(attr) || atributos.getAtributos() == null){
+				Entity entidad = getEntidad(attr);
+				if (entidad != null)
+					entidades.add(entidad);
+			}
 			atributos = atributos.getAtributos();
 		}
 		return entidades;

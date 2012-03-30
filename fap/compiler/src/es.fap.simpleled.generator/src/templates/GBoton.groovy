@@ -1,76 +1,79 @@
 package templates;
 
+import org.eclipse.emf.ecore.EObject
 import es.fap.simpleled.led.impl.EnlaceImpl;
-
+import es.fap.simpleled.led.impl.LedFactoryImpl;
+import es.fap.simpleled.led.util.ModelUtils
 import es.fap.simpleled.led.Enlace;
+import es.fap.simpleled.led.FirmaSimple
+import es.fap.simpleled.led.LedFactory
 import generator.utils.*;
-import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.Boton;
 
-public class GBoton {
+public class GBoton extends GElement{
 
-	def Boton boton;
+	Boton boton;
 	
-	public static String generate(Boton boton){
-		GBoton g = new GBoton();
-		g.boton = boton;
-		g.view();
+	public GBoton(Boton boton, GElement container){
+		super(boton, container);
+		this.boton = boton;
 	}
 
+	public void generate(){
+		if (boton.pagina || boton.popup || boton.anterior) {
+			Enlace enlace = LedFactory.eINSTANCE.createEnlace();
+			enlace.name = (boton.name ?: "") + "IDenlace";
+			enlace.titulo = boton.titulo;
+			String btnType = (boton.type!= null && (!boton.type.equals("default"))) ? "btn-"+boton.type : "";
+			enlace.estilo = "btn ${btnType}";
+			if (boton.pagina)
+				enlace.getMetaClass().setAttribute(enlace, "pagina", boton.pagina);
+			else if (boton.popup)
+				enlace.getMetaClass().setAttribute(enlace, "popup", boton.popup);
+			else if (boton.anterior)
+				enlace.anterior = true;
+			
+			getGroupContainer().replaceElement(enlace, boton);
+		}
+	}
+	
     public String view(){
         TagParameters params = new TagParameters();
         params.putStr("id", boton.name)
         params.putStr("titulo", boton.titulo)
         if (boton.ancho != null)
-            params.put "ancho", boton.ancho
+            params.put "ancho", boton.ancho;
 		if (boton.isWaitPopup())
-			params.put "waitPopup", boton.isWaitPopup()
+			params.put "waitPopup", boton.isWaitPopup();
 		if (boton.type != null)
-			params.putStr "type", "btn "+boton.type
+			params.putStr "type", "btn "+boton.type;
 		
 		if (boton.ayuda != null) {
 			if ((boton.tipoAyuda != null) && (boton.tipoAyuda.type.equals("propover")))
-				params.put "ayuda", "tags.TagAyuda.popover('${boton.ayuda}')"
+				params.put "ayuda", "tags.TagAyuda.popover('${boton.ayuda}')";
 			else
-				params.put "ayuda", "tags.TagAyuda.texto('${boton.ayuda}')"
+				params.put "ayuda", "tags.TagAyuda.texto('${boton.ayuda}')";
 		}
-		String result = ""
-			
-		if (boton.pagina != null) {   // envolvemos el botón dentro de un enlace (tag <a>)
-			Enlace enlace = new EnlaceImpl();
-			enlace.name = (boton.name ?: "")+"IDenlace";
-			enlace.titulo = boton.titulo;
-			enlace.pagina = boton.pagina;
-			String btnType = (boton.type!= null && (!boton.type.equals("default"))) ? "btn-"+boton.type : "" 
-			enlace.estilo = "btn ${btnType}";
-			result = Expand.expand(enlace);
-		}
-		else if (boton.popup != null) {
-			Enlace enlace = new EnlaceImpl();
-			enlace.name = (boton.name ?: "")+"IDenlace";
-			enlace.titulo = boton.titulo;
-			enlace.popup = boton.popup;
-			String btnType = (boton.type!= null && (!boton.type.equals("default"))) ? "btn-"+boton.type : ""
-			enlace.estilo = "btn ${btnType}";
-			result = Expand.expand(enlace);
-		}
-		else if (boton.anterior) {
-			Enlace enlace = new EnlaceImpl();
-			enlace.name = (boton.name ?: "")+"IDenlace";
-			enlace.titulo = boton.titulo;
-			enlace.anterior = true;
-			String btnType = (boton.type!= null && (!boton.type.equals("default"))) ? "btn-"+boton.type : ""
-			enlace.estilo = "btn ${btnType}";
-			result = Expand.expand(enlace);
-		}
-		else {
-			HashStack.push(HashStackName.SAVE_BOTON, boton.name);
-			result ="""
-#{fap.boton ${params.lista()} /}
-			"""
-		}
-		
-        return result;
+		return """
+			#{fap.boton ${params.lista()} /}
+		""";
     }
+	
+	public String controller(){
+		Controller controller = Controller.create(getControllerContainer());
+		
+		if (controller.isForm() && controller.gElement.getInstancesOf(GBoton.class).size() == 1 && controller.gElement.getInstancesOf(GFirmaSimple.class).size() == 0)
+			return "";
+		return """
+			@Util
+			public static void ${StringUtils.firstLower(boton.name)}${controller.sufijoBoton}(${StringUtils.params(
+				controller.allEntities.collect{it.typeId},
+				controller.saveEntities.collect{it.typeVariable},
+				controller.extraParams
+			)}){
+				//Sobreescribir este método para asignar una acción
+			}
+		""";
+	}
 	
 }

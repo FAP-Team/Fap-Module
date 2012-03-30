@@ -22,7 +22,7 @@ Formulario Pepe campo=Solicitud {
 			Columna campo=Aportacion.estado
 		}
 		Texto campo=FuncionariosHabilitados.texto
-		FirmaSimple f documento=Solicitud.aportaciones.actual.borrador listaFirmantes=Solicitud.registro.firmantes setTrue=Quartz.sendMail
+		FirmaSimple f documento=Solicitud.aportaciones.actual.borrador listaFirmantes=Solicitud.registro.firmantes setTrue=Quartz.sendMail calcularFirmantes=Solicitud.solicitante
 			titulo="Titulo" setCamposTo{
 				Solicitud.amigo.nombre to "Value1",
 				DocumentoSingle.desc to "Value2",
@@ -35,16 +35,8 @@ Formulario Pepe campo=Solicitud {
 		Accion crear crearSiempre
 		Accion editar crearSiempre
 //		Form novena{
-			FirmaSimple f documento=Solicitud.doc listaFirmantes=Solicitud.registro.firmantes titulo="Titulo"
+			FirmaSimple f documento=Solicitud.doc listaFirmantes=Solicitud.registro.firmantes titulo="Titulo" calcularFirmantes=Solicitud.solicitante
 //		}
-	}
-	
-	Pagina Firma2 campo=Documento {
-		Accion crear crearSiempre
-		Accion editar crearSiempre
-			FirmaSimple f documento=DocumentoSingle.doc listaFirmantes=FirmanteSingle.firmantes titulo="Titulo" setTrue=Quartz.execute setCamposTo{
-				FuncionariosHabilitados.texto to "Value"
-			}
 	}
 	
 }

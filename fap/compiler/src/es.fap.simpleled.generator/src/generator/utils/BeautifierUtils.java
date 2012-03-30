@@ -12,7 +12,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 
-public class Beautifier {
+public class BeautifierUtils {
         
 		@SuppressWarnings("unchecked")
         public static String formatear(String code) throws MalformedTreeException, BadLocationException{

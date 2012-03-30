@@ -2,23 +2,18 @@ package templates;
 
 import es.fap.simpleled.led.*
 import generator.utils.*
-import generator.utils.HashStack.HashStackName
 
-public class GCheck {
+public class GCheck extends GSaveCampoElement{
 
-	def Check check;
+	Check check;
 	
-	public static String generate(Check check){
-		GCheck g = new GCheck();
-		g.check = check;
-		g.view();
+	public GCheck(Check check, GElement container){
+		super(check, container);
+		this.check = check;
+		campo = CampoUtils.create(check.campo);
 	}
 	
 	public String view(){
-		// Añado la entidad que lo engloba a los parametros del Save
-		CampoUtils campo = CampoUtils.create(check.campo);
-		EntidadUtils.addToSaveEntity(campo);
-		
 		TagParameters params = new TagParameters();
 		params.putStr("campo", campo.firstLower());
 		
@@ -31,11 +26,8 @@ public class GCheck {
 		if(check.anchoTitulo != null)
 			params.putStr("anchoTitulo", check.anchoTitulo)
 		
-			
-		String view = 
-		"""
-#{fap.check ${params.lista()} /}		
-		"""
-		return view;
+		return """
+			#{fap.check ${params.lista()} /}		
+		""";
 	}	
 }

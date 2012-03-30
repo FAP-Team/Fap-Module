@@ -10,6 +10,7 @@ import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.Tabla
 import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.LedPackage;
+
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import java.util.regex.Pattern.First;
@@ -46,13 +47,13 @@ public class CampoUtils implements Comparable{
 		Entity entity = ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, entidad, LedUtils.resource);
 		if (entity == null){
 			if (entidad.equals("Solicitud"))
-				entity = EntidadUtils.findSolicitud();
+				entity = Entidad.findSolicitud();
 			else return null;
 		}
 		Campo campoResult = LedFactory.eINSTANCE.createCampo();
 		campoResult.setEntidad(entity);
 		if (atributos.size() == 0)
-			return CampoUtils.create(campoResult);
+			return create(campoResult);
 		CampoAtributos attrsResult = LedFactory.eINSTANCE.createCampoAtributos();
 		campoResult.setAtributos(attrsResult);
 		for (int i = 0; i < atributos.size(); i++){
@@ -68,19 +69,19 @@ public class CampoUtils implements Comparable{
 				attrsResult = attrsResult.getAtributos();
 			}
 		}
-		return CampoUtils.create(campoResult);
+		return create(campoResult);
 	}
 	
 	public static CampoUtils create(Campo campo, Attribute attr){
-		return create(addAttribute(campo, attr));
+		return addAttribute(campo, attr);
 	}
 	
 	public static CampoUtils create(Campo campo, String more){
-		return create(addMore(campo, more));
+		return addMore(campo, more);
 	}
 	
-	public Entity getEntidad(){
-		return campo?.getEntidad();
+	public Entidad getEntidad(){
+		return Entidad.create(campo?.entidad);
 	}
 	
 	
@@ -119,19 +120,31 @@ public class CampoUtils implements Comparable{
 		return LedCampoUtils.getUltimaEntidad(campo);
 	}
 	
-	public static Campo addMore(Campo campo, String more){
-		return CampoUtils.create(CampoUtils.create(campo).str + "." + more)?.campo;
+	public Campo newCampo(){
+		return create(str).campo;
 	}
 	
-	public Campo addMore(String more){
-		return CampoUtils.addMore(campo, more);
+	public static Campo newCampo(Campo campo){
+		return create(create(campo).str).campo;
 	}
 	
-	public Campo addAttribute(Attribute atributo){
-		return CampoUtils.addAttribute(campo, atributo);
+	public static CampoUtils addMore(CampoUtils campo, String more){
+		return create(campo.str + "." + more);
 	}
 	
-	public static Campo addAttribute(Campo campo, Attribute atributo){
+	public static CampoUtils addMore(Campo campo, String more){
+		return addMore(create(campo), more);
+	}
+	
+	public CampoUtils addMore(String more){
+		return addMore(campo, more);
+	}
+	
+	public CampoUtils addAttribute(Attribute atributo){
+		return addAttribute(campo, atributo);
+	}
+	
+	public static CampoUtils addAttribute(Campo campo, Attribute atributo){
 		return addMore(campo, atributo.name);
 	}
 	
@@ -147,7 +160,7 @@ public class CampoUtils implements Comparable{
 	 * Solicitud.documento ----> solicitud?.documento?.id
 	 */
 	public String idWithNullCheck(){
-		return CampoUtils.withNullCheck(firstLower() + '.id');
+		return withNullCheck(firstLower() + '.id');
 	}
 	
 	public static boolean hayCamposGuardables(Object o){
@@ -209,6 +222,45 @@ public class CampoUtils implements Comparable{
 	
 	public String getStr_(){
 		return StringUtils.firstLower(str.replace('.', '_'));
+	}
+	
+	public static List<EntidadInfo> calcularSubcampos(Campo campo){
+		List<EntidadInfo> lista = new ArrayList<EntidadInfo>();
+		if (campo == null) return lista;
+		if (campo.atributos == null){
+			lista.add(new EntidadInfo(create(campo)));
+			return lista;
+		}
+		String campoStr = campo.getEntidad().getName();
+		CampoAtributos atributos = campo.atributos;
+		while (atributos != null){
+			Attribute attr = atributos.getAtributo();
+			campoStr += "." + attr.getName();
+			if (LedEntidadUtils.xToMany(attr) || atributos.getAtributos() == null){
+				lista.add(new EntidadInfo(create(campoStr)));
+				campoStr = Entidad.create(LedEntidadUtils.getEntidad(attr)).getClase();
+			}
+			atributos = atributos.getAtributos();
+		}
+		return lista;
+	}
+	
+	public int indexOf(Entidad entidad){
+		if (campo == null) return -1;
+		if (campo.method) return -1;
+		if (entidad.nulo()) return -1;
+		Entidad e = Entidad.create(campo.entidad);
+		if (e.equals(entidad))
+			return 0; 
+		CampoAtributos attrs = campo.getAtributos();
+		int c = 1;
+		while (attrs != null){
+			if (entidad.equals(Entidad.create(LedEntidadUtils.getEntidad(attrs.getAtributo()))))
+				return c;
+			attrs = attrs.getAtributos();
+			c++;
+		}
+		return -1;
 	}
 	
 }

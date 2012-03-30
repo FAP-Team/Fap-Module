@@ -2,30 +2,22 @@ package templates;
 
 import utils.StringUtils;
 import es.fap.simpleled.led.*;
-import generator.utils.HashStack;
-import generator.utils.HashStack.HashStackName;
 import generator.utils.CampoUtils
+import generator.utils.Entidad;
 import generator.utils.StringUtils;
 import generator.utils.TagParameters;
-import generator.utils.EntidadUtils;
 
-public class GSubirArchivo {
+public class GSubirArchivo extends GSaveCampoElement{
 
 	SubirArchivo subirArchivo;
-	CampoUtils campo;
 	
-	public static String generate(SubirArchivo subirArchivo){
-		def g = new GSubirArchivo();
-		g.subirArchivo = subirArchivo;
-		return g.view();
+	public GSubirArchivo(SubirArchivo subirArchivo, GElement container){
+		super(subirArchivo, container);
+		this.subirArchivo = subirArchivo;
+		campo = CampoUtils.create(subirArchivo.campo);
 	}
 	
 	public String view(){
-		campo = CampoUtils.create(subirArchivo.campo);
-		EntidadUtils.addToSaveEntity(campo);
-		HashStack.push(HashStackName.SAVE_EXTRA, "java.io.File ${subirArchivo.name}")
-		HashStack.push(HashStackName.SAVE_CODE, this);
-		HashStack.push(HashStackName.SUBIR_ARCHIVO, subirArchivo.name)
 		TagParameters params = new TagParameters()
 		params.putStr("id", subirArchivo.name)
 		params.putStr("tipo", "tipoCiudadano")
@@ -119,6 +111,16 @@ public class GSubirArchivo {
 				}
 			}
 		""";
+	}
+	
+	public List<String> extraParams(){
+		List<String> extraParams = super.extraParams();
+		extraParams.add("java.io.File ${subirArchivo.name}");
+		return extraParams;
+	}
+	
+	public String copy(){
+		return GSaveCampoElement.copyCamposFiltrados(campo, ["tipo","descripcion"]);
 	}
 	
 }

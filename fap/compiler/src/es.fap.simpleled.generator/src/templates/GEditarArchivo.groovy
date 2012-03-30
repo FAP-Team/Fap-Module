@@ -1,29 +1,22 @@
 package templates;
 
 import es.fap.simpleled.led.*;
-import generator.utils.HashStack;
-import generator.utils.HashStack.HashStackName;
 import generator.utils.CampoUtils
+import generator.utils.Entidad;
 import generator.utils.StringUtils;
 import generator.utils.TagParameters;
-import generator.utils.EntidadUtils;
 
-public class GEditarArchivo {
+public class GEditarArchivo extends GSaveCampoElement{
 
 	EditarArchivo editarArchivo;
-	CampoUtils campo;
 	
-	public static String generate(EditarArchivo editarArchivo){
-		def g = new GEditarArchivo();
-		g.editarArchivo = editarArchivo;
-		return g.view();
+	public GEditarArchivo(EditarArchivo editarArchivo, GElement container){
+		super(editarArchivo, container);
+		this.editarArchivo = editarArchivo;
+		campo = CampoUtils.create(editarArchivo.campo);
 	}
 	
 	public String view(){
-		// Añado la entidad que lo engloba a los parametros del Save
-		campo = CampoUtils.create(editarArchivo.campo);
-		EntidadUtils.addToSaveEntity(campo);
-		HashStack.push(HashStackName.SAVE_CODE, this);
 		TagParameters params = new TagParameters()
 		if(editarArchivo.name != null)
 			params.putStr("id", editarArchivo.name)
@@ -53,7 +46,6 @@ public class GEditarArchivo {
 				}
 			}
 		""";
-		return saveCode;
 	}
 	
 }

@@ -9,27 +9,39 @@ import java.util.Map;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
-import es.fap.simpleled.led.*;
+import es.fap.simpleled.led.Attribute;
+import es.fap.simpleled.led.Campo;
+import es.fap.simpleled.led.CampoAtributos;
+import es.fap.simpleled.led.Elemento;
+import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.FirmaSimple;
+import es.fap.simpleled.led.LedFactory;
+import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.Model;
+import es.fap.simpleled.led.Pagina;
+import es.fap.simpleled.led.Popup;
+import es.fap.simpleled.led.Tabla;
+import es.fap.simpleled.led.Formulario;
+
 
 public class LedCampoUtils {
 	
 	public static Entity getUltimaEntidad(Campo campo){
-		if (campo == null){
+		if (campo == null)
 			return null;
-		}
 		Entity result = campo.getEntidad();
 		CampoAtributos attrs = campo.getAtributos();
 		while (attrs != null){
 			Attribute attr = attrs.getAtributo();
-			if (LedEntidadUtils.getEntidad(attr) != null){
+			if (LedEntidadUtils.getEntidad(attr) != null)
 				result = LedEntidadUtils.getEntidad(attr);
-			}
 			attrs = attrs.getAtributos();
 		}
 		return result;
 	}
 	
 	public static Attribute getUltimoAtributo(Campo campo){
+		if (campo == null) return null;
 		Attribute result = null;
 		CampoAtributos attrs = campo.getAtributos();
 		while (attrs != null){
@@ -37,6 +49,18 @@ public class LedCampoUtils {
 			attrs = attrs.getAtributos();
 		}
 		return result;
+	}
+	
+	public static boolean xToMany(Campo campo){
+		return LedEntidadUtils.xToMany(getUltimoAtributo(campo));
+	}
+	
+	public static boolean xToOne(Campo campo){
+		return LedEntidadUtils.xToOne(getUltimoAtributo(campo));
+	}
+	
+	public static boolean hasAtributos(Campo campo){
+		return campo.getAtributos() != null;
 	}
 	
 	public static CampoAtributos getUltimoCampoAtributos(Campo campo){
@@ -84,7 +108,7 @@ public class LedCampoUtils {
 			}
 			return false;
 		}
-		return (!((container instanceof Tabla) || (container instanceof FirmaPlatinoSimple))) && getCampo(container) != null;
+		return (!((container instanceof Tabla) || (container instanceof FirmaSimple))) && getCampo(container) != null;
 	}
 	
 	public static boolean hayCamposGuardablesOrTablaOneToMany(EObject container){
@@ -123,7 +147,7 @@ public class LedCampoUtils {
 		return (Campo) atributos.eContainer();
 	}
 	
-	public static EObject getElementosContainer(EObject obj){
+	public static EObject getCampoScope(EObject obj){
 		EObject container = obj.eContainer();
 		if (obj instanceof Campo)
 			container = container.eContainer();
@@ -167,21 +191,8 @@ public class LedCampoUtils {
 		return ((Formulario) paginaPopup.eContainer()).getCampo();
 	}
 	
-	/*
-	 * Devuelve cual es la entidad que se puede usar en ese campo (sin contar
-	 * las Singleton), en función del contexto en que se sitúe dicho campo.
-	 */
-	public static Entity getEntidadPaginaOrPopupOrTabla(EObject element){
-		EObject container = LedCampoUtils.getElementosContainer(element);
-		if (container instanceof Pagina || container instanceof Popup)
-			return LedEntidadUtils.getEntidadPaginaPopup(container);
-		if (container instanceof Tabla)
-			return LedCampoUtils.getUltimaEntidad(LedCampoUtils.getCampo(container));
-		return null;
-	}
-	
 	public static Map<String, Entity> getEntidadesValidas(EObject elemento){
-		EObject container = LedCampoUtils.getElementosContainer(elemento);
+		EObject container = LedCampoUtils.getCampoScope(elemento);
 		Map<String, Entity> entidades = new HashMap<String, Entity>();
 		if (container instanceof Model || elemento instanceof Tabla){
 			for (Entity e: ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, elemento.eResource()))
@@ -203,10 +214,6 @@ public class LedCampoUtils {
 		return entidades;
 	}
 
-	/*
-	 * Concatena dos campos, siempre y cuando la ultima entidad del primer campo sea la misma
-	 * que la primera entidad del segundo campo.
-	 */
 	public static Campo concatena(Campo primero, Campo segundo){
 		if (primero == null && segundo == null)
 			return null;
@@ -214,11 +221,12 @@ public class LedCampoUtils {
 			return segundo;
 		if (primero != null && segundo == null)
 			return primero;
-		if (!LedEntidadUtils.equals(getUltimaEntidad(primero), segundo.getEntidad()))
-			return null;
+		Entity entidad = segundo.getEntidad();
 		Campo result = LedFactory.eINSTANCE.createCampo();
 		result.setEntidad(primero.getEntidad());
 		CampoAtributos atributos = primero.getAtributos();
+		if (LedEntidadUtils.equals(entidad, primero.getEntidad()))
+			atributos = null;
 		CampoAtributos attrs = null;
 		while (atributos != null){
 			if (attrs == null){
@@ -230,7 +238,12 @@ public class LedCampoUtils {
 				attrs = attrs.getAtributos();
 			}
 			attrs.setAtributo(atributos.getAtributo());
-			atributos = atributos.getAtributos();
+			if (LedEntidadUtils.equals(entidad, LedEntidadUtils.getEntidad(atributos.getAtributo())))
+				break;
+			else
+				atributos = atributos.getAtributos();
+			if (atributos == null)
+				return null; // los campos no se pueden concatenar
 		}
 		atributos = segundo.getAtributos();
 		while (atributos != null){

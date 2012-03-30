@@ -10,9 +10,16 @@ public class SimpleEntidadValidator extends LedElementValidator{
 
 	private String nameEntidad;
 	
-	public SimpleEntidadValidator(EObject element, String nameEntidad){
+	private boolean aceptaString;
+	
+	public SimpleEntidadValidator(EObject element, String nameEntidad, boolean aceptaString){
 		super(element);
 		this.nameEntidad = nameEntidad;
+		this.aceptaString = aceptaString;
+	}
+	
+	public boolean aceptaString(){
+		return aceptaString;
 	}
 	
 	@Override

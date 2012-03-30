@@ -16,7 +16,11 @@
 
 	def borde = _borde != null? _borde : true
 	
-	def mostrarSi = _mostrarSi != null? _mostrarSi : true
+	boolean mostrarSi = true;
+	if (_mostrarSi != null){
+		if (reverse) mostrarSi = !_mostrarSi;
+		else mostrarSi = _mostrarSi;
+	}
 %}
 
 

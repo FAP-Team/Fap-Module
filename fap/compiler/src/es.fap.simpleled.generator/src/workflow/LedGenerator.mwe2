@@ -38,11 +38,6 @@ Workflow {
 			type = "Formulario"
 		}
 		
-		load = {
-			slot = "permisos"
-			type = "Permiso"
-		}
-		
 	}
 
 	component = wfcomponent.Start {
@@ -75,15 +70,6 @@ Workflow {
 		expand = "templates::Template::main FOREACH listas"
 		outlet = {
 			path = targetPath	
-		}
-		fileEncoding = fileEncoding
-	}
-	
-	//Expande los permisos graficos
-	component = org.eclipse.xpand2.Generator {
-		expand = "templates::Template::main FOREACH permisos"
-		outlet = {
-			path = targetPath
 		}
 		fileEncoding = fileEncoding
 	}

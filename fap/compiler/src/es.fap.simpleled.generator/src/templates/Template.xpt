@@ -12,7 +12,3 @@
 «DEFINE main FOR Lista-»
 	«expand(this)»
 «ENDDEFINE»
-
-«DEFINE main FOR Permiso-»
-	«expand(this)»
-«ENDDEFINE»

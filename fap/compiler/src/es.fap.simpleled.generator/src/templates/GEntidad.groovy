@@ -3,10 +3,8 @@ package templates;
 
 import generator.utils.FileUtils;
 import generator.utils.LedUtils;
-import generator.utils.HashStack;
-import generator.utils.HashStack.HashStackName;
 import generator.utils.StringUtils;
-import generator.utils.Beautifier;
+import generator.utils.BeautifierUtils;
 
 import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.util.ModelUtils;
@@ -15,24 +13,31 @@ import es.fap.simpleled.led.impl.CompoundTypeImpl
 import es.fap.simpleled.led.impl.EntityImpl
 import es.fap.simpleled.led.impl.PaginaImpl
 import es.fap.simpleled.led.impl.TypeImpl
+import es.fap.simpleled.led.impl.LedFactoryImpl
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
+
 import es.fap.simpleled.led.util.LedDocumentationUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
-public class GEntidad {
+public class GEntidad extends GElement{
 	
-	public static String moreImports = "";
+	Entity entity;
 	
-	public static String generate(Entity entity){
+	public GEntidad(Entity entity, GElement container){
+		super(entity, container);
+		this.entity = entity;
+	}
+	
+	public void generate(){
 		String extendz;
 		
 		if (entity.name.equals("Solicitud")){
-			solicitudStuff(entity);
+			solicitudStuff();
 		}
 		
 		if (entity.getExtends() != null){
@@ -76,12 +81,12 @@ public class GEntidad {
 		
 		String attributesCode = """// Código de los atributos""";
 		for(Attribute attr : entity.attributes){
-			attributesCode += generate(entity, attr);
+			attributesCode += generate(attr);
 		}
 		
 		String file = FileUtils.getRoute('MODEL')+ entity.name + ".java";
 		
-		String initCode = generateInit(entity);
+		String initCode = generateInit();
 		
 		
 		String out = """
@@ -107,17 +112,17 @@ ${persist}
 public class ${entity.name} ${extendz} {
 	${attributesCode}
 	${initCode}
-	${savePagesPrepared(entity)}
+	${savePagesPrepared()}
 ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}	
 	
 	}
 		"""
 		
-		FileUtils.overwrite(file, Beautifier.formatear(out));
+		FileUtils.overwrite(file, BeautifierUtils.formatear(out));
 		return;
 	}
 	
-	private static String generate(Entity entity, Attribute attribute){
+	private String generate(Attribute attribute){
 	
 		if (attribute.name.equals("id")){
 			return "";
@@ -259,19 +264,16 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		// Si el atributo tiene comentarios
 		String comments = LedDocumentationUtils.findComment(attribute);
 		
-		String out =
-	"""
+		return """
 	$comments
 	${anotacionesJPA.join('\n	')}
 	${anotaciones.join('\n	')}
 	${transientStr}
 	public ${type} ${name};
-	"""
-		return out;
-	
+		""";
 	}
 	
-	private static String generateInit(Entity entity){
+	private String generateInit(){
 		String refInit = "";
 		for(Attribute attribute : entity.attributes){
 			CompoundType compuesto = attribute.type.compound;
@@ -400,7 +402,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		return out;
 	}
 	
-	private static String savePagesPrepared(Entity entity) {
+	private String savePagesPrepared() {
 		if (!entity.name.equals("Solicitud"))
 			return "";
 		String out = "public void savePagesPrepared () {"
@@ -417,7 +419,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		return out;
 	}
 	
-	private static Entity getEntitySavePages(){
+	private Entity getEntitySavePages(){
 		EntityImpl savePages = LedFactory.eINSTANCE.createEntity();
 		savePages.setName("SavePages");
 	
@@ -436,19 +438,19 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		return savePages;
 	}
 	
-	private static void solicitudStuff(Entity solicitud){
-		if (!solicitud.getExtends()?.name.equals("SolicitudGenerica"))
-			solicitud.setExtends(ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "SolicitudGenerica", LedUtils.resource));
+	private void solicitudStuff(){
+		if (!entity.getExtends()?.name.equals("SolicitudGenerica"))
+			entity.setExtends(ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "SolicitudGenerica", LedUtils.resource));
 		Entity savePages = getEntitySavePages();
-		GEntidad.generate(savePages);
-		Type tipo = new TypeImpl();
-		CompoundType compound = new CompoundTypeImpl();
+		GElement.getInstance(savePages, null).generate();
+		Type tipo = LedFactory.eINSTANCE.createType();
+		CompoundType compound = LedFactory.eINSTANCE.createCompoundType();
 		compound.setEntidad(savePages);
 		tipo.setCompound(compound);
-		Attribute at = new AttributeImpl();
+		Attribute at = LedFactory.eINSTANCE.createAttribute();
 		at.setName("savePages");
 		at.setType(tipo);
-		solicitud.getAttributes().add(at);
+		entity.getAttributes().add(at);
 	}
 	
 	/**
@@ -458,7 +460,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	 * @param name Atributo de la entidad
 	 * @return
 	 */
-	private static String defaultValue(String value, String type, String name) {
+	private String defaultValue(String value, String type, String name) {
 		if ((value != null)) {
 			def defaultValue = value;
 			if (type.equals("Double")) {
@@ -489,13 +491,12 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	/**
 	 * Indica se el string pasado es un email válido
 	 */
-	public static boolean isValidEmailAddress(String emailAddress){
+	public boolean isValidEmailAddress(String emailAddress){
 		String  expression="^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[A-Z]{2,4}\$";
 		CharSequence inputStr = emailAddress;
 		Pattern pattern = Pattern.compile(expression,Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(inputStr);
 		return matcher.matches();
-	  }
-	
+	}
 	
 }

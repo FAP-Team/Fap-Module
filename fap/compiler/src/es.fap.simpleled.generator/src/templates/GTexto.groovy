@@ -2,23 +2,19 @@ package templates;
 
 import es.fap.simpleled.led.Texto
 import generator.utils.*
-import generator.utils.HashStack.HashStackName
 import es.fap.simpleled.led.util.LedEntidadUtils
 
-public class GTexto {
+public class GTexto extends GSaveCampoElement{
 
-	def Texto texto;
+	Texto texto;
 	
-	public static String generate(Texto texto){
-		GTexto g = new GTexto();
-		g.texto = texto;
-		g.view();
+	public GTexto(Texto texto, GElement container){
+		super(texto, container);
+		this.texto = texto;
+		campo = CampoUtils.create(texto.campo);
 	}
 	
 	public String view(){
-		// Añado la entidad que lo engloba a los parametros del Save
-		CampoUtils campo = CampoUtils.create(texto.campo);
-		EntidadUtils.addToSaveEntity(campo);
 		TagParameters params = new TagParameters();
 		params.putStr("campo", campo.firstLower())
 		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Double"))
@@ -51,11 +47,18 @@ public class GTexto {
 		if((texto.duplicar != null) && (texto.duplicar == true))
 			params.put ("duplicado", true)
 
-		String view = 
-		"""
-#{fap.texto ${params.lista()} /}		
-		"""
-		return view;
+		return """
+			#{fap.texto ${params.lista()} /}		
+		""";
+	}
+	
+	public String validate(Stack<Set<String>> validatedFields){
+		String validation = super.validate(validatedFields);
+		if (texto.isDuplicar()){
+			String campo_ = campo.firstLower().replaceAll("\\.", "_");
+			validation += "CustomValidation.compare(${campo.firstLower()}, params.get(\"${campo_}copy\"));\n";
+		}
+		return validation;
 	}
 	
 }

@@ -6,94 +6,63 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import org.eclipse.emf.ecore.EObject
+
 
 import generator.utils.*;
-import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
 import generator.utils.CampoUtils;
 
-public class GTabla {
+public class GTabla extends GElement{
 
 	Tabla tabla;
-	def contenedor;
-	Controller controller;
-	String tipo;
+	GElement gPaginaPopup;
 	CampoUtils campo;
-	String permisoBotonLeer;
-	String permisoBotonEditar;
-	String permisoBotonBorrar;
-	boolean botonLeer;
-	boolean botonEditar;
 	boolean botonBorrar;
 	
-	public static String generate(Tabla tabla){
-		GTabla g = new GTabla();
-		g.tabla = tabla;
-		g.campo = CampoUtils.create(tabla.campo);
-		
-		g.contenedor = HashStack.top(HashStackName.CONTAINER);
-		if (g.contenedor instanceof GPopup){
-			g.tipo = "popup";
-			g.controller = Controller.fromPopup(g.contenedor.popup).initialize();
-		}
-		else{
-			g.tipo = "pagina";
-			g.controller = Controller.fromPagina(g.contenedor.pagina).initialize();
-		}
-		
-		HashStack.push(HashStackName.CONTROLLER, g);
-		HashStack.push(HashStackName.ROUTES, g);
-		return g.view();
-	}
-
-	private String id(){
-		return tabla.name ?: campo.str.replace(".", "_");
+	public GTabla(Tabla tabla, GElement container){
+		super(tabla, container);
+		this.tabla = tabla;
+		campo = CampoUtils.create(tabla.campo);
+		gPaginaPopup = getPaginaOrPopupContainer();
 	}
 	
 	public String view(){
-		String controllerName = contenedor.controllerFullName();
-		
+		String controllerName = gPaginaPopup.controllerFullName();
 		TagParameters params = new TagParameters();
-		params.putStr 'id', id()
-
-		EntidadUtils entidad = EntidadUtils.create(campo.entidad);
-		
+		params.putStr 'id', id();
+		Entidad entidad = campo.entidad;
 		if(campo.getCampo().getAtributos() != null && !entidad.isSingleton())
-        	params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id})"
+        	params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
 		else
-			params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}()"
-			
-        if (tabla.titulo){
-			params.putStr 'titulo', tabla.titulo
-		}
-		params.putStr 'campo', campo.str
-
-		if (tabla.alto){
-			params.putStr 'alto', tabla.alto
-		}
-		
+			params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}()";
+        if (tabla.titulo)
+			params.putStr 'titulo', tabla.titulo;
+		params.putStr 'campo', campo.str;
+		if (tabla.alto)
+			params.putStr 'alto', tabla.alto;
 		botonesPopup(params);
 		botonesPagina(params);
-		
 		if (tabla.recargarPagina)
 			params.put("recargarPagina", true)
-			
 	    List <Attribute> excludes, includes;
-	
 		if (tabla.seleccionable) {
 			params.putStr("seleccionable", tabla.seleccionable)
 			params.putStr("urlSeleccionable", "${controllerName}.${seleccionableMethodName()}")
 		}
-
-		params.putStr 'tipoContainer', tipo;
-		params.putStr("idEntidad", "${EntidadUtils.create(campo.ultimaEntidad).id}");
+		if (gPaginaPopup instanceof GPopup)
+			params.putStr 'tipoContainer', "popup";
+		else
+			params.putStr 'tipoContainer', "pagina";
+		params.putStr("idEntidad", "${Entidad.create(campo.ultimaEntidad).id}");
 	
+		Controller controller = Controller.create(getPaginaOrPopupContainer());
 		if (tabla.campo.entidad.name.equals(controller.campo?.ultimaEntidad?.name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear) && !controller.entidad.isSingleton()){
 			params.put 'crearEntidad', "accion == 'crear'";
-			params.putStr 'nameContainer', contenedor.name;
+			params.putStr 'nameContainer', gPaginaPopup.name;
 			params.putStr 'idContainer', controller.entidad.id;
 			params.put 'urlContainerCrear', controller.getRouteIndex("crear", false, false);
 			params.put 'urlContainerEditar', controller.getRouteIndex("editar", false, true);
@@ -160,9 +129,13 @@ public class GTabla {
 		return view;
 	}
 	
+	private String id(){
+		return tabla.name ?: campo.str.replace(".", "_");
+	}
+	
 	private void botonesPopup(TagParameters params){
 		if (tabla.popup != null) {
-			Controller popupUtil = Controller.fromPopup(tabla.popup).initialize();
+			Controller popupUtil = Controller.create(GElement.getInstance(tabla.popup, null));
 			params.put 'urlLeer', popupUtil.getRouteIndex("leer", true, true);
 			params.putStr 'popupLeer', tabla.popup.name;
 			params.put 'urlCrear', popupUtil.getRouteIndex("crear", true, true);
@@ -171,85 +144,50 @@ public class GTabla {
 			params.putStr 'popupEditar', tabla.popup.name;
 			params.put 'urlBorrar', popupUtil.getRouteIndex("borrar", true, true);
 			params.putStr 'popupBorrar', tabla.popup.name;
-			botonLeer = true;
-			botonEditar = true;
-			botonBorrar = true;
-			if (tabla.popup.permiso){
+			if (tabla.popup.permiso)
 				params.putStr 'permisoCrear', tabla.popup.permiso.name;
-				permisoBotonLeer = tabla.popup.permiso.name;
-				permisoBotonEditar = tabla.popup.permiso.name;
-				permisoBotonBorrar = tabla.popup.permiso.name;
-			}
 		}
 		if (tabla.popupLeer != null) {
-			params.put 'urlLeer', Controller.fromPopup(tabla.popupLeer).initialize().getRouteIndex("leer", true, true);
+			params.put 'urlLeer', Controller.create(GElement.getInstance(tabla.popupLeer, null)).getRouteIndex("leer", true, true);
 			params.putStr 'popupLeer', tabla.popupLeer.name;
-			botonLeer = true;
-			if (tabla.popupLeer.permiso)
-				permisoBotonLeer = tabla.popupLeer.permiso.name;
 		}
 		if (tabla.popupCrear != null) {
-			params.put 'urlCrear', Controller.fromPopup(tabla.popupCrear).initialize().getRouteIndex("crear", true, true);
+			params.put 'urlCrear', Controller.create(GElement.getInstance(tabla.popupCrear, null)).getRouteIndex("crear", true, true);
 			params.putStr 'popupCrear', tabla.popupCrear.name;
 			if (tabla.popupCrear.permiso)
 				params.putStr 'permisoCrear', tabla.popupCrear.permiso.name;
 		}
 		if (tabla.popupEditar != null) {
-			params.put 'urlEditar', Controller.fromPopup(tabla.popupEditar).initialize().getRouteIndex("editar", true, true);
+			params.put 'urlEditar', Controller.create(GElement.getInstance(tabla.popupEditar, null)).getRouteIndex("editar", true, true);
 			params.putStr 'popupEditar', tabla.popupEditar.name;
-			botonEditar = true;
-			if (tabla.popupEditar.permiso)
-				permisoBotonEditar = tabla.popupEditar.permiso.name;
 		}
 		if (tabla.popupBorrar != null) {
-			params.put 'urlBorrar', Controller.fromPopup(tabla.popupBorrar).initialize().getRouteIndex("borrar", true, true);
+			params.put 'urlBorrar', Controller.create(GElement.getInstance(tabla.popupBorrar, null)).getRouteIndex("borrar", true, true);
 			params.putStr 'popupBorrar', tabla.popupBorrar.name;
-			botonBorrar = true;
-			if (tabla.popupBorrar.permiso)
-				permisoBotonBorrar = tabla.popupBorrar.permiso.name;
 		}
 	}
 	
 	private void botonesPagina(TagParameters params){
 		if (tabla.pagina != null) {
-			Controller pagUtil = Controller.fromPagina(tabla.pagina).initialize();
+			Controller pagUtil = Controller.create(GElement.getInstance(tabla.pagina, null));
 			params.put 'urlLeer', pagUtil.getRouteIndex("leer", true, true);
 			params.put 'urlCrear', pagUtil.getRouteIndex("crear", true, true);
 			params.put 'urlEditar', pagUtil.getRouteIndex("editar", true, true);
 			params.put 'urlBorrar', pagUtil.getRouteIndex("borrar", true, true);
-			botonLeer = true;
-			botonEditar = true;
-			botonBorrar = true;
-			if (tabla.pagina.permiso){
+			if (tabla.pagina.permiso)
 				params.putStr 'permisoCrear', tabla.pagina.permiso.name;
-				permisoBotonLeer = tabla.pagina.permiso.name;
-				permisoBotonEditar = tabla.pagina.permiso.name;
-				permisoBotonBorrar = tabla.pagina.permiso.name;
-			}
 		}
-		if (tabla.paginaLeer != null) {
-			params.put 'urlLeer', Controller.fromPagina(tabla.paginaLeer).initialize().getRouteIndex("leer", true, true);
-			botonLeer = true;
-			if (tabla.paginaLeer.permiso)
-				permisoBotonLeer = tabla.paginaLeer.permiso.name;
-		}
+		if (tabla.paginaLeer != null)
+			params.put 'urlLeer', Controller.create(GElement.getInstance(tabla.paginaLeer, null)).getRouteIndex("leer", true, true);
 		if (tabla.paginaCrear != null) {
-			params.put 'urlCrear', Controller.fromPagina(tabla.paginaCrear).initialize().getRouteIndex("crear", true, true);
+			params.put 'urlCrear', Controller.create(GElement.getInstance(tabla.paginaCrear, null)).getRouteIndex("crear", true, true);
 			if (tabla.paginaCrear.permiso)
 				params.putStr 'permisoCrear', tabla.paginaCrear.permiso.name;
 		}
-		if (tabla.paginaEditar != null) {
-			params.put 'urlEditar', Controller.fromPagina(tabla.paginaEditar).initialize().getRouteIndex("editar", true, true);
-			botonEditar = true;
-			if (tabla.paginaEditar.permiso)
-				permisoBotonEditar = tabla.paginaEditar.permiso.name;
-		}
-		if (tabla.paginaBorrar != null) {
-			params.put 'urlBorrar', Controller.fromPagina(tabla.paginaBorrar).initialize().getRouteIndex("borrar", true, true);
-			botonBorrar = true;
-			if (tabla.paginaBorrar.permiso)
-				permisoBotonBorrar = tabla.paginaBorrar.permiso.name;
-		}
+		if (tabla.paginaEditar != null)
+			params.put 'urlEditar', Controller.create(GElement.getInstance(tabla.paginaEditar, null)).getRouteIndex("editar", true, true);
+		if (tabla.paginaBorrar != null)
+			params.put 'urlBorrar', Controller.create(GElement.getInstance(tabla.paginaBorrar, null)).getRouteIndex("borrar", true, true);
 	}
 	
 	private void addPopupBoton(Map popups, Popup popup, List<String> botones){
@@ -357,18 +295,21 @@ public class GTabla {
 
 		//Clase de la entidad que contiene la lista
 		
-		EntidadUtils entidad = EntidadUtils.create(campo.getUltimaEntidad());
-		EntidadUtils entidadRaiz = EntidadUtils.create(campo.getEntidad());
+		Entidad entidad = Entidad.create(campo.getUltimaEntidad());
+		Entidad entidadRaiz = campo.entidad;
+		entidadRaiz.singletonsId = true;
 		
 		//La consulta depende de si se listan todas las entidades de una clase, o se accede a un campo
 		String query = null;
 		String param = "";
 		String idSingleton = "";
-		if(campo.getCampo().getAtributos() == null){ //Lista todas las entidades de ese tipo
-			query = """ "select ${entidadRaiz.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable}" """
-		}
+		
+		if (tabla.metodoFilas)
+			query = """${tabla.metodoFilas}""";
+		else if (!campo.getCampo().getAtributos()) //Lista todas las entidades de ese tipo
+			query = """${entidad.clase}.find("select ${entidadRaiz.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable}").fetch()""";
 		else{ //Acceso a los campos de una entidad
-			query = """ "select ${entidad.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable} join ${campo.firstLower()} ${entidad.variable} where ${entidadRaiz.variable}.id=?", ${entidadRaiz.id} """
+			query = """${entidad.clase}.find("select ${entidad.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable} join ${campo.firstLower()} ${entidad.variable} where ${entidadRaiz.variable}.id=?", ${entidadRaiz.id}).fetch()""";
 			if (entidadRaiz.isSingleton())
 				idSingleton = "${entidadRaiz.typeId} = ${entidadRaiz.clase}.get(${entidadRaiz.clase}.class).id;";
 			else
@@ -380,7 +321,7 @@ public class GTabla {
 		return """
 			public static void ${controllerMethodName()}(${param}){
 				${idSingleton}
-				java.util.List<${entidad.clase}> rows = ${entidad.clase}.find(${query}).fetch();
+				java.util.List<${entidad.clase}> rows = ${query};
 				${getCodePermiso(entidad)}
 				tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered);
 				renderJSON(response.toJSON($rowsStr));
@@ -398,7 +339,7 @@ public class GTabla {
 	 * @param camposStr String con los campos que debemos devolver
 	 * @return
 	 */
-	private String getCodePermiso(EntidadUtils entidad) {
+	private String getCodePermiso(Entidad entidad) {
 		if(tabla.permiso == null){
 			return """
 				List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra
@@ -421,14 +362,10 @@ public class GTabla {
 		return "tabla" + id();
 	}
 	
-	public String generateRoutes(){
-		String url = contenedor.url() + "/" + id();
-		String action = contenedor.controllerFullName() + "." + controllerMethodName();
-		return Route.to("GET", url, action);
-	}
-	
-	public String getNameRoute () {
-		return (contenedor.url() + "/" + id());
+	public String routes(){
+		String url = gPaginaPopup.url() + "/" + id();
+		String action = gPaginaPopup.controllerFullName() + "." + controllerMethodName();
+		return RouteUtils.to("GET", url, action).toString() + "\n";
 	}
 	
 	private String seleccionableMethodName () {

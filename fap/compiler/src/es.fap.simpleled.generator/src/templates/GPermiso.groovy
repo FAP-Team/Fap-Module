@@ -2,31 +2,28 @@ package templates;
 
 import java.awt.event.ItemEvent;
 
+
 import es.fap.simpleled.led.*;
 import generator.utils.CampoPermisoUtils
-import generator.utils.EntidadUtils
+import generator.utils.Entidad;
 import generator.utils.FileUtils;
-import generator.utils.HashStack;
 import generator.utils.StringUtils;
-import generator.utils.HashStack.HashStackName;
 
-public class GPermiso {
+public class GPermiso extends GElement{
 
 	Permiso permiso;
 	boolean isOrContains;
 
-	public static String generate(Permiso permiso){
-		GPermiso g = new GPermiso();
-		g.permiso = permiso;
-		HashStack.push(HashStackName.PERMISSION, g);
-		return null;
+	public GPermiso(Permiso permiso, GElement container){
+		super(permiso, container);
+		this.permiso = permiso;
 	}
 
 	private String permisoVarsCode(List<PermisoVar> vars){
 		String varStr = "";
 		for(PermisoVar var : vars){
 			String varName = var.name;
-			EntidadUtils entity = EntidadUtils.create(var.getTipo());
+			Entidad entity = Entidad.create(var.getTipo());
 			if(var.sql != null){
 				String params = var.sqlParams?.sqlParams?.collect{
 					return CampoPermisoUtils.create(it).str;

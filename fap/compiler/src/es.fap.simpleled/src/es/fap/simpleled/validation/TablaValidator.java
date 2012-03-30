@@ -25,13 +25,14 @@ public class TablaValidator extends LedElementValidator{
 	
 	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
-		Entity valida = LedCampoUtils.getEntidadPaginaOrPopupOrTabla(element);
 		Entity actual = LedCampoUtils.getCampo(element).getEntidad();
 		if (actual == null)
 			actual = raiz;
-		if ((valida == null || !LedEntidadUtils.equals(valida, actual)) && !LedEntidadUtils.esSingleton(actual))
-			return false; 
-		return LedEntidadUtils.xToMany(atributo);
+		for (Entity valida: LedCampoUtils.getEntidadesValidas(element.eContainer()).values()){
+			if (LedEntidadUtils.equals(valida, actual))
+				return LedEntidadUtils.xToMany(atributo);
+		}
+		return false;
 	}
 
 	@Override

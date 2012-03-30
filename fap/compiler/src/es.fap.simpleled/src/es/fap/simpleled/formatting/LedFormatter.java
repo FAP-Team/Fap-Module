@@ -26,7 +26,7 @@ public class LedFormatter extends AbstractDeclarativeFormatter {
 		
 		String[] elementosSaltoLineaFormularios = {"Grupo", "AgruparCampos", "Texto", "Fecha", "Combo", "Tabla", "SubirArchivo", "Boton", "Check", 
 										"AgrupaBotones", "Nip", "Solicitante", "PersonaFisica", "PersonaJuridica", "Persona", "Direccion",
-										"Wiki", "AreaTexto", "Enlace", "Form", "SubirArchivoAed", "EditarArchivoAed", "FirmaPlatinoSimple",
+										"Wiki", "AreaTexto", "Enlace", "Form", "SubirArchivoAed", "EditarArchivoAed", "FirmaSimple",
 										"EntidadAutomatica", "Accion", "Columna"};
 		
 		String[] elementosSaltoLineaPermisos = {"vars", "when", "return", "else", "mensaje"};

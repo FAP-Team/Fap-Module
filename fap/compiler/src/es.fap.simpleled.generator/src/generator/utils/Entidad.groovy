@@ -5,39 +5,25 @@ import java.util.List;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import es.fap.simpleled.led.Attribute;
+import es.fap.simpleled.led.Campo
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Entity
-import generator.utils.StringUtils
-import generator.utils.CampoUtils
-import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.LedPackage;
 
-public class EntidadUtils implements Comparable{
+public class Entidad implements Comparable{
 
 	public Entity entidad;
 	
-    public static EntidadUtils create(String campo){
-		return create(CampoUtils.create(campo)?.entidad);
-    }
-
-	public static EntidadUtils create(CampoUtils campo){
-		EntidadUtils util = new EntidadUtils();
-		util.entidad = campo.getEntidad();
-		return util;
-	}
+	public boolean singletonsId = false;
 	
-	public static EntidadUtils create(Entity entidad){
-		EntidadUtils util = new EntidadUtils();
+	public static Entidad create(Entity entidad){
+		Entidad util = new Entidad();
 		util.entidad = entidad;
 		return util;
 	}
 	
-	public static EntidadUtils create(){
-		return new EntidadUtils();
-	}
-		
 	public boolean nulo(){
 		return entidad == null;
 	}
@@ -49,13 +35,13 @@ public class EntidadUtils implements Comparable{
 	}
 	
 	public String getIdCheck(){
-		if (entidad == null)
+		if (entidad == null || (!singletonsId && isSingleton()))
 			return "";
 		return "${variable}?.id";
 	}
 
 	public String getIdNoCheck(){
-		if (entidad == null)
+		if (entidad == null || (!singletonsId && isSingleton()))
 			return "";
 		return "${variable}.id";
 	}
@@ -81,7 +67,7 @@ public class EntidadUtils implements Comparable{
     }
 
     public String getId(){
-		if (entidad == null)
+		if (entidad == null || (!singletonsId && isSingleton()))
 			return "";
 		if (entidad.name.equals("SolicitudGenerica"))
 			return "idSolicitud";
@@ -89,7 +75,7 @@ public class EntidadUtils implements Comparable{
     }
 
     public String getTypeId(){
-		if (entidad == null)
+		if (entidad == null || (!singletonsId && isSingleton()))
 			return "";
         return "Long $id";
     }
@@ -116,17 +102,32 @@ public class EntidadUtils implements Comparable{
 	
 	@Override
 	public boolean equals(Object util){
-		EntidadUtils e = (EntidadUtils)util;
-		return entidad?.name.equals(e.entidad?.name);
+		Entidad e = (Entidad)util;
+		return entidad == e || entidad?.name.equals(e.entidad?.name);
+	}
+	
+	@Override
+	public int hashCode() {
+		if (entidad == null) return 0;
+		entidad.name.hashCode();
 	}
 	
 	@Override
 	public int compareTo(Object util){
-		EntidadUtils e = (EntidadUtils)util;
+		Entidad e = (Entidad)util;
 		if (equals(e)){
 			return 0;
 		}
 		return 1;
+	}
+	
+	public EntidadInfo getInfo(Campo campo){
+		List<EntidadInfo> subcampos = CampoUtils.calcularSubcampos(campo);
+		for (EntidadInfo info: subcampos){
+			if (equals(info.entidad))
+				return info;
+		}
+		return new EntidadInfo(this);
 	}
 	
 	/*
@@ -139,19 +140,5 @@ public class EntidadUtils implements Comparable{
 		   solicitud = ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "SolicitudGenerica", LedUtils.resource);
 	   return solicitud;
    }
-	
-	public static void addToSaveEntity(String campo){
-		EntidadUtils.create(campo).addToSaveEntity();
-	}
-	
-	public static void addToSaveEntity(CampoUtils campo){
-		EntidadUtils.create(campo).addToSaveEntity();
-	}
-	
-	public void addToSaveEntity(){
-		if (entidad != null){
-			HashStack.push(HashStackName.SAVE_ENTITY, this);
-		}
-	}
 	
 }

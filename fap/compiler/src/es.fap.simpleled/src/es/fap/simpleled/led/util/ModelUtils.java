@@ -14,7 +14,6 @@ import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescriptions;
 import org.eclipse.xtext.resource.containers.DescriptionAddingContainer;
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
-
 import com.google.inject.Inject;
 
 public class ModelUtils{
@@ -66,4 +65,5 @@ public class ModelUtils{
 		System.out.println("Clazz: "+clazz);
 		return (T)getVisibleNode(clazz, null, res);
 	}
+	
 }

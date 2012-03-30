@@ -26,7 +26,7 @@ public class NipCheck extends Check {
 		return true;
 	}
 	
-	public static boolean validaNip (Nip nip, StringBuilder texto) {
+	public boolean validaNip (Nip nip, StringBuilder texto) {
 		if ((nip.tipo == null || nip.tipo.isEmpty()) && ((nip.valor == null) || (nip.valor.isEmpty())))
 			return true; 
 		

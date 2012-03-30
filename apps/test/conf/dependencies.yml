@@ -2,7 +2,7 @@
 
 require:
     - play
-    - fap -> fap 2.0
+    - fap-module -> fap 2.0
     - fap -> guice 1.3
     - play -> pdf 0.6
     - play -> less 0.9
@@ -16,7 +16,7 @@ repositories:
         type:       local
         artifact:   ${fapsdk}/fap
         contains:
-            - fap -> *
+            - fap-module -> *
 #    - Fap repository:
 #        type: http
 #        artifact: "http://fap-devel.etsii.ull.es/public/fap-sdk2/[revision]/[module]-[revision].zip"

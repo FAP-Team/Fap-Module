@@ -9,17 +9,19 @@ import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.*;
 import wfcomponent.Start;
 
-public class GLista {
+public class GLista extends GElement{
 	
-	def Lista lista;
+	Lista lista;
 	
-	public static String generate(Lista lista){
-		GLista g = new GLista();
-		g.lista = lista;
-		g.generateFile();
-		if (lista.enumerado){
-		      g.generateEnum();
-		}
+	public GLista(Lista lista, GElement container){
+		super(lista, container);
+		this.lista = lista;
+	}
+	
+	public void generate(){
+		generateFile();
+		if (lista.enumerado)
+			generateEnum();
 	}
 	
 	public String generateFile(){

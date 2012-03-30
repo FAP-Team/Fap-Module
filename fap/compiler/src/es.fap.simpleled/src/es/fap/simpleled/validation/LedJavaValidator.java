@@ -156,18 +156,22 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	}
 	
 	public void checkTablaCampoPopup(Tabla tabla, Popup popup, Campo concatenado, EReference ref){
-		if (popup != null && !LedCampoUtils.equals(tabla.getCampo(), LedCampoUtils.getCampoPaginaPopup(popup)) && !LedCampoUtils.equals(concatenado, LedCampoUtils.getCampoPaginaPopup(popup)))
+		if (popup == null) return;
+		Campo campo = LedCampoUtils.getCampoPaginaPopup(popup);
+		if (!LedCampoUtils.equals(tabla.getCampo(), campo) && !LedCampoUtils.equals(concatenado, campo))
 			error( "El popup referenciado no es válido para el campo especificado en la tabla", ref);
 	}
 	
 	public void checkTablaCampoPagina(Tabla tabla, Pagina pagina, Campo concatenado, EReference ref){
-		if (pagina != null && !LedCampoUtils.equals(tabla.getCampo(), LedCampoUtils.getCampoPaginaPopup(pagina)) && !LedCampoUtils.equals(concatenado, LedCampoUtils.getCampoPaginaPopup(pagina)))
+		if (pagina == null) return;
+		Campo campo = LedCampoUtils.getCampoPaginaPopup(pagina);
+		if (!LedCampoUtils.equals(tabla.getCampo(), campo) && !LedCampoUtils.equals(concatenado, campo))
 			error("La página referenciada no es válida para el campo especificado en la tabla", ref);
 	}
 	
 	@Check
 	public void checkTablaCampo(Tabla tabla){
-		EObject container = LedCampoUtils.getElementosContainer(tabla);
+		EObject container = LedCampoUtils.getCampoScope(tabla);
 		Campo concatenado = LedCampoUtils.concatena(LedCampoUtils.getCampoPaginaPopup(container), tabla.getCampo());
 		
 		checkTablaCampoPopup(tabla, tabla.getPopup(), concatenado, LedPackage.Literals.TABLA__POPUP);
@@ -303,9 +307,22 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	}
 	
 	@Check
-	public void checkFirmaPlatinoSimple(FirmaPlatinoSimple firma){
+	public void checkFirmaSimple(FirmaSimple firma){
 		if ("firma".equals(firma.getName()))
-			error("FirmaSimple no puede llamarse \"firma\"", LedPackage.Literals.FIRMA_PLATINO_SIMPLE__NAME);
+			error("FirmaSimple no puede llamarse \"firma\"", LedPackage.Literals.FIRMA_SIMPLE__NAME);
+	}
+	
+	@Check
+	public void checkGuardarParaPreparar(Pagina pagina){
+		if (pagina.isGuardarParaPreparar()){
+			Campo campo = LedCampoUtils.getCampoPaginaPopup(pagina);
+			String entidad = "";
+			if (campo != null)
+				entidad = LedCampoUtils.getUltimaEntidad(campo).getName();
+			if (!entidad.equals("Solicitud") && !entidad.equals("SolicitudGenerica"))
+				error("El atributo guardarParaPreparar solo puede aplicarse a paginas de Solicitud", LedPackage.Literals.PAGINA__GUARDAR_PARA_PREPARAR);
+		
+		}
 	}
 	
 	@Check

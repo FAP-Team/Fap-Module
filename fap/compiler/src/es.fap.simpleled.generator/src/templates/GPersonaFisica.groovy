@@ -2,23 +2,18 @@ package templates;
 
 import es.fap.simpleled.led.*
 import generator.utils.*
-import generator.utils.HashStack.HashStackName
 
-public class GPersonaFisica {
-	def PersonaFisica personaFisica;
+public class GPersonaFisica extends GSaveCampoElement{
+
+	PersonaFisica personaFisica;
 	
-	public static String generate(PersonaFisica personaFisica){
-		GPersonaFisica g = new GPersonaFisica();
-		g.personaFisica = personaFisica;
-		g.view();
+	public GPersonaFisica(PersonaFisica personaFisica, GElement container){
+		super(personaFisica, container);
+		this.personaFisica = personaFisica;
+		campo = CampoUtils.create(personaFisica.campo);
 	}
 	
 	public String view(){
-		// Añado la entidad que lo engloba a los parametros del Save
-		CampoUtils campo = CampoUtils.create(personaFisica.campo);
-//		System.out.println("CAMPO1 ${personaFisica.campo}");
-//		System.out.println("CAMPO2 ${campo}");
-		EntidadUtils.addToSaveEntity(campo);
 		TagParameters params = new TagParameters();
 		params.putStr("id", personaFisica.name);
 		params.putStr "campo", campo.firstLower();
@@ -26,8 +21,13 @@ public class GPersonaFisica {
 			params.putStr("titulo", personaFisica.titulo);
 		if (personaFisica.requerido)
 			params.put("requerido", true);
+		
 		return """
 			#{fap.personaFisica ${params.lista()} /}
 		""";
+	}
+	
+	public String copy(){
+		return GSaveCampoElement.copyCamposFiltrados(campo, ["nombre","primerApellido","segundoApellido","nip"]);
 	}
 }

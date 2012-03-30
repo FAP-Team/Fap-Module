@@ -159,17 +159,7 @@ public class CustomValidation {
     
     public static ValidationResult required(String key, Object o) {
     	CustomRequiredCheck requiredCheck = new CustomRequiredCheck();
-    	if(o instanceof Persona){
-    		Persona persona = (Persona)o;
-    		ValidationResult result = new ValidationResult();
-    		result.ok = true;
-    		result.ok = result.ok && applyCheck(requiredCheck, key + ".tipo", persona.tipo).ok;
-    		if(persona.isPersonaFisica())
-    			result.ok = result.ok && required(key + ".fisica", persona.fisica).ok;
-    		if(persona.isPersonaJuridica())
-    			result.ok = result.ok && required(key + ".juridica", persona.juridica).ok;
-    		return result;
-    	}else if(o instanceof PersonaFisica){
+    	if (o instanceof PersonaFisica){
     		PersonaFisica personaFisica = (PersonaFisica)o;
     		ValidationResult result = new ValidationResult();
     		result.ok = true;
@@ -177,7 +167,8 @@ public class CustomValidation {
     		result.ok = applyCheck(requiredCheck, key + ".primerApellido", personaFisica.primerApellido).ok && result.ok;
     		result.ok = applyCheck(requiredCheck, key + ".nip", personaFisica.nip).ok && result.ok;
     		return result;
-    	}else if(o instanceof PersonaJuridica){
+    	}
+    	else if (o instanceof PersonaJuridica){
     		PersonaJuridica personaJuridica = (PersonaJuridica)o;
     		ValidationResult result = new ValidationResult();
     		result.ok = true;
@@ -185,7 +176,8 @@ public class CustomValidation {
     		result.ok = applyCheck(requiredCheck, key + ".entidad", personaJuridica.entidad).ok && result.ok;
     		return result;
     		
-    	}else if(o instanceof Direccion){
+    	}
+    	else if (o instanceof Direccion){
     		Direccion direccion = (Direccion)o;
     		ValidationResult result = new ValidationResult();
     		result.ok = true;
@@ -195,7 +187,8 @@ public class CustomValidation {
     		result.ok = applyCheck(requiredCheck, key + ".numero", direccion.numero).ok && result.ok;
     		return result;
     		
-    	}else if(o instanceof Documento){
+    	}
+    	else if (o instanceof Documento){
     		Documento documento = (Documento)o;
     		ValidationResult result = new ValidationResult();
     		result.ok = true;
@@ -204,7 +197,8 @@ public class CustomValidation {
     			result.ok = applyCheck(requiredCheck, key + ".descripcion", documento.descripcion).ok && result.ok;
     		}
     		return result;    		
-    	}else{
+    	}
+    	else{
     		return applyCheck(requiredCheck, key, o);
     	}
         

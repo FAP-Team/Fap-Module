@@ -2,6 +2,7 @@ package templates;
 
 import java.io.StringWriter;
 
+
 import com.sun.media.sound.RealTimeSequencer.PlayThread;
 
 import generator.utils.*;
@@ -12,25 +13,13 @@ import jj.play.org.eclipse.mylyn.wikitext.core.parser.builder.HtmlDocumentBuilde
 import jj.play.org.eclipse.mylyn.wikitext.textile.core.TextileLanguage;
 
 
-public class GWiki {
+public class GWiki extends GElement{
 
-	def Wiki wiki;
+	Wiki wiki;
 	
-	public static String generate(Wiki wiki){
-		GWiki g = new GWiki();
-		g.wiki = wiki;
-		g.view();
-	}
-	
-	private String getParsedText(String textile){
-		MarkupParser parser = new MarkupParser(new TextileLanguage());
-		StringWriter writer = new StringWriter();
-		HtmlDocumentBuilder builder = new HtmlDocumentBuilder(writer);
-		builder.setEmitAsDocument(false);
-		parser.setBuilder(builder);
-		StringBuffer wikidatas = new StringBuffer();
-		parser.parse(textile);
-		wikidatas.append(writer.toString());
+	public GWiki(Wiki wiki, GElement container){
+		super(wiki, container);
+		this.wiki = wiki;
 	}
 	
 	public String view(){	
@@ -44,13 +33,23 @@ public class GWiki {
 
 		String estilo =  wiki.estilo? wiki.estilo: "";
 		
-		String view =
-		"""
+		return """
 			<div class="wiki ${estilo}">
 ${wikidata}
 			</div>
-		"""
+		""";
 		return view;
+	}
+	
+	private String getParsedText(String textile){
+		MarkupParser parser = new MarkupParser(new TextileLanguage());
+		StringWriter writer = new StringWriter();
+		HtmlDocumentBuilder builder = new HtmlDocumentBuilder(writer);
+		builder.setEmitAsDocument(false);
+		parser.setBuilder(builder);
+		StringBuffer wikidatas = new StringBuffer();
+		parser.parse(textile);
+		wikidatas.append(writer.toString());
 	}
 	
 }

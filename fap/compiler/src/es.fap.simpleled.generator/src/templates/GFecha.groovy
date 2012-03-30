@@ -2,23 +2,18 @@ package templates
 
 import es.fap.simpleled.led.*
 import generator.utils.*
-import generator.utils.HashStack.HashStackName
 
-class GFecha {
+public class GFecha extends GSaveCampoElement{
 
-	def Fecha fecha;
+	Fecha fecha;
 	
-	public static String generate(Fecha fecha){
-		GFecha g = new GFecha();
-		g.fecha = fecha;
-		g.view();
+	public GFecha(Fecha fecha, GElement container){
+		super(fecha, container);
+		this.fecha = fecha;
+		campo = CampoUtils.create(fecha.campo);
 	}
 	
 	public String view(){
-		// Añado la entidad que lo engloba a los parametros del Save
-		CampoUtils campo = CampoUtils.create(fecha.campo);
-		EntidadUtils.addToSaveEntity(campo);
-		
 		TagParameters params = new TagParameters();
 		params.putStr("campo", campo.firstLower())
 		if(fecha.titulo != null)
@@ -34,11 +29,9 @@ class GFecha {
 				params.put "ayuda", "tags.TagAyuda.texto('${fecha.ayuda}')"
 		}
 			
-		String view = 
-		"""
-#{fap.fecha ${params.lista()} /}		
-		"""
-		return view;
+		return """
+			#{fap.fecha ${params.lista()} /}		
+		""";
 	}
 	
 }

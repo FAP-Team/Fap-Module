@@ -1,32 +1,22 @@
 package templates
 
 import es.fap.simpleled.led.*;
-import generator.utils.HashStack;
-import generator.utils.HashStack.HashStackName;
 
-class GFormulario {
+class GFormulario extends GElement{
 
-	public static String generate(Formulario formulario){
-		HashStack.push(HashStackName.FORMULARIO, formulario)
+	Formulario formulario;
+	
+	public GFormulario(Formulario formulario, GElement container){
+		super(formulario, container);
+		this.formulario = formulario;
+	}
 		
-		if ((formulario.permiso != null)) {
-			HashStack.push(HashStackName.PERMISSION, formulario.permiso);
-		}
-		
-		if(formulario.menu != null)
-			Expand.expand(formulario.menu);
-		
-		for(Pagina pagina : formulario.getPaginas()){
-			Expand.expand(pagina);
-		}
-		
-		for(Popup popup : formulario.getPopups()){
-			Expand.expand(popup);
-		}
-		
-		if ((formulario.permiso != null)) {
-			HashStack.pop(HashStackName.PERMISSION);
-		}
-		HashStack.pop(HashStackName.FORMULARIO)
+	public void generate(){
+		for(int i = 0; i < formulario.getPaginas().size(); i++)
+			GElement.getInstance(formulario.getPaginas().get(i), null).generate();
+			
+		for(int i = 0; i < formulario.getPopups().size(); i++)
+			GElement.getInstance(formulario.getPopups().get(i), null).generate();
+			
 	}
 }

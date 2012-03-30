@@ -206,7 +206,7 @@ Elemento:
 	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
 	AreaTexto | Enlace | Form |
-	SubirArchivo | EditarArchivo | FirmaPlatinoSimple | 
+	SubirArchivo | EditarArchivo | FirmaSimple | 
 	EntidadAutomatica | Accion
 ;
 
@@ -339,6 +339,7 @@ Tabla:
         & ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('seleccionable' "=" seleccionable=STRING)?
+		& ('metodoFilas' "=" metodoFilas=STRING)?
 	    & ('popup' '=' popup=[Popup|IDS])?
 	    & ('popupCrear' '=' popupCrear=[Popup|IDS])?
 	   	& ('popupBorrar' '=' popupBorrar=[Popup|IDS])?
@@ -391,12 +392,13 @@ EditarArchivo:
 	)
 ;
 
-FirmaPlatinoSimple:
+FirmaSimple:
 	elemento="FirmaSimple" (name=ID)
 	(
 		("titulo" "=" titulo=STRING)
 		& (documento=FirmaDocumento)
 		& (firmantes=FirmaFirmantes)
+		& (calcularFirmantes=CalcularFirmantes)
 		& (setToTrue=FirmaSetTrue)?
 	)
 	(
@@ -413,6 +415,10 @@ FirmaDocumento:
 
 FirmaFirmantes:
 	"listaFirmantes" "=" campo=Campo
+;
+
+CalcularFirmantes:
+	"calcularFirmantes" "=" campo=Campo
 ;
 
 FirmaSetCampo:

@@ -16,8 +16,11 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowComponent;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
 
-import templates.GEntidad;
+import templates.GElement
+import templates.GPagina;
 import templates.GPermiso;
+import templates.GPopup;
+import templates.elements.*;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Formulario
@@ -25,13 +28,13 @@ import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Permiso
 import es.fap.simpleled.led.PermisoVar
+import es.fap.simpleled.led.Popup
 import es.fap.simpleled.led.Type
 import es.fap.simpleled.led.Pagina
 import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.impl.AttributeImpl;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
-import generator.utils.HashStack.HashStackName;
 
 import generator.utils.*;
 
@@ -42,28 +45,25 @@ public class End implements IWorkflowComponent {
 	String createSolicitud
 	
 	private static Logger log = Logger.getLogger(End.class)
-	
-	@Override
-	public void preInvoke() {
-		// TODO Auto-generated method stub
-	}
 
 	@Override
 	public void invoke(IWorkflowContext ctx) {
-		if (createSolicitud.equals("true")) {
-			Resource res = LedUtils.resource;
-			if (ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "Solicitud", res) == null){
-				if (ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, "Solicitud", res).size() > 1)
-					log.warn("No se ha creado la entidad Solicitud. Se creará una por defecto.");
-				entitySolicitud();
-			}
+		LedUtils.setFapResources();
+		
+		controllersAndViews();
+		
+		if (!Start.generatingModule){
+			entitySolicitud();
 			properties();
 		}
+		
 		permisos();
 		rutas();
+		
 		if (Start.generatingModule){
 			DocumentationUtils.makeDocumentation();
 		}
+		
 		borrarFicherosAntiguos();
 		config();
 	}
@@ -73,11 +73,34 @@ public class End implements IWorkflowComponent {
 		// TODO Auto-generated method stub
 	}
 
+	private void controllersAndViews(){
+		for (Formulario formulario: LedUtils.getNodes(LedPackage.Literals.FORMULARIO)){
+			if (!LedUtils.inPath(formulario)) continue;
+			for (Pagina pagina: formulario.paginas){
+				GPagina gpagina = GElement.getInstance(pagina, null);
+				gpagina.view();
+				gpagina.controller();
+			}
+			for (Popup popup: formulario.popups){
+				GPopup gpopup = GElement.getInstance(popup, null);
+				gpopup.view();
+				gpopup.controller();
+			}
+			if(formulario.menu)
+				GElement.getInstance(formulario.menu, null).generate();
+		}
+	}
 	
 	private void rutas(){
-		def elementos = HashStack.allElements(HashStackName.ROUTES);
-		def sortedElementos = elementos.sort{p1, p2 -> p1.getNameRoute().compareToIgnoreCase(p2.getNameRoute())};
-		String content = sortedElementos.collect{it -> it.generateRoutes()}.join('\n');
+		String content = "";
+		for(Pagina pagina in LedUtils.getNodes(LedPackage.Literals.PAGINA)){
+			if (!LedUtils.inPath(pagina)) continue;
+			content += GElement.getInstance(pagina, null).routes();
+		}
+		for(Popup popup in LedUtils.getNodes(LedPackage.Literals.POPUP)){
+			if (!LedUtils.inPath(popup)) continue;
+			content += GElement.getInstance(popup, null).routes();
+		}
 		if (!Start.generatingModule){
 			content = "  # Home page\n" + rutaPaginaInicial() + "\n" + content;
 		}
@@ -95,7 +118,7 @@ public class End implements IWorkflowComponent {
 			}
 		}
 		if (formInicial == null || formInicial.paginas.size() == 0){
-			return Route.to("GET", "/", "SolicitudesController.index");
+			return RouteUtils.to("GET", "/", "SolicitudesController.index");
 		}
 		pagInicial = formInicial.paginas.get(0);
 		for (Pagina pag: formInicial.paginas){
@@ -104,7 +127,7 @@ public class End implements IWorkflowComponent {
 				break;
 			}
 		}
-		return Route.to("GET", "/", pagInicial.name + "Controller.index");
+		return RouteUtils.to("GET", "/", pagInicial.name + "Controller.index");
 	}
 	
 	private void properties(){
@@ -127,11 +150,6 @@ public class End implements IWorkflowComponent {
 		FileUtils.writeInRegion(FileUtils.getRoute('CONF_APPLICATION'), content);
 	}
 
-  /**
-   * Genera el fichero de permisos a partir de las entidad GPermisos almacenadas
-   * en la hashStack
-   * @return
-   */
 	private String permisos(){	  
 		String clazzName = Start.generatingModule ? "SecureFap" : "SecureApp"; 
 		String clazzGenName = clazzName + "Gen";
@@ -141,8 +159,9 @@ public class End implements IWorkflowComponent {
 		String els = "";
 		Map<String, Entity> variables = new HashMap<String, Entity>();
 	  
-		for(Object o in HashStack.allElements(HashStackName.PERMISSION)){
-			GPermiso permiso = (GPermiso)o;
+		for(Permiso p in LedUtils.getNodes(LedPackage.Literals.PERMISO)){
+			if (!LedUtils.inPath(p)) continue;
+			GPermiso permiso = GElement.getInstance(p, null);
 			if (permiso.permiso.varSection != null){
 				for(PermisoVar var : permiso.permiso.varSection.vars)
 					variables.put(var.tipo.name, var.tipo);
@@ -162,7 +181,7 @@ public class End implements IWorkflowComponent {
 	  	  
 		String vars = "";
 		for (Entity e: variables.values()){
-			EntidadUtils entidad = EntidadUtils.create(e);
+			Entidad entidad = Entidad.create(e);
 			vars += """
 				public ${entidad.clase} get${entidad.clase}(Map<String, Long> ids, Map<String, Object> vars){
 					if (vars != null && vars.containsKey("${entidad.variable}"))
@@ -208,7 +227,7 @@ public class ${clazzGenName} extends Secure {
 }
 """;
 
-		FileUtils.overwrite(FileUtils.getRoute('PERMISSION'), "${clazzGenName}.java", Beautifier.formatear(secureGen));
+		FileUtils.overwrite(FileUtils.getRoute('PERMISSION'), "${clazzGenName}.java", BeautifierUtils.formatear(secureGen));
 		
 		// Permisos manual
 		String secure = """
@@ -234,17 +253,22 @@ public class ${clazzName} extends Secure {
 }
 """;
 
-		FileUtils.write(FileUtils.getRoute('PERMISSION'), "${clazzName}.java", Beautifier.formatear(secure));
+		FileUtils.write(FileUtils.getRoute('PERMISSION'), "${clazzName}.java", BeautifierUtils.formatear(secure));
 	}
   
   
 	private void entitySolicitud() {
-		EntityImpl solicitud = LedFactory.eINSTANCE.createEntity();
-		solicitud.setName("Solicitud");
-		EntityImpl solicitudGen = LedFactory.eINSTANCE.createEntity();
-		solicitudGen.setName("SolicitudGenerica");
-		solicitud.setExtends(solicitudGen);
-		GEntidad.generate(solicitud);
+		Resource res = LedUtils.resource;
+		if (ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "Solicitud", res) == null){
+			if (ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, "Solicitud", res).size() > 1)
+				log.warn("No se ha creado la entidad Solicitud. Se creará una por defecto.");
+			EntityImpl solicitud = LedFactory.eINSTANCE.createEntity();
+			solicitud.setName("Solicitud");
+			EntityImpl solicitudGen = LedFactory.eINSTANCE.createEntity();
+			solicitudGen.setName("SolicitudGenerica");
+			solicitud.setExtends(solicitudGen);
+			GElement.getInstance(solicitud, null).generate();
+		}
 	}
  
  
@@ -307,7 +331,12 @@ public class AppModule extends FapModule {
 	
 }
 """
-			FileUtils.write(appConfigFolder, "AppModule.java", Beautifier.formatear(config));
+			FileUtils.write(appConfigFolder, "AppModule.java", BeautifierUtils.formatear(config));
 		}	
-	}  
+	}
+	
+	@Override
+	public void preInvoke() {
+		// TODO Auto-generated method stub
+	}
 }

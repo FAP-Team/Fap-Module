@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import es.fap.simpleled.led.AreaTexto;
 import es.fap.simpleled.led.Attribute;
+import es.fap.simpleled.led.CalcularFirmantes;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.Check;
 import es.fap.simpleled.led.Columna;
@@ -23,9 +24,9 @@ import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Fecha;
 import es.fap.simpleled.led.FirmaDocumento;
 import es.fap.simpleled.led.FirmaFirmantes;
-import es.fap.simpleled.led.FirmaPlatinoSimple;
 import es.fap.simpleled.led.FirmaSetCampo;
 import es.fap.simpleled.led.FirmaSetTrue;
+import es.fap.simpleled.led.FirmaSimple;
 import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.Grupo;
 import es.fap.simpleled.led.LedPackage;
@@ -111,7 +112,7 @@ public abstract class LedElementValidator {
 	
 	public List<Proposal> completeEntidades(String contextPrefix, Collection<Entity> entidades, EObject elemento) {
 		List<Proposal> proposals = new ArrayList<Proposal>();
-		EObject container = LedCampoUtils.getElementosContainer(elemento);
+		EObject container = LedCampoUtils.getCampoScope(elemento);
 		List<Entity> prios = null;
 		if (container instanceof Pagina || container instanceof Popup)
 			prios = LedEntidadUtils.getEntidadesPaginaPopup(container);
@@ -122,7 +123,8 @@ public abstract class LedElementValidator {
 			String tipo = "Entidad";
 			if (LedEntidadUtils.esSingleton(entidad))
 				tipo = "Singleton";
-			int prio = prios.indexOf(entidad) + 2;
+			int prio = 0;
+			if (prios != null) prio = prios.indexOf(entidad) + 2;
 			if (aceptaEntidad(entidad))
 				proposals.add(new Proposal(entidad.getName() + "  -  " + tipo, true, entidad, prio));
 			else if (aceptaEntidadRecursivo(entidad))
@@ -208,25 +210,25 @@ public abstract class LedElementValidator {
 			return new ComboValidator(container);
 		}
 		if (container instanceof SubirArchivo || container instanceof EditarArchivo) {
-			return new SimpleEntidadValidator(container, "Documento");
+			return new SimpleEntidadValidator(container, "Documento", false);
 		}
 		if (container instanceof Direccion) {
-			return new SimpleEntidadValidator(container, "Direccion");
+			return new SimpleEntidadValidator(container, "Direccion", false);
 		}
 		if (container instanceof Nip) {
-			return new SimpleEntidadValidator(container, "Nip");
+			return new SimpleEntidadValidator(container, "Nip", false);
 		}
 		if (container instanceof Persona) {
-			return new SimpleEntidadValidator(container, "Persona");
+			return new SimpleEntidadValidator(container, "Persona", false);
 		}
 		if (container instanceof PersonaFisica) {
-			return new SimpleEntidadValidator(container, "PersonaFisica");
+			return new SimpleEntidadValidator(container, "PersonaFisica", false);
 		}
 		if (container instanceof PersonaJuridica) {
-			return new SimpleEntidadValidator(container, "PersonaJuridica");
+			return new SimpleEntidadValidator(container, "PersonaJuridica", false);
 		}
 		if (container instanceof Solicitante) {
-			return new SimpleEntidadValidator(container, "Solicitante");
+			return new SimpleEntidadValidator(container, "Solicitante", false);
 		}
 		if (container instanceof EntidadAutomatica) {
 			return new EntidadAutomaticaValidator(container);
@@ -235,12 +237,15 @@ public abstract class LedElementValidator {
 			return new EnlaceValidator(container);
 		}
 		if (container instanceof FirmaDocumento) {
-			return new SimpleEntidadValidator(container, "Documento");
+			return new SimpleEntidadValidator(container, "Documento", false);
 		}
 		if (container instanceof FirmaFirmantes) {
 			return new ListaEntidadValidator(container, "Firmante");
 		}
-		if (container instanceof FirmaSetCampo || container instanceof FirmaPlatinoSimple) {
+		if (container instanceof CalcularFirmantes) {
+			return new SimpleEntidadValidator(container, "Solicitante", true);
+		}
+		if (container instanceof FirmaSetCampo || container instanceof FirmaSimple) {
 			return new TextoValidator(container);
 		}
 		if (container instanceof FirmaSetTrue) {

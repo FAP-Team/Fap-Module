@@ -65,7 +65,7 @@ public class FapDocumentationProvider extends DefaultEObjectHoverProvider implem
 		"MenuEnlace:Enlace", "Accion", "Pagina", "Popup", "Grupo", "AgruparCampos",
 		"Texto", "AreaTexto", "Check", "Enlace", "Wiki", "Boton", "Fecha", "Combo",
 		"Form", "Tabla", "Columna", "SubirArchivo",
-		"FirmaPlatinoSimple:FirmaSimple", "Direccion", "Nip", "PersonaFisica",
+		"FirmaSimple", "Direccion", "Nip", "PersonaFisica",
 		"PersonaJuridica", "Persona", "Solicitante", "EntidadAutomatica", "Lista",
 		"FirmaDocumento", "FirmaFirmantes", "FirmaSetCampo", "FirmaSetTrue"
 	};

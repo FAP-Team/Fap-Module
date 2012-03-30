@@ -1,18 +1,18 @@
 package generator.utils;
 
-public class Route {
+public class RouteUtils {
 	public String method;
 	public String url;
 	public String action;
 	
-	public Route(String method, String url, String action) {
+	public RouteUtils(String method, String url, String action) {
 		this.method = method;
 		this.url = url;
 		this.action = action;
 	}
 
-	public static Route to(String method, String url, String action){
-		return new Route(method, url, action);
+	public static RouteUtils to(String method, String url, String action){
+		return new RouteUtils(method, url, action);
 	}
 	
 	@Override

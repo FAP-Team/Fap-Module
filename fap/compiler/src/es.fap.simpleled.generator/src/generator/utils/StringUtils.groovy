@@ -57,7 +57,7 @@ class StringUtils {
 			}
 			if (p instanceof List<String>){
 				for (String s: p){
-					if (!s.trim().equals("")){ 
+					if (s != null && !s.trim().equals("")){ 
 						if (!result.equals("")){
 							result += ", ";
 						}

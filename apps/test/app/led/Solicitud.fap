@@ -422,7 +422,7 @@ Formulario Solicitud {
 				Boton botonSimple titulo="Botón que no hace nada"
 				Boton botonSimple2 titulo="Botón 2 que nada"
 			}
-			FirmaSimple firmaSimple titulo="Firma Simple (por ahora no hace nada)" documento=Solicitud.registro.oficial listaFirmantes=Solicitud.registro.firmantes
+			FirmaSimple firmaSimple titulo="Firma Simple (por ahora no hace nada)" documento=Solicitud.registro.oficial listaFirmantes=Solicitud.registro.firmantes calcularFirmantes=Solicitud.solicitante
 		}
 	}
 	

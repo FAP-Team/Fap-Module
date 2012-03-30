@@ -5,7 +5,6 @@ import java.text.CollationElementIterator;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.*
 import es.fap.simpleled.led.impl.*;
-import generator.utils.HashStack.HashStackName;
 
 public class ColumnasUtils {
 
@@ -105,7 +104,7 @@ public class ColumnasUtils {
 		String referencia = attr.type.compound.tipoReferencia?.type;
 		if (referencia == null || referencia.equals("OneToOne") || referencia.equals("ManyToOne")){
 			CampoUtils anterior = campo;
-			campo = CampoUtils.create(campo.addAttribute(attr));
+			campo = campo.addAttribute(attr);
 			out.addAll(recorrerEntidad());
 			campo = anterior;
 		}
@@ -113,8 +112,9 @@ public class ColumnasUtils {
 	}
 	
 	private Columna columna(Attribute attr){
-		Columna col = new ColumnaImpl();
-		col.campo = campo.addAttribute(attr);
+		Columna col = LedFactory.eINSTANCE.createColumna();
+//		Columna col = LedFactory.eINSTANCE.createColumna();
+		col.campo = campo.addAttribute(attr).campo;
 		col.titulo = attr.name;
 		col.ancho = col.titulo.length() * 15;
 		return col;

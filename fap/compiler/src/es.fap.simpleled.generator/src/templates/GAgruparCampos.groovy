@@ -1,30 +1,30 @@
 package templates;
 
 import es.fap.simpleled.led.*;
+import generator.utils.Entidad;
 import generator.utils.ListUtils;
 import generator.utils.TagParameters;
 
-public class GAgruparCampos {
-	def AgruparCampos agruparCampos;
+public class GAgruparCampos extends GGroupElement{
 	
-	public static String generate(AgruparCampos agruparCampos){
-		GAgruparCampos g = new GAgruparCampos();
-		g.agruparCampos = agruparCampos;
-		g.view();
+	AgruparCampos agruparCampos;
+	
+	public GAgruparCampos(AgruparCampos agruparCampos, GElement container){
+		super(agruparCampos, container);
+		this.agruparCampos = agruparCampos;
+		elementos = agruparCampos.getElementos();
 	}
 	
 	public String view(){
 		String elementos = "";
 		for(Elemento elemento : agruparCampos.getElementos()){
-			elementos += Expand.expand(elemento);
+			elementos += getInstance(elemento).view();
 		}
-		
-		def out = """
-#{fap.agruparCampos}
-	${elementos}
-#{/fap.agruparCampos}
-"""
-	
-		return out;	
+		return """
+			#{fap.agruparCampos}
+				${elementos}
+			#{/fap.agruparCampos}
+		""";
 	}
+	
 }

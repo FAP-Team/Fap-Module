@@ -1,281 +1,209 @@
-
 package templates;
 
 import es.fap.simpleled.led.*
+import es.fap.simpleled.led.util.LedCampoUtils
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.impl.*;
 import generator.utils.*
-import generator.utils.HashStack.HashStackName
 
-public class GEntidadAutomatica {
+public class GEntidadAutomatica extends GElement{
 
-	def EntidadAutomatica entidadAutomatica;
+	EntidadAutomatica entidadAutomatica;
 	
-	public static String generate(EntidadAutomatica entidadAutomatica){
-		GEntidadAutomatica g = new GEntidadAutomatica();
-		entidadAutomatica.metaClass.elementos = new ArrayList<Elemento>()
-		g.entidadAutomatica = entidadAutomatica;
-		g.view();
+	public GEntidadAutomatica(EntidadAutomatica entidadAutomatica, GElement container){
+		super(entidadAutomatica, container);
+		this.entidadAutomatica = entidadAutomatica;
 	}
 	
-	public String view(){
-		String out = ""
+	public void generate(){
+		CampoUtils campo = CampoUtils.create(entidadAutomatica.campo);
+		List<Elemento> elementos = generateEntidad(campo);
+		Elemento prev = entidadAutomatica;
+		GGroupElement group = getGroupContainer();
+		for (Elemento e: elementos){
+			group.addElementAfter(e, prev);
+			prev = e;
+		}
+		group.removeElement(entidadAutomatica);
+	}
+	
+	private List<Elemento> generateEntidad(CampoUtils campo) {
 		Entity entidad = CampoUtils.create(entidadAutomatica.campo).getUltimaEntidad();
-				
-		if (entidad.getExtends()?.name.equals("Persona")) {
-			Persona persona = new PersonaImpl()
-			persona.name = entidadAutomatica.name
-			persona.campo = entidadAutomatica.campo
-			persona.requerido = true
-			out = GPersona.generate(persona);
-			entidadAutomatica.elementos.add(persona)			
-		}
-		else if (entidad.getExtends()?.name.equals("PersonaFisica")) {
-			PersonaFisica persona = new PersonaFisicaImpl()
-			persona.name = entidadAutomatica.name
-			persona.campo = CampoUtils.addMore(entidadAutomatica.campo, "fisica");
-			persona.requerido = true
-			out = GPersonaFisica.generate(persona);
-			entidadAutomatica.elementos.add(persona)			
-		}
-		else if (entidad.getExtends()?.name.equals("PersonaJuridica")){
-			PersonaJuridica persona = new PersonaJuridicaImpl()
-			persona.name = entidadAutomatica.name
-			persona.campo = CampoUtils.addMore(entidadAutomatica.campo, "juridica");
-			persona.requerido = true
-			out = GPersonaJuridica.generate(persona);
-			entidadAutomatica.elementos.add(persona)			
-		}
 		
-		for (Attribute attr : entidad.attributes) {
-			if (!attr.name.equals("id")){
-				out += generateAttr(attr);	
-			}		
-		}
+		if (LedEntidadUtils.extend(entidad, "Solicitante"))
+			return [generateSolicitante(campo)];
 		
-		return out;
+		if (LedEntidadUtils.extend(entidad, "PersonaFisica"))
+			return [generatePersonaFisica(campo)];
+	
+		if (LedEntidadUtils.extend(entidad, "PersonaJuridica"))
+			return [generatePersonaJuridica(campo)];
+		
+		if (LedEntidadUtils.extend(entidad, "Persona"))
+			return [generatePersona(campo)];
+			
+		if (LedEntidadUtils.extend(entidad, "Direccion"))
+			return [generateDireccion(campo)];
+			
+		if (LedEntidadUtils.extend(entidad, "Nip"))
+			return [generateNip(campo)];
+			
+		List<Elemento> elementos = new ArrayList<Elemento>();
+		for (Attribute attr: entidad.attributes){
+			if (!attr.name.equals("id"))
+				elementos.addAll(generateAtributo(campo.addAttribute(attr)));
+		}
+		return elementos;
 	}
 				
-	private String generateAttr(Attribute attr) {
-		String out = "" 
-		if ( attr.type.simple != null)
-			out = generateAttrSimple(attr);
-		else if ( attr.type.special != null)
-			out = generateAttrSpecial(attr);
+	private List<Elemento> generateAtributo(CampoUtils campo){
+		Attribute attr = campo.getUltimoAtributo();
+		if (attr.type.simple)
+			return [generateAttrSimple(campo)];
+		if (attr.type.special)
+			return [generateAttrSpecial(campo)];
 		else
-			out = generateAttrCompound(attr);
-		return out;
+			return generateAttrCompound(campo);
 	}
 	
-	private String generateAttrSimple(Attribute attr) {
-		String out = ""
-		String type = attr.type.simple?.type;
-		if ("LongText".equals(type)) {
-			out = generateAreaTexto(attr);
-		}
-		else{
-			out = generateTexto(attr);
-		}
-		return out
+	private Elemento generateAttrSimple(CampoUtils campo){
+		String type = campo.getUltimoAtributo().type.simple?.type;
+		if ("LongText".equals(type))
+			return generateAreaTexto(campo);
+		if ("Boolean".equals(type))
+			return generateCheck(campo);
+		else
+			return generateTexto(campo);
 	}
 
-	private String generateAttrSpecial(Attribute attr) {
-		String out = ""
-		String type = attr.type.special?.type;
-		if ("DateTime".equals(type)) {
-			out = generateFecha(attr);
-		}
-		else{
-			out = generateTexto(attr);
-		}
-		return out
+	private Elemento generateAttrSpecial(CampoUtils campo){
+		String type = campo.getUltimoAtributo().type.special?.type;
+		if ("DateTime".equals(type))
+			return generateFecha(campo);
+		else
+			return generateTexto(campo);
 	}
 
-	private String generateAttrCompound(Attribute attr) {
-		String out = "";
-		CompoundType compound = attr.type.compound;
-		if (compound.entidad != null){
-			out = generateEntidad(attr);
-		}
-		else {
-			out = generateLista(attr);
-		}		
-		return out;
+	private List<Elemento> generateAttrCompound(CampoUtils campo){
+		if (LedCampoUtils.xToOne(campo.campo))
+			return generateEntidad(campo);
+		if (LedCampoUtils.xToMany(campo.campo))
+			return [generateTabla(campo)];
+		return [generateLista(campo)];
 	}
 
-/*  Atributos Simples */
-		
-	private String generateTexto(Attribute attr) {
-		String out = "";
-		Texto texto = new TextoImpl();
-		texto.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		texto.requerido = esRequerido(attr);
-		out = GTexto.generate(texto);
-		entidadAutomatica.elementos.add(texto);
-		return out;
+	private Elemento generateTexto(CampoUtils campo){
+		Texto texto = LedFactory.eINSTANCE.createTexto();
+		texto.campo = campo.newCampo();
+		texto.requerido = esRequerido(campo);
+		return texto;
 	}
 	
-	private String generateFecha(Attribute attr) {
-		String out = "";
-		Fecha fecha = new FechaImpl();
-		fecha.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		fecha.requerido = esRequerido(attr);
-		out = GFecha.generate(fecha);
-		entidadAutomatica.elementos.add(fecha);
-		return out;
-	}
-
-	private String generateAreaTexto(Attribute attr) {
-		String out = "";
-		AreaTexto texto = new AreaTextoImpl();
-		texto.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		texto.requerido = esRequerido(attr);
-		out = GAreaTexto.generate(texto);
-		entidadAutomatica.elementos.add(texto);
-		return out;
+	private Elemento generateCheck(CampoUtils campo){
+		Check check = LedFactory.eINSTANCE.createCheck();
+		check.campo = campo.newCampo();
+		return check;
 	}
 	
-	private String generateNip(Attribute attr) {
-		String out = "";
-		Nip nip = new NipImpl();
-		nip.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		nip.requerido = esRequerido(attr);
-		out = GNip.generate(nip);
-		entidadAutomatica.elementos.add(nip);
-		return out;
+	private Elemento generateAreaTexto(CampoUtils campo){
+		AreaTexto areaTexto = LedFactory.eINSTANCE.createAreaTexto();
+		areaTexto.campo = campo.newCampo();
+		areaTexto.requerido = esRequerido(campo);
+		return areaTexto;
 	}
 	
-	/*
-	 * Atributo simple de direccion
-	 * no se muestra ni el país ni la provincia
-	 */
-	private String generateDireccion(Attribute attr) {
-		String out = "";
-		Direccion direccion = new DireccionImpl();
-		direccion.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		direccion.requerido = esRequerido(attr);
-		out = GDireccion.generate(direccion);
-		entidadAutomatica.elementos.add(direccion);
-		return out;
-	}
-
-	private boolean esRequerido (Attribute attr) {
-		return attr.required;
+	private Elemento generateFecha(CampoUtils campo){
+		Fecha fecha = LedFactory.eINSTANCE.createFecha();
+		fecha.campo = campo.newCampo();
+		fecha.requerido = esRequerido(campo);
+		return fecha;
 	}
 	
-	/* Atributos Compuestos */
-	
-	private String generateLista(Attribute attr) {
-		String out = ""
-		Combo combo = new ComboImpl();
-		combo.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		combo.requerido = esRequerido(attr);
-//		if (attr.type.getCompound()?.isMultiple()){
-//			combo.multiple = true;
-//		}
-		out = GCombo.generate(combo);
-		entidadAutomatica.elementos.add(combo)
-		return out;
-	}
-
-	private String generatePersona(Attribute attr) {
-		String out = ""
-		Persona persona = new PersonaImpl();
-		persona.name = entidadAutomatica.name + "_" + attr.name;
-		persona.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		persona.requerido = esRequerido(attr);
-		out = GPersona.generate(persona);
-		entidadAutomatica.elementos.add(persona);
-		return out;
-	}
-
-	private String generatePersonaFisica(Attribute attr) {
-		String out = "";
-		PersonaFisica persona = new PersonaFisicaImpl();
-		persona.name = entidadAutomatica.name + "_" + attr.name;
-		persona.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		persona.requerido = esRequerido(attr);
-		out = GPersonaFisica.generate(persona);
-		entidadAutomatica.elementos.add(persona);
-		return out;
-	}
-
-	private String generatePersonaJuridica(Attribute attr) {
-		String out = "";
-		PersonaJuridica persona = new PersonaJuridicaImpl();
-		persona.name = entidadAutomatica.name + "_" + attr.name;
-		persona.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		persona.requerido = esRequerido(attr);
-		out = GPersonaJuridica.generate(persona);
-		entidadAutomatica.elementos.add(persona);
-		return out;
-	}
-
-	private String generateEntidad (Attribute attr) {
-		String out = ""
-		Entity entidad = attr.type.compound.entidad;
-		if (entidad.name.equals("Persona")){
-			out = generatePersona(attr);
-		}
-		else if (entidad.name.equals("PersonaFisica")){
-			out = generatePersonaFisica(attr)
-		}
-		else if (entidad.name.equals("PersonaFisica")){
-			out = generatePersonaJuridica(attr);
-		}
-		else if (entidad.name.equals("Direccion")){
-			out = generateDireccion(attr);
-		}
-		else if (entidad.name.equals("Nip")){
-			out = generateNip(attr);
-		}
-		else{
-			if (LedEntidadUtils.xToOne(attr)){ 
-				out = generateEntidadAutomatica(attr);
-			}
-			else if (LedEntidadUtils.xToMany(attr)){
-				out = generateTabla(attr);
-			}
-		}
-		return out;
+	private Elemento generateNip(CampoUtils campo){
+		Nip nip = LedFactory.eINSTANCE.createNip();
+		nip.campo = campo.newCampo();
+		nip.requerido = esRequerido(campo);
+		return nip;
 	}
 	
-	private String generateEntidadAutomatica(Attribute attr) {
-		String out = "";
-		Entity entidad = attr.type.compound.entidad;
-		EntidadAutomatica nuevaAutomatica = new EntidadAutomaticaImpl();
-		nuevaAutomatica.name = entidadAutomatica.name + "_" + attr.name;	
-		nuevaAutomatica.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		nuevaAutomatica.permiso = entidadAutomatica.permiso;
-		out = GEntidadAutomatica.generate(nuevaAutomatica);
-		entidadAutomatica.elementos.addAll(nuevaAutomatica.elementos);
-		return out;
+	private Elemento generateDireccion(CampoUtils campo){
+		Direccion direccion = LedFactory.eINSTANCE.createDireccion();
+		direccion.campo = campo.newCampo();
+		direccion.requerido = esRequerido(campo);
+		return direccion;
+	}
+	
+	private Elemento generateLista(CampoUtils campo){
+		Combo combo = LedFactory.eINSTANCE.createCombo();
+		combo.campo = campo.newCampo();
+		combo.requerido = esRequerido(campo);
+		return combo;
 	}
 
-	private String generateTabla(Attribute attr) {
-		String out = "";
-		Tabla tabla = new TablaImpl();
-		tabla.name = attr.name;
-		tabla.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
-		tabla.popup = generatePopup(attr);
-		Entity entidad = attr.type.compound.entidad;
+	private Elemento generatePersona(CampoUtils campo){
+		Persona persona = LedFactory.eINSTANCE.createPersona();
+		persona.name = entidadAutomatica.name + "_" + campo.str.replaceAll("\\.", "_");
+		persona.campo = campo.newCampo();
+		persona.requerido = esRequerido(campo);
+		return persona;
+	}
+
+	private Elemento generatePersonaFisica(CampoUtils campo){
+		PersonaFisica persona = LedFactory.eINSTANCE.createPersonaFisica();
+		persona.name = entidadAutomatica.name + "_" + campo.str.replaceAll("\\.", "_");
+		persona.campo = campo.newCampo();
+		persona.requerido = esRequerido(campo);
+		return persona;
+	}
+
+	private Elemento generatePersonaJuridica(CampoUtils campo){
+		PersonaJuridica persona = LedFactory.eINSTANCE.createPersonaJuridica();
+		persona.name = entidadAutomatica.name + "_" + campo.str.replaceAll("\\.", "_");
+		persona.titulo = "Persona juridica";
+		persona.campo = campo.newCampo();
+		persona.requerido = esRequerido(campo);
+		return persona;
+	}
+
+	private Elemento generateSolicitante(CampoUtils campo){
+		Solicitante solicitante = LedFactory.eINSTANCE.createSolicitante();
+		solicitante.name = entidadAutomatica.name + "_" + campo.str.replaceAll("\\.", "_");
+		solicitante.elemento = "Solicitante";
+		solicitante.campo = campo.newCampo();
+		solicitante.requerido = esRequerido(campo);
+		return solicitante;
+	}
+	
+	private Elemento generateTabla(CampoUtils campo){
+		Tabla tabla = LedFactory.eINSTANCE.createTabla();
+		tabla.name = campo.str.replaceAll("\\.", "_");
+		tabla.campo = campo.newCampo();
 		tabla.columnasAutomaticas = true;
-		out = GTabla.generate(tabla);
-		return out;
+		tabla.popup = generatePopup(campo);
+		getPaginaOrPopupContainer().element.eContainer().popups.add(tabla.popup);
+		return tabla;
 	}
 	
-	private Popup generatePopup(Attribute attr) {
-		Entity entidad = attr.type.compound.entidad;
-		Popup popup = new PopupImpl();
-		popup.name = "Popup" + attr.name;
-		popup.campo = CampoUtils.addAttribute(entidadAutomatica.campo, attr);
+	private Popup generatePopup(CampoUtils campo){
+		Popup popup = LedFactory.eINSTANCE.createPopup();
+		popup.name = "Popup_" + campo.str.replaceAll("\\.", "_");
+		Campo c = getPaginaOrPopupContainer().campo?.campo;
+		Campo concatenado = LedCampoUtils.concatena(c, campo.campo);
+		if (concatenado != null)
+			popup.campo = concatenado;
+		else
+			popup.campo = campo.newCampo();
 		
-		EntidadAutomatica nuevaAutomatica = new EntidadAutomaticaImpl();
-		nuevaAutomatica.campo = CampoUtils.create(entidad).campo;
-		nuevaAutomatica.permiso=entidadAutomatica.permiso;
+		EntidadAutomatica nuevaAutomatica = LedFactory.eINSTANCE.createEntidadAutomatica();
+		nuevaAutomatica.campo = CampoUtils.create(campo.getUltimaEntidad()).campo;
+		nuevaAutomatica.name = entidadAutomatica.name + "_" + campo.str.replaceAll("\\.", "_");
+		nuevaAutomatica.permiso = entidadAutomatica.permiso;
 		popup.elementos.add(nuevaAutomatica);
-		GPopup.generate(popup);
 		return popup;
+	}
+	
+	private boolean esRequerido(CampoUtils campo){
+		return campo?.getUltimoAtributo()?.required;
 	}
 
 }

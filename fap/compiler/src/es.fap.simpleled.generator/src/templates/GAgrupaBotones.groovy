@@ -5,35 +5,28 @@ import es.fap.simpleled.led.impl.EnlaceImpl;
 import es.fap.simpleled.led.AgrupaBotones
 import es.fap.simpleled.led.Enlace;
 import generator.utils.*;
-import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.Boton;
 
-public class GAgrupaBotones {
+public class GAgrupaBotones extends GElement{
 	
-	AgrupaBotones agrupaB;
+	AgrupaBotones agrupa;
 	
-	
-	public static String generate(AgrupaBotones grupoBotones){
-		GAgrupaBotones g = new GAgrupaBotones();
-		g.agrupaB = grupoBotones;
-		g.view();
+	public GAgrupaBotones(AgrupaBotones grupoBotones, GElement container){
+		super(grupoBotones, container);
+		this.agrupa = grupoBotones;
 	}
 
     public String view(){
 		String clazz = "actions button_container";
-		if (agrupaB.type == "well")
+		if (agrupa.type == "well")
 			clazz = "well";
 		String result = ""
 		result += """<div class="${clazz}">
-		"""
-		for (Boton b : agrupaB.botones) {
-			if(b instanceof Boton)
-				result += GBoton.generate(b);
-			else if(b instanceof Enlace)
-				result += GEnlace.generate(b);
-		}
+		""";
+		for (Boton b: agrupa.botones)
+			result += getInstance(b).view();
 		result += """</div>
-		"""
+		""";
         return result;
     }
 	

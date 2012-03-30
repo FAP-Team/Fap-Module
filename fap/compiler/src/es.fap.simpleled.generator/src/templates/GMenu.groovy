@@ -2,67 +2,42 @@ package templates
 
 import es.fap.simpleled.led.*;
 import generator.utils.CampoUtils
-import generator.utils.Controller
-import generator.utils.EntidadUtils
+import generator.utils.Controller;
+import generator.utils.Entidad;
 import generator.utils.FileUtils;
-import generator.utils.HashStack;
 import generator.utils.StringUtils
-import generator.utils.HashStack.HashStackName;
 import es.fap.simpleled.led.util.LedCampoUtils
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
-public class GMenu {
+public class GMenu extends GElement{
 
-	def Menu menu;
+	Menu menu;
 	Set<String> scriptVariables;
 
-	public static String generate(Menu menu){
-		GMenu g = new GMenu();
-		g.menu = menu;
-		g.scriptVariables = new HashSet<String>();
-		return g.generateView();
+	public GMenu(Menu menu, GElement container){
+		super(menu, container);
+		this.menu = menu;
+		this.scriptVariables = new HashSet<String>();
 	}
 
-	/**
-	 * Devuelve el nombre del menu del formulario que se está procesando
-	 */
-	public static String getMenuName(){
-		Formulario f = HashStack.top (HashStackName.FORMULARIO)
-		if(f.menu == null) return null;
-		return f.name + ".html";
-	}
-
-	/**
-	 * Codigo para incluir el menu dentro de las páginas
-	 * Si el formulario no tiene menú devuelve cadena vacia
-	 */
-	public static String getIncludeMenuInPage(){
-		String menuName = getMenuName();
-		
-		if (menuName == null) {
-			Formulario f = HashStack.top (HashStackName.FORMULARIO);
-			menuName = f.name + ".html";
-		}
-		return """
-			#{if play.getVirtualFile("app/views/gen/menu/$menuName") != null}
-				#{set 'menu'}
-						#{include 'gen/menu/${menuName}'/}
-				#{/set}
-			#{/if}
-		""";
-	}
-	
-	public String generateView(){
+	public void generate(){
+		scriptVariables = new HashSet<String>();
 		String view = "<ul class='nav nav-list'>"
 		for(MenuElemento elemento : menu.elementos){
 			view += generateElemento(elemento);
 		}
 		view +="</ul>"
 		FileUtils.overwrite(FileUtils.getRoute('MENU_GEN'), getMenuName(), view);
-		return view;
 	}
-
-
+	
+	/**
+	* Devuelve el nombre del menu del formulario que se está procesando
+	*/
+   public String getMenuName(){
+	   Formulario f = menu.eContainer();
+	   if (f.menu == null) return null;
+	   return f.name + ".html";
+   }
 
 	public String generateElemento(MenuGrupo grupo){
 		String out = "";
@@ -101,11 +76,10 @@ public class GMenu {
 			""";
 			permisoAfter = "#{/fap.permiso}";
 		}
-		
 		if(enlace.pagina != null){
 			return """
 				${permisoBefore}
-				${scriptUrl(Controller.fromPagina(enlace.pagina.pagina).initialize(), enlace.pagina.accion)}
+				${scriptUrl(Controller.create(GElement.getInstance(enlace.pagina.pagina, null)), enlace.pagina.accion)}
 				<li class="#{fap.activeRoute href:url, activeClass:'active' /}"><a href='\${url}'>${titulo}</a></li>
 				${permisoAfter}
 			""";
@@ -126,7 +100,7 @@ public class GMenu {
 	    } else if(enlace.url != null) //URL
 			ref = enlace.url;
 		else if(enlace.popup != null){ //Popup
-			script = "${scriptUrl(Controller.fromPopup(enlace.popup.popup).initialize(), enlace.popup.accion)}";
+			script = "${scriptUrl(Controller.create(GElement.getInstance(enlace.popup.popup, null)), enlace.popup.accion)}";
 			ref= "javascript:popup_open('${enlace.popup.popup.name}', '\${url}')";
 		}
 		else if(enlace.anterior != null){
@@ -147,14 +121,9 @@ public class GMenu {
 	
 	private String scriptUrl(Controller controller, String accion){
 		String link = controller.getRouteIndex(accion);
-		List<EntidadUtils> entidades = new ArrayList<EntidadUtils>();
-		if (!controller.entidad.nulo())
-			entidades.add(controller.entidad);
-		if (!controller.almacen.nulo())
-			entidades.add(controller.almacen);
-		entidades.addAll(controller.intermedias);
+		List<Entidad> entidades = new ArrayList<Entidad>();
 		String scriptEntidades = "";
-		for (EntidadUtils entidad: entidades){
+		for (Entidad entidad: controller.allEntities){
 			if (!scriptVariables.contains(entidad.variable)){
 				scriptVariables.add(entidad.variable);
 				scriptEntidades += """models.${entidad.clase} ${entidad.variable} = play.mvc.Scope.RenderArgs.current().get("${entidad.variable}");\n""";

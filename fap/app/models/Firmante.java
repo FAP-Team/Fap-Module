@@ -58,7 +58,7 @@ public class Firmante extends Model {
 		} else {
 			Nip nip = new Nip();
 			nip.valor = agente.username;
-			if (NipCheck.validaNip(nip, texto)) {
+			if (new NipCheck().validaNip(nip, texto)) {
 				this.tipo = "personajuridica";
 			} else {
 				play.Logger.error("El firmante creado a partir del Agente no tiene tipo (username: " + agente.username + ")");

@@ -50,6 +50,10 @@ h2. Envío de mails cuando suceden Errores Fatales
 
 Debemos crear en la página de Administración, en la página de emails, un Email con ID = LogFatal. De esa forma se nos enviaran los mensajes Fatales de la aplicación al correo que configuremos con dicho ID.
 
+Al configurar el email que se enviará al ocurrir un LogFatal, en la página de Administración, a través de la variable ${pattern} podemos acceder al contenido de ese error FATAL, tal y como vemos en la siguiente imagen.
+
+!images/app-LogFatal!
+
 h2. Configuración del servidor de envio de correos
 
 En el fichero @application.conf@ se configura el servidor de envio de correo

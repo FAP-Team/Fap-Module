@@ -10,10 +10,10 @@ public class TablaDeTablasController extends TablaDeTablasControllerGen {
 
     public static void actualizarDesdeFichero() {
         TableKeyValue.deleteAll();
-        long count = TableKeyValue.loadFromFiles();
-        Messages.ok("Se cargaron desde fichero " + count + " registros, para la tabla de tablas");
         TableKeyValueDependency.deleteAll();
-        count = TableKeyValueDependency.loadFromFiles();
+        long count = TableKeyValue.loadFromFiles(false);
+        Messages.ok("Se cargaron desde fichero " + count + " registros, para la tabla de tablas");
+        count = TableKeyValueDependency.loadFromFiles(true);
         Messages.ok("Se cargaron desde fichero " + count + " registros, para la tabla de tablas de dependencias");
         Messages.keep();
         redirect("TablaDeTablasController.index", "editar");

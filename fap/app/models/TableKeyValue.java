@@ -258,9 +258,15 @@ public class TableKeyValue extends Model {
 		}
 		return keys;
 	}
+	
+	public static long loadFromFiles(){
+		return loadFromFiles(false);
+	}
 
-	public static long loadFromFiles() {
-		Fixtures.loadFolderFromAppAndFap("app/listas/gen/");
+	public static long loadFromFiles(boolean cargadoPreviamente) {
+		// Si antes de hacer esta llamada se realiza la homologa en TableKeyValueDependency o similar, para que no duplique las entradas
+		if (!cargadoPreviamente)
+			Fixtures.loadFolderFromAppAndFap("app/listas/gen/");
 
 		List<TableKeyValue> all = TableKeyValue.findAll();
 		HashSet<String> tables = new HashSet<String>();

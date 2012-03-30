@@ -45,14 +45,28 @@ public class Start extends Job {
             play.test.Fixtures.loadModels(agentesFile);
         }
 		
+		// Para controlar el posible cambio de version del modulo fap de una aplicacion, y evitar el minimo daño posible en la BBDD
+		// Ya que en versiones 1.2.X y anteriores la TableKeyValueDependency no existía, por lo que debemos controlar eso.
+		boolean cambioVersion=true;
+		
 		if(TableKeyValue.count() == 0){
-	        long count = TableKeyValue.loadFromFiles();
+	        long count = TableKeyValue.loadFromFiles(false); //Carga las dos tablas, tanto la TableKeyValue como la TableKeyValueDependency, le pasamos false porque no se ha cargado nada (ningun .yaml) previamente
 	        if (count > 0)
 	        	Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas");
+	        cambioVersion=false; // Si no existe la TableKeyValue, es que no es un cambio de versión, sino una inicializacion por primera vez de la BBDD
 		}
 		
 		if(TableKeyValueDependency.count() == 0){
-			long count = TableKeyValueDependency.loadFromFiles();
+			// Si estamos en un cambio de version de la 1.2.X a la 2.X del modulo FAP
+			if (cambioVersion) { // Sabemos que estamos en un cambio de version porque existe TableKeyValue, pero no existe TableKeyValueDependency
+				Logger.info("Detectado un cambio de versión del módulo FAP que se venía utilizando, de la 1.2.X a la 2.X. Se procederá a reconfigurar las tablas de tablas");
+				TableKeyValue.deleteAll(); // Borramos los posibles datos que hubiera de la TableKeyValue, ya que vamos a cargarlo todo otra vez y así evitamos la duplicidad de valores
+				TableKeyValueDependency.deleteAll(); // Borramos la TableKeyValueDependency por manía, ya que no va a tener nada, supuestamente
+				long count = TableKeyValue.loadFromFiles(false); // Cargamos todos los .yaml en las dos tablas anteriores que hemos borrado (limpiado)
+				if (count > 0)
+		        	Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas");
+			}
+			long count = TableKeyValueDependency.loadFromFiles(true); // Le pasamos true, porque la carga desde los .yaml, ya la hizo con el TableKeyValue
 	        if (count > 0)
 	        	Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas de Dependencias");
 		}

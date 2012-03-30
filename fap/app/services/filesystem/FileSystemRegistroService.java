@@ -29,7 +29,12 @@ public class FileSystemRegistroService implements RegistroService {
     public boolean isConfigured() {
         return true;
     }
-
+    
+    @Override
+    public JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento,
+            ExpedientePlatino expediente) throws RegistroServiceException {
+    	return registrarEntrada(solicitante, documento, expediente, null);
+    }
     /**
      * @param solicitante No se utiliza
      * @param documento Documento que se va a registrar
@@ -39,7 +44,7 @@ public class FileSystemRegistroService implements RegistroService {
      */
     @Override
     public JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento,
-            ExpedientePlatino expediente) throws RegistroServiceException {
+            ExpedientePlatino expediente, String descripcion) throws RegistroServiceException {
 
         String numeroRegistro = "FileSystemRegistro - " + Codec.UUID();
         DateTime fechaRegistro = new DateTime();

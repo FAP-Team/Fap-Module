@@ -339,6 +339,20 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		completeTabla_Pagina(model, assignment, context, acceptor);
 	}
 	
+	@Override
+	public void completeCascadeType_Type(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		String[] values = {"ALL", "NONE"};
+		for (String value: values)
+			acceptor.accept(createCompletionProposal(value, styledProposal(value + "  -  " + "CascadeType."+value, null), null, context));
+	}
+	
+	@Override
+	public void completeCascadeListSimpleType_List(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		String[] values = {"PERSIST", "DETACH", "REFRESH", "MERGE", "REMOVE"};
+		for (String value: values)
+			acceptor.accept(createCompletionProposal(value, styledProposal(value + "  -  " + "CascadeType."+value, null), null, context));
+	}
+	
 	public List<PermisoVar> getPermisoVariables(EObject model) {
 		List<PermisoVar> variables = new ArrayList<PermisoVar>();
 		while (! (model instanceof Permiso))

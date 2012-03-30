@@ -349,4 +349,16 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			}
 		}
 	}
+	
+	@Check
+	public void checkCascadeType(CascadeListSimpleType tipos){
+		if (tipos.getList().size() == 0) return;
+		Set<String> allTipos = new HashSet<String>();
+		for (String tipo: tipos.getList()){
+			if (allTipos.contains(tipo))
+				error("No se pueden repetir las mismas opciones de cascada", tipos.eContainer().eContainer(), LedPackage.Literals.ATTRIBUTE__CASCADE, 0);
+			else
+				allTipos.add(tipo);
+		}
+	}
 }

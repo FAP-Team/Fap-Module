@@ -46,11 +46,24 @@ Attribute:
 		& (hasLength?="length" "=" length=INT)?
 		& (required?="requerido")?	// NOTA: No se comprobará en la Entidad, sino en los "validators"
 		& (noConstruct?="noConstruct")? // No crea el new para ese atributo
-		& (noCascade?="noCascade")?
+		//& (noCascade?="noCascade")?
+		& ("cascadeType" "=" cascade=CascadeType)?
 		& ("checkWith" "=" checkWith=STRING)? // Manual validator
 		& ("column" "=" column=STRING)?
 		& ("validate" "=" validate=STRING)?  // validacion por regexp
 		)
+;
+
+CascadeType:
+	type = ("ALL" | "NONE") | simpleType = CascadeListSimpleType
+;
+
+CascadeListSimpleType:
+	list += CascadeSimpleType+
+;
+
+CascadeSimpleType:
+	"PERSIST" | "DETACH" | "MERGE" | "REFRESH" | "REMOVE"
 ;
 
 Type:

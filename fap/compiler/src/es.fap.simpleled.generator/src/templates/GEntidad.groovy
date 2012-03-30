@@ -1,4 +1,3 @@
-
 package templates;
 
 import generator.utils.FileUtils;
@@ -135,8 +134,22 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		List<String> columnAnotations = new ArrayList<String>();
 		
 		String cascadeType = "cascade=CascadeType.ALL,";
-		if (attribute.noCascade) {
-			cascadeType = "";
+		if (attribute.cascade != null ){
+			if (attribute.cascade.type != null){
+			    if (attribute.cascade.type.equals("NONE"))
+					cascadeType = "";
+			} else {
+				String [] cascadeListSimpleType = attribute.cascade.simpleType.getList();
+				if (cascadeListSimpleType.size() == 1){
+					cascadeType = "cascade=CascadeType."+cascadeListSimpleType[0]+", ";
+				} else {
+					cascadeType = "cascade={CascadeType."+cascadeListSimpleType[0];
+					for (int i=1; i<cascadeListSimpleType.size(); i++){
+						cascadeType += ", CascadeType."+cascadeListSimpleType[i];
+					}
+					cascadeType += "}, ";
+				}
+			}
 		}
 		
 		if(attribute.type.compound?.entidad?.name.equals("Nip")){

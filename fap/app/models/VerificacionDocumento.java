@@ -16,7 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-			
+import utils.AedUtils;			
 // === IMPORT REGION END ===
 	
 
@@ -75,6 +75,10 @@ public class VerificacionDocumento extends Model {
 	public Boolean existe;
 	
 	
+	@Transient
+	public String urlDescarga;
+	
+	
 	public VerificacionDocumento (){
 		init();
 	}
@@ -91,7 +95,24 @@ public class VerificacionDocumento extends Model {
 	
 
 // === MANUAL REGION START ===
-			
+	public VerificacionDocumento (Documento doc) {
+		descripcion = doc.descripcion;
+		uriTipoDocumento = doc.tipo;
+		fechaPresentacion = doc.fechaRegistro;
+		uriDocumento = doc.uri;
+	}
+	
+	public String getUrlDescarga(){
+		if ((uriDocumento != null) && (!uriDocumento.trim().isEmpty()))
+			return AedUtils.crearUrl(uriDocumento);
+		return "#";
+	}
+	
+	public String disponibleDescarga(){
+		if ((uriDocumento != null) && (!uriDocumento.trim().isEmpty()))
+			return "SI";
+		return "NO";
+	}
 // === MANUAL REGION END ===
 	
 	

@@ -406,6 +406,18 @@ when
 then
 	grant
 
+//rule documentosNoVerificados
+//vars
+//	SolicitudGenerica solicitud
+//	Documento documento : sql("select d from Documento d where d.agente=? AND p.solicitud=?", agente, solicitud)
+//when
+//	(action in ("read", "update")) and 
+//	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+//	(solicitud.estado = "iniciada") and
+//	(solicitud.verificacion.)
+//then
+//	grant
+
 rule verificarDocumentos
 vars
 	SolicitudGenerica solicitud

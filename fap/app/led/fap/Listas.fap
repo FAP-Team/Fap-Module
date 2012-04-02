@@ -196,4 +196,6 @@ Lista estadosDocumentoVerificacion crearEnumerado {
 	noPresentado: "No Presentado"
 	noVerificado: "No Verificado"
 	noProcede: "No Procede"
+	valido: "Válido"
+	noValido: "No Valido"
 }

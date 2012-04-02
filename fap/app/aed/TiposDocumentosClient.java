@@ -262,5 +262,27 @@ public class TiposDocumentosClient {
 		JPAPlugin.closeTx(false);
 		return true;
 	}
+	
+	public static List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		String uriProcedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri");
+		
+		play.Logger.info("Obteniendo tipos de documento aportados por el ciudadano en el trámite "+tramite.uri);
+		List<TipoDocumentoEnTramite> listaTodos = new ArrayList<TipoDocumentoEnTramite>();
+		List<TipoDocumentoEnTramite> listaCiudadanos = new ArrayList<TipoDocumentoEnTramite>();
+		try {
+			listaTodos = procedimientos.consultarTiposDocumentosEnTramite(uriProcedimiento, tramite.uri).getTiposDocumentos();
+		} catch (ProcedimientosExcepcion e) {
+			play.Logger.error("No se han podido consultar los tipos de documentos aportados por el ciudadano: "+e.getMessage());
+			Messages.error("No se han podido consultar los tipos de documentos aportados por el ciudadano");
+		}
+		
+		for (TipoDocumentoEnTramite tipoDoc : listaTodos) {
+			if (tipoDoc.getAportadoPor() == AportadoPorEnum.CIUDADANO) {
+				listaCiudadanos.add(tipoDoc);
+			}			
+		}
+		
+		return listaCiudadanos;
+	}
 
 }

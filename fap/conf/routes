@@ -158,6 +158,12 @@ POST /Solicitud/popupdocprocesos/{idEntidad}/borrar popups.PopUpDocProcesosContr
 POST /Solicitud/popupdocprocesos/{idEntidad}/crear popups.PopUpDocProcesosController.crear
 POST /Solicitud/popupdocprocesos/{idEntidad}/cancelarcrear popups.PopUpDocProcesosController.cancelarCrear
 
+GET /Solicitud/popupdoctipos/{idEntidad}/abrir popups.PopUpDocTiposController.abrir
+POST /Solicitud/popupdoctipos/{idEntidad}/editar popups.PopUpDocTiposController.editar
+POST /Solicitud/popupdoctipos/{idEntidad}/borrar popups.PopUpDocTiposController.borrar
+POST /Solicitud/popupdoctipos/{idEntidad}/crear popups.PopUpDocTiposController.crear
+POST /Solicitud/popupdoctipos/{idEntidad}/cancelarcrear popups.PopUpDocTiposController.cancelarCrear
+
 GET /Solicitud/popupdocumentacionverificacionver/{idEntidad}/abrir popups.PopUpDocumentacionVerificacionVerController.abrir
 POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/editar popups.PopUpDocumentacionVerificacionVerController.editar
 POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/borrar popups.PopUpDocumentacionVerificacionVerController.borrar
@@ -190,6 +196,7 @@ POST /Solicitud/verificacion/grequerimientoFirmarRequerimiento VerificacionContr
 POST /Solicitud/verificacion/grequerimientoGuardar VerificacionController.grequerimientoGuardar
 POST /Solicitud/verificacion/iniciarVerificacion VerificacionController.iniciarVerificacion
 GET /Solicitud/verificacion/registros VerificacionController.tablaregistros
+POST /Solicitud/verificacion/reiniciarVerificacion VerificacionController.reiniciarVerificacion
 GET /Solicitud/verificacion/requerimientos VerificacionController.tablarequerimientos
 GET /Solicitud/verificacion/verificacionDocumentos VerificacionController.tablaverificacionDocumentos
 GET /Solicitud/verificacion/verificacionTipos VerificacionController.tablaverificacionTipos

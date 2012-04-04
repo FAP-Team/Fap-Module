@@ -1,10 +1,13 @@
 package verificacion;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import models.Documento;
 import models.SolicitudGenerica;
+import models.TableKeyValue;
 import models.Tramite;
 import models.Verificacion;
 import models.VerificacionDocumento;
@@ -47,7 +50,7 @@ public class VerificacionUtils {
 					}
 					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
 					//vDoc.etiquetaTipoDocumento
-					if ((tipoEncontrado) || !vDoc.identificadorMultiple.equalsIgnoreCase("multiple")) {
+					if ((tipoEncontrado) && !vDoc.identificadorMultiple.equalsIgnoreCase("multiple")) {
 						play.Logger.error("El tipo de documento <"+doc.tipo+"> ya había sido añadido en la misma verificacion y su cardinalidad es "+vDoc.identificadorMultiple);
 					}
 					
@@ -58,28 +61,48 @@ public class VerificacionUtils {
 			}
 			
 			// Si el tipo de documento no fue encontrado en los que aporta
-			if (tipoEncontrado = false) {
-				
+			if (!tipoEncontrado) {
+
 				// Si es OBLIGATORIO
 				if ((tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.OBLIGATORIO))
 					||(tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.IMPRESCINDIBLE))) {
 					VerificacionDocumento vDoc = new VerificacionDocumento();
 					vDoc.existe = false;
 					vDoc.uriTipoDocumento = tipoDoc.getUri();
-					vDoc.descripcion = tipoDoc.getIdentificador();
+					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
 					if (existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.noProcede, verificacionesBefore, tipoDoc.getUri(), tramite.uri)
 						|| existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.valido, verificacionesBefore, tipoDoc.getUri(), tramite.uri)) {
 						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
 					} else {
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
 					}
 					vDoc.save();
 					list.add(vDoc);
 
-				} 
-				
+				}
 				// TODO: Demás obligatoriedad
-				
+				// Condicionado MANUAL, igual que el anterior pero siempre es NO VERIFICADO, ya que es el gestor/revisor quien se encarga de discernir si debe ser aportado o no
+				if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_MANUAL)){
+					VerificacionDocumento vDoc = new VerificacionDocumento();
+					vDoc.existe = false;
+					vDoc.uriTipoDocumento = tipoDoc.getUri();
+					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
+					vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
+					vDoc.save();
+					list.add(vDoc);
+				} 
+				// Condicionado AUTOMATICO, llamar a algun metodo (que debe ser manual de la aplicacion, sobreescrito) que nos diga si se debe incluir el documento o no
+				/*if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
+					VerificacionDocumento vDoc = new VerificacionDocumento();
+					vDoc.existe = false;
+					vDoc.uriTipoDocumento = tipoDoc.getUri();
+					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
+					//if (//TODO: ¿El documento hay que incluirlo?)
+					//	vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+					vDoc.save();
+					list.add(vDoc);
+
+				}*/
 				
 				// Si es múltiple
 				if (tipoDoc.getCardinalidad().name().equalsIgnoreCase("multiple")) {
@@ -148,4 +171,76 @@ public class VerificacionUtils {
 		play.Logger.info("NO existen documentos del tipo de documento "+uriTipo);
 		return false;
 	}
+	
+	/**
+	 * Indica si existe algun documento no verificado, en la verificacion actual
+	 * 
+	 * @param verificacionActual La verificación que está en curso
+	 * 
+	 * @return True Si existe un documento de la verificación actual que está No Verificado
+	 */
+	public static boolean existsDocumentoNoVerificado (Verificacion verificacionActual) {
+	    for (VerificacionDocumento vDoc: verificacionActual.documentos) {
+		   if (vDoc.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noVerificado.name())) {
+			   return true;
+		   }
+		}
+		return false;
+	}
+	
+	/**
+	 * Indica si existen documentos nuevos aportados por el solicitante y que no estan incluidos en la verificacion actual
+	 * 
+	 * @param verificacionActual La verificación que está en curso
+	 * @param documentos La lista de documentos actuales que ha aportado el solicitante y no han sido verificados
+	 * 
+	 * @return True Si existe un documento nuevo aportado por el solicitante que no esté en la verificación actual
+	 */
+	public static boolean existDocumentoNuevo (Verificacion verificacionActual, List<VerificacionDocumento> documentos) {
+		Set docActualesVerificacion = new HashSet();
+		for (VerificacionDocumento vDoc: verificacionActual.documentos){
+			if (vDoc.uriDocumento != null){
+				docActualesVerificacion.add(vDoc.uriDocumento);
+			}
+		}
+		for (VerificacionDocumento actualesDoc: documentos){
+			if ((actualesDoc.uriDocumento != null) && (!docActualesVerificacion.contains(actualesDoc.uriDocumento))){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Indica si todos los documentos de la verificacion estan correctamente (no procede o valido)
+	 * 
+	 * @param verificacionActual La verificación que está en curso
+	 * 
+	 * @return True Si todos los documentos estan correctamente (en estado no procede o valido)
+	 */
+	public static boolean documentosValidos (Verificacion verificacionActual) {
+		for (VerificacionDocumento vDoc: verificacionActual.documentos){
+			if (!(vDoc.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.valido.name())) && !((vDoc.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noProcede.name())))){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Indica si existe algun documento en la verificacion en estado No presentado o no valido
+	 * 
+	 * @param verificacionActual La verificación que está en curso
+	 * 
+	 * @return True Si algun documento esta en estado No presentado o no valido
+	 */
+	public static boolean documentosIncorrectos (Verificacion verificacionActual) {
+		for (VerificacionDocumento vDoc: verificacionActual.documentos){
+			if ((vDoc.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noValido.name())) || ((vDoc.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name())))){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

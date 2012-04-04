@@ -1,9 +1,11 @@
 package controllers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import play.Logger;
+import reports.Report;
 
 import tags.ComboItem;
 import verificacion.VerificacionUtils;
@@ -14,6 +16,7 @@ import models.SolicitudGenerica;
 import models.Verificacion;
 import models.VerificacionDocumento;
 import controllers.gen.VerificacionControllerGen;
+import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 
 public class VerificacionController extends VerificacionControllerGen {
@@ -107,6 +110,64 @@ public class VerificacionController extends VerificacionControllerGen {
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
 		}
 		verificaTiposRender(idSolicitud);
+	}
+	
+	public static void finalizarVerificacion(Long idSolicitud) {
+		checkAuthenticity();
+
+		if (permisofinalizarVerificacion("update") || permisofinalizarVerificacion("create")) {
+			if (!validation.hasErrors()) {
+				// Obtengo los documentos que el usuario tiene actualmente aportados
+				SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+				List<VerificacionDocumento> documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos(dbSolicitud.documentacion.documentos, dbSolicitud.verificacion.tramiteNombre.uri, dbSolicitud.verificaciones);
+				// Compruebo que no haya documentos no verificados, en caso contrario emito el error correspondiente
+				if (VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacion)){
+					Messages.error("Compruebe que todos los documentos estan Verificados, existe algún documento en estado no Verificado");
+				} 
+				// Compruebo que no existen documentos nuevos aportados por el solicitante y que no esten incluidos en la verificacion actual
+				if (VerificacionUtils.existDocumentoNuevo(dbSolicitud.verificacion, documentos)){
+					Messages.error("Existen documentos nuevos aportados por el solicitante que no están incluidos en esta verificación. Pulse el botón 'Reiniciar la verificación' para incluirlos");
+				}
+				if (!Messages.hasErrors()){
+					// Si hay algun documento en estado no valido o no presentado
+					if (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion)){
+						dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enRequerimiento.name();
+					} else if (VerificacionUtils.documentosValidos(dbSolicitud.verificacion)){ // Si todos los documentos estan en estado valido o no procede, todo ha ido correcto, cambiamos el estado de la verificacion
+						dbSolicitud.verificacion.estado=EstadosVerificacionEnum.verificacionPositiva.name();
+					}
+					// Pasamos la verificacion Actual a la lista de historicos de la verficaciones y dejamos todo listo para que se pueda iniciar otra, si asi lo requiere el gestor o revisor
+					dbSolicitud.verificaciones.add(dbSolicitud.verificacion);
+					dbSolicitud.verificacion.init();
+					dbSolicitud.save();
+				}
+			}
+		} else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+		finalizarVerificacionRender(idSolicitud);
+	}
+	
+	public static void requerimientoBorrador(Long idSolicitud) {
+		checkAuthenticity();
+
+		if (permisorequerimientoBorrador("update") || permisorequerimientoBorrador("create")) {
+			if (!validation.hasErrors()) {
+				// Generar el borrador en PDF del requerimiento
+				try {
+					SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+					new Report("reports/borradorRequerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(solicitud);
+				} catch (Exception e) {
+					play.Logger.error("Error generando el borrador", e);
+					Messages.error("Error generando el borrador");
+				}
+			}
+
+		} else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+
+		requerimientoBorradorRender(idSolicitud);
+
 	}
 
 

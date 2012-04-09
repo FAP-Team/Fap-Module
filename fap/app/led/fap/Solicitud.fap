@@ -320,8 +320,11 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 			Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		}
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
-		Grupo requerimientos titulo="Requerimiento/s del documento"{
-			AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
+		Grupo requerimientosNoValido titulo="Requerimiento/s del documento"{
+			// ¡¡ ¿ASI? !! ... ¿Potencialidad de que desde el permiso pueda acceder al documento actual?
+			Grupo requerimientoTexto visible=false /*permiso=verificarDocumentoNoPresentado*/ {
+				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
+			}
 			Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
 				popupCrear=PopUpDocumentoRequerimientosVerificacion
 				popupModificar=PopUpDocumentoRequerimientosVerificacion

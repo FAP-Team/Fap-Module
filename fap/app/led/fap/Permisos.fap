@@ -558,3 +558,19 @@ when
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado != null) 
 then
     grant
+    
+//rule verificarDocumentoNoPresentado
+//vars
+//	SolicitudGenerica solicitud
+//when
+//	(agente.rolActivo in ("administrador", "gestor", "revisor")) and ( ) 
+//then
+//    grant
+//    
+//rule verificarDocumentoNoValido
+//vars
+//	SolicitudGenerica solicitud
+//when
+//	(agente.rolActivo in ("administrador", "gestor", "revisor")) and ( ) 
+//then
+//    grant

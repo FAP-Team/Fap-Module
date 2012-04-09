@@ -312,7 +312,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 	}
 	
 	Popup PopUpDocumentoVerificacionEditar modificar titulo="Editar Documento" campo=SolicitudGenerica.verificacion.documentos {
-		Enlace url="${VerificacionDocumento.urlDescarga}" titulo="Descargar"
+		Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		Grupo noEditable permiso=noEditable visible=false{
 			Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
 			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento

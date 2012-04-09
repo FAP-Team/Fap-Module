@@ -125,20 +125,26 @@ public class VerificacionController extends VerificacionControllerGen {
 					Messages.error("Compruebe que todos los documentos estan Verificados, existe algún documento en estado no Verificado");
 				} 
 				// Compruebo que no existen documentos nuevos aportados por el solicitante y que no esten incluidos en la verificacion actual
-				if (VerificacionUtils.existDocumentoNuevo(dbSolicitud.verificacion, documentos)){
+				if (VerificacionUtils.existDocumentoNuevo(dbSolicitud.verificacion, documentos)){ //CAMBIAR
 					Messages.error("Existen documentos nuevos aportados por el solicitante que no están incluidos en esta verificación. Pulse el botón 'Reiniciar la verificación' para incluirlos");
 				}
 				if (!Messages.hasErrors()){
 					// Si hay algun documento en estado no valido o no presentado
 					if (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion)){
 						dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enRequerimiento.name();
+						//Crear requerimiento
+						// Si es la primera verificacion, se crea si o si
+						// Si no, aparecen dos botones
+						//           CREAR REQUERIMIENTO f.i)
+						//           FINALIZAR VERIFICACION NEGATIVAMENTE f.ii)
+						// Boton FINALIZAR requerimiento encargado de finalizar verificacion
 					} else if (VerificacionUtils.documentosValidos(dbSolicitud.verificacion)){ // Si todos los documentos estan en estado valido o no procede, todo ha ido correcto, cambiamos el estado de la verificacion
 						dbSolicitud.verificacion.estado=EstadosVerificacionEnum.verificacionPositiva.name();
+						// Pasamos la verificacion Actual a la lista de historicos de la verficaciones y dejamos todo listo para que se pueda iniciar otra, si asi lo requiere el gestor o revisor
+						dbSolicitud.verificaciones.add(dbSolicitud.verificacion);
+						dbSolicitud.verificacion = new Verificacion();
+						dbSolicitud.save();
 					}
-					// Pasamos la verificacion Actual a la lista de historicos de la verficaciones y dejamos todo listo para que se pueda iniciar otra, si asi lo requiere el gestor o revisor
-					dbSolicitud.verificaciones.add(dbSolicitud.verificacion);
-					dbSolicitud.verificacion.init();
-					dbSolicitud.save();
 				}
 			}
 		} else {

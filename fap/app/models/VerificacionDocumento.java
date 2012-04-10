@@ -79,6 +79,10 @@ public class VerificacionDocumento extends Model {
 	public String urlDescarga;
 	
 	
+	@Transient
+	public String linkUrlDescarga;
+	
+	
 	public VerificacionDocumento (){
 		init();
 	}
@@ -113,6 +117,14 @@ public class VerificacionDocumento extends Model {
 			return "SI";
 		return "NO";
 	}
+	
+	public String getLinkUrlDescarga(){
+		String link="";
+		if ((uriDocumento != null) && (!uriDocumento.trim().isEmpty()))
+			link = "<a href=\""+AedUtils.crearUrl(uriDocumento)+"\" target=\"_blank\">Descarga</a>";
+		return link;
+	}
+	
 // === MANUAL REGION END ===
 	
 	

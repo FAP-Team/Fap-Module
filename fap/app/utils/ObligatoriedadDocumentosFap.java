@@ -2,6 +2,10 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.*;
+
+import play.db.jpa.Model;
 import models.TipoDocumento;
 import models.Tramite;
 
@@ -10,19 +14,25 @@ import models.Tramite;
  * es de tipo: OBLIGATORIO, CONDICIONADO_AUTOMATICO, IMPRESCINDIBLE y CONDICIONADO_MANUAL
  */
 
-public class ObligatoriedadDocumentosFap {
+@Entity
+public class ObligatoriedadDocumentosFap extends Model{
 	
 	// Para saber el trámite sobre el que se está trabajando
-	static public Tramite tramite;
+	@OneToOne(fetch=FetchType.LAZY)
+	public Tramite tramite;
 
 	// Lista que contendrá los documentos IMPRESCINDIBLE al trámite
-	public static List<String> imprescindibles;
+	@ElementCollection
+	public List<String> imprescindibles;
 	// Lista que contendrá los documentos OBLIGATORIO al trámite
-	public static List<String> obligatorias;
+	@ElementCollection
+	public List<String> obligatorias;
 	// Lista que contendrá los documentos CONDICIONADO_AUTOMATICO al trámite
-	public static List<String> automaticas;
+	@ElementCollection
+	public List<String> automaticas;
 	// Lista que contendrá los documentos CONDICIONADO_MANUALES al trámite
-	public static List<String> manuales;
+	@ElementCollection
+	public List<String> manuales;
 
 	// Constructor de la clase que tiene como parámetros el tramite, para calcular los documentos
 	// que son obligatorios en él.
@@ -39,7 +49,7 @@ public class ObligatoriedadDocumentosFap {
 		// Guardamos localmente, el trámite sobre el que trabajará la instancia de la clase.
 		// Este tramite lo calcularemos a partir de su nombre, que es el que nos pasan por parametro, mediante una
 		// consulta a la base de datos
-		this.tramite=Tramite.find("select tramite from Tramite tramite where nombre='" + strTramite + "'").first();
+		this.tramite=Tramite.find("select tramite from Tramite tramite where nombre=?", strTramite).first();
 		// Se calculan los documentos obligatorios de dicho trámite
 		init();
 	}
@@ -62,7 +72,7 @@ public class ObligatoriedadDocumentosFap {
 	// Función que a través del trámite sobre el que se está trabajando en la clase
 	// Recupera los documentos aportados por el CIUDADANO y que sean OBLIGATORIOS
 	// Almacenandolos en la lista local de la clase para tal efecto
-	static void ObtenerDocumentosObligatorios(){
+	public void ObtenerDocumentosObligatorios(){
 		for (TipoDocumento td : tramite.documentos) {
 			if (td.aportadoPor.equals("CIUDADANO")){
 				if(td.obligatoriedad.equals("OBLIGATORIO")){
@@ -75,7 +85,7 @@ public class ObligatoriedadDocumentosFap {
 	// Función que a través del trámite sobre el que se está trabajando en la clase
 	// Recupera los documentos aportados por el CIUDADANO y que sean CONDICIONADO_AUTOMATICO
 	// Almacenandolos en la lista local de la clase para tal efecto
-	static void ObtenerDocumentosAutomaticos(){
+	public void ObtenerDocumentosAutomaticos(){
 		for (TipoDocumento td : tramite.documentos) {
 			if (td.aportadoPor.equals("CIUDADANO")){
 				if(td.obligatoriedad.equals("CONDICIONADO_AUTOMATICO")){
@@ -88,7 +98,7 @@ public class ObligatoriedadDocumentosFap {
 	// Función que a través del trámite sobre el que se está trabajando en la clase
 	// Recupera los documentos aportados por el CIUDADANO y que sean IMPRESCINDIBLE
 	// Almacenandolos en la lista local de la clase para tal efecto
-	static void ObtenerDocumentosImprescindibles(){
+	public void ObtenerDocumentosImprescindibles(){
 		for (TipoDocumento td : tramite.documentos) {
 			if (td.aportadoPor.equals("CIUDADANO")){
 				if(td.obligatoriedad.equals("IMPRESCINDIBLE")){
@@ -101,7 +111,7 @@ public class ObligatoriedadDocumentosFap {
 	// Función que a través del trámite sobre el que se está trabajando en la clase
 	// Recupera los documentos aportados por el CIUDADANO y que sean CONDICIONADO_MANUAL
 	// Almacenandolos en la lista local de la clase para tal efecto
-	static void ObtenerDocumentosManual(){
+	public void ObtenerDocumentosManual(){
 		for (TipoDocumento td : tramite.documentos) {
 			if (td.aportadoPor.equals("CIUDADANO")){
 				if(td.obligatoriedad.equals("CONDICIONADO_MANUAL")){
@@ -137,7 +147,7 @@ public class ObligatoriedadDocumentosFap {
 	}
 
 	// Para eliminar de la URI, la Versión, que no hará falta en el proceso de obtener la documentación obligatoria al trámite
-	static String eliminarVersionUri(String uri){
+	public static String eliminarVersionUri(String uri){
 		return uri.substring(0,uri.length()-4);
 	}
 	

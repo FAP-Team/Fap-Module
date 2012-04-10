@@ -236,7 +236,7 @@ Formulario Solicitud {
 				Columna titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
 				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
 				Columna titulo="Multiplicidad" campo=VerificacionDocumento.identificadorMultiple ancho="80"
-				Columna funcion="<a href=\"${VerificacionDocumento.urlDescarga}\" target=\"_blank\">Descarga</a>" titulo="Descargar" ancho="100"
+				Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"
 				
 			}
 //			Tabla exclusion titulo="Exclusión" campo=SolicitudGenerica.verificacion.codigosExclusion 
@@ -256,8 +256,9 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 					"}
 			}
 			
+			// Esto debe aparecer al darle al boton finalizar REQUERIMIENTO
 			Form requerimientoBorrador { 
-				Boton obtenerBorradorRequerimiento titulo="Obtener Borrador"
+				Boton obtenerBorradorRequerimiento titulo="Obtener Borrador" 
 			}
 			
 		}
@@ -312,7 +313,9 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 	}
 	
 	Popup PopUpDocumentoVerificacionEditar modificar titulo="Editar Documento" campo=SolicitudGenerica.verificacion.documentos {
-		Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
+		Grupo botonDescarga visible=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
+			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
+		}
 		Grupo noEditable permiso=noEditable visible=false{
 			Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
 			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
@@ -320,37 +323,44 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 			Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		}
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
-		Grupo requerimientosNoValido titulo="Requerimiento/s del documento"{
-			// ¡¡ ¿ASI? !! ... ¿Potencialidad de que desde el permiso pueda acceder al documento actual?
-			Grupo requerimientoTexto visible=false /*permiso=verificarDocumentoNoPresentado*/ {
+		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
+			Grupo requerimientoTexto visible=false mostrarSiCombo estado="noValido","noPresentado"{
 				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
 			}
-			Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
-				popupCrear=PopUpDocumentoRequerimientosVerificacion
-				popupModificar=PopUpDocumentoRequerimientosVerificacion
-				popupVer=PopUpDocumentoRequerimientosVerificacion
-				popupBorrar=PopUpDocumentoRequerimientosVerificacion
-			{
-				Columna titulo="Código" campo=CodigoRequerimiento.codigo ancho="150"
-				Columna titulo="Descripción" campo=CodigoRequerimiento.descripcionCorta expandir
+			Grupo requerimientoCodigos visible=false mostrarSiCombo estado="noValido" {
+				Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
+					popupCrear=PopUpDocumentoRequerimientosVerificacion
+					popupModificar=PopUpDocumentoRequerimientosVerificacion
+					popupVer=PopUpDocumentoRequerimientosVerificacion
+					popupBorrar=PopUpDocumentoRequerimientosVerificacion
+				{
+					Columna titulo="Código" campo=CodigoRequerimiento.codigo ancho="150"
+					Columna titulo="Descripción" campo=CodigoRequerimiento.descripcionCorta expandir
+				}
 			}
 		}
 	}
 	
 	Popup PopUpDocumentoVerificacionVer ver titulo="Ver Documento" campo=SolicitudGenerica.verificacion.documentos {
-		Enlace url="${VerificacionDocumento.urlDescarga}" titulo="Descargar"
+		Grupo botonDescarga visible=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
+			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
+		}
 		Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
 		Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
 		Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
 		Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
-		Grupo requerimientos titulo="Requerimiento/s del documento"{
-			AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
-			Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
-				popupVer=PopUpDocumentoRequerimientosVerificacion
-			{
-				Columna titulo="Código" campo=CodigoRequerimiento.codigo ancho="150"
-				Columna titulo="Descripción" campo=CodigoRequerimiento.descripcionCorta expandir
+		Grupo requerimientosNoValido titulo="Requerimiento/s del documento"{
+			Grupo requerimientoTexto visible=false mostrarSiCombo estado="noValido","noPresentado"{
+				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
+			}
+			Grupo requerimientoCodigos visible=false mostrarSiCombo estado="noValido" {
+				Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
+					popupVer=PopUpDocumentoRequerimientosVerificacion
+				{
+					Columna titulo="Código" campo=CodigoRequerimiento.codigo ancho="150"
+					Columna titulo="Descripción" campo=CodigoRequerimiento.descripcionCorta expandir
+				}
 			}
 		}
 	}

@@ -12,6 +12,11 @@ public class AedController extends AedControllerGen {
 		boolean result = TiposDocumentosClient.actualizarTramites();
 		if(result){
 			Messages.ok("Se actualizaron correctamente los tipos de documentos desde el AED");
+			result = TiposDocumentosClient.actualizarTiposDocumentoDB();
+			if (result)
+				Messages.ok("Se actualizaron correctamente los tipos de documentos desde el AED en la BBDD, según los trámites");
+			else
+				Messages.error("Se produjo un error actualizando los tipos de documentos desde el AED en la BBDD, según los trámites");
 		}else{
 			Messages.error("Se produjo un error actualizando los tipos de documentos desde el AED");
 		}

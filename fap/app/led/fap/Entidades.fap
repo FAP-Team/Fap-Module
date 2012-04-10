@@ -352,6 +352,7 @@ Entidad VerificacionDocumento {
 	//Si existe permite ver el documento
 	Boolean existe
 	String urlDescarga transient
+	String linkUrlDescarga transient
 }
 
 // Códigos de requerimiento utilizados en la verificación

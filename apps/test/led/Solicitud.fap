@@ -101,7 +101,7 @@ Formulario Solicitud {
 	Pagina CombosOverwrite {
 		
 		Grupo titulo="Combos sobreescritos en el controlador manual" {
-			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)"
+			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)" requerido
 			Combo listaLong campo=Solicitud.comboTest.listOverwriteLong titulo="Combo manual (Long)"
 			Combo listaMultiple campo=Solicitud.comboTest.listMultipleOverwrite titulo="Combo múltiple manual (Set<String>)"
 			Combo listaMultipleLong campo=Solicitud.comboTest.listMultipleOverwriteLong titulo="Combo múltiple manual (Long<Long>)"

@@ -119,13 +119,15 @@ public class VerificacionController extends VerificacionControllerGen {
 			if (!validation.hasErrors()) {
 				// Obtengo los documentos que el usuario tiene actualmente aportados
 				SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-				List<VerificacionDocumento> documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos(dbSolicitud.documentacion.documentos, dbSolicitud.verificacion.tramiteNombre.uri, dbSolicitud.verificaciones);
+				List<VerificacionDocumento> documentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
+				for(VerificacionDocumento d: documentos)
+					System.out.println("Hola: "+d.descripcion);
 				// Compruebo que no haya documentos no verificados, en caso contrario emito el error correspondiente
 				if (VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacion)){
 					Messages.error("Compruebe que todos los documentos estan Verificados, existe algún documento en estado no Verificado");
 				} 
 				// Compruebo que no existen documentos nuevos aportados por el solicitante y que no esten incluidos en la verificacion actual
-				if (VerificacionUtils.existDocumentoNuevo(dbSolicitud.verificacion, documentos)){ //CAMBIAR
+				if (!documentos.isEmpty()){
 					Messages.error("Existen documentos nuevos aportados por el solicitante que no están incluidos en esta verificación. Pulse el botón 'Reiniciar la verificación' para incluirlos");
 				}
 				if (!Messages.hasErrors()){

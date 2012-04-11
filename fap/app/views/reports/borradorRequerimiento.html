@@ -1,0 +1,77 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+h2 {
+	margin-top: 30px;
+}
+
+</style>
+
+</head>
+<body>
+
+<h3 style="text-align: left;">Asunto: Requerimiento de documentación y/o aclaraciones del expediente referenciado</h3>
+
+<!-- Solicitante Enlace a la aplicación en cuestión-->
+#{include 'reports/datosSolicitanteBorradorRequerimiento.html' /}
+
+<h2 style="text-align: left; page-break-before: always;">Anexo</h2>
+
+#{if dbSolicitud.verificacion.requerimiento.motivo != null}
+	<div id="divMotivoGeneralRequerimiento">
+    	<h2>Motivo General de Requerimiento:</h2> 
+		<p>${dbSolicitud.verificacion.requerimiento.motivo}</p>
+	</div>
+#{/if}
+
+%{
+	def noPresentados=[];
+	def noValidos=[];
+%}
+
+
+#{list items:dbSolicitud.verificacion.documentos, as:"documento"}
+	#{if documento.estadoDocumentoVerificacion.equals("noPresentado")}
+		%{ noPresentados.add(documento); %}	
+	#{/if}
+	#{if documento.estadoDocumentoVerificacion.equals("noValido")}
+		%{ noValidos.add(documento); %}
+	#{/if}
+#{/list}
+
+
+#{if noPresentados.size > 0}
+	<div id="divDocumentacionNoPresentada">
+    	<h2>Documentos no presentados:</h2> 
+   		#{list items:noPresentados, as:"documento"}
+			<p style='text-indent: 1em'> - ${documento.descripcion}</p>
+			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
+				<p style='text-indent: 2em'> - ${requerimiento.codigo}: ${requerimiento.descripcion} </p>
+			#{/list}
+   		#{/list}
+	</div>
+#{/if}
+
+#{if noValidos.size > 0}
+	<div id="divDocumentacionNoValida">
+    	<h2>Documentos no válidos:</h2> 
+   		#{list items:noValidos, as:"documento"}
+			<p style='text-indent: 1em'> - ${documento.descripcion}</p>
+			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
+				<p style='text-indent: 2em'> - ${requerimiento.codigo}: ${requerimiento.descripcion} </p>
+			#{/list}
+   		#{/list}
+	</div>
+#{/if}
+
+</body>
+</html>

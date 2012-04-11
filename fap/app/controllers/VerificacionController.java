@@ -4,7 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import aed.AedClient;
+
 import play.Logger;
+import properties.FapProperties;
 import reports.Report;
 
 import tags.ComboItem;
@@ -134,15 +137,13 @@ public class VerificacionController extends VerificacionControllerGen {
 			if (!validation.hasErrors()) {
 				// Obtengo los documentos que el usuario tiene actualmente aportados
 				SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-				List<VerificacionDocumento> documentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
-				for(VerificacionDocumento d: documentos)
-					System.out.println("Hola: "+d.descripcion);
+				List<VerificacionDocumento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
 				// Compruebo que no haya documentos no verificados, en caso contrario emito el error correspondiente
 				if (VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacion)){
 					Messages.error("Compruebe que todos los documentos estan Verificados, existe algún documento en estado no Verificado");
 				} 
 				// Compruebo que no existen documentos nuevos aportados por el solicitante y que no esten incluidos en la verificacion actual
-				if (!documentos.isEmpty()){
+				if (!documentosNuevos.isEmpty()){
 					Messages.error("Existen documentos nuevos aportados por el solicitante que no están incluidos en esta verificación. Pulse el botón 'Reiniciar la verificación' para incluirlos");
 				}
 				if (!Messages.hasErrors()){
@@ -156,6 +157,25 @@ public class VerificacionController extends VerificacionControllerGen {
 						//           CREAR REQUERIMIENTO f.i)
 						//           FINALIZAR VERIFICACION NEGATIVAMENTE f.ii)
 						// Boton FINALIZAR requerimiento encargado de finalizar verificacion
+						// --------------------------------------------------
+						try {
+							// Generar Borrador 
+							File borrador;
+							borrador = new Report("reports/borradorRequerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderTmpFile(dbSolicitud);
+							dbSolicitud.verificacion.requerimiento.borrador = new Documento();
+							dbSolicitud.verificacion.requerimiento.borrador.tipo = FapProperties.get("fap.aed.tiposdocumentos.solicitud");
+							AedClient.saveDocumentoTemporal(dbSolicitud.verificacion.requerimiento.borrador, borrador);
+							// Generar el Documento Oficial
+							File oficial;
+							oficial = new Report("reports/borradorRequerimiento.html").header("reports/header.html").renderTmpFile(dbSolicitud);
+							dbSolicitud.verificacion.requerimiento.oficial = new Documento();
+							dbSolicitud.verificacion.requerimiento.oficial.tipo = FapProperties.get("fap.aed.tiposdocumentos.solicitud");
+							AedClient.saveDocumentoTemporal(dbSolicitud.verificacion.requerimiento.oficial, oficial);
+						} catch (Exception e) {
+							play.Logger.error("Error generando el borrador del requerimiento", e);
+							Messages.error("Error generando el borrador o el documento oficial del requerimiento.");
+						}
+						// ------------------------------------------------------------------
 					} else if (VerificacionUtils.documentosValidos(dbSolicitud.verificacion)){ // Si todos los documentos estan en estado valido o no procede, todo ha ido correcto, cambiamos el estado de la verificacion
 						dbSolicitud.verificacion.estado=EstadosVerificacionEnum.verificacionPositiva.name();
 						// Pasamos la verificacion Actual a la lista de historicos de la verficaciones y dejamos todo listo para que se pueda iniciar otra, si asi lo requiere el gestor o revisor

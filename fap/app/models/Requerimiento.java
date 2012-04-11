@@ -72,6 +72,10 @@ public class Requerimiento extends Model {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Documento borrador;
+	
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento justificante;
 	
 	
@@ -143,6 +147,11 @@ public class Requerimiento extends Model {
 								oficial = new Documento();
 							else
 								oficial.init();
+						
+							if (borrador == null)
+								borrador = new Documento();
+							else
+								borrador.init();
 						
 							if (justificante == null)
 								justificante = new Documento();

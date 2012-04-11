@@ -384,6 +384,7 @@ Entidad Requerimiento {
 	DateTime fechaAcuse
 	
 	Documento oficial			// documento de requerimiento oficial, este es el que se firma
+	Documento borrador
 	Documento justificante		// justificante del registro de salida
 	Documento borrador
 	

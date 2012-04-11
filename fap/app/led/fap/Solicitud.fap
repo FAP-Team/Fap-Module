@@ -206,7 +206,7 @@ Formulario Solicitud {
 		
 		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {
 			Form iniciarVerificacion {
-				Combo titulo="Seleccione el trámite" campo=SolicitudGenerica.verificacion.tramiteNombre comboTexto=nombre
+				Combo getTramitesCombo titulo="Seleccione el trámite" campo=SolicitudGenerica.verificacion.uriTramite
 				Wiki {"Si la solicitud está lista para iniciar la verificación, pulse el siguiente botón."}
 				Boton botonIniciarVerificacion titulo="Iniciar la verificación"
 			}
@@ -226,7 +226,7 @@ Formulario Solicitud {
 			}
 		}
 		
-		Grupo verificacionProceso titulo="Verificación de la documentación" /*permiso=verificarDocumentos*/ { 
+		Grupo verificacionProceso titulo="Verificación de la documentación" permiso=verificarDocumentos { 
 			Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
 				popupVer=PopUpDocumentoVerificacionVer 
 				popupModificar=PopUpDocumentoVerificacionEditar 
@@ -263,28 +263,28 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 			
 		}
 		
-//		Grupo grequerimientos titulo="Requerimientos" /*permiso=verificacionRequerimientos*/ {
-//			Grupo gnuevoRequerimiento titulo="Añadir requerimiento" /*permiso=nuevoRequerimiento*/{				
-//				Form grequerimientoGuardar { 
-//					AreaTexto requerimientoCrearMotivo titulo="Motivo del requerimiento" campo=SolicitudGenerica.verificacion.requerimientoProceso.motivo
-//					Boton requerimientoGuardar titulo="Guardar motivo del requerimiento"
-//				}
-//
-//				Form frequerimientoSolicitaFirma {
-//					Combo requerimientoCrearFirmante titulo="Persona que firma el requerimiento" campo=SolicitudGenerica.verificacion.requerimientoProceso.firmante
-//					Boton requerimientoCrearSolicitarFirma titulo="Solicitar firma requerimiento"
-//				}
-//				
-//				Form gnuevoRequerimientoBorrador { 
-//					Boton obtenerBorradorRequerimiento titulo="Obtener Borrador"
-//				}
-//
-//				Form grequerimientoFirmarRequerimiento /*permiso=firmarRequerimiento*/ {
-//					Boton firmarRequerimiento titulo="Firmar, registrar y notificar"
-//					Firma firmarRequerimiento ActualizarForm="Verificacion" Titulo="Elija el certificado para firmar" TituloBoton="Firmar, registrar y notificar" CampoFirma="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.firma" CampoURI="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.uriDocRequerimiento" CampoURL="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.urlDocRequerimiento";
-//				}
-//			}
-//			
+		Grupo grequerimientos titulo="Requerimientos" permiso=verificacionRequerimientos {
+			Grupo gnuevoRequerimiento titulo="Añadir requerimiento" /*permiso=nuevoRequerimiento*/{				
+				Form grequerimientoGuardar { 
+					AreaTexto requerimientoCrearMotivo titulo="Motivo del requerimiento" campo=SolicitudGenerica.verificacion.requerimientoProceso.motivo
+					Boton requerimientoGuardar titulo="Guardar motivo del requerimiento"
+				}
+
+				Form frequerimientoSolicitaFirma {
+					Combo requerimientoCrearFirmante titulo="Persona que firma el requerimiento" campo=SolicitudGenerica.verificacion.requerimientoProceso.firmante
+					Boton requerimientoCrearSolicitarFirma titulo="Solicitar firma requerimiento"
+				}
+				
+				Form gnuevoRequerimientoBorrador { 
+					Boton obtenerBorradorRequerimiento titulo="Obtener Borrador"
+				}
+
+				Form grequerimientoFirmarRequerimiento /*permiso=firmarRequerimiento*/ {
+					Boton firmarRequerimiento titulo="Firmar, registrar y notificar"
+					//Firma firmarRequerimiento ActualizarForm="Verificacion" Titulo="Elija el certificado para firmar" TituloBoton="Firmar, registrar y notificar" CampoFirma="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.firma" CampoURI="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.uriDocRequerimiento" CampoURL="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.urlDocRequerimiento";
+				}
+			}
+			
 //			Tabla requerimientos titulo="Requerimientos" campo=SolicitudGenerica.verificacion.requerimientos
 //				popup=PopUp:requerimientoVer 
 //			{
@@ -298,8 +298,8 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 //			Form gfinalizarRequerimiento /*permiso=finalizarRequerimiento*/ {
 //				Boton verificacionFinalizarReq titulo="Finalizar Requerimiento Actual"
 //			}
-//		}
-//					
+		}
+					
 //		Tabla registros titulo="Aportación de documentación y subsanaciones" campo=SolicitudGenerica.documentacionAportada.documentos
 //			popupVer=PopUpDocAportados
 //		{

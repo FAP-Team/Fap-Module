@@ -34,10 +34,11 @@ public class Verificacion extends Model {
 	
 	
 	@ManyToOne(fetch=FetchType.LAZY)
+	@Transient
 	public Tramite tramiteNombre;
 	
 	
-	@Transient
+	
 	public String uriTramite;
 	
 	
@@ -116,8 +117,15 @@ public class Verificacion extends Model {
 	
 
 // === MANUAL REGION START ===
-	public String getUriTramite () {
-		return tramiteNombre.uri;
+//	public String getUriTramite () {
+//		return tramiteNombre.uri;
+//	}
+	
+	public Tramite getTramiteNombre () {
+		if (uriTramite == null)
+			return null;
+		Tramite tramite = Tramite.find("select tramite from Tramite tramite where tramite.uri=?", uriTramite).first();
+		return tramite;
 	}
 // === MANUAL REGION END ===
 	

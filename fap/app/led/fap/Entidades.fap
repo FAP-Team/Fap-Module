@@ -312,8 +312,8 @@ Entidad Log nonPersist {
 Entidad Verificacion {
 	String uriVerificacion	// Uri específica de la verificación actual
 	String uriProcedimiento	// Uri del procedimiento
-	ManyToOne Tramite tramiteNombre
-	String uriTramite transient	// Uri del trámite al que pertenece
+	ManyToOne Tramite tramiteNombre transient
+	String uriTramite // Uri del trámite al que pertenece
 	String expediente		// Expediente al que pertenece
 	Lista estadosVerificacion estado			// Estado de la verificación
 	

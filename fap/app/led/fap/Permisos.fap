@@ -425,13 +425,17 @@ when
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(
 		(
-			(action = "read") and 
-			(solicitud.estado in ("requerida", "pendiente requerimiento", "requerida plazo vencido", "en verificacion"))
+			(action = "read")
+			and (solicitud.estado = "iniciada")
+			and solicitud.verificacion.estado != null
+			and solicitud.verificacion.estado = "enVerificacion"
 		)
 		or
 		(
 			(action = "update") and
-			(solicitud.estado = "en verificacion") 
+			(solicitud.estado = "iniciada")
+			and solicitud.verificacion.estado != null
+			and solicitud.verificacion.estado = "enVerificacion" 
 		)
 	)
 then 

@@ -13,6 +13,7 @@ import verificacion.VerificacionUtils;
 import messages.Messages;
 import models.Documento;
 import models.SolicitudGenerica;
+import models.Tramite;
 import models.Verificacion;
 import models.VerificacionDocumento;
 import controllers.gen.VerificacionControllerGen;
@@ -38,6 +39,16 @@ public class VerificacionController extends VerificacionControllerGen {
 		}
 		reiniciarVerificacionRender(idSolicitud);
 	}
+	
+	//Métodos en el controlador manual
+	public static List<ComboItem> getTramitesCombo () {
+		List<ComboItem> result = new ArrayList<ComboItem>();
+		List<Tramite> lTrams = Tramite.findAll();
+		for (Tramite t: lTrams) {
+			result.add(new ComboItem(t.uri, t.nombre));
+		}
+		return result;
+	}
 
 	public static void iniciarVerificacion(Long idSolicitud, SolicitudGenerica solicitud) {
 		checkAuthenticity();
@@ -51,6 +62,7 @@ public class VerificacionController extends VerificacionControllerGen {
 			iniciarVerificacionValidateCopy(dbSolicitud, solicitud);
 
 			if (!validation.hasErrors()) {
+				dbSolicitud.verificacion.uriTramite = solicitud.verificacion.tramiteNombre.uri;
 				iniciarVerificacionValidateRules(dbSolicitud, solicitud);
 			}
 
@@ -60,7 +72,7 @@ public class VerificacionController extends VerificacionControllerGen {
 			if (!validation.hasErrors()) {
 				
 				dbSolicitud.save();
-				Messages.ok("Varificación de Tipos de Documentos para el trámite iniciada correctamente.");
+				Messages.ok("Verificación de Tipos de Documentos para el trámite iniciada correctamente.");
 			}
 		} else {
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
@@ -98,7 +110,7 @@ public class VerificacionController extends VerificacionControllerGen {
 		if (permisoverificaTipos("update") || permisoverificaTipos("create")) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			
-			dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos(dbSolicitud.documentacion.documentos, dbSolicitud.verificacion.tramiteNombre.uri, dbSolicitud.verificaciones);
+			dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos(dbSolicitud.documentacion.documentos, dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones);
 			
 			if (!validation.hasErrors()) {
 				

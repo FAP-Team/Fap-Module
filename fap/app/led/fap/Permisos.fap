@@ -566,6 +566,14 @@ when
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado != null) 
 then
     grant
+    
+rule verificacionConNuevosDoc
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado != null) and (solicitud.verificacion.estado = "enVerificacionNuevosDoc") 
+then
+    grant
 
 rule verificacionCrearRequerimiento
 vars

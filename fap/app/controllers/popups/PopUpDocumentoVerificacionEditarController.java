@@ -3,6 +3,8 @@ package controllers.popups;
 
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import messages.Messages;
 import models.SolicitudGenerica;
 import models.VerificacionDocumento;
@@ -46,6 +48,8 @@ public class PopUpDocumentoVerificacionEditarController extends PopUpDocumentoVe
 		}
 
 		if (!Messages.hasErrors()) {
+			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 			dbVerificacionDocumento.save();
 		}
 

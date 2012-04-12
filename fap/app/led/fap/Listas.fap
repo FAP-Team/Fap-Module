@@ -185,6 +185,7 @@ Lista estadosVerificacion crearEnumerado {
 	iniciada: "Iniciada"
 	verificandoTipos: "Verificando Tipos Documento"
 	enVerificacion: "En Verificación"
+	enVerificacionNuevosDoc: "En Verificación con Nuevos Documentos"
 	enRequerimiento: "En Requerimiento"
 	enRequerido: "Requerido"
 	plazoVencido: "Plazo Vencido"

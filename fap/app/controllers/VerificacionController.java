@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import aed.AedClient;
 
 import play.Logger;
@@ -36,6 +38,7 @@ public class VerificacionController extends VerificacionControllerGen {
 			if(!validation.hasErrors()){
 				dbSolicitud.verificacion = new Verificacion();
 				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
+				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 				dbSolicitud.save();
 				Messages.ok("Solicitud reiniciada correctamente");
 			}
@@ -72,9 +75,8 @@ public class VerificacionController extends VerificacionControllerGen {
 				iniciarVerificacionValidateRules(dbSolicitud, solicitud);
 			}
 
-			// Debemos recuperar todos los documentos aportados, del trámite seleccionado que no hayan sido verificados
-			List<Documento> sinVerificar = solicitud.documentacion.getDocumentosNoVerificados();
 			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.verificandoTipos.name();
+			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 			if (!validation.hasErrors()) {
 				
 				dbSolicitud.save();
@@ -121,6 +123,8 @@ public class VerificacionController extends VerificacionControllerGen {
 			if (!validation.hasErrors()) {
 				
 				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
+				dbSolicitud.verificacion.nuevosDocumentos.clear();
+				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 				dbSolicitud.save();
 				Messages.ok("Finaliza la verificación de tipos");
 			}
@@ -130,6 +134,34 @@ public class VerificacionController extends VerificacionControllerGen {
 		verificaTiposRender(idSolicitud);
 	}
 	
+	public static void verificaTiposNuevosDoc(Long idSolicitud) {
+		checkAuthenticity();
+		if (permisoverificaTipos("update") || permisoverificaTipos("create")) {
+			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+			
+			for (Documento doc: dbSolicitud.verificacion.nuevosDocumentos){
+				VerificacionDocumento vDoc= new VerificacionDocumento(doc);
+				vDoc.existe = true;
+				//vDoc.identificadorMultiple = 
+				vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+				vDoc.save();
+				dbSolicitud.verificacion.documentos.add(vDoc);
+			}
+			
+			if (!validation.hasErrors()) {
+				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
+				dbSolicitud.verificacion.nuevosDocumentos.clear();
+				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
+				dbSolicitud.save();
+				Messages.ok("Finaliza la verificación de tipos");
+			}
+		} else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+		verificaTiposNuevosDocRender(idSolicitud);
+
+	}
+	
 	public static void finalizarVerificacion(Long idSolicitud) {
 		checkAuthenticity();
 
@@ -137,19 +169,23 @@ public class VerificacionController extends VerificacionControllerGen {
 			if (!validation.hasErrors()) {
 				// Obtengo los documentos que el usuario tiene actualmente aportados
 				SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-				List<VerificacionDocumento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
+				List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
 				// Compruebo que no haya documentos no verificados, en caso contrario emito el error correspondiente
 				if (VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacion)){
 					Messages.error("Compruebe que todos los documentos estan Verificados, existe algún documento en estado no Verificado");
 				} 
 				// Compruebo que no existen documentos nuevos aportados por el solicitante y que no esten incluidos en la verificacion actual
 				if (!documentosNuevos.isEmpty()){
-					Messages.error("Existen documentos nuevos aportados por el solicitante que no están incluidos en esta verificación. Pulse el botón 'Reiniciar la verificación' para incluirlos");
+					dbSolicitud.verificacion.nuevosDocumentos.addAll(documentosNuevos);
+					dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enVerificacionNuevosDoc.name();
+					dbSolicitud.save();
+					Messages.error("Existen documentos nuevos aportados por el solicitante que no están incluidos en esta verificación, que han sido aportados durante el propio proceso de verificación. Deberá verificarlos para continuar con la verificación");
 				}
 				if (!Messages.hasErrors()){
 					// Si hay algun documento en estado no valido o no presentado
 					if (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion)){
 						dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enRequerimiento.name();
+						dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 						dbSolicitud.save();
 						//Crear requerimiento
 						// Si es la primera verificacion, se crea si o si
@@ -178,10 +214,12 @@ public class VerificacionController extends VerificacionControllerGen {
 						// ------------------------------------------------------------------
 					} else if (VerificacionUtils.documentosValidos(dbSolicitud.verificacion)){ // Si todos los documentos estan en estado valido o no procede, todo ha ido correcto, cambiamos el estado de la verificacion
 						dbSolicitud.verificacion.estado=EstadosVerificacionEnum.verificacionPositiva.name();
+						dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 						// Pasamos la verificacion Actual a la lista de historicos de la verficaciones y dejamos todo listo para que se pueda iniciar otra, si asi lo requiere el gestor o revisor
 						dbSolicitud.verificaciones.add(dbSolicitud.verificacion);
 						dbSolicitud.verificacion = new Verificacion();
 						dbSolicitud.save();
+						redirect("AccesoVerificacionesController.index", idSolicitud);
 					}
 				}
 			}
@@ -213,6 +251,7 @@ public class VerificacionController extends VerificacionControllerGen {
 		requerimientoBorradorRender(idSolicitud);
 
 	}
+
 
 	/**
 	 * Sobreescribimos el combo para mostrar los Gestores que podrán ser solicitados para firmar el
@@ -272,6 +311,30 @@ public class VerificacionController extends VerificacionControllerGen {
 		}
 
 		frequerimientoSolicitaFirmaRender(idSolicitud);
+	}
+
+	// BORRRRRRRRRRRRRRRRRRRRRRRRAAAAAAAAAAAAAAAAAAAARRRRRRRRRRRRRRRRRRRRRRR
+	public static void todosNoProcede(Long idSolicitud) {
+		checkAuthenticity();
+
+		// Save code
+		if (permisotodosNoProcede("update") || permisotodosNoProcede("create")) {
+
+			if (!validation.hasErrors()) {
+				SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+				for (VerificacionDocumento vd: dbSolicitud.verificacion.documentos){
+					vd.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+				}
+				dbSolicitud.save();
+			}
+
+		} else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+
+		todosNoProcedeRender(idSolicitud);
+
+
 	}
 
 }

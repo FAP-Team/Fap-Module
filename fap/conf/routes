@@ -146,6 +146,12 @@ POST /Solicitud/popupdocaportados/{idEntidad}/borrar popups.PopUpDocAportadosCon
 POST /Solicitud/popupdocaportados/{idEntidad}/crear popups.PopUpDocAportadosController.crear
 POST /Solicitud/popupdocaportados/{idEntidad}/cancelarcrear popups.PopUpDocAportadosController.cancelarCrear
 
+GET /Solicitud/popupdocnuevostipos/{idEntidad}/abrir popups.PopUpDocNuevosTiposController.abrir
+POST /Solicitud/popupdocnuevostipos/{idEntidad}/editar popups.PopUpDocNuevosTiposController.editar
+POST /Solicitud/popupdocnuevostipos/{idEntidad}/borrar popups.PopUpDocNuevosTiposController.borrar
+POST /Solicitud/popupdocnuevostipos/{idEntidad}/crear popups.PopUpDocNuevosTiposController.crear
+POST /Solicitud/popupdocnuevostipos/{idEntidad}/cancelarcrear popups.PopUpDocNuevosTiposController.cancelarCrear
+
 GET /Solicitud/popupdocpresentados/{idEntidad}/abrir popups.PopUpDocPresentadosController.abrir
 POST /Solicitud/popupdocpresentados/{idEntidad}/editar popups.PopUpDocPresentadosController.editar
 POST /Solicitud/popupdocpresentados/{idEntidad}/borrar popups.PopUpDocPresentadosController.borrar
@@ -214,9 +220,12 @@ POST /Solicitud/verificacion/grequerimientoGuardar VerificacionController.greque
 POST /Solicitud/verificacion/iniciarVerificacion VerificacionController.iniciarVerificacion
 POST /Solicitud/verificacion/reiniciarVerificacion VerificacionController.reiniciarVerificacion
 POST /Solicitud/verificacion/requerimientoBorrador VerificacionController.requerimientoBorrador
+POST /Solicitud/verificacion/todosNoProcede VerificacionController.todosNoProcede
 GET /Solicitud/verificacion/verificacionDocumentos VerificacionController.tablaverificacionDocumentos
 GET /Solicitud/verificacion/verificacionTipos VerificacionController.tablaverificacionTipos
+GET /Solicitud/verificacion/verificacionTiposNuevosDoc VerificacionController.tablaverificacionTiposNuevosDoc
 POST /Solicitud/verificacion/verificaTipos VerificacionController.verificaTipos
+POST /Solicitud/verificacion/verificaTiposNuevosDoc VerificacionController.verificaTiposNuevosDoc
 GET /Soporte/soporte SoporteController.index
 
 POST /Soporte/soporte/incidencia SoporteController.incidencia

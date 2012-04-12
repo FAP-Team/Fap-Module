@@ -127,12 +127,11 @@ Formulario Solicitud {
 		Tabla verificacionesFinalizadas titulo="Verificaciones Finalizadas" campo=SolicitudGenerica.verificaciones
 			popupVer=PopUpVerificacionVer  
 			{
-				Columna titulo="Uri" campo=Verificacion.uriVerificacion ancho="150"
 				Columna titulo="Expediente" campo=Verificacion.expediente ancho="150"
 				Columna titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion ancho="150" 
 				Columna titulo="Fecha creación" campo=Verificacion.fechaCreacion ancho="150"
-				Columna titulo="Fecha actualización" campo=Verificacion.fechaUltimaActualizacion ancho="150"
-				Columna titulo="Estado" campo=Verificacion.estado ancho="100"
+				Columna titulo="Fecha finalización" campo=Verificacion.fechaUltimaActualizacion ancho="150"
+				Columna titulo="Estado" campo=Verificacion.estado expandir
 			}
 		Grupo gVerificacionActual titulo="Acceder a la verificacion actual" permiso=hayVerificacionEnCurso {
 			Form verificacionActual {
@@ -144,34 +143,32 @@ Formulario Solicitud {
 		Grupo gVerificacionNueva titulo="Crear una nueva verificación" permiso=noHayVerificacionEnCurso{
 			Form verificacionNueva {
 				Wiki {"Pulse el botón para crear una nueva verificación."}
-				Boton botonIniciarVerificacion titulo="Nueva verificación" pagina=Verificacion
+				Boton botonIniciarVerificacion titulo="Nueva verificación"
 			}
 		}
 	}
 	
 	Popup PopUpVerificacionVer ver titulo="Verificación" campo=SolicitudGenerica.verificaciones {
-		Texto uri titulo="Uri" campo=Verificacion.uriVerificacion
 		Texto expediente titulo="Expediente" campo=Verificacion.expediente
 		Texto exclusion titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion
 		Fecha fechaCreacion titulo="Fecha creación" campo=Verificacion.fechaCreacion
-		Fecha fechaActualizacion titulo="Fecha actualización" campo=Verificacion.fechaUltimaActualizacion
+		Fecha fechaActualizacion titulo="Fecha finalización" campo=Verificacion.fechaUltimaActualizacion
 		Combo estado titulo="Estado" campo=Verificacion.estado
 		Tabla documentosVerificacion titulo="Documentación" campo=Verificacion.documentos
 			popupVer=PopUpDocumentacionVerificacionVer  
 			{
-				Columna titulo="Tipo" campo=VerificacionDocumento.etiquetaTipoDocumento ancho="150"
+				Columna titulo="Tipo" campo=VerificacionDocumento.uriTipoDocumento ancho="150"
 				Columna titulo="Descripción" campo=VerificacionDocumento.descripcion ancho="150"
 				Columna titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion ancho="150" 
 				Columna titulo="Versión" campo=VerificacionDocumento.version ancho="50"
-				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
+				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion expandir
 			}
 	}
 	
 	Popup PopUpDocumentacionVerificacionVer ver titulo="Documentación" campo=Verificacion.documentos {
-		Texto titulo="Tipo" campo=VerificacionDocumento.etiquetaTipoDocumento
+		Texto titulo="Tipo" campo=VerificacionDocumento.uriTipoDocumento
 		Texto titulo="Descripción" campo=VerificacionDocumento.descripcion
 		Fecha titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion 
-		Texto titulo="Versión" campo=VerificacionDocumento.version
 		Combo titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
 		Tabla requerimientosVerificacion titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
 			popupVer=PopUpRequerimientosVerificacionVer  
@@ -251,6 +248,11 @@ Formulario Solicitud {
 //			Form gnuevoRequerimientoBorradorPreliminar { 
 //				Boton obtenerBorradorPreliminar titulo="Obtener Borrador"
 //			}
+
+			// Borrar
+			Form todosNoProcede {
+				Boton docsNoProcede titulo="Todos No Procede"
+			}
 			
 			Form finalizarVerificacion {
 				Boton verificacionFinalizar titulo="Finalizar la verificación"
@@ -267,6 +269,20 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 			}
 		}
 		
+		Grupo nuevosDocumentosTipos titulo="Verificación de Tipos de Documentos" permiso=verificacionConNuevosDoc {
+			Tabla verificacionTiposNuevosDoc titulo="Documentación Aún No Verificada" campo=SolicitudGenerica.verificacion.nuevosDocumentos
+				popupModificar=PopUpDocNuevosTipos popupVer=PopUpDocNuevosTipos {
+				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
+				Columna campo=Documento.descripcion titulo="Tipo" expandir
+				Columna campo=Documento.verificado titulo="Verificado"
+				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			}
+			Form verificaTiposNuevosDoc {
+				Boton finalizaVerificarTipos titulo="Finaliza verificación de tipos"
+			}
+		}
+		
+
 		Grupo grequerimientos titulo="Requerimiento" permiso=verificacionRequerimientos {				
 				Form grequerimientoGuardar { 
 					Grupo titulo="Añadir Motivo General del Requerimiento" {
@@ -319,6 +335,10 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 	}
 	
 	Popup PopUpDocTipos modificar ver titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {
+		EditarArchivoAed documentoProceso campo=Documento requerido
+	}
+	
+	Popup PopUpDocNuevosTipos modificar ver titulo="Documentación" campo=SolicitudGenerica.verificacion.nuevosDocumentos {
 		EditarArchivoAed documentoProceso campo=Documento requerido
 	}
 	

@@ -69,6 +69,7 @@ public class VerificacionUtils {
 					}
 					vDoc.save();
 					list.add(vDoc);
+					aux.remove(vDoc);
 					tipoEncontrado = true;
 				}
 			}
@@ -122,6 +123,17 @@ public class VerificacionUtils {
 				}
 			}
 		}
+		// Recorro todos los documentos no pertenecientes al trámite actual pero se han aportado
+		for (Documento docAux: aux){
+			VerificacionDocumento vDoc = new VerificacionDocumento();
+			vDoc.existe = false;
+			vDoc.uriTipoDocumento = docAux.tipo;
+			//vDoc.identificadorMultiple = 
+			vDoc.descripcion = docAux.descripcion;
+			vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+			vDoc.save();
+			list.add(vDoc);
+		}
 
 		return list;
 	}
@@ -166,7 +178,7 @@ public class VerificacionUtils {
 	public static boolean existsDocumentoVerificacionAnterior (EstadosDocumentoVerificacionEnum resultado, List<Verificacion> listVerificacion, String uriTipo, String uriTramite) {
 		play.Logger.info("Buscamos el tipo de documento <"+uriTipo+"> con resultado <"+resultado.name()+"> en verificaciones anteriores del trámite <"+uriTramite+">");
 		for (Verificacion verif: listVerificacion) {
-			if (verif.uriTramite.equals(uriTramite)) {
+			if ((verif.uriTramite != null) && (verif.uriTramite.equals(uriTramite))) {
 				for (VerificacionDocumento vDoc: verif.documentos) {
 					if (vDoc.uriTipoDocumento.equals(uriTipo)) {
 						if (vDoc.existe && (vDoc.estadoDocumentoVerificacion.equals(resultado.name()))) {
@@ -206,9 +218,9 @@ public class VerificacionUtils {
 	 * 
 	 * @return documentosNuevos Lista con los documentos nuevos que ha aportado el solicitante y no han sido incluidos en ninguna verificacion
 	 */
-	public static List<VerificacionDocumento> existDocumentosNuevos (Verificacion verificacionActual, List<Verificacion> verificaciones, List<Documento> documentosActuales) {
+	public static List<Documento> existDocumentosNuevos (Verificacion verificacionActual, List<Verificacion> verificaciones, List<Documento> documentosActuales) {
 		Set documentosVerificaciones = new HashSet();
-		List <VerificacionDocumento> documentosNuevos = new ArrayList<VerificacionDocumento>();
+		List <Documento> documentosNuevos = new ArrayList<Documento>();
 		for (Verificacion verificacion: verificaciones){
 			for (VerificacionDocumento vDoc: verificacion.documentos){
 				documentosVerificaciones.add(vDoc.uriDocumento);
@@ -219,7 +231,7 @@ public class VerificacionUtils {
 		}
 		for (Documento doc: documentosActuales){
 			if (!documentosVerificaciones.contains(doc.uri)){
-				documentosNuevos.add(new VerificacionDocumento(doc));
+				documentosNuevos.add(doc);
 			}
 		}
 		return documentosNuevos;

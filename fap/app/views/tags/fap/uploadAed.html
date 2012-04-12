@@ -30,7 +30,7 @@
 		}
 	}%
 
-	#{fap.combo id:comboId, campo:campoTipo, titulo:"Tipo de documento", items:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
+	#{fap.combo id:comboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
 	
 	#{fap.grupo visible:false, siCombo:comboId, siComboValue:[tipoDocumentoOtros], siComboReverse:true}
 		#{fap.texto campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}

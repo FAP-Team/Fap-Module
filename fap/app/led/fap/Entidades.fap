@@ -319,6 +319,8 @@ Entidad Verificacion {
 	
 	// El atributo no es transient ahora
 	OneToMany VerificacionDocumento documentos
+	
+	OneToMany Documento nuevosDocumentos
 		
 	String uriExclusion
 	String motivoExclusion

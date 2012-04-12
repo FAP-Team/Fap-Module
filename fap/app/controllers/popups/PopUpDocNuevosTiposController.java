@@ -1,29 +1,21 @@
 
 package controllers.popups;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-
-import aed.TiposDocumentosClient;
 
 import messages.Messages;
 import models.Documento;
 import models.SolicitudGenerica;
-
-import play.db.jpa.JPAPlugin;
-import properties.FapProperties;
-
 import tags.ComboItem;
-import controllers.gen.popups.PopUpDocTiposControllerGen;
+import aed.TiposDocumentosClient;
+import controllers.gen.popups.PopUpDocNuevosTiposControllerGen;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
-import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 			
-public class PopUpDocTiposController extends PopUpDocTiposControllerGen {
+public class PopUpDocNuevosTiposController extends PopUpDocNuevosTiposControllerGen {
 	
 	public static List<ComboItem> documento_tipo() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
@@ -50,12 +42,12 @@ public class PopUpDocTiposController extends PopUpDocTiposControllerGen {
 		}
 
 		if (!Messages.hasErrors()) {
-			PopUpDocTiposValidateCopy(dbDocumento, documento);
+			PopUpDocNuevosTiposValidateCopy(dbDocumento, documento);
 		}
 
 		if (!Messages.hasErrors()) {
-			dbDocumento.save();
 			solicitud.verificacion.fechaUltimaActualizacion = new DateTime();
+			dbDocumento.save();
 		}
 
 		if (!Messages.hasErrors()) {

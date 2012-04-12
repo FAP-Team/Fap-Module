@@ -64,13 +64,16 @@
 			if(_items != null){
 				items = _items.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")}
 			}else{
-				items = tags.ReflectionUtils.callControllerMethodIfExists(id)
-				if(items == null){
-					//No existe método en el controlador
+				if (tags.ReflectionUtils.existsControllerMethod(id)){
+					items = tags.ReflectionUtils.callControllerMethodIfExists(id) // Devuelve null si no existe el método
+				} else {
+					items = _itemsModificables.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")} // Devuelve lista vacia si no existe _itemsModificable
+				}
+				if ((items == null) || (items.size() == 0)){
+					//No existe método en el controlador ni _itemsModificable (que solo existira si se llama al combo desde un UploadAED)
 					if(field.reference){
 						//Opciones buscando todas las filas de una tabla
 						items = [];
-						
 						for(row in field.referenceClass.findAll()){
 							def ik; 
 							def iv;
@@ -86,7 +89,7 @@
 					}else{
 						//Opciones desde tabla de tablas
 						items = tags.ComboItem.listFromTableOfTable(field.table)				
-					}
+					}	
 				}
 			}
 			// Para eliminar los valores duplicados que pueda haber en la lista de seleccion, si el usuario lo ha indicado en el .fap, 

@@ -271,5 +271,20 @@ public class TiposDocumentosClient {
 		
 		return listaCiudadanos;
 	}
+	
+	public static List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		List<TipoDocumento> tiposDocumentos = new ArrayList<TipoDocumento>();
+		List<TipoDocumentoEnTramite> listaCiudadanos = getTiposDocumentosAportadosCiudadano(tramite);
+		for (TipoDocumentoEnTramite tipoDoc : listaCiudadanos) {
+			try {
+				TipoDocumento tipoDocumento = tipos.obtenerTipoDocumento(tipoDoc.getUri());
+				tiposDocumentos.add(tipoDocumento);
+			} catch (TiposDocumentosExcepcion e) {
+				play.Logger.error("No se han podido obtener el tipo de Documento a partir de su uri: "+e.getMessage());
+				Messages.error("No se han podido obtener el tipo de Documento a partir de su uri");
+			}
+		}
+		return tiposDocumentos;
+	}
 
 }

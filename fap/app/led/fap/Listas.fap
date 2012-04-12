@@ -190,6 +190,7 @@ Lista estadosVerificacion crearEnumerado {
 	plazoVencido: "Plazo Vencido"
 	verificacionPositiva: "Verificación Positiva"
 	verificacionNegativa: "Verificación Negativa"
+	enRequerimientoFirmaSolicitada: "Firma Solicitada"
 }
 
 Lista estadosDocumentoVerificacion crearEnumerado {

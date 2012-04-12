@@ -447,7 +447,8 @@ vars
 when
 	(action in ("read", "update")) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
-	(solicitud.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido"))
+	(solicitud.estado in ("iniciada"))
+	and solicitud.verificacion.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
 then
 	grant
 
@@ -466,7 +467,10 @@ rule firmarRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
-	(solicitud.estado = "pendiente requerimiento") and
+	(solicitud.estado = "iniciada") and
+	(solicitud.verificacion.estado != null)
+	and solicitud.verificacion.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+	and
 	(
 		(
 			(action = "read") and 
@@ -563,3 +567,38 @@ when
 then
     grant
 
+rule verificacionCrearRequerimiento
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor"))
+	and solicitud.verificacion.estado != null
+	and solicitud.verificacion.estado = "enRequerimientoSinRequerimiento"
+then
+	grant
+
+rule solicitarFirmaRequerimiento
+vars
+	SolicitudGenerica solicitud
+when
+	(action = "update"
+	and (agente.rolActivo in ("administrador", "gestor", "revisor"))
+	and solicitud.verificacion.estado != null
+	and solicitud.verificacion.estado in ("enRequerimiento"))
+	or
+	(action = "read"
+	and (agente.rolActivo in ("administrador", "gestor", "revisor"))
+	and solicitud.verificacion.estado != null	
+	and solicitud.verificacion.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada"))
+then
+	grant
+
+rule borradorRequerimiento
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor"))
+	and solicitud.verificacion.estado != null
+	and solicitud.verificacion.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+then
+	grant

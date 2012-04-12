@@ -104,6 +104,8 @@ public class TiposDocumentosClient {
 					tipoDocumentoDb.uri = tipoDocumento.getUri();
 					tipoDocumentoDb.aportadoPor = tipoDocumento.getAportadoPor().toString();
 					tipoDocumentoDb.obligatoriedad = tipoDocumento.getObligatoriedad().toString();
+					tipoDocumentoDb.tramitePertenece = tramite.getUri();
+					tipoDocumentoDb.cardinalidad = tipoDocumento.getCardinalidad().toString();
 					
 					//Consulta al WS de Tipos de Documentos la descripción
 					TipoDocumento td = tipos.obtenerTipoDocumento(tipoDocumento.getUri());
@@ -209,6 +211,12 @@ public class TiposDocumentosClient {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param lista
+	 * @param table
+	 * @return
+	 */
 	public static boolean actualizarDocumentosDB(List<TipoDocumentoEnTramite> lista, String table) {
 		JPAPlugin.startTx(false);
 		TableKeyValue.deleteTable(table);		

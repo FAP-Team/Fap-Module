@@ -324,8 +324,7 @@ Entidad Verificacion {
 	String motivoExclusion
 	OneToMany Exclusion codigosExclusion
 		 
-	OneToOne Requerimiento requerimientoProceso
-	OneToMany Requerimiento requerimientos
+	OneToOne Requerimiento requerimiento
 		
 	DateTime fechaCreacion
 	DateTime fechaUltimaActualizacion	
@@ -386,6 +385,7 @@ Entidad Requerimiento {
 	
 	Documento oficial			// documento de requerimiento oficial, este es el que se firma
 	Documento justificante		// justificante del registro de salida
+	Documento borrador
 	
 //	String uriDocRequerimiento				//uri del documento de requerimiento oficial, este es el que se firma
 //	Boolean docRequerimientoClasificado
@@ -432,6 +432,8 @@ Entidad TipoDocumento {
 	String nombre
 	String aportadoPor
 	String obligatoriedad
+	String tramitePertenece
+	String cardinalidad
 }
 
 Entidad Tramite {

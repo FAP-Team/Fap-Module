@@ -75,6 +75,10 @@ public class Requerimiento extends Model {
 	public Documento justificante;
 	
 	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Documento borrador;
+	
+	
 	
 	public String uriRequerimiento;
 	
@@ -144,6 +148,11 @@ public class Requerimiento extends Model {
 								justificante = new Documento();
 							else
 								justificante.init();
+						
+							if (borrador == null)
+								borrador = new Documento();
+							else
+								borrador.init();
 						
 	}
 		

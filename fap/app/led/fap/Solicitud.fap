@@ -199,6 +199,9 @@ Formulario Solicitud {
 	Grupo reiniciaVerificacion {
 		Form reiniciarVerificacion {
 			Wiki { "Esto es momentáneo" }
+			Grupo permiso=noEditable {
+				Combo titulo="Estado Verificacion" campo=SolicitudGenerica.verificacion.estado
+			}
 			Boton resetVerificacion titulo="Reiniciar la verificacion"
 		}
 	}
@@ -256,32 +259,41 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 					"}
 			}
 			
-			// Esto debe aparecer al darle al boton finalizar REQUERIMIENTO
-			Form requerimientoBorrador { 
-				Boton obtenerBorradorRequerimiento titulo="Obtener Borrador" 
-			}
-			
 		}
 		
-		Grupo grequerimientos titulo="Requerimientos" permiso=verificacionRequerimientos {
-			Grupo gnuevoRequerimiento titulo="Añadir requerimiento" /*permiso=nuevoRequerimiento*/{				
+		
+		Grupo crearNuevoRequerimiento titulo="Requerimiento" permiso=verificacionCrearRequerimiento {
+			Form gCrearRequerimiento {
+				Boton crearRequerimientoBoton titulo="Crear Requerimiento"
+			}
+		}
+		
+		Grupo grequerimientos titulo="Requerimiento" permiso=verificacionRequerimientos {				
 				Form grequerimientoGuardar { 
-					AreaTexto requerimientoCrearMotivo titulo="Motivo del requerimiento" campo=SolicitudGenerica.verificacion.requerimientoProceso.motivo
-					Boton requerimientoGuardar titulo="Guardar motivo del requerimiento"
-				}
-
-				Form frequerimientoSolicitaFirma {
-					Combo requerimientoCrearFirmante titulo="Persona que firma el requerimiento" campo=SolicitudGenerica.verificacion.requerimientoProceso.firmante
-					Boton requerimientoCrearSolicitarFirma titulo="Solicitar firma requerimiento"
+					Grupo titulo="Añadir Motivo General del Requerimiento" {
+						AreaTexto requerimientoCrearMotivo titulo="Motivo del requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.motivo
+						Boton requerimientoGuardar titulo="Guardar motivo del requerimiento"
+					}
 				}
 				
-				Form gnuevoRequerimientoBorrador { 
-					Boton obtenerBorradorRequerimiento titulo="Obtener Borrador"
+				// Esto debe aparecer al darle al boton finalizar REQUERIMIENTO
+                Form requerimientoBorrador permiso=borradorRequerimiento {
+                	Grupo titulo="Obtener borrador del Requerimiento"  { 
+                		Enlace campo=SolicitudGenerica.verificacion.requerimiento.borrador.urlDescarga titulo="Obtener Borrador" destino="_blank" estilo="boton"
+                	}
+                }
+				
+				Form frequerimientoSolicitaFirma permiso=solicitarFirmaRequerimiento {
+					Grupo titulo="Solicitar firma del Requerimiento"  { 
+						Combo requerimientoCrearFirmante titulo="Persona que firma el requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.firmante
+						Boton requerimientoCrearSolicitarFirma titulo="Solicitar firma requerimiento"
+					}
 				}
 
-				Form grequerimientoFirmarRequerimiento /*permiso=firmarRequerimiento*/ {
-					Boton firmarRequerimiento titulo="Firmar, registrar y notificar"
-					//Firma firmarRequerimiento ActualizarForm="Verificacion" Titulo="Elija el certificado para firmar" TituloBoton="Firmar, registrar y notificar" CampoFirma="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.firma" CampoURI="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.uriDocRequerimiento" CampoURL="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.urlDocRequerimiento";
+				Form grequerimientoFirmarRequerimiento permiso=firmarRequerimiento {
+					Grupo titulo="Firma del Requerimiento"  { 
+						FirmaSimple firmarRequerimiento titulo="Firmar, registrar y notificar" documento=SolicitudGenerica.verificacion.requerimiento.oficial
+					}
 				}
 			}
 			
@@ -298,7 +310,6 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 //			Form gfinalizarRequerimiento /*permiso=finalizarRequerimiento*/ {
 //				Boton verificacionFinalizarReq titulo="Finalizar Requerimiento Actual"
 //			}
-		}
 					
 //		Tabla registros titulo="Aportación de documentación y subsanaciones" campo=SolicitudGenerica.documentacionAportada.documentos
 //			popupVer=PopUpDocAportados

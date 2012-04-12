@@ -41,6 +41,14 @@ public class TipoDocumento extends Model {
 	public String obligatoriedad;
 	
 	
+	
+	public String tramitePertenece;
+	
+	
+	
+	public String cardinalidad;
+	
+	
 
 	public void init(){
 		

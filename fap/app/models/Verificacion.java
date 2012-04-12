@@ -69,12 +69,7 @@ public class Verificacion extends Model {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	public Requerimiento requerimientoProceso;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="verificacion_requerimientos")
-	public List<Requerimiento> requerimientos;
+	public Requerimiento requerimiento;
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaCreacion"),@Column(name="fechaCreacionTZ")})
@@ -104,13 +99,10 @@ public class Verificacion extends Model {
 						if (codigosExclusion == null)
 							codigosExclusion = new ArrayList<Exclusion>();
 						
-							if (requerimientoProceso == null)
-								requerimientoProceso = new Requerimiento();
+							if (requerimiento == null)
+								requerimiento = new Requerimiento();
 							else
-								requerimientoProceso.init();
-						
-						if (requerimientos == null)
-							requerimientos = new ArrayList<Requerimiento>();
+								requerimiento.init();
 						
 	}
 		

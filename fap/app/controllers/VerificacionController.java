@@ -11,12 +11,15 @@ import tags.ComboItem;
 import verificacion.VerificacionUtils;
 
 import messages.Messages;
+import models.Agente;
 import models.Documento;
 import models.SolicitudGenerica;
 import models.Tramite;
 import models.Verificacion;
 import models.VerificacionDocumento;
+import controllers.fap.AgenteController;
 import controllers.gen.VerificacionControllerGen;
+import emails.Mails;
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 
@@ -146,6 +149,7 @@ public class VerificacionController extends VerificacionControllerGen {
 					// Si hay algun documento en estado no valido o no presentado
 					if (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion)){
 						dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enRequerimiento.name();
+						dbSolicitud.save();
 						//Crear requerimiento
 						// Si es la primera verificacion, se crea si o si
 						// Si no, aparecen dos botones
@@ -190,5 +194,64 @@ public class VerificacionController extends VerificacionControllerGen {
 
 	}
 
+	/**
+	 * Sobreescribimos el combo para mostrar los Gestores que podrán ser solicitados para firmar el
+	 * requerimiento.
+	 * @return Lista de gestores (DNI - Nombre)
+	 */
+	public static List<ComboItem> requerimientoCrearFirmante() {
+		List<ComboItem> result = new ArrayList<ComboItem>();
+		
+		List<Agente> lGestores = Agente.findAll();
+		for (Agente a: lGestores) {
+			if (a.roles.contains("gestor")) {
+				String name = a.name;
+				if (a.name == null || a.name.trim().equals("")) {
+					name = a.username;
+				}
+				result.add(new ComboItem(a.username, name));
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Solicitar la firma del requerimiento a un Gestor en concreto
+	 * @param idSolicitud
+	 * @param solicitud
+	 */
+	public static void frequerimientoSolicitaFirma(Long idSolicitud, SolicitudGenerica solicitud){
+		checkAuthenticity();
+
+		if (permisofrequerimientoSolicitaFirma("update") || permisofrequerimientoSolicitaFirma("create")) {
+			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+			frequerimientoSolicitaFirmaValidateCopy(dbSolicitud, solicitud);
+			if(!validation.hasErrors()){
+				frequerimientoSolicitaFirmaValidateRules(dbSolicitud, solicitud);
+			}
+			if(!validation.hasErrors()){
+				// Enviar el correo al agente
+				String emailAgente = Agente.find("select agente from Agente agente where agente.username=?" , solicitud.verificacion.requerimiento.firmante).first();
+				if (emailAgente == null || emailAgente.length() == 0) {
+					Messages.error("El agente al que se le solicita la firma no tiene email");
+				} else {
+					try {
+						Mails.enviar("solicitarFirmaRequerimiento", emailAgente);
+					} catch (Exception e) {
+						play.Logger.error("El mail de Solicitar Firma de requerimiento de la verificación "+solicitud.verificacion.id+" no ha podido ser enviado. "+e.getMessage());
+					}
+				
+					dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimientoFirmaSolicitada.name();
+					dbSolicitud.save();
+					Logger.info("Firma de requerimiento solicitada a " + dbSolicitud.verificacion.requerimiento.firmante);
+				}
+			}
+		}
+		else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+
+		frequerimientoSolicitaFirmaRender(idSolicitud);
+	}
 
 }

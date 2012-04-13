@@ -160,7 +160,6 @@ Formulario Solicitud {
 				Columna titulo="Tipo" campo=VerificacionDocumento.uriTipoDocumento ancho="150"
 				Columna titulo="Descripción" campo=VerificacionDocumento.descripcion ancho="150"
 				Columna titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion ancho="150" 
-				Columna titulo="Versión" campo=VerificacionDocumento.version ancho="50"
 				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion expandir
 			}
 	}
@@ -359,8 +358,8 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 			}
 			Grupo requerimientoCodigos visible=false mostrarSiCombo estado="noValido" {
 				Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
-					popupCrear=PopUpDocumentoRequerimientosVerificacion
-					popupModificar=PopUpDocumentoRequerimientosVerificacion
+					popupCrear=PopUpDocumentoRequerimientosVerificacionModificar
+					popupModificar=PopUpDocumentoRequerimientosVerificacionModificar
 					popupVer=PopUpDocumentoRequerimientosVerificacion
 					popupBorrar=PopUpDocumentoRequerimientosVerificacion
 				{
@@ -380,7 +379,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 		Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
 		Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
-		Grupo requerimientosNoValido titulo="Requerimiento/s del documento"{
+		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
 			Grupo requerimientoTexto visible=false mostrarSiCombo estado="noValido","noPresentado"{
 				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
 			}
@@ -395,10 +394,14 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 		}
 	}
 	
-	Popup PopUpDocumentoRequerimientosVerificacion borrar crear modificar ver titulo="Requerimiento" campo=VerificacionDocumento.codigosRequerimiento {
+	Popup PopUpDocumentoRequerimientosVerificacion borrar ver titulo="Requerimiento" campo=VerificacionDocumento.codigosRequerimiento {
 		Texto codigo titulo="Código" campo=CodigoRequerimiento.codigo requerido
 		Texto descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta
 		AreaTexto descripcion titulo="Descripción" campo=CodigoRequerimiento.descripcion
+	}
+	
+	Popup PopUpDocumentoRequerimientosVerificacionModificar crear modificar titulo="Requerimiento" campo=VerificacionDocumento.codigosRequerimiento {
+		Combo codigo titulo="Código" campo=CodigoRequerimiento.codigo requerido
 	}
 	
 }

@@ -223,8 +223,19 @@ public class AedClient {
 	 * @throws AedExcepcion
 	 */
 	public static void actualizarTipoDescripcion(models.Documento documento) throws AedExcepcion {
+		actualizarTipoDescripcion(documento, false);
+	}
+	
+	/**
+	 * Actualiza el tipo y las descripción en el aed de un documento
+	 * @param documento
+	 * @param sobreescribeDescripcion Si es true, obtiene la descripcion a partir de la uri
+	 * @throws AedExcepcion
+	 */
+	public static void actualizarTipoDescripcion(models.Documento documento, boolean actualizarDescripcion) throws AedExcepcion {
 		if(documento.uri == null) throw new IllegalArgumentException("La uri del documneto no puede ser null");
-		documento.actualizaDescripcion();
+		if (actualizarDescripcion)	
+			documento.actualizaDescripcion();
 		if (documento.clasificado != null && documento.clasificado.booleanValue()) {
 			log.debug("Actualizando tipo y descripción de un documento clasificado");
 			log.debug("Obteniendo propiedades");

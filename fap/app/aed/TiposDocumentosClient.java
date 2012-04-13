@@ -12,6 +12,7 @@ import javax.xml.ws.Holder;
 import org.apache.log4j.Logger;
 
 import messages.Messages;
+import models.CodigoRequerimiento;
 import models.Quartz;
 import models.Singleton;
 import models.TableKeyValue;
@@ -37,6 +38,8 @@ import es.gobcan.eadmon.procedimientos.ws.Procedimientos;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosInterface;
 import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaCodigosExclusion;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaCodigosRequerimiento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTiposDocumentosEnTramite;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTramites;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
@@ -112,6 +115,17 @@ public class TiposDocumentosClient {
 					tipoDocumentoDb.nombre = td.getDescripcion();	
 					
 					tramitedb.documentos.add(tipoDocumentoDb);
+					
+					List<CodigoRequerimiento> codigosReq = getCodigosRequerimientos (tramite.getUri(), tipoDocumento.getUri());
+					for (CodigoRequerimiento codigo: codigosReq){
+						models.TiposCodigoRequerimiento tipoCodReqdb = new models.TiposCodigoRequerimiento();
+						tipoCodReqdb.codigo = codigo.codigo;
+						tipoCodReqdb.descripcion = codigo.descripcion;
+						tipoCodReqdb.descripcionCorta = codigo.descripcionCorta;
+						tipoCodReqdb.uriTipoDocumento = tipoDocumento.getUri();
+						tipoCodReqdb.uriTramite = tramite.getUri();
+						tipoCodReqdb.save();
+					}
 				}
 				
 				tramitedb.save();
@@ -287,4 +301,30 @@ public class TiposDocumentosClient {
 		return tiposDocumentos;
 	}
 
+	public static List<CodigoRequerimiento> getCodigosRequerimientos (String tramiteUri, String tipoDocumentoUri){
+		try {
+			ListaCodigosRequerimiento listaCodigos = procedimientos.consultarCodigosRequerimiento(FapProperties.get("fap.aed.procedimientos.procedimiento.uri"), tramiteUri, tipoDocumentoUri);
+			return fromListaCodigosRequerimientoWS2List(listaCodigos);
+		} catch (ProcedimientosExcepcion e) {
+			play.Logger.error("No se han podido obtener los codigos de exclusion asociados al tipo de Documento: "+e.getMessage());
+			Messages.error("No se han podido obtener los codigos de exclusion asociados al tipo de Documento");
+		}
+		return null;
+	}
+	
+	public static List<CodigoRequerimiento> fromListaCodigosRequerimientoWS2List(ListaCodigosRequerimiento listCodReq){
+        List<CodigoRequerimiento> list = new ArrayList<CodigoRequerimiento>();
+        
+        if(listCodReq != null){
+           for(es.gobcan.eadmon.procedimientos.ws.dominio.CodigoRequerimiento codReq : listCodReq.getCodigosRequerimiento()){
+              CodigoRequerimiento nuevo = new CodigoRequerimiento();
+              nuevo.codigo = codReq.getCodigo();
+              nuevo.descripcionCorta = codReq.getDescripcionCorta();
+              nuevo.descripcion = codReq.getDescripcion();
+              list.add(nuevo);
+           }
+        }
+        return list;
+	}
+	
 }

@@ -30,6 +30,14 @@ import enumerado.fap.gen.EstadosVerificacionEnum;
 
 public class VerificacionController extends VerificacionControllerGen {
 	
+	public static void index(Long idSolicitud){
+		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+        if (solicitud.verificacion.estado != null)
+        	renderTemplate( "gen/Verificacion/Verificacion.html" , solicitud);
+        else
+        	redirect("AccesoVerificacionesController.index", idSolicitud);
+	}
+	
 	public static void reiniciarVerificacion(Long idSolicitud){
 		checkAuthenticity();
 		// Save code

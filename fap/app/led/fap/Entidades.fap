@@ -363,6 +363,15 @@ Entidad CodigoRequerimiento {
 	String descripcionCorta
 }
 
+// Códigos de requerimiento utilizados en la verificación
+Entidad TiposCodigoRequerimiento {
+	String codigo
+	LongText descripcion
+	String descripcionCorta
+	String uriTramite
+	String uriTipoDocumento
+}
+
 // Códigos de exclusión
 Entidad Exclusion {
 	String codigo
@@ -388,7 +397,6 @@ Entidad Requerimiento {
 	Documento oficial			// documento de requerimiento oficial, este es el que se firma
 	Documento borrador
 	Documento justificante		// justificante del registro de salida
-	Documento borrador
 	
 //	String uriDocRequerimiento				//uri del documento de requerimiento oficial, este es el que se firma
 //	Boolean docRequerimientoClasificado

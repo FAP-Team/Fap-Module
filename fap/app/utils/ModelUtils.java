@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 
 import messages.Messages;
+import models.CodigoRequerimiento;
+import models.TiposCodigoRequerimiento;
 
 import exceptions.ModelAccessException;
 
@@ -91,6 +93,18 @@ public class ModelUtils {
 		}
 		return null;
 
+	}
+	
+	public static List<CodigoRequerimiento> getListCodigoRequerimientoFromTiposCodigoRequerimiento(List<TiposCodigoRequerimiento> tipoCodReq){
+		List<CodigoRequerimiento> codReq = new ArrayList<CodigoRequerimiento>();
+		for (TiposCodigoRequerimiento tcr: tipoCodReq){
+			CodigoRequerimiento cr = new CodigoRequerimiento();
+			cr.codigo=tcr.codigo;
+			cr.descripcion=tcr.descripcion;
+			cr.descripcionCorta=tcr.descripcionCorta;
+			codReq.add(cr);
+		}
+		return codReq;
 	}
 
 }

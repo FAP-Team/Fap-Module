@@ -33,7 +33,7 @@ public class Requerimiento extends Model {
 	public String urlDocRequerimiento;
 	
 	
-	
+	@ValueFromTable("estadosRequerimiento")
 	public String estado;
 	
 	

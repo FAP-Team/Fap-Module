@@ -11,6 +11,9 @@ import aed.AedClient;
 import play.Logger;
 import properties.FapProperties;
 import reports.Report;
+import services.FirmaService;
+import services.RegistroException;
+import services.RegistroService;
 
 import tags.ComboItem;
 import verificacion.VerificacionUtils;
@@ -18,6 +21,7 @@ import verificacion.VerificacionUtils;
 import messages.Messages;
 import models.Agente;
 import models.Documento;
+import models.Firmante;
 import models.SolicitudGenerica;
 import models.Tramite;
 import models.Verificacion;
@@ -26,6 +30,7 @@ import controllers.fap.AgenteController;
 import controllers.gen.VerificacionControllerGen;
 import emails.Mails;
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
+import enumerado.fap.gen.EstadosRequerimientoEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 
 public class VerificacionController extends VerificacionControllerGen {
@@ -320,6 +325,56 @@ public class VerificacionController extends VerificacionControllerGen {
 
 		frequerimientoSolicitaFirmaRender(idSolicitud);
 	}
+	
+	
+	/**
+	 * Cuando pulsemos sobre Firmar, Registrar y Notificar el Requerimiento
+	 * 
+	 * @param idSolicitud
+	 * @param firma
+	 */
+	public static void grequerimientoFirmarRequerimiento(Long idSolicitud, platino.Firma firma){
+		checkAuthenticity();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+		
+		if (permisogrequerimientoFirmarRequerimiento("update") || permisogrequerimientoFirmarRequerimiento("create")) {
+			if(!validation.hasErrors()){
+				
+				/// 1. Firmar el requerimiento
+				if (solicitud.verificacion.requerimiento.estado.equals(EstadosRequerimientoEnum.creado.name())) {
+					List<Firmante> firmantes = FirmaService.calcularFirmantesRequerimiento();
+					play.Logger.info("Firmantes " + firmantes);
+					FirmaService.firmar(solicitud.verificacion.requerimiento.oficial, firmantes, firma);
+				
+					play.Logger.info("Firmado el requerimiento");
+				
+					if(!Messages.hasErrors()){
+						solicitud.verificacion.requerimiento.estado = "firmada";
+						solicitud.save();
+					}
+				}
+				
+				/// 2. Registrar el requerimiento
+				if(!Messages.hasErrors() && solicitud.verificacion.requerimiento.estado.equals(EstadosRequerimientoEnum.firmado.name())) {
+					try {
+						RegistroService.registrarRequerimientoActual(solicitud);
+					} catch (RegistroException e) {
+						e.printStackTrace();
+						Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");
+					}
+				}
+				
+				/// 3. Notificar el requerimiento
+				
+			}
+		}
+		else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+		grequerimientoFirmarRequerimientoRender(idSolicitud);
+	}
+
 
 	// BORRRRRRRRRRRRRRRRRRRRRRRRAAAAAAAAAAAAAAAAAAAARRRRRRRRRRRRRRRRRRRRRRR
 	public static void todosNoProcede(Long idSolicitud) {

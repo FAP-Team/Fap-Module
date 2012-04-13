@@ -201,3 +201,10 @@ Lista estadosDocumentoVerificacion crearEnumerado {
 	valido: "Válido"
 	noValido: "No Valido"
 }
+
+Lista estadosRequerimiento crearEnumerado {
+	creado: "Creado"
+	firmado: "Firmado"
+	registrado: "Registrado"
+	notificado: "Notificado"
+}

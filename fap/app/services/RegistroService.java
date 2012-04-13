@@ -19,6 +19,7 @@ import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import aed.AedClient;
 
 import emails.Mails;
+import enumerado.fap.gen.EstadosRequerimientoEnum;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAdministrativas;
@@ -39,6 +40,7 @@ import models.ObligatoriedadDocumentos;
 import models.Persona;
 import models.PersonaFisica;
 import models.PersonaJuridica;
+import models.Requerimiento;
 import models.SemillaExpediente;
 import models.Singleton;
 import models.Solicitante;
@@ -378,6 +380,51 @@ public class RegistroService {
 			
 			play.Logger.debug("Los documentos de la aportacion se movieron correctamente");
 		}
+	}
+	
+	/**
+	 * Registra el requerimiento actual
+	 * @param solicitud
+	 */
+	public static void registrarSalidaRequerimientoActual (SolicitudGenerica solicitud) throws RegistroException {
+		Requerimiento requerimiento = solicitud.verificacion.requerimiento;
+		
+//		if(requerimiento.estado.equals(EstadosRequerimientoEnum.creado)){
+//			try {
+//				DatosRegistro datos = PlatinoRegistro.getDatosRegistro(solicitud.solicitante, aportacion.oficial, solicitud.expedientePlatino);
+//				//Registra la solicitud
+//				JustificanteRegistro justificante = PlatinoRegistro.registroDeEntrada(datos);
+//				play.Logger.info("Se ha registrado la solicitud de aportacion de la solicitud %s en platino", solicitud.id);
+						
+				//Almacena la información de registro
+				//aportacion.informacionRegistro.setDataFromJustificante(justificante);
+				//play.Logger.info("Almacenada la información del registro en la base de datos");
+
+				//Guarda el justificante en el AED
+				//play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
+				//Documento documento = aportacion.justificante;
+				//documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitud");
+				//documento.descripcion = "Justificante de registro de la solicitud";
+				//documento.save();
+				//AedClient.saveDocumentoTemporal(documento, justificante.getReciboPdf().getInputStream(), "JustificanteSolicitudPDF" + solicitud.id + ".pdf");
+						
+//				aportacion.estado = "registrada";
+//				aportacion.save();
+//				Mails.enviar("aportacionRealizada", solicitud);
+//						
+//				play.Logger.info("Justificante almacenado en el AED");
+//			} catch (IllegalArgumentException e){
+//				play.Logger.warn("No se encontró el ID del mail en la base de datos");
+//				play.Logger.info("Justificante almacenado en el AED");
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				Messages.error("Error al registrar de entrada la solicitud");
+//				throw new RegistroException("Error al obtener el justificante del registro de entrada");
+//			}
+//		} else {
+//			Messages.error("El Requerimiento no ha sido creado");
+//		}
+		
 	}
 	
 }

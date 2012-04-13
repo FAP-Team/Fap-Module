@@ -299,7 +299,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 				
 				Form frequerimientoSolicitaFirma permiso=solicitarFirmaRequerimiento {
 					Grupo titulo="Solicitar firma del Requerimiento"  { 
-						Combo requerimientoCrearFirmante titulo="Persona que firma el requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.firmante
+						Combo requerimientoCrearFirmante titulo="Persona que firma el requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.firmante requerido
 						Boton requerimientoCrearSolicitarFirma titulo="Solicitar firma requerimiento"
 					}
 				}
@@ -309,28 +309,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 						FirmaSimple firmarRequerimiento titulo="Firmar, registrar y notificar" documento=SolicitudGenerica.verificacion.requerimiento.oficial
 					}
 				}
-			}
-			
-//			Tabla requerimientos titulo="Requerimientos" campo=SolicitudGenerica.verificacion.requerimientos
-//				popup=PopUp:requerimientoVer 
-//			{
-//				Columna titulo="Número Registro" campo=Requerimiento.numeroGeneralRegistroSalida
-//				Columna titulo="Fecha Registro" campo=Requerimiento.fechaRegistroSalida
-//				Columna titulo="Fecha Acceso" campo=Requerimiento.fechaAcceso
-//				Columna titulo="Estado" campo=Requerimiento.estado
-//				Columna titulo="Documento" campo=Requerimiento.justificante.uri
-//			}
-//			
-//			Form gfinalizarRequerimiento /*permiso=finalizarRequerimiento*/ {
-//				Boton verificacionFinalizarReq titulo="Finalizar Requerimiento Actual"
-//			}
-					
-//		Tabla registros titulo="Aportación de documentación y subsanaciones" campo=SolicitudGenerica.documentacionAportada.documentos
-//			popupVer=PopUpDocAportados
-//		{
-//			Columna campo=Documento.fechaSubida titulo="Fecha" expandir
-//			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-//		}			
+			}	
 	}
 	
 	Popup PopUpDocTipos modificar ver titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {

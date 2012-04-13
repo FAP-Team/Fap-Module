@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import messages.Messages;
+import models.Agente;
 import models.Documento;
 import models.Firmante;
 import models.Persona;
@@ -203,6 +204,26 @@ public class FirmaService {
 				firmantes.add(fr);
 			}
 		}		
+	}
+	
+	/**
+	 * Calcula los firmantes que pueden firmar un requerimiento
+	 * @param firmantes
+	 */
+	public static List<Firmante> calcularFirmantesRequerimiento () {
+		List<Firmante> firmantes = new ArrayList<Firmante>();
+		List<Agente> lAgentes = Agente.findAll();
+		for (Agente agente: lAgentes) {
+			// Si el agente no tiene password
+			if ((agente.password == null) && (agente.roles.contains("gestor"))) {
+				Firmante nFirmante = new Firmante();
+				nFirmante.nombre = agente.username;
+				nFirmante.tipo = "gestor";
+				nFirmante.cardinalidad = "unico";
+				firmantes.add(nFirmante);
+			}
+		}
+		return firmantes;
 	}
 	
 }

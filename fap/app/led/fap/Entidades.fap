@@ -205,7 +205,7 @@ Entidad Firmante {
 	String idtipo
 	String idvalor
 	DateTime fechaFirma
-	String tipo // fisica, juridica, representante
+	String tipo // fisica, juridica, representante, gestor
 	String cardinalidad // unico, multiple
 }
 
@@ -382,7 +382,7 @@ Entidad Exclusion {
 Entidad Requerimiento {
 	String firma transient					//Guarda firma del requerimiento
 	String urlDocRequerimiento transient		//Guarda url del doc oficial, publicado en el servlet
-	String estado 					 	//Rellenar a mano
+	Lista estadosRequerimiento estado 					 	//Rellenar a mano
 		
 	LongText motivo
 		

@@ -80,6 +80,11 @@ public class SolicitudGenerica extends Model {
 	public Verificacion verificacion;
 	
 	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="solicitudgenerica_verificaciones")
+	public List<Verificacion> verificaciones;
+	
+	
 	public SolicitudGenerica (){
 		init();
 	}
@@ -132,6 +137,9 @@ public class SolicitudGenerica extends Model {
 								verificacion = new Verificacion();
 							else
 								verificacion.init();
+						
+						if (verificaciones == null)
+							verificaciones = new ArrayList<Verificacion>();
 						
 	}
 		

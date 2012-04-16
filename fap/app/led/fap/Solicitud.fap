@@ -120,116 +120,276 @@ Formulario Solicitud {
 		}
 	}
 	
+
+	/***************************************************************************************************/
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	Pagina Verificacion titulo="Verificación de la documentación" noForm {
-		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
-			Wiki {"
-Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
-				"}
-		}
+	Pagina AccesoVerificaciones titulo="Verificaciones" noForm {
+		Grupo fantasma permiso=noVisible{
+			Tabla verificacionesFinalizadas titulo="Verificaciones Finalizadas" campo=SolicitudGenerica.verificaciones
+			popupVer=PopUpVerificacionVer
+			{
+				Columna titulo="Expediente" campo=Verificacion.expediente ancho="150"
+				Columna titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion ancho="150" 
+				Columna titulo="Fecha creación" campo=Verificacion.fechaCreacion ancho="150"
+				Columna titulo="Fecha finalización" campo=Verificacion.fechaUltimaActualizacion ancho="150"
+				Columna titulo="Estado" campo=Verificacion.estado expandir
+			}
 		
-		Grupo giniciarVerificacion titulo="Iniciar la verificación" /*permiso=iniciarVerificacion*/ {
+		Grupo gVerificacionActual titulo="Acceder a la verificacion actual" permiso=hayVerificacionEnCurso {
+			Form verificacionActual {
+				Wiki {"Pulse el botón para acceder a la verificación que está actualmente en curso."}
+				Boton botonIraVerificacion titulo="Ir a verificación" pagina=Verificacion
+			}
+		}
+		}
+		Grupo gVerificacionNueva titulo="Crear una nueva verificación" permiso=noHayVerificacionEnCurso{
+			Form verificacionNueva {
+				Wiki {"Pulse el botón para crear una nueva verificación."}
+				Boton botonIniciarVerificacion titulo="Nueva verificación"
+			}
+		}
+	}
+	
+	Popup PopUpVerificacionVer ver titulo="Verificación" campo=SolicitudGenerica.verificaciones {
+		Texto expediente titulo="Expediente" campo=Verificacion.expediente
+		Texto exclusion titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion
+		Fecha fechaCreacion titulo="Fecha creación" campo=Verificacion.fechaCreacion
+		Fecha fechaActualizacion titulo="Fecha finalización" campo=Verificacion.fechaUltimaActualizacion
+		Combo estado titulo="Estado" campo=Verificacion.estado
+		Tabla documentosVerificacion titulo="Documentación" campo=Verificacion.documentos
+			popupVer=PopUpDocumentacionVerificacionVer  
+			{
+				Columna titulo="Tipo" campo=VerificacionDocumento.uriTipoDocumento ancho="150"
+				Columna titulo="Descripción" campo=VerificacionDocumento.descripcion ancho="150"
+				Columna titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion ancho="150" 
+				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion expandir
+			}
+	}
+	
+	Popup PopUpDocumentacionVerificacionVer ver titulo="Documentación" campo=Verificacion.documentos {
+		Texto titulo="Tipo" campo=VerificacionDocumento.uriTipoDocumento
+		Texto titulo="Descripción" campo=VerificacionDocumento.descripcion
+		Fecha titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion 
+		Combo titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
+		Tabla requerimientosVerificacion titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
+			popupVer=PopUpRequerimientosVerificacionVer  
+			{
+				Columna titulo="Código" campo=CodigoRequerimiento.codigo ancho="150"
+				Columna titulo="Descripción" campo=CodigoRequerimiento.descripcionCorta expandir
+			}
+	}
+	
+	Popup PopUpRequerimientosVerificacionVer ver titulo="Documentación" campo=VerificacionDocumento.codigosRequerimiento {
+		Texto codigo titulo="Código" campo=CodigoRequerimiento.codigo
+		Texto descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta
+		AreaTexto descripcion titulo="Descripción" campo=CodigoRequerimiento.descripcion
+	}
+	
+	/***************************************************************************************************/
+	
+
+	Pagina Verificacion titulo="Verificación de la documentación" noForm {
+//		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
+//			Wiki {"
+//Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
+//				"}
+//		}
+//	Grupo reiniciaVerificacion {
+//		Form reiniciarVerificacion {
+//			Wiki { "Esto es momentáneo" }
+//			Grupo permiso=noEditable {
+//				Combo titulo="Estado Verificacion" campo=SolicitudGenerica.verificacion.estado
+//			}
+//			Boton resetVerificacion titulo="Reiniciar la verificacion"
+//		}
+//	}
+
+		
+		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {
 			Form iniciarVerificacion {
+				Combo getTramitesCombo titulo="Seleccione el trámite" campo=SolicitudGenerica.verificacion.uriTramite
 				Wiki {"Si la solicitud está lista para iniciar la verificación, pulse el siguiente botón."}
 				Boton botonIniciarVerificacion titulo="Iniciar la verificación"
 			}
 		}
 		
+		Form nuevosDocumentos permiso=hayNuevaDocumentacionVerificacion{
+			Wiki{"Existen nuevos documentos aportados por el solicitante y que no están incluídos en la verificación actual.
+				  Por favor, pulse el siguiente botón para añadirlos a la verificación que está actualmente en curso."}
+			Boton adjuntarNuevosDocumentos titulo="Añadir nuevos documentos"
+		}
 		
-		Grupo verificacionProceso titulo="Verificación de la documentación" /*permiso=verificarDocumentos*/ { 
-			Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
-//				popupVer=PopUp:verificacionVer 
-//				popupModificar=PopUp:verificacionEditar 
-			{
-				Columna titulo="Tipo" campo=VerificacionDocumento.etiquetaTipoDocumento ancho="150"
-				Columna titulo="Descripción" campo=VerificacionDocumento.descripcion expandir
-				Columna titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion ancho="150" 
-				Columna titulo="Versión" campo=VerificacionDocumento.version ancho="50"
-				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
+		Grupo tiposProceso titulo="Verificación de Tipos de Documentos" permiso=verificarTiposDocumentos {
+			Tabla verificacionTipos titulo="Documentación Aún No Verificada" campo=SolicitudGenerica.documentacion.documentos
+				//permiso=documentosNoVerificados
+				popupModificar=PopUpDocTipos popupVer=PopUpDocTipos {
+				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
+				Columna campo=Documento.descripcion titulo="Tipo" expandir
+				Columna campo=Documento.verificado titulo="Verificado"
+				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
-			Tabla exclusion titulo="Exclusión" campo=SolicitudGenerica.verificacion.codigosExclusion 
+			Form verificaTipos {
+				Boton finalizaVerificarTipos titulo="Finaliza verificación de tipos"
+			}
+		}
+		
+		Grupo verificacionProceso titulo="Verificación de la documentación" permiso=verificarDocumentos { 
+			Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
+				popupVer=PopUpDocumentoVerificacionVer 
+				popupModificar=PopUpDocumentoVerificacionEditar 
+			{
+				//Columna titulo="Id" campo=VerificacionDocumento.id ancho="40"
+				Columna titulo="Fecha Presentación" campo=VerificacionDocumento.fechaPresentacion ancho="80"
+				Columna titulo="Descripcion" campo=VerificacionDocumento.descripcion expandir
+				Columna titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
+				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
+				Columna titulo="Multiplicidad" campo=VerificacionDocumento.identificadorMultiple ancho="80"
+				Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"
+				
+			}
+//			Tabla exclusion titulo="Exclusión" campo=SolicitudGenerica.verificacion.codigosExclusion 
 //				popupCrear=PopUp:exclusionCrear 
 //				popupBorrar=PopUp:exclusionBorrar
-			{
-				Columna titulo="Códigos de exclusion" campo=Exclusion.descripcionCorta expandir
-			}
-			Form gnuevoRequerimientoBorradorPreliminar { 
-				Boton obtenerBorradorPreliminar titulo="Obtener Borrador"
-			}
+//			{
+//				Columna titulo="Códigos de exclusion" campo=Exclusion.descripcionCorta expandir
+//			}
+//			Form gnuevoRequerimientoBorradorPreliminar { 
+//				Boton obtenerBorradorPreliminar titulo="Obtener Borrador"
+//			}
+
+//			// Borrar
+//			Form todosNoProcede {
+//				Boton docsNoProcede titulo="Todos No Procede"
+//			}
 			
-			Form finalizarTemporal {
-				Boton verificacionFinalizar titulo="Finalizar la verificación"
-				Wiki {"
-Nota: Finalizar la verificación es irreversible y cambiará el estado de la solicitud.
-					"}
+//			Form finalizarVerificacion {
+//				Boton verificacionFinalizar titulo="Finalizar la verificación"
+//				Wiki {"
+//Nota: Finalizar la verificación es irreversible y cambiará el estado de la solicitud.
+//					"}
+//			}
+		}
+		
+		
+		Grupo crearNuevoRequerimiento titulo="Requerimiento" permiso=verificacionCrearRequerimiento {
+			Form gCrearRequerimiento {
+				Boton crearRequerimientoBoton titulo="Crear Requerimiento"
 			}
 		}
 		
-		Grupo grequerimientos titulo="Requerimientos" /*permiso=verificacionRequerimientos*/ {
-			Grupo gnuevoRequerimiento titulo="Añadir requerimiento" /*permiso=nuevoRequerimiento*/ {				
-				Form grequerimientoGuardar { 
-					AreaTexto requerimientoCrearMotivo titulo="Motivo del requerimiento" campo=SolicitudGenerica.verificacion.requerimientoProceso.motivo
-					Boton requerimientoGuardar titulo="Guardar motivo del requerimiento"
-				}
-
-				Form frequerimientoSolicitaFirma {
-					Combo requerimientoCrearFirmante titulo="Persona que firma el requerimiento" campo=SolicitudGenerica.verificacion.requerimientoProceso.firmante
-					Boton requerimientoCrearSolicitarFirma titulo="Solicitar firma requerimiento"
-				}
-				
-				Form gnuevoRequerimientoBorrador { 
-					Boton obtenerBorradorRequerimiento titulo="Obtener Borrador"
-				}
-
-				Form grequerimientoFirmarRequerimiento /*permiso=firmarRequerimiento*/ {
-					Boton firmarRequerimiento titulo="Firmar, registrar y notificar"
-//					Firma firmarRequerimiento ActualizarForm="Verificacion" Titulo="Elija el certificado para firmar" TituloBoton="Firmar, registrar y notificar" CampoFirma="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.firma" CampoURI="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.uriDocRequerimiento" CampoURL="Solicitud.expediente.verificacionDocumentacion.requerimientoProceso.urlDocRequerimiento";
-				}
+		Grupo nuevosDocumentosTipos titulo="Verificación de Tipos de Documentos" permiso=verificacionConNuevosDoc {
+			Tabla verificacionTiposNuevosDoc titulo="Documentación Aún No Verificada" campo=SolicitudGenerica.verificacion.nuevosDocumentos
+				popupModificar=PopUpDocNuevosTipos popupVer=PopUpDocNuevosTipos {
+				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
+				Columna campo=Documento.descripcion titulo="Tipo" expandir
+				Columna campo=Documento.verificado titulo="Verificado"
+				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
-			
-			Tabla requerimientos titulo="Requerimientos" campo=SolicitudGenerica.verificacion.requerimientos
-//				popup=PopUp:requerimientoVer 
-			{
-				Columna titulo="Número Registro" campo=Requerimiento.numeroGeneralRegistroSalida
-				Columna titulo="Fecha Registro" campo=Requerimiento.fechaRegistroSalida
-				Columna titulo="Fecha Acceso" campo=Requerimiento.fechaAcceso
-				Columna titulo="Estado" campo=Requerimiento.estado
-				Columna titulo="Documento" campo=Requerimiento.justificante.uri
-			}
-			
-			Form gfinalizarRequerimiento /*permiso=finalizarRequerimiento*/ {
-				Boton verificacionFinalizarReq titulo="Finalizar Requerimiento Actual"
+			Form verificaTiposNuevosDoc {
+				Boton finalizaVerificarTipos titulo="Finaliza verificación de tipos"
 			}
 		}
-					
-		Tabla registros titulo="Aportación de documentación y subsanaciones" campo=SolicitudGenerica.documentacionAportada.documentos
-			popupVer=PopUpDocAportados
-		{
-			Columna campo=Documento.fechaSubida titulo="Fecha" expandir
-			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-		}			
+		
+
+		Grupo grequerimientos titulo="Requerimiento" permiso=noVisible /*permiso=verificacionRequerimientos*/ {				
+				Form grequerimientoGuardar { 
+					Grupo titulo="Añadir Motivo General del Requerimiento" {
+						AreaTexto requerimientoCrearMotivo titulo="Motivo del requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.motivo
+						Boton requerimientoGuardar titulo="Guardar motivo del requerimiento"
+					}
+				}
+				
+				// Esto debe aparecer al darle al boton finalizar REQUERIMIENTO
+                Form requerimientoBorrador permiso=borradorRequerimiento {
+                	Grupo titulo="Obtener borrador del Requerimiento"  { 
+                		Enlace campo=SolicitudGenerica.verificacion.requerimiento.borrador.urlDescarga titulo="Obtener Borrador" destino="_blank" estilo="boton"
+                	}
+                }
+				
+				Form frequerimientoSolicitaFirma permiso=solicitarFirmaRequerimiento {
+					Grupo titulo="Solicitar firma del Requerimiento"  { 
+						Combo requerimientoCrearFirmante titulo="Persona que firma el requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.firmante requerido
+						Boton requerimientoCrearSolicitarFirma titulo="Solicitar firma requerimiento"
+					}
+				}
+
+				Form grequerimientoFirmarRequerimiento permiso=firmarRequerimiento {
+					Grupo titulo="Firma del Requerimiento"  { 
+						FirmaSimple firmarRequerimiento titulo="Firmar, registrar y notificar" documento=SolicitudGenerica.verificacion.requerimiento.oficial
+					}
+				}
+			}	
 	}
 	
+	Popup PopUpDocTipos modificar ver titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {
+		EditarArchivoAed documentoProceso campo=Documento requerido
+	}
 	
+	Popup PopUpDocNuevosTipos modificar ver titulo="Documentación" campo=SolicitudGenerica.verificacion.nuevosDocumentos {
+		EditarArchivoAed documentoProceso campo=Documento requerido
+	}
 	
+	Popup PopUpDocumentoVerificacionEditar modificar titulo="Editar Documento" campo=SolicitudGenerica.verificacion.documentos {
+		Grupo botonDescarga visible=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
+			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
+		}
+		Grupo noEditable permiso=noEditable visible=false{
+			Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
+			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
+			Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
+			//Texto version titulo="Versión" campo=VerificacionDocumento.version	
+		}
+		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
+		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
+			Grupo requerimientoTexto visible=false mostrarSiCombo estado="noValido","noPresentado"{
+				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
+			}
+			Grupo requerimientoCodigos visible=false mostrarSiCombo estado="noValido" {
+				Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
+					popupCrear=PopUpDocumentoRequerimientosVerificacionModificar
+					popupModificar=PopUpDocumentoRequerimientosVerificacionModificar
+					popupVer=PopUpDocumentoRequerimientosVerificacion
+					popupBorrar=PopUpDocumentoRequerimientosVerificacion
+				{
+					Columna titulo="Código" campo=CodigoRequerimiento.codigo ancho="150"
+					Columna titulo="Descripción" campo=CodigoRequerimiento.descripcionCorta expandir
+				}
+			}
+		}
+	}
 	
+	Popup PopUpDocumentoVerificacionVer ver titulo="Ver Documento" campo=SolicitudGenerica.verificacion.documentos {
+		Grupo botonDescarga visible=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
+			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
+		}
+		Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
+		Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
+		Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
+		//Texto version titulo="Versión" campo=VerificacionDocumento.version	
+		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
+		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
+			Grupo requerimientoTexto visible=false mostrarSiCombo estado="noValido","noPresentado"{
+				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
+			}
+			Grupo requerimientoCodigos visible=false mostrarSiCombo estado="noValido" {
+				Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
+					popupVer=PopUpDocumentoRequerimientosVerificacion
+				{
+					Columna titulo="Código" campo=CodigoRequerimiento.codigo ancho="150"
+					Columna titulo="Descripción" campo=CodigoRequerimiento.descripcionCorta expandir
+				}
+			}
+		}
+	}
 	
+	Popup PopUpDocumentoRequerimientosVerificacion borrar ver titulo="Requerimiento" campo=VerificacionDocumento.codigosRequerimiento {
+		Texto codigo titulo="Código" campo=CodigoRequerimiento.codigo requerido
+		Texto descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta
+		AreaTexto descripcion titulo="Descripción" campo=CodigoRequerimiento.descripcion
+	}
+	
+	Popup PopUpDocumentoRequerimientosVerificacionModificar crear modificar titulo="Requerimiento" campo=VerificacionDocumento.codigosRequerimiento {
+		Combo codigo titulo="Código" campo=CodigoRequerimiento.codigo requerido
+	}
 	
 }

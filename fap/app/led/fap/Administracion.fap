@@ -71,6 +71,7 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 			Columna titulo="Aportado Por" campo=TipoDocumento.aportadoPor ancho="250"
 			Columna titulo="Obligatoriedad" campo=TipoDocumento.obligatoriedad ancho="250"
 			Columna titulo="URI" campo=TipoDocumento.uri ancho="600"
+			Columna titulo="Cardinalidad" campo=TipoDocumento.cardinalidad ancho="250"
 		}	
 	}
 	

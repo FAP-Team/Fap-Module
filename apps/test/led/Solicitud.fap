@@ -10,6 +10,7 @@ Formulario Solicitud {
 			Enlace "ErrorCombos" pagina=PaginaCombosError
 		}
 		
+		Enlace "Verificacion" pagina=Solicitud.AccesoVerificaciones
 		
 		Grupo "Solicitantes" {
 			Enlace "S. Normal" pagina=Solicitante
@@ -48,6 +49,11 @@ Formulario Solicitud {
 		Grupo "Otras" {
 			Enlace "Presentacion" pagina=Presentacion
 			Enlace "Documentacion" pagina=Documentacion
+		}
+		
+		Grupo "Instruccion" {
+			Enlace "Aportación" pagina=Solicitud.Aportacion
+			Enlace "Verificación" pagina=Solicitud.Verificacion
 		}
 		
 		Enlace "Salir" accion="fap.SecureController.logout"
@@ -95,7 +101,7 @@ Formulario Solicitud {
 	Pagina CombosOverwrite {
 		
 		Grupo titulo="Combos sobreescritos en el controlador manual" {
-			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)"
+			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)" requerido
 			Combo listaLong campo=Solicitud.comboTest.listOverwriteLong titulo="Combo manual (Long)"
 			Combo listaMultiple campo=Solicitud.comboTest.listMultipleOverwrite titulo="Combo múltiple manual (Set<String>)"
 			Combo listaMultipleLong campo=Solicitud.comboTest.listMultipleOverwriteLong titulo="Combo múltiple manual (Long<Long>)"
@@ -112,7 +118,7 @@ Formulario Solicitud {
 		}
 	}
 
-	Popup ComboTestRef campo=ComboTestRef {
+	Popup ComboTestRef campo=ComboTestRef permiso=administrador{
 		Texto campo=ComboTestRef.nombre
 	}
 	
@@ -159,7 +165,7 @@ Formulario Solicitud {
 	
 	Popup popupNombre2 campo=Solicitud.peta crear modificar borrar ver {
 		Texto campo=Peta.n titulo="Nombre"
-		Texto campo=Peta.d titulo="Apellido"
+		Texto campo=Peta.d titulo="Apellido" requerido
 		Texto campo=Peta.otro titulo="Otro contacto"
 		Combo campo=Peta.petador titulo="Petador"
 		Fecha campo=Peta.fecha titulo="Fecha"

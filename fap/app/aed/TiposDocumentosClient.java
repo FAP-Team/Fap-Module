@@ -12,7 +12,7 @@ import javax.xml.ws.Holder;
 import org.apache.log4j.Logger;
 
 import messages.Messages;
-import models.ObligatoriedadDocumentos;
+import models.CodigoRequerimiento;
 import models.Quartz;
 import models.Singleton;
 import models.TableKeyValue;
@@ -23,6 +23,7 @@ import play.db.jpa.JPAPlugin;
 import play.test.Fixtures;
 import properties.FapProperties;
 import tags.StringUtils;
+import utils.ObligatoriedadDocumentosFap;
 
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedPortType;
@@ -37,6 +38,8 @@ import es.gobcan.eadmon.procedimientos.ws.Procedimientos;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosInterface;
 import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaCodigosExclusion;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaCodigosRequerimiento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTiposDocumentosEnTramite;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTramites;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
@@ -104,12 +107,25 @@ public class TiposDocumentosClient {
 					tipoDocumentoDb.uri = tipoDocumento.getUri();
 					tipoDocumentoDb.aportadoPor = tipoDocumento.getAportadoPor().toString();
 					tipoDocumentoDb.obligatoriedad = tipoDocumento.getObligatoriedad().toString();
+					tipoDocumentoDb.tramitePertenece = tramite.getUri();
+					tipoDocumentoDb.cardinalidad = tipoDocumento.getCardinalidad().toString();
 					
 					//Consulta al WS de Tipos de Documentos la descripción
 					TipoDocumento td = tipos.obtenerTipoDocumento(tipoDocumento.getUri());
 					tipoDocumentoDb.nombre = td.getDescripcion();	
 					
 					tramitedb.documentos.add(tipoDocumentoDb);
+					
+					List<CodigoRequerimiento> codigosReq = getCodigosRequerimientos (tramite.getUri(), tipoDocumento.getUri());
+					for (CodigoRequerimiento codigo: codigosReq){
+						models.TiposCodigoRequerimiento tipoCodReqdb = new models.TiposCodigoRequerimiento();
+						tipoCodReqdb.codigo = codigo.codigo;
+						tipoCodReqdb.descripcion = codigo.descripcion;
+						tipoCodReqdb.descripcionCorta = codigo.descripcionCorta;
+						tipoCodReqdb.uriTipoDocumento = tipoDocumento.getUri();
+						tipoCodReqdb.uriTramite = tramite.getUri();
+						tipoCodReqdb.save();
+					}
 				}
 				
 				tramitedb.save();
@@ -202,13 +218,19 @@ public class TiposDocumentosClient {
 			boolean organismo = actualizarDocumentosDB(listaOrganismos, "tipoDocumentosOrganismos"+StringUtils.firstUpper(tramite.getNombre()));
 			boolean otrasEntidades = actualizarDocumentosDB(listaOtrasEntidades, "tipoDocumentosOtrasEntidades"+StringUtils.firstUpper(tramite.getNombre()));
 		
-			boolean obligatoriedad = actualizarObligatoriedadDocumentos(listaCiudadanos);
+			boolean obligatoriedad = actualizarObligatoriedadDocumentos(tramite.getNombre());
 		
 			result = result && todos && ciudadano && organismo && otrasEntidades && obligatoriedad;
 		}
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param lista
+	 * @param table
+	 * @return
+	 */
 	public static boolean actualizarDocumentosDB(List<TipoDocumentoEnTramite> lista, String table) {
 		JPAPlugin.startTx(false);
 		TableKeyValue.deleteTable(table);		
@@ -230,37 +252,79 @@ public class TiposDocumentosClient {
 	}
 
 	
-	public static boolean actualizarObligatoriedadDocumentos(List<TipoDocumentoEnTramite> lista) {
+	public static boolean actualizarObligatoriedadDocumentos(String tramite) {
 		JPAPlugin.startTx(false);
-    	ObligatoriedadDocumentos docObli = ObligatoriedadDocumentos.get(ObligatoriedadDocumentos.class);
-		try {
-			docObli.clear();
-			for(TipoDocumentoEnTramite tipoDoc : lista){
-				ObligatoriedadEnum obligatoriedad = tipoDoc.getObligatoriedad();
-				if (obligatoriedad == ObligatoriedadEnum.IMPRESCINDIBLE) {
-					docObli.imprescindibles.add(tipoDoc.getUri());
-				}
-				else if (obligatoriedad == ObligatoriedadEnum.OBLIGATORIO) {
-					docObli.obligatorias.add(tipoDoc.getUri());
-				}
-				else if (obligatoriedad == ObligatoriedadEnum.CONDICIONADO_AUTOMATICO) {
-					docObli.automaticas.add(tipoDoc.getUri());
-				}
-				else if (obligatoriedad == ObligatoriedadEnum.CONDICIONADO_MANUAL) {
-					docObli.manuales.add(tipoDoc.getUri());
-				}
-				else {
-					throw new NotFoundException("Tipo de obligatoriedad no encontrado ("+obligatoriedad.name()+")");
-				}
-			}
-			docObli.save();
-		}catch(Exception e){
-			log.error("Se produjo un error al asignar el tipo de obligatoriedad de los documentos", e);
-			JPAPlugin.closeTx(true);
-			return false;
-		}
+		long idTramite = models.Tramite.find("select id from Tramite where nombre=?", tramite).first();
+		ObligatoriedadDocumentosFap docObli = (ObligatoriedadDocumentosFap)ObligatoriedadDocumentosFap.find("select docObli from ObligatoriedadDocumentosFap docObli join docObli.tramite tramite where tramite.id=?", idTramite).first();
+    	if (docObli != null)
+    		docObli.delete();
+		ObligatoriedadDocumentosFap docObliNew = new ObligatoriedadDocumentosFap(tramite);
+		docObliNew.save();
 		JPAPlugin.closeTx(false);
 		return true;
 	}
+	
+	public static List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		String uriProcedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri");
+		
+		play.Logger.info("Obteniendo tipos de documento aportados por el ciudadano en el trámite "+tramite.uri);
+		List<TipoDocumentoEnTramite> listaTodos = new ArrayList<TipoDocumentoEnTramite>();
+		List<TipoDocumentoEnTramite> listaCiudadanos = new ArrayList<TipoDocumentoEnTramite>();
+		try {
+			listaTodos = procedimientos.consultarTiposDocumentosEnTramite(uriProcedimiento, tramite.uri).getTiposDocumentos();
+		} catch (ProcedimientosExcepcion e) {
+			play.Logger.error("No se han podido consultar los tipos de documentos aportados por el ciudadano: "+e.getMessage());
+			Messages.error("No se han podido consultar los tipos de documentos aportados por el ciudadano");
+		}
+		
+		for (TipoDocumentoEnTramite tipoDoc : listaTodos) {
+			if (tipoDoc.getAportadoPor() == AportadoPorEnum.CIUDADANO) {
+				listaCiudadanos.add(tipoDoc);
+			}			
+		}
+		
+		return listaCiudadanos;
+	}
+	
+	public static List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		List<TipoDocumento> tiposDocumentos = new ArrayList<TipoDocumento>();
+		List<TipoDocumentoEnTramite> listaCiudadanos = getTiposDocumentosAportadosCiudadano(tramite);
+		for (TipoDocumentoEnTramite tipoDoc : listaCiudadanos) {
+			try {
+				TipoDocumento tipoDocumento = tipos.obtenerTipoDocumento(tipoDoc.getUri());
+				tiposDocumentos.add(tipoDocumento);
+			} catch (TiposDocumentosExcepcion e) {
+				play.Logger.error("No se han podido obtener el tipo de Documento a partir de su uri: "+e.getMessage());
+				Messages.error("No se han podido obtener el tipo de Documento a partir de su uri");
+			}
+		}
+		return tiposDocumentos;
+	}
 
+	public static List<CodigoRequerimiento> getCodigosRequerimientos (String tramiteUri, String tipoDocumentoUri){
+		try {
+			ListaCodigosRequerimiento listaCodigos = procedimientos.consultarCodigosRequerimiento(FapProperties.get("fap.aed.procedimientos.procedimiento.uri"), tramiteUri, tipoDocumentoUri);
+			return fromListaCodigosRequerimientoWS2List(listaCodigos);
+		} catch (ProcedimientosExcepcion e) {
+			play.Logger.error("No se han podido obtener los codigos de exclusion asociados al tipo de Documento: "+e.getMessage());
+			Messages.error("No se han podido obtener los codigos de exclusion asociados al tipo de Documento");
+		}
+		return null;
+	}
+	
+	public static List<CodigoRequerimiento> fromListaCodigosRequerimientoWS2List(ListaCodigosRequerimiento listCodReq){
+        List<CodigoRequerimiento> list = new ArrayList<CodigoRequerimiento>();
+        
+        if(listCodReq != null){
+           for(es.gobcan.eadmon.procedimientos.ws.dominio.CodigoRequerimiento codReq : listCodReq.getCodigosRequerimiento()){
+              CodigoRequerimiento nuevo = new CodigoRequerimiento();
+              nuevo.codigo = codReq.getCodigo();
+              nuevo.descripcionCorta = codReq.getDescripcionCorta();
+              nuevo.descripcion = codReq.getDescripcion();
+              list.add(nuevo);
+           }
+        }
+        return list;
+	}
+	
 }

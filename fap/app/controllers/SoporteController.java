@@ -41,8 +41,15 @@ public class SoporteController extends SoporteControllerGen {
 		dbincidencia.fecha = df.format(new Date());
 
 		if(!validation.hasErrors()){
-			emails.Mails.enviar("incidencia",incidencia);
-			dbincidencia.save(); Logger.info("Guardando incidencia");
+			try {
+				emails.Mails.enviar("incidencia",incidencia);
+				dbincidencia.enviada=true;
+			} catch (Exception e){
+				dbincidencia.enviada=false;
+				play.Logger.error("Error al enviar el correo con la incidencia "+incidencia.id+": "+e);
+			}
+			dbincidencia.save(); 
+			Logger.info("Guardando incidencia");
 		}
 		incidenciaRender();
 	}

@@ -56,4 +56,4 @@ bc. Lista roles {
 
 Con el formato *clave: "Valor"*, así las comparaciones se harán con las claves (en minúscula), mientras que para mostrar en la aplicación utilizaremos el valor.
 
-Los permisos son mucho más potentes que lo que hemos explicado aquí, pudiendo referirnos a las entidades utilizadas en la aplicación, utilizar variables a partir de una consulta SQL, referirnos dentro de un permiso a otro, ... Más información sobre los mismos "aquí":permisos.
+Los permisos son mucho más potentes que lo que hemos explicado aquí, pudiendo referirnos a las entidades utilizadas en la aplicación, utilizar variables a partir de una consulta SQL, referirnos dentro de un permiso a otro, ... Más información sobre los mismos "aquí":app-permisos.

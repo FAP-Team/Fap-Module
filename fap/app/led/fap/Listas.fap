@@ -180,3 +180,32 @@ Lista estadoConvocatoria crearEnumerado {
 	presentacion : "Presentación"
 	instruccion : "Instrucción"	
 }
+
+Lista estadosVerificacion crearEnumerado {
+	iniciada: "Iniciada"
+	verificandoTipos: "Verificando Tipos Documento"
+	enVerificacion: "En Verificación"
+	enVerificacionNuevosDoc: "En Verificación con Nuevos Documentos"
+	enRequerimiento: "En Requerimiento"
+	enRequerido: "Requerido"
+	plazoVencido: "Plazo Vencido"
+	verificacionPositiva: "Verificación Positiva"
+	verificacionNegativa: "Verificación Negativa"
+	enRequerimientoFirmaSolicitada: "Firma Solicitada"
+}
+
+Lista estadosDocumentoVerificacion crearEnumerado {
+	noPresentado: "No Presentado"
+	noVerificado: "No Verificado"
+	noProcede: "No Procede"
+	valido: "Válido"
+	noValido: "No Valido"
+}
+
+Lista estadosRequerimiento crearEnumerado {
+	creado: "Creado"
+	firmado: "Firmado"
+	registrado: "Registrado"
+	notificado: "Notificado"
+	clasificado: "Clasificado"
+}

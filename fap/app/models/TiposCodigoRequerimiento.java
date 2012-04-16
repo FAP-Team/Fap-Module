@@ -22,31 +22,27 @@ import java.text.SimpleDateFormat;
 
 
 @Entity
-public class TipoDocumento extends Model {
+public class TiposCodigoRequerimiento extends Model {
 	// Código de los atributos
 	
 	
-	public String uri;
+	public String codigo;
+	
+	
+	@Column(columnDefinition="LONGTEXT")
+	public String descripcion;
 	
 	
 	
-	public String nombre;
+	public String descripcionCorta;
 	
 	
 	
-	public String aportadoPor;
+	public String uriTramite;
 	
 	
 	
-	public String obligatoriedad;
-	
-	
-	
-	public String tramitePertenece;
-	
-	
-	
-	public String cardinalidad;
+	public String uriTipoDocumento;
 	
 	
 

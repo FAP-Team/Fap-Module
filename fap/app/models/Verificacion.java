@@ -33,6 +33,11 @@ public class Verificacion extends Model {
 	public String uriProcedimiento;
 	
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@Transient
+	public Tramite tramiteNombre;
+	
+	
 	
 	public String uriTramite;
 	
@@ -41,14 +46,18 @@ public class Verificacion extends Model {
 	public String expediente;
 	
 	
-	
+	@ValueFromTable("estadosVerificacion")
 	public String estado;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_documentos")
-	@Transient
 	public List<VerificacionDocumento> documentos;
+	
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="verificacion_nuevosdocumentos")
+	public List<Documento> nuevosDocumentos;
 	
 	
 	
@@ -61,17 +70,11 @@ public class Verificacion extends Model {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_codigosexclusion")
-	@Transient
 	public List<Exclusion> codigosExclusion;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	public Requerimiento requerimientoProceso;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="verificacion_requerimientos")
-	public List<Requerimiento> requerimientos;
+	public Requerimiento requerimiento;
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaCreacion"),@Column(name="fechaCreacionTZ")})
@@ -92,26 +95,38 @@ public class Verificacion extends Model {
 	public void init(){
 		
 		
+							if (tramiteNombre != null)
+								tramiteNombre.init();	
+						
 						if (documentos == null)
 							documentos = new ArrayList<VerificacionDocumento>();
+						
+						if (nuevosDocumentos == null)
+							nuevosDocumentos = new ArrayList<Documento>();
 						
 						if (codigosExclusion == null)
 							codigosExclusion = new ArrayList<Exclusion>();
 						
-							if (requerimientoProceso == null)
-								requerimientoProceso = new Requerimiento();
+							if (requerimiento == null)
+								requerimiento = new Requerimiento();
 							else
-								requerimientoProceso.init();
-						
-						if (requerimientos == null)
-							requerimientos = new ArrayList<Requerimiento>();
+								requerimiento.init();
 						
 	}
 		
 	
 
 // === MANUAL REGION START ===
-			
+//	public String getUriTramite () {
+//		return tramiteNombre.uri;
+//	}
+	
+	public Tramite getTramiteNombre () {
+		if (uriTramite == null)
+			return null;
+		Tramite tramite = Tramite.find("select tramite from Tramite tramite where tramite.uri=?", uriTramite).first();
+		return tramite;
+	}
 // === MANUAL REGION END ===
 	
 	

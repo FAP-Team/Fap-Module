@@ -75,6 +75,10 @@ public class Documento extends Model {
 	public String urlDescarga;
 	
 	
+	
+	public Boolean verificado;
+	
+	
 
 	public void init(){
 		

@@ -33,7 +33,7 @@ public class Requerimiento extends Model {
 	public String urlDocRequerimiento;
 	
 	
-	
+	@ValueFromTable("estadosRequerimiento")
 	public String estado;
 	
 	
@@ -68,7 +68,15 @@ public class Requerimiento extends Model {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public InformacionRegistro informacionRegistro;
+	
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Documento oficial;
+	
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Documento borrador;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
@@ -135,10 +143,20 @@ public class Requerimiento extends Model {
 	public void init(){
 		
 		
+							if (informacionRegistro == null)
+								informacionRegistro = new InformacionRegistro();
+							else
+								informacionRegistro.init();
+						
 							if (oficial == null)
 								oficial = new Documento();
 							else
 								oficial.init();
+						
+							if (borrador == null)
+								borrador = new Documento();
+							else
+								borrador.init();
 						
 							if (justificante == null)
 								justificante = new Documento();

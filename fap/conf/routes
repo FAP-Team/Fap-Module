@@ -116,6 +116,11 @@ GET /Principal/solicitudes SolicitudesController.index
 
 GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
 POST /Principal/solicitudes/nuevaSolicitud SolicitudesController.nuevaSolicitud
+GET /Solicitud/accesoverificaciones AccesoVerificacionesController.index
+
+POST /Solicitud/accesoverificaciones/verificacionActual AccesoVerificacionesController.verificacionActual
+GET /Solicitud/accesoverificaciones/verificacionesFinalizadas AccesoVerificacionesController.tablaverificacionesFinalizadas
+POST /Solicitud/accesoverificaciones/verificacionNueva AccesoVerificacionesController.verificacionNueva
 GET /Solicitud/aportacion AportacionController.index
 
 POST /Solicitud/aportacion/addDocumento AportacionController.addDocumento
@@ -141,6 +146,12 @@ POST /Solicitud/popupdocaportados/{idEntidad}/borrar popups.PopUpDocAportadosCon
 POST /Solicitud/popupdocaportados/{idEntidad}/crear popups.PopUpDocAportadosController.crear
 POST /Solicitud/popupdocaportados/{idEntidad}/cancelarcrear popups.PopUpDocAportadosController.cancelarCrear
 
+GET /Solicitud/popupdocnuevostipos/{idEntidad}/abrir popups.PopUpDocNuevosTiposController.abrir
+POST /Solicitud/popupdocnuevostipos/{idEntidad}/editar popups.PopUpDocNuevosTiposController.editar
+POST /Solicitud/popupdocnuevostipos/{idEntidad}/borrar popups.PopUpDocNuevosTiposController.borrar
+POST /Solicitud/popupdocnuevostipos/{idEntidad}/crear popups.PopUpDocNuevosTiposController.crear
+POST /Solicitud/popupdocnuevostipos/{idEntidad}/cancelarcrear popups.PopUpDocNuevosTiposController.cancelarCrear
+
 GET /Solicitud/popupdocpresentados/{idEntidad}/abrir popups.PopUpDocPresentadosController.abrir
 POST /Solicitud/popupdocpresentados/{idEntidad}/editar popups.PopUpDocPresentadosController.editar
 POST /Solicitud/popupdocpresentados/{idEntidad}/borrar popups.PopUpDocPresentadosController.borrar
@@ -153,20 +164,72 @@ POST /Solicitud/popupdocprocesos/{idEntidad}/borrar popups.PopUpDocProcesosContr
 POST /Solicitud/popupdocprocesos/{idEntidad}/crear popups.PopUpDocProcesosController.crear
 POST /Solicitud/popupdocprocesos/{idEntidad}/cancelarcrear popups.PopUpDocProcesosController.cancelarCrear
 
+GET /Solicitud/popupdoctipos/{idEntidad}/abrir popups.PopUpDocTiposController.abrir
+POST /Solicitud/popupdoctipos/{idEntidad}/editar popups.PopUpDocTiposController.editar
+POST /Solicitud/popupdoctipos/{idEntidad}/borrar popups.PopUpDocTiposController.borrar
+POST /Solicitud/popupdoctipos/{idEntidad}/crear popups.PopUpDocTiposController.crear
+POST /Solicitud/popupdoctipos/{idEntidad}/cancelarcrear popups.PopUpDocTiposController.cancelarCrear
+
+GET /Solicitud/popupdocumentacionverificacionver/{idEntidad}/abrir popups.PopUpDocumentacionVerificacionVerController.abrir
+POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/editar popups.PopUpDocumentacionVerificacionVerController.editar
+POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/borrar popups.PopUpDocumentacionVerificacionVerController.borrar
+POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/crear popups.PopUpDocumentacionVerificacionVerController.crear
+POST /Solicitud/popupdocumentacionverificacionver/{idEntidad}/cancelarcrear popups.PopUpDocumentacionVerificacionVerController.cancelarCrear
+
+GET /Solicitud/popupdocumentacionverificacionver/{idEntidad}/requerimientosVerificacion popups.PopUpDocumentacionVerificacionVerController.tablarequerimientosVerificacion
+GET /Solicitud/popupdocumentorequerimientosverificacion/{idEntidad}/abrir popups.PopUpDocumentoRequerimientosVerificacionController.abrir
+POST /Solicitud/popupdocumentorequerimientosverificacion/{idEntidad}/editar popups.PopUpDocumentoRequerimientosVerificacionController.editar
+POST /Solicitud/popupdocumentorequerimientosverificacion/{idEntidad}/borrar popups.PopUpDocumentoRequerimientosVerificacionController.borrar
+POST /Solicitud/popupdocumentorequerimientosverificacion/{idEntidad}/crear popups.PopUpDocumentoRequerimientosVerificacionController.crear
+POST /Solicitud/popupdocumentorequerimientosverificacion/{idEntidad}/cancelarcrear popups.PopUpDocumentoRequerimientosVerificacionController.cancelarCrear
+
+GET /Solicitud/popupdocumentorequerimientosverificacionmodificar/{idEntidad}/abrir popups.PopUpDocumentoRequerimientosVerificacionModificarController.abrir
+POST /Solicitud/popupdocumentorequerimientosverificacionmodificar/{idEntidad}/editar popups.PopUpDocumentoRequerimientosVerificacionModificarController.editar
+POST /Solicitud/popupdocumentorequerimientosverificacionmodificar/{idEntidad}/borrar popups.PopUpDocumentoRequerimientosVerificacionModificarController.borrar
+POST /Solicitud/popupdocumentorequerimientosverificacionmodificar/{idEntidad}/crear popups.PopUpDocumentoRequerimientosVerificacionModificarController.crear
+POST /Solicitud/popupdocumentorequerimientosverificacionmodificar/{idEntidad}/cancelarcrear popups.PopUpDocumentoRequerimientosVerificacionModificarController.cancelarCrear
+
+GET /Solicitud/popupdocumentoverificacioneditar/{idEntidad}/abrir popups.PopUpDocumentoVerificacionEditarController.abrir
+POST /Solicitud/popupdocumentoverificacioneditar/{idEntidad}/editar popups.PopUpDocumentoVerificacionEditarController.editar
+POST /Solicitud/popupdocumentoverificacioneditar/{idEntidad}/borrar popups.PopUpDocumentoVerificacionEditarController.borrar
+POST /Solicitud/popupdocumentoverificacioneditar/{idEntidad}/crear popups.PopUpDocumentoVerificacionEditarController.crear
+POST /Solicitud/popupdocumentoverificacioneditar/{idEntidad}/cancelarcrear popups.PopUpDocumentoVerificacionEditarController.cancelarCrear
+
+GET /Solicitud/popupdocumentoverificacioneditar/{idEntidad}/requerimientosDocumento popups.PopUpDocumentoVerificacionEditarController.tablarequerimientosDocumento
+GET /Solicitud/popupdocumentoverificacionver/{idEntidad}/abrir popups.PopUpDocumentoVerificacionVerController.abrir
+POST /Solicitud/popupdocumentoverificacionver/{idEntidad}/editar popups.PopUpDocumentoVerificacionVerController.editar
+POST /Solicitud/popupdocumentoverificacionver/{idEntidad}/borrar popups.PopUpDocumentoVerificacionVerController.borrar
+POST /Solicitud/popupdocumentoverificacionver/{idEntidad}/crear popups.PopUpDocumentoVerificacionVerController.crear
+POST /Solicitud/popupdocumentoverificacionver/{idEntidad}/cancelarcrear popups.PopUpDocumentoVerificacionVerController.cancelarCrear
+
+GET /Solicitud/popupdocumentoverificacionver/{idEntidad}/requerimientosDocumento popups.PopUpDocumentoVerificacionVerController.tablarequerimientosDocumento
+GET /Solicitud/popuprequerimientosverificacionver/{idEntidad}/abrir popups.PopUpRequerimientosVerificacionVerController.abrir
+POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/editar popups.PopUpRequerimientosVerificacionVerController.editar
+POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/borrar popups.PopUpRequerimientosVerificacionVerController.borrar
+POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/crear popups.PopUpRequerimientosVerificacionVerController.crear
+POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/cancelarcrear popups.PopUpRequerimientosVerificacionVerController.cancelarCrear
+
+GET /Solicitud/popupverificacionver/{idEntidad}/abrir popups.PopUpVerificacionVerController.abrir
+POST /Solicitud/popupverificacionver/{idEntidad}/editar popups.PopUpVerificacionVerController.editar
+POST /Solicitud/popupverificacionver/{idEntidad}/borrar popups.PopUpVerificacionVerController.borrar
+POST /Solicitud/popupverificacionver/{idEntidad}/crear popups.PopUpVerificacionVerController.crear
+POST /Solicitud/popupverificacionver/{idEntidad}/cancelarcrear popups.PopUpVerificacionVerController.cancelarCrear
+
+GET /Solicitud/popupverificacionver/{idEntidad}/documentosVerificacion popups.PopUpVerificacionVerController.tabladocumentosVerificacion
 GET /Solicitud/verificacion VerificacionController.index
 
-GET /Solicitud/verificacion/exclusion VerificacionController.tablaexclusion
-POST /Solicitud/verificacion/finalizarTemporal VerificacionController.finalizarTemporal
 POST /Solicitud/verificacion/frequerimientoSolicitaFirma VerificacionController.frequerimientoSolicitaFirma
-POST /Solicitud/verificacion/gfinalizarRequerimiento VerificacionController.gfinalizarRequerimiento
-POST /Solicitud/verificacion/gnuevoRequerimientoBorrador VerificacionController.gnuevoRequerimientoBorrador
-POST /Solicitud/verificacion/gnuevoRequerimientoBorradorPreliminar VerificacionController.gnuevoRequerimientoBorradorPreliminar
+POST /Solicitud/verificacion/gCrearRequerimiento VerificacionController.gCrearRequerimiento
 POST /Solicitud/verificacion/grequerimientoFirmarRequerimiento VerificacionController.grequerimientoFirmarRequerimiento
 POST /Solicitud/verificacion/grequerimientoGuardar VerificacionController.grequerimientoGuardar
 POST /Solicitud/verificacion/iniciarVerificacion VerificacionController.iniciarVerificacion
-GET /Solicitud/verificacion/registros VerificacionController.tablaregistros
-GET /Solicitud/verificacion/requerimientos VerificacionController.tablarequerimientos
+POST /Solicitud/verificacion/nuevosDocumentos VerificacionController.nuevosDocumentos
+POST /Solicitud/verificacion/requerimientoBorrador VerificacionController.requerimientoBorrador
 GET /Solicitud/verificacion/verificacionDocumentos VerificacionController.tablaverificacionDocumentos
+GET /Solicitud/verificacion/verificacionTipos VerificacionController.tablaverificacionTipos
+GET /Solicitud/verificacion/verificacionTiposNuevosDoc VerificacionController.tablaverificacionTiposNuevosDoc
+POST /Solicitud/verificacion/verificaTipos VerificacionController.verificaTipos
+POST /Solicitud/verificacion/verificaTiposNuevosDoc VerificacionController.verificaTiposNuevosDoc
 GET /Soporte/soporte SoporteController.index
 
 POST /Soporte/soporte/incidencia SoporteController.incidencia

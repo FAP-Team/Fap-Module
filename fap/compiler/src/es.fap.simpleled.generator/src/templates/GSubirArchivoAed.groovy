@@ -112,6 +112,7 @@ public class GSubirArchivoAed {
 		
 		return """
 			if(${subirArchivoAed.name} == null) validation.addError("${subirArchivoAed.name}", "Archivo requerido");
+			else if (${subirArchivoAed.name}.length() > FapProperties.getLong("fap.file.maxsize")) validation.addError("${subirArchivoAed.name}", "Tamaño del archivo superior al máximo permitido ("+org.apache.commons.io.FileUtils.byteCountToDisplaySize(FapProperties.getLong("fap.file.maxsize"))+")");
 			else{
 				${checkFile}
 			}

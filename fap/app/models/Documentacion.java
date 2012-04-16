@@ -67,7 +67,20 @@ public class Documentacion extends Model {
 	
 
 // === MANUAL REGION START ===
-
+	/**
+	 * Devuelve los documentos que no hayan sido verificados o una lista vacía
+	 * en caso de que no haya documentos que no hayan sido verificados.
+	 * @return 
+	 */
+	public List<Documento> getDocumentosNoVerificados () {
+		List<Documento> docNoVerificados = new ArrayList<Documento>();
+		for (Documento doc: documentos) {
+			if (!doc.verificado) {
+				docNoVerificados.add(doc);
+			}
+		}
+		return docNoVerificados;
+	}
 // === MANUAL REGION END ===
 	
 	

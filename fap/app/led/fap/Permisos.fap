@@ -30,6 +30,12 @@ when
 	agente != null
 then 
 	grant
+
+rule noVisible
+when
+	agente != null or agente = null
+then
+	deny
 		
 // Permisos de la pag presentacion
 rule presentacionPrepararParaFirmar
@@ -390,9 +396,33 @@ vars
 when
 	(action in ("read", "update")) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
-	(solicitud.estado = "iniciada")
+	(solicitud.estado = "iniciada") and
+	(solicitud.verificacion.estado != null and solicitud.verificacion.estado = "iniciada")
 then
 	grant
+
+rule verificarTiposDocumentos
+vars
+	SolicitudGenerica solicitud
+when
+	(action in ("read", "update")) and 
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+	(solicitud.estado = "iniciada") and
+	(solicitud.verificacion.estado != null and solicitud.verificacion.estado = "verificandoTipos")
+then
+	grant
+
+//rule documentosNoVerificados
+//vars
+//	SolicitudGenerica solicitud
+//	Documento documento : sql("select d from Documento d where d.agente=? AND p.solicitud=?", agente, solicitud)
+//when
+//	(action in ("read", "update")) and 
+//	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+//	(solicitud.estado = "iniciada") and
+//	(solicitud.verificacion.)
+//then
+//	grant
 
 rule verificarDocumentos
 vars
@@ -401,13 +431,17 @@ when
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 	(
 		(
-			(action = "read") and 
-			(solicitud.estado in ("requerida", "pendiente requerimiento", "requerida plazo vencido", "en verificacion"))
+			(action = "read")
+			and (solicitud.estado = "iniciada")
+			and solicitud.verificacion.estado != null
+			and solicitud.verificacion.estado = "enVerificacion"
 		)
 		or
 		(
 			(action = "update") and
-			(solicitud.estado = "en verificacion") 
+			(solicitud.estado = "iniciada")
+			and solicitud.verificacion.estado != null
+			and solicitud.verificacion.estado = "enVerificacion" 
 		)
 	)
 then 
@@ -419,7 +453,8 @@ vars
 when
 	(action in ("read", "update")) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
-	(solicitud.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido"))
+	(solicitud.estado in ("iniciada"))
+	and solicitud.verificacion.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
 then
 	grant
 
@@ -438,7 +473,10 @@ rule firmarRequerimiento
 vars
 	SolicitudGenerica solicitud
 when
-	(solicitud.estado = "pendiente requerimiento") and
+	(solicitud.estado = "iniciada") and
+	(solicitud.verificacion.estado != null)
+	and solicitud.verificacion.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+	and
 	(
 		(
 			(action = "read") and 
@@ -516,5 +554,75 @@ when
 	tableKeyValue.table = "estadosSolicitudUsuario"
 	and
 	agente.rolActivo = "administrador"
+then
+	grant
+
+rule noHayVerificacionEnCurso
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado = null) 
+then
+    grant
+	
+rule hayVerificacionEnCurso
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado != null) 
+then
+    grant
+    
+rule verificacionConNuevosDoc
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado != null) and (solicitud.verificacion.estado = "enVerificacionNuevosDoc") 
+then
+    grant
+
+rule verificacionCrearRequerimiento
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor"))
+	and solicitud.verificacion.estado != null
+	and solicitud.verificacion.estado = "enRequerimientoSinRequerimiento"
+then
+	grant
+
+rule solicitarFirmaRequerimiento
+vars
+	SolicitudGenerica solicitud
+when
+	(action = "update"
+	and (agente.rolActivo in ("administrador", "gestor", "revisor"))
+	and solicitud.verificacion.estado != null
+	and solicitud.verificacion.estado in ("enRequerimiento"))
+	or
+	(action = "read"
+	and (agente.rolActivo in ("administrador", "gestor", "revisor"))
+	and solicitud.verificacion.estado != null	
+	and solicitud.verificacion.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada"))
+then
+	grant
+
+rule borradorRequerimiento
+vars
+	SolicitudGenerica solicitud
+when
+	(agente.rolActivo in ("administrador", "gestor", "revisor"))
+	and solicitud.verificacion.estado != null
+	and solicitud.verificacion.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+then
+	grant
+	
+// Permiso fantasma, ya que va a ser sobrescrito para su uso.
+// Lo que en verdad está declarado no es lo que hace.
+// Este permiso comprueba que no haya documentación nueva adjuntada por el solicitante
+// y que no esté en la verificación actual.
+rule hayNuevaDocumentacionVerificacion
+when
+	agente.rolActivo != null
 then
 	grant

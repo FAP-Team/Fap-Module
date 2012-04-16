@@ -107,8 +107,11 @@ public class GPagina {
 			#{/fap.permiso}
 			#{/fap.messages}
 			#{/fap.permiso}
-			#{if play.getVirtualFile("../../public/javascripts/$formulario/$titulo"+".js") != null}
-            	#{script '../../public/javascripts/${formulario}/${titulo}.js' /}
+			#{if play.getVirtualFile("public/javascripts/$formulario/${pagina.name}"+".js") != null}
+            	#{script '../../public/javascripts/${formulario}/${pagina.name}.js' /}
+			#{/if}
+			#{if play.getVirtualFile("app/views/manualEndPage/$formulario/${pagina.name}"+".html") != null}
+            	#{include 'manualEndPage/${formulario}/${pagina.name}.html' /}
 			#{/if}
 		"""
 
@@ -165,6 +168,7 @@ public class GPagina {
 			import messages.Messages;
 			import java.lang.reflect.Field;
 			import utils.GestorDocumentalUtils;
+			import properties.FapProperties;
 
 			import security.Secure;
 			import javax.inject.Inject;

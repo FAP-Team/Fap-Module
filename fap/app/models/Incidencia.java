@@ -53,6 +53,10 @@ public class Incidencia extends Model {
 	public String texto;
 	
 	
+	
+	public Boolean enviada;
+	
+	
 
 	public void init(){
 		

@@ -124,8 +124,9 @@ Formulario Solicitud {
 	/***************************************************************************************************/
 	
 	Pagina AccesoVerificaciones titulo="Verificaciones" noForm {
-		Tabla verificacionesFinalizadas titulo="Verificaciones Finalizadas" campo=SolicitudGenerica.verificaciones
-			popupVer=PopUpVerificacionVer  
+		Grupo fantasma permiso=noVisible{
+			Tabla verificacionesFinalizadas titulo="Verificaciones Finalizadas" campo=SolicitudGenerica.verificaciones
+			popupVer=PopUpVerificacionVer
 			{
 				Columna titulo="Expediente" campo=Verificacion.expediente ancho="150"
 				Columna titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion ancho="150" 
@@ -133,13 +134,14 @@ Formulario Solicitud {
 				Columna titulo="Fecha finalización" campo=Verificacion.fechaUltimaActualizacion ancho="150"
 				Columna titulo="Estado" campo=Verificacion.estado expandir
 			}
+		
 		Grupo gVerificacionActual titulo="Acceder a la verificacion actual" permiso=hayVerificacionEnCurso {
 			Form verificacionActual {
 				Wiki {"Pulse el botón para acceder a la verificación que está actualmente en curso."}
 				Boton botonIraVerificacion titulo="Ir a verificación" pagina=Verificacion
 			}
 		}
-		
+		}
 		Grupo gVerificacionNueva titulo="Crear una nueva verificación" permiso=noHayVerificacionEnCurso{
 			Form verificacionNueva {
 				Wiki {"Pulse el botón para crear una nueva verificación."}
@@ -192,15 +194,15 @@ Formulario Solicitud {
 //Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
 //				"}
 //		}
-	Grupo reiniciaVerificacion {
-		Form reiniciarVerificacion {
-			Wiki { "Esto es momentáneo" }
-			Grupo permiso=noEditable {
-				Combo titulo="Estado Verificacion" campo=SolicitudGenerica.verificacion.estado
-			}
-			Boton resetVerificacion titulo="Reiniciar la verificacion"
-		}
-	}
+//	Grupo reiniciaVerificacion {
+//		Form reiniciarVerificacion {
+//			Wiki { "Esto es momentáneo" }
+//			Grupo permiso=noEditable {
+//				Combo titulo="Estado Verificacion" campo=SolicitudGenerica.verificacion.estado
+//			}
+//			Boton resetVerificacion titulo="Reiniciar la verificacion"
+//		}
+//	}
 
 		
 		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {
@@ -209,6 +211,12 @@ Formulario Solicitud {
 				Wiki {"Si la solicitud está lista para iniciar la verificación, pulse el siguiente botón."}
 				Boton botonIniciarVerificacion titulo="Iniciar la verificación"
 			}
+		}
+		
+		Form nuevosDocumentos permiso=hayNuevaDocumentacionVerificacion{
+			Wiki{"Existen nuevos documentos aportados por el solicitante y que no están incluídos en la verificación actual.
+				  Por favor, pulse el siguiente botón para añadirlos a la verificación que está actualmente en curso."}
+			Boton adjuntarNuevosDocumentos titulo="Añadir nuevos documentos"
 		}
 		
 		Grupo tiposProceso titulo="Verificación de Tipos de Documentos" permiso=verificarTiposDocumentos {
@@ -248,17 +256,17 @@ Formulario Solicitud {
 //				Boton obtenerBorradorPreliminar titulo="Obtener Borrador"
 //			}
 
-			// Borrar
-			Form todosNoProcede {
-				Boton docsNoProcede titulo="Todos No Procede"
-			}
+//			// Borrar
+//			Form todosNoProcede {
+//				Boton docsNoProcede titulo="Todos No Procede"
+//			}
 			
-			Form finalizarVerificacion {
-				Boton verificacionFinalizar titulo="Finalizar la verificación"
-				Wiki {"
-Nota: Finalizar la verificación es irreversible y cambiará el estado de la solicitud.
-					"}
-			}
+//			Form finalizarVerificacion {
+//				Boton verificacionFinalizar titulo="Finalizar la verificación"
+//				Wiki {"
+//Nota: Finalizar la verificación es irreversible y cambiará el estado de la solicitud.
+//					"}
+//			}
 		}
 		
 		
@@ -328,7 +336,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 			Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
 			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
 			Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
-			Texto version titulo="Versión" campo=VerificacionDocumento.version	
+			//Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		}
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
 		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
@@ -356,7 +364,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 		Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
 		Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
 		Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
-		Texto version titulo="Versión" campo=VerificacionDocumento.version	
+		//Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
 		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
 			Grupo requerimientoTexto visible=false mostrarSiCombo estado="noValido","noPresentado"{

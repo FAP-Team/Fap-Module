@@ -31,7 +31,6 @@ when
 then 
 	grant
 
-
 rule noVisible
 when
 	agente != null or agente = null
@@ -615,5 +614,15 @@ when
 	(agente.rolActivo in ("administrador", "gestor", "revisor"))
 	and solicitud.verificacion.estado != null
 	and solicitud.verificacion.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+then
+	grant
+	
+// Permiso fantasma, ya que va a ser sobrescrito para su uso.
+// Lo que en verdad está declarado no es lo que hace.
+// Este permiso comprueba que no haya documentación nueva adjuntada por el solicitante
+// y que no esté en la verificación actual.
+rule hayNuevaDocumentacionVerificacion
+when
+	agente.rolActivo != null
 then
 	grant

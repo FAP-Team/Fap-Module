@@ -21,7 +21,7 @@ public class EnvioMailsController extends EnvioMailsControllerGen {
 		Solicitud dbSolicitud = EnvioMailsController.getSolicitud(idSolicitud);
 
 		if (!Messages.hasErrors()) {
-			EnvioMailsController.enviarMailValidateRules(dbSolicitud);
+			EnvioMailsController.enviarMailValidateRules();
 		}
 		if (!Messages.hasErrors()) {
 			Map<String, Object> argsVacios = new HashMap<String, Object>();

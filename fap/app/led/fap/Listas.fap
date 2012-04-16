@@ -207,4 +207,5 @@ Lista estadosRequerimiento crearEnumerado {
 	firmado: "Firmado"
 	registrado: "Registrado"
 	notificado: "Notificado"
+	clasificado: "Clasificado"
 }

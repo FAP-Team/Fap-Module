@@ -311,4 +311,49 @@ public class PlatinoRegistro {
 		return dateTime;
 	}
 	
+	/**
+	 * TODO: Registrar de Salida los datos
+	 * @param datosRegistro
+	 * @return
+	 * @throws Exception
+	 */
+	public static JustificanteRegistro registroDeSalida(DatosRegistro datosRegistro) throws Exception {
+//		log.info("Preparando registro de salida");
+//		String datosAFirmar = obtenerDatosAFirmarRegisto(datosRegistro);
+//		log.info(datosAFirmar);
+//		
+//		String datosFirmados = FirmaClient.firmarPKCS7(datosAFirmar.getBytes("iso-8859-1"));
+//		log.info("Datos normalizados firmados");
+//		
+//		// 6) Registrar
+//		try {	
+//			JustificanteRegistro justificante = registroDeSalida(datosAFirmar, datosFirmados);
+//			log.info("Registro de salida realizado con justificante con NDE " + justificante.getNDE() + " Numero Registro General: " + justificante.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificante.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificante.getDatosFirmados().getNúmeroRegistro().getNumOficina());
+//			log.info("RegistrarSalida -> EXIT OK");
+//			return justificante;
+//		} catch (Exception e) {
+//			log.error("Error al obtener el justificante y EXIT "+e);
+//			log.error("RegistrarSalida -> EXIT ERROR");
+//			throw e;
+//		}
+		return null;
+	}
+	
+	/**
+	 * TODO
+	 * @param datosAFirmar
+	 * @param datosFirmados
+	 * @return
+	 * @throws Exception
+	 */
+	public static JustificanteRegistro registroDeSalida(String datosAFirmar, String datosFirmados) throws Exception{
+//		// Se realiza el registro de Salida, obteniendo el justificante
+//		String username = FapProperties.get("fap.platino.registro.username");
+//		String password = FapProperties.get("fap.platino.registro.password");
+//		String aliasServidor = FapProperties.get("fap.platino.registro.aliasServidor");
+//		
+//		String passwdEncripted = PlatinoSecurityUtils.encriptarPassword(password);
+//		return registro.registrarSalida(username, passwdEncripted, datosAFirmar, datosFirmados, aliasServidor, null);
+		return null;
+	}
 }

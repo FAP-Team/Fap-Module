@@ -358,7 +358,7 @@ public class VerificacionController extends VerificacionControllerGen {
 				/// 2. Registrar el requerimiento
 				if(!Messages.hasErrors() && solicitud.verificacion.requerimiento.estado.equals(EstadosRequerimientoEnum.firmado.name())) {
 					try {
-						RegistroService.registrarRequerimientoActual(solicitud);
+						RegistroService.registrarSalidaRequerimientoActual(solicitud);
 					} catch (RegistroException e) {
 						e.printStackTrace();
 						Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");

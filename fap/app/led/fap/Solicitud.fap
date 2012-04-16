@@ -282,7 +282,7 @@ Nota: Finalizar la verificación es irreversible y cambiará el estado de la sol
 		}
 		
 
-		Grupo grequerimientos titulo="Requerimiento" permiso=verificacionRequerimientos {				
+		Grupo grequerimientos titulo="Requerimiento" permiso=noVisible /*permiso=verificacionRequerimientos*/ {				
 				Form grequerimientoGuardar { 
 					Grupo titulo="Añadir Motivo General del Requerimiento" {
 						AreaTexto requerimientoCrearMotivo titulo="Motivo del requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.motivo

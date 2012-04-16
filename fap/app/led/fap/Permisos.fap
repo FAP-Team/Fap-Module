@@ -30,6 +30,13 @@ when
 	agente != null
 then 
 	grant
+
+
+rule noVisible
+when
+	agente != null or agente = null
+then
+	deny
 		
 // Permisos de la pag presentacion
 rule presentacionPrepararParaFirmar

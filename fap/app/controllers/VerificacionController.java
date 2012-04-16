@@ -399,6 +399,18 @@ public class VerificacionController extends VerificacionControllerGen {
 		nuevosDocumentosRender(idSolicitud);
 
 	}
+	
+	public static void tablaverificacionDocumentos(Long idSolicitud, Long idEntidad){
+		
+		Long id = idSolicitud != null? idSolicitud : idEntidad;
+		java.util.List<VerificacionDocumento> rows = VerificacionDocumento.find( "select verificacionDocumento from SolicitudGenerica solicitud join solicitud.verificacion.documentos verificacionDocumento where solicitud.id=? order by verificacionDocumento.descripcion, verificacionDocumento.uriTipoDocumento, verificacionDocumento.fechaPresentacion", id ).fetch();
+		
+		List<VerificacionDocumento> rowsFiltered = rows; //Tabla sin permisos, no filtra
+		
+		tables.TableRenderResponse<VerificacionDocumento> response = new tables.TableRenderResponse<VerificacionDocumento>(rowsFiltered);
+		renderJSON(response.toJSON("fechaPresentacion", "descripcion", "uriTipoDocumento", "estadoDocumentoVerificacion", "identificadorMultiple", "linkUrlDescarga", "id"));
+			
+}
 
 	// BORRRRRRRRRRRRRRRRRRRRRRRRAAAAAAAAAAAAAAAAAAAARRRRRRRRRRRRRRRRRRRRRRR, para pruebas sólo
 //	public static void todosNoProcede(Long idSolicitud) {

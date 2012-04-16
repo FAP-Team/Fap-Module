@@ -238,10 +238,11 @@ Formulario Solicitud {
 				popupVer=PopUpDocumentoVerificacionVer 
 				popupModificar=PopUpDocumentoVerificacionEditar 
 			{
-				Columna titulo="Id" campo=VerificacionDocumento.id ancho="40"
+				//Columna titulo="Id" campo=VerificacionDocumento.id ancho="40"
+				Columna titulo="Fecha Presentación" campo=VerificacionDocumento.fechaPresentacion ancho="80"
 				Columna titulo="Descripcion" campo=VerificacionDocumento.descripcion expandir
 				Columna titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
-				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
+				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
 				Columna titulo="Multiplicidad" campo=VerificacionDocumento.identificadorMultiple ancho="80"
 				Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"
 				

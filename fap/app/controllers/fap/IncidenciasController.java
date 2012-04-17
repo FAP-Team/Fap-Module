@@ -43,7 +43,7 @@ public class IncidenciasController extends GenericController {
         rows = Incidencia.findAll();
 		tables.TableRenderNoPermisos<Incidencia> response = new tables.TableRenderNoPermisos<Incidencia>(rows);
 		
-		flexjson.JSONSerializer flex = new flexjson.JSONSerializer().include("rows.fecha", "rows.nombre", "rows.apellidos", "rows.email", "rows.telefono", "rows.asunto", "rows.texto").transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class).exclude("*");
+		flexjson.JSONSerializer flex = new flexjson.JSONSerializer().include("rows.id", "rows.fecha", "rows.nombre", "rows.apellidos", "rows.email", "rows.telefono", "rows.asunto", "rows.texto", "rows.enviada").transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class).exclude("*");
 		String serialize = flex.serialize(response);
 		renderJSON(serialize);
 

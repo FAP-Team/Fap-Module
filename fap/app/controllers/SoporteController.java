@@ -30,10 +30,6 @@ public class SoporteController extends SoporteControllerGen {
 			dbIncidencia = getIncidencia();
 		}
 		if(!Messages.hasErrors()){
-	
-		}
-
-		if(!Messages.hasErrors()){
 			SoporteValidateCopy("crear", dbIncidencia, incidencia);
 		}
 		Long idIncidencia;
@@ -45,7 +41,13 @@ public class SoporteController extends SoporteControllerGen {
 			}
 			DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); 
 			dbIncidencia.fecha= df.format(new Date());
-			emails.Mails.enviar("incidencia",incidencia);
+			try {
+				emails.Mails.enviar("incidencia",incidencia);
+				dbIncidencia.enviada=true;
+			} catch (Exception e){
+				dbIncidencia.enviada=false;
+				play.Logger.error("Error al enviar el correo con la incidencia "+incidencia.id+": "+e);
+			}
 			dbIncidencia.save();
 			
 		}

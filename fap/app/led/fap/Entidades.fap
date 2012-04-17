@@ -282,6 +282,7 @@ Entidad Incidencia {
     String apellidos
     String asunto
     LongText texto
+    Boolean enviada
 }
 
 Entidad SemillaExpediente extends Singleton{

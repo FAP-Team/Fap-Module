@@ -16,6 +16,9 @@
 <div id="tablaIncidencias" class="tabla"></div>
 
 <div id="mensajeIncidencia" class="alert"  style="display:none" >
+	<h2>Id</h2>
+    <p id="incidenciaId"></p>
+ 	<br/>
 	<h2>Fecha</h2>
 	<p id="incidenciaFecha"></p>
 	<br/>
@@ -34,6 +37,9 @@
 	<h2>Texto</h2>
 	<p id="incidenciaTexto"></p>
 	<br/>
+	<h2>Envio</h2>	
+	<p id="incidenciaEnvio"></p>
+ 	<br/>
 </div>
 
 
@@ -42,13 +48,15 @@
 		if (!Ext.ModelManager.isRegistered('modelIncidencias')){
 			Ext.define('modelIncidencias',{
         		extend: 'Ext.data.Model',
-					fields:['email', 
+					fields:['id',
+							'email', 
 					        'fecha', 
 					        'telefono', 
 					        'nombre', 
 					        'apellidos', 
 					        'asunto',
-					        'texto']
+					        'texto',
+					        'enviada']
 		    	});
 			}
 
@@ -82,10 +90,12 @@
 		        title: 'Incidencias',
 				renderTo: 'tablaIncidencias',
 				columns: [
+						  {header: 'Id',  dataIndex: 'id', field: 'textfield', width:50},
 				          {header: 'Fecha',  dataIndex: 'fecha', field: 'textfield', width:120},
 				          {header: 'Nombre',  dataIndex: 'nombre', field: 'textfield', width:150},
 				          {header: 'Apellidos',  dataIndex: 'apellidos', field: 'textfield', width:150},
-				          {header: 'Asunto',  dataIndex: 'asunto', field: 'textfield', width:350}
+				          {header: 'Asunto',  dataIndex: 'asunto', field: 'textfield', width:350},
+				          {header: 'Envio',  dataIndex: 'enviada', field: 'textfield', width:50}
 				          ],
 				id: 'tablaIncidencias-grid',
 		        height: 400,
@@ -134,8 +144,12 @@
 			        $('#incidenciaTelefono').html("");
 			        $('#incidenciaAsunto').html("");
 			        $('#incidenciaTexto').html("");
-			        
-			        if (incidencia.fecha != null)
+			        $('#incidenciaId').html("");
+				    $('#incidenciaEnviada').html("");
+				        
+				    if (incidencia.id != null)
+		                $('#incidenciaId').html(incidencia.id);
+				    if (incidencia.fecha != null)
 						$('#incidenciaFecha').html(incidencia.fecha);
 					if ((incidencia.nombre != null) && (incidencia.apellidos != null)) 
 			    		$('#incidenciaNombre').html(incidencia.nombre+" "+incidencia.apellidos);
@@ -149,6 +163,12 @@
 			    		$('#incidenciaAsunto').html(incidencia.asunto);
 			    	if (incidencia.texto != null)
 			    		$('#incidenciaTexto').html(incidencia.texto);
+			    	if (incidencia.enviada != null){
+		                if (incidencia.enviada)	
+		                      $('#incidenciaEnvio').html("Si");
+			            else
+				              $('#incidenciaEnvio').html("Error al enviar, consulte los logs");
+				    }
 			    
 			    	$box.removeClass("alert alert-info");
 			    	$box.addClass("alert alert-info");

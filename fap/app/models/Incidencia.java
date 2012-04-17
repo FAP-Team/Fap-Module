@@ -38,6 +38,8 @@ public class Incidencia extends FapModel {
 	@Column(columnDefinition = "LONGTEXT")
 	public String texto;
 
+	public Boolean enviada;
+
 	public void init() {
 
 		postInit();

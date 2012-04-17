@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class ValoresCEconomico extends Model {
+public class ValoresCEconomico extends FapModel {
 	// Código de los atributos
 
 	public Double valorSolicitado;
@@ -32,6 +32,7 @@ public class ValoresCEconomico extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

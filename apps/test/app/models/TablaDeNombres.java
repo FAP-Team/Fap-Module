@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class TablaDeNombres extends Model {
+public class TablaDeNombres extends FapModel {
 	// Código de los atributos
 
 	public String nombre;
@@ -40,6 +40,7 @@ public class TablaDeNombres extends Model {
 		else
 			fecha.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

@@ -27,6 +27,7 @@ public class FuncionariosHabilitados extends Singleton {
 	public void init() {
 		super.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Verificacion extends Model {
+public class Verificacion extends FapModel {
 	// Código de los atributos
 
 	public String uriVerificacion;
@@ -71,6 +71,7 @@ public class Verificacion extends Model {
 		if (requerimientos == null)
 			requerimientos = new ArrayList<Requerimiento>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class DireccionTest extends Model {
+public class DireccionTest extends FapModel {
 	// Código de los atributos
 
 	@Embedded
@@ -34,6 +34,7 @@ public class DireccionTest extends Model {
 		if (direccion == null)
 			direccion = new Direccion();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

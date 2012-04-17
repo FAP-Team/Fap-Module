@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Tramite extends Model {
+public class Tramite extends FapModel {
 	// Código de los atributos
 
 	public String uri;
@@ -39,6 +39,7 @@ public class Tramite extends Model {
 		if (documentos == null)
 			documentos = new ArrayList<TipoDocumento>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

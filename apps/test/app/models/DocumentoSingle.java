@@ -39,6 +39,7 @@ public class DocumentoSingle extends Singleton {
 		else
 			doc.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

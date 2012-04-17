@@ -142,6 +142,7 @@ public class Solicitud extends SolicitudGenerica {
 		else
 			savePages.init();
 
+		postInit();
 	}
 
 	public void savePagesPrepared() {

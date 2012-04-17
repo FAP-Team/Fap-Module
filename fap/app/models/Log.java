@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
-public class Log extends Model {
+public class Log extends FapModel {
 	// Código de los atributos
 
 	public String time;
@@ -35,6 +35,7 @@ public class Log extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

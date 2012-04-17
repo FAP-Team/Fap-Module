@@ -67,6 +67,7 @@ public class Solicitante extends Persona {
 		if (representantes == null)
 			representantes = new ArrayList<RepresentantePersonaJuridica>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

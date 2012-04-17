@@ -21,7 +21,7 @@ import utils.AedUtils;
 
 @Auditable
 @Entity
-public class Requerimiento extends Model {
+public class Requerimiento extends FapModel {
 	// Código de los atributos
 
 	@Transient
@@ -111,6 +111,7 @@ public class Requerimiento extends Model {
 		else
 			justificante.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

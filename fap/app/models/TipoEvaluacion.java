@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class TipoEvaluacion extends Model {
+public class TipoEvaluacion extends FapModel {
 	// Código de los atributos
 
 	public String nombre;
@@ -66,6 +66,7 @@ public class TipoEvaluacion extends Model {
 		if (datosAdicionales == null)
 			datosAdicionales = new ArrayList<TipoDatoAdicional>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

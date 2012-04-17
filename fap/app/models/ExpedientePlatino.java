@@ -21,7 +21,7 @@ import properties.FapProperties;
 
 @Auditable
 @Entity
-public class ExpedientePlatino extends Model {
+public class ExpedientePlatino extends FapModel {
 	// Código de los atributos
 
 	public String uri;
@@ -38,6 +38,7 @@ public class ExpedientePlatino extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

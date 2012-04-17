@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 
 @Auditable
 @Entity
-public class Firmante extends Model {
+public class Firmante extends FapModel {
 	// Código de los atributos
 
 	public String nombre;
@@ -39,6 +39,7 @@ public class Firmante extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

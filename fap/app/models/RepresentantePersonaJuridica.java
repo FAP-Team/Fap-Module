@@ -29,6 +29,7 @@ public class RepresentantePersonaJuridica extends RepresentantePersonaFisica {
 	public void init() {
 		super.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

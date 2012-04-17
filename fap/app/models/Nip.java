@@ -34,6 +34,7 @@ public class Nip {
 
 		if (tipo == null)
 			tipo = new String();
+
 	}
 
 	// === MANUAL REGION START ===

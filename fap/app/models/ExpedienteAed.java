@@ -21,13 +21,14 @@ import properties.FapProperties;
 
 @Auditable
 @Entity
-public class ExpedienteAed extends Model {
+public class ExpedienteAed extends FapModel {
 	// Código de los atributos
 
 	public String idAed;
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

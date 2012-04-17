@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 @Auditable
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class PersonaFisica extends Model {
+public class PersonaFisica extends FapModel {
 	// Código de los atributos
 
 	@Transient
@@ -49,6 +49,7 @@ public class PersonaFisica extends Model {
 		if (nip == null)
 			nip = new Nip();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

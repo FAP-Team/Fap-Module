@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class TablaPaginas_nivel2 extends Model {
+public class TablaPaginas_nivel2 extends FapModel {
 	// Código de los atributos
 
 	public String nombre;
@@ -47,6 +47,7 @@ public class TablaPaginas_nivel2 extends Model {
 		if (tpaginas_nivel3 == null)
 			tpaginas_nivel3 = new ArrayList<TablaPaginas_nivel3>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

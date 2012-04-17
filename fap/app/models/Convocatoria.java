@@ -32,6 +32,7 @@ public class Convocatoria extends Singleton {
 	public void init() {
 		super.init();
 		estado = "presentacion";
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

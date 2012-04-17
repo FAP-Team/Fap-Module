@@ -20,7 +20,7 @@ import enumerado.fap.gen.*;
 // === IMPORT REGION END ===
 
 @Entity
-public class FasesRegistro extends Model {
+public class FasesRegistro extends FapModel {
 	// Código de los atributos
 
 	public Boolean borrador;
@@ -39,6 +39,7 @@ public class FasesRegistro extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

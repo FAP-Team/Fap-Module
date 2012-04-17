@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class ComboTest extends Model {
+public class ComboTest extends FapModel {
 	// Código de los atributos
 
 	@ValueFromTable("provincias")
@@ -93,6 +93,7 @@ public class ComboTest extends Model {
 		if (refMultipleOverwrite == null)
 			refMultipleOverwrite = new ArrayList<ComboTestRef>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

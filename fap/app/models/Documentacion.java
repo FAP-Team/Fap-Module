@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Documentacion extends Model {
+public class Documentacion extends FapModel {
 	// Código de los atributos
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -48,6 +48,7 @@ public class Documentacion extends Model {
 		if (documentos == null)
 			documentos = new ArrayList<Documento>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

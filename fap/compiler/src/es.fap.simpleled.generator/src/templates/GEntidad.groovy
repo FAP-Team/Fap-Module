@@ -27,6 +27,8 @@ public class GEntidad extends GElement{
 	
 	Entity entity;
 	
+	boolean incluirPostInit;
+	
 	public GEntidad(Entity entity, GElement container){
 		super(entity, container);
 		this.entity = entity;
@@ -34,6 +36,7 @@ public class GEntidad extends GElement{
 	
 	public void generate(){
 		String extendz;
+		incluirPostInit=false;
 		
 		if (entity.name.equals("Solicitud")){
 			solicitudStuff();
@@ -41,11 +44,20 @@ public class GEntidad extends GElement{
 		
 		if (entity.getExtends() != null){
 			extendz = "extends "+entity.getExtends().name;
+			incluirPostInit=true;
+			for(Entity ent: getExtendsRecursively(entity)){
+				if (ent.embedded){
+					incluirPostInit=false;
+					break;
+				}
+			}
 		} else {
 			if (entity.embedded)
 				extendz = "";
-			else
-				extendz = "extends Model";
+			else {
+				extendz = "extends FapModel";
+				incluirPostInit=true;
+			}
 		}
 		
 		String doc = LedDocumentationUtils.findComment(entity);
@@ -404,12 +416,15 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	}
 	"""
 		}
-		
+		String postInit="";
+		if (incluirPostInit)
+			postInit="postInit();"
 		out += """
 
 	public void init(){
 		${entity.getExtends()? "super.init();": ""}
 		${refInit}
+		${postInit}
 	}
 		"""
 		return out;
@@ -510,6 +525,15 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		Pattern pattern = Pattern.compile(expression,Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(inputStr);
 		return matcher.matches();
+	}
+	
+	public List<Entity> getExtendsRecursively(Entity entity){
+		List<Entity> extendsList = new ArrayList<Entity>();
+		while (entity != null){
+			extendsList.add(entity);
+			entity = entity.getExtends();
+		}
+		return extendsList;
 	}
 	
 }

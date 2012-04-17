@@ -27,7 +27,7 @@ import org.apache.commons.mail.SimpleEmail;
 
 @Entity
 @Table(name = "email")
-public class Mail extends Model {
+public class Mail extends FapModel {
 	// Código de los atributos
 
 	public String idMail;
@@ -49,6 +49,7 @@ public class Mail extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

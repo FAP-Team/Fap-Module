@@ -21,7 +21,7 @@ import properties.FapProperties;
 // === IMPORT REGION END ===
 
 @Entity
-public class Evaluacion extends Model {
+public class Evaluacion extends FapModel {
 	// Código de los atributos
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -72,6 +72,7 @@ public class Evaluacion extends Model {
 		else
 			tipo.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

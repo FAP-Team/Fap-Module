@@ -47,6 +47,7 @@ public class Direccion {
 
 		if (calle == null)
 			calle = new String();
+
 	}
 
 	// === MANUAL REGION START ===

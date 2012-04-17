@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class TipoCriterio extends Model {
+public class TipoCriterio extends FapModel {
 	// Código de los atributos
 
 	public String nombre;
@@ -71,6 +71,7 @@ public class TipoCriterio extends Model {
 		comentariosAdministracion = false;
 		comentariosSolicitante = false;
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Incidencia extends Model {
+public class Incidencia extends FapModel {
 	// Código de los atributos
 
 	@Email
@@ -40,6 +40,7 @@ public class Incidencia extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

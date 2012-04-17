@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 @Auditable
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Persona extends Model {
+public class Persona extends FapModel {
 	// Código de los atributos
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -55,6 +55,7 @@ public class Persona extends Model {
 		else
 			juridica.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

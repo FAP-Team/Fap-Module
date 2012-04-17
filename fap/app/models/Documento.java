@@ -21,7 +21,7 @@ import properties.FapProperties;
 // === IMPORT REGION END ===
 
 @Entity
-public class Documento extends Model {
+public class Documento extends FapModel {
 	// Código de los atributos
 
 	public String uri;
@@ -48,6 +48,7 @@ public class Documento extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

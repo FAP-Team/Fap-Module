@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Consulta extends Model {
+public class Consulta extends FapModel {
 	// Código de los atributos
 
 	@Column(columnDefinition = "LONGTEXT")
@@ -33,6 +33,7 @@ public class Consulta extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

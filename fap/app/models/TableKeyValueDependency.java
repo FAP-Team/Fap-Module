@@ -21,7 +21,7 @@ import utils.Fixtures;
 // === IMPORT REGION END ===
 
 @Entity
-public class TableKeyValueDependency extends Model {
+public class TableKeyValueDependency extends FapModel {
 	// Código de los atributos
 
 	@Column(name = "t")
@@ -35,6 +35,7 @@ public class TableKeyValueDependency extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

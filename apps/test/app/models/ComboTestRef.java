@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class ComboTestRef extends Model {
+public class ComboTestRef extends FapModel {
 	// Código de los atributos
 
 	public String nombre;
@@ -29,6 +29,7 @@ public class ComboTestRef extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

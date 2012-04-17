@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Criterio extends Model {
+public class Criterio extends FapModel {
 	// Código de los atributos
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -44,6 +44,7 @@ public class Criterio extends Model {
 		else
 			tipo.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

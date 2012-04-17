@@ -22,7 +22,7 @@ import play.mvc.Scope.Session;
 @Auditable
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Agente extends Model {
+public class Agente extends FapModel {
 	// Código de los atributos
 
 	public String username;
@@ -54,6 +54,7 @@ public class Agente extends Model {
 		if (roles == null)
 			roles = new HashSet<String>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

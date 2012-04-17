@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 
 @Auditable
 @Entity
-public class InformacionRegistro extends Model {
+public class InformacionRegistro extends FapModel {
 	// Código de los atributos
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRegistro"), @Column(name = "fechaRegistroTZ") })
@@ -35,6 +35,7 @@ public class InformacionRegistro extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

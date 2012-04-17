@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 @Auditable
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class PersonaJuridica extends Model {
+public class PersonaJuridica extends FapModel {
 	// Código de los atributos
 
 	public String entidad;
@@ -42,6 +42,7 @@ public class PersonaJuridica extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

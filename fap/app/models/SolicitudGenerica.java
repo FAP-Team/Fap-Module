@@ -24,7 +24,7 @@ import play.mvc.Http.Request;
 @Auditable
 @Entity
 @Table(name = "solicitud")
-public class SolicitudGenerica extends Model {
+public class SolicitudGenerica extends FapModel {
 	// Código de los atributos
 
 	public String estado;
@@ -122,6 +122,7 @@ public class SolicitudGenerica extends Model {
 		if (ceconomicos == null)
 			ceconomicos = new ArrayList<CEconomico>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

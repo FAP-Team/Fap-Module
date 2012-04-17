@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class CEconomico extends Model {
+public class CEconomico extends FapModel {
 	// Código de los atributos
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -49,6 +49,7 @@ public class CEconomico extends Model {
 		if (valores == null)
 			valores = new ArrayList<ValoresCEconomico>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

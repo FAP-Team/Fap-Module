@@ -19,11 +19,12 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @MappedSuperclass
-public class Singleton extends Model {
+public class Singleton extends FapModel {
 	// Código de los atributos
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

@@ -19,13 +19,14 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class SavePages extends Model {
+public class SavePages extends FapModel {
 	// Código de los atributos
 
 	public Boolean paginaSolicitante;
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

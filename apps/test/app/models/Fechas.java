@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Fechas extends Model {
+public class Fechas extends FapModel {
 	// Código de los atributos
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRequerida"), @Column(name = "fechaRequeridaTZ") })
@@ -32,6 +32,7 @@ public class Fechas extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

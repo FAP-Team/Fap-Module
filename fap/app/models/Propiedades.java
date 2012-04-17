@@ -20,7 +20,7 @@ import properties.FapProperties;
 // === IMPORT REGION END ===
 
 @Entity
-public class Propiedades extends Model {
+public class Propiedades extends FapModel {
 	// Código de los atributos
 
 	public String descripcion;
@@ -32,6 +32,7 @@ public class Propiedades extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

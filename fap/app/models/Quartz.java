@@ -39,6 +39,7 @@ public class Quartz extends Singleton {
 	public void init() {
 		super.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

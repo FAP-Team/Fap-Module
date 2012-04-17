@@ -40,6 +40,7 @@ public class FirmanteSingle extends Singleton {
 		if (firmantes == null)
 			firmantes = new ArrayList<Firmante>();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

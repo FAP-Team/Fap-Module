@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class ValoresPorDefectoTest extends Model {
+public class ValoresPorDefectoTest extends FapModel {
 	// Código de los atributos
 
 	public String mString;
@@ -90,6 +90,7 @@ public class ValoresPorDefectoTest extends Model {
 		if (mEmbebida == null)
 			mEmbebida = new Embebida();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

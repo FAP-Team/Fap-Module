@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Aportacion extends Model {
+public class Aportacion extends FapModel {
 	// Código de los atributos
 
 	public String estado;
@@ -75,6 +75,7 @@ public class Aportacion extends Model {
 		else
 			justificante.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

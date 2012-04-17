@@ -37,6 +37,7 @@ public class ObligatoriedadDocumentos extends Singleton {
 	public void init() {
 		super.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

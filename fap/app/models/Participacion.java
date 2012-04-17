@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 
 @Auditable
 @Entity
-public class Participacion extends Model {
+public class Participacion extends FapModel {
 	// Código de los atributos
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -34,6 +34,7 @@ public class Participacion extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class CriterioListaValores extends Model {
+public class CriterioListaValores extends FapModel {
 	// Código de los atributos
 
 	public Double valor;
@@ -28,6 +28,7 @@ public class CriterioListaValores extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

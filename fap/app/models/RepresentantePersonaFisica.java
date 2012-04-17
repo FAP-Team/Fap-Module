@@ -35,6 +35,7 @@ public class RepresentantePersonaFisica extends Persona {
 	public void init() {
 		super.init();
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

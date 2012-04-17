@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class TipoDatoAdicional extends Model {
+public class TipoDatoAdicional extends FapModel {
 	// Código de los atributos
 
 	public Integer orden;
@@ -31,6 +31,7 @@ public class TipoDatoAdicional extends Model {
 
 	public void init() {
 
+		postInit();
 	}
 
 	// === MANUAL REGION START ===

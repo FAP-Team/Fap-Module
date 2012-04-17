@@ -275,7 +275,7 @@ Entidad Incidencia {
 }
 
 Entidad SemillaExpediente extends Singleton{
-	// Ahora se pone como estática en el código
+	// Ahora no se utiliza, sino el ID
 	// Long semilla
 }
 

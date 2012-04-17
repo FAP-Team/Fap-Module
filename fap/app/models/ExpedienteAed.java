@@ -44,12 +44,14 @@ public class ExpedienteAed extends Model {
 	 * Asigna un ID de expediente único
 	 */
 	public void asignarIdAed(){
-		Long id = SemillaExpediente.obtenerId();
+		SemillaExpediente semilla = new SemillaExpediente();
+		semilla.save();
+		Long id = (Long)semilla.id;
 		java.text.NumberFormat formatter = new java.text.DecimalFormat("0000");
 		String prefijo = FapProperties.get("fap.aed.expediente.prefijo");
 		idAed = prefijo + formatter.format(id);
+		semilla.delete();
 		this.save();
-		this.em().flush();
 	}
 	
 // === MANUAL REGION END ===

@@ -22,12 +22,17 @@ import aed.TiposDocumentosClient;
 import controllers.gen.popups.PopUpDocumentoRequerimientosVerificacionModificarControllerGen;
 			
 public class PopUpDocumentoRequerimientosVerificacionModificarController extends PopUpDocumentoRequerimientosVerificacionModificarControllerGen {
-
+	
 	public static List<ComboItem> codigo() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
 		Map <String, Long> parametrosUrl = (Map<String, Long>)tags.TagMapStack.top("idParams");
 		VerificacionDocumento doc = VerificacionDocumento.findById(parametrosUrl.get("idVerificacionDocumento"));
-		SolicitudGenerica sol = SolicitudGenerica.findById(parametrosUrl.get("idSolicitud"));
+		SolicitudGenerica sol = null;
+		if (parametrosUrl.get("idSolicitud") == null){ // Fallo la validacion y es necesario recuperar la solicitud a traves del idVerificacionDocumento, ya que no está en los parametros de la URL dentro de un popup al darle al boton Guardar
+			sol = SolicitudGenerica.find("select sol from SolicitudGenerica sol join sol.verificacion.documentos vdoc where vdoc.id=?", doc.id).first();
+		} else {
+			sol = SolicitudGenerica.findById(parametrosUrl.get("idSolicitud"));
+		}
 		List <TiposCodigoRequerimiento> tiposCodReq = TiposCodigoRequerimiento.find("select tcr from TiposCodigoRequerimiento tcr where tcr.uriTipoDocumento=? and tcr.uriTramite=?", doc.uriTipoDocumento, sol.verificacion.uriTramite).fetch();
 		List <CodigoRequerimiento> codigosRequerimiento = utils.ModelUtils.getListCodigoRequerimientoFromTiposCodigoRequerimiento(tiposCodReq);
 		for (CodigoRequerimiento codigo: codigosRequerimiento)

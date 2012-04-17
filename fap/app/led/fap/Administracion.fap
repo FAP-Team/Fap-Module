@@ -1,5 +1,5 @@
 Formulario Administracion permiso=administrador{
-	
+
 	Menu {
 		Enlace "Mis Solicitudes" pagina=Solicitudes
 		

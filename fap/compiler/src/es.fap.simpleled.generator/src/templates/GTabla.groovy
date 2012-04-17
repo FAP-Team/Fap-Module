@@ -323,7 +323,7 @@ public class GTabla extends GElement{
 				${idSingleton}
 				java.util.List<${entidad.clase}> rows = ${query};
 				${getCodePermiso(entidad)}
-				tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered);
+			    ${getCodeFilasPermiso(entidad)}
 				renderJSON(response.toJSON($rowsStr));
 			}
 
@@ -342,6 +342,7 @@ public class GTabla extends GElement{
 	private String getCodePermiso(Entidad entidad) {
 		if(tabla.permiso == null){
 			return """
+				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 				List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra
 			""";
 		}
@@ -356,6 +357,99 @@ public class GTabla extends GElement{
 				}
 			}
 		"""
+	}
+	
+	private String getCodeFilasPermiso(Entidad entidad) {
+		String ret="";
+		String paramsPermiso="";
+		String paramsNombrePermiso="";
+		if (tabla.pagina != null){
+			Pagina pagina = (Pagina)tabla.pagina;
+			if (pagina.permiso != null){
+				paramsPermiso+="true, true, true, \"${pagina.permiso.name}\", \"${pagina.permiso.name}\", \"${pagina.permiso.name}\", getAccion(), ids";
+			} else {
+				paramsPermiso+="false, false, false, \"\", \"\", \"\", getAccion(), ids";
+			}
+		}
+		else if(tabla.popup != null){
+			Popup popUp = (Popup)tabla.popup;
+			if (popUp.permiso != null){
+				paramsPermiso+="true, true, true, \"${popUp.permiso.name}\", \"${popUp.permiso.name}\", \"${popUp.permiso.name}\", getAccion(), ids";
+			} else {
+				paramsPermiso+="false, false, false, \"\", \"\", \"\", getAccion(), ids";
+			}
+		} else {
+			if(tabla.paginaEditar != null){
+				Pagina pagina = (Pagina)tabla.paginaEditar;
+				if (pagina.permiso != null){
+					paramsPermiso+="true, ";
+					paramsNombrePermiso+="\"${pagina.permiso.name}\", ";
+				} else{
+					paramsPermiso+="false, ";
+					paramsNombrePermiso+="\"\", ";
+				}
+			} else if(tabla.popupEditar != null){
+				Popup popUp = (Popup)tabla.popupEditar;
+				if (popUp.permiso != null){
+					paramsPermiso+="true, ";
+					paramsNombrePermiso+="\"${popUp.permiso.name}\", ";
+				} else{
+					paramsPermiso+="false, ";
+					paramsNombrePermiso+="\"\", ";
+				}
+			} else {
+				paramsPermiso+="false, ";
+				paramsNombrePermiso+="\"\", ";
+			}
+			if(tabla.paginaBorrar != null){
+				Pagina pagina = (Pagina)tabla.paginaBorrar;
+				if (pagina.permiso != null){
+					paramsPermiso+="true, ";
+					paramsNombrePermiso+="\"${pagina.permiso.name}\", ";
+				} else{
+					paramsPermiso+="false, ";
+					paramsNombrePermiso+="\"\", ";
+				}
+			} else if(tabla.popupBorrar != null){
+				Popup popUp = (Popup)tabla.popupBorrar;
+				if (popUp.permiso != null){
+					paramsPermiso+="true, ";
+					paramsNombrePermiso+="\"${popUp.permiso.name}\", ";
+				} else{
+					paramsPermiso+="false, ";
+					paramsNombrePermiso+="\"\", ";
+				}
+			} else {
+				paramsPermiso+="false, ";
+				paramsNombrePermiso+="\"\", ";
+			}
+			if(tabla.paginaLeer != null){
+				Pagina pagina = (Pagina)tabla.paginaLeer;
+				if (pagina.permiso != null){
+					paramsPermiso+="true, ";
+					paramsNombrePermiso+="\"${pagina.permiso.name}\"";
+				} else{
+					paramsPermiso+="false, ";
+					paramsNombrePermiso+="\"\"";
+				}
+			} else if(tabla.popupLeer != null){
+				Popup popUp = (Popup)tabla.popupLeer;
+				if (popUp.permiso != null){
+					paramsPermiso+="true, ";
+					paramsNombrePermiso+="\"${popUp.permiso.name}\"";
+				} else{
+					paramsPermiso+="false, ";
+					paramsNombrePermiso+="\"\"";
+				}
+			} else {
+				paramsPermiso+="false, ";
+				paramsNombrePermiso+="\"\"";
+			}
+			paramsPermiso+=paramsNombrePermiso+", getAccion(), ids"
+		}
+		ret+="""tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered, ${paramsPermiso});
+			"""
+		return ret;
 	}
 	
 	private controllerMethodName(){

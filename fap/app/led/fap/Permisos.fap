@@ -241,7 +241,7 @@ Permiso editarSolicitud{
 		!usuario is visible
 		or (
 	 		agente.rolActivo = "usuario" and
-	 		solicitud.estado = "borrador"
+	 		solicitud?.estado = "borrador"
 		)
 	return [leer]
 }

@@ -10,6 +10,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import models.Nip;
 import models.PersonaFisica;
@@ -239,6 +241,16 @@ public class ReflectionUtils {
 		return null;
 	}
 	
+	public static Object getValueFromMethodFromClass (Object object, String method) {
+		try {
+			Method m1 = object.getClass().getMethod(method, null);
+			return m1.invoke(object, null);
+		} catch (Exception e) {
+			System.out.println("El método no se pudo ejecutar "+method+" class= "+object.getClass());
+		}
+		return null;
+	}
+	
 	public static List<Field> getFieldsOfType(Class clazz, String field){
 		Field f = getFieldRecursively(clazz, field);
 		if(f == null) return null;
@@ -304,6 +316,14 @@ public class ReflectionUtils {
 			}
 		}
 		
+		return null;
+	}
+	
+	public static String getNameClass (Object o){
+		String clase = o.getClass().getName();
+		String[] parser = clase.split("\\.");
+		if (parser.length > 0)
+			return parser[parser.length-1];
 		return null;
 	}
 	

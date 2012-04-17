@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
+import config.InjectorConfig;
+
 import play.db.jpa.Model;
 import play.mvc.Util;
 
@@ -19,8 +23,11 @@ import messages.Messages;
 import messages.Messages.MessageType;
 import models.Firmante;
 import models.TableKeyValue;
+import security.ResultadoPermiso;
+import security.Secure;
 import tags.ReflectionUtils;
 import validation.ValueFromTable;
+import security.ResultadoPermiso;
 
 public class TableRenderResponse<T> {
 	public List<TableRecord<T>> rows;
@@ -29,7 +36,23 @@ public class TableRenderResponse<T> {
 	
 	public Obj obj;
 	
-	// Constructor con Permisos
+	public TableRenderResponse(List<T> rows, boolean permisoEditar, boolean permisoBorrar, boolean permisoLeer, String permisoNombreEditar, String permisoNombreBorrar, String permisoNombreLeer, String accion, Map<String, Long> ids) {
+		if (rows != null){
+			List<TableRecord<T>> rowsPermisos = tablaPermisos(rows, permisoEditar, permisoBorrar, permisoLeer, permisoNombreEditar, permisoNombreBorrar, permisoNombreLeer, accion, ids);
+			this.rows = rowsPermisos;
+		}
+		else
+			this.rows = null;
+		this.obj = new Obj();
+		obj.rows = this.rows;
+		this.mensajes.error = Messages.messages(MessageType.ERROR);
+		this.mensajes.warning = Messages.messages(MessageType.WARNING);
+		this.mensajes.fatal = Messages.messages(MessageType.FATAL);
+		this.mensajes.ok = Messages.messages(MessageType.OK);
+		this.mensajes.info = Messages.messages(MessageType.INFO);
+	}
+	
+	// Constructor con Permisos a true
 	public TableRenderResponse(List<T> rows) {
 		if (rows != null){
 			List<TableRecord<T>> rowsPermisos = tablaPermisos(rows);
@@ -128,7 +151,66 @@ public class TableRenderResponse<T> {
 	}
 	
 	@Util
-	public static <T> List<TableRecord<T>> tablaPermisos(List<T> rowsFiltered) {
+	public static <T> List<TableRecord<T>> tablaPermisos(List<T> rowsFiltered, boolean permisoEditar, boolean permisoBorrar, boolean permisoLeer, String permisoNombreEditar, String permisoNombreBorrar, String permisoNombreLeer, String accion, Map<String, Long> ids) {
+		List<TableRecord<T>> records = new ArrayList<TableRecord<T>>();
+		Map<String, Object> vars = new HashMap<String, Object>();
+		Secure secure = InjectorConfig.getInjector().getInstance(Secure.class);
+		for (T tablaTipo : rowsFiltered) {
+			TableRecord<T> record = new TableRecord<T>();
+			records.add(record);
+			record.objeto = tablaTipo;
+			String[] nombre = tablaTipo.getClass().getName().split("\\.");
+			vars.put(nombre[nombre.length-1], tablaTipo);
+
+			ResultadoPermiso permisoFilasEditar = null;
+			ResultadoPermiso permisoFilasLeer = null;
+			ResultadoPermiso permisoFilasBorrar = null;
+			
+			if (permisoEditar || permisoLeer || permisoBorrar){
+				String paramClass = "id"+ReflectionUtils.getNameClass(tablaTipo);
+				if (!ids.containsKey(paramClass)){
+					ids.put(paramClass, (Long) ReflectionUtils.getValueFromMethodFromClass(tablaTipo, "getId"));
+				}
+			}
+			
+			if (permisoEditar)
+				permisoFilasEditar = secure.check(permisoNombreEditar, "editable", accion, ids, null);
+			if (permisoLeer)
+				permisoFilasLeer = secure.check(permisoNombreBorrar, "visible", accion, ids, null);
+			if (permisoBorrar)
+				permisoFilasBorrar = secure.check(permisoNombreLeer, "editable", accion, ids, null);
+			
+			if ((permisoFilasLeer != null) && (permisoFilasLeer.checkAcceso("leer")))
+				record.permisoLeer = true;
+			else {
+				if (permisoLeer)
+					record.permisoLeer=false;
+				else
+					record.permisoLeer=true;
+			}
+			if ((permisoFilasEditar != null) && (permisoFilasEditar.checkAcceso("editar")))
+				record.permisoEditar = true;
+			else {
+				if (permisoEditar)
+					record.permisoEditar=false;
+				else
+					record.permisoEditar=true;
+			}
+			if ((permisoFilasBorrar != null) && (permisoFilasBorrar.checkAcceso("borrar")))
+				record.permisoBorrar = true;
+			else {
+				if (permisoBorrar)
+					record.permisoBorrar=false;
+				else
+					record.permisoBorrar=true;
+			}
+		}
+		return records;
+	}
+	
+	// Con los permisos todos a TRUE, es decir se acepta todo
+	@Util
+	public static <T> List<TableRecord<T>> tablaPermisos(List<T> rowsFiltered)  {
 		List<TableRecord<T>> records = new ArrayList<TableRecord<T>>();
 		Map<String, Object> vars = new HashMap<String, Object>();
 		for (T tablaTipo : rowsFiltered) {

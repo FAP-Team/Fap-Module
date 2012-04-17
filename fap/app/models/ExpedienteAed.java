@@ -48,7 +48,8 @@ public class ExpedienteAed extends Model {
 		java.text.NumberFormat formatter = new java.text.DecimalFormat("0000");
 		String prefijo = FapProperties.get("fap.aed.expediente.prefijo");
 		idAed = prefijo + formatter.format(id);
-		save();
+		this.save();
+		this.em().flush();
 	}
 	
 // === MANUAL REGION END ===

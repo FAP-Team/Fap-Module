@@ -303,6 +303,7 @@ public class AedClient {
 		//Obtiene un ID de expediente nuevo
 		if(solicitud.expedienteAed.idAed == null){				
 			solicitud.expedienteAed.asignarIdAed();
+			play.Logger.info("Asignado el idAed "+solicitud.expedienteAed.idAed+" a la Solicitud "+solicitud.id);
 		}
 		
 		try {
@@ -330,6 +331,7 @@ public class AedClient {
 		//Obtiene un ID de expediente nuevo
 		if(expedienteAed.idAed == null){				
 			expedienteAed.asignarIdAed();
+			play.Logger.info("Asignado el idAed "+expedienteAed.idAed);
 		}
 		
 		try {
@@ -400,12 +402,12 @@ public class AedClient {
 		}
 	}
 	
-	private static void clasificarDocumentoSinRegistro(String idAed, models.Documento documento, List<String> interesadosDocumentos, List<String> interesadosNombres) throws AedExcepcion{
+	private static void clasificarDocumentoSinRegistro(String idAed, models.Documento documento, List<String> interesadosDocumentos, List<String> interesadosNombres) throws AedExcepcion, Exception{
 		PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri);
 		clasificarDocumento(idAed, documento, propiedades, interesadosDocumentos, interesadosNombres);
 	}
 
-	private static void clasificarDocumentoConRegistro(String idAed, models.Documento documento, List<String> interesadosDocumentos, List<String> interesadosNombres, InformacionRegistro informacionRegistro, boolean notificable) throws AedExcepcion{
+	private static void clasificarDocumentoConRegistro(String idAed, models.Documento documento, List<String> interesadosDocumentos, List<String> interesadosNombres, InformacionRegistro informacionRegistro, boolean notificable) throws AedExcepcion, Exception {
 		PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri);
 		PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
 		
@@ -424,7 +426,7 @@ public class AedClient {
 		clasificarDocumento(idAed, documento, propiedades, interesadosDocumentos, interesadosNombres);
 	}
 	
-	private static void clasificarDocumento(String idAed, models.Documento documento, PropiedadesDocumento propiedadesDocumento, List<String> interesadosDocumentos, List<String> interesadosNombre) throws AedExcepcion {
+	private static void clasificarDocumento(String idAed, models.Documento documento, PropiedadesDocumento propiedadesDocumento, List<String> interesadosDocumentos, List<String> interesadosNombre) throws AedExcepcion, Exception {
 		// Registro de entrada
 		PropiedadesAdministrativas propsAdmin = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
 
@@ -444,6 +446,7 @@ public class AedClient {
 
 		// Clasificar documento al expediente
 		aed.clasificarDocumento(documento.uri, propiedadesDocumento, ubicaciones);
+		log.info("Documento temporal clasificado en el AED: Expediente: " + idAed + ", Documento: " + documento.uri);
 		documento.clasificado = true;
 		documento.save();
 		
@@ -478,7 +481,10 @@ public class AedClient {
 					}
 				}catch(AedExcepcion e){
 					todosClasificados = false;
-					log.error("Error al clasificar el documento " + documento.uri);
+					log.error("AedException: Error al clasificar el documento " + documento.uri+" "+e.getMessage());
+				} catch (Exception e) {
+					todosClasificados = false;
+					log.error("Error al clasificar el documento "+documento.uri+" "+e.getMessage());
 				}
 			}else{
 				log.warn("El documento " + documento.uri + " ya está clasificado");

@@ -92,6 +92,10 @@ public class PlatinoRegistro {
 //		http.setClient(httpClientPolicy);
 	}
 	
+	public static String getVersion () {
+		return registro.getVersion();
+	}
+	
 	/**
 	 * Obtiene los datos del registro de un documento.
 	 * @see #getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion)

@@ -25,10 +25,6 @@ import java.text.SimpleDateFormat;
 public class SemillaExpediente extends Singleton {
 	// Código de los atributos
 	
-	
-	public Long semilla;
-	
-	
 
 	public void init(){
 		super.init();
@@ -38,6 +34,7 @@ public class SemillaExpediente extends Singleton {
 	
 
 // === MANUAL REGION START ===
+	private static Long semilla = null;
 	
 	//Obtiene un ID de expediente, el ID debe ser único para todos los expedientes
 	public static synchronized Long obtenerId(){
@@ -50,6 +47,7 @@ public class SemillaExpediente extends Singleton {
 		Long semillaActual = semilla.semilla;
 		semilla.semilla++;
 		semilla.save();
+		semilla.em().flush();
 		return semillaActual;
 	}
 	

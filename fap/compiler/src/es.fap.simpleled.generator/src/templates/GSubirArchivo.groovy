@@ -95,8 +95,8 @@ public class GSubirArchivo extends GSaveCampoElement{
 			""";
 		}
 		return """
-			if(${subirArchivo.name} == null)
-				validation.addError("${subirArchivo.name}", "Archivo requerido");
+			if(${subirArchivo.name} == null) validation.addError("${subirArchivo.name}", "Archivo requerido");
+			else if (${subirArchivo.name}.length() > FapProperties.getLong("fap.file.maxsize")) validation.addError("${subirArchivo.name}", "Tamaño del archivo superior al máximo permitido ("+org.apache.commons.io.FileUtils.byteCountToDisplaySize(FapProperties.getLong("fap.file.maxsize"))+")");
 			else{
 				${checkFile}
 			}

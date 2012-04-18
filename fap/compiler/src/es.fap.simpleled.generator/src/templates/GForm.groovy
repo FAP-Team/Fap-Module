@@ -84,12 +84,6 @@ public class GForm {
 			saveExtra = HashStack.getUntil(HashStackName.SAVE_EXTRA, sizeExtra);
 			saveCode = HashStack.getUntil(HashStackName.SAVE_CODE, sizeCode);
 			saveBoton = HashStack.getUntil(HashStackName.SAVE_BOTON, sizeBoton);
-			if (elementoGramatica.name.equals("prepFunc")){
-				System.out.println("Entre: "+entities.collect{it.getVariable()});
-				System.out.println(saveExtra);
-				System.out.println(saveCode);
-				System.out.println(saveBoton);
-			}
 		}
 		else{
 			entities = HashStack.allElements(HashStackName.SAVE_ENTITY).unique();

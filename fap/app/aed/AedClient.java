@@ -243,7 +243,7 @@ public class AedClient {
 			List<Ubicaciones> newUbicaciones = new ArrayList<Ubicaciones>();
 			for (DocumentoEnUbicacion docUbic :ubicaciones) {
 				Ubicaciones ubic = new Ubicaciones();
-				ubic.setProcedimiento(FapProperties.get(""));
+				ubic.setProcedimiento(FapProperties.get("fap.aed.procedimiento"));
 				ubic.getExpedientes().add(docUbic.getExpediente());
 				newUbicaciones.add(ubic);
 			}

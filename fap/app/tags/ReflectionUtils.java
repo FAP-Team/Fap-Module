@@ -41,7 +41,7 @@ public class ReflectionUtils {
 							if (i == (pieces.length - 1)) {
 								return f;
 							} else {
-								clazz = f.getClass();
+								clazz = f.getType();
 							}
 						} catch (Exception e) {
 							// if there is a problem reading the field we dont

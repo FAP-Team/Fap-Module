@@ -327,4 +327,38 @@ public class ReflectionUtils {
 		return null;
 	}
 	
+	/**
+	 * Comprueba si existe el método 'method' en el controlador
+	 * @param method Nombre del metodo
+	 * @return true en caso de que existe
+	 */
+	public static boolean existsControllerMethod(String method){
+		String controller = (String)play.mvc.Scope.RenderArgs.current().get("controllerName");
+
+		//Elimina el sufijo Gen del nombre del controlador, para llamar al controlador manual
+		if(controller.endsWith("Gen"))
+			controller = controller.substring(0, controller.length() - 3);
+
+		//Busca la clase del contorllador, puede ser un controlador de página o de popup
+		String pageController = "controllers." + controller;
+		String popupController = "controllers.popups." + controller;
+		Class clazz = null;
+		clazz = Play.classloader.getClassIgnoreCase(pageController);
+		if(clazz == null){
+			clazz = Play.classloader.getClassIgnoreCase(popupController);
+		}
+
+		//Si encuentra la clase, invoca el método si existe en la clase
+		if(clazz != null){
+			try {
+				Method m = clazz.getMethod(method);
+				return true;
+			} catch (Exception e){
+				//Method not found
+			}
+		}
+
+		return false;
+	}
+	
 }

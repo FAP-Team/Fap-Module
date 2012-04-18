@@ -14,10 +14,15 @@
 	showCert = configfap.getBoolean('fap.login.type.cert')
 	showUser = configfap.getBoolean('fap.login.type.user')
 	manualApp = configfap.get('fap.manual.aplicacion')
+	pathApp = configfap.get('http.path')
 	if (manualApp == null)
 	   manualApp = '#'
-	else
-	   manualApp = "/public/"+manualApp
+	else{
+	   if (pathApp == null)
+	   		manualApp = "/public/"+manualApp
+	   else
+	   		manualApp = pathApp+"/public/"+manualApp
+	}
 %}
 
 

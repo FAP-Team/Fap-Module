@@ -25,6 +25,10 @@ import java.text.SimpleDateFormat;
 public class SemillaExpediente extends Singleton {
 	// Código de los atributos
 	
+	
+	public Long semilla;
+	
+	
 
 	public void init(){
 		super.init();

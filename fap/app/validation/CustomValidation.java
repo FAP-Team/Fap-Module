@@ -393,4 +393,21 @@ public class CustomValidation {
 		}
 		return result;
     }
+	
+	/**
+	 * Emite un mensaje de error, al igual que el Message.error, pero permite recuperar de flash lo que habia antes no como el Messages.error que no recupera
+	 * @param mensaje, Mensaje de error a emitir
+	 * @param key, Nombre del campo que falla, en string (igual que obj1 pero con "")
+	 * @param obj1, Campo que falla
+	 * @return
+	 */
+	public static ValidationResult error(String mensaje, String key, Object obj1) {
+		ValidationResult result = new ValidationResult();
+		String field = key;
+		String message = mensaje;
+        String[] variables = new String[0];  
+        Validation.addError(field, message, variables);
+		result.ok = false;
+		return result;
+	}
 }

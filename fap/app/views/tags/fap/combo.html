@@ -69,9 +69,13 @@
 			if(_items != null){
 				items = _items.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")}
 			}else{
-				items = tags.ReflectionUtils.callControllerMethodIfExists(id)
-				if(items == null){
-					//No existe método en el controlador
+				if (tags.ReflectionUtils.existsControllerMethod(id)){
+					items = tags.ReflectionUtils.callControllerMethodIfExists(id) // Devuelve null si no existe el método
+				} else {
+					items = _itemsModificables.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")} // Devuelve lista vacia si no existe _itemsModificable
+				}
+				if ((items == null) || (items.size() == 0)){
+					//No existe método en el controlador ni _itemsModificable (que solo existira si se llama al combo desde un tag documento)
 					if(field.reference){
 						//Opciones buscando todas las filas de una tabla
 						items = [];

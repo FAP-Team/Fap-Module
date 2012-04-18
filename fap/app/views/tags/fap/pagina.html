@@ -99,8 +99,12 @@
 
 #{/fap.messages}
 
-#{if play.getVirtualFile("../../public/javascripts/${formulario}/${titulo}"+".js") != null}
+#{if play.getVirtualFile("public/javascripts/${formulario}/${titulo}"+".js") != null}
 	#{script '../../public/javascripts/${formulario}/${titulo}.js' /}
+#{/if}
+
+#{if play.getVirtualFile("app/views/manualEndPage/$formulario/${titulo}"+".html") != null}
+    #{include 'manualEndPage/${formulario}/${titulo}.html' /}
 #{/if}
 
 		

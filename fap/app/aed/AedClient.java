@@ -559,8 +559,20 @@ public class AedClient {
 	
 	public static void actualizarPropiedades(PropiedadesDocumento propiedades, Boolean clasificado) throws AedExcepcion {
 		if(clasificado){
-			//TODO falta ver las ubicaciones y si se incrementa la versión del documento
-			//aed.actualizarDocumentoPropiedades(propiedades, arg1)
+			//TODO falta ver las ubicaciones (¿hecho en la lineas comentadas?) y si se incrementa la versión del documento
+//			List<DocumentoEnUbicacion> ubicaciones = aed.obtenerDocumentoRutas(propiedades.getUri());
+//			if (ubicaciones.size() == 0) {
+//				log.error("No se pudieron obtener las ubicaciones del documento " + propiedades.getUri());
+//				throw new AedExcepcion();
+//			}
+//			List<Ubicaciones> newUbicaciones = new ArrayList<Ubicaciones>();
+//			for (DocumentoEnUbicacion docUbic :ubicaciones) {
+//				Ubicaciones ubic = new Ubicaciones();
+//				ubic.setProcedimiento(FapProperties.get("fap.aed.procedimiento"));
+//				ubic.getExpedientes().add(docUbic.getExpediente());
+//				newUbicaciones.add(ubic);
+//			}
+//			aed.actualizarDocumentoPropiedades(propiedades, newUbicaciones);
 		}else{
 			aed.actualizarDocumentoPropiedadesNoClasificado(propiedades);
 		}

@@ -203,7 +203,6 @@ Formulario Solicitud {
 //			Boton resetVerificacion titulo="Reiniciar la verificacion"
 //		}
 //	}
-
 		
 		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {
 			Form iniciarVerificacion {
@@ -234,6 +233,11 @@ Formulario Solicitud {
 		}
 		
 		Grupo verificacionProceso titulo="Verificación de la documentación" permiso=verificarDocumentos { 
+		
+			Grupo botonDescargaReciboSolitud visible=false{
+				Enlace campo=SolicitudGenerica.registro.oficial.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="boton"
+			}	
+		
 			Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
 				popupVer=PopUpDocumentoVerificacionVer 
 				popupModificar=PopUpDocumentoVerificacionEditar 
@@ -247,6 +251,12 @@ Formulario Solicitud {
 				Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"
 				
 			}
+			
+			Form guardarMotivoRequerimientoGeneral {
+				AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.motivo
+				Boton guardarRequerimientoMotivoRequerimientoGeneralbtn titulo="Guardar Motivo Requerimiento"
+			}
+			
 //			Tabla exclusion titulo="Exclusión" campo=SolicitudGenerica.verificacion.codigosExclusion 
 //				popupCrear=PopUp:exclusionCrear 
 //				popupBorrar=PopUp:exclusionBorrar
@@ -318,7 +328,8 @@ Formulario Solicitud {
 						FirmaSimple firmarRequerimiento titulo="Firmar, registrar y notificar" documento=SolicitudGenerica.verificacion.requerimiento.oficial
 					}
 				}
-			}	
+			}
+			
 	}
 	
 	Popup PopUpDocTipos modificar ver titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {

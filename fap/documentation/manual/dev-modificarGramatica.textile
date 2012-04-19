@@ -1,0 +1,63 @@
+h1. Guía para desarrolladores del FAP-Team
+
+Si se quiere introducir un cambio en la gramática de FAP se debe:
+
+h2. Modificar Gramática FAP
+
+Modificar la gramática que está en el fichero: Led.xtext (_ruta:_ es.fap.simpleled/src/es.fap.simpleled/)
+
+Ejecutar:
+* o el compiler.xml de fap con el target: 'compiler [defaults]', unicamente. (_ruta:_ fap/) (Recomendado)
+* o el GenerateLed.mwe2 (_ruta:_ es.fap.simpleled/src/es.fap.simpleled/)
+
+h2. Modificar Generador a partir de las reglas de la Gramática FAP
+
+Modificar el generador de la regla que hemos creado/modificado (_ruta:_ es.fap.simpleled.generator/src/templates/GNOMBRE_REGLA.groovy) Dichos ficheros tiene como finalidad:
+* Generar el código en Java a raíz de la gramática que acepta el codigo .fap escrito por los usuarios.
+* Generar el código en Html correspondiente a la regla de la gramática en cuestión, que se añadirá a la vista de la página.
+
+h2. Modificar el ámbito de Acción para los DSL
+
+Para asignar el ambito de lo que hemos modificado en la gramática. Permite decir qué se puede poner en cada ámbito en los .fap. Se combina con las funciones de es.fap.simpleled.ui de autocompletado y demás:
+* Añadir o modificar la funcion correspondiente en: es.fap.simpleled/src/es/fap/simpleled/scoping/LedScopeProvider.java
+** Para crear una nueva función a partir de una nueva regla, la sintaxis del nombre de la función sería: public IScope scope_NOMBRE_REGLA_NOMBRE_ELEMENTO_REGLA (TIPO_REGLA x, EReference y) { ... }
+** Dicha función debe devolver: return Scopes.scopeFor(AMBITO_CALCULADO); // Pueden ser los campos, los atributos, etc ...
+
+h2. Modificar las Validaciones en el DSL
+
+Modificar validaciones (si se requiere):
+* El archivo LedJavaValidator.java, contiene todas las validaciones (_ruta:_ es.fap.simpleled/src/es.fap.simpleled.validation/)
+* Añadir/modificar, lo que queramos
+* Para añadir habría que crear una funcion con @Check antes, y pasarle como argumento lo que queramos validar
+* Actualizar Plugins como se explica más adelante.
+
+h2. Modificar el Autocompletado en el DSL
+
+Modificar el autocompletado: El archivo LedProposalProvider.java, contiene todas las reglas de autocompletado (es.fap.simpleled.ui/es.fap.ui.simpleled.ui.contentassist/):
+* Crear/Modificar, la que queramos
+* Para crear una funcion se deberá sobrecargar la funcion correspondiente de la clase padre de LedProposalProvider, en la clase LedProposalProvider
+
+h2. Modificar el AutoFormateador de los ficheros Generados
+
+Modificar el fichero BeautifierUtils.java, que contiene las reglas de formateo de los ficheros .java que son generados por FAP. (_ruta:_ es.fap.simpleled.generator/src/generator.utils/)
+
+h2. Modificar el Formateador de los ficheros .fap
+
+Modificar el fichero LedFormatter.java, que contiene las reglas de formateo que se aplicarán al hacer un CTRL+F en un fichero .fap. (_ruta:_ es.fap.simpleled/src/es.fap.simpleled.formatting)
+
+* Si se quiere tener más información ir al siguiente "enlace":http://www.eclipse.org/Xtext/documentation/2_1_0/105-formatting.php
+
+h2. Actualizar Plugins en Eclipse
+
+Actualizar los plugins de FAP para que reconozca en los .fap los nuevos cambios de la gramática:
+* Exportar las carpetas : 'es.fap.simpleled' y 'es.fap.simpleled.ui' (En eclipse: File->Export)
+* Reiniciar Eclipse
+
+h2. Ejecutar un proyecto en modo Debugger
+
+Ejecutar un proyecto en modo debugger en Eclipse:
+* La carpeta es.fap.simplele.ui (por ejemplo) -> debug as -> Eclipse Application
+* Para cerrar el Eclipse del Debugger hacerlo desde File -> Exit, si no dará problemas en sucesivos usos
+
+
+

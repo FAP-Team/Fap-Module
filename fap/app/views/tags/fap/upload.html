@@ -5,7 +5,7 @@
 		accept = "accept='${_accept}'";
 %}
 
-<div class="control-group ${play.mvc.Controller.validation.current().hasError(id)? "error" : ""}">
+<div class="control-group ${((play.mvc.Controller.validation!=null) && (play.mvc.Controller.validation.current().hasError(id))) ? "error" : ""}">
 <label for="${id}">Fichero</label>
 <div class="controls">
 	<input class="input-file" id='${id}' name='${id}' type='file' ${accept}>

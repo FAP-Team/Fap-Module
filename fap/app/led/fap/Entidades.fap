@@ -322,6 +322,8 @@ Entidad Verificacion {
 	OneToMany VerificacionDocumento documentos
 	
 	OneToMany Documento nuevosDocumentos
+	
+	OneToMany Documento verificacionTiposDocumentos
 		
 	String uriExclusion
 	String motivoExclusion

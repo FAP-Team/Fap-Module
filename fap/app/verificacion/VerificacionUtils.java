@@ -238,6 +238,37 @@ public class VerificacionUtils {
 	}
 	
 	/**
+	 * Indica si existen documentos nuevos aportados por el solicitante y que no estan incluidos en la verificacion actual, ni en anteriores, ni en la verificacion de tipos actual
+	 * 
+	 * @param verificacionActual La verificación que está en curso
+	 * @param verificaciones Las verificaciones anteriores ya finalizadas
+	 * @param documentosActuales La lista de documentos actuales que ha aportado el solicitante
+	 * 
+	 * @return documentosNuevos Lista con los documentos nuevos que ha aportado el solicitante y no han sido incluidos en ninguna verificacion
+	 */
+	public static List<Documento> existDocumentosNuevosVerificacionTipos (Verificacion verificacionActual, List<Verificacion> verificaciones, List<Documento> documentosActuales) {
+		Set documentosVerificaciones = new HashSet();
+		List <Documento> documentosNuevos = new ArrayList<Documento>();
+		for (Verificacion verificacion: verificaciones){
+			for (VerificacionDocumento vDoc: verificacion.documentos){
+				documentosVerificaciones.add(vDoc.uriDocumento);
+			}
+		}
+		for (VerificacionDocumento vDoc: verificacionActual.documentos){
+			documentosVerificaciones.add(vDoc.uriDocumento);
+		}
+		for (Documento vtdoc: verificacionActual.verificacionTiposDocumentos){
+			documentosVerificaciones.add(vtdoc.uri);
+		}
+		for (Documento doc: documentosActuales){
+			if (!documentosVerificaciones.contains(doc.uri)){
+				documentosNuevos.add(doc);
+			}
+		}
+		return documentosNuevos;
+	}
+	
+	/**
 	 * Indica si todos los documentos de la verificacion estan correctamente (no procede o valido)
 	 * 
 	 * @param verificacionActual La verificación que está en curso

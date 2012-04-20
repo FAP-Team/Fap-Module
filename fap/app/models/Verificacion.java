@@ -60,6 +60,11 @@ public class Verificacion extends Model {
 	public List<Documento> nuevosDocumentos;
 	
 	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="verificacion_verificaciontiposdocumentos")
+	public List<Documento> verificacionTiposDocumentos;
+	
+	
 	
 	public String uriExclusion;
 	
@@ -103,6 +108,9 @@ public class Verificacion extends Model {
 						
 						if (nuevosDocumentos == null)
 							nuevosDocumentos = new ArrayList<Documento>();
+						
+						if (verificacionTiposDocumentos == null)
+							verificacionTiposDocumentos = new ArrayList<Documento>();
 						
 						if (codigosExclusion == null)
 							codigosExclusion = new ArrayList<Exclusion>();

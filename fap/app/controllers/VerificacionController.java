@@ -43,24 +43,24 @@ public class VerificacionController extends VerificacionControllerGen {
         	redirect("AccesoVerificacionesController.index", idSolicitud);
 	}
 	
-//	public static void reiniciarVerificacion(Long idSolicitud){
-//		checkAuthenticity();
-//		// Save code
-//		if (permisoreiniciarVerificacion("update") || permisoreiniciarVerificacion("create")) {
-//			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-//			if(!validation.hasErrors()){
-//				dbSolicitud.verificacion = new Verificacion();
-//				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
-//				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
-//				dbSolicitud.save();
-//				Messages.ok("Solicitud reiniciada correctamente");
-//			}
-//		}
-//		else {
-//			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-//		}
-//		reiniciarVerificacionRender(idSolicitud);
-//	}
+	public static void reiniciarVerificacion(Long idSolicitud){
+		checkAuthenticity();
+		// Save code
+		if (permisoreiniciarVerificacion("update") || permisoreiniciarVerificacion("create")) {
+			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+			if(!validation.hasErrors()){
+				dbSolicitud.verificacion = new Verificacion();
+				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
+				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
+				dbSolicitud.save();
+				Messages.ok("Solicitud reiniciada correctamente");
+			}
+		}
+		else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+		reiniciarVerificacionRender(idSolicitud);
+	}
 	
 	//Métodos en el controlador manual
 	public static List<ComboItem> getTramitesCombo () {
@@ -90,6 +90,7 @@ public class VerificacionController extends VerificacionControllerGen {
 
 			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.verificandoTipos.name();
 			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
+			dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
 			if (!validation.hasErrors()) {
 				
 				dbSolicitud.save();
@@ -108,8 +109,9 @@ public class VerificacionController extends VerificacionControllerGen {
 	 */
 	public static void tablaverificacionTipos(Long idSolicitud, Long idEntidad) {
 		Long id = idSolicitud != null ? idSolicitud : idEntidad;
+		SolicitudGenerica s = getSolicitudGenerica(idSolicitud);
 		java.util.List<Documento> rows = Documento
-				.find("select documento from SolicitudGenerica solicitud join solicitud.documentacion.documentos documento where solicitud.id=? and (documento.verificado is null or documento.verificado = false)",id).fetch();
+				.find("select documento from SolicitudGenerica solicitud join solicitud.verificacion.verificacionTiposDocumentos documento where solicitud.id=? and (documento.verificado is null or documento.verificado = false)",id).fetch();
 
 		List<Documento> rowsFiltered = rows; // Tabla sin permisos, no filtra
 
@@ -387,6 +389,7 @@ public class VerificacionController extends VerificacionControllerGen {
 				if (!documentosNuevos.isEmpty()){
 					dbSolicitud.verificacion.nuevosDocumentos.addAll(documentosNuevos);
 					dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enVerificacionNuevosDoc.name();
+					dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
 					dbSolicitud.save();
 					Messages.info("Nuevos documentos aportados por el solicitante añadidos a la verificación actual. Verifique los tipos de estos documentos para proseguir con la verificación en curso.");
 				}

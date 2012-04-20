@@ -13,7 +13,8 @@ Formulario Solicitud {
 				popupModificar=PopUpDocProcesos  
 				popupVer=PopUpDocProcesos
 			{
-				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+				Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
+				Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
 				Columna campo=Documento.descripcion titulo="Tipo" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
@@ -194,15 +195,15 @@ Formulario Solicitud {
 //Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
 //				"}
 //		}
-//	Grupo reiniciaVerificacion {
-//		Form reiniciarVerificacion {
-//			Wiki { "Esto es momentáneo" }
-//			Grupo permiso=noEditable {
-//				Combo titulo="Estado Verificacion" campo=SolicitudGenerica.verificacion.estado
-//			}
-//			Boton resetVerificacion titulo="Reiniciar la verificacion"
-//		}
-//	}
+	Grupo reiniciaVerificacion {
+		Form reiniciarVerificacion {
+			Wiki { "Esto es momentáneo" }
+			Grupo permiso=noEditable {
+				Combo titulo="Estado Verificacion" campo=SolicitudGenerica.verificacion.estado
+			}
+			Boton resetVerificacion titulo="Reiniciar la verificacion"
+		}
+	}
 		
 		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {
 			Form iniciarVerificacion {
@@ -223,6 +224,7 @@ Formulario Solicitud {
 				//permiso=documentosNoVerificados
 				popupModificar=PopUpDocTipos popupVer=PopUpDocTipos {
 				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
+				Columna campo=Documento.fechaRegistro titulo="Fecha de Registro" ancho="100"
 				Columna campo=Documento.descripcion titulo="Tipo" expandir
 				Columna campo=Documento.verificado titulo="Verificado"
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
@@ -291,6 +293,7 @@ Formulario Solicitud {
 			Tabla verificacionTiposNuevosDoc titulo="Documentación Aún No Verificada" campo=SolicitudGenerica.verificacion.nuevosDocumentos
 				popupModificar=PopUpDocNuevosTipos popupVer=PopUpDocNuevosTipos {
 				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
+				Columna campo=Documento.fechaRegistro titulo="Fecha de Registro" ancho="100"
 				Columna campo=Documento.descripcion titulo="Tipo" expandir
 				Columna campo=Documento.verificado titulo="Verificado"
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"

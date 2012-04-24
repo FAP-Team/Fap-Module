@@ -130,7 +130,7 @@ Formulario Solicitud {
 			popupVer=PopUpVerificacionVer
 			{
 				Columna titulo="Expediente" campo=Verificacion.expediente ancho="150"
-				Columna titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion ancho="150" 
+				Columna titulo="Motivo Exclusión" campo=Verificacion.requerimiento.motivo ancho="150" 
 				Columna titulo="Fecha creación" campo=Verificacion.fechaCreacion ancho="150"
 				Columna titulo="Fecha finalización" campo=Verificacion.fechaUltimaActualizacion ancho="150"
 				Columna titulo="Estado" campo=Verificacion.estado expandir
@@ -153,7 +153,7 @@ Formulario Solicitud {
 	
 	Popup PopUpVerificacionVer ver titulo="Verificación" campo=SolicitudGenerica.verificaciones {
 		Texto expediente titulo="Expediente" campo=Verificacion.expediente
-		Texto exclusion titulo="Motivo Exclusión" campo=Verificacion.motivoExclusion
+		Texto exclusion titulo="Motivo Requerimiento" campo=Verificacion.requerimiento.motivo
 		Fecha fechaCreacion titulo="Fecha creación" campo=Verificacion.fechaCreacion
 		Fecha fechaActualizacion titulo="Fecha finalización" campo=Verificacion.fechaUltimaActualizacion
 		Combo estado titulo="Estado" campo=Verificacion.estado
@@ -195,15 +195,15 @@ Formulario Solicitud {
 //Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
 //				"}
 //		}
-	Grupo reiniciaVerificacion {
-		Form reiniciarVerificacion {
-			Wiki { "Esto es momentáneo" }
-			Grupo permiso=noEditable {
-				Combo titulo="Estado Verificacion" campo=SolicitudGenerica.verificacion.estado
-			}
-			Boton resetVerificacion titulo="Reiniciar la verificacion"
-		}
-	}
+//	Grupo reiniciaVerificacion {
+//		Form reiniciarVerificacion {
+//			Wiki { "Esto es momentáneo" }
+//			Grupo permiso=noEditable {
+//				Combo titulo="Estado Verificacion" campo=SolicitudGenerica.verificacion.estado
+//			}
+//			Boton resetVerificacion titulo="Reiniciar la verificacion"
+//		}
+//	}
 		
 		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {
 			Form iniciarVerificacion {
@@ -246,7 +246,7 @@ Formulario Solicitud {
 			{
 				//Columna titulo="Id" campo=VerificacionDocumento.id ancho="40"
 				Columna titulo="Fecha Presentación" campo=VerificacionDocumento.fechaPresentacion ancho="80"
-				Columna titulo="Descripcion" campo=VerificacionDocumento.descripcion expandir
+				Columna titulo="Descripción" campo=VerificacionDocumento.descripcion expandir
 				Columna titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
 				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
 				Columna titulo="Multiplicidad" campo=VerificacionDocumento.identificadorMultiple ancho="80"
@@ -353,7 +353,7 @@ Formulario Solicitud {
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
 		Grupo noEditable permiso=noEditable visible=false{
-			Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
+			Texto titulo="Descripción" campo=VerificacionDocumento.descripcion
 			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
 			Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento
 			Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
@@ -382,7 +382,7 @@ Formulario Solicitud {
 		Grupo botonDescarga visible=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
-		Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
+		Texto titulo="Descripción" campo=VerificacionDocumento.descripcion
 		Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
 		Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento
 		Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion

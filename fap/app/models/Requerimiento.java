@@ -25,16 +25,20 @@ import utils.AedUtils;
 public class Requerimiento extends Model {
 	// Código de los atributos
 	
+	
 	@Transient
 	public String firma;
+	
 	
 	
 	@Transient
 	public String urlDocRequerimiento;
 	
 	
+	
 	@ValueFromTable("estadosRequerimiento")
 	public String estado;
+	
 	
 	
 	@Column(columnDefinition="LONGTEXT")
@@ -42,7 +46,9 @@ public class Requerimiento extends Model {
 	
 	
 	
+	
 	public String firmante;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaRegistroSalida"),@Column(name="fechaRegistroSalidaTZ")})
@@ -51,7 +57,9 @@ public class Requerimiento extends Model {
 	
 	
 	
+	
 	public String numeroRegistroSalida;
+	
 	
 	
 	
@@ -59,7 +67,9 @@ public class Requerimiento extends Model {
 	
 	
 	
+	
 	public String oficinaRegistroSalida;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaAcuse"),@Column(name="fechaAcuseTZ")})
@@ -68,23 +78,29 @@ public class Requerimiento extends Model {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public InformacionRegistro informacionRegistro;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Documento oficial;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Documento borrador;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Documento justificante;
 	
 	
 	
+	
 	public String uriRequerimiento;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaAcceso"),@Column(name="fechaAccesoTZ")})
@@ -92,9 +108,11 @@ public class Requerimiento extends Model {
 	public DateTime fechaAcceso;
 	
 	
+	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaNotificacion"),@Column(name="fechaNotificacionTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaNotificacion;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaVencimiento"),@Column(name="fechaVencimientoTZ")})
@@ -103,7 +121,9 @@ public class Requerimiento extends Model {
 	
 	
 	
+	
 	public Boolean accesoaSede;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaDisposicionSede"),@Column(name="fechaDisposicionSedeTZ")})
@@ -111,9 +131,11 @@ public class Requerimiento extends Model {
 	public DateTime fechaDisposicionSede;
 	
 	
+	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaAcuseSede"),@Column(name="fechaAcuseSedeTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaAcuseSede;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaRechazoSede"),@Column(name="fechaRechazoSedeTZ")})
@@ -122,12 +144,15 @@ public class Requerimiento extends Model {
 	
 	
 	
+	
 	public Boolean postal;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaEnvioPostal"),@Column(name="fechaEnvioPostalTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaEnvioPostal;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaAcusePostal"),@Column(name="fechaAcusePostalTZ")})

@@ -27,7 +27,9 @@ public class Documento extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String uri;
+	
 	
 	
 	@ValueFromTable("tipoDocumentosCiudadanos")
@@ -35,9 +37,11 @@ public class Documento extends Model {
 	public String tipoCiudadano;
 	
 	
+	
 	@ValueFromTable("tipoDocumentosOrganismos")
 	@Transient
 	public String tipoOrganismo;
+	
 	
 	
 	@ValueFromTable("tipoDocumentosOtrasEntidades")
@@ -45,8 +49,10 @@ public class Documento extends Model {
 	public String tipoOtraEntidad;
 	
 	
+	
 	@ValueFromTable("tipoDocumentos")
 	public String tipo;
+	
 	
 	
 	
@@ -54,11 +60,14 @@ public class Documento extends Model {
 	
 	
 	
+	
 	public Boolean clasificado;
 	
 	
 	
+	
 	public String hash;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaSubida"),@Column(name="fechaSubidaTZ")})
@@ -66,13 +75,16 @@ public class Documento extends Model {
 	public DateTime fechaSubida;
 	
 	
+	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaRegistro"),@Column(name="fechaRegistroTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaRegistro;
 	
 	
+	
 	@Transient
 	public String urlDescarga;
+	
 	
 	
 	

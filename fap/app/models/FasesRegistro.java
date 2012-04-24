@@ -26,7 +26,9 @@ public class FasesRegistro extends Model {
 	// Código de los atributos
 	
 	
+	
 	public Boolean borrador;
+	
 	
 	
 	
@@ -34,7 +36,9 @@ public class FasesRegistro extends Model {
 	
 	
 	
+	
 	public Boolean expedientePlatino;
+	
 	
 	
 	
@@ -42,7 +46,9 @@ public class FasesRegistro extends Model {
 	
 	
 	
+	
 	public Boolean expedienteAed;
+	
 	
 	
 	

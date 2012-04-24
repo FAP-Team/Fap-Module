@@ -33,7 +33,9 @@ public class Mail extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String idMail;
+	
 	
 	
 	
@@ -41,7 +43,9 @@ public class Mail extends Model {
 	
 	
 	
+	
 	public String cc;
+	
 	
 	
 	@Column(columnDefinition="LONGTEXT")
@@ -49,7 +53,9 @@ public class Mail extends Model {
 	
 	
 	
+	
 	public String footer;
+	
 	
 	
 	
@@ -57,7 +63,9 @@ public class Mail extends Model {
 	
 	
 	
+	
 	public String sender;
+	
 	
 	
 	

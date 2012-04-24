@@ -27,11 +27,14 @@ public class Propiedades extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String descripcion;
 	
 	
 	
+	
 	public String clave;
+	
 	
 	
 	@Transient

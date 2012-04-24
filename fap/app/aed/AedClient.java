@@ -474,9 +474,11 @@ public class AedClient {
 			if(!documento.clasificado){
 				try {
 					if(informacionRegistro == null){
+						log.info("Clasificando SIN registro el documento: "+documento.uri);
 						clasificarDocumentoSinRegistro(idAed, documento, interesadosDocumentos, interesadosNombres);
 					}else{
 						//TODO: Pasar parámetro notificable
+						log.info("Clasificando CON registro el documento: "+documento.uri);
 						clasificarDocumentoConRegistro(idAed, documento, interesadosDocumentos, interesadosNombres, informacionRegistro, false); 
 					}
 				}catch(AedExcepcion e){

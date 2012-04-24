@@ -26,11 +26,14 @@ public class CodigoRequerimiento extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String codigo;
+	
 	
 	
 	@Column(columnDefinition="LONGTEXT")
 	public String descripcion;
+	
 	
 	
 	

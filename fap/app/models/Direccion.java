@@ -26,7 +26,9 @@ public class Direccion  {
 	// Código de los atributos
 	
 	
+	
 	public String calle;
+	
 	
 	
 	
@@ -34,19 +36,24 @@ public class Direccion  {
 	
 	
 	
+	
 	public String otros;
+	
 	
 	
 	
 	public String codigoPostal;
 	
 	
+	
 	@ValueFromTable("municipios")
 	public String municipio;
 	
 	
+	
 	@ValueFromTable("provincias")
 	public String provincia;
+	
 	
 	
 	@ValueFromTable("paises")

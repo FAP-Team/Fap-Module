@@ -26,8 +26,10 @@ import java.text.SimpleDateFormat;
 public class PersonaFisica extends Model {
 	// Código de los atributos
 	
+	
 	@Transient
 	public String nombreCompleto;
+	
 	
 	
 	@Transient
@@ -35,7 +37,9 @@ public class PersonaFisica extends Model {
 	
 	
 	
+	
 	public String nombre;
+	
 	
 	
 	
@@ -43,7 +47,9 @@ public class PersonaFisica extends Model {
 	
 	
 	
+	
 	public String segundoApellido;
+	
 	
 	
 	@CheckWith(NipCheck.class)

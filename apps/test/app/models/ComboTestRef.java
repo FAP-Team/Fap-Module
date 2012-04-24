@@ -26,6 +26,7 @@ public class ComboTestRef extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String nombre;
 	
 	

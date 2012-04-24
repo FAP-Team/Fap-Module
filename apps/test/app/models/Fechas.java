@@ -25,9 +25,11 @@ import java.text.SimpleDateFormat;
 public class Fechas extends Model {
 	// Código de los atributos
 	
+	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaRequerida"),@Column(name="fechaRequeridaTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaRequerida;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fecha"),@Column(name="fechaTZ")})

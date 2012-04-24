@@ -146,7 +146,11 @@ public class ObligatoriedadDocumentosFap extends Model{
 			manuales.clear();
 	}
 
-	// Para eliminar de la URI, la Versión, que no hará falta en el proceso de obtener la documentación obligatoria al trámite
+	/**
+	 *  Para eliminar de la URI, la Versión, que no hará falta en el proceso de obtener la documentación obligatoria al trámite
+	 * @param uri
+	 * @return
+	 */
 	public static String eliminarVersionUri(String uri){
 		return uri.substring(0,uri.length()-4);
 	}

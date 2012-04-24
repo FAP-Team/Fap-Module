@@ -33,12 +33,15 @@ public class SolicitudGenerica extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String estado;
+	
 	
 	
 	@ValueFromTable("estadosSolicitud")
 	@Transient
 	public String estadoValue;
+	
 	
 	
 	@ValueFromTable("estadosSolicitud")
@@ -51,44 +54,59 @@ public class SolicitudGenerica extends Model {
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Solicitante solicitante;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Documentacion documentacion;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Documentacion documentacionProceso;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Documentacion documentacionAportada;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Registro registro;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public ExpedientePlatino expedientePlatino;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public ExpedienteAed expedienteAed;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Aportaciones aportaciones;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Verificacion verificacion;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="solicitudgenerica_verificaciones")
+	
 	public List<Verificacion> verificaciones;
+	
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
+	public Exclusion exclusion;
 	
 	
 	public SolicitudGenerica (){
@@ -146,6 +164,11 @@ public class SolicitudGenerica extends Model {
 						
 						if (verificaciones == null)
 							verificaciones = new ArrayList<Verificacion>();
+						
+							if (exclusion == null)
+								exclusion = new Exclusion();
+							else
+								exclusion.init();
 						
 	}
 		

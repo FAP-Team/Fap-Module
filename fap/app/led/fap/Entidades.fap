@@ -30,6 +30,7 @@ Entidad SolicitudGenerica tableName = "solicitud"{
 	Aportaciones aportaciones
 	Verificacion verificacion
 	OneToMany Verificacion verificaciones
+	Exclusion exclusion
 }
 
 // Dátos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -326,10 +327,6 @@ Entidad Verificacion {
 	OneToMany Documento nuevosDocumentos
 	
 	OneToMany Documento verificacionTiposDocumentos
-		
-	String uriExclusion
-	String motivoExclusion
-	OneToMany Exclusion codigosExclusion
 		 
 	OneToOne Requerimiento requerimiento
 		
@@ -378,10 +375,16 @@ Entidad TiposCodigoRequerimiento {
 }
 
 // Códigos de exclusión
-Entidad Exclusion {
+Entidad TipoCodigoExclusion {
 	String codigo
 	LongText descripcion
 	String descripcionCorta
+}
+
+Entidad Exclusion {
+	String motivoExclusion
+	List<String> codigosExclusionString
+	OneToMany TipoCodigoExclusion codigosExclusion transient
 }
 
 Entidad Requerimiento {

@@ -258,6 +258,12 @@ public class RegistroService {
 				//Almacena la información de registro
 				aportacion.informacionRegistro.setDataFromJustificante(justificante);
 				play.Logger.info("Almacenada la información del registro en la base de datos");
+				
+				/// Establecemos la fecha de registro en todos los documentos de la aportación
+				for (Documento doc: aportacion.documentos) {
+					doc.fechaRegistro = aportacion.informacionRegistro.fechaRegistro;
+					doc.save();
+				}
 
 				//Guarda el justificante en el AED
 				play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
@@ -312,14 +318,16 @@ public class RegistroService {
 		//Mueve la aportación a la lista de aportaciones clasificadas
 		//Añade los documentos a la lista de documentos
 		if(aportacion.estado.equals("clasificada")){
+			play.Logger.info("Procedemos a finalizar la aportación");
 			solicitud.aportaciones.registradas.add(aportacion);
 			solicitud.documentacion.documentos.addAll(aportacion.documentos);
 			solicitud.aportaciones.actual = new Aportacion();
-			solicitud.save();
 			aportacion.estado = "finalizada";
 			aportacion.save();
+			play.Logger.info("Guardamos la aportación");
+			solicitud.save();
 			
-			play.Logger.debug("Los documentos de la aportacion se movieron correctamente");
+			play.Logger.info("Los documentos de la aportacion se movieron correctamente");
 		}
 		
 		

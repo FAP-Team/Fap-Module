@@ -26,7 +26,9 @@ public class TestGrupo extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String nombre;
+	
 	
 	
 	

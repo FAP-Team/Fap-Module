@@ -26,8 +26,10 @@ import java.text.SimpleDateFormat;
 public class PersonaJuridica extends Model {
 	// Código de los atributos
 	
+	
 	@Transient
 	public String nombreCompleto;
+	
 	
 	
 	@Transient
@@ -35,11 +37,14 @@ public class PersonaJuridica extends Model {
 	
 	
 	
+	
 	public String entidad;
+	
 	
 	
 	@CheckWith(CifCheck.class)
 	public String cif;
+	
 	
 	
 	@Email
@@ -47,11 +52,14 @@ public class PersonaJuridica extends Model {
 	
 	
 	
+	
 	public String telefonoFijo;
 	
 	
 	
+	
 	public String telefonoMovil;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaFirma"),@Column(name="fechaFirmaTZ")})

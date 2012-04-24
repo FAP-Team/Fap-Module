@@ -26,7 +26,9 @@ public class ValoresPorDefectoTest extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String mString;
+	
 	
 	
 	
@@ -34,7 +36,9 @@ public class ValoresPorDefectoTest extends Model {
 	
 	
 	
+	
 	public Integer mInteger;
+	
 	
 	
 	
@@ -42,7 +46,9 @@ public class ValoresPorDefectoTest extends Model {
 	
 	
 	
+	
 	public Double mDouble;
+	
 	
 	
 	@Column(columnDefinition="LONGTEXT")
@@ -50,23 +56,29 @@ public class ValoresPorDefectoTest extends Model {
 	
 	
 	
+	
 	public String mTelefono;
+	
 	
 	
 	@Email
 	public String mEmail;
 	
 	
+	
 	@Email
 	public String mEmail2;
+	
 	
 	
 	@CheckWith(CifCheck.class)
 	public String mCif;
 	
 	
+	
 	@Moneda
 	public Double mMoneda;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="mDateTime"),@Column(name="mDateTimeTZ")})
@@ -74,10 +86,12 @@ public class ValoresPorDefectoTest extends Model {
 	public DateTime mDateTime;
 	
 	
+	
 	@ValueFromTable("ComboTestList")
 	public String mLista;
 	
 	/*default = "c"*/
+	
 	@Embedded
 	public Embebida mEmbebida;
 	

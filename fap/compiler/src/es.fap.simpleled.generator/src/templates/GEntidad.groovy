@@ -126,6 +126,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		String type;
 		String name = attribute.name;
 		List<String> anotaciones = new ArrayList<String>();
+		List<String> anotacionesJPA = new ArrayList<String>(); // Éstas anotaciones no se utilizarán si el atributo es Transient
 		List<String> columnAnotations = new ArrayList<String>();
 		
 		String cascadeType = "cascade=CascadeType.ALL,";
@@ -202,14 +203,14 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				//Referencia
 				String tipoReferencia = compuesto.tipoReferencia?.type ?: "OneToOne" //Si no especifica tipo es una OneToOne
 				if (tipoReferencia.equals("ManyToOne")) { // Si es ManyToOne, no ponemos la anotacion de cascade
-					anotaciones.add "@${tipoReferencia}(fetch=FetchType.LAZY)"
+					anotacionesJPA.add "@${tipoReferencia}(fetch=FetchType.LAZY)"
 				} else {
-					anotaciones.add "@${tipoReferencia}(${cascadeType} fetch=FetchType.LAZY)"
+					anotacionesJPA.add "@${tipoReferencia}(${cascadeType} fetch=FetchType.LAZY)"
 				}
 				type= compuesto.entidad.name;
 				if(LedEntidadUtils.xToMany(attribute)){
 					type = "List<${type}>"
-					anotaciones.add """@JoinTable(name="${entity.name.toLowerCase()}_${attribute.name.toLowerCase()}")"""
+					anotacionesJPA.add """@JoinTable(name="${entity.name.toLowerCase()}_${attribute.name.toLowerCase()}")"""
 				}
 
 			}
@@ -227,8 +228,10 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			anotaciones.add("""@Column(name="${attribute.column}")""");
 		
 		// Si el atributo es transient
-		if (attribute.isTransient)
+		if (attribute.isTransient) {
 			anotaciones.add("@Transient");
+			anotacionesJPA.clear();
+		}
 			
 		// Si tiene atributo length (sólo los de tipo String y LongText -> la comprobación se hace en el editor)
 		if (attribute.hasLength)
@@ -258,6 +261,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		String out =
 	"""
 	$comments
+	${anotacionesJPA.join('\n	')}
 	${anotaciones.join('\n	')}
 	public ${type} ${name};
 	"""
@@ -270,7 +274,11 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		for(Attribute attribute : entity.attributes){
 			CompoundType compuesto = attribute.type.compound;
 			String tipo = compuesto?.entidad?.name;
-			if (compuesto?.entidad?.embedded){
+			// Si el atributo es Transient, no necesita init
+			if (attribute.isTransient) {
+				refInit += "";
+			}
+			else if (compuesto?.entidad?.embedded){
 				refInit += """
 			if (${attribute.name} == null)
 				${attribute.name} = new ${compuesto.entidad.name}();

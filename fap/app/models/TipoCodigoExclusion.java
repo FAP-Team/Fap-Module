@@ -22,47 +22,22 @@ import java.text.SimpleDateFormat;
 
 
 @Entity
-public class Incidencia extends Model {
+public class TipoCodigoExclusion extends Model {
 	// Código de los atributos
 	
 	
-	@Email
-	public String email;
 	
-	
-	
-	
-	public String fecha;
-	
-	
-	
-	
-	public String telefono;
-	
-	
-	
-	
-	public String nombre;
-	
-	
-	
-	
-	public String apellidos;
-	
-	
-	
-	
-	public String asunto;
+	public String codigo;
 	
 	
 	
 	@Column(columnDefinition="LONGTEXT")
-	public String texto;
+	public String descripcion;
 	
 	
 	
 	
-	public Boolean enviada;
+	public String descripcionCorta;
 	
 	
 
@@ -74,7 +49,7 @@ public class Incidencia extends Model {
 	
 
 // === MANUAL REGION START ===
-
+			
 // === MANUAL REGION END ===
 	
 	

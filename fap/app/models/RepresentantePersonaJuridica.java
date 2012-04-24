@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 public class RepresentantePersonaJuridica extends RepresentantePersonaFisica {
 	// Código de los atributos
 	
+	
 	@ValueFromTable("TiposRepresentantes")
 	public String tipoRepresentacion;
 	

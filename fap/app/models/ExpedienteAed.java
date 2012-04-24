@@ -27,6 +27,7 @@ public class ExpedienteAed extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String idAed;
 	
 	

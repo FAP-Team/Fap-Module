@@ -26,53 +26,65 @@ public class Solicitud extends SolicitudGenerica {
 	// Código de los atributos
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public DireccionTest direccionTest;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public ComboTest comboTest;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public ValoresPorDefectoTest valoresPorDefectoTest;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Fechas fechas;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public TestGrupo testGrupo;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="solicitud_tabladenombres")
+	
 	public List<TablaDeNombres> tablaDeNombres;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="solicitud_peta")
+	
 	public List<Peta> peta;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Solicitante pf;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Solicitante pj;
 	
 	
 	@ManyToOne(fetch=FetchType.LAZY)
+	
 	public ComboTestRef comboError;
 	
 	
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="solicitud_comboerrormany")
+	
 	public List<ComboTestRef> comboErrorMany;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public SavePages savePages;
 	
 	

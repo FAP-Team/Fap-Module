@@ -26,7 +26,9 @@ public class Peta extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String n;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fecha"),@Column(name="fechaTZ")})
@@ -36,11 +38,14 @@ public class Peta extends Model {
 	
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="peta_petador")
+	
 	public List<ComboTestRef> petador;
 	
 	
 	
+	
 	public String d;
+	
 	
 	
 	

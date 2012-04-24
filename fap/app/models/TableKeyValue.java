@@ -26,12 +26,15 @@ import utils.Fixtures;
 public class TableKeyValue extends Model {
 	// Código de los atributos
 	
+	
 	@Column(name="t")
 	public String table;
 	
 	
+	
 	@Column(name="k")
 	public String key;
+	
 	
 	
 	@Column(name="v")

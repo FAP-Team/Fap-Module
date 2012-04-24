@@ -27,11 +27,14 @@ public class Agente extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String username;
 	
 	
 	
+	
 	public String password;
+	
 	
 	
 	@Email
@@ -39,7 +42,9 @@ public class Agente extends Model {
 	
 	
 	
+	
 	public String name;
+	
 	
 	
 	@ElementCollection
@@ -47,12 +52,15 @@ public class Agente extends Model {
 	public Set<String> roles;
 	
 	
+	
 	@ValueFromTable("roles")
 	public String rolActivo;
 	
 	
 	
+	
 	public String acceso;
+	
 	
 	
 	

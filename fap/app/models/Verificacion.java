@@ -26,16 +26,19 @@ public class Verificacion extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String uriVerificacion;
+	
 	
 	
 	
 	public String uriProcedimiento;
 	
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	
 	@Transient
 	public Tramite tramiteNombre;
+	
 	
 	
 	
@@ -43,7 +46,9 @@ public class Verificacion extends Model {
 	
 	
 	
+	
 	public String expediente;
+	
 	
 	
 	@ValueFromTable("estadosVerificacion")
@@ -52,6 +57,7 @@ public class Verificacion extends Model {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_documentos")
+	
 	public List<VerificacionDocumento> documentos;
 	
 	
@@ -64,22 +70,10 @@ public class Verificacion extends Model {
 	@JoinTable(name="verificacion_verificaciontiposdocumentos")
 	public List<Documento> verificacionTiposDocumentos;
 	
-	
-	
-	public String uriExclusion;
-	
-	
-	
-	public String motivoExclusion;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="verificacion_codigosexclusion")
-	public List<Exclusion> codigosExclusion;
-	
-	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	
 	public Requerimiento requerimiento;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaCreacion"),@Column(name="fechaCreacionTZ")})
@@ -100,21 +94,18 @@ public class Verificacion extends Model {
 	public void init(){
 		
 		
-							if (tramiteNombre != null)
-								tramiteNombre.init();	
-						
 						if (documentos == null)
 							documentos = new ArrayList<VerificacionDocumento>();
 						
 						if (nuevosDocumentos == null)
 							nuevosDocumentos = new ArrayList<Documento>();
-						
+
 						if (verificacionTiposDocumentos == null)
 							verificacionTiposDocumentos = new ArrayList<Documento>();
 						
 						if (codigosExclusion == null)
 							codigosExclusion = new ArrayList<Exclusion>();
-						
+							
 							if (requerimiento == null)
 								requerimiento = new Requerimiento();
 							else

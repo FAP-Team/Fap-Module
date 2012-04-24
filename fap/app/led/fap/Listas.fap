@@ -199,7 +199,7 @@ Lista estadosDocumentoVerificacion crearEnumerado {
 	noVerificado: "No Verificado"
 	noProcede: "No Procede"
 	valido: "Válido"
-	noValido: "No Valido"
+	noValido: "No Válido"
 }
 
 Lista estadosRequerimiento crearEnumerado {

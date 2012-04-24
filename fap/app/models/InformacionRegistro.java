@@ -25,9 +25,11 @@ import java.text.SimpleDateFormat;
 public class InformacionRegistro extends Model {
 	// Código de los atributos
 	
+	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaRegistro"),@Column(name="fechaRegistroTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaRegistro;
+	
 	
 	
 	
@@ -35,7 +37,9 @@ public class InformacionRegistro extends Model {
 	
 	
 	
+	
 	public String numeroRegistro;
+	
 	
 	
 	

@@ -26,11 +26,14 @@ public class Participacion extends Model {
 	// Código de los atributos
 	
 	@ManyToOne(fetch=FetchType.LAZY)
+	
 	public Agente agente;
 	
 	
 	@ManyToOne(fetch=FetchType.LAZY)
+	
 	public SolicitudGenerica solicitud;
+	
 	
 	
 	@ValueFromTable("TiposParticipacion")

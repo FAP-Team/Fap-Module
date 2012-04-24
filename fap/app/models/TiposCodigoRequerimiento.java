@@ -26,7 +26,9 @@ public class TiposCodigoRequerimiento extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String codigo;
+	
 	
 	
 	@Column(columnDefinition="LONGTEXT")
@@ -34,11 +36,14 @@ public class TiposCodigoRequerimiento extends Model {
 	
 	
 	
+	
 	public String descripcionCorta;
 	
 	
 	
+	
 	public String uriTramite;
+	
 	
 	
 	

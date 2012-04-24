@@ -26,6 +26,7 @@ public class Embebida  {
 	// Código de los atributos
 	
 	
+	
 	public String algo;
 	
 	

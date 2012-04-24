@@ -26,7 +26,9 @@ public class Firmante extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String nombre;
+	
 	
 	
 	
@@ -34,7 +36,9 @@ public class Firmante extends Model {
 	
 	
 	
+	
 	public String idvalor;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaFirma"),@Column(name="fechaFirmaTZ")})
@@ -43,7 +47,9 @@ public class Firmante extends Model {
 	
 	
 	
+	
 	public String tipo;
+	
 	
 	
 	

@@ -26,7 +26,9 @@ public class TipoDocumento extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String uri;
+	
 	
 	
 	
@@ -34,7 +36,9 @@ public class TipoDocumento extends Model {
 	
 	
 	
+	
 	public String aportadoPor;
+	
 	
 	
 	
@@ -42,7 +46,9 @@ public class TipoDocumento extends Model {
 	
 	
 	
+	
 	public String tramitePertenece;
+	
 	
 	
 	

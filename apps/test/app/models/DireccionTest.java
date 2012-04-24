@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 public class DireccionTest extends Model {
 	// Código de los atributos
 	
+	
 	@Embedded
 	public Direccion direccion;
 	

@@ -18,6 +18,7 @@ public class GPagina {
 	List<EntidadUtils> entities;
 	List<String> saveExtra;
 	List<String> saveCode;
+	String codeForSetProcesando;
 	
 	public static String generate(Pagina pagina){
 		GPagina g = new GPagina();
@@ -118,6 +119,16 @@ public class GPagina {
 		FileUtils.overwrite(FileUtils.getRoute('VIEW'), "${pagina.name}/${pagina.name}.html", view);
 	}
 
+	public String getCodeForSetProcesando(List<Object> objects) {
+		String myCode = ""
+		for (Object obn: objects) {
+			if (obn instanceof GForm) {
+				myCode += ", \"${controllerName()}."+obn.name+"\", \"${controllerGenName()}."+obn.name+"\"";
+			}
+		}
+		return myCode
+	}
+	
 	public String controller(){
 		
 		String controladorPadre = "GenericController"
@@ -131,6 +142,8 @@ public class GPagina {
 		for(elemento in HashStack.allElements(HashStackName.CONTROLLER)){
 			controllerHS += elemento.controller()
 		}
+		codeForSetProcesando = getCodeForSetProcesando(HashStack.allElements(HashStackName.CONTROLLER))
+
 		HashStack.remove(HashStackName.CONTROLLER);
 		entities = HashStack.allElements(HashStackName.SAVE_ENTITY);
 		
@@ -155,6 +168,23 @@ public class GPagina {
 		if (ModelUtils.isSolicitudForm()) {
 			solicitud = EntidadUtils.create(LedUtils.findSolicitud());
 		}
+		
+		String finalCodeSetSolicitud = ""
+		if (!pagina.noAutenticar) {
+			finalCodeSetSolicitud = """
+				@After(only={"${controllerName()}.save", "${controllerGenName()}.save" ${codeForSetProcesando}})
+				protected static void setSolicitudProcesada () {
+					unsetSolicitudProcesando();
+				}
+			
+				@Before(only={"${controllerName()}.save", "${controllerGenName()}.save" ${codeForSetProcesando}})
+				protected static void setSolicitudProcesandose () {
+					setSolicitudProcesando();
+				}
+			"""
+		}
+		
+		
 		String controllerGen = """
 			package controllers.gen;
 
@@ -189,6 +219,8 @@ public class GPagina {
 				static void beforeMethod() {
 					renderArgs.put("controllerName", "${controllerGenName()}");
 				}
+				
+				${finalCodeSetSolicitud}
 	
 		""";
 		

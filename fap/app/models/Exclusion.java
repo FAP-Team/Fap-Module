@@ -26,15 +26,18 @@ public class Exclusion extends Model {
 	// Código de los atributos
 	
 	
-	public String codigo;
 	
-	
-	@Column(columnDefinition="LONGTEXT")
-	public String descripcion;
+	public String motivoExclusion;
 	
 	
 	
-	public String descripcionCorta;
+	@ElementCollection
+	public List<String> codigosExclusionString;
+	
+	
+	
+	@Transient
+	public List<TipoCodigoExclusion> codigosExclusion;
 	
 	
 
@@ -46,6 +49,18 @@ public class Exclusion extends Model {
 	
 
 // === MANUAL REGION START ===
+	
+	public List<TipoCodigoExclusion> getCodigosExclusion () {
+		System.out.println("Codigos de exclusion");
+		List<TipoCodigoExclusion> codigos = new ArrayList<TipoCodigoExclusion>();
+		for (String codeString : codigosExclusionString) {
+			TipoCodigoExclusion code = TipoCodigoExclusion.find("select tipoCodigoExclusion from TipoCodigoExclusion tipoCodigoExclusion where tipoCodigoExclusion.codigo=?", codeString).first();
+			if (code != null) {
+				codigos.add(code);
+			}
+		}
+		return codigos;
+	}
 			
 // === MANUAL REGION END ===
 	

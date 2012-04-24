@@ -27,11 +27,14 @@ public class ExpedientePlatino extends Model {
 	// Código de los atributos
 	
 	
+	
 	public String uri;
 	
 	
 	
+	
 	public String numero;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaApertura"),@Column(name="fechaAperturaTZ")})
@@ -40,7 +43,9 @@ public class ExpedientePlatino extends Model {
 	
 	
 	
+	
 	public Boolean creado;
+	
 	
 	
 	

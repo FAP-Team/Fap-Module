@@ -90,6 +90,7 @@ public class TiposDocumentosClient {
 			//Borra los trámites antiguos
 			Fixtures.delete(models.Tramite.class);
 			Fixtures.delete(models.TipoDocumento.class);
+			Fixtures.delete(models.TiposCodigoRequerimiento.class);
 			
 			//Recupera los trámites y los tipos de documentos asociados
 			ListaTramites tramites = procedimientos.consultarTramites(uriProcedimiento);

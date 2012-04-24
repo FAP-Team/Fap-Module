@@ -95,6 +95,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 					RegistroService.registrarAportacionActual(solicitud, null);
 				} catch (RegistroException e) {
 					e.printStackTrace();
+					play.Logger.fatal("Se produjo un error al intentar registrar la aportación: "+e.getMessage());
 					Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");
 				}
 			}

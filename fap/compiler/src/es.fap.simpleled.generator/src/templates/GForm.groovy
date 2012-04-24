@@ -16,6 +16,7 @@ public class GForm {
 	boolean tieneBotonSave;
 	String name;
 	CampoUtils campo;
+	String target;
 	Permiso permiso;
 	
 	EntidadUtils padre;
@@ -30,6 +31,11 @@ public class GForm {
 		g.name = form.name;	
 		if (form.campo != null){
 			g.campo = CampoUtils.create(form.campo);
+		}
+		if(form.destino != null){
+			g.target = form.destino;
+		} else {
+			g.target = null;
 		}
 		g.permiso = form.permiso
 		g.contenedor = HashStack.top(HashStackName.GPAGINA);
@@ -115,14 +121,22 @@ public class GForm {
 		else {
 			tieneBotonSave = false;	
 		}
-		
-		String view = """
-			#{form @${controllerName()}.${controllerMethodName()}(${padre.getId()}), id:"${name}" ${encTypeStr}}
-				${elementos}
-				${saveButtonStr}
-			#{/form}
-		""";
-		
+		String view;
+		if (target != null){
+			view = """
+				#{form @${controllerName()}.${controllerMethodName()}(${padre.getId()}), id:"${name}" ${encTypeStr}, target:"${target}"}
+					${elementos}
+					${saveButtonStr}
+					#{/form}
+			""";
+		} else {
+			view = """
+				#{form @${controllerName()}.${controllerMethodName()}(${padre.getId()}), id:"${name}" ${encTypeStr}}
+					${elementos}
+					${saveButtonStr}
+					#{/form}
+			""";
+		}
 		if(elementoGramatica instanceof Form  && elementoGramatica.autoEnviar){
 			view += """
 			<script>

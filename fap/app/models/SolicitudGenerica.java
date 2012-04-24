@@ -19,7 +19,9 @@ import java.text.SimpleDateFormat;
 import controllers.fap.SecureController;
 import enumerado.fap.gen.TiposParticipacionEnum;
 import play.db.jpa.JPABase;
+import play.libs.F.Promise;
 import play.mvc.Http.Request;
+import reports.Report;
 
 // === IMPORT REGION END ===
 	
@@ -42,6 +44,10 @@ public class SolicitudGenerica extends Model {
 	@ValueFromTable("estadosSolicitud")
 	@Transient
 	public String estadoUsuario;
+	
+	
+	@Transient
+	public String borradorRequerimiento;
 	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)

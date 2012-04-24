@@ -11,6 +11,7 @@ import models.Documento;
 import models.Singleton;
 import models.SolicitudGenerica;
 import controllers.fap.AgenteController;
+import controllers.fap.VerificacionFapController;
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 
@@ -43,7 +44,7 @@ public class SecureFap extends Secure {
 			return false;
 
 		List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevosVerificacionTipos(solicitud.verificacion, solicitud.verificaciones, solicitud.documentacion.documentos);
-		if ((documentosNuevos.isEmpty()) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enVerificacionNuevosDoc.name())))
+		if ((documentosNuevos.isEmpty()) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enVerificacionNuevosDoc.name())) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.iniciada.name())))
     		return false;
 		return true;
 	}

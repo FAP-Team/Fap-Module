@@ -37,8 +37,8 @@ public class VerificacionDocumento extends Model {
 	public String uriTipoDocumento;
 	
 	
-	
-	public String etiquetaTipoDocumento;
+	@Transient
+	public String nombreTipoDocumento;
 	
 	
 	
@@ -123,6 +123,11 @@ public class VerificacionDocumento extends Model {
 		if ((uriDocumento != null) && (!uriDocumento.trim().isEmpty()))
 			link = "<a href=\""+AedUtils.crearUrl(uriDocumento)+"\" target=\"_blank\">Descarga</a>";
 		return link;
+	}
+
+	public String getNombreTipoDocumento(){
+		String etiqueta = TipoDocumento.find("select nombre from TipoDocumento tipo where tipo.uri=?", this.uriTipoDocumento).first();
+		return etiqueta;
 	}
 	
 // === MANUAL REGION END ===

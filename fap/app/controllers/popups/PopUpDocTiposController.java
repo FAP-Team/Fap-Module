@@ -16,6 +16,7 @@ import models.Documento;
 import models.SolicitudGenerica;
 
 import play.db.jpa.JPAPlugin;
+import play.mvc.Util;
 import properties.FapProperties;
 
 import tags.ComboItem;
@@ -66,6 +67,41 @@ public class PopUpDocTiposController extends PopUpDocTiposControllerGen {
 		}
 
 	}
+	
+	public static void abrir(String accion,Long idDocumento,Long idSolicitud){
+		Documento documento;
+		if(accion.equals("crear")){
+            documento = new Documento();
+			
+		}else{
+		    documento = getDocumento(idSolicitud, idDocumento);
+		}
+
+		if (!permiso(accion)){
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+
+		renderArgs.put("controllerName", "PopUpDocTiposControllerGen");
+		renderTemplate("gen/popups/PopUpDocTipos.html",accion,idDocumento,documento,idSolicitud);
+	}
+	
+	@Util
+    protected static Documento getDocumento(Long idSolicitud, Long idDocumento){
+        Documento documento = null;
+        if(idSolicitud == null){
+            Messages.fatal("Falta parámetro idSolicitud");
+        }else if(idDocumento == null){
+            Messages.fatal("Falta parámetro idDocumento");
+        }else{
+            documento = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.documentacion.documentos documento where solicitud.id=? and documento.id=?", idSolicitud, idDocumento).first();
+            if(documento == null){
+            	documento = Documento.findById(idDocumento);
+            	if(documento == null)
+            		Messages.fatal("Error al recuperar Documento");
+            }
+        }
+        return documento;
+    }
 
 }
 		

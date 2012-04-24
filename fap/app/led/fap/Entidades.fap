@@ -18,6 +18,8 @@ Entidad SolicitudGenerica tableName = "solicitud"{
 	String estado
 	Lista estadosSolicitud estadoValue transient
 	Lista estadosSolicitud estadoUsuario transient
+	// Para visualizar el borrador del requerimiento temporalmente sin guardar en BBDD, y sin haber finalizado el requerimiento
+	String borradorRequerimiento transient
 	Solicitante solicitante
 	Documentacion documentacion
 	Documentacion documentacionProceso
@@ -341,7 +343,7 @@ Entidad VerificacionDocumento {
 	String uriDocumento
 		
 	String uriTipoDocumento
-	String etiquetaTipoDocumento
+	String nombreTipoDocumento transient
 	String descripcion
 		
 	//String estadoDocumentoVerificacion

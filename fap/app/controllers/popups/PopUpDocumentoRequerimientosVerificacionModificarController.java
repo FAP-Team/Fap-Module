@@ -35,8 +35,12 @@ public class PopUpDocumentoRequerimientosVerificacionModificarController extends
 		}
 		List <TiposCodigoRequerimiento> tiposCodReq = TiposCodigoRequerimiento.find("select tcr from TiposCodigoRequerimiento tcr where tcr.uriTipoDocumento=? and tcr.uriTramite=?", doc.uriTipoDocumento, sol.verificacion.uriTramite).fetch();
 		List <CodigoRequerimiento> codigosRequerimiento = utils.ModelUtils.getListCodigoRequerimientoFromTiposCodigoRequerimiento(tiposCodReq);
-		for (CodigoRequerimiento codigo: codigosRequerimiento)
-			result.add(new ComboItem(codigo.codigo, codigo.codigo));
+		for (CodigoRequerimiento codigo: codigosRequerimiento){
+			if (codigo.descripcionCorta != null)
+				result.add(new ComboItem(codigo.codigo, codigo.codigo+" - "+codigo.descripcionCorta));
+			else
+				result.add(new ComboItem(codigo.codigo, codigo.codigo));
+		}
 		return result;
 	}
 	

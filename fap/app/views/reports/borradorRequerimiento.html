@@ -54,6 +54,9 @@ h2 {
     	<h2>Documentos no presentados:</h2> 
    		#{list items:noPresentados, as:"documento"}
 			<p style='text-indent: 1em'> - ${documento.descripcion}</p>
+			#{if documento.motivoRequerimiento}
+				<p style='text-indent: 2em'> - Motivo Requerimiento: ${documento.motivoRequerimiento} </p>
+			#{/if}
 			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
 				<p style='text-indent: 2em'> - ${requerimiento.codigo}: ${requerimiento.descripcion} </p>
 			#{/list}
@@ -66,6 +69,9 @@ h2 {
     	<h2>Documentos no válidos:</h2> 
    		#{list items:noValidos, as:"documento"}
 			<p style='text-indent: 1em'> - ${documento.descripcion}</p>
+			#{if documento.motivoRequerimiento}
+				<p style='text-indent: 2em'> - Motivo Requerimiento: ${documento.motivoRequerimiento} </p>
+			#{/if}
 			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
 				<p style='text-indent: 2em'> - ${requerimiento.codigo}: ${requerimiento.descripcion} </p>
 			#{/list}

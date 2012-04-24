@@ -5,10 +5,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import play.libs.F.Promise;
+
+import reports.Report;
+
 import utils.ObligatoriedadDocumentosFap;
 
 import controllers.fap.VerificacionFapController;
 
+import messages.Messages;
 import models.Documento;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
@@ -36,7 +41,9 @@ public class VerificacionUtils {
 		
 		List<VerificacionDocumento> list = new ArrayList<VerificacionDocumento>();
 		List<Documento> aux = new ArrayList<Documento>();
+		List<Documento> auxIterar = new ArrayList<Documento>();
 		aux.addAll(listDoc);
+		auxIterar.addAll(listDoc);
 		
 		List<TipoDocumentoEnTramite> listaTipos = TiposDocumentosClient.getTiposDocumentosAportadosCiudadano(tramite);
 		// Documentos condicionados automaticos obligatorios de la aplicacion en cuestion
@@ -49,7 +56,7 @@ public class VerificacionUtils {
 		for (TipoDocumentoEnTramite tipoDoc : listaTipos) {
 			boolean tipoEncontrado = false;
 			// Mejorar la implementación
-			for (Documento doc: aux) {
+			for (Documento doc: auxIterar) {
 				if (doc.tipo.trim().equals(tipoDoc.getUri())) {
 					VerificacionDocumento vDoc = new VerificacionDocumento(doc);
 					vDoc.existe = true;
@@ -69,7 +76,7 @@ public class VerificacionUtils {
 					}
 					vDoc.save();
 					list.add(vDoc);
-					aux.remove(vDoc);
+					aux.remove(doc);
 					tipoEncontrado = true;
 				}
 			}
@@ -84,6 +91,7 @@ public class VerificacionUtils {
 					vDoc.existe = false;
 					vDoc.uriTipoDocumento = tipoDoc.getUri();
 					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
+					System.out.println(tipoDoc.getUri());
 					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
 					if (existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.noProcede, verificacionesBefore, tipoDoc.getUri(), tramite.uri)
 						|| existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.valido, verificacionesBefore, tipoDoc.getUri(), tramite.uri)) {
@@ -123,12 +131,14 @@ public class VerificacionUtils {
 				}
 			}
 		}
-		// Recorro todos los documentos no pertenecientes al trámite actual pero se han aportado
+		
+		// Recorro todos los documentos no pertenecientes al trámite actual pero que se han aportado
 		for (Documento docAux: aux){
 			VerificacionDocumento vDoc = new VerificacionDocumento();
 			vDoc.existe = false;
 			vDoc.uriTipoDocumento = docAux.tipo;
 			//vDoc.identificadorMultiple = 
+			vDoc.uriDocumento = docAux.uri;
 			vDoc.descripcion = docAux.descripcion;
 			vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
 			vDoc.save();
@@ -213,28 +223,21 @@ public class VerificacionUtils {
 	 * Indica si existen documentos nuevos aportados por el solicitante y que no estan incluidos en la verificacion actual, ni en anteriores
 	 * 
 	 * @param verificacionActual La verificación que está en curso
-	 * @param verificaciones Las verificaciones anteriores ya finalizadas
-	 * @param documentosActuales La lista de documentos actuales que ha aportado el solicitante
 	 * 
 	 * @return documentosNuevos Lista con los documentos nuevos que ha aportado el solicitante y no han sido incluidos en ninguna verificacion
 	 */
-	public static List<Documento> existDocumentosNuevos (Verificacion verificacionActual, List<Verificacion> verificaciones, List<Documento> documentosActuales) {
-		Set documentosVerificaciones = new HashSet();
-		List <Documento> documentosNuevos = new ArrayList<Documento>();
-		for (Verificacion verificacion: verificaciones){
-			for (VerificacionDocumento vDoc: verificacion.documentos){
-				documentosVerificaciones.add(vDoc.uriDocumento);
+	public static List<Documento> existDocumentosNuevos (Verificacion verificacionActual) {
+		List <Documento> documentosNuevos = VerificacionFapController.getNuevosDocumentosVerificar(verificacionActual.id);
+		List <Documento> documentosNuevosSinVerificacionActual = VerificacionFapController.getNuevosDocumentosVerificar(verificacionActual.id);
+		for (Documento doc: documentosNuevos){
+			for (VerificacionDocumento vDoc: verificacionActual.documentos){
+				if ((vDoc.uriDocumento != null) && (vDoc.uriDocumento.equals(doc.uri))){
+					documentosNuevosSinVerificacionActual.remove(doc);
+					break;
+				}
 			}
 		}
-		for (VerificacionDocumento vDoc: verificacionActual.documentos){
-			documentosVerificaciones.add(vDoc.uriDocumento);
-		}
-		for (Documento doc: documentosActuales){
-			if (!documentosVerificaciones.contains(doc.uri)){
-				documentosNuevos.add(doc);
-			}
-		}
-		return documentosNuevos;
+		return documentosNuevosSinVerificacionActual;
 	}
 	
 	/**
@@ -247,22 +250,14 @@ public class VerificacionUtils {
 	 * @return documentosNuevos Lista con los documentos nuevos que ha aportado el solicitante y no han sido incluidos en ninguna verificacion
 	 */
 	public static List<Documento> existDocumentosNuevosVerificacionTipos (Verificacion verificacionActual, List<Verificacion> verificaciones, List<Documento> documentosActuales) {
-		Set documentosVerificaciones = new HashSet();
-		List <Documento> documentosNuevos = new ArrayList<Documento>();
-		for (Verificacion verificacion: verificaciones){
-			for (VerificacionDocumento vDoc: verificacion.documentos){
-				documentosVerificaciones.add(vDoc.uriDocumento);
-			}
-		}
-		for (VerificacionDocumento vDoc: verificacionActual.documentos){
-			documentosVerificaciones.add(vDoc.uriDocumento);
-		}
+		List <Documento> documentos = existDocumentosNuevos (verificacionActual);
+		List <Documento> documentosNuevos = existDocumentosNuevos (verificacionActual);
 		for (Documento vtdoc: verificacionActual.verificacionTiposDocumentos){
-			documentosVerificaciones.add(vtdoc.uri);
-		}
-		for (Documento doc: documentosActuales){
-			if (!documentosVerificaciones.contains(doc.uri)){
-				documentosNuevos.add(doc);
+			for (Documento doc: documentos){
+				if ((vtdoc.uri != null) && (vtdoc.uri.equals(doc.uri))){
+					documentosNuevos.remove(doc);
+					break;
+				}
 			}
 		}
 		return documentosNuevos;

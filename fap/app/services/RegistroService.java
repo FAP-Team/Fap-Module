@@ -302,6 +302,7 @@ public class RegistroService {
 				aportacion.save();
 				play.Logger.info("Se clasificaron todos los documentos");
 			}else{
+				play.Logger.fatal("Algunos documentos no se pudieron clasificar correctamente");
 				Messages.error("Algunos documentos no se pudieron clasificar correctamente");
 			}
 		}else{

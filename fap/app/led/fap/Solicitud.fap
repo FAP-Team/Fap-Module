@@ -247,7 +247,7 @@ Formulario Solicitud {
 				//Columna titulo="Id" campo=VerificacionDocumento.id ancho="40"
 				Columna titulo="Fecha Presentación" campo=VerificacionDocumento.fechaPresentacion ancho="80"
 				Columna titulo="Descripcion" campo=VerificacionDocumento.descripcion expandir
-				Columna titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
+				Columna titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
 				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
 				Columna titulo="Multiplicidad" campo=VerificacionDocumento.identificadorMultiple ancho="80"
 				Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"
@@ -258,6 +258,11 @@ Formulario Solicitud {
 				AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.motivo
 				Boton guardarRequerimientoMotivoRequerimientoGeneralbtn titulo="Guardar Motivo Requerimiento"
 			}
+			
+		
+			Form gnuevoRequerimientoBorradorPreliminar destino="_blank"{ 
+				Boton obtenerBorradorPreliminar titulo="Obtener Borrador"
+			} 
 			
 //			Tabla exclusion titulo="Exclusión" campo=SolicitudGenerica.verificacion.codigosExclusion 
 //				popupCrear=PopUp:exclusionCrear 
@@ -349,7 +354,8 @@ Formulario Solicitud {
 		}
 		Grupo noEditable permiso=noEditable visible=false{
 			Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
-			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
+			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
+			Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento
 			Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
 			//Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		}
@@ -377,7 +383,8 @@ Formulario Solicitud {
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
 		Texto titulo="Descripcion" campo=VerificacionDocumento.descripcion
-		Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.uriTipoDocumento
+		Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
+		Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento
 		Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
 		//Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion

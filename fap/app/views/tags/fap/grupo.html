@@ -91,7 +91,6 @@
 			if(value == ${siCheckValue} ){
 				var el = Ext.get('${id}').show();				
 				$('#${id} .tabla').each( function(index){
-					console.log($(this).data('grid'));
 					if ((typeof $(this).data('grid')!=  "undefined")) {
 						$(this).data('grid').setWidth("10%"); // IE7
 						$(this).data('grid').setWidth("100%");

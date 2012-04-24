@@ -288,6 +288,7 @@ Form:
 		& (autoEnviar?="autoEnviar")?
 		& ("permiso" "=" permiso=[Permiso])?
 		& ('redirigir' '=' redirigir=[Pagina|QN])?
+		& ('destino' '=' destino=STRING)?
 	)
 	'{'
 		elementos+=Elemento+

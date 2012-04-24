@@ -15,8 +15,8 @@ bc. cd holamundo
 bc. # Dependencias
 require:
     - play
-    - fap -> fap 1.2.3
-    - fap -> guice 1.2.1
+    - fap -> fap 1.3.2
+    - fapGuice -> guice 1.2.1
     - play -> pdf 0.6
     - play -> recaptcha 1.2
 # Custom repository 
@@ -30,7 +30,7 @@ repositories:
         type: http
         artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
         contains:
-           - fap -> guice
+           - fapGuice -> guice
             
 
 4. Carga las dependencias del proyecto
@@ -86,14 +86,21 @@ Fichero "dependencies.yml"
 
 bc. require:
     - play
-    - fap -> fap 1.1
+    - fap -> fap 1.3.2
+    - fapGuice -> guice 1.2.1
     - play -> pdf 0.6
+    - play -> recaptcha 1.2
 repositories:
     - Fap Local repository:
         type:       local
         artifact:   ${fapsdk}/fap
         contains:
             - fap-module -> *
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+           - fapGuice -> guice
 
 Debemos tener la variable de entorno FAPSDK
 

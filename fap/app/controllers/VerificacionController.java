@@ -16,6 +16,7 @@ import services.RegistroException;
 import services.RegistroService;
 
 import tags.ComboItem;
+
 import verificacion.VerificacionUtils;
 
 import messages.Messages;
@@ -27,6 +28,7 @@ import models.Tramite;
 import models.Verificacion;
 import models.VerificacionDocumento;
 import controllers.fap.AgenteController;
+import controllers.fap.VerificacionFapController;
 import controllers.gen.VerificacionControllerGen;
 import emails.Mails;
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
@@ -49,6 +51,7 @@ public class VerificacionController extends VerificacionControllerGen {
 		if (permisoreiniciarVerificacion("update") || permisoreiniciarVerificacion("create")) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			if(!validation.hasErrors()){
+				dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
 				dbSolicitud.verificacion = new Verificacion();
 				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
 				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
@@ -90,7 +93,7 @@ public class VerificacionController extends VerificacionControllerGen {
 
 			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.verificandoTipos.name();
 			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
-			dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
+			dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion);
 			if (!validation.hasErrors()) {
 				
 				dbSolicitud.save();
@@ -133,12 +136,13 @@ public class VerificacionController extends VerificacionControllerGen {
 		if (permisoverificaTipos("update") || permisoverificaTipos("create")) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			
-			dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos(dbSolicitud.documentacion.documentos, dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones);
+			dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos(VerificacionFapController.getNuevosDocumentosVerificar(dbSolicitud.verificacion.id), dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones);
 			
 			if (!validation.hasErrors()) {
 				
 				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
 				dbSolicitud.verificacion.nuevosDocumentos.clear();
+				dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
 				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 				dbSolicitud.save();
 				Messages.ok("Finaliza la verificación de tipos");
@@ -166,6 +170,7 @@ public class VerificacionController extends VerificacionControllerGen {
 			if (!validation.hasErrors()) {
 				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
 				dbSolicitud.verificacion.nuevosDocumentos.clear();
+				dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
 				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 				dbSolicitud.save();
 				Messages.ok("Finaliza la verificación de tipos");
@@ -251,8 +256,8 @@ public class VerificacionController extends VerificacionControllerGen {
 			if (!validation.hasErrors()) {
 				// Generar el borrador en PDF del requerimiento
 				try {
-					SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
-					new Report("reports/borradorRequerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(solicitud);
+					SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+					new Report("reports/borradorRequerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(dbSolicitud);
 				} catch (Exception e) {
 					play.Logger.error("Error generando el borrador", e);
 					Messages.error("Error generando el borrador");
@@ -384,12 +389,12 @@ public class VerificacionController extends VerificacionControllerGen {
 
 			if (!validation.hasErrors()) {
 				SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-				List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
+				List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion);
 				// Compruebo que no existen documentos nuevos aportados por el solicitante y que no esten incluidos en la verificacion actual
 				if (!documentosNuevos.isEmpty()){
 					dbSolicitud.verificacion.nuevosDocumentos.addAll(documentosNuevos);
 					dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enVerificacionNuevosDoc.name();
-					dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, dbSolicitud.verificaciones, dbSolicitud.documentacion.documentos);
+					dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion);
 					dbSolicitud.save();
 					Messages.info("Nuevos documentos aportados por el solicitante añadidos a la verificación actual. Verifique los tipos de estos documentos para proseguir con la verificación en curso.");
 				}
@@ -403,17 +408,47 @@ public class VerificacionController extends VerificacionControllerGen {
 
 	}
 	
+	/**
+	 * Se sobreescribe para ordenar la tabla por descripcion, uriTipo y Fecha Presentacion
+	 * @param idSolicitud
+	 * @param idEntidad
+	 */
 	public static void tablaverificacionDocumentos(Long idSolicitud, Long idEntidad){
 		
 		Long id = idSolicitud != null? idSolicitud : idEntidad;
-		java.util.List<VerificacionDocumento> rows = VerificacionDocumento.find( "select verificacionDocumento from SolicitudGenerica solicitud join solicitud.verificacion.documentos verificacionDocumento where solicitud.id=? order by verificacionDocumento.descripcion, verificacionDocumento.uriTipoDocumento, verificacionDocumento.fechaPresentacion", id ).fetch();
+
+		//java.util.List<VerificacionDocumento> rows = VerificacionDocumento.find("select verificacionDocumento from SolicitudGenerica solicitud join solicitud.verificacion.documentos verificacionDocumento where solicitud.id=? order by verificacionDocumento.descripcion, verificacionDocumento.fechaPresentacion", id ).fetch();
+		java.util.List<VerificacionDocumento> rows = VerificacionDocumento.find("select verificacionDocumento from TipoDocumento tipoDoc, SolicitudGenerica solicitud join solicitud.verificacion.documentos verificacionDocumento where solicitud.id=? and tipoDoc.uri=verificacionDocumento.uriTipoDocumento order by tipoDoc.nombre, verificacionDocumento.descripcion, verificacionDocumento.fechaPresentacion", id ).fetch();
 		
 		List<VerificacionDocumento> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		
 		tables.TableRenderResponse<VerificacionDocumento> response = new tables.TableRenderResponse<VerificacionDocumento>(rowsFiltered);
-		renderJSON(response.toJSON("fechaPresentacion", "descripcion", "uriTipoDocumento", "estadoDocumentoVerificacion", "identificadorMultiple", "linkUrlDescarga", "id"));
+		renderJSON(response.toJSON("fechaPresentacion", "descripcion", "nombreTipoDocumento", "estadoDocumentoVerificacion", "identificadorMultiple", "linkUrlDescarga", "id"));
 			
-}
+	}
+	
+	public static void gnuevoRequerimientoBorradorPreliminar(Long idSolicitud) {
+		checkAuthenticity();
+
+		// Save code
+		if (permisognuevoRequerimientoBorradorPreliminar("update") || permisognuevoRequerimientoBorradorPreliminar("create")) {
+
+			if (!validation.hasErrors()) {
+				// Generar el borrador en PDF del requerimiento
+				try {
+					SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+					new Report("reports/borradorRequerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(dbSolicitud);
+				} catch (Exception e) {
+					play.Logger.error("Error generando el borrador", e);
+					Messages.error("Error generando el borrador");
+				}
+			}
+
+		} else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+		gnuevoRequerimientoBorradorPreliminarRender(idSolicitud);
+	}
 
 	// BORRRRRRRRRRRRRRRRRRRRRRRRAAAAAAAAAAAAAAAAAAAARRRRRRRRRRRRRRRRRRRRRRR, para pruebas sólo
 //	public static void todosNoProcede(Long idSolicitud) {

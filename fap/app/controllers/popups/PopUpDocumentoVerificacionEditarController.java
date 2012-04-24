@@ -1,14 +1,19 @@
 
 package controllers.popups;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
 
 import messages.Messages;
+import models.CodigoRequerimiento;
 import models.SolicitudGenerica;
+import models.TiposCodigoRequerimiento;
 import models.VerificacionDocumento;
 import play.mvc.Util;
+import tags.ComboItem;
 import validation.CustomError;
 import validation.CustomValidation;
 import controllers.gen.popups.PopUpDocumentoVerificacionEditarControllerGen;
@@ -29,18 +34,27 @@ public class PopUpDocumentoVerificacionEditarController extends PopUpDocumentoVe
 				   CustomValidation.error("Con el estado Válido, no puede existir ningun código de requerimiento, vuelva al estado anterior y elimine los codigos de requerimiento", "dbVerificacionDocumento.codigosRequerimiento", dbVerificacionDocumento.codigosRequerimiento);
 			   if (!verificacionDocumento.motivoRequerimiento.isEmpty())
 				   CustomValidation.error("Con el estado Válido, no puede existir motivo de requerimiento, vuelva al estado anterior y elimine el motivo de requerimiento", "verificacionDocumento.motivoRequerimiento", verificacionDocumento.motivoRequerimiento);
-			} else if ((verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noValido.name()))
+			} 
+			if ((verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noValido.name()))
 			   && ((dbVerificacionDocumento.codigosRequerimiento.size() == 0) && (verificacionDocumento.motivoRequerimiento.isEmpty()))){
 				CustomValidation.error("Con el estado No Válido, debe existir algún código o motivo de requerimiento", "verificacionDocumento.motivoRequerimiento", verificacionDocumento.motivoRequerimiento);
-			} else if (verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name())
+			}
+			if (verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name())
 			   && (dbVerificacionDocumento.codigosRequerimiento.size() != 0)){
 				CustomValidation.error("Con el estado No Presentado, no puede existir ningun código de requerimiento, sólo motivos, vuelva al estado anterior y elimine los códigos de requerimiento", "dbVerificacionDocumento.codigosRequerimiento", dbVerificacionDocumento.codigosRequerimiento);
-			} else if ((verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noVerificado.name())
+			}
+			if ((verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noVerificado.name())
 			   || (verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noProcede.name())))){
 				if (dbVerificacionDocumento.codigosRequerimiento.size() != 0)
 				   CustomValidation.error("Con el estado No Verificado o No Procede, no puede existir ningun código de requerimiento, vuelva al estado anterior y elimine los codigos de requerimiento", "dbVerificacionDocumento.codigosRequerimiento", dbVerificacionDocumento.codigosRequerimiento);
 				if (!verificacionDocumento.motivoRequerimiento.isEmpty())
 				   CustomValidation.error("Con el estado No Verificado o No Procede, no puede existir motivo de requerimiento, vuelva al estado anterior y elimine el motivo de requerimiento", "verificacionDocumento.motivoRequerimiento", verificacionDocumento.motivoRequerimiento);
+			}
+			if ((dbVerificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name())) && (!verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noProcede.name())) && (!verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name()))){
+				CustomValidation.error("El documento estaba en estado No Presentado. De ese estado sólo puede cambiar a No Procede", "verificacionDocumento.estadoDocumentoVerificacion", verificacionDocumento.estadoDocumentoVerificacion);			
+			}
+			if ((dbVerificacionDocumento.uriDocumento != null) && (verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name()))){
+				CustomValidation.error("El documento ha sido presentado por el solicitante y existe. No puede ponerse en estado No Presentado", "verificacionDocumento.estadoDocumentoVerificacion", verificacionDocumento.estadoDocumentoVerificacion);
 			}
 		}
 		if (!Messages.hasErrors()) {

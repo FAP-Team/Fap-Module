@@ -39,7 +39,8 @@ public class VerificacionDocumento extends Model {
 	
 	public String uriTipoDocumento;
 	
-
+	
+	
 	@Transient
 	public String nombreTipoDocumento;
 	

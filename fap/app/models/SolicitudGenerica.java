@@ -49,6 +49,7 @@ public class SolicitudGenerica extends Model {
 	public String estadoUsuario;
 	
 	
+	
 	@Transient
 	public String borradorRequerimiento;
 	

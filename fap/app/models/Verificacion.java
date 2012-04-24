@@ -63,12 +63,15 @@ public class Verificacion extends Model {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_nuevosdocumentos")
+	
 	public List<Documento> nuevosDocumentos;
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="verificacion_verificaciontiposdocumentos")
+	
 	public List<Documento> verificacionTiposDocumentos;
+	
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	
@@ -79,6 +82,7 @@ public class Verificacion extends Model {
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaCreacion"),@Column(name="fechaCreacionTZ")})
 	@org.hibernate.annotations.Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaCreacion;
+	
 	
 	
 	@org.hibernate.annotations.Columns(columns={@Column(name="fechaUltimaActualizacion"),@Column(name="fechaUltimaActualizacionTZ")})
@@ -99,13 +103,10 @@ public class Verificacion extends Model {
 						
 						if (nuevosDocumentos == null)
 							nuevosDocumentos = new ArrayList<Documento>();
-
+						
 						if (verificacionTiposDocumentos == null)
 							verificacionTiposDocumentos = new ArrayList<Documento>();
 						
-						if (codigosExclusion == null)
-							codigosExclusion = new ArrayList<Exclusion>();
-							
 							if (requerimiento == null)
 								requerimiento = new Requerimiento();
 							else

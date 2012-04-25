@@ -50,6 +50,7 @@ Formulario Administracion permiso=administrador{
 "Actualiza a partir del servicio web del Aed la definición de los trámites y los tipos de documentos asociados a cada trámite.
 Actualiza las tablas **ConfiguracionAed**, **Trámite** y **TiposDocumentos**.
 También actualiza la tabla de tablas, añadiendo los tipos de documentos en la tabla **tiposdocumentos**.
+Actualiza también los códigos de exclusión del procedimiento, añadiéndolos en **TipoCodigoExclusion**.
 "}
 			Form actualizarTramites {
 				Boton actualizarTramites titulo="Actualizar trámites"

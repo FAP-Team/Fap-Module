@@ -45,25 +45,25 @@ public class VerificacionController extends VerificacionControllerGen {
         	redirect("AccesoVerificacionesController.index", idSolicitud);
 	}
 	
-	public static void reiniciarVerificacion(Long idSolicitud){
-		checkAuthenticity();
-		// Save code
-		if (permisoreiniciarVerificacion("update") || permisoreiniciarVerificacion("create")) {
-			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-			if(!validation.hasErrors()){
-				dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
-				dbSolicitud.verificacion = new Verificacion();
-				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
-				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
-				dbSolicitud.save();
-				Messages.ok("Solicitud reiniciada correctamente");
-			}
-		}
-		else {
-			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-		}
-		reiniciarVerificacionRender(idSolicitud);
-	}
+//	public static void reiniciarVerificacion(Long idSolicitud){
+//		checkAuthenticity();
+//		// Save code
+//		if (permisoreiniciarVerificacion("update") || permisoreiniciarVerificacion("create")) {
+//			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+//			if(!validation.hasErrors()){
+//				dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
+//				dbSolicitud.verificacion = new Verificacion();
+//				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
+//				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
+//				dbSolicitud.save();
+//				Messages.ok("Solicitud reiniciada correctamente");
+//			}
+//		}
+//		else {
+//			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+//		}
+//		reiniciarVerificacionRender(idSolicitud);
+//	}
 	
 	//Métodos en el controlador manual
 	public static List<ComboItem> getTramitesCombo () {

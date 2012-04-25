@@ -16,6 +16,7 @@ import models.CodigoRequerimiento;
 import models.Quartz;
 import models.Singleton;
 import models.TableKeyValue;
+import models.TipoCodigoExclusion;
 
 import platino.PlatinoProxy;
 import play.db.jpa.JPABase;
@@ -23,6 +24,7 @@ import play.db.jpa.JPAPlugin;
 import play.test.Fixtures;
 import properties.FapProperties;
 import tags.StringUtils;
+import utils.ConvertWSUtils;
 import utils.ObligatoriedadDocumentosFap;
 
 import es.gobcan.eadmon.aed.ws.Aed;
@@ -81,13 +83,16 @@ public class TiposDocumentosClient {
 		return h1.value;
 	}
 	
-	
+	/**
+	 * Actualiza los trámites del procedimiento, sus tipos de documentos y los códigos de requerimiento
+	 * @return
+	 */
 	public static boolean actualizarTramites() {
 		String uriProcedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri"); 
 		JPAPlugin.startTx(false);
 
 		try {
-			//Borra los trámites antiguos
+			//Borra los trámites, tipos de documentos y tipos de requerimiento antiguos
 			Fixtures.delete(models.Tramite.class);
 			Fixtures.delete(models.TipoDocumento.class);
 			Fixtures.delete(models.TiposCodigoRequerimiento.class);
@@ -147,6 +152,26 @@ public class TiposDocumentosClient {
 			return false;
 		} catch(TiposDocumentosExcepcion e){
 			aedError("Se produjo un error en el servicio web de TiposDocumenetos"+ uriProcedimiento, e);
+			JPAPlugin.closeTx(true);
+			return false;
+		}
+		JPAPlugin.closeTx(false);
+		return true;
+	}
+	
+	public static boolean actualizarCodigosExclusion() {
+		String uriProcedimiento = FapProperties.get("fap.aed.procedimientos.procedimiento.uri"); 
+		JPAPlugin.startTx(false);
+
+		try {
+			Fixtures.delete(models.TipoCodigoExclusion.class);
+			
+			ListaCodigosExclusion codigosExclusionWS = procedimientos.consultarCodigosExclusion(uriProcedimiento);
+			List<TipoCodigoExclusion> listaCodExc = ConvertWSUtils.codigosExclusionWS2List(codigosExclusionWS);
+			for (TipoCodigoExclusion tipo : listaCodExc) {
+				tipo.save();
+			}
+		} catch (Exception e) {
 			JPAPlugin.closeTx(true);
 			return false;
 		}

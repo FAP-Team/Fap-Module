@@ -38,6 +38,7 @@ import play.mvc.results.RenderTemplate;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import play.utils.Java;
+import properties.FapProperties;
 import utils.BinaryResponse;
 import validation.CustomValidation;
 
@@ -77,31 +78,31 @@ public class GenericController extends Controller {
 	protected static void setSolicitudProcesando () {
 		String threadName = Thread.currentThread().getName();
 		Random r = new Random();
-		if (params.get("idSolicitud") != null) {
+		if ((params.get("idSolicitud") != null) && (FapProperties.getBoolean("fap.cache"))){
 			String stringSol = params.get("idSolicitud");
 			HashMap<String, String> idsSol = (HashMap<String, String>) Cache.get("solicitudesProcesando");
 			if (idsSol == null) {
 				idsSol = new HashMap<String, String>();
 				idsSol.put(stringSol, threadName);
-				Cache.safeSet("solicitudesProcesando", idsSol, "5min");
+				Cache.safeSet("solicitudesProcesando", idsSol, FapProperties.get("fap.cache.time"));
 			} else if (isSolicitudProcesando()) {
 				play.Logger.error(threadName+" La Solicitud "+stringSol+" está siendo procesada");
 				CustomValidation.error(" La Solicitud está siendo procesada, vuelva a intentarlo en unos instantes.", "", null);
 			} else {
 				idsSol.put(stringSol, threadName);
-				Cache.safeReplace("solicitudesProcesando", idsSol, "5min");
+				Cache.safeReplace("solicitudesProcesando", idsSol, FapProperties.get("fap.cache.time"));
 			}
 		}
 	}
 
 	protected static void unsetSolicitudProcesando () {
 		String threadName = Thread.currentThread().getName();
-		if (params.get("idSolicitud") != null) {
+		if ((params.get("idSolicitud") != null)  && (FapProperties.getBoolean("fap.cache"))){
 			String stringSol = params.get("idSolicitud"); 
 			HashMap<String, String> idsSol = (HashMap<String, String>) Cache.get("solicitudesProcesando");
 			if ((idsSol != null) && idsSol.containsKey(stringSol) && idsSol.get(stringSol).equals(threadName)) {
 				idsSol.remove(stringSol);
-				Cache.safeReplace("solicitudesProcesando", idsSol, "5min");
+				Cache.safeReplace("solicitudesProcesando", idsSol, FapProperties.get("fap.cache.time"));
 			}
 		}
 	}

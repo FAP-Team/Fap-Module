@@ -24,7 +24,8 @@ Lista tipoFirmaJuridica crearEnumerado {
 
 Lista estadosSolicitud crearEnumerado {
 	borrador: "Borrador"
-	iniciada: "Iniciada"	
+	iniciada: "Iniciada"
+	enVerificacion: "En Verificación"
 }
 
 // Lista que se creará a partir de la de estadosSolicitud, e indicará los

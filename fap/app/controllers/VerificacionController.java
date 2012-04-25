@@ -33,6 +33,7 @@ import controllers.gen.VerificacionControllerGen;
 import emails.Mails;
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosRequerimientoEnum;
+import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 
 public class VerificacionController extends VerificacionControllerGen {
@@ -94,6 +95,7 @@ public class VerificacionController extends VerificacionControllerGen {
 			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.verificandoTipos.name();
 			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 			dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion);
+			dbSolicitud.estado=EstadosSolicitudEnum.enVerificacion.name();
 			if (!validation.hasErrors()) {
 				
 				dbSolicitud.save();

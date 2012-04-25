@@ -225,7 +225,7 @@ En los campos **Para**, **CC** y **CCO** puede poner varios destinatarios separa
 		}
 		Tabla tablacodexclusion titulo="Códigos de Exclusión" campo=TipoCodigoExclusion popupVer=PopupVerCodExc{
 			Columna titulo="Código" campo=TipoCodigoExclusion.codigo
-			Columna titulo="Descripcion" campo=TipoCodigoExclusion.descripcionCorta
+			Columna titulo="Descripcion" campo=TipoCodigoExclusion.descripcionCorta expandir
 		}
 	}
 	

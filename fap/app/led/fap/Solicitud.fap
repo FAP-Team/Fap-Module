@@ -411,6 +411,10 @@ Formulario Solicitud {
 	
 	Popup PopUpDocumentoRequerimientosVerificacionModificar crear modificar titulo="Requerimiento" campo=VerificacionDocumento.codigosRequerimiento {
 		Combo codigo titulo="Código" campo=CodigoRequerimiento.codigo requerido
+		Grupo descripciones visible=false permiso=noEditable{
+			Texto descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta
+			AreaTexto descripcion titulo="Descripción" campo=CodigoRequerimiento.descripcion
+		}
 	}
 	
 }

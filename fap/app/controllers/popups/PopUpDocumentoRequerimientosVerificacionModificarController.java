@@ -23,6 +23,23 @@ import controllers.gen.popups.PopUpDocumentoRequerimientosVerificacionModificarC
 			
 public class PopUpDocumentoRequerimientosVerificacionModificarController extends PopUpDocumentoRequerimientosVerificacionModificarControllerGen {
 	
+	public static void abrir(String accion,Long idCodigoRequerimiento,Long idVerificacionDocumento){
+		CodigoRequerimiento codigoRequerimiento;
+		if(accion.equals("crear")){
+            codigoRequerimiento = new CodigoRequerimiento();
+			
+		}else{
+		    codigoRequerimiento = getCodigoRequerimiento(idVerificacionDocumento, idCodigoRequerimiento);
+		}
+
+		if (!permiso(accion)){
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+
+		renderArgs.put("controllerName", "PopUpDocumentoRequerimientosVerificacionModificarControllerGen");
+		renderTemplate("fap/Verificacion/PopUpDocumentoRequerimientosVerificacionModificar.html",accion,idCodigoRequerimiento,codigoRequerimiento,idVerificacionDocumento);
+	}
+	
 	public static List<ComboItem> codigo() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
 		Map <String, Long> parametrosUrl = (Map<String, Long>)tags.TagMapStack.top("idParams");
@@ -36,10 +53,7 @@ public class PopUpDocumentoRequerimientosVerificacionModificarController extends
 		List <TiposCodigoRequerimiento> tiposCodReq = TiposCodigoRequerimiento.find("select tcr from TiposCodigoRequerimiento tcr where tcr.uriTipoDocumento=? and tcr.uriTramite=?", doc.uriTipoDocumento, sol.verificacion.uriTramite).fetch();
 		List <CodigoRequerimiento> codigosRequerimiento = utils.ModelUtils.getListCodigoRequerimientoFromTiposCodigoRequerimiento(tiposCodReq);
 		for (CodigoRequerimiento codigo: codigosRequerimiento){
-			if (codigo.descripcionCorta != null)
-				result.add(new ComboItem(codigo.codigo, codigo.codigo+" - "+codigo.descripcionCorta));
-			else
-				result.add(new ComboItem(codigo.codigo, codigo.codigo));
+			result.add(new ComboItem(codigo.codigo, codigo.codigo));
 		}
 		return result;
 	}

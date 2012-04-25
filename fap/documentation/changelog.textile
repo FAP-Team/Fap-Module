@@ -1,5 +1,15 @@
 h2. Changelog
 
+h3. Versión 1.3.2
+
+* Implementación del acceso concurrente al hacer varias operaciones sobre la misma solicitud.
+* Fixed Bugs en la Verificación de Documentación.
+* Añadido los códigos de Exclusión.
+* Página con dos tablas para los códigos de Requerimiento y Exclusión de la aplicación, en Administración.
+* Fixed Bug en la generación de la semilla de los identificadores de los expedientes.
+* Permitir indicar un destino (target) en los elementos Form del DSL.
+* Cambiado el estado de la solicitud a 'enVerificacion' cuando se inicia una verificación.
+
 h3. Versión 1.3.1
 
 * Fixed Bug en la variable de entorno del Commands.py.

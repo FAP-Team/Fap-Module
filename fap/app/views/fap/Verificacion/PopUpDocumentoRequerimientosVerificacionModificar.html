@@ -1,0 +1,40 @@
+
+%{
+	models.VerificacionDocumento verificacionDocumento = models.VerificacionDocumento.findById(idVerificacionDocumento);
+	models.Verificacion verificacion = models.Verificacion.find("select verificacion from Verificacion verificacion join verificacion.documentos vd where vd.id=?", idVerificacionDocumento).first();
+	List<models.TiposCodigoRequerimiento> codigos = models.TiposCodigoRequerimiento.find("select tcr from TiposCodigoRequerimiento tcr where tcr.uriTramite=? and tcr.uriTipoDocumento=?", verificacion.uriTramite, verificacionDocumento.uriTipoDocumento).fetch();
+	tags.JSMap descripcionCorta = new tags.JSMap();
+	tags.JSMap descripcionLarga = new tags.JSMap();
+	for (models.TiposCodigoRequerimiento cod: codigos){
+		descripcionCorta.put(cod.codigo, cod.descripcionCorta);
+		descripcionLarga.put(cod.codigo, cod.descripcion);
+	}
+%}
+
+#{fap.popup titulo:'Requerimiento', hidden:[idVerificacionDocumento:idVerificacionDocumento, idCodigoRequerimiento: idCodigoRequerimiento], popup:'PopUpDocumentoRequerimientosVerificacionModificar', action:accion}
+	
+#{fap.combo id:'codigo', titulo:'Código', campo:'codigoRequerimiento.codigo', requerido:true /}		
+		
+#{fap.grupo permiso:'noEditable', visible:false}
+	
+#{fap.texto id:'descripcionCorta', titulo:'Descripción Corta', campo:'codigoRequerimiento.descripcionCorta' /}		
+		
+#{fap.areaTexto id:'descripcion', titulo:'Descripción', campo:'codigoRequerimiento.descripcion' /}		
+		
+#{/fap.grupo}	
+		
+<script>
+	var descripcionCorta = #{fap.toJSMap descripcionCorta/};
+	var descripcionLarga = #{fap.toJSMap descripcionLarga/};
+	
+	var $combo = $('#codigo');
+		
+	function change(){
+		$('#descripcionCorta').val(descripcionCorta[$combo.val()]);
+		$('#descripcion').val(descripcionLarga[$combo.val()]);
+	};
+	change();
+	$combo.change(change);
+</script>
+		
+#{/fap.popup}

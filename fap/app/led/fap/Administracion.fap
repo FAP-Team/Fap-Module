@@ -8,6 +8,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Aed" pagina=Aed
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
+			Enlace "Codigos Requerimientos y Exclusión" pagina=Codigos
 			Enlace "Emails" pagina=Emails
 			Enlace "Logs" accion="fap.LoggerController.index"
 			Enlace "Informe" accion="fap.InformeController.index"
@@ -212,6 +213,34 @@ En los campos **Para**, **CC** y **CCO** puede poner varios destinatarios separa
 	    	Texto campo=TableKeyValue.key titulo="Estado Interno"
 	    }
 	    Combo comboEstadoInterno campo=TableKeyValue.value titulo="Estado que ve el usuario" requerido
+	}
+	
+	Pagina Codigos titulo="Códigos de Requerimientos y de Exclusión"{
+		Wiki{"Para actualizar estos códigos debe dirigirse a la página 'Aed' y actualizar todos los trámites."}
+		Tabla tablacodrequerimientos titulo="Códigos de Requerimientos" campo=TiposCodigoRequerimiento popupVer=PopupVerCodReq{
+			Columna titulo="Código" campo=TiposCodigoRequerimiento.codigo
+			Columna titulo="Descripcion" campo=TiposCodigoRequerimiento.descripcionCorta
+			Columna titulo="Uri Trámite" campo=TiposCodigoRequerimiento.uriTramite
+			Columna titulo="Uri Tipo Documento" campo=TiposCodigoRequerimiento.uriTipoDocumento expandir
+		}
+		Tabla tablacodexclusion titulo="Códigos de Exclusión" campo=TipoCodigoExclusion popupVer=PopupVerCodExc{
+			Columna titulo="Código" campo=TipoCodigoExclusion.codigo
+			Columna titulo="Descripcion" campo=TipoCodigoExclusion.descripcionCorta
+		}
+	}
+	
+	Popup PopupVerCodReq campo=TiposCodigoRequerimiento titulo="Codigo de Requerimiento"{
+		Texto codigo campo=TiposCodigoRequerimiento.codigo titulo="Código"
+		Texto descripcionCorta campo=TiposCodigoRequerimiento.descripcionCorta titulo="Descripción Corta"
+		AreaTexto descripcion campo=TiposCodigoRequerimiento.descripcion titulo="Descripción"
+		Texto uriTramite campo=TiposCodigoRequerimiento.uriTramite titulo="Uri Trámite"
+		Texto uriTipoDocumento campo=TiposCodigoRequerimiento.uriTipoDocumento titulo="Uri Tipo de Documentos"
+	}
+	
+	Popup PopupVerCodExc campo=TipoCodigoExclusion titulo="Codigo de Exclusión"{
+		Texto codigo campo=TipoCodigoExclusion.codigo titulo="Código"
+		Texto descripcionCorta campo=TipoCodigoExclusion.descripcionCorta titulo="Descripción Corta"
+		AreaTexto descripcion campo=TipoCodigoExclusion.descripcion titulo="Descripción"
 	}
     
 }

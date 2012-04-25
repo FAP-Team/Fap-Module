@@ -18,7 +18,7 @@ import models.VerificacionDocumento;
 import play.Play;
 import play.utils.Java;
 import properties.FapProperties;
-import utils.ObligatoriedadDocumentosFap;
+import verificacion.ObligatoriedadDocumentosFap;
 
 public class VerificacionFapController {
 	

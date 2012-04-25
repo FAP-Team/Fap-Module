@@ -44,6 +44,11 @@ GET /Administracion/aed AedController.index
 
 POST /Administracion/aed/actualizarTramites AedController.actualizarTramites
 GET /Administracion/aed/tramites AedController.tablatramites
+GET /Administracion/codigos CodigosController.index
+
+POST /Administracion/codigos/save CodigosController.save
+GET /Administracion/codigos/tablacodexclusion CodigosController.tablatablacodexclusion
+GET /Administracion/codigos/tablacodrequerimientos CodigosController.tablatablacodrequerimientos
 GET /Administracion/configuracionquartz ConfiguracionQuartzController.index
 
 POST /Administracion/configuracionquartz/save ConfiguracionQuartzController.save
@@ -94,6 +99,18 @@ POST /Administracion/popupusuario/{idEntidad}/editar popups.PopupUsuarioControll
 POST /Administracion/popupusuario/{idEntidad}/borrar popups.PopupUsuarioController.borrar
 POST /Administracion/popupusuario/{idEntidad}/crear popups.PopupUsuarioController.crear
 POST /Administracion/popupusuario/{idEntidad}/cancelarcrear popups.PopupUsuarioController.cancelarCrear
+
+GET /Administracion/popupvercodexc/{idEntidad}/abrir popups.PopupVerCodExcController.abrir
+POST /Administracion/popupvercodexc/{idEntidad}/editar popups.PopupVerCodExcController.editar
+POST /Administracion/popupvercodexc/{idEntidad}/borrar popups.PopupVerCodExcController.borrar
+POST /Administracion/popupvercodexc/{idEntidad}/crear popups.PopupVerCodExcController.crear
+POST /Administracion/popupvercodexc/{idEntidad}/cancelarcrear popups.PopupVerCodExcController.cancelarCrear
+
+GET /Administracion/popupvercodreq/{idEntidad}/abrir popups.PopupVerCodReqController.abrir
+POST /Administracion/popupvercodreq/{idEntidad}/editar popups.PopupVerCodReqController.editar
+POST /Administracion/popupvercodreq/{idEntidad}/borrar popups.PopupVerCodReqController.borrar
+POST /Administracion/popupvercodreq/{idEntidad}/crear popups.PopupVerCodReqController.crear
+POST /Administracion/popupvercodreq/{idEntidad}/cancelarcrear popups.PopupVerCodReqController.cancelarCrear
 
 GET /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/abrir popups.PopupVisibilidadDeSolicitudesController.abrir
 POST /Administracion/popupvisibilidaddesolicitudes/{idEntidad}/editar popups.PopupVisibilidadDeSolicitudesController.editar

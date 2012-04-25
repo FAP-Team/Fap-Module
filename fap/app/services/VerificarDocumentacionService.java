@@ -3,7 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 import messages.Messages;
-import utils.ObligatoriedadDocumentosFap;
+import verificacion.ObligatoriedadDocumentosFap;
 import models.TableKeyValue;
 import models.Documento;
 import models.Tramite;

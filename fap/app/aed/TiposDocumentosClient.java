@@ -25,7 +25,7 @@ import play.test.Fixtures;
 import properties.FapProperties;
 import tags.StringUtils;
 import utils.ConvertWSUtils;
-import utils.ObligatoriedadDocumentosFap;
+import verificacion.ObligatoriedadDocumentosFap;
 
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedPortType;

@@ -80,6 +80,7 @@ h3. Permisos
 h2. Desarrollo de aplicaciones
 
 * "Permisos":app-permisos
+* "Verificacion Documentación":app-verificacion
 * "Inyección de dependencia":app-guice
 * "Envío de emails":app-email
 * Servicios web : 

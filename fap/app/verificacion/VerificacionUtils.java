@@ -9,8 +9,6 @@ import play.libs.F.Promise;
 
 import reports.Report;
 
-import utils.ObligatoriedadDocumentosFap;
-
 import controllers.fap.VerificacionFapController;
 
 import messages.Messages;

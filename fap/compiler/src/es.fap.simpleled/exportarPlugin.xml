@@ -4,6 +4,9 @@
 	<property name="fap.src.dir" value="${env.FAPSDK}/fap" />
 	
 	<target name="plugin_export">
+		<delete>
+		    <fileset dir="${fap.src.dir}/plugins" includes="es.fap.**.jar"/>
+		</delete>
 		<pde.exportPlugins destination="${fap.src.dir}" exportSource="false" exportType="directory" plugins="es.fap.simpleled,es.fap.simpleled.ui" useJARFormat="false"/>
 	</target>
 </project>

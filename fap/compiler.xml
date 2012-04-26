@@ -134,8 +134,8 @@
 		<mkdir dir="${compiler.compiled}" />
 		<ant target="dist" antfile="buildCompiler.xml" dir="${grammar.dir}" />
 		<ant target="dist" antfile="buildCompiler.xml" dir="${generator.dir}" />
-		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar" />
-		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar" />
+		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar" overwrite="yes"/>
+		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar" overwrite="yes"/>
 	</target>
 
 	<target name="build-plugins">

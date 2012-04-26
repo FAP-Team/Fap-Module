@@ -44,3 +44,7 @@ h2. Properties originarias de FAP
 ** Ejemplo: _fap.delete.temporals=true_ (Activa el borrado, por defecto es false)
 * Vejez de los pdf temporales a borrar: *fap.delete.temporals.old=* _[Xd | Xh |Xm]_
 ** Ejemplo: _fap.delete.temporals.old=3h_ (Borrar PDF temporales con más de 3 horas de antiguedad)
+* Habilitar concurrencia en la aplicación: *fap.cache=* _[true | false]_
+** Ejemplo: _fap.cache=true_ (Activar la concurrencia en la aplicación web, por defecto es true)
+* Tiempo máximo que tiene una petición el control cuando se habilita la concurrencia: *fap.cache.time=* _[Xmin]_
+** Ejemplo: _fap.cache.time=5min_ (Si una petición tiene el control más de 5 minutos, el control vuelve a liberarse)

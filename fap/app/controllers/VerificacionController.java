@@ -121,7 +121,7 @@ public class VerificacionController extends VerificacionControllerGen {
 		List<Documento> rowsFiltered = rows; // Tabla sin permisos, no filtra
 
 		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered);
-		renderJSON(response.toJSON("fechaSubida", "descripcion", "verificado", "urlDescarga", "id"));
+		renderJSON(response.toJSON("fechaSubida", "fechaRegistro", "descripcion", "verificado", "urlDescarga", "id"));
 	}
 	
 	/**

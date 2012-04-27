@@ -407,7 +407,7 @@ vars
 when
 	(action in ("read", "update")) and 
 	(agente.rolActivo in ("administrador", "gestor", "revisor")) and
-	(solicitud.estado = "iniciada") and
+	(solicitud.estado = "enVerificacion") and
 	(solicitud.verificacion.estado != null and solicitud.verificacion.estado = "verificandoTipos")
 then
 	grant
@@ -432,14 +432,14 @@ when
 	(
 		(
 			(action = "read")
-			and (solicitud.estado = "iniciada")
+			and (solicitud.estado = "enVerificacion")
 			and solicitud.verificacion.estado != null
 			and solicitud.verificacion.estado = "enVerificacion"
 		)
 		or
 		(
 			(action = "update") and
-			(solicitud.estado = "iniciada")
+			(solicitud.estado = "enVerificacion")
 			and solicitud.verificacion.estado != null
 			and solicitud.verificacion.estado = "enVerificacion" 
 		)

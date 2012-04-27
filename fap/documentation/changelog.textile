@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 1.3.3
+
+* Fixed Bug en algunos permisos de Verificación.
+
 h3. Versión 1.3.2
 
 * Implementación del acceso concurrente al hacer varias operaciones sobre la misma solicitud.

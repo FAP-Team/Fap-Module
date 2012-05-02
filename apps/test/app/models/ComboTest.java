@@ -110,6 +110,12 @@ public class ComboTest extends Model {
 						if (refMultiple == null)
 							refMultiple = new ArrayList<ComboTestRef>();
 						
+						if (listMultipleOverwrite == null)
+							listMultipleOverwrite = new HashSet<String>();
+						
+							if (listMultipleOverwriteLong == null)
+								listMultipleOverwriteLong = new ArrayList<Long>();
+							
 							if (refOverwrite != null)
 								refOverwrite.init();	
 						

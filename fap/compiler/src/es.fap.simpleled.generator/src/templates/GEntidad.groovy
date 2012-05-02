@@ -310,8 +310,20 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 						"""
 					}
 				}
+			} else if ((!attribute.noConstruct) && (compuesto?.collectionType != null)) {
+					String _tipo = compuesto?.collectionReferencia?.type;
+					if (compuesto?.collectionType?.type.equals("List")) {
+						refInit += """
+							if (${attribute.name} == null)
+								${attribute.name} = new ArrayList<${_tipo}>();
+							""";
+					} else if (compuesto?.collectionType?.type.equals("Set")){
+					refInit += """
+						if (${attribute.name} == null)
+							${attribute.name} = new HashSet<${_tipo}>();
+						""";
+					}
 			}
-
 			
 			/** Valores por defecto de los atributos */
 			if (attribute.defaultValue != null) {

@@ -45,26 +45,31 @@ public class ObligatoriedadDocumentos extends Singleton {
 	public List<String> manuales;
 	
 	
+	public ObligatoriedadDocumentos (){
+		init();
+	}
+	
 
 	public void init(){
 		super.init();
 		
+							if (imprescindibles == null)
+								imprescindibles = new ArrayList<String>();
+							
+							if (obligatorias == null)
+								obligatorias = new ArrayList<String>();
+							
+							if (automaticas == null)
+								automaticas = new ArrayList<String>();
+							
+							if (manuales == null)
+								manuales = new ArrayList<String>();
+							
 	}
 		
 	
 
 // === MANUAL REGION START ===
-	
-	public ObligatoriedadDocumentos (){
-		if (imprescindibles == null)
-			imprescindibles = new ArrayList<String>();
-		if (obligatorias == null)
-			obligatorias = new ArrayList<String>();
-		if (automaticas == null)
-			automaticas = new ArrayList<String>();
-		if (manuales == null)
-			manuales = new ArrayList<String>();
-	}
 	
 	public void clear(){
 		imprescindibles.clear();

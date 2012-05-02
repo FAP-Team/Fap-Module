@@ -48,6 +48,9 @@ public class Exclusion extends Model {
 	public void init(){
 		
 		
+							if (codigosExclusionString == null)
+								codigosExclusionString = new ArrayList<String>();
+							
 						if (codigosExclusion == null)
 							codigosExclusion = new ArrayList<TipoCodigoExclusion>();
 						
@@ -58,7 +61,6 @@ public class Exclusion extends Model {
 // === MANUAL REGION START ===
 	
 	public List<TipoCodigoExclusion> getCodigosExclusion () {
-		System.out.println("Codigos de exclusion");
 		List<TipoCodigoExclusion> codigos = new ArrayList<TipoCodigoExclusion>();
 		for (String codeString : codigosExclusionString) {
 			TipoCodigoExclusion code = TipoCodigoExclusion.find("select tipoCodigoExclusion from TipoCodigoExclusion tipoCodigoExclusion where tipoCodigoExclusion.codigo=?", codeString).first();

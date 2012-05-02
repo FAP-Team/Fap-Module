@@ -72,6 +72,11 @@ public class Solicitud extends SolicitudGenerica {
 	public Solicitante pj;
 	
 	
+	
+	@Transient
+	public Documento doc;
+	
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	
 	public ComboTestRef comboError;
@@ -136,6 +141,11 @@ public class Solicitud extends SolicitudGenerica {
 								pj = new Solicitante();
 							else
 								pj.init();
+						
+							if (doc == null)
+								doc = new Documento();
+							else
+								doc.init();
 						
 							if (comboError != null)
 								comboError.init();	

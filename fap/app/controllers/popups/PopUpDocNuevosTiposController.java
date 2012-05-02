@@ -58,6 +58,23 @@ public class PopUpDocNuevosTiposController extends PopUpDocNuevosTiposController
 		}
 
 	}
+	
+	protected static Documento getDocumento(Long idSolicitud, Long idDocumento){
+        Documento documento = null;
+        if(idSolicitud == null){
+            Messages.fatal("Falta parámetro idSolicitud");
+        }else if(idDocumento == null){
+            Messages.fatal("Falta parámetro idDocumento");
+        }else{
+            documento = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.verificacion.nuevosDocumentos documento where solicitud.id=? and documento.id=?", idSolicitud, idDocumento).first();
+            if(documento == null){
+            	documento = Documento.findById(idDocumento);
+            	if(documento == null)
+            		Messages.fatal("Error al recuperar Documento");
+            }
+        }
+        return documento;
+    }
 
 }
 		

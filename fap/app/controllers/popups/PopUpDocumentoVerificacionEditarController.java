@@ -65,6 +65,7 @@ public class PopUpDocumentoVerificacionEditarController extends PopUpDocumentoVe
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 			dbVerificacionDocumento.save();
+			dbSolicitud.save();
 		}
 
 		if (!Messages.hasErrors()) {

@@ -57,6 +57,7 @@ public class PopUpDocTiposController extends PopUpDocTiposControllerGen {
 		if (!Messages.hasErrors()) {
 			dbDocumento.save();
 			solicitud.verificacion.fechaUltimaActualizacion = new DateTime();
+			solicitud.save();
 		}
 
 		if (!Messages.hasErrors()) {

@@ -1,5 +1,11 @@
 h2. Changelog
 
+h3. Versión 1.3.4
+
+* Fixed Bug en la parte de Verificación de Documentación.
+* Atributos transient ahora se vuelven a inicializar en el init de la Entidad.
+* Fixed Bug actualización semilla expediente.
+
 h3. Versión 1.3.3
 
 * Fixed Bug en algunos permisos de Verificación.

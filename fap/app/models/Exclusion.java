@@ -40,10 +40,17 @@ public class Exclusion extends Model {
 	public List<TipoCodigoExclusion> codigosExclusion;
 	
 	
+	public Exclusion (){
+		init();
+	}
+	
 
 	public void init(){
 		
 		
+						if (codigosExclusion == null)
+							codigosExclusion = new ArrayList<TipoCodigoExclusion>();
+						
 	}
 		
 	

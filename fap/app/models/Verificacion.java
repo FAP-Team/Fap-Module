@@ -98,6 +98,9 @@ public class Verificacion extends Model {
 	public void init(){
 		
 		
+							if (tramiteNombre != null)
+								tramiteNombre.init();	
+						
 						if (documentos == null)
 							documentos = new ArrayList<VerificacionDocumento>();
 						

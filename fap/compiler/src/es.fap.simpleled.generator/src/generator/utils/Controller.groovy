@@ -26,6 +26,7 @@ import es.fap.simpleled.led.LedFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.mapping.ModelStatus;
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
@@ -388,6 +389,16 @@ public class ${controllerName} extends ${controllerGenName} {
 				crearSaveCall += "db${lastSubcampo.str}.add(${entidad.variableDb});\n";
 			else
 				crearSaveCall += "db${lastSubcampo.str} = ${entidad.variableDb};\n";
+			// Recorre el ${lastSubcampo.str}, y voy comprobando que cada elemento (cortado por '.') es ManyToOne, en ese caso hago su save, ya que ahora por defecto FAP no pone Cascade a los ManyToOne, por lo que no se guardaria y fallaria.
+			String[] camposToSaveIfManyToOne = lastSubcampo.str.split("\\.");
+			String campoConcatenado=camposToSaveIfManyToOne[0];
+			for(int i=1; i<camposToSaveIfManyToOne.size(); i++){
+				campoConcatenado+="."+camposToSaveIfManyToOne[i];
+				CampoUtils campo = CampoUtils.create(campoConcatenado);
+				if (LedCampoUtils.ManyToOne(campo.campo)){
+					crearSaveCall += "db${campoConcatenado}.save();\n";
+				}
+			}
 			crearSaveCall += "${almacen.variableDb}.save();\n";
 		}
 		metodoCrearLogica = """

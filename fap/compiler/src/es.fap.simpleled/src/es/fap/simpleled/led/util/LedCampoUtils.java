@@ -59,6 +59,10 @@ public class LedCampoUtils {
 		return LedEntidadUtils.xToOne(getUltimoAtributo(campo));
 	}
 	
+	public static boolean ManyToOne(Campo campo){
+		return LedEntidadUtils.isManyToOne(getUltimoAtributo(campo));
+	}
+	
 	public static boolean hasAtributos(Campo campo){
 		return campo.getAtributos() != null;
 	}

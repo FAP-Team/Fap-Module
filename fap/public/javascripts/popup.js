@@ -51,7 +51,7 @@ function popup_open(popup, url, callback) {
 function popupWait_open() {
 	$("body").append("<div id=\"popupWait_popup\" class=\"modal hide fade in\">"+
 					 "<div class=\"modal-header\">"+
-					   	"<a href=\"#\" class=\"close\">×</a>"+
+						"<button class=\"close\" data-dismiss=\"modal\">×</button>"+
     					"<h3>En proceso ...</h3>"+
 					 "</div>"+
 					 "<div class=\"modal-body\">"+
@@ -117,12 +117,12 @@ function popupAddButton (popup, textButton, functionButton, type, enable) {
 
 function popupTitle (popup, title) {
 	var $popup = $('#' + popup);
-	$popup.find('.modal-header').html("<a href=\"#\" class=\"close\">×</a><h3>"+title+"</h3>");
+	$popup.find('.modal-header').html("<button class=\"close\" data-dismiss=\"modal\">×</button><h3>"+title+"</h3>");
 }
 
 function popupAddWait (popup) {
 	var $popup = $('#' + popup);
-	$popup.html("<div class=\"modal-header\"><a href=\"#\" class=\"close\">×</a></div><div id=\""+popup+"modal_body\" class=\"modal-body\"><div class=\"animation_content\"><div id=\"facebookG\"><div id=\"block_1\" class=\"facebook_blockG\"></div><div id=\"blockG_2\" class=\"facebook_blockG\"></div><div id=\"blockG_3\" class=\"facebook_blockG\"></div></div></div></div>");
+	$popup.html("<div class=\"modal-header\"><button class=\"close\" data-dismiss=\"modal\">×</button></div><div id=\""+popup+"modal_body\" class=\"modal-body\"><div class=\"animation_content\"><div id=\"facebookG\"><div id=\"block_1\" class=\"facebook_blockG\"></div><div id=\"blockG_2\" class=\"facebook_blockG\"></div><div id=\"blockG_3\" class=\"facebook_blockG\"></div></div></div></div>");
 }
 
 function popupMessages (popup, idMessages) {

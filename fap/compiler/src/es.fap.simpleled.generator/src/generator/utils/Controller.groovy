@@ -19,14 +19,13 @@ import es.fap.simpleled.led.PermisoWhen
 import es.fap.simpleled.led.Popup
 import es.fap.simpleled.led.PopupAccion
 import es.fap.simpleled.led.Tabla
-import es.fap.simpleled.led.util.ModelUtils;
+import es.fap.simpleled.led.util.ModelUtils
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.LedFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.mapping.ModelStatus;
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess

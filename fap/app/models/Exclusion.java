@@ -22,14 +22,22 @@ import java.text.SimpleDateFormat;
 public class Exclusion extends FapModel {
 	// Código de los atributos
 
-	public String codigo;
+	public String motivoExclusion;
 
-	@Column(columnDefinition = "LONGTEXT")
-	public String descripcion;
+	@ElementCollection
+	public List<String> codigosExclusionString;
 
-	public String descripcionCorta;
+	@Transient
+	public List<TipoCodigoExclusion> codigosExclusion;
+
+	public Exclusion() {
+		init();
+	}
 
 	public void init() {
+
+		if (codigosExclusion == null)
+			codigosExclusion = new ArrayList<TipoCodigoExclusion>();
 
 		postInit();
 	}

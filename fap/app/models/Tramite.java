@@ -65,6 +65,8 @@ public class Tramite extends FapModel {
 			tramite.delete();
 		}
 		TipoDocumento.deleteAll();
+		TipoCodigoExclusion.deleteAll();
+		TiposCodigoRequerimiento.deleteAll();
 	}
 	// === MANUAL REGION END ===
 

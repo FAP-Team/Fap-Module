@@ -6,7 +6,11 @@ import java.util.List;
 
 import javax.xml.ws.Holder;
 
+import messages.Messages;
+import models.CodigoRequerimiento;
 import models.TableKeyValue;
+import models.TipoCodigoExclusion;
+import models.TiposCodigoRequerimiento;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +26,10 @@ import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocument
 import es.gobcan.eadmon.procedimientos.ws.Procedimientos;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosInterface;
+import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.CodigoExclusion;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaCodigosExclusion;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ListaCodigosRequerimiento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaProcedimientos;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ListaTramites;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Procedimiento;
@@ -73,14 +81,56 @@ public class ProcedimientosService {
 			tipoDocumentoDb.uri = tipoDocumento.getUri();
 			tipoDocumentoDb.aportadoPor = tipoDocumento.getAportadoPor().toString();
 			tipoDocumentoDb.obligatoriedad = tipoDocumento.getObligatoriedad().toString();
+			tipoDocumentoDb.cardinalidad = tipoDocumento.getCardinalidad().toString();
+			tipoDocumentoDb.tramitePertenece = uriTramite;
 			
 			//Consulta al WS de Tipos de Documentos la descripción
 			TipoDocumento td = tiposDocumentosService.getTipoDocumento(tipoDocumento.getUri());
 			tipoDocumentoDb.nombre = td.getDescripcion();	
 			
 			result.add(tipoDocumentoDb);
+			setCodigosRequerimientosTipoDocumento(tipoDocumento.getUri(), uriTramite);
 		}
 		return result;
+	}
+	
+	private void setCodigosRequerimientosTipoDocumento (String uriTipoDocumento, String uriTramite) throws GestorDocumentalServiceException, ProcedimientosExcepcion{
+		List<CodigoRequerimiento> codigosReq = getCodigosRequerimientos (uriTramite, uriTipoDocumento);
+		for (CodigoRequerimiento codigo: codigosReq){
+			models.TiposCodigoRequerimiento tipoCodReqdb = new models.TiposCodigoRequerimiento();
+			tipoCodReqdb.codigo = codigo.codigo;
+			tipoCodReqdb.descripcion = codigo.descripcion;
+			tipoCodReqdb.descripcionCorta = codigo.descripcionCorta;
+			tipoCodReqdb.uriTipoDocumento = uriTipoDocumento;
+			tipoCodReqdb.uriTramite = uriTramite;
+			tipoCodReqdb.save();
+		}
+	}
+	
+	private List<CodigoRequerimiento> getCodigosRequerimientos (String tramiteUri, String tipoDocumentoUri){
+		try {
+			ListaCodigosRequerimiento listaCodigos = procedimientosPort.consultarCodigosRequerimiento(propertyPlaceholder.get("fap.aed.procedimientos.procedimiento.uri"), tramiteUri, tipoDocumentoUri);
+			return fromListaCodigosRequerimientoWS2List(listaCodigos);
+		} catch (ProcedimientosExcepcion e) {
+			play.Logger.error("No se han podido obtener los codigos de exclusion asociados al tipo de Documento: "+e.getMessage());
+			Messages.error("No se han podido obtener los codigos de exclusion asociados al tipo de Documento");
+		}
+		return null;
+	}
+	
+	private List<CodigoRequerimiento> fromListaCodigosRequerimientoWS2List(ListaCodigosRequerimiento listCodReq){
+        List<CodigoRequerimiento> list = new ArrayList<CodigoRequerimiento>();
+        
+        if(listCodReq != null){
+           for(es.gobcan.eadmon.procedimientos.ws.dominio.CodigoRequerimiento codReq : listCodReq.getCodigosRequerimiento()){
+              CodigoRequerimiento nuevo = new CodigoRequerimiento();
+              nuevo.codigo = codReq.getCodigo();
+              nuevo.descripcionCorta = codReq.getDescripcionCorta();
+              nuevo.descripcion = codReq.getDescripcion();
+              list.add(nuevo);
+           }
+        }
+        return list;
 	}
 		
 	private List<models.Tramite> getTramites(String uriProcedimiento) throws ProcedimientosExcepcion, GestorDocumentalServiceException {
@@ -108,6 +158,61 @@ public class ProcedimientosService {
 	    }catch(Exception e){
 	        throw new GestorDocumentalServiceException("Error al obtener los trámites", e);
 	    }
+	}
+	
+	public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		String uriProcedimiento = propertyPlaceholder.get("fap.aed.procedimientos.procedimiento.uri");
+		
+		play.Logger.info("Obteniendo tipos de documento aportados por el ciudadano en el trámite "+tramite.uri);
+		List<TipoDocumentoEnTramite> listaTodos = new ArrayList<TipoDocumentoEnTramite>();
+		List<TipoDocumentoEnTramite> listaCiudadanos = new ArrayList<TipoDocumentoEnTramite>();
+		try {
+			listaTodos = procedimientosPort.consultarTiposDocumentosEnTramite(uriProcedimiento, tramite.uri).getTiposDocumentos();
+		} catch (ProcedimientosExcepcion e) {
+			play.Logger.error("No se han podido consultar los tipos de documentos aportados por el ciudadano: "+e.getMessage());
+			Messages.error("No se han podido consultar los tipos de documentos aportados por el ciudadano");
+		}
+		
+		for (TipoDocumentoEnTramite tipoDoc : listaTodos) {
+			if (tipoDoc.getAportadoPor() == AportadoPorEnum.CIUDADANO) {
+				listaCiudadanos.add(tipoDoc);
+			}			
+		}
+		
+		return listaCiudadanos;
+	}
+	
+	public List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		List<TipoDocumento> tiposDocumentos = new ArrayList<TipoDocumento>();
+		List<TipoDocumentoEnTramite> listaCiudadanos = getTiposDocumentosAportadosCiudadano(tramite);
+		for (TipoDocumentoEnTramite tipoDoc : listaCiudadanos) {
+			try {
+				TipoDocumento tipoDocumento = tiposDocumentosService.getTipoDocumento(tipoDoc.getUri());
+				tiposDocumentos.add(tipoDocumento);
+			} catch (GestorDocumentalServiceException e) {
+				play.Logger.error("No se han podido obtener el tipo de Documento a partir de su uri: "+e.getMessage());
+				Messages.error("No se han podido obtener el tipo de Documento a partir de su uri");
+			}
+		}
+		return tiposDocumentos;
+	}
+	
+	public boolean actualizarCodigosExclusion() {
+		String uriProcedimiento = propertyPlaceholder.get("fap.aed.procedimientos.procedimiento.uri"); 
+
+		try {
+			TipoCodigoExclusion.deleteAll();
+			
+			ListaCodigosExclusion codigosExclusionWS = procedimientosPort.consultarCodigosExclusion(uriProcedimiento);
+			List<TipoCodigoExclusion> listaCodExc = utils.ConvertWSUtils.codigosExclusionWS2List(codigosExclusionWS);
+			for (TipoCodigoExclusion tipo : listaCodExc) {
+				tipo.save();
+			}
+		} catch (Exception e) {
+			play.Logger.error("No se han podido cargar los codigo de exclusión "+e.getMessage());
+			return false;
+		}
+		return true;
 	}
 	
 	/*

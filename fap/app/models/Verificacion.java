@@ -26,28 +26,30 @@ public class Verificacion extends FapModel {
 
 	public String uriProcedimiento;
 
+	@Transient
+	public Tramite tramiteNombre;
+
 	public String uriTramite;
 
 	public String expediente;
 
+	@ValueFromTable("estadosVerificacion")
 	public String estado;
 
-	@Transient
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "verificacion_documentos")
 	public List<VerificacionDocumento> documentos;
 
-	public String uriExclusion;
-
-	public String motivoExclusion;
-
-	@Transient
-	public List<Exclusion> codigosExclusion;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public Requerimiento requerimientoProceso;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "verificacion_nuevosdocumentos")
+	public List<Documento> nuevosDocumentos;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "verificacion_requerimientos")
-	public List<Requerimiento> requerimientos;
+	@JoinTable(name = "verificacion_verificaciontiposdocumentos")
+	public List<Documento> verificacionTiposDocumentos;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Requerimiento requerimiento;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaCreacion"), @Column(name = "fechaCreacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
@@ -63,18 +65,34 @@ public class Verificacion extends FapModel {
 
 	public void init() {
 
-		if (requerimientoProceso == null)
-			requerimientoProceso = new Requerimiento();
-		else
-			requerimientoProceso.init();
+		if (tramiteNombre != null)
+			tramiteNombre.init();
 
-		if (requerimientos == null)
-			requerimientos = new ArrayList<Requerimiento>();
+		if (documentos == null)
+			documentos = new ArrayList<VerificacionDocumento>();
+
+		if (nuevosDocumentos == null)
+			nuevosDocumentos = new ArrayList<Documento>();
+
+		if (verificacionTiposDocumentos == null)
+			verificacionTiposDocumentos = new ArrayList<Documento>();
+
+		if (requerimiento == null)
+			requerimiento = new Requerimiento();
+		else
+			requerimiento.init();
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
+
+	public Tramite getTramiteNombre() {
+		if (uriTramite == null)
+			return null;
+		Tramite tramite = Tramite.find("select tramite from Tramite tramite where tramite.uri=?", uriTramite).first();
+		return tramite;
+	}
 
 	// === MANUAL REGION END ===
 

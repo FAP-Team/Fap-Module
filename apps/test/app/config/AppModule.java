@@ -4,6 +4,7 @@ import security.*;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.RegistroService;
+import services.aed.AedGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemRegistroService;

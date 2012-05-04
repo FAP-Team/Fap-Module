@@ -36,7 +36,8 @@ Lista tipoFirmaJuridica crearEnumerado {
 Lista estadosSolicitud crearEnumerado {
 	borrador: "Borrador"
 	iniciada: "Iniciada"
-	verificado: "Verificado"	
+	verificado: "Verificado"
+	enVerificacion: "En Verificación"
 }
 
 // Lista que se creará a partir de la de estadosSolicitud, e indicará los
@@ -286,4 +287,33 @@ Lista tipoConsulta crearEnumerado {
 Lista estadoConvocatoria crearEnumerado {
 	presentacion : "Presentación"
 	instruccion : "Instrucción"	
+}
+
+Lista estadosVerificacion crearEnumerado {
+	iniciada: "Iniciada"
+	verificandoTipos: "Verificando Tipos Documento"
+	enVerificacion: "En Verificación"
+	enVerificacionNuevosDoc: "En Verificación con Nuevos Documentos"
+	enRequerimiento: "En Requerimiento"
+	enRequerido: "Requerido"
+	plazoVencido: "Plazo Vencido"
+	verificacionPositiva: "Verificación Positiva"
+	verificacionNegativa: "Verificación Negativa"
+	enRequerimientoFirmaSolicitada: "Firma Solicitada"
+}
+
+Lista estadosDocumentoVerificacion crearEnumerado {
+	noPresentado: "No Presentado"
+	noVerificado: "No Verificado"
+	noProcede: "No Procede"
+	valido: "Válido"
+	noValido: "No Válido"
+}
+
+Lista estadosRequerimiento crearEnumerado {
+	creado: "Creado"
+	firmado: "Firmado"
+	registrado: "Registrado"
+	notificado: "Notificado"
+	clasificado: "Clasificado"
 }

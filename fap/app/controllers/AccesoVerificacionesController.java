@@ -1,5 +1,6 @@
 package controllers;
 
+import org.h2.constant.SysProperties;
 import org.joda.time.DateTime;
 
 import messages.Messages;
@@ -26,7 +27,10 @@ public class AccesoVerificacionesController extends AccesoVerificacionesControll
 			dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.iniciada.name();
 			dbSolicitud.verificacionEnCurso.fechaCreacion = new DateTime();
 			dbSolicitud.save();
-			redirect("PaginaVerificacionController.index", idSolicitud);
+			long idVerificacion=dbSolicitud.verificacionEnCurso.id;
+			String accion = getAccion();
+			System.out.println(accion);
+			redirect("PaginaVerificacionController.index", accion, idSolicitud, idVerificacion);
 		} else
 			log.info("Acción Editar de página: " + "gen/AccesoVerificaciones/AccesoVerificaciones.html" + " , intentada sin éxito (Problemas de Validación)");
 		AccesoVerificacionesController.verificacionNuevaRender(idSolicitud);

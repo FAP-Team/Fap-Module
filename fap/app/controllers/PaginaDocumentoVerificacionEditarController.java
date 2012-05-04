@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 
 import validation.CustomValidation;
 import messages.Messages;
+import models.SolicitudGenerica;
 import models.Verificacion;
 import models.VerificacionDocumento;
 import controllers.gen.PaginaDocumentoVerificacionEditarControllerGen;
@@ -11,13 +12,13 @@ import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 
 public class PaginaDocumentoVerificacionEditarController extends PaginaDocumentoVerificacionEditarControllerGen {
 	
-	public static void editar(Long idVerificacion, Long idVerificacionDocumento, VerificacionDocumento verificacionDocumento) {
+	public static void editar(Long idSolicitud, Long idVerificacionDocumento, VerificacionDocumento verificacionDocumento) {
 		checkAuthenticity();
 		if (!permiso("editar")) {
 			Messages.error("No tiene suficientes privilegios para acceder a esta solicitud");
 		}
-		VerificacionDocumento dbVerificacionDocumento = PaginaDocumentoVerificacionEditarController.getVerificacionDocumento(idVerificacion, idVerificacionDocumento);
-		Verificacion dbVerificacion = getVerificacion(idVerificacion);
+		VerificacionDocumento dbVerificacionDocumento = PaginaDocumentoVerificacionEditarController.getVerificacionDocumento(idSolicitud, idVerificacionDocumento);
+
 		PaginaDocumentoVerificacionEditarController.PaginaDocumentoVerificacionEditarBindReferences(verificacionDocumento);
 
 		if (!Messages.hasErrors()){
@@ -59,13 +60,14 @@ public class PaginaDocumentoVerificacionEditarController extends PaginaDocumento
 			PaginaDocumentoVerificacionEditarController.editarValidateRules(dbVerificacionDocumento, verificacionDocumento);
 		}
 		if (!Messages.hasErrors()) {
-			dbVerificacion.fechaUltimaActualizacion=new DateTime();
+			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+			solicitud.verificacionEnCurso.fechaUltimaActualizacion=new DateTime();
 			dbVerificacionDocumento.save();
-			dbVerificacion.save();
+			solicitud.save();
 			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada con éxito");
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada sin éxito (Problemas de Validación)");
-		PaginaDocumentoVerificacionEditarController.editarRender(idVerificacion, idVerificacionDocumento);
+		PaginaDocumentoVerificacionEditarController.editarRender(idSolicitud, idVerificacionDocumento);
 	}
 
 }

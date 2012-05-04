@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
+import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
+
 import models.Documento;
 import models.ExpedienteAed;
 import models.Firma;
@@ -48,6 +51,12 @@ public interface GestorDocumentalService {
     public Firma getFirma(Documento documento) throws GestorDocumentalServiceException;
 
     public List<Tramite> getTramites() throws GestorDocumentalServiceException;
+    
+    public void actualizarCodigosExclusion();
+    
+    public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite);
+    
+    public List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite);
 
 	String crearExpediente(ExpedienteAed expedienteAed)
 			throws GestorDocumentalServiceException;

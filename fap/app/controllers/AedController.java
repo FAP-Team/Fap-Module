@@ -48,10 +48,11 @@ public class AedController extends AedControllerGen {
     public static void actualizarTramites() {
         if (actualizarTramitesHasAccess()) {
             try {
+            	deleteTramites();
                 List<Tramite> tramites = gestorDocumentalService.getTramites();
-                deleteTramites();
                 saveTramites(tramites);
                 updateTableKeyValueTiposDocumentos();
+                gestorDocumentalService.actualizarCodigosExclusion();
                 Messages.ok("Recuperados " + tramites.size() + " tramites");
             } catch (GestorDocumentalServiceException e) {
                 Messages.error("Error al actualizar los trámites", e);

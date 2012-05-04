@@ -46,6 +46,8 @@ public class Documento extends FapModel {
 	@Transient
 	public String urlDescarga;
 
+	public Boolean verificado;
+
 	public void init() {
 
 		postInit();

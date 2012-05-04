@@ -391,15 +391,17 @@ Permiso iniciarVerificacion{
 Permiso verificarDocumentos{
 	vars
 		SolicitudGenerica solicitud
-		when
-			agente.rolActivo in ("administrador", "gestor", "revisor") and
-			solicitud?.estado = "en verificacion"
-		return all
-		
-		when
-			agente.rolActivo in ("administrador", "gestor", "revisor") and
-			solicitud?.estado in ("requerida", "pendiente requerimiento", "requerida plazo vencido", "en verificacion")
-		return leer
+		Verificacion verificacion
+	when
+		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+		(
+			(_accion in (leer, editar))
+			and (solicitud.estado = "enVerificacion")
+			and verificacion.estado != null
+			and verificacion.estado = "enVerificacion"
+		)	
+	return 
+		all
 }
 
 Permiso verificacionRequerimientos{
@@ -501,4 +503,57 @@ Permiso editAdminGestorVisibleUser {
 	when
 		usuario is visible
 	return visible
+}
+
+Permiso noHayVerificacionEnCurso{
+	vars
+		SolicitudGenerica solicitud
+		Verificacion verificacion : sql("select verificacionEnCurso from SolicitudGenerica s where s.id=?", solicitud.id)
+	when
+		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion = null) or ((verificacion.estado=null) or (verificacion.estado in ("enRequerido", "plazoVencido", "verificacionPositiva", "verificacionNegativa"))))
+	return
+		all
+}
+	
+Permiso hayVerificacionEnCurso{
+	vars
+		SolicitudGenerica solicitud
+		Verificacion verificacion : sql("select verificacionEnCurso from SolicitudGenerica s where s.id=?", solicitud.id)
+	when
+		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion != null) and (verificacion.estado!=null) and (verificacion.estado in ("iniciada", "verificandoTipos", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada")))
+	return
+    	all
+}
+
+// Permiso fantasma, ya que va a ser sobrescrito para su uso.
+// Lo que en verdad está declarado no es lo que hace.
+// Este permiso comprueba que no haya documentación nueva adjuntada por el solicitante
+// y que no esté en la verificación actual.
+Permiso hayNuevaDocumentacionVerificacion{
+	when
+		agente.rolActivo != null
+	return
+		all
+}
+
+Permiso verificarTiposDocumentos{
+	vars
+		SolicitudGenerica solicitud
+		Verificacion verificacion
+	when
+		(_accion in (leer, editar)) and 
+		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+		(solicitud.estado = "enVerificacion") and
+		(verificacion != null and verificacion.estado != null and verificacion.estado = "verificandoTipos")
+	return
+		all
+}
+
+Permiso verificacionConNuevosDoc{
+	vars
+		SolicitudGenerica solicitud
+	when
+		(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacionEnCurso.estado != null) and (solicitud.verificacionEnCurso.estado = "enVerificacionNuevosDoc") 
+	return
+    	all
 }

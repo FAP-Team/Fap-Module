@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+import utils.AedUtils;
 
 // === IMPORT REGION END ===
 
@@ -28,10 +29,12 @@ public class VerificacionDocumento extends FapModel {
 
 	public String uriTipoDocumento;
 
-	public String etiquetaTipoDocumento;
+	@Transient
+	public String nombreTipoDocumento;
 
 	public String descripcion;
 
+	@ValueFromTable("estadosDocumentoVerificacion")
 	public String estadoDocumentoVerificacion;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaPresentacion"), @Column(name = "fechaPresentacionTZ") })
@@ -51,6 +54,12 @@ public class VerificacionDocumento extends FapModel {
 
 	public Boolean existe;
 
+	@Transient
+	public String urlDescarga;
+
+	@Transient
+	public String linkUrlDescarga;
+
 	public VerificacionDocumento() {
 		init();
 	}
@@ -64,6 +73,37 @@ public class VerificacionDocumento extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
+
+	public VerificacionDocumento(Documento doc) {
+		descripcion = doc.descripcion;
+		uriTipoDocumento = doc.tipo;
+		fechaPresentacion = doc.fechaRegistro;
+		uriDocumento = doc.uri;
+	}
+
+	public String getUrlDescarga() {
+		if ((uriDocumento != null) && (!uriDocumento.trim().isEmpty()))
+			return AedUtils.crearUrl(uriDocumento);
+		return "#";
+	}
+
+	public String disponibleDescarga() {
+		if ((uriDocumento != null) && (!uriDocumento.trim().isEmpty()))
+			return "SI";
+		return "NO";
+	}
+
+	public String getLinkUrlDescarga() {
+		String link = "";
+		if ((uriDocumento != null) && (!uriDocumento.trim().isEmpty()))
+			link = "<a href=\"" + AedUtils.crearUrl(uriDocumento) + "\" target=\"_blank\">Descarga</a>";
+		return link;
+	}
+
+	public String getNombreTipoDocumento() {
+		String etiqueta = TipoDocumento.find("select nombre from TipoDocumento tipo where tipo.uri=?", this.uriTipoDocumento).first();
+		return etiqueta;
+	}
 
 	// === MANUAL REGION END ===
 

@@ -50,7 +50,9 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Propiedades
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
+import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -665,6 +667,11 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return tramites;
     }
     
+    @Override
+    public void actualizarCodigosExclusion() {
+        procedimientosService.actualizarCodigosExclusion();
+    }
+    
     /**
      * Crea la carpeta temporal en el aed que está configurada
      * en la property "fap.aed.temporales"
@@ -830,4 +837,11 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		return numeroExpediente;
 	}
 	
+	public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		return procedimientosService.getTiposDocumentosAportadosCiudadano(tramite);
+	}
+	
+	public List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		return procedimientosService.getListTiposDocumentosAportadosCiudadano(tramite);
+	}
 }

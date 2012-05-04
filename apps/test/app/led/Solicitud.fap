@@ -3,6 +3,8 @@ Formulario Solicitud {
     Menu {
     	Enlace "Volver" pagina=Solicitudes
     	
+    	Enlace "Verificaciones" pagina=AccesoVerificaciones
+    	
     	Grupo "Combos" {
 			Enlace "Combos por defecto" pagina=Combos
 			Enlace "Combos sobreescritos" pagina=CombosOverwrite
@@ -225,6 +227,7 @@ Formulario Solicitud {
 	Pagina Paginas_Combo_niveles campo=PaginasTab{
 		Accion crear redirigir=ComboTablasPaginas
 		Accion editar redirigir=ComboTablasPaginas
+		Texto campo=PaginasTab.nombre titulo="Nombre"
 	}
 	
 	Pagina ComboTablasPaginas campo=Solicitud{

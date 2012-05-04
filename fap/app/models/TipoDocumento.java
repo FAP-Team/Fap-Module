@@ -30,6 +30,10 @@ public class TipoDocumento extends FapModel {
 
 	public String obligatoriedad;
 
+	public String tramitePertenece;
+
+	public String cardinalidad;
+
 	public void init() {
 
 		postInit();

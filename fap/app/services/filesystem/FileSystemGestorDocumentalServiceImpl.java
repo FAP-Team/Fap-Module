@@ -17,6 +17,11 @@ import org.joda.time.DateTime;
 
 import com.google.common.base.Preconditions;
 
+import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.CardinalidadEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
+import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
+
 import play.Play;
 import play.libs.Codec;
 import play.libs.Crypto;
@@ -31,7 +36,9 @@ import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
 import models.SolicitudGenerica;
+import models.TipoCodigoExclusion;
 import models.TipoDocumento;
+import models.TiposCodigoRequerimiento;
 import models.Tramite;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
@@ -350,14 +357,90 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tramite.nombre = "solicitud";
         tramite.uri = "fs://";
 
-        tramite.documentos.add(newTipoDocumento("FileSystem1","fs://type1/v01"));
-        tramite.documentos.add(newTipoDocumento("FileSystem2", "fs://type2/v01"));
-        tramite.documentos.add(newTipoDocumento("FileSystem3", "fs://type3/v01"));
-        tramite.documentos.add(newTipoDocumento("Otros", propertyPlaceholder.get("fap.aed.tiposdocumentos.otros")));
+        TipoDocumento tipo = newTipoDocumento("FileSystem1","fs://type1/v01");
+        tramite.documentos.add(tipo);
+        TiposCodigoRequerimiento tipoCodReqdb = new TiposCodigoRequerimiento();
+		tipoCodReqdb.codigo = "CodigoReq1";
+		tipoCodReqdb.descripcion = "Descripcion para el Código de Requerimiento 1 del tipo de documento FileSystem1";
+		tipoCodReqdb.descripcionCorta = "CR1FS1";
+		tipoCodReqdb.uriTipoDocumento = tipo.uri;
+		tipoCodReqdb.uriTramite = tramite.uri;
+		tipoCodReqdb.save();
+		TiposCodigoRequerimiento tipoCodReqdb2 = new TiposCodigoRequerimiento();
+		tipoCodReqdb2.codigo = "CodigoReq2";
+		tipoCodReqdb2.descripcion = "Descripcion para el Código de Requerimiento 2 del tipo de documento FileSystem1";
+		tipoCodReqdb2.descripcionCorta = "CR2FS1";
+		tipoCodReqdb2.uriTipoDocumento = tipo.uri;
+		tipoCodReqdb2.uriTramite = tramite.uri;
+		tipoCodReqdb2.save();
+        
+		TipoDocumento tipo2 = newTipoDocumento("FileSystem2", "fs://type2/v01");
+        tramite.documentos.add(tipo2);
+        TiposCodigoRequerimiento tipoCodReqdb3 = new TiposCodigoRequerimiento();
+		tipoCodReqdb3.codigo = "CodigoReq1";
+		tipoCodReqdb3.descripcion = "Descripcion para el Código de Requerimiento 1 del tipo de documento FileSystem2";
+		tipoCodReqdb3.descripcionCorta = "CR1FS2";
+		tipoCodReqdb3.uriTipoDocumento = tipo2.uri;
+		tipoCodReqdb3.uriTramite = tramite.uri;
+		tipoCodReqdb3.save();
+		
+		TipoDocumento tipo3 = newTipoDocumento("FileSystem3", "fs://type3/v01");
+        tramite.documentos.add(tipo3);
+        TiposCodigoRequerimiento tipoCodReqdb4 = new TiposCodigoRequerimiento();
+		tipoCodReqdb4.codigo = "CodigoReq1";
+		tipoCodReqdb4.descripcion = "Descripcion para el Código de Requerimiento 1 del tipo de documento FileSystem3";
+		tipoCodReqdb4.descripcionCorta = "CR1FS3";
+		tipoCodReqdb4.uriTipoDocumento = tipo3.uri;
+		tipoCodReqdb4.uriTramite = tramite.uri;
+		tipoCodReqdb4.save();
+		TiposCodigoRequerimiento tipoCodReqdb5 = new TiposCodigoRequerimiento();
+		tipoCodReqdb5.codigo = "CodigoReq2";
+		tipoCodReqdb5.descripcion = "Descripcion para el Código de Requerimiento 2 del tipo de documento FileSystem3";
+		tipoCodReqdb5.descripcionCorta = "CR2FS3";
+		tipoCodReqdb5.uriTipoDocumento = tipo3.uri;
+		tipoCodReqdb5.uriTramite = tramite.uri;
+		tipoCodReqdb5.save();
+		TiposCodigoRequerimiento tipoCodReqdb6 = new TiposCodigoRequerimiento();
+		tipoCodReqdb6.codigo = "CodigoReq3";
+		tipoCodReqdb6.descripcion = "Descripcion para el Código de Requerimiento 3 del tipo de documento FileSystem3";
+		tipoCodReqdb6.descripcionCorta = "CR3FS3";
+		tipoCodReqdb6.uriTipoDocumento = tipo3.uri;
+		tipoCodReqdb6.uriTramite = tramite.uri;
+		tipoCodReqdb6.save();
+		
+		TipoDocumento tipo4=newTipoDocumento("Otros", propertyPlaceholder.get("fap.aed.tiposdocumentos.otros"));
+        tramite.documentos.add(tipo4);
+        TiposCodigoRequerimiento tipoCodReqdb7 = new TiposCodigoRequerimiento();
+		tipoCodReqdb7.codigo = "CodigoReq1";
+		tipoCodReqdb7.descripcion = "Descripcion para el Código de Requerimiento 1 del tipo de documento Otros";
+		tipoCodReqdb7.descripcionCorta = "CR1Otros";
+		tipoCodReqdb7.uriTipoDocumento = tipo4.uri;
+		tipoCodReqdb7.uriTramite = tramite.uri;
+		tipoCodReqdb7.save();
+        
         
         ArrayList<Tramite> tramites = new ArrayList<Tramite>();
         tramites.add(tramite);
         return tramites;
+    }
+    
+    @Override
+    public void actualizarCodigosExclusion() {
+    	TipoCodigoExclusion tce = new TipoCodigoExclusion();
+    	tce.codigo="0001";
+    	tce.descripcion="Descripción Larga, Larguisima 1";
+    	tce.descripcionCorta="Descripcion Corta 1";
+    	tce.save();
+    	tce = new TipoCodigoExclusion();
+    	tce.codigo="0002";
+    	tce.descripcion="Descripción Larga, Larguisima 2";
+    	tce.descripcionCorta="Descripcion Corta 2";
+    	tce.save();
+    	tce = new TipoCodigoExclusion();
+    	tce.codigo="0003";
+    	tce.descripcion="Descripción Larga, Larguisima 3";
+    	tce.descripcionCorta="Descripcion Corta 3";
+    	tce.save();
     }
     
     private TipoDocumento newTipoDocumento(String nombre, String tipo){
@@ -400,6 +483,30 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		if (!folder.exists() || (expediente.trim().equals("")))
 			throw new GestorDocumentalServiceException("Error modificando expediente para el expediente (id: " + expedienteAed.id+"): No existe la carpeta o no tiene idAed.");
 		return expediente;
+	}
+	
+	public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		List <TipoDocumentoEnTramite> tdtList = new ArrayList<TipoDocumentoEnTramite>();
+		TipoDocumentoEnTramite tdt = new TipoDocumentoEnTramite();
+		tdt.setAportadoPor(AportadoPorEnum.CIUDADANO);
+		tdt.setCardinalidad(CardinalidadEnum.UNICO);
+		tdt.setIdentificador("1");
+		tdt.setObligatoriedad(ObligatoriedadEnum.OBLIGATORIO);
+		tdt.setVersion(1);
+		tdt.setUri("fs://type1/v01");
+		tdtList.add(tdt);
+		return tdtList;
+	}
+	
+	public List<es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		List <es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento> tdList = new ArrayList<es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento>();
+		es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento td = new es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento();
+		td.setUri("fs://type1/v01");
+		td.setDescripcion("Descripcion Falsa 1");
+		td.setVersion(1);
+		td.setEtiqueta("Etiqueta1");
+		tdList.add(td);
+		return tdList;
 	}
 
 }

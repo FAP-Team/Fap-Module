@@ -303,10 +303,9 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		for(Attribute attribute : entity.attributes){
 			CompoundType compuesto = attribute.type.compound;
 			String tipo = compuesto?.entidad?.name;
-			// Si el atributo es Transient, no necesita init
-			if (attribute.isTransient) {
-				refInit += "";
-			} else if (compuesto?.entidad?.embedded){
+			// Si el atributo es Transient, SI necesita init
+			// En una versión anterior no se estaba haciendo y el objeto era null
+			if (compuesto?.entidad?.embedded){
 				refInit += """
 			if (${attribute.name} == null)
 				${attribute.name} = new ${compuesto.entidad.name}();

@@ -22,7 +22,14 @@ h2 {
 <h3 style="text-align: left;">Asunto: Requerimiento de documentación y/o aclaraciones del expediente referenciado</h3>
 
 <!-- Solicitante Enlace a la aplicación en cuestión-->
-#{include 'reports/datosSolicitanteBorradorRequerimiento.html' /}
+
+%{ 
+	def ficheroApp = new File("app/views/reports/datosSolicitanteBorradorRequerimiento.html");
+%}
+
+#{if ficheroApp.exists()}
+	#{include 'reports/datosSolicitanteBorradorRequerimiento.html' /}
+#{/if}
 
 <h2 style="text-align: left; page-break-before: always;">Anexo</h2>
 

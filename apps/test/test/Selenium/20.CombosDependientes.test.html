@@ -1,18 +1,17 @@
 %{
 	// Obtenemos al ultima solicitud, sobre la que trabajamos
 	
-	models.Solicitud solicitud = new models.Solicitud()
-	solicitud.save()
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
 	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest")
 	
 	play.mvc.Controller.session.put("username", "admin")
 	controllers.fap.AgenteController.findAgente()
-	controllers.fap.AgenteController.getAgente().cambiarRolActivo('admin')
+	controllers.fap.AgenteController.getAgente().cambiarRolActivo('administrador')
 }%
 
 #{selenium}
 
-	open(/Solicitud/paginacombosdependientes?idSolicitud=${solicitud.id})
+	open(/Solicitud/paginacombosdependientes?idSolicitud=${s.id})
 	waitForPageToLoad()
 	
 	select('id=paises', 'label=España')

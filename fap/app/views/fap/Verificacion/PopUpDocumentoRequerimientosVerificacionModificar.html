@@ -1,0 +1,49 @@
+
+%{
+	models.VerificacionDocumento verificacionDocumento = models.VerificacionDocumento.findById(idVerificacionDocumento);
+	models.Verificacion verificacion = models.Verificacion.find("select verificacion from Verificacion verificacion join verificacion.documentos vd where vd.id=?", idVerificacionDocumento).first();
+	List<models.TiposCodigoRequerimiento> codigos = models.TiposCodigoRequerimiento.find("select tcr from TiposCodigoRequerimiento tcr where tcr.uriTramite=? and tcr.uriTipoDocumento=?", verificacion.uriTramite, verificacionDocumento.uriTipoDocumento).fetch();
+	tags.JSMap descripcionCorta = new tags.JSMap();
+	tags.JSMap descripcionLarga = new tags.JSMap();
+	for (models.TiposCodigoRequerimiento cod: codigos){
+		descripcionCorta.put(cod.codigo, cod.descripcionCorta);
+		descripcionLarga.put(cod.codigo, cod.descripcion);
+	}
+%}
+
+#{fap.popup 
+     accion:accion, 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     popup:'PopUpDocumentoRequerimientosVerificacionEditar', 
+     titulo:'Requerimiento', 
+     urlBorrar:play.mvc.Router.reverse('popups.PopUpDocumentoRequerimientosVerificacionEditarController.borrar' , ['idVerificacionDocumento':verificacionDocumento?.id, 'idCodigoRequerimiento':codigoRequerimiento?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.PopUpDocumentoRequerimientosVerificacionEditarController.crear' , ['idVerificacionDocumento':verificacionDocumento?.id]), 
+     urlEditar:play.mvc.Router.reverse('popups.PopUpDocumentoRequerimientosVerificacionEditarController.editar' , ['idVerificacionDocumento':verificacionDocumento?.id, 'idCodigoRequerimiento':codigoRequerimiento?.id])
+}
+	
+			#{fap.combo campo:'codigoRequerimiento.codigo', id:'codigo', requerido:true, titulo:'Código' /}		
+		
+			#{fap.grupo borde:false, permiso:'noEditable'}
+				
+			#{fap.texto campo:'codigoRequerimiento.descripcionCorta', id:'descripcionCorta', titulo:'Descripción Corta' /}		
+		
+			#{fap.areaTexto campo:'codigoRequerimiento.descripcion', id:'descripcion', titulo:'Descripción' /}		
+		
+			#{/fap.grupo}	
+		
+			<script>
+				var descripcionCorta = #{fap.toJSMap descripcionCorta/};
+				var descripcionLarga = #{fap.toJSMap descripcionLarga/};
+	
+				var $combo = $('#codigo');
+		
+				function change(){
+					$('#descripcionCorta').val(descripcionCorta[$combo.val()]);
+					$('#descripcion').val(descripcionLarga[$combo.val()]);
+				};
+				change();
+				$combo.change(change);
+			</script>
+		
+#{/fap.popup}

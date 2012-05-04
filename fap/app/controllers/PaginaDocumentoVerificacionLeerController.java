@@ -1,0 +1,7 @@
+package controllers;
+
+import controllers.gen.PaginaDocumentoVerificacionLeerControllerGen;
+
+public class PaginaDocumentoVerificacionLeerController extends PaginaDocumentoVerificacionLeerControllerGen {
+
+}

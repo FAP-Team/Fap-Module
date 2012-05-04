@@ -157,11 +157,18 @@ def getModuleDir(app, cmd_args=""):
     else:    
         if app.path and os.path.exists(os.path.join(app.path, 'modules')):
             regexp = re.compile("^fap(-(\d*\.*)*)?$")
+            regexpRC = re.compile("^fap(-(\d*\.*)*)?RC\d+$")
             regexpNigthly = re.compile("^fap(-nb-(\d*\.*)*)?$")
             for m in os.listdir(os.path.join(app.path, 'modules')):
                 mf = os.path.join(os.path.join(app.path, 'modules'), m)
                 base = os.path.basename(mf)
                 if regexp.match(base):
+                    if os.path.isdir(mf):
+                        return mf
+                    else:
+                        return open(mf, 'r').read().strip()
+                # RC regexp
+                if regexpRC.match(base):
                     if os.path.isdir(mf):
                         return mf
                     else:

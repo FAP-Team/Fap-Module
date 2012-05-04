@@ -23,7 +23,7 @@
 	if (tipoContainer == "popup"){
 		alto  = _alto  ?: "250";
 	}
-	
+
 	String titulo = _titulo ?: play.i18n.Messages.get(campo);
 	
 	def obj = _obj ?: _caller.get(campo.split("\\.")[0]);
@@ -234,7 +234,6 @@
 			}
 			
 			function ajax2Data (data){
-				console.log(data);
 				var filas=[];
 				var aux;
 				for (var i=0; i<data.length; i++){
@@ -248,7 +247,6 @@
 				 	aux['permisoLeer']=data[i].permisoLeer;
 				 	aux['permisoEditar']=data[i].permisoEditar;
 				 	aux['permisoBorrar']=data[i].permisoBorrar;
-				 	console.log(aux['permisoLeer']);
 				 	
 				 	filas[i] = aux;
 				}

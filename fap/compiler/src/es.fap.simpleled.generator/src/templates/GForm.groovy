@@ -36,7 +36,7 @@ public class GForm extends GGroupElement{
 			encTypeStr = ", enctype:\"multipart/form-data\"";
 		
 		String view = """
-			#{form ${Controller.create(this).getRouteAccion(name)} ${encTypeStr}}
+			#{form ${Controller.create(this).getRouteAccion(name)} ${encTypeStr}, class:"form-horizontal"}
 				${elementos}
 			#{/form}
 		""";

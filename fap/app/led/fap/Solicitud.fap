@@ -353,9 +353,9 @@ Formulario Solicitud {
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
 		Grupo noEditable permiso=noEditable visible=false{
-			Texto titulo="Descripción" campo=VerificacionDocumento.descripcion
-			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
-			Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento
+			Texto titulo="Descripción" campo=VerificacionDocumento.descripcion ancho="420px"
+			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento ancho="420px"
+			Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento ancho="420px"
 			Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
 			//Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		}
@@ -382,9 +382,9 @@ Formulario Solicitud {
 		Grupo botonDescarga visible=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
-		Texto titulo="Descripción" campo=VerificacionDocumento.descripcion
-		Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
-		Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento
+		Texto titulo="Descripción" campo=VerificacionDocumento.descripcion ancho="420px"
+		Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento ancho="420px"
+		Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento ancho="420px"
 		Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
 		//Texto version titulo="Versión" campo=VerificacionDocumento.version	
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
@@ -404,15 +404,15 @@ Formulario Solicitud {
 	}
 	
 	Popup PopUpDocumentoRequerimientosVerificacion borrar ver titulo="Requerimiento" campo=VerificacionDocumento.codigosRequerimiento {
-		Texto codigo titulo="Código" campo=CodigoRequerimiento.codigo requerido
+		Texto codigo titulo="Código" campo=CodigoRequerimiento.codigo
 		Texto descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta
 		AreaTexto descripcion titulo="Descripción" campo=CodigoRequerimiento.descripcion
 	}
 	
 	Popup PopUpDocumentoRequerimientosVerificacionModificar crear modificar titulo="Requerimiento" campo=VerificacionDocumento.codigosRequerimiento {
-		Combo codigo titulo="Código" campo=CodigoRequerimiento.codigo requerido
+		Combo descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta requerido
 		Grupo descripciones visible=false permiso=noEditable{
-			Texto descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta
+			Texto codigo titulo="Código" campo=CodigoRequerimiento.codigo
 			AreaTexto descripcion titulo="Descripción" campo=CodigoRequerimiento.descripcion
 		}
 	}

@@ -261,7 +261,7 @@ Formulario Solicitud {
 			
 		
 			Form gnuevoRequerimientoBorradorPreliminar destino="_blank"{ 
-				Boton obtenerBorradorPreliminar titulo="Obtener Borrador"
+				Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
 			} 
 			
 //			Tabla exclusion titulo="Exclusión" campo=SolicitudGenerica.verificacion.codigosExclusion 

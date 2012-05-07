@@ -55,7 +55,7 @@ public class VerificacionUtils {
 			boolean tipoEncontrado = false;
 			// Mejorar la implementación
 			for (Documento doc: auxIterar) {
-				if (doc.tipo.trim().equals(tipoDoc.getUri())) {
+				if ((doc.tipo != null) && (doc.tipo.trim().equals(tipoDoc.getUri()))) {
 					VerificacionDocumento vDoc = new VerificacionDocumento(doc);
 					vDoc.existe = true;
 					if (tipoDoc.getObligatoriedad() == ObligatoriedadEnum.CONDICIONADO_AUTOMATICO) {

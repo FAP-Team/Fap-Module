@@ -250,29 +250,6 @@ public class VerificacionController extends VerificacionControllerGen {
 //		}
 //		finalizarVerificacionRender(idSolicitud);
 //	}
-	
-	public static void requerimientoBorrador(Long idSolicitud) {
-		checkAuthenticity();
-
-		if (permisorequerimientoBorrador("update") || permisorequerimientoBorrador("create")) {
-			if (!validation.hasErrors()) {
-				// Generar el borrador en PDF del requerimiento
-				try {
-					SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-					new Report("reports/borradorRequerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(dbSolicitud);
-				} catch (Exception e) {
-					play.Logger.error("Error generando el borrador", e);
-					Messages.error("Error generando el borrador");
-				}
-			}
-
-		} else {
-			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-		}
-
-		requerimientoBorradorRender(idSolicitud);
-
-	}
 
 
 	/**

@@ -40,7 +40,7 @@ public class PopUpDocumentoRequerimientosVerificacionModificarController extends
 		renderTemplate("fap/Verificacion/PopUpDocumentoRequerimientosVerificacionModificar.html",accion,idCodigoRequerimiento,codigoRequerimiento,idVerificacionDocumento);
 	}
 	
-	public static List<ComboItem> codigo() {
+	public static List<ComboItem> descripcionCorta() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
 		Map <String, Long> parametrosUrl = (Map<String, Long>)tags.TagMapStack.top("idParams");
 		VerificacionDocumento doc = VerificacionDocumento.findById(parametrosUrl.get("idVerificacionDocumento"));
@@ -53,7 +53,7 @@ public class PopUpDocumentoRequerimientosVerificacionModificarController extends
 		List <TiposCodigoRequerimiento> tiposCodReq = TiposCodigoRequerimiento.find("select tcr from TiposCodigoRequerimiento tcr where tcr.uriTipoDocumento=? and tcr.uriTramite=?", doc.uriTipoDocumento, sol.verificacion.uriTramite).fetch();
 		List <CodigoRequerimiento> codigosRequerimiento = utils.ModelUtils.getListCodigoRequerimientoFromTiposCodigoRequerimiento(tiposCodReq);
 		for (CodigoRequerimiento codigo: codigosRequerimiento){
-			result.add(new ComboItem(codigo.codigo, codigo.codigo));
+			result.add(new ComboItem(codigo.descripcionCorta, codigo.descripcionCorta));
 		}
 		return result;
 	}
@@ -77,9 +77,9 @@ public class PopUpDocumentoRequerimientosVerificacionModificarController extends
 
 		if (!Messages.hasErrors()) {
 			Verificacion verificacion = Verificacion.find("select verificacion from Verificacion verificacion inner join verificacion.documentos vDoc where vDoc.id=?", idVerificacionDocumento).first();
-			TiposCodigoRequerimiento tipoCodReq = TiposCodigoRequerimiento.find("select tipoCodReq from TiposCodigoRequerimiento tipoCodReq where (tipoCodReq.codigo=? and tipoCodReq.uriTramite=? and tipoCodReq.uriTipoDocumento=?)", codigoRequerimiento.codigo, verificacion.uriTramite, dbVerificacionDocumento.uriTipoDocumento).first();
+			TiposCodigoRequerimiento tipoCodReq = TiposCodigoRequerimiento.find("select tipoCodReq from TiposCodigoRequerimiento tipoCodReq where (tipoCodReq.descripcionCorta=? and tipoCodReq.uriTramite=? and tipoCodReq.uriTipoDocumento=?)", codigoRequerimiento.descripcionCorta, verificacion.uriTramite, dbVerificacionDocumento.uriTipoDocumento).first();
 			dbCodigoRequerimiento.descripcion = tipoCodReq.descripcion;
-			dbCodigoRequerimiento.descripcionCorta = tipoCodReq.descripcionCorta;
+			dbCodigoRequerimiento.codigo = tipoCodReq.codigo;
 			dbCodigoRequerimiento.save();
 			dbVerificacionDocumento.codigosRequerimiento.add(dbCodigoRequerimiento);
 			dbVerificacionDocumento.save();
@@ -113,9 +113,9 @@ public class PopUpDocumentoRequerimientosVerificacionModificarController extends
 
 		if (!Messages.hasErrors()) {
 			Verificacion verificacion = Verificacion.find("select verificacion from Verificacion verificacion inner join verificacion.documentos vDoc where vDoc.id=?", idVerificacionDocumento).first();
-			TiposCodigoRequerimiento tipoCodReq = TiposCodigoRequerimiento.find("select tipoCodReq from TiposCodigoRequerimiento tipoCodReq where (tipoCodReq.codigo=? and tipoCodReq.uriTramite=? and tipoCodReq.uriTipoDocumento=?)", codigoRequerimiento.codigo, verificacion.uriTramite, verificacionDocumento.uriTipoDocumento).first();
+			TiposCodigoRequerimiento tipoCodReq = TiposCodigoRequerimiento.find("select tipoCodReq from TiposCodigoRequerimiento tipoCodReq where (tipoCodReq.descripcionCorta=? and tipoCodReq.uriTramite=? and tipoCodReq.uriTipoDocumento=?)", codigoRequerimiento.descripcionCorta, verificacion.uriTramite, verificacionDocumento.uriTipoDocumento).first();
 			dbCodigoRequerimiento.descripcion = tipoCodReq.descripcion;
-			dbCodigoRequerimiento.descripcionCorta = tipoCodReq.descripcionCorta;
+			dbCodigoRequerimiento.codigo = tipoCodReq.codigo;
 			dbCodigoRequerimiento.save();
 		}
 
@@ -132,17 +132,17 @@ public class PopUpDocumentoRequerimientosVerificacionModificarController extends
 	protected static void PopUpDocumentoRequerimientosVerificacionModificarValidateCopy(CodigoRequerimiento dbCodigoRequerimiento, CodigoRequerimiento codigoRequerimiento) {
 		CustomValidation.clearValidadas();
 		CustomValidation.valid("codigoRequerimiento", codigoRequerimiento);
-		CustomValidation.validValueFromTable("codigoRequerimiento.codigo",codigoRequerimiento.codigo);
-		CustomValidation.required("codigoRequerimiento.codigo",codigoRequerimiento.codigo);
+		CustomValidation.validValueFromTable("codigoRequerimiento.descripcionCorta",codigoRequerimiento.descripcionCorta);
+		CustomValidation.required("codigoRequerimiento.descripcionCorta",codigoRequerimiento.descripcionCorta);
 		// Comprobar que no se introduzca ningun codigo Requerimiento que ya esté repetido
 		Map <String, Long> parametrosUrl = (Map<String, Long>)tags.TagMapStack.top("idParams");
 		VerificacionDocumento doc = VerificacionDocumento.findById(parametrosUrl.get("idVerificacionDocumento"));
 		for (CodigoRequerimiento codigoR: doc.codigosRequerimiento){
-			if (codigoR.codigo.equals(codigoRequerimiento.codigo)){
-				CustomValidation.error("El código de requerimiento ya existe en este documento", "codigoRequerimiento.codigo",codigoRequerimiento.codigo);
+			if (codigoR.descripcionCorta.equals(codigoRequerimiento.descripcionCorta)){
+				CustomValidation.error("El código de requerimiento ya existe en este documento", "codigoRequerimiento.descripcionCorta",codigoRequerimiento.descripcionCorta);
 			}
 		}
-		dbCodigoRequerimiento.codigo = codigoRequerimiento.codigo;
+		dbCodigoRequerimiento.descripcionCorta = codigoRequerimiento.descripcionCorta;
 	}
 	
 }

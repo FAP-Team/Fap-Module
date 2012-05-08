@@ -24,7 +24,22 @@ public class CompressLogs extends Job {
 	public void doJob() {
 		// Preparamos una variable para gestionar el directorio de logs
 		File directorioLogs = new File(Play.applicationPath+"/logs");
+		if (!(new File(Play.applicationPath+"/logs").exists())){
+			directorioLogs.mkdir();
+		}
 		play.Logger.info("Directorio se supone está en: "+directorioLogs.getAbsolutePath());
+		
+		//Comprobar que existen /logs/Auditable  y  /logs/Daily  y si no crearlos
+		//if (!(directorioLogs+"/Auditable").exists()){}
+		File logsAuditable = new File(Play.applicationPath+"/logs/Auditable");
+		if (!(logsAuditable.exists())){
+			logsAuditable.mkdir();
+		}
+		File logsDaily = new File(Play.applicationPath+"/logs/Daily");
+		if (!(logsDaily.exists())){
+			logsDaily.mkdir();
+		}
+		
 		// Buscamos en dicho directorio ficheros cuyos nombres tengan fechas, que indicaran que son de dias anteriores
 		for (File fichero : directorioLogs.listFiles()){
 			// Si es un fichero antiguo, lo comprimimos, dependiendo del tipo que sea Daily o Auditable, para colocarlo en su carpeta

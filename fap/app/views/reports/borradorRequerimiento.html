@@ -24,7 +24,7 @@ h2 {
 <!-- Solicitante Enlace a la aplicación en cuestión-->
 
 %{ 
-	def nombreFichero = "requerimiento-"+dbSolicitud.verificacion.tramiteNombre.uri.subSequence(dbSolicitud.verificacion.tramiteNombre.uri.length()-6, dbSolicitud.verificacion.tramiteNombre.uri.length())+".html";
+	def nombreFichero = "requerimiento-TRP"+dbSolicitud.verificacion.tramiteNombre.uri.split("TRP")[1]+".html";
 	def ficheroApp = new File("app/views/reports/"+nombreFichero);
 %}
 

@@ -94,7 +94,7 @@ public class VerificacionController extends VerificacionControllerGen {
 
 			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.verificandoTipos.name();
 			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
-			dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion);
+			dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, idSolicitud);
 			dbSolicitud.estado=EstadosSolicitudEnum.enVerificacion.name();
 			if (!validation.hasErrors()) {
 				
@@ -138,7 +138,11 @@ public class VerificacionController extends VerificacionControllerGen {
 		if (permisoverificaTipos("update") || permisoverificaTipos("create")) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			
-			dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos(VerificacionFapController.getNuevosDocumentosVerificar(dbSolicitud.verificacion.id), dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones);
+			try {
+				dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos((List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", dbSolicitud.verificacion.id, idSolicitud), dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones, idSolicitud);
+			} catch (Throwable e) {
+				play.Logger.error("Error recuperando los documentos nuevos a verificar 1", e);
+			}
 			
 			if (!validation.hasErrors()) {
 				
@@ -368,12 +372,12 @@ public class VerificacionController extends VerificacionControllerGen {
 
 			if (!validation.hasErrors()) {
 				SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-				List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion);
+				List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, idSolicitud);
 				// Compruebo que no existen documentos nuevos aportados por el solicitante y que no esten incluidos en la verificacion actual
 				if (!documentosNuevos.isEmpty()){
 					dbSolicitud.verificacion.nuevosDocumentos.addAll(documentosNuevos);
 					dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enVerificacionNuevosDoc.name();
-					dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion);
+					dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, idSolicitud);
 					dbSolicitud.save();
 					Messages.info("Nuevos documentos aportados por el solicitante añadidos a la verificación actual. Verifique los tipos de estos documentos para proseguir con la verificación en curso.");
 				}
@@ -420,6 +424,9 @@ public class VerificacionController extends VerificacionControllerGen {
 				} catch (Exception e) {
 					play.Logger.error("Error generando el borrador", e);
 					Messages.error("Error generando el borrador");
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 

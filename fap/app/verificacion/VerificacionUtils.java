@@ -33,7 +33,7 @@ public class VerificacionUtils {
 	 * @param listDoc Lista de Documentos (verificados y no verificados)
 	 * @return Lista de VerificaciónDocumentos (sólo los no verificados)
 	 */
-	public static List<VerificacionDocumento> getVerificacionDocumentosFromNewDocumentos (List<Documento> listDoc, String uriTramite, List<Verificacion> verificacionesBefore) {
+	public static List<VerificacionDocumento> getVerificacionDocumentosFromNewDocumentos (List<Documento> listDoc, String uriTramite, List<Verificacion> verificacionesBefore, Long idSolicitud) {
 		
 		Tramite tramite = (Tramite) Tramite.find("select t from Tramite t where t.uri=?", uriTramite).first();
 		
@@ -47,7 +47,7 @@ public class VerificacionUtils {
 		// Documentos condicionados automaticos obligatorios de la aplicacion en cuestion
 		List<String> docCondicionadosAutomaticos=new ArrayList<String>();
 		try {
-			docCondicionadosAutomaticos = VerificacionFapController.getTipoDocumentosCondicionadosAutomaticos(tramite.nombre);
+			docCondicionadosAutomaticos = VerificacionFapController.invoke("getDocumentosCondicionadosAutomaticos", tramite.nombre, idSolicitud);
 		} catch (Throwable e) {
 			play.Logger.warn("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
 		}
@@ -224,9 +224,15 @@ public class VerificacionUtils {
 	 * 
 	 * @return documentosNuevos Lista con los documentos nuevos que ha aportado el solicitante y no han sido incluidos en ninguna verificacion
 	 */
-	public static List<Documento> existDocumentosNuevos (Verificacion verificacionActual) {
-		List <Documento> documentosNuevos = VerificacionFapController.getNuevosDocumentosVerificar(verificacionActual.id);
-		List <Documento> documentosNuevosSinVerificacionActual = VerificacionFapController.getNuevosDocumentosVerificar(verificacionActual.id);
+	public static List<Documento> existDocumentosNuevos (Verificacion verificacionActual, Long idSolicitud) {
+		List<Documento> documentosNuevos=null;
+		List <Documento> documentosNuevosSinVerificacionActual = null;
+		try {
+			documentosNuevos = (List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
+			documentosNuevosSinVerificacionActual = (List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
+		} catch (Throwable e) {
+			play.Logger.error("Error recuperando los documentos nuevos a verificar", e);
+		}
 		for (Documento doc: documentosNuevos){
 			for (VerificacionDocumento vDoc: verificacionActual.documentos){
 				if ((vDoc.uriDocumento != null) && (vDoc.uriDocumento.equals(doc.uri))){
@@ -247,9 +253,9 @@ public class VerificacionUtils {
 	 * 
 	 * @return documentosNuevos Lista con los documentos nuevos que ha aportado el solicitante y no han sido incluidos en ninguna verificacion
 	 */
-	public static List<Documento> existDocumentosNuevosVerificacionTipos (Verificacion verificacionActual, List<Verificacion> verificaciones, List<Documento> documentosActuales) {
-		List <Documento> documentos = existDocumentosNuevos (verificacionActual);
-		List <Documento> documentosNuevos = existDocumentosNuevos (verificacionActual);
+	public static List<Documento> existDocumentosNuevosVerificacionTipos (Verificacion verificacionActual, List<Verificacion> verificaciones, List<Documento> documentosActuales, Long idSolicitud) {
+		List <Documento> documentos = existDocumentosNuevos (verificacionActual, idSolicitud);
+		List <Documento> documentosNuevos = existDocumentosNuevos (verificacionActual, idSolicitud);
 		for (Documento vtdoc: verificacionActual.verificacionTiposDocumentos){
 			for (Documento doc: documentos){
 				if ((vtdoc.uri != null) && (vtdoc.uri.equals(doc.uri))){

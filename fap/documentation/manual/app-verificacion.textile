@@ -25,11 +25,15 @@ bc. public class miClase extends VerificacionFapController {
 
 En dicha clase nueva creada, deberan de sobreescribirse todos los métodos que permiten personalizar la documentación a verificar que por defecto trae el módulo FAP:
 
+_NOTA: Para llamar a los métodos que sobreescribamos deberemos llamarlos de la siguiente forma (si queremos llamar al getDocumentosCondicionadosAutomaticos, por ejemplo):_
+
+**VerificacionFapController.invoke("getDocumentosCondicionadosAutomaticos", tramite.nombre, idSolicitud);**
+
 h3. Lista de todos los documentos a verificar
 
 Si se quiere indicar que documentos se deben verificar, se deberá sobreescribir la función siguiente (_getNuevosDocumentosVerificar_) que deberá devolver una lista de Documentos con todos aquellos Documentos que se quieran tener en cuenta para su verificación.
 
-bc. public static List<Documento> getNuevosDocumentosVerificar(Long idVerificacion){
+bc. public static List<Documento> getNuevosDocumentosVerificar(Long idVerificacion, Long idSolicitud){
    ...
 }
 
@@ -39,7 +43,7 @@ h3. Marcar como verificados una serie de Documentos
 
 Cuando se finalice una verificación, se deberá de marcar como verificados los documentos que se han verificado en dicha verificación. Para ello, puede ser que una determinada aplicación quiera marcar determinados documentos como verificados, por lo que se permite sobreescribir el método que setea que un determinado documento se da como verificado.
 
-bc. public static void setDocumentosVerificados(Long idVerificacion, List<Documento> documentos){
+bc. public static void setDocumentosVerificados(Long idVerificacion, List<Documento> documentos, Long idSolicitud){
    ...
 }
 
@@ -51,7 +55,7 @@ Existe una variedad de documentos que son depedientes de la aplicación que se d
 
 _NOTA: Existe un clase también de FAP (ObligatoriedadDocumentosFAP, dentro del paquete verificación), que puede ser utilizada para gestionar los documentos, y que posee un método para eliminar la versión de la uri del tipo de documento._
 
-bc. public static List<String> getDocumentosCondicionadosAutomaticos (String uriTramite){
+bc. public static List<String> getDocumentosCondicionadosAutomaticos (String uriTramite, Long idSolicitud){
    ...
 }
 
@@ -61,7 +65,7 @@ h2. Personalizar PDF Requerimiento
 
 Para cada requerimiento, se generá su PDF correspondiente (tanto el borrador como el oficial) que seguirá el formato y estructura del .html _borradorRequerimiento_ que está en el modulo fap (app/views/reports).
 
-Dicho PDF, se compone de dos partes. La primera es propia de la aplicación ya que deberá contener los datos del solicitante y demás formalismos. Como esto es dependiente de cada solicitud, y no generalizable, se debe sobreescribir la plantilla _datosSolicitanteBorradorRequerimiento.html_ que se debe crear en (app/views/reports/) de cada aplicación y indicarle en ella todo aquello que queramos que aparezca en el PDF del requerimiento.
+Dicho PDF, se compone de dos partes. La primera es propia de la aplicación ya que deberá contener los datos del solicitante y demás formalismos. Como esto es dependiente de cada solicitud y de cada trámite, y no generalizable, se debe sobreescribir la plantilla _requerimiento-TRPXXXXXX.html_, donde **XXXXXX** serán los digitos de la URI del trámite del que se está realizando la verificación. La plantilla se debe crear en (app/views/reports/) de cada aplicación y indicarle en ella todo aquello que queramos que aparezca en el PDF del requerimiento.
 
 La segunda parte, se encarga de confeccionarla el módulo FAP, y simplemente va listando las causas de requerimientos, así como los documentos que tienen algun defecto y cuales fueron sus motivos de requerimientos.
 

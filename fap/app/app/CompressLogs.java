@@ -30,7 +30,6 @@ public class CompressLogs extends Job {
 		play.Logger.info("Directorio se supone está en: "+directorioLogs.getAbsolutePath());
 		
 		//Comprobar que existen /logs/Auditable  y  /logs/Daily  y si no crearlos
-		//if (!(directorioLogs+"/Auditable").exists()){}
 		File logsAuditable = new File(Play.applicationPath+"/logs/Auditable");
 		if (!(logsAuditable.exists())){
 			logsAuditable.mkdir();

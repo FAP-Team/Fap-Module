@@ -1,5 +1,16 @@
 h2. Changelog
 
+h3. Versión 1.3.5 RC2
+
+* Añadidos codigos de exclusión a la Verificación.
+* Fixed Bug en la clase que hay que sobreescribir VerificacionFAPController, para indicar los documentos concretos a verificar.
+* Fixed Bug al visualizar el detalle de un documento en la verificación de tipos.
+* Fixed Bug al descargar recibo de la solicitud en Verificación.
+* Ampliado el ancho de lod elementos html del popup de verificación de un documento.
+* Combo de selección de un requerimiento, ahora está por la descripción corta.
+* Fixed Bug Botón Obtener Borrador Requerimiento en Verificacion.
+* Fixed bug PDF Borrador Requerimiento en Verificación.
+
 h3. Versión 1.3.5 RC1
 
 * Fixed bug generación de los inits en los modelos.

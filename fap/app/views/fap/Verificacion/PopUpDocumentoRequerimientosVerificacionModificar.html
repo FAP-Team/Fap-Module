@@ -17,9 +17,9 @@
 		
 #{fap.grupo permiso:'noEditable', visible:false}
 	
-#{fap.texto id:'codigo', titulo:'Código', campo:'codigoRequerimiento.codigo' /}		
+	#{fap.texto id:'codigo', titulo:'Código', campo:'codigoRequerimiento.codigo' /}		
 		
-#{fap.areaTexto id:'descripcion', titulo:'Descripción', campo:'codigoRequerimiento.descripcion' /}	
+	#{fap.areaTexto id:'descripcion', titulo:'Descripción', campo:'codigoRequerimiento.descripcion' /}	
 		
 #{/fap.grupo}	
 		
@@ -30,8 +30,13 @@
 	var $combo = $('#descripcionCorta');
 		
 	function change(){
-		$('#codigo').val(codigo[$combo.val()]);
-		$('#descripcion').val(descripcionLarga[$combo.val()]);
+		if ($combo.val().trim() != ""){
+			$('#codigo').val(codigo[$combo.val().trim()]);
+			$('#descripcion').val(descripcionLarga[$combo.val().trim()]);
+		} else {
+			$('#codigo').val("");
+			$('#descripcion').val("");
+		}
 	};
 	change();
 	$combo.change(change);

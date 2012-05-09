@@ -137,7 +137,7 @@ public class VerificacionController extends VerificacionControllerGen {
 		checkAuthenticity();
 		if (permisoverificaTipos("update") || permisoverificaTipos("create")) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-			
+
 			try {
 				dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos((List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", dbSolicitud.verificacion.id, idSolicitud), dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones, idSolicitud);
 			} catch (Throwable e) {

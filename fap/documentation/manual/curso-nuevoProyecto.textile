@@ -43,7 +43,7 @@ bc. play deps
 
 bc. play fap:init
 
-8. Edita el fichero *led/src/Solicitud.play* y añade un nuevo mensaje
+8. Edita el fichero *app/led/Solicitud.fap* y añade un nuevo mensaje
 
 bc. Formulario Solicitud {
 	Pagina Solicitante inicial {

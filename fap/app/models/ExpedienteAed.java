@@ -38,11 +38,13 @@ public class ExpedienteAed extends FapModel {
 	 */
 	public String asignarIdAed() {
 		if (idAed == null) {
-			Long id = SemillaExpediente.obtenerId();
+			SemillaExpediente semilla = new SemillaExpediente();
+			semilla.save();
+			Long id = (Long) semilla.id;
 			java.text.NumberFormat formatter = new java.text.DecimalFormat("0000");
 			String prefijo = FapProperties.get("fap.aed.expediente.prefijo");
 			idAed = prefijo + formatter.format(id);
-			save();
+			this.save();
 		}
 		return idAed;
 	}

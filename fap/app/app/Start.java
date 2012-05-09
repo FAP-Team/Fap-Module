@@ -94,7 +94,9 @@ public class Start extends Job {
 			Logger.info("Tipo de Baremación cargada correctamente desde fichero");
 		}else if (!new File("conf/initial-data/tipoEvaluacion.json").exists()){
 			Logger.info("No se puede leer el fichero que contiene los parámetros de la Evaluacion (/conf/initial-data/tipoEvaluacion.json)");
-		} 
+		}
+		
+		actualizarSemillaExpediente();
 	}
 	
 	/**
@@ -109,6 +111,32 @@ public class Start extends Job {
 			if(resource != null){
 				PropertyConfigurator.configure(resource);
 			}
+		}
+	}
+	
+	/**
+	 * Actualiza la semilla del Expediente, en caso necesario,
+	 * para que funcione la versión 1.3.2 de FAP y posteriores.
+	 */
+	private void actualizarSemillaExpediente() {
+		
+		Long size = (long) SemillaExpediente.findAll().size();
+		Long idSemilla;
+		Long valueSemilla;
+		if (size == 1) {
+			SemillaExpediente semilla = SemillaExpediente.find("select semillaExpediente from SemillaExpediente semillaExpediente").first();
+			valueSemilla = semilla.semilla;
+			idSemilla = semilla.id;
+			
+			play.Logger.info("Semilla a buscar: "+ valueSemilla + ", encontrada: " + idSemilla);
+			
+			while (idSemilla < valueSemilla) {
+				SemillaExpediente sem = new SemillaExpediente();
+				sem.save();
+				
+				idSemilla = sem.id;
+			}
+			play.Logger.info("Semilla actualizada a " + idSemilla);
 		}
 	}
 }

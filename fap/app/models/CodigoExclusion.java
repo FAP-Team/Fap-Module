@@ -22,21 +22,20 @@ import java.text.SimpleDateFormat;
 
 
 @Entity
-public class Exclusion extends Model {
+public class CodigoExclusion extends Model {
 	// Código de los atributos
 	
 	
 	
-	public String motivoExclusion;
+	public String codigo;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="exclusion_codigos")
 	
-	public List<CodigoExclusion> codigos;
+	@Transient
+	public TipoCodigoExclusion tipoCodigo;
 	
 	
-	public Exclusion (){
+	public CodigoExclusion (){
 		init();
 	}
 	
@@ -44,16 +43,23 @@ public class Exclusion extends Model {
 	public void init(){
 		
 		
-						if (codigos == null)
-							codigos = new ArrayList<CodigoExclusion>();
+							if (tipoCodigo == null)
+								tipoCodigo = new TipoCodigoExclusion();
+							else
+								tipoCodigo.init();
 						
 	}
 		
 	
 
 // === MANUAL REGION START ===
-
-			
+	public TipoCodigoExclusion getTipoCodigo () {
+		if (this.codigo != null) {
+			TipoCodigoExclusion tCode = TipoCodigoExclusion.find("select tCode from TipoCodigoExclusion tCode where tCode.codigo=?" , this.codigo).first();
+			return tCode;
+		}
+		return tipoCodigo;
+	}
 // === MANUAL REGION END ===
 	
 	

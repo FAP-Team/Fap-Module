@@ -157,6 +157,10 @@ GET /Solicitud/aportacionrecibos AportacionRecibosController.index
 
 GET /Solicitud/aportacionrecibos/recibosAportados AportacionRecibosController.tablarecibosAportados
 POST /Solicitud/aportacionrecibos/save AportacionRecibosController.save
+GET /Solicitud/exclusion ExclusionController.index
+
+GET /Solicitud/exclusion/exclusion ExclusionController.tablaexclusion
+POST /Solicitud/exclusion/save ExclusionController.save
 GET /Solicitud/popupdocaportados/{idEntidad}/abrir popups.PopUpDocAportadosController.abrir
 POST /Solicitud/popupdocaportados/{idEntidad}/editar popups.PopUpDocAportadosController.editar
 POST /Solicitud/popupdocaportados/{idEntidad}/borrar popups.PopUpDocAportadosController.borrar
@@ -220,6 +224,12 @@ POST /Solicitud/popupdocumentoverificacionver/{idEntidad}/crear popups.PopUpDocu
 POST /Solicitud/popupdocumentoverificacionver/{idEntidad}/cancelarcrear popups.PopUpDocumentoVerificacionVerController.cancelarCrear
 
 GET /Solicitud/popupdocumentoverificacionver/{idEntidad}/requerimientosDocumento popups.PopUpDocumentoVerificacionVerController.tablarequerimientosDocumento
+GET /Solicitud/popupexclusion/{idEntidad}/abrir popups.PopUpExclusionController.abrir
+POST /Solicitud/popupexclusion/{idEntidad}/editar popups.PopUpExclusionController.editar
+POST /Solicitud/popupexclusion/{idEntidad}/borrar popups.PopUpExclusionController.borrar
+POST /Solicitud/popupexclusion/{idEntidad}/crear popups.PopUpExclusionController.crear
+POST /Solicitud/popupexclusion/{idEntidad}/cancelarcrear popups.PopUpExclusionController.cancelarCrear
+
 GET /Solicitud/popuprequerimientosverificacionver/{idEntidad}/abrir popups.PopUpRequerimientosVerificacionVerController.abrir
 POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/editar popups.PopUpRequerimientosVerificacionVerController.editar
 POST /Solicitud/popuprequerimientosverificacionver/{idEntidad}/borrar popups.PopUpRequerimientosVerificacionVerController.borrar

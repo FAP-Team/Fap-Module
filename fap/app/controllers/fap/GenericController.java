@@ -16,8 +16,6 @@ import models.Participacion;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
-import com.sun.xml.internal.ws.message.source.PayloadSourceMessage;
-
 
 import play.Play;
 import play.cache.Cache;

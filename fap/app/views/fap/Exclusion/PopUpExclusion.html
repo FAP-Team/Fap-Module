@@ -1,0 +1,51 @@
+%{
+	models.SolicitudGenerica solicitud = models.Solicitud.findById(idSolicitud);
+	List<models.TipoCodigoExclusion> codigos = models.TipoCodigoExclusion.find("select tce from TipoCodigoExclusion tce").fetch();
+	tags.JSMap codigo = new tags.JSMap();
+    tags.JSMap descripcionLarga = new tags.JSMap();
+       for (models.TiposCodigoRequerimiento cod: codigos){
+               codigo.put(cod.descripcionCorta, cod.codigo);
+               descripcionLarga.put(cod.descripcionCorta, cod.descripcion);
+       }
+    
+%}
+
+#{fap.popup titulo:'PopUpExclusion', hidden:[idSolicitud:idSolicitud, idCodigoExclusion: idCodigoExclusion], popup:'PopUpExclusion', action:accion}
+		
+#{fap.combo id:'descripcionCorta', titulo:'Descripción Corta', campo:'codigoExclusion.tipoCodigo.descripcionCorta', requerido:'true' /}
+		
+
+#{fap.grupo permiso:'noEditable', visible:false}
+
+#{fap.texto id:'codigo', titulo:'Código', campo:'codigoExclusion.codigo' /}
+		
+#{fap.areaTexto id:'descripcion', titulo:'Descripción', campo:'codigoExclusion.tipoCodigo.descripcion' /}
+		
+#{/fap.grupo}
+
+<input type="hidden" id="codigoHidden" name="codigoExclusion.codigo" />
+
+#{/fap.popup}
+
+               
+<script>
+	var codigo = #{fap.toJSMap codigo/};
+	var descripcionLarga = #{fap.toJSMap descripcionLarga/};
+
+	var $combo = $('#descripcionCorta');
+
+	function change(){
+		if ($combo.val().trim() == "") {
+			$('#codigo').val("");
+			$('#codigoHidden').val("");
+			$('#descripcion').val("");
+		} else {
+			$('#codigo').val(codigo[$combo.val()].trim());
+			$('#codigoHidden').val(codigo[$combo.val()].trim());
+			$('#descripcion').val(descripcionLarga[$combo.val()]);
+		}
+    };
+	
+    change();
+	$combo.change(change);
+</script>

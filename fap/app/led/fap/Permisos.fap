@@ -231,7 +231,7 @@ vars
 	SolicitudGenerica solicitud
 when 
 	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
-	(solicitud.estado in ("iniciada", "requerida"))
+	(solicitud.estado in ("iniciada", "enVerificacion", "requerida"))
 then 
 	grant
 

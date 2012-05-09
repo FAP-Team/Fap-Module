@@ -383,8 +383,14 @@ Entidad TipoCodigoExclusion {
 
 Entidad Exclusion {
 	String motivoExclusion
-	List<String> codigosExclusionString
-	OneToMany TipoCodigoExclusion codigosExclusion transient
+	//List<String> codigosExclusionString
+	//OneToMany TipoCodigoExclusion codigosExclusion transient
+	OneToMany CodigoExclusion codigos
+}
+
+Entidad CodigoExclusion {
+	String codigo
+	TipoCodigoExclusion tipoCodigo transient
 }
 
 Entidad Requerimiento {

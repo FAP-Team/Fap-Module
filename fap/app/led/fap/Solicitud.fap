@@ -153,7 +153,7 @@ Formulario Solicitud {
 	
 	Popup PopUpVerificacionVer ver titulo="Verificación" campo=SolicitudGenerica.verificaciones {
 		Texto expediente titulo="Expediente" campo=Verificacion.expediente
-		Texto exclusion titulo="Motivo Requerimiento" campo=Verificacion.requerimiento.motivo
+		Texto motivoReq titulo="Motivo Requerimiento" campo=Verificacion.requerimiento.motivo
 		Fecha fechaCreacion titulo="Fecha creación" campo=Verificacion.fechaCreacion
 		Fecha fechaActualizacion titulo="Fecha finalización" campo=Verificacion.fechaUltimaActualizacion
 		Combo estado titulo="Estado" campo=Verificacion.estado
@@ -237,7 +237,7 @@ Formulario Solicitud {
 		Grupo verificacionProceso titulo="Verificación de la documentación" permiso=verificarDocumentos { 
 		
 			Grupo botonDescargaReciboSolitud visible=false{
-				Enlace campo=SolicitudGenerica.registro.oficial.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="boton"
+				Enlace campo=SolicitudGenerica.registro.justificante.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="boton"
 			}	
 		
 			Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
@@ -264,15 +264,6 @@ Formulario Solicitud {
 				Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
 			} 
 			
-//			Tabla exclusion titulo="Exclusión" campo=SolicitudGenerica.verificacion.codigosExclusion 
-//				popupCrear=PopUp:exclusionCrear 
-//				popupBorrar=PopUp:exclusionBorrar
-//			{
-//				Columna titulo="Códigos de exclusion" campo=Exclusion.descripcionCorta expandir
-//			}
-//			Form gnuevoRequerimientoBorradorPreliminar { 
-//				Boton obtenerBorradorPreliminar titulo="Obtener Borrador"
-//			}
 
 //			// Borrar
 //			Form todosNoProcede {
@@ -414,6 +405,27 @@ Formulario Solicitud {
 		Grupo descripciones visible=false permiso=noEditable{
 			Texto codigo titulo="Código" campo=CodigoRequerimiento.codigo
 			AreaTexto descripcion titulo="Descripción" campo=CodigoRequerimiento.descripcion
+		}
+	}
+	
+	Pagina Exclusion {
+		Tabla exclusion titulo="Codigos de Exclusión" campo=SolicitudGenerica.exclusion.codigos
+		popupVer=PopUpExclusion
+		popupCrear=PopUpExclusion
+		popupBorrar=PopUpExclusion
+		{
+			Columna titulo="Código" campo=CodigoExclusion.codigo
+			Columna titulo="Descripción corta" campo=CodigoExclusion.tipoCodigo.descripcionCorta expandir
+		}
+	}
+	
+	Popup PopUpExclusion crear ver borrar campo=SolicitudGenerica.exclusion.codigos {
+		Wiki {"Prueba"}
+		
+		Combo descripcionCorta campo=CodigoExclusion.tipoCodigo.descripcionCorta titulo="Descripción Corta"
+		Grupo permiso=noEditable {
+			Texto codigo campo=CodigoExclusion.codigo titulo="Código"
+			AreaTexto descripcion campo=CodigoExclusion.tipoCodigo.descripcion titulo="Descripcion" 
 		}
 	}
 	

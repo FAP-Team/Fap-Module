@@ -101,14 +101,13 @@ public class VerificacionUtils {
 					list.add(vDoc);
 
 				}
-				// Condicionado MANUAL, igual que el anterior pero siempre es NO VERIFICADO, ya que es el gestor/revisor quien se encarga de discernir si debe ser aportado o no
 				if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_MANUAL)){
 					VerificacionDocumento vDoc = new VerificacionDocumento();
 					vDoc.existe = false;
 					vDoc.uriTipoDocumento = tipoDoc.getUri();
 					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
 					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
-					vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+					vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
 					vDoc.save();
 					list.add(vDoc);
 				} 
@@ -122,7 +121,7 @@ public class VerificacionUtils {
 						vDoc.uriTipoDocumento = tipoDoc.getUri();
 						vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
 						vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
 						vDoc.save();
 						list.add(vDoc);
 					}

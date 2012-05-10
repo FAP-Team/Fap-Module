@@ -35,14 +35,14 @@
 	var $combo = $('#descripcionCorta');
 
 	function change(){
-		if ($combo.val().trim() == "") {
+		if ($.trim($combo.val()) == "") {
 			$('#codigo').val("");
 			$('#codigoHidden').val("");
 			$('#descripcion').val("");
 		} else {
-			$('#codigo').val(codigo[$combo.val()].trim());
-			$('#codigoHidden').val(codigo[$combo.val()].trim());
-			$('#descripcion').val(descripcionLarga[$combo.val()]);
+			$('#codigo').val($.trim(codigo[$combo.val()]));
+			$('#codigoHidden').val($.trim(codigo[$combo.val()]));
+			$('#descripcion').val($.trim(descripcionLarga[$combo.val()]));
 		}
     };
 	

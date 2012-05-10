@@ -30,9 +30,9 @@
 	var $combo = $('#descripcionCorta');
 		
 	function change(){
-		if ($combo.val().trim() != ""){
-			$('#codigo').val(codigo[$combo.val().trim()]);
-			$('#descripcion').val(descripcionLarga[$combo.val().trim()]);
+		if ($.trim($combo.val()) != ""){
+			$('#codigo').val($.trim(codigo[$combo.val()]));
+			$('#descripcion').val($.trim(descripcionLarga[$combo.val()]));
 		} else {
 			$('#codigo').val("");
 			$('#descripcion').val("");

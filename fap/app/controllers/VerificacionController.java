@@ -116,7 +116,7 @@ public class VerificacionController extends VerificacionControllerGen {
 		Long id = idSolicitud != null ? idSolicitud : idEntidad;
 		SolicitudGenerica s = getSolicitudGenerica(idSolicitud);
 		java.util.List<Documento> rows = Documento
-				.find("select documento from SolicitudGenerica solicitud join solicitud.verificacionEnCurso.verificacionTiposDocumentos documento where solicitud.id=? and (documento.verificado is null or documento.verificado = false)",id).fetch();
+				.find("select documento from SolicitudGenerica solicitud join solicitud.verificacion.verificacionTiposDocumentos documento where solicitud.id=? and (documento.verificado is null or documento.verificado = false)",id).fetch();
 
 		List<Documento> rowsFiltered = rows; // Tabla sin permisos, no filtra
 

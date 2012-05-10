@@ -1,5 +1,10 @@
 h2. Changelog
 
+h3. Versión 1.3.5 RC3
+
+* Fixed Bug en el PDF del borrador del requerimiento, quitando atributos que no hacían falta.
+* Fixed Bug en método trim() de JavaScript en PopUps Manuales de Exclusión y Requerimiento.
+
 h3. Versión 1.3.5 RC2
 
 * Fixed Bug al utilizar la Release Candidate.
@@ -10,7 +15,7 @@ h3. Versión 1.3.5 RC2
 * Ampliado el ancho de los elementos html del popup de verificación de un documento.
 * Combo de selección de un requerimiento por descripción corta.
 * Fixed Bug Botón Obtener Borrador Requerimiento en Verificación.
-* Fixed bug PDF Borrador Requerimiento en Verificación.
+* Fixed Bug PDF Borrador Requerimiento en Verificación.
 
 h3. Versión 1.3.5 RC1
 

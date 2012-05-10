@@ -66,10 +66,10 @@ h2 {
    		#{list items:noPresentados, as:"documento"}
 			<p style='text-indent: 1em'> - ${documento.descripcion}</p>
 			#{if documento.motivoRequerimiento}
-				<p style='text-indent: 2em'> - Motivo Requerimiento: ${documento.motivoRequerimiento} </p>
+				<p style='text-indent: 2em'> - ${documento.motivoRequerimiento} </p>
 			#{/if}
 			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
-				<p style='text-indent: 2em'> - ${requerimiento.codigo}: ${requerimiento.descripcion} </p>
+				<p style='text-indent: 2em'> - ${requerimiento.descripcion} </p>
 			#{/list}
    		#{/list}
 	</div>
@@ -81,10 +81,10 @@ h2 {
    		#{list items:noValidos, as:"documento"}
 			<p style='text-indent: 1em'> - ${documento.descripcion}</p>
 			#{if documento.motivoRequerimiento}
-				<p style='text-indent: 2em'> - Motivo Requerimiento: ${documento.motivoRequerimiento} </p>
+				<p style='text-indent: 2em'> - ${documento.motivoRequerimiento} </p>
 			#{/if}
 			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
-				<p style='text-indent: 2em'> - ${requerimiento.codigo}: ${requerimiento.descripcion} </p>
+				<p style='text-indent: 2em'> - ${requerimiento.descripcion} </p>
 			#{/list}
    		#{/list}
 	</div>

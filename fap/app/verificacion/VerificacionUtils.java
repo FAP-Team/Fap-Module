@@ -89,7 +89,6 @@ public class VerificacionUtils {
 					vDoc.existe = false;
 					vDoc.uriTipoDocumento = tipoDoc.getUri();
 					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
-					System.out.println(tipoDoc.getUri());
 					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
 					if (existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.noProcede, verificacionesBefore, tipoDoc.getUri(), tramite.uri)
 						|| existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.valido, verificacionesBefore, tipoDoc.getUri(), tramite.uri)) {
@@ -131,12 +130,8 @@ public class VerificacionUtils {
 		
 		// Recorro todos los documentos no pertenecientes al trámite actual pero que se han aportado
 		for (Documento docAux: aux){
-			VerificacionDocumento vDoc = new VerificacionDocumento();
-			vDoc.existe = false;
-			vDoc.uriTipoDocumento = docAux.tipo;
-			//vDoc.identificadorMultiple = 
-			vDoc.uriDocumento = docAux.uri;
-			vDoc.descripcion = docAux.descripcion;
+			VerificacionDocumento vDoc = new VerificacionDocumento(docAux);
+			vDoc.existe = true;
 			vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
 			vDoc.save();
 			list.add(vDoc);

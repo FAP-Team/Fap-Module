@@ -207,7 +207,7 @@ Formulario Solicitud {
 		
 		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {
 			Form iniciarVerificacion {
-				Combo getTramitesCombo titulo="Seleccione el trámite" campo=SolicitudGenerica.verificacion.uriTramite
+				Combo getTramitesCombo titulo="Seleccione el trámite" campo=SolicitudGenerica.verificacion.uriTramite requerido
 				Wiki {"Si la solicitud está lista para iniciar la verificación, pulse el siguiente botón."}
 				Boton botonIniciarVerificacion titulo="Iniciar la verificación"
 			}

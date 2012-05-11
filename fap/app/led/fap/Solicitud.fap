@@ -408,7 +408,7 @@ Formulario Solicitud {
 		}
 	}
 	
-	Pagina Exclusion {
+	Pagina Exclusion noForm {
 		Tabla exclusion titulo="Codigos de Exclusión" campo=SolicitudGenerica.exclusion.codigos
 		popupVer=PopUpExclusion
 		popupCrear=PopUpExclusion
@@ -417,6 +417,10 @@ Formulario Solicitud {
 			Columna titulo="Código" campo=CodigoExclusion.codigo
 			Columna titulo="Descripción corta" campo=CodigoExclusion.tipoCodigo.descripcionCorta expandir
 		}
+		
+		Form finalizarExclusion {
+			Boton finalizarExclusionBoton titulo="Finalizar Exclusión"
+		} 
 	}
 	
 	Popup PopUpExclusion crear ver borrar campo=SolicitudGenerica.exclusion.codigos {

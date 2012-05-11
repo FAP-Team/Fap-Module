@@ -226,7 +226,6 @@ Formulario Solicitud {
 				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
 				Columna campo=Documento.fechaRegistro titulo="Fecha de Registro" ancho="100"
 				Columna campo=Documento.descripcion titulo="Tipo" expandir
-				Columna campo=Documento.verificado titulo="Verificado"
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
 			Form verificaTipos {
@@ -291,7 +290,6 @@ Formulario Solicitud {
 				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
 				Columna campo=Documento.fechaRegistro titulo="Fecha de Registro" ancho="100"
 				Columna campo=Documento.descripcion titulo="Tipo" expandir
-				Columna campo=Documento.verificado titulo="Verificado"
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
 			Form verificaTiposNuevosDoc {

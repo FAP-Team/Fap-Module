@@ -21,7 +21,7 @@
         };
         
         $(self).bind("change", function() {
-            $(".file").val($(self).val());
+            $(self).parent().parent().children($(".file")).val($(self).val());
         });
   
 	});

@@ -25,9 +25,9 @@ bc. public class miClase extends VerificacionFapController {
 
 En dicha clase nueva creada, deberan de sobreescribirse todos los métodos que permiten personalizar la documentación a verificar que por defecto trae el módulo FAP:
 
-_NOTA: Para llamar a los métodos que sobreescribamos deberemos llamarlos de la siguiente forma (si queremos llamar al getDocumentosCondicionadosAutomaticos, por ejemplo):_
+_NOTA: Para llamar a los métodos que sobreescribamos deberemos llamarlos de la siguiente forma (si queremos llamar al getDocumentosNoAportadosCondicionadosAutomaticos, por ejemplo):_
 
-**VerificacionFapController.invoke("getDocumentosCondicionadosAutomaticos", tramite.nombre, idSolicitud);**
+**VerificacionFapController.invoke("getDocumentosNoAportadosCondicionadosAutomaticos", tramite.nombre, idSolicitud);**
 
 h3. Lista de todos los documentos a verificar
 
@@ -51,15 +51,15 @@ Por defecto, el módulo FAP, setea a verificados todos los documentos de la list
 
 h3. Documentos Condicionados Automáticos propios de la aplicación para tener en cuenta en la verificación
 
-Existe una variedad de documentos que son depedientes de la aplicación que se desarrolla. Estos documentos son los Condicionados Automáticos, que dependerán totalmente de la aplicación y su lógica. Por ello, si se quieren tener en cuenta estos documentos, se deberá sobreescribir el método _getDocumentosCondicionadosAutomaticos_, que deberá devolver una lista de String, que contengan las Uri's (**sin la version**) de los documentos condicionados automáticos que se querrán tener en cuenta en la aplicación.
+Existe una variedad de documentos que son depedientes de la aplicación que se desarrolla. Estos documentos son los Condicionados Automáticos, que dependerán totalmente de la aplicación y su lógica. Por ello, si se quieren tener en cuenta estos documentos, se deberá sobreescribir el método _getDocumentosNoAportadosCondicionadosAutomaticos_, que deberá devolver una lista de String, que contengan las Uri's (**sin la version**) de los documentos condicionados automáticos que se querrán tener en cuenta en la aplicación. Estos documentos, deben ser documentos obligatorios automáticos no aportados por el solicitante.
 
 _NOTA: Existe un clase también de FAP (ObligatoriedadDocumentosFAP, dentro del paquete verificación), que puede ser utilizada para gestionar los documentos, y que posee un método para eliminar la versión de la uri del tipo de documento._
 
-bc. public static List<String> getDocumentosCondicionadosAutomaticos (String uriTramite, Long idSolicitud){
+bc. public static List<String> getDocumentosNoAportadosCondicionadosAutomaticos (String uriTramite, Long idSolicitud){
    ...
 }
 
-Por defecto, el módulo FAP, devuelve todos los documentos que sean Condicionados Automáticos del trámite que se esté evaluando en la verificación en cuestión.
+Por defecto, el módulo FAP, devuelve todos los documentos que sean Condicionados Automáticos del trámite que se esté evaluando en la verificación en cuestión. Es un comportamiento erróneo, pero es un comportamiento definido por defecto, para obligar a que cada aplicación se encargue de discernir que documentos obligatorios automáticos no ha aportado el solicitante.
 
 h2. Personalizar PDF Requerimiento
 

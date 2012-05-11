@@ -15,12 +15,21 @@ h2 {
 }
 
 .myarrow {
-	width: 0px;
-	height: 0px;
-	border-style: solid;
-	border-width: 6px 0 6px 10.4px;
-	border-color: transparent transparent transparent #000000;
+   line-height: 0%; width: 0px;
+   border-top: 4px solid  transparent;
+   border-bottom: 4px solid  transparent;
+   border-left: 6.9px solid black;
+   margin-top: 30px;
+   margin-left: 3em;
+   text-indent: 1em;
 }
+
+ul {
+   list-style-type:circle
+   margin-left: 4em;
+   text-indent: 4em;
+}
+
 </style>
 
 </head>
@@ -71,13 +80,15 @@ h2 {
 	<div id="divDocumentacionNoPresentada">
     	<h2>Documentos no presentados:</h2> 
    		#{list items:noPresentados, as:"documento"}
-			<p style='text-indent: 1em'  class="myarrow"> - ${documento.descripcion}</p>
+			<p  class="myarrow"> ${documento.descripcion}</p>
+			<ul>
 			#{if documento.motivoRequerimiento}
-				<p style='text-indent: 2em'> - ${documento.motivoRequerimiento} </p>
+				<li> ${documento.motivoRequerimiento} </li>
 			#{/if}
 			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
-				<p style='text-indent: 2em'> - ${requerimiento.descripcion} </p>
+				<li> ${requerimiento.descripcion} </li>
 			#{/list}
+			</ul>
    		#{/list}
 	</div>
 #{/if}
@@ -86,12 +97,12 @@ h2 {
 	<div id="divDocumentacionNoValida">
     	<h2>Documentos no válidos:</h2> 
    		#{list items:noValidos, as:"documento"}
-			<p style='text-indent: 1em' class="myarrow"> - ${documento.descripcion}</p>
+			<p class="myarrow"> ${documento.descripcion}</p>
 			#{if documento.motivoRequerimiento}
-				<p style='text-indent: 2em'> - ${documento.motivoRequerimiento} </p>
+				<p style='text-indent: 6em'> - ${documento.motivoRequerimiento} </p>
 			#{/if}
 			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
-				<p style='text-indent: 2em'> - ${requerimiento.descripcion} </p>
+				<p style='text-indent: 6em'> - ${requerimiento.descripcion} </p>
 			#{/list}
    		#{/list}
 	</div>

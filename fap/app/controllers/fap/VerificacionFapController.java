@@ -36,7 +36,7 @@ public class VerificacionFapController {
 			if ((doc.verificado == null) || (!doc.verificado))
 				nuevosDocumentos.add(doc);
 		}
-		if (((solicitud.verificacion.uriTramite != null) && (solicitud.verificacion.uriTramite.equals(FapProperties.get("fap.aed.procedimientos.tramite.uri")))) && ((solicitud.registro.oficial.verificado == null) || (!solicitud.registro.oficial.verificado))){
+		if ((solicitud.registro.oficial.uri != null) && ((solicitud.verificacion.uriTramite != null) && (solicitud.verificacion.uriTramite.equals(FapProperties.get("fap.aed.procedimientos.tramite.uri")))) && ((solicitud.registro.oficial.verificado == null) || (!solicitud.registro.oficial.verificado))){
 			nuevosDocumentos.add(solicitud.registro.oficial);
 		}
 		return nuevosDocumentos;
@@ -82,7 +82,7 @@ public class VerificacionFapController {
 	 * @return Lista con los tipos de documentos condicionados automaticos obligatorios de dicha aplicacion
 	 * @throws Throwable
 	 */
-	public static List<String> getDocumentosCondicionadosAutomaticos(String tramite, Long idSolicitud) throws Throwable  {
+	public static List<String> getDocumentosNoAportadosCondicionadosAutomaticos(String tramite, Long idSolicitud) throws Throwable  {
 		play.Logger.info("No hay ninguna llamada para calcular los documentos condicionados automaticos");
     	play.Logger.info("Se incluirán todos los documentos condicionados automáticos por defecto");
 		// Devolver todos los CONDICIONADOS AUTOMATICOS

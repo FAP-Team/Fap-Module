@@ -45,9 +45,9 @@ public class VerificacionUtils {
 		
 		List<TipoDocumentoEnTramite> listaTipos = TiposDocumentosClient.getTiposDocumentosAportadosCiudadano(tramite);
 		// Documentos condicionados automaticos obligatorios de la aplicacion en cuestion
-		List<String> docCondicionadosAutomaticos=new ArrayList<String>();
+		List<String> docCondicionadosAutomaticosNoAportados=new ArrayList<String>();
 		try {
-			docCondicionadosAutomaticos = VerificacionFapController.invoke("getDocumentosCondicionadosAutomaticos", tramite.nombre, idSolicitud);
+			docCondicionadosAutomaticosNoAportados = VerificacionFapController.invoke("getDocumentosNoAportadosCondicionadosAutomaticos", tramite.nombre, idSolicitud);
 		} catch (Throwable e) {
 			play.Logger.warn("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
 		}
@@ -60,7 +60,7 @@ public class VerificacionUtils {
 					vDoc.existe = true;
 					if (tipoDoc.getObligatoriedad() == ObligatoriedadEnum.CONDICIONADO_AUTOMATICO) {
 						// Comprobar si se tenía que añadir o no
-						if (docCondicionadosAutomaticos.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri())))
+						if (!docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri())))
 							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
 						else
 							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
@@ -114,7 +114,7 @@ public class VerificacionUtils {
 				if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
 					// Si el tipo de Documento está en la lista de los tipos de documentos obligatorios condicionados automaticos que obtenemos de la propia aplicacion
 					// Quitamos la uri del tipo de documento porque esta quitada en la lista de condicionados automaticos, por lo que se debe quitar para comparar
-					if (docCondicionadosAutomaticos.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()))){
+					if (!docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()))){
 						VerificacionDocumento vDoc = new VerificacionDocumento();
 						vDoc.existe = false;
 						vDoc.uriTipoDocumento = tipoDoc.getUri();

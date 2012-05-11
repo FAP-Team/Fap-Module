@@ -160,7 +160,7 @@ POST /Solicitud/aportacionrecibos/save AportacionRecibosController.save
 GET /Solicitud/exclusion ExclusionController.index
 
 GET /Solicitud/exclusion/exclusion ExclusionController.tablaexclusion
-POST /Solicitud/exclusion/save ExclusionController.save
+POST /Solicitud/exclusion/finalizarExclusion ExclusionController.finalizarExclusion
 GET /Solicitud/popupdocaportados/{idEntidad}/abrir popups.PopUpDocAportadosController.abrir
 POST /Solicitud/popupdocaportados/{idEntidad}/editar popups.PopUpDocAportadosController.editar
 POST /Solicitud/popupdocaportados/{idEntidad}/borrar popups.PopUpDocAportadosController.borrar

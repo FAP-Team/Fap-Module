@@ -110,42 +110,6 @@
 				}
 			    
 			}
-			// Para eliminar los valores duplicados que pueda haber en la lista de seleccion, si el usuario lo ha indicado en el .fap, 
-			// o por defecto para los Tipos de Documentos en la subida de archivos
-			if (eliminarDuplicados){
-				Set sinDuplicados = new LinkedHashSet(); // Hash Set pero ordenado por como se inserte en él
-				sinDuplicados.addAll(items.value);
-				List itemsCopia = new ArrayList();
-				itemsCopia.addAll(items);
-				items.clear();
-				for(recorre in sinDuplicados){
-					for(comprueba in itemsCopia){
-					   if(recorre.equals(comprueba.value)){
-					      items.add(comprueba);
-					      break;
-					   }
-					}
-				}
-			    
-			}
-			// Para eliminar los valores duplicados que pueda haber en la lista de seleccion, si el usuario lo ha indicado en el .fap, 
-			// o por defecto para los Tipos de Documentos en la subida de archivos
-			if (eliminarDuplicados){
-				Set sinDuplicados = new LinkedHashSet(); // Hash Set pero ordenado por como se inserte en él
-				sinDuplicados.addAll(items.value);
-				List itemsCopia = new ArrayList();
-				itemsCopia.addAll(items);
-				items.clear();
-				for(recorre in sinDuplicados){
-					for(comprueba in itemsCopia){
-					   if(recorre.equals(comprueba.value)){
-					      items.add(comprueba);
-					      break;
-					   }
-					}
-				}
-			    
-			}
 			// Ordenamos si se especifica
 			if (ordenar)
 				if (ordenarPorClave)
@@ -163,7 +127,6 @@
 					values.addAll(value);
 				}
 			}
-			
 		}%
 		
 		<select class="combo" data-placeholder="Seleccione..." id="${id}" name="${name}" #{if multiple} multiple #{/if} ${disabled} #{if style}style="${style}"#{/if}>
@@ -175,7 +138,7 @@
 				%{				
 					def clave = entry.key
 					def valor = entry.value
-					def selected = values.contains(clave)? 'selected="selected"' : ''
+					def selected = (values.contains(clave) || values.contains(clave.toString()))? 'selected="selected"' : ''
 				}%
 				<option value="${clave}" ${selected}>#{if mostrarClave}${clave} - #{/if}${valor}</option>
 			#{/list}

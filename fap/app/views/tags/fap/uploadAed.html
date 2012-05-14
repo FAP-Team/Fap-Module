@@ -8,7 +8,10 @@
 	def tipo = _tipo != null? _tipo : "tipo";
 	def campoTipo = "${campo}.${tipo}";
 	def campoDescripcion = campo + ".descripcion"
-	def comboId = field.id + "_tipo";
+	def comboId = id + "_tipo";
+	def oldComboId = field.id + "_tipo";
+	print "Antes: "+oldComboId;
+	print "SDSes: "+comboId;
 	def tipoDocumentoOtros = properties.FapProperties.get("fap.aed.tiposdocumentos.otros");
 	def upload = _upload != null? _upload : true
 	def download = _download != null? _download : false
@@ -30,7 +33,7 @@
 		}
 	}%
 
-	#{fap.combo id:comboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
+	#{fap.combo id:comboId, idOld:oldComboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
 	
 	#{fap.grupo visible:false, siCombo:comboId, siComboValue:[tipoDocumentoOtros], siComboReverse:true}
 		#{fap.texto campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}

@@ -4,6 +4,7 @@
 
 %{ 
 	def id = _id ?: field.id
+	def oldId = _oldId ?: field.id
 	def label = _titulo ?: play.i18n.Messages.get(field.name)
 	def value = _value ?: field.flashorvalue
 		
@@ -66,6 +67,9 @@
 			}else{
 				if (tags.ReflectionUtils.existsControllerMethod(id)){
 					items = tags.ReflectionUtils.callControllerMethodIfExists(id) // Devuelve null si no existe el método
+				} else if (tags.ReflectionUtils.existsControllerMethod(oldId)){
+					// Mantenemos la antigua llamada (por compatibilidad)
+					items = tags.ReflectionUtils.callControllerMethodIfExists(oldId) // Devuelve null si no existe el método
 				} else {
 					items = _itemsModificables.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")} // Devuelve lista vacia si no existe _itemsModificable
 				}

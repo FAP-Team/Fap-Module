@@ -3,7 +3,7 @@
 require:
     - play
     - fap-module -> fap 2.0
-    - fap -> guice 1.3
+    - fap-modules -> guice 1.3
     - play -> pdf 0.6
     - play -> less 0.9
     - play -> recaptcha 1.2
@@ -26,5 +26,5 @@ repositories:
         type: http
         artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
         contains:
-            - fap -> guice
+            - fap-modules -> guice
 

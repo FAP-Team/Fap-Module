@@ -231,7 +231,7 @@ vars
 	SolicitudGenerica solicitud
 when 
 	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
-	(solicitud.estado in ("iniciada", "enVerificacion", "requerida"))
+	(solicitud.estado in ("iniciada", "enVerificacion", "requerida", "excluido"))
 then 
 	grant
 
@@ -241,7 +241,7 @@ vars
 when
 	(action = "read") and 
 	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
-	(solicitud.estado in ("iniciada", "requerida", "requerida plazo vencido"))
+	(solicitud.estado in ("iniciada", "requerida", "requerida plazo vencido", "excluido"))
 then
 	grant	
 
@@ -432,14 +432,14 @@ when
 	(
 		(
 			(action = "read")
-			and (solicitud.estado = "enVerificacion")
+			and (solicitud.estado in ("enVerificacion", "excluido"))
 			and solicitud.verificacion.estado != null
 			and solicitud.verificacion.estado = "enVerificacion"
 		)
 		or
 		(
 			(action = "update") and
-			(solicitud.estado = "enVerificacion")
+			(solicitud.estado in ("enVerificacion", "excluido"))
 			and solicitud.verificacion.estado != null
 			and solicitud.verificacion.estado = "enVerificacion" 
 		)

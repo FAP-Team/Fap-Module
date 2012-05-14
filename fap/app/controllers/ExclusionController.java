@@ -1,27 +1,40 @@
 
-			package controllers;
+package controllers;
 
-			import java.util.List;
+import java.util.List;
 
+import messages.Messages;
 import models.Exclusion;
+import models.SolicitudGenerica;
 import models.TipoCodigoExclusion;
 import controllers.gen.ExclusionControllerGen;
+import enumerado.fap.gen.EstadosSolicitudEnum;
+
+public class ExclusionController extends ExclusionControllerGen {
+	public static void finalizarExclusion(Long idSolicitud) {
+		checkAuthenticity();
+
+		// Save code
+		if (permisofinalizarExclusion("update")
+				|| permisofinalizarExclusion("create")) {
+			SolicitudGenerica sol = getSolicitudGenerica(idSolicitud);
 			
-			public class ExclusionController extends ExclusionControllerGen {
-//				public static void tablaexclusion(Long idSolicitud, Long idEntidad){
-//					
-//					Long id = idSolicitud != null? idSolicitud : idEntidad;
-//					Exclusion exclusion = Exclusion.find("select solicitud.exclusion from SolicitudGenerica solicitud where solicitud.id=?", id ).first();
-//					//java.util.List<TipoCodigoExclusion> rows = TipoCodigoExclusion.find( "select tipoCodigoExclusion from 
-//					
-//					java.util.List<TipoCodigoExclusion> rows = exclusion.getCodigosExclusion();
-//					System.out.println("Rows: "+rows.size());
-//					
-//					List<TipoCodigoExclusion> rowsFiltered = rows; //Tabla sin permisos, no filtra
-//					
-//					tables.TableRenderResponse<TipoCodigoExclusion> response = new tables.TableRenderResponse<TipoCodigoExclusion>(rowsFiltered);
-//					renderJSON(response.toJSON("descripcionCorta", "codigo" ,"id"));
-//						
-//			}
+			if (!validation.hasErrors()) {
+				if (sol.exclusion.codigos.size() == 0) {
+					Messages.error("Debe asignar al menos un códio de exclusión a la Solicitud para excluirla");
+				}
 			}
-		
+
+			if (!validation.hasErrors()) {
+				Messages.ok("La Solicitud ha pasado al estado Excluido");
+				sol.estado = EstadosSolicitudEnum.excluido.name();
+				sol.save();
+			}
+		} else {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+		}
+
+		finalizarExclusionRender(idSolicitud);
+
+	}
+}

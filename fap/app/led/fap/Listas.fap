@@ -25,7 +25,30 @@ Lista tipoFirmaJuridica crearEnumerado {
 Lista estadosSolicitud crearEnumerado {
 	borrador: "Borrador"
 	iniciada: "Iniciada"
-	enVerificacion: "En Verificación"
+	desistido: "Desistido"
+    // ESTADOS ASOCIADOS A LA FASE DE INSTRUCCIÓN
+    enVerificacion: "En Verificación"
+    verificado: "Verificado"
+ 
+    // ESTADOS ASOCIADOS A LA FASE DE RESOLUCIÓN
+    concedidoRSLPROV: "Concedido RSL PROV"
+    denegadoRSLPROV: "Denegado RSL PROV"
+    excluido: "Excluido RSL PROV"
+    aceptadoRSLPROV: "Aceptado RSL PROV"
+    enVerifAceptadoRSLPROV: "En Verificacion Aceptado RSL PROV"
+    renunciadoRSLPROV: "Renunciado RSL PROV"
+    concedidoRSLDEF: "Concedido RSL DEF"
+    denegadoRSLDEF: "Denegado RSL DEF"
+    excluidoRSLDEF: "Excluido RSL DEF"
+    aceptadoRSLDEF: "Aceptado RSL DEF"
+    enVerifAceptadoRSLDEF: "En Verificacion Aceptado RSL DEF"
+    renunciadoRSLDEF: "Renunciado RSL DEF"
+ 
+    // ESTADOS ASOCIADOS A LA FASE DE EJECUCIÓN
+    concedido: "Concedido"
+    renunciadoEjecucion: "Renunciado Ejecucion"
+    listaEspera: "Lista Espera"
+    archivado: "Archivado"
 }
 
 // Lista que se creará a partir de la de estadosSolicitud, e indicará los

@@ -223,7 +223,7 @@ public class AedClient {
 	 * @throws AedExcepcion
 	 */
 	public static void actualizarTipoDescripcion(models.Documento documento) throws AedExcepcion {
-		actualizarTipoDescripcion(documento, false);
+		actualizarTipoDescripcion(documento, true);
 	}
 	
 	/**

@@ -10,8 +10,6 @@
 	def campoDescripcion = campo + ".descripcion"
 	def comboId = id + "_tipo";
 	def oldComboId = field.id + "_tipo";
-	print "Antes: "+oldComboId;
-	print "SDSes: "+comboId;
 	def tipoDocumentoOtros = properties.FapProperties.get("fap.aed.tiposdocumentos.otros");
 	def upload = _upload != null? _upload : true
 	def download = _download != null? _download : false

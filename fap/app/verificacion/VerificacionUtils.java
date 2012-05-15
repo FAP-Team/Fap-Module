@@ -112,18 +112,20 @@ public class VerificacionUtils {
 				} 
 				// Condicionado AUTOMATICO
 				if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
+					VerificacionDocumento vDoc = new VerificacionDocumento();
+					vDoc.existe = false;
+					vDoc.uriTipoDocumento = tipoDoc.getUri();
+					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
+					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
 					// Si el tipo de Documento está en la lista de los tipos de documentos obligatorios condicionados automaticos que obtenemos de la propia aplicacion
 					// Quitamos la uri del tipo de documento porque esta quitada en la lista de condicionados automaticos, por lo que se debe quitar para comparar
 					if (!docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()))){
-						VerificacionDocumento vDoc = new VerificacionDocumento();
-						vDoc.existe = false;
-						vDoc.uriTipoDocumento = tipoDoc.getUri();
-						vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
-						vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
 						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
-						vDoc.save();
-						list.add(vDoc);
+					} else {
+						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
 					}
+					vDoc.save();
+					list.add(vDoc);
 				}
 			}
 		}

@@ -97,13 +97,15 @@ ul {
 	<div id="divDocumentacionNoValida">
     	<h2>Documentos no válidos:</h2> 
    		#{list items:noValidos, as:"documento"}
-			<p class="myarrow"> ${documento.descripcion}</p>
+			<p  class="myarrow"> ${documento.descripcion}</p>
+			<ul>
 			#{if documento.motivoRequerimiento}
-				<p style='text-indent: 6em'> - ${documento.motivoRequerimiento} </p>
+				<li> ${documento.motivoRequerimiento} </li>
 			#{/if}
 			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
-				<p style='text-indent: 6em'> - ${requerimiento.descripcion} </p>
+				<li> ${requerimiento.descripcion} </li>
 			#{/list}
+			</ul>
    		#{/list}
 	</div>
 #{/if}

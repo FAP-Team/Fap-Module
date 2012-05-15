@@ -10,6 +10,7 @@ import security.Secure;
 import config.InjectorConfig;
 
 import models.TableKeyValue;
+import models.VisibilidadEstadoUsuario;
 
 public class DataBaseUtils {
 
@@ -17,7 +18,7 @@ public class DataBaseUtils {
 	
 	public static void updateEstadosSolicitudUsuario () {
 		java.util.List<TableKeyValue> rows = TableKeyValue.find( "select tableKeyValue from TableKeyValue tableKeyValue" ).fetch();
-
+		
 		Secure secure = InjectorConfig.getInjector().getInstance(Secure.class);
 		
 		Map<String, Long> ids = new HashMap<String, Long>();
@@ -37,8 +38,17 @@ public class DataBaseUtils {
 			if (!TableKeyValue.contains(USER_TABLE_NAME, tableKeyValue.key)) {
 				play.Logger.info("Creamos el estado \""+tableKeyValue.key+"\" para la visibilidad del estado del usuario");
 				TableKeyValue.setValue(USER_TABLE_NAME, tableKeyValue.key, tableKeyValue.key);
-			
 			}
+			
+			VisibilidadEstadoUsuario visibilidadEstado = VisibilidadEstadoUsuario.find( "select visibilidad from VisibilidadEstadoUsuario visibilidad where visibilidad.estadoInterno = ?", tableKeyValue.key).first();
+			if (visibilidadEstado == null) {
+				play.Logger.info("Creamos el estado visibilidad \""+tableKeyValue.key+"\" para la visibilidad del estado del usuario");
+				VisibilidadEstadoUsuario estado = new VisibilidadEstadoUsuario();
+				estado.estadoInterno = tableKeyValue.key;
+				estado.estadoUsuario = tableKeyValue.key;
+				estado.save();
+			}
+			
 		}
 	}
 }

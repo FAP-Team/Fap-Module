@@ -460,3 +460,8 @@ Entidad Tramite {
 	String nombre
 	OneToMany TipoDocumento documentos	
 }
+
+Entidad VisibilidadEstadoUsuario noAuditable{
+	String estadoInterno
+	String estadoUsuario
+}

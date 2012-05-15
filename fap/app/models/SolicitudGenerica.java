@@ -140,9 +140,11 @@ public class SolicitudGenerica extends FapModel {
 	}
 
 	public String getEstadoUsuario() {
-		if (!TableKeyValue.contains("estadosSolicitudUsuario", estado))
+		VisibilidadEstadoUsuario visibilidadEstado = VisibilidadEstadoUsuario.find("select visibilidad from VisibilidadEstadoUsuario visibilidad where visibilidad.estadoInterno = ?", estado).first();
+		if (visibilidadEstado == null) {
 			utils.DataBaseUtils.updateEstadosSolicitudUsuario();
-		return TableKeyValue.getValue("estadosSolicitudUsuario", estado);
+		}
+		return visibilidadEstado.estadoUsuario;
 	}
 
 	public String getEstadoValue() {

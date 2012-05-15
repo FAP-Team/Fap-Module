@@ -11,4 +11,6 @@ import controllers.gen.EstadosVisiblesControllerGen;
 
 public class EstadosVisiblesController extends EstadosVisiblesControllerGen {
 
+	
+	
 }

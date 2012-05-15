@@ -12,6 +12,8 @@ public class TablaDeTablasController extends TablaDeTablasControllerGen {
         TableKeyValue.deleteAll();
         TableKeyValueDependency.deleteAll();
         long count = TableKeyValue.loadFromFiles(false);
+        utils.DataBaseUtils.updateEstadosSolicitudUsuario();
+        
         Messages.ok("Se cargaron desde fichero " + count + " registros, para la tabla de tablas");
         count = TableKeyValueDependency.loadFromFiles(true);
         Messages.ok("Se cargaron desde fichero " + count + " registros, para la tabla de tablas de dependencias");

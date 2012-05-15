@@ -215,19 +215,18 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	}
     
     Pagina EstadosVisibles titulo="Visibilidad de Estados" {
-    	Tabla tabladeEstadosSolicitud titulo="Estados de la solicitud visibles para los usuarios" campo=TableKeyValue popupEditar=PopupVisibilidadDeSolicitudes permisoFilas=tableKeyOnlyEstadosSolicitudUsuario {
-	        Columna campo=TableKeyValue.key titulo="Estado Interno"
-	        Columna campo=TableKeyValue.value titulo="Estado Visible por el Usuario" expandir
+    	Tabla tabladeEstadosSolicitud titulo="Estados de la solicitud visibles para los usuarios" campo=VisibilidadEstadoUsuario popupEditar=PopupVisibilidadDeSolicitudes {
+	        Columna campo=VisibilidadEstadoUsuario.estadoInterno titulo="Estado Interno"
+	        Columna campo=VisibilidadEstadoUsuario.estadoUsuario titulo="Estado Visible por el Usuario" expandir
 	    }
     	
     }
     
-    Popup PopupVisibilidadDeSolicitudes campo=TableKeyValue {
+    Popup PopupVisibilidadDeSolicitudes campo=VisibilidadEstadoUsuario {
     	Grupo permiso=noEditable borde=false {
-	    	Texto campo=TableKeyValue.table titulo="Tabla"
-	    	Texto campo=TableKeyValue.key titulo="Estado Interno"
+	    	Texto campo=VisibilidadEstadoUsuario.estadoInterno titulo="Estado Interno"
 	    }
-	    Combo comboEstadoInterno campo=TableKeyValue.value titulo="Estado que ve el usuario" requerido
+	    Combo comboEstadoInterno campo=VisibilidadEstadoUsuario.estadoUsuario titulo="Estado que ve el usuario" requerido
 	}
 	
 	Pagina Codigos titulo="Códigos de Requerimientos y de Exclusión"{

@@ -189,21 +189,11 @@ Formulario Solicitud {
 	/***************************************************************************************************/
 	
 
-	Pagina Verificacion titulo="Verificación de la documentación" noForm {
-//		Grupo verificacionMensaje visible=false/*permiso=mensajeVerificacion*/ {
-//			Wiki {"
-//Nota: El requerimiento pendiente ha vencido su plazo, puede finalizar el requerimiento y empezar la verificación de las aportaciones hechas si procede.
-//				"}
-//		}
-//	Grupo reiniciaVerificacion {
-//		Form reiniciarVerificacion {
-//			Wiki { "Esto es momentáneo" }
-//			Grupo permiso=noEditable {
-//				Combo titulo="Estado Verificacion" campo=SolicitudGenerica.verificacion.estado
-//			}
-//			Boton resetVerificacion titulo="Reiniciar la verificacion"
-//		}
-//	}
+	Pagina Verificacion titulo="Verificación de la documentación" noForm  permiso=accederSiSolicituNoBorrador{
+		
+		Grupo datosEstadoSolicitud titulo="Estado de la Solicitud" permiso=noEditable{
+			Combo estado titulo="Estado" campo=SolicitudGenerica.estadoValue
+		}
 		
 		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {
 			Form iniciarVerificacion {
@@ -406,7 +396,7 @@ Formulario Solicitud {
 		}
 	}
 	
-	Pagina Exclusion noForm {
+	Pagina Exclusion noForm permiso=accederSiSolicituNoBorrador{
 		Tabla exclusion titulo="Codigos de Exclusión" campo=SolicitudGenerica.exclusion.codigos
 		popupVer=PopUpExclusion
 		popupCrear=PopUpExclusion

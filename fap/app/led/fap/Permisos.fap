@@ -231,7 +231,7 @@ vars
 	SolicitudGenerica solicitud
 when 
 	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
-	(solicitud.estado in ("iniciada", "enVerificacion", "requerida", "excluido"))
+	(solicitud.estado != "borrador")
 then 
 	grant
 
@@ -625,4 +625,13 @@ rule hayNuevaDocumentacionVerificacion
 when
 	agente.rolActivo != null
 then
+	grant
+	
+rule accederSiSolicituNoBorrador
+vars
+	SolicitudGenerica solicitud
+when 
+	(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
+	(solicitud.estado != "borrador")
+then 
 	grant

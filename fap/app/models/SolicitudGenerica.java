@@ -183,9 +183,11 @@ public class SolicitudGenerica extends Model {
 	}
 
 	public String getEstadoUsuario() {
-		if (!TableKeyValue.contains("estadosSolicitudUsuario", estado))
+		VisibilidadEstadoUsuario visEstado = VisibilidadEstadoUsuario.find("select estado from VisibilidadEstadoUsuario estado where estado.estadoInterno=?", estado).first();
+		if (visEstado == null) {
 			utils.DataBaseUtils.updateEstadosSolicitudUsuario();
-		return TableKeyValue.getValue("estadosSolicitudUsuario", estado);
+		}
+		return visEstado.estadoUsuario;
 	}
 	
 	public String getEstadoValue() {

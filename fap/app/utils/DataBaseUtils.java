@@ -10,6 +10,7 @@ import security.Secure;
 import config.InjectorConfig;
 
 import models.TableKeyValue;
+import models.VisibilidadEstadoUsuario;
 
 public class DataBaseUtils {
 
@@ -38,6 +39,15 @@ public class DataBaseUtils {
 				play.Logger.info("Creamos el estado \""+tableKeyValue.key+"\" para la visibilidad del estado del usuario");
 				TableKeyValue.setValue(USER_TABLE_NAME, tableKeyValue.key, tableKeyValue.key);
 			
+			}
+			// Actualizamos la entidad VisibilidadEstadosUsuario también
+			VisibilidadEstadoUsuario visib = VisibilidadEstadoUsuario.find("select estado from VisibilidadEstadoUsuario estado where estado.estadoInterno=?", tableKeyValue.key).first();
+			if (visib == null) {
+				VisibilidadEstadoUsuario newVis = new VisibilidadEstadoUsuario();
+				newVis.estadoInterno = tableKeyValue.key;
+				newVis.estadoUsuario = tableKeyValue.key;
+				newVis.save();
+				play.Logger.info("Se creo el estado de Visibilidad: "+newVis.estadoInterno);
 			}
 		}
 	}

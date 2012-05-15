@@ -6,6 +6,11 @@ Entidad TableKeyValue noAuditable{
 	String value column="v"
 }
 
+Entidad VisibilidadEstadoUsuario noAuditable {
+	String estadoInterno
+	String estadoUsuario
+}
+
 // Entidad de la que deberán extender las entidades únicas en la aplicación.
 // Es decir, una única entidad para toda la aplicación.
 Entidad Singleton superClass {

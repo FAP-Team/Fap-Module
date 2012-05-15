@@ -60,7 +60,7 @@ public class VerificacionFapController {
 				documentosVerificaciones.add(vDoc.uriDocumento);
 		}
 		for (Documento doc: solicitud.documentacion.documentos){
-			if ((doc.uri != null) && (!documentosVerificaciones.contains(doc.uri))){
+			if (doc.uri != null && !documentosVerificaciones.contains(doc.uri)){
 				return true;
 			}
 		}

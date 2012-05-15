@@ -422,8 +422,7 @@ Formulario Solicitud {
 	}
 	
 	Popup PopUpExclusion crear ver borrar campo=SolicitudGenerica.exclusion.codigos {
-		Wiki {"Prueba"}
-		
+
 		Combo descripcionCorta campo=CodigoExclusion.tipoCodigo.descripcionCorta titulo="Descripción Corta"
 		Grupo permiso=noEditable {
 			Texto codigo campo=CodigoExclusion.codigo titulo="Código"

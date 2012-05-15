@@ -51,14 +51,16 @@ public class VerificacionFapController {
 		Set documentosVerificaciones = new HashSet();
 		for (Verificacion verificacion: solicitud.verificaciones){
 			for (VerificacionDocumento vDoc: verificacion.documentos){
-				documentosVerificaciones.add(vDoc.uriDocumento);
+				if (vDoc.uriDocumento != null)
+					documentosVerificaciones.add(vDoc.uriDocumento);
 			}
 		}
 		for (VerificacionDocumento vDoc: solicitud.verificacion.documentos){
-			documentosVerificaciones.add(vDoc.uriDocumento);
+			if (vDoc.uriDocumento != null)
+				documentosVerificaciones.add(vDoc.uriDocumento);
 		}
 		for (Documento doc: solicitud.documentacion.documentos){
-			if (!documentosVerificaciones.contains(doc.uri)){
+			if ((doc.uri != null) && (!documentosVerificaciones.contains(doc.uri))){
 				return true;
 			}
 		}

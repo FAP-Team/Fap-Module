@@ -143,6 +143,7 @@ public class SolicitudGenerica extends FapModel {
 		VisibilidadEstadoUsuario visibilidadEstado = VisibilidadEstadoUsuario.find("select visibilidad from VisibilidadEstadoUsuario visibilidad where visibilidad.estadoInterno = ?", estado).first();
 		if (visibilidadEstado == null) {
 			utils.DataBaseUtils.updateEstadosSolicitudUsuario();
+			visibilidadEstado = VisibilidadEstadoUsuario.find("select visibilidad from VisibilidadEstadoUsuario visibilidad where visibilidad.estadoInterno = ?", estado).first();
 		}
 		return visibilidadEstado.estadoUsuario;
 	}

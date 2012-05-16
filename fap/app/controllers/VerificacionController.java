@@ -70,6 +70,13 @@ public class VerificacionController extends VerificacionControllerGen {
 	public static List<ComboItem> getTramitesCombo () {
 		List<ComboItem> result = new ArrayList<ComboItem>();
 		List<Tramite> lTrams = Tramite.findAll();
+		if (FapProperties.getBoolean("fap.verificacion.soloSolicitud")) {
+			String tramiteSolicitud = FapProperties.get("fap.aed.procedimientos.tramite.uri");
+			if (tramiteSolicitud != null && !tramiteSolicitud.trim().equals("")) {
+				result.add(new ComboItem(tramiteSolicitud, "Solicitud"));
+				return result;
+			}
+		}
 		for (Tramite t: lTrams) {
 			result.add(new ComboItem(t.uri, t.nombre));
 		}

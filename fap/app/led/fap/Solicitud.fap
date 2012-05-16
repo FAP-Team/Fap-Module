@@ -192,7 +192,7 @@ Formulario Solicitud {
 	Pagina Verificacion titulo="Verificación de la documentación" noForm  permiso=accederSiSolicituNoBorrador{
 		
 		Grupo datosEstadoSolicitud titulo="Estado de la Solicitud" permiso=noEditable{
-			Combo estado titulo="Estado" campo=SolicitudGenerica.estadoValue
+			Combo estadoSolicitud titulo="Estado" campo=SolicitudGenerica.estadoValue
 		}
 		
 		Grupo giniciarVerificacion titulo="Iniciar la verificación" permiso=iniciarVerificacion {

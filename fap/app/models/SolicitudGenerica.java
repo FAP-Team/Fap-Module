@@ -186,6 +186,7 @@ public class SolicitudGenerica extends Model {
 		VisibilidadEstadoUsuario visEstado = VisibilidadEstadoUsuario.find("select estado from VisibilidadEstadoUsuario estado where estado.estadoInterno=?", estado).first();
 		if (visEstado == null) {
 			utils.DataBaseUtils.updateEstadosSolicitudUsuario();
+			visEstado = VisibilidadEstadoUsuario.find("select visibilidad from VisibilidadEstadoUsuario visibilidad where visibilidad.estadoInterno = ?", estado).first();
 		}
 		return visEstado.estadoUsuario;
 	}

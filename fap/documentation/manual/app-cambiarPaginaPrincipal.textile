@@ -1,0 +1,20 @@
+h1. Cambiar la página principal de FAP
+
+h2. Descripción
+
+Por defecto, una aplicación de FAP tiene como página de inicio (la página que sale despues de loguearnos), una tabla que contiene la lista de solicitudes, que se mostrarán en función del rol que tenga el usuario que ve esa tabla.
+
+Si queremos modificar esa pagina inicial, y poner una confeccionada por nosotros mismos deberemos seguir una serie de pasos:
+
+* Primero deberemos de crear el DSL de la pagina que queramos que sea nuestra pagina de inicio
+* Después nos bastará con indicar en el fichero de rutas de nuestra Aplicación, que dicha página sea la de inicio para ello:
+** En el fichero ${PATH_APLICACION}app/conf/routes, la primera linea sin comentar nos indica cual será la página de inicio:
+** _GET        /                SolicitudesController.index_
+** Bastará con modificar dicha línea e indicar el controlador de la pagina que hemos creado mediante DSL, es decir, que si creamos una pagina en un *.fap como:
+
+bc. Pagina miPaginaInicial titulo="Pagina de Inicio"{
+   ...
+}
+
+** En el fichero de rutas deberemos sobreescribir la línea que explicamos anteriormente como:
+** _GET        /                miPaginaInicialController.index_

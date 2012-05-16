@@ -259,7 +259,8 @@ public class AedClient {
 			props.setUriTipoDocumento(documento.tipo);
 			
 			log.debug("Actualizando Propiedades Clasificado");
-			aed.actualizarDocumentoPropiedades(props, newUbicaciones);
+			documento.uri = aed.actualizarDocumentoPropiedades(props, newUbicaciones);
+			documento.save();
 		}else{
 			log.info("Actualizando tipo y descripción de un documento no clasificado");
 			log.debug("Obteniendo propiedades");

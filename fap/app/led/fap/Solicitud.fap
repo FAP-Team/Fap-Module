@@ -124,7 +124,7 @@ Formulario Solicitud {
 
 	/***************************************************************************************************/
 	
-	Pagina AccesoVerificaciones titulo="Verificaciones" noForm {
+	Pagina AccesoVerificaciones titulo="Verificaciones" noForm permiso=accederSiSolicituNoBorrador{
 		Grupo fantasma permiso=noVisible{
 			Tabla verificacionesFinalizadas titulo="Verificaciones Finalizadas" campo=SolicitudGenerica.verificaciones
 			popupVer=PopUpVerificacionVer

@@ -41,6 +41,7 @@ import es.gobcan.eadmon.aed.ws.AedPortType;
 import es.gobcan.eadmon.aed.ws.dominio.DocumentoEnUbicacion;
 import es.gobcan.eadmon.aed.ws.dominio.Expediente;
 import es.gobcan.eadmon.aed.ws.dominio.Ubicaciones;
+import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Contenido;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Documento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
@@ -609,6 +610,44 @@ public class AedClient {
 			listOut.add(p.getUri());
 		}
 		return listOut;
+	}
+	
+	public static void crearCarpetaTemporal(String carpetaTemporales) throws Exception{
+        if (carpetaTemporales.split("/").length != 2) throw new Exception("La carpeta de temporales no está debidamente configurada.");
+        //Si no existe la carpeta temporal del procedimiento, la creamos'(p.e Bonos)
+        if (!existeCarpetaTemporal(carpetaTemporales.split("/")[0])) {
+        	try {
+        		//Creamos la carpeta temporal del procedimiento
+        		aed.crearCarpetaNoClasificada("", carpetaTemporales.split("/")[0], null);
+              }catch (AedExcepcion e) {
+                    throw new Exception("COD. Error: " + e.getFaultInfo().getCodigoError()
+                         + " \n Descripcion: " + e.getFaultInfo().getDescripcion());
+              }
+        }
+
+        //Comprobamos si no existe la sub carpeta temporal del procedimiento (p.e. Bonos/C201101)
+        if (!existeCarpetaTemporal(carpetaTemporales)) {
+              try {
+                    aed.crearCarpetaNoClasificada(carpetaTemporales.split("/")[0], carpetaTemporales.split("/")[1], null);
+              } catch (AedExcepcion e) {
+                    // TODO: handle exception
+                    throw new Exception("COD. Error: " + e.getFaultInfo().getCodigoError()
+                               + " \n Descripcion: " + e.getFaultInfo().getDescripcion());
+              }
+        }
+  }
+
+
+	static boolean existeCarpetaTemporal(String ruta){
+        try {
+        	aed.obtenerCarpetasNoClasificadas(ruta);
+        } catch (AedExcepcion e) {
+        	play.Logger.info("COD. Error: " + e.getFaultInfo().getCodigoError()
+        			+ " \n Descripcion: " + e.getFaultInfo().getDescripcion());
+        	if (e.getFaultInfo().getCodigoError()==CodigoErrorEnum.CARPETA_NO_EXISTE)
+        		return false;
+        }
+        return true;
 	}
 	
 }

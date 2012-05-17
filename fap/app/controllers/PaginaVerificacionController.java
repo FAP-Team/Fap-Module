@@ -12,6 +12,7 @@ import verificacion.VerificacionUtils;
 import messages.Messages;
 import models.Documento;
 import models.SolicitudGenerica;
+import models.TipoDocumento;
 import models.Tramite;
 import models.Verificacion;
 import models.VerificacionDocumento;
@@ -143,6 +144,8 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			for (Documento doc: dbSolicitud.verificacionEnCurso.nuevosDocumentos){
 				VerificacionDocumento vDoc= new VerificacionDocumento(doc);
+				TipoDocumento tipo = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.tramitePertenece=? and tipo.uri=?", dbSolicitud.verificacionEnCurso.uriTramite, doc.tipo).first();
+				vDoc.identificadorMultiple = tipo.cardinalidad;
 				vDoc.existe = true;
 				vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
 				vDoc.save();

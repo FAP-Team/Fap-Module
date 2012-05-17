@@ -119,7 +119,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	
 	Pagina AccesoVerificaciones titulo="Verificaciones" noForm {
 		Tabla verificaciones titulo="Verificaciones" campo=SolicitudGenerica.verificaciones
-			pagina=PaginaVerificacionesAnteriores
+			paginaLeer=PaginaVerificacionesAnteriores
 		{
 				Columna titulo="Expediente" campo=Verificacion.expediente ancho="150"
 				Columna titulo="Motivo Exclusión" campo=Verificacion.requerimiento.motivo ancho="150" 
@@ -148,7 +148,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	Pagina PaginaVerificacion titulo="Verificación" campo=SolicitudGenerica.verificacionEnCurso noForm permiso=accederSiSolicituNoBorrador{
 		Grupo datosVerificacion titulo="Datos generales de la verificación" permiso=noEditable{
 			Texto expediente titulo="Expediente" campo=Verificacion.expediente
-			Combo estadoS titulo="Estado Solicitud" campo=SolicitudGenerica.estado
+			Combo estadoS titulo="Estado Solicitud" campo=SolicitudGenerica.estadoValue
 			Texto motivoReq titulo="Motivo Requerimiento" campo=Verificacion.requerimiento.motivo
 			Fecha fechaCreacion titulo="Fecha Creación" campo=Verificacion.fechaCreacion
 			Fecha fechaActualizacion titulo="Fecha Actualizacion" campo=Verificacion.fechaUltimaActualizacion
@@ -188,7 +188,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				Enlace campo=SolicitudGenerica.registro.justificante.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="btn"
 			}	
 		
-			Tabla verificacionDocumentos titulo="Documentación" campo=Verificacion.documentos
+			Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacionEnCurso.documentos
 				paginaLeer=PaginaDocumentoVerificacionLeer 
 				paginaEditar=PaginaDocumentoVerificacionEditar 
 			{

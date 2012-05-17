@@ -37,7 +37,7 @@ public class PopUpDocumentoRequerimientosVerificacionEditarController extends Po
 		renderTemplate("fap/Verificacion/PopUpDocumentoRequerimientosVerificacionModificar.html", accion, idVerificacionDocumento, idCodigoRequerimiento, verificacionDocumento, codigoRequerimiento);
 	}
 	
-	public static List<ComboItem> codigo() {
+	public static List<ComboItem> descripcionCorta() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
 		Map <String, Long> parametrosUrl = (Map<String, Long>)tags.TagMapStack.top("idParams");
 		VerificacionDocumento doc = VerificacionDocumento.findById(parametrosUrl.get("idVerificacionDocumento"));
@@ -50,7 +50,7 @@ public class PopUpDocumentoRequerimientosVerificacionEditarController extends Po
 		List <TiposCodigoRequerimiento> tiposCodReq = TiposCodigoRequerimiento.find("select tcr from TiposCodigoRequerimiento tcr where tcr.uriTipoDocumento=? and tcr.uriTramite=?", doc.uriTipoDocumento, sol.verificacionEnCurso.uriTramite).fetch();
 		List <CodigoRequerimiento> codigosRequerimiento = utils.ModelUtils.getListCodigoRequerimientoFromTiposCodigoRequerimiento(tiposCodReq);
 		for (CodigoRequerimiento codigo: codigosRequerimiento){
-			result.add(new ComboItem(codigo.codigo, codigo.codigo));
+			result.add(new ComboItem(codigo.descripcionCorta, codigo.descripcionCorta));
 		}
 		return result;
 	}
@@ -73,9 +73,9 @@ public class PopUpDocumentoRequerimientosVerificacionEditarController extends Po
 		}
 		if (!Messages.hasErrors()) {
 			Verificacion verificacion = Verificacion.find("select verificacion from Verificacion verificacion inner join verificacion.documentos vDoc where vDoc.id=?", idVerificacionDocumento).first();
-			TiposCodigoRequerimiento tipoCodReq = TiposCodigoRequerimiento.find("select tipoCodReq from TiposCodigoRequerimiento tipoCodReq where (tipoCodReq.codigo=? and tipoCodReq.uriTramite=? and tipoCodReq.uriTipoDocumento=?)", codigoRequerimiento.codigo, verificacion.uriTramite, verificacionDocumento.uriTipoDocumento).first();
+			TiposCodigoRequerimiento tipoCodReq = TiposCodigoRequerimiento.find("select tipoCodReq from TiposCodigoRequerimiento tipoCodReq where (tipoCodReq.descripcionCorta=? and tipoCodReq.uriTramite=? and tipoCodReq.uriTipoDocumento=?)", codigoRequerimiento.descripcionCorta, verificacion.uriTramite, verificacionDocumento.uriTipoDocumento).first();
 			dbCodigoRequerimiento.descripcion = tipoCodReq.descripcion;
-			dbCodigoRequerimiento.descripcionCorta = tipoCodReq.descripcionCorta;
+			dbCodigoRequerimiento.codigo = tipoCodReq.codigo;
 			dbCodigoRequerimiento.save();
 			log.info("Acción Editar de página: " + "gen/popups/PopUpDocumentoRequerimientosVerificacionEditar.html" + " , intentada con éxito");
 		} else
@@ -103,9 +103,9 @@ public class PopUpDocumentoRequerimientosVerificacionEditarController extends Po
 		Long idCodigoRequerimiento = null;
 		if (!Messages.hasErrors()) {
 			Verificacion verificacion = Verificacion.find("select verificacion from Verificacion verificacion inner join verificacion.documentos vDoc where vDoc.id=?", idVerificacionDocumento).first();
-			TiposCodigoRequerimiento tipoCodReq = TiposCodigoRequerimiento.find("select tipoCodReq from TiposCodigoRequerimiento tipoCodReq where (tipoCodReq.codigo=? and tipoCodReq.uriTramite=? and tipoCodReq.uriTipoDocumento=?)", codigoRequerimiento.codigo, verificacion.uriTramite, dbVerificacionDocumento.uriTipoDocumento).first();
+			TiposCodigoRequerimiento tipoCodReq = TiposCodigoRequerimiento.find("select tipoCodReq from TiposCodigoRequerimiento tipoCodReq where (tipoCodReq.descripcionCorta=? and tipoCodReq.uriTramite=? and tipoCodReq.uriTipoDocumento=?)", codigoRequerimiento.descripcionCorta, verificacion.uriTramite, dbVerificacionDocumento.uriTipoDocumento).first();
 			dbCodigoRequerimiento.descripcion = tipoCodReq.descripcion;
-			dbCodigoRequerimiento.descripcionCorta = tipoCodReq.descripcionCorta;
+			dbCodigoRequerimiento.codigo = tipoCodReq.codigo;
 			dbCodigoRequerimiento.save();
 			idCodigoRequerimiento = dbCodigoRequerimiento.id;
 			dbVerificacionDocumento.codigosRequerimiento.add(dbCodigoRequerimiento);

@@ -358,6 +358,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tramite.uri = "fs://";
 
         TipoDocumento tipo = newTipoDocumento("FileSystem1","fs://type1/v01");
+        tipo.cardinalidad = "UNICO";
+        tipo.tramitePertenece=tramite.uri;
         tramite.documentos.add(tipo);
         TiposCodigoRequerimiento tipoCodReqdb = new TiposCodigoRequerimiento();
 		tipoCodReqdb.codigo = "CodigoReq1";
@@ -375,6 +377,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		tipoCodReqdb2.save();
         
 		TipoDocumento tipo2 = newTipoDocumento("FileSystem2", "fs://type2/v01");
+		tipo2.cardinalidad = "MULTIPLE";
+		tipo2.tramitePertenece=tramite.uri;
         tramite.documentos.add(tipo2);
         TiposCodigoRequerimiento tipoCodReqdb3 = new TiposCodigoRequerimiento();
 		tipoCodReqdb3.codigo = "CodigoReq1";
@@ -385,6 +389,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		tipoCodReqdb3.save();
 		
 		TipoDocumento tipo3 = newTipoDocumento("FileSystem3", "fs://type3/v01");
+		tipo3.cardinalidad = "UNICO";
+		tipo3.tramitePertenece=tramite.uri;
         tramite.documentos.add(tipo3);
         TiposCodigoRequerimiento tipoCodReqdb4 = new TiposCodigoRequerimiento();
 		tipoCodReqdb4.codigo = "CodigoReq1";
@@ -409,6 +415,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		tipoCodReqdb6.save();
 		
 		TipoDocumento tipo4=newTipoDocumento("Otros", propertyPlaceholder.get("fap.aed.tiposdocumentos.otros"));
+		tipo4.cardinalidad = "UNICO";
+		tipo4.tramitePertenece=tramite.uri;
         tramite.documentos.add(tipo4);
         TiposCodigoRequerimiento tipoCodReqdb7 = new TiposCodigoRequerimiento();
 		tipoCodReqdb7.codigo = "CodigoReq1";

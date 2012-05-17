@@ -24,6 +24,7 @@ import models.Agente;
 import models.Documento;
 import models.Firmante;
 import models.SolicitudGenerica;
+import models.TipoDocumento;
 import models.Tramite;
 import models.Verificacion;
 import models.VerificacionDocumento;
@@ -174,7 +175,8 @@ public class VerificacionController extends VerificacionControllerGen {
 			for (Documento doc: dbSolicitud.verificacion.nuevosDocumentos){
 				VerificacionDocumento vDoc= new VerificacionDocumento(doc);
 				vDoc.existe = true;
-				//vDoc.identificadorMultiple = 
+				TipoDocumento tipo = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.tramitePertenece=? and tipo.uri=?", dbSolicitud.verificacion.uriTramite, doc.tipo).first();
+				vDoc.identificadorMultiple = tipo.cardinalidad;
 				vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
 				vDoc.save();
 				dbSolicitud.verificacion.documentos.add(vDoc);

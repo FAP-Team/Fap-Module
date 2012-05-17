@@ -1,0 +1,75 @@
+h1. Verificación de Documentación FAP
+
+El módulo FAP, tiene una serie de páginas y popups que integran la funcionalidad de verificar la documentación de una determinada solicitud en un determinado trámite.
+
+Las verificaciones pueden ser múltiples y estaran asociadas a la solicitud. Simultáneamente sólo se podrá llevar a cabo una única verificación, no pudiendo empezar una nueva hasta que se haya dado por finalizada la que está actualmente en curso. El proceso de verificación puede concluir satisfactoriamente, o insatisfactoriamente en cuyo caso se generará un requerimiento.
+
+Matizar que para poder utilizarla en las aplicaciones que se desarrollen en FAP, simplemente habrá que instanciar a la Página FAP: 'AccesoVerificaciones'. Nombrandola en la parte del .fap, que se quiera, ya tendremos acceso a todo lo concerniente a ello. 
+Por ejemplo, estoy creando una aplicación FAP y deseo utilizar la parte de Verificación de Documentación del módulo FAP. En el Solicitud.fap, por ejemplo, de mi aplicación, podría poner un Enlace en el menú como sigue:
+
+bc. Grupo "Instruccion" permiso=instruccion {
+	...
+	Enlace "Verificacion" permiso=noUsuario pagina=Solicitud.AccesoVerificaciones
+	...
+}
+
+Con esto simplemente, ya tendremos acceso a toda la parte de Verificación. No obstante, si se quiere personalizar la documentación a verificar, se tiene que sobreescribir una serie de métodos, entre otras cosas, si se quiere un comportamiento especial propio de una determinada aplicación.
+
+h2. Deseo cambiar el comportamiento por defecto de los documentos a verificar ... ¿Qué métodos debo sobreescribir?
+
+Se deberá crear una clase propia en la aplicación que extienda de VerificacionFapController, que es una clase que está implementada en el módulo FAP:
+
+bc. public class miClase extends VerificacionFapController {
+   ...
+}
+
+En dicha clase nueva creada, deberan de sobreescribirse todos los métodos que permiten personalizar la documentación a verificar que por defecto trae el módulo FAP:
+
+_NOTA: Para llamar a los métodos que sobreescribamos deberemos llamarlos de la siguiente forma (si queremos llamar al getDocumentosNoAportadosCondicionadosAutomaticos, por ejemplo):_
+
+**VerificacionFapController.invoke("getDocumentosNoAportadosCondicionadosAutomaticos", tramite.nombre, idSolicitud);**
+
+h3. Lista de todos los documentos a verificar
+
+Si se quiere indicar que documentos se deben verificar, se deberá sobreescribir la función siguiente (_getNuevosDocumentosVerificar_) que deberá devolver una lista de Documentos con todos aquellos Documentos que se quieran tener en cuenta para su verificación.
+
+bc. public static List<Documento> getNuevosDocumentosVerificar(Long idVerificacion, Long idSolicitud){
+   ...
+}
+
+Por defecto, el módulo FAP, verificará todos los documentos que se encuentren en _solicitud.documentacion.documentos_ y en caso de que se esté verificando en el trámite _Trámite_, se añadirá a esa lista el _solicitud.registro.oficial_, que es el documento generado al presentar una solicitud.
+
+h3. Marcar como verificados una serie de Documentos
+
+Cuando se finalice una verificación, se deberá de marcar como verificados los documentos que se han verificado en dicha verificación. Para ello, puede ser que una determinada aplicación quiera marcar determinados documentos como verificados, por lo que se permite sobreescribir el método que setea que un determinado documento se da como verificado.
+
+bc. public static void setDocumentosVerificados(Long idVerificacion, List<Documento> documentos, Long idSolicitud){
+   ...
+}
+
+Por defecto, el módulo FAP, setea a verificados todos los documentos de la lista pasada como parámetros a dicha función, por lo que dichos documentos ya se consideraran como verificados en verificaciones posteriores
+
+h3. Documentos Condicionados Automáticos propios de la aplicación para tener en cuenta en la verificación
+
+Existe una variedad de documentos que son depedientes de la aplicación que se desarrolla. Estos documentos son los Condicionados Automáticos, que dependerán totalmente de la aplicación y su lógica. Por ello, si se quieren tener en cuenta estos documentos, se deberá sobreescribir el método _getDocumentosNoAportadosCondicionadosAutomaticos_, que deberá devolver una lista de String, que contengan las Uri's (**sin la version**) de los documentos condicionados automáticos que se querrán tener en cuenta en la aplicación. Estos documentos, deben ser documentos obligatorios automáticos no aportados por el solicitante.
+
+_NOTA: Existe un clase también de FAP (ObligatoriedadDocumentosFAP, dentro del paquete verificación), que puede ser utilizada para gestionar los documentos, y que posee un método para eliminar la versión de la uri del tipo de documento._
+
+bc. public static List<String> getDocumentosNoAportadosCondicionadosAutomaticos (String uriTramite, Long idSolicitud){
+   ...
+}
+
+Por defecto, el módulo FAP, devuelve todos los documentos que sean Condicionados Automáticos del trámite que se esté evaluando en la verificación en cuestión. Es un comportamiento erróneo, pero es un comportamiento definido por defecto, para obligar a que cada aplicación se encargue de discernir que documentos obligatorios automáticos no ha aportado el solicitante.
+
+h2. Personalizar PDF Requerimiento
+
+Para cada requerimiento, se generá su PDF correspondiente (tanto el borrador como el oficial) que seguirá el formato y estructura del .html _borradorRequerimiento_ que está en el modulo fap (app/views/reports).
+
+Dicho PDF, se compone de dos partes. La primera es propia de la aplicación ya que deberá contener los datos del solicitante y demás formalismos. Como esto es dependiente de cada solicitud y de cada trámite, y no generalizable, se debe sobreescribir la plantilla asociada a esa cabecera. La plantilla se debe crear en (app/views/reports/) de cada aplicación y indicarle en ella todo aquello que queramos que aparezca en el PDF del requerimiento.
+El nombre de la plantilla estará formado por _requerimiento-_*_XXXX_* donde *XXXX* sera el texto que case a partir de la URI del trámite de la verificación y con la expresión regular (en formato String) que devuelve una función que se deberá sobreescribir en la clase Gestor Documental que utilicemos. Dicha función se denomina _getExpReg()_ y simplemente debe devolver un String con la expresión regular que queramos utilizar para capturar en la URI del trámite asociado a la verificación el texto identificativo del nombre de la cabecera del PDF.
+
+La segunda parte, se encarga de confeccionarla el módulo FAP, y simplemente va listando las causas de requerimientos, así como los documentos que tienen algun defecto y cuales fueron sus motivos de requerimientos.
+
+El PDF tendrá un aspecto como vemos en la imagen:
+
+!images/app-verifPDF!

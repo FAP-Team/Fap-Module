@@ -1,0 +1,60 @@
+%{
+	models.SolicitudGenerica solicitud = models.Solicitud.findById(idSolicitud);
+	List<models.TipoCodigoExclusion> codigos = models.TipoCodigoExclusion.find("select tce from TipoCodigoExclusion tce").fetch();
+	tags.JSMap codigo = new tags.JSMap();
+    tags.JSMap descripcionLarga = new tags.JSMap();
+       for (models.TiposCodigoRequerimiento cod: codigos){
+               codigo.put(cod.descripcionCorta, cod.codigo);
+               descripcionLarga.put(cod.descripcionCorta, cod.descripcion);
+       }
+    
+%}
+
+
+#{fap.popup 
+     accion:accion, 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     popup:'PopUpExclusion', 
+     titulo:'PopUpExclusion', 
+     urlBorrar:play.mvc.Router.reverse('popups.PopUpExclusionController.borrar' , ['idSolicitud':solicitud?.id, 'idCodigoExclusion':codigoExclusion?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.PopUpExclusionController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('popups.PopUpExclusionController.editar' , ['idSolicitud':solicitud?.id, 'idCodigoExclusion':codigoExclusion?.id])
+}
+	
+			#{fap.combo campo:'codigoExclusion.tipoCodigo.descripcionCorta', id:'descripcionCorta', titulo:'Descripción Corta' /}		
+		
+			#{fap.grupo permiso:'noEditable'}
+				
+			#{fap.texto campo:'codigoExclusion.codigo', id:'codigo', titulo:'Código' /}		
+		
+			#{fap.areaTexto campo:'codigoExclusion.tipoCodigo.descripcion', id:'descripcion', titulo:'Descripcion' /}		
+		
+			#{/fap.grupo}
+			
+			<input type="hidden" id="codigoHidden" name="codigoExclusion.codigo" />
+		
+#{/fap.popup}
+
+<script>
+	var codigo = #{fap.toJSMap codigo/};
+	var descripcionLarga = #{fap.toJSMap descripcionLarga/};
+
+	var $combo = $('#descripcionCorta');
+
+	function change(){
+		if ($.trim($combo.val()) == "") {
+			$('#codigo').val("");
+			$('#codigoHidden').val("");
+			$('#descripcion').val("");
+		} else {
+			$('#codigo').val($.trim(codigo[$combo.val()]));
+			$('#codigoHidden').val($.trim(codigo[$combo.val()]));
+			$('#descripcion').val($.trim(descripcionLarga[$combo.val()]));
+		}
+    };
+	
+    change();
+	$combo.change(change);
+</script>
+		

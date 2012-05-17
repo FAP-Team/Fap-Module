@@ -38,7 +38,7 @@ public class SecureFap extends Secure {
 		if (solicitud == null)
 			return new ResultadoPermiso(Accion.Denegar);
 		
-		List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevosVerificacionTipos(solicitud.verificacionEnCurso, solicitud.verificaciones, solicitud.documentacion.documentos);
+		List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevosVerificacionTipos(solicitud.verificacionEnCurso, solicitud.verificaciones, solicitud.documentacion.documentos, solicitud.id);
 		if ((documentosNuevos.isEmpty()) || (solicitud.verificacionEnCurso.estado.equals(EstadosVerificacionEnum.enVerificacionNuevosDoc.name())) || (solicitud.verificacionEnCurso.estado.equals(EstadosVerificacionEnum.iniciada.name())))
 			return new ResultadoPermiso(Accion.Denegar);
 		return new ResultadoPermiso(Accion.All);
@@ -49,7 +49,7 @@ public class SecureFap extends Secure {
 		if (solicitud == null)
 			return new ResultadoPermiso(Accion.Denegar);
 		
-		List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevosVerificacionTipos(solicitud.verificacionEnCurso, solicitud.verificaciones, solicitud.documentacion.documentos);
+		List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevosVerificacionTipos(solicitud.verificacionEnCurso, solicitud.verificaciones, solicitud.documentacion.documentos, solicitud.id);
 		if ((documentosNuevos.isEmpty()) || (solicitud.verificacionEnCurso.estado.equals(EstadosVerificacionEnum.enVerificacionNuevosDoc.name())) || (solicitud.verificacionEnCurso.estado.equals(EstadosVerificacionEnum.iniciada.name())))
 			return new ResultadoPermiso(Accion.Denegar);
 		return new ResultadoPermiso(Accion.All);

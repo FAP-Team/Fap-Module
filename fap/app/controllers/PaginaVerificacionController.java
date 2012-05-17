@@ -3,7 +3,7 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import reports.Report;
 import org.joda.time.DateTime;
 
 import tags.ComboItem;
@@ -31,7 +31,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			Messages.fatal("No tiene suficientes privilegios para acceder a esta solicitud");
 			renderTemplate("gen/PaginaVerificacion/PaginaVerificacion.html");
 		}
-
+		
 		SolicitudGenerica solicitud = PaginaVerificacionController.getSolicitudGenerica(idSolicitud);
 
 		Verificacion verificacion = null;
@@ -78,7 +78,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		if (!Messages.hasErrors()) {
 			dbVerificacion.estado = EstadosVerificacionEnum.verificandoTipos.name();
 			dbVerificacion.fechaUltimaActualizacion = new DateTime();
-			dbVerificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbVerificacion);
+			dbVerificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbVerificacion, idSolicitud);
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			dbSolicitud.estado=EstadosSolicitudEnum.enVerificacion.name();
 			dbVerificacion.save();
@@ -113,7 +113,11 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			
-			dbSolicitud.verificacionEnCurso.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos(VerificacionFapController.getNuevosDocumentosVerificar(dbSolicitud.verificacionEnCurso.id), dbSolicitud.verificacionEnCurso.uriTramite, dbSolicitud.verificaciones);
+			try {
+				dbSolicitud.verificacionEnCurso.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos((List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", dbSolicitud.verificacionEnCurso.id, idSolicitud), dbSolicitud.verificacionEnCurso.uriTramite, dbSolicitud.verificaciones, idSolicitud);
+			} catch (Throwable e) {
+				play.Logger.error("Error recuperando los documentos nuevos a verificar", e.getMessage());
+			}
 
 			dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.enVerificacion.name();
 			dbSolicitud.verificacionEnCurso.nuevosDocumentos.clear();
@@ -165,12 +169,12 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		}
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-			List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacionEnCurso);
+			List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacionEnCurso, idSolicitud);
 			// Compruebo que no existen documentos nuevos aportados por el solicitante y que no esten incluidos en la verificacion actual
 			if (!documentosNuevos.isEmpty()){
 				dbSolicitud.verificacionEnCurso.nuevosDocumentos.addAll(documentosNuevos);
 				dbSolicitud.verificacionEnCurso.estado=EstadosVerificacionEnum.enVerificacionNuevosDoc.name();
-				dbSolicitud.verificacionEnCurso.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacionEnCurso);
+				dbSolicitud.verificacionEnCurso.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacionEnCurso, idSolicitud);
 				dbSolicitud.save();
 				Messages.info("Nuevos documentos aportados por el solicitante añadidos a la verificación actual. Verifique los tipos de estos documentos para proseguir con la verificación en curso.");
 			}
@@ -180,5 +184,29 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		PaginaVerificacionController.nuevosDocumentosRender(idSolicitud, idVerificacion);
 	}
 	
+	public static void gnuevoRequerimientoBorradorPreliminar(Long idSolicitud, Long idVerificacion, String obtenerBorradorPreliminar) {
+		checkAuthenticity();
+		if (!permisoGnuevoRequerimientoBorradorPreliminar("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.gnuevoRequerimientoBorradorPreliminarValidateRules();
+		}
+		if (!Messages.hasErrors()) {
+			try {
+				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+				new Report("reports/borradorRequerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(dbSolicitud);
+			} catch (Exception e) {
+				play.Logger.error("Error generando el borrador", e.getMessage());
+				Messages.error("Error generando el borrador");
+			} catch (Throwable e) {
+				play.Logger.error("Error generando el borrador", e.getMessage());
+				Messages.error("Error generando el borrador");
+			}
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
+		PaginaVerificacionController.gnuevoRequerimientoBorradorPreliminarRender(idSolicitud, idVerificacion);
+	}
 
 }

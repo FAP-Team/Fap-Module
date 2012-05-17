@@ -9,6 +9,7 @@
 	def campoTipo = "${campo}.tipo";
 	def campoDescripcion = campo + ".descripcion"
 	def comboId = field.id + "_tipo";
+	def oldComboId = field.id + "_tipo";
 	def tipoDocumentoOtros = properties.FapProperties.get("fap.aed.tiposdocumentos.otros");
 	def upload = _upload != null? _upload : true
 	def download = _download != null? _download : false
@@ -30,10 +31,10 @@
 		}
 	}%
 
-	#{fap.combo id:comboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
+	#{fap.combo id:comboId, idOld:oldComboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
 	
 	#{fap.grupo borde:false, siCombo:comboId, siComboValue:[tipoDocumentoOtros], siComboReverse:true}
-		#{fap.texto campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
+		#{fap.texto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
 	#{/fap.grupo}
 	
 	#{if upload}
@@ -42,7 +43,7 @@
 	
 	#{if download}
 		<div class="control-group">
-			<a href="${field.value.urlDescarga}" class="btn">Descargar documento desde el AED</a>
+			<a href="${field.value.urlDescarga}" target="_blank" class="btn">Descargar documento desde el AED</a>
 		</div>
 	#{/if}
 	

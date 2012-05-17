@@ -258,7 +258,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
      */
     @Override
     public void updateDocumento(Documento documento) throws GestorDocumentalServiceException {
-        //No es necesario realizar ninguna operación
+        documento.actualizaDescripcion();
     }
 
     /**
@@ -502,11 +502,23 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		List <es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento> tdList = new ArrayList<es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento>();
 		es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento td = new es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento();
 		td.setUri("fs://type1/v01");
-		td.setDescripcion("Descripcion Falsa 1");
+		td.setDescripcion("FileSystem FileSystem 1");
 		td.setVersion(1);
 		td.setEtiqueta("Etiqueta1");
 		tdList.add(td);
+		es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento td2 = new es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento();
+		td2.setUri("fs://type2/v01");
+		td2.setDescripcion("FileSystem FileSystem 2");
+		td2.setVersion(1);
+		td2.setEtiqueta("Etiqueta2");
+		tdList.add(td2);
 		return tdList;
+	}
+	
+	@Override
+	public String getExpReg(){
+		String expresionRegular="";
+		return expresionRegular;
 	}
 
 }

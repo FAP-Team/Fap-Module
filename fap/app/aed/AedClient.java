@@ -225,7 +225,7 @@ public class AedClient {
 	 * @throws AedExcepcion
 	 */
 	public static void actualizarTipoDescripcion(models.Documento documento) throws AedExcepcion {
-		if(documento.uri == null) throw new IllegalArgumentException("La uri del documneto no puede ser null");
+		if(documento.uri == null) throw new IllegalArgumentException("La uri del documento no puede ser null");
 		documento.actualizaDescripcion();
 		
 		if (documento.clasificado != null && documento.clasificado.booleanValue()) {
@@ -251,7 +251,8 @@ public class AedClient {
 			props.setUriTipoDocumento(documento.tipo);
 			
 			log.debug("Actualizando Propiedades Clasificado");
-			aed.actualizarDocumentoPropiedades(props, newUbicaciones);
+			documento.uri = aed.actualizarDocumentoPropiedades(props, newUbicaciones);
+			documento.save();
 		}else{
 			log.info("Actualizando tipo y descripción de un documento no clasificado");
 			log.debug("Obteniendo propiedades");

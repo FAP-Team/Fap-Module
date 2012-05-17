@@ -36,7 +36,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Aportaciones aportaciones
 	Verificacion verificacionEnCurso
 	OneToMany Verificacion verificaciones
-	
+	Exclusion exclusion
 	//Criterios economicos que rellena el solicitante
 	ManyToMany CEconomico ceconomicos	
 }
@@ -384,8 +384,14 @@ Entidad TipoCodigoExclusion {
 
 Entidad Exclusion {
 	String motivoExclusion
-	List<String> codigosExclusionString
-	OneToMany TipoCodigoExclusion codigosExclusion transient
+	//List<String> codigosExclusionString
+	//OneToMany TipoCodigoExclusion codigosExclusion transient
+	OneToMany CodigoExclusion codigos
+}
+
+Entidad CodigoExclusion {
+	String codigo
+	TipoCodigoExclusion tipoCodigo transient
 }
 
 Entidad Requerimiento auditable{

@@ -1,0 +1,126 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+h2 {
+	margin-top: 30px;
+}
+
+.myarrow {
+   line-height: 0%; width: 0px;
+   border-top: 4px solid  transparent;
+   border-bottom: 4px solid  transparent;
+   border-left: 6.9px solid black;
+   margin-top: 30px;
+   margin-left: 3em;
+   text-indent: 1em;
+}
+
+ul {
+   list-style-type:circle
+   margin-left: 4em;
+   text-indent: 4em;
+}
+
+</style>
+
+</head>
+<body>
+
+<h3 style="text-align: left;">Asunto: Requerimiento de documentación y/o aclaraciones del expediente referenciado</h3>
+
+<!-- Solicitante Enlace a la aplicación en cuestión-->
+
+%{ 
+	def nombreFichero;
+	if (dbSolicitud.verificacionEnCurso.tramiteNombre.uri != null){
+		services.GestorDocumentalService gestorDocumental = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
+		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(gestorDocumental.getExpReg());
+		java.util.regex.Matcher matcher = pattern.matcher(dbSolicitud.verificacionEnCurso.tramiteNombre.uri);
+		if(matcher.find())
+			nombreFichero = "requerimiento-"+matcher.group()+".html";
+		else
+			nombreFichero = "requerimiento-TRPFileSystemMock.html";
+	}
+	else {
+		nombreFichero = "requerimiento-TRPFileSystemMock.html";
+	}
+	def ficheroApp = new File("app/views/reports/"+nombreFichero);
+%}
+
+#{if ficheroApp.exists()}
+	#{include 'reports/'+nombreFichero /}
+#{/if}
+#{else}
+	#{include 'reports/datosSolicitanteBorradorRequerimientoMock.html' /}
+#{/else}
+
+<h2 style="text-align: left; page-break-before: always;">Anexo</h2>
+
+#{if dbSolicitud.verificacionEnCurso.requerimiento.motivo != null}
+	<div id="divMotivoGeneralRequerimiento">
+    	<h2>Motivo General de Requerimiento:</h2> 
+		<p>${dbSolicitud.verificacionEnCurso.requerimiento.motivo}</p>
+	</div>
+#{/if}
+
+%{
+	def noPresentados=[];
+	def noValidos=[];
+%}
+
+
+#{list items:dbSolicitud.verificacionEnCurso.documentos, as:"documento"}
+	#{if documento.estadoDocumentoVerificacion.equals("noPresentado")}
+		%{ noPresentados.add(documento); %}	
+	#{/if}
+	#{if documento.estadoDocumentoVerificacion.equals("noValido")}
+		%{ noValidos.add(documento); %}
+	#{/if}
+#{/list}
+
+
+#{if noPresentados.size > 0}
+	<div id="divDocumentacionNoPresentada">
+    	<h2>Documentos no presentados:</h2> 
+   		#{list items:noPresentados, as:"documento"}
+			<p  class="myarrow"> ${documento.descripcion}</p>
+			<ul>
+			#{if documento.motivoRequerimiento}
+				<li> ${documento.motivoRequerimiento} </li>
+			#{/if}
+			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
+				<li> ${requerimiento.descripcion} </li>
+			#{/list}
+			</ul>
+   		#{/list}
+	</div>
+#{/if}
+
+#{if noValidos.size > 0}
+	<div id="divDocumentacionNoValida">
+    	<h2>Documentos no válidos:</h2> 
+   		#{list items:noValidos, as:"documento"}
+			<p  class="myarrow"> ${documento.descripcion}</p>
+			<ul>
+			#{if documento.motivoRequerimiento}
+				<li> ${documento.motivoRequerimiento} </li>
+			#{/if}
+			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
+				<li> ${requerimiento.descripcion} </li>
+			#{/list}
+			</ul>
+   		#{/list}
+	</div>
+#{/if}
+
+</body>
+</html>

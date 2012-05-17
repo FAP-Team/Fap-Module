@@ -13,6 +13,7 @@ public class GForm extends GGroupElement{
 
 	Form form;
 	String name;
+	String target;
 	
 	public GForm(Form form, GElement container){
 		super(form, container);
@@ -22,6 +23,11 @@ public class GForm extends GGroupElement{
 		
 		this.form = form;
 		this.name = StringUtils.firstLower(form.name);
+		if(form.destino != null){
+			this.target = form.destino;
+		} else {
+			this.target = null;
+		}
 		elementos = form.getElementos();
 	}
 	
@@ -35,12 +41,20 @@ public class GForm extends GGroupElement{
 		if (getInstancesOf(GSubirArchivo.class).size() > 0)
 			encTypeStr = ", enctype:\"multipart/form-data\"";
 		
-		String view = """
-			#{form ${Controller.create(this).getRouteAccion(name)} ${encTypeStr}, class:"form-horizontal"}
-				${elementos}
-			#{/form}
-		""";
-		
+		String view;
+		if (target != null){
+			view = """
+				#{form ${Controller.create(this).getRouteAccion(name)} ${encTypeStr}, class:"form-horizontal", target:"${target}", id:"${name}"}
+					${elementos}
+				#{/form}
+			""";
+		} else {
+			view = """
+				#{form ${Controller.create(this).getRouteAccion(name)} ${encTypeStr}, class:"form-horizontal", id:"${name}"}
+					${elementos}
+				#{/form}
+			""";
+		}
 		if(form.autoEnviar){
 			view += """
 				<script>

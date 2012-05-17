@@ -194,7 +194,7 @@ Permiso aportacion{
 		SolicitudGenerica solicitud
 	when 
 		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
-		solicitud?.estado in ("iniciada", "requerida", "verificado")
+		solicitud?.estado != "borrador"
 	return all
 }
 
@@ -203,7 +203,7 @@ Permiso aportacionDocumentos{
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
-		solicitud?.estado in ("iniciada", "requerida", "requerida plazo vencido")
+		solicitud?.estado in ("iniciada", "requerida", "requerida plazo vencido", "excluido")
 	return editable
 }
 
@@ -396,7 +396,7 @@ Permiso verificarDocumentos{
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 		(
 			(_accion in (leer, editar))
-			and (solicitud.estado = "enVerificacion")
+			and (solicitud.estado in ("enVerificacion", "excluido"))
 			and verificacion.estado != null
 			and verificacion.estado = "enVerificacion"
 		)	
@@ -556,4 +556,14 @@ Permiso verificacionConNuevosDoc{
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacionEnCurso.estado != null) and (solicitud.verificacionEnCurso.estado = "enVerificacionNuevosDoc") 
 	return
     	all
+}
+
+Permiso accederSiSolicituNoBorrador{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
+		(solicitud.estado != "borrador")
+	return 
+		all
 }

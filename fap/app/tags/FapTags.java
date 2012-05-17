@@ -193,7 +193,7 @@ public class FapTags extends FastTags {
 
         //Value Or Flash
         Object flashOrValue = field.get("flash");
-        if ((flashOrValue == null) && (Validation.errors().size() == 0)) {
+        if ((flashOrValue == null) /*&& (Validation.errors().size() == 0)*/) { // Comentado el Validation.error, ya que debe entrar por aquí cuando es un campo no Editable (no tiene Flash) y hay errores de validacion ¿Fallaría en otro caso?
         	flashOrValue = field.get("value");
         }
         

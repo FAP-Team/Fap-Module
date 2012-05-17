@@ -56,6 +56,9 @@ public interface GestorDocumentalService {
     
     public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite);
     
+    // Devuelve la expresión regular que queremos que case con parte de la URI del trámite de la verificación, para componer el nombre de la plantilla que se utilizará como cabecera del PDF del requerimiento.
+    public String getExpReg();
+    
     public List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite);
 
 	String crearExpediente(ExpedienteAed expedienteAed)

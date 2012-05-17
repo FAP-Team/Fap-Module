@@ -110,12 +110,12 @@
 
 #{/fap.messages}
 
-#{if play.getVirtualFile("public/javascripts/${formulario}/${titulo}"+".js") != null}
-	#{script '../../public/javascripts/${formulario}/${titulo}.js' /}
+#{if play.getVirtualFile("public/javascripts/${formulario}/${pagina}"+".js") != null}
+	#{script "${formulario}/${pagina}.js" /}
 #{/if}
 
-#{if play.getVirtualFile("app/views/manualEndPage/$formulario/${titulo}"+".html") != null}
-    #{include 'manualEndPage/${formulario}/${titulo}.html' /}
+#{if play.getVirtualFile("app/views/manualEndPage/${formulario}/${pagina}"+".html") != null}
+    #{include 'manualEndPage/${formulario}/${pagina}.html' /}
 #{/if}
 
 		

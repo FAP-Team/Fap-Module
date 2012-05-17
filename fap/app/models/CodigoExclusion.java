@@ -19,23 +19,24 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Exclusion extends FapModel {
+public class CodigoExclusion extends FapModel {
 	// Código de los atributos
 
-	public String motivoExclusion;
+	public String codigo;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "exclusion_codigos")
-	public List<CodigoExclusion> codigos;
+	@Transient
+	public TipoCodigoExclusion tipoCodigo;
 
-	public Exclusion() {
+	public CodigoExclusion() {
 		init();
 	}
 
 	public void init() {
 
-		if (codigos == null)
-			codigos = new ArrayList<CodigoExclusion>();
+		if (tipoCodigo == null)
+			tipoCodigo = new TipoCodigoExclusion();
+		else
+			tipoCodigo.init();
 
 		postInit();
 	}

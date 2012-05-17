@@ -844,4 +844,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	public List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
 		return procedimientosService.getListTiposDocumentosAportadosCiudadano(tramite);
 	}
+	
+	@Override
+	public String getExpReg(){
+		String expresionRegular="TRP\\d+";
+		return expresionRegular;
+	}
 }

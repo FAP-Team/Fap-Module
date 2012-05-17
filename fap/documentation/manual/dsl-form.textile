@@ -10,6 +10,7 @@ h2. Parámetros
 * **autoEnviar** (opcional) : Reenvía el formulario cada vez que un elemento input o select del form cambia de estado.
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al form.
 * **redirigir = _[pagina]_** (opcional) : Cuando termina la acción del boton del form, se produce una redirección a la página especificada.
+* **destino = _[string]_** (opcional) : Indica al enlace donde tiene que abrirse, si quiere abrirse en una pagina distinta (campo target en html).
 
 h2. Definición
 
@@ -18,6 +19,7 @@ bc. Form:
 		(autoEnviar?="autoEnviar")?
 		& ("permiso" "=" permiso=[Permiso])?
 		& ('redirigir' '=' redirigir=PaginaAccion)?
+		& ('destino' '=' destino=STRING)?
 	)
 	'{'
 		elementos+=Elemento+

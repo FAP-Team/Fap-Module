@@ -1,10 +1,12 @@
 package templates
 
+import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.emf.common.util.EList;
 
 import generator.utils.FileUtils;
 import generator.utils.StringUtils;
 import generator.utils.LedUtils;
+import es.fap.simpleled.led.impl.ElementoListaImpl;
 import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.*;
 import wfcomponent.Start;
@@ -53,8 +55,6 @@ public class GLista extends GElement{
      */
     public void generateEnum(){
         if(lista.elementos.size() == 0) return;
-        
-		print "Genera enumerado: "+lista.name
 		
         String ppackage;
         String route;
@@ -141,15 +141,28 @@ public class GLista extends GElement{
     }
     
     private List<ElementoLista> elementosListaMergedWithModule(){
-		print "eleeeee"
         List listas = ModelUtils.getVisibleNodes(LedPackage.Literals.LISTA, lista.name, LedUtils.resource);
-		print "eleeeee"
         List merged = lista.elementos;
-		print "eleeeee"
         for(Lista lista : listas){
             for(ElementoLista elemento : lista.elementos){
                 if (listContainsElementoLista(elemento, merged) == false){
-                    merged.add(elemento);
+					elemento.elementosDependientes = new BasicEList<ElementoListaDependiente>();
+					ElementoLista el = LedFactory.eINSTANCE.createElementoLista();
+					el.key = elemento.key;
+					el.value = elemento.value;
+					if (elemento.elementosDependientes != null) {
+						el.elementosDependientes = new BasicEList();
+						for (ElementoListaDependiente elDep: elemento.elementosDependientes) {
+							ElementoListaDependiente newElDep = LedFactory.eINSTANCE.createElementoListaDependiente();
+							newElDep.key = elDep.key;
+							newElDep.value = elDep.value;
+							el.elementosDependientes.add(newElDep);
+						}
+					} else {
+						el.elementosDependientes = null;
+					}
+					
+                    merged.add(el);
                 }
             }
         }

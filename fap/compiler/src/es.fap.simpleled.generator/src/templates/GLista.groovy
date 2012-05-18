@@ -54,11 +54,13 @@ public class GLista extends GElement{
     public void generateEnum(){
         if(lista.elementos.size() == 0) return;
         
+		print "Genera enumerado: "+lista.name
+		
         String ppackage;
         String route;
         String elementos;
 		if (Start.generatingModule){ // Si es lista FAP, lo creo en un directorio distinto y con marcadores comentados para propiciar el añadir despues si la sobreescribimos con una lista de aplicacion
-            ppackage = "enumerado.fap.gen";
+			ppackage = "enumerado.fap.gen";
             route = FileUtils.getRoute('ENUM_FAP');
             elementos = getEnumElementsDefinition(lista.elementos);
 		} else{ // Si la lista es de la Aplicacion
@@ -139,8 +141,11 @@ public class GLista extends GElement{
     }
     
     private List<ElementoLista> elementosListaMergedWithModule(){
+		print "eleeeee"
         List listas = ModelUtils.getVisibleNodes(LedPackage.Literals.LISTA, lista.name, LedUtils.resource);
+		print "eleeeee"
         List merged = lista.elementos;
+		print "eleeeee"
         for(Lista lista : listas){
             for(ElementoLista elemento : lista.elementos){
                 if (listContainsElementoLista(elemento, merged) == false){

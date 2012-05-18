@@ -6,7 +6,6 @@ import generator.utils.Entidad;
 import generator.utils.LedUtils
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 
 import templates.elements.*;
 

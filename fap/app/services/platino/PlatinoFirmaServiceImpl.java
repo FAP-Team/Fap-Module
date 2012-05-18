@@ -80,7 +80,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	public PlatinoFirmaServiceImpl(PropertyPlaceholder propertyPlaceholder){
 		this.propertyPlaceholder = propertyPlaceholder;
 		
-        URL wsdlURL = PlatinoFirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma-pre.wsdl");
+        URL wsdlURL = PlatinoFirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma.wsdl");
         firmaPort = new FirmaService(wsdlURL).getFirmaService();
         WSUtils.configureEndPoint(firmaPort, getEndPoint());
         WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
@@ -129,6 +129,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	    }
 	}
 	
+	@Override
     public List<String> getFirmaEnClienteJS() {
         List<String> jsclient = new ArrayList<String>();
         String host;

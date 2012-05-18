@@ -26,7 +26,7 @@ import es.fap.simpleled.led.util.LedEntidadUtils;
 public class GEntidad extends GElement{
 	
 	Entity entity;
-	
+	String moreImports;
 	boolean incluirPostInit;
 	
 	public GEntidad(Entity entity, GElement container){
@@ -36,6 +36,7 @@ public class GEntidad extends GElement{
 	
 	public void generate(){
 		String extendz;
+		moreImports = "";
 		incluirPostInit=false;
 		
 		if (entity.name.equals("Solicitud")){
@@ -116,6 +117,8 @@ import validation.*;
 import audit.Auditable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+$moreImports
+
 ${FileUtils.addRegion(file, FileUtils.REGION_IMPORT)}	
 ${doc}
 ${auditable}
@@ -166,6 +169,12 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		
 		if(attribute.type.compound?.entidad?.name.equals("Nip")){
 			anotaciones.add "@CheckWith(NipCheck.class)"
+		}
+		
+		// Manual validator
+		if ((attribute?.checkWith != null) && (!attribute?.checkWith.trim().equals(""))) {
+			anotaciones.add("@CheckWith("+attribute?.checkWith+".class)");
+			moreImports += "import "+attribute?.checkWith+";\n";
 		}
 		
 		if(attribute.type.simple != null){

@@ -75,6 +75,8 @@ public class Documento extends FapModel {
 		// el nombre del tipo de documento
 		if ((descripcion == null || descripcion.isEmpty()) && !isOtros()) {
 			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
+			if ((descripcion == null) || (descripcion.trim().equals("")))
+				play.Logger.error("La descripción no se pudo abtener a partir del tipo: "+tipo);
 		}
 	}
 

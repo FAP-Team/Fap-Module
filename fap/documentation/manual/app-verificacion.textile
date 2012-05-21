@@ -65,6 +65,8 @@ h2. Personalizar PDF Requerimiento
 
 Para cada requerimiento, se generá su PDF correspondiente (tanto el borrador como el oficial) que seguirá el formato y estructura del .html _borradorRequerimiento_ que está en el modulo fap (app/views/reports).
 
+Se puede personalizar el CSS que afecta a todos los PDF, incluyendo el del requerimiento, sobreescribiendo el fichero 'documentoPDF.css'. Para ello basta con modificar (crear si no existe), dicho fichero en "${APP_PATH}/public/stylesheets/".
+
 Dicho PDF, se compone de dos partes. La primera es propia de la aplicación ya que deberá contener los datos del solicitante y demás formalismos. Como esto es dependiente de cada solicitud y de cada trámite, y no generalizable, se debe sobreescribir la plantilla _requerimiento-TRPXXXXXX.html_, donde **XXXXXX** serán los digitos de la URI del trámite del que se está realizando la verificación. La plantilla se debe crear en (app/views/reports/) de cada aplicación y indicarle en ella todo aquello que queramos que aparezca en el PDF del requerimiento.
 
 La segunda parte, se encarga de confeccionarla el módulo FAP, y simplemente va listando las causas de requerimientos, así como los documentos que tienen algun defecto y cuales fueron sus motivos de requerimientos.

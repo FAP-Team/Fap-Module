@@ -33,11 +33,11 @@ ul {
 </style>
 
 %{
-	def ficheroAppCss = new File("public/stylesheets/Verificacion/requerimientoVerificacion.css");
+	def ficheroAppCss = new File("public/stylesheets/documentoPDF.css");
 %}
 
 #{if ficheroAppCss.exists()}
-	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/Verificacion/requerimientoVerificacion.css'}">
+	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/documentoPDF.css'}">
 #{/if}
 
 </head>

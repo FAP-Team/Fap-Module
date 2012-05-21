@@ -32,6 +32,14 @@ ul {
 
 </style>
 
+%{
+	def ficheroAppCss = new File("public/stylesheets/Verificacion/requerimientoVerificacion.css");
+%}
+
+#{if ficheroAppCss.exists()}
+	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/Verificacion/requerimientoVerificacion.css'}">
+#{/if}
+
 </head>
 <body>
 

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import properties.FapProperties;
+
 import verificacion.VerificacionUtils;
 
 import models.Agente;
@@ -23,6 +25,8 @@ public class SecureFap extends Secure {
 	public ResultadoPermiso check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {	
 		if ("hayNuevaDocumentacionVerificacion".equals(id))
 			return hayNuevaDocumentacionVerificacion(_permiso, action, ids, vars);
+		else if ("loginTipoUser".equals(id))
+			return loginTipoUser(_permiso, action, ids, vars);
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
@@ -30,6 +34,8 @@ public class SecureFap extends Secure {
 	public ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {
 		if ("hayNuevaDocumentacionVerificacion".equals(id))
 			return hayNuevaDocumentacionVerificacionAccion(ids, vars);
+		else if ("loginTipoUser".equals(id))
+			return loginTipoUserAccion(ids, vars);
 		return nextAccion(id, ids, vars);
 	}
 	
@@ -61,6 +67,18 @@ public class SecureFap extends Secure {
 		else if (ids != null && ids.containsKey("idSolicitud"))
 			return SolicitudGenerica.findById(ids.get("idSolicitud"));
 		return null;
+	}
+	
+	public ResultadoPermiso loginTipoUser(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		if (FapProperties.getBoolean("fap.login.type.user")) 
+			return new ResultadoPermiso(Accion.All); 
+		return new ResultadoPermiso(Accion.Denegar);
+	}
+	
+	private ResultadoPermiso loginTipoUserAccion(Map<String, Long> ids, Map<String, Object> vars) {
+		if (FapProperties.getBoolean("fap.login.type.user")) 
+			return new ResultadoPermiso(Accion.All); 
+		return new ResultadoPermiso(Accion.Denegar);
 	}
 
 }

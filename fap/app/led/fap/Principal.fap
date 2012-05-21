@@ -3,6 +3,7 @@ Formulario Principal {
 		Enlace "Mis Solicitudes" pagina=Solicitudes
 		Enlace "Administración" permiso=administrador pagina=Usuarios
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
+		Enlace "Cambiar contraseña" permiso=loginTipoUser pagina=CambiarPass 
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion="fap.SecureController.logout"
 	}
@@ -26,5 +27,28 @@ Formulario Principal {
 	Pagina EditarSolicitud campo=SolicitudGenerica permiso=editarSolicitud {}
 	
 	Pagina LeerSolicitud campo=SolicitudGenerica {}
+	
+	Pagina CambiarPass permiso=loginTipoUser {
+		Wiki {" Utilice el siguiente formulario para cambiar su contraseña. "}
+		
+		Tabla tablaCambioPass campo=Agente permisoFilas=miAgente popupEditar=PopupPass { 		
+			Columna campo=Agente.id titulo="Id" ancho="25"
+			Columna campo=Agente.username titulo="Usuario" expandir
+			Columna campo=Agente.name titulo="Nombre completo" expandir
+			Columna campo=Agente.roles titulo="Roles" expandir
+			Columna campo=Agente.email titulo="Email" ancho="150"
+			Columna campo=Agente.funcionario titulo="Funcionario" ancho="80"
+		}
+	}
+	
+	Popup PopupPass campo=Agente titulo="Cambiando contraseña" {
+		Grupo titulo="Datos de usuario" permiso=noEditable borde=false  {
+			Texto campo=Agente.username titulo="Username" 
+		} 
+			Texto campo=Agente.verificacion titulo="Contraseña actual" password requerido
+			Texto campo=Agente.newpassword titulo="Nueva contraseña" password requerido duplicar
+		
+	}
+	
 	
 }

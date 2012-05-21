@@ -13,6 +13,8 @@ import validation.*;
 import audit.Auditable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import validation.PasswordCheck;
+import validation.PasswordCheck;
 
 // === IMPORT REGION START ===
 import play.mvc.Scope.Session;
@@ -27,7 +29,12 @@ public class Agente extends FapModel {
 
 	public String username;
 
+	@CheckWith(validation.PasswordCheck.class)
 	public String password;
+
+	@CheckWith(validation.PasswordCheck.class)
+	@Transient
+	public String newpassword;
 
 	@Email
 	public String email;
@@ -44,6 +51,9 @@ public class Agente extends FapModel {
 	public String acceso;
 
 	public Boolean funcionario;
+
+	@Transient
+	public String verificacion;
 
 	public Agente() {
 		init();

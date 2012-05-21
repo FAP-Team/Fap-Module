@@ -567,3 +567,22 @@ Permiso accederSiSolicituNoBorrador{
 	return 
 		all
 }
+
+// Permiso que controla si se pueden loguear con usuario y contraseña
+// SOBREESCRITO EN SECUREFAP.JAVA
+Permiso loginTipoUser{
+	when
+		agente.rolActivo = "administrador"
+	return 
+		all
+}
+
+// Para mostrar en las páginas únicamente el agente perteneciente al usuario logueado
+Permiso miAgente{
+	vars 
+		Agente agenteActual 
+	when 
+		agenteActual.id = agente.id
+	return
+		all
+}

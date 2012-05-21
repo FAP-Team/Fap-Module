@@ -34,6 +34,10 @@ h2. Properties originarias de FAP
 ** Ejemplo: _fap.format.double=0.00_
 * Configurar Login con Usuario y Contraseña: *fap.login.type.user=* _[true | false]_
 ** Ejemplo: _fap.login.type.user=true_
+* Configurar Tamaño mínimo de las contraseñas: *fap.password.min=* _Número_
+** Ejemplo: _fap.login.type.min=6_
+* Configurar Tamaño máximo de las contraseñas: *fap.password.max=* _Número_
+** Ejemplo: _fap.login.type.max=10_
 * Nombre de la aplicación: *fap.app.name=* _NOMBRE_
 ** Ejemplo: _fap.app.name=Tueri_
 * Configuración del AED: *fap.aed.[...]* 

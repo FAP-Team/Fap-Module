@@ -64,13 +64,15 @@ Entidad FuncionariosHabilitados extends Singleton {
 // Agentes que pueden acceder a la aplicación
 Entidad Agente inheritance=joined auditable {
 	String username
-	String password
+	String password checkWith="validation.PasswordCheck" 
+	String newpassword checkWith="validation.PasswordCheck" transient
 	Email email
 	String name
 	Lista multiple roles roles
 	Lista roles rolActivo
 	String acceso
 	Boolean funcionario
+	String verificacion transient
 }
 
 // Entidad que contiene los campos necesarios para una dirección. Se establece como "embeddable", lo que indica

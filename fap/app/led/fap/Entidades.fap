@@ -206,9 +206,14 @@ Entidad Registro {
 	//Se almacena si se firma con el certificado de empresa
 	//o firman los representantes
 	Lista tipoFirmaJuridica tipoFirma 
-	 
-	//Persona que han firmado o deben firmar	
-	OneToMany Firmante firmantes
+	
+	//Personas que han firmado o deben firmar	 
+	Firmantes firmantes
+}
+
+Entidad Firmantes {
+	//Personas que han firmado o deben firmar	
+	OneToMany Firmante todos
 }
 
 // Representación de firmantes

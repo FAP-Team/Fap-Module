@@ -25,6 +25,14 @@ public interface FirmaService {
     public boolean validarFirmaDocumento(byte[] contenidoDocumento, String firma) throws FirmaServiceException;
 
     public InfoCert extraerCertificado(String firma) throws FirmaServiceException;
+    
+    public Firmante getFirmante(String firma, Documento documento);
+    
+    public Firmante validateXMLSignature(byte[] contenidoDoc, String firma);
+    
+    public HashMap<String,String> extraerInfoFromFirma(String firma);
+    
+    public List<StringArray> getCertInfo(String certificado) throws FirmaServiceException;
 
     /**
      * Verifica si una firma es correcta

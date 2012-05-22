@@ -1,16 +1,38 @@
 package services.filesystem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import org.apache.log4j.Logger;
+
+import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
+
+import net.java.dev.jaxb.array.StringArray;
+
+import messages.Messages;
+import models.Documento;
+import models.Firmante;
 
 import platino.InfoCert;
 import play.libs.Codec;
 import play.libs.Crypto;
+import properties.FapProperties;
 import services.FirmaService;
 import services.FirmaServiceException;
+import services.GestorDocumentalService;
+import services.platino.PlatinoFirmaServiceImpl;
+import utils.BinaryResponse;
 
 public class FileSystemFirmaServiceImpl implements FirmaService {
+	
+	private static Logger log = Logger.getLogger(FileSystemFirmaServiceImpl.class);
 
+	@Inject
+    protected static GestorDocumentalService gestorDocumentalService;
+	
     @Override
     public boolean isConfigured() {
         //No necesita configuración
@@ -55,6 +77,48 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
         info.nif = decode.getNif();
         return info;
     }
+    
+    @Override
+	public Firmante getFirmante(String firma, Documento documento){
+		if(firma == null || firma.isEmpty()){
+			Messages.error("La firma llegó vacía");
+			return null;
+		}	
+		Firmante firmante = null;
+		try {
+		    BinaryResponse response = gestorDocumentalService.getDocumento(documento);
+			byte[] contenido = response.getBytes();
+			firmante = validateXMLSignature(contenido, firma);
+			if(firmante == null){
+				Messages.error("Error validando la firma");
+			}
+		} catch (Exception e) {
+			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri);
+			Messages.error("Error validando la firma");
+		}
+		return firmante;
+	}
+	
+	@Override
+	public HashMap<String,String> extraerInfoFromFirma(String firma) {
+		return null;
+	}
+	
+	@Override
+	public List<StringArray> getCertInfo(String certificado) throws FirmaServiceException{
+		return null;
+	}
+	
+	@Override
+	public Firmante validateXMLSignature(byte[] contenidoDoc, String firma) {
+		
+		Firmante firmante = new Firmante();			
+		firmante = new Firmante();
+		firmante.idtipo = "nif";
+		firmante.idvalor = "12345678Z";
+		firmante.nombre = "Fapito Etsiiano Ulliano";
+		return firmante;
 
+	}
  
 }

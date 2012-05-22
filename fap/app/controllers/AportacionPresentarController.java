@@ -120,7 +120,7 @@ public class AportacionPresentarController extends AportacionPresentarController
      */
     private static void almacenarFirmaAportacion(String firma, SolicitudGenerica solicitud, Aportacion aportacion) {
         if (!Messages.hasErrors() && "borrador".equals(aportacion.estado)) {
-            Firmante firmante = FirmaController.getFirmanteFromFirma(firma);
+            Firmante firmante = firmaService.getFirmante(firma, aportacion.oficial);
 
             if(!Messages.hasErrors()){
                 if (isFirmanteValido(solicitud, firmante)) {
@@ -155,7 +155,7 @@ public class AportacionPresentarController extends AportacionPresentarController
      */
     private static boolean isFirmanteValido(SolicitudGenerica solicitud, Firmante firmante) {
         Firmantes firmantesValidos = Firmantes.calcularFirmanteFromSolicitante(solicitud.solicitante);
-        boolean result = firmantesValidos.containsFirmanteConId(firmante.idvalor);
+        boolean result = firmantesValidos.containsFirmanteConIdentificador(firmante.idvalor);
 
         if (!result)
             Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud");

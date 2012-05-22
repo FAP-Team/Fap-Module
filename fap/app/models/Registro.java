@@ -43,9 +43,8 @@ public class Registro extends FapModel {
 	@ValueFromTable("tipoFirmaJuridica")
 	public String tipoFirma;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "registro_firmantes")
-	public List<Firmante> firmantes;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Firmantes firmantes;
 
 	public Registro() {
 		init();
@@ -84,7 +83,9 @@ public class Registro extends FapModel {
 			fasesRegistro.init();
 
 		if (firmantes == null)
-			firmantes = new ArrayList<Firmante>();
+			firmantes = new Firmantes();
+		else
+			firmantes.init();
 
 		postInit();
 	}

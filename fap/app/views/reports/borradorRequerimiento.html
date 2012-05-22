@@ -32,8 +32,20 @@ ul {
 
 </style>
 
+%{
+	def ficheroAppCss = new File("public/stylesheets/documentoPDF.css");
+%}
+
+#{if ficheroAppCss.exists()}
+	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/documentoPDF.css'}">
+#{/if}
+
 </head>
 <body>
+
+<div class="div-saltoPagina">
+	<br/>
+</div>
 
 <h3 style="text-align: left;">Asunto: Requerimiento de documentación y/o aclaraciones del expediente referenciado</h3>
 

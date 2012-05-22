@@ -555,12 +555,16 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             Firma firmaActual = propiedadesAdministrativas.getFirma();
             
             models.Firmante firmante = firma.getFirmantes().get(0);
-            
-            Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
-            propiedadesAdministrativas.setFirma(firmaNueva);
+            if (!firmaActual.getFirmantes().contains(firmante)){
+            	Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
+            	propiedadesAdministrativas.setFirma(firmaNueva);
     
-            boolean clasificado = isClasificado(documento);
-            actualizarPropiedades(propiedadesDocumento, clasificado);
+            	boolean clasificado = isClasificado(documento);
+            	actualizarPropiedades(propiedadesDocumento, clasificado);
+            }
+            else {
+            	throw new GestorDocumentalServiceException("La firma ya existía");
+            }
         }catch(AedExcepcion e){
             throw serviceExceptionFrom(e);
         }

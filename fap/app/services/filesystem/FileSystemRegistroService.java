@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.joda.time.DateTime;
 
+import platino.DatosRegistro;
 import play.libs.Codec;
 
 import models.Documento;

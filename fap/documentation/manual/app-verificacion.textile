@@ -65,6 +65,8 @@ h2. Personalizar PDF Requerimiento
 
 Para cada requerimiento, se generá su PDF correspondiente (tanto el borrador como el oficial) que seguirá el formato y estructura del .html _borradorRequerimiento_ que está en el modulo fap (app/views/reports).
 
+Se puede personalizar el CSS que afecta a todos los PDF, incluyendo el del requerimiento, sobreescribiendo el fichero 'documentoPDF.css'. Para ello basta con modificar (crear si no existe), dicho fichero en "${APP_PATH}/public/stylesheets/".
+
 Dicho PDF, se compone de dos partes. La primera es propia de la aplicación ya que deberá contener los datos del solicitante y demás formalismos. Como esto es dependiente de cada solicitud y de cada trámite, y no generalizable, se debe sobreescribir la plantilla asociada a esa cabecera. La plantilla se debe crear en (app/views/reports/) de cada aplicación y indicarle en ella todo aquello que queramos que aparezca en el PDF del requerimiento.
 El nombre de la plantilla estará formado por _requerimiento-_*_XXXX_* donde *XXXX* sera el texto que case a partir de la URI del trámite de la verificación y con la expresión regular (en formato String) que devuelve una función que se deberá sobreescribir en la clase Gestor Documental que utilicemos. Dicha función se denomina _getExpReg()_ y simplemente debe devolver un String con la expresión regular que queramos utilizar para capturar en la URI del trámite asociado a la verificación el texto identificativo del nombre de la cabecera del PDF.
 

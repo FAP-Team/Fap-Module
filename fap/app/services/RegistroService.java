@@ -1,5 +1,6 @@
 package services;
 
+import platino.DatosRegistro;
 import models.Documento;
 import models.ExpedientePlatino;
 import models.JustificanteRegistro;

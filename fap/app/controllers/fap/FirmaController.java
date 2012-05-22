@@ -15,15 +15,10 @@ public class FirmaController {
     @Inject
     private static FirmaService firmaService;
     
-    public static Firmante getFirmanteFromFirma(String xmlSignature) {
+    public static String getIdentificacionFromFirma(String xmlSignature) {
         try {
             InfoCert certificado = firmaService.extraerCertificado(xmlSignature);
-           
-            Firmante firmante = new Firmante();
-            firmante.nombre = certificado.getNombreCompleto();
-            firmante.idvalor = certificado.getId();
-            
-            return firmante;
+            return certificado.getId();
         }catch(Exception e){
             String msg = "Error extrayendo el certificado de la firma";
             Messages.error(msg);

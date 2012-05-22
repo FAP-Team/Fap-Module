@@ -48,19 +48,19 @@ public class PaginaFirmaController extends PaginaFirmaControllerGen {
 			dbSolicitud.save();
 		
 			//Borra firmantes anteriores
-			List<Firmante> firmantesBack = new ArrayList<Firmante>(dbSolicitud.registro.firmantes);
-			dbSolicitud.registro.firmantes.clear();
+			List<Firmante> firmantesBack = new ArrayList<Firmante>(dbSolicitud.registro.firmantes.todos);
+			dbSolicitud.registro.firmantes.todos.clear();
 			dbSolicitud.registro.save();
 			FirmaUtils.borrarFirmantes(firmantesBack);
 		
 			//Calcula quién puede firmar la solicitud
-			dbSolicitud.registro.firmantes = dbSolicitud.solicitante.calcularFirmantes();
+			dbSolicitud.registro.firmantes.todos = dbSolicitud.solicitante.calcularFirmantes();
 			
 			//dbSolicitud.solicitante.autorizaFuncionario = true;
 			dbSolicitud.registro.save();
 		
 			play.Logger.info("FIRMANTES");
-			for(Firmante f : dbSolicitud.registro.firmantes){
+			for(Firmante f : dbSolicitud.registro.firmantes.todos){
 				play.Logger.info(f.toString());
 			}
 		}
@@ -77,18 +77,18 @@ public class PaginaFirmaController extends PaginaFirmaControllerGen {
 		
 		if (!Messages.hasErrors()) {
 			//Borra firmantes anteriores
-			List<Firmante> firmantesBack = new ArrayList<Firmante>(dbSolicitud.registro.firmantes);
-			dbSolicitud.registro.firmantes.clear();
+			List<Firmante> firmantesBack = new ArrayList<Firmante>(dbSolicitud.registro.firmantes.todos);
+			dbSolicitud.registro.firmantes.todos.clear();
 			dbSolicitud.registro.save();
 			FirmaUtils.borrarFirmantes(firmantesBack);
 		
 			//Calcula quién puede firmar la solicitud (los funcionarios habilitados)
-			dbSolicitud.registro.firmantes = FuncionariosHabilitados.getFirmantes();
+			dbSolicitud.registro.firmantes.todos = FuncionariosHabilitados.getFirmantes();
 			
 			dbSolicitud.registro.save();
 		
 			play.Logger.info("FIRMANTES");
-			for(Firmante f : dbSolicitud.registro.firmantes){
+			for(Firmante f : dbSolicitud.registro.firmantes.todos){
 				play.Logger.info(f.toString());
 			}
 			dbSolicitud.solicitante.autorizaFuncionario = true;

@@ -7,7 +7,7 @@
 	def oldId = _oldId ?: field.id
 	def label = _titulo ?: play.i18n.Messages.get(field.name)
 	def value = _value ?: field.flashorvalue
-		
+
 	def ayuda = _ayuda
 	def requerido = _requerido != null? _requerido : false;
 	def stackDisabled = tags.TagMapStack.top("editable")
@@ -49,6 +49,7 @@
 	
 	def manyTo = _manyTo;
 	def name = ""	
+	
 }%
 
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
@@ -122,13 +123,18 @@
 					items.sort{it.value}
 			
 			//Values
-			def values = [];			
+			def values = [];	
 			if(value != null){
 				if(field.reference){
 					values.addAll(value.collect{ it."$comboValue" })
 				}else{
 					//Tabla de tablas
-					values.addAll(value);
+					if (value.getClass() == String.class){
+						values.addAll(value.split(","));
+					}
+					else{
+						values.addAll(value);
+					}
 				}
 			}
 		}%
@@ -142,7 +148,7 @@
 				%{				
 					def clave = entry.key
 					def valor = entry.value
-					def selected = (values.contains(clave) || values.contains(clave.toString()))? 'selected="selected"' : ''
+					def selected = (values.contains(clave) || values.contains(clave.toString().trim()))? 'selected="selected"' : ''
 				}%
 				<option value="${clave}" ${selected}>#{if mostrarClave}${clave} - #{/if}${valor}</option>
 			#{/list}

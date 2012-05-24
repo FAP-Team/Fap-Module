@@ -27,9 +27,13 @@ repositories:
 
 3. Cargamos las dependencias del proyecto.
 
-bc. play dependencies --sync
+bc. play deps --sync
 
 4. Con esto ya tendremos actualizada la version del modulo y la aplicación estaria lista para ser inicializada. 
+
+5. Si utilizamos eclipse, no te olvides de hacer un:
+
+bc. play eclipsify
 
 h2. Borrar el modulo de la cache .ivy2
 

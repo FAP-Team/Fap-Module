@@ -702,7 +702,13 @@ class ControllerUtils {
 	}
 	
 	private static String required(String campo){
+		CampoUtils campoU = CampoUtils.create(campo);
 		campo = StringUtils.firstLower(campo);
+		Attribute atributo = campoU.getUltimoAtributo();
+		if (LedEntidadUtils.ManyToX(atributo)){
+			String campo_ = campo.replaceAll("\\.", "_");
+			return "CustomValidation.required(\"${campo}\", params.get(\"${campo_}\"));\n";
+		}
 		return "CustomValidation.required(\"${campo}\", ${campo});\n";
 	}
 	

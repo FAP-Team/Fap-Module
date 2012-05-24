@@ -43,6 +43,8 @@
 	
 	def stackDisabled = tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	if (disabled)
+		value = field.value;
 	def showRow   = _noRow != null? !_noRow : true
 	def anchoTitulo = _anchoTitulo
 	def duplicado = _duplicado ? _duplicado : false

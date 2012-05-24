@@ -650,4 +650,56 @@ public class AedClient {
         return true;
 	}
 	
+
+	/**
+	 * Actualiza el campo "clasificado" de la entidad models.Documento a partir de lo que devuelva el AED
+	 * @param documentos Lista de documentos a actualizar su campo clasificado
+	 * @return
+	 */
+	public static void actualizarClasificacionDocumentosFromAed (List<models.Documento> documentos) {
+		for (models.Documento doc: documentos) {
+			actualizarClasificacionDocumentoFromAed(doc);
+		}
+	}
+	
+	public static void actualizarClasificacionDocumentoFromAed (models.Documento doc) {
+		if (doc.uri == null) {
+			play.Logger.error("La uri del doc "+doc.id+" es null y no se actualizará su \"clasificación\"");
+			return;
+		}
+		if (!doc.clasificado) {
+			boolean errorNoClasificado = false;
+			try {
+				aed.obtenerDocumentoNoClasificado(doc.uri);
+			} catch (AedExcepcion eAed) {
+				errorNoClasificado = true;
+			}
+			if (errorNoClasificado) {
+				try {
+					aed.obtenerDocumento(doc.uri);
+					doc.clasificado = true;
+					doc.save();
+				} catch (AedExcepcion e) {
+					play.Logger.info("El documento no se pudo obtener del Aed ni clasificado ni sin clasificar");
+				}
+			}
+		}
+		else {
+			boolean errorClasificado = false;
+			try {
+				aed.obtenerDocumento(doc.uri);
+			} catch (AedExcepcion eAed) {
+				errorClasificado = true;
+			}
+			if (errorClasificado) {
+				try {
+					aed.obtenerDocumentoNoClasificado(doc.uri);
+					doc.clasificado = false;
+					doc.save();
+				} catch (AedExcepcion e) {
+					play.Logger.info("El documento no se pudo obtener del Aed ni clasificado ni sin clasificar");
+				}
+			}
+		}
+	}
 }

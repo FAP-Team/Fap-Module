@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.activation.DataSource;
+import javax.persistence.EntityTransaction;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -30,6 +31,7 @@ import platino.DatosExpediente;
 import platino.DatosRegistro;
 import platino.PlatinoGestorDocumentalClient;
 import platino.PlatinoRegistro;
+import play.db.jpa.JPA;
 import properties.FapProperties;
 import utils.BinaryResponse;
 import messages.Messages;
@@ -231,6 +233,7 @@ public class RegistroService {
 
 	/**
 	 * Registra la aportación actual a partir de la solicitud.
+	 * Mejorada con control de transacciones por pasos
 	 * @param solicitud
 	 * @param descripcion Si descripción = null, se utilizará: "Solicitud de Aportación de Documentación " + FapProperties.get("application.name");
 	 * @throws RegistroException
@@ -244,8 +247,11 @@ public class RegistroService {
 			Messages.error("La solicitud no está firmada");
 		}
 		
+		EntityTransaction tx = JPA.em().getTransaction();
 		//Registro de entrada en platino
+		aportacion.refresh();
 		if(aportacion.estado.equals("firmada")){
+			tx.begin();
 			try {
 				String _descripcion = descripcion;
 				if (_descripcion == null)
@@ -285,22 +291,29 @@ public class RegistroService {
 				e.printStackTrace();
 				Messages.error("Error al registrar de entrada la solicitud");
 				throw new RegistroException("Error al obtener el justificante del registro de entrada");
+			} finally {
+				aportacion.save();
+				tx.commit();
 			}
 		}else{
 			play.Logger.debug("La solicitud %s ya está registrada", solicitud.id);
 		}
 		
+		aportacion.refresh();
 		//Clasifica los documentos
 		if(aportacion.estado.equals("registrada")){
+			tx.begin();
 			//Clasifica los documentos sin registro
 			List<Documento> documentos = new ArrayList<Documento>();
-			documentos.addAll(aportacion.documentos);
+			//documentos.addAll(aportacion.documentos);
 			documentos.add(aportacion.justificante);
 			boolean todosClasificados = AedClient.clasificarDocumentos(solicitud, documentos);
 			
 			//Clasifica los documentos con registro de entrada
 			List<Documento> documentosRegistrados = new ArrayList<Documento>();
 			documentosRegistrados.add(aportacion.oficial);
+			// Los documentos aportados como registro de entrada
+			documentosRegistrados.addAll(aportacion.documentos);
 			todosClasificados = todosClasificados && AedClient.clasificarDocumentos(solicitud, documentosRegistrados, aportacion.informacionRegistro);
 			
 			if(todosClasificados){
@@ -311,13 +324,17 @@ public class RegistroService {
 				play.Logger.fatal("Algunos documentos no se pudieron clasificar correctamente");
 				Messages.error("Algunos documentos no se pudieron clasificar correctamente");
 			}
+			aportacion.save();
+			tx.commit();
 		}else{
 			play.Logger.debug("Ya están clasificados todos los documentos de la solicitud %s", solicitud.id);
 		}
 		
+		aportacion.refresh();
 		//Mueve la aportación a la lista de aportaciones clasificadas
 		//Añade los documentos a la lista de documentos
 		if(aportacion.estado.equals("clasificada")){
+			tx.begin();
 			play.Logger.info("Procedemos a finalizar la aportación");
 			solicitud.aportaciones.registradas.add(aportacion);
 			solicitud.documentacion.documentos.addAll(aportacion.documentos);
@@ -328,9 +345,8 @@ public class RegistroService {
 			solicitud.save();
 			
 			play.Logger.info("Los documentos de la aportacion se movieron correctamente");
+			tx.commit();
 		}
-		
-		
 	}
 	
 	

@@ -68,6 +68,17 @@ public class AportacionPresentarController extends AportacionPresentarController
 				Messages.error("La solicitud no está preparada para registrar");
 			}
 			
+			// Si hubo errores anteriormente, está en un estado que no es borrador
+			// Y actualizaremos la clasificación de los documentos
+			if (!aportacion.estado.equals("borrador")) {
+				play.Logger.info("Se actualizará la clasificación de los documentos desde el AED");
+				AedClient.actualizarClasificacionDocumentosFromAed(aportacion.documentos);
+				if ((aportacion.justificante != null) && (aportacion.justificante.uri != null) && (aportacion.justificante.uri.equals("")))
+					AedClient.actualizarClasificacionDocumentoFromAed(aportacion.justificante);
+				if ((aportacion.oficial != null) && (aportacion.oficial.uri != null) && (aportacion.oficial.uri.equals("")))
+					AedClient.actualizarClasificacionDocumentoFromAed(aportacion.oficial);
+			}
+			
 			//Firma si es necesario
 			if(!Messages.hasErrors() && aportacion.estado.equals("borrador")){
 				play.Logger.info("Calculando firmantes");

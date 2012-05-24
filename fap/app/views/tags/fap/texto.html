@@ -94,7 +94,7 @@
 	#{if duplicado == true}
 		%{
 			label_copy = label+" (verificar)";
-			id_copy = id+"copy";
+			id_copy = field.id+"copy";
 			def value_copy = value;
 			if (messages.Messages.getErrorMessages(id.replaceAll("_", ".")))
 				value_copy = field.copy;

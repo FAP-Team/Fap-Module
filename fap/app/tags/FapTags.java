@@ -193,7 +193,11 @@ public class FapTags extends FastTags {
 
         //Value Or Flash
         Object flashOrValue = field.get("flash");
-        if ((flashOrValue == null) /*&& (Validation.errors().size() == 0)*/) { // Comentado el Validation.error, ya que debe entrar por aquí cuando es un campo no Editable (no tiene Flash) y hay errores de validacion ¿Fallaría en otro caso?
+        // Primero se comento el Validation.error, ya que debia entrar por aquí cuando es un campo no Editable (no tiene Flash) y hay errores de validacion.
+        // Despues a la pregunta ¿Fallaría en otro caso?: Tras un tiempo nos dimos cuenta que Sí. En el caso de un combo ManyToX, si se setea a blanco y hay un fallo de validacion, recupera de BBDD y no deja el blanco
+        // Posteriormente se solucionó volviendo a descomentar el Validation.error, y añadiendo en el texto.html, la condición de que si el parametro 'disabled' es true, pues el value, lo coge directamente de BBDD (o sea field.value).
+        // Tras hacer todo esto, la pregunta sigue en el aire con la nueva forma de arreglarlo: ¿Fallaría esto último en otro caso?
+        if ((flashOrValue == null) && (Validation.errors().size() == 0)) { 
         	flashOrValue = field.get("value");
         }
         

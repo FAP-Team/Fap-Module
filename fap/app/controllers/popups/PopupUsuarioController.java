@@ -4,6 +4,9 @@ package controllers.popups;
 import messages.Messages;
 import models.Agente;
 import play.Logger;
+import play.libs.Crypto;
+import play.mvc.Util;
+import validation.CustomValidation;
 import controllers.gen.popups.PopupUsuarioControllerGen;
 			
 public class PopupUsuarioController extends PopupUsuarioControllerGen {
@@ -74,5 +77,27 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
             index("crear",  null);
         }
     }
+	
+	@Util
+	public static void PopupUsuarioValidateCopy(String accion, Agente dbAgente, Agente agente) {
+		CustomValidation.clearValidadas();
+		CustomValidation.valid("agente", agente);
+		CustomValidation.required("agente.username", agente.username);
+		dbAgente.username = agente.username;
+		CustomValidation.required("agente.password", agente.password);
+		CustomValidation.compare(agente.password, params.get("agente_passwordcopy"));
+		//dbAgente.password = agente.password;
+		dbAgente.password = Crypto.passwordHash(agente.password);
+		CustomValidation.required("agente.roles", agente.roles);
+		CustomValidation.validListOfValuesFromTable("agente.roles", agente.roles);
+
+		dbAgente.roles.retainAll(agente.roles);
+		dbAgente.roles.addAll(agente.roles);
+		CustomValidation.required("agente.email", agente.email);
+		dbAgente.email = agente.email;
+		dbAgente.funcionario = agente.funcionario;
+
+	}
+	
 }
 		

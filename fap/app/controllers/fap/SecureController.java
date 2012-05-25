@@ -205,7 +205,7 @@ public class SecureController extends GenericController{
     	
     	if(agente != null){
     		if(Play.mode.isDev()){
-    			//En modo desarollo se permite hacer login a cualquier usuario
+    			//En modo desarrollo se permite hacer login a cualquier usuario
     			allowed = true;
     		}else {
     	        /** Si uno de los passwords es vacío */

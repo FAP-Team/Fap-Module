@@ -24,7 +24,7 @@ public class GMenu extends GElement{
 		scriptVariables = new HashSet<String>();
 		String view = "<ul class='nav nav-list'>"
 		for(MenuElemento elemento : menu.elementos){
-			view += generateElemento(elemento);
+			view += generateElemento(elemento, -1);
 		}
 		view +="</ul>"
 		FileUtils.overwrite(FileUtils.getRoute('MENU_GEN'), getMenuName(), view);
@@ -39,18 +39,24 @@ public class GMenu extends GElement{
 	   return f.name + ".html";
    }
 
-	public String generateElemento(MenuGrupo grupo){
+	public String generateElemento(MenuGrupo grupo, int profundidad){
+		profundidad++;
 		String out = "";
 		if (grupo.permiso != null) {
 			out += """
 				#{fap.permiso permiso:'${grupo.permiso.name}'}
 			""";
 		}
+		String padding="";
+		if (profundidad > 0){
+			int pixeles = (profundidad*20)+15; // +15 para equilibrar con el margin-left negativo de los nav-header
+			padding=""" style="padding-left: ${pixeles}px" """;
+		}
 		out += """
-				<li class="nav-header">${grupo.titulo}</li>
+				<li class="nav-header" ${padding}>${grupo.titulo}</li>
 		""";
 		for(MenuElemento elemento : grupo.elementos){
-			out += generateElemento(elemento);
+			out += generateElemento(elemento, profundidad);
 		}
 		out += """
 		<li class="nav-separator"></li>	
@@ -63,12 +69,17 @@ public class GMenu extends GElement{
 		return out;
 	}
 
-	public String generateElemento(MenuEnlace enlace){
+	public String generateElemento(MenuEnlace enlace, int profundidad){
 		String titulo = enlace.titulo != null ? enlace.titulo : enlace.pagina?.pagina.name
 		String ref = "";
 		String refSin = "";
 		String permisoBefore = "";
 		String permisoAfter = "";
+		String padding="";
+		if (profundidad > 0){
+			int pixeles = profundidad*20;
+			padding=""" style="padding-left: ${pixeles}px" """;
+		}
 		
 		if (enlace.permiso != null) {
 			permisoBefore = """
@@ -80,7 +91,7 @@ public class GMenu extends GElement{
 			return """
 				${permisoBefore}
 				${scriptUrl(Controller.create(GElement.getInstance(enlace.pagina.pagina, null)), enlace.pagina.accion)}
-				<li class="#{fap.activeRoute href:url, activeClass:'active' /}"><a href='\${url}'>${titulo}</a></li>
+				<li class="#{fap.activeRoute href:url, activeClass:'active'/}" ${padding}><a href='\${url}'>${titulo}</a></li>
 				${permisoAfter}
 			""";
 		}
@@ -114,7 +125,7 @@ public class GMenu extends GElement{
 		return """
 			${permisoBefore}
 			${script}
-			<li ${seleccion}><a href="${ref}">${titulo}</a></li>
+			<li ${seleccion} ${padding}><a href="${ref}">${titulo}</a></li>
 			${permisoAfter}
 		""";
 	}

@@ -49,6 +49,7 @@ Formulario Administracion permiso=administrador{
 	
 	Popup PopupUsuario campo=Agente titulo="Usuario" {
 		Texto campo=Agente.username titulo="Username" requerido
+		Texto campo=Agente.password titulo="Contraseña" requerido
 		Combo campo=Agente.roles titulo="Roles" busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido
 		Check campo=Agente.funcionario titulo="Funcionario habilitado"

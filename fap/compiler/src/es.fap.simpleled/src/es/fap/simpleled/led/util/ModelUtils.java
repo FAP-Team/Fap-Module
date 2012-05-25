@@ -62,7 +62,6 @@ public class ModelUtils{
 	
 	@SuppressWarnings("unchecked")
 	public static <T extends EObject> T getVisibleNode(EClass clazz, Resource res) {
-		System.out.println("Clazz: "+clazz);
 		return (T)getVisibleNode(clazz, null, res);
 	}
 	

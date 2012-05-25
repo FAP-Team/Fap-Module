@@ -1,5 +1,7 @@
 package templates;
 
+import java.lang.reflect.Method;
+
 import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.util.ModelUtils
 import generator.utils.Entidad;
@@ -68,7 +70,10 @@ public class GGroupElement extends GElement{
 	
 	public String validateCopy(Stack<Set<String>> validatedFields){
 		String out = "";
-		if (element.permiso != null){
+		boolean permiso = true;
+		if (element instanceof AgruparCampos)
+			permiso = false;
+		if ((permiso) && (element.permiso != null)){
 			validatedFields.push(new HashSet<String>());
 			out += """if (secure.checkGrafico("${element.permiso.name}", "editable", accion, (Map<String,Long>)tags.TagMapStack.top("idParams"), null)) {\n""";
 		}
@@ -76,7 +81,7 @@ public class GGroupElement extends GElement{
 		for (Elemento elemento: elementos)
 			out += getInstance(elemento).validateCopy(validatedFields);
 
-		if (element.permiso != null){
+		if ((permiso) && (element.permiso != null)){
 			validatedFields.pop();
 			out += "\n}\n";
 		}

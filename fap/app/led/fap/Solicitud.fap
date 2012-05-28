@@ -77,7 +77,7 @@ Formulario Solicitud {
 		EditarArchivoAed documentoProceso campo=Documento requerido
 	}
 	
-	Popup PopUpDocAportados ver titulo="Documentación" campo=SolicitudGenerica.documentacionProceso.documentos {
+	Popup PopUpDocAportados ver titulo="Documentación" campo=SolicitudGenerica.documentacionAportada.documentos {
 		EditarArchivoAed documentoAportado campo=Documento requerido
 	}
 		

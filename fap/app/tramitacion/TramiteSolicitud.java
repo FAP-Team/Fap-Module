@@ -3,6 +3,8 @@ package tramitacion;
 import java.util.ArrayList;
 import java.util.List;
 
+import controllers.fap.VerificacionFapController;
+
 import tramitacion.Documentos;
 
 import platino.DatosRegistro;
@@ -12,6 +14,7 @@ import es.gobcan.platino.servicios.registro.JustificanteRegistro;
 import services.GestorDocumentalServiceException;
 import services.RegistroService;
 import services.RegistroServiceException;
+import services.VerificarDocumentacionService;
 import services.platino.PlatinoGestorDocumentalService;
 import messages.Messages;
 import models.Documento;
@@ -97,24 +100,17 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	 * Validar los documentos condicionados automaticamente
 	 */
 	protected void validarDocumentacion() {
-		// Validar documentos que se deben eXcluir condicionados automáticos
-		//
-
-		// play.Logger.info("Documentos Subidos:" +
-		// solicitud.documentacion.documentos.size());
 		
-		//PresentacionService ps = new PresentacionService(NOMBRE_TRAMITE, this.solicitud,
-		//		this.solicitud.documentacion.documentos);
-
-		//ps.preparaPresentacionTramite(this.obtenerObligatoriosNoAportadosCondicionadosAutomatico());
+		VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", solicitud.documentacion.documentos);
+		List<String> condicionadosAutomaticosNoAportados;
+		try {
+			condicionadosAutomaticosNoAportados = VerificacionFapController.getDocumentosNoAportadosCondicionadosAutomaticos(NOMBRE_TRAMITE, solicitud.id);
+			verificar.preparaPresentacionTramite(condicionadosAutomaticosNoAportados);
+		} catch (Throwable e) {
+			play.Logger.debug("Error validando la documentacion aportada", e.getMessage());
+			Messages.error("Error validando la documentacion aportada");
+		}
 	}
-
-	/**
-	 * Sobreescribir para obtener las lista de Documentos obligatorios no aportados
-	 * @return La lista de documentos y null en caso de no encontrarse ninguno
-	 */
-	//TODO SMB 2012/05/14 (protected to public)
-	public abstract List<String> obtenerObligatoriosNoAportadosCondicionadosAutomatico();
 
 	/**
 	 * No realiza cambios de estado

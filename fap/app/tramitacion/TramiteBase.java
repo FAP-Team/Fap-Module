@@ -238,96 +238,100 @@ public abstract class TramiteBase {
 	 */
 	protected abstract void guardar();
 	
-	public void validarReglasConMensajes() {}
+	protected abstract void validarReglasConMensajes();
 
     /**
 	 * Sobreescribir para registrar el tipo de trámite específico 
 	 * @throws RegistroException
 	 */
 	protected void registrar() throws RegistroServiceException {
+		validarReglasConMensajes();
 		//Registra la solicitud
-		if (!registro.fasesRegistro.registro && registro.fasesRegistro.firmada) {
-			try {
-				//Registra la solicitud
-				JustificanteRegistro justificante = registroService.registrarEntrada(this.solicitud.solicitante, registro.oficial, this.solicitud.expedientePlatino, null);
-				play.Logger.info("Se ha registrado la solicitud %s en platino", solicitud.id);
+		if (!Messages.hasErrors()){
+			if (!registro.fasesRegistro.registro && registro.fasesRegistro.firmada) {
+				try {
+					//Registra la solicitud
+					JustificanteRegistro justificante = registroService.registrarEntrada(this.solicitud.solicitante, registro.oficial, this.solicitud.expedientePlatino, null);
+					play.Logger.info("Se ha registrado la solicitud %s en platino", solicitud.id);
+					
+					//Almacena la información de registro
+					registro.informacionRegistro.setDataFromJustificante(justificante);
+					play.Logger.info("Almacenada la información del registro en la base de datos");
 
-				//Almacena la información de registro
-				registro.informacionRegistro.setDataFromJustificante(justificante);
-				play.Logger.info("Almacenada la información del registro en la base de datos");
-
-				//Guarda el justificante en el AED
-				play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
-				Documento documento = registro.justificante;
-				documento.tipo = this.getJustificanteRegistro();
-				documento.descripcion = "Justificante de registro de la solicitud";
-				documento.save();
-				gestorDocumentalService.saveDocumentoTemporal(documento, justificante.getDocumento().contenido.getInputStream(), this.getNombreFicheroPdf());
-				play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el AED", this.getTipoTramite());
-
-				registro.fasesRegistro.registro = true;
-				registro.fasesRegistro.save();
-				Mails.enviar(this.getMail(), this.solicitud);
-				play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());				
+					//Guarda el justificante en el AED
+					play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
+					Documento documento = registro.justificante;
+					documento.tipo = this.getJustificanteRegistro();
+					documento.descripcion = "Justificante de registro de la solicitud";
+					documento.save();
+					gestorDocumentalService.saveDocumentoTemporal(documento, justificante.getDocumento().contenido.getInputStream(), this.getNombreFicheroPdf());
+					play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el AED", this.getTipoTramite());
+					
+					registro.fasesRegistro.registro = true;
+					registro.fasesRegistro.save();
+					Mails.enviar(this.getMail(), this.solicitud);
+					play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());				
 
 
-				// Establecemos las fechas de registro para todos los documentos de la solicitud
+					// Establecemos las fechas de registro para todos los documentos de la solicitud
+					List<Documento> documentos = new ArrayList<Documento>();
+					documentos.addAll(this.getDocumentos());
+					documentos.add(registro.justificante);
+					documentos.add(registro.oficial);
+					for (Documento doc: documentos) {
+						if (doc.fechaRegistro == null) {
+							doc.fechaRegistro = registro.informacionRegistro.fechaRegistro;
+						}
+					}
+					play.Logger.info("Fechas de registro establecidas a " + this.getRegistro().informacionRegistro.fechaRegistro);
+
+				} catch (Exception e) {
+					Messages.error("Error al registrar de entrada la solicitud");
+					throw new RegistroServiceException("Error al obtener el justificante del registro de entrada");
+				}
+			} else {
+				play.Logger.debug("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
+			}
+
+			//Clasifica los documentos en el AED
+			if (!registro.fasesRegistro.clasificarAed && registro.fasesRegistro.registro) {
+				//Clasifica los documentos sin registro
 				List<Documento> documentos = new ArrayList<Documento>();
-				documentos.addAll(this.getDocumentos());
 				documentos.add(registro.justificante);
-				documentos.add(registro.oficial);
-				for (Documento doc: documentos) {
-					if (doc.fechaRegistro == null) {
-						doc.fechaRegistro = registro.informacionRegistro.fechaRegistro;
+				try {
+					gestorDocumentalService.clasificarDocumentos(this.solicitud, documentos);
+				} catch (GestorDocumentalServiceException e){
+					Messages.error("Algunos documentos sin registro del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
+					throw new RegistroServiceException("Error al clasificar documentos sin registros");
+				}
+	
+				if (!Messages.hasErrors()){
+					//Clasifica los documentos con registro de entrada
+					List<Documento> documentosRegistrados = new ArrayList<Documento>();
+					documentosRegistrados.addAll(this.getDocumentos());
+					documentosRegistrados.add(registro.oficial);
+					try {
+						gestorDocumentalService.clasificarDocumentos(this.solicitud, documentosRegistrados, registro.informacionRegistro);
+						registro.fasesRegistro.clasificarAed = true;
+						registro.fasesRegistro.save();
+						play.Logger.info("Se clasificaron todos los documentos del trámite de '%s'", this.getTipoTramite());
+					} catch (GestorDocumentalServiceException e){
+						Messages.error("Algunos documentos con registro de entrada del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
+						throw new RegistroServiceException("Error al clasificar documentos con registros");
 					}
 				}
-				play.Logger.info("Fechas de registro establecidas a " + this.getRegistro().informacionRegistro.fechaRegistro);
-
-			} catch (Exception e) {
-				Messages.error("Error al registrar de entrada la solicitud");
-				throw new RegistroServiceException("Error al obtener el justificante del registro de entrada");
+			} else {
+				play.Logger.debug("Ya están clasificados todos los documentos del trámite de '%s' de la solicitud %s", this.getTipoTramite(), this.solicitud.id);
 			}
-		} else {
-			play.Logger.debug("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
-		}
-
-		//Clasifica los documentos en el AED
-		if (!registro.fasesRegistro.clasificarAed && registro.fasesRegistro.registro) {
-			//Clasifica los documentos sin registro
-			List<Documento> documentos = new ArrayList<Documento>();
-			documentos.add(registro.justificante);
-			try {
-				gestorDocumentalService.clasificarDocumentos(this.solicitud, documentos);
-			} catch (GestorDocumentalServiceException e){
-				Messages.error("Algunos documentos sin registro del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
+	
+			//Añade los documentos a la lista de documentos de la solicitud
+			if (registro.fasesRegistro.clasificarAed){
+				this.moverRegistradas();
+				this.solicitud.documentacion.documentos.addAll(this.getDocumentos());
+				this.prepararNuevo();
+				solicitud.save();
+				play.Logger.debug("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
 			}
-
-			if (!Messages.hasErrors()){
-				//Clasifica los documentos con registro de entrada
-				List<Documento> documentosRegistrados = new ArrayList<Documento>();
-				documentosRegistrados.addAll(this.getDocumentos());
-				documentosRegistrados.add(registro.oficial);
-				try {
-					gestorDocumentalService.clasificarDocumentos(this.solicitud, documentosRegistrados, registro.informacionRegistro);
-					registro.fasesRegistro.clasificarAed = true;
-					registro.fasesRegistro.save();
-					play.Logger.info("Se clasificaron todos los documentos del trámite de '%s'", this.getTipoTramite());
-				} catch (GestorDocumentalServiceException e){
-					Messages.error("Algunos documentos con registro de entrada del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
-				}
-			}
-		} else {
-			play.Logger.debug("Ya están clasificados todos los documentos del trámite de '%s' de la solicitud %s", this.getTipoTramite(), this.solicitud.id);
-		}
-
-		//Añade los documentos a la lista de documentos de la solicitud
-		if (registro.fasesRegistro.clasificarAed){
-			this.moverRegistradas();
-			this.solicitud.documentacion.documentos.addAll(this.getDocumentos());
-			this.prepararNuevo();
-			solicitud.save();
-
-			play.Logger.debug("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
 		}
 	}
 	

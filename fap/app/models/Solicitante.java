@@ -86,16 +86,16 @@ public class Solicitante extends Persona {
 	public List<Firmante> calcularFirmantes() {
 		//if(solicitante == null) throw new NullPointerException();
 		//if(firmantes == null) throw new NullPointerException();
-		List<Firmante> firmantes = new ArrayList<Firmante>();
+		Firmantes firmantes = new Firmantes();
 		//Solicitante de la solicitud
 		Firmante firmanteSolicitante = new Firmante(this, "unico");
-		firmantes.add(firmanteSolicitante);
+		firmantes.todos.add(firmanteSolicitante);
 
 		//Comprueba los representantes
 		if (this.isPersonaFisica() && this.representado) {
 			// Representante de persona física
 			Firmante representante = new Firmante(this.representante, "representante", "unico");
-			firmantes.add(representante);
+			firmantes.todos.add(representante);
 		} else if (this.isPersonaJuridica()) {
 			//Representantes de la persona jurídica
 			for (RepresentantePersonaJuridica r : this.representantes) {
@@ -106,10 +106,10 @@ public class Solicitante extends Persona {
 					cardinalidad = "unico";
 				}
 				Firmante firmante = new Firmante(r, "representante", cardinalidad);
-				firmantes.add(firmante);
+				firmantes.todos.add(firmante);
 			}
 		}
-		return firmantes;
+		return firmantes.todos;
 	}
 	// === MANUAL REGION END ===
 

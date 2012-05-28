@@ -150,6 +150,7 @@ GET /Solicitud/aportacionaportados/documentos AportacionAportadosController.tabl
 POST /Solicitud/aportacionaportados/save AportacionAportadosController.save
 GET /Solicitud/aportacionpresentar AportacionPresentarController.index
 
+GET /Solicitud/aportacionpresentar/documentos AportacionPresentarController.tabladocumentos
 POST /Solicitud/aportacionpresentar/modificarBorrador AportacionPresentarController.modificarBorrador
 POST /Solicitud/aportacionpresentar/presentar AportacionPresentarController.presentar
 POST /Solicitud/aportacionpresentar/presentarSinRegistrar AportacionPresentarController.presentarSinRegistrar

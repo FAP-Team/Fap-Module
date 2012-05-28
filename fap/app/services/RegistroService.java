@@ -248,6 +248,7 @@ public class RegistroService {
 		}
 		
 		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
 		//Registro de entrada en platino
 		aportacion.refresh();
 		if(aportacion.estado.equals("firmada")){
@@ -281,7 +282,11 @@ public class RegistroService {
 				
 				aportacion.estado = "registrada";
 				aportacion.save();
-				Mails.enviar("aportacionRealizada", solicitud);
+				try {
+					Mails.enviar("aportacionRealizada", solicitud);
+				} catch (Exception e){
+					play.Logger.error("Error al enviar el mail aportacionRealizada");
+				}
 				
 				play.Logger.info("Justificante almacenado en el AED");
 			} catch (IllegalArgumentException e){
@@ -289,12 +294,12 @@ public class RegistroService {
 				play.Logger.info("Justificante almacenado en el AED");
 			} catch (Exception e) {
 				e.printStackTrace();
-				Messages.error("Error al registrar de entrada la solicitud");
+				Messages.error("Error al registrar de entrada la solicitud "+solicitud.id);
 				throw new RegistroException("Error al obtener el justificante del registro de entrada");
 			} finally {
 				aportacion.save();
-				tx.commit();
 			}
+			tx.commit();
 		}else{
 			play.Logger.debug("La solicitud %s ya está registrada", solicitud.id);
 		}
@@ -319,9 +324,9 @@ public class RegistroService {
 			if(todosClasificados){
 				aportacion.estado = "clasificada";
 				aportacion.save();
-				play.Logger.info("Se clasificaron todos los documentos");
+				play.Logger.info("Se clasificaron todos los documentos de la solicitud "+solicitud.id+", aportación "+aportacion.id);
 			}else{
-				play.Logger.fatal("Algunos documentos no se pudieron clasificar correctamente");
+				play.Logger.fatal("Algunos documentos no se pudieron clasificar correctamente. Solicitud: "+solicitud.id+", Aportación: "+aportacion.id);
 				Messages.error("Algunos documentos no se pudieron clasificar correctamente");
 			}
 			aportacion.save();
@@ -344,9 +349,10 @@ public class RegistroService {
 			play.Logger.info("Guardamos la aportación");
 			solicitud.save();
 			
-			play.Logger.info("Los documentos de la aportacion se movieron correctamente");
+			play.Logger.info("Los documentos de la aportacion %s se movieron correctamente", aportacion.id);
 			tx.commit();
 		}
+		tx.begin();
 	}
 	
 	

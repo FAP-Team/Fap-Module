@@ -62,6 +62,13 @@ public class PlatinoRegistro {
 	static {
 		URL wsdlURL = Registro_Service.class.getClassLoader().getResource("wsdl/registro.wsdl");
 		registro = new Registro_Service(wsdlURL).getRegistroPort();
+		
+		Client client = ClientProxy.getClient(registro);
+		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
+		httpConduit.setClient(httpClientPolicy);
 
 		BindingProvider bp = (BindingProvider)registro;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
@@ -243,6 +250,8 @@ public class PlatinoRegistro {
 		return registro.registrarEntrada (username, passwdEncripted, datosAFirmar, datosFirmados, aliasServidor, null, null);	
 	}
 	
+	
+	
 	/**
 	 * Se almacena el documento en el gestor documental.
 	 * Se normalizan los datos de registro.
@@ -276,11 +285,17 @@ public class PlatinoRegistro {
 		
 		Asunto asunto = new Asunto();
 		
-		String asuntoProperty = FapProperties.get("fap.platino.registro.asunto");
+		String asuntoProperty = datosRegistro.getAsunto();
+		if (asuntoProperty == null) {
+			asuntoProperty = FapProperties.get("fap.platino.registro.asunto");
+		}
 		
 		asunto.getContent().add(asuntoProperty);
 		
-		Long organismo = FapProperties.getLong("fap.platino.registro.unidadOrganica");
+		String organismo = datosRegistro.getUnidadOrganica();
+		if (organismo == null) {
+			organismo = FapProperties.get("fap.platino.registro.unidadOrganica");
+		}
 
 		String datosAFirmar = null;	
 		try {								
@@ -315,49 +330,34 @@ public class PlatinoRegistro {
 		return dateTime;
 	}
 	
-	/**
-	 * TODO: Registrar de Salida los datos
-	 * @param datosRegistro
-	 * @return
-	 * @throws Exception
-	 */
 	public static JustificanteRegistro registroDeSalida(DatosRegistro datosRegistro) throws Exception {
-//		log.info("Preparando registro de salida");
-//		String datosAFirmar = obtenerDatosAFirmarRegisto(datosRegistro);
-//		log.info(datosAFirmar);
-//		
-//		String datosFirmados = FirmaClient.firmarPKCS7(datosAFirmar.getBytes("iso-8859-1"));
-//		log.info("Datos normalizados firmados");
-//		
-//		// 6) Registrar
-//		try {	
-//			JustificanteRegistro justificante = registroDeSalida(datosAFirmar, datosFirmados);
-//			log.info("Registro de salida realizado con justificante con NDE " + justificante.getNDE() + " Numero Registro General: " + justificante.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificante.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificante.getDatosFirmados().getNúmeroRegistro().getNumOficina());
-//			log.info("RegistrarSalida -> EXIT OK");
-//			return justificante;
-//		} catch (Exception e) {
-//			log.error("Error al obtener el justificante y EXIT "+e);
-//			log.error("RegistrarSalida -> EXIT ERROR");
-//			throw e;
-//		}
-		return null;
-	}
+		log.info("Preparando registro de salida");
+		
+		String datosAFirmar = obtenerDatosAFirmarRegisto(datosRegistro);
+		log.info(datosAFirmar);
+		
+		String datosFirmados = FirmaClient.firmarPKCS7(datosAFirmar.getBytes("iso-8859-1"));
+		log.info("Datos normalizados firmados");
+		
+		try {	
+			JustificanteRegistro justificante = registroDeSalida(datosAFirmar, datosFirmados);
+			log.info("Registro de entrada realizado con justificante con NDE " + justificante.getNDE() + " Numero Registro General: " + justificante.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificante.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificante.getDatosFirmados().getNúmeroRegistro().getNumOficina());
+			log.info("RegistrarEntrada -> EXIT OK");
+			return justificante;
+		} catch (Exception e) {
+			log.error("Error al obtener el justificante y EXIT "+e);
+			log.error("RegistrarEntrada -> EXIT ERROR");
+			throw e;
+		}		
+	}	
 	
-	/**
-	 * TODO
-	 * @param datosAFirmar
-	 * @param datosFirmados
-	 * @return
-	 * @throws Exception
-	 */
-	public static JustificanteRegistro registroDeSalida(String datosAFirmar, String datosFirmados) throws Exception{
-//		// Se realiza el registro de Salida, obteniendo el justificante
-//		String username = FapProperties.get("fap.platino.registro.username");
-//		String password = FapProperties.get("fap.platino.registro.password");
-//		String aliasServidor = FapProperties.get("fap.platino.registro.aliasServidor");
-//		
-//		String passwdEncripted = PlatinoSecurityUtils.encriptarPassword(password);
-//		return registro.registrarSalida(username, passwdEncripted, datosAFirmar, datosFirmados, aliasServidor, null);
-		return null;
+	public static JustificanteRegistro registroDeSalida(String datosAFirmar, String datosFirmados) throws Exception {
+		// Se realiza el registro de salida, obteniendo el justificante
+		String username = FapProperties.get("fap.platino.registro.username");
+		String password = FapProperties.get("fap.platino.registro.password");
+		String aliasServidor = FapProperties.get("fap.platino.registro.aliasServidor");
+		
+		String passwordEncrypted = PlatinoSecurityUtils.encriptarPassword(password);
+		return registro.registrarSalida(username, passwordEncrypted, datosAFirmar, datosFirmados, aliasServidor, null);
 	}
 }

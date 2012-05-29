@@ -1,6 +1,6 @@
 h2. Changelog
 
-h3. Versión 1.3.7RC1
+h3. Versión 1.3.7
 
 * Mejoras en las transacciones en la aportación de documentación.
 * Fixed bug el clasificar con registro los documentos de la aportación.
@@ -8,6 +8,7 @@ h3. Versión 1.3.7RC1
 * Cambios en la forma de generar los requerimientos.
 * AED: Añadidos métodos para crear y comprobar que existen carpetas.
 * Fixed bug actualizar propiedades documento clasificado.
+* Modificadas las clases DatosRegistro y PlatinoRegistro.
 
 h3. Versión 1.3.6
 

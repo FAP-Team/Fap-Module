@@ -351,6 +351,49 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		return null;
 	}
 	
+	@Override
+	public void firmar(Documento documento, List<Firmante> firmantes, String firma, String valorDocumentofirmanteSolicitado){		
+		Firmante firmanteCertificado = getFirmante(firma, documento);
+		
+		if(firmanteCertificado != null){
+			log.info("Firmante validado");
+			
+			int index = firmantes.indexOf(firmanteCertificado);
+			Firmante firmante = null;
+			if(index == -1){
+				Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud.");
+			}else{
+				firmante = firmantes.get(index);
+				if(firmante.fechaFirma != null){
+					Messages.error("Ya ha firmado la solicitud");
+				}
+				
+				log.info("Firmante encontrado " + firmante.idvalor );
+				log.info("Esperado " + valorDocumentofirmanteSolicitado);
+				if(valorDocumentofirmanteSolicitado != null && !firmante.idvalor.equalsIgnoreCase(valorDocumentofirmanteSolicitado)){
+					Messages.error("Se esperaba la firma de " + valorDocumentofirmanteSolicitado);
+				}
+			}
+			
+			if(!Messages.hasErrors()){
+				// Guarda la firma en el AED
+				try {
+					log.info("Guardando firma en el aed");
+					firmante.fechaFirma = new DateTime();
+					gestorDocumentalService.agregarFirma(documento, new models.Firma(firma, firmantes));
+					firmante.save();
+					
+					log.info("Firma del documento " + documento.uri + " guardada en el AED");
+				}catch(GestorDocumentalServiceException e){
+					log.error("Error guardando la firma en el aed");
+					Messages.error("Error al guardar la firma");
+				}				
+			}
+		}else{
+			log.error("firmanteCertificado == null????");
+		}
+	}
+	
 
 	/*
 	@Override

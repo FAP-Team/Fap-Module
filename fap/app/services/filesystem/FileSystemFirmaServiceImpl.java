@@ -16,6 +16,7 @@ import messages.Messages;
 import models.Documento;
 import models.Firmante;
 
+import platino.Firma;
 import platino.InfoCert;
 import play.libs.Codec;
 import play.libs.Crypto;
@@ -119,6 +120,10 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 		firmante.nombre = "Fapito Etsiiano Ulliano";
 		return firmante;
 
+	}
+	
+	@Override
+	public void firmar(Documento documento, List<Firmante> firmantes, String firma, String valorDocumentofirmanteSolicitado){
 	}
  
 }

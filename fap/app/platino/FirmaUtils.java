@@ -55,7 +55,7 @@ public class FirmaUtils {
 			return;
 		}
 		
-		firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
+		firmaService.firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
 		
 		if (!Messages.hasMessages()) {
 			Messages.ok("La solicitud se firmó correctamente");

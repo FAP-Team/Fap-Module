@@ -47,9 +47,11 @@ public class GenericController extends Controller {
 	protected static void packageParams() throws Exception {
 		//Añade a la pila todos los parámetros que empiezan por id
 		//Se utiliza en la propagacion de identificadores
-		tags.TagMapStack.clear();
+		//tags.TagMapStack.clear();
 		Map<String, String> allSimple = params.allSimple();
-		Map<String, Long> idParams = new HashMap<String, Long>();
+		Map<String, Long> idParams = (Map<String, Long>) tags.TagMapStack.pop("idParams");
+		if (idParams == null || idParams.size() == 0)
+			idParams = new HashMap<String, Long>();
 		for(Map.Entry<String, String> entry : allSimple.entrySet()){
 			if(entry.getKey().startsWith("id")){
 				try {

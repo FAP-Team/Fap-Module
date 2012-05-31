@@ -30,7 +30,7 @@ public class CodigoExclusion extends Model {
 	public String codigo;
 	
 	
-	
+	@OneToOne
 	@Transient
 	public TipoCodigoExclusion tipoCodigo;
 	

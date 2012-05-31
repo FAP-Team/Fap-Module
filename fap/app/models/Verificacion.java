@@ -35,7 +35,7 @@ public class Verificacion extends Model {
 	public String uriProcedimiento;
 	
 	
-	
+	@ManyToOne
 	@Transient
 	public Tramite tramiteNombre;
 	

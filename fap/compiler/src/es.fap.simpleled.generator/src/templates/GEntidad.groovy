@@ -123,7 +123,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			return "";
 		}
 		
-		String type;
+		String type, referenceTypeTransient;
 		String name = attribute.name;
 		List<String> anotaciones = new ArrayList<String>();
 		List<String> anotacionesJPA = new ArrayList<String>(); // Éstas anotaciones no se utilizarán si el atributo es Transient
@@ -202,6 +202,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			else{
 				//Referencia
 				String tipoReferencia = compuesto.tipoReferencia?.type ?: "OneToOne" //Si no especifica tipo es una OneToOne
+				referenceTypeTransient = tipoReferencia;
 				if (tipoReferencia.equals("ManyToOne")) { // Si es ManyToOne, no ponemos la anotacion de cascade
 					anotacionesJPA.add "@${tipoReferencia}(fetch=FetchType.LAZY)"
 				} else {
@@ -231,6 +232,9 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		if (attribute.isTransient) {
 			anotaciones.add("@Transient");
 			anotacionesJPA.clear();
+			// Ponemos el tipo de referencia para que si alguien asigna un transient en un combo, ese combo sepa que tipo de referencia es, en el combo.html, y cargue los items correctamente
+			if (referenceTypeTransient != null)
+				anotacionesJPA.add("@${referenceTypeTransient}");
 		}
 			
 		// Si tiene atributo length (sólo los de tipo String y LongText -> la comprobación se hace en el editor)

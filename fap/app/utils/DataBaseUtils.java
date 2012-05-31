@@ -8,6 +8,7 @@ import java.util.Map;
 import security.Secure;
 
 import config.InjectorConfig;
+import enumerado.fap.gen.EstadosSolicitudEnum;
 
 import models.TableKeyValue;
 import models.VisibilidadEstadoUsuario;
@@ -45,7 +46,10 @@ public class DataBaseUtils {
 				play.Logger.info("Creamos el estado visibilidad \""+tableKeyValue.key+"\" para la visibilidad del estado del usuario");
 				VisibilidadEstadoUsuario estado = new VisibilidadEstadoUsuario();
 				estado.estadoInterno = tableKeyValue.key;
-				estado.estadoUsuario = tableKeyValue.key;
+				if (estado.equals(EstadosSolicitudEnum.borrador.name()) || estado.equals(EstadosSolicitudEnum.desistido.name()))
+					estado.estadoUsuario = tableKeyValue.key;
+				else
+					estado.estadoUsuario = EstadosSolicitudEnum.iniciada.name();
 				estado.save();
 			}
 			

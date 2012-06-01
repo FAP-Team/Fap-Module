@@ -46,7 +46,7 @@ public class DataBaseUtils {
 				play.Logger.info("Creamos el estado visibilidad \""+tableKeyValue.key+"\" para la visibilidad del estado del usuario");
 				VisibilidadEstadoUsuario estado = new VisibilidadEstadoUsuario();
 				estado.estadoInterno = tableKeyValue.key;
-				if (estado.equals(EstadosSolicitudEnum.borrador.name()) || estado.equals(EstadosSolicitudEnum.desistido.name()))
+				if (estado.estadoInterno.equals(EstadosSolicitudEnum.borrador.name()) || estado.estadoInterno.equals(EstadosSolicitudEnum.desistido.name()))
 					estado.estadoUsuario = tableKeyValue.key;
 				else
 					estado.estadoUsuario = EstadosSolicitudEnum.iniciada.name();

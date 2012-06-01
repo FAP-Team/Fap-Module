@@ -52,3 +52,6 @@ h2. Properties originarias de FAP
 ** Ejemplo: _fap.cache=true_ (Activar la concurrencia en la aplicación web, por defecto es true)
 * Tiempo máximo que tiene una petición el control cuando se habilita la concurrencia: *fap.cache.time=* _[Xmin]_
 ** Ejemplo: _fap.cache.time=5min_ (Si una petición tiene el control más de 5 minutos, el control vuelve a liberarse)
+* Aparece un formulario de búsqueda en la pantalla inicial para todos los roles (excepto Usuario): *fap.index.search=* _[true | false]_
+** Ejemplo: _fap.index.search=true_
+

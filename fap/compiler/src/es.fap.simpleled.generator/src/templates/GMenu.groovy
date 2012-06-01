@@ -13,6 +13,7 @@ public class GMenu extends GElement{
 
 	Menu menu;
 	Set<String> scriptVariables;
+	String scriptEntidadesDeclaracion = "";
 
 	public GMenu(Menu menu, GElement container){
 		super(menu, container);
@@ -22,11 +23,17 @@ public class GMenu extends GElement{
 
 	public void generate(){
 		scriptVariables = new HashSet<String>();
-		String view = "<ul class='nav nav-list'>"
+		String viewAntes = "<ul class='nav nav-list'>\n"
+		String view = ""
 		for(MenuElemento elemento : menu.elementos){
 			view += generateElemento(elemento, -1);
 		}
 		view +="</ul>"
+		view = viewAntes+"""
+			%{
+				${scriptEntidadesDeclaracion}
+			%}
+"""+ view;
 		FileUtils.overwrite(FileUtils.getRoute('MENU_GEN'), getMenuName(), view);
 	}
 	
@@ -137,7 +144,8 @@ public class GMenu extends GElement{
 		for (Entidad entidad: controller.allEntities){
 			if (!scriptVariables.contains(entidad.variable)){
 				scriptVariables.add(entidad.variable);
-				scriptEntidades += """models.${entidad.clase} ${entidad.variable} = play.mvc.Scope.RenderArgs.current().get("${entidad.variable}");\n""";
+				scriptEntidadesDeclaracion += """ models.${entidad.clase} ${entidad.variable};\n """;
+				scriptEntidades += """${entidad.variable} = play.mvc.Scope.RenderArgs.current().get("${entidad.variable}");\n""";
 			}
 		}
 		String url = "url = ${link};";

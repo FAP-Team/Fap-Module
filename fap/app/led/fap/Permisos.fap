@@ -586,3 +586,30 @@ Permiso miAgente{
 	return
 		all
 }
+
+// Permiso que controla que se muestra la búsqueda en la pantalla inicial
+// SOBREESCRITO EN SECUREFAP.JAVA
+Permiso listaSolicitudesConBusqueda{
+	when
+		agente.rolActivo != "usuario"
+	return 
+		all
+}
+
+// Permiso que controla que no se muestra la búsqueda en la pantalla inicial
+// SOBREESCRITO EN SECUREFAP.JAVA
+Permiso listaSolicitudesSinBusqueda{
+	when
+		agente.rolActivo = "usuario"
+	return 
+		all
+}
+
+// Permiso para saber el estado de la búsqueda (si no se ha buscado todavía, no mostramos la tabla de resultados)
+// SOBREESCRITO EN SECUREFAP.JAVA
+Permiso mostrarResultadoBusqueda{
+	when
+		agente.rolActivo != "usuario"
+	return
+		all
+}

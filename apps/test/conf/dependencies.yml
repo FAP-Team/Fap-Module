@@ -10,7 +10,10 @@ require:
     - play -> mockito 0.1
     - play -> webdrive 0.2:
         transitive: false
-
+#    - play -> elasticsearch 0.1
+#    - org.elasticsearch -> elasticsearch 0.18.5
+#    - se.scalablesolutions.akka -> akka-amqp 1.1.2
+    
 repositories:
     - Fap Local repository:
         type:       local
@@ -28,3 +31,14 @@ repositories:
         contains:
             - fap-modules -> guice
 
+#    - elasticsearch:
+#        type: iBiblio
+#        root: "http://oss.sonatype.org/content/repositories/releases/"
+#        contains:
+#            - org.elasticsearch -> *
+             
+#    - akka:
+#        type: iBiblio
+#        root: "http://repo.akka.io/releases/"
+#        contains:
+#            - se.scalablesolutions.akka -> *

@@ -8,18 +8,42 @@ Formulario Principal {
 		Enlace "Salir" accion="fap.SecureController.logout"
 	}
 	
-	Pagina Solicitudes{
-		
-		Tabla listaSolicitudes titulo="Mis Solicitudes" campo=SolicitudGenerica paginaLeer=LeerSolicitud paginaEditar=EditarSolicitud paginaCrear=NuevaSolicitud permisoFilas=solicitudes {
-			Columna campo=SolicitudGenerica.id titulo="ID" ancho="40"
-			Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
-			Columna campo=SolicitudGenerica.estado titulo="Estado Interno" ancho="80" permiso=noVisibleUsuario
-			Columna campo=SolicitudGenerica.estadoValue titulo="Estado" ancho="80" permiso=noVisibleUsuario
-			Columna campo=SolicitudGenerica.estadoUsuario titulo="Estado Usuario" ancho="150"
-			Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" expandir
-			Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir			
+	
+	Pagina Solicitudes {
+		// Vista de búsqueda de solicitudes
+		Grupo titulo="Resultado de la búsqueda" permiso=listaSolicitudesConBusqueda borde=false {
+			Wiki {" Puede insertar en una misma caja de texto varias palabras separadas por espacios en blanco y se buscará cualquier referencia que concuerde en la base de datos. <br /> <br />"}
+            Form BusquedaForm {
+                Texto campo=Busqueda.solicitud titulo="Solicitud:"
+                Texto campo=Busqueda.interesado titulo="Interesado:"
+                Combo campo=Busqueda.estadoSolicitud titulo="Estado:"
+                Boton Buscar titulo="Buscar"
+            }
+            
+            Grupo titulo="Resultado de la búsqueda" permiso=mostrarResultadoBusqueda borde=false {
+                Tabla listaSolicitudesBuscadas titulo="Mis Solicitudes (Búsqueda)" campo=SolicitudGenerica paginaLeer=LeerSolicitud paginaEditar=EditarSolicitud paginaCrear=NuevaSolicitud {
+                    Columna campo=SolicitudGenerica.id titulo="ID" ancho="40"
+                    Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
+                    Columna campo=SolicitudGenerica.estado titulo="Estado Interno" ancho="80" permiso=noVisibleUsuario
+                    Columna campo=SolicitudGenerica.estadoValue titulo="Estado" ancho="80" permiso=noVisibleUsuario
+                    Columna campo=SolicitudGenerica.estadoUsuario titulo="Estado Usuario" ancho="150"
+                    Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" expandir
+                    Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir         
+                }
+            }
+        }
+        // Vista de listado de solicitudes (perfil Usuario)
+        Grupo titulo="Resultado de la búsqueda" permiso=listaSolicitudesSinBusqueda borde=false {        	 
+    		Tabla listaSolicitudes titulo="Mis Solicitudes" campo=SolicitudGenerica paginaLeer=LeerSolicitud paginaEditar=EditarSolicitud paginaCrear=NuevaSolicitud permisoFilas=solicitudes {
+    			Columna campo=SolicitudGenerica.id titulo="ID" ancho="40"
+    			Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
+    			Columna campo=SolicitudGenerica.estado titulo="Estado Interno" ancho="80" permiso=noVisibleUsuario
+    			Columna campo=SolicitudGenerica.estadoValue titulo="Estado" ancho="80" permiso=noVisibleUsuario
+    			Columna campo=SolicitudGenerica.estadoUsuario titulo="Estado Usuario" ancho="150"
+    			Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" expandir
+    			Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir			
+    		}
 		}
-		
 	}
 	
 	Pagina NuevaSolicitud campo=SolicitudGenerica permiso=nuevaSolicitud {}

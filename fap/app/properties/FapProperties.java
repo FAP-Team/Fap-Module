@@ -50,6 +50,13 @@ public class FapProperties extends PlayPlugin {
 		return configuration.getLong(key);
 	}
 	
+	public static void setBoolean(String key, boolean bool) {
+		if (bool) 
+			configuration.setInt(key, 1);
+		else
+			configuration.setInt(key, 0);
+	}
+	
 	/**
 	 * Comprueba si se está ejecutando una aplicacion
 	 * o el módulo directamente (por ejemplo ejecutando los test del módulo)

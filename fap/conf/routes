@@ -55,6 +55,8 @@ POST /popups.popupceconomicoscontroller/editar popups.PopupCEConomicosController
 
 # === FAPGENERATED ===
 GET /Principal/solicitudes SolicitudesController.index
+POST /Principal/solicitudes/busquedaForm SolicitudesController.busquedaForm
+GET /Principal/solicitudes/listaSolicitudesBuscadas SolicitudesController.tablalistaSolicitudesBuscadas
 GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
 GET /Principal/nuevasolicitud NuevaSolicitudController.index
 POST /Principal/nuevasolicitud/editar NuevaSolicitudController.editar

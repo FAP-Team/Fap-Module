@@ -1,5 +1,5 @@
 // La entidad "TableKeyValue" la utilizaremos como tabla de tablas.
-// Básicamnte para guardar las listas con clave-valor.
+// Básicamente para guardar las listas con clave-valor.
 Entidad TableKeyValue noAuditable{
 	String table column="t"
 	String key column="k"
@@ -7,7 +7,7 @@ Entidad TableKeyValue noAuditable{
 }
 
 // La entidad "TableKeyValueDependency" la utilizaremos como tabla de tablas de las listas con dependencias.
-// Básicamnte para guardar las listas con clave-valor-dependencia, para los combos dependientes.
+// Básicamente para guardar las listas con clave-valor-dependencia, para los combos dependientes.
 Entidad TableKeyValueDependency noAuditable{
 	String table column="t"
 	String dependency column="d"
@@ -41,7 +41,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	ManyToMany CEconomico ceconomicos	
 }
 
-// Dátos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
+// Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
 Entidad Solicitante extends Persona auditable{
 	Direccion domicilio
 	String telefonoFijo
@@ -72,7 +72,7 @@ Entidad Agente inheritance=joined auditable {
 	Lista roles rolActivo
 	String acceso
 	Boolean funcionario
-	String verificacion transient
+	String verificacion transient		// campo auxiliar para el cambio de password
 }
 
 // Entidad que contiene los campos necesarios para una dirección. Se establece como "embeddable", lo que indica
@@ -477,4 +477,11 @@ Entidad Tramite {
 Entidad VisibilidadEstadoUsuario noAuditable{
 	String estadoInterno
 	String estadoUsuario
+}
+
+Entidad Busqueda noAuditable extends Singleton {
+	String solicitud                                  // expedienteAed
+	String interesado
+	Lista multiple estadosSolicitud estadoSolicitud
+	Boolean mostrarTabla default = "false"             // necesitamos una variable para saber si ya ha buscado y mostrar la tabla de resultados
 }

@@ -24,6 +24,7 @@ public class CodigoExclusion extends FapModel {
 
 	public String codigo;
 
+	@OneToOne
 	@Transient
 	public TipoCodigoExclusion tipoCodigo;
 

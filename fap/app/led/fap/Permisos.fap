@@ -479,8 +479,7 @@ Permiso tableKeyOnlyEstadosSolicitud{
 	vars
 		TableKeyValue tableKeyValue
 	when
-		tableKeyValue.table = "estadosSolicitud" and
-		agente.rolActivo = "administrador"
+		tableKeyValue.table = "estadosSolicitud"
 	return all
 }
 
@@ -488,8 +487,7 @@ Permiso tableKeyOnlyEstadosSolicitudUsuario{
 	vars
 		TableKeyValue tableKeyValue
 	when
-		tableKeyValue.table = "estadosSolicitudUsuario" and
-		agente.rolActivo = "administrador"
+		tableKeyValue.table = "estadosSolicitudUsuario"
 	return editable
 }
 

@@ -266,7 +266,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		}
 		
 		if (attribute.column != null)
-			anotaciones.add("""@Column(name="${attribute.column}")""");
+			columnAnotations.add("name=\""+attribute.column+"\"");
 			
 		// Si tiene atributo length (sólo los de tipo String y LongText -> la comprobación se hace en el editor)
 		if (attribute.hasLength)

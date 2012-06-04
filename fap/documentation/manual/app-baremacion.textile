@@ -1,0 +1,22 @@
+h1. Baremación
+
+Para realizar la parte de la aplicación que se encargue del proceso de Baremación se deben seguir una serie de pautas que se describe a continuación.
+
+h2. Creación del fichero JSON asociado
+
+Para conocer la estructura que debe tener el fichero JSON (tipoEvaluacion.json) pulsar "aqui":app-baremacion-creacionJSON
+
+h2. Inicializar la Baremación
+
+Para llevar a cabo el inicio de la baremación, en la parte de Administración, esta "Activar Baremación", que contiene un botón con el mismo nombre que permite el Inicio de la Baremación. Una vez activada la Baremación, no es recomendable volver a iniciarla, ya que puede haber problemas graves de los cuales no nos hacemos responsables.
+
+Por defecto FAP, para el inicio de la baremación lo que se hace es a través del tipo de evaluación que se ha cargado en Base de Datos a partir del fichero _tipoEvaluacion.json_, se recorren todas las solicitudes y se buscan aquellas que no tengan evaluaciones creadas para crear dichas evaluaciones por primera vez a partir del Tipo de Evaluación.
+
+h3. Y si quiero personalizar el inicio de la Baremación ¿Qué tengo que hacer?
+
+Como el proceso de Baremación es muy dependiente del procedimiento en cuestión, para llevar a cabo el inicio de la misma de forma personalizada se puede sobreescribir una clase tal y como se describe "aqui":app-baremacion-inicio
+
+h2. ¿Qué debo sobreescribir para personalizar la Baremación?
+
+Si quieres que algunos comportamientos por defecto, como el cálculo de los criterios no hoja o cualquier otro aspecto, sea uno propio, se deberán sobreescribir una serie de métodos y funciones que puede conocer "aqui":app-baremacion-sobreescribir
+

@@ -85,6 +85,7 @@ h2. Desarrollo de aplicaciones
 * "Permisos":app-permisos
 * "Cambiar página de inicio":app-cambiarPaginaPrincipal
 * "Verificacion Documentación":app-verificacion
+* "Baremación":app-baremacion
 * "Inyección de dependencia":app-guice
 * "Envío de emails":app-email
 * "Properties del application.conf":doc-properties

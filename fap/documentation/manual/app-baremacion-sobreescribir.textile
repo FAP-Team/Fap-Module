@@ -1,0 +1,89 @@
+h1. ¿Qué debo sobreescribir para personalizar la Baremación?
+
+Si quieres que algunos comportamientos por defecto, como el cálculo de los criterios no hoja o cualquier otro aspecto, sea uno propio, se deberán sobreescribir una serie de métodos y funciones que se explican a continuación.
+
+Para sobreescribir algun método y personalizarlo, se deberá crear una clase en ${PATH_APLICACION}/app/baremacion/ con el nombre que queramos y que extienda de _Evaluador_, es decir, por ejemplo:
+
+bc. public class EvaluadorMiClase extends Evaluador {
+}
+
+Dentro de esa clase irán todos los métodos y funciones que queramos sobreescribir para personalizar alguna acción determinada de la baremación.
+
+A continuación se explican las acciones que se pueden sobreescribir, detallando lo que se hace por defecto.
+
+h2. Cálculo de los criterios no hoja
+
+h3. Cambiar comportamiento por defecto
+
+Para el cálculo de los criterios de evaluación, lo que se realiza por defecto es la suma de todos los nodos hijos de cada uno de los criterios, es decir, de sus subcriterios.
+
+De esta forma se tiene la función por defecto, cuyos parámetros indica el Criterio en cuestión a calcularle su valor, y la lista de subcriterios asociados a este.
+
+bc. public static void evalDefault(Criterio criterio, List<Criterio> childs) {
+		criterio.valor = sumatorio("valor", childs);
+	}
+
+Por lo que si se quiere cambiar este comportamiento por defecto y que dicho cálculo sea otro distinto a la suma se deberá sobreescribir este método en nuestra Clase recién creada que extiende de Evaluador.
+
+h3. Cambiar comportamiento específico
+
+Puede resultar que lo que queramos es que cada criterio se calcule de una forma determinada, es decir, que una función por defecto, como la anterior, no nos sirva para representar el cálculo de todos los criterios en general, ya que cada uno necesita un cálculo distinto.
+
+Por ello se pueden crear métodos que permiten el cálculo personalizado por criterios. Para ello el método tendra que confeccionarse con el siguiente nombre: _eval${JERARQUIA}_ donde ${JERARQUIA} representa la jerarquia del criterio, pero con la peculiaridad que los "." se convierten en "_" así que si tenemos la Jerarquia _A.1.1_ el método correspondiente se llamará *evalA_1_1*
+
+Así, para el criterio con Jerarquía anterior, se debería crear la función dentro de nuestra clase nueva que extiende de Evaluador y personalizar el cálculo del valor de dicho criterio, por ejemplo:
+
+bc. public static void evalA_1_1(Criterio criterio, List<Criterio> childs) {
+		Double a111 = childs.get(0).valor;
+		Double a112 = childs.get(1).valor;
+		Double a113 = childs.get(2).valor;
+		Double a114 = childs.get(3).valor;
+		if ((a111 !=null) && (a112 !=null) && (a113 !=null) && (a114 !=null)){
+			criterio.valor=b111*(a111+a112+(4*a113)-a114);
+		}
+	}
+	
+h2. Valores de los Datos Adicionales
+
+También es posible crear los _Getters_ que nos devuelvan el valor que queramos que representen los datos Adicionales, que no se englobaban ni en Criterios ni en Conceptos Económicos. 
+
+Para ello tendremos que crear el getter correspondiente para cada dato adicional a través de su nombre. Y crear una función que nos devuelva el valor de un dato Adicional pasandole como parámetro el propio nombre del dato Adicional. Esta función tendrá como nombre _getDatoAdicional_ y más adelante se detalla como debe ser construida.
+
+De manera que si teníamos un dato Adicional que tuviera como nombre *porcentajeTeorico*, el getter se crearía y se podría personalizar como sigue:
+
+bc. private static Double getPorcentajeTeorico(){
+		Double result = null;
+		String property = FapProperties.get("fap.app.baremacion.porcentajeAyuda");
+		if(property != null){
+			try {
+				result = Double.parseDouble(property);
+			}catch (NumberFormatException e) {
+				play.Logger.error("La property fap.app.baremacion.porcentajeAyuda no es un double");
+			}
+		}
+		return result;
+	}
+
+Si nos damos cuenta, este método se define como privado, por lo que su ámbito de uso sólo es local a esa clase. Esto es así, debido a lo comentado antes de que el que nos va a otorgar el valor de un dato Adicional, va a ser la función _getDatoAdicional_, de manera que por ejemplo podemos definirla como:
+
+bc. public static Object getDatoAdicional(String name, Evaluacion evaluacion){
+	Object result = null;
+	if("porcentajeTeorico".equals(name)){
+		result = formatPorcentaje(getPorcentajeTeorico());
+	}else if("subvencionTotalConcedida".equals(name)){
+		result = formatCurrency(getSubvencionTotalConcedida(evaluacion));
+	}else if("porcentajeSubvencionConcedida".equals(name)){
+		result = formatPorcentaje(getPorcentajeSubvencionConcedida(evaluacion));
+	}else if("porcentajeFondosPropios".equals(name)){
+		result = formatPorcentaje(getPorcentajeFondosPropios(evaluacion));
+	}else if("garantias".equals(name)){
+		result = getGarantias(evaluacion);
+	}else if("inversionTotalAprobada".equals(name)){
+		result = formatCurrency(getInversionTotalAprobada(evaluacion));
+	}
+	return result;
+}
+
+De forma que se le pase como argumento el nombre (_name_) del dato Adicional en cuestión y la evaluación que se está tratando en ese momento, y devuelve un Objeto (ya que dependiendo el dato Adicional puede ser un String, Double, etc., no conocemos el tipo a priori) con el valor correspondiente a ese dato Adicional. Se establece un IF para conocer que dato Adicional es y se halla su valor simplemente obteniendolo de la llamada al _getter_ correspondiente del dato Adicional, que como vimos antes se crea como método privado.
+	
+	

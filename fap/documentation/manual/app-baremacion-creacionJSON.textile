@@ -1,0 +1,255 @@
+h1. Creación del fichero JSON asociado
+
+El nicho de información principal para la generación de toda la parte de baremación en nuestra aplicación es un simple fichero JSON que indica los campos, atributos, criterios y demás formalismos que contiene una baremación en especial.
+
+Este fichero es un principio está pensado para que sea la respuesta de una petición a un servicio web propio para crear la Baremación de la aplicación. En estos momentos eso no está totalmente desarrollado, por lo que de momento el fichero JSON se debe generar a mano, simulando la respuesta del servicio web, para que la aplicación lo pueda leer y parsear, y así cargar todo lo concerniente a la baremación en nuestra aplicación.
+
+El fichero debe llamarse: *tipoEvaluacion.json* y debe situarse en _${PATH_APLICACION}/conf/initial-data/_, creando las carpetas oportunas si no existen.
+
+h2. Estructura General
+
+El contenido del fichero se detalla a continuación:
+
+Debe contener 9 items que se separaran por ',' y estarán encerrados entre '{', '}'
+
+Los items tendrán la estructura _clave : valor_ y serán los siguientes:
+
+* *nombre* Es un String que representará el nombre de la baremación.
+* *tipoProcedimiento* Es un String que representará el tipo de Procedimiento al que se le está realizando la Baremación.
+* *numeroEvaluacion* Es un Integer que indica el número de Evaluación que es, como una especie de versión.
+* *duracion* Es un Integer que indica la duración en años que tiene estipulada la ayuda, subvención, etc.
+* *comentariosAdministracion* Valor booleano que representa la presencia o no en la baremación de comentarios por parte del Evaluador o Gestor etc.
+* *comentariosSolicitante* Valor booleano que representa la presencia o no en la baremación de comentarios por parte del solicitante.
+* *criterios* Representan en una lista englobado por "[", "]" la serie de criterios de evaluación de dicha baremación. Más adelante se explica mejor su estructura.
+* *ceconomicos* Representa en una lista englobada por "[", "]" la serie de conceptos económicos de dicha baremación. Más adelante se explica mejor su estructura.
+* *datosAdicional* Representa en una lista englobada por "[", "]" aquellos datos adicionales propios de un procedimiento en concreto que hacen falta para la evaluación. Más adelante se explica mejor su estructura.
+
+De modo que el fichero debe tener un formato como el ejemplo que vemos a continuación. Denotar que los items _criterios_, _ceconomicos_ y _datosAdicionales_ se representan vacíos, porque más adelante se detalla en profundidad el contenido de los mismos, para una mejor explicación.
+
+bc. {
+	nombre : "Tipo evaluación de innovación",
+	tipoProcedimiento : "Innovacion",
+	numeroEvaluacion : 1,
+	duracion : 3,
+	comentariosAdministracion : true,
+	comentariosSolicitante : false,
+	criterios : [],
+	ceconomicos : [],
+	datosAdicionales : []
+}
+
+h2. Estructura de los _criterios_
+
+El item criterio de la estructura general anterior, representa la lista de criterios de evaluación, que normalmente se publica en la convocatoria. En esta lista, cada elemento será un objeto _criterio_ que tendrá los siguientes items:
+
+* *nombre* Es un String con el Título del criterio.
+* *claseCriterio* Es un String que indica la forma en la que se evalúa el criterio. Puede tener uno de los tres valores siguientes:
+** _manual_ : El criterio se evalúa de forma manual en la aplicación.
+** _auto_ : La evaluación del criterio es el resultado de un algoritmo predefinido de cálculo.
+** _automod_ : La evaluación del criterio se calcula de forma automática como en el caso anterior pero pueder ser modificada manualmente
+* *jerarquia* Es un String que denota la jerarquía de los criterios. Se utiliza para la representación de qué es un criterio, cuáles son subcriterios, etc. Es decir, si tenemos un criterio con jerarquía "A", otro con jerarquía "B" y otro con Jerarquía "A.1", lo que indicaremos será que "A" y "B" son dos criterios a la misma altura jerarquicamente (que será la más alta), y dentro de "A" habrá un subcriterio "A.1". Si hubiese un "A.1.1", ese sería subcriterio del "A.1", es decir, subcriterio del subcriterio del criterio con jerarquía "A". La jerarquía indica la situación del criterio en el árbol de criterios. Los nodos hojas son los únicos que se evalúan. Los nodos no hoja se calculan a aprtir de los nodos hoja.
+* *tipoValor* String que representa el tipo de valor que admitirá el criterio. Los posibles valores son:
+** _cantidad_ :  Indica que el valor admitido por ese criterio es un Double
+** _lista_ :  Indica que ese criterio sólo admitirá valores de un lista, que se debe indicar en la definición del criterio como se verá más adelante a través del item *listaValores*.
+* *listaValores* Representa una lista englobada por "[", "]", y cuyos elementos englobados en "{", "}", y separador por "," dentro de la lista. Este item es opcional y sólo tiene sentido indicarlo cuando el item *tipoValor* es _lista_, si es _cantidad_ no procede ponerlo. Cada elemento de la lista debe tener dos atributos que son:
+** _valor_ : Valor que se asociará al elemento de la lista y que se utilizará como valor del criterio en cuestión.
+** _descripcion_ : String que especifica el nombre del elemento de la lista de los valores posibles para ese criterio.
+* *descripcion* String que indica la descripción del criterio.
+* *comentariosAdministracion* Valor booleano que representa la presencia o no en ese criterio en concreto de comentarios por parte del Evaluador o Gestor etc.
+* *comentariosSolicitante* Valor booleano que representa la presencia o no en ese criterio en concreto de comentarios por parte del solicitante.
+
+De modo que el item _criterios_ tiene que tener una estructura similar a la que se muestra en el siguiente ejemplo:
+
+bc. criterios : [
+    {
+        nombre:"Componente innovadora y tecnológica predominante (0-25 Ptos.)",
+        claseCriterio:"auto",
+        jerarquia:"A",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    },
+    {
+        nombre:"Carácter de la empresa de base tecnológica",
+        claseCriterio:"manual",
+        jerarquia:"A.1",
+        tipoValor:"lista",
+        listaValores:[
+            {
+                valor:7,
+                descripcion:"ALTO: Fecha constitución EBT <=  2 años"
+            },
+            {
+                valor:5,
+                descripcion:"MEDIO: Fecha constitución EBT > 2 años y <= 6 años"
+            },
+            {
+                valor:0,
+                descripcion:"BAJO: Fecha constitución EBT > 6 años, o no EBT"
+            }
+        ],
+        descripcion:"Prioridad a empresas de nueva o reciente creación frente a las ya consolidadas",
+        comentariosAdministracion:false,
+        comentariosSolicitante:false
+    }
+]
+
+h2. Estructura de los _ceconomicos_
+
+El item ceconomicos de la estructura general que vimos al principio, representa la lista de conceptos económicos que serán necesarios evaluar para conocer si las valoraciones económicas de cada uno de los conceptos del presupuesto presentado se adecuan al proyecto. En esta lista, cada elemento será un objeto _ceconomico_ que tendrá los siguientes items:
+
+* *nombre* Es un String con el Título del concepto económico.
+* *clase* String que representa la forma en la que se especifica el concepto económico. Puede tener uno de los dos valores siguientes:
+** _manual_ : El concepto económico se especifica de forma manual en la aplicación.
+** _auto_ : El concepto económico se autogenera como el resultado de un algoritmo predefinido de cálculo por la aplicación.
+* *jerarquia* Es un String que denota la jerarquía de los conceptos económicos de la misma manera que los criterios. Se utiliza para la representación de los subconceptos económicos. La jerarquía indica la situación del concepto económico en el árbol de conceptos económicos. Los nodos hojas son los únicos que se cumplimentarán por el solicitante. Los nodos no hoja se calculan a partir de los nodos hoja, y su cálculo por defecto será la suma de sus subconceptos o nodos hoja. Si se quiere un algoritmo de cómputo distinto al de suma, se requerirá sobreescribir la función asociada como se verá más adelante.
+* *comentariosAdministracion* Valor booleano que representa la presencia o no en ese concepto económico en concreto de comentarios por parte del Evaluador o Gestor etc.
+* *comentariosSolicitante* Valor booleano que representa la presencia o no en ese concepto económico en concreto de comentarios por parte del solicitante.
+
+De modo que el item _ceconomicos_ tiene que tener una estructura similar a la que se muestra en el siguiente ejemplo:
+
+bc. ceconomicos : [
+    {
+    	nombre:"Inversión aprobada",
+    	clase:"manual",
+    	jerarquia:"A",
+    	comentariosAdministracion:false,
+      comentariosSolicitante:false
+    },
+    {
+    	nombre:"Activo actual",
+    	clase:"manual",
+    	jerarquia:"B",
+    	comentariosAdministracion:false,
+      comentariosSolicitante:false
+    },
+    {
+    	nombre:"Fondos Propios",
+    	clase:"manual",
+    	jerarquia:"C",
+    	comentariosAdministracion:false,
+      comentariosSolicitante:false
+    }
+]
+
+h2. Estructura de los _datosAdicionales_
+
+La baremación de un determinado procedimiento puede requerir de datos adicionales que no se engloban ni en criterios ni en conceptos económicos, para llevar a cabo la evaluación. Por ello se pone a disposición un item que mediante una lista de elementos representa estos tipos de datos adicionales.
+
+Cada elemento de la lista tendrá los siguientes atributos:
+
+* **orden** Es un Integer que se utiliza para ordenar ese dato o criterio adicional, cómo aparecerá en la página correspondiente.
+* **nombre** Es un String con el Título del dato adicional y servirá de identificador para poder referenciarlo en el cálculo pertinente.
+* **descripcion** String que indica la descripción del dato adicional y que será el que se muestre en la página.
+
+bc. datosAdicionales : [
+	{
+		orden: 1,
+		nombre: "porcentajeTeorico",
+		descripcion : "Porcentaje teórico"
+	},
+	{
+		orden: 2,
+		nombre: "subvencionTotalConcedida",
+		descripcion : "Subvención total concedida"
+	},	
+	{
+		orden : 3,
+		nombre: "porcentajeSubvencionConcedida",
+		descripcion : "Porcentaje de la subvención concedida"
+	},
+	{
+		orden : 4,
+		nombre: "porcentajeFondosPropios",
+		descripcion : "% Fondos Propios"
+	},
+	{
+		orden : 5,
+		nombre : "garantias",
+		descripcion : "Garantías"
+	}
+]
+
+h2. Ejemplo de fichero JSON con todo incluido
+
+Una vez visto todos los campos y demás atributos que debe contener el fichero que permitirá la creación de la baremación, a continuación se muestra el contenido de un fichero de ejemplo, totalmente funcional:
+
+bc. {
+	nombre : "Tipo evaluación de innovación",
+	tipoProcedimiento : "Innovacion",
+	numeroEvaluacion : 1,
+	duracion : 3,
+	comentariosAdministracion : true,
+	comentariosSolicitante : false,
+	criterios : [
+    	  	{
+        		nombre:"Componente innovadora y tecnológica predominante (0-25 Ptos.)",
+        		claseCriterio:"auto",
+        		jerarquia:"A",
+        		tipoValor:"cantidad",
+        		descripcion:"",
+        		comentariosAdministracion:true,
+        		comentariosSolicitante:true
+    		},
+    		{
+        		nombre:"Carácter de la empresa de base tecnológica",
+        		claseCriterio:"manual",
+        		jerarquia:"A.1",
+        		tipoValor:"lista",
+        		listaValores:[
+		            {
+      			          valor:7,
+            			    descripcion:"ALTO: Fecha constitución EBT <=  2 años"
+            			},
+            			{
+                		valor:5,
+                		descripcion:"MEDIO: Fecha constitución EBT > 2 años y <= 6 años"
+            			},
+            			{
+                		valor:0,
+            			   descripcion:"BAJO: Fecha constitución EBT > 6 años, o no EBT"
+            			}
+        		],
+        		descripcion:"Prioridad a empresas de nueva o reciente creación frente a las ya consolidadas",
+        		comentariosAdministracion:false,
+        		comentariosSolicitante:false
+    		}
+	],
+	ceconomicos : [
+   		   {
+    			nombre:"Inversión aprobada",
+    			clase:"manual",
+    			jerarquia:"A",
+    			comentariosAdministracion:false,
+      			comentariosSolicitante:false
+    		},
+    		{
+    			nombre:"Activo actual",	
+    			clase:"manual",
+    			jerarquia:"B",
+    			comentariosAdministracion:false,
+      			comentariosSolicitante:false
+    		},
+    		{
+    			nombre:"Fondos Propios",
+    			clase:"manual",
+    			jerarquia:"C",
+    			comentariosAdministracion:false,
+      			comentariosSolicitante:false
+    		}
+	],
+	datosAdicionales : [
+		{
+			orden: 1,
+			nombre: "porcentajeTeorico",
+			descripcion : "Porcentaje teórico"
+		},
+		{
+			orden: 2,
+			nombre: "subvencionTotalConcedida",
+			descripcion : "Subvención total concedida"
+		}
+	]	
+}
+

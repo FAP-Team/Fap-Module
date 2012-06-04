@@ -40,6 +40,7 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
         return true;
     }
 
+    @Override
     public List<String> getFirmaEnClienteJS() {
         List<String> jsclient = new ArrayList<String>();
         jsclient.add("/public/javascripts/firma/base64.js");

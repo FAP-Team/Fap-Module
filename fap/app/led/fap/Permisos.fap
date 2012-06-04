@@ -226,7 +226,7 @@ Permiso solicitudEnBorrador{
 	return all
 }
 
-Permiso editarSolicitud{
+Permiso editarSolicitud {
 	vars
 		SolicitudGenerica solicitud
 	when

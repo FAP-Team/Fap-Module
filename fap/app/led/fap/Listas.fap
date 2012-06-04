@@ -147,7 +147,7 @@ Lista provincias{
 		toledo: "Toledo"
 	}
 	castillaleon : {
-		avila: "Ávila"
+		avila: "�?vila"
 		burgos: "Burgos"
 		leon: "León"
 		palencia: "Palencia"
@@ -194,7 +194,7 @@ Lista provincias{
 		navarra: "Navarra"
 	}
 	paisvasco : {
-		alava: "Álava"
+		alava: "�?lava"
 		guipuzcoa: "Guipúzcoa"
 		vizcaya: "Vizcaya"
 	}

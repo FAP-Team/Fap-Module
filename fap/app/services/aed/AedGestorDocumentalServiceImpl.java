@@ -87,7 +87,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 
     private String getEndPoint() {
-        return propertyPlaceholder.get("fap.aed.url");
+        return propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".url");
     }
 	
     /**
@@ -157,8 +157,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException {        
         Interesados interesados = getInteresados(solicitud);
         String numeroExpediente = solicitud.expedienteAed.asignarIdAed();
-        String procedimiento = propertyPlaceholder.get("fap.aed.procedimiento");
-        String convocatoria = propertyPlaceholder.get("fap.aed.convocatoria");
+        String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+        String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
 
         Expediente expediente = new Expediente();
         expediente.setIdExterno(numeroExpediente);
@@ -202,8 +202,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      */
     private Interesados getInteresadosPorDefecto(){
         Interesados interesados = new Interesados();
-        String nombre = FapProperties.get("fap.aed.documentonoclasificado.interesado.nombre");
-        String documento = FapProperties.get("fap.aed.documentonoclasificado.interesado.nif");
+        String nombre = FapProperties.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nombre");
+        String documento = FapProperties.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nif");
         interesados.add(nombre, documento);
         
         return interesados;
@@ -232,7 +232,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
     
     private List<PropiedadesDocumento> obtenerPropiedadesDocumentos(String expediente) throws AedExcepcion {
-        String procedimiento = propertyPlaceholder.get("fap.aed.procedimiento");
+        String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
         List<PropiedadesDocumento> lista = aedPort.buscarDocumentos(procedimiento, expediente, null, null, null, null, null, null, null);
         if(lista == null)
             lista = Collections.emptyList();
@@ -300,7 +300,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		
 		Documento documentoAed = crearDocumentoTemporal(documento.tipo, documento.descripcion, filename, contenido);
 		
-		String ruta = propertyPlaceholder.get("fap.aed.temporales");
+		String ruta = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".temporales");
 		String uri = null;
 		try {
     		uri = aedPort.crearDocumentoNoClasificado(ruta, documentoAed);
@@ -359,8 +359,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         documento.getPropiedades().setTipoPropiedadesAvanzadas(TipoPropiedadAvanzadaEnum.ADMINISTRATIVO);
         PropiedadesAdministrativas propiedadesAdministrativas = new PropiedadesAdministrativas();
         documento.getPropiedades().setPropiedadesAvanzadas(propiedadesAdministrativas);
-        propiedadesAdministrativas.getInteresados().add(propertyPlaceholder.get("fap.aed.documentonoclasificado.interesado.nombre"));
-        propiedadesAdministrativas.getInteresadosNombre().add(propertyPlaceholder.get("fap.aed.documentonoclasificado.interesado.nif"));
+        propiedadesAdministrativas.getInteresados().add(propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nombre"));
+        propiedadesAdministrativas.getInteresadosNombre().add(propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nif"));
         
         // Contenido
         Contenido contenido = new Contenido();
@@ -526,7 +526,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         propsAdmin.getInteresadosNombre().addAll(interesados.getNombres());
 
         // Ubicaciones
-        String procedimiento = propertyPlaceholder.get("fap.aed.procedimiento");
+        String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
         List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
         Ubicaciones ubicacionExpediente = new Ubicaciones();
         ubicacionExpediente.setProcedimiento(procedimiento);
@@ -683,10 +683,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      * @throws AedExcepcion
      */
     private void crearCarpetaTemporal() throws AedExcepcion {
-        String carpeta = propertyPlaceholder.get("fap.aed.temporales");
+        String carpeta = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".temporales");
         if (carpeta == null || carpeta.isEmpty()) {
             throw new IllegalStateException(
-                    "La property fap.aed.temporales no está configurada en el application.conf");
+                    "La property fap."+propertyPlaceholder.get("fap.defaultAED")+".temporales no está configurada en el application.conf");
         }
         crearCarpetaTemporal(carpeta);
     }
@@ -721,7 +721,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      * "fap.aed.temporales"
      */
     private boolean existeCarpetaTemporal() throws AedExcepcion {
-        String carpeta = propertyPlaceholder.get("fap.aed.temporales");
+        String carpeta = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".temporales");
         return existeCarpetaTemporal(carpeta);
     }
 
@@ -790,8 +790,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     public String crearExpediente(ExpedienteAed expedienteAed) throws GestorDocumentalServiceException {        
         Interesados interesados = getInteresadosPorDefecto();
         String numeroExpediente = expedienteAed.asignarIdAed();
-        String procedimiento = propertyPlaceholder.get("fap.aed.procedimiento");
-        String convocatoria = propertyPlaceholder.get("fap.aed.convocatoria");
+        String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+        String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
 
         Expediente expediente = new Expediente();
         expediente.setIdExterno(numeroExpediente);
@@ -822,8 +822,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         
         Interesados interesados = getInteresados(solicitud);
         String numeroExpediente = expedienteAed.idAed;
-        String procedimiento = propertyPlaceholder.get("fap.aed.procedimiento");
-        String convocatoria = propertyPlaceholder.get("fap.aed.convocatoria");
+        String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+        String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
 
         Expediente expediente = new Expediente();
         expediente.setIdExterno(numeroExpediente);

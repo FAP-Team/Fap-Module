@@ -19,6 +19,7 @@ import es.fap.simpleled.led.PermisoWhen
 import es.fap.simpleled.led.Popup
 import es.fap.simpleled.led.PopupAccion
 import es.fap.simpleled.led.Tabla
+import es.fap.simpleled.led.impl.FormImpl;
 import es.fap.simpleled.led.util.ModelUtils
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.LedFactory;
@@ -83,6 +84,7 @@ public class Controller implements Comparator<Entidad>{
 	private Accion accionCrear;
 	private Accion accionEditar;
 	private Accion accionBorrar;
+	private String strProcesandoMethods = "";
 	
 	public Controller initialize(){
 		saveEntities = gElement.saveEntities();
@@ -205,6 +207,8 @@ ${metodoCheckRedirigir()}
 ${metodosControllerElementos()}
 
 ${metodoBefore()}
+
+${metodoProcesandoEntidades()}
 
 }
 """
@@ -770,8 +774,13 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	private String metodosControllerElementos(){
 		String controllers = "";
-		for(Elemento elemento : element.getElementos())
+		for(Elemento elemento : element.getElementos()) {
+			if ((element instanceof Boton) || (element instanceof FirmaSimple)) {
+				println "   Elemento: "+elemento;
+				strProcesandoMethods += ", \"${controllerName}."+elemento.name+"\", \"${controllerGenName}."+elemento.name+"\"";
+			}
 			controllers += gElement.getInstance(elemento).controller();
+		}
 		return controllers;
 	}
 	
@@ -1351,6 +1360,20 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (!s1) s1 = "";
 		if (!s2) s2 = "";
 		return s1.compareTo(s2);
+	}
+	
+	private String metodoProcesandoEntidades () {
+		return """
+			@After(only={"${controllerName}.${nameEditar}", "${controllerGenName}.${nameEditar}" $strProcesandoMethods})
+			protected static void setEntidadesProcesada () {
+				unsetEntidadesProcesando();
+			}
+
+			@Before(only={"${controllerName}.${nameEditar}", "${controllerGenName}.${nameEditar}" $strProcesandoMethods})
+			protected static void setEntidadesProcesandose () {
+				setEntidadesProcesando();
+			}
+		"""
 	}
 			
 }

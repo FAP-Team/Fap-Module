@@ -40,6 +40,10 @@ Firma._firmarUrl = function(url, certificado){
 	return signFile(certificado.clave, url);
 }
 
+Firma._firmarDocumento = function(url, certificado){
+	return signFile(certificado.clave, url);
+}
+
 var Platino = {
 	
 	listarCertificados : function(combo, opciones){

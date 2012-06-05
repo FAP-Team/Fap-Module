@@ -20,6 +20,7 @@ import platino.Firma;
 import platino.InfoCert;
 import play.libs.Codec;
 import play.libs.Crypto;
+import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import services.FirmaService;
 import services.FirmaServiceException;
@@ -27,6 +28,7 @@ import services.GestorDocumentalService;
 import services.platino.PlatinoFirmaServiceImpl;
 import utils.BinaryResponse;
 
+@InjectSupport
 public class FileSystemFirmaServiceImpl implements FirmaService {
 	
 	private static Logger log = Logger.getLogger(FileSystemFirmaServiceImpl.class);

@@ -28,7 +28,7 @@ public class GFirmaSimple extends GElement{
 		if (firmaSimple.titulo)
 			params.putStr("titulo", firmaSimple.titulo);
 		params.putStr("id", firmaSimple.name);
-		params.putStr("firma", "firma.firma");
+		params.putStr("firma", "firma");
 		params.put("uri", '"${' + documentoUri.firstLower() + '}"');
 		return """
 			#{fap.firma ${params.lista()} /}

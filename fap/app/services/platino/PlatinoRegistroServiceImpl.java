@@ -41,6 +41,7 @@ import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
 import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
+import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalService;
@@ -75,6 +76,7 @@ import models.TableKeyValue;
  * a la property
  * 
  */
+@InjectSupport
 public class PlatinoRegistroServiceImpl implements RegistroService {
 
 	private static Logger log = Logger.getLogger(RegistroService.class);

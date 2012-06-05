@@ -40,6 +40,7 @@ import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
 import platino.PlatinoProxy;
 import play.libs.Codec;
+import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.FirmaServiceException;
@@ -57,6 +58,7 @@ import es.gobcan.platino.servicios.sfst.ValidateCertResult;
 /**
  * FirmaServiceImpl
  */
+@InjectSupport
 public class PlatinoFirmaServiceImpl implements services.FirmaService {
 
 	private static Logger log = Logger.getLogger(PlatinoFirmaServiceImpl.class);

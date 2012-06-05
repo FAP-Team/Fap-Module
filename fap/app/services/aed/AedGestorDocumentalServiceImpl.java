@@ -27,6 +27,7 @@ import org.joda.time.DateTime;
 
 import platino.PlatinoProxy;
 import play.libs.MimeTypes;
+import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalService;
@@ -59,6 +60,7 @@ import static com.google.common.base.Preconditions.*;
 /**
  * 
  */
+@InjectSupport
 public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
 	private final AedPortType aedPort;

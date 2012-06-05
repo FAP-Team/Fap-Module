@@ -43,7 +43,7 @@ public class FirmaUtils {
 	 * @param valorDocumentofirmanteSolicitado
 	 */
 	public static void firmar(Documento documento, List<Firmante> listaFirmantes, String firma, String valorDocumentofirmanteSolicitado){
-		//firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
 		
 		if (documento == null) {
 			Messages.error("No existe ningún documento para firmar");
@@ -74,7 +74,7 @@ public class FirmaUtils {
 	 * @return
 	 */
 	public static void generarOficial (SolicitudGenerica solicitud, boolean create) {
-		//gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		if ((create) || (solicitud.registro.oficial == null) || (solicitud.registro.oficial.uri == null)) {
 			try {
 				//Genera el documento oficial

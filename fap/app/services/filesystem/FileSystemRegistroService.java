@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 
 import platino.DatosRegistro;
 import play.libs.Codec;
+import play.modules.guice.InjectSupport;
 
 import models.Documento;
 import models.ExpedientePlatino;
@@ -17,6 +18,7 @@ import services.RegistroService;
 import services.RegistroServiceException;
 import utils.BinaryResponse;
 
+@InjectSupport
 public class FileSystemRegistroService implements RegistroService {
 
     private final GestorDocumentalService gestorDocumentalService;

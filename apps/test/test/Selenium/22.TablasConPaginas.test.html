@@ -1,13 +1,16 @@
 %{
 	// Obtenemos al ultima solicitud, sobre la que trabajamos
 	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
 	
 	play.mvc.Controller.session.put("username", "admin");
 	controllers.fap.AgenteController.findAgente();
 }%
 
 #{selenium}
-	open(/Principal/solicitudes)
+	 
+   #{if !automatic}
+	 open(/Principal/solicitudes)
 	 waitForPageToLoad()
 	
      open('Solicitud/combotablaspaginas?idSolicitud=${s.id}')
@@ -35,4 +38,5 @@
 	 waitForElementPresent('tablaDeNombres_nombre')
 	 type('tablaDeNombres_nombre', 'fin de profundidad')
 	 click('Guardar_id')
+  #{/if}
 #{/selenium}

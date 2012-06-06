@@ -70,7 +70,7 @@ Formulario Solicitud {
 			Enlace "Envío de Mails" pagina=EnvioMails
 		}
 		
-		Enlace "Salir" accion="fap.SecureController.logout"
+		Enlace "Salir" accion="fap.SecureController.logoutFap"
     }
 		
 	Pagina Fechas campo=Solicitud{

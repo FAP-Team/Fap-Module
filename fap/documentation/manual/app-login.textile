@@ -1,0 +1,36 @@
+h1. Personalizar la autenticación en la aplicación
+
+Es posible personalizar el modo de loguearse en la aplicación sino se quiere autenticarse como lo hace por defecto FAP.
+
+Para ello se deberá crear una clase en el paquete controllers de la aplicación, que extienda de la clase FAP SecureController, es decir:
+
+bc. public class SecureControllerApp extends SecureController{
+   ...
+}
+
+Y en esta clase tendremos la posibilidad de configurar 2 funciones que llevan toda la lógica de autenticaciones. Si no se crean estas funciones, FAP usará por defecto las suyas propias, tal y como lo venía haciendo en versiones anteriores.
+
+Las funciones en cuestión son:
+
+* *Autenticarse con certificado:* Si queremos cambiar la forma de autenticarnos con certificado, deberemos indicarselo en esta función. Tiene 3 parámetros que nos darán:
+** *certificado* String con el certificado con el que estamos intentando acceder
+** *token* String con el token (UUID) para firmar y acceder por certificado
+** *firma* String con la firma correspondiente a nuestro certificado
+
+Por lo que deberemos declararla en nuestra clase que extiende de SecureController, como sigue, y hacer ahí dentro la lógica que queramos (Incluyendo los redirect y demás):
+
+bc. public void authenticateCertificate(String certificado, String token, String firma) {
+   ...
+}
+
+* *Autenticarse con Username:* Si queremos cambiar la forma de autenticarnos con usuario y contraseña, deberemos indicarselo en esta función. Tiene 3 parámetros que nos darán:
+** *username* String con el usuario que se haya puesto en el input correspondiente
+** *password* String con la contraseña que se haya puesto en el input correspondiente
+** *remember* Boolean con el valor del check para recordar o no el usuario
+
+Por lo que deberemos declararla en nuestra clase que extiende de SecureController, como sigue, y hacer ahí dentro la lógica que queramos (Incluyendo los redirect y demás):
+
+bc. public void authenticate(String username, String password, boolean remember){
+   ...
+}
+ 

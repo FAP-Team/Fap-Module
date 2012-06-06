@@ -43,7 +43,7 @@
 #{if showCert}
 
 	#{fap.grupo titulo:"Login"}
-		#{form @authenticateCertificate(), id:"cert-form"}
+		#{form @authenticateCertificateFap(), id:"cert-form"}
 			<input type="hidden" id="token" name="token" value="${token}"/>
 			<input type="hidden" id="firma" name="firma" value=""/>
 			<div class="form-vertical">
@@ -83,7 +83,7 @@
 				} 
 			%}
 			
-			#{form @authenticate(), id:"authen-form"}
+			#{form @authenticateFap(), id:"authen-form"}
 			<div class="form-vertical">
 
 					<label for="username">&{'fap.login.username'}</label>

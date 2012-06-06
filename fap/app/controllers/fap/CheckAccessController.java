@@ -42,7 +42,7 @@ public class CheckAccessController extends Controller{
         // Authent
         if(!AgenteController.agenteIsConnected()) {
             flash.put("url", request.method == "GET" ? request.url : "/"); // seems a good default
-            SecureController.login();
+            SecureController.loginFap();
         }
         AgenteController.findAgente(); //Recupera el agente de base de datos
     }

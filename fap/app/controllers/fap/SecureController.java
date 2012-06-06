@@ -1,13 +1,17 @@
 package controllers.fap;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.ivy.util.Message;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
+import baremacion.IniciarBaremacion;
 import config.InjectorConfig;
 
 
@@ -49,7 +53,39 @@ public class SecureController extends GenericController{
 	private static Logger log = Logger.getLogger(SecureController.class);
 	
     // ~~~ Login
-    public static void login() {
+    public static void loginFap() {
+    	//if (!buscarLoginOverwrite())
+    		loginPorDefecto();
+    }
+    
+//    private static boolean buscarLoginOverwrite(){
+//    	Class invokedClass = getSecureClass();
+//    	Object object=null;
+//    	
+//    	if (invokedClass != null){
+//			Method method = null;
+//			try {
+//    			object = invokedClass.newInstance();
+//    			method = invokedClass.getDeclaredMethod("login");
+//    			if (method != null){
+//    				method.invoke(object);
+//    				return true;
+//    			}
+//    			else{
+//    				log.info("No existe el método login() en la clase "+invokedClass.getName());
+//    				return false;
+//    			}
+//			} catch (Exception e) {
+//				log.info("No se puede instanciar la clase propia de la aplicación que se encargará del login, por defecto se usará la autenticación de FAP");
+//				return false;
+//			}
+//    	} else {
+//    		log.info("No existe una clase en la aplicación que extienda de SecureController, por defecto se usará la autenticación de FAP");
+//    		return false;
+//    	}
+//    }
+    
+    private static void loginPorDefecto(){
     	Http.Cookie remember = request.cookies.get("rememberme");
         if(remember != null && remember.value.indexOf("-") > 0) {
             String sign = remember.value.substring(0, remember.value.indexOf("-"));
@@ -71,7 +107,40 @@ public class SecureController extends GenericController{
         	renderArgs.put("token", token);
         }
         //Messages.keep();
-        renderTemplate("fap/Secure/login.html");        
+        renderTemplate("fap/Secure/login.html");
+    }
+    
+    public static void authenticateCertificateFap(String certificado, String token, String firma){
+    	checkAuthenticity();
+    	if (!buscarAuthenticateCertificateOverwrite(certificado, token, firma))
+    		authenticateCertificatePorDefecto(certificado, token, firma);
+    }
+    
+    private static boolean buscarAuthenticateCertificateOverwrite(String certificado, String token, String firma){
+    	Class invokedClass = getSecureClass();
+    	Object object=null;
+    	
+    	if (invokedClass != null){
+			Method method = null;
+			try {
+    			object = invokedClass.newInstance();
+    			method = invokedClass.getDeclaredMethod("authenticateCertificate", String.class, String.class, String.class);
+    			if (method != null){
+    				method.invoke(object, certificado, token, firma);
+    				return true;
+    			}
+    			else{
+    				log.info("No existe el método authenticateCertificate() en la clase "+invokedClass.getName());
+    				return false;
+    			}
+			} catch (Exception e) {
+				log.info("No se puede instanciar la clase propia de la aplicación que se encargará del authenticateCertificate, por defecto se usará la autenticación de FAP");
+				return false;
+			}
+    	} else {
+    		log.info("No existe una clase en la aplicación que extienda de SecureController, por defecto se usará la autenticación de FAP");
+    		return false;
+    	}
     }
    
     /**
@@ -79,14 +148,13 @@ public class SecureController extends GenericController{
      * @param certificado
      * @throws Throwable
      */
-    public static void authenticateCertificate(String certificado, String token, String firma) {
-    	checkAuthenticity(); //Comprueba token de autenticidad
+    public static void authenticateCertificatePorDefecto(String certificado, String token, String firma) {
     	
     	if(!FapProperties.getBoolean("fap.login.type.cert")){
             flash.keep("url");
             Messages.error("El acceso a la aplicación mediante certificado electrónico está desactivado");
             Messages.keep();
-            login();   		
+            loginFap();   		
     	}
     	
     	String sessionid = Session.current().getId();
@@ -125,7 +193,7 @@ public class SecureController extends GenericController{
     	if(validation.hasErrors()){
             flash.keep("url");
             Messages.keep();
-            login();
+            loginFap();
     	}
     	
     	//Busca el agente en la base de datos, si no existe lo crea
@@ -155,6 +223,41 @@ public class SecureController extends GenericController{
 		redirectToOriginalURL();
     }    
 
+    public static void authenticateFap(@Required String username, String password, boolean remember) throws Throwable {
+    	checkAuthenticity();
+    	if (!buscarAuthenticateOverwrite(username, password, remember))
+    		authenticatePorDefecto(username, password, remember);
+    }
+    
+    private static boolean buscarAuthenticateOverwrite(String username, String password, boolean remember){
+    	Class invokedClass = getSecureClass();
+    	Object object=null;
+    	
+    	if (invokedClass != null){
+			Method method = null;
+			try {
+    			object = invokedClass.newInstance();
+    			method = invokedClass.getDeclaredMethod("authenticate", String.class, String.class, boolean.class);
+    			System.out.println(method);
+    			if (method != null){
+    				username="paco";
+    				method.invoke(object, username, password, remember);
+    				return true;
+    			}
+    			else{
+    				log.info("No existe el método authenticate() en la clase "+invokedClass.getName());
+    				return false;
+    			}
+			} catch (Exception e) {
+				log.info("No se puede instanciar la clase propia de la aplicación que se encargará del authenticate, por defecto se usará la autenticación de FAP");
+				return false;
+			}
+    	} else {
+    		log.info("No existe una clase en la aplicación que extienda de SecureController, por defecto se usará la autenticación de FAP");
+    		return false;
+    	}
+    }
+    
     /**
      * Login con usuario y contraseña
      * @param username
@@ -162,8 +265,7 @@ public class SecureController extends GenericController{
      * @param remember
      * @throws Throwable
      */
-    public static void authenticate(@Required String username, String password, boolean remember) throws Throwable {
-        checkAuthenticity();
+    public static void authenticatePorDefecto(@Required String username, String password, boolean remember) throws Throwable {
         
         int accesosFallidos = 0;
         if (session.get("accesoFallido") != null) {
@@ -176,7 +278,7 @@ public class SecureController extends GenericController{
         		flash.keep("url");
         		Messages.error(play.i18n.Messages.get("validation.recaptcha"));
         		Messages.keep();
-        		login();
+        		loginFap();
         	}
     	}
 
@@ -184,7 +286,7 @@ public class SecureController extends GenericController{
             flash.keep("url");
             Messages.error("El acceso a la aplicación mediante usuario y contraseña está desactivado");
             Messages.keep();
-            login();   		
+            loginFap();   		
     	}
     	    	
     	String cryptoPassword = Crypto.passwordHash(password);
@@ -238,7 +340,7 @@ public class SecureController extends GenericController{
             flash.keep("url");
             Messages.error(play.i18n.Messages.get("fap.login.error.user"));
             Messages.keep();
-            login();
+            loginFap();
     	}
         
 		//Almacena el modo de acceso del agente
@@ -258,13 +360,13 @@ public class SecureController extends GenericController{
         redirectToOriginalURL();
     }
 
-    public static void logout() throws Throwable {
+    public static void logoutFap() throws Throwable {
     	Cache.delete(session.getId());
         session.clear();
         response.removeCookie("rememberme");
         Messages.info(play.i18n.Messages.get("fap.logout.ok"));
         Messages.keep();
-        redirect("fap.SecureController.login");
+        redirect("fap.SecureController.loginFap");
     }
     
     @Util
@@ -294,5 +396,15 @@ public class SecureController extends GenericController{
     	AgenteController.getAgente().cambiarRolActivo(rol);
     	redirectToUrlOrOriginal(url);
     }
+    
+    private static Class getSecureClass() {
+		Class invokedClass = null;
+		//Busca una clase que herede del SecureController
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(SecureController.class);
+        if(assignableClasses.size() > 0){
+            invokedClass = assignableClasses.get(0);
+        }
+		return invokedClass;
+	}
         
 }

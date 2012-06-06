@@ -143,6 +143,6 @@ Formulario Baremacion {
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
-		Enlace "Salir" accion="fap.SecureController.logout"
+		Enlace "Salir" accion="fap.SecureController.logoutFap"
     }
 }

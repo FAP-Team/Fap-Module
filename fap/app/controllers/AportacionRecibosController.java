@@ -16,7 +16,7 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 	    List<Documento> rows = Documento
 				.find("select registradas.justificante from Solicitud solicitud " +
 					  "join solicitud.aportaciones.registradas registradas " +
-					  "where solicitud.id=?",
+					  "where solicitud.id=? and registradas.justificante.uri is not null",
 					  idSolicitud).fetch();
 	    TableRenderResponse<Documento> response = TableRenderResponse.sinPermisos(rows);
 	    renderJSON(response.toJSON("id", "fechaSubida", "descripcion", "urlDescarga"));

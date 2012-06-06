@@ -32,7 +32,7 @@ import utils.BinaryResponse;
 public class FileSystemFirmaServiceImpl implements FirmaService {
 	
 	private static Logger log = Logger.getLogger(FileSystemFirmaServiceImpl.class);
-
+	
 	@Inject
     protected static GestorDocumentalService gestorDocumentalService;
 	

@@ -265,7 +265,7 @@ public class SecureController extends GenericController{
      * @param remember
      * @throws Throwable
      */
-    public static void authenticatePorDefecto(@Required String username, String password, boolean remember) throws Throwable {
+    public static void authenticatePorDefecto(String username, String password, boolean remember){
         
         int accesosFallidos = 0;
         if (session.get("accesoFallido") != null) {
@@ -393,6 +393,7 @@ public class SecureController extends GenericController{
     @Util
     public static void changeRol(String url, String rol){
     	checkAuthenticity();
+    	// ¿Agente Null?
     	AgenteController.getAgente().cambiarRolActivo(rol);
     	redirectToUrlOrOriginal(url);
     }

@@ -85,6 +85,7 @@ public class SecureController extends GenericController{
 //    	}
 //    }
     
+    @Util
     private static void loginPorDefecto(){
     	Http.Cookie remember = request.cookies.get("rememberme");
         if(remember != null && remember.value.indexOf("-") > 0) {
@@ -116,6 +117,7 @@ public class SecureController extends GenericController{
     		authenticateCertificatePorDefecto(certificado, token, firma);
     }
     
+    @Util
     private static boolean buscarAuthenticateCertificateOverwrite(String certificado, String token, String firma){
     	Class invokedClass = getSecureClass();
     	Object object=null;
@@ -148,6 +150,7 @@ public class SecureController extends GenericController{
      * @param certificado
      * @throws Throwable
      */
+    @Util
     public static void authenticateCertificatePorDefecto(String certificado, String token, String firma) {
     	
     	if(!FapProperties.getBoolean("fap.login.type.cert")){
@@ -229,6 +232,7 @@ public class SecureController extends GenericController{
     		authenticatePorDefecto(username, password, remember);
     }
     
+    @Util
     private static boolean buscarAuthenticateOverwrite(String username, String password, boolean remember){
     	Class invokedClass = getSecureClass();
     	Object object=null;
@@ -238,9 +242,7 @@ public class SecureController extends GenericController{
 			try {
     			object = invokedClass.newInstance();
     			method = invokedClass.getDeclaredMethod("authenticate", String.class, String.class, boolean.class);
-    			System.out.println(method);
     			if (method != null){
-    				username="paco";
     				method.invoke(object, username, password, remember);
     				return true;
     			}
@@ -265,8 +267,9 @@ public class SecureController extends GenericController{
      * @param remember
      * @throws Throwable
      */
+    @Util
     public static void authenticatePorDefecto(String username, String password, boolean remember){
-        
+
         int accesosFallidos = 0;
         if (session.get("accesoFallido") != null) {
         	accesosFallidos = new Integer(session.get("accesoFallido"));
@@ -382,21 +385,6 @@ public class SecureController extends GenericController{
         }
         redirect(url);
     }
-
-    
-    /**
-     * Cambia el rol del usuario
-     * Se comprueba que el usuario conectado tenga el rol que se quiera cambiar
-     * @param url Dirección a la que redirigir
-     * @param rol Rol nuevo
-     */
-    @Util
-    public static void changeRol(String url, String rol){
-    	checkAuthenticity();
-    	// ¿Agente Null?
-    	AgenteController.getAgente().cambiarRolActivo(rol);
-    	redirectToUrlOrOriginal(url);
-    }
     
     private static Class getSecureClass() {
 		Class invokedClass = null;
@@ -407,5 +395,18 @@ public class SecureController extends GenericController{
         }
 		return invokedClass;
 	}
+
+    /**
+     * Cambia el rol del usuario
+     * Se comprueba que el usuario conectado tenga el rol que se quiera cambiar
+     * @param url Dirección a la que redirigir
+     * @param rol Rol nuevo
+     */
+    @Util
+    public static void changeRol(String url, String rol){
+    	checkAuthenticity();
+    	AgenteController.getAgente().cambiarRolActivo(rol);
+    	redirectToUrlOrOriginal(url);
+    }
         
 }

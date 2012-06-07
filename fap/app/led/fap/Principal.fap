@@ -5,7 +5,7 @@ Formulario Principal {
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
 		Enlace "Cambiar contraseña" permiso=loginTipoUser pagina=CambiarPass 
 		Enlace "Ayuda" pagina=Soporte crear
-		Enlace "Salir" accion="fap.SecureController.logoutFap"
+		Enlace "Salir" accion=logout
 	}
 	
 	

@@ -9,7 +9,7 @@ import generator.utils.StringUtils
 import es.fap.simpleled.led.util.LedCampoUtils
 import es.fap.simpleled.led.util.LedEntidadUtils;
 
-public class GMenu extends GElement{
+public class GMenu extends GElement {
 
 	Menu menu;
 	Set<String> scriptVariables;
@@ -115,9 +115,29 @@ public class GMenu extends GElement{
 			""";
 			ref = "@{${enlace.accion}}"
 			seleccion = """class="#{fap.activeRoute href:url, activeClass:'active' /}" """
-	    } else if(enlace.url != null) //URL
+	    } else if (enlace.accionLogout) {
+			String link = """play.mvc.Router.reverse("fap.SecureController.logoutFap")"""
+			String url = "url = ${link};";
+			script = """
+			%{
+				${url}
+			%}
+			""";
+			ref = "@{fap.SecureController.logoutFap}"
+			seleccion = """class="#{fap.activeRoute href:url, activeClass:'active' /}" """
+		} else if (enlace.accionLogin) {
+			String link = """play.mvc.Router.reverse("fap.SecureController.loginFap")"""
+			String url = "url = ${link};";
+			script = """
+			%{
+				${url}
+			%}
+			""";
+			ref = "@{fap.SecureController.loginFap}"
+			seleccion = """class="#{fap.activeRoute href:url, activeClass:'active' /}" """
+		} else if(enlace.url != null) //URL
 			ref = enlace.url;
-		else if(enlace.popup != null){ //Popup
+		else if(enlace.popup != null) { //Popup
 			script = "${scriptUrl(Controller.create(GElement.getInstance(enlace.popup.popup, null)), enlace.popup.accion)}";
 			ref= "javascript:popup_open('${enlace.popup.popup.name}', '\${url}')";
 		}

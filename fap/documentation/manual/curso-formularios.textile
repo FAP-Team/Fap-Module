@@ -40,6 +40,8 @@ Formulario Solicitud campo=Solicitud{
 	}
 	Enlace "Ayuda" pagina=Soporte.Soporte
 	Enlace "Salir" accion="fap.SecureController.logout"
+	// Una manera más fácil de especificar "Salir"
+	Enlace "Salir2" accion=logout
 	}
     Pagina Solicitante guardarParaPreparar inicial permiso=solicitudEditable {
 	Persona personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=solicitudEditable requerido
@@ -215,6 +217,8 @@ Y en el formulario definiremos una página Soporte, indicándole mediante opcion
 bc. Formulario Soporte {
 	Menu {
 		Enlace "Inicio" accion="fap.SecureController.login"
+		// Una manera más fácil de especificar el "login"
+		Enlace "Inicio2" accion=login
 		Enlace "Mis Solicitudes" permiso=logeado pagina=Solicitudes
     		Enlace "Soporte" pagina=Soporte
     	}

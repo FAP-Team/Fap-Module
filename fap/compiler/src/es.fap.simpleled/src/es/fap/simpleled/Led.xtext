@@ -129,7 +129,7 @@ MenuEnlace:
 		& (
 			('pagina' '=' pagina=PaginaAccion) |
 			('popup' '=' popup=PopupAccion) |
-			('accion' '=' accion=STRING) |
+			('accion' '=' (accion=STRING | accionLogout?="logout" | accionLogin?="login")) |
 			('url' '=' url=STRING) |
 			(anterior?="anterior")
 		)?

@@ -48,6 +48,8 @@ bc.. Formulario Solicitud permiso=administrador {
 		}
 		Enlace "Ayuda" pagina=Soporte.Soporte
 		Enlace "Salir" accion="fap.SecureController.logout"
+		// Una manera más fácil de especificar "Salir"
+		Enlace "Salir2" accion=logout
 	}
 	
 	Pagina Solicitante campo=Solicitud {

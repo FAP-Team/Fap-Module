@@ -97,8 +97,6 @@ Formulario Solicitud {
 					"Se produjo un error en la presentación de la aportación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
 				}
 				Tabla documentos titulo="Documentos" campo=SolicitudGenerica.aportaciones.actual.documentos
-					popupBorrar=PopUpDocProcesos
-					popupModificar=PopUpDocProcesos  
 					popupVer=PopUpDocProcesos
 				{
 					Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"

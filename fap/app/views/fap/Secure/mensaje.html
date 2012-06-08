@@ -1,9 +1,14 @@
-#{fap.grupo titulo:"Última Hora"}
-	{%
-		models.MensajeInicio mensajeObjeto = models.MensajeInicio.findAll().get(0);
-		def hayMensaje=mensajeObjeto.habilitar;
-		def tipo=mensajeObjeto.tipo;
-		def clase="";
+{%
+	models.MensajeInicio mensajeObjeto = null;
+	def hayMensaje=false;
+	def tipo="";
+	def clase="";
+	def contenido="";
+	if (!models.MensajeInicio.findAll().isEmpty()){
+		mensajeObjeto = models.MensajeInicio.findAll().get(0);
+		hayMensaje=mensajeObjeto.habilitar;
+		tipo=mensajeObjeto.tipo;
+		clase="";
 		if (tipo=="terror" || tipo=="tfatal")
 			clase="alert alert-error";
 		else if (tipo=="twarning")
@@ -12,13 +17,15 @@
 			clase="alert alert-success";
 		else if (tipo=="tinfo")
 			clase="alert alert-info";
-		def contenido=utils.StringUtils.getParsedText(mensajeObjeto.contenido);
-	%}
-	#{if hayMensaje}
+		contenido=utils.StringUtils.getParsedText(mensajeObjeto.contenido);
+	}
+%}
+#{if hayMensaje}
+	#{fap.grupo titulo:"Última Hora"}
 		<div id="GMensaje">
 			<div id="MensajeAdhoc" class="${clase}">
 				${contenido.raw()}
 			</div>
 		</div>
-	#{/if}
-#{/fap.grupo}
+	#{/fap.grupo}
+#{/if}

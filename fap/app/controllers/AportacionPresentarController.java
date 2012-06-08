@@ -68,6 +68,12 @@ public class AportacionPresentarController extends AportacionPresentarController
 				Messages.error("La solicitud no está preparada para registrar");
 			}
 			
+			if(aportacion.documentos.isEmpty()){
+				play.Logger.fatal ("Se está intentando presentar una aportación ("+aportacion.id+") en la solicitud ("+solicitud.id+"sin documentos (no debería ocurrir esto nunca)");
+				Messages.error("Se debía haber aportado al menos un documento para poder presentar");
+				presentarRender(idSolicitud);
+			}
+			
 			// Si hubo errores anteriormente, está en un estado que no es borrador
 			// Y actualizaremos la clasificación de los documentos
 			if (!aportacion.estado.equals("borrador")) {
@@ -107,6 +113,10 @@ public class AportacionPresentarController extends AportacionPresentarController
 				} catch (RegistroException e) {
 					e.printStackTrace();
 					play.Logger.fatal("Se produjo un error al intentar registrar la aportación: "+e.getMessage());
+					Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");
+				} catch (Exception e) {
+					e.printStackTrace();
+					play.Logger.fatal("Se produjo un error al intentar registrar la aportación actual: "+e.getMessage());
 					Messages.error("Se produjo un error al intentar registrar la aportación, inténtelo de nuevo.");
 				}
 			}

@@ -1,6 +1,11 @@
 package utils;
 
+import java.io.StringWriter;
 import java.util.Random;
+
+import jj.play.org.eclipse.mylyn.wikitext.core.parser.MarkupParser;
+import jj.play.org.eclipse.mylyn.wikitext.core.parser.builder.HtmlDocumentBuilder;
+import jj.play.org.eclipse.mylyn.wikitext.textile.core.TextileLanguage;
 
 public class StringUtils {
 
@@ -68,4 +73,16 @@ public class StringUtils {
 		return sb.toString();
 	}
 	
+	// Permite convertir un String con formato Textile en contenido válido en ese formato para HTML
+	public static StringBuffer getParsedText(String textile){
+		MarkupParser parser = new MarkupParser(new TextileLanguage());
+		StringWriter writer = new StringWriter();
+		HtmlDocumentBuilder builder = new HtmlDocumentBuilder(writer);
+		builder.setEmitAsDocument(false);
+		parser.setBuilder(builder);
+		StringBuffer wikidatas = new StringBuffer();
+		parser.parse(textile);
+		wikidatas.append(writer.toString());
+		return wikidatas;
+	}
 }

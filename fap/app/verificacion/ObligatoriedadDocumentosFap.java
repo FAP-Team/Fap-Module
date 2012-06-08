@@ -32,7 +32,7 @@ public class ObligatoriedadDocumentosFap extends FapModel{
 		// Guardamos localmente, el trámite sobre el que trabajará la instancia de la clase
 		this.tramite=tramite;
 		// Se calculan los documentos obligatorios de dicho trámite
-		init();
+		this.initObligatoriedad();
 	}
 
 	// Constructor de la clase que tiene como parámetros el nombre del tramite, para calcular los documentos
@@ -43,12 +43,12 @@ public class ObligatoriedadDocumentosFap extends FapModel{
 		// consulta a la base de datos
 		this.tramite=Tramite.find("select tramite from Tramite tramite where nombre='" + strTramite + "'").first();
 		// Se calculan los documentos obligatorios de dicho trámite
-		init();
+		this.initObligatoriedad();
 	}
 
 	// Función que se encarga de llamar al resto de funciones de la clase, que se encargan de obtener los documentos
 	// obligatorios del trámite en cuestión
-	public void init(){
+	public void initObligatoriedad(){
 		// Nos cercioramos de que las listas que contendran los documentos obligatorios estén limpias, o sea vacías
 		this.clear();
 		// Obtenemos los documentos IMPRESCINDIBLE, almacenandose en la lista local de la clase, pertinente

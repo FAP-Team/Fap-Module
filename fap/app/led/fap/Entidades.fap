@@ -485,3 +485,9 @@ Entidad Busqueda noAuditable extends Singleton {
 	Lista multiple estadosSolicitud estadoSolicitud
 	Boolean mostrarTabla default = "false"             // necesitamos una variable para saber si ya ha buscado y mostrar la tabla de resultados
 }
+
+Entidad MensajeInicio noAuditable extends Singleton {
+	Lista tipoMensaje tipo
+	String contenido
+	Boolean habilitar
+}

@@ -61,27 +61,27 @@
 	#{doBody /}
 	
 	<div id="${id}_GFatal">
-		<div id="${id}_Fatal" class="alert-message block-message error" data-dismiss="alert">
+		<div id="${id}_Fatal" class="alert alert-error">
 		</div>
 	</div>
 	
 	<div id="${id}_GError">
-		<div id="${id}_Error" class="alert-message block-message error" data-dismiss="alert">
+		<div id="${id}_Error" class="alert alert-error">
 		</div>
 	</div>
 	
 	<div id="${id}_GWarning">
-		<div id="${id}_Warning" class="alert-message block-message warning" data-dismiss="alert">
+		<div id="${id}_Warning" class="alert alert-warning">
 		</div>
 	</div>
 	
 	<div id="${id}_GOk">
-		<div id="${id}_Ok" class="alert-message block-message success" data-dismiss="alert">
+		<div id="${id}_Ok" class="alert alert-success">
 		</div>
 	</div>
 	
 	<div id="${id}_GInfo">
-		<div id="${id}_Info" class="alert-message block-message info" data-dismiss="alert">
+		<div id="${id}_Info" class="alert alert-info">
 		</div>
 	</div>
 	
@@ -159,20 +159,20 @@
 			// Por si el usuario lo ha cerrado en tiempo de ejecución
 			function creaMensaje${id}(tipo, clase){
 				var id = "${id}_"+tipo;
-				var content = '<div id="'+id+'" class="'+clase+'" data-dismiss="alert"> </div>';
+				var content = '<div id="'+id+'" class="'+clase+'"> </div>';
 				$('#${id}_G'+tipo).html(content);
 			}
 			function crearMensajes${id}(){
 				if (!document.getElementById("${id}_Fatal"))
-					creaMensaje${id}("Fatal", "alert-message block-message error");
+					creaMensaje${id}("Fatal", "alert alert-error");
 				if (!document.getElementById("${id}_Error"))
-					creaMensaje${id}("Error", "alert-message block-message error");
+					creaMensaje${id}("Error", "alert alert-error");
 				if (!document.getElementById("${id}_Warning"))
-					creaMensaje${id}("Warning", "alert-message block-message warning");
+					creaMensaje${id}("Warning", "alert alert-warning");
 				if (!document.getElementById("${id}_Ok"))
-					creaMensaje${id}("Ok", "alert-message block-message success");
+					creaMensaje${id}("Ok", "alert alert-success");
 				if (!document.getElementById("${id}_Info"))
-					creaMensaje${id}("Info", "alert-message block-message info");
+					creaMensaje${id}("Info", "alert alert-info");
 			}
 			
 			function resetMessages${id}(){
@@ -186,7 +186,7 @@
 			function writeMessage${id}(name, data){
 				if (data.length > 0){
 					document.getElementById("${id}_"+name).style.display = "";
-			    	var content = '<a class="close" href="#">x</a>';
+			    	var content = '<a class="close" data-dismiss="alert" href="#">x</a>';
 			    	if (name == "Error" || name == "Fatal"){
 			       		content += '<ul>';
 			       		for(i=0; i < data.length; i++){

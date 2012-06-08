@@ -1,0 +1,117 @@
+<script>
+
+// Este JavaScript, lo que permite es previsualizar como quedaría el mensaje personalizado en la página de login
+
+// Variables Globales
+
+// Formulario de la página
+var $MensajeForm = $("#MensajeLogineditarForm");
+// TextArea de la página, el que tendrá el mensaje
+var $MensajeContenido = $("#contenido");
+// Combo del tipo de mensaje, para ver el estilo que se deberá poner
+var $MensajeTipo = $("#tipo");
+// Para controlar que cada X tiempo se recargue la previsualización del mensaje y no instanteneamente que sería muy pesado
+var timeout;
+
+// Función que se encarga de mostrar el mensaje con su estilo la primera vez que se accede a la pagina o cada vez que se recargue la misma
+$(document).ready(function() {
+	refrescarMensaje();
+});
+
+// Funcion que crea el mensaje a partir del contenedor GMensaje, si no existe,
+// Por si el usuario lo ha cerrado en tiempo de ejecución, o reasigna la clase, por si el usuario ha cambiado el tipo de mensaje en el combo
+// Variable: clase: Contedrá la clase que se seteará en el div MensajeAdhoc, y la que permitirá asignarle correctamente los estilos CSS
+function creaMensaje(clase){
+	// Si el elemento HTML con id = 'MensajeAdhoc', no existe, lo creamos 
+	if (!document.getElementById("MensajeAdhoc")){
+		// Almacenamos en una variable la definición del div que contendrá nuestros mensajes
+		var content = '<div id="MensajeAdhoc" class="'+clase+'"> </div>';
+		// Esa definición la introducimos dentro del elemento GMensaje, que será nuestro DIV contenedor que usaremos siempre de referencia
+		// por si el usuario cierra en ejecución el DIV que contiene el mensaje (MensajeAdhoc), por lo que se eliminaría del HTML, tener una
+		// referencia (GMensaje) para insertarlo otra vez en el sitio adecuado. Esa referencia será el GMensaje.
+		$('#GMensaje').html(content);
+	} else { // Si existe, pues le reasignamos la clase por si el usuario ha cambiado el valor del tipo en el combo para modificar el estilo
+		var elementoMensaje = document.getElementById("MensajeAdhoc");
+		elementoMensaje.className=clase;
+	}
+}
+
+// Función que permite introducir un mensaje dentro del Div correspondiente con el estilo adecuado
+// Variable: name: Indicará el tipo de mensaje que se ha seleccionado en el combo pertinente de la pagina para saber como crear el contenido del mensaje
+//           data: Contendrá el contenido que se situará dentro del DIV que representa el mensaje, lo que el usuario a introducido en el area de texto
+//				   Estos datos estarán en un formato convertido a HTML adecuado para poder visualizar el contenido como Wiki, por si el usuario ha
+//                 introducido sintaxis para representar estilos Wiki.
+function writeMessage(name, data){
+	// Creamos un elemento que sirva para cerrar el mensaje y así 'ocultarlo' y no visualizarlo y el usuario lo cierra
+	var content = '<a class="close" data-dismiss="alert" href="#">x</a>';
+	// Si es un mensaje de tipo Error o tipo Fatal (lo que el usuario a seleccionado en el combo)
+	if (name == "terror" || name == "tfatal"){
+		// El contenido se formará como elemento de una lista HTML
+		content += '<ul>';
+		content += '<li>'+data+'</li>';
+		content += '</ul>';
+	} else{ // Si es otro tipo de mensaje
+		 // El contenido irá inmerso en un simple elemento <p>
+		 content += data;
+	}
+	// Añadimos la estructura con el contenido que hemos creado, al elemento HTML correspondiente, el DIV que contendrá nuestro mensaje
+	$('#MensajeAdhoc').html(content);
+	// Devolvemos true para indicar que todo se ha realizado correctamente
+	return true;
+}
+
+// Función que a través del tipo seleccionado en el combo, devuelve la clase del div del mensaje que tiene que ponerse
+// para asignarle correctamente el estilo CSS
+// Variables: tipo: Indica el tipo que ha seleccionado el usuario en el combo, para devolver la clase correspondiente y 
+//                  así asignar correctamente los estilos al elemento que mostrará el mensaje
+function tipoToClass(tipo){
+	if (tipo=="tfatal"){
+		return "alert alert-error";
+	}
+	if (tipo=="terror"){
+		return "alert alert-error";
+	}
+	if (tipo=="tok"){
+		return "alert alert-success";
+	}
+	if (tipo=="twarning"){
+		return "alert alert-warning";
+	}
+	if (tipo=="tinfo"){
+		return "alert alert-info";
+	}
+	return "";
+}
+
+// Evento que detecta cada vez que se introduce algo nuevo en el Area de Texto de contenido de la página MensajeLogin
+// para permitir refrescar continuamente el elemento que muestra la previsualización del mensaje
+$MensajeContenido.keydown(function(){refrescarMensaje()});
+
+// Evento para refrescar el mensaje cada vez que se seleccione otro valor en el combo que permite elegir el tipo de mensaje
+$MensajeTipo.change(function(){refrescarMensaje()});
+
+// Variable Groovy para conocer la dirección de la función a la que se debe llamar por Ajax para convertir el Texto del Mensaje escrito por le usuario
+// en datos HTML válidos para que se visualice correctamente los formatos Wiki que pueda introducir en él, el usuario.
+%{
+	urlConvertDataFunction = play.mvc.Router.reverse('MensajeLoginController.convertData')
+%}
+
+// Función que refresca el mensaje a partir del tipo que ha seleccionado el usuario en el combo y del contenido que tenga
+// el Area de Texto que contendrá los datos del mensaje
+function refrescarMensaje(){
+	var urlConvertData = "${urlConvertDataFunction}";
+	// Llamada AJAX para poder recibir el contenido del Area de Texto en el formato HTML correcto para previsulizar los posibles estilos Wiki
+	// que haya podido introducirse en el mismo
+	$.ajax({
+  		type: "POST",
+  		url: urlConvertData,
+  		data: { contenido: $MensajeContenido.val() }
+	}).done(function( msg ) {
+		// Creamos el mensaje en función del valor del combo que haya y que representa el tipo de mensaje. Convertiremos el valor del combo a un string con la clase correspondiente
+		creaMensaje(tipoToClass($MensajeTipo.val()));
+		// Escribimos el mensaje dentro del Div pertinente a raíz del contenido del Area de Texto y del valor del Combo de tipo de mensaje
+		writeMessage($MensajeTipo.val(), msg);
+	});
+}
+
+</script>

@@ -1,0 +1,29 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Administracion', 
+     hayForm:true, 
+     pagina:'MensajeLogin', 
+     permiso:'administrador', 
+     titulo:'MensajeLogin', 
+     urlBorrar:play.mvc.Router.reverse('MensajeLoginController.borrar' ), 
+     urlCrear:play.mvc.Router.reverse('MensajeLoginController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('MensajeLoginController.editar' )
+}
+			#{fap.combo campo:'mensajeInicio.tipo', id:'tipo', titulo:'Tipo del Mensaje' /}		
+		
+			#{fap.areaTexto campo:'mensajeInicio.contenido', id:'contenido', titulo:'Contenido del mensaje de Inicio' /}		
+		
+			#{fap.check campo:'mensajeInicio.habilitar', id:'habilitar', titulo:'Habilitar la aparición del mensaje en la página de inicio' /}		
+		
+#{/fap.pagina}
+
+<div id="GMensaje">
+	<div id="MensajeAdhoc" class="" data-dismiss="alert">
+	</div>
+</div>
+		

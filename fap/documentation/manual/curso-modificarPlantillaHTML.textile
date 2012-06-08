@@ -179,6 +179,16 @@ Estas plantillas deberán crearse, si no existen, en el path:
 O directamente podemos sobreescibir, conociendo los riesgos que eso conlleva, las plantillas que trae el módulo FAP para esas secciones. Estas plantillas se encuentran en:
 * ${APP}/modules/fap/app/views/Secure/
 
+h3. Mensajes configurables en contenido y estilo
+
+También existe una parte configurable en esta pagina de login.html, que permite la introducción de mensajes en diversos estilos. 
+
+Estos mensajes (de última hora), con sus estilos, y que se situan justo encima de la parte de _Instrucciones_, se configuran en la parte de *Administración*.
+
+Concretamente en _Mensaje de Login_. Para activarlos y que salgan en dicha página de login se deberá marcar el check que los habilita en la misma página de administracion: _Mensaje de Login_. Si queremos que no se muestre, bastará con desactivar dicho check y guardar los cambios de la página.
+
+Además en esta página se podrá divisar una previsualización de cómo quedaría (con estilos y demás) el mensaje, a medida que lo vamos confeccionando.
+
 
 
  

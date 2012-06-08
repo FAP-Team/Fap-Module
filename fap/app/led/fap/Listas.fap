@@ -339,3 +339,11 @@ Lista estadosRequerimiento crearEnumerado {
 	notificado: "Notificado"
 	clasificado: "Clasificado"
 }
+
+Lista tipoMensaje crearEnumerado{
+	tfatal: "Fatal"
+	terror: "Error"
+	twarning: "Warning"
+	tok: "Ok"
+	tinfo: "Info"
+}

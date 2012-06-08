@@ -18,10 +18,17 @@ Formulario Administracion permiso=administrador{
 			Enlace "Incidencias" accion="fap.IncidenciasController.index"
 			Enlace "Properties" pagina=Propiedades
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
+			Enlace "Mensaje en Login" pagina=MensajeLogin
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
+    }
+    
+    Pagina MensajeLogin campo=MensajeInicio{
+    	Combo tipo campo=MensajeInicio.tipo titulo="Tipo del Mensaje"
+    	AreaTexto contenido campo=MensajeInicio.contenido titulo="Contenido del mensaje de Inicio" 
+    	Check habilitar campo=MensajeInicio.habilitar titulo="Habilitar la aparición del mensaje en la página de inicio"
     }
     
     Pagina ActivarBaremacion{

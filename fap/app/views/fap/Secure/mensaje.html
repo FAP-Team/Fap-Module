@@ -1,0 +1,24 @@
+#{fap.grupo titulo:"Última Hora"}
+	{%
+		models.MensajeInicio mensajeObjeto = models.MensajeInicio.findAll().get(0);
+		def hayMensaje=mensajeObjeto.habilitar;
+		def tipo=mensajeObjeto.tipo;
+		def clase="";
+		if (tipo=="terror" || tipo=="tfatal")
+			clase="alert alert-error";
+		else if (tipo=="twarning")
+			clase="alert alert-warning";
+		else if (tipo=="tok")
+			clase="alert alert-success";
+		else if (tipo=="tinfo")
+			clase="alert alert-info";
+		def contenido=utils.StringUtils.getParsedText(mensajeObjeto.contenido);
+	%}
+	#{if hayMensaje}
+		<div id="GMensaje">
+			<div id="MensajeAdhoc" class="${clase}">
+				${contenido.raw()}
+			</div>
+		</div>
+	#{/if}
+#{/fap.grupo}

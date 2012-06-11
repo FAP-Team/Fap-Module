@@ -11,26 +11,26 @@ bc. 'Permiso' name{
 		'editable' | 'visible' | 'none'
 }
 
-La sección *vars* permite declarar variables que serán utilizadas en la sección *condiciones*, donde se utilizarán expresiones para realizar el cálculo de permisos. Existen variables por defecto, las cuales no hará falta declarar (_agente_ y _accion_, ___permiso__).
+La sección *vars* permite declarar variables que serán utilizadas en la sección *condiciones*, donde se utilizarán expresiones para realizar el cálculo de permisos. Existen variables por defecto, las cuales no hará falta declarar (_agente_ y ___accion__).
 
-La sección *when* contiene el conjunto de condiciones que se van a comprobar a la hora de consultar un permiso. Pueden existir multiples secciones _when_ dentro de un permiso. Si al comprobar una de ellas, se cumplen todas las condiciones, entonces no se siguen comprobando las demás que estén a continuación.
+La sección *when* contiene el conjunto de condiciones que se van a comprobar a la hora de consultar un permiso. Pueden existir múltiples secciones _when_ dentro de un permiso. Si al comprobar una de ellas, se cumplen todas las condiciones, entonces no se siguen comprobando las demás que estén a continuación.
 
 Los permisos se podrán aplicar a páginas, popups, grupos, forms, tablas, y al menú (tanto grupos como elementos individuales). Cuando se comprueba un permiso se le consulta para una acción y para un modo concretos. 
 
-Para consultar por una acción en concreto es necesario utilizar la variable predefinida __accion__. Las posibles acciones son:
+Para consultar por una acción en concreto es necesario utilizar la variable predefinida ___accion__. Las posibles acciones son:
 
 * **leer** : permitir la navegación a páginas y popups cuando la acción es __leer__. Esta acción permite únicamente visualizar el contenido.
 * **crear** : permitir la navegación a páginas y popups cuando la acción es __crear__. Esta acción incluye un botón para crear en base de datos una entidad con los datos suministrados en el formulario.
 * **editar** : permitir la navegación a páginas y popups cuando la acción es __editar__. Esta acción incluye un botón para editar una entidad ya existente a partir de los datos suministrados en el formulario.
 * **borrar** : permitir la navegación a páginas y popups cuando la acción es __borrar__. Esta acción incluye un botón para borrar de base de datos la entidad que se está visualizando en el formulario.
 
-Para consultar por un modo de presentación en concreto es necesario utilizar la variable predefinida ___permiso__. Los posibles modos son:
+La sección *return* establece lo que el permiso va a devolver cuando se cumplan las condiciones que están justo encima. Los posibles modos de presentación son:
 
 * **editable** : permite que todos los controles gráficos web sobre los que está actuando el permiso sean visibles y editables.
 * **visible** : permite que todos los controles gráficos web sobre los que está actuando el permiso sean visibles, pero no editables.
 * **none** : deshabilita el renderizado de todos los controles gráficos web sobre los que está actuando el permiso.
 
-La sección *return* establece lo que el permiso va a devolver cuando se cumplan las condiciones que están justo encima. Si se está consultando con ___permiso__ igual a _editable_  y el permiso define _return editable_, el método del permiso devolverá _true_. Si por el contrario el permiso define _return visible_ o _return none_, devolverá _false_. La jerarquía de permisos es la siguiente:
+Si se está consultando con permiso igual a _editable_ y el permiso define _return editable_, el método del permiso devolverá _true_. Si por el contrario el permiso define _return visible_ o _return none_, devolverá _false_. La jerarquía de permisos es la siguiente:
 
 bc. Editable > Visible > None
 
@@ -38,27 +38,27 @@ Los permisos son mucho más potentes que lo que hemos explicado aquí, pudiendo 
 
 h2. Ejemplo práctico
 
-En el siguiente se mostrará la definición DSL de dos permisos y su utilización en una página, para demostrar su uso y visualizar el resultado en la web.
+En el siguiente ejemplo se mostrará la definición DSL de dos permisos y su utilización en una página, para demostrar su uso y visualizar el resultado en la web.
 
-bc. Permiso ejemplo1{
-	when accion = crear
+bc. Permiso ejemplo1 {
+	when _accion = crear
 	return none
 	else return editable
 }
 
-bc. Permiso ejemplo2{
-	when accion = editar
+bc. Permiso ejemplo2 {
+	when _accion = editar
 	return visible
 	else return editable
 }
 
 bc.. Pagina PaginaEj campo=Document {
 		
-	Grupo permiso=ejemplo1 borde=false{
+	Grupo permiso=ejemplo1 borde=false {
 		Tabla tabla1 campo=Document.valores columnasAutomaticas{}
 	}
 		
-	Grupo permiso=ejemplo2 borde=false{
+	Grupo permiso=ejemplo2 borde=false {
 		Texto campo=Document.nombre
 	}
 		
@@ -66,13 +66,13 @@ bc.. Pagina PaginaEj campo=Document {
 }
 
 p. En la página expuesta existen tres elementos diferenciados:
-* En primer lugar se define una tabla que está restringida por el permiso _ejemplo1_. Dicho permiso establece que cuando la accion es crear no permite ni visible ni editable. En caso contrario permite ambas cosas.
+* En primer lugar, se define una tabla que está restringida por el permiso _ejemplo1_. Dicho permiso establece que cuando la acción es crear no permite ni visible ni editable. En caso contrario permite ambas cosas.
 
-* A continuación se define un campo de texto restringido con el permiso _ejemplo2_. En este caso, el permiso establece que cuando la accion es editar solo permite visible. En caso contrario lo permite todo (editable).
+* A continuación, se define un campo de texto restringido con el permiso _ejemplo2_. En este caso, el permiso establece que cuando la acción es editar solo permite visible. En caso contrario lo permite todo (editable).
 
-* Por último se define otro campo de texto, pero que en este caso no está restringido por ningún permiso.
+* Por último, se define otro campo de texto, pero que en este caso no está restringido por ningún permiso.
 
-A continuación se muestra el resultado visual de dicha página, en dos casos distintos: cuando la acción es crear y cuando la acción es editar.
+A continuación, se muestra el resultado visual de dicha página, en dos casos distintos: cuando la acción es crear y cuando la acción es editar.
 
 Cuando la acción es *crear* :
 

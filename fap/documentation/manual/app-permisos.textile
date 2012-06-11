@@ -50,16 +50,22 @@ protected void secure(){
 
 h2. Metódo de control de permisos
 
-Las clases que controlan los permisos heredan de la clase **security.Secure** e implementan el método **check** que se encarga de validar un permiso.
+Las clases que controlan los permisos heredan de la clase **security.Secure** e implementan uno de estos métodos dependiendo a qué elemento se le aplique:
+* **checkGrafico** - Será el que se utilice en los elementos gráficos, y determina si estos serán editables, solo visibles o si directamente no aparecerán. En el DSL se distinguirán porque pueden devolver unos de los siguientes valores: _editable, visible, none_.
 
-bc. public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars);
+bc. public boolean checkGrafico(String id, String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars)
 
-El método debe devolver true/false en función de si se cumple la validación del permiso.
+
+* **checkAcceso** - Será el que se utilice en las páginas y popups, y regulará el acceso a estos. En el DSL se distinguirán porque pueden devolver uno de los siguiente valores: _leer, editar, crear, borrar_.
+
+bc. public boolean checkAcceso(String id, String accion, Map<String, Long> ids, Map<String, Object> vars)
+
+Los métodos deben devolver true/false en función de si se cumple la validación del permiso.
 
 Los parámetros del método son:
 * **id** - Nombre del permiso que se va a comprobar.
-* **_permiso** - permiso del elemento gráfico que se está consultando (editable, visible, none).
-* **action** - Acción del permiso que se está consultando (leer, editar, crear, borrar).
+* **grafico** - permiso del elemento gráfico que se está consultando (editable, visible, none).
+* **accion** - Acción del permiso que se está consultando (leer, editar, crear, borrar).
 * **ids** - Mapa con clave idNombreVariable y valor el id de la variable que debe recuperar de base de datos.
 * **vars** - Mapa con clave nombreDeVariable y valor el objeto que se asignará a la variable.
 
@@ -67,17 +73,23 @@ A la hora de asignar valores a las variables, se puede utilizar tanto el "ids" c
 
 h2. Sobrescribiendo un permiso de forma manual
 
-Si por ejemplo queremos sobrescribir el permiso **administrador** lo que debemos hacer es modificar el método **check** de la clase **security.SecureApp**.
+Si por ejemplo queremos sobrescribir el permiso **administrador** lo que debemos hacer es modificar el método **check** de la clase **security.SecureApp** y sobreescribir en esta clase el método del permiso correspondiente, que se encuentra definido en la clase **security.SecureAppGen**.
 
 bc.. 	@Override
-public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {		
-  
-   if("administrador".equals(id)){
-      //Añadir código manual para hacer la comprobación del permiso
-      return <devolver true o false>;
-   }
-
-   return nextCheck(id, _permiso, action, ids, vars);
+public ResultadoPermiso check(String id, String grafico, String action, Map<String, Long> ids, Map<String, Object> vars) {
+	if ("administrador".equals(id))
+		return administrador(grafico, action, ids, vars);
+	return nextCheck(id, grafico, action, ids, vars);
 }
-
+	
+private ResultadoPermiso administrador(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+	//Variables
+	Agente agente = AgenteController.getAgente();
+	Solicitud solicitud = getSolicitud(ids, vars);
+	Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+	if (solicitud.id.toString().equals(solicitud.id.toString())) {
+		return new ResultadoPermiso(Accion.All);
+	}
+	return null;
+}
 

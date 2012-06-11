@@ -1,8 +1,8 @@
 h1. Permisos
 
-h2. Ambito
+h2. Ámbito
 
-Los permisos se podrán aplicar a páginas, grupos, forms, tablas, al menú (tanto grupos como elementos individuales). Los permisos que se aplican a las tablas sirven para filtrar las filas que van a aparecen al renderizarla. Para más información sobre como funcionan los permisos, "consultar esta página":curso-permisos.
+Los permisos se podrán aplicar a páginas, grupos, forms, tablas, al menú (tanto a grupos como a elementos individuales). Los permisos que se aplican a las tablas sirven para filtrar las filas que van a aparecer al renderizarla. Para más información sobre cómo funcionan los permisos, "consultar esta página":curso-permisos.
 
 h2. Sintaxis
 
@@ -10,8 +10,7 @@ h3. Variables por defecto
 
 Para la definición de permisos se tendrán una serie de variables especiales.
 *  **agente** : Agente conectado actualmente. Puede ser null.
-*  **action** : Accion para la que se está consulta el permiso (leer, editar, crear, borrar).
-*  **_permiso** : Modo de presentación para el que se está consultando el permiso (editable, visible, none).
+*  **_accion** : Acción para la que se está consulta el permiso (leer, editar, crear, borrar).
 
 h3. Varibles definidas por el usuario
 
@@ -22,7 +21,7 @@ Para definirlas tenemos dos opciones:
 
 h3. DSL
 
-bc. Permiso rule_name{
+bc. Permiso rule_name {
 	vars
 		Tipo1 var1
 		Tipo2 var2 : sql("Consulta sql...con parametros ?", var1);
@@ -39,10 +38,10 @@ bc. Permiso rule_name{
 
 h4. Operaciones
 
-* **=, !=** : Comprueba si un campo tiene, o no, un determinado valor
-* **in, not in**: Comprueba si un valor está, o no, dentro de una lista de valores
-* **= null, != null** : Comprueba si una variable es null
-* **and, or** : Concatenan reglas
+* **=, !=** : Comprueba si un campo tiene, o no, un determinado valor.
+* **in, not in**: Comprueba si un valor está, o no, dentro de una lista de valores.
+* **= null, != null** : Comprueba si una variable es null.
+* **and, or** : Concatenan reglas.
 
 h2. Definición
 
@@ -63,19 +62,37 @@ bc. Permiso:
 
 h2. Ejemplos
 
-bc. Permiso listaSolicitudes{
+bc. Permiso listaSolicitudes {
 	vars
 		Solicitud solicitud
 		Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 	when
-		(accion = leer and agente.rolActivo.nombre = "administrador")
+		(_accion = leer and agente.rolActivo = "administrador")
 		or
 		(
-			accion = leer
+			_accion = leer
 			and 
 			(participacion != null and agente.rolActivo.id = participacion.agente.id)
 		)
 	return editable
+}
+
+bc. Permiso resolucion {
+	vars
+		Resolucion resolucion
+	when
+	(
+		_accion in (editar, crear) and
+		(agente.rolActivo in ("administrador")) and
+		resolucion.estado = "_20"
+	)
+	or
+	(
+		_accion = leer and
+		(agente.rolActivo in ("gestor"))
+	)
+return
+	editable
 }
 
 h2. Permisos avanzados

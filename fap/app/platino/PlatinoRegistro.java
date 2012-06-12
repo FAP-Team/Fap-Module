@@ -82,17 +82,12 @@ public class PlatinoRegistro {
 		
 		PlatinoProxy.setProxy(registro);
 		
-		//Depuración
-//		Client client = ClientProxy.getClient(registro);
-//		client.getInInterceptors().add(new LoggingInInterceptor());
-//		client.getOutInterceptors().add(new LoggingOutInterceptor());
-		
-//		HTTPConduit http = (HTTPConduit) client.getConduit();
-//		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-//		httpClientPolicy.setConnectionTimeout(36000);
-//		httpClientPolicy.setAllowChunking(false);
-//		httpClientPolicy.setContentType("text/xml; charset=ISO-8859-1;");
-//		http.setClient(httpClientPolicy);
+		Client client = ClientProxy.getClient(registro);
+		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
+		httpConduit.setClient(httpClientPolicy);
 	}
 	
 	public static DatosRegistro getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente) throws Exception {
@@ -249,11 +244,17 @@ public class PlatinoRegistro {
 		
 		Asunto asunto = new Asunto();
 		
-		String asuntoProperty = FapProperties.get("fap.platino.registro.asunto");
+		String asuntoProperty = datosRegistro.getAsunto();
+		if (asuntoProperty == null) {
+			asuntoProperty = FapProperties.get("fap.platino.registro.asunto");
+		}
 		
 		asunto.getContent().add(asuntoProperty);
 		
-		Long organismo = FapProperties.getLong("fap.platino.registro.unidadOrganica");
+		String organismo = datosRegistro.getUnidadOrganica();
+		if (organismo == null) {
+			organismo = FapProperties.get("fap.platino.registro.unidadOrganica");
+		}
 
 		String datosAFirmar = null;	
 		try {								
@@ -286,6 +287,37 @@ public class PlatinoRegistro {
 		XMLGregorianCalendar fechaHora = justificante.getDatosFirmados().getHoraRegistro();
 		DateTime dateTime = new DateTime(fecha.getYear(),fecha.getMonth(),fecha.getDay(),fechaHora.getHour(),fechaHora.getMinute(),fechaHora.getSecond(),fechaHora.getMillisecond());
 		return dateTime;
+	}
+	
+	public static JustificanteRegistro registroDeSalida(DatosRegistro datosRegistro) throws Exception {
+		log.info("Preparando registro de salida");
+
+		String datosAFirmar = obtenerDatosAFirmarRegisto(datosRegistro);
+		log.info(datosAFirmar);
+
+		String datosFirmados = FirmaClient.firmarPKCS7(datosAFirmar.getBytes("iso-8859-1"));
+		log.info("Datos normalizados firmados");
+
+		try {	
+			JustificanteRegistro justificante = registroDeSalida(datosAFirmar, datosFirmados);
+			log.info("Registro de entrada realizado con justificante con NDE " + justificante.getNDE() + " Numero Registro General: " + justificante.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificante.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificante.getDatosFirmados().getNúmeroRegistro().getNumOficina());
+			log.info("RegistrarEntrada -> EXIT OK");
+			return justificante;
+		} catch (Exception e) {
+			log.error("Error al obtener el justificante y EXIT "+e);
+			log.error("RegistrarEntrada -> EXIT ERROR");
+			throw e;
+		}		
+	}	
+
+	public static JustificanteRegistro registroDeSalida(String datosAFirmar, String datosFirmados) throws Exception {
+		// Se realiza el registro de salida, obteniendo el justificante
+		String username = FapProperties.get("fap.platino.registro.username");
+		String password = FapProperties.get("fap.platino.registro.password");
+		String aliasServidor = FapProperties.get("fap.platino.registro.aliasServidor");
+
+		String passwordEncrypted = PlatinoSecurityUtils.encriptarPassword(password);
+		return registro.registrarSalida(username, passwordEncrypted, datosAFirmar, datosFirmados, aliasServidor, null);
 	}
 	
 }

@@ -17,6 +17,8 @@ public class DatosRegistro {
 	private String numeroDocumento; // NIF(N), o NIE(E) o CIF(C) documento
 	private XMLGregorianCalendar fecha;
 	private DatosDocumento documento;
+	private String asunto = null;
+	private String unidadOrganica = null;
 
 	public DatosExpediente getExpediente() {
 		return expediente;
@@ -84,5 +86,21 @@ public class DatosRegistro {
 		documento.setHash(PlatinoSecurityUtils.obtenerHash(inputStream));
 		// documentosGestorDocumental.getDocumento().add(documento);
 		return documento;
+	}
+	
+	public void setUnidadOrganica(String unidadOrganica) {
+		this.unidadOrganica = unidadOrganica;
+	}
+
+	public String getUnidadOrganica() {
+		return this.unidadOrganica;
+	}
+
+	public String getAsunto() {
+		return this.asunto;
+	}
+
+	public void setAsunto(String asunto) {
+		this.asunto = asunto;
 	}
 }

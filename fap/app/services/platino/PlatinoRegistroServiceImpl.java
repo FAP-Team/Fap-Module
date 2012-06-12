@@ -18,6 +18,10 @@ import javax.xml.ws.BindingProvider;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 
@@ -36,6 +40,7 @@ import platino.DatosDocumento;
 import platino.DatosExpediente;
 import platino.DatosFirmante;
 import platino.DatosRegistro;
+import platino.FirmaClient;
 
 import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
@@ -109,6 +114,13 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         WSUtils.configureEndPoint(registroPort, getEndPoint());
         WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder);
         PlatinoProxy.setProxy(registroPort); 
+        
+        Client client = ClientProxy.getClient(registroPort);
+		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
+		httpConduit.setClient(httpClientPolicy);
         
         USERNAME = FapProperties.get("fap.platino.registro.username");
         PASSWORD = FapProperties.get("fap.platino.registro.password");
@@ -252,11 +264,20 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         // Poner fecha en la que se produce la solicitud
         XMLGregorianCalendar fecha = WSUtils.getXmlGregorianCalendar(new Date()); 
         Asunto asunto = new Asunto();
-        asunto.getContent().add(ASUNTO);
+        String asuntoProperty = datosRegistro.getAsunto();
+		if (asuntoProperty == null) {
+			asuntoProperty = ASUNTO;
+		}
+        asunto.getContent().add(asuntoProperty);
+        
+        Long organismo = Long.valueOf(datosRegistro.getUnidadOrganica());
+		if (organismo == null) {
+			organismo = UNIDAD_ORGANICA;
+		}
 
         try {
             String datosAFirmar = registroPort.normalizaDatosFirmados(
-                    UNIDAD_ORGANICA, // Organismo
+            		organismo, // Organismo
                     asunto, // Asunto
                     nombre, // Nombre remitente
                     null, // TipoTransporte (opcional)
@@ -312,6 +333,37 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             throw new RegistroServiceException("Error en la llamada de registro de entrada", e);
         }
     }
+    
+    public JustificanteRegistro registroDeSalida(ExpedientePlatino expediente, DatosRegistro datosRegistro) throws Exception {
+		log.info("Preparando registro de salida");
+
+		String datosAFirmar = getDatosRegistroNormalizados(expediente, datosRegistro);
+		log.info(datosAFirmar);
+
+		String datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
+		log.info("Datos normalizados firmados");
+
+		try {	
+			JustificanteRegistro justificante = registroDeSalida(datosAFirmar, datosFirmados);
+			log.info("Registro de entrada realizado con justificante con NDE " + justificante.getNDE() + " Numero Registro General: " + justificante.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificante.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificante.getDatosFirmados().getNúmeroRegistro().getNumOficina());
+			log.info("RegistrarEntrada -> EXIT OK");
+			return justificante;
+		} catch (Exception e) {
+			log.error("Error al obtener el justificante y EXIT "+e);
+			log.error("RegistrarEntrada -> EXIT ERROR");
+			throw e;
+		}		
+	}	
+
+	public JustificanteRegistro registroDeSalida(String datosAFirmar, String datosFirmados) throws Exception {
+		// Se realiza el registro de salida, obteniendo el justificante
+		String username = FapProperties.get("fap.platino.registro.username");
+		String password = FapProperties.get("fap.platino.registro.password");
+		String aliasServidor = FapProperties.get("fap.platino.registro.aliasServidor");
+
+		String passwordEncrypted = PlatinoSecurityUtils.encriptarPassword(password);
+		return registroPort.registrarSalida(username, passwordEncrypted, datosAFirmar, datosFirmados, aliasServidor, null);
+	}
     
     private models.JustificanteRegistro getJustificanteRegistroModel(JustificanteRegistro justificantePlatino) {
         DateTime fechaRegistro = getRegistroDateTime(justificantePlatino);

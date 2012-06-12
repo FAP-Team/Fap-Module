@@ -557,7 +557,12 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             Firma firmaActual = propiedadesAdministrativas.getFirma();
             
             models.Firmante firmante = firma.getFirmantes().get(0);
-            if (!firmaActual.getFirmantes().contains(firmante)){
+    		if (propiedadesAdministrativas.getFirma() == null) {
+    			firmaActual = new Firma();
+    			propiedadesAdministrativas.setFirma(firmaActual);
+    			firmaActual.setContenido(firma.getContenido());
+    			firmaActual.setTipoMime("text/xml");
+    		} else if (!firmaActual.getFirmantes().contains(firmante)){
             	Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
             	propiedadesAdministrativas.setFirma(firmaNueva);
     

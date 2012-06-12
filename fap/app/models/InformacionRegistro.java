@@ -42,7 +42,7 @@ public class InformacionRegistro extends FapModel {
 	public void setDataFromJustificante(models.JustificanteRegistro justificante) {
 		fechaRegistro = justificante.getFechaRegistro();
 		unidadOrganica = justificante.getUnidadOrganica();
-		numeroRegistro = justificante.getUnidadOrganica();
+		numeroRegistro = justificante.getNumeroRegistro();
 		numeroRegistroGeneral = justificante.getNumeroRegistroGeneral();
 		save();
 	}

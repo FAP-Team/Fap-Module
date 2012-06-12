@@ -225,8 +225,8 @@ Formulario Solicitud {
 	}
 	
 	Pagina Paginas_Combo_niveles campo=PaginasTab{
-		Accion crear redirigir=ComboTablasPaginas
-		Accion editar redirigir=ComboTablasPaginas
+		Accion crear redirigir=anterior
+		Accion editar redirigir=anterior
 		Texto campo=PaginasTab.nombre titulo="Nombre"
 	}
 	
@@ -436,6 +436,12 @@ Formulario Solicitud {
 		Wiki {"Pulse en botón para enviar un mail de prueba siguiendo la configuracion descrita en la pagina de Administración"}	
 		Form enviarMail {
         	Boton enviarBoton titulo="Enviar Mail"
+        }
+    }
+    
+    Pagina RenderPdf noForm campo=Solicitud {
+    	Form renderPdfSolicitud {
+    		Boton pdfBotonRender titulo="Render Response PDF"
         }
     }
 	

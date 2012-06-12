@@ -117,6 +117,8 @@ GET /Solicitud/paginainject PaginaInjectController.index
 POST /Solicitud/paginainject/editar PaginaInjectController.editar
 GET /Solicitud/enviomails EnvioMailsController.index
 POST /Solicitud/enviomails/enviarMail EnvioMailsController.enviarMail
+GET /Solicitud/renderpdf RenderPdfController.index
+POST /Solicitud/renderpdf/renderPdfSolicitud RenderPdfController.renderPdfSolicitud
 GET /Solicitud/combotestref popups.ComboTestRefController.index
 POST /Solicitud/combotestref/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/borrar popups.ComboTestRefController.borrar

@@ -14,11 +14,11 @@
      urlCrear:play.mvc.Router.reverse('MensajeLoginController.crear' ), 
      urlEditar:play.mvc.Router.reverse('MensajeLoginController.editar' )
 }
-			#{fap.combo campo:'mensajeInicio.tipo', id:'tipo', titulo:'Tipo del Mensaje' /}		
+			#{fap.combo ayuda:tags.TagAyuda.popover('Tipo de mensaje a visualizar, este atributo será el encargado de maquetar el texto, permite cambiar el estilo del mensaje'), campo:'mensajeInicio.tipo', id:'tipo', titulo:'Tipo del Mensaje' /}		
 		
-			#{fap.areaTexto campo:'mensajeInicio.contenido', id:'contenido', titulo:'Contenido del mensaje de Inicio' /}		
+			#{fap.areaTexto ancho:'500px', ayuda:tags.TagAyuda.popover('Contenido del mensaje que podremos colocar en la página inicial de login de la aplicación'), campo:'mensajeInicio.contenido', id:'contenido', titulo:'Contenido del mensaje de Inicio' /}		
 		
-			#{fap.check campo:'mensajeInicio.habilitar', id:'habilitar', titulo:'Habilitar la aparición del mensaje en la página de inicio' /}		
+			#{fap.check ayuda:tags.TagAyuda.popover('Será necesario habilitar en caso de querer mostrar en la pagina de inicio el mensaje'), campo:'mensajeInicio.habilitar', id:'habilitar', titulo:'Habilitar la aparición del mensaje en la página de inicio' /}	
 		
 #{/fap.pagina}
 

@@ -26,9 +26,9 @@ Formulario Administracion permiso=administrador{
     }
     
     Pagina MensajeLogin campo=MensajeInicio{
-    	Combo tipo campo=MensajeInicio.tipo titulo="Tipo del Mensaje"
-    	AreaTexto contenido campo=MensajeInicio.contenido titulo="Contenido del mensaje de Inicio" 
-    	Check habilitar campo=MensajeInicio.habilitar titulo="Habilitar la aparición del mensaje en la página de inicio"
+    	Combo tipo campo=MensajeInicio.tipo titulo="Tipo del Mensaje" ayuda="Tipo de mensaje a visualizar, este atributo será el encargado de maquetar el texto, permite cambiar el estilo del mensaje" (propover)
+    	AreaTexto contenido campo=MensajeInicio.contenido titulo="Contenido del mensaje de Inicio" ancho="500px" ayuda="Contenido del mensaje que podremos colocar en la página inicial de login de la aplicación" (propover)
+    	Check habilitar campo=MensajeInicio.habilitar titulo="Habilitar la aparición del mensaje en la página de inicio" ayuda="Será necesario habilitar en caso de querer mostrar en la pagina de inicio el mensaje" (propover)
     }
     
     Pagina ActivarBaremacion{

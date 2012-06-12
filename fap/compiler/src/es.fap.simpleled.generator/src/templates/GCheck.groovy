@@ -22,6 +22,13 @@ public class GCheck extends GSaveCampoElement{
 		
 		if(check.name != null)
 			params.putStr("id", check.name)	
+		
+		if (check.ayuda != null) {
+			if ((check.tipoAyuda != null) && (check.tipoAyuda.type.equals("propover")))
+				params.put "ayuda", "tags.TagAyuda.popover('${check.ayuda}')"
+			else
+				params.put "ayuda", "tags.TagAyuda.texto('${check.ayuda}')"
+		}
 			
 		if(check.anchoTitulo != null)
 			params.putStr("anchoTitulo", check.anchoTitulo)

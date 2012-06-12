@@ -255,8 +255,10 @@ AreaTexto:
 		& ('titulo' '=' titulo=STRING)?
 		& ('valor' '=' valor=STRING)?
 		& ('filas' '=' filas=INT)?
+		& ('ancho' '=' ancho=STRING)?
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& (requerido?='requerido')?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 
@@ -265,6 +267,7 @@ Check:
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;	
 

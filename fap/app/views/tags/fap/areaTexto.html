@@ -30,11 +30,21 @@
 	def showRow   = _noRow != null? !_noRow : true
 	def rows = _filas != null? _filas : 5
 	def anchoTitulo = _anchoTitulo
+	
+	String style = '';
+	def ancho = _ancho
+	def anchoBloque
+	if(tags.TagMapStack.top("agruparCampos")){
+		if(ancho == null) ancho = "200px";
+		anchoBloque = ancho;
+	}
+	if(ancho != null)
+		style += 'width: ' + ancho + ';'
 }%
 
 
-	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoTitulo:anchoTitulo}
-		<textarea rows="${rows}" id="${id}" name="${field.name}" ${disabled} >${value}</textarea>
+	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
+		<textarea rows="${rows}" id="${id}" name="${field.name}" ${disabled} style="${style}">${value}</textarea>
 	#{/fap.formrow}
 
 #{/fap.field}

@@ -4,6 +4,7 @@
 
 %{ 
 	def id = _id ?: field.id
+	def id_help  = id + '-help' 
 	def idHidden = (String)id+utils.StringUtils.aleatorio(5);
 	def label = _titulo ?: play.i18n.Messages.get(field.name)
 	def value = _value ?: field.flashorvalue
@@ -38,9 +39,13 @@
 		<label class="checkbox">
 			<input type="checkbox" id="${id}" ${checked.raw()} ${disabled}/>
 			${label}
+			#{fap.ayuda ayuda:ayuda, id:id_help /}
 		</label>
+		
 		<input type="hidden" id="${idHidden}" name="${field.name}" value="${valueH.raw()}" ${disabled}/>
+		
 	</div>
+	
 	
 	<script>
 		$(function() {

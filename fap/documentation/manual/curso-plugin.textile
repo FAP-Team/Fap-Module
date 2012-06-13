@@ -16,7 +16,7 @@ Donde ${APP} es el directorio de tu aplicación.
 
 h2. Actualización del plugin
 
-Normalmente cuando actualizamos el módulo introducimos modificaciones en el lenguaje. Por lo tanto es necesario que actualices el editor para que tenga sincronizado estos cambios. Para actualizar el módulo tienes que repetir los pasos de instalación, copiar los nuevos ficheros jar del plugin en la carpeta dropins de eclipse.
+Normalmente, cuando actualizamos el módulo introducimos modificaciones en el lenguaje. Por lo tanto, es necesario que actualices el editor para que tenga sincronizado estos cambios. Para actualizar el módulo tienes que repetir los pasos de instalación, copiar los nuevos ficheros jar del plugin en la carpeta dropins de eclipse.
 
 
 h2(#apendix1). Apéndice1 : Instalación de xtext2

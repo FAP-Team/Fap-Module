@@ -8,11 +8,11 @@ Los formularios tienen asociado un *permiso* (opcional), un *Menu* (opcional), c
 
 !images/curso_formulario_1!
 
-Le definición en la gramática de los fomularios más información "aquí":dsl-formulario.
+Le definición en la gramática de los fomularios, más información "aquí":dsl-formulario.
 
 h3. Formulario Solicitud
 
-Existe un formulario _especial_, llamado formulario *Solicitud* (será el formuario principal de la aplicación FAP). Este formulario, el cual tiene partes definidas ya en el módulo *FAP* (como por ejemplo la página de _Aportación de documentación_), es y debe ser redefinido en nuestra aplicación añadiéndole las páginas necesarias para que los usuarios rellenen datos en la aplicación. Así, antes de redefinir el formulario _Solicitud_, internamente tendrá un esquema parecido al siguiente.
+Existe un formulario _especial_, llamado formulario *Solicitud* (será el formuario principal de la aplicación FAP). Este formulario, el cual tiene partes definidas ya en el módulo *FAP* (como, por ejemplo, la página de _Aportación de documentación_), es y debe ser redefinido en nuestra aplicación añadiéndole las páginas necesarias para que los usuarios rellenen datos en la aplicación. Así, antes de redefinir el formulario _Solicitud_, internamente tendrá un esquema parecido al siguiente.
 
 !images/curso_formulario_2-SolicitudInicial!
 
@@ -20,14 +20,14 @@ Nos fijamos en que por defecto, inicialmente no tiene ni un permiso definido (el
 
 h3. Añadir menu y páginas al formulario Solicitud
 
-Como usuarios del módulo FAP, podemos añadir páginas, un menú y permisos al formulario *Solicitud*. Para ello, en algun fichero *.play* definido en _led/src/_ de nuestra aplicación (lo más normal sería hacerlo en el _Solicitud.play_) escribimos acuerdo al dsl un formulario llamado _Solicitud_ que tenga el menú, las páginas y los popups que queramos.
+Como usuarios del módulo FAP, podemos añadir páginas, un menú y permisos al formulario *Solicitud*. Para ello, en algún fichero *.fap* definido en _app/led/_ de nuestra aplicación (lo más normal sería hacerlo en el _Solicitud.fap_) escribimos, de acuerdo al dsl, un formulario llamado _Solicitud_ que tenga el menú, las páginas y los popups que queramos.
 
 !images/curso_formulario_3-SolicitudDesarrollador!
 
-En este caso incluiremos una página *Solicitante*, un menu de navegación con el enlace a la página solicitante y otro a la página de *Aportación* (que por defecto provee el módulo FAP). Quedando nuestro fichero de la siguiente manera:
+En este caso, incluiremos una página *Solicitante*, un menú de navegación con el enlace a la página solicitante y otro a la página de *Aportación* (que por defecto provee el módulo FAP). Quedando nuestro fichero de la siguiente manera:
 
 bc. 
-Formulario Solicitud campo=Solicitud{
+Formulario Solicitud campo=Solicitud {
 	
     Menu {
     	Enlace "Volver" pagina=Principal.Solicitudes
@@ -55,14 +55,14 @@ Formulario Solicitud campo=Solicitud{
     }
 }
 
-Podemos observar como definimos el formulario *Solicitud*, incluyendo un *menu* y una *página* de _Solicitante_ donde permitiremos rellenar datos al usuario de la aplicación, y el *permiso* de la página deberá estar definido en nuestra aplicación, o en el módulo FAP (que provee varios permisos pordefecto). 
+Podemos observar cómo definimos el formulario *Solicitud*, incluyendo un *menu* y una *pagina* de _Solicitante_ donde permitiremos rellenar datos al usuario de la aplicación, y el *permiso* de la página deberá estar definido en nuestra aplicación, o en el módulo FAP (que provee varios permisos por defecto). 
 
 El menú tiene el siguiente contenido:
 
 # Un enlace "Volver" que permite regresar a la página de listas de solicitudes.
 # Un grupo de navegación "Solicitud" con un único enlace a una página, en concreto a la página "Solicitante".
 # Un grupo de navegación "Instrucción" con un único enlace a una página, en concreto a la página "Aportación", incluida por defecto en el módulo FAP.
-# Un enlace a la Ayuda de la aplicación, en concreto a la página "Soporte" del formulario "Soporte". Se indica en "_pagina=NombreFormulario/NombreDePagina_".
+# Un enlace a la Ayuda de la aplicación, en concreto, a la página "Soporte" del formulario "Soporte". Se indica en "_pagina=NombreFormulario/NombreDePagina_".
 
 En la definción de la página de _Solicitante_, se establecen una serie de opciones (para su comportamiento), en concreto *guardarParaPreparar* (indica que la página deberá ser "guardada" para poder presentar más adelante la solicitud) e *inicial* (indica que será la página principal de la solicitud, es decir, la primera página que se enlazará desde la lista de Solicitudes). Mas información sobre las páginas "aquí":dsl-pagina.
 
@@ -70,30 +70,30 @@ En la página _Solicitante_ creada por nosotros, permitimos rellenar varios camp
 
 # Un campo *Persona*, el cual define todos los campos para rellenar datos sobre una persona, ya sea física o jurídica. "Más info":dsl-persona.
 # Un campo *Dirección*, que nos permite rellenar los datos de una dirección. "Más Info":dsl-direccion.
-# Varios campos de texto para diferente información
+# Varios campos de texto para diferente información.
 # Un campo de *Fecha*, permite indicar la fecha de nacimiento del solicitante. "Más info":dsl-fecha.
 
 Nos fijamos en que podemos indicar si el campo es requerido (necesario rellenar para poder almacenar).
 
 h4. Generación del formulario
 
-Así, cuando generemos el código del formulario _play fap:generate_, el formulario *Solicitud* creado por el desarrollador de la aplicación, se _unirá_ al que viene por defecto en el módulo FAP, creandose un formulario conjunto:
+Así, cuando generemos el código del formulario _play fap:generate_, el formulario *Solicitud* creado por el desarrollador de la aplicación, se _unirá_ al que viene por defecto en el módulo FAP, creándose un formulario conjunto:
 
 !images/curso_formulario_4-SolicitudUnion!
 
-Una vez generado y ejecutada la aplicación, al inicial una nueva solicitud, nos aparecerá directamente la página *Solicitante* que nosotros especificamos:
+Una vez generada y ejecutada la aplicación, al iniciar una nueva solicitud, nos aparecerá directamente la página *Solicitante* que nosotros especificamos:
 
 !images/curso_formulario_5-paginaSolicitud!
 
 h3. Otros formularios
 
-La creación de otros formularios en nuestra aplicación se hará básicemente de la misma forma, sólo que únicamente el formulario estará definido en nuestra aplicación, y no en el módulo FAP. Veremos como definirlos más adelante.
+La creación de otros formularios en nuestra aplicación se hará básicamente de la misma forma, sólo que únicamente el formulario estará definido en nuestra aplicación, y no en el módulo FAP. Veremos como definirlos más adelante.
 
 h3. Añadir popups a los formularios
 
-Los "Popups":dsl-popup en las aplicaciones FAP pueden ser utilizadon en los enlaces del menú, en los botones de la aplicación web y por último, pero más importante, en las tablas. En este caso, utilizaremos los Popups para mostrar, editar o eliminar información de cada una de las "filas" de la tabla, es decir de sus elementos. Más información sobre las tablas "aquí":dsl-tabla.
+Los "Popups":dsl-popup en las aplicaciones FAP pueden ser utilizados en los enlaces del menú, en los botones de la aplicación web y por último, pero más importante, en las tablas. En este caso, utilizaremos los Popups para mostrar, editar o eliminar información de cada una de las "filas" de la tabla, es decir, de sus elementos. Más información sobre las tablas "aquí":dsl-tabla.
 
-Pongamos un ejemplo, supongamos que tenemos una tabla en la cual llevaremos la cuenta de los pagos que vamos haciendo, con las columas concepto y cantidad. Lo primero será crear las entidades, la cual llamaremos *Pago* que tendrá dos atributos, *concepto* y *cantidad* (cuyos tipos serán _String_ y _Moneda_ respectivamente).
+Pongamos un ejemplo, supongamos que tenemos una tabla en la cual llevaremos la cuenta de los pagos que vamos haciendo, con las columnas concepto y cantidad. Lo primero será crear las entidades, la cual llamaremos *Pago* que tendrá dos atributos, *concepto* y *cantidad* (cuyos tipos serán _String_ y _Moneda_, respectivamente).
 
 bc. Entidad Pago {
 	String concepto
@@ -110,7 +110,7 @@ Entidad DatosDePagos {
 	OneToMany Pago pagos
 }
 
-Así, una representación gráfica de la estructura sería la siguiente:
+Así, una representación gráfica de la estructura, sería la siguiente:
 
 !images/curso_formulario_8-solicitudPagos!
 
@@ -139,13 +139,13 @@ Si pulsamos sobre *Nuevo*, se cargará el popUp que indicamos, y nos saldrá lo 
 
 !images/curso_formulario_9-ejemploTablaPagos2!
 
-Podemos insertar varios pagos, y la tabla nos quedará algo así:
+Podemos insertar varios pagos, quedando la tabla de la siguiente manera:
 
 !images/curso_formulario_9-ejemploTablaPagos3!
 
-Los pagos ya creados los podremos editar, borrar y ver (mediante el mismo PopUp). *NOTA:* También podemos utilizar diferentes popups para las diferentes acciones de la tabla, asignando los popups mediante *popupCrear*, *popupModificar*, *popupVer* y *popupBorrar*.
+Los pagos ya creados los podremos editar, borrar y ver (mediante el mismo PopUp). *NOTA:* También podemos utilizar diferentes popups para las diferentes acciones de la tabla, asignando los popups mediante *popupCrear*, *popupEditar*, *popupLeer* y *popupBorrar*.
 
-*NOTA:* Las tablas tambien se pueden gestionar con páginas, a parte de con Pop-Ups, a partir de la versión 2.0. Más información sobre las tablas "aquí":dsl-tabla.
+*NOTA:* Las tablas también se pueden gestionar con páginas, a parte de con PopUps, a partir de la versión 2.0. Más información sobre las tablas "aquí":dsl-tabla.
 
 h2. Ciclo de vida de los formularios
 

@@ -1,12 +1,12 @@
 h1. Generar la aplicación
 
-Cuando hagamos cambios en los ficheros .play debemos volver a generar la aplicación.
+Cuando hagamos cambios en los ficheros .fap debemos volver a generar la aplicación.
 
 bc. play fap:generate
 
 h2. Configuración para generar desde Eclipse
 
-Puedes configurar Eclipse para generar las aplicación y no tener que hacerlo desde la consola
+Puedes configurar Eclipse para generar la aplicación y no tener que hacerlo desde la consola:
 * Abrir Run/External Tools/External Tools Configurations...
 * Añadir un nuevo Program
 ** Location (ruta a Play): ruta_play/play.bat
@@ -20,7 +20,7 @@ h3. Opciones adicionales
 *  **--dev**: No añade en el classpath las liberías compiladas y añade las rutas $FAPSDK/compiler-src/es.fap.simpleled.generator/bin y $FAPSDK/compiler-src/es.fap.simpleled/bin de manera que permite trabajar directamente con el generador compilado con Eclipse, sin tener que exportar el jar.
 bc. play fap:generate --dev
 
-*  **--debug**: Por defecto se utiliza el fichero de log que está en $modulofap/compiler/config/log4.properties. Pasando este parámetro se utiliza $modulofap/compiler/config/log4-debug.properties
+*  **--debug**: Por defecto, se utiliza el fichero de log que está en $modulofap/compiler/config/log4.properties. Pasando este parámetro se utiliza $modulofap/compiler/config/log4-debug.properties
 bc. play fap:generate --debug
 
 *  **--diff**: Indica que queremos generar el fichero .patch (app/DiffGen.patch) con las diferencias que pueda haber entre lo que tenemos actualmente y lo que se va a generar, respecto a los ficheros GEN. Además de aquellos ficheros GEN que vayan a cambiar, guarda una copia de lo que tiene el fichero antes de cambiar, en el subdirectorio Diff, dentro de donde se encuentra el fichero GEN en cuestión. Este parámetro es compatible con los dos anteriores.

@@ -25,12 +25,12 @@ h2. Desarrollo
 
 h3. Instalación del FAP-SDK
 
-* Cree una nueva variable de entorno con el nombre FAPSDK y el valor la ruta donde descromprimio el SDK.
-** Windows : Click derecho Equipo > Propiedades, Configuracion Avanzada del Sistema (en el lateral izquierdo), (Pestaña Opciones Avanzadas) Botón Variables de entorno. Se deberan crear/modificar dos variables de entorno: FAPSDK=C:\fap-sdk\ y modificar la variable de entorno "PATH" añadir la ruta del framework play! (p.e. ...;C:\fap-sdk\play-1.2.1;...).
+* Cree una nueva variable de entorno con el nombre FAPSDK y el valor de la ruta donde descromprimió el SDK.
+** Windows : Click derecho Equipo > Propiedades, Configuracion Avanzada del Sistema (en el lateral izquierdo), (Pestaña Opciones Avanzadas) Botón Variables de entorno. Se deberan crear/modificar dos variables de entorno: FAPSDK=C:\fap-sdk\ y modificar la variable de entorno "PATH" añadir la ruta del framework play! (p.e. ...;C:\fap-sdk\play-1.2.4;...).
 ** Mac/Linux: Editar ~/.bashrc y añadir   export FAPSDK=/ruta/a/fap-sdk/
 
-* Entorno para modificar el generador
-** Eclipse con versión de xtext 2.0.1 ("Instalación":xtext-instalacion) 
-** "ant":http://ant.apache.org/ mediante línea de comandos 
+* Entorno para modificar el generador:
+** Eclipse con versión de xtext 2.0.1 ("Instalación":xtext-instalacion).
+** "ant":http://ant.apache.org/ mediante línea de comandos.
 
 

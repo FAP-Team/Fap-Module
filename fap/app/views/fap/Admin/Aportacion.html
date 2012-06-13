@@ -1,0 +1,90 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     pagina:'Aportacion', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Aportacion', 
+     urlBorrar:play.mvc.Router.reverse('AportacionController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('AportacionController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('AportacionController.editar' , ['idSolicitud':solicitud?.id])
+}
+	
+			#{fap.enlace action:play.mvc.Router.reverse("AportacionAportadosController.index" , ['idSolicitud':solicitud?.id]), estilo:'btn', titulo:'Consultar documentos ya aportados' /}
+		
+			#{fap.enlace action:play.mvc.Router.reverse("AportacionRecibosController.index" , ['idSolicitud':solicitud?.id]), estilo:'btn', titulo:'Consultar recibos de aportaciones' /}
+		
+#{fap.tabla 
+     campo:'Solicitud.aportaciones.actual.documentos', 
+     crearEntidad:accion == 'crear', 
+     id:'documentos', 
+     idContainer:'idSolicitud', 
+     idEntidad:'idDocumento', 
+     nameContainer:'Aportacion', 
+     popupBorrar:'PopUpDocProcesos', 
+     popupEditar:'PopUpDocProcesos', 
+     popupLeer:'PopUpDocProcesos', 
+     tipoContainer:'pagina', 
+     titulo:'Documentos nuevos pendientes de aportar', 
+     urlBorrar:play.mvc.Router.reverse("popups.PopUpDocProcesosController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumento':documento?.id? documento?.id:'_idDocumento_']), 
+     urlContainerCrear:play.mvc.Router.reverse("AportacionController.index" , ['accion':'crear']), 
+     urlContainerEditar:play.mvc.Router.reverse("AportacionController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_']), 
+     urlCrear:play.mvc.Router.reverse("DocumentosAportacionController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_']), 
+     urlCrearEntidad:play.mvc.Router.reverse('AportacionController.crearForTablas' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse("popups.PopUpDocProcesosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumento':documento?.id? documento?.id:'_idDocumento_']), 
+     urlLeer:play.mvc.Router.reverse("popups.PopUpDocProcesosController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumento':documento?.id? documento?.id:'_idDocumento_']), 
+     urlTabla:@AportacionController.tabladocumentos(idSolicitud)
+}
+	
+	#{fap.columna ancho:80, cabecera:'Fecha', campo:'fechaSubida' /}
+		
+	#{fap.columna ancho:200, cabecera:'Descripción', campo:'descripcion', expandir:true /}
+		
+	#{fap.columna ancho:100, cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>' /}
+		
+#{/fap.tabla}
+
+				#{fap.permiso permiso:"aportacionDocumentos", accion:accion}
+					
+				#{form play.mvc.Router.reverse('AportacionController.presentar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"presentar"}
+					
+			<div class="wiki ">
+<p>Debe registrar los documentos para que se consideren aportados a la solicitud.</p>
+
+			</div>
+		
+			#{fap.boton id:'botonPresentar', titulo:'Preparar para registrar' /}
+		
+				#{/form}
+			<div class="wiki ">
+			{%
+				models.MensajeAportacion mensajeaportacion = null;
+				def hayMensaje=false;
+				def contenido="";
+				if (!models.MensajeInicio.findAll().isEmpty()){
+					mensajeAportacion = models.MensajeAportacion.findAll().get(0);
+					hayMensaje=mensajeAportacion.habilitar;
+					contenido=utils.StringUtils.getParsedText(mensajeAportacion.contenido);
+				}
+			%}
+			#{if hayMensaje}
+			#{fap.grupo}
+				<div id="GMensaje">
+					<div id="MensajeAdhoc">
+						${contenido.raw()}
+					</div>
+				</div>
+			#{/fap.grupo}
+			#{/if}
+		</div>
+			
+		#{/fap.permiso}		
+			
+#{/fap.pagina}
+		

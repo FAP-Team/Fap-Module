@@ -491,3 +491,8 @@ Entidad MensajeInicio noAuditable extends Singleton {
 	String contenido
 	Boolean habilitar
 }
+
+Entidad MensajeAportacion noAuditable extends Singleton {
+	String contenido
+	Boolean habilitar
+}

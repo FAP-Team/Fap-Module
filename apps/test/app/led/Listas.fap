@@ -10,14 +10,6 @@ Lista ComboTestList {
 	f : "F"
 }
 
-Lista paises {
-	francia: "Francia"
-	alemania: "Alemania"
-	portugal: "Portugal"
-	reinounido: "Reino Unido"
-	italia: "Italia"
-}
-
 Lista listaEnumTestOnlyKeys crearEnumerado{
 	francia 
 	alemania

@@ -164,6 +164,9 @@
 			// Para los combos dependientes
 			function CargarValoresComboDependiente${id}(){
 				var valorDependencia${id} = $('select[id=${dependencia}]').val();
+				if (valorDependencia${id}.match(/^_\d*/)){ // Para quitar el '_' que se pone automaticamente cuando la clave es un digito
+					valorDependencia${id}=valorDependencia${id}.replace("_", "");
+				}
                 var elementos${id} = #{fap.toJSMap listaDependencias/};
                 var elementosTKV${id} = #{fap.toJSMap listaTKV/};
                 // Rellenar el select con options, segun los valores que le correspondan

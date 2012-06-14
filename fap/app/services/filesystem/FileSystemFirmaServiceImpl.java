@@ -83,6 +83,15 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
     }
     
     @Override
+    public InfoCert extraerCertificadoLogin (String firma) throws FirmaServiceException {
+        FileSystemFirma decode = FileSystemFirma.decode(firma);
+        InfoCert info = new InfoCert();
+        info.nombrecompleto = decode.getNombre();
+        info.nif = decode.getNif();
+        return info;
+    }
+    
+    @Override
 	public Firmante getFirmante(String firma, Documento documento){
 		if(firma == null || firma.isEmpty()){
 			Messages.error("La firma llegó vacía");

@@ -182,7 +182,7 @@ public class SecureController extends GenericController{
         String name = null;
         if (!validation.hasErrors()) {
             try {
-                InfoCert cert = firmaService.extraerCertificado(firma);
+                InfoCert cert = firmaService.extraerCertificadoLogin(firma);
                 username = cert.getId();
                 name = cert.getNombreCompleto();
             } catch (FirmaServiceException e) {

@@ -135,6 +135,7 @@ public class GFirmaSimple extends GElement{
 				if (!Messages.hasErrors()) {
 					${strCampoToTrue}
 					${strCampoSetTo}
+					${entidadDoc.variable}.registro.fasesRegistro.firmada = true;
 					${entidadDoc.variable}.save();
 				}
 			}

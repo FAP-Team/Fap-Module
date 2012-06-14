@@ -36,17 +36,17 @@ import services.RegistroServiceException;
 public abstract class TramiteBase {
     
     @Inject
-    protected static GestorDocumentalService gestorDocumentalService;
+    public static GestorDocumentalService gestorDocumentalService;
     
     @Inject
-    protected static RegistroService registroService;
+    public static RegistroService registroService;
     
     @Inject
     private static FirmaService firmaService;
     
-    protected SolicitudGenerica solicitud;
+    public SolicitudGenerica solicitud;
     
-    protected Registro registro;
+    public Registro registro;
     
     public TramiteBase(SolicitudGenerica solicitud){
         this.solicitud = solicitud;
@@ -57,25 +57,25 @@ public abstract class TramiteBase {
     /**
 	 * Sobreescribir para inicializar la clase. Es invocado desde el constructor
 	 */
-    protected void inicializar() {
+    public void inicializar() {
     }
     
-    protected abstract Registro getRegistro();
-    protected abstract String getTipoRegistro();
+    public abstract Registro getRegistro();
+    public abstract String getTipoRegistro();
     // Region Procedimientos y Funciones
- 	protected abstract String getBodyReport();
- 	protected abstract String getHeaderReport();
- 	protected abstract String getFooterReport();
+ 	public abstract String getBodyReport();
+ 	public abstract String getHeaderReport();
+ 	public abstract String getFooterReport();
 
- 	protected abstract String getMail(); // Cuando se registre un trámite
- 	protected abstract String getJustificanteRegistro();
+ 	public abstract String getMail(); // Cuando se registre un trámite
+ 	public abstract String getJustificanteRegistro();
  	
  	/**
 	 * Sobreescribir para asignar la descripción del justificante.
 	 * El resultado final será la descripción del justificante más el nombre de la aplicación
 	 * @return
 	 */
-	protected abstract String getDescripcionJustificante();
+	public abstract String getDescripcionJustificante();
  	
  	public abstract String getTipoTramite();
  	
@@ -83,7 +83,7 @@ public abstract class TramiteBase {
 		return this.solicitud;
 	}
     
-    protected abstract List<Documento> getDocumentos();
+    public abstract List<Documento> getDocumentos();
         
     public void prepararFirmar(){
         if(registro.fasesRegistro.borrador){
@@ -100,7 +100,7 @@ public abstract class TramiteBase {
         avanzarFaseBorrador();
     }
     
-    protected void validar(){
+    public void validar(){
         
     }
     
@@ -108,9 +108,9 @@ public abstract class TramiteBase {
 	 * Nombre del fichero del justificante
 	 * @return el nombre del fichero para el justificante
 	 */
-	protected abstract String getPrefijoJustificantePdf();
+	public abstract String getPrefijoJustificantePdf();
     
-    protected void eliminarBorrador(){
+    public void eliminarBorrador(){
         if(!Messages.hasErrors()){
             // Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
             if(registro.borrador != null){
@@ -126,7 +126,7 @@ public abstract class TramiteBase {
         }
     }
 
-    protected void eliminarOficial() {
+    public void eliminarOficial() {
         if(!Messages.hasErrors()){
             if(registro.oficial != null){
                 Documento oficialOld = registro.oficial;
@@ -141,7 +141,7 @@ public abstract class TramiteBase {
         }
     }
     
-    protected File generarBorrador(){
+    public File generarBorrador(){
         File borrador = null;
         if(!Messages.hasErrors()){
             try {
@@ -155,7 +155,7 @@ public abstract class TramiteBase {
         return borrador;
     }
     
-    protected File generarOficial(){
+    public File generarOficial(){
         File oficial = null;
         if(!Messages.hasErrors()){
             try {
@@ -169,7 +169,7 @@ public abstract class TramiteBase {
         return oficial;
     }
     
-    protected void almacenarEnGestorDocumental(File borrador, File oficial){
+    public void almacenarEnGestorDocumental(File borrador, File oficial){
         if(!Messages.hasErrors()){
             try {
                 gestorDocumentalService.saveDocumentoTemporal(registro.borrador, borrador);
@@ -180,7 +180,7 @@ public abstract class TramiteBase {
         }
     }
     
-    protected void almacenarFirma(String firma, Documento documento, Firmante firmante) {
+    public void almacenarFirma(String firma, Documento documento, Firmante firmante) {
         try {
             gestorDocumentalService.agregarFirma(documento, new Firma(firma, firmante));
         } catch (Exception e) {
@@ -188,13 +188,13 @@ public abstract class TramiteBase {
         }
     }
     
-    protected void calcularFirmantes(){
+    public void calcularFirmantes(){
         if(!Messages.hasErrors()){
             registro.firmantes = Firmantes.calcularFirmanteFromSolicitante(solicitud.solicitante);
         }
     }
     
-    protected void avanzarFaseBorrador(){
+    public void avanzarFaseBorrador(){
         if(!Messages.hasErrors()){
             registro.fasesRegistro.borrador = true;
             registro.save();
@@ -226,7 +226,7 @@ public abstract class TramiteBase {
         }
     }
     
-    protected void avanzarFaseFirmada(){
+    public void avanzarFaseFirmada(){
         if(!Messages.hasErrors()){
             registro.fasesRegistro.firmada = true;
         }
@@ -236,15 +236,15 @@ public abstract class TramiteBase {
     /**
 	 * Sobreescribir para guardar el tipo de trámite específico
 	 */
-	protected abstract void guardar();
+	public abstract void guardar();
 	
-	protected abstract void validarReglasConMensajes();
+	public abstract void validarReglasConMensajes();
 
     /**
 	 * Sobreescribir para registrar el tipo de trámite específico 
 	 * @throws RegistroException
 	 */
-	protected void registrar() throws RegistroServiceException {
+	public void registrar() throws RegistroServiceException {
 		validarReglasConMensajes();
 		//Registra la solicitud
 		if (!Messages.hasErrors()){
@@ -268,8 +268,14 @@ public abstract class TramiteBase {
 					play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el AED", this.getTipoTramite());
 					
 					registro.fasesRegistro.registro = true;
+					this.solicitud.registro.fasesRegistro.registro=true;
+					
 					registro.fasesRegistro.save();
-					Mails.enviar(this.getMail(), this.solicitud);
+					try {
+						Mails.enviar(this.getMail(), this.solicitud);
+					} catch (Exception e){
+						play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail());
+					}
 					play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());				
 
 
@@ -293,6 +299,27 @@ public abstract class TramiteBase {
 				play.Logger.debug("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
 			}
 
+			//Crea el expediente en el AED
+			if(!solicitud.registro.fasesRegistro.expedienteAed){
+				try {
+					gestorDocumentalService.crearExpediente(solicitud);
+				} catch (GestorDocumentalServiceException e) {
+					Messages.error("Error al crear el expediente");
+					throw new RegistroServiceException("Error al crear el expediente");
+				}
+				solicitud.registro.fasesRegistro.expedienteAed = true;
+				solicitud.registro.fasesRegistro.save();
+			}else{
+				play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
+			}
+
+			//Cambiamos el estado de la solicitud
+			if (!solicitud.estado.equals("iniciada")) {
+				solicitud.estado = "iniciada";
+				solicitud.save();
+				Mails.enviar("solicitudIniciada", solicitud);
+			}
+			
 			//Clasifica los documentos en el AED
 			if (!registro.fasesRegistro.clasificarAed && registro.fasesRegistro.registro) {
 				//Clasifica los documentos sin registro
@@ -338,13 +365,13 @@ public abstract class TramiteBase {
 	/**
 	 * Mueve el trámite actual a la colección de trámites registrados
 	 */
-	protected void moverRegistradas() {
+	public void moverRegistradas() {
 	}
 	
 	/**
 	 * Prepara un nuevo trámite y lo añade a la variable actual
 	 */
-	protected void prepararNuevo() {
+	public void prepararNuevo() {
 		
 	}
 	
@@ -360,19 +387,19 @@ public abstract class TramiteBase {
 	/**
 	 * Crea el expediente del Aed
 	 */
-	protected abstract void crearExpedienteAed();
+	public abstract void crearExpedienteAed();
 
 	/**
 	 * Crea el expediente en Platino
 	 */
-	protected abstract void crearExpedientePlatino() throws RegistroServiceException;
+	public abstract void crearExpedientePlatino() throws RegistroServiceException;
 
 	/**
 	 * Añadir los documentos a la solicitud
 	 */
-	protected abstract void anadirDocumentosSolicitud();
+	public abstract void anadirDocumentosSolicitud();
 	
-	protected void cambiarEstadoSolicitud() {}
+	public void cambiarEstadoSolicitud() {}
 
     
 }

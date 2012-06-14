@@ -69,14 +69,14 @@ public class AportacionController extends AportacionControllerGen {
 						String tipoDocumentoSolicitudAportacion = FapProperties.get("fap.aed.tiposdocumentos.aportacion.solicitud");
 						
 	                    // Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
-						if(aportacion.borrador != null){
+						if((aportacion.borrador != null) && (aportacion.borrador.uri != null) && (!aportacion.borrador.uri.trim().equals(""))){
 						    Documento borradorOld = aportacion.borrador;
 						    aportacion.oficial = null;
 						    aportacion.save();
 						    gestorDocumentalService.deleteDocumento(borradorOld);
 						}
 						
-						if(aportacion.oficial != null){
+						if((aportacion.oficial != null) && (aportacion.oficial.uri != null) && (!aportacion.oficial.uri.trim().equals(""))){
 						    Documento oficialOld = aportacion.oficial;
 						    aportacion.oficial = null;
 						    aportacion.save();

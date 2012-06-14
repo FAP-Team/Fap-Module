@@ -112,6 +112,8 @@ GET /Solicitud/exclusion/exclusion ExclusionController.tablaexclusion
 POST /Solicitud/exclusion/finalizarExclusion ExclusionController.finalizarExclusion
 GET /Administracion/mensajelogin MensajeLoginController.index
 POST /Administracion/mensajelogin/editar MensajeLoginController.editar
+GET /Administracion/wikiaportacion WikiAportacionController.index
+POST /Administracion/wikiaportacion/editar WikiAportacionController.editar
 GET /Administracion/activarbaremacion ActivarBaremacionController.index
 POST /Administracion/activarbaremacion/activarFormBaremacion ActivarBaremacionController.activarFormBaremacion
 GET /Administracion/usuarios UsuariosController.index

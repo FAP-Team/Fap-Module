@@ -27,12 +27,12 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	private final static String NOMBRE_TRAMITE = FapProperties.get("fap.aed.procedimientos.tramitesolicitud.nombre");
 	private PlatinoGestorDocumentalService platinoGestorDocumentalService;
 
-	protected TramiteSolicitud(SolicitudGenerica solicitud) {
+	public TramiteSolicitud(SolicitudGenerica solicitud) {
 		super(solicitud);
 	}
 
 	@Override
-	protected final String getDescripcionJustificante() {
+	public final String getDescripcionJustificante() {
 		return TramiteSolicitud.TIPO_TRAMITE;
 	}
 
@@ -40,7 +40,7 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	 * Crea el expediente en el AED
 	 */
 	@Override
-	protected void crearExpedienteAed() {
+	public void crearExpedienteAed() {
 		if (!this.solicitud.registro.fasesRegistro.expedienteAed){
 			try {
 				gestorDocumentalService.crearExpediente(this.solicitud);
@@ -67,7 +67,7 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	 * Crea el expediente en el archivo electrónico de platino
 	 */
 	@Override
-	protected void crearExpedientePlatino() throws RegistroServiceException {
+	public void crearExpedientePlatino() throws RegistroServiceException {
 		if (!this.solicitud.registro.fasesRegistro.expedientePlatino){
 			try {
 				platinoGestorDocumentalService.crearExpediente(this.solicitud.expedientePlatino);
@@ -85,7 +85,7 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	}
 
 	@Override
-	protected final void anadirDocumentosSolicitud() {
+	public final void anadirDocumentosSolicitud() {
 	}
 
 	/**
@@ -99,7 +99,7 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	/**
 	 * Validar los documentos condicionados automaticamente
 	 */
-	protected void validarDocumentacion() {
+	public void validarDocumentacion() {
 		
 		VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", solicitud.documentacion.documentos);
 		List<String> condicionadosAutomaticosNoAportados;
@@ -116,7 +116,7 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	 * No realiza cambios de estado
 	 */
 	@Override
-	protected final void cambiarEstadoSolicitud() {}
+	public final void cambiarEstadoSolicitud() {}
 
 
 }

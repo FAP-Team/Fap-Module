@@ -192,7 +192,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         return getInformacion(certificado);
     }
 
-	private String extraerCertificadoDeFirma(String firma) throws FirmaServiceException {
+    public InfoCert extraerCertificadoLogin(String firma) throws FirmaServiceException{
 		String certificado = null;
 		try {
 			PKCS7 pkcs7 = new PKCS7(Codec.decodeBASE64(firma));
@@ -200,9 +200,28 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			byte[] certificadoEncoded = certificate.getEncoded();
 			certificado = Codec.encodeBASE64(certificadoEncoded);
 		} catch (Exception e) {
+			log.error("Error al extraer la información del certificado");
+		}
+		boolean certificadoValido = isValidCertificado(certificado);
+        if(!certificadoValido)
+            throw new FirmaServiceException("El certificado no es válido");
+		return getInformacion(certificado);
+	}
+    
+	private String extraerCertificadoDeFirma(String firma) throws FirmaServiceException {
+		try {
+			//"Extrayendo el certificado de la firma 
+	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	        dbf.setNamespaceAware(true);
+	        DocumentBuilder db  = dbf.newDocumentBuilder();
+	        org.w3c.dom.Document doc = db.parse(new InputSource(new StringReader(firma)));
+	        //Pillamos certificado
+	        Element x509Certificate = (Element) doc.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "X509Certificate").item(0);
+	        return x509Certificate.getTextContent();
+		} catch (Exception e) {
+			System.out.println("Exception extraer: "+e.getMessage());
 			throw new FirmaServiceException("Error al extraer el certificado de la firma", e);
 		}
-		return certificado;
 	}
 	
 	private boolean isValidCertificado(String certificado) throws FirmaServiceException{
@@ -288,7 +307,12 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	
 	@Override
 	public HashMap<String,String> extraerInfoFromFirma(String firma) {
-		return extraerInformacionPersonal(firma);
+		try {
+			return extraerInformacionPersonal(extraerCertificadoDeFirma(firma));
+		} catch (FirmaServiceException e) {
+			log.error("Error al extraer Info From Firma "+e.getMessage());
+		}
+		return null;
 	}
 	
 	@Override

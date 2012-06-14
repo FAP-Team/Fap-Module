@@ -298,7 +298,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         checkArgument(!filename.isEmpty(), "El filename no puede estar vacío");
         
         checkDocumentoNotInGestorDocumental(documento);
-        checkNotEmptyImputStream(contenido);
+        //checkNotEmptyImputStream(contenido); // Falla cuando viene en 'contenido' el Justificante de Platino (el getJustificantePDF)
 		
 		Documento documentoAed = crearDocumentoTemporal(documento.tipo, documento.descripcion, filename, contenido);
 		
@@ -548,8 +548,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         if(firma.getContenido() == null)
             throw new GestorDocumentalServiceException("La firma está vacia");
         
-        if(!firma.isFirmaSimple())
-            throw new GestorDocumentalServiceException("La firma debe tener un único firmante");
+        //if(!firma.isFirmaSimple())
+        //    throw new GestorDocumentalServiceException("La firma debe tener un único firmante");
         
         try {
             PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(documento.uri, documento.clasificado);

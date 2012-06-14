@@ -26,6 +26,8 @@ public interface FirmaService {
 
     public InfoCert extraerCertificado(String firma) throws FirmaServiceException;
     
+    public InfoCert extraerCertificadoLogin(String firma) throws FirmaServiceException;
+    
     public Firmante getFirmante(String firma, Documento documento);
     
     public Firmante validateXMLSignature(byte[] contenidoDoc, String firma);

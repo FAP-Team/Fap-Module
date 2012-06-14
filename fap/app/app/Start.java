@@ -128,15 +128,16 @@ public class Start extends Job {
 			valueSemilla = semilla.semilla;
 			idSemilla = semilla.id;
 			
-			play.Logger.info("Semilla a buscar: "+ valueSemilla + ", encontrada: " + idSemilla);
-			
-			while (idSemilla < valueSemilla) {
-				SemillaExpediente sem = new SemillaExpediente();
-				sem.save();
+			if (valueSemilla != null){
+				play.Logger.info("Semilla a buscar: "+ valueSemilla + ", encontrada: " + idSemilla);
+				while (idSemilla < valueSemilla) {
+					SemillaExpediente sem = new SemillaExpediente();
+					sem.save();
 				
-				idSemilla = sem.id;
+					idSemilla = sem.id;
+				}
+				play.Logger.info("Semilla actualizada a " + idSemilla);
 			}
-			play.Logger.info("Semilla actualizada a " + idSemilla);
 		}
 	}
 }

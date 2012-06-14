@@ -19,11 +19,11 @@
 	waitForElementPresent(//option[text()='Galicia'])
 	select('id=comunidades', 'label=Galicia')
 	
-	waitForElementPresent(//option[text()='La Coruña'])
-	select('id=provincias', 'label=La Coruña')
+	waitForElementPresent(//option[text()='Ourense'])
+	select('id=provincias', 'label=Ourense')
 	
-	assertSelectedValue('id=paises', 'espana')
-	assertSelectedValue('id=comunidades', 'galicia')
-	assertSelectedValue('id=provincias', 'lacoruna')
+	assertSelectedValue('id=paises', '_724')
+	assertSelectedValue('id=comunidades', '12')
+	assertSelectedValue('id=provincias', '32')
 
 #{/selenium}

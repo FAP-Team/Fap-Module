@@ -341,7 +341,6 @@ ${end}
 						}
 						
 						if (line.find(pattern)) {
-							//println ("*************** $entity");
 							hasContruct = true;
 						}
 					}

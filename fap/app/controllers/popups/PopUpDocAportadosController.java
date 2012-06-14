@@ -10,7 +10,6 @@ public class PopUpDocAportadosController extends PopUpDocAportadosControllerGen 
 	
 	@Util
 	public static Documento getDocumento(Long idSolicitud, Long idDocumento){
-    	System.out.println("hola soy hijo");
         Documento documento = null;
         if(idSolicitud == null){
             Messages.fatal("Falta parámetro idSolicitud");

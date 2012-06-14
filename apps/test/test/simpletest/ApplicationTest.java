@@ -21,7 +21,7 @@ public class ApplicationTest extends FunctionalTest {
     	
     	play.Logger.info("Se ha borrado la DDBB");
     	
-//        Response response = GET("/");
+//        Response response = GET("/login");
 //        assertIsOk(response);
 //        assertContentType("text/html", response);
 //        assertCharset(play.Play.defaultWebEncoding, response);

@@ -127,6 +127,10 @@ public class Controller implements Comparator<Entidad>{
 		return this;
 	}
 	
+	public Set<String> getMyAllEntities () {
+		return allEntities;
+	} 
+	
 	public void controller(){
 		String withSecure = "";
 		if (!noAutenticar)
@@ -776,10 +780,13 @@ public class ${controllerName} extends ${controllerGenName} {
 		String controllers = "";
 		for(Elemento elemento : element.getElementos()) {
 			if ((element instanceof Boton) || (element instanceof FirmaSimple)) {
-				println "   Elemento: "+elemento;
 				strProcesandoMethods += ", \"${controllerName}."+elemento.name+"\", \"${controllerGenName}."+elemento.name+"\"";
 			}
-			controllers += gElement.getInstance(elemento).controller();
+			if ((elemento instanceof Tabla)) {
+				controllers += gElement.getInstance(elemento).controllerWithParams(allEntities);
+			} else {
+				controllers += gElement.getInstance(elemento).controller();
+			}
 		}
 		return controllers;
 	}

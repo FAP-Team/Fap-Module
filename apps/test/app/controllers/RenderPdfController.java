@@ -22,7 +22,7 @@ public class RenderPdfController extends RenderPdfControllerGen {
 				new Report("reports/solicitud_simple.html").header("reports/header.html").footer("reports/footer-borrador.html").registroSize().renderResponse(solicitud);
 			}
 			catch (Exception ex1) {
-				Messages.error("Error en la generaciÃ³n del pdf "+ex1.getMessage());
+				Messages.error("Error en la generación del pdf "+ex1.getMessage());
 			}
 		}
 

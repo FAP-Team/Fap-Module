@@ -22,12 +22,20 @@ public class GTabla extends GElement{
 	GElement gPaginaPopup;
 	CampoUtils campo;
 	boolean botonBorrar;
+	String stringParamsAdded;
+	Set<Entity> globalSetEntityParent;
 	
 	public GTabla(Tabla tabla, GElement container){
 		super(tabla, container);
 		this.tabla = tabla;
 		campo = CampoUtils.create(tabla.campo);
 		gPaginaPopup = getPaginaOrPopupContainer();
+		//stringParamsAdded = new ArrayList<String>();
+	}
+	
+	public String viewWithParams (Set<Entity> setEntityParent){
+		globalSetEntityParent = setEntityParent;
+		view();
 	}
 	
 	public String view(){
@@ -35,10 +43,22 @@ public class GTabla extends GElement{
 		TagParameters params = new TagParameters();
 		params.putStr 'id', id();
 		Entidad entidad = campo.entidad;
-		if(campo.getCampo().getAtributos() != null && !entidad.isSingleton())
-        	params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
+		if(campo.getCampo().getAtributos() != null && !entidad.isSingleton()) {
+			// No le han llegado los parámetros
+			String finalStrParams = "";
+			if (globalSetEntityParent != null && globalSetEntityParent.size() > 0) {
+				finalStrParams = StringUtils.params(globalSetEntityParent.collect{if (!entidad.id.equals(it.id)) if ((it.id) != null) it.id});
+				// Debemos eliminar los que no empiezan por id y los que ya están en params
+				if (finalStrParams.trim().length() > 0)
+					params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id}, "+finalStrParams+")";
+				else
+					params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
+			} else {
+				params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
+			}
+		}
 		else
-			params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}()";
+			params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${StringUtils.params(globalSetEntityParent.collect{it.id})})";
         if (tabla.titulo)
 			params.putStr 'titulo', tabla.titulo;
 		params.putStr 'campo', campo.str;
@@ -286,6 +306,13 @@ public class GTabla extends GElement{
 		return campos.unique();
 	}
 	
+	public String controllerWithParams (Set<Entity> setEntityParent){
+		//println setEntityParent;
+		globalSetEntityParent = setEntityParent;
+		stringParamsAdded = StringUtils.params(setEntityParent.collect{it.typeId});
+		controller();
+	}
+	
 	public String controller(){
 		List<CampoUtils> campos = uniqueCamposTabla(tabla);
 				
@@ -318,8 +345,21 @@ public class GTabla extends GElement{
 		
 		String rowsStr = campos.collect { '"' + it.sinEntidad() + '"'  }.join(", ");
 
+		String finalStrParams = "";
+		if (stringParamsAdded != null && stringParamsAdded.length() > 0) {
+			finalStrParams = StringUtils.params(globalSetEntityParent.collect{if (!param.contains(it.typeId)) it.typeId});
+			// Debemos eliminar los que no empiezan por id y los que ya están en params
+			if ((param.trim().size() > 0) && (finalStrParams.trim().size() > 0))
+				finalStrParams = param + ", "+finalStrParams;
+			else if (param.trim().size() > 0)
+				finalStrParams = param;
+		} else {
+			finalStrParams = param;
+		}
+		// Deberemos añadir además, los id necesarios en el formulario, página o popup que contiene a esta tabla.
+				
 		return """
-			public static void ${controllerMethodName()}(${param}){
+			public static void ${controllerMethodName()}(${finalStrParams}){
 				${idSingleton}
 				java.util.List<${entidad.clase}> rows = ${query};
 				${getCodePermiso(entidad)}
@@ -476,5 +516,9 @@ public class GTabla extends GElement{
 				//index();
 			}
 		"""
+	}
+	
+	public void addParams2Controller (String stringParams) {
+		stringParamsAdded = stringParams;
 	}
 }

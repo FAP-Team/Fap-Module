@@ -33,9 +33,16 @@ public class GPagina extends GGroupElement{
 	public String view(){
 		String viewElementos = "";
 		
-		for(Elemento elemento : pagina.getElementos())
-			viewElementos += getInstance(elemento).view();
-			
+		for(Elemento elemento : pagina.getElementos()) {
+			if (elemento instanceof Tabla) {
+				Controller c = Controller.create(this);
+				c.initialize();
+				viewElementos += getInstance(elemento).viewWithParams(c.getMyAllEntities());
+			} else {
+				viewElementos += getInstance(elemento).view();
+			}
+		}
+		
 		TagParameters params = new TagParameters();
 		
 		if (getInstancesOf(GSubirArchivo.class).size() > 0)

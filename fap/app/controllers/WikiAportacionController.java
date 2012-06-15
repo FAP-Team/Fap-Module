@@ -27,7 +27,7 @@ public class WikiAportacionController extends WikiAportacionControllerGen {
 		}
 
 		MensajeAportacion mensajeAportacion = WikiAportacionController.getMensajeAportacion();
-		log.info("Visitando pÃ¡gina: " + "fap/Admin/WikiAportacion.html");
+		log.info("Visitando página: " + "fap/Admin/WikiAportacion.html");
 		renderTemplate("fap/Admin/WikiAportacion.html", accion, mensajeAportacion);
 	}
 
@@ -36,7 +36,7 @@ public class WikiAportacionController extends WikiAportacionControllerGen {
 	public static void editar(MensajeAportacion mensajeAportacion) {
 		checkAuthenticity();
 		if (!permiso("editar")) {
-			Messages.error("No tiene permisos suficientes para realizar la acciÃ³n");
+			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		MensajeAportacion dbMensajeAportacion = WikiAportacionController.getMensajeAportacion();
 
@@ -53,9 +53,9 @@ public class WikiAportacionController extends WikiAportacionControllerGen {
 		}
 		if (!Messages.hasErrors()) {
 			dbMensajeAportacion.save();
-			log.info("AcciÃ³n Editar de pÃ¡gina: " + "fap/Admin/WikiAportacion.html" + " , intentada con Ã©xito");
+			log.info("Acción Editar de página: " + "fap/Admin/WikiAportacion.html" + " , intentada con éxito");
 		} else
-			log.info("AcciÃ³n Editar de pÃ¡gina: " + "fap/Admin/WikiAportacion.html" + " , intentada sin Ã©xito (Problemas de ValidaciÃ³n)");
+			log.info("Acción Editar de página: " + "fap/Admin/WikiAportacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		WikiAportacionController.editarRender();
 	}
 
@@ -89,7 +89,7 @@ public class WikiAportacionController extends WikiAportacionControllerGen {
 	@Util
 	public static void editarRender() {
 		if (!Messages.hasMessages()) {
-			Messages.ok("PÃ¡gina editada correctamente");
+			Messages.ok("Página editada correctamente");
 			Messages.keep();
 			redirect("WikiAportacionController.index", "editar");
 		}

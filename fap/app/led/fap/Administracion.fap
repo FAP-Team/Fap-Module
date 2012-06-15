@@ -1,7 +1,7 @@
 Formulario Administracion permiso=administrador{
 
 	Menu {
-		Enlace "Mis Solicitudes" pagina=Solicitudes
+		Enlace "Mis Solicitudes" pagina=Solicitudes 
 		
 		Grupo "Administración" {
 			Enlace "Usuarios" pagina=Usuarios
@@ -27,14 +27,14 @@ Formulario Administracion permiso=administrador{
     }
     
     Pagina MensajeLogin campo=MensajeInicio{
-    	Combo tipo campo=MensajeInicio.tipo titulo="Tipo del Mensaje" ayuda="Tipo de mensaje a visualizar, este atributo será el encargado de maquetar el texto, permite cambiar el estilo del mensaje" (propover)
+    	Combo tipo campo=MensajeInicio.tipo titulo="Tipo del Mensaje de Inicio" ayuda="Tipo de mensaje a visualizar, este atributo será el encargado de maquetar el texto, permite cambiar el estilo del mensaje" (propover)
     	AreaTexto contenido campo=MensajeInicio.contenido titulo="Contenido del mensaje de Inicio" ancho="500px" ayuda="Contenido del mensaje que podremos colocar en la página inicial de login de la aplicación" (propover)
     	Check habilitar campo=MensajeInicio.habilitar titulo="Habilitar la aparición del mensaje en la página de inicio" ayuda="Será necesario habilitar en caso de querer mostrar en la pagina de inicio el mensaje" (propover)
     }
     
     Pagina WikiAportacion campo=MensajeAportacion{
-    	AreaTexto contenido campo=MensajeAportacion.contenido titulo="Contenido del mensaje de Inicio" ancho="500px" ayuda="Contenido del mensaje que podremos colocar en la página inicial de login de la aplicación" (propover)
-    	Check habilitar campo=MensajeAportacion.habilitar titulo="Habilitar la aparición del mensaje en la página de inicio" ayuda="Será necesario habilitar en caso de querer mostrar en la pagina el mensaje" (propover)
+    	AreaTexto contenido campo=MensajeAportacion.contenido titulo="Contenido del mensaje de Aportación" ancho="500px" ayuda="Contenido del mensaje que podremos colocar en la página aportación de la aplicación" (propover)
+    	Check habilitar campo=MensajeAportacion.habilitar titulo="Habilitar la aparición del mensaje en la página de aportación" ayuda="Será necesario habilitar en caso de querer mostrar en la pagina el mensaje" (propover)
     }
     
     Pagina ActivarBaremacion{
@@ -255,7 +255,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			Columna titulo="Código" campo=TipoCodigoExclusion.codigo
 			Columna titulo="Descripcion" campo=TipoCodigoExclusion.descripcionCorta expandir
 		}
-	}
+	} 
 	
 	Popup PopupVerCodReq campo=TiposCodigoRequerimiento titulo="Codigo de Requerimiento"{
 		Texto codigo campo=TiposCodigoRequerimiento.codigo titulo="Código"

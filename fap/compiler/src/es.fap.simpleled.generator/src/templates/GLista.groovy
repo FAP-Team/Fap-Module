@@ -14,6 +14,7 @@ import wfcomponent.Start;
 public class GLista extends GElement{
 	
 	Lista lista;
+	int numFichero;
 	
 	public GLista(Lista lista, GElement container){
 		super(lista, container);
@@ -28,7 +29,9 @@ public class GLista extends GElement{
 	
 	public String generateFile(){
 		String contenido = "";
-		
+		int contador=0;
+		numFichero=1;
+		boolean pendienteEscribir=false;
 		for(ElementoLista el : lista.elementos){
 			// Distinguir si el elemento es de tipo 'normal' o 'dependiente' para generarlo de una forma u otra
 			if (el.value){
@@ -40,9 +43,25 @@ public class GLista extends GElement{
 				contenido += generateElementoDependiente(el);
 				// Nombre generado de la tabla : table-key-key
 			}
+			contador++;
+			if (!contenido.equals("")){
+				pendienteEscribir=true;
+				if (contador == 100){
+					System.out.println("Entre: "+lista.name+numFichero);
+					contador = 0;
+					FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numFichero + ".yaml", contenido);
+					contenido = "";
+					numFichero++;
+					pendienteEscribir=false;
+				}
+			}
 		}
-		
-		FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + ".yaml", contenido);
+		if ((pendienteEscribir) && (!contenido.equals(""))){
+			if (numFichero != 1)
+				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numFichero + ".yaml", contenido);
+			else
+				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + ".yaml", contenido);
+		}
 	}
 	
         
@@ -206,6 +225,7 @@ public class GLista extends GElement{
 			key += "."+rest;
 		}
 		String out = "";
+		int contador=0;
 		// Recorremos todos los elementos que tiene el elemento Dependiente
 		for (ElementoListaDependiente elDep : el.elementosDependientes){
 			// Calculamos el nombre de la clave de cada uno de los elementos
@@ -230,6 +250,13 @@ public class GLista extends GElement{
   key: '${keyDep}'
 
 """
+			contador+=2;
+			if (contador == 100){
+				contador = 0;
+				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numFichero + ".yaml", out);
+				out = "";
+				numFichero++;
+			}
 		}
 		//String value = el.value?:el.key;
 		return out;

@@ -47,7 +47,7 @@ require:
     # XmlGregorianCalendar    
     - xerces -> xercesImpl 2.9.1
 
-    - es.gobcan.eadmon.aed.cliente -> eadmon-aed-cliente 1.1:
+    - es.gobcan.eadmon -> aed 20111125:
         transitive: false
     - es.gobcan.platino -> platino.pre 1.0:
         transitive: false   

@@ -30,7 +30,7 @@ public class TableKeyValue extends FapModel {
 	@Column(name = "k")
 	public String key;
 
-	@Column(name = "v")
+	@Column(columnDefinition = "LONGTEXT", name = "v")
 	public String value;
 
 	public void init() {

@@ -4794,3 +4794,7 @@ ul.errorsDetails li a {
   font-weight: bold;
   text-decoration: underline;
 }
+/* Hack para IE8 */
+.well > .nav > li > a {
+  display: inline\9; 
+}

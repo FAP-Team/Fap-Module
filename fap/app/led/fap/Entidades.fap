@@ -3,7 +3,7 @@
 Entidad TableKeyValue noAuditable{
 	String table column="t"
 	String key column="k"
-	String value column="v"
+	LongText value column="v"
 }
 
 // La entidad "TableKeyValueDependency" la utilizaremos como tabla de tablas de las listas con dependencias.

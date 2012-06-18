@@ -57,6 +57,10 @@ require:
         transitive: false
     - es.gobcan.eadmon.tiposdocumentos -> tiposdocumentos 1.0:
         transitive: false
+    - es.gobcan -> certificados 1.1:
+        transitive: false
+    - es.gobcan -> resoluciones 1.1:
+        transitive: false
     - platinowssinterceptor -> platinowssinterceptor 2
 
 repositories:
@@ -65,6 +69,7 @@ repositories:
         root: "http://fap-devel.etsii.ull.es/nexus/content/groups/public/"
         contains:
             - org.apache -> *
+            - es.gobcan -> *
             - es.gobcan.platino -> *
             - es.gobcan.platino.servicios -> *    
             - es.gobcan.eadmon.verificacion -> *

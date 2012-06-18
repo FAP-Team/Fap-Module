@@ -393,7 +393,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             if(clasificado){
                 List<DocumentoEnUbicacion> ubicaciones = aedPort.obtenerDocumentoRutas(documento.uri);
                 List<Ubicaciones> newUbicaciones = clonarUbicaciones(ubicaciones);
-                aedPort.actualizarDocumentoPropiedades(props, newUbicaciones);
+                documento.uri = aedPort.actualizarDocumentoPropiedades(props, newUbicaciones);
+                documento.save();
             }else{
                 aedPort.actualizarDocumentoPropiedadesNoClasificado(props);
             }    

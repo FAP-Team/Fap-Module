@@ -79,7 +79,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		
 	    this.propertyPlaceholder = propertyPlaceholder;
 		
-        URL wsdlURL = Aed.class.getClassLoader().getResource("aed/aed.wsdl");
+        URL wsdlURL = Aed.class.getClassLoader().getResource("wsdl/aed/aed.wsdl");
         this.aedPort = new Aed(wsdlURL).getAed(new MTOMFeature());
         WSUtils.configureEndPoint(aedPort, getEndPoint());
         PlatinoProxy.setProxy(aedPort, propertyPlaceholder);

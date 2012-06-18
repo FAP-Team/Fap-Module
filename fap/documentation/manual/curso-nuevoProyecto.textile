@@ -102,7 +102,7 @@ Para abrir el proyecto que acabamos de crear en Eclipse.
 bc. play eclipsify
 
 
-h2. Desarrollo
+h2. Desarrollo (sólo para el desarrollo del módulo)
 
 Fichero "dependencies.yml"
 

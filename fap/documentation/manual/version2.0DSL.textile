@@ -92,7 +92,7 @@ La definición de los permisos en el DSL ha cambiado sensiblemente, debido a lo 
 * La palabra __then__ cambia a __return__.
 * Las palabras __deny__ y __grant__ desaparecen. El equivalente de __deny__ es __none__. Los de __grant__ pueden ser __editable__ y __visible__, y el uso de uno u otro depende del significado del permiso y lo que el usuario quiera restringir con él.
 * La palabra __action__ cambia a __accion__.
-* La variable __accion__ ya no puede ser comparada con un String que contenga cualquier cadena. A partir de ahora, solo podrá ser comparada con las palabras __leer__, __editar__, __crear__ y __borrar__.
+* La variable __&#95;accion__ ya no puede ser comparada con un String que contenga cualquier cadena. A partir de ahora, solo podrá ser comparada con las palabras __leer__, __editar__, __crear__ y __borrar__.
 
 Ejemplo de definición de un permiso, antes:
 
@@ -110,7 +110,7 @@ bc.. Permiso solicitudEditable{
 	when
 		usuario is-not visible
 		or
-		accion = leer
+		_accion = leer
 	return editable
 }	
 
@@ -165,8 +165,8 @@ public boolean check(String id, String action, Map<String, Long> ids, Map<String
 p. Código de sustitución:
 
 bc.. @Override
-public boolean check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {		
-	return nextCheck(id, _permiso, action, ids, vars);
+public boolean check(String id, String grafico, String action, Map<String, Long> ids, Map<String, Object> vars) {		
+	return nextCheck(id, grafico, action, ids, vars);
 }
 
 p. Si por el contrario el paquete __security__ no existe, y en lugar de él se encuentra el paquete __secure__, hay que borrarlo completo, y generar la aplicación. Si existía código manual dentro del paquete __secure__, será necesario copiarlo y adaptarlo dentro de la nueva clase manual que se provee.
@@ -176,7 +176,7 @@ h3. Añadir dependencia de google guice
 Las aplicaciones ahora tienen una nueva dependencia "google-guice". Para añadir esta dependencia, en el fichero conf/dependencies.yml añade en la sección require:
 
 bc. require:
-    - fap -> guice 1.2.1
+    - fap-modules -> guice 1.3
 
 Este módulo no es exactamente el que está en el repositorio de módulo de google guice, sino que es una adaptación, debido a un bug de módulo que impedia ejecutar los tests.
 
@@ -187,7 +187,7 @@ bc. repositories:
         type: http
         artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
         contains:
-            - fap -> guice
+            - fap-modules -> guice
 
 
 h3. Configuración de google guice  

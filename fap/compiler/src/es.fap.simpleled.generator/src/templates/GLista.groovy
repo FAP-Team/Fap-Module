@@ -47,7 +47,6 @@ public class GLista extends GElement{
 			if (!contenido.equals("")){
 				pendienteEscribir=true;
 				if (contador == 100){
-					System.out.println("Entre: "+lista.name+numFichero);
 					contador = 0;
 					FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numFichero + ".yaml", contenido);
 					contenido = "";

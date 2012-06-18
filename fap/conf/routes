@@ -54,6 +54,21 @@ POST /popups.popupceconomicoscontroller/editar popups.PopupCEConomicosController
 
 
 # === FAPGENERATED ===
+GET /Principal/solicitudes SolicitudesController.index
+POST /Principal/solicitudes/busquedaForm SolicitudesController.busquedaForm
+GET /Principal/solicitudes/listaSolicitudesBuscadas SolicitudesController.tablalistaSolicitudesBuscadas
+GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
+GET /Principal/nuevasolicitud NuevaSolicitudController.index
+POST /Principal/nuevasolicitud/editar NuevaSolicitudController.editar
+POST /Principal/nuevasolicitud/crear NuevaSolicitudController.crear
+GET /Principal/editarsolicitud EditarSolicitudController.index
+POST /Principal/editarsolicitud/editar EditarSolicitudController.editar
+GET /Principal/leersolicitud LeerSolicitudController.index
+GET /Principal/cambiarpass CambiarPassController.index
+GET /Principal/cambiarpass/tablaCambioPass CambiarPassController.tablatablaCambioPass
+GET /Soporte/soporte SoporteController.index
+POST /Soporte/soporte/editar SoporteController.editar
+POST /Soporte/soporte/crear SoporteController.crear
 GET /Solicitud/pceconomicos PCEconomicosController.index
 GET /Solicitud/aportacion AportacionController.index
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
@@ -124,21 +139,8 @@ GET /Administracion/estadosvisibles/tabladeEstadosSolicitud EstadosVisiblesContr
 GET /Administracion/codigos CodigosController.index
 GET /Administracion/codigos/tablacodrequerimientos CodigosController.tablatablacodrequerimientos
 GET /Administracion/codigos/tablacodexclusion CodigosController.tablatablacodexclusion
-GET /Soporte/soporte SoporteController.index
-POST /Soporte/soporte/editar SoporteController.editar
-POST /Soporte/soporte/crear SoporteController.crear
-GET /Principal/solicitudes SolicitudesController.index
-POST /Principal/solicitudes/busquedaForm SolicitudesController.busquedaForm
-GET /Principal/solicitudes/listaSolicitudesBuscadas SolicitudesController.tablalistaSolicitudesBuscadas
-GET /Principal/solicitudes/listaSolicitudes SolicitudesController.tablalistaSolicitudes
-GET /Principal/nuevasolicitud NuevaSolicitudController.index
-POST /Principal/nuevasolicitud/editar NuevaSolicitudController.editar
-POST /Principal/nuevasolicitud/crear NuevaSolicitudController.crear
-GET /Principal/editarsolicitud EditarSolicitudController.index
-POST /Principal/editarsolicitud/editar EditarSolicitudController.editar
-GET /Principal/leersolicitud LeerSolicitudController.index
-GET /Principal/cambiarpass CambiarPassController.index
-GET /Principal/cambiarpass/tablaCambioPass CambiarPassController.tablatablaCambioPass
+GET /Principal/popuppass popups.PopupPassController.index
+POST /Principal/popuppass/editar popups.PopupPassController.editar
 GET /Solicitud/popupdocpresentados popups.PopUpDocPresentadosController.index
 GET /Solicitud/popupdocprocesos popups.PopUpDocProcesosController.index
 POST /Solicitud/popupdocprocesos/editar popups.PopUpDocProcesosController.editar
@@ -187,7 +189,5 @@ GET /Administracion/popupvisibilidaddesolicitudes popups.PopupVisibilidadDeSolic
 POST /Administracion/popupvisibilidaddesolicitudes/editar popups.PopupVisibilidadDeSolicitudesController.editar
 GET /Administracion/popupvercodreq popups.PopupVerCodReqController.index
 GET /Administracion/popupvercodexc popups.PopupVerCodExcController.index
-GET /Principal/popuppass popups.PopupPassController.index
-POST /Principal/popuppass/editar popups.PopupPassController.editar
 
 # === END FAPGENERATED ===			 

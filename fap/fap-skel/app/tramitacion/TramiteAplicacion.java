@@ -2,6 +2,8 @@ package tramitacion;
 
 import java.util.List;
 
+import properties.FapProperties;
+
 import models.*;
 import tramitacion.TramiteSolicitud;
 
@@ -27,37 +29,37 @@ public class TramiteAplicacion extends TramiteSolicitud{
 
 	@Override
 	public String getTipoRegistro() {
-		return TramiteSolicitudEstancia.TIPO_REGISTRO;
+		return TramiteAplicacion.TIPO_REGISTRO;
 	}
 
 	@Override
 	public String getBodyReport() {
-		return TramiteSolicitudEstancia.BODY_REPORT;
+		return TramiteAplicacion.BODY_REPORT;
 	}
 
 	@Override
 	public String getHeaderReport() {
-		return TramiteSolicitudEstancia.HEADER_REPORT;
+		return TramiteAplicacion.HEADER_REPORT;
 	}
 
 	@Override
 	public String getFooterReport() {
-		return TramiteSolicitudEstancia.FOOTER_REPORT;
+		return TramiteAplicacion.FOOTER_REPORT;
 	}
 
 	@Override
 	public String getMail() {
-		return TramiteSolicitudEstancia.MAIL;
+		return TramiteAplicacion.MAIL;
 	}
 
 	@Override
 	public String getJustificanteRegistro() {
-		return TramiteSolicitudEstancia.JUSTIFICANTE_REGISTRO;
+		return TramiteAplicacion.JUSTIFICANTE_REGISTRO;
 	}
 
 	@Override
 	public String getTipoTramite() {
-		return TramiteSolicitudEstancia.TIPO_TRAMITE;
+		return TramiteAplicacion.TIPO_TRAMITE;
 	}
 
 	@Override

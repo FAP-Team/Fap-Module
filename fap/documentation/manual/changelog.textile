@@ -1,30 +1,165 @@
 h2. Changelog
 
-h3. Version 2.0 RC1
+h3. Version 2.0 (Sarantontón)
 
 Para adaptar las aplicaciones a esta versión es necesario realizar cambios en el DSL y en las aplicaciones. Consulta la guía de migración a la version 2.0:
 
 **"Migración de aplicaciones a la versión 2.0":version2.0DSL**
 
-* Compresión de logs de manera automática, al tener un día de antigüedad
-* División de los logs en Daily y Auditable
-* Agregado Boton de Iniciar Baremacion en la pagina Administracion
-* Creación de la tabla de Conceptos Económicos dependiendo del 'json' de la evaluación
-* Formateador incorporado para los ficheros .fap (CTRL+SHIFT+F)
-* Formateador para los ficheros Generados
-* Mayor flexiblidad a la hora de crear aplicaciones: 
+* Rediseño de los permisos.
+* Mayor flexiblidad a la hora de crear aplicaciones:
+** Inyección de servicios utilizando Google Guice 1.3. 
 ** Integración completa de páginas y popups con campos de entidades, lo cual permite fácilmente la creación, edición, lectura y borrado mediante formularios de cualquier esquema de bases de datos que se modele a partir de entidades creadas con la herramienta. 
 ** Se permite la navegación a páginas a partir de los botones de una tabla.
 ** Ahora es posible crear aplicaciones que no dependan ni utilicen la entidad Solicitud ni sus páginas.
 ** Ahora es posible, si se desea, crear aplicaciones completas sin utilizar popups, sin perder ninguna de las funcionalidades que estos aportan, simplemente sustituyéndolos por páginas.
-** Inyección de servicios utilizando google guice.
+* Actualizada la interfaz de los servicios.
+* Cambio de estilos utilizando twitter-bootstrap.
+* Se permite sobreescribir la forma de autenticarse en la aplicación.
+* Paquete de tramitación.
+* Nuevas Páginas FAP para la Baremación (_No actualices si estás trabajando en algo relacionado con la baremación o tendrás conflictos en las entidades_).
+* Posibilidad de personalizar el mensaje de la pantalla de Login.
+* Formateador incorporado para los ficheros .fap (CTRL+SHIFT+F).
+* Formateador para los ficheros Generados.
 * Mejorado el autocompletado de los DSL en el plugin de eclipse.
 * Mejorado el syntax highlighting de los DSL en el plugin de eclipse.
-* Cambio de estilos utilizando twitter-bootstrap.
-* Página simplificada de baremación. (Baremación utilizada en proyectos de innovación). No actualices si estás trabajando en algo relacionado con la baremación o tendrás conflictos en las entidades.
+* Atributo Ayuda en los elementos Area de Texto y Check.
+* Atributo Ancho en el elemento Area de Texto.
+* Añadidas nuevas propertys.
+* Nuevas palabras reservadas en el DSL: login y logout para entrar y salir de la aplicación.
+* División de los logs en Daily y Auditable.
+* Compresión de logs de manera automática, al tener un día de antigüedad.
+* División en distintos ficheros al generar listas FAP de más de 100 elementos.
+* Posibilidad de personalizar el mensaje de la página de aportación. 
+
+h3. Versión 1.3.8
+
+* Fixed bug al registrar aportacion de documentos.
+* Fixed bug en permisos de tabla de documentos de aportación.
+* Property httpTimeout en el módulo.
+
+h3. Versión 1.3.7
+
+* Mejoras en las transacciones en la aportación de documentación.
+* Fixed bug el clasificar con registro los documentos de la aportación.
+* Fixed bug en combos ManyToX.
+* Cambios en la forma de generar los requerimientos.
+* AED: Añadidos métodos para crear y comprobar que existen carpetas.
+* Fixed bug actualizar propiedades documento clasificado.
+* Modificadas las clases DatosRegistro y PlatinoRegistro.
+
+h3. Versión 1.3.6
+
+* Fixed bug página de Verificación.
+* Se muestra más info cuando la descripción de un documento es NULL o vacía.
+
+h3. Versión 1.3.5
+
+* Añadidos nuevos estados de la Solicitud.
+* Añadida Exclusión de la Solicitud.
+* Mejorada la Visibilidad de Estados de Usuario.
+* Estandarizando los nombres del dependecies.yml.
+* Combo de selección de un requerimiento por descripción corta.
+* Fixed Bugs en Verificación.
+* Fixed Bug en los combos que tengan claves que no sean String.
+* Fixed Bug al recuperar de Flash, con errores de validación, en campos no Editables.
+* Fixed Bug en combo del subir archivo.
+* Fixed Bugs en el PDF del borrador del Requerimiento en Verificación.
+* Fixed Bug en funcion a sobreescribir para conocer los documentos condicionados automaticos en Verificación.
+* Fixed Bug Upload JavaScript.
+* Fixed Bug en JavaScript en PopUps manuales de Exclusión y Requerimiento.
+* Fixed Bug al utilizar la Release Candidate.
+* Fixed bug generación de los inits en los modelos.
+
+h3. Versión 1.3.4
+
+* Fixed Bug en la parte de Verificación de Documentación.
+* Atributos transient ahora se vuelven a inicializar en el init de la Entidad.
+* Fixed Bug actualización semilla expediente.
+
+h3. Versión 1.3.3
+
+* Fixed Bug en algunos permisos de Verificación.
+
+h3. Versión 1.3.2
+
+* Implementación del acceso concurrente al hacer varias operaciones sobre la misma solicitud.
+* Fixed Bugs en la Verificación de Documentación.
+* Añadido los códigos de Exclusión.
+* Página con dos tablas para los códigos de Requerimiento y Exclusión de la aplicación, en Administración.
+* Fixed Bug en la generación de la semilla de los identificadores de los expedientes.
+* Permitir indicar un destino (target) en los elementos Form del DSL.
+* Cambiado el estado de la solicitud a 'enVerificacion' cuando se inicia una verificación.
+
+h3. Versión 1.3.1
+
+* Fixed Bug en la variable de entorno del Commands.py.
+* Fixed Bug en los valores del combo de los codigos de requerimiento al saltar un error de validación.
+* Estableciendo static al atributo semilla.
+* Añadiendo más información de logs en la clasificación de documentos, y el asignarIDAed.
+
+h3. Versión 1.3
+
+* Verificación de documentación añadida (sin permitir finalizarla aún).
+* Duplicado email remitente en incidencias.
+* Mejoras en la página de incidencias.
+* Tamañano máximo de fichero en la property fap.file.maxsize.
+* Fixed bug en el path del manual.
+
+h3. Versión 1.2.9
+
+* Fixed Bug al actualizar el Tipo y la Descripción del Documento clasificado en el AED.
+* Fixed Bug al enviar Mail en los errores Fatales.
+* Se separa en distintos html, la pagina de login.html para su personalización.
+* Fixed bug en subir documento.
+* Se permite editar la descripción en los registros de entrada.
+* Se permite eliminar valores duplicados de los combos.
+* En el subir archivo se eliminan los elementos duplicados en el combo.
+
+h3. Versión 1.2.8
+
+* Validacion de que el solicitante no se tenga a él mismo como representante
+* Mejorado el control de participaciones en las solicitudes.
+* Limpieza de campos de persona no seleccionados.
+* Borrado automaticamente de los ficheros PDF temporales cada cierto tiempo
+* Rol gestor añadido al módulo FAP.
+* Aportación de Documentos diferente para usuarios y gestores.
+* Página de incidencias y fecha en las mismas.
+* Fixed bug aportación de documentación.
+* Eliminado print del elemento firma.
+* Fixed bug tabla de logs en IE8.
+
+h3. Versión 1.2.7
+
+* Fixed bug en NipCheck nulos.
+* Añadida properties para la configuración de PerserveHost de Apache.
+* Añadido campo CC en la plantilla de los mails.
+* Fixed Bug en el envío de los checkbox unchecked.
+* Añadida clase para Verificar la aportacion de los documentos obligatorios.
+* Fixed #230: Property para enlazar el manual de la aplicación "fap.manual.aplicacion".
+
+h3. Versión 1.2.6
+
+* Fixed Bug en la generación del Validate Copy del Agrupar Campos
+* Fixed Bug en redirección después de login
+* Fixed Bug en formato de los doubles si no se especifica
+* Fixed #228: Añadidos métodos al AEDClient.
+* Fixed #229: Métodos y variables protected.
+
+h3. Versión 1.2.5
+
+* Fixed bug con problemas del path de las aplicaciones en producción
+* Fixed bug en la URL del documento a firmar
+* Filtrado en la subida de documento por tipo Mime y por extensión
+* Formato de los tipos doubles configurable
+* Homogeneizando el formato del CIF y NIP en Base de Datos
+* Fixed Bug en validación de CIF y NIP
+* Fixed Bug en la descripción de los documentos a subir
 
 h3. Versión 1.2.4
 
+* En los elementos Solicitante, PersonaFisica, Persona, etc. Si no se le indica un título, por defecto no se le estableces el grupo que lo englobaría.
+* Fixed bug varios botones en un mismo form
 * Los representantes de un Solicitante (ya sea un Solicitante, un SolicitantePersonaFisica o un SolicitantePersonaJuridica), podemos indicar en el DSL que sean sólo del tipo PersonaFísica, o como hasta ahora, por defecto, que salga un combo para elegir entre PersonaFisica o PersonaJuridica.
 * En el DSL se puede especificar que el Solicitante sólo sea PersonaFisica o PersonaJurídica
 * Elemento fecha, tiene nuevos parámetros: ancho y anchoTitulo
@@ -57,9 +192,6 @@ h3. Versión 1.2.1
 
 h3. Versión 1.2
 
-* Se recomienda actualizar play a la versión 1.2.4.
-* Fixed minor bugs.
-* Test automáticos (play autotest).
 * Nueva interfaz de permisos que permite sobrescribir los permisos definidos en el módulo
 * Inyección de dependencias utilizando Google Guice.
 * Permitir creacion de Enumerados Java a partir de Listas FAP
@@ -135,5 +267,3 @@ h3. Versión 1.0.1
 h3. Versión 1.0
 
 * Primera versión estable.
-    
- 

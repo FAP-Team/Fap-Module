@@ -274,7 +274,8 @@ public abstract class TramiteBase {
 					
 					registro.fasesRegistro.save();
 					try {
-						Mails.enviar(this.getMail(), this.solicitud);
+						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+						Mails.enviar(this.getMail(), solicitud);
 					} catch (Exception e){
 						play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail());
 					}
@@ -319,6 +320,7 @@ public abstract class TramiteBase {
 			if (!solicitud.estado.equals("iniciada")) {
 				solicitud.estado = "iniciada";
 				solicitud.save();
+				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
 				Mails.enviar("solicitudIniciada", solicitud);
 			}
 			

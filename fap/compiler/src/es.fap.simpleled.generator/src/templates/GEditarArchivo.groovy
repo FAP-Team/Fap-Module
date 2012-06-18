@@ -1,5 +1,8 @@
 package templates;
 
+import java.util.Set;
+import java.util.Stack;
+
 import es.fap.simpleled.led.*;
 import generator.utils.CampoUtils
 import generator.utils.Entidad;
@@ -45,6 +48,13 @@ public class GEditarArchivo extends GSaveCampoElement{
 					validation.addError("", "Error al actualizar el documento el documento en el Gestor Documental");
 				}
 			}
+		""";
+	}
+	
+	public String validateCopy(Stack<Set<String>> validatedFields){
+		return """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
+				   if ((${campo.firstLower()}.descripcion != null) && (!${campo.firstLower()}.descripcion.trim().equals("")) && (${campo.firstLower()}.descripcion.equals(FapProperties.get("fap.aed.tiposdocumentos.otros"))))
+				      ${campo.dbStr()}.descripcion = ${campo.firstLower()}.descripcion;
 		""";
 	}
 	

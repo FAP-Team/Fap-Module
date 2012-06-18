@@ -145,7 +145,8 @@ public abstract class TramiteBase {
         File borrador = null;
         if(!Messages.hasErrors()){
             try {
-            	borrador = new Report(this.getBodyReport()).header(this.getHeaderReport()).footer(this.getFooterReport()).renderTmpFile(this.solicitud);
+            	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+            	borrador = new Report(this.getBodyReport()).header(this.getHeaderReport()).footer(this.getFooterReport()).renderTmpFile(solicitud);
                 registro.borrador = new Documento();
                 registro.borrador.tipo = getTipoRegistro();
             } catch (Exception ex2) {
@@ -159,7 +160,8 @@ public abstract class TramiteBase {
         File oficial = null;
         if(!Messages.hasErrors()){
             try {
-            	oficial = new Report(this.getBodyReport()).header(this.getHeaderReport()).registroSize().renderTmpFile(this.solicitud);
+            	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+            	oficial = new Report(this.getBodyReport()).header(this.getHeaderReport()).registroSize().renderTmpFile(solicitud);
                 registro.oficial = new Documento();
                 registro.oficial.tipo = getTipoRegistro();
             } catch (Exception ex2) {

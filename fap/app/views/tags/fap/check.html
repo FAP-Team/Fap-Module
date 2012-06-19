@@ -9,6 +9,7 @@
 	def label = _titulo ?: play.i18n.Messages.get(field.name)
 	def value = _value ?: field.flashorvalue
 	def ayuda = _ayuda
+	def alineadoAIzquierdas = _alineadoAIzquierdas
 	
 	def requerido;
 	if(_requerido != null) 
@@ -36,7 +37,7 @@
 	
 }%	
 	<div class="controls">
-		<label class="checkbox">
+		<label class="checkbox" #{if alineadoAIzquierdas}style="margin-left:-30%"#{/if}>
 			<input type="checkbox" id="${id}" ${checked.raw()} ${disabled}/>
 			${label}
 			#{fap.ayuda ayuda:ayuda, id:id_help /}

@@ -21,7 +21,10 @@ public class GCheck extends GSaveCampoElement{
 			params.putStr("titulo", check.titulo)
 		
 		if(check.name != null)
-			params.putStr("id", check.name)	
+			params.putStr("id", check.name)
+		
+		if(check.alineadoAIzquierdas)
+			params.put "alineadoAIzquierdas", true;
 		
 		if (check.ayuda != null) {
 			if ((check.tipoAyuda != null) && (check.tipoAyuda.type.equals("propover")))

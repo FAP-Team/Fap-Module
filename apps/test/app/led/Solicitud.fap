@@ -205,9 +205,11 @@ Popup popUpTemas titulo = "Tema" campo = Asignatura.temas {
 	Pagina ValoresPorDefecto campo=Solicitud{
 		Texto mString campo=Solicitud.valoresPorDefectoTest.mString titulo="String"
 		Texto mLong campo=Solicitud.valoresPorDefectoTest.mLong titulo="Long"
-		Texto mInteger campo=Solicitud.valoresPorDefectoTest.mInteger titulo="Integer"
-		Check mBoolean campo=Solicitud.valoresPorDefectoTest.mBoolean titulo="Boolean de la Clase Boolean"
-		Check m2Boolean campo=Solicitud.valoresPorDefectoTest.otroBoolean titulo="Otro sin valor por defecto Boolean"
+		Grupo paco titulo="Un Grupo" {
+			Texto mInteger campo=Solicitud.valoresPorDefectoTest.mInteger titulo="Integer"
+			Check mBoolean campo=Solicitud.valoresPorDefectoTest.mBoolean titulo="Boolean de la Clase Boolean" alineadoAIzquierdas
+			Check m2Boolean campo=Solicitud.valoresPorDefectoTest.otroBoolean titulo="Otro sin valor por defecto Boolean"
+		}
 		Texto mDouble campo=Solicitud.valoresPorDefectoTest.mDouble titulo="Double"
 		Texto mLongText campo=Solicitud.valoresPorDefectoTest.mLongText titulo="LongText"
 		
@@ -216,7 +218,7 @@ Popup popUpTemas titulo = "Tema" campo = Asignatura.temas {
 		Texto mEmbeddable campo=Solicitud.valoresPorDefectoTest.mEmbebida.algo titulo="String embeddable" 
 		
 		Check mbooleanNuevo campo=Solicitud.valoresPorDefectoTest.mbooleanNuevo titulo="boolean de tipo boolean"
-		Check otrobooleanNuevo campo=Solicitud.valoresPorDefectoTest.otrobooleanNuevo titulo="Boolean de tipo boolean a true por defecto"
+		Check otrobooleanNuevo campo=Solicitud.valoresPorDefectoTest.otrobooleanNuevo titulo="Boolean de tipo boolean a true por defecto" alineadoAIzquierdas
 	}
 	
 	Pagina TablasSimples campo=Solicitud{

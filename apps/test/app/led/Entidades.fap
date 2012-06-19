@@ -144,3 +144,16 @@ Entidad ValoresPorDefectoTest {
 Entidad Embebida embeddable {
 	String algo default = "pepe"
 }
+
+Entidad Asignatura {
+
+    Long codigo
+    String nombre
+    OneToMany Tema temas cascadeType = ALL
+}
+
+Entidad Tema {
+
+    Integer numTema
+    String nombre
+}

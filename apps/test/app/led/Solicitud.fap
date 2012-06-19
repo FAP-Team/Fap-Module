@@ -5,6 +5,8 @@ Formulario Solicitud {
     	
     	Enlace "Verificaciones" pagina=AccesoVerificaciones
     	
+    	Enlace "Prueba Asignaturas" pagina = Listado
+    	
     	Grupo "Combos" {
 			Enlace "Combos por defecto" pagina=Combos
 			Enlace "Combos sobreescritos" pagina=CombosOverwrite
@@ -71,6 +73,66 @@ Formulario Solicitud {
 		}
 		
 		Enlace "Salir" accion=logout
+    }
+    
+    Pagina Listado {
+        Tabla listado titulo = "Listado Asignaturas" 
+            campo = Asignatura
+            paginaCrear = NuevaAsignatura
+            paginaEditar = EditarAsignatura
+
+        {
+
+            Columna campo = Asignatura.codigo titulo = "Código" 
+            Columna campo = Asignatura.nombre titulo = "Nombre Asignatura"
+        }
+        
+    }
+    
+    Pagina NuevaAsignatura campo = Asignatura {
+        Accion crear  boton = "Guardar" redirigir = Listado mensajeOk = "Asignatura creada correctamente."
+
+        Texto campo = Asignatura.codigo titulo = "Código"
+        Texto campo = Asignatura.nombre titulo = "Nombre asignatura"
+        Tabla listadoTemas titulo = "Listado Temas" 
+            campo = Asignatura.temas
+            popup = popUpTemas
+            recargarPagina
+        {
+
+            Columna campo = Tema.numTema titulo = "Nº Tema" ancho = "60"
+            Columna campo = Tema.nombre titulo = "Nombre"
+        }
+    }
+    
+    Pagina EditarAsignatura campo = Asignatura {
+        Accion editar boton = "Guardar" redirigir = Listado mensajeOk = "Asignatura modificada correctamente."
+
+        Texto campo = Asignatura.codigo titulo = "Código"
+        Texto campo = Asignatura.nombre titulo = "Nombre asignatura"
+        Tabla listadoTemas titulo = "Listado Temas" 
+            campo = Asignatura.temas
+            popup = popUpTemas
+            recargarPagina
+        {
+
+            Columna campo = Tema.numTema titulo = "Nº Tema" ancho = "60"
+            Columna campo = Tema.nombre titulo = "Nombre"
+        }
+    }
+
+Popup popUpTemas titulo = "Tema" campo = Asignatura.temas {
+		Accion crear redirigir=EditarAsignatura
+		Accion editar redirigir=EditarAsignatura
+        Texto campo = Tema.numTema titulo = "Nº Tema"
+        Texto campo = Tema.nombre titulo = "Nombre"
+    }
+    
+    Pagina popUpTemas3 titulo = "Tema" campo = Asignatura.temas {
+		Accion crear redirigir=EditarAsignatura
+		Accion editar redirigir=EditarAsignatura
+        Texto campo = Tema.numTema titulo = "Nº Tema"
+        Texto campo = Tema.nombre titulo = "Nombre"
     }
 		
 	Pagina Fechas campo=Solicitud{

@@ -228,7 +228,10 @@ public class FichaEvaluadorController extends Controller {
 			record.objeto = cEconomico;
 			vars.put("cEconomico", cEconomico);
 			record.permisoLeer = false;
-			record.permisoEditar = true;
+			if (cEconomico.tipo.clase.equals("auto"))
+				record.permisoEditar = true;
+			else
+				record.permisoEditar = false;
 			record.permisoBorrar = false;
 		}
 		return records;

@@ -77,16 +77,16 @@
 					items = tags.ReflectionUtils.callControllerMethodIfExists(oldId) // Devuelve null si no existe el método
 				} else {
 					items = _itemsModificables.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")} // Devuelve lista vacia si no existe _itemsModificable
-				}
-				if ((items == null) || (items.size() == 0)){
-					//No existe método en el controlador ni _itemsModificable (que solo existira si se llama al combo desde un tag documento)
-					if(field.reference){
-						//Opciones buscando todas las filas de una tabla
-						items = [];
-						
-						for(row in field.referenceClass.findAll()){
-							def ik; 
-							def iv;
+					// Este IF antes iba por fuera del ELSE, pero como los métodos sobreescritos que devuelven los valores de los combos pueden devolver listas vacías, podía entrar por este IF cuando no debería
+					if ((items == null) || (items.size() == 0)){
+						//No existe método en el controlador ni _itemsModificable (que solo existira si se llama al combo desde un tag documento)
+						if(field.reference){
+							//Opciones buscando todas las filas de una tabla
+							items = [];
+							
+							for(row in field.referenceClass.findAll()){
+								def ik; 
+								def iv;
 							try {
 								ik = row."$comboValue";
 								iv = row."$comboText"?.toString();
@@ -96,9 +96,10 @@
 							}							
 							items.add(new tags.ComboItem(ik, iv));
 						}
-					}else{
-						//Opciones desde tabla de tablas
-						items = tags.ComboItem.listFromTableOfTable(field.table)				
+						}else{
+							//Opciones desde tabla de tablas
+							items = tags.ComboItem.listFromTableOfTable(field.table)				
+						}
 					}
 				}
 			}

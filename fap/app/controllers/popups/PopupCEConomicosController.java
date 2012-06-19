@@ -12,6 +12,7 @@ import models.Criterio;
 import models.Evaluacion;
 import models.SolicitudGenerica;
 import models.TipoEvaluacion;
+import models.ValoresCEconomico;
 
 import org.apache.log4j.Logger;
 
@@ -96,7 +97,10 @@ public class PopupCEConomicosController extends Controller{
 	public static void PopupCEConomicosValidateCopy(String accion, CEconomico dbCEconomico, CEconomico cEconomico) {
 		CustomValidation.clearValidadas();
 		CustomValidation.valid("cEconomico", cEconomico);
-		dbCEconomico.valores = cEconomico.valores;
+		int anios=0;
+		for (ValoresCEconomico valor: dbCEconomico.valores){
+			valor.valorSolicitado = cEconomico.valores.get(anios++).valorSolicitado;
+		}
 	}
 
 	@Util

@@ -4387,11 +4387,17 @@ applet {
   margin-top: 14px;
   border-top: 1px solid #bbbbbb;
 }
-div.controls input {
-  box-sizing: none;
-  --moz-box-sizing: none;
-  --ms-box-sizing: none;
-  --webkit-box-sizing: none;
+div.grupo-content div.controls input {
+  box-sizing: content-box;
+  --moz-box-sizing: content-box;
+  --ms-box-sizing: content-box;
+  --webkit-box-sizing: content-box;
+}
+div.control-group div.controls input {
+  box-sizing: content-box;
+  --moz-box-sizing: content-box;
+  --ms-box-sizing: content-box;
+  --webkit-box-sizing: content-box;
 }
 body {
   background: #B5C5D4;
@@ -4767,11 +4773,11 @@ applet {
   margin-top: 14px;
   border-top: 1px solid #bbbbbb;
 }
-div.controls input {
-  box-sizing: none;
-  --moz-box-sizing: none;
-  --ms-box-sizing: none;
-  --webkit-box-sizing: none;
+.criterio .control-group input {
+  box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -ms-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
 }
 .controls .input-xlarge {
   box-sizing: content-box;

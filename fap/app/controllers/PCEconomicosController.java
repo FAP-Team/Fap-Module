@@ -12,6 +12,7 @@ import tables.TableRecord;
 import models.*;
 import tags.ReflectionUtils;
 import security.Accion;
+import services.BaremacionService;
 
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,11 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 		List<CEconomico> rowsFiltered = rows; //Tabla sin permisos, no filtra
 
 		tables.TableRenderResponse<CEconomico> response = new tables.TableRenderResponse<CEconomico>(rowsFiltered);
+		// Para no permitir editar en la tabla los conceptos economicos que sean automaticos
+		for (TableRecord<CEconomico> filaCEconomico: response.rows){
+			if (filaCEconomico.objeto.tipo.clase.equals("auto"))
+				filaCEconomico.permisoEditar = false;
+		}
 		response.mensajes.error = Messages.messages(MessageType.ERROR);
 		response.mensajes.warning = Messages.messages(MessageType.WARNING);
 		response.mensajes.fatal = Messages.messages(MessageType.FATAL);
@@ -107,6 +113,32 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 			record.permisoBorrar = false;
 		}
 		return records;
+	}
+	
+	public static void editar(Long idSolicitud) {
+		checkAuthenticity();
+		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
+		if (!permiso("editar")) {
+			Messages.error("No tiene suficientes privilegios para acceder a esta solicitud");
+		}
+		if (!Messages.hasErrors()) {
+			// CALCULAR TOTALES
+
+			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada sin éxito (Problemas de Validación)");
+		PCEconomicosController.editarRender(idSolicitud);
+	}
+	
+	@Util
+	public static void editarRender(Long idSolicitud) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página editada correctamente");
+			Messages.keep();
+			redirect("PCEconomicosController.index", "editar", idSolicitud);
+		}
+		Messages.keep();
+		redirect("PCEconomicosController.index", "editar", idSolicitud);
 	}
 
 }

@@ -29,9 +29,17 @@
 		%}
 		<b>${anioLabel}</b>
 		#{simple.uneditable value:valorSolicitado.value, label:valorSolicitado.label /}
-		#{simple.text name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error /}
-		#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
-		#{simple.text name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value, error:valorConcedido.error /}		
+		#{if cEconomico.tipo.clase.equals("manual")}
+			#{simple.text name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error /}
+			#{simple.text name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error /}
+			#{simple.text name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value, error:valorConcedido.error /}
+		#{/if}
+		#{else}
+			#{simple.uneditable label:valorPropuesto.label, value:valorPropuesto.value /}
+			#{simple.uneditable label:valorEstimado.label, value:valorEstimado.value /}
+			#{simple.uneditable label:valorConcedido.label, value:valorConcedido.value /}
+		#{/else}
+			
 	#{/list}
 #{/fap.popup}
 		

@@ -1,0 +1,143 @@
+h1. Documentación FAP
+
+Puedes ver una aplicación de ejemplo creada con fap en "Aplicación de ejemplo":otros-testapp
+
+h2. Tutorial
+
+# "Introducción":curso-introduccion
+# "Instalación":curso-instalacion
+# "Creación de un proyecto":curso-nuevoProyecto
+# "Instalación del plugin de Eclipse":curso-plugin
+# "Generar la aplicación":curso-generar
+# "Modelo de Entidades (entidad)":curso-entidades
+# "Formularios/Páginas (vista)":curso-formularios
+# "Lógica de negocio (controlador)":curso-controladores
+# "Utilizando permisos":curso-permisos
+# "Generación de informes en PDF":curso-informes
+# "Actualización del modulo FAP":tutorial-actualizacionModuloFap
+# "Desplegar la aplicación":curso-deploy
+# "Modificar Estilo de Páginas":curso-modificarPlantillaHTML
+# "Personalizar código JavaScript de las paginas":curso-personalizarJavaScriptPaginas
+# "Configuracion Apache para desplegar las aplicaciones":curso-configuracionProxyReverse
+
+
+h2. "Preguntas Frecuentes":preguntas-frecuentes
+
+h2. Documentación generada
+
+* "Javadocs":fapapi/
+* "Fapdocs":html/index
+* "Generar y acceder a la documentación de los ficheros *.fap":doc-html
+
+h2. DSL
+
+Elementos que pueden ser utilizados en el DSL
+
+h3. Elementos de persistencia
+
+# "Entidad":dsl-entity
+# "Atributo":dsl-attribute
+
+h3. Listas y enumerados
+
+# "lista":dsl-lista
+
+h3. Elementos Gráficos
+
+# "texto":dsl-texto
+# "area texto":dsl-areaTexto
+# "boton":dsl-boton
+# "check":dsl-check
+# "enlace":dsl-enlace
+# "combo":dsl-combo
+# "grupo":dsl-grupo
+# "wiki":dsl-wiki
+# "pagina":dsl-pagina
+# "popup":dsl-popup
+# "fecha":dsl-fecha
+# "firma simple":dsl-firmaPlatinoSimple
+# "agrupar campos":dsl-agruparCampos
+# "menu":dsl-menu
+# "form":dsl-form
+# "tabla":dsl-tabla
+# "columna":dsl-columna
+# "direccion":dsl-direccion
+# "subir archivo":dsl-subirArchivo
+# "editar archivo":dsl-editarArchivo
+# "solicitante":dsl-solicitante
+# "persona":dsl-persona
+# "persona fisica":dsl-personaFisica
+# "persona juridica":dsl-personaJuridica
+# "entidad automática":dsl-entidadAutomatica
+# "formulario":dsl-formulario
+
+h3. Acciones
+
+# "accion":dsl-accion
+
+h3. Permisos
+
+# "Permisos":dsl-permisos 
+
+
+h2. Desarrollo de aplicaciones
+
+* "Permisos":app-permisos
+* "Cambiar página de inicio":app-cambiarPaginaPrincipal
+* "Personalizar autenticación":app-login
+* "Verificacion Documentación":app-verificacion
+* "Baremación":app-baremacion
+* "Inyección de dependencia":app-guice
+* "Envío de emails":app-email
+* "Properties del application.conf":doc-properties
+* Servicios web : 
+** "Archivo Electrónico de Documento (AED)":ws-aed - Gestor documental
+** "Platino":ws-platino - Firma, registro y gestor documental
+** "Generación de librerías a partir de WSDL":ws-cxf
+** "Depuración de peticiones y respuestas":ws-debug
+** "Configuración de un proxy":ws-proxy
+* "Puesta en producción":app-deploy
+
+h2. "Páginas por defecto":defaultpages
+
+
+h2. Desarrollo del generador
+
+Consulta esta sección únicamente si estás trabajando en el desarollo del generador. Si estás utilizando la herramienta para crear aplicaciones no debería hacerte falta consultar esta sección
+
+h3. Compilación y distribución
+
+# "Compilación":generador-compilacion
+# "Nueva versión y distribución":generador-distribucion
+# "Plugin de Eclipse":generador-plugin
+
+h3. Tags
+
+Elementos que pueden ser utilizados en las vista creadas de forma manual. Las vistas creadas por el generador utilizan estos tags.
+
+# "fap.areaTexto":tag-areaTexto
+# "fap.ayuda":tag-ayuda
+# "fap.boton":tag-boton
+# "fap.camposAutomaticos":tag-camposAutomaticos
+# "fap.check":tag-check
+# "fap.columna":tag-columna
+# "fap.combo":tag-combo
+# "fap.direccion":tag-direccion
+# "fap.enlace":tag-enlace
+# "fap.fecha":tag-fecha
+# "fap.firma":tag-firma
+# "fap.grupo":tag-grupo
+# "fap.messages":tag-messages
+# "fap.nip":tag-nip
+# "fap.pagina":tag-pagina
+# "fap.permiso":tag-permiso
+# "fap.personaFisica":tag-personaFisica
+# "fap.personaJuridica":tag-personaJuridica
+# "fap.popup":tag-popup
+# "fap.tabla":tag-tabla
+# "fap.texto":tag-texto
+# "fap.toJSMapNoValue":tag-toJSMapNoValue
+
+
+
+

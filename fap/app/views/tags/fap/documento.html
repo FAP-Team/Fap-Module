@@ -14,6 +14,7 @@
 	def download = _download != null? _download : false
 	def tramite = _tramite
 	def aportadoPor = _aportadoPor
+
 	def tiposDocumentos
 	if (tramite == null){
 		if (aportadoPor == null)
@@ -25,16 +26,63 @@
 	}else{
 		tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(tramite, aportadoPor);
 	}
-}%
 
-	#{fap.combo id:comboId, idOld:oldComboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
+	def listarDocumentosSubidos = _listarDocumentosSubidos != null? _listarDocumentosSubidos : false
+	def comboSeleccionado = null
+}%	
+
+
+	#{fap.combo id:comboId, idOld:oldComboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos,
+	   comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
 	
-	#{fap.texto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
-	
-	#{if upload}
-		#{fap.upload id:id, accept:_accept/}
-	#{/if}
-	
+	#{fap.grupo borde:false, siCombo:comboId, siComboValue:[tipoDocumentoOtros], siComboReverse:true}
+		#{fap.texto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
+	#{/fap.grupo}
+
+    #{if upload}
+        #{fap.upload id:id, accept:_accept/}
+    #{/if}
+    
+     <div id="ocultaTabla">
+    #{if listarDocumentosSubidos}
+		    #{fap.tablaSiCombo
+		           campo:'Documento', 
+		           id:'tablaDocumentos', 
+		           titulo:'Documentos', 
+		           tipoContainer:'pagina',  
+		           combo:comboId,
+		           urlSubir:'true', 
+		           urlTabla:@fap.DescargasAedController.GestorDocumentalgetDocumentosPorTipo()
+		      }   
+				    #{fap.columna ancho:180, cabecera:'Uri', campo:'uri' /}
+                    #{fap.columna ancho:50, cabecera:'Descripción', campo:'descripcion', expandir:true /}
+				    #{fap.columna ancho:80, cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>' /}
+		    #{/fap.tablaSiCombo} 
+  #{/if}
+   </div>
+   
+   
+	<script type="text/javascript">
+		    var $combo = $('#${comboId}');
+	         
+	        $(document).ready(function(){
+			   if ($combo.val() == "") {
+                  document.getElementById("ocultaTabla").style.visibility = "hidden";
+                }
+             });
+	       
+		   $combo.change( function() {
+		       if ($combo.val() == "") {
+		         document.getElementById("ocultaTabla").style.visibility = "hidden";     	          
+		       }
+		       else {
+		       $('div#idOfDiv').removeAttr('class');
+		         document.getElementById("ocultaTabla").style.visibility = "visible";		         
+		       }
+		   });
+	 </script>
+	 
+
 	#{if download}
 		<div class="control-group">
 			<a href="${field.value.urlDescarga}" target="_blank" class="btn">Descargar documento desde el AED</a>

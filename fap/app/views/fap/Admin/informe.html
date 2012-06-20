@@ -28,7 +28,7 @@
 		        data:{'items':[
                	#{list items:labels, as:'label'}
                		%{ def valor = valores.get(label) }%
-               		{'campo':'${label}','valor':'${valor}'}${product_isLast ? '' : ','}
+               		{'campo':'${label}','valor':'${valor}'}${label_isLast ? '' : ','}
 		        #{/list}			
 		                       
 		        ]},

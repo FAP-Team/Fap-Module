@@ -70,6 +70,16 @@ public class Documento extends FapModel {
 		return AedUtils.crearUrl(uri);
 	}
 
+	/**
+	 * Transformamos la entidad Documento del gestor documental del Gobierno de Canarias en una entidad Documento de FAP.
+	 * 
+	 */
+	public void docAed2Doc(es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento propiedadesDoc, String tipoDocumento) {
+		uri = propiedadesDoc.getUri();
+		tipo = tipoDocumento;
+		descripcion = propiedadesDoc.getDescripcion();
+	}
+
 	public static Documento findByUri(String uri) {
 		Documento documento = models.Documento.find("byUri", uri).first();
 		return documento;

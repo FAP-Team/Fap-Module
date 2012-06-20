@@ -16,6 +16,7 @@ import javax.xml.ws.Holder;
 import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import models.Agente;
 import models.ExpedienteAed;
 import models.InformacionRegistro;
 import models.RepresentantePersonaJuridica;
@@ -25,7 +26,10 @@ import models.Tramite;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import controllers.fap.AgenteController;
+
 import platino.PlatinoProxy;
+import play.db.jpa.GenericModel.JPAQuery;
 import play.libs.MimeTypes;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
@@ -40,6 +44,7 @@ import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.AedPortType;
 import es.gobcan.eadmon.aed.ws.dominio.DocumentoEnUbicacion;
 import es.gobcan.eadmon.aed.ws.dominio.Expediente;
+import es.gobcan.eadmon.aed.ws.dominio.Solicitud;
 import es.gobcan.eadmon.aed.ws.dominio.Ubicaciones;
 import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Contenido;
@@ -47,6 +52,7 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Documento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAdministrativas;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAvanzadas;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
@@ -54,6 +60,7 @@ import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcep
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
+import es.gobcan.eadmon.verificacion.ws.dominio.ListaDocumentosVerificacion;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -130,7 +137,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         try {
             hasConnection = getVersion() != null;
         }catch(Exception e){
-            log.info("El servicio no tiene coneccion con " + getEndPoint());
+            log.info("El servicio no tiene conexion con " + getEndPoint());
         }
 		return hasConnection;
 	}
@@ -153,7 +160,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 * 
 	 * @throws NullPointerException El solicitante o alguno de sus representantes no tiene los campos 
 	 *                              nombreCompleto o númeroId
-	 * @throws GestorDocumentalServiceException Si el servicio web dió error                             
+	 * @throws GestorDocumentalServiceException Si el servicio web dio error                             
 	 */
 	@Override
     public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException {        
@@ -181,12 +188,12 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     private Interesados getInteresados(SolicitudGenerica solicitud){
         Interesados interesados = new Interesados();
         interesados.add(solicitud.solicitante);
-        
         boolean representado = solicitud.solicitante.representado != null ? solicitud.solicitante.representado : false;
         //Representantes
         if(solicitud.solicitante.isPersonaFisica() && representado){
             interesados.add(solicitud.solicitante.representante);
-        }else if(solicitud.solicitante.isPersonaJuridica()){
+        } 
+        else if(solicitud.solicitante.isPersonaJuridica()){
             for(RepresentantePersonaJuridica representante: solicitud.solicitante.representantes){
                 interesados.add(representante);
             }
@@ -233,6 +240,39 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return uris;
     }
     
+    /**
+     * Obtiene la lista de documentos que se corresponden a un determinado tipo y donde el interesado es el agente logueado.
+     * 
+     */
+    @Override
+    public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws AedExcepcion {
+    	System.out.println("***************** [getDocumentosPorTipo] INICIO (tipoDocumento) = " + tipoDocumento);
+    	if (tipoDocumento == null || tipoDocumento.isEmpty())
+    		return Collections.emptyList();
+    	
+    	Agente agente = AgenteController.getAgente();
+    	String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+    	List<PropiedadesDocumento> lista = aedPort.buscarDocumentos(procedimiento, null, null, tipoDocumento, "12345678Z", null, null, null, null);
+    	System.out.println(" ---------- lista = " + lista.toString());
+    	//List<PropiedadesDocumento> lista = aedPort.buscarDocumentos(null, null, null, tipoDocumento, agente.username, null, null, null, null);
+    	if(lista == null)
+    		return Collections.emptyList();
+
+    	// En la interfaz GestorDocumentalService tengo que poner qué entidad retorna esta función. Puedo elegir entre la entidad
+    	// Documento de FAP (models.Documento) y la entidad Documento del Gobierno de Canarias. Elegimos la entidad de FAP.
+    	// Con la función docAed2Doc, transformamos la entidad del Gobierno (devuelto en aedPort.buscarDocumentos) por la de FAP.
+    	List<models.Documento> listaDocumentos = new ArrayList<models.Documento>();
+    	for (PropiedadesDocumento propiedadesDoc : lista) {
+    		System.out.println("************* [getDocumentosPorTipo] Uri doc = " + propiedadesDoc.getUri());
+    		models.Documento doc = new models.Documento();
+    		propiedadesDoc.getIdentificador();
+    		doc.docAed2Doc(propiedadesDoc, tipoDocumento);
+    		listaDocumentos.add(doc);
+    		doc.delete();
+    	}
+    	return listaDocumentos;
+    }
+    
     private List<PropiedadesDocumento> obtenerPropiedadesDocumentos(String expediente) throws AedExcepcion {
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
         List<PropiedadesDocumento> lista = aedPort.buscarDocumentos(procedimiento, expediente, null, null, null, null, null, null, null);
@@ -273,6 +313,43 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return response;
     }
     
+    
+    /**
+     * Recupera el contenido de un documento dado su uri
+     * 
+     * El documento puede estar clasificado o no clasificado
+     * 
+     * @param uriDocumento
+     * @return Contenido y nombre del fichero
+     * 
+     * @throws GestorDocumentalServiceException Si se produjo un error al recuperar un documento
+     * 
+     */
+    @Override
+    public BinaryResponse getDocumentoByUri(String uriDocumento) throws GestorDocumentalServiceException {
+        BinaryResponse response = new BinaryResponse();
+        Documento doc;
+        boolean obtuveDocumento = false;
+        try {
+        	 doc = aedPort.obtenerDocumentoNoClasificado(uriDocumento);
+        	 response.contenido = doc.getContenido().getFichero();
+             response.nombre = doc.getContenido().getNombre();
+             obtuveDocumento = true;
+        } catch (AedExcepcion e) { ; }
+        
+        if (!obtuveDocumento) {
+	        try {
+	        	doc = aedPort.obtenerDocumento(uriDocumento);	            
+	            response.contenido = doc.getContenido().getFichero();
+	            response.nombre = doc.getContenido().getNombre();
+	        } catch (AedExcepcion e) {
+	            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
+	        }     
+        }
+        log.info("Documento recuperado del aed " + uriDocumento);
+        return response;
+    }
+    
     private boolean isClasificado(models.Documento documento) throws GestorDocumentalServiceException {
         if(documento.clasificado == null){
             throw new GestorDocumentalServiceException("No se tiene información de si el documento con uri " + documento.uri + " está o no clasificado");
@@ -306,6 +383,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     		uri = aedPort.crearDocumentoNoClasificado(ruta, documentoAed);
     
     		documento.uri = uri;
+    		System.out.println("************* [saveDocumentoTemporal] Uri doc = " + documento.uri);
     		documento.fechaSubida = new DateTime();
     		documento.clasificado = false;
     		
@@ -348,6 +426,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
 	
 	private Documento crearDocumentoTemporal(String tipo, String descripcion, String filename, InputStream is){
+		System.out.println("********************* crearDocumentoTemporal");
         Documento documento = new Documento();
         
         // Propiedades básicas
@@ -361,7 +440,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         documento.getPropiedades().setPropiedadesAvanzadas(propiedadesAdministrativas);
         propiedadesAdministrativas.getInteresados().add(propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nombre"));
         propiedadesAdministrativas.getInteresadosNombre().add(propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nif"));
-        
+       
         // Contenido
         Contenido contenido = new Contenido();
         contenido.setNombre(filename);

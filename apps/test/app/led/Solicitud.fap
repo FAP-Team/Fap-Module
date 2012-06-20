@@ -239,7 +239,7 @@ Popup popUpTemas titulo = "Tema" campo = Asignatura.temas {
 	
 	Pagina Documentos campo=Solicitud.documentacion.documentos{
 		Accion crear redirigir=SubirArchivoAedTest	
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
+		SubirArchivo fileAportacion campo=Documento requerido listarDocumentosSubidos tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"  
 	}
 	
 	Pagina DocumentosEditar campo=Solicitud.documentacion.documentos{

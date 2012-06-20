@@ -17,6 +17,9 @@ import org.joda.time.DateTime;
 
 import com.google.common.base.Preconditions;
 
+import controllers.fap.AgenteController;
+
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
 import es.gobcan.eadmon.procedimientos.ws.dominio.CardinalidadEnum;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
@@ -30,11 +33,15 @@ import play.vfs.VirtualFile;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 
+import models.Agente;
+import models.Consulta;
 import models.Documento;
+import models.Documentacion;
 import models.ExpedienteAed;
 import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
+import models.Participacion;
 import models.SolicitudGenerica;
 import models.TipoCodigoExclusion;
 import models.TipoDocumento;
@@ -142,7 +149,35 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         List<String> names = Arrays.asList(folder.list());
         return names;
     }
+    
+    /**
+     * Obtiene las uris de los documentos de un determinado tipo y usuario (y que estén clasificados)
+     * @return lista de uris
+     */
+    @Override
+    public List<Documento> getDocumentosPorTipo(String tipoDocumento) {
+    	List<Documento> rows = new ArrayList<Documento>();
 
+    	if (tipoDocumento != null && !tipoDocumento.isEmpty()) {
+	    	Agente agente = AgenteController.getAgente();
+	     	// Documentos (de tipo tipoDocumento) de las solicitudes donde ha participado el agente actualmente logueado 
+	     	rows = Documento.find("select documento2 " +
+	     			"from Documentacion documentacion2 join documentacion2.documentos documento2 " +
+    				"where (documento2.tipo = '" + tipoDocumento + "') and  (documento2.clasificado = 0) and (documentacion2.id in " +
+	     				// Seleccionamos los id de Documentación pertenecientes a las solicitudes en los que el agente actualmente logueado ha participado
+	     				"(select documentacion.id from Documentacion documentacion, Solicitud solicitud " +
+	     				"where (solicitud.documentacion.id = documentacion.id) and " +
+	     				"(solicitud.id in " +
+	     						// Seleccionamos los id de las solicitudes en los que el agente actualmente logueado ha participado
+		     					"(select solicitud2.id from Participacion participacion, Solicitud solicitud2 " +
+		    					" where (participacion.agente.username = '" + agente.username + "') and " +
+		    						"(solicitud2.id = participacion.solicitud.id) )" +
+	     				")" +
+    				"))").fetch();
+    	}
+    	return rows;
+    }
+    
     /**
      * Obtiene el contenido de un documento
      * El documento puede estar clasificado o no clasificado
@@ -169,7 +204,28 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         }
     }
     
+    /**
+     * Obtiene el contenido de un documento a partir de su uri
+     * El documento puede estar clasificado o no clasificado
+     * 
+     * @return Contenido y nombre del documento
+     */
+    @Override
+    public BinaryResponse getDocumentoByUri(String uriDocumento) throws GestorDocumentalServiceException {
+//        File file = getFile(documento);
+//        BinaryResponse response = BinaryResponse.fromFile(file);
+//        
+//        //Elimina el uuid
+//        String fileName = file.getName();
+//        response.nombre = fileName.substring(4, fileName.length());
+//        
+//        return response;
+    	return new BinaryResponse();
+    }
+    
+    
     private File getFile(Documento documento) throws GestorDocumentalServiceException{
+   	 	
         File folder = getDocumentoFolder(documento);
         
         File file = new File(folder, documento.uri);

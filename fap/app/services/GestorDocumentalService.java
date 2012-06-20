@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import es.gobcan.eadmon.aed.ws.AedExcepcion;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 
@@ -28,6 +30,8 @@ public interface GestorDocumentalService {
     public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
 
     public List<String> getDocumentosEnExpediente(String expediente) throws GestorDocumentalServiceException;
+    
+    public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws AedExcepcion;
 
     public BinaryResponse getDocumento(Documento documento) throws GestorDocumentalServiceException;
 
@@ -67,5 +71,7 @@ public interface GestorDocumentalService {
 	String modificarInteresados(ExpedienteAed expedienteAed,
 			SolicitudGenerica solicitud)
 			throws GestorDocumentalServiceException;
+
+	BinaryResponse getDocumentoByUri(String uriDocumento) throws GestorDocumentalServiceException;
     
 }

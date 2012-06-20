@@ -29,6 +29,8 @@ public class GSubirArchivo extends GSaveCampoElement{
 			params.putStr("tramite", subirArchivo.tramite);
 		if (subirArchivo.aportadoPor != null && subirArchivo.aportadoPor.trim() != "")
 			params.putStr("aportadoPor", subirArchivo.aportadoPor)
+		if(subirArchivo.listarDocumentosSubidos != null) 
+			params.put("listarDocumentosSubidos", subirArchivo.listarDocumentosSubidos)
 		return "#{fap.documento ${params.lista()} /}	";
 	}
 	

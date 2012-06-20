@@ -398,6 +398,7 @@ SubirArchivo:
 			('mimes' '=' mimes+=STRING ("," mimes+=STRING)*) |
 			('extensiones' '=' extensiones+=STRING ("," extensiones+=STRING)*)
 		)?
+		& (listarDocumentosSubidos?='listarDocumentosSubidos')?
 	)
 ;
 

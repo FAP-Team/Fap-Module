@@ -1,0 +1,113 @@
+h1. Tramitación
+
+Los trámites son procesos en los que el solicitante aporta documentación al expediente.
+
+Los trámites estándares son:
+* *Solicitud*
+* *Aceptación* (incluye el trámite renuncia)
+* *Alegaciones*
+* *Reformulación*
+
+h2. Utilizando los trámites
+
+En el paquete _tramitación_ del módulo de FAP se encuentran los distintos trámites. Si se quiere utilizar desde una aplicación uno de estos trámites simplemente ha de hacerse referencia a la página principal del trámite en cuestión.
+
+Por ejemplo, para acceder desde un menú a la página correspondiente del trámite de aceptación (que incluye al de renuncia) hacer:
+
+bc. Enlace "Aceptación/Renuncia" pagina=PaginaAceptacionRenuncia permiso=resolucionAceptarRenunciar
+
+El trámite Solicitud es algo especial. Para poder utilizarlo hay que seguir una serie de pasos para poder utilizarlo.
+
+1. Crear en el DSL las páginas necesarias, por ejemplo:
+
+bc. Pagina Presentar noForm titulo="Presentación de la solicitud" {
+		Grupo titulo="Presentación de la solicitud" {
+			Grupo permiso=editarSolicitud borde = false { 
+				Grupo permiso=prepararSolicitud borde = false {
+            			Grupo gpreparar titulo="Paso 1. Preparar la solicitud"  {
+                			Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }
+                  			Form prepararFirmar {
+                        			Boton botonPrepararFirmar titulo="Preparar para firmar"
+                  			}
+            			}
+            		}
+				Grupo titulo="Paso 2. Obtener borrador de la Solicitud" permiso=enBorradorSolicitud {
+					Wiki {"Puede obtener un borrador de la solicitud, no válido para su presentación y comprobar que la información introducida es correcta."}
+ 					Enlace campo=Solicitud.registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+					Form deshacer redirigir=Solicitante permiso=modificarSolicitud {
+						Wiki {"Para realizar cambios o aportar documentos, antes de su presentación definitiva, pulse el siguiente botón."}
+						Boton botonModificar titulo="Modificar solicitud"
+						Wiki {"<b><u>NOTA: </u></b>Recuerde que también es posible aportar los documentos después de presentar su solicitud."}
+					}
+					Grupo mensajeIntermedio permiso=mensajeIntermedioSolicitud borde=false {
+						Wiki estilo ="box-warn box" {
+								"Se produjo un error en la presentación de la solicitud. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+						}
+					}
+				}
+			}
+			Grupo grpPresentar titulo="Paso 3. Registrar Solicitud" permiso=enBorradorSolicitud {
+				Form frmPresentar redirigir=SolicitudPresentar {
+					Wiki {"Debe registrar la solicitud para que se considere presentada."}
+					Boton botonPresentar titulo="Presentar solicitud"
+				}
+			}
+			Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaSolicitud {
+				Wiki {"Puede obtener un recibo de la presentación de la solicitud pulsando el enlace 'Obtener recibo'." }
+				Enlace campo=Solicitud.registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton"
+			}
+		}
+	}
+	Pagina SolicitudPresentar titulo="Presentar Solicitud" noForm {
+		Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiCampo Solicitud.solicitante.tipo = "fisica" {
+			Form formFirmaPF permiso=firmarRegistrarSolicitud {
+			    	Wiki {"La solicitud será firmada y registrada." }
+				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=Solicitud.registro.oficial calcularFirmantes=Solicitud.solicitante listaFirmantes=Solicitud.registro.firmantes.todos
+			}
+			Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+		}
+	}
+
+2. Una vez creadas se podrán sobreescribir los métodos del controlador para presentar documentación, firmar y registrar.
+
+Para utilizar el Trámite en el controlador simplemente hay que hacer:
+
+bc. Solicitud dbSolicitud = getSolicitud(idSolicitud);
+TramiteAplicacion tramite = new TramiteAplicacion(solicitud);
+
+Hay que tener en cuenta que una vez se firme y registre hay que cambiar el estado de la solicitud y enviar el e-mail correpondiente al trámite que se haya realizado.
+
+bc. tramite.firmar(firma);
+if (!Messages.hasErrors()) {
+	try {
+		tramite.registrar();
+		dbSolicitud.estado = "iniciada";
+		try {
+			Mails.enviar(tramite.getMail(), dbSolicitud);
+		} catch (Exception e) {
+			play.Logger.error("No se pudo enviar mail de la solicitud " + dbSolicitud.id);
+		}
+		dbSolicitud.save();
+	} catch (RegistroServiceException e) {
+		e.printStackTrace();
+	}
+}
+
+3. Ahora ya se puede poner el enlace en el menú para poder realizar el trámite solicitud:
+
+bc. Enlace "Presentación" pagina=Presentar
+
+h2. ¿Qué debo sobreescribir para personalizar un Trámite?
+
+En el caso de que se quiera personalizar algunos métodos concretos de un trámite, hay que tener en cuenta el nuevo trámite tiene que extender de TramiteBase.
+
+bc.  TramiteNuevo -->  TramiteBase
+
+Simplemente hay que crear una clase en _tramitación_:
+
+bc. public class TramiteNuevo extends TramiteBase {
+...
+}
+
+Una vez se escriba esto, podrás sobreescribir los métodos para crear un nuevo trámite.
+

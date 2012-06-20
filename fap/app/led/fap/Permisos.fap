@@ -611,3 +611,112 @@ Permiso mostrarResultadoBusqueda{
 	return
 		all
 }
+
+/**
+ * Permisos del trámite renuncia.
+ */
+
+Permiso editarRenunciar {
+vars
+	SolicitudGenerica solicitud
+when 
+	((agente.rolActivo = "usuario") and (_accion = leer))
+	or solicitud.id = solicitud.id // Eliminar esta línea
+return
+	editable
+}
+
+Permiso prepararRenunciar {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.renuncia.registro.fasesRegistro.borrador = "false")
+return
+	editable
+}
+
+Permiso generarBorradorRenunciar {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	solicitud.renuncia.motivoRenuncia != null
+return
+	editable
+}
+
+Permiso enBorradorRenunciar {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.renuncia.registro.fasesRegistro.borrador="true")
+return
+	editable
+}
+
+Permiso modificarRenunciar {
+vars
+ 	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.renuncia.registro.fasesRegistro.registro="false")
+return
+	editable
+}
+
+Permiso mensajeIntermedioRenunciar {
+vars
+	SolicitudGenerica solicitud
+when
+	(solicitud.renuncia.registro.fasesRegistro.firmada = "true" or
+	solicitud.renuncia.registro.fasesRegistro.registro = "true" or
+	solicitud.renuncia.registro.fasesRegistro.expedienteAed = "true") and
+	solicitud.renuncia.registro.fasesRegistro.clasificarAed = "false"
+return
+	all
+}
+
+Permiso clasificadaRenunciar {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.renuncia.registro.fasesRegistro.clasificarAed="true")
+return
+	editable
+}
+
+Permiso firmarRegistrarRenunciar {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.renuncia.registro.fasesRegistro.clasificarAed="false")
+return
+	editable
+}
+
+Permiso firmarRenunciar {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.renuncia.registro.fasesRegistro.firmada="false")
+return
+	editable
+}
+
+Permiso registrarRenunciar {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.renuncia.registro.fasesRegistro.firmada = "true" and
+	solicitud.renuncia.registro.fasesRegistro.registro = "false" and
+	solicitud.renuncia.registro.fasesRegistro.clasificarAed = "false")
+return
+	editable
+}
+

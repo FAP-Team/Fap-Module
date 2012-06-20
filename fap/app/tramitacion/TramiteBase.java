@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityTransaction;
 
 import org.joda.time.DateTime;
 
@@ -22,6 +23,7 @@ import models.Registro;
 import models.SolicitudGenerica;
 
 import platino.DatosRegistro;
+import play.db.jpa.JPA;
 import play.libs.Crypto;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
@@ -248,14 +250,19 @@ public abstract class TramiteBase {
 	 */
 	public void registrar() throws RegistroServiceException {
 		validarReglasConMensajes();
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
 		//Registra la solicitud
 		if (!Messages.hasErrors()){
 			if (!registro.fasesRegistro.registro && registro.fasesRegistro.firmada) {
 				try {
+					tx.begin();
 					//Registra la solicitud
 					JustificanteRegistro justificante = registroService.registrarEntrada(this.solicitud.solicitante, registro.oficial, this.solicitud.expedientePlatino, null);
 					play.Logger.info("Se ha registrado la solicitud %s en platino", solicitud.id);
-					
+					tx.commit();
+					registro.refresh();
+					tx.begin();
 					//Almacena la información de registro
 					registro.informacionRegistro.setDataFromJustificante(justificante);
 					play.Logger.info("Almacenada la información del registro en la base de datos");
@@ -293,7 +300,7 @@ public abstract class TramiteBase {
 						}
 					}
 					play.Logger.info("Fechas de registro establecidas a " + this.getRegistro().informacionRegistro.fechaRegistro);
-
+					tx.commit();
 				} catch (Exception e) {
 					Messages.error("Error al registrar de entrada la solicitud");
 					throw new RegistroServiceException("Error al obtener el justificante del registro de entrada");
@@ -301,9 +308,10 @@ public abstract class TramiteBase {
 			} else {
 				play.Logger.debug("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
 			}
-
+			registro.refresh();
 			//Crea el expediente en el AED
 			if(!solicitud.registro.fasesRegistro.expedienteAed){
+				tx.begin();
 				try {
 					gestorDocumentalService.crearExpediente(solicitud);
 				} catch (GestorDocumentalServiceException e) {
@@ -312,21 +320,29 @@ public abstract class TramiteBase {
 				}
 				solicitud.registro.fasesRegistro.expedienteAed = true;
 				solicitud.registro.fasesRegistro.save();
+				tx.commit();
 			}else{
 				play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
 			}
-
+			solicitud.refresh();
 			//Cambiamos el estado de la solicitud
 			if (!solicitud.estado.equals("iniciada")) {
+				tx.begin();
 				solicitud.estado = "iniciada";
 				solicitud.save();
 				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-				Mails.enviar("solicitudIniciada", solicitud);
+				try {
+					Mails.enviar("solicitudIniciada", solicitud);
+				} catch (Exception e) {
+					play.Logger.error("No se pudo enviar mail con solicitudIniciada: ", solicitud.id);
+				}
+				tx.commit();
 			}
-			
+			registro.refresh();
 			//Clasifica los documentos en el AED
 			if (!registro.fasesRegistro.clasificarAed && registro.fasesRegistro.registro) {
 				//Clasifica los documentos sin registro
+				tx.begin();
 				List<Documento> documentos = new ArrayList<Documento>();
 				documentos.add(registro.justificante);
 				try {
@@ -351,19 +367,27 @@ public abstract class TramiteBase {
 						throw new RegistroServiceException("Error al clasificar documentos con registros");
 					}
 				}
+				tx.commit();
 			} else {
 				play.Logger.debug("Ya están clasificados todos los documentos del trámite de '%s' de la solicitud %s", this.getTipoTramite(), this.solicitud.id);
 			}
-	
+			registro.refresh();
 			//Añade los documentos a la lista de documentos de la solicitud
 			if (registro.fasesRegistro.clasificarAed){
+				tx.begin();
 				this.moverRegistradas();
-				this.solicitud.documentacion.documentos.addAll(this.getDocumentos());
+				for (Documento doc: this.getDocumentos()) {
+					if (!this.solicitud.documentacion.documentos.contains(doc))
+						this.solicitud.documentacion.documentos.add(doc);
+				}
 				this.prepararNuevo();
 				solicitud.save();
 				play.Logger.debug("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
+				tx.commit();
 			}
+			
 		}
+		tx.begin();
 	}
 	
 	/**

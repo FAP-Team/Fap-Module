@@ -339,6 +339,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 	}
 	
+
 	Pagina DocumentacionFAP campo=SolicitudGenerica noForm {
 		Tabla documentos titulo="Documentos Aportados" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP {
 			Columna campo=Documento.id
@@ -355,4 +356,156 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Accion editar redirigir=DocumentacionFAP	
 		EditarArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
+
+	// ******************************************************************************************
+	// RENUNCIAR
+	// *******************************************************************************************
+	
+	Pagina PaginaRenuncia titulo="Renuncia" noForm permiso=accederSiSolicituNoBorrador {
+		
+		Grupo titulo="Renuncia" {
+			Grupo permiso=editarRenunciar borde=false {
+				Grupo permiso=prepararRenunciar borde=false {
+					Form formRenunciar autoEnviar  { 
+						Grupo borde=false {
+				    		AreaTexto titulo="Motivo de renuncia" campo=SolicitudGenerica.renuncia.motivoRenuncia filas=10 requerido
+			    			Boton btoGuardar titulo="Guardar trámite"
+			    		}
+					}
+					
+					Grupo titulo="Renuncia" borde = false {
+						Tabla documentos titulo="Documentación Renuncia" 
+				    	campo=SolicitudGenerica.renuncia.documentos
+						popupBorrar=PopUpDocRenuncia
+						popupEditar=PopUpDocRenuncia 
+						popupLeer=PopUpDocRenuncia
+						paginaCrear=AportarDocumentacionRenuncia
+						{
+							Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+							Columna campo=Documento.descripcion titulo="Tipo" expandir
+							Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+						}
+					}
+					
+					Grupo grupoPreparar titulo="Paso 1. Preparar la solicitud de renuncia" /*permiso=presentacionPrepararParaFirmar*/ {
+                		Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }                  
+                  		Form prepararFirmar permiso=generarBorradorRenunciar {
+                           Boton botonPrepararFirmar titulo="Preparar para firmar"
+                 		}
+            		}
+				}
+				
+				Grupo titulo="Paso 2. Obtener borrador de la solicitud de Renuncia" permiso=enBorradorRenunciar {
+
+                	Wiki {"Puede obtener un borrador de la solicitud de renuncia, no válido para su presentación y comprobar que la información introducida es correcta."}
+	                Enlace campo=SolicitudGenerica.renuncia.registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+
+    	            Form deshacer redirigir=PaginaRenuncia permiso=modificarRenunciar {
+        	        	Wiki {"Puede realizar cambios antes de su presentación definitiva."}
+            	    	Boton botonModificar titulo="Modificar renuncia"
+                	}
+                  
+                  	Grupo mensajeIntermedio permiso=mensajeIntermedioRenunciar borde=false {
+                        Wiki estilo ="box-warn box" {
+                             "Se produjo un error en la presentación de la renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+                        }
+                  	}
+            	}
+			}
+            
+            Grupo grpPresentar titulo="Paso 3. Registrar Renuncia" permiso=enBorradorRenunciar {  
+				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado	
+				Form frmPresentar redirigir=RenunciaPresentar {
+		 			Wiki {"Debe registrar la renuncia para que se considere presentada."}
+					Boton botonPresentar titulo="Presentar Renuncia" pagina=RenunciaPresentar
+				}
+			}
+		
+			Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaRenunciar {
+				Wiki {"Puede obtener un recibo de la presentación de la renuncia pulsando el enlace 'Obtener recibo'." }
+				Enlace campo=SolicitudGenerica.renuncia.registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton" 	
+			}
+		}
+		
+	}
+	
+	/*
+	 * AportarDocumentacionRenuncia
+	 */
+	Pagina AportarDocumentacionRenuncia titulo="Añadir documentación" campo=SolicitudGenerica.renuncia.documentos {
+		Accion crear redirigir=PaginaRenuncia
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Renuncia" aportadoPor="CIUDADANO"	
+    }
+    
+    Popup PopUpDocRenuncia titulo="Documentación" campo=SolicitudGenerica.renuncia.documentos {
+		EditarArchivo documentoPresentado campo=Documento requerido
+	}
+	
+	Pagina RenunciaPresentar titulo="Presentar Renuncia" noForm {
+		Grupo mensajeIntermedio permiso=mensajeIntermedioRenunciar borde=false {
+			Wiki estilo ="box-warn box" {
+				"Se produjo un error en la presentación de la renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+			}
+		}
+		
+		//Firma persona física	
+		Grupo titulo="Paso 1. Firmar y Registrar la Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo="fisica" {			
+			Form formFirma permiso=firmarRegistrarRenunciar redirigir=PaginaRenuncia {
+		    	Wiki {"La renuncia será firmada y registrada."}
+				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=SolicitudGenerica.renuncia.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.renuncia.registro.firmantes.todos
+			}
+			
+			Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}			
+		}			
+						
+		//Firma Persona jurídica
+		Grupo titulo="Paso 1. Firmar y Registrar la Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" {
+			Wiki {"Debe indicar si se firmará la renuncia con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la renuncia debe firmarse por todos los representantes mancomunados"}
+			
+			Form tipoCertificadoFirma autoEnviar {
+				Combo certificadoFirma titulo="Certificado que se usará en la firma" campo=SolicitudGenerica.renuncia.registro.tipoFirma
+			}
+					
+			Grupo borde = false mostrarSiCampo SolicitudGenerica.renuncia.registro.tipoFirma="representantes" {
+				Grupo titulo="Paso 1.1. Firmar la Renuncia"  {						
+					Wiki {"La renuncia será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la renuncia."}
+					
+					Form formFirmaRepresentante permiso=firmarRenunciar {
+						FirmaSimple firmarRepresentante titulo="Firmar" documento=SolicitudGenerica.renuncia.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.renuncia.registro.firmantes.todos
+					}
+					
+					Tabla tablaFirmantesHecho campo=SolicitudGenerica.renuncia.registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
+						Columna campo=Firmante.idvalor titulo="NIP"
+						Columna campo=Firmante.nombre titulo="Nombre" expandir
+						Columna campo=Firmante.fechaFirma titulo="Fecha de firma"
+					}
+				
+					Tabla tablaFirmantesEspera campo=SolicitudGenerica.renuncia.registro.firmantes.todos recargarPagina  titulo="Representantes que no han firmado" {
+						Columna campo=Firmante.idvalor titulo="NIP"
+						Columna campo=Firmante.nombre titulo="Nombre" expandir
+					}
+				}
+				
+				Grupo titulo="Paso 1.2. Registrar la Renuncia" permiso=registrarRenunciar {
+					Wiki {"Su renuncia ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
+					
+					Form formRegistrar redirigir=PaginaRenuncia {
+						Boton botonRegistrar titulo="Registrar" pagina=PaginaRenuncia
+					}
+					
+					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
+				}
+			}
+
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.renuncia.registro.tipoFirma="cif" {
+				Wiki {"La renuncia será firmada y registrada."}			
+				
+				Form formFirmaCif redirigir=PaginaRenuncia permiso=firmarRegistrarRenunciar {
+					FirmaSimple firmarRegistrarCif titulo="Firmar y Registrar" documento=SolicitudGenerica.renuncia.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.renuncia.registro.firmantes.todos
+				}
+			}
+		}
+		
+	}
+
 }

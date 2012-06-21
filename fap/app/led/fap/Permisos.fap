@@ -234,7 +234,7 @@ Permiso editarSolicitud {
 		or (
 	 		agente.rolActivo = "usuario" and
 	 		solicitud?.estado = "borrador" and
-	 		solicitud.registro.fasesRegistro.borrador = "false"
+	 		solicitud?.registro?.fasesRegistro?.borrador = "false"
 		)
 	return [editar leer]
 	when

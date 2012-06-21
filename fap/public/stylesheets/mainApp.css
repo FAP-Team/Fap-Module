@@ -6,7 +6,7 @@ Ejemplo:
 .modal {
   top: 50%;
   left: 40%;
-  width: 880px;	/* Aumentamos el tamaño: por defecto es 560px */
+  width: 880px;	// Aumentamos el tamaño: por defecto es 560px
 }
 
 */

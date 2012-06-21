@@ -84,7 +84,12 @@ public class GGrupo extends GGroupElement{
 			}
 			if (grupo.siCheck) {
 				CampoUtils campo = CampoUtils.create(grupo.siCheck.campo);
-				out += "if ((${campo.firstLower()} != null) && (${campo.firstLower()} == ${grupo.siCheckValues})) {\n";
+				if(campo.getUltimoAtributo().type.simple.type != "boolean"){
+					out += "if ((${campo.firstLower()} != null) && (${campo.firstLower()} == ${grupo.siCheckValues})) {\n";
+				}
+				else{
+					out += "if (${campo.firstLower()} == ${grupo.siCheckValues}) {\n";
+				}
 			}
 			if (grupo.campo){
 				String not = "";

@@ -1,0 +1,12 @@
+/* Se sobreescribirá en la aplicación para utilizar sus propios CSS derivados
+   de los que use la aplicación.
+
+Ejemplo:    
+// Cómo modificar el tamaño y la posición de los popups
+.modal {
+  top: 50%;
+  left: 40%;
+  width: 880px;	/* Aumentamos el tamaño: por defecto es 560px */
+}
+
+*/

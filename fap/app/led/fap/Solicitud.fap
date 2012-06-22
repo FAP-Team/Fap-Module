@@ -84,6 +84,17 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				Boton botonModificarBorrador titulo="Modificar datos"
 			}
 			
+			Tabla documentos 
+		    	titulo="Documentos aportados que se van a registrar" 
+		    	campo=SolicitudGenerica.aportaciones.actual.documentos
+				popupLeer=PopUpDocProcesos
+				paginaCrear=DocumentosAportacion
+			{
+				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+				Columna campo=Documento.descripcion titulo="Descripción" expandir
+				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			}
+			
 			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
 				Wiki estilo ="box-warn box" {
 					"Se produjo un error en la presentación de la aportación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."

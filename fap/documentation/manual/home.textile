@@ -25,7 +25,9 @@ En la aplicación obtendrá una página llamada __Solicitante__ que se ocupe de 
 
 h2. Comenzando con FAP
 
-h3. Instalación del entorno
+Para utilizar FAP básicamente lo que debes tener instalado es "Play Framework 1.2.4":http://www.playframework.org/documentation/1.2.4/home. La versión 2.0 de Play actualmente no está soportada.
+
+h3. "Instalación del entorno":curso-instalacion
 
 h4. PLAY Framework
 

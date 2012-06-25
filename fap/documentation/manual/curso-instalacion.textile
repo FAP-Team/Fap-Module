@@ -1,15 +1,15 @@
 h1. Instalación del entorno
 
-h2. Instalación de Play
+h2. Play
 
 Para instalar Play sigue los pasos que se indican en "http://www.playframework.org/documentation/1.2.2/install":http://www.playframework.org/documentation/1.2.2/install
 
-h2. Instalación del FAP-SDK
+h2. FAP
 
-FAP-SDK es un módulo de Play. No hace falta ningún paso de configuración adicional para instalarlo.
+FAP es un módulo de Play, no hace falta ningún paso de configuración adicional para instalarlo.
 Al crear un nuevo proyecto, diremos que queremos utilizar el módulo y play se encargará de descargarlo y configurarlo automáticamente.
 
-h2. Configuración de Eclipse
+h3. Configurando Eclipse
 
 Playframework se integra con varios IDEs. Puedes consultar cómo integrarlos en "http://www.playframework.org/documentation/1.2.2/ide":http://www.playframework.org/documentation/1.2.2/ide
 

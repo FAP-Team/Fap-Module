@@ -57,8 +57,9 @@ public class CEconomico extends FapModel {
 	public CEconomico(CEconomico cEconomico) {
 		this.tipo = new TipoCEconomico(cEconomico.tipo);
 		this.valores = new ArrayList<ValoresCEconomico>();
+		int orden=0;
 		for (ValoresCEconomico valoresCEconomico : cEconomico.valores) {
-			this.valores.add(new ValoresCEconomico(valoresCEconomico));
+			this.valores.add(new ValoresCEconomico(valoresCEconomico, orden++));
 		}
 		this.comentariosAdministracion = cEconomico.comentariosAdministracion;
 		this.comentariosSolicitante = cEconomico.comentariosSolicitante;

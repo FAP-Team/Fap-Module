@@ -109,7 +109,7 @@ public class BaremacionService {
 	 * @param childs Lista de hijos
 	 * @return
 	 */
-	private static <T> void invokeEval(String jerarquia, T parent, List<T> childs){
+	public static <T> void invokeEval(String jerarquia, T parent, List<T> childs){
 		Class invokedClass = getEvaluadorClass();
         
         String methodName = "eval" + jerarquia.replaceAll("\\.", "_");
@@ -146,7 +146,7 @@ public class BaremacionService {
 	}
 	
 	
-	private static <T> List<T> getChilds(T parent, List<T> posibleChilds){
+	public static <T> List<T> getChilds(T parent, List<T> posibleChilds){
 		List<T> childs = new ArrayList<T>();
 		for(T child : posibleChilds){
 			if(isChild(parent, child)){
@@ -168,7 +168,7 @@ public class BaremacionService {
 	 * @param elementos
 	 * @return
 	 */
-	private static <T> List<List<T>> sortByProfundidad(List<T> elementos) {
+	public static <T> List<List<T>> sortByProfundidad(List<T> elementos) {
 		if (elementos.isEmpty())
 			return null;
 		

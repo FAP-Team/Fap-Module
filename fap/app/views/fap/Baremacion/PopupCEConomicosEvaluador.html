@@ -18,7 +18,7 @@
 </div>
 	#{list items:0..duracion, as:'anio'}
 		%{
-			def anioLabel = "Año "+(anio+1);
+			def anioLabel = "Año "+cEconomico.valores[anio].anio;
 			def paramName="cEconomico.valores[${anio}]";
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}

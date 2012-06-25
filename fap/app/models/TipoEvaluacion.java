@@ -49,6 +49,8 @@ public class TipoEvaluacion extends FapModel {
 
 	public Integer duracion;
 
+	public Integer inicio;
+
 	public TipoEvaluacion() {
 		init();
 	}

@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 public class ValoresCEconomico extends FapModel {
 	// Código de los atributos
 
+	public Integer anio;
+
 	public Double valorSolicitado;
 
 	public Double valorEstimado;
@@ -37,22 +39,24 @@ public class ValoresCEconomico extends FapModel {
 
 	// === MANUAL REGION START ===
 
-	public ValoresCEconomico() {
-		initValues();
+	public ValoresCEconomico(int anio) {
+		initValues(anio);
 	}
 
-	public ValoresCEconomico(ValoresCEconomico valoresCEconomico) {
+	public ValoresCEconomico(ValoresCEconomico valoresCEconomico, int anio) {
 		this.valorConcedido = valoresCEconomico.valorConcedido;
 		this.valorEstimado = valoresCEconomico.valorEstimado;
 		this.valorPropuesto = valoresCEconomico.valorPropuesto;
 		this.valorSolicitado = valoresCEconomico.valorSolicitado;
+		this.anio = anio;
 	}
 
-	public void initValues() {
+	public void initValues(int anioArg) {
 		valorSolicitado = 0.0;
 		valorEstimado = 0.0;
 		valorPropuesto = 0.0;
 		valorConcedido = 0.0;
+		anio = anioArg;
 	}
 	// === MANUAL REGION END ===
 

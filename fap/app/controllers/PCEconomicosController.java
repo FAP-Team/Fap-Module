@@ -5,6 +5,7 @@ import play.mvc.*;
 import play.db.jpa.Model;
 import controllers.fap.*;
 import controllers.gen.PCEconomicosControllerGen;
+import utils.BaremacionUtils;
 import validation.*;
 import messages.Messages;
 import messages.Messages.MessageType;
@@ -54,6 +55,7 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 		//Inicializa los conceptos economicos con los Tipos de Conceptos Economicos
 		//que están definidos en la base de datos
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+		//COMPROBAR TE NULL
 		if(solicitud != null && solicitud.ceconomicos.isEmpty()){
 			List<TipoCEconomico> tipos = TipoCEconomico.findAll();
 			int c=0;
@@ -61,8 +63,8 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 				CEconomico ceconomico = new CEconomico();
 				ceconomico.tipo = tipo;
 				for (int i = 0; i < tipoEvaluacion.duracion; i++){
-					ValoresCEconomico vCEconomico = new ValoresCEconomico();
-					vCEconomico.initValues();
+					ValoresCEconomico vCEconomico = new ValoresCEconomico(i);
+					vCEconomico.initValues(i);
 					ceconomico.valores.add(vCEconomico);
 				}
 				solicitud.ceconomicos.add(ceconomico);
@@ -118,12 +120,12 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 	public static void editar(Long idSolicitud) {
 		checkAuthenticity();
 		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
+
 		if (!permiso("editar")) {
 			Messages.error("No tiene suficientes privilegios para acceder a esta solicitud");
 		}
 		if (!Messages.hasErrors()) {
-			// CALCULAR TOTALES
-
+			BaremacionUtils.calcularTotales(solicitud);
 			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada con éxito");
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada sin éxito (Problemas de Validación)");

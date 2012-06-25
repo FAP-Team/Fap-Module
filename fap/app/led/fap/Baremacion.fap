@@ -67,6 +67,7 @@ Entidad CEconomico {
 }
 
 Entidad ValoresCEconomico {
+	Integer anio
 	Double valorSolicitado
 	Double valorEstimado
 	Double valorPropuesto
@@ -106,6 +107,8 @@ Entidad TipoEvaluacion {
     OneToMany TipoDatoAdicional datosAdicionales
     
     Integer duracion
+    
+    Integer inicio
 }
 
 Entidad Evaluacion {

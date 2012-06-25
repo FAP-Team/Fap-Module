@@ -88,8 +88,8 @@ public class Evaluacion extends FapModel {
 			CEconomico cEconomico = new CEconomico();
 			cEconomico.tipo = tCEconomico;
 			for (int i = 0; i < tipo.duracion; i++) {
-				ValoresCEconomico vCEconomico = new ValoresCEconomico();
-				vCEconomico.initValues();
+				ValoresCEconomico vCEconomico = new ValoresCEconomico(tipo.inicio+i);
+				vCEconomico.initValues(tipo.inicio+i);
 				cEconomico.valores.add(vCEconomico);
 			}
 			this.ceconomicos.add(cEconomico);

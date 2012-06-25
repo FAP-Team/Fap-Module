@@ -84,6 +84,7 @@ POST /Solicitud/aportacionrecibos/editar AportacionRecibosController.editar
 GET /Solicitud/aportacionrecibos/recibosAportados AportacionRecibosController.tablarecibosAportados
 GET /Solicitud/aportacionpresentar AportacionPresentarController.index
 POST /Solicitud/aportacionpresentar/modificarBorrador AportacionPresentarController.modificarBorrador
+GET /Solicitud/aportacionpresentar/documentos AportacionPresentarController.tabladocumentos
 POST /Solicitud/aportacionpresentar/presentar AportacionPresentarController.presentar
 GET /Solicitud/aportacionpresentar/firmarRepresentanteFirmantes AportacionPresentarController.tablafirmarRepresentanteFirmantes
 POST /Solicitud/aportacionpresentar/presentarSinRegistrar AportacionPresentarController.presentarSinRegistrar
@@ -110,6 +111,11 @@ GET /Solicitud/paginadocumentoverificacioneditar/requerimientosDocumento PaginaD
 GET /Solicitud/exclusion ExclusionController.index
 GET /Solicitud/exclusion/exclusion ExclusionController.tablaexclusion
 POST /Solicitud/exclusion/finalizarExclusion ExclusionController.finalizarExclusion
+GET /Solicitud/documentacionfap DocumentacionFAPController.index
+GET /Solicitud/documentacionfap/documentos DocumentacionFAPController.tabladocumentos
+GET /Solicitud/documentosfap DocumentosFAPController.index
+POST /Solicitud/documentosfap/editar DocumentosFAPController.editar
+POST /Solicitud/documentosfap/crear DocumentosFAPController.crear
 GET /Administracion/mensajelogin MensajeLoginController.index
 POST /Administracion/mensajelogin/editar MensajeLoginController.editar
 GET /Administracion/wikiaportacion WikiAportacionController.index
@@ -159,6 +165,8 @@ GET /Solicitud/popupexclusion popups.PopUpExclusionController.index
 POST /Solicitud/popupexclusion/editar popups.PopUpExclusionController.editar
 POST /Solicitud/popupexclusion/borrar popups.PopUpExclusionController.borrar
 POST /Solicitud/popupexclusion/crear popups.PopUpExclusionController.crear
+GET /Solicitud/documentoseditarfap popups.DocumentosEditarFAPController.index
+POST /Solicitud/documentoseditarfap/editar popups.DocumentosEditarFAPController.editar
 GET /Administracion/popupusuario popups.PopupUsuarioController.index
 POST /Administracion/popupusuario/editar popups.PopupUsuarioController.editar
 POST /Administracion/popupusuario/borrar popups.PopupUsuarioController.borrar

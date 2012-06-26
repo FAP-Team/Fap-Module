@@ -106,7 +106,11 @@ public class VerificacionUtils {
 					vDoc.uriTipoDocumento = tipoDoc.getUri();
 					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
 					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
-					vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
+					if (ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()).equals(ObligatoriedadDocumentosFap.eliminarVersionUri(FapProperties.get("fap.aed.tiposdocumentos.otros")))) {
+						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+					} else {
+						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
+					}
 					vDoc.save();
 					list.add(vDoc);
 				} 

@@ -8711,3 +8711,8 @@ Lista tipoMensaje crearEnumerado{
 	tok: "Ok"
 	tinfo: "Info"
 }
+
+Lista seleccion crearEnumerado{
+	acepta		:"Acepta"
+	renuncia	:"Renuncia"
+}

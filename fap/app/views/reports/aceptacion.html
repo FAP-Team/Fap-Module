@@ -1,0 +1,74 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+h2 {
+	margin-top: 30px;
+}
+
+.myarrow {
+   line-height: 0%; width: 0px;
+   border-top: 4px solid  transparent;
+   border-bottom: 4px solid  transparent;
+   border-left: 6.9px solid black;
+   margin-top: 30px;
+   margin-left: 3em;
+   text-indent: 1em;
+}
+
+ul {
+   list-style-type:circle
+   margin-left: 4em;
+   text-indent: 4em;
+}
+
+</style>
+
+%{
+	def ficheroAppCss = new File("public/stylesheets/documentoPDF.css");
+%}
+
+#{if ficheroAppCss.exists()}
+	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/documentoPDF.css'}">
+#{/if}
+
+</head>
+<body>
+
+<h3 style="text-align: center;"></h3>
+<!-- TITULO -->
+%{
+def cabecera = 'AYUDAS A LA FORMACIÓN DEL PERSONAL INVESTIGADOR PARA LA REALIZACIÓN DE TESIS DOCTORALES 2012';
+def titulo = 'COMUNICACIÓN DE ACEPTACIÓN DE LA SOLICITUD';
+}%
+#{tagTitulo cab:cabecera, tit:titulo
+/}
+
+<!-- SOLICITANTE -->
+%{
+def ttlSolte='SOLICITANTE';
+def solte = solicitud.solicitante;
+def	datosSolte = solicitud.datosSolicitante;
+}%
+#{tagSolicitante ttl:ttlSolte, slt:solte, dtslt:datosSolte
+/}
+
+<br/><br/>
+
+<!-- SOLICITA -->
+%{	def ttlSolicita='SOLICITA'
+	def solicita='Sea admitido el presente escrito, y se resuelva favorablemente mi aceptación presentada en el presente procedimiento.';
+}%
+#{tagSolicita ttl:ttlSolicita, slta:solicita /}
+</br></br>
+
+</body>
+</html>

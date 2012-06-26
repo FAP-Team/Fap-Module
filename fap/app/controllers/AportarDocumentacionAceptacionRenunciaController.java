@@ -1,0 +1,7 @@
+package controllers;
+
+import controllers.gen.AportarDocumentacionAceptacionRenunciaControllerGen;
+
+public class AportarDocumentacionAceptacionRenunciaController extends AportarDocumentacionAceptacionRenunciaControllerGen {
+
+}

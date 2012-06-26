@@ -151,10 +151,12 @@ public abstract class TramiteBase {
             	borrador = new Report(this.getBodyReport()).header(this.getHeaderReport()).footer(this.getFooterReport()).renderTmpFile(solicitud);
                 registro.borrador = new Documento();
                 registro.borrador.tipo = getTipoRegistro();
+                registro.save();
             } catch (Exception ex2) {
                 Messages.error("Error generando el documento borrador");
             }
         }
+
         return borrador;
     }
     
@@ -166,8 +168,9 @@ public abstract class TramiteBase {
             	oficial = new Report(this.getBodyReport()).header(this.getHeaderReport()).registroSize().renderTmpFile(solicitud);
                 registro.oficial = new Documento();
                 registro.oficial.tipo = getTipoRegistro();
+                registro.save();
             } catch (Exception ex2) {
-                Messages.error("Error generando el documento borrador");
+                Messages.error("Error generando el documento oficial");
             }
         }
         return oficial;
@@ -277,7 +280,7 @@ public abstract class TramiteBase {
 					play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el AED", this.getTipoTramite());
 					
 					registro.fasesRegistro.registro = true;
-					this.solicitud.registro.fasesRegistro.registro=true;
+					getRegistro().fasesRegistro.registro=true;
 					
 					registro.fasesRegistro.save();
 					try {
@@ -310,7 +313,7 @@ public abstract class TramiteBase {
 			}
 			registro.refresh();
 			//Crea el expediente en el AED
-			if(!solicitud.registro.fasesRegistro.expedienteAed){
+			if(!getRegistro().fasesRegistro.expedienteAed){
 				tx.begin();
 				try {
 					gestorDocumentalService.crearExpediente(solicitud);
@@ -318,27 +321,16 @@ public abstract class TramiteBase {
 					Messages.error("Error al crear el expediente");
 					throw new RegistroServiceException("Error al crear el expediente");
 				}
-				solicitud.registro.fasesRegistro.expedienteAed = true;
-				solicitud.registro.fasesRegistro.save();
+				getRegistro().fasesRegistro.expedienteAed = true;
+				getRegistro().fasesRegistro.save();
 				tx.commit();
 			}else{
 				play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
 			}
-			solicitud.refresh();
-			//Cambiamos el estado de la solicitud
-			if (!solicitud.estado.equals("iniciada")) {
-				tx.begin();
-				solicitud.estado = "iniciada";
-				solicitud.save();
-				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-				try {
-					Mails.enviar("solicitudIniciada", solicitud);
-				} catch (Exception e) {
-					play.Logger.error("No se pudo enviar mail con solicitudIniciada: ", solicitud.id);
-				}
-				tx.commit();
-			}
 			registro.refresh();
+			
+			//Ahora el estado de la solicitud se cambia después de registrar.
+			
 			//Clasifica los documentos en el AED
 			if (!registro.fasesRegistro.clasificarAed && registro.fasesRegistro.registro) {
 				//Clasifica los documentos sin registro

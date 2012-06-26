@@ -39,7 +39,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Exclusion exclusion
 	//Criterios economicos que rellena el solicitante
 	ManyToMany CEconomico ceconomicos	
-	Renuncia renuncia	
+	AceptarRenunciar aceptarRenunciar
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -497,8 +497,9 @@ Entidad MensajeAportacion noAuditable extends Singleton {
 	String contenido
 	Boolean habilitar
 }
-Entidad Renuncia {
-	//Boolean renunciaSolicitud
+
+Entidad AceptarRenunciar {
+	Lista seleccion seleccion
 	LongText motivoRenuncia
 	Documento borrador
 	OneToMany Documento documentos

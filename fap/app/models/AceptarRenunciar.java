@@ -19,8 +19,11 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Renuncia extends FapModel {
+public class AceptarRenunciar extends FapModel {
 	// Código de los atributos
+
+	@ValueFromTable("seleccion")
+	public String seleccion;
 
 	@Column(columnDefinition = "LONGTEXT")
 	public String motivoRenuncia;
@@ -29,7 +32,7 @@ public class Renuncia extends FapModel {
 	public Documento borrador;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "renuncia_documentos")
+	@JoinTable(name = "aceptarrenunciar_documentos")
 	public List<Documento> documentos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -38,7 +41,7 @@ public class Renuncia extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
-	public Renuncia() {
+	public AceptarRenunciar() {
 		init();
 	}
 

@@ -75,6 +75,9 @@ public class SolicitudGenerica extends FapModel {
 	@JoinTable(name = "solicitudgenerica_ceconomicos")
 	public List<CEconomico> ceconomicos;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public AceptarRenunciar aceptarRenunciar;
+
 	public SolicitudGenerica() {
 		init();
 	}
@@ -136,6 +139,11 @@ public class SolicitudGenerica extends FapModel {
 
 		if (ceconomicos == null)
 			ceconomicos = new ArrayList<CEconomico>();
+
+		if (aceptarRenunciar == null)
+			aceptarRenunciar = new AceptarRenunciar();
+		else
+			aceptarRenunciar.init();
 
 		postInit();
 	}

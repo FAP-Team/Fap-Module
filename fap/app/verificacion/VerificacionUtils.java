@@ -227,6 +227,7 @@ public class VerificacionUtils {
 			documentosNuevos = (List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
 			documentosNuevosSinVerificacionActual = (List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
 		} catch (Throwable e) {
+			e.printStackTrace();
 			play.Logger.error("Error recuperando los documentos nuevos a verificar", e.getMessage());
 		}
 		for (Documento doc: documentosNuevos){

@@ -1,0 +1,45 @@
+<html>
+<head>
+<link rel="stylesheet" media="print" href="@{'/public/stylesheets/solicitudPDF.css'}">
+</head>
+<body>
+
+<h3 style="text-align: center;"></h3>
+<!-- TITULO -->
+%{
+def cabecera = 'AYUDA PARA LA REALIZACIÓN DE ESTANCIAS BREVES EN ESPAÑA Y EN EL EXTRANJERO - CONVOCATORIA 2012';
+def titulo = 'COMUNICACIÓN DE DESISTIMIENTO DE LA SOLICITUD';
+}%
+#{tagTitulo cab:cabecera, tit:titulo
+/}
+
+<!-- SOLICITANTE -->
+ %{
+ def ttlSolte='SOLICITANTE';
+ def solte = solicitud.solicitante;
+ def datosSolte = solicitud.datosSolicitante;
+ }% 
+ #{tagSolicitante ttl:ttlSolte, slt:solte, dtslt:datosSolte 
+ /} 
+
+<!-- EXPONE DESISTIMIENTO -->
+%{
+	def ttlExpone = 'EXPONE';
+	def expedienteManifiesta = solicitud.expedienteAed.idAed;
+	def fechaRegistro = solicitud.registro.informacionRegistro.fechaRegistro;
+	def motivo = solicitud.desistimiento.motivo;
+}%
+#{tagExponeDesistimiento ttl:ttlExpone, expd:expedienteManifiesta, fchReg: fechaRegistro, css: motivo
+/}
+
+<br/><br/> 
+
+<!-- SOLICITA -->
+%{	def ttlSolicita='SOLICITA'
+	def solicita='Sea admitido el presente escrito, y se resuelva favorablemente mi desistimiento con exclusión de la solicitud de subvención presentada en el presente procedimiento.';
+}%
+#{tagSolicita ttl:ttlSolicita, slta:solicita /}
+</br></br>
+
+</body>
+</html>

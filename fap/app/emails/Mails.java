@@ -15,7 +15,13 @@ public class Mails {
 		if(email != null){
 			email.send(argsMap);
 		}else{
+			try{
 			throw new IllegalArgumentException("No se encontró el ID del mail en la base de datos");
+			}
+			catch (Exception e) {
+				// TODO: handle exception
+				play.Logger.info("No se encontró el mail en la base de datos");
+			}
 		}
 	}
 	

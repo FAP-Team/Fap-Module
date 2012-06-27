@@ -37,6 +37,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Verificacion verificacionEnCurso
 	OneToMany Verificacion verificaciones
 	Exclusion exclusion
+	Desistimiento desistimiento
 	//Criterios economicos que rellena el solicitante
 	ManyToMany CEconomico ceconomicos	
 	AceptarRenunciar aceptarRenunciar
@@ -538,4 +539,9 @@ Entidad ExpedientesNoAceptados nonPersist {
 	String idAed
 	String estado
 	Moneda Cantidad
+}
+Entidad Desistimiento {
+	LongText motivo
+	Registro registro
+	OneToMany Documento documentos
 }

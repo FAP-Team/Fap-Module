@@ -71,6 +71,9 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Exclusion exclusion;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Desistimiento desistimiento;
+
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_ceconomicos")
 	public List<CEconomico> ceconomicos;
@@ -139,6 +142,11 @@ public class SolicitudGenerica extends FapModel {
 			exclusion = new Exclusion();
 		else
 			exclusion.init();
+
+		if (desistimiento == null)
+			desistimiento = new Desistimiento();
+		else
+			desistimiento.init();
 
 		if (ceconomicos == null)
 			ceconomicos = new ArrayList<CEconomico>();

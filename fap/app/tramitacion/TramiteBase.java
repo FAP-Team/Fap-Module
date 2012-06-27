@@ -115,9 +115,9 @@ public abstract class TramiteBase {
     public void eliminarBorrador(){
         if(!Messages.hasErrors()){
             // Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
-            if(registro.borrador != null){
+        	if ((registro.borrador != null) && (registro.borrador.uri != null)){
                 Documento borradorOld = registro.borrador;
-                registro.oficial = null;
+                registro.oficial = null; 
                 registro.save();
                 try{
                     gestorDocumentalService.deleteDocumento(borradorOld);
@@ -130,7 +130,7 @@ public abstract class TramiteBase {
 
     public void eliminarOficial() {
         if(!Messages.hasErrors()){
-            if(registro.oficial != null){
+            if((registro.oficial != null) && (registro.oficial.uri != null)){
                 Documento oficialOld = registro.oficial;
                 registro.oficial = null;
                 registro.save();
@@ -144,7 +144,8 @@ public abstract class TramiteBase {
     }
     
     public File generarBorrador(){
-        File borrador = null;
+    	File borrador = null;
+        borrador = new File (this.getBodyReport());
         if(!Messages.hasErrors()){
             try {
             	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
@@ -153,7 +154,7 @@ public abstract class TramiteBase {
                 registro.borrador.tipo = getTipoRegistro();
                 registro.save();
             } catch (Exception ex2) {
-                Messages.error("Error generando el documento borrador");
+                Messages.error("Error generando el documento borrador: "+ex2.getMessage());
             }
         }
 

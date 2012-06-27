@@ -98,6 +98,7 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
         SolicitudGenerica solicitud = stubSolicitud("TEST" + Codec.UUID());
         mockPersonaFisica(solicitud.solicitante);
         solicitud.solicitante.representado = true;
+        solicitud.solicitante.representante = null;
         gestorDocumentalService.crearExpediente(solicitud);        
     }
     

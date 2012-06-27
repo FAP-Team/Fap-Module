@@ -508,5 +508,175 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 		
 	}
+	
+	// ******************************************************************************************
+	// ALEGACIÓN
+	// *******************************************************************************************
+	
+	Pagina Alegaciones noForm titulo= "Alegaciones" {
+
+		Grupo titulo="Nueva Alegación" {
+			Grupo permiso=editarAlegacion borde=false {
+				Grupo permiso=prepararAlegacion borde=false {
+					Form formMotivo autoEnviar {
+						AreaTexto titulo ="Texto Alegación" campo = SolicitudGenerica.alegaciones.actual.motivoAlegacion requerido				
+						Boton btoGuardar titulo="Guardar trámite"
+					}
+
+					Tabla documentos titulo="Documentos asociados a la alegación" 
+			    	campo=SolicitudGenerica.alegaciones.actual.documentos
+					popupBorrar=PopUpDocAlegacionEnProceso
+					popupEditar=PopUpDocAlegacionEnProceso  
+					popupLeer=PopUpDocAlegacionEnProceso
+					paginaCrear=AportarDocumentacionAlegacion
+					{
+						Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+						Columna campo=Documento.descripcion titulo="Tipo" expandir
+						Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+					}
+			
+            		Grupo gpreparar titulo="Paso 1. Preparar la alegación" permiso=generarBorradorAlegacion {
+                		Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }                  
+                  		Form prepararFirmar {
+                        	Boton botonPrepararFirmar titulo="Preparar para firmar"
+                  		}
+            		}
+            	}
+            
+				Grupo titulo="Paso 2. Obtener borrador de la Alegación" permiso=enBorradorAlegacion {
+	                  Wiki {"Puede obtener un borrador de la alegación, no válido para su presentación y comprobar que la información introducida es correcta."}	
+	                  Enlace campo=SolicitudGenerica.alegaciones.actual.registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+            
+	                  Form deshacer redirigir=Alegaciones permiso=modificarAlegacion {
+                        	Wiki {"Puede realizar cambios antes de su presentación definitiva."}
+	                        Boton botonModificar titulo="Modificar alegación"
+	                  }
+                  
+	                  Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
+	                        Wiki estilo ="box-warn box" {
+	    	                    "Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+    	                    }
+	                  }
+            	}
+            }
+            
+            Grupo grpPresentar titulo="Paso 3. Registrar Alegación" permiso=enBorradorAlegacion {  
+				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado		
+				Form frmPresentar redirigir=AlegacionPresentar {
+		 			Wiki {"Debe registrar la alegación para que se considere presentada."}
+					Boton botonPresentar titulo="Presentar Alegación" pagina=AlegacionPresentar
+				}
+			}
+		}
+		
+		Grupo titulo="Paso 4. Descargar el recibo" {
+			Wiki {"Puede obtener un recibo de la presentación de la alegación pulsando el enlace 'Obtener recibo'." }		
+			Tabla alegacionesLista titulo="Alegaciones" 
+			campo=SolicitudGenerica.alegaciones.alegacionRegistradas
+			popupLeer=PopUpAlegacion
+			{
+				Columna campo=Alegacion.registro.informacionRegistro.fechaRegistro titulo="Fecha de registro" ancho="150" 
+				Columna campo=Alegacion.registro.informacionRegistro.numeroRegistro titulo="Número de registro" ancho="150" 
+				Columna funcion="<a href=\"${Alegacion.registro.justificante.urlDescarga}\" target=\"_blank\">Obtener recibo</a>" titulo="Obtener recibo" expandir
+			}		
+		}
+	}
+	
+	/*
+	 * AportarDocumentacionAlegacion
+	 */
+	Pagina AportarDocumentacionAlegacion titulo="Añadir documentación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarSolicitud {
+		Accion crear redirigir=Alegaciones
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"	
+    }
+	
+	Pagina AlegacionPresentar titulo="Presentar Alegación" noForm {
+		Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
+			Wiki estilo ="box-warn box" {
+				"Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+			}
+		}
+
+		//Firma persona física	
+		Grupo titulo="Paso 1. Firmar y Registrar la Alegación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" // permiso=presentacionFirmar 
+		{			
+			Form formFirmaPF redirigir=Alegaciones permiso=firmarRegistrarAlegacion {
+		    	Wiki {"La alegación será firmada y registrada." }
+				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=SolicitudGenerica.alegaciones.actual.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.alegaciones.actual.registro.firmantes.todos
+			}
+			
+			Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}			
+		}			
+						
+		//Firma Persona jurídica
+		Grupo titulo="Paso 1. Firmar y Registrar la Alegación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" // permiso=presentacionFirmar 
+		{
+
+			Wiki {"Debe indicar si se firmará la alegación con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la aceptación/renuncia debe firmarse por todos los representantes mancomunados"}
+			
+			Form tipoCertificadoFirma autoEnviar {
+				Combo certificadoFirma titulo="Certificado que se usará en la firma" campo=SolicitudGenerica.alegaciones.actual.registro.tipoFirma
+			}					
+							
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.alegaciones.actual.registro.tipoFirma = "representantes" {
+
+				// La firma y registro se hace en dos pasos
+
+				Grupo titulo="Paso 1.1. Firmar la Alegación"  {						
+					Wiki {"La alegación será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la alegación."}
+					Form formFirmaRepresentante permiso=firmarAlegacion {
+						FirmaSimple firmarRepresentante titulo="Firmar" documento=SolicitudGenerica.alegaciones.actual.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.alegaciones.actual.registro.firmantes.todos
+					}
+					Tabla tablaFirmantesHecho campo=SolicitudGenerica.alegaciones.actual.registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
+						Columna campo=Firmante.idvalor titulo="NIP"
+						Columna campo=Firmante.nombre titulo="Nombre" expandir
+						Columna campo=Firmante.fechaFirma titulo="Fecha de firma"
+					}
+				
+					Tabla tablaFirmantesEspera campo=SolicitudGenerica.alegaciones.actual.registro.firmantes.todos recargarPagina  titulo="Representantes que no han firmado" {
+						Columna campo=Firmante.idvalor titulo="NIP"
+						Columna campo=Firmante.nombre titulo="Nombre" expandir
+					}
+				}
+					
+				Grupo titulo="Paso 1.2. Registrar la Alegación" permiso=registrarAlegacion 
+				{
+					Wiki {"Su alegación ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
+			
+					Form frmRegistrar redirigir=Alegaciones {
+						Boton botonRegistrar titulo="Registrar"
+					}
+			
+					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
+				}	
+			}								
+
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.alegaciones.actual.registro.tipoFirma="cif"
+			{
+				Wiki {"La alegación será firmada y registrada. "}
+
+				//La firma y registro se realiza en la misma acción				
+				Form formFirmaCif redirigir=Alegaciones permiso=firmarRegistrarAlegacion {
+					FirmaSimple firmarRegistrarCif titulo="Firmar y Registrar" documento=SolicitudGenerica.alegaciones.actual.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.alegaciones.actual.registro.firmantes.todos
+				}
+				Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+			}			
+		}		
+	}
+	
+	Popup PopUpAlegacion titulo="Alegacion" campo=SolicitudGenerica.alegaciones.alegacionRegistradas {
+		//Se muestra el motivo de la alegación y la lista de documentos presentados con la alegación		
+	    AreaTexto campo=Alegacion.motivoAlegacion filas = 10  titulo="Motivo Alegación"
+	    Tabla documentos titulo="Documentos asociados a la alegación" campo=Alegacion.documentos
+		{
+			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+			Columna campo=Documento.descripcion titulo="Tipo" expandir
+			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+		}	
+	}
+	
+	Popup PopUpDocAlegacionEnProceso titulo="Documentación" campo=SolicitudGenerica.alegaciones.actual.documentos {
+		EditarArchivo documentoAlegacionEnProceso campo=Documento requerido
+	}
 
 }

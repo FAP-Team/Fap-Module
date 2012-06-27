@@ -8716,3 +8716,9 @@ Lista seleccion crearEnumerado{
 	acepta		:"Acepta"
 	renuncia	:"Renuncia"
 }
+
+Lista estadoAlegacion crearEnumerado {
+	iniciada	:"Iniciada"
+	enestudio	:"En estudio"
+	resuelta	:"Resuelta"
+}

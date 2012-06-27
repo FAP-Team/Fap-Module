@@ -1,0 +1,141 @@
+/*
+ * Permisos del trámite Alegación
+ */
+ 
+/*
+ * Permiso "editarAlegacion"
+ * 
+ * - Regla sobreescrita...
+ */
+ 
+Permiso editarAlegacion {
+vars
+	SolicitudGenerica solicitud
+when ((agente.rolActivo = "usuario")
+		and (_accion = leer))
+		or solicitud.id = solicitud.id // Eliminar esta línea
+return
+	editable
+}
+
+/*
+ * Permiso "prepararAlegacion"
+ */
+
+Permiso prepararAlegacion {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.alegaciones.actual.registro.fasesRegistro.borrador = "false") 
+return
+	editable
+}
+
+/*
+ * Permiso "generarBorradorAlegacion"
+ * 
+ * - Sólo permitimos generar el borrador si se ha indicado algún motivo
+ * 
+ */
+ 
+Permiso generarBorradorAlegacion {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	solicitud.alegaciones.actual.motivoAlegacion != null 
+return
+	editable
+}
+
+/*
+ * Permiso "penBorradorAlegacion"
+ */
+ 
+Permiso enBorradorAlegacion {
+vars
+	SolicitudGenerica solicitud
+when 
+	(_accion = leer) or
+	(solicitud.alegaciones.actual.registro.fasesRegistro.borrador="true")
+return
+	editable
+}
+
+/* 
+ * Permiso "modificarAlegacion"
+ */
+ 
+Permiso modificarAlegacion {
+vars
+ 	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.alegaciones.actual.registro.fasesRegistro.registro="false")	
+return
+	editable
+}
+
+/*
+ * Permiso "alegacionMensajeIntermedio"
+ * 
+ * - Cuando la firma y registro se quedo en un paso intermedio. Se le muestra un mensaje
+ * al usuario diciendole que hubo un problema, que pulse otra vez el problema para completar el registro 
+ */	
+
+Permiso mensajeIntermedioAlegacion {
+vars
+	SolicitudGenerica solicitud
+when
+	(solicitud.alegaciones.actual.registro.fasesRegistro.firmada = "true" or
+	solicitud.alegaciones.actual.registro.fasesRegistro.registro = "true" or
+	solicitud.alegaciones.actual.registro.fasesRegistro.expedienteAed = "true") and
+	solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed = "false"
+return
+	editable
+}
+
+/*
+ * Permiso "firmarRegistrarAlegacion"
+ */
+ 
+Permiso firmarRegistrarAlegacion {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or 
+	(solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed="false")
+return
+	editable
+}
+
+/*
+ * Permiso "firmarAlegacion"
+ */
+ 
+Permiso firmarAlegacion {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or 
+	(solicitud.alegaciones.actual.registro.fasesRegistro.firmada="false")	
+return
+	editable
+}
+
+/*
+ * Permiso "registrarAlegacion"
+ */
+ 
+Permiso registrarAlegacion {
+vars
+	SolicitudGenerica solicitud
+when
+	(_accion = leer) or
+	(solicitud.alegaciones.actual.registro.fasesRegistro.firmada = "true" and
+	solicitud.alegaciones.actual.registro.fasesRegistro.registro = "false" and
+	solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed = "false")
+return
+	editable
+}

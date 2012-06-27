@@ -1,0 +1,7 @@
+package controllers;
+
+import controllers.gen.AportarDocumentacionAlegacionControllerGen;
+
+public class AportarDocumentacionAlegacionController extends AportarDocumentacionAlegacionControllerGen {
+
+}

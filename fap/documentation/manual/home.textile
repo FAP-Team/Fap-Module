@@ -55,6 +55,7 @@ h3. Comandos
 h3. Páginas por defecto
 
 (login, lista solicitudes, baremación, tramitación, ...)
+* "Tramitación":app-tramitacion
 
 h2. Profundizando en FAP
 

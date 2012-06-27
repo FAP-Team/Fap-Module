@@ -78,6 +78,9 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public AceptarRenunciar aceptarRenunciar;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Alegaciones alegaciones;
+
 	public SolicitudGenerica() {
 		init();
 	}
@@ -144,6 +147,11 @@ public class SolicitudGenerica extends FapModel {
 			aceptarRenunciar = new AceptarRenunciar();
 		else
 			aceptarRenunciar.init();
+
+		if (alegaciones == null)
+			alegaciones = new Alegaciones();
+		else
+			alegaciones.init();
 
 		postInit();
 	}

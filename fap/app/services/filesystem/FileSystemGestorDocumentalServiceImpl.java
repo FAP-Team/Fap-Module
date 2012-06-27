@@ -109,7 +109,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         if(solicitud.solicitante == null)
             throw new NullPointerException();
         
-        if(solicitud.solicitante.isPersonaFisica() && solicitud.solicitante.representado != null && solicitud.solicitante.representado){
+        if(solicitud.solicitante.isPersonaFisica() && solicitud.solicitante.representado != null && solicitud.solicitante.representado && solicitud.solicitante.representante == null){
             throw new NullPointerException();
         }
         

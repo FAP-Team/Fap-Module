@@ -40,6 +40,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	//Criterios economicos que rellena el solicitante
 	ManyToMany CEconomico ceconomicos	
 	AceptarRenunciar aceptarRenunciar
+	Alegaciones alegaciones
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -505,4 +506,36 @@ Entidad AceptarRenunciar {
 	OneToMany Documento documentos
 	Documento justificante
 	Registro registro
+}
+
+Entidad Alegaciones {
+	Alegacion actual
+	OneToMany Alegacion alegacionRegistradas
+}
+
+Entidad Alegacion {
+	LongText motivoAlegacion
+	LongText respuestaAlegacion
+	Lista estadoAlegacion estado
+	Registro registro
+	OneToMany Documento documentos
+}
+
+//INFO
+// Puede haber más de una alegación, en actual mantenemos la que está en proceso, pero que aún no se ha registrado
+// Se ha planteado de forma similar a lo de aportación de documentación.
+// Una vez que se produzca el registro la actual pasa a una alegación registrada
+
+Entidad ExpedientesAlegados nonPersist {
+	Solicitante solicitante
+	String idAed
+	DateTime fechaRegistro
+	Lista estadoAlegacion estado //Iniciada, En estudio, Resuelta
+}
+
+Entidad ExpedientesNoAceptados nonPersist {
+	Solicitante solicitante
+	String idAed
+	String estado
+	Moneda Cantidad
 }

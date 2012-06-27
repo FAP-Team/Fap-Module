@@ -101,7 +101,7 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 	 */
 	@Override
 	public String getPrefijoJustificantePdf() {
-		return FapProperties.get("fap.tramitacion.nombreficherojustificante.aceptacionrenuncia");
+		return FapProperties.get("fap.tramitacion.aceptacion.prefijojustificantepdf");
 	}
 
 	/**

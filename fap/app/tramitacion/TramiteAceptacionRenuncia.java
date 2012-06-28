@@ -188,7 +188,7 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 	/**
 	 * Validar los documentos condicionados automaticamente
 	 */
-	protected void validarDocumentacion() {
+	public void validarDocumentacion() {
 		
 		if (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase("aceptar")) {
 			VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", solicitud.aceptarRenunciar.documentos);

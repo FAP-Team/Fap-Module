@@ -2,9 +2,14 @@ package tramitacion;
 
 import java.util.List;
 
+import emails.Mails;
+
 import properties.FapProperties;
 
+import services.GestorDocumentalServiceException;
 import services.RegistroServiceException;
+import services.platino.PlatinoGestorDocumentalService;
+import messages.Messages;
 import models.Alegacion;
 import models.Documento;
 import models.Registro;
@@ -19,6 +24,7 @@ public class TramiteAlegacion extends TramiteBase {
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String MAIL = "alegacionRealizada";
 	private final static String JUSTIFICANTE = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroAlegacion");
+	private PlatinoGestorDocumentalService platinoGestorDocumentalService;
 	
 	public TramiteAlegacion(SolicitudGenerica solicitud) {
 		super(solicitud);
@@ -110,22 +116,56 @@ public class TramiteAlegacion extends TramiteBase {
 		
 	}
 
+	/**
+	 * Crea el expediente en el AED
+	 */
 	@Override
 	public void crearExpedienteAed() {
-		// TODO Auto-generated method stub
+		if (!this.solicitud.alegaciones.actual.registro.fasesRegistro.expedienteAed){
+			try {
+				gestorDocumentalService.crearExpediente(this.solicitud);
+				this.solicitud.alegaciones.actual.registro.fasesRegistro.expedienteAed = true;
+				this.solicitud.alegaciones.actual.registro.fasesRegistro.save();
+			} catch (GestorDocumentalServiceException e) {
+				play.Logger.debug("Error creando el expediente en el Gestor Documental", e.getMessage());
+				Messages.error("Error creando el expediente en el Gestor Documental");
+			}
+		}
+		else {
+			play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", this.solicitud.alegaciones.actual.id);
+		}
+
+		if (!this.solicitud.alegaciones.actual.estado.equals("iniciada")) {
+			Mails.enviar(this.getMail(), this.solicitud);
+		}
 		
 	}
 
+	/**
+	 * Crea el expediente en el archivo electrónico de platino
+	 */
 	@Override
 	public void crearExpedientePlatino() throws RegistroServiceException {
-		// TODO Auto-generated method stub
 		
+		if (!this.solicitud.alegaciones.actual.registro.fasesRegistro.expedientePlatino){
+			try {
+				platinoGestorDocumentalService.crearExpediente(this.solicitud.expedientePlatino);
+
+				this.solicitud.alegaciones.actual.registro.fasesRegistro.expedientePlatino = true;
+				this.solicitud.alegaciones.actual.registro.fasesRegistro.save();
+			} catch (Exception e) {
+				Messages.error("Error creando expediente en el gestor documental de platino");
+				throw new RegistroServiceException("Error creando expediente en el gestor documental de platino");
+			}
+		}
+		else {
+			play.Logger.debug("El expediente de platino para la solicitud %s ya está creado", solicitud.id);
+		}
 	}
 
 	@Override
 	public void anadirDocumentosSolicitud() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

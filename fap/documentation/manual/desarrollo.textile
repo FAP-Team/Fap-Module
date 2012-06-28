@@ -1,0 +1,40 @@
+h2. Desarrollo (sólo para el desarrollo del módulo)
+
+Fichero "dependencies.yml"
+
+bc. # Application dependencies
+require:
+    - play
+    - fap -> fap 2.0
+    - fap-modules -> guice 1.3
+    - play -> pdf 0.6
+    - play -> less 0.9
+    - play -> recaptcha 1.2
+    - play -> mockito 0.1
+    - play -> webdrive 0.2:
+        transitive: false
+repositories:
+    - Fap Local repository:
+        type:       local
+        artifact:   ${fapsdk}/fap
+        contains:
+            - fap -> *
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+            - fap-modules -> guice
+
+Debemos tener la variable de entorno FAPSDK.
+
+*Cargar las dependencias del proyecto*
+
+bc. play dependencies -Dfapsdk="<ruta_al_fapsdk>"
+
+*Generación del módulo*
+
+La generación del módulo ahora se realiza mediante el fichero python *generate.py*. El comando _"play fap:model --dev"_ ha sido eliminado del módulo.
+
+*Generación de la aplicación*
+
+bc. play fap:generate --dev

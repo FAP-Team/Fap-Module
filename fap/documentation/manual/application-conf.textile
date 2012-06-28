@@ -1,0 +1,27 @@
+h1. Application.conf
+
+En este fichero se definen una serie de propiedades que se necesitan en la aplicación. Se mencionarán las porpiedades más relevantes.
+
+* Hay que especificar el nombre de la aplicación:
+bc. application.name=nombre
+
+* Hay que especificar una clave secreta para asegurar funciones criptográficas. Si no dispone de una tiene que ejecutar _play secret_ en la consola. La clave secreta que se le genera es la que tiene que poner en la siguiente propiedad:
+bc. application.secret=clave_secreta
+
+* Hay que especificar el formato de la fecha que se utilizará en la aplicación:
+bc. date.format=dd/MM/yyyy
+
+* Por defecto, el puerto en el que se puede ejecutar la aplicación es el 9000. Pero si se quiere se puede modificar. Esto se hace cambiando la propiedad:
+bc. http.port=9001
+
+* Por defecto, el puerto para depurar con JPDA es:
+bc. jpda.port=8000
+
+* Para configurar la base de datos hay tres posibilidades:
+bc. // File System
+	db=fs
+// Memoria
+	db=mem
+// MySQL
+	db=mysql:user:password@schema
+

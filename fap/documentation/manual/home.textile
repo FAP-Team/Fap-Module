@@ -38,6 +38,8 @@ h4. FAP
 
 h3. Creando una nueva Aplicación
 
+"Hola Mundo":nuevaApp
+
 h2. Entendiendo FAP
 
 h3. DSL Básico (+ enlace Avanzado)

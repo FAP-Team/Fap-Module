@@ -1,0 +1,36 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'PaginaInicialForm', 
+     hayForm:false, 
+     pagina:'Expedientes', 
+     titulo:'Expedientes', 
+     urlBorrar:play.mvc.Router.reverse('ExpedientesController.borrar' ), 
+     urlCrear:play.mvc.Router.reverse('ExpedientesController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('ExpedientesController.editar' )
+}
+	
+#{fap.tabla 
+     campo:'ExpedienteGenerico', 
+     id:'listaExpedientes', 
+     idEntidad:'idExpedienteGenerico', 
+     tipoContainer:'pagina', 
+     titulo:'Listado Expedientes', 
+     urlCrear:play.mvc.Router.reverse("CrearExpedienteController.index" , ['accion':'crear']), 
+     urlTabla:@ExpedientesController.tablalistaExpedientes()
+}
+	
+	#{fap.columna ancho:60, cabecera:'ID', campo:'id' /}
+		
+	#{fap.columna ancho:180, cabecera:'Id Expediente', campo:'idExpediente' /}
+		
+	#{fap.columna ancho:180, cabecera:'Nombre', campo:'nombre', expandir:true /}
+		
+#{/fap.tabla}
+
+#{/fap.pagina}
+		

@@ -1,0 +1,17 @@
+/*
+ * Descomente las lineas que hay a continuacion para
+ * empezar a crear la entidad Solicitud y sus referencias.
+ * 
+ * Si se deja comentada, al generar se creará la entidad
+ * Solicitud sin ningún campo.
+ */
+
+Entidad Solicitud extends SolicitudGenerica {
+    String expediente transient       // En el popup de creación de solicitudes, tenemos un combo con los expedientes  
+}
+
+Entidad ExpedienteGenerico {
+    String idExpediente
+    String nombre
+    OneToMany Solicitud solicitud noConstruct
+}

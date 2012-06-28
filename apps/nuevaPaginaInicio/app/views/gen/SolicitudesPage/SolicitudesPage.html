@@ -1,0 +1,39 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'PaginaInicialForm', 
+     hayForm:false, 
+     pagina:'SolicitudesPage', 
+     titulo:'SolicitudesPage', 
+     urlBorrar:play.mvc.Router.reverse('SolicitudesPageController.borrar' ), 
+     urlCrear:play.mvc.Router.reverse('SolicitudesPageController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('SolicitudesPageController.editar' )
+}
+	
+#{fap.tabla 
+     campo:'Solicitud', 
+     id:'listaSolicitudes', 
+     idEntidad:'idSolicitud', 
+     popupCrear:'PopupCrearSolicitud', 
+     popupEditar:'PopupEditarSolicitud', 
+     tipoContainer:'pagina', 
+     titulo:'Listado Solicitudes', 
+     urlCrear:play.mvc.Router.reverse("popups.PopupCrearSolicitudController.index" , ['accion':'crear']), 
+     urlEditar:play.mvc.Router.reverse("popups.PopupEditarSolicitudController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_']), 
+     urlTabla:@SolicitudesPageController.tablalistaSolicitudes()
+}
+	
+	#{fap.columna ancho:40, cabecera:'ID', campo:'id' /}
+		
+	#{fap.columna ancho:180, cabecera:'Estado', campo:'estado' /}
+		
+	#{fap.columna ancho:180, cabecera:'Solicitante', campo:'solicitante.nombreCompleto', expandir:true /}
+		
+#{/fap.tabla}
+
+#{/fap.pagina}
+		

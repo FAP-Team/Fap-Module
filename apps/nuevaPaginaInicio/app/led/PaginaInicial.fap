@@ -1,0 +1,36 @@
+Formulario PaginaInicialForm inicial {
+    Menu {
+        Enlace "Expedientes" pagina=Expedientes
+        Enlace "Solicitudes" pagina=SolicitudesPage
+    }
+        
+    Pagina Expedientes inicial {
+        Tabla listaExpedientes titulo="Listado Expedientes" campo=ExpedienteGenerico  paginaCrear=CrearExpediente permisoFilas=adminGestorRevisor {
+            Columna campo=ExpedienteGenerico.id titulo="ID" ancho="60"
+            Columna campo=ExpedienteGenerico.idExpediente titulo="Id Expediente" ancho="180"
+            Columna campo=ExpedienteGenerico.nombre titulo="Nombre" ancho="180" expandir
+        }
+    }
+    
+    Pagina CrearExpediente campo=ExpedienteGenerico {}
+    
+    Pagina SolicitudesPage {
+        Tabla listaSolicitudes titulo="Listado Solicitudes" campo=Solicitud popupCrear=PopupCrearSolicitud popupEditar=PopupEditarSolicitud permisoFilas=solicitudes {
+                Columna campo=Solicitud.id titulo="ID" ancho="40"
+                Columna campo=Solicitud.estado titulo="Estado" ancho="180"
+                Columna campo=Solicitud.solicitante.nombreCompleto titulo="Solicitante" ancho="180" expandir              
+        }
+    }
+     
+    Popup PopupCrearSolicitud campo=Solicitud titulo="Crear Solicitud" {
+        Accion editar crearSiempre
+        Combo expediente titulo="Expediente" campo=Solicitud.expediente                  // Combo con todos los expedientes
+        Solicitante solicitante titulo="Solicitante" campo=Solicitud.solicitante
+    }
+    
+    Popup PopupEditarSolicitud campo=Solicitud titulo="Editar Solicitud" {
+        Combo expediente titulo="Expediente" campo=Solicitud.expediente                  
+        Solicitante solicitante titulo="Solicitante" campo=Solicitud.solicitante
+    }
+    
+}

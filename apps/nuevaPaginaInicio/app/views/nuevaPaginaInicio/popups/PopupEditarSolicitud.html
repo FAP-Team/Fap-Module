@@ -1,0 +1,89 @@
+
+#{fap.popup 
+     accion:accion, 
+     popup:'PopupEditarSolicitud', 
+     titulo:'Editar Solicitud', 
+     urlBorrar:play.mvc.Router.reverse('popups.PopupEditarSolicitudController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.PopupEditarSolicitudController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('popups.PopupEditarSolicitudController.editar' , ['idSolicitud':solicitud?.id])
+}
+	
+			#{fap.combo campo:'solicitud.expediente', id:'expediente', titulo:'Expediente', blanco:false /}		
+		
+			#{fap.grupo titulo:'Solicitante'}
+				
+			#{fap.combo campo:'solicitud.solicitante.tipo', id:'solicitanteCombo', titulo:'Tipo' /}		
+		
+			#{fap.grupo borde:false, siCombo:'solicitanteCombo', siComboValue:['fisica']}
+				
+			#{fap.personaFisica campo:'solicitud.solicitante.fisica', id:'solicitanteFisica' /}
+		
+			#{fap.check campo:'solicitud.solicitante.representado', id:'checkRepresentante_solicitante', titulo:'Representante' /}		
+		
+			#{fap.grupo borde:false, siCheck:'checkRepresentante_solicitante', siCheckValue:true}
+				
+			#{fap.grupo titulo:'Representante'}
+				
+			#{fap.combo campo:'solicitud.solicitante.representante.tipo', id:'representanteDelSolicitante_solicitanteCombo', requerido:true, titulo:'Tipo' /}		
+		
+			#{fap.grupo borde:false, siCombo:'representanteDelSolicitante_solicitanteCombo', siComboValue:['fisica']}
+				
+			#{fap.personaFisica campo:'solicitud.solicitante.representante.fisica', id:'representanteDelSolicitante_solicitanteFisica', requerido:true /}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, siCombo:'representanteDelSolicitante_solicitanteCombo', siComboValue:['juridica']}
+				
+			#{fap.personaJuridica campo:'solicitud.solicitante.representante.juridica', id:'representanteDelSolicitante_solicitanteJuridica', requerido:true /}
+		
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, siCombo:'solicitanteCombo', siComboValue:['juridica']}
+				
+			#{fap.personaJuridica campo:'solicitud.solicitante.juridica', id:'solicitanteJuridica' /}
+		
+#{fap.tabla 
+     campo:'Solicitud.solicitante.representantes', 
+     crearEntidad:accion == 'crear', 
+     id:'solicitanteJuridicaTabla', 
+     idContainer:'idSolicitud', 
+     idEntidad:'idRepresentantePersonaJuridica', 
+     nameContainer:'PopupEditarSolicitud', 
+     popupBorrar:'PopupSolicitanteJuridicaTabla', 
+     popupCrear:'PopupSolicitanteJuridicaTabla', 
+     popupEditar:'PopupSolicitanteJuridicaTabla', 
+     popupLeer:'PopupSolicitanteJuridicaTabla', 
+     tipoContainer:'popup', 
+     titulo:'Representante', 
+     urlBorrar:play.mvc.Router.reverse("popups.PopupSolicitanteJuridicaTablaController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idRepresentantePersonaJuridica':representantePersonaJuridica?.id? representantePersonaJuridica?.id:'_idRepresentantePersonaJuridica_']), 
+     urlContainerCrear:play.mvc.Router.reverse("popups.PopupEditarSolicitudController.index" , ['accion':'crear']), 
+     urlContainerEditar:play.mvc.Router.reverse("popups.PopupEditarSolicitudController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_']), 
+     urlCrear:play.mvc.Router.reverse("popups.PopupSolicitanteJuridicaTablaController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_']), 
+     urlCrearEntidad:play.mvc.Router.reverse('popups.PopupEditarSolicitudController.crearForTablas' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse("popups.PopupSolicitanteJuridicaTablaController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idRepresentantePersonaJuridica':representantePersonaJuridica?.id? representantePersonaJuridica?.id:'_idRepresentantePersonaJuridica_']), 
+     urlLeer:play.mvc.Router.reverse("popups.PopupSolicitanteJuridicaTablaController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idRepresentantePersonaJuridica':representantePersonaJuridica?.id? representantePersonaJuridica?.id:'_idRepresentantePersonaJuridica_']), 
+     urlTabla:@popups.PopupEditarSolicitudController.tablasolicitanteJuridicaTabla(idSolicitud)
+}
+	
+	#{fap.columna ancho:200, cabecera:'Tipo', campo:'tipo', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Nombre', campo:'nombreCompleto', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'NIP/CIF', campo:'numeroId', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Tipo Representación', campo:'tipoRepresentacion', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+#{/fap.popup}
+		

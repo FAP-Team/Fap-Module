@@ -1,0 +1,32 @@
+
+#{fap.popup 
+     accion:accion, 
+     popup:'PopupSolicitanteJuridicaTabla', 
+     titulo:'Representante', 
+     urlBorrar:play.mvc.Router.reverse('popups.PopupSolicitanteJuridicaTablaController.borrar' , ['idSolicitud':solicitud?.id, 'idRepresentantePersonaJuridica':representantePersonaJuridica?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.PopupSolicitanteJuridicaTablaController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('popups.PopupSolicitanteJuridicaTablaController.editar' , ['idSolicitud':solicitud?.id, 'idRepresentantePersonaJuridica':representantePersonaJuridica?.id])
+}
+	
+			#{fap.grupo titulo:'Representante'}
+				
+			#{fap.combo campo:'representantePersonaJuridica.tipo', id:'representante_PopupSolicitanteJuridicaTablaCombo', requerido:true, titulo:'Tipo' /}		
+		
+			#{fap.grupo borde:false, siCombo:'representante_PopupSolicitanteJuridicaTablaCombo', siComboValue:['fisica']}
+				
+			#{fap.personaFisica campo:'representantePersonaJuridica.fisica', id:'representante_PopupSolicitanteJuridicaTablaFisica', requerido:true /}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, siCombo:'representante_PopupSolicitanteJuridicaTablaCombo', siComboValue:['juridica']}
+				
+			#{fap.personaJuridica campo:'representantePersonaJuridica.juridica', id:'representante_PopupSolicitanteJuridicaTablaJuridica', requerido:true /}
+		
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{fap.combo campo:'representantePersonaJuridica.tipoRepresentacion', id:'tipo_PopupSolicitanteJuridicaTabla', requerido:true, titulo:'Tipo de Representación' /}		
+		
+#{/fap.popup}
+		

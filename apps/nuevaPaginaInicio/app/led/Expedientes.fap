@@ -1,0 +1,8 @@
+Formulario ExpedientesForm {
+    
+    Pagina CrearExpedientes campo=ExpedienteGenerico {
+        Accion editar crearSiempre
+        Texto campo=ExpedienteGenerico.idExpediente titulo="Identificador expediente"
+        Texto campo=ExpedienteGenerico.nombre titulo="Nombre"
+    }
+}

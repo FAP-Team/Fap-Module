@@ -1,0 +1,22 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'ExpedientesForm', 
+     hayForm:true, 
+     pagina:'CrearExpedientes', 
+     titulo:'CrearExpedientes', 
+     urlBorrar:play.mvc.Router.reverse('CrearExpedientesController.borrar' , ['idExpedienteGenerico':expedienteGenerico?.id]), 
+     urlCrear:play.mvc.Router.reverse('CrearExpedientesController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('CrearExpedientesController.editar' , ['idExpedienteGenerico':expedienteGenerico?.id])
+}
+	
+			#{fap.texto campo:'expedienteGenerico.idExpediente', titulo:'Identificador expediente' /}		
+		
+			#{fap.texto campo:'expedienteGenerico.nombre', titulo:'Nombre' /}		
+		
+#{/fap.pagina}
+		

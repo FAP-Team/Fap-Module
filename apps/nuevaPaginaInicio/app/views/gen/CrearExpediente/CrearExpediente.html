@@ -1,0 +1,18 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'PaginaInicialForm', 
+     hayForm:true, 
+     pagina:'CrearExpediente', 
+     titulo:'CrearExpediente', 
+     urlBorrar:play.mvc.Router.reverse('CrearExpedienteController.borrar' , ['idExpedienteGenerico':expedienteGenerico?.id]), 
+     urlCrear:play.mvc.Router.reverse('CrearExpedienteController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('CrearExpedienteController.editar' , ['idExpedienteGenerico':expedienteGenerico?.id])
+}
+	
+#{/fap.pagina}
+		

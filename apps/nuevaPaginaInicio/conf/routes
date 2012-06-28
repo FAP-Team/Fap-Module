@@ -1,0 +1,47 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Autogenerada por fap:create
+*     /                       module:fap
+
+# Dentro de esta region se van a escribir todas las rutas generadas
+# === FAPGENERATED ===
+  # Home page
+GET / ExpedientesController.index
+GET /ExpedientesForm/crearexpedientes CrearExpedientesController.index
+POST /ExpedientesForm/crearexpedientes/editar CrearExpedientesController.editar
+GET /FormularioEjemplo/paginaejemplo PaginaEjemploController.index
+GET /PaginaInicialForm/expedientes ExpedientesController.index
+GET /PaginaInicialForm/expedientes/listaExpedientes ExpedientesController.tablalistaExpedientes
+GET /PaginaInicialForm/crearexpediente CrearExpedienteController.index
+POST /PaginaInicialForm/crearexpediente/editar CrearExpedienteController.editar
+POST /PaginaInicialForm/crearexpediente/crear CrearExpedienteController.crear
+GET /PaginaInicialForm/solicitudespage SolicitudesPageController.index
+GET /PaginaInicialForm/solicitudespage/listaSolicitudes SolicitudesPageController.tablalistaSolicitudes
+GET /PaginaInicialForm/popupcrearsolicitud popups.PopupCrearSolicitudController.index
+POST /PaginaInicialForm/popupcrearsolicitud/editar popups.PopupCrearSolicitudController.editar
+POST /PaginaInicialForm/popupcrearsolicitud/crear popups.PopupCrearSolicitudController.crear
+GET /PaginaInicialForm/popupcrearsolicitud/solicitanteJuridicaTabla popups.PopupCrearSolicitudController.tablasolicitanteJuridicaTabla
+GET /PaginaInicialForm/popupeditarsolicitud popups.PopupEditarSolicitudController.index
+POST /PaginaInicialForm/popupeditarsolicitud/editar popups.PopupEditarSolicitudController.editar
+GET /PaginaInicialForm/popupeditarsolicitud/solicitanteJuridicaTabla popups.PopupEditarSolicitudController.tablasolicitanteJuridicaTabla
+GET /PaginaInicialForm/popupsolicitantejuridicatabla popups.PopupSolicitanteJuridicaTablaController.index
+POST /PaginaInicialForm/popupsolicitantejuridicatabla/editar popups.PopupSolicitanteJuridicaTablaController.editar
+POST /PaginaInicialForm/popupsolicitantejuridicatabla/borrar popups.PopupSolicitanteJuridicaTablaController.borrar
+POST /PaginaInicialForm/popupsolicitantejuridicatabla/crear popups.PopupSolicitanteJuridicaTablaController.crear
+GET /PaginaInicialForm/popupsolicitantejuridicatabla popups.PopupSolicitanteJuridicaTablaController.index
+POST /PaginaInicialForm/popupsolicitantejuridicatabla/editar popups.PopupSolicitanteJuridicaTablaController.editar
+POST /PaginaInicialForm/popupsolicitantejuridicatabla/borrar popups.PopupSolicitanteJuridicaTablaController.borrar
+POST /PaginaInicialForm/popupsolicitantejuridicatabla/crear popups.PopupSolicitanteJuridicaTablaController.crear
+
+# === END FAPGENERATED ===
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

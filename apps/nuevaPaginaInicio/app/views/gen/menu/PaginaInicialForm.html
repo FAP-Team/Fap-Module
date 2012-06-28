@@ -1,0 +1,26 @@
+<ul class='nav nav-list'>
+
+			%{
+				
+			%}
+
+				
+				
+			%{
+				
+				play.mvc.Router.ActionDefinition url = play.mvc.Router.reverse("ExpedientesController.index" );
+			%}
+		
+				<li class="#{fap.activeRoute href:url, activeClass:'active'/}" ><a href='${url}'>Expedientes</a></li>
+				
+			
+				
+				
+			%{
+				
+				url = play.mvc.Router.reverse("SolicitudesPageController.index" );
+			%}
+		
+				<li class="#{fap.activeRoute href:url, activeClass:'active'/}" ><a href='${url}'>Solicitudes</a></li>
+				
+			</ul>

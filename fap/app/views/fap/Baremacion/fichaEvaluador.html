@@ -138,7 +138,7 @@
 	#{/fap.grupo}
 #{/if}
 
-#{if  hasCEconomicos}
+#{if hasCEconomicos}
 	#{fap.grupo titulo:'Conceptos económicos', id: 'CEconomicos'}
 
 		<div id="tablaCEconomicos" class="tabla"></div>
@@ -160,6 +160,7 @@
         			extend: 'Ext.data.Model',
         			idProperty: 'id',
         			fields:[
+        				{name: 'jerarquia', mapping: 'jerarquia'},
         				{name: 'nombre', mapping: 'nombre'},
         				#{list items:0..duracion, as:'i'}
         					%{
@@ -228,6 +229,11 @@
 		    var grid = new Ext.grid.GridPanel({
 				store : store,
 				columns : [{
+					text : 'Jerarquía',
+					sortable : true,
+					dataIndex : 'jerarquia',
+					width : 80
+					} , {
 					text : 'Concepto',
 					sortable : true,
 					dataIndex : 'nombre',
@@ -298,6 +304,7 @@
 		    
 		    function reload(){
 				peticionJSON();
+				window.location.reload();
 			};
 		    
 		    $('#tablaCEconomicos').data('grid', grid);

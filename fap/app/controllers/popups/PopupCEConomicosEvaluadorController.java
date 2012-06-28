@@ -84,6 +84,7 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 		CustomValidation.clearValidadas();
 		CustomValidation.valid("cEconomico", cEconomico);
 		for (int i=0; i<duracion; i++){
+			dbCEconomico.valores.get(i).valorSolicitado = cEconomico.valores.get(i).valorSolicitado;
 			dbCEconomico.valores.get(i).valorConcedido = cEconomico.valores.get(i).valorConcedido;
 			dbCEconomico.valores.get(i).valorEstimado = cEconomico.valores.get(i).valorEstimado;
 			dbCEconomico.valores.get(i).valorPropuesto = cEconomico.valores.get(i).valorPropuesto;

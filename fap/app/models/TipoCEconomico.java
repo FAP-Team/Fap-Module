@@ -37,6 +37,10 @@ public class TipoCEconomico extends FapModel {
 
 	public Boolean comentariosSolicitante;
 
+	public boolean esNuevo;
+
+	public Boolean tipoOtro;
+
 	public TipoCEconomico() {
 		init();
 	}
@@ -45,6 +49,7 @@ public class TipoCEconomico extends FapModel {
 
 		comentariosAdministracion = false;
 		comentariosSolicitante = false;
+		tipoOtro = false;
 
 		postInit();
 	}
@@ -55,10 +60,34 @@ public class TipoCEconomico extends FapModel {
 		this.clase = tipoCEconomico.clase;
 		this.comentariosAdministracion = tipoCEconomico.comentariosAdministracion;
 		this.comentariosSolicitante = tipoCEconomico.comentariosSolicitante;
-		this.descripcion = tipoCEconomico.clase;
+		this.descripcion = tipoCEconomico.descripcion;
 		this.instrucciones = tipoCEconomico.instrucciones;
 		this.jerarquia = tipoCEconomico.jerarquia;
 		this.nombre = tipoCEconomico.nombre;
+	}
+
+	public boolean esIgual(TipoCEconomico tipoCEconomico) {
+		if (this.jerarquia != null && this.jerarquia.equals(tipoCEconomico.jerarquia))
+			return true;
+		return false;
+	}
+
+	public void actualizar(TipoCEconomico tipoCEconomico) {
+		this.clase = tipoCEconomico.clase;
+		this.comentariosAdministracion = tipoCEconomico.comentariosAdministracion;
+		this.comentariosSolicitante = tipoCEconomico.comentariosSolicitante;
+		this.descripcion = tipoCEconomico.descripcion;
+		this.instrucciones = tipoCEconomico.instrucciones;
+		this.jerarquia = tipoCEconomico.jerarquia;
+		this.nombre = tipoCEconomico.nombre;
+	}
+
+	public int estoyContenido(List<TipoCEconomico> lista) {
+		for (TipoCEconomico busqueda : lista) {
+			if (this.esIgual(busqueda))
+				return lista.indexOf(busqueda);
+		}
+		return -1;
 	}
 
 	// === MANUAL REGION END ===

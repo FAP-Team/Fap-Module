@@ -1,0 +1,31 @@
+%{
+   Integer anios = duracion;
+%}
+
+#{fap.popup 
+     accion:accion, 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     popup:'PopupCEconomicoManual', 
+     titulo:'PopupCEconomicoManual', 
+     urlBorrar:play.mvc.Router.reverse('popups.PopupCEconomicoManualController.borrar' , ['idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.PopupCEconomicoManualController.crear' , ['idCEconomico':cEconomico?.id]), 
+     urlEditar:play.mvc.Router.reverse('popups.PopupCEconomicoManualController.editar' , ['idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id])
+}
+
+	#{fap.texto campo:'cEconomicosManuales.tipo.nombre', id:'Nombre', titulo:'Nombre', requerido:'true' /}		
+	#{fap.texto campo:'cEconomicosManuales.tipo.descripcion', id:'Descripcion', titulo:'Descripcion' /}		
+
+	#{list items:0..anios, as:'i'}
+		%{
+			def paramName="cEconomicosManuales.valores[${i}]";
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+			def anioLabel = "Año "+(i+1);
+			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomicosManuales.valores[i].valorSolicitado);
+		%}
+		#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
+	#{/list}
+	
+#{/fap.popup}
+		

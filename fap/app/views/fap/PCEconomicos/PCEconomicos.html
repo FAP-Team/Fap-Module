@@ -10,7 +10,7 @@
      botonEditar:'Guardar', 
      encType:'application/x-www-form-urlencoded', 
      formulario:'Solicitud', 
-     hayForm:true,
+     hayForm:false,
      pagina:'PCEconomicos',
      permisoFormulario:'solicitudes', 
      permisoFormularioMsg:'No tiene suficientes privilegios para acceder a esta solicitud', 
@@ -24,14 +24,16 @@
 	 campo:'Solicitud.ceconomicos', 
      id:'tablaCEconomicos', 
      idEntidad:'idCEconomico',
-     popupEditar:'PopupCEConomicos', 
+     paginaEditar:'PaginaCEConomicos',
      tipoContainer:'pagina', 
      titulo:'Conceptos económicos', 
      urlTabla:@PCEconomicosController.tablatablaCEconomicos('idSolicitud':solicitud?.id), 
-     urlEditar:play.mvc.Router.reverse("popups.PopupCEConomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d])
+     urlEditar:play.mvc.Router.reverse("PaginaCEConomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d])
 }
 
-	#{fap.columna ancho:200, cabecera:'Concepto', campo:'tipo.nombre', expandir:true /}
+	#{fap.columna ancho:80, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}
+
+	#{fap.columna ancho:200, cabecera:'Concepto', campo:'tipo.nombre' /}
 	
 	#{list items:0..d, as:'i'}
 		%{	

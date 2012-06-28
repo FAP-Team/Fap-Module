@@ -612,7 +612,6 @@ Permiso mostrarResultadoBusqueda{
 }
 
 
-
 Permiso prepararDesistimiento{
 vars
 	SolicitudGenerica solicitud
@@ -757,4 +756,10 @@ return
 }
 
 
-
+Permiso verTablaCEconomicosOtros{
+	vars
+		CEconomico ceconomico
+	when
+		ceconomico.tipo.tipoOtro="true"
+	return all
+}

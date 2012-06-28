@@ -1,0 +1,90 @@
+%{
+   Integer anios = duracion;
+%}
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:true, 
+     pagina:'PaginaCEconomicos', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'PaginaCEconomicos', 
+     urlBorrar:play.mvc.Router.reverse('PaginaCEconomicosController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaCEconomicosController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('PaginaCEconomicosController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, duracion:anios])
+}
+	
+	#{if cEconomico.tipo.tipoOtro}
+		#{fap.texto campo:'cEconomico.tipo.nombre', id:'Nombre', titulo:'Nombre', requerido:'true'/}	
+		<div class="wiki ">
+		<p>
+			${cEconomico.tipo.descripcion}
+			<br/>		
+		</p>
+	</div>
+	#{/if}
+	#{else}
+		<div class="wiki ">
+		<p>
+			<b>${cEconomico.tipo.nombre}</b>
+			<br/>
+			${cEconomico.tipo.descripcion}
+			<br/>		
+		</p>
+	</div>
+	#{/else}	
+			
+
+	#{list items:0..anios, as:'i'}
+		%{
+			def paramName="cEconomico.valores[${i}]";
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+			def anioLabel = "Año "+(i+1);
+			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
+		%}
+		#{if !cEconomico.tipo.tipoOtro}
+			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
+		#{/if}
+		#{else}
+			#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
+		#{/else}
+	#{/list}	
+		
+	#{fap.grupo borde:false, permiso:'verTablaCEconomicosOtros'}
+				
+		#{fap.tabla 
+		     campo:'CEconomico.otros', 
+		     crearEntidad:accion == 'crear', 
+		     id:'ceconomicosManuales', 
+		     idContainer:'idCEconomico', 
+		     idEntidad:'idCEconomicosManuales', 
+		     nameContainer:'PaginaCEconomicos', 
+		     popupCrear:'PopupCEconomicoManual', 
+		     popupEditar:'PopupCEconomicoManual', 
+		     recargarPagina:true,
+		     tipoContainer:'pagina', 
+		     titulo:'Conceptos Económicos Manuales', 
+		     urlContainerCrear:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id]), 
+		     urlContainerEditar:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
+		     urlCrear:play.mvc.Router.reverse("popups.PopupCEconomicoManualController.index" , ['accion':'crear', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
+		     urlCrearEntidad:play.mvc.Router.reverse('PaginaCEconomicosController.crearForTablas' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
+		     urlEditar:play.mvc.Router.reverse("popups.PopupCEconomicoManualController.index" , ['accion':'editar', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']), 
+		     urlTabla:@PaginaCEconomicosController.tablaceconomicosManuales(idCEconomico)
+		}
+		
+			#{fap.columna ancho:200, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}
+			
+			#{fap.columna ancho:200, cabecera:'Nombre', campo:'tipo.nombre', expandir:true /}
+			
+		#{/fap.tabla}
+
+	#{/fap.grupo}
+		
+#{/fap.pagina}
+		

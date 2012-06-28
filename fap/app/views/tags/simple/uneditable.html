@@ -1,3 +1,8 @@
+%{  def color='#e4e4e4';
+	if (_color)
+		color=_color
+%}
+
 #{simple.row id:_id, label:_label}
-	<input type="text" class="span3" disabled="disabled" select style="width: ${_ancho}px;  background-color: #e4e4e4" value="${_value}"/>
+	<input type="text" class="span3" disabled="disabled" select style="width: ${_ancho}px;  background-color: ${color}" value="${_value}"/>
 #{/simple.row}

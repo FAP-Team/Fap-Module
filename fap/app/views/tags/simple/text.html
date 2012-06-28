@@ -1,3 +1,8 @@
+%{  def color=null;
+	if (_color)
+		color=_color
+%}
+
 #{simple.row label:_label, id:_id, help:_help, error:_error }
-	<input type="text" #{if _id}id="${_id}"#{/if} name="${_name}" value="${_value}" select style="width: ${_ancho}px"/>
+	<input type="text" #{if _id}id="${_id}"#{/if} name="${_name}" value="${_value}" select style="width: ${_ancho}px; #{if color} background-color: ${color} #{/if}"/>
 #{/simple.row}

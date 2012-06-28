@@ -1,11 +1,16 @@
 package app;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.PropertyConfigurator;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import emails.Mails;
 
@@ -23,6 +28,8 @@ import play.vfs.VirtualFile;
 import properties.FapProperties;
 import properties.Properties;
 import services.BaremacionService;
+import utils.BaremacionUtils;
+import utils.JsonUtils;
 
 @OnApplicationStart
 public class Start extends Job {
@@ -86,15 +93,9 @@ public class Start extends Job {
 				solicitud.save();
 			}
 		}
-		//Inicializa o recupera el tipo de evaluacion
-		TipoEvaluacion tipoEvaluacion = null;
-		if((TipoEvaluacion.count() == 0) && (new File("conf/initial-data/tipoEvaluacion.json").exists())){
-			tipoEvaluacion = BaremacionService.loadTipoEvaluacionFromJson("/conf/initial-data/tipoEvaluacion.json");
-			tipoEvaluacion.save();
-			Logger.info("Tipo de Baremación cargada correctamente desde fichero");
-		}else if (!new File("conf/initial-data/tipoEvaluacion.json").exists()){
-			Logger.info("No se puede leer el fichero que contiene los parámetros de la Evaluacion (/conf/initial-data/tipoEvaluacion.json)");
-		}
+		
+		// Inicializamos, recuperamos o actualizamos la Baremación
+		BaremacionUtils.inicializarTipoEvaluacion();
 		
 		actualizarSemillaExpediente();
 	}

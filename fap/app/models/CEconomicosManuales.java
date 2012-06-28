@@ -19,14 +19,14 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class CEconomico extends FapModel {
+public class CEconomicosManuales extends FapModel {
 	// Código de los atributos
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public TipoCEconomico tipo;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "ceconomico_valores")
+	@JoinTable(name = "ceconomicosmanuales_valores")
 	public List<ValoresCEconomico> valores;
 
 	@Column(columnDefinition = "LONGTEXT")
@@ -35,11 +35,7 @@ public class CEconomico extends FapModel {
 	@Column(columnDefinition = "LONGTEXT")
 	public String comentariosSolicitante;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "ceconomico_otros")
-	public List<CEconomicosManuales> otros;
-
-	public CEconomico() {
+	public CEconomicosManuales() {
 		init();
 	}
 
@@ -52,24 +48,20 @@ public class CEconomico extends FapModel {
 
 		if (valores == null)
 			valores = new ArrayList<ValoresCEconomico>();
-
-		if (otros == null)
-			otros = new ArrayList<CEconomicosManuales>();
+		comentariosAdministracion = "true";
+		comentariosSolicitante = "true";
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
-
-	public CEconomico(CEconomico cEconomico) {
-		this.tipo = new TipoCEconomico(cEconomico.tipo);
+	public CEconomicosManuales(int duracion) {
+		this.tipo = new TipoCEconomico();
 		this.valores = new ArrayList<ValoresCEconomico>();
-		int orden = 0;
-		for (ValoresCEconomico valoresCEconomico : cEconomico.valores) {
-			this.valores.add(new ValoresCEconomico(valoresCEconomico, orden++));
+		for (int i = 0; i < duracion; i++) {
+			ValoresCEconomico valoresCEconomico = new ValoresCEconomico(i);
+			this.valores.add(valoresCEconomico);
 		}
-		this.comentariosAdministracion = cEconomico.comentariosAdministracion;
-		this.comentariosSolicitante = cEconomico.comentariosSolicitante;
 	}
 
 	// === MANUAL REGION END ===

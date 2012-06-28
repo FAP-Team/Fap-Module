@@ -1,9 +1,22 @@
-Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
-
-	Pagina PCEconomicos titulo="Conceptos económicos"{
-
+Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{	
+	
+	Pagina DocumentacionFAP campo=SolicitudGenerica noForm {
+		Tabla documentos titulo="Documentos Aportados" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP {
+			Columna campo=Documento.id
+			Columna campo=Documento.tipo
+		}
+		//SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
 	}
-
+	Pagina DocumentosFAP campo=SolicitudGenerica.documentacion.documentos {
+		Accion crear redirigir=DocumentacionFAP	
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
+	}
+	
+	Popup DocumentosEditarFAP campo=SolicitudGenerica.documentacion.documentos {
+		Accion editar redirigir=DocumentacionFAP	
+		EditarArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+	}
+	
 
 	Pagina Aportacion {
 		
@@ -338,23 +351,27 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			AreaTexto descripcion campo=CodigoExclusion.tipoCodigo.descripcion titulo="Descripcion" 
 		}
 	}
-	
 
-	Pagina DocumentacionFAP campo=SolicitudGenerica noForm {
-		Tabla documentos titulo="Documentos Aportados" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP {
-			Columna campo=Documento.id
-			Columna campo=Documento.tipo
-		}
-		//SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
-	}
-	Pagina DocumentosFAP campo=SolicitudGenerica.documentacion.documentos {
-		Accion crear redirigir=DocumentacionFAP	
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
+	//Sobreescrita
+	Pagina PCEconomicos titulo="Conceptos económicos"{
+
 	}
 	
-	Popup DocumentosEditarFAP campo=SolicitudGenerica.documentacion.documentos {
-		Accion editar redirigir=DocumentacionFAP	
-		EditarArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+	//Sobreescrita
+	Pagina PaginaCEconomicos campo=SolicitudGenerica.ceconomicos {
+		Texto Nombre titulo="Nombre" campo=CEconomico.tipo.nombre
+		Grupo conceptosManuales borde=false permiso=verTablaCEconomicosOtros {
+			Tabla ceconomicosManuales titulo="Conceptos Económicos Manuales" campo=CEconomico.otros popupCrear=PopupCEconomicoManual popupEditar=PopupCEconomicoManual recargarPagina{
+				Columna campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquía"
+				Columna campo=CEconomicosManuales.tipo.nombre titulo="Nombre" expandir
+			}
+		}
+	}
+	
+	//Sobreescrita
+	Popup PopupCEconomicoManual campo=CEconomico.otros{
+		Accion editar redirigir=PaginaCEconomicos
+		Accion crear redirigir=PaginaCEconomicos
 	}
 
 	// ******************************************************************************************

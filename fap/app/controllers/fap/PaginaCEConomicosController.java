@@ -1,5 +1,5 @@
 
-package controllers.popups;
+package controllers.fap;
 
 import java.util.Map;
 
@@ -30,7 +30,7 @@ import security.Secure;
 import validation.CustomValidation;
 
 @With({SecureController.class, AgenteController.class})
-public class PopupCEConomicosController extends Controller{
+public class PaginaCEConomicosController extends Controller{
 	
 	@Inject
 	protected static Secure secure;
@@ -50,9 +50,9 @@ public class PopupCEConomicosController extends Controller{
 			renderTemplate("fap/PCEconomicos/PopupCEConomicos.html");
 		}
 
-		SolicitudGenerica solicitud = PopupCEConomicosController.getSolicitudGenerica(idSolicitud);
+		SolicitudGenerica solicitud = PaginaCEConomicosController.getSolicitudGenerica(idSolicitud);
 
-		CEconomico cEconomico = PopupCEConomicosController.getCEconomico(idSolicitud, idCEconomico);
+		CEconomico cEconomico = PaginaCEConomicosController.getCEconomico(idSolicitud, idCEconomico);
 		log.info("Visitando página: " + "fap/PCEconomico/PopupCEConomicos.html");
 		renderTemplate("fap/PCEconomicos/PopupCEConomicos.html", accion, idSolicitud,
 				solicitud, idCEconomico, cEconomico, duracion);
@@ -65,16 +65,16 @@ public class PopupCEConomicosController extends Controller{
 			Messages.error("No tiene suficientes privilegios para acceder a esta solicitud");
 		}
 
-		CEconomico dbCEconomico = PopupCEConomicosController.getCEconomico(idSolicitud, idCEconomico);
+		CEconomico dbCEconomico = PaginaCEConomicosController.getCEconomico(idSolicitud, idCEconomico);
 
-		PopupCEConomicosController.PopupCEConomicosBindReferences(cEconomico);
+		PaginaCEConomicosController.PopupCEConomicosBindReferences(cEconomico);
 
 		if (!Messages.hasErrors()) {
-			PopupCEConomicosController.PopupCEConomicosValidateCopy("editar", dbCEconomico, cEconomico);
+			PaginaCEConomicosController.PopupCEConomicosValidateCopy("editar", dbCEconomico, cEconomico);
 		}
 
 		if (!Messages.hasErrors()) {
-			PopupCEConomicosController.editarValidateRules(dbCEconomico, cEconomico);
+			PaginaCEConomicosController.editarValidateRules(dbCEconomico, cEconomico);
 		}
 
 		if (!Messages.hasErrors()) {
@@ -90,7 +90,7 @@ public class PopupCEConomicosController extends Controller{
 					+ " , intentada sin éxito (Problemas de Validación)");
 		}
 
-		PopupCEConomicosController.editarRender(idSolicitud, idCEconomico, duracion);
+		PaginaCEConomicosController.editarRender(idSolicitud, idCEconomico, duracion);
 	}
 
 	@Util

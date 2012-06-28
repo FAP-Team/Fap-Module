@@ -29,11 +29,14 @@ Entidad TipoCriterio {
     Double valorMaximo
     Double valorMinimo
     
+    // Para saber si hay que actualizarlo o crearlo en sucesivas actualizaciones de la Baremación (Boton de recargar Baremacion o Iniciar, etc.)
+    Boolean esNuevo default="false"
+    
     Lista LstTipoValorCriterio tipoValor requerido
     OneToMany CriterioListaValores listaValores
     
     //Opcion para la visualización: Muestra el valor junto a la descripción en el combo
-    Boolean mostrarValor default="true"
+    boolean mostrarValor
     
     Boolean transparencia
     Boolean comentariosAdministracion default="false"
@@ -55,6 +58,9 @@ Entidad TipoCEconomico {
   	Lista LstClaseCEconomico clase
     Boolean comentariosAdministracion default="false"
     Boolean comentariosSolicitante default="false"
+    // Para saber si hay que actualizarlo o crearlo en sucesivas actualizaciones de la Baremación (Boton de recargar Baremacion o Iniciar, etc.)
+    boolean esNuevo
+    Boolean tipoOtro default="false"
 }
 
 Entidad CEconomico {
@@ -64,6 +70,17 @@ Entidad CEconomico {
 	
 	LongText comentariosAdministracion
 	LongText comentariosSolicitante	
+	
+	OneToMany CEconomicosManuales otros
+}
+
+Entidad CEconomicosManuales {
+	TipoCEconomico tipo
+
+	OneToMany ValoresCEconomico valores
+	
+	LongText comentariosAdministracion default="true"
+	LongText comentariosSolicitante	default="true"
 }
 
 Entidad ValoresCEconomico {

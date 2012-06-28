@@ -38,6 +38,7 @@ import reports.Report;
 import security.Secure;
 import services.BaremacionService;
 import tables.TableRecord;
+import utils.BaremacionUtils;
 
 @With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class FichaEvaluadorController extends Controller {
@@ -59,6 +60,7 @@ public class FichaEvaluadorController extends Controller {
 			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
 			List<Documento> documentos = evaluacion.getDocumentosAccesibles();
 			int duracion = tipoEvaluacion.duracion-1;
+			BaremacionUtils.calcularTotalesCEconomicosFichaEvaluacion(evaluacion);
 			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos, expedienteUrl, duracion, idEvaluacion);
 		}else{
 			forbidden();
@@ -213,6 +215,7 @@ public class FichaEvaluadorController extends Controller {
 				columna.put("valorEstimado"+i, cEconomico.valores.get(i).valorEstimado.toString());
 			 }
 		  	 columna.put("nombre", cEconomico.tipo.nombre);
+		  	 columna.put("jerarquia", cEconomico.tipo.jerarquia);
 		  	 columnasCEconomicos.add(columna);
 		}
 		renderJSON(columnasCEconomicos);

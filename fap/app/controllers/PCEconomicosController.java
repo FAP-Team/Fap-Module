@@ -87,7 +87,7 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 		tables.TableRenderResponse<CEconomico> response = new tables.TableRenderResponse<CEconomico>(rowsFiltered);
 		// Para no permitir editar en la tabla los conceptos economicos que sean automaticos
 		for (TableRecord<CEconomico> filaCEconomico: response.rows){
-			if (filaCEconomico.objeto.tipo.clase.equals("auto"))
+			if ((filaCEconomico.objeto.tipo.clase!=null) && (filaCEconomico.objeto.tipo.clase.equals("auto")) && (!filaCEconomico.objeto.tipo.tipoOtro))
 				filaCEconomico.permisoEditar = false;
 		}
 		response.mensajes.error = Messages.messages(MessageType.ERROR);
@@ -95,7 +95,7 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 		response.mensajes.fatal = Messages.messages(MessageType.FATAL);
 		response.mensajes.ok = Messages.messages(MessageType.OK);
 		response.mensajes.info = Messages.messages(MessageType.INFO);
-		renderJSON(response.toJSON("tipo.nombre", "valores.valorSolicitado", "id"));
+		renderJSON(response.toJSON("tipo.nombre", "tipo.jerarquia", "valores.valorSolicitado", "id"));
 	}
 
 	@Util
@@ -115,21 +115,6 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 			record.permisoBorrar = false;
 		}
 		return records;
-	}
-	
-	public static void editar(Long idSolicitud) {
-		checkAuthenticity();
-		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
-
-		if (!permiso("editar")) {
-			Messages.error("No tiene suficientes privilegios para acceder a esta solicitud");
-		}
-		if (!Messages.hasErrors()) {
-			BaremacionUtils.calcularTotales(solicitud);
-			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada con éxito");
-		} else
-			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada sin éxito (Problemas de Validación)");
-		PCEconomicosController.editarRender(idSolicitud);
 	}
 	
 	@Util

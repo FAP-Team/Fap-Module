@@ -43,6 +43,8 @@ public class TipoCriterio extends FapModel {
 
 	public Double valorMinimo;
 
+	public Boolean esNuevo;
+
 	@ValueFromTable("LstTipoValorCriterio")
 	@Required
 	public String tipoValor;
@@ -51,7 +53,7 @@ public class TipoCriterio extends FapModel {
 	@JoinTable(name = "tipocriterio_listavalores")
 	public List<CriterioListaValores> listaValores;
 
-	public Boolean mostrarValor;
+	public boolean mostrarValor;
 
 	public Boolean transparencia;
 
@@ -65,9 +67,10 @@ public class TipoCriterio extends FapModel {
 
 	public void init() {
 
+		esNuevo = false;
+
 		if (listaValores == null)
 			listaValores = new ArrayList<CriterioListaValores>();
-		mostrarValor = true;
 		comentariosAdministracion = false;
 		comentariosSolicitante = false;
 
@@ -75,6 +78,38 @@ public class TipoCriterio extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
+
+	public boolean esIgual(TipoCriterio tipoCriterio) {
+		if (this.jerarquia != null && this.jerarquia.equals(tipoCriterio.jerarquia))
+			return true;
+		return false;
+	}
+
+	public void actualizar(TipoCriterio tipoCriterio) {
+		this.claseCriterio = tipoCriterio.claseCriterio;
+		this.comentariosAdministracion = tipoCriterio.comentariosAdministracion;
+		this.comentariosSolicitante = tipoCriterio.comentariosSolicitante;
+		this.descripcion = tipoCriterio.descripcion;
+		this.instrucciones = tipoCriterio.instrucciones;
+		this.jerarquia = tipoCriterio.jerarquia;
+		this.listaValores.clear();
+		this.listaValores.addAll(tipoCriterio.listaValores);
+		this.mostrarValor = tipoCriterio.mostrarValor;
+		this.nombre = tipoCriterio.nombre;
+		this.tipoValor = tipoCriterio.tipoValor;
+		this.transparencia = tipoCriterio.transparencia;
+		this.valorMaximo = tipoCriterio.valorMaximo;
+		this.valorMinimo = tipoCriterio.valorMinimo;
+		this.valorPrecision = tipoCriterio.valorPrecision;
+	}
+
+	public int estoyContenido(List<TipoCriterio> lista) {
+		for (TipoCriterio busqueda : lista) {
+			if (this.esIgual(busqueda))
+				return lista.indexOf(busqueda);
+		}
+		return -1;
+	}
 
 	// === MANUAL REGION END ===
 

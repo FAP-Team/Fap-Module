@@ -81,18 +81,46 @@ public class Evaluacion extends FapModel {
 		for (TipoCriterio tCriterio : tipo.criterios) {
 			Criterio criterio = new Criterio();
 			criterio.tipo = tCriterio;
+			tCriterio.esNuevo = false;
 			this.criterios.add(criterio);
 		}
 
 		for (TipoCEconomico tCEconomico : tipo.ceconomicos) {
 			CEconomico cEconomico = new CEconomico();
 			cEconomico.tipo = tCEconomico;
+			tCEconomico.esNuevo = false;
 			for (int i = 0; i < tipo.duracion; i++) {
-				ValoresCEconomico vCEconomico = new ValoresCEconomico(tipo.inicio+i);
-				vCEconomico.initValues(tipo.inicio+i);
+				ValoresCEconomico vCEconomico = new ValoresCEconomico(tipo.inicio + i);
+				vCEconomico.initValues(tipo.inicio + i);
 				cEconomico.valores.add(vCEconomico);
 			}
 			this.ceconomicos.add(cEconomico);
+		}
+	}
+
+	public void actualizar(TipoEvaluacion tipo) {
+		for (TipoCriterio tCriterio : tipo.criterios) {
+			if (tCriterio.esNuevo) {
+				Criterio criterio = new Criterio();
+				tCriterio.esNuevo = false;
+				tCriterio.save();
+				criterio.tipo = tCriterio;
+				this.criterios.add(criterio);
+			}
+		}
+		for (TipoCEconomico tCEconomico : tipo.ceconomicos) {
+			if (tCEconomico.esNuevo) {
+				CEconomico cEconomico = new CEconomico();
+				tCEconomico.esNuevo = false;
+				tCEconomico.save();
+				cEconomico.tipo = tCEconomico;
+				for (int i = 0; i < tipo.duracion; i++) {
+					ValoresCEconomico vCEconomico = new ValoresCEconomico(tipo.inicio + i);
+					vCEconomico.initValues(tipo.inicio + i);
+					cEconomico.valores.add(vCEconomico);
+				}
+				this.ceconomicos.add(cEconomico);
+			}
 		}
 	}
 

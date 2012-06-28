@@ -45,6 +45,26 @@ public class TipoDatoAdicional extends FapModel {
 		this.descripcion = descripcion;
 	}
 
+	public boolean esIgual(TipoDatoAdicional tipoDatoAdicional) {
+		if (this.orden != null && this.orden.equals(tipoDatoAdicional.orden))
+			return true;
+		return false;
+	}
+
+	public void actualizar(TipoDatoAdicional tipoDatoAdicional) {
+		this.orden = tipoDatoAdicional.orden;
+		this.nombre = tipoDatoAdicional.nombre;
+		this.descripcion = tipoDatoAdicional.descripcion;
+	}
+
+	public int estoyContenido(List<TipoDatoAdicional> lista) {
+		for (TipoDatoAdicional busqueda : lista) {
+			if (this.esIgual(busqueda))
+				return lista.indexOf(busqueda);
+		}
+		return -1;
+	}
+
 	// === MANUAL REGION END ===
 
 }

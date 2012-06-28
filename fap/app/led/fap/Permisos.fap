@@ -642,6 +642,17 @@ when
 return
 	all
 }
+
+Permiso editarDesistimiento {
+vars
+	SolicitudGenerica solicitud
+when 
+	((agente.rolActivo = "usuario") and (_accion = leer))
+	or solicitud.id = solicitud.id // Eliminar esta línea
+return
+	editable
+}
+
 /*
  * Permiso “modificarDesistimiento�?
  *

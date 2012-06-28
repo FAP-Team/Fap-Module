@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import play.libs.F.Promise;
+import properties.FapProperties;
 
 import reports.Report;
 

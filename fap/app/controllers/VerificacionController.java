@@ -188,7 +188,7 @@ public class VerificacionController extends VerificacionControllerGen {
 				dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
 				dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 				dbSolicitud.save();
-				Messages.ok("Finaliza la verificación de tipos");
+				Messages.ok("Finaliza la verificación de tipos nuevos");
 			}
 		} else {
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");

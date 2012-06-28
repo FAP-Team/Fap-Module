@@ -44,6 +44,12 @@ public class VerificacionUtils {
 		auxIterar.addAll(listDoc);
 		
 		List<TipoDocumentoEnTramite> listaTipos = TiposDocumentosClient.getTiposDocumentosAportadosCiudadano(tramite);
+		
+		if (listaTipos == null || listaTipos.isEmpty()) {
+			play.Logger.error("No se han podido recuperar los tipos de documentos del trámite "+tramite.nombre+"->"+tramite.uri);
+			Messages.error("No se han podido recuperar los tipos de documentos del trámite. Repita la operación.");
+			return list;
+		}
 		// Documentos condicionados automaticos obligatorios de la aplicacion en cuestion
 		List<String> docCondicionadosAutomaticosNoAportados=new ArrayList<String>();
 		try {
@@ -81,7 +87,7 @@ public class VerificacionUtils {
 			
 			// Si el tipo de documento no fue encontrado en los que aporta
 			if (!tipoEncontrado) {
-
+				play.Logger.error ("El tipo "+tipoDoc.getUri()+" no fue encontrado.");
 				// Si es OBLIGATORIO
 				if ((tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.OBLIGATORIO))
 					||(tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.IMPRESCINDIBLE))) {
@@ -100,7 +106,7 @@ public class VerificacionUtils {
 					list.add(vDoc);
 
 				}
-				if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_MANUAL)){
+				else if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_MANUAL)){
 					VerificacionDocumento vDoc = new VerificacionDocumento();
 					vDoc.existe = false;
 					vDoc.uriTipoDocumento = tipoDoc.getUri();
@@ -115,7 +121,7 @@ public class VerificacionUtils {
 					list.add(vDoc);
 				} 
 				// Condicionado AUTOMATICO
-				if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
+				else if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
 					VerificacionDocumento vDoc = new VerificacionDocumento();
 					vDoc.existe = false;
 					vDoc.uriTipoDocumento = tipoDoc.getUri();
@@ -130,6 +136,8 @@ public class VerificacionUtils {
 					}
 					vDoc.save();
 					list.add(vDoc);
+				} else {
+					play.Logger.error ("El tipo "+tipoDoc.getUri()+" con obligatoriedad: "+tipoDoc.getObligatoriedad()+" no fue encontrado y no es válido.");
 				}
 			}
 		}

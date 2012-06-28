@@ -301,6 +301,10 @@ public class TiposDocumentosClient {
 		} catch (ProcedimientosExcepcion e) {
 			play.Logger.error("No se han podido consultar los tipos de documentos aportados por el ciudadano: "+e.getMessage());
 			Messages.error("No se han podido consultar los tipos de documentos aportados por el ciudadano");
+		} catch (Exception e) {
+			e.printStackTrace();
+			play.Logger.error("Exception -> No se han podido consultar los tipos de documentos aportados por el ciudadano "+e.getMessage());
+			Messages.error("No se han podido consultar los tipos de documentos aportados por el ciudadano");
 		}
 		
 		for (TipoDocumentoEnTramite tipoDoc : listaTodos) {

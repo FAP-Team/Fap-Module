@@ -49,14 +49,17 @@ public class VerificacionUtils {
 		if (listaTipos == null || listaTipos.isEmpty()) {
 			play.Logger.error("No se han podido recuperar los tipos de documentos del trámite "+tramite.nombre+"->"+tramite.uri);
 			Messages.error("No se han podido recuperar los tipos de documentos del trámite. Repita la operación.");
-			return list;
+			return null;
 		}
 		// Documentos condicionados automaticos obligatorios de la aplicacion en cuestion
 		List<String> docCondicionadosAutomaticosNoAportados=new ArrayList<String>();
 		try {
 			docCondicionadosAutomaticosNoAportados = VerificacionFapController.invoke("getDocumentosNoAportadosCondicionadosAutomaticos", tramite.nombre, idSolicitud);
 		} catch (Throwable e) {
-			play.Logger.warn("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
+			play.Logger.error("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
+		}
+		if (docCondicionadosAutomaticosNoAportados != null) {
+			play.Logger.info("docCondicionadosAutomÃ¡ticosNoAportados size: "+docCondicionadosAutomaticosNoAportados.size());
 		}
 		for (TipoDocumentoEnTramite tipoDoc : listaTipos) {
 			boolean tipoEncontrado = false;
@@ -67,7 +70,8 @@ public class VerificacionUtils {
 					vDoc.existe = true;
 					if (tipoDoc.getObligatoriedad() == ObligatoriedadEnum.CONDICIONADO_AUTOMATICO) {
 						// Comprobar si se tenía que añadir o no
-						if (docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri())))
+						if ((docCondicionadosAutomaticosNoAportados != null) && (docCondicionadosAutomaticosNoAportados.size() != 0) 
+								&& docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri())))
 							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
 						else
 							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
@@ -123,20 +127,26 @@ public class VerificacionUtils {
 				} 
 				// Condicionado AUTOMATICO
 				else if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
-					VerificacionDocumento vDoc = new VerificacionDocumento();
-					vDoc.existe = false;
-					vDoc.uriTipoDocumento = tipoDoc.getUri();
-					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
-					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
-					// Si el tipo de Documento está en la lista de los tipos de documentos obligatorios condicionados automaticos que obtenemos de la propia aplicacion
-					// Quitamos la uri del tipo de documento porque esta quitada en la lista de condicionados automaticos, por lo que se debe quitar para comparar
-					if (docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()))){
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
-					} else {
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+					try {
+						VerificacionDocumento vDoc = new VerificacionDocumento();
+						vDoc.existe = false;
+						vDoc.uriTipoDocumento = tipoDoc.getUri();
+						vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
+						vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
+						// Si el tipo de Documento está en la lista de los tipos de documentos obligatorios condicionados automaticos que obtenemos de la propia aplicacion
+						// Quitamos la uri del tipo de documento porque esta quitada en la lista de condicionados automaticos, por lo que se debe quitar para comparar
+						if ((docCondicionadosAutomaticosNoAportados != null) && (docCondicionadosAutomaticosNoAportados.size() != 0) 
+							&& docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()))){
+							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
+						} else {
+							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+						}
+						vDoc.save();
+						list.add(vDoc);
+					} catch (Exception e) {
+						e.printStackTrace();
+						play.Logger.error("Error en CA: "+e.getMessage());
 					}
-					vDoc.save();
-					list.add(vDoc);
 				} else {
 					play.Logger.error ("El tipo "+tipoDoc.getUri()+" con obligatoriedad: "+tipoDoc.getObligatoriedad()+" no fue encontrado y no es válido.");
 				}

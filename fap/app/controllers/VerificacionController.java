@@ -17,6 +17,7 @@ import services.RegistroService;
 
 import tags.ComboItem;
 
+import validation.CustomValidation;
 import verificacion.VerificacionUtils;
 
 import messages.Messages;
@@ -150,10 +151,16 @@ public class VerificacionController extends VerificacionControllerGen {
 				dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos((List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", dbSolicitud.verificacion.id, idSolicitud), dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones, idSolicitud);
 			} catch (Throwable e) {
 				play.Logger.error("Error recuperando los documentos nuevos a verificar", e.getMessage());
+				CustomValidation.error("Error al recuperar los documentos nuevos a verificar", null, null);
+			}
+			
+			if (dbSolicitud.verificacion.documentos == null) {
+				CustomValidation.error("Error al recuperar los documentos nuevos a verificar", null, null);
+				play.Logger.error("Error al recuperar los documentos nuevos a verificar: La lista de documentos a verificar es NULL");
 			}
 			
 			if (!validation.hasErrors()) {
-				
+				play.Logger.info("No errores de validación aquí");
 				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
 				dbSolicitud.verificacion.nuevosDocumentos.clear();
 				dbSolicitud.verificacion.verificacionTiposDocumentos.clear();

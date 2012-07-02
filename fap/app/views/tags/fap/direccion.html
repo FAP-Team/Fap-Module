@@ -6,6 +6,7 @@
   	_titulo - Label
   	_campo  - Campo donde se almacenará el campo de texto
   	_provincia - provincia (si es distinto de null se muestra)
+  	_isla	- isla (si es distinto de null se muestra)
   	_pais	- pais (si es distinto de null se muestra)
   	_ayuda  - Objeto de tipo TagAyuda
   	_requerido(false) - El campo es requerido
@@ -20,8 +21,10 @@
 %{ 
 	def id = _id ?: field.id
 	def label = _titulo
+	def isla = _isla
 	def pais = _pais
 	def provincia = _provincia
+	def elemento = _elemento
 	
 	def ayuda = _ayuda
 	def requerido = _requerido != null? _requerido : false;
@@ -29,35 +32,58 @@
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'	
 	def ancho = _ancho
 	
+	def id_elemento = id +"_elemento"
 	def id_calle = id + "_calle"
 	def id_numero = id + "_numero"
 	def id_otros = id + "_otros"
 	def id_codigoPostal = id + "_codigoPostal"
 	def id_municipio = id + "_municipio"
+	def id_isla = id + "_isla"
 	def id_provincia = id + "_provincia"
 	def id_pais = id + "_pais"
 		 
+	def campo_elemento = _elemento + ".elemento"
 	def campo_calle = _campo + ".calle"
 	def campo_numero = _campo + ".numero"
 	def campo_otros = _campo + ".otros"
 	def campo_codigoPostal = _campo + ".codigoPostal"
 	def campo_municipio = _campo + ".municipio"
+	def campo_isla = _campo + ".isla"
 	def campo_provincia = _campo + ".provincia"
 	def campo_pais = _campo + ".pais"
+	
+	
+	
 		
 }%
-	#{fap.grupo titulo:label, visible:label != null}		
-		#{if pais}
-			#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:false, ancho:ancho /}
+	#{fap.grupo titulo:label, visible:label != null}
+		#{if elemento.equals("DireccionCanaria")}
+			#{fap.combo id:id_isla, titulo:'Isla', campo:campo_isla, obj:obj, requerido:false, ancho:ancho /}
 		#{/if}
-		#{if provincia}
+		
+		#{if elemento.equals("DireccionNacional")}
 			#{fap.combo id:id_provincia, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:false, ancho:ancho /}
 		#{/if}
 		
-
+		#{if elemento.equals("DireccionInternacional")}
+			#{fap.combo id:id_provincia, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:false, ancho:ancho /}
+			#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:false, ancho:ancho /}
+		#{/if}
+			
+		#{if elemento.equals("Direccion")}	
+			#{if pais}
+				#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:false, ancho:ancho /}
+			#{/if}
+			#{if provincia}
+				#{fap.combo id:id_provincia, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:false, ancho:ancho /}
+			#{/if}
+			#{if isla}
+				#{fap.combo id:id_isla, titulo:'Isla', campo:campo_isla, obj:obj, requerido:false, ancho:ancho /}
+			#{/if}
+		#{/if}
 		#{fap.combo id:id_municipio, titulo:"Municipio", campo:campo_municipio, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
 		#{fap.texto id:id_codigoPostal, titulo:'Código Postal', campo:campo_codigoPostal, obj:obj, requerido:requerido, ancho:"100px" /}
-		
+	
 		#{fap.agruparCampos}
 			#{fap.texto id:id_calle, titulo:'Calle', campo:campo_calle, obj:obj, requerido:requerido, ancho:"250px" /}
 			#{fap.texto id:id_numero, titulo:'Número', campo:campo_numero, obj:obj, requerido:requerido, ancho:"100px"/}

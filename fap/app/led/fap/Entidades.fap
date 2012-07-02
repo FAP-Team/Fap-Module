@@ -86,6 +86,7 @@ Entidad Direccion embeddable auditable{
 	String otros
 	String codigoPostal
 	Lista municipios municipio
+	Lista islas isla
 	Lista provincias provincia
 	Lista paises pais
 }

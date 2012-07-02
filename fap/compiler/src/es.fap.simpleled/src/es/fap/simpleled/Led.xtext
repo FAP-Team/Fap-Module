@@ -18,7 +18,7 @@ QN: // Qualified Name
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
-	"agente" | "documento" | "password" | "aportadoPor" | "texto"
+	"agente" | "documento" | "password" | "aportadoPor" | "texto" | "isla"
 ;
 
 Entity:
@@ -448,9 +448,10 @@ FirmaSetTrue:
 ;
 
 Direccion:
-	elemento="Direccion" (name=ID)? (
+	elemento=("Direccion" | "DireccionCanaria" |"DireccionNacional" |"DireccionInternacional") (name=ID)? (
 		('campo' '=' campo=Campo)
-		& ("titulo" "=" titulo=STRING)?
+		& ("titulo" "=" titulo=STRING)
+		& (isla?="isla")?
 		& (provincia?="provincia")?
 		& (pais?="pais")?
 		& (requerido?="requerido")?

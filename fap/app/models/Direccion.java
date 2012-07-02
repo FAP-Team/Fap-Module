@@ -33,6 +33,9 @@ public class Direccion {
 	@ValueFromTable("municipios")
 	public String municipio;
 
+	@ValueFromTable("islas")
+	public String isla;
+
 	@ValueFromTable("provincias")
 	public String provincia;
 

@@ -83,6 +83,15 @@ Lista obligatoriedadDocumentos{
 	// dinamicamente a traves del WS.
 }
 
+Lista islas{
+		01: "Fuerteventura"
+		02: "Gomera, La"
+		03: "Gran Canaria"
+		04: "Hierro, El"
+		05: "Lanzarote"
+		06: "Palma, La"
+		07: "Tenerife"
+}
 
 Lista paises{
 	004:"Afganistán"

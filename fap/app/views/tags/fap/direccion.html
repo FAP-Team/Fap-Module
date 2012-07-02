@@ -58,27 +58,27 @@
 }%
 	#{fap.grupo titulo:label, visible:label != null}
 		#{if elemento.equals("DireccionCanaria")}
-			#{fap.combo id:id_isla, titulo:'Isla', campo:campo_isla, obj:obj, requerido:false, ancho:"250px", searchable:true /}
+			#{fap.combo id:id_isla, titulo:'Isla', campo:campo_isla, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
 		#{/if}
 		
 		#{if elemento.equals("DireccionNacional")}
-			#{fap.combo id:id_provincia, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:false, ancho:"250px", searchable:true /}
+			#{fap.combo id:id_provincia, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
 		#{/if}
 		
 		#{if elemento.equals("DireccionInternacional")}
-			#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:false, ancho:"250px", searchable:true /}
-			#{fap.combo id:id_provincia, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:false, ancho:"250px", searchable:true /}
+			#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+			#{fap.combo id:id_provincia, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
 		#{/if}
 			
 		#{if elemento.equals("Direccion")}	
 			#{if pais}
-				#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:false, ancho:"250px", searchable:true /}
+				#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
 			#{/if}
 			#{if provincia}
-				#{fap.combo id:id_provincia, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:false, ancho:"250px", searchable:true /}
+				#{fap.combo id:id_provincia, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
 			#{/if}
 			#{if isla}
-				#{fap.combo id:id_isla, titulo:'Isla', campo:campo_isla, obj:obj, requerido:false, ancho:"250px", searchable:true /}
+				#{fap.combo id:id_isla, titulo:'Isla', campo:campo_isla, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
 			#{/if}
 		#{/if}
 		#{fap.combo id:id_municipio, titulo:"Municipio", campo:campo_municipio, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}

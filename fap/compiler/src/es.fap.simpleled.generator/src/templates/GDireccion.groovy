@@ -73,24 +73,47 @@ public class GDireccion extends GSaveCampoElement{
 		validation += GCombo.validValueFromTable(campo.addMore("municipio"));
 		
 		if(direccion.elemento == "Direccion"){
-			if (direccion.isla)
+			if (direccion.isla){
 				validation += GCombo.validValueFromTable(campo.addMore("isla"));
-			if (direccion.provincia)
+				if (direccion.requerido){
+					validation+=required(campo.addMore("isla"));
+				}
+			}
+			if (direccion.provincia){
 				validation += GCombo.validValueFromTable(campo.addMore("provincia"));
-			if (direccion.pais)
+				if (direccion.requerido){
+					validation+=required(campo.addMore("provincia"));
+				}
+			}
+			if (direccion.pais){
 				validation += GCombo.validValueFromTable(campo.addMore("pais"));
+				if (direccion.requerido){
+					validation+=required(campo.addMore("pais"));
+				}
+			}
 		}
 		
 		if (direccion.elemento.equals("DireccionCanaria")){
 			validation += GCombo.validValueFromTable(campo.addMore("isla"));
+			if (direccion.requerido){
+				validation+=required(campo.addMore("isla"));
+			}
 		}
 		
-		if (direccion.elemento.equals("DireccionNacional" || "DireccionInternacional")){
+		if (direccion.elemento.equals("DireccionNacional")){
 			validation += GCombo.validValueFromTable(campo.addMore("provincia"));
+			if (direccion.requerido){
+				validation+=required(campo.addMore("provincia"));
+			}
 		}
 		
 		if (direccion.elemento.equals("DireccionInternacional")){
+			validation += GCombo.validValueFromTable(campo.addMore("provincia"));
 			validation += GCombo.validValueFromTable(campo.addMore("pais"));
+			if (direccion.requerido){
+				validation+=required(campo.addMore("provincia"));
+				validation+=required(campo.addMore("pais"));
+			}
 		}
 		
 		return validation;

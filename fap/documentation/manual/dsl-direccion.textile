@@ -7,8 +7,9 @@ Nos permitirá insertar de una forma simple los datos de una dirección en un fo
 h2. Parámetros
 
 * **_[name]_** (opcional) : Identificador del elemento.
-* **campo = _[campo]_** : Atributo donde se almacenará la dirección. Tiene que ser de tipo Direccion.
+* **campo = _[campo]_** : Atributo donde se almacenará la dirección. Tiene que ser de tipo Direccion, DireccionCanaria, DireccionNacional o DireccionInternacional.
 * **titulo = _[string]_** (opcional) : Título que llevará la agrupación de campos de la dirección.
+* **isla** (opcional) : Si se especifica, indica que se debe crear un combo que permita la inserción de la isla.
 * **provincia** (opcional) : Si se especifica, indica que se debe crear un combo que permita la inserción de la provincia.
 * **pais** (opcional) : Si se especifica, indica que se debe crear un combo que permita la inserción del país.
 * **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
@@ -17,9 +18,10 @@ h2. Parámetros
 h2. Definición
 
 bc. Direccion:
-	elemento="Direccion" (name=ID)? (
+	elemento=("Direccion" | "DireccionCanaria" |"DireccionNacional" |"DireccionInternacional") (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ("titulo" "=" titulo=STRING)?
+		& (isla?="isla")?
 		& (provincia?="provincia")?
 		& (pais?="pais")?
 		& (requerido?="requerido")?
@@ -27,12 +29,23 @@ bc. Direccion:
 	)
 ;
 
+* El elemento DirecciónCanaria, añade automáticamente el campo isla.
+* El elemento DireccionNacional, añade automáticamente el campo provincia.
+* El elemento DireccionInternacional, añade automáticamente los campos provincia y país.
 
-h2. Ejemplo de uso
+h2. Ejemplo de uso de Dirección
 
-bc. Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido
-
+bc. Direccion titulo="Domicilio Social" campo=Solicitud.solicitante.domicilio requerido
 
 h2. Resultado
 
 !images/dsl-direccion!
+
+
+h2. Ejemplo de uso de DireccionNacional
+
+bc. DireccionNacional titulo="La Dirección Nacional" campo=Solicitud.solicitante.domicilio requerido
+
+h2. Resultado
+
+!images/dsl-direccionnacional!

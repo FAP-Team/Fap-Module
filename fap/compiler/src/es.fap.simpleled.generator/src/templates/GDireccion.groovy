@@ -24,7 +24,7 @@ public class GDireccion extends GSaveCampoElement{
 		if(direccion.name != null)
 			params.putStr "id", direccion.name;
 
-		if (direccion.elemento == "Direccion"){
+		if (direccion.elemento.equals("Direccion")){
 			if(direccion.isla != null)
 				params.put "isla", direccion.isla;
 				
@@ -41,17 +41,17 @@ public class GDireccion extends GSaveCampoElement{
 				params.put "ancho", direccion.ancho;
 		}
 			
-		if (direccion.elemento == "DireccionCanaria"){
+		if (direccion.elemento.equals("DireccionCanaria")){
 			if(direccion.isla != null)
 				params.put "isla", direccion.isla;
 		}
 		
-		if (direccion.elemento == ("DireccionNacional" || "DireccionInternacional")){
+		if (direccion.elemento.equals("DireccionNacional" || "DireccionInternacional")){
 			if(direccion.provincia != null)
 				params.put "provincia", direccion.provincia;
 		}
 		
-		if (direccion.elemento == ("DireccionInternacional")){
+		if (direccion.elemento.equals("DireccionInternacional")){
 			if(direccion.pais != null)
 				params.put "pais", direccion.pais;
 		}
@@ -81,15 +81,15 @@ public class GDireccion extends GSaveCampoElement{
 				validation += GCombo.validValueFromTable(campo.addMore("pais"));
 		}
 		
-		if (direccion.elemento == "DireccionCanaria"){
+		if (direccion.elemento.equals("DireccionCanaria")){
 			validation += GCombo.validValueFromTable(campo.addMore("isla"));
 		}
 		
-		if (direccion.elemento == ("DireccionNacional" || "DireccionInternacional")){
+		if (direccion.elemento.equals("DireccionNacional" || "DireccionInternacional")){
 			validation += GCombo.validValueFromTable(campo.addMore("provincia"));
 		}
 		
-		if (direccion.elemento == ("DireccionInternacional")){
+		if (direccion.elemento.equals("DireccionInternacional")){
 			validation += GCombo.validValueFromTable(campo.addMore("pais"));
 		}
 		

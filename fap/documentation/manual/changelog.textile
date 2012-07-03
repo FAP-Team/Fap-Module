@@ -42,6 +42,8 @@ Para adaptar las aplicaciones a esta versión es necesario realizar cambios en e
 * Posibilidad de personalizar el mensaje de la página de aportación. 
 * Posibilidad de filtrar las solicitudes de la tabla que las lista.
 * Añadidas nuevas librerias de certificados y resoluciones, así como actualizada la del aed.
+* Fixed bug de redireccion de login.
+* Añadido aumento del nivel de detalle en las Direcciones.
 
 h3. Versión 1.3.8
 

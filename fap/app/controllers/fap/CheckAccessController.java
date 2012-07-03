@@ -41,10 +41,12 @@ public class CheckAccessController extends Controller{
     static void checkAccess() throws Throwable {
         // Authent
         if(!AgenteController.agenteIsConnected()) {
-            flash.put("url", request.method == "GET" ? request.url : "/"); // seems a good default
+        	String httpPath = Play.configuration.getProperty("http.path", "/");
+        	if(request.method == "GET" && !request.url.equals(httpPath)){
+        		flash.put("url", request.method == "GET" ? request.url : "/"); // seems a good default
+        	}
             SecureController.loginFap();
         }
         AgenteController.findAgente(); //Recupera el agente de base de datos
     }
-
 }

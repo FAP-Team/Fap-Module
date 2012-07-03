@@ -2,6 +2,7 @@ h2. Changelog
 
 h3. Versión 2.0.1RC1
 
+* Eliminada la property _fap.aed.tiposdocumentos.otros_.
 * Trámite Alegación añadido.
 * Trámite Aceptación/Renuncia añadido.
 * Trámite Base actualizado.

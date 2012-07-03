@@ -97,6 +97,7 @@ Entidad Documento {
 	String uri
 	Lista tiposDocumentos tipo
 	String descripcion
+	String descripcionVisible transient
 	Boolean clasificado
 	String hash
 	DateTime fechaSubida

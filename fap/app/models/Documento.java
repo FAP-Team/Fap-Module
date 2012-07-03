@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import utils.AedUtils;
+import utils.DocumentosUtils;
 import properties.FapProperties;
 
 // === IMPORT REGION END ===
@@ -30,6 +31,9 @@ public class Documento extends FapModel {
 	public String tipo;
 
 	public String descripcion;
+
+	@Transient
+	public String descripcionVisible;
 
 	public Boolean clasificado;
 
@@ -58,39 +62,8 @@ public class Documento extends FapModel {
 		clasificado = false;
 	}
 
-	public boolean isOtros() {
-		return (tipo != null && tipo.equals(FapProperties.get("fap.aed.tiposdocumentos.otros")));
-	}
-
-	/**
-	 * Prepara un documento para subir al AED
-	 * 
-	 * - Los documentos para subir al aed deben tener tipo y descripción. Si el 
-	 *   documento no tiene descripción y no es de tipo otros, la asigna según
-	 *   el tipo de documento.
-	 *   
-	 */
-	public void prepararParaSubir() {
-		// Si no tiene descripción y no es de tipo otros, pone como tipo
-		// el nombre del tipo de documento
-		if ((descripcion == null || descripcion.isEmpty()) && !isOtros()) {
-			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
-			if ((descripcion == null) || (descripcion.trim().equals("")))
-				play.Logger.error("La descripción no se pudo abtener a partir del tipo: " + tipo);
-		}
-	}
-
-	/**
-	 * Actualiza la descripcion si el tipo de documentos no es Otro
-	 * 
-	 */
-
-	public void actualizaDescripcion() {
-		if (!isOtros()) {
-			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
-			if ((descripcion == null) || (descripcion.trim().equals("")))
-				play.Logger.error("La descripción no se pudo abtener a partir del tipo.");
-		}
+	public boolean isMultiple() {
+		return (tipo != null && DocumentosUtils.esTipoMultiple(tipo));
 	}
 
 	public String getUrlDescarga() {
@@ -100,6 +73,16 @@ public class Documento extends FapModel {
 	public static Documento findByUri(String uri) {
 		Documento documento = models.Documento.find("byUri", uri).first();
 		return documento;
+	}
+
+	public String getDescripcionVisible() {
+		String descripcionDevolver = "";
+		if ((this.descripcion != null) && !(this.descripcion.trim().equals("")))
+			return this.descripcion;
+		descripcionDevolver = TableKeyValue.getValue("tiposDocumentos", tipo);
+		if ((descripcionDevolver == null) || (descripcionDevolver.trim().equals("")))
+			play.Logger.error("La descripción no se pudo obtener a partir del tipo: " + tipo);
+		return descripcionDevolver;
 	}
 
 	// === MANUAL REGION END ===

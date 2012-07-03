@@ -192,16 +192,14 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     @Override
     public String saveDocumentoTemporal(Documento documento, InputStream contenido, String filename)
             throws GestorDocumentalServiceException {
-        
-        documento.prepararParaSubir();
 
         checkNotNull(documento.tipo, "tipo del documento no puede ser null");
-        checkNotNull(documento.descripcion, "descripcion del documento no puede ser null");
+        checkNotNull(documento.descripcionVisible, "descripcion del documento no puede ser null");
         checkNotNull(contenido, "contenido no puede ser null");
         checkNotNull(filename, "filename del documento no puede ser null");
         
         checkArgument(!documento.tipo.isEmpty(), "El tipo de documento no puede estar vacío");
-        checkArgument(!documento.descripcion.isEmpty(), "La descripción del documento no puede estar vacía");
+        checkArgument(!documento.descripcionVisible.isEmpty(), "La descripción del documento no puede estar vacía");
         checkArgument(!filename.isEmpty(), "El filename no puede estar vacío");
         
         checkDocumentoNotInGestorDocumental(documento);
@@ -258,7 +256,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
      */
     @Override
     public void updateDocumento(Documento documento) throws GestorDocumentalServiceException {
-        documento.actualizaDescripcion();
+        
     }
 
     /**

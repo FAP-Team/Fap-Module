@@ -2,6 +2,8 @@ package verificacion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import models.FapModel;
 import models.TipoDocumento;
@@ -13,6 +15,8 @@ import models.Tramite;
  */
 
 public class ObligatoriedadDocumentosFap extends FapModel{
+	
+	static public String PATTERN_VERSION_URI = "(.*)/v[0-9][0-9]$";
 	
 	// Para saber el trámite sobre el que se está trabajando
 	static public Tramite tramite;
@@ -139,8 +143,12 @@ public class ObligatoriedadDocumentosFap extends FapModel{
 	}
 
 	// Para eliminar de la URI, la Versión, que no hará falta en el proceso de obtener la documentación obligatoria al trámite
-	static String eliminarVersionUri(String uri){
-		return uri.substring(0,uri.length()-4);
-	}
+	static public String eliminarVersionUri(String uri) {
+		Pattern p = Pattern.compile(PATTERN_VERSION_URI);
+		Matcher m = p.matcher(uri);
+		if (m.find())
+			return m.group(1);
+		return uri;
+ 	}
 	
 }

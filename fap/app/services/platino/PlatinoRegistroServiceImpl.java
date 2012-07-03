@@ -193,12 +193,11 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         datosDoc.setTipoDoc("SOL");
         datosDoc.setTipoMime("application/pdf");
 
-        documento.prepararParaSubir();
-        if (documento.descripcion == null)
+        if (documento.descripcionVisible == null)
             throw new NullPointerException();
         
         if (descripcion == null)
-        	descripcion=documento.descripcion+" "+FapProperties.get("application.name");
+        	descripcion=documento.descripcionVisible+" "+FapProperties.get("application.name");
 
         datosDoc.setDescripcion(descripcion);
         datosDoc.setFecha(fechaApertura);

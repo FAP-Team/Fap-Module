@@ -18,6 +18,10 @@ GET   /Baremacion/evaluaciones      								 fap.ConsultarEvaluacionesController
 GET   /Baremacion/evaluacion/{idEvaluacion}/fichaevaluador           fap.FichaEvaluadorController.index
 GET   /Baremacion/evaluacion/{idEvaluacion}/borradorpdf              fap.FichaEvaluadorController.generaPDF
 
+#Utils
+
+GET /utils/documentoEsMultiple/{tipoUri}				fap.UtilsController.documentoEsMultiple
+
 #Descarga del AED
 GET         /aed/descargar                 fap.DescargasAedController.descargar
 

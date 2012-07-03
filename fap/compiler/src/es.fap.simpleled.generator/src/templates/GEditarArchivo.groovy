@@ -53,7 +53,7 @@ public class GEditarArchivo extends GSaveCampoElement{
 	
 	public String validateCopy(Stack<Set<String>> validatedFields){
 		return """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
-				   if ((${campo.firstLower()}.descripcion != null) && (!${campo.firstLower()}.descripcion.trim().equals("")) && (${campo.firstLower()}.descripcion.equals(FapProperties.get("fap.aed.tiposdocumentos.otros"))))
+				   if ((${campo.firstLower()}.descripcion != null) && (!${campo.firstLower()}.descripcion.trim().equals("")))
 				      ${campo.dbStr()}.descripcion = ${campo.firstLower()}.descripcion;
 		""";
 	}

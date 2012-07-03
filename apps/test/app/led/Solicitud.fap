@@ -251,6 +251,7 @@ Popup popUpTemas titulo = "Tema" campo = Asignatura.temas {
 		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos paginaEditar=DocumentosEditar{
 			Columna campo=Documento.id
 			Columna campo=Documento.tipo
+			Columna campo=Documento.descripcionVisible
 		}
 		Grupo botonObligatorios titulo="Comprobar que estan aportados todos los documentos obligatorios"{
 			Boton comprobarDocumentosObligatorios titulo="Comprobar Obligatorios"

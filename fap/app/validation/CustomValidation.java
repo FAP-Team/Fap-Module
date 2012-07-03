@@ -193,7 +193,7 @@ public class CustomValidation {
     		ValidationResult result = new ValidationResult();
     		result.ok = true;
     		result.ok = applyCheck(requiredCheck, key + ".tipo", documento.tipo).ok && result.ok;
-    		if(documento.isOtros()){
+    		if(documento.isMultiple()){
     			result.ok = applyCheck(requiredCheck, key + ".descripcion", documento.descripcion).ok && result.ok;
     		}
     		return result;    		

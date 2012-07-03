@@ -285,22 +285,20 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      */
 	@Override
 	public String saveDocumentoTemporal(models.Documento documento, InputStream contenido, String filename) throws GestorDocumentalServiceException {
-		//Preparamos el documento para subir al AED		
-        documento.prepararParaSubir();
 
         checkNotNull(documento.tipo, "tipo del documento no puede ser null");
-        checkNotNull(documento.descripcion, "descripcion del documento no puede ser null");
+        checkNotNull(documento.descripcionVisible, "descripcion del documento no puede ser null");
         checkNotNull(contenido, "contenido no puede ser null");
         checkNotNull(filename, "filename del documento no puede ser null");
         
         checkArgument(!documento.tipo.isEmpty(), "El tipo de documento no puede estar vacío");
-        checkArgument(!documento.descripcion.isEmpty(), "La descripción del documento no puede estar vacía");
+        checkArgument(!documento.descripcionVisible.isEmpty(), "La descripción del documento no puede estar vacía");
         checkArgument(!filename.isEmpty(), "El filename no puede estar vacío");
         
         checkDocumentoNotInGestorDocumental(documento);
         //checkNotEmptyImputStream(contenido); // Falla cuando viene en 'contenido' el Justificante de Platino (el getJustificantePDF)
 		
-		Documento documentoAed = crearDocumentoTemporal(documento.tipo, documento.descripcion, filename, contenido);
+		Documento documentoAed = crearDocumentoTemporal(documento.tipo, documento.descripcionVisible, filename, contenido);
 		
 		String ruta = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".temporales");
 		String uri = null;
@@ -382,13 +380,12 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	
     @Override
     public void updateDocumento(models.Documento documento) throws GestorDocumentalServiceException {
-        documento.prepararParaSubir();
 
         try {
             boolean clasificado = isClasificado(documento);
             PropiedadesDocumento props = obtenerPropiedades(documento.uri, clasificado);
             
-            props.setDescripcion(documento.descripcion);
+            props.setDescripcion(documento.descripcionVisible);
             props.setUriTipoDocumento(documento.tipo);
             if(clasificado){
                 List<DocumentoEnUbicacion> ubicaciones = aedPort.obtenerDocumentoRutas(documento.uri);

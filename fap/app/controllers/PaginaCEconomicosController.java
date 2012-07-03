@@ -1,47 +1,26 @@
-
 package controllers;
 
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import messages.Messages;
-import messages.Messages.MessageType;
-import models.CEconomico;
-import models.CEconomicoSolicitanteManual;
-import models.CEconomicosManuales;
-import models.CEconomicosSolicitante;
-import models.Criterio;
-import models.Evaluacion;
-import models.SolicitudGenerica;
-import models.TipoEvaluacion;
-import models.ValoresCEconomico;
-
-import org.apache.log4j.Logger;
-
-import controllers.fap.AgenteController;
-import controllers.fap.GenericController;
-import controllers.fap.SecureController;
-import controllers.gen.PaginaCEconomicosControllerGen;
-
-import play.mvc.Before;
-import play.mvc.Controller;
+import models.*;
+import play.Logger;
 import play.mvc.Finally;
 import play.mvc.Util;
-import play.mvc.With;
-import security.Accion;
 import security.Secure;
+import tables.TableRecord;
 import utils.BaremacionUtils;
 import validation.CustomValidation;
 
-@With({SecureController.class, AgenteController.class})
-public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen{
+import com.google.inject.Inject;
+
+import controllers.gen.PaginaCEconomicosControllerGen;
+
+public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen {
 	
 	@Inject
 	protected static Secure secure;
-	
-	private static Logger log = Logger.getLogger("Paginas");
 	
 	@Finally(only="index")
 	public static void end(){
@@ -49,6 +28,7 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen{
 	}
 	
 	public static void index(String accion, Long idSolicitud, Long idCEconomico, Integer duracion) {
+		System.out.println(Messages.allMessages());
 		if (accion == null)
 			accion = getAccion();
 		if (!permiso(accion)) {
@@ -68,6 +48,7 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen{
 			calcularValoresAuto(cEconomico);
 		
 		log.info("Visitando página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html");
+		
 		renderTemplate("fap/PaginaCEconomicos/PaginaCEconomicos.html", accion, idSolicitud, idCEconomico, solicitud, cEconomico, duracion);
 	}
 	
@@ -86,50 +67,9 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen{
 		}
 		return suma;
 	}
-
-	@Util
-	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void editar(Long idSolicitud, Long idCEconomico, CEconomico cEconomico, Integer duracion) {
-		checkAuthenticity();
-		if (!permiso("editar")) {
-			Messages.error("No tiene suficientes privilegios para acceder a esta solicitud");
-		}
-		CEconomico dbCEconomico = PaginaCEconomicosController.getCEconomico(idSolicitud, idCEconomico);
-
-		PaginaCEconomicosController.PaginaCEconomicosBindReferences(cEconomico);
-
-		if (!Messages.hasErrors()) {
-			PaginaCEconomicosController.PaginaCEconomicosValidateCopy("editar", dbCEconomico, cEconomico);
-			SolicitudGenerica solicitud = PaginaCEconomicosController.getSolicitudGenerica(idSolicitud);
-			BaremacionUtils.calcularTotales(solicitud);
-		}
-
-		if (!Messages.hasErrors()) {
-			PaginaCEconomicosController.editarValidateRules(dbCEconomico, cEconomico);
-		}
-		if (!Messages.hasErrors()) {		
-			dbCEconomico.save();
-			log.info("Acción Editar de página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html" + " , intentada con éxito");
-		} else {
-			flash(dbCEconomico);
-			log.info("Acción Editar de página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html" + " , intentada sin éxito (Problemas de Validación)");
-		}
-		PaginaCEconomicosController.editarRender(idSolicitud, idCEconomico, duracion);
-	}
-
-	@Util
-	public static void editarRender(Long idSolicitud, Long idCEconomico, Integer duracion) {
-		if (!Messages.hasMessages()) {
-			Messages.ok("Página editada correctamente");
-			Messages.keep();
-			redirect("PCEconomicosController.index", "editar", idSolicitud);
-		}
-		Messages.keep();
-		redirect("PaginaCEconomicosController.index", "editar", idSolicitud, idCEconomico, duracion);
-	}
 	
 	@Util
-	public static void PaginaCEconomicosValidateCopy(String accion, CEconomico dbCEconomico, CEconomico cEconomico) {
+	public static void guardarValidateCopy(String accion, CEconomico dbCEconomico, CEconomico cEconomico) {
 		CustomValidation.clearValidadas();
 		CustomValidation.valid("cEconomico.tipo", cEconomico.tipo);
 		CustomValidation.valid("cEconomico", cEconomico);
@@ -147,6 +87,47 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen{
 		}
 		if (!Messages.hasErrors())
 			dbCEconomico.save();
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void guardar(Long idSolicitud, Long idCEconomico, CEconomico cEconomico, String botonGuardar, Integer duracion) {
+		checkAuthenticity();
+		if (!permisoGuardar("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		CEconomico dbCEconomico = PaginaCEconomicosController.getCEconomico(idSolicitud, idCEconomico);
+
+		PaginaCEconomicosController.guardarBindReferences(cEconomico);
+
+		if (!Messages.hasErrors()) {
+			PaginaCEconomicosController.guardarValidateCopy("editar", dbCEconomico, cEconomico);
+			SolicitudGenerica solicitud = PaginaCEconomicosController.getSolicitudGenerica(idSolicitud);
+			BaremacionUtils.calcularTotales(solicitud);
+		}
+
+		if (!Messages.hasErrors()) {
+			PaginaCEconomicosController.guardarValidateRules(dbCEconomico, cEconomico);
+		}
+		if (!Messages.hasErrors()) {		
+			dbCEconomico.save();
+			log.info("Acción Editar de página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html" + " , intentada con éxito");
+		} else {
+			flash(dbCEconomico);
+			log.info("Acción Editar de página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html" + " , intentada sin éxito (Problemas de Validación)");
+		}
+		PaginaCEconomicosController.guardarRender(idSolicitud, idCEconomico, duracion);
+	}
+	
+	@Util
+	public static void guardarRender(Long idSolicitud, Long idCEconomico, Integer duracion) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página editada correctamente");
+			Messages.keep();
+			redirect("PCEconomicosController.index", "editar", idSolicitud);
+		}
+		Messages.keep();
+		redirect("PCEconomicosController.index", "editar", idSolicitud);
 	}
 	
 	@Util
@@ -173,5 +154,23 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen{
 			Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
 		}
 	}
-}
+	
+	public static void tablaceconomicosManuales(Long idCEconomico) {
+
+		java.util.List<CEconomicosManuales> rows = CEconomicosManuales.find("select cEconomicosManuales from CEconomico cEconomico join cEconomico.otros cEconomicosManuales where cEconomico.id=?", idCEconomico).fetch();
+
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		List<CEconomicosManuales> rowsFiltered = rows; //Tabla sin permisos, no filtra
+
+		tables.TableRenderResponse<CEconomicosManuales> response = new tables.TableRenderResponse<CEconomicosManuales>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 		
+		for (TableRecord<CEconomicosManuales> filaCEconomico: response.rows){
+			if (tipoEvaluacion.estado.equals("iniciada"))
+				filaCEconomico.permisoEditar = false;
+		}
+		
+		renderJSON(response.toJSON("tipo.jerarquia", "tipo.nombre", "id"));
+	}
+}

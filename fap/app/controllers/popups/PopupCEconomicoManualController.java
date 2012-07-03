@@ -16,8 +16,8 @@ public class PopupCEconomicoManualController extends PopupCEconomicoManualContro
 		if (accion == null)
 			accion = getAccion();
 		if (!permiso(accion)) {
-			Messages.fatal("No tiene suficientes privilegios para acceder a esta solicitud");
-			renderTemplate("fap/Baremacion/PopupCEconomicoManual.html");
+			Messages.fatal("La evaluacion ya ha sido iniciada, no puede crear ningún Concepto Economico Nuevo");
+			renderTemplate("fap/Baremacion/PopupCEconomicoManual.html", accion);
 		}
 
 		CEconomico cEconomico = PopupCEconomicoManualController.getCEconomico(idCEconomico);

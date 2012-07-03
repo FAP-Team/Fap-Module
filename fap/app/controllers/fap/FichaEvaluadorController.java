@@ -56,6 +56,12 @@ public class FichaEvaluadorController extends Controller {
 		if(secure.checkGrafico("evaluacion", "visible", "leer", null, null)){
 			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+			if (evaluacion != null) {
+				BaremacionUtils.ordenarTiposCEconomicos(evaluacion.tipo.ceconomicos);
+				BaremacionUtils.ordenarCEconomicos(evaluacion.ceconomicos);
+				BaremacionUtils.ordenarTiposCriterios(evaluacion.tipo.criterios);
+				BaremacionUtils.ordenarCriterios(evaluacion.criterios);
+			}
 			notFoundIfNull(evaluacion);
 			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
 			List<Documento> documentos = evaluacion.getDocumentosAccesibles();

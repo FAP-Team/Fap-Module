@@ -613,58 +613,58 @@ Permiso mostrarResultadoBusqueda{
 
 
 Permiso prepararDesistimiento{
-vars
-	SolicitudGenerica solicitud
-when
-	(_accion = leer) or
-	(solicitud.desistimiento.registro.fasesRegistro.borrador = "false")
-return
-	editable
+	vars
+		SolicitudGenerica solicitud
+	when
+		(_accion = leer) or
+		(solicitud.desistimiento.registro.fasesRegistro.borrador = "false")
+	return
+		editable
 }
 
 Permiso generarBorradorDesistimiento{
-vars
-	SolicitudGenerica solicitud
-when
-	(_accion = leer) or
-	solicitud.desistimiento.motivo != null
-return
-	all
+	vars
+		SolicitudGenerica solicitud
+	when
+		(_accion = leer) or
+		solicitud.desistimiento.motivo != null
+	return
+		all
 }
 
 Permiso enBorradorDesistimiento{
-vars
-	SolicitudGenerica solicitud
-when
-	(_accion = leer) or
-	(solicitud.desistimiento.registro.fasesRegistro.borrador="true")
-return
-	all
+	vars
+		SolicitudGenerica solicitud
+	when
+		(_accion = leer) or
+		(solicitud.desistimiento.registro.fasesRegistro.borrador="true")
+	return
+		all
 }
 
 Permiso editarDesistimiento {
-vars
-	SolicitudGenerica solicitud
-when 
-	((agente.rolActivo = "usuario") and (_accion = leer))
-	or solicitud.id = solicitud.id // Eliminar esta línea
-return
-	editable
+	vars
+		SolicitudGenerica solicitud
+	when 
+		((agente.rolActivo = "usuario") and (_accion = leer))
+		or solicitud.id = solicitud.id // Eliminar esta línea
+	return
+		editable
 }
 
 /*
- * Permiso “modificarDesistimiento�?
+ * Permiso “modificarDesistimiento�?
  *
  */
 
 Permiso modificarDesistimiento{
-vars
- 	SolicitudGenerica solicitud
-when
-	(_accion = leer) or
-	(solicitud.desistimiento.registro.fasesRegistro.registro="false")
-return
-	all
+	vars
+	 	SolicitudGenerica solicitud
+	when
+		(_accion = leer) or
+		(solicitud.desistimiento.registro.fasesRegistro.registro="false")
+	return
+		all
 }
 
 /*
@@ -674,85 +674,85 @@ return
  * - Regla sobreescrita
  */
 Permiso instruccionDesistimiento{
-vars
-	SolicitudGenerica solicitud
-when
-	solicitud.id = solicitud.id
-return
-	all
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud.id = solicitud.id
+	return
+		all
 }
 /*
  * Permiso “mesajeIntermedioDesistimiento"
  */
 Permiso mensajeIntermedioDesistimiento{
-vars
-	SolicitudGenerica solicitud
-when
-	(solicitud.desistimiento.registro.fasesRegistro.firmada = "true" or
-	solicitud.desistimiento.registro.fasesRegistro.registro = "true" or
-	solicitud.desistimiento.registro.fasesRegistro.expedienteAed = "true") and
-	solicitud.desistimiento.registro.fasesRegistro.clasificarAed = "false"
-return
-	all
+	vars
+		SolicitudGenerica solicitud
+	when
+		(solicitud.desistimiento.registro.fasesRegistro.firmada = "true" or
+		solicitud.desistimiento.registro.fasesRegistro.registro = "true" or
+		solicitud.desistimiento.registro.fasesRegistro.expedienteAed = "true") and
+		solicitud.desistimiento.registro.fasesRegistro.clasificarAed = "false"
+	return
+		all
 }
 /*
- * Permiso “clasificadaDesistimiento�?
+ * Permiso “clasificadaDesistimiento�?
  *
  */
 
 Permiso clasificadaDesistimiento{
-vars
-	SolicitudGenerica solicitud
-when
-	//TODO SMB 04/04/2012
-	(_accion = leer) or
-	(solicitud.desistimiento.registro.fasesRegistro.clasificarAed="true")
-return
-	visible
+	vars
+		SolicitudGenerica solicitud
+	when
+		//TODO SMB 04/04/2012
+		(_accion = leer) or
+		(solicitud.desistimiento.registro.fasesRegistro.clasificarAed="true")
+	return
+		visible
 }
 /*
- * Permiso “firmarRegistrarDesistimiento�?
+ * Permiso “firmarRegistrarDesistimiento�?
  *
  */
 
 Permiso firmarRegistrarDesistimiento{
-vars
-	SolicitudGenerica solicitud
-when
-	(_accion = leer) or
-	(solicitud.desistimiento.registro.fasesRegistro.clasificarAed="false")
-return
-	all
+	vars
+		SolicitudGenerica solicitud
+	when
+		(_accion = leer) or
+		(solicitud.desistimiento.registro.fasesRegistro.clasificarAed="false")
+	return
+		all
 }
 /*
- * Permiso “firmarDesistimiento�?
+ * Permiso “firmarDesistimiento�?
  *
  */
 
 Permiso firmarDesistimiento{
-vars
-	SolicitudGenerica solicitud
-when
-	(_accion = leer) or
-	(solicitud.desistimiento.registro.fasesRegistro.firmada="false")
-return
-	all
+	vars
+		SolicitudGenerica solicitud
+	when
+		(_accion = leer) or
+		(solicitud.desistimiento.registro.fasesRegistro.firmada="false")
+	return
+		all
 }
 /*
- * Permiso “registrarDesistimiento�?
+ * Permiso “registrarDesistimiento�?
  *
  */
 
 Permiso registrarDesistimiento{
-vars
-	SolicitudGenerica solicitud
-when
-	(_accion = leer) or
-	(solicitud.desistimiento.registro.fasesRegistro.firmada = "true" and
-	solicitud.desistimiento.registro.fasesRegistro.registro = "false" and
-	solicitud.desistimiento.registro.fasesRegistro.clasificarAed = "false")
-return
-	visible
+	vars
+		SolicitudGenerica solicitud
+	when
+		(_accion = leer) or
+		(solicitud.desistimiento.registro.fasesRegistro.firmada = "true" and
+		solicitud.desistimiento.registro.fasesRegistro.registro = "false" and
+		solicitud.desistimiento.registro.fasesRegistro.clasificarAed = "false")
+	return
+		visible
 }
 
 
@@ -762,4 +762,31 @@ Permiso verTablaCEconomicosOtros{
 	when
 		ceconomico.tipo.tipoOtro="true"
 	return all
+}
+
+Permiso iniciarTipoEvaluacion{
+	vars
+		TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")
+	when
+		tipoEvaluacion = null
+	return
+		all
+}
+
+Permiso iniciarBaremacion {
+	vars
+		TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")
+	when
+		(tipoEvaluacion != null) and (tipoEvaluacion.estado = "cargada")
+	return
+		all
+}
+
+Permiso actualizarBaremacion {
+	vars
+		TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")
+	when
+		(tipoEvaluacion != null) and (tipoEvaluacion.estado = "iniciada")
+	return
+		all
 }

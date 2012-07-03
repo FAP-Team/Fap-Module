@@ -1,16 +1,20 @@
 h1. Creación del fichero JSON asociado
 
-El nicho de información principal para la generación de toda la parte de baremación en nuestra aplicación es un simple fichero JSON que indica los campos, atributos, criterios y demás formalismos que contiene una baremación en especial.
+El nicho de información principal para la generación de toda la parte de baremación en nuestra aplicación es una serie de ficheros JSON que indican los campos, atributos, criterios y demás formalismos que contiene una baremación en especial.
 
-Este fichero es un principio está pensado para que sea la respuesta de una petición a un servicio web propio para crear la Baremación de la aplicación. En estos momentos eso no está totalmente desarrollado, por lo que de momento el fichero JSON se debe generar a mano, simulando la respuesta del servicio web, para que la aplicación lo pueda leer y parsear, y así cargar todo lo concerniente a la baremación en nuestra aplicación.
+Estos ficheros están pensados para que sea la respuesta de una petición a un servicio web propio, en un futuro, para crear la Baremación de la aplicación. En estos momentos eso no está totalmente desarrollado, por lo que de momento los ficheros JSON se deben generar a mano, simulando la respuesta del servicio web, para que la aplicación los pueda leer y parsear, y así cargar todo lo concerniente a la baremación en nuestra aplicación.
 
-El fichero debe llamarse: *tipoEvaluacion.json* y debe situarse en _${PATH_APLICACION}/conf/initial-data/_, creando las carpetas oportunas si no existen.
+Los ficheros deberán situarse en _${PATH_APLICACION}/conf/initial-data/_, creando las carpetas oportunas si no existen. Deberán llamarse: 
+* *tipoEvaluacion.json*, _contedrá los Datos Generales del tipo de Evaluación. Estos datos sólo se podrán carga una única vez, al iniciarse la baremación_
+* *criterios.json*, _contendrá los datos de los Criterios de la evaluación. Este fichero se podrá actualizar tantas veces como se quiera, recargandolo en la página pertinente de administración_
+* *conceptosEconomicos.json*, _contedrá los datos de los Conceptos Economicos de la evaluación. Este fichero se podrá actualizar tantas veces como se quiera, recargandolo en la página pertinente de administración. Pero teniendo en cuenta que los conceptos economicos que verá el solicitante, sólo se cargarán una única vez, y esta será cuando el solicitante visite por primera vez la página PCEconomicos, creada por defecto en fap._
+* *datosAdicionales.json*, _contendrá los Datos Adicionales de la evaluación, que así se quieran contemplar. Este fichero se podrá actualizar tantas veces como se quiera, recargandolo en la página pertinente de administración_
 
-h2. Estructura General
+h2. Estructura de _tipoEvaluacion.json_
 
 El contenido del fichero se detalla a continuación:
 
-Debe contener 9 items que se separaran por ',' y estarán encerrados entre '{', '}'
+Debe contener 7 items que se separaran por ',' y estarán encerrados entre '{', '}'
 
 Los items tendrán la estructura _clave : valor_ y serán los siguientes:
 
@@ -18,29 +22,25 @@ Los items tendrán la estructura _clave : valor_ y serán los siguientes:
 * *tipoProcedimiento* Es un String que representará el tipo de Procedimiento al que se le está realizando la Baremación.
 * *numeroEvaluacion* Es un Integer que indica el número de Evaluación que es, como una especie de versión.
 * *duracion* Es un Integer que indica la duración en años que tiene estipulada la ayuda, subvención, etc.
+* *inicio* Es un Integer que indica el año de inicio de la ayuda, subvención, etc. A partir de ese año y con la _duración_ se podrá conocer exactamente los años que se tendrán en cuenta.
 * *comentariosAdministracion* Valor booleano que representa la presencia o no en la baremación de comentarios por parte del Evaluador o Gestor etc.
 * *comentariosSolicitante* Valor booleano que representa la presencia o no en la baremación de comentarios por parte del solicitante.
-* *criterios* Representan en una lista englobado por "[", "]" la serie de criterios de evaluación de dicha baremación. Más adelante se explica mejor su estructura.
-* *ceconomicos* Representa en una lista englobada por "[", "]" la serie de conceptos económicos de dicha baremación. Más adelante se explica mejor su estructura.
-* *datosAdicional* Representa en una lista englobada por "[", "]" aquellos datos adicionales propios de un procedimiento en concreto que hacen falta para la evaluación. Más adelante se explica mejor su estructura.
 
-De modo que el fichero debe tener un formato como el ejemplo que vemos a continuación. Denotar que los items _criterios_, _ceconomicos_ y _datosAdicionales_ se representan vacíos, porque más adelante se detalla en profundidad el contenido de los mismos, para una mejor explicación.
+De modo que el fichero debe tener un formato como el ejemplo que vemos a continuación.
 
 bc. {
 	nombre : "Tipo evaluación de innovación",
 	tipoProcedimiento : "Innovacion",
 	numeroEvaluacion : 1,
 	duracion : 3,
+	inicio: 2012,
 	comentariosAdministracion : true,
 	comentariosSolicitante : false,
-	criterios : [],
-	ceconomicos : [],
-	datosAdicionales : []
 }
 
-h2. Estructura de los _criterios_
+h2. Estructura de _criterios.json_
 
-El item criterio de la estructura general anterior, representa la lista de criterios de evaluación, que normalmente se publica en la convocatoria. En esta lista, cada elemento será un objeto _criterio_ que tendrá los siguientes items:
+El fichero criterio.json, representa la lista de criterios de evaluación, que normalmente se publica en la convocatoria. Se podrá modificar este fichero tantas veces como se requiera, y poder actualizar el modelo de la aplicación respecto a este fichero en la página pertinente de administración, a través del botón asociado. Fap lo que hará será insertar en el modelo de BBDD los nuevos criterios que encuentre o actualizará los que existen si estos han sido modificados, pero nunca tendrá en cuenta si se han eliminado criterios del fichero, por lo que *no* eliminará criterios, sólo actualizará los existentes y añadirá los nuevos. En esta lista, cada elemento será un objeto _criterio_ que tendrá los siguientes items:
 
 * *nombre* Es un String con el Título del criterio.
 * *claseCriterio* Es un String que indica la forma en la que se evalúa el criterio. Puede tener uno de los tres valores siguientes:
@@ -58,9 +58,9 @@ El item criterio de la estructura general anterior, representa la lista de crite
 * *comentariosAdministracion* Valor booleano que representa la presencia o no en ese criterio en concreto de comentarios por parte del Evaluador o Gestor etc.
 * *comentariosSolicitante* Valor booleano que representa la presencia o no en ese criterio en concreto de comentarios por parte del solicitante.
 
-De modo que el item _criterios_ tiene que tener una estructura similar a la que se muestra en el siguiente ejemplo:
+De modo que el fichero _criterios.json_ tiene que tener una estructura similar a la que se muestra en el siguiente ejemplo:
 
-bc. criterios : [
+bc. [
     {
         nombre:"Componente innovadora y tecnológica predominante (0-25 Ptos.)",
         claseCriterio:"auto",
@@ -95,9 +95,9 @@ bc. criterios : [
     }
 ]
 
-h2. Estructura de los _ceconomicos_
+h2. Estructura de _conceptosEconomicos.json_
 
-El item ceconomicos de la estructura general que vimos al principio, representa la lista de conceptos económicos que serán necesarios evaluar para conocer si las valoraciones económicas de cada uno de los conceptos del presupuesto presentado se adecuan al proyecto. En esta lista, cada elemento será un objeto _ceconomico_ que tendrá los siguientes items:
+El fichero conceptosEconomicos.json, representa la lista de conceptos Economicos de evaluación, que normalmente se publica en la convocatoria. Se podrá modificar este fichero tantas veces como se requiera, y poder actualizar el modelo de la aplicación respecto a este fichero en la página pertinente de administración, a través del botón asociado. Fap lo que hará será insertar en el modelo de BBDD los nuevos Conceptos Economicos que encuentre o actualizará los que existen si estos han sido modificados, pero nunca tendrá en cuenta si se han eliminado Conceptos Economicos del fichero, por lo que *no* eliminará criterios, sólo actualizará los existentes y añadirá los nuevos. Los Conceptos Economicos que verá el solicitante, sólo se cargarán una única vez, y esta será cuando el solicitante visite por primera vez la página _PCEconomicos_, creada por defecto en fap. En esta lista, cada elemento será un objeto _ceconomicos_ que tendrá los siguientes items:
 
 * *nombre* Es un String con el Título del concepto económico.
 * *clase* String que representa la forma en la que se especifica el concepto económico. Puede tener uno de los dos valores siguientes:
@@ -106,36 +106,40 @@ El item ceconomicos de la estructura general que vimos al principio, representa 
 * *jerarquia* Es un String que denota la jerarquía de los conceptos económicos de la misma manera que los criterios. Se utiliza para la representación de los subconceptos económicos. La jerarquía indica la situación del concepto económico en el árbol de conceptos económicos. Los nodos hojas son los únicos que se cumplimentarán por el solicitante. Los nodos no hoja se calculan a partir de los nodos hoja, y su cálculo por defecto será la suma de sus subconceptos o nodos hoja. Si se quiere un algoritmo de cómputo distinto al de suma, se requerirá sobreescribir la función asociada como se verá más adelante.
 * *comentariosAdministracion* Valor booleano que representa la presencia o no en ese concepto económico en concreto de comentarios por parte del Evaluador o Gestor etc.
 * *comentariosSolicitante* Valor booleano que representa la presencia o no en ese concepto económico en concreto de comentarios por parte del solicitante.
+* *tipoOtro* Valor booleano que representa que dicho Concepto Economico puede ser 'personalizable' por el solicitante. Esto es que el Concepto Economico en cuestión, puede tener una serie de hijos, que serán creados por el solicitante, para que pueda añadir aquellos Conceptos Económicos que vea oportuno y no estén en la convocatoria. La jerarquía de dichos conceptos económicos, se calculará automáticamente, a raíz del padre y teniendo en cuenta los hermanos ya creados. Por lo que este Concepto Económico, siempre deberá ser de _clase: "auto"_ ya que será calculado a partir de sus posibles hijos que cree el solicitante. Al solicitante, en la página de Conceptos Económicos que verá en la aplicación (PCEconomicos), podrá acceder a la página asociada a ese Concepto Económico, y la saldrá una tabla para ir creando todos los hijos, también de tipo _ceconomicos_ que necesite, de este Concepto Económico. Tras Iniciar la Evaluación, estos Conceptos Económicos creados por el solicitante, se añadirán automáticamente a los Conceptos Económicos que podrá evaluar el Gestor/Revisor. Por ello, sólo se podrá iniciar una única vez la Evaluación, cargando una única vez los Conceptos Económicos que haya creado manualmente el solicitante.
 
-De modo que el item _ceconomicos_ tiene que tener una estructura similar a la que se muestra en el siguiente ejemplo:
+De modo que el fichero _conceptosEconomicos.json_ tiene que tener una estructura similar a la que se muestra en el siguiente ejemplo:
 
-bc. ceconomicos : [
+bc. [
     {
     	nombre:"Inversión aprobada",
     	clase:"manual",
     	jerarquia:"A",
     	comentariosAdministracion:false,
-      comentariosSolicitante:false
+    	comentariosSolicitante:false,
+    	tipoOtro:false
     },
     {
     	nombre:"Activo actual",
     	clase:"manual",
     	jerarquia:"B",
     	comentariosAdministracion:false,
-      comentariosSolicitante:false
+    	comentariosSolicitante:false,
+    	tipoOtro:false
     },
     {
     	nombre:"Fondos Propios",
     	clase:"manual",
     	jerarquia:"C",
     	comentariosAdministracion:false,
-      comentariosSolicitante:false
+    	comentariosSolicitante:false,
+    	tipoOtro:true
     }
 ]
 
-h2. Estructura de los _datosAdicionales_
+h2. Estructura de  _datosAdicionales.json_
 
-La baremación de un determinado procedimiento puede requerir de datos adicionales que no se engloban ni en criterios ni en conceptos económicos, para llevar a cabo la evaluación. Por ello se pone a disposición un item que mediante una lista de elementos representa estos tipos de datos adicionales.
+La baremación de un determinado procedimiento puede requerir de datos adicionales que no se engloban ni en criterios ni en conceptos económicos, para llevar a cabo la evaluación. Por ello se pone a disposición un fichero que mediante una lista de elementos representa estos tipos de datos adicionales.
 
 Cada elemento de la lista tendrá los siguientes atributos:
 
@@ -143,7 +147,7 @@ Cada elemento de la lista tendrá los siguientes atributos:
 * **nombre** Es un String con el Título del dato adicional y servirá de identificador para poder referenciarlo en el cálculo pertinente.
 * **descripcion** String que indica la descripción del dato adicional y que será el que se muestre en la página.
 
-bc. datosAdicionales : [
+bc. [
 	{
 		orden: 1,
 		nombre: "porcentajeTeorico",
@@ -170,86 +174,3 @@ bc. datosAdicionales : [
 		descripcion : "Garantías"
 	}
 ]
-
-h2. Ejemplo de fichero JSON con todo incluido
-
-Una vez visto todos los campos y demás atributos que debe contener el fichero que permitirá la creación de la baremación, a continuación se muestra el contenido de un fichero de ejemplo, totalmente funcional:
-
-bc. {
-	nombre : "Tipo evaluación de innovación",
-	tipoProcedimiento : "Innovacion",
-	numeroEvaluacion : 1,
-	duracion : 3,
-	comentariosAdministracion : true,
-	comentariosSolicitante : false,
-	criterios : [
-    	  	{
-        		nombre:"Componente innovadora y tecnológica predominante (0-25 Ptos.)",
-        		claseCriterio:"auto",
-        		jerarquia:"A",
-        		tipoValor:"cantidad",
-        		descripcion:"",
-        		comentariosAdministracion:true,
-        		comentariosSolicitante:true
-    		},
-    		{
-        		nombre:"Carácter de la empresa de base tecnológica",
-        		claseCriterio:"manual",
-        		jerarquia:"A.1",
-        		tipoValor:"lista",
-        		listaValores:[
-		            {
-      			          valor:7,
-            			    descripcion:"ALTO: Fecha constitución EBT <=  2 años"
-            			},
-            			{
-                		valor:5,
-                		descripcion:"MEDIO: Fecha constitución EBT > 2 años y <= 6 años"
-            			},
-            			{
-                		valor:0,
-            			   descripcion:"BAJO: Fecha constitución EBT > 6 años, o no EBT"
-            			}
-        		],
-        		descripcion:"Prioridad a empresas de nueva o reciente creación frente a las ya consolidadas",
-        		comentariosAdministracion:false,
-        		comentariosSolicitante:false
-    		}
-	],
-	ceconomicos : [
-   		   {
-    			nombre:"Inversión aprobada",
-    			clase:"manual",
-    			jerarquia:"A",
-    			comentariosAdministracion:false,
-      			comentariosSolicitante:false
-    		},
-    		{
-    			nombre:"Activo actual",	
-    			clase:"manual",
-    			jerarquia:"B",
-    			comentariosAdministracion:false,
-      			comentariosSolicitante:false
-    		},
-    		{
-    			nombre:"Fondos Propios",
-    			clase:"manual",
-    			jerarquia:"C",
-    			comentariosAdministracion:false,
-      			comentariosSolicitante:false
-    		}
-	],
-	datosAdicionales : [
-		{
-			orden: 1,
-			nombre: "porcentajeTeorico",
-			descripcion : "Porcentaje teórico"
-		},
-		{
-			orden: 2,
-			nombre: "subvencionTotalConcedida",
-			descripcion : "Subvención total concedida"
-		}
-	]	
-}
-

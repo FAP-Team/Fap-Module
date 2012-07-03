@@ -1,20 +1,37 @@
 h1. Baremación
 
-Para realizar la parte de la aplicación que se encargue del proceso de Baremación se deben seguir una serie de pautas que se describe a continuación.
+Para realizar la parte de la aplicación que se encargue del proceso de Baremación se deben seguir una serie de pautas que se describe a continuación. Toda la gestión de la Baremación, se hará a través de la modificación de una serie de fichero .json que se describen más adelante, y de la interacción con la página _Gestionar Baremación_ de Administración.
 
-h2. Creación del fichero JSON asociado
+El gestor/revisor, podrá ver en el menú lateral de la aplicación un elemento Baremación, que listará todas las evaluaciones, para poder activarlas primero, para después evaluarlas. Estas evaluaciones serán visibles en un tabla, una vez que se presione el Botón "Iniciar Evaluación de Baremación", que estará visible en la página _Gestionar Baremación_ de Administración, una vez se haya iniciado el Tipo de Evaluación. (Presionando el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración)
 
-Para conocer la estructura que debe tener el fichero JSON (tipoEvaluacion.json) pulsar "aqui":app-baremacion-creacionJSON
+El solicitante/usuario, podrá ver la página de conceptos económicos que puede rellenar (si procede), una vez se haya presionado el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración. Estos datos que rellene el usuario se tendrán en cuenta sólo la primera vez que se Inicie la Baremación a través del botón "Iniciar Evaluación de Baremación", de la página _Gestionar Baremación_ de Administración, que aparecerá cuando se haya iniciado el Tipo de Evaluación, en la misma página de Administración.
+
+h2. Creación de los ficheros JSON asociados
+
+Para conocer la estructura que deben tener los ficheros JSON (tipoEvaluacion.json, conceptosEconomicos.json, criterios.json, datosAdicionales.json) pulsar "aqui":app-baremacion-creacionJSON
+
+h2. Iniciar el Tipo de Evaluación
+
+El Tipo de la Evaluación de la Baremación, se deberá iniciar sólo una vez, y es el proceso por el cual se mapea el fichero _tipoEvaluacion.json_ en su modelo Fap correspondiente. Para ello se deberá pulsar el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración. Además de que se activará en ese momento el botón pertinente para Iniciar la Baremación en la página de Administración (_Gestionar Baremación_). El inicio del Tipo de Evaluación es necesario para que el solicitante puede ver la página de Conceptos Económicos pertinentes, y así rellenarla. Hasta que no se inicie el Tipo de Evaluación, el solicitante no podrá acceder a la Página de _PCEconomicos_ de FAP.
 
 h2. Inicializar la Baremación
 
-Para llevar a cabo el inicio de la baremación, en la parte de Administración, esta "Activar Baremación", que contiene un botón con el mismo nombre que permite el Inicio de la Baremación. Una vez activada la Baremación, no es recomendable volver a iniciarla, ya que puede haber problemas graves de los cuales no nos hacemos responsables.
+Para llevar a cabo el inicio de la baremación, en la parte de Administración, esta "Iniciar Evaluación de Baremación", que contiene un botón con el mismo nombre que permite el Inicio de la Baremación. Una vez activada la Baremación, no se podrá volver a Iniciar, lo que conlleva a que los datos genericos sólo son cargados una única vez.
+
+Una vez Iniciada la Baremación, se podrá Actualizar la misma tantas veces como se requiera, a través del botón "Actualizar Baremación", y modificando los ficheros variables .json de la Baremación (criterios.json, conceptosEconomicos.json y datosAdicionales.json).
 
 Por defecto FAP, para el inicio de la baremación lo que se hace es a través del tipo de evaluación que se ha cargado en Base de Datos a partir del fichero _tipoEvaluacion.json_, se recorren todas las solicitudes y se buscan aquellas que no tengan evaluaciones creadas para crear dichas evaluaciones por primera vez a partir del Tipo de Evaluación.
 
 h3. Y si quiero personalizar el inicio de la Baremación ¿Qué tengo que hacer?
 
 Como el proceso de Baremación es muy dependiente del procedimiento en cuestión, para llevar a cabo el inicio de la misma de forma personalizada se puede sobreescribir una clase tal y como se describe "aqui":app-baremacion-inicio
+
+h2. Actualizar la Baremación
+
+Si queremos actualizar algún dato variable de nuestra Baremación (o insertar nuevos datos), se deberá:
+
+* *Primero:* Modificar o Insertar los nuevos datos en los fichero pertinentes (criterios.json, conceptosEconomicos.json o datosAdicionales.json).
+* *Despues:* Pulsar el Botón de "Actualizar Baremación" de la página de Administración, _Gestionar Baremación_ para que se cambie en los modelos FAP. 
 
 h2. ¿Qué debo sobreescribir para personalizar la Baremación?
 

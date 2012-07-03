@@ -3,7 +3,11 @@ package utils;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import org.hibernate.mapping.Collection;
 
 import play.Logger;
 
@@ -12,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import services.BaremacionService;
 
 import models.CEconomico;
+import models.Criterio;
 import models.Evaluacion;
 import models.SolicitudGenerica;
 import models.TipoCEconomico;
@@ -120,20 +125,73 @@ public class BaremacionUtils {
 		}
 	}
 	
-	public static void inicializarTipoEvaluacion(){
+	public static void actualizarTipoEvaluacion(){
 		//Inicializa o recupera el tipo de evaluacion
 		TipoEvaluacion tipoEvaluacion = null;
-		if((TipoEvaluacion.count() == 0) && (new File("conf/initial-data/tipoEvaluacion.json").exists())){
-			tipoEvaluacion = BaremacionService.loadTipoEvaluacionFromJson("/conf/initial-data/tipoEvaluacion.json");
-			tipoEvaluacion.save();
-			actualizarParametrosVariables(tipoEvaluacion);
-			Logger.info("Tipo de Baremación cargada correctamente desde fichero por primera vez");
-		}else if (!new File("conf/initial-data/tipoEvaluacion.json").exists()){
-			Logger.info("No se puede leer el fichero que contiene los parámetros de la Evaluacion (/conf/initial-data/tipoEvaluacion.json)");
-		}else if (TipoEvaluacion.count() > 0){
+		if (TipoEvaluacion.count() > 0){
 			tipoEvaluacion = (TipoEvaluacion) TipoEvaluacion.findAll().get(0);
 			actualizarParametrosVariables(tipoEvaluacion);
 			Logger.info("Tipo de Baremación actualizada correctamente desde fichero");
 		}
+	}
+	
+	public static class CEconomicoComparator implements Comparator {
+		  public int compare(Object o1, Object o2) {
+		    CEconomico u1 = (CEconomico) o1;
+		    CEconomico u2 = (CEconomico) o2;
+		    return u1.tipo.jerarquia.compareTo(u2.tipo.jerarquia);
+		  }
+		  public boolean equals(Object o) {
+		    return this == o;
+		  }
+	}
+	
+	public static void ordenarCEconomicos (List<CEconomico> lista){
+		Collections.sort(lista, new CEconomicoComparator());
+	}
+	
+	public static class CriterioComparator implements Comparator {
+		  public int compare(Object o1, Object o2) {
+		    Criterio u1 = (Criterio) o1;
+		    Criterio u2 = (Criterio) o2;
+		    return u1.tipo.jerarquia.compareTo(u2.tipo.jerarquia);
+		  }
+		  public boolean equals(Object o) {
+		    return this == o;
+		  }
+	}
+	
+	public static void ordenarCriterios (List<Criterio> lista){
+		Collections.sort(lista, new CriterioComparator());
+	}
+	
+	public static class TipoCEconomicoComparator implements Comparator {
+		  public int compare(Object o1, Object o2) {
+		    TipoCEconomico u1 = (TipoCEconomico) o1;
+		    TipoCEconomico u2 = (TipoCEconomico) o2;
+		    return u1.jerarquia.compareTo(u2.jerarquia);
+		  }
+		  public boolean equals(Object o) {
+		    return this == o;
+		  }
+	}
+	
+	public static void ordenarTiposCEconomicos (List<TipoCEconomico> lista){
+		Collections.sort(lista, new TipoCEconomicoComparator());
+	}
+	
+	public static class TipoCriterioComparator implements Comparator {
+		  public int compare(Object o1, Object o2) {
+		    TipoCriterio u1 = (TipoCriterio) o1;
+		    TipoCriterio u2 = (TipoCriterio) o2;
+		    return u1.jerarquia.compareTo(u2.jerarquia);
+		  }
+		  public boolean equals(Object o) {
+		    return this == o;
+		  }
+	}
+	
+	public static void ordenarTiposCriterios (List<TipoCriterio> lista){
+		Collections.sort(lista, new TipoCriterioComparator());
 	}
 }

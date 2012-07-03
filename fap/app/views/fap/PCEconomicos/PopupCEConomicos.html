@@ -5,6 +5,8 @@
 
 #{fap.popup 
      accion:accion, 
+     permiso:'iniciarBaremacion',
+     permisoMensaje:'La evaluación ya ha sido iniciada, no puede modificar ningún dato más', 
      popup:'PopupCEConomicos', 
      titulo:'Concepto económico', 
      urlBorrar:play.mvc.Router.reverse('popups.PopupCEConomicosController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 

@@ -10,7 +10,7 @@
 }*
 
 #{simple.row label:_label, id:_id, help:_help, error:_error}
-	<select #{if _id}id="${_id}"#{/if} name="${_name}" #{if _class}class="${_class}"#{/if}>
+	<select #{if _id}id="${_id}"#{/if} name="${_name}" #{if _class}class="${_class}"#{/if} #{if _ancho} style="width: ${_ancho}px;" #{/if}}>
 		<option> </option>
 		#{list items:_options, as:'option'}
 			%{

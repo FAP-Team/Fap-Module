@@ -95,7 +95,7 @@ public class Start extends Job {
 		}
 		
 		// Inicializamos, recuperamos o actualizamos la Baremación
-		BaremacionUtils.inicializarTipoEvaluacion();
+		BaremacionUtils.actualizarTipoEvaluacion();
 		
 		actualizarSemillaExpediente();
 	}

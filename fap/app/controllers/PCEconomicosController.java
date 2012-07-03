@@ -55,25 +55,30 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 		//Inicializa los conceptos economicos con los Tipos de Conceptos Economicos
 		//que están definidos en la base de datos
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
-		//COMPROBAR TE NULL
-		if(solicitud != null && solicitud.ceconomicos.isEmpty()){
-			List<TipoCEconomico> tipos = TipoCEconomico.findAll();
-			int c=0;
-			for(TipoCEconomico tipo : tipos){
-				CEconomico ceconomico = new CEconomico();
-				ceconomico.tipo = tipo;
-				for (int i = 0; i < tipoEvaluacion.duracion; i++){
-					ValoresCEconomico vCEconomico = new ValoresCEconomico(i);
-					vCEconomico.initValues(i);
-					ceconomico.valores.add(vCEconomico);
+		if (tipoEvaluacion != null){
+			if(solicitud != null && solicitud.ceconomicos.isEmpty()){
+				List<TipoCEconomico> tipos = TipoCEconomico.findAll();
+				int c=0;
+				for(TipoCEconomico tipo : tipos){
+					CEconomico ceconomico = new CEconomico();
+					ceconomico.tipo = tipo;
+					for (int i = 0; i < tipoEvaluacion.duracion; i++){
+						ValoresCEconomico vCEconomico = new ValoresCEconomico(i);
+						vCEconomico.initValues(i);
+						ceconomico.valores.add(vCEconomico);
+					}
+					solicitud.ceconomicos.add(ceconomico);
 				}
-				solicitud.ceconomicos.add(ceconomico);
+				solicitud.save();
 			}
-			solicitud.save();
+			int duracion = tipoEvaluacion.duracion;
+			log.info("Visitando página: " + "fap/PCEconomicos/PCEconomicos.html");		
+			renderTemplate("fap/PCEconomicos/PCEconomicos.html", accion, idSolicitud, solicitud, duracion);
+		} else {
+			Messages.fatal("Los Conceptos Económicos todavía no están disponibles en la aplicación");
+			int duracion=1; // Para que no reviente el HTML, al intentar buscar una variable duracion dentro.
+			renderTemplate("fap/PCEconomicos/PCEconomicos.html", accion, idSolicitud, solicitud, duracion);
 		}
-		int duracion = tipoEvaluacion.duracion;
-		log.info("Visitando página: " + "fap/PCEconomicos/PCEconomicos.html");		
-		renderTemplate("fap/PCEconomicos/PCEconomicos.html", accion, idSolicitud, solicitud, duracion);
 	}
 
 	public static void tablatablaCEconomicos(Long idSolicitud) {

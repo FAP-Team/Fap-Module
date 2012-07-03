@@ -1,7 +1,7 @@
 %{
    Integer anios = duracion;
+   def tipoEvaluacion = models.TipoEvaluacion.all().first();
 %}
-
 #{fap.pagina 
      accion:accion, 
      botonBorrar:'Borrar', 
@@ -9,7 +9,7 @@
      botonEditar:'Guardar', 
      encType:'application/x-www-form-urlencoded', 
      formulario:'Solicitud', 
-     hayForm:true, 
+     hayForm:false, 
      pagina:'PaginaCEconomicos', 
      permiso:'solicitudes', 
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
@@ -19,8 +19,15 @@
      urlEditar:play.mvc.Router.reverse('PaginaCEconomicosController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, duracion:anios])
 }
 	
+  #{form play.mvc.Router.reverse('PaginaCEconomicosController.guardar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'duracion':anios]) , class:"form-horizontal", id:"guardar"}
+	
 	#{if cEconomico.tipo.tipoOtro}
-		#{fap.texto campo:'cEconomico.tipo.nombre', id:'Nombre', titulo:'Nombre', requerido:'true'/}	
+		#{if ((tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")))}
+			#{fap.texto campo:'cEconomico.tipo.nombre', id:'Nombre', titulo:'Nombre', requerido:'true'/}
+		#{/if}
+		#{else}
+			#{simple.uneditable name:'cEconomico.tipo.nombre', label:'Nombre', value:cEconomico.tipo.nombre /}
+		#{/else}	
 		<div class="wiki ">
 		<p>
 			${cEconomico.tipo.descripcion}
@@ -48,7 +55,7 @@
 			def anioLabel = "Año "+(i+1);
 			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
 		%}
-		#{if !cEconomico.tipo.tipoOtro}
+		#{if ((!cEconomico.tipo.tipoOtro) && (tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")))}
 			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
 		#{/if}
 		#{else}
@@ -67,6 +74,7 @@
 		     nameContainer:'PaginaCEconomicos', 
 		     popupCrear:'PopupCEconomicoManual', 
 		     popupEditar:'PopupCEconomicoManual', 
+		     permisoCrear:'iniciarBaremacion', 
 		     recargarPagina:true,
 		     tipoContainer:'pagina', 
 		     titulo:'Conceptos Económicos Manuales', 
@@ -85,6 +93,12 @@
 		#{/fap.tabla}
 
 	#{/fap.grupo}
+	
+	#{if (!tipoEvaluacion.estado.equals("iniciada"))}
+		#{fap.boton id:'botonGuardar', titulo:'Guardar' /}
+	#{/if}
+		
+  #{/form}
 		
 #{/fap.pagina}
 		

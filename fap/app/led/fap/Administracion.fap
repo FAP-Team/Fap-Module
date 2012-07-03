@@ -7,7 +7,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Usuarios" pagina=Usuarios
 			Enlace "Convocatoria" pagina=Convocatoria
 			Enlace "Aed" pagina=Aed
-			Enlace "Activar Baremación" pagina=ActivarBaremacion
+			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Codigos Requerimientos y Exclusión" pagina=Codigos
@@ -37,12 +37,25 @@ Formulario Administracion permiso=administrador{
     	Check habilitar campo=MensajeAportacion.habilitar titulo="Habilitar la aparición del mensaje en la página de aportación" ayuda="Será necesario habilitar en caso de querer mostrar en la pagina el mensaje" (propover)
     }
     
-    Pagina ActivarBaremacion{
-    	Wiki {"Para activar la baremación es necesario pulsar el siguiente botón, que generará todos los datos oportunos, y activando las secciones de la aplicación destinadas a la Baremación"}
-    	Wiki {"*No olvides que una vez activada la Baremación, no la debes volver a activar por el bien de la integridad de la base de datos*"}
-    	Form activarFormBaremacion{
-    		Boton activarBaremacionBoton titulo="Activar Baremación"
+    Pagina ActivarBaremacion noForm{
+    	Grupo IniciarTipoEvaluacion titulo="Iniciar el Tipo de Evaluación" permiso=iniciarTipoEvaluacion{
+    		Wiki {"Para cargar el tipo de Evaluación, es necesario pulsar el siguiente botón. El tipo de Evaluación sólo se cargará una única vez, téngalo en cuenta."}
+    		Form iniciarTipoEvaluacionFormBaremacion {
+    			Boton iniciarTipoEvaluacionBoton titulo="Cargar Tipo Evaluación"
+    		}
     	}
+    	Grupo IniciarBaremacion titulo="Iniciar la Evaluación de la Baremación" permiso=iniciarBaremacion{
+	    	Wiki {"Para activar la baremación, por primera vez, es necesario pulsar el siguiente botón, que generará todos los datos oportunos, activando las secciones de la aplicación destinadas a la Baremación."}
+	    	Form activarFormBaremacion{
+	    		Boton activarBaremacionBoton titulo="Iniciar Evaluación de Baremación"
+	    	}
+	    }
+	    Grupo ActualizarBaremacion titulo="Actualizar los datos variables de la Baremación" permiso=actualizarBaremacion{
+	    	Wiki {"Si ha cambiado (actualizado o insertado) nuevos datos en los ficheros de criterios, conceptosEconomicos o datosAdicionales, es necesario que pulse el siguiente botón, para que se actualice el modelo de la aplicación según los nuevos cambios."}
+	    	Form actualizarFormBaremacion{
+	    		Boton actualizarBaremacionBoton titulo="Actualizar Baremación"
+	    	}
+	    }
     }
 	
 	Pagina Usuarios {

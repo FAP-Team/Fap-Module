@@ -126,6 +126,8 @@ Entidad TipoEvaluacion {
     Integer duracion
     
     Integer inicio
+    
+    String estado
 }
 
 Entidad Evaluacion {

@@ -44,8 +44,7 @@ public class GPopup extends GGroupElement{
 			params.putStr "permiso", "${popup.permiso.name}";
 			if (popup.permiso.mensaje != null)
 				params.putStr "permisoMensaje", popup.permiso.mensaje;
-		}
-		if (formulario.permiso != null) {
+		}else if (formulario.permiso != null) {
 			params.putStr "permiso", formulario.permiso.name;
 			if (formulario.permiso.mensaje != null)
 				params.putStr "permisoMensaje", formulario.permiso.mensaje;

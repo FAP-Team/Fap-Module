@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+
 import models.FapModel;
 import models.TipoDocumento;
 import models.Tramite;
@@ -14,6 +17,7 @@ import models.Tramite;
  * es de tipo: OBLIGATORIO, CONDICIONADO_AUTOMATICO, IMPRESCINDIBLE y CONDICIONADO_MANUAL
  */
 
+@Entity
 public class ObligatoriedadDocumentosFap extends FapModel{
 	
 	static public String PATTERN_VERSION_URI = "(.*)/v[0-9][0-9]$";
@@ -22,12 +26,16 @@ public class ObligatoriedadDocumentosFap extends FapModel{
 	static public Tramite tramite;
 
 	// Lista que contendrá los documentos IMPRESCINDIBLE al trámite
+	@ElementCollection
 	public static List<String> imprescindibles;
 	// Lista que contendrá los documentos OBLIGATORIO al trámite
+	@ElementCollection
 	public static List<String> obligatorias;
 	// Lista que contendrá los documentos CONDICIONADO_AUTOMATICO al trámite
+	@ElementCollection
 	public static List<String> automaticas;
 	// Lista que contendrá los documentos CONDICIONADO_MANUALES al trámite
+	@ElementCollection
 	public static List<String> manuales;
 
 	// Constructor de la clase que tiene como parámetros el tramite, para calcular los documentos

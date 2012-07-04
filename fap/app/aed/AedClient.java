@@ -75,14 +75,11 @@ public class AedClient {
 	
 	
 	public static String saveDocumentoTemporal(models.Documento documento, InputStream is, String filename) throws AedExcepcion {
-		//Preparamos el documento para subir al AED
-		documento.prepararParaSubir();
-		documento.save();
 		
 		Documento documentoAed = new Documento();
 		// Propiedades básicas
 		documentoAed.setPropiedades(new PropiedadesDocumento());
-		documentoAed.getPropiedades().setDescripcion(documento.descripcion);
+		documentoAed.getPropiedades().setDescripcion(documento.descripcionVisible);
 		documentoAed.getPropiedades().setUriTipoDocumento(documento.tipo);
 
 		// Propiedades avanzadas
@@ -235,8 +232,6 @@ public class AedClient {
 	 */
 	public static void actualizarTipoDescripcion(models.Documento documento, boolean actualizarDescripcion) throws AedExcepcion {
 		if(documento.uri == null) throw new IllegalArgumentException("La uri del documneto no puede ser null");
-		if (actualizarDescripcion)	
-			documento.actualizaDescripcion();
 		if (documento.clasificado != null && documento.clasificado.booleanValue()) {
 			log.debug("Actualizando tipo y descripción de un documento clasificado");
 			log.debug("Obteniendo propiedades");
@@ -256,7 +251,7 @@ public class AedClient {
 				ubic.getExpedientes().add(docUbic.getExpediente());
 				newUbicaciones.add(ubic);
 			}
-			props.setDescripcion(documento.descripcion);
+			props.setDescripcion(documento.descripcionVisible);
 			props.setUriTipoDocumento(documento.tipo);
 			
 			log.debug("Actualizando Propiedades Clasificado");
@@ -266,7 +261,7 @@ public class AedClient {
 			log.info("Actualizando tipo y descripción de un documento no clasificado");
 			log.debug("Obteniendo propiedades");
 			PropiedadesDocumento props = aed.obtenerDocumentoPropiedadesNoClasificado(documento.uri);
-			props.setDescripcion(documento.descripcion);
+			props.setDescripcion(documento.descripcionVisible);
 			props.setUriTipoDocumento(documento.tipo);
 			log.debug("Actualizando PropiedadesNoClasificado");
 			aed.actualizarDocumentoPropiedadesNoClasificado(props);

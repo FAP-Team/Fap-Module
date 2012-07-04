@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import utils.AedUtils;			
+import utils.DocumentosUtils;
 import properties.FapProperties;
 // === IMPORT REGION END ===
 	
@@ -57,6 +58,11 @@ public class Documento extends Model {
 	
 	
 	public String descripcion;
+	
+	
+	
+	@Transient
+	public String descripcionVisible;
 	
 	
 	
@@ -104,34 +110,6 @@ public class Documento extends Model {
 		clasificado = false;
 	}
 	
-	public boolean isOtros(){
-		return (tipo != null && tipo.equals(FapProperties.get("fap.aed.tiposdocumentos.otros")));
-	}
-	
-	/**
-	 * Prepara un documento para subir al AED
-	 */
-	public void prepararParaSubir(){
-		//Si no es de tipo otros, pone la despcrión igual al tipo
-		//El AED da error con descripción null
-		if(!isOtros() && ((descripcion == null) || (descripcion.trim().equals("")))){
-			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
-		}
-	}
-	
-	/**
-	 * Actualiza la descripcion si el tipo de documentos no es Otro
-	 * 
-	*/
-	
-	public void actualizaDescripcion(){
-		if(!isOtros()){
-			descripcion = TableKeyValue.getValue("tiposDocumentos", tipo);
-			if ((descripcion == null) || (descripcion.trim().equals("")))
-				play.Logger.error("La descripción no se pudo abtener a partir del tipo.");
-		}
-	}
-	
 	public String getUrlDescarga(){
 		return AedUtils.crearUrl(uri);
 	}
@@ -139,9 +117,23 @@ public class Documento extends Model {
 	public String getTipoCiudadano() {
 		return tipo;
 	}
+	
+	public boolean isMultiple() {
+		return (tipo != null && DocumentosUtils.esTipoMultiple(tipo));
+	}
 
 	public void setTipoCiudadano(String tipoCiudadano) {
 		this.tipo = tipoCiudadano;
+	}
+	
+	public String getDescripcionVisible() {
+		String descripcionDevolver = "";
+		if ((this.descripcion != null) && !(this.descripcion.trim().equals("")))
+			return this.descripcion;
+		descripcionDevolver = TableKeyValue.getValue("tiposDocumentos", tipo);
+		if ((descripcionDevolver == null) || (descripcionDevolver.trim().equals("")))
+			play.Logger.error("La descripción no se pudo obtener a partir del tipo: " + tipo);
+		return descripcionDevolver;
 	}
 	
 // === MANUAL REGION END ===

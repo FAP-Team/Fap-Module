@@ -10,32 +10,26 @@
 	def campoDescripcion = campo + ".descripcion"
 	def comboId = id + "_tipo";
 	def oldComboId = field.id + "_tipo";
-	def tipoDocumentoOtros = properties.FapProperties.get("fap.aed.tiposdocumentos.otros");
 	def upload = _upload != null? _upload : true
 	def download = _download != null? _download : false
 	def tramite = _tramite
 	def aportadoPor = _aportadoPor
-}%	
-
-	%{
-		def tiposDocumentos
-		if (tramite == null){
-			if (aportadoPor == null)
-				tiposDocumentos = models.TipoDocumento.findAll();
-			else
-				tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(aportadoPor);
-		}else if(aportadoPor == null){
+	def tiposDocumentos
+	if (tramite == null){
+		if (aportadoPor == null)
+			tiposDocumentos = models.TipoDocumento.findAll();
+		else
+			tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(aportadoPor);
+	} else if(aportadoPor == null){
 			tiposDocumentos = models.Tramite.findTipoDocumentosFrom(tramite);
 		}else{
 			tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(tramite, aportadoPor);
-		}
-	}%
+	}
+}%
 
 	#{fap.combo id:comboId, idOld:oldComboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos, comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
 	
-	#{fap.grupo visible:false, siCombo:comboId, siComboValue:[tipoDocumentoOtros], siComboReverse:true}
-		#{fap.texto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
-	#{/fap.grupo}
+	#{fap.texto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
 	
 	#{if upload}
 		#{fap.upload id:id /}
@@ -46,5 +40,37 @@
 			<a href="${obj.urlDescarga}" target="_blank" class="boton">Descargar documento desde el AED</a>
 		</div>
 	#{/if}
+	
+	<script type="text/javascript">
+		%{
+			urlDocumentoEsMultiple = play.mvc.Router.reverse('fap.UtilsController.documentoEsMultiple');
+		%}
+		//Peticion ajax, para ver si el tipo de documento seleccionado es multiple, para que salga el asterisco de requerido en descripcion, si no no sale el asterisco porque no es requerido
+		var urlDocumentoEsMultipleAjax = "${urlDocumentoEsMultiple}";
+
+		// Para la primera vez que recarga la pagina
+		$(document).ready(setearRequerido());
+
+		// Para cada vez que cambie el valor del combo, del tipo de documento
+		$('#${comboId}').change(function(){
+			setearRequerido();
+		});
+
+		function setearRequerido(){
+			console.log("hola");
+			$.ajax({
+		  		type: "POST",
+		  		url: urlDocumentoEsMultipleAjax,
+		  		data: { tipoUri: $('#${comboId}').val() }
+			}).done(function(esMultiple) {
+				var requerido = $('#${id}_descripcion').parent().children().children('.required');
+				if (esMultiple == "true"){
+					$(requerido).text("*");
+				} else {
+					$(requerido).text("");
+				}
+			});
+		}
+	</script>
 	
 #{/fap.field}

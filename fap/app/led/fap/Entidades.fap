@@ -86,6 +86,7 @@ Entidad Documento {
 	Lista tipoDocumentosOtrasEntidades tipoOtraEntidad transient
 	Lista tipoDocumentos tipo
 	String descripcion
+	String descripcionVisible transient
 	Boolean clasificado
 	String hash
 	DateTime fechaSubida

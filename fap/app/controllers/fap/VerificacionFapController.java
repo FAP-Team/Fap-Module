@@ -17,6 +17,7 @@ import play.Play;
 import play.utils.Java;
 import properties.FapProperties;
 import verificacion.ObligatoriedadDocumentosFap;
+import verificacion.VerificacionUtils;
 
 public class VerificacionFapController {
 	
@@ -87,16 +88,16 @@ public class VerificacionFapController {
 		play.Logger.info("No hay ninguna llamada para calcular los documentos condicionados automaticos");
     	play.Logger.info("Se incluirán todos los documentos condicionados automáticos por defecto");
 		// Devolver todos los CONDICIONADOS AUTOMATICOS
-    	ObligatoriedadDocumentosFap docObli = null;
+    	List<String> docObli = new ArrayList<String>();
     	try{
-    		long idTramite = Tramite.find("select id from Tramite where nombre=?", tramite).first();
-    		docObli = (ObligatoriedadDocumentosFap)ObligatoriedadDocumentosFap.find("select docObli from ObligatoriedadDocumentosFap docObli join docObli.tramite tramite where tramite.id=?", idTramite).first();
+    		Tramite tr = Tramite.find("select tramite from Tramite tramite where nombre=?", tramite).first();
+    		docObli = VerificacionUtils.ObtenerDocumentosAutomaticos(tr);
     	} catch (Exception e){
     		play.Logger.warn("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
     		return new ArrayList<String>();
     	}
-    	if ((docObli != null) && (docObli.automaticas != null)){
-    		return docObli.automaticas;
+    	if ((docObli != null)){
+    		return docObli;
     	}
     	else
     		return new ArrayList<String>();

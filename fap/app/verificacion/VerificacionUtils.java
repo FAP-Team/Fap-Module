@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -21,6 +23,7 @@ import messages.Messages;
 import models.Documento;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
+import models.TipoDocumento;
 import models.Tramite;
 import models.Verificacion;
 import models.VerificacionDocumento;
@@ -67,7 +70,7 @@ public class VerificacionUtils {
 					vDoc.existe = true;
 					if (tipoDoc.getObligatoriedad() == ObligatoriedadEnum.CONDICIONADO_AUTOMATICO) {
 						// Comprobar si se tenía que añadir o no
-						if (!docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri())))
+						if (!docCondicionadosAutomaticosNoAportados.contains(eliminarVersionUri(tipoDoc.getUri())))
 							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
 						else
 							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
@@ -127,7 +130,7 @@ public class VerificacionUtils {
 					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
 					// Si el tipo de Documento está en la lista de los tipos de documentos obligatorios condicionados automaticos que obtenemos de la propia aplicacion
 					// Quitamos la uri del tipo de documento porque esta quitada en la lista de condicionados automaticos, por lo que se debe quitar para comparar
-					if (!docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()))){
+					if (!docCondicionadosAutomaticosNoAportados.contains(eliminarVersionUri(tipoDoc.getUri()))){
 						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
 					} else {
 						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
@@ -302,5 +305,30 @@ public class VerificacionUtils {
 		}
 		return false;
 	}
+	
+	// Función que a través del trámite sobre el que se está trabajando en la clase
+	// Recupera los documentos aportados por el CIUDADANO y que sean CONDICIONADO_AUTOMATICO
+	// Almacenandolos en la lista local de la clase para tal efecto
+	public static List<String> ObtenerDocumentosAutomaticos(Tramite tramite){
+		List<String> lista = new ArrayList<String>();
+		for (TipoDocumento td : tramite.documentos) {
+			if (td.aportadoPor.toUpperCase().equals("CIUDADANO")){
+				if(td.obligatoriedad.toUpperCase().equals("CONDICIONADO_AUTOMATICO")){
+					lista.add(eliminarVersionUri(td.uri));
+				}
+			}
+		}
+		return lista;
+	}
+	// Para eliminar de la URI, la Versión, que no hará falta en el proceso de obtener la documentación obligatoria al trámite
+	public static String eliminarVersionUri(String uri) {
+		String PATTERN_VERSION_URI = "(.*)/v[0-9][0-9]$";
+		Pattern p = Pattern.compile(PATTERN_VERSION_URI);
+		Matcher m = p.matcher(uri);
+		if (m.find())
+			return m.group(1);
+		return uri;
+ 	}
+	
 	
 }

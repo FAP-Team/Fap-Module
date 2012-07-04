@@ -412,8 +412,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		tipoCodReqdb6.uriTramite = tramite.uri;
 		tipoCodReqdb6.save();
 		
-		TipoDocumento tipo4=newTipoDocumento("Otros", propertyPlaceholder.get("fap.aed.tiposdocumentos.otros"));
-		tipo4.cardinalidad = "UNICO";
+		TipoDocumento tipo4=newTipoDocumento("Otros", "fs://otros/v01");
+		tipo4.cardinalidad = "MULTIPLE";
 		tipo4.tramitePertenece=tramite.uri;
         tramite.documentos.add(tipo4);
         TiposCodigoRequerimiento tipoCodReqdb7 = new TiposCodigoRequerimiento();

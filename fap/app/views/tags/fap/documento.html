@@ -5,7 +5,6 @@
 	def id = _id ?: field.id
 	def requerido = _requerido != null? _requerido : false;
 	def campo = _campo
-	def nuevo = _nuevo != null? _nuevo : false;
 	def tipo = _tipo != null? _tipo : "tipo";
 	def campoTipo = "${campo}.tipo";
 	def campoDescripcion = campo + ".descripcion"

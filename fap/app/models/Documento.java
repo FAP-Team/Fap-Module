@@ -80,7 +80,7 @@ public class Documento extends FapModel {
 		if ((this.descripcion != null) && !(this.descripcion.trim().equals("")))
 			return this.descripcion;
 		descripcionDevolver = TableKeyValue.getValue("tiposDocumentos", tipo);
-		if ((descripcionDevolver == null) || (descripcionDevolver.trim().equals(""))){
+		if ((descripcionDevolver == null) || (descripcionDevolver.trim().equals(""))) {
 			play.Logger.error("La descripción no se pudo obtener a partir del tipo: " + tipo);
 			return this.descripcion;
 		}

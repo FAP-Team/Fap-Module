@@ -35,8 +35,6 @@ public class FileSystemGestorDocumentalServiceTest extends GestorDocumentalServi
 
     static File base;
 
-    private static String uriOtros = FapProperties.get("fap.aed.tiposdocumentos.otros");
-
     @BeforeClass
     public static void setup() throws GestorDocumentalServiceException {
         gestorDocumentalService = new FileSystemGestorDocumentalServiceImpl(getProperties());
@@ -45,7 +43,7 @@ public class FileSystemGestorDocumentalServiceTest extends GestorDocumentalServi
     }
 
     private static PropertyPlaceholder getProperties() {
-        PropertyPlaceholder propertyPlaceholder = new MapPropertyPlaceholder("fap.aed.tiposdocumentos.otros", uriOtros,
+        PropertyPlaceholder propertyPlaceholder = new MapPropertyPlaceholder("fs://tipo1", "fs://tipo1",
                 "fap.fs.gestorDocumental.path", "/tmp/test/gestorDocumental");
         return propertyPlaceholder;
     }
@@ -53,11 +51,6 @@ public class FileSystemGestorDocumentalServiceTest extends GestorDocumentalServi
     @Override
     protected String getTipoDocumentoValido() {
         return "fs://tipo1";
-    }
-
-    @Override
-    protected String getTipoDocumentoOtros() {
-        return uriOtros;
     }
 
 }

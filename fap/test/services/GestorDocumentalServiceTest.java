@@ -60,7 +60,6 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
 	private static final String URI_NOT_IN_DB = "http://uri/notindb";
 
     protected abstract String getTipoDocumentoValido(); 
-    protected abstract String getTipoDocumentoOtros();
 	
 	@Before
 	public void before() {
@@ -221,7 +220,7 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
     @Test(expected=NullPointerException.class)
     public void saveDocumentoTemporalFailsIfOtrosAndNullDescription() throws Exception {
         Documento documento = new Documento();
-        documento.tipo = getTipoDocumentoOtros();
+        documento.tipo = getTipoDocumentoValido();
         documento.descripcion = null;
         InputStream is = new ByteArrayInputStream("".getBytes());
         gestorDocumentalService.saveDocumentoTemporal(documento, is , TEST_FILENAME);
@@ -239,7 +238,7 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
     @Test(expected=IllegalArgumentException.class)
     public void saveDocumentoTemporalFailsIfOtrosAndEmptyDescripcion() throws Exception {
         Documento documento = new Documento();
-        documento.tipo = getTipoDocumentoOtros();
+        documento.tipo = getTipoDocumentoValido();
         documento.descripcion = "";
         InputStream is = new ByteArrayInputStream("".getBytes());
         gestorDocumentalService.saveDocumentoTemporal(documento, is , TEST_FILENAME);

@@ -70,10 +70,5 @@ public class AedGestorDocumentalServiceTest extends GestorDocumentalServiceTest 
     protected String getTipoDocumentoValido() {
         return propertyPlaceholder.get("fap.aed.tiposdocumentos.base");
     }
-
-    @Override
-    protected String getTipoDocumentoOtros() {
-        return propertyPlaceholder.get("fap.aed.tiposdocumentos.otros");
-    }
     
 }

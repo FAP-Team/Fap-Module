@@ -84,13 +84,13 @@ Lista obligatoriedadDocumentos{
 }
 
 Lista islas{
-		01: "Fuerteventura"
-		02: "Gomera, La"
-		03: "Gran Canaria"
-		04: "Hierro, El"
-		05: "Lanzarote"
-		06: "Palma, La"
-		07: "Tenerife"
+		351: "Fuerteventura"
+		352: "Gran Canaria"
+		353: "Lanzarote"
+		381: "Gomera, La"
+		382: "Hierro, El"
+		383: "Palma, La"
+		384: "Tenerife"
 }
 
 Lista paises{

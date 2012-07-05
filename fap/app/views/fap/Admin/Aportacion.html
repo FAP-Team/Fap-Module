@@ -67,7 +67,7 @@
 				models.MensajeAportacion mensajeaportacion = null;
 				def hayMensaje=false;
 				def contenido="";
-				if (!models.MensajeInicio.findAll().isEmpty()){
+				if ((!models.MensajeAportacion.findAll().isEmpty())){
 					mensajeAportacion = models.MensajeAportacion.findAll().get(0);
 					hayMensaje=mensajeAportacion.habilitar;
 					contenido=utils.StringUtils.getParsedText(mensajeAportacion.contenido);

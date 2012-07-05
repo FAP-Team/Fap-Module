@@ -297,7 +297,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento ancho="420px"
 			Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
 		}
-		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
+		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion requerido
 		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
 			Grupo requerimientoTexto borde=false mostrarSiCombo estado="noValido","noPresentado"{
 				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento

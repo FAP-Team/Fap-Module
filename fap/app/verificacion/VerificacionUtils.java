@@ -59,7 +59,7 @@ public class VerificacionUtils {
 		try {
 			docCondicionadosAutomaticosNoAportados = VerificacionFapController.invoke("getDocumentosNoAportadosCondicionadosAutomaticos", tramite.nombre, idSolicitud);
 		} catch (Throwable e) {
-			play.Logger.warn("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
+			play.Logger.error("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
 		}
 		for (TipoDocumentoEnTramite tipoDoc : listaTipos) {
 			boolean tipoEncontrado = false;
@@ -70,10 +70,11 @@ public class VerificacionUtils {
 					vDoc.existe = true;
 					if (tipoDoc.getObligatoriedad() == ObligatoriedadEnum.CONDICIONADO_AUTOMATICO) {
 						// Comprobar si se tenía que añadir o no
-						if (!docCondicionadosAutomaticosNoAportados.contains(eliminarVersionUri(tipoDoc.getUri())))
-							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
-						else
+						if ((docCondicionadosAutomaticosNoAportados != null) && (docCondicionadosAutomaticosNoAportados.size() != 0) 
+								&& docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri())))
 							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+						else
+							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
 					} else {
 						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
 					}
@@ -110,8 +111,7 @@ public class VerificacionUtils {
 					list.add(vDoc);
 
 				}
-				// Condicionado MANUAL, igual que el anterior pero siempre es NO VERIFICADO, ya que es el gestor/revisor quien se encarga de discernir si debe ser aportado o no
-				if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_MANUAL)){
+				else if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_MANUAL)){
 					VerificacionDocumento vDoc = new VerificacionDocumento();
 					vDoc.existe = false;
 					vDoc.uriTipoDocumento = tipoDoc.getUri();
@@ -122,7 +122,7 @@ public class VerificacionUtils {
 					list.add(vDoc);
 				} 
 				// Condicionado AUTOMATICO
-				if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
+				else if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
 					VerificacionDocumento vDoc = new VerificacionDocumento();
 					vDoc.existe = false;
 					vDoc.uriTipoDocumento = tipoDoc.getUri();
@@ -130,7 +130,8 @@ public class VerificacionUtils {
 					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
 					// Si el tipo de Documento está en la lista de los tipos de documentos obligatorios condicionados automaticos que obtenemos de la propia aplicacion
 					// Quitamos la uri del tipo de documento porque esta quitada en la lista de condicionados automaticos, por lo que se debe quitar para comparar
-					if (!docCondicionadosAutomaticosNoAportados.contains(eliminarVersionUri(tipoDoc.getUri()))){
+					if ((docCondicionadosAutomaticosNoAportados != null) && (docCondicionadosAutomaticosNoAportados.size() != 0) 
+						&& docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()))){
 						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
 					} else {
 						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
@@ -144,7 +145,7 @@ public class VerificacionUtils {
 		// Recorro todos los documentos no pertenecientes al trámite actual pero que se han aportado
 		for (Documento docAux: aux){
 			VerificacionDocumento vDoc = new VerificacionDocumento(docAux);
-			vDoc.existe = false;
+			vDoc.existe = true;
 			vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
 			vDoc.save();
 			list.add(vDoc);
@@ -238,7 +239,8 @@ public class VerificacionUtils {
 			documentosNuevos = (List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
 			documentosNuevosSinVerificacionActual = (List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
 		} catch (Throwable e) {
-			play.Logger.error("Error recuperando los documentos nuevos a verificar", e);
+			e.printStackTrace();
+			play.Logger.error("Error recuperando los documentos nuevos a verificar", e.getMessage());
 		}
 		for (Documento doc: documentosNuevos){
 			for (VerificacionDocumento vDoc: verificacionActual.documentos){

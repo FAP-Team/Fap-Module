@@ -1,0 +1,7 @@
+package controllers;
+
+import controllers.gen.PaginaDocumentoVerificacionLeerAnterioresControllerGen;
+
+public class PaginaDocumentoVerificacionLeerAnterioresController extends PaginaDocumentoVerificacionLeerAnterioresControllerGen {
+
+}

@@ -144,7 +144,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	
 	Pagina AccesoVerificaciones titulo="Verificaciones" noForm {
 		Tabla verificaciones titulo="Verificaciones" campo=SolicitudGenerica.verificaciones
-			paginaLeer=PaginaVerificacionesAnteriores
+			paginaEditar=PaginaVerificacionesAnteriores
 		{
 				Columna titulo="Expediente" campo=Verificacion.expediente ancho="150"
 				Columna titulo="Motivo Exclusión" campo=Verificacion.requerimiento.motivo ancho="150" 
@@ -166,8 +166,65 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 	}
 	
-	Pagina PaginaVerificacionesAnteriores campo=SolicitudGenerica.verificaciones{
+	Pagina PaginaVerificacionesAnteriores campo=SolicitudGenerica.verificaciones noForm{
+
+		Grupo noEditable borde=false permiso=noEditable{
+			Grupo datosVerificacion titulo="Datos generales de la verificación" {
+				Texto expediente titulo="Expediente" campo=Verificacion.expediente
+				Combo estadoS titulo="Estado Solicitud" campo=SolicitudGenerica.estadoValue
+				Texto motivoReq titulo="Motivo Requerimiento" campo=Verificacion.requerimiento.motivo
+				Fecha fechaCreacion titulo="Fecha Creación" campo=Verificacion.fechaCreacion
+				Fecha fechaActualizacion titulo="Fecha Actualizacion" campo=Verificacion.fechaUltimaActualizacion
+				Combo estadoV titulo="Estado Verificación" campo=Verificacion.estado
+			}
+			
+			Tabla verificacionDocumentos titulo="Documentación" campo=Verificacion.documentos
+				paginaEditar=PaginaDocumentoVerificacionLeerAnteriores
+			{
+				Columna titulo="Fecha Presentación" campo=VerificacionDocumento.fechaPresentacion ancho="80"
+				Columna titulo="Descripción" campo=VerificacionDocumento.descripcion expandir
+				Columna titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
+				Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
+				Columna titulo="Multiplicidad" campo=VerificacionDocumento.identificadorMultiple ancho="80"
+				Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"	
+			}
+			
+			AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacionEnCurso.requerimiento.motivo ancho="500px"
+		}
 		
+		Form gDocumentoRequerimiento destino="_blank"{ 
+			Boton obtenerOficial titulo="Obtener Requerimiento"
+		}
+		
+		Enlace volverVerificacionAnteriores titulo="Volver" pagina=AccesoVerificaciones estilo="btn"
+	}
+	
+	Pagina PaginaDocumentoVerificacionLeerAnteriores campo=Verificacion.documentos noForm{
+		Grupo noEditable borde=false permiso=noEditable{
+			Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
+				Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
+			}
+			Texto titulo="Descripción" campo=VerificacionDocumento.descripcion ancho="420px"
+			Texto tipo titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento ancho="420px"
+			Texto tipoUri titulo="Uri tipo documento" campo=VerificacionDocumento.uriTipoDocumento ancho="420px"
+			Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
+			Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
+			Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
+				Grupo requerimientoTexto borde=false mostrarSiCombo estado="noValido","noPresentado"{
+					AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento ancho="450px"
+				}
+				Grupo requerimientoCodigos borde=false mostrarSiCombo estado="noValido" {
+					Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
+						popupLeer=PopUpDocumentoRequerimientosVerificacion
+					{
+						Columna titulo="Código" campo=CodigoRequerimiento.codigo ancho="150"
+						Columna titulo="Descripción" campo=CodigoRequerimiento.descripcionCorta expandir
+					}
+				}
+			}
+		}
+		
+		Enlace volverVerificacionActual titulo="Volver" anterior estilo="btn"
 	}
 	
 	Pagina PaginaVerificacion titulo="Verificación" campo=SolicitudGenerica.verificacionEnCurso noForm permiso=accederSiSolicituNoBorrador{
@@ -227,14 +284,17 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			}
 			
 			Form guardarMotivoRequerimientoGeneral {
-				AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacionEnCurso.requerimiento.motivo
+				AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacionEnCurso.requerimiento.motivo ancho="500px"
 				Boton guardarRequerimientoMotivoRequerimientoGeneralbtn titulo="Guardar Motivo Requerimiento"
-			}
-			
+			}		
 		
 			Form gnuevoRequerimientoBorradorPreliminar destino="_blank"{ 
 				Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
-			} 
+			}
+			
+			Form finalizarVerificacion {
+				Boton btnFinalizarVerificacion titulo="Finalizar Verificación"
+			}
 		}
 		
 		Grupo nuevosDocumentosTipos titulo="Verificación de Tipos de Documentos" permiso=verificacionConNuevosDoc {
@@ -272,7 +332,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion
 		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
 			Grupo requerimientoTexto borde=false mostrarSiCombo estado="noValido","noPresentado"{
-				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
+				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento ancho="450px"
 			}
 			Grupo requerimientoCodigos borde=false mostrarSiCombo estado="noValido" {
 				Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
@@ -300,7 +360,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion requerido
 		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
 			Grupo requerimientoTexto borde=false mostrarSiCombo estado="noValido","noPresentado"{
-				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento
+				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento ancho="450px"
 			}
 			Grupo requerimientoCodigos borde=false mostrarSiCombo estado="noValido" {
 				Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
@@ -319,7 +379,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	}
 	
 	Popup PopUpDocumentoRequerimientosVerificacion titulo="Requerimiento" campo=VerificacionDocumento.codigosRequerimiento {
-		Combo descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta requerido
+		Texto descripcionCorta titulo="Descripción Corta" campo=CodigoRequerimiento.descripcionCorta requerido
 		Texto codigo titulo="Código" campo=CodigoRequerimiento.codigo
 		AreaTexto descripcion titulo="Descripción" campo=CodigoRequerimiento.descripcion
 	}

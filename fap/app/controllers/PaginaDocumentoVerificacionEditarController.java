@@ -1,6 +1,11 @@
 package controllers;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import org.joda.time.DateTime;
+
+import play.mvc.Util;
 
 import validation.CustomValidation;
 import messages.Messages;
@@ -68,6 +73,31 @@ public class PaginaDocumentoVerificacionEditarController extends PaginaDocumento
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaDocumentoVerificacionEditarController.editarRender(idSolicitud, idVerificacionDocumento);
+	}
+	
+	@Util
+	public static void PaginaDocumentoVerificacionEditarValidateCopy(String accion, VerificacionDocumento dbVerificacionDocumento, VerificacionDocumento verificacionDocumento) {
+		CustomValidation.clearValidadas();
+		if (verificacionDocumento.uriDocumento != null) {
+		}
+		if (secure.checkGrafico("noEditable", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+			CustomValidation.valid("verificacionDocumento", verificacionDocumento);
+			dbVerificacionDocumento.descripcion = verificacionDocumento.descripcion;
+			dbVerificacionDocumento.nombreTipoDocumento = verificacionDocumento.nombreTipoDocumento;
+			dbVerificacionDocumento.uriTipoDocumento = verificacionDocumento.uriTipoDocumento;
+			dbVerificacionDocumento.fechaPresentacion = verificacionDocumento.fechaPresentacion;
+
+		}
+		CustomValidation.valid("verificacionDocumento", verificacionDocumento);
+		CustomValidation.required("verificacionDocumento.estadoDocumentoVerificacion", verificacionDocumento.estadoDocumentoVerificacion);
+		CustomValidation.validValueFromTable("verificacionDocumento.estadoDocumentoVerificacion", verificacionDocumento.estadoDocumentoVerificacion);
+		dbVerificacionDocumento.estadoDocumentoVerificacion = verificacionDocumento.estadoDocumentoVerificacion;
+		if (Arrays.asList(new String[] { "noValido", "noPresentado" }).contains(dbVerificacionDocumento.estadoDocumentoVerificacion)) {
+			dbVerificacionDocumento.motivoRequerimiento = verificacionDocumento.motivoRequerimiento;
+		} else {
+			dbVerificacionDocumento.motivoRequerimiento = "";
+		}
+
 	}
 
 }

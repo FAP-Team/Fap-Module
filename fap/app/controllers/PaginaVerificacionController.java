@@ -6,6 +6,8 @@ import java.util.Map;
 import reports.Report;
 import org.joda.time.DateTime;
 
+import play.mvc.Util;
+
 import tags.ComboItem;
 import verificacion.VerificacionUtils;
 
@@ -22,6 +24,7 @@ import controllers.gen.PaginaVerificacionControllerGen;
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import es.gobcan.eadmon.verificacion.ws.dominio.DocumentoVerificacion;
 
 public class PaginaVerificacionController extends PaginaVerificacionControllerGen {
 	
@@ -210,6 +213,64 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaVerificacionController.gnuevoRequerimientoBorradorPreliminarRender(idSolicitud, idVerificacion);
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void finalizarVerificacion(Long idSolicitud, Long idVerificacion, String btnFinalizarVerificacion) {
+		checkAuthenticity();
+		if (!permisoFinalizarVerificacion("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+			// Comprobamos que esten todos los documentos verificados
+			if (!VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacionEnCurso)){
+				// Si hay cosas que requerir, la verificación tiene causas subsanables
+				if (((dbSolicitud.verificacionEnCurso.requerimiento.motivo != null) && (!dbSolicitud.verificacionEnCurso.requerimiento.motivo.trim().isEmpty())) || (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacionEnCurso))){
+					log.info("Hay que requerir y notificar, existe un motivo general de requerimiento o documentos en estado noValidos o noPresentados");
+								
+					// Firma requerimiento por el Gestor
+					// Crear notificación
+					// Enviar Notificacion
+		
+					// Actualizamos los datos de la verificacion para verificaciones posteriores, en este caso el estado.
+					dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.verificacionNegativa.name();
+					Messages.ok("Se ha creado una notificación, verificación finalizada y notificación enviada");
+				} else { // Si la verificación ha ido correcta, no hay ninguna causa subsanable
+					log.info("La verificación se ha podido finalizar con éxito, todo es correcto");
+					Messages.ok("La verificación no tiene ningun requerimiento, finalizada correctamente y con éxito");
+					// Actualizamos los datos de la verificacion para verificaciones posteriores, en este caso el estado.
+					dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.verificacionPositiva.name();
+				}
+				// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
+				for (VerificacionDocumento docV: dbSolicitud.verificacionEnCurso.documentos){
+					for (Documento docu: dbSolicitud.documentacion.documentos){
+						if ((docu.uri != null) && (docV.uriDocumento != null) && (docu.uri.equals(docV.uriDocumento))){
+							docu.verificado=true;
+							break;
+						}
+					}
+				}
+				// Actualizamos los datos de la verificacion para verificaciones posteriores. Copiamos la verificacionActual a las verificaciones Anteriores para poder empezar una nueva verificación.
+				dbSolicitud.verificaciones.add(dbSolicitud.verificacionEnCurso);
+				dbSolicitud.estado = EstadosSolicitudEnum.verificado.name();
+				dbSolicitud.save();
+			} else {
+				Messages.error("Existen documentos aún por verificar, compruebe y verifiquelos para finalizar la Verificación Actual");
+			}
+		}
+
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.finalizarVerificacionValidateRules();
+		}
+		if (!Messages.hasErrors()) {
+
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
+		PaginaVerificacionController.finalizarVerificacionRender(idSolicitud, idVerificacion);
 	}
 
 }

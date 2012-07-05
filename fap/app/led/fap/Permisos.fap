@@ -383,7 +383,7 @@ Permiso iniciarVerificacion{
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("administrador", "gestor", "revisor") and
-		solicitud?.estado = "iniciada"
+		solicitud?.estado = "iniciada" or solicitud?.estado = "verificado"
 	return all
 }
 

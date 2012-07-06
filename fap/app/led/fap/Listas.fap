@@ -8731,3 +8731,10 @@ Lista estadoAlegacion crearEnumerado {
 	enestudio	:"En estudio"
 	resuelta	:"Resuelta"
 }
+
+Lista estadoNotificacion crearEnumerado {
+	puestaadisposicion : "Puesta a disposición"
+	accedida : "Accedida"
+	plazovencido : "Plazo vencido"
+	anulada : "Anulada"
+}

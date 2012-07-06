@@ -63,7 +63,8 @@
 
 
 %{
-	topbarscope : { //�?mbito
+	def userNotificacion=null;
+	topbarscope : { //Ámbito
 		def agente = controllers.fap.AgenteController.getAgente();
 		def roles;
 		def user;
@@ -72,6 +73,7 @@
 			roles.remove(agente.rolActivo)
 			
 			user = agente.name ?: agente.username
+			userNotificacion = agente.username
 		}
 }%
 <!-- div class="navbar-wrapper" style="margin-top: 10px;"-->
@@ -90,6 +92,7 @@
 				<ul class="nav pull-right">
 					#{if agente.roles?.size() > 0}
 						<li><p>${user}</p></li>
+						<li><p><span class="badge" id="notificacionFap" rel="tooltip" data-original-title="prueba">0</span></p></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle">
 								#{fap.tableOfTableValue table:'roles', key:agente.rolActivo /}
@@ -159,7 +162,34 @@
 	        	
 	        	$("[rel=popover]").popover({offset: 10});
         	});
+        	
+        	%{
+				urlNuevasNotificaciones = play.mvc.Router.reverse('fap.UtilsController.getNuevasNotificaciones');
+			%}
+        	
+        	var urlNuevasNotificacionesAjax = "${urlNuevasNotificaciones}";
+        	$(function(){
+				$.ajax({
+			  		type: "POST",
+			  		url: urlNuevasNotificacionesAjax,
+			  		data: { usuario : '${userNotificacion}' }
+				}).done(function(numeroNotificacionesActivas) {
+					if ((numeroNotificacionesActivas == null) || (numeroNotificacionesActivas.trim() == '')){
+						$('#notificacionFap').parent().remove();
+					} else {
+						if (numeroNotificacionesActivas == 0){
+							document.getElementById('notificacionFap').className='badge';
+							$('#notificacionFap').attr('data-original-title', "No tiene notificaciones sin leer.");
+						} else {
+							document.getElementById('notificacionFap').className='badge badge-error';
+							$('#notificacionFap').attr('data-original-title', "Tiene "+numeroNotificacionesActivas+" notificaciones sin leer.");
+						}
+						$('#notificacionFap').text(numeroNotificacionesActivas);
+						$('#notificacionFap').tooltip();
+					}
+				});
+			});
+        	
         </script>
-        
     </body>
 </html>

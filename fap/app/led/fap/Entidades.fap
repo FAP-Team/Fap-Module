@@ -547,3 +547,20 @@ Entidad Desistimiento {
 	Registro registro
 	OneToMany Documento documentos
 }
+
+// Notificaciones
+
+Entidad Interesado {
+	Persona persona
+	String movil
+	String uriTerceros
+	Email email
+}
+
+Entidad Notificacion {
+	String uri
+	String descripcion
+	OneToMany Interesado interesados
+	Lista estadoNotificacion estado
+	boolean activa transient
+}

@@ -1,0 +1,58 @@
+h1. Adaptación de la base de datos a la versión 2.0
+
+A continuación se muestra la lista de cambios que deben realizarse en la base de datos de una aplicación escrita con versiones previas de la herramienta.
+
+h3. Tablas en desuso
+
+El primer cambio que puede apreciarse es que las siguientes tablas no son necesarias:
+
+* obligatoriedaddocumentosfap_automaticas
+* obligatoriedaddocumentosfap_imprescindibles
+* obligatoriedaddocumentosfap_manueales
+* obligatoriedaddocumentosfap_obligatorias
+* obligatoriedaddocumentosfap
+
+Por lo que deberán ser borradas de la base de datos que se quiera usar en la nueva versión.
+
+*{padding:0} *Borrado:*
+bc.. 
+ DROP TABLE obligatoriedaddocumentosfap_automaticas;  
+ DROP TABLE obligatoriedaddocumentosfap_imprescindibles;
+ DROP TABLE obligatoriedaddocumentosfap_manuales;
+ DROP TABLE obligatoriedaddocumentosfap_obligatorias;
+ DROP TABLE obligatoriedaddocumentosfap;
+ 
+p. 
+
+h3. Actualización de valores propios de las listas.
+
+En las listas propias de la aplicación, creadas con *crearEnumerado*, el valor clave obligatoriamente debe empezar por un caracter, por ello se añade '_' en base de datos, a todas aquellas listas cuya clave sea un número (Ejemplo: códigos INE). 
+*{padding:0} *Ejemplo:*
+bc.. 
+Lista centros crearEnumerado {
+	01 : "Universidad de La Laguna"
+	02 : "Universidad de Las Palmas de G. C."
+	...
+}
+	
+p. 
+
+*{padding:0} *En base de datos:*
+
+!images/version2BBDD1!
+
+*{padding:0} *Actualización:* 
+bc.. 
+ UPDATE nombre_tabla
+ SET campo_actualizar = concat('_', campo_actualizar)
+ WHERE (campo_actualizar NOT LIKE '\_%');
+ 
+p. 
+
+
+h3. Actualización de la tabla de tablas.
+
+Al lanzar la ejecución por consola veremos un mensaje que nos informa de la detección de cambio de versión de FAP, por lo que se procederá a la reconfiguración de la tabla de tablas.
+Por ello, al ejecutar la aplicación por primera vez, debera volver a cargarse la tabla de tablas y el AED.
+
+ 

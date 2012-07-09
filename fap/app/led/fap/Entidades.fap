@@ -93,8 +93,7 @@ Entidad Direccion embeddable auditable{
 
 // Entidad que representa un Documento y todo lo necesario para representarlo
 Entidad Documento {
-	// uri del documento en el AED
-	String uri
+	String uri                     // uri del documento en el AED
 	Lista tiposDocumentos tipo
 	String descripcion
 	String descripcionVisible transient
@@ -104,13 +103,18 @@ Entidad Documento {
 	DateTime fechaRegistro
 	String urlDescarga transient
 	Boolean verificado	// Indica si el documento ya ha sido verificado
+	// Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente.
+	// Los dos campos siguientes se utilizan para referenciar de manera temporal (hasta su clasificación)
+	// dónde se encuentra el documento seleccionado en la subida (ya presente en el aed).
+	Boolean refAed                     // si el campo expedienteReferenciado/solicitudReferenciada es válido
+	String expedienteReferenciado      // identificador del expediente (aed) donde está este documento
+	Long solicitudReferenciada         // identificador de la solicitud (filesystem) donde está el documento
 }
 
 // La entidad Documentación agrupa aportaciones de documentos
 Entidad Documentacion {
 	// Lista de documentos
 	OneToMany Documento documentos
-	
 	String uriDocOficial
 	String urlDocOficial
 	Boolean docOficialClasificado

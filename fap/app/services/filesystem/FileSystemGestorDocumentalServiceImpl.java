@@ -19,6 +19,7 @@ import com.google.common.base.Preconditions;
 
 import controllers.fap.AgenteController;
 
+import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
 import es.gobcan.eadmon.procedimientos.ws.dominio.CardinalidadEnum;
@@ -157,21 +158,37 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     @Override
     public List<Documento> getDocumentosPorTipo(String tipoDocumento) {
     	List<Documento> rows = new ArrayList<Documento>();
-
     	if (tipoDocumento != null && !tipoDocumento.isEmpty()) {
 	    	Agente agente = AgenteController.getAgente();
+	    
 	     	// Documentos (de tipo tipoDocumento) de las solicitudes donde ha participado el agente actualmente logueado 
+//	     	rows = Documento.find("select documento2 " +
+//	     			"from Documentacion documentacion2 join documentacion2.documentos documento2 " +
+//    				"where (documento2.tipo = '" + tipoDocumento + "') and  (documento2.clasificado = 1) and (documentacion2.id in " +
+//	     				// Seleccionamos los id de Documentación pertenecientes a las solicitudes en los que el agente actualmente logueado ha participado
+//	     				"(select documentacion.id from Documentacion documentacion, Solicitud solicitud " +
+//	     				"where (solicitud.documentacion.id = documentacion.id) and " +
+//	     				"(solicitud.id in " +
+//	     						// Seleccionamos los id de las solicitudes en los que el agente actualmente logueado ha participado
+//		     					"(select solicitud2.id from Participacion participacion, Solicitud solicitud2 " +
+//		    					" where (participacion.agente.username = '" + agente.username + "') and " +
+//		    						"(solicitud2.id = participacion.solicitud.id) )" +
+//	     				")" +
+//    				"))").fetch();
+	    	
+	    	// Documentos (de tipo tipoDocumento) de las solicitudes donde el agente actualmente logueado es solicitante 
 	     	rows = Documento.find("select documento2 " +
 	     			"from Documentacion documentacion2 join documentacion2.documentos documento2 " +
-    				"where (documento2.tipo = '" + tipoDocumento + "') and  (documento2.clasificado = 0) and (documentacion2.id in " +
-	     				// Seleccionamos los id de Documentación pertenecientes a las solicitudes en los que el agente actualmente logueado ha participado
+    				"where (documento2.tipo = '" + tipoDocumento + "') and  (documento2.clasificado = 1) and (documentacion2.id in " +
+	     				// Documentación perteneciente a las solicitudes en los que el usuario actualmente logueado es solicitante 
 	     				"(select documentacion.id from Documentacion documentacion, Solicitud solicitud " +
 	     				"where (solicitud.documentacion.id = documentacion.id) and " +
 	     				"(solicitud.id in " +
-	     						// Seleccionamos los id de las solicitudes en los que el agente actualmente logueado ha participado
-		     					"(select solicitud2.id from Participacion participacion, Solicitud solicitud2 " +
-		    					" where (participacion.agente.username = '" + agente.username + "') and " +
-		    						"(solicitud2.id = participacion.solicitud.id) )" +
+	     						// Seleccionamos los id de las solicitudes en los que el agente actualmente logueado es solicitante
+		     					"(select solicitud2.id from Solicitud solicitud2 " +
+		    					" where (solicitud2.solicitante.fisica.nip.valor = '" + agente.username + "') or " +
+		    							"(solicitud2.solicitante.juridica.cif = '" + agente.username + "')" +
+		    					")" +
 	     				")" +
     				"))").fetch();
     	}
@@ -212,25 +229,28 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
      */
     @Override
     public BinaryResponse getDocumentoByUri(String uriDocumento) throws GestorDocumentalServiceException {
-//        File file = getFile(documento);
-//        BinaryResponse response = BinaryResponse.fromFile(file);
-//        
-//        //Elimina el uuid
-//        String fileName = file.getName();
-//        response.nombre = fileName.substring(4, fileName.length());
-//        
-//        return response;
-    	return new BinaryResponse();
+    	Documento documento = Documento.findByUri(uriDocumento);
+    	if (documento == null) {
+    		throw new GestorDocumentalServiceException("No existe el documento con uri " + uriDocumento);
+    	}
+        File file = getFile(documento);
+        BinaryResponse response = BinaryResponse.fromFile(file);
+        
+        //Elimina el uuid
+        String fileName = file.getName();
+        response.nombre = fileName.substring(4, fileName.length());
+        
+        return response;
     }
     
     
     private File getFile(Documento documento) throws GestorDocumentalServiceException{
-   	 	
         File folder = getDocumentoFolder(documento);
-        
         File file = new File(folder, documento.uri);
+        
         if(!file.exists())
             throw new GestorDocumentalServiceException("No existe el documento " + file.getAbsolutePath());
+        
         return file;
     }
     
@@ -249,34 +269,39 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     public String saveDocumentoTemporal(Documento documento, InputStream contenido, String filename)
             throws GestorDocumentalServiceException {
 
+        documento.prepararParaSubir();
+        
         checkNotNull(documento.tipo, "tipo del documento no puede ser null");
         checkNotNull(documento.descripcionVisible, "descripcion del documento no puede ser null");
         checkNotNull(contenido, "contenido no puede ser null");
-        checkNotNull(filename, "filename del documento no puede ser null");
-        
+        checkNotNull(filename, "filename del documento no puede ser null");        
         checkArgument(!documento.tipo.isEmpty(), "El tipo de documento no puede estar vacío");
         checkArgument(!documento.descripcionVisible.isEmpty(), "La descripción del documento no puede estar vacía");
         checkArgument(!filename.isEmpty(), "El filename no puede estar vacío");
         
-        checkDocumentoNotInGestorDocumental(documento);
+        // No chequeamos si está en el gestor documental porque si refAed está a true significa que estamos
+        // utilizando un archivo ya subido en el gestor documental para otra solicitud.
+        if ( (documento.refAed == null) || (!documento.refAed.booleanValue()) ) 
+        	checkDocumentoNotInGestorDocumental(documento);
         checkNotEmptyImputStream(contenido);
-        
-        
+
         String uri = Codec.UUID().substring(0, URI_KEY_SIZE) + filename;
         
         File file = new File(temporalPath, uri);
             
         try{
-        IO.write(contenido, file);
+        	IO.write(contenido, file);
         }catch(Exception e){e.printStackTrace();};
-        
+
         documento.uri = uri;
         documento.clasificado = false;
         documento.hash = Codec.UUID();
         documento.fechaSubida = new DateTime();
-        
+		documento.refAed = false;					
+		documento.solicitudReferenciada = null;	
+		documento.expedienteReferenciado = null;
         documento.save();
-        
+
         return uri;
     }
 
@@ -359,7 +384,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     private boolean move(File src, File dstFolder){
         return src.renameTo(new File(dstFolder, src.getName()));
     }
-  
+    
     /**
      * Clasifica una lista de documentos temporales
      * 
@@ -373,7 +398,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         boolean todosClasificados = true;
         File dst = clasificadoPath;
         for(Documento documento : documentos){
-            if(!documento.clasificado ){
+            if(!documento.clasificado){
                 File file = getFile(documento);
                 boolean ok = move(file, dst);
                 if(ok){
@@ -384,6 +409,25 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
                 }
             }
         }
+        
+        // Clasificación de los documentos que ya estaban subidos en otra solicitud
+        for (Documento doc: solicitud.documentacion.documentos) {
+			if ((doc.refAed != null) && (doc.refAed == true)) {
+				if(!doc.clasificado){
+	                File file = getFile(doc);
+	                boolean ok = move(file, dst);
+	                if(ok){
+	                    doc.clasificado = true;
+	                    doc.save();
+	                }else{
+	                    todosClasificados = false;
+	                }
+			      	doc.refAed = false;
+					doc.save();
+				}
+			}
+		}
+        
         if(todosClasificados == false){
             throw new GestorDocumentalServiceException("No se pudieron clasificar todos los documentos");
         }
@@ -583,4 +627,47 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		return expresionRegular;
 	}
 
+	
+	
+	/*
+	 * Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente (y clasificado). 
+	 * Esta función marca en ese documento (campos documento.RefAed y documento.expedienteReferenciado) que 
+	 * debe estar en el expediente correspondiente. En el proceso de clasificación es cuando realmente este
+	 * documento pasa a formar parte a todos los efectos del expediente.
+	 * 
+	 */
+	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException  {
+		SolicitudGenerica solicitudReferenciada = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud " +
+				 											"where ( solicitud.documentacion.id in (" +
+				 												"select documentacion.id from Documentacion documentacion join documentacion.documentos doc " + 
+				 												"where doc.uri = '" + uriDocumento + "') )").first();
+		if (solicitudReferenciada == null) {
+			throw new GestorDocumentalServiceException("No se encuentra la solicitud que debe tener el documento con uri " + uriDocumento + 
+									" en la duplicación de un documento ya subido.");
+		}
+		
+		Documento documento = Documento.findByUri(uriDocumento);
+		Documento doc = new Documento();
+		doc.duplicar(documento);
+		// El campo refAed se creó para verificar si el campo expedienteReferenciado/solicitudReferenciada es válido
+		// Ahora lo ponemos true para que en saveDocumentoTemporal no compruebe que doc esté en el aed (por haber hecho un duplicar documento)
+		doc.refAed = true;			
+		doc.save();	
+		
+		File contenidoOriginal = getFile(documento);
+		FileInputStream contenido = null;
+		try {
+			contenido = new FileInputStream(contenidoOriginal);
+		} catch (FileNotFoundException e) { System.out.println(e); }	
+
+		saveDocumentoTemporal(doc, contenido, contenidoOriginal.getName());
+		
+		doc.refAed = true;
+		doc.solicitudReferenciada = solicitudReferenciada.id;
+        doc.fechaSubida = new DateTime();
+		doc.save();
+		
+		solicitud.documentacion.documentos.add(doc);
+		solicitud.save();
+	}
 }

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import tramitacion.Documentos;
 import utils.BinaryResponse;
 import utils.StreamUtils;
 import utils.WSUtils;
@@ -47,6 +49,7 @@ import es.gobcan.eadmon.aed.ws.dominio.Expediente;
 import es.gobcan.eadmon.aed.ws.dominio.Solicitud;
 import es.gobcan.eadmon.aed.ws.dominio.Ubicaciones;
 import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
+import es.gobcan.eadmon.aed.ws.servicios.ObtenerDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Contenido;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Documento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
@@ -246,24 +249,21 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      */
     @Override
     public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws AedExcepcion {
-    	System.out.println("***************** [getDocumentosPorTipo] INICIO (tipoDocumento) = " + tipoDocumento);
     	if (tipoDocumento == null || tipoDocumento.isEmpty())
     		return Collections.emptyList();
     	
     	Agente agente = AgenteController.getAgente();
     	String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
-    	List<PropiedadesDocumento> lista = aedPort.buscarDocumentos(procedimiento, null, null, tipoDocumento, "12345678Z", null, null, null, null);
-    	System.out.println(" ---------- lista = " + lista.toString());
-    	//List<PropiedadesDocumento> lista = aedPort.buscarDocumentos(null, null, null, tipoDocumento, agente.username, null, null, null, null);
-    	if(lista == null)
+    	// Conjunto de documentos donde su tipo es 'tipoDocumento' y el interesado es el usuario logueado
+    	List<PropiedadesDocumento> listaDocs = aedPort.buscarDocumentos(procedimiento, null, null, tipoDocumento, agente.username, null, null, null, null);
+    	if(listaDocs.isEmpty())
     		return Collections.emptyList();
 
     	// En la interfaz GestorDocumentalService tengo que poner qué entidad retorna esta función. Puedo elegir entre la entidad
     	// Documento de FAP (models.Documento) y la entidad Documento del Gobierno de Canarias. Elegimos la entidad de FAP.
     	// Con la función docAed2Doc, transformamos la entidad del Gobierno (devuelto en aedPort.buscarDocumentos) por la de FAP.
     	List<models.Documento> listaDocumentos = new ArrayList<models.Documento>();
-    	for (PropiedadesDocumento propiedadesDoc : lista) {
-    		System.out.println("************* [getDocumentosPorTipo] Uri doc = " + propiedadesDoc.getUri());
+    	for (PropiedadesDocumento propiedadesDoc : listaDocs) {
     		models.Documento doc = new models.Documento();
     		propiedadesDoc.getIdentificador();
     		doc.docAed2Doc(propiedadesDoc, tipoDocumento);
@@ -383,9 +383,11 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     		uri = aedPort.crearDocumentoNoClasificado(ruta, documentoAed);
     
     		documento.uri = uri;
-    		System.out.println("************* [saveDocumentoTemporal] Uri doc = " + documento.uri);
     		documento.fechaSubida = new DateTime();
     		documento.clasificado = false;
+    		documento.refAed = false;					
+    		documento.expedienteReferenciado = null;
+    		documento.solicitudReferenciada = null;
     		
     		// Almacena el Hash del documento
     		documento.hash=getHash(uri);
@@ -426,7 +428,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
 	
 	private Documento crearDocumentoTemporal(String tipo, String descripcion, String filename, InputStream is){
-		System.out.println("********************* crearDocumentoTemporal");
         Documento documento = new Documento();
         
         // Propiedades básicas
@@ -560,6 +561,28 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                 log.warn("El documento " + documento.uri + " ya está clasificado");
             }
         }
+        
+       // Clasificación de los documentos que ya estaban subidos en otro expediente y queremos duplicar en este expediente
+       for (models.Documento doc: solicitud.documentacion.documentos) {
+			if (doc.refAed == true) {	
+				idAed = solicitud.expedienteAed.idAed;
+				String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+				Ubicaciones ubicacion = new Ubicaciones();
+				ubicacion.setProcedimiento(procedimiento);
+				ubicacion.getExpedientes().add(idAed);
+				List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
+				ubicaciones.add(ubicacion);
+				try {
+					aedPort.copiarDocumento(doc.uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
+				} catch (AedExcepcion e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				doc.refAed = false;
+				doc.save();
+			}
+       }
+        
         if(!todosClasificados){
             throw new GestorDocumentalServiceException("No se pudieron clasificar todos los documentos : " + errores);
         }
@@ -920,7 +943,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             aedPort.actualizarExpediente(expediente);
             log.info("Actualizado expediente " + numeroExpediente + " para el expediente local " + expedienteAed.id);
         }catch(AedExcepcion e){
-            throw new GestorDocumentalServiceException("Error actualizandondo expediente " + numeroExpediente + " para el expediente " + expedienteAed.id, e);
+            throw new GestorDocumentalServiceException("Error actualizando expediente " + numeroExpediente + " para el expediente " + expedienteAed.id, e);
         }
 		return numeroExpediente;
 	}
@@ -937,5 +960,36 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	public String getExpReg(){
 		String expresionRegular="TRP\\d+";
 		return expresionRegular;
+	}
+	
+	/*
+	 * Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente (y clasificado). 
+	 * Esta función marca en ese documento (campos documento.RefAed y documento.expedienteReferenciado) que 
+	 * debe estar en el expediente correspondiente. En el proceso de clasificación es cuando realmente este
+	 * documento pasa a formar parte a todos los efectos del expediente.
+	 * 
+	 */
+	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion {
+		List<DocumentoEnUbicacion> documentoEnUbicacion = aedPort.obtenerDocumentoRutas(uriDocumento);
+		String expediente = null;
+		for (DocumentoEnUbicacion docEnUbicacion : documentoEnUbicacion) {
+			expediente = docEnUbicacion.getExpediente();
+			if (expediente != null)
+				break;
+		}
+		if (expediente == null) {
+			throw new AedExcepcion("No se encuentra el expediente que debe tener el documento con uri " + uriDocumento + 
+									" en la duplicación de un documento ya subido.");
+		}
+
+		models.Documento doc = new models.Documento(); 
+		doc.refAed = true;
+		doc.uri = uriDocumento;
+		doc.expedienteReferenciado = expediente;
+        doc.fechaSubida = new DateTime();
+		doc.save();
+		
+		solicitud.documentacion.documentos.add(doc);
+		solicitud.save();
 	}
 }

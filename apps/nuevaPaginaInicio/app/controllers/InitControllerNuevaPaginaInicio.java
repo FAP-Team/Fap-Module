@@ -31,7 +31,6 @@ public class InitControllerNuevaPaginaInicio {
         	if (classesExp.size() != 0) {
         		Class expClass = classesExp.get(0);
         		ExpedienteGenerico exp = (ExpedienteGenerico) expClass.newInstance();
-        		//sol.estado = "borrador";
         		exp.save();
         		return exp;
         	} else {

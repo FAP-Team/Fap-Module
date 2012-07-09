@@ -65,13 +65,12 @@ public interface GestorDocumentalService {
     
     public List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite);
 
-	String crearExpediente(ExpedienteAed expedienteAed)
-			throws GestorDocumentalServiceException;
+	String crearExpediente(ExpedienteAed expedienteAed) throws GestorDocumentalServiceException;
 
-	String modificarInteresados(ExpedienteAed expedienteAed,
-			SolicitudGenerica solicitud)
-			throws GestorDocumentalServiceException;
+	String modificarInteresados(ExpedienteAed expedienteAed, SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
 
 	BinaryResponse getDocumentoByUri(String uriDocumento) throws GestorDocumentalServiceException;
+	
+	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
     
 }

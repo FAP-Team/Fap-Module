@@ -52,6 +52,12 @@ public class Documento extends FapModel {
 
 	public Boolean verificado;
 
+	public Boolean refAed;
+
+	public String expedienteReferenciado;
+
+	public Long solicitudReferenciada;
+
 	public void init() {
 
 		postInit();
@@ -95,6 +101,24 @@ public class Documento extends FapModel {
 			return this.descripcion;
 		}
 		return descripcionDevolver;
+
+	/*
+	 * Duplicamos todos los campos de un documento (no hacemos doc1 = doc2 porque también duplica el id)
+	 * 
+	 */
+	public void duplicar(Documento doc) {
+		uri = doc.uri;
+		tipo = doc.tipo;
+		descripcion = doc.descripcion;
+		clasificado = doc.clasificado;
+		hash = doc.hash;
+		fechaSubida = doc.fechaSubida;
+		fechaRegistro = doc.fechaRegistro;
+		urlDescarga = doc.urlDescarga;
+		verificado = doc.verificado;
+		refAed = doc.refAed;
+		expedienteReferenciado = doc.expedienteReferenciado;
+		solicitudReferenciada = doc.solicitudReferenciada;
 	}
 
 	// === MANUAL REGION END ===

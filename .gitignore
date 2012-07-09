@@ -58,6 +58,7 @@ Thumbs.db
 
 #Ficheros temporales
 apps/test/tmp/*
+apps/nuevaPaginaInicio/tmp/*
 fap/tmp/*
 
 # Listas
@@ -104,3 +105,4 @@ apps/test/conf/platino
 #Gestor documental FileSystem
 # apps/test/gestorDocumental
 apps/test/gestorDocumental/temporal/*
+apps/test/gestorDocumental/clasificado/*

@@ -145,7 +145,7 @@ public class AportacionPresentarController extends AportacionPresentarController
     }
 
     /**
-     * Comprueba si la firma se correcponde con uno de los firmantes válidos de
+     * Comprueba si la firma se corresponde con uno de los firmantes válidos de
      * la solicitud
      * 
      * @param firma

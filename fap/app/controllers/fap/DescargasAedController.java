@@ -77,51 +77,47 @@ public class DescargasAedController extends GenericController {
 	 * Controlador intermedio necesario porque de una plantilla html no podemos invocar directamente 
 	 * un método de la interfaz GestorDocumentalService.
 	 * 
-	 * Llama al método de la interfaz getDocumentosPorTipo, que retorna una lista con los documentos de tipo tipoDocumento.
+	 * Llama al método de la interfaz getDocumentosPorTipo (obtenemos los documentos, de tipo tipoDocumento, 
+	 * de las solicitudes donde el agente actualmente logueado es solicitante).
 	 * 
 	 * @param tipoDocumento Tipo del documento 
 	 * 
 	 */
-	//public static List<Documento> accederGestorDocumental(String funcionGestorDocumental, String... argumentos) throws AedExcepcion {
-	public static void GestorDocumentalgetDocumentosPorTipo(String tipoDocumento) throws AedExcepcion {
+	public static void getDocumentosPorTipoGestorDocumental(String tipoDocumento) throws AedExcepcion {
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-//		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-//		Long idSolicitud = ids.get("idSolicitud");
-//		if (idSolicitud == null) {
-//			Messages.fatal("Falta parámetro idSolicitud");
-//			return;
-//		}
-//		SolicitudGenerica solicitud = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.id = " + idSolicitud.toString()).first();
 		List<Documento> rows = gestorDocumentalService.getDocumentosPorTipo(tipoDocumento);
-		for (Documento d : rows) {
-			System.out.println("[GestorDocumentalgetDocumentosPorTipo] doc.tipo = " + d.tipo);
-		}
+		
 		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rows);
 		renderJSON(response.toJSON("uri", "descripcion", "urlDescarga"));	
 	}
 	
 	/**
-	 * Guarda un tipo de documento
+	 * Función a la que se llama cuando hemos seleccionado un archivo ya subido anteriormente para volver a usarlo en otra solicitud.
+	 * 
+	 * Llama al método de la interfaz GestorDocumentalService duplicarDocumentoSubido.
 	 * 
 	 */
-	//public static void asignarASolicitudDocumentoSubido(String idSolicitud, String idDocumento) {
 	public static void asignarASolicitudDocumentoSubido(String uriDocumento) {
-		System.out.println("**********************************************");
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		Long idSolicitud = ids.get("idSolicitud");
 		if (idSolicitud == null) {
 			Messages.fatal("Falta parámetro idSolicitud");
 			return;
 		}
-		else
-			System.out.println("********************************************** idSolicitud = " + idSolicitud);
-		//GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-//		System.out.println("********************************************** idSolicitud = " + idSolicitud);
-		System.out.println("********************************************** uriDocumento = " + uriDocumento);
 		SolicitudGenerica solicitud = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.id = " + idSolicitud.toString()).first();
-		//solicitud.
+
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		try {
+			gestorDocumentalService.duplicarDocumentoSubido(uriDocumento, solicitud);
+		} catch (Exception e) { 
+			//System.out.println(e);
+			Messages.error("Ha habido un error al subir el documento"); 
+			Messages.keep();
+		    redirect("SubirArchivoAedTestController.index", "editar", idSolicitud);
+		}
+		Messages.ok("Documento subido correctamente");
+		Messages.keep();
+		redirect("SubirArchivoAedTestController.index", "editar", idSolicitud);
 	}
-	
-	
 	
 }

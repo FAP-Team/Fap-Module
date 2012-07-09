@@ -113,7 +113,6 @@ public class AedClient {
 		String hashAux = ((PropiedadesAdministrativas)pro.getPropiedadesAvanzadas()).getSellado().getHash();
 		documento.hash=hashAux;
 		log.debug("\r\n------ El hash= " + hashAux + " ------------\r\n");
-		//System.out.println("\r\n------ El hash= " + hashAux + " ------------\r\n");
 		//TXU
 				
 		documento.save();

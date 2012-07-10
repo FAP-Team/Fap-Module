@@ -24,6 +24,44 @@ bc..
  
 p. 
 
+También podrá apreciarse, que se crean nuevas tablas en la BBDD:
+
+* aceptarrenunciar
+* aceptarrenunciar:documentos
+* busqueda
+* busqueda_estadosolicitud
+* ceconomico
+* ceconomico_otros
+* ceconomico_valores
+* ceconomicosmanual
+* ceconomicosmanual_valores
+* ceconomicosolicitantemanual
+* ceconomicosolicitantemanual_ceconomicosmanuales
+* ceconomicosolicitantemanual_valores
+* ceconomicosolicitante
+* ceconomicosolicitante_ceconomicosautomaticos
+* criterio
+* criteriolistavalores
+* evaluacion
+* evaluacion_ceconomicos
+* evaluacion_criterios
+* firmantes
+* firmantes_todos
+* funcionarioshabilitados
+* mensajeaportacion
+* mensajeinicio
+* tablekeyvaluedependency
+* tipoeconomico
+* tipocriterio
+* tipocriterio_listavalores
+* tipodatoadicional
+* tipoevaluacion
+* tipoevaluacion_ceconomicos
+* tipoevaluacion_criterios
+* tipoevaluacion_datosadicionales
+* tipoevaluacion_tiposdocumentos
+* valoresceconomico
+
 h3. Actualización de valores propios de las listas.
 
 En las listas propias de la aplicación, creadas con *crearEnumerado*, el valor clave obligatoriamente debe empezar por un caracter, por ello se añade '_' en base de datos, a todas aquellas listas cuya clave sea un número (Ejemplo: códigos INE). 

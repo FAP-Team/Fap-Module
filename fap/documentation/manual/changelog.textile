@@ -15,6 +15,7 @@ h3. Version 2.0 (Sarantontón)
 Para adaptar las aplicaciones a esta versión es necesario realizar cambios en el DSL y en las aplicaciones. Consulta la guía de migración a la version 2.0:
 
 **"Migración de aplicaciones a la versión 2.0":version2.0DSL**
+**"Migración de la base de datos a la versión 2.0":version2.0BBDD**
 
 * Rediseño de los permisos.
 * Mayor flexiblidad a la hora de crear aplicaciones:

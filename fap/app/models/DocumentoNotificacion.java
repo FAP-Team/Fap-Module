@@ -9,13 +9,13 @@ import play.data.validation.*;
 import org.joda.time.DateTime;
 import models.*;
 import messages.Messages;
-import utils.AedUtils;
 import validation.*;
 import audit.Auditable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+import utils.AedUtils;
 
 // === IMPORT REGION END ===
 
@@ -34,12 +34,12 @@ public class DocumentoNotificacion extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-	
-	public DocumentoNotificacion (String uri){
+
+	public DocumentoNotificacion(String uri) {
 		init();
-		this.uri = uri; 
+		this.uri = uri;
 	}
-	
+
 	public String getUrlDescarga() {
 		return AedUtils.crearUrl(uri);
 	}

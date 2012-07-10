@@ -6,7 +6,6 @@ import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
-import properties.FapProperties;
 import org.joda.time.DateTime;
 import models.*;
 import messages.Messages;
@@ -17,6 +16,7 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import enumerado.fap.gen.EstadoNotificacionEnum;
+import properties.FapProperties;
 
 // === IMPORT REGION END ===
 
@@ -142,8 +142,8 @@ public class Notificacion extends FapModel {
 		}
 		return listFirmantes;
 	}
-	
-	public void actualizar (Notificacion notificacion){
+
+	public void actualizar(Notificacion notificacion) {
 		this.estado = notificacion.estado;
 		this.fechaAcceso = notificacion.fechaAcceso;
 	}

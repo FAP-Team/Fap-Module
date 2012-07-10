@@ -26,7 +26,7 @@ import utils.NotificacionUtils;
  * Job que actualiza la base de datos local con las notificaciones del servicio web de la ACIISI
  *
  */
-@Every("5m")
+@Every("5min")
 public class ActualizarNotificaciones extends Job {
 	
     public void doJob() {

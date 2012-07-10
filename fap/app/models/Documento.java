@@ -101,6 +101,7 @@ public class Documento extends FapModel {
 			return this.descripcion;
 		}
 		return descripcionDevolver;
+	}
 
 	/*
 	 * Duplicamos todos los campos de un documento (no hacemos doc1 = doc2 porque también duplica el id)

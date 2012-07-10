@@ -268,8 +268,6 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     @Override
     public String saveDocumentoTemporal(Documento documento, InputStream contenido, String filename)
             throws GestorDocumentalServiceException {
-
-        documento.prepararParaSubir();
         
         checkNotNull(documento.tipo, "tipo del documento no puede ser null");
         checkNotNull(documento.descripcionVisible, "descripcion del documento no puede ser null");

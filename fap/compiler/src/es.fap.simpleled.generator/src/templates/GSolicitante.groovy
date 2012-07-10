@@ -85,7 +85,10 @@ public class GSolicitante extends GElement{
 			grupoRepFisica.siCheck = check;
 			grupoRepFisica.siCheckValues = "true";
 			grupoRepFisica.borde = "false";
-
+			Texto textoEmail = LedFactory.eINSTANCE.createTexto();
+			textoEmail.titulo="Email";
+			textoEmail.requerido=true;
+			textoEmail.duplicar=true;
 			if (!solicitante.representantePersonaFisica){
 				Persona persona = LedFactory.eINSTANCE.createPersona();
 				persona.titulo = "Representante";
@@ -93,6 +96,7 @@ public class GSolicitante extends GElement{
 				persona.name = "representanteDelSolicitante_${solicitante.name}";
 				persona.campo = CampoUtils.addMore(solicitante.campo, "representante").campo;
 				grupoRepFisica.elementos.add(persona);
+				textoEmail.campo = CampoUtils.addMore(persona.campo, "email").campo;
 			}
 			else {
 				PersonaFisica personaFisica = LedFactory.eINSTANCE.createPersonaFisica();
@@ -101,7 +105,9 @@ public class GSolicitante extends GElement{
 				personaFisica.name = "representanteDelSolicitante_${solicitante.name}";
 				personaFisica.campo = CampoUtils.addMore(solicitante.campo, "representante.fisica").campo;
 				grupoRepFisica.elementos.add(personaFisica);
+				textoEmail.campo = CampoUtils.addMore(solicitante.campo, "representante.email").campo;
 			}
+			grupoRepFisica.elementos.add(textoEmail);
 			grupo.getElementos().add(check);
 			grupo.getElementos().add(grupoRepFisica);
 		}
@@ -178,6 +184,11 @@ public class GSolicitante extends GElement{
 		popup.titulo = "Representante";
 		popup.campo = CampoUtils.addMore(solicitante.campo, "representantes").campo;
 		
+		Texto textoEmail = LedFactory.eINSTANCE.createTexto();
+		textoEmail.titulo="Email";
+		textoEmail.requerido=true;
+		textoEmail.duplicar=true;
+		
 		if (!solicitante.representantePersonaFisica){
 			Persona persona = LedFactory.eINSTANCE.createPersona();
 			persona.campo = CampoUtils.create("RepresentantePersonaJuridica").campo;
@@ -185,6 +196,7 @@ public class GSolicitante extends GElement{
 			persona.name = "representante_${popup.name}";
 			persona.requerido = true;
 			popup.elementos.add(persona);
+			textoEmail.campo = CampoUtils.addMore(persona.campo, "email").campo;
 		}
 		else {
 			PersonaFisica personaFisica = LedFactory.eINSTANCE.createPersonaFisica();
@@ -193,8 +205,9 @@ public class GSolicitante extends GElement{
 			personaFisica.name = "representante_${popup.name}";
 			personaFisica.campo = CampoUtils.create("RepresentantePersonaJuridica.fisica").campo;
 			popup.getElementos().add(personaFisica);
+			textoEmail.campo = CampoUtils.create("RepresentantePersonaJuridica.email").campo;
 		}
-
+		popup.elementos.add(textoEmail);
 		Combo tipo = LedFactory.eINSTANCE.createCombo();
 		tipo.name = "tipo_${popup.name}";
 		tipo.campo = CampoUtils.create("RepresentantePersonaJuridica.tipoRepresentacion").campo;

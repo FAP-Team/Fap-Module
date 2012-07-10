@@ -38,7 +38,6 @@ import properties.PropertyPlaceholder;
 
 import models.Agente;
 import models.Documento;
-import models.DocumentoAuditoria;
 import models.DocumentoNotificacion;
 import models.Interesado;
 import models.Notificacion;

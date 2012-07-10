@@ -33,6 +33,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			paginaCrear=DocumentosAportacion
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
@@ -55,6 +56,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			popupLeer=PopUpDocPresentados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80" 
+			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
@@ -68,6 +70,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
@@ -105,6 +108,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				paginaCrear=DocumentosAportacion
 			{
 				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+				Columna titulo="Tipo Documento" campo=Documento.tipo
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
@@ -256,7 +260,8 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				popupEditar=PopUpDocTipos popupLeer=PopUpDocTipos {
 				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
 				Columna campo=Documento.fechaRegistro titulo="Fecha de Registro" ancho="100"
-				Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
+				Columna titulo="Tipo Documento" campo=Documento.tipo
+				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
 			Form verificaTipos {
@@ -302,7 +307,8 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				popupEditar=PopUpDocNuevosTipos popupLeer=PopUpDocNuevosTipos {
 				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
 				Columna campo=Documento.fechaRegistro titulo="Fecha de Registro" ancho="100"
-				Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
+				Columna titulo="Tipo Documento" campo=Documento.tipo
+				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
 			Form verificaTiposNuevosDoc {
@@ -464,7 +470,8 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 						paginaCrear=AportarDocumentacionAceptacionRenuncia
 						{
 							Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
-							Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
+							Columna titulo="Tipo Documento" campo=Documento.tipo
+							Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 							Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 						}
 					}
@@ -612,7 +619,8 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 					paginaCrear=AportarDocumentacionAlegacion
 					{
 						Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
-						Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
+						Columna titulo="Tipo Documento" campo=Documento.tipo
+						Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 						Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 					}
 			
@@ -751,7 +759,8 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	    Tabla documentos titulo="Documentos asociados a la alegación" campo=Alegacion.documentos
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
-			Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
+			Columna titulo="Tipo Documento" campo=Documento.tipo
+			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}	
 	}

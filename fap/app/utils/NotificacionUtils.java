@@ -103,7 +103,7 @@ public class NotificacionUtils {
 					if (dbNotificacion != null){
 						dbNotificacion.actualizar(notificacion);
 					} else {
-						dbNotificacion = notificacion;
+						play.Logger.error("Existe una notificacion con uri: "+notificacion.uri+" en la base de datos del servicio web, pero no en la aplicación local");
 					}
 					dbNotificacion.save();
 				}

@@ -110,6 +110,7 @@ Entidad Documento {
 	Boolean refAed                     // si el campo expedienteReferenciado/solicitudReferenciada es válido
 	String expedienteReferenciado      // identificador del expediente (aed) donde está este documento
 	Long solicitudReferenciada         // identificador de la solicitud (filesystem) donde está el documento
+	Lista estadosDocumentoAuditoria estadoDocumento
 }
 
 // La entidad Documentación agrupa aportaciones de documentos
@@ -575,7 +576,7 @@ Entidad Notificacion {
 	DateTime fechaAcceso					// Fecha en la que algún interesado accedió a la notificación 
 	OneToMany DocumentoNotificacion documentosANotificar
 	OneToMany DocumentoNotificacion documentosAnexos
-	OneToMany DocumentoAuditoria documentosAuditoria
+	OneToMany Documento documentosAuditoria
 	Documento documentoPuestaADisposicion
 	Registro registro
 	Integer plazoAcceso					// Nº de dias naturales a partir de la fecha de puesta a disposición, en los cuales legalmente se debe recibir la notificación por parte del interesado
@@ -591,9 +592,5 @@ Entidad DocumentoNotificacion{
 	String urlDescarga transient
 }
 
-Entidad DocumentoAuditoria extends Documento {
-	Lista estadosDocumentoAuditoria estadoDocumento
-	String urlDescargaFirma transient
-}
 
 

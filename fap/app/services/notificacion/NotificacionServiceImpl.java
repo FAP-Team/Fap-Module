@@ -170,7 +170,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 			log.info(String.format("Documento de puesta a disposición (%s) para la notificación (%s)", uriDoc, uriNotificacion));
 			
 			// Cumplimentar los campos del documento
-			DocumentoAuditoria docPuestaADisposicion = new DocumentoAuditoria();
+			Documento docPuestaADisposicion = new Documento();
 			docPuestaADisposicion.clasificado = true;
 			docPuestaADisposicion.descripcion = "Documento \"Puesta a disposición\" creado por el servicio de notificaciones";
 			docPuestaADisposicion.fechaRegistro = DateTime.now();

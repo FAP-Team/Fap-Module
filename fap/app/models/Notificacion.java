@@ -60,7 +60,7 @@ public class Notificacion extends FapModel {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "notificacion_documentosauditoria")
-	public List<DocumentoAuditoria> documentosAuditoria;
+	public List<Documento> documentosAuditoria;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento documentoPuestaADisposicion;
@@ -97,7 +97,7 @@ public class Notificacion extends FapModel {
 			documentosAnexos = new ArrayList<DocumentoNotificacion>();
 
 		if (documentosAuditoria == null)
-			documentosAuditoria = new ArrayList<DocumentoAuditoria>();
+			documentosAuditoria = new ArrayList<Documento>();
 
 		if (documentoPuestaADisposicion == null)
 			documentoPuestaADisposicion = new Documento();
@@ -141,8 +141,8 @@ public class Notificacion extends FapModel {
 		this.estado = notificacion.estado;
 		this.fechaAcceso = notificacion.fechaAcceso;
 	}
-	
-	public void setData (List<DocumentoNotificacion> documentosANotificar, List<Interesado> interesados, String idExpedienteAed) {
+
+	public void setData(List<DocumentoNotificacion> documentosANotificar, List<Interesado> interesados, String idExpedienteAed) {
 		this.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
 		this.plazoRespuesta = FapProperties.getInt("fap.notificacion.plazorespuesta");
 		this.frecuenciaRecordatorioAcceso = FapProperties.getInt("fap.notificacion.frecuenciarecordatorioacceso");

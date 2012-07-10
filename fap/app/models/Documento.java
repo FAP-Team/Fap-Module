@@ -58,6 +58,9 @@ public class Documento extends FapModel {
 
 	public Long solicitudReferenciada;
 
+	@ValueFromTable("estadosDocumentoAuditoria")
+	public String estadoDocumento;
+
 	public void init() {
 
 		postInit();

@@ -6,6 +6,8 @@ import javax.inject.Inject;
 
 import org.joda.time.DateTime;
 
+import play.modules.guice.InjectSupport;
+
 import services.NotificacionService;
 
 import models.DocumentoNotificacion;
@@ -17,6 +19,7 @@ import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.EstadoNoti
 import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.InteresadoType;
 import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionType;
 
+@InjectSupport
 public class NotificacionUtils {
 	
 	@Inject
@@ -92,15 +95,23 @@ public class NotificacionUtils {
 	}
 	
 	public static void recargarNotificacionesFromWS (String uriProcedimiento){
-		List<Notificacion> notificaciones = notificacionService.getNotificaciones(uriProcedimiento);
-		for (Notificacion notificacion: notificaciones){
-			Notificacion dbNotificacion = (Notificacion) Notificacion.find("select notificacion from Notificacion notificacion where notificacion.uri=?", notificacion.uri).first();
-			if (dbNotificacion != null){
-				dbNotificacion.actualizar(notificacion);
+		if (notificacionService != null){
+			List<Notificacion> notificaciones = notificacionService.getNotificaciones(uriProcedimiento);
+			if (notificaciones != null){
+				for (Notificacion notificacion: notificaciones){
+					Notificacion dbNotificacion = (Notificacion) Notificacion.find("select notificacion from Notificacion notificacion where notificacion.uri=?", notificacion.uri).first();
+					if (dbNotificacion != null){
+						dbNotificacion.actualizar(notificacion);
+					} else {
+						dbNotificacion = notificacion;
+					}
+					dbNotificacion.save();
+				}
 			} else {
-				dbNotificacion = notificacion;
+				play.Logger.error("Hubo un problema al actualizar desde el servicio web, las notificaciones");
 			}
-			dbNotificacion.save();
+		} else {
+			play.Logger.error("No se pudo inyectar el servicio de Notificaciones");
 		}
 	}
 }

@@ -64,6 +64,7 @@
 
 %{
 	def userNotificacion=null;
+	def urlNotificacionesTabla = play.mvc.Router.reverse('NotificacionesController.index');
 	topbarscope : { //Ámbito
 		def agente = controllers.fap.AgenteController.getAgente();
 		def roles;
@@ -92,7 +93,7 @@
 				<ul class="nav pull-right">
 					#{if agente.roles?.size() > 0}
 						<li><p>${user}</p></li>
-						<li><p><span class="badge" id="notificacionFap" rel="tooltip" data-original-title="prueba">0</span></p></li>
+						<li><p><a href="${urlNotificacionesTabla}"><span class="badge" id="notificacionFap" rel="tooltip" data-original-title="">0</span></a></p></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle">
 								#{fap.tableOfTableValue table:'roles', key:agente.rolActivo /}

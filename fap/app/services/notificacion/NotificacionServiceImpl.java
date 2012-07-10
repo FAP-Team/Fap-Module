@@ -241,8 +241,11 @@ public class NotificacionServiceImpl implements NotificacionService {
 				notificacionesWS.add(NotificacionUtils.convertNotificacionTypeToNotificacion(notificacionType));
 			return notificacionesWS;
 		} catch (NotificacionException e) {
-			play.Logger.info("Error en la llamada al método del Servicio Web de búsqueda de notificaciones: "+e.getMessage());
+			play.Logger.error("Error en la llamada al método del Servicio Web de búsqueda de notificaciones: "+e.getMessage());
 			return notificacionesWS;
+		} catch (Exception e){
+			play.Logger.error("Error al intentar obtener las notificaciones del servicio web "+e.getMessage());
+			return null;
 		}
 	}
 	

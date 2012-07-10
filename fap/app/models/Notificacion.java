@@ -116,14 +116,8 @@ public class Notificacion extends FapModel {
 
 	public Notificacion(List<DocumentoNotificacion> documentosANotificar, List<Interesado> interesados, String idExpedienteAed) {
 		init();
-		this.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
-		this.plazoRespuesta = FapProperties.getInt("fap.notificacion.plazorespuesta");
-		this.frecuenciaRecordatorioAcceso = FapProperties.getInt("fap.notificacion.frecuenciarecordatorioacceso");
-		this.frecuenciaRecordatorioRespuesta = FapProperties.getInt("fap.notificacion.frecuenciarecordatoriorespuesta");
-		this.fechaPuestaADisposicion = new DateTime();
-		this.documentosANotificar.addAll(documentosANotificar);
-		this.interesados.addAll(interesados);
-		this.idExpedienteAed = idExpedienteAed;
+		this.estado = EstadoNotificacionEnum.creada.name();
+		this.setData(documentosANotificar, interesados, idExpedienteAed);
 	}
 
 	public boolean getActiva() {
@@ -146,6 +140,17 @@ public class Notificacion extends FapModel {
 	public void actualizar(Notificacion notificacion) {
 		this.estado = notificacion.estado;
 		this.fechaAcceso = notificacion.fechaAcceso;
+	}
+	
+	public void setData (List<DocumentoNotificacion> documentosANotificar, List<Interesado> interesados, String idExpedienteAed) {
+		this.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
+		this.plazoRespuesta = FapProperties.getInt("fap.notificacion.plazorespuesta");
+		this.frecuenciaRecordatorioAcceso = FapProperties.getInt("fap.notificacion.frecuenciarecordatorioacceso");
+		this.frecuenciaRecordatorioRespuesta = FapProperties.getInt("fap.notificacion.frecuenciarecordatoriorespuesta");
+		this.fechaPuestaADisposicion = new DateTime();
+		this.documentosANotificar.addAll(documentosANotificar);
+		this.interesados.addAll(interesados);
+		this.idExpedienteAed = idExpedienteAed;
 	}
 
 	// === MANUAL REGION END ===

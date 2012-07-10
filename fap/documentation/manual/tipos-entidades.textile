@@ -1,0 +1,68 @@
+h1. Asignar un tipo Singleton
+
+Al asignar el tipo *extends Singleton* solo se creará una instancia de la clase generada por esta entidad.
+
+bc. Entidad Quartz extends Singleton {
+	Boolean sendMail
+	Boolean sendMsg
+}
+
+h1. Asignar otros tipos
+
+*Nota:* Desaparece el tipo _Solicitud_ y _Solicitud[]_. Ahora en la aplicación que creamos deberíamos crear una entidad *Solicitud* que extienda de _SolicitudGenerica_ y ahí añadiremos más campos a la solicitud. 
+
+bc. Entidad Solicitud extends SolicitudGenerica{
+	SolicitanteNuevo solicitanteNuevo
+}
+
+Además de los tipos que provee *FAP* se permite al desarrollador crear entidades que extiendan de otras entidades. Utilizando *extends "NombreEntidad"* se indica que la entidad que estamos definiendo extenderá (será una clase hija) de la entidad *"NombreEntidad"*.
+
+bc. Entidad RepresentantePersonaFisica extends Persona  {
+	String stringMejorado
+	.....
+}
+
+!images/curso-2-5-herencia!
+
+h1. Opciones Avanzadas
+
+A cada entidad se le pueden asignar una serie de anotaciones que cambian su comportamiento. (Para más información "entidad":dsl-entity.)
+
+bc. Entidad Solicitante extends Persona noConstruct {
+	Direccion domicilio
+	String telefonoFijo
+	Email email
+	DateTime fechaNacimiento
+}
+
+La anotación *noConstruct* hace que no se genere un constructor para esta entidad. 
+
+bc. Entidad Direccion Embeddable {
+	String calle
+	Lista municipios municipio
+	Lista provincia provincia
+	Lista pais pais
+}
+
+Con *Embeddable* no se creará una tabla para almacenar los atributos de la entidad, estos se almacenarán en la tabla de la entidad que la referencie.
+
+h1. Relaciones entre entidades 
+
+Para definir las relaciones entre entidades primero debemos definir los atributos que estas pueden contener. Estos atributos pueden ser de tipo simple como String, Double, ..., y de tipo compuestos como Listas y otras entidades. En *FAP* si queremos que una entidad esté relacionada con otra debemos asignarle un atributo cuyo tipo sea la otra entidad. 
+
+bc. Entidad Solicitante extends Persona noConstruct {
+	Direccion domicilio
+	String telefonoFijo
+	Email email
+	DateTime fechaNacimiento
+}
+Entidad Direccion Embeddable {
+	String calle
+	Lista municipios municipio
+	Lista provincia provincia
+	Lista pais pais
+}
+
+!images/curso_2_1-relacion_entidades!
+
+En este caso, la entidad Solicitante tiene definido el atributo domicilio que es de tipo Direccion. Por lo que existe una relación OneToOne entre Solicitante y Direccion, OneToOne es la relación por defecto, esto se puede cambiar. Ejemplo: 

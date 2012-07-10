@@ -1,6 +1,6 @@
-h1. Application.conf
+h1. Configurar el application.conf
 
-En este fichero se definen una serie de propiedades que se necesitan en la aplicación. Se mencionarán las porpiedades más relevantes.
+En el fichero *conf/application.conf* se definen una serie de propiedades que se necesitan en la aplicación. Se mencionarán las propiedades más relevantes.
 
 * Hay que especificar el nombre de la aplicación:
 bc. application.name=nombre
@@ -24,4 +24,3 @@ bc. // File System
 	db=mem
 // MySQL
 	db=mysql:user:password@schema
-

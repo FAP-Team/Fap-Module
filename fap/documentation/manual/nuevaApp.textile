@@ -62,38 +62,7 @@ bc. play run
  
 10. A partir de este momento tenemos la aplicación ejecutándose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. El usuario por defecto es *admin* y la contraseña no se comprueba cuando se está en modo desarrollo. Crea una nueva solicitud e irás a la página con el mensaje que acabas de crear.
 
-h2. Creación de un proyecto de forma automática
-
-Otra manera de realizar la creación de un proyecto FAP, es utilizando un script creado para ello que automatiza los pasos anteriores de manera que el usuario sólo se preocupa de elegir el nombre de su proyecto.
-
-Para obtener dicho script, nos bastará con descargarlo del siguiente enlace: "init-script":http://fap-devel.etsii.ull.es/public/fapInitScript/init-script.py
-
-Su ejecución se realizará lanzando el script en python, pasándole como único argumento el nombre que queremos darle al proyecto FAP:
-
-bc. > python init-script.py "holamundo"
-
-Este script se encargará de:
-
-1. Crear un proyecto play con el nombre pasado por parámetro.
-2. Actualizar el fichero de dependencias.
-3. Cargar las dependencias.
-4. Crear el esqueleto de la aplicación FAP.
-5. Genera la aplicación creada.
-
-De esta forma, tendremos lista nuestra aplicación para lanzar, y ver lo que nos crea FAP sin tocar nada de nada, ejecutando un simple comando.
-
-h2. Configuración de la base de datos
-
-Por defecto, PLAY utiliza una base de datos en memoria. Para utilizar una base de datos MySQL debemos modificar el fichero de configuración *"conf/application.conf":application-conf*
-
-Sustituye:
-
-bc. db=mem
-
-por
-
-bc. db=mysql:user:password@schema
-
+Si quiere crear el proyecto de forma automática, pinche "aquí":creacion-automatica-proyecto
 
 h2. Configuración de Eclipse
 

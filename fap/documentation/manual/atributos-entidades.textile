@@ -1,0 +1,38 @@
+h1. Atributos
+
+Las entidades tienen atributos, para más información ver "Atributos":dsl-attribute.
+
+h2. Validación Manual
+
+Si queremos utilizar validación manual en alguno de los atributos de una entidad, tendremos que anotar ese atributo indicándole cual es la clase que realizará la validación. Un ejemplo, puede ser el siguiente:
+
+Supongamos que queremos que todos los nombres del contacto empiecen por mayúscula, así, para que se pueda almacenar correctamente el nombre del contacto, éste debe empezar por una mayúscula.
+
+bc. Entidad Contacto {
+	String nombre requerido
+	...
+}
+
+Anotaremos dicha entidad mediante *checkWith="validation.Mayuscula"*, quedando de la siguiente manera:
+
+bc. Entidad Contacto {
+	String nombre requerido checkWith="validation.Mayuscula"
+	...
+}
+
+Y creamos la clase con la que comprobamos el valor (_NOTA: Como la llamamos validacion.Mayuscula, la clase se deberá llamar *Mayuscula* y deberá estar en el paquete *validation*_), quedando de la siguiente manera:
+
+bc. package validacion;
+import play.data.validation.Check;
+public class Mayuscula extends Check {
+	@Override
+	public boolean isSatisfied(Object validatedObject, Object value) {
+		String name = (String) value;
+		if (Character.isUpperCase(name.charAt(0))) {
+			return true;
+		}
+		return false;
+	}
+}
+
+El atributo que estamos validando es el objeto _value_ del método _isSatisfied(..)_. Si el primer carácter del nombre es una mayúscula devolvemos *_true_* (validación correcta), en caso contrario _false_. Así, en el momento de guardar la página donde se referencia ese atributo, dará un error de validación, indicando que el valor del atributo es inválido.

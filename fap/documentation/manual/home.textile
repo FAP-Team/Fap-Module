@@ -39,12 +39,22 @@ h4. FAP
 h3. Creando una nueva Aplicación
 
 "Hola Mundo":nuevaApp
+"Configurar el application.conf":nuevaApp-configurar-application
+
 
 h2. Entendiendo FAP
 
 h3. DSL Básico (+ enlace Avanzado)
 
+
+
+"Permisos (Avanzado??)":curso-permisos
+
 h3. Entidad (Modelo)
+
+"Entidades":nuevaApp-entidades
+* "Tipos y relaciones":tipos-entidades
+* "Atributos":atributos-entidades
 
 h3. Controlador
 
@@ -79,6 +89,5 @@ h2. Aplicaciones de ejemplo
 h2. Documentación adicional
 
 h3. Tecnologías FAP
-
 
 

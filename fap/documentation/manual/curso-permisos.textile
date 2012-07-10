@@ -61,7 +61,7 @@ bc.. Pagina PaginaEj campo=Document {
 	Grupo permiso=ejemplo2 borde=false {
 		Texto campo=Document.nombre
 	}
-		
+
 	Texto campo=Document.Descripcion
 }
 

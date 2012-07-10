@@ -790,3 +790,16 @@ Permiso actualizarBaremacion {
 	return
 		all
 }
+
+Permiso notificacionEditableSiNoLeida {
+	vars
+		Notificacion notificacion
+	when
+		notificacion.estado != null and notificacion.estado != "puestaadisposicion"
+	return
+		visible
+	when
+		notificacion.estado != null
+	return
+		all
+}

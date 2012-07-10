@@ -76,6 +76,14 @@ public class Firmante extends FapModel {
 		constructor(persona, tipo, cardinalidad);
 	}
 
+	public Firmante(Interesado interesado) {
+		this.nombre = interesado.persona.getNombreCompleto();
+		this.idvalor = interesado.persona.getNumeroId();
+		this.cardinalidad = "unico";
+		this.tipo = interesado.persona.tipo;
+		// TODO: Le asignamos un ID tipo???
+	}
+
 	private void constructor(Persona persona, String tipo, String cardinalidad) {
 		init();
 		this.nombre = persona.getNombreCompleto();

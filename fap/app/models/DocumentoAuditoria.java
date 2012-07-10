@@ -19,32 +19,17 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Interesado extends FapModel {
+public class DocumentoAuditoria extends Documento {
 	// Código de los atributos
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public Persona persona;
+	@ValueFromTable("estadosDocumentoAuditoria")
+	public String estadoDocumento;
 
-	public String movil;
-
-	public String uriTerceros;
-
-	@Email
-	public String email;
-
-	public Boolean notificar;
-
-	public Interesado() {
-		init();
-	}
+	@Transient
+	public String urlDescargaFirma;
 
 	public void init() {
-
-		if (persona == null)
-			persona = new Persona();
-		else
-			persona.init();
-		notificar = true;
+		super.init();
 
 		postInit();
 	}

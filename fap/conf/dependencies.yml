@@ -62,6 +62,9 @@ require:
     - es.gobcan -> resoluciones 1.1:
         transitive: false
     - platinowssinterceptor -> platinowssinterceptor 2
+    
+    - es.gobcan.platino.servicios.enotificacion ->  notificaciones 1.0:
+        transitive: false
 
 repositories:
     - Fap nexus:
@@ -77,7 +80,7 @@ repositories:
             - es.gobcan.eadmon -> *
             - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *
-
+            - es.gobcan.platino.servicios.enotificacion -> * 
 
     - fap-devel modules repository:
         type: http

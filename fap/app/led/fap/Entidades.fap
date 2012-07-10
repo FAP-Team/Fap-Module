@@ -42,6 +42,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	ManyToMany CEconomico ceconomicos	
 	AceptarRenunciar aceptarRenunciar
 	Alegaciones alegaciones
+	OneToMany Notificacion notificaciones
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -559,12 +560,40 @@ Entidad Interesado {
 	String movil
 	String uriTerceros
 	Email email
+	Boolean notificar default="true"
 }
 
 Entidad Notificacion {
 	String uri
+	String uriProcedimiento
 	String descripcion
-	OneToMany Interesado interesados
+	ManyToMany Interesado interesados
 	Lista estadoNotificacion estado
 	boolean activa transient
+	String asunto							// Asunto sobre lo que va la notificación
+	DateTime fechaPuestaADisposicion		// Fecha en la que se creó la notificación
+	DateTime fechaAcceso					// Fecha en la que algún interesado accedió a la notificación 
+	OneToMany DocumentoNotificacion documentosANotificar
+	OneToMany DocumentoNotificacion documentosAnexos
+	OneToMany DocumentoAuditoria documentosAuditoria
+	Documento documentoPuestaADisposicion
+	Registro registro
+	Integer plazoAcceso					// Nº de dias naturales a partir de la fecha de puesta a disposición, en los cuales legalmente se debe recibir la notificación por parte del interesado
+	Integer frecuenciaRecordatorioAcceso	// Cada cuantos dias naturales, a patir de la fecha de puesta a disposición, se envía un recordatorio al/los interesado/s de que tiene/n pendiente el acceso.
+	Integer plazoRespuesta					// Nº de dias habiles, a partir de la fecha en la que se accedió a la notificación, que hay de plazo para responder a lo requerido en la notificación.
+	Integer frecuenciaRecordatorioRespuesta		// Cada cuantos días naturales, a partir de la fecha de acceso, hay que enviar recordatorios al/a los interesado/s.
+	String idExpedienteAed
+	Agente agente noConstruct
 }
+
+Entidad DocumentoNotificacion{
+	String uri
+	String urlDescarga transient
+}
+
+Entidad DocumentoAuditoria extends Documento {
+	Lista estadosDocumentoAuditoria estadoDocumento
+	String urlDescargaFirma transient
+}
+
+

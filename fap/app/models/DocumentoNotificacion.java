@@ -9,6 +9,7 @@ import play.data.validation.*;
 import org.joda.time.DateTime;
 import models.*;
 import messages.Messages;
+import utils.AedUtils;
 import validation.*;
 import audit.Auditable;
 import java.text.ParseException;
@@ -19,37 +20,29 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Interesado extends FapModel {
+public class DocumentoNotificacion extends FapModel {
 	// Código de los atributos
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public Persona persona;
+	public String uri;
 
-	public String movil;
-
-	public String uriTerceros;
-
-	@Email
-	public String email;
-
-	public Boolean notificar;
-
-	public Interesado() {
-		init();
-	}
+	@Transient
+	public String urlDescarga;
 
 	public void init() {
-
-		if (persona == null)
-			persona = new Persona();
-		else
-			persona.init();
-		notificar = true;
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
+	
+	public DocumentoNotificacion (String uri){
+		init();
+		this.uri = uri; 
+	}
+	
+	public String getUrlDescarga() {
+		return AedUtils.crearUrl(uri);
+	}
 
 	// === MANUAL REGION END ===
 

@@ -176,9 +176,9 @@ public class TableRenderResponse<T> {
 			if (permisoEditar)
 				permisoFilasEditar = secure.check(permisoNombreEditar, "editable", accion, ids, null);
 			if (permisoLeer)
-				permisoFilasLeer = secure.check(permisoNombreBorrar, "visible", accion, ids, null);
+				permisoFilasLeer = secure.check(permisoNombreLeer, "visible", accion, ids, null);
 			if (permisoBorrar)
-				permisoFilasBorrar = secure.check(permisoNombreLeer, "editable", accion, ids, null);
+				permisoFilasBorrar = secure.check(permisoNombreBorrar, "editable", accion, ids, null);
 			
 			if ((permisoFilasLeer != null) && (permisoFilasLeer.checkAcceso("leer")))
 				record.permisoLeer = true;

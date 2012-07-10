@@ -8737,4 +8737,17 @@ Lista estadoNotificacion crearEnumerado {
 	accedida : "Accedida"
 	plazovencido : "Plazo vencido"
 	anulada : "Anulada"
+	respondida : "Verificada su respuesta"
+	cerrada : "Expediente cerrado"
+	creada : "Creada"
+	enviada : "Enviada"
+}
+
+Lista estadosDocumentoAuditoria crearEnumerado {
+	puestaadisposicion : "Puesta a disposición"
+	accedida : "Accedida"
+	plazovencido : "Plazo vencido"
+	accedidafueraplazo	: "Accedida fuera de plazo"
+	anulada : "Anulada"
+	respondida : "Verificada su respuesta"
 }

@@ -12,6 +12,8 @@ import services.RegistroService;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemRegistroService;
+import services.notificacion.NotificacionServiceImpl;
+import services.NotificacionService;
 
 public class FapModule extends PlayAbstractModule {
 
@@ -22,6 +24,11 @@ public class FapModule extends PlayAbstractModule {
 		gestorDocumental();
 		firma();
 		registro();
+		notificacion();
+	}
+	
+	protected void notificacion() {
+		bindLazySingletonOnDev(NotificacionService.class, NotificacionServiceImpl.class);
 	}
 	
 	protected void gestorDocumental() {

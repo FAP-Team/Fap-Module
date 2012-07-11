@@ -307,6 +307,7 @@ public abstract class TramiteBase {
 					tx.commit();
 				} catch (Exception e) {
 					Messages.error("Error al registrar de entrada la solicitud");
+					play.Logger.error("Error al registrar de entrada la solicitud: "+e.getMessage());
 					throw new RegistroServiceException("Error al obtener el justificante del registro de entrada");
 				}
 			} else {

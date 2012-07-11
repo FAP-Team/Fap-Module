@@ -66,7 +66,7 @@ public class PaginaDocumentoVerificacionEditarController extends PaginaDocumento
 		}
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
-			solicitud.verificacionEnCurso.fechaUltimaActualizacion=new DateTime();
+			solicitud.verificacion.fechaUltimaActualizacion=new DateTime();
 			dbVerificacionDocumento.save();
 			solicitud.save();
 			log.info("Acción Editar de página: " + "gen/PaginaDocumentoVerificacionEditar/PaginaDocumentoVerificacionEditar.html" + " , intentada con éxito");

@@ -24,7 +24,7 @@ public class PopUpDocTiposController extends PopUpDocTiposControllerGen {
 		Map <String, Long> parametrosUrl = (Map<String, Long>)tags.TagMapStack.top("idParams");
 		SolicitudGenerica solicitud = getSolicitudGenerica(parametrosUrl.get("idSolicitud"));
 		GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		List <TipoDocumento> tiposDocumentos = gestorDocumental.getListTiposDocumentosAportadosCiudadano (solicitud.verificacionEnCurso.tramiteNombre);
+		List <TipoDocumento> tiposDocumentos = gestorDocumental.getListTiposDocumentosAportadosCiudadano (solicitud.verificacion.tramiteNombre);
 		for (TipoDocumento tDoc: tiposDocumentos){
 			result.add(new ComboItem(tDoc.getUri(), tDoc.getDescripcion()));
 		}
@@ -50,7 +50,7 @@ public class PopUpDocTiposController extends PopUpDocTiposControllerGen {
 		}
 		if (!Messages.hasErrors()) {
 			dbDocumento.save();
-			solicitud.verificacionEnCurso.fechaUltimaActualizacion = new DateTime();
+			solicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 			solicitud.save();
 			log.info("Acción Editar de página: " + "gen/popups/PopUpDocTipos.html" + " , intentada con éxito");
 		} else

@@ -383,7 +383,7 @@ Permiso iniciarVerificacion{
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("administrador", "gestor", "revisor") and
-		solicitud?.verificacionEnCurso?.estado = "iniciada" and
+		solicitud?.verificacion?.estado = "iniciada" and
 		(solicitud?.estado in (/*"iniciada", "verificado",*/ "enVerificacion"))
 		
 	return all
@@ -504,20 +504,20 @@ Permiso editAdminGestorVisibleUser {
 	return visible
 }
 
-Permiso noHayVerificacionEnCurso{
+Permiso noHayverificacion{
 	vars
 		SolicitudGenerica solicitud
-		Verificacion verificacion : sql("select verificacionEnCurso from SolicitudGenerica s where s.id=?", solicitud.id)
+		Verificacion verificacion : sql("select verificacion from SolicitudGenerica s where s.id=?", solicitud.id)
 	when
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion = null) or ((verificacion.estado=null) or (verificacion.estado in ("enRequerido", "plazoVencido", "verificacionPositiva", "verificacionNegativa"))))
 	return
 		all
 }
 	
-Permiso hayVerificacionEnCurso{
+Permiso hayverificacion{
 	vars
 		SolicitudGenerica solicitud
-		Verificacion verificacion : sql("select verificacionEnCurso from SolicitudGenerica s where s.id=?", solicitud.id)
+		Verificacion verificacion : sql("select verificacion from SolicitudGenerica s where s.id=?", solicitud.id)
 	when
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion != null) and (verificacion.estado!=null) and (verificacion.estado in ("iniciada", "verificandoTipos", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada")))
 	return
@@ -552,7 +552,7 @@ Permiso verificacionConNuevosDoc{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacionEnCurso.estado != null) and (solicitud.verificacionEnCurso.estado = "enVerificacionNuevosDoc") 
+		(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado != null) and (solicitud.verificacion.estado = "enVerificacionNuevosDoc") 
 	return
     	all
 }
@@ -810,7 +810,7 @@ Permiso requerimiento {
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.verificacionEnCurso?.estado in ("enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada")
+		solicitud?.verificacion?.estado in ("enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada")
 	return
 		all
 }
@@ -820,16 +820,16 @@ Permiso requerimientoAFirmar {
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("gestor", "administrador")
-		and solicitud?.verificacionEnCurso?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
-		and solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.borrador = "false"
-		and solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.firmada = "false"
+		and solicitud?.verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+		and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.borrador = "false"
+		and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada = "false"
 	return
 		all
 	when
 		agente.rolActivo in ("revisor")
-		and solicitud?.verificacionEnCurso?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
-		and solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.borrador = "false"
-		and solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.firmada = "false"
+		and solicitud?.verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+		and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.borrador = "false"
+		and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada = "false"
 	return
 		visible
 }
@@ -838,8 +838,8 @@ Permiso requerimientoFirmado {
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.firmada = "true"
-		//and solicitud?.verificacionEnCurso?.requerimiento?. y no ha sido notificado
+		solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada = "true"
+		//and solicitud?.verificacion?.requerimiento?. y no ha sido notificado
 	return all
 }
 
@@ -847,11 +847,20 @@ Permiso requerimientoRequerirFirma {
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.verificacionEnCurso?.estado in ("enRequerimiento")
+		solicitud?.verificacion?.estado in ("enRequerimiento")
 	return
 		all
 	when
-		solicitud?.verificacionEnCurso?.estado in ("enRequerimientoFirmaSolicitada")
+		solicitud?.verificacion?.estado in ("enRequerimientoFirmaSolicitada")
 	return
 		visible
+}
+
+Permiso obtenerRequerimiento {
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud?.verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+	return
+		all
 }

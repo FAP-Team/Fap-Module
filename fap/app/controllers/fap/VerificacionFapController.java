@@ -55,7 +55,7 @@ public class VerificacionFapController {
 					documentosVerificaciones.add(vDoc.uriDocumento);
 			}
 		}
-		for (VerificacionDocumento vDoc: solicitud.verificacionEnCurso.documentos){
+		for (VerificacionDocumento vDoc: solicitud.verificacion.documentos){
 			if (vDoc.uriDocumento != null)
 				documentosVerificaciones.add(vDoc.uriDocumento);
 		}

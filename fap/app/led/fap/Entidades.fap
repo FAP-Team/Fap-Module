@@ -34,7 +34,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	ExpedientePlatino expedientePlatino
 	ExpedienteAed expedienteAed
 	Aportaciones aportaciones
-	Verificacion verificacionEnCurso
+	Verificacion verificacion
 	OneToMany Verificacion verificaciones
 	Exclusion exclusion
 	Desistimiento desistimiento

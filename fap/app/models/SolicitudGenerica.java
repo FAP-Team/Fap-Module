@@ -62,7 +62,7 @@ public class SolicitudGenerica extends FapModel {
 	public Aportaciones aportaciones;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public Verificacion verificacionEnCurso;
+	public Verificacion verificacion;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_verificaciones")
@@ -134,10 +134,10 @@ public class SolicitudGenerica extends FapModel {
 		else
 			aportaciones.init();
 
-		if (verificacionEnCurso == null)
-			verificacionEnCurso = new Verificacion();
+		if (verificacion == null)
+			verificacion = new Verificacion();
 		else
-			verificacionEnCurso.init();
+			verificacion.init();
 
 		if (verificaciones == null)
 			verificaciones = new ArrayList<Verificacion>();

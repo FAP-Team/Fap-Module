@@ -22,12 +22,12 @@ public class AccesoVerificacionesController extends AccesoVerificacionesControll
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			// Asignamos una nueva verificacion con su fecha de creacion, cuando se pulse el boton de nueva verificación
-			dbSolicitud.verificacionEnCurso = new Verificacion();
-			dbSolicitud.verificacionEnCurso.expediente = dbSolicitud.expedienteAed.idAed;
-			dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.iniciada.name();
-			dbSolicitud.verificacionEnCurso.fechaCreacion = new DateTime();
+			dbSolicitud.verificacion = new Verificacion();
+			dbSolicitud.verificacion.expediente = dbSolicitud.expedienteAed.idAed;
+			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
+			dbSolicitud.verificacion.fechaCreacion = new DateTime();
 			dbSolicitud.save();
-			long idVerificacion=dbSolicitud.verificacionEnCurso.id;
+			long idVerificacion=dbSolicitud.verificacion.id;
 			String accion = getAccion();
 			redirect("PaginaVerificacionController.index", accion, idSolicitud, idVerificacion);
 		} else

@@ -24,7 +24,7 @@ public class PopUpDocNuevosTiposController extends PopUpDocNuevosTiposController
 		Map <String, Long> parametrosUrl = (Map<String, Long>)tags.TagMapStack.top("idParams");
 		SolicitudGenerica solicitud = getSolicitudGenerica(parametrosUrl.get("idSolicitud"));
 		GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		List <TipoDocumento> tiposDocumentos = gestorDocumental.getListTiposDocumentosAportadosCiudadano (solicitud.verificacionEnCurso.tramiteNombre);
+		List <TipoDocumento> tiposDocumentos = gestorDocumental.getListTiposDocumentosAportadosCiudadano (solicitud.verificacion.tramiteNombre);
 		for (TipoDocumento tDoc: tiposDocumentos){
 			result.add(new ComboItem(tDoc.getUri(), tDoc.getDescripcion()));
 		}
@@ -51,7 +51,7 @@ public class PopUpDocNuevosTiposController extends PopUpDocNuevosTiposController
 		}
 		if (!Messages.hasErrors()) {
 			dbDocumento.save();
-			solicitud.verificacionEnCurso.fechaUltimaActualizacion = new DateTime();
+			solicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 			solicitud.save();
 			log.info("Acción Editar de página: " + "gen/popups/PopUpDocNuevosTipos.html" + " , intentada con éxito");
 		} else
@@ -72,7 +72,7 @@ public class PopUpDocNuevosTiposController extends PopUpDocNuevosTiposController
 				Messages.fatal("Falta parámetro idDocumento");
 		}
 		if (idSolicitud != null && idDocumento != null) {
-			documento = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.verificacionEnCurso.nuevosDocumentos documento where solicitud.id=? and documento.id=?", idSolicitud, idDocumento).first();
+			documento = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.verificacion.nuevosDocumentos documento where solicitud.id=? and documento.id=?", idSolicitud, idDocumento).first();
 			if (documento == null){
 				documento = Documento.findById(idDocumento);
 				if(documento == null)

@@ -71,7 +71,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		else if (!"borrado".equals(accion))
 			verificacion = PaginaVerificacionController.getVerificacion(idSolicitud, idVerificacion);
 
-        if ((solicitud != null) && (solicitud.verificacionEnCurso != null) && (solicitud.verificacionEnCurso.estado != null)){
+        if ((solicitud != null) && (solicitud.verificacion != null) && (solicitud.verificacion.estado != null)){
         	log.info("Visitando página: " + "gen/PaginaVerificacion/PaginaVerificacion.html");
         	renderTemplate("gen/PaginaVerificacion/PaginaVerificacion.html", accion, idSolicitud, idVerificacion, solicitud, verificacion);
         } else
@@ -122,7 +122,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	
 	public static void tablaverificacionTipos(Long idSolicitud) {
 
-		java.util.List<Documento> rows = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.verificacionEnCurso.verificacionTiposDocumentos documento where solicitud.id=? and (documento.verificado is null or documento.verificado = false)",idSolicitud).fetch();
+		java.util.List<Documento> rows = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.verificacion.verificacionTiposDocumentos documento where solicitud.id=? and (documento.verificado is null or documento.verificado = false)",idSolicitud).fetch();
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Documento> rowsFiltered = rows; //Tabla sin permisos, no filtra
@@ -145,15 +145,15 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			
 			try {
-				dbSolicitud.verificacionEnCurso.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos((List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", dbSolicitud.verificacionEnCurso.id, idSolicitud), dbSolicitud.verificacionEnCurso.uriTramite, dbSolicitud.verificaciones, idSolicitud);
+				dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos((List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", dbSolicitud.verificacion.id, idSolicitud), dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones, idSolicitud);
 			} catch (Throwable e) {
 				play.Logger.error("Error recuperando los documentos nuevos a verificar", e.getMessage());
 			}
 
-			dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.enVerificacion.name();
-			dbSolicitud.verificacionEnCurso.nuevosDocumentos.clear();
-			dbSolicitud.verificacionEnCurso.verificacionTiposDocumentos.clear();
-			dbSolicitud.verificacionEnCurso.fechaUltimaActualizacion = new DateTime();
+			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
+			dbSolicitud.verificacion.nuevosDocumentos.clear();
+			dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
+			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 			dbSolicitud.save();
 			Messages.ok("Finaliza la verificación de tipos");
 			log.info("Acción verificacion de tipos de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
@@ -172,19 +172,19 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		}
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-			for (Documento doc: dbSolicitud.verificacionEnCurso.nuevosDocumentos){
+			for (Documento doc: dbSolicitud.verificacion.nuevosDocumentos){
 				VerificacionDocumento vDoc= new VerificacionDocumento(doc);
-				TipoDocumento tipo = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.tramitePertenece=? and tipo.uri=?", dbSolicitud.verificacionEnCurso.uriTramite, doc.tipo).first();
+				TipoDocumento tipo = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.tramitePertenece=? and tipo.uri=?", dbSolicitud.verificacion.uriTramite, doc.tipo).first();
 				vDoc.identificadorMultiple = tipo.cardinalidad;
 				vDoc.existe = true;
 				vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
 				vDoc.save();
-				dbSolicitud.verificacionEnCurso.documentos.add(vDoc);
+				dbSolicitud.verificacion.documentos.add(vDoc);
 			}
-			dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.enVerificacion.name();
-			dbSolicitud.verificacionEnCurso.nuevosDocumentos.clear();
-			dbSolicitud.verificacionEnCurso.verificacionTiposDocumentos.clear();
-			dbSolicitud.verificacionEnCurso.fechaUltimaActualizacion = new DateTime();
+			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
+			dbSolicitud.verificacion.nuevosDocumentos.clear();
+			dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
+			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
 			dbSolicitud.save();
 			log.info("Acción sobre verificacion de tipos de nuevos documentos de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
 		} else
@@ -202,12 +202,12 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		}
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-			List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacionEnCurso, idSolicitud);
+			List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, idSolicitud);
 			// Compruebo que no existen documentos nuevos aportados por el solicitante y que no esten incluidos en la verificacion actual
 			if (!documentosNuevos.isEmpty()){
-				dbSolicitud.verificacionEnCurso.nuevosDocumentos.addAll(documentosNuevos);
-				dbSolicitud.verificacionEnCurso.estado=EstadosVerificacionEnum.enVerificacionNuevosDoc.name();
-				dbSolicitud.verificacionEnCurso.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacionEnCurso, idSolicitud);
+				dbSolicitud.verificacion.nuevosDocumentos.addAll(documentosNuevos);
+				dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enVerificacionNuevosDoc.name();
+				dbSolicitud.verificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbSolicitud.verificacion, idSolicitud);
 				dbSolicitud.save();
 				Messages.info("Nuevos documentos aportados por el solicitante añadidos a la verificación actual. Verifique los tipos de estos documentos para proseguir con la verificación en curso.");
 			}
@@ -253,9 +253,9 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			// Comprobamos que esten todos los documentos verificados
-			if (!VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacionEnCurso)){
+			if (!VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacion)){
 				// Si hay cosas que requerir, la verificación tiene causas subsanables
-				if (((dbSolicitud.verificacionEnCurso.requerimiento.motivo != null) && (!dbSolicitud.verificacionEnCurso.requerimiento.motivo.trim().isEmpty())) || (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacionEnCurso))){
+				if (((dbSolicitud.verificacion.requerimiento.motivo != null) && (!dbSolicitud.verificacion.requerimiento.motivo.trim().isEmpty())) || (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion))){
 					log.info("Hay que requerir y notificar, existe un motivo general de requerimiento o documentos en estado noValidos o noPresentados (Solicitud "+dbSolicitud.id+")");
 								
 					// Firma requerimiento por el Gestor
@@ -263,23 +263,27 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					// Enviar Notificacion
 		
 					// Actualizamos los datos de la verificacion para verificaciones posteriores, en este caso el estado.
-					dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.enRequerimiento.name();
+					dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimiento.name();
 					Messages.ok("Se deberá realizar un Requerimiento");
 				} else { // Si la verificación ha ido correcta, no hay ninguna causa subsanable
 					log.info("La verificación se ha podido finalizar con éxito, todo es correcto");
 					Messages.ok("La verificación no tiene ningun requerimiento, finalizada correctamente y con éxito");
 					
 					// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
-					VerificacionUtils.setVerificadoDocumentos(dbSolicitud.verificacionEnCurso.documentos, dbSolicitud.documentacion.documentos);
+					VerificacionUtils.setVerificadoDocumentos(dbSolicitud.verificacion.documentos, dbSolicitud.documentacion.documentos);
 					// Actualizamos los datos de la verificacion para verificaciones posteriores, en este caso el estado.
-					dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.verificacionPositiva.name();
+					dbSolicitud.verificacion.estado = EstadosVerificacionEnum.verificacionPositiva.name();
 					
 					// Actualizamos los datos de la verificacion para verificaciones posteriores. Copiamos la verificacionActual a las verificaciones Anteriores para poder empezar una nueva verificación.
-					dbSolicitud.verificaciones.add(dbSolicitud.verificacionEnCurso);
-					dbSolicitud.estado = EstadosSolicitudEnum.verificado.name();
+					dbSolicitud.verificaciones.add(dbSolicitud.verificacion);
+					// Según el estado anterior de la Solicitud cambiamos a nuevo estado
+					if (dbSolicitud.estado.equals(EstadosSolicitudEnum.enVerifAceptadoRSLPROV.name()))
+						dbSolicitud.estado = EstadosSolicitudEnum.concedidoRSLPROV.name();
+					else if (dbSolicitud.estado.equals(EstadosSolicitudEnum.enVerifAceptadoRSLDEF.name()))
+						dbSolicitud.estado = EstadosSolicitudEnum.concedidoRSLDEF.name();
+					else
+						dbSolicitud.estado = EstadosSolicitudEnum.verificado.name();
 					dbSolicitud.save();
-					
-					//redirect("PaginaVerificacionController.index", "editar", idSolicitud, idVerificacion);
 				}
 
 				dbSolicitud.save();
@@ -330,7 +334,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		if (!Messages.hasErrors()) {
 			PaginaVerificacionController.gRequerirFirmaRequerimientoValidateRules(dbSolicitud, solicitud);
 			Messages.ok("Se estableció correctamente el firmante del Requerimiento");
-			dbSolicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.enRequerimientoFirmaSolicitada.name();
+			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimientoFirmaSolicitada.name();
 			
 			// Se debe enviar el mail de "solicitarFirmaRequerimiento"
 			String mailRevisor = null;
@@ -338,7 +342,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			try {
 				Agente revisor = AgenteController.getAgente();
 				mailRevisor = revisor.email;
-				mailGestor = ((Agente) Agente.find("select agente from Agente agente where agente.username=?", solicitud.verificacionEnCurso.requerimiento.firmante).first()).username;
+				mailGestor = ((Agente) Agente.find("select agente from Agente agente where agente.username=?", solicitud.verificacion.requerimiento.firmante).first()).username;
 				
 				Mails.enviar("solicitarFirmaRequerimiento", solicitud, mailGestor, mailRevisor);
 			} catch (Exception e) {
@@ -357,14 +361,14 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	public static void gRequerirFirmaRequerimientoValidateCopy(String accion, SolicitudGenerica dbSolicitud, SolicitudGenerica solicitud) {
 		CustomValidation.clearValidadas();
 		if (secure.checkGrafico("requerimientoRequerirFirma", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
-			CustomValidation.valid("solicitud.verificacionEnCurso.requerimiento", solicitud.verificacionEnCurso.requerimiento);
-			CustomValidation.valid("solicitud.verificacionEnCurso", solicitud.verificacionEnCurso);
+			CustomValidation.valid("solicitud.verificacion.requerimiento", solicitud.verificacion.requerimiento);
+			CustomValidation.valid("solicitud.verificacion", solicitud.verificacion);
 			CustomValidation.valid("solicitud", solicitud);
-			CustomValidation.validValueFromTable("solicitud.verificacionEnCurso.requerimiento.firmante", solicitud.verificacionEnCurso.requerimiento.firmante);
-			dbSolicitud.verificacionEnCurso.requerimiento.firmante = solicitud.verificacionEnCurso.requerimiento.firmante;
+			CustomValidation.validValueFromTable("solicitud.verificacion.requerimiento.firmante", solicitud.verificacion.requerimiento.firmante);
+			dbSolicitud.verificacion.requerimiento.firmante = solicitud.verificacion.requerimiento.firmante;
 			
-			dbSolicitud.verificacionEnCurso.requerimiento.registro.firmantes.todos = CalcularFirmantes.getGestorComoFirmante(solicitud.verificacionEnCurso.requerimiento.firmante);
-			dbSolicitud.verificacionEnCurso.requerimiento.registro.firmantes.save();
+			dbSolicitud.verificacion.requerimiento.registro.firmantes.todos = CalcularFirmantes.getGestorComoFirmante(solicitud.verificacion.requerimiento.firmante);
+			dbSolicitud.verificacion.requerimiento.registro.firmantes.save();
 			dbSolicitud.save();
 		}
 	}
@@ -384,13 +388,13 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		}
 		
 		// Si ya fue firmada y no ha sido registrada
-		if (dbSolicitud.verificacionEnCurso.requerimiento.registro.fasesRegistro.firmada
-				&& !dbSolicitud.verificacionEnCurso.requerimiento.registro.fasesRegistro.registro) {
+		if (dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.firmada
+				&& !dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro) {
 			try {
-				registroService.registroDeSalida(dbSolicitud.solicitante, dbSolicitud.verificacionEnCurso.requerimiento.oficial, dbSolicitud.expedientePlatino, "Requerimiento");
+				registroService.registroDeSalida(dbSolicitud.solicitante, dbSolicitud.verificacion.requerimiento.oficial, dbSolicitud.expedientePlatino, "Requerimiento");
 				play.Logger.info("Se ha registrado de Salida el documento del requerimiento de la solicitud "+dbSolicitud.id);
 				Messages.ok("Se ha registrado el Requerimiento correctamente.");
-				dbSolicitud.verificacionEnCurso.requerimiento.registro.fasesRegistro.registro = true;
+				dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro = true;
 				dbSolicitud.save();
 			} catch (Exception e) {
 				Messages.error("No se ha podido registrar el requerimiento de la solicitud "+dbSolicitud.id);
@@ -399,11 +403,11 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		}
 		
 		// Si ya fue registrada
-		if (dbSolicitud.verificacionEnCurso.requerimiento.registro.fasesRegistro.registro) {
-			Notificacion notificacion = dbSolicitud.verificacionEnCurso.requerimiento.notificacion;
+		if (dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro) {
+			Notificacion notificacion = dbSolicitud.verificacion.requerimiento.notificacion;
 			if (notificacion.estado == null || notificacion.estado.isEmpty()) {
 				//La notificación no ha sido creada
-				DocumentoNotificacion docANotificar = new DocumentoNotificacion(dbSolicitud.verificacionEnCurso.requerimiento.oficial.uri);
+				DocumentoNotificacion docANotificar = new DocumentoNotificacion(dbSolicitud.verificacion.requerimiento.oficial.uri);
 				notificacion.documentosANotificar.add(docANotificar);
 				notificacion.interesados.addAll(dbSolicitud.solicitante.getInteresados());
 				notificacion.descripcion = "Notificación";
@@ -443,15 +447,15 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	public static void firmaRequerimientoGFirmarRequerimiento(Long idSolicitud, Long idVerificacion, String firma) {
 		SolicitudGenerica solicitud = PaginaVerificacionController.getSolicitudGenerica(idSolicitud);
 
-		if (solicitud.verificacionEnCurso.requerimiento.registro.firmantes.todos == null || solicitud.verificacionEnCurso.requerimiento.registro.firmantes.todos.size() == 0) {
-			solicitud.verificacionEnCurso.requerimiento.registro.firmantes.todos = CalcularFirmantes.getGestoresComoFirmantes();
-			solicitud.verificacionEnCurso.requerimiento.registro.firmantes.save();
+		if (solicitud.verificacion.requerimiento.registro.firmantes.todos == null || solicitud.verificacion.requerimiento.registro.firmantes.todos.size() == 0) {
+			solicitud.verificacion.requerimiento.registro.firmantes.todos = CalcularFirmantes.getGestoresComoFirmantes();
+			solicitud.verificacion.requerimiento.registro.firmantes.save();
 		}
-		FirmaUtils.firmar(solicitud.verificacionEnCurso.requerimiento.oficial, solicitud.verificacionEnCurso.requerimiento.registro.firmantes.todos, firma, solicitud.verificacionEnCurso.requerimiento.firmante);
+		FirmaUtils.firmar(solicitud.verificacion.requerimiento.oficial, solicitud.verificacion.requerimiento.registro.firmantes.todos, firma, solicitud.verificacion.requerimiento.firmante);
 		if (!Messages.hasErrors()) {
 			Messages.ok("El requerimiento se ha firmado correctamente");
-			solicitud.verificacionEnCurso.estado = EstadosVerificacionEnum.enRequerido.name();
-			solicitud.verificacionEnCurso.requerimiento.registro.fasesRegistro.firmada = true;
+			solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
+			solicitud.verificacion.requerimiento.registro.fasesRegistro.firmada = true;
 			solicitud.save();
 		}
 	}
@@ -470,7 +474,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 
 			
 			try {
-				//enviarNotificaciones(solicitud.verificacionEnCurso.requerimiento.notificacion, gestor);
+				//enviarNotificaciones(solicitud.verificacion.requerimiento.notificacion, gestor);
 			} catch (Exception e) {
 				Messages.error("No se ha podido enviar la notificación");
 			}

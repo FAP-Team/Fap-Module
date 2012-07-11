@@ -43,11 +43,11 @@ public class PopUpDocumentoRequerimientosVerificacionEditarController extends Po
 		VerificacionDocumento doc = VerificacionDocumento.findById(parametrosUrl.get("idVerificacionDocumento"));
 		SolicitudGenerica sol = null;
 		if (parametrosUrl.get("idSolicitud") == null){ // Fallo la validacion y es necesario recuperar la solicitud a traves del idVerificacionDocumento, ya que no está en los parametros de la URL dentro de un popup al darle al boton Guardar
-			sol = SolicitudGenerica.find("select sol from SolicitudGenerica sol join sol.verificacionEnCurso.documentos vdoc where vdoc.id=?", doc.id).first();
+			sol = SolicitudGenerica.find("select sol from SolicitudGenerica sol join sol.verificacion.documentos vdoc where vdoc.id=?", doc.id).first();
 		} else {
 			sol = SolicitudGenerica.findById(parametrosUrl.get("idSolicitud"));
 		}
-		List <TiposCodigoRequerimiento> tiposCodReq = TiposCodigoRequerimiento.find("select tcr from TiposCodigoRequerimiento tcr where tcr.uriTipoDocumento=? and tcr.uriTramite=?", doc.uriTipoDocumento, sol.verificacionEnCurso.uriTramite).fetch();
+		List <TiposCodigoRequerimiento> tiposCodReq = TiposCodigoRequerimiento.find("select tcr from TiposCodigoRequerimiento tcr where tcr.uriTipoDocumento=? and tcr.uriTramite=?", doc.uriTipoDocumento, sol.verificacion.uriTramite).fetch();
 		List <CodigoRequerimiento> codigosRequerimiento = utils.ModelUtils.getListCodigoRequerimientoFromTiposCodigoRequerimiento(tiposCodReq);
 		for (CodigoRequerimiento codigo: codigosRequerimiento){
 			result.add(new ComboItem(codigo.descripcionCorta, codigo.descripcionCorta));

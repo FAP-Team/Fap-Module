@@ -156,13 +156,13 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				Columna titulo="Fecha finalización" campo=Verificacion.fechaUltimaActualizacion ancho="150"
 				Columna titulo="Estado" campo=Verificacion.estado expandir
 		}
-		Grupo gVerificacionNueva titulo="Crear una nueva verificación" permiso=noHayVerificacionEnCurso{
+		Grupo gVerificacionNueva titulo="Crear una nueva verificación" permiso=noHayverificacion{
 			Form verificacionNueva {
 				Wiki {"Pulse el botón para crear una nueva verificación."}
 				Boton botonIniciarVerificacion titulo="Nueva verificación"
 			}
 		}
-		Grupo gVerificacionActual titulo="Acceder a la verificacion actual" permiso=hayVerificacionEnCurso {
+		Grupo gVerificacionActual titulo="Acceder a la verificacion actual" permiso=hayverificacion {
 			Form verificacionActual {
 				Wiki {"Pulse el botón para acceder a la verificación que está actualmente en curso."}
 				Boton botonIraVerificacion titulo="Ir a verificación" pagina=PaginaVerificacion
@@ -193,11 +193,14 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"	
 			}
 			
-			AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacionEnCurso.requerimiento.motivo ancho="500px"
-		}
-		
-		Form gDocumentoRequerimiento destino="_blank"{ 
-			Boton obtenerOficial titulo="Obtener Requerimiento"
+			AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.motivo ancho="500px"
+					
+			Grupo gDocumentoRequerimiento  permiso=obtenerRequerimiento {
+				Form documentoRequerimiento destino="_blank" { 
+					Boton obtenerRequerimiento titulo="Obtener Requerimiento"
+				}
+			}
+
 		}
 		
 		Enlace volverVerificacionAnteriores titulo="Volver" pagina=AccesoVerificaciones estilo="btn"
@@ -231,7 +234,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Enlace volverVerificacionActual titulo="Volver" anterior estilo="btn"
 	}
 	
-	Pagina PaginaVerificacion titulo="Verificación" campo=SolicitudGenerica.verificacionEnCurso noForm permiso=accederSiSolicituNoBorrador{
+	Pagina PaginaVerificacion titulo="Verificación" campo=SolicitudGenerica.verificacion noForm permiso=accederSiSolicituNoBorrador{
 		Grupo datosVerificacion titulo="Datos generales de la verificación" permiso=noEditable{
 			Texto expediente titulo="Expediente" campo=Verificacion.expediente
 			Combo estadoS titulo="Estado Solicitud" campo=SolicitudGenerica.estadoValue
@@ -275,7 +278,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				Enlace campo=SolicitudGenerica.registro.justificante.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="btn"
 			}	
 		
-			Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacionEnCurso.documentos
+			Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
 				paginaLeer=PaginaDocumentoVerificacionLeer 
 				paginaEditar=PaginaDocumentoVerificacionEditar 
 			{
@@ -289,7 +292,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			}
 			
 			Form guardarMotivoRequerimientoGeneral {
-				AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacionEnCurso.requerimiento.motivo ancho="500px"
+				AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.motivo ancho="500px"
 				Boton guardarRequerimientoMotivoRequerimientoGeneralbtn titulo="Guardar Motivo Requerimiento"
 			}		
 		
@@ -306,12 +309,12 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		
 		Grupo gRequerimientos permiso=requerimiento titulo="Requerimiento"{
 			Form gRequerirFirmaRequerimiento permiso=requerimientoRequerirFirma {
-				Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacionEnCurso.requerimiento.firmante ancho="450px" 
+				Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacion.requerimiento.firmante ancho="450px" 
 				Boton requerirFirma titulo="Requerir firma al Gestor" 
 			} 
 			
 			Form gFirmarRequerimiento permiso=requerimientoAFirmar {
-				FirmaSimple firmaRequerimiento titulo="Firmar y Registrar de salida el Requerimiento" documento=SolicitudGenerica.verificacionEnCurso.requerimiento.oficial listaFirmantes=SolicitudGenerica.verificacionEnCurso.requerimiento.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante  
+				FirmaSimple firmaRequerimiento titulo="Firmar y Registrar de salida el Requerimiento" documento=SolicitudGenerica.verificacion.requerimiento.oficial listaFirmantes=SolicitudGenerica.verificacion.requerimiento.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante  
 			}
 			
 			Form gPonerADisposicion permiso=requerimientoFirmado {
@@ -321,7 +324,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 		
 		Grupo nuevosDocumentosTipos titulo="Verificación de Tipos de Documentos" permiso=verificacionConNuevosDoc {
-			Tabla verificacionTiposNuevosDoc titulo="Documentación Aún No Verificada" campo=SolicitudGenerica.verificacionEnCurso.nuevosDocumentos
+			Tabla verificacionTiposNuevosDoc titulo="Documentación Aún No Verificada" campo=SolicitudGenerica.verificacion.nuevosDocumentos
 				popupEditar=PopUpDocNuevosTipos popupLeer=PopUpDocNuevosTipos {
 				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
 				Columna campo=Documento.fechaRegistro titulo="Fecha de Registro" ancho="100"
@@ -341,11 +344,11 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		EditarArchivo documentoProceso campo=Documento requerido
 	}
 	
-	Popup PopUpDocNuevosTipos titulo="Documentación" campo=SolicitudGenerica.verificacionEnCurso.nuevosDocumentos {
+	Popup PopUpDocNuevosTipos titulo="Documentación" campo=SolicitudGenerica.verificacion.nuevosDocumentos {
 		EditarArchivo documentoProceso campo=Documento requerido
 	}
 	
-	Pagina PaginaDocumentoVerificacionLeer campo=SolicitudGenerica.verificacionEnCurso.documentos{
+	Pagina PaginaDocumentoVerificacionLeer campo=SolicitudGenerica.verificacion.documentos{
 		Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
@@ -370,7 +373,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Enlace volverVerificacionActual titulo="Volver" pagina=PaginaVerificacion estilo="btn"
 	}
 	
-	Pagina PaginaDocumentoVerificacionEditar campo=SolicitudGenerica.verificacionEnCurso.documentos{
+	Pagina PaginaDocumentoVerificacionEditar campo=SolicitudGenerica.verificacion.documentos{
 		Accion editar
 		Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"

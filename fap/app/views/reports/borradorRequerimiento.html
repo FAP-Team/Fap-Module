@@ -53,10 +53,10 @@ ul {
 
 %{ 
 	def nombreFichero;
-	if (dbSolicitud.verificacionEnCurso.tramiteNombre.uri != null){
+	if (dbSolicitud.verificacion.tramiteNombre.uri != null){
 		services.GestorDocumentalService gestorDocumental = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
 		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(gestorDocumental.getExpReg());
-		java.util.regex.Matcher matcher = pattern.matcher(dbSolicitud.verificacionEnCurso.tramiteNombre.uri);
+		java.util.regex.Matcher matcher = pattern.matcher(dbSolicitud.verificacion.tramiteNombre.uri);
 		if(matcher.find())
 			nombreFichero = "requerimiento-"+matcher.group()+".html";
 		else
@@ -77,10 +77,10 @@ ul {
 
 <h2 style="text-align: left; page-break-before: always;">Anexo</h2>
 
-#{if dbSolicitud.verificacionEnCurso.requerimiento.motivo != null}
+#{if dbSolicitud.verificacion.requerimiento.motivo != null}
 	<div id="divMotivoGeneralRequerimiento">
     	<h2>Motivo General de Requerimiento:</h2> 
-		<p>${dbSolicitud.verificacionEnCurso.requerimiento.motivo}</p>
+		<p>${dbSolicitud.verificacion.requerimiento.motivo}</p>
 	</div>
 #{/if}
 
@@ -90,7 +90,7 @@ ul {
 %}
 
 
-#{list items:dbSolicitud.verificacionEnCurso.documentos, as:"documento"}
+#{list items:dbSolicitud.verificacion.documentos, as:"documento"}
 	#{if documento.estadoDocumentoVerificacion.equals("noPresentado")}
 		%{ noPresentados.add(documento); %}	
 	#{/if}

@@ -5,6 +5,8 @@ h1. Documentación FAP
 
 Puedes ver una aplicación de ejemplo creada con fap en "Aplicación de ejemplo":otros-testapp
 
+"Aplicación de ejemplo":otros-nuevapaginainicioapp de cómo crear una página de inicio diferente a la que se genera por defecto.
+
 h2. ¿Qué es FAP?
 
 Es un framework para modelar el funcionamiento de la Administración Pública y desarrollar sistemas de información basados en DSL... __-Eyyy! para, para! ¿sistemas de información? ¿DSL?...__. Bueno tranquilo, empecemos por el principio. FAP surgió a raiz de que las aplicaciones relativas a la Administración Pública tenían un núcleo muy común y una parte específica de cada sistema de información (o aplicación). Y se pensó ¿por qué no separar esa parte común e integrarla en cada una de las aplicaciones por separado? ¿por qué no facilitar la creación de aplicaciones mediante un lenguaje sencillo?... de ahí surgió FAP.

@@ -10,7 +10,6 @@ public class Init extends InitControllerNuevaPaginaInicio {
 
 	public static Object inicialize() {
 		ExpedienteGenerico exp = new ExpedienteGenerico();
-		//exp.nombre = "Expediente007";
 		exp.save();
 		Logger.info("Creando pruebaInstancia " + exp.id);
 		return exp;

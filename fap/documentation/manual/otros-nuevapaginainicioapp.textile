@@ -1,0 +1,157 @@
+h1. Documentación de la Aplicación: Nueva Página de Inicio
+
+h2. Creación y configuración de la aplicación
+
+Una vez "configurado el entorno":curso-instalacion, abrimos una consola del sistema, nos situamos donde queramos poner físicamente la nueva aplicación y tecleamos:
+
+bc. play new nuevaPaginaInicio
+
+Con el comando @new@, Play nos ha generado una estructura inicial de nuestra nueva aplicación llamada _nuevaPaginaInicio_. Ahora necesitamos decirle a la aplicación qué modulos auxiliares vamos a usar para ayudarnos en nuestro desarrollo. Para ello, editamos el fichero @nuevaPaginaInicio/conf/dependencies.yml@ y pegamos el siguiente código:
+
+bc. # Application dependencies
+require:
+    - play
+    - fap -> fap 2.0
+    - fap-modules -> guice 1.3
+    - play -> pdf 0.6
+    - play -> less 0.9
+    - play -> recaptcha 1.2
+    - play -> mockito 0.1
+    - play -> webdrive 0.2:
+        transitive: false
+repositories:
+    - Fap Local repository:
+        type:       local
+        artifact:   ${fapsdk}/fap
+        contains:
+            - fap -> *
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+            - fap-modules -> guice
+
+
+Para este ejemplo vamos a utilizar el gestor de base de datos MySQL (si no la tiene instalada, volver al apartado de "configuración del entorno":curso-instalacion). Creamos una nueva base de datos para esta aplicación en nuestro propio equipo (en el ejemplo también la llamaremos _nuevaPaginaInicio_). Podemos usar un asistente gráfico o desde consola:
+
+bc. mysql -u root -p
+// Nos pedirá la contraseña que hemos puesto en la instalación de MySQL para el administrador
+mysql> show databases;                     // muestra las bases de datos existentes
+mysql> create database nuevaPaginaInicio;  // crea la nueva base de datos
+
+Situándonos dentro de la carpeta _nuevaPaginaInicio_ que nos creó el comando @new@, procedemos a ejecutar los siguientes comandos:
+
+bc.  play deps --sync -Dfapsdk="/ruta/a/fap-sdk"  // instalamos las dependencias (entre ellas nuestro framework FAP). 
+// La ruta a fap-sdk es la misma que la variable de entorno FAPSDK
+play eclipsify       // preparamos el proyecto para importarlo en el Eclipse
+mkdir logs           // creamos la carpeta logs (dentro de nuevaPaginaInicio)
+cd logs
+mkdir Auditable      // dentro de logs creamos las carpetas Auditable y Daily
+mkdir Daily
+    
+Dentro de la carpeta _nuevaPaginaInicio_, ejecutamos el comando siguiente para crear el esqueleto básico de una aplicación fap (modelo Solicitud, ficheros .fap, ...):
+
+bc. play fap:init
+
+Sin movernos de _nuevaPaginaInicio_, con el siguiente comando (si estamos en modo desarrollo la primera opción, en caso contrario, la segunda), generamos, entre otras cosas, rutas en el fichero routes, el código asociado a la gramática del DSL que define el lenguaje propio de FAP o el código generado a partir de nuestros ficheros .fap
+
+bc. 1. play fap:generate --dev      // modo desarrollo
+2. play fap:generate            // modo producción
+
+Importamos la aplicación como un nuevo proyecto al eclipse. En la barra de herramientas del eclipse:
+
+bc. File -> Import -> Existing Projects into Workspace -> /nuestra/ruta/a/nuevaPaginaInicio
+
+!images/otros-nuevapaginainicioapp_importeclipse1!
+
+!images/otros-nuevapaginainicioapp_importeclipse2!
+
+Tenemos que decirle a nuestra aplicación que utilice la base de datos que hemos creado anteriormente. Ya trabajando con eclipse, buscamos el fichero @application.conf@ (atajo de teclado CTRL+SHIFT+R), y en el apartado de _Database configuration_ ponemos la siguiente configuración tal y como explica el propio fichero: _db=mysql:usuario:contraseña@basededatos_ (el host lo podemos omitir porque es _localhost_).
+
+bc. db=mysql:root:fap@nuevaPaginaInicio
+
+!images/otros-nuevapaginainicioapp_dbconfig!
+
+h2. Programando nuestra aplicación
+
+Creamos nuestras entidades en el fichero @Entidades.fap@, que en nuestro ejemplo son:
+
+bc. Entidad Solicitud extends SolicitudGenerica {
+    String expediente transient       // En el popup de creación de solicitudes, tenemos un combo con los expedientes  
+}
+Entidad ExpedienteGenerico {
+    String idExpediente
+    String nombre
+    OneToMany Solicitud solicitud noConstruct
+}
+
+*Por defecto, nuestra página inicial está en _Solicitud.fap_ y manejamos objetos de la entidad Solicitud. Para personalizarlo, debemos crear un nueva página inicial, y cambiar aspectos relacionados con el InitController.*
+
+En la carpeta _app/led/_ de nuestro proyecto creamos un nuevo fichero donde indicaremos que sea el inicial. En el ejemplo lo llamamos @PaginaInicial.fap@. nótese la palabra reservada _inicial_ tanto como atributo de _Formulario_, como de la página _Expedientes_:
+
+bc. Formulario PaginaInicialForm inicial {
+    Menu {
+        Enlace "Expedientes" pagina=Expedientes
+        Enlace "Solicitudes" pagina=SolicitudesPage
+    }
+        
+    Pagina Expedientes inicial {
+        Tabla listaExpedientes titulo="Listado Expedientes" campo=ExpedienteGenerico  
+               paginaCrear=CrearExpediente permisoFilas=adminGestorRevisor {
+            Columna campo=ExpedienteGenerico.id titulo="ID" ancho="60"
+            Columna campo=ExpedienteGenerico.idExpediente titulo="Id Expediente" ancho="180"
+            Columna campo=ExpedienteGenerico.nombre titulo="Nombre" ancho="180" expandir
+        }
+    }
+    
+    Pagina CrearExpediente campo=ExpedienteGenerico {}
+    
+    Pagina SolicitudesPage {
+        Tabla listaSolicitudes titulo="Listado Solicitudes" campo=Solicitud 
+              popupCrear=PopupCrearSolicitud popupEditar=PopupEditarSolicitud permisoFilas=solicitudes {
+            Columna campo=Solicitud.id titulo="ID" ancho="40"
+            Columna campo=Solicitud.estado titulo="Estado" ancho="180"
+            Columna campo=Solicitud.solicitante.nombreCompleto titulo="Solicitante" ancho="180" expandir              
+        }
+    }
+     
+    Popup PopupCrearSolicitud campo=Solicitud titulo="Crear Solicitud" {
+        Accion editar crearSiempre
+        Combo expediente titulo="Expediente" campo=Solicitud.expediente                  // Combo con todos los expedientes
+        Solicitante solicitante titulo="Solicitante" campo=Solicitud.solicitante
+    }
+    
+    Popup PopupEditarSolicitud campo=Solicitud titulo="Editar Solicitud" {
+        Combo expediente titulo="Expediente" campo=Solicitud.expediente                  
+        Solicitante solicitante titulo="Solicitante" campo=Solicitud.solicitante
+    }  
+}
+
+
+Escritos nuestros ficheros fap, debemos generar el código asociado a ese lenguaje. Para ello debemos ejecutar de nuevo el comando:
+
+bc. play fap:generate --dev   
+
+Podemos comprobar en el archivo _conf/routes_ que el controlador inicial al que se llama (ruta raíz: /) no es el que estaba por defecto (SolicitudesController), sino el contraldor de nuestra entidad ExpedienteGenerico, _ExpedientesController_. 
+
+bc. # Dentro de esta región se van a escribir todas las rutas generadas
+# === FAPGENERATED ===
+  # Home page
+GET / ExpedientesController.index
+
+
+Cuando anteriormente ejecutamos el comando @play fap:init@, se generó el fichero @Init.java@, donde se crea el objeto por defecto Solicitud en el método _inicialize()_. Cambiamos ese método con el código siguiente para que nuestra instancia sea de la entidad _ExpedienteGenerico_.
+
+bc. public class Init extends InitController {
+    public static Object inicialize() {
+        ExpedienteGenerico exp = new ExpedienteGenerico();
+        exp.save();
+        Logger.info("Creando pruebaInstancia " + exp.id);
+        return exp;
+    } 
+}
+
+
+h2. Código
+
+"Código completo y ampliado en GitHub":https://github.com/FAP-Team/Fap-Module/tree/master/apps/nuevaPaginaInicio 

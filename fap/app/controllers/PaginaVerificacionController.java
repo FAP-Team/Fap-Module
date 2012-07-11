@@ -129,7 +129,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 
 		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("fechaSubida", "fechaRegistro", "descripcion", "verificado", "urlDescarga", "id"));
+		renderJSON(response.toJSON("fechaSubida", "fechaRegistro", "tipo", "descripcionVisible", "verificado", "urlDescarga", "id"));
 	}
 	
 	public static void verificaTipos(Long idSolicitud, Long idVerificacion, String finalizaVerificarTipos) {

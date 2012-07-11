@@ -4,7 +4,8 @@
 	def tipo="";
 	def clase="";
 	def contenido="";
-	mensajeObjeto = models.MensajeInicio.findAll().get(0);
+	if (!models.MensajeInicio.findAll().isEmpty())
+		mensajeObjeto = models.MensajeInicio.findAll().get(0);
    	if ((mensajeObjeto != null) && (mensajeObjeto.habilitar)){
 		hayMensaje=mensajeObjeto.habilitar;
 		tipo=mensajeObjeto.tipo;

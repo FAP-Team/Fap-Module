@@ -110,7 +110,7 @@ Entidad Documento {
 	Boolean refAed                     // si el campo expedienteReferenciado/solicitudReferenciada es válido
 	String expedienteReferenciado      // identificador del expediente (aed) donde está este documento
 	Long solicitudReferenciada         // identificador de la solicitud (filesystem) donde está el documento
-	Lista estadosDocumentoAuditoria estadoDocumento
+	Lista estadoNotificacion estadoDocumento
 }
 
 // La entidad Documentación agrupa aportaciones de documentos

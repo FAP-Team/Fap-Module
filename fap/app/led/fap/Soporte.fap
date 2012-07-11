@@ -4,7 +4,6 @@ Formulario Soporte campo=Incidencia {
 		Enlace "Inicio" accion=login
 		Enlace "Mis Solicitudes" permiso=logeado pagina=Solicitudes 		
     	Enlace "Ayuda" pagina=Soporte crear
-    	Enlace "Manuales"
     }
     
 	Pagina Soporte noAutenticar {

@@ -67,30 +67,20 @@ public class NotificacionUtils {
 	}
 	
 	public static String convertEstadoNotificacionEnumTypeToEstadoNotificacion (EstadoNotificacionEnumType estadoNotificacionEnumType){
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.ANULADA))
-//			return EstadoNotificacionEnum.anulada.name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.CREADA))
-//			return EstadoNotificacionEnum..name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.ENVIADA))
-//			return EstadoNotificacionEnum..name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.EXPIRADA))
-//			return EstadoNotificacionEnum.plazovencido.name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.FINALIZADA))
-//			return EstadoNotificacionEnum.cerrada.name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.LEIDA))
-//			return EstadoNotificacionEnum.accedida.name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.LEIDA_PLAZO_RESPUESTA_VENCIDO))
-//			return EstadoNotificacionEnum..name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.PLAZO_RESPUESTA_VENCIDO))
-//			return EstadoNotificacionEnum..name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.PUESTA_A_DISPOSICION))
-//			return EstadoNotificacionEnum.puestaadisposicion.name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.RECHAZADA))
-//			return EstadoNotificacionEnum..name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.RESPONDIDA))
-//			return EstadoNotificacionEnum.respondida.name();
-//		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.TERCERO_NO_SUSCRITO))
-//			return EstadoNotificacionEnum..name();
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.ANULADA))
+			return EstadoNotificacionEnum.anulada.name();
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.EXPIRADA))
+			return EstadoNotificacionEnum.expirada.name();
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.LEIDA))
+			return EstadoNotificacionEnum.leida.name();
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.LEIDA_PLAZO_RESPUESTA_VENCIDO))
+			return EstadoNotificacionEnum.leidaplazorespuestavencido.name();
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.PLAZO_RESPUESTA_VENCIDO))
+			return EstadoNotificacionEnum.plazorespuestavencido.name();
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.PUESTA_A_DISPOSICION))
+			return EstadoNotificacionEnum.puestaadisposicion.name();
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.RESPONDIDA))
+			return EstadoNotificacionEnum.respondida.name();
 		return "";
 	}
 	

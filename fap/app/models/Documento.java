@@ -58,7 +58,7 @@ public class Documento extends FapModel {
 
 	public Long solicitudReferenciada;
 
-	@ValueFromTable("estadosDocumentoAuditoria")
+	@ValueFromTable("estadoNotificacion")
 	public String estadoDocumento;
 
 	public void init() {

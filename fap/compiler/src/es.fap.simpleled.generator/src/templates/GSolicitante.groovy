@@ -84,14 +84,13 @@ public class GSolicitante extends GElement{
 			Grupo grupoRepFisica = LedFactory.eINSTANCE.createGrupo();
 			grupoRepFisica.siCheck = check;
 			grupoRepFisica.siCheckValues = "true";
-			grupoRepFisica.borde = "false";
+			grupoRepFisica.titulo = "Representante"
 			Texto textoEmail = LedFactory.eINSTANCE.createTexto();
 			textoEmail.titulo="Email";
 			textoEmail.requerido=true;
 			textoEmail.duplicar=true;
 			if (!solicitante.representantePersonaFisica){
 				Persona persona = LedFactory.eINSTANCE.createPersona();
-				persona.titulo = "Representante";
 				persona.requerido = true;
 				persona.name = "representanteDelSolicitante_${solicitante.name}";
 				persona.campo = CampoUtils.addMore(solicitante.campo, "representante").campo;
@@ -100,7 +99,6 @@ public class GSolicitante extends GElement{
 			}
 			else {
 				PersonaFisica personaFisica = LedFactory.eINSTANCE.createPersonaFisica();
-				personaFisica.titulo = "Representante";
 				personaFisica.requerido = true;
 				personaFisica.name = "representanteDelSolicitante_${solicitante.name}";
 				personaFisica.campo = CampoUtils.addMore(solicitante.campo, "representante.fisica").campo;
@@ -184,6 +182,10 @@ public class GSolicitante extends GElement{
 		popup.titulo = "Representante";
 		popup.campo = CampoUtils.addMore(solicitante.campo, "representantes").campo;
 		
+		Grupo grupo = LedFactory.eINSTANCE.createGrupo();
+		grupo.titulo="Representante"
+		
+		
 		Texto textoEmail = LedFactory.eINSTANCE.createTexto();
 		textoEmail.titulo="Email";
 		textoEmail.requerido=true;
@@ -192,28 +194,27 @@ public class GSolicitante extends GElement{
 		if (!solicitante.representantePersonaFisica){
 			Persona persona = LedFactory.eINSTANCE.createPersona();
 			persona.campo = CampoUtils.create("RepresentantePersonaJuridica").campo;
-			persona.titulo = "Representante";
 			persona.name = "representante_${popup.name}";
 			persona.requerido = true;
-			popup.elementos.add(persona);
+			grupo.elementos.add(persona);
 			textoEmail.campo = CampoUtils.addMore(persona.campo, "email").campo;
 		}
 		else {
 			PersonaFisica personaFisica = LedFactory.eINSTANCE.createPersonaFisica();
-			personaFisica.titulo = "Representante";
 			personaFisica.requerido = true;
 			personaFisica.name = "representante_${popup.name}";
 			personaFisica.campo = CampoUtils.create("RepresentantePersonaJuridica.fisica").campo;
-			popup.getElementos().add(personaFisica);
+			grupo.elementos.add(personaFisica);
 			textoEmail.campo = CampoUtils.create("RepresentantePersonaJuridica.email").campo;
 		}
-		popup.elementos.add(textoEmail);
+		grupo.elementos.add(textoEmail);
 		Combo tipo = LedFactory.eINSTANCE.createCombo();
 		tipo.name = "tipo_${popup.name}";
 		tipo.campo = CampoUtils.create("RepresentantePersonaJuridica.tipoRepresentacion").campo;
 		tipo.titulo = "Tipo de Representación";
 		tipo.requerido = true;
-		popup.getElementos().add(tipo);
+		grupo.elementos.add(tipo);
+		popup.elementos.add(grupo);
 		return popup;
 	}
 	

@@ -30,7 +30,7 @@ import utils.NotificacionUtils;
 public class ActualizarNotificaciones extends Job {
 	
     public void doJob() {
-    	if ((FapProperties.get("fap.aed.procedimientos.procedimiento.uri") != null) && (!(FapProperties.get("fap.aed.procedimientos.procedimiento.uri").trim().isEmpty())))
+    	if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.aed.procedimientos.procedimiento.uri") != null) && (!(FapProperties.get("fap.aed.procedimientos.procedimiento.uri").trim().isEmpty())))
     		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.aed.procedimientos.procedimiento.uri"));
     }
 

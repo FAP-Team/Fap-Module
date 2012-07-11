@@ -10,7 +10,6 @@ import org.joda.time.DateTime;
 import com.google.inject.Inject;
 
 import enumerado.fap.gen.EstadoNotificacionEnum;
-import enumerado.fap.gen.EstadosDocumentoAuditoriaEnum;
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionException;
 import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionPortType;
@@ -176,8 +175,8 @@ public class NotificacionServiceImpl implements NotificacionService {
 			docPuestaADisposicion.fechaSubida = DateTime.now();
 			docPuestaADisposicion.tipo = this.getTipoDocPuestaADisposicion();
 			docPuestaADisposicion.uri = uriDoc;
-			docPuestaADisposicion.estadoDocumento = EstadosDocumentoAuditoriaEnum.puestaadisposicion.name();
-			
+			docPuestaADisposicion.estadoDocumento = EstadoNotificacionEnum.puestaadisposicion.name();
+		
 			docPuestaADisposicion.save();
 			
 			Documento dbDoc = notificacion.documentoPuestaADisposicion;

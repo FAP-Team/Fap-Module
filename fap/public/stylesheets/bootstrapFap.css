@@ -4804,3 +4804,6 @@ ul.errorsDetails li a {
 .well > .nav > li > a {
   display: inline\9; 
 }
+.wiki ul li {
+	list-style:disc;
+}

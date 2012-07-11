@@ -8733,21 +8733,12 @@ Lista estadoAlegacion crearEnumerado {
 }
 
 Lista estadoNotificacion crearEnumerado {
-	puestaadisposicion : "Puesta a disposición"
-	accedida : "Accedida"
-	plazovencido : "Plazo vencido"
 	anulada : "Anulada"
-	respondida : "Verificada su respuesta"
-	cerrada : "Expediente cerrado"
-	creada : "Creada"
-	enviada : "Enviada"
-}
-
-Lista estadosDocumentoAuditoria crearEnumerado {
+	expirada : "Expirada"
+	leida : "Leida"
+	leidaplazorespuestavencido : "Leida plazo respuesta vencido"
+	plazorespuestavencido : "Plazo respuesta vencido"
 	puestaadisposicion : "Puesta a disposición"
-	accedida : "Accedida"
-	plazovencido : "Plazo vencido"
-	accedidafueraplazo	: "Accedida fuera de plazo"
-	anulada : "Anulada"
 	respondida : "Verificada su respuesta"
+	creada : "Creada" // Estado interno de FAP
 }

@@ -68,4 +68,12 @@ public class FileSystemRegistroService implements RegistroService {
         }
     }
 
+	@Override
+	public JustificanteRegistro registroDeSalida(Solicitante solicitante,
+			Documento documento, ExpedientePlatino expediente,
+			String descripcion) throws RegistroServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

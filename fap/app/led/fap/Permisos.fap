@@ -383,7 +383,9 @@ Permiso iniciarVerificacion{
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("administrador", "gestor", "revisor") and
-		solicitud?.estado = "iniciada" or solicitud?.estado = "verificado"
+		solicitud?.verificacionEnCurso?.estado = "iniciada" and
+		(solicitud?.estado in (/*"iniciada", "verificado",*/ "enVerificacion"))
+		
 	return all
 }
 
@@ -802,4 +804,54 @@ Permiso notificacionEditableSiNoLeida {
 		notificacion.estado != null
 	return
 		all
+}
+// Permisos sobre Requerimientos
+Permiso requerimiento {
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud?.verificacionEnCurso?.estado in ("enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada")
+	return
+		all
+}
+
+Permiso requerimientoAFirmar {
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("gestor", "administrador")
+		and solicitud?.verificacionEnCurso?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+		and solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.borrador = "false"
+		and solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.firmada = "false"
+	return
+		all
+	when
+		agente.rolActivo in ("revisor")
+		and solicitud?.verificacionEnCurso?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+		and solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.borrador = "false"
+		and solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.firmada = "false"
+	return
+		visible
+}
+
+Permiso requerimientoFirmado {
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud?.verificacionEnCurso?.requerimiento?.registro?.fasesRegistro?.firmada = "true"
+		//and solicitud?.verificacionEnCurso?.requerimiento?. y no ha sido notificado
+	return all
+}
+
+Permiso requerimientoRequerirFirma {
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud?.verificacionEnCurso?.estado in ("enRequerimiento")
+	return
+		all
+	when
+		solicitud?.verificacionEnCurso?.estado in ("enRequerimientoFirmaSolicitada")
+	return
+		visible
 }

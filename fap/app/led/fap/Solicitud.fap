@@ -300,6 +300,24 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			Form finalizarVerificacion {
 				Boton btnFinalizarVerificacion titulo="Finalizar Verificación"
 			}
+			
+
+		}
+		
+		Grupo gRequerimientos permiso=requerimiento titulo="Requerimiento"{
+			Form gRequerirFirmaRequerimiento permiso=requerimientoRequerirFirma {
+				Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacionEnCurso.requerimiento.firmante ancho="450px" 
+				Boton requerirFirma titulo="Requerir firma al Gestor" 
+			} 
+			
+			Form gFirmarRequerimiento permiso=requerimientoAFirmar {
+				FirmaSimple firmaRequerimiento titulo="Firmar y Registrar de salida el Requerimiento" documento=SolicitudGenerica.verificacionEnCurso.requerimiento.oficial listaFirmantes=SolicitudGenerica.verificacionEnCurso.requerimiento.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante  
+			}
+			
+			Form gPonerADisposicion permiso=requerimientoFirmado {
+				Boton ponerADisposicion titulo="Notificar el requerimiento"
+			}
+			
 		}
 		
 		Grupo nuevosDocumentosTipos titulo="Verificación de Tipos de Documentos" permiso=verificacionConNuevosDoc {

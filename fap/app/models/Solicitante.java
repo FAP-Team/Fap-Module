@@ -111,6 +111,13 @@ public class Solicitante extends Persona {
 		}
 		return firmantes.todos;
 	}
+
+	public List<Interesado> getInteresados() {
+		ArrayList<Interesado> listaInteresados = new ArrayList<Interesado>();
+		// TODO: Añadir los interesados
+		return listaInteresados;
+	}
+
 	// === MANUAL REGION END ===
 
 }

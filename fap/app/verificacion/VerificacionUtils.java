@@ -332,5 +332,22 @@ public class VerificacionUtils {
 		return uri;
  	}
 	
+	/**
+	 * Establece el campo verificado de los documentos a true
+	 * 
+	 * @param vDocs VerificacionDocumentos verificados
+	 * @param docs Documentos donde deberá buscar para setear los anteriores
+	 */
+	public static void setVerificadoDocumentos (List<VerificacionDocumento> vDocs, List<Documento> docs) {
+		for (VerificacionDocumento vDoc : vDocs) {
+			for (Documento docu: docs) {
+				if ((docu.uri != null) && (vDoc.uriDocumento != null) && (docu.uri.equals(vDoc.uriDocumento))){
+					docu.verificado=true;
+					break;
+				}
+			}
+		}
+	}
+	
 	
 }

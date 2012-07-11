@@ -92,7 +92,7 @@ public class FichaEvaluadorController extends Controller {
 			notFound("Evaluación no encontrada");
 		}
 		try {
-			new Report("app/views/reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, duracion);
+			new Report("app/views/reports/baremacion/borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, duracion);
 		} catch (Exception e) {
 			play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());
 			Messages.error("Error al generar el borrador del documento");

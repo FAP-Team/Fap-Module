@@ -24,6 +24,21 @@ import utils.AedUtils;
 public class Requerimiento extends FapModel {
 	// Código de los atributos
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Registro registro;
+
+	@Column(columnDefinition = "LONGTEXT")
+	public String motivo;
+
+	public String firmante;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaAcuse"), @Column(name = "fechaAcuseTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaAcuse;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Notificacion notificacion;
+
 	@Transient
 	public String firma;
 
@@ -31,11 +46,6 @@ public class Requerimiento extends FapModel {
 	public String urlDocRequerimiento;
 
 	public String estado;
-
-	@Column(columnDefinition = "LONGTEXT")
-	public String motivo;
-
-	public String firmante;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRegistroSalida"), @Column(name = "fechaRegistroSalidaTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
@@ -46,10 +56,6 @@ public class Requerimiento extends FapModel {
 	public String numeroGeneralRegistroSalida;
 
 	public String oficinaRegistroSalida;
-
-	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaAcuse"), @Column(name = "fechaAcuseTZ") })
-	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
-	public DateTime fechaAcuse;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento oficial;
@@ -100,6 +106,16 @@ public class Requerimiento extends FapModel {
 	}
 
 	public void init() {
+
+		if (registro == null)
+			registro = new Registro();
+		else
+			registro.init();
+
+		if (notificacion == null)
+			notificacion = new Notificacion();
+		else
+			notificacion.init();
 
 		if (oficial == null)
 			oficial = new Documento();

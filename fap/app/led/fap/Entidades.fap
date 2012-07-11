@@ -413,19 +413,23 @@ Entidad CodigoExclusion {
 }
 
 Entidad Requerimiento auditable{
+	Registro registro
+	LongText motivo
+	String firmante		// Quien debe firmar el requerimiento
+	
+	DateTime fechaAcuse
+	Notificacion notificacion
+	
+	// Posiblemente lo que está debajo de aqui se eliminará 
 	String firma transient					//Guarda firma del requerimiento
 	String urlDocRequerimiento transient		//Guarda url del doc oficial, publicado en el servlet
 	String estado 					 	//Rellenar a mano
-		
-	LongText motivo
-		
-	String firmante							//ver como enlazarlo con usuarios
+
 		
 	DateTime fechaRegistroSalida
 	String numeroRegistroSalida
 	String numeroGeneralRegistroSalida
 	String oficinaRegistroSalida
-	DateTime fechaAcuse
 	
 	Documento oficial			// documento de requerimiento oficial, este es el que se firma
 	Documento justificante		// justificante del registro de salida
@@ -591,6 +595,4 @@ Entidad DocumentoNotificacion{
 	String uri
 	String urlDescarga transient
 }
-
-
 

@@ -1,3 +1,4 @@
+
 package platino;
 
 import java.io.File;
@@ -58,7 +59,7 @@ public class FirmaUtils {
 		firmaService.firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
 		
 		if (!Messages.hasMessages()) {
-			Messages.ok("La solicitud se firmó correctamente");
+			Messages.ok("El documento se firmó correctamente");
 			
 			if(hanFirmadoTodos(listaFirmantes)){
 				Messages.ok("La solicitud está preparada para el registro");

@@ -269,10 +269,14 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 		}
         asunto.getContent().add(asuntoProperty);
         
-        Long organismo = Long.valueOf(datosRegistro.getUnidadOrganica());
-		if (organismo == null) {
-			organismo = UNIDAD_ORGANICA;
-		}
+        Long organismo = UNIDAD_ORGANICA;
+        if (datosRegistro.getUnidadOrganica() != null) {
+        	organismo = Long.valueOf(datosRegistro.getUnidadOrganica());
+        }
+        
+//		if (organismo == null) {
+//			organismo = UNIDAD_ORGANICA;
+//		}
 
         try {
             String datosAFirmar = registroPort.normalizaDatosFirmados(

@@ -839,7 +839,7 @@ Permiso requerimientoFirmado {
 		SolicitudGenerica solicitud
 	when
 		solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada = "true"
-		//and solicitud?.verificacion?.requerimiento?. y no ha sido notificado
+		and solicitud?.verificacion?.requerimiento?.notificacion?.estado in ("creada")
 	return all
 }
 

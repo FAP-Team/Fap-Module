@@ -8741,4 +8741,5 @@ Lista estadoNotificacion crearEnumerado {
 	puestaadisposicion : "Puesta a disposición"
 	respondida : "Verificada su respuesta"
 	creada : "Creada" // Estado interno de FAP
+	enviada: "Enviada"
 }

@@ -1,5 +1,7 @@
 package controllers;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,7 @@ import javax.inject.Inject;
 
 import reports.Report;
 import services.FirmaService;
+import services.GestorDocumentalService;
 import services.NotificacionService;
 import services.RegistroService;
 
@@ -27,6 +30,7 @@ import models.Agente;
 import models.Documento;
 import models.DocumentoNotificacion;
 import models.Notificacion;
+import models.Requerimiento;
 import models.SolicitudGenerica;
 import models.TipoDocumento;
 import models.Tramite;
@@ -54,6 +58,9 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
     
     @Inject
     static NotificacionService notificacionService;
+    
+	@Inject
+	static GestorDocumentalService gestorDocumentalService;
 	
 	public static void index(String accion, Long idSolicitud, Long idVerificacion) {
 		if (accion == null)
@@ -257,14 +264,41 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 				// Si hay cosas que requerir, la verificación tiene causas subsanables
 				if (((dbSolicitud.verificacion.requerimiento.motivo != null) && (!dbSolicitud.verificacion.requerimiento.motivo.trim().isEmpty())) || (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion))){
 					log.info("Hay que requerir y notificar, existe un motivo general de requerimiento o documentos en estado noValidos o noPresentados (Solicitud "+dbSolicitud.id+")");
-								
-					// Firma requerimiento por el Gestor
-					// Crear notificación
-					// Enviar Notificacion
-		
-					// Actualizamos los datos de la verificacion para verificaciones posteriores, en este caso el estado.
-					dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimiento.name();
-					Messages.ok("Se deberá realizar un Requerimiento");
+					Requerimiento requerimiento = dbSolicitud.verificacion.requerimiento;
+					if(!Messages.hasErrors()){
+						try {
+							String tipoDocumentoRequerimiento = FapProperties.get("fap.aed.tiposdocumentos.requerimiento");
+													
+							if((requerimiento.oficial != null) && (requerimiento.oficial.uri != null) && (!requerimiento.oficial.uri.trim().equals(""))){
+							    Documento oficialOld = requerimiento.oficial;
+							    requerimiento.oficial = null;
+							    requerimiento.save();
+							    gestorDocumentalService.deleteDocumento(oficialOld);
+							}						
+
+							//Genera el documento oficial
+							SolicitudGenerica solicitud = dbSolicitud;
+							File oficial =  new Report("reports/requerimiento.html").header("reports/header.html").footer("reports/footer.html").registroSize().renderTmpFile(solicitud);
+							requerimiento.oficial = new Documento();
+							requerimiento.oficial.tipo = tipoDocumentoRequerimiento;
+							requerimiento.oficial.descripcion = "Requerimiento";
+							
+							gestorDocumentalService.saveDocumentoTemporal(requerimiento.oficial, new FileInputStream(oficial), oficial.getName());
+							
+							requerimiento.estado = "borrador";
+							requerimiento.save();
+							
+							
+							// Actualizamos los datos de la verificacion para verificaciones posteriores, en este caso el estado.
+							dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimiento.name();
+							Messages.ok("Se deberá realizar un Requerimiento");
+						}catch(Exception e){
+							Messages.error("Se produjo un error generando el documento de requerimiento.");
+							play.Logger.error(e, "Error al generar el documento de requerimiento: " + e.getMessage());
+							e.printStackTrace();
+						}
+					}
+
 				} else { // Si la verificación ha ido correcta, no hay ninguna causa subsanable
 					log.info("La verificación se ha podido finalizar con éxito, todo es correcto");
 					Messages.ok("La verificación no tiene ningun requerimiento, finalizada correctamente y con éxito");
@@ -384,53 +418,45 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 
 		if (firmaRequerimiento != null) {
 			PaginaVerificacionController.firmaRequerimientoGFirmarRequerimiento(idSolicitud, idVerificacion, firma);
-			PaginaVerificacionController.gFirmarRequerimientoRender(idSolicitud, idVerificacion);
-		}
-		
-		// Si ya fue firmada y no ha sido registrada
-		if (dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.firmada
-				&& !dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro) {
-			try {
-				registroService.registroDeSalida(dbSolicitud.solicitante, dbSolicitud.verificacion.requerimiento.oficial, dbSolicitud.expedientePlatino, "Requerimiento");
-				play.Logger.info("Se ha registrado de Salida el documento del requerimiento de la solicitud "+dbSolicitud.id);
-				Messages.ok("Se ha registrado el Requerimiento correctamente.");
-				dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro = true;
-				dbSolicitud.save();
-			} catch (Exception e) {
-				Messages.error("No se ha podido registrar el requerimiento de la solicitud "+dbSolicitud.id);
-				play.Logger.error("No se ha podido registrar el requerimiento de la solicitud "+dbSolicitud.id+": "+e.getMessage());
-			}
-		}
-		
-		// Si ya fue registrada
-		if (dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro) {
-			Notificacion notificacion = dbSolicitud.verificacion.requerimiento.notificacion;
-			if (notificacion.estado == null || notificacion.estado.isEmpty()) {
-				//La notificación no ha sido creada
-				DocumentoNotificacion docANotificar = new DocumentoNotificacion(dbSolicitud.verificacion.requerimiento.oficial.uri);
-				notificacion.documentosANotificar.add(docANotificar);
-				notificacion.interesados.addAll(dbSolicitud.solicitante.getInteresados());
-				notificacion.descripcion = "Notificación";
-				notificacion.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
-				notificacion.plazoRespuesta = FapProperties.getInt("fap.notificacion.plazorespuesta");
-				notificacion.frecuenciaRecordatorioAcceso = FapProperties.getInt("fap.notificacion.frecuenciarecordatorioacceso");
-				notificacion.frecuenciaRecordatorioRespuesta = FapProperties.getInt("fap.notificacion.frecuenciarecordatoriorespuesta");
-				
-				dbSolicitud.save();
-			}
-			if (notificacion.estado.equals(EstadoNotificacionEnum.creada.name())) {
-				// TODO: Está en estado creada, debo notificarla
+			
+			// Si ya fue firmada y no ha sido registrada
+			if (dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.firmada
+					&& !dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro) {
 				try {
-					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
-					play.Logger.info("Se ha enviado correctamente la notificación "+notificacion.id);
-					// Los demás cambios en la notificación los hace el Servicio
-					notificacion.save();
-				} catch (NotificacionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
+					registroService.registroDeSalida(dbSolicitud.solicitante, dbSolicitud.verificacion.requerimiento.oficial, dbSolicitud.expedientePlatino, "Requerimiento");
+					play.Logger.info("Se ha registrado de Salida el documento del requerimiento de la solicitud "+dbSolicitud.id);
+					Messages.ok("Se ha registrado el Requerimiento correctamente.");
+					dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro = true;
+					dbSolicitud.save();
+				} catch (Exception e) {
+					Messages.error("No se ha podido registrar el requerimiento de la solicitud "+dbSolicitud.id);
+					play.Logger.error("No se ha podido registrar el requerimiento de la solicitud "+dbSolicitud.id+": "+e.getMessage());
 				}
 			}
+			
+			// Si ya fue registrada
+			if (dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro) {
+				Notificacion notificacion = dbSolicitud.verificacion.requerimiento.notificacion;
+				if (notificacion.estado == null || notificacion.estado.isEmpty()) {
+					//La notificación no ha sido creada
+					DocumentoNotificacion docANotificar = new DocumentoNotificacion(dbSolicitud.verificacion.requerimiento.oficial.uri);
+					notificacion.documentosANotificar.add(docANotificar);
+					notificacion.interesados.addAll(dbSolicitud.solicitante.getAllInteresados());
+					notificacion.descripcion = "Notificación";
+					notificacion.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
+					notificacion.plazoRespuesta = FapProperties.getInt("fap.notificacion.plazorespuesta");
+					notificacion.frecuenciaRecordatorioAcceso = FapProperties.getInt("fap.notificacion.frecuenciarecordatorioacceso");
+					notificacion.frecuenciaRecordatorioRespuesta = FapProperties.getInt("fap.notificacion.frecuenciarecordatoriorespuesta");
+					notificacion.estado = EstadoNotificacionEnum.creada.name();
+					notificacion.idExpedienteAed = dbSolicitud.expedienteAed.idAed;
+					notificacion.asunto = "Notificación por Requerimiento";
+					notificacion.save();
+					dbSolicitud.save();
+				}
+
+			}
+			
+			PaginaVerificacionController.gFirmarRequerimientoRender(idSolicitud, idVerificacion);
 		}
 
 		if (!Messages.hasErrors()) {
@@ -471,12 +497,22 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		if (!Messages.hasErrors()) {
 			Agente gestor = AgenteController.getAgente();
 			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
-
-			
-			try {
-				//enviarNotificaciones(solicitud.verificacion.requerimiento.notificacion, gestor);
-			} catch (Exception e) {
-				Messages.error("No se ha podido enviar la notificación");
+			Notificacion notificacion = solicitud.verificacion.requerimiento.notificacion;
+		
+			if (notificacion.estado.equals(EstadoNotificacionEnum.creada.name()) &&
+					!notificacion.estado.equals(EstadoNotificacionEnum.enviada.name())) {
+				// TODO: Está en estado creada, debo notificarla
+				try {
+					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
+					play.Logger.info("Se ha enviado correctamente la notificación "+notificacion.id);
+					// Los demás cambios en la notificación los hace el Servicio
+					notificacion.estado = EstadoNotificacionEnum.enviada.name();
+					notificacion.save();
+				} catch (NotificacionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
+				}
 			}
 		}
 

@@ -14,7 +14,7 @@ Formulario Notificacion {
 	
 	Pagina Notificaciones titulo="Mis Notificaciones" {
 		Tabla listaNotificaciones titulo="Notificaciones de la Aplicación" campo=Notificacion
-	  	  paginaEditar=NotificacionAcceder paginaLeer=NotificacionVer{
+	  	  popupLeer=NotificacionVer{
 			Columna campo=Notificacion.asunto titulo="Asunto" ancho="150" expandir   //Asunto de la notificación
 			Columna campo=Notificacion.descripcion titulo="Descripción" ancho="200"               //Descripción de la notificación
 			Columna campo=Notificacion.fechaPuestaADisposicion titulo="Fecha creación" ancho="100" //Fecha en la que se creó la notificación
@@ -22,28 +22,30 @@ Formulario Notificacion {
 		}
 	}
 	
-	Pagina NotificacionVer titulo="Ver Notificacion" campo=Notificacion{
+	Popup NotificacionVer titulo="Ver Notificacion" campo=Notificacion{
 		Fecha campo=Notificacion.fechaPuestaADisposicion titulo="Fecha Generación"
 		Fecha campo=Notificacion.fechaAcceso titulo="Fecha Lectura"
 		Texto campo=Notificacion.asunto titulo="Asunto"
 		AreaTexto campo=Notificacion.descripcion titulo="Descripción" filas=5 ancho="500px"
-		Tabla listaDocumentosNotificados titulo="Documentos notificados" campo=Notificacion.documentosANotificar {
-			Columna funcion="<a href=\"${DocumentoNotificacion.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100" expandir
-		}
+		
+		Enlace titulo="Enlace Sede Electrónica" url="http://10.140.209.253:9007/aciisi/jano/pre/sede/areapersonal/"
+//		Tabla listaDocumentosNotificados titulo="Documentos notificados" campo=Notificacion.documentosANotificar {
+//			Columna funcion="<a href=\"${DocumentoNotificacion.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100" expandir
+//		}
 	}
 	
-	Pagina NotificacionAcceder titulo="Confirmar Notificacion" noForm campo=Notificacion permiso=notificacionEditableSiNoLeida{
-		Grupo noEditable borde=false permiso=noEditable{
-			Fecha campo=Notificacion.fechaPuestaADisposicion titulo="Fecha Generación"
-			Texto campo=Notificacion.asunto titulo="Asunto"
-			AreaTexto campo=Notificacion.descripcion titulo="Descripción" filas=5 ancho="500px"
-		}
-		Form btnConfirmar {
-			FirmaSimple acuseReciboNotificacion titulo="Firmar el Acuse de Recibo"
-				documento=Notificacion.registro.oficial 
-				listaFirmantes=Notificacion.registro.firmantes.todos
-				calcularFirmantes="notificacion.getFirmantes()"
-		}
-	}
+//	Pagina NotificacionAcceder titulo="Confirmar Notificacion" noForm campo=Notificacion permiso=notificacionEditableSiNoLeida{
+//		Grupo noEditable borde=false permiso=noEditable{
+//			Fecha campo=Notificacion.fechaPuestaADisposicion titulo="Fecha Generación"
+//			Texto campo=Notificacion.asunto titulo="Asunto"
+//			AreaTexto campo=Notificacion.descripcion titulo="Descripción" filas=5 ancho="500px"
+//		}
+//		Form btnConfirmar {
+//			FirmaSimple acuseReciboNotificacion titulo="Firmar el Acuse de Recibo"
+//				documento=Notificacion.registro.oficial 
+//				listaFirmantes=Notificacion.registro.firmantes.todos
+//				calcularFirmantes="notificacion.getFirmantes()"
+//		}
+//	}
 
 }

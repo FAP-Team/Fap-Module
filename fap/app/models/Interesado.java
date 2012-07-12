@@ -50,7 +50,7 @@ public class Interesado extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-
+	
 	// === MANUAL REGION END ===
 
 }

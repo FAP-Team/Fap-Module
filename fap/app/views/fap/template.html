@@ -175,7 +175,7 @@
 			  		url: urlNuevasNotificacionesAjax,
 			  		data: { usuario : '${userNotificacion}' }
 				}).done(function(numeroNotificacionesActivas) {
-					if ((numeroNotificacionesActivas == null) || (numeroNotificacionesActivas.trim() == '')){
+					if ((numeroNotificacionesActivas == null) || (numeroNotificacionesActivas == '')){
 						$('#notificacionFap').parent().remove();
 					} else {
 						if (numeroNotificacionesActivas == 0){

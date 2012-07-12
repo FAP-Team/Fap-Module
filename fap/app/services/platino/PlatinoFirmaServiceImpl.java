@@ -384,7 +384,15 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		if(firmanteCertificado != null){
 			log.info("Firmante validado");
 			
-			int index = firmantes.indexOf(firmanteCertificado);
+			
+			int index = -1;
+			for (Firmante fB : firmantes) {
+				if (fB.idvalor.equals(firmanteCertificado.idvalor)) {
+					index = firmantes.indexOf(fB);
+					break;
+				}
+			}
+			
 			Firmante firmante = null;
 			if(index == -1){
 				Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud.");

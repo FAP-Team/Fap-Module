@@ -111,10 +111,41 @@ public class Solicitante extends Persona {
 		}
 		return firmantes.todos;
 	}
+	
+	public models.Interesado getInteresado () {
+		Interesado intere = new Interesado();
+		intere.email = email;
+		intere.movil = telefonoMovil;
+		intere.notificar = true;
+		intere.persona = this;
+		return intere;
+	}
 
-	public List<Interesado> getInteresados() {
+	public List<Interesado> getAllInteresados() {
 		ArrayList<Interesado> listaInteresados = new ArrayList<Interesado>();
-		// TODO: Añadir los interesados
+		//Comprueba los representantes
+
+		//Solicitante de la solicitud
+		Interesado interesadoSolicitante = getInteresado();
+		listaInteresados.add(interesadoSolicitante);
+		
+		if (this.isPersonaFisica() && this.representado) {
+			// Representante de persona física
+			Interesado interesado = this.representante.getInteresado();
+			listaInteresados.add(interesado);
+		} else if (this.isPersonaJuridica()) {
+			//Representantes de la persona jurídica
+			for (RepresentantePersonaJuridica r : this.representantes) {
+				String cardinalidad = null;
+				if (r.tipoRepresentacion.equals("mancomunado")) {
+					cardinalidad = "multiple";
+				} else if ((r.tipoRepresentacion.equals("solidario")) || (r.tipoRepresentacion.equals("administradorUnico"))) {
+					cardinalidad = "unico";
+				}
+				Interesado interesado = r.getInteresado();
+				listaInteresados.add(interesado);
+			}
+		}
 		return listaInteresados;
 	}
 

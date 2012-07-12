@@ -4,6 +4,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
@@ -66,6 +70,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 	private final static String MSG_CON_WS = "No se pudo conectar con el servicio de notificaciones. ";
 	private final static String MSG_DESCONOCIDO = "Error desconocido. ";
 	
+	private final static String KEY_CONNECTION_TIMEOUT = "fap.notificacion.proxy.connectiontimeout";
+    private final static String KEY_RECEIVE_TIMEOUT = "fap.notificacion.proxy.receivetimeout";
+	
 	@Inject
 	public NotificacionServiceImpl (PropertyPlaceholder propertyPlaceholder) {
 		this.propertyPlaceholder = propertyPlaceholder;
@@ -73,6 +80,15 @@ public class NotificacionServiceImpl implements NotificacionService {
 		URL wsdlURL = es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService.class.getClassLoader().getResource("wsdl/NotificacionService.wsdl");
 		this.notificacionPort = new es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService(wsdlURL).getNotificacionService();
 		WSUtils.configureEndPoint(notificacionPort, getEndPoint());
+		
+		Client client = ClientProxy.getClient(notificacionPort);
+        HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+        
+        HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+        httpClientPolicy.setConnectionTimeout(FapProperties.getLong(KEY_CONNECTION_TIMEOUT));
+        httpClientPolicy.setReceiveTimeout(FapProperties.getLong(KEY_RECEIVE_TIMEOUT));
+        
+        httpConduit.setClient(httpClientPolicy);
 	}
 	
     private String getEndPoint() {

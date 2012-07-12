@@ -48,6 +48,15 @@ public class RepresentantePersonaFisica extends Persona {
 	public void printPre() {
 		play.Logger.info("Se va a guardar el representante [" + this.toString() + "]");
 	}
+	
+	public models.Interesado getInteresado () {
+		Interesado intere = new Interesado();
+		intere.email = email;
+		intere.movil = telefonoMovil;
+		intere.notificar = true;
+		intere.persona = this;
+		return intere;
+	}
 	// === MANUAL REGION END ===
 
 }

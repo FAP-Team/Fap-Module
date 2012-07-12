@@ -12,6 +12,7 @@ import models.Aportacion;
 import models.Documento;
 import models.JustificanteRegistro;
 import models.Notificacion;
+import models.Solicitante;
 import models.SolicitudGenerica;
 import play.mvc.Util;
 import properties.FapProperties;
@@ -23,66 +24,69 @@ import emails.Mails;
 import enumerado.fap.gen.EstadoNotificacionEnum;
 
 public class NotificacionAccederController extends NotificacionAccederControllerGen {
-	
-	@Inject
-	static RegistroService registroService;
-
-	@Inject
-	static GestorDocumentalService gestorDocumentalService;
-	
-	@Util
-	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void btnConfirmar(Long idNotificacion, String firma, String acuseReciboNotificacion) {
-		checkAuthenticity();
-		if (!permisoBtnConfirmar("editar")) {
-			Messages.error("No tiene permisos suficientes para realizar la acción");
-		}
-		Notificacion dbNotificacion = NotificacionAccederController.getNotificacion(idNotificacion);
-
-		if (acuseReciboNotificacion != null) {
-			// Firma
-			if (!dbNotificacion.registro.fasesRegistro.firmada)
-				NotificacionAccederController.acuseReciboNotificacionBtnConfirmar(idNotificacion, firma);
-			// Registra
-			registrarNotificacion(dbNotificacion);
-			clasificarDocumentosNotificacionConRegistro(dbNotificacion);
-			
-			if (!Messages.hasErrors()) {
-				dbNotificacion.save();
-				Messages.clear();
-				Messages.ok("Notificacion abierta correctamente.");
-			}
-			NotificacionAccederController.btnConfirmarRender(idNotificacion);
-		}
-
-		if (!Messages.hasErrors()) {
-			NotificacionAccederController.btnConfirmarValidateRules(firma);
-		}
-		if (!Messages.hasErrors()) {
-
-			log.info("Acción Editar de página: " + "gen/NotificacionAcceder/NotificacionAcceder.html" + " , intentada con éxito");
-		} else
-			log.info("Acción Editar de página: " + "gen/NotificacionAcceder/NotificacionAcceder.html" + " , intentada sin éxito (Problemas de Validación)");
-		NotificacionAccederController.btnConfirmarRender(idNotificacion);
-	}
-
-	@Util
-	public static void btnConfirmarRender(Long idNotificacion) {
-		if (!Messages.hasMessages()) {
-			Messages.ok("Notificacion correcta");
-			Messages.keep();
-			redirect("NotificacionVerController.index", "editar", idNotificacion);
-		}
-		Messages.keep();
-		redirect("NotificacionVerController.index", "editar", idNotificacion);
-	}
-	
-	private static void registrarNotificacion(Notificacion notificacion) {
-        // Registro de entrada en platino
-        if (notificacion.registro.fasesRegistro.firmada){
-            try {  
+//	
+//	@Inject
+//	static RegistroService registroService;
+//
+//	@Inject
+//	static GestorDocumentalService gestorDocumentalService;
+//	
+//	@Util
+//	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+//	public static void btnConfirmar(Long idNotificacion, String firma, String acuseReciboNotificacion) {
+//		checkAuthenticity();
+//		if (!permisoBtnConfirmar("editar")) {
+//			Messages.error("No tiene permisos suficientes para realizar la acción");
+//		}
+//		Notificacion dbNotificacion = NotificacionAccederController.getNotificacion(idNotificacion);
+//
+//		if (acuseReciboNotificacion != null) {
+//			// Firma
+//			if (!dbNotificacion.registro.fasesRegistro.firmada)
+//				NotificacionAccederController.acuseReciboNotificacionBtnConfirmar(idNotificacion, firma);
+//			// Registra
+//			if (dbNotificacion.registro.fasesRegistro.firmada && !dbNotificacion.registro.fasesRegistro.registro)
+//				registrarNotificacion(dbNotificacion);
+//			
+//			if (dbNotificacion.registro.fasesRegistro.registro && !dbNotificacion.registro.fasesRegistro.clasificarAed)
+//				clasificarDocumentosNotificacionConRegistro(dbNotificacion);
+//			
+//			if (!Messages.hasErrors()) {
+//				dbNotificacion.save();
+//				Messages.clear();
+//				Messages.ok("Notificacion abierta correctamente.");
+//			}
+//			NotificacionAccederController.btnConfirmarRender(idNotificacion);
+//		}
+//
+//		if (!Messages.hasErrors()) {
+//			NotificacionAccederController.btnConfirmarValidateRules(firma);
+//		}
+//		if (!Messages.hasErrors()) {
+//
+//			log.info("Acción Editar de página: " + "gen/NotificacionAcceder/NotificacionAcceder.html" + " , intentada con éxito");
+//		} else
+//			log.info("Acción Editar de página: " + "gen/NotificacionAcceder/NotificacionAcceder.html" + " , intentada sin éxito (Problemas de Validación)");
+//		NotificacionAccederController.btnConfirmarRender(idNotificacion);
+//	}
+//
+//	@Util
+//	public static void btnConfirmarRender(Long idNotificacion) {
+//		if (!Messages.hasMessages()) {
+//			Messages.ok("Notificacion correcta");
+//			Messages.keep();
+//			redirect("NotificacionVerController.index", "editar", idNotificacion);
+//		}
+//		Messages.keep();
+//		redirect("NotificacionVerController.index", "editar", idNotificacion);
+//	}
+//	
+//	private static void registrarNotificacion(Notificacion notificacion) {
+//        // Registro de entrada en platino
+//        if (notificacion.registro.fasesRegistro.firmada){
+//            try {  
 //            	// Registra la solicitud
-//                JustificanteRegistro justificante = registroService.registrarEntrada(solicitud.solicitante,aportacion.oficial, solicitud.expedientePlatino, null);
+//                JustificanteRegistro justificante = registroService.registrarEntrada(notificacion.,notificacion.documentoPuestaADisposicion, notificacion.idExpedienteAed, null);
 //                play.Logger.info("Se ha registrado la notificacion %s en platino", notificacion.id);
 //
 //                // Almacena la información de registro
@@ -95,12 +99,12 @@ public class NotificacionAccederController extends NotificacionAccederController
 //                
 //                notificacion.estado = EstadoNotificacionEnum.accedida.name();
 //                notificacion.save();
-            } catch (Exception e) {
-                Messages.error("Error al registrar de entrada la notificacion");
-                return;
-            }
-        }
-    }
+//            } catch (Exception e) {
+//                Messages.error("Error al registrar de entrada la notificacion");
+//                return;
+//            }
+//        }
+//    }
 
 	private static void guardarJustificanteEnGestorDocumental(Notificacion notificacion, JustificanteRegistro justificante) throws GestorDocumentalServiceException, IOException {
 //	    Documento documento = notificacion.justificante;

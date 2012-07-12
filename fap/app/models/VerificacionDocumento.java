@@ -75,7 +75,7 @@ public class VerificacionDocumento extends FapModel {
 	// === MANUAL REGION START ===
 
 	public VerificacionDocumento(Documento doc) {
-		descripcion = doc.descripcion;
+		descripcion = doc.descripcionVisible;
 		uriTipoDocumento = doc.tipo;
 		fechaPresentacion = doc.fechaRegistro;
 		uriDocumento = doc.uri;

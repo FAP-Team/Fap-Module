@@ -200,7 +200,6 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 					Boton obtenerRequerimiento titulo="Obtener Requerimiento"
 				}
 			}
-
 		}
 		
 		Enlace volverVerificacionAnteriores titulo="Volver" pagina=AccesoVerificaciones estilo="btn"

@@ -203,7 +203,7 @@ Permiso aportacionDocumentos{
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
-		solicitud?.estado in ("iniciada", "requerida", "requerida plazo vencido", "excluido")
+		solicitud?.estado not in ("borrador")
 	return editable
 }
 

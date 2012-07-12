@@ -278,7 +278,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 
 							//Genera el documento oficial
 							SolicitudGenerica solicitud = dbSolicitud;
-							File oficial =  new Report("reports/requerimiento.html").header("reports/header.html").footer("reports/footer.html").registroSize().renderTmpFile(solicitud);
+							File oficial =  new Report("reports/requerimiento.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
 							requerimiento.oficial = new Documento();
 							requerimiento.oficial.tipo = tipoDocumentoRequerimiento;
 							requerimiento.oficial.descripcion = "Requerimiento";

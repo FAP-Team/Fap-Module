@@ -323,12 +323,12 @@ public class NotificacionServiceImpl implements NotificacionService {
 	
 	@Override
 	public final String getUriProcedimiento() {
-		return FapProperties.get("fap.aed.procedimiento");
+		return FapProperties.get("fap.notificacion.procedimiento");
 	}
 	
 	@Override
 	public final String getUriBackOffice() {
-		return FapProperties.get("fap.aed.expediente.prefijo");
+		return FapProperties.get("fap.notificacion.backoffice");
 	}
 	
 	protected String getTipoDocPuestaADisposicion() {

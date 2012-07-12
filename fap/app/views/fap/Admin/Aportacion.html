@@ -70,7 +70,8 @@
 				if ((!models.MensajeAportacion.findAll().isEmpty())){
 					mensajeAportacion = models.MensajeAportacion.findAll().get(0);
 					hayMensaje=mensajeAportacion.habilitar;
-					contenido=utils.StringUtils.getParsedText(mensajeAportacion.contenido);
+					if (mensajeAportacion.contenido != null)
+						contenido=utils.StringUtils.getParsedText(mensajeAportacion.contenido);
 				}
 			%}
 			#{if hayMensaje}

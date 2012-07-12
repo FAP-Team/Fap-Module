@@ -94,7 +94,6 @@ public class Persona extends FapModel {
 		p.tipo = "juridica";
 		return p;
 	}
-	
 
 	// === MANUAL REGION END ===
 

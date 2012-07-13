@@ -131,7 +131,7 @@ public class Solicitante extends Persona {
 
 		if (this.isPersonaFisica() && this.representado) {
 			// Representante de persona física
-			Interesado interesado = ((RepresentantePersonaFisica)this.representante).getInteresado();
+			Interesado interesado = ((RepresentantePersonaFisica) this.representante).getInteresado();
 			listaInteresados.add(interesado);
 		} else if (this.isPersonaJuridica()) {
 			//Representantes de la persona jurídica
@@ -142,7 +142,7 @@ public class Solicitante extends Persona {
 				} else if ((r.tipoRepresentacion.equals("solidario")) || (r.tipoRepresentacion.equals("administradorUnico"))) {
 					cardinalidad = "unico";
 				}
-				Interesado interesado = ((RepresentantePersonaJuridica)r).getInteresado();
+				Interesado interesado = ((RepresentantePersonaJuridica) r).getInteresado();
 				listaInteresados.add(interesado);
 			}
 		}

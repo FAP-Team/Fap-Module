@@ -26,12 +26,21 @@ import utils.NotificacionUtils;
  * Job que actualiza la base de datos local con las notificaciones del servicio web de la ACIISI
  *
  */
-@Every("5min")
+@Every("1min")
 public class ActualizarNotificaciones extends Job {
 	
+	Integer tiempoRefresco=1;
+	
     public void doJob() {
-    	if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
-    		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+    	
+    	Integer frecuencia = FapProperties.getInt("fap.notificacion.refrescoBaseDeDatosFromWS");
+    	if ((frecuencia != null) && (tiempoRefresco == frecuencia)){
+    		tiempoRefresco=1;
+	    	if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
+	    		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+    	} else {
+    		tiempoRefresco++;
+    	}
     }
 
     

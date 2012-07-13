@@ -377,7 +377,9 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 				Agente revisor = AgenteController.getAgente();
 				mailRevisor = revisor.email;
 				mailGestor = ((Agente) Agente.find("select agente from Agente agente where agente.username=?", solicitud.verificacion.requerimiento.firmante).first()).username;
-				
+				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailGestor", mailGestor);
+				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailRevisor", mailRevisor);
 				Mails.enviar("solicitarFirmaRequerimiento", solicitud, mailGestor, mailRevisor);
 			} catch (Exception e) {
 				play.Logger.error("No se pudo enviar el mail solicitarFirmaRequerimiento a los mails: "+mailGestor+", "+mailRevisor);
@@ -428,6 +430,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					Messages.ok("Se ha registrado el Requerimiento correctamente.");
 					dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro = true;
 					dbSolicitud.save();
+					
 				} catch (Exception e) {
 					Messages.error("No se ha podido registrar el requerimiento de la solicitud "+dbSolicitud.id);
 					play.Logger.error("No se ha podido registrar el requerimiento de la solicitud "+dbSolicitud.id+": "+e.getMessage());
@@ -508,6 +511,14 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					// Los demás cambios en la notificación los hace el Servicio
 					notificacion.estado = EstadoNotificacionEnum.enviada.name();
 					notificacion.save();
+					// Se debe enviar el mail de "FirmarRequerimiento"
+					try {			
+						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+						
+						Mails.enviar("emitirRequerimiento", solicitud);
+					} catch (Exception e) {
+						play.Logger.error("No se pudo enviar el mail emitirRequerimiento");
+					}
 				} catch (NotificacionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

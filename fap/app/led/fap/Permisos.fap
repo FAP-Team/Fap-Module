@@ -504,12 +504,25 @@ Permiso editAdminGestorVisibleUser {
 	return visible
 }
 
+
 Permiso noHayverificacion{
 	vars
 		SolicitudGenerica solicitud
 		Verificacion verificacion : sql("select verificacion from SolicitudGenerica s where s.id=?", solicitud.id)
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion = null) or ((verificacion.estado=null) or (verificacion.estado in ("enRequerido", "plazoVencido", "verificacionPositiva", "verificacionNegativa"))))
+		(
+		    (agente.rolActivo in ("administrador", "gestor", "revisor")) 
+		    and 
+		        (
+		            ((verificacion = null) or (verificacion.requerimiento = null) or (verificacion.requerimiento.notificacion = null) or
+                    (verificacion.requerimiento.notificacion.estado = null))
+		            or
+    		        ((verificacion != null) and (verificacion.requerimiento != null) and (verificacion.requerimiento.notificacion != null) and
+    		        (verificacion.requerimiento.notificacion.estado != null) and (verificacion.requerimiento.notificacion.estado != "creada"))
+		        )
+		    and
+		    ((verificacion = null) or ((verificacion.estado=null) or (verificacion.estado in ("enRequerido", "plazoVencido", "verificacionPositiva", "verificacionNegativa"))))
+		)
 	return
 		all
 }
@@ -519,7 +532,14 @@ Permiso hayverificacion{
 		SolicitudGenerica solicitud
 		Verificacion verificacion : sql("select verificacion from SolicitudGenerica s where s.id=?", solicitud.id)
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion != null) and (verificacion.estado!=null) and (verificacion.estado in ("iniciada", "verificandoTipos", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada")))
+		(
+		    (agente.rolActivo in ("administrador", "gestor", "revisor")) 
+		    and
+		        ((verificacion != null) and (verificacion.requerimiento != null) and (verificacion.requerimiento.notificacion != null) and
+                (verificacion.requerimiento.notificacion.estado != null) and (verificacion.requerimiento.notificacion.estado = "creada"))
+		    and 
+		    ((verificacion != null) and (verificacion.estado != null) and (verificacion.estado in ("iniciada", "verificandoTipos", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada", "enRequerido")))
+		)
 	return
     	all
 }

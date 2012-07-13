@@ -1,0 +1,102 @@
+Mail(solicitudIniciada):
+   idMail: "solicitudIniciada"
+   sender: "tesisyestancias.aciisi@gmail.com"
+   sendTo: "${solicitud.solicitante.email}"
+   bcc: "tesisyestancias.aciisi@gmail.com"
+   subject: "Solicitud Iniciada. Convocatoria 2012"
+   content: "Convocatoria 2012
+
+   footer: "Atentamente
+
+
+Agencia Canaria de Investigación, Innovación y Sociedad de la Información
+
+
+Por favor, no intente responder a este mensaje. La dirección desde la que se ha enviado no está habilitada para la recepción de correos."
+
+
+
+
+Mail(aportacionRealizada):
+   idMail: "aportacionRealizada"
+   sender: "tesisyestancias.aciisi@gmail.com"
+   sendTo: "${solicitud.solicitante.email}"
+   bcc: "tesisyestancias.aciisi@gmail.com"
+   subject: "Aportación de documentación. Convocatoria 2012"
+   content: "Se ha realizado una aportación de documentación - Convocatoria 2012
+
+   footer: "Atentamente
+
+
+Agencia Canaria de Investigación, Innovación y Sociedad de la Información
+
+
+Por favor, no intente responder a este mensaje. La dirección desde la que se ha enviado no está habilitada para la recepción de correos."
+
+Mail(renunciaRealizada):
+   idMail: "renunciaRealizada"
+   sender: "tesisyestancias.aciisi@gmail.com"
+   sendTo: "${solicitud.solicitante.email}"
+   bcc: "tesisyestancias.aciisi@gmail.com"
+   subject: "Renuncia Realizada. Convocatoria 2012"
+   content: "Se ha rechazado una Solicitud - Convocatoria 2012
+
+   footer: "Atentamente
+
+
+Agencia Canaria de Investigación, Innovación y Sociedad de la Información
+
+
+Por favor, no intente responder a este mensaje. La dirección desde la que se ha enviado no está habilitada para la recepción de correos."
+
+
+Mail(aceptacionRealizada):
+   idMail: "aceptacionRealizada"
+   sender: "tesisyestancias.aciisi@gmail.com"
+   sendTo: "${solicitud.solicitante.email}"
+   bcc: "tesisyestancias.aciisi@gmail.com"
+   subject: "Aceptación Realizada. Convocatoria 2012"
+   content: "Se ha aceptado una Solicitud - Convocatoria 2012
+
+   footer: "Atentamente
+
+
+Agencia Canaria de Investigación, Innovación y Sociedad de la Información
+
+
+Por favor, no intente responder a este mensaje. La dirección desde la que se ha enviado no está habilitada para la recepción de correos."
+
+
+Mail(desistimientoRealizada):
+   idMail: "desistimientoRealizada"
+   sender: "tesisyestancias.aciisi@gmail.com"
+   sendTo: "${solicitud.solicitante.email}"
+   bcc: "tesisyestancias.aciisi@gmail.com"
+   subject: "Desistimiento Realizada. Convocatoria 2012"
+   content: "Se ha desistido una Solicitud - Convocatoria 2012
+
+   footer: "Atentamente
+
+
+Agencia Canaria de Investigación, Innovación y Sociedad de la Información
+
+
+Por favor, no intente responder a este mensaje. La dirección desde la que se ha enviado no está habilitada para la recepción de correos."
+
+
+
+Mail(alegacionRealizada):
+   idMail: "alegacionRealizada"
+   sender: "tesisyestancias.aciisi@gmail.com"
+   sendTo: "${solicitud.solicitante.email}"
+   bcc: "tesisyestancias.aciisi@gmail.com"
+   subject: "Alegación Realizada. Convocatoria 2012"
+   content: "Se ha alegado una Solicitud - Convocatoria 2012
+
+   footer: "Atentamente
+
+
+Agencia Canaria de Investigación, Innovación y Sociedad de la Información
+
+
+Por favor, no intente responder a este mensaje. La dirección desde la que se ha enviado no está habilitada para la recepción de correos."

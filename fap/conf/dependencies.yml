@@ -63,7 +63,7 @@ require:
         transitive: false
     - platinowssinterceptor -> platinowssinterceptor 2
     
-    - es.gobcan.platino.servicios.enotificacion ->  notificaciones 1.0:
+    - es.gobcan.platino.servicios.enotificacion ->  notificaciones 1.1:
         transitive: false
 
 repositories:

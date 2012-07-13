@@ -180,7 +180,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 			log.info(String.format("Notificación (%s) realizada por el gestor (%s).", uriNotificacion, idGestor));
 			
 			// Se obtiene la uri del documento de notificación
-			String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion(uriNotificacion, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
+			String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
 			log.info(String.format("Documento de puesta a disposición (%s) para la notificación (%s)", uriDoc, uriNotificacion));
 			
 			// Cumplimentar los campos del documento

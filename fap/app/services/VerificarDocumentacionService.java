@@ -2,6 +2,9 @@ package services;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jamonapi.utils.Logger;
+
 import messages.Messages;
 import verificacion.ObligatoriedadDocumentosFap;
 import models.TableKeyValue;
@@ -80,7 +83,12 @@ public class VerificarDocumentacionService {
 		// Se comprueba si existen documentos de obligatoriedad IMPRESCINDIBLE NO APORTADOS
 		if (!docObligatoriedad.imprescindibles.isEmpty()) {
 			for (String uri : docObligatoriedad.imprescindibles) {
-				String descripcion=((TableKeyValue) TableKeyValue.find("byKLike", "%" + uri + "%").first()).value;
+				TableKeyValue descripcionTabla = (TableKeyValue) TableKeyValue.find("byKLike", "%" + uri + "%").first();
+				String descripcion = "No encontrado el Tipo de Documento Imprescindible";
+				if (descripcionTabla != null)
+					descripcion=descripcionTabla.value;
+				else
+					play.Logger.error("No encontrado el tipo de documento en BBDD con uri: "+uri);
 				// Si NO ha aportado un determinado tipo de obligatoriedad de documento que sí debería haberlo hecho, se genera el error correspondiente
 				Messages.error("Error: Pagina Documentación falta el documento \""+ descripcion + "\"");
 			}
@@ -88,7 +96,12 @@ public class VerificarDocumentacionService {
 		// Se comprueba si existen documentos de obligatoriedad OBLIGATORIOS NO APORTADOS
 		if (!docObligatoriedad.obligatorias.isEmpty()) {
 			for (String uri : docObligatoriedad.obligatorias) {
-				String descripcion=((TableKeyValue) TableKeyValue.find("byKLike", "%" + uri + "%").first()).value;
+				TableKeyValue descripcionTabla = (TableKeyValue) TableKeyValue.find("byKLike", "%" + uri + "%").first();
+				String descripcion = "No encontrado el Tipo de Documento Obligatorio";
+				if (descripcionTabla != null)
+					descripcion=descripcionTabla.value;
+				else
+					play.Logger.error("No encontrado el tipo de documento en BBDD con uri: "+uri);
 				// Si NO ha aportado un determinado tipo de obligatoriedad de documento que sí debería haberlo hecho, se genera el error correspondiente
 				Messages.error("Error: Pagina Documentación falta el documento \""+ descripcion + "\"");
 			}
@@ -96,7 +109,12 @@ public class VerificarDocumentacionService {
 		// Se comprueba si existen documentos de obligatoriedad AUTOMATICOS NO APORTADOS
 		if (!docObligatoriedad.automaticas.isEmpty()) {
 			for (String uri : docObligatoriedad.automaticas) {
-				String descripcion=((TableKeyValue) TableKeyValue.find("byKLike", "%" + uri + "%").first()).value;
+				TableKeyValue descripcionTabla = (TableKeyValue) TableKeyValue.find("byKLike", "%" + uri + "%").first();
+				String descripcion = "No encontrado el Tipo de Documento Automatico";
+				if (descripcionTabla != null)
+					descripcion=descripcionTabla.value;
+				else
+					play.Logger.error("No encontrado el tipo de documento en BBDD con uri: "+uri);
 				// Si NO ha aportado un determinada obligatoriedad de documento que sí debería haberlo hecho, se genera el error correspondiente
 				Messages.error("Error: Pagina Documentación falta el documento \""+ descripcion + "\"");
 			}

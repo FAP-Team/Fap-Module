@@ -180,8 +180,14 @@ public class NotificacionServiceImpl implements NotificacionService {
 			log.info(String.format("Notificación (%s) realizada por el gestor (%s).", uriNotificacion, idGestor));
 			
 			// Se obtiene la uri del documento de notificación
-			String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
-			log.info(String.format("Documento de puesta a disposición (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+			String uriDoc = null;
+			try {
+				uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
+				log.info(String.format("Documento de puesta a disposición (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+			} catch (Exception e){
+				log.error("Fallo al intentar recuperar la URI del Documento Notificacion. Error: "+e.getMessage());
+				log.error("Ojo, la URI del documento puesta a disposicion de la notificacion "+uriNotificacion+" se seteará a NULL en la BBDD local de la aplicación");
+			}
 			
 			// Cumplimentar los campos del documento
 			Documento docPuestaADisposicion = new Documento();

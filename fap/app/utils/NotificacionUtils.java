@@ -30,7 +30,7 @@ public class NotificacionUtils {
 		interesadoType.setEmail(interesado.email);
 		interesadoType.setMovil(interesado.movil);
 		interesadoType.setNif(interesado.persona.getNumeroId());
-		interesadoType.setUriTerceros(interesado.uriTerceros);
+		interesadoType.setUriTerceros(interesado.persona.getNumeroId());
 		if (interesado.persona.tipo.equals("fisica")){
 			interesadoType.setApellido1(interesado.persona.fisica.primerApellido);
 			interesadoType.setApellido2(interesado.persona.fisica.segundoApellido);
@@ -51,7 +51,7 @@ public class NotificacionUtils {
 		notificacion.asunto = notificacionType.getAsunto();
 		notificacion.descripcion = notificacionType.getCuerpo();
 		notificacion.estado = convertEstadoNotificacionEnumTypeToEstadoNotificacion(notificacionType.getEstadoNotificacion().getEstado());
-		notificacion.fechaPuestaADisposicion = new DateTime(notificacionType.getEstadoNotificacion().getFechaCreacion());
+		notificacion.fechaPuestaADisposicion = new DateTime(notificacionType.getEstadoNotificacion().getFechaCreacion().toGregorianCalendar().getTime());
 		notificacion.idExpedienteAed = notificacionType.getNumeroExpediente();
 		notificacion.plazoAcceso = notificacionType.getPlazoAcceso();
 		notificacion.plazoRespuesta = notificacionType.getPlazoRespuesta();
@@ -67,19 +67,19 @@ public class NotificacionUtils {
 	}
 	
 	public static String convertEstadoNotificacionEnumTypeToEstadoNotificacion (EstadoNotificacionEnumType estadoNotificacionEnumType){
-		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.ANULADA))
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.ANULADA.name()))
 			return EstadoNotificacionEnum.anulada.name();
-		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.EXPIRADA))
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.EXPIRADA.name()))
 			return EstadoNotificacionEnum.expirada.name();
-		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.LEIDA))
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.LEIDA.name()))
 			return EstadoNotificacionEnum.leida.name();
-		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.LEIDA_PLAZO_RESPUESTA_VENCIDO))
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.LEIDA_PLAZO_RESPUESTA_VENCIDO.name()))
 			return EstadoNotificacionEnum.leidaplazorespuestavencido.name();
-		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.PLAZO_RESPUESTA_VENCIDO))
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.PLAZO_RESPUESTA_VENCIDO.name()))
 			return EstadoNotificacionEnum.plazorespuestavencido.name();
-		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.PUESTA_A_DISPOSICION))
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.PUESTA_A_DISPOSICION.name()))
 			return EstadoNotificacionEnum.puestaadisposicion.name();
-		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.RESPONDIDA))
+		if (estadoNotificacionEnumType.name().equals(EstadoNotificacionEnumType.RESPONDIDA.name()))
 			return EstadoNotificacionEnum.respondida.name();
 		return "";
 	}
@@ -92,10 +92,10 @@ public class NotificacionUtils {
 					Notificacion dbNotificacion = (Notificacion) Notificacion.find("select notificacion from Notificacion notificacion where notificacion.uri=?", notificacion.uri).first();
 					if (dbNotificacion != null){
 						dbNotificacion.actualizar(notificacion);
+						dbNotificacion.save();
 					} else {
 						play.Logger.error("Existe una notificacion con uri: "+notificacion.uri+" en la base de datos del servicio web, pero no en la aplicación local");
 					}
-					dbNotificacion.save();
 				}
 			} else {
 				play.Logger.error("Hubo un problema al actualizar desde el servicio web, las notificaciones");

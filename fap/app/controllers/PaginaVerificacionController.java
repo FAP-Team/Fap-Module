@@ -235,7 +235,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		if (!Messages.hasErrors()) {
 			try {
 				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
-				new Report("reports/borradorRequerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(dbSolicitud);
+				new Report("reports/requerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(dbSolicitud);
 			} catch (Exception e) {
 				play.Logger.error("Error generando el borrador", e.getMessage());
 				Messages.error("Error generando el borrador");
@@ -513,6 +513,11 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					notificacion.save();
 					
 					solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
+					// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
+					VerificacionUtils.setVerificadoDocumentos(solicitud.verificacion.documentos, solicitud.documentacion.documentos);
+					// Actualizamos los datos de la verificacion para verificaciones posteriores. Copiamos la verificacionActual a las verificaciones Anteriores para poder empezar una nueva verificación.
+					solicitud.verificaciones.add(solicitud.verificacion);
+					
 					solicitud.save();
 					
 					try {			
@@ -526,6 +531,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
+					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
 				}
 			}
 		}

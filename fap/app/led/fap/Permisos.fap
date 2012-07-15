@@ -849,11 +849,11 @@ Permiso requerimientoRequerirFirma {
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.verificacion?.estado in ("enRequerimiento")
+		solicitud?.verificacion?.estado in ("enRequerimiento") and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true"
 	return
 		all
 	when
-		solicitud?.verificacion?.estado in ("enRequerimientoFirmaSolicitada")
+		solicitud?.verificacion?.estado in ("enRequerimientoFirmaSolicitada") and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true"
 	return
 		visible
 }

@@ -483,7 +483,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		FirmaUtils.firmar(solicitud.verificacion.requerimiento.oficial, solicitud.verificacion.requerimiento.registro.firmantes.todos, firma, solicitud.verificacion.requerimiento.firmante);
 		if (!Messages.hasErrors()) {
 			Messages.ok("El requerimiento se ha firmado correctamente");
-			solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
+			
 			solicitud.verificacion.requerimiento.registro.fasesRegistro.firmada = true;
 			solicitud.save();
 		}
@@ -509,9 +509,12 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
 					play.Logger.info("Se ha enviado correctamente la notificación "+notificacion.id);
 					// Los demás cambios en la notificación los hace el Servicio
-					notificacion.estado = EstadoNotificacionEnum.enviada.name();
+					notificacion.estado = EstadoNotificacionEnum.enviada.name();				
 					notificacion.save();
-					// Se debe enviar el mail de "FirmarRequerimiento"
+					
+					solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
+					solicitud.save();
+					
 					try {			
 						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
 						

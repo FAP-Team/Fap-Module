@@ -117,7 +117,8 @@ public class SecureFap extends Secure {
 
 	public ResultadoPermiso listaSolicitudesSinBusqueda(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
 		Agente agente = AgenteController.getAgente();
-		if (agente.rolActivo.toString().equals("usuario".toString())) {
+		if (agente.rolActivo.toString().equals("usuario".toString())
+				|| !FapProperties.getBoolean("fap.index.search")) {
 			return new ResultadoPermiso(Accion.All);
 		}
 		return new ResultadoPermiso(Accion.Denegar);
@@ -125,7 +126,8 @@ public class SecureFap extends Secure {
 
 	public ResultadoPermiso listaSolicitudesSinBusquedaAccion(Map<String, Long> ids, Map<String, Object> vars) {
 		Agente agente = AgenteController.getAgente();
-		if (agente.rolActivo.toString().equals("usuario".toString())) {
+		if (agente.rolActivo.toString().equals("usuario".toString())
+				|| !FapProperties.getBoolean("fap.index.search")) {
 			return new ResultadoPermiso(Accion.All);
 		}
 		return new ResultadoPermiso(Accion.Denegar);

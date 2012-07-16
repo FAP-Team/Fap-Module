@@ -5,7 +5,7 @@ Formulario Notificacion {
 		
 		Enlace "Mis Notificaciones" pagina=Notificaciones
 		
-		Enlace "Cambiar contraseña" permiso=loginTipoUser pagina=CambiarPass 
+		//Enlace "Cambiar contraseña" permiso=loginTipoUser pagina=CambiarPass 
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
     }
@@ -31,9 +31,7 @@ Formulario Notificacion {
 				AreaTexto campo=Notificacion.descripcion titulo="Descripción" filas=5 ancho="500px"
 			}
 			
-			Form enlaceSede {
-				Boton btnEnlaceSede titulo="Enlace Sede Electrónica"
-			}
+			Enlace enlaceSede url="" estilo="btn" titulo="Ir a la Sede Electrónica" // Sobreescrito
 			
 		}
 		

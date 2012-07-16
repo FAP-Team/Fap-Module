@@ -1,0 +1,42 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Notificacion', 
+     hayForm:false, 
+     pagina:'NotificacionVer', 
+     titulo:'Ver Notificacion', 
+     urlBorrar:play.mvc.Router.reverse('NotificacionVerController.borrar' , ['idNotificacion':notificacion?.id]), 
+     urlCrear:play.mvc.Router.reverse('NotificacionVerController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('NotificacionVerController.editar' , ['idNotificacion':notificacion?.id])
+}
+	
+			#{fap.grupo titulo:'Datos Notificacion'}
+				
+			#{fap.grupo borde:false, permiso:'noEditable'}
+				
+			#{fap.fecha campo:'notificacion.fechaPuestaADisposicion', titulo:'Fecha Generación' /}		
+		
+			#{fap.fecha campo:'notificacion.fechaAcceso', titulo:'Fecha Lectura' /}		
+		
+			#{fap.texto campo:'notificacion.asunto', titulo:'Asunto' /}		
+		
+			#{fap.areaTexto ancho:'500px', campo:'notificacion.descripcion', filas:'5', titulo:'Descripción' /}		
+		
+			#{/fap.grupo}
+		
+			#{if url != null}
+				<div class="form-row">
+					<a id="enlaceSede" href="${url}" class="btn" target="blank">Ir a la Sede Electrónica</a>		
+				</div>
+			#{/if}
+		
+			#{/fap.grupo}
+		
+			#{fap.enlace anterior:true, container:'NotificacionVer', estilo:'btn', id:'atras', titulo:'Volver a Mis Notificaciones' /}
+		
+#{/fap.pagina}
+		

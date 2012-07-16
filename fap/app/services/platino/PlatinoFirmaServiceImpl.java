@@ -414,7 +414,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				try {
 					log.info("Guardando firma en el aed");
 					firmante.fechaFirma = new DateTime();
-					gestorDocumentalService.agregarFirma(documento, new models.Firma(firma, firmantes));
+					gestorDocumentalService.agregarFirma(documento, new models.Firma(firma, firmante));
 					firmante.save();
 					
 					log.info("Firma del documento " + documento.uri + " guardada en el AED");

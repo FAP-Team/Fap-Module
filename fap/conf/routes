@@ -223,7 +223,6 @@ GET /Principal/cambiarpass/tablaCambioPass CambiarPassController.tablatablaCambi
 GET /Notificacion/notificaciones NotificacionesController.index
 GET /Notificacion/notificaciones/listaNotificaciones NotificacionesController.tablalistaNotificaciones
 GET /Notificacion/notificacionver NotificacionVerController.index
-POST /Notificacion/notificacionver/enlaceSede NotificacionVerController.enlaceSede
 GET /Solicitud/popupdocdesistimiento popups.PopUpDocDesistimientoController.index
 GET /Solicitud/documentoseditarfap popups.DocumentosEditarFAPController.index
 POST /Solicitud/documentoseditarfap/editar popups.DocumentosEditarFAPController.editar

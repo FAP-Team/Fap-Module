@@ -32,6 +32,9 @@ import messages.Messages;
 import models.Agente;
 import models.Documento;
 import models.DocumentoNotificacion;
+import models.Firma;
+import models.Firmante;
+import models.Firmantes;
 import models.Notificacion;
 import models.Requerimiento;
 import models.SolicitudGenerica;
@@ -428,6 +431,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			if (dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.firmada
 					&& !dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro) {
 				try {
+
 					models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(dbSolicitud.solicitante, dbSolicitud.verificacion.requerimiento.oficial, dbSolicitud.expedientePlatino, "Requerimiento");
 					
 					// ----- Hecho por Paco ------------------------
@@ -518,6 +522,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			solicitud.verificacion.requerimiento.registro.firmantes.save();
 		}
 		FirmaUtils.firmar(solicitud.verificacion.requerimiento.oficial, solicitud.verificacion.requerimiento.registro.firmantes.todos, firma, solicitud.verificacion.requerimiento.firmante);
+		
 		if (!Messages.hasErrors()) {
 			Messages.ok("El requerimiento se ha firmado correctamente");
 			

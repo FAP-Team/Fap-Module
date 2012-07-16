@@ -4,7 +4,7 @@ Formulario Principal {
 		Enlace "Administración" permiso=administrador pagina=Usuarios
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
 		Enlace "Mis Notificaciones" pagina=Notificaciones
-		Enlace "Cambiar contraseña" permiso=loginTipoUser pagina=CambiarPass 
+		//Enlace "Cambiar contraseña" permiso=loginTipoUser pagina=CambiarPass 
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
 	}

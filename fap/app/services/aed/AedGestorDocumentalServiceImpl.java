@@ -731,9 +731,24 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			propiedadesAdministrativas.setFirma(firmaActual);
     			firmaActual.setContenido(firma.getContenido());
     			firmaActual.setTipoMime("text/xml");
+    			boolean clasificado = isClasificado(documento);
+    			
+    			es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
+    			firmanteAed.setFirmanteNombre(firmante.nombre);
+    			firmanteAed.setFirmanteNif(firmante.idvalor);
+    			firmanteAed.setFecha(firmante.fechaFirma.toDate());
+    			firmaActual.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
+    			
+    			actualizarPropiedades(propiedadesDocumento, clasificado);
     		} else if (!firmaActual.getFirmantes().contains(firmante)){
             	Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
             	propiedadesAdministrativas.setFirma(firmaNueva);
+            	
+            	es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
+    			firmanteAed.setFirmanteNombre(firmante.nombre);
+    			firmanteAed.setFirmanteNif(firmante.idvalor);
+    			firmanteAed.setFecha(firmante.fechaFirma.toDate());
+    			firmaNueva.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
     
             	boolean clasificado = isClasificado(documento);
             	actualizarPropiedades(propiedadesDocumento, clasificado);

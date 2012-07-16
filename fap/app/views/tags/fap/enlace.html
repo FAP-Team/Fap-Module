@@ -24,10 +24,10 @@
 	}
 	else if (_anterior){
 		String key = "redirigir${_container}";
-		if (play.mvc.Controller.response.cookies.containsKey(key))
-			url = play.mvc.Controller.response.cookies.get(key).value;
-		else if (play.mvc.Controller.request.cookies.containsKey(key))
-			url = play.mvc.Controller.request.cookies.get(key).value;
+		if ((play.mvc.Controller.response != null) && (play.mvc.Controller.response.cookies != null) && (play.mvc.Controller.response.cookies.containsKey(key)))
+            url = play.mvc.Controller.response.cookies.get(key).value;
+       else if ((play.mvc.Controller.request != null) && (play.mvc.Controller.request.cookies != null) && (play.mvc.Controller.request.cookies.containsKey(key)))
+       		url = play.mvc.Controller.request.cookies.get(key).value;
 	}
 	else{
 		throw new play.exceptions.TagInternalException("el atributo url y accion no pueden ser vacios");

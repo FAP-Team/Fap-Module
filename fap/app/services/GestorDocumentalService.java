@@ -43,11 +43,17 @@ public interface GestorDocumentalService {
     public void updateDocumento(Documento documento) throws GestorDocumentalServiceException;
 
     public void deleteDocumento(Documento documento) throws GestorDocumentalServiceException;
+    
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos,
+            InformacionRegistro informacionRegistro, boolean notificable) throws GestorDocumentalServiceException;
 
     public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos,
             InformacionRegistro informacionRegistro) throws GestorDocumentalServiceException;
 
     public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos)
+            throws GestorDocumentalServiceException;
+    
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, boolean notificable)
             throws GestorDocumentalServiceException;
 
     public void agregarFirma(Documento documento, Firma firma) throws GestorDocumentalServiceException;

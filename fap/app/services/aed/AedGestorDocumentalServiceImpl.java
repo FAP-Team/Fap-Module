@@ -527,7 +527,67 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     private static GestorDocumentalServiceException serviceExceptionFrom(AedExcepcion e){
         return new GestorDocumentalServiceException(getLogMessage(e), e);
     }
-	
+    
+    @Override
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, InformacionRegistro informacionRegistro, boolean notificable) throws GestorDocumentalServiceException {
+    	 log.debug("Clasificando documentos");
+         String idAed = solicitud.expedienteAed.idAed;
+         
+         if(idAed == null)
+             throw new NullPointerException();
+         
+         Interesados interesados = getInteresados(solicitud);
+         
+         boolean todosClasificados = true;
+         String errores = "";
+         for(models.Documento documento : documentos){
+             if(!documento.clasificado){
+                 try {
+                     if(informacionRegistro == null){
+                         clasificarDocumentoSinRegistro(idAed, documento, interesados, notificable);
+                     }else{
+                         //TODO: Pasar parámetro notificable ¿Hecho?
+                         clasificarDocumentoConRegistro(idAed, documento, interesados, informacionRegistro, notificable); 
+                     }
+                 }catch(AedExcepcion e){
+                     todosClasificados = false;
+                     errores += "Error al clasificar el documento " + documento.uri + "\n";
+                 }catch(SOAPFaultException e){
+                     todosClasificados = false;
+                     errores += "Error al clasificar el documento " + documento.uri + "\n";
+                     e.printStackTrace();
+                 }
+             }else{
+                 log.warn("El documento " + documento.uri + " ya está clasificado");
+             }
+         }
+         
+        // Clasificación de los documentos que ya estaban subidos en otro expediente y queremos duplicar en este expediente
+        for (models.Documento doc: solicitud.documentacion.documentos) {
+ 			if ((doc.refAed != null) && (doc.refAed == true)) {	
+ 				idAed = solicitud.expedienteAed.idAed;
+ 				String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+ 				Ubicaciones ubicacion = new Ubicaciones();
+ 				ubicacion.setProcedimiento(procedimiento);
+ 				ubicacion.getExpedientes().add(idAed);
+ 				List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
+ 				ubicaciones.add(ubicacion);
+ 				try {
+ 					aedPort.copiarDocumento(doc.uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
+ 				} catch (AedExcepcion e) {
+ 					// TODO Auto-generated catch block
+ 					e.printStackTrace();
+ 				}
+ 				doc.refAed = false;
+ 				doc.save();
+ 			}
+        }
+         
+         if(!todosClasificados){
+             throw new GestorDocumentalServiceException("No se pudieron clasificar todos los documentos : " + errores);
+         }
+    }
+    
     @Override
     public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, InformacionRegistro informacionRegistro) throws GestorDocumentalServiceException {
         log.debug("Clasificando documentos");
@@ -544,7 +604,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             if(!documento.clasificado){
                 try {
                     if(informacionRegistro == null){
-                        clasificarDocumentoSinRegistro(idAed, documento, interesados);
+                        clasificarDocumentoSinRegistro(idAed, documento, interesados, false);
                     }else{
                         //TODO: Pasar parámetro notificable
                         clasificarDocumentoConRegistro(idAed, documento, interesados, informacionRegistro, false); 
@@ -564,7 +624,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         
        // Clasificación de los documentos que ya estaban subidos en otro expediente y queremos duplicar en este expediente
        for (models.Documento doc: solicitud.documentacion.documentos) {
-			if (doc.refAed == true) {	
+			if ((doc.refAed != null) && (doc.refAed == true)) {	
 				idAed = solicitud.expedienteAed.idAed;
 				String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
 				Ubicaciones ubicacion = new Ubicaciones();
@@ -593,8 +653,17 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         clasificarDocumentos(solicitud, documentos, null);
     }
     
-    private void clasificarDocumentoSinRegistro(String idAed, models.Documento documento, Interesados interesados) throws AedExcepcion {
+    @Override
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, boolean notificable) throws GestorDocumentalServiceException {
+        clasificarDocumentos(solicitud, documentos, null, notificable);
+    }
+    
+    private void clasificarDocumentoSinRegistro(String idAed, models.Documento documento, Interesados interesados, boolean notificable) throws AedExcepcion {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
+        PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
+        // Marca como notificable
+        if (notificable)
+        	propAdmin.setNotificable(true);
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
 

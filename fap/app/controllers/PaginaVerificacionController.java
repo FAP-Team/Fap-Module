@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 import reports.Report;
 import services.FirmaService;
 import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import services.NotificacionService;
 import services.RegistroService;
 
@@ -22,6 +24,7 @@ import properties.FapProperties;
 
 import tags.ComboItem;
 import utils.CalcularFirmantes;
+import utils.NotificacionUtils;
 import validation.CustomValidation;
 import verificacion.VerificacionUtils;
 
@@ -425,7 +428,41 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			if (dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.firmada
 					&& !dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro) {
 				try {
-					registroService.registroDeSalida(dbSolicitud.solicitante, dbSolicitud.verificacion.requerimiento.oficial, dbSolicitud.expedientePlatino, "Requerimiento");
+					models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(dbSolicitud.solicitante, dbSolicitud.verificacion.requerimiento.oficial, dbSolicitud.expedientePlatino, "Requerimiento");
+					
+					// ----- Hecho por Paco ------------------------
+					dbSolicitud.verificacion.requerimiento.registro.informacionRegistro.setDataFromJustificante(justificanteSalida);
+					
+					Documento documento = dbSolicitud.verificacion.requerimiento.justificante;
+			        documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
+			        documento.descripcion = "Justificante de registro";
+			        documento.save();
+
+			        InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
+			        gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteRequerimiento" + dbSolicitud.verificacion.requerimiento.id + ".pdf");
+			        play.Logger.info("Justificante del Requerimiento almacenado en el AED");
+			        
+			        List<Documento> documentos = new ArrayList<Documento>();
+			        
+			        documentos.add(dbSolicitud.verificacion.requerimiento.justificante);
+			        
+			        try { // Sin registro
+		                gestorDocumentalService.clasificarDocumentos(dbSolicitud, documentos, true);
+		            } catch (Exception e) {
+		                play.Logger.error("No se ha podido clasificar el justificante del requerimiento: "+e.getMessage());
+		            }
+			        
+			        documentos.clear();
+			        documentos.add(dbSolicitud.verificacion.requerimiento.oficial);
+			        
+			        try { // Con registro
+		                gestorDocumentalService.clasificarDocumentos(dbSolicitud, documentos, dbSolicitud.verificacion.requerimiento.registro.informacionRegistro, true);
+		            } catch (Exception e) {
+		            	play.Logger.error("No se ha podido clasificar el requerimiento oficial: "+e.getMessage());
+		            }
+					
+			        // ------------------------------------------
+			        
 					play.Logger.info("Se ha registrado de Salida el documento del requerimiento de la solicitud "+dbSolicitud.id);
 					Messages.ok("Se ha registrado el Requerimiento correctamente.");
 					dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro = true;
@@ -442,7 +479,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 				Notificacion notificacion = dbSolicitud.verificacion.requerimiento.notificacion;
 				if (notificacion.estado == null || notificacion.estado.isEmpty()) {
 					//La notificación no ha sido creada
-					DocumentoNotificacion docANotificar = new DocumentoNotificacion(dbSolicitud.verificacion.requerimiento.oficial.uri);
+					DocumentoNotificacion docANotificar = new DocumentoNotificacion(dbSolicitud.verificacion.requerimiento.justificante.uri);
 					notificacion.documentosANotificar.add(docANotificar);
 					notificacion.interesados.addAll(dbSolicitud.solicitante.getAllInteresados());
 					notificacion.descripcion = "Notificación";
@@ -509,7 +546,8 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
 					play.Logger.info("Se ha enviado correctamente la notificación "+notificacion.id);
 					// Los demás cambios en la notificación los hace el Servicio
-					notificacion.estado = EstadoNotificacionEnum.enviada.name();				
+					notificacion.estado = EstadoNotificacionEnum.enviada.name();
+					notificacion.fechaPuestaADisposicion = new DateTime();
 					notificacion.save();
 					
 					solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
@@ -525,8 +563,12 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 						
 						Mails.enviar("emitirRequerimiento", solicitud);
 					} catch (Exception e) {
-						play.Logger.error("No se pudo enviar el mail emitirRequerimiento");
+						play.Logger.error("No se pudo enviar el mail emitirRequerimiento: "+e.getMessage());
 					}
+					
+					if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
+			    		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+					
 				} catch (NotificacionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

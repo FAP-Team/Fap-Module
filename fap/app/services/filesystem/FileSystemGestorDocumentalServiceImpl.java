@@ -668,4 +668,20 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		solicitud.documentacion.documentos.add(doc);
 		solicitud.save();
 	}
+
+	@Override
+	public void clasificarDocumentos(SolicitudGenerica solicitud,
+			List<Documento> documentos,
+			InformacionRegistro informacionRegistro, boolean notificable)
+			throws GestorDocumentalServiceException {
+		clasificarDocumentos(solicitud, documentos);
+		
+	}
+
+	@Override
+	public void clasificarDocumentos(SolicitudGenerica solicitud,
+			List<Documento> documentos, boolean notificable)
+			throws GestorDocumentalServiceException {
+		clasificarDocumentos(solicitud, documentos);	
+	}
 }

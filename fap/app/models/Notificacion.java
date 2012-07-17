@@ -145,8 +145,8 @@ public class Notificacion extends FapModel {
 	}
 
 	public void actualizar(Notificacion notificacion) {
-		play.Logger.info("Viendo si hay que cambiar el estado de una notificacion. Antes: "+this.estado+" nuevo valor: "+notificacion.estado);
-		play.Logger.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: "+this.fechaAcceso+" nuevo valor: "+notificacion.fechaAcceso);
+		play.Logger.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
+		play.Logger.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
 		this.estado = notificacion.estado;
 		this.fechaAcceso = notificacion.fechaAcceso;
 	}

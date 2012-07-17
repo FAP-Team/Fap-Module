@@ -443,7 +443,10 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					
 					Documento documento = dbSolicitud.verificacion.requerimiento.justificante;
 			        documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
-			        documento.descripcion = "Justificante de registro";
+			        String aplicacionJ = "la aplicación";
+			        if ((FapProperties.get("fap.app.name.requerimiento.justificante.descripcion") != null) && (!"undefined".equals(FapProperties.get("fap.app.name.requerimiento.justificante.descripcion"))))
+			        	aplicacionJ = FapProperties.get("fap.app.name.requerimiento.justificante.descripcion");
+			        documento.descripcion = "Justificante de registro de requerimientos de la solicitud de "+aplicacionJ;
 			        documento.save();
 
 			        InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();

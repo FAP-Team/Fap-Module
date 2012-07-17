@@ -4,7 +4,7 @@ Mail(solicitudIniciada):
    sendTo: "${solicitud.solicitante.email}"
    bcc: "tesisyestancias.aciisi@gmail.com"
    subject: "Solicitud Iniciada. Convocatoria 2012"
-   content: "Convocatoria 2012
+   content: "Convocatoria 2012"
 
    footer: "Atentamente
 
@@ -23,7 +23,7 @@ Mail(aportacionRealizada):
    sendTo: "${solicitud.solicitante.email}"
    bcc: "tesisyestancias.aciisi@gmail.com"
    subject: "Aportación de documentación. Convocatoria 2012"
-   content: "Se ha realizado una aportación de documentación - Convocatoria 2012
+   content: "Se ha realizado una aportación de documentación - Convocatoria 2012"
 
    footer: "Atentamente
 
@@ -39,7 +39,7 @@ Mail(renunciaRealizada):
    sendTo: "${solicitud.solicitante.email}"
    bcc: "tesisyestancias.aciisi@gmail.com"
    subject: "Renuncia Realizada. Convocatoria 2012"
-   content: "Se ha rechazado una Solicitud - Convocatoria 2012
+   content: "Se ha rechazado una Solicitud - Convocatoria 2012"
 
    footer: "Atentamente
 
@@ -56,7 +56,7 @@ Mail(aceptacionRealizada):
    sendTo: "${solicitud.solicitante.email}"
    bcc: "tesisyestancias.aciisi@gmail.com"
    subject: "Aceptación Realizada. Convocatoria 2012"
-   content: "Se ha aceptado una Solicitud - Convocatoria 2012
+   content: "Se ha aceptado una Solicitud - Convocatoria 2012"
 
    footer: "Atentamente
 
@@ -73,7 +73,7 @@ Mail(desistimientoRealizada):
    sendTo: "${solicitud.solicitante.email}"
    bcc: "tesisyestancias.aciisi@gmail.com"
    subject: "Desistimiento Realizada. Convocatoria 2012"
-   content: "Se ha desistido una Solicitud - Convocatoria 2012
+   content: "Se ha desistido una Solicitud - Convocatoria 2012"
 
    footer: "Atentamente
 
@@ -91,7 +91,7 @@ Mail(alegacionRealizada):
    sendTo: "${solicitud.solicitante.email}"
    bcc: "tesisyestancias.aciisi@gmail.com"
    subject: "Alegación Realizada. Convocatoria 2012"
-   content: "Se ha alegado una Solicitud - Convocatoria 2012
+   content: "Se ha alegado una Solicitud - Convocatoria 2012"
 
    footer: "Atentamente
 

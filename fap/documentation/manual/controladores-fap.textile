@@ -1,0 +1,99 @@
+h2. Controladores en Fap
+
+En las aplicaciones Fap existen dos controladores por cada página y otros dos por cada popup. De cada dos, uno de ellos se sobreescribe automáticamente cada vez que se ejecuta el comando **fap:generate** para generar la aplicación, y se denomina "**controlador generado**". El otro controlador no se sobreescribe, sino que conserva su contenido. Este último se denomina "**controlador manual**". El controlador manual extiende del controlador generado, y la primera vez que se genera la aplicación a partir del DSL, situación en la cual el directorio de controladores está vacío, el generador también escribe el controlador manual, declarándolo subclase del controlador generado, pero sin ningún contenido. Con este mecanismo se posibilita al programador de la aplicación Fap el modificar los comportamientos que traen los controladores por defecto. Como el fichero de rutas **conf/routes** (que establece el mapeo de las URLs con las acciones que invocan) siempre va a hacer referencia a las acciones de los controladores manuales, si dichos métodos existen, se utilizan, y si no, se hace uso de los de la clase padre: el controlador generado. A continuación se muestra un extracto de una pareja de controladores de una aplicación Fap:
+
+Controlador generado: 
+
+bc. package controllers.gen;
+ 
+ public class EjemploControllerGen extends GenericController {
+ 
+    public static void index(Long idSolicitud){
+       Solicitud solicitud = getSolicitud(idSolicitud);
+       renderTemplate("gen/Ejemplo/Ejemplo.html", solicitud);
+    }
+    
+    public static void save(Long idSolicitud, Solicitud solicitud){
+       checkAuthenticity();
+       Solicitud dbsolicitud = getSolicitud(idSolicitud);
+       saveValidateCopy(dbsolicitud, solicitud);
+       if(!validation.hasErrors()){
+          dbsolicitud.save();
+       }
+       redirect( "EjemploController.index" , idSolicitud);
+    }
+    
+   ...
+
+Controlador manual:
+
+bc. package controllers;
+ 
+ public class EjemploController extends EjemploControllerGen {
+ 
+    public static void save(Long idSolicitud, Solicitud solicitud){
+       redirect( "EjemploController.index" , idSolicitud);
+    }
+    
+   ...
+
+Estos controladores, cuyos códigos han sido simplificados para mejor entendimiento en este punto, corresponderían a una página denominada "Ejemplo" escrita en el DSL. Esta página tiene asociada dos acciones: **index**, que tiene como respuesta el código HTML de la página, y **save**, que se encarga de guardar los datos del formulario que hay en la página. Ambos acciones han sido implementadas en el controlador generado, y se observa que en el controlador manual ha sido sobreescrita una de ellas, save. El resultado es que si se invoca la acción index se llamará al método generado, mientras que si se invoca la acción save se llamará al método del controlador manual. En el redirect al final del save manual, se invoca al método index generado al no existir en el controlador manual.
+
+
+h3. Controladores en las páginas
+
+Como ya se ha comentado, para cada página existen dos controladores: el generado y el manual. El controlador generado se escribe en el paquete **controllers.gen** mientras que el manual se sitúa en el paquete **controllers**. Así, una página que se llame Solicitante tendrá los siguientes controladores: controllers.gen.SolicitanteControllerGen controllers.SolicitanteController.
+
+Con el controlador generado se incluyen una serie de métodos que se detallan a continuación: 
+
+* **Index** - Este método es el que se llama al mostrar la página, es el encargado de cargar las entidades que va a utilizar la página (por ejemplo, la solicitud a partir de un ID) y renderizar la plantilla correspondiente para retornar el código html que compone la página.
+
+bc. public static void index(Long idSolicitud){
+   Solicitud solicitud = getSolicitud(idSolicitud);
+   renderTemplate( "gen/Solicitante/Solicitante.html" , solicitud);
+}
+
+* **Save** - Es el encargado de guardar los datos introducidos en el formulario dentro de la entidad correspondientes. En primer lugar este método hace una llamada a checkAutenticity para comprobar que se accede con un usuario autentificado, luego se comprueba si este usuario tiene permisos para realizar esta acción, si los permisos son los correctos se obtiene la entidad de la base de datos, se validan los datos del formulario y se guardan guarda la entidad con los datos actualizados. Si todo el proceso transcurre correctamente se envía un mensaje de confirmación (de error en caso contrario). Por último se redirecciona al método index
+
+bc. public static void save(Long idSolicitud, Solicitud solicitud){
+   checkAuthenticity();
+   if (permisosave("update") || permisosave("create")) {
+      Solicitud dbsolicitud = getSolicitud(idSolicitud);
+      saveValidateCopy(dbsolicitud, solicitud);
+      if(!validation.hasErrors()){
+         dbsolicitud.save(); Logger.info("Guardando solicitud " + dbsolicitud.id);
+      }
+   }
+   else {
+      Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+   }
+   saveRender(idSolicitud);
+}
+
+* **Métodos de tabla** - Si la página contiene tablas se creara, para cada una de las tablas un método en el controlador encargado de devolver las filas en un JSON. Este método busca en base de datos la lista de instancias de la entidad a la que hace referencia la tabla, se filtran los resultados utilizando los permisos que se asignaron a la tabla y selecciona los datos que se van a enviar (atendiendo a las columnas de la tabla), por último se realizan las tranformaciones necesarias (por ejemplo para el formato de las fechas) y se renderiza como JSON. 
+
+bc. public static void tablasubPublicas(Long idSolicitud){
+   ...
+   List rows = SubvencionPublica.find("select subvencionPublica ...", idSolicitud ).fetch();
+   List rowsFiltered = rows; //Tabla sin permisos, no filtra los resultados
+   TableRenderResponse response = new TableRenderResponse(rowsFiltered);
+   renderJSON(response.toJSON("entidad", "objeto", "situacion", "importe", "id"));
+}
+
+Existen otros métodos que son llamados desde alguno de los métodos anteriores, como pueden ser *permisoSave*, *saveValidateCopy*, ..., estos métodos se utilizan como utilidades (no como acciones) por lo que al llamarlos desde otro metodo no producen una redirección (Esto se indica con la anotación @Util).
+
+bc. @Util
+protected static Solicitud getSolicitud(Long idSolicitud){
+   Solicitud solicitud = null;
+   if(idSolicitud == null){
+      Messages.fatal("Falta parámetro idSolicitud");
+   }else{
+      solicitud = Solicitud.findById(idSolicitud);
+      if(solicitud == null){
+         Messages.fatal("Error al recuperar Solicitud");
+      }
+   }
+   return solicitud;
+}
+
+Se puede ver la llamada a este método tanto en index como en save.

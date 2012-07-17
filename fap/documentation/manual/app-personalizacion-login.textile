@@ -1,0 +1,18 @@
+h1. Página de Login
+
+h2. Personalización
+
+En la versión actual, se ofrece la posibilidad de personalizar los siguientes mensajes de login:
+
+* Fatal
+* Error
+* Warning
+* Ok
+* Info
+
+En el cuadro de texto disponible escribimos el mensaje deseado para el tipo de mensaje elegido y obtenemos la visualización bajo el botón guardar.
+Para que se aplique el cambio de mensaje, debe activarse el check de habilitacion.
+
+h2. Captura de pantalla
+
+!images/mensaje-login!

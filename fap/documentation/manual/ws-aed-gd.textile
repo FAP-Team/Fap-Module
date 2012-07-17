@@ -1,0 +1,33 @@
+h1. Aed
+
+h2. Configuración para el uso del Aed.
+
+Para configurar el Aed como Gestor Documental de nuestra aplicación deben seguirse los siguientes pasos:
+
+* Poner el fichero app/config/AppModule.java como sigue, indicando AedGestorDocumentalServiceImpl en gestorDocumental(). 
+* Si se quiere firmar y registrar con Platino, PlatinoFirmaServiceImpl en firma() y PlatinoRegistroServiceImpl en registro().
+* Si se quiere firmar y registrar con el FileSystem, FileSystemFirmaServiceImpl en firma() y FileSystemRegistroService en registro().
+
+bc. public class AppModule extends FapModule {
+	@Override
+	protected void secure() {
+		bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
+	}
+	
+	@Override
+	protected void gestorDocumental() {
+		bindLazySingletonOnDev(GestorDocumentalService.class,AedGestorDocumentalServiceImpl.class);
+	}
+	
+	@Override
+	protected void firma() {
+		bindLazySingletonOnDev(FirmaService.class, PlatinoFirmaServiceImpl.class);
+	}
+	
+	@Override
+	protected void registro(){
+		bindLazySingletonOnDev(RegistroService.class, PlatinoRegistroService.class);
+	}
+}
+
+* Ir a Administración/Aed, en la aplicación arrancada y pulsar los botones _Configurar gestor documental_ y _Actualizar trámites_.

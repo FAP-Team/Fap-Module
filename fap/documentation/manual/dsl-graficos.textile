@@ -1,0 +1,29 @@
+h1. Elementos gráficos de un DSL
+
+# "texto":dsl-texto
+# "area texto":dsl-areaTexto
+# "boton":dsl-boton
+# "check":dsl-check
+# "enlace":dsl-enlace
+# "combo":dsl-combo
+# "grupo":dsl-grupo
+# "wiki":dsl-wiki
+# "pagina":dsl-pagina
+# "popup":dsl-popup
+# "fecha":dsl-fecha
+# "firma simple":dsl-firmaPlatinoSimple
+# "agrupar campos":dsl-agruparCampos
+# "menu":dsl-menu
+# "form":dsl-form
+# "tabla":dsl-tabla
+# "columna":dsl-columna
+# "direccion":dsl-direccion
+# "subir archivo":dsl-subirArchivo
+# "editar archivo":dsl-editarArchivo
+# "solicitante":dsl-solicitante
+# "persona":dsl-persona
+# "persona fisica":dsl-personaFisica
+# "persona juridica":dsl-personaJuridica
+# "entidad automática":dsl-entidadAutomatica
+# "formulario":dsl-formulario
+

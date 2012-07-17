@@ -1,0 +1,36 @@
+h1. FileSystem
+
+Para configurar el FileSystem como Gestor Documental de nuestra aplicación deben seguirse los siguientes pasos:
+
+* Poner el fichero app/config/AppModule.java como sigue, indicando FileSystemGestorDocumentalServiceImpl en gestorDocumental().
+
+* Si se quiere firmar y registrar con Platino, PlatinoFirmaServiceImpl en firma() y PlatinoRegistroServiceImpl en registro().
+* Si se quiere firmar y registrar con el FileSystem, FileSystemFirmaServiceImpl en firma() y FileSystemRegistroService en registro().
+
+bc. public class AppModule extends FapModule {
+	@Override
+	protected void secure() {
+		bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
+	}
+	
+	@Override
+	protected void gestorDocumental() {
+		bindLazySingletonOnDev(GestorDocumentalService.class,FileSystemGestorDocumentalServiceImpl.class);
+	}
+	
+	@Override
+	protected void firma() {
+		bindLazySingletonOnDev(FirmaService.class, FileSystemFirmaServiceImpl.class);
+	}
+	
+	@Override
+	protected void registro(){
+		bindLazySingletonOnDev(RegistroService.class, FileSystemRegistroService.class);
+	}
+}
+
+
+
+
+
+* Ir a Administración/Aed, en la aplicación arrancada y pulsar los botones _Configurar gestor documental_ y _Actualizar trámites_.

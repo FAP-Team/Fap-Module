@@ -1,0 +1,12 @@
+h1. Página de Aportación
+
+h2. Personalización
+
+En la versión actual, se ofrece la posibilidad de personalizar el mensaje de aportación.
+
+En el cuadro de texto disponible escribimos el mensaje deseado y obtenemos la visualización bajo el botón guardar.
+Para que se aplique el cambio de mensaje, debe activarse el check de habilitacion.
+
+h2. Captura de pantalla
+
+!images/mensaje-aportacion!

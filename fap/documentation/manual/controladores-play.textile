@@ -1,0 +1,123 @@
+
+h2. Controladores en Play Framework
+
+En Play Framework, un controlador es una clase Java subclase de **play.mvc.Controller** y situada en un paquete cuya raíz sea **controllers**. En un controlador, cada método que sea público y estático es considerado una **acción**. Estos métodos pueden tener parámetros, los cuales serán obtenidos automáticamente a partir los parámetros de la petición HTTP que desencadena la invocación de la acción.
+Normalmente un método acción no termina con una sentencia **return**, sino que lo hace con la llamada a alguno de los métodos predefinidos que renderizan una respuesta HTTP, o con la llamada a otro método acción, lo que provoca una redirección. Todo aquel código que ponga a continuación de estas llamadas no se ejecutará. Además de los métodos acción, existe otro tipo de método, los metodos de utilidades que se diferencian de los de acción por la anotación @Util. Estos métodos son llamados desde los métodos de acción pero en este caso no se produce una redirección, y el código que esta a continuación de la llamada continua ejecutándose.  
+
+h3. Parámetros
+
+Los datos de una petición HTTP que pueden ser pasados como parámetros a una acción de un controlador pueden proceder de tres sitios distintos:
+* del path de la URI:  **/solicitud/4**, donde 4 es una parte dinámica del patrón de la URI.
+* del Query string de la URI:  **/solicitud?id=4**
+* del cuerpo de la petición:  para cuando los datos son enviados a través de un formulario HTML.
+
+De esta manera, una petición cuya URI sea de la forma **/solicitud?id=4** puede desembocar en la invocación de la acción del controlador que se propone a continuación:
+
+bc.  package controllers;
+ 
+ import play.*;
+ 
+ public class SolicitanteController extends Controller {
+    public static void index(Long id){
+       Solicitud solicitud = getSolicitud(id);
+       render(solicitud);
+    }
+ }
+
+Podemos observar que la clase SolicitanteController se encuentra en el paquete controller, extiende de play.mvc.Controller y el método index es public y static, por lo tanto cumple todos los requisitos para ser considerada una acción de un controlador. Además, la acción **index** tiene un parámetro con el nombre **id**, mismo nombre que el parámetro de la URI anterior, por lo que Play copia el valor del parámetro HTTP al parámetro de la acción (4, en este caso).
+
+Siguiendo con este ejemplo, si la acción **index** no se hubiera especificado ningún parámetro, también hubiera sido posible recuperar el valor de los parámetros HTTP (**id** en este caso), ya que todos los controladores (al extender de play.mvc.Controller) tienen acceso a un objeto de tipo mapa que contiene todos los parámetros de la petición actual. En este caso el método index podría haber quedado así:
+
+bc. public static void index(){
+   Long id = params.get("id", Long.class);
+   Solicitud solicitud = getSolicitud(id);
+   render(solicitud);
+}
+
+Vemos como en este caso se está convirtiendo el parámetro HTTP a un objeto tipo Long. Además de este, Play es capaz de convertir parámetros a todos los tipos básicos comunes de Java, y a algunas otras clases que se listan a continuación:
+
+* **tipos simples**: int, long, boolean, char, byte, float, double, Integer, Long, Boolean, Char, String, Byte, Float, Double.
+* **fechas**: Date, Calendar
+* **ficheros**: File (permite subir ficheros al servidor)
+* **arrays y Collections**: para datos multivaluados
+* **entidades**: subclases de play.db.jpa.Model
+
+A continuación se muestra un ejemplo de cómo se transforman los datos de una petición a una instancia de una entidad:
+
+Petición:
+
+bc. /save?solicitante.nombre=Juan&solicitante.apellidos=Cruz&solicitante.email=juan@gmail.com
+
+Entidad:
+
+bc. @Entity
+public class Persona extends Model {
+   public String nombre; 
+   public String apellidos; 
+   public String email; 
+}
+
+Acción del controlador:
+
+bc. public static void save(Persona solicitante){
+   ...
+
+h3. Resultados de una acción
+
+La misión de un método acción es manejar una petición HTTP y generar la correspondiente respuesta. Play provee una serie de métodos que generan distintos tipos de respuesta.
+
+* **renderText()**: es el método más simple. Se le pasa por parámetro un String, que es escrito directamente en la correspondiente respuesta HTTP.
+
+* **renderBinary()**: para responder con datos binarios, como por ejemplo un fichero almacenado en el servidor.
+
+* **renderJson()**: para convertir objetos a formato JSON.
+
+h4. Renderización de plantillas
+
+La manera más común de crear una respuesta HTTP es utilizar el sistema de plantillas de Play para generar dinámicamente un documento HTML, XML, JSON, o cualquier otro tipo de documento textual.
+
+Para utilizar una plantilla al final de la ejecución de una acción hay que hacer una llamada a alguno de los métodos que provee Play con tal fin. Cabe recordar que el código que se ejecute después de una de estas llamadas nunca se va a ejecutar.
+
+bc. public class SolicitanteController extends Controller {
+   public static void index(){
+      render();
+      System.out.println("Nunca se ejecuta esto");
+   }
+}
+
+Con **render()**, Play infiere el nombre de la plantilla que tiene que utilizar a partir del nombre de la acción, del nombre del controlador, y del nombre de paquete. Por ejemplo, en este caso se utilizará la plantilla **index.html** situada en el directorio **views/SolicitanteController/** de la aplicación.
+
+bc. public static void index(Long id){
+   Solicitud solicitud = getSolicitud(id);
+   render(solicitud);
+}
+
+Las plantillas de Play pueden recibir un número variable de objetos como parámetros. En este caso se está llamando a la misma plantilla que en el caso anterior, pero pasándole como parámetro un objeto de tipo Solicitud. En la plantilla deberá haber un objeto con el nombre "solicitud".
+
+bc. public static void index(){
+   renderTemplate("Solicitante/Solicitante.html");
+}
+
+**renderTemplate()** hace lo mismo que **render()**, pero adicionalmente en el primer parámetro se le especifica la plantilla que quiere renderizar. Por ejemplo, en este caso se utilizará la plantilla **Solicitante.html** situada en el directorio **views/Solicitante/** de la aplicación. 
+
+
+h4. Redirecciones
+
+Al final de la ejecución de una acción también es posible emitir una respuesta HTTP de tipo Redirect, mediante el método **redirect()**. Este método permite especificar directamente una URI, o una acción de un controlador. Si se le especifica una acción Play se encarga de obtener la URI que genera una invocación a esa acción, y la devuelve en la respuesta.
+
+bc. public class SolicitanteController extends Controller {
+ 
+    public static void index(Long idSolicitud){
+       Solicitud solicitud = Solicitud.findById(idSolicitud);
+       render(solicitud);
+    }
+ 
+    public static void save(Long idSolicitud){
+       Solicitud solicitud = Solicitud.findById(idSolicitud);
+       redirect("SolicitanteController.index" , idSolicitud);
+    }
+}
+
+En este ejemplo se tiene un controlador con dos acciones. Mediante **redirect()** la acción **save** hace una redirección a la otra acción de este controlador, **index**. Además, vemos como es posible pasar objetos en redirecciones.
+			
+"Para mas información":http://www.playframework.org/documentation/1.2/controllers

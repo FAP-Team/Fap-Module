@@ -1,0 +1,40 @@
+h1. Administración
+
+Es una de las páginas que se crean por defecto, para mantener una parte común a todas las aplicaciones. Aquí podrán gestinarse una serie de parámetros que influyen en nuestra aplicación.
+
+h2. Usuarios
+
+En esta página pueden observarse el nombre de los usuarios con acceso a la aplicación, sus roles, email de contacto y demás información. Pueden crearse nuevos usuarios y modificar o borrar los ya existentes. Al acceder por primera vez a la aplicación se crear un usuario con su DNI y rol usuario. Para acceder a esta página, se debe ser administrador.  
+
+!images/admin-usuarios!
+
+h2. AED
+
+El Archivo Electrónico de Documentos (AED) permite almacenar los documentos de la aplicación, tanto los aportados por el ciudadano como los generados por la aplicación.
+
+* **Actualizar tipos de documentos desde el AED** - Consulta los tipos de documentos definidos en el archivo electrónico y actualiza la tabla "tipoDocumentos" definida en la tabla de tablas. Ademas carga una lista con la obligatoriedad de cada uno de los documentos.
+
+* **Actualizar trámites** - Actualiza a partir del servicio web del Aed la definición de los trámites y tipos de documentos asociados a cada uno de ellos.
+
+Para más información "aqui":ws-aed
+
+!images/admin-aed!
+
+h2. Requerimientos
+
+En esta página se configura el quartz, proceso que se encarga de la comprobación de los accesos a la sede cuando se emiten los requerimientos y de la correcta asignación de las fechas de acceso y vencimiento de los requerimientos. 
+
+!images/admin-requerimientos!
+
+h2. Tabla de Tablas
+
+La tabla de tabla, almacena toda la información (listas, tipos de documentos, trámites,...). Se da la opción de restaurar a los valores iniciales desde fichero. Recordar que al activar esta opción, se perderán todas las modificaciones, que los tipos de documentos se recuperan a partir del Aed, por lo que al despues ed actualizar la tabla de tablas, es necesario ir a Administración/Aed/Actualizar tipos de documentos desde el Aed. 
+
+!images/admin-tabladetablas!
+
+h2. Emails
+
+En esta página se permite la creación, modificación y borrado, de plantillas para el envío de mails a los usuarios. Igualmente, se permite la actualización de las plantillas desde fichero (app/emails/initial-data/fichero.yaml), debiéndose tener en cuenta, que se perderán todas las modificaciones que se hayan realizado previamente. 
+
+!images/admin-mails!
+

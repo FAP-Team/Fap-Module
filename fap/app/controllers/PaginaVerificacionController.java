@@ -188,7 +188,10 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			for (Documento doc: dbSolicitud.verificacion.nuevosDocumentos){
 				VerificacionDocumento vDoc= new VerificacionDocumento(doc);
 				TipoDocumento tipo = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.tramitePertenece=? and tipo.uri=?", dbSolicitud.verificacion.uriTramite, doc.tipo).first();
-				vDoc.identificadorMultiple = tipo.cardinalidad;
+				if (tipo != null)
+					vDoc.identificadorMultiple = tipo.cardinalidad;
+				else
+					log.error("Tipo no encontrado al verificar los tipos de documentos nuevos: "+doc.tipo);
 				vDoc.existe = true;
 				vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
 				vDoc.save();
@@ -288,6 +291,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 							requerimiento.oficial = new Documento();
 							requerimiento.oficial.tipo = tipoDocumentoRequerimiento;
 							requerimiento.oficial.descripcion = "Requerimiento";
+							requerimiento.oficial.clasificado=false;
 							
 							gestorDocumentalService.saveDocumentoTemporal(requerimiento.oficial, new FileInputStream(oficial), oficial.getName());
 							
@@ -388,7 +392,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailRevisor", mailRevisor);
 				Mails.enviar("solicitarFirmaRequerimiento", solicitud, mailGestor, mailRevisor);
 			} catch (Exception e) {
-				play.Logger.error("No se pudo enviar el mail solicitarFirmaRequerimiento a los mails: "+mailGestor+", "+mailRevisor);
+				play.Logger.error("No se pudo enviar el mail solicitarFirmaRequerimiento a los mails: "+mailGestor+", "+mailRevisor+". Error: "+e.getMessage());
 			}
 		}
 		if (!Messages.hasErrors()) {

@@ -138,6 +138,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 
     private static void almacenarFirma(String firma, Aportacion aportacion, Firmante firmante) {
         try {
+        	firmante.fechaFirma = new DateTime();
             gestorDocumentalService.agregarFirma(aportacion.oficial, new Firma(firma, firmante));
         } catch (Exception e) {
             Messages.error("Error guardando la firma del documento");

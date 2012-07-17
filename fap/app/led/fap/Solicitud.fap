@@ -105,7 +105,6 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		    	titulo="Documentos aportados que se van a registrar" 
 		    	campo=SolicitudGenerica.aportaciones.actual.documentos
 				popupLeer=PopUpDocProcesos
-				paginaCrear=DocumentosAportacion
 			{
 				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
 				Columna titulo="Tipo Documento" campo=Documento.tipo

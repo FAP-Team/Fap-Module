@@ -1,5 +1,6 @@
 package services.notificacion;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 	
 	private final PropertyPlaceholder propertyPlaceholder;
 	
+	protected static es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService notificacionService;
 	private final NotificacionPortType notificacionPort;
 	
 	private final static String URL_AED = FapProperties.get("fap.aed.url");
@@ -60,6 +62,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 	protected static Logger log = Logger.getLogger(NotificacionServiceImpl.class);
 	
 	private final static String COD_ERROR_NOTIFICACION = "INSERCION_CORRECTA";
+	private final static String URL_WSDL = FapProperties.get("fap.notificaciones.url");
 	private final static String TIPO_DOC_PUESTAADISPOSICION = FapProperties.get("fap.aed.notificacion.tipodocumento.puestaadisposicion");
 	private final static String TIPO_DOC_ANULACION = FapProperties.get("fap.aed.notificacion.tipodocumento.anulacion");
 	private final static String TIPO_DOC_MARCARARESPONDIDA = FapProperties.get("fap.aed.notificacion.tipodocumento.marcararespondida");
@@ -77,9 +80,15 @@ public class NotificacionServiceImpl implements NotificacionService {
 	public NotificacionServiceImpl (PropertyPlaceholder propertyPlaceholder) {
 		this.propertyPlaceholder = propertyPlaceholder;
 		
-		URL wsdlURL = es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService.class.getClassLoader().getResource("wsdl/NotificacionService.wsdl");
-		this.notificacionPort = new es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService(wsdlURL).getNotificacionService();
-		WSUtils.configureEndPoint(notificacionPort, getEndPoint());
+		URL wsdlLocation = null;
+        try {
+              wsdlLocation = new URL(URL_WSDL);
+        } catch (MalformedURLException e) {
+              log.error("No se puede inicializar la wsdl por defecto " + URL_WSDL);
+        }
+        
+        notificacionService = new es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService(wsdlLocation);
+        notificacionPort = notificacionService.getNotificacionService();
 		
 		Client client = ClientProxy.getClient(notificacionPort);
         HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
@@ -161,7 +170,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 			String mailGestor = gestor.email;
 			
 			// Se envía la notificación
-			log.info(String.format("Se envía la notificación por el gestor (%s)", idGestor));
+			play.Logger.info("Se envía la notificación por el gestor: "+idGestor+ " cuyo email es: "+mailGestor);
 			ArrayOfArrayResultadoType enviarNotificacionesResponse = notificacionPort.enviarNotificaciones(notificaciones, idGestor, mailGestor);
 			
 			uriNotificacion = enviarNotificacionesResponse.getArrayResultado().get(0).getResultado().get(0).getUriNotificacion();

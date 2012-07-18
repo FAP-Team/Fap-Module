@@ -1,15 +1,21 @@
 h2. Changelog
 
-h3. Versión 2.0.1RC1
+h3. Versión 2.0.1
 
-* Empezada la parte de Notificaciones
-* Eliminada la property _fap.aed.tiposdocumentos.otros_.
+* Páginas por defecto de FAP para Notificaciones.
+* Añadido el servicio de Notificaciones.
+* Añadida la versión 1.1 de la librería de Notificaciones.
+* Fixed Bug en Registro con Platino.
+* Fixed Bug en Firma con Platino.
+* Fixed Bug al almacenar la Firma de un Documento en el AED.
+* Baremación actualizada.
+* Verificación actualizada.
+* Fixed minor bugs.
 * Trámite Alegación añadido.
 * Trámite Aceptación/Renuncia añadido.
 * Trámite Base actualizado.
-* Baremación actualizado.
-* Fixed some bugs.
-* Cambiado algo de documentación.
+* Redefiniendo la documentación.
+* Eliminada la property _fap.aed.tiposdocumentos.otros_.
 
 h3. Version 2.0 (Sarantontón)
 

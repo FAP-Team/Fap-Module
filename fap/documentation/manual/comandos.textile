@@ -3,9 +3,31 @@ h1. Comandos
 A continuación se muestran los diferentes comandos que pueden aplicarse sobre un proyecto creado con Fap y sus diferentes funcionalidades.
 
 * *_fap:init_*: Genera la estructura del proyecto FAP.
+
+!images/comandos-init!
+
 * *_fap:generate_*: Genera la aplicación FAP.
+
+!images/comandos-generate!
+
 * *_fap:version_*: Devuelve la versión utilizada de FAP.
+
+!images/comandos-version!
+
 * *_fap:documentation_*: Crea la documentación html de las entidades.
+
+
+
 * *_fap:dist_*: Crea una carpeta con los ficheros minimos y suficientes para ejecutar el proyecto.
+
+
+
 * *_fap:winservice_*: Crea el instalador del servicio que pone la aplicación como servicio de windows.
+
+!images/comandos-winservice!
+
+* *_fap:deps_*: Descarga todos los módulos y librerias necesarias para trabajar con Fap (Incluido Fap).
+
+!images/comandos-deps!
+
  

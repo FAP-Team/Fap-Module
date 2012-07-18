@@ -79,7 +79,6 @@ public class NotificacionServiceImpl implements NotificacionService {
 	@Inject
 	public NotificacionServiceImpl (PropertyPlaceholder propertyPlaceholder) {
 		this.propertyPlaceholder = propertyPlaceholder;
-		
 		URL wsdlLocation = null;
         try {
               wsdlLocation = new URL(URL_WSDL);
@@ -87,17 +86,25 @@ public class NotificacionServiceImpl implements NotificacionService {
               log.error("No se puede inicializar la wsdl por defecto " + URL_WSDL);
         }
         
-        notificacionService = new es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService(wsdlLocation);
+        try {
+	        notificacionService = new es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService(wsdlLocation);
+        } catch (Exception e) {
+        	log.error("No se ha podido injectar el servicio de notificaciones: " + e.getMessage());
+        	notificacionPort = null;
+        	return;
+        }
+	        
         notificacionPort = notificacionService.getNotificacionService();
-		
+			
 		Client client = ClientProxy.getClient(notificacionPort);
-        HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-        
-        HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-        httpClientPolicy.setConnectionTimeout(FapProperties.getLong(KEY_CONNECTION_TIMEOUT));
-        httpClientPolicy.setReceiveTimeout(FapProperties.getLong(KEY_RECEIVE_TIMEOUT));
-        
-        httpConduit.setClient(httpClientPolicy);
+	    HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+	        
+	    HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+	    httpClientPolicy.setConnectionTimeout(FapProperties.getLong(KEY_CONNECTION_TIMEOUT));
+	    httpClientPolicy.setReceiveTimeout(FapProperties.getLong(KEY_RECEIVE_TIMEOUT));
+	        
+	    httpConduit.setClient(httpClientPolicy);
+ 
 	}
 	
     private String getEndPoint() {

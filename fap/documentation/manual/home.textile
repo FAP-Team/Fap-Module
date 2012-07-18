@@ -96,7 +96,7 @@ h3. Personalización (página login, página principal, tags, ...)
 
 h3. "Lógica de Negocio":curso-controladores
 
-h3. "Generación de PDF":curso-informes
+h3. "Generación de PDF":fap-generacion-informes
 
 h3. Servicios (GD, firma, registro, ...)
 

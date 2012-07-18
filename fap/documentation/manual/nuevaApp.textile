@@ -55,12 +55,21 @@ bc. Formulario Solicitud {
 
 bc. play fap:generate
 
-9. Para ejecutar la aplicación:
+h4. Configuración para generar desde Eclipse
+
+Puedes configurar Eclipse para generar la aplicación y no tener que hacerlo desde la consola:
+* Abrir Run/External Tools/External Tools Configurations...
+* Añadir un nuevo Program
+** Location (ruta a Play): ruta_play/play.bat
+** Working directory: Ruta raíz del proyecto (Seleccionar con Browse Workspace)
+** Arguments: fap:generate --opciones
+
+10. Para ejecutar la aplicación:
 
 bc. play run
 
  
-10. A partir de este momento tenemos la aplicación ejecutándose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. El usuario por defecto es *admin* y la contraseña no se comprueba cuando se está en modo desarrollo. Crea una nueva solicitud e irás a la página con el mensaje que acabas de crear.
+11. A partir de este momento tenemos la aplicación ejecutándose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. El usuario por defecto es *admin* y la contraseña no se comprueba cuando se está en modo desarrollo. Crea una nueva solicitud e irás a la página con el mensaje que acabas de crear.
 
 Si quiere crear el proyecto de forma automática, pinche "aquí":creacion-automatica-proyecto
 

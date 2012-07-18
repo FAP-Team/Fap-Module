@@ -1,4 +1,4 @@
-h2. Creación de un proyecto de forma automática
+h1. Creación de un proyecto de forma automática
 
 Otra manera de realizar la creación de un proyecto FAP, es utilizando un script creado para ello que automatiza los pasos anteriores de manera que el usuario sólo se preocupa de elegir el nombre de su proyecto.
 

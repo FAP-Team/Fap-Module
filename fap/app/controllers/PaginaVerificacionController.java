@@ -391,7 +391,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			try {
 				Agente revisor = AgenteController.getAgente();
 				mailRevisor = revisor.email;
-				mailGestor = ((Agente) Agente.find("select agente from Agente agente where agente.username=?", solicitud.verificacion.requerimiento.firmante).first()).username;
+				mailGestor = ((Agente) Agente.find("select agente from Agente agente where agente.username=?", solicitud.verificacion.requerimiento.firmante).first()).email;
 				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
 				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailGestor", mailGestor);
 				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailRevisor", mailRevisor);

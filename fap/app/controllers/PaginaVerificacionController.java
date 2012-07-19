@@ -353,9 +353,14 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	 */
 	public static List<ComboItem> gestorAFirmar() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
-		List<Agente> listaAgentes = Agente.findAll(); //Agente.find("select agente from Agente agente where agente.roles").fetch();
+		List<Agente> listaAgentes = Agente.findAll();
 		for (Agente ag : listaAgentes) {
-			result.add(new ComboItem(ag.username, ag.username +" - "+ag.name));
+			List<String> roles = ag.getSortRoles();
+			for(String rol : roles){
+				if (rol.equals("gestor")){
+					result.add(new ComboItem(ag.username, ag.username +" - "+ag.name));
+				}
+			}
 		}
 		return result;
 	}

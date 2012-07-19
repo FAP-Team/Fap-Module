@@ -354,11 +354,15 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	public static List<ComboItem> gestorAFirmar() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
 		List<Agente> listaAgentes = Agente.findAll();
-		for (Agente ag : listaAgentes) {
-			List<String> roles = ag.getSortRoles();
-			for(String rol : roles){
-				if (rol.equals("gestor")){
-					result.add(new ComboItem(ag.username, ag.username +" - "+ag.name));
+		if (listaAgentes != null){
+			for (Agente ag : listaAgentes) {
+				List<String> roles = ag.getSortRoles();
+				if (roles != null){
+					for(String rol : roles){
+						if ((rol != null) && (rol.equals("gestor"))){
+							result.add(new ComboItem(ag.username, ag.username +" - "+ag.name));
+						}
+					}
 				}
 			}
 		}
@@ -444,6 +448,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(dbSolicitud.solicitante, dbSolicitud.verificacion.requerimiento.oficial, dbSolicitud.expedientePlatino, "Requerimiento");
 					
 					// ----- Hecho por Paco ------------------------
+					
 					dbSolicitud.verificacion.requerimiento.registro.informacionRegistro.setDataFromJustificante(justificanteSalida);
 					
 					Documento documento = dbSolicitud.verificacion.requerimiento.justificante;
@@ -461,21 +466,26 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			        List<Documento> documentos = new ArrayList<Documento>();
 			        
 			        documentos.add(dbSolicitud.verificacion.requerimiento.justificante);
+			        documentos.add(dbSolicitud.verificacion.requerimiento.oficial);
+			        
+			        // TODO: OJO, Descomentar esto, que el el correcto funcionamiento, pero pro problemas de la sede electronica de mis notificaciones
+					//       No se puede ni poner a notificable tanto el requerimiento como su justificante de registro
+					//       Ni poder los datos de registro del requerimiento
 			        
 			        try { // Sin registro
-		                gestorDocumentalService.clasificarDocumentos(dbSolicitud, documentos, true);
+		                gestorDocumentalService.clasificarDocumentos(dbSolicitud, documentos, false /*true*/);
 		            } catch (Exception e) {
 		                play.Logger.error("No se ha podido clasificar el justificante del requerimiento: "+e.getMessage());
 		            }
 			        
-			        documentos.clear();
-			        documentos.add(dbSolicitud.verificacion.requerimiento.oficial);
-			        
-			        try { // Con registro
-		                gestorDocumentalService.clasificarDocumentos(dbSolicitud, documentos, dbSolicitud.verificacion.requerimiento.registro.informacionRegistro, true);
-		            } catch (Exception e) {
-		            	play.Logger.error("No se ha podido clasificar el requerimiento oficial: "+e.getMessage());
-		            }
+//			        documentos.clear();
+//			        documentos.add(dbSolicitud.verificacion.requerimiento.oficial);
+//			        
+//			        try { // Con registro
+//		                gestorDocumentalService.clasificarDocumentos(dbSolicitud, documentos, dbSolicitud.verificacion.requerimiento.registro.informacionRegistro, true);
+//		            } catch (Exception e) {
+//		            	play.Logger.error("No se ha podido clasificar el requerimiento oficial: "+e.getMessage());
+//		            }
 					
 			        // ------------------------------------------
 			        
@@ -600,6 +610,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		}
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
+			Messages.ok("Notificación enviada correctamente");
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaVerificacionController.gPonerADisposicionRender(idSolicitud, idVerificacion);

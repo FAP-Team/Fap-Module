@@ -429,7 +429,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		} 
 	}
 	
-	Popup PopUpExclusion campo=SolicitudGenerica.exclusion.codigos {
+	Popup PopUpExclusion campo=SolicitudGenerica.exclusion.codigos titulo="Datos Exclusión" {
 
 		Combo descripcionCorta campo=CodigoExclusion.tipoCodigo.descripcionCorta titulo="Descripción Corta"
 		Grupo permiso=noEditable borde=false {

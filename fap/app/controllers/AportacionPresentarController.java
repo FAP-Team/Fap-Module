@@ -185,6 +185,12 @@ public class AportacionPresentarController extends AportacionPresentarController
                 // Almacena la información de registro
                 aportacion.informacionRegistro.setDataFromJustificante(justificante);
                 play.Logger.info("Almacenada la información del registro en la base de datos");
+                
+                /// Establecemos la fecha de registro en todos los documentos de la aportación
+				for (Documento doc: aportacion.documentos) {
+					doc.fechaRegistro = aportacion.informacionRegistro.fechaRegistro;
+					doc.save();
+				}
 
                 // Guarda el justificante en el AED
                 play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
@@ -234,7 +240,6 @@ public class AportacionPresentarController extends AportacionPresentarController
 
             // Clasifica los documentos sin registro
             List<Documento> documentos = new ArrayList<Documento>();
-            documentos.addAll(aportacion.documentos);
             documentos.add(aportacion.justificante);
 
             try {
@@ -246,7 +251,8 @@ public class AportacionPresentarController extends AportacionPresentarController
             // Clasifica los documentos con registro de entrada
             List<Documento> documentosRegistrados = new ArrayList<Documento>();
             documentosRegistrados.add(aportacion.oficial);
-
+            documentosRegistrados.addAll(aportacion.documentos);
+            
             try {
                 gestorDocumentalService.clasificarDocumentos(solicitud, documentosRegistrados,
                         aportacion.informacionRegistro);

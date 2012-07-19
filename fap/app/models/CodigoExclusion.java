@@ -44,6 +44,15 @@ public class CodigoExclusion extends FapModel {
 
 	// === MANUAL REGION START ===
 
+	public TipoCodigoExclusion getTipoCodigo() {
+		TipoCodigoExclusion tipo = new TipoCodigoExclusion();
+		if (this.codigo != null) {
+			tipo = (TipoCodigoExclusion) TipoCodigoExclusion.find("select tipo from TipoCodigoExclusion tipo where tipo.codigo=?", this.codigo).first();
+			return tipo;
+		}
+		return null;
+	}
+
 	// === MANUAL REGION END ===
 
 }

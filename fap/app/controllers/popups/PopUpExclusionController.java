@@ -2,6 +2,9 @@ package controllers.popups;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import play.mvc.Util;
 
 import tags.ComboItem;
 import validation.CustomValidation;
@@ -83,4 +86,12 @@ public class PopUpExclusionController extends PopUpExclusionControllerGen {
     	return result;
     }
 
+	@Util
+	public static void PopUpExclusionValidateCopy(String accion, CodigoExclusion dbCodigoExclusion, CodigoExclusion codigoExclusion) {
+		CustomValidation.clearValidadas();
+		CustomValidation.valid("codigoExclusion.tipoCodigo", codigoExclusion.tipoCodigo);
+		CustomValidation.valid("codigoExclusion", codigoExclusion);
+		CustomValidation.validValueFromTable("codigoExclusion.tipoCodigo.descripcionCorta", codigoExclusion.tipoCodigo.descripcionCorta);
+		dbCodigoExclusion.codigo = codigoExclusion.codigo;
+	}
 }

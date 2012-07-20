@@ -11,6 +11,7 @@ import services.GestorDocumentalService;
 import services.RegistroService;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
+import services.filesystem.FileSystemNotificacionServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.notificacion.NotificacionServiceImpl;
 import services.NotificacionService;
@@ -28,7 +29,7 @@ public class FapModule extends PlayAbstractModule {
 	}
 	
 	protected void notificacion() {
-		bindLazySingletonOnDev(NotificacionService.class, NotificacionServiceImpl.class);
+		bindLazySingletonOnDev(NotificacionService.class, FileSystemNotificacionServiceImpl.class);
 	}
 	
 	protected void gestorDocumental() {

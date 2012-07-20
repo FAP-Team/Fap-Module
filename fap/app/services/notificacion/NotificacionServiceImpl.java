@@ -112,7 +112,7 @@ public class NotificacionServiceImpl implements NotificacionService {
     }
 
 	@Override
-	public void crearDocumentoPuestaADisposición(List<String> urisDocumentos,
+	public void crearDocumentoPuestaADisposicion(List<String> urisDocumentos,
 			List<Interesado> interesados, String descripcion) {
 		//notificacionPort.crearDocumentoPuestaADisposicion(urisDocumentos, interesados, descripcion);
 	}
@@ -320,7 +320,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 	}
 
 	@Override
-	public void crearDocumentaciónAnulacion() {
+	public void crearDocumentacionAnulacion() {
 		// TODO Auto-generated method stub
 		
 	}

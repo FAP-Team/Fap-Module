@@ -14,6 +14,7 @@ import play.Play;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
 import play.jobs.On;
+import properties.FapProperties;
 import properties.Properties;
 
 // Ejecuta el doJob de la clase, cada día a las 12 de la noche y 50 minutos y al iniciar la aplicación
@@ -23,18 +24,25 @@ public class CompressLogs extends Job {
 	
 	public void doJob() {
 		// Preparamos una variable para gestionar el directorio de logs
-		File directorioLogs = new File(Play.applicationPath+"/logs");
-		if (!(new File(Play.applicationPath+"/logs").exists())){
+		File ruta;
+		if (FapProperties.getBoolean("fap.compresslogs.properties") == true){
+			ruta = new File(FapProperties.get("fap.compresslogs.path"));
+		}
+		else{
+			ruta = Play.applicationPath;
+		}
+		File directorioLogs = new File(ruta+"/logs");
+		if (!(new File(ruta+"/logs").exists())){
 			directorioLogs.mkdir();
 		}
-		play.Logger.info("Directorio se supone está en: "+directorioLogs.getAbsolutePath());
+		play.Logger.info("Directorio se supone está en: "+directorioLogs.getPath());
 		
 		//Comprobar que existen /logs/Auditable  y  /logs/Daily  y si no crearlos
-		File logsAuditable = new File(Play.applicationPath+"/logs/Auditable");
+		File logsAuditable = new File(ruta+"/logs/Auditable");
 		if (!(logsAuditable.exists())){
 			logsAuditable.mkdir();
 		}
-		File logsDaily = new File(Play.applicationPath+"/logs/Daily");
+		File logsDaily = new File(ruta+"/logs/Daily");
 		if (!(logsDaily.exists())){
 			logsDaily.mkdir();
 		}
@@ -45,7 +53,7 @@ public class CompressLogs extends Job {
 			// Para los de tipo Auditable
 			if (fichero.getName().matches(".*Auditable\\.log\\.\\d\\d\\d\\d\\-\\d\\d\\-\\d\\d$")){
 				// Si se comprime bien, borramos el fichero
-				if (!(new File(Play.applicationPath+"/logs/backups/Auditable/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"/logs/"+fichero.getName()}, "/logs/backups/Auditable/"+fichero.getName()+".zip"))){
+				if (!(new File(ruta+"/logs/backups/Auditable/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"/logs/"+fichero.getName()}, "/logs/backups/Auditable/"+fichero.getName()+".zip"))){
 					Logger.info("BackUps Logs: Fichero '"+fichero.getName()+"' comprimido en la carpeta <logs/backups/Auditable>");
 					fichero.delete();
 				}
@@ -55,7 +63,7 @@ public class CompressLogs extends Job {
 				// Para los de tipo Daily
 				if (fichero.getName().matches(".*log\\.\\d\\d\\d\\d\\-\\d\\d\\-\\d\\d$")){
 					// Si se comprime bien, borramos el fichero
-					if (!(new File(Play.applicationPath+"/logs/backups/Daily/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"/logs/"+fichero.getName()}, "/logs/backups/Daily/"+fichero.getName()+".zip"))){
+					if (!(new File(ruta+"/logs/backups/Daily/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"/logs/"+fichero.getName()}, "/logs/backups/Daily/"+fichero.getName()+".zip"))){
 						Logger.info("BackUps Logs: Fichero '"+fichero.getName()+"' comprimido en la carpeta <logs/backups/Daily>");
 						fichero.delete();
 					}

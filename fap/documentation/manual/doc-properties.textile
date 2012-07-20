@@ -22,6 +22,8 @@ h2. Properties originarias de FAP
 
 * Configurar los logs: *app.log.path=* _Ruta del log4j de configuración_
 ** Ejemplo: _app.log.path=/log4j-logsApp.properties_
+* Configurar la activación de almacenar los log en la carpeta que se indica en fap.compresslogs.path: *fap.compresslogs.properties=* _[true | false]_
+** Ejemplo: _fap.compresslogs.properties=false_
 * Configurar filtro por tipo MIMES: *fap.gestordocumental.mimes=* _Tipos mimes_
 ** Ejemplo: _fap.gestordocumental.mimes=image/png, image/jpg, application/pdf_
 * Configurar filtro por extensiones: *fap.gestordocumental.extensions=* _Extensiones_

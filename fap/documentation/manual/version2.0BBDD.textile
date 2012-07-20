@@ -87,6 +87,23 @@ bc..
  
 p. 
 
+*{padding:0} *Otro ejemplo:*
+bc. 
+Lista asignaturasTipos crearEnumerado{
+	0.33:"Trimestral"
+	0.50:"Cuatrimestral"
+      ...
+}
+
+*{padding:0} *Actualización:* 
+
+bc.. UPDATE nombre_tabla
+SET campo_actualizar = concat('_', campo_actualizar)
+WHERE (campo_actualizar NOT LIKE '\_%');
+
+UPDATE nombre_tabla
+SET campo_actualizar = REPLACE(campo_actualizar, '.', '_');
+
 
 h3. Actualización de la tabla de tablas.
 

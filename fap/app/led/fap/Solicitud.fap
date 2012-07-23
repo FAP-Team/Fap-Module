@@ -23,24 +23,30 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="btn"
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="btn"
-
-		Tabla documentos 
-		    titulo="Documentos nuevos pendientes de aportar" 
-		    campo=SolicitudGenerica.aportaciones.actual.documentos
-			popupBorrar=PopUpDocProcesos
-			popupEditar=PopUpDocProcesos  
-			popupLeer=PopUpDocProcesos
-			paginaCrear=DocumentosAportacion
-		{
-			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
-			Columna titulo="Tipo Documento" campo=Documento.tipo
-			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
-			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+		
+		Grupo titulo="Paso 1. Agregar Nuevos Documentos"{
+			Wiki {"A partir de las plantillas que se adjuntan en la convocatoria, y una vez rellenadas correctamente, deberá añadirlas como documentación indicando el tipo de documento correspondiente."}
+	
+			Tabla documentos 
+			    titulo="Documentos nuevos pendientes de aportar" 
+			    campo=SolicitudGenerica.aportaciones.actual.documentos
+				popupBorrar=PopUpDocProcesos
+				popupEditar=PopUpDocProcesos  
+				popupLeer=PopUpDocProcesos
+				paginaCrear=DocumentosAportacion
+			{
+				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+				Columna titulo="Tipo Documento" campo=Documento.tipo
+				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			}
 		}
 		
-		Form presentar redirigir=AportacionPresentar permiso=aportacionDocumentos {
-			Wiki {"Debe registrar los documentos para que se consideren aportados a la solicitud."}
-			Boton botonPresentar titulo="Preparar para registrar"
+		Grupo titulo="Paso 1b. Registrar los documentos"{
+			Form presentar redirigir=AportacionPresentar permiso=aportacionDocumentos {
+				Wiki {"Debe registrar los documentos para que se consideren aportados a la solicitud."}
+				Boton botonPresentar titulo="Preparar para registrar"
+			}
 		}
 		
 	}
@@ -118,16 +124,17 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				}
 			}
 			
-			
-			Wiki {"La solicitud de aportación será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud pulsando el enlace 'Obtener recibo'." }
-			
-			Form presentar redirigir=AportacionRecibos {
-				FirmaSimple firmarRepresentante titulo="Firmar y presentar"
-					documento=SolicitudGenerica.aportaciones.actual.oficial
-					listaFirmantes=SolicitudGenerica.registro.firmantes.todos
-					calcularFirmantes=SolicitudGenerica.solicitante
+			Grupo titulo="Paso 2. Presentar los Documentos"{
+				Wiki{"**NOTA: Debe finalizar el Paso 2 pulsando en el botón 'Firmar y presentar' para que los Nuevos Documentos se consideren presentados. Cuando el proceso finalice los documentos nuevos desaparecerán del Paso 1 y se incorporarán a la lista de Documentos Presentados.**"}
+				Wiki{"La solicitud será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud una vez 'Firmar y Presentar' se haya realizado con éxito"}
+				Form presentar redirigir=AportacionRecibos {
+					FirmaSimple firmarRepresentante titulo="Firmar y presentar"
+						documento=SolicitudGenerica.aportaciones.actual.oficial
+						listaFirmantes=SolicitudGenerica.registro.firmantes.todos
+						calcularFirmantes=SolicitudGenerica.solicitante
+				}
 			}
-			
+				
 			Grupo titulo="Incorporar Documentos sin Registro de Entrada" permiso=adminGestorRevisor {
 				Form presentarSinRegistrar redirigir=AportacionRecibos {
 					Fecha fechaAportacionSinRegistrar titulo="Fecha Incorporación" campo=SolicitudGenerica.aportaciones.actual.fechaAportacionSinRegistro requerido

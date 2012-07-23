@@ -19,6 +19,13 @@
 			#{fap.enlace action:play.mvc.Router.reverse("AportacionAportadosController.index" , ['idSolicitud':solicitud?.id]), estilo:'btn', titulo:'Consultar documentos ya aportados' /}
 		
 			#{fap.enlace action:play.mvc.Router.reverse("AportacionRecibosController.index" , ['idSolicitud':solicitud?.id]), estilo:'btn', titulo:'Consultar recibos de aportaciones' /}
+			
+			#{fap.grupo titulo:'Paso 1. Agregar Nuevos Documentos'}
+				
+			<div class="wiki ">
+<p>A partir de las plantillas que se adjuntan en la convocatoria, y una vez rellenadas correctamente, deberá añadirlas como documentación indicando el tipo de documento correspondiente.</p>
+
+			</div>
 		
 #{fap.tabla 
      campo:'Solicitud.aportaciones.actual.documentos', 
@@ -49,6 +56,10 @@
 	#{fap.columna ancho:100, cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>' /}
 		
 #{/fap.tabla}
+
+	#{/fap.grupo}
+	
+	#{fap.grupo titulo:'Paso 1b. Registrar los documentos'}
 
 				#{fap.permiso permiso:"aportacionDocumentos", accion:accion}
 					
@@ -86,6 +97,8 @@
 		</div>
 			
 		#{/fap.permiso}		
+		
+		#{/fap.grupo}
 			
 #{/fap.pagina}
 		

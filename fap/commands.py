@@ -255,7 +255,7 @@ def init_application (app, args):
     
     # Configuración de los Loggers
     FILE.write("%test.app.log.path=/log4j-test.properties\n");
-    FILE.write("%prod.application.log.path=/log4j-prod.properties\n");
+    FILE.write("%prod.app.log.path=/log4j-prod.properties\n");
     FILE.write("application.log.path=/log4j-dev.properties\n");
     FILE.write("db=mem\n");
     FILE.write("%prod.jpa.ddl=none     # La primera vez que lo ejecutes debes ponerlo a 'create'" + "\n");

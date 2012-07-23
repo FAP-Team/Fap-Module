@@ -580,8 +580,12 @@ Entidad Notificacion {
 	DateTime fechaAcceso					// Fecha en la que algún interesado accedió a la notificación 
 	OneToMany DocumentoNotificacion documentosANotificar
 	OneToMany DocumentoNotificacion documentosAnexos
+	OneToMany DocumentoNotificacion documentosRespuesta
 	OneToMany Documento documentosAuditoria
 	Documento documentoPuestaADisposicion
+	Documento documentoAnulacion
+	Documento documentoRespondida
+	Documento documentoAcuseRecibo
 	Registro registro
 	Integer plazoAcceso					// Nº de dias naturales a partir de la fecha de puesta a disposición, en los cuales legalmente se debe recibir la notificación por parte del interesado
 	Integer frecuenciaRecordatorioAcceso	// Cada cuantos dias naturales, a patir de la fecha de puesta a disposición, se envía un recordatorio al/los interesado/s de que tiene/n pendiente el acceso.
@@ -589,6 +593,8 @@ Entidad Notificacion {
 	Integer frecuenciaRecordatorioRespuesta		// Cada cuantos días naturales, a partir de la fecha de acceso, hay que enviar recordatorios al/a los interesado/s.
 	String idExpedienteAed
 	Agente agente noConstruct
+	Boolean preparadaAnulacion default = "false"
+	Boolean preparadaRespondida default = "false"
 }
 
 Entidad DocumentoNotificacion{

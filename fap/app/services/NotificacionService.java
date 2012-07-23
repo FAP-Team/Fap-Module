@@ -2,42 +2,44 @@ package services;
 
 import java.util.List;
 
+import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
 import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionException;
 
 import models.Agente;
+import models.Documento;
 import models.Interesado;
 import models.Notificacion;
 
 public interface NotificacionService {
 	
 	/// 3.1 RF01 - Poner a disposición una notificación
-	public void crearDocumentoPuestaADisposicion (List<String> urisDocumentos, List<Interesado> interesados, String descripcion);
+	public void crearDocumentoPuestaADisposicion (Notificacion dbNotificacion, List<String> urisDocumentos, List<Interesado> interesados, String descripcion);
 	
 	public void enviarNotificaciones (Notificacion notificacion, Agente gestor) throws NotificacionException;
 	
 	/// 3.2 RF02 - Acusar recibo de una notificación
-	public void crearDocumentoAcuseRecibo ();
+	public void crearDocumentoAcuseRecibo (Notificacion dbNotificacion, String dniInteresado);
 	
-	public void recibirAcuseRecibo ();
+	public void enviarAcuseRecibo (Notificacion dbNotificacion, String dniInteresado, String firma);
 	
 	public List<Notificacion> getNotificaciones (String uriProcedimiento);
 	
 	public List<Notificacion> getNotificaciones ();
 	
-	public void estadoNotificacion ();
+	public String estadoNotificacion (String uriNotificacion);
 
-	public void obtenerNotificacion ();
+	public Notificacion obtenerNotificacion (String uriNotificacion);
 
-	public void obtenerDocumentoNotificacion ();
+	public Documento obtenerDocumentoNotificacion (String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento);
 	
 	/// 3.4 RF04 - Anular una notificación
-	public void crearDocumentacionAnulacion ();
+	public void crearDocumentacionAnulacion (Notificacion dbNotificacion);
 
-	public void anularNotificacion ();
+	public void anularNotificacion (Notificacion dbNotificacion, String firma);
 	
-	public void crearDocumentoMarcarComoRespondida ();
+	public void crearDocumentoMarcarComoRespondida (Notificacion dbNotificacion);
 	
-	public void marcarNotificacionComoRespondida ();
+	public void marcarNotificacionComoRespondida (Notificacion dbNotificacion, String firma);
 	
 	public String getUriProcedimiento() ;
 	

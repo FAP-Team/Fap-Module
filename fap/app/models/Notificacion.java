@@ -59,11 +59,24 @@ public class Notificacion extends FapModel {
 	public List<DocumentoNotificacion> documentosAnexos;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "notificacion_documentosrespuesta")
+	public List<DocumentoNotificacion> documentosRespuesta;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "notificacion_documentosauditoria")
 	public List<Documento> documentosAuditoria;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento documentoPuestaADisposicion;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento documentoAnulacion;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento documentoRespondida;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento documentoAcuseRecibo;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
@@ -81,6 +94,10 @@ public class Notificacion extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Agente agente;
 
+	public Boolean preparadaAnulacion;
+
+	public Boolean preparadaRespondida;
+
 	public Notificacion() {
 		init();
 	}
@@ -96,6 +113,9 @@ public class Notificacion extends FapModel {
 		if (documentosAnexos == null)
 			documentosAnexos = new ArrayList<DocumentoNotificacion>();
 
+		if (documentosRespuesta == null)
+			documentosRespuesta = new ArrayList<DocumentoNotificacion>();
+
 		if (documentosAuditoria == null)
 			documentosAuditoria = new ArrayList<Documento>();
 
@@ -104,10 +124,27 @@ public class Notificacion extends FapModel {
 		else
 			documentoPuestaADisposicion.init();
 
+		if (documentoAnulacion == null)
+			documentoAnulacion = new Documento();
+		else
+			documentoAnulacion.init();
+
+		if (documentoRespondida == null)
+			documentoRespondida = new Documento();
+		else
+			documentoRespondida.init();
+
+		if (documentoAcuseRecibo == null)
+			documentoAcuseRecibo = new Documento();
+		else
+			documentoAcuseRecibo.init();
+
 		if (registro == null)
 			registro = new Registro();
 		else
 			registro.init();
+		preparadaAnulacion = false;
+		preparadaRespondida = false;
 
 		postInit();
 	}

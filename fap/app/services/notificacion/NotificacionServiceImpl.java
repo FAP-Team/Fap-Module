@@ -1,9 +1,13 @@
 package services.notificacion;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
@@ -14,8 +18,11 @@ import org.joda.time.DateTime;
 
 import com.google.inject.Inject;
 
+import controllers.fap.AgenteController;
+
 import enumerado.fap.gen.EstadoNotificacionEnum;
 import es.gobcan.eadmon.aed.ws.Aed;
+import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionException;
 import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionPortType;
 import es.gobcan.platino.servicios.enotificacion.notificacion.ResultadoBusquedaNotificacionType;
@@ -45,9 +52,12 @@ import models.Documento;
 import models.DocumentoNotificacion;
 import models.Interesado;
 import models.Notificacion;
+import services.GestorDocumentalService;
 import services.NotificacionService;
+import utils.BinaryResponse;
 import utils.NotificacionUtils;
 import utils.WSUtils;
+import utils.XMLGregorianCalendarConverter;
 
 @InjectSupport
 public class NotificacionServiceImpl implements NotificacionService {
@@ -59,6 +69,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 	
 	private final static String URL_AED = FapProperties.get("fap.aed.url");
 	
+	@Inject
+	GestorDocumentalService gestorDocumental;
+	
 	protected static Logger log = Logger.getLogger(NotificacionServiceImpl.class);
 	
 	private final static String COD_ERROR_NOTIFICACION = "INSERCION_CORRECTA";
@@ -66,6 +79,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 	private final static String TIPO_DOC_PUESTAADISPOSICION = FapProperties.get("fap.aed.notificacion.tipodocumento.puestaadisposicion");
 	private final static String TIPO_DOC_ANULACION = FapProperties.get("fap.aed.notificacion.tipodocumento.anulacion");
 	private final static String TIPO_DOC_MARCARARESPONDIDA = FapProperties.get("fap.aed.notificacion.tipodocumento.marcararespondida");
+	private final static String TIPO_DOC_ACUSERECIBO = FapProperties.get("fap.aed.notificacion.tipodocumento.acuserecibo");
 	
 	private final static String EXCEPTION_CON_WS = "El gestor %s no pudo conectarse al servicio de notificaciones para realizar %s de la notificación %s. ";
 	private final static String EXCEPTION_DESCONOCIDO = "El gestor %s no pudo realizar la operación de %s para la notificación %s al obtenerse un error desconocido. ";
@@ -112,9 +126,68 @@ public class NotificacionServiceImpl implements NotificacionService {
     }
 
 	@Override
-	public void crearDocumentoPuestaADisposicion(List<String> urisDocumentos,
-			List<Interesado> interesados, String descripcion) {
-		//notificacionPort.crearDocumentoPuestaADisposicion(urisDocumentos, interesados, descripcion);
+	public void crearDocumentoPuestaADisposicion(Notificacion dbNotificacion, List<String> urisDocumentos, List<Interesado> interesados, String descripcion) {
+		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
+		String uriNotificacion = dbNotificacion.uri;
+		
+		try {
+	
+			// El estado de la notificación en el servicio de notificaciones debe ser igual al de la base de datos de fap
+			EstadoNotificacionType estadoNotificacionWS = notificacionPort.obtenerEstadoNotificacion(uriNotificacion);
+			if (estadoNotificacionWS.getEstado() == EstadoNotificacionEnumType.PUESTA_A_DISPOSICION) {
+				log.warn(String.format("Actualizando la notificicación %s al estado de PUESTA A DISPOSICIÓN, debido a un error previo", uriNotificacion));
+				
+				// Se obtiene la uri del documento de notificación
+				String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
+				log.info(String.format("Documento de puesta a disposición (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+				
+				// Se actualizan las propiedades del documento			
+				dbNotificacion.documentoPuestaADisposicion.uri = uriDoc;
+				dbNotificacion.documentoPuestaADisposicion.clasificado = true;
+				dbNotificacion.documentoPuestaADisposicion.save();
+				
+				// Se cambia el estado de la notificación
+				dbNotificacion.estado = EstadoNotificacionEnum.puestaadisposicion.name();
+				log.info(String.format("La notificación (%s) pasa al estado de puesta a disposición", uriNotificacion));
+			
+				dbNotificacion.save();
+			}
+			else {
+				// Se crea el documento de puesta a disposición
+				log.info(String.format("Se crea el documento de puesta a disposición para la notificación (%s) por el gestor (%s)", uriNotificacion, idGestor));
+
+				ArrayOfInteresadoType interesadosType = new ArrayOfInteresadoType();
+				for (Interesado interesado: interesados){
+					interesadosType.getInteresados().add(NotificacionUtils.convertInteresadoToInteresadoType(interesado));
+				}
+				
+				DocumentoType docPuestaADisposicion = notificacionPort.crearDocumentoPuestaADisposicion(urisDocumentos, interesadosType, descripcion, dbNotificacion.idExpedienteAed, this.getUriBackOffice(), this.getUriProcedimiento());
+				
+				// Se inserta el documento en el Aed
+				Documento dbOld = dbNotificacion.documentoPuestaADisposicion;
+				dbNotificacion.documentoPuestaADisposicion = null;
+				dbNotificacion.save();
+				dbOld.delete();
+				dbOld = null;
+
+				Documento dbDocPuestaADisposicion = new Documento();
+				dbDocPuestaADisposicion.tipo = this.getTipoDocPuestaADisposicion();
+				dbDocPuestaADisposicion.descripcion = "Documento \"Puesta a Disposición\" creado por el servicio de notificaciones";
+				dbDocPuestaADisposicion.estadoDocumento = EstadoNotificacionEnum.puestaadisposicion.name();
+				dbDocPuestaADisposicion.uri = gestorDocumental.saveDocumentoTemporal(dbDocPuestaADisposicion, docPuestaADisposicion.getDatos().getInputStream(), UUID.randomUUID().toString() + ".pdf");
+				log.info(String.format("Se guarda el documento de anulación (%s) para la notificación (%s) en la carpeta temporal", dbDocPuestaADisposicion.uri, uriNotificacion));
+
+				dbNotificacion.documentoAnulacion = dbDocPuestaADisposicion;
+				dbNotificacion.documentosAuditoria.add(dbDocPuestaADisposicion);  // Añadir el documento a la collección de documentos de auditoría
+				dbNotificacion.preparadaAnulacion = true;
+				
+				dbDocPuestaADisposicion.save();
+				dbNotificacion.save();
+			}
+		}
+		catch (Exception e) {
+			log.error("No se ha podido crear el documento de puesta a disposición de la notificación: "+ e.getMessage());
+		} 
 	}
 
 	@Override
@@ -246,15 +319,112 @@ public class NotificacionServiceImpl implements NotificacionService {
 	}
 
 	@Override
-	public void crearDocumentoAcuseRecibo() {
-		// TODO Auto-generated method stub
+	public void crearDocumentoAcuseRecibo(Notificacion dbNotificacion, String dniInteresado) {
+		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
+		String uriNotificacion = dbNotificacion.uri;
 		
+		try {
+			
+			// El estado de la notificación en el servicio de notificaciones debe ser igual al de la base de datos de fap
+			EstadoNotificacionType estadoNotificacionWS = notificacionPort.obtenerEstadoNotificacion(uriNotificacion);
+			if (estadoNotificacionWS.getEstado() == EstadoNotificacionEnumType.LEIDA) {
+				log.warn(String.format("Actualizando la notificicación %s al estado de LEIDA, debido a un error previo", uriNotificacion));
+				
+				// Se obtiene la uri del documento de notificación
+				String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
+				log.info(String.format("Documento de acuse de recibo (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+				
+				// Se actualizan las propiedades del documento
+				dbNotificacion.documentoAcuseRecibo.uri = uriDoc;
+				dbNotificacion.documentoAcuseRecibo.save();
+				
+				// Se cambia el estado de la notificación
+				dbNotificacion.estado = EstadoNotificacionEnum.leida.name();
+				log.info(String.format("La notificación (%s) pasa al estado leida", uriNotificacion));
+				
+				dbNotificacion.save();
+			}
+			else {
+				
+				// Se crea el documento de Acuse de Recibo
+				log.info(String.format("Se crea el documento de acuse de recibo para la notificación (%s) por el gestor (%s)", uriNotificacion, idGestor));
+				DocumentoType docAcuseDeRecibo = notificacionPort.crearDocumentoAcuseDeRecibo(uriNotificacion, dniInteresado);
+				
+				// Se inserta el documento en el Aed
+				Documento dbOld = dbNotificacion.documentoAcuseRecibo;
+				dbNotificacion.documentoAcuseRecibo = null;
+				dbNotificacion.save();
+				dbOld.delete();
+				dbOld = null;
+				
+				Documento dbDocAcuseDeRecibo = new Documento();
+				dbDocAcuseDeRecibo.tipo = this.getTipoDocAcuseRecibo();
+				dbDocAcuseDeRecibo.descripcion = "Documento \"Acuse de Recibo\" creado por el servicio de notificaciones";
+				dbDocAcuseDeRecibo.estadoDocumento = EstadoNotificacionEnum.leida.name();
+				dbDocAcuseDeRecibo.uri = gestorDocumental.saveDocumentoTemporal(dbDocAcuseDeRecibo, docAcuseDeRecibo.getDatos().getInputStream(), UUID.randomUUID().toString() + ".pdf");
+				log.info(String.format("Se guarda el documento de respondida (%s) para la notificación (%s) en la carpeta temporal", dbDocAcuseDeRecibo.uri, uriNotificacion));
+				
+				dbNotificacion.documentoRespondida = dbDocAcuseDeRecibo;
+				dbNotificacion.documentosAuditoria.add(dbDocAcuseDeRecibo); // Añadir el documento a la collección de documentos de auditoría
+				dbNotificacion.preparadaRespondida = true;
+
+				dbDocAcuseDeRecibo.save();
+				dbNotificacion.save();
+			}
+		}
+		catch (Exception e) {
+			log.error("No se ha podido crear el documento de acuse de recibo de la notificación: "+e.getMessage());
+		} 
 	}
 
 	@Override
-	public void recibirAcuseRecibo() {
-		// TODO Auto-generated method stub
+	public void enviarAcuseRecibo(Notificacion dbNotificacion, String dniInteresado, String firma) {
+		String uriNotificacion = dbNotificacion.uri;
+		String uriDocAcuseRecibo = dbNotificacion.documentoAcuseRecibo.uri;
 		
+		try {
+			
+			// Se descarga el fichero del aed
+			BinaryResponse docHandler = gestorDocumental.getDocumentoByUri(uriDocAcuseRecibo);
+			
+			DocumentoCreateType docAcuseDeRecibo = new DocumentoCreateType();
+			docAcuseDeRecibo.setContadorRegistro(null); // NOUSED:
+			docAcuseDeRecibo.setDatos(docHandler.contenido);
+			docAcuseDeRecibo.setFechaRegistro(null); // NOUSED:
+			docAcuseDeRecibo.setFirmaXmlSignature(firma);
+			docAcuseDeRecibo.setMimeType(MimeTypeEnumType.APPLICATION_PDF);
+			docAcuseDeRecibo.setNombre(null); // NOUSED:
+			docAcuseDeRecibo.setNumeroGeneral(null); // NOUSED:
+			docAcuseDeRecibo.setNumeroRegistro(null); // NOUSED:
+			docAcuseDeRecibo.setUri(null); // NOUSED:
+			
+			// Se envía la notificación
+			log.info(String.format("Acuse de Recibo de la notificación (%s)", uriNotificacion));
+			try{
+				notificacionPort.enviarAcuseRecibo(uriNotificacion, docAcuseDeRecibo, dniInteresado);
+			} catch (Exception e){
+				log.error("No se ha podido enviar el acuse de recibo de la notificacion debido a un fallo en la llamada al servicio web: "+e.getMessage());
+				return;
+			}
+			
+			// Se procede a la actualización de la notificación de acuse de recibo
+			// Se obtiene la uri del documento de notificación
+			String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
+			log.info(String.format("Documento de acuse de recibo (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+			
+			// Se actualizan las propiedades del documento			
+			dbNotificacion.documentoAcuseRecibo.uri = uriDoc;
+			dbNotificacion.documentoAcuseRecibo.clasificado = true;
+			dbNotificacion.documentoAcuseRecibo.save();
+
+			// TODO: ¿Cambiar el estado de la notificacion?
+
+			dbNotificacion.save();
+		}
+		catch (Exception e) {
+			log.error("Ha ocurrido un error al intentar anular la notificación: "+e.getMessage());
+		} 
+				
 	}
 
 	/* Funcion que consulta el WS de Notificaciones para conocer las notificaciones a raiz de un patrón de búsqueda
@@ -302,45 +472,280 @@ public class NotificacionServiceImpl implements NotificacionService {
 	}
 
 	@Override
-	public void estadoNotificacion() {
-		// TODO Auto-generated method stub
+	public String estadoNotificacion(String uriNotificacion) {
+		EstadoNotificacionType estadoNotificacionType;
+		try {
+			estadoNotificacionType = notificacionPort.obtenerEstadoNotificacion(uriNotificacion);
+			return NotificacionUtils.convertEstadoNotificacionEnumTypeToEstadoNotificacion(estadoNotificacionType.getEstado());
+		} catch (Exception e) {
+			log.error("No se ha podido recuperar del servicio web el estado de la notificacion "+uriNotificacion+" : "+e.getMessage());
+		}
+		return "";
+	}
+
+	@Override
+	public Notificacion obtenerNotificacion(String uriNotificacion) {
+		Notificacion notificacion = null;
+		try {
+			NotificacionType notificacionType = notificacionPort.obtenerNotificacion(uriNotificacion);
+			notificacion = NotificacionUtils.convertNotificacionTypeToNotificacion(notificacionType);
+		} catch (Exception e) {
+			log.error("Hubo un error al intentar recuperar la notificacion del servicio web con uri "+uriNotificacion+" : "+e.getMessage());
+		}
+		return notificacion;
+	}
+
+	@Override
+	public Documento obtenerDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
+		Documento documento = new Documento();
+		try {
+			DocumentoType documentoType = notificacionPort.obtenerDocumentoNotificacion(idUsuario, uriNotificacion, tipoDocumento);
+			documento.descripcion = documentoType.getNombre();
+			documento.uri = documentoType.getUri();
+			documento.fechaRegistro = new DateTime(documentoType.getFechaRegistro().toGregorianCalendar().getTime());
+		} catch (NotificacionException e) {
+			log.error("Hubo un error al intentar obtener el documento de notificación del servicio web con uri "+uriNotificacion+" : "+e.getMessage());
+		}
+		return documento;
+	}
+
+	@Override
+	public void crearDocumentacionAnulacion(Notificacion dbNotificacion) {
+
+		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
+		String uriNotificacion = dbNotificacion.uri;
+		
+		try {
+			
+			String motivoAnulacion = null;
+	
+			// El estado de la notificación en el servicio de notificaciones debe ser igual al de la base de datos de fap
+			EstadoNotificacionType estadoNotificacionWS = notificacionPort.obtenerEstadoNotificacion(uriNotificacion);
+			if (estadoNotificacionWS.getEstado() == EstadoNotificacionEnumType.ANULADA) {
+				log.warn(String.format("Actualizando la notificicación %s al estado de ANULADA, debido a un error previo", uriNotificacion));
+				
+				// Se obtiene la uri del documento de notificación
+				String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ANULACION);
+				log.info(String.format("Documento de anulación (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+				
+				// Se actualizan las propiedades del documento			
+				dbNotificacion.documentoAnulacion.uri = uriDoc;
+				dbNotificacion.documentoAnulacion.clasificado = true;
+				dbNotificacion.documentoAnulacion.save();
+				
+				// Se cambia el estado de la notificación
+				dbNotificacion.estado = EstadoNotificacionEnum.anulada.name();
+				log.info(String.format("La notificación (%s) pasa al estado de anulada", uriNotificacion));
+			
+				dbNotificacion.save();
+			}
+			else {
+				// Se crea el documento de anulación
+				log.info(String.format("Se crea el documento de anulación para la notificación (%s) por el gestor (%s)", uriNotificacion, idGestor));
+				DocumentoType docAnulacion = notificacionPort.crearDocumentoAnulacion(uriNotificacion, motivoAnulacion, idGestor);
+				
+				// Se inserta el documento en el Aed
+				Documento dbOld = dbNotificacion.documentoAnulacion;
+				dbNotificacion.documentoAnulacion = null;
+				dbNotificacion.save();
+				dbOld.delete();
+				dbOld = null;
+
+				Documento dbDocAnulacion = new Documento();
+				dbDocAnulacion.tipo = this.getTipoDocAnulacion();
+				dbDocAnulacion.descripcion = "Documento \"Anulación\" creado por el servicio de notificaciones";
+				dbDocAnulacion.estadoDocumento = EstadoNotificacionEnum.anulada.name();
+			 	dbDocAnulacion.uri = gestorDocumental.saveDocumentoTemporal(dbDocAnulacion, docAnulacion.getDatos().getInputStream(), UUID.randomUUID().toString() + ".pdf");
+				log.info(String.format("Se guarda el documento de anulación (%s) para la notificación (%s) en la carpeta temporal", dbDocAnulacion.uri, uriNotificacion));
+
+				dbNotificacion.documentoAnulacion = dbDocAnulacion;
+				dbNotificacion.documentosAuditoria.add(dbDocAnulacion);  // Añadir el documento a la collección de documentos de auditoría
+				dbNotificacion.preparadaAnulacion = true;
+				
+				dbDocAnulacion.save();
+				dbNotificacion.save();
+			}
+		}
+		catch (Exception e) {
+			log.error("No se ha podido crear el documento de anulación de la notificación: "+ e.getMessage());
+		} 
+	}
+
+	@Override
+	public void anularNotificacion(Notificacion dbNotificacion, String firma) {
+		String uriNotificacion = dbNotificacion.uri;
+		String uriDocAnulacion = dbNotificacion.documentoAnulacion.uri;
+		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
+		
+		try {
+			
+			// Se descarga el fichero del aed
+			BinaryResponse docHandler = gestorDocumental.getDocumentoByUri(uriDocAnulacion);
+			
+			DocumentoCreateType docAnulacion = new DocumentoCreateType();
+			docAnulacion.setContadorRegistro(null); // NOUSED:
+			docAnulacion.setDatos(docHandler.contenido);
+			docAnulacion.setFechaRegistro(null); // NOUSED:
+			docAnulacion.setFirmaXmlSignature(firma);
+			docAnulacion.setMimeType(MimeTypeEnumType.APPLICATION_PDF);
+			docAnulacion.setNombre(null); // NOUSED:
+			docAnulacion.setNumeroGeneral(null); // NOUSED:
+			docAnulacion.setNumeroRegistro(null); // NOUSED:
+			docAnulacion.setUri(null); // NOUSED:
+			
+			// Se envía la notificación
+			log.info(String.format("Anulación de la notificación (%s) por el gestor (%s)", uriNotificacion, idGestor));
+			try{
+				notificacionPort.anularNotificacion(uriNotificacion, docAnulacion, idGestor);
+			} catch (Exception e){
+				log.error("No se ha podido anular la notificacion debido a un fallo en la llamada al servicio web: "+e.getMessage());
+				return;
+			}
+			
+			// Se procede a la actualización de la notificación de anulación
+			// Se obtiene la uri del documento de notificación
+			String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ANULACION);
+			log.info(String.format("Documento de anulación (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+			
+			// Se actualizan las propiedades del documento			
+			dbNotificacion.documentoAnulacion.uri = uriDoc;
+			dbNotificacion.documentoAnulacion.clasificado = true;
+			dbNotificacion.documentoAnulacion.save();
+			
+			// Se cambia el estado de la notificación
+			dbNotificacion.estado = EstadoNotificacionEnum.anulada.name();
+			log.info(String.format("La notificación (%s) pasa al estado de anulada", uriNotificacion));
+
+			dbNotificacion.save();
+		}
+		catch (Exception e) {
+			log.error("Ha ocurrido un error al intentar anular la notificación: "+e.getMessage());
+		} 
 		
 	}
 
 	@Override
-	public void obtenerNotificacion() {
-		// TODO Auto-generated method stub
+	public void crearDocumentoMarcarComoRespondida(Notificacion dbNotificacion) {
+
+		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
+		String uriNotificacion = dbNotificacion.uri;
 		
+		try {
+			
+			// El estado de la notificación en el servicio de notificaciones debe ser igual al de la base de datos de fap
+			EstadoNotificacionType estadoNotificacionWS = notificacionPort.obtenerEstadoNotificacion(uriNotificacion);
+			if (estadoNotificacionWS.getEstado() == EstadoNotificacionEnumType.RESPONDIDA) {
+				log.warn(String.format("Actualizando la notificicación %s al estado de RESPONDIDA, debido a un error previo", uriNotificacion));
+				
+				// Se obtiene la uri del documento de notificación
+				String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
+				log.info(String.format("Documento de respondida (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+				
+				// Se actualizan las propiedades del documento
+				dbNotificacion.documentoRespondida.uri = uriDoc;
+				dbNotificacion.documentoRespondida.save();
+				
+				// Se cambia el estado de la notificación
+				dbNotificacion.estado = EstadoNotificacionEnum.respondida.name();
+				log.info(String.format("La notificación (%s) pasa al estado de respondida", uriNotificacion));
+				
+				dbNotificacion.save();
+			}
+			else {
+				XMLGregorianCalendar fechaHoraRespuesta = XMLGregorianCalendarConverter.asXMLGregorianCalendar(DateTime.now());
+
+				List<String> urisDocumentosRespuesta = new ArrayList<String>();
+				for (DocumentoNotificacion doc : dbNotificacion.documentosRespuesta) {
+					urisDocumentosRespuesta.add(doc.uri);
+				}
+				
+				// Se crea el documento de Marcar como Respondida
+				log.info(String.format("Se crea el documento de respondida para la notificación (%s) por el gestor (%s)", uriNotificacion, idGestor));
+				DocumentoType docRespondida = notificacionPort.crearDocumentoMarcarComoRespondida(uriNotificacion, fechaHoraRespuesta, urisDocumentosRespuesta, idGestor);
+				
+				// Se inserta el documento en el Aed
+				Documento dbOld = dbNotificacion.documentoRespondida;
+				dbNotificacion.documentoRespondida = null;
+				dbNotificacion.save();
+				dbOld.delete();
+				dbOld = null;
+				
+				Documento dbDocRespondida = new Documento();
+				dbDocRespondida.tipo = this.getTipoDocMarcarARespondida();
+				dbDocRespondida.descripcion = "Documento \"Marcar a respondida\" creado por el servicio de notificaciones";
+				dbDocRespondida.estadoDocumento = EstadoNotificacionEnum.respondida.name();
+				dbDocRespondida.uri = gestorDocumental.saveDocumentoTemporal(dbDocRespondida, docRespondida.getDatos().getInputStream(), UUID.randomUUID().toString() + ".pdf");
+				log.info(String.format("Se guarda el documento de respondida (%s) para la notificación (%s) en la carpeta temporal", dbDocRespondida.uri, uriNotificacion));
+				
+				dbNotificacion.documentoRespondida = dbDocRespondida;
+				dbNotificacion.documentosAuditoria.add(dbDocRespondida); // Añadir el documento a la collección de documentos de auditoría
+				dbNotificacion.preparadaRespondida = true;
+
+				dbDocRespondida.save();
+				dbNotificacion.save();
+			}
+		}
+		catch (Exception e) {
+			log.error("No se ha podido crear el documento de marcar como respondida de la notificación: "+e.getMessage());
+		} 
 	}
 
 	@Override
-	public void obtenerDocumentoNotificacion() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void marcarNotificacionComoRespondida(Notificacion dbNotificacion, String firma) {
 
-	@Override
-	public void crearDocumentacionAnulacion() {
-		// TODO Auto-generated method stub
+		String uriNotificacion = dbNotificacion.uri;
+		String uriDocRespondida = dbNotificacion.documentoRespondida.uri;
+		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
 		
-	}
-
-	@Override
-	public void anularNotificacion() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void crearDocumentoMarcarComoRespondida() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void marcarNotificacionComoRespondida() {
-		// TODO Auto-generated method stub
-		
+		try {
+			// Se descarga el fichero del aed
+			BinaryResponse docHandler = gestorDocumental.getDocumentoByUri(uriDocRespondida);
+			
+			XMLGregorianCalendar fechaHoraRespuesta = XMLGregorianCalendarConverter.asXMLGregorianCalendar(DateTime.now());
+			
+			List<String> urisDocumentosRespuesta = new ArrayList<String>();
+			for (DocumentoNotificacion docs : dbNotificacion.documentosRespuesta) {
+				urisDocumentosRespuesta.add(docs.uri);
+			}
+			
+			DocumentoCreateType docMarcadaComoRespondida = new DocumentoCreateType();
+			docMarcadaComoRespondida.setContadorRegistro(null); // NOUSED:
+			docMarcadaComoRespondida.setDatos(docHandler.contenido);
+			docMarcadaComoRespondida.setFechaRegistro(null); // NOUSED:
+			docMarcadaComoRespondida.setFirmaXmlSignature(firma);
+			docMarcadaComoRespondida.setMimeType(MimeTypeEnumType.APPLICATION_PDF);
+			docMarcadaComoRespondida.setNombre(null); // NOUSED:
+			docMarcadaComoRespondida.setNumeroGeneral(null); // NOUSED:
+			docMarcadaComoRespondida.setNumeroRegistro(null); // NOUSED:
+			docMarcadaComoRespondida.setUri(null); // NOUSED:
+			
+			// Se envía la notificación
+			log.info(String.format("Se marca la notificación (%s) por el gestor (%s) como respondida", uriNotificacion, idGestor));
+			try{
+				notificacionPort.marcarNotificacionComoRespondida(uriNotificacion, fechaHoraRespuesta, urisDocumentosRespuesta, docMarcadaComoRespondida, idGestor);
+			} catch (Exception e){
+				log.error("Error al intentar marcar la notificación como respondida a raiz de la llamada al servicio web: "+e.getMessage());
+				return;
+			}
+			
+			// Se procede a la actualización de la notificación de asignar a respondida
+			// Se obtiene la uri del documento de notificación
+			String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
+			log.info(String.format("Documento de respondida (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+			
+			// Se actualizan las propiedades del documento
+			dbNotificacion.documentoRespondida.uri = uriDoc;
+			dbNotificacion.documentoRespondida.save();
+			
+			// Se cambia el estado de la notificación
+			dbNotificacion.estado = EstadoNotificacionEnum.respondida.name();
+			log.info(String.format("La notificación (%s) pasa al estado de respondida", uriNotificacion));
+			
+			dbNotificacion.save();
+		} 
+		catch (Exception e) {
+			log.error("Hubo un error al marcar como respondida la notificacion: "+e.getMessage());
+		} 
 	}
 	
 	@Override
@@ -355,6 +760,18 @@ public class NotificacionServiceImpl implements NotificacionService {
 	
 	protected String getTipoDocPuestaADisposicion() {
 		return TIPO_DOC_PUESTAADISPOSICION;
+	}
+	
+	protected String getTipoDocAnulacion() {
+		return TIPO_DOC_ANULACION;
+	}
+	
+	protected String getTipoDocMarcarARespondida() {
+		return TIPO_DOC_MARCARARESPONDIDA;
+	}
+	
+	protected String getTipoDocAcuseRecibo() {
+		return TIPO_DOC_ACUSERECIBO;
 	}
 
 }

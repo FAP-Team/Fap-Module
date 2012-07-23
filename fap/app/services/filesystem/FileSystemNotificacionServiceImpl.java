@@ -55,35 +55,12 @@ public class FileSystemNotificacionServiceImpl implements NotificacionService {
 	protected static Logger log = Logger.getLogger(NotificacionServiceImpl.class);
 	private final static String TIPO_DOC_PUESTAADISPOSICION = FapProperties.get("fap.aed.notificacion.tipodocumento.puestaadisposicion");
 
-	
-	
-    private String getEndPoint() { 
-    	return "fs//endPoint";
-    }
-    
-    @Override
-	public void crearDocumentoPuestaADisposicion(List<String> urisDocumentos,
-			List<Interesado> interesados, String descripcion) {
-		
-	}
     
     public void enviarNotificaciones(Notificacion notificacion, Agente gestor) throws NotificacionException {
 		log.info(String.format("La notificación pasa al estado de puesta a disposición"));
 			// Asignamos el gestor a la notificación
 			notificacion.agente = gestor;
 			notificacion.save();
-	}
-    
-    @Override
-	public void crearDocumentoAcuseRecibo() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void recibirAcuseRecibo() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/* Funcion que consulta el WS de Notificaciones para conocer las notificaciones a raiz de un patrón de búsqueda
@@ -113,48 +90,6 @@ public class FileSystemNotificacionServiceImpl implements NotificacionService {
 		notificaciones.add(crearNotificacion(4));
 		notificaciones.add(crearNotificacion(5));
 		return notificaciones;
-	}
-
-	@Override
-	public void estadoNotificacion() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void obtenerNotificacion() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void obtenerDocumentoNotificacion() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void crearDocumentacionAnulacion() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void anularNotificacion() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void crearDocumentoMarcarComoRespondida() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void marcarNotificacionComoRespondida() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
@@ -219,6 +154,72 @@ public class FileSystemNotificacionServiceImpl implements NotificacionService {
 		r.fasesRegistro = new FasesRegistro();
 		r.firmantes = new Firmantes(); //Comprobar si es necesario rellenarlo
 		return r;
+	}
+
+	@Override
+	public void crearDocumentoPuestaADisposicion(Notificacion dbNotificacion,
+			List<String> urisDocumentos, List<Interesado> interesados,
+			String descripcion) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void crearDocumentoAcuseRecibo(Notificacion dbNotificacion,
+			String dniInteresado) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void enviarAcuseRecibo(Notificacion dbNotificacion,
+			String dniInteresado, String firma) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String estadoNotificacion(String uriNotificacion) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Notificacion obtenerNotificacion(String uriNotificacion) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Documento obtenerDocumentoNotificacion(String idUsuario,
+			String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void crearDocumentacionAnulacion(Notificacion dbNotificacion) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void anularNotificacion(Notificacion dbNotificacion, String firma) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void crearDocumentoMarcarComoRespondida(Notificacion dbNotificacion) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void marcarNotificacionComoRespondida(Notificacion dbNotificacion,
+			String firma) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

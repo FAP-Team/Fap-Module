@@ -207,6 +207,16 @@ Permiso aportacionDocumentos{
 	return editable
 }
 
+Permiso incorporarDocumentos {
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor") and
+		solicitud?.estado not in ("borrador")
+	return
+		all
+}
+
 Permiso noEditable{
 	return visible
 }
@@ -822,15 +832,19 @@ Permiso requerimientoAFirmar {
 	when
 		agente.rolActivo in ("gestor", "administrador")
 		and solicitud?.verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
-		and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.borrador = "false"
-		and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada = "false"
+		and (
+			solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.registro = "false"
+			or solicitud?.verificacion?.requerimiento?.notificacion = null
+			)
 	return
 		all
 	when
 		agente.rolActivo in ("revisor")
 		and solicitud?.verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
-		and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.borrador = "false"
-		and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada = "false"
+		and (
+			solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.registro = "false"
+			or solicitud?.verificacion?.requerimiento?.notificacion = null
+			)
 	return
 		visible
 }

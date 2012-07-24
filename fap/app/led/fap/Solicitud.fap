@@ -314,7 +314,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		
 		Grupo gRequerimientos permiso=requerimiento titulo="Requerimiento"{
 			Form gRequerirFirmaRequerimiento permiso=requerimientoRequerirFirma {
-				Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacion.requerimiento.firmante ancho="450px" 
+				Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacion.requerimiento.firmante ancho="450px" requerido 
 				Boton requerirFirma titulo="Requerir firma al Gestor" 
 			} 
 			
@@ -323,6 +323,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			}
 			
 			Form gPonerADisposicion permiso=requerimientoFirmado {
+				Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
 				Boton ponerADisposicion titulo="Notificar el requerimiento"
 			}
 			

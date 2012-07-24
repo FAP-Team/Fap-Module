@@ -419,6 +419,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			CustomValidation.valid("solicitud.verificacion.requerimiento", solicitud.verificacion.requerimiento);
 			CustomValidation.valid("solicitud.verificacion", solicitud.verificacion);
 			CustomValidation.valid("solicitud", solicitud);
+			CustomValidation.required("solicitud.verificacion.requerimiento.firmante", solicitud.verificacion.requerimiento.firmante);
 			CustomValidation.validValueFromTable("solicitud.verificacion.requerimiento.firmante", solicitud.verificacion.requerimiento.firmante);
 			dbSolicitud.verificacion.requerimiento.firmante = solicitud.verificacion.requerimiento.firmante;
 			

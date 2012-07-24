@@ -104,13 +104,13 @@ ul {
 	<div id="divDocumentacionNoPresentada">
     	<h2>Documentos no presentados:</h2> 
    		#{list items:noPresentados, as:"documento"}
-			<p  class="myarrow"> ${documento.descripcion}</p>
+			<p  class="myarrow"> ${documento.descripcionVisible}</p>
 			<ul>
 			#{if documento.motivoRequerimiento}
 				<li> ${documento.motivoRequerimiento} </li>
 			#{/if}
 			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
-				<li> ${requerimiento.descripcion} </li>
+				<li> ${requerimiento.descripcionVisible} </li>
 			#{/list}
 			</ul>
    		#{/list}
@@ -121,13 +121,13 @@ ul {
 	<div id="divDocumentacionNoValida">
     	<h2>Documentos no válidos:</h2> 
    		#{list items:noValidos, as:"documento"}
-			<p  class="myarrow"> ${documento.descripcion}</p>
+			<p  class="myarrow"> ${documento.descripcionVisible}</p>
 			<ul>
 			#{if documento.motivoRequerimiento}
 				<li> ${documento.motivoRequerimiento} </li>
 			#{/if}
 			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
-				<li> ${requerimiento.descripcion} </li>
+				<li> ${requerimiento.descripcionVisible} </li>
 			#{/list}
 			</ul>
    		#{/list}

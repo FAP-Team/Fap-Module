@@ -449,7 +449,7 @@ width:100%;
 	#{list items:solicitud.documentacion.documentos, as:"documento"}
 	<tr>
 <!--  		<td >#{fap.valueFromTable "documento.tipo"}${valor?.toUpperCase()}#{/fap.valueFromTable}</td> -->
-		<td >${documento.descripcion}</td>
+		<td >${documento.descripcionVisible}</td>
 		<td>${documento.hash}</td>
 	</tr>
    #{/list}

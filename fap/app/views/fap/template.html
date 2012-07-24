@@ -61,9 +61,10 @@
 
 
 %{
-    // Comprobamos si Platino responde. Si no, mostramos un mensaje de aviso.
+    // Comprobamos si servicios como Platino, GestorDocumental, etc responden. 
+    // Si no, mostramos un mensaje de aviso.
     def servicesConfigured = controllers.MensajeLoginController.servicesIsConfigured();
-    if(servicesConfigured != "") {
+    if(!servicesConfigured.isEmpty()) {
 }%
     <div id="infoServicios" class="row">
         <div class="span16">
@@ -84,7 +85,7 @@
 %{
 	def userNotificacion=null;
 	def urlNotificacionesTabla = play.mvc.Router.reverse('NotificacionesController.index');
-	topbarscope : { //√?mbito
+	topbarscope : { //√Åmbito
 		def agente = controllers.fap.AgenteController.getAgente();
 		def roles;
 		def user;

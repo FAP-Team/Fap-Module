@@ -366,7 +366,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 				dbDocAcuseDeRecibo.descripcion = "Documento \"Acuse de Recibo\" creado por el servicio de notificaciones";
 				dbDocAcuseDeRecibo.estadoDocumento = EstadoNotificacionEnum.leida.name();
 				dbDocAcuseDeRecibo.uri = gestorDocumental.saveDocumentoTemporal(dbDocAcuseDeRecibo, docAcuseDeRecibo.getDatos().getInputStream(), UUID.randomUUID().toString() + ".pdf");
-				log.info(String.format("Se guarda el documento de respondida (%s) para la notificación (%s) en la carpeta temporal", dbDocAcuseDeRecibo.uri, uriNotificacion));
+				log.info(String.format("Se guarda el acuse de recibo (%s) para la notificación (%s) en la carpeta temporal", dbDocAcuseDeRecibo.uri, uriNotificacion));
 				
 				dbNotificacion.documentoRespondida = dbDocAcuseDeRecibo;
 				dbNotificacion.documentosAuditoria.add(dbDocAcuseDeRecibo); // Añadir el documento a la collección de documentos de auditoría

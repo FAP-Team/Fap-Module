@@ -4807,3 +4807,8 @@ ul.errorsDetails li a {
 .wiki ul li {
 	list-style:disc;
 }
+
+.wiki ol li {
+	list-style: decimal;
+	font-weight:normal;
+}

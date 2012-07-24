@@ -1,0 +1,46 @@
+Formulario Ayuda {
+	
+	Menu {
+		Enlace "Inicio" accion=login
+		Enlace "Mis Solicitudes" permiso=logeado pagina=Solicitudes 		
+    	Enlace "Ayuda" pagina=Soporte crear
+    }
+    
+	Pagina AyudaVistaCompatibilidad noAutenticar {
+		Wiki {"
+h3. Usar Internet Explorer con la función Vista de compatibilidad habilitada.
+
+Internet Explorer dispone de una Vista de compatibilidad, una función que afecta a la forma en que se visualizan algunos sitios web. Si se habilita la Vista de compatibilidad para esta aplicación, puede que algunas funciones no se visualicen correctamente. Para asegurarte de que utilizas las vistas de esta aplicación correctamente, te sugerimos que elimines el nombre de dominio de la aplicacion de tu lista de sitios que tengan habilitada la vista de compatibilidad.
+
+Para ello, sigue estos pasos:
+
+h4. Para IE8
+
+# Abre el menú Herramientas que se encuentra en la parte superior del navegador y selecciona Configuración de Vista de compatibilidad.
+# Selecciona google.es en la sección \"Sitios web que agregó a Vista de compatibilidad.\" 
+# Haz clic en Quitar. 
+# En la parte inferior de la ventana, asegúrate de que la casilla junto a \"Mostrar todos los sitios web en Vista de compatibilidad\" no esté marcada. 
+# Haz clic en Cerrar. La página en la que estés se actualizará y se mostrará en el modo IE8. 
+
+Si no ves este dominio en la lista o si estos pasos no te ayudan a resolver la incidencia, asegúrate de haber instalado las últimas actualizaciones de Windows en tu ordenador.
+
+h4. Para IE9
+
+# Haz clic con el botón derecho del ratón en el icono de rueda dentada  en la esquina superior derecha junto al icono de estrella de favoritos. Si no ves este icono de rueda dentada en los menús \"Archivo\" o \"Herramientas\" en la parte superior de la ventana, pulsa la tecla F10 para que se muestren. 
+# Selecciona Barra de comandos. 
+# Abre el menú Herramientas que se encuentra en la parte superior del navegador y selecciona Configuración de Vista de compatibilidad. 
+# Selecciona google.es en la sección \"Sitios web que agregó a Vista de compatibilidad.\" 
+# Haz clic en Quitar. 
+# En la parte inferior de la ventana, asegúrate de que la casilla junto a \"Mostrar todos los sitios web en Vista de compatibilidad\" no esté marcada. 
+# Haz clic en Cerrar. La página en la que estés se actualizará y se mostrará en el modo IE9. 
+
+Si no ves este dominio en la lista o si estos pasos no te ayudan a resolver la incidencia, asegúrate de haber instalado las últimas actualizaciones de Windows en tu ordenador.
+
+
+
+
+
+			"}
+	}
+	
+}

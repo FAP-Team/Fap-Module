@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="es">
+	<meta name="google" content="notranslate"/>
     <head>
         <title>#{get 'title' /}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -58,12 +59,13 @@
 				#{include 'fap/header.html' /}
 	    	</div>
 
+
 %{
     // Comprobamos si Platino responde. Si no, mostramos un mensaje de aviso.
     def servicesConfigured = controllers.MensajeLoginController.servicesIsConfigured();
     if(servicesConfigured != "") {
 }%
-    <div id="infoCompatibilidad" class="row">
+    <div id="infoServicios" class="row">
         <div class="span16">
             <span class="label label-important">¡Importante! No están disponibles los servicios: ${servicesConfigured}</span>
         </div>
@@ -72,10 +74,17 @@
     } 
 }%
 
+			<div id="infoCompatibilidad" class="row">
+				<div class="span16">
+			        
+			    </div>
+			</div>
+
+
 %{
 	def userNotificacion=null;
 	def urlNotificacionesTabla = play.mvc.Router.reverse('NotificacionesController.index');
-	topbarscope : { //Ámbito
+	topbarscope : { //�?mbito
 		def agente = controllers.fap.AgenteController.getAgente();
 		def roles;
 		def user;
@@ -185,6 +194,8 @@
 			  		url: urlNuevasNotificacionesAjax,
 			  		data: { usuario : '${userNotificacion}' }
 				}).done(function(numeroNotificacionesActivas) {
+					if ((!$('#notificacionFap').html()))
+						return;
 					if ((numeroNotificacionesActivas == null) || (numeroNotificacionesActivas == '')){
 						$('#notificacionFap').parent().remove();
 					} else {
@@ -202,5 +213,17 @@
 			});
         	
         </script>
+        
+		<script type="text/javascript">
+        //Permite detectar cuando IE corre con Vista de Compatibilidad
+        $(function(){    
+        	if (document.documentMode) {
+				if (document.documentMode <= 7) {
+					$('#infoCompatibilidad').children(0).append('<span class="label label-important">Importante: Su navegador tiene la vista de compatibilidad activada. Más información para como desactivarla <a href="/Ayuda/ayudavistacompatibilidad">aquí</a></span>')
+					return;
+				}
+			}
+        });
+    	</script>
     </body>
 </html>

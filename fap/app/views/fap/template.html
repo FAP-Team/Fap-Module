@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 
 <html lang="es">
-	<meta name="google" content="notranslate"/>
     <head>
         <title>#{get 'title' /}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="google" content="notranslate"/>
         
-        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}" />
         
-
         <link rel="stylesheet" href="@{'/public/javascripts/ext/resources/css/ext-all.css'}" />
         
         #{stylesheet 'jquery-ui.css' /}
@@ -60,7 +58,19 @@
 				#{include 'fap/header.html' /}
 	    	</div>
 
-
+%{
+    // Comprobamos si Platino responde. Si no, mostramos un mensaje de aviso.
+    def servicesConfigured = controllers.MensajeLoginController.servicesIsConfigured();
+    if(servicesConfigured != "") {
+}%
+    <div id="infoCompatibilidad" class="row">
+        <div class="span16">
+            <span class="label label-important">¡Importante! No están disponibles los servicios: ${servicesConfigured}</span>
+        </div>
+    </div>
+%{ 
+    } 
+}%
 
 %{
 	def userNotificacion=null;

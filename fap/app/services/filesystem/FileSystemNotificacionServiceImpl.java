@@ -55,7 +55,11 @@ public class FileSystemNotificacionServiceImpl implements NotificacionService {
 	protected static Logger log = Logger.getLogger(NotificacionServiceImpl.class);
 	private final static String TIPO_DOC_PUESTAADISPOSICION = FapProperties.get("fap.aed.notificacion.tipodocumento.puestaadisposicion");
 
-    
+	public boolean isConfigured() {
+		// No necesita configuración
+		return true;
+	}
+	
     public void enviarNotificaciones(Notificacion notificacion, Agente gestor) throws NotificacionException {
 		log.info(String.format("La notificación pasa al estado de puesta a disposición"));
 			// Asignamos el gestor a la notificación

@@ -44,4 +44,6 @@ public interface NotificacionService {
 	public String getUriProcedimiento() ;
 	
 	public String getUriBackOffice() ;
+
+	public boolean isConfigured();
 }

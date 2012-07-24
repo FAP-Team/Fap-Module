@@ -121,6 +121,10 @@ public class NotificacionServiceImpl implements NotificacionService {
  
 	}
 	
+	public boolean isConfigured() {
+		return notificacionPort != null;
+	}
+	
     private String getEndPoint() {
         return propertyPlaceholder.get("fap.notificaciones.url");
     }

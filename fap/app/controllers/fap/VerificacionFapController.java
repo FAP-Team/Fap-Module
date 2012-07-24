@@ -60,9 +60,19 @@ public class VerificacionFapController {
 				documentosVerificaciones.add(vDoc.uriDocumento);
 		}
 		for (Documento doc: solicitud.documentacion.documentos){
-			if ((doc.uri != null) && (!documentosVerificaciones.contains(doc.uri))){
+			if ((doc.uri != null) && (!containsSinVersion(documentosVerificaciones, doc.uri))){
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	private static boolean containsSinVersion (Set<String> documentos, String uriDoc) {
+		if ((uriDoc == null) || (uriDoc.trim().isEmpty()))
+			return false;
+		for (String aux : documentos) {
+			if (VerificacionUtils.eliminarVersionUri(uriDoc).equals(VerificacionUtils.eliminarVersionUri(aux)))
+				return true;
 		}
 		return false;
 	}

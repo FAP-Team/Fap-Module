@@ -208,6 +208,7 @@ GET /Administracion/estadosvisibles/tabladeEstadosSolicitud EstadosVisiblesContr
 GET /Administracion/codigos CodigosController.index
 GET /Administracion/codigos/tablacodrequerimientos CodigosController.tablatablacodrequerimientos
 GET /Administracion/codigos/tablacodexclusion CodigosController.tablatablacodexclusion
+GET /Ayuda/ayudavistacompatibilidad AyudaVistaCompatibilidadController.index
 GET /Principal/solicitudes SolicitudesController.index
 POST /Principal/solicitudes/busquedaForm SolicitudesController.busquedaForm
 GET /Principal/solicitudes/listaSolicitudesBuscadas SolicitudesController.tablalistaSolicitudesBuscadas

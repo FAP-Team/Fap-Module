@@ -1,5 +1,15 @@
 h2. Changelog
 
+h3. Versión 2.0.2
+
+* Añadiendo mensaje de vista compatibilidad en IE y cómo solucionarlo.
+* Requerido el firmante al requerir.
+* Fixed Bug en verificación al comprobar los documentos sin versiones.
+* Mostrar información del estado de platino.
+* Fixed Bug descripción visible en los templates.
+* El directorio de compresión de los logs, ahora es configurable.
+* Enumerando los pasos de aportación.
+
 h3. Versión 2.0.1
 
 * Páginas por defecto de FAP para Notificaciones.

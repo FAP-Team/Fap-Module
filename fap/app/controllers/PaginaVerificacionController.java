@@ -544,7 +544,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			solicitud.verificacion.requerimiento.registro.firmantes.todos = CalcularFirmantes.getGestoresComoFirmantes();
 			solicitud.verificacion.requerimiento.registro.firmantes.save();
 		}
-		FirmaUtils.firmar(solicitud.verificacion.requerimiento.oficial, solicitud.verificacion.requerimiento.registro.firmantes.todos, firma, solicitud.verificacion.requerimiento.firmante);
+		FirmaUtils.firmar(solicitud.verificacion.requerimiento.oficial, solicitud.verificacion.requerimiento.registro.firmantes.todos, firma, null);
 		
 		if (!Messages.hasErrors()) {
 			Messages.ok("El requerimiento se ha firmado correctamente");

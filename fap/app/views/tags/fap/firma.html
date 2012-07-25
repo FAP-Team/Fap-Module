@@ -70,3 +70,19 @@
 			});
 		});
 </script>
+
+
+%{
+        // Comprobamos si servicios como Platino, GestorDocumental, etc, responden. 
+        // Si no, mostramos un mensaje de aviso.
+        def servicesConfigured = controllers.MensajeLoginController.servicesIsConfigured();
+        if(!servicesConfigured.isEmpty()) {
+}%
+   
+            <script type="text/javascript">
+                $('#infoServicios').append('<div class="span16"><span class="label label-important">¡Importante! No están disponibles los servicios: ${servicesConfigured}</span></div>');
+            </script>
+%{ 
+        } 
+  
+}% 

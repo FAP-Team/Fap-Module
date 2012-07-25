@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 <html lang="es">
-	<meta name="google" content="notranslate"/>
     <head>
         <title>#{get 'title' /}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -60,20 +59,8 @@
 	    	</div>
 
 
-%{
-    // Comprobamos si servicios como Platino, GestorDocumental, etc responden. 
-    // Si no, mostramos un mensaje de aviso.
-    def servicesConfigured = controllers.MensajeLoginController.servicesIsConfigured();
-    if(!servicesConfigured.isEmpty()) {
-}%
-    <div id="infoServicios" class="row">
-        <div class="span16">
-            <span class="label label-important">¡Importante! No están disponibles los servicios: ${servicesConfigured}</span>
-        </div>
-    </div>
-%{ 
-    } 
-}%
+			<div id="infoServicios">
+		    </div>
 
 			<div id="infoCompatibilidad" class="row">
 				<div class="span16">

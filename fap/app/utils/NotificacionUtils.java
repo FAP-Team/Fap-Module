@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.joda.time.DateTime;
 
+import play.db.jpa.Transactional;
 import play.modules.guice.InjectSupport;
 
 import services.NotificacionService;
@@ -84,6 +85,7 @@ public class NotificacionUtils {
 		return "";
 	}
 	
+	@Transactional
 	public static void recargarNotificacionesFromWS (String uriProcedimiento){
 		if (notificacionService != null){
 			List<Notificacion> notificaciones = notificacionService.getNotificaciones(uriProcedimiento);

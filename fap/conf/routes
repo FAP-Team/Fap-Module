@@ -21,6 +21,8 @@ GET   /Baremacion/evaluacion/{idEvaluacion}/borradorpdf              fap.FichaEv
 #Utils
 
 GET /utils/documentoEsMultiple/{tipoUri}				fap.UtilsController.documentoEsMultiple
+GET /utils/filterDependency/{tabla}/{dependencia}		fap.UtilsController.filterDependency
+GET /utils/filterTKV/{tabla}/{elementos}				fap.UtilsController.filterTKV
 
 #Descarga del AED
 GET         /aed/descargar                 fap.DescargasAedController.descargar

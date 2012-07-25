@@ -33,6 +33,9 @@ public class TableKeyValue extends FapModel {
 	@Column(columnDefinition = "LONGTEXT", name = "v")
 	public String value;
 
+	@Column(name = "o")
+	public boolean noVisible;
+
 	public void init() {
 
 		postInit();
@@ -49,11 +52,12 @@ public class TableKeyValue extends FapModel {
 		super();
 	}
 
-	public TableKeyValue(String table, String key, String value) {
+	public TableKeyValue(String table, String key, String value, boolean noVisible) {
 		super();
 		this.table = table;
 		this.key = key;
 		this.value = value;
+		this.noVisible = noVisible;
 	}
 
 	/**
@@ -125,10 +129,10 @@ public class TableKeyValue extends FapModel {
 	 * @param value
 	 * @param renewCache
 	 */
-	public static void setValue(String table, String key, String value, boolean renewCache) {
+	public static void setValue(String table, String key, String value, boolean noVisible, boolean renewCache) {
 		TableKeyValue first = TableKeyValue.find("byTableAndKey", table, key).first();
 		if (first == null) {
-			first = new TableKeyValue(table, key, value);
+			first = new TableKeyValue(table, key, value, noVisible);
 		} else {
 			first.value = value;
 		}
@@ -147,16 +151,16 @@ public class TableKeyValue extends FapModel {
 	 * @param key
 	 * @param value
 	 */
-	public static void setValue(String table, String key, String value) {
-		setValue(table, key, value, true);
+	public static void setValue(String table, String key, String value, boolean noVisible) {
+		setValue(table, key, value, noVisible, true);
 	}
 
 	public static void setValue(TableKeyValue tkv) {
-		setValue(tkv.table, tkv.key, tkv.value, true);
+		setValue(tkv.table, tkv.key, tkv.value, tkv.noVisible, true);
 	}
 
 	public static void setValue(TableKeyValue tkv, boolean renewCache) {
-		setValue(tkv.table, tkv.key, tkv.value, renewCache);
+		setValue(tkv.table, tkv.key, tkv.value, tkv.noVisible, renewCache);
 	}
 
 	/**

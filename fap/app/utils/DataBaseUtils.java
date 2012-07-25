@@ -38,7 +38,7 @@ public class DataBaseUtils {
 		for(TableKeyValue tableKeyValue : rowsFiltered) {
 			if (!TableKeyValue.contains(USER_TABLE_NAME, tableKeyValue.key)) {
 				play.Logger.info("Creamos el estado \""+tableKeyValue.key+"\" para la visibilidad del estado del usuario");
-				TableKeyValue.setValue(USER_TABLE_NAME, tableKeyValue.key, tableKeyValue.key);
+				TableKeyValue.setValue(USER_TABLE_NAME, tableKeyValue.key, tableKeyValue.key, tableKeyValue.noVisible);
 			}
 			
 			VisibilidadEstadoUsuario visibilidadEstado = VisibilidadEstadoUsuario.find( "select visibilidad from VisibilidadEstadoUsuario visibilidad where visibilidad.estadoInterno = ?", tableKeyValue.key).first();

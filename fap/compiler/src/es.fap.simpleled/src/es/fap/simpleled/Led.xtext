@@ -512,7 +512,9 @@ EntidadAutomatica:
 ;
 
 Lista:
-	elemento='Lista' name=ID (enumerado?='crearEnumerado')? '{'
+	elemento='Lista' name=ID (enumerado?='crearEnumerado')? &
+	(ocultar?='ocultar')?
+	'{'
 		elementos+=ElementoLista*
 	'}'
 ;

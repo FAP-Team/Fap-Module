@@ -364,7 +364,7 @@ Lista comunidadesAutonomas{
 	}
 }
 
-Lista provincias{
+Lista provincias ocultar{
 	 01 : {
 		04: "Almería"
 		11: "Cádiz"
@@ -457,8 +457,8 @@ Lista provincias{
 	}
 }
 
-Lista municipios {
-	/* 01 : {
+Lista municipios ocultar{
+	 01 : {
 		010014: "Alegría-Dulantzi"
 		010029: "Amurrio"
 		010493: "Añana"
@@ -5757,7 +5757,7 @@ Lista municipios {
 		342435: "Villoldo"
 		342453: "Villota del Páramo"
 		342466: "Villovieco"
-	}*/
+	}
 	35 : {
 		350017: "Agaete"
 		350022: "Agüimes"
@@ -5794,7 +5794,7 @@ Lista municipios {
 		350332: "Vega de San Mateo"
 		350347: "Yaiza"
 	}
-	/* 36 : {
+	 36 : {
 		360209: "Agolada"
 		360010: "Arbo"
 		360031: "Baiona"
@@ -6221,7 +6221,7 @@ Lista municipios {
 		373809: "Zarapicos"
 		373816: "Zarza de Pumareda (La)"
 		373821: "Zorita de la Frontera"
-	}*/
+	}
 	38 : {
 		380012: "Adeje"
 		380027: "Agulo"
@@ -6277,7 +6277,7 @@ Lista municipios {
 		380526: "Vilaflor"
 		380532: "Villa de Mazo"
 	}
-	/*39 : {
+	39 : {
 		390015: "Alfoz de Lloredo"
 		390020: "Ampuero"
 		390036: "Anievas"
@@ -8671,7 +8671,7 @@ Lista municipios {
 	}
 	52 : {
 		520018: "Melilla"
-	}*/
+	}
 }
 
 Lista tipoConsulta crearEnumerado {

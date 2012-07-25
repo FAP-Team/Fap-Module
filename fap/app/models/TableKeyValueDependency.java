@@ -33,6 +33,9 @@ public class TableKeyValueDependency extends FapModel {
 	@Column(name = "k")
 	public String key;
 
+	@Column(name = "o")
+	public boolean noVisible;
+
 	public void init() {
 
 		postInit();
@@ -49,11 +52,12 @@ public class TableKeyValueDependency extends FapModel {
 		super();
 	}
 
-	public TableKeyValueDependency(String table, String key, String dependency) {
+	public TableKeyValueDependency(String table, String key, String dependency, boolean noVisible) {
 		super();
 		this.table = table;
 		this.key = key;
 		this.dependency = dependency;
+		this.noVisible = noVisible;
 	}
 
 	/**
@@ -125,10 +129,10 @@ public class TableKeyValueDependency extends FapModel {
 	 * @param dependency
 	 * @param renewCache
 	 */
-	public static void setValue(String table, String key, String dependency, boolean renewCache) {
+	public static void setValue(String table, String key, String dependency, boolean noVisible, boolean renewCache) {
 		TableKeyValue first = TableKeyValueDependency.find("byTableAndKey", table, key).first();
 		if (first == null) {
-			first = new TableKeyValue(table, key, dependency);
+			first = new TableKeyValue(table, key, dependency, noVisible);
 		} else {
 			first.value = dependency;
 		}
@@ -147,16 +151,16 @@ public class TableKeyValueDependency extends FapModel {
 	 * @param key
 	 * @param value
 	 */
-	public static void setValue(String table, String key, String dependency) {
-		setValue(table, key, dependency, true);
+	public static void setValue(String table, String key, boolean noVisible, String dependency) {
+		setValue(table, key, dependency, noVisible, true);
 	}
 
 	public static void setValue(TableKeyValueDependency tkv) {
-		setValue(tkv.table, tkv.key, tkv.dependency, true);
+		setValue(tkv.table, tkv.key, tkv.dependency, tkv.noVisible, true);
 	}
 
 	public static void setValue(TableKeyValueDependency tkv, boolean renewCache) {
-		setValue(tkv.table, tkv.key, tkv.dependency, renewCache);
+		setValue(tkv.table, tkv.key, tkv.dependency, tkv.noVisible, renewCache);
 	}
 
 	/**
@@ -222,17 +226,17 @@ public class TableKeyValueDependency extends FapModel {
 	 * @param dependency
 	 * @param renewCache
 	 */
-	public static void updateValue(String oldTable, String oldKey, String newTable, String newKey, String newDependency, boolean renewCache) {
+	public static void updateValue(String oldTable, String oldKey, String newTable, String newKey, String newDependency, boolean noVisible, boolean renewCache) {
 		removeValue(oldTable, oldKey, renewCache);
-		setValue(newTable, newKey, newDependency, renewCache);
+		setValue(newTable, newKey, newDependency, noVisible, renewCache);
 	}
 
 	public static void updateValue(TableKeyValueDependency oldTkv, TableKeyValueDependency newTkv) {
-		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.dependency, true);
+		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.dependency, newTkv.noVisible, true);
 	}
 
 	public static void updateValue(TableKeyValueDependency oldTkv, TableKeyValueDependency newTkv, boolean renewCache) {
-		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.dependency, renewCache);
+		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.dependency, newTkv.noVisible, renewCache);
 	}
 
 	/**

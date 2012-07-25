@@ -85,7 +85,7 @@ public class AedController extends AedControllerGen {
         String table = "tiposDocumentos";
         TableKeyValue.deleteTable(table);
         for (models.TipoDocumento tipo : tiposDocumentos) {
-            TableKeyValue.setValue(table, tipo.uri, tipo.nombre, false);
+            TableKeyValue.setValue(table, tipo.uri, tipo.nombre, false, false);
         }
         TableKeyValue.renewCache(table); // Renueva la cache una única vez
     }

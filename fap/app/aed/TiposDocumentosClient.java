@@ -124,7 +124,7 @@ public class TiposDocumentosClient {
 			String table = "tiposDocumentos";
 			TableKeyValue.deleteTable(table);
 			for(models.TipoDocumento tipo : tiposDocumentos){
-				TableKeyValue.setValue(table, tipo.uri, tipo.nombre, false);
+				TableKeyValue.setValue(table, tipo.uri, tipo.nombre, false, false);
 			}
 			TableKeyValue.renewCache(table); //Renueva la cache una única vez
 			
@@ -220,7 +220,7 @@ public class TiposDocumentosClient {
 			for(TipoDocumentoEnTramite tipoDoc : lista){
 				String uriTipoDocumento = tipoDoc.getUri();
 				TipoDocumento tipoDocumento = tipos.obtenerTipoDocumento(uriTipoDocumento);
-				TableKeyValue.setValue(table, uriTipoDocumento, tipoDocumento.getDescripcion(), false);
+				TableKeyValue.setValue(table, uriTipoDocumento, tipoDocumento.getDescripcion(), false, false);
 			}
 		}catch(Exception e){
 			log.error("Se produjo un error actualizando la tabla " + table + ". Rollback", e);

@@ -210,7 +210,7 @@ public class GLista extends GElement{
   table: '${table}'
   key: '${key}'
   value: '${value}'
-
+  noVisible: '${lista.ocultar}'
 """
 	}
 	
@@ -240,6 +240,7 @@ public class GLista extends GElement{
   table: '${table}'
   key: '${keyDep}'
   value: '${valueDep}'
+  noVisible: '${lista.ocultar}'
 
 """
 			// Para la tabla TKVDependency
@@ -247,6 +248,7 @@ public class GLista extends GElement{
   table: '${table}'
   dependency: '${key}'
   key: '${keyDep}'
+  noVisible: '${lista.ocultar}'
 
 """
 			contador+=2;

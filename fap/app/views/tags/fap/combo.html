@@ -52,8 +52,8 @@
 	def manyTo = _manyTo;
 	def name = ""
 	// Obtenemos la lista con los valores de las dependencias del combo, si tuviera
-	def listaDependencias = models.TableKeyValueDependency.findByTableAsMap("${field.table}");
-	def listaTKV = models.TableKeyValue.findByTableAsMap("${field.table}");
+	def listaDependencias;
+	def listaTKV;
 }%
     
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
@@ -160,31 +160,127 @@
 	#{/fap.formrow}
 	
 	#{if dependencia}
+	
+		%{
+			urlFilterDependencyFunction = play.mvc.Router.reverse('fap.UtilsController.filterDependency')
+			urlFilterTKVFunction = play.mvc.Router.reverse('fap.UtilsController.filterTKV')
+		%}
 		
 		<script>
+		
+			 var elementos${id}={};
+             var elementosTKV${id}={};
+             var valorDependencia${id};
+
+			// Para llamar a codigo Java que filtre los valores de la lista de dependencia para que solo cargue los potenciales, no todos.
+			function calculateDependencies${id}(dependency){
+				var urlFilterDependency = "${urlFilterDependencyFunction}";
+				if(dependency != ""){
+					$.ajax({
+				  		type: "POST",
+				  		url: urlFilterDependency,
+				  		data: {tabla: "${field.table}", dependencia: dependency}
+					}).done(function( msg ) { 
+		 				var params = msg;
+						if (params != "{}"){
+							params = params.replace("{", "");
+							params = params.replace("}", "");
+							params = params.split('%');
+							for (var i = 0; i < params.length; i++) {
+		 						 var parts = params[i].split(':');
+		 						 elementos${id}[parts[0]] = parts[1];
+							}
+						} 
+						calculateTKV${id}(msg);
+					});
+				} else {
+					// Rellenar el select con options, segun los valores que le correspondan
+					var contenido${id} = '<option> </option>';
+					for (var el in elementos${id}){
+						// Calcular los valores de la lista segun el valor dependiente
+						if (elementos${id}[el] === valorDependencia${id}){
+							var selected = ""
+							// Para recuperar el valor seleccionado, si lo habia
+							if ($('select[id=${id}]').val() == el)
+								selected = "selected=\"selected\"";
+						    contenido${id}+='<option value="'+el+'" '+selected+'>#{if mostrarClave}'+elementos${id}[el]+' - #{/if}'+elementosTKV${id}[el]+'</option>';
+						}
+					}
+					$('#${id}').html(contenido${id});
+					// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
+					$('#${id}').change();
+					elementos${id}={};
+             		elementosTKV${id}={}
+				}
+			}
+			
+			// Para llamar a codigo Java que filtre los valores de la lista de dependencia para que solo cargue los potenciales, no todos.
+			function calculateTKV${id}(elementos){
+				var urlFilterTKV = "${urlFilterTKVFunction}";
+				if (elementos != "{}"){
+					$.ajax({
+				  		type: "POST",
+				  		url: urlFilterTKV,
+				  		data: {tabla: "${field.table}", elementos: elementos}
+					}).done(function( msg ) {
+						var params = msg;
+						if (params != "{}"){
+							params = params.replace("{", "");
+							params = params.replace("}", "");
+							params = params.split('%');
+							for (var i = 0; i < params.length; i++) {
+		 						 var parts = params[i].split(':');
+		 						 elementosTKV${id}[parts[0]] = parts[1];
+							}
+						}
+						// Rellenar el select con options, segun los valores que le correspondan
+						var contenido${id} = '<option> </option>';
+						for (var el in elementos${id}){
+							// Calcular los valores de la lista segun el valor dependiente
+							if (elementos${id}[el] === valorDependencia${id}){
+								var selected = ""
+								// Para recuperar el valor seleccionado, si lo habia
+								if ($('select[id=${id}]').val() == el)
+									selected = "selected=\"selected\"";
+							    contenido${id}+='<option value="'+el+'" '+selected+'>#{if mostrarClave}'+elementos${id}[el]+' - #{/if}'+elementosTKV${id}[el]+'</option>';
+							}
+						}
+						$('#${id}').html(contenido${id});
+						// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
+						$('#${id}').change();
+						elementos${id}={};
+	             		elementosTKV${id}={}
+					});
+				} else {
+					// Rellenar el select con options, segun los valores que le correspondan
+					var contenido${id} = '<option> </option>';
+					for (var el in elementos${id}){
+						// Calcular los valores de la lista segun el valor dependiente
+						if (elementos${id}[el] === valorDependencia${id}){
+							var selected = ""
+							// Para recuperar el valor seleccionado, si lo habia
+							if ($('select[id=${id}]').val() == el)
+								selected = "selected=\"selected\"";
+						    contenido${id}+='<option value="'+el+'" '+selected+'>#{if mostrarClave}'+elementos${id}[el]+' - #{/if}'+elementosTKV${id}[el]+'</option>';
+						}
+					}
+					$('#${id}').html(contenido${id});
+					// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
+					$('#${id}').change();
+					elementos${id}={};
+             		elementosTKV${id}={}
+				}
+			}
+		
+		
+		
 			// Para los combos dependientes
 			function CargarValoresComboDependiente${id}(){
-				var valorDependencia${id} = $('select[id=${dependencia}]').val();
+				valorDependencia${id} = $('select[id=${dependencia}]').val();
 				if (valorDependencia${id}.match(/^_\d*/)){ // Para quitar el '_' que se pone automaticamente cuando la clave es un digito
 					valorDependencia${id}=valorDependencia${id}.replace("_", "");
 				}
-                var elementos${id} = #{fap.toJSMap listaDependencias/};
-                var elementosTKV${id} = #{fap.toJSMap listaTKV/};
-                // Rellenar el select con options, segun los valores que le correspondan
-				var contenido${id} = '<option> </option>';
-				for (var el in elementos${id}){
-					// Calcular los valores de la lista segun el valor dependiente
-					if (elementos${id}[el] === valorDependencia${id}){
-						var selected = ""
-						// Para recuperar el valor seleccionado, si lo habia
-						if ($('select[id=${id}]').val() == el)
-							selected = "selected=\"selected\"";
-					    contenido${id}+='<option value="'+el+'" '+selected+'>#{if mostrarClave}'+elementos${id}[el]+' - #{/if}'+elementosTKV${id}[el]+'</option>';
-					}
-				}
-				$('#${id}').html(contenido${id});
-				// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
-				$('#${id}').change();
+                calculateDependencies${id}(valorDependencia${id}); 
 			}
 			// Para cada vez que se renderiza la pagina, calculamos los posibles valores de ese combo
 			CargarValoresComboDependiente${id}();

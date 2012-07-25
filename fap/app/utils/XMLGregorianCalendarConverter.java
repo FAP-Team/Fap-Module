@@ -68,5 +68,13 @@ public class XMLGregorianCalendarConverter {
             return xgc.toGregorianCalendar().getTime();
         }
     }
+    
+    public static DateTime asDatetime(XMLGregorianCalendar xgc) {
+        if (xgc == null) {
+             return null;
+         } else {
+             return new DateTime(asDate(xgc));
+         }
+     }
 }
 

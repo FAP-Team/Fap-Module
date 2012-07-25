@@ -29,7 +29,7 @@ import utils.NotificacionUtils;
 @Every("1min")
 public class ActualizarNotificaciones extends Job {
 	
-	Integer tiempoRefresco=1;
+	static Integer tiempoRefresco = 1;
 	
     public void doJob() {
     	

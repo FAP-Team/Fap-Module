@@ -439,7 +439,11 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		SolicitudGenerica dbSolicitud = PaginaVerificacionController.getSolicitudGenerica(idSolicitud);
 
 		if (firmaRequerimiento != null) {
-			PaginaVerificacionController.firmaRequerimientoGFirmarRequerimiento(idSolicitud, idVerificacion, firma);
+			
+			// Si no ha sido firmada
+			if (!dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.firmada) {
+				PaginaVerificacionController.firmaRequerimientoGFirmarRequerimiento(idSolicitud, idVerificacion, firma);
+			}
 			
 			// Si ya fue firmada y no ha sido registrada
 			if (dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.firmada
@@ -567,42 +571,48 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 			Notificacion notificacion = solicitud.verificacion.requerimiento.notificacion;
 		
-			if (notificacion.estado.equals(EstadoNotificacionEnum.creada.name()) &&
-					!notificacion.estado.equals(EstadoNotificacionEnum.enviada.name())) {
+			if (notificacion.estado.equals(EstadoNotificacionEnum.creada.name())) {
 				// TODO: Está en estado creada, debo notificarla
 				try {
 					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
-					play.Logger.info("Se ha enviado correctamente la notificación "+notificacion.id);
-					// Los demás cambios en la notificación los hace el Servicio
-					notificacion.estado = EstadoNotificacionEnum.enviada.name();
+					
+					play.Logger.info("Se ha puesto a disposición la notificación "+notificacion.id);
 					notificacion.fechaPuestaADisposicion = new DateTime();
 					notificacion.save();
-					
-					solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
-					// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
-					VerificacionUtils.setVerificadoDocumentos(solicitud.verificacion.documentos, solicitud.documentacion.documentos);
-					// Actualizamos los datos de la verificacion para verificaciones posteriores. Copiamos la verificacionActual a las verificaciones Anteriores para poder empezar una nueva verificación.
-					solicitud.verificaciones.add(solicitud.verificacion);
-					
-					solicitud.save();
-					
-					try {			
-						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-						
-						Mails.enviar("emitirRequerimiento", solicitud);
-					} catch (Exception e) {
-						play.Logger.error("No se pudo enviar el mail emitirRequerimiento: "+e.getMessage());
-					}
-					
-					if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
-			    		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
-					
-				} catch (NotificacionException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
 					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
 				}
+			}
+			
+			if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
+		    	NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+			
+			// Si fue puesta a disposición
+			if (notificacion.estado.equals(EstadoNotificacionEnum.puestaadisposicion.name())) {
+					
+				if (!solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enRequerido.name())) {
+					solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
+					// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
+					VerificacionUtils.setVerificadoDocumentos(solicitud.verificacion.documentos, solicitud.documentacion.documentos);
+					// Actualizamos los datos de la verificacion para verificaciones posteriores. Copiamos la verificacionActual a las verificaciones Anteriores para poder empezar una nueva verificación.
+					solicitud.verificaciones.add(solicitud.verificacion);
+					solicitud.save();
+				}
+					
+				try {			
+					play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+					Mails.enviar("emitirRequerimiento", solicitud);
+					notificacion.estado = EstadoNotificacionEnum.enviada.name();
+				} catch (Exception e) {
+					play.Logger.error("No se pudo enviar el mail emitirRequerimiento: "+e.getMessage());
+				}
+					
+				if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
+			    	NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+					
 			}
 		}
 

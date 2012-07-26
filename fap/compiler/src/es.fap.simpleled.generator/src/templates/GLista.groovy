@@ -6,6 +6,8 @@ import org.eclipse.emf.common.util.EList;
 import generator.utils.FileUtils;
 import generator.utils.StringUtils;
 import generator.utils.LedUtils;
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import es.fap.simpleled.led.impl.ElementoListaImpl;
 import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.*;
@@ -254,7 +256,9 @@ public class GLista extends GElement{
 			contador+=2;
 			if (contador == 100){
 				contador = 0;
-				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numFichero + ".yaml", out);
+				NumberFormat formatter = new DecimalFormat("0000");
+				String numeroFormateado = formatter.format(numFichero);
+				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numeroFormateado + ".yaml", out);
 				out = "";
 				numFichero++;
 			}

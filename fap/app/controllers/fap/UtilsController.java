@@ -50,15 +50,14 @@ public class UtilsController extends Controller {
     
     public static String filterDependency(String tabla, String dependencia){
     	if (!dependencia.isEmpty()){
-	    	Map<String, String> mapa = TableKeyValueDependency.findByTableAsMap(tabla);
-	    	System.out.println(mapa);
-			Iterator<String> iterator = mapa.keySet().iterator();
+	    	List<TableKeyValueDependency> tablaD = TableKeyValueDependency.find("select tkvd from TableKeyValueDependency tkvd where table=?", tabla).fetch(); 
 			String js = "{";
-			while(iterator.hasNext()){
-				String key = iterator.next();
-				if (dependencia.equals(mapa.get(key))){
-					js += key + ":" + mapa.get(key);
-					if(iterator.hasNext()){
+			int tamLimite = tablaD.size();
+			int contador=1;
+			for (TableKeyValueDependency tkvd: tablaD){
+				if (dependencia.equals(tkvd.dependency)){
+					js += tkvd.key + ":" + tkvd.dependency;
+					if(contador++ <= tamLimite){
 						js += "%";
 					}
 				}
@@ -71,11 +70,12 @@ public class UtilsController extends Controller {
     
     public static String filterTKV(String tabla, String elementos) throws IOException{
 
-    	Properties props = new Properties();
-    	props.load(new StringReader(elementos.substring(1, elementos.length() - 1).replace("%", "\n")));       
+    	elementos = elementos.replaceFirst("\\{", "");
+    	elementos = elementos.replaceFirst("\\}", "");
+    	String[] parseador = elementos.split(":.*?%");
     	List<String> mapaFilter = new ArrayList<String>();
-    	for (Map.Entry<Object, Object> e : props.entrySet()) {
-    	    mapaFilter.add((String)e.getKey());
+    	for (String s : parseador) {
+    	    mapaFilter.add(s);
     	}
     	if (!mapaFilter.isEmpty()){
     		Map<String, String> mapa = TableKeyValue.findByTableAsMap(tabla);

@@ -168,9 +168,11 @@
 		
 		<script>
 		
-			 var elementos${id}={};
+			 var elementosKey${id}=[];
+			 var elementosValue${id}=[];
              var elementosTKV${id}={};
              var valorDependencia${id};
+             var tamElementos${id}=0;
 
 			// Para llamar a codigo Java que filtre los valores de la lista de dependencia para que solo cargue los potenciales, no todos.
 			function calculateDependencies${id}(dependency){
@@ -188,7 +190,9 @@
 							params = params.split('%');
 							for (var i = 0; i < params.length; i++) {
 		 						 var parts = params[i].split(':');
-		 						 elementos${id}[parts[0]] = parts[1];
+		 						 elementosKey${id}[i] = parts[0]
+		 						 elementosValue${id}[i] = parts[1];
+		 						 tamElementos${id}++;
 							}
 						} 
 						calculateTKV${id}(msg);
@@ -196,21 +200,13 @@
 				} else {
 					// Rellenar el select con options, segun los valores que le correspondan
 					var contenido${id} = '<option> </option>';
-					for (var el in elementos${id}){
-						// Calcular los valores de la lista segun el valor dependiente
-						if (elementos${id}[el] === valorDependencia${id}){
-							var selected = ""
-							// Para recuperar el valor seleccionado, si lo habia
-							if ($('select[id=${id}]').val() == el)
-								selected = "selected=\"selected\"";
-						    contenido${id}+='<option value="'+el+'" '+selected+'>#{if mostrarClave}'+elementos${id}[el]+' - #{/if}'+elementosTKV${id}[el]+'</option>';
-						}
-					}
 					$('#${id}').html(contenido${id});
 					// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
 					$('#${id}').change();
-					elementos${id}={};
-             		elementosTKV${id}={}
+					elementosKey${id}=[];
+					elementosValue${id}=[];
+             		elementosTKV${id}={};
+             		tamElementos${id}=0;
 				}
 			}
 			
@@ -235,40 +231,33 @@
 						}
 						// Rellenar el select con options, segun los valores que le correspondan
 						var contenido${id} = '<option> </option>';
-						for (var el in elementos${id}){
+						var i;
+						for (i=0; i<tamElementos${id}; i++){
 							// Calcular los valores de la lista segun el valor dependiente
-							if (elementos${id}[el] === valorDependencia${id}){
+							if (elementosValue${id}[i] === valorDependencia${id}){
 								var selected = ""
 								// Para recuperar el valor seleccionado, si lo habia
-								if ($('select[id=${id}]').val() == el)
+								if ($('select[id=${id}]').val() == elementosKey${id}[i])
 									selected = "selected=\"selected\"";
-							    contenido${id}+='<option value="'+el+'" '+selected+'>#{if mostrarClave}'+elementos${id}[el]+' - #{/if}'+elementosTKV${id}[el]+'</option>';
+							    contenido${id}+='<option value="'+elementosKey${id}[i]+'" '+selected+'>#{if mostrarClave}'+elementosValue${id}[i]+' - #{/if}'+elementosTKV${id}[elementosKey${id}[i]]+'</option>';
 							}
 						}
 						$('#${id}').html(contenido${id});
 						// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
 						$('#${id}').change();
 						elementos${id}={};
-	             		elementosTKV${id}={}
+	             		elementosTKV${id}={};
+	             		tamElementos${id}=0;
 					});
 				} else {
 					// Rellenar el select con options, segun los valores que le correspondan
 					var contenido${id} = '<option> </option>';
-					for (var el in elementos${id}){
-						// Calcular los valores de la lista segun el valor dependiente
-						if (elementos${id}[el] === valorDependencia${id}){
-							var selected = ""
-							// Para recuperar el valor seleccionado, si lo habia
-							if ($('select[id=${id}]').val() == el)
-								selected = "selected=\"selected\"";
-						    contenido${id}+='<option value="'+el+'" '+selected+'>#{if mostrarClave}'+elementos${id}[el]+' - #{/if}'+elementosTKV${id}[el]+'</option>';
-						}
-					}
 					$('#${id}').html(contenido${id});
 					// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
 					$('#${id}').change();
 					elementos${id}={};
-             		elementosTKV${id}={}
+             		elementosTKV${id}={};
+             		tamElementos${id}=0;
 				}
 			}
 		

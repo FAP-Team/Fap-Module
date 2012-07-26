@@ -151,13 +151,20 @@ width:100%;
  <thead>
   <tr>		
 		<td>Documento</td>
+		<td>Tipo</td>
 		<td>Hash del documento</td>
 		
   <tr>
  </thead>
 	#{list items:solicitud.aportaciones.actual.documentos, as:"documento"}
+	%{
+		String descripcionDevolver = documento.tipo;
+		if (models.TableKeyValue.getValue("tiposDocumentos", documento.tipo) != null)
+			descripcionDevolver = models.TableKeyValue.getValue("tiposDocumentos", documento.tipo);
+	%}
 	<tr>
-		<td >${documento.descripcionVisible}</td>
+		<td>${documento.descripcionVisible}</td>
+		<td>${descripcionDevolver}</td>
 		<td>${documento.hash}</td>
 	</tr>
    #{/list}

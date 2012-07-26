@@ -7,7 +7,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.apache.log4j.PropertyConfigurator;
+import org.hibernate.ejb.EntityManagerImpl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,6 +22,8 @@ import models.*;
 import play.Logger;
 import play.Play;
 import play.classloading.ApplicationClassloader;
+import play.db.DB;
+import play.db.jpa.JPA;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
 import play.mvc.Router;
@@ -55,6 +60,13 @@ public class Start extends Job {
 		// Para controlar el posible cambio de version del modulo fap de una aplicacion, y evitar el minimo daño posible en la BBDD
 		// Ya que en versiones 1.2.X y anteriores la TableKeyValueDependency no existía, por lo que debemos controlar eso.
 		boolean cambioVersion=true;
+		
+		// Si TableKeyValue no está vacía y tiene el atributo noVisible a NULL,
+		// se lo ponemos a false (si no, salta un error)
+		if (TableKeyValue.count() != 0) {
+			Query query = JPA.em().createQuery("update TableKeyValue tablekeyvalue set o=false where o=null");
+			query.executeUpdate();
+		}
 		
 		if(TableKeyValue.count() == 0){
 	        long count = TableKeyValue.loadFromFiles(false); //Carga las dos tablas, tanto la TableKeyValue como la TableKeyValueDependency, le pasamos false porque no se ha cargado nada (ningun .yaml) previamente

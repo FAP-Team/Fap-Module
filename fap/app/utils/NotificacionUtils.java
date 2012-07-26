@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import play.db.jpa.Transactional;
@@ -87,6 +88,7 @@ public class NotificacionUtils {
 	
 	@Transactional
 	public static void recargarNotificacionesFromWS (String uriProcedimiento){
+		Logger log = Logger.getLogger("Job");
 		if (notificacionService != null){
 			List<Notificacion> notificaciones = notificacionService.getNotificaciones(uriProcedimiento);
 			if (notificaciones != null){
@@ -96,7 +98,7 @@ public class NotificacionUtils {
 						dbNotificacion.actualizar(notificacion);
 						dbNotificacion.save();
 					} else {
-						play.Logger.error("Existe una notificacion con uri: "+notificacion.uri+" en la base de datos del servicio web, pero no en la aplicación local");
+						log.error("Existe una notificacion con uri: "+notificacion.uri+" en la base de datos del servicio web, pero no en la aplicación local");
 					}
 				}
 			} else {

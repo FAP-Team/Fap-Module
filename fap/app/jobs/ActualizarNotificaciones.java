@@ -13,8 +13,10 @@ import javax.inject.Inject;
 
 import models.Notificacion;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import play.db.jpa.Transactional;
 import play.jobs.*;
 import properties.FapProperties;
 import services.GestorDocumentalService;
@@ -31,8 +33,8 @@ public class ActualizarNotificaciones extends Job {
 	
 	static Integer tiempoRefresco = 1;
 	
+	@Transactional
     public void doJob() {
-    	
     	Integer frecuencia = FapProperties.getInt("fap.notificacion.refrescoBaseDeDatosFromWS");
     	if ((frecuencia != null) && (tiempoRefresco == frecuencia)){
     		tiempoRefresco=1;

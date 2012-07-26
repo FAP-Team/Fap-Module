@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 2.0.3
+
+* Fixed Bug servicio de Notificaciones.
+* Fixed Bug plantilla aportacion de documentacion.
+* Mejorado el rendimiento de los combos dependientes utilizando Ajax.
+* Nuevos métodos en la clase XMLGregorianCalendarConverter.
+
 h3. Versión 2.0.2
 
 * Añadiendo mensaje de vista compatibilidad en IE y cómo solucionarlo.

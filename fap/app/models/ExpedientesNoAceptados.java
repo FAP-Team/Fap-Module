@@ -29,7 +29,7 @@ public class ExpedientesNoAceptados extends FapModel {
 	public String estado;
 
 	@Moneda
-	public Double Cantidad;
+	public Double cantidad;
 
 	public ExpedientesNoAceptados() {
 		init();

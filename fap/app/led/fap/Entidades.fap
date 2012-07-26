@@ -552,7 +552,7 @@ Entidad ExpedientesNoAceptados nonPersist {
 	Solicitante solicitante
 	String idAed
 	String estado
-	Moneda Cantidad
+	Moneda cantidad
 }
 Entidad Desistimiento {
 	LongText motivo

@@ -75,7 +75,8 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
 		{
-			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
+			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
 			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
@@ -113,6 +114,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				popupLeer=PopUpDocProcesos
 			{
 				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+				Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
 				Columna titulo="Tipo Documento" campo=Documento.tipo
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"

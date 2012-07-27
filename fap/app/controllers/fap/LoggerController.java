@@ -99,23 +99,25 @@ public class LoggerController extends GenericController {
 					}
 					
 					error = false;
+					String rutaFichero = rutaLogs + "/" + nameLogs;
+					
 					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
 					if (!esHoy(date)){
-						if (utils.ZipUtils.descomprimirEnZip(rutaLogs+"/backups/Daily/"+nameLogs+".zip", rutaLogs + "/" + nameLogs)){
+						if (utils.ZipUtils.descomprimirEnZip(rutaLogs+"/backups/Daily/"+nameLogs+".zip", rutaFichero)){
 							// Lo anotamos para despues borrarlo, y no dejar basura
-							borrarDaily.add(rutaLogs + "/" + nameLogs);
+							borrarDaily.add(rutaFichero);
 						} else{
 							error = true;
 							play.Logger.error("Descompresión de '" + rutaLogs + "/backups/Daily/"+nameLogs+".zip' fallida o no existe el fichero");
 						}
 					}
 					if (!error){
-						if ((new File(rutaLogs + "/" + nameLogs)).exists()){
-							FileReader ficheroDaily = new FileReader(rutaLogs + "/" + nameLogs);
+						if ((new File(rutaFichero)).exists()){
+							FileReader ficheroDaily = new FileReader(rutaFichero);
 							brDaily.add(new BufferedReader(ficheroDaily));
 							ficherosACerrar.add(ficheroDaily);
 						} else {
-							play.Logger.error("Fichero '"+rutaLogs + "/" + nameLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
+							play.Logger.error("Fichero '"+ rutaFichero +"' no existe. Imposible mostrarlo en la tabla de Logs");
 						}
 					}
 				}
@@ -138,23 +140,25 @@ public class LoggerController extends GenericController {
 					}
 					
 					error = false;
+					String rutaFichero = rutaLogs + "/" + nameLogs;
+					
 					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
 					if (!esHoy(date)){
-						if (utils.ZipUtils.descomprimirEnZip(rutaLogs+"/backups/Auditable/"+nameLogs+".zip", rutaLogs + "/" + nameLogs)){
+						if (utils.ZipUtils.descomprimirEnZip(rutaLogs+"/backups/Auditable/"+nameLogs+".zip", rutaFichero)){
 							// Lo anotamos para despues borrarlo, y no dejar basura
-							borrarAuditable.add(rutaLogs + "/" + nameLogs);
+							borrarAuditable.add(rutaFichero);
 						} else{
 							error = true;
 							play.Logger.error("Descompresión de '" + rutaLogs +"/backups/Auditable/"+nameLogs+".zip' fallida o no existe el fichero");
 						}
 					}
 					if (!error){
-						if ((new File(rutaLogs + "/" + nameLogs)).exists()){
-							FileReader ficheroAuditable = new FileReader(rutaLogs + "/" + nameLogs);
+						if ((new File(rutaFichero)).exists()){
+							FileReader ficheroAuditable = new FileReader(rutaFichero);
 							brAuditable.add(new BufferedReader(ficheroAuditable));
 							ficherosACerrar.add(ficheroAuditable);
 						} else {
-							play.Logger.error("Fichero '"+rutaLogs + "/" + nameLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
+							play.Logger.error("Fichero '"+ rutaFichero +"' no existe. Imposible mostrarlo en la tabla de Logs");
 						}
 					}
 				}

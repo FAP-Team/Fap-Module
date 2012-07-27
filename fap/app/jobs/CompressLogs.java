@@ -111,24 +111,6 @@ public class CompressLogs extends Job {
 				}
 			}
 		}
-		
-		
-		
-	}
-	
-	public List<String> getPath() {
-		String fileName = null;
-		org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("app");
-		List<String> fileNameList = new ArrayList<String>();
-		
-		for (Enumeration<Appender> e = logger.getAllAppenders(); e.hasMoreElements();){
-			Appender appender = e.nextElement();
-			if (appender instanceof DailyRollingFileAppender){
-				fileName = ((DailyRollingFileAppender)appender).getFile();
-				fileNameList.add(fileName);
-			}
-		}
-		return fileNameList;
 	}
 }
 	

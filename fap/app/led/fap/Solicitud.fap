@@ -42,6 +42,13 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			}
 		}
 		
+		Grupo titulo="Incorporar Documentos sin Registro de Entrada" permiso=adminGestorRevisor {
+			Form presentarSinRegistrar redirigir=AportacionRecibos {
+				Fecha fechaAportacionSinRegistrar titulo="Fecha Incorporación" campo=SolicitudGenerica.aportaciones.actual.fechaAportacionSinRegistro requerido
+				Boton aportarSinRegistrar titulo="Incorporar"
+			}
+		}
+		
 		Grupo titulo="Paso 1b. Registrar los documentos"{
 			Form presentar redirigir=AportacionPresentar permiso=aportacionDocumentos {
 				Wiki {"Debe registrar los documentos para que se consideren aportados a la solicitud."}
@@ -137,12 +144,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				}
 			}
 				
-			Grupo titulo="Incorporar Documentos sin Registro de Entrada" permiso=adminGestorRevisor {
-				Form presentarSinRegistrar redirigir=AportacionRecibos {
-					Fecha fechaAportacionSinRegistrar titulo="Fecha Incorporación" campo=SolicitudGenerica.aportaciones.actual.fechaAportacionSinRegistro requerido
-					Boton aportarSinRegistrar titulo="Incorporar"
-				}
-			}
+
 			
 
 			Wiki {"Nota: La operación de firmar y presentar puede tardar varios minutos."}

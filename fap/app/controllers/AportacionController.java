@@ -3,8 +3,15 @@ package controllers;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import org.joda.time.DateTime;
 
 import messages.Messages;
 import models.Aportacion;
@@ -118,5 +125,99 @@ public class AportacionController extends AportacionControllerGen {
 		
 		presentarRender(idSolicitud);
 	}
+	
+    /**
+     * Presenta la aportación de documentación sin registrar los documentos.
+     * Deberá realizarlo únicamente un gestor, administrador o revisor.
+     */
+    public static void presentarSinRegistrar(String accion, Long idSolicitud, SolicitudGenerica solicitud) {
+        checkAuthenticity();
+        if (permisoPresentarSinRegistrar("editar") || permisoPresentarSinRegistrar("crear")) {
+
+            SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+			Aportacion aportacion = dbSolicitud.aportaciones.actual;
+
+			if(aportacion.documentos.isEmpty()){
+				Messages.error("Debe aportar al menos un documento");
+				
+				//Reinicia el estado de la aportación
+				aportacion.estado = null;
+				aportacion.save();
+			}
+			
+			if(!Messages.hasErrors()) {
+				presentarSinRegistrarValidateCopy(accion, dbSolicitud, solicitud);
+
+				validateDateIsAfterNow(aportacion.fechaAportacionSinRegistro);
+				clasificarDocumentosAportacionSinRegistro(dbSolicitud, aportacion);
+				finalizarAportacion(dbSolicitud, aportacion);
+			}
+        }else{
+            Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+        }
+        presentarRender(idSolicitud);
+    }
+    
+    private static void validateDateIsAfterNow(DateTime fecha) {
+        if(!Messages.hasErrors()){
+            if ((fecha == null) || (fecha.isAfterNow())) {
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                Date date = new Date();
+                Messages.error("La fecha de incorporación debe ser anterior a " + dateFormat.format(date));
+            }
+        }
+    }
+    
+    private static void clasificarDocumentosAportacionSinRegistro(SolicitudGenerica solicitud, Aportacion aportacion) {
+        if (!Messages.hasErrors() && aportacion.estado.equals("borrador")) {
+            // Establecemos la fecha de registro en todos los documentos
+            // de la aportación
+            for (Documento doc : aportacion.documentos) {
+                doc.fechaRegistro = aportacion.fechaAportacionSinRegistro;
+                doc.save();
+            }
+
+            // Los documentos temporales se pasan a clasificados, pero sin
+            // registrar
+            List<Documento> documentos = new ArrayList<Documento>();
+            documentos.addAll(aportacion.documentos);
+            boolean todosClasificados = true;
+            try {
+                gestorDocumentalService.clasificarDocumentos(solicitud, documentos);
+            } catch (Exception e) {
+                todosClasificados = false;
+            }
+
+            if (todosClasificados) {
+                aportacion.estado = "clasificada";
+                aportacion.save();
+                play.Logger.info("Se clasificaron (sin registrar) todos los documentos");
+            } else {
+                Messages.error("Algunos documentos no se pudieron clasificar (sin registrar) correctamente");
+            }
+        }
+    }
+    
+    /**
+     * Mueve la aportación a la lista de aportaciones clasificadas Añade los
+     * documentos a la lista de documentos
+     * 
+     * Cambia el estado de la aportación a finalizada
+     * 
+     * @param solicitud
+     * @param aportacion
+     */
+    private static void finalizarAportacion(SolicitudGenerica solicitud, Aportacion aportacion) {
+        if (aportacion.estado.equals("clasificada")) {
+            solicitud.aportaciones.registradas.add(aportacion);
+            solicitud.documentacion.documentos.addAll(aportacion.documentos);
+            solicitud.aportaciones.actual = new Aportacion();
+            solicitud.save();
+            aportacion.estado = "finalizada";
+            aportacion.save();
+
+            play.Logger.debug("Los documentos de la aportacion se movieron correctamente");
+        }
+    }
 
 }

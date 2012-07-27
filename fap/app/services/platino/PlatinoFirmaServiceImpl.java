@@ -50,6 +50,7 @@ import sun.security.pkcs.PKCS7;
 import utils.BinaryResponse;
 import utils.WSUtils;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
+import es.gobcan.eadmon.aed.ws.AedPortType;
 import es.gobcan.platino.servicios.sfst.FirmaService;
 import es.gobcan.platino.servicios.sfst.PlatinoSignatureServerBean;
 import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
@@ -112,6 +113,10 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	        throw newFirmaServiceException("Error al hacer getVersion", e);
 	    }
 	}
+	
+	protected PlatinoSignatureServerBean getFirmaPort(){
+    	return this.firmaPort;
+    }
 	
 	private String getEndPoint() {
 		return propertyPlaceholder.get("fap.platino.firma.url");

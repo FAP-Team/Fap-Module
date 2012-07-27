@@ -140,6 +140,10 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         }	    
 	}
 	
+	protected Registro getRegistroPort(){
+		return this.registroPort;
+	}
+	
 	public boolean isConfigured(){
 	    return hasConnection() && platinoGestorDocumentalService.hasConnection();
 	}

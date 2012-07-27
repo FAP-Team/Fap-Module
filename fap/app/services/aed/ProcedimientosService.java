@@ -68,6 +68,10 @@ public class ProcedimientosService {
 		return propertyPlaceholder.get("fap.aed.procedimientos.url");
 	}
 	
+	protected ProcedimientosInterface getProcedimientoPort(){
+		return this.procedimientosPort;
+	}
+	
 	private List<models.TipoDocumento> getDocumentosEnTramite(String uriProcedimiento, String uriTramite) throws GestorDocumentalServiceException, ProcedimientosExcepcion{
 		if(uriProcedimiento == null || uriTramite == null){
 			throw new NullPointerException();

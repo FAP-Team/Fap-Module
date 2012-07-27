@@ -76,6 +76,10 @@ public class TiposDocumentosService {
 	public String getEndPoint(){
 		return propertyPlaceholder.get("fap.aed.tiposdocumentos.url");
 	}
+	
+	protected TiposDocumentosInterface getTiposPort(){
+		return this.tiposPort;
+	}
 		
 	public TipoDocumento getTipoDocumento(String uri) throws GestorDocumentalServiceException {
 		if(uri == null)

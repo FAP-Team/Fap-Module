@@ -118,6 +118,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
     }
     
+    protected AedPortType getAedPort(){
+    	return this.aedPort;
+    }
+    
     /**
      * Comprueba que el servicio esté configurado
      * 

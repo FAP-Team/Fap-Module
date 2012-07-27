@@ -128,6 +128,10 @@ public class NotificacionServiceImpl implements NotificacionService {
     private String getEndPoint() {
         return propertyPlaceholder.get("fap.notificaciones.url");
     }
+    
+    protected NotificacionPortType getNotificacionPort(){
+    	return this.notificacionPort;
+    }
 
 	@Override
 	public void crearDocumentoPuestaADisposicion(Notificacion dbNotificacion, List<String> urisDocumentos, List<Interesado> interesados, String descripcion) {

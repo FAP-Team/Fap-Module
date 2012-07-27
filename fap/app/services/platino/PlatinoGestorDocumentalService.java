@@ -68,6 +68,10 @@ public class PlatinoGestorDocumentalService {
     private String getVersion() {
         return gestorDocumentalPort.getVersion();
     }
+    
+    protected SGRDEServicePortType getGestorDocumentalPort(){
+    	return this.gestorDocumentalPort;
+    }
 
     /**
      * Crea un expediente en el Gestor Documental de Platino

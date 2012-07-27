@@ -86,6 +86,7 @@ POST /Solicitud/documentosfap/editar DocumentosFAPController.editar
 POST /Solicitud/documentosfap/crear DocumentosFAPController.crear
 GET /Solicitud/aportacion AportacionController.index
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
+POST /Solicitud/aportacion/presentarSinRegistrar AportacionController.presentarSinRegistrar
 POST /Solicitud/aportacion/presentar AportacionController.presentar
 GET /Solicitud/documentosaportacion DocumentosAportacionController.index
 POST /Solicitud/documentosaportacion/editar DocumentosAportacionController.editar
@@ -101,7 +102,6 @@ POST /Solicitud/aportacionpresentar/modificarBorrador AportacionPresentarControl
 GET /Solicitud/aportacionpresentar/documentos AportacionPresentarController.tabladocumentos
 POST /Solicitud/aportacionpresentar/presentar AportacionPresentarController.presentar
 GET /Solicitud/aportacionpresentar/firmarRepresentanteFirmantes AportacionPresentarController.tablafirmarRepresentanteFirmantes
-POST /Solicitud/aportacionpresentar/presentarSinRegistrar AportacionPresentarController.presentarSinRegistrar
 GET /Solicitud/accesoverificaciones AccesoVerificacionesController.index
 GET /Solicitud/accesoverificaciones/verificaciones AccesoVerificacionesController.tablaverificaciones
 POST /Solicitud/accesoverificaciones/verificacionNueva AccesoVerificacionesController.verificacionNueva
@@ -223,6 +223,10 @@ POST /Principal/editarsolicitud/editar EditarSolicitudController.editar
 GET /Principal/leersolicitud LeerSolicitudController.index
 GET /Principal/cambiarpass CambiarPassController.index
 GET /Principal/cambiarpass/tablaCambioPass CambiarPassController.tablatablaCambioPass
+GET /Principal/verificacionessinfinalizar VerificacionesSinFinalizarController.index
+GET /Principal/verificacionessinfinalizar/listaVerificacionesSinFinalizar VerificacionesSinFinalizarController.tablalistaVerificacionesSinFinalizar
+GET /Principal/irverificacionsinfinalizar IrVerificacionSinFinalizarController.index
+POST /Principal/irverificacionsinfinalizar/editar IrVerificacionSinFinalizarController.editar
 GET /Notificacion/notificaciones NotificacionesController.index
 GET /Notificacion/notificaciones/listaNotificaciones NotificacionesController.tablalistaNotificaciones
 GET /Notificacion/notificacionver NotificacionVerController.index

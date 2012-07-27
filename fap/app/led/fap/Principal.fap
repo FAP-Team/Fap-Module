@@ -3,6 +3,7 @@ Formulario Principal {
 		Enlace "Mis Solicitudes" pagina=Solicitudes
 		Enlace "Administración" permiso=administrador pagina=Usuarios
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
+		Enlace "Verificaciones sin Finalizar" permiso=adminOrGestor pagina=VerificacionesSinFinalizar
 		Enlace "Mis Notificaciones" pagina=Notificaciones
 		Enlace "Cambiar contraseña" permiso=loginTipoUser pagina=CambiarPass 
 		Enlace "Ayuda" pagina=Soporte crear
@@ -74,6 +75,19 @@ Formulario Principal {
 			Texto campo=Agente.newpassword titulo="Nueva contraseña" password requerido duplicar
 		
 	}
+	
+	Pagina VerificacionesSinFinalizar permiso=noUsuario{
+        Tabla listaVerificacionesSinFinalizar titulo="Verificaciones sin Finalizar" campo=SolicitudGenerica paginaEditar=IrVerificacionSinFinalizar {
+            Columna campo=SolicitudGenerica.id titulo="ID Solicitud" ancho="80"
+            Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente Solicitud" ancho="120"
+            Columna campo=SolicitudGenerica.verificacion.id titulo="ID Veificacion" ancho="80"
+            Columna campo=SolicitudGenerica.verificacion.estado titulo="Estado Verificación" ancho="100"
+            Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" ancho="100"
+            Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir         
+        }
+	}
+	
+	Pagina IrVerificacionSinFinalizar campo=SolicitudGenerica permiso=noUsuario{}
 	
 	
 }

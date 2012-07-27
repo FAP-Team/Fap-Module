@@ -73,15 +73,15 @@ import static com.google.common.base.Preconditions.*;
 @InjectSupport
 public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
-	private final AedPortType aedPort;
+	protected final AedPortType aedPort;
 
-	private final PropertyPlaceholder propertyPlaceholder;
+	protected final PropertyPlaceholder propertyPlaceholder;
 
-	private final ProcedimientosService procedimientosService;
+	protected final ProcedimientosService procedimientosService;
 	
 	private static final Logger log = Logger.getLogger(AedGestorDocumentalServiceImpl.class);
 
-    private final TiposDocumentosService tiposDocumentos;
+    protected final TiposDocumentosService tiposDocumentos;
 	
     @Inject
 	public AedGestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder){
@@ -98,7 +98,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         procedimientosService = new ProcedimientosService(propertyPlaceholder, tiposDocumentos);
 	}
 
-    private String getEndPoint() {
+    protected String getEndPoint() {
         return propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".url");
     }
 	
@@ -139,7 +139,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	    return isConfigured;
 	}
 		
-	private boolean hasConnection(){
+	protected boolean hasConnection(){
         boolean hasConnection = false;
         try {
             hasConnection = getVersion() != null;
@@ -149,7 +149,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		return hasConnection;
 	}
 	
-	private String getVersion() throws AedExcepcion {
+	protected String getVersion() throws AedExcepcion {
         Holder<String> version = new Holder<String>();
         Holder<String> revision = new Holder<String>();
         aedPort.obtenerVersionServicio(version, revision);
@@ -431,7 +431,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
     }
 	
-	private Documento crearDocumentoTemporal(String tipo, String descripcion, String filename, InputStream is){
+	protected Documento crearDocumentoTemporal(String tipo, String descripcion, String filename, InputStream is){
         Documento documento = new Documento();
         
         // Propiedades básicas
@@ -456,7 +456,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return documento;
 	}
 
-	private String getHash(String uri) throws AedExcepcion {
+	protected String getHash(String uri) throws AedExcepcion {
         PropiedadesDocumento pro  = aedPort.obtenerDocumentoPropiedadesNoClasificado(uri);
         String hash = ((PropiedadesAdministrativas)pro.getPropiedadesAvanzadas()).getSellado().getHash();
         return hash;   
@@ -484,7 +484,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
     }
 
-	private List<Ubicaciones> clonarUbicaciones(List<DocumentoEnUbicacion> documentoUbicaciones){
+	protected List<Ubicaciones> clonarUbicaciones(List<DocumentoEnUbicacion> documentoUbicaciones){
         List<Ubicaciones> result = new ArrayList<Ubicaciones>();
         for (DocumentoEnUbicacion docUbic : documentoUbicaciones) {
             Ubicaciones ubic = new Ubicaciones();
@@ -495,7 +495,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return result;
 	}
 	
-	private PropiedadesDocumento obtenerPropiedades(String uri, boolean clasificado) throws AedExcepcion {
+	protected PropiedadesDocumento obtenerPropiedades(String uri, boolean clasificado) throws AedExcepcion {
 		PropiedadesDocumento propiedades;
 		if(clasificado){
 			propiedades = aedPort.obtenerDocumentoPropiedades(uri);
@@ -528,7 +528,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return e.getFaultInfo().getDescripcion();
     }
 	
-    private static GestorDocumentalServiceException serviceExceptionFrom(AedExcepcion e){
+    protected static GestorDocumentalServiceException serviceExceptionFrom(AedExcepcion e){
         return new GestorDocumentalServiceException(getLogMessage(e), e);
     }
     
@@ -662,7 +662,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         clasificarDocumentos(solicitud, documentos, null, notificable);
     }
     
-    private void clasificarDocumentoSinRegistro(String idAed, models.Documento documento, Interesados interesados, boolean notificable) throws AedExcepcion {
+    protected void clasificarDocumentoSinRegistro(String idAed, models.Documento documento, Interesados interesados, boolean notificable) throws AedExcepcion {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
         PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
         // Marca como notificable
@@ -671,7 +671,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
 
-    private void clasificarDocumentoConRegistro(String idAed, models.Documento documento, Interesados interesados, InformacionRegistro informacionRegistro, boolean notificable) throws AedExcepcion {
+    protected void clasificarDocumentoConRegistro(String idAed, models.Documento documento, Interesados interesados, InformacionRegistro informacionRegistro, boolean notificable) throws AedExcepcion {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
         PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
 
@@ -690,7 +690,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
     
-    private void clasificarDocumento(String idAed, models.Documento documento, PropiedadesDocumento propiedadesDocumento, Interesados interesados) throws AedExcepcion {
+    protected void clasificarDocumento(String idAed, models.Documento documento, PropiedadesDocumento propiedadesDocumento, Interesados interesados) throws AedExcepcion {
         // Registro de entrada
         PropiedadesAdministrativas propsAdmin = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
 
@@ -765,7 +765,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
     }
     
-    private Firma concatenarFirma(Firma firma, models.Firmante firmante, String nueva){
+    protected Firma concatenarFirma(Firma firma, models.Firmante firmante, String nueva){
         Firma firmaNueva = null;
         if(firma == null)
             firmaNueva = firmaSimple(nueva);
@@ -775,14 +775,14 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return firmaNueva;
     }
     
-    private Firma firmaSimple(String nueva){
+    protected Firma firmaSimple(String nueva){
         Firma firma = new Firma();
         firma.setContenido(nueva);
         firma.setTipoMime("text/xml");
         return firma;
     }
     
-    private Firma firmaParalela(Firma actual, String nueva){
+    protected Firma firmaParalela(Firma actual, String nueva){
         Firma firma = actual;
         // No es la primera construimos firma paralela
         String firmaParalela = "<SignatureList>";
@@ -798,7 +798,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return firma;
     }
 	
-    private void asignarFirmante(Firma firma, models.Firmante firmante){
+    protected void asignarFirmante(Firma firma, models.Firmante firmante){
         es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
         firmanteAed.setFirmanteNombre(firmante.nombre);
         firmanteAed.setFirmanteNif(firmante.idvalor);
@@ -877,7 +877,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      * 
      * @throws AedExcepcion
      */
-    private void crearCarpetaTemporal() throws AedExcepcion {
+    protected void crearCarpetaTemporal() throws AedExcepcion {
         String carpeta = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".temporales");
         if (carpeta == null || carpeta.isEmpty()) {
             throw new IllegalStateException(
@@ -897,7 +897,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      * @param carpeta
      * @throws AedExcepcion
      */
-    private void crearCarpetaTemporal(String carpeta) throws AedExcepcion {
+    protected void crearCarpetaTemporal(String carpeta) throws AedExcepcion {
         if(carpeta == null)
             throw new NullPointerException();
         if(carpeta.isEmpty())
@@ -915,7 +915,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      * Comprueba si existe la carpeta temporal definida en la property
      * "fap.aed.temporales"
      */
-    private boolean existeCarpetaTemporal() throws AedExcepcion {
+    protected boolean existeCarpetaTemporal() throws AedExcepcion {
         String carpeta = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".temporales");
         return existeCarpetaTemporal(carpeta);
     }
@@ -924,7 +924,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      * Comprueba si existe uan carpeta no clasificada en el archivo
      * @param carpeta Ruta de la carpeta que se va a comprobar
      */
-    private boolean existeCarpetaTemporal(String carpeta) throws AedExcepcion {
+    protected boolean existeCarpetaTemporal(String carpeta) throws AedExcepcion {
         if(carpeta == null)
             throw new NullPointerException();
         if(carpeta.isEmpty())
@@ -948,7 +948,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      * @param carpeta
      * @throws AedExcepcion
      */
-    private void borrarCarpetaTemporal(String carpeta) throws AedExcepcion {
+    protected void borrarCarpetaTemporal(String carpeta) throws AedExcepcion {
         if(carpeta == null)
             throw new NullPointerException();
         if(carpeta.isEmpty())

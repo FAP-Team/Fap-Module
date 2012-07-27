@@ -62,15 +62,15 @@ import utils.XMLGregorianCalendarConverter;
 @InjectSupport
 public class NotificacionServiceImpl implements NotificacionService {
 	
-	private final PropertyPlaceholder propertyPlaceholder;
+	protected final PropertyPlaceholder propertyPlaceholder;
 	
 	protected static es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService notificacionService;
-	private final NotificacionPortType notificacionPort;
+	protected final NotificacionPortType notificacionPort;
 	
-	private final static String URL_AED = FapProperties.get("fap.aed.url");
+	protected final static String URL_AED = FapProperties.get("fap.aed.url");
 	
 	@Inject
-	GestorDocumentalService gestorDocumental;
+	protected GestorDocumentalService gestorDocumental;
 	
 	protected static Logger log = Logger.getLogger(NotificacionServiceImpl.class);
 	
@@ -125,7 +125,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 		return notificacionPort != null;
 	}
 	
-    private String getEndPoint() {
+	protected String getEndPoint() {
         return propertyPlaceholder.get("fap.notificaciones.url");
     }
     

@@ -183,10 +183,12 @@ public class Notificacion extends FapModel {
 
 	public void actualizar(Notificacion notificacion) {
 		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
-		log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
-		log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
-		this.estado = notificacion.estado;
-		this.fechaAcceso = notificacion.fechaAcceso;
+		if ((this.estado != notificacion.estado) || (this.fechaAcceso != notificacion.fechaAcceso)) {
+			log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
+			log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
+			this.estado = notificacion.estado;
+			this.fechaAcceso = notificacion.fechaAcceso;
+		}
 	}
 
 	// === MANUAL REGION END ===

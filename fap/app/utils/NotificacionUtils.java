@@ -88,7 +88,6 @@ public class NotificacionUtils {
 	
 	@Transactional
 	public static void recargarNotificacionesFromWS (String uriProcedimiento){
-		Logger log = Logger.getLogger("Job");
 		if (notificacionService != null){
 			List<Notificacion> notificaciones = notificacionService.getNotificaciones(uriProcedimiento);
 			if (notificaciones != null){
@@ -97,8 +96,6 @@ public class NotificacionUtils {
 					if (dbNotificacion != null){
 						dbNotificacion.actualizar(notificacion);
 						dbNotificacion.save();
-					} else {
-						log.error("Existe una notificacion con uri: "+notificacion.uri+" en la base de datos del servicio web, pero no en la aplicación local");
 					}
 				}
 			} else {

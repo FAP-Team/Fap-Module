@@ -1,5 +1,6 @@
 package utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,8 +15,8 @@ import play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNam
 
 public class ZipUtils {
 
-	public static boolean comprimirEnZip (String[] nombresAComprimir, String nombreComprimido) {
-		return comprimirEnZip(nombresAComprimir, nombreComprimido, Play.applicationPath+"");
+	public static boolean comprimirEnZip (String[] nombresAComprimir, String nombreComprimido, File ruta) {
+		return comprimirEnZip(nombresAComprimir, nombreComprimido, ruta.getAbsolutePath());
 	}
 	
 	public static boolean comprimirEnZip (String[] nombresAComprimir, String nombreComprimido, String rootPath) {

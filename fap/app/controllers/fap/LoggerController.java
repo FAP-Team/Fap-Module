@@ -3,6 +3,7 @@ package controllers.fap;
 
 import play.*;
 import play.mvc.*;
+import properties.FapProperties;
 import controllers.fap.*;
 import tags.ReflectionUtils;
 import validation.*;
@@ -57,28 +58,63 @@ public class LoggerController extends GenericController {
 		ArrayList<FileReader> ficherosACerrar = new ArrayList<FileReader>();
 		boolean seguirLeyendo=true, error;
 		Date date = date1;
+		
+		String fileName, dirName = null;
+		org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("app");
+		File rutaLogs = null;
+		for (Enumeration<Appender> e = logger.getAllAppenders(); e.hasMoreElements();){
+			Appender appender = e.nextElement();
+			
+			if (appender instanceof DailyRollingFileAppender){
+				fileName = ((DailyRollingFileAppender)appender).getFile();
+				int indexBackup = fileName.lastIndexOf("/");
+			
+				if (indexBackup == -1) {
+					rutaLogs = Play.applicationPath;
+				}
+				else {
+					dirName = fileName.substring(0, indexBackup);
+					if ((dirName.matches("^[a-zA-Z]:")) || (dirName.startsWith("/"))) {
+						rutaLogs = new File(dirName);
+					} else {
+						rutaLogs = new File(Play.applicationPath.getAbsolutePath() + "/" + dirName);
+					}
+				}
+			}
+		}
+		
 		while (seguirLeyendo){
 			try {
 				String ficheroLogs = nombreFichero(date, "Daily");
+				String nameLogs = null;
+				int indexBackup = ficheroLogs.lastIndexOf("/");
+				
+				if (indexBackup == -1) {
+					nameLogs = ficheroLogs;
+				}
+				else {
+					nameLogs = ficheroLogs.substring(indexBackup, ficheroLogs.length());
+				}
+				
 				if (ficheroLogs != null){
 					error = false;
 					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
 					if (!esHoy(date)){
-						if (utils.ZipUtils.descomprimirEnZip("logs/backups/Daily/"+ficheroLogs.replace("logs/", "")+".zip", ficheroLogs)){
+						if (utils.ZipUtils.descomprimirEnZip(rutaLogs+"/backups/Daily/"+nameLogs+".zip", rutaLogs + "/" + nameLogs)){
 							// Lo anotamos para despues borrarlo, y no dejar basura
-							borrarDaily.add(ficheroLogs);
+							borrarDaily.add(rutaLogs + "/" + nameLogs);
 						} else{
 							error = true;
-							play.Logger.error("Descompresión de 'logs/backups/Daily/"+ficheroLogs.replace("logs/", "")+".zip' fallida o no existe el fichero");
+							play.Logger.error("Descompresión de '" + rutaLogs + "/backups/Daily/"+nameLogs+".zip' fallida o no existe el fichero");
 						}
 					}
 					if (!error){
-						if ((new File(ficheroLogs)).exists()){
-							FileReader ficheroDaily = new FileReader(ficheroLogs);
+						if ((new File(rutaLogs + "/" + nameLogs)).exists()){
+							FileReader ficheroDaily = new FileReader(rutaLogs + "/" + nameLogs);
 							brDaily.add(new BufferedReader(ficheroDaily));
 							ficherosACerrar.add(ficheroDaily);
 						} else {
-							play.Logger.error("Fichero '"+ficheroLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
+							play.Logger.error("Fichero '"+rutaLogs + "/" + nameLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
 						}
 					}
 				}
@@ -88,25 +124,34 @@ public class LoggerController extends GenericController {
 			
 			try {
 				String ficheroLogs = nombreFichero(date, "Auditable");
+				String nameLogs = null;
+				int indexBackup = ficheroLogs.lastIndexOf("/");
+				
+				if (indexBackup == -1) {
+					nameLogs = ficheroLogs;
+				}
+				else {
+					nameLogs = ficheroLogs.substring(indexBackup, ficheroLogs.length());
+				}
 				if (ficheroLogs != null){
 					error = false;
 					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
 					if (!esHoy(date)){
-						if (utils.ZipUtils.descomprimirEnZip("logs/backups/Auditable/"+ficheroLogs.replace("logs/", "")+".zip", ficheroLogs)){
+						if (utils.ZipUtils.descomprimirEnZip(rutaLogs+"/backups/Auditable/"+nameLogs+".zip", rutaLogs + "/" + nameLogs)){
 							// Lo anotamos para despues borrarlo, y no dejar basura
-							borrarAuditable.add(ficheroLogs);
+							borrarAuditable.add(rutaLogs + "/" + nameLogs);
 						} else{
 							error = true;
-							play.Logger.error("Descompresión de 'logs/backups/Auditable/"+ficheroLogs.replace("logs/", "")+".zip' fallida o no existe el fichero");
+							play.Logger.error("Descompresión de '" + rutaLogs +"/backups/Auditable/"+nameLogs+".zip' fallida o no existe el fichero");
 						}
 					}
 					if (!error){
-						if ((new File(ficheroLogs)).exists()){
-							FileReader ficheroAuditable = new FileReader(ficheroLogs);
+						if ((new File(rutaLogs + "/" + nameLogs)).exists()){
+							FileReader ficheroAuditable = new FileReader(rutaLogs + "/" + nameLogs);
 							brAuditable.add(new BufferedReader(ficheroAuditable));
 							ficherosACerrar.add(ficheroAuditable);
 						} else {
-							play.Logger.error("Fichero '"+ficheroLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
+							play.Logger.error("Fichero '"+rutaLogs + "/" + nameLogs+"' no existe. Imposible mostrarlo en la tabla de Logs");
 						}
 					}
 				}
@@ -151,6 +196,7 @@ public class LoggerController extends GenericController {
 
 		flexjson.JSONSerializer flex = new flexjson.JSONSerializer().include("rows.level", "rows.time", "rows.class_", "rows.user", "rows.message", "rows.trace").transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class).exclude("*");
 		String serialize = flex.serialize(response);
+		
 		// Antes de renderizar la página, eliminamos los ficheros descomprimidos, para no dejar basura, si los hay.
 		for(int i=0; i<ficherosACerrar.size(); i++){
 			ficherosACerrar.get(i).close();
@@ -195,6 +241,7 @@ public class LoggerController extends GenericController {
 				}
 			}
 		}
+		
 		if (fileName == null){
 			return fileName;
 		}

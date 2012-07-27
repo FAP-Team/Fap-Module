@@ -87,16 +87,17 @@ public class LoggerController extends GenericController {
 			try {
 				String ficheroLogs = nombreFichero(date, "Daily");
 				String nameLogs = null;
-				int indexBackup = ficheroLogs.lastIndexOf("/");
-				
-				if (indexBackup == -1) {
-					nameLogs = ficheroLogs;
-				}
-				else {
-					nameLogs = ficheroLogs.substring(indexBackup, ficheroLogs.length());
-				}
 				
 				if (ficheroLogs != null){
+					int indexBackup = ficheroLogs.lastIndexOf("/");
+					
+					if (indexBackup == -1) {
+						nameLogs = ficheroLogs;
+					}
+					else {
+						nameLogs = ficheroLogs.substring(indexBackup, ficheroLogs.length());
+					}
+					
 					error = false;
 					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
 					if (!esHoy(date)){
@@ -125,15 +126,17 @@ public class LoggerController extends GenericController {
 			try {
 				String ficheroLogs = nombreFichero(date, "Auditable");
 				String nameLogs = null;
-				int indexBackup = ficheroLogs.lastIndexOf("/");
-				
-				if (indexBackup == -1) {
-					nameLogs = ficheroLogs;
-				}
-				else {
-					nameLogs = ficheroLogs.substring(indexBackup, ficheroLogs.length());
-				}
+
 				if (ficheroLogs != null){
+					int indexBackup = ficheroLogs.lastIndexOf("/");
+					
+					if (indexBackup == -1) {
+						nameLogs = ficheroLogs;
+					}
+					else {
+						nameLogs = ficheroLogs.substring(indexBackup, ficheroLogs.length());
+					}
+					
 					error = false;
 					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
 					if (!esHoy(date)){

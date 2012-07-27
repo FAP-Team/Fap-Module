@@ -5,7 +5,7 @@
  * bastante pesados con aplicaciones que se usan constantemente.
  */
 
-package app;
+package jobs;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,6 +32,8 @@ import properties.Properties;
 public class CompressLogs extends Job {
 	
 	public void doJob() {
+		if (!Play.mode.isProd())
+			return;
 		// Preparamos una variable para gestionar el directorio de logs
 		String fileName, dirName = null;
 		org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("app");

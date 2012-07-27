@@ -16,26 +16,43 @@
 	
 			#{fap.grupo titulo:'Datos Notificacion'}
 				
-			#{fap.grupo borde:false, permiso:'noEditable'}
+				#{fap.grupo borde:false, permiso:'noEditable'}
 				
-			#{fap.fecha campo:'notificacion.fechaPuestaADisposicion', titulo:'Fecha Generación' /}		
+					#{fap.combo campo:'notificacion.estado', titulo:'Estado' /}	
+					
+					#{fap.fecha campo:'notificacion.fechaPuestaADisposicion', titulo:'Fecha Generación' /}		
+				
+					#{fap.fecha campo:'notificacion.fechaAcceso', titulo:'Fecha Lectura' /}		
+				
+					#{fap.texto campo:'notificacion.asunto', titulo:'Asunto' /}		
+				
+					#{fap.areaTexto ancho:'500px', campo:'notificacion.descripcion', filas:'5', titulo:'Descripción' /}		
+			
+				#{/fap.grupo}
+			
+				#{fap.grupo borde:false, mostrarSi:['leida', 'leidaplazorespuestavencido', 'respondida'].contains(notificacion.estado)}
+					
+					#{if urlRequerimiento != null}
+						<div class="form-row">
+							<a id="verRequerimientoPdf" href="${urlRequerimiento}" class="btn" target="blank">Ver Requerimiento</a>		
+						</div>
+						#{if url != null}
+							</br>
+						#{/if}
+					#{/if}
+			
+				#{/fap.grupo}
 		
-			#{fap.fecha campo:'notificacion.fechaAcceso', titulo:'Fecha Lectura' /}		
-		
-			#{fap.texto campo:'notificacion.asunto', titulo:'Asunto' /}		
-		
-			#{fap.areaTexto ancho:'500px', campo:'notificacion.descripcion', filas:'5', titulo:'Descripción' /}		
+				#{if url != null}
+					<div class="form-row">
+						<a id="enlaceSede" href="${url}" class="btn" target="blank">Ir a la Sede Electrónica</a>		
+					</div>
+				#{/if}
 		
 			#{/fap.grupo}
 		
-			#{if url != null}
-				<div class="form-row">
-					<a id="enlaceSede" href="${url}" class="btn" target="blank">Ir a la Sede Electrónica</a>		
-				</div>
-			#{/if}
-		
-			#{/fap.grupo}
-		
+			</br>
+			
 			#{fap.enlace anterior:true, container:'NotificacionVer', estilo:'btn', id:'atras', titulo:'Volver a Mis Notificaciones' /}
 		
 #{/fap.pagina}

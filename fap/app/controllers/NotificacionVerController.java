@@ -30,7 +30,11 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 
 		log.info("Visitando página: " + "fap/Notificacion/NotificacionVer.html");
 		String url = FapProperties.get("fap.notificacion.enlaceSede");
-		renderTemplate("fap/Notificacion/NotificacionVer.html", accion, idNotificacion, notificacion, url);
+		String urlRequerimiento = null;
+		if ((notificacion.documentosANotificar != null) && (!notificacion.documentosANotificar.isEmpty())){
+			urlRequerimiento = notificacion.documentosANotificar.get(0).urlDescarga;
+		}
+		renderTemplate("fap/Notificacion/NotificacionVer.html", accion, idNotificacion, notificacion, url, urlRequerimiento);
 	}
 
 }

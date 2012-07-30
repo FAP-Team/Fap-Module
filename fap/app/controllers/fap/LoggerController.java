@@ -136,7 +136,7 @@ public class LoggerController extends GenericController {
 						nameLogs = ficheroLogs;
 					}
 					else {
-						nameLogs = ficheroLogs.substring(indexBackup, ficheroLogs.length());
+						nameLogs = ficheroLogs.substring(indexBackup+1);
 					}
 					
 					error = false;

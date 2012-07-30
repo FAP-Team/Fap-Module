@@ -324,7 +324,7 @@ Entidad Mail tableName = "email" {
 	String subject
 }
 
-Entidad Log nonPersist {
+Entidad Logs nonPersist {
 	String time
 	String level
 	String class_
@@ -602,5 +602,17 @@ Entidad Notificacion {
 Entidad DocumentoNotificacion{
 	String uri
 	String urlDescarga transient
+}
+
+//Permitimos buscar logs por distintos tipos de datos.
+Entidad BusquedaLogs nonPersist {
+	Boolean buquedaPorAtributos
+	DateTime fechaLog
+	String tipoLog
+	String mensajeLog
+	String usuario
+	String claseLog
+	String numeroFilasSeleccionadas
+
 }
 

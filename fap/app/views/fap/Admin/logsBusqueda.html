@@ -39,6 +39,12 @@
 	<br/>
 </div>
 
+%{
+   // Se reciben todos los parámetros de búsqueda para pasárselo a la función.
+   def filas_ = filas;
+   def t = "";
+
+%}
 
 <script>
 	Ext.onReady(function() {
@@ -54,7 +60,7 @@
 		    	});
 			}
 
-	    	var logAction = #{jsAction @fap.LoggerController.logs(':fecha1', ':fecha2') /}
+	    	var logAction = #{jsAction @MostrarLogsController.logs(':fecha1', ':fecha2', ':filas', ':porAtributos', ':fecha', ':tipo', ':mensaje', ':usuario', ':clase') /}
 	    	
 	    	var logsDaily;
 	    	var logsAuditable;
@@ -64,7 +70,7 @@
 		        autoLoad: true,
 		        proxy: {
 		            type: 'ajax',
-		            url: logAction({fecha1: new Date().getTime(), fecha2: new Date().getTime()}),
+		            url: logAction({fecha1: new Date().getTime(), fecha2: new Date().getTime(), filas: ${filas_}, porAtributos: ${porAtributos}, #{if fechaLog!=null} fecha: '${fechaLog}'  #{/if} #{else} fecha: '${t}' #{/else}, #{if tipo!=null} tipo: '${tipo}' #{/if} #{else} tipo: '${t}' #{/else}, #{if mensaje!=null} mensaje: '${mensaje}' #{/if} #{else} mensaje: '${t}' #{/else}, #{if usuario!=null} usuario: '${usuario}' #{/if} #{else} usuario: '${t}'#{/else}, #{if clase!=null} clase: '${clase}' #{/if} #{else} clase: '${t}'#{/else}}),
 		            reader: {
 		                type: 'json',
 		                root: 'rows',
@@ -75,12 +81,6 @@
 
 			store.sort('time', 'DESC');
 
-		    var boton_actualizar = new Ext.Button({
-		    	text: 'Actualizar',
-		    	handler : function(){
-		    		store.load();
-		    	}
-		    });
 		    
 		    var grid = Ext.create('Ext.grid.Panel', {
 		        store: store,
@@ -133,9 +133,7 @@
 			        		   	            format: 'Y-m-d',
 			        		   	            maxValue: new Date(),
 			        		   	            value: new Date()
-			        		   	        },
-						            '->',
-						            boton_actualizar
+			        		   	        }
 			        				]
 			    				}
 							]
@@ -184,7 +182,7 @@
 		   		}
 		   		grid.store.setProxy(new Ext.data.proxy.Ajax({
 		            type: 'ajax',
-		            url: logAction({fecha1: fecha1.getTime(), fecha2: fecha2.getTime()}),
+		            url: logAction({fecha1: fecha1.getTime(), fecha2: fecha2.getTime(), filas: ${filas_}, porAtributos: ${porAtributos}, fecha: '${fecha}', #{if tipo!=null} tipo: '${tipo}' #{/if} #{else} tipo: '${t}' #{/else}, #{if mensaje!=null} mensaje: '${mensaje}' #{/if} #{else} mensaje: '${t}' #{/else}, #{if usuario!=null} usuario: '${usuario}' #{/if} #{else} usuario: '${t}'#{/else}, #{if clase!=null} clase: '${clase}' #{/if} #{else} clase: '${t}'#{/else}}),
 		            reader: {
 		                type: 'json',
 		                root: 'rows',
@@ -211,7 +209,7 @@
 		   		}
 		   		grid.store.setProxy(new Ext.data.proxy.Ajax({
 		            type: 'ajax',
-		            url: logAction({fecha1: fecha1.getTime(), fecha2: fecha2.getTime()}),
+		            url: logAction({fecha1: fecha1.getTime(), fecha2: fecha2.getTime(), filas: ${filas_}, porAtributos: ${porAtributos}, fecha: '${fecha}', #{if tipo!=null} tipo: '${tipo}' #{/if} #{else} tipo: '${t}' #{/else}, #{if mensaje!=null} mensaje: '${mensaje}' #{/if} #{else} mensaje: '${t}' #{/else}, #{if usuario!=null} usuario: '${usuario}' #{/if} #{else} usuario: '${t}'#{/else}, #{if clase!=null} clase: '${clase}' #{/if} #{else} clase: '${t}'#{/else}}),
 		            reader: {
 		                type: 'json',
 		                root: 'rows',
@@ -239,15 +237,27 @@
 		   	       else
 		   	          logsAuditable++;
 		   	    }
+		   	    
 		   	    var content="";
-		   	    var date = grid.getComponent('barraInferior').getComponent('fechabox1').value;
+		   	    var date = "";
+
+		   	    if ('${hoy}' == true)
+		   	    	date = new Date();
+		   	    else
+		   	    	date = grid.getComponent('barraInferior').getComponent('fechabox1').value;
+		   	    	
 		   	    var d  = date.getDate();
 				var day = (d < 10) ? '0' + d : d;
 				var m = date.getMonth() + 1;
 				var month = (m < 10) ? '0' + m : m;
 				var yy = date.getYear();
 				var year = (yy < 1000) ? yy + 1900 : yy;
-		   	    var fecha = day+"-"+month+"-"+year;
+				var fecha = day+"-"+month+"-"+year;
+
+				if ('${fechaLogBuscado}' != "") {
+					fecha = '${fechaLogBuscado}';
+				}
+		   	    
 		   	    if ((logsDaily!=0) || (logsAuditable!=0)){
 		   	    	if (logsDaily==0){
 		   	    		if (busqueda == 0)

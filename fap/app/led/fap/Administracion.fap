@@ -12,7 +12,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Codigos Requerimientos y Exclusión" pagina=Codigos
 			Enlace "Emails" pagina=Emails
-			Enlace "Logs" accion="fap.LoggerController.index"
+			Enlace "Logs" pagina=BuscarLogs
 			Enlace "Informe" accion="fap.InformeController.index"
 			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
 			Enlace "Incidencias" accion="fap.IncidenciasController.index"
@@ -283,5 +283,43 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Texto descripcionCorta campo=TipoCodigoExclusion.descripcionCorta titulo="Descripción Corta"
 		AreaTexto descripcion campo=TipoCodigoExclusion.descripcion titulo="Descripción"
 	}
-    
+ 
+	Pagina BuscarLogs titulo="Búsqueda de Logs" campo=BusquedaLogs noForm {
+		Form buscar {
+			Wiki {
+				"**En esta página podrá decidir como quiere hacer la búsqueda de los Logs, tanto por atributos como por fecha.** </br>"
+			}
+			
+			Check busquedaAtributos titulo="Búsqueda por atributos" campo=BusquedaLogs.buquedaPorAtributos alineadoAIzquierdas
+			Grupo mostrarSiCheck busquedaAtributos=true borde=false {
+				Fecha titulo="Fecha" campo=BusquedaLogs.fechaLog
+				Texto titulo="Tipo" campo=BusquedaLogs.tipoLog
+				Texto titulo="Mensaje" campo=BusquedaLogs.mensajeLog
+				Texto titulo="Usuario" campo=BusquedaLogs.usuario
+				Texto titulo="Clase" campo=BusquedaLogs.claseLog
+			}
+			
+			Wiki {
+				"</br>"
+			}
+		
+			Texto titulo="Número de filas que quiere seleccionar: " campo=BusquedaLogs.numeroFilasSeleccionadas
+		
+			Wiki {
+				"</br>"
+			}
+		
+			Boton botonBuscar titulo="Buscar"
+		}
+	}
+	
+	Pagina MostrarLogs titulo="Logs" noForm {
+		Tabla logs campo=Logs titulo="Logs" {
+			Columna titulo="Fecha" campo=Logs.time expandir
+			Columna titulo="Tipo" campo=Logs.level expandir
+			Columna titulo="Mensaje" campo=Logs.message expandir
+			Columna titulo="Usuario" campo=Logs.user expandir
+			Columna titulo="Clase" campo=Logs.class_ expandir
+		}
+	}
 }

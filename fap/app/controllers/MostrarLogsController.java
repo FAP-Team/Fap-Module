@@ -344,47 +344,47 @@ public class MostrarLogsController extends MostrarLogsControllerGen {
 	}
 
 
-@Util
-private static String nombreFichero(Date date, String loggerName) {
-	
-	String fileName = null;
-	org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("app");
-	
-	// busca entre los appenders dos que sean de tipo DailyRollingFile,
-	// preferentemente aquel cuyo nombre es "Daily" o "Auditable", que son los configurados inicialmente en
-	// los ficheros de configuracion
-	
-	for (Enumeration<Appender> e = logger.getAllAppenders(); e.hasMoreElements();){
-		Appender appender = e.nextElement();
-		if (appender instanceof DailyRollingFileAppender){
-			fileName = ((DailyRollingFileAppender)appender).getFile();
-			if (((DailyRollingFileAppender)appender).getName().equals(loggerName)){
-				break;
+	@Util
+	private static String nombreFichero(Date date, String loggerName) {
+		
+		String fileName = null;
+		org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("app");
+		
+		// busca entre los appenders dos que sean de tipo DailyRollingFile,
+		// preferentemente aquel cuyo nombre es "Daily" o "Auditable", que son los configurados inicialmente en
+		// los ficheros de configuracion
+		
+		for (Enumeration<Appender> e = logger.getAllAppenders(); e.hasMoreElements();){
+			Appender appender = e.nextElement();
+			if (appender instanceof DailyRollingFileAppender){
+				fileName = ((DailyRollingFileAppender)appender).getFile();
+				if (((DailyRollingFileAppender)appender).getName().equals(loggerName)){
+					break;
+				}
 			}
 		}
-	}
-	if (fileName == null){
+		if (fileName == null){
+			return fileName;
+		}
+		
+		if (!esHoy(date)) {
+			fileName += "."+(date.getYear()+1900)+"-";
+			if (date.getMonth() < 9)
+				fileName += "0";
+			fileName += (date.getMonth()+1)+"-";
+			if (date.getDate() < 10)
+				fileName += "0";
+			fileName += date.getDate();
+		}
 		return fileName;
 	}
-	
-	if (!esHoy(date)) {
-		fileName += "."+(date.getYear()+1900)+"-";
-		if (date.getMonth() < 9)
-			fileName += "0";
-		fileName += (date.getMonth()+1)+"-";
-		if (date.getDate() < 10)
-			fileName += "0";
-		fileName += date.getDate();
-	}
-	return fileName;
-}
 
-@SuppressWarnings("deprecation")
-public static Date diaSiguiente (Date date){
-	Calendar cal = Calendar.getInstance();
-	cal.setTime(date);
-	cal.add(Calendar.DATE, 1);
-	return cal.getTime();
-}
+	@SuppressWarnings("deprecation")
+	public static Date diaSiguiente (Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, 1);
+		return cal.getTime();
+	}
 
 }

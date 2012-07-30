@@ -50,7 +50,7 @@ public class CompressLogs extends Job {
 				}
 				else {
 					dirName = fileName.substring(0, indexBackup);
-					if ((dirName.matches("^[a-zA-Z]:")) || (dirName.startsWith("/"))) {
+					if ((dirName.matches("^[a-zA-Z]:.*")) || (dirName.startsWith("/"))) {
 						rutaLogs = new File(dirName);
 					} else {
 						rutaLogs = new File(Play.applicationPath.getAbsolutePath() + "/" + dirName);

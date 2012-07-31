@@ -80,6 +80,7 @@ Formulario Principal {
         Tabla listaVerificacionesSinFinalizar titulo="Verificaciones sin Finalizar" campo=SolicitudGenerica paginaEditar=IrVerificacionSinFinalizar {
             Columna campo=SolicitudGenerica.id titulo="ID Solicitud" ancho="80"
             Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente Solicitud" ancho="120"
+            Columna campo=SolicitudGenerica.estado titulo="Estado Solicitud" ancho="120"
             Columna campo=SolicitudGenerica.verificacion.id titulo="ID Veificacion" ancho="80"
             Columna campo=SolicitudGenerica.verificacion.estado titulo="Estado Verificación" ancho="100"
             Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" ancho="100"

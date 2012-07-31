@@ -205,10 +205,11 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			
 			AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.motivo ancho="500px"
 					
-			Grupo gDocumentoRequerimiento  permiso=obtenerRequerimiento {
-				Form documentoRequerimiento destino="_blank" { 
-					Boton obtenerRequerimiento titulo="Obtener Requerimiento"
-				}
+		}
+		
+		Grupo gDocumentoRequerimiento  permiso=obtenerRequerimiento {
+			Form documentoRequerimiento destino="_blank" { 
+				Boton obtenerRequerimiento titulo="Obtener Requerimiento"
 			}
 		}
 		

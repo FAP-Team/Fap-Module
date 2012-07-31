@@ -6,6 +6,7 @@ import java.util.Map;
 
 import models.SolicitudGenerica;
 import controllers.gen.VerificacionesSinFinalizarControllerGen;
+import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 
 public class VerificacionesSinFinalizarController extends VerificacionesSinFinalizarControllerGen {
@@ -20,11 +21,15 @@ public class VerificacionesSinFinalizarController extends VerificacionesSinFinal
 		
 		for (SolicitudGenerica sol: rows){		
 			if ((sol.verificacion != null) && 
+				(sol.estado != null) &&
 				(sol.verificacion.estado != null) &&
 			    (!sol.verificacion.estado.equals(EstadosVerificacionEnum.enRequerido.name())) &&
 			    (!sol.verificacion.estado.equals(EstadosVerificacionEnum.plazoVencido.name())) &&
 			    (!sol.verificacion.estado.equals(EstadosVerificacionEnum.verificacionNegativa.name())) &&
-			    (!sol.verificacion.estado.equals(EstadosVerificacionEnum.verificacionPositiva.name()))
+			    (!sol.verificacion.estado.equals(EstadosVerificacionEnum.verificacionPositiva.name())) &&
+			    (!sol.estado.equals(EstadosSolicitudEnum.excluido.name())) &&
+			    (!sol.estado.equals(EstadosSolicitudEnum.excluidoRSLDEF.name())) &&
+			    (!sol.estado.equals(EstadosSolicitudEnum.desistido.name()))
 			   ){
 				rowsFiltered.add(sol);
 			}

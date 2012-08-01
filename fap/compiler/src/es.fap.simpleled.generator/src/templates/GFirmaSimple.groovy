@@ -127,11 +127,20 @@ public class GFirmaSimple extends GElement{
 				controller.allEntities.collect{it.typeId}, controller.extraParams
 			)}){
 				${getters}
-				if (${firmantes.firstLower()} == null || ${firmantes.firstLower()}.size() == 0){
-					${firmantes.firstLower()} = ${calcularFirmantes};
-					${firmantes.sinUltimoAtributo()}.save();
+				play.Logger.info("Metodo: ${StringUtils.firstLower(firmaSimple.name)}${controller.sufijoBoton}");
+				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams"); //A
+				Map<String, Object> vars = new HashMap<String, Object>(); //A
+				if (secure.checkAcceso("editarFirma", "editar", ids, vars)) { //A
+					if (${firmantes.firstLower()} == null || ${firmantes.firstLower()}.size() == 0){
+						${firmantes.firstLower()} = ${calcularFirmantes};
+						${firmantes.sinUltimoAtributo()}.save();
+					}
+					FirmaUtils.firmar(${documento.firstLower()}, ${firmantes.firstLower()}, firma, null);
 				}
-				FirmaUtils.firmar(${documento.firstLower()}, ${firmantes.firstLower()}, firma, null);
+				else{
+				//ERROR
+					Messages.error("No tiene permisos suficientes para realizar la acción++");
+				}
 				if (!Messages.hasErrors()) {
 					${strCampoToTrue}
 					${strCampoSetTo}

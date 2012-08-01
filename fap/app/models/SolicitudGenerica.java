@@ -88,6 +88,10 @@ public class SolicitudGenerica extends FapModel {
 	@JoinTable(name = "solicitudgenerica_notificaciones")
 	public List<Notificacion> notificaciones;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "solicitudgenerica_autorizacion")
+	public List<Autorizaciones> autorizacion;
+
 	public SolicitudGenerica() {
 		init();
 	}
@@ -167,6 +171,9 @@ public class SolicitudGenerica extends FapModel {
 
 		if (notificaciones == null)
 			notificaciones = new ArrayList<Notificacion>();
+
+		if (autorizacion == null)
+			autorizacion = new ArrayList<Autorizaciones>();
 
 		postInit();
 	}

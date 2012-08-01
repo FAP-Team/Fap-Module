@@ -255,6 +255,30 @@ Permiso editarSolicitud {
 	return [leer]
 }
 
+Permiso editarFirma {
+	vars
+		SolicitudGenerica solicitud
+		Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
+	when
+		!usuario is visible
+		or (
+			(participacion.tipo != "autorizado") and
+	 		(agente.rolActivo = "usuario" and
+	 		solicitud?.estado = "borrador" and
+	 		solicitud?.registro?.fasesRegistro?.borrador = "false"
+			)
+		)
+	return [editar leer]
+	when
+		!usuario is visible
+		or (
+	 		agente.rolActivo = "usuario"
+		) or (
+			participacion.tipo = "autorizado"
+		)
+	return [leer]
+}
+
 
 Permiso participacionEnSolicitud {
 	vars

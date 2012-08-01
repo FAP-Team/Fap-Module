@@ -45,6 +45,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	AceptarRenunciar aceptarRenunciar
 	Alegaciones alegaciones
 	OneToMany Notificacion notificaciones
+	OneToMany Autorizaciones autorizacion
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -604,6 +605,7 @@ Entidad DocumentoNotificacion{
 	String urlDescarga transient
 }
 
+
 //Permitimos buscar logs por distintos tipos de datos.
 Entidad BusquedaLogs nonPersist {
 	Boolean buquedaPorAtributos
@@ -614,5 +616,10 @@ Entidad BusquedaLogs nonPersist {
 	String claseLog
 	String numeroFilasSeleccionadas
 
+}
+
+
+Entidad Autorizaciones{
+	Nip nip
 }
 

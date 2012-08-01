@@ -569,7 +569,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 		
 		//Firma persona física	
-		Grupo titulo="Paso 1. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo="fisica" {			
+		Grupo titulo="Paso 1. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo="fisica" /*permiso=editarFirma*/{			
 			Form formFirma permiso=firmarRegistrarAceptarRenunciar redirigir=PaginaAceptacionRenuncia {
 		    	Wiki {"La aceptación/renuncia será firmada y registrada."}
 				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=SolicitudGenerica.aceptarRenunciar.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.aceptarRenunciar.registro.firmantes.todos
@@ -587,7 +587,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			}
 					
 			Grupo borde=false mostrarSiCampo SolicitudGenerica.aceptarRenunciar.registro.tipoFirma="representantes" {
-				Grupo titulo="Paso 1.1. Firmar la Aceptación/Renuncia"  {						
+				Grupo titulo="Paso 1.1. Firmar la Aceptación/Renuncia" permiso=editarFirma{						
 					Wiki {"La aceptación/renuncia será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la aceptación/renuncia."}
 					
 					Form formFirmaRepresentante permiso=firmarAceptarRenunciar {
@@ -617,7 +617,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				}
 			}
 
-			Grupo borde=false mostrarSiCampo SolicitudGenerica.aceptarRenunciar.registro.tipoFirma="cif" {
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.aceptarRenunciar.registro.tipoFirma="cif" permiso=editarFirma{
 				Wiki {"La aceptación/renuncia será firmada y registrada."}			
 				
 				Form formFirmaCif redirigir=PaginaAceptacionRenuncia permiso=firmarRegistrarAceptarRenunciar {
@@ -718,7 +718,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 
 		//Firma persona física	
-		Grupo titulo="Paso 1. Firmar y Registrar la Alegación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" // permiso=presentacionFirmar 
+		Grupo titulo="Paso 1. Firmar y Registrar la Alegación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=editarFirma// permiso=presentacionFirmar 
 		{			
 			Form formFirmaPF redirigir=Alegaciones permiso=firmarRegistrarAlegacion {
 		    	Wiki {"La alegación será firmada y registrada." }
@@ -742,7 +742,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 
 				// La firma y registro se hace en dos pasos
 
-				Grupo titulo="Paso 1.1. Firmar la Alegación"  {						
+				Grupo titulo="Paso 1.1. Firmar la Alegación"  permiso=editarFirma{						
 					Wiki {"La alegación será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la alegación."}
 					Form formFirmaRepresentante permiso=firmarAlegacion {
 						FirmaSimple firmarRepresentante titulo="Firmar" documento=SolicitudGenerica.alegaciones.actual.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.alegaciones.actual.registro.firmantes.todos
@@ -771,7 +771,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				}	
 			}								
 
-			Grupo borde=false mostrarSiCampo SolicitudGenerica.alegaciones.actual.registro.tipoFirma="cif"
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.alegaciones.actual.registro.tipoFirma="cif" permiso=editarFirma
 			{
 				Wiki {"La alegación será firmada y registrada. "}
 
@@ -799,5 +799,23 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	Popup PopUpDocAlegacionEnProceso titulo="Documentación" campo=SolicitudGenerica.alegaciones.actual.documentos {
 		EditarArchivo documentoAlegacionEnProceso campo=Documento requerido
 	}
+	
+/*  
+ * Autorización de acceso a la solicitud
+ */
+
+	Pagina Autorizacion campo=SolicitudGenerica permiso=editarSolicitud { //TODO permiso autorizado no autoriza.
+		Tabla nipsAutorizados titulo="Nips autorizados" campo=SolicitudGenerica.autorizacion pagina=PaginaAutorizar 
+		{
+			Columna campo=Autorizaciones.id titulo="Identificador"
+			Columna campo=Autorizaciones.nip.tipo titulo="Tipo"
+			Columna campo=Autorizaciones.nip.valor titulo="Valor"
+		}
+	}
+	
+	Pagina PaginaAutorizar titulo="Autorizar" campo=SolicitudGenerica.autorizacion {
+		Nip NIP campo=Autorizaciones.nip titulo="Nip del autorizado" requerido
+		Boton btonvolver titulo="Volver" pagina=Autorizacion 
+	} 
 
 }

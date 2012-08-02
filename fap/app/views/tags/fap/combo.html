@@ -201,8 +201,17 @@
 					// Rellenar el select con options, segun los valores que le correspondan
 					var contenido${id} = '<option> </option>';
 					$('#${id}').html(contenido${id});
+					var $combo = $('#${id}');
+					
+					if ($combo.attr('disabled') != "disabled") {
+						#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
+						$combo.trigger("liszt:updated");
+						#{/if}
+					}	
+					
 					// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
 					$('#${id}').change();
+			
 					elementosKey${id}=[];
 					elementosValue${id}=[];
              		elementosTKV${id}={};
@@ -243,8 +252,17 @@
 							}
 						}
 						$('#${id}').html(contenido${id});
+						var $combo = $('#${id}');
+						if ($combo.attr('disabled') != "disabled") {
+							#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
+							$combo.trigger("liszt:updated");
+							#{/if}
+						}
 						// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
 						$('#${id}').change();
+						
+							
+						
 						elementos${id}={};
 	             		elementosTKV${id}={};
 	             		tamElementos${id}=0;
@@ -253,8 +271,15 @@
 					// Rellenar el select con options, segun los valores que le correspondan
 					var contenido${id} = '<option> </option>';
 					$('#${id}').html(contenido${id});
+					var $combo = $('#${id}');
+					if ($combo.attr('disabled') != "disabled") {
+						#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
+						$combo.trigger("liszt:updated");
+						#{/if}
+					}	
 					// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
 					$('#${id}').change();
+
 					elementos${id}={};
              		elementosTKV${id}={};
              		tamElementos${id}=0;

@@ -1,0 +1,62 @@
+*{
+  Dirección
+  ==================================
+  Argumentos
+  	_id     - ID
+  	_titulo - Label
+  	_campo  - Campo donde se almacenará el campo de texto
+  	_provincia - provincia (si es distinto de null se muestra)
+  	_isla	- isla (si es distinto de null se muestra)
+  	_pais	- pais (si es distinto de null se muestra)
+  	_ayuda  - Objeto de tipo TagAyuda
+  	_requerido(false) - El campo es requerido
+    _obj     - Objeto a partir del cual se accede al value. 
+    		   Usar en el caso de que se llame desde otro tag
+    _noRow(false)   - true para no envolver el campo en un form-row
+	_ancho	- ancho 
+}*
+
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0]) }%
+#{fap.field _campo, obj:obj}
+%{ 
+	def id = _id ?: field.id
+	def label = _titulo
+	
+	def ayuda = _ayuda
+	def requerido = _requerido != null? _requerido : false;
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'	
+	def ancho = _ancho
+
+	def id_calle = id + "_calle"
+	def id_numero = id + "_numero"
+	def id_otros = id + "_otros"
+	def id_codigoPostal = id + "_codigoPostal"
+	def id_pais = id + "_pais"
+	def id_provinciaInternacional = id + "_provinciaInternacional"
+	def id_localidad = id + "_localidad"
+
+	def campo_calle = _campo + ".calle"
+	def campo_numero = _campo + ".numero"
+	def campo_otros = _campo + ".otros"
+	def campo_codigoPostal = _campo + ".codigoPostal"
+	def campo_pais = _campo + ".pais"
+	def campo_provinciaInternacional = _campo + ".provinciaInternacional"
+	def campo_localidad = _campo + ".localidad"
+	
+}%
+	
+	#{fap.grupo titulo:label}
+
+		#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+		#{fap.texto id:id_provinciaInternacional, titulo:'Estado/Provincia/Región', campo:campo_provinciaInternacional, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
+		
+		#{fap.texto id:id_localidad, titulo:"Localidad", campo:campo_localidad, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+		#{fap.texto id:id_codigoPostal, titulo:'Código Postal', campo:campo_codigoPostal, obj:obj, requerido:requerido, ancho:"100px" /}
+		#{fap.texto id:id_calle, titulo:'Calle', campo:campo_calle, obj:obj, requerido:requerido, ancho:"250px" /}
+		#{fap.texto id:id_numero, titulo:'Número', campo:campo_numero, obj:obj, requerido:requerido, ancho:"100px"/}
+		#{fap.texto id:id_otros, titulo:'Puerta/Piso/Otros', obj:obj, campo:campo_otros, ancho:"150px" /}
+
+	#{/fap.grupo}
+	
+#{/fap.field}

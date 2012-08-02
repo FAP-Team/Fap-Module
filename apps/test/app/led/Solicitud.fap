@@ -142,7 +142,7 @@ Popup popUpTemas titulo = "Tema" campo = Asignatura.temas {
 	}
 	
 	Pagina Direcciones campo=Solicitud{
-		Direccion titulo="La Dirección" campo=Solicitud.direccionTest.direccion
+		Direccion titulo="La Dirección" campo=Solicitud.direccionTest.direccion requerido
 	}
 	
 	Pagina Combos inicial campo=Solicitud{

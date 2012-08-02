@@ -452,9 +452,6 @@ Direccion:
 	elemento=("Direccion" | "DireccionCanaria" |"DireccionNacional" |"DireccionInternacional") (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ("titulo" "=" titulo=STRING)
-		& (isla?="isla")?
-		& (provincia?="provincia")?
-		& (pais?="pais")?
 		& (requerido?="requerido")?
 	    & ('ancho' '=' ancho=STRING)?
 	)

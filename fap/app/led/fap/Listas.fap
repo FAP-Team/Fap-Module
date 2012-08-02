@@ -84,13 +84,17 @@ Lista obligatoriedadDocumentos{
 }
 
 Lista islas{
+	35 : {
 		351: "Fuerteventura"
 		352: "Gran Canaria"
 		353: "Lanzarote"
+	}
+	38 : {
 		381: "Gomera, La"
 		382: "Hierro, El"
 		383: "Palma, La"
 		384: "Tenerife"
+	}
 }
 
 Lista paises{
@@ -5758,6 +5762,7 @@ Lista municipios ocultar{
 		342453: "Villota del Páramo"
 		342466: "Villovieco"
 	}
+	
 	35 : {
 		350017: "Agaete"
 		350022: "Agüimes"
@@ -5794,7 +5799,52 @@ Lista municipios ocultar{
 		350332: "Vega de San Mateo"
 		350347: "Yaiza"
 	}
-	 36 : {
+	
+	// Para las Islas
+	351: {
+		350038: "Antigua"
+		350075: "Betancuria"
+		350141: "Oliva (La)"
+		350154: "Pájara"
+		350173: "Puerto del Rosario"
+		350304: "Tuineje"
+	}
+	
+	352: {
+		350017: "Agaete"
+		350022: "Agüimes"
+		350206: "Aldea de San Nicolás (La)"
+		350056: "Artenara"
+		350069: "Arucas"
+		350081: "Firgas"
+		350094: "Gáldar"
+		350115: "Ingenio"
+		350120: "Mogán"
+		350136: "Moya"
+		350167: "Palmas de Gran Canaria (Las)"
+		350192: "San Bartolomé de Tirajana"
+		350213: "Santa Brígida"
+		350228: "Santa Lucía de Tirajana"
+		350234: "Santa María de Guía de Gran Canaria"
+		350252: "Tejeda"
+		350265: "Telde"
+		350271: "Teror"
+		350326: "Valleseco"
+		350311: "Valsequillo de Gran Canaria"
+		350332: "Vega de San Mateo"
+	}
+	
+	353: {
+		350043: "Arrecife"
+		350108: "Haría"
+		350189: "San Bartolomé"
+		350249: "Teguise"
+		350287: "Tías"
+		350290: "Tinajo"
+		350347: "Yaiza"
+	}
+	
+	36 : {
 		360209: "Agolada"
 		360010: "Arbo"
 		360031: "Baiona"
@@ -6249,6 +6299,7 @@ Lista municipios ocultar{
 		380257: "Matanza de Acentejo (La)"
 		380260: "Orotava (La)"
 		380276: "Paso (El)"
+		389013: "Pinar de El Hierro (El)"
 		380282: "Puerto de la Cruz"
 		380295: "Puntagorda"
 		380309: "Puntallana"
@@ -6277,6 +6328,70 @@ Lista municipios ocultar{
 		380526: "Vilaflor"
 		380532: "Villa de Mazo"
 	}
+	// Para las Islas
+	381 : {// "Gomera, La"
+		380027: "Agulo"
+		380033: "Alajeró"
+		380218: "Hermigua"
+		380368: "San Sebastián de la Gomera"
+		380491: "Valle Gran Rey"
+		380504: "Vallehermoso"
+	}
+	382 : {//"Hierro, El"
+		380131: "Frontera"
+		389013: "Pinar de El Hierro (El)"
+		380488: "Valverde"
+	}
+	383 : {//"Palma, La"
+		380070: "Barlovento"
+		380086: "Breña Alta"
+		380099: "Breña Baja"
+		380146: "Fuencaliente de la Palma"
+		380162: "Garafía"
+		380244: "Llanos de Aridane (Los)"
+		380276: "Paso (El)"
+		380295: "Puntagorda"
+		380309: "Puntallana"
+		380337: "San Andrés y Sauces"
+		380374: "Santa Cruz de la Palma"
+		380453: "Tazacorte"
+		380472: "Tijarafe"
+		380532: "Villa de Mazo"
+	}
+	384 : {//"Tenerife"
+		380012: "Adeje"
+		380048: "Arafo"
+		380051: "Arico"
+		380064: "Arona"
+		380103: "Buenavista del Norte"
+		380110: "Candelaria"
+		380125: "Fasnia"
+		380159: "Garachico"
+		380178: "Granadilla de Abona"
+		380184: "Guancha (La)"
+		380197: "Guía de Isora"
+		380201: "Güímar"
+		380223: "Icod de los Vinos"
+		380257: "Matanza de Acentejo (La)"
+		380260: "Orotava (La)"
+		380282: "Puerto de la Cruz"
+		380316: "Realejos (Los)"
+		380321: "Rosario (El)"
+		380239: "San Cristóbal de La Laguna"
+		380342: "San Juan de la Rambla"
+		380355: "San Miguel de Abona"
+		380380: "Santa Cruz de Tenerife"
+		380393: "Santa Úrsula"
+		380407: "Santiago del Teide"
+		380414: "Sauzal (El)"
+		380429: "Silos (Los)"
+		380435: "Tacoronte"
+		380440: "Tanque (El)"
+		380466: "Tegueste"
+		380511: "Victoria de Acentejo (La)"
+		380526: "Vilaflor"
+	}
+	
 	39 : {
 		390015: "Alfoz de Lloredo"
 		390020: "Ampuero"
@@ -8742,4 +8857,10 @@ Lista estadoNotificacion crearEnumerado {
 	respondida : "Verificada su respuesta"
 	creada : "Creada" // Estado interno de FAP
 	enviada: "Enviada"
+}
+
+Lista tipoDireccion crearEnumerado {
+	canaria : "Canaria"
+	nacional : "Nacional"
+	internacional : "Internacional"
 }

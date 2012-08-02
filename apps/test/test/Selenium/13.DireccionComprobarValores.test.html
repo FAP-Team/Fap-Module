@@ -13,7 +13,7 @@
 	
     open('/Solicitud/direcciones?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
-    assertSelectedLabel('solicitud_direccionTest_direccion_municipio', 'Santa Úrsula')
+    assertSelectedLabel('solicitud_direccionTest_direccion_municipioIsla', 'Santa Úrsula')
     assertValue('solicitud_direccionTest_direccion_codigoPostal', '38390')
     assertValue('solicitud_direccionTest_direccion_calle', 'Los Cedros')
     assertValue('solicitud_direccionTest_direccion_numero', '14')

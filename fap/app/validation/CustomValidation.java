@@ -181,7 +181,22 @@ public class CustomValidation {
     		Direccion direccion = (Direccion)o;
     		ValidationResult result = new ValidationResult();
     		result.ok = true;
-    		result.ok = applyCheck(requiredCheck, key + ".municipio", direccion.municipio).ok && result.ok;
+    		result.ok = applyCheck(requiredCheck, key + ".tipo", direccion.tipo).ok && result.ok;
+    		if (direccion.tipo.equals("canaria")){
+    			result.ok = applyCheck(requiredCheck, key + ".provincia", direccion.provincia.replace(",", "").trim()).ok && result.ok;
+    			result.ok = applyCheck(requiredCheck, key + ".isla", direccion.isla).ok && result.ok;
+    			result.ok = applyCheck(requiredCheck, key + ".municipio", direccion.municipio.replace(",", "").trim()).ok && result.ok;
+    		}
+    		if (direccion.tipo.equals("nacional")){
+    			result.ok = applyCheck(requiredCheck, key + ".comunidad", direccion.comunidad).ok && result.ok;
+    			result.ok = applyCheck(requiredCheck, key + ".provincia", direccion.provincia.replace(",", "").trim()).ok && result.ok;
+    			result.ok = applyCheck(requiredCheck, key + ".municipio", direccion.municipio.replace(",", "").trim()).ok && result.ok;
+    		}
+    		if (direccion.tipo.equals("internacional")){
+    			result.ok = applyCheck(requiredCheck, key + ".pais", direccion.pais).ok && result.ok;
+    			result.ok = applyCheck(requiredCheck, key + ".provinciaInternacional", direccion.provinciaInternacional).ok && result.ok;
+    			result.ok = applyCheck(requiredCheck, key + ".localidad", direccion.localidad).ok && result.ok;
+    		}
     		result.ok = applyCheck(requiredCheck, key + ".codigoPostal", direccion.codigoPostal).ok && result.ok;
     		result.ok = applyCheck(requiredCheck, key + ".calle", direccion.calle).ok && result.ok;
     		result.ok = applyCheck(requiredCheck, key + ".numero", direccion.numero).ok && result.ok;

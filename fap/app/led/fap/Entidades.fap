@@ -91,7 +91,11 @@ Entidad Direccion embeddable auditable{
 	Lista municipios municipio
 	Lista islas isla
 	Lista provincias provincia
+	Lista comunidadesAutonomas comunidad
 	Lista paises pais
+	String provinciaInternacional
+	String localidad
+	Lista tipoDireccion tipo
 }
 
 // Entidad que representa un Documento y todo lo necesario para representarlo

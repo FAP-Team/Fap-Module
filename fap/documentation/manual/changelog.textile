@@ -1,5 +1,18 @@
 h2. Changelog
 
+h3. Versión 2.0.5
+
+* Mejorada la búsqueda de logs.
+* Fixed Bug en Pagina Verificaciones sin finalizar.
+
+h3. Versión 2.0.4
+
+* Permitir incorporar sin registro.
+* Página FAP que lista las verificaciones sin finalizar.
+* Fixed Bug en la compresión y descompresión de los logs.
+* Simplificando algunos logs.
+* Métodos protected en vez de private en los servicios.
+
 h3. Versión 2.0.3
 
 * Fixed Bug servicio de Notificaciones.

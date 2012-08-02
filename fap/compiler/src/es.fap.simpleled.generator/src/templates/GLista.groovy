@@ -50,7 +50,9 @@ public class GLista extends GElement{
 				pendienteEscribir=true;
 				if (contador == 100){
 					contador = 0;
-					FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numFichero + ".yaml", contenido);
+					NumberFormat formatter = new DecimalFormat("0000");
+					String numeroFormateado = formatter.format(numFichero);
+					FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numeroFormateado + ".yaml", contenido);
 					contenido = "";
 					numFichero++;
 					pendienteEscribir=false;
@@ -58,9 +60,11 @@ public class GLista extends GElement{
 			}
 		}
 		if ((pendienteEscribir) && (!contenido.equals(""))){
-			if (numFichero != 1)
-				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numFichero + ".yaml", contenido);
-			else
+			if (numFichero != 1){
+				NumberFormat formatter = new DecimalFormat("0000");
+				String numeroFormateado = formatter.format(numFichero);
+				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numeroFormateado + ".yaml", contenido);
+			} else
 				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + ".yaml", contenido);
 		}
 	}

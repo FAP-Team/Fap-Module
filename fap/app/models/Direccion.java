@@ -39,8 +39,18 @@ public class Direccion {
 	@ValueFromTable("provincias")
 	public String provincia;
 
+	@ValueFromTable("comunidadesAutonomas")
+	public String comunidad;
+
 	@ValueFromTable("paises")
 	public String pais;
+
+	public String provinciaInternacional;
+
+	public String localidad;
+
+	@ValueFromTable("tipoDireccion")
+	public String tipo;
 
 	public Direccion() {
 		init();

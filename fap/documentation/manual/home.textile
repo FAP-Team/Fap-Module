@@ -98,7 +98,7 @@ h3. "Lógica de Negocio":curso-controladores
 
 h3. "Generación de PDF":fap-generacion-informes
 
-h3. Servicios (GD, firma, registro, ...)
+h3. "Servicios":servicios (GD, firma, registro, ...)
 
 * Gestor Documental: Puede tratarse del "Aed":ws-aed-gd o del "FileSystem":ws-fs-gd.
 * Firma: Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.

@@ -35,7 +35,7 @@
 	#{fap.combo id:comboId, idOld:oldComboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos,
 	   comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ancho:"450px", ordenarPorTexto:true/}
 	
-	#{fap.texto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
+	#{fap.areaTexto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
 
     #{if upload}
         #{fap.upload id:id, accept:_accept/}

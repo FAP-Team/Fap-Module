@@ -17,6 +17,7 @@ import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.Combo;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Direccion;
+import es.fap.simpleled.led.DireccionMapa;
 import es.fap.simpleled.led.EditarArchivo;
 import es.fap.simpleled.led.Enlace;
 import es.fap.simpleled.led.EntidadAutomatica;
@@ -214,6 +215,9 @@ public abstract class LedElementValidator {
 		}
 		if (container instanceof Direccion) {
 			return new SimpleEntidadValidator(container, "Direccion", false);
+		}
+		if (container instanceof DireccionMapa) {
+			return new SimpleEntidadValidator(container, "DireccionMapa", false);
 		}
 		if (container instanceof Nip) {
 			return new SimpleEntidadValidator(container, "Nip", false);

@@ -98,6 +98,23 @@ Entidad Direccion embeddable auditable{
 	Lista tipoDireccion tipo
 }
 
+// Nuevos parametros para la busqueda mediante la Api de Google Places
+Entidad DireccionMapa embeddable auditable{
+	
+	String direccionBusqueda
+	Double latitud
+	Double longitud
+	String numero
+	String otros
+	String calle
+	String localidad
+	String codigoPostal
+	String municipio
+	String provincia
+	String comunidad
+	String pais
+}
+
 // Entidad que representa un Documento y todo lo necesario para representarlo
 Entidad Documento {
 	String uri                     // uri del documento en el AED

@@ -25,7 +25,7 @@ public class LedFormatter extends AbstractDeclarativeFormatter {
 		LedGrammarAccess f = (LedGrammarAccess)getGrammarAccess();
 		
 		String[] elementosSaltoLineaFormularios = {"Grupo", "AgruparCampos", "Texto", "Fecha", "Combo", "Tabla", "SubirArchivo", "Boton", "Check", 
-										"AgrupaBotones", "Nip", "Solicitante", "PersonaFisica", "PersonaJuridica", "Persona", "Direccion",
+										"AgrupaBotones", "Nip", "Solicitante", "PersonaFisica", "PersonaJuridica", "Persona", "Direccion", "DireccionMapa",
 										"Wiki", "AreaTexto", "Enlace", "Form", "SubirArchivoAed", "EditarArchivoAed", "FirmaSimple",
 										"EntidadAutomatica", "Accion", "Columna"};
 		

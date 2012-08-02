@@ -166,6 +166,9 @@ public class GElement {
 
 			else if(element instanceof Direccion)
 				cache.put(element, new GDireccion(element, container));
+				
+			else if(element instanceof DireccionMapa)
+				cache.put(element, new GDireccionMapa(element, container));
 			
 			else if(element instanceof Boton)
 				cache.put(element, new GBoton(element, container));

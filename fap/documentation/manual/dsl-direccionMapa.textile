@@ -1,0 +1,32 @@
+h1. Dirección Mapa
+
+h2. Descripción
+
+Nos permitirá insertar de una forma simple los datos de una dirección en un formulario, con la ayuda de un autocompletado y GoogleMaps.
+
+h2. Parámetros
+
+* **_[name]_** (opcional) : Identificador del elemento.
+* **campo = _[campo]_** : Atributo donde se almacenará la dirección. Tiene que ser de tipo DireccionMapa.
+* **titulo = _[string]_** (opcional) : Título que llevará la agrupación de campos de la dirección.
+* **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
+* **ancho = _[string]_** (opcional) : Ancho para los elementos utilizados en la dirección Mapa.
+
+h2. Definición
+
+bc. DireccionMapa:
+	elemento=("DireccioMapa") (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ("titulo" "=" titulo=STRING)
+		& (requerido?="requerido")?
+	    & ('ancho' '=' ancho=STRING)?
+	)
+;
+
+h2. Ejemplo de uso de Dirección
+
+bc. DireccioMapa titulo="Dirección Autocompletada" campo=Solicitud.direccionTest.direccionMapa
+
+h2. Resultado
+
+!images/dsl-direccionMapa!

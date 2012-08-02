@@ -45,6 +45,9 @@ public class GEntidadAutomatica extends GElement{
 		if (LedEntidadUtils.extend(entidad, "Direccion"))
 			return [generateDireccion(campo)];
 			
+		if (LedEntidadUtils.extend(entidad, "DireccionMapa"))
+			return [generateDireccionMapa(campo)];
+			
 		if (LedEntidadUtils.extend(entidad, "Nip"))
 			return [generateNip(campo)];
 			
@@ -131,6 +134,13 @@ public class GEntidadAutomatica extends GElement{
 		direccion.campo = campo.newCampo();
 		direccion.requerido = esRequerido(campo);
 		return direccion;
+	}
+	
+	private Elemento generateDireccionMapa(CampoUtils campo){
+		DireccionMapa direccionMapa = LedFactory.eINSTANCE.createDireccionMapa();
+		direccionMapa.campo = campo.newCampo();
+		direccionMapa.requerido = esRequerido(campo);
+		return direccionMapa;
 	}
 	
 	private Elemento generateLista(CampoUtils campo){

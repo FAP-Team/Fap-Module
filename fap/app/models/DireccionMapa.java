@@ -18,29 +18,43 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
-@Entity
-public class DireccionTest extends FapModel {
+@Embeddable
+public class DireccionMapa {
 	// Código de los atributos
 
-	@Embedded
-	public Direccion direccion;
+	public String direccionBusqueda;
 
-	@Embedded
-	public DireccionMapa direccionMapa;
+	public Double latitud;
 
-	public DireccionTest() {
+	public Double longitud;
+
+	public String numero;
+
+	public String otros;
+
+	public String calle;
+
+	public String localidad;
+
+	public String codigoPostal;
+
+	public String municipio;
+
+	public String provincia;
+
+	public String comunidad;
+
+	public String pais;
+
+	public DireccionMapa() {
 		init();
 	}
 
 	public void init() {
 
-		if (direccion == null)
-			direccion = new Direccion();
+		if (direccionBusqueda == null)
+			direccionBusqueda = new String();
 
-		if (direccionMapa == null)
-			direccionMapa = new DireccionMapa();
-
-		postInit();
 	}
 
 	// === MANUAL REGION START ===

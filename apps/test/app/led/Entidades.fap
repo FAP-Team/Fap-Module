@@ -84,6 +84,7 @@ Entidad TablaDeNombres {
 
 Entidad DireccionTest {
 	Direccion direccion
+	DireccionMapa direccionMapa
 }
 
 Entidad ComboTest {

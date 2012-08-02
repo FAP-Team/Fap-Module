@@ -62,6 +62,7 @@ h3. Elementos Gráficos
 # "tabla":dsl-tabla
 # "columna":dsl-columna
 # "direccion":dsl-direccion
+# "direccionMapa":dsl-direccionMapa
 # "subir archivo":dsl-subirArchivo
 # "editar archivo":dsl-editarArchivo
 # "solicitante":dsl-solicitante

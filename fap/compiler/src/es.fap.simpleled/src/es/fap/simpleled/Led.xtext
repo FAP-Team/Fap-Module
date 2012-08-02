@@ -16,7 +16,7 @@ QN: // Qualified Name
 ;
 
 IDS:  
-	ID | "Solicitud" | "Nip" | "Direccion" | "Persona" | "PersonaFisica" |
+	ID | "Solicitud" | "Nip" | "Direccion" | "DireccionMapa" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
 	"agente" | "documento" | "password" | "aportadoPor" | "texto" | "isla"
 ;
@@ -218,7 +218,7 @@ Values:
 Elemento:
 	Grupo | AgruparCampos | 
 	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones |
-	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | Wiki |
+	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple | 
 	EntidadAutomatica | Accion
@@ -451,6 +451,15 @@ FirmaSetTrue:
 
 Direccion:
 	elemento=("Direccion" | "DireccionCanaria" |"DireccionNacional" |"DireccionInternacional") (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ("titulo" "=" titulo=STRING)
+		& (requerido?="requerido")?
+	    & ('ancho' '=' ancho=STRING)?
+	)
+;
+
+DireccionMapa:
+	elemento=("DireccioMapa") (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ("titulo" "=" titulo=STRING)
 		& (requerido?="requerido")?

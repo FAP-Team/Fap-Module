@@ -8834,6 +8834,7 @@ Lista tipoMensaje crearEnumerado{
 	twarning: "Warning"
 	tok: "Ok"
 	tinfo: "Info"
+	wiki: "Wiki"
 }
 
 Lista seleccion crearEnumerado{

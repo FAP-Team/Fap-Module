@@ -1,4 +1,3 @@
-
 #{fap.pagina 
      accion:accion, 
      botonBorrar:'Borrar', 
@@ -7,20 +6,33 @@
      encType:'application/x-www-form-urlencoded', 
      formulario:'Administracion', 
      hayForm:true, 
-     pagina:'MensajeLogin', 
+     mensajeFinal:false, 
+     pagina:'RellenarMensajes', 
      permiso:'administrador', 
-     titulo:'MensajeLogin', 
-     urlBorrar:play.mvc.Router.reverse('MensajeLoginController.borrar' ), 
-     urlCrear:play.mvc.Router.reverse('MensajeLoginController.crear' ), 
-     urlEditar:play.mvc.Router.reverse('MensajeLoginController.editar' )
+     titulo:'Rellenar mensaje', 
+     urlBorrar:play.mvc.Router.reverse('RellenarMensajesController.borrar' , ['idConfigurarMensaje':configurarMensaje?.id]), 
+     urlCrear:play.mvc.Router.reverse('RellenarMensajesController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('RellenarMensajesController.editar' , ['idConfigurarMensaje':configurarMensaje?.id])
 }
-			#{fap.combo ayuda:tags.TagAyuda.popover('Tipo de mensaje a visualizar, este atributo será el encargado de maquetar el texto, permite cambiar el estilo del mensaje'), campo:'mensajeInicio.tipo', id:'tipo', titulo:'Tipo del Mensaje' /}		
+	
+			#{fap.texto ayuda:tags.TagAyuda.popover('Introduzca el nombre de la página en la que quiere configurar el mensaje'), campo:'configurarMensaje.paginaAconfigurar', id:'paginaAconfigurar', requerido:true, titulo:'Página' /}		
 		
-			#{fap.areaTexto ancho:'500px', ayuda:tags.TagAyuda.popover('Contenido del mensaje que podremos colocar en la página inicial de login de la aplicación'), campo:'mensajeInicio.contenido', id:'contenido', titulo:'Contenido del mensaje de Inicio' /}		
+			#{fap.combo ayuda:tags.TagAyuda.popover('Seleccionar si se quiere configurar un wiki u otro tipo de mensaje'), campo:'configurarMensaje.tipoMensaje', id:'tipoMensaje', requerido:true, titulo:'Tipo' /}		
 		
-			#{fap.check ayuda:tags.TagAyuda.popover('Será necesario habilitar en caso de querer mostrar en la pagina de inicio el mensaje'), campo:'mensajeInicio.habilitar', id:'habilitar', titulo:'Habilitar la aparición del mensaje en la página de inicio' /}	
+			#{fap.grupo borde:false, siCombo:'tipoMensaje', siComboValue:['wiki']}
+				
+			#{fap.texto campo:'configurarMensaje.tituloMensaje', id:'tituloMensaje', requerido:true, titulo:'Título del Wiki' /}		
+		
+			#{/fap.grupo}
+		
+			#{fap.areaTexto ancho:'500px', ayuda:tags.TagAyuda.popover('Contenido del mensaje que podremos colocar en la página de la aplicación'), campo:'configurarMensaje.contenido', id:'contenido', requerido:true, titulo:'Contenido del mensaje' /}		
+		
+			#{fap.check ayuda:tags.TagAyuda.popover('Será necesario habilitar en caso de querer mostrar en la página el mensaje'), campo:'configurarMensaje.habilitar', id:'habilitado', titulo:'Habilitar la aparición del mensaje en la página' /}		
 		
 #{/fap.pagina}
+
+<div id="prev">
+</div>
 
 <div id="GMensaje">
 	<div id="MensajeAdhoc" class="" data-dismiss="alert">
@@ -34,11 +46,13 @@
 // Variables Globales
 
 // Formulario de la página
-var $MensajeForm = $("#MensajeLogineditarForm");
+var $MensajeForm = $("#RellenarMensajeseditarForm");
 // TextArea de la página, el que tendrá el mensaje
 var $MensajeContenido = $("#contenido");
+// TextArea de la página, el que tendrá el titulo del wiki
+var $TituloMensaje = $("#tituloMensaje");
 // Combo del tipo de mensaje, para ver el estilo que se deberá poner
-var $MensajeTipo = $("#tipo");
+var $MensajeTipo = $("#tipoMensaje");
 // Para controlar que cada X tiempo se recargue la previsualización del mensaje y no instanteneamente que sería muy pesado
 var timeout;
 
@@ -47,13 +61,13 @@ $(document).ready(function() {
 	refrescarMensaje();
 });
 
-// Funcion que crea el mensaje a partir del contenedor GMensaje, si no existe,
+// Función que crea el mensaje de alerta a partir del contenedor GMensaje, si no existe,
 // Por si el usuario lo ha cerrado en tiempo de ejecución, o reasigna la clase, por si el usuario ha cambiado el tipo de mensaje en el combo
 // Variable: clase: Contedrá la clase que se seteará en el div MensajeAdhoc, y la que permitirá asignarle correctamente los estilos CSS
 function creaMensaje(clase){
 	// Si el elemento HTML con id = 'MensajeAdhoc', no existe, lo creamos 
 	if (!document.getElementById("MensajeAdhoc")){
-		// Almacenamos en una variable la definición del div que contendrá nuestros mensajes
+		// Almacenamos en una variable la definición del div que contendrá nuestros mensaje
 		var content = '<div id="MensajeAdhoc" class="'+clase+'"> </div>';
 		// Esa definición la introducimos dentro del elemento GMensaje, que será nuestro DIV contenedor que usaremos siempre de referencia
 		// por si el usuario cierra en ejecución el DIV que contiene el mensaje (MensajeAdhoc), por lo que se eliminaría del HTML, tener una
@@ -70,17 +84,22 @@ function creaMensaje(clase){
 //           data: Contendrá el contenido que se situará dentro del DIV que representa el mensaje, lo que el usuario a introducido en el area de texto
 //				   Estos datos estarán en un formato convertido a HTML adecuado para poder visualizar el contenido como Wiki, por si el usuario ha
 //                 introducido sintaxis para representar estilos Wiki.
-function writeMessage(name, data){
+function writeMessage(name, data, titulo){
 	// Creamos un elemento que sirva para cerrar el mensaje y así 'ocultarlo' y no visualizarlo y el usuario lo cierra
-	var content = '<a class="close" data-dismiss="alert" href="#">x</a>';
+	var content = "";// '<a class="close" data-dismiss="alert" href="#">x</a>';
 	// Si es un mensaje de tipo Error o tipo Fatal (lo que el usuario a seleccionado en el combo)
-	if (name == "terror" || name == "tfatal"){
+	if (name == "wiki") {
+		content = '<div id="wiki" class="grupo"> <p class="grupo-header">'+titulo+'</p>' +data+ '</div>';
+	}
+	else if (name == "terror" || name == "tfatal"){
 		// El contenido se formará como elemento de una lista HTML
+		content = '<a class="close" data-dismiss="alert" href="#">x</a>';
 		content += '<ul>';
 		content += '<li>'+data+'</li>';
 		content += '</ul>';
 	} else{ // Si es otro tipo de mensaje
 		 // El contenido irá inmerso en un simple elemento <p>
+		 content = '<a class="close" data-dismiss="alert" href="#">x</a>';
 		 content += data;
 	}
 	// Añadimos la estructura con el contenido que hemos creado, al elemento HTML correspondiente, el DIV que contendrá nuestro mensaje
@@ -109,12 +128,18 @@ function tipoToClass(tipo){
 	if (tipo=="tinfo"){
 		return "alert alert-info";
 	}
+	if (tipo=="tinfo"){
+		return "wiki";
+	}
 	return "";
 }
 
-// Evento que detecta cada vez que se introduce algo nuevo en el Area de Texto de contenido de la página MensajeLogin
+// Evento que detecta cada vez que se introduce algo nuevo en el Area de Texto de contenido de la página RellenarMensaje
 // para permitir refrescar continuamente el elemento que muestra la previsualización del mensaje
 $MensajeContenido.keydown(function(){refrescarMensaje()});
+
+// Evento para refrescar el mensaje cada vez que se seleccione otro valor en el combo que permite elegir el tipo (si es wiki o no)
+$Tipo.change(function(){refrescarMensaje()});
 
 // Evento para refrescar el mensaje cada vez que se seleccione otro valor en el combo que permite elegir el tipo de mensaje
 $MensajeTipo.change(function(){refrescarMensaje()});
@@ -122,7 +147,7 @@ $MensajeTipo.change(function(){refrescarMensaje()});
 // Variable Groovy para conocer la dirección de la función a la que se debe llamar por Ajax para convertir el Texto del Mensaje escrito por le usuario
 // en datos HTML válidos para que se visualice correctamente los formatos Wiki que pueda introducir en él, el usuario.
 %{
-	urlConvertDataFunction = play.mvc.Router.reverse('MensajeLoginController.convertData')
+	urlConvertDataFunction = play.mvc.Router.reverse('RellenarMensajesController.convertData')
 %}
 
 // Función que refresca el mensaje a partir del tipo que ha seleccionado el usuario en el combo y del contenido que tenga
@@ -136,12 +161,13 @@ function refrescarMensaje(){
   		url: urlConvertData,
   		data: { contenido: $MensajeContenido.val() }
 	}).done(function( msg ) {
+		var text = '<h4> Previsualización: </h4> </br>';
+		$('#prev').html(text);
 		// Creamos el mensaje en función del valor del combo que haya y que representa el tipo de mensaje. Convertiremos el valor del combo a un string con la clase correspondiente
 		creaMensaje(tipoToClass($MensajeTipo.val()));
 		// Escribimos el mensaje dentro del Div pertinente a raíz del contenido del Area de Texto y del valor del Combo de tipo de mensaje
-		writeMessage($MensajeTipo.val(), msg);
+		writeMessage($MensajeTipo.val(), msg, $TituloMensaje.val());
 	});
 }
 
 </script>
-		

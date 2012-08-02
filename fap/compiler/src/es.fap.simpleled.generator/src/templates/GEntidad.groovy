@@ -451,9 +451,12 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			if (!pag.guardarParaPreparar)
 				continue;
 			String name = "pagina" + pag.name;
+			String title = name;
+			if ((pag.titulo != null) && (!pag.titulo.isEmpty()))
+				title = pag.titulo;
 			out += """
 				if ((savePages.${name} == null) || (!savePages.${name}))
-					Messages.error("La página ${name.substring(6)} no fue guardada correctamente");
+					Messages.error("La página ${title} no fue guardada correctamente");
 			"""
 		}
 		out += "}";

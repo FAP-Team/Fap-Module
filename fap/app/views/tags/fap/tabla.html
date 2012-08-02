@@ -566,6 +566,53 @@
     				}
 				]
 			});
+		   	
+
+		   	
+		    // Creamos el tooltip de la celda
+		    grid.getView().on('render', function(gridView) {
+            	gridView.tip = Ext.create('Ext.tip.ToolTip', {
+                	// The overall target element.
+                	target: gridView.el,
+                	// Each grid row causes its own seperate show and hide.
+                	delegate: gridView.cellSelector,
+                	// Moving within the row should not hide the tip.
+                	trackMouse: true,
+                	// Render immediately so that tip.body can be referenced prior to the first show.
+                	renderTo: Ext.getBody(),
+                	listeners: {
+                    	// Change content dynamically depending on which element triggered the show.
+                    	beforeshow: function updateTipBody(tip) {
+                        	gridColums = gridView.getGridColumns();
+                        	column = gridColums[tip.triggerElement.cellIndex];
+                            record = gridView.getRecord(tip.triggerElement.parentNode);
+                            myToolTipText = "<b>"+column.text+": </b>";
+                            myToolTipText = myToolTipText + record.get(column.dataIndex);
+                            tip.update(myToolTipText);
+                    	}
+                	}
+            	})
+            });
+		    
+		   	// Si queremos crear el tooltip por fila (no por celda)
+		    /* 		   	grid.getView().on('render', function(view) {
+		    		   	    view.tip = Ext.create('Ext.tip.ToolTip', {
+		    		   	        // The overall target element.
+		    		   	        target: view.el,
+		    		   	        // Each grid row causes its own seperate show and hide.
+		    		   	        delegate: view.itemSelector,
+		    		   	        // Moving within the row should not hide the tip.
+		    		   	        trackMouse: true,
+		    		   	        // Render immediately so that tip.body can be referenced prior to the first show.
+		    		   	        renderTo: Ext.getBody(),
+		    		   	        listeners: {
+		    		   	            // Change content dynamically depending on which element triggered the show.
+		    		   	            beforeshow: function updateTipBody(tip) {
+		    		   	                tip.update('Over company "' + view.getRecord(tip.triggerElement).get('estadoUsuario') + '"');
+		    		   	            }
+		    		   	        }
+		    		   	    });
+		    		   	}); */
 	
 		    store${id}.addListener("datachanged", function(){
 		    	store${id}.sync();

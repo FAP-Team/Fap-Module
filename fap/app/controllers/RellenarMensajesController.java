@@ -1,0 +1,225 @@
+package controllers;
+
+import java.util.Arrays;
+import java.util.List;
+
+import play.mvc.Util;
+import services.FirmaService;
+import services.GestorDocumentalService;
+import services.NotificacionService;
+import utils.StringUtils;
+import validation.CustomValidation;
+import messages.Messages;
+import models.ConfigurarMensaje;
+import models.MensajeDocumentacion;
+import config.InjectorConfig;
+import controllers.gen.RellenarMensajesControllerGen;
+
+public class RellenarMensajesController extends RellenarMensajesControllerGen {
+	
+	public static void index(String accion, Long idConfigurarMensaje) {
+		if (accion == null)
+			accion = getAccion();
+		if (!permiso(accion)) {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+			renderTemplate("gen/RellenarMensajes/RellenarMensajes.html");
+		}
+
+		ConfigurarMensaje configurarMensaje = null;
+		if ("crear".equals(accion))
+			configurarMensaje = RellenarMensajesController.getConfigurarMensaje();
+		else if (!"borrado".equals(accion))
+			configurarMensaje = RellenarMensajesController.getConfigurarMensaje(idConfigurarMensaje);
+
+		log.info("Visitando página: " + "fap/Admin/RellenarMensajes.html");
+		renderTemplate("fap/Admin/RellenarMensajes.html", accion, idConfigurarMensaje, configurarMensaje);
+	}
+	
+	@Util
+	public static Long crearLogica(ConfigurarMensaje configurarMensaje) {
+		checkAuthenticity();
+		if (!permiso("crear")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		
+		ConfigurarMensaje dbConfigurarMensaje = RellenarMensajesController.getConfigurarMensaje();
+		RellenarMensajesController.RellenarMensajesBindReferences(configurarMensaje);
+
+		if (!Messages.hasErrors()) {
+			List<ConfigurarMensaje> listaMensajes = ConfigurarMensaje.findAll();
+			
+			// Comprobamos que no exista ya un mensaje configurado para la misma página
+			// y que esté habilitado.
+			for (ConfigurarMensaje mensaje: listaMensajes) {
+				if ((configurarMensaje.paginaAconfigurar.equals(mensaje.paginaAconfigurar)) &&
+					(configurarMensaje.habilitar) && (mensaje.habilitar)) {
+					Messages.error("Ya existe un mensaje configurado para esa página");
+				}
+			}
+		}
+
+		if (!Messages.hasErrors()) {
+			RellenarMensajesController.RellenarMensajesValidateCopy("crear", dbConfigurarMensaje, configurarMensaje);
+		}
+		
+		if (!Messages.hasErrors()) {
+			RellenarMensajesController.crearValidateRules(dbConfigurarMensaje, configurarMensaje);
+		}
+		
+		Long idConfigurarMensaje = null;
+		if (!Messages.hasErrors()) {
+			dbConfigurarMensaje.save();
+			idConfigurarMensaje = dbConfigurarMensaje.id;
+			log.info("Acción Crear de página: " + "gen/RellenarMensajes/RellenarMensajes.html" + " , intentada con éxito");
+		} else {
+			log.info("Acción Crear de página: " + "gen/RellenarMensajes/RellenarMensajes.html" + " , intentada sin éxito (Problemas de Validación)");
+		}
+		return idConfigurarMensaje;
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void editar(Long idConfigurarMensaje, ConfigurarMensaje configurarMensaje) {
+		checkAuthenticity();
+		if (!permiso("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		
+		ConfigurarMensaje dbConfigurarMensaje = RellenarMensajesController.getConfigurarMensaje(idConfigurarMensaje);
+		RellenarMensajesController.RellenarMensajesBindReferences(configurarMensaje);
+
+		if (!Messages.hasErrors()) {
+
+			List<ConfigurarMensaje> listaMensajes = ConfigurarMensaje.findAll();
+			
+			// Comprobamos que no exista ya un mensaje configurado para la misma página
+			// y que esté habilitado.
+			for (ConfigurarMensaje mensaje: listaMensajes) {
+				if ((mensaje.paginaAconfigurar.equals(configurarMensaje.paginaAconfigurar)) && (
+					(!mensaje.tipoMensaje.equals(configurarMensaje.tipoMensaje)) ||
+					(!mensaje.contenido.equals(configurarMensaje.contenido)) ||
+					(!mensaje.habilitar.equals(configurarMensaje.habilitar)))) {
+					
+					if ((configurarMensaje.paginaAconfigurar.equals(mensaje.paginaAconfigurar)) &&
+						(configurarMensaje.habilitar) && (mensaje.habilitar)) {
+						Messages.error("Ya existe un mensaje configurado para esa página");
+					}
+				}
+			}
+		}
+
+		if (!Messages.hasErrors()) {
+			RellenarMensajesController.RellenarMensajesValidateCopy("editar", dbConfigurarMensaje, configurarMensaje);
+		}
+		if (!Messages.hasErrors()) {
+			RellenarMensajesController.editarValidateRules(dbConfigurarMensaje, configurarMensaje);
+		}
+		if (!Messages.hasErrors()) {
+			dbConfigurarMensaje.save();
+			log.info("Acción Editar de página: " + "gen/RellenarMensajes/RellenarMensajes.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/RellenarMensajes/RellenarMensajes.html" + " , intentada sin éxito (Problemas de Validación)");
+		RellenarMensajesController.editarRender(idConfigurarMensaje);
+	}
+	
+	@Util
+	public static void editarRender(Long idConfigurarMensaje) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página editada correctamente");
+			Messages.keep();
+			redirect("ConfigurarMensajesController.index", "editar", idConfigurarMensaje);
+		}
+		Messages.keep();
+		redirect("RellenarMensajesController.index", "editar", idConfigurarMensaje);
+	}
+	
+	@Util
+	public static void crearRender(Long idConfigurarMensaje) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página creada correctamente");
+			Messages.keep();
+			redirect("ConfigurarMensajesController.index", "editar", idConfigurarMensaje);
+		}
+		Messages.keep();
+		redirect("RellenarMensajesController.index", "crear", idConfigurarMensaje);
+	}
+
+	@Util
+	public static void borrarRender(Long idConfigurarMensaje) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página borrada correctamente");
+			Messages.keep();
+			redirect("ConfigurarMensajesController.index", "borrado");
+		}
+		Messages.keep();
+		redirect("RellenarMensajesController.index", "borrar", idConfigurarMensaje);
+	}
+	
+	/*
+	 * Método utilizado en RellenarMensajes.html. Permite que
+	 * se pueda mostrar el contenido del mensaje correctamente.
+	 */
+	
+	public static StringBuffer convertData(String contenido){
+		return StringUtils.getParsedText(contenido);
+	}
+	
+	
+	//+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	// Métodos para comprobar qué servicio
+	// no está disponible y mostrarlo mediante
+	// una alerta al hacer el login.
+	//+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	
+	/*
+	 * Retorna false si el servicio Platino no está disponible, true en caso contrario. 
+	 * 
+	 */
+	private static boolean platinoIsConfigured() {
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		return firmaService.isConfigured();
+	}
+	
+	/*
+	 * Retorna false si el servicio Notificación no está disponible, true en caso contrario. 
+	 * 
+	 */
+	private static boolean notificacionIsConfigured() {
+		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
+		return notificacionService.isConfigured();
+	}
+	
+	/*
+	 * Retorna false si el servicio Gestor Documental no está disponible, true en caso contrario.  
+	 * 
+	 */
+	private static boolean gestorDocumentalIsConfigured() {
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		return gestorDocumentalService.isConfigured();
+	}
+	
+
+	/*
+	 * Retorna un string con los servicios que no están disponibles, o una cadena vacía si están todos activos.
+	 * Usado para insertar un mensaje de aviso en la pantalla de login. 
+	 * 
+	 */
+	public static String servicesIsConfigured() {
+		String msg = "";
+		if (!platinoIsConfigured())
+			msg += "Platino";
+		if (!notificacionIsConfigured()) {
+			if (msg.isEmpty())
+				msg += "Notificación";
+			else
+				msg += ", Notificación";
+		}
+		if (!gestorDocumentalIsConfigured()) {
+			if (msg.isEmpty())
+				msg += "Gestor Documental";
+			else
+				msg += ", Gestor Documental";
+		}
+		return msg;
+	}
+}

@@ -52,7 +52,8 @@ public class AportacionController extends AportacionControllerGen {
     			redirect("AportacionPresentarController.index", accion, idSolicitud);
     		}
 		}
-		renderTemplate("fap/Admin/Aportacion.html", accion, idSolicitud, solicitud);
+		log.info("Visitando página: " + "gen/Aportacion/Aportacion.html");
+		renderTemplate("gen/Aportacion/Aportacion.html", accion, idSolicitud, solicitud);
 	}
 	
 	public static void presentar(Long idSolicitud) {

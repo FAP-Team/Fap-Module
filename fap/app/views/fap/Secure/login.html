@@ -32,7 +32,7 @@
 
 <div class="row">
 <div id="instrucciones" class="span6 alpha">
-	#{include 'fap/Secure/mensaje.html' /}
+	#{fap.configurarMensaje pagina:"login"/}
 	#{include 'fap/Secure/instrucciones.html' /}
 	#{include 'fap/Secure/help.html' /}
 </div>
@@ -125,7 +125,7 @@
 %{
         // Comprobamos si servicios como Platino, GestorDocumental, etc, responden. 
         // Si no, mostramos un mensaje de aviso.
-        def servicesConfigured = controllers.MensajeLoginController.servicesIsConfigured();
+        def servicesConfigured = controllers.RellenarMensajesController.servicesIsConfigured();
         if(!servicesConfigured.isEmpty()) {
 }%
    

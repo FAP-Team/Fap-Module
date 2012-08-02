@@ -165,6 +165,7 @@ Pagina:
 		& (noAutenticar?='noAutenticar')?
 		& (guardarParaPreparar?="guardarParaPreparar")?
 		& (inicial?="inicial")?
+		& (mensajeFinal?="mensajeFinal")?
 	)
 	'{'
 		elementos+=Elemento*

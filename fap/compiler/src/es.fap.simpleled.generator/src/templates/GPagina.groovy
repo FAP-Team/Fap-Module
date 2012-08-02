@@ -19,6 +19,7 @@ public class GPagina extends GGroupElement{
 	boolean hasForm;
 	CampoUtils campo;
 	String name;
+	boolean mensajeFinal;
 	
 	public GPagina(Pagina pagina, GElement container){
 		super(pagina, container);
@@ -27,6 +28,7 @@ public class GPagina extends GGroupElement{
 		this.formulario = pagina.eContainer();
 		this.campo = CampoUtils.create(LedCampoUtils.getCampoPaginaPopup(pagina));
 		this.hasForm = this.campo != null && !pagina.noForm && !hayForm(pagina);
+		this.mensajeFinal = pagina.mensajeFinal;
 		elementos = pagina.getElementos();
 	}
 
@@ -64,6 +66,7 @@ public class GPagina extends GGroupElement{
 		Controller c = Controller.create(this);
 		
 		params.put("accion", "accion");
+		params.put("mensajeFinal", mensajeFinal);
 		params.put("urlEditar", c.getRouteAccion("editar"));
 		params.put("urlCrear", c.getRouteAccion("crear"));
 		params.put("urlBorrar", c.getRouteAccion("borrar"));

@@ -503,16 +503,15 @@ Entidad Busqueda noAuditable extends Singleton {
 	Boolean mostrarTabla default = "false"             // necesitamos una variable para saber si ya ha buscado y mostrar la tabla de resultados
 }
 
-Entidad MensajeInicio noAuditable extends Singleton {
-	Lista tipoMensaje tipo
-	String contenido
+Entidad ConfigurarMensaje {
+	String paginaAconfigurar
+	Lista tipoMensaje tipoMensaje
+	String tituloMensaje
+	LongText contenido
 	Boolean habilitar
+	String habilitarText transient
 }
 
-Entidad MensajeAportacion noAuditable extends Singleton {
-	String contenido
-	Boolean habilitar
-}
 
 Entidad AceptarRenunciar {
 	Lista seleccion seleccion

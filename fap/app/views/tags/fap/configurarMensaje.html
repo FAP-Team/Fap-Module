@@ -1,0 +1,53 @@
+%{
+	def pagina = _pagina; // Nombre de la página
+	def hayMensaje=false;
+	def contenido="";
+	def tituloMensaje="";
+	def tipoMensaje="";
+	if ((!models.ConfigurarMensaje.findAll().isEmpty())) {
+	   for (models.ConfigurarMensaje mensaje: models.ConfigurarMensaje.findAll()) {
+			if ((mensaje.paginaAconfigurar.equals(pagina)) && (mensaje.habilitar)) {
+				hayMensaje=mensaje.habilitar;
+				tituloMensaje=mensaje.tituloMensaje;
+				tipoMensaje=mensaje.tipoMensaje;
+				if (tipoMensaje=="terror" || tipoMensaje=="tfatal")
+					clase="alert alert-error";
+				else if (tipoMensaje=="twarning")
+					clase="alert alert-warning";
+				else if (tipoMensaje=="tok")
+					clase="alert alert-success";
+				else if (tipoMensaje=="tinfo")
+					clase="alert alert-info";
+				else if (tipoMensaje=="wiki")
+					clase="wiki";
+				if (mensaje.contenido != null)
+					contenido=utils.StringUtils.getParsedText(mensaje.contenido);
+			}
+		}
+	}
+%}
+#{if tipoMensaje.equals("wiki")}
+	<div class="wiki">
+		#{if hayMensaje}
+			#{fap.grupo titulo:tituloMensaje}
+				<div id="GMensaje">
+					<div id="MensajeAdhoc">
+						${contenido.raw()}
+					</div>
+				</div>
+			#{/fap.grupo}
+		#{/if}
+	</div>
+#{/if}
+#{else}
+	#{if hayMensaje}
+		#{fap.grupo titulo:"Última Hora"}
+			<div id="GMensaje">
+				<div id="MensajeAdhoc" class="${clase}">
+					${contenido.raw()}
+				</div>
+			</div>
+		#{/fap.grupo}
+	#{/if}
+#{/else}
+

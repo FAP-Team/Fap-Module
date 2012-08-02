@@ -18,24 +18,33 @@ Formulario Administracion permiso=administrador{
 			Enlace "Incidencias" accion="fap.IncidenciasController.index"
 			Enlace "Properties" pagina=Propiedades
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
-			Enlace "Mensaje en Login" pagina=MensajeLogin
-			Enlace "Mensaje de Aportacion" pagina=WikiAportacion
+			Enlace "Configurar mensajes" pagina=ConfigurarMensajes
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
     }
     
-    Pagina MensajeLogin campo=MensajeInicio{
-    	Combo tipo campo=MensajeInicio.tipo titulo="Tipo del Mensaje de Inicio" ayuda="Tipo de mensaje a visualizar, este atributo será el encargado de maquetar el texto, permite cambiar el estilo del mensaje" (propover)
-    	AreaTexto contenido campo=MensajeInicio.contenido titulo="Contenido del mensaje de Inicio" ancho="500px" ayuda="Contenido del mensaje que podremos colocar en la página inicial de login de la aplicación" (propover)
-    	Check habilitar campo=MensajeInicio.habilitar titulo="Habilitar la aparición del mensaje en la página de inicio" ayuda="Será necesario habilitar en caso de querer mostrar en la pagina de inicio el mensaje" (propover)
+    Pagina ConfigurarMensajes titulo="Configurar mensajes" {
+    	Tabla mensajesPagina campo=ConfigurarMensaje titulo="Mensajes configurados" pagina=RellenarMensajes {
+    		Columna campo=ConfigurarMensaje.paginaAconfigurar titulo="Página" expandir
+    		Columna campo=ConfigurarMensaje.tipoMensaje titulo="Tipo Mensaje" expandir
+    		Columna campo=ConfigurarMensaje.habilitarText titulo="Habilitado" expandir
+    	}
     }
     
-    Pagina WikiAportacion campo=MensajeAportacion{
-    	AreaTexto contenido campo=MensajeAportacion.contenido titulo="Contenido del mensaje de Aportación" ancho="500px" ayuda="Contenido del mensaje que podremos colocar en la página aportación de la aplicación" (propover)
-    	Check habilitar campo=MensajeAportacion.habilitar titulo="Habilitar la aparición del mensaje en la página de aportación" ayuda="Será necesario habilitar en caso de querer mostrar en la pagina el mensaje" (propover)
-    }
+    Pagina RellenarMensajes titulo="Rellenar mensaje" campo=ConfigurarMensaje {
+    	Texto paginaAconfigurar campo=ConfigurarMensaje.paginaAconfigurar titulo="Página" ayuda="Introduzca el nombre de la página en la que quiere configurar el mensaje" (propover) requerido
+    	Combo tipoMensaje campo=ConfigurarMensaje.tipoMensaje titulo="Tipo" ayuda="Seleccionar si se quiere configurar un wiki u otro tipo de mensaje" (propover) requerido
+    	
+    	Grupo mostrarSiCombo tipoMensaje="wiki" borde=false {
+    		Texto tituloMensaje campo=ConfigurarMensaje.tituloMensaje titulo="Título del Wiki" requerido
+    	}
+    	
+    	AreaTexto contenido campo=ConfigurarMensaje.contenido titulo="Contenido del mensaje" ancho="500px" ayuda="Contenido del mensaje que podremos colocar en la página de la aplicación" (propover) requerido
+    	Check habilitado campo=ConfigurarMensaje.habilitar titulo="Habilitar la aparición del mensaje en la página" ayuda="Será necesario habilitar en caso de querer mostrar en la página el mensaje" (propover)
+
+   	}
     
     Pagina ActivarBaremacion noForm{
     	Grupo IniciarTipoEvaluacion titulo="Iniciar el Tipo de Evaluación" permiso=iniciarTipoEvaluacion{

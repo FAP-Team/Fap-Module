@@ -9,9 +9,6 @@ h2. Parámetros
 * **_[name]_** (opcional) : Identificador del elemento.
 * **campo = _[campo]_** : Atributo donde se almacenará la dirección. Tiene que ser de tipo Direccion, DireccionCanaria, DireccionNacional o DireccionInternacional.
 * **titulo = _[string]_** (opcional) : Título que llevará la agrupación de campos de la dirección.
-* **isla** (opcional) : Si se especifica, indica que se debe crear un combo que permita la inserción de la isla.
-* **provincia** (opcional) : Si se especifica, indica que se debe crear un combo que permita la inserción de la provincia.
-* **pais** (opcional) : Si se especifica, indica que se debe crear un combo que permita la inserción del país.
 * **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
 * **ancho = _[string]_** (opcional) : Ancho para los combos de provincia y país (los demás son establecidos por defecto para que se agrupen de una forma correcta).
 
@@ -21,31 +18,44 @@ bc. Direccion:
 	elemento=("Direccion" | "DireccionCanaria" |"DireccionNacional" |"DireccionInternacional") (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ("titulo" "=" titulo=STRING)?
-		& (isla?="isla")?
-		& (provincia?="provincia")?
-		& (pais?="pais")?
 		& (requerido?="requerido")?
 		& ('ancho' '=' ancho=STRING)?
 	)
 ;
 
-* El elemento DirecciónCanaria, añade automáticamente el campo isla.
-* El elemento DireccionNacional, añade automáticamente el campo provincia.
-* El elemento DireccionInternacional, añade automáticamente los campos provincia y país.
+h2. Opciones
+
+h3. Dirección
+
+Permite indicar que la dirección será elegible por el propio solicitante, mediante un combo 'Tipo Dirección'. Los valores de este combo estarán compuestos por los valores parseador de una property situada en el application.conf. Esta property es:
+
+* *fap.direcciones.tipo=* _canaria,nacional,internacional_ , Por defecto tiene los valores que vemos (todos los posibles), si se quiere personalizar dicho combo habrá que sobreescribir la property en nuestro application.conf de la aplicación e indicarle que valores dejaremos seleccionar.
+
+h3. Dirección Canaria
+
+Es uno de los tres tipos de direcciones que se definen en este elemento Dirección.
+La dirección Canaria, da por supuesto que el País será España y que la Comunidad Autonóma será Canarias. A partir de ahí, deja seleccionar una de las dos provincias que tiene Canarias, y dependiendo de la provincia seleccionada, permitirá seleccionar la isla. Dependiendo de la isla se podrá seleccionar el municipio.
+
+Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numero, otros (puerta,etc.).
+
+h3. Dirección Nacional
+
+Supone que el pais será España. A partir de ahí deja seleccionar la comunidad autonoma que queramos, y dependiendo de esta, su provincia. Dependiendo de esta provincia podremos seleccionar un municipio.
+
+Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numero, otros (puerta,etc.).
+
+h3. Dirección Internacional
+
+Permite seleccionar un Pais, de la lista de todos los paises del mundo.
+
+Además de que tiene campos distintos a las otras direcciones, como el Estado, y no tiene campos como Comunidad Autónoma, Provincia y Muncipio.
+
+Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numero, otros (puerta,etc.).
 
 h2. Ejemplo de uso de Dirección
 
 bc. Direccion titulo="Domicilio Social" campo=Solicitud.solicitante.domicilio requerido
 
-h2. Resultado
-
-!images/dsl-direccion!
-
-
 h2. Ejemplo de uso de DireccionNacional
 
 bc. DireccionNacional titulo="La Dirección Nacional" campo=Solicitud.solicitante.domicilio requerido
-
-h2. Resultado
-
-!images/dsl-direccionnacional!

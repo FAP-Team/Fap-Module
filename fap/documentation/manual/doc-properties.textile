@@ -56,4 +56,6 @@ h2. Properties originarias de FAP
 ** Ejemplo: _fap.cache.time=5min_ (Si una petición tiene el control más de 5 minutos, el control vuelve a liberarse)
 * Aparece un formulario de búsqueda en la pantalla inicial para todos los roles (excepto Usuario): *fap.index.search=* _[true | false]_
 ** Ejemplo: _fap.index.search=true_
+* Tipo de direcciones usadas en el combo tipo de direcciones del elemento dirección: * *fap.direcciones.tipo=* _tiposDirecciones_
+** Ejemplo: _fap.direcciones.tipo=canaria,nacional,internacional_ (Valor por defecto, que trae el módulo FAP)
 

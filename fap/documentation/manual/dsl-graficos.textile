@@ -1,29 +1,32 @@
 h1. Elementos gráficos de un DSL
 
-# "texto":dsl-texto
+# "agrupar campos":dsl-agruparCampos
 # "area texto":dsl-areaTexto
 # "boton":dsl-boton
 # "check":dsl-check
-# "enlace":dsl-enlace
+# "columna":dsl-columna
 # "combo":dsl-combo
-# "grupo":dsl-grupo
-# "wiki":dsl-wiki
-# "pagina":dsl-pagina
-# "popup":dsl-popup
+# "direccion":dsl-direccion
+# "editar archivo":dsl-editarArchivo
+# "enlace":dsl-enlace
+# "entidad automática":dsl-entidadAutomatica
 # "fecha":dsl-fecha
 # "firma simple":dsl-firmaPlatinoSimple
-# "agrupar campos":dsl-agruparCampos
-# "menu":dsl-menu
 # "form":dsl-form
-# "tabla":dsl-tabla
-# "columna":dsl-columna
-# "direccion":dsl-direccion
-# "subir archivo":dsl-subirArchivo
-# "editar archivo":dsl-editarArchivo
-# "solicitante":dsl-solicitante
+# "formulario":dsl-formulario
+# "grupo":dsl-grupo
+# "menu":dsl-menu
+# "pagina":dsl-pagina
 # "persona":dsl-persona
 # "persona fisica":dsl-personaFisica
 # "persona juridica":dsl-personaJuridica
-# "entidad automática":dsl-entidadAutomatica
-# "formulario":dsl-formulario
+# "popup":dsl-popup
+# "solicitante":dsl-solicitante
+# "subir archivo":dsl-subirArchivo
+# "tabla":dsl-tabla
+# "texto":dsl-texto
+# "wiki":dsl-wiki
+
+
+
 

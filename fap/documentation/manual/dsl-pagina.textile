@@ -14,10 +14,11 @@ h2. Parámetros
 * **campo = _[campo]_** (opcional) : Define la entidad que se puede usar en los campos que se sitúen dentro de la página. Si no se especifica este parámetro, ni en el formulario que contiene a la página, entonces no se crearán los botones asociados a cada una de las acciones.
 * **inicial** (opcional) : Establece esta página como la inicial de la aplicación.
 * **titulo = _[string]_** (opcional) : Define un título para la página.
+* **mensajeFinal** (opcional) : En el caso que se quiera configurar un mensaje personalizado para la página y se especifique esta opción, se indicará que se quiere poner el mensaje al final de la página. Por defecto, se colocará al principio de la página.
 
 h2. Definición
 
-bc. Pagina:
+bc.. Pagina:
 	elemento='Pagina' name=IDS
 	(
 		("titulo" "=" titulo=STRING)?
@@ -27,6 +28,7 @@ bc. Pagina:
 		& (noAutenticar?='noAutenticar')?
 		& (guardarParaPreparar?="guardarParaPreparar")?
 		& (inicial?="inicial")?
+		& (mensajeFinal?="mensajeFinal")?
 	)
 	'{'
 		elementos+=Elemento*

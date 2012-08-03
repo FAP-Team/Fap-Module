@@ -1,0 +1,24 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'multipart/form-data', 
+     formulario:'Solicitud', 
+     hayForm:true, 
+     mensajeFinal:false, 
+     pagina:'DocumentosFAP', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'DocumentosFAP', 
+     urlBorrar:play.mvc.Router.reverse('DocumentosFAPController.borrar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id]), 
+     urlCrear:play.mvc.Router.reverse('DocumentosFAPController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('DocumentosFAPController.editar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id])
+}
+%{
+	// El trámite se obtiene de la property fap.gestordocumental.documentacion.tramite
+	String tramite = properties.FapProperties.get("fap.gestordocumental.documentacion.tramite");
+%}
+	#{fap.documento accept:'', aportadoPor:'CIUDADANO', campo:'documento', id:'fileAportacion', listarDocumentosSubidos:false, requerido:true, tipo:'tipoCiudadano', tramite:tramite /}	
+#{/fap.pagina}

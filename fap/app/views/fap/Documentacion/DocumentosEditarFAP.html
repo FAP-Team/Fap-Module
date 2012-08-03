@@ -1,0 +1,16 @@
+#{fap.popup 
+     accion:accion, 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     popup:'DocumentosEditarFAP', 
+     titulo:'DocumentosEditarFAP', 
+     urlBorrar:play.mvc.Router.reverse('popups.DocumentosEditarFAPController.borrar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.DocumentosEditarFAPController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('popups.DocumentosEditarFAPController.editar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id])
+}
+%{
+	// El trámite se obtiene de la property fap.gestordocumental.documentacion.tramite
+	String tramite = properties.FapProperties.get("fap.gestordocumental.documentacion.tramite");
+%}
+	#{fap.documento aportadoPor:'CIUDADANO', campo:'documento', download:true, id:'fileAportacion', requerido:true, tipo:'tipoCiudadano', upload:false, tramite:tramite /}	
+#{/fap.popup}

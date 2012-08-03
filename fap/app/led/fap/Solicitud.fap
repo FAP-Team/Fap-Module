@@ -10,12 +10,12 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	}
 	Pagina DocumentosFAP campo=SolicitudGenerica.documentacion.documentos {
 		Accion crear redirigir=DocumentacionFAP	
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
+		SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
 	}
 	
 	Popup DocumentosEditarFAP campo=SolicitudGenerica.documentacion.documentos {
 		Accion editar redirigir=DocumentacionFAP	
-		EditarArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+		EditarArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO"
 	}
 	
 

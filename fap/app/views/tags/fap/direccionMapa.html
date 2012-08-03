@@ -303,6 +303,16 @@
 				$("#map_${id}").hide("slow");
 		});
 		
+		// Para evitar que el ENTER haga un submit del Form, por el autocompletado de google place que un usuario puede darle a ENTER para seleccionar la busqueda.
+		
+		$(document).ready(function() {
+            $("form").bind("keypress", function(e) {
+               if (e.which == 13) {
+                 return false;
+               }
+            });
+        }); 
+		
 		$("#${id_direccionBusqueda}").parent().click(function(e){
 			if ($("#${id_direccionBusqueda}").attr('readonly') == 'readonly'){
 				$("#${id_direccionBusqueda}").prop('readonly', false);

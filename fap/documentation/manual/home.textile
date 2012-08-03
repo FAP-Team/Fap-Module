@@ -89,8 +89,7 @@ h2. Profundizando en FAP
 h3. Personalización (página login, página principal, tags, ...)
 
 * "JavaScript":curso-personalizarJavaScriptPaginas
-* "Mensaje de Login":app-personalizacion-login
-* "Mensaje de Aportacion de Documentacion":app-personalizacion-aportacion 
+* "Configuración de mensajes personalizados en las páginas":app-configurar-mensajes 
 * "Pagina de Baremación":app-baremacion-sobreescribir
 * "Tags":tag-tags
 

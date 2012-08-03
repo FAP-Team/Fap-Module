@@ -38,3 +38,13 @@ En esta página se permite la creación, modificación y borrado, de plantillas 
 
 !images/admin-mails!
 
+h2. Configuración de mensajes
+
+En esta página se permite la creación, modificación y borrado de mensajes, tanto Wikis como Alertas, para las diferentes páginas de la aplicación. Para más información "aqui":app-configurar-mensajes
+
+!images/admin-configurar-mensajes!
+
+
+
+
+

@@ -110,6 +110,9 @@ public class GSubirArchivo extends GSaveCampoElement{
 				catch(services.GestorDocumentalServiceException e){
                 	play.Logger.error(e, "Error al subir el documento al Gestor Documental");
 					validation.addError("", "Error al subir el documento al Gestor Documental");
+				} catch (Exception e) {
+					play.Logger.error(e, "Ex: Error al subir el documento al Gestor Documental");
+					validation.addError("", "Error al subir el documento al Gestor Documental");
 				}
 			}
 		""";

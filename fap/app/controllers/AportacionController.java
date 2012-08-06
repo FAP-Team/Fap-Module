@@ -17,6 +17,7 @@ import messages.Messages;
 import models.Aportacion;
 import models.Documento;
 import models.SolicitudGenerica;
+import play.mvc.Util;
 import properties.FapProperties;
 import reports.Report;
 import services.GestorDocumentalService;
@@ -131,11 +132,18 @@ public class AportacionController extends AportacionControllerGen {
      * Presenta la aportación de documentación sin registrar los documentos.
      * Deberá realizarlo únicamente un gestor, administrador o revisor.
      */
-    public static void presentarSinRegistrar(String accion, Long idSolicitud, SolicitudGenerica solicitud) {
-        checkAuthenticity();
-        if (permisoPresentarSinRegistrar("editar") || permisoPresentarSinRegistrar("crear")) {
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void presentarSinRegistrar(Long idSolicitud, SolicitudGenerica solicitud, String aportarSinRegistrar) {
+		checkAuthenticity();
+		if (!permisoPresentarSinRegistrar("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		SolicitudGenerica dbSolicitud = AportacionController.getSolicitudGenerica(idSolicitud);
 
-            SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+		AportacionController.presentarSinRegistrarBindReferences(solicitud);
+
+		if (!Messages.hasErrors()) {
 			Aportacion aportacion = dbSolicitud.aportaciones.actual;
 
 			if(aportacion.documentos.isEmpty()){
@@ -147,17 +155,25 @@ public class AportacionController extends AportacionControllerGen {
 			}
 			
 			if(!Messages.hasErrors()) {
-				presentarSinRegistrarValidateCopy(accion, dbSolicitud, solicitud);
-
+				AportacionController.presentarSinRegistrarValidateCopy("editar", dbSolicitud, solicitud);
+				
 				validateDateIsAfterNow(aportacion.fechaAportacionSinRegistro);
 				clasificarDocumentosAportacionSinRegistro(dbSolicitud, aportacion);
 				finalizarAportacion(dbSolicitud, aportacion);
 			}
-        }else{
-            Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-        }
-        presentarRender(idSolicitud);
-    }
+
+		}
+
+		if (!Messages.hasErrors()) {
+			AportacionController.presentarSinRegistrarValidateRules(dbSolicitud, solicitud);
+		}
+		if (!Messages.hasErrors()) {
+			dbSolicitud.save();
+			log.info("Acción Editar de página: " + "gen/Aportacion/Aportacion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/Aportacion/Aportacion.html" + " , intentada sin éxito (Problemas de Validación)");
+		AportacionController.presentarSinRegistrarRender(idSolicitud);
+	}
     
     private static void validateDateIsAfterNow(DateTime fecha) {
         if(!Messages.hasErrors()){

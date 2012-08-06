@@ -62,3 +62,9 @@ bc. public class AppModule extends FapModule {
 }
 
 Y ya autom谩ticamente nuestra aplicaci贸n utilizar铆a el AED. Evidentemente, si nosotros queremos utilizar otro gestor documental en la aplicaci贸n simplemente tendremos que crear otra implementaci贸n de la interfaz *GestorDocumentalService.java* y configurarla de la misma manera en la aplicaci贸n.
+
+Un esquema que complementa la anterior explicaci贸n es el siguiente:
+
+!images/gestorDocumentalService!
+
+Vemos que el m骴ulo FAP tiene 2 implementaciones del servicio, y nuestra aplicaci髇 puede a su vez tener todas las implementaciones que queramos y usaremos la que configuremos en el _AppModule.java_.

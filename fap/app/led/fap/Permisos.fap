@@ -819,31 +819,31 @@ Permiso notificacionEditableSiNoLeida {
 // Permisos sobre Requerimientos
 Permiso requerimiento {
 	vars
-		SolicitudGenerica solicitud
+		Verificacion verificacion
 	when
-		solicitud?.verificacion?.estado in ("enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada")
+		verificacion?.estado in ("enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada")
 	return
 		all
 }
 
 Permiso requerimientoAFirmar {
 	vars
-		SolicitudGenerica solicitud
+		Verificacion verificacion
 	when
 		agente.rolActivo in ("gestor", "administrador")
-		and solicitud?.verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+		and verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
 		and (
-			solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.registro = "false"
-			or solicitud?.verificacion?.requerimiento?.notificacion = null
+			verificacion?.requerimiento?.registro?.fasesRegistro?.registro = "false"
+			or verificacion?.requerimiento?.notificacion = null
 			)
 	return
 		all
 	when
 		agente.rolActivo in ("revisor")
-		and solicitud?.verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+		and verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
 		and (
-			solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.registro = "false"
-			or solicitud?.verificacion?.requerimiento?.notificacion = null
+			verificacion?.requerimiento?.registro?.fasesRegistro?.registro = "false"
+			or verificacion?.requerimiento?.notificacion = null
 			)
 	return
 		visible
@@ -851,32 +851,32 @@ Permiso requerimientoAFirmar {
 
 Permiso requerimientoFirmado {
 	vars
-		SolicitudGenerica solicitud
+		Verificacion verificacion
 	when
-		solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada = "true"
-		and solicitud?.verificacion?.requerimiento?.notificacion?.estado != null
-		and solicitud?.verificacion?.requerimiento?.notificacion?.estado in ("creada")
+		verificacion?.requerimiento?.registro?.fasesRegistro?.firmada = "true"
+		and verificacion?.requerimiento?.notificacion?.estado != null
+		and verificacion?.requerimiento?.notificacion?.estado in ("creada")
 	return all
 }
 
 Permiso requerimientoRequerirFirma {
 	vars
-		SolicitudGenerica solicitud
+		Verificacion verificacion
 	when
-		solicitud?.verificacion?.estado in ("enRequerimiento") and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true"
+		verificacion?.estado in ("enRequerimiento") and verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true"
 	return
 		all
 	when
-		solicitud?.verificacion?.estado in ("enRequerimientoFirmaSolicitada") and solicitud?.verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true"
+		verificacion?.estado in ("enRequerimientoFirmaSolicitada") and verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true"
 	return
 		visible
 }
 
 Permiso obtenerRequerimiento {
 	vars
-		SolicitudGenerica solicitud
+		Verificacion verificacion
 	when
-		solicitud?.verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada", "enRequerido")
+		verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada", "enRequerido")
 	return
 		all
 }

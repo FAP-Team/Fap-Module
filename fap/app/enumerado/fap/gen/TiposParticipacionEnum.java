@@ -2,7 +2,7 @@
             package enumerado.fap.gen;
             
             public enum TiposParticipacionEnum{
-                creador("Creador"),solicitante("Solicitante"),representante("Representante");
+                creador("Creador"),solicitante("Solicitante"),representante("Representante"),autorizado("Autorizado");
             
                 private String value;
             

@@ -27,11 +27,12 @@ import properties.FapProperties;
 import properties.Properties;
 
 // Ejecuta el doJob de la clase, cada día a las 12 de la noche y 50 minutos y al iniciar la aplicación
-@On("0 50 12 * * ?")
+@On("0 50 0 * * ?")
 @OnApplicationStart
 public class CompressLogs extends Job {
 	
 	public void doJob() {
+		play.Logger.info("Ejecutando el job CompressLog: "+Play.mode);
 		if (!Play.mode.isProd())
 			return;
 		// Preparamos una variable para gestionar el directorio de logs
@@ -59,6 +60,7 @@ public class CompressLogs extends Job {
 			}
 
 			if (rutaLogs != null) {
+				play.Logger.info("Ruta Jobs: "+rutaLogs.getAbsolutePath());
 				String ruta = rutaLogs.getAbsolutePath();
 				//Comprobar que existen /logs/Auditable  y  /logs/Daily  y si no crearlos
 				File logsAuditable = new File(ruta+"/Auditable");
@@ -92,7 +94,9 @@ public class CompressLogs extends Job {
 						// Si se comprime bien, borramos el fichero
 						if (!(new File(ruta+"/backups/Auditable/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"/"+fichero.getName()}, "/backups/Auditable/"+fichero.getName()+".zip", rutaLogs))){
 							Logger.info("BackUps Logs: Fichero '"+fichero.getName()+"' comprimido en la carpeta <backups/Auditable>");
-							fichero.delete();
+							// Eliminamos el fichero si lo indica la property (es un backup)
+							if (FapProperties.getBoolean("fap.deleteLogs.textoPlano"))
+								fichero.delete();
 						}
 						else
 							Logger.error("BackUps Logs: Compresión de '"+fichero.getName()+"' fallida o ya existe el fichero comprimido en la carpeta <backups/Auditable>");
@@ -102,7 +106,9 @@ public class CompressLogs extends Job {
 							// Si se comprime bien, borramos el fichero
 							if (!(new File(ruta+"/backups/Daily/"+fichero.getName()+".zip").exists()) && (utils.ZipUtils.comprimirEnZip(new String[]{"/"+fichero.getName()}, "/backups/Daily/"+fichero.getName()+".zip", rutaLogs))){
 								Logger.info("BackUps Logs: Fichero '"+fichero.getName()+"' comprimido en la carpeta <backups/Daily>");
-								fichero.delete();
+								// Eliminamos el fichero Daily si lo indica la property(es un backup)
+								if (FapProperties.getBoolean("fap.deleteLogs.textoPlano"))
+									fichero.delete();
 							}
 							else
 								Logger.error("BackUps Logs: Compresión de '"+fichero.getName()+"' fallida o ya existe el fichero comprimido en la carpeta <backups/Daily>");

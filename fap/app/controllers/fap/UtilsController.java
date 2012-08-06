@@ -19,6 +19,7 @@ import models.TableKeyValueDependency;
 import play.mvc.*;
 import utils.DocumentosUtils;
 
+@With(CheckAccessController.class)
 public class UtilsController extends Controller {
 
     public static boolean documentoEsMultiple(String tipoUri) {

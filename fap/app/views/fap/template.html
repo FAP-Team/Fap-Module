@@ -172,7 +172,8 @@
         	});
         	
         	%{
-				urlNuevasNotificaciones = play.mvc.Router.reverse('fap.UtilsController.getNuevasNotificaciones');
+        		if (userNotificacion != null) {
+					urlNuevasNotificaciones = play.mvc.Router.reverse('fap.UtilsController.getNuevasNotificaciones');
 			%}
         	
         	var urlNuevasNotificacionesAjax = "${urlNuevasNotificaciones}";
@@ -199,6 +200,10 @@
 					}
 				});
 			});
+        	
+        	%{
+        		}
+        	%}
         	
         </script>
         

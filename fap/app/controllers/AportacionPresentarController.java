@@ -179,8 +179,8 @@ public class AportacionPresentarController extends AportacionPresentarController
                 // Registra la solicitud
                 JustificanteRegistro justificante = registroService.registrarEntrada(solicitud.solicitante,
                         aportacion.oficial, solicitud.expedientePlatino, null);
-                play.Logger.info("Se ha registrado la solicitud de aportacion de la solicitud %s en platino",
-                        solicitud.id);
+                play.Logger.info("Se ha registrado la solicitud de aportacion %s de la solicitud %s en platino",
+                        aportacion.id, solicitud.id);
 
                 // Almacena la información de registro
                 aportacion.informacionRegistro.setDataFromJustificante(justificante);
@@ -218,6 +218,7 @@ public class AportacionPresentarController extends AportacionPresentarController
         Documento documento = aportacion.justificante;
         documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitud");
         documento.descripcion = "Justificante de registro";
+        documento.fechaRegistro = justificante.getFechaRegistro();
         documento.save();
 
         InputStream is = justificante.getDocumento().contenido.getInputStream();

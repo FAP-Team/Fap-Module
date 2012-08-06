@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 
 import controllers.fap.FirmaController;
 import emails.Mails;
+import enumerado.fap.gen.EstadosSolicitudEnum;
 
 import messages.Messages;
 import models.Aportacion;
@@ -154,7 +155,8 @@ public abstract class TramiteBase {
                 registro.borrador.tipo = getTipoRegistro();
                 registro.save();
             } catch (Exception ex2) {
-                Messages.error("Error generando el documento borrador: "+ex2.getMessage());
+                Messages.error("Error generando el documento borrador");
+                play.Logger.error("Error generando el documento borrador: "+ex2.getMessage());
             }
         }
 
@@ -172,6 +174,7 @@ public abstract class TramiteBase {
                 registro.save();
             } catch (Exception ex2) {
                 Messages.error("Error generando el documento oficial");
+                play.Logger.error("Error generando el documento oficial: "+ex2.getMessage());
             }
         }
         return oficial;
@@ -184,6 +187,7 @@ public abstract class TramiteBase {
                 gestorDocumentalService.saveDocumentoTemporal(registro.oficial, oficial);
             }catch(Exception e){
                 Messages.error("Error almacenando documentos en el aed");
+                play.Logger.error("Error almacenando documentos en el aed: "+e.getMessage());
             }
         }
     }
@@ -193,6 +197,7 @@ public abstract class TramiteBase {
             gestorDocumentalService.agregarFirma(documento, new Firma(firma, firmante));
         } catch (Exception e) {
             Messages.error("Error guardando la firma del documento");
+            play.Logger.error("Error guardando la firma del documento: "+e.getMessage());
         }
     }
     
@@ -204,7 +209,7 @@ public abstract class TramiteBase {
     
     public void avanzarFaseBorrador(){
         if(!Messages.hasErrors()){
-            registro.fasesRegistro.borrador = true;
+        	registro.fasesRegistro.borrador = true;
             registro.save();
         }
     }
@@ -421,7 +426,10 @@ public abstract class TramiteBase {
 	 */
 	public abstract void anadirDocumentosSolicitud();
 	
-	public void cambiarEstadoSolicitud() {}
+	public void cambiarEstadoSolicitud() {
+		solicitud.estado=EstadosSolicitudEnum.iniciada.name();
+		solicitud.save();
+	}
 
     
 }

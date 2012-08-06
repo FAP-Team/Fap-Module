@@ -3,8 +3,6 @@ Formulario Solicitud {
     Menu {
     	Enlace "Volver" pagina=Solicitudes
     	
-    	Enlace "Verificaciones" pagina=AccesoVerificaciones
-    	
     	Enlace "Prueba Asignaturas" pagina = Listado
     	
     	Grupo "Combos" {
@@ -62,7 +60,12 @@ Formulario Solicitud {
 		}
 
 		Grupo "Páginas Especiales" {
-			Enlace "Presentación" pagina=PaginaFirma
+			Enlace "Firma" pagina=PaginaFirma
+		}
+		
+		Grupo "Paginas FAP" {
+			Enlace "Verificaciones" pagina=AccesoVerificaciones
+			Enlace "Presentación" pagina=PresentarFAP
 		}
 		
 		Grupo "Anotación Inject"{

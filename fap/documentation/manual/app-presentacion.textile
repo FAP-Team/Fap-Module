@@ -1,0 +1,19 @@
+h1. Presentación FAP
+
+El módulo FAP, tiene una serie de páginas que permiten realizar la presentación de las solicitudes sin tener que hacerla enteramente a mano. El comportamiento de esta presentación, es algo genérico, aunque muy adaptable, y si se necesita realizar algo más específico y determinado esta opción no valdría. 
+
+Para utilizar la página de presentación de FAP en nuestra aplicación simplemente la tenemos que referenciar en nuestro DSL, como con cualquier otra página por defecto de FAP:
+
+bc. Enlace "Presentación" pagina=PresentarFAP
+
+Y ya estaría disponible.
+
+Como la presentación de las solicitudes tienen un par de datos que siempre van a ser específicos de cada aplicación, se deben sobreescribir un par de métodos y clases, para que el comportamiento sea el adecuado.
+
+h2. Crear una clase que extienda de PresentacionFapController
+
+La clase PresentacionFapController, tiene implementados una serie de métodos que personalizan la Presentación. Por ello, se deberá sobreescribir los métodos de esta clase, mediante la creación de una clase hija que extienda de esta, y que tenga implementado/sobreescritos los métodos de la clase padre (PresentacionFapController).
+
+Los métodos que posee esta clase, y que se deberan sobreescribir en la clase hija que debemos crear son:
+
+

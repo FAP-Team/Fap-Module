@@ -801,6 +801,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		EditarArchivo documentoAlegacionEnProceso campo=Documento requerido
 	}
 	
+
 /*  
  * Autorización de acceso a la solicitud
  */
@@ -819,4 +820,130 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Boton btonvolver titulo="Volver" pagina=Autorizacion 
 	} 
 
+	/*
+     * Página Presentar
+     */
+    Pagina PresentarFAP noForm titulo="Presentación de la solicitud" campo=SolicitudGenerica.registro{
+
+		Grupo titulo="Presentación de la solicitud" {
+			Grupo permiso=prepararSolicitud borde = false { 
+        		Grupo gpreparar titulo="Paso 1. Preparar la solicitud"  {
+            		Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }
+              		Form prepararFirmar {
+                    	Boton botonPrepararFirmar titulo="Preparar para firmar"
+              		}
+        		}
+        	} // Fin Grupo para controlar prepararAlegacion
+
+			Grupo titulo="Paso 2. Obtener borrador de la Solicitud" permiso=enBorradorSolicitud {
+				Wiki {"Puede obtener un borrador de la solicitud, no válido para su presentación y comprobar que la información introducida es correcta."}
+				Enlace campo=Registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+
+				Form deshacer permiso=modificarSolicitud {
+					Wiki {"Para realizar cambios o aportar documentos, antes de su presentación definitiva, pulse el siguiente botón."}
+					Boton botonModificar titulo="Modificar solicitud"
+					Wiki {"<b><u>NOTA: </u></b>Recuerde que también es posible aportar los documentos después de presentar su solicitud."}
+
+				}
+
+				Grupo mensajeIntermedio permiso=mensajeIntermedioSolicitud borde=false {
+					Wiki estilo ="box-warn box" {
+							"Se produjo un error en la presentación de la solicitud. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+					}
+				}
+			}
+
+			// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
+			Grupo grpPresentar titulo="Paso 3. Registrar Solicitud" permiso=enBorradorSolicitud {
+				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
+				Form frmPresentar redirigir=SolicitudPresentarFAP permiso=enBorradorSolicitud {
+					Wiki {"Debe registrar la solicitud para que se considere presentada."}
+					Boton botonPresentar titulo="Presentar solicitud"
+				}
+			}
+
+			// Hay que poner bien el permiso
+			Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaSolicitud {
+				Wiki {"Puede obtener un recibo de la presentación de la solicitud pulsando el enlace 'Obtener recibo'." }
+				Enlace campo=Registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton"
+			}
+		}
+	}
+
+	/*
+	 * Página ReformulacionPresentar
+	 */
+	Pagina SolicitudPresentarFAP titulo="Presentar Solicitud" noForm campo=SolicitudGenerica.registro{
+		
+		Grupo mensajeIntermedio permiso=mensajeIntermedioSolicitud borde=false {
+			Wiki estilo ="box-warn box" {
+				"Se produjo un error en la presentación de la solicitud. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+			}
+		}
+
+		//Firma persona física
+		Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=firmarRegistrarSolicitud
+		{
+			Form formFirmaPF { 
+		    	Wiki {"La solicitud será firmada y registrada." }
+				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+			}
+
+			Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+		}
+
+		//Firma Persona jurídica
+		Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=firmarRegistrarSolicitud
+		{
+			Wiki {"Debe indicar si se firmará la solicitud con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la reformulación debe firmarse por todos los representantes mancomunados"}
+
+			Form tipoCertificadoFirma autoEnviar {
+				Combo certificadoFirma titulo="Certificado que se usará en la firma" campo=Registro.tipoFirma
+			}
+
+			Grupo borde = false mostrarSiCampo Registro.tipoFirma = "representantes" {
+
+				// La firma y registro se hace en dos pasos
+				Grupo titulo="Paso 1.1. Firmar la solicitud"  {
+					Wiki {"La solicitud será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la reformulación."}
+
+					Form formFirmaRepresentante permiso=firmarSolicitud {
+						FirmaSimple firmarRepresentante titulo="Firmar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+					}
+
+					Tabla tablaFirmantesHecho campo=Registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
+						Columna campo=Firmante.idvalor titulo="NIP"
+						Columna campo=Firmante.nombre titulo="Nombre" expandir
+						Columna campo=Firmante.fechaFirma titulo="Fecha de firma"
+					}
+
+					Tabla tablaFirmantesEspera campo=Registro.firmantes.todos recargarPagina  titulo="Representantes que no han firmado" {
+						Columna campo=Firmante.idvalor titulo="NIP"
+						Columna campo=Firmante.nombre titulo="Nombre" expandir
+					}
+				}
+
+				Grupo titulo="Paso 1.2. Registrar la solicitud" permiso=registrarSolicitud
+				{
+					Wiki {"Su solicitud ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
+
+					Form frmRegistrar redirigir=PresentarFAP {
+						Boton botonRegistrar titulo="Registrar"
+					}
+
+					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
+				}
+			}
+
+			Grupo borde=false mostrarSiCampo Registro.tipoFirma = "cif"
+			{
+				Wiki {"La solicitud será firmada y registrada. "}
+
+//La firma y registro se realiza en la misma acción
+				Form formFirmaCif redirigir=PresentarFAP permiso=firmarRegistrarSolicitud {
+					FirmaSimple firmarRegistrarCif titulo="Firmar y Registrar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+				}
+			}
+		}
+	}
 }

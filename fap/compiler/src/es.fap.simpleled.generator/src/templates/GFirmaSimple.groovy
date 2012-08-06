@@ -128,9 +128,9 @@ public class GFirmaSimple extends GElement{
 			)}){
 				${getters}
 				play.Logger.info("Metodo: ${StringUtils.firstLower(firmaSimple.name)}${controller.sufijoBoton}");
-				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams"); //A
-				Map<String, Object> vars = new HashMap<String, Object>(); //A
-				if (secure.checkAcceso("editarFirma", "editar", ids, vars)) { //A
+				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams"); 
+				Map<String, Object> vars = new HashMap<String, Object>(); 
+				if (secure.checkAcceso("editarFirma", "editar", ids, vars)) { 
 					if (${firmantes.firstLower()} == null || ${firmantes.firstLower()}.size() == 0){
 						${firmantes.firstLower()} = ${calcularFirmantes};
 						${firmantes.sinUltimoAtributo()}.save();

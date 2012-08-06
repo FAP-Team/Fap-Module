@@ -11,6 +11,7 @@ import models.Autorizaciones;
 import play.mvc.Util;
 import validation.CustomValidation;
 import controllers.gen.PaginaAutorizarControllerGen;
+import enumerado.fap.gen.TiposParticipacionEnum;
 
 public class PaginaAutorizarController extends PaginaAutorizarControllerGen {
 
@@ -101,7 +102,7 @@ public class PaginaAutorizarController extends PaginaAutorizarControllerGen {
 				Participacion p = new Participacion();
 				p.agente = ag;
 				p.solicitud = getSolicitudGenerica(idSolicitud);
-				p.tipo = "autorizado";
+				p.tipo = TiposParticipacionEnum.autorizado.name();
 				p.save();
 				break;
 			}
@@ -116,7 +117,7 @@ public class PaginaAutorizarController extends PaginaAutorizarControllerGen {
 			Participacion p = new Participacion();
 			p.agente = ag;
 			p.solicitud = getSolicitudGenerica(idSolicitud);
-			p.tipo = "autorizado";
+			p.tipo = TiposParticipacionEnum.autorizado.name();
 			p.save();
 		}
 	}

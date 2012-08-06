@@ -20,6 +20,7 @@ Formulario Solicitud {
 			Enlace "S. PersonaFisica" pagina=SolicitantePF
 			Enlace "S. PersonaJuridica" pagina=SolicitantePJ
 			Enlace "Persona Fisica" pagina=PersonaF
+			Enlace "Autorizaciones" pagina=Autorizacion
 		}
 		
 		Grupo "Direccion"{

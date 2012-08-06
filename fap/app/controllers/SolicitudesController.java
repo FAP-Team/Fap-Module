@@ -28,7 +28,7 @@ public class SolicitudesController extends SolicitudesControllerGen {
 
 	public static void tablalistaSolicitudesBuscadas() {
 		Busqueda busqueda = SolicitudesController.getBusqueda(); 
-		java.util.List<SolicitudGenerica> rows, rowsRepresentantes = null;
+		java.util.List<SolicitudGenerica> rows, rowsRepresentantes = null, rowsInteresados = null;
 
 		if ( (busqueda.solicitud == null || busqueda.solicitud.isEmpty()) && 
 			 (busqueda.interesado == null || busqueda.interesado.isEmpty()) && 
@@ -36,10 +36,12 @@ public class SolicitudesController extends SolicitudesControllerGen {
 			rows = SolicitudGenerica.findAll();
 		}
 		else {
-			String consulta = "select solicitud from SolicitudGenerica solicitud join solicitud.autorizacion s where"; //  
+			String consulta = "select solicitud from SolicitudGenerica solicitud where ";
 			Boolean andWhere = false;		// separar las condiciones de la cláusula where con 'and' (cuando corresponda)
-				
+
 			if (busqueda.solicitud != null && !busqueda.solicitud.isEmpty()) {
+				//String listaExped = "('" + busqueda.solicitud.trim().replaceAll("\\s+", "','") + "')";
+				//consulta += "(solicitud.expedienteAed.idAed in " + listaExped + ")";
 				String[] listaExped = busqueda.solicitud.trim().split("\\s+");
 				String exp = listaExped[0];
 				consulta += "( (solicitud.expedienteAed.idAed like '%" + exp + "%') ";
@@ -50,11 +52,10 @@ public class SolicitudesController extends SolicitudesControllerGen {
 			}
 			if (busqueda.interesado != null && !busqueda.interesado.isEmpty()) {
 				//String interesado = "('" + busqueda.interesado.trim().replaceAll("\\s+", "','") + "')";
-				String[] listaInteresado = busqueda.interesado.trim().split("\\s+");				
+				String[] listaInteresado = busqueda.interesado.trim().split("\\s+");
 				if (andWhere) 
 					consulta += " and ";
 				String interesado = listaInteresado[0];
-
 				consulta += " ( (solicitud.solicitante.fisica.nombre like '%" + interesado + "%')";
 				consulta += " or (solicitud.solicitante.fisica.primerApellido like '%" + interesado + "%')";
 				consulta += " or (solicitud.solicitante.fisica.segundoApellido like '%" + interesado + "%')";
@@ -65,8 +66,7 @@ public class SolicitudesController extends SolicitudesControllerGen {
 				consulta += " or (solicitud.solicitante.representante.fisica.primerApellido like '%" + interesado + "%')";
 				consulta += " or (solicitud.solicitante.representante.fisica.segundoApellido like '%" + interesado + "%')";
 				consulta += " or (solicitud.solicitante.representante.fisica.nip.valor like '%" + interesado + "%')";
-				consulta += " or (s.nip.valor like '%" + interesado + "%'))"; //Los usuarios tienes id = cif
-				
+
 				String consultaRepresentantes =  "select solicitud from SolicitudGenerica solicitud " +
 						  "where solicitud.solicitante.id in " +
 						  "(select solicitante.id from Solicitante solicitante " +
@@ -74,7 +74,7 @@ public class SolicitudesController extends SolicitudesControllerGen {
 								  "(select representante.id from RepresentantePersonaJuridica representante " +
 					                      "where (representante.juridica.entidad like '%" + interesado + "%')" +
 					                             " or (representante.juridica.cif like '%" + interesado + "%')";
-				
+
 				for (int i = 1; i < listaInteresado.length; i++) {
 					consulta += " or (solicitud.solicitante.fisica.nombre like '%" + listaInteresado[i] + "%')";
 					consulta += " or (solicitud.solicitante.fisica.primerApellido like '%" + listaInteresado[i] + "%')";
@@ -89,10 +89,13 @@ public class SolicitudesController extends SolicitudesControllerGen {
 					consultaRepresentantes += " or (representante.juridica.entidad like '%" + listaInteresado[i] + "%')";
 					consultaRepresentantes += " or (representante.juridica.cif like '%" + listaInteresado[i] + "%')";
 				}
-					
+				consulta += " )";
 				consultaRepresentantes += " ))";
 				rowsRepresentantes = SolicitudGenerica.find(consultaRepresentantes).fetch();
 				andWhere = true;	
+				
+				String consultaInteresados = "select solicitud from SolicitudGenerica solicitud join solicitud.autorizacion s where (s.nip.valor like '%" + interesado + "%'))"; //Los usuarios tienes id = cif
+				rowsInteresados = SolicitudGenerica.find(consultaInteresados).fetch();
 			}
 			if (busqueda.estadoSolicitud != null && !busqueda.estadoSolicitud.isEmpty()) {
 				String listaEstados = busqueda.estadoSolicitud.toString().replace("[", "('").replace("]", "')").replace(", ", "', '");
@@ -100,27 +103,34 @@ public class SolicitudesController extends SolicitudesControllerGen {
 					consulta += " and ";
 				consulta += " ( solicitud.estado in " +  listaEstados + " )";	
 			}
-			
+
 			rows = SolicitudGenerica.find(consulta).fetch();
 			if (rowsRepresentantes != null) {
 				for (SolicitudGenerica sol : rowsRepresentantes) 
 					if (!rows.contains(sol)) 
 						rows.add(sol);
 			}
+			
+			if (rowsInteresados != null) {
+				for (SolicitudGenerica sol : rowsInteresados) 
+					if (!rows.contains(sol)) 
+						rows.add(sol);
+			}
+			
 		}
-		
+
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, true, false, false, "editarSolicitud", "", "", getAccion(), ids);
-	
+
 		// "Reseteamos" la tabla de resultados de la búsqueda para la próxima vez que se utilice
 		busqueda.mostrarTabla = false; 
 		busqueda.solicitud = "";
 		busqueda.interesado = "";
 		busqueda.estadoSolicitud = null;	
 		busqueda.save();
-	
-		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estado", "estadoValue", "estadoUsuario", "solicitante.numeroId", "solicitante.nombreCompleto"));	
+
+		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estado", "estadoValue", "estadoUsuario", "solicitante.numeroId", "solicitante.nombreCompleto"));
 	}
 	
 	
@@ -139,11 +149,17 @@ public class SolicitudesController extends SolicitudesControllerGen {
 	}
 	
 	public static void tablalistaSolicitudes() {
-
-		java.util.List<SolicitudGenerica> rows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud").fetch();
-		String consulta = "select solicitud from SolicitudGenerica solicitud join solicitud.autorizacion s where (s.nip.valor like '%" + AgenteController.getAgente().username + "%') or (solicitud.solicitante.fisica.nip.valor like '%" + AgenteController.getAgente().username + "%')";
-		rows = SolicitudGenerica.find(consulta).fetch();
+		java.util.List<SolicitudGenerica> rows = new ArrayList<SolicitudGenerica>();
+		java.util.List<SolicitudGenerica> allrows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud").fetch();
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		for (SolicitudGenerica solicitud : allrows) {
+			Map<String, Object> vars = new HashMap<String, Object>();
+			vars.put("solicitud", solicitud);
+			if (secure.checkAcceso("solicitudes", "leer", ids, vars)) {
+				rows.add(solicitud);
+			}
+		}
+
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rows, true, false, false, "editarSolicitud", "", "", getAccion(), ids);
 		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estado", "estadoValue", "estadoUsuario", "solicitante.numeroId", "solicitante.nombreCompleto"));
 	

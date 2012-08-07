@@ -574,6 +574,7 @@ Entidad Notificacion {
 	String uriProcedimiento
 	String descripcion
 	ManyToMany Interesado interesados
+	String todosInteresados transient
 	Lista estadoNotificacion estado
 	boolean activa transient
 	String asunto							// Asunto sobre lo que va la notificación

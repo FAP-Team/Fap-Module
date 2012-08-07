@@ -208,9 +208,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 		
 		Grupo gDocumentoRequerimiento  permiso=obtenerRequerimiento {
-			Form documentoRequerimiento destino="_blank" { 
-				Boton obtenerRequerimiento titulo="Obtener Requerimiento"
-			}
+			Enlace campo=Verificacion.requerimiento.justificante.urlDescarga titulo="Obtener requerimiento"  destino="_blank" estilo="boton"
 		}
 		
 		Enlace volverVerificacionAnteriores titulo="Volver" pagina=AccesoVerificaciones estilo="btn"

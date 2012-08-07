@@ -218,7 +218,6 @@ public class AportacionPresentarController extends AportacionPresentarController
         Documento documento = aportacion.justificante;
         documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitud");
         documento.descripcion = "Justificante de registro";
-        documento.fechaRegistro = justificante.getFechaRegistro();
         documento.save();
 
         InputStream is = justificante.getDocumento().contenido.getInputStream();

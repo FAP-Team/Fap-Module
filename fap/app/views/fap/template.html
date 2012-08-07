@@ -72,7 +72,7 @@
 %{
 	def userNotificacion=null;
 	def urlNotificacionesTabla = play.mvc.Router.reverse('NotificacionesController.index');
-	topbarscope : { //Ámbito
+	topbarscope : { //�?mbito
 		def agente = controllers.fap.AgenteController.getAgente();
 		def roles;
 		def user;
@@ -210,6 +210,10 @@
 		<script type="text/javascript">
         //Permite detectar cuando IE corre con Vista de Compatibilidad
         $(function(){    
+        	 if (jQuery.browser.msie && jQuery.browser.version <= 8){ //IE8 o inferior
+        	 	$('#infoCompatibilidad').children(0).append('<span class="label label-warning">Atención: Está usando IE8 o anterior, se recomienda actualizar a IE9 </span>')
+					return;
+        	 }  
         	if (document.documentMode) {
 				if (document.documentMode <= 7) {
 					$('#infoCompatibilidad').children(0).append('<span class="label label-important">Importante: Su navegador tiene la vista de compatibilidad activada. Más información para como desactivarla <a href="/Ayuda/ayudavistacompatibilidad">aquí</a></span>')

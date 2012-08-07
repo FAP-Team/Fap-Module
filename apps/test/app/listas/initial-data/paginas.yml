@@ -1,194 +1,264 @@
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "DocumentacionFAP"
+  PaginaAconfigurar: "Listado"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "DocumentosFAP"
+  PaginaAconfigurar: "NuevaAsignatura"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Aportacion"
+  PaginaAconfigurar: "EditarAsignatura"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "DocumentosAportacion"
+  PaginaAconfigurar: "popUpTemas3"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AportacionAportados"
+  PaginaAconfigurar: "Fechas"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AportacionRecibos"
+  PaginaAconfigurar: "Direcciones"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AportacionPresentar"
+  PaginaAconfigurar: "Combos"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AccesoVerificaciones"
+  PaginaAconfigurar: "CombosOverwrite"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaVerificacionesAnteriores"
+  PaginaAconfigurar: "PaginaCombosError"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaDocumentoVerificacionLeerAnteriores"
+  PaginaAconfigurar: "PaginaCombosDependientes"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaVerificacion"
+  PaginaAconfigurar: "ValoresPorDefecto"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaDocumentoVerificacionLeer"
+  PaginaAconfigurar: "TablasSimples"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaDocumentoVerificacionEditar"
+  PaginaAconfigurar: "Documentos"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Exclusion"
+  PaginaAconfigurar: "DocumentosEditar"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PCEconomicos"
+  PaginaAconfigurar: "SubirArchivoAedTest"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaCEconomicos"
+  PaginaAconfigurar: "EjemplosdeGrupos"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaAceptacionRenuncia"
+  PaginaAconfigurar: "Paginas_Combo_niveles"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AportarDocumentacionAceptacionRenuncia"
+  PaginaAconfigurar: "ComboTablasPaginas"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AceptacionRenunciaPresentar"
+  PaginaAconfigurar: "Paginas_nivel3"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Alegaciones"
+  PaginaAconfigurar: "Paginas_nivel2"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AportarDocumentacionAlegacion"
+  PaginaAconfigurar: "Paginas_nivel1"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AlegacionPresentar"
+  PaginaAconfigurar: "VerPaginas_nivel1"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Autorizacion"
+  PaginaAconfigurar: "CrearPaginasPopUpPagina"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaAutorizar"
+  PaginaAconfigurar: "PaginasTablas"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PresentarFAP"
+  PaginaAconfigurar: "PermisoPagina"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "SolicitudPresentarFAP"
+  PaginaAconfigurar: "PermisoGrupo"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Desistimiento"
+  PaginaAconfigurar: "PermisoNoEditable"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "DesistimientoPresentar"
+  PaginaAconfigurar: "PermisoEnTablas"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "Solicitante"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "SolicitantePF"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "SolicitantePJ"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "PersonaF"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "TipoDeAyudaTexto"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "TipoDeAyudaPopover"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "PaginaFirma"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "PaginaInject"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "EnvioMails"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "RenderPdf"
   tipoMensaje:
   tituloMensaje:
   contenido: 

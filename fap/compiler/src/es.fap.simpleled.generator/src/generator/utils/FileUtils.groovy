@@ -29,7 +29,8 @@ public class FileUtils {
 		PERMISSION: 'app/security/',
 		JSON_DOCUMENTATION: 'compiler/src/es.fap.simpleled.ui/src/es/fap/simpleled/ui/documentation/json/',
 		FAP_DOCUMENTATION: 'documentation/manual/',
-		APP_CONFIG : 'app/config/'
+		APP_CONFIG : 'app/config/',
+		INI_DATA: 'app/listas/initial-data/'
 	]
 	
 	public static final HashSet<String> overwrittenFiles = new HashSet<String>();
@@ -59,10 +60,7 @@ public class FileUtils {
 			createFolders(fullPath);
 			f.write(content, "UTF-8");
 			logger.info("Escribiendo en ${filepath}");
-		}else{
-			//logger.info("El fichero ${filepath} ya existe, no se sobreescribe");
 		}
-
 	}
 	
 	public static void write(String path, String file, String content){
@@ -143,6 +141,22 @@ public class FileUtils {
 			}
 		}
 		write(filepath, content); // Escribimos el nuevo fichero generado (Este caso es cuando no queremos crear el .patch)
+	}
+	
+	public static void append(String path, String file, String content){
+		append(path + file, content);
+	}
+	
+	public static void append(String filepath, String content){
+		String fullPath = filepath;
+		File f = new File(fullPath);
+		overwrittenFiles.add(f.getAbsolutePath());
+		if(f.exists()){ //Si exisite añado al final
+			f.append(content);
+		}
+		else{ //Solo debe entrar 1 vez
+			write(filepath, content);
+		}
 	}
 	
 	public static void overwrite(String path, String file, String content){

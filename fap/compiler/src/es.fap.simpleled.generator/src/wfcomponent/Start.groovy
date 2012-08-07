@@ -24,6 +24,8 @@ public class Start implements IWorkflowComponent {
         FileUtils.target = target;
 		generatingModule = !createSolicitud.equals("true");
 		FileUtils.diffPatchActive = diff.equals("true");
+		File file = new File(FileUtils.getRoute('INI_DATA')+"paginas.yml");
+		FileUtils.delete(file);
 	}
 
 	@Override

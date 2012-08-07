@@ -149,7 +149,7 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 		if (!Messages.hasMessages()) {
 			Messages.ok("Página borrada correctamente");
 			Messages.keep();
-			redirect("ConfigurarMensajesController.index", "borrado");
+			redirect("ConfigurarMensajesController.index", "editar");
 		}
 		Messages.keep();
 		redirect("RellenarMensajesController.index", "borrar", idConfigurarMensaje);

@@ -34,6 +34,9 @@ public class Notificacion extends FapModel {
 	@JoinTable(name = "notificacion_interesados")
 	public List<Interesado> interesados;
 
+	@Transient
+	public String todosInteresados;
+
 	@ValueFromTable("estadoNotificacion")
 	public String estado;
 
@@ -189,6 +192,16 @@ public class Notificacion extends FapModel {
 			this.estado = notificacion.estado;
 			this.fechaAcceso = notificacion.fechaAcceso;
 		}
+	}
+
+	public String getTodosInteresados() {
+		String todos = "";
+		for (Interesado interesado : this.interesados) {
+			todos += interesado.persona.numeroId + ", ";
+		}
+		if (!todos.isEmpty())
+			todos = todos.substring(0, todos.length() - 2);
+		return todos;
 	}
 
 	// === MANUAL REGION END ===

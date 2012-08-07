@@ -15,7 +15,8 @@ Formulario Notificacion {
 	Pagina Notificaciones titulo="Mis Notificaciones" {
 		Tabla listaNotificaciones titulo="Notificaciones de la Aplicación" campo=Notificacion
 	  	  paginaEditar=NotificacionVer{
-			Columna campo=Notificacion.asunto titulo="Asunto" ancho="150" expandir   //Asunto de la notificación
+	  	  	Columna campo=Notificacion.todosInteresados titulo="Interesados" ancho="200" expandir
+			Columna campo=Notificacion.asunto titulo="Asunto" ancho="150"   //Asunto de la notificación
 			Columna campo=Notificacion.descripcion titulo="Descripción" ancho="200"               //Descripción de la notificación
 			Columna campo=Notificacion.fechaPuestaADisposicion titulo="Fecha creación" ancho="100" //Fecha en la que se creó la notificación
 			Columna campo=Notificacion.estado titulo="Estado" ancho="150"  //Estado actual de la notificación
@@ -25,6 +26,7 @@ Formulario Notificacion {
 	Pagina NotificacionVer titulo="Ver Notificacion" campo=Notificacion noForm{
 		Grupo datosNotificacion titulo="Datos Notificacion" {
 			Grupo datosBasicos borde=false permiso=noEditable{
+				Texto campo=Notificacion.todosInteresados titulo="Interesados"
 				Combo campo=Notificacion.estado titulo="Estado"
 				Fecha campo=Notificacion.fechaPuestaADisposicion titulo="Fecha Generación"
 				Fecha campo=Notificacion.fechaAcceso titulo="Fecha Lectura"

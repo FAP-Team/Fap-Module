@@ -25,7 +25,7 @@ public class NotificacionesController extends NotificacionesControllerGen {
 		if (agente != null){
 			for (Notificacion notificacion: rows){
 				for (Interesado interesado: notificacion.interesados){
-					if ((interesado.persona.getNumeroId() != null) && (interesado.persona.getNumeroId().equals(agente.username))){
+					if (((interesado.persona.getNumeroId() != null) && (interesado.persona.getNumeroId().equals(agente.username))) || ((agente.rolActivo.equals("gestor") || agente.rolActivo.equals("administrador")))){
 						rowsFiltered.add(notificacion);
 						break;
 					}
@@ -35,7 +35,7 @@ public class NotificacionesController extends NotificacionesControllerGen {
 		
 		tables.TableRenderResponse<Notificacion> response = new tables.TableRenderResponse<Notificacion>(rowsFiltered, true, false, false, "notificacionEditableSiNoLeida", "", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("asunto", "descripcion", "fechaPuestaADisposicion", "estado", "id"));
+		renderJSON(response.toJSON("todosInteresados", "asunto", "descripcion", "fechaPuestaADisposicion", "estado", "id"));
 	}
 	
 }

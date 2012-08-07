@@ -1,4 +1,18 @@
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "Desistimiento"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
+  PaginaAconfigurar: "DesistimientoPresentar"
+  tipoMensaje:
+  tituloMensaje:
+  contenido: 
+  habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Solicitud):
   PaginaAconfigurar: "DocumentacionFAP"
   tipoMensaje:
   tituloMensaje:
@@ -181,14 +195,14 @@ ConfigurarMensaje(ConfigurarMensaje-Solicitud):
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Desistimiento"
+  PaginaAconfigurar: "PresentarFAP"
   tipoMensaje:
   tituloMensaje:
   contenido: 
   habilitar: false
 
 ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "DesistimientoPresentar"
+  PaginaAconfigurar: "SolicitudPresentarFAP"
   tipoMensaje:
   tituloMensaje:
   contenido: 

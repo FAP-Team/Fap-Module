@@ -2,7 +2,26 @@ h2. Changelog
 
 h3. Versión 2.0.5
 
+* Descripción de un documento ahora en área de Texto.
+* Añadido tooltip en las tablas con su contenido.
+* Se permiten wikis o mensajes en las páginas de FAP.
+* Añadida fecha de registro al justificante de aportación.
+* Mejora en el control de excepciones del GestorDocumental.
+* Fixed bugs en permisos dependientes de verificación.
+* Fixed redirección a la url indicada tras login.
+* Fixed pequeños bugs.
+* Mejorada la búsqueda de logs.
+* Mejorada la tabla de verificaciones sin Finalizar.
+* Fixed bug al comprimir y descomprimir logs (no se eliminan los ficheros de logs sin comprimir).
+* Fixed Bug en Pagina Verificaciones sin finalizar.
+
 h3. Versión 2.0.4
+
+* Permitir incorporar sin registro.
+* Página FAP que lista las verificaciones sin finalizar.
+* Fixed Bug en la compresión y descompresión de los logs.
+* Simplificando algunos logs.
+* Métodos protected en vez de private en los servicios.
 
 h3. Versión 2.0.3
 

@@ -8,12 +8,67 @@ bc. Enlace "Presentación" pagina=PresentarFAP
 
 Y ya estaría disponible.
 
-Como la presentación de las solicitudes tienen un par de datos que siempre van a ser específicos de cada aplicación, se deben sobreescribir un par de métodos y clases, para que el comportamiento sea el adecuado.
+Como la presentación de las solicitudes tienen un par de datos que siempre van a ser específicos de cada aplicación, se deben sobreescribir un par de métodos y clases, para que el comportamiento sea el adecuado. Todo esto ya es opcional, y se podrá personalizar y sobreescribir aquello que se vea necesario:
 
-h2. Crear una clase que extienda de PresentacionFapController
+!images/presentacion!
 
-La clase PresentacionFapController, tiene implementados una serie de métodos que personalizan la Presentación. Por ello, se deberá sobreescribir los métodos de esta clase, mediante la creación de una clase hija que extienda de esta, y que tenga implementado/sobreescritos los métodos de la clase padre (PresentacionFapController).
+h2. Crear una clase que herede de TramiteBase.
+
+Para conocer la jerarquía de trámites sería conveniente visitar la "página de Tramitación.":app-tramitacion
+
+Es común que los métodos a implementar y usar en la presentación dependan del trámite al cual está asociada la misma. Por ello para personalizar esto, podemos crear una clase que herede de TramiteBase. Por ejemplo, si queremos crear una clase para personalizar los métodos de presentación de nuestra aplicación, esta clase deberá extender directa (ser hija) o indirectamente (ser nieta, etc.) de la clase TramiteBase. Además, a la hora de usar la presentación por defecto de FAP, esta tendrá en cuenta sólos los métodos de la clase TramiteBase, por lo que si se quiere modificar alguno de estos métodos por defecto, se deberá sobreescribir en nuestra clase hereditaria de TramiteBase recién creada. En ese caso, la página Presentación de FAP, llamará a los métodos que hayamos sobreescrito en vez de a los métodos que tiene por defecto TramiteBase. En el siguiente punto, se explica como especificarle a FAP, que tenemos nuestra propia clase que extiende de TramiteBase (a través de un método de la clase PresentacionFapController).
+
+Existe una clase denominada TramiteSolicitudFap, que extiende de TramiteSolicitud, que a su vez extiende de TramiteBase, que es la que se usa en el módulo FAP, por defecto, para todos los métodos propios de la Presentación. Si se quiere otorgar otra dinámica y funcionalidad a la parte esta, deberemos, como se ha nombrado anteriormente, crear una clase que extienda directa o indirectamente de TramiteBase como lo hace la clase por defecto de Fap (TramiteSolicitudFap).
+
+Algunos métodos que tiene definido la clase TramiteBase, y que por ende se pueden sobreescribir en nuestra clase hereditaria de TramiteBase, ya tienen implementaciones listas para funcionar (como el método registrar(), que registra las solicitudes), y otros métodos están definidos como abstract debido a su naturaleza que depende de la aplicación en cuestión y no es generalizable, y deberemos sobreescribir en nuestra clase tal y como hace Fap en la suya por defecto (TramiteSolicitudFap).
+
+Se puede ver el contenido de la clase TramiteSolicitudFap, así como de su padre TramiteSolicitud y su abuelo TramiteBase para ver todo lo explicado con más detalle, así como para ver los métodos que implementa TramiteBase y podemos personalizar para la Presentación, mediante su sobreescritura.
+
+h2. Crear una clase que extienda de PresentacionFapController.
+
+La clase PresentacionFapController, tiene implementados una serie de métodos que personalizan más aún la Presentación. Por ello, se deberá sobreescribir los métodos de esta clase, mediante la creación de una clase hija que extienda de esta, y que tenga implementado/sobreescritos los métodos de la clase padre (PresentacionFapController).
 
 Los métodos que posee esta clase, y que se deberan sobreescribir en la clase hija que debemos crear son:
 
+* *1. Método para gestionar la clase encargada de las funciones propias del trámite específico.*
 
+bc. public static TramiteBase getTramiteObject (Long idSolicitud)
+
+Esta función deberá devolver el objeto que hayamos implementado (si lo hemos hecho) para personalizar aún más la presentación dependiendo el trámite específico que queramos tratar. Por defecto hay un objeto creado en el módulo FAP, que es el que devuelve esta función, también por defecto, y que de forma genérica da cabida a todas las funcionalidades necesarias para la presentación. Como siempre, si queremos que nuestra aplicación se comporte de forma distintas, deberemos crear nuestra propia clase que extienda, por ejemplo, de TramiteSolicitud o cualquier otra clase que extienda de TramiteBase como vimos en el punto anterior, para personalizar el comportamiento de la presentación en el trámite Solicitud. FAP, tiene configurada una clase propia, que extiende de TramiteSolicitud, para realizar la presentación en base a ella, y si no sobreescribimos este método, es el que se cogerá por defecto para la Presentación.
+
+_Ejemplo (Comportamiento por defecto de FAP):_
+
+bc. public static TramiteBase getTramiteObject (Long idSolicitud){
+	SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
+	return new TramiteSolicitudFap(solicitud);
+}
+
+* *2. Método para personalizar acciones a realizar después de registrar.*
+
+bc. public static void afterRegistro(Long idSolicitud)
+
+Esta función se utiliza para ejecutar código que sea necesario ejecutar después del proceso de Registro en la Presentación. De esta manera, lo que en esta función pongamos, se ejecutará siempre después de registrar las solicitudes.
+
+Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta nada especial después de registrar.
+
+* *3. Método para personalizar acciones a realizar antes de firmar.*
+
+bc. public static void beforeFirma(Long idSolicitud)
+
+Esta función se utiliza para ejecutar código que sea necesario ejecutar antes del proceso de Firma en la Presentación. De esta manera, lo que en esta función pongamos, se ejecutará siempre justo antes de firmar las solicitudes. Puede ser, por ejemplo, indicar alguna condición que se debe dar para proseguir con la firma (en este caso debemos especificar en esta función mediante Messages.error(...) que la condicion no se cumple para que no se firme), o cualquier otra cosa.
+
+Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta ni comprueba nada especial antes de firmar.
+
+* *4.Método para comprobar si se ha guardado las páginas asociadas a la fase que se va a Presentar.*
+
+bc. public static boolean comprobarPaginasGuardadas(Long idSolicitud)
+
+Esta función puede servir para comprobar que las páginas definidas en nuestra aplicación, han sido guardadas correctamente por el solicitante. Como a priori nunca conoceremos las páginas exactas que puede tener las aplicaciones, se debe sobreescribir este método para hacer esta comprobación, de verificar si todo ha sido guardado correctamente. En caso positivo devolveremos un _true_ y si no ha sido guardado todo correctamente y para evitar que se prosiga con el proceso de Presentación, devolveremos un _false_. Es función del que sobreescriba este método, el indicar mediante mensajes (Messages.error(...)), las páginas que no han sido guardadas correctamente o cualquier otro mensaje que se le quiera dar al usuario en caso de que algo haya ido mal.
+
+Por defecto en Fap, este método siempre devuelve _true_, por lo que no se comprueba nada.
+
+h2. Conclusiones
+
+De manera que podemos sobreescribir los métodos de la clase PresentacionFapController, sin crear nuestra clase que extienda de TramiteBase (usando la de Fap por defecto), o sobreescribir todo, o no sobreescribir nada.
+
+Hay que tener en cuenta que siempre que sobreescribamos los métodos de la clase TramiteBase, con nuestra propia clase, deberemos de sobreescribir forzosamente el método _getTramiteObject_ de la clase PresentacionFapController, para tener en cuenta y utilizar el objeto nuevo que hemos creado y que hereda de TramiteBase.

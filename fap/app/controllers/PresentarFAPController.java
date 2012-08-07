@@ -53,17 +53,17 @@ public class PresentarFAPController extends PresentarFAPControllerGen {
 			
 			try {
 				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
-				PresentacionFapController.invoke("comprobarPaginasGuardadas", idSolicitud);
-				
-				// Valido si hay alguna pagina sin guardar y si da error
-				// No evaluo los documentos;
-				if (!Messages.hasErrors()) {
-					tramite.validarReglasConMensajes();
-				}
-
-				// Si no da fallos => genero el documento
-				if (!Messages.hasErrors()) {
-					tramite.prepararFirmar();
+				if (PresentacionFapController.invoke("comprobarPaginasGuardadas", idSolicitud)){
+					// Valido si hay alguna pagina sin guardar y si da error
+					// No evaluo los documentos;
+					if (!Messages.hasErrors()) {
+						tramite.validarReglasConMensajes();
+					}
+	
+					// Si no da fallos => genero el documento
+					if (!Messages.hasErrors()) {
+						tramite.prepararFirmar();
+					}
 				}
 			} catch (Throwable e) {
 				log.error("Hubo un problema al intentar invocar a los métodos de la clase PresentacionFAPController en prepararFirmar: "+e.getMessage());

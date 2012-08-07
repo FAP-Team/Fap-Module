@@ -8,7 +8,6 @@ Utilizando la clase *AppModule* configuramos los diferentes servicios que utiliz
 
 _驴No me puedes poner un ejemplo?_ ... Por supuesto. Uno de los servicios es el *GestorDocumentalService*. Las aplicaciones que utilizan FAP deben tener un gestor documental donde guardar los documentos que se suban a la aplicaci贸n o que se generen por la misma, as铆 que tenemos definida en el m贸dulo la interfaz de ese Gestor Documental.
 
- 
 bc. public interface GestorDocumentalService {
     public void configure() throws GestorDocumentalServiceException;
     public boolean isConfigured();
@@ -43,7 +42,6 @@ bc. public interface GestorDocumentalService {
 	 public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
 }
 
-
 Y tambi茅n tenemos definida dos implementaciones (las cuales no incluiremos todo el codigo aqu铆 por el tama帽o del mismo) AedGestorDocumentalServiceImpl y FileSystemGestorDocumentalServiceImpl. El primero utiliza un AED como gestor documental, que se deber谩 configurar correctamente en las properties; mientras que el segundo utiliza el sistema de ficheros local como gestor documental.
 
 Como vimos anteriormente, la configuraci贸n se hereda del m贸dulo FAP, y la configuraci贸n en el m贸dulo es la siguiente:
@@ -67,4 +65,4 @@ Un esquema que complementa la anterior explicaci贸n es el siguiente:
 
 !images/gestorDocumentalService!
 
-Vemos que el m骴ulo FAP tiene 2 implementaciones del servicio, y nuestra aplicaci髇 puede a su vez tener todas las implementaciones que queramos y usaremos la que configuremos en el _AppModule.java_.
+Vemos que el m贸dulo FAP tiene 2 implementaciones del servicio, y nuestra aplicaci贸n puede a su vez tener todas las implementaciones que queramos y usaremos la que configuremos en el _AppModule.java_.

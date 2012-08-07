@@ -78,8 +78,9 @@ h3. Páginas por defecto
 (login, lista solicitudes, baremación, tramitación, ...)
 * "Login":app-login.textile
 * "Tramitación":app-tramitacion
-* "Baremación":app-baremacion
+* "Presentación":app-presentacion
 * "Verificación":app-verificacion
+* "Baremación":app-baremacion
 * "Desistimiento":app-tramitacion
 * "Administración":app-administracion
 

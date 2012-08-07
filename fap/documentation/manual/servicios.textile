@@ -67,4 +67,4 @@ Un esquema que complementa la anterior explicaciÃ³n es el siguiente:
 
 !images/gestorDocumentalService!
 
-Vemos que el módulo FAP tiene 2 implementaciones del servicio, y nuestra aplicación puede a su vez tener todas las implementaciones que queramos y usaremos la que configuremos en el _AppModule.java_.
+Vemos que el mï¿½dulo FAP tiene 2 implementaciones del servicio, y nuestra aplicaciï¿½n puede a su vez tener todas las implementaciones que queramos y usaremos la que configuremos en el _AppModule.java_.

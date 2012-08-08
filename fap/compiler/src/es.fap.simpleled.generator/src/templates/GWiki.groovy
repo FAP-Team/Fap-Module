@@ -24,8 +24,54 @@ public class GWiki extends GElement{
 	
 	public String view(){	
 		StringBuffer wikidata = new StringBuffer();
+		String convertirComillasDolar="", dolar="", acumulado="", buscarLlaveMasCercana="";
+		String porcentaje="", acumuladoGroovy="";
+		String dataGroovy="";
 		for(String data : wiki.getWikiData()){
-			wikidata.append(getParsedText(data) + "\n");
+			if (data.contains("\${") || data.contains("%{")){ // Para que no se convierta a UTF8 lo englobado en ${...} y en %{...%}
+				dolar="";
+				acumulado="";
+				dataGroovy=data;
+				convertirComillasDolar=getParsedText(data);
+				while (data.indexOf("\${") != -1){
+					buscarLlaveMasCercana=data.substring(data.indexOf("\${"));
+					
+					dolar=buscarLlaveMasCercana.substring(buscarLlaveMasCercana.indexOf("\${"), buscarLlaveMasCercana.indexOf("}")+1);
+					
+					acumulado+=convertirComillasDolar.substring(0, convertirComillasDolar.indexOf("\${"));
+					
+					acumulado+=dolar;
+					
+					convertirComillasDolar=convertirComillasDolar.substring(convertirComillasDolar.indexOf("\${"));
+					convertirComillasDolar=convertirComillasDolar.substring(convertirComillasDolar.indexOf("}")+1);
+					
+					data=data.substring(data.indexOf("\${"));
+					data=data.substring(data.indexOf("}")+1);
+				}
+				acumulado+=convertirComillasDolar;
+				
+				acumuladoGroovy="";
+				porcentaje="";
+				while (dataGroovy.indexOf("%{") != -1){
+		
+					porcentaje=dataGroovy.substring(dataGroovy.indexOf("%{"), dataGroovy.indexOf("%}")+2);
+
+					acumuladoGroovy+=acumulado.substring(0, acumulado.indexOf("%{"));
+
+					acumuladoGroovy+=porcentaje;
+					
+					acumulado=acumulado.substring(acumulado.indexOf("%}")+2);
+
+					dataGroovy=dataGroovy.substring(dataGroovy.indexOf("%}")+2);
+				}
+				if (!acumuladoGroovy.isEmpty()){
+					acumuladoGroovy+=acumulado;
+					acumulado=acumuladoGroovy;
+				}
+				wikidata.append(acumulado + "\n");
+			} else {
+				wikidata.append(getParsedText(data) + "\n");
+			}
 		}
 		
 //		//TODO: Problemas al cargar imagenes, solucion: overwrite the WikiModel#parseInternalImageLink()

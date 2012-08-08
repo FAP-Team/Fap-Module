@@ -133,6 +133,11 @@ public class GSolicitante {
 			grupoRepFisica.setSiCheckValues("true");
 			grupoRepFisica.setVisible("false");
 			
+			Texto textoEmail = LedFactory.eINSTANCE.createTexto();
+			textoEmail.titulo="Email";
+	  		textoEmail.requerido=true;
+	  		textoEmail.duplicar=true;
+			
 			if (!soloRepresentantePersonaFisica){
 				Persona persona = new PersonaImpl();
 				persona.setTitulo("Representante");
@@ -140,6 +145,7 @@ public class GSolicitante {
 				persona.setName("representanteDelSolicitante_"+solicitante.name);
 				persona.setCampo(CampoUtils.addMore(solicitante.campo, "representante"));
 				grupoRepFisica.getElementos().add(persona);
+				textoEmail.setCampo(CampoUtils.addMore(persona.campo, "email"));
 			} else {
 				PersonaFisica personaFisica = new PersonaFisicaImpl();
 				personaFisica.setTitulo("Representante");
@@ -147,8 +153,9 @@ public class GSolicitante {
 				personaFisica.setName("representanteDelSolicitante_"+solicitante.name);
 				personaFisica.setCampo(CampoUtils.addMore(solicitante.campo, "representante.fisica"));
 				grupoRepFisica.getElementos().add(personaFisica);
+				textoEmail.setCampo(CampoUtils.addMore(solicitante.campo, "representante.email"));
 			}
-			
+			grupoRepFisica.elementos.add(textoEmail);
 			grupoCheckRepFisica.getElementos().add(check);
 			grupoCheckRepFisica.getElementos().add(grupoRepFisica);
 			
@@ -252,6 +259,11 @@ public class GSolicitante {
 		popup.setName "Popup" + StringUtils.firstUpper(name);
 		popup.setTitulo "Representante";
 		popup.setCampo(CampoUtils.addMore(campo, "representantes"));
+		
+		Texto textoEmail = LedFactory.eINSTANCE.createTexto();
+		textoEmail.titulo="Email";
+        textoEmail.requerido=true;
+  		textoEmail.duplicar=true;
 
 		if (!soloRepresentantePersonaFisica){
 			Persona person = new PersonaImpl();
@@ -260,6 +272,7 @@ public class GSolicitante {
 			person.setName("representante_"+popup.name);
 			person.setRequerido(true);
 			popup.getElementos().add(person);
+			textoEmail.setCampo(CampoUtils.addMore(person.campo, "email"));
 		} else {
 			PersonaFisica personaFisica = new PersonaFisicaImpl();
 			personaFisica.setTitulo("Representante");
@@ -267,9 +280,10 @@ public class GSolicitante {
 			personaFisica.setName("representante_"+popup.name);
 			personaFisica.setCampo(CampoUtils.create("RepresentantePersonaJuridica.fisica").campo);
 			popup.getElementos().add(personaFisica);
+			textoEmail.setCampo(CampoUtils.create("RepresentantePersonaJuridica.email").campo);
 		}
 		
-
+		popup.elementos.add(textoEmail);
 		Combo tipo = new ComboImpl();
 		tipo.setName "tipo_"+popup.name;
 		

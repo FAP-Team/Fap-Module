@@ -50,6 +50,7 @@ Formulario Solicitud {
 			popupVer=PopUpDocPresentados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80" 
+			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
 			Columna campo=Documento.tipo titulo="Tipo Documento"
 			Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
@@ -65,6 +66,9 @@ Formulario Solicitud {
 			popupVer=PopUpDocAportados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" expandir
+			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
+			Columna titulo="Tipo Documento" campo=Documento.tipo
+       		Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
 		

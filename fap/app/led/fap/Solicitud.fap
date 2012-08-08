@@ -15,6 +15,7 @@ Formulario Solicitud {
 			{
 				Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
 				Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
+				Columna campo=Documento.tipo titulo="Tipo Documento" 
 				Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
@@ -49,6 +50,7 @@ Formulario Solicitud {
 			popupVer=PopUpDocPresentados
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80" 
+			Columna campo=Documento.tipo titulo="Tipo Documento"
 			Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
@@ -101,6 +103,7 @@ Formulario Solicitud {
 				{
 					Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
 					Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
+					Columna campo=Documento.tipo titulo="Tipo Documento"
 					Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
 					Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 				}
@@ -223,6 +226,7 @@ Formulario Solicitud {
 				popupModificar=PopUpDocTipos popupVer=PopUpDocTipos {
 				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
 				Columna campo=Documento.fechaRegistro titulo="Fecha de Registro" ancho="100"
+				Columna campo=Documento.tipo titulo="Tipo Documento"
 				Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}
@@ -287,6 +291,7 @@ Formulario Solicitud {
 				popupModificar=PopUpDocNuevosTipos popupVer=PopUpDocNuevosTipos {
 				Columna campo=Documento.fechaSubida titulo="Fecha de Subida" ancho="100"
 				Columna campo=Documento.fechaRegistro titulo="Fecha de Registro" ancho="100"
+				Columna campo=Documento.tipo titulo="Tipo Documento"
 				Columna campo=Documento.descripcionVisible titulo="Tipo" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			}

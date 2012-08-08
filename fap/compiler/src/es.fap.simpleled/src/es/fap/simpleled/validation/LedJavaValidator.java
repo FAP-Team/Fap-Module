@@ -169,4 +169,14 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
+	/**
+	 * Comprueba que los atributos no empiecen con mayúscula
+	 * @param entity
+	 */
+	@Check
+	public void checkAttributeNoStartsWithCapital(Attribute attr) {
+		if ((attr.getName() != null) && (Character.isUpperCase(attr.getName().charAt(0))))
+			error("Los atributos de las entidades deben empezar con minuscula", LedPackage.Literals.ATTRIBUTE__NAME);
+	}
+	
 }

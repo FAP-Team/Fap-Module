@@ -1,0 +1,55 @@
+
+#{fap.popup 
+     accion:accion, 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     popup:'DocumentosExternosEditarFAP', 
+     titulo:'Modificar Documento Externo', 
+     urlBorrar:play.mvc.Router.reverse('popups.DocumentosExternosEditarFAPController.borrar' , ['idSolicitud':solicitud?.id, 'idDocumentoExterno':documentoExterno?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.DocumentosExternosEditarFAPController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('popups.DocumentosExternosEditarFAPController.editar' , ['idSolicitud':solicitud?.id, 'idDocumentoExterno':documentoExterno?.id])
+}
+	
+			#{fap.combo campo:'documentoExterno.tipo', id:'tipoDocumento', requerido:true, titulo:'Tipo Documento' /}		
+		
+			#{fap.areaTexto campo:'documentoExterno.descripcion', id:'descripcion', titulo:'Descripción', requerido:true/}		
+		
+			#{fap.texto campo:'documentoExterno.organo', id:'organo', requerido:true, titulo:'Órgano' /}		
+		
+			#{fap.texto campo:'documentoExterno.expediente', id:'expediente', requerido:true, titulo:'Expediente' /}		
+		
+			#{fap.areaTexto campo:'documentoExterno.uri', id:'uri', requerido:true, titulo:'Dirección (uri)' /}
+			
+	<script type="text/javascript">
+		%{
+			urlDocumentoEsMultiple = play.mvc.Router.reverse('fap.UtilsController.documentoEsMultiple');
+		%}
+		//Peticion ajax, para ver si el tipo de documento seleccionado es multiple, para que salga el asterisco de requerido en descripcion, si no no sale el asterisco porque no es requerido
+		var urlDocumentoEsMultipleAjax = "${urlDocumentoEsMultiple}";
+		
+		// Para la primera vez que recarga la pagina
+		$(document).ready(setearRequerido());
+		
+		// Para cada vez que cambie el valor del combo, del tipo de documento
+		$('#tipoDocumento').change(function(){
+			setearRequerido();
+		});
+		
+		function setearRequerido(){
+			$.ajax({
+		  		type: "POST",
+		  		url: urlDocumentoEsMultipleAjax,
+		  		data: { tipoUri: $('#tipoDocumento').val() }
+			}).done(function(esMultiple) {
+				var requerido = $('#descripcion').parent().parent().children('.control-label').children('.required');
+				if (esMultiple == "true"){
+					$(requerido).text("*");
+				} else {
+					$(requerido).text("");
+				}
+			});
+		}
+	</script>	
+		
+#{/fap.popup}
+		

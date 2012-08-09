@@ -52,9 +52,8 @@ public class GEditarArchivo extends GSaveCampoElement{
 	}
 	
 	public String validateCopy(Stack<Set<String>> validatedFields){
-		return """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
-				   if ((${campo.firstLower()}.descripcion != null) && (!${campo.firstLower()}.descripcion.trim().equals("")))
-				      ${campo.dbStr()}.descripcion = ${campo.firstLower()}.descripcion;
+		return validate(validatedFields) + """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
+ ${campo.dbStr()}.descripcion = ${campo.firstLower()}.descripcion;
 		""";
 	}
 	

@@ -8,6 +8,7 @@ import properties.FapProperties;
 import services.RegistroServiceException;
 
 import models.Documento;
+import models.DocumentoExterno;
 import models.Registro;
 import models.SolicitudGenerica;
 
@@ -119,6 +120,12 @@ public class TramiteDesistimiento extends TramiteBase {
 	@Override
 	public	final void cambiarEstadoSolicitud() {
 		this.solicitud.estado = EstadosSolicitudEnum.desistido.name();
+	}
+
+	@Override
+	public List<DocumentoExterno> getDocumentosExternos() {
+		// TODO Auto-generated method stub
+		return solicitud.desistimiento.documentosExternos;
 	}
 	
 	

@@ -101,7 +101,7 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	 */
 	public void validarDocumentacion() {
 		
-		VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", solicitud.documentacion.documentos);
+		VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", this.getDocumentos(), this.getDocumentosExternos());
 		List<String> condicionadosAutomaticosNoAportados;
 		try {
 			condicionadosAutomaticosNoAportados = VerificacionFapController.getDocumentosNoAportadosCondicionadosAutomaticos(NOMBRE_TRAMITE, solicitud.id);

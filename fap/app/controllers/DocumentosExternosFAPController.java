@@ -1,0 +1,50 @@
+package controllers;
+
+import play.mvc.Util;
+import validation.CustomValidation;
+import messages.Messages;
+import models.DocumentoExterno;
+import models.SolicitudGenerica;
+import controllers.gen.DocumentosExternosFAPControllerGen;
+
+public class DocumentosExternosFAPController extends DocumentosExternosFAPControllerGen {
+
+	public static void index(String accion, Long idSolicitud, Long idDocumentoExterno) {
+		if (accion == null)
+			accion = getAccion();
+		if (!permiso(accion)) {
+			Messages.fatal("No tiene suficientes privilegios para acceder a esta solicitud");
+			renderTemplate("gen/DocumentosExternosFAP/DocumentosExternosFAP.html");
+		}
+
+		SolicitudGenerica solicitud = DocumentosExternosFAPController.getSolicitudGenerica(idSolicitud);
+
+		DocumentoExterno documentoExterno = null;
+		if ("crear".equals(accion))
+			documentoExterno = DocumentosExternosFAPController.getDocumentoExterno();
+		else if (!"borrado".equals(accion))
+			documentoExterno = DocumentosExternosFAPController.getDocumentoExterno(idSolicitud, idDocumentoExterno);
+
+		log.info("Visitando página: " + "fap/Documentacion/DocumentosExternosFAP.html");
+		renderTemplate("fap/Documentacion/DocumentosExternosFAP.html", accion, idSolicitud, idDocumentoExterno, solicitud, documentoExterno);
+	}
+	
+	@Util
+	public static void DocumentosExternosFAPValidateCopy(String accion, DocumentoExterno dbDocumentoExterno, DocumentoExterno documentoExterno) {
+		CustomValidation.clearValidadas();
+		CustomValidation.valid("documentoExterno", documentoExterno);
+		CustomValidation.required("documentoExterno", documentoExterno);
+		CustomValidation.required("documentoExterno.tipo", documentoExterno.tipo);
+		CustomValidation.validValueFromTable("documentoExterno.tipo", documentoExterno.tipo);
+		dbDocumentoExterno.tipo = documentoExterno.tipo;
+		dbDocumentoExterno.descripcion = documentoExterno.descripcion;
+		CustomValidation.required("documentoExterno.organo", documentoExterno.organo);
+		dbDocumentoExterno.organo = documentoExterno.organo;
+		CustomValidation.required("documentoExterno.expediente", documentoExterno.expediente);
+		dbDocumentoExterno.expediente = documentoExterno.expediente;
+		CustomValidation.required("documentoExterno.uri", documentoExterno.uri);
+		dbDocumentoExterno.uri = documentoExterno.uri;
+
+	}
+	
+}

@@ -81,9 +81,13 @@ POST /Soporte/soporte/editar SoporteController.editar
 POST /Soporte/soporte/crear SoporteController.crear
 GET /Solicitud/documentacionfap DocumentacionFAPController.index
 GET /Solicitud/documentacionfap/documentos DocumentacionFAPController.tabladocumentos
+GET /Solicitud/documentacionfap/documentosExternos DocumentacionFAPController.tabladocumentosExternos
 GET /Solicitud/documentosfap DocumentosFAPController.index
 POST /Solicitud/documentosfap/editar DocumentosFAPController.editar
 POST /Solicitud/documentosfap/crear DocumentosFAPController.crear
+GET /Solicitud/documentosexternosfap DocumentosExternosFAPController.index
+POST /Solicitud/documentosexternosfap/editar DocumentosExternosFAPController.editar
+POST /Solicitud/documentosexternosfap/crear DocumentosExternosFAPController.crear
 GET /Solicitud/aportacion AportacionController.index
 GET /Solicitud/aportacion/documentos AportacionController.tabladocumentos
 POST /Solicitud/aportacion/presentarSinRegistrar AportacionController.presentarSinRegistrar
@@ -94,6 +98,7 @@ POST /Solicitud/documentosaportacion/crear DocumentosAportacionController.crear
 GET /Solicitud/aportacionaportados AportacionAportadosController.index
 POST /Solicitud/aportacionaportados/editar AportacionAportadosController.editar
 GET /Solicitud/aportacionaportados/documentos AportacionAportadosController.tabladocumentos
+GET /Solicitud/aportacionaportados/documentosExternos AportacionAportadosController.tabladocumentosExternos
 GET /Solicitud/aportacionrecibos AportacionRecibosController.index
 POST /Solicitud/aportacionrecibos/editar AportacionRecibosController.editar
 GET /Solicitud/aportacionrecibos/recibosAportados AportacionRecibosController.tablarecibosAportados
@@ -260,6 +265,9 @@ GET /Notificacion/notificacionver NotificacionVerController.index
 GET /Solicitud/popupdocdesistimiento popups.PopUpDocDesistimientoController.index
 GET /Solicitud/documentoseditarfap popups.DocumentosEditarFAPController.index
 POST /Solicitud/documentoseditarfap/editar popups.DocumentosEditarFAPController.editar
+GET /Solicitud/documentosexternoseditarfap popups.DocumentosExternosEditarFAPController.index
+POST /Solicitud/documentosexternoseditarfap/editar popups.DocumentosExternosEditarFAPController.editar
+GET /Solicitud/documentosexternosleerfap popups.DocumentosExternosLeerFAPController.index
 GET /Solicitud/popupdocpresentados popups.PopUpDocPresentadosController.index
 GET /Solicitud/popupdocprocesos popups.PopUpDocProcesosController.index
 POST /Solicitud/popupdocprocesos/editar popups.PopUpDocProcesosController.editar

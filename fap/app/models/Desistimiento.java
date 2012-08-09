@@ -32,6 +32,10 @@ public class Desistimiento extends FapModel {
 	@JoinTable(name = "desistimiento_documentos")
 	public List<Documento> documentos;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "desistimiento_documentosexternos")
+	public List<DocumentoExterno> documentosExternos;
+
 	public Desistimiento() {
 		init();
 	}
@@ -45,6 +49,9 @@ public class Desistimiento extends FapModel {
 
 		if (documentos == null)
 			documentos = new ArrayList<Documento>();
+
+		if (documentosExternos == null)
+			documentosExternos = new ArrayList<DocumentoExterno>();
 
 		postInit();
 	}

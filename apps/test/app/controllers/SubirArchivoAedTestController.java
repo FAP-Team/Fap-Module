@@ -14,7 +14,7 @@ public class SubirArchivoAedTestController extends SubirArchivoAedTestController
 	public static void comprobarDocumentosObligatorios(Long idSolicitud) {
 		//Sobreescribir este método para asignar una acción al boton
 		Solicitud solicitud = SubirArchivoAedTestController.getSolicitud(idSolicitud);
-		VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", solicitud.documentacion.documentos);
+		VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", solicitud.documentacion.documentos, solicitud.documentacion.documentosExternos);
 		List <String> nada = new ArrayList<String>();
 		nada.clear();
 		verificar.preparaPresentacionTramite(nada);

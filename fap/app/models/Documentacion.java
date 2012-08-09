@@ -26,6 +26,10 @@ public class Documentacion extends FapModel {
 	@JoinTable(name = "documentacion_documentos")
 	public List<Documento> documentos;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "documentacion_documentosexternos")
+	public List<DocumentoExterno> documentosExternos;
+
 	public String uriDocOficial;
 
 	public String urlDocOficial;
@@ -47,6 +51,9 @@ public class Documentacion extends FapModel {
 
 		if (documentos == null)
 			documentos = new ArrayList<Documento>();
+
+		if (documentosExternos == null)
+			documentosExternos = new ArrayList<DocumentoExterno>();
 
 		postInit();
 	}

@@ -10,6 +10,7 @@ import properties.FapProperties;
 import models.Agente;
 import models.Convocatoria;
 import models.Documento;
+import models.DocumentoExterno;
 import models.Firmante;
 import models.Registro;
 import models.SolicitudGenerica;
@@ -83,6 +84,15 @@ public class TramiteSolicitudFap extends TramiteSolicitud {
 		// TODO Auto-generated method stub
 		return this.solicitud.documentacion.documentos;
 	}
+	
+	/**
+	 * Retorna los documentos externos de la solicitud
+	 */
+	@Override
+	public List<DocumentoExterno> getDocumentosExternos() {
+		// TODO Auto-generated method stub
+		return this.solicitud.documentacion.documentosExternos;
+	}
 
 	/**
 	 * Nombre del fichero del justificante para la solicitud
@@ -128,7 +138,7 @@ public class TramiteSolicitudFap extends TramiteSolicitud {
 	 */
 	public void validarDocumentacion() {
 		
-		VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", solicitud.documentacion.documentos);
+		VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", this.getDocumentos(), this.getDocumentosExternos());
 		List<String> condicionadosAutomaticosNoAportados;
 		try {
 			condicionadosAutomaticosNoAportados = obtenerObligatoriosNoAportadosCondicionadosAutomatico();

@@ -1,0 +1,62 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:true, 
+     mensajeFinal:false, 
+     pagina:'DocumentosExternosFAP', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Nuevo Documento Externo', 
+     urlBorrar:play.mvc.Router.reverse('DocumentosExternosFAPController.borrar' , ['idSolicitud':solicitud?.id, 'idDocumentoExterno':documentoExterno?.id]), 
+     urlCrear:play.mvc.Router.reverse('DocumentosExternosFAPController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('DocumentosExternosFAPController.editar' , ['idSolicitud':solicitud?.id, 'idDocumentoExterno':documentoExterno?.id])
+}
+	
+			#{fap.combo campo:'documentoExterno.tipo', id:'tipoDocumento', titulo:'Tipo Documento', ancho:"450px", requerido:true/}		
+		
+			#{fap.areaTexto campo:'documentoExterno.descripcion', id:'descripcion', titulo:'Descripción', ancho:"450px", requerido:true/}		
+		
+			#{fap.texto campo:'documentoExterno.organo', id:'organo', titulo:'Órgano', ancho:"450px", requerido:true /}		
+		
+			#{fap.texto campo:'documentoExterno.expediente', id:'expediente', titulo:'Expediente', ancho:"450px", requerido:true /}		
+		
+			#{fap.areaTexto campo:'documentoExterno.uri', id:'uri', titulo:'Dirección (uri)', ancho:"450px", requerido:true /}	
+			
+	<script type="text/javascript">
+		%{
+			urlDocumentoEsMultiple = play.mvc.Router.reverse('fap.UtilsController.documentoEsMultiple');
+		%}
+		//Peticion ajax, para ver si el tipo de documento seleccionado es multiple, para que salga el asterisco de requerido en descripcion, si no no sale el asterisco porque no es requerido
+		var urlDocumentoEsMultipleAjax = "${urlDocumentoEsMultiple}";
+		
+		// Para la primera vez que recarga la pagina
+		$(document).ready(setearRequerido());
+		
+		// Para cada vez que cambie el valor del combo, del tipo de documento
+		$('#tipoDocumento').change(function(){
+			setearRequerido();
+		});
+		
+		function setearRequerido(){
+			$.ajax({
+		  		type: "POST",
+		  		url: urlDocumentoEsMultipleAjax,
+		  		data: { tipoUri: $('#tipoDocumento').val() }
+			}).done(function(esMultiple) {
+				var requerido = $('#descripcion').parent().parent().children('.control-label').children('.required');
+				if (esMultiple == "true"){
+					$(requerido).text("*");
+				} else {
+					$(requerido).text("");
+				}
+			});
+		}
+	</script>	
+		
+#{/fap.pagina}
+		

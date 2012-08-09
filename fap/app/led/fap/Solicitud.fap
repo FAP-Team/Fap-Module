@@ -1,24 +1,65 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{	
 	
-	Pagina DocumentacionFAP campo=SolicitudGenerica noForm {
-		Tabla documentos titulo="Documentos Aportados" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP {
+	Pagina DocumentacionFAP titulo="Documentacion" campo=SolicitudGenerica noForm {
+		
+		Tabla documentos titulo="Documentos Aportados" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP{
 			Columna titulo="Id" campo=Documento.id
 			Columna titulo="Tipo Documento" campo=Documento.tipo
-			Columna titulo="Descripcion" campo=Documento.descripcionVisible
+			Columna titulo="Descripcion" campo=Documento.descripcionVisible expandir
 		}
-		//SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
+		
+		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
+			Tabla documentosExternos titulo="Documentos Externos" campo=SolicitudGenerica.documentacion.documentosExternos paginaCrear=DocumentosExternosFAP popupEditar=DocumentosExternosEditarFAP popupLeer=DocumentosExternosLeerFAP {
+				Columna titulo="Id" campo=DocumentoExterno.id
+				Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
+				Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
+			}
+		}
 	}
-	Pagina DocumentosFAP campo=SolicitudGenerica.documentacion.documentos {
+	
+	
+	// Sobreescrito
+	Pagina DocumentosFAP titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {
 		Accion crear redirigir=DocumentacionFAP	
 		SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
 	}
 	
-	Popup DocumentosEditarFAP campo=SolicitudGenerica.documentacion.documentos {
+	//Sobreescrito
+	Popup DocumentosEditarFAP titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {
 		Accion editar redirigir=DocumentacionFAP	
 		EditarArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO"
 	}
 	
+	// Página Sobreescrita
+	Pagina DocumentosExternosFAP titulo="Nuevo Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos {
+		Accion crear redirigir=DocumentacionFAP
+		
+		Combo tipoDocumento titulo="Tipo Documento" campo=DocumentoExterno.tipo requerido
+		AreaTexto descripcion titulo="Descripción" campo=DocumentoExterno.descripcion
+		Texto organo titulo="Órgano" campo=DocumentoExterno.organo requerido
+		Texto expediente titulo="Expediente" campo=DocumentoExterno.expediente requerido
+		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri requerido
+	}
+	
+	// Popup Sobrescrito
+	Popup DocumentosExternosEditarFAP titulo="Modificar Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos {
+		Accion editar redirigir=DocumentacionFAP	
 
+		Combo tipoDocumento titulo="Tipo Documento" campo=DocumentoExterno.tipo requerido
+		AreaTexto descripcion titulo="Descripción" campo=DocumentoExterno.descripcion
+		Texto organo titulo="Órgano" campo=DocumentoExterno.organo requerido
+		Texto expediente titulo="Expediente" campo=DocumentoExterno.expediente requerido
+		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri requerido
+	}
+	
+	Popup DocumentosExternosLeerFAP titulo="Ver Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos {
+		Combo tipoDocumento titulo="Tipo Documento" campo=DocumentoExterno.tipo
+		AreaTexto descripcion titulo="Descripción" campo=DocumentoExterno.descripcion
+		Texto organo titulo="Órgano" campo=DocumentoExterno.organo
+		Texto expediente titulo="Expediente" campo=DocumentoExterno.expediente
+		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri
+	}
+	
 	Pagina Aportacion {
 		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="btn"
@@ -73,10 +114,17 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 		}
+
+		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
+			Tabla documentosExternos titulo="Documentos Externos" campo=SolicitudGenerica.documentacion.documentosExternos popupLeer=DocumentosExternosLeerFAP {
+				Columna titulo="Id" campo=DocumentoExterno.id
+				Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
+				Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
+			}
+		}
 		
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
-	}
-	
+	}	
 	
 	Pagina AportacionRecibos {
 			

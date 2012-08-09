@@ -32,6 +32,7 @@ Formulario Solicitud {
 	
 		Grupo "SubirArchivo" {
 			Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
+			Enlace "Documentación FAP" pagina=DocumentacionFAP
 		}
 		
 		Grupo "Pagina del módulo"{
@@ -64,8 +65,9 @@ Formulario Solicitud {
 		}
 		
 		Grupo "Paginas FAP" {
-			Enlace "Verificaciones" pagina=AccesoVerificaciones
 			Enlace "Presentación" pagina=PresentarFAP
+			Enlace "Verificaciones" pagina=AccesoVerificaciones
+			Enlace "Aportacion Documentacion" pagina=Aportacion
 		}
 		
 		Grupo "Anotación Inject"{

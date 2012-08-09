@@ -17,13 +17,13 @@ class GFormulario extends GElement{
 	public void generate(){		
 		for(int i = 0; i < formulario.getPaginas().size(); i++){
 			GElement.getInstance(formulario.getPaginas().get(i), null).generate();
-
+			String tituloPagina = formulario.getPaginas().get(i).titulo ?: formulario.getPaginas().get(i).name;
 			if (formulario.name == "Solicitud"){	
 				texto+="""ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "${formulario.getPaginas().get(i).name}"
+  PaginaAconfigurar: "${tituloPagina}"
   tipoMensaje:
   tituloMensaje:
-  contenido: 
+  contenido:
   habilitar: false
 
 """

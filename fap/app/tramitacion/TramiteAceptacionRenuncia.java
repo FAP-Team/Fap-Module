@@ -13,6 +13,7 @@ import services.VerificarDocumentacionService;
 import services.platino.PlatinoGestorDocumentalService;
 import messages.Messages;
 import models.Documento;
+import models.DocumentoExterno;
 import models.Registro;
 import models.SolicitudGenerica;
 
@@ -191,7 +192,7 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 	public void validarDocumentacion() {
 		
 		if (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase("aceptar")) {
-			VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", solicitud.aceptarRenunciar.documentos);
+			VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", this.getDocumentos(), this.getDocumentosExternos());
 			List<String> condicionadosAutomaticosNoAportados;
 			try {
 				condicionadosAutomaticosNoAportados = VerificacionFapController.getDocumentosNoAportadosCondicionadosAutomaticos(NOMBRE_TRAMITE, solicitud.aceptarRenunciar.id);
@@ -211,6 +212,12 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 	public
 	final void cambiarEstadoSolicitud() {
 		
+	}
+
+	@Override
+	public List<DocumentoExterno> getDocumentosExternos() {
+		// TODO Auto-generated method stub
+		return solicitud.aceptarRenunciar.documentosExternos;
 	}
 	
 

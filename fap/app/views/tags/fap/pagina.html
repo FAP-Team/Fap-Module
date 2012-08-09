@@ -13,6 +13,8 @@
 	String botonCrear = com.google.common.base.Preconditions.checkNotNull(_botonCrear, "botonCrear");
 	String botonBorrar = com.google.common.base.Preconditions.checkNotNull(_botonBorrar, "botonBorrar");
 	
+	def tituloPagina = _titulo ?: _pagina;
+	
 	String permisoMensaje = _permisoMensaje? _permisoMensaje : "No tiene suficientes privilegios para acceder a ésta página";
 	
 	play.mvc.Router.ActionDefinition url;
@@ -50,7 +52,7 @@
 
 
 #{if !mensajeFinal}
-	#{fap.configurarMensaje pagina:_pagina/}
+	#{fap.configurarMensaje pagina:tituloPagina/}
 #{/if}
 
 #{if accion != "borrado"}

@@ -12,6 +12,7 @@ import antlr.StringUtils;
 import messages.Messages;
 import models.Direccion;
 import models.Documento;
+import models.DocumentoExterno;
 import models.Nip;
 import models.Persona;
 import models.PersonaFisica;
@@ -205,6 +206,16 @@ public class CustomValidation {
     	}
     	else if (o instanceof Documento){
     		Documento documento = (Documento)o;
+    		ValidationResult result = new ValidationResult();
+    		result.ok = true;
+    		result.ok = applyCheck(requiredCheck, key + ".tipo", documento.tipo).ok && result.ok;
+    		if(documento.isMultiple()){
+    			result.ok = applyCheck(requiredCheck, key + ".descripcion", documento.descripcion).ok && result.ok;
+    		}
+    		return result;    		
+    	}
+    	else if (o instanceof DocumentoExterno){
+    		DocumentoExterno documento = (DocumentoExterno)o;
     		ValidationResult result = new ValidationResult();
     		result.ok = true;
     		result.ok = applyCheck(requiredCheck, key + ".tipo", documento.tipo).ok && result.ok;

@@ -16,6 +16,7 @@ import enumerado.fap.gen.EstadosSolicitudEnum;
 import messages.Messages;
 import models.Aportacion;
 import models.Documento;
+import models.DocumentoExterno;
 import models.Firma;
 import models.Firmante;
 import models.Firmantes;
@@ -87,6 +88,8 @@ public abstract class TramiteBase {
 	}
     
     public abstract List<Documento> getDocumentos();
+    
+    public abstract List<DocumentoExterno> getDocumentosExternos();
         
     public void prepararFirmar(){
         if(registro.fasesRegistro.borrador){

@@ -12,6 +12,7 @@ import services.platino.PlatinoGestorDocumentalService;
 import messages.Messages;
 import models.Alegacion;
 import models.Documento;
+import models.DocumentoExterno;
 import models.Registro;
 import models.SolicitudGenerica;
 
@@ -166,6 +167,12 @@ public class TramiteAlegacion extends TramiteBase {
 	@Override
 	public void anadirDocumentosSolicitud() {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public List<DocumentoExterno> getDocumentosExternos() {
+		// TODO Auto-generated method stub
+		return solicitud.alegaciones.actual.documentosExternos;
 	}
 
 }

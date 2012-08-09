@@ -141,11 +141,21 @@ Entidad Documento {
 Entidad Documentacion {
 	// Lista de documentos
 	OneToMany Documento documentos
+	OneToMany DocumentoExterno documentosExternos
 	String uriDocOficial
 	String urlDocOficial
 	Boolean docOficialClasificado
 	DateTime fechaFirma
 	String firma transient
+}
+
+Entidad DocumentoExterno {
+	Lista tiposDocumentos tipo
+	String descripcion
+	String descripcionVisible transient
+	String organo
+	String expediente
+	LongText uri
 }
 
 Entidad ObligatoriedadDocumentos extends Singleton {
@@ -540,6 +550,7 @@ Entidad AceptarRenunciar {
 	LongText motivoRenuncia
 	Documento borrador
 	OneToMany Documento documentos
+	OneToMany DocumentoExterno documentosExternos
 	Documento justificante
 	Registro registro
 }
@@ -555,6 +566,7 @@ Entidad Alegacion {
 	Lista estadoAlegacion estado
 	Registro registro
 	OneToMany Documento documentos
+	OneToMany DocumentoExterno documentosExternos
 }
 
 //INFO
@@ -579,6 +591,7 @@ Entidad Desistimiento {
 	LongText motivo
 	Registro registro
 	OneToMany Documento documentos
+	OneToMany DocumentoExterno documentosExternos
 }
 
 // Notificaciones

@@ -3,10 +3,13 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
+import properties.FapProperties;
+
 import com.jamonapi.utils.Logger;
 
 import messages.Messages;
 import verificacion.ObligatoriedadDocumentosFap;
+import models.DocumentoExterno;
 import models.TableKeyValue;
 import models.Documento;
 import models.Tramite;
@@ -24,30 +27,49 @@ public class VerificarDocumentacionService {
 	
 	// Lista con todos los documentos que el usuario ha aportado
 	private static List<Documento> lstDocumentosSubidos=new ArrayList<Documento>();
+	
+	// Lista con todos los documentos que el usuario dice haber aportado externamente
+	private static List<DocumentoExterno> lstDocumentosExternos=new ArrayList<DocumentoExterno>();
 
 	// Constructor de la clase, que tiene dos parametros:
 	// 		* tramite: De tipo Tramite, y especifica el trámite que se está utilizando, para saber a partir de él los documentos obligatorios
-	// 		* lstDocumentosSubidos: Lista que contiene los documentos que el usuario a aportado    
-	public VerificarDocumentacionService(Tramite tramite, List<Documento> lstDocumentosSubidos) {
+	// 		* lstDocumentosSubidos: Lista que contiene los documentos que el usuario a aportado   
+	//      * lstDocumentosExternos: Lista que contiene los documentos que el usuario dice que ha aportado externamente a la aplicacion
+	public VerificarDocumentacionService(Tramite tramite, List<Documento> lstDocumentosSubidos, List<DocumentoExterno> lstDocumentosExternos) {
 		// Se calculan los documentos obligatorios a adjuntar, a raíz del trámite que nos llega por parámetros
 		this.docObligatoriedad=new ObligatoriedadDocumentosFap(tramite);
 		// Guardamos en una variable local a la clase, la lista de documentos que el usuario ha aportado, para despues comparar
 		// con la lista de documentos obligatorios al trámite (docObligatoriedad), y así ver si falta o no algun documento obligatorio a aportar 
 		this.lstDocumentosSubidos=lstDocumentosSubidos;
+		if (FapProperties.getBoolean("fap.documentacion.documentosExternos"))
+			this.lstDocumentosExternos=lstDocumentosExternos;
 	}
-
+	
 	// Constructor de la clase, que tiene dos parametros:
 	// 		* tramite: De tipo String, y servirá para especificas el trámite que se está utilizando, para saber a partir de él los documentos obligatorios
 	//			** Es de tipo String, ya que después se conocerá el trámite en sí, consultando en la base de datos por el nombre del trámite que será este string
 	// 		* lstDocumentosSubidos: Lista que contiene los documentos que el usuario a aportado 
-	public VerificarDocumentacionService(String strTramite, List<Documento> lstDocumentosSubidos) {
+	//      * lstDocumentosExternos: Lista que contiene los documentos que el usuario dice que ha aportado externamente a la aplicacion
+	public VerificarDocumentacionService(String strTramite, List<Documento> lstDocumentosSubidos, List<DocumentoExterno> lstDocumentosExternos) {
 		// Se calculan los documentos obligatorios a adjuntar, a raíz del trámite que nos llega por parámetros
 		this.docObligatoriedad=new ObligatoriedadDocumentosFap(strTramite);
 		// Guardamos en una variable local a la clase, la lista de documentos que el usuario ha aportado, para despues comparar
 		// con la lista de documentos obligatorios al trámite (docObligatoriedad), y así ver si falta o no algun documento obligatorio a aportar 
 		this.lstDocumentosSubidos=lstDocumentosSubidos;
+		if (FapProperties.getBoolean("fap.documentacion.documentosExternos"))
+			this.lstDocumentosExternos=lstDocumentosExternos;
 	}
 
+	public VerificarDocumentacionService(Tramite tramite, List<Documento> lstDocumentosSubidos) {
+		this.docObligatoriedad=new ObligatoriedadDocumentosFap(tramite);
+		this.lstDocumentosSubidos=lstDocumentosSubidos;
+	}
+	
+	public VerificarDocumentacionService(String tramite, List<Documento> lstDocumentosSubidos) {
+		this.docObligatoriedad=new ObligatoriedadDocumentosFap(tramite);
+		this.lstDocumentosSubidos=lstDocumentosSubidos;
+	}
+	
 	/**
 	 * Función que se encarga de corroborar que se han aportado todos los documentos necesarios, en caso negativo
 	 * prepara los errores correspondientes para mostrarle al usuario
@@ -73,6 +95,29 @@ public class VerificarDocumentacionService {
 					continue;
 				else if(docObligatoriedad.automaticas.remove(tipo)) 
 					continue;
+			}
+		}
+		
+		if (FapProperties.getBoolean("fap.documentacion.documentosExternos")){
+			// Hacemos lo mismo que para los documentos aportados, pero ahora con los documentos Externos, que son los documentos que el usuario dice haber aportado en otro órgano
+			// Se comprueba los tipos de obligatoriedad documentos que el usuario dice haber aportado externamente, para quedarse con los que NO ha aportado
+			for (DocumentoExterno doc : lstDocumentosExternos) {
+				if (doc.tipo != null) {
+					String tipo = eliminarVersionUri(doc.tipo);
+					// Si recorriendo todos los documentos que el usuario dice haber aportado
+					// Es posible eliminar de la lista de obligatorios, el documento en cuestión,
+					// es que es síntoma de que el documento estaba aportado.
+					// Sino, por el contrario, el tipo de obligatoriedad documento no se borrará de nuestra lista de 
+					// documentos obligatorios, ya que el usuario no lo ha aportado. De esta forma
+					// la variable 'docObligatoriedad', después de este proceso, sólo contendrá
+					// aquellos tipos de obligatoriedad de documentos que el usuario NO ha aportado y lo debería haber hecho.
+					if(docObligatoriedad.imprescindibles.remove(tipo))
+						continue;
+					else if(docObligatoriedad.obligatorias.remove(tipo)) 
+						continue;
+					else if(docObligatoriedad.automaticas.remove(tipo)) 
+						continue;
+				}
 			}
 		}
 
@@ -101,9 +146,9 @@ public class VerificarDocumentacionService {
 				if (descripcionTabla != null)
 					descripcion=descripcionTabla.value;
 				else
-					play.Logger.error("No encontrado el tipo de documento en BBDD con uri: "+uri);
+					play.Logger.warn("No encontrado el tipo de documento en BBDD con uri: "+uri);
 				// Si NO ha aportado un determinado tipo de obligatoriedad de documento que sí debería haberlo hecho, se genera el error correspondiente
-				Messages.error("Error: Pagina Documentación falta el documento \""+ descripcion + "\"");
+				Messages.warning("Aviso: Pagina Documentación falta el documento \""+ descripcion + "\"");
 			}
 		}
 		// Se comprueba si existen documentos de obligatoriedad AUTOMATICOS NO APORTADOS
@@ -114,9 +159,9 @@ public class VerificarDocumentacionService {
 				if (descripcionTabla != null)
 					descripcion=descripcionTabla.value;
 				else
-					play.Logger.error("No encontrado el tipo de documento en BBDD con uri: "+uri);
+					play.Logger.warn("No encontrado el tipo de documento en BBDD con uri: "+uri);
 				// Si NO ha aportado un determinada obligatoriedad de documento que sí debería haberlo hecho, se genera el error correspondiente
-				Messages.error("Error: Pagina Documentación falta el documento \""+ descripcion + "\"");
+				Messages.warning("Aviso: Pagina Documentación falta el documento \""+ descripcion + "\"");
 			}
 		}
 	}

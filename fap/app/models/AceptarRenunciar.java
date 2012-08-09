@@ -35,6 +35,10 @@ public class AceptarRenunciar extends FapModel {
 	@JoinTable(name = "aceptarrenunciar_documentos")
 	public List<Documento> documentos;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "aceptarrenunciar_documentosexternos")
+	public List<DocumentoExterno> documentosExternos;
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento justificante;
 
@@ -54,6 +58,9 @@ public class AceptarRenunciar extends FapModel {
 
 		if (documentos == null)
 			documentos = new ArrayList<Documento>();
+
+		if (documentosExternos == null)
+			documentosExternos = new ArrayList<DocumentoExterno>();
 
 		if (justificante == null)
 			justificante = new Documento();

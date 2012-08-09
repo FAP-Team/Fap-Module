@@ -67,6 +67,37 @@ Esta función puede servir para comprobar que las páginas definidas en nuestra 
 
 Por defecto en Fap, este método siempre devuelve _true_, por lo que no se comprueba nada.
 
+h2. Plantillas que se pueden sobreeescribir
+
+Para personalizar el documento generado en la presentación se deberá sobreescribir una serie de plantillas, que deberan ir en la ruta _app/views/reports/_ situada en la raiz de nuestra aplicación.
+
+Para la generación del documento de presentación, se hará uso de la plantilla que se indique en una de las funciones de la clase TramiteBase: _getBodyReport()_, así que si nos creamos una clase que herede de TramiteBase y no queremos usar el nombre por defecto de la plantilla que indica FAP, deberemos sobreescribir dicho método. También existen métodos para indicar la cabecera y el pie de página de dicho documento.
+
+Si por el contrario queremos hacer uso de lo que ya trae definido FAP (en TramiteSolicitudFap), las funciones pertinentes de FAP, para la cabecera, el contenido y el pie de pagina de dicho documento son las siguientes:
+
+bc. @Override
+ public String getHeaderReport() {
+ 	return "reports/header.html";
+ }
+
+bc. @Override
+ public String getBodyReport() {
+	return "reports/solicitud.html";
+ }
+
+bc.	 @Override
+ public String getFooterReport() {
+	return "reports/footer-borrador.html";
+ }
+
+Por lo que si queremos sobreescribir el documento que se genera en la Presentación deberemos situar en nuestra carpeta _reports_ de la aplicación (situada en el path que se explicó anteriormente), las plantillas que nosotros elaboremos, con los nombres que vemos ahí:
+
+* *header.html*: Para la cabecera del documento.
+* *solicitud.html*: Para el contenido o cuerpo del documento.
+* *footer-borrador.html*: Para el pie de pagina del documento borrador.
+
+_*NOTA*:_ La cabecera y el contenido serán los mismos para el documento borrador y el oficial. Por el contrario el pie de página sólo será utilizado en el documento borrador, ya que el oficial se generará sin pie de página.
+
 h2. Conclusiones
 
 De manera que podemos sobreescribir los métodos de la clase PresentacionFapController, sin crear nuestra clase que extienda de TramiteBase (usando la de Fap por defecto), o sobreescribir todo, o no sobreescribir nada.

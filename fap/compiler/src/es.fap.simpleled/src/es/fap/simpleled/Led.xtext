@@ -459,7 +459,7 @@ Direccion:
 ;
 
 DireccionMapa:
-	elemento=("DireccioMapa") (name=ID)? (
+	elemento=("DireccionMapa") (name=ID)? (
 		('campo' '=' campo=Campo)
 		& ("titulo" "=" titulo=STRING)
 		& (requerido?="requerido")?

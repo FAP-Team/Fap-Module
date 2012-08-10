@@ -103,14 +103,6 @@ public class TramiteSolicitudFap extends TramiteSolicitud {
 	}
 
 	/**
-	 * Salva el trámite de Solicitud de Estancia
-	 */
-	@Override
-	public void guardar() {
-		this.solicitud.save();
-	}
-
-	/**
 	 *
 	 * @return
 	 */

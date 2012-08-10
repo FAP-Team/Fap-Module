@@ -16,6 +16,8 @@ h2. Crear una clase que herede de TramiteBase.
 
 Para conocer la jerarquía de trámites sería conveniente visitar la "página de Tramitación.":app-tramitacion
 
+Además de ver los métodos que implemente el Trámite Base y que podemos "sobreescribir":app-tramiteBase
+
 Es común que los métodos a implementar y usar en la presentación dependan del trámite al cual está asociada la misma. Por ello para personalizar esto, podemos crear una clase que herede de TramiteBase. Por ejemplo, si queremos crear una clase para personalizar los métodos de presentación de nuestra aplicación, esta clase deberá extender directa (ser hija) o indirectamente (ser nieta, etc.) de la clase TramiteBase. Además, a la hora de usar la presentación por defecto de FAP, esta tendrá en cuenta sólos los métodos de la clase TramiteBase, por lo que si se quiere modificar alguno de estos métodos por defecto, se deberá sobreescribir en nuestra clase hereditaria de TramiteBase recién creada. En ese caso, la página Presentación de FAP, llamará a los métodos que hayamos sobreescrito en vez de a los métodos que tiene por defecto TramiteBase. En el siguiente punto, se explica como especificarle a FAP, que tenemos nuestra propia clase que extiende de TramiteBase (a través de un método de la clase PresentacionFapController).
 
 Existe una clase denominada TramiteSolicitudFap, que extiende de TramiteSolicitud, que a su vez extiende de TramiteBase, que es la que se usa en el módulo FAP, por defecto, para todos los métodos propios de la Presentación. Si se quiere otorgar otra dinámica y funcionalidad a la parte esta, deberemos, como se ha nombrado anteriormente, crear una clase que extienda directa o indirectamente de TramiteBase como lo hace la clase por defecto de Fap (TramiteSolicitudFap).

@@ -15,7 +15,7 @@ public class DesistimientoController extends DesistimientoControllerGen {
 		 	if(!validation.hasErrors()) {
 		 	   TramiteDesistimiento tramite = new TramiteDesistimiento(solicitud);
  		 	   tramite.prepararFirmar();
- 		 	   tramite.guardar();
+ 		 	   solicitud.save();
 		 	}else{
 		 	   Messages.error("No tiene permisos suficientes para realizar la acción");
 		 	}

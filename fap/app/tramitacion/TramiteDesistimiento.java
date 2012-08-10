@@ -81,11 +81,6 @@ public class TramiteDesistimiento extends TramiteBase {
 	}
 
 	@Override
-	public void guardar() {
-		this.solicitud.save();
-	}
-
-	@Override
 	public String getDescripcionJustificante() {
 		return TramiteDesistimiento.TIPO_TRAMITE;
 	}
@@ -104,12 +99,6 @@ public class TramiteDesistimiento extends TramiteBase {
 
 	@Override
 	public void crearExpedientePlatino() throws RegistroServiceException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void anadirDocumentosSolicitud() {
 		// TODO Auto-generated method stub
 		
 	}

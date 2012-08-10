@@ -91,11 +91,6 @@ public class TramiteAlegacion extends TramiteBase {
 	public String getPrefijoJustificantePdf() {
 		return FapProperties.get("fap.tramitacion.alegacion.prefijojustificantepdf");
 	}
-
-	@Override
-	public void guardar() {
-		this.solicitud.alegaciones.actual.save();
-	}
 	
 	/**
 	 * Mueve el trámite actual a la colección de trámites registrados
@@ -162,11 +157,6 @@ public class TramiteAlegacion extends TramiteBase {
 		else {
 			play.Logger.debug("El expediente de platino para la solicitud %s ya está creado", solicitud.id);
 		}
-	}
-
-	@Override
-	public void anadirDocumentosSolicitud() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

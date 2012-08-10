@@ -15,7 +15,7 @@ En la siguiente imagen se puede ver un diagrama de clases sobre la definición y
 
 !images/diagramaTramites!
 
-Todos los trámites se encuentran en el paquete _tramitación_ de FAP. 
+Todos los trámites se encuentran en el paquete _tramitación_ de FAP, y extienden de "Trámite Base":app-tramiteBase
 
 Para hacer uso de los distintos trámites de FAP desde la aplicación simplemente habría que llamar a alguna de estas páginas dependiendo el trámite que se quiera utilizar.
 

@@ -1,0 +1,527 @@
+h1. Tramite Base
+
+El Trámite Base, es la clase de mayor nivel en la Herencia de las clases de Trámite. Es usada páginas de FAP, como en toda la parte de Presentación.
+
+Se puede crear una clase que herede de Trámite Base, para sobreescribir las funciones que define Trámite Base y que son usadas por FAP en Presentación, de manera que se pueda otorgar un comportamiento distinto a la Presentación a través de nuestra propia clase hereditaria de Trámite Base. Para ello se explican a continuación las funciones que tiene Trámite Base y que se pueden sobreescribir. No es necesario sobreescribir todas las funciones aquí explicadas (a excepcion de todos aquellos métodos implementados como Abstract y que la propia definición de la clase hija de Trámite Base te obliga a sobreescribir). Puedes sobreescribir sólo aquellas que necesite, ya que las otras tendran el comportamiento por defecto que tiene definido Trámite Base.
+
+h2. Constructor
+
+El constructor de Trámite Base pide un único parámetro que tiene que ser o heredar del tipo SolicitudGenerica. El código del constructor de Trámite Base es el siguiente:
+
+bc. public TramiteBase(SolicitudGenerica solicitud){
+    this.solicitud = solicitud;
+    this.registro = getRegistro();
+    inicializar();
+}
+    
+
+h2. Métodos de Trámite Base
+
+h3. inicializar(); Sobreescritura: Opcional
+
+bc. public void inicializar() {
+}
+
+Es la función que se ejecuta al final del constructor de Trámite Base. Su sobreescritura es opcional y por defecto no hace nada.
+
+h3. getRegistro(); Sobreescritura: Obligatoria
+
+bc. public abstract Registro getRegistro();
+
+Al ser definida como Abstract, debe ser sobreescrita en la clase que herede de Tramite Base. Dicha función espera que se le devuelva la entidad encargada del Registro de nuestra Solicitud, quiere saber dónde está.
+
+h3. getTipoRegistro(); Sobreescritura: Obligatoria
+
+bc. public abstract String getTipoRegistro(); 
+
+Espera el String con el tipo de Registro, utilizado para asignarle el tipo de Documento al documento borrador y oficial que se generarán en la Presentación.
+
+h3. getBodyReport(); Sobreescritura: Obligatoria
+
+bc. public abstract String getBodyReport();
+
+Debe devolver la plantilla HTML del documento oficial y borrador de la Presentación. Se debe conocer que la ruta es relativa a partir de _app/views_
+
+h3. getHeaderReport(); Sobreescritura: Obligatoria
+
+bc. public abstract String getHeaderReport();
+
+Debe devolver la plantilla HTML de la cabecera del documento oficial y borrador de la Presentación. Se debe conocer que la ruta es relativa a partir de _app/views_
+
+h3. getFooterReport(); Sobreescritura: Obligatoria
+
+bc. public abstract String getFooterReport();
+
+Debe devolver la plantilla HTML del pie de pagina del documento borrador de la Presentación. Se debe conocer que la ruta es relativa a partir de _app/views_
+
+h3. getMail(); Sobreescritura: Obligatoria
+
+bc. public abstract String getMail();
+
+Debe Devolver el identificador de la plantilla del Mail configurado para enviarse al terminar correctamente la parte de registro.
+
+h3. getJustificanteRegistro(); Sobreescritura: Obligatoria
+
+bc. public abstract String getJustificanteRegistro();
+
+Debe devolver el tipo de Documento que hay que asignarle al Justificante que se genera al registrar de entrada el documento oficial de presentación.
+
+h3. getDescripcionJustificante(); Sobreeescritura: Obligatoria
+
+bc. public abstract String getDescripcionJustificante();
+
+Debe devolver la descripción que va asociada al documento que se genera a raiz del justificante de entrada que obtenemos al registrar la solicitud.
+
+h3. getTipoTramite(); Sobreescritura: Obligatoria
+
+bc. public abstract String getTipoTramite();
+
+Debe devolver el tipo de trámita que se le asocia a la solicitud. 
+_De momento sólo se utiliza en Logs, debido a que se coge el trámite que está vinculado a la propia solicitud, para el resto de operaciones en el que es necesario._
+
+h3. getDocumentos(); Sobreescritura: Obligatoria
+
+bc. public abstract List<Documento> getDocumentos(); 
+
+Devuelve la lista de locumentos aportados por el solicitante que se tienen que tener en cuenta para presentar la Solicitud. De esta lista se verificará que los documentos imprescindibles han sido aportados (dando un mensaje de error e impidiendo que continue el proceso de Presentación, en caso de que hubiese algun tipo de documento de tipo imprescindible no aportado por el solicitante), y los documentos condicionados automáticos, condicionados manuales y obligatorios (dando un mensaje de Warning, si falta algún tipo de documento de estos y que el solicitante no ha aportado, pero no impidiendo que se continue con la Presentación).
+
+h3. getDocumentosExternos(); Sobreescritura: Obligatoria
+
+bc. public abstract List<DocumentoExterno> getDocumentosExternos();
+
+Devuelve la lista de documentos que el solicitante dice haber aportado en otro órgano y expediente ajeno a la aplicación actual. Es utilizado en la verificación de documentación aportado exactamente de la misma manera que los documentos que devolvía el método anterior.
+
+h3. validarReglasConMensajes(); Sobreescritura: Obligatoria
+
+bc. public abstract void validarReglasConMensajes();
+
+Método encargado de validar que el tipo de documentación que ha adjuntado el solicitante en la solicitud se ajusta a los documentos que debería haber subido para poder presentar. Esta función debe setear mensajes de error (Messages.error(...)), en caso de que el tipo de documento no adjuntado fuese tan importante como para no continuar con la presentación hasta que el solicitnate lo adjuntase. Cualquier otro tipo de documento que no se haya aportado y no sea concluyente para abortar la operación de Presentación, se deberá indicar mediante mensajes de tipo warnings, Messages.warning(...).
+
+De este modo, en el TramiteSolicitudFap que hay por defecto en FAP para la presentación y que tiene sobreescrita esta función debido a que extiende de Trámite Base, se comprueba si el tipo de documento no aportado fuese imprescindible para setear los mensajes de error pertinentes. Si es de cualquier otro tipo, los mensajes son Warnings por defecto en FAP, por lo que se podría continuar con la presentación. En FAP los documentos que se validan son los que devuelve la función explicada anteriormente: getDocumentos() y getDocumentosExternos(), del Trámite Base.
+
+Esta acción por defecto FAP la hace apoyandose en la clase VerificacionService, como se muestra a continuación:
+
+bc. public void validarReglasConMensajes() { 
+	VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", this.getDocumentos(), this.getDocumentosExternos());
+	List<String> condicionadosAutomaticosNoAportados;
+	try {
+		condicionadosAutomaticosNoAportados = obtenerObligatoriosNoAportadosCondicionadosAutomatico();
+		verificar.preparaPresentacionTramite(condicionadosAutomaticosNoAportados);
+	} catch (Throwable e) {
+		play.Logger.debug("Error validando la documentacion aportada", e.getMessage());
+		Messages.error("Error validando la documentacion aportada");
+	}
+}
+
+h3. prepararFirmar(); Sobreescritura: Opcional
+
+bc. public void prepararFirmar(){
+    if(registro.fasesRegistro.borrador){
+        Messages.error("La solicitud ya está preparada");
+    }
+    
+    validar();
+    eliminarBorrador();
+    eliminarOficial();
+    File borrador = generarBorrador();
+    File oficial = generarOficial();
+    almacenarEnGestorDocumental(borrador, oficial);
+    calcularFirmantes();
+    avanzarFaseBorrador();
+}
+
+Método que se ejecutará justo después de verificar los tipos de documentos de la documentación aportada por el solicitante, y antes de firmar y registrar la solicitud. Debe contener los pasos previos a firmar y registrar como puede ser generar los documentos oficial y borrador, almacenarlos en el gestor Documental, calcular los firmantes válidos, etc.
+
+Por defecto, Trámite Base tiene su propia implementación para que no sea necesario su sobreescritura si así se desea, como vemos en el fragmente de código superior.
+
+h3. validar(); Sobreescritura: Opcional
+
+bc. public void validar(){
+}
+
+Función que se ejecuta al inicio del prepararFirmar, por si se quiere hacer alguna comprobación previa, siguiendo utilizando el prepararFirmar implementado por el Trámite Base. Por defecto, como vemos en la líneas superiores, no se realiza nada.
+
+h3. getPrefijoJustificantePdf(); Sobreescritura: Obligatoria
+
+bc. public abstract String getPrefijoJustificantePdf();
+
+Debe devolver el prefijo que se quiere otorgar al Justificante de entrada, al documento pdf que se genera. Este prefijo se concatenará de la siguiente manera para formar el nombre del documento justificante que se creará a partir del justificante obtenido al registrar de entrada:
+
+bc. this.getPrefijoJustificantePdf() + this.solicitud.id + ".pdf";
+
+h3. eliminarBorrador(); Sobreescritura: Opcional
+
+bc. public void eliminarBorrador(){
+    if(!Messages.hasErrors()){
+        // Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
+    	if ((registro.borrador != null) && (registro.borrador.uri != null)){
+            Documento borradorOld = registro.borrador;
+            registro.oficial = null; 
+            registro.save();
+            try{
+                gestorDocumentalService.deleteDocumento(borradorOld);
+            }catch(Exception e){
+                play.Logger.error("Error eliminando borrador del gestor documental");
+            };
+        }
+    }
+}
+
+Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe eliminar el documento borrador, si existiera, para crear el nuevo que se va a generar. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h3. eliminarOficial(); Sobreescritura: Opcional
+
+bc. public void eliminarOficial() {
+    if(!Messages.hasErrors()){
+        if((registro.oficial != null) && (registro.oficial.uri != null)){
+            Documento oficialOld = registro.oficial;
+            registro.oficial = null;
+            registro.save();
+            try {
+                gestorDocumentalService.deleteDocumento(oficialOld);
+            }catch(Exception e){
+                play.Logger.error("Error eliminando documento oficial del gestor documental");
+            };
+        }
+    }
+}
+
+Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe eliminar el documento oficial, si existiera, para crear el nuevo que se va a generar. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h3. generarBorrador(); Sobreescritura: Opcional
+
+bc. public File generarBorrador(){
+	File borrador = null;
+    borrador = new File (this.getBodyReport());
+    if(!Messages.hasErrors()){
+        try {
+        	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+        	borrador = new Report(this.getBodyReport()).header(this.getHeaderReport()).footer(this.getFooterReport()).renderTmpFile(solicitud);
+            registro.borrador = new Documento();
+            registro.borrador.tipo = getTipoRegistro();
+            registro.save();
+        } catch (Exception ex2) {
+            Messages.error("Error generando el documento borrador");
+            play.Logger.error("Error generando el documento borrador: "+ex2.getMessage());
+        }
+    }
+
+    return borrador;
+}
+
+Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe generar el documento borrador. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h3. generarOficial(); Sobreescritura: Opcional
+
+bc. public File generarOficial(){
+    File oficial = null;
+    if(!Messages.hasErrors()){
+        try {
+        	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+        	oficial = new Report(this.getBodyReport()).header(this.getHeaderReport()).registroSize().renderTmpFile(solicitud);
+            registro.oficial = new Documento();
+            registro.oficial.tipo = getTipoRegistro();
+            registro.save();
+        } catch (Exception ex2) {
+            Messages.error("Error generando el documento oficial");
+            play.Logger.error("Error generando el documento oficial: "+ex2.getMessage());
+        }
+    }
+    return oficial;
+}
+
+Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe generar el documento oficial. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h3. almacenarEnGestorDocumental(File borrador, File oficial); Sobreescritura: Opcional
+
+bc. public void almacenarEnGestorDocumental(File borrador, File oficial){
+    if(!Messages.hasErrors()){
+        try {
+            gestorDocumentalService.saveDocumentoTemporal(registro.borrador, borrador);
+            gestorDocumentalService.saveDocumentoTemporal(registro.oficial, oficial);
+        }catch(Exception e){
+            Messages.error("Error almacenando documentos en el aed");
+            play.Logger.error("Error almacenando documentos en el aed: "+e.getMessage());
+        }
+    }
+}
+
+Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe almacenar en el gestor documental que usemos tanto el documento borrador generado como el oficial. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h3. calcularFirmantes(); Sobreescritura: Opcional
+
+bc. public void calcularFirmantes(){
+    if(!Messages.hasErrors()){
+        registro.firmantes = Firmantes.calcularFirmanteFromSolicitante(solicitud.solicitante);
+    }
+}
+
+Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Su misión es calcular los firmantes válidos para presentar la solicitud, almacenándolos en el registro, para su comprobación posteriormente cuando se vaya a firmar. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h3. avanzarFaseBorrador(); Sobreescritura: Opcional
+
+bc. public void avanzarFaseBorrador(){
+    if(!Messages.hasErrors()){
+    	registro.fasesRegistro.borrador = true;
+      registro.save();
+    }
+}
+
+Última de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Indica que se ha terminado de prepararFirmar y está todo listo para firmar y registrar, de manera que se puedan ocultar algunos grupos del DSL y mostrar otros en función de los permisos utilizados. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h3. deshacer(); Sobreescritura: Opcional
+
+bc. public void deshacer() {
+    registro.fasesRegistro.reiniciar();
+    registro.fasesRegistro.save();
+}
+
+Función encargada de ejecutarse cuando el solicitante quiere modificar algún dato de la solicitud una vez ha presionado el botón de Preparar para Firmar. Su misión es volver a atrás y 'deshacer' el preparar para Firmar. Lo que se hace por defecto es resetear las variables pertinentes utilizadas en los permisos que muestran u ocultan unos grupos u otros, dejando los permisos igual que estaban antes de presionar a preparar para Firmar. No se debe hacer nada más por defecto, ya que después el propio prepararFirmar(), que vimos más arriba se encarga de las tareas de eliminar los documentos generados previamente (si hubiera), y esas cositas.
+
+h3. almacenarFirma(String firma, Documento documento, Firmante firmante); Sobreescritura: Opcional
+
+bc. public void almacenarFirma(String firma, Documento documento, Firmante firmante) {
+    try {
+        gestorDocumentalService.agregarFirma(documento, new Firma(firma, firmante));
+    } catch (Exception e) {
+        Messages.error("Error guardando la firma del documento");
+        play.Logger.error("Error guardando la firma del documento: "+e.getMessage());
+    }
+}
+
+Una de las funciones que usa la función firmar() del propio Trámite Base (que también es sobreescribible). Su cometido es almacenar la firma de la presentación en el gestor documental pertinente. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h3. firmar(String firma); Sobreescritura: Opcional
+
+bc. public void firmar(String firma){
+    if(registro.fasesRegistro.borrador && !registro.fasesRegistro.firmada){
+        String identificadorFirmante = FirmaController.getIdentificacionFromFirma(firma);
+        if(registro.firmantes.containsFirmanteConIdentificador(identificadorFirmante)){
+        	Firmante firmante = firmaService.getFirmante(firma, registro.oficial);
+        	firmante.fechaFirma = new DateTime();
+            almacenarFirma(firma, registro.oficial, firmante);
+            firmante.save();
+            if(registro.firmantes.hanFirmadoTodos()){
+                avanzarFaseFirmada();
+            }
+        }else{
+            Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud");
+        }
+    }
+}
+
+Función encargada de firmar la solicitud (el documento oficial generado) en la Presentación. Llama a su vez al almacenarFirma descrito arriba, si todo ha ido bien y si ya se ha firmado correctamente por todos los que deberían hacerlo, se llama a otra función sobreescribible que explicaremos justo a continuación.
+
+h3. avanzarFaseFirmada(); Sobreescritura: Opcional
+
+bc. public void avanzarFaseFirmada(){
+    if(!Messages.hasErrors()){
+        registro.fasesRegistro.firmada = true;
+    }
+}
+
+Este método se ejecuta. como dijimos antes, justo después de que todo haya ido bien en todos los pasos de la firma. Por defecto, como vemos en el código superior, se setea una variable para saber que la fase de firma ha sido pasada correctamente, en fases posteriores, y no dejar repetir el proceso.
+
+h3. registrar(); Sobreescritura: Opcional
+
+bc. public void registrar() throws RegistroServiceException {
+	validarReglasConMensajes();
+	EntityTransaction tx = JPA.em().getTransaction();
+	tx.commit();
+	//Registra la solicitud
+	if (!Messages.hasErrors()){
+		if (!registro.fasesRegistro.registro && registro.fasesRegistro.firmada) {
+			try {
+				tx.begin();
+				//Registra la solicitud
+				JustificanteRegistro justificante = registroService.registrarEntrada(this.solicitud.solicitante, registro.oficial, this.solicitud.expedientePlatino, null);
+				play.Logger.info("Se ha registrado la solicitud %s en platino", solicitud.id);
+				tx.commit();
+				registro.refresh();
+				tx.begin();
+				//Almacena la información de registro
+				registro.informacionRegistro.setDataFromJustificante(justificante);
+				play.Logger.info("Almacenada la información del registro en la base de datos");
+				//Guarda el justificante en el AED
+				play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
+				Documento documento = registro.justificante;
+				documento.tipo = this.getJustificanteRegistro();
+				documento.descripcion = this.getDescripcionJustificante();
+				documento.save();
+				gestorDocumentalService.saveDocumentoTemporal(documento, justificante.getDocumento().contenido.getInputStream(), this.getNombreFicheroPdf());
+				play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el AED", this.getTipoTramite());				
+				registro.fasesRegistro.registro = true;
+				getRegistro().fasesRegistro.registro=true;		
+				registro.fasesRegistro.save();
+				try {
+					play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+					Mails.enviar(this.getMail(), solicitud);
+				} catch (Exception e){
+					play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail());
+				}
+				play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());				
+				// Establecemos las fechas de registro para todos los documentos de la solicitud
+				List<Documento> documentos = new ArrayList<Documento>();
+				documentos.addAll(this.getDocumentos());
+				documentos.add(registro.justificante);
+				documentos.add(registro.oficial);
+				for (Documento doc: documentos) {
+					if (doc.fechaRegistro == null) {
+						doc.fechaRegistro = registro.informacionRegistro.fechaRegistro;
+					}
+				}
+				play.Logger.info("Fechas de registro establecidas a " + this.getRegistro().informacionRegistro.fechaRegistro);
+				tx.commit();
+			} catch (Exception e) {
+				Messages.error("Error al registrar de entrada la solicitud");
+				play.Logger.error("Error al registrar de entrada la solicitud: "+e.getMessage());
+				throw new RegistroServiceException("Error al obtener el justificante del registro de entrada");
+			}
+		} else {
+			play.Logger.debug("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
+		}
+		registro.refresh();
+		//Crea el expediente en el AED
+		if(!getRegistro().fasesRegistro.expedienteAed){
+			tx.begin();
+			try {
+				gestorDocumentalService.crearExpediente(solicitud);
+			} catch (GestorDocumentalServiceException e) {
+				Messages.error("Error al crear el expediente");
+				throw new RegistroServiceException("Error al crear el expediente");
+			}
+			getRegistro().fasesRegistro.expedienteAed = true;
+			getRegistro().fasesRegistro.save();
+			tx.commit();
+		}else{
+			play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
+		}
+		registro.refresh();
+		//Ahora el estado de la solicitud se cambia después de registrar.
+		//Clasifica los documentos en el AED
+		if (!registro.fasesRegistro.clasificarAed && registro.fasesRegistro.registro) {
+			//Clasifica los documentos sin registro
+			tx.begin();
+			List<Documento> documentos = new ArrayList<Documento>();
+			documentos.add(registro.justificante);
+			try {
+				gestorDocumentalService.clasificarDocumentos(this.solicitud, documentos);
+			} catch (GestorDocumentalServiceException e){
+				Messages.error("Algunos documentos sin registro del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
+				throw new RegistroServiceException("Error al clasificar documentos sin registros");
+			}
+			if (!Messages.hasErrors()){
+				//Clasifica los documentos con registro de entrada
+				List<Documento> documentosRegistrados = new ArrayList<Documento>();
+				documentosRegistrados.addAll(this.getDocumentos());
+				documentosRegistrados.add(registro.oficial);
+				try {
+					gestorDocumentalService.clasificarDocumentos(this.solicitud, documentosRegistrados, registro.informacionRegistro);
+					registro.fasesRegistro.clasificarAed = true;
+					registro.fasesRegistro.save();
+					play.Logger.info("Se clasificaron todos los documentos del trámite de '%s'", this.getTipoTramite());
+				} catch (GestorDocumentalServiceException e){
+					Messages.error("Algunos documentos con registro de entrada del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
+					throw new RegistroServiceException("Error al clasificar documentos con registros");
+				}
+			}
+			tx.commit();
+		} else {
+			play.Logger.debug("Ya están clasificados todos los documentos del trámite de '%s' de la solicitud %s", this.getTipoTramite(), this.solicitud.id);
+		}
+		registro.refresh();
+		//Añade los documentos a la lista de documentos de la solicitud
+		if (registro.fasesRegistro.clasificarAed){
+			tx.begin();
+			this.moverRegistradas();
+			for (Documento doc: this.getDocumentos()) {
+				if (!this.solicitud.documentacion.documentos.contains(doc))
+					this.solicitud.documentacion.documentos.add(doc);
+			}
+			this.prepararNuevo();
+			solicitud.save();
+			play.Logger.debug("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
+			tx.commit();
+		}		
+	}
+	tx.begin();
+}
+
+Función encargada de registrar la presentación una vez que ha sido firmada correctamente. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h3. moverRegistradas(); Sobreescritura: Opcional
+
+bc. public void moverRegistradas() {
+}
+
+Función que se encarga en el proceso de registrar de mover trámite actual a la colección de trámites registrados. Por defecto, actualmente en el módulo FAP no se hace nada, como puede verse en el fragmento de código anterior. Se deberá sobreescribir si se quiere que se comporte como debería.
+
+h3. prepararNuevo(); Sobreescritura: Opcional
+
+bc. public void prepararNuevo() {
+}
+
+Función que se encarga en el proceso de registrar de preparar un nuevo trámite y añadirlo a la variable actual. Por defecto, actualmente en el módulo FAP no se hace nada, como puede verse en el fragmento de código anterior. Se deberá sobreescribir si se quiere que se comporte como debería.
+
+h3. crearExpedienteAed(); Sobreescritura: Obligatoria
+
+bc. public abstract void crearExpedienteAed();
+
+Función que se encarga de crear el expediente correspondiente en el gestor documental que estemos usando. Por defecto, el trámite (TramiteSolicitud) que extiende de Trámite Base de FAP, y que se utiliza por defecto en la Presentación a través de TramiteSolicitudFap (que extiende de TramiteSolicitud), realiza la siguiente acción:
+
+bc. public void crearExpedienteAed() {
+	if (!this.solicitud.registro.fasesRegistro.expedienteAed){
+		try {
+			gestorDocumentalService.crearExpediente(this.solicitud);
+			this.solicitud.registro.fasesRegistro.expedienteAed = true;
+			this.solicitud.registro.fasesRegistro.save();
+		} catch (GestorDocumentalServiceException e) {
+			play.Logger.debug("Error creando el expediente en el Gestor Documental", e.getMessage());
+			Messages.error("Error creando el expediente en el Gestor Documental");
+		}
+	}
+	else {
+		play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", this.solicitud.id);
+	}
+	//Cambiamos el estado de la solicitud
+	if (!this.solicitud.estado.equals("iniciada")) {
+		this.solicitud.estado = "iniciada";
+		this.solicitud.save();
+		Mails.enviar(this.getMail(), this.solicitud);
+	}
+}
+
+h3. crearExpedientePlatino(); Sobreescritura: Obligatoria
+
+bc. public abstract void crearExpedientePlatino() throws RegistroServiceException;
+
+Función que se encarga de crear el expediente en el archivo electrónico de platino. Por defecto, el trámite (TramiteSolicitud) que extiende de Trámite Base de FAP, y que se utiliza por defecto en la Presentación a través de TramiteSolicitudFap (que extiende de TramiteSolicitud), realiza la siguiente acción:
+
+bc. public void crearExpedientePlatino() throws RegistroServiceException {
+	if (!this.solicitud.registro.fasesRegistro.expedientePlatino){
+		try {
+			platinoGestorDocumentalService.crearExpediente(this.solicitud.expedientePlatino);
+			this.solicitud.registro.fasesRegistro.expedientePlatino = true;
+			this.solicitud.registro.fasesRegistro.save();
+		} catch (Exception e) {
+			Messages.error("Error creando expediente en el gestor documental de platino");
+			throw new RegistroServiceException("Error creando expediente en el gestor documental de platino");
+		}
+	}
+	else {
+		play.Logger.debug("El expediente de platino para la solicitud %s ya está creado", solicitud.id);
+	}
+}
+
+h3. cambiarEstadoSolicitud(); Sobreescritura: Opcional
+
+bc. public void cambiarEstadoSolicitud() {
+	solicitud.estado=EstadosSolicitudEnum.iniciada.name();
+	solicitud.save();
+}
+
+Método que se ejecuta después de que el registrar haya terminado con éxito. Se debe encargar de setear el nuevo estado de la solicitud, una vez se haya presentado esta correctamente. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+
+h2. Conclusiones
+
+Recordar que FAP por defecto tiene su propia implementación de TramiteBase a través de la clase hija TramiteSolicitud, que tiene como hija la clase TramiteSolicitudFap, que es la utilizada en la presentación por defecto de FAP. Para conocer más detalles podemos ver el código de TramiteSolicitud y TrámiteSolicitudFap y así ver lo que cada una de ellas implemente y sobreescribe.

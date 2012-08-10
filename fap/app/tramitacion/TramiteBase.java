@@ -76,7 +76,6 @@ public abstract class TramiteBase {
  	
  	/**
 	 * Sobreescribir para asignar la descripción del justificante.
-	 * El resultado final será la descripción del justificante más el nombre de la aplicación
 	 * @return
 	 */
 	public abstract String getDescripcionJustificante();
@@ -247,12 +246,6 @@ public abstract class TramiteBase {
             registro.fasesRegistro.firmada = true;
         }
     }
-    
-    
-    /**
-	 * Sobreescribir para guardar el tipo de trámite específico
-	 */
-	public abstract void guardar();
 	
 	public abstract void validarReglasConMensajes();
 
@@ -283,7 +276,7 @@ public abstract class TramiteBase {
 					play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
 					Documento documento = registro.justificante;
 					documento.tipo = this.getJustificanteRegistro();
-					documento.descripcion = "Justificante de registro de la solicitud";
+					documento.descripcion = this.getDescripcionJustificante();
 					documento.save();
 					gestorDocumentalService.saveDocumentoTemporal(documento, justificante.getDocumento().contenido.getInputStream(), this.getNombreFicheroPdf());
 					play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el AED", this.getTipoTramite());
@@ -423,11 +416,6 @@ public abstract class TramiteBase {
 	 * Crea el expediente en Platino
 	 */
 	public abstract void crearExpedientePlatino() throws RegistroServiceException;
-
-	/**
-	 * Añadir los documentos a la solicitud
-	 */
-	public abstract void anadirDocumentosSolicitud();
 	
 	public void cambiarEstadoSolicitud() {
 		solicitud.estado=EstadosSolicitudEnum.iniciada.name();

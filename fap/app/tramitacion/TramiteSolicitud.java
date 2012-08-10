@@ -33,7 +33,7 @@ public abstract class TramiteSolicitud extends TramiteBase {
 
 	@Override
 	public final String getDescripcionJustificante() {
-		return TramiteSolicitud.TIPO_TRAMITE;
+		return "Justificante de registro de la solicitud de "+TramiteSolicitud.TIPO_TRAMITE;
 	}
 
 	/**
@@ -82,10 +82,6 @@ public abstract class TramiteSolicitud extends TramiteBase {
 		else {
 			play.Logger.debug("El expediente de platino para la solicitud %s ya está creado", solicitud.id);
 		}
-	}
-
-	@Override
-	public final void anadirDocumentosSolicitud() {
 	}
 
 	/**

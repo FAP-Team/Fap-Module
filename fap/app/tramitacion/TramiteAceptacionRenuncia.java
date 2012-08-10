@@ -106,14 +106,6 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 	}
 
 	/**
-	 * Salva el trámite de aceptación
-	 */
-	@Override
-	public void guardar() {
-		this.solicitud.aceptarRenunciar.save();
-	}
-
-	/**
 	 * Crea el expediente en el AED
 	 */
 	@Override
@@ -172,12 +164,6 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 		}
 	}
 
-	@Override
-	public void anadirDocumentosSolicitud() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	/**
 	 *
 	 */

@@ -76,7 +76,7 @@ h3. "Comandos":comandos
 h3. Páginas por defecto
 
 (login, lista solicitudes, baremación, tramitación, ...)
-* "Login":app-login.textile
+* "Login":app-login
 * "Tramitación":app-tramitacion
 * "Presentación":app-presentacion
 * "Verificación":app-verificacion

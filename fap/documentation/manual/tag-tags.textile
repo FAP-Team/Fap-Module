@@ -1,6 +1,6 @@
 h1. Tags
 
-Elementos que pueden ser utilizados en las vista creadas de forma manual. Para personalizar un tag, debe crearse el fichero correspondiente al tag en app/views/tags. 
+Elementos que pueden ser utilizados en las vista creadas de forma manual. Estos tags, pueden ser personalizados (por ejemplo tagTitulo), para ello debe crearse el fichero correspondiente al tag (tagTitulo.html) en app/views/tags. 
 
 
 Las vistas creadas por el generador utilizan estos tags.

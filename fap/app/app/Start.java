@@ -58,10 +58,12 @@ public class Start extends Job {
         }
 		
 		//Cargando mensajes de pagina desde conf/initial-data/paginas.yml
-		Fixtures.delete();
-		String paginasFile = "listas/initial-data/paginas.yml";
-		Logger.info("Cargando mensajes de páginas desde %s", paginasFile);
-		play.test.Fixtures.loadModels(paginasFile);
+		if (ConfigurarMensaje.count() == 0){
+			Fixtures.delete();
+			String paginasFile = "listas/initial-data/paginas.yml";
+			Logger.info("Cargando mensajes de páginas desded %s", paginasFile);
+			play.test.Fixtures.loadModels(paginasFile);
+		}
 		
 		// Para controlar el posible cambio de version del modulo fap de una aplicacion, y evitar el minimo daño posible en la BBDD
 		// Ya que en versiones 1.2.X y anteriores la TableKeyValueDependency no existía, por lo que debemos controlar eso.

@@ -52,7 +52,7 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 			// y que esté habilitado.
 			for (ConfigurarMensaje mensaje: listaMensajes) {
 				if ((configurarMensaje.paginaAconfigurar.equals(mensaje.paginaAconfigurar)) &&
-					(configurarMensaje.habilitar) && (mensaje.habilitar)) {
+				(((mensaje.tipoMensaje != null) && (mensaje.tipoMensaje.equals(configurarMensaje.tipoMensaje))))) {
 					Messages.error("Ya existe un mensaje configurado para esa página");
 				}
 			}
@@ -75,51 +75,6 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 			log.info("Acción Crear de página: " + "gen/RellenarMensajes/RellenarMensajes.html" + " , intentada sin éxito (Problemas de Validación)");
 		}
 		return idConfigurarMensaje;
-	}
-	
-	@Util
-	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void editar(Long idConfigurarMensaje, ConfigurarMensaje configurarMensaje) {
-		checkAuthenticity();
-		if (!permiso("editar")) {
-			Messages.error("No tiene permisos suficientes para realizar la acción");
-		}
-		
-		ConfigurarMensaje dbConfigurarMensaje = RellenarMensajesController.getConfigurarMensaje(idConfigurarMensaje);
-		RellenarMensajesController.RellenarMensajesBindReferences(configurarMensaje);
-
-		if (!Messages.hasErrors()) {
-
-			List<ConfigurarMensaje> listaMensajes = ConfigurarMensaje.findAll();
-			
-			// Comprobamos que no exista ya un mensaje configurado para la misma página
-			// y que esté habilitado.
-			for (ConfigurarMensaje mensaje: listaMensajes) {
-				if ((mensaje.paginaAconfigurar.equals(configurarMensaje.paginaAconfigurar)) && (
-					(!mensaje.tipoMensaje.equals(configurarMensaje.tipoMensaje)) ||
-					(!mensaje.contenido.equals(configurarMensaje.contenido)) ||
-					(!mensaje.habilitar.equals(configurarMensaje.habilitar)))) {
-					
-					if ((configurarMensaje.paginaAconfigurar.equals(mensaje.paginaAconfigurar)) &&
-						(configurarMensaje.habilitar) && (mensaje.habilitar)) {
-						Messages.error("Ya existe un mensaje configurado para esa página");
-					}
-				}
-			}
-		}
-
-		if (!Messages.hasErrors()) {
-			RellenarMensajesController.RellenarMensajesValidateCopy("editar", dbConfigurarMensaje, configurarMensaje);
-		}
-		if (!Messages.hasErrors()) {
-			RellenarMensajesController.editarValidateRules(dbConfigurarMensaje, configurarMensaje);
-		}
-		if (!Messages.hasErrors()) {
-			dbConfigurarMensaje.save();
-			log.info("Acción Editar de página: " + "gen/RellenarMensajes/RellenarMensajes.html" + " , intentada con éxito");
-		} else
-			log.info("Acción Editar de página: " + "gen/RellenarMensajes/RellenarMensajes.html" + " , intentada sin éxito (Problemas de Validación)");
-		RellenarMensajesController.editarRender(idConfigurarMensaje);
 	}
 	
 	@Util

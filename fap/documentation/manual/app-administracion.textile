@@ -8,6 +8,12 @@ En esta página pueden observarse el nombre de los usuarios con acceso a la apli
 
 !images/admin-usuarios!
 
+h2. Convocatoria
+
+En esta página se permite cambiar el estado de la convocatoria.
+
+!images/admin-convocatoria!
+
 h2. AED
 
 El Archivo Electrónico de Documentos (AED) permite almacenar los documentos de la aplicación, tanto los aportados por el ciudadano como los generados por la aplicación.

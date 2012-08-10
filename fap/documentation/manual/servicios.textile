@@ -6,6 +6,8 @@ Ahora tanto la seguridad en los permisos como los servicios que utiliza FAP (Ges
 
 Utilizando la clase *AppModule* configuramos los diferentes servicios que utilizaremos. Esta clase hereda de la configuración que está definida en el módulo donde se declaran todos los servicios.
 
+!images/servicios!
+
 _¿No me puedes poner un ejemplo?_ ... Por supuesto. Uno de los servicios es el *GestorDocumentalService*. Las aplicaciones que utilizan FAP deben tener un gestor documental donde guardar los documentos que se suban a la aplicación o que se generen por la misma, así que tenemos definida en el módulo la interfaz de ese Gestor Documental.
 
 bc. public interface GestorDocumentalService {

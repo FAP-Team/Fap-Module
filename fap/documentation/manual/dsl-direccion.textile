@@ -2,7 +2,7 @@ h1. Dirección
 
 h2. Descripción
 
-Nos permitirá insertar de una forma simple los datos de una dirección en un formulario.
+Nos permitirá insertar de una forma simple los datos de una dirección en un formulario. Existe un tipo especial de dirección, direccionMapa, que puede verse "aquí":dsl-direccionMapa
 
 h2. Parámetros
 
@@ -54,8 +54,18 @@ Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numer
 
 h2. Ejemplo de uso de Dirección
 
-bc. Direccion titulo="Domicilio Social" campo=Solicitud.solicitante.domicilio requerido
+bc. Direccion titulo="Dirección" campo=Solicitud.domicilio.direccion
+
+!images/dsl-direccion!
+
+h2. Ejemplo de uso de Dirección Canaria
+
+bc. Direccion titulo="DirecciónCanaria" campo=Solicitud.domicilio.direccion
+
+!images/dsl-direccionCanaria!
 
 h2. Ejemplo de uso de DireccionNacional
 
-bc. DireccionNacional titulo="La Dirección Nacional" campo=Solicitud.solicitante.domicilio requerido
+bc. DireccionNacional titulo="La Dirección Nacional" campo=Solicitud.domicilio.direccion
+
+!images/dsl-direccionNacional!

@@ -34,6 +34,8 @@ Formulario Administracion permiso=administrador{
     }
     
     Pagina RellenarMensajes titulo="Rellenar mensaje" campo=ConfigurarMensaje {
+    	Accion crear redirigir = ConfigurarMensajes
+    	Accion editar redirigir = ConfigurarMensajes
     	Texto paginaAconfigurar campo=ConfigurarMensaje.paginaAconfigurar titulo="Página" ayuda="Introduzca el nombre de la página en la que quiere configurar el mensaje" (propover) requerido
     	Combo tipoMensaje campo=ConfigurarMensaje.tipoMensaje titulo="Tipo" ayuda="Seleccionar si se quiere configurar un wiki u otro tipo de mensaje" (propover) requerido
     	

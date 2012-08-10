@@ -129,6 +129,8 @@ GET /Solicitud/enviomails EnvioMailsController.index
 POST /Solicitud/enviomails/enviarMail EnvioMailsController.enviarMail
 GET /Solicitud/renderpdf RenderPdfController.index
 POST /Solicitud/renderpdf/renderPdfSolicitud RenderPdfController.renderPdfSolicitud
+GET /Solicitud/tablascondecimales TablasConDecimalesController.index
+GET /Solicitud/tablascondecimales/tablaConceptos TablasConDecimalesController.tablatablaConceptos
 GET /Solicitud/popuptemas popups.popUpTemasController.index
 POST /Solicitud/popuptemas/editar popups.popUpTemasController.editar
 POST /Solicitud/popuptemas/borrar popups.popUpTemasController.borrar
@@ -158,6 +160,10 @@ GET /Solicitud/combotestrefpermiso popups.ComboTestRefPermisoController.index
 POST /Solicitud/combotestrefpermiso/editar popups.ComboTestRefPermisoController.editar
 POST /Solicitud/combotestrefpermiso/borrar popups.ComboTestRefPermisoController.borrar
 POST /Solicitud/combotestrefpermiso/crear popups.ComboTestRefPermisoController.crear
+GET /Solicitud/popupconceptos popups.PopUpConceptosController.index
+POST /Solicitud/popupconceptos/editar popups.PopUpConceptosController.editar
+POST /Solicitud/popupconceptos/borrar popups.PopUpConceptosController.borrar
+POST /Solicitud/popupconceptos/crear popups.PopUpConceptosController.crear
 GET /Solicitud/popuppersonasolicitantejuridicatabla popups.PopupPersonaSolicitanteJuridicaTablaController.index
 POST /Solicitud/popuppersonasolicitantejuridicatabla/editar popups.PopupPersonaSolicitanteJuridicaTablaController.editar
 POST /Solicitud/popuppersonasolicitantejuridicatabla/borrar popups.PopupPersonaSolicitanteJuridicaTablaController.borrar

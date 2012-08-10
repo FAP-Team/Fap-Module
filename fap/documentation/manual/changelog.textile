@@ -1,5 +1,21 @@
 h2. Changelog
 
+h3. Versión 2.1RC1
+
+* Páginas por defecto en FAP para la Presentación.
+* Nueva tabla de Documentación Externa en la Documentación FAP y en Aportación.
+* Nuevo elemento DireccionMapa, utilizando la API de Google Place.
+* Mejoras en los otros elementos Direcciones.
+* Fixed Bug al utilizar código Groovy en los Wikis del DSL.
+* Página de Autorizaciones.
+* Visbles todas las notificaciones por los roles admin y gestor.
+* Nuevas funciones de interesados y representantes en SolicitudGenerica.
+* Nuevas funciones para consultar los atributos de Documento.
+* Mayor nivel de contenido en la documentación.
+* Mensaje de recomenación de IE9 cuando se usa IE8.
+* Fixed Bug en los wikis o mensajes de la páginas FAP.
+* Fixed Minors Bugs.
+
 h3. Versión 2.0.6
 
 * Tipo Moneda se representa en formato español (con BigDecimal). Así es necesario actualizar los campos de tipo Moneda en la BBDD a DECIMAL(30,4).

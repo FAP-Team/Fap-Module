@@ -272,7 +272,11 @@ public class GTabla extends GElement{
 	public static List<CampoUtils> camposDeColumna(Columna c){
 		List<CampoUtils> campos = new ArrayList<CampoUtils>();
 		if(c.campo != null){
-			campos.add(CampoUtils.create(c.campo));
+			CampoUtils _campo = CampoUtils.create(c.campo)
+			campos.add(_campo);
+			if (LedEntidadUtils.isMoneda(_campo.getUltimoAtributo())){
+				campos.add(CampoUtils.create(CampoUtils.getCampoStr(c.campo)+"_formatFapTabla"));
+			}
 		}
 		else if(c.funcion != null){
 			Pattern funcionSinEntidadPattern = Pattern.compile('\\$\\{(.*?)\\}');

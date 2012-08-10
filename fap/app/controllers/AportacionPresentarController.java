@@ -266,6 +266,8 @@ public class AportacionPresentarController extends AportacionPresentarController
                 play.Logger.info("Se clasificaron todos los documentos");
             } else {
                 Messages.error("Algunos documentos no se pudieron clasificar correctamente");
+                Messages.fatal("Algunos documentos no se pudieron clasificar correctamente: Solicitud("
+                		+solicitud.id+") Aportación("+aportacion.id+")");
             }
         } else {
             play.Logger.debug("Ya están clasificados todos los documentos de la solicitud %s", solicitud.id);

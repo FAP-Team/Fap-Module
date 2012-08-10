@@ -28,6 +28,7 @@ public class GEntidad extends GElement{
 	Entity entity;
 	String moreImports;
 	boolean incluirPostInit;
+	ArrayList<Attribute> attributosAdd;
 	
 	public GEntidad(Entity entity, GElement container){
 		super(entity, container);
@@ -95,6 +96,14 @@ public class GEntidad extends GElement{
 		for(Attribute attr : entity.attributes){
 			attributesCode += generate(attr);
 		}
+		String gettersAttrMonedaType = "";
+		if (attributosAdd != null) {
+			for (Attribute attr : attributosAdd) {
+				gettersAttrMonedaType += getMonedaType(attr);
+				attributesCode += generate(attr);
+			}
+			entity.getAttributes().addAll(attributosAdd);
+		}
 		
 		String file = FileUtils.getRoute('MODEL')+ entity.name + ".java";
 		
@@ -115,8 +124,11 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import format.FapFormat;
 $moreImports
 
 ${FileUtils.addRegion(file, FileUtils.REGION_IMPORT)}	
@@ -125,6 +137,7 @@ ${auditable}
 ${persist}
 public class ${entity.name} ${extendz} {
 	${attributesCode}
+	${gettersAttrMonedaType}
 	${initCode}
 	${savePagesPrepared()}
 ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}	
@@ -134,6 +147,21 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		
 		FileUtils.overwrite(file, BeautifierUtils.formatear(out));
 		return;
+	}
+	
+	/**
+	 * Genera el getterEspecialPara las tablas del tipo Moneda
+	 * @param attribute
+	 * @return
+	 */
+	private String getMonedaType (Attribute attribute) {
+		String nameSin = attribute.name.split("_formatFapTabla")[0];
+		String ret = """
+			// Getter del atributo del tipo moneda
+			public String get${StringUtils.firstUpper(attribute.name)} () {
+				return FapFormat.format(${nameSin});
+			}
+		"""
 	}
 	
 	private String generate(Attribute attribute){
@@ -185,8 +213,19 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				type = "String";
 				anotaciones.add "@Email";
 			}else if(type.equals("Moneda")){
-				type = "Double";
+				type = "BigDecimal";
 				anotaciones.add "@Moneda";
+				anotaciones.add "@Column(precision=30, scale=4)";
+				// Creamos el atributo con el formatDeMoneda
+				Attribute formatMoneda = LedFactory.eINSTANCE.createAttribute();
+				formatMoneda.type = LedFactory.eINSTANCE.createType();
+				formatMoneda.type.simple = LedFactory.eINSTANCE.createSimpleType();
+				formatMoneda.type.simple.type = "String";
+				formatMoneda.name = attribute.getName()+"_formatFapTabla";
+				formatMoneda.isTransient = true;
+				if (attributosAdd == null)
+					attributosAdd = new ArrayList<Attribute>();
+				attributosAdd.add(formatMoneda);
 			}else if(type.equals("Telefono")){
 				type="String";
 			}else if(type.equals("LongText")) {
@@ -203,8 +242,19 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				type = "String";
 				anotaciones.add "@Email";
 			}else if(type.equals("Moneda")){
-				type = "Double";
+				type = "BigDecimal";
 				anotaciones.add "@Moneda";
+				anotaciones.add "@Column(precision=30, scale=4)";
+				// Creamos el atributo con el formatDeMoneda
+				Attribute formatMoneda = LedFactory.eINSTANCE.createAttribute();
+				formatMoneda.type = LedFactory.eINSTANCE.createType();
+				formatMoneda.type.simple = LedFactory.eINSTANCE.createSimpleType();
+				formatMoneda.type.simple.type = "String";
+				formatMoneda.name = attribute.getName()+"_formatFapTabla";
+				formatMoneda.isTransient = true;
+				if (attributosAdd == null)
+					attributosAdd = new ArrayList<Attribute>();
+				attributosAdd.add(formatMoneda);
 			}else if(type.equals("Telefono")){
 				type="String";
 			}else if(type.equals("DateTime")){
@@ -316,6 +366,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		String refInit = "";
 		for(Attribute attribute : entity.attributes){
 			CompoundType compuesto = attribute.type.compound;
+			SpecialType special = attribute.type.special;
 			String tipo = compuesto?.entidad?.name;
 			// Si el atributo es Transient, SI necesita init
 			// En una versión anterior no se estaba haciendo y el objeto era null
@@ -353,8 +404,15 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 						"""
 					}
 				}
+			} else {
+				// Si es un Moneda, lo convertimos a BigDecimel, y necesita el new si no tiene el noConstruct
+				if(special?.type.equals("Moneda") && !attribute.noConstruct){
+					refInit += """
+						if (${attribute.name} == null)
+							${attribute.name} = new BigDecimal(0);
+					""";
+				}
 			}
-
 			
 			/** Valores por defecto de los atributos */
 			if (attribute.defaultValue != null) {
@@ -377,7 +435,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 						// TODO: Validar el CIF
 						refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
 					} else if (tipo.equals("Moneda")) {
-						refInit += defaultValue(attribute.defaultValue, "Double", attribute.name);
+						refInit += defaultValue(attribute.defaultValue, "Moneda", attribute.name);
 					}  else if (tipo.equals("DateTime")) {
 						// TODO: Validar el DateTime
 						refInit += defaultValue(attribute.defaultValue, tipo, attribute.name);
@@ -513,6 +571,8 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				defaultValue = Integer.parseInt(value);
 			} else if (type.equals("Long")) {
 				defaultValue = Long.parseLong(value) + "L";
+			} else if (type.equals("Moneda")) {
+				defaultValue = "new BigDecimal("+Double.parseDouble(value)+")"
 			}
 		
 			if (defaultValue != null) {

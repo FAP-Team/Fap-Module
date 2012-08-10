@@ -18,6 +18,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	
 	PersonaFisica amigo
 	Documento doc
+	
+	OneToMany MiConcepto misConceptos
 }
 
 Entidad FirmanteSingle extends Singleton{
@@ -153,7 +155,12 @@ Entidad Asignatura {
 }
 
 Entidad Tema {
-
     Integer numTema
     String nombre
+}
+
+Entidad MiConcepto {
+	Integer unInteger
+	Double unDouble
+	Moneda unaMoneda
 }

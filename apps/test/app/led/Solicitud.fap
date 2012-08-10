@@ -28,6 +28,7 @@ Formulario Solicitud {
 		}
 		
 		Grupo "Tablas y PopUps" {
+			Enlace "Tablas con Decimales" pagina=TablasConDecimales
 			Enlace "Tablas Simples" pagina=TablasSimples
 		}
 	
@@ -509,6 +510,21 @@ Popup popUpTemas titulo = "Tema" campo = Asignatura.temas {
     	Form renderPdfSolicitud {
     		Boton pdfBotonRender titulo="Render Response PDF"
         }
+    }
+    
+    Pagina TablasConDecimales noForm campo=Solicitud {
+    	Wiki { "Probando los decimales en tablas y campos" }
+    	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos {
+    		Columna titulo="Entero" campo=MiConcepto.unInteger
+    		Columna titulo="Double" campo=MiConcepto.unDouble
+    		Columna titulo="Moneda" campo=MiConcepto.unaMoneda
+    	}
+    }
+    
+    Popup PopUpConceptos campo=Solicitud.misConceptos {
+    	Texto titulo="Entero" campo=MiConcepto.unInteger
+    	Texto titulo="Doble" campo=MiConcepto.unDouble
+    	Texto titulo="Moneda" campo=MiConcepto.unaMoneda
     }
 	
 }

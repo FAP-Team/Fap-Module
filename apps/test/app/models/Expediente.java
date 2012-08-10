@@ -21,24 +21,38 @@ import format.FapFormat;
 
 // === IMPORT REGION END ===
 
-@Entity
-public class PaginasTab extends FapModel {
+public class Expediente extends FapModel {
 	// Código de los atributos
 
-	public String nombre;
+	public String idAed;
+
+	public String idProcedimiento;
+
+	public String valorModalidad;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaInicio"), @Column(name = "fechaInicioTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaInicio;
+
+	public String estado;
+
+	public String uri;
+
+	@Transient
+	public String verDocumentos;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "paginastab_tpaginas_nivel1")
-	public List<TablaPaginas_nivel1> tpaginas_nivel1;
+	@JoinTable(name = "expediente_documentos")
+	public List<Documento> documentos;
 
-	public PaginasTab() {
+	public Expediente() {
 		init();
 	}
 
 	public void init() {
 
-		if (tpaginas_nivel1 == null)
-			tpaginas_nivel1 = new ArrayList<TablaPaginas_nivel1>();
+		if (documentos == null)
+			documentos = new ArrayList<Documento>();
 
 		postInit();
 	}

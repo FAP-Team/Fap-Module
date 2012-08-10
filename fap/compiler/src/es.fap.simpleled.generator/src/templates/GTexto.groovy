@@ -19,6 +19,8 @@ public class GTexto extends GSaveCampoElement{
 		params.putStr("campo", campo.firstLower())
 		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Double"))
 			params.putStr ("format", "double")
+		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Moneda"))
+			params.putStr ("format", "moneda")
 		if(texto.titulo != null)
 			params.putStr("titulo", texto.titulo)
 		

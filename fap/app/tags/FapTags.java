@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,13 +135,6 @@ public class FapTags extends FastTags {
 	        	field.put("table", valueFromTable.value());
 	        }else{
 	        	field.put("table", null);
-	        }
-	        // Moneda
-	        if (f.getAnnotation(Moneda.class) != null){
-	        	if (value != null){
-	        		DecimalFormat twoDForm = new DecimalFormat("#.##");
-	        		field.put("value", Double.valueOf(twoDForm.format(value).replace(",", ".")));
-	        	}
 	        }
 	        
 	        field.put("class", f.getType());
@@ -422,6 +416,7 @@ R
 				dataIndex = campo2id(campo);
 				campos.add(campo);
 			}
+			play.Logger.info("Data Index: "+dataIndex);
 				
 			
 			String cabecera = play.i18n.Messages.get((String)args.get("cabecera"));

@@ -75,7 +75,7 @@
 %{
         // Comprobamos si servicios como Platino, GestorDocumental, etc, responden. 
         // Si no, mostramos un mensaje de aviso.
-        def servicesConfigured = controllers.MensajeLoginController.servicesIsConfigured();
+        def servicesConfigured = controllers.RellenarMensajesController.servicesIsConfigured();
         if(!servicesConfigured.isEmpty()) {
 }%
    

@@ -7,6 +7,8 @@ h3. Versión 2.1RC1
 * Nuevo elemento DireccionMapa, utilizando la API de Google Place.
 * Mejoras en los otros elementos Direcciones.
 * Fixed Bug al utilizar código Groovy en los Wikis del DSL.
+* Mejoras en el campo Moneda y su representación en tablas.
+* Fixed Bug en el formato de los doubles en tablas.
 * Página de Autorizaciones.
 * Visbles todas las notificaciones por los roles admin y gestor.
 * Nuevas funciones de interesados y representantes en SolicitudGenerica.

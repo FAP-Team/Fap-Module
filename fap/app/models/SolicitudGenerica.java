@@ -1,6 +1,7 @@
 package models;
 
 import java.util.*;
+
 import javax.persistence.*;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -255,6 +256,52 @@ public class SolicitudGenerica extends FapModel {
 
 	public boolean documentoEsObligatorio(String uri) {
 		return false;
+	}
+	
+	public List<RepresentantePersonaFisica> getRepresentantes(){
+		List<RepresentantePersonaFisica> listaRepresentantes =  new ArrayList<RepresentantePersonaFisica>();
+		listaRepresentantes.addAll(this.solicitante.representantes);
+		listaRepresentantes.add(this.solicitante.representante);
+		return listaRepresentantes;
+	}
+	
+	public List<Interesado> getInteresados(){
+		List<Interesado> interesados = new ArrayList<Interesado>();
+		interesados.addAll(this.solicitante.getAllInteresados());
+		
+		List<Participacion> participaciones = Participacion.find("select participacion from Participacion participacion where participacion.solicitud.id=?", this.id).fetch();
+		
+		boolean encontrado=false, tienePersona=false;
+		List<Persona> personas = Persona.findAll();
+		List<Interesado> interesadosSoloParticipacion = new ArrayList<Interesado>();
+		for (Participacion p: participaciones){
+			encontrado=false;
+			for (Interesado i: interesados){
+				if (p.agente.name.equals(i.persona.getNumeroId())){
+					encontrado=true;
+					break;
+				}
+			}
+			if(!encontrado){
+				tienePersona=false;
+				for (Persona persona: personas){
+					if (p.agente.name.equals(persona.getNumeroId())){
+						Interesado nuevoInteresado = new Interesado();
+						nuevoInteresado.persona = persona;
+						nuevoInteresado.notificar=false;
+						nuevoInteresado.email = p.agente.email;
+						interesadosSoloParticipacion.add(nuevoInteresado);
+						tienePersona=true;
+						break;
+					}
+				}
+				if (!tienePersona){
+					play.Logger.error("El solicitante: "+p.agente.name+" tiene un posible Interesado con participacion que no ha sido añadido a la lista de interesados porque no tener asociada una Persona");
+				}
+			}
+		}
+		interesados.addAll(interesadosSoloParticipacion);
+		return interesados;
 	}
 
 	// === MANUAL REGION END ===

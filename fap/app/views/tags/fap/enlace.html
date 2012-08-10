@@ -36,7 +36,7 @@
 		url = "javascript:popup_open('${_popup}', '${url}')";
 	
 	def target = _target
-	def stackDisabled = tags.TagMapStack.top("editable")
+	def stackDisabled = null; // Enlaces siempre editables! tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
 	def estilo = _estilo;
 }%

@@ -22,23 +22,33 @@ import format.FapFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class PaginasTab extends FapModel {
+public class MiConcepto extends FapModel {
 	// Código de los atributos
 
-	public String nombre;
+	public Integer unInteger;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "paginastab_tpaginas_nivel1")
-	public List<TablaPaginas_nivel1> tpaginas_nivel1;
+	public Double unDouble;
 
-	public PaginasTab() {
+	@Moneda
+	@Column(precision = 30, scale = 4)
+	public BigDecimal unaMoneda;
+
+	@Transient
+	public String unaMoneda_formatFapTabla;
+
+	// Getter del atributo del tipo moneda
+	public String getUnaMoneda_formatFapTabla() {
+		return FapFormat.format(unaMoneda);
+	}
+
+	public MiConcepto() {
 		init();
 	}
 
 	public void init() {
 
-		if (tpaginas_nivel1 == null)
-			tpaginas_nivel1 = new ArrayList<TablaPaginas_nivel1>();
+		if (unaMoneda == null)
+			unaMoneda = new BigDecimal(0);
 
 		postInit();
 	}

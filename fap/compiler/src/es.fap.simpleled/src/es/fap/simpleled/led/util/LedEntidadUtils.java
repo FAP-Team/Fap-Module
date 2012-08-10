@@ -263,4 +263,11 @@ public class LedEntidadUtils {
 		return false;
 	}
 
+	public static boolean isMoneda (Attribute attr) {
+		if (attr.getType().getSpecial() != null) {
+			if (attr.getType().getSpecial().getType().equals("Moneda"))
+				return true;
+		}
+		return false;
+	}
 }

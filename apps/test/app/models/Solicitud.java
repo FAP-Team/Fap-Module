@@ -11,8 +11,11 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import format.FapFormat;
 
 // === IMPORT REGION START ===
 
@@ -66,6 +69,10 @@ public class Solicitud extends SolicitudGenerica {
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento doc;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "solicitud_misconceptos")
+	public List<MiConcepto> misConceptos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
@@ -136,6 +143,9 @@ public class Solicitud extends SolicitudGenerica {
 			doc = new Documento();
 		else
 			doc.init();
+
+		if (misConceptos == null)
+			misConceptos = new ArrayList<MiConcepto>();
 
 		if (savePages == null)
 			savePages = new SavePages();

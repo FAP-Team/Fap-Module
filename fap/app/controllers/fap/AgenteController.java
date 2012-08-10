@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import play.cache.Cache;
 import play.data.validation.Validation;
+import play.db.jpa.Transactional;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
@@ -24,6 +25,7 @@ public class AgenteController extends Controller {
 	private static Logger log = Logger.getLogger(AgenteController.class);
 
 	@Util
+	@Transactional
 	public static Agente getAgente() {
 		if (!agenteIsConnected()) {
 			return null;
@@ -45,6 +47,7 @@ public class AgenteController extends Controller {
 	 * agenteLocal
 	 */
 	@Util
+	@Transactional
 	public static void findAgente() {
 		String username = session.get("username");
 		Agente a = Agente.find("byUsername", username).first();

@@ -243,7 +243,11 @@
 					aux = {};
 				 	#{list campos, as:'columna_campo'}
 				 	try { // Por si el objeto intermedio es null
-				 		aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo};
+				 		if (data[i].objeto.${columna_campo}_formatFapTabla) {
+				 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo}_formatFapTabla;
+				 		} else {
+				 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo};
+				 		}
 				 	} catch (e) {
 				 	}
 				 	#{/list}
@@ -266,10 +270,13 @@
 				crearMensajes${id}();
 				ocultarMensajes${id}();
 				$.ajax(urlTabla).done(function (data){
+					console.log(data);
 					// Para los mensajes
 				 	loadMessages${id}(data);
 		        	writeAllMessages${id}(); 
 		        	// Para las filas de la tabla
+		        	console.log(data);
+		        	console.log(data.obj.rows);
 				 	store${id}.loadData(ajax2Data(data.obj.rows));
 				});
 		    }

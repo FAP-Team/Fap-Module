@@ -12,7 +12,7 @@ h3. Versión 2.1RC1
 * Nuevas funciones de interesados y representantes en SolicitudGenerica.
 * Nuevas funciones para consultar los atributos de Documento.
 * Mayor nivel de contenido en la documentación.
-* Mensaje de recomenación de IE9 cuando se usa IE8.
+* Mensaje de recomendación de IE9 cuando se usa IE8.
 * Fixed Bug en los wikis o mensajes de la páginas FAP.
 * Fixed Minors Bugs.
 

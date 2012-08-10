@@ -1,239 +1,50 @@
-<<<<<<< HEAD
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Desistimiento"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Presentar Desistimiento"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Documentacion"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Documentación"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Nuevo Documento Externo"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Aportacion"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "DocumentosAportacion"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AportacionAportados"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AportacionRecibos"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "AportacionPresentar"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Verificaciones"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaVerificacionesAnteriores"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaDocumentoVerificacionLeerAnteriores"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Verificación"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaDocumentoVerificacionLeer"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaDocumentoVerificacionEditar"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Exclusion"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Conceptos económicos"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "PaginaCEconomicos"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Aceptación/Renuncia"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Añadir documentación"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Presentar Aceptacion/Renuncia"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Alegaciones"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Añadir documentación"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Presentar Alegación"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Autorizacion"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Autorizar"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Presentación de la solicitud"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Solicitud):
-  PaginaAconfigurar: "Presentar Solicitud"
-  tipoMensaje:
-  tituloMensaje:
-  contenido:
-  habilitar: false
-=======
-ConfigurarMensaje(ConfigurarMensaje-DocumentacionFAP):
-   paginaAconfigurar: "DocumentacionFAP"
+ConfigurarMensaje(ConfigurarMensaje-Desistimiento):
+   paginaAconfigurar: "Desistimiento"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-DocumentosFAP):
-   paginaAconfigurar: "DocumentosFAP"
+ConfigurarMensaje(ConfigurarMensaje-Presentar Desistimiento):
+   paginaAconfigurar: "Presentar Desistimiento"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-Aportacion):
-   paginaAconfigurar: "Aportacion"
+ConfigurarMensaje(ConfigurarMensaje-Documentación):
+   paginaAconfigurar: "Documentación"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-DocumentosAportacion):
-   paginaAconfigurar: "DocumentosAportacion"
+ConfigurarMensaje(ConfigurarMensaje-Nuevo Documento):
+   paginaAconfigurar: "Nuevo Documento"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-AportacionAportados):
-   paginaAconfigurar: "AportacionAportados"
+ConfigurarMensaje(ConfigurarMensaje-Nuevo Documento Externo):
+   paginaAconfigurar: "Nuevo Documento Externo"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-AportacionRecibos):
-   paginaAconfigurar: "AportacionRecibos"
+ConfigurarMensaje(ConfigurarMensaje-Aportación):
+   paginaAconfigurar: "Aportación"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-AportacionPresentar):
-   paginaAconfigurar: "AportacionPresentar"
+ConfigurarMensaje(ConfigurarMensaje-Aportar Nuevo Documento):
+   paginaAconfigurar: "Aportar Nuevo Documento"
+   tipoMensaje: []
+   habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Documentos Aportados):
+   paginaAconfigurar: "Documentos Aportados"
+   tipoMensaje: []
+   habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Recibos de Aportaciones):
+   paginaAconfigurar: "Recibos de Aportaciones"
+   tipoMensaje: []
+   habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Presentar la Aportación):
+   paginaAconfigurar: "Presentar la Aportación"
    tipoMensaje: []
    habilitar: false
 
@@ -242,13 +53,13 @@ ConfigurarMensaje(ConfigurarMensaje-Verificaciones):
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-PaginaVerificacionesAnteriores):
-   paginaAconfigurar: "PaginaVerificacionesAnteriores"
+ConfigurarMensaje(ConfigurarMensaje-Ver Verificación):
+   paginaAconfigurar: "Ver Verificación"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-PaginaDocumentoVerificacionLeerAnteriores):
-   paginaAconfigurar: "PaginaDocumentoVerificacionLeerAnteriores"
+ConfigurarMensaje(ConfigurarMensaje-Documento Verificado):
+   paginaAconfigurar: "Documento Verificado"
    tipoMensaje: []
    habilitar: false
 
@@ -257,28 +68,28 @@ ConfigurarMensaje(ConfigurarMensaje-Verificación):
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-PaginaDocumentoVerificacionLeer):
-   paginaAconfigurar: "PaginaDocumentoVerificacionLeer"
+ConfigurarMensaje(ConfigurarMensaje-Ver Documento de la Verificación):
+   paginaAconfigurar: "Ver Documento de la Verificación"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-PaginaDocumentoVerificacionEditar):
-   paginaAconfigurar: "PaginaDocumentoVerificacionEditar"
+ConfigurarMensaje(ConfigurarMensaje-Editar Documento):
+   paginaAconfigurar: "Editar Documento"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-Exclusion):
-   paginaAconfigurar: "Exclusion"
+ConfigurarMensaje(ConfigurarMensaje-Exclusión):
+   paginaAconfigurar: "Exclusión"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-Conceptos económicos):
-   paginaAconfigurar: "Conceptos económicos"
+ConfigurarMensaje(ConfigurarMensaje-Conceptos Económicos):
+   paginaAconfigurar: "Conceptos Económicos"
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-PaginaCEconomicos):
-   paginaAconfigurar: "PaginaCEconomicos"
+ConfigurarMensaje(ConfigurarMensaje-Conceptos Económicos):
+   paginaAconfigurar: "Conceptos Económicos"
    tipoMensaje: []
    habilitar: false
 
@@ -287,8 +98,8 @@ ConfigurarMensaje(ConfigurarMensaje-Aceptación/Renuncia):
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-Añadir documentación):
-   paginaAconfigurar: "Añadir documentación"
+ConfigurarMensaje(ConfigurarMensaje-Añadir Documentación Aceptación/Renuncia):
+   paginaAconfigurar: "Añadir Documentación Aceptación/Renuncia"
    tipoMensaje: []
    habilitar: false
 
@@ -302,8 +113,8 @@ ConfigurarMensaje(ConfigurarMensaje-Alegaciones):
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-Añadir documentación):
-   paginaAconfigurar: "Añadir documentación"
+ConfigurarMensaje(ConfigurarMensaje-Añadir Documentación Alegación):
+   paginaAconfigurar: "Añadir Documentación Alegación"
    tipoMensaje: []
    habilitar: false
 
@@ -312,8 +123,8 @@ ConfigurarMensaje(ConfigurarMensaje-Presentar Alegación):
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-Autorizacion):
-   paginaAconfigurar: "Autorizacion"
+ConfigurarMensaje(ConfigurarMensaje-Autorizaciones):
+   paginaAconfigurar: "Autorizaciones"
    tipoMensaje: []
    habilitar: false
 
@@ -322,8 +133,8 @@ ConfigurarMensaje(ConfigurarMensaje-Autorizar):
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-Presentación de la solicitud):
-   paginaAconfigurar: "Presentación de la solicitud"
+ConfigurarMensaje(ConfigurarMensaje-Presentación de la Solicitud):
+   paginaAconfigurar: "Presentación de la Solicitud"
    tipoMensaje: []
    habilitar: false
 
@@ -331,15 +142,4 @@ ConfigurarMensaje(ConfigurarMensaje-Presentar Solicitud):
    paginaAconfigurar: "Presentar Solicitud"
    tipoMensaje: []
    habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Desistimiento):
-   paginaAconfigurar: "Desistimiento"
-   tipoMensaje: []
-   habilitar: false
-
-ConfigurarMensaje(ConfigurarMensaje-Presentar Desistimiento):
-   paginaAconfigurar: "Presentar Desistimiento"
-   tipoMensaje: []
-   habilitar: false
->>>>>>> + Arreglando mensajes de página
 

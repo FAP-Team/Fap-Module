@@ -1,6 +1,6 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{	
 	
-	Pagina DocumentacionFAP titulo="Documentacion" campo=SolicitudGenerica noForm {
+	Pagina DocumentacionFAP titulo="Documentación" campo=SolicitudGenerica noForm {
 		
 		Tabla documentos titulo="Documentos Aportados" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP{
 			Columna titulo="Id" campo=Documento.id
@@ -19,13 +19,13 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	
 	
 	// Sobreescrito
-	Pagina DocumentosFAP titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {
+	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos {
 		Accion crear redirigir=DocumentacionFAP	
 		SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
 	}
 	
 	//Sobreescrito
-	Popup DocumentosEditarFAP titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {
+	Popup DocumentosEditarFAP titulo="Documento" campo=SolicitudGenerica.documentacion.documentos {
 		Accion editar redirigir=DocumentacionFAP	
 		EditarArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO"
 	}
@@ -60,7 +60,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri
 	}
 	
-	Pagina Aportacion {
+	Pagina Aportacion titulo="Aportación"{
 		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="btn"
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="btn"
@@ -99,12 +99,12 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		
 	}
 	
-	Pagina DocumentosAportacion campo=SolicitudGenerica.aportaciones.actual.documentos{
+	Pagina DocumentosAportacion titulo="Aportar Nuevo Documento" campo=SolicitudGenerica.aportaciones.actual.documentos{
 		Accion crear redirigir=Aportacion
 		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 	}
 	
-	Pagina AportacionAportados {		
+	Pagina AportacionAportados titulo="Documentos Aportados"{		
 		Tabla documentos titulo="Documentos Presentados" 
 		    campo=SolicitudGenerica.documentacion.documentos
 			popupLeer=PopUpDocPresentados
@@ -126,7 +126,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
 	}	
 	
-	Pagina AportacionRecibos {
+	Pagina AportacionRecibos titulo="Recibos de Aportaciones"{
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
 		{
@@ -152,7 +152,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		EditarArchivo documentoAportado campo=Documento requerido
 	}
 		
-	Pagina AportacionPresentar {
+	Pagina AportacionPresentar titulo="Presentar la Aportación"{
 	  	Grupo titulo="Presentar Aportación de Documentos" {
 			Wiki {"Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
 
@@ -228,7 +228,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 	}
 	
-	Pagina PaginaVerificacionesAnteriores campo=SolicitudGenerica.verificaciones noForm{
+	Pagina PaginaVerificacionesAnteriores titulo="Ver Verificación" campo=SolicitudGenerica.verificaciones noForm{
 
 		Grupo noEditable borde=false permiso=noEditable{
 			Grupo datosVerificacion titulo="Datos generales de la verificación" {
@@ -262,7 +262,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Enlace volverVerificacionAnteriores titulo="Volver" pagina=AccesoVerificaciones estilo="btn"
 	}
 	
-	Pagina PaginaDocumentoVerificacionLeerAnteriores campo=Verificacion.documentos noForm{
+	Pagina PaginaDocumentoVerificacionLeerAnteriores titulo="Documento Verificado" campo=Verificacion.documentos noForm{
 		Grupo noEditable borde=false permiso=noEditable{
 			Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 				Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
@@ -405,7 +405,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		EditarArchivo documentoProceso campo=Documento requerido
 	}
 	
-	Pagina PaginaDocumentoVerificacionLeer campo=SolicitudGenerica.verificacion.documentos{
+	Pagina PaginaDocumentoVerificacionLeer titulo="Ver Documento de la Verificación" campo=SolicitudGenerica.verificacion.documentos{
 		Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
@@ -430,7 +430,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Enlace volverVerificacionActual titulo="Volver" pagina=PaginaVerificacion estilo="btn"
 	}
 	
-	Pagina PaginaDocumentoVerificacionEditar campo=SolicitudGenerica.verificacion.documentos{
+	Pagina PaginaDocumentoVerificacionEditar titulo="Editar Documento" campo=SolicitudGenerica.verificacion.documentos{
 		Accion editar
 		Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
@@ -476,7 +476,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 	}
 	
-	Pagina Exclusion noForm permiso=accederSiSolicituNoBorrador{
+Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		Tabla exclusion titulo="Codigos de Exclusión" campo=SolicitudGenerica.exclusion.codigos
 		popup=PopUpExclusion
 		{
@@ -498,12 +498,12 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	}
 
 	//Sobreescrita
-	Pagina PCEconomicos titulo="Conceptos económicos"{
+	Pagina PCEconomicos titulo="Conceptos Económicos"{
 
 	}
 	
 	//Sobreescrita
-	Pagina PaginaCEconomicos campo=SolicitudGenerica.ceconomicos noForm{
+	Pagina PaginaCEconomicos titulo= "Conceptos Económicos" campo=SolicitudGenerica.ceconomicos noForm{
 		Form Guardar { 
 			Texto Nombre titulo="Nombre" campo=CEconomico.tipo.nombre
 			Grupo conceptosManuales borde=false permiso=verTablaCEconomicosOtros {
@@ -517,7 +517,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	}
 	
 	//Sobreescrita
-	Popup PopupCEconomicoManual campo=CEconomico.otros permiso=iniciarBaremacion{
+	Popup PopupCEconomicoManual titulo="Concepto Económico" campo=CEconomico.otros permiso=iniciarBaremacion{
 		Accion editar redirigir=PaginaCEconomicos
 		Accion crear redirigir=PaginaCEconomicos
 	}
@@ -599,7 +599,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	/*
 	 * AportarDocumentacionAceptacionRenuncia
 	 */
-	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir documentación" campo=SolicitudGenerica.aceptarRenunciar.documentos {
+	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos {
 		Accion crear redirigir=PaginaAceptacionRenuncia
 		SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación/Renuncia" aportadoPor="CIUDADANO"	
     }
@@ -752,7 +752,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	/*
 	 * AportarDocumentacionAlegacion
 	 */
-	Pagina AportarDocumentacionAlegacion titulo="Añadir documentación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarSolicitud {
+	Pagina AportarDocumentacionAlegacion titulo="Añadir Documentación Alegación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarSolicitud {
 		Accion crear redirigir=Alegaciones
 		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"	
     }
@@ -852,7 +852,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
  * Autorización de acceso a la solicitud
  */
 
-	Pagina Autorizacion campo=SolicitudGenerica permiso=editarSolicitud { //TODO permiso autorizado no autoriza.
+	Pagina Autorizacion titulo="Autorizaciones" campo=SolicitudGenerica permiso=editarSolicitud { //TODO permiso autorizado no autoriza.
 		Tabla nipsAutorizados titulo="Nips autorizados" campo=SolicitudGenerica.autorizacion pagina=PaginaAutorizar 
 		{
 			Columna campo=Autorizaciones.id titulo="Identificador"
@@ -869,7 +869,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	/*
      * Página Presentar
      */
-    Pagina PresentarFAP noForm titulo="Presentación de la solicitud" campo=SolicitudGenerica.registro{
+    Pagina PresentarFAP noForm titulo="Presentación de la Solicitud" campo=SolicitudGenerica.registro{
 
 		Grupo titulo="Presentación de la solicitud" {
 			Grupo permiso=prepararSolicitud borde = false { 

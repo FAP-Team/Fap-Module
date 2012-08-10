@@ -81,44 +81,44 @@ public class Documento extends FapModel {
 	public String getUrlDescarga() {
 		return AedUtils.crearUrl(uri);
 	}
-	
+
 	public boolean isObligatorio() {
 		return (tipo != null && DocumentosUtils.esTipoObligatorio(tipo));
 	}
-	
+
 	public boolean isImprescindible() {
 		return (tipo != null && DocumentosUtils.esTipoImprescindible(tipo));
 	}
-	
+
 	public boolean isCondicionadoAutomatico() {
 		return (tipo != null && DocumentosUtils.esTipoCondicionadoAutomatico(tipo));
 	}
-	
+
 	public boolean isCondicionadoManual() {
 		return (tipo != null && DocumentosUtils.esTipoCondicionadoManual(tipo));
 	}
-	
+
 	public String getTipoObligatoriedad() {
 		if (tipo != null)
 			return DocumentosUtils.getTipoObligatoriedad(tipo);
 		return null;
 	}
-	
+
 	public boolean isAportadoCiudadano() {
 		return (tipo != null && DocumentosUtils.esAportadoCiudadano(tipo));
 	}
-	
+
 	public boolean isAportadoOrganismo() {
 		return (tipo != null && DocumentosUtils.esAportadoOrganismo(tipo));
 	}
-	
+
 	public String getAportadoPor() {
 		if (tipo != null)
 			return DocumentosUtils.getAportadoPor(tipo);
 		return null;
 	}
-	
-	public Tramite getTramitePertenece(){
+
+	public Tramite getTramitePertenece() {
 		if (tipo != null)
 			return DocumentosUtils.getTramitePertenece(tipo);
 		return null;

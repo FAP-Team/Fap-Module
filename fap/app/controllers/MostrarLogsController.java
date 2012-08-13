@@ -83,12 +83,9 @@ public class MostrarLogsController extends MostrarLogsControllerGen {
 
 		Date date1 = new Date(fecha1);
 		Date date2 = new Date(fecha2);
-		int logsD=0, logsA=0;
 		ArrayList<String> borrarDaily = new ArrayList<String>();
-		ArrayList<String> borrarAuditable = new ArrayList<String>();
 		Gson gson = new Gson();
 		ArrayList<BufferedReader> brDaily = new ArrayList<BufferedReader>();
-		ArrayList<BufferedReader> brAuditable = new ArrayList<BufferedReader>();
 		ArrayList<FileReader> ficherosACerrar = new ArrayList<FileReader>();
 		boolean seguirLeyendo=true, error;
 		
@@ -177,46 +174,6 @@ public class MostrarLogsController extends MostrarLogsControllerGen {
 				play.Logger.error(e,"Fichero de log del Daily no encontrado");
 			}
 			
-			try {
-				String ficheroLogs = nombreFichero(date, "Auditable");
-				String nameLogs = null;
-
-				if (ficheroLogs != null){
-					int indexBackup = ficheroLogs.lastIndexOf("/");
-					
-					if (indexBackup == -1) {
-						nameLogs = ficheroLogs;
-					}
-					else {
-						nameLogs = ficheroLogs.substring(indexBackup+1);
-					}
-					
-					error = false;
-					String rutaFichero = rutaLogs + "/" + nameLogs;
-					
-					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
-					if (!esHoy(date)){
-						if (utils.ZipUtils.descomprimirEnZip(rutaLogs+"/backups/Auditable/"+nameLogs+".zip", rutaFichero)){
-							// Lo anotamos para despues borrarlo, y no dejar basura
-							borrarAuditable.add(rutaFichero);
-						} else{
-							error = true;
-							play.Logger.error("Descompresión de '" + rutaLogs +"/backups/Auditable/"+nameLogs+".zip' fallida o no existe el fichero");
-						}
-					}
-					if (!error){
-						if ((new File(rutaFichero)).exists()){
-							FileReader ficheroAuditable = new FileReader(rutaFichero);
-							brAuditable.add(new BufferedReader(ficheroAuditable));
-							ficherosACerrar.add(ficheroAuditable);
-						} else {
-							play.Logger.error("Fichero '"+ rutaFichero +"' no existe. Imposible mostrarlo en la tabla de Logs");
-						}
-					}
-				}
-			} catch (FileNotFoundException e) {
-				play.Logger.error(e,"Fichero de log Auditable no encontrado");
-			}
 			if (diaSiguiente(date).before(date2)){
 				date = diaSiguiente(date);
 			} else {
@@ -229,25 +186,11 @@ public class MostrarLogsController extends MostrarLogsControllerGen {
 			try {
 				while ((linea = brDaily.get(i).readLine()) != null) {
 					rows.add(gson.fromJson(linea, Log.class));
-					logsD++;
 				}
 			} catch (JsonSyntaxException e) {
 				play.Logger.error(e,"Error de formato en el fichero de log Daily");
 			} catch (IOException e) {
 				play.Logger.error(e,"Error al leer el fichero de log Daily");
-			}
-		}
-		for (int i=0; i<brAuditable.size(); i++){
-			String linea;
-			try {
-				while ((linea = brAuditable.get(i).readLine()) != null) {
-					rows.add(gson.fromJson(linea, Log.class)); 
-					logsA++;
-				}
-			} catch (JsonSyntaxException e) {
-				play.Logger.error(e,"Error de formato en el fichero de log Auditable");
-			} catch (IOException e) {
-				play.Logger.error(e,"Error al leer el fichero de log Auditable");
 			}
 		}
 		List<Log> rowsFiltered = rows; //Tabla sin permisos, no filtra
@@ -325,10 +268,6 @@ public class MostrarLogsController extends MostrarLogsControllerGen {
 		}
 		for(int i=0; i<borrarDaily.size(); i++){
 			File borrado = new File(borrarDaily.get(i));
-			borrado.delete();
-		}
-		for(int i=0; i<borrarAuditable.size(); i++){
-			File borrado = new File(borrarAuditable.get(i));
 			borrado.delete();
 		}
 		renderJSON(serialize);

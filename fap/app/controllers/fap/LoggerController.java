@@ -34,6 +34,7 @@ import com.google.gson.JsonSyntaxException;
 import emails.Mails;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.h2.constant.SysProperties;
 
 
 public class LoggerController extends GenericController {
@@ -49,12 +50,9 @@ public class LoggerController extends GenericController {
 	public static void logs(long fecha1, long fecha2) throws IOException{
 		Date date1 = new Date(fecha1);
 		Date date2 = new Date(fecha2);
-		int logsD=0, logsA=0;
 		ArrayList<String> borrarDaily = new ArrayList<String>();
-		ArrayList<String> borrarAuditable = new ArrayList<String>();
 		Gson gson = new Gson();
 		ArrayList<BufferedReader> brDaily = new ArrayList<BufferedReader>();
-		ArrayList<BufferedReader> brAuditable = new ArrayList<BufferedReader>();
 		ArrayList<FileReader> ficherosACerrar = new ArrayList<FileReader>();
 		boolean seguirLeyendo=true, error;
 		Date date = date1;
@@ -97,7 +95,7 @@ public class LoggerController extends GenericController {
 					else {
 						nameLogs = ficheroLogs.substring(indexBackup+1);
 					}
-					
+
 					error = false;
 					String rutaFichero = rutaLogs + "/" + nameLogs;
 					
@@ -125,46 +123,6 @@ public class LoggerController extends GenericController {
 				play.Logger.error(e,"Fichero de log del Daily no encontrado");
 			}
 			
-			try {
-				String ficheroLogs = nombreFichero(date, "Auditable");
-				String nameLogs = null;
-
-				if (ficheroLogs != null){
-					int indexBackup = ficheroLogs.lastIndexOf("/");
-					
-					if (indexBackup == -1) {
-						nameLogs = ficheroLogs;
-					}
-					else {
-						nameLogs = ficheroLogs.substring(indexBackup+1);
-					}
-					
-					error = false;
-					String rutaFichero = rutaLogs + "/" + nameLogs;
-					
-					// Si el fichero no es del día actual, lo recuperamos de los backups, descomprimiendolo
-					if (!esHoy(date)){
-						if (utils.ZipUtils.descomprimirEnZip(rutaLogs+"/backups/Auditable/"+nameLogs+".zip", rutaFichero)){
-							// Lo anotamos para despues borrarlo, y no dejar basura
-							borrarAuditable.add(rutaFichero);
-						} else{
-							error = true;
-							play.Logger.error("Descompresión de '" + rutaLogs +"/backups/Auditable/"+nameLogs+".zip' fallida o no existe el fichero");
-						}
-					}
-					if (!error){
-						if ((new File(rutaFichero)).exists()){
-							FileReader ficheroAuditable = new FileReader(rutaFichero);
-							brAuditable.add(new BufferedReader(ficheroAuditable));
-							ficherosACerrar.add(ficheroAuditable);
-						} else {
-							play.Logger.error("Fichero '"+ rutaFichero +"' no existe. Imposible mostrarlo en la tabla de Logs");
-						}
-					}
-				}
-			} catch (FileNotFoundException e) {
-				play.Logger.error(e,"Fichero de log Auditable no encontrado");
-			}
 			if (diaSiguiente(date).before(date2)){
 				date = diaSiguiente(date);
 			} else {
@@ -177,7 +135,6 @@ public class LoggerController extends GenericController {
 			try {
 				while ((linea = brDaily.get(i).readLine()) != null) {
 					rows.add(gson.fromJson(linea, Log.class));
-					logsD++;
 				}
 			} catch (JsonSyntaxException e) {
 				play.Logger.error(e,"Error de formato en el fichero de log Daily");
@@ -185,19 +142,7 @@ public class LoggerController extends GenericController {
 				play.Logger.error(e,"Error al leer el fichero de log Daily");
 			}
 		}
-		for (int i=0; i<brAuditable.size(); i++){
-			String linea;
-			try {
-				while ((linea = brAuditable.get(i).readLine()) != null) {
-					rows.add(gson.fromJson(linea, Log.class)); 
-					logsA++;
-				}
-			} catch (JsonSyntaxException e) {
-				play.Logger.error(e,"Error de formato en el fichero de log Auditable");
-			} catch (IOException e) {
-				play.Logger.error(e,"Error al leer el fichero de log Auditable");
-			}
-		}
+		
 		List<Log> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderNoPermisos<Log> response = new tables.TableRenderNoPermisos<Log>(rowsFiltered);
 
@@ -210,10 +155,6 @@ public class LoggerController extends GenericController {
 		}
 		for(int i=0; i<borrarDaily.size(); i++){
 			File borrado = new File(borrarDaily.get(i));
-			borrado.delete();
-		}
-		for(int i=0; i<borrarAuditable.size(); i++){
-			File borrado = new File(borrarAuditable.get(i));
 			borrado.delete();
 		}
 		renderJSON(serialize);

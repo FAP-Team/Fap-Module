@@ -234,8 +234,6 @@
 		   	    for (var i in datos){
 		   	       if (datos[i].data.class_ != "audit.AuditLogListener")
 		   	          logsDaily++;
-		   	       else
-		   	          logsAuditable++;
 		   	    }
 		   	    
 		   	    var content="";
@@ -257,42 +255,18 @@
 				if ('${fechaLogBuscado}' != "") {
 					fecha = '${fechaLogBuscado}';
 				}
-		   	    
-		   	    if ((logsDaily!=0) || (logsAuditable!=0)){
-		   	    	if (logsDaily==0){
-		   	    		if (busqueda == 0)
-		   	       			content+="<b>No existen Logs Generales del día "+fecha+"</b></br>";
-		   	       		else
-		   	       			content+="<b>No existen Logs Generales del día "+fecha+" con esos criterios de búsqueda </b></br>";
-		   	       	} else {
-		   	       		if (busqueda == 0)
-		   	       			content+="<b>Logs Generales:</b> "+logsDaily+"</br>";
-		   	       		else
-		   	       			content+="<b>Logs Generales:</b> "+logsDaily+" teniendo en cuenta los criterios de búsqueda </br>";
-		   	       	}	
-	            	if (logsAuditable==0){
-	            		if (busqueda == 0)
-		   	       			content+="<b>No existen Logs de Auditoría del día "+fecha+"</b></br>";
-		   	       		else
-		   	       			content+="<b>No existen Logs de Auditoría del día con esos criterios de búsqueda </b></br>";
-		   	       	} else {
-		   	       		if (busqueda == 0)
-		   	       			content+="<b>Logs de Auditoría:</b> "+logsAuditable+"</br>";
-		   	       		else
-		   	       			content+="<b>Logs de Auditoría:</b> "+logsAuditable+" teniendo en cuenta los criterios de búsqueda </br>";
-		   	       	}
-		   	    } else {
-		   	    	if (busqueda == 0)
-		   	    		content+="<b>No existen ni Logs Generales, ni Logs de Auditoría del día "+fecha+"</b></br>";
-		   	    	else
-		   	    		content+="<b>No existen ni Logs Generales, ni Logs de Auditoría del día "+fecha+" teniendo en cuenta los criterios de búsqueda </b></br>";
-		   	    }
-		   	    var logs = logsDaily+logsAuditable;
-		   	    if (busqueda == 1){
-		   	    	content+="</br><b>Logs Totales encontrados con los parametros de búsqueda: "+logs+"</b></br>";
-		   	    } else {
-		   	    	content+="</br><b>Logs Totales: "+logs+"</b></br>";
-		   	    }
+
+	   	    	if (logsDaily==0){
+	   	    		if (busqueda == 0)
+	   	       			content+="<b>No existen Logs Generales del día "+fecha+"</b></br>";
+	   	       		else
+	   	       			content+="<b>No existen Logs Generales del día "+fecha+" con esos criterios de búsqueda </b></br>";
+	   	       	} else {
+	   	       		if (busqueda == 0)
+	   	       			content+="<b>Logs Generales:</b> "+logsDaily+"</br>";
+	   	       		else
+	   	       			content+="<b>Logs Generales:</b> "+logsDaily+" teniendo en cuenta los criterios de búsqueda </br>";
+	   	       	}	
 		   	    $('#mensajeContadorLogs').html(content);
 		   	    $('#mensajeContadorLogs').css({display:""});
 		    }

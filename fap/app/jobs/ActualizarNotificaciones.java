@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import models.AdministracionFapJobs;
 import models.Notificacion;
 
 import org.apache.log4j.Logger;
@@ -35,14 +36,17 @@ public class ActualizarNotificaciones extends Job {
 	
 	@Transactional
     public void doJob() {
-    	Integer frecuencia = FapProperties.getInt("fap.notificacion.refrescoBaseDeDatosFromWS");
-    	if ((frecuencia != null) && (tiempoRefresco == frecuencia)){
-    		tiempoRefresco=1;
-	    	if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
-	    		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
-    	} else {
-    		tiempoRefresco++;
-    	}
+		List <AdministracionFapJobs> jobs = AdministracionFapJobs.findAll();
+		if ((jobs.isEmpty()) || (jobs.get(0).actualizarNotificaciones == null) || (jobs.get(0).actualizarNotificaciones)){
+	    	Integer frecuencia = FapProperties.getInt("fap.notificacion.refrescoBaseDeDatosFromWS");
+	    	if ((frecuencia != null) && (tiempoRefresco == frecuencia)){
+	    		tiempoRefresco=1;
+		    	if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
+		    		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+	    	} else {
+	    		tiempoRefresco++;
+	    	}
+		}
     }
 
     

@@ -5,8 +5,11 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import models.AdministracionFapJobs;
 
 import org.joda.time.DateTime;
 
@@ -23,9 +26,12 @@ import properties.FapProperties;
 public class DeleteTemporals extends Job {
 	
     public void doJob() {
-    	String borrar = FapProperties.get("fap.delete.temporals");
-    	if (borrar.equals("true"))
-    		deleteReports();
+    	List <AdministracionFapJobs> jobs = AdministracionFapJobs.findAll();
+		if ((jobs.isEmpty()) || (jobs.get(0).eliminarTemporales == null) || (jobs.get(0).eliminarTemporales)){
+	    	String borrar = FapProperties.get("fap.delete.temporals");
+	    	if (borrar.equals("true"))
+	    		deleteReports();
+		}
     }
     
     private static void deleteReports () {

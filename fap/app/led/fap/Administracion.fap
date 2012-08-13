@@ -17,12 +17,32 @@ Formulario Administracion permiso=administrador{
 			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
 			Enlace "Incidencias" accion="fap.IncidenciasController.index"
 			Enlace "Properties" pagina=Propiedades
+			Enlace "Configurar Jobs" pagina=Jobs
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 			Enlace "Configurar mensajes" pagina=ConfigurarMensajes
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
+    }
+    
+    Pagina Jobs titulo="Configurar Jobs" campo=AdministracionFapJobs{
+    	Wiki{"*Esta Página permite habilitar/deshabilitar los Jobs que están activos del módulo FAP.*"}
+    	
+    	Grupo titulo="Job para la Actualización de las Notificaciones" mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.notificacion.activa\")"{
+    		Wiki{"Esta Job es el encargado de conectarse cada X minutos (según la configuración de la aplicación) al servicio web de Notificaciones que esté configurado para actualizar la información relevante de las notificaciones que existen en base de datos asociadas a la aplicación."}
+    		Check titulo="Actualizar Notificaciones" campo=AdministracionFapJobs.actualizarNotificaciones
+    	}
+    	
+    	Grupo titulo="Job para la Compresión de los Logs"{
+    		Wiki{"Esta Job es el encargado de comprimir los Logs de días anteriores. Cada madrugada, el Job se encarga de comprimir los ficheros de Logs del día anterior para así tener un backup de tamaño reducido."}
+    		Check titulo="Comprimir Logs" campo=AdministracionFapJobs.comprimirLogs
+    	}
+    	
+    	Grupo titulo="Job para Eliminar Archivos Temporales" mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.delete.temporals\")"{
+    		Wiki{"Esta Job es el encargado de eliminar (según la configuración de la aplicación) los archivos temporales que se hayan ido creando por la aplicación y que sean más antiguos a una fecha configurada."}
+    		Check titulo="Eliminar Archivos Temporales" campo=AdministracionFapJobs.eliminarTemporales
+    	}
     }
     
     Pagina ConfigurarMensajes titulo="Configurar mensajes" {

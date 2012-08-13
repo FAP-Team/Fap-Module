@@ -205,6 +205,8 @@ GET /Solicitud/solicitudpresentarfap/tablaFirmantesEspera SolicitudPresentarFAPC
 POST /Solicitud/solicitudpresentarfap/frmRegistrar SolicitudPresentarFAPController.frmRegistrar
 POST /Solicitud/solicitudpresentarfap/formFirmaCif SolicitudPresentarFAPController.formFirmaCif
 GET /Solicitud/solicitudpresentarfap/firmarRegistrarCifFirmantes SolicitudPresentarFAPController.tablafirmarRegistrarCifFirmantes
+GET /Administracion/jobs JobsController.index
+POST /Administracion/jobs/editar JobsController.editar
 GET /Administracion/configurarmensajes ConfigurarMensajesController.index
 GET /Administracion/configurarmensajes/mensajesPagina ConfigurarMensajesController.tablamensajesPagina
 GET /Administracion/rellenarmensajes RellenarMensajesController.index

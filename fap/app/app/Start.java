@@ -50,6 +50,11 @@ public class Start extends Job {
 		
 		loadLog4Config();
 		
+		if (AdministracionFapJobs.count() == 0){
+			AdministracionFapJobs jobs = new AdministracionFapJobs();
+			jobs.save();
+		}
+		
 		if (Agente.count() == 0){
             Fixtures.delete();
             String agentesFile = "listas/initial-data/agentes.yml";

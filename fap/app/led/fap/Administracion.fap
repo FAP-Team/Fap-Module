@@ -68,7 +68,7 @@ Formulario Administracion permiso=administrador{
 
    	}
     
-    Pagina ActivarBaremacion noForm{
+    Pagina ActivarBaremacion titulo="Activar Baremación" noForm{
     	Grupo IniciarTipoEvaluacion titulo="Iniciar el Tipo de Evaluación" permiso=iniciarTipoEvaluacion{
     		Wiki {"Para cargar el tipo de Evaluación, es necesario pulsar el siguiente botón. El tipo de Evaluación sólo se cargará una única vez, téngalo en cuenta."}
     		Form iniciarTipoEvaluacionFormBaremacion {
@@ -89,7 +89,7 @@ Formulario Administracion permiso=administrador{
 	    }
     }
 	
-	Pagina Usuarios {
+	Pagina Usuarios titulo="Administración de Usuarios"{
 		Wiki {"Para asignar roles seleccione el usuario y pulse en editar"}
 
 		Tabla listaUsuarios titulo="Usuarios" campo=Agente
@@ -217,7 +217,7 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 		Texto campo=TableKeyValueDependency.key titulo="Clave"
 	}
 
-	Pagina Emails noForm{
+	Pagina Emails titulo="Configuración de Correos Electrónicos" noForm{
 		Tabla emails titulo="Plantillas de emails" campo=Mail popup=PopupEmail {
 			Columna campo=Mail.idMail titulo="Identificador"
 			Columna campo=Mail.content titulo="Contenido" expandir
@@ -259,7 +259,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Combo campo=Consulta.tipo titulo="Tipo" requerido
 	}
 
-	Pagina Propiedades {
+	Pagina Propiedades titulo="Propiedades de la aplicación" {
 		Tabla tablaPropiedades titulo="Tabla de properties" campo=Propiedades popup=PopupProperties {
 			Columna campo=Propiedades.descripcion titulo="Descripción"
 			Columna campo=Propiedades.clave titulo="Clave"

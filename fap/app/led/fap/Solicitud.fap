@@ -21,7 +21,9 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	// Sobreescrito
 	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos {
 		Accion crear redirigir=DocumentacionFAP	
-		SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
+		Grupo gSubirDocumento titulo="Adjuntar Documento"{
+			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
+		}
 	}
 	
 	//Sobreescrito
@@ -101,7 +103,9 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	
 	Pagina DocumentosAportacion titulo="Aportar Nuevo Documento" campo=SolicitudGenerica.aportaciones.actual.documentos{
 		Accion crear redirigir=Aportacion
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+		Grupo gSubirDocumento titulo="Aportar Documento"{
+			SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+		}
 	}
 	
 	Pagina AportacionAportados titulo="Documentos Aportados"{		

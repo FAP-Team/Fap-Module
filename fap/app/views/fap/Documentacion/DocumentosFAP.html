@@ -20,5 +20,7 @@
 	// El trámite se obtiene de la property fap.gestordocumental.documentacion.tramite
 	String tramite = properties.FapProperties.get("fap.gestordocumental.documentacion.tramite");
 %}
-	#{fap.documento accept:'', aportadoPor:'CIUDADANO', campo:'documento', id:'fileAportacion', listarDocumentosSubidos:false, requerido:true, tipo:'tipoCiudadano', tramite:tramite /}	
+	#{fap.grupo titulo:'Adjuntar Documento'}
+		#{fap.documento accept:'', aportadoPor:'CIUDADANO', campo:'documento', id:'fileAportacion', listarDocumentosSubidos:false, requerido:true, tipo:'tipoCiudadano', tramite:tramite /}
+	#{/fap.grupo}	
 #{/fap.pagina}

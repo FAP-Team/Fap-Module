@@ -2,7 +2,7 @@ h1. Instalación del entorno
 
 h2. Play
 
-Para instalar Play sigue los pasos que se indican en "http://www.playframework.org/documentation/1.2.2/install":http://www.playframework.org/documentation/1.2.2/install
+Para instalar Play sigue los pasos que se indican en "http://www.playframework.org/documentation/1.2.4/install":http://www.playframework.org/documentation/1.2.4/install
 
 h2. FAP
 
@@ -11,7 +11,7 @@ Al crear un nuevo proyecto, diremos que queremos utilizar el módulo y play se e
 
 h3. Configurando Eclipse
 
-Playframework se integra con varios IDEs. Puedes consultar cómo integrarlos en "http://www.playframework.org/documentation/1.2.2/ide":http://www.playframework.org/documentation/1.2.2/ide
+Playframework se integra con varios IDEs. Puedes consultar cómo integrarlos en "http://www.playframework.org/documentation/1.2.4/ide":http://www.playframework.org/documentation/1.2.4/ide
 
 FAP-SDK incluye un plugin para Eclipse que permite resaltado de sintaxis para escribir el DSL.
 
@@ -23,9 +23,11 @@ En las aplicaciones creadas por el equipo utilizamos "MySQL":http://www.mysql.co
 
 h2. Desarrollo
 
+Si quieres ayudar a desarrollar el módulo, o simplemente quieres ver como funciona realmente internamente, deberás seguír los siguientes pasos.
+
 h3. Instalación del FAP-SDK
 
-* Cree una nueva variable de entorno con el nombre FAPSDK y el valor de la ruta donde descromprimió el SDK.
+* Crea una nueva variable de entorno con el nombre FAPSDK y el valor de la ruta donde descromprimió el SDK.
 ** Windows : Click derecho Equipo > Propiedades, Configuracion Avanzada del Sistema (en el lateral izquierdo), (Pestaña Opciones Avanzadas) Botón Variables de entorno. Se deberan crear/modificar dos variables de entorno: FAPSDK=C:\fap-sdk\ y modificar la variable de entorno "PATH" añadir la ruta del framework play! (p.e. ...;C:\fap-sdk\play-1.2.4;...).
 ** Mac/Linux: Editar ~/.bashrc y añadir   export FAPSDK=/ruta/a/fap-sdk/
 

@@ -13,6 +13,7 @@ h2. Parámetros
 * **mostrarSiCampo _[campo]_ = _[string]_, _[string]_, ...** (opcional) : Muestra el grupo si el valor del campo corresponde con alguno de los valores especificados.
 * **mostrarSiExpresion _[string]_** (opcional) : Muestra el grupo si el valor de la expresion que se especifique es verdadero.
 * _Nota: Sólo se permitirá indicar un 'mostrarSi...' en un combo_
+* **ayuda = _[string]_** (opcional) : Muestra, bajo la etiqueta del título, el texto de ayuda especificado.
 * **borde = true | false** (opcional) : Si es false no se mostrara el cuadro que engloba a los elementos del grupo.
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al grupo.
 
@@ -27,14 +28,14 @@ bc. Grupo:
 			('mostrarSiCampo' campo=Campo signoSiCampo=GrupoComboSigno siCampoValues=Values) |
 			('mostrarSiExpresion' siExpresion=STRING)
 		)? &
-		('borde' '=' borde=("true" | "false"))? & 
+		('borde' '=' borde=("true" | "false"))? &
+		('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)? 
 		("permiso" "=" permiso=[Permiso])?
 	)
 	'{'
 		elementos+=Elemento*
 	'}'
-;	
-
+;
 h2. Ejemplos de uso
 
 h3. Grupo Simple

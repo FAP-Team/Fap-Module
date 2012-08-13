@@ -31,7 +31,7 @@ public class GAreaTexto extends GSaveCampoElement{
 			params.putStr "filas", areaTexto.filas.toString()
 			
 		if (areaTexto.ayuda != null) {
-			if ((areaTexto.tipoAyuda != null) && (areaTexto.tipoAyuda.type.equals("propover")))
+			if ((areaTexto.tipoAyuda != null) && ((areaTexto.tipoAyuda.type.equals("propover")) || (areaTexto.tipoAyuda.type.equals("popover"))))
 				params.put "ayuda", "tags.TagAyuda.popover('${areaTexto.ayuda}')"
 			else
 				params.put "ayuda", "tags.TagAyuda.texto('${areaTexto.ayuda}')"

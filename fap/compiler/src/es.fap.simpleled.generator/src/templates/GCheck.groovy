@@ -27,7 +27,7 @@ public class GCheck extends GSaveCampoElement{
 			params.put "alineadoAIzquierdas", true;
 		
 		if (check.ayuda != null) {
-			if ((check.tipoAyuda != null) && (check.tipoAyuda.type.equals("propover")))
+			if ((check.tipoAyuda != null) && ((check.tipoAyuda.type.equals("propover")) || (check.tipoAyuda.type.equals("popover"))))
 				params.put "ayuda", "tags.TagAyuda.popover('${check.ayuda}')"
 			else
 				params.put "ayuda", "tags.TagAyuda.texto('${check.ayuda}')"

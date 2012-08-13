@@ -49,7 +49,7 @@ public class GBoton extends GElement{
 			params.putStr "type", "btn "+boton.type;
 		
 		if (boton.ayuda != null) {
-			if ((boton.tipoAyuda != null) && (boton.tipoAyuda.type.equals("propover")))
+			if ((boton.tipoAyuda != null) && ((boton.tipoAyuda.type.equals("propover")) || (boton.tipoAyuda.type.equals("popover"))))
 				params.put "ayuda", "tags.TagAyuda.popover('${boton.ayuda}')";
 			else
 				params.put "ayuda", "tags.TagAyuda.texto('${boton.ayuda}')";

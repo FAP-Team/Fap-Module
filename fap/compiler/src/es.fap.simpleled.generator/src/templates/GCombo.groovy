@@ -48,7 +48,7 @@ public class GCombo extends GSaveCampoElement{
 		}
 
 		if (combo.ayuda != null) {
-			if ((combo.tipoAyuda != null) && (combo.tipoAyuda.type.equals("propover")))
+			if ((combo.tipoAyuda != null) && ((combo.tipoAyuda.type.equals("propover")) || (combo.tipoAyuda.type.equals("popover"))))
 				params.put "ayuda", "tags.TagAyuda.popover('${combo.ayuda}')";
 			else
 				params.put "ayuda", "tags.TagAyuda.texto('${combo.ayuda}')";

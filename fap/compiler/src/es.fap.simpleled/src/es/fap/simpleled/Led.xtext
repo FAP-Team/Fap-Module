@@ -193,7 +193,8 @@ Grupo:
 			('mostrarSiCampo' campo=Campo signoSiCampo=GrupoComboSigno siCampoValues=Values) |
 			('mostrarSiExpresion' siExpresion=STRING)
 		)? &
-		('borde' '=' borde=("true" | "false"))? & 
+		('borde' '=' borde=("true" | "false"))? &
+		('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)? 
 		("permiso" "=" permiso=[Permiso])?
 	)
 	'{'
@@ -234,7 +235,7 @@ CampoAtributos:
 ;
 
 TipoDeAyuda:
-	'(' type=('texto' | 'propover') ')'
+	'(' type=('texto' | 'popover') ')'
 ;
 
 Texto:

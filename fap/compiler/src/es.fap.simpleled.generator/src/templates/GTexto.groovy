@@ -34,7 +34,7 @@ public class GTexto extends GSaveCampoElement{
 			params.putStr "id", texto.name
 		
 		if (texto.ayuda != null) {
-			if ((texto.tipoAyuda != null) && (texto.tipoAyuda.type.equals("propover")))
+			if ((texto.tipoAyuda != null) && ((texto.tipoAyuda.type.equals("propover") || (texto.tipoAyuda.type.equals("popover")))))
 				params.put "ayuda", "tags.TagAyuda.popover('${texto.ayuda}')"
 			else
 				params.put "ayuda", "tags.TagAyuda.texto('${texto.ayuda}')"

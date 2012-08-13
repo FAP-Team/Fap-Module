@@ -473,7 +473,7 @@ Popup popUpTemas titulo = "Tema" campo = Asignatura.temas {
 	}
 	
 	Pagina TipoDeAyudaTexto campo=Solicitud{
-		Grupo ayudasDeTexto titulo="Ayudas de tipo texto simples"{
+		Grupo ayudasDeTexto titulo="Ayudas de tipo texto simples" ayuda="Ayuda. Esto es una ayuda de Grupo"{
 			Texto campo=Solicitud.solicitante.telefonoFijo titulo="Texto" requerido ayuda="Ésto es una ayudita"
 			Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" ayuda="Ayuda de fecha"
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas" ayuda="Ayuda del combo simple"
@@ -483,12 +483,12 @@ Popup popUpTemas titulo = "Tema" campo = Asignatura.temas {
 	}
 	
 	Pagina TipoDeAyudaPopover campo=Solicitud{
-		Grupo ayudasDePopover titulo="Ayudas de tipo popover"{
-			Texto campo=Solicitud.solicitante.telefonoMovil titulo="Texto" requerido ayuda="Titulo de la Ayuda. Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)
-			Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" ayuda="Titulo de la Ayuda de fecha.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)
-			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas" ayuda="Ayuda del combo simple.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)
-			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas" ayuda="Ayuda del otro combo.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover) requerido
-			Boton noHagoNada titulo="Guardar desde aquí" ayuda="Titulo de la Ayuda del botón.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (propover)
+		Grupo ayudasDePopover titulo="Ayudas de tipo popover" ayuda="Titulo de la Ayuda. Ésto es una ayuda de tipo popover en un grupo." (popover){
+			Texto campo=Solicitud.solicitante.telefonoMovil titulo="Texto" requerido ayuda="Titulo de la Ayuda. Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (popover)
+			Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" ayuda="Titulo de la Ayuda de fecha.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (popover)
+			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas" ayuda="Ayuda del combo simple.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (popover)
+			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas" ayuda="Ayuda del otro combo.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (popover) requerido
+			Boton noHagoNada titulo="Guardar desde aquí" ayuda="Titulo de la Ayuda del botón.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (popover)
 		}
 	}
 	

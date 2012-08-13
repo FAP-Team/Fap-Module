@@ -23,7 +23,7 @@ public class GFecha extends GSaveCampoElement{
 			params.put "requerido", true
 		
 		if (fecha.ayuda != null) {
-			if ((fecha.tipoAyuda != null) && (fecha.tipoAyuda.type.equals("propover")))
+			if ((fecha.tipoAyuda != null) && ((fecha.tipoAyuda.type.equals("propover")) || (fecha.tipoAyuda.type.equals("popover"))))
 				params.put "ayuda", "tags.TagAyuda.popover('${fecha.ayuda}')"
 			else
 				params.put "ayuda", "tags.TagAyuda.texto('${fecha.ayuda}')"

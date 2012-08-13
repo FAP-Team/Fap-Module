@@ -44,6 +44,13 @@ public class GGrupo extends GGroupElement{
             if(grupo.signoSiCampo.equals("!="))
                 params.put("reverse", true);
 		}
+		
+		if (grupo.ayuda != null) {
+			if ((grupo.tipoAyuda != null) && (grupo.tipoAyuda.type.equals("popover")))
+				params.put "ayuda", "tags.TagAyuda.popover('${grupo.ayuda}')"
+			else
+				params.put "ayuda", "tags.TagAyuda.texto('${grupo.ayuda}')"
+		}
 
 		if (grupo.siExpresion)
 			params.put("mostrarSi", grupo.siExpresion)

@@ -5,6 +5,8 @@
 	def siCheck = _siCheck
 	def siCheckValue = _siCheckValue
 	def permiso = _permiso
+	def ayuda = _ayuda
+	def id_help  = id + '-help' 
 	
 	def reverse = _reverse ?: false;
 	
@@ -31,7 +33,9 @@
 	#{if borde}
 		<div id="${id}" class="grupo">
 			#{if _titulo}
-				<p class="grupo-header">${_titulo}</p>
+				<p class="grupo-header">
+					${_titulo} #{fap.ayuda ayuda:ayuda, id:id_help /}
+				</p>
 			#{/if}
 			<div class="grupo-content">
 			#{doBody/}
@@ -43,6 +47,7 @@
 			#{doBody/}
 		</div>
 	#{/else}
+
 
 #{if siCombo}
 

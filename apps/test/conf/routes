@@ -26,16 +26,6 @@ GET     /public/                                staticDir:public
 # === FAPGENERATED ===
   # Home page
 GET / SolicitudesController.index
-GET /Solicitud/listado ListadoController.index
-GET /Solicitud/listado/listado ListadoController.tablalistado
-GET /Solicitud/nuevaasignatura NuevaAsignaturaController.index
-POST /Solicitud/nuevaasignatura/editar NuevaAsignaturaController.editar
-POST /Solicitud/nuevaasignatura/crear NuevaAsignaturaController.crear
-GET /Solicitud/nuevaasignatura/listadoTemas NuevaAsignaturaController.tablalistadoTemas
-GET /Solicitud/editarasignatura EditarAsignaturaController.index
-POST /Solicitud/editarasignatura/editar EditarAsignaturaController.editar
-GET /Solicitud/editarasignatura/listadoTemas EditarAsignaturaController.tablalistadoTemas
-GET /Solicitud/popuptemas3 popUpTemas3Controller.index
 GET /Solicitud/fechas FechasController.index
 POST /Solicitud/fechas/editar FechasController.editar
 GET /Solicitud/direcciones DireccionesController.index
@@ -129,10 +119,8 @@ GET /Solicitud/enviomails EnvioMailsController.index
 POST /Solicitud/enviomails/enviarMail EnvioMailsController.enviarMail
 GET /Solicitud/renderpdf RenderPdfController.index
 POST /Solicitud/renderpdf/renderPdfSolicitud RenderPdfController.renderPdfSolicitud
-GET /Solicitud/popuptemas popups.popUpTemasController.index
-POST /Solicitud/popuptemas/editar popups.popUpTemasController.editar
-POST /Solicitud/popuptemas/borrar popups.popUpTemasController.borrar
-POST /Solicitud/popuptemas/crear popups.popUpTemasController.crear
+GET /Solicitud/tablascondecimales TablasConDecimalesController.index
+GET /Solicitud/tablascondecimales/tablaConceptos TablasConDecimalesController.tablatablaConceptos
 GET /Solicitud/combotestref popups.ComboTestRefController.index
 POST /Solicitud/combotestref/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/borrar popups.ComboTestRefController.borrar
@@ -158,6 +146,10 @@ GET /Solicitud/combotestrefpermiso popups.ComboTestRefPermisoController.index
 POST /Solicitud/combotestrefpermiso/editar popups.ComboTestRefPermisoController.editar
 POST /Solicitud/combotestrefpermiso/borrar popups.ComboTestRefPermisoController.borrar
 POST /Solicitud/combotestrefpermiso/crear popups.ComboTestRefPermisoController.crear
+GET /Solicitud/popupconceptos popups.PopUpConceptosController.index
+POST /Solicitud/popupconceptos/editar popups.PopUpConceptosController.editar
+POST /Solicitud/popupconceptos/borrar popups.PopUpConceptosController.borrar
+POST /Solicitud/popupconceptos/crear popups.PopUpConceptosController.crear
 GET /Solicitud/popuppersonasolicitantejuridicatabla popups.PopupPersonaSolicitanteJuridicaTablaController.index
 POST /Solicitud/popuppersonasolicitantejuridicatabla/editar popups.PopupPersonaSolicitanteJuridicaTablaController.editar
 POST /Solicitud/popuppersonasolicitantejuridicatabla/borrar popups.PopupPersonaSolicitanteJuridicaTablaController.borrar

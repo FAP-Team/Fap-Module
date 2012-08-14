@@ -11,11 +11,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import format.FapFormat;
 
 // === IMPORT REGION START ===
 
@@ -30,25 +27,9 @@ public class MiConcepto extends FapModel {
 	public Double unDouble;
 
 	@Moneda
-	@Column(precision = 30, scale = 4)
-	public BigDecimal unaMoneda;
-
-	@Transient
-	public String unaMoneda_formatFapTabla;
-
-	// Getter del atributo del tipo moneda
-	public String getUnaMoneda_formatFapTabla() {
-		return FapFormat.format(unaMoneda);
-	}
-
-	public MiConcepto() {
-		init();
-	}
+	public Double unaMoneda;
 
 	public void init() {
-
-		if (unaMoneda == null)
-			unaMoneda = new BigDecimal(0);
 
 		postInit();
 	}

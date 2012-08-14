@@ -97,7 +97,7 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 
 		if (!Messages.hasErrors()) {
 			TipoEvaluacion tipoEvaluacion = null;
-			if((TipoEvaluacion.count() == 0) && (new File("conf/initial-data/tipoEvaluacion.json").exists())){
+			if((TipoEvaluacion.count() == 0) && (new File(Play.applicationPath+"/conf/initial-data/tipoEvaluacion.json").exists())){
 				tipoEvaluacion = BaremacionService.loadTipoEvaluacionFromJson("/conf/initial-data/tipoEvaluacion.json");
 				tipoEvaluacion.estado = "cargada";
 				tipoEvaluacion.save();

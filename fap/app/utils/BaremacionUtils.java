@@ -10,6 +10,7 @@ import java.util.List;
 import org.hibernate.mapping.Collection;
 
 import play.Logger;
+import play.Play;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -99,7 +100,7 @@ public class BaremacionUtils {
 	
 	public static void actualizarParametrosVariables (TipoEvaluacion tipoEvaluacion){
 		Type type;
-		if (new File("conf/initial-data/criterios.json").exists()){
+		if (new File(Play.applicationPath+"/conf/initial-data/criterios.json").exists()){
 			// Actualizamos en BBDD los Tipos de Criterios, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
 			type = new TypeToken<ArrayList<TipoCriterio>>(){}.getType();
 			List<TipoCriterio> tiposCriterios = JsonUtils.loadObjectFromJsonFile("conf/initial-data/criterios.json", type);
@@ -107,7 +108,7 @@ public class BaremacionUtils {
 		} else {
 			Logger.info("No se puede leer el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)");
 		}
-		if (new File("conf/initial-data/conceptosEconomicos.json").exists()) {
+		if (new File(Play.applicationPath+"/conf/initial-data/conceptosEconomicos.json").exists()) {
 			// Actualizamos en BBDD los Tipos de CEconomicos, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
 			type = new TypeToken<ArrayList<TipoCEconomico>>(){}.getType();
 			List<TipoCEconomico> tiposCEconomicos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/conceptosEconomicos.json", type);
@@ -115,7 +116,7 @@ public class BaremacionUtils {
 		} else {
 			Logger.info("No se puede leer el fichero que contiene los parámetros de los CEconomicos (/conf/initial-data/conceptosEconomicos.json)");
 		}
-		if (new File("conf/initial-data/datosAdicionales.json").exists()) {
+		if (new File(Play.applicationPath+"/conf/initial-data/datosAdicionales.json").exists()) {
 			// Actualizamos en BBDD los Tipos de Datos Adicionales, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
 			type = new TypeToken<ArrayList<TipoDatoAdicional>>(){}.getType();
 			List<TipoDatoAdicional> tiposDatosAdicionales = JsonUtils.loadObjectFromJsonFile("conf/initial-data/datosAdicionales.json", type);

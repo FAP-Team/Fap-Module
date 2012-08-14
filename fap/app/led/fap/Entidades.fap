@@ -45,6 +45,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	AceptarRenunciar aceptarRenunciar
 	Alegaciones alegaciones
 	OneToMany Notificacion notificaciones
+	DatosAnotaciones datosAnotaciones
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -602,5 +603,24 @@ Entidad Notificacion {
 Entidad DocumentoNotificacion{
 	String uri
 	String urlDescarga transient
+}
+
+
+Entidad DatosAnotaciones {
+	OneToMany AnotacionFAP anotaciones
+	Boolean isResueltasTodasAnotaciones transient
+}
+
+Entidad AnotacionFAP {
+	DateTime fecha
+	DateTime fechaAlerta
+	Boolean checkResuelta
+	Boolean checkAlerta transient
+	Boolean alertaNotificada
+	String tituloanotacion
+	LongText descripcion
+	LongText solucion
+	ManyToOne Agente personaAsunto noConstruct
+	ManyToOne Agente personaSolucion noConstruct
 }
 

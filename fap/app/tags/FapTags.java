@@ -416,7 +416,6 @@ R
 				dataIndex = campo2id(campo);
 				campos.add(campo);
 			}
-			play.Logger.info("Data Index: "+dataIndex);
 				
 			
 			String cabecera = play.i18n.Messages.get((String)args.get("cabecera"));

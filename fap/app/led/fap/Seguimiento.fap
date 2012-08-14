@@ -1,0 +1,85 @@
+Formulario Solicitud campo=SolicitudGenerica {
+
+	Pagina AnotacionesFAP titulo="Anotaciones" noForm {
+		Tabla Anotaciones titulo="Anotaciones y Avisos" campo=SolicitudGenerica.datosAnotaciones.anotaciones
+		popupCrear=PopUpAnotacionCrear
+		popupBorrar=PopUpAnotacionBorrar
+		popupEditar=PopUpAnotacionModificar
+		popupLeer=PopUpAnotacionVer
+		{
+			Columna titulo="Fecha" campo=AnotacionFAP.fecha ancho="70"
+			Columna titulo="Anotación" campo=AnotacionFAP.tituloanotacion expandir
+			Columna titulo="Descripción" campo=AnotacionFAP.descripcion expandir
+			Columna titulo="Resuelta" campo=AnotacionFAP.checkResuelta ancho="60"
+			Columna titulo="Fecha alerta" campo=AnotacionFAP.fechaAlerta ancho="100"
+			Columna titulo="Abierto Por" campo=AnotacionFAP.personaAsunto.name expandir //ancho="100"
+			Columna titulo="Cerrado Por" campo=AnotacionFAP.personaSolucion.name expandir //ancho="100"
+		}
+
+		Form frmSeguimientoSolicitud permiso=adminOrGestor destino="_blank" {
+			Boton btnSeguimientoSolictud titulo="Informe Seguimiento"
+		}
+
+	}
+
+	Popup PopUpAnotacionCrear titulo="Nueva Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
+		Accion editar crearSiempre
+		Texto titulo="Título" campo=AnotacionFAP.tituloanotacion requerido
+		AreaTexto titulo="Descripción" campo=AnotacionFAP.descripcion requerido
+		Check alerta titulo="Añadir alerta" campo=AnotacionFAP.checkAlerta
+		Grupo borde=false mostrarSiCheck alerta=true  {
+			Fecha titulo="Fecha de alerta" campo=AnotacionFAP.fechaAlerta
+		}
+	}
+
+	Popup PopUpAnotacionVer titulo="Ver Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
+		Fecha titulo="Fecha" campo=AnotacionFAP.fecha
+		Texto titulo="Título" campo=AnotacionFAP.tituloanotacion
+		AreaTexto titulo="Descripción" campo=AnotacionFAP.descripcion
+
+		Check chk_Resuelta titulo="Resuelta?" campo=AnotacionFAP.checkResuelta
+		Grupo grSolucion borde=false mostrarSiCheck chk_Resuelta=true {
+			AreaTexto titulo="Solución" campo=AnotacionFAP.solucion requerido
+		}
+		Grupo borde=false mostrarSiExpresion "(anotacionFAP.fechaAlerta != null)"
+		{
+			Fecha titulo="Fecha de alerta" campo=AnotacionFAP.fechaAlerta
+		}
+	}
+
+	Popup PopUpAnotacionModificar titulo="Modificar Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
+		Grupo borde=false permiso=noEditable {
+			Fecha titulo="Fecha" campo=AnotacionFAP.fecha
+		}
+		Texto titulo="Título" campo=AnotacionFAP.tituloanotacion requerido
+		AreaTexto titulo="Descripción" campo=AnotacionFAP.descripcion requerido
+
+		Check chk_Resuelta titulo="Resuelta?" campo=AnotacionFAP.checkResuelta
+		Grupo grSolucion borde=false mostrarSiCheck chk_Resuelta=true {
+			AreaTexto titulo="Solución" campo=AnotacionFAP.solucion requerido
+		}
+
+		Grupo borde=false mostrarSiExpresion "(anotacionFAP.fechaAlerta != null) && (anotacionFAP.fechaAlerta.getMillis() > new org.joda.time.DateTime().getMillis())"
+		{
+			Fecha titulo="Fecha de alerta" campo=AnotacionFAP.fechaAlerta
+		}
+
+		Grupo borde=false mostrarSiExpresion "(anotacionFAP.fechaAlerta != null) && (anotacionFAP.fechaAlerta.getMillis() < new org.joda.time.DateTime().getMillis())"
+		{
+			Wiki {
+				"La fecha de alerta no se puede modificar porque ha expirado."
+			}
+		}
+	}
+
+	Popup PopUpAnotacionBorrar titulo="Borrar Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
+		Fecha titulo="Fecha" campo=AnotacionFAP.fecha
+		Check chk_Resuelta titulo="Resuelta?" campo=AnotacionFAP.checkResuelta
+		Texto titulo="Título" campo=AnotacionFAP.tituloanotacion
+		AreaTexto titulo="Descripción" campo=AnotacionFAP.descripcion
+		Grupo borde=false mostrarSiExpresion "(anotacionFAP.fechaAlerta != null)"
+		{
+			Fecha titulo="Fecha de alerta" campo=AnotacionFAP.fechaAlerta
+		}
+	}
+}

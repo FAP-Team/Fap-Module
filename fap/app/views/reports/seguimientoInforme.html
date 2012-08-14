@@ -1,0 +1,270 @@
+<html>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+h2 {
+	margin-top: 30px;
+}
+
+/*-------------------------------------------------------------------------
+SALTO DE PÁGINAS*/
+.div-saltoPagina{
+page-break-after:always;
+}
+
+
+/*-------------------------------------------------------------------------
+ESTILO DE SECCIÓN */
+
+.table-seccion {
+    width:100%;
+}
+
+.table-seccion caption {
+	background-color : #ccc;
+	border:2px solid gray;
+	font-weight: bold;
+	text-align: left;
+	padding: 6px;
+}
+.table-seccion td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+/*-------------------------------------------------------------------------
+TABLA PARA TEXTOS y LISTAS GENERICA */
+
+.table-datos {
+    width:100%;
+    border:1px solid #ccc;
+}
+
+.table-datos caption {
+	background-color : #ccc;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-datos th {
+	background-color : #ccc;
+	font-weight: bold;
+	width: 150px;
+	white-space: nowrap;
+	text-align: left;
+	padding-left: 5px;
+}
+.table-datos td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+/*-------------------------------------------------------------------------
+TABLAS CON GRID*/
+
+.table-grid {
+	width:100%;
+	border-collapse: collapse;
+	cellspacing:0px;
+	cellpadding:2px;
+	-fs-table-paginate: paginate;
+}
+
+.table-grid caption{
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+.table-grid thead td {
+	border: 1px solid gray;
+	background-color : #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding: 4px;
+}
+
+.table-grid td {
+	border: 1px solid #ccc;
+	padding: 4px;
+}
+
+/*-------------------------------------------------------------------------
+Estilo para tablas de resultados*/
+.table-total{
+	width:50%;
+	border-collapse: collapse;
+	margin-left: 50%;
+}
+
+.table-total td{
+	font-weight: bold;
+	font-style: normal;
+	text-align: center;
+	border-bottom-color:black;
+	border-bottom-style:double;
+	border-bottom-width: 3px;
+}
+
+.table-total th{
+	text-align:right;
+	font-weight: bold;
+	font-style: italic;
+	/*text-decoration: underline;*/
+}
+
+/*-------------------------------------------------------------------------
+Estilo para tabla de cuentas cotizacion*/
+
+.table-cuentasCotizacion {
+	width:75%;
+	border-collapse: collapse;
+	font-size: 10px;
+}
+
+.table-cuentasCotizacion caption{
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.table-cuentasCotizacion thead td {
+	background-color : #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding-left: 2px;
+}
+
+
+.table-cuentasCotizacion td {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.myarrow {
+   line-height: 0%; width: 0px;
+   border-top: 4px solid  transparent;
+   border-bottom: 4px solid  transparent;
+   border-left: 6.9px solid black;
+   margin-top: 30px;
+   margin-left: 3em;
+   text-indent: 1em;
+}
+
+ul {
+   list-style-type:circle
+   margin-left: 4em;
+   text-indent: 4em;
+}
+
+</style>
+
+%{
+	def ficheroAppCss = new File(play.Play.applicationPath.getAbsolutePath()+"/public/stylesheets/documentoPDF.css");
+%}
+
+#{if ficheroAppCss.exists()}
+	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/documentoPDF.css'}">
+#{/if}
+	<body>
+	<!-- EXPEDIENTES -->
+	%{
+	  def titulo='INFORME DE SEGUIMIENTO';
+	  def fecha=new Date(new Date().getTime()).format('dd/MM/yyyy hh:mm');
+	}%
+	
+	<div id="divTituloSeguimiento">
+		<h2 align="center">${titulo} <br/>DEL DIA: ${fecha}</h2>
+	</div>
+	<br/>
+	<br/>
+
+	<div id="divSeguimientoExpedientes" style="width:100%;">
+		%{
+			def cuentaAnotaciones = solicitud.datosAnotaciones.anotaciones.size();
+			def esExpedienteResuelto = solicitud.datosAnotaciones.getIsResueltasTodasAnotaciones();
+		}%
+
+
+		<div id="divTituloExpediente">
+		#{if (cuentaAnotaciones > 0)}
+			#{if (esExpedienteResuelto)}
+				<table class="table-seccion" style="background-color: #98FB98;">
+				<caption style="background-color: #98FB98;border-color:#98FB98;">${solicitud.expedienteAed.idAed}</caption>
+	  		#{/if}
+	  		#{else}
+ 				<table class="table-seccion" style="background-color: #F08080;">
+				<caption style="background-color: #F08080;border-color:#F08080;">${solicitud.expedienteAed.idAed}</caption>
+	  		#{/else}
+		#{/if}
+ 		#{else}
+ 			<table class="table-seccion" style="background-color: #98FB98;">
+ 			<caption style="background-color: #98FB98;border-color:#98FB98;">${solicitud.expedienteAed.idAed}</caption>
+		#{/else}
+			
+			</table>
+		</div>
+		#{if (cuentaAnotaciones > 0)}
+			#{if (esExpedienteResuelto)}<table class="table-datos" style="background-color: #98FB98;">#{/if}
+			#{else}<table class="table-datos" style="background-color: #F08080;">#{/else}
+		#{/if}
+		#{else}
+			<table class="table-datos" style="background-color: #98FB98;">
+		#{/else}
+			
+			<tr><th>ESTADO: </th><td>${solicitud.estado?.toUpperCase()}</td></tr>
+			<tr><th>CIF/NIF: </th><td>${solicitud.solicitante.getNumeroId()?.toUpperCase()}</td></tr>
+			<tr><th>SOLCITANTE: </th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>
+		</table> <!-- table-datos -->
+
+ 		#{if (cuentaAnotaciones > 0)}
+ 			#{if (esExpedienteResuelto)}<table style="background-color: #98FB98;width: 100%;"><tr><td>#{/if}
+ 			#{else}<table style="background-color: #F08080;width: 100%;"><tr><td>#{/else}
+			<table id="tblAnotaciones" class="table-grid" style="background-color: white;font-size: 7pt;" >
+			<thead>
+			<tr>
+				<td>FECHA</td>
+				<td>RESUELTA?</td>
+				<td>ANOTACIÓN</td>
+				<td>DESCRIPCIÓN</td>
+				<td>F.ALERTA</td>
+				<td>AVISO?</td>
+				<td>GESTOR</td>
+			<tr>
+			</thead>
+		
+			<tbody>
+			#{list items:solicitud.datosAnotaciones.anotaciones, as:"ant"}
+		  		<tr>
+				<td style="width:50px;text-align: center; vertical-align: top;">${ant.fecha.toDate().format('dd/MM/yyyy')}</td>
+				<td style="width:50px;text-align: center; vertical-align: top;">#{if (ant.checkResuelta)} X #{/if}</td>
+				<td style="width:120px; vertical-align: top;">${ant.tituloanotacion}</td>
+				<td><b><i><u>Nota:</u></i></b><br/>${ant.descripcion}
+					#{if (ant.checkResuelta)}<br/><br/><b><i><u>Cerrada</u></i></b>(${ant.personaSolucion.name}):<br/><br/>${ant.solucion}#{/if}
+				</td>
+				<td style="width:50px;text-align: center; vertical-align: top;">${ant.fechaAlerta==null?'':ant.fechaAlerta.toDate().format('dd/MM/yyyy')}</td>
+				<td style="width:40px;text-align: center; vertical-align: top;">#{if (ant.alertaNotificada)} X #{/if}</td>
+				<td style="width:50px;text-align: center; vertical-align: top;font-size: 6pt;">${ant.personaAsunto.name}</td></tr>
+		  		</tr>
+			#{/list}
+			</tbody>
+		</table>
+		#{/if}
+	
+		</td></tr></table>
+		<br/><br/>
+
+	</div>
+
+
+	</body>
+</html>

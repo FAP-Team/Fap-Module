@@ -1,4 +1,3 @@
-
 package controllers;
 
 import java.io.File;
@@ -155,6 +154,8 @@ public class AportacionController extends AportacionControllerGen {
 			}
 			
 			if(!Messages.hasErrors()) {
+				aportacion.estado = "borrador";
+				aportacion.save();
 				AportacionController.presentarSinRegistrarValidateCopy("editar", dbSolicitud, solicitud);
 				
 				validateDateIsAfterNow(aportacion.fechaAportacionSinRegistro);

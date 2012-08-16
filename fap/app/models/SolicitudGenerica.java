@@ -11,11 +11,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import format.FapFormat;
 
 // === IMPORT REGION START ===
 import controllers.fap.SecureController;
@@ -94,6 +91,9 @@ public class SolicitudGenerica extends FapModel {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_autorizacion")
 	public List<Autorizaciones> autorizacion;
+	
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DatosAnotaciones datosAnotaciones;
 
 	public SolicitudGenerica() {
 		init();
@@ -177,6 +177,11 @@ public class SolicitudGenerica extends FapModel {
 
 		if (autorizacion == null)
 			autorizacion = new ArrayList<Autorizaciones>();
+
+		if (datosAnotaciones == null)
+			datosAnotaciones = new DatosAnotaciones();
+		else
+			datosAnotaciones.init();
 
 		postInit();
 	}

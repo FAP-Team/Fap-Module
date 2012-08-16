@@ -46,6 +46,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Alegaciones alegaciones
 	OneToMany Notificacion notificaciones
 	OneToMany Autorizaciones autorizacion
+	DatosAnotaciones datosAnotaciones
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -661,5 +662,23 @@ Entidad AdministracionFapJobs extends Singleton{
 	Boolean actualizarNotificaciones default = "true"
 	Boolean comprimirLogs default="true"
 	Boolean eliminarTemporales default="true"
+}
+
+Entidad DatosAnotaciones {
+	OneToMany AnotacionFAP anotaciones
+	Boolean isResueltasTodasAnotaciones transient
+}
+
+Entidad AnotacionFAP {
+	DateTime fecha
+	DateTime fechaAlerta
+	Boolean checkResuelta
+	Boolean checkAlerta transient
+	Boolean alertaNotificada
+	String tituloanotacion
+	LongText descripcion
+	LongText solucion
+	ManyToOne Agente personaAsunto noConstruct
+	ManyToOne Agente personaSolucion noConstruct
 }
 

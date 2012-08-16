@@ -11,11 +11,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import format.FapFormat;
 
 // === IMPORT REGION START ===
 
@@ -53,8 +50,7 @@ public class ValoresPorDefectoTest extends FapModel {
 	public String mCif;
 
 	@Moneda
-	@Column(precision = 30, scale = 4)
-	public BigDecimal mMoneda;
+	public Double mMoneda;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "mDateTime"), @Column(name = "mDateTimeTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
@@ -73,7 +69,7 @@ public class ValoresPorDefectoTest extends FapModel {
 
 	// Getter del atributo del tipo moneda
 	public String getMMoneda_formatFapTabla() {
-		return FapFormat.format(mMoneda);
+		return format.FapFormat.format(mMoneda);
 	}
 
 	public ValoresPorDefectoTest() {
@@ -92,10 +88,7 @@ public class ValoresPorDefectoTest extends FapModel {
 		mTelefono = "900 120 120";
 		mEmail = "asas@pepe.com";
 		mCif = "A58818501";
-
-		if (mMoneda == null)
-			mMoneda = new BigDecimal(0);
-		mMoneda = new BigDecimal(2.1);
+		mMoneda = 2.1;
 		try {
 			mDateTime = new DateTime((new SimpleDateFormat("dd/MM/yyyy")).parse("12/12/2010"));
 		} catch (ParseException e) {

@@ -1,0 +1,10 @@
+h1. Documentación FAP
+
+Es una página en la que aparecen todos los documentos aportados por el ciudadano.
+
+!images/app-documentacionfap!
+
+En el momento de subir un documento, los tipos de documentos que se permiten aportar son aquellos correspondientes al procedimiento que se haya especificado en el _application.conf_ con la property:
+
+bc. fap.gestordocumental.documentacion.tramite=Solicitud
+

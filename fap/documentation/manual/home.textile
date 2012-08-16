@@ -82,6 +82,7 @@ h3. Páginas por defecto
 * "Verificación":app-verificacion
 * "Desistimiento":app-tramitacion
 * "Administración":app-administracion
+* "Documentos FAP":app-documentacionfap
 
 
 h2. Profundizando en FAP

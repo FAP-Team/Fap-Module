@@ -29,6 +29,14 @@ public class MiConcepto extends FapModel {
 	@Moneda
 	public Double unaMoneda;
 
+	@Transient
+	public String unaMoneda_formatFapTabla;
+
+	// Getter del atributo del tipo moneda
+	public String getUnaMoneda_formatFapTabla() {
+		return format.FapFormat.format(unaMoneda);
+	}
+
 	public void init() {
 
 		postInit();

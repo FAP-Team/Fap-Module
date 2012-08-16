@@ -11,11 +11,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import format.FapFormat;
 
 // === IMPORT REGION START ===
 
@@ -32,15 +29,14 @@ public class ExpedientesNoAceptados extends FapModel {
 	public String estado;
 
 	@Moneda
-	@Column(precision = 30, scale = 4)
-	public BigDecimal cantidad;
+	public Double cantidad;
 
 	@Transient
 	public String cantidad_formatFapTabla;
 
 	// Getter del atributo del tipo moneda
 	public String getCantidad_formatFapTabla() {
-		return FapFormat.format(cantidad);
+		return format.FapFormat.format(cantidad);
 	}
 
 	public ExpedientesNoAceptados() {
@@ -53,9 +49,6 @@ public class ExpedientesNoAceptados extends FapModel {
 			solicitante = new Solicitante();
 		else
 			solicitante.init();
-
-		if (cantidad == null)
-			cantidad = new BigDecimal(0);
 
 		postInit();
 	}

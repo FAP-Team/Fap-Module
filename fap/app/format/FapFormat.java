@@ -7,8 +7,8 @@ public class FapFormat {
 	public static String format(Object value) {
 		if (value == null)
 			return "";
-		if (value instanceof BigDecimal) {
-				Integer decimales = properties.FapProperties.getInt("fap.format.moneda");
+		if (value instanceof Double) {
+				Integer decimales = properties.FapProperties.getInt("fap.format.double");
 				if (decimales == null) {
 					return null;
 				}
@@ -27,13 +27,13 @@ public class FapFormat {
 		return value.toString();
 	}
 	
-	public static String format(BigDecimal value, String tipo) {
+	public static String format(Double value, String tipo) {
 		if (value == null)
 			return "";
 		
 		Integer decimales = properties.FapProperties.getInt("fap.format."+tipo);
 		if (decimales == null) {
-			return "";
+			return format(value);
 		}
 		
   		java.text.DecimalFormat decim = (java.text.DecimalFormat) java.text.NumberFormat.getInstance(java.util.Locale.US);

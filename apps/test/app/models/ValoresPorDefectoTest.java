@@ -64,6 +64,14 @@ public class ValoresPorDefectoTest extends FapModel {
 	@Embedded
 	public Embebida mEmbebida;
 
+	@Transient
+	public String mMoneda_formatFapTabla;
+
+	// Getter del atributo del tipo moneda
+	public String getMMoneda_formatFapTabla() {
+		return format.FapFormat.format(mMoneda);
+	}
+
 	public ValoresPorDefectoTest() {
 		init();
 	}

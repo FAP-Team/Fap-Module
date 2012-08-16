@@ -124,11 +124,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import format.FapFormat;
 $moreImports
 
 ${FileUtils.addRegion(file, FileUtils.REGION_IMPORT)}	
@@ -159,7 +156,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		String ret = """
 			// Getter del atributo del tipo moneda
 			public String get${StringUtils.firstUpper(attribute.name)} () {
-				return FapFormat.format(${nameSin});
+				return format.FapFormat.format(${nameSin});
 			}
 		"""
 	}
@@ -213,9 +210,8 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				type = "String";
 				anotaciones.add "@Email";
 			}else if(type.equals("Moneda")){
-				type = "BigDecimal";
+				type = "Double";
 				anotaciones.add "@Moneda";
-				anotaciones.add "@Column(precision=30, scale=4)";
 				// Creamos el atributo con el formatDeMoneda
 				Attribute formatMoneda = LedFactory.eINSTANCE.createAttribute();
 				formatMoneda.type = LedFactory.eINSTANCE.createType();
@@ -242,9 +238,8 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				type = "String";
 				anotaciones.add "@Email";
 			}else if(type.equals("Moneda")){
-				type = "BigDecimal";
+				type = "Double";
 				anotaciones.add "@Moneda";
-				anotaciones.add "@Column(precision=30, scale=4)";
 				// Creamos el atributo con el formatDeMoneda
 				Attribute formatMoneda = LedFactory.eINSTANCE.createAttribute();
 				formatMoneda.type = LedFactory.eINSTANCE.createType();
@@ -404,14 +399,6 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 						"""
 					}
 				}
-			} else {
-				// Si es un Moneda, lo convertimos a BigDecimel, y necesita el new si no tiene el noConstruct
-				if(special?.type.equals("Moneda") && !attribute.noConstruct){
-					refInit += """
-						if (${attribute.name} == null)
-							${attribute.name} = new BigDecimal(0);
-					""";
-				}
 			}
 			
 			/** Valores por defecto de los atributos */
@@ -435,7 +422,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 						// TODO: Validar el CIF
 						refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
 					} else if (tipo.equals("Moneda")) {
-						refInit += defaultValue(attribute.defaultValue, "Moneda", attribute.name);
+						refInit += defaultValue(attribute.defaultValue, "Double", attribute.name);
 					}  else if (tipo.equals("DateTime")) {
 						// TODO: Validar el DateTime
 						refInit += defaultValue(attribute.defaultValue, tipo, attribute.name);
@@ -571,8 +558,6 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				defaultValue = Integer.parseInt(value);
 			} else if (type.equals("Long")) {
 				defaultValue = Long.parseLong(value) + "L";
-			} else if (type.equals("Moneda")) {
-				defaultValue = "new BigDecimal("+Double.parseDouble(value)+")"
 			}
 		
 			if (defaultValue != null) {

@@ -1,10 +1,48 @@
-h1. Documentación FAP
+h1. Documentación
 
-Es una página en la que aparecen todos los documentos aportados por el ciudadano.
+h2. Introducción
+
+El módulo de FAP ofrece la posibilidad de incluir en las aplicaciones una página de documentación de forma sencilla. Esta contiene una tabla en la que se listan los documentos que el solicitante vaya adjuntando a la solicitud.
 
 !images/app-documentacionfap!
 
-En el momento de subir un documento, los tipos de documentos que se permiten aportar son aquellos correspondientes al procedimiento que se haya especificado en el _application.conf_ con la property:
+En el momento de añadir nueva documentación hay que rellenar los siguientes campos:
+
+!images/app-documentacionfap-nuevo!
+
+Los tipos de documentos que se permiten seleccionar son aquellos correspondientes al trámite que se haya especificado en el _application.conf_ mediante la propiedad _fap.gestordocumental.documentacion.tramite_.
+
+Los documentos que se suben (a _solicitud.documentacion.documentos_) están representados por la entidad *Documento*.
+
+bc. Entidad Documento {
+	String uri
+	Lista tiposDocumentos tipo
+	String descripcion
+	String descripcionVisible transient
+	Boolean clasificado
+	String hash
+	DateTime fechaSubida
+	DateTime fechaRegistro
+	String urlDescarga transient
+	Boolean verificado
+	Boolean refAed
+	String expedienteReferenciado
+	Long solicitudReferenciada
+	Lista estadoNotificacion estadoDocumento
+}
+
+h2. ¿Cómo usar esta página en mi aplicación?
+
+Para poder utilizar esta página desde nuestra aplicación simplemente hay que poner un enlace en nuestro menú haciendo referencia a ella.
+
+bc. Enlace "Documentación" pagina=DocumentacionFAP
+
+h2. Propiedades a configurar
+
+Hay que especificar en el _application.conf_ de qué trámite se requieren los documentos. Por defecto, son del trámite _Solicitud_.
 
 bc. fap.gestordocumental.documentacion.tramite=Solicitud
 
+h2. Personalización de los mensajes de la página
+
+En el caso que queramos personalizar la página de documentación con algún tipo de alerta o un wiki se puede hacer siguiendo las siguientes "indicaciones":app-configurar-mensajes

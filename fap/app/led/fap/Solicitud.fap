@@ -1,7 +1,7 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{	
 	
 	Pagina DocumentacionFAP campo=SolicitudGenerica noForm {
-		Tabla documentos titulo="Documentos Aportados" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP {
+		Tabla documentos titulo="Documentos" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP {
 			Columna titulo="Id" campo=Documento.id
 			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna titulo="Descripcion" campo=Documento.descripcionVisible

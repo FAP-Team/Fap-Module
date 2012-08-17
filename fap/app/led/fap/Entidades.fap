@@ -642,7 +642,6 @@ Entidad DocumentoNotificacion{
 	String urlDescarga transient
 }
 
-
 //Permitimos buscar logs por distintos tipos de datos.
 Entidad BusquedaLogs nonPersist {
 	Boolean buquedaPorAtributos
@@ -652,7 +651,6 @@ Entidad BusquedaLogs nonPersist {
 	String usuario
 	String claseLog
 	String numeroFilasSeleccionadas
-
 }
 
 
@@ -694,5 +692,15 @@ Entidad AnotacionFAP {
 	LongText solucion
 	ManyToOne Agente personaAsunto noConstruct
 	ManyToOne Agente personaSolucion noConstruct
+}
+
+Entidad PlantillaDocumento {
+    LongText plantilla
+    String nombrePlantilla
+}
+
+Entidad ImagenesPlantilla {
+    String uriImagen
+    String nombreImagen
 }
 

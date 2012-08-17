@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Guardando plantilla como</title>
+	<script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+	<script type="text/javascript" src="js/dialog.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js" type="text/javascript"></script>
+	<style>
+	     body { padding:10px; }
+         img { display: block; margin-left: auto; margin-right: auto; }
+         #aviso { font-size: 0.9em; color:red; margin: 10px; }
+         #descarga { font-size: 1em; text-align: center; margin: 10px; }
+         .mceActionPanel { margin-top: 30px; }
+         #nombreNuevaPlantilla { margin-top: 10px; }
+         #nombreNuevaPlantilla input { width: 15em ;}
+    </style>
+</head>
+
+
+<body>
+
+<script type="text/javascript">
+    // Recogemos los datos del json devuelto por el controlador getPlantillas, para crear las
+    // <option> del <select>
+    $.getJSON('/plantillasdoccontroller/getAllPlantillas', function(data) {    
+	   $.each(data.obj.rows, function(k,v) {
+	        $("#selectplantilla").append('<option value="' + v.objeto.id + '">' + v.objeto.nombrePlantilla + '</option>');
+	   });  
+	});
+
+</script>
+
+<form id="formGuardar" onsubmit="EliminarPlantillaDialog.eliminar();return false;" action="#">
+    <span>Escoja una plantilla a eliminar:</span> 
+	<select id="selectplantilla" name="selectplantilla">
+	</select>
+	<p id="aviso">¡Esta operación es irreversible!<p>
+    
+	<div class="mceActionPanel">
+		<input type="button" id="insert" name="insert" value="Eliminar" onclick="borrar();" />
+		<input type="button" id="cancel" name="cancel" value="Cancelar" onclick="tinyMCEPopup.close();" />
+	</div>
+</form>	
+	
+<script type="text/javascript">
+    // Eliminar la plantilla (form submit) previa confirmación
+    function borrar() {
+        if( confirm('¿Está seguro que desea eliminar esta plantilla?') ) {
+            EliminarPlantillaDialog.eliminar();
+        }
+    }
+</script>
+	
+</body>
+</html>

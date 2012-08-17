@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Insertar una entidad FAP</title>
+	<script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+	<script type="text/javascript" src="js/dialog.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js" type="text/javascript"></script>
+	<style>
+	     body { padding:10px; }
+         #breadcrumbs { font-size:0.9em; color:green; margin: 15px 0 15px 0; }
+         #atributos { width: 80%; margin: 0 auto; padding:4px;}
+         #leyenda { width: 80%; margin: 0 auto; padding:4px;}
+         .celdaEntidad { width: 70%; }
+         #atributos tr:hover { background: #C3F7A3; }
+         .icono { float: right; }
+    </style>
+</head>
+
+
+<body>
+
+<script type="text/javascript">
+    // Recogemos los datos del json devuelto por el controlador insertarImagen, para crear las
+    // <option> del <select>
+    $.getJSON('/plantillasdoccontroller/obtenerListaEntidades', function(data) {   
+	   $.each(data, function(index,value) {
+	         $('<option value="' + value +'">' + value + '</option>').insertAfter('#seleccion');
+	   });  
+	});
+</script>
+
+<form>
+	<span>Escoja una entidad FAP a insertar:</span> 
+	<select id="selectentidad">
+        	<option id="seleccion" selected="selected" value="nooption">---</option>
+	</select>
+	
+	<table id="leyenda">
+	    <tr>
+	        <td class="icono"><img src="img/insert.png" alt="Insertar atributo" /></td><td>Atributo</td>
+	        <td class="icono"><img src="img/expand.png" alt="Expandir entidad" /></td><td>Entidad</td>
+	    </tr>
+	</table>
+
+	<!--
+	<div class="mceActionPanel">
+		<input type="button" id="insert" name="insert" value="Insertar" onclick="InsertarEntidadFAP.insert();" />
+		<input type="button" id="cancel" name="cancel" value="Cancelar" onclick="tinyMCEPopup.close();" />
+	</div>
+	-->
+</form>	
+
+
+<script>
+    // *****************************************************************************************
+    // Función que recibe un json con los atributos de la entidad seleccionada y crea la lista 
+    // *****************************************************************************************
+    function obtenerAtributosEntidad(entidad) {
+         $.getJSON('/plantillasdoccontroller/obtenerAtributosEntidad?entidad='+entidad, function(data) {
+               var listaAtrib = '<table id="atributos">';
+               if ($('#atributos').length) {     
+                   $("#atributos").remove();
+               }
+               $.each(data, function(key, value) {
+                       listaAtrib += "<tr>";
+                       if (typeof value.entidad !== "undefined") {      // es una entidad
+                            listaAtrib += '<td class="celdaEntidad" onclick="expandirEntidad(\'' + value.nombre + '\',\'' + value.entidad + '\')">' + value.nombre + '</td>';
+                            listaAtrib += '<td onclick="expandirEntidad(\'' + value.nombre + '\',\'' + value.entidad + '\')"><img src="img/expand.png" alt="Expandir entidad" /></td>';
+                       }
+                       else {                                           // es un atributo
+                            listaAtrib += '<td class="celdaEntidad" onclick="insertarAtributo(\'' + value.nombre + '\')">' + value.nombre + '</td>';
+                            listaAtrib += '<td onclick="insertarAtributo(\'' + value.nombre + '\')"><img src="img/insert.png" alt="Insertar atributo" /></td>';
+                       }
+                       listaAtrib += "</tr>";       	                       
+               }); 
+               listaAtrib += '</table>';
+               $(listaAtrib).insertAfter('#breadcrumbs'); 
+           });
+    }
+    
+    // *****************************************************************************************
+    // Expandimos la entidad seleccionada en nuestra lista <ul>
+    // *****************************************************************************************    
+    function expandirEntidad(nombre, entidad) {
+        $('#breadcrumbs').append("." + nombre);
+        obtenerAtributosEntidad(entidad);
+    }
+
+    // *****************************************************************************************
+    // Insertamos en el editor el texto que corresponde a la identificación nuestro atributo FAP
+    // *****************************************************************************************
+    function insertarAtributo(atributo) {
+       InsertarEntidadFAPDialog.insert($('#breadcrumbs').text() + "." + atributo);
+    }
+   
+    // *****************************************************************************************
+	// Insertamos los atributos de la entidad seleccionada
+    // *****************************************************************************************
+    $("#selectentidad").change(function () {
+           if ($('#breadcrumbs').length) {       // si el nodo existe
+                $('#breadcrumbs').remove();
+           }
+           $('<div id="breadcrumbs">' + $(this).val() + '</div>').insertAfter('#leyenda');   
+
+          $("select option:selected").each(function () {
+              obtenerAtributosEntidad( $(this).val() );
+          });
+     });
+</script>
+
+
+</body>
+</html>

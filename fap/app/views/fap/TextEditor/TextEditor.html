@@ -1,0 +1,105 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Administracion', 
+     hayForm:true, 
+     pagina:'PlantillasDoc', 
+     permiso:'administrador', 
+     titulo:'PlantillasDoc', 
+     urlBorrar:play.mvc.Router.reverse('PlantillasDocController.borrar' , ['idPlantillaDocumento':plantillaDocumento?.id]), 
+     urlCrear:play.mvc.Router.reverse('PlantillasDocController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('PlantillasDocController.editar' , ['idPlantillaDocumento':plantillaDocumento?.id])
+}
+
+<script type="text/javascript">
+	tinyMCE.init({
+	        // General options
+	        mode : "textareas",
+	        theme : "advanced",
+	        height: 700,
+	        language : "es",     
+	        plugins : "guardarcomo,insertarentidadfap,insertarimg,topdf,eliminarplantilla,autosave,autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+	        
+	        // Theme options
+//	        theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+//	        theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+//	        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
+//	        theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,spellchecker,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,blockquote,|,insertfile,insertimage",
+//	        theme_advanced_buttons5 : "save,guardarcomo,nuevodocumento,|,template,eliminarplantilla,|,insertarimg,|,insertarentidadfap,|,topdf,|,pagebreak",
+
+	        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,sub,sup,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect",
+            theme_advanced_buttons2 : "cut,copy,paste,|,search,|,table,|,advhr,|,code,|,spellchecker,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,image,cleanup,|,forecolor,backcolor",
+            theme_advanced_buttons3 : "nuevodocumento,save,guardarcomo,|,template,eliminarplantilla,|,insertarimg,|,insertarentidadfap,|,topdf,|,pagebreak",
+	        theme_advanced_toolbar_location : "top",
+            theme_advanced_toolbar_align : "left",
+            theme_advanced_statusbar_location : "bottom",
+            theme_advanced_resizing : true,
+	        //theme_advanced_resizing_max_width : 450,
+                        
+            // Sobreescribimos el comportamiento del botón save con la función guardar
+            save_onsavecallback : "saveModificado",
+	        
+	        // This is required for the image paths to display properly
+	        relative_urls : false,
+	        
+	        // Skin options
+	        skin : "o2k7",
+	        skin_variant : "silver",
+       
+            setup : function(ed) {
+	            // Utilizamos un botón propio en "Nuevo Documento" para poder limpiar el ancla que marca el id de la plantilla actual
+	            ed.addButton('nuevodocumento', {
+	                title : 'Nuevo Documento',
+	                image : '/public/images/nuevodocumento_editor_icono.png',
+	                onclick : function() {
+	                      ed.windowManager.confirm('advanced.newdocument', function(s) {
+	                             if (s) {
+                                     ed.execCommand('mceSetContent', false, '');
+                                     window.location.hash = ''; // limpiamos el anchor de la url (el id de la plantilla actual)
+	                             }
+	                      });
+	                }          
+	            });  
+	            
+
+                // Comando que nos permite poner en la url un parámetro con la id de la plantilla actual
+                ed.addCommand('putIdPlantillaURL', function(idPlantilla) {
+                    window.location.hash = idPlantilla;    
+                });   
+   
+	        },
+  	           
+    });    
+    
+   
+   // Función que se llama al pulsar el botón save (option save_onsavecallback:"guardar")
+   function saveModificado() {
+        var ed = tinyMCE.get(0);
+        var datos = ed.getContent();
+        var idPlantilla = location.href.split('#')[1]; 
+        if (!idPlantilla) {     
+            ed.execCommand('mceGuardarComo');
+        }
+        else {
+            $.post("/plantillasdoccontroller/guardarPlantilla", {'contenido' : datos, 'idPlantilla' : idPlantilla}, function(idNuevaPlantilla) {
+                    window.location.hash = idNuevaPlantilla;
+            }).error(function (xhr, ajaxOptions, thrownError) { 
+                    alert('Error al guardar la plantilla: (' + xhr.status + ') ' + thrownError); 
+            }); 
+        }
+        return 1;
+    }
+
+</script>        
+
+
+<form method="post" action="#">
+    <textarea name="content" style="width:100%"></textarea>
+</form>
+
+#{/fap.pagina}
+    

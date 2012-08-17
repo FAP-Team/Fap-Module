@@ -296,6 +296,10 @@ def init_application (app, args):
     os.makedirs(os.path.join(app.path, "logs", "backups"));
     os.makedirs(os.path.join(app.path, "logs", "backups", "Auditable"));
     os.makedirs(os.path.join(app.path, "logs", "backups", "Daily"));
+
+    # Carpeta temporal para la generación de plantillas html y sus correspondientes pdfs desde el editor tinyMCE
+    os.makedirs(os.path.join(app.path, "public/tmp"));
+    
     
 def copy_directory(source, target):
     if not os.path.exists(target):

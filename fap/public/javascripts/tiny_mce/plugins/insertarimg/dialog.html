@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Insertar una imagen</title>
+	<script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+	<script type="text/javascript" src="js/dialog.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js" type="text/javascript"></script>
+	<script src="http://malsup.github.com/jquery.form.js"></script> 
+	<style>
+	     body { padding:10px; }
+         #errorupload { font-size:1.3em; color:red; }
+         #uploadok { font-size:1.3em; color:green; }
+    </style>
+</head>
+
+
+<body>
+
+<script type="text/javascript">
+    // Recogemos los datos del json devuelto por el controlador insertarImagen, para crear las <option> del <select>
+    $.getJSON('/plantillasdoccontroller/insertarImagen', function(data) {    
+	   $.each(data.obj.rows, function(k,v) {
+	        $('<option value="' +v.objeto.uriImagen+ '">' +v.objeto.nombreImagen+ '</option>').insertAfter('#seleccion');
+	   });  
+	});
+</script>
+
+
+<form onsubmit="InsertarImgDialog.insert();return false;" action="#">
+	<span>Escoja una imagen a insertar:</span> 
+	<select id="selectimg">
+	     <option id="seleccion" selected="selected" value="nooption">---</option>
+	</select>
+	
+	<br /><br />
+	<div id="insertimg"></div>
+	
+	<div class="mceActionPanel">
+		<input type="button" id="insert" name="insert" value="Insertar" onclick="InsertarImgDialog.insert();" />
+		<input type="button" id="cancel" name="cancel" value="Cancelar" onclick="tinyMCEPopup.close();" />
+		
+	</div>
+	
+</form>	
+
+ <br /><br /><br /><br />
+ <span>¿Quiere subir una imagen diferente?</span> 
+ <form id="uploadform" action="/plantillasdoccontroller/uploadImagen" method="post" enctype="multipart/form-data">
+    <input type="file" name="imagen" id="fileupload" />
+    <input type="submit" name="submit" value="Subir imagen" />
+</form> 
+	<span id="errorupload"></span>
+	<span id="uploadok"></span>
+	
+
+<script>
+    
+    //**********************************************************************************
+	// Comprobamos que se ha elegido un fichero en el form del upload
+    //**********************************************************************************
+    $("#uploadform").submit(function() {
+          if ($("#fileupload").val().length != 0) {
+                $("#errorupload").remove();
+                $("#uploadok").text("¡Subiendo!");
+                return true;
+          }
+          $("#errorupload").text("¡Debe elegir un fichero!");
+          return false;
+    });
+
+    //**********************************************************************************
+    // Función que después de subida la imagen, la inserta en el editor
+    //**********************************************************************************
+    $(document).ready(function() { 
+            var ruta = "";
+            $.getJSON('/plantillasdoccontroller/getRutaImagen', function(data) { 
+	               $.each(data, function(index,value) {
+	                    ruta = "/" + value.ruta + "/";
+	               });  
+	         });
+	         
+        $('#uploadform').ajaxForm(function() { 
+             var rutaNombre = $("#fileupload").val().split("\\");    // hack para el Chromium/¿Chrome?, que pone en el campo file "C:/fakepath/fichero.extensión"
+             var nombreFichero = rutaNombre[rutaNombre.length - 1];
+             InsertarImgDialog.uploadandinsert(ruta + nombreFichero);
+        }); 
+    }); 
+	
+	//**********************************************************************************
+	// Insertamos en el div con id="selectimg" la imagen que hemos elegido en el select
+    //**********************************************************************************
+    $("#selectimg").change(function () {
+          var uriImg = "";
+          $("select option:selected").each(function () {
+            uriImg += $(this).val();
+          });
+          $("#insertimg").replaceWith('<div id="insertimg" style="text-align:center;"><img id="imgtag" src="/' + uriImg + '" /></div>');
+     });
+</script>
+
+</body>
+</html>

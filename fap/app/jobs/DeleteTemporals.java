@@ -26,11 +26,13 @@ import properties.FapProperties;
 public class DeleteTemporals extends Job {
 	
     public void doJob() {
-    	List <AdministracionFapJobs> jobs = AdministracionFapJobs.findAll();
-		if ((jobs.isEmpty()) || (jobs.get(0).eliminarTemporales == null) || (jobs.get(0).eliminarTemporales)){
-	    	String borrar = FapProperties.get("fap.delete.temporals");
-	    	if (borrar.equals("true"))
-	    		deleteReports();
+		if (AdministracionFapJobs.all() != null) {
+			AdministracionFapJobs job = AdministracionFapJobs.all().first();
+			if (job.eliminarTemporales) {
+		    	String borrar = FapProperties.get("fap.delete.temporals");
+		    	if (borrar.equals("true"))
+		    		deleteReports();
+			}
 		}
     }
     

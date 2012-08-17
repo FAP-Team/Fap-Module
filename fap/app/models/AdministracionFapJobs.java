@@ -28,6 +28,8 @@ public class AdministracionFapJobs extends Singleton {
 
 	public Boolean eliminarTemporales;
 
+	public Boolean notificarAlertasAnotaciones;
+
 	public AdministracionFapJobs() {
 		init();
 	}
@@ -37,6 +39,7 @@ public class AdministracionFapJobs extends Singleton {
 		actualizarNotificaciones = true;
 		comprimirLogs = true;
 		eliminarTemporales = true;
+		notificarAlertasAnotaciones = true;
 
 		postInit();
 	}

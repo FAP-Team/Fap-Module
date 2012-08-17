@@ -662,6 +662,7 @@ Entidad AdministracionFapJobs extends Singleton{
 	Boolean actualizarNotificaciones default = "true"
 	Boolean comprimirLogs default="true"
 	Boolean eliminarTemporales default="true"
+	Boolean notificarAlertasAnotaciones default="true"
 }
 
 Entidad DatosAnotaciones {

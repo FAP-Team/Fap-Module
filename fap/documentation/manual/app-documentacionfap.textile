@@ -2,7 +2,11 @@ h1. Documentación
 
 h2. Introducción
 
-El módulo de FAP ofrece la posibilidad de incluir en las aplicaciones una página de documentación de forma sencilla. Esta contiene una tabla en la que se listan los documentos que el solicitante vaya adjuntando a la solicitud.
+El módulo de FAP ofrece la posibilidad de incluir en las aplicaciones una página de documentación de forma sencilla. En ella se permite añadir *Documentos Nuevos* (representados en la Tabla de Documentos) y, opcionalmente, *Documentos Externos* (representados en la Tabla de Documentos Externos).
+
+h3. Tabla de Documentos
+
+En esta tabla se listan los documentos que el solicitante vaya adjuntando a la solicitud.
 
 !images/app-documentacionfap!
 
@@ -12,7 +16,7 @@ En el momento de añadir nueva documentación hay que rellenar los siguientes ca
 
 Los tipos de documentos que se permiten seleccionar son aquellos correspondientes al trámite que se haya especificado en el _application.conf_ mediante la propiedad _fap.gestordocumental.documentacion.tramite_.
 
-Los documentos que se suben (a _solicitud.documentacion.documentos_) están representados por la entidad *Documento*.
+Los documentos nuevos que se suben (a _solicitud.documentacion.documentos_) están representados por la entidad *Documento*.
 
 bc. Entidad Documento {
 	String uri
@@ -31,17 +35,44 @@ bc. Entidad Documento {
 	Lista estadoNotificacion estadoDocumento
 }
 
+h3. Tabla de Documentos Externos (Opcional)
+
+Los documentos externos son documentos que ya el solicitante ha presentado en otro organismo, de manera que solo tiene que especificar los datos correspondientes al expediente presentado para poder acceder a esa información.
+
+En esta tabla se listan las referencias a los documentos ya aportados en otro órgano.
+
+!images/app-documentacionfapExterna!
+
+En el caso de querer hacer referencia a un documento externo hay que rellenar los siguiente campos:
+
+!images/app-documentacionExterna-nuevo!
+
+La documentos externos están representados por la entidad *DocumentoExterno*.
+
+bc. Entidad DocumentoExterno {
+	Lista tiposDocumentos tipo
+	String descripcion
+	String descripcionVisible transient
+	String organo
+	String expediente
+	LongText uri
+}
+
 h2. ¿Cómo usar esta página en mi aplicación?
 
-Para poder utilizar esta página desde nuestra aplicación simplemente hay que poner un enlace en nuestro menú haciendo referencia a ella.
+Para poder utilizar esta página (_DocumentacionFAP_) desde nuestra aplicación simplemente hay que poner un enlace en nuestro menú haciendo referencia a ella.
 
 bc. Enlace "Documentación" pagina=DocumentacionFAP
 
 h2. Propiedades a configurar
 
-Hay que especificar en el _application.conf_ de qué trámite se requieren los documentos. Por defecto, son del trámite _Solicitud_.
+* Documentos: Hay que especificar en el _application.conf_ de qué trámite se requieren los documentos. Por defecto, son del trámite _Solicitud_.
 
 bc. fap.gestordocumental.documentacion.tramite=Solicitud
+
+* Documentos Externos: Como se dijo anteriormente, esta tabla es opcional, por lo que hay que especificar en el _application.conf_ si queremos que aparezca o no. Por defecto, sí se mostrará.
+
+bc. fap.documentacion.documentosExternos=true
 
 h2. Personalización de los mensajes de la página
 

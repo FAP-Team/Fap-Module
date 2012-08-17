@@ -194,7 +194,7 @@ Grupo:
 			('mostrarSiExpresion' siExpresion=STRING)
 		)? &
 		('borde' '=' borde=("true" | "false"))? &
-		('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)? 
+		('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)? &
 		("permiso" "=" permiso=[Permiso])?
 	)
 	'{'

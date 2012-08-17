@@ -1,6 +1,6 @@
 Formulario Solicitud campo=SolicitudGenerica {
 
-	Pagina AnotacionesFAP titulo="Anotaciones" noForm {
+	Pagina AnotacionesFAP titulo="Anotaciones" noForm permiso=adminGestorRevisor {
 		Tabla Anotaciones titulo="Anotaciones y Avisos" campo=SolicitudGenerica.datosAnotaciones.anotaciones
 		popupCrear=PopUpAnotacionCrear
 		popupBorrar=PopUpAnotacionBorrar

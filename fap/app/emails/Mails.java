@@ -19,8 +19,7 @@ public class Mails {
 			throw new IllegalArgumentException("No se encontró el ID del mail en la base de datos");
 			}
 			catch (Exception e) {
-				// TODO: handle exception
-				play.Logger.info("No se encontró el mail en la base de datos");
+				play.Logger.error("No se encontró el mail en la base de datos");
 			}
 		}
 	}

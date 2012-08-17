@@ -135,13 +135,13 @@ public class Agente extends FapModel {
 		return list;
 	}
 
-    /**
-    * Devuelve true si el agente accedió por certificado
-    * @return
-    */
-    public Boolean accedidoPorCertificado() {
-          return this.acceso != null && this.acceso.equalsIgnoreCase("certificado");
-    }
+	/**
+	 * Devuelve true si el agente accedió por certificado
+	 * @return
+	 */
+	public Boolean accedidoPorCertificado() {
+		return this.acceso != null && this.acceso.equalsIgnoreCase("certificado");
+	}
 	// === MANUAL REGION END ===
 
 }

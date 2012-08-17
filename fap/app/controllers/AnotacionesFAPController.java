@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import messages.Messages;
-import models.Solicitud;
 import models.SolicitudGenerica;
 import play.mvc.Util;
 import reports.Report;

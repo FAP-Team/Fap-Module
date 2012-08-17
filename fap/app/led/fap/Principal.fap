@@ -4,6 +4,7 @@ Formulario Principal {
 		Enlace "Administración" permiso=administrador pagina=Usuarios
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
 		Enlace "Verificaciones sin Finalizar" permiso=adminOrGestor pagina=VerificacionesSinFinalizar
+		Enlace "Seguimiento" permiso=adminGestorRevisor pagina=Seguimiento
 		Enlace "Mis Notificaciones" pagina=Notificaciones
 		Enlace "Cambiar contraseña" permiso=loginTipoUser pagina=CambiarPass 
 		Enlace "Ayuda" pagina=Soporte crear
@@ -90,5 +91,10 @@ Formulario Principal {
 	
 	Pagina IrVerificacionSinFinalizar campo=SolicitudGenerica permiso=noUsuario{}
 	
+	Pagina Seguimiento permiso=adminGestorRevisor noForm {
+		Form generarSeguimientoForm {
+			Boton generarSeguimiento titulo="Informe de Seguimiento"
+		}
+	}
 	
 }

@@ -6,7 +6,6 @@ import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
-
 import org.joda.time.DateTime;
 import models.*;
 import messages.Messages;
@@ -17,6 +16,7 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import properties.FapProperties;
+
 // === IMPORT REGION END ===
 
 @Entity

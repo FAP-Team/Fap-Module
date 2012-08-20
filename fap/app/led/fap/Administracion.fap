@@ -67,7 +67,7 @@ Formulario Administracion permiso=administrador{
     	Grupo permiso = paginaAConfigurar borde=false{
     		Combo paginaAconfigurar campo=ConfigurarMensaje.nombrePagina titulo="Página"
     	} 
-    	Combo tipoMensaje campo=ConfigurarMensaje.tipoMensaje titulo="Tipo" ayuda="Seleccionar si se quiere configurar un wiki u otro tipo de mensaje" (propover) requerido
+    	Combo tipoMensaje campo=ConfigurarMensaje.tipoMensaje titulo="Tipo" ayuda="Seleccionar si se quiere configurar un wiki u otro tipo de mensaje" (popover) requerido
     	
     	Grupo mostrarSiCombo tipoMensaje="wiki" borde=false {
     		Texto tituloMensaje campo=ConfigurarMensaje.tituloMensaje titulo="Título del Wiki" requerido

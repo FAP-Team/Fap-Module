@@ -125,6 +125,14 @@ public class NotificacionServiceImpl implements NotificacionService {
 		return notificacionPort != null;
 	}
 	
+	@Override
+    public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio de Notificación ha sido inyectado con NotificacionACIISI y está operativo.");
+		else
+			play.Logger.info("El servicio de Notificación ha sido inyectado con NotificacionACIISI y NO está operativo.");
+    }
+	
 	protected String getEndPoint() {
         return propertyPlaceholder.get("fap.notificaciones.url");
     }

@@ -10,6 +10,8 @@ import models.Solicitante;
 public interface RegistroService {
 
     public boolean isConfigured();
+    
+    public void mostrarInfoInyeccion();
 
     @Deprecated
     public JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento, ExpedientePlatino expediente) throws RegistroServiceException;

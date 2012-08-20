@@ -27,6 +27,8 @@ public interface GestorDocumentalService {
 
     public boolean isConfigured();
     
+    public void mostrarInfoInyeccion();
+    
     public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
 
     public List<String> getDocumentosEnExpediente(String expediente) throws GestorDocumentalServiceException;

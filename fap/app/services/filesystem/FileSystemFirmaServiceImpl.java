@@ -41,6 +41,14 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
         //No necesita configuración
         return true;
     }
+    
+    @Override
+    public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio de Firma ha sido inyectado con FileSystem y está operativo.");
+		else
+			play.Logger.info("El servicio de Firma ha sido inyectado con FileSystem y NO está operativo.");
+    }
 
     @Override
     public List<String> getFirmaEnClienteJS() {

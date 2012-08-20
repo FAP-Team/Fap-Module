@@ -148,6 +148,14 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	    return hasConnection() && platinoGestorDocumentalService.hasConnection();
 	}
 	
+	@Override
+    public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio de Registro ha sido inyectado con Platino y está operativo.");
+		else
+			play.Logger.info("El servicio de Registro ha sido inyectado con Platino y NO está operativo.");
+    }
+	
 	public boolean hasConnection() {
 		boolean hasConnection = false;
 		try {

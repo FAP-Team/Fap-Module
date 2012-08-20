@@ -94,6 +94,14 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	    return hasConnection();
 	}
 	
+	@Override
+    public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio de Firma ha sido inyectado con Platino y está operativo.");
+		else
+			play.Logger.info("El servicio de Firma ha sido inyectado con Platino y NO está operativo.");
+    }
+	
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {

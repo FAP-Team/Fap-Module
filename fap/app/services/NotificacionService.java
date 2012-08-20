@@ -46,4 +46,6 @@ public interface NotificacionService {
 	public String getUriBackOffice() ;
 
 	public boolean isConfigured();
+	
+	public void mostrarInfoInyeccion();
 }

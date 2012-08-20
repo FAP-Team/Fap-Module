@@ -106,6 +106,14 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         return temporalPath.exists() && clasificadoPath.exists();
     }
     
+    @Override
+    public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio de Gestor Documental ha sido inyectado con FileSystem y está operativo.");
+		else
+			play.Logger.info("El servicio de Gestor Documental ha sido inyectado con FileSystem y NO está operativo.");
+    }
+    
 
     /**
      * Crea un expediente para la solicitud

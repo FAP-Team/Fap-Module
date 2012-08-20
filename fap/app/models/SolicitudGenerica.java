@@ -91,7 +91,7 @@ public class SolicitudGenerica extends FapModel {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_autorizacion")
 	public List<Autorizaciones> autorizacion;
-	
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public DatosAnotaciones datosAnotaciones;
 

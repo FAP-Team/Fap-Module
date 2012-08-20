@@ -60,6 +60,14 @@ public class FileSystemNotificacionServiceImpl implements NotificacionService {
 		return true;
 	}
 	
+	@Override
+    public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio de Notificación ha sido inyectado con FileSystem y está operativo.");
+		else
+			play.Logger.info("El servicio de Notificación ha sido inyectado con FileSystem y NO está operativo.");
+    }
+	
     public void enviarNotificaciones(Notificacion notificacion, Agente gestor) throws NotificacionException {
 		log.info(String.format("La notificación pasa al estado de puesta a disposición"));
 			// Asignamos el gestor a la notificación

@@ -8,8 +8,8 @@ ConfigurarMensaje(ConfigurarMensaje-Presentar Desistimiento):
    tipoMensaje: []
    habilitar: false
 
-ConfigurarMensaje(ConfigurarMensaje-Documentación):
-   paginaAconfigurar: "Documentación"
+ConfigurarMensaje(ConfigurarMensaje-DocumentacionFAP):
+   paginaAconfigurar: "DocumentacionFAP"
    tipoMensaje: []
    habilitar: false
 
@@ -140,6 +140,11 @@ ConfigurarMensaje(ConfigurarMensaje-Presentación de la Solicitud):
 
 ConfigurarMensaje(ConfigurarMensaje-Presentar Solicitud):
    paginaAconfigurar: "Presentar Solicitud"
+   tipoMensaje: []
+   habilitar: false
+
+ConfigurarMensaje(ConfigurarMensaje-Anotaciones):
+   paginaAconfigurar: "Anotaciones"
    tipoMensaje: []
    habilitar: false
 

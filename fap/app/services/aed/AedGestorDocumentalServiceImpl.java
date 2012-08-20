@@ -138,6 +138,14 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	    }
 	    return isConfigured;
 	}
+    
+    @Override
+    public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio de Gestor Documental ha sido inyectado con el AED y está operativo.");
+		else
+			play.Logger.info("El servicio de Gestor Documental ha sido inyectado con el AED y NO está operativo.");
+    }
 		
 	protected boolean hasConnection(){
         boolean hasConnection = false;

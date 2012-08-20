@@ -14,6 +14,9 @@ import org.hibernate.ejb.EntityManagerImpl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.inject.Inject;
+
+import config.InjectorConfig;
 
 import emails.Mails;
 
@@ -26,6 +29,7 @@ import play.db.DB;
 import play.db.jpa.JPA;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
+import play.modules.guice.InjectSupport;
 import play.mvc.Router;
 import models.SolicitudGenerica;
 import play.test.Fixtures;
@@ -33,6 +37,10 @@ import play.vfs.VirtualFile;
 import properties.FapProperties;
 import properties.Properties;
 import services.BaremacionService;
+import services.FirmaService;
+import services.GestorDocumentalService;
+import services.NotificacionService;
+import services.RegistroService;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 
@@ -123,6 +131,19 @@ public class Start extends Job {
 		BaremacionUtils.actualizarTipoEvaluacion();
 		
 		actualizarSemillaExpediente();
+		
+		// Para mostrar información acerca de la inyección de los servicios
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		gestorDocumentalService.mostrarInfoInyeccion();
+		
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		firmaService.mostrarInfoInyeccion();
+		
+		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
+		registroService.mostrarInfoInyeccion();
+		
+		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
+		notificacionService.mostrarInfoInyeccion();
 	}
 	
 	/**

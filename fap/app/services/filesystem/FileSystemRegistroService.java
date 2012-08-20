@@ -34,6 +34,14 @@ public class FileSystemRegistroService implements RegistroService {
     }
     
     @Override
+    public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio de Registro ha sido inyectado con FileSystem y está operativo.");
+		else
+			play.Logger.info("El servicio de Registro ha sido inyectado con FileSystem y NO está operativo.");
+    }
+    
+    @Override
     public JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento,
             ExpedientePlatino expediente) throws RegistroServiceException {
     	return registrarEntrada(solicitante, documento, expediente, null);

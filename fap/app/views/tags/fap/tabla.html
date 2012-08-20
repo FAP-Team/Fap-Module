@@ -594,6 +594,9 @@
                         	column = gridColums[tip.triggerElement.cellIndex];
                             record = gridView.getRecord(tip.triggerElement.parentNode);
                             myToolTipText = "<b>"+column.text+": </b>";
+                            if (record.get(column.dataIndex) == null)
+                            	myToolTipText = myToolTipText + "Vacio";
+                            else
                             myToolTipText = myToolTipText + record.get(column.dataIndex);
                             tip.update(myToolTipText);
                     	}

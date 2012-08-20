@@ -1056,3 +1056,14 @@ when
 return
 	all
 }
+
+/*
+ * Permiso que nos permite en la pagina Administracion/ConfigurarMensajes ver la página a 
+ * la que le estamos editando el permiso, pero no modificarlo.
+ * 
+ */
+
+Permiso paginaAConfigurar{
+	return
+		visible
+}

@@ -22,8 +22,6 @@ import java.text.SimpleDateFormat;
 public class ConfigurarMensaje extends FapModel {
 	// Código de los atributos
 
-	public String paginaAconfigurar;
-
 	@ValueFromTable("tipoMensaje")
 	public String tipoMensaje;
 
@@ -36,6 +34,8 @@ public class ConfigurarMensaje extends FapModel {
 
 	@Transient
 	public String habilitarText;
+
+	public String nombrePagina;
 
 	public void init() {
 

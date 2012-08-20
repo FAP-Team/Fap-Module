@@ -6,7 +6,7 @@
 	def tipoMensaje="";
 	if ((!models.ConfigurarMensaje.findAll().isEmpty())) {
 	   for (models.ConfigurarMensaje mensaje: models.ConfigurarMensaje.findAll()) {
-			if ((mensaje.paginaAconfigurar.equals(pagina)) && (mensaje.habilitar)) {
+			if ((mensaje.nombrePagina.equals(pagina)) && (mensaje.habilitar)) {
 				hayMensaje=mensaje.habilitar;
 				tituloMensaje=mensaje.tituloMensaje;
 				tipoMensaje=mensaje.tipoMensaje;

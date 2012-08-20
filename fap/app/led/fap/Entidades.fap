@@ -537,12 +537,12 @@ Entidad Busqueda noAuditable extends Singleton {
 }
 
 Entidad ConfigurarMensaje {
-	String paginaAconfigurar
 	Lista tipoMensaje tipoMensaje
 	String tituloMensaje
 	LongText contenido
 	Boolean habilitar
 	String habilitarText transient
+	String nombrePagina 
 }
 
 

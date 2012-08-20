@@ -24,8 +24,18 @@ public class Start implements IWorkflowComponent {
         FileUtils.target = target;
 		generatingModule = !createSolicitud.equals("true");
 		FileUtils.diffPatchActive = diff.equals("true");
-		File file = new File(FileUtils.getRoute('INI_DATA')+"paginas.yml");
-		FileUtils.delete(file);
+		File file = new File(FileUtils.getRoute('INI_DATA')+"paginasMsj.yml");
+		File file1 = new File(FileUtils.getRoute('INI_DATA')+"paginasAppMsj.yml");
+		String file2 = new File(FileUtils.getRoute('INI_DATA')+"paginasMsjLista.yml");
+		String file3 = new File(FileUtils.getRoute('INI_DATA')+"paginasAppMsjLista.yml");
+		if (Start.generatingModule){
+			FileUtils.delete(file);
+			FileUtils.overwrite(file2, "[");
+		}
+		else{
+			FileUtils.delete(file1);
+			FileUtils.overwrite(file3, "[");
+		}
 	}
 
 	@Override

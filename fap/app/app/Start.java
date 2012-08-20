@@ -1,16 +1,33 @@
 package app;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.persistence.Query;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.h2.constant.SysProperties;
 import org.hibernate.ejb.EntityManagerImpl;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
+import org.yaml.snakeyaml.introspector.BeanAccess;
+import org.yaml.snakeyaml.scanner.ScannerException;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,6 +44,7 @@ import play.Play;
 import play.classloading.ApplicationClassloader;
 import play.db.DB;
 import play.db.jpa.JPA;
+import play.exceptions.YAMLException;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
 import play.modules.guice.InjectSupport;
@@ -71,13 +89,76 @@ public class Start extends Job {
         }
 		
 		//Cargando mensajes de pagina desde conf/initial-data/paginas.yml
-		if (ConfigurarMensaje.count() == 0){
-			Fixtures.delete();
-			String paginasFile = "listas/initial-data/paginas.yml";
-			Logger.info("Cargando mensajes de páginas desded %s", paginasFile);
-			play.test.Fixtures.loadModels(paginasFile);
-		}
 		
+		if ((ConfigurarMensaje.count() == 0)){
+			//Fap
+			Fixtures.delete();
+			String paginasFile = "listas/initial-data/paginasMsj.yml";
+			Logger.info("Cargando mensajes de páginas desde %s", paginasFile);
+			play.test.Fixtures.loadModels(paginasFile);
+			
+			//Aplicacion
+			Fixtures.delete();
+			paginasFile = "listas/initial-data/paginasAppMsj.yml";
+			Logger.info("Cargando mensajes de páginas desde %s", paginasFile);
+			play.test.Fixtures.loadModels(paginasFile);
+		}else{
+		
+		//Siempre revisa que las páginas no hayan sido previamente cargadas -> Añade nuevas
+			Fixtures.delete();
+			String paginasFileFap = "listas/initial-data/paginasMsj.yml";
+			String paginasFileApp = "listas/initial-data/paginasAppMsj.yml";
+			String paginasFileFapLista = "listas/initial-data/paginasMsjLista.yml";
+			String paginasFileAppLista = "listas/initial-data/paginasAppMsjLista.yml";
+			
+			//Intento de lectura desde yaml a estructura de datos
+			//http://forums.bukkit.org/threads/constructing-an-instance-of-a-class-with-snakeyaml.4153/
+			//LinkedHashMap<String, ConfigurarMensaje> paginasFap = (LinkedHashMap)play.test.Fixtures.loadYaml(paginasFileFap);
+			//LinkedHashMap<String, ConfigurarMensaje> paginasApp = (LinkedHashMap)play.test.Fixtures.loadYaml(paginasFileApp);
+			//HashMap<String, ConfigurarMensaje> obj = new HashMap<String, ConfigurarMensaje>();
+			//Yaml y = new Yaml(new CustomClassLoaderConstructor(ConfigurarMensaje.class.getClassLoader()));
+		    //   try {
+		    //       obj = (HashMap<String, ConfigurarMensaje>) y.load(new FileReader(paginasFileFap));
+		    //   } catch (FileNotFoundException e) {
+		    //       e.printStackTrace();
+		    //   }
+			//Lista<String> donde tengo todos los parámetros obtenidos de bbdd
+			//Collection<ConfigurarMensaje> valoresCM = (Collection<ConfigurarMensaje>)paginasFap2.values();
+			
+			//Cargo la lista de paginas
+			List<String> listaPagApp = (List<String>)play.test.Fixtures.loadYaml(paginasFileAppLista);
+			List<String> listaPagFap = (List<String>)play.test.Fixtures.loadYaml(paginasFileFapLista);
+			
+			
+			List<String> listaTotal = new ArrayList<String>();
+			listaTotal.addAll(listaPagFap);
+			listaTotal.addAll(listaPagApp);
+			
+			//Obtengo las paginas que ya están almacenadas
+			List<ConfigurarMensaje> paginasMensaje = ConfigurarMensaje.findAll();
+			
+			//Compruebo si la página existe.
+			boolean existe = false;
+			for (String str : listaTotal){
+				 existe = false;
+				 for (ConfigurarMensaje cm : paginasMensaje) {
+					if(str.equals(cm.nombrePagina)){
+						existe = true; //Encontrado
+						break;
+					}
+				}
+				if (!existe){ //Si no lo encontré -> Crear
+					ConfigurarMensaje cm = new ConfigurarMensaje();
+					cm.nombrePagina = str;
+					cm.habilitar = false;
+					cm.save();
+					existe = true;
+				}
+			}
+			
+			 
+
+		}
 		// Para controlar el posible cambio de version del modulo fap de una aplicacion, y evitar el minimo daño posible en la BBDD
 		// Ya que en versiones 1.2.X y anteriores la TableKeyValueDependency no existía, por lo que debemos controlar eso.
 		boolean cambioVersion=true;
@@ -187,6 +268,8 @@ public class Start extends Job {
 			}
 		}
 	}
+
+   
 }
 	
 	

@@ -1,12 +1,15 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import play.mvc.Util;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.NotificacionService;
+import tags.ComboItem;
 import utils.StringUtils;
 import validation.CustomValidation;
 import messages.Messages;
@@ -28,8 +31,9 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 		ConfigurarMensaje configurarMensaje = null;
 		if ("crear".equals(accion))
 			configurarMensaje = RellenarMensajesController.getConfigurarMensaje();
-		else if (!"borrado".equals(accion))
+		else if (!"borrado".equals(accion)){
 			configurarMensaje = RellenarMensajesController.getConfigurarMensaje(idConfigurarMensaje);
+		}
 
 		log.info("Visitando página: " + "fap/Admin/RellenarMensajes.html");
 		renderTemplate("fap/Admin/RellenarMensajes.html", accion, idConfigurarMensaje, configurarMensaje);
@@ -39,31 +43,13 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 	public static Long crearLogica(ConfigurarMensaje configurarMensaje) {
 		checkAuthenticity();
 		if (!permiso("crear")) {
-			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		
 		ConfigurarMensaje dbConfigurarMensaje = RellenarMensajesController.getConfigurarMensaje();
 		RellenarMensajesController.RellenarMensajesBindReferences(configurarMensaje);
 
 		if (!Messages.hasErrors()) {
-			List<ConfigurarMensaje> listaMensajes = ConfigurarMensaje.findAll();
-			
-			// Comprobamos que no exista ya un mensaje configurado para la misma página
-			// y que esté habilitado.
-			for (ConfigurarMensaje mensaje: listaMensajes) {
-				if ((configurarMensaje.paginaAconfigurar.equals(mensaje.paginaAconfigurar)) &&
-				(((mensaje.tipoMensaje != null) && (mensaje.tipoMensaje.equals(configurarMensaje.tipoMensaje))))) {
-					Messages.error("Ya existe un mensaje configurado para esa página");
-				}
-			}
-		}
-
-		if (!Messages.hasErrors()) {
 			RellenarMensajesController.RellenarMensajesValidateCopy("crear", dbConfigurarMensaje, configurarMensaje);
-		}
-		
-		if (!Messages.hasErrors()) {
-			RellenarMensajesController.crearValidateRules(dbConfigurarMensaje, configurarMensaje);
 		}
 		
 		Long idConfigurarMensaje = null;
@@ -176,5 +162,34 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 				msg += ", Gestor Documental";
 		}
 		return msg;
+	}
+	
+	public static List<ComboItem> paginaAconfigurar(){
+		List<ComboItem> result = new ArrayList<ComboItem>();
+		List<ConfigurarMensaje> paginasMensaje = ConfigurarMensaje.findAll();
+		for (ConfigurarMensaje lista: paginasMensaje){
+			result.add(new ComboItem(lista.nombrePagina, lista.nombrePagina));
+		}
+		return result; 
+	}
+	
+	public static void RellenarMensajesValidateCopy(String accion, ConfigurarMensaje dbConfigurarMensaje, ConfigurarMensaje configurarMensaje) {
+		CustomValidation.clearValidadas();
+		if (secure.checkGrafico("paginaAConfigurar", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+			CustomValidation.valid("configurarMensaje", configurarMensaje);
+		}
+		CustomValidation.valid("configurarMensaje", configurarMensaje);
+		CustomValidation.required("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
+		CustomValidation.validValueFromTable("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
+		dbConfigurarMensaje.tipoMensaje = configurarMensaje.tipoMensaje;
+		if (Arrays.asList(new String[] { "wiki" }).contains(dbConfigurarMensaje.tipoMensaje)) {
+			CustomValidation.required("configurarMensaje.tituloMensaje", configurarMensaje.tituloMensaje);
+			dbConfigurarMensaje.tituloMensaje = configurarMensaje.tituloMensaje;
+
+		}
+		CustomValidation.required("configurarMensaje.contenido", configurarMensaje.contenido);
+		dbConfigurarMensaje.contenido = configurarMensaje.contenido;
+		dbConfigurarMensaje.habilitar = configurarMensaje.habilitar;
+
 	}
 }

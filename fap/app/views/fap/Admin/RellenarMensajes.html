@@ -15,7 +15,11 @@
      urlEditar:play.mvc.Router.reverse('RellenarMensajesController.editar' , ['idConfigurarMensaje':configurarMensaje?.id])
 }
 	
-			#{fap.texto ayuda:tags.TagAyuda.popover('Introduzca el nombre de la página en la que quiere configurar el mensaje'), campo:'configurarMensaje.paginaAconfigurar', id:'paginaAconfigurar', requerido:true, titulo:'Página' /}		
+			#{fap.grupo borde:false, permiso:'paginaAConfigurar'}
+				
+			#{fap.combo campo:'configurarMensaje.nombrePagina', id:'paginaAconfigurar', titulo:'Página' /}		
+		
+			#{/fap.grupo}		
 		
 			#{fap.combo ayuda:tags.TagAyuda.popover('Seleccionar si se quiere configurar un wiki u otro tipo de mensaje'), campo:'configurarMensaje.tipoMensaje', id:'tipoMensaje', requerido:true, titulo:'Tipo' /}		
 		

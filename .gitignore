@@ -106,3 +106,8 @@ apps/test/conf/platino
 # apps/test/gestorDocumental
 apps/test/gestorDocumental/temporal/*
 apps/test/gestorDocumental/clasificado/*
+
+#Ignorar los yml
+fap/app/listas/initial-data/*.yml
+apps/test/app/listas/initial-data/*.yml
+

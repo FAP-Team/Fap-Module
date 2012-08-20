@@ -24,6 +24,9 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	@Inject
 	private IQualifiedNameProvider qnProvider;
 	
+//	@Inject
+//	private LedPackage ledPackage;
+	
 	public void myError(String message, EStructuralFeature feature){
 		error(message, feature);
 	}
@@ -49,7 +52,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	public void checkLengthOnlyString(Attribute attr) {
 		String tipo = attr.getType().getSimple().getType();
 		if ((attr.isHasLength()) && (tipo == null || (!(tipo.equals("String")) && !(tipo.equals("LongTexto"))))){
-			error("Anotado con la propiedad \"length\" un atributo que no es de tipo String o LongText", LedPackage.Literals.ATTRIBUTE__HAS_LENGTH);
+			error("Anotado con la propiedad \"length\" un atributo que no es de tipo String o LongText", /*ledPackage.getAttribute_HasLength()*/LedPackage.Literals.ATTRIBUTE__HAS_LENGTH);
 		}
 	}
 
@@ -60,7 +63,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	@Check
 	public void checkEntitiesStartsWithCapital(Entity entity) {
 		if (!Character.isUpperCase(entity.getName().charAt(0))){
-			error("Los nombres de las entidades deben empezar con mayuscula", LedPackage.Literals.ENTITY__NAME);
+			error("Los nombres de las entidades deben empezar con mayuscula", /*ledPackage.getEntity_Name()*/LedPackage.Literals.ENTITY__NAME);
 		}
 	}
 	
@@ -74,7 +77,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		Entity father = ((Entity)(attribute.eContainer()));
 		if (EntityImpl.class.isInstance(LedEntidadUtils.getEntidad(attribute))) {
 			if (father.getName().equals(((EntityImpl)LedEntidadUtils.getEntidad(attribute)).getName())){
-				error("Las entidades no se deben referenciar a si mismas mediante un atributo", LedPackage.Literals.ATTRIBUTE__TYPE);
+				error("Las entidades no se deben referenciar a si mismas mediante un atributo", /*ledPackage.getAttribute_Type()*/LedPackage.Literals.ATTRIBUTE__TYPE);
 			}
 		}
 	}
@@ -89,10 +92,10 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			CompoundType compound = attribute.getType().getCompound();
 			if (compound != null) {
 				if (compound.getEntidad() != null){
-					warning("Valores por defecto no aplicables sobre el tipo "+LedEntidadUtils.getEntidad(attribute).getName()+" (solo aplicables a tipos simples)", LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
+					warning("Valores por defecto no aplicables sobre el tipo "+LedEntidadUtils.getEntidad(attribute).getName()+" (solo aplicables a tipos simples)", /*ledPackage.getAttribute_DefaultValue()*/LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
 				}
 				else if ((compound.getLista() == null) || (compound.isMultiple())) {
-					warning("Valores por defecto no aplicables sobre listas de tipo multiple", LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
+					warning("Valores por defecto no aplicables sobre listas de tipo multiple", /*ledPackage.getAttribute_DefaultValue()*/LedPackage.Literals.ATTRIBUTE__DEFAULT_VALUE);
 				}
 			}
 		}
@@ -104,7 +107,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			Entity entidad = (Entity) attr.eContainer();
 			if (entidad.getName().equals("Solicitud")){
 				if (LedEntidadUtils.esSimple(attr)){
-					warning("La entidad \"Solicitud\" no debe tener atributos simples", LedPackage.Literals.ATTRIBUTE__TYPE);
+					warning("La entidad \"Solicitud\" no debe tener atributos simples", /*ledPackage.getAttribute_Type()*/LedPackage.Literals.ATTRIBUTE__TYPE);
 				}
 			}
 		}
@@ -134,7 +137,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	@Check
 	public void checkNameVariableInPermiso(PermisoVar permisoVar) {
 		if (Pattern.compile("^[A-Z]").matcher(permisoVar.getName()).find()) {
-			error("El nombre de la variable en permiso debe comenzar por minúscula", LedPackage.Literals.PERMISO_VAR__NAME);
+			error("El nombre de la variable en permiso debe comenzar por minúscula", /*ledPackage.getPermisoVar_Name()*/LedPackage.Literals.PERMISO_VAR__NAME);
 		}
 	}
 	
@@ -144,7 +147,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		Entity father = entidad.getExtends();
 		while (father != null){
 			if (father.getName().equals(entidad.getName())){
-				error(entidad.getName() + " no puede extender de " + entidad.getExtends().getName() + " porque se produce un lazo infinito", LedPackage.Literals.ENTITY__EXTENDS);
+				error(entidad.getName() + " no puede extender de " + entidad.getExtends().getName() + " porque se produce un lazo infinito", /*ledPackage.getEntity_Extends()*/LedPackage.Literals.ENTITY__EXTENDS);
 				return;
 			}
 			if (intermedias.contains(father.getName())){
@@ -174,26 +177,26 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		EObject container = LedCampoUtils.getCampoScope(tabla);
 		Campo concatenado = LedCampoUtils.concatena(LedCampoUtils.getCampoPaginaPopup(container), tabla.getCampo());
 		
-		checkTablaCampoPopup(tabla, tabla.getPopup(), concatenado, LedPackage.Literals.TABLA__POPUP);
-		checkTablaCampoPopup(tabla, tabla.getPopupBorrar(), concatenado, LedPackage.Literals.TABLA__POPUP_BORRAR);
-		checkTablaCampoPopup(tabla, tabla.getPopupCrear(), concatenado, LedPackage.Literals.TABLA__POPUP_CREAR);
-		checkTablaCampoPopup(tabla, tabla.getPopupEditar(), concatenado, LedPackage.Literals.TABLA__POPUP_EDITAR);
-		checkTablaCampoPopup(tabla, tabla.getPopupLeer(), concatenado, LedPackage.Literals.TABLA__POPUP_LEER);
+		checkTablaCampoPopup(tabla, tabla.getPopup(), concatenado, /*ledPackage.getTabla_Popup()*/LedPackage.Literals.TABLA__POPUP);
+		checkTablaCampoPopup(tabla, tabla.getPopupBorrar(), concatenado, /*ledPackage.getTabla_PopupBorrar()*/LedPackage.Literals.TABLA__POPUP_BORRAR);
+		checkTablaCampoPopup(tabla, tabla.getPopupCrear(), concatenado, /*ledPackage.getTabla_PopupCrear()*/LedPackage.Literals.TABLA__POPUP_CREAR);
+		checkTablaCampoPopup(tabla, tabla.getPopupEditar(), concatenado, /*ledPackage.getTabla_PopupEditar()*/LedPackage.Literals.TABLA__POPUP_EDITAR);
+		checkTablaCampoPopup(tabla, tabla.getPopupLeer(), concatenado, /*ledPackage.getTabla_PopupLeer()*/LedPackage.Literals.TABLA__POPUP_LEER);
 		
-		checkTablaCampoPagina(tabla, tabla.getPagina(), concatenado, LedPackage.Literals.TABLA__PAGINA);
-		checkTablaCampoPagina(tabla, tabla.getPaginaBorrar(), concatenado, LedPackage.Literals.TABLA__PAGINA_BORRAR);
-		checkTablaCampoPagina(tabla, tabla.getPaginaCrear(), concatenado, LedPackage.Literals.TABLA__PAGINA_CREAR);
-		checkTablaCampoPagina(tabla, tabla.getPaginaEditar(), concatenado, LedPackage.Literals.TABLA__PAGINA_EDITAR);
-		checkTablaCampoPagina(tabla, tabla.getPaginaLeer(), concatenado, LedPackage.Literals.TABLA__PAGINA_LEER);
+		checkTablaCampoPagina(tabla, tabla.getPagina(), concatenado, /*ledPackage.getTabla_Pagina()*/LedPackage.Literals.TABLA__PAGINA);
+		checkTablaCampoPagina(tabla, tabla.getPaginaBorrar(), concatenado, /*ledPackage.getTabla_PaginaBorrar()*/LedPackage.Literals.TABLA__PAGINA_BORRAR);
+		checkTablaCampoPagina(tabla, tabla.getPaginaCrear(), concatenado, /*ledPackage.getTabla_PaginaCrear()*/LedPackage.Literals.TABLA__PAGINA_CREAR);
+		checkTablaCampoPagina(tabla, tabla.getPaginaEditar(), concatenado, /*ledPackage.getTabla_PaginaEditar()*/LedPackage.Literals.TABLA__PAGINA_EDITAR);
+		checkTablaCampoPagina(tabla, tabla.getPaginaLeer(), concatenado, /*ledPackage.getTabla_PaginaLeer()*/LedPackage.Literals.TABLA__PAGINA_LEER);
 	}
 	
 	@Check
 	public void checkNombreEntidadUnico(Entity entidad){
-		for (Entity e : ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, entidad.eResource())) {
+		for (Entity e : ModelUtils.<Entity>getVisibleNodes(/*ledPackage.getEntity()*/LedPackage.Literals.ENTITY, entidad.eResource())) {
 			String uri1 = entidad.eResource().getURI().toString();
 			String uri2 = e.eResource().getURI().toString();
 			if (entidad.getName().equals(e.getName()) && !uri1.equals(uri2))
-				error("La entidad " + entidad.getName() + " ya existe", LedPackage.Literals.ENTITY__NAME);
+				error("La entidad " + entidad.getName() + " ya existe", /*ledPackage.getEntity_Name()*/LedPackage.Literals.ENTITY__NAME);
 		}
 	}
 	
@@ -202,7 +205,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	 */
 	@Check
 	public void checkPaginasStuff(Pagina pagina){
-		for (Pagina p : ModelUtils.<Pagina>getVisibleNodes(LedPackage.Literals.PAGINA, pagina.eResource())) {
+		for (Pagina p : ModelUtils.<Pagina>getVisibleNodes(/*ledPackage.getPagina()*/LedPackage.Literals.PAGINA, pagina.eResource())) {
 			String qn1 = qnProvider.getFullyQualifiedName(pagina).toString();
 			String qn2 = qnProvider.getFullyQualifiedName(p).toString();
 			String uri1 = pagina.eResource().getURI().toString();
@@ -219,7 +222,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	 */
 	@Check
 	public void checkPopupsStuff(Popup popup){
-		for (Popup p : ModelUtils.<Popup>getVisibleNodes(LedPackage.Literals.POPUP, popup.eResource())) {
+		for (Popup p : ModelUtils.<Popup>getVisibleNodes(/*ledPackage.getPopup()*/LedPackage.Literals.POPUP, popup.eResource())) {
 			String qn1 = qnProvider.getFullyQualifiedName(popup).toString();
 			String qn2 = qnProvider.getFullyQualifiedName(p).toString();
 			String uri1 = popup.eResource().getURI().toString();
@@ -231,14 +234,14 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Check
 	public void checkFormularioInicialUnico(Formulario formulario){
-		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(LedPackage.Literals.FORMULARIO, formulario.eResource())) {
+		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(/*ledPackage.getFormulario()*/LedPackage.Literals.FORMULARIO, formulario.eResource())) {
 			String qn1 = qnProvider.getFullyQualifiedName(formulario).toString();
 			String qn2 = qnProvider.getFullyQualifiedName(f).toString();
 			String uri1 = formulario.eResource().getURI().toString();
 			String uri2 = f.eResource().getURI().toString();
 			if (!qn1.equals(qn2) || !uri1.equals(uri2)){
 				if (formulario.isInicial() && f.isInicial()){
-					error("Ya existe otro formulario definido como inicial", LedPackage.Literals.FORMULARIO__INICIAL);
+					error("Ya existe otro formulario definido como inicial", /*ledPackage.getFormulario_Inicial()*/LedPackage.Literals.FORMULARIO__INICIAL);
 				}
 			}
 		}
@@ -247,20 +250,20 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	public void checkNombrePaginaUnico(Pagina pagina, Pagina other){
 		Formulario formulario = (Formulario)other.eContainer();
 		if (pagina.getName().equals(other.getName()))
-			error("La página " + pagina.getName() + " ya existe en el formulario " + formulario.getName(), LedPackage.Literals.PAGINA__NAME);
+			error("La página " + pagina.getName() + " ya existe en el formulario " + formulario.getName(), /*ledPackage.getPagina_Name()*/LedPackage.Literals.PAGINA__NAME);
 	}
 	
 	public void checkNombrePopupUnico(Popup popup, Popup other){
 		Formulario formulario = (Formulario)other.eContainer();
 		if (popup.getName().equals(other.getName()))
-			error("El popup " + popup.getName() + " ya existe en el formulario " + formulario.getName(), LedPackage.Literals.POPUP__NAME);
+			error("El popup " + popup.getName() + " ya existe en el formulario " + formulario.getName(), /*ledPackage.getPopup_Name()*/LedPackage.Literals.POPUP__NAME);
 	}
 	
 	public void checkPaginaInicialUnica(Pagina pagina, Pagina other){
 		Formulario formulario = (Formulario)pagina.eContainer();
 		Formulario otherForm = (Formulario)other.eContainer();
 		if (pagina.isInicial() && other.isInicial() && formulario.getName().equals(otherForm.getName())){
-			error("Ya existe en el formulario otra página definida como inicial", LedPackage.Literals.PAGINA__INICIAL);
+			error("Ya existe en el formulario otra página definida como inicial", /*ledPackage.getPagina_Inicial()*/LedPackage.Literals.PAGINA__INICIAL);
 		}
 	}
 	
@@ -269,10 +272,10 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		if (!rule.getLeft().isAction())
 			return;
 		if (rule.getRight() != null && rule.getRight().getAction() == null)
-			error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", LedPackage.Literals.PERMISO_RULE_CHECK__RIGHT);
+			error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", /*ledPackage.getPermisoRuleCheck_Right()*/LedPackage.Literals.PERMISO_RULE_CHECK__RIGHT);
 		for (PermisoRuleCheckRight right: rule.getRightGroup()){
 			if (right.getAction() == null)
-				error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", LedPackage.Literals.PERMISO_RULE_CHECK__LEFT);
+				error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", /*ledPackage.getPermisoRuleCheck_Left()*/LedPackage.Literals.PERMISO_RULE_CHECK__LEFT);
 		}
 	}
 	
@@ -283,7 +286,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		for (AccionesGrafico acciones: permisoReturn.getPares()){
 			for (String accion: acciones.getAcciones().getAcciones()){
 				if (allAcciones.contains(accion))
-					error("No se pueden repetir acciones", acciones, LedPackage.Literals.ACCIONES_GRAFICO__ACCIONES, 0);
+					error("No se pueden repetir acciones", acciones, /*ledPackage.getAccionesGrafico_Acciones()*/LedPackage.Literals.ACCIONES_GRAFICO__ACCIONES, 0);
 				else
 					allAcciones.add(accion);
 			}
@@ -294,7 +297,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	@Check
 	public void checkAcciones(Acciones acciones){
 		if (acciones.isMultiple() && acciones.getAcciones().size() == 0)
-			error("La lista de acciones no puede ser vacía", LedPackage.Literals.ACCIONES__ACCIONES);
+			error("La lista de acciones no puede ser vacía", /*ledPackage.getAcciones_Acciones()*/LedPackage.Literals.ACCIONES__ACCIONES);
 	}
 	
 	@Check
@@ -302,14 +305,14 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		Pattern pattern = Pattern.compile("[\\w-]+/(\\*|[\\w-]+)");
 		for (int i = 0; i < subirArchivo.getMimes().size(); i++){
 			if (!pattern.matcher(subirArchivo.getMimes().get(i)).matches())
-				error("El tipo mime especificado no es válido. Tiene que ser tipo/subtipo o tipo/*. Por ejemplo: application/pdf", LedPackage.Literals.SUBIR_ARCHIVO__MIMES, i);
+				error("El tipo mime especificado no es válido. Tiene que ser tipo/subtipo o tipo/*. Por ejemplo: application/pdf", /*ledPackage.getSubirArchivo_Mimes()*/LedPackage.Literals.SUBIR_ARCHIVO__MIMES, i);
 		}
 	}
 	
 	@Check
 	public void checkFirmaSimple(FirmaSimple firma){
 		if ("firma".equals(firma.getName()))
-			error("FirmaSimple no puede llamarse \"firma\"", LedPackage.Literals.FIRMA_SIMPLE__NAME);
+			error("FirmaSimple no puede llamarse \"firma\"", /*ledPackage.getFirmaSimple_Name()*/LedPackage.Literals.FIRMA_SIMPLE__NAME);
 	}
 	
 	@Check
@@ -320,7 +323,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			if (campo != null)
 				entidad = LedCampoUtils.getUltimaEntidad(campo).getName();
 			if (!entidad.equals("Solicitud") && !entidad.equals("SolicitudGenerica"))
-				error("El atributo guardarParaPreparar solo puede aplicarse a paginas de Solicitud", LedPackage.Literals.PAGINA__GUARDAR_PARA_PREPARAR);
+				error("El atributo guardarParaPreparar solo puede aplicarse a paginas de Solicitud", /*ledPackage.getPagina_GuardarParaPreparar()*/LedPackage.Literals.PAGINA__GUARDAR_PARA_PREPARAR);
 		
 		}
 	}
@@ -345,7 +348,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 				unicos.add(campoStr);
 			else{
 				if (campo != null)
-					warning("El campo esta siendo utilizado por otro elemento en la misma pagina", campo, LedPackage.Literals.CAMPO__ATRIBUTOS, 0);
+					warning("El campo esta siendo utilizado por otro elemento en la misma pagina", campo, /*ledPackage.getCampo_Atributos()*/LedPackage.Literals.CAMPO__ATRIBUTOS, 0);
 			}
 		}
 	}
@@ -356,7 +359,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		Set<String> allTipos = new HashSet<String>();
 		for (String tipo: tipos.getList()){
 			if (allTipos.contains(tipo))
-				error("No se pueden repetir las mismas opciones de cascada", tipos.eContainer().eContainer(), LedPackage.Literals.ATTRIBUTE__CASCADE, 0);
+				error("No se pueden repetir las mismas opciones de cascada", tipos.eContainer().eContainer(), /*ledPackage.getAttribute_Cascade()*/LedPackage.Literals.ATTRIBUTE__CASCADE, 0);
 			else
 				allTipos.add(tipo);
 		}
@@ -369,6 +372,6 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	@Check
 	public void checkAttributeNoStartsWithCapital(Attribute attr) {
 		if ((attr.getName() != null) && (Character.isUpperCase(attr.getName().charAt(0))))
-			error("Los atributos de las entidades deben empezar con minuscula", LedPackage.Literals.ATTRIBUTE__NAME);
+			error("Los atributos de las entidades deben empezar con minuscula", /*ledPackage.getAttribute_Name()*/LedPackage.Literals.ATTRIBUTE__NAME);
 	}
 }

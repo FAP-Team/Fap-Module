@@ -660,9 +660,20 @@ Entidad Autorizaciones{
 
 Entidad AdministracionFapJobs extends Singleton{
 	Boolean actualizarNotificaciones default = "true"
+	Boolean valorPropioActualizarNotificaciones default="false"
+	Integer valorActualizarNotificaciones
+	
 	Boolean comprimirLogs default="true"
+	Boolean valorPropioComprimirLogs default="false"
+	Integer valorComprimirLogs
+	
 	Boolean eliminarTemporales default="true"
+	Boolean valorPropioEliminarTemporales default="false"
+	Integer valorEliminarTemporales
+	
 	Boolean notificarAlertasAnotaciones default="true"
+	Boolean valorPropioNotificarAlertasAnotaciones default="false"
+	Integer valorNotificarAlertasAnotaciones
 }
 
 Entidad DatosAnotaciones {

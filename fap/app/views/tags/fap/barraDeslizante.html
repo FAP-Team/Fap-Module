@@ -1,0 +1,51 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+	def id = _id ?: field.id
+	def id_help  = id + '-help' 
+	def idHidden = (String)id+utils.StringUtils.aleatorio(5);
+	def label = _titulo ?: play.i18n.Messages.get(field.name)
+	def value = _value ?: field.flashorvalue
+	def alineadoAIzquierdas = _alineadoAIzquierdas
+	def minimo = _minimo ?: 0;
+	def maximo = _maximo ?: 100;
+	
+	if (value == null)
+		value = _valorDefecto ?: minimo;
+
+	def ayuda = _ayuda
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+
+}%	
+
+	<div class="controls">
+		<div #{if alineadoAIzquierdas}style="margin-left:-30%;"#{/if}>
+			<h5>${label}</h5>
+			<div class="span4" id="${id}_Slider" ${disabled} style="margin-top:0.5em; margin-bottom:1em; margin-right:1%; width:40%"></div>
+			<input class="span1" type="text "id="${id}" name="${field.name}" value="${value}" ${disabled} style="border:0; color:#ed2b34; font-weight:bold;"/>
+			#{fap.ayuda ayuda:ayuda, id:id_help /}
+		</div>
+	</div>
+	
+	<script>
+		$('#${id}_Slider').slider({
+	         range: "min",
+	         min: ${minimo},
+	         max: ${maximo},
+	         value: ${value},
+	         slide: function (event, ui) {
+         		$("#${id}").val(ui.value);
+    	 	 }
+		});
+		
+		$('#${id}').change(function(){
+			$('#${id}_Slider').slider({
+				value: $('#${id}').val()
+			});
+		});
+	</script>
+	
+#{/fap.field}

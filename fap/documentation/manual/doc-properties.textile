@@ -57,5 +57,12 @@ h2. Properties originarias de FAP
 * Aparece un formulario de búsqueda en la pantalla inicial para todos los roles (excepto Usuario): *fap.index.search=* _[true | false]_
 ** Ejemplo: _fap.index.search=true_
 * Tipo de direcciones usadas en el combo tipo de direcciones del elemento dirección: * *fap.direcciones.tipo=* _tiposDirecciones_
-** Ejemplo: _fap.direcciones.tipo=canaria,nacional,internacional_ (Valor por defecto, que trae el módulo FAP)
-
+** Ejemplo: _fap.direcciones.tipo=canaria,nacional,internacional_ (Valor por defecto que trae el módulo FAP)
+* Cada cuanto se debe ejecutar el Job encargado de actualizar las Notificaciones (en minutos) *fap.notificacion.refrescoBaseDeDatosFromWS=* _Número_
+** Ejemplo: _fap.notificacion.refrescoBaseDeDatosFromWS=1_ (Valor por defecto que trae el módulo FAP)
+* Cada cuanto se debe ejecutar el Job encargado de gestionar lo del Seguimiento (en minutos) *fap.seguimiento.notificarAlertar.anotaciones=* _Número_
+** Ejemplo: _fap.seguimiento.notificarAlertar.anotaciones=1_ (Valor por defecto que trae el módulo FAP)
+* Cada cuanto se debe ejecutar el Job encargado de comprimir los logs (en horas) *fap.log.compress.every=* _Número_
+** Ejemplo: _fap.log.compress.every=24_ (Valor por defecto que trae el módulo FAP)
+* Cada cuanto se debe ejecutar el Job encargado de eliminar los archivos temporales antiguos (en horas) *fap.delete.temporals.every=* _Número_
+** Ejemplo: _fap.delete.temporals.every=5_ (Valor por defecto que trae el módulo FAP)

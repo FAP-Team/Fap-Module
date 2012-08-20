@@ -26,6 +26,7 @@ Formulario Administracion permiso=administrador{
 		Enlace "Salir" accion=logout
     }
     
+    /* Sobreescrita */
     Pagina Jobs titulo="Configurar Jobs" campo=AdministracionFapJobs{
     	Wiki{"*Esta Página permite habilitar/deshabilitar los Jobs que están activos del módulo FAP.*"}
     	
@@ -35,18 +36,21 @@ Formulario Administracion permiso=administrador{
     	}
     	
     	Grupo titulo="Job para la Compresión de los Logs"{
-    		Wiki{"Este Job es el encargado de comprimir los Logs de días anteriores. Cada madrugada, el Job se encarga de comprimir los ficheros de Logs del día anterior para así tener un backup de tamaño reducido."}
-    		Check titulo="Comprimir Logs" campo=AdministracionFapJobs.comprimirLogs
+    		Wiki{"Esta Job es el encargado de comprimir los Logs de días anteriores. Cada madrugada (por defecto), el Job se encarga de comprimir los ficheros de Logs del día anterior para así tener un backup de tamaño reducido."}
+    		Check cComprimirLogs titulo="Comprimir Logs" campo=AdministracionFapJobs.comprimirLogs alineadoAIzquierdas
+    		Grupo borde=false mostrarSiCheck cComprimirLogs = true{
+	    		RadioBooleano rComprimirLogs titulo="Intervalo de tiempo" campo=AdministracionFapJobs.valorPropioComprimirLogs alineadoAIzquierdas botonIzquierdo="Por Defecto" botonDerecho="Personalizar"
+	    	}
     	}
     	
     	Grupo titulo="Job para Eliminar Archivos Temporales" mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.delete.temporals\")"{
-    		Wiki{"Este Job es el encargado de eliminar (según la configuración de la aplicación) los archivos temporales que se hayan ido creando por la aplicación y que sean más antiguos a una fecha configurada."}
-    		Check titulo="Eliminar Archivos Temporales" campo=AdministracionFapJobs.eliminarTemporales
+    		Wiki{"Esta Job es el encargado de eliminar (según la configuración de la aplicación) los archivos temporales que se hayan ido creando por la aplicación y que sean más antiguos a una fecha configurada."}
+    		Check cEliminarTemporales titulo="Eliminar Archivos Temporales" campo=AdministracionFapJobs.eliminarTemporales alineadoAIzquierdas
     	}
     	
     	Grupo titulo="Job para Notificar Alertas de las Anotaciones" {
     		Wiki{"Este Job es el encargado de notificar las alertas de las anotaciones creadas, comprobando cada minuto si existe alguna nueva."}
-    		Check titulo="Notificar Alertas Anotaciones" campo=AdministracionFapJobs.notificarAlertasAnotaciones
+    		Check titulo="Notificar Alertas Anotaciones" campo=AdministracionFapJobs.notificarAlertasAnotaciones alineadoAIzquierdas
     	}
     }
     

@@ -9,6 +9,8 @@ import java.util.Map;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
+import com.google.inject.Inject;
+
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CampoAtributos;
@@ -25,6 +27,9 @@ import es.fap.simpleled.led.Formulario;
 
 
 public class LedCampoUtils {
+	
+//	@Inject
+//	public static LedPackage ledPackage;
 	
 	public static Entity getUltimaEntidad(Campo campo){
 		if (campo == null)
@@ -199,7 +204,7 @@ public class LedCampoUtils {
 		EObject container = LedCampoUtils.getCampoScope(elemento);
 		Map<String, Entity> entidades = new HashMap<String, Entity>();
 		if (container instanceof Model || elemento instanceof Tabla){
-			for (Entity e: ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, elemento.eResource()))
+			for (Entity e: ModelUtils.<Entity>getVisibleNodes(/*ledPackage.getEntity()*/LedPackage.Literals.ENTITY, elemento.eResource()))
 				entidades.put(e.getName(), e);	
 			return entidades;
 		}

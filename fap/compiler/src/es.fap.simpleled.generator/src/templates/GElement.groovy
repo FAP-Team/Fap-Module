@@ -176,6 +176,9 @@ public class GElement {
 			else if(element instanceof Check)
 				cache.put(element, new GCheck(element, container));
 		
+			else if(element instanceof RadioBooleano)
+				cache.put(element, new GRadioBooleano(element, container));
+				
 			else if(element instanceof Wiki)
 				cache.put(element, new GWiki(element, container));
 			
@@ -211,6 +214,9 @@ public class GElement {
 			
 			else if (element instanceof Accion)
 				cache.put(element, new GElement(element, container));
+				
+//			else if (element instanceof BarraDeslizante)
+//				cache.put(element, new GBarraDeslizante(element, container));
 		}
 		
 		return cache.get(element);

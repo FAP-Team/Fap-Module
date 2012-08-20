@@ -22,16 +22,23 @@ import properties.FapProperties;
  * @author Jorge Carballo
  *
  */
-@Every("5h")
+@Every("1h")
 public class DeleteTemporals extends Job {
+	
+	static Integer tiempoRefresco = 1;
 	
     public void doJob() {
 		if (AdministracionFapJobs.all() != null) {
 			AdministracionFapJobs job = AdministracionFapJobs.all().first();
 			if (job.eliminarTemporales) {
-		    	String borrar = FapProperties.get("fap.delete.temporals");
-		    	if (borrar.equals("true"))
-		    		deleteReports();
+				if ((job.valorEliminarTemporales != null) && (tiempoRefresco == job.valorEliminarTemporales)){
+					tiempoRefresco=1;
+			    	String borrar = FapProperties.get("fap.delete.temporals");
+			    	if (borrar.equals("true"))
+			    		deleteReports();
+				} else {
+		    		tiempoRefresco++;
+		    	}
 			}
 		}
     }

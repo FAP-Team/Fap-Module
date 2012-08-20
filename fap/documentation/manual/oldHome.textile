@@ -48,6 +48,7 @@ h3. Elementos Gráficos
 # "area texto":dsl-areaTexto
 # "boton":dsl-boton
 # "check":dsl-check
+# "radioBooleano":dsl-radioBooleano
 # "enlace":dsl-enlace
 # "combo":dsl-combo
 # "grupo":dsl-grupo

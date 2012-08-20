@@ -1,0 +1,34 @@
+h1. Radio Booleano
+
+h2. Descripción
+
+Permite definir un radio booleano (con dos botones/opciones y sólo se puede seleccionar uno de ellos).
+
+h2. Parámetros
+
+* **_[name]_** (opcional) : Identificador del elemento.
+* **titulo = _[string]_** : Etiqueta que se mostrará al lado del radio, si no se especifica se mostrara el nombre del campo.
+* **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de título.
+* **campo = _[campo]_** : Atributo donde se almacenará el valor del radio.
+* **ayuda = _[string]_** (opcional) : Ayuda asociada al radio booleano.
+* **alineadoAIzquierdas** (opcional) : Si se especifica, se alineará el radio Booleano a la izquierda del todo.
+* **botonIzquierdo= _[string]** (opcional): Indica el nombre que va a poseer el botón de la izquierda del radio booleano.
+* **botonDerecho= _[string]** (opcional): Indica el nombre que va a poseer el botón de la derecha del radio booleano.
+
+h2. Definición
+
+bc. RadioBooleano:
+	elemento='RadioBooleano' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
+		& ('botonIzquierdo' '=' botonIzquierdo=STRING)?
+		& ('botonDerecho' '=' botonDerecho=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
+	)
+;	
+
+h2. Ejemplo de uso
+
+bc. RadioBooleano sexualidad titulo="Sexo" campo=Solicitud.datosSolicitante.sexo botonIzquierdo="Varón" botonDerecho="Mujer"

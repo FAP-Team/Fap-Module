@@ -1,0 +1,62 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+	def id = _id ?: field.id
+	def id_help  = id + '-help' 
+	def idHidden = (String)id+utils.StringUtils.aleatorio(5);
+	def label = _titulo ?: play.i18n.Messages.get(field.name)
+	def value = _value ?: field.flashorvalue
+	def alineadoAIzquierdas = _alineadoAIzquierdas
+	
+	def labelLeft = _labelLeft ?: "Off"
+	def labelRight = _labelRight ?: "On"
+	
+	def checkedIzquierda = ""
+	def checkedDerecha = ""
+	def valueH = false
+	if((value == true) || (value == 'on') || value == "true") {
+		checkedDerecha = "active"
+		valueH = true
+	} else {
+		checkedIzquierda = "active"
+		valueH = false
+	}
+
+	def ayuda = _ayuda
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	
+	String style = '';
+	if(_anchoTitulo != null)
+		style += 'width: ' + _anchoTitulo + ';'
+
+}%	
+	<div class="controls">
+		<div #{if alineadoAIzquierdas}style="margin-left:-30%; margin-top:1em;"#{/if}#{else} style="margin-top:1em;"#{/else}>
+			<h5>${label}</h5>
+			<div class="btn-group" data-toggle="buttons-radio" style="margin-top:0.5em; margin-bottom:1em">
+		  		<a id="${id}Izquierda" class="btn ${checkedIzquierda}" ${disabled}>${labelLeft}</a>
+		  		<a id="${id}Derecha" class="btn ${checkedDerecha}" ${disabled}>${labelRight}</a>
+		  		#{fap.ayuda ayuda:ayuda, id:id_help /}
+			</div>
+		</div>
+		<input type="hidden" id="${idHidden}" name="${field.name}" value="${valueH.raw()}" ${disabled}/>
+	</div>
+	
+	<script>
+		$(function() {
+			$('#${id}Izquierda').click(function(){
+				$('#${idHidden}').val("false");
+			});
+		});
+		
+		$(function() {
+			$('#${id}Derecha').click(function(){
+				$('#${idHidden}').val("true");
+			});
+		});
+	</script>
+	
+#{/fap.field}

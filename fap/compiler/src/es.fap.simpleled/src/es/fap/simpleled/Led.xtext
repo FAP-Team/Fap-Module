@@ -190,6 +190,7 @@ Grupo:
 		(
 			('mostrarSiCombo' siCombo=[Combo|QN] signoSiCombo=GrupoComboSigno siComboValues=Values) |
 			('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false")) |
+			//('mostrarSiRadioBooleano' siCheck=[RadioBooleano|QN] '=' siRadioBooleanoValues=("true" | "false")) |
 			('mostrarSiCampo' campo=Campo signoSiCampo=GrupoComboSigno siCampoValues=Values) |
 			('mostrarSiExpresion' siExpresion=STRING)
 		)? &
@@ -218,10 +219,10 @@ Values:
 
 Elemento:
 	Grupo | AgruparCampos | 
-	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones |
+	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones | RadioBooleano | //BarraDeslizante |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
-	SubirArchivo | EditarArchivo | FirmaSimple | 
+	SubirArchivo | EditarArchivo | FirmaSimple |
 	EntidadAutomatica | Accion
 ;
 
@@ -272,8 +273,32 @@ Check:
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
 	)
+;
+
+RadioBooleano:
+	elemento='RadioBooleano' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
+		& ('botonIzquierdo' '=' botonIzquierdo=STRING)?
+		& ('botonDerecho' '=' botonDerecho=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
+	)
 ;	
 
+//BarraDeslizante:
+//	elemento='BarraDeslizante' (name=ID)? (
+//		('campo' '=' campo=Campo)
+//		& ('titulo' '=' titulo=STRING)?
+//		& ('ancho' '=' ancho=STRING)?
+//		& ('minimo' '=' minimo=STRING)?
+//		& ('maximo' '=' maximo=STRING)?
+//		& ('valorDefecto' '=' valorDefecto=STRING)?
+//		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+//		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
+//	)
+//;	
 
 Enlace:
 	elemento='Enlace' (name=ID)? (

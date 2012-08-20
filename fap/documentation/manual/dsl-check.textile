@@ -10,6 +10,8 @@ h2. Parámetros
 * **titulo = _[string]_** : Etiqueta que se mostrará al lado del check, si no se especifica se mostrara el nombre del campo.
 * **campo = _[campo]_** : Atributo donde se almacenará el valor del check.
 * **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de título.
+* **ayuda = _[string]_** (opcional) : Ayuda asociada al radio booleano.
+* **alineadoAIzquierdas** (opcional) : Si se especifica, se alineará el check a la izquierda del todo.
 
 h2. Definición
 
@@ -18,8 +20,10 @@ bc. Check:
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
 	)
-;	
+;
 
 h2. Ejemplo de uso
 

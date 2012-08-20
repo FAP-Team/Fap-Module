@@ -4,6 +4,8 @@
 	def siComboValue = _siComboValue;
 	def siCheck = _siCheck
 	def siCheckValue = _siCheckValue
+	def siRadioBooleano = _siRadioBooleano
+	def siRadioBooleanoValue = _siRadioBooleanoValue
 	def permiso = _permiso
 	def ayuda = _ayuda
 	def id_help  = id + '-help' 
@@ -89,7 +91,6 @@
 			if(value == ${siCheckValue} ){
 				var el = Ext.get('${id}').show();				
 				$('#${id} .tabla').each( function(index){
-					console.log($(this).data('grid'));
 					if ((typeof $(this).data('grid')!=  "undefined")) {
 						$(this).data('grid').setWidth("10%"); // IE7
 						$(this).data('grid').setWidth("100%");
@@ -106,5 +107,53 @@
 	});
 </script>
 #{/if}
+
+#{if siRadioBooleano}
+<script type="text/javascript">
+	$(function(){
+		var $radioBooleanoIzquierda = $('#${siRadioBooleano}Izquierda');
+		var $radioBooleanoDerecha = $('#${siRadioBooleano}Derecha');
+		var $group = $('#${id}');
+		function click${siRadioBooleano}Izquierda(){
+			if (${siRadioBooleanoValue} === false) {
+				var el = Ext.get('${id}').show();				
+				$('#${id} .tabla').each( function(index){
+					if ((typeof $(this).data('grid')!=  "undefined")) {
+						$(this).data('grid').setWidth("10%"); // IE7
+						$(this).data('grid').setWidth("100%");
+					}
+				});			
+			}else{
+				var el = Ext.get('${id}');
+				el.setVisibilityMode(Ext.Element.OFFSETS);
+				el.hide();
+			}	
+		};
+		function click${siRadioBooleano}Derecha(){
+			if (${siRadioBooleanoValue} === true) {
+				var el = Ext.get('${id}').show();				
+				$('#${id} .tabla').each( function(index){
+					if ((typeof $(this).data('grid')!=  "undefined")) {
+						$(this).data('grid').setWidth("10%"); // IE7
+						$(this).data('grid').setWidth("100%");
+					}
+				});			
+			}else{
+				var el = Ext.get('${id}');
+				el.setVisibilityMode(Ext.Element.OFFSETS);
+				el.hide();
+			}	
+		};
+		if ($('#${siRadioBooleano}Izquierda').hasClass('active')){
+			click${siRadioBooleano}Izquierda();
+		} else {
+			click${siRadioBooleano}Derecha();
+		}
+		$radioBooleanoIzquierda.click(click${siRadioBooleano}Izquierda);
+		$radioBooleanoDerecha.click(click${siRadioBooleano}Derecha);
+	});
+</script>
+#{/if}
+
 #{/fap.permiso}
 #{/if}

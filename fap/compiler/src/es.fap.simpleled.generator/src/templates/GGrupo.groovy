@@ -37,6 +37,11 @@ public class GGrupo extends GGroupElement{
 			params.put("siCheckValue", grupo.siCheckValues)
 		}
 		
+//		if (grupo.siRadioBooleano){
+//			params.putStr("siRadioBooleano", grupo.siRadioBooleano.name)
+//			params.put("siRadioBooleanoValue", grupo.siRadioBooleanoValues)
+//		}
+		
 		if (grupo.campo){
 			def valores = ListUtils.list2GroovyListString(grupo.siCampoValues.values);
 			CampoUtils campo = CampoUtils.create(grupo.campo);

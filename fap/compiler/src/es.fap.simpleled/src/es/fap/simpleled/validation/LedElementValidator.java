@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 
+import com.google.inject.Inject;
+
 import es.fap.simpleled.led.AreaTexto;
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.CalcularFirmantes;
@@ -50,6 +52,8 @@ public abstract class LedElementValidator {
 	public EObject element;
 	public Entity raiz;
 	
+//	@Inject
+//	private LedPackage ledPackage;
 	
 	public abstract boolean aceptaEntidad(Entity entidad);
 	
@@ -67,7 +71,7 @@ public abstract class LedElementValidator {
 	
 	public void validateCampoEntidad(Campo campo, LedJavaValidator validator){
 		if (campo.getMethod() == null && !LedCampoUtils.getEntidadesValidas(campo.eContainer()).containsKey(campo.getEntidad().getName()))
-			validator.myError("En este contexto no se puede utilizar esta entidad", campo, LedPackage.Literals.CAMPO__ENTIDAD, 0);
+			validator.myError("En este contexto no se puede utilizar esta entidad", campo, /*ledPackage.getCampo_Entidad()*/LedPackage.Literals.CAMPO__ENTIDAD, 0);
 	}
 	
 	public void validateCampo(Campo campo, LedJavaValidator validator) {

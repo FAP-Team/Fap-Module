@@ -1,10 +1,10 @@
 h1. Configuración de mensajes
 
-En la versión actual, se ofrece la posibilidad de personalizar los mensajes de las diferentes páginas de la aplicación. Las páginas a las que se les haya configurado un mensaje aparacen en la tabla de la página "Configurar mensajes" del apartado de Administración.
+En la versión actual, se ofrece la posibilidad de personalizar los mensajes de las diferentes páginas de la aplicación. En "Configurar mensajes" del apartado de Administración, puede verse una tabla con todas las páginas de la aplicación a las que se les puede añadir un mensaje personalizado.
 
 !images/admin-configurar-mensajes!
 
-A la hora de crear un nuevo mensaje habrá que rellenar una serie de campos. En primer lugar, se rellena la página en la que se quiere configurar el mensaje. A continuación, tenemos la posibilidad de elegir el tipo del mensaje:
+A la hora de personalizar una página, debemos buscarla en la lista de páginas diponible. Una vez se haya elegido, aparecerá una nueva página en la que se nos pide que elijamos el tipo de mensaje:
 
 * Fatal
 * Error
@@ -13,7 +13,8 @@ A la hora de crear un nuevo mensaje habrá que rellenar una serie de campos. En 
 * Info
 * Wiki
 
-En el cuadro de texto disponible escribimos el mensaje deseado para el tipo de mensaje elegido y obtenemos la visualización bajo el botón guardar.
-Para que se aplique el cambio de mensaje en la página, debe activarse el check de habilitación.
+En el cuadro de texto disponible escribimos el mensaje deseado y obtenemos la visualización bajo el botón guardar.
+Para que sea visible el mensaje en la página, debe activarse el check de habilitación.
+Sólo se permite un mensaje por página, independientemente del tipo que se le asigne.
 
 !images/admin-rellenar-mensajes!

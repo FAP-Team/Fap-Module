@@ -15,18 +15,20 @@
         #{stylesheet 'mainApp.css' /}
 
         #{stylesheet 'loading.css' /}
+        
+        #{stylesheet 'datepicker.css' /}
           
         #{get 'moreStyles' /}
         
         #{script src:"jquery/jquery-1.7.1.min.js" /}
         #{script src:"jquery/jquery-ui.1.8.10.min.js" /}
-        #{script src:"jquery/jquery.ui.datepicker-es.js" /}
               
         #{script src:"bootstrap/bootstrap-dropdown.js" /}
         #{script src:"bootstrap/bootstrap-modal.js" /}
         #{script src:"bootstrap/bootstrap-alert.js" /}
         #{script src:"bootstrap/bootstrap-tooltip.js" /}
         #{script src:"bootstrap/bootstrap-popover.js" /}
+        #{script src:"bootstrap/bootstrap-datepicker.js" /}
         
         #{script 'ext/ext-all.js' /}
         #{script 'ext/form/SearchFieldFilter.js' /}
@@ -72,7 +74,7 @@
 %{
 	def userNotificacion=null;
 	def urlNotificacionesTabla = play.mvc.Router.reverse('NotificacionesController.index');
-	topbarscope : { //Ã?mbito
+	topbarscope : { //Ámbito
 		def agente = controllers.fap.AgenteController.getAgente();
 		def roles;
 		def user;

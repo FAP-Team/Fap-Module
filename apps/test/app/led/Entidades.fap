@@ -28,11 +28,6 @@ Entidad FirmanteSingle extends Singleton{
 	String otros
 }
 
-Entidad DocumentoSingle extends Singleton{
-	Documento doc
-	String desc
-}
-
 Entidad PaginasTab{
 	String nombre
 	OneToMany TablaPaginas_nivel1 tpaginas_nivel1

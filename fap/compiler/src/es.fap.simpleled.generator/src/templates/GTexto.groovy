@@ -17,6 +17,8 @@ public class GTexto extends GSaveCampoElement{
 	public String view(){
 		TagParameters params = new TagParameters();
 		params.putStr("campo", campo.firstLower())
+		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Email"))
+			params.put "email", true
 		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Double"))
 			params.putStr ("format", "double")
 		if (LedEntidadUtils.getSimpleTipo(campo.getUltimoAtributo()).equals("Moneda"))

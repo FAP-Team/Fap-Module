@@ -83,7 +83,12 @@
 
 	#{if download}
 		<div class="control-group">
-			<a href="${field.value.urlDescarga}" target="_blank" class="btn">Descargar documento desde el AED</a>
+			<label class="control-label">Documento</label>
+			<div class="controls">
+				<div class="input-prepend">
+    			<span class="add-on"><i class="icon-download-alt"></i></span><a href="${field.value.urlDescarga}" target="_blank" class="btn">Descargar documento</a>
+				</div>
+			</div>
 		</div>
 	#{/if}
 	

@@ -1010,11 +1010,12 @@ select:focus:required:invalid:focus {
 }
 .input-prepend .add-on,
 .input-append .add-on {
-  display: inline-block;
+  //display: inline-block;
   width: auto;
   min-width: 16px;
   height: 18px;
-  padding: 4px 5px;
+  //padding: 4px 5px;
+  padding: 5px 5px 5px 5px;
   font-weight: normal;
   line-height: 18px;
   text-align: center;

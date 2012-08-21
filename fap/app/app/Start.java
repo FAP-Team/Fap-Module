@@ -102,28 +102,19 @@ public class Start extends Job {
 			paginasFile = "listas/initial-data/paginasAppMsj.yml";
 			Logger.info("Cargando mensajes de páginas desde %s", paginasFile);
 			play.test.Fixtures.loadModels(paginasFile);
+			
+			// Para la pagina de Login
+			ConfigurarMensaje cm = new ConfigurarMensaje();
+			cm.nombrePagina = "login";
+			cm.formulario = "login";
+			cm.habilitar = false;
+			cm.save();
 		}else{
 		
-		//Siempre revisa que las páginas no hayan sido previamente cargadas -> Añade nuevas
+			//Siempre revisa que las páginas no hayan sido previamente cargadas -> Añade nuevas
 			Fixtures.delete();
 			String paginasFileFapLista = "listas/initial-data/paginasMsjLista.yml";
 			String paginasFileAppLista = "listas/initial-data/paginasAppMsjLista.yml";
-			
-			//Intento de lectura desde yaml a estructura de datos
-			//http://forums.bukkit.org/threads/constructing-an-instance-of-a-class-with-snakeyaml.4153/
-			//String paginasFileFap = "listas/initial-data/paginasMsj.yml";
-			//String paginasFileApp = "listas/initial-data/paginasAppMsj.yml";
-			//LinkedHashMap<String, ConfigurarMensaje> paginasFap = (LinkedHashMap)play.test.Fixtures.loadYaml(paginasFileFap);
-			//LinkedHashMap<String, ConfigurarMensaje> paginasApp = (LinkedHashMap)play.test.Fixtures.loadYaml(paginasFileApp);
-			//HashMap<String, ConfigurarMensaje> obj = new HashMap<String, ConfigurarMensaje>();
-			//Yaml y = new Yaml(new CustomClassLoaderConstructor(ConfigurarMensaje.class.getClassLoader()));
-		    //   try {
-		    //       obj = (HashMap<String, ConfigurarMensaje>) y.load(new FileReader(paginasFileFap));
-		    //   } catch (FileNotFoundException e) {
-		    //       e.printStackTrace();
-		    //   }
-			//Lista<String> donde tengo todos los parámetros obtenidos de bbdd
-			//Collection<ConfigurarMensaje> valoresCM = (Collection<ConfigurarMensaje>)paginasFap2.values();
 			
 			//Cargo la lista de paginas
 			List<String> listaPagApp = (List<String>)play.test.Fixtures.loadYaml(paginasFileAppLista);
@@ -156,8 +147,6 @@ public class Start extends Job {
 				}
 			}
 			
-			 
-
 		}
 		// Para controlar el posible cambio de version del modulo fap de una aplicacion, y evitar el minimo daño posible en la BBDD
 		// Ya que en versiones 1.2.X y anteriores la TableKeyValueDependency no existía, por lo que debemos controlar eso.

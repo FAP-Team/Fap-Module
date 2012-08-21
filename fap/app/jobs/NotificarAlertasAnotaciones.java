@@ -19,6 +19,7 @@ import models.TableKeyValue;
 import play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesSupport;
 import play.db.jpa.GenericModel.JPAQuery;
 import play.db.jpa.JPA;
+import play.db.jpa.Transactional;
 import play.jobs.*;
 import properties.FapProperties;
 
@@ -27,11 +28,12 @@ public class NotificarAlertasAnotaciones extends Job implements LocalVariablesSu
 
 	static Integer tiempoRefresco = 1;
 	
+	@Transactional
 	public void doJob() {
 		if (AdministracionFapJobs.all() != null) {
 			AdministracionFapJobs job = AdministracionFapJobs.all().first();
-			if (job.notificarAlertasAnotaciones) {
-				if ((job.valorNotificarAlertasAnotaciones != null) && (tiempoRefresco == job.valorNotificarAlertasAnotaciones)){
+			if ((job.notificarAlertasAnotaciones != null) && (job.notificarAlertasAnotaciones == true)) {
+				if ((job.valorNotificarAlertasAnotaciones != null) && (tiempoRefresco.equals(job.valorNotificarAlertasAnotaciones))){
 					tiempoRefresco=1;
 					List<AnotacionFAP> anotaciones = new ArrayList<AnotacionFAP>();
 					try {

@@ -1,4 +1,4 @@
-h2. Controladores en Fap
+h1. Controladores en Fap
 
 En las aplicaciones Fap existen dos controladores por cada página y otros dos por cada popup. De cada dos, uno de ellos se sobreescribe automáticamente cada vez que se ejecuta el comando **fap:generate** para generar la aplicación, y se denomina "**controlador generado**". El otro controlador no se sobreescribe, sino que conserva su contenido. Este último se denomina "**controlador manual**". El controlador manual extiende del controlador generado, y la primera vez que se genera la aplicación a partir del DSL, situación en la cual el directorio de controladores está vacío, el generador también escribe el controlador manual, declarándolo subclase del controlador generado, pero sin ningún contenido. Con este mecanismo se posibilita al programador de la aplicación Fap el modificar los comportamientos que traen los controladores por defecto. Como el fichero de rutas **conf/routes** (que establece el mapeo de las URLs con las acciones que invocan) siempre va a hacer referencia a las acciones de los controladores manuales, si dichos métodos existen, se utilizan, y si no, se hace uso de los de la clase padre: el controlador generado. A continuación se muestra un extracto de una pareja de controladores de una aplicación Fap:
 
@@ -40,7 +40,7 @@ bc. package controllers;
 Estos controladores, cuyos códigos han sido simplificados para mejor entendimiento en este punto, corresponderían a una página denominada "Ejemplo" escrita en el DSL. Esta página tiene asociada dos acciones: **index**, que tiene como respuesta el código HTML de la página, y **save**, que se encarga de guardar los datos del formulario que hay en la página. Ambos acciones han sido implementadas en el controlador generado, y se observa que en el controlador manual ha sido sobreescrita una de ellas, save. El resultado es que si se invoca la acción index se llamará al método generado, mientras que si se invoca la acción save se llamará al método del controlador manual. En el redirect al final del save manual, se invoca al método index generado al no existir en el controlador manual.
 
 
-h3. Controladores en las páginas
+h2. Controladores en las páginas
 
 Como ya se ha comentado, para cada página existen dos controladores: el generado y el manual. El controlador generado se escribe en el paquete **controllers.gen** mientras que el manual se sitúa en el paquete **controllers**. Así, una página que se llame Solicitante tendrá los siguientes controladores: controllers.gen.SolicitanteControllerGen controllers.SolicitanteController.
 

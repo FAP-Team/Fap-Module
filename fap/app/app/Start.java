@@ -106,13 +106,13 @@ public class Start extends Job {
 		
 		//Siempre revisa que las páginas no hayan sido previamente cargadas -> Añade nuevas
 			Fixtures.delete();
-			String paginasFileFap = "listas/initial-data/paginasMsj.yml";
-			String paginasFileApp = "listas/initial-data/paginasAppMsj.yml";
 			String paginasFileFapLista = "listas/initial-data/paginasMsjLista.yml";
 			String paginasFileAppLista = "listas/initial-data/paginasAppMsjLista.yml";
 			
 			//Intento de lectura desde yaml a estructura de datos
 			//http://forums.bukkit.org/threads/constructing-an-instance-of-a-class-with-snakeyaml.4153/
+			//String paginasFileFap = "listas/initial-data/paginasMsj.yml";
+			//String paginasFileApp = "listas/initial-data/paginasAppMsj.yml";
 			//LinkedHashMap<String, ConfigurarMensaje> paginasFap = (LinkedHashMap)play.test.Fixtures.loadYaml(paginasFileFap);
 			//LinkedHashMap<String, ConfigurarMensaje> paginasApp = (LinkedHashMap)play.test.Fixtures.loadYaml(paginasFileApp);
 			//HashMap<String, ConfigurarMensaje> obj = new HashMap<String, ConfigurarMensaje>();

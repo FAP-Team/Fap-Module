@@ -19,30 +19,25 @@ class GFormulario extends GElement{
 	public void generate(){
 		for(int i = 0; i < formulario.getPaginas().size(); i++){
 			GElement.getInstance(formulario.getPaginas().get(i), null).generate();
-			String tituloPaginaLista = formulario.name+"-"+formulario.getPaginas().get(i).name;
 			String tituloPagina  = formulario.getPaginas().get(i).name;
 			
-			if (formulario.getPaginas().get(i).titulo !=null){
-				tituloPaginaLista+="-"+formulario.getPaginas().get(i).titulo;
-			}
-			if ((formulario.name == "Solicitud")){
-				lista+="""${tituloPaginaLista},
+				lista+="""${tituloPagina},
 """
 				configMsj+="""ConfigurarMensaje(ConfigurarMensaje-${tituloPagina}):
    nombrePagina: ${tituloPagina}
    tipoMensaje: []
    habilitar: false
+   formulario: ${formulario.name}
 
 """
-			}
 		}
-		if((formulario.name == "Solicitud") && (Start.generatingModule)){
+		if(Start.generatingModule){
 			FileUtils.append(FileUtils.getRoute('INI_DATA'), "paginasMsj.yml", configMsj);
 			FileUtils.append(FileUtils.getRoute('INI_DATA'), "paginasMsjLista.yml", lista);
 			
 		}
 		
-		if((formulario.name == "Solicitud") && (!Start.generatingModule)){
+		if(!Start.generatingModule){
 			FileUtils.append(FileUtils.getRoute('INI_DATA'), "paginasAppMsj.yml", configMsj);
 			FileUtils.append(FileUtils.getRoute('INI_DATA'), "paginasAppMsjLista.yml", lista);
 		}

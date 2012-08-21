@@ -56,7 +56,7 @@ Formulario Administracion permiso=administrador{
     
     Pagina ConfigurarMensajes titulo="Configurar mensajes" {
     	Tabla mensajesPagina campo=ConfigurarMensaje titulo="Mensajes configurados" paginaEditar=RellenarMensajes {
-    		Columna campo=ConfigurarMensaje.nombrePagina titulo="Página" expandir
+    		Columna campo=ConfigurarMensaje.formularioNombreText titulo="Página" expandir
     		Columna campo=ConfigurarMensaje.tipoMensaje titulo="Tipo Mensaje" expandir
     		Columna campo=ConfigurarMensaje.habilitarText titulo="Habilitado" expandir
     	}

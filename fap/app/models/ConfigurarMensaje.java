@@ -37,6 +37,11 @@ public class ConfigurarMensaje extends FapModel {
 
 	public String nombrePagina;
 
+	public String formulario;
+
+	@Transient
+	public String formularioNombreText;
+
 	public void init() {
 
 		postInit();
@@ -50,6 +55,9 @@ public class ConfigurarMensaje extends FapModel {
 		return "No";
 	}
 
+	public String getFormularioNombreText() {
+		return formulario + "-" + nombrePagina;
+	}
 	// === MANUAL REGION END ===
 
 }

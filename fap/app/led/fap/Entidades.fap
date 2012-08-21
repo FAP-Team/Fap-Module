@@ -542,7 +542,9 @@ Entidad ConfigurarMensaje {
 	LongText contenido
 	Boolean habilitar
 	String habilitarText transient
-	String nombrePagina 
+	String nombrePagina
+	String formulario
+	String formularioNombreText transient 
 }
 
 

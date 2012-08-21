@@ -91,7 +91,7 @@
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
     	#{if _email || _fecha || _direccionMapa}<div class="input-prepend">
     	<span class="add-on"><i class=${icono}></i></span>#{/if}<input class="${clase}" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
-    	#{if email || fecha || _direccionMapa}</div>#{/if}
+    	#{if _email || _fecha || _direccionMapa}</div>#{/if}
 	#{/fap.formrow}
 	#{if _format != null}
 		<script>
@@ -115,9 +115,9 @@
 				value_copy = field.copy;
 		}%
 		#{fap.formrow id:id_copy, label:label_copy, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-			#{if email}<div class="input-prepend">
+			#{if _email || _fecha || _direccionMapa}<div class="input-prepend">
 			<span class="add-on"><i class="icon-envelope"></i></span>#{/if}<input id="${id_copy}" class="${clase}" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
-			#{if email}</div>#{/if}
+			#{if _email || _fecha || _direccionMapa}</div>#{/if}
 		#{/fap.formrow}
 		
 		<script>

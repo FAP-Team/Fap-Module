@@ -190,7 +190,7 @@ Grupo:
 		(
 			('mostrarSiCombo' siCombo=[Combo|QN] signoSiCombo=GrupoComboSigno siComboValues=Values) |
 			('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false")) |
-			('mostrarSiRadioBooleano' siCheck=[RadioBooleano|QN] '=' siRadioBooleanoValues=("true" | "false")) |
+			('mostrarSiRadioBooleano' siRadioBooleano=[RadioBooleano|QN] '=' siRadioBooleanoValues=("true" | "false")) |
 			('mostrarSiCampo' campo=Campo signoSiCampo=GrupoComboSigno siCampoValues=Values) |
 			('mostrarSiExpresion' siExpresion=STRING)
 		)? &

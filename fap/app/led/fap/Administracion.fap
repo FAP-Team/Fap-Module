@@ -26,31 +26,51 @@ Formulario Administracion permiso=administrador{
 		Enlace "Salir" accion=logout
     }
     
-    /* Sobreescrita */
     Pagina Jobs titulo="Configurar Jobs" campo=AdministracionFapJobs{
     	Wiki{"*Esta Página permite habilitar/deshabilitar los Jobs que están activos del módulo FAP.*"}
     	
     	Grupo titulo="Job para la Actualización de las Notificaciones" mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.notificacion.activa\")"{
-    		Wiki{"Esta Job es el encargado de conectarse cada X minutos (según la configuración de la aplicación) al servicio web de Notificaciones que esté configurado para actualizar la información relevante de las notificaciones que existen en base de datos asociadas a la aplicación."}
+    		Wiki{"Este Job es el encargado de conectarse cada X MINUTOS (según la configuración de la aplicación) al servicio web de Notificaciones que esté configurado para actualizar la información relevante de las notificaciones que existen en base de datos asociadas a la aplicación."}
     		Check cActualizarNotificaciones titulo="Actualizar Notificaciones" campo=AdministracionFapJobs.actualizarNotificaciones alineadoAIzquierdas
+    		Grupo borde=false mostrarSiCheck cActualizarNotificaciones = true{
+	    		RadioBooleano rActualizarNotificaciones titulo="Intervalo de tiempo" campo=AdministracionFapJobs.valorPropioActualizarNotificaciones alineadoAIzquierdas botonIzquierdo="Por Defecto" botonDerecho="Personalizar"
+	    		Grupo borde=false mostrarSiRadioBooleano rActualizarNotificaciones = true{
+	    			BarraDeslizante bdActualizarNotificaciones titulo="Seleccione el intervalo de tiempo (en minutos)" campo=AdministracionFapJobs.valorActualizarNotificaciones minimo=0 maximo=60 valorDefecto=1 alineadoAIzquierdas
+	    		}
+	    	}
     	}
     	
     	Grupo titulo="Job para la Compresión de los Logs"{
-    		Wiki{"Esta Job es el encargado de comprimir los Logs de días anteriores. Cada madrugada (por defecto), el Job se encarga de comprimir los ficheros de Logs del día anterior para así tener un backup de tamaño reducido."}
+    		Wiki{"Esta Job es el encargado de comprimir los Logs de días anteriores. Cada X HORAS, el Job se encarga de comprimir los ficheros de Logs del día anterior para así tener un backup de tamaño reducido."}
     		Check cComprimirLogs titulo="Comprimir Logs" campo=AdministracionFapJobs.comprimirLogs alineadoAIzquierdas
     		Grupo borde=false mostrarSiCheck cComprimirLogs = true{
 	    		RadioBooleano rComprimirLogs titulo="Intervalo de tiempo" campo=AdministracionFapJobs.valorPropioComprimirLogs alineadoAIzquierdas botonIzquierdo="Por Defecto" botonDerecho="Personalizar"
+	    		Grupo borde=false mostrarSiRadioBooleano rComprimirLogs = true{
+	    			BarraDeslizante bdComprimirLogs titulo="Seleccione el intervalo de tiempo (en horas)" campo=AdministracionFapJobs.valorComprimirLogs minimo=0 maximo=24 valorDefecto=24 alineadoAIzquierdas
+	    		}
 	    	}
     	}
     	
     	Grupo titulo="Job para Eliminar Archivos Temporales" mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.delete.temporals\")"{
-    		Wiki{"Esta Job es el encargado de eliminar (según la configuración de la aplicación) los archivos temporales que se hayan ido creando por la aplicación y que sean más antiguos a una fecha configurada."}
+    		Wiki{"Esta Job es el encargado de eliminar, cada X HORAS, los archivos temporales que se hayan ido creando por la aplicación y que sean más antiguos a una fecha configurada."}
     		Check cEliminarTemporales titulo="Eliminar Archivos Temporales" campo=AdministracionFapJobs.eliminarTemporales alineadoAIzquierdas
+    		Grupo borde=false mostrarSiCheck cEliminarTemporales = true{
+	    		RadioBooleano rEliminarTemporales titulo="Intervalo de tiempo" campo=AdministracionFapJobs.valorPropioEliminarTemporales alineadoAIzquierdas botonIzquierdo="Por Defecto" botonDerecho="Personalizar"
+	    		Grupo borde=false mostrarSiRadioBooleano rEliminarTemporales = true{
+	    			BarraDeslizante bdEliminarTemporales titulo="Seleccione el intervalo de tiempo (en horas)" campo=AdministracionFapJobs.valorEliminarTemporales minimo=0 maximo=24 valorDefecto=5 alineadoAIzquierdas
+	    		}
+	    	}
     	}
     	
     	Grupo titulo="Job para Notificar Alertas de las Anotaciones" {
-    		Wiki{"Este Job es el encargado de notificar las alertas de las anotaciones creadas, comprobando cada minuto si existe alguna nueva."}
-    		Check titulo="Notificar Alertas Anotaciones" campo=AdministracionFapJobs.notificarAlertasAnotaciones alineadoAIzquierdas
+    		Wiki{"Este Job es el encargado de notificar las alertas de las anotaciones creadas, comprobando cada X MINUTOS si existe alguna nueva."}
+    		Check cNotificarAlertasAnotaciones titulo="Notificar Alertas Anotaciones" campo=AdministracionFapJobs.notificarAlertasAnotaciones alineadoAIzquierdas
+    		Grupo borde=false mostrarSiCheck cNotificarAlertasAnotaciones = true{
+	    		RadioBooleano rNotificarAlertasAnotaciones titulo="Intervalo de tiempo" campo=AdministracionFapJobs.valorPropioNotificarAlertasAnotaciones alineadoAIzquierdas botonIzquierdo="Por Defecto" botonDerecho="Personalizar"
+	    		Grupo borde=false mostrarSiRadioBooleano rNotificarAlertasAnotaciones = true{
+	    			BarraDeslizante bdNotificarAlertasAnotaciones titulo="Seleccione el intervalo de tiempo (en minutos)" campo=AdministracionFapJobs.valorNotificarAlertasAnotaciones minimo=0 maximo=60 valorDefecto=1 alineadoAIzquierdas
+	    		}
+	    	}
     	}
     }
     

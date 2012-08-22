@@ -33,21 +33,6 @@
 		style += 'width: ' + _anchoTitulo + ';'
 
 }%	
-		
-		<div id="slider"></div>
-		<script>
-			$('#slider').slider({
-		         range: "min",
-		         min: 0,
-		         max: 100,
-		         value: 60//,
-		         //slide: function (event, ui) {
-             		//$("#amount").val(ui.value);
-        	 	 //}
-    		});
-		</script>
-		
-		
 	<div class="controls">
 		<div #{if alineadoAIzquierdas}style="margin-left:-30%; margin-top:1em;"#{/if}#{else} style="margin-top:1em;"#{/else}>
 			<h5>${label}</h5>

@@ -9,19 +9,6 @@ import controllers.gen.JobsControllerGen;
 
 public class JobsController extends JobsControllerGen {
 
-	public static void index(String accion) {
-		if (accion == null)
-			accion = getAccion();
-		if (!permiso(accion)) {
-			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-			renderTemplate("fap/Jobs/Jobs.html");
-		}
-
-		AdministracionFapJobs administracionFapJobs = JobsController.getAdministracionFapJobs();
-		log.info("Visitando página: " + "fap/Jobs/Jobs.html");
-		renderTemplate("fap/Jobs/Jobs.html", accion, administracionFapJobs);
-	}
-	
 	@Util
 	public static void JobsValidateCopy(String accion, AdministracionFapJobs dbAdministracionFapJobs, AdministracionFapJobs administracionFapJobs) {
 		CustomValidation.clearValidadas();

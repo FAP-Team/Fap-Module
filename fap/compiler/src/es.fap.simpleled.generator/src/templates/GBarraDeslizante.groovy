@@ -27,13 +27,13 @@ public class GBarraDeslizante extends GSaveCampoElement{
 			params.putStr("ancho", barra.ancho)
 			
 		if(barra.minimo != null)
-			params.putStr("minimo", barra.minimo)
+			params.put("minimo", barra.minimo)
 			
 		if(barra.maximo != null)
-			params.putStr("maximo", barra.maximo)
+			params.put("maximo", barra.maximo)
 		
 		if(barra.valorDefecto != null)
-			params.putStr("valorDefecto", barra.valorDefecto)
+			params.put("valorDefecto", barra.valorDefecto)
 			
 		if(barra.alineadoAIzquierdas)
 			params.put "alineadoAIzquierdas", true;

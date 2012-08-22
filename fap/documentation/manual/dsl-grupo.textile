@@ -10,6 +10,7 @@ h2. Parámetros
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará al lado del campo de texto, si no se especifica se mostrará el nombre del campo.
 * **mostrarSiCombo _[combo]_ = _[string]_, _[string]_, ...** (opcional) : Muestra el grupo si el valor del combo específicado es alguno de la lista.
 * **mostrarSiCheck _[check]_ = true | false** (opcional) : Muestra el grupo si el valor del check específicado es "true" o "false".
+* **mostrarSiRadioBooleano _[radioBooleano]_ = true | false** (opcional) : Muestra el grupo si el valor del radioBooleano específicado es "true" o "false". False significa que está activo el botón izquierdo, y true que es el botón de la derecha el que está presionado.
 * **mostrarSiCampo _[campo]_ = _[string]_, _[string]_, ...** (opcional) : Muestra el grupo si el valor del campo corresponde con alguno de los valores especificados.
 * **mostrarSiExpresion _[string]_** (opcional) : Muestra el grupo si el valor de la expresion que se especifique es verdadero.
 * _Nota: Sólo se permitirá indicar un 'mostrarSi...' en un combo_
@@ -25,6 +26,7 @@ bc. Grupo:
 		(
 			('mostrarSiCombo' siCombo=[Combo|QN] signoSiCombo=GrupoComboSigno siComboValues=Values) |
 			('mostrarSiCheck' siCheck=[Check|QN] '=' siCheckValues=("true" | "false")) |
+			('mostrarSiRadioBooleano' siRadioBooleano=[RadioBooleano|QN] '=' siRadioBooleanoValues=("true" | "false")) |
 			('mostrarSiCampo' campo=Campo signoSiCampo=GrupoComboSigno siCampoValues=Values) |
 			('mostrarSiExpresion' siExpresion=STRING)
 		)? &

@@ -1,0 +1,36 @@
+h1. Barra Deslizante
+
+h2. Descripción
+
+Permite definir una barra deslizante para seleccionar un valor entre un mínimo y un máximo que se defina.
+
+h2. Parámetros
+
+* **_[name]_** (opcional) : Identificador del elemento.
+* **titulo = _[string]_** : Etiqueta que se mostrará encima de la barra deslizante, si no se especifica se mostrara el nombre del campo.
+* **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de título.
+* **campo = _[campo]_** : Atributo donde se almacenará el valor asignado por la barra deslizante.
+* **ayuda = _[string]_** (opcional) : Ayuda asociada a la barra deslizante.
+* **alineadoAIzquierdas** (opcional) : Si se especifica, se alineará la barra deslizante a la izquierda del todo.
+* **minimo= _[string]** (opcional): Valor mínimo que tendrá la barra deslizante. Si no se especifica será 0.
+* **maximo= _[string]** (opcional): Valor máximo que tendrá la barra deslizante. Si no se especifica será 100.
+* **valorDefecto= _[string]** (opcional): Valor por defecto donde se situará la barra deslizante entre el mínimo y el máximo. Si no se especifica será el valor mínimo indicado.
+
+h2. Definición
+
+bc. BarraDeslizante:
+	elemento='BarraDeslizante' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('ancho' '=' ancho=STRING)?
+		& ('minimo' '=' minimo=STRING)?
+		& ('maximo' '=' maximo=STRING)?
+		& ('valorDefecto' '=' valorDefecto=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
+	)
+;	
+
+h2. Ejemplo de uso
+
+bc. BarraDeslizante miBarra titulo="Edad" campo=Solicitud.datosSolicitante.edad minimo="18" maximo="65" valorDefecto="21"

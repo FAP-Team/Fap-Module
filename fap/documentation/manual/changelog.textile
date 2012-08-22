@@ -1,5 +1,25 @@
 h2. Changelog
 
+h3. Versión 2.1RC2
+
+* Seguimiento incluido en el módulo de FAP.
+* Pagina en Administración que permite configurar mensajes en cualquier página definida en el DSL.
+* Fixed Bug en la carga del fichero .json de Baremación en modo Servicio de Windows.
+* Permitir habilitar/deshabilitar y configurar los Jobs del módulo FAP en el panel de Administración.
+* Nuevo elemento barraDeslizante.
+* Nuevo elemento RadioBooleano.
+* MostrarSiRadioBooleano en Grupos.
+* Personalizando algunos elementos con iconos.
+* DatePicker usando Bootstrap.
+* Cambiado los BigDecimal a Doubles, por problemas varios con los BigDecimal.
+* Añadido método para mostrar información de la inyección de dependencias al iniciarse las aplicaciones.
+* Añadidos titulos a todas las páginas del módulo FAP.
+* Rediseño de la página de Subir Documentación del módulo FAP.
+* No se muestran los logs de auditoría en la página Logs de Administración.
+* Elemento Ayuda en el elemento Grupo.
+* Fixed Bug en Tooltip de tablas.
+* Fixed Minor Bugs.
+
 h3. Versión 2.1RC1
 
 * Páginas por defecto en FAP para la Presentación.

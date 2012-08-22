@@ -906,10 +906,10 @@ Permiso obtenerRequerimiento {
 }
 
 /*
- * Permiso “prepararSolicitud�?
+ * Permiso “prepararSolicitud�?
  *
  * - Podemos preparar la solicitud siempre que esta no haya sido preparada previamente.
- * Una vez que esté preparada para firmar no podríamos “Guardar trámite�?, ni “Añadir documentación�? ni  “Preparar para firmar�?
+ * Una vez que esté preparada para firmar no podríamos “Guardar trámite�?, ni “Añadir documentación�? ni  “Preparar para firmar�?
  * Es decir, permitimos editar al aplicar este permiso siempre que Solicitud.registro.faserRegistro.borrador = false
  * Si no es así, todos estos botones deberían mostrarse deshabilitados.
  */
@@ -930,10 +930,10 @@ Permiso prepararSolicitud {
 }
 
 /*
- * Permiso “enBorradorSolicitud�?
+ * Permiso “enBorradorSolicitud�?
  *
  * - Podemos visualizar el borrador y pulsar para modificar la solicitud si el borrador se generó previamente
- * Por tanto los botones “Obtener borrador�? , “Modificar solicitud�?, “Presentar solicitud�?  se muestran deshabilitados si
+ * Por tanto los botones “Obtener borrador�? , “Modificar solicitud�?, “Presentar solicitud�?  se muestran deshabilitados si
  * Solicitud.registro.faseRegistro.borrador =false
  */
 
@@ -966,10 +966,10 @@ Permiso clasificadaSolicitud{
 }
 
 /*
- * Permiso “modificarSolicitud�?
+ * Permiso “modificarSolicitud�?
  *
  * - Para permitir modificar la aceptación o renuncia también se debe comprobar que no se haya producido el registro de entrada de la solicitud asociada
- * Por tanto, también debemos mostrar deshabilitado el botón “Modificar solicitud�? si
+ * Por tanto, también debemos mostrar deshabilitado el botón “Modificar solicitud�? si
  * Solicitud.registro.faseregistro.registro =true
  */
 
@@ -997,13 +997,13 @@ return
 	all
 }
 /*
- * Permiso “firmarRegistrarSolicitud�?
+ * Permiso “firmarRegistrarSolicitud�?
  *
- * - Este permiso se aplica al botón “Firmar y Registrar�?
+ * - Este permiso se aplica al botón “Firmar y Registrar�?
  * El botón está deshabilitado si Solicitud.registro.faseregistro.clasificadaAED = false
  * En el proceso se debería controlar si se ha pasado por todas las fases e intentar recuperarlo de un posible fallo.
  * Si ya está firmada, se debería eliminar la firma anterior y proceder a realizar una nueva firma y registro (revisar
- * si esto estaba previsto en el código, posiblemente no�?
+ * si esto estaba previsto en el código, posiblemente no�?
  * Si ya está registrada, se intenta clasificarlo nuevamente
  */
 
@@ -1017,11 +1017,11 @@ return
 	all
 }
 /*
- * Permiso “firmarSolicitud�?
+ * Permiso “firmarSolicitud�?
  *
  * - Este permiso se aplica al botón firmar.
  * Este botón estará deshabilitado siempre que en la fase de registro ya se haya realizado todas las firmas necesaria.
- * Hay que comprobar que se hace un correcto control del proceso de firma tanto cuando firma un represente solidario/�?administrador único�?
+ * Hay que comprobar que se hace un correcto control del proceso de firma tanto cuando firma un represente solidario/�?administrador único�?
  * o cuando la firma se produce por representantes mancomunados, deben firmar en este caso todos los que se han indicado que tengan tipo
  * de representación mancomunada.
  */
@@ -1036,7 +1036,7 @@ return
 	all
 }
 /*
- * Permiso “registrarSolicitud�?
+ * Permiso “registrarSolicitud�?
  *
  * - Este botón estará habilitado si cumplen las siguientes condiciones:
  * La solicitud ha sido firmada y no ha sido aún clasificada en el AED
@@ -1066,4 +1066,15 @@ return
 Permiso paginaAConfigurar{
 	return
 		visible
+}
+
+
+Permiso accesoNoCertificado{
+	vars
+		Agente ag 
+	when
+		(ag.acceso = null) or
+		(ag.acceso != "certificado") 
+	return
+		all
 }

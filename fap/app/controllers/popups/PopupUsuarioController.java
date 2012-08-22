@@ -1,6 +1,8 @@
 
 package controllers.popups;
 
+import java.util.Map;
+
 import messages.Messages;
 import models.Agente;
 import play.Logger;
@@ -84,10 +86,13 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
 		CustomValidation.valid("agente", agente);
 		CustomValidation.required("agente.username", agente.username);
 		dbAgente.username = agente.username;
-		CustomValidation.required("agente.password", agente.password);
-		CustomValidation.compare(agente.password, params.get("agente_passwordcopy"));
-		//dbAgente.password = agente.password;
-		dbAgente.password = Crypto.passwordHash(agente.password);
+
+		if (secure.checkGrafico("accesoNoCertificado", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+			CustomValidation.required("agente.password", agente.password);
+			CustomValidation.compare(agente.password, params.get("agente_passwordcopy"));
+			dbAgente.password = Crypto.passwordHash(agente.password);
+		}
+		
 		CustomValidation.required("agente.roles", agente.roles);
 		CustomValidation.validListOfValuesFromTable("agente.roles", agente.roles);
 

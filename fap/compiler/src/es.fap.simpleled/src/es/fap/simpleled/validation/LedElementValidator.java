@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 
 import es.fap.simpleled.led.AreaTexto;
 import es.fap.simpleled.led.Attribute;
+import es.fap.simpleled.led.BarraDeslizante;
 import es.fap.simpleled.led.CalcularFirmantes;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.Check;
@@ -40,6 +41,7 @@ import es.fap.simpleled.led.Persona;
 import es.fap.simpleled.led.PersonaFisica;
 import es.fap.simpleled.led.PersonaJuridica;
 import es.fap.simpleled.led.Popup;
+import es.fap.simpleled.led.RadioBooleano;
 import es.fap.simpleled.led.Solicitante;
 import es.fap.simpleled.led.SubirArchivo;
 import es.fap.simpleled.led.Tabla;
@@ -211,6 +213,12 @@ public abstract class LedElementValidator {
 		}
 		if (container instanceof Check) {
 			return new CheckValidator(container);
+		}
+		if (container instanceof RadioBooleano) {
+			return new RadioBooleanoValidator(container);
+		}
+		if (container instanceof BarraDeslizante) {
+			return new BarraDeslizanteValidator(container);
 		}
 		if (container instanceof Combo) {
 			return new ComboValidator(container);

@@ -12,9 +12,9 @@ h2. Parámetros
 * **campo = _[campo]_** : Atributo donde se almacenará el valor asignado por la barra deslizante.
 * **ayuda = _[string]_** (opcional) : Ayuda asociada a la barra deslizante.
 * **alineadoAIzquierdas** (opcional) : Si se especifica, se alineará la barra deslizante a la izquierda del todo.
-* **minimo= _[string]** (opcional): Valor mínimo que tendrá la barra deslizante. Si no se especifica será 0.
-* **maximo= _[string]** (opcional): Valor máximo que tendrá la barra deslizante. Si no se especifica será 100.
-* **valorDefecto= _[string]** (opcional): Valor por defecto donde se situará la barra deslizante entre el mínimo y el máximo. Si no se especifica será el valor mínimo indicado.
+* **minimo= _[integer]_** (opcional): Valor mínimo que tendrá la barra deslizante. Si no se especifica será 0.
+* **maximo= _[integer]_** (opcional): Valor máximo que tendrá la barra deslizante. Si no se especifica será 100.
+* **valorDefecto= _[integer]_** (opcional): Valor por defecto donde se situará la barra deslizante entre el mínimo y el máximo. Si no se especifica será el valor mínimo indicado.
 
 h2. Definición
 
@@ -23,9 +23,9 @@ bc. BarraDeslizante:
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
 		& ('ancho' '=' ancho=STRING)?
-		& ('minimo' '=' minimo=STRING)?
-		& ('maximo' '=' maximo=STRING)?
-		& ('valorDefecto' '=' valorDefecto=STRING)?
+		& (min?='minimo' '=' minimo=INT)?
+		& (max?='maximo' '=' maximo=INT)?
+		& (defecto?='valorDefecto' '=' valorDefecto=INT)?
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
 	)
@@ -33,4 +33,4 @@ bc. BarraDeslizante:
 
 h2. Ejemplo de uso
 
-bc. BarraDeslizante miBarra titulo="Edad" campo=Solicitud.datosSolicitante.edad minimo="18" maximo="65" valorDefecto="21"
+bc. BarraDeslizante miBarra titulo="Edad" campo=Solicitud.datosSolicitante.edad minimo=18 maximo=65 valorDefecto=21

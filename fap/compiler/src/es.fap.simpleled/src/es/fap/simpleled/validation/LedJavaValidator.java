@@ -374,4 +374,36 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		if ((attr.getName() != null) && (Character.isUpperCase(attr.getName().charAt(0))))
 			error("Los atributos de las entidades deben empezar con minuscula", ledPackage.getAttribute_Name());
 	}
+	
+	/**
+	 * Comprueba que el valor minimo de un elemento barra deslizamiento no sea mayor que el maximo
+	 * @param entity
+	 */
+	@Check
+	public void checkMinimoNoMayorMaximo(BarraDeslizante barraDeslizante) {
+		if (barraDeslizante.isMin() && barraDeslizante.isMax() && (barraDeslizante.getMinimo() > barraDeslizante.getMaximo()))
+			error("El valor minimo no puede ser mayor que el maximo", ledPackage.getBarraDeslizante_Minimo());
+		else if (!barraDeslizante.isMin() && barraDeslizante.isMax() && (0 > barraDeslizante.getMaximo()))
+			error("El valor maximo debe ser superior a 0, o especificar un valor minimo menor que el maximo", ledPackage.getBarraDeslizante_Maximo());
+		else if (barraDeslizante.isMin() && !barraDeslizante.isMax() && (barraDeslizante.getMinimo() < 100))
+			error("El valor minimo debe ser inferior a 100, o especificar un valor maximo mayor que el minimo", ledPackage.getBarraDeslizante_Minimo());
+	}
+	
+	/**
+	 * Comprueba que el valor por defecto este comprendido entre el minimo y el maximo
+	 * @param entity
+	 */
+	@Check
+	public void checkValorDefectoBetweenMinimoMaximo(BarraDeslizante barraDeslizante) {
+		if (barraDeslizante.isDefecto() && barraDeslizante.isMin() && barraDeslizante.isMax() && ((barraDeslizante.getValorDefecto() > barraDeslizante.getMaximo()) || (barraDeslizante.getValorDefecto() < barraDeslizante.getMinimo())))
+			error("El valor por defecto tiene que estar comprendido entre el minimo y el maximo", ledPackage.getBarraDeslizante_ValorDefecto());
+		else if (barraDeslizante.isDefecto() && barraDeslizante.isMin() && !barraDeslizante.isMax() && ((barraDeslizante.getValorDefecto() > 100) || (barraDeslizante.getValorDefecto() < barraDeslizante.getMinimo())))
+			error("El valor por defecto tiene que estar comprendido entre el minimo y 100", ledPackage.getBarraDeslizante_ValorDefecto());
+		else if (barraDeslizante.isDefecto() && !barraDeslizante.isMin() && barraDeslizante.isMax() && ((barraDeslizante.getValorDefecto() > barraDeslizante.getMaximo()) || (barraDeslizante.getValorDefecto() < 0)))
+			error("El valor por defecto tiene que estar comprendido entre el 0 y el maximo", ledPackage.getBarraDeslizante_ValorDefecto());
+		else if (barraDeslizante.isDefecto() && !barraDeslizante.isMin() && !barraDeslizante.isMax() && ((barraDeslizante.getValorDefecto() > 100) || (barraDeslizante.getValorDefecto() < 0)))
+			error("El valor por defecto tiene que estar comprendido entre el 0 y el 100", ledPackage.getBarraDeslizante_ValorDefecto());
+	}
+	
+	
 }

@@ -605,8 +605,11 @@ Permiso accederSiSolicituNoBorrador{
 // Permiso que controla si se pueden loguear con usuario y contraseña
 // SOBREESCRITO EN SECUREFAP.JAVA
 Permiso loginTipoUser{
+	vars
+		Agente ag
 	when
-		agente.rolActivo = "administrador"
+		(agente.rolActivo = "administrador") and
+		(ag.acceso != "certificado")
 	return 
 		all
 }

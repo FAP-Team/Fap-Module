@@ -85,8 +85,9 @@ public class SecureFap extends Secure {
 		return null;
 	}
 	
-	public ResultadoPermiso loginTipoUser(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
-		if (FapProperties.getBoolean("fap.login.type.user")) 
+	private ResultadoPermiso loginTipoUser(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		Agente agente = AgenteController.getAgente();
+		if ((FapProperties.getBoolean("fap.login.type.user")) && (!agente.acceso.toString().equals("certificado".toString()))) 
 			return new ResultadoPermiso(Accion.All); 
 		return new ResultadoPermiso(Accion.Denegar);
 	}

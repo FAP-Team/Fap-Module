@@ -22,8 +22,8 @@ import es.fap.simpleled.led.util.ModelUtils;
 
 public class FuncionColumnaValidator {
 	
-//	@Inject
-//	public static LedPackage ledPackage;
+	@Inject
+	public static LedPackage ledPackage;
 
 	public static void checkFuncionColumna(Columna columna, LedJavaValidator validator) {
 		if (columna.getFuncion() == null){
@@ -34,7 +34,7 @@ public class FuncionColumnaValidator {
 		while (matcher.find()){
 			String campo = matcher.group(1).trim();
 			if (create(campo, columna) == null){
-				validator.myError("El campo \"" + campo + "\" no es valido.", /*ledPackage.getColumna_Funcion()*/LedPackage.Literals.COLUMNA__FUNCION);
+				validator.myError("El campo \"" + campo + "\" no es valido.", ledPackage.getColumna_Funcion());
 			}
 		}
 	}
@@ -63,7 +63,7 @@ public class FuncionColumnaValidator {
 			return null;
 		}
 		
-		Entity entity = ModelUtils.<Entity>getVisibleNode(/*ledPackage.getEntity()*/LedPackage.Literals.ENTITY, entidad, obj.eResource());
+		Entity entity = ModelUtils.<Entity>getVisibleNode(ledPackage.getEntity(), entidad, obj.eResource());
 		if (entity == null){
 			return null;
 		}

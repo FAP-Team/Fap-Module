@@ -219,7 +219,7 @@ Values:
 
 Elemento:
 	Grupo | AgruparCampos | 
-	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones | RadioBooleano | //BarraDeslizante |
+	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones | RadioBooleano | BarraDeslizante |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple |
@@ -287,18 +287,18 @@ RadioBooleano:
 	)
 ;	
 
-//BarraDeslizante:
-//	elemento='BarraDeslizante' (name=ID)? (
-//		('campo' '=' campo=Campo)
-//		& ('titulo' '=' titulo=STRING)?
-//		& ('ancho' '=' ancho=STRING)?
-//		& ('minimo' '=' minimo=STRING)?
-//		& ('maximo' '=' maximo=STRING)?
-//		& ('valorDefecto' '=' valorDefecto=STRING)?
-//		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
-//		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
-//	)
-//;	
+BarraDeslizante:
+	elemento='BarraDeslizante' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('ancho' '=' ancho=STRING)?
+		& ('minimo' '=' minimo=STRING)?
+		& ('maximo' '=' maximo=STRING)?
+		& ('valorDefecto' '=' valorDefecto=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
+	)
+;	
 
 Enlace:
 	elemento='Enlace' (name=ID)? (

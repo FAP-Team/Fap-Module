@@ -11,11 +11,8 @@ import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import format.FapFormat;
 
 // === IMPORT REGION START ===
 
@@ -34,25 +31,7 @@ public class Expediente extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaInicio;
 
-	public String estado;
-
-	public String uri;
-
-	@Transient
-	public String verDocumentos;
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "expediente_documentos")
-	public List<Documento> documentos;
-
-	public Expediente() {
-		init();
-	}
-
 	public void init() {
-
-		if (documentos == null)
-			documentos = new ArrayList<Documento>();
 
 		postInit();
 	}

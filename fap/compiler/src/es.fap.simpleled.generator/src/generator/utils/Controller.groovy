@@ -1117,23 +1117,23 @@ public class ${controllerName} extends ${controllerGenName} {
 		
 	public void findPaginaReferencias(Pagina pagina){
 		editar = crear = borrar = false;
-		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE)){
+		for (MenuEnlace enlace: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getMenuEnlace())){
 			if (enlace.pagina != null && enlace.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(enlace.pagina);
 		}
-		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE)){
+		for (Enlace enlace: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getEnlace())){
 			if (enlace.pagina != null && enlace.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(enlace.pagina);
 		}
-		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON)){
+		for (Boton boton: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getBoton())){
 			if (boton.pagina != null && boton.pagina.pagina.name.equals(pagina.name))
 				checkReferencia(boton.pagina);
 		}
-		for (Accion accion: LedUtils.getNodes(LedPackage.Literals.ACCION)){
+		for (Accion accion: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getAccion())){
 			if (accion.redirigir != null && accion.redirigir.pagina.name.equals(pagina.name))
 				checkReferencia(accion.redirigir);
 		}
-		for (Pagina p: LedUtils.getNodes(LedPackage.Literals.PAGINA)){
+		for (Pagina p: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getPagina())){
 			Controller c = new Controller();
 			c.createOpcionesAccion(pagina);
 			if (c.accionCrear.redirigir?.pagina?.name.equals(pagina.name))
@@ -1143,7 +1143,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			if (c.accionBorrar.redirigir?.pagina?.name.equals(pagina.name))
 				checkReferencia(c.accionBorrar.redirigir);
 		}
-		for (Tabla tabla: LedUtils.getNodes(LedPackage.Literals.TABLA)){
+		for (Tabla tabla: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getTabla())){
 			if (tabla.pagina != null && tabla.pagina.name.equals(pagina.name))
 				crear = borrar = editar = true;
 			if (tabla.paginaCrear != null && tabla.paginaCrear.name.equals(pagina.name))
@@ -1153,7 +1153,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			if (tabla.paginaBorrar != null && tabla.paginaBorrar.name.equals(pagina.name))
 				borrar = true;
 		}
-		for (Form form: LedUtils.getNodes(LedPackage.Literals.FORM)){
+		for (Form form: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getForm())){
 			if (form.redirigir != null && form.redirigir.pagina.name.equals(pagina.name))
 				checkReferencia(form.redirigir);
 		}
@@ -1161,19 +1161,19 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	public void findPopupReferencias(Popup popup){
 		editar = crear = borrar = false;
-		for (MenuEnlace enlace: LedUtils.getNodes(LedPackage.Literals.MENU_ENLACE)){
+		for (MenuEnlace enlace: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getMenuEnlace())){
 			if (enlace.popup != null && enlace.popup.popup.name.equals(popup.name))
 				checkReferencia(enlace.popup);
 		}
-		for (Enlace enlace: LedUtils.getNodes(LedPackage.Literals.ENLACE)){
+		for (Enlace enlace: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getEnlace())){
 			if (enlace.popup != null && enlace.popup.popup.name.equals(popup.name))
 				checkReferencia(enlace.popup);
 		}
-		for (Boton boton: LedUtils.getNodes(LedPackage.Literals.BOTON)){
+		for (Boton boton: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getBoton())){
 			if (boton.popup != null && boton.popup.popup.name.equals(popup.name))
 				checkReferencia(boton.popup);
 		}
-		for (Tabla tabla: LedUtils.getNodes(LedPackage.Literals.TABLA)){
+		for (Tabla tabla: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getTabla())){
 			if (tabla.popup != null && tabla.popup.name.equals(popup.name))
 				crear = borrar = editar = true;
 			if (tabla.popupCrear != null && tabla.popupCrear.name.equals(popup.name))

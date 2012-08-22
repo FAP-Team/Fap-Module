@@ -165,7 +165,7 @@ public class GLista extends GElement{
     }
     
     private List<ElementoLista> elementosListaMergedWithModule(){
-        List listas = ModelUtils.getVisibleNodes(LedPackage.Literals.LISTA, lista.name, LedUtils.resource);
+        List listas = ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getLista(), lista.name, LedUtils.resource);
         List merged = lista.elementos;
         for(Lista lista : listas){
             for(ElementoLista elemento : lista.elementos){

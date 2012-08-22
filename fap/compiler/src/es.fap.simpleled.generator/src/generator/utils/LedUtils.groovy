@@ -47,7 +47,7 @@ public class LedUtils {
 	}
 
 	/*
-	 * Obtiene todos los nodos de un mismo tipo (por ejemplo de la EClass LedPackage.Literals.PAGINA).
+	 * Obtiene todos los nodos de un mismo tipo (por ejemplo de la EClass LedFactory.eINSTANCE.getLedPackage().getPagina(), antes se podía llamar con LedPackage.Literals.PAGINA).
 	 */
 	public static List<EObject> getNodes(EClass clazz){
 		List<EObject> nodes = allNodes.get(clazz);

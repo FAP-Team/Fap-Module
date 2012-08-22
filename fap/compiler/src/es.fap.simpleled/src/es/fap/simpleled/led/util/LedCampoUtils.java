@@ -28,8 +28,8 @@ import es.fap.simpleled.led.Formulario;
 
 public class LedCampoUtils {
 	
-//	@Inject
-//	public static LedPackage ledPackage;
+	@Inject
+	public static LedPackage ledPackage;
 	
 	public static Entity getUltimaEntidad(Campo campo){
 		if (campo == null)
@@ -204,7 +204,7 @@ public class LedCampoUtils {
 		EObject container = LedCampoUtils.getCampoScope(elemento);
 		Map<String, Entity> entidades = new HashMap<String, Entity>();
 		if (container instanceof Model || elemento instanceof Tabla){
-			for (Entity e: ModelUtils.<Entity>getVisibleNodes(/*ledPackage.getEntity()*/LedPackage.Literals.ENTITY, elemento.eResource()))
+			for (Entity e: ModelUtils.<Entity>getVisibleNodes(ledPackage.getEntity(), elemento.eResource()))
 				entidades.put(e.getName(), e);	
 			return entidades;
 		}

@@ -11,6 +11,7 @@ import es.fap.simpleled.led.Entity
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.LedFactory;
 
 public class Entidad implements Comparable{
 
@@ -135,9 +136,9 @@ public class Entidad implements Comparable{
 	* módulo en vez de la aplicación), devuelve la entidad SolicitudGenerica.
 	*/
    public static Entity findSolicitud(){
-	   Entity solicitud = ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "Solicitud", LedUtils.resource);
+	   Entity solicitud = ModelUtils.getVisibleNode(LedFactory.eINSTANCE.getLedPackage().getEntity(), "Solicitud", LedUtils.resource);
 	   if (solicitud == null)
-		   solicitud = ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "SolicitudGenerica", LedUtils.resource);
+		   solicitud = ModelUtils.getVisibleNode(LedFactory.eINSTANCE.getLedPackage().getEntity(), "SolicitudGenerica", LedUtils.resource);
 	   return solicitud;
    }
 	

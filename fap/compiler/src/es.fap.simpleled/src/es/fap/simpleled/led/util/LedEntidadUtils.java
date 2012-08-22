@@ -22,8 +22,8 @@ import es.fap.simpleled.led.impl.LedFactoryImpl;
 
 public class LedEntidadUtils {
 	
-//	@Inject
-//	public static LedPackage ledPackage;
+	@Inject
+	public static LedPackage ledPackage;
 	
 	public static List<Attribute> getAllDirectAttributes(Entity entidad) {
 		List<Attribute> attrs = new ArrayList<Attribute>();
@@ -246,7 +246,7 @@ public class LedEntidadUtils {
 	
 	public static Set<Entity> getSingletons(Resource res) {
 		Set<Entity> singletons = new HashSet<Entity>();
-		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(/*ledPackage.getEntity()*/LedPackage.Literals.ENTITY, res)){
+		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(ledPackage.getEntity(), res)){
 			if (LedEntidadUtils.esSingleton(entidad))
 				singletons.add(entidad);
 		}

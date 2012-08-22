@@ -39,16 +39,16 @@ import es.fap.simpleled.led.util.ModelUtils;
  */
 public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 	
-//	@Inject
-//	private LedPackage ledPackage;
+	@Inject
+	private LedPackage ledPackage;
 	
 	public IScope scope_Pagina(EObject ctx, EReference ref){
-		List<Pagina> paginas = ModelUtils.<Pagina>getVisibleNodes(/*ledPackage.getPagina()*/LedPackage.Literals.PAGINA, ctx.eResource());
+		List<Pagina> paginas = ModelUtils.<Pagina>getVisibleNodes(ledPackage.getPagina(), ctx.eResource());
 		return Scopes.scopeFor(paginas);
 	}
 	
 	public IScope scope_Popup(EObject ctx, EReference ref){
-		List<Popup> popups = ModelUtils.<Popup>getVisibleNodes(/*ledPackage.getPopup()*/LedPackage.Literals.POPUP, ctx.eResource());
+		List<Popup> popups = ModelUtils.<Popup>getVisibleNodes(ledPackage.getPopup(), ctx.eResource());
 		return Scopes.scopeFor(popups);
 	}
 	
@@ -83,7 +83,7 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 				entidad = permiso.getVariable().getTipo();
 			}
 			else if (permiso.isAgente()){
-				List<Entity> entidades = ModelUtils.<Entity>getVisibleNodes(/*ledPackage.getEntity()*/LedPackage.Literals.ENTITY, "Agente", atributos.eResource());
+				List<Entity> entidades = ModelUtils.<Entity>getVisibleNodes(ledPackage.getEntity(), "Agente", atributos.eResource());
 				if (entidades.size() > 0)
 					entidad = entidades.get(0);
 			}

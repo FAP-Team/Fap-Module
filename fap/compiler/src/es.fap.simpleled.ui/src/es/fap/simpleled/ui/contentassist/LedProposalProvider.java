@@ -36,8 +36,8 @@ import es.fap.simpleled.validation.*;
 
 public class LedProposalProvider extends AbstractLedProposalProvider {
 	
-//	@Inject
-//	private LedPackage ledPackage;
+	@Inject
+	private LedPackage ledPackage;
 
 	public int getCurrentLine(ContentAssistContext context){
 		try {
@@ -141,7 +141,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		if (getCurrentLine(context) == node.getStartLine() && !(node.getSemanticElement().eContainer() instanceof CompoundType)){
 			return;
 		}
-		for (Entity entidad: ModelUtils.<Entity>getVisibleNodes(/*ledPackage.getEntity()*/LedPackage.Literals.ENTITY, model.eResource())){
+		for (Entity entidad: ModelUtils.<Entity>getVisibleNodes(ledPackage.getEntity(), model.eResource())){
 			acceptor.accept(createCompletionProposal(entidad.getName(), styledProposal(entidad.getName() + "  -  " + "Entidad", null), null, 0, context.getPrefix(), context));
 		}
 	}
@@ -252,7 +252,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		while (!(model instanceof Formulario))
 			model = model.eContainer();
 		Formulario actual = (Formulario) model;
-		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(/*ledPackage.getFormulario()*/LedPackage.Literals.FORMULARIO, model.eResource())){
+		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(ledPackage.getFormulario(), model.eResource())){
 			for (Popup popup: f.getPopups()){
 				if (validTablaCampoPopup(tabla, popup)){
 					if (f.getName().equals(actual.getName()))
@@ -270,7 +270,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		while (!(model instanceof Formulario))
 			model = model.eContainer();
 		Formulario actual = (Formulario) model;
-		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(/*ledPackage.getFormulario()*/LedPackage.Literals.FORMULARIO, model.eResource())){
+		for (Formulario f : ModelUtils.<Formulario>getVisibleNodes(ledPackage.getFormulario(), model.eResource())){
 			for (Pagina pagina: f.getPaginas()){
 				if (validTablaCampoPagina(tabla, pagina)){
 					if (f.getName().equals(actual.getName()))
@@ -415,7 +415,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	public Entity getAgente(Resource res) {
-		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(/*ledPackage.getEntity()*/LedPackage.Literals.ENTITY, "Agente", res))
+		for (Entity entidad : ModelUtils.<Entity>getVisibleNodes(ledPackage.getEntity(), "Agente", res))
 			return entidad;
 		return null;
 	}

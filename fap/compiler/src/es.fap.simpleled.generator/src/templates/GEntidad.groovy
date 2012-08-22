@@ -492,7 +492,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		if (!entity.name.equals("Solicitud"))
 			return "";
 		String out = "public void savePagesPrepared () {"
-		for (PaginaImpl pag: ModelUtils.getVisibleNodes(LedPackage.Literals.PAGINA, LedUtils.resource)){
+		for (PaginaImpl pag: ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getPagina(), LedUtils.resource)){
 			if (!pag.guardarParaPreparar)
 				continue;
 			String name = "pagina" + pag.name;
@@ -512,7 +512,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		EntityImpl savePages = LedFactory.eINSTANCE.createEntity();
 		savePages.setName("SavePages");
 	
-		for (PaginaImpl pag: ModelUtils.getVisibleNodes(LedPackage.Literals.PAGINA, LedUtils.resource)){
+		for (PaginaImpl pag: ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getPagina(), LedUtils.resource)){
 			if (!pag.guardarParaPreparar){
 				continue;
 			}
@@ -529,7 +529,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 	
 	private void solicitudStuff(){
 		if (!entity.getExtends()?.name.equals("SolicitudGenerica"))
-			entity.setExtends(ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "SolicitudGenerica", LedUtils.resource));
+			entity.setExtends(ModelUtils.getVisibleNode(LedFactory.eINSTANCE.getLedPackage().getEntity(), "SolicitudGenerica", LedUtils.resource));
 		Entity savePages = getEntitySavePages();
 		GElement.getInstance(savePages, null).generate();
 		Type tipo = LedFactory.eINSTANCE.createType();

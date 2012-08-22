@@ -11,6 +11,8 @@ import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 
+import com.google.inject.Inject;
+
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.CampoAtributos;
@@ -23,6 +25,7 @@ import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.Popup;
 import es.fap.simpleled.led.ListaAtributos;
 import es.fap.simpleled.led.Tabla;
+import es.fap.simpleled.led.impl.LedPackageImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
@@ -34,16 +37,18 @@ import es.fap.simpleled.led.util.ModelUtils;
  * on how and when to use it 
  *
  */
-
 public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 	
+	@Inject
+	private LedPackage ledPackage;
+	
 	public IScope scope_Pagina(EObject ctx, EReference ref){
-		List<Pagina> paginas = ModelUtils.<Pagina>getVisibleNodes(LedPackage.Literals.PAGINA, ctx.eResource());
+		List<Pagina> paginas = ModelUtils.<Pagina>getVisibleNodes(ledPackage.getPagina(), ctx.eResource());
 		return Scopes.scopeFor(paginas);
 	}
 	
 	public IScope scope_Popup(EObject ctx, EReference ref){
-		List<Popup> popups = ModelUtils.<Popup>getVisibleNodes(LedPackage.Literals.POPUP, ctx.eResource());
+		List<Popup> popups = ModelUtils.<Popup>getVisibleNodes(ledPackage.getPopup(), ctx.eResource());
 		return Scopes.scopeFor(popups);
 	}
 	
@@ -78,7 +83,7 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 				entidad = permiso.getVariable().getTipo();
 			}
 			else if (permiso.isAgente()){
-				List<Entity> entidades = ModelUtils.<Entity>getVisibleNodes(LedPackage.Literals.ENTITY, "Agente", atributos.eResource());
+				List<Entity> entidades = ModelUtils.<Entity>getVisibleNodes(ledPackage.getEntity(), "Agente", atributos.eResource());
 				if (entidades.size() > 0)
 					entidad = entidades.get(0);
 			}

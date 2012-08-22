@@ -44,7 +44,7 @@ public class CampoUtils implements Comparable{
 		List<String> atributos = sinEntidad(campoStr).split("\\.");
 		if (atributos.get(0).equals(""))
 			atributos.clear();
-		Entity entity = ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, entidad, LedUtils.resource);
+		Entity entity = ModelUtils.getVisibleNode(LedFactory.eINSTANCE.getLedPackage().getEntity(), entidad, LedUtils.resource);
 		if (entity == null){
 			if (entidad.equals("Solicitud"))
 				entity = Entidad.findSolicitud();

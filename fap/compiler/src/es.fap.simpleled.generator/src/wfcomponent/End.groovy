@@ -74,7 +74,7 @@ public class End implements IWorkflowComponent {
 	}
 
 	private void controllersAndViews(){
-		for (Formulario formulario: LedUtils.getNodes(LedPackage.Literals.FORMULARIO)){
+		for (Formulario formulario: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario())){
 			if (!LedUtils.inPath(formulario)) continue;
 			for (Pagina pagina: formulario.paginas){
 				GPagina gpagina = GElement.getInstance(pagina, null);
@@ -93,11 +93,11 @@ public class End implements IWorkflowComponent {
 	
 	private void rutas(){
 		String content = "";
-		for(Pagina pagina in LedUtils.getNodes(LedPackage.Literals.PAGINA)){
+		for(Pagina pagina in LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getPagina())){
 			if (!LedUtils.inPath(pagina)) continue;
 			content += GElement.getInstance(pagina, null).routes();
 		}
-		for(Popup popup in LedUtils.getNodes(LedPackage.Literals.POPUP)){
+		for(Popup popup in LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getPopup())){
 			if (!LedUtils.inPath(popup)) continue;
 			content += GElement.getInstance(popup, null).routes();
 		}
@@ -108,7 +108,7 @@ public class End implements IWorkflowComponent {
 	}
 	
 	private String rutaPaginaInicial(){
-		List<Formulario> formularios = ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, LedUtils.resource);
+		List<Formulario> formularios = ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario(), LedUtils.resource);
 		Formulario formInicial;
 		Pagina pagInicial;
 		for (Formulario f: formularios){
@@ -131,7 +131,7 @@ public class End implements IWorkflowComponent {
 	}
 	
 	private void properties(){
-		List<Formulario> formsSolicitud = ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, "Solicitud", LedUtils.resource);
+		List<Formulario> formsSolicitud = ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario(), "Solicitud", LedUtils.resource);
 		Pagina pagInicial;
 		boolean indicada;
 		for (Formulario f: formsSolicitud){
@@ -159,7 +159,7 @@ public class End implements IWorkflowComponent {
 		String els = "";
 		Map<String, Entity> variables = new HashMap<String, Entity>();
 	  
-		for(Permiso p in LedUtils.getNodes(LedPackage.Literals.PERMISO)){
+		for(Permiso p in LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getPermiso())){
 			if (!LedUtils.inPath(p)) continue;
 			GPermiso permiso = GElement.getInstance(p, null);
 			if (permiso.permiso.varSection != null){
@@ -259,8 +259,8 @@ public class ${clazzName} extends Secure {
   
 	private void entitySolicitud() {
 		Resource res = LedUtils.resource;
-		if (ModelUtils.getVisibleNode(LedPackage.Literals.ENTITY, "Solicitud", res) == null){
-			if (ModelUtils.getVisibleNodes(LedPackage.Literals.FORMULARIO, "Solicitud", res).size() > 1)
+		if (ModelUtils.getVisibleNode(LedFactory.eINSTANCE.getLedPackage().getEntity(), "Solicitud", res) == null){
+			if (ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario(), "Solicitud", res).size() > 1)
 				log.warn("No se ha creado la entidad Solicitud. Se creará una por defecto.");
 			EntityImpl solicitud = LedFactory.eINSTANCE.createEntity();
 			solicitud.setName("Solicitud");

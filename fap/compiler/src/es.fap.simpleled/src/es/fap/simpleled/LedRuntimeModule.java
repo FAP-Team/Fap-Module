@@ -7,8 +7,15 @@ import org.eclipse.xtext.naming.IQualifiedNameProvider;
 
 import com.google.inject.Binder;
 
+import es.fap.simpleled.led.LedFactory;
+import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.impl.LedFactoryImpl;
+import es.fap.simpleled.led.impl.LedPackageImpl;
+import es.fap.simpleled.led.util.LedCampoUtils;
+import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.scoping.MyQualifiedNameProvider;
+import es.fap.simpleled.validation.FuncionColumnaValidator;
 
 /**
  * Use this class to register components to be used at runtime / without the
@@ -18,12 +25,20 @@ public class LedRuntimeModule extends es.fap.simpleled.AbstractLedRuntimeModule 
 	
 	@Override
 	public void configure(Binder binder) {
-		binder.requestStaticInjection(ModelUtils.class);
 		super.configure(binder);
+		binder.requestStaticInjection(ModelUtils.class);
+		binder.requestStaticInjection(LedCampoUtils.class);
+		binder.requestStaticInjection(LedEntidadUtils.class);
+		binder.requestStaticInjection(FuncionColumnaValidator.class);
 	}
 	
 	public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
 		return MyQualifiedNameProvider.class;
 	}
+	
+	public LedPackage bindLedPackage() {
+		return LedPackageImpl.eINSTANCE;
+	}
+
 	
 }

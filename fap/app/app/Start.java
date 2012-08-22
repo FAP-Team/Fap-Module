@@ -76,7 +76,6 @@ import services.NotificacionService;
 import services.RegistroService;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
-import utils.LoadConfigurarMensaje;
 
 @OnApplicationStart
 public class Start extends Job {
@@ -129,8 +128,8 @@ public class Start extends Job {
 			String paginasFileFap = "listas/initial-data/paginasMsj.yml";
 			String paginasFileApp = "listas/initial-data/paginasAppMsj.yml";            
 		
-            LoadConfigurarMensaje.loadConfigurarMensaje(paginasFileFap);
-            LoadConfigurarMensaje.loadConfigurarMensaje(paginasFileApp);
+			utils.Fixtures.loadConfigurarMensaje(paginasFileFap);
+			utils.Fixtures.loadConfigurarMensaje(paginasFileApp);
 		}
 		
 		// Para controlar el posible cambio de version del modulo fap de una aplicacion, y evitar el minimo daño posible en la BBDD

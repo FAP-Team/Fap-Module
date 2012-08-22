@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 
+import messages.Messages;
+import models.ConfigurarMensaje;
+
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
@@ -50,6 +53,7 @@ import play.data.binding.types.DateBinder;
 import play.db.DB;
 import play.db.DBPlugin;
 import play.db.Model;
+import play.db.jpa.Transactional;
 import play.exceptions.UnexpectedException;
 import play.exceptions.YAMLException;
 import play.vfs.VirtualFile;
@@ -325,6 +329,42 @@ public class Fixtures extends play.test.Fixtures {
         }
     }
 
-	
+	@Transactional
+	public static void loadConfigurarMensaje(String paginasFile) {
+		Pattern keyPattern = Pattern.compile("([^(]+)\\(([^)]+)\\)");
+		Object o = play.test.Fixtures.loadYaml(paginasFile);
+		
+		//Obtengo las paginas que ya están almacenadas
+		List<ConfigurarMensaje> paginasMensaje = ConfigurarMensaje.findAll();
+		
+		if (o instanceof LinkedHashMap<?, ?>) {
+			@SuppressWarnings("unchecked")
+			LinkedHashMap<Object, Map<?, ?>> objects = (LinkedHashMap<Object, Map<?, ?>>) o;
+			for (Object key : objects.keySet()) {
+				//Llamo al Load del modelo específico que quiero cargar desde fichero.
+				Model myModel = ConfigurarMensaje.loadModel(key, keyPattern, objects, o);
+				
+				// En este momento tengo el ConfigurarMensaje
+				// completo y compruebo que no esté en BBDD
+				// Para guardarlo
+				if (myModel != null){
+					ConfigurarMensaje cm = (ConfigurarMensaje) myModel;
+					boolean encontrado = false;
+					for (ConfigurarMensaje configurarMensaje : paginasMensaje) {
+						if(configurarMensaje.nombrePagina.equals(cm.nombrePagina)){
+							encontrado = true;
+							break; //Encontrado, dejamos de buscar.
+						}									
+					}
+					if (!encontrado)
+						myModel._save();
+				}
+				else{
+					Messages.error("Se produjo un error cargando los modelos desde fichero");
+				}
+			}
+		} 
+	}
+
 	
 }

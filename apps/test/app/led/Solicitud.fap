@@ -459,7 +459,11 @@ Formulario Solicitud {
         }
     }
     
-    Pagina TablasConDecimales noForm campo=Solicitud {
+    Pagina TablasConDecimales campo=Solicitud {
+    	Texto campo=Solicitud.conceptos.moneda1
+    	Texto campo=Solicitud.conceptos.moneda2
+    	Texto campo=Solicitud.conceptos.moneda3
+    	Texto campo=Solicitud.conceptos.moneda4
     	Wiki { "Probando los decimales en tablas y campos" }
     	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos {
     		Columna titulo="Entero" campo=MiConcepto.unInteger

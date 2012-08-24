@@ -1,5 +1,15 @@
 h2. Changelog
 
+h3. Versión 2.1RC3
+
+* Validando y guardando datos en paginas que tienen tablas que van a otras paginas. 
+* Fixed Bug en Monedas y Doubles.
+* Fixed Bug al tener paginas o popups solo con crear o con un editar distinto en tablas.
+* No permitir al usuario que entra por certificado gestionar contraseñas.
+* Fixed Bug en el enlace al requerimiento en verificaciones anteriores.
+* Permitiendo algunas retrocompatibilidades con versiones anteriores a la versión 2.1.
+* Fixed Minor Bugs.
+
 h3. Versión 2.1RC2
 
 * Seguimiento incluido en el módulo de FAP.

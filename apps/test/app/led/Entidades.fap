@@ -20,6 +20,14 @@ Entidad Solicitud extends SolicitudGenerica {
 	Documento doc
 	
 	OneToMany MiConcepto misConceptos
+	ConceptosMios conceptos
+}
+
+Entidad ConceptosMios {
+	Moneda moneda1
+	Moneda moneda2
+	Moneda moneda3
+	Moneda moneda4
 }
 
 Entidad FirmanteSingle extends Singleton{

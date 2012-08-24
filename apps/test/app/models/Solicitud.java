@@ -72,6 +72,9 @@ public class Solicitud extends SolicitudGenerica {
 	public List<MiConcepto> misConceptos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public ConceptosMios conceptos;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
 
 	public Solicitud() {
@@ -143,6 +146,11 @@ public class Solicitud extends SolicitudGenerica {
 
 		if (misConceptos == null)
 			misConceptos = new ArrayList<MiConcepto>();
+
+		if (conceptos == null)
+			conceptos = new ConceptosMios();
+		else
+			conceptos.init();
 
 		if (savePages == null)
 			savePages = new SavePages();

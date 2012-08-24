@@ -83,7 +83,11 @@ fap/compiler/src/es.fap.simpleled.generator/bin/*
 apps/test/logs
 apps/test/test-result
 
-apps/test/gestorDocumental/temporal/*
+apps/test/gestorDocumental
+
 
 # Generated sources
 *Gen.java
+
+# Documentacion html y javadoc
+fap/documentation/javadoc

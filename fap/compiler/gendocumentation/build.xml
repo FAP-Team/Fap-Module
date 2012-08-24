@@ -1,6 +1,6 @@
 <project default="compile" basedir="../">
 	<path id="classpath">
-		<fileset dir="src/es.fap.simpleled.generator/lib/">
+		<fileset dir="compiler/src/es.fap.simpleled.generator/lib/">
 			<include name="groovy-all-1.7.5.jar" />
 			<include name="jj-textile.jar" />
 			<include name="jj-wikitext.jar" />

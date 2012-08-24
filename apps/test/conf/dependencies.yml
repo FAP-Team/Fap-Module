@@ -2,7 +2,7 @@
 
 require:
     - play
-    - fap -> fap 1.3.8
+    - fap -> fap 1.3.9
     - fap-modules -> guice 1.2.1
     - play -> pdf 0.6
     - play -> recaptcha 1.2
@@ -12,7 +12,7 @@ repositories:
         type:       local
         artifact:   ${fapsdk}/fap
         contains:
-            - fap -> *
+            - fap -> fap
             
 #    - Fap repository:
 #        type: http

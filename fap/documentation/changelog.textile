@@ -1,8 +1,13 @@
 h2. Changelog
 
-h3. Versión 1.3.9RC1
+h3. Versión 1.3.9
 
 * Tipo de documentos Otros, reemplazado por la multiplicidad del tipo de documento.
+* Tipo y descripción visible en todas las tablas de documentos en las páginas por defecto de FAP.
+* Fixed bug en email del representante de un solicitante.
+* Descripción de los documentos como Área de Texto.
+* Fixed bug en Validación.
+* Añadida fecha de Registro en las tablas de documentación de Aportación de FAP.
 
 h3. Versión 1.3.8
 

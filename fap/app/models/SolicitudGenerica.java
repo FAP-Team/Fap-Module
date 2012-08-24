@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import controllers.fap.SecureController;
-import enumerado.fap.gen.TiposParticipacionEnum;
 import play.db.jpa.JPABase;
 import play.libs.F.Promise;
 import play.mvc.Http.Request;

@@ -10,7 +10,8 @@
 	<property name="grammar.dir" value="${compiler.src.dir}/es.fap.simpleled" />
 	<property name="generator.dir" value="${compiler.src.dir}/es.fap.simpleled.generator" />
 	<property name="dependencies.yml" value="${fap}/conf/dependencies.yml" />
-
+	<property name="documentationHTML" value="${fap}/compiler/gendocumentation" />
+	
 	<!-- FTP Tasks properties -->
 	<condition property="ftp.server" value="${ftpservernightly}" else="fap-devel.etsii.ull.es">
 		<isset property="ftpservernightly" />
@@ -18,10 +19,10 @@
 	<condition property="ftp.fap.dir" value="${ftpdirnightly}" else="/public/fap-sdk2/">
 		<isset property="ftpdirnightly" />
 	</condition>
-	<condition property="ftp.user" value="${ftpusernightly}" else="jorge">
+	<condition property="ftp.user" value="${ftpusernightly}" else="yurena">
 		<isset property="ftpusernightly" />
 	</condition>
-	<condition property="ftp.pass" value="${ftppassnightly}" else="jorge">
+	<condition property="ftp.pass" value="${ftppassnightly}" else="yurena">
 		<isset property="ftppassnightly" />
 	</condition>
 	<condition property="zip.dir" value="dist-nightly" else="dist">
@@ -136,6 +137,7 @@
 		<ant target="dist" antfile="buildCompiler.xml" dir="${generator.dir}" />
 		<copy file="${grammar.dir}/dist/es.fap.simpleled.jar" tofile="${compiler.compiled}/es.fap.simpleled.jar" overwrite="yes"/>
 		<copy file="${generator.dir}/dist/es.fap.simpleled.generator.jar" tofile="${compiler.compiled}/es.fap.simpleled.generator.jar" overwrite="yes"/>
+		<antcall target="generate-docHTML" />
 	</target>
 
 	<target name="build-plugins">
@@ -266,6 +268,10 @@
 		<!--git command="stash" args="apply" dir=".."/-->
 	</target>
 
+	 <target name="generate-docHTML" description="Genera las clases necesarias para despues generar la documentacion HTML">
+	        <ant target="compile" antfile="${documentationHTML}/build.xml" />
+	</target>
+	
 </project>
 
 

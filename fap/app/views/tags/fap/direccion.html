@@ -60,77 +60,93 @@
 	
 	java.util.List tipoDireccionesProperty = properties.FapProperties.get("fap.direcciones.tipo").split(",");
 	
+	def direccionAntigua = properties.FapProperties.getBoolean("fap.direccion.anterior.version2.1");
+	
 }%
 
-	#{fap.grupo titulo:label}
+	#{if !direccionAntigua}
 
-		#{fap.combo id:id_combo, titulo:'Tipo Dirección', campo:campo_combo, obj:obj, requerido:requerido, ancho:"250px"/}
+		#{fap.grupo titulo:label, visible:label != null}
 	
-		#{fap.grupo siCombo:id_combo, siComboValue:['canaria'], borde:false}
+			#{fap.combo id:id_combo, titulo:'Tipo Dirección', campo:campo_combo, obj:obj, requerido:requerido, ancho:"250px"/}
+		
+			#{fap.grupo siCombo:id_combo, siComboValue:['canaria'], borde:false}
+				
+				<select id="${id_comunidad}_canaria" style="display:none">
+					<option value="_05" selected></option>
+				</select>
+				
+				#{fap.combo id:id_provinciaIsla, dependeDe:id_comunidad+"_canaria", titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+				#{fap.combo id:id_isla, dependeDe:id_provinciaIsla, titulo:'Isla', campo:campo_isla, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+				#{fap.combo id:id_municipioIsla, dependeDe:id_isla, titulo:'Municipio', campo:campo_municipio, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
+			#{/fap.grupo}
+		
+		
+			#{fap.grupo siCombo:id_combo, siComboValue:['nacional'], borde:false}
+				
+				<select id="${id_pais}_nacional" style="display:none">
+					<option value="_724" selected></option>
+				</select>
+				
+				#{fap.combo id:id_comunidad, dependeDe:id_pais+"_nacional", titulo:'Comunidad Autónoma', campo:campo_comunidad, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+				#{fap.combo id:id_provincia, dependeDe:id_comunidad, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+				#{fap.combo id:id_municipio, dependeDe:id_provincia, titulo:'Municipio', campo:campo_municipio, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
+			#{/fap.grupo}
 			
-			<select id="${id_comunidad}_canaria" style="display:none">
-				<option value="_05" selected></option>
-			</select>
 			
-			#{fap.combo id:id_provinciaIsla, dependeDe:id_comunidad+"_canaria", titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
-			#{fap.combo id:id_isla, dependeDe:id_provinciaIsla, titulo:'Isla', campo:campo_isla, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
-			#{fap.combo id:id_municipioIsla, dependeDe:id_isla, titulo:'Municipio', campo:campo_municipio, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
+			#{fap.grupo siCombo:id_combo, siComboValue:['internacional'], borde:false}
+				#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+				#{fap.texto id:id_provinciaInternacional, titulo:'Estado/Provincia/Región', campo:campo_provinciaInternacional, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
+			#{/fap.grupo}
+			
+			#{fap.grupo siCombo:id_combo, siComboValue:tipoDireccionesProperty, borde:false}
+			
+				#{fap.texto id:id_localidad, titulo:"Localidad", campo:campo_localidad, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+				#{fap.texto id:id_codigoPostal, titulo:'Código Postal', campo:campo_codigoPostal, obj:obj, requerido:requerido, ancho:"100px" /}
+				#{fap.texto id:id_calle, titulo:'Calle', campo:campo_calle, obj:obj, requerido:requerido, ancho:"250px" /}
+				#{fap.texto id:id_numero, titulo:'Número', campo:campo_numero, obj:obj, requerido:requerido, ancho:"100px"/}
+				#{fap.texto id:id_otros, titulo:'Puerta/Piso/Otros', obj:obj, campo:campo_otros, ancho:"150px" /}
+				
+			#{/fap.grupo}
+	
 		#{/fap.grupo}
 	
-	
-		#{fap.grupo siCombo:id_combo, siComboValue:['nacional'], borde:false}
+		<script>
+			$('#${id_combo}').change(function(){
+				$('#${id_pais}').val("");
+				$('#${id_comunidad}').val("");
+				$('#${id_provincia}').val("");
+				$('#${id_municipio}').val("");
+				$('#${id_provinciaIsla}').val("");
+				$('#${id_municipioIsla}').val("");
+				$('#${id_isla}').val("");
+				setearRequerido();
+			});
 			
-			<select id="${id_pais}_nacional" style="display:none">
-				<option value="_724" selected></option>
-			</select>
+			// Para la primera vez que recarga la pagina
+			$(document).ready(setearRequerido());
 			
-			#{fap.combo id:id_comunidad, dependeDe:id_pais+"_nacional", titulo:'Comunidad Autónoma', campo:campo_comunidad, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
-			#{fap.combo id:id_provincia, dependeDe:id_comunidad, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
-			#{fap.combo id:id_municipio, dependeDe:id_provincia, titulo:'Municipio', campo:campo_municipio, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
-		#{/fap.grupo}
+			function setearRequerido(){
+				if ($('#${id_combo}').val() === "internacional"){
+					var requerido = $('#${id_localidad}').parent().parent().children('.control-label').children('.required');
+					$(requerido).text("*");
+				} else {
+					var requerido = $('#${id_localidad}').parent().parent().children('.control-label').children('.required');
+					$(requerido).text("");
+				}
+			}
+		</script>
 		
-		
-		#{fap.grupo siCombo:id_combo, siComboValue:['internacional'], borde:false}
-			#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
-			#{fap.texto id:id_provinciaInternacional, titulo:'Estado/Provincia/Región', campo:campo_provinciaInternacional, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
-		#{/fap.grupo}
-		
-		#{fap.grupo siCombo:id_combo, siComboValue:tipoDireccionesProperty, borde:false}
-		
-			#{fap.texto id:id_localidad, titulo:"Localidad", campo:campo_localidad, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
+	#{/if}
+	#{else}
+		#{fap.grupo titulo:label, visible:label != null}
+			#{fap.combo id:id_municipio, titulo:"Municipio", campo:campo_municipio, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
 			#{fap.texto id:id_codigoPostal, titulo:'Código Postal', campo:campo_codigoPostal, obj:obj, requerido:requerido, ancho:"100px" /}
+	
 			#{fap.texto id:id_calle, titulo:'Calle', campo:campo_calle, obj:obj, requerido:requerido, ancho:"250px" /}
 			#{fap.texto id:id_numero, titulo:'Número', campo:campo_numero, obj:obj, requerido:requerido, ancho:"100px"/}
 			#{fap.texto id:id_otros, titulo:'Puerta/Piso/Otros', obj:obj, campo:campo_otros, ancho:"150px" /}
-			
 		#{/fap.grupo}
-
-	#{/fap.grupo}
-	
-	<script>
-		$('#${id_combo}').change(function(){
-			$('#${id_pais}').val("");
-			$('#${id_comunidad}').val("");
-			$('#${id_provincia}').val("");
-			$('#${id_municipio}').val("");
-			$('#${id_provinciaIsla}').val("");
-			$('#${id_municipioIsla}').val("");
-			$('#${id_isla}').val("");
-			setearRequerido();
-		});
-		
-		// Para la primera vez que recarga la pagina
-		$(document).ready(setearRequerido());
-		
-		function setearRequerido(){
-			if ($('#${id_combo}').val() === "internacional"){
-				var requerido = $('#${id_localidad}').parent().parent().children('.control-label').children('.required');
-				$(requerido).text("*");
-			} else {
-				var requerido = $('#${id_localidad}').parent().parent().children('.control-label').children('.required');
-				$(requerido).text("");
-			}
-		}
-	</script>
+	#{/else}
 	
 #{/fap.field}

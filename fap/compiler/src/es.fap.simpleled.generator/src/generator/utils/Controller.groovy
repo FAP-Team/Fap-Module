@@ -309,7 +309,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoEditar(){
-		if (!editar && !isForm())
+		if (!editar && !crear && !isForm())
 			return "";
 		
 		List<GBoton> botones = gElement.getInstancesOf(GBoton.class);
@@ -547,7 +547,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoEditarRender(){
-		if (!editar && !isForm())
+		if (!editar && !crear && !isForm())
 			return "";
 		String redirectMethod = "\"${controllerFullName}.index\"";
 		String redirectMethodOk = redirectMethod;
@@ -693,7 +693,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoEditarValidateRules(){
-		if (!editar && !isForm())
+		if (!editar && !crear && !isForm())
 			return "";
 		return """
 			@Util

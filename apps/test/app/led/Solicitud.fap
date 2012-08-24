@@ -464,7 +464,26 @@ Formulario Solicitud {
     	Texto campo=Solicitud.conceptos.moneda2
     	Texto campo=Solicitud.conceptos.moneda3
     	Texto campo=Solicitud.conceptos.moneda4
-    	Wiki { "Probando los decimales en tablas y campos" }
+    	Wiki { "Probando los decimales en tablas y campos en un wiki"}
+    	Wiki { " <table class=\"table table-bordered table-striped\">
+<thead>
+<tr>
+	<th>Nombre</th>
+	<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Moneda1</td>
+<td>${format.FapFormat.format(solicitud.conceptos.moneda1)} €</td>
+</tr>
+<tr>
+<td>Moneda2</td>
+<td>${format.FapFormat.format(solicitud.conceptos.moneda2)} €</td>
+</tr>
+</tbody>
+</table>
+" }
     	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos {
     		Columna titulo="Entero" campo=MiConcepto.unInteger
     		Columna titulo="Double" campo=MiConcepto.unDouble

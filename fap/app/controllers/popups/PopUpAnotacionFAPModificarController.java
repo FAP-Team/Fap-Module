@@ -2,19 +2,20 @@ package controllers.popups;
 
 import java.util.Map;
 
-import org.joda.time.DateTime;
-
 import messages.Messages;
 import models.AnotacionFAP;
+
+import org.joda.time.DateTime;
+
 import play.mvc.Util;
 import validation.CustomValidation;
 import controllers.fap.AgenteController;
-import controllers.gen.popups.PopUpAnotacionModificarControllerGen;
+import controllers.gen.popups.PopUpAnotacionFAPModificarControllerGen;
 
-public class PopUpAnotacionModificarController extends PopUpAnotacionModificarControllerGen {
+public class PopUpAnotacionFAPModificarController extends PopUpAnotacionFAPModificarControllerGen {
 
 	@Util
-	public static void PopUpAnotacionModificarValidateCopy(String accion, AnotacionFAP dbAnotacionFAP, AnotacionFAP anotacionFAP) {
+	public static void PopUpAnotacionFAPModificarValidateCopy(String accion, AnotacionFAP dbAnotacionFAP, AnotacionFAP anotacionFAP) {
 		CustomValidation.clearValidadas();
 		if (secure.checkGrafico("noEditable", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
 			CustomValidation.valid("anotacionFAP", anotacionFAP);
@@ -49,6 +50,5 @@ public class PopUpAnotacionModificarController extends PopUpAnotacionModificarCo
 		}
 
 	}
-
 	
 }

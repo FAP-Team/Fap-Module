@@ -1,20 +1,18 @@
 package controllers.popups;
 
-import messages.Messages;
 import models.AnotacionFAP;
 
 import org.joda.time.DateTime;
 
 import play.mvc.Util;
-
 import validation.CustomValidation;
 import controllers.fap.AgenteController;
-import controllers.gen.popups.PopUpAnotacionCrearControllerGen;
+import controllers.gen.popups.PopUpAnotacionFAPCrearControllerGen;
 
-public class PopUpAnotacionCrearController extends PopUpAnotacionCrearControllerGen {
+public class PopUpAnotacionFAPCrearController extends PopUpAnotacionFAPCrearControllerGen {
 
 	@Util
-	public static void PopUpAnotacionCrearValidateCopy(String accion, AnotacionFAP dbAnotacionFAP, AnotacionFAP anotacionFAP) {
+	public static void PopUpAnotacionFAPCrearValidateCopy(String accion, AnotacionFAP dbAnotacionFAP, AnotacionFAP anotacionFAP) {
 		CustomValidation.clearValidadas();
 		CustomValidation.valid("anotacionFAP", anotacionFAP);
 		CustomValidation.required("anotacionFAP.tituloanotacion", anotacionFAP.tituloanotacion);

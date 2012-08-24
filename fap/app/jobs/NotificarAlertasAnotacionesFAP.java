@@ -24,7 +24,7 @@ import play.jobs.*;
 import properties.FapProperties;
 
 @Every("1min")
-public class NotificarAlertasAnotaciones extends Job implements LocalVariablesSupport {
+public class NotificarAlertasAnotacionesFAP extends Job implements LocalVariablesSupport {
 
 	static Integer tiempoRefresco = 1;
 	

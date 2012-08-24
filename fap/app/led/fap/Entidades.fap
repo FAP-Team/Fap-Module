@@ -45,7 +45,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	AceptarRenunciar aceptarRenunciar
 	Alegaciones alegaciones
 	OneToMany Notificacion notificaciones
-	OneToMany Autorizaciones autorizacion
+	OneToMany AutorizacionesFAP autorizacion
 	DatosAnotaciones datosAnotaciones
 }
 
@@ -656,7 +656,7 @@ Entidad BusquedaLogs nonPersist {
 }
 
 
-Entidad Autorizaciones{
+Entidad AutorizacionesFAP{
 	Nip nip
 }
 

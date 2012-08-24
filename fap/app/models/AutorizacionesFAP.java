@@ -19,14 +19,14 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Autorizaciones extends FapModel {
+public class AutorizacionesFAP extends FapModel {
 	// Código de los atributos
 
 	@CheckWith(NipCheck.class)
 	@Embedded
 	public Nip nip;
 
-	public Autorizaciones() {
+	public AutorizacionesFAP() {
 		init();
 	}
 

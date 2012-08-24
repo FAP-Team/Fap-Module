@@ -7,7 +7,7 @@ import models.Agente;
 import models.Nip;
 import models.Participacion;
 import models.SolicitudGenerica;
-import models.Autorizaciones;
+import models.AutorizacionesFAP;
 import play.mvc.Util;
 import validation.CustomValidation;
 import controllers.gen.PaginaAutorizarControllerGen;
@@ -17,12 +17,12 @@ public class PaginaAutorizarController extends PaginaAutorizarControllerGen {
 
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void editar(Long idSolicitud, Long idAutorizaciones, Autorizaciones autorizaciones) {
+	public static void editar(Long idSolicitud, Long idAutorizaciones, AutorizacionesFAP autorizaciones) {
 		checkAuthenticity();
 		if (!permiso("editar")) {
 			Messages.error("No tiene suficientes privilegios para acceder a esta solicitud");
 		}
-		Autorizaciones dbautorizaciones = PaginaAutorizarController.getAutorizaciones(idSolicitud, idAutorizaciones);
+		AutorizacionesFAP dbautorizaciones = PaginaAutorizarController.getAutorizacionesFAP(idSolicitud, idAutorizaciones);
 
 		PaginaAutorizarController.PaginaAutorizarBindReferences(autorizaciones);
 		busqueda(idSolicitud,  autorizaciones.nip, dbautorizaciones);
@@ -45,12 +45,12 @@ public class PaginaAutorizarController extends PaginaAutorizarControllerGen {
 	}
 	
 	@Util
-	public static Long crearLogica(Long idSolicitud, Autorizaciones autorizaciones) {
+	public static Long crearLogica(Long idSolicitud, AutorizacionesFAP autorizaciones) {
 		checkAuthenticity();
 		if (!permiso("crear")) {
 			Messages.error("No tiene suficientes privilegios para acceder a esta solicitud");
 		}
-		Autorizaciones dbautorizaciones = PaginaAutorizarController.getAutorizaciones();
+		AutorizacionesFAP dbautorizaciones = PaginaAutorizarController.getAutorizacionesFAP();
 		SolicitudGenerica dbSolicitud = PaginaAutorizarController.getSolicitudGenerica(idSolicitud);
 
 		PaginaAutorizarController.PaginaAutorizarBindReferences(autorizaciones);
@@ -80,11 +80,11 @@ public class PaginaAutorizarController extends PaginaAutorizarControllerGen {
 	}
 
 	@Util
-	public static void busqueda(Long idSolicitud, Nip nip, Autorizaciones autorizaciones) {
+	public static void busqueda(Long idSolicitud, Nip nip, AutorizacionesFAP autorizaciones) {
 		//Tengo que buscar todas las autorizaciones asociadas a la solicitud
 		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
-		List<Autorizaciones> listaAuto = solicitud.autorizacion;
-		for (Autorizaciones auto : listaAuto) {
+		List<AutorizacionesFAP> listaAuto = solicitud.autorizacion;
+		for (AutorizacionesFAP auto : listaAuto) {
 			if (auto.nip.valor.equals(nip.valor)){
 				Messages.error("Ese nip ya ha sido autorizado para esta solicitud");
 				break;
@@ -93,7 +93,7 @@ public class PaginaAutorizarController extends PaginaAutorizarControllerGen {
 	}
 	
 	@Util
-	public static void AsignarAgente(Long idSolicitud, Autorizaciones autorizaciones) {
+	public static void AsignarAgente(Long idSolicitud, AutorizacionesFAP autorizaciones) {
 		boolean encontrado = false;
 		List<Agente> listaAgentes = Agente.findAll();
 		for (Agente ag : listaAgentes) {

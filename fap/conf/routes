@@ -334,13 +334,13 @@ POST /Solicitud/popupdocalegacionenproceso/editar popups.PopUpDocAlegacionEnProc
 POST /Solicitud/popupdocalegacionenproceso/borrar popups.PopUpDocAlegacionEnProcesoController.borrar
 GET /Principal/popuppass popups.PopupPassController.index
 POST /Principal/popuppass/editar popups.PopupPassController.editar
-GET /Solicitud/popupanotacioncrear popups.PopUpAnotacionCrearController.index
-POST /Solicitud/popupanotacioncrear/editar popups.PopUpAnotacionCrearController.editar
-POST /Solicitud/popupanotacioncrear/crear popups.PopUpAnotacionCrearController.crear
-GET /Solicitud/popupanotacionver popups.PopUpAnotacionVerController.index
-GET /Solicitud/popupanotacionmodificar popups.PopUpAnotacionModificarController.index
-POST /Solicitud/popupanotacionmodificar/editar popups.PopUpAnotacionModificarController.editar
-GET /Solicitud/popupanotacionborrar popups.PopUpAnotacionBorrarController.index
-POST /Solicitud/popupanotacionborrar/borrar popups.PopUpAnotacionBorrarController.borrar
+GET /Solicitud/popupanotacionfapcrear popups.PopUpAnotacionFAPCrearController.index
+POST /Solicitud/popupanotacionfapcrear/editar popups.PopUpAnotacionFAPCrearController.editar
+POST /Solicitud/popupanotacionfapcrear/crear popups.PopUpAnotacionFAPCrearController.crear
+GET /Solicitud/popupanotacionfapver popups.PopUpAnotacionFAPVerController.index
+GET /Solicitud/popupanotacionfapmodificar popups.PopUpAnotacionFAPModificarController.index
+POST /Solicitud/popupanotacionfapmodificar/editar popups.PopUpAnotacionFAPModificarController.editar
+GET /Solicitud/popupanotacionfapborrar popups.PopUpAnotacionFAPBorrarController.index
+POST /Solicitud/popupanotacionfapborrar/borrar popups.PopUpAnotacionFAPBorrarController.borrar
 
 # === END FAPGENERATED ===			 

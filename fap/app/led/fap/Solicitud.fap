@@ -859,14 +859,14 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	Pagina Autorizacion titulo="Autorizaciones" campo=SolicitudGenerica permiso=editarSolicitud { //TODO permiso autorizado no autoriza.
 		Tabla nipsAutorizados titulo="Nips autorizados" campo=SolicitudGenerica.autorizacion pagina=PaginaAutorizar 
 		{
-			Columna campo=Autorizaciones.id titulo="Identificador"
-			Columna campo=Autorizaciones.nip.tipo titulo="Tipo"
-			Columna campo=Autorizaciones.nip.valor titulo="Valor"
+			Columna campo=AutorizacionesFAP.id titulo="Identificador"
+			Columna campo=AutorizacionesFAP.nip.tipo titulo="Tipo"
+			Columna campo=AutorizacionesFAP.nip.valor titulo="Valor"
 		}
 	}
 	
 	Pagina PaginaAutorizar titulo="Autorizar" campo=SolicitudGenerica.autorizacion {
-		Nip NIP campo=Autorizaciones.nip titulo="Nip del autorizado" requerido
+		Nip NIP campo=AutorizacionesFAP.nip titulo="Nip del autorizado" requerido
 		Boton btonvolver titulo="Volver" pagina=Autorizacion 
 	} 
 

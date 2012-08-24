@@ -2,10 +2,10 @@ Formulario Solicitud campo=SolicitudGenerica {
 
 	Pagina AnotacionesFAP titulo="Anotaciones" noForm permiso=adminGestorRevisor {
 		Tabla Anotaciones titulo="Anotaciones y Avisos" campo=SolicitudGenerica.datosAnotaciones.anotaciones
-		popupCrear=PopUpAnotacionCrear
-		popupBorrar=PopUpAnotacionBorrar
-		popupEditar=PopUpAnotacionModificar
-		popupLeer=PopUpAnotacionVer
+		popupCrear=PopUpAnotacionFAPCrear
+		popupBorrar=PopUpAnotacionFAPBorrar
+		popupEditar=PopUpAnotacionFAPModificar
+		popupLeer=PopUpAnotacionFAPVer
 		{
 			Columna titulo="Fecha" campo=AnotacionFAP.fecha ancho="70"
 			Columna titulo="Anotación" campo=AnotacionFAP.tituloanotacion expandir
@@ -22,7 +22,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 
 	}
 
-	Popup PopUpAnotacionCrear titulo="Nueva Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
+	Popup PopUpAnotacionFAPCrear titulo="Nueva Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
 		Accion editar crearSiempre
 		Texto titulo="Título" campo=AnotacionFAP.tituloanotacion requerido
 		AreaTexto titulo="Descripción" campo=AnotacionFAP.descripcion requerido
@@ -32,7 +32,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 		}
 	}
 
-	Popup PopUpAnotacionVer titulo="Ver Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
+	Popup PopUpAnotacionFAPVer titulo="Ver Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
 		Fecha titulo="Fecha" campo=AnotacionFAP.fecha
 		Texto titulo="Título" campo=AnotacionFAP.tituloanotacion
 		AreaTexto titulo="Descripción" campo=AnotacionFAP.descripcion
@@ -47,7 +47,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 		}
 	}
 
-	Popup PopUpAnotacionModificar titulo="Modificar Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
+	Popup PopUpAnotacionFAPModificar titulo="Modificar Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
 		Grupo borde=false permiso=noEditable {
 			Fecha titulo="Fecha" campo=AnotacionFAP.fecha
 		}
@@ -72,7 +72,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 		}
 	}
 
-	Popup PopUpAnotacionBorrar titulo="Borrar Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
+	Popup PopUpAnotacionFAPBorrar titulo="Borrar Nota" campo=SolicitudGenerica.datosAnotaciones.anotaciones {
 		Fecha titulo="Fecha" campo=AnotacionFAP.fecha
 		Check chk_Resuelta titulo="Resuelta?" campo=AnotacionFAP.checkResuelta
 		Texto titulo="Título" campo=AnotacionFAP.tituloanotacion

@@ -66,3 +66,5 @@ h2. Properties originarias de FAP
 ** Ejemplo: _fap.log.compress.every=24_ (Valor por defecto que trae el módulo FAP)
 * Cada cuanto se debe ejecutar el Job encargado de eliminar los archivos temporales antiguos (en horas) *fap.delete.temporals.every=* _Número_
 ** Ejemplo: _fap.delete.temporals.every=5_ (Valor por defecto que trae el módulo FAP)
+* Validación y guardado de la pagina antes de abrir la página de una tabla *fap.tablas.validacion.antesRedirigirPaginas*= _[true | false]_
+** Ejemplo: _fap.tablas.validacion.antesRedirigirPaginas=true_ (Valor por defecto que trae el módulo FAP, a partir de la versión 2.1, antes _false_)

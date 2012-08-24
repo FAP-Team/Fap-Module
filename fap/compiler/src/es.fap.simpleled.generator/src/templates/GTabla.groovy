@@ -20,6 +20,7 @@ public class GTabla extends GElement{
 
 	Tabla tabla;
 	GElement gPaginaPopup;
+	Controller controller;
 	CampoUtils campo;
 	boolean botonBorrar;
 	String stringParamsAdded;
@@ -79,7 +80,7 @@ public class GTabla extends GElement{
 			params.putStr 'tipoContainer', "pagina";
 		params.putStr("idEntidad", "${Entidad.create(campo.ultimaEntidad).id}");
 	
-		Controller controller = Controller.create(getPaginaOrPopupContainer());
+		controller = Controller.create(getPaginaOrPopupContainer());
 		if (tabla.campo.entidad.name.equals(controller.campo?.ultimaEntidad?.name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear) && !controller.entidad.isSingleton()){
 			params.put 'crearEntidad', "accion == 'crear'";
 			params.putStr 'nameContainer', gPaginaPopup.name;
@@ -87,6 +88,10 @@ public class GTabla extends GElement{
 			params.put 'urlContainerCrear', controller.getRouteIndex("crear", false, false);
 			params.put 'urlContainerEditar', controller.getRouteIndex("editar", false, true);
 			params.put 'urlCrearEntidad', controller.getRouteAccion("crearForTablas");
+		}
+		
+		if (tabla.pagina || tabla.paginaCrear){
+			params.put 'urlBeforeOpenPageTable', controller.getRouteBeforeOpenPageTable("editar");
 		}
 		
 		StringBuffer columnasView = new StringBuffer();
@@ -140,6 +145,11 @@ public class GTabla extends GElement{
 		for(Columna c : tabla.columnas)
 			columnasView.append (columnaView(c));
 
+		if (controller.algoQueGuardar())
+			params.put("saveEntity", true);
+		else
+			params.put("saveEntity", false);
+			
 		String view = """
 #{fap.tabla ${params.lista(true)}
 }
@@ -361,7 +371,7 @@ public class GTabla extends GElement{
 			finalStrParams = param;
 		}
 		// Deberemos añadir además, los id necesarios en el formulario, página o popup que contiene a esta tabla.
-				
+
 		return """
 			public static void ${controllerMethodName()}(${finalStrParams}){
 				${idSingleton}

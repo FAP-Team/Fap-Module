@@ -52,6 +52,7 @@ public class Controller implements Comparator<Entidad>{
 	public boolean index;
 	public boolean crear;
 	public boolean editar;
+	public boolean postIndex;
 	public boolean borrar;
 	public CampoUtils campo;
 	public String renderView;
@@ -185,6 +186,8 @@ ${metodoBorrar()}
 
 ${metodoValidateCopy()}
 
+${metodoValidateCopyBeforeOpenPageTable()}
+
 ${metodoPermiso()}
 
 ${metodoPrimeraAccion()}
@@ -235,12 +238,16 @@ public class ${controllerName} extends ${controllerGenName} {
 		StringBuffer sb = new StringBuffer();
 		if (index)
 			StringUtils.appendln sb, RouteUtils.to("GET", url, controllerFullName + ".index");
+		if (index && postIndex)
+			StringUtils.appendln sb, RouteUtils.to("POST", url, controllerFullName + ".index");
 		if (editar || isForm())
 			StringUtils.appendln sb, RouteUtils.to("POST", url + "/${nameEditar}", controllerFullName + ".${nameEditar}");
 		if (borrar)
 			StringUtils.appendln sb, RouteUtils.to("POST", url + "/borrar", controllerFullName + ".borrar");
 		if (crear)
 			StringUtils.appendln sb, RouteUtils.to("POST", url + "/crear", controllerFullName + ".crear");
+		if (hayTablasDeEntidad(element))
+			StringUtils.appendln sb, RouteUtils.to("POST", url + "/beforeOpenPageTable", controllerFullName + ".beforeOpenPageTable");
 		
 		String routes = sb.toString();
 		for(Elemento elemento : element.getElementos())
@@ -843,6 +850,42 @@ public class ${controllerName} extends ${controllerGenName} {
 		"""
 	}
 	
+	public boolean algoQueGuardar(){
+		if (saveEntities.size() == 0 || (!editar && !crear && !borrar) || (!hayTablasDeEntidad(element))) 
+			return false;
+		return true;
+	}
+	
+	public String metodoValidateCopyBeforeOpenPageTable(){
+		if (saveEntities.size() == 0 || (!editar && !crear && !borrar) || (!hayTablasDeEntidad(element))) 
+			return "";
+		String redirectMethod = "\"${controllerFullName}.index\"";
+		return """
+			@Util
+			public static void beforeOpenPageTable(String accion, String irDespuesDeValidar, ${StringUtils.params(
+				allEntities.collect{it.typeId},
+				saveDbEntities.collect{
+					if (saveEntities.contains(it)) return "${it.typeVariable}";
+				},
+				extraParams
+			)}){
+				CustomValidation.clearValidadas();
+				${saveDbEntities.collect{"$it.clase $it.variableDb = ${complexGetterCall(it)};"}.join("\n")}
+				${gElement.validateCopy()}
+
+				${gElement.saveCode()}
+
+				if(!Messages.hasErrors()){
+					${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
+					redirect(irDespuesDeValidar.replaceAll("@", "&"));
+				} else {
+					Messages.keep();
+					redirect(${StringUtils.params(redirectMethod, "\"editar\"", allEntities.collect{it.id})});
+				}
+			}
+		"""
+	}
+	
 	public String metodoBindReferences(){
 		if ((!editar && !crear) || saveEntities.size() == 0)
 			return "";
@@ -882,7 +925,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		}
 	}
 	
-	private String metodosCrearForTablas(){
+	public String metodosCrearForTablas(){
 		if (!crear || !hayTablasDeEntidad(element) || entidad.isSingleton())
 			return "";
 		return """
@@ -911,6 +954,8 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private boolean hayTablasDeEntidad(Object o){
+		if (o == null)
+			return false;
 		if (o.metaClass.respondsTo(o,"getElementos")){
 			for (Object elemento: o.elementos){
 				if (hayTablasDeEntidad(elemento))
@@ -919,7 +964,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		}
 		else if (o instanceof Tabla){
 			Tabla tabla = o;
-			if (tabla.campo.entidad.name.equals(lastSubcampo.getUltimaEntidad().name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear))
+			if ((lastSubcampo != null) && tabla.campo.entidad.name.equals(lastSubcampo.getUltimaEntidad().name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear))
 				return true;
 		}
 		return false;
@@ -955,6 +1000,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.element = gpag.pagina;
 		controller.index = true;
 		controller.findPaginaReferencias(gpag.pagina);
+		controller.findTablasReferencias(gpag.pagina);
 		controller.crear = gpag.hasForm && (controller.crear || controller.accionCrear.crearSiempre);
 		controller.editar = gpag.hasForm && (controller.editar || controller.crear || controller.accionEditar.crearSiempre);
 		controller.borrar = gpag.hasForm && (controller.borrar || controller.accionBorrar.crearSiempre);
@@ -1159,6 +1205,24 @@ public class ${controllerName} extends ${controllerGenName} {
 		}
 	}
 	
+	public void findTablasReferencias(Pagina pagina){
+		postIndex = false;
+		
+		for (Tabla tabla: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getTabla())){
+			if (tabla.pagina != null && tabla.pagina.name.equals(pagina.name))
+				postIndex = true;
+			else if (tabla.paginaCrear != null && tabla.paginaCrear.name.equals(pagina.name))
+				postIndex = true;
+			else if (tabla.paginaEditar != null && tabla.paginaEditar.name.equals(pagina.name))
+				postIndex = true;
+			else if (tabla.paginaBorrar != null && tabla.paginaBorrar.name.equals(pagina.name))
+				postIndex = true;
+			else if (tabla.paginaLeer != null && tabla.paginaLeer.name.equals(pagina.name))
+				postIndex = true;
+		}
+
+	}
+	
 	public void findPopupReferencias(Popup popup){
 		editar = crear = borrar = false;
 		for (MenuEnlace enlace: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getMenuEnlace())){
@@ -1222,6 +1286,32 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (! params.equals("")) map = ", [${params}]";
 		return """play.mvc.Router.reverse("${controllerFullName}.index" ${map})""";
 	}
+	
+	/*
+	* Para saber la ruta de la funcion que se encargara de validar y guardar la pagina antes de abrir la pagina de una tabla
+	*/
+   public String getRouteBeforeOpenPageTable(String accion){
+	   String accionParam = "";
+	   if (accion) accionParam = "'accion':'${accion}'";
+	   List<String> idParams = allEntities.collect {
+		   if (it.isSingleton() || (entidad.equals(it) && "crear".equals(accion)))
+			   return "";
+		   EntidadInfo info = it.getInfo(campo?.campo);
+		   String id;
+		   if (info.campo && !LedCampoUtils.xToMany(info.campo.campo))
+			   id = "${info.campo.idWithNullCheck()}";
+		   else
+			   id = "${it.idCheck}";
+		   return "'${it.id}':${id}";
+	   };
+		   
+	   String irDespuesDeValidar = "'irDespuesDeValidar':''";
+	
+	   String params = StringUtils.params(accionParam, idParams, irDespuesDeValidar);
+	   String map = "";
+	   if (! params.equals("")) map = ", [${params}]";
+	   return """play.mvc.Router.reverse("${controllerFullName}.beforeOpenPageTable" ${map})""";
+   }
 	
 	public String getRouteIndex(String accion){
 		return getRouteIndex(accion, true, false);

@@ -23,10 +23,14 @@
 	if (tipoContainer == "popup"){
 		alto  = _alto  ?: "250";
 	}
-
+	
 	String titulo = _titulo ?: play.i18n.Messages.get(campo);
 	
 	def obj = _obj ?: _caller.get(campo.split("\\.")[0]);
+	
+	
+	// Para que lo de la validacion y el guardado de la pagina actual al abrir la pagina de la tabla no funcione, siga comportandose como antes de la versión 2.1
+	def saveBefore = properties.FapProperties.getBoolean("fap.tablas.validacion.antesRedirigirPaginas") ?: false;
 
 	def seleccionable = _seleccionable;
 	def urlSeleccionable = seleccionable ? play.mvc.Router.reverse(_urlSeleccionable) : null
@@ -59,6 +63,10 @@
 	//Campos en el contexto para que las columnas los rellenen
 	play.templates.TagContext.current().data.put("campos", campos);
 	play.templates.TagContext.current().data.put("columnas", columnas);
+	
+	String mUrlBeforeOpenPageTable = _urlBeforeOpenPageTable ?: "";
+	
+	def saveEntity = _saveEntity ?: false;
 %}
 
 	#{doBody /}
@@ -270,13 +278,10 @@
 				crearMensajes${id}();
 				ocultarMensajes${id}();
 				$.ajax(urlTabla).done(function (data){
-					console.log(data);
 					// Para los mensajes
 				 	loadMessages${id}(data);
 		        	writeAllMessages${id}(); 
 		        	// Para las filas de la tabla
-		        	console.log(data);
-		        	console.log(data.obj.rows);
 				 	store${id}.loadData(ajax2Data(data.obj.rows));
 				});
 		    }
@@ -314,7 +319,13 @@
 			   			);
 			   		#{/if}
 			   		#{else}
-						window.location.href = replaceId("${urlEditar}", "_${_idEntidad}_", selected_id);
+						#{if saveBefore && saveEntity}
+	    					var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlEditar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
+						#{/if}
+						#{else}
+							window.location.href = replaceId("${urlEditar}", "_${_idEntidad}_", selected_id);
+						#{/else}
 					#{/else}
 		    	}
 		    });
@@ -336,7 +347,13 @@
 
 		   			#{/if}
 					#{else}
-						window.location.href = replaceId("${urlEditar}", "_${_idEntidad}_", selected_id);
+						#{if saveBefore && saveEntity}
+	    					var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlEditar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
+						#{/if}
+						#{else}
+							window.location.href = replaceId("${urlEditar}", "_${_idEntidad}_", selected_id);
+						#{/else}
 					#{/else}
         			}
         		}
@@ -360,7 +377,13 @@
 						)
 					#{/if}
 			   		#{else}
-						window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
+						#{if saveBefore && saveEntity}
+	    					var urlBeforeOpenPageTableLeer = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlLeer}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableLeer).submit();
+						#{/if}
+						#{else}
+							window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
+						#{/else}
 					#{/else}
 	    		}
 		    });
@@ -378,7 +401,13 @@
 			   			);
 			   		#{/if}
 					#{else}
-						window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
+						#{if saveBefore && saveEntity}
+	    					var urlBeforeOpenPageTableLeer = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlLeer}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableLeer).submit();
+						#{/if}
+						#{else}
+							window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
+						#{/else}
 					#{/else}
             		}
 				}
@@ -402,7 +431,13 @@
 	    				);
 	    			#{/if}
 	    			#{else}
-						window.location.href = replaceId("${urlBorrar}", "_${_idEntidad}_", selected_id);
+	    				#{if saveBefore && saveEntity}
+	    					var urlBeforeOpenPageTableBorrar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlBorrar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableBorrar).submit();
+						#{/if}
+						#{else}
+							window.location.href = replaceId("${urlBorrar}", "_${_idEntidad}_", selected_id);
+						#{/else}
 					#{/else}
 	    		}
 		    });
@@ -415,6 +450,7 @@
 		    	disabled:false,
 	    		handler : function(){
 	    			var urlCrear = replaceAmpersand("${urlCrear}");
+	    			var urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
 					var funcionCrear = function(){
 						#{if popupCrear}
 	    					popup_open(
@@ -424,7 +460,12 @@
 	    					);
 	    				#{/if}
 	    				#{else}
-							window.location.href = urlCrear;
+	    					#{if saveBefore && saveEntity}
+	    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableCrear).submit();
+							#{/if}
+							#{else}
+								window.location.href = urlCrear;
+							#{/else}
 						#{/else}
 					}	
 
@@ -457,6 +498,7 @@
 								input.setAttribute("value", data.id);
 								$('#${_nameContainer}crearForm').append(input);
 								
+								urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
 								funcionCrear();
 	    					});
 	    				}
@@ -465,6 +507,7 @@
 	    					urlCrear = replaceId(urlCrear, "_${_idContainer}_", dataId);
 	    					var urlContainerEditar = replaceId("${_urlContainerEditar}", "_${_idContainer}_", dataId);
 	    					urlCrear = replaceRedirigirAnterior(urlCrear, escape(urlContainerEditar));
+	    					urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
 	    					funcionCrear();
 	    				}
 	    				

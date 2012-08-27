@@ -66,6 +66,9 @@
 	
 	String mUrlBeforeOpenPageTable = _urlBeforeOpenPageTable ?: "";
 	
+	if (mUrlBeforeOpenPageTable.isEmpty())
+		saveBefore = false;
+	
 	def saveEntity = _saveEntity ?: false;
 %}
 

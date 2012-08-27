@@ -11,9 +11,8 @@
 (function() {
 	tinymce.create('tinymce.plugins.PageBreakPlugin', {
 		init : function(ed, url) {
-			var pb = '<div style="page-break-after:always"><img src="' + ed.theme.url + '/img/trans.gif" class="mcePageBreak mceItemNoResize" /></div>', cls = 'mcePageBreak', sep = ed.getParam('pagebreak_separator', '<!-- pagebreak -->'), pbRE;
-
-			pbRE = new RegExp(sep.replace(/[\?\.\*\[\]\(\)\{\}\+\^\$\:]/g, function(a) {return '\\' + a;}), 'g');
+			var pb = '<div style="page-break-after:always; padding:10px;"><img src="/public/images/pagebreak.png" style="display:block; margin:auto;"/></div>', 
+			    cls = 'mcePageBreak';
 
 			// Register commands
 			ed.addCommand('mcePageBreak', function() {
@@ -41,20 +40,6 @@
 
 			ed.onNodeChange.add(function(ed, cm, n) {
 				cm.setActive('pagebreak', n.nodeName === 'IMG' && ed.dom.hasClass(n, cls));
-			});
-
-			ed.onBeforeSetContent.add(function(ed, o) {
-				o.content = o.content.replace(pbRE, pb);
-			});
-
-			ed.onPostProcess.add(function(ed, o) {
-				if (o.get)
-					o.content = o.content.replace(/<img[^>]+>/g, function(im) {
-						if (im.indexOf('class="mcePageBreak') !== -1)
-							im = sep;
-
-						return im;
-					});
 			});
 		},
 

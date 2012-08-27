@@ -20,8 +20,6 @@ Formulario Administracion permiso=administrador{
 			Enlace "Configurar Jobs" pagina=Jobs
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 			Enlace "Configurar mensajes" pagina=ConfigurarMensajes
-			Enlace "Mensaje en Login" pagina=MensajeLogin
-			Enlace "Mensaje de Aportacion" pagina=WikiAportacion
 			Enlace "Plantillas Documentos" pagina=PlantillasDoc
 		}
 		

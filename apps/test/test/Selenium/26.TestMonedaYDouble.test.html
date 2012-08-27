@@ -1,0 +1,29 @@
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
+	
+	play.mvc.Controller.session.put("username", "admin");
+	controllers.fap.AgenteController.findAgente();
+}%
+
+#{selenium}
+	open(/Principal/solicitudes)
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='Borrador'])
+    open('/Solicitud/tablascondecimales?idSolicitud=${s.id}')
+    waitForPageToLoad()
+    
+    type('solicitud_conceptos_moneda1', '1,1')
+    type('solicitud_conceptos_moneda2', '2,22')
+    type('solicitud_conceptos_moneda3', '3.33')
+    type('solicitud_conceptos_moneda4', '4.444,4')
+    
+    clickAndWait(//input[@type='submit'])
+    verifyTextPresent('Error al guardar. La página contiene errores.')
+    
+    type('solicitud_conceptos_moneda3', '3,33')
+    clickAndWait(//input[@type='submit'])
+    
+    verifyTextPresent('Página editada correctamente')
+#{/selenium}

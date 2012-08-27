@@ -303,62 +303,6 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	@Check
 	public void checkSubirArchivoMimeTypes(SubirArchivo subirArchivo){
 		Pattern pattern = Pattern.compile("[\\w-]+/(\\*|[\\w-]+)");
-	public void checkNombrePaginaUnico(Pagina pagina, Pagina other){
-		Formulario formulario = (Formulario)other.eContainer();
-		if (pagina.getName().equals(other.getName()))
-			error("La página " + pagina.getName() + " ya existe en el formulario " + formulario.getName(), ledPackage.getPagina_Name());
-	}
-	
-	public void checkNombrePopupUnico(Popup popup, Popup other){
-		Formulario formulario = (Formulario)other.eContainer();
-		if (popup.getName().equals(other.getName()))
-			error("El popup " + popup.getName() + " ya existe en el formulario " + formulario.getName(), ledPackage.getPopup_Name());
-	}
-	
-	public void checkPaginaInicialUnica(Pagina pagina, Pagina other){
-		Formulario formulario = (Formulario)pagina.eContainer();
-		Formulario otherForm = (Formulario)other.eContainer();
-		if (pagina.isInicial() && other.isInicial() && formulario.getName().equals(otherForm.getName())){
-			error("Ya existe en el formulario otra página definida como inicial", ledPackage.getPagina_Inicial());
-		}
-	}
-	
-	@Check
-	public void checkPermisoAction(PermisoRuleCheck rule){
-		if (!rule.getLeft().isAction())
-			return;
-		if (rule.getRight() != null && rule.getRight().getAction() == null)
-			error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", ledPackage.getPermisoRuleCheck_Right());
-		for (PermisoRuleCheckRight right: rule.getRightGroup()){
-			if (right.getAction() == null)
-				error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", ledPackage.getPermisoRuleCheck_Left());
-		}
-	}
-	
-	@Check
-	public void checkPermisoReturn(PermisoReturn permisoReturn){
-		if (permisoReturn.getPares().size() == 0) return;
-		Set<String> allAcciones = new HashSet<String>();
-		for (AccionesGrafico acciones: permisoReturn.getPares()){
-			for (String accion: acciones.getAcciones().getAcciones()){
-				if (allAcciones.contains(accion))
-					error("No se pueden repetir acciones", acciones, ledPackage.getAccionesGrafico_Acciones(), 0);
-				else
-					allAcciones.add(accion);
-			}
-		}
-		
-	}
-	
-	@Check
-	public void checkAcciones(Acciones acciones){
-		if (acciones.isMultiple() && acciones.getAcciones().size() == 0)
-			error("La lista de acciones no puede ser vacía", ledPackage.getAcciones_Acciones());
-	}
-	
-	@Check
-	public void checkSubirArchivoMimeTypes(SubirArchivo subirArchivo){
-		Pattern pattern = Pattern.compile("[\\w-]+/(\\*|[\\w-]+)");
 		for (int i = 0; i < subirArchivo.getMimes().size(); i++){
 			if (!pattern.matcher(subirArchivo.getMimes().get(i)).matches())
 				error("El tipo mime especificado no es válido. Tiene que ser tipo/subtipo o tipo/*. Por ejemplo: application/pdf", ledPackage.getSubirArchivo_Mimes(), i);

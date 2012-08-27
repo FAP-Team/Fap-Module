@@ -251,7 +251,7 @@ Permiso editarSolicitud {
 	 		solicitud?.estado = "borrador" and
 	 		solicitud?.registro?.fasesRegistro?.borrador = "false"
 		)
-	return [editar leer]
+	return all
 	when
 		!usuario is visible
 		or (

@@ -55,9 +55,9 @@
 			<option value="_724" selected></option>
 		</select>
 		
-		#{fap.combo id:id_comunidad, dependeDe:id_pais, titulo:'Comunidad Autónoma', campo:campo_comunidad, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
-		#{fap.combo id:id_provincia, dependeDe:id_comunidad, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
-		#{fap.combo id:id_municipio, dependeDe:id_provincia, titulo:'Municipio', campo:campo_municipio, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
+		#{fap.combo id:id_comunidad, dependeDe:id_pais, titulo:'Comunidad Autónoma', campo:campo_comunidad, obj:obj, requerido:requerido, searchable:true /}
+		#{fap.combo id:id_provincia, dependeDe:id_comunidad, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, searchable:true /}
+		#{fap.combo id:id_municipio, dependeDe:id_provincia, titulo:'Municipio', campo:campo_municipio, obj:obj, requerido:requerido, searchable:true /}	
 		
 		#{fap.texto id:id_localidad, titulo:"Localidad", campo:campo_localidad, obj:obj, requerido:false, ancho:"250px", searchable:true /}
 		#{fap.texto id:id_codigoPostal, titulo:'Código Postal', campo:campo_codigoPostal, obj:obj, requerido:requerido, ancho:"100px" /}

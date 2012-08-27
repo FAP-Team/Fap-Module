@@ -568,7 +568,7 @@ R
 		crumbs.add(breadcrumbLi("<a href=\"#\">" + pageName + "</a>"));
 		
 		
-		Joiner joiner = Joiner.on("<p>/</p>").skipNulls();
+		Joiner joiner = Joiner.on("<p class=\"barra\">/</p>").skipNulls();
 		out.write(joiner.join(crumbs));
 	}
 	

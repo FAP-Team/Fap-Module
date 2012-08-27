@@ -16,8 +16,8 @@
      urlCrear:play.mvc.Router.reverse('DocumentosExternosFAPController.crear' , ['idSolicitud':solicitud?.id]), 
      urlEditar:play.mvc.Router.reverse('DocumentosExternosFAPController.editar' , ['idSolicitud':solicitud?.id, 'idDocumentoExterno':documentoExterno?.id])
 }
-	
-			#{fap.combo campo:'documentoExterno.tipo', id:'tipoDocumento', titulo:'Tipo Documento', ancho:"450px", requerido:true/}		
+	 #{fap.grupo titulo:'Nuevo documento externo'}
+			#{fap.combo campo:'documentoExterno.tipo', id:'tipoDocumento', titulo:'Tipo Documento', requerido:true/}		
 		
 			#{fap.areaTexto campo:'documentoExterno.descripcion', id:'descripcion', titulo:'Descripción', ancho:"450px", requerido:true/}		
 		
@@ -26,7 +26,7 @@
 			#{fap.texto campo:'documentoExterno.expediente', id:'expediente', titulo:'Expediente', ancho:"450px", requerido:true /}		
 		
 			#{fap.areaTexto campo:'documentoExterno.uri', id:'uri', titulo:'Dirección (uri)', ancho:"450px", requerido:true /}	
-			
+	#{/fap.grupo}
 	<script type="text/javascript">
 		%{
 			urlDocumentoEsMultiple = play.mvc.Router.reverse('fap.UtilsController.documentoEsMultiple');

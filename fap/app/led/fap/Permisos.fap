@@ -28,7 +28,12 @@ Permiso logeado{
 		agente != null
 	return all
 }
-		
+
+Permiso noLogeado{
+	when 
+		agente = null
+	return all
+}		
 // Permisos de la pag presentacion
 Permiso presentacionPrepararParaFirmar{
 	vars

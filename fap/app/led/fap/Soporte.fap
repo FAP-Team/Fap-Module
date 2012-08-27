@@ -1,8 +1,8 @@
 Formulario Soporte campo=Incidencia {
 	
 	Menu {
-		Enlace "Inicio" accion=login
-		Enlace "Mis Solicitudes" permiso=logeado pagina=Solicitudes 		
+		Enlace "Login" accion=login permiso=noLogeado
+		Enlace "Inicio" permiso=logeado pagina=Solicitudes
     	Enlace "Ayuda" pagina=Soporte crear
     }
     

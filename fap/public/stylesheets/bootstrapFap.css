@@ -310,6 +310,10 @@ a:hover {
 .container-fluid {
   padding-left: 20px;
   padding-right: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 980px;
+  //min-width: 723px;
   *zoom: 1;
 }
 .container-fluid:before,
@@ -619,6 +623,7 @@ select,
 .uneditable-input {
   display: inline-block;
   width: 210px;
+  width: 80%;  // Bootstrap-adaptativo
   height: 18px;
   padding: 4px;
   margin-bottom: 9px;
@@ -632,6 +637,7 @@ select,
 }
 .uneditable-textarea {
   width: auto;
+  width: 80%;  // Bootstrap-adaptativo
   height: auto;
 }
 label input,
@@ -693,6 +699,7 @@ input[type="file"] {
 }
 select {
   width: 220px;
+  width: 80%;  // Bootstrap-adaptativo
   background-color: #ffffff;
 }
 select[multiple],
@@ -781,6 +788,7 @@ select:focus {
 }
 .input-xlarge {
   width: 270px;
+  width: 80%; // Bootstrap-adaptativo
 }
 .input-xxlarge {
   width: 530px;
@@ -2802,19 +2810,23 @@ input[type="submit"].btn.btn-mini {
 .navbar .container {
   width: auto;
 }
+.navbar .container-fluid {
+  width: auto;
+}
 .btn-navbar {
   display: none;
   float: right;
   padding: 7px 10px;
   margin-left: 5px;
   margin-right: 5px;
-  background-color: #2c2c2c;
-  background-image: -moz-linear-gradient(top, #333333, #222222);
-  background-image: -ms-linear-gradient(top, #333333, #222222);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#333333), to(#222222));
-  background-image: -webkit-linear-gradient(top, #333333, #222222);
-  background-image: -o-linear-gradient(top, #333333, #222222);
-  background-image: linear-gradient(top, #333333, #222222);
+  margin-bottom: 5px;
+  background-color: #f5f5f5;
+  background-image: -moz-linear-gradient(top, ##f5f5f5, #f5f5f5);
+  background-image: -ms-linear-gradient(top, ##f5f5f5, #f5f5f5);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(##f5f5f5), to(#f5f5f5));
+  background-image: -webkit-linear-gradient(top, ##f5f5f5, #f5f5f5);
+  background-image: -o-linear-gradient(top, ##f5f5f5, #f5f5f5);
+  background-image: linear-gradient(top, ##f5f5f5, #f5f5f5);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333333', endColorstr='#222222', GradientType=0);
   border-color: #222222 #222222 #000000;
@@ -2829,7 +2841,7 @@ input[type="submit"].btn.btn-mini {
 .btn-navbar.active,
 .btn-navbar.disabled,
 .btn-navbar[disabled] {
-  background-color: #222222;
+  background-color: #f5f5f5;
 }
 .btn-navbar:active,
 .btn-navbar.active {
@@ -2853,6 +2865,13 @@ input[type="submit"].btn.btn-mini {
 .nav-collapse.collapse {
   height: auto;
 }
+.nav-collapse.in .nav li p.barra {
+	display: none;
+}
+.nav-collapse.collapse .nav li p.barra {
+	display: block;
+}
+
 .navbar {
   color: #999999;
 }
@@ -2977,6 +2996,10 @@ input[type="submit"].btn.btn-mini {
 }
 .navbar-fixed-top .container,
 .navbar-fixed-bottom .container {
+  width: 940px;
+}
+.navbar-fixed-top .container-fluid,
+.navbar-fixed-bottom .container-fluid {
   width: 940px;
 }
 .navbar-fixed-top {
@@ -4211,7 +4234,7 @@ div ul.errorsDetails li {
 }
 .navbar-inner,
 .navbar .fill {
-  background-color: whiteSmoke;
+  //background-color: whiteSmoke;
   background-color: #f4f4f4;
   background-image: -moz-linear-gradient(top, #fafafa, #eaeaea);
   background-image: -ms-linear-gradient(top, #fafafa, #eaeaea);
@@ -4405,6 +4428,20 @@ body {
 }
 .contenido {
   background: #B5C5D4;
+}
+/* The white background content wrapper */
+.container-fluid > .content {
+  background-color: #ffffff;
+  padding: 10px 20px;
+  margin: 0 -20px;
+  /* negative indent the amount of the padding to maintain the grid system */
+
+  -webkit-border-radius: 0 0 6px 6px;
+  -moz-border-radius: 0 0 6px 6px;
+  border-radius: 0 0 6px 6px;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 /* The white background content wrapper */
 .container > .content {
@@ -4635,7 +4672,7 @@ div ul.errorsDetails li {
   padding: 10px 10px 10px;
   margin-bottom: 0px;
   line-height: 19px;
-  color: gray;
+  color: #000000;
   text-decoration: none;
 }
 .navbar .nav > div > ul a,
@@ -4714,7 +4751,7 @@ div ul.errorsDetails li {
   background-image: linear-gradient(top, #fafafa, #eaeaea);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#eaeaea', GradientType=0);
-  color: #444;
+  color: #08C;
 }
 .navbar .nav > div > ul .menu-dropdown .active a,
 .nav .menu-dropdown .active a,

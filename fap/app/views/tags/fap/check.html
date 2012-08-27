@@ -57,6 +57,19 @@
 				}
 			});
 		});
+		
+		Ext.onReady(function() {
+			if (document.body.offsetWidth <= 480) {
+				var checkLength = 0;
+			   	var countCheck = 0;
+			   	while (checkLength < document.getElementsByClassName('checkbox').length) {
+			   		var checkStyle = document.getElementsByClassName('checkbox')[checkLength].style.marginLeft;
+			   		if (checkStyle == "-30%")
+			   			document.getElementsByClassName('checkbox')[checkLength].style.marginLeft = "";
+		   			checkLength++;
+		   		}
+		   	}
+		});
 	</script>
 	
 #{/fap.field}

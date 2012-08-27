@@ -1,6 +1,6 @@
 Formulario Solicitud campo=SolicitudGenerica {
 
-	Pagina Desistimiento campo=SolicitudGenerica.desistimiento{
+	Pagina Desistimiento campo=SolicitudGenerica.desistimiento titulo="Desistimiento"{
 	Grupo titulo="Solicitud de Desistimiento"  {  
 		
 			Grupo permiso=editarDesistimiento borde = false { 

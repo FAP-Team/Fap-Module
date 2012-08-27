@@ -406,4 +406,29 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	}
 	
 	
+	/*
+	 * Se llama para comprobar que si el popup tiene una tabla:
+	 * 		- No se recomienda emplear un popup en una tabla que está en un popup
+	 * 		- Se recuerda que al introducir una nueva entrada en la tabla, se perderán los valores de 
+	 * 		  los demás elementos del popup (Si la tabla tiene una página).
+	 */
+	@Check
+	public void checkPopupsWarning(Popup popup){
+		List<Elemento> elementos = popup.getElementos();
+		if (!elementos.isEmpty()){
+			for (Elemento elemento : elementos) {
+				if (elemento instanceof Tabla){  //El popup contiene una tabla
+					Tabla tbl = (Tabla)elemento;
+					//Si la tabla contiene un popup
+					if((tbl.getPopup() != null) || (tbl.getPopupBorrar() != null) || (tbl.getPopupCrear() != null) || (tbl.getPopupEditar() != null) || (tbl.getPopupLeer() != null))
+						warning("No se recomienda emplear un Popup dentro de otro Popup", null);
+					//Si la tabla contiene una página, recordar que se perderá el valor de los otros campos
+					if((elementos.size() > 1) && ((tbl.getPagina() != null) || (tbl.getPaginaBorrar() != null) || (tbl.getPaginaCrear() != null) || (tbl.getPaginaEditar() != null) || (tbl.getPaginaLeer() != null))){
+						warning("Al introducir una nueva entrada en la tabla, se perderán los valores de los demás elementos del Popup", null);
+					}
+				}
+			}
+		}
+	}
+	
 }

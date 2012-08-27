@@ -13,6 +13,25 @@ import controllers.gen.popups.PopupUsuarioControllerGen;
 			
 public class PopupUsuarioController extends PopupUsuarioControllerGen {
 	
+	public static void index(String accion, Long idAgente) {
+		if (accion == null)
+			accion = getAccion();
+		if (!permiso(accion)) {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+			renderTemplate("gen/popups/PopupUsuario.html");
+		}
+
+		Agente agente = null;
+		if ("crear".equals(accion))
+			agente = PopupUsuarioController.getAgente();
+		else if (!"borrado".equals(accion))
+			agente = PopupUsuarioController.getAgente(idAgente);
+
+		log.info("Visitando página: " + "fap/Admin/PopupUsuario.html");
+		renderTemplate("fap/Admin/PopupUsuario.html", accion, idAgente, agente);
+	}
+
+	
 	public static void editar(Long idAgente,Agente agente){
         checkAuthenticity();
         if(!permiso("editar")){
@@ -83,14 +102,26 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
 	@Util
 	public static void PopupUsuarioValidateCopy(String accion, Agente dbAgente, Agente agente) {
 		CustomValidation.clearValidadas();
-		CustomValidation.valid("agente", agente);
+		if (!agente.password.isEmpty()){
+			CustomValidation.valid("agente", agente);
+		}
 		CustomValidation.required("agente.username", agente.username);
 		dbAgente.username = agente.username;
 
 		if (secure.checkGrafico("accesoNoCertificado", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
-			CustomValidation.required("agente.password", agente.password);
-			CustomValidation.compare(agente.password, params.get("agente_passwordcopy"));
-			dbAgente.password = Crypto.passwordHash(agente.password);
+			
+			if (!agente.password.isEmpty()){
+				if ((dbAgente.password == null) || (Crypto.passwordHash(agente.passwordAntiguo).equals(dbAgente.password))){
+					CustomValidation.compare("agente.password", agente.password, params.get("agente_passwordcopy"));
+					dbAgente.password = Crypto.passwordHash(agente.password);
+				} else {
+					CustomValidation.error("El password antiguo no es correcto", "agente.passwordAntiguo", agente.passwordAntiguo);
+				}
+			} else {
+				if (!agente.passwordAntiguo.isEmpty()){
+					CustomValidation.error("La longitud de la contraseña debe tener entre 6 y 10 carateres", "agente.password", agente.password);
+				} 
+			}
 		}
 		
 		CustomValidation.required("agente.roles", agente.roles);

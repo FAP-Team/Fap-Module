@@ -8,20 +8,23 @@ public class FapFormat {
 		if (value == null)
 			return "";
 		if (value instanceof Double) {
-				Integer decimales = properties.FapProperties.getInt("fap.format.double");
-				if (decimales == null) {
-					return null;
-				}
-	      		java.text.DecimalFormat decim = (java.text.DecimalFormat) java.text.NumberFormat.getInstance(java.util.Locale.US);
-				java.text.DecimalFormatSymbols dfs = new java.text.DecimalFormatSymbols();
-				char ch = ',';
-				dfs.setDecimalSeparator(ch);
-				ch = '.';
-				dfs.setGroupingSeparator(ch);
-				decim.setMaximumIntegerDigits(308);
-				decim.setDecimalFormatSymbols(dfs);
-				decim.setMaximumFractionDigits(decimales);
-				return decim.format(value);
+			// Obtenemos los decimales que queremos mostrar (máximo y mínimo)
+			Integer minDecimales = properties.FapProperties.getInt("fap.format.double.min");
+			Integer maxDecimales = properties.FapProperties.getInt("fap.format.double.max");
+
+      		java.text.DecimalFormat decim = (java.text.DecimalFormat) java.text.NumberFormat.getInstance(java.util.Locale.US);
+			java.text.DecimalFormatSymbols dfs = new java.text.DecimalFormatSymbols();
+			char ch = ',';
+			dfs.setDecimalSeparator(ch);
+			ch = '.';
+			dfs.setGroupingSeparator(ch);
+			decim.setMaximumIntegerDigits(308);
+			decim.setDecimalFormatSymbols(dfs);
+			if ((maxDecimales != null) && (minDecimales != null)) {
+				decim.setMaximumFractionDigits(maxDecimales);
+				decim.setMinimumFractionDigits(minDecimales);
+			}
+			return decim.format(value);
 		}
 
 		return value.toString();
@@ -31,8 +34,9 @@ public class FapFormat {
 		if (value == null)
 			return "";
 		
-		Integer decimales = properties.FapProperties.getInt("fap.format."+tipo);
-		if (decimales == null) {
+		Integer minDecimales = properties.FapProperties.getInt("fap.format."+tipo+".min");
+		Integer maxDecimales = properties.FapProperties.getInt("fap.format."+tipo+".max");
+		if (minDecimales == null && maxDecimales == null) {
 			return format(value);
 		}
 		
@@ -44,7 +48,10 @@ public class FapFormat {
 		dfs.setGroupingSeparator(ch);
 		decim.setMaximumIntegerDigits(308);
 		decim.setDecimalFormatSymbols(dfs);
-		decim.setMaximumFractionDigits(decimales);
+		if ((maxDecimales != null) && (minDecimales != null)) {
+			decim.setMaximumFractionDigits(maxDecimales);
+			decim.setMinimumFractionDigits(minDecimales);
+		}
 		return decim.format(value);
 	}
 }

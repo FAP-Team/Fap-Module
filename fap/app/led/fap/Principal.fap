@@ -12,7 +12,7 @@ Formulario Principal {
 	}
 	
 	
-	Pagina Solicitudes {
+	Pagina Solicitudes titulo="Solicitudes"{
 		// Vista de búsqueda de solicitudes
 		Grupo titulo="Resultado de la búsqueda" permiso=listaSolicitudesConBusqueda borde=false {
 			Wiki {" Puede insertar en una misma caja de texto varias palabras separadas por espacios en blanco y se buscará cualquier referencia que concuerde en la base de datos. <br /> <br />"}
@@ -49,13 +49,13 @@ Formulario Principal {
 		}
 	}
 	
-	Pagina NuevaSolicitud campo=SolicitudGenerica permiso=nuevaSolicitud {}
+	Pagina NuevaSolicitud titulo ="Nueva Solicitud" campo=SolicitudGenerica permiso=nuevaSolicitud {}
 	
-	Pagina EditarSolicitud campo=SolicitudGenerica permiso=editarSolicitud {}
+	Pagina EditarSolicitud titulo= "Editar Solicitud" campo=SolicitudGenerica permiso=editarSolicitud {}
 	
-	Pagina LeerSolicitud campo=SolicitudGenerica {}
+	Pagina LeerSolicitud titulo = "Leer Solicitud" campo=SolicitudGenerica {}
 	
-	Pagina CambiarPass permiso=loginTipoUser {
+	Pagina CambiarPass titulo = "Cambiar password" permiso=loginTipoUser {
 		Wiki {" Utilice el siguiente formulario para cambiar su contraseña. "}
 		
 		Tabla tablaCambioPass campo=Agente permisoFilas=miAgente popupEditar=PopupPass { 		
@@ -77,7 +77,7 @@ Formulario Principal {
 		
 	}
 	
-	Pagina VerificacionesSinFinalizar permiso=noUsuario{
+	Pagina VerificacionesSinFinalizar titulo = "Verificaciones Sin Finalizar" permiso=noUsuario{
         Tabla listaVerificacionesSinFinalizar titulo="Verificaciones sin Finalizar" campo=SolicitudGenerica paginaEditar=IrVerificacionSinFinalizar {
             Columna campo=SolicitudGenerica.id titulo="ID Solicitud" ancho="80"
             Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente Solicitud" ancho="120"
@@ -89,9 +89,9 @@ Formulario Principal {
         }
 	}
 	
-	Pagina IrVerificacionSinFinalizar campo=SolicitudGenerica permiso=noUsuario{}
+	Pagina IrVerificacionSinFinalizar titulo="Ir a verificaciones sin finalizar" campo=SolicitudGenerica permiso=noUsuario{}
 	
-	Pagina Seguimiento permiso=adminGestorRevisor noForm {
+	Pagina Seguimiento titulo="Seguimiento" permiso=adminGestorRevisor noForm {
 		Form generarSeguimientoForm {
 			Boton generarSeguimiento titulo="Informe de Seguimiento"
 		}

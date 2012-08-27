@@ -29,6 +29,8 @@ public class Agente extends FapModel {
 
 	public String username;
 
+	public String passwordAntiguo;
+
 	@CheckWith(validation.PasswordCheck.class)
 	public String password;
 

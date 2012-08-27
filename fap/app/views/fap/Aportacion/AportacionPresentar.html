@@ -1,0 +1,148 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'AportacionPresentar', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Presentar la Aportación', 
+     urlBorrar:play.mvc.Router.reverse('AportacionPresentarController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('AportacionPresentarController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('AportacionPresentarController.editar' , ['idSolicitud':solicitud?.id])
+}
+	
+			#{fap.grupo titulo:'Presentar Aportación de Documentos'}
+				
+			<div class="wiki ">
+<p>Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta.</p>
+
+			</div>
+		
+			#{fap.enlace estilo:'btn', target:'_blank', titulo:'Obtener borrador', url:solicitud.aportaciones.actual.borrador.urlDescarga /}
+		
+				#{fap.permiso permiso:"aportacionModificar", accion:accion}
+					
+				#{form play.mvc.Router.reverse('AportacionPresentarController.modificarBorrador' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"modificarBorrador"}
+					
+			<div class="wiki ">
+<p>Puede realizar cambios antes de su presentación definitiva.</p>
+
+			</div>
+		
+			#{fap.boton id:'botonModificarBorrador', titulo:'Modificar datos' /}
+		
+				#{/form}
+			
+				#{/fap.permiso}		
+			
+#{fap.tabla 
+     campo:'Solicitud.aportaciones.actual.documentos', 
+     id:'documentos', 
+     idEntidad:'idDocumento', 
+     popupLeer:'PopUpDocProcesos', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Documentos aportados que se van a registrar', 
+     urlLeer:play.mvc.Router.reverse("popups.PopUpDocProcesosController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumento':documento?.id? documento?.id:'_idDocumento_']), 
+     urlTabla:@AportacionPresentarController.tabladocumentos(idSolicitud)
+}
+	
+	#{fap.columna ancho:80, cabecera:'Fecha', campo:'fechaSubida' /}
+		
+	#{fap.columna ancho:80, cabecera:'Fecha Registro', campo:'fechaRegistro' /}
+		
+	#{fap.columna ancho:200, cabecera:'Tipo Documento', campo:'tipo' /}
+		
+	#{fap.columna ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
+		
+	#{fap.columna ancho:100, cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>' /}
+		
+#{/fap.tabla}
+
+			#{fap.grupo borde:false, permiso:'aportacionMensajeIntermedio'}
+				
+			<div class="wiki box-warn box">
+<p>Se produjo un error en la presentación de la aportación. Pulse otra vez el botón &#8216;Firmar y presentar&#8217; para intentar finalizar el proceso.</p>
+
+			</div>
+		
+			#{/fap.grupo}
+
+			#{fap.grupo borde:false, mostrarSi:solicitud.aportaciones.actual.habilitaFuncionario==true}
+
+				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.aportacion.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarSolicitudFH', titulo:'Paso 2. Presentar los Documentos por Funcionario Habilitado'}
+				
+					<div class="wiki ">
+						<p><b>NOTA: Debe finalizar el Paso 2 pulsando en el botón &#8216;Firmar y presentar&#8217; para que los Nuevos Documentos se consideren presentados. Cuando el proceso finalice los documentos nuevos desaparecerán del Paso 1 y se incorporarán a la lista de Documentos Presentados.</b></p>
+					</div>
+		
+					<div class="wiki ">
+						<p>La solicitud será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud una vez &#8216;Firmar y Presentar&#8217; se haya realizado con éxito</p>
+					</div>
+				
+					#{form play.mvc.Router.reverse('AportacionPresentarController.formFirmaFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formFirmaFH"}
+
+						#{fap.firma firma:'firma', id:'firmarRegistrarFH', titulo:'Firmar y presentar por Funcionario Habilitado', uri:"${solicitud.aportaciones.actual.oficial.uri}" /}
+		
+					#{/form}
+			
+				#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo titulo:'Paso 2. Presentar los Documentos'}
+				
+			<div class="wiki ">
+<p><b>NOTA: Debe finalizar el Paso 2 pulsando en el botón &#8216;Firmar y presentar&#8217; para que los Nuevos Documentos se consideren presentados. Cuando el proceso finalice los documentos nuevos desaparecerán del Paso 1 y se incorporarán a la lista de Documentos Presentados.</b></p>
+
+			</div>
+		
+			<div class="wiki ">
+<p>La solicitud será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud una vez &#8216;Firmar y Presentar&#8217; se haya realizado con éxito</p>
+
+			</div>
+		
+				#{form play.mvc.Router.reverse('AportacionPresentarController.presentar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"presentar"}
+					
+#{fap.tabla 
+     campo:'Solicitud.registro.firmantes.todos', 
+     id:'firmarRepresentanteFirmantes', 
+     idEntidad:'idFirmante', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Firmantes', 
+     urlTabla:@AportacionPresentarController.tablafirmarRepresentanteFirmantes(idSolicitud)
+}
+	
+	#{fap.columna ancho:200, cabecera:'Nº', campo:'idvalor', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Nombre', campo:'nombre', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Cardinalidad', campo:'cardinalidad', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Firmado', campo:'fechaFirma', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{fap.firma firma:'firma', id:'firmarRepresentante', titulo:'Firmar y presentar', uri:"${solicitud.aportaciones.actual.oficial.uri}" /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			<div class="wiki ">
+<p>Nota: La operación de firmar y presentar puede tardar varios minutos.</p>
+
+			</div>
+		
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+
+		

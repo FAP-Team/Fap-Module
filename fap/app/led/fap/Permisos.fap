@@ -1024,6 +1024,21 @@ when
 return
 	all
 }
+
+// 	Permite firmar a yun funcionario habilitado
+
+Permiso firmarRegistrarSolicitudFH{
+vars
+	SolicitudGenerica solicitud
+when
+	((_accion = leer) or
+	(solicitud.registro.fasesRegistro.clasificarAed="false"))
+	and
+	(agente.funcionario="true")
+return
+	all
+}
+
 /*
  * Permiso “firmarSolicitud�?
  *

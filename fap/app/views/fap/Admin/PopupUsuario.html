@@ -1,0 +1,36 @@
+
+#{fap.popup 
+     accion:accion, 
+     permiso:'administrador', 
+     popup:'PopupUsuario', 
+     titulo:'Usuario', 
+     urlBorrar:play.mvc.Router.reverse('popups.PopupUsuarioController.borrar' , ['idAgente':agente?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.PopupUsuarioController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('popups.PopupUsuarioController.editar' , ['idAgente':agente?.id])
+}
+	
+			#{fap.texto campo:'agente.username', requerido:true, titulo:'Username' /}		
+		
+			#{fap.grupo borde:false, permiso:'accesoNoCertificado'}
+				
+			#{fap.texto campo:'agente.passwordAntiguo', password:true, titulo:'Contraseña Antigua' /}		
+		
+			#{fap.texto campo:'agente.password', duplicado:true, password:true, titulo:'Contraseña Nueva' /}		
+		
+			#{/fap.grupo}
+		
+			#{fap.combo campo:'agente.roles', requerido:true, searchable:true, titulo:'Roles' /}		
+		
+			#{fap.texto campo:'agente.email', email:true, requerido:true, titulo:'Email' /}		
+		
+			#{fap.check campo:'agente.funcionario', titulo:'Funcionario habilitado' /}		
+		
+#{/fap.popup}
+
+<script>
+   $(document).ready(function(){
+   		$('#agente_passwordAntiguo').val("");
+   		$('#agente_password').val("");
+   		$('#agente_passwordcopy').val("");
+   });
+</script>

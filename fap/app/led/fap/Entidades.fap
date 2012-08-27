@@ -72,6 +72,7 @@ Entidad FuncionariosHabilitados extends Singleton {
 // Agentes que pueden acceder a la aplicación
 Entidad Agente inheritance=joined auditable {
 	String username
+	String passwordAntiguo
 	String password checkWith="validation.PasswordCheck" 
 	String newpassword checkWith="validation.PasswordCheck" transient
 	Email email
@@ -255,6 +256,9 @@ Entidad Registro {
 	
 	//Personas que han firmado o deben firmar	 
 	Firmantes firmantes
+	
+	//Si habilita a firmar a un Funcionario Habilitado
+	Boolean habilitaFuncionario
 }
 
 Entidad Firmantes {
@@ -322,7 +326,7 @@ Entidad Aportacion {
 	InformacionRegistro informacionRegistro
 	/* Cuando aportamos sin registro, se establece ésta fecha */
 	DateTime fechaAportacionSinRegistro
-	
+	Boolean habilitaFuncionario
 	Documento borrador
 	Documento oficial
 	Documento justificante

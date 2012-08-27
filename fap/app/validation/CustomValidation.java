@@ -420,6 +420,19 @@ public class CustomValidation {
 		return result;
     }
 	
+	public static ValidationResult compare(String campo, String comprobar, String copia) {
+		ValidationResult result = new ValidationResult();
+		if (comprobar.equals(copia))
+			result.ok = true;
+		else {
+			String message = "No coinciden los campos";
+        	String[] variables = new String[0];
+            Validation.addError(campo, message, variables);
+			result.ok = false;
+		}
+		return result;
+    }
+	
 	/**
 	 * Emite un mensaje de error, al igual que el Message.error, pero permite recuperar de flash lo que habia antes no como el Messages.error que no recupera
 	 * @param mensaje, Mensaje de error a emitir

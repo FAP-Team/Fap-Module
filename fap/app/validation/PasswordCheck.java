@@ -17,11 +17,13 @@ public class PasswordCheck extends Check {
 		StringBuilder texto = new StringBuilder();
 		if (value != null) {
 			String password = (String)value;
-			if ( (password.length() < FapProperties.getInt(TAM_MIN)) 
-					|| (password.length() > FapProperties.getInt(TAM_MAX)) ) {
-				texto.append(ERROR_TAM_PASSWORD);
-				setMessage(texto.toString());
-				return false;
+			if (password.length() != 0){
+				if ( (password.length() < FapProperties.getInt(TAM_MIN)) 
+						|| (password.length() > FapProperties.getInt(TAM_MAX)) ) {
+					texto.append(ERROR_TAM_PASSWORD);
+					setMessage(texto.toString());
+					return false;
+				}
 			}
 		}
 		return true;

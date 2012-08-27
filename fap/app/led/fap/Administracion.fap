@@ -137,7 +137,8 @@ Formulario Administracion permiso=administrador{
 	Popup PopupUsuario campo=Agente titulo="Usuario" {
 		Texto campo=Agente.username titulo="Username" requerido
 		Grupo permiso=accesoNoCertificado borde=false{
-			Texto campo=Agente.password titulo="Contraseña" requerido password duplicar
+			Texto campo=Agente.passwordAntiguo titulo="Contraseña Antigua" password
+			Texto campo=Agente.password titulo="Contraseña Nueva" password duplicar
 		}
 		Combo campo=Agente.roles titulo="Roles" busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido

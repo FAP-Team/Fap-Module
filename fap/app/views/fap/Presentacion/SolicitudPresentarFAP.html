@@ -1,0 +1,252 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'SolicitudPresentarFAP', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Presentar Solicitud', 
+     urlBorrar:play.mvc.Router.reverse('SolicitudPresentarFAPController.borrar' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]), 
+     urlCrear:play.mvc.Router.reverse('SolicitudPresentarFAPController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('SolicitudPresentarFAPController.editar' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id])
+}
+	
+			#{fap.grupo borde:false, permiso:'mensajeIntermedioSolicitud'}
+				
+			<div class="wiki box-warn box">
+<p>Se produjo un error en la presentación de la solicitud. Pulse otra vez el botón &#8216;Firmar y presentar&#8217; para intentar finalizar el proceso.</p>
+
+			</div>
+		
+			#{/fap.grupo}
+			
+			#{fap.grupo borde:false, mostrarSi:registro.habilitaFuncionario==true}
+		
+				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.presentacion.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarSolicitudFH', titulo:'Paso 1. Firmar y Registrar la solicitud'}
+					
+					#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.formFirmaFH' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"formFirmaFH"}
+					
+						<div class="wiki ">
+							<p>La solicitud será firmada y registrada.</p>
+						</div>
+
+						#{fap.firma firma:'firma', id:'firmarRegistrarFH', titulo:'Firmar y registrar', uri:"${solicitud.registro.oficial.uri}" /}
+		
+					#{/form}
+			
+					<div class="wiki ">
+						<p>Nota: La operación de firmar y registrar puede tardar varios minutos.</p>
+					</div>
+		
+				#{/fap.grupo}
+				
+			#{/fap.grupo}
+		
+			#{fap.grupo mostrarSi:['fisica'].contains(solicitud.solicitante.tipo), permiso:'firmarRegistrarSolicitud', titulo:'Paso 1. Firmar y Registrar la solicitud'}
+				
+				#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.formFirmaPF' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"formFirmaPF"}
+					
+			<div class="wiki ">
+<p>La solicitud será firmada y registrada.</p>
+
+			</div>
+		
+#{fap.tabla 
+     campo:'Solicitud.registro.firmantes.todos', 
+     id:'firmarRegistrarNifFirmantes', 
+     idEntidad:'idFirmante', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Firmantes', 
+     urlTabla:@SolicitudPresentarFAPController.tablafirmarRegistrarNifFirmantes(idSolicitud)
+}
+	
+	#{fap.columna ancho:200, cabecera:'Nº', campo:'idvalor', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Nombre', campo:'nombre', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Cardinalidad', campo:'cardinalidad', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Firmado', campo:'fechaFirma', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{fap.firma firma:'firma', id:'firmarRegistrarNif', titulo:'Firmar y registrar', uri:"${solicitud.registro.oficial.uri}" /}
+		
+				#{/form}
+			
+			<div class="wiki ">
+<p>Nota: La operación de firmar y registrar puede tardar varios minutos.</p>
+
+			</div>
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo mostrarSi:['juridica'].contains(solicitud.solicitante.tipo), permiso:'firmarRegistrarSolicitud', titulo:'Paso 1. Firmar y Registrar la solicitud'}
+				
+			<div class="wiki ">
+<p>Debe indicar si se firmará la solicitud con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la reformulación debe firmarse por todos los representantes mancomunados</p>
+
+			</div>
+		
+				#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.tipoCertificadoFirma' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"tipoCertificadoFirma"}
+					
+			#{fap.combo campo:'registro.tipoFirma', id:'certificadoFirma', titulo:'Certificado que se usará en la firma' /}		
+		
+				#{/form}
+			
+				<script>
+					$(function(){
+						$('#tipoCertificadoFirma input, #tipoCertificadoFirma select, #tipoCertificadoFirma textarea').change(function(){
+							$('#tipoCertificadoFirma').submit();
+						});
+				</script>
+			
+			#{fap.grupo borde:false, mostrarSi:['representantes'].contains(registro.tipoFirma)}
+				
+			#{fap.grupo titulo:'Paso 1.1. Firmar la solicitud'}
+				
+			<div class="wiki ">
+<p>La solicitud será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la reformulación.</p>
+
+			</div>
+		
+				#{fap.permiso permiso:"firmarSolicitud", accion:accion}
+					
+				#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.formFirmaRepresentante' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"formFirmaRepresentante"}
+					
+#{fap.tabla 
+     campo:'Solicitud.registro.firmantes.todos', 
+     id:'firmarRepresentanteFirmantes', 
+     idEntidad:'idFirmante', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Firmantes', 
+     urlTabla:@SolicitudPresentarFAPController.tablafirmarRepresentanteFirmantes(idSolicitud)
+}
+	
+	#{fap.columna ancho:200, cabecera:'Nº', campo:'idvalor', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Nombre', campo:'nombre', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Cardinalidad', campo:'cardinalidad', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Firmado', campo:'fechaFirma', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{fap.firma firma:'firma', id:'firmarRepresentante', titulo:'Firmar', uri:"${solicitud.registro.oficial.uri}" /}
+		
+				#{/form}
+			
+				#{/fap.permiso}		
+			
+#{fap.tabla 
+     campo:'Registro.firmantes.todos', 
+     id:'tablaFirmantesHecho', 
+     idEntidad:'idFirmante', 
+     recargarPagina:true, 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Representantes que ya han firmado', 
+     urlTabla:@SolicitudPresentarFAPController.tablatablaFirmantesHecho(idRegistro)
+}
+	
+	#{fap.columna ancho:200, cabecera:'NIP', campo:'idvalor' /}
+		
+	#{fap.columna ancho:200, cabecera:'Nombre', campo:'nombre', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Fecha de firma', campo:'fechaFirma' /}
+		
+#{/fap.tabla}
+
+#{fap.tabla 
+     campo:'Registro.firmantes.todos', 
+     id:'tablaFirmantesEspera', 
+     idEntidad:'idFirmante', 
+     recargarPagina:true, 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Representantes que no han firmado', 
+     urlTabla:@SolicitudPresentarFAPController.tablatablaFirmantesEspera(idRegistro)
+}
+	
+	#{fap.columna ancho:200, cabecera:'NIP', campo:'idvalor' /}
+		
+	#{fap.columna ancho:200, cabecera:'Nombre', campo:'nombre', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'registrarSolicitud', titulo:'Paso 1.2. Registrar la solicitud'}
+				
+			<div class="wiki ">
+<p>Su solicitud ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo.</p>
+
+			</div>
+		
+				#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.frmRegistrar' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"frmRegistrar"}
+					
+			#{fap.boton id:'botonRegistrar', titulo:'Registrar' /}
+		
+				#{/form}
+			
+			<div class="wiki ">
+<p>Nota: La operación de registro puede tardar varios minutos.</p>
+
+			</div>
+		
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, mostrarSi:['cif'].contains(registro.tipoFirma)}
+				
+			<div class="wiki ">
+<p>La solicitud será firmada y registrada. </p>
+
+			</div>
+		
+				#{fap.permiso permiso:"firmarRegistrarSolicitud", accion:accion}
+					
+				#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.formFirmaCif' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"formFirmaCif"}
+					
+#{fap.tabla 
+     campo:'Solicitud.registro.firmantes.todos', 
+     id:'firmarRegistrarCifFirmantes', 
+     idEntidad:'idFirmante', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Firmantes', 
+     urlTabla:@SolicitudPresentarFAPController.tablafirmarRegistrarCifFirmantes(idSolicitud)
+}
+	
+	#{fap.columna ancho:200, cabecera:'Nº', campo:'idvalor', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Nombre', campo:'nombre', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Cardinalidad', campo:'cardinalidad', expandir:true /}
+		
+	#{fap.columna ancho:200, cabecera:'Firmado', campo:'fechaFirma', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{fap.firma firma:'firma', id:'firmarRegistrarCif', titulo:'Firmar y Registrar', uri:"${solicitud.registro.oficial.uri}" /}
+		
+				#{/form}
+			
+				#{/fap.permiso}		
+			
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

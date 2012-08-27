@@ -991,6 +991,7 @@ select:focus:required:invalid:focus {
 .input-prepend,
 .input-append {
   margin-bottom: 5px;
+  width: 90%;
 }
 .input-prepend input,
 .input-append input,

@@ -90,7 +90,7 @@ public class GTabla extends GElement{
 			params.put 'urlCrearEntidad', controller.getRouteAccion("crearForTablas");
 		}
 		
-		if (tabla.pagina || tabla.paginaCrear){
+		if (tabla.pagina || tabla.paginaCrear || tabla.paginaBorrar || tabla.paginaEditar || tabla.paginaLeer){
 			params.put 'urlBeforeOpenPageTable', controller.getRouteBeforeOpenPageTable("editar");
 		}
 		

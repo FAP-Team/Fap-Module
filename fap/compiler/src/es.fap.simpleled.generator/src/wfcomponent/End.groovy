@@ -55,7 +55,6 @@ public class End implements IWorkflowComponent {
 		if (!Start.generatingModule){
 			entitySolicitud();
 			properties();
-			FileUtils.append(FileUtils.getRoute('INI_DATA'), "paginasAppMsjLista.yml", "]");
 		}
 		
 		permisos();
@@ -63,7 +62,6 @@ public class End implements IWorkflowComponent {
 		
 		if (Start.generatingModule){
 			DocumentationUtils.makeDocumentation();
-			FileUtils.append(FileUtils.getRoute('INI_DATA'), "paginasMsjLista.yml", "]");
 		}
 		
 		borrarFicherosAntiguos();

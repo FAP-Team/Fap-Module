@@ -386,6 +386,7 @@ Columna:
 	       & ('ancho' '=' ancho=STRING)? 
 		   & ("permiso" "=" permiso=[Permiso])?
 	       & (expandir?='expandir')?
+	       & ("align" "=" position=("left"|"center"|"right"))?
 	)
 ;
 

@@ -427,7 +427,10 @@ R
 			params.putStr("dataIndex", dataIndex);
 			params.put("sortable", true);
 			
-			
+			String alignPosition = (String)args.get("alignPosition");
+			if (alignPosition != null && !alignPosition.isEmpty()) {
+				params.putStr("align", alignPosition);
+			}
 			
 			if(expandir){
 				params.put("flex", true);

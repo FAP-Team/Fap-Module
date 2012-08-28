@@ -142,6 +142,13 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	}
 	
 	@Check
+	public void checkNameVariableAgenteInPermiso(PermisoVar permisoVar) {
+		if ((permisoVar.getTipo().getName().equals("Agente")) && (permisoVar.getName().equals("agente"))) {
+			error("El nombre de una variable Agente no puede llamarse agente. Existe ya una variable agente global.", ledPackage.getPermisoVar_Name());
+		}
+	}
+	
+	@Check
 	public void checkExtends(Entity entidad){
 		Set<String> intermedias = new HashSet<String>();
 		Entity father = entidad.getExtends();

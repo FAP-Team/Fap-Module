@@ -37,6 +37,8 @@ public class Aportacion extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaAportacionSinRegistro;
 
+	public Boolean habilitaFuncionario;
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento borrador;
 

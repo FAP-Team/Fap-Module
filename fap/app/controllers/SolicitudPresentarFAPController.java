@@ -1,20 +1,134 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import platino.FirmaUtils;
 import play.mvc.Util;
 import services.RegistroServiceException;
 import tramitacion.TramiteBase;
 
 import messages.Messages;
+import models.Agente;
 import models.Firmante;
+import models.Registro;
 import models.SolicitudGenerica;
+import controllers.fap.AgenteController;
 import controllers.fap.PresentacionFapController;
 import controllers.gen.SolicitudPresentarFAPControllerGen;
 import emails.Mails;
 
 public class SolicitudPresentarFAPController extends SolicitudPresentarFAPControllerGen {
+	
+	public static void index(String accion, Long idSolicitud, Long idRegistro) {
+		if (accion == null)
+			accion = getAccion();
+		if (!permiso(accion)) {
+			Messages.fatal("No tiene suficientes privilegios para acceder a esta solicitud");
+			renderTemplate("fap/Presentacion/SolicitudPresentarFAP.html");
+		}
+
+		SolicitudGenerica solicitud = SolicitudPresentarFAPController.getSolicitudGenerica(idSolicitud);
+
+		Registro registro = null;
+		if ("crear".equals(accion))
+			registro = SolicitudPresentarFAPController.getRegistro();
+		else if (!"borrado".equals(accion))
+			registro = SolicitudPresentarFAPController.getRegistro(idSolicitud, idRegistro);
+
+		log.info("Visitando página: " + "fap/Presentacion/SolicitudPresentarFAP.html");
+		renderTemplate("fap/Presentacion/SolicitudPresentarFAP.html", accion, idSolicitud, idRegistro, solicitud, registro);
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void formFirmaFH(Long idSolicitud, Long idRegistro, String firma, String firmarRegistrarFH) {
+		checkAuthenticity();
+		if (!permisoFormFirmaFH("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		try {
+			PresentacionFapController.invoke("beforeFirma", idSolicitud);
+		} catch (Throwable e1) {
+			log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
+			Messages.error("Error al validar elementos previos a la firma");
+		}
+		if (!Messages.hasErrors()) {
+			try {
+				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
+				tramite.firmar(firma);
+				if (!Messages.hasErrors()) {
+					try {
+						tramite.registrar();
+						tramite.cambiarEstadoSolicitud();
+						try {
+							PresentacionFapController.invoke("afterRegistro", idSolicitud);
+						} catch (Throwable e1) {
+							log.error("Hubo un problema al invocar los métodos afterRegistro: "+e1.getMessage());
+							Messages.error("Error al validar elementos posteriores al registro");
+						}
+						Messages.ok("Solicitud registrada correctamente");
+					} catch (Exception e) {
+						log.error("Hubo un error al registrar la solicitud: "+ e.getMessage());
+						Messages.error("No se pudo registrar la solicitud");
+					}
+				}
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar el metodo que devuelve la clase TramiteBase en la firma: "+e1.getMessage());
+				Messages.error("Error al intentar firmar antes de registrar");
+			}
+		}
+		
+		
+		if (firmarRegistrarFH != null) {
+			SolicitudPresentarFAPController.firmarRegistrarFHFormFirmaFH(idSolicitud, idRegistro, firma);
+			SolicitudPresentarFAPController.formFirmaFHRender(idSolicitud, idRegistro);
+		}
+
+		if (!Messages.hasErrors()) {
+			SolicitudPresentarFAPController.formFirmaFHValidateRules(firma);
+		}
+		if (!Messages.hasErrors()) {
+
+			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
+		SolicitudPresentarFAPController.formFirmaFHRender(idSolicitud, idRegistro);
+	}
+	
+	@Util
+	public static void firmarRegistrarFHFormFirmaFH(Long idSolicitud, Long idRegistro, String firma) {
+		SolicitudGenerica solicitud = SolicitudPresentarFAPController.getSolicitudGenerica(idSolicitud);
+
+		play.Logger.info("Metodo: firmarRegistrarFHFormFirmaFH");
+		Agente agente = AgenteController.getAgente();
+		if (agente.getFuncionario()){
+			List<Firmante> firmantes = new ArrayList<Firmante>();
+			firmantes.add(new Firmante(agente));
+			FirmaUtils.firmar(solicitud.registro.oficial, firmantes, firma, null);
+		} else {
+			//ERROR
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		if (!Messages.hasErrors()) {
+
+			solicitud.registro.fasesRegistro.firmada = true;
+			solicitud.save();
+		}
+	}
+	
+	@Util
+	public static void formFirmaFHRender(Long idSolicitud, Long idRegistro) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página editada correctamente");
+			Messages.keep();
+			redirect("PresentarFAPController.index", "editar", idSolicitud, idRegistro);
+		}
+		Messages.keep();
+		redirect("PresentarFAPController.index", "editar", idSolicitud, idRegistro);
+	}
 	
 	public static void tablatablaFirmantesHecho(Long idRegistro) {
 
@@ -95,10 +209,10 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			SolicitudPresentarFAPController.formFirmaPFValidateRules(firma);
 		}
 		if (!Messages.hasErrors()) {
-			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada con éxito");
+			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada con éxito");
 			redirect("PresentarFAPController.index", idSolicitud, idRegistro);
 		} else
-			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
+			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		SolicitudPresentarFAPController.formFirmaPFRender(idSolicitud, idRegistro);
 	}
 	
@@ -147,9 +261,9 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			SolicitudPresentarFAPController.formFirmaRepresentanteValidateRules(firma);
 		}
 		if (!Messages.hasErrors()) {
-			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada con éxito");
+			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada con éxito");
 		} else
-			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
+			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		SolicitudPresentarFAPController.formFirmaRepresentanteRender(idSolicitud, idRegistro);
 	}
 	
@@ -202,10 +316,10 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			SolicitudPresentarFAPController.formFirmaCifValidateRules(firma);
 		}
 		if (!Messages.hasErrors()) {
-			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada con éxito");
+			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada con éxito");
 			redirect("PresentarFAPController.index", idSolicitud);
 		} else
-			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
+			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		SolicitudPresentarFAPController.formFirmaCifRender(idSolicitud, idRegistro);
 	}
 	
@@ -261,10 +375,10 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			SolicitudPresentarFAPController.frmRegistrarValidateRules();
 		}
 		if (!Messages.hasErrors()) {
-			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada con éxito");
+			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada con éxito");
 			redirect("PresentarFAPController.index", idSolicitud);
 		} else
-			log.info("Acción Editar de página: " + "gen/SolicitudPresentarFAP/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
+			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		SolicitudPresentarFAPController.frmRegistrarRender(idSolicitud, idRegistro);
 	}
 }

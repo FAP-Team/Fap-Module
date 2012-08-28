@@ -56,70 +56,71 @@ public class AportacionController extends AportacionControllerGen {
 		renderTemplate("gen/Aportacion/Aportacion.html", accion, idSolicitud, solicitud);
 	}
 	
-	public static void presentar(Long idSolicitud) {
+	public static void presentar(Long idSolicitud, SolicitudGenerica solicitud, String botonPresentar) {
 		checkAuthenticity();
-		if (permisoPresentar("editar") || permisoPresentar("crear")) {
-			if (!validation.hasErrors()) {
-				SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
-				
-				Aportacion aportacion = solicitud.aportaciones.actual;
+		if (!permisoPresentarSinRegistrar("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+		dbSolicitud.aportaciones.actual.habilitaFuncionario = solicitud.aportaciones.actual.habilitaFuncionario;
+		dbSolicitud.save();
+		solicitud = dbSolicitud;
+		if (!Messages.hasErrors()) {
+			
+			Aportacion aportacion = solicitud.aportaciones.actual;
 
-				if(aportacion.documentos.isEmpty()){
-					Messages.error("Debe aportar al menos un documento");
-					
-					//Reinicia el estado de la aportación
-					aportacion.estado = null;
-					aportacion.save();
-				}
+			if(aportacion.documentos.isEmpty()){
+				Messages.error("Debe aportar al menos un documento");
 				
-				if(!Messages.hasErrors() && aportacion.estado == null){
-					try {
-						String tipoDocumentoSolicitudAportacion = FapProperties.get("fap.aed.tiposdocumentos.aportacion.solicitud");
-						
-	                    // Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
-						if((aportacion.borrador != null) && (aportacion.borrador.uri != null) && (!aportacion.borrador.uri.trim().equals(""))){
-						    Documento borradorOld = aportacion.borrador;
-						    aportacion.oficial = null;
-						    aportacion.save();
-						    gestorDocumentalService.deleteDocumento(borradorOld);
-						}
-						
-						if((aportacion.oficial != null) && (aportacion.oficial.uri != null) && (!aportacion.oficial.uri.trim().equals(""))){
-						    Documento oficialOld = aportacion.oficial;
-						    aportacion.oficial = null;
-						    aportacion.save();
-						    gestorDocumentalService.deleteDocumento(oficialOld);
-						}						
-		
-						//Genera el borrador
-						File borrador = new Report("reports/solicitudAportacion.html").header("reports/header.html").footer("reports/footer-borrador.html").renderTmpFile(solicitud);
-						aportacion.borrador = new Documento();
-						aportacion.borrador.tipo = tipoDocumentoSolicitudAportacion;
-						aportacion.borrador.descripcion = "Borrador solicitud aportación";
-						
-						gestorDocumentalService.saveDocumentoTemporal(aportacion.borrador, new FileInputStream(borrador), borrador.getName());
-												
-						//Genera el documento oficial
-						File oficial =  new Report("reports/solicitudAportacion.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
-						aportacion.oficial = new Documento();
-						aportacion.oficial.tipo = tipoDocumentoSolicitudAportacion;
-						aportacion.oficial.descripcion = "Solicitud aportación";
-						
-						gestorDocumentalService.saveDocumentoTemporal(aportacion.oficial, new FileInputStream(oficial), oficial.getName());
-						
-						aportacion.estado = "borrador";
-						aportacion.save();
-					}catch(Exception e){
-						Messages.error("Se produjo un error generando el documento de aportación.");
-						play.Logger.error(e, "Error al generar el documento de la aportación: " + e.getMessage());
-						e.printStackTrace();
+				//Reinicia el estado de la aportación
+				aportacion.estado = null;
+				aportacion.save();
+			}
+			
+			if(!Messages.hasErrors() && aportacion.estado == null){
+				try {
+					String tipoDocumentoSolicitudAportacion = FapProperties.get("fap.aed.tiposdocumentos.aportacion.solicitud");
+					
+                    // Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
+					if((aportacion.borrador != null) && (aportacion.borrador.uri != null) && (!aportacion.borrador.uri.trim().equals(""))){
+					    Documento borradorOld = aportacion.borrador;
+					    aportacion.oficial = null;
+					    aportacion.save();
+					    gestorDocumentalService.deleteDocumento(borradorOld);
 					}
+					
+					if((aportacion.oficial != null) && (aportacion.oficial.uri != null) && (!aportacion.oficial.uri.trim().equals(""))){
+					    Documento oficialOld = aportacion.oficial;
+					    aportacion.oficial = null;
+					    aportacion.save();
+					    gestorDocumentalService.deleteDocumento(oficialOld);
+					}						
+	
+					//Genera el borrador
+					File borrador = new Report("reports/solicitudAportacion.html").header("reports/header.html").footer("reports/footer-borrador.html").renderTmpFile(solicitud);
+					aportacion.borrador = new Documento();
+					aportacion.borrador.tipo = tipoDocumentoSolicitudAportacion;
+					aportacion.borrador.descripcion = "Borrador solicitud aportación";
+					
+					gestorDocumentalService.saveDocumentoTemporal(aportacion.borrador, new FileInputStream(borrador), borrador.getName());
+											
+					//Genera el documento oficial
+					File oficial =  new Report("reports/solicitudAportacion.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
+					aportacion.oficial = new Documento();
+					aportacion.oficial.tipo = tipoDocumentoSolicitudAportacion;
+					aportacion.oficial.descripcion = "Solicitud aportación";
+					
+					gestorDocumentalService.saveDocumentoTemporal(aportacion.oficial, new FileInputStream(oficial), oficial.getName());
+					
+					aportacion.estado = "borrador";
+					aportacion.save();
+				}catch(Exception e){
+					Messages.error("Se produjo un error generando el documento de aportación.");
+					play.Logger.error(e, "Error al generar el documento de la aportación: " + e.getMessage());
+					e.printStackTrace();
 				}
 			}
-		} else {
-			Messages.error("En este momento no se permiten aportaciones");
 		}
-		
 		if(!Messages.hasErrors()){
 			Messages.ok("La solicitud de aportación se preparó correctamente");		
 		}

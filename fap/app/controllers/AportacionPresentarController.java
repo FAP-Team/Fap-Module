@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import org.joda.time.DateTime;
 
 import messages.Messages;
+import models.Agente;
 import models.Aportacion;
 import models.Documento;
 import models.Firma;
@@ -31,6 +32,7 @@ import services.RegistroServiceException;
 import services.RegistroService;
 import sun.util.logging.resources.logging;
 import validation.CustomValidation;
+import controllers.fap.AgenteController;
 import controllers.fap.FirmaController;
 import controllers.gen.AportacionPresentarControllerGen;
 import emails.Mails;
@@ -57,7 +59,7 @@ public class AportacionPresentarController extends AportacionPresentarController
             Messages.keep();
             redirect("AportacionController.index", accion, idSolicitud);
         } else {
-            renderTemplate("gen/AportacionPresentar/AportacionPresentar.html", accion, idSolicitud, solicitud);
+            renderTemplate("fap/Aportacion/AportacionPresentar.html", accion, idSolicitud, solicitud);
         }
     }
 
@@ -75,6 +77,32 @@ public class AportacionPresentarController extends AportacionPresentarController
         }
         modificarBorradorRender(idSolicitud);
     }
+    
+    @Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void formFirmaFH(Long idSolicitud, String firma, String firmarRegistrarFH) {
+		checkAuthenticity();
+		if (!permisoFormFirmaFH("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+        Aportacion aportacion = solicitud.aportaciones.actual;
+
+        if (aportacion.estado == null) {
+            Messages.error("La solicitud no está preparada para registrar");
+        }
+
+        almacenarFirmaAportacionFH(firma, solicitud, aportacion);
+        registrarAportacion(solicitud, aportacion);
+        clasificarDocumentosAportacionConRegistro(solicitud, aportacion);
+        finalizarAportacion(solicitud, aportacion);
+
+        if (!Messages.hasErrors()) {
+            Messages.ok("Su solicitud de aportación de documentación se registró correctamente");
+        }
+
+        presentarRender(idSolicitud);
+	}
 
     /**
      * Firma y registra la solicitud de aportación de documentación
@@ -125,6 +153,27 @@ public class AportacionPresentarController extends AportacionPresentarController
             if(!Messages.hasErrors()){
                 if (isFirmanteValido(solicitud, firmante)) {
                     almacenarFirma(firma, aportacion, firmante);
+                }
+            }
+
+            if (!Messages.hasErrors()) {
+                // Firma válida y almacenada
+                aportacion.estado = "firmada";
+                aportacion.save();
+            }
+        }
+    }
+    
+    private static void almacenarFirmaAportacionFH(String firma, SolicitudGenerica solicitud, Aportacion aportacion) {
+        if (!Messages.hasErrors() && "borrador".equals(aportacion.estado)) {
+            Firmante firmante = firmaService.getFirmante(firma, aportacion.oficial);
+            Agente agente = AgenteController.getAgente();
+            if(!Messages.hasErrors()){
+                if ((firmante != null) && (agente.username.equals(firmante.idvalor)) && (agente.getFuncionario())) {
+                    almacenarFirma(firma, aportacion, firmante);
+                } else {
+                	Messages.error("Firmante Funcionario Habilitado no Válido");
+                	play.Logger.error("El firmante no es valido o no coincide con el agente conectado en FH");
                 }
             }
 

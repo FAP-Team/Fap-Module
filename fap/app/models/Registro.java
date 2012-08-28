@@ -46,6 +46,8 @@ public class Registro extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Firmantes firmantes;
 
+	public Boolean habilitaFuncionario;
+
 	public Registro() {
 		init();
 	}

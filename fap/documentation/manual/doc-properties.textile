@@ -72,3 +72,7 @@ h2. Properties originarias de FAP
 ** Ejemplo: _fap.path.editor.img=/public/images_
 * Ruta para la subida de ficheros temporales por el editor enriquecido para las plantillas (antiguos informes odt)
 ** Ejemplo: _fap.path.editor.tmp=/public/tmp_
+* Permitir en la Presentación que un Funcionario Habilitado firme. *fap.presentacion.firmaYRegistro.funcionarioHabilitado*=_[true | false]_
+** Ejemplo: _fap.presentacion.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el mñodulo FAP)
+* Permitir en la Aportación que un Funcionario Habilitado firme. *fap.aportacion.firmaYRegistro.funcionarioHabilitado*=_[true | false]_
+** Ejemplo: _fap.aportacion.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el mñodulo FAP)

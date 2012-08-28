@@ -137,6 +137,7 @@ POST /Solicitud/enviomails/enviarMail EnvioMailsController.enviarMail
 GET /Solicitud/renderpdf RenderPdfController.index
 POST /Solicitud/renderpdf/renderPdfSolicitud RenderPdfController.renderPdfSolicitud
 GET /Solicitud/tablascondecimales TablasConDecimalesController.index
+POST /Solicitud/tablascondecimales/editar TablasConDecimalesController.editar
 POST /Solicitud/tablascondecimales/beforeOpenPageTable TablasConDecimalesController.beforeOpenPageTable
 GET /Solicitud/tablascondecimales/tablaConceptos TablasConDecimalesController.tablatablaConceptos
 GET /Solicitud/combotestref popups.ComboTestRefController.index

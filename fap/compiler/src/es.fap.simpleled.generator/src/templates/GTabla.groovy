@@ -239,12 +239,23 @@ public class GTabla extends GElement{
 		TagParameters params = new TagParameters();
 		params.putStr "cabecera", c.titulo;
 		params.put "ancho", c.ancho
+		String positionDefault = "left";
 		if(c.campo != null){
 			params.putStr("campo", CampoUtils.create(c.campo).sinEntidad());
+			if (CampoUtils.create(c.campo).getUltimoAtributo()?.type?.special?.type?.equals("Moneda")) {
+				// Si es un campo Moneda lo alineamos a la derecha
+				positionDefault = "right";
+			}
 		}
 		else if(c.funcion != null){
 			String str = c.funcion;
 			params.putStr("funcion", funcionSinEntidades(str));	
+		}
+		
+		if (c.position != null) {
+			params.putStr("alignPosition", c.position);
+		} else {
+			params.putStr("alignPosition", positionDefault);
 		}
 		
 		if (c.permiso != null)

@@ -26,6 +26,8 @@
 		editable = false;
 
 	tags.TagMapStack.push("editable", editable);
+	
+	def guardarAntes = properties.FapProperties.getBoolean("fap.entidades.guardar.antes") ?: false;
 }%
 
 <!--div id="${idMensajes}"></div-->
@@ -90,10 +92,10 @@ $(document).ready(function(){
 				$('#${idBotonAccion}').button('complete');
 			});
 		};
-	  	popupButtons (idPopup, {"${botonAccion}": "${idBotonAccion}()"}, "btn-primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"});
+	  	popupButtons (idPopup, {"${botonAccion}": "${idBotonAccion}()"}, "btn-primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"}, ${guardarAntes});
   	#{/if}
   	#{else}
-  		popupButtons (idPopup, {}, "btn-primary", true, true);
+  		popupButtons (idPopup, {}, "btn-primary", true, true, false);
   	#{/else}
   	popupTitle(idPopup, "${titulo}");
 

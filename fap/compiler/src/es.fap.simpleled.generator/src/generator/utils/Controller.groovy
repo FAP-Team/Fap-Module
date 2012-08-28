@@ -275,14 +275,43 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoIndex(){
+		
+		String crearSaveCall = """
+			${entidad.variable}.save();
+			${entidad.id} = ${entidad.variable}.id;
+		""";
+		if(!almacen.nulo()){
+			String lastSubcampoMinuscula = lastSubcampo.str.substring(0,1).toLowerCase()+lastSubcampo.str.substring(1);
+			if (LedCampoUtils.xToMany(lastSubcampo?.campo))
+				crearSaveCall += "${lastSubcampoMinuscula}.add(${entidad.variable});\n";
+			else
+				crearSaveCall += "${lastSubcampoMinuscula} = ${entidad.variable};\n";
+			// Recorre el ${lastSubcampo.str}, y voy comprobando que cada elemento (cortado por '.') es ManyToOne, en ese caso hago su save, ya que ahora por defecto FAP no pone Cascade a los ManyToOne, por lo que no se guardaria y fallaria.
+			String[] camposToSaveIfManyToOne = lastSubcampoMinuscula.split("\\.");
+			String campoConcatenado=camposToSaveIfManyToOne[0];
+			for(int i=1; i<camposToSaveIfManyToOne.size(); i++){
+				campoConcatenado+="."+camposToSaveIfManyToOne[i];
+				CampoUtils campo = CampoUtils.create((campoConcatenado.substring(0,1).toUpperCase()+campoConcatenado.substring(1)));
+				if (LedCampoUtils.ManyToOne(campo.campo)){
+					crearSaveCall += "${campoConcatenado}.save();\n";
+				}
+			}
+			crearSaveCall += "${almacen.variable}.save();\n";
+		}
+		
+		
 		String getEntidad = "";
 		if (!entidad.nulo()){
 			if (!entidad.isSingleton()){
 				getEntidad = """
 					$entidad.clase $entidad.variable = null;
-					if("crear".equals(accion))
+					if("crear".equals(accion)){
 						$entidad.variable = ${simpleGetterCall(entidad, false)};
-					else if (!"borrado".equals(accion))
+						if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")){
+							${crearSaveCall}
+							accion="editar";
+						}
+					} else if (!"borrado".equals(accion))
 						$entidad.variable = ${complexGetterCall(entidad)};
 				""";
 			}

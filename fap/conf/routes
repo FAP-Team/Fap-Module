@@ -117,6 +117,7 @@ GET /Administracion/buscarlogs BuscarLogsController.index
 POST /Administracion/buscarlogs/buscar BuscarLogsController.buscar
 GET /Administracion/mostrarlogs MostrarLogsController.index
 GET /Administracion/mostrarlogs/logs MostrarLogsController.tablalogs
+GET /Administracion/plantillasdoc PlantillasDocController.index
 GET /Solicitud/documentacionfap DocumentacionFAPController.index
 POST /Solicitud/documentacionfap/beforeOpenPageTable DocumentacionFAPController.beforeOpenPageTable
 GET /Solicitud/documentacionfap/documentos DocumentacionFAPController.tabladocumentos

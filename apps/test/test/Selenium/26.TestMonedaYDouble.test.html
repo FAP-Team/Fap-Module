@@ -8,7 +8,7 @@
 }%
 
 #{selenium}
-	open(/Principal/solicitudes)
+	open('Principal/solicitudes')
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='Borrador'])
     open('/Solicitud/tablascondecimales?idSolicitud=${s.id}')

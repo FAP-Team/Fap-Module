@@ -635,6 +635,12 @@ select,
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
+.inline-inputs > select {
+	width: 30%;
+}
+.inline-inputs > input {
+	width: 49%;
+}
 .uneditable-textarea {
   width: auto;
   width: 80%;  // Bootstrap-adaptativo
@@ -3324,7 +3330,7 @@ input[type="submit"].btn.btn-mini {
   position: absolute;
   margin: -250px auto auto -280px;
   left: 25%;
-  width: 90%;	// Aumentamos el tamaño: por defecto es 560px
+  width: 90%;	// Aumentamos el tamaï¿½o: por defecto es 560px
   heigth: 80%;
 }
 .modal.max .modal-body {

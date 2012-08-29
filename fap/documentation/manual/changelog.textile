@@ -1,5 +1,17 @@
 h2. Changelog
 
+h3. Versión 2.1RC4
+
+* Bootstrap adaptativo.
+* Se permite añadir check a las tablas de popups.
+* Se permite que los PopUp abarquen toda la pantalla (atributo maximizar).
+* Alineado de los elementos en las columnas de las tablas (tipo moneda alineado por defecto a la derecha).
+* Se permite especificar un número mínimo y máximo de decimales en los atributos de tipo moneda y en los double.
+* Fixed Bug redireción después de los PopUp.
+* Fixed Bug en cambiar password de los usuarios.
+* Fixed Bug en validar las páginas antes de abrir una página de tabla.
+* Fixed Minor Bugs.
+
 h3. Versión 2.1RC3
 
 * Validando y guardando datos en paginas que tienen tablas que van a otras paginas. 

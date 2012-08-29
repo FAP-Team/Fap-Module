@@ -29,7 +29,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 			renderJSON(utils.RestResponse.ok("Registro creado correctamente"));
 		}else{
 			Messages.keep();
-			index("crear",null);
+			index("crear",null, "");
 		}
 	}
 
@@ -59,7 +59,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 			renderJSON(utils.RestResponse.ok("Registro actualizado correctamente"));
 		}else{
 			Messages.keep();
-			index("editar",idTableKeyValue);
+			index("editar",idTableKeyValue, "");
 		}
 
 	}
@@ -85,7 +85,7 @@ public class PopupTablaDeTablasController extends PopupTablaDeTablasControllerGe
 			renderJSON(utils.RestResponse.ok("Registro borrado correctamente"));
 		}else{
 			Messages.keep();
-			index("borrar",idTableKeyValue);
+			index("borrar",idTableKeyValue, "");
 		}
 	}
 

@@ -28,6 +28,7 @@
 	
 	def obj = _obj ?: _caller.get(campo.split("\\.")[0]);
 	
+	def urlRedirigir = _urlRedirigir ?: "";
 	
 	// Para que lo de la validacion y el guardado de la pagina actual al abrir la pagina de la tabla no funcione, siga comportandose como antes de la versión 2.1
 	def saveBefore = properties.FapProperties.getBoolean("fap.tablas.validacion.antesRedirigirPaginas") ?: false;
@@ -456,9 +457,14 @@
 	    			var urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
 					var funcionCrear = function(){
 						#{if popupCrear}
+							var urlCrearRedirigir;
+							if ("${urlRedirigir}" !== "")
+								urlCrearRedirigir = urlCrear+"&urlRedirigir="+replaceAmpersand("${urlRedirigir}").split("&")[0];
+							else
+								urlCrearRedirigir = urlCrear;
 	    					popup_open(
 	    						"${popupCrear}_popup",
-	    						urlCrear,
+	    						urlCrearRedirigir,
 	    						reload
 	    					);
 	    				#{/if}

@@ -37,6 +37,7 @@ public class GPopup extends GGroupElement{
 		Controller c = Controller.create(this);
 		params.putStr("popup", popup.name);
 		params.put("accion", "accion");
+		params.put("urlRedirigir", "urlRedirigir");
 		params.put("urlEditar", c.getRouteAccion("editar"));
 		params.put("urlCrear", c.getRouteAccion("crear"));
 		params.put("urlBorrar", c.getRouteAccion("borrar"));

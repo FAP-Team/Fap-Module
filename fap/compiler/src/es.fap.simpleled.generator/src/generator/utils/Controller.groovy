@@ -298,12 +298,18 @@ public class ${controllerName} extends ${controllerGenName} {
 			}
 			crearSaveCall += "${almacen.variable}.save();\n";
 		}
-		
+		String getVariablesRedirigir = "";
+		getVariablesRedirigir += """String variablesRedirigir="";\n""";
+		allEntities.collect{
+			if (it != entidad)
+				getVariablesRedirigir += """variablesRedirigir += "&$it.id="+$it.id;\n""";
+		}
+		getVariablesRedirigir += """urlRedirigir+=variablesRedirigir;\n""";
 		
 		String getEntidad = "";
 		if (!entidad.nulo()){
 			if (!entidad.isSingleton()){
-				getEntidad = """
+				getEntidad += """
 					$entidad.clase $entidad.variable = null;
 					if("crear".equals(accion)){
 						$entidad.variable = ${simpleGetterCall(entidad, false)};
@@ -311,15 +317,29 @@ public class ${controllerName} extends ${controllerGenName} {
 							${crearSaveCall}
 							accion="editar";
 						}
+					"""
+				if (isPopup()){
+					getEntidad += """${getVariablesRedirigir}
+					"""
+				}
+				getEntidad += """
 					} else if (!"borrado".equals(accion))
 						$entidad.variable = ${complexGetterCall(entidad)};
-				""";
+					""";
 			}
 			else
 				getEntidad = """$entidad.clase $entidad.variable = ${simpleGetterCall(entidad, false)};""";
 		}
-		return """
-			public static void index(${StringUtils.params("String accion", allEntities.collect{it.typeId})}){
+		String devolver = "";
+		if (isPopup()){
+			devolver += """
+			public static void index(${StringUtils.params("String accion", allEntities.collect{it.typeId}, "String urlRedirigir")}"""
+		}
+		else {
+			devolver += """
+			public static void index(${StringUtils.params("String accion", allEntities.collect{it.typeId})}"""
+		}
+		devolver +=	"""){
 				if (accion == null)
 					accion = getAccion();
 				if (!permiso(accion)){
@@ -331,17 +351,28 @@ public class ${controllerName} extends ${controllerGenName} {
 					if (it != entidad)
 						return "$it.clase $it.variable = ${complexGetterCall(it)};"
 					else return "";
-				}.join("\n")}
-				${getEntidad}
+				}.join("\n")}""";
+		
+		devolver +=	"""${getEntidad}
 				log.info("Visitando página: "+${renderView});
-				renderTemplate(${StringUtils.params(
+				"""; 
+		if (isPopup()){
+			devolver += """renderTemplate(${StringUtils.params(
 					renderView,
 					"accion",
 					allEntities.collect{it.id},
-					allEntities.collect{it.variable}
-				)});
-			}
-		""";
+					allEntities.collect{it.variable},
+					"urlRedirigir" )});
+		}""";
+		} else {
+			devolver += """renderTemplate(${StringUtils.params(
+					renderView,
+					"accion",
+					allEntities.collect{it.id},
+					allEntities.collect{it.variable} )});
+		}""";
+		}
+		return devolver;
 	}
 	
 	private String metodoEditar(){

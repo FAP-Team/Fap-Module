@@ -181,6 +181,9 @@ public class GElement {
 				
 			else if(element instanceof Wiki)
 				cache.put(element, new GWiki(element, container));
+				
+			else if(element instanceof Codigo)
+				cache.put(element, new GCodigo(element, container));
 			
 			else if(element instanceof EntidadAutomatica)
 				cache.put(element, new GEntidadAutomatica(element, container));

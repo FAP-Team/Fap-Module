@@ -1,0 +1,29 @@
+h1. Codigo
+
+h2. Descripción
+
+Elemento opcional que permite insertar fragmentos de código como ejemplo.
+
+h2. Parámetros
+
+* **_[name]_** : Identificador del elemento.
+
+h2. Definición
+
+bc. Codigo:
+	elemento='Codigo' name=IDS
+	'{' 
+		contenido=STRING
+	'}' 
+;
+
+h2. Ejemplo de uso
+
+bc. Codigo codigoSolicitantePF {
+	"Wiki {\"El representante de este solicitante sólo puede ser de tipo Persona Fisica\"}
+	SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo=\"Solicitante Persona Fisica\" representantePersonaFisica"
+}
+
+h3. Resultado
+
+!images/dsl-codigo!

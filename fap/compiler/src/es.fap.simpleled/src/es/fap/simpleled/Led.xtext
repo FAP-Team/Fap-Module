@@ -224,7 +224,7 @@ Elemento:
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple |
-	EntidadAutomatica | Accion
+	EntidadAutomatica | Accion | Codigo
 ;
 
 Campo:
@@ -680,4 +680,11 @@ PermisoRuleCheckGroupOp:
 
 PermisoRuleCheckRight:
 	campo=CampoPermiso | str=STRING  | nulo?='null' | action=("leer" | "editar" | "crear" | "borrar")
+;
+
+Codigo:
+	elemento='Codigo' name=IDS
+	'{' 
+		contenido=STRING
+	'}' 
 ;

@@ -11,6 +11,10 @@
         
         <link rel="stylesheet" href="@{'/public/javascripts/ext/resources/css/ext-all.css'}" />
         
+        <link rel="stylesheet" href="@{'/public/playmanual/prettify/prettify.css'}" type="text/css" media="screen">
+        <script type="text/javascript" src="@{'/public/playmanual/prettify/prettify.js'}"></script>
+  
+        
         #{stylesheet 'jquery-ui-1.8.16.custom.css' /}
         #{stylesheet 'jquery-ui.css' /}
         #{stylesheet 'bootstrapFap.css' /}
@@ -35,6 +39,7 @@
         #{script src:"bootstrap/bootstrap-button.js" /}
         #{script src:"bootstrap/bootstrap-collapse.js" /}
         
+        
         #{script 'ext/ext-all.js' /}
         #{script 'ext/form/SearchFieldFilter.js' /}
 
@@ -57,7 +62,7 @@
         
         <link rel="stylesheet" href="/public/stylesheets/responsiveFAP.css" />
     </head>
-    <body>
+    <body onload="prettyPrint()" bgcolor="white">
     
     	<div class="container-fluid">
     		<div class="content">

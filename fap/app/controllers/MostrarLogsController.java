@@ -66,12 +66,12 @@ public class MostrarLogsController extends MostrarLogsControllerGen {
 		if (fecha_ != null) {
 			int dia = fecha_.getDate();
 			int mes = fecha_.getMonth();
-			int año = fecha_.getYear();
+			int anyo = fecha_.getYear();
 			int day = (dia < 10) ? '0' + dia : dia;
 			int m = mes + 1;
 			NumberFormat formatter = new DecimalFormat("00");
 			month = formatter.format(m);
-			int year = (año < 1000) ? año + 1900 : año;
+			int year = (anyo < 1000) ? anyo + 1900 : anyo;
 			fechaLogBuscado = day + "-" + month + "-" + year;
 		}
 		

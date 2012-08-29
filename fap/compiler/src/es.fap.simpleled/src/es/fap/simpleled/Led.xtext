@@ -178,6 +178,7 @@ Popup:
 		('titulo' '=' titulo=STRING)?
 		& ("campo" "=" campo=Campo)?
 		& ("permiso" "=" permiso=[Permiso])?
+		& (maximizar?="maximizar")?
 	)
 	'{'
 		elementos+=Elemento*

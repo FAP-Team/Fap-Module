@@ -48,6 +48,10 @@ Formulario Solicitud {
 			Enlace "Tablas con páginas" pagina=PaginasTablas
 		}
 		
+		Grupo "Popups" {
+			Enlace "BigPopUp" popup=PruebaBigPopUp
+		}
+		
 		Grupo "Tipos de Ayuda" {
 			Enlace "Ayuda Texto" pagina=TipoDeAyudaTexto
 			Enlace "Ayuda Popover" pagina=TipoDeAyudaPopover
@@ -80,6 +84,36 @@ Formulario Solicitud {
 		
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
+    }
+    
+    Popup PruebaBigPopUp campo=Solicitud titulo="eeee" maximizar {
+    	Texto campo=Solicitud.bigPopUp.prueba1 titulo="Prueba1" 
+    	Texto campo=Solicitud.bigPopUp.prueba2 titulo="Prueba2" ayuda="Ayuda" (popover)
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Tabla documentosExternos titulo="Documentos Externos" campo=Solicitud.bigPopUp.doc  {
+			Columna titulo="Id" campo=DocumentoExterno.id
+			Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
+			Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
+		}
+		Tabla documentos titulo="Documentos" campo=Solicitud.bigPopUp.doc2 {
+			Columna titulo="Id" campo=Documento.id
+			Columna titulo="Tipo Documento" campo=Documento.tipo
+			Columna titulo="Descripcion" campo=Documento.descripcionVisible expandir
+		}
+		Check campo=Solicitud.bigPopUp.prueba5 titulo="Prueba5"
+		Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
     }
 		
 	Pagina Fechas campo=Solicitud{

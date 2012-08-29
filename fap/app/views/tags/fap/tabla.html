@@ -718,52 +718,37 @@
 			};
 
 		   	$('#${id}').data('grid', grid);
-		   	
+
+		});
+		
+		Ext.onReady(function() {
+			var tableName = ${id};
+			var ancho = document.body.clientWidth;
+			if (ancho < 850) {
+				// Ocultamos el campo de búsqueda
+				var campoBusqueda = tableName.getElementsByClassName('x-field x-form-item x-field-default-toolbar x-box-item x-toolbar-item')[0].id;
+				$("#"+campoBusqueda).hide();
 				
-		   	Ext.onReady(function() {
-		   		var gridLength = 0;
-		   		var countBtn = 0;
-				var count = 0;
-		   		while (gridLength < document.getElementsByClassName('x-panel x-grid x-panel-default').length) {
-		   			var idTabla = document.getElementsByClassName('x-panel x-grid x-panel-default')[gridLength].id;
-			   		var anchoTabla = parseInt(document.getElementById(idTabla).style.width);
-					var idCampoBuscar = document.getElementsByClassName('x-field x-form-item x-field-default-toolbar x-box-item x-toolbar-item')[gridLength].id;
-					
-					var idBtn = "";
-					if (anchoTabla < 635) {
-						$("#"+idCampoBuscar).hide();
-						#{if seleccionable}
-							idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item')[count].id;
-							count++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-				        #{/if}
-						#{if botonCrear }
-				            idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item')[count].id;
-							count++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-				        #{/if}
-				        #{if urlEditar}
-					        idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item')[countBtn].id;
-							countBtn++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-					    #{/if} 
-				        #{if urlBorrar}
-					       	idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item')[countBtn].id;
-							countBtn++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-					    #{/if}
-				        #{if urlLeer}
-					      	idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item')[countBtn].id;
-							countBtn++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-					    #{/if}
-			        	idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item')[count].id;
-				    	document.getElementById(idBtn).style.marginLeft = "-300px";
-				    	count++;
-					}
-					gridLength++;
+				// Hay dos clases de botones. Obtenemos los botones agrupados por
+				// clases y los rodamos todos a la izquierda.
+				
+				var botonesTipoA = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item');
+				var i = 0;
+				var idBtn = "";
+				while (i < botonesTipoA.length) {
+					idBtn = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item')[i].id;
+					document.getElementById(idBtn).style.marginLeft = "-300px";
+					i++;
 				}
-			});
+				var botonesTipoB = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item');
+				var j = 0;
+				idBtn = "";
+				while (j < botonesTipoB.length) {
+					idBtn = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item')[j].id;
+					document.getElementById(idBtn).style.marginLeft = "-300px";
+					j++;
+				}
+			}
 		});
 </script>
 	

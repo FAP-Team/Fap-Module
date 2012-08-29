@@ -21,6 +21,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	
 	OneToMany MiConcepto misConceptos
 	ConceptosMios conceptos
+	
+	BigPopUpPrueba bigPopUp
 }
 
 Entidad ConceptosMios {
@@ -155,4 +157,14 @@ Entidad MiConcepto {
 	Integer unInteger
 	Double unDouble
 	Moneda unaMoneda
+}
+
+Entidad BigPopUpPrueba {
+	String prueba1
+	String prueba2
+	String prueba3
+	String prueba4
+	OneToMany DocumentoExterno doc
+	OneToMany Documento doc2
+	boolean prueba5
 }

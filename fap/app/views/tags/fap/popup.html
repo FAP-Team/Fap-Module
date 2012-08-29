@@ -4,6 +4,7 @@
 	play.mvc.Router.ActionDefinition urlCrear = com.google.common.base.Preconditions.checkNotNull(_urlCrear, "urlCrear");
 	play.mvc.Router.ActionDefinition urlBorrar = com.google.common.base.Preconditions.checkNotNull(_urlBorrar, "urlBorrar");
 	String titulo = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
+	boolean maximizar = _maximizar? true : false;
 	
 	play.mvc.Router.ActionDefinition url;
 	if (accion == "editar")
@@ -100,6 +101,19 @@ $(document).ready(function(){
   	popupTitle(idPopup, "${titulo}");
 
 
+});
+Ext.onReady(function() {
+
+	if (${maximizar})
+		$('.modal-header').parent().addClass("max");
+
+	var ancho = document.body.clientWidth;
+	
+	if (ancho < 850) {
+		// No va a haber a la vez dos popups
+		var modalId = document.getElementsByClassName('modal hide fade in max')[0].id
+		$('#' + modalId).css('margin', '-45% -20% auto');
+	}
 });
 </script>
 

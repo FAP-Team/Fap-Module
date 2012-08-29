@@ -3320,6 +3320,17 @@ input[type="submit"].btn.btn-mini {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
 }
+.modal.max {
+  position: absolute;
+  margin: -250px auto auto -280px;
+  left: 25%;
+  width: 90%;	// Aumentamos el tamaño: por defecto es 560px
+  heigth: 80%;
+}
+.modal.max .modal-body {
+	overflow-y: visible;
+	max-height: none;
+}
 .modal.fade {
   -webkit-transition: opacity .3s linear, top .3s ease-out;
   -moz-transition: opacity .3s linear, top .3s ease-out;

@@ -67,12 +67,17 @@ public class TipoCriterio extends FapModel {
 
 	public void init() {
 
-		esNuevo = false;
+		if (esNuevo == null)
+			esNuevo = false;
 
 		if (listaValores == null)
 			listaValores = new ArrayList<CriterioListaValores>();
-		comentariosAdministracion = false;
-		comentariosSolicitante = false;
+
+		if (comentariosAdministracion == null)
+			comentariosAdministracion = false;
+
+		if (comentariosSolicitante == null)
+			comentariosSolicitante = false;
 
 		postInit();
 	}

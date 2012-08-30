@@ -406,25 +406,55 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 				/** Valores por defecto para los tipos simples */
 				if (attribute?.type?.simple != null) { 
 					tipo = attribute?.type?.simple?.type;
+					if (!tipo.equals("boolean") && !defaultValue(attribute.defaultValue, tipo, attribute.name).isEmpty()){
+						refInit += """
+							if (${attribute.name} == null)
+						""";
+					}
 					refInit += defaultValue(attribute.defaultValue, tipo, attribute.name);
 					
 				} else if (attribute?.type?.special != null) {
 					/** Valores por defecto para tipos especiales */
 					tipo = attribute?.type?.special?.type;
 					if (tipo.equals("Telefono")) {
+						if (!defaultValue(attribute.defaultValue, "String", attribute.name).isEmpty()){
+							refInit += """
+								if (${attribute.name} == null)
+							""";
+						}
 						refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
 					} else if (tipo.equals("Email")) {
-						if (isValidEmailAddress((String)attribute.defaultValue))
+						if (isValidEmailAddress((String)attribute.defaultValue)){
+							if (!defaultValue(attribute.defaultValue, "String", attribute.name).isEmpty()){
+								refInit += """
+									if (${attribute.name} == null)
+								""";
+							}
 							refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
-						else
+						} else
 							println """WARNING: "${attribute.defaultValue}" no es una dirección email válida para ${entity.name}.${attribute.name}""";
 					} else if (tipo.equals("Cif")) {
 						// TODO: Validar el CIF
+						if (!defaultValue(attribute.defaultValue, "String", attribute.name).isEmpty()){
+							refInit += """
+								if (${attribute.name} == null)
+							""";
+						}
 						refInit += defaultValue(attribute.defaultValue, "String", attribute.name);
 					} else if (tipo.equals("Moneda")) {
+						if (!defaultValue(attribute.defaultValue, "Double", attribute.name).isEmpty()){
+							refInit += """
+								if (${attribute.name} == null)
+							""";
+						}
 						refInit += defaultValue(attribute.defaultValue, "Double", attribute.name);
 					}  else if (tipo.equals("DateTime")) {
 						// TODO: Validar el DateTime
+						if (!defaultValue(attribute.defaultValue, tipo, attribute.name).isEmpty()){
+							refInit += """
+								if (${attribute.name} == null)
+							""";
+						}
 						refInit += defaultValue(attribute.defaultValue, tipo, attribute.name);
 					}
 				} else {
@@ -433,7 +463,9 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 						String tabla = attribute?.type?.compound?.lista.name;
 						String value = attribute.defaultValue;
 						// Error al iniciar por primera vez la app -> refInit += """if (TableKeyValue.contains("${tabla}", "${value}"))""";
-						refInit +=  """	${attribute.name} = "${value}";""";
+						refInit +=  """	if (${attribute.name} == null)
+											${attribute.name} = "${value}";
+							""";
 					} else {
 						println "WARNING: Valor por defecto no permitido en este tipo";
 					}

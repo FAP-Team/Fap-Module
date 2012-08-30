@@ -26,9 +26,27 @@
 		
 			#{/fap.grupo}
 			
+			#{fap.grupo titulo:'Firma Requerida a Funcionario Habilitado', mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'habilitarFHPresentacion'}
+				
+				#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.formHabilitarFH' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"formHabilitarFH"}
+				
+					#{fap.boton id:'btnHabilitarFH', titulo:'Habilitar a los Funcionarios para firmar en mi nombre' /}
+	
+				#{/form}
+				
+				#{fap.grupo borde:false, mostrarSi:registro.habilitaFuncionario==true}
+				
+					<div class="wiki ">
+						<p>Ya ha sido requerida la firma por un Funcionario habilitado, en breve un funcionario lo firmará y registrará.</p>
+					</div>
+		
+				#{/fap.grupo}
+					
+			#{/fap.grupo}
+			
 			#{fap.grupo borde:false, mostrarSi:registro.habilitaFuncionario==true}
 		
-				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.presentacion.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarSolicitudFH', titulo:'Paso 1. Firmar y Registrar la solicitud'}
+				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarSolicitudFH', titulo:'Paso 1. Firmar y Registrar la solicitud por Funcionario Habilitado'}
 					
 					#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.formFirmaFH' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"formFirmaFH"}
 					

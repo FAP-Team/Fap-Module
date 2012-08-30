@@ -258,7 +258,7 @@ Entidad Registro {
 	Firmantes firmantes
 	
 	//Si habilita a firmar a un Funcionario Habilitado
-	Boolean habilitaFuncionario
+	Boolean habilitaFuncionario default="false"
 }
 
 Entidad Firmantes {
@@ -326,7 +326,9 @@ Entidad Aportacion {
 	InformacionRegistro informacionRegistro
 	/* Cuando aportamos sin registro, se establece ésta fecha */
 	DateTime fechaAportacionSinRegistro
-	Boolean habilitaFuncionario
+
+	Boolean habilitaFuncionario default="false"
+
 	Documento borrador
 	Documento oficial
 	Documento justificante

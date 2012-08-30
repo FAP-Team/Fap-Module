@@ -68,9 +68,7 @@ h2. Properties originarias de FAP
 ** Ejemplo: _fap.delete.temporals.every=5_ (Valor por defecto que trae el módulo FAP)
 * Validación y guardado de la pagina antes de abrir la página de una tabla *fap.tablas.validacion.antesRedirigirPaginas*= _[true | false]_
 ** Ejemplo: _fap.tablas.validacion.antesRedirigirPaginas=true_ (Valor por defecto que trae el módulo FAP, a partir de la versión 2.1, antes _false_)
-* Permitir en la Presentación que un Funcionario Habilitado firme. *fap.presentacion.firmaYRegistro.funcionarioHabilitado*= _[true | false]_
-** Ejemplo: _fap.presentacion.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el mñodulo FAP)
-* Permitir en la Aportación que un Funcionario Habilitado firme. *fap.aportacion.firmaYRegistro.funcionarioHabilitado*= _[true | false]_
-** Ejemplo: _fap.aportacion.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el mñodulo FAP)
+* Permitir que un Funcionario Habilitado firme. *fap.firmaYRegistro.funcionarioHabilitado*= _[true | false]_
+** Ejemplo: _fap.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el mñodulo FAP)
 * Configurar que las entidades se guarden nada mas invocarlas con el Nuevo de las tablas. *fap.entidades.guardar.antes*= _[true | false]_
 ** Ejemplo: _fap.entidades.guardar.antes=false_ (Valor por defecto que trae el mñodulo FAP)

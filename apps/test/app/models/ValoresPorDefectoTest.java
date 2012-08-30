@@ -78,22 +78,43 @@ public class ValoresPorDefectoTest extends FapModel {
 
 	public void init() {
 
-		mString = "string";
-		mLong = 2L;
-		mInteger = 4;
-		mBoolean = true;
+		if (mString == null)
+			mString = "string";
+
+		if (mLong == null)
+			mLong = 2L;
+
+		if (mInteger == null)
+			mInteger = 4;
+
+		if (mBoolean == null)
+			mBoolean = true;
 		otrobooleanNuevo = true;
-		mDouble = 2.345;
-		mLongText = "texto largooooo largiiisimo";
-		mTelefono = "900 120 120";
-		mEmail = "asas@pepe.com";
-		mCif = "A58818501";
-		mMoneda = 2.1;
-		try {
-			mDateTime = new DateTime((new SimpleDateFormat("dd/MM/yyyy")).parse("12/12/2010"));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+
+		if (mDouble == null)
+			mDouble = 2.345;
+
+		if (mLongText == null)
+			mLongText = "texto largooooo largiiisimo";
+
+		if (mTelefono == null)
+			mTelefono = "900 120 120";
+
+		if (mEmail == null)
+			mEmail = "asas@pepe.com";
+
+		if (mCif == null)
+			mCif = "A58818501";
+
+		if (mMoneda == null)
+			mMoneda = 2.1;
+
+		if (mDateTime == null)
+			try {
+				mDateTime = new DateTime((new SimpleDateFormat("dd/MM/yyyy")).parse("12/12/2010"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 
 		if (mEmbebida == null)
 			mEmbebida = new Embebida();

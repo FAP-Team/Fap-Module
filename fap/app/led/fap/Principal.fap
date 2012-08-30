@@ -4,6 +4,7 @@ Formulario Principal {
 		Enlace "Administración" permiso=administrador pagina=Usuarios
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
 		Enlace "Verificaciones sin Finalizar" permiso=adminOrGestor pagina=VerificacionesSinFinalizar
+		Enlace "Firmas Pendientes de FH" pagina=FirmasPendientesFH permiso=esFuncionarioHabilitadoYActivadaProperty
 		Enlace "Seguimiento" permiso=adminGestorRevisor pagina=Seguimiento
 		Enlace "Mis Notificaciones" pagina=Notificaciones
 		Enlace "Cambiar contraseña" permiso=loginTipoUser pagina=CambiarPass 
@@ -97,4 +98,30 @@ Formulario Principal {
 		}
 	}
 	
+	Pagina FirmasPendientesFH titulo = "Firmas Pendientes de Funcionarios Habilitados" permiso=esFuncionarioHabilitadoYActivadaProperty{
+		
+		Grupo glistaPresentacionPendientesFH titulo="Presentaciones que han requerido la Firma de un Funcionario y están pendientes"{
+			Tabla listaPresentacionesPendientesFH titulo="Presentaciones Pendientes de Firmar" campo=SolicitudGenerica paginaEditar=IrPresentacionPendienteFH{
+				Columna campo=SolicitudGenerica.id titulo="ID Solicitud" ancho="80"
+	            Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente Solicitud" ancho="120"
+	            Columna campo=SolicitudGenerica.estado titulo="Estado Solicitud" ancho="120"
+	            Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" ancho="100"
+	            Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir  
+			}
+		}
+		
+		Grupo glistaAportacionesPendientesFH titulo="Aportaciones que han requerido la Firma de un Funcionario y están pendientes"{
+			Tabla listaAportacionesPendientesFH titulo="Aportaciones Pendientes de Firmar" campo=SolicitudGenerica paginaEditar=IrAportacionPendienteFH{
+				Columna campo=SolicitudGenerica.id titulo="ID Solicitud" ancho="80"
+	            Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente Solicitud" ancho="120"
+	            Columna campo=SolicitudGenerica.estado titulo="Estado Solicitud" ancho="120"
+	            Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" ancho="100"
+	            Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir  
+			}
+		}
+	}
+	
+	Pagina IrPresentacionPendienteFH titulo="Ir a presentar Funcionario Habilitado" campo=SolicitudGenerica permiso=esFuncionarioHabilitadoYActivadaProperty{}
+	
+	Pagina IrAportacionPendienteFH titulo="Ir a presentar Funcionario Habilitado" campo=SolicitudGenerica permiso=esFuncionarioHabilitadoYActivadaProperty{}
 }

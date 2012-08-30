@@ -15,6 +15,13 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 				Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
 			}
 		}
+		
+		Grupo titulo="Plantilla a rellenar para habilitar a firmar a un Funcionario" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")"{
+			Wiki{"Para habilitar la firma a un Funcionario habilitado, deberá abrir la plantilla siguiente. Descárguese y rellene dicha plantilla y adjuntela como documento."}
+			Form formAbrirPlantillaFH destino="_blank"{
+				Boton btnAbrirPlantillaFH titulo="Abrir Plantilla"
+			}
+		}
 	}
 	
 	
@@ -95,9 +102,6 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Grupo titulo="Paso 1b. Registrar los documentos"{
 			Form presentar redirigir=AportacionPresentar permiso=aportacionDocumentos {
 				Wiki {"Debe registrar los documentos para que se consideren aportados a la solicitud."}
-				Grupo borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.aportacion.firmaYRegistro.funcionarioHabilitado\")"{
-					Check campo=SolicitudGenerica.aportaciones.actual.habilitaFuncionario titulo="Habilitar a los Funcionarios para firmar en mi nombre" alineadoAIzquierdas
-				}
 				Boton botonPresentar titulo="Preparar para registrar"
 			}
 		}
@@ -160,7 +164,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	}
 		
 	// Sobreescrita
-	Pagina AportacionPresentar titulo="Presentar la Aportación"{
+	Pagina AportacionPresentar titulo="Presentar la Aportación" noForm{
 	  	Grupo titulo="Presentar Aportación de Documentos" {
 			Wiki {"Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
 
@@ -190,9 +194,19 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			}
 			
 			// Sobreescrito HTML
+			
+			Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHAportacion{
+				Form formHabilitarFH {
+					Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
+				}
+				Grupo borde=false mostrarSiCampo SolicitudGenerica.registro.habilitaFuncionario="true"{
+					Wiki{"Ya ha sido habilitada la opción de que un funcionario habilitado firmar y registrar."}
+				}
+			}
+			
 			//Firma Funcionario Habilitado
 			Grupo borde=false mostrarSiCampo SolicitudGenerica.aportaciones.actual.habilitaFuncionario="true"{
-				Grupo titulo="Paso 2. Presentar los Documentos por Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.aportacion.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarSolicitudFH
+				Grupo titulo="Paso 2. Presentar los Documentos por Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarAportacionFH
 				{
 					Wiki{"**NOTA: Debe finalizar el Paso 2 pulsando en el botón 'Firmar y presentar' para que los Nuevos Documentos se consideren presentados. Cuando el proceso finalice los documentos nuevos desaparecerán del Paso 1 y se incorporarán a la lista de Documentos Presentados.**"}
 					Wiki{"La solicitud será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud una vez 'Firmar y Presentar' se haya realizado con éxito"}
@@ -928,9 +942,6 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
 				Form frmPresentar redirigir=SolicitudPresentarFAP permiso=enBorradorSolicitud {
 					Wiki {"Debe registrar la solicitud para que se considere presentada."}
-					Grupo borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.presentacion.firmaYRegistro.funcionarioHabilitado\")"{
-						Check campo=Registro.habilitaFuncionario titulo="Habilitar a los Funcionarios para firmar en mi nombre" alineadoAIzquierdas
-					}
 					Boton botonPresentar titulo="Presentar solicitud"
 				}
 			}
@@ -949,6 +960,15 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		Grupo mensajeIntermedio permiso=mensajeIntermedioSolicitud borde=false {
 			Wiki estilo ="box-warn box" {
 				"Se produjo un error en la presentación de la solicitud. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+			}
+		}
+		
+		Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHPresentacion{
+			Form formHabilitarFH {
+				Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
+			}
+			Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
+				Wiki{"Ya ha sido requerida la firma por un Funcionario habilitado, en breve un funcionario lo firmará y registrará."}
 			}
 		}
 		

@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<link rel="stylesheet" media="print" href="@{'/public/stylesheets/solicitudPDF.css'}">
+	</head>
+	
+	<body>
+
+		<!-- TITULO -->
+		%{
+			def cabecera = 'DOCUMENTO AUTORIZACIÓN FUNCIONARIO HABILITADO';
+			def titulo = 'Autorización por parte del Solicitante a que un Funcionario Habilitado firme y registre en su nombre.';
+		}%
+		
+		<div id="divTitulo2">
+			<h2 style="text-align: center;">${cabecera}</h2>
+			<h3 style="text-align: center;">${titulo}</h3>
+		</div>
+		
+		<!-- SOLICITANTE -->
+		%{
+			def ttlSolte='DATOS PERSONALES DEL SOLICITANTE';
+			def solte = solicitud.solicitante;
+		}%
+		#{reports.tagSolicitante ttl:ttlSolte, slt:solte/}
+		
+		<p>Expone que: </p>
+		
+		</br>
+		</br>
+		</br>
+		</br>
+		</br>
+		</br>
+		</br>
+		</br>
+		</br>
+		</br>
+		</br>
+		
+		<p>Y para que así conste, firmo la presente a</p>
+
+	</body>
+	
+</html>

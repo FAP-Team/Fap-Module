@@ -62,6 +62,9 @@ public class Aportacion extends FapModel {
 		else
 			informacionRegistro.init();
 
+		if (habilitaFuncionario == null)
+			habilitaFuncionario = false;
+
 		if (borrador == null)
 			borrador = new Documento();
 		else

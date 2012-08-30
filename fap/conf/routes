@@ -121,6 +121,7 @@ GET /Solicitud/documentacionfap DocumentacionFAPController.index
 POST /Solicitud/documentacionfap/beforeOpenPageTable DocumentacionFAPController.beforeOpenPageTable
 GET /Solicitud/documentacionfap/documentos DocumentacionFAPController.tabladocumentos
 GET /Solicitud/documentacionfap/documentosExternos DocumentacionFAPController.tabladocumentosExternos
+POST /Solicitud/documentacionfap/formAbrirPlantillaFH DocumentacionFAPController.formAbrirPlantillaFH
 GET /Solicitud/documentosfap DocumentosFAPController.index
 POST /Solicitud/documentosfap DocumentosFAPController.index
 POST /Solicitud/documentosfap/editar DocumentosFAPController.editar
@@ -254,6 +255,7 @@ POST /Solicitud/presentarfap/prepararFirmar PresentarFAPController.prepararFirma
 POST /Solicitud/presentarfap/deshacer PresentarFAPController.deshacer
 POST /Solicitud/presentarfap/frmPresentar PresentarFAPController.frmPresentar
 GET /Solicitud/solicitudpresentarfap SolicitudPresentarFAPController.index
+POST /Solicitud/solicitudpresentarfap/formHabilitarFH SolicitudPresentarFAPController.formHabilitarFH
 POST /Solicitud/solicitudpresentarfap/formFirmaFH SolicitudPresentarFAPController.formFirmaFH
 GET /Solicitud/solicitudpresentarfap/firmarRegistrarFHFirmantes SolicitudPresentarFAPController.tablafirmarRegistrarFHFirmantes
 POST /Solicitud/solicitudpresentarfap/formFirmaPF SolicitudPresentarFAPController.formFirmaPF

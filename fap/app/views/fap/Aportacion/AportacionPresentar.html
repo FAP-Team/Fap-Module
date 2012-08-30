@@ -73,10 +73,28 @@
 			</div>
 		
 			#{/fap.grupo}
+			
+			#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'habilitarFHAportacion', titulo:'Firma Requerida a Funcionario Habilitado'}
+				
+				#{form play.mvc.Router.reverse('AportacionPresentarController.formHabilitarFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formHabilitarFH"}
+					
+					#{fap.boton id:'btnHabilitarFH', titulo:'Habilitar a los Funcionarios para firmar en mi nombre' /}
+		
+				#{/form}
+			
+				#{fap.grupo borde:false, mostrarSi:solicitud.aportaciones.actual.habilitaFuncionario==true}
+				
+					<div class="wiki ">
+						<p>Ya ha sido habilitada la opción de que un funcionario habilitado pueda firmar y registrar.</p>
+					</div>
+		
+				#{/fap.grupo}
+		
+			#{/fap.grupo}
 
 			#{fap.grupo borde:false, mostrarSi:solicitud.aportaciones.actual.habilitaFuncionario==true}
 
-				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.aportacion.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarSolicitudFH', titulo:'Paso 2. Presentar los Documentos por Funcionario Habilitado'}
+				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarAportacionFH', titulo:'Paso 2. Presentar los Documentos por Funcionario Habilitado'}
 				
 					<div class="wiki ">
 						<p><b>NOTA: Debe finalizar el Paso 2 pulsando en el botón &#8216;Firmar y presentar&#8217; para que los Nuevos Documentos se consideren presentados. Cuando el proceso finalice los documentos nuevos desaparecerán del Paso 1 y se incorporarán a la lista de Documentos Presentados.</b></p>

@@ -75,6 +75,9 @@ public class Solicitud extends SolicitudGenerica {
 	public ConceptosMios conceptos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public BigPopUpPrueba bigPopUp;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
 
 	public Solicitud() {
@@ -151,6 +154,11 @@ public class Solicitud extends SolicitudGenerica {
 			conceptos = new ConceptosMios();
 		else
 			conceptos.init();
+
+		if (bigPopUp == null)
+			bigPopUp = new BigPopUpPrueba();
+		else
+			bigPopUp.init();
 
 		if (savePages == null)
 			savePages = new SavePages();

@@ -48,8 +48,12 @@ public class CEconomicosManuales extends FapModel {
 
 		if (valores == null)
 			valores = new ArrayList<ValoresCEconomico>();
-		comentariosAdministracion = "true";
-		comentariosSolicitante = "true";
+
+		if (comentariosAdministracion == null)
+			comentariosAdministracion = "true";
+
+		if (comentariosSolicitante == null)
+			comentariosSolicitante = "true";
 
 		postInit();
 	}

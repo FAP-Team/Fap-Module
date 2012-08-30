@@ -1,0 +1,44 @@
+<!-- //////////////////////////////////////////////////////////////////////////////// -->
+<!-- SOLICITANTE-->
+<!-- //////////////////////////////////////////////////////////////////////////////// -->
+	%{
+		def desMunicipio = models.TableKeyValue.getValue("municipios", _slt.domicilio.municipio);
+	}%
+
+<div id="divDatosPersonalesSolicitante">
+<table id="seccionSolicitante" class="table-seccion">
+	<caption>${_ttl}:</caption>
+</table>
+<br/>
+<table id="tblDatosPersonalesSolicitante" class="table-datos">
+	<tr><td colspan="2"><em><b>Datos personales:</b></em></td></tr>
+	<tr><th>NIF/NIE: *</th><td>${_slt.getNumeroId()?.toUpperCase()}</td></tr>
+	<tr><th>Nombre: *</th><td>${_slt.getNombreCompleto()?.toUpperCase()}</td></tr>
+</table>
+</div>
+
+<br/>
+
+<div id="divDatosDireccionSolicitante">
+
+<table id="tblDatosDireccionSolicitante" class="table-datos" >
+	<tr><td colspan="2"><em><b>Domicilio:</b></em></td></tr>
+	<tr><th>Calle: *</th><td>${_slt.domicilio.calle?.toUpperCase()}</td></tr>
+	<tr><th>Número: *</th><td>${_slt.domicilio.numero}</td></tr>
+	<tr><th>Puerta/Piso/Otros:</th><td>${_slt.domicilio.otros?.toUpperCase()}</td></tr>
+	<tr><th>Código Postal: *</th><td>${_slt.domicilio.codigoPostal}</td></tr>
+</table>
+</div>
+<br/>
+
+<div id="divDatosContacto">
+<table id="tblDatosContactos" class="table-datos">
+	<tr><td colspan="2"><em><b>Datos contacto:</b></em></td></tr>
+	<tr><th>Teléfono: </th><td>${_slt.telefonoFijo}</td></tr>
+	<tr><th>Móvil: *</th><td>${_slt.telefonoMovil}</td></tr>
+	<tr><th>Correo electrónico: *</th><td>${_slt.email}</td></tr>
+</table>
+</div>
+<br/>
+
+<br/>

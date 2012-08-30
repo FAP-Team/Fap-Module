@@ -1025,19 +1025,66 @@ return
 	all
 }
 
-// 	Permite firmar a yun funcionario habilitado
+// 	Permite firmar a un funcionario habilitado
 
 Permiso firmarRegistrarSolicitudFH{
-vars
-	SolicitudGenerica solicitud
-when
-	((_accion = leer) or
-	(solicitud.registro.fasesRegistro.clasificarAed="false"))
-	and
-	(agente.funcionario="true")
-return
-	all
+	vars
+		SolicitudGenerica solicitud
+	when
+		((_accion = leer) or
+		(solicitud.registro.fasesRegistro.clasificarAed="false"))
+		and
+		(agente.funcionario="true")
+	return
+		all
 }
+
+Permiso firmarRegistrarAportacionFH{
+	vars
+		SolicitudGenerica solicitud
+	when
+		((_accion = leer) or
+		(solicitud.aportaciones.actual.estado!="finalizada"))
+		and
+		(agente.funcionario="true")
+	return
+		all
+}
+
+// Sobreescrito
+Permiso esFuncionarioHabilitadoYActivadaProperty{
+	when
+		(agente.funcionario="true") 
+	return
+		all
+}
+
+Permiso habilitarFHPresentacion{
+	vars
+		SolicitudGenerica solicitud
+	when
+		(solicitud.registro.habilitaFuncionario="true")
+	return
+		visible
+	when
+		(solicitud.registro.habilitaFuncionario=null) or (solicitud.registro.habilitaFuncionario="false")
+	return
+		all
+}
+
+Permiso habilitarFHAportacion{
+	vars
+		SolicitudGenerica solicitud
+	when
+		(solicitud.aportaciones.actual.habilitaFuncionario="true")
+	return
+		visible
+	when
+		(solicitud.aportaciones.actual.habilitaFuncionario=null) or (solicitud.aportaciones.actual.habilitaFuncionario="false")
+	return
+		all
+}
+
 
 /*
  * Permiso “firmarSolicitud�?

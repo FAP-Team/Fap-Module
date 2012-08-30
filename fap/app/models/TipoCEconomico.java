@@ -47,9 +47,14 @@ public class TipoCEconomico extends FapModel {
 
 	public void init() {
 
-		comentariosAdministracion = false;
-		comentariosSolicitante = false;
-		tipoOtro = false;
+		if (comentariosAdministracion == null)
+			comentariosAdministracion = false;
+
+		if (comentariosSolicitante == null)
+			comentariosSolicitante = false;
+
+		if (tipoOtro == null)
+			tipoOtro = false;
 
 		postInit();
 	}

@@ -14,7 +14,7 @@ MODULE = 'fap'
 
 # Commands that are specific to your module
 
-COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist', 'fap:winservice', "fap:copyplatinoconf"]
+COMMANDS = ['fap:hello', 'fap:generate', 'fap:init', 'fap:version', 'fap:documentation', 'fap:dist', 'fap:winservice', "fap:copyplatinoconf", 'fap:javadoc']
 # Eliminamos el comando 'fap:model' de la lista de comandos
 
 def execute(**kargs):
@@ -52,6 +52,9 @@ def execute(**kargs):
     
     if command == "fap:copyplatinoconf":
         copyplatinoconf(app, args)
+        
+    if command == "fap:javadoc":
+        run_javadoc(app, args, env)
 
 def version (app, args):
     depsYaml = os.path.join(getModuleDir(app, args), 'conf/dependencies.yml')
@@ -535,3 +538,45 @@ def append_content(src, dst):
         to_f = open(dst, 'a')
         to_f.write(from_content)
         to_f.close() 
+
+def run_javadoc(app, args, play_env):
+    app.check()
+    modules = app.modules()
+    if not os.environ.has_key('JAVA_HOME'):
+        javadoc_path = "javadoc"
+    else:
+        javadoc_path = os.path.normpath("%s/bin/javadoc" % os.environ['JAVA_HOME'])
+
+    fileList = []
+    def add_java_files(path):
+        for root, subFolders, files in os.walk(path):    
+            for file in files:
+                 if file.endswith(".java"):
+                       fileList.append(os.path.join(root, file))
+    def add_java_filesdebug(path):
+        for root, subFolders, files in os.walk(path):
+            deEste = False    
+            for file in files:
+                 if file.endswith(".java"):
+                     deEste = True
+            if (deEste):
+                fileList.append(os.path.join(root, "*.java"))
+
+    # Como se ejecuta en la aplicación de test, colocamos el javadoc
+    # que se crea en el directorio de FAP.
+    fapPath = app.path.replace("apps\\test", "fap")
+    outdir = os.path.join(fapPath, 'javadoc')
+    sout = open(os.path.join(app.log_path(), 'javadoc.log'), 'w')
+    serr = open(os.path.join(app.log_path(), 'javadoc.err'), 'w')
+    if (os.path.isdir(outdir)):
+        shutil.rmtree(outdir)
+    # Solo incluímos el módulo de fap.
+    for module in modules:
+        if (re.match(".*fap$", module)):
+            add_java_filesdebug(os.path.normpath(os.path.join(module, "app")))
+            add_java_filesdebug(os.path.normpath(os.path.join(module, "src")))
+
+    javadoc_cmd = [javadoc_path, '-classpath', app.cp_args(), '-d', outdir] + args + fileList
+    print "Generating Javadoc in " + outdir + "..."
+    subprocess.call(javadoc_cmd, env=os.environ, stdout=sout, stderr=serr)
+    print "Done! You can open " + os.path.join(outdir, 'overview-tree.html') + " in your browser."

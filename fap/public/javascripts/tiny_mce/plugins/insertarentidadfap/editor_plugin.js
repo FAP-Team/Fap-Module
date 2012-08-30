@@ -39,7 +39,7 @@
 			ed.addButton('insertarentidadfap', {
 				title : "Insertar entidad FAP",
 				cmd : 'mceInsertarEntidadFAP',
-				image : url + '/img/fap_editor_icono.jpg'
+				image : url + '/img/entidadfap_editor_icono.png'
 			});
 
 			// Add a node change handler, selects the button in the UI when a image is selected

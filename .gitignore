@@ -113,3 +113,7 @@ apps/test/gestorDocumental/clasificado/*
 fap/app/listas/initial-data/*.yml
 apps/test/app/listas/initial-data/*.yml
 
+# Ficheros temporal del gedit/vim
+*~
+*.swp
+*.swo

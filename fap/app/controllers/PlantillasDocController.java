@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -111,9 +112,8 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en TextEditor.html
 	 */
-	public static void getContenidoPlantilla(String idPlantilla) {
-		idPlantilla = "13";
-		PlantillaDocumento plantilla = PlantillaDocumento.findById(Long.valueOf(idPlantilla));
+	public static void getContenidoPlantilla(Long idPlantilla) {
+		PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
 		renderText(plantilla.plantilla);
 	}
 	
@@ -142,13 +142,39 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	}
 	
 	/*
+	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en template.js (plugin 'headerfooter' del TinyMCE).
+	 * 
+	 * Para guardar la cabecera y el pie de la plantilla actual del editor.
+	 */
+	public static void guardarHeaderFooter(Long idHeader, Long idFooter, Long idPlantilla) {
+		PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
+		plantilla.idHeader = idHeader;
+		plantilla.idFooter = idFooter;
+		plantilla.save();
+		ok();
+	}
+	
+	/*
+	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en template.js (plugin 'headerfooter' del TinyMCE).
+	 * 
+	 * Retorna los ids de la cabecera y el pie de la plantilla con idPlantilla.
+	 */
+	public static void getHeaderFooter(Long idPlantilla) {
+		PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
+		String headerFooter = "[{ \"idHeader\" : \"" + plantilla.idHeader + "\", " +
+								 "\"idFooter\" : \"" + plantilla.idFooter + "\"}]";
+		renderJSON(headerFooter);
+	}
+	
+	
+	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en dialog.js (plugin 'eliminarplantilla' del TinyMCE).
 	 */
-	public static void eliminarPlantilla(String idPlantilla) {	
+	public static void eliminarPlantilla(Long idPlantilla) {	
 		if (idPlantilla == null)
 			error();
 		
-		PlantillaDocumento plantilla = PlantillaDocumento.findById(Long.valueOf(idPlantilla));
+		PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
 		String nombrePlantilla = plantilla.nombrePlantilla;
 		plantilla.delete();
 		play.Logger.info("El usuario <" + AgenteController.getAgente().username + "> ha eliminado la plantilla con id=" + idPlantilla + ": " + nombrePlantilla);
@@ -208,6 +234,10 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	private static String generarPlantilla(String contenido) {
 		String nombreFichero = "tmp_" + Codec.UUID().substring(0, FILENAME_SIZE);
 		String rutaMasNombreFicheroTemporal = null;
+		
+		// Quitamos las imágenes que respresentan en la plantilla al salto de línea
+		// FIXME: arreglar esta chapuza de sustitución (reemplazamos la imagen de pagebreak por un pixel transparente). 
+		contenido = contenido.replaceAll("pagebreak.png", "pixel_transparente.png");
 		try {
 			BufferedReader reader = null;
 			// XXX: Revisar ruta
@@ -218,12 +248,29 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 			rutaMasNombreFicheroTemporal = FapProperties.get("fap.path.editor.tmp") + "/" + nombreFichero + ".html";
 			PrintWriter writer = new PrintWriter(new FileWriter(rutaMasNombreFicheroTemporal));
 			String line = null;
-			while ((line = reader.readLine()) != null) {
-				writer.println(line.replaceAll("&contenido&",contenido)); 
-			}
+			while ((line = reader.readLine()) != null)
+				writer.println(line.replaceAll("&contenido&",contenido));
 		    reader.close();
 		    writer.close();
-		} catch (Exception e1) { e1.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); }
+
+		return rutaMasNombreFicheroTemporal;
+	}
+	
+	/*
+	 * Genera la plantilla del header/footer
+	 * 
+	 * Retorna la ruta + nombre de la plantilla
+	 */
+	private static String generarHeaderFooter(String contenido) {
+		String nombreFichero = "tmp_" + Codec.UUID().substring(0, FILENAME_SIZE);
+		String rutaMasNombreFicheroTemporal = FapProperties.get("fap.path.editor.tmp") + "/" + nombreFichero + ".html";
+		try {
+		    BufferedWriter fichero = new BufferedWriter(new FileWriter(rutaMasNombreFicheroTemporal));
+			fichero.write(contenido);
+			fichero.close();
+		} catch (Exception e) { e.printStackTrace(); }	
+		
 		return rutaMasNombreFicheroTemporal;
 	}
 	
@@ -231,13 +278,38 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en el .init de TinyMCE (TextEditor.html)
 	 * Genera un pdf a partir del texto actual del editor.
 	 */
-	public static void html2pdf(String contenido) {	
+	public static void html2pdf(String contenido, Long idPlantilla) {	
 		if (contenido == null)
 			contenido = "";
+		
+		// Obtenemos el header y el footer
+		PlantillaDocumento plantilla;
+		String header = null, footer = null;
+		if (idPlantilla != null) {
+			plantilla = PlantillaDocumento.findById(idPlantilla);
+			if (plantilla.idHeader != null) {
+				PlantillaDocumento plantillaHeader = PlantillaDocumento.findById(plantilla.idHeader);
+				header = generarHeaderFooter(plantillaHeader.plantilla);
+				
+			}
+			if (plantilla.idFooter != null) {
+				PlantillaDocumento plantillaFooter = PlantillaDocumento.findById(plantilla.idFooter);
+				footer = generarHeaderFooter(plantillaFooter.plantilla);
+			}
+		}
+		
 		String rutaMasNombreFicheroTemporal = generarPlantilla(contenido);
 		File borrador = null;
+		
 		try {
-			borrador = new Report(rutaMasNombreFicheroTemporal).renderTmpFile();
+				if (header == null && footer == null)
+					borrador = new Report(rutaMasNombreFicheroTemporal).renderTmpFile();
+				else if (header != null && footer != null)
+					borrador = new Report(rutaMasNombreFicheroTemporal).header(header).footer(footer).renderTmpFile();
+				else if (header != null)
+					borrador = new Report(rutaMasNombreFicheroTemporal).header(header).renderTmpFile();
+				else	// footer != null
+					borrador = new Report(rutaMasNombreFicheroTemporal).footer(footer).renderTmpFile();
 		} catch (Exception e) { e.printStackTrace(); }
 		
 		// Copiamos el pdf de la carpeta temporal de la aplicación a /public/tmp

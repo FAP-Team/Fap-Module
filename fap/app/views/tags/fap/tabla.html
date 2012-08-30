@@ -71,6 +71,8 @@
 		saveBefore = false;
 	
 	def saveEntity = _saveEntity ?: false;
+	
+	def codePrint = _codePrint ?: "";
 %}
 
 	#{doBody /}
@@ -623,7 +625,14 @@
 			            boton_actualizar
         				]
     				}
-				]
+				],
+				viewConfig: {
+					getRowClass: function(record, index, rowParams, ds) {
+						console.log(this);
+						${codePrint.raw()}
+					}
+				}
+
 			});
 		   	
 

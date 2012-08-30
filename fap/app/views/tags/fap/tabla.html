@@ -53,6 +53,8 @@
 	
 	boolean botonCrear = urlCrear;
 	
+	def codePrint = _cpdePrint ?: "";
+	
 	if (_permisoCrear != null)
 		botonCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("$_permisoCrear", "crear", tags.TagMapStack.top("idParams"), null);
 	

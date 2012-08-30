@@ -153,7 +153,7 @@ public class GTabla extends GElement{
 			params.put("saveEntity", true);
 		else
 			params.put("saveEntity", false);
-			
+
 		String view = """
 #{fap.tabla ${params.lista(true)}
 }
@@ -262,8 +262,9 @@ public class GTabla extends GElement{
 			params.putStr("alignPosition", positionDefault);
 		}
 		
-		if (c.permiso != null)
-			params.putStr('permiso', c.permiso.name)	
+		if (c.permiso != null){
+			params.putStr('permiso', c.permiso.name)
+		}	
 
 		if(c.isExpandir())
 			params.put("expandir", "true")	

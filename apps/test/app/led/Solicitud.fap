@@ -74,7 +74,7 @@ Formulario Solicitud {
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
     }
-    
+
 	Pagina Fechas campo=Solicitud{
 		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" requerido
 		Fecha campo=Solicitud.fechas.fecha titulo="Fecha" requerido

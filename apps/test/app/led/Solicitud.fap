@@ -696,7 +696,9 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
 </tbody>
 </table>
 " }
-    	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos {
+    	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos 
+    	colorear = "Probando el codigo"
+    	{
     		Columna titulo="Entero" campo=MiConcepto.unInteger
     		Columna titulo="Double" campo=MiConcepto.unDouble
     		Columna titulo="Moneda" campo=MiConcepto.unaMoneda

@@ -396,6 +396,7 @@ Tabla:
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|IDS])?
 	   	& ('paginaEditar' '=' paginaEditar=[Pagina|IDS])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
+	   	& ('colorear' '=' colorear=STRING)?
 	)
 	'{'
 		columnas += Columna*

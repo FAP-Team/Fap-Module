@@ -81,7 +81,7 @@ import utils.JsonUtils;
 public class Start extends Job {
 	
 	public void doJob() {
-		
+
 		// Context Path, para el despliegue de varias aplicaciones en Apache y no tener el problema del Path
 		String ctxPath = FapProperties.get("fap.ctxPath");
 		if (ctxPath != null){
@@ -198,6 +198,11 @@ public class Start extends Job {
 		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();
+		
+		// Crear la carpeta public/tmp si no existe
+		try {
+			Runtime.getRuntime().exec("mkdir public/tmp");
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 
 	/**

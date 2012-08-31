@@ -69,7 +69,7 @@ public class ValoresPorDefectoTest extends FapModel {
 
 	// Getter del atributo del tipo moneda
 	public String getMMoneda_formatFapTabla() {
-		return format.FapFormat.format(mMoneda);
+		return format.FapFormat.formatMoneda(mMoneda);
 	}
 
 	public ValoresPorDefectoTest() {

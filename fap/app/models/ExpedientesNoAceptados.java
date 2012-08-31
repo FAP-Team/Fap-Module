@@ -36,7 +36,7 @@ public class ExpedientesNoAceptados extends FapModel {
 
 	// Getter del atributo del tipo moneda
 	public String getCantidad_formatFapTabla() {
-		return format.FapFormat.format(cantidad);
+		return format.FapFormat.formatMoneda(cantidad);
 	}
 
 	public ExpedientesNoAceptados() {

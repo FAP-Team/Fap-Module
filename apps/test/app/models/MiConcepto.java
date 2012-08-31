@@ -34,7 +34,7 @@ public class MiConcepto extends FapModel {
 
 	// Getter del atributo del tipo moneda
 	public String getUnaMoneda_formatFapTabla() {
-		return format.FapFormat.format(unaMoneda);
+		return format.FapFormat.formatMoneda(unaMoneda);
 	}
 
 	public void init() {

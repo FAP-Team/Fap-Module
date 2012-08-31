@@ -6,7 +6,7 @@ var InsertarEntidadFAPDialog = {
     
 	insert : function(contenido) {
 		// Insert the contents from the input into the document
-        contenido = "&" + contenido + "&";
+        contenido = '\\${' + contenido + '}';
 		tinyMCEPopup.editor.execCommand('mceInsertContent', false, contenido);
 		tinyMCEPopup.close();
 	},

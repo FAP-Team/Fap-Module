@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.inject.Injector;
@@ -41,6 +42,9 @@ import play.Play;
 import play.db.jpa.JPABase;
 import play.libs.Codec;
 import play.libs.IO;
+import play.modules.pdf.PDF;
+import play.modules.pdf.PDF.MultiPDFDocuments;
+import play.modules.pdf.PDF.Options;
 import play.mvc.Util;
 import play.mvc.results.Ok;
 import properties.FapProperties;
@@ -59,6 +63,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.allcolor.yahp.converter.IHtmlToPdfTransformer;
 import org.apache.log4j.Logger;
 
 
@@ -395,6 +400,58 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	}
 	
 	/*
+	public static List<String> obtenerListaEntidadesArray() {
+		List<String> listaEntidades = new ArrayList<String>();
+		List<String> listaEntidadesAExluir = new ArrayList<String>(); // entidades que no queremos que aparezcan en la lista para insertarlas en las plantillas
+		List<String> listaEntidadesPadre = new ArrayList<String>();	 // entidades del módulo FAP que son padres de alguna entidad de la aplicación (hija extends padre)
+																	 // (para eliminarlas del listado de entidades que se presenta)		
+		for (String entidad : ENTIDADES_A_EXCLUIR)
+			listaEntidadesAExluir.add(entidad);
+	
+		try {
+			// Primero obtenemos las entidades propias de la aplicación
+			// XXX: Revisar ruta
+			BufferedReader reader = new BufferedReader(new FileReader("app/led/Entidades.fap")); 
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				// Lista de entidades de la aplicación
+				Pattern pattern = Pattern.compile("^Entidad ([_A-Za-z0-9]+)");
+				Matcher matcher = pattern.matcher(line);
+				while (matcher.find()) 
+					listaEntidades.add(matcher.group(1));	
+				// Lista de las entidades padre de las que hereda alguna entidad de la aplicación
+				pattern = Pattern.compile("^Entidad ([_A-Za-z0-9]+) extends ([_A-Za-z0-9]+)");
+				matcher = pattern.matcher(line);
+				while (matcher.find()) 
+					listaEntidadesPadre.add(matcher.group(2));
+			}
+			
+			// Ahora obtenemos las entidades del módulo fap (excluyendo las que no nos interesan)
+			// XXX: Revisar ruta
+			if(Play.mode.isDev())	// modo desarrollo
+				reader = new BufferedReader(new FileReader("../../fap/app/led/fap/Entidades.fap"));
+			else					// modo producción
+				reader = new BufferedReader(new FileReader("modules/fap/app/led/fap/Entidades.fap"));
+			line = null;
+			while ((line = reader.readLine()) != null) {
+				Pattern pattern = Pattern.compile("^Entidad ([_A-Za-z0-9]+)");
+				Matcher matcher = pattern.matcher(line);
+				while (matcher.find()) {
+					if ( !listaEntidades.contains(matcher.group(1)) && !listaEntidadesPadre.contains(matcher.group(1)) &&
+							!listaEntidadesAExluir.contains(matcher.group(1)) ) {
+						listaEntidades.add(matcher.group(1));
+					}
+				}
+			}
+		    reader.close();
+		} catch (Exception e1) {e1.printStackTrace();}
+		
+		//Collections.sort(listaEntidades, Collections.reverseOrder());
+		return listaEntidades;
+	}
+	*/
+	
+	/*
 	 * Devuelve todos los atributos de una entidad (sin profundizar en las relaciones con otras entidades)
 	 * 
 	 */
@@ -439,5 +496,46 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		}
 		jsonString += "]";
 		renderJSON(jsonString);
+	}
+	
+	/*
+	 * PRUEBA DE SUSTITUCIÓN DE VALORES EN LA PLANTILLA
+	 * 
+	 */
+	public static void reemplazarValoresEntidades(Long idPlantilla) {
+		PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
+		System.out.println("****** [reemplazarValoresEntidades] ");
+		String plantillaBase = generarPlantilla(plantilla.plantilla);
+		
+		MultiPDFDocuments m = new MultiPDFDocuments();
+		Options opciones = new Options();
+		PlantillaDocumento header = null, footer = null;
+		String plantillaHeader = null, plantillaFooter = null;
+		if (plantilla.idHeader != null) {
+			header = PlantillaDocumento.findById(plantilla.idHeader);
+			plantillaHeader = generarHeaderFooter(header.plantilla);
+			opciones.HEADER_TEMPLATE = plantillaHeader;
+		}
+		if (plantilla.idFooter != null) {
+			footer = PlantillaDocumento.findById(plantilla.idFooter);
+			plantillaFooter = generarHeaderFooter(footer.plantilla);
+			opciones.FOOTER_TEMPLATE = plantillaFooter;
+		}
+		opciones.pageSize = new IHtmlToPdfTransformer.PageSize(20.8d, 29.6d, 1d, 1d, 4d, 3.5d);
+		m.add(plantillaBase, opciones);
+		
+		//System.out.println("****** Lista entidades = " + obtenerListaEntidadesArray());
+		Agente Agente = AgenteController.getAgente();
+		File borrador = null;
+		try {
+			if (header == null && footer == null)
+				borrador = new Report(plantillaBase).renderTmpFile( Agente );
+			else if (header != null && footer != null)
+				borrador = new Report(plantillaBase).header(plantillaHeader).footer(plantillaFooter).renderTmpFile( Agente );
+			else if (header != null)
+				borrador = new Report(plantillaBase).header(plantillaHeader).renderTmpFile( Agente );
+			else	// footer != null
+				borrador = new Report(plantillaBase).footer(plantillaFooter).renderTmpFile( Agente );
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 }

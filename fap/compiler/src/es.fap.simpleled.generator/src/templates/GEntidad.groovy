@@ -156,7 +156,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		String ret = """
 			// Getter del atributo del tipo moneda
 			public String get${StringUtils.firstUpper(attribute.name)} () {
-				return format.FapFormat.format(${nameSin});
+				return format.FapFormat.formatMoneda(${nameSin});
 			}
 		"""
 	}

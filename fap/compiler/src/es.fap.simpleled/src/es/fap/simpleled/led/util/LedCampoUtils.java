@@ -22,6 +22,7 @@ import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Model;
 import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.Popup;
+import es.fap.simpleled.led.ServicioWeb;
 import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.Formulario;
 
@@ -203,7 +204,7 @@ public class LedCampoUtils {
 	public static Map<String, Entity> getEntidadesValidas(EObject elemento){
 		EObject container = LedCampoUtils.getCampoScope(elemento);
 		Map<String, Entity> entidades = new HashMap<String, Entity>();
-		if (container instanceof Model || elemento instanceof Tabla){
+		if (container instanceof Model || elemento instanceof Tabla || elemento instanceof Model){
 			for (Entity e: ModelUtils.<Entity>getVisibleNodes(ledPackage.getEntity(), elemento.eResource()))
 				entidades.put(e.getName(), e);	
 			return entidades;

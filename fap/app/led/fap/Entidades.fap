@@ -702,3 +702,12 @@ Entidad AnotacionFAP {
 	ManyToOne Agente personaSolucion noConstruct
 }
 
+Entidad ConsultaWS {
+	String nombre
+	Integer valorInteger
+	String valorString
+	Double valorDouble
+	DateTime valorDateTime
+	Boolean valorBoolean
+}
+

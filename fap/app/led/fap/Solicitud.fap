@@ -1,4 +1,4 @@
-Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{	
+Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 
 	Pagina DocumentacionFAP titulo = "Documentación FAP" campo=SolicitudGenerica noForm {
 	

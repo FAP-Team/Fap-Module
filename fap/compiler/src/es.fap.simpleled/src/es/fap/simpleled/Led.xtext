@@ -7,7 +7,8 @@ Model:
 		(entidades += Entity) |
 	 	(formularios += Formulario) |
 	 	(listas += Lista) |
-	 	(permisos += Permiso)
+	 	(permisos += Permiso) |
+	 	(servicioWeb += ServicioWeb)
 	 ) *
 ;
 
@@ -588,6 +589,18 @@ Permiso:
 			)
 		)
 	"}"
+;
+
+ServicioWeb:
+	elemento='ServicioWeb' name=ID "{"
+		"versionSW" ":" version=INT
+		"campo" ":" campo=Campo
+		"return" ":" "{" ret = WSReturn ("," retMore += WSReturn)* "}" 	
+	"}"
+;
+
+WSReturn:
+	"titulo" "=" titulo=STRING ":" campoRet=Campo
 ;
 
 PermisoWhen:

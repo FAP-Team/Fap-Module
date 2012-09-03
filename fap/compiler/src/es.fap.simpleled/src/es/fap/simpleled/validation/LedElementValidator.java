@@ -42,10 +42,12 @@ import es.fap.simpleled.led.PersonaFisica;
 import es.fap.simpleled.led.PersonaJuridica;
 import es.fap.simpleled.led.Popup;
 import es.fap.simpleled.led.RadioBooleano;
+import es.fap.simpleled.led.ServicioWeb;
 import es.fap.simpleled.led.Solicitante;
 import es.fap.simpleled.led.SubirArchivo;
 import es.fap.simpleled.led.Tabla;
 import es.fap.simpleled.led.Texto;
+import es.fap.simpleled.led.WSReturn;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.Proposal;
@@ -122,6 +124,7 @@ public abstract class LedElementValidator {
 		List<Proposal> proposals = new ArrayList<Proposal>();
 		EObject container = LedCampoUtils.getCampoScope(elemento);
 		List<Entity> prios = null;
+		System.out.println(container);
 		if (container instanceof Pagina || container instanceof Popup)
 			prios = LedEntidadUtils.getEntidadesPaginaPopup(container);
 		for (Entity entidad: entidades){
@@ -201,6 +204,12 @@ public abstract class LedElementValidator {
 		}
 		if (container instanceof Tabla) {
 			return new TablaValidator(container);
+		}
+		if (container instanceof WSReturn) {
+			return new WSReturnValidator(container);
+		}
+		if (container instanceof ServicioWeb) {
+			return new ServicioWebValidator(container);
 		}
 		if (container instanceof Pagina || container instanceof Formulario || container instanceof Popup) {
 			return new PaginaValidator(container);

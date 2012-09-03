@@ -1,3 +1,9 @@
+ServicioWeb servicioWeb1 {
+	versionSW:1
+	campo:SolicitudGenerica
+	return:{titulo="Estado":Verificacion.id}
+}
+
 Formulario Solicitud {
 	
     Menu {

@@ -12,3 +12,7 @@
 «DEFINE main FOR Lista-»
 	«expand(this)»
 «ENDDEFINE»
+
+«DEFINE main FOR ServicioWeb-»
+	«expand(this)»
+«ENDDEFINE»

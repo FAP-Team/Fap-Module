@@ -356,7 +356,7 @@ public class Fixtures extends play.test.Fixtures {
 					ConfigurarMensaje cm = (ConfigurarMensaje) myModel;
 					boolean encontrado = false;
 					for (ConfigurarMensaje configurarMensaje : paginasMensaje) {
-						if(configurarMensaje.nombrePagina.equals(cm.nombrePagina)){
+						if(configurarMensaje != null && configurarMensaje.nombrePagina.equals(cm.nombrePagina)){
 							encontrado = true;
 							break; //Encontrado, dejamos de buscar.
 						}									

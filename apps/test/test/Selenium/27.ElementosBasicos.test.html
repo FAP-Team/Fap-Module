@@ -1,0 +1,32 @@
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	def automatic = properties.FapProperties.getBoolean("fap.automatic.autotest");
+	
+	play.mvc.Controller.session.put("username", "admin");
+	controllers.fap.AgenteController.findAgente();
+    controllers.fap.AgenteController.getAgente().cambiarRolActivo("usuario")
+}%
+
+#{selenium}
+	open('Principal/solicitudes')
+	waitForPageToLoad()
+	waitForElementPresent(//div[text()='Borrador'])
+    open('/Solicitud/elementosbasicos?idSolicitud=${s.id}&accion=editar')
+    waitForPageToLoad()
+    
+    type('solicitud_elementos_texto', 'Texto1')
+    type('solicitud_elementos_areaDeTexto', 'Area De Texto')
+    type('solicitud_elementos_numeroI', '5')
+    type('solicitud_elementos_numeroD', '5,55')
+    type('solicitud_elementos_numeroL', 'palabraNoNumero')
+    
+    clickAndWait(//input[@type='submit'])
+    verifyTextPresent('Error al guardar. La página contiene errores.')
+    
+    type('solicitud_elementos_numeroL', '99')
+    
+    clickAndWait(//input[@type='submit'])
+    verifyTextPresent('Página editada correctamente')
+    
+#{/selenium}

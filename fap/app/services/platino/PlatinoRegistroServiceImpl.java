@@ -209,7 +209,8 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             throw new NullPointerException();
         
         if (descripcion == null)
-        	descripcion=documento.descripcionVisible+" "+FapProperties.get("application.name");
+        	descripcion="RE "+documento.descripcionVisible+" "+FapProperties.get("application.name");
+        	// Añadimos RE al asunto en los registros de entrada
 
         datosDoc.setDescripcion(descripcion);
         datosDoc.setFecha(fechaApertura);

@@ -684,7 +684,7 @@ PermisoRuleCheckRight:
 ;
 
 Codigo:
-	elemento='Codigo' name=IDS
+	elemento='Codigo'
 	'{' 
 		contenido=STRING
 	'}' 

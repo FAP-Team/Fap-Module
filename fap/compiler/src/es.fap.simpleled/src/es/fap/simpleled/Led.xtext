@@ -397,7 +397,7 @@ Tabla:
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|IDS])?
 	   	& ('paginaEditar' '=' paginaEditar=[Pagina|IDS])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
-	   	& ('colorear' '=' colorear=STRING)?
+	   	& (color=Color)?
 	)
 	'{'
 		columnas += Columna*
@@ -701,4 +701,15 @@ Codigo:
 	'{' 
 		contenido=STRING
 	'}' 
+;
+
+Color : 
+	texto = "Color" ":" 
+	(codePrint = STRING
+	| default = "porDefecto"
+	|(
+		(textoB = "siFilaBorrar" "=" claseB=STRING)?
+		(textoE = "siFilaEditar" "=" claseE=STRING)?
+		(textoL = "siFilaLeer" "=" claseL=STRING)?
+	))
 ;

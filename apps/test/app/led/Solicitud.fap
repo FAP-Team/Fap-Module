@@ -703,7 +703,13 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
 </table>
 " }
     	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos 
-    	colorear = "Probando el codigo"
+    	permisoFilas = colorFondo
+    	Color: "var c = record.data.id; if (c < 2) { return \\'docFirmado\\'; } else if (c > 2) { return \\'docNoFirmado\\'; }"
+    	
+    	//siFilaBorrar = "docNoFirmado" 
+    	//siFilaEditar = "siEditable"
+    	//siFilaLeer = "docFirmado"
+    	//porDefecto
     	{
     		Columna titulo="Entero" campo=MiConcepto.unInteger
     		Columna titulo="Double" campo=MiConcepto.unDouble
@@ -719,7 +725,10 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
  Wiki { \"Probando los decimales en tablas y campos\" }
     	
  Tabla tablaConceptos campo=Solicitud.misConceptos titulo=\"Tabla de mis Conceptos\" 
-  popup=PopUpConceptos {
+  popup=PopUpConceptos permisoFilas = colorFondo
+ Color: \"var c = record.data.id; if (c < 2) { return \\'docFirmado\\'; } 
+ else if (c > 2) { return \\'docNoFirmado\\'; }\"
+  {
 	Columna titulo=\"Entero\" campo=MiConcepto.unInteger
 	Columna titulo=\"Double\" campo=MiConcepto.unDouble
 	Columna titulo=\"Moneda\" campo=MiConcepto.unaMoneda

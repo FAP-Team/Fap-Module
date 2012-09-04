@@ -3,84 +3,77 @@ Formulario Solicitud {
     Menu {
     	Enlace "Volver" pagina=Solicitudes
     	
-    	Enlace "Verificaciones" pagina=AccesoVerificaciones
-    	Grupo "Combos" {
-			Enlace "Combos por defecto" pagina=Combos
-			Enlace "Combos sobreescritos" pagina=CombosOverwrite
-			Enlace "Valores por defecto" pagina=ValoresPorDefecto
-			Enlace "ErrorCombos" pagina=PaginaCombosError
-			Enlace "Combos dependientes" pagina=PaginaCombosDependientes
-		}
+    	Grupo "Aplicación Test" {
+    		Grupo "Elementos Básicos"{
+    			Enlace "Ejemplo: Elementos Básicos" pagina=elementosBasicos
+    		}
+    		Grupo "Tipos de Solicitantes" {
+				Enlace "S. Normal" pagina=Solicitante
+				Enlace "S. PersonaFisica" pagina=SolicitantePF
+				Enlace "S. PersonaJuridica" pagina=SolicitantePJ
+				Enlace "Persona Fisica" pagina=PersonaF
+				Enlace "Autorizaciones" pagina=Autorizacion
+			}
+						
+			Grupo "Ejemplo: Direccion y Fecha"{
+				Enlace "Direccion" pagina=Direcciones
+				Enlace "Fecha" pagina=Fechas
+			}
+			
+			Grupo "Ejemplo: Grupos" {
+				Enlace "Grupos" pagina=EjemplosdeGrupos
+			}
+			
+    		Grupo "Ejemplo: Combos" {
+				Enlace "Combos por defecto" pagina=Combos
+				Enlace "Combos sobreescritos" pagina=CombosOverwrite
+				Enlace "Valores por defecto" pagina=ValoresPorDefecto
+				Enlace "Error en Combos" pagina=PaginaCombosError
+				Enlace "Combos dependientes" pagina=PaginaCombosDependientes
+				Enlace "Combo ManytoOne" pagina=ComboTablasPaginas
+			}
+
+			Grupo "Ejemplo: Tablas y PopUps" {
+				Enlace "Tablas Simples" pagina=TablasSimples
+				Enlace "Tablas con Decimales" pagina=TablasConDecimales
+				Enlace "Tablas con páginas" pagina=PaginasTablas
+				Enlace "BigPopUp" popup=PruebaBigPopUp
+			}
 		
-		Grupo "Solicitantes" {
-			Enlace "S. Normal" pagina=Solicitante
-			Enlace "S. PersonaFisica" pagina=SolicitantePF
-			Enlace "S. PersonaJuridica" pagina=SolicitantePJ
-			Enlace "Persona Fisica" pagina=PersonaF
-			Enlace "Autorizaciones" pagina=Autorizacion
-		}
-		
-		Grupo "Direccion"{
-			Enlace "Direccion" pagina=Direcciones
-			Enlace "Fecha" pagina=Fechas
-		}
-		
-		Grupo "Tablas y PopUps" {
-			Enlace "Tablas con Decimales" pagina=TablasConDecimales
-			Enlace "Tablas Simples" pagina=TablasSimples
-		}
+			Grupo "Ejemplo: Subida de Archivos y Envío de Mails" {
+				Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
+				Enlace "Documentación FAP" pagina=DocumentacionFAP
+				Enlace "Envío de Mails" pagina=EnvioMails
+			}
 	
-		Grupo "SubirArchivo" {
-			Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
-			Enlace "Documentación FAP" pagina=DocumentacionFAP
-		}
-		
-		Grupo "Pagina del módulo"{
-			Enlace "Titulo" pagina=PCEconomicos
-		}	
-
-		Grupo "Test Grupos" {
-			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
-		}
-		
-		Grupo "Paginas" {
-			Enlace "Combo ManytoOne" pagina=ComboTablasPaginas
-			Enlace "Tablas con páginas" pagina=PaginasTablas
-		}
-		
-		Grupo "Popups" {
-			Enlace "BigPopUp" popup=PruebaBigPopUp
-		}
-		
-		Grupo "Tipos de Ayuda" {
-			Enlace "Ayuda Texto" pagina=TipoDeAyudaTexto
-			Enlace "Ayuda Popover" pagina=TipoDeAyudaPopover
-		}
-
-		Grupo "Permisos" {
-			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administrador
-			Enlace "Permiso grupo" pagina=PermisoGrupo permiso=administrador
-			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable
-			Enlace "Permiso tablas" pagina=PermisoEnTablas 
-		}
-
-		Grupo "Páginas Especiales" {
-			Enlace "Firma" pagina=PaginaFirma
-		}
-		
-		Grupo "Paginas FAP" {
-			Enlace "Presentación" pagina=PresentarFAP
+			Grupo "Tipos de Ayuda" {
+				Enlace "Ayuda Texto" pagina=TipoDeAyudaTexto
+				Enlace "Ayuda Popover" pagina=TipoDeAyudaPopover
+			}
+	
+			Grupo "Ejemplo: Permisos" {
+				Enlace "Permiso en Página" pagina=PermisoPagina permiso=administrador
+				Enlace "Permiso en Grupo" pagina=PermisoGrupo permiso=administrador
+				Enlace "Permiso no Editable" pagina=PermisoNoEditable permiso=noEditable
+				Enlace "Permiso en Tablas" pagina=PermisoEnTablas 
+			}
+	
+			Grupo "Páginas Especiales" {
+				Enlace "Firma" pagina=PaginaFirma
+			}
+			
+			Grupo "Anotación Inject"{
+				Enlace "Inject" pagina=PaginaInject
+			}
+    		
+    	}
+    	    	
+    	Grupo "Módulo FAP" {
+	    	Enlace "Presentación" pagina=PresentarFAP
 			Enlace "Verificaciones" pagina=AccesoVerificaciones
-			Enlace "Aportacion Documentacion" pagina=Aportacion
-		}
-		
-		Grupo "Anotación Inject"{
-			Enlace "Inject" pagina=PaginaInject
-		}
-		
-		Grupo "Envío de Mails"{
-			Enlace "Envío de Mails" pagina=EnvioMails
-		}
+			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
+			Enlace "PCEconómicos" pagina=PCEconomicos	
+    	}    	
 		
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
@@ -742,5 +735,24 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
     	Texto titulo="Doble" campo=MiConcepto.unDouble
     	Texto titulo="Moneda" campo=MiConcepto.unaMoneda
     }
+
+	Pagina elementosBasicos campo=Solicitud{
+		Grupo Textos titulo = "Textos"{
+			Texto campo=Solicitud.elementos.texto titulo="Texto: "
+			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "Área de texto"
+		}
+		
+		Grupo Numeros titulo="Números"{
+			Texto titulo="Ejemplo de integer: " campo=Solicitud.elementos.numeroI
+			Texto titulo="Ejemplo de double: " campo=Solicitud.elementos.numeroD
+			Texto titulo="Ejemplo de long: " campo=Solicitud.elementos.numeroL
+		}
+		
+		Grupo Selectores titulo="Selectores"{
+			Check titulo="Check" campo=Solicitud.elementos.mBoolean
+			RadioBooleano titulo="Radio Booleano" campo=Solicitud.elementos.mBoolean botonIzquierdo="Botón Izquierdo" botonDerecho="Botón Derecho"
+		}
+	}
 	
 }
+

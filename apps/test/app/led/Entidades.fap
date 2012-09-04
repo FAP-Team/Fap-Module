@@ -23,6 +23,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	ConceptosMios conceptos
 	
 	BigPopUpPrueba bigPopUp
+	
+	ElementosBasicos elementos
 }
 
 Entidad ConceptosMios {
@@ -167,4 +169,14 @@ Entidad BigPopUpPrueba {
 	OneToMany DocumentoExterno doc
 	OneToMany Documento doc2
 	boolean prueba5
+}
+
+Entidad ElementosBasicos{
+	String texto
+	LongText areaDeTexto
+	Boolean mBoolean default = "true"
+	Integer numeroI
+	Long numeroL
+	Double numeroD
+	
 }

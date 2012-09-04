@@ -4868,3 +4868,11 @@ ul.errorsDetails li a {
 	list-style: decimal;
 	font-weight:normal;
 }
+
+.docNoFirmado, .docNoFirmado.x-grid-row-alt .x-grid-cell, .docNoFirmado.x-grid-row-alt .x-grid-rowwrap-div {
+   background-color: #FF0000;
+}
+
+.docFirmado, .docFirmado.x-grid-row-alt .x-grid-cell, .docFirmado.x-grid-row-alt .x-grid-rowwrap-div   {
+   background-color: #ADFF2F;
+}

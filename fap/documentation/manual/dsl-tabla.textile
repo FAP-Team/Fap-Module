@@ -26,6 +26,7 @@ h2. Parámetros
 * **paginaEditar = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Editar para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaCrear = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Crear para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaBorrar = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Borrar para abrirla. "Ver documentación Pagina":dsl-pagina.
+* **Color: _[string | porDefecto | siFilaBorrar | siFilaLeer | siFilaEditar]_ = String** (opcional): Atributo que permite asignar una clase css para colorear las filas de una tabla de acuerdo a un código especificado, a sus permisos (siFilaLeer, siFilaBorrar, siFilaEditar) o por la opción por defecto (editable y no editable).
 
 h2. Definición
 
@@ -49,11 +50,24 @@ bc. Tabla:
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|QN])?
 	   	& ('paginaEditar' '=' paginaEditar=[Pagina|QN])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|QN])?
+	    & (color=Color)?
 	)
 	'{'
 		columnas += Columna*
 	'}'
 ;
+
+
+bc.	Color : 
+		"Color:" 
+		(codePrint = STRING
+		| default = "porDefecto"
+		|(
+			(textoB = "siFilaBorrar" "=" claseB=STRING)?
+			(textoE = "siFilaEditar" "=" claseE=STRING)?
+			(textoL = "siFilaLeer" "=" claseL=STRING)?
+		))
+	;
 
 h2. Columnas
 
@@ -112,3 +126,41 @@ Pagina CrearTablaPaginas campo=Solicitud.tablaPaginas.tpaginas{
 Pagina PaginaTablas campo=Solicitud {
 	Tabla TablaConPaginas campo=TablaPaginas.tpaginas paginaCrear=CrearTablaPaginas paginaEditar=ModificarTablaPaginas paginaBorrar=BorrarTablaPaginas titulo="Tabla con paginas" columnasAutomaticas include=id{}
 }
+
+h3. Tablas utilizando coloreado por defecto
+
+bc. ...
+Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos
+    	Color: porDefecto
+    	{
+    		Columna titulo="Entero" campo=MiConcepto.unInteger
+    		Columna titulo="Double" campo=MiConcepto.unDouble
+    		Columna titulo="Moneda" campo=MiConcepto.unaMoneda
+    	}
+...
+
+h3. Tablas utilizando coloreado de filas por permisos
+
+bc. ...
+Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos
+    	Color: siFilaBorrar = "colorSiBorrar" 
+    	siFilaEditar = "colorSiEditar"
+    	siFilaLeer = "colorSiLeer"
+    	{
+    		Columna titulo="Entero" campo=MiConcepto.unInteger
+    		Columna titulo="Double" campo=MiConcepto.unDouble
+    		Columna titulo="Moneda" campo=MiConcepto.unaMoneda
+    	}
+...
+
+h3. Tablas utilizando coloreado de filas definido por usuario
+
+bc. ...
+Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos 
+    	Color: "var c = record.data.id; if (c < 8) { return \\'docFirmado\\'; } else if (c > 8) { return \\'docNoFirmado\\'; }"
+    	{
+    		Columna titulo="Entero" campo=MiConcepto.unInteger
+    		Columna titulo="Double" campo=MiConcepto.unDouble
+    		Columna titulo="Moneda" campo=MiConcepto.unaMoneda
+    	}
+...

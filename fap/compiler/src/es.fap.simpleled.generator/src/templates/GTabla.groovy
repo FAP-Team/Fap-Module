@@ -65,6 +65,29 @@ public class GTabla extends GElement{
 		params.putStr 'campo', campo.str;
 		if (tabla.alto)
 			params.putStr 'alto', tabla.alto;
+		if (tabla.color){
+			String consulta = "";
+			if(tabla.color.codePrint){
+				params.putStr 'codePrint', tabla.color.codePrint;
+			}
+			else if (tabla.color.default) {
+				consulta = "if (record.data.permisoEditar) { return \\'docFirmado\\'; } else { return \\'docNoFirmado\\'; }";
+				params.putStr 'codePrint', consulta;
+			}
+			else{
+				if(tabla.color.textoB){
+					consulta += "if (record.data.permisoBorrar) { return \\'${tabla.color.claseB}\\'; } "
+				}
+				if(tabla.color.textoE){
+					consulta += "if (record.data.permisoEditar) { return \\'${tabla.color.claseE}\\'; }";
+				}
+				if(tabla.color.textoL){
+					consulta += "if (record.data.permisoLeer) { return \\'${tabla.color.claseL}\\'; }";
+				}
+				params.putStr 'codePrint', consulta;
+			}
+		}
+			
 		botonesPopup(params);
 		botonesPagina(params);
 		if (tabla.recargarPagina)
@@ -517,6 +540,7 @@ public class GTabla extends GElement{
 			}
 			paramsPermiso+=paramsNombrePermiso+", getAccion(), ids"
 		}
+
 		ret+="""tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered, ${paramsPermiso});
 			"""
 		return ret;

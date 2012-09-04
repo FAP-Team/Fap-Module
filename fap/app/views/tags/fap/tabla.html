@@ -53,8 +53,6 @@
 	
 	boolean botonCrear = urlCrear;
 	
-	def codePrint = _cpdePrint ?: "";
-	
 	if (_permisoCrear != null)
 		botonCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("$_permisoCrear", "crear", tags.TagMapStack.top("idParams"), null);
 	
@@ -75,6 +73,7 @@
 	def saveEntity = _saveEntity ?: false;
 	
 	def codePrint = _codePrint ?: "";
+
 %}
 
 	#{doBody /}
@@ -105,6 +104,7 @@
 	</div>
 	
 	<div id="${id}" class="tabla"></div>
+	
 
 	<script>
 	
@@ -631,7 +631,9 @@
 				viewConfig: {
 					getRowClass: function(record, index, rowParams, ds) {
 						console.log(this);
-						${codePrint.raw()}
+						#{if codePrint}
+							${codePrint.raw()}
+						#{/if}
 					}
 				}
 

@@ -438,4 +438,12 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
+	@Check
+	public void checkColorTablas(Tabla tabla){
+		if ((tabla.getColor().getTexto() != null && ((tabla.getColor().getCodePrint() == null) && (tabla.getColor().getDefault() == null) && (tabla.getColor().getTextoB() == null)&& (tabla.getColor().getTextoE() == null) && (tabla.getColor().getTextoL() == null))))
+			error("El campo Color no ha sido rellenado correctamente", null);
+	}
+	
 }
+
+

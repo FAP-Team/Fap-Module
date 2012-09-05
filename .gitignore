@@ -80,6 +80,7 @@ fap/compiler/src/es.fap.simpleled.ui/src-gen/*
 fap/compiler/src/es.fap.simpleled.generator/bin/*
 
 apps/test/javadoc/*
+fap/documentation/javadoc/*
 fap/javadoc/*
 fap/logs/*
 

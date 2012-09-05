@@ -5,6 +5,8 @@ h3. Versión 2.0.6
 * Tipo Moneda se representa en formato español (con BigDecimal). Así es necesario actualizar los campos de tipo Moneda en la BBDD a DECIMAL(30,4).
 * Enlaces siempre editables.
 * Error en clasificar al aportar, mensaje Fatal.
+* Añadido seguimiento en Fap.
+* Añadido alinear elementos en las columnas de las tablas.
 
 h3. Versión 2.0.5
 

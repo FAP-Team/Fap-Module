@@ -44,9 +44,11 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 					log.info("Acción Editar de página: " + "gen/ActivarBaremacion/ActivarBaremacion.html" + " , intentada con éxito, Baremación Iniciada");
 				} catch (Exception e) {} 
 			} else{
+				play.Logger.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciar()'");
 				Message.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciar()'");
 			}
 		} else{
+			play.Logger.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'IniciarBaremacion'");
 			Message.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'IniciarBaremacion'");
 		}
 		ActivarBaremacionController.activarFormBaremacionRender();

@@ -1,5 +1,18 @@
 h2. Changelog
 
+h3. Versión 2.1RC5
+
+* Mejorada la página de conceptos económicos.
+* En los conceptos económicos ahora son de tipo Moneda.
+* Añadida la cadena "RE" cuando se registra en Platino.
+* Fixed bug baremación.
+* Fixed bug al mostrar solicitudes sin estado.
+* Añadido el método formatMoneda() que es que se utilizará para los elementos tipo Moneda.
+* Se permite coloreado de tablas.
+* Se permite incluir ejemplos de código.
+* Se permite generar el javadoc del módulo desde una aplicación.
+* Fixed minimal bugs.
+
 h3. Versión 2.1RC4
 
 * Bootstrap adaptativo.

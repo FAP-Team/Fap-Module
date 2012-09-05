@@ -4876,3 +4876,15 @@ ul.errorsDetails li a {
 .docFirmado, .docFirmado.x-grid-row-alt .x-grid-cell, .docFirmado.x-grid-row-alt .x-grid-rowwrap-div   {
    background-color: #ADFF2F;
 }
+
+.table td.tabla-moneda {
+	text-align: right;
+}
+
+.table th.tabla-encabezado {
+	text-align: center;
+}
+
+.total {
+	background-color: #DCE8F4;
+}

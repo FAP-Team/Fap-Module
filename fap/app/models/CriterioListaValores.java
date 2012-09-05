@@ -22,9 +22,18 @@ import java.text.SimpleDateFormat;
 public class CriterioListaValores extends FapModel {
 	// Código de los atributos
 
+	@Moneda
 	public Double valor;
 
 	public String descripcion;
+
+	@Transient
+	public String valor_formatFapTabla;
+
+	// Getter del atributo del tipo moneda
+	public String getValor_formatFapTabla() {
+		return format.FapFormat.formatMoneda(valor);
+	}
 
 	public void init() {
 

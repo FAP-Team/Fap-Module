@@ -100,7 +100,7 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 		response.mensajes.fatal = Messages.messages(MessageType.FATAL);
 		response.mensajes.ok = Messages.messages(MessageType.OK);
 		response.mensajes.info = Messages.messages(MessageType.INFO);
-		renderJSON(response.toJSON("tipo.nombre", "tipo.jerarquia", "valores.valorSolicitado", "id"));
+		renderJSON(response.toJSON("tipo.nombre", "tipo.jerarquia", "valores.valorSolicitado_formatFapTabla", "id"));
 	}
 
 	@Util

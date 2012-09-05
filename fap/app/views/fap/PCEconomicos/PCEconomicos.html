@@ -40,11 +40,85 @@
 	  		String aux = "valores[${i}].valorSolicitado";
 	  		String label = "Año "+(i+1);
 		%}
-		#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true /}
+		#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true, alignPosition:'right' /}
 	#{/list}
+
 
 		
 #{/fap.tabla}
+
+
+<div class="wiki ">
+<table class="table table-bordered table-striped">
+<thead>
+<tr>
+	<th class="tabla-encabezado">Concepto</th>
+	#{list items:0..d, as:'i'}
+	<th class="tabla-encabezado">Año ${i+1}</th>
+	#{/list}
+	<th class="tabla-encabezado">Total</th>
+</tr>
+</thead>
+<tbody>
+%{
+	java.util.List<models.CEconomico> rows = models.CEconomico.find("select cEconomico from SolicitudGenerica solicitud join solicitud.ceconomicos cEconomico where solicitud.id=?",idSolicitud).fetch();
+	Double total = 0
+	java.util.ArrayList<Double> arrayTotales = new java.util.ArrayList<Double>(d+1);
+%}
+
+#{list items:rows, as:'fila'}
+	%{
+		// Calculamos si la jerarquía es de las principales
+		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile ("^[a-zA-Z]\$");
+		def jerarquiaPrincipal = pattern.matcher("${fila.tipo.jerarquia}").matches();
+		
+		if (jerarquiaPrincipal) {
+			Double subTotal = 0;
+	%}
+	
+	<tr>
+		<td>${fila.tipo.jerarquia} (${fila.tipo.nombre})</td>
+	
+	%{  
+		int i = 0; // Contador de años
+	%}
+	
+	#{list items:fila.valores, as:'valor'}
+		%{
+			subTotal += valor.valorSolicitado;
+		%}
+		<td class="tabla-moneda">${format.FapFormat.formatMoneda(valor.valorSolicitado)} €</td>
+			
+		%{
+		    if (arrayTotales.size() <= i) {
+		    	arrayTotales.add(valor.valorSolicitado);
+		    } else {
+				arrayTotales.set(i, arrayTotales.get(i)+valor.valorSolicitado);
+			}
+			i++;
+		%}
+	#{/list}
+
+		<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotal)} €</td>
+		%{
+			total += subTotal;
+		%}
+	</tr>
+
+	%{
+		} // Close IF
+	%}
+#{/list}
+	<tr class="total">
+		<td><b>TOTAL</b></td>
+		#{list items:0..d, as:'i'}
+					<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(arrayTotales.get(i))} €</b></td>
+		#{/list}
+		<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(total)} €</b></td>
+	</tr>
+</tbody>
+</table>
+</div>
 
 #{/fap.pagina}
 		

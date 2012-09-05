@@ -21,12 +21,14 @@
 	
   #{form play.mvc.Router.reverse('PaginaCEconomicosController.guardar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'duracion':anios]) , class:"form-horizontal", id:"guardar"}
 	
+	#{fap.grupo titulo:cEconomico.tipo.nombre}
+			
 	#{if cEconomico.tipo.tipoOtro}
 		#{if ((tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")))}
-			#{fap.texto campo:'cEconomico.tipo.nombre', id:'Nombre', titulo:'Nombre', requerido:'true'/}
+			#{fap.texto campo:'cEconomico.tipo.nombre', id:'Nombre', titulo:'Nombre', requerido:'true', format:'moneda'/}
 		#{/if}
 		#{else}
-			#{simple.uneditable name:'cEconomico.tipo.nombre', label:'Nombre', value:cEconomico.tipo.nombre /}
+			#{simple.uneditable name:'cEconomico.tipo.nombre', label:'Nombre', value:cEconomico.tipo.nombre, format:'moneda' /}
 		#{/else}	
 		<div class="wiki ">
 		<p>
@@ -38,12 +40,11 @@
 	#{else}
 		<div class="wiki ">
 		<p>
-			<b>${cEconomico.tipo.nombre}</b>
 			<br/>
 			${cEconomico.tipo.descripcion}
 			<br/>		
 		</p>
-	</div>
+		</div>
 	#{/else}	
 			
 
@@ -56,10 +57,10 @@
 			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
 		%}
 		#{if ((!cEconomico.tipo.tipoOtro) && (tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")))}
-			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
+			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
 		#{/if}
 		#{else}
-			#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error /}
+			#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
 		#{/else}
 	#{/list}	
 		
@@ -92,6 +93,8 @@
 			
 		#{/fap.tabla}
 
+	#{/fap.grupo}
+	
 	#{/fap.grupo}
 	
 	#{if (!tipoEvaluacion.estado.equals("iniciada"))}

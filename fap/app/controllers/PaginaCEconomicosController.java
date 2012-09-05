@@ -127,7 +127,7 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 			redirect("PCEconomicosController.index", "editar", idSolicitud);
 		}
 		Messages.keep();
-		redirect("PCEconomicosController.index", "editar", idSolicitud);
+		redirect("PaginaCEconomicosController.index", "editar", idSolicitud, idCEconomico, duracion);
 	}
 	
 	@Util

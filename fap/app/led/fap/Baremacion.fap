@@ -15,7 +15,7 @@ Lista LstTipoValorCriterio {
 }
 
 Entidad CriterioListaValores {
-	Double valor
+	Moneda valor
 	String descripcion
 }
 
@@ -85,10 +85,10 @@ Entidad CEconomicosManuales {
 
 Entidad ValoresCEconomico {
 	Integer anio
-	Double valorSolicitado
-	Double valorEstimado
-	Double valorPropuesto
-	Double valorConcedido
+	Moneda valorSolicitado
+	Moneda valorEstimado
+	Moneda valorPropuesto
+	Moneda valorConcedido
 }
 
 // Tipo de la información adicional

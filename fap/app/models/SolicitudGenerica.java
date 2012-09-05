@@ -194,6 +194,8 @@ public class SolicitudGenerica extends FapModel {
 	}
 
 	public String getEstadoUsuario() {
+		if (estado == null || estado.isEmpty())
+			return "";
 		VisibilidadEstadoUsuario visibilidadEstado = VisibilidadEstadoUsuario.find("select visibilidad from VisibilidadEstadoUsuario visibilidad where visibilidad.estadoInterno = ?", estado).first();
 		if (visibilidadEstado == null) {
 			utils.DataBaseUtils.updateEstadosSolicitudUsuario();

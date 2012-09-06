@@ -71,6 +71,7 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 				}
 				solicitud.save();
 			}
+			BaremacionUtils.calcularTotales(solicitud);
 			int duracion = tipoEvaluacion.duracion;
 			log.info("Visitando página: " + "fap/PCEconomicos/PCEconomicos.html");		
 			renderTemplate("fap/PCEconomicos/PCEconomicos.html", accion, idSolicitud, solicitud, duracion);

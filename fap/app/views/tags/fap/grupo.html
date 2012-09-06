@@ -72,7 +72,7 @@
 			}else{
 				var el = Ext.get('${id}');
 				el.setVisibilityMode(Ext.Element.OFFSETS);
-				{if reverse}_show#{/if}#{else}_hide#{/else}('${id}', ${sendHiddenFields});
+				#{if reverse}_show#{/if}#{else}_hide#{/else}('${id}', ${sendHiddenFields});
 			}				
 		};
 		change();

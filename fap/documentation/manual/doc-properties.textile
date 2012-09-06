@@ -72,3 +72,5 @@ h2. Properties originarias de FAP
 ** Ejemplo: _fap.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el mñodulo FAP)
 * Configurar que las entidades se guarden nada mas invocarlas con el Nuevo de las tablas. *fap.entidades.guardar.antes*= _[true | false]_
 ** Ejemplo: _fap.entidades.guardar.antes=false_ (Valor por defecto que trae el mñodulo FAP)
+* Envío de los campos no visibles en el formulario (ocultos por algún grupo). Defecto: _true_. *fap.form.sendHiddenFields*= _[true | false]_
+** Ejemplo: _fap.form.sendHiddenFields=false_ (No se enviarán los campos ocultos, ya que se les modifica su atributo *name* para que el controlador no los reciba correctamente.)

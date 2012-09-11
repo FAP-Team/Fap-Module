@@ -1,8 +1,10 @@
 h1. Baremación
 
-Para realizar la parte de la aplicación que se encargue del proceso de Baremación se deben seguir una serie de pautas que se describe a continuación. Toda la gestión de la Baremación, se hará a través de la modificación de una serie de fichero .json que se describen más adelante, y de la interacción con la página _Gestionar Baremación_ de Administración.
+Para realizar la parte de la aplicación que se encargue del proceso de Baremación se deben seguir una serie de pautas que se describen a continuación. Toda la gestión de la Baremación, se hará a través de la modificación de una serie de ficheros .json que se describen más adelante, y de la interacción con la página _Gestionar Baremación_ de Administración.
 
-El gestor/revisor, podrá ver en el menú lateral de la aplicación un elemento Baremación, que listará todas las evaluaciones, para poder activarlas primero, para después evaluarlas. Estas evaluaciones serán visibles en un tabla, una vez que se presione el Botón "Iniciar Evaluación de Baremación", que estará visible en la página _Gestionar Baremación_ de Administración, una vez se haya iniciado el Tipo de Evaluación. (Presionando el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración)
+El gestor/revisor, podrá ver en el menú lateral de la aplicación un elemento Baremación, que listará todas las evaluaciones, para poder aceptarlas y después evaluarlas. Estas evaluaciones serán visibles en una tabla, una vez que se presione el Botón "Iniciar Evaluación de Baremación", que estará visible en la página _Gestionar Baremación_ de Administración, una vez se haya iniciado el Tipo de Evaluación. (Presionando el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración)
+
+!images/admin-Baremacion-tablaBaremacion!
 
 El solicitante/usuario, podrá ver la página de conceptos económicos que puede rellenar (si procede), una vez se haya presionado el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración. Estos datos que rellene el usuario se tendrán en cuenta sólo la primera vez que se Inicie la Baremación a través del botón "Iniciar Evaluación de Baremación", de la página _Gestionar Baremación_ de Administración, que aparecerá cuando se haya iniciado el Tipo de Evaluación, en la misma página de Administración.
 
@@ -12,19 +14,24 @@ Para conocer la estructura que deben tener los ficheros JSON (tipoEvaluacion.jso
 
 h2. Iniciar el Tipo de Evaluación
 
-El Tipo de la Evaluación de la Baremación, se deberá iniciar sólo una vez, y es el proceso por el cual se mapea el fichero _tipoEvaluacion.json_ en su modelo Fap correspondiente. Para ello se deberá pulsar el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración. Además de que se activará en ese momento el botón pertinente para Iniciar la Baremación en la página de Administración (_Gestionar Baremación_). El inicio del Tipo de Evaluación es necesario para que el solicitante puede ver la página de Conceptos Económicos pertinentes, y así rellenarla. Hasta que no se inicie el Tipo de Evaluación, el solicitante no podrá acceder a la Página de _PCEconomicos_ de FAP.
+El Tipo de la Evaluación de la Baremación, se deberá iniciar sólo una vez, y es el proceso por el cual se mapea el fichero _tipoEvaluacion.json_ en su modelo Fap correspondiente. Para ello se deberá pulsar el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración. 
+
+!images/admin-Baremacion-cargarTipoEvaluacion!
+
+Además de que se activará en ese momento el botón pertinente para Iniciar la Baremación en la página de Administración (_Gestionar Baremación_). El inicio del Tipo de Evaluación es necesario para que el solicitante puede ver la página de Conceptos Económicos pertinentes, y así rellenarla. Hasta que no se inicie el Tipo de Evaluación, el solicitante no podrá acceder a la Página de _PCEconomicos_ de FAP.
 
 h2. Inicializar la Baremación
 
+Como el proceso de Baremación es muy dependiente del procedimiento en cuestión, para llevar a cabo el inicio de la misma de forma personalizada se debe sobreescribir una clase tal y como se describe "aqui":app-baremacion-inicio
 Para llevar a cabo el inicio de la baremación, en la parte de Administración, esta "Iniciar Evaluación de Baremación", que contiene un botón con el mismo nombre que permite el Inicio de la Baremación. Una vez activada la Baremación, no se podrá volver a Iniciar, lo que conlleva a que los datos genericos sólo son cargados una única vez.
+
+!images/admin-Baremacion-iniciarEvaluacion!
 
 Una vez Iniciada la Baremación, se podrá Actualizar la misma tantas veces como se requiera, a través del botón "Actualizar Baremación", y modificando los ficheros variables .json de la Baremación (criterios.json, conceptosEconomicos.json y datosAdicionales.json).
 
+!images/admin-Baremacion-actualizarBaremacion!
+
 Por defecto FAP, para el inicio de la baremación lo que se hace es a través del tipo de evaluación que se ha cargado en Base de Datos a partir del fichero _tipoEvaluacion.json_, se recorren todas las solicitudes y se buscan aquellas que no tengan evaluaciones creadas para crear dichas evaluaciones por primera vez a partir del Tipo de Evaluación.
-
-h3. Y si quiero personalizar el inicio de la Baremación ¿Qué tengo que hacer?
-
-Como el proceso de Baremación es muy dependiente del procedimiento en cuestión, para llevar a cabo el inicio de la misma de forma personalizada se puede sobreescribir una clase tal y como se describe "aqui":app-baremacion-inicio
 
 h2. Actualizar la Baremación
 
@@ -37,3 +44,178 @@ h2. ¿Qué debo sobreescribir para personalizar la Baremación?
 
 Si quieres que algunos comportamientos por defecto, como el cálculo de los criterios no hoja o cualquier otro aspecto, sea uno propio, se deberán sobreescribir una serie de métodos y funciones que puede conocer "aqui":app-baremacion-sobreescribir
 
+h2. Ejemplo de Baremación de la aplicacion de Test
+
+En la aplicación de Test, se dispone de un ejemplo de Baremación simple, a continuación se explicará su composición.
+
+h3. Características de la Baremación
+
+A la hora de definir la evaluación, se decidió empezar el procedimiento en 2012, con una duración de dos años y permitir comentarios tanto por parte de la administración como del solicitante, por lo que en el fichero _tipoEvaluacion.json_ se ingresaron siguientes datos:
+
+bc. {
+	nombre: "Tipo evaluacion de Test",
+	tipoProcedimiento: "Test",
+	numeroEvaluacion: 1,
+	duracion: 2,
+	inicio: 2012,
+	comentariosAdministracion : true,
+	comentariosSolicitante : true
+}
+
+Para definir los conceptos económicos (_conceptosEconomicos.json_), se quiso realizar ejemplos generalizados para cada _clase_, _jerarquia_ y _tipoOtro_. 
+* El _Concepto Económico A_, se compone de dos subconceptos manuales que rellena el solicitante. 
+* El _Concepto Económico B_, se compone de tres subconceptos, dos de ellos manuales y uno auto de tipoOtros.
+
+El tercer subconcepto de B, al ser de @tipoOtros@ permite al solicitante dividir el criterio en tantos como desee.
+
+Véase que todos los conceptos del primer nivel de la jerarquía (_A_ y _B_), son de @clase: "auto"@, ya que dependen de sus subconceptos hijos.
+
+bc. [
+	{
+		nombre: "Concepto Economico A",
+		clase: "auto",
+		jerarquia: "A",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Primer Subconcepto de A",
+		clase: "manual",
+		jerarquia: "A.1",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Segundo Subconcepto de A",
+		clase: "manual",
+		jerarquia: "A.2",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Concepto Economico B",
+		clase: "auto",
+		jerarquia: "B",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro:false
+	},
+	{
+		nombre: "Primer Subconcepto de B",
+		clase: "manual",
+		jerarquia: "B.1",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Segundo Subconcepto de B",
+		clase: "manual",
+		jerarquia: "B.2",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Tercer Subconcepto de B",
+		clase: "auto",
+		jerarquia: "B.3",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: true
+	}
+]
+
+A la hora de definir los criterios (_criterios.json_), se optó por realizar un ejemplo generalizado de cada @tipoValor@ disponible, _cantidad/lista_
+
+* El criterio _Criterio numero uno_ esta asignado como @tipoValor: "cantidad"@, lo que indica que será un valor numérico y al ser @claseCriterio: "auto"@, deberá indicarse en el lugar correspondiente como se calcula dicho valor.   
+* El criterio _Criterio numero dos_ esta asignado como @tipoValor: "lista"@, lo que indica que le corresponde un valor de la lista definida en el campo @listaValores@. Como @claseCriterio: "manual"@, el valor será elegido por el encargado de realizar la evaluación.
+bc. [
+	{
+		nombre: "Criterio numero uno",
+		claseCriterio: "auto",
+		jerarquia: "A",
+		tipoValor: "cantidad",
+		descripcion: "Primer criterio",
+		comentariosAdministracion: true,
+		comentariosSolicitante: true
+	},
+	{
+		nombre: "Criterio numero dos (Lista)",
+		claseCriterio: "manual",
+		jerarquia: "B",
+		tipoValor: "lista",
+		listaValores: [
+			{
+				valor: 10,
+				descripcion: "ALTO: Puntuacion maxima"
+			},
+			{
+				valor: 5,
+				descripcion: "MEDIO: Puntuacion media"
+			},
+			{
+				valor: 0,
+				descripcion: "BAJO: Puntuacion nula"
+			}
+					  ],
+		descripcion: "Ejemplo de criterio con lista de valores",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false
+	}
+]
+
+Finalmente, para completar la configuración de las características de este ejemplo de baremación simple, se añadieron 3 datos adicionales (_datosAdicionales.json_).
+
+bc. [
+	{
+		orden: 1,
+		nombre: "Porcentaje Adicional",
+		descripcion: "Porcentaje añadido como dato adicional"
+	},
+	{
+		orden: 2,
+		nombre: "Calculo Adicional",
+		descripcion: "Calculo añadido como dato adicional"
+	},
+	{
+		orden: 3,
+		nombre: "Elemento Adicional",
+		descripcion: "Elemento añadido como dato adicional"
+	}
+]
+
+
+h3. Inicio de Baremación
+
+Como se ha explicado en la documentación anterior, la Baremación es un proceso muy dependiente de la aplicación en que se está llevando a cabo, por ello, debe ser personalizada en cada caso. Para la aplicación de Test, no se va a llevar a cabo una personalización, se utilizará la inicialización por defecto disponible en el módulo Fap. Aún así debemos crear nuestra propia clase _IniciarBaremaciónTest_ que extienda de _IniciarBaremacion_.
+
+bc. public class IniciarBaremacionTest extends IniciarBaremacion{
+	public static void iniciar(){
+		IniciarBaremacion.iniciar();
+	}
+}
+
+
+h3. Resultados
+
+A continuación se muestran diversas imágenes de como quedaría la _Ficha del Evaluador_ con la configuración elegida para Test.
+
+h4. Información del expediente:
+
+!images/admin-Baremacion-EjmInfoExp!
+
+h4. Criterios de Evaluación
+
+!images/admin-Baremacion-EjmCriterioEval!
+
+h4. Conceptos Económicos
+
+!images/admin-Baremacion-EjmConcepEco!
+
+Como último, se muestra como es la página que verá el solicitante, a la hora de rellenar los Conceptos Económicos.
+
+!images/user-ConcepEco!

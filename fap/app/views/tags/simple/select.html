@@ -17,6 +17,7 @@
 				def optionText  = option."${_optionsText}"
 				def optionValue = option."${_optionsValue}"				
 				def selected = optionValue?.toString().equals(_value?.toString()) ? 'selected=selected' : '';
+				optionValue = format.FapFormat.format(optionValue);
 			}%
 			<option value="${optionValue}" ${selected}>${optionText}#{if _showKeyInLabel} (${optionValue})#{/if}</option>
 		#{/list}

@@ -81,6 +81,7 @@ fap/compiler/src/es.fap.simpleled.generator/bin/*
 
 apps/test/javadoc/*
 fap/javadoc/*
+fap/documentation/javadoc/*
 fap/logs/*
 
 # Logs eliminar carpeta

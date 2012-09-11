@@ -100,7 +100,7 @@ public class FichaEvaluadorController extends Controller {
 	}
 
 	public static void save(){
-		if(secure.checkGrafico("evaluacion", "none", "editar", null, null)){
+		if(secure.checkGrafico("evaluacion", "editable", "editar", null, null)){
 			boolean actionSave = params.get("save") != null;
 			boolean actionPdf = params.get("pdf") != null;
 			boolean actionEnd = params.get("end") != null;
@@ -136,7 +136,6 @@ public class FichaEvaluadorController extends Controller {
 						validation.required(key, valor);
 						//TODO validaciones de tamaño máximo
 					}
-					
 					criterio.valor = valor;
 				}else if(criterio.tipo.claseCriterio.equals("automod")){
 					//TODO criterio automático modificable

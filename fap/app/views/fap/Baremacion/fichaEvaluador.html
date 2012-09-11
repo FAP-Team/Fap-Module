@@ -119,7 +119,7 @@
 				#{/if}
 				
 				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
-					#{simple.text name:paramName + ".valor", value:valor, error: error, ancho: tam /}
+					#{simple.text name:paramName + ".valor", value:valor, error: error, ancho: tam, format:'double' /}
 				#{/elseif}
 			#{/elseif}
 			

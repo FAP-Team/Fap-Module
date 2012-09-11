@@ -739,7 +739,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 	Pagina elementosBasicos campo=Solicitud{
 		Grupo Textos titulo = "Textos"{
 			Texto campo=Solicitud.elementos.texto titulo="Texto: "
-			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "Área de texto"
+			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "�?rea de texto"
 		}
 		
 		Grupo Numeros titulo="Números"{

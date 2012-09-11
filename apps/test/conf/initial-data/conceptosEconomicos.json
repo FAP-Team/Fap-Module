@@ -1,0 +1,58 @@
+[
+	{
+		nombre: "Concepto Economico A",
+		clase: "auto",
+		jerarquia: "A",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Primer Subconcepto de A",
+		clase: "manual",
+		jerarquia: "A.1",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Segundo Subconcepto de A",
+		clase: "manual",
+		jerarquia: "A.2",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Concepto Economico B",
+		clase: "auto",
+		jerarquia: "B",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro:false
+	},
+	{
+		nombre: "Primer Subconcepto de B",
+		clase: "manual",
+		jerarquia: "B.1",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Segundo Subconcepto de B",
+		clase: "manual",
+		jerarquia: "B.2",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: false
+	},
+	{
+		nombre: "Tercer Subconcepto de B",
+		clase: "auto",
+		jerarquia: "B.3",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false,
+		tipoOtro: true
+	}
+]

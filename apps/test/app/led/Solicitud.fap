@@ -1,6 +1,6 @@
 ServicioWeb servicioWeb1 {
 	versionSW:1
-	campo:SolicitudGenerica
+	campo:Notificacion
 	return:{titulo="Estado":Verificacion.id}
 }
 

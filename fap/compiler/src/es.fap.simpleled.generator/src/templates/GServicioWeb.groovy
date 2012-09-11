@@ -106,7 +106,8 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 		for (EntidadInfo subcampo: subcampos){
 			allEntities.add(subcampo.entidad);
 		}
-		String ret = "";
+		String ret = """List<ConsultaWS> consultas = new ArrayList<ConsultaWS>();
+					 """;
 		// En allEntities tendria todas las entidades xToMany que tuviera concatenadas el campoEntidad
 		for (Entidad ent: allEntities){
 			//System.out.println("Valgo: "+ent.entidad.name);
@@ -114,7 +115,6 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 				
 			} else {
 			   ret += """List<${ent.entidad.name}> ${ent.getVariable()} = ${ent.entidad.name}.findAll();
-				   	     List<ConsultaWS> consultas = new ArrayList<ConsultaWS>();
 			   			 for(${ent.entidad.name} ${ent.getVariable()}Aux: ${ent.getVariable()}){
 			   					// Ir creando el Array de Array de Objetitos por defecto.
 			   					// El Objetito sería el "id${ent.getVariable()}":${ent.getVariable()}Aux.id

@@ -60,14 +60,16 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 				List<TipoCEconomico> tipos = TipoCEconomico.findAll();
 				int c=0;
 				for(TipoCEconomico tipo : tipos){
-					CEconomico ceconomico = new CEconomico();
-					ceconomico.tipo = tipo;
-					for (int i = 0; i < tipoEvaluacion.duracion; i++){
-						ValoresCEconomico vCEconomico = new ValoresCEconomico(i);
-						vCEconomico.initValues(i);
-						ceconomico.valores.add(vCEconomico);
+					if (tipo.creadoUsuario == null || !tipo.creadoUsuario) {
+						CEconomico ceconomico = new CEconomico();
+						ceconomico.tipo = tipo;
+						for (int i = 0; i < tipoEvaluacion.duracion; i++){
+							ValoresCEconomico vCEconomico = new ValoresCEconomico(i);
+							vCEconomico.initValues(i);
+							ceconomico.valores.add(vCEconomico);
+						}
+						solicitud.ceconomicos.add(ceconomico);
 					}
-					solicitud.ceconomicos.add(ceconomico);
 				}
 				solicitud.save();
 			}

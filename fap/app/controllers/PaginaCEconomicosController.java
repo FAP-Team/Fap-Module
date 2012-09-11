@@ -28,7 +28,6 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 	}
 	
 	public static void index(String accion, Long idSolicitud, Long idCEconomico, Integer duracion) {
-		System.out.println(Messages.allMessages());
 		if (accion == null)
 			accion = getAccion();
 		if (!permiso(accion)) {
@@ -171,6 +170,6 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 				filaCEconomico.permisoEditar = false;
 		}
 		
-		renderJSON(response.toJSON("tipo.jerarquia", "tipo.nombre", "id"));
+		renderJSON(response.toJSON("tipo.jerarquia", "tipo.nombre", "id", "valores.valorSolicitado_formatFapTabla"));
 	}
 }

@@ -34,7 +34,7 @@ public class BaremacionUtils {
 			for(int i = sortedCEconomicos.size() -2; i >= 0; i--){
 				for(CEconomico ceconomico : sortedCEconomicos.get(i)){
 					play.Logger.info("Calculando automático en la solicitud "+ceconomico.tipo.jerarquia);
-					if(ceconomico.tipo.clase.equals("auto") && (!ceconomico.tipo.tipoOtro)){
+					if(ceconomico.tipo!= null && ceconomico.tipo.clase != null && ceconomico.tipo.clase.equals("auto") && (!ceconomico.tipo.tipoOtro)){
 						List<CEconomico> childs = BaremacionService.getChilds(ceconomico, sortedCEconomicos.get(i + 1));
 						BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
 					}

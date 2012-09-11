@@ -25,7 +25,8 @@ Formulario Principal {
             }
             
             Grupo titulo="Resultado de la búsqueda" permiso=mostrarResultadoBusqueda borde=false {
-                Tabla listaSolicitudesBuscadas titulo="Mis Solicitudes (Búsqueda)" campo=SolicitudGenerica paginaLeer=LeerSolicitud paginaEditar=EditarSolicitud paginaCrear=NuevaSolicitud {
+                Tabla listaSolicitudesBuscadas titulo="Mis Solicitudes (Búsqueda)" campo=SolicitudGenerica paginaLeer=LeerSolicitud paginaEditar=EditarSolicitud paginaCrear=NuevaSolicitud 
+                Color: porDefecto{
                     Columna campo=SolicitudGenerica.id titulo="ID" ancho="40"
                     Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
                     Columna campo=SolicitudGenerica.estado titulo="Estado Interno" ancho="80" permiso=noVisibleUsuario

@@ -4877,6 +4877,14 @@ ul.errorsDetails li a {
    background-color: #ADFF2F;
 }
 
+.filaNoEditable, .filaNoEditable.x-grid-row-alt .x-grid-cell, .filaNoEditable.x-grid-row-alt .x-grid-rowwrap-div {
+   background-color: #E3E1E2;
+}
+
+.filaEditable, .filaEditable.x-grid-row-alt .x-grid-cell, .filaEditable.x-grid-row-alt .x-grid-rowwrap-div   {
+   background-color: #FFFFFF;
+}
+
 .table td.tabla-moneda {
 	text-align: right;
 }

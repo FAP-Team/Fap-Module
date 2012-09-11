@@ -22,6 +22,7 @@
 	
 #{fap.tabla 
 	 campo:'Solicitud.ceconomicos', 
+	 codePrint:'if (record.data.permisoEditar) { return \'filaEditable\'; } else { return \'filaNoEditable\'; }',
      id:'tablaCEconomicos', 
      idEntidad:'idCEconomico',
      paginaEditar:'PaginaCEConomicos',

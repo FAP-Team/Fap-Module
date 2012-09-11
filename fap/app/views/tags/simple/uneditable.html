@@ -2,8 +2,17 @@
 	if (_color)
 		color=_color
 	def id = _id ?: null;
+	
+		def value = _value;	
+	if (_format != null){
+	   try{
+	      	value = format.FapFormat.format(value, _format);
+	   } catch (Exception e){
+	      // Value tiene un fallo de validación, no se le da formato, dejandolo como estaba
+	   }
+	}
 %}
 
 #{simple.row id:_id, label:_label}
-	<input type="text" #{if id}id="${id}"#{/if} class="span3" disabled="disabled" select style="width: ${_ancho}px;  background-color: ${color}" value="${_value}"/>
+	<input type="text" #{if id}id="${id}"#{/if} class="span3" disabled="disabled" select style="width: ${_ancho}px;  background-color: ${color}" value="${value}"/>
 #{/simple.row}

@@ -42,7 +42,12 @@
 }%
 
 #{if url != null}
-	<div class="form-row">
+	#{if _noRow}
 		<a id="${id}" href="${url}" #{if target}target="${target}"#{/if} ${disabled} #{if estilo}class="${estilo}"#{/if}>${label}</a>		
-	</div>
+	#{/if}
+	#{else}
+		<div class="form-row">
+			<a id="${id}" href="${url}" #{if target}target="${target}"#{/if} ${disabled} #{if estilo}class="${estilo}"#{/if}>${label}</a>		
+		</div>
+	#{/else}
 #{/if}

@@ -6,34 +6,47 @@ import validation.CustomValidation;
 import messages.Messages;
 import models.CEconomico;
 import models.CEconomicosManuales;
+import models.SolicitudGenerica;
 import models.TipoCEconomico;
 import models.TipoEvaluacion;
+import controllers.PaginaCEconomicoManualController;
 import controllers.gen.popups.PopupCEconomicoManualControllerGen;
 
 public class PopupCEconomicoManualController extends PopupCEconomicoManualControllerGen {
 	
-	public static void index(String accion, Long idCEconomico, Long idCEconomicosManuales) {
+	public static void index(String accion, Long idSolicitud, Long idCEconomico, Long idCEconomicosManuales) {
 		if (accion == null)
 			accion = getAccion();
 		if (!permiso(accion)) {
-			Messages.fatal("La evaluacion ya ha sido iniciada, no puede crear ningún Concepto Economico Nuevo");
-			renderTemplate("fap/Baremacion/PopupCEconomicoManual.html", accion);
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+			renderTemplate("gen/PaginaCEconomicoManual/PaginaCEconomicoManual.html");
 		}
 
-		CEconomico cEconomico = PopupCEconomicoManualController.getCEconomico(idCEconomico);
+		SolicitudGenerica solicitud = PaginaCEconomicoManualController.getSolicitudGenerica(idSolicitud);
+		CEconomico cEconomico = PaginaCEconomicoManualController.getCEconomico(idSolicitud, idCEconomico);
 
 		CEconomicosManuales cEconomicosManuales = null;
-		if ("crear".equals(accion))
-			cEconomicosManuales = PopupCEconomicoManualController.getCEconomicosManuales();
-		else if (!"borrado".equals(accion))
-			cEconomicosManuales = PopupCEconomicoManualController.getCEconomicosManuales(idCEconomico, idCEconomicosManuales);
+		if ("crear".equals(accion)) {
+			cEconomicosManuales = PaginaCEconomicoManualController.getCEconomicosManuales();
+			if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")) {
+
+				cEconomicosManuales.save();
+				idCEconomicosManuales = cEconomicosManuales.id;
+				cEconomico.otros.add(cEconomicosManuales);
+				cEconomico.save();
+
+				accion = "editar";
+			}
+
+		} else if (!"borrado".equals(accion))
+			cEconomicosManuales = PaginaCEconomicoManualController.getCEconomicosManuales(idCEconomico, idCEconomicosManuales);
 
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 		Integer duracion = tipoEvaluacion.duracion-1;
-		log.info("Visitando página: " + "fap/Baremacion/PopupCEconomicoManual.html");
-		renderTemplate("fap/Baremacion/PopupCEconomicoManual.html", accion, idCEconomico, idCEconomicosManuales, cEconomico, cEconomicosManuales, duracion);
+		log.info("Visitando página: " + "gen/PaginaCEconomicoManual/PaginaCEconomicoManual.html");
+		renderTemplate("gen/PaginaCEconomicoManual/PaginaCEconomicoManual.html", accion, idSolicitud, idCEconomico, idCEconomicosManuales, solicitud, cEconomico, cEconomicosManuales);
 	}
-	
+
 	@Util
 	public static CEconomicosManuales getCEconomicosManuales() {
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
@@ -122,7 +135,7 @@ public class PopupCEconomicoManualController extends PopupCEconomicoManualContro
 			tipoCEconomico.comentariosSolicitante=true;
 			tipoCEconomico.descripcion=cEconomicosManuales.tipo.descripcion;
 			tipoCEconomico.nombre=cEconomicosManuales.tipo.nombre;
-			tipoCEconomico.instrucciones="Instrucciones";
+			tipoCEconomico.instrucciones=null; //"Instrucciones";
 			tipoCEconomico.tipoOtro=false;
 			tipoCEconomico.jerarquia=dbCEconomico.tipo.jerarquia+"."+(dbCEconomico.otros.size()+1);
 			tipoCEconomico.save();

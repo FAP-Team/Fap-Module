@@ -1,0 +1,54 @@
+%{
+   Integer anios = duracion;
+%}
+
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'PaginaCEconomicoManual', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Concepto Económico', 
+     urlBorrar:play.mvc.Router.reverse('PaginaCEconomicoManualController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaCEconomicoManualController.crear' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
+     urlEditar:play.mvc.Router.reverse('PaginaCEconomicoManualController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id])
+}
+	
+	#{form play.mvc.Router.reverse('PaginaCEconomicoManualController.guardarPCE' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]) , class:"form-horizontal", id:"guardarPCE"}
+
+	#{fap.grupo titulo:'Editar Detalle'}
+					
+	#{fap.texto campo:'cEconomicosManuales.tipo.nombre', id:'Nombre', titulo:'Nombre', requerido:'true' /}		
+	#{fap.areaTexto campo:'cEconomicosManuales.tipo.descripcion', id:'Descripción', titulo:'Descripcion' /}		
+
+	#{list items:0..anios, as:'i'}
+		%{
+			def paramName="cEconomicosManuales.valores[${i}]";
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+			def anioLabel = "Año "+(i+1);
+			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomicosManuales.valores[i].valorSolicitado);
+		%}
+		#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
+	#{/list}
+	
+	#{/fap.grupo}
+	
+	<div class="well">
+	#{fap.boton id:'bGuardarPCE', titulo:'Guardar' /}
+		
+	#{fap.enlace action:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'duracion':duracion]), estilo:'btn btn-link', titulo:'Volver', noRow:true /}
+	</div>
+	
+	#{/form}
+	
+	
+#{/fap.pagina}
+		

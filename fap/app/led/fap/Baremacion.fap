@@ -61,6 +61,7 @@ Entidad TipoCEconomico {
     // Para saber si hay que actualizarlo o crearlo en sucesivas actualizaciones de la Baremación (Boton de recargar Baremacion o Iniciar, etc.)
     boolean esNuevo
     Boolean tipoOtro default="false"
+    Boolean creadoUsuario // Concepto creado manualmente (no se debe buscar al iniciar uno nuevo)
 }
 
 Entidad CEconomico {

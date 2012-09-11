@@ -31,7 +31,7 @@
 			#{simple.uneditable name:'cEconomico.tipo.nombre', label:'Nombre', value:cEconomico.tipo.nombre, format:'moneda' /}
 		#{/else}	
 		<div class="wiki ">
-		<p>
+			<p>
 			${cEconomico.tipo.descripcion}
 			<br/>		
 		</p>
@@ -66,30 +66,38 @@
 		
 	#{fap.grupo borde:false, permiso:'verTablaCEconomicosOtros'}
 				
-		#{fap.tabla 
-		     campo:'CEconomico.otros', 
-		     crearEntidad:accion == 'crear', 
-		     id:'ceconomicosManuales', 
-		     idContainer:'idCEconomico', 
-		     idEntidad:'idCEconomicosManuales', 
-		     nameContainer:'PaginaCEconomicos', 
-		     popupCrear:'PopupCEconomicoManual', 
-		     popupEditar:'PopupCEconomicoManual', 
-		     permisoCrear:'iniciarBaremacion', 
-		     recargarPagina:true,
-		     tipoContainer:'pagina', 
-		     titulo:'Conceptos Económicos Manuales', 
-		     urlContainerCrear:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id]), 
-		     urlContainerEditar:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
-		     urlCrear:play.mvc.Router.reverse("popups.PopupCEconomicoManualController.index" , ['accion':'crear', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
-		     urlCrearEntidad:play.mvc.Router.reverse('PaginaCEconomicosController.crearForTablas' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
-		     urlEditar:play.mvc.Router.reverse("popups.PopupCEconomicoManualController.index" , ['accion':'editar', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']), 
-		     urlTabla:@PaginaCEconomicosController.tablaceconomicosManuales(idCEconomico)
-		}
+#{fap.tabla 
+     campo:'CEconomico.otros', 
+     crearEntidad:accion == 'crear', 
+     id:'ceconomicosManuales', 
+     idContainer:'idCEconomico', 
+     idEntidad:'idCEconomicosManuales', 
+     nameContainer:'PaginaCEconomicos', 
+     permisoCrear:'iniciarBaremacion', 
+     recargarPagina:true, 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Especificar Detalle', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("PaginaCEconomicosController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'irDespuesDeValidar':'']), 
+     urlContainerCrear:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id]), 
+     urlContainerEditar:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
+     urlCrear:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
+     urlCrearEntidad:play.mvc.Router.reverse('PaginaCEconomicosController.crearForTablas' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
+     urlEditar:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']),
+     urlTabla:@PaginaCEconomicosController.tablaceconomicosManuales(idCEconomico)
+}
+	
+			#{fap.columna alignPosition:'left', ancho:200, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}
 		
-			#{fap.columna ancho:200, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}
-			
-			#{fap.columna ancho:200, cabecera:'Nombre', campo:'tipo.nombre', expandir:true /}
+			#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre', campo:'tipo.nombre', expandir:true /}
+	
+			#{list items:0..anios, as:'i'}
+				%{	
+	  				String aux = "valores[${i}].valorSolicitado";
+	  				String label = "Año "+(i+1);
+				%}
+				#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true, alignPosition:'right' /}
+			#{/list}
 			
 		#{/fap.tabla}
 

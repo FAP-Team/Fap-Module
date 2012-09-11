@@ -17,7 +17,27 @@
      urlEditar:play.mvc.Router.reverse('DocumentosExternosFAPController.editar' , ['idSolicitud':solicitud?.id, 'idDocumentoExterno':documentoExterno?.id])
 }
 	 #{fap.grupo titulo:'Nuevo documento externo'}
-			#{fap.combo campo:'documentoExterno.tipo', id:'tipoDocumento', titulo:'Tipo Documento', requerido:true/}		
+	 
+		 %{
+		 	def tiposDocumentos;
+		 	def aportadoPor = "CIUDADANO";
+		 	// El trámite se obtiene de la property fap.gestordocumental.documentacion.tramite
+			String tramite = properties.FapProperties.get("fap.gestordocumental.documentacion.tramite");
+			print tramite
+			if (tramite == null){
+				if (aportadoPor == null)
+					tiposDocumentos = models.TipoDocumento.findAll();
+				else
+					tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(aportadoPor);
+			}else if(aportadoPor == null){
+				tiposDocumentos = models.Tramite.findTipoDocumentosFrom(tramite);
+			}else{
+				tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(tramite, aportadoPor);
+			}
+		%}
+			   
+			#{fap.combo campo:'documentoExterno.tipo', id:'tipoDocumento', titulo:'Tipo Documento', itemsModificables:tiposDocumentos,
+	          comboValue:"uri", comboText:"nombre", requerido:true, eliminarDuplicados:true, ordenarPorTexto:true/}		
 		
 			#{fap.areaTexto campo:'documentoExterno.descripcion', id:'descripcion', titulo:'Descripción', ancho:"450px", requerido:true/}		
 		
@@ -25,7 +45,7 @@
 		
 			#{fap.texto campo:'documentoExterno.expediente', id:'expediente', titulo:'Expediente', ancho:"450px", requerido:true /}		
 		
-			#{fap.areaTexto campo:'documentoExterno.uri', id:'uri', titulo:'Dirección (uri)', ancho:"450px", requerido:true /}	
+			#{fap.areaTexto campo:'documentoExterno.uri', id:'uri', titulo:'Dirección Electrónica', ancho:"450px" /}	
 	#{/fap.grupo}
 	<script type="text/javascript">
 		%{

@@ -9,10 +9,12 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 		
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
-			Tabla documentosExternos titulo="Documentos Externos" campo=SolicitudGenerica.documentacion.documentosExternos paginaCrear=DocumentosExternosFAP popupEditar=DocumentosExternosEditarFAP popupLeer=DocumentosExternosLeerFAP {
-				Columna titulo="Id" campo=DocumentoExterno.id
-				Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
-				Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
+			Grupo docExt titulo="Documentos Externos"{
+				Wiki{"En aplicación del artículo 18 del Decreto 48/2009, de 28 de Abril, de simplificación administrativa, la siguiente documentación ya obra en poder del Órgano, o presentada en otras administraciones en soporte electrónico, siempre que no haya transcurrido más de 5 años desde la finalización del procedimiento."}
+				Tabla documentosExternos titulo="Documentos Externos" campo=SolicitudGenerica.documentacion.documentosExternos paginaCrear=DocumentosExternosFAP popupEditar=DocumentosExternosEditarFAP popupLeer=DocumentosExternosLeerFAP {
+					Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
+					Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
+				}
 			}
 		}
 		
@@ -47,7 +49,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		AreaTexto descripcion titulo="Descripción" campo=DocumentoExterno.descripcion
 		Texto organo titulo="Órgano" campo=DocumentoExterno.organo requerido
 		Texto expediente titulo="Expediente" campo=DocumentoExterno.expediente requerido
-		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri requerido
+		AreaTexto uri titulo="Dirección Electrónica" campo=DocumentoExterno.uri
 	}
 	
 	// Popup Sobrescrito
@@ -58,7 +60,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		AreaTexto descripcion titulo="Descripción" campo=DocumentoExterno.descripcion
 		Texto organo titulo="Órgano" campo=DocumentoExterno.organo requerido
 		Texto expediente titulo="Expediente" campo=DocumentoExterno.expediente requerido
-		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri requerido
+		AreaTexto uri titulo="Dirección Electrónica" campo=DocumentoExterno.uri
 	}
 	
 	Popup DocumentosExternosLeerFAP titulo="Ver Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos {
@@ -66,7 +68,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		AreaTexto descripcion titulo="Descripción" campo=DocumentoExterno.descripcion
 		Texto organo titulo="Órgano" campo=DocumentoExterno.organo
 		Texto expediente titulo="Expediente" campo=DocumentoExterno.expediente
-		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri
+		AreaTexto uri titulo="Dirección Electrónica" campo=DocumentoExterno.uri
 	}
 	
 	Pagina Aportacion titulo="Aportación"{

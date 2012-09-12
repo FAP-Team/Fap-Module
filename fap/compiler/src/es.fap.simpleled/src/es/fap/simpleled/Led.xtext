@@ -18,7 +18,7 @@ QN: // Qualified Name
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "DireccionMapa" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
-	"agente" | "documento" | "password" | "aportadoPor" | "texto" | "isla"
+	"agente" | "documento" | "password" | "aportadoPor" | "texto" | "isla" | "CCC"
 ;
 
 Entity:
@@ -224,7 +224,7 @@ Elemento:
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple |
-	EntidadAutomatica | Accion | Codigo
+	EntidadAutomatica | Accion | Codigo | CCC
 ;
 
 Campo:
@@ -501,6 +501,15 @@ Nip:
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING) &
 		(requerido?='requerido')?
+	)
+;
+
+CCC:
+	elemento='CCC' (name=ID)? (
+		('campo' '=' campo=Campo) & 
+		('titulo' '=' titulo=STRING) &
+		(requerido?='requerido')? &
+		('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
 ;
 

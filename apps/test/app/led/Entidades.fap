@@ -178,5 +178,5 @@ Entidad ElementosBasicos{
 	Integer numeroI
 	Long numeroL
 	Double numeroD
-	
+	CCC ccc
 }

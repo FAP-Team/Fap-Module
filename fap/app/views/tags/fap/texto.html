@@ -26,6 +26,8 @@
 	def label = _titulo ?: play.i18n.Messages.get(field.name)
 	def value = _value ?: field.flashorvalue
 	def ayuda = _ayuda
+	
+	def maxlength = _maxlength
 
 	def icono = ""
 	if (_email)
@@ -35,7 +37,7 @@
 		icono = "icon-calendar"
 		
 	if (_direccionMapa)
-		icono = "icon-map-marker"	
+		icono = "icon-map-marker"
 	
 	
 	def clase = _clase ?: "input-xlarge"
@@ -90,7 +92,7 @@
 	
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
     	#{if _email || _fecha || _direccionMapa}<div class="input-prepend">
-    	<span class="add-on"><i class=${icono}></i></span>#{/if}<input class="${clase}" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+    	<span class="add-on"><i class=${icono}></i></span>#{/if}<input class="${clase}" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>
     	#{if _email || _fecha || _direccionMapa}</div>#{/if}
 	#{/fap.formrow}
 	#{if duplicado == true}
@@ -103,7 +105,7 @@
 		}%
 		#{fap.formrow id:id_copy, label:label_copy, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
 			#{if _email || _fecha || _direccionMapa}<div class="input-prepend">
-			<span class="add-on"><i class=${icono}></i></span>#{/if}<input id="${id_copy}" class="${clase}" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if}>
+			<span class="add-on"><i class=${icono}></i></span>#{/if}<input id="${id_copy}" class="${clase}" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>
 			#{if _email || _fecha || _direccionMapa}</div>#{/if}
 		#{/fap.formrow}
 		

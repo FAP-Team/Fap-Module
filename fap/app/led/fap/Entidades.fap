@@ -101,6 +101,13 @@ Entidad Direccion embeddable auditable{
 	Lista tipoDireccion tipo
 }
 
+Entidad CCC embeddable {
+	String cccCodigoEntidad
+	String cccCodigoOficina
+	String cccDigitosControl
+	String cccNumeroCuenta
+}
+
 // Nuevos parametros para la busqueda mediante la Api de Google Places
 Entidad DireccionMapa embeddable auditable{
 	

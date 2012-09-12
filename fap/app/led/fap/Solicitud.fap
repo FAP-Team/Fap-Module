@@ -3,8 +3,11 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	Pagina DocumentacionFAP titulo = "Documentación FAP" campo=SolicitudGenerica noForm {
 	
 		Tabla documentos titulo="Documentos" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP {
-			Columna titulo="Tipo Documento" campo=Documento.tipo
-			Columna titulo="Descripcion" campo=Documento.descripcionVisible expandir
+			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
+            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="85"
+			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+            Columna campo=Documento.tipo titulo="Tipo Documento"expandir
+			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
 		}
 		
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{

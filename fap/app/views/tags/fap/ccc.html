@@ -1,0 +1,49 @@
+*{
+  CCC
+  ==================================
+  Argumentos
+  	_id     - ID
+  	_titulo - Label
+  	_value  - Valor a mostrar, si no se especifica busca el valor del campo
+  	_campo  - Campo donde se almacenará el campo de texto
+  	_ayuda  - Objeto de tipo TagAyuda
+  	_requerido(false) - El campo es requerido
+    _obj     - Objeto a partir del cual se accede al value. 
+    		   Usar en el caso de que se llame desde otro tag
+    _noRow(false)   - true para no envolver el campo en un form-row
+}*
+
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0]) }%
+#{fap.field _campo, obj:obj}
+%{ 
+	def id = _id ?: field.id
+	def label = _titulo ?: field.name
+	def value = _value ?: field.flashorvalue
+	def ayuda = _ayuda
+	def requerido = _requerido != null? _requerido : false;
+	def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	def showRow   = _noRow != null? !_noRow : true
+
+	def id_ce = id+"CodigoEntidad"
+	def id_oficina = id+"Oficina"
+	def id_dc = id+"DigitosControl"
+	def id_cuenta = id+"Cuenta"
+
+	def campo_ce = _campo+".cccCodigoEntidad"
+	def campo_oficina = _campo+".cccCodigoOficina"
+	def campo_dc = _campo+".cccDigitosControl"
+	def campo_cuenta = _campo+".cccNumeroCuenta"
+	
+}%
+	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoMensajes:"276px"}
+		<div class="inline-inputs">
+			#{fap.texto id:id_ce, titulo:"Código Entidad", ancho:"10%", noRow:true, campo:campo_ce, obj:obj, maxlength:4 /}
+			#{fap.texto id:id_oficina, titulo:"Código Oficina", ancho:"10%", noRow:true, campo:campo_oficina, obj:obj, maxlength:4 /}
+			#{fap.texto id:id_dc, titulo:"Dígito de Control", ancho:"5%", noRow:true, campo:campo_dc, obj:obj, maxlength:2 /}
+			#{fap.texto id:id_cuenta, titulo:"Número de Cuenta", ancho:"47%", noRow:true, campo:campo_cuenta, obj:obj, maxlength:10 /}
+		</div>
+		#{fap.ayuda ayuda:ayuda, id:id_help /}
+	#{/fap.formrow}
+	
+#{/fap.field}

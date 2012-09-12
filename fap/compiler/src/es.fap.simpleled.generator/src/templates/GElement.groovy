@@ -220,6 +220,9 @@ public class GElement {
 				
 			else if (element instanceof BarraDeslizante)
 				cache.put(element, new GBarraDeslizante(element, container));
+				
+			else if(element instanceof CCC)
+				cache.put(element, new GCCC(element, container));
 		}
 		
 		return cache.get(element);

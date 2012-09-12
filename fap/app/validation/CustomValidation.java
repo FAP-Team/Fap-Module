@@ -10,6 +10,7 @@ import java.util.Set;
 import antlr.StringUtils;
 
 import messages.Messages;
+import models.CCC;
 import models.Direccion;
 import models.Documento;
 import models.DocumentoExterno;
@@ -92,6 +93,30 @@ public class CustomValidation {
         try {
             ValidationResult result = new ValidationResult();
             if (!check.validaCif(o.toString(), texto)) {
+            	
+            	String field = key;
+            	String message = texto.toString();
+            	String[] variables = new String[0];
+                
+            	Error error = new Error(field, message, variables);
+                Validation.addError(field, message, variables);
+                
+                result.error = error;
+                result.ok = false;
+            } else {
+                result.ok = true;
+            }
+            return result;
+        } catch (Exception e) {
+            throw new UnexpectedException(e);
+        }
+    }
+    
+    static ValidationResult applyCheck(CCCCheck check, String key, Object o) {
+    	StringBuilder texto = new StringBuilder();
+        try {
+            ValidationResult result = new ValidationResult();
+            if (!check.validaCCC((CCC)o, texto)) {
             	
             	String field = key;
             	String message = texto.toString();
@@ -273,6 +298,9 @@ public class CustomValidation {
     		} else if (o instanceof PersonaJuridica) {
     			CifCheck cCheck = new CifCheck();
     			return applyCheck(cCheck, key + ".cif", ((PersonaJuridica) o).cif);
+    		} else if (o instanceof CCC) {
+    			CCCCheck cccCheck = new CCCCheck();
+    			return applyCheck(cccCheck, key, ((CCC) o));
     		}
     		return result;
     	}

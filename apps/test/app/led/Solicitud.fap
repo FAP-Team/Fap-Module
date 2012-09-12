@@ -739,13 +739,14 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 	Pagina elementosBasicos campo=Solicitud{
 		Grupo Textos titulo = "Textos"{
 			Texto campo=Solicitud.elementos.texto titulo="Texto: "
-			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "�?rea de texto"
+			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "Area de texto"
 		}
 		
 		Grupo Numeros titulo="Números"{
 			Texto titulo="Ejemplo de integer: " campo=Solicitud.elementos.numeroI
 			Texto titulo="Ejemplo de double: " campo=Solicitud.elementos.numeroD
 			Texto titulo="Ejemplo de long: " campo=Solicitud.elementos.numeroL
+			CCC titulo="Ejemplo de Cuenta Bancaria: " campo=Solicitud.elementos.ccc
 		}
 		
 		Grupo Selectores titulo="Selectores"{

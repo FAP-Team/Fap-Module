@@ -23,6 +23,8 @@ public class CCCCheck extends Check {
 	}
 	
 	public boolean validaCCC (CCC ccc, StringBuilder texto) {
+		if (ccc.cccCodigoEntidad.isEmpty() && ccc.cccCodigoOficina.isEmpty() && ccc.cccDigitosControl.isEmpty() && ccc.cccNumeroCuenta.isEmpty())
+			return true;
 		if ((ccc.cccCodigoEntidad != null && ccc.cccCodigoEntidad.matches("\\d{4}$")) &&
 			(ccc.cccCodigoOficina != null  && ccc.cccCodigoOficina.matches("\\d{4}$")) &&
 			(ccc.cccDigitosControl != null  && ccc.cccDigitosControl.matches("\\d{2}$")) &&

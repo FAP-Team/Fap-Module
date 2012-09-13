@@ -163,16 +163,7 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 		}
 		return msg;
 	}
-	
-	public static List<ComboItem> paginaAconfigurar(){
-		List<ComboItem> result = new ArrayList<ComboItem>();
-		List<ConfigurarMensaje> paginasMensaje = ConfigurarMensaje.findAll();
-		for (ConfigurarMensaje lista: paginasMensaje){
-			result.add(new ComboItem(lista.nombrePagina, lista.nombrePagina));
-		}
-		return result; 
-	}
-	
+
 	public static void RellenarMensajesValidateCopy(String accion, ConfigurarMensaje dbConfigurarMensaje, ConfigurarMensaje configurarMensaje) {
 		CustomValidation.clearValidadas();
 		

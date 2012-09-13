@@ -85,7 +85,7 @@ Formulario Administracion permiso=administrador{
     Pagina RellenarMensajes titulo="Rellenar mensaje" campo=ConfigurarMensaje {
     	Accion editar redirigir = ConfigurarMensajes
     	Grupo permiso = paginaAConfigurar borde=false{
-    		Combo paginaAconfigurar campo=ConfigurarMensaje.nombrePagina titulo="Página"
+    		Texto paginaAconfigurar campo=ConfigurarMensaje.nombrePagina titulo="Página"
     	} 
     	Combo tipoMensaje campo=ConfigurarMensaje.tipoMensaje titulo="Tipo" ayuda="Seleccionar si se quiere configurar un wiki u otro tipo de mensaje" (popover) requerido
     	

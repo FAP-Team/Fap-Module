@@ -63,7 +63,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		if (!Messages.hasErrors()) {
 			try {
 				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
-				tramite.firmar(firma);
+				SolicitudPresentarFAPController.firmarRegistrarFHFormFirmaFH(idSolicitud, idRegistro, firma);
 				if (!Messages.hasErrors()) {
 					try {
 						tramite.registrar();
@@ -87,10 +87,10 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		}
 		
 		
-		if (firmarRegistrarFH != null) {
-			SolicitudPresentarFAPController.firmarRegistrarFHFormFirmaFH(idSolicitud, idRegistro, firma);
-			SolicitudPresentarFAPController.formFirmaFHRender(idSolicitud, idRegistro);
-		}
+//		if (firmarRegistrarFH != null) {
+//			SolicitudPresentarFAPController.firmarRegistrarFHFormFirmaFH(idSolicitud, idRegistro, firma);
+//			SolicitudPresentarFAPController.formFirmaFHRender(idSolicitud, idRegistro);
+//		}
 
 		if (!Messages.hasErrors()) {
 			SolicitudPresentarFAPController.formFirmaFHValidateRules(firma);
@@ -203,19 +203,20 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			}
 		}
 		
-		if (!Messages.hasErrors()) {
-			if (firmarRegistrarNif != null) {
-				SolicitudPresentarFAPController.firmarRegistrarNifFormFirmaPF(idSolicitud, idRegistro, firma);
-				SolicitudPresentarFAPController.formFirmaPFRender(idSolicitud, idRegistro);
-			}
-		}
+//		if (!Messages.hasErrors()) {
+//			if (firmarRegistrarNif != null) {
+//				// OJO creo que sobraria
+//				//SolicitudPresentarFAPController.firmarRegistrarNifFormFirmaPF(idSolicitud, idRegistro, firma);
+//				SolicitudPresentarFAPController.formFirmaPFRender(idSolicitud, idRegistro);
+//			}
+//		}
 
 		if (!Messages.hasErrors()) {
 			SolicitudPresentarFAPController.formFirmaPFValidateRules(firma);
 		}
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada con éxito");
-			redirect("PresentarFAPController.index", idSolicitud, idRegistro);
+			redirect("PresentarFAPController.index", "editar", idSolicitud, idRegistro);
 		} else
 			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		SolicitudPresentarFAPController.formFirmaPFRender(idSolicitud, idRegistro);
@@ -257,10 +258,10 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			}
 		}
 		
-		if (firmarRepresentante != null) {
-			SolicitudPresentarFAPController.firmarRepresentanteFormFirmaRepresentante(idSolicitud, idRegistro, firma);
-			SolicitudPresentarFAPController.formFirmaRepresentanteRender(idSolicitud, idRegistro);
-		}
+//		if (firmarRepresentante != null) {
+//			//SolicitudPresentarFAPController.firmarRepresentanteFormFirmaRepresentante(idSolicitud, idRegistro, firma);
+//			SolicitudPresentarFAPController.formFirmaRepresentanteRender(idSolicitud, idRegistro);
+//		}
 
 		if (!Messages.hasErrors()) {
 			SolicitudPresentarFAPController.formFirmaRepresentanteValidateRules(firma);
@@ -312,17 +313,17 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			}
 		}
 
-		if (firmarRegistrarCif != null) {
-			SolicitudPresentarFAPController.firmarRegistrarCifFormFirmaCif(idSolicitud, idRegistro, firma);
-			SolicitudPresentarFAPController.formFirmaCifRender(idSolicitud, idRegistro);
-		}
+//		if (firmarRegistrarCif != null) {
+//			//SolicitudPresentarFAPController.firmarRegistrarCifFormFirmaCif(idSolicitud, idRegistro, firma);
+//			SolicitudPresentarFAPController.formFirmaCifRender(idSolicitud, idRegistro);
+//		}
 
 		if (!Messages.hasErrors()) {
 			SolicitudPresentarFAPController.formFirmaCifValidateRules(firma);
 		}
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada con éxito");
-			redirect("PresentarFAPController.index", idSolicitud);
+			redirect("PresentarFAPController.index", "editar", idSolicitud, idRegistro);
 		} else
 			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		SolicitudPresentarFAPController.formFirmaCifRender(idSolicitud, idRegistro);
@@ -381,7 +382,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		}
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada con éxito");
-			redirect("PresentarFAPController.index", idSolicitud);
+			redirect("PresentarFAPController.index", "editar", idSolicitud, idRegistro);
 		} else
 			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		SolicitudPresentarFAPController.frmRegistrarRender(idSolicitud, idRegistro);

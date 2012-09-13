@@ -11,9 +11,10 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 		
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
-			Grupo docExt titulo="Documentos Externos"{
-				Wiki{"En aplicación del artículo 18 del Decreto 48/2009, de 28 de Abril, de simplificación administrativa, la siguiente documentación ya obra en poder del Órgano, o presentada en otras administraciones en soporte electrónico, siempre que no haya transcurrido más de 5 años desde la finalización del procedimiento."}
-				Tabla documentosExternos titulo="Documentos Externos" campo=SolicitudGenerica.documentacion.documentosExternos paginaCrear=DocumentosExternosFAP popupEditar=DocumentosExternosEditarFAP popupLeer=DocumentosExternosLeerFAP {
+			Grupo docExt titulo="Documentos ya aportados en la Administración"{
+				Wiki{"En aplicación del artículo 18 del Decreto 48/2009, de 28 de abril, por el que se establecen en la Administración Pública de la Comunidad Autónoma de Canarias medidas ante la crisis económica y de simplificación administrativa, el interesado puede NO aportar los documentos que ya se encuentren en poder de la Administración y que se relacionan a continuación.
+Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alternativos de los órganos gestores que se indican.."}
+				Tabla documentosExternos titulo="Documentos ya aportados en la Administración" campo=SolicitudGenerica.documentacion.documentosExternos paginaCrear=DocumentosExternosFAP popupEditar=DocumentosExternosEditarFAP popupLeer=DocumentosExternosLeerFAP {
 					Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
 					Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
 				}

@@ -312,7 +312,7 @@ public abstract class TramiteBase {
 					throw new RegistroServiceException("Error al obtener el justificante del registro de entrada");
 				}
 			} else {
-				play.Logger.debug("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
+				play.Logger.info("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
 			}
 			registro.refresh();
 			//Crea el expediente en el AED
@@ -328,7 +328,7 @@ public abstract class TramiteBase {
 				getRegistro().fasesRegistro.save();
 				tx.commit();
 			}else{
-				play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
+				play.Logger.info("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
 			}
 			registro.refresh();
 			
@@ -364,7 +364,7 @@ public abstract class TramiteBase {
 				}
 				tx.commit();
 			} else {
-				play.Logger.debug("Ya están clasificados todos los documentos del trámite de '%s' de la solicitud %s", this.getTipoTramite(), this.solicitud.id);
+				play.Logger.info("Ya están clasificados todos los documentos del trámite de '%s' de la solicitud %s", this.getTipoTramite(), this.solicitud.id);
 			}
 			registro.refresh();
 			//Añade los documentos a la lista de documentos de la solicitud
@@ -377,7 +377,7 @@ public abstract class TramiteBase {
 				}
 				this.prepararNuevo();
 				solicitud.save();
-				play.Logger.debug("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
+				play.Logger.info("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
 				tx.commit();
 			}
 			

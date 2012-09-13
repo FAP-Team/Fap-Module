@@ -1,5 +1,15 @@
 h2. Changelog
 
+h3. Versión 2.1RC6
+
+* Fixed Bug en el cálculo de los conceptos económicos.
+* Nuevo elemento CCC, para representar una Cuenta Corriente Cliente.
+* Fixed Bug en ConfigurarMensajes.
+* Redefiniendo las columnas de la tablas DocumentacionFAP.
+* Fixed Bug en Documentación Externa.
+* No se envían ahora los campos ocultos por grupos.
+* Minor Fixed Bug.
+
 h3. Versión 2.1RC5
 
 * Mejorada la página de conceptos económicos.

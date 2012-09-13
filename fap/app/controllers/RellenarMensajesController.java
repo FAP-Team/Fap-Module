@@ -175,21 +175,29 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 	
 	public static void RellenarMensajesValidateCopy(String accion, ConfigurarMensaje dbConfigurarMensaje, ConfigurarMensaje configurarMensaje) {
 		CustomValidation.clearValidadas();
-		if (secure.checkGrafico("paginaAConfigurar", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
-			CustomValidation.valid("configurarMensaje", configurarMensaje);
-		}
-		CustomValidation.valid("configurarMensaje", configurarMensaje);
-		CustomValidation.required("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
-		CustomValidation.validValueFromTable("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
+		
 		dbConfigurarMensaje.tipoMensaje = configurarMensaje.tipoMensaje;
-		if (Arrays.asList(new String[] { "wiki" }).contains(dbConfigurarMensaje.tipoMensaje)) {
-			CustomValidation.required("configurarMensaje.tituloMensaje", configurarMensaje.tituloMensaje);
+		if (Arrays.asList(new String[] { "wiki" }).contains(dbConfigurarMensaje.tipoMensaje))
 			dbConfigurarMensaje.tituloMensaje = configurarMensaje.tituloMensaje;
-
-		}
-		CustomValidation.required("configurarMensaje.contenido", configurarMensaje.contenido);
 		dbConfigurarMensaje.contenido = configurarMensaje.contenido;
 		dbConfigurarMensaje.habilitar = configurarMensaje.habilitar;
-
+		dbConfigurarMensaje.msjFinal = configurarMensaje.msjFinal;
+		
+		if (configurarMensaje.habilitar){
+			CustomValidation.valid("configurarMensaje", configurarMensaje);
+			CustomValidation.validValueFromTable("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
+			CustomValidation.required("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
+			
+			if (Arrays.asList(new String[] { "wiki" }).contains(dbConfigurarMensaje.tipoMensaje)) 
+				CustomValidation.required("configurarMensaje.tituloMensaje", configurarMensaje.tituloMensaje);
+			
+			if (secure.checkGrafico("paginaAConfigurar", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+				CustomValidation.valid("configurarMensaje", configurarMensaje);
+			}
+			
+			CustomValidation.required("configurarMensaje.contenido", configurarMensaje.contenido);
+			CustomValidation.validValueFromTable("configurarMensaje.msjFinal", configurarMensaje.msjFinal);
+			CustomValidation.required("configurarMensaje.msjFinal", configurarMensaje.msjFinal);
+		}
 	}
 }

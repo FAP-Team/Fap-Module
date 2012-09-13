@@ -558,6 +558,7 @@ Entidad ConfigurarMensaje {
 	String nombrePagina
 	String formulario
 	String formularioNombreText transient 
+	Lista posicionMensaje msjFinal
 }
 
 
@@ -708,4 +709,5 @@ Entidad AnotacionFAP {
 	ManyToOne Agente personaAsunto noConstruct
 	ManyToOne Agente personaSolucion noConstruct
 }
+
 

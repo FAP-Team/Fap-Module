@@ -8866,3 +8866,8 @@ Lista tipoDireccion crearEnumerado {
 	nacional : "Nacional"
 	internacional : "Internacional"
 }
+
+Lista posicionMensaje crearEnumerado {
+	superior: "Parte superior"
+	inferior: "Parte inferior"
+}

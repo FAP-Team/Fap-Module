@@ -95,7 +95,7 @@ Formulario Administracion permiso=administrador{
     	
     	AreaTexto contenido campo=ConfigurarMensaje.contenido titulo="Contenido del mensaje" ancho="500px" ayuda="Contenido del mensaje que podremos colocar en la página de la aplicación" (popover) requerido
     	Check habilitado campo=ConfigurarMensaje.habilitar titulo="Habilitar la aparición del mensaje en la página" ayuda="Será necesario habilitar en caso de querer mostrar en la página el mensaje" (popover)
-
+		Combo posicion campo=ConfigurarMensaje.msjFinal titulo = "Posición del mensaje en la página" requerido
    	}
     
     Pagina ActivarBaremacion titulo="Activar Baremación" noForm{

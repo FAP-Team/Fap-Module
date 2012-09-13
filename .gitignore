@@ -114,4 +114,4 @@ apps/test/app/listas/initial-data/*.yml
 #Aplicación Cuadro de Mandos
 apps/cuadroMandos/tmp/*
 apps/cuadroMandos/app/listas/initial-data/*.yml
-
+apps/cuadroMandos/app/views/gen/*

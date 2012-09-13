@@ -54,10 +54,20 @@ public class GraficasWSController extends GraficasWSControllerGen {
 		Aplicacion app = Aplicacion.findById(idAplicacion);
 		RelacionWSConsultas relacion = getRelacionWSConsultas(idAplicacion, idRelacionWSConsulta);
 		String urlWS = relacion.serviciosWeb.urlWS;
-		WSRequest request = WS.url(urlWS);
+		WSRequest request = null;
+		JsonElement json = null;
 		
-		if (request.body != null) {
-			JsonElement json = request.get().getJson();
+		try {
+			request = WS.url(urlWS);
+			json = request.get().getJson();
+		} catch (RuntimeException ce) {
+			Messages.warning("El servicio web no está disponible en estos momentos y no existe historial del mismo");
+			play.Logger.error("El servicio web no está disponible en estos momentos  y no existe historial del mismo");
+			Messages.keep();
+			redirect("ServiciosWebAppController.index", "editar", idAplicacion);
+		}
+		
+		if (json != null) {
 			JsonArray array = json.getAsJsonArray();
 			Gson gson = new Gson();
 			int i = 0;

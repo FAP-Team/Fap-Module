@@ -25,13 +25,13 @@ import models.wsTest;
 import play.libs.WS;
 import play.libs.WS.HttpResponse;
 import play.libs.WS.WSRequest;
+import play.mvc.Http.Request;
 import play.mvc.Util;
 import play.mvc.results.RenderJson;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.sun.mail.iap.Response;
 
 import controllers.gen.ServiciosWebAppControllerGen;
 
@@ -73,10 +73,18 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		
 		Aplicacion app = getAplicacion(idAplicacion);
 		String urlApp = app.urlApp;
-		WSRequest request = WS.url(urlApp);
+		WSRequest request = null;
+		JsonElement json = null;
 		
-		if (request.body != null) {
-			JsonElement json = request.get().getJson();
+		try {
+			request = WS.url(urlApp);
+			json = request.get().getJson();
+		} catch (RuntimeException ce) {
+			Messages.warning("El servicio web no está disponible en estos momentos");
+			play.Logger.error("El servicio web no está disponible en estos momentos");
+		}
+		
+		if (json != null) {
 			JsonArray array = json.getAsJsonArray();		
 			Gson gson = new Gson();
 			int i = 0;
@@ -98,12 +106,18 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		
 		Aplicacion app = getAplicacion(idAplicacion);
 		String urlApp = app.urlApp;
-		WSRequest request = WS.url(urlApp);
+		WSRequest request = null;
+		JsonElement json = null;
+		try {
+			request = WS.url(urlApp);
+			json = request.get().getJson();
+		} catch (RuntimeException ce) {
+			Messages.warning("El servicio web no está disponible en estos momentos");
+			play.Logger.error("El servicio web no está disponible en estos momentos");
+		}
 		
-		if (request.body != null) {
-			JsonElement json = request.get().getJson();
+		if (json != null) {
 			JsonArray array = json.getAsJsonArray();		
-			
 			int i = 0;
 			List<RelacionWSConsultas> anteriorRelacionesWSConsultas = RelacionWSConsultas.find("select relacionWSConsultas from Aplicacion aplicacion join aplicacion.relacionWSConsultas relacionWSConsultas where aplicacion.id=? and relacionWSConsultas.serviciosWeb.activo=true", idAplicacion).fetch();
 			int numWS = array.size();
@@ -221,11 +235,19 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		
 		while (i < anteriorNumRelaciones) {
 			String urlWS = anterioresRelaciones.get(i).serviciosWeb.urlWS;
-			WSRequest request = WS.url(urlWS);
+			WSRequest request = null;
+			JsonElement json = null;
 			
-			if (request.body != null) {
+			try {
+				request = WS.url(urlWS);
+				json = request.get().getJson();
+			} catch (RuntimeException ce) {
+				Messages.warning("El servicio web no está disponible en estos momentos");
+				play.Logger.error("El servicio web no está disponible en estos momentos");
+			}
+			
+			if (json != null) {
 				List<ConsultasWS> anterioresConsultas = anterioresRelaciones.get(i).consulta;
-				JsonElement json = request.get().getJson();
 				JsonArray array = json.getAsJsonArray();		
 				Gson gson = new Gson();
 				int j = 0;

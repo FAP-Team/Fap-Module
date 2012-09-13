@@ -18,12 +18,6 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
-/*
- Entidad Solicitud extends SolicitudGenerica{
-
- }
- */
-
 @Entity
 public class Aplicacion extends FapModel {
 	// Código de los atributos

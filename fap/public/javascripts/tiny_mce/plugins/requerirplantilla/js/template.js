@@ -1,15 +1,7 @@
 tinyMCEPopup.requireLangPack();
 
-var HeaderFooterDialog = {
+var RequerirPlantillaDialog = {
 	preInit : function() {
-	    // Comprobamos que hay alguna plantilla actual "seteada" en el editor 
-	    // (ver si hay un ancla con el id de la plantilla en la url)      
-        tinyMCE.editors[0].execCommand('existeIdPlantillaURL');
-        if (tinyMCEPopup.editor.plantillaEnEditor == false) {
-            alert("¡Error! Debe guardar la plantilla actual para elegir su cabecera y su pie.");
-            tinyMCEPopup.close();
-        }
-
 		var url = tinyMCEPopup.getParam("template_external_list_url");
 
 		if (url != null)
@@ -62,13 +54,9 @@ var HeaderFooterDialog = {
 		});
 	},
 
-	selectTemplate : function(u, ti, header) {
-	    var d, x, tsrc = this.tsrc;
-	    if (header === 'header')
-    		d = window.frames['templatesrc_header'].document; 
-        else if (header === 'footer')
-            d = window.frames['templatesrc_footer'].document;
-            
+	selectTemplate : function(u, ti, descripcion) {
+		var d = window.frames['templatesrc'].document, x, tsrc = this.tsrc;
+
 		if (!u)
 			return;
 
@@ -78,28 +66,17 @@ var HeaderFooterDialog = {
 			if (tsrc[x].title == ti)
 				document.getElementById('tmpldesc').innerHTML = tsrc[x].description || '';
 		}
+		
+		if ( descripcion === "null")
+            descripcion = "";
+		document.getElementById('tmpldesc').innerHTML = descripcion || '';
 	},
 
  	insert : function() {
-        var indice = document.forms[0].header.selectedIndex 
-		var header_value = document.forms[0].header.options[indice].value
-		indice = document.forms[0].footer.selectedIndex 
-		var footer_value = document.forms[0].footer.options[indice].value
-		var idHeader = header_value.split(",")[0];
-		var idFooter = footer_value.split(",")[0];
-        
-        tinyMCE.editors[0].execCommand('existeIdPlantillaURL');
-        if (tinyMCEPopup.editor.plantillaEnEditor == false) {
-            alert("¡Error! Debe guardar la plantilla actual para elegir su cabecera y su pie.");
-            tinyMCEPopup.close();
-        } 
-	    
-	    $.post("/plantillasdoccontroller/guardarHeaderFooter", {'idHeader' : idHeader, 'idFooter' : idFooter, 'idPlantilla' : tinyMCEPopup.editor.plantillaEnEditor}, function() {
-             ;
-        }).error(function (xhr, ajaxOptions, thrownError) { 
-              alert('Error al guardar la plantilla: (' + xhr.status + ') ' + thrownError); 
-        }); 
-        
+        var indice = document.forms[0].tpath.selectedIndex 
+		var nombrePlantilla = document.forms[0].tpath.options[indice].text
+		
+		tinyMCEPopup.execCommand('mceInsertContent', false, "@"+nombrePlantilla+"@");
 		tinyMCEPopup.close();
 	},
 
@@ -127,7 +104,8 @@ var HeaderFooterDialog = {
 
 		return x.responseText;
 	}
+
 };
 
-HeaderFooterDialog.preInit();
-tinyMCEPopup.onInit.add(HeaderFooterDialog.init, HeaderFooterDialog);
+RequerirPlantillaDialog.preInit();
+tinyMCEPopup.onInit.add(RequerirPlantillaDialog.init, RequerirPlantillaDialog);

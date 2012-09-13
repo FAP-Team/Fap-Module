@@ -36,6 +36,7 @@ import models.CodigoExclusion;
 import models.Convocatoria;
 import models.ImagenesPlantilla;
 import models.PlantillaDocumento;
+import models.PlantillaDocumentoEncabezado;
 import models.RepresentantePersonaFisica;
 import models.SolicitudGenerica;
 import play.Play;
@@ -49,6 +50,7 @@ import play.mvc.Util;
 import play.mvc.results.Ok;
 import properties.FapProperties;
 import reports.Report;
+import reports.ReportFAP;
 import utils.BinaryResponse;
 import validation.CustomValidation;
 import config.InjectorConfig;
@@ -71,7 +73,6 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	
 	// Entidades a excluir en el plugin de TinyMCE que inserta una entidad FAP en una plantilla del editor
 	private static final String[] ENTIDADES_A_EXCLUIR = {"Singleton", "TableKeyValue", "TableKeyValueDependency", "Quartz"};
-    private static final int FILENAME_SIZE = 6;
     
 	public static void index(String accion) {
 		if (accion == null)
@@ -86,7 +87,7 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	
 	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en dialog.html (plugin 'template' del TinyMCE).
-	 * Devolvemos al plugin del editor TinyMCE un JSON con las plantillas guardadas
+	 * Devolvemos al plugin del editor TinyMCE un JSON con las plantillas html generadas
 	 */
 	public static void insertarPlantilla() {
 		// Ordeno esta consulta en orden alfabético inverso, para que quede en el orden correcto en el <select>
@@ -94,8 +95,9 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		String rutaMasNombrePlantilla,
 			   jsonString = "[";
 		for(int i = 0; i < plantillas.size(); i++) {
-			rutaMasNombrePlantilla = "/" + generarPlantilla(plantillas.get(i).plantilla); 
-			jsonString += "{\"idPlantilla\" : \"" + plantillas.get(i).id + "\", \"nombrePlantilla\" : \"" + plantillas.get(i).nombrePlantilla + "\", \"ruta\" : \"" + rutaMasNombrePlantilla + "\"}";
+			rutaMasNombrePlantilla = "/" + ReportFAP.generarPlantilla(plantillas.get(i).plantilla, false);
+			jsonString += "{\"idPlantilla\" : \"" + plantillas.get(i).id + "\", \"nombrePlantilla\" : \"" + plantillas.get(i).nombrePlantilla + 
+						  "\", \"ruta\" : \"" + rutaMasNombrePlantilla + "\", \"descripcion\" : \"" + plantillas.get(i).descripcion  +  "\"}";
 			if (i < plantillas.size()-1 )
 				jsonString += ", ";
 		}
@@ -111,7 +113,7 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		List<PlantillaDocumento> rows = PlantillaDocumento.find("select plantilla from PlantillaDocumento plantilla order by plantilla.nombrePlantilla asc").fetch();
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		tables.TableRenderResponse<PlantillaDocumento> response = new tables.TableRenderResponse<PlantillaDocumento>(rows, false, false, false, "", "", "", getAccion(), ids);
-		renderJSON(response.toJSON("id", "nombrePlantilla"));
+		renderJSON(response.toJSON("id", "nombrePlantilla", "descripcion"));
 	}
 	
 	/*
@@ -123,11 +125,25 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	}
 	
 	/*
+	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en TextEditor.html
+	 * Comprobamos si 
+	 */
+	public static void comprobarNombrePlantillaUnico(String nombrePlantilla) {
+		List<PlantillaDocumento> listaPlantillas = PlantillaDocumento.find("select plantilla from PlantillaDocumento plantilla " +
+																		   "where nombrePlantilla = '" + nombrePlantilla + "'").fetch();
+		boolean duplicado = false;
+		if ( !listaPlantillas.isEmpty() )
+			duplicado = true;
+
+		renderJSON( "[{ \"duplicado\" : \"" + duplicado + "\"}]" );
+	}
+	
+	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en dialog.js (plugin 'guardar' del TinyMCE).
 	 * 
 	 * Para guardar la plantilla como un nuevo documento, en idPlantilla debe venir la cadena "nuevo".
 	 */
-	public static void guardarPlantilla(String idPlantilla, String nombrePlantilla, String contenido) {
+	public static void guardarPlantilla(String idPlantilla, String nombrePlantilla, String descripcionPlantilla, String contenido) {
 		if ( (idPlantilla == null) || (contenido == null) )
 			error();
 
@@ -142,21 +158,10 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 			plantilla = PlantillaDocumento.findById(Long.valueOf(idPlantilla));
 
 		plantilla.plantilla = contenido;
+		if ( (descripcionPlantilla != null) && (!descripcionPlantilla.isEmpty()) ) 
+			plantilla.descripcion = descripcionPlantilla;
 		plantilla.save();
-		renderText(plantilla.id.toString());
-	}
-	
-	/*
-	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en template.js (plugin 'headerfooter' del TinyMCE).
-	 * 
-	 * Para guardar la cabecera y el pie de la plantilla actual del editor.
-	 */
-	public static void guardarHeaderFooter(Long idHeader, Long idFooter, Long idPlantilla) {
-		PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
-		plantilla.idHeader = idHeader;
-		plantilla.idFooter = idFooter;
-		plantilla.save();
-		ok();
+		renderText(plantilla.id);
 	}
 	
 	/*
@@ -164,13 +169,21 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	 * 
 	 * Retorna los ids de la cabecera y el pie de la plantilla con idPlantilla.
 	 */
-	public static void getHeaderFooter(Long idPlantilla) {
-		PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
-		String headerFooter = "[{ \"idHeader\" : \"" + plantilla.idHeader + "\", " +
-								 "\"idFooter\" : \"" + plantilla.idFooter + "\"}]";
-		renderJSON(headerFooter);
+	/*
+	public static void getHeaderFooter(Long idPlantilla) {	
+		List<PlantillaDocumentoEncabezado> listaPlantillas = PlantillaDocumentoEncabezado.find("select plantilla from PlantillaDocumentoEncabezado plantilla " +
+				   																		 "where plantillaDocumento.id = '" + idPlantilla + "'").fetch();
+		
+		String jsonString = "[";			// json que vamos a renderizar
+		for (int i = 0; i < listaPlantillas.size(); i++) {
+			jsonString += "{\"idHeader\" : \"" + listaPlantillas.get(i).header.id + "\", \"idFooter\" : \"" + listaPlantillas.get(i).footer.id + "\"}";
+			if (i < listaPlantillas.size()-1 )
+				jsonString += ", ";
+		}
+		jsonString += "]";
+		renderJSON(jsonString);
 	}
-	
+	*/
 	
 	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en dialog.js (plugin 'eliminarplantilla' del TinyMCE).
@@ -183,7 +196,7 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		String nombrePlantilla = plantilla.nombrePlantilla;
 		plantilla.delete();
 		play.Logger.info("El usuario <" + AgenteController.getAgente().username + "> ha eliminado la plantilla con id=" + idPlantilla + ": " + nombrePlantilla);
-		ok();	
+		ok();
 	}
 	
 	/*
@@ -229,94 +242,20 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		renderJSON(rutaImagen);
 	}
 	
-	
-	/*
-	 * Genera la plantilla con el texto dado, a partir de una plantilla base, y la almacena en el temporal
-	 * correspondiente,
-	 * 
-	 * Retorna la ruta + nombre de la plantilla
-	 */
-	private static String generarPlantilla(String contenido) {
-		String nombreFichero = "tmp_" + Codec.UUID().substring(0, FILENAME_SIZE);
-		String rutaMasNombreFicheroTemporal = null;
-		
-		// Quitamos las imágenes que respresentan en la plantilla al salto de línea
-		// FIXME: arreglar esta chapuza de sustitución (reemplazamos la imagen de pagebreak por un pixel transparente). 
-		contenido = contenido.replaceAll("pagebreak.png", "pixel_transparente.png");
-		try {
-			BufferedReader reader = null;
-			// XXX: Revisar ruta
-			if(Play.mode.isDev())	// modo desarrollo
-				reader = new BufferedReader(new FileReader("../../fap/app/views/reports/plantilla-base-editor.html"));
-			else 					// modo producción
-				reader = new BufferedReader(new FileReader("modules/fap/app/views/reports/plantilla-base-editor.html"));
-			rutaMasNombreFicheroTemporal = FapProperties.get("fap.path.editor.tmp") + "/" + nombreFichero + ".html";
-			PrintWriter writer = new PrintWriter(new FileWriter(rutaMasNombreFicheroTemporal));
-			String line = null;
-			while ((line = reader.readLine()) != null)
-				writer.println(line.replaceAll("&contenido&",contenido));
-		    reader.close();
-		    writer.close();
-		} catch (Exception e) { e.printStackTrace(); }
-
-		return rutaMasNombreFicheroTemporal;
-	}
-	
-	/*
-	 * Genera la plantilla del header/footer
-	 * 
-	 * Retorna la ruta + nombre de la plantilla
-	 */
-	private static String generarHeaderFooter(String contenido) {
-		String nombreFichero = "tmp_" + Codec.UUID().substring(0, FILENAME_SIZE);
-		String rutaMasNombreFicheroTemporal = FapProperties.get("fap.path.editor.tmp") + "/" + nombreFichero + ".html";
-		try {
-		    BufferedWriter fichero = new BufferedWriter(new FileWriter(rutaMasNombreFicheroTemporal));
-			fichero.write(contenido);
-			fichero.close();
-		} catch (Exception e) { e.printStackTrace(); }	
-		
-		return rutaMasNombreFicheroTemporal;
-	}
-	
 	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en el .init de TinyMCE (TextEditor.html)
 	 * Genera un pdf a partir del texto actual del editor.
 	 */
-	public static void html2pdf(String contenido, Long idPlantilla) {	
+	public static void html2pdf(String contenido, Long idPlantilla, Long idHeader, Long idFooter, boolean sustituirEntidades) {
 		if (contenido == null)
 			contenido = "";
 		
-		// Obtenemos el header y el footer
-		PlantillaDocumento plantilla;
-		String header = null, footer = null;
-		if (idPlantilla != null) {
-			plantilla = PlantillaDocumento.findById(idPlantilla);
-			if (plantilla.idHeader != null) {
-				PlantillaDocumento plantillaHeader = PlantillaDocumento.findById(plantilla.idHeader);
-				header = generarHeaderFooter(plantillaHeader.plantilla);
-				
-			}
-			if (plantilla.idFooter != null) {
-				PlantillaDocumento plantillaFooter = PlantillaDocumento.findById(plantilla.idFooter);
-				footer = generarHeaderFooter(plantillaFooter.plantilla);
-			}
-		}
-		
-		String rutaMasNombreFicheroTemporal = generarPlantilla(contenido);
 		File borrador = null;
-		
 		try {
-				if (header == null && footer == null)
-					borrador = new Report(rutaMasNombreFicheroTemporal).renderTmpFile();
-				else if (header != null && footer != null)
-					borrador = new Report(rutaMasNombreFicheroTemporal).header(header).footer(footer).renderTmpFile();
-				else if (header != null)
-					borrador = new Report(rutaMasNombreFicheroTemporal).header(header).renderTmpFile();
-				else	// footer != null
-					borrador = new Report(rutaMasNombreFicheroTemporal).footer(footer).renderTmpFile();
+			borrador = new ReportFAP(contenido, false, sustituirEntidades).header(idHeader).footer(idFooter).renderTmpFile();
+			//borrador = new ReportFAP("reports/plantillaBaseEditorCopia.html", false).header("reports/header2.html").footer("reports/footer2.html").renderTmpFile();		
 		} catch (Exception e) { e.printStackTrace(); }
-		
+	
 		// Copiamos el pdf de la carpeta temporal de la aplicación a /public/tmp
 		try {
 			Process proc = null;
@@ -342,7 +281,6 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 
 		renderText("/" + FapProperties.get("fap.path.editor.tmp") + "/" + borrador.getName());
 	}
-	
 	
 	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en dialog.html (plugin 'insertarentidadfap' del TinyMCE).
@@ -400,58 +338,6 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	}
 	
 	/*
-	public static List<String> obtenerListaEntidadesArray() {
-		List<String> listaEntidades = new ArrayList<String>();
-		List<String> listaEntidadesAExluir = new ArrayList<String>(); // entidades que no queremos que aparezcan en la lista para insertarlas en las plantillas
-		List<String> listaEntidadesPadre = new ArrayList<String>();	 // entidades del módulo FAP que son padres de alguna entidad de la aplicación (hija extends padre)
-																	 // (para eliminarlas del listado de entidades que se presenta)		
-		for (String entidad : ENTIDADES_A_EXCLUIR)
-			listaEntidadesAExluir.add(entidad);
-	
-		try {
-			// Primero obtenemos las entidades propias de la aplicación
-			// XXX: Revisar ruta
-			BufferedReader reader = new BufferedReader(new FileReader("app/led/Entidades.fap")); 
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				// Lista de entidades de la aplicación
-				Pattern pattern = Pattern.compile("^Entidad ([_A-Za-z0-9]+)");
-				Matcher matcher = pattern.matcher(line);
-				while (matcher.find()) 
-					listaEntidades.add(matcher.group(1));	
-				// Lista de las entidades padre de las que hereda alguna entidad de la aplicación
-				pattern = Pattern.compile("^Entidad ([_A-Za-z0-9]+) extends ([_A-Za-z0-9]+)");
-				matcher = pattern.matcher(line);
-				while (matcher.find()) 
-					listaEntidadesPadre.add(matcher.group(2));
-			}
-			
-			// Ahora obtenemos las entidades del módulo fap (excluyendo las que no nos interesan)
-			// XXX: Revisar ruta
-			if(Play.mode.isDev())	// modo desarrollo
-				reader = new BufferedReader(new FileReader("../../fap/app/led/fap/Entidades.fap"));
-			else					// modo producción
-				reader = new BufferedReader(new FileReader("modules/fap/app/led/fap/Entidades.fap"));
-			line = null;
-			while ((line = reader.readLine()) != null) {
-				Pattern pattern = Pattern.compile("^Entidad ([_A-Za-z0-9]+)");
-				Matcher matcher = pattern.matcher(line);
-				while (matcher.find()) {
-					if ( !listaEntidades.contains(matcher.group(1)) && !listaEntidadesPadre.contains(matcher.group(1)) &&
-							!listaEntidadesAExluir.contains(matcher.group(1)) ) {
-						listaEntidades.add(matcher.group(1));
-					}
-				}
-			}
-		    reader.close();
-		} catch (Exception e1) {e1.printStackTrace();}
-		
-		//Collections.sort(listaEntidades, Collections.reverseOrder());
-		return listaEntidades;
-	}
-	*/
-	
-	/*
 	 * Devuelve todos los atributos de una entidad (sin profundizar en las relaciones con otras entidades)
 	 * 
 	 */
@@ -496,46 +382,5 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		}
 		jsonString += "]";
 		renderJSON(jsonString);
-	}
-	
-	/*
-	 * PRUEBA DE SUSTITUCIÓN DE VALORES EN LA PLANTILLA
-	 * 
-	 */
-	public static void reemplazarValoresEntidades(Long idPlantilla) {
-		PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
-		System.out.println("****** [reemplazarValoresEntidades] ");
-		String plantillaBase = generarPlantilla(plantilla.plantilla);
-		
-		MultiPDFDocuments m = new MultiPDFDocuments();
-		Options opciones = new Options();
-		PlantillaDocumento header = null, footer = null;
-		String plantillaHeader = null, plantillaFooter = null;
-		if (plantilla.idHeader != null) {
-			header = PlantillaDocumento.findById(plantilla.idHeader);
-			plantillaHeader = generarHeaderFooter(header.plantilla);
-			opciones.HEADER_TEMPLATE = plantillaHeader;
-		}
-		if (plantilla.idFooter != null) {
-			footer = PlantillaDocumento.findById(plantilla.idFooter);
-			plantillaFooter = generarHeaderFooter(footer.plantilla);
-			opciones.FOOTER_TEMPLATE = plantillaFooter;
-		}
-		opciones.pageSize = new IHtmlToPdfTransformer.PageSize(20.8d, 29.6d, 1d, 1d, 4d, 3.5d);
-		m.add(plantillaBase, opciones);
-		
-		//System.out.println("****** Lista entidades = " + obtenerListaEntidadesArray());
-		Agente Agente = AgenteController.getAgente();
-		File borrador = null;
-		try {
-			if (header == null && footer == null)
-				borrador = new Report(plantillaBase).renderTmpFile( Agente );
-			else if (header != null && footer != null)
-				borrador = new Report(plantillaBase).header(plantillaHeader).footer(plantillaFooter).renderTmpFile( Agente );
-			else if (header != null)
-				borrador = new Report(plantillaBase).header(plantillaHeader).renderTmpFile( Agente );
-			else	// footer != null
-				borrador = new Report(plantillaBase).footer(plantillaFooter).renderTmpFile( Agente );
-		} catch (Exception e) { e.printStackTrace(); }
 	}
 }

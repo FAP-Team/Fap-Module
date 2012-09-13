@@ -11,14 +11,14 @@
 (function() {
 	var each = tinymce.each;
 
-	tinymce.create('tinymce.plugins.TemplatePlugin', {
+	tinymce.create('tinymce.plugins.RequerirPlantillaPlugin', {
 		init : function(ed, url) {
 			var t = this;
 
 			t.editor = ed;
 
 			// Register commands
-			ed.addCommand('mceTemplate', function(ui) {
+			ed.addCommand('mceRequerirPlantilla', function(ui) {
 				ed.windowManager.open({
 					file : url + '/template.htm',
 					width : ed.getParam('template_popup_width', 750),
@@ -32,8 +32,12 @@
 			ed.addCommand('mceInsertTemplate', t._insertTemplate, t);
 
 			// Register buttons
-			ed.addButton('template', {title : 'template.desc', cmd : 'mceTemplate'});
-
+			ed.addButton('requerirplantilla', {
+			    title : 'Requerir plantilla', 
+			    cmd : 'mceRequerirPlantilla',
+			    image : url + '/img/requerirplantilla_editor_icono.png'
+			});
+			
 			ed.onPreProcess.add(function(ed, o) {
 				var dom = ed.dom;
 
@@ -49,7 +53,7 @@
 				});
 			});
 		},
-
+/*
 		getInfo : function() {
 			return {
 				longname : 'Template plugin',
@@ -59,7 +63,7 @@
 				version : tinymce.majorVersion + "." + tinymce.minorVersion
 			};
 		},
-
+*/
 		_insertTemplate : function(ui, v) {
 			var t = this, ed = t.editor, h, el, dom = ed.dom, sel = ed.selection.getContent();
 
@@ -155,5 +159,5 @@
 	});
 
 	// Register plugin
-	tinymce.PluginManager.add('template', tinymce.plugins.TemplatePlugin);
+	tinymce.PluginManager.add('requerirplantilla', tinymce.plugins.RequerirPlantillaPlugin);
 })();

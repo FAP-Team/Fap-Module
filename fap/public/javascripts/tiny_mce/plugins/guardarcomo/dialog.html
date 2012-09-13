@@ -8,20 +8,33 @@
 	<style>
 	     body { padding:10px; }
          img { display: block; margin-left: auto; margin-right: auto; }
-         #aviso { font-size: 0.9em; color:red; margin: 10px; }
+         #aviso { font-size: 1em; color:red; margin: 10px; }
          #descarga { font-size: 1em; text-align: center; margin: 10px; }
          .mceActionPanel { margin-top: 30px; }
-         #nombreNuevaPlantilla { margin-top: 10px; }
-         #nombreNuevaPlantilla input { width: 15em ;}
+         table { padding: 4px; }
+         .header { text-align: right; }
     </style>
 </head>
-
 
 <body>
 
 <form id="formGuardar" onsubmit="GuardarComoDialog.insert();return false;" action="#">
-    <span>Nombre de la nueva plantilla: </span><input id="nombrePlantilla" type="text" name="nombrePlantilla" />
-
+    <table>
+        <tr>
+            <td class="header">Nombre:</td>
+            <td>
+                <input id="nombrePlantilla" type="text" name="nombrePlantilla" size="30" />
+            </td>
+        </tr>
+        <tr class="helptext">
+            <td>&nbsp;</td>
+            <td><span id="aviso">(Solamente números, letras o guiones, sin espacios en blanco)</span><br /><br/><br /></td>
+        </tr>
+        <tr>
+            <td class="header">Título:</td>
+            <td><input id="descripcionPlantilla" type="text" name="descripcionPlantilla"  size="60" /></td>
+        </tr>
+    </table>
 	<div class="mceActionPanel">
 		<input type="button" id="insert" name="insert" value="Guardar" onclick="GuardarComoDialog.insert();" />
 		<input type="button" id="cancel" name="cancel" value="Cancelar" onclick="tinyMCEPopup.close();" />

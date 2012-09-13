@@ -27,9 +27,7 @@ public class PlantillaDocumento extends FapModel {
 
 	public String nombrePlantilla;
 
-	public Long idHeader;
-
-	public Long idFooter;
+	public String descripcion;
 
 	public void init() {
 

@@ -701,8 +701,7 @@ Entidad AnotacionFAP {
 Entidad PlantillaDocumento {
     LongText plantilla
     String nombrePlantilla
-    Long idHeader               // id de un objeto PlantillaDocumento
-    Long idFooter               // id de un objeto PlantillaDocumento
+    String descripcion          // titulo de la plantilla
 }
 
 Entidad ImagenesPlantilla {

@@ -54,7 +54,7 @@ var TemplateDialog = {
 		});
 	},
 
-	selectTemplate : function(u, ti) {
+	selectTemplate : function(u, ti, descripcion) {
 		var d = window.frames['templatesrc'].document, x, tsrc = this.tsrc;
 
 		if (!u)
@@ -66,12 +66,16 @@ var TemplateDialog = {
 			if (tsrc[x].title == ti)
 				document.getElementById('tmpldesc').innerHTML = tsrc[x].description || '';
 		}
+		
+		if ( descripcion === "null")
+            descripcion = "";
+		document.getElementById('tmpldesc').innerHTML = descripcion || '';
 	},
 
  	insert : function() {
         var indice = document.forms[0].tpath.selectedIndex 
 		var contenido = document.forms[0].tpath.options[indice].value
-		var idPlantilla = contenido.split(",")[0];
+		var idPlantilla = contenido.split("|")[0];
 		tinyMCE.editors[0].execCommand('putIdPlantillaURL', idPlantilla);
 		
 		tinyMCEPopup.execCommand('mceInsertTemplate', false, {

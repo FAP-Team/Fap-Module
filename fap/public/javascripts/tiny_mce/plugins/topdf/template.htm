@@ -1,0 +1,111 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Generar PDF</title>
+	<script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+	<script type="text/javascript" src="js/template.js"></script>
+	<link href="css/template.css" rel="stylesheet" type="text/css" />
+	<link href="css/jquery-ui-1.8.23.custom.css" rel="stylesheet" type="text/css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+	<style>
+	     #pdf { padding: 20px; text-align: center }
+         #loading { display: block; margin: 40px auto 40px auto; }
+         #aviso { font-size: 1.3em; }
+         #warning { font-size: 1.2em; color:red; padding-bottom: 30px;}
+         #descarga { font-size: 1.1em ; padding: 30px; } 
+         .enlacepdf { text-decoration: none; }
+    </style>
+</head>
+
+<body onresize="ToPDFDialog.resize();"> 
+
+    <script>
+        //**********************************************************************************
+        // Recogemos los datos del json devuelto por el controlador insertarImagen, para crear las
+        // <option> del <select>. En el value del option concatenamos (separado por una coma) 
+        // el id de la plantilla y la ruta de la misma
+        //**********************************************************************************
+        $.getJSON('/plantillasdoccontroller/insertarPlantilla', function(data) {   
+             $.each(data, function(key,value) {
+                    $("#header").append('<option id="h' + value.idPlantilla + '" value="' + value.idPlantilla + "|" + value.ruta + '|' + value.descripcion + '">' + value.nombrePlantilla + '</option>');
+                    $("#footer").append('<option id="f' + value.idPlantilla + '" value="' + value.idPlantilla + "|" + value.ruta + '|' + value.descripcion + '">' + value.nombrePlantilla + '</option>');
+             });  
+        });
+        //**********************************************************************************
+        // Hallamos qué header y footer tiene la plantilla actual para mostrarla por defecto
+        //tinyMCE.editors[0].execCommand('existeIdPlantillaURL');
+        //console.log("[template.htm] tinyMCEPopup.editor.plantillaEnEditor = " + tinyMCEPopup.editor.plantillaEnEditor);
+        //**********************************************************************************
+        /*
+        $.getJSON('/plantillasdoccontroller/getHeaderFooter', {'idPlantilla' : tinyMCEPopup.editor.plantillaEnEditor}, function(data) { 
+               $.each(data, function(index,value) {
+                    if (value.idHeader != "null") {
+                        $("#h" + value.idHeader).attr('selected', 'selected');
+                        var optionValue =  $("#h" + value.idHeader).attr("value");
+                        HeaderFooterDialog.selectTemplate( getRuta(optionValue), "", "header" );
+                    }
+                    if (value.idFooter != "null") {
+                        $("#f" + value.idFooter).attr('selected', 'selected');
+                        var optionValue =  $("#f" + value.idFooter).attr("value");
+                        HeaderFooterDialog.selectTemplate( getRuta(optionValue), "", "footer" );
+                    }     
+               });  
+        });
+        */
+        //**********************************************************************************
+        // Obtenemos la ruta del value del option actualmente seleccionado en el select
+        //**********************************************************************************
+        function getRuta(value) {
+            return value.split("|")[1];
+        }
+        //**********************************************************************************
+        // Obtenemos la descripción del value del option actualmente seleccionado en el select
+        //**********************************************************************************
+        function getDescripcion(value) {
+	        return value.split("|")[2];
+	    }
+    </script>
+
+	<form id="frm" onsubmit="ToPDFDialog.insert();return false;">
+		<div id="frmbody">
+			<div class="title">Elegir cabecera y pie para la plantilla actual</div>
+			<div class="frmRow">
+			<label for="header" title="header_label">Cabecera:</label>
+			<select id="header" name="header" onchange="ToPDFDialog.selectTemplate(getRuta( this.options[this.selectedIndex].value), this.options[this.selectedIndex].text, 'header', getDescripcion(this.options[this.selectedIndex].value) );" class="mceFocus">
+				<option value="">Selecciona una plantilla...</option>
+			</select>
+			<span id="warning"></span>
+			</div>
+			<div class="frmRow"><label for="tdesc">{#template_dlg.desc_label}:</label>
+			<span id="tmpldesc_header"></span></div>
+			<fieldset>
+				<legend>Vista Previa</legend>
+				<iframe id="templatesrc_header" name="templatesrc_header"  width="690" height="145" frameborder="0"></iframe>
+			</fieldset>
+			
+			<br /><br />
+			
+			<div class="frmRow">
+			<label for="footer" title="footer_label">Pie:</label>
+		    <select id="footer" name="footer" onchange="ToPDFDialog.selectTemplate( getRuta(this.options[this.selectedIndex].value), this.options[this.selectedIndex].text, 'footer', getDescripcion(this.options[this.selectedIndex].value) );" class="mceFocus">
+				<option value="">Selecciona una plantilla...</option>
+			</select>
+			<span id="warning"></span>
+			</div>
+			<div class="frmRow"><label for="tdesc">{#template_dlg.desc_label}:</label>
+			<span id="tmpldesc_footer"></span></div>
+			<fieldset>
+				<legend>Vista Previa</legend>
+				<iframe id="templatesrc_footer" name="templatesrc_footer"  width="690" height="145" frameborder="0"></iframe>
+			</fieldset>
+			<br />
+			<span><input type="checkbox" name="sustituirentidades" value="" /> Sustituir el valor de las entidades<br /></span>
+		</div>
+
+		<div class="mceActionPanel">
+			<input type="submit" id="insert" name="insert" value="Generar PDF" />
+			<input type="button" id="cancel" name="cancel" value="Cancelar" onclick="tinyMCEPopup.close();" />
+		</div>
+	</form>
+
+</body> 
+</html> 

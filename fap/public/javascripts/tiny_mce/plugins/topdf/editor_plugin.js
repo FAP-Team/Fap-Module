@@ -9,76 +9,153 @@
  */
 
 (function() {
-	// Load plugin specific language pack
-	tinymce.PluginManager.requireLangPack('topdf');
+	var each = tinymce.each;
 
 	tinymce.create('tinymce.plugins.ToPDFPlugin', {
-		/**
-		 * Initializes the plugin, this will be executed after the plugin has been created.
-		 * This call is done before the editor instance has finished it's initialization so use the onInit event
-		 * of the editor instance to intercept that event.
-		 *
-		 * @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
-		 * @param {string} url Absolute URL to where the plugin is located.
-		 */
 		init : function(ed, url) {
-			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
-			ed.addCommand('mceToPDF', function() {
+			var t = this;
+
+			t.editor = ed;
+
+			// Register commands
+			ed.addCommand('mceToPDFP', function(ui) {
 				ed.windowManager.open({
-					file : url + '/dialog.html',
-					width : 400 + parseInt(ed.getLang('topdf.delta_width', 0)),
-					height : 200 + parseInt(ed.getLang('topdf.delta_height', 0)),
+					file : url + '/template.htm',
+					width : ed.getParam('template_popup_width', 750),
+					height : ed.getParam('template_popup_height', 600),
 					inline : 1
 				}, {
-					plugin_url : url, // Plugin absolute URL
-					some_custom_arg : 'custom arg' // Custom argument
+					plugin_url : url
 				});
 			});
 
-			// Register example button
+			ed.addCommand('mceInsertToPDFP', t._insertTemplate, t);
+
+			// Register buttons
 			ed.addButton('topdf', {
-				title : "Generar pdf",
-				cmd : 'mceToPDF',
-				image : url + '/img/pdf_editor_icono.png'
+			    title : 'Generar pdf', 
+			    cmd : 'mceToPDFP',
+			    image : url + '/img/pdf_editor_icono.png'
 			});
 
-			// Add a node change handler, selects the button in the UI when a image is selected
-			ed.onNodeChange.add(function(ed, cm, n) {
-				cm.setActive('topdf', n.nodeName == 'IMG');
+			ed.onPreProcess.add(function(ed, o) {
+				var dom = ed.dom;
+
+				each(dom.select('div', o.node), function(e) {
+					if (dom.hasClass(e, 'mceTmpl')) {
+						each(dom.select('*', e), function(e) {
+							if (dom.hasClass(e, ed.getParam('template_mdate_classes', 'mdate').replace(/\s+/g, '|')))
+								e.innerHTML = t._getDateTime(new Date(), ed.getParam("template_mdate_format", ed.getLang("template.mdate_format")));
+						});
+
+						t._replaceVals(e);
+					}
+				});
 			});
 		},
-
-		/**
-		 * Creates control instances based in the incomming name. This method is normally not
-		 * needed since the addButton method of the tinymce.Editor class is a more easy way of adding buttons
-		 * but you sometimes need to create more complex controls like listboxes, split buttons etc then this
-		 * method can be used to create those.
-		 *
-		 * @param {String} n Name of the control to create.
-		 * @param {tinymce.ControlManager} cm Control manager to use inorder to create new control.
-		 * @return {tinymce.ui.Control} New control instance or null if no control was created.
-		 */
-		createControl : function(n, cm) {
-			return null;
-		},
-
-		/**
-		 * Returns information about the plugin as a name/value array.
-		 * The current keys are longname, author, authorurl, infourl and version.
-		 *
-		 * @return {Object} Name/value array containing information about the plugin.
-		 */
-		 /*
+/*
 		getInfo : function() {
 			return {
-				longname : 'Example plugin',
-				author : 'Some author',
-				authorurl : 'http://tinymce.moxiecode.com',
-				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/example',
-				version : "1.0"
+				longname : 'Template plugin',
+				author : 'Moxiecode Systems AB',
+				authorurl : 'http://www.moxiecode.com',
+				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/template',
+				version : tinymce.majorVersion + "." + tinymce.minorVersion
 			};
+		},
+*/
+		_insertTemplate : function(ui, v) {
+			var t = this, ed = t.editor, h, el, dom = ed.dom, sel = ed.selection.getContent();
+
+			h = v.content;
+
+			each(t.editor.getParam('template_replace_values'), function(v, k) {
+				if (typeof(v) != 'function')
+					h = h.replace(new RegExp('\\{\\$' + k + '\\}', 'g'), v);
+			});
+
+			el = dom.create('div', null, h);
+
+			// Find template element within div
+			n = dom.select('.mceTmpl', el);
+			if (n && n.length > 0) {
+				el = dom.create('div', null);
+				el.appendChild(n[0].cloneNode(true));
+			}
+
+			function hasClass(n, c) {
+				return new RegExp('\\b' + c + '\\b', 'g').test(n.className);
+			};
+
+			each(dom.select('*', el), function(n) {
+				// Replace cdate
+				if (hasClass(n, ed.getParam('template_cdate_classes', 'cdate').replace(/\s+/g, '|')))
+					n.innerHTML = t._getDateTime(new Date(), ed.getParam("template_cdate_format", ed.getLang("template.cdate_format")));
+
+				// Replace mdate
+				if (hasClass(n, ed.getParam('template_mdate_classes', 'mdate').replace(/\s+/g, '|')))
+					n.innerHTML = t._getDateTime(new Date(), ed.getParam("template_mdate_format", ed.getLang("template.mdate_format")));
+
+				// Replace selection
+				if (hasClass(n, ed.getParam('template_selected_content_classes', 'selcontent').replace(/\s+/g, '|')))
+					n.innerHTML = sel;
+			});
+
+			t._replaceVals(el);
+
+			ed.execCommand('mceInsertContent', false, el.innerHTML);
+			ed.addVisual();
+		},
+
+		_replaceVals : function(e) {
+			var dom = this.editor.dom, vl = this.editor.getParam('template_replace_values');
+
+			each(dom.select('*', e), function(e) {
+				each(vl, function(v, k) {
+					if (dom.hasClass(e, k)) {
+						if (typeof(vl[k]) == 'function')
+							vl[k](e);
+					}
+				});
+			});
+		},
+
+		_getDateTime : function(d, fmt) {
+				if (!fmt)
+					return "";
+
+				function addZeros(value, len) {
+					var i;
+
+					value = "" + value;
+
+					if (value.length < len) {
+						for (i=0; i<(len-value.length); i++)
+							value = "0" + value;
+					}
+
+					return value;
+				}
+
+				fmt = fmt.replace("%D", "%m/%d/%y");
+				fmt = fmt.replace("%r", "%I:%M:%S %p");
+				fmt = fmt.replace("%Y", "" + d.getFullYear());
+				fmt = fmt.replace("%y", "" + d.getYear());
+				fmt = fmt.replace("%m", addZeros(d.getMonth()+1, 2));
+				fmt = fmt.replace("%d", addZeros(d.getDate(), 2));
+				fmt = fmt.replace("%H", "" + addZeros(d.getHours(), 2));
+				fmt = fmt.replace("%M", "" + addZeros(d.getMinutes(), 2));
+				fmt = fmt.replace("%S", "" + addZeros(d.getSeconds(), 2));
+				fmt = fmt.replace("%I", "" + ((d.getHours() + 11) % 12 + 1));
+				fmt = fmt.replace("%p", "" + (d.getHours() < 12 ? "AM" : "PM"));
+				fmt = fmt.replace("%B", "" + this.editor.getLang("template_months_long").split(',')[d.getMonth()]);
+				fmt = fmt.replace("%b", "" + this.editor.getLang("template_months_short").split(',')[d.getMonth()]);
+				fmt = fmt.replace("%A", "" + this.editor.getLang("template_day_long").split(',')[d.getDay()]);
+				fmt = fmt.replace("%a", "" + this.editor.getLang("template_day_short").split(',')[d.getDay()]);
+				fmt = fmt.replace("%%", "%");
+
+				return fmt;
 		}
-		*/
 	});
 
 	// Register plugin

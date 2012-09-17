@@ -125,7 +125,7 @@ public abstract class TramiteBase {
                 try{
                     gestorDocumentalService.deleteDocumento(borradorOld);
                 }catch(Exception e){
-                    play.Logger.error("Error eliminando borrador del gestor documental");
+                    play.Logger.error("Error eliminando borrador del gestor documental: "+e.getMessage());
                 };
             }
         }
@@ -140,7 +140,7 @@ public abstract class TramiteBase {
                 try {
                     gestorDocumentalService.deleteDocumento(oficialOld);
                 }catch(Exception e){
-                    play.Logger.error("Error eliminando documento oficial del gestor documental");
+                    play.Logger.error("Error eliminando documento oficial del gestor documental: "+e.getMessage());
                 };
             }
         }
@@ -236,6 +236,7 @@ public abstract class TramiteBase {
                     avanzarFaseFirmada();
                 }
             }else{
+            	play.Logger.error("El certificado no se corresponde con uno que debe firmar la solicitud");
                 Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud");
             }
         }
@@ -289,7 +290,7 @@ public abstract class TramiteBase {
 						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
 						Mails.enviar(this.getMail(), solicitud);
 					} catch (Exception e){
-						play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail());
+						play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail()+": "+e.getMessage());
 					}
 					play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());				
 
@@ -343,6 +344,7 @@ public abstract class TramiteBase {
 				try {
 					gestorDocumentalService.clasificarDocumentos(this.solicitud, documentos);
 				} catch (GestorDocumentalServiceException e){
+					play.Logger.error("No se clasificaron algunos documentos sin registro: "+e.getMessage());
 					Messages.error("Algunos documentos sin registro del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
 					throw new RegistroServiceException("Error al clasificar documentos sin registros");
 				}
@@ -358,6 +360,7 @@ public abstract class TramiteBase {
 						registro.fasesRegistro.save();
 						play.Logger.info("Se clasificaron todos los documentos del trámite de '%s'", this.getTipoTramite());
 					} catch (GestorDocumentalServiceException e){
+						play.Logger.error("No se clasificaron algunos documentos con registro de entrada: "+e.getMessage());
 						Messages.error("Algunos documentos con registro de entrada del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
 						throw new RegistroServiceException("Error al clasificar documentos con registros");
 					}

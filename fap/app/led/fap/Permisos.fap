@@ -927,12 +927,14 @@ Permiso prepararSolicitud {
 		SolicitudGenerica solicitud
 	when
 		(_accion = editar) and
-		(solicitud.registro.fasesRegistro.borrador = "false")  
+		(solicitud.registro.fasesRegistro.borrador = "false") and
+		(solicitud.registro.fasesRegistro.clasificarAed = "false")
 	return
 		editable
 	when
 		(_accion = editar) and
-		(solicitud.registro.fasesRegistro.borrador = "true")  
+		(solicitud.registro.fasesRegistro.borrador = "true") and
+		(solicitud.registro.fasesRegistro.clasificarAed = "false") 
 	return
 		visible
 }
@@ -951,13 +953,15 @@ Permiso enBorradorSolicitud{
 	when
 		(_accion = leer) or 
 		((solicitud.registro.fasesRegistro.borrador="true") and
-		 (solicitud.registro.fasesRegistro.clasificarAed="false") 	
+		 (solicitud.registro.fasesRegistro.clasificarAed="false") and
+		(solicitud.registro.fasesRegistro.clasificarAed = "false")
 		) 
 	return
 		all
 		
 	when
-		(solicitud.registro.fasesRegistro.clasificarAed="true") 
+		(solicitud.registro.fasesRegistro.clasificarAed="true") and
+		(solicitud.registro.fasesRegistro.clasificarAed = "false")
 	return
 		visible	
 }

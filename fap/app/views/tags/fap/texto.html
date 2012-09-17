@@ -91,9 +91,11 @@
 }%
 	
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-    	#{if _email || _fecha || _direccionMapa}<div class="input-prepend">
-    	<span class="add-on"><i class=${icono}></i></span>#{/if}<input class="${clase}" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>
-    	#{if _email || _fecha || _direccionMapa}</div>#{/if}
+    	#{if _email || _fecha || _direccionMapa || _moneda}
+    		<div class="input-prepend">
+    	#{/if}
+    	#{if _email || _fecha || _direccionMapa}<span class="add-on"><i class=${icono}></i></span>#{/if}#{if _moneda}<span class="add-on"><strong>€</strong></span>#{/if}<input class="${clase}" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>
+    	#{if _email || _fecha || _direccionMapa || _moneda}</div>#{/if}
 	#{/fap.formrow}
 	#{if duplicado == true}
 		%{
@@ -104,9 +106,11 @@
 				value_copy = field.copy;
 		}%
 		#{fap.formrow id:id_copy, label:label_copy, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
-			#{if _email || _fecha || _direccionMapa}<div class="input-prepend">
-			<span class="add-on"><i class=${icono}></i></span>#{/if}<input id="${id_copy}" class="${clase}" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>
-			#{if _email || _fecha || _direccionMapa}</div>#{/if}
+			#{if _email || _fecha || _direccionMapa || _moneda}
+    			<div class="input-prepend">
+    		#{/if}
+    		#{if _email || _fecha || _direccionMapa}<span class="add-on"><i class=${icono}></i></span>#{/if}#{if _moneda}<span class="add-on"><strong>€</strong></span>#{/if}<input id="${id_copy}" class="${clase}" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>
+			#{if _email || _fecha || _direccionMapa || _moneda}</div>#{/if}
 		#{/fap.formrow}
 		
 		<script>

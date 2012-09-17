@@ -665,7 +665,7 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
     }
     
     Pagina TablasConDecimales campo=Solicitud {
-    	Texto campo=Solicitud.conceptos.moneda1
+    	Texto titulo="Moneda 1" campo=Solicitud.conceptos.moneda1
     	Texto campo=Solicitud.conceptos.moneda2
     	Texto campo=Solicitud.conceptos.moneda3
     	Texto campo=Solicitud.conceptos.moneda4
@@ -705,7 +705,7 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
     	
     	Codigo {
 "Pagina TablasConDecimales campo=Solicitud {
- Texto campo=Solicitud.conceptos.moneda1
+ Texto titulo=\"Moneda 1\" campo=Solicitud.conceptos.moneda1
  Texto campo=Solicitud.conceptos.moneda2
   Texto campo=Solicitud.conceptos.moneda3
  Texto campo=Solicitud.conceptos.moneda4

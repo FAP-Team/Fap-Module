@@ -598,15 +598,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	}
 	
 	public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
-		List <TipoDocumentoEnTramite> tdtList = new ArrayList<TipoDocumentoEnTramite>();
-		TipoDocumentoEnTramite tdt = new TipoDocumentoEnTramite();
-		tdt.setAportadoPor(AportadoPorEnum.CIUDADANO);
-		tdt.setCardinalidad(CardinalidadEnum.UNICO);
-		tdt.setIdentificador("1");
-		tdt.setObligatoriedad(ObligatoriedadEnum.OBLIGATORIO);
-		tdt.setVersion(1);
-		tdt.setUri("fs://type1/v01");
-		tdtList.add(tdt);
+		String consulta = "select tipoDoc from TipoDocumento tipoDoc where (tipoDoc.aportadoPor = ? and tipoDoc.tramitePertenece = ?) ";
+		List <TipoDocumentoEnTramite> tdtList = Documento.find(consulta, "Ciudadano", tramite.uri).fetch();
 		return tdtList;
 	}
 	

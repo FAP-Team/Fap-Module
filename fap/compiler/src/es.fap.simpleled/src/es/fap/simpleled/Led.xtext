@@ -700,7 +700,7 @@ Codigo:
 ;
 
 Color : 
-	texto = "Color" ":" 
+	texto = "color" ":" 
 	(codePrint = STRING
 	| default = "porDefecto"
 	|(

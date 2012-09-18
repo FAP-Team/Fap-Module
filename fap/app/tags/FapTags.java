@@ -139,7 +139,7 @@ public class FapTags extends FastTags {
 	        	while(iterator.hasNext()){
 	        		String nextMessage = iterator.next().message();
 	        		if (nextMessage.equals("Valor incorrecto")) {
-	        			error += nextMessage + ". El formato correcto es 0,00.";
+	        			error += nextMessage + "." + FapProperties.get("fap.mensaje.error.moneda");
 	        		} else {
 	        			error += nextMessage;
 	        		}

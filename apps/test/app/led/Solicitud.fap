@@ -5,7 +5,7 @@ Formulario Solicitud {
     	
     	Grupo "Aplicación Test" {
     		Grupo "Elementos Básicos"{
-    			Enlace "Ejemplo: Elementos Básicos" pagina=elementosBasicos
+    			Enlace "Ejemplo: Elementos Básicos" pagina=ElementosBasicos
     		}
     		Grupo "Tipos de Solicitantes" {
 				Enlace "S. Normal" pagina=Solicitante
@@ -692,7 +692,7 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
 " }
     	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos 
     	permisoFilas = colorFondo
-    	Color: "var c = record.data.unInteger; if (c < 20) { return \\'docFirmado\\'; } else { return \\'docNoFirmado\\'; }"
+    	color: "var c = record.data.unInteger; if (c < 20) { return \\'docFirmado\\'; } else { return \\'docNoFirmado\\'; }"
     	{
     		Columna titulo="Entero" campo=MiConcepto.unInteger
     		Columna titulo="Double" campo=MiConcepto.unDouble
@@ -732,7 +732,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
     	Texto titulo="Moneda" campo=MiConcepto.unaMoneda
     }
 
-	Pagina elementosBasicos campo=Solicitud{
+	Pagina ElementosBasicos campo=Solicitud{
 		Grupo Textos titulo = "Textos"{
 			Texto campo=Solicitud.elementos.texto titulo="Texto: "
 			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "Area de texto"

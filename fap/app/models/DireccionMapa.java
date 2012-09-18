@@ -54,6 +54,24 @@ public class DireccionMapa {
 
 		if (direccionBusqueda == null)
 			direccionBusqueda = new String();
+		if (numero == null)
+			numero = new String();
+		if (otros == null)
+			otros = new String();
+		if (calle == null)
+			calle = new String();
+		if (localidad == null)
+			localidad = new String();
+		if (codigoPostal == null)
+			codigoPostal = new String();
+		if (municipio == null)
+			municipio = new String();
+		if (provincia == null)
+			provincia = new String();
+		if (comunidad == null)
+			comunidad = new String();
+		if (pais == null)
+			pais = new String();
 
 	}
 

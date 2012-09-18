@@ -94,8 +94,10 @@ Formulario Principal {
 	Pagina IrVerificacionSinFinalizar titulo="Ir a verificaciones sin finalizar" campo=SolicitudGenerica permiso=noUsuario{}
 	
 	Pagina Seguimiento titulo="Seguimiento" permiso=adminGestorRevisor noForm {
-		Form generarSeguimientoForm {
-			Boton generarSeguimiento titulo="Informe de Seguimiento"
+		Form generarSeguimientoForm destino="_blank"{
+			Grupo titulo="Informe de Seguimiento"{
+				Boton generarSeguimiento titulo="Informe de Seguimiento"
+			}
 		}
 	}
 	

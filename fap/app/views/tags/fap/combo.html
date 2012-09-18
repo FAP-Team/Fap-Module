@@ -151,10 +151,13 @@
 			#{list items:items, as:'entry'}
 				%{				
 					def clave = entry.key
+					String claveFalsa = clave;
+					if(claveFalsa.startsWith("_"))
+						claveFalsa = claveFalsa.replace("_", "");
 					def valor = entry.value
 					def selected = (values.contains(clave) || values.contains(clave.toString().trim()))? 'selected="selected"' : ''
 				}%
-				<option value="${clave}" ${selected}>#{if mostrarClave}${clave} - #{/if}${valor}</option>
+				<option value="${clave}" ${selected}>#{if mostrarClave}${claveFalsa} - #{/if}${valor}</option>
 			#{/list}
 		</select>
 	#{/fap.formrow}

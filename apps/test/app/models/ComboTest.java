@@ -37,6 +37,9 @@ public class ComboTest extends FapModel {
 	@ValueFromTable("ComboTestList")
 	public String list;
 
+	@ValueFromTable("Numeritos")
+	public String listNumber;
+
 	@ValueFromTable("ComboTestList")
 	public String listSinDuplicados;
 

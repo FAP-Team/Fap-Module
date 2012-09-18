@@ -103,6 +103,7 @@ Entidad ComboTest {
 	Lista municipios municipios
 
 	Lista ComboTestList list
+	Lista Numeritos listNumber 
 	Lista ComboTestList listSinDuplicados
 	Lista multiple ComboTestList listMultiple
 	ManyToOne ComboTestRef ref

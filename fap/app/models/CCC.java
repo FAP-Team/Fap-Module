@@ -38,12 +38,6 @@ public class CCC {
 
 		if (cccCodigoEntidad == null)
 			cccCodigoEntidad = new String();
-		if (cccCodigoOficina == null)
-			cccCodigoOficina = new String();
-		if (cccDigitosControl == null)
-			cccDigitosControl = new String();
-		if (cccNumeroCuenta == null)
-			cccNumeroCuenta = new String();
 
 	}
 

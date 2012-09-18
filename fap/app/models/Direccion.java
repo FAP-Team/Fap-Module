@@ -60,16 +60,6 @@ public class Direccion {
 
 		if (calle == null)
 			calle = new String();
-		if (numero == null)
-			numero = new String();
-		if (otros == null)
-			otros = new String();
-		if (codigoPostal == null)
-			codigoPostal = new String();
-		if (provinciaInternacional == null)
-			provinciaInternacional = new String();
-		if (localidad == null)
-			localidad = new String();
 
 	}
 

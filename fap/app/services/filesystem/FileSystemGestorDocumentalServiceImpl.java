@@ -559,8 +559,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         TipoDocumento tipoDocumento = new TipoDocumento();
         tipoDocumento.nombre = "FileSystem " + nombre;
         tipoDocumento.uri=tipo;
-        tipoDocumento.aportadoPor = "Ciudadano";
-        tipoDocumento.obligatoriedad = "Obligatorio";
+        tipoDocumento.aportadoPor = "CIUDADANO";
+        tipoDocumento.obligatoriedad = "OBLIGATORIO";
         return tipoDocumento;
     }
 
@@ -599,7 +599,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	
 	public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
 		String consulta = "select tipoDoc from TipoDocumento tipoDoc where (tipoDoc.aportadoPor = ? and tipoDoc.tramitePertenece = ?) ";
-		List <TipoDocumentoEnTramite> tdtList = Documento.find(consulta, "Ciudadano", tramite.uri).fetch();
+		List <TipoDocumentoEnTramite> tdtList = Documento.find(consulta, "CIUDADANO", tramite.uri).fetch();
 		return tdtList;
 	}
 	

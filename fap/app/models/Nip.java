@@ -34,8 +34,6 @@ public class Nip {
 
 		if (tipo == null)
 			tipo = new String();
-		if (valor == null)
-			valor = new String();
 
 	}
 

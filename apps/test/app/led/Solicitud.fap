@@ -692,12 +692,7 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
 " }
     	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos 
     	permisoFilas = colorFondo
-    	Color: "var c = record.data.id; if (c < 2) { return \\'docFirmado\\'; } else if (c > 2) { return \\'docNoFirmado\\'; }"
-    	
-    	//siFilaBorrar = "docNoFirmado" 
-    	//siFilaEditar = "siEditable"
-    	//siFilaLeer = "docFirmado"
-    	//porDefecto
+    	Color: "var c = record.data.unInteger; if (c < 20) { return \\'docFirmado\\'; } else { return \\'docNoFirmado\\'; }"
     	{
     		Columna titulo="Entero" campo=MiConcepto.unInteger
     		Columna titulo="Double" campo=MiConcepto.unDouble
@@ -714,8 +709,8 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
     	
  Tabla tablaConceptos campo=Solicitud.misConceptos titulo=\"Tabla de mis Conceptos\" 
   popup=PopUpConceptos permisoFilas = colorFondo
- Color: \"var c = record.data.id; if (c < 2) { return \\'docFirmado\\'; } 
- else if (c > 2) { return \\'docNoFirmado\\'; }\"
+ Color: \"var c = record.data.unInteger; if (c < 20) { return \\'docFirmado\\'; } 
+ else { return \\'docNoFirmado\\'; }\"
   {
 	Columna titulo=\"Entero\" campo=MiConcepto.unInteger
 	Columna titulo=\"Double\" campo=MiConcepto.unDouble

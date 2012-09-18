@@ -5072,11 +5072,11 @@ ul.errorsDetails li a {
 }
 
 .docNoFirmado, .docNoFirmado.x-grid-row-alt .x-grid-cell, .docNoFirmado.x-grid-row-alt .x-grid-rowwrap-div {
-   background-color: #FF0000;
+   background-color: #FAA0A1;
 }
 
 .docFirmado, .docFirmado.x-grid-row-alt .x-grid-cell, .docFirmado.x-grid-row-alt .x-grid-rowwrap-div   {
-   background-color: #ADFF2F;
+   background-color: #AAFAAD;
 }
 
 .filaNoEditable, .filaNoEditable.x-grid-row-alt .x-grid-cell, .filaNoEditable.x-grid-row-alt .x-grid-rowwrap-div {

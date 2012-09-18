@@ -64,6 +64,7 @@ import play.mvc.Scope.Flash;
 import play.templates.FastTags;
 import static play.templates.JavaExtensions.*;
 import play.templates.GroovyTemplate.ExecutableTemplate;
+import properties.FapProperties;
 import security.Secure;
 import utils.RoutesUtils;
 import validation.Moneda;
@@ -128,6 +129,25 @@ public class FapTags extends FastTags {
 	        Required required = f.getAnnotation(Required.class);
 	        boolean requerido = required != null;
 	        field.put("required", requerido);
+	        
+	        // Tipos de moneda con mensaje en property
+	        Moneda monedaM = f.getAnnotation(Moneda.class);
+	        boolean moneda = monedaM != null;
+	        if(moneda && hasErrors){
+	        	error = "";
+	        	Iterator<Error> iterator = errors.iterator();
+	        	while(iterator.hasNext()){
+	        		String nextMessage = iterator.next().message();
+	        		if (nextMessage.equals("Valor incorrecto")) {
+	        			error += nextMessage + ". El formato correcto es 0,00.";
+	        		} else {
+	        			error += nextMessage;
+	        		}
+	        		if(iterator.hasNext())
+	        			error += ", ";
+	        	}
+	            field.put("error", error);
+	        }
 	        
 	        //Value of table
 	        ValueFromTable valueFromTable = f.getAnnotation(ValueFromTable.class);

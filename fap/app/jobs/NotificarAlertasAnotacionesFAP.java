@@ -23,7 +23,7 @@ import play.db.jpa.Transactional;
 import play.jobs.*;
 import properties.FapProperties;
 
-@Every("1min")
+@Every("1h")
 public class NotificarAlertasAnotacionesFAP extends Job implements LocalVariablesSupport {
 
 	static Integer tiempoRefresco = 1;

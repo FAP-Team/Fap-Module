@@ -68,7 +68,7 @@ Formulario Administracion permiso=administrador{
     		Grupo borde=false mostrarSiCheck cNotificarAlertasAnotaciones = true{
 	    		RadioBooleano rNotificarAlertasAnotaciones titulo="Intervalo de tiempo" campo=AdministracionFapJobs.valorPropioNotificarAlertasAnotaciones alineadoAIzquierdas botonIzquierdo="Por Defecto" botonDerecho="Personalizar"
 	    		Grupo borde=false mostrarSiRadioBooleano rNotificarAlertasAnotaciones = true{
-	    			BarraDeslizante bdNotificarAlertasAnotaciones titulo="Seleccione el intervalo de tiempo (en minutos)" campo=AdministracionFapJobs.valorNotificarAlertasAnotaciones minimo=0 maximo=60 valorDefecto=1 alineadoAIzquierdas
+	    			BarraDeslizante bdNotificarAlertasAnotaciones titulo="Seleccione el intervalo de tiempo (en horas)" campo=AdministracionFapJobs.valorNotificarAlertasAnotaciones minimo=0 maximo=24 valorDefecto=24 alineadoAIzquierdas
 	    		}
 	    	}
     	}

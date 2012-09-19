@@ -31,6 +31,7 @@ Formulario Solicitud {
 				Enlace "Error en Combos" pagina=PaginaCombosError
 				Enlace "Combos dependientes" pagina=PaginaCombosDependientes
 				Enlace "Combo ManytoOne" pagina=ComboTablasPaginas
+				Enlace "Combo No Editable" pagina=ComboNoEditable
 			}
 
 			Grupo "Ejemplo: Tablas y PopUps" {
@@ -749,6 +750,13 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 			Check titulo="Check" campo=Solicitud.elementos.mBoolean
 			RadioBooleano titulo="Radio Booleano" campo=Solicitud.elementos.mBoolean botonIzquierdo="Botón Izquierdo" botonDerecho="Botón Derecho"
 		}
+	}
+	
+	Pagina ComboNoEditable titulo="Combo No Editable" campo=Solicitud {
+		Grupo permiso=noEditable {
+			Combo campo=Solicitud.comboTest.listNumber titulo="Combo de numeritos" mostrarClave
+		}
+		Texto email campo=Solicitud.solicitante.email
 	}
 	
 }

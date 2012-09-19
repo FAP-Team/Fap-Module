@@ -12,6 +12,8 @@
 	def requerido = _requerido != null? _requerido : false;
 	def stackDisabled = tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	if (disabled)
+		value = value ?: field.value;
 	def showRow   = _noRow != null? !_noRow : true
 	def blanco    = _blanco != null? _blanco : true
 	def searchable = _searchable != null? _searchable : false

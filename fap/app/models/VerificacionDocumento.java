@@ -80,6 +80,30 @@ public class VerificacionDocumento extends FapModel {
 		fechaPresentacion = doc.fechaRegistro;
 		uriDocumento = doc.uri;
 	}
+	
+	/**
+	 * Constructor de copia
+	 */
+	public VerificacionDocumento (VerificacionDocumento vDoc) {
+		this.descripcion = vDoc.descripcion;
+		this.estadoDocumentoVerificacion = vDoc.estadoDocumentoVerificacion;
+		this.existe = vDoc.existe;
+		this.fechaPresentacion = vDoc.fechaPresentacion;
+		this.identificadorMultiple = vDoc.identificadorMultiple;
+		this.motivoRequerimiento = vDoc.motivoRequerimiento;
+		this.uriDocumento = vDoc.uriDocumento;
+		this.uriDocumentoVerificacion = vDoc.uriDocumentoVerificacion;
+		this.uriTipoDocumento = vDoc.uriTipoDocumento;
+		this.codigosRequerimiento = new ArrayList<CodigoRequerimiento>();
+		for (CodigoRequerimiento cReq : vDoc.codigosRequerimiento) {
+			CodigoRequerimiento cRequerimiento = new CodigoRequerimiento();
+			cRequerimiento.codigo = cReq.codigo;
+			cRequerimiento.descripcion = cReq.descripcion;
+			cRequerimiento.descripcionCorta = cReq.descripcionCorta;
+			cRequerimiento.save();
+			this.codigosRequerimiento.add(cRequerimiento);
+		}
+	}
 
 	public String getUrlDescarga() {
 		if ((uriDocumento != null) && (!uriDocumento.trim().isEmpty()))

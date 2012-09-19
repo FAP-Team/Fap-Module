@@ -38,6 +38,14 @@ public class VerificacionUtils {
 	/**
 	 * Devuelve la lista de documentos a verificar (presentes y no presentes) que no han sido verificados en forma de lista de VerificacionDocumentos.
 	 * 
+	 * 1ª Verificación del trámite actual:
+	 *    - Lista con todos los documentos aportados y no aportados.
+	 * 2ª o posteriores verificaciones de un trámite:
+	 *    - Añadimos los nuevo documentos presentados con  estado ="No verificado"
+	 *    - Copiamos de la verificación anterior de ese trámite todos los documentos  "No válido"
+	 *       y "No presentado" con sus respectivos motivos y códigos de requerimiento que no se han
+	 *       presentado ahora.
+	 * 
 	 * @param listDoc Lista de Documentos (verificados y no verificados)
 	 * @return Lista de VerificaciónDocumentos (sólo los no verificados)
 	 */
@@ -53,104 +61,153 @@ public class VerificacionUtils {
 		
 		GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		
-		List<TipoDocumentoEnTramite> listaTipos = gestorDocumental.getTiposDocumentosAportadosCiudadano(tramite);
-		// Documentos condicionados automaticos obligatorios de la aplicacion en cuestion
-		List<String> docCondicionadosAutomaticosNoAportados=new ArrayList<String>();
-		try {
-			docCondicionadosAutomaticosNoAportados = VerificacionFapController.invoke("getDocumentosNoAportadosCondicionadosAutomaticos", tramite.nombre, idSolicitud);
-		} catch (Throwable e) {
-			play.Logger.error("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
-		}
-		for (TipoDocumentoEnTramite tipoDoc : listaTipos) {
-			boolean tipoEncontrado = false;
-			// Mejorar la implementación
-			for (Documento doc: auxIterar) {
-				if ((doc.tipo != null) && (doc.tipo.trim().equals(tipoDoc.getUri()))) {
-					VerificacionDocumento vDoc = new VerificacionDocumento(doc);
-					vDoc.existe = true;
-					if (tipoDoc.getObligatoriedad() == ObligatoriedadEnum.CONDICIONADO_AUTOMATICO) {
-						// Comprobar si se tenía que añadir o no
-						if ((docCondicionadosAutomaticosNoAportados != null) && (docCondicionadosAutomaticosNoAportados.size() != 0) 
-								&& docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri())))
-							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
-						else
-							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
-					} else {
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
-					}
-					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
-					//vDoc.etiquetaTipoDocumento
-					if ((tipoEncontrado) && !vDoc.identificadorMultiple.equalsIgnoreCase("multiple")) {
-						play.Logger.error("El tipo de documento <"+doc.tipo+"> ya había sido añadido en la misma verificacion y su cardinalidad es "+vDoc.identificadorMultiple);
-					}
-					vDoc.save();
-					list.add(vDoc);
-					aux.remove(doc);
-					tipoEncontrado = true;
-				}
-			}
-			
-			// Si el tipo de documento no fue encontrado en los que aporta
-			if (!tipoEncontrado) {
-
-				// Si es OBLIGATORIO
-				if ((tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.OBLIGATORIO))
-					||(tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.IMPRESCINDIBLE))) {
-					VerificacionDocumento vDoc = new VerificacionDocumento();
-					vDoc.existe = false;
-					vDoc.uriTipoDocumento = tipoDoc.getUri();
-					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
-					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
-					if (existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.noProcede, verificacionesBefore, tipoDoc.getUri(), tramite.uri)
-						|| existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.valido, verificacionesBefore, tipoDoc.getUri(), tramite.uri)) {
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
-					} else {
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
-					}
-					vDoc.save();
-					list.add(vDoc);
-
-				}
-				else if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_MANUAL)){
-					VerificacionDocumento vDoc = new VerificacionDocumento();
-					vDoc.existe = false;
-					vDoc.uriTipoDocumento = tipoDoc.getUri();
-					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
-					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
-					vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
-					vDoc.save();
-					list.add(vDoc);
-				} 
-				// Condicionado AUTOMATICO
-				else if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
-					VerificacionDocumento vDoc = new VerificacionDocumento();
-					vDoc.existe = false;
-					vDoc.uriTipoDocumento = tipoDoc.getUri();
-					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
-					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
-					// Si el tipo de Documento está en la lista de los tipos de documentos obligatorios condicionados automaticos que obtenemos de la propia aplicacion
-					// Quitamos la uri del tipo de documento porque esta quitada en la lista de condicionados automaticos, por lo que se debe quitar para comparar
-					if ((docCondicionadosAutomaticosNoAportados != null) && (docCondicionadosAutomaticosNoAportados.size() != 0) 
-						&& docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()))){
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
-					} else {
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
-					}
-					vDoc.save();
-					list.add(vDoc);
+		/// Comprobamos si existenVerificaciones de este mismo trámite anteriormente
+		Verificacion verificacionAnterior = null;
+		if (verificacionesBefore != null && !verificacionesBefore.isEmpty()) {
+			for (Verificacion auxVerificacion : verificacionesBefore) {
+				if (auxVerificacion.uriTramite.equals(uriTramite)) {
+					verificacionAnterior = auxVerificacion;
 				}
 			}
 		}
 		
-		// Recorro todos los documentos no pertenecientes al trámite actual pero que se han aportado
-		for (Documento docAux: aux){
-			VerificacionDocumento vDoc = new VerificacionDocumento(docAux);
-			vDoc.existe = true;
-			vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
-			vDoc.save();
-			list.add(vDoc);
+		/// Si verificacionAnterior == null, NO tiene verificaciones anteriores en ese trámite
+		List<TipoDocumentoEnTramite> listaTipos = new ArrayList<TipoDocumentoEnTramite>();
+		if (verificacionAnterior == null) {
+			play.Logger.info("No existen verificaciones anteriores para la solicitud "+idSolicitud+" del trámite "+uriTramite);
+			listaTipos = gestorDocumental.getTiposDocumentosAportadosCiudadano(tramite);
+		
+			// Documentos condicionados automaticos obligatorios de la aplicacion en cuestion
+			List<String> docCondicionadosAutomaticosNoAportados=new ArrayList<String>();
+			try {
+				docCondicionadosAutomaticosNoAportados = VerificacionFapController.invoke("getDocumentosNoAportadosCondicionadosAutomaticos", tramite.nombre, idSolicitud);
+			} catch (Throwable e) {
+				play.Logger.error("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
+			}
+			for (TipoDocumentoEnTramite tipoDoc : listaTipos) {
+				boolean tipoEncontrado = false;
+				// Mejorar la implementación
+				for (Documento doc: auxIterar) {
+					if ((doc.tipo != null) && (doc.tipo.trim().equals(tipoDoc.getUri()))) {
+						VerificacionDocumento vDoc = new VerificacionDocumento(doc);
+						vDoc.existe = true;
+						if (tipoDoc.getObligatoriedad() == ObligatoriedadEnum.CONDICIONADO_AUTOMATICO) {
+							// Comprobar si se tenía que añadir o no
+							if ((docCondicionadosAutomaticosNoAportados != null) && (docCondicionadosAutomaticosNoAportados.size() != 0) 
+									&& docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri())))
+								vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+							else
+								vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+						} else {
+							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+						}
+						vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
+						//vDoc.etiquetaTipoDocumento
+						if ((tipoEncontrado) && !vDoc.identificadorMultiple.equalsIgnoreCase("multiple")) {
+							play.Logger.error("El tipo de documento <"+doc.tipo+"> ya había sido añadido en la misma verificacion y su cardinalidad es "+vDoc.identificadorMultiple);
+						}
+						vDoc.save();
+						list.add(vDoc);
+						aux.remove(doc);
+						tipoEncontrado = true;
+					}
+				}
+				
+				// Si el tipo de documento no fue encontrado en los que aporta
+				if (!tipoEncontrado) {
+	
+					// Si es OBLIGATORIO
+					if ((tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.OBLIGATORIO))
+						||(tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.IMPRESCINDIBLE))) {
+						VerificacionDocumento vDoc = new VerificacionDocumento();
+						vDoc.existe = false;
+						vDoc.uriTipoDocumento = tipoDoc.getUri();
+						vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
+						vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
+						if (existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.noProcede, verificacionesBefore, tipoDoc.getUri(), tramite.uri)
+							|| existsDocumentoVerificacionAnterior(EstadosDocumentoVerificacionEnum.valido, verificacionesBefore, tipoDoc.getUri(), tramite.uri)) {
+							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+						} else {
+							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
+						}
+						vDoc.save();
+						list.add(vDoc);
+	
+					}
+					else if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_MANUAL)){
+						VerificacionDocumento vDoc = new VerificacionDocumento();
+						vDoc.existe = false;
+						vDoc.uriTipoDocumento = tipoDoc.getUri();
+						vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
+						vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
+						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
+						vDoc.save();
+						list.add(vDoc);
+					} 
+					// Condicionado AUTOMATICO
+					else if (tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.CONDICIONADO_AUTOMATICO)){
+						VerificacionDocumento vDoc = new VerificacionDocumento();
+						vDoc.existe = false;
+						vDoc.uriTipoDocumento = tipoDoc.getUri();
+						vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
+						vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
+						// Si el tipo de Documento está en la lista de los tipos de documentos obligatorios condicionados automaticos que obtenemos de la propia aplicacion
+						// Quitamos la uri del tipo de documento porque esta quitada en la lista de condicionados automaticos, por lo que se debe quitar para comparar
+						if ((docCondicionadosAutomaticosNoAportados != null) && (docCondicionadosAutomaticosNoAportados.size() != 0) 
+							&& docCondicionadosAutomaticosNoAportados.contains(ObligatoriedadDocumentosFap.eliminarVersionUri(tipoDoc.getUri()))){
+							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noPresentado.name();
+						} else {
+							vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+						}
+						vDoc.save();
+						list.add(vDoc);
+					}
+				}
+			}
+			
+			// Recorro todos los documentos no pertenecientes al trámite actual pero que se han aportado
+			for (Documento docAux: aux){
+				VerificacionDocumento vDoc = new VerificacionDocumento(docAux);
+				vDoc.existe = true;
+				vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+				vDoc.save();
+				list.add(vDoc);
+			}
+	
+		} else {
+			/// Tiene verificaciones anteriores de este trámite y está en verificacionAnterior
+			play.Logger.info("Existe al menos una verificación anterior "+verificacionAnterior.id+" de la solicitud "+idSolicitud+" para trámite "+uriTramite);
+			
+			// Añadimos todos los documentos que se aportaron ahora
+			for (Documento doc: listDoc) {
+				VerificacionDocumento vDoc = new VerificacionDocumento(doc);
+				vDoc.existe = true;
+				vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+				vDoc.save();
+				list.add(vDoc);
+			}
+			
+			// De la verificación anterior copiamos los No Validos y los No Presentados que no
+			// hayan sido añadidos ahora
+			for (VerificacionDocumento docVerif : verificacionAnterior.documentos) {
+				if (docVerif.estadoDocumentoVerificacion.equals(EstadoDocumentoVerificacion.NO_PRESENTADO.name())
+						|| docVerif.estadoDocumentoVerificacion.equals(EstadoDocumentoVerificacion.NO_VALIDO.name())) {
+					boolean findActual = false;
+					for (Documento doc: listDoc) { 
+						if (ObligatoriedadDocumentosFap.eliminarVersionUri(docVerif.uriTipoDocumento).equals(ObligatoriedadDocumentosFap.eliminarVersionUri(doc.tipo))) {
+							findActual = true;
+							break;
+						}
+					}
+					if (!findActual) {
+						VerificacionDocumento newVerDoc = new VerificacionDocumento(docVerif);
+						newVerDoc.save();
+						list.add(newVerDoc);
+					}
+				}
+			}
+			
 		}
-
 		return list;
 	}
 

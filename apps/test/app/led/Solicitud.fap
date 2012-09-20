@@ -6,6 +6,7 @@ Formulario Solicitud {
     	Grupo "Aplicación Test" {
     		Grupo "Elementos Básicos"{
     			Enlace "Ejemplo: Elementos Básicos" pagina=ElementosBasicos
+    			Enlace "Ejemplo: Botón Cancelar" pagina=PaginaCancelar
     		}
     		Grupo "Tipos de Solicitantes" {
 				Enlace "S. Normal" pagina=Solicitante
@@ -757,6 +758,16 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 			Combo campo=Solicitud.comboTest.listNumber titulo="Combo de numeritos" mostrarClave
 		}
 		Texto email campo=Solicitud.solicitante.email
+	}
+
+	Pagina PaginaCancelar titulo="Pagina con Botón Cancelar" campo=Solicitud noForm {
+		Form guardarPCE {
+			Texto titulo="Introduce un integer: " campo=Solicitud.elementos.numeroI
+			Texto titulo="Introduce un double: " campo=Solicitud.elementos.numeroD
+			Texto titulo="Introduce un long: " campo=Solicitud.elementos.numeroL
+			Boton bGuardar titulo="Guardar"
+			Enlace titulo="Cancelar" estilo="btn btn-link" pagina=Solicitudes
+		}
 	}
 	
 }

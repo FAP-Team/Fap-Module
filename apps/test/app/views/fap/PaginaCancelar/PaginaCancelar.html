@@ -1,0 +1,34 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'PaginaCancelar', 
+     titulo:'Pagina con Botón Cancelar', 
+     urlBorrar:play.mvc.Router.reverse('PaginaCancelarController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaCancelarController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('PaginaCancelarController.editar' , ['idSolicitud':solicitud?.id])
+}
+	
+			#{form play.mvc.Router.reverse('PaginaCancelarController.guardarPCE' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"guardarPCE"}
+					
+			#{fap.texto campo:'solicitud.elementos.numeroI', titulo:'Introduce un integer: ' /}		
+		
+			#{fap.texto campo:'solicitud.elementos.numeroD', format:'double', titulo:'Introduce un double: ' /}		
+		
+			#{fap.texto campo:'solicitud.elementos.numeroL', titulo:'Introduce un long: ' /}		
+		
+			<div class="well" align="right">
+				#{fap.boton id:'bGuardar', titulo:'Guardar' /}
+		
+				#{fap.enlace action:play.mvc.Router.reverse("SolicitudesController.index" ), estilo:'btn btn-link', titulo:'Cancelar' , noRow:true /}
+			</div>
+			#{/form}
+			
+#{/fap.pagina}
+		

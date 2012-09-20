@@ -190,8 +190,8 @@ public class VerificacionUtils {
 			// De la verificación anterior copiamos los No Validos y los No Presentados que no
 			// hayan sido añadidos ahora
 			for (VerificacionDocumento docVerif : verificacionAnterior.documentos) {
-				if (docVerif.estadoDocumentoVerificacion.equals(EstadoDocumentoVerificacion.NO_PRESENTADO.name())
-						|| docVerif.estadoDocumentoVerificacion.equals(EstadoDocumentoVerificacion.NO_VALIDO.name())) {
+				if (docVerif.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name())
+						|| docVerif.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noValido.name())) {
 					boolean findActual = false;
 					for (Documento doc: listDoc) { 
 						if (ObligatoriedadDocumentosFap.eliminarVersionUri(docVerif.uriTipoDocumento).equals(ObligatoriedadDocumentosFap.eliminarVersionUri(doc.tipo))) {

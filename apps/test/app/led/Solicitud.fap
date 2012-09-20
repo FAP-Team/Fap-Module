@@ -11,7 +11,7 @@ Formulario Solicitud {
     	
     	Grupo "Aplicación Test" {
     		Grupo "Elementos Básicos"{
-    			Enlace "Ejemplo: Elementos Básicos" pagina=elementosBasicos
+    			Enlace "Ejemplo: Elementos Básicos" pagina=ElementosBasicos
     		}
     		Grupo "Tipos de Solicitantes" {
 				Enlace "S. Normal" pagina=Solicitante
@@ -742,7 +742,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
     	Texto titulo="Moneda" campo=MiConcepto.unaMoneda
     }
 
-	Pagina elementosBasicos campo=Solicitud{
+	Pagina ElementosBasicos campo=Solicitud{
 		Grupo Textos titulo = "Textos"{
 			Texto campo=Solicitud.elementos.texto titulo="Texto: "
 			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "Área de texto"

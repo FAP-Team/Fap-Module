@@ -1,0 +1,52 @@
+%{
+	def id = _id;
+	def titulo = _titulo;
+	def name = _name;
+	System.out.println("Data: "+_data);
+	def strData = _data;
+%}
+
+
+<script>
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: '${id}',
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: '${titulo}'
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: '#000000',
+                        connectorColor: '#000000',
+                        formatter: function() {
+                            return '<b>'+ this.point.name +'</b>: '+ this.y;
+                        }
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '${name}',
+                data: ${strData.raw()}
+            }]
+        });
+    });
+    
+});
+</script>

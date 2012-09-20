@@ -1,5 +1,17 @@
 h2. Changelog
 
+h3. Versión 2.1RC7
+
+* Fixed bugs en Verificaciones posteriores.
+* Fixed bugs en combos no Editables tras error de validación.
+* Mensaje de error en los elementos de tipo moneda se obtiene de "fap.mensaje.error.moneda".
+* Escala de job de anotaciones ahora en horas.
+* Informe de seguimiento en nueva pestaña.
+* Añadidos iconos en la pantalla de login.
+* Añadido icono de Euro a los tipo Moneda.
+* Fixed bugs en Presentación, PersonaFisica,...
+* Fixed some minimal bugs.
+
 h3. Versión 2.1RC6
 
 * Fixed Bug en el cálculo de los conceptos económicos.

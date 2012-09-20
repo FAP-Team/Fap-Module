@@ -112,3 +112,4 @@ apps/test/gestorDocumental/clasificado/*
 fap/app/listas/initial-data/*.yml
 apps/test/app/listas/initial-data/*.yml
 
+apps/cuadroMandos/*

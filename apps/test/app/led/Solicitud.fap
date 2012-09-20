@@ -558,7 +558,7 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
 	}
 	
 	Pagina PersonaF campo=Solicitud{
-		PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física"
+		PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física" 
 	}
 	
 	Pagina TipoDeAyudaTexto campo=Solicitud{

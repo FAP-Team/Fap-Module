@@ -140,8 +140,8 @@ GET /Solicitud/tablascondecimales TablasConDecimalesController.index
 POST /Solicitud/tablascondecimales/editar TablasConDecimalesController.editar
 POST /Solicitud/tablascondecimales/beforeOpenPageTable TablasConDecimalesController.beforeOpenPageTable
 GET /Solicitud/tablascondecimales/tablaConceptos TablasConDecimalesController.tablatablaConceptos
-GET /Solicitud/elementosbasicos elementosBasicosController.index
-POST /Solicitud/elementosbasicos/editar elementosBasicosController.editar
+GET /Solicitud/elementosbasicos ElementosBasicosController.index
+POST /Solicitud/elementosbasicos/editar ElementosBasicosController.editar
 GET /Solicitud/pruebabigpopup popups.PruebaBigPopUpController.index
 POST /Solicitud/pruebabigpopup/editar popups.PruebaBigPopUpController.editar
 GET /Solicitud/pruebabigpopup/documentosExternos popups.PruebaBigPopUpController.tabladocumentosExternos

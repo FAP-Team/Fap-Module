@@ -1022,7 +1022,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 				Combo certificadoFirma titulo="Certificado que se usará en la firma" campo=Registro.tipoFirma
 			}
 
-			Grupo borde = false mostrarSiCampo Registro.tipoFirma = "representantes" {
+			Grupo borde = false mostrarSiCombo tipoCertificadoFirma.certificadoFirma="representantes" {
 
 				// La firma y registro se hace en dos pasos
 				Grupo titulo="Paso 1.1. Firmar la solicitud"  {
@@ -1056,7 +1056,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 				}
 			}
 
-			Grupo borde=false mostrarSiCampo Registro.tipoFirma = "cif"
+			Grupo borde=false mostrarSiCombo tipoCertificadoFirma.certificadoFirma="cif"
 			{
 				Wiki {"La solicitud será firmada y registrada. "}
 

@@ -517,7 +517,8 @@ PersonaFisica:
 	elemento='PersonaFisica' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
-		(requerido?='requerido')?
+		(requerido?='requerido')? &
+		(setearTipoPadre?='setearTipoPadre')?
 	)
 ;
 

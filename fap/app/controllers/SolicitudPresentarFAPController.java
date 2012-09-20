@@ -138,7 +138,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 	public static void tablatablaFirmantesHecho(Long idRegistro) {
 
 		java.util.List<Firmante> rows =  Firmante
-				.find("select firmante from SolicitudGenerica solicitud join solicitud.registro.firmantes firmante where solicitud.id=? and firmante.tipo=? and firmante.fechaFirma is not null",
+				.find("select firmante from SolicitudGenerica solicitud join solicitud.registro.firmantes.todos firmante where solicitud.id=? and firmante.tipo=? and firmante.fechaFirma is not null",
 						idRegistro, "representante").fetch();
 
 
@@ -154,7 +154,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 	public static void tablatablaFirmantesEspera(Long idRegistro) {
 
 		java.util.List<Firmante> rows = Firmante
-				.find("select firmante from SolicitudGenerica solicitud join solicitud.registro.firmantes firmante where solicitud.id=? and firmante.tipo=? and firmante.fechaFirma is null", idRegistro, "representante").fetch();
+				.find("select firmante from SolicitudGenerica solicitud join solicitud.registro.firmantes.todos firmante where solicitud.id=? and firmante.tipo=? and firmante.fechaFirma is null", idRegistro, "representante").fetch();
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Firmante> rowsFiltered = rows; //Tabla sin permisos, no filtra
@@ -259,7 +259,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		}
 		
 //		if (firmarRepresentante != null) {
-//			//SolicitudPresentarFAPController.firmarRepresentanteFormFirmaRepresentante(idSolicitud, idRegistro, firma);
+//			SolicitudPresentarFAPController.firmarRepresentanteFormFirmaRepresentante(idSolicitud, idRegistro, firma);
 //			SolicitudPresentarFAPController.formFirmaRepresentanteRender(idSolicitud, idRegistro);
 //		}
 

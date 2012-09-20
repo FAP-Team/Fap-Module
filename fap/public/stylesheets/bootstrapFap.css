@@ -4300,13 +4300,14 @@ footer {
   padding-right: 5px;
   padding-bottom: 10px;
 }
-#logoAciisi {
-  width: 185px;
-  margin-right: 10px;
-  float: left;
-}
-#banderaue {
-  width: 90px;
+// Comentado --
+//#logoAciisi {
+//  width: 185px;
+//  margin-right: 10px;
+//  float: left;
+//}
+
+#banderaue img {
   float: right;
 }
 .migas {
@@ -4701,15 +4702,6 @@ footer {
   padding-left: 5px;
   padding-right: 5px;
   padding-bottom: 10px;
-}
-#logoAciisi {
-  width: 185px;
-  margin-right: 10px;
-  float: left;
-}
-#banderaue {
-  width: 90px;
-  float: right;
 }
 .migas {
   height: 24px;

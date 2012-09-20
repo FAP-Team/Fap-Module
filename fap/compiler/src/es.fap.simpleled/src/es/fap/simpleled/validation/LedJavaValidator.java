@@ -444,6 +444,13 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			error("El campo Color no ha sido rellenado correctamente", null);
 	}
 	
+	@Check
+	public void checkPersonaFisicaNoUtilizarSetearTipoPadre(PersonaFisica personaFisica){
+		if (personaFisica.isSetearTipoPadre()){
+			error("setearTipoPadre no se debe utilizar nunca.", ledPackage.getPersonaFisica_SetearTipoPadre());
+		}
+	}
+	
 }
 
 

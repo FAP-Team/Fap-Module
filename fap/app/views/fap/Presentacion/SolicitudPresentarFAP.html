@@ -126,7 +126,7 @@
 						});
 				</script>
 			
-			#{fap.grupo borde:false, mostrarSi:['representantes'].contains(registro.tipoFirma)}
+			#{fap.grupo borde:false, siCombo:'certificadoFirma', siComboValue:['representantes']}
 				
 			#{fap.grupo titulo:'Paso 1.1. Firmar la solicitud'}
 				
@@ -225,7 +225,7 @@
 		
 			#{/fap.grupo}
 		
-			#{fap.grupo borde:false, mostrarSi:['cif'].contains(registro.tipoFirma)}
+			#{fap.grupo borde:false, siCombo:'certificadoFirma', siComboValue:['cif']}
 				
 			<div class="wiki ">
 <p>La solicitud será firmada y registrada. </p>

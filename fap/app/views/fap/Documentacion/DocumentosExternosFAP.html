@@ -16,14 +16,14 @@
      urlCrear:play.mvc.Router.reverse('DocumentosExternosFAPController.crear' , ['idSolicitud':solicitud?.id]), 
      urlEditar:play.mvc.Router.reverse('DocumentosExternosFAPController.editar' , ['idSolicitud':solicitud?.id, 'idDocumentoExterno':documentoExterno?.id])
 }
-	 #{fap.grupo titulo:'Nuevo documento externo'}
+	 #{fap.grupo titulo:'Nuevo documento ya aportado en la Administración'}
 	 
 		 %{
 		 	def tiposDocumentos;
 		 	def aportadoPor = "CIUDADANO";
 		 	// El trámite se obtiene de la property fap.gestordocumental.documentacion.tramite
 			String tramite = properties.FapProperties.get("fap.gestordocumental.documentacion.tramite");
-			print tramite
+
 			if (tramite == null){
 				if (aportadoPor == null)
 					tiposDocumentos = models.TipoDocumento.findAll();

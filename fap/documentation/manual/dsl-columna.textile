@@ -12,6 +12,7 @@ h2. Parámetros
 * **ancho = _[string]_** (opcional) : Permite especificar el ancho de la columna en píxeles.
 * **permiso = _[permiso]_** (opcional) : Permite asociar un permiso a la columna, por ejemplo para que solo la muestre a un usuario determinado. 
 * **expandir** (opcional) : Se asigna a la columna todo el espacio no ocupado en la tabla.
+* **align = (left|center|right)** (opcional) : Permite alinear el texto contenido en la columna.
 
 h2. Definición
 
@@ -22,6 +23,7 @@ bc. Columna:
 	   & ('ancho' '=' ancho=STRING)? 
 	   & ("permiso" "=" permiso=[Permiso])?
 	   & (expandir?='expandir')?
+	   & ("align" "=" position=("left"|"center"|"right"))?
 	)
 ;
 

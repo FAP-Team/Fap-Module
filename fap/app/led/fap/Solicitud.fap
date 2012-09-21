@@ -973,12 +973,6 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	// Sobreescrito
 	Pagina SolicitudPresentarFAP titulo="Presentar Solicitud" noForm campo=SolicitudGenerica.registro{
 		
-		Grupo mensajeIntermedio permiso=mensajeIntermedioSolicitud borde=false {
-			Wiki estilo ="box-warn box" {
-				"Se produjo un error en la presentación de la solicitud. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-			}
-		}
-		
 		Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHPresentacion{
 			Form formHabilitarFH {
 				Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
@@ -1016,29 +1010,22 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		//Firma Persona jurídica
 		Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=firmarRegistrarSolicitud
 		{
-			Wiki {"Debe indicar si se firmará la solicitud con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la reformulación debe firmarse por todos los representantes mancomunados"}
 
-			Form tipoCertificadoFirma autoEnviar {
-				Combo certificadoFirma titulo="Certificado que se usará en la firma" campo=Registro.tipoFirma
-			}
-
-			Grupo borde = false mostrarSiCombo tipoCertificadoFirma.certificadoFirma="representantes" {
-
-				// La firma y registro se hace en dos pasos
-				Grupo titulo="Paso 1.1. Firmar la solicitud"  {
-					Wiki {"La solicitud será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la reformulación."}
+			// La firma y registro se hace en dos pasos
+				Grupo titulo="Paso 1.1. Firmar la solicitud" permiso=firmarSolicitud{
+					Wiki {"La solicitud será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación."}
 
 					Form formFirmaRepresentante permiso=firmarSolicitud {
 						FirmaSimple firmarRepresentante titulo="Firmar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
 					}
 
-					Tabla tablaFirmantesHecho campo=Registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
+					Tabla tablaFirmantesHecho campo=SolicitudGenerica.registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
 						Columna campo=Firmante.idvalor titulo="NIP"
 						Columna campo=Firmante.nombre titulo="Nombre" expandir
 						Columna campo=Firmante.fechaFirma titulo="Fecha de firma"
 					}
 
-					Tabla tablaFirmantesEspera campo=Registro.firmantes.todos recargarPagina  titulo="Representantes que no han firmado" {
+					Tabla tablaFirmantesEspera campo=SolicitudGenerica.registro.firmantes.todos recargarPagina  titulo="Representantes que no han firmado" {
 						Columna campo=Firmante.idvalor titulo="NIP"
 						Columna campo=Firmante.nombre titulo="Nombre" expandir
 					}
@@ -1055,16 +1042,5 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
 				}
 			}
-
-			Grupo borde=false mostrarSiCombo tipoCertificadoFirma.certificadoFirma="cif"
-			{
-				Wiki {"La solicitud será firmada y registrada. "}
-
-//La firma y registro se realiza en la misma acción
-				Form formFirmaCif redirigir=PresentarFAP permiso=firmarRegistrarSolicitud {
-					FirmaSimple firmarRegistrarCif titulo="Firmar y Registrar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
-				}
-			}
-		}
 	}
 }

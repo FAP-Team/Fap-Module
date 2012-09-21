@@ -227,15 +227,28 @@ public abstract class TramiteBase {
     public void firmar(String firma){
         if(registro.fasesRegistro.borrador && !registro.fasesRegistro.firmada){
             String identificadorFirmante = FirmaController.getIdentificacionFromFirma(firma);
-            if(registro.firmantes.containsFirmanteConIdentificador(identificadorFirmante)){
+            if(registro.firmantes.containsFirmanteConIdentificador(identificadorFirmante) && !registro.firmantes.haFirmado(identificadorFirmante)){
             	Firmante firmante = firmaService.getFirmante(firma, registro.oficial);
+            	for (Firmante firmanteAux: registro.firmantes.todos){
+            		if (firmanteAux.idvalor.equals(identificadorFirmante)){
+            			firmante.cardinalidad = firmanteAux.cardinalidad;
+            			firmante.tipo = firmanteAux.tipo;
+            			registro.firmantes.todos.remove(firmanteAux);
+            			registro.firmantes.todos.add(firmante);
+            			registro.save();
+            			break;
+            		}
+            	}
             	firmante.fechaFirma = new DateTime();
                 almacenarFirma(firma, registro.oficial, firmante);
                 firmante.save();
                 if(registro.firmantes.hanFirmadoTodos()){
                     avanzarFaseFirmada();
                 }
-            }else{
+            } else if (registro.firmantes.haFirmado(identificadorFirmante)){
+            	play.Logger.error("La solicitud ya ha sido firmada por ese certificado");
+                Messages.error("La solicitud ya ha sido firmada por ese certificado");
+            } else {
             	play.Logger.error("El certificado no se corresponde con uno que debe firmar la solicitud");
                 Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud");
             }
@@ -245,6 +258,7 @@ public abstract class TramiteBase {
     public void avanzarFaseFirmada(){
         if(!Messages.hasErrors()){
             registro.fasesRegistro.firmada = true;
+            registro.save();
         }
     }
 	

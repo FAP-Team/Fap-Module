@@ -8,6 +8,8 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
+import controllers.fap.FirmaController;
+
 import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
 
 import net.java.dev.jaxb.array.StringArray;
@@ -136,7 +138,12 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 		Firmante firmante = new Firmante();			
 		firmante = new Firmante();
 		firmante.idtipo = "nif";
-		firmante.idvalor = "12345678Z";
+		String idvalor = FirmaController.getIdentificacionFromFirma(firma);
+		System.out.println("Firmante con id: "+idvalor);
+		if ((idvalor != null) && (!idvalor.isEmpty()))
+			firmante.idvalor = idvalor;
+		else
+			firmante.idvalor = "11111111H";
 		firmante.nombre = "Fapito Etsiiano Ulliano";
 		return firmante;
 

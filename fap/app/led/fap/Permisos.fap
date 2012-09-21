@@ -1125,7 +1125,6 @@ vars
 when
 	(_accion = leer) or
 	(solicitud.registro.fasesRegistro.firmada = "true" and
-		solicitud.registro.fasesRegistro.registro = "false" and
 		solicitud.registro.fasesRegistro.clasificarAed = "false")
 return
 	all

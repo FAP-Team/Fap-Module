@@ -182,7 +182,7 @@ public class VerificacionUtils {
 			for (Documento doc: listDoc) {
 				VerificacionDocumento vDoc = new VerificacionDocumento(doc);
 				vDoc.existe = true;
-				TipoDocumento tipoDocAux = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.uri", doc.tipo).first();
+				TipoDocumento tipoDocAux = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.uri=?", doc.tipo).first();
 				if (tipoDocAux != null) {
 					vDoc.identificadorMultiple = tipoDocAux.cardinalidad;
 			    } else {

@@ -80,11 +80,11 @@ public class VerificacionDocumento extends FapModel {
 		fechaPresentacion = doc.fechaRegistro;
 		uriDocumento = doc.uri;
 	}
-	
+
 	/**
 	 * Constructor de copia
 	 */
-	public VerificacionDocumento (VerificacionDocumento vDoc) {
+	public VerificacionDocumento(VerificacionDocumento vDoc) {
 		this.descripcion = vDoc.descripcion;
 		this.estadoDocumentoVerificacion = vDoc.estadoDocumentoVerificacion;
 		this.existe = vDoc.existe;

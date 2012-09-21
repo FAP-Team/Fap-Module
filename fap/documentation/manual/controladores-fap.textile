@@ -80,7 +80,7 @@ bc. public static void tablasubPublicas(Long idSolicitud){
    renderJSON(response.toJSON("entidad", "objeto", "situacion", "importe", "id"));
 }
 
-Existen otros métodos que son llamados desde alguno de los métodos anteriores, como pueden ser *permisoSave*, *saveValidateCopy*, ..., estos métodos se utilizan como utilidades (no como acciones) por lo que al llamarlos desde otro metodo no producen una redirección (Esto se indica con la anotación @Util).
+Existen otros métodos que son llamados desde alguno de los métodos anteriores, como pueden ser *getSolicitud*, etc. Estos métodos se utilizan como utilidades (no como acciones) por lo que al llamarlos desde otro metodo no producen una redirección (Esto se indica con la anotación @Util).
 
 bc. @Util
 protected static Solicitud getSolicitud(Long idSolicitud){

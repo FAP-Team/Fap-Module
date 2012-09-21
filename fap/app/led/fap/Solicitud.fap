@@ -305,7 +305,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Enlace volverVerificacionAnteriores titulo="Volver" pagina=AccesoVerificaciones estilo="btn"
 	}
 	
-	Pagina PaginaDocumentoVerificacionLeerAnteriores titulo="Documento Verificado" campo=Verificacion.documentos noForm{
+	Pagina PaginaDocumentoVerificacionLeerAnteriores titulo="Documento Verificado" campo=SolicitudGenerica.verificaciones.documentos noForm{
 		Grupo noEditable borde=false permiso=noEditable{
 			Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 				Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"

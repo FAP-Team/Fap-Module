@@ -119,4 +119,4 @@ bc. public class SolicitanteController extends Controller {
 
 En este ejemplo se tiene un controlador con dos acciones. Mediante **redirect()** la acción **save** hace una redirección a la otra acción de este controlador, **index**. Además, vemos como es posible pasar objetos en redirecciones.
 			
-"Para mas información":http://www.playframework.org/documentation/1.2/controllers
+"Para mas información":http://www.playframework.org/documentation/1.2.4/controllers

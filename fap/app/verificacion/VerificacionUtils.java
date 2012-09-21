@@ -182,6 +182,13 @@ public class VerificacionUtils {
 			for (Documento doc: listDoc) {
 				VerificacionDocumento vDoc = new VerificacionDocumento(doc);
 				vDoc.existe = true;
+				TipoDocumento tipoDocAux = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.uri", doc.tipo).first();
+				if (tipoDocAux != null) {
+					vDoc.identificadorMultiple = tipoDocAux.cardinalidad;
+			    } else {
+					play.Logger.error("No existe el tipo de documento para el tipo: "+doc.tipo+". Se seteará por defecto a UNICO.");
+					vDoc.identificadorMultiple = "UNICO";
+				}
 				vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
 				vDoc.save();
 				list.add(vDoc);

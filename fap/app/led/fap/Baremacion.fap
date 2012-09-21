@@ -69,6 +69,8 @@ Entidad CEconomico {
 
 	OneToMany ValoresCEconomico valores
 	
+	Moneda total transient
+	
 	LongText comentariosAdministracion
 	LongText comentariosSolicitante	
 	

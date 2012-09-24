@@ -40,7 +40,7 @@
 	#{list items:0..d, as:'i'}
 		%{	
 	  		String aux = "valores[${i}].valorSolicitado";
-	  		String label = "${tipoEvaluacion.inicio+i}";
+	  		String label = "Año ${tipoEvaluacion.inicio+i}";
 		%}
 		#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true, alignPosition:'right' /}
 	#{/list}
@@ -58,7 +58,7 @@
 <tr>
 	<th class="tabla-encabezado">Concepto</th>
 	#{list items:0..d, as:'i'}
-	<th class="tabla-encabezado">${tipoEvaluacion.inicio+i}</th>
+	<th class="tabla-encabezado">Año ${tipoEvaluacion.inicio+i}</th>
 	#{/list}
 	<th class="tabla-encabezado">Total</th>
 </tr>

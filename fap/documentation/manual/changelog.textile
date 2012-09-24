@@ -1,5 +1,10 @@
 h2. Changelog
 
+h3. Versión 2.1RC10
+
+* Fixed Bug en Verificación.
+* Fixed Bug en Conceptos Economicos.
+
 h3. Versión 2.1RC9
 
 * Fixed Bug en Verificación.

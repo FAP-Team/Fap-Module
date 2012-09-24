@@ -53,7 +53,7 @@
 			def paramName="cEconomico.valores[${i}]";
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
-			def anioLabel = "Año "+(i+1);
+			def anioLabel = "${tipoEvaluacion.inicio+i}";
 			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
 		%}
 		#{if ((!cEconomico.tipo.tipoOtro) && (tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")))}
@@ -94,7 +94,7 @@
 			#{list items:0..anios, as:'i'}
 				%{	
 	  				String aux = "valores[${i}].valorSolicitado";
-	  				String label = "Año "+(i+1);
+	  				String label = "${tipoEvaluacion.inicio+i}";
 				%}
 				#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true, alignPosition:'right' /}
 			#{/list}

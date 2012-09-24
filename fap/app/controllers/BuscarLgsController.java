@@ -13,13 +13,13 @@ public class BuscarLgsController extends BuscarLgsControllerGen {
 			accion = getAccion();
 		if (!permiso(accion)) {
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-			renderTemplate("gen/BuscarLogs/BuscarLogs.html");
+			renderTemplate("gen/BuscarLgs/BuscarLgs.html");
 		}
 
 		BusquedaLogs busquedaLogs = BuscarLgsController.getBusquedaLogs();
 
-		log.info("Visitando página: " + "gen/BuscarLogs/BuscarLogs.html");
-		renderTemplate("gen/BuscarLogs/BuscarLgs.html", accion, idBusquedaLogs, busquedaLogs);
+		log.info("Visitando página: " + "gen/BuscarLgs/BuscarLgs.html");
+		renderTemplate("gen/BuscarLgs/BuscarLgs.html", accion, idBusquedaLogs, busquedaLogs);
 	}
 	
 	@Util
@@ -52,9 +52,9 @@ public class BuscarLgsController extends BuscarLgsControllerGen {
 			BuscarLgsController.buscarValidateRules(dbBusquedaLogs, busquedaLogs);
 		}
 		if (!Messages.hasErrors()) {
-			log.info("Acción Editar de página: " + "gen/BuscarLogs/BuscarLogs.html" + " , intentada con éxito");
+			log.info("Acción Editar de página: " + "gen/BuscarLgs/BuscarLgs.html" + " , intentada con éxito");
 		} else
-			log.info("Acción Editar de página: " + "gen/BuscarLogs/BuscarLogs.html" + " , intentada sin éxito (Problemas de Validación)");
+			log.info("Acción Editar de página: " + "gen/BuscarLgs/BuscarLgs.html" + " , intentada sin éxito (Problemas de Validación)");
 		
 		BuscarLgsController.buscarRender(busquedaLogs, filas);
 	}

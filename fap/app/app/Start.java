@@ -44,6 +44,8 @@ import com.google.inject.Inject;
 import config.InjectorConfig;
 
 import emails.Mails;
+import enumerado.fap.gen.EstadosSolicitudEnum;
+import enumerado.fap.gen.EstadosVerificacionEnum;
 
 import messages.Messages;
 import models.*;
@@ -95,7 +97,7 @@ public class Start extends Job {
 			AdministracionFapJobs jobs = new AdministracionFapJobs();
 			jobs.save();
 		}
-		
+
 		if (Agente.count() == 0){
             Fixtures.delete();
             String agentesFile = "listas/initial-data/agentes.yml";

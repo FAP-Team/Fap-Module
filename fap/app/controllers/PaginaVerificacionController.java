@@ -315,6 +315,8 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					
 					// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
 					VerificacionUtils.setVerificadoDocumentos(dbSolicitud.verificacion.documentos, dbSolicitud.documentacion.documentos);
+					if ((dbSolicitud.registro.oficial != null) && (!dbSolicitud.registro.oficial.uri.isEmpty()) && ((dbSolicitud.registro.oficial.verificado == null) || (!dbSolicitud.registro.oficial.verificado)))
+						VerificacionUtils.setVerificadoDocumento(dbSolicitud.verificacion.documentos, dbSolicitud.registro.oficial);
 					// Actualizamos los datos de la verificacion para verificaciones posteriores, en este caso el estado.
 					dbSolicitud.verificacion.estado = EstadosVerificacionEnum.verificacionPositiva.name();
 					

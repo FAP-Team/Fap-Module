@@ -1,39 +1,13 @@
 package controllers;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-
-import org.apache.log4j.Appender;
-import org.apache.log4j.DailyRollingFileAppender;
-import org.joda.time.DateTime;
-import org.postgresql.jdbc2.optional.SimpleDataSource;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
 import messages.Messages;
 import models.BusquedaLogs;
-import models.Log;
-import models.SolicitudGenerica;
-import play.Logger;
-import play.data.binding.As;
 import play.mvc.Util;
 import validation.CustomValidation;
-import controllers.fap.LoggerController;
-import controllers.gen.BuscarLogsControllerGen;
+import controllers.gen.BuscarLgsControllerGen;
 
-public class BuscarLogsController extends BuscarLogsControllerGen {
-	
+public class BuscarLgsController extends BuscarLgsControllerGen {
+
 	public static void index(String accion, Long idBusquedaLogs) {
 		if (accion == null)
 			accion = getAccion();
@@ -42,10 +16,10 @@ public class BuscarLogsController extends BuscarLogsControllerGen {
 			renderTemplate("gen/BuscarLogs/BuscarLogs.html");
 		}
 
-		BusquedaLogs busquedaLogs = BuscarLogsController.getBusquedaLogs();
+		BusquedaLogs busquedaLogs = BuscarLgsController.getBusquedaLogs();
 
 		log.info("Visitando página: " + "gen/BuscarLogs/BuscarLogs.html");
-		renderTemplate("gen/BuscarLogs/BuscarLogs.html", accion, idBusquedaLogs, busquedaLogs);
+		renderTemplate("gen/BuscarLogs/BuscarLgs.html", accion, idBusquedaLogs, busquedaLogs);
 	}
 	
 	@Util
@@ -54,12 +28,12 @@ public class BuscarLogsController extends BuscarLogsControllerGen {
 		if (!permisoBuscar("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
-		BusquedaLogs dbBusquedaLogs = BuscarLogsController.getBusquedaLogs();
+		BusquedaLogs dbBusquedaLogs = BuscarLgsController.getBusquedaLogs();
 
-		BuscarLogsController.buscarBindReferences(busquedaLogs);
+		BuscarLgsController.buscarBindReferences(busquedaLogs);
 
 		if (!Messages.hasErrors()) {
-			BuscarLogsController.buscarValidateCopy("editar", dbBusquedaLogs, busquedaLogs);
+			BuscarLgsController.buscarValidateCopy("editar", dbBusquedaLogs, busquedaLogs);
 		}
 		
 		int filas = 0;
@@ -75,14 +49,14 @@ public class BuscarLogsController extends BuscarLogsControllerGen {
 		}
 
 		if (!Messages.hasErrors()) {
-			BuscarLogsController.buscarValidateRules(dbBusquedaLogs, busquedaLogs);
+			BuscarLgsController.buscarValidateRules(dbBusquedaLogs, busquedaLogs);
 		}
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "gen/BuscarLogs/BuscarLogs.html" + " , intentada con éxito");
 		} else
 			log.info("Acción Editar de página: " + "gen/BuscarLogs/BuscarLogs.html" + " , intentada sin éxito (Problemas de Validación)");
 		
-		BuscarLogsController.buscarRender(busquedaLogs, filas);
+		BuscarLgsController.buscarRender(busquedaLogs, filas);
 	}
 
 	@Util
@@ -103,7 +77,7 @@ public class BuscarLogsController extends BuscarLogsControllerGen {
 		}
 
 		Messages.keep();
-		redirect("BuscarLogsController.index", "editar");
+		redirect("BuscarLgsController.index", "editar");
 	}
 	
 	@Util
@@ -131,4 +105,5 @@ public class BuscarLogsController extends BuscarLogsControllerGen {
 			dbBusquedaLogs.numeroFilasSeleccionadas = null;
 		}
 	}
+	
 }

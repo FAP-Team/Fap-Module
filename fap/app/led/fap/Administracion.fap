@@ -12,7 +12,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Codigos Requerimientos y Exclusión" pagina=Codigos
 			Enlace "Emails" pagina=Emails
-			Enlace "Logs" pagina=BuscarLogs
+			Enlace "Logs" pagina=BuscarLgs
 			Enlace "Informe" accion="fap.InformeController.index"
 			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
 			Enlace "Incidencias" accion="fap.IncidenciasController.index"
@@ -348,7 +348,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		AreaTexto descripcion campo=TipoCodigoExclusion.descripcion titulo="Descripción"
 	}
  
-	Pagina BuscarLogs titulo="Búsqueda de Logs" campo=BusquedaLogs noForm {
+	Pagina BuscarLgs titulo="Búsqueda de Logs" campo=BusquedaLogs noForm {
 		Form buscar {
 			Wiki {
 				"**En esta página podrá decidir como quiere hacer la búsqueda de los Logs, tanto por atributos como por fecha.** </br>"

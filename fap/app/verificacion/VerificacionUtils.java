@@ -413,5 +413,14 @@ public class VerificacionUtils {
 		}
 	}
 	
+	public static void setVerificadoDocumento (List<VerificacionDocumento> vDocs, Documento docu) {
+		for (VerificacionDocumento vDoc : vDocs) {
+			if ((docu.uri != null) && (vDoc.uriDocumento != null) && (docu.uri.equals(vDoc.uriDocumento))){
+				docu.verificado=true;
+				break;
+			}
+		}
+	}
+	
 	
 }

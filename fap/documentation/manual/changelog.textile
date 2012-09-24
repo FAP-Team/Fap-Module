@@ -1,5 +1,11 @@
 h2. Changelog
 
+h3. Versión 2.1RC9
+
+* Fixed Bug en Verificación.
+* Fixed Bug en Presentación de Persona Jurídica.
+* Añadida columna totales por Concepto Económico.
+
 h3. Versión 2.1RC8
 
 * Fixed Some Bug en Verificación.

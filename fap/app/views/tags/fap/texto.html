@@ -47,8 +47,9 @@
 	if (_moneda){
 		mostrarIcono = true
 	}
-	
-	
+	if (!properties.FapProperties.getBoolean("fap.iconos.mostrar"))
+		mostrarIcono = false
+		
 	def clase = _clase ?: "input-xlarge"
 	
 	def requerido;
@@ -103,7 +104,7 @@
     	#{if mostrarIcono}
     		<div class="input-prepend">
     	#{/if}
-    	#{if _email || _fecha || _direccionMapa}<span class="add-on"><i class=${icono}></i></span>#{/if}#{if _moneda}<span class="add-on"><strong>€</strong></span>#{/if}<input class="${clase}" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>#{if mostrarIcono}#{fap.ayuda ayuda:ayuda, id:id_help /}
+    	#{if mostrarIcono &&  (_email || _fecha || _direccionMapa)}<span class="add-on"><i class=${icono}></i></span>#{/if}#{if mostrarIcono && _moneda}<span class="add-on"><strong>€</strong></span>#{/if}<input class="${clase}" id="${id}" type="${passwordText}" name="${field.name}" value="${value}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>#{if mostrarIcono}#{fap.ayuda ayuda:ayuda, id:id_help /}
     	    </div>#{/if}
 	#{/fap.formrow}
 	#{if duplicado == true}
@@ -118,7 +119,7 @@
 			#{if mostrarIcono}
     			<div class="input-prepend">
     		#{/if}
-    		#{if _email || _fecha || _direccionMapa}<span class="add-on"><i class=${icono}></i></span>#{/if}#{if _moneda}<span class="add-on"><strong>€</strong></span>#{/if}<input id="${id_copy}" class="${clase}" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>#{if mostrarIcono}#{fap.ayuda ayuda:ayuda, id:id_help /}
+    		#{if mostrarIcono && (_email || _fecha || _direccionMapa)}<span class="add-on"><i class=${icono}></i></span>#{/if}#{if mostrarIcono && _moneda}<span class="add-on"><strong>€</strong></span>#{/if}<input id="${id_copy}" class="${clase}" type="${passwordText}" name="${id_copy}" value="${value_copy}" ${onBlurStr} ${disabled} #{if style}style="${style}"#{/if} #{if maxlength}maxlength="${maxlength}"#{/if}>#{if mostrarIcono}#{fap.ayuda ayuda:ayuda, id:id_help /}
     	        </div>#{/if}
 		#{/fap.formrow}
 		

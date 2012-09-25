@@ -125,7 +125,14 @@ Ext.onReady(function() {
 		$('.modal-header').parent().addClass("max");
 
 	var ancho = document.body.clientWidth;
-	
+	if ($('.modal.max').height() != null) {
+		var alto = $('.modal.max').height();
+		if (alto <= 600)
+			$('.modal.max').css("position", "fixed");
+		else
+			window.scrollTo(0,0);
+	}
+		
 	if (ancho < 850) {
 		// No va a haber a la vez dos popups
 		var modalId = document.getElementsByClassName('modal hide fade in max')[0].id

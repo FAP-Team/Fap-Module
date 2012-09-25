@@ -269,7 +269,7 @@ public abstract class TramiteBase {
 	 * @throws RegistroException
 	 */
 	public void registrar() throws RegistroServiceException {
-		validarReglasConMensajes();
+
 		EntityTransaction tx = JPA.em().getTransaction();
 		tx.commit();
 		//Registra la solicitud

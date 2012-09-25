@@ -406,19 +406,46 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 
 		}
 		
-		Grupo gRequerimientos permiso=requerimiento titulo="Requerimiento"{
-			Form gRequerirFirmaRequerimiento permiso=requerimientoRequerirFirma {
-				Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacion.requerimiento.firmante ancho="450px" requerido 
-				Boton requerirFirma titulo="Requerir firma al Gestor" 
-			} 
+		Grupo gRequerimientos permiso=requerimiento borde = false{
+		
+		    Grupo gDatosVerificacionDocumentos titulo = "Verificación de la Documentación"{
+		    	
+				Grupo botonDescargaReciboSolitudgR borde=false{
+					Enlace campo=SolicitudGenerica.registro.justificante.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="btn"
+				}	
 			
-			Form gFirmarRequerimiento permiso=requerimientoAFirmar {
-				FirmaSimple firmaRequerimiento titulo="Firmar y Registrar de salida el Requerimiento" documento=SolicitudGenerica.verificacion.requerimiento.oficial listaFirmantes=SolicitudGenerica.verificacion.requerimiento.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante  
+				Tabla verificacionDocumentosgR titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
+					paginaLeer=PaginaDocumentoVerificacionLeer 
+				{
+					//Columna titulo="Id" campo=VerificacionDocumento.id ancho="40"
+					Columna titulo="Fecha Presentación" campo=VerificacionDocumento.fechaPresentacion ancho="80"
+					Columna titulo="Descripción" campo=VerificacionDocumento.descripcion expandir
+					Columna titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
+					Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
+					Columna titulo="Multiplicidad" campo=VerificacionDocumento.identificadorMultiple ancho="80"
+					Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"	
+				}
+			
+				Form gnuevoRequerimientoBorradorPreliminargR destino="_blank"{ 
+					Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
+				}
 			}
 			
-			Form gPonerADisposicion permiso=requerimientoFirmado {
-				Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
-				Boton ponerADisposicion titulo="Notificar el requerimiento"
+			Grupo gRequerimientoFirmaYPonerADisposicion titulo="Requerimiento" {
+			
+				Form gRequerirFirmaRequerimiento permiso=requerimientoRequerirFirma {
+					Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacion.requerimiento.firmante ancho="450px" requerido 
+					Boton requerirFirma titulo="Requerir firma al Gestor" 
+				} 
+				
+				Form gFirmarRequerimiento permiso=requerimientoAFirmar {
+					FirmaSimple firmaRequerimiento titulo="Firmar y Registrar de salida el Requerimiento" documento=SolicitudGenerica.verificacion.requerimiento.oficial listaFirmantes=SolicitudGenerica.verificacion.requerimiento.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante  
+				}
+				
+				Form gPonerADisposicion permiso=requerimientoFirmado {
+					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
+					Boton ponerADisposicion titulo="Notificar el requerimiento"
+				}
 			}
 			
 		}

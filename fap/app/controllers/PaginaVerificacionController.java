@@ -260,6 +260,35 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void gnuevoRequerimientoBorradorPreliminargR(Long idSolicitud, Long idVerificacion, String obtenerBorradorPreliminar) {
+		checkAuthenticity();
+		if (!permisoGnuevoRequerimientoBorradorPreliminargR("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.gnuevoRequerimientoBorradorPreliminargRValidateRules();
+		}
+		
+		if (!Messages.hasErrors()) {
+			try {
+				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+				new Report("reports/requerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(dbSolicitud);
+			} catch (Exception e) {
+				play.Logger.error("Error generando el borrador", e.getMessage());
+				Messages.error("Error generando el borrador");
+			} catch (Throwable e) {
+				play.Logger.error("Error generando el borrador", e.getMessage());
+				Messages.error("Error generando el borrador");
+			}
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
+		PaginaVerificacionController.gnuevoRequerimientoBorradorPreliminargRRender(idSolicitud, idVerificacion);
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void finalizarVerificacion(Long idSolicitud, Long idVerificacion, String btnFinalizarVerificacion) {
 		checkAuthenticity();
 		if (!permisoFinalizarVerificacion("editar")) {

@@ -5090,3 +5090,7 @@ ul.errorsDetails li a {
 .total {
 	background-color: #DCE8F4;
 }
+
+.input-prepend {
+   width: 80%; // Bootstrap-adaptativo
+}

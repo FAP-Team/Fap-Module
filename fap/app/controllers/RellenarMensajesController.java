@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import play.mvc.Util;
+import properties.FapProperties;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.NotificacionService;
@@ -149,11 +150,13 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 		String msg = "";
 		if (!platinoIsConfigured())
 			msg += "Platino";
-		if (!notificacionIsConfigured()) {
-			if (msg.isEmpty())
-				msg += "Notificación";
-			else
-				msg += ", Notificación";
+		if (FapProperties.getBoolean("fap.notificacion.activa")){
+			if (!notificacionIsConfigured()) {
+				if (msg.isEmpty())
+					msg += "Notificación";
+				else
+					msg += ", Notificación";
+			}
 		}
 		if (!gestorDocumentalIsConfigured()) {
 			if (msg.isEmpty())

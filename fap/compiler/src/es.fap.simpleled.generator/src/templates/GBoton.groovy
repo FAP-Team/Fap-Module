@@ -47,7 +47,8 @@ public class GBoton extends GElement{
 			params.put "waitPopup", boton.isWaitPopup();
 		if (boton.type != null)
 			params.putStr "type", "btn "+boton.type;
-		
+		if (boton.refrescar)
+			params.put "refrescar", true
 		if (boton.ayuda != null) {
 			if ((boton.tipoAyuda != null) && ((boton.tipoAyuda.type.equals("propover")) || (boton.tipoAyuda.type.equals("popover"))))
 				params.put "ayuda", "tags.TagAyuda.popover('${boton.ayuda}')";

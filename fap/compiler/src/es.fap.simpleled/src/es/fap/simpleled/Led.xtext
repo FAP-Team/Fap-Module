@@ -331,6 +331,7 @@ Boton:
 	    & ('popup' '=' popup=PopupAccion)?
 	    & (anterior?="anterior")?
 		& (waitPopup?="waitPopup")?	
+		& (refrescar?="refrescar")?	
 		& ('type' '=' type=('primary' | 'info' | 'success' | 'danger' | 'warning' | 'inverse'))?
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)

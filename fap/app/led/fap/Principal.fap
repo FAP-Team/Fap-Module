@@ -96,7 +96,7 @@ Formulario Principal {
 	Pagina Seguimiento titulo="Seguimiento" permiso=adminGestorRevisor noForm {
 		Form generarSeguimientoForm destino="_blank"{
 			Grupo titulo="Informe de Seguimiento"{
-				Boton generarSeguimiento titulo="Informe de Seguimiento"
+				Boton generarSeguimiento titulo="Informe de Seguimiento" refrescar
 			}
 		}
 	}

@@ -13,6 +13,7 @@
 
 %{ 
 	def id = _id ?: play.libs.Codec.UUID()
+	def refrescar = _refrescar ?: 'false'
 	def idFijo = _idFijo 
 	def label = _titulo
 	def ayuda = _ayuda
@@ -73,6 +74,11 @@
 			});
 		});
 		#{/else}
+		#{if refrescar}
+			$('#${id}').click(function(){
+				$('#${id}').disabled('false');
+			}
+		#{/if}
 	</script>
 	
 

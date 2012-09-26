@@ -108,9 +108,9 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		boolean hasConnection = false;
 		try {
 			hasConnection = getVersion() != null;
-			log.info("El servicio tiene conexion con " + getEndPoint() + "? :"+hasConnection);
+			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "? :"+hasConnection);
 		}catch(Exception e){
-			log.info("El servicio no tiene conexion con " + getEndPoint());
+			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
 		}
 		return hasConnection; 
 	}
@@ -194,7 +194,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         try {
             result = firmaPort.verifyContentSignature(contenidoDocumento, firma.getBytes(), INVOKING_APP);
         } catch (SignatureServiceException_Exception e) {
-            log.error("Error verificando el contenido de la firma", e);
+            play.Logger.error("Error verificando el contenido de la firma", e);
         }
         return result;        
     }
@@ -215,7 +215,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			byte[] certificadoEncoded = certificate.getEncoded();
 			certificado = Codec.encodeBASE64(certificadoEncoded);
 		} catch (Exception e) {
-			log.error("Error al extraer la información del certificado");
+			play.Logger.error("Error al extraer la información del certificado");
 		}
 		boolean certificadoValido = isValidCertificado(certificado);
         if(!certificadoValido)
@@ -305,7 +305,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			String invokingApp = FapProperties.get("fap.platino.firma.invokingApp");
 			return firmaPort.verifyContentSignature(content, signature, invokingApp);
 		} catch (SignatureServiceException_Exception e) {
-			log.error("Error verificando el contenido de la firma", e);
+			play.Logger.error("Error verificando el contenido de la firma", e);
 			return false;
 		}
 	}
@@ -316,7 +316,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			String invokingApp = FapProperties.get("fap.platino.firma.invokingApp");
 			return firmaPort.getCertInfo(certificado, invokingApp);
 		} catch (Exception e) {
-			log.error("Error al recuperar la información del certificado"+e);
+			play.Logger.error("Error al recuperar la información del certificado"+e);
 		}
 		return null;
 	}
@@ -336,7 +336,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			}
 			return values;
 		} catch (Exception e) {
-			log.error("Error al parsear al extraer el certificado "+e);
+			play.Logger.error("Error al parsear al extraer el certificado "+e);
 		}
 		return null;
 	}
@@ -346,7 +346,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		try {
 			return extraerInformacionPersonal(extraerCertificadoDeFirma(firma));
 		} catch (FirmaServiceException e) {
-			log.error("Error al extraer Info From Firma "+e.getMessage());
+			play.Logger.error("Error al extraer Info From Firma "+e.getMessage());
 		}
 		return null;
 	}
@@ -405,9 +405,9 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			}
 			return null;
 		} catch (FirmaServiceException e){
-			log.error("El certificado no es válido");
+			play.Logger.error("El certificado no es válido");
 		}catch (Exception e) {
-			log.error("Error en validateXMLSignature "+e);
+			play.Logger.error("Error en validateXMLSignature "+e);
 			Messages.error("Error al validar la firma");
 		}
 		return null;
@@ -502,7 +502,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		Firmante firmanteCertificado = getFirmante(firma, documento);
 		
 		if(firmanteCertificado != null){
-			log.info("Firmante validado");
+			play.Logger.info("Firmante validado");
 			
 			
 			int index = -1;
@@ -522,8 +522,8 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 					Messages.error("Ya ha firmado la solicitud");
 				}
 				
-				log.info("Firmante encontrado " + firmante.idvalor );
-				log.info("Esperado " + valorDocumentofirmanteSolicitado);
+				play.Logger.info("Firmante encontrado " + firmante.idvalor );
+				play.Logger.info("Esperado " + valorDocumentofirmanteSolicitado);
 				if(valorDocumentofirmanteSolicitado != null && !firmante.idvalor.equalsIgnoreCase(valorDocumentofirmanteSolicitado)){
 					Messages.error("Se esperaba la firma de " + valorDocumentofirmanteSolicitado);
 				}
@@ -532,19 +532,19 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			if(!Messages.hasErrors()){
 				// Guarda la firma en el AED
 				try {
-					log.info("Guardando firma en el aed");
+					play.Logger.info("Guardando firma en el aed");
 					firmante.fechaFirma = new DateTime();
 					gestorDocumentalService.agregarFirma(documento, new models.Firma(firma, firmante));
 					firmante.save();
 					
-					log.info("Firma del documento " + documento.uri + " guardada en el AED");
+					play.Logger.info("Firma del documento " + documento.uri + " guardada en el AED");
 				}catch(GestorDocumentalServiceException e){
-					log.error("Error guardando la firma en el aed");
+					play.Logger.error("Error guardando la firma en el aed");
 					Messages.error("Error al guardar la firma");
 				}				
 			}
 		}else{
-			log.error("firmanteCertificado == null????");
+			play.Logger.error("firmanteCertificado == null????");
 		}
 	}
 	
@@ -555,11 +555,11 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		try {
 			return extraerInformacionPersonal(extraerCertificado(firma));
 		} catch (ParserConfigurationException e) {
-			log.error("Error al parsear al extraer el certificado "+e);
+			play.Logger.error("Error al parsear al extraer el certificado "+e);
 		} catch (SAXException e) {
-			log.error("Error al parsear al extraer el certificado. REINSTALAR EL APPLET O ACTIVEX "+e);
+			play.Logger.error("Error al parsear al extraer el certificado. REINSTALAR EL APPLET O ACTIVEX "+e);
 		} catch (IOException e) {
-			log.error("Error en extraerInfoFromFirma "+e);
+			play.Logger.error("Error en extraerInfoFromFirma "+e);
 		}
 		return null;
 	}
@@ -590,7 +590,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			String invokingApp = propertyPlaceholder.get("fap.platino.firma.invokingApp");
 			return getFirmaPort().getCertInfo(certificado, invokingApp);
 		} catch (Exception e) {
-			log.error("Error al recuperar la información del certificado"+e);
+			play.Logger.error("Error al recuperar la información del certificado"+e);
 		}
 		return null;
 	}
@@ -654,21 +654,21 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				return null;
 			} else {
 				switch (result.getCode()) {
-					case CERT_NO_VALIDO: log.error("certificadoNoValido"); break;
-					case CERT_NO_CONFIANZA: log.error("certificadoNoConfianza"); break;
-					case CERT_NO_VERIFICADO: log.error("certificadoNoVerificado"); break;
-					case CERT_REVOCADO: log.error("certificadoRevocado"); break;
-					case CADENA_CERT_NO_VALIDA: log.error("cadenaNoValida"); break;
+					case CERT_NO_VALIDO: play.Logger.error("certificadoNoValido"); break;
+					case CERT_NO_CONFIANZA: play.Logger.error("certificadoNoConfianza"); break;
+					case CERT_NO_VERIFICADO: play.Logger.error("certificadoNoVerificado"); break;
+					case CERT_REVOCADO: play.Logger.error("certificadoRevocado"); break;
+					case CADENA_CERT_NO_VALIDA: play.Logger.error("cadenaNoValida"); break;
 				}
 			}
 		} catch (ParserConfigurationException e) {
-			log.error("Error al parsear al extraer el certificado "+e);
+			play.Logger.error("Error al parsear al extraer el certificado "+e);
 		} catch (SAXException e) {
-			log.error("Error al parsear al extraer el certificado. REINSTALAR EL APPLET O ACTIVEX "+e);
+			play.Logger.error("Error al parsear al extraer el certificado. REINSTALAR EL APPLET O ACTIVEX "+e);
 		} catch (IOException e) {
-			log.error("Error al parsear al extraer el certificado "+e);
+			play.Logger.error("Error al parsear al extraer el certificado "+e);
 		}catch (Exception e) {
-			log.error("Error en validateXMLSignature "+e);
+			play.Logger.error("Error en validateXMLSignature "+e);
 			Messages.error("Error al validar la firma");
 		}
 		return null;
@@ -728,7 +728,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		Firmante firmanteCertificado = getFirmante(firma.firma, documento);
 		
 		if(firmanteCertificado != null){
-			log.info("Firmante validado");
+			play.Logger.info("Firmante validado");
 			
 			int index = firmantes.indexOf(firmanteCertificado);
 			Firmante firmante = null;
@@ -740,8 +740,8 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 					Messages.error("Ya ha firmado la solicitud");
 				}
 				
-				log.info("Firmante encontrado " + firmante.idvalor );
-				log.info("Esperado " + valorDocumentofirmanteSolicitado);
+				play.Logger.info("Firmante encontrado " + firmante.idvalor );
+				play.Logger.info("Esperado " + valorDocumentofirmanteSolicitado);
 				if(valorDocumentofirmanteSolicitado != null && !firmante.idvalor.equalsIgnoreCase(valorDocumentofirmanteSolicitado)){
 					Messages.error("Se esperaba la firma de " + valorDocumentofirmanteSolicitado);
 				}
@@ -750,19 +750,19 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			if(!Messages.hasErrors()){
 				// Guarda la firma en el AED
 				try {
-					log.info("Guardando firma en el aed");
+					play.Logger.info("Guardando firma en el aed");
 					firmante.fechaFirma = new DateTime();
 					aedService.agregarFirma(documento, new models.Firma(firma.firma, firmantes));
 					firmante.save();
 					
-					log.info("Firma del documento " + documento.uri + " guardada en el AED");
+					play.Logger.info("Firma del documento " + documento.uri + " guardada en el AED");
 				}catch(GestorDocumentalServiceException e){
-					log.error("Error guardando la firma en el aed");
+					play.Logger.error("Error guardando la firma en el aed");
 					Messages.error("Error al guardar la firma");
 				}				
 			}
 		}else{
-			log.error("firmanteCertificado == null????");
+			play.Logger.error("firmanteCertificado == null????");
 		}
 	}
 
@@ -771,20 +771,20 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		Firmante firmante = getFirmante(firma.firma, documento);
 		
 		if((firmante != null)&&(firmante.esFuncionarioHabilitado())){
-			log.info("Funcionario habilitado validado");
-			log.info("Firmante encontrado " + firmante.idvalor );
+			play.Logger.info("Funcionario habilitado validado");
+			play.Logger.info("Firmante encontrado " + firmante.idvalor );
 			
 			if(!Messages.hasErrors()){
 				// Guarda la firma en el AED
 				try {
-					log.info("Guardando firma en el aed");
+					play.Logger.info("Guardando firma en el aed");
 					firmante.fechaFirma = new DateTime();
 					aedService.agregarFirma(documento, new models.Firma(firma.firma, firmante));
 					firmante.save();
 					
-					log.info("Firma del documento " + documento.uri + " guardada en el AED");
+					play.Logger.info("Firma del documento " + documento.uri + " guardada en el AED");
 				}catch(GestorDocumentalServiceException e){
-					log.error("Error guardando la firma en el aed");
+					play.Logger.error("Error guardando la firma en el aed");
 					Messages.error("Error al guardar la firma");
 				}				
 			}

@@ -13,7 +13,6 @@ import models.TipoCEconomico;
 import models.TipoEvaluacion;
 import models.ValoresCEconomico;
 import controllers.gen.PaginaCEconomicoManualControllerGen;
-import controllers.popups.PopupCEconomicoManualController;
 
 public class PaginaCEconomicoManualController extends PaginaCEconomicoManualControllerGen {
 	

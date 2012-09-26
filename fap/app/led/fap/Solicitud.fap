@@ -142,7 +142,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
 	}	
 	
-	Pagina AportacionRecibos titulo="Recibos de Aportaciones"{
+	Pagina AportacionRecibos titulo="Recibos de Aportaciones" noForm {
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
 		{

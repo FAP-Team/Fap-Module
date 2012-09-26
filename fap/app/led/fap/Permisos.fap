@@ -827,6 +827,27 @@ Permiso iniciarBaremacion {
 		all
 }
 
+Permiso editarSolicitudYIniciarBaremacion {
+	vars
+		SolicitudGenerica solicitud
+		TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")
+	when
+		!usuario is visible
+		or (
+	 		agente.rolActivo = "usuario" and
+	 		solicitud?.estado = "borrador" and
+	 		solicitud?.registro?.fasesRegistro?.borrador = "false" and
+	 		(tipoEvaluacion != null) and (tipoEvaluacion.estado = "cargada")
+		)
+	return all
+	when
+		!usuario is visible
+		or (
+	 		agente.rolActivo = "usuario"
+		)
+	return [leer]
+}
+
 Permiso actualizarBaremacion {
 	vars
 		TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")

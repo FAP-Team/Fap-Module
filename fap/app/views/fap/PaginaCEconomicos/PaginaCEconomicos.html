@@ -11,7 +11,7 @@
      formulario:'Solicitud', 
      hayForm:false, 
      pagina:'PaginaCEconomicos', 
-     permiso:'solicitudes', 
+     permiso:'editarSolicitud', 
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
      titulo:'Conceptos Económicos', 
      urlBorrar:play.mvc.Router.reverse('PaginaCEconomicosController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
@@ -55,8 +55,9 @@
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
 			def anioLabel = "Año ${tipoEvaluacion.inicio+i}";
 			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
+			def permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("editarSolicitudYIniciarBaremacion", "editar", tags.TagMapStack.top("idParams"), null);
 		%}
-		#{if ((!cEconomico.tipo.tipoOtro) && (tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")))}
+		#{if ((!cEconomico.tipo.tipoOtro) && (tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")) && (permisoEditar))}
 			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
 		#{/if}
 		#{else}
@@ -73,7 +74,7 @@
      idContainer:'idCEconomico', 
      idEntidad:'idCEconomicosManuales', 
      nameContainer:'PaginaCEconomicos', 
-     permisoCrear:'iniciarBaremacion', 
+     permisoCrear:'editarSolicitudYIniciarBaremacion', 
      recargarPagina:true, 
      saveEntity:false, 
      tipoContainer:'pagina', 
@@ -84,6 +85,7 @@
      urlCrear:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
      urlCrearEntidad:play.mvc.Router.reverse('PaginaCEconomicosController.crearForTablas' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
      urlEditar:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']),
+     urlLeer:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']),
      urlTabla:@PaginaCEconomicosController.tablaceconomicosManuales(idCEconomico)
 }
 	

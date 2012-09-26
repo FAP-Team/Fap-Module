@@ -14,7 +14,7 @@
      hayForm:false, 
      mensajeFinal:false, 
      pagina:'PaginaCEconomicoManual', 
-     permiso:'solicitudes', 
+     permiso:'editarSolicitudYIniciarBaremacion', 
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
      titulo:'Concepto Económico', 
      urlBorrar:play.mvc.Router.reverse('PaginaCEconomicoManualController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]), 
@@ -36,8 +36,14 @@
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
 			def anioLabel = "Año ${tipoEvaluacion.inicio+i}";
 			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomicosManuales.valores[i].valorSolicitado);
+			def permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("editarSolicitudYIniciarBaremacion", "editar", tags.TagMapStack.top("idParams"), null);
 		%}
-		#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
+		#{if permisoEditar}	
+			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
+		#{/if}
+		#{else}
+			#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
+		#{/else}
 	#{/list}
 	
 	#{/fap.grupo}

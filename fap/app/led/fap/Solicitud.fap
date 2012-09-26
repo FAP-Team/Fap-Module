@@ -31,7 +31,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	
 	
 	// Sobreescrito
-	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos {
+	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos permiso=editarSolicitud{
 		Accion crear redirigir=DocumentacionFAP	
 		Grupo gSubirDocumento titulo="Adjuntar Documento"{
 			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
@@ -39,13 +39,13 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	}
 	
 	//Sobreescrito
-	Popup DocumentosEditarFAP titulo="Documento" campo=SolicitudGenerica.documentacion.documentos {
+	Popup DocumentosEditarFAP titulo="Documento" campo=SolicitudGenerica.documentacion.documentos permiso=editarSolicitud{
 		Accion editar redirigir=DocumentacionFAP	
 		EditarArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO"
 	}
 	
 	// Página Sobreescrita
-	Pagina DocumentosExternosFAP titulo="Nuevo documento ya aportado en la Administración" campo=SolicitudGenerica.documentacion.documentosExternos {
+	Pagina DocumentosExternosFAP titulo="Nuevo documento ya aportado en la Administración" campo=SolicitudGenerica.documentacion.documentosExternos permiso=editarSolicitud{
 		Accion crear redirigir=DocumentacionFAP
 		
 		Combo tipoDocumento titulo="Tipo Documento" campo=DocumentoExterno.tipo requerido
@@ -56,7 +56,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	}
 	
 	// Popup Sobrescrito
-	Popup DocumentosExternosEditarFAP titulo="Modificar Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos {
+	Popup DocumentosExternosEditarFAP titulo="Modificar Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos permiso=editarSolicitud{
 		Accion editar redirigir=DocumentacionFAP	
 
 		Combo tipoDocumento titulo="Tipo Documento" campo=DocumentoExterno.tipo requerido
@@ -568,16 +568,16 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	}
 
 	//Sobreescrita
-	Pagina PCEconomicos titulo="Conceptos Económicos"{
+	Pagina PCEconomicos titulo="Conceptos Económicos" permiso=editarSolicitudYIniciarBaremacion{
 
 	}
 	
 	//Sobreescrita
-	Pagina PaginaCEconomicos titulo= "Conceptos Económicos" campo=SolicitudGenerica.ceconomicos noForm{
+	Pagina PaginaCEconomicos titulo= "Conceptos Económicos" campo=SolicitudGenerica.ceconomicos permiso=editarSolicitudYIniciarBaremacion noForm{
 		Form Guardar { 
 			Texto Nombre titulo="Nombre" campo=CEconomico.tipo.nombre
 			Grupo conceptosManuales borde=false permiso=verTablaCEconomicosOtros {
-				Tabla ceconomicosManuales titulo="Especificar Detalle" campo=CEconomico.otros paginaCrear=PaginaCEconomicoManual paginaEditar=PaginaCEconomicoManual recargarPagina{
+				Tabla ceconomicosManuales titulo="Especificar Detalle" campo=CEconomico.otros paginaCrear=PaginaCEconomicoManual paginaEditar=PaginaCEconomicoManual paginaLeer=PaginaCEconomicoManual recargarPagina{
 					Columna campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquía"
 					Columna campo=CEconomicosManuales.tipo.nombre titulo="Nombre" expandir
 				}
@@ -587,13 +587,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	}
 	
 	//Sobreescrita
-	Popup PopupCEconomicoManual titulo="Concepto Económico" campo=CEconomico.otros permiso=iniciarBaremacion{
-		Accion editar redirigir=PaginaCEconomicos crearSiempre
-		Accion crear redirigir=PaginaCEconomicos crearSiempre
-	}
-	
-	//Sobreescrita
-	Pagina PaginaCEconomicoManual titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=iniciarBaremacion noForm{
+	Pagina PaginaCEconomicoManual titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=editarSolicitudYIniciarBaremacion noForm{
 		Accion editar redirigir=PaginaCEconomicos
 		Accion crear redirigir=PaginaCEconomicos
 		Form guardarPCE {

@@ -168,6 +168,10 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 		for (TableRecord<CEconomicosManuales> filaCEconomico: response.rows){
 			if (tipoEvaluacion.estado.equals("iniciada"))
 				filaCEconomico.permisoEditar = false;
+			else if (!permiso("editar")){
+				filaCEconomico.permisoEditar = false;
+				filaCEconomico.permisoLeer = true;
+			}
 		}
 		
 		renderJSON(response.toJSON("tipo.jerarquia", "tipo.nombre", "id", "valores.valorSolicitado_formatFapTabla"));

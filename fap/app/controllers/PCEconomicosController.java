@@ -95,8 +95,13 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 		tables.TableRenderResponse<CEconomico> response = new tables.TableRenderResponse<CEconomico>(rowsFiltered);
 		// Para no permitir editar en la tabla los conceptos economicos que sean automaticos
 		for (TableRecord<CEconomico> filaCEconomico: response.rows){
-			if ((filaCEconomico.objeto.tipo.clase!=null) && (filaCEconomico.objeto.tipo.clase.equals("auto")) && (!filaCEconomico.objeto.tipo.tipoOtro))
+			if ((filaCEconomico.objeto.tipo.clase!=null) && (filaCEconomico.objeto.tipo.clase.equals("auto")) && (!filaCEconomico.objeto.tipo.tipoOtro)){
 				filaCEconomico.permisoEditar = false;
+				filaCEconomico.permisoLeer = false;
+		    } else if (!permiso("editar")){
+				filaCEconomico.permisoEditar = false;
+				filaCEconomico.permisoLeer = true;
+			}
 		}
 		response.mensajes.error = Messages.messages(MessageType.ERROR);
 		response.mensajes.warning = Messages.messages(MessageType.WARNING);
@@ -107,8 +112,7 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 	}
 
 	@Util
-	public static List<TableRecord<CEconomico>> tablatablaCEconomicosPermisos(
-			List<CEconomico> rowsFiltered) {
+	public static List<TableRecord<CEconomico>> tablatablaCEconomicosPermisos(List<CEconomico> rowsFiltered) {
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack
 				.top("idParams");
 		List<TableRecord<CEconomico>> records = new ArrayList<TableRecord<CEconomico>>();

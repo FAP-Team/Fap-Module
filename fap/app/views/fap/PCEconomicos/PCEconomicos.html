@@ -13,7 +13,7 @@
      formulario:'Solicitud', 
      hayForm:false,
      pagina:'PCEconomicos',
-     permisoFormulario:'solicitudes', 
+     permisoFormulario:'editarSolicitudYIniciarBaremacion', 
      permisoFormularioMsg:'No tiene suficientes privilegios para acceder a esta solicitud', 
      titulo:'Conceptos económicos', 
      urlBorrar:play.mvc.Router.reverse('PCEconomicosController.borrar' , ['idSolicitud':solicitud?.id]), 
@@ -23,14 +23,16 @@
 	
 #{fap.tabla 
 	 campo:'Solicitud.ceconomicos', 
-	 codePrint:'if (record.data.permisoEditar) { return \'filaEditable\'; } else { return \'filaNoEditable\'; }',
+	 codePrint:'if (record.data.permisoEditar || record.data.permisoLeer) { return \'filaEditable\'; } else { return \'filaNoEditable\'; }',
      id:'tablaCEconomicos', 
      idEntidad:'idCEconomico',
      paginaEditar:'PaginaCEConomicos',
+     paginaLeer:'PaginaCEConomicos',
      tipoContainer:'pagina', 
      titulo:'Conceptos económicos', 
      urlTabla:@PCEconomicosController.tablatablaCEconomicos('idSolicitud':solicitud?.id), 
-     urlEditar:play.mvc.Router.reverse("PaginaCEConomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d])
+     urlEditar:play.mvc.Router.reverse("PaginaCEConomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d]),
+     urlLeer:play.mvc.Router.reverse("PaginaCEConomicosController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d])
 }
 
 	#{fap.columna ancho:80, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}

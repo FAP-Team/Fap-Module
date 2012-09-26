@@ -299,15 +299,7 @@ public abstract class TramiteBase {
 					registro.fasesRegistro.registro = true;
 					getRegistro().fasesRegistro.registro=true;
 					
-					registro.fasesRegistro.save();
-					try {
-						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-						Mails.enviar(this.getMail(), solicitud);
-					} catch (Exception e){
-						play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail()+": "+e.getMessage());
-					}
-					play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());				
-
+					registro.fasesRegistro.save();				
 
 					// Establecemos las fechas de registro para todos los documentos de la solicitud
 					List<Documento> documentos = new ArrayList<Documento>();
@@ -337,6 +329,7 @@ public abstract class TramiteBase {
 					gestorDocumentalService.crearExpediente(solicitud);
 				} catch (GestorDocumentalServiceException e) {
 					Messages.error("Error al crear el expediente");
+					play.Logger.fatal("Error al crear el expediente para la solicitud "+solicitud.id);
 					throw new RegistroServiceException("Error al crear el expediente");
 				}
 				getRegistro().fasesRegistro.expedienteAed = true;
@@ -358,7 +351,7 @@ public abstract class TramiteBase {
 				try {
 					gestorDocumentalService.clasificarDocumentos(this.solicitud, documentos);
 				} catch (GestorDocumentalServiceException e){
-					play.Logger.error("No se clasificaron algunos documentos sin registro: "+e.getMessage());
+					play.Logger.fatal("No se clasificaron algunos documentos sin registro: "+e.getMessage());
 					Messages.error("Algunos documentos sin registro del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
 					throw new RegistroServiceException("Error al clasificar documentos sin registros");
 				}
@@ -374,7 +367,7 @@ public abstract class TramiteBase {
 						registro.fasesRegistro.save();
 						play.Logger.info("Se clasificaron todos los documentos del trámite de '%s'", this.getTipoTramite());
 					} catch (GestorDocumentalServiceException e){
-						play.Logger.error("No se clasificaron algunos documentos con registro de entrada: "+e.getMessage());
+						play.Logger.fatal("No se clasificaron algunos documentos con registro de entrada: "+e.getMessage());
 						Messages.error("Algunos documentos con registro de entrada del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
 						throw new RegistroServiceException("Error al clasificar documentos con registros");
 					}
@@ -395,6 +388,15 @@ public abstract class TramiteBase {
 				this.prepararNuevo();
 				solicitud.save();
 				play.Logger.info("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
+				
+				try {
+					play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+					Mails.enviar(this.getMail(), solicitud);
+				} catch (Exception e){
+					play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail()+": "+e.getMessage());
+				}
+				play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());
+				
 				tx.commit();
 			}
 			

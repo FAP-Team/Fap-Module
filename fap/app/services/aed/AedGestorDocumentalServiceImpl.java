@@ -763,6 +763,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			firmaNueva.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
     
             	boolean clasificado = isClasificado(documento);
+            	propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
             	actualizarPropiedades(propiedadesDocumento, clasificado);
             }
             else {

@@ -752,7 +752,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			firmaActual.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
     			
     			actualizarPropiedades(propiedadesDocumento, clasificado);
-    		} else if (!firmaActual.getFirmantes().contains(firmante)){
+    		} else if (!containsFirmante(firmante, firmaActual.getFirmantes())){
             	Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
             	propiedadesAdministrativas.setFirma(firmaNueva);
             	
@@ -1089,4 +1089,13 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		solicitud.documentacion.documentos.add(doc);
 		solicitud.save();
 	}
+	
+	private boolean containsFirmante (models.Firmante firmante, List<Firmante> listaFirmantes) {
+		for (Firmante f : listaFirmantes) {
+			if (firmante.idvalor.equalsIgnoreCase(f.getFirmanteNif()))
+				return true;
+		}
+		return false;
+	}
+	
 }

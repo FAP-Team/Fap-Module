@@ -1,5 +1,19 @@
 h2. Changelog
 
+h3. Versión 2.1RC11
+
+* Hack para firmar y registrar con A9999999 y ESA9999999.
+* Envío del correo de registro después de realizar todos los pasos.
+* Fixed bug ayuda con iconos.
+* getFirmantes no crea uno nuevo.
+* Fixed bug presentación.
+* Fixed bug 
+* Fixed bug posición BigPopup.
+* Permitir no informar del servicio de notificaciones.
+* Property para mostrar o no los iconos en los input.
+* Logs de PlatinoFirmaService ok.
+* Fixed permisos.
+
 h3. Versión 2.1RC10
 
 * Fixed Bug en Verificación.

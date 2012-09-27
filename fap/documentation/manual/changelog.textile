@@ -4,10 +4,12 @@ h3. Versión 2.1RC11
 
 * Hack para firmar y registrar con A9999999 y ESA9999999.
 * Envío del correo de registro después de realizar todos los pasos.
+* Fixed Bug en Consultas BBDD desde Administración.
+* Añadidas 3 consultas por defecto a la BBDD desde Administración.
 * Fixed bug ayuda con iconos.
 * getFirmantes no crea uno nuevo.
 * Fixed bug presentación.
-* Fixed bug 
+* Fixed bug búsqueda de firmantes.
 * Fixed bug posición BigPopup.
 * Permitir no informar del servicio de notificaciones.
 * Property para mostrar o no los iconos en los input.

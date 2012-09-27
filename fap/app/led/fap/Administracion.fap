@@ -29,7 +29,7 @@ Formulario Administracion permiso=administrador{
     // Pagina Sobreescrita
     Pagina ConsultasBBDD titulo="Consultas" {
     	Grupo titulo = "Consultas a la Base de Datos de la aplicación"{
-    		Tabla consultasdb campo=Consulta titulo="Consultas" popup=popupConsultas {
+    		Tabla consultasdb campo=Consulta titulo="Consultas" popup=PopUpConsultas {
     			Columna campo=Consulta.consulta titulo="Consulta" expandir
     			Columna campo=Consulta.descripcion titulo="Descripción" expandir
     			Columna campo=Consulta.tipo titulo="Tipo" expandir
@@ -37,7 +37,7 @@ Formulario Administracion permiso=administrador{
     	}
     }
     
-    Popup popupConsultas titulo="Consulta a la Base de Datos" campo=Consulta maximizar{
+    Popup PopUpConsultas titulo="Consulta a la Base de Datos" campo=Consulta maximizar{
     	AreaTexto areaDescripcion titulo="Descripción" campo=Consulta.descripcion requerido
     	AreaTexto areaConsulta titulo="Consulta" campo=Consulta.consulta requerido
     	Combo comboTipo titulo="Tipo" campo=Consulta.tipo requerido

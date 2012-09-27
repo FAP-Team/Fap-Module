@@ -14,7 +14,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Emails" pagina=Emails
 			Enlace "Logs" pagina=BuscarLgs
 			Enlace "Informe" accion="fap.InformeController.index"
-			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
+			Enlace "Consultas a BBDD" pagina=ConsultasBBDD
 			Enlace "Incidencias" accion="fap.IncidenciasController.index"
 			Enlace "Properties" pagina=Propiedades
 			Enlace "Configurar Jobs" pagina=Jobs
@@ -24,6 +24,23 @@ Formulario Administracion permiso=administrador{
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
+    }
+    
+    // Pagina Sobreescrita
+    Pagina ConsultasBBDD titulo="Consultas" {
+    	Grupo titulo = "Consultas a la Base de Datos de la aplicación"{
+    		Tabla consultasdb campo=Consulta titulo="Consultas" popup=popupConsultas {
+    			Columna campo=Consulta.consulta titulo="Consulta" expandir
+    			Columna campo=Consulta.descripcion titulo="Descripción" expandir
+    			Columna campo=Consulta.tipo titulo="Tipo" expandir
+    		}
+    	}
+    }
+    
+    Popup popupConsultas titulo="Consulta a la Base de Datos" campo=Consulta maximizar{
+    	AreaTexto areaDescripcion titulo="Descripción" campo=Consulta.descripcion requerido
+    	AreaTexto areaConsulta titulo="Consulta" campo=Consulta.consulta requerido
+    	Combo comboTipo titulo="Tipo" campo=Consulta.tipo requerido
     }
     
     Pagina Jobs titulo="Configurar Jobs" campo=AdministracionFapJobs{

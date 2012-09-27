@@ -561,7 +561,6 @@ Entidad ConfigurarMensaje {
 	Lista posicionMensaje msjFinal
 }
 
-
 Entidad AceptarRenunciar {
 	Lista seleccion seleccion
 	LongText motivoRenuncia

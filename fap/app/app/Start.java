@@ -105,6 +105,13 @@ public class Start extends Job {
             play.test.Fixtures.loadModels(agentesFile);
         }
 		
+		if (Consulta.count() == 0){
+            Fixtures.delete();
+            String consultasFile = "listas/initial-data/consultasSQL.yml";
+            Logger.info("Cargando consultas desde %s", consultasFile);
+            play.test.Fixtures.loadModels(consultasFile);
+        }
+		
 		//Cargando mensajes de pagina desde conf/initial-data/paginas.yml
 		
 		if ((ConfigurarMensaje.count() == 0)){

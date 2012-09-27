@@ -1,26 +1,55 @@
 
-#{extends 'fap/template.html' /}
-#{set title:'Consultas' /}
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Administracion', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'ConsultasBBDD', 
+     permiso:'administrador', 
+     titulo:'Consultas', 
+     urlBorrar:play.mvc.Router.reverse('ConsultasBBDDController.borrar' ), 
+     urlCrear:play.mvc.Router.reverse('ConsultasBBDDController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('ConsultasBBDDController.editar' )
+}
+	
+			#{fap.grupo titulo:'Consultas a la Base de Datos de la aplicación'}
+				
+				#{fap.tabla 
+				     campo:'Consulta', 
+				     id:'consultasdb', 
+				     idEntidad:'idConsulta', 
+				     popupBorrar:'popupConsultas', 
+				     popupCrear:'popupConsultas', 
+				     popupEditar:'popupConsultas', 
+				     popupLeer:'popupConsultas', 
+				     saveEntity:false, 
+				     tipoContainer:'pagina', 
+				     titulo:'Consultas', 
+				     urlBorrar:play.mvc.Router.reverse("popups.popupConsultasController.index" , ['accion':'borrar', 'idConsulta':consulta?.id? consulta?.id:'_idConsulta_']), 
+				     urlCrear:play.mvc.Router.reverse("popups.popupConsultasController.index" , ['accion':'crear']), 
+				     urlEditar:play.mvc.Router.reverse("popups.popupConsultasController.index" , ['accion':'editar', 'idConsulta':consulta?.id? consulta?.id:'_idConsulta_']), 
+				     urlLeer:play.mvc.Router.reverse("popups.popupConsultasController.index" , ['accion':'leer', 'idConsulta':consulta?.id? consulta?.id:'_idConsulta_']), 
+				     urlRedirigir:play.mvc.Router.reverse("ConsultasBBDDController.index" , ['accion':'editar']), 
+				     urlTabla:@ConsultasBBDDController.tablaconsultasdb()
+				}
+				
+					#{fap.columna alignPosition:'left', ancho:200, cabecera:'Consulta', campo:'consulta', expandir:true /}
+					
+					#{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcion', expandir:true /}
+					
+					#{fap.columna alignPosition:'left', ancho:200, cabecera:'Tipo', campo:'tipo', expandir:true /}
+					
+				#{/fap.tabla}
 
-#{fap.permiso permiso:'administrador', mensaje:'No tiene suficientes privilegios para acceder a páginas de éste formulario'}
-
+			#{/fap.grupo}
 			
-#{if play.getVirtualFile("app/views/gen/menu/Administracion.html") != null}
-	#{set 'menu'}
-		#{include 'gen/menu/Administracion.html'/}
-	#{/set}
-#{/if}
+			#{fap.boton idFijo:'botonEjecutar', titulo:'Ejecutar' /}
 		
-#{fap.messages}
-
-#{fap.permiso }
-			
-#{fap.tabla campo:'Consulta', id:'tablaConsultas', idEntidad:'_idConsulta_', tipoContainer:'pagina', titulo:'Consultas', popupBorrar:'PopupConsulta', popupCrear:'PopupConsulta', popupEditar:'PopupConsulta', popupLeer:'PopupConsulta', urlBorrar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'borrar', 'idConsulta':'_idConsulta_']), urlCrear:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'crear']), urlEditar:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'editar', 'idConsulta':'_idConsulta_']), urlLeer:play.mvc.Router.reverse("popups.PopupConsultaController.index" , ['accion':'leer', 'idConsulta':'_idConsulta_']), urlTabla:@fap.ConsultasController.tablatablaConsultas(idConsulta) 
-}	
-	#{fap.columna campo:'consulta', cabecera:'Consulta', expandir:true, ancho:200 /}		
-	#{fap.columna campo:'descripcion', cabecera:'Descripción', ancho:350 /}		
-	#{fap.columna campo:'tipo', cabecera:'Tipo', ancho:50 /}
-#{/fap.tabla}
+#{/fap.pagina}
 
 
 <div id="boxConsulta" class="box"  style="display:none" >
@@ -35,8 +64,6 @@
 	<br/>
 </div>
 
-#{fap.boton id:'botonEjecutar', titulo:'Ejecutar' /}
-
 <div id="boxResultado" class="box"  style="display:none" >
 	<div id="resultado"></div>
 </div>
@@ -47,7 +74,7 @@
 	console.log(grid);
 	
 	function getGrid() {
-		grid = $('#tablaConsultas').data('grid');
+		grid = $('#consultasdb').data('grid');
 		if (typeof grid == "undefined") {
 			var t = setTimeout("getGrid()",1000);
 		}
@@ -71,8 +98,8 @@
 	 	});
 
 	    $('#botonEjecutar').click(function () {
-	    	var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-	    	var ejecutarConsulta = #{jsAction @fap.ConsultasController.ejecutarConsulta(':id') /};
+	    	var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+	    	var ejecutarConsulta = #{jsAction @ConsultasBBDDController.ejecutarConsulta(':id') /};
 	    	
 	    	$('#resultado').load(ejecutarConsulta({id: selected_id}));
 		    $('#boxResultado').show();
@@ -80,9 +107,5 @@
 	});
 		
 </script>
-
-#{/fap.permiso}
-#{/fap.messages}
-#{/fap.permiso}
 
 		

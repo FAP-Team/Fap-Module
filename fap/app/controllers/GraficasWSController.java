@@ -1,17 +1,18 @@
 package controllers;
 
+import messages.Messages;
+import models.Aplicacion;
+import models.ConsultasWS;
+import models.DatosGraficas;
+import models.RelacionWSConsultas;
+import play.libs.WS;
+import play.libs.WS.WSRequest;
+import play.mvc.Util;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import messages.Messages;
-import models.Aplicacion;
-import models.ConsultasWS;
-import models.RelacionWSConsultas;
-import models.ServiciosWebAplicacion;
-import play.libs.WS;
-import play.libs.WS.WSRequest;
-import play.mvc.Util;
 import controllers.gen.GraficasWSControllerGen;
 
 public class GraficasWSController extends GraficasWSControllerGen {
@@ -38,27 +39,29 @@ public class GraficasWSController extends GraficasWSControllerGen {
 
 				accion = "editar";
 			}
+
 		} else if (!"borrado".equals(accion))
 			relacionWSConsultas = GraficasWSController.getRelacionWSConsultas(idAplicacion, idRelacionWSConsultas);
 
-		if ((relacionWSConsultas.consulta.size() == 0) && (relacionWSConsultas.serviciosWeb.activo))
+		if ((relacionWSConsultas.datos.size() == 0) && (relacionWSConsultas.serviciosWeb.activo))
 			getDatosFromWS(idAplicacion, idRelacionWSConsultas);
-
 		
-		log.info("Visitando página: " + "app/views/manual/GraficasWS.html");
-		renderTemplate("app/views/manual/GraficasWS.html", accion, idAplicacion, idRelacionWSConsultas, aplicacion, relacionWSConsultas);
+		log.info("Visitando página: " + "app/views/fap/Graficas/GraficasWS.html");
+		renderTemplate("app/views/fap/Graficas/GraficasWS.html", accion, idAplicacion, idRelacionWSConsultas, aplicacion, relacionWSConsultas);
 	}
 	
 	@Util
 	public static void getDatosFromWS(Long idAplicacion, Long idRelacionWSConsulta) {
-		Aplicacion app = Aplicacion.findById(idAplicacion);
+		Aplicacion aplicacion = GraficasWSController.getAplicacion(idAplicacion);
 		RelacionWSConsultas relacion = getRelacionWSConsultas(idAplicacion, idRelacionWSConsulta);
 		String urlWS = relacion.serviciosWeb.urlWS;
 		WSRequest request = null;
 		JsonElement json = null;
 		
 		try {
-			request = WS.url(urlWS);
+			String url = aplicacion.urlApp + urlWS;
+			request = WS.url(url);
+//			request = WS.url("http://localhost:9009"+urlWS);
 			json = request.get().getJson();
 		} catch (RuntimeException ce) {
 			Messages.warning("El servicio web no está disponible en estos momentos y no existe historial del mismo");
@@ -68,17 +71,12 @@ public class GraficasWSController extends GraficasWSControllerGen {
 		}
 		
 		if (json != null) {
-			JsonArray array = json.getAsJsonArray();
 			Gson gson = new Gson();
-			int i = 0;
-			while (i < array.size()) {
-				ConsultasWS consulta = gson.fromJson(array.get(i), ConsultasWS.class);
-				consulta.save();
-				relacion.consulta.add(consulta);
-				relacion.save();
-				app.save();
-				i++;
-			}
+			DatosGraficas datos = gson.fromJson(json, DatosGraficas.class);
+			datos.save();
+			relacion.datos.add(datos);
+			relacion.save();
+
 		}
 	}
 }

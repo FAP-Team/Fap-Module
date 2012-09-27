@@ -702,12 +702,48 @@ Entidad AnotacionFAP {
 	ManyToOne Agente personaSolucion noConstruct
 }
 
+Entidad Aplicacion {
+	String nombreApp
+	String urlApp
+	OneToMany RelacionWSConsultas relacionWSConsultas
+}
+
+Entidad RelacionWSConsultas {
+	ServiciosWebApp serviciosWeb
+	OneToMany DatosGraficas datos
+}
+
+Entidad ServiciosWebApp {
+	String nombre
+	String urlWS
+	Boolean activo
+	OneToMany InfoWS infoRet
+}
+
+Entidad InfoWS {
+	String nombreParam
+	String tipo
+}
+
+Entidad DatosGraficas {
+	String fechaConsulta
+	OneToMany ListaConsultas lista
+}
+
+Entidad ListaConsultas {
+	OneToMany ConsultasWS consultasWS
+}
+
+Entidad ConsultasWS {
+	OneToMany ConsultaWS consultaWS
+}
+
 Entidad ConsultaWS {
 	String nombre
 	Integer valorInteger
+	Long valorLong
 	String valorString
 	Double valorDouble
 	DateTime valorDateTime
 	Boolean valorBoolean
 }
-

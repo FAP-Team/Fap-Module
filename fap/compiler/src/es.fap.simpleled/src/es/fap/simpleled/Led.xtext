@@ -594,9 +594,8 @@ Permiso:
 
 ServicioWeb:
 	elemento='ServicioWeb' name=ID "{"
-		"versionSW" ":" version=INT
-		"campo" ":" campo=Campo
-		"return" ":" "{" ret = WSReturn ("," retMore += WSReturn)* "}" 	
+		"campo" "=" campo=Campo
+		"return" "=" "{" ret = WSReturn ("," retMore += WSReturn)* "}" 	
 	"}"
 ;
 

@@ -1,0 +1,25 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Administracion', 
+     hayForm:true, 
+     mensajeFinal:false, 
+     pagina:'GraficasWS', 
+     permiso:'administrador', 
+     titulo:'Gráficas servicios web', 
+     urlBorrar:play.mvc.Router.reverse('GraficasWSController.borrar' , ['idAplicacion':aplicacion?.id, 'idRelacionWSConsultas':relacionWSConsultas?.id]), 
+     urlCrear:play.mvc.Router.reverse('GraficasWSController.crear' , ['idAplicacion':aplicacion?.id]), 
+     urlEditar:play.mvc.Router.reverse('GraficasWSController.editar' , ['idAplicacion':aplicacion?.id, 'idRelacionWSConsultas':relacionWSConsultas?.id])
+}
+	
+			<div class="wiki ">
+<p>Aquí se mostrará el SuperTag</p>
+
+			</div>
+		
+#{/fap.pagina}
+		

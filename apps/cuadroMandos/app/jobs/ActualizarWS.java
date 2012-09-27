@@ -4,7 +4,6 @@ import java.util.List;
 
 import models.Aplicacion;
 import models.RelacionWSConsultas;
-import models.ServiciosWebAplicacion;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

@@ -20,11 +20,42 @@ Formulario Administracion permiso=administrador{
 			Enlace "Configurar Jobs" pagina=Jobs
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 			Enlace "Configurar mensajes" pagina=ConfigurarMensajes
+			Enlace "Gráficas" pagina=ServiciosWebApp
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
     }
+    
+    Pagina ServiciosWebApp noForm titulo="Servicios web de la aplicación" campo=Aplicacion  permiso=administrador {
+		Grupo permiso=noEditable titulo="Datos de la aplicación" {
+			Texto campo=Aplicacion.nombreApp titulo="Nombre de la aplicación" 
+			Texto campo=Aplicacion.urlApp titulo="URL de la aplicación"
+		}
+		
+		Tabla serviciosWeb titulo="Servicios web activos" campo=Aplicacion.relacionWSConsultas
+		paginaEditar=GraficasWS
+		{
+			Columna titulo="Nombre del servicio web" campo=RelacionWSConsultas.serviciosWeb.nombre expandir
+			Columna titulo="URL del servicio web" campo=RelacionWSConsultas.serviciosWeb.urlWS expandir
+		}
+		
+		Form formBtnRecargaWS {
+			Boton recargasWS titulo="Recargar Servicios Web" ayuda="Pulse este botón para obligar a actualizar los servicios web de la aplicación" (popover)
+			Boton recargasDatos titulo="Recargar datos" ayuda="Pulse este botón para obligar a actualizar los datos de los servicios web" (popover)
+		}
+		
+		Tabla historialServiciosWeb titulo="Historial de servicios web" campo=Aplicacion.relacionWSConsultas
+		paginaEditar=GraficasWS
+		{
+			Columna titulo="Nombre del servicio web" campo=RelacionWSConsultas.serviciosWeb.nombre expandir
+			Columna titulo="URL del servicio web" campo=RelacionWSConsultas.serviciosWeb.urlWS expandir
+		}
+	}
+	
+	Pagina GraficasWS noForm titulo="Gráficas servicios web" campo=Aplicacion.relacionWSConsultas {
+		Wiki {"Aquí se mostrará el SuperTag"}
+	}
     
     Pagina Jobs titulo="Configurar Jobs" campo=AdministracionFapJobs{
     	Wiki{"*Esta Página permite habilitar/deshabilitar los Jobs que están activos del módulo FAP.*"}

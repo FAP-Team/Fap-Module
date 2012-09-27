@@ -29,6 +29,7 @@ import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Permiso
 import es.fap.simpleled.led.PermisoVar
 import es.fap.simpleled.led.Popup
+import es.fap.simpleled.led.ServicioWeb;
 import es.fap.simpleled.led.Type
 import es.fap.simpleled.led.Pagina
 import es.fap.simpleled.led.impl.EntityImpl;
@@ -100,6 +101,10 @@ public class End implements IWorkflowComponent {
 		for(Popup popup in LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getPopup())){
 			if (!LedUtils.inPath(popup)) continue;
 			content += GElement.getInstance(popup, null).routes();
+		}
+		for(ServicioWeb servicioweb in LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getServicioWeb())){
+			if (!LedUtils.inPath(servicioweb)) continue;
+			content += GElement.getInstance(servicioweb, null).routes();
 		}
 		if (!Start.generatingModule){
 			content = "  # Home page\n" + rutaPaginaInicial() + "\n" + content;

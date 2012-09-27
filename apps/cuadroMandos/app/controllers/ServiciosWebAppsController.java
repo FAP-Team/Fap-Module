@@ -1,53 +1,40 @@
 package controllers;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.sql.Delete;
-import org.json.JSONObject;
-import org.postgresql.core.Parser;
-
-import messages.Messages;
-import models.Aplicacion;
-import models.Consulta;
-import models.ConsultasWS;
-import models.DatoGrafica;
-import models.DatosGrafica;
-import models.InfoWS;
-import models.RelacionWSConsultas;
-import models.ServiciosWebAplicacion;
-import models.wsTest;
-import play.libs.WS;
-import play.libs.WS.HttpResponse;
-import play.libs.WS.WSRequest;
-import play.mvc.Http.Request;
-import play.mvc.Util;
-import play.mvc.results.RenderJson;
+import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import controllers.gen.ServiciosWebAppControllerGen;
+import play.libs.WS;
+import play.libs.WS.WSRequest;
+import play.mvc.Util;
 
-public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
-	
+import messages.Messages;
+import models.Aplicacion;
+import models.ConsultasWS;
+import models.DatosGraficas;
+import models.ListaConsultas;
+import models.RelacionWSConsultas;
+import models.ServiciosWebApp;
+import controllers.gen.ServiciosWebAppsControllerGen;
+
+public class ServiciosWebAppsController extends ServiciosWebAppsControllerGen {
 	public static void index(String accion, Long idAplicacion) {
 		if (accion == null)
 			accion = getAccion();
 		if (!permiso(accion)) {
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-			renderTemplate("gen/ServiciosWebApp/ServiciosWebApp.html");
+			renderTemplate("gen/ServiciosWebApps/ServiciosWebApps.html");
 		}
 
 		Aplicacion aplicacion = null;
 		if ("crear".equals(accion)) {
-			aplicacion = ServiciosWebAppController.getAplicacion();
+			aplicacion = ServiciosWebAppsController.getAplicacion();
 			if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")) {
 
 				aplicacion.save();
@@ -57,19 +44,19 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			}
 
 		} else if (!"borrado".equals(accion))
-			aplicacion = ServiciosWebAppController.getAplicacion(idAplicacion);
+			aplicacion = ServiciosWebAppsController.getAplicacion(idAplicacion);
 
 		if (aplicacion.relacionWSConsultas.size() == 0) {
-			getWSFromApps(accion, idAplicacion, aplicacion);
+			getWS(accion, idAplicacion, aplicacion);
 		}
 		else {
-			log.info("Visitando página: " + "gen/ServiciosWebApp/ServiciosWebApp.html");
-			renderTemplate("gen/ServiciosWebApp/ServiciosWebApp.html", accion, idAplicacion, aplicacion);
+			log.info("Visitando página: " + "gen/ServiciosWebApps/ServiciosWebApps.html");
+			renderTemplate("gen/ServiciosWebApps/ServiciosWebApps.html", accion, idAplicacion, aplicacion);
 		}
 	}
 	
 	@Util
-	public static void getWSFromApps(String accion, Long idAplicacion, Aplicacion aplicacion) {
+	public static void getWS(String accion, Long idAplicacion, Aplicacion aplicacion) {
 		
 		Aplicacion app = getAplicacion(idAplicacion);
 		String urlApp = app.urlApp;
@@ -82,7 +69,7 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		} catch (RuntimeException ce) {
 			Messages.warning("El servicio web no está disponible en estos momentos");
 			play.Logger.error("El servicio web no está disponible en estos momentos");
-		}
+		} 
 		
 		if (json != null) {
 			JsonArray array = json.getAsJsonArray();		
@@ -91,19 +78,20 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			
 			while (i < array.size()) {
 				RelacionWSConsultas relacion = new RelacionWSConsultas();
-				relacion.serviciosWeb = gson.fromJson(array.get(i), ServiciosWebAplicacion.class);
+				relacion.serviciosWeb = gson.fromJson(array.get(i), ServiciosWebApp.class);
+				relacion.serviciosWeb.activo = true;
 				relacion.save();
 				app.relacionWSConsultas.add(relacion);
 				app.save();
 				i++;
 			}
 		}
-		renderTemplate("gen/ServiciosWebApp/ServiciosWebApp.html", accion, idAplicacion, aplicacion);
+		log.info("Visitando página: " + "gen/ServiciosWebApps/ServiciosWebApps.html");
+		renderTemplate("gen/ServiciosWebApps/ServiciosWebApps.html", accion, idAplicacion, aplicacion);
 	}
-
+	
 	@Util
 	public static void recargasWSFormBtnRecargaWS(Long idAplicacion) {
-		
 		Aplicacion app = getAplicacion(idAplicacion);
 		String urlApp = app.urlApp;
 		WSRequest request = null;
@@ -141,7 +129,7 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 					for (int j = i; j < numWS; j++) {
 						Gson gson = new Gson();
 						RelacionWSConsultas relacion = new RelacionWSConsultas();
-						relacion.serviciosWeb = gson.fromJson(array.get(j), ServiciosWebAplicacion.class);
+						relacion.serviciosWeb = gson.fromJson(array.get(j), ServiciosWebApp.class);
 						relacion.save();
 						relacion.serviciosWeb.activo = true;
 						relacion.serviciosWeb.save();
@@ -161,14 +149,14 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 	
 	@Util
 	public static void diferentesWS(JsonArray array, int i, List<RelacionWSConsultas> relacion, Aplicacion app) {
-
+	
 		Gson gson = new Gson();
-		ServiciosWebAplicacion anteriorServicioWeb = relacion.get(i).serviciosWeb;
-		ServiciosWebAplicacion actualServicioWeb = gson.fromJson(array.get(i), ServiciosWebAplicacion.class);
-
+		ServiciosWebApp anteriorServicioWeb = relacion.get(i).serviciosWeb;
+		ServiciosWebApp actualServicioWeb = gson.fromJson(array.get(i), ServiciosWebApp.class);
+	
 		if (((!anteriorServicioWeb.nombre.equals(actualServicioWeb.nombre)) ||
 			(!anteriorServicioWeb.urlWS.equals(actualServicioWeb.urlWS)))) {
-
+	
 			anteriorServicioWeb.activo = false;
 			anteriorServicioWeb.save();
 			actualServicioWeb.activo= true;
@@ -180,8 +168,8 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			app.save();
 		}
 		else {
-			int infoAnterior = anteriorServicioWeb.servicioWebInfo.size();
-			int infoActual = actualServicioWeb.servicioWebInfo.size();
+			int infoAnterior = anteriorServicioWeb.infoRet.size();
+			int infoActual = actualServicioWeb.infoRet.size();
 			if (infoAnterior < infoActual) {
 				anteriorServicioWeb.activo = false;
 				anteriorServicioWeb.save();
@@ -207,8 +195,8 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 				}
 				else {
 					for (int j = 0; j < infoActual; j++) {
-						if ((!anteriorServicioWeb.servicioWebInfo.get(j).nombreParam.equals(actualServicioWeb.servicioWebInfo.get(j).nombreParam))
-							|| (!anteriorServicioWeb.servicioWebInfo.get(j).tipo.equals(actualServicioWeb.servicioWebInfo.get(j).tipo))) {
+						if ((!anteriorServicioWeb.infoRet.get(j).nombreParam.equals(actualServicioWeb.infoRet.get(j).nombreParam))
+							|| (!anteriorServicioWeb.infoRet.get(j).tipo.equals(actualServicioWeb.infoRet.get(j).tipo))) {
 							
 							anteriorServicioWeb.activo = false;
 							anteriorServicioWeb.save();
@@ -228,7 +216,8 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 
 	@Util
 	public static void recargasDatosFormBtnRecargaWS(Long idAplicacion) {
-		
+		Aplicacion app = getAplicacion(idAplicacion);
+		String urlApp = app.urlApp;
 		List<RelacionWSConsultas> anterioresRelaciones = RelacionWSConsultas.find("select relacionWSConsultas from Aplicacion aplicacion join aplicacion.relacionWSConsultas relacionWSConsultas where aplicacion.id=?  and relacionWSConsultas.serviciosWeb.activo=true", idAplicacion).fetch();
 		int i = 0;
 		int anteriorNumRelaciones = anterioresRelaciones.size();		
@@ -237,64 +226,46 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			String urlWS = anterioresRelaciones.get(i).serviciosWeb.urlWS;
 			WSRequest request = null;
 			JsonElement json = null;
-			
 			try {
-				request = WS.url(urlWS);
+				String url = urlApp + urlWS;
+				request = WS.url(url);
 				json = request.get().getJson();
 			} catch (RuntimeException ce) {
 				Messages.warning("El servicio web no está disponible en estos momentos");
 				play.Logger.error("El servicio web no está disponible en estos momentos");
 			}
 			
-			if (json != null) {
-				List<ConsultasWS> anterioresConsultas = anterioresRelaciones.get(i).consulta;
-				JsonArray array = json.getAsJsonArray();		
+			if ((json != null) && (anterioresRelaciones.get(i).datos.size() > 0)) {
+				ListaConsultas anterioresConsultas = anterioresRelaciones.get(i).datos.get(0).lista.get(0);
 				Gson gson = new Gson();
-				int j = 0;
+				DatosGraficas nuevaConsulta = gson.fromJson(json, DatosGraficas.class);
+				ListaConsultas nuevasConsulta = nuevaConsulta.lista.get(0);
 				
-				while (j < array.size()) {
-					ConsultasWS nuevaConsulta = gson.fromJson(array.get(j), ConsultasWS.class);
-					if ((anterioresConsultas.size() < array.size()) || (anterioresConsultas.size() > array.size())) {
-						// Si hay más o menos consultas se actualiza.
-						recargasWSFormBtnRecargaWS(idAplicacion);
-					}
-					else {
-						List<DatosGrafica> nuevosDatosGrafica = nuevaConsulta.datosGrafica;
-						List<DatosGrafica> anteriorDatosGrafica = anterioresConsultas.get(j).datosGrafica;
-						if (nuevosDatosGrafica.size() == anteriorDatosGrafica.size()) {
-							// Si tienen el mismo número de datos que antes, se comprueba
-							// que todos sus atributos concuerden, si no se actualiza.
-							for (int k = 0; k < nuevosDatosGrafica.size(); k++) {
-								List<DatoGrafica> anteriorDato = anteriorDatosGrafica.get(k).datoGrafica;
-								List<DatoGrafica> nuevoDato = nuevosDatosGrafica.get(k).datoGrafica;
-								for (int l = 0; l < nuevoDato.size(); l++) {
-									if ((!anteriorDato.get(l).tituloDato.equals(nuevoDato.get(l).tituloDato))
-											|| (anteriorDato.get(l).valorBoolean != nuevoDato.get(l).valorBoolean)
-											|| (anteriorDato.get(l).valorDouble != nuevoDato.get(l).valorDouble)
-											|| (anteriorDato.get(l).valorFecha != nuevoDato.get(l).valorFecha)
-											|| (anteriorDato.get(l).valorLong != nuevoDato.get(l).valorLong)
-											|| (!anteriorDato.get(l).valorString.equals(nuevoDato.get(l).valorString))) {
-										recargasWSFormBtnRecargaWS(idAplicacion);
-									}
-								}
+				if ((anterioresConsultas.consultasWS.size() < nuevasConsulta.consultasWS.size()) || (anterioresConsultas.consultasWS.size() > nuevasConsulta.consultasWS.size())) {
+					recargasWSFormBtnRecargaWS(idAplicacion);
+				}
+				else {
+					for (int j = 0; j < anterioresConsultas.consultasWS.size(); j++) {
+						ConsultasWS consultaAnt = anterioresConsultas.consultasWS.get(j);
+						ConsultasWS consultaPost = nuevasConsulta.consultasWS.get(j);
+						for (int k = 0; k < consultaAnt.consultaWS.size(); k++) {
+							if ((!consultaAnt.consultaWS.get(k).nombre.equals(consultaPost.consultaWS.get(k).nombre))
+									|| (consultaAnt.consultaWS.get(k).valorBoolean != consultaPost.consultaWS.get(k).valorBoolean)
+									|| (consultaAnt.consultaWS.get(k).valorDouble != consultaPost.consultaWS.get(k).valorDouble)
+									|| (consultaAnt.consultaWS.get(k).valorDateTime != consultaPost.consultaWS.get(k).valorDateTime)
+									|| (consultaAnt.consultaWS.get(k).valorLong != consultaPost.consultaWS.get(k).valorLong)
+									|| (consultaAnt.consultaWS.get(k).valorString != consultaPost.consultaWS.get(k).valorString)) {
+								recargasWSFormBtnRecargaWS(idAplicacion);
 							}
 						}
-						else {
-							// Hay más o menos información que antes, por lo que se actualiza.
-							recargasWSFormBtnRecargaWS(idAplicacion);
-						}
 					}
-					j++;
 				}
+				
 			}
 			i++;
 		}
 	}
 	
-	/**
-	 * Tabla en la que se muestran los servicios web activos.
-	 * @param idAplicacion
-	 */
 	public static void tablaserviciosWeb(Long idAplicacion) {
 		java.util.List<RelacionWSConsultas> rows = RelacionWSConsultas.find("select relacionWSConsultas from Aplicacion aplicacion join aplicacion.relacionWSConsultas relacionWSConsultas where aplicacion.id=?", idAplicacion).fetch();
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
@@ -306,15 +277,10 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		}
 		
 		tables.TableRenderResponse<RelacionWSConsultas> response = new tables.TableRenderResponse<RelacionWSConsultas>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
-		renderJSON(response.toJSON("serviciosWeb.nombre", "serviciosWeb.urlWS", "serviciosWeb.activo", "id"));
+		renderJSON(response.toJSON("serviciosWeb.nombre", "serviciosWeb.urlWS", "id"));
 	}
 	
-	/**
-	 * Tabla en la que solo se muestra un historial de servicios web que ya no están activos.
-	 * @param idAplicacion
-	 */	
 	public static void tablahistorialServiciosWeb(Long idAplicacion) {
-
 		java.util.List<RelacionWSConsultas> rows = RelacionWSConsultas.find("select relacionWSConsultas from Aplicacion aplicacion join aplicacion.relacionWSConsultas relacionWSConsultas where aplicacion.id=?", idAplicacion).fetch();
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<RelacionWSConsultas> rowsFiltered = new ArrayList<RelacionWSConsultas>();
@@ -323,9 +289,9 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			if (!rows.get(i).serviciosWeb.activo)
 				rowsFiltered.add(rows.get(i));
 		}
-
+		
 		tables.TableRenderResponse<RelacionWSConsultas> response = new tables.TableRenderResponse<RelacionWSConsultas>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
-		renderJSON(response.toJSON("serviciosWeb.nombre", "serviciosWeb.urlWS", "serviciosWeb.activo", "id"));
+		renderJSON(response.toJSON("serviciosWeb.nombre", "serviciosWeb.urlWS", "id"));
 	}
 	
 }

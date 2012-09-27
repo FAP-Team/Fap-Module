@@ -18,28 +18,30 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
-/*
- Entidad Solicitud extends SolicitudGenerica{
-
- }
- */
-
 @Entity
-public class CuadroMando extends FapModel {
+public class RelacionWSConsultas extends FapModel {
 	// Código de los atributos
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "cuadromando_aplicacion")
-	public List<Aplicacion> aplicacion;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public ServiciosWebApp serviciosWeb;
 
-	public CuadroMando() {
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "relacionwsconsultas_datos")
+	public List<DatosGraficas> datos;
+
+	public RelacionWSConsultas() {
 		init();
 	}
 
 	public void init() {
 
-		if (aplicacion == null)
-			aplicacion = new ArrayList<Aplicacion>();
+		if (serviciosWeb == null)
+			serviciosWeb = new ServiciosWebApp();
+		else
+			serviciosWeb.init();
+
+		if (datos == null)
+			datos = new ArrayList<DatosGraficas>();
 
 		postInit();
 	}

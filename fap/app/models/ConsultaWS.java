@@ -26,6 +26,8 @@ public class ConsultaWS extends FapModel {
 
 	public Integer valorInteger;
 
+	public Long valorLong;
+
 	public String valorString;
 
 	public Double valorDouble;
@@ -46,6 +48,17 @@ public class ConsultaWS extends FapModel {
 	public ConsultaWS(String nombre, Integer integer) {
 		this.nombre = nombre;
 		this.valorInteger = integer;
+		this.valorLong = null;
+		this.valorBoolean = null;
+		this.valorDateTime = null;
+		this.valorDouble = null;
+		this.valorString = null;
+	}
+
+	public ConsultaWS(String nombre, Long _long) {
+		this.nombre = nombre;
+		this.valorInteger = null;
+		this.valorLong = _long;
 		this.valorBoolean = null;
 		this.valorDateTime = null;
 		this.valorDouble = null;
@@ -55,6 +68,7 @@ public class ConsultaWS extends FapModel {
 	public ConsultaWS(String nombre, Boolean bool) {
 		this.nombre = nombre;
 		this.valorInteger = null;
+		this.valorLong = null;
 		this.valorBoolean = bool;
 		this.valorDateTime = null;
 		this.valorDouble = null;
@@ -64,6 +78,7 @@ public class ConsultaWS extends FapModel {
 	public ConsultaWS(String nombre, DateTime datetime) {
 		this.nombre = nombre;
 		this.valorInteger = null;
+		this.valorLong = null;
 		this.valorBoolean = null;
 		this.valorDateTime = datetime;
 		this.valorDouble = null;
@@ -73,6 +88,7 @@ public class ConsultaWS extends FapModel {
 	public ConsultaWS(String nombre, Double doubl) {
 		this.nombre = nombre;
 		this.valorInteger = null;
+		this.valorLong = null;
 		this.valorBoolean = null;
 		this.valorDateTime = null;
 		this.valorDouble = doubl;
@@ -82,6 +98,7 @@ public class ConsultaWS extends FapModel {
 	public ConsultaWS(String nombre, String string) {
 		this.nombre = nombre;
 		this.valorInteger = null;
+		this.valorLong = null;
 		this.valorBoolean = null;
 		this.valorDateTime = null;
 		this.valorDouble = null;

@@ -1,7 +1,11 @@
 ServicioWeb servicioWeb1 {
-	versionSW:1
-	campo:Notificacion
-	return:{titulo="Estado":Verificacion.id}
+	campo=Solicitud.documentacion.documentos
+	return={titulo="Clasificado":Documento.clasificado, titulo="Descripción":Documento.descripcion}
+}
+
+ServicioWeb servicioWeb2 {
+	campo=Solicitud
+	return={titulo="Estado":Solicitud.estado}
 }
 
 Formulario Solicitud {

@@ -183,6 +183,11 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	@Override
 	public models.JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion) throws RegistroServiceException{
 	    DatosRegistro datosRegistro = getDatosRegistro(solicitante, documento, expediente, descripcion);
+	    // Para las pruebas con estos certificados
+	    if (datosRegistro.getNumeroDocumento().equals("ESA99999999")
+	    		|| datosRegistro.getNumeroDocumento().equals("A99999999")) {
+	    	datosRegistro.setNumeroDocumento("A99999997");
+	    }
 	    String datos = getDatosRegistroNormalizados(expediente, datosRegistro);
 	    String datosFirmados = firmarDatosRegistro(datos);
         JustificanteRegistro justificantePlatino = registroDeEntrada(datos, datosFirmados);
@@ -209,7 +214,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             throw new NullPointerException();
         
         if (descripcion == null)
-        	descripcion="RE "+documento.descripcionVisible+" "+FapProperties.get("application.name");
+        	descripcion="RE "+documento.descripcionVisible;
         	// Añadimos RE al asunto en los registros de entrada
 
         datosDoc.setDescripcion(descripcion);

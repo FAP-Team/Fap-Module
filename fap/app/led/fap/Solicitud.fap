@@ -975,7 +975,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 			}
 
 			// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
-			Grupo grpPresentar titulo="Paso 3. Registrar Solicitud" permiso=enBorradorSolicitud {
+			Grupo grpPresentar titulo="Paso 3. Firmar y Registrar la Solicitud" permiso=enBorradorSolicitud {
 				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
 				Form frmPresentar redirigir=SolicitudPresentarFAP permiso=enBorradorSolicitud {
 					Wiki {"Debe registrar la solicitud para que se considere presentada."}
@@ -1006,7 +1006,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		// Sobreescrito HTML
 		//Firma Funcionario Habilitado
 		Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
-			Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.presentacion.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarSolicitudFH
+			Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.presentacion.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarSolicitudFH
 			{
 				Form formFirmaFH { 
 			    	Wiki {"La solicitud será firmada y registrada." }
@@ -1018,7 +1018,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		}
 
 		//Firma persona física
-		Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=firmarRegistrarSolicitud
+		Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=firmarRegistrarSolicitud
 		{
 			Form formFirmaPF { 
 		    	Wiki {"La solicitud será firmada y registrada." }
@@ -1029,12 +1029,12 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		}
 
 		//Firma Persona jurídica
-		Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=firmarRegistrarSolicitud
+		Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=firmarRegistrarSolicitud
 		{
 
 			// La firma y registro se hace en dos pasos
-				Grupo titulo="Paso 1.1. Firmar la solicitud" permiso=firmarSolicitud{
-					Wiki {"La solicitud será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación."}
+				Grupo titulo="Paso 3.1. Firmar la solicitud" permiso=firmarSolicitud{
+					Wiki {"La solicitud debe firmarse con el Certificado electrónico del solicitante o el de uno de los representantes del solicitante. Si la representación es  mancomunada todos los representantes deben firmar la solicitud."}
 
 					Form formFirmaRepresentante permiso=firmarSolicitud {
 						FirmaSimple firmarRepresentante titulo="Firmar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
@@ -1052,7 +1052,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 					}
 				}
 
-				Grupo titulo="Paso 1.2. Registrar la solicitud" permiso=registrarSolicitud
+				Grupo titulo="Paso 3.2. Registrar la solicitud" permiso=registrarSolicitud
 				{
 					Wiki {"Su solicitud ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 

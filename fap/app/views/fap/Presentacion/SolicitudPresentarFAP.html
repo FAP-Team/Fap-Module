@@ -37,7 +37,7 @@
 			
 			#{fap.grupo borde:false, mostrarSi:registro.habilitaFuncionario==true}
 		
-				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarSolicitudFH', titulo:'Paso 1. Firmar y Registrar la solicitud por Funcionario Habilitado'}
+				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarSolicitudFH', titulo:'Paso 3. Firmar y Registrar la solicitud por Funcionario Habilitado'}
 					
 					#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.formFirmaFH' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"formFirmaFH"}
 					
@@ -57,7 +57,7 @@
 				
 			#{/fap.grupo}
 		
-			#{fap.grupo mostrarSi:['fisica'].contains(solicitud.solicitante.tipo), permiso:'firmarRegistrarSolicitud', titulo:'Paso 1. Firmar y Registrar la solicitud'}
+			#{fap.grupo mostrarSi:['fisica'].contains(solicitud.solicitante.tipo), permiso:'firmarRegistrarSolicitud', titulo:'Paso 3. Firmar y Registrar la solicitud'}
 				
 				#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.formFirmaPF' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"formFirmaPF"}
 					
@@ -97,9 +97,9 @@
 		
 			#{/fap.grupo}
 		
-			#{fap.grupo mostrarSi:['juridica'].contains(solicitud.solicitante.tipo), permiso:'firmarRegistrarSolicitud', titulo:'Paso 1. Firmar y Registrar la solicitud'}
+			#{fap.grupo mostrarSi:['juridica'].contains(solicitud.solicitante.tipo), permiso:'firmarRegistrarSolicitud', titulo:'Paso 3. Firmar y Registrar la solicitud'}
 				
-			#{fap.grupo permiso:'firmarSolicitud', titulo:'Paso 1.1. Firmar la solicitud'}
+			#{fap.grupo permiso:'firmarSolicitud', titulo:'Paso 3.1. Firmar la solicitud'}
 				
 			<div class="wiki ">
 <p>La solicitud será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación.</p>
@@ -174,7 +174,7 @@
 
 			#{/fap.grupo}
 		
-			#{fap.grupo permiso:'registrarSolicitud', titulo:'Paso 1.2. Registrar la solicitud'}
+			#{fap.grupo permiso:'registrarSolicitud', titulo:'Paso 3.2. Registrar la solicitud'}
 				
 			<div class="wiki ">
 <p>Su solicitud ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo.</p>

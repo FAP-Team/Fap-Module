@@ -214,7 +214,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             throw new NullPointerException();
         
         if (descripcion == null)
-        	descripcion="RE "+documento.descripcionVisible;
+        	descripcion=documento.descripcionVisible;
         	// Añadimos RE al asunto en los registros de entrada
 
         datosDoc.setDescripcion(descripcion);

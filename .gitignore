@@ -109,7 +109,8 @@ apps/test/gestorDocumental/temporal/*
 apps/test/gestorDocumental/clasificado/*
 
 #Ignorar los yml
-fap/app/listas/initial-data/*.yml
+fap/app/listas/initial-data/paginasMsj.yml
+fap/app/listas/initial-data/paginasMsjLista.yml
 apps/test/app/listas/initial-data/*.yml
 
 apps/cuadroMandos/*

@@ -1,0 +1,23 @@
+h1. Comenzando ...
+
+En esta sección nos adentraremos en los primeros pasos que realicemos con FAP. Desde conocer los comandos básicos, hasta generar nuestra propia aplicación 'Hola Mundo' en unos sencillos pasos.
+
+¿A qué esperas? ... ¡Comienza a explorar FAP! 
+
+h4. "1. Comandos Básicos":comandos.textile
+
+h4. "2. Nuestra Primera Aplicación FAP":nuevaApp.textile
+
+h4. "3. ¿Qué Se Esconde Detrás de Nuestra Aplicación FAP?"
+
+h5. "   3.1 Elementos Básicos del DSL":
+
+h5. "   3.2 Modelo Vista Controlador (MVC)"
+
+h6. "      3.2.1 Los Modelos":
+
+h6: "      3.2.2 Los Controladores":
+
+h6. "      3.2.3 Las Vistas":
+
+h4. "4. Estructura de Nuestra Aplicación FAP":

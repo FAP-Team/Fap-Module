@@ -21,6 +21,27 @@
      urlCrear:play.mvc.Router.reverse('PaginaCEconomicoManualController.crear' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
      urlEditar:play.mvc.Router.reverse('PaginaCEconomicoManualController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id])
 }
+
+	#{fap.grupo permiso:'noEditable', titulo:'Información Concepto Nivel Superior'}
+				
+			#{fap.texto campo:'cEconomico.tipo.nombre', titulo:'Nombre' /}	
+			
+			#{if ((cEconomico.tipo.descripcion != null) && (!cEconomico.tipo.descripcion.isEmpty()))}
+				#{fap.areatexto campo:'cEconomico.tipo.descripcion', titulo:'Descripción' /}	
+			#{/if}
+		
+			#{list items:0..anios, as:'i'}
+				%{
+					def paramName="cEconomico.valores[${i}]";
+					def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+					def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+					def anioLabel = "Año ${tipoEvaluacion.inicio+i}";
+					def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
+				%}
+				#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
+			#{/list}
+		
+	#{/fap.grupo}
 	
 	#{form play.mvc.Router.reverse('PaginaCEconomicoManualController.guardarPCE' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]) , class:"form-horizontal", id:"guardarPCE"}
 

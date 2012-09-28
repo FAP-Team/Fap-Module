@@ -590,6 +590,9 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	Pagina PaginaCEconomicoManual titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=editarSolicitudYIniciarBaremacion noForm{
 		Accion editar redirigir=PaginaCEconomicos
 		Accion crear redirigir=PaginaCEconomicos
+		Grupo gInfoPadre titulo="Información Concepto Nivel Superior" permiso=noEditable{
+			Texto titulo="Nombre" campo=CEconomico.tipo.nombre
+		}
 		Form guardarPCE {
 			Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
 			Boton bGuardarPCE titulo="Guardar"

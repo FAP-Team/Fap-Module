@@ -41,7 +41,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Exclusion exclusion
 	Desistimiento desistimiento
 	//Criterios economicos que rellena el solicitante
-	ManyToMany CEconomico ceconomicos	
+	OneToMany CEconomico ceconomicos	
 	AceptarRenunciar aceptarRenunciar
 	Alegaciones alegaciones
 	OneToMany Notificacion notificaciones

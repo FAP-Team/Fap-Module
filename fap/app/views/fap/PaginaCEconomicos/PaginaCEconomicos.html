@@ -75,17 +75,19 @@
      idEntidad:'idCEconomicosManuales', 
      nameContainer:'PaginaCEconomicos', 
      permisoCrear:'editarSolicitudYIniciarBaremacion', 
+     popupBorrar:'PopUpCEconomicoManualBorrar', 
      recargarPagina:true, 
      saveEntity:false, 
      tipoContainer:'pagina', 
      titulo:'Especificar Detalle', 
      urlBeforeOpenPageTable:play.mvc.Router.reverse("PaginaCEconomicosController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'irDespuesDeValidar':'']), 
+     urlBorrar:play.mvc.Router.reverse("popups.PopUpCEconomicoManualBorrarController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']), 
      urlContainerCrear:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id]), 
      urlContainerEditar:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
      urlCrear:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
      urlCrearEntidad:play.mvc.Router.reverse('PaginaCEconomicosController.crearForTablas' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
-     urlEditar:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']),
-     urlLeer:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']),
+     urlEditar:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']), 
+     urlLeer:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']), 
      urlTabla:@PaginaCEconomicosController.tablaceconomicosManuales(idCEconomico)
 }
 	

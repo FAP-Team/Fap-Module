@@ -2,7 +2,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 
 	Pagina DocumentacionFAP titulo = "Documentación" campo=SolicitudGenerica noForm {
 	
-		Tabla documentos titulo="Documentos" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP {
+		Tabla documentos titulo="Documentos" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP popupBorrar=DocumentosEditarFAP{
 			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
             Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="85"
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
@@ -14,7 +14,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			Grupo docExt titulo="Documentos ya aportados en la Administración"{
 				Wiki{"En aplicación del artículo 18 del Decreto 48/2009, de 28 de abril, por el que se establecen en la Administración Pública de la Comunidad Autónoma de Canarias medidas ante la crisis económica y de simplificación administrativa, el interesado puede NO aportar los documentos que ya se encuentren en poder de la Administración y que se relacionan a continuación.
 Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alternativos de los órganos gestores que se indican."}
-				Tabla documentosExternos titulo="Documentos ya aportados en la Administración" campo=SolicitudGenerica.documentacion.documentosExternos paginaCrear=DocumentosExternosFAP popupEditar=DocumentosExternosEditarFAP popupLeer=DocumentosExternosLeerFAP {
+				Tabla documentosExternos titulo="Documentos ya aportados en la Administración" campo=SolicitudGenerica.documentacion.documentosExternos paginaCrear=DocumentosExternosFAP popupEditar=DocumentosExternosEditarFAP popupLeer=DocumentosExternosLeerFAP popupBorrar=DocumentosExternosEditarFAP {
 					Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
 					Columna titulo="Descripción" campo=DocumentoExterno.descripcionVisible expandir
 				}
@@ -577,7 +577,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		Form Guardar { 
 			Texto Nombre titulo="Nombre" campo=CEconomico.tipo.nombre
 			Grupo conceptosManuales borde=false permiso=verTablaCEconomicosOtros {
-				Tabla ceconomicosManuales titulo="Especificar Detalle" campo=CEconomico.otros paginaCrear=PaginaCEconomicoManual paginaEditar=PaginaCEconomicoManual paginaLeer=PaginaCEconomicoManual recargarPagina{
+				Tabla ceconomicosManuales titulo="Especificar Detalle" campo=CEconomico.otros paginaCrear=PaginaCEconomicoManual paginaEditar=PaginaCEconomicoManual paginaLeer=PaginaCEconomicoManual popupBorrar=PopUpCEconomicoManualBorrar recargarPagina{
 					Columna campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquía"
 					Columna campo=CEconomicosManuales.tipo.nombre titulo="Nombre" expandir
 				}
@@ -595,6 +595,11 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 			Boton bGuardarPCE titulo="Guardar"
 			Enlace titulo="Volver" estilo="btn btn-link" pagina=PaginaCEconomicos
 		}
+	}
+	
+	Popup PopUpCEconomicoManualBorrar titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=editarSolicitudYIniciarBaremacion {
+		Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+		Texto campo=CEconomicosManuales.tipo.descripcion titulo="Descripción"
 	}
 
 	// ******************************************************************************************

@@ -115,7 +115,7 @@ public class GenericController extends Controller {
 		for (String par: paramsId) {
 			if (isEntidadProcesando(par)) {
 				play.Logger.error(threadName+" La entidad "+par+" está siendo procesada");
-				CustomValidation.error(" La entidad está siendo procesada, vuelva a intentarlo en unos instantes.", "", null);
+				CustomValidation.error(" La entidad está siendo procesada, vuelva a intentarlo en unos "+FapProperties.get("fap.cache.time")+" minutos.", "", null);
 			} else {
 				idsEntidades.put(par, threadName);
 				cambio = true;

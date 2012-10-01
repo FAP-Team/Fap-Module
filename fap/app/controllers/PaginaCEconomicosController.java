@@ -62,7 +62,8 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 		Double suma=0.0;
 		for (CEconomicosManuales cEconomicoManual: listaHijosOtro){
 			if (!cEconomicoManual.valores.isEmpty())
-				suma += cEconomicoManual.valores.get(anio).valorSolicitado;
+				if (cEconomicoManual.valores.get(anio).valorSolicitado != null)
+					suma += cEconomicoManual.valores.get(anio).valorSolicitado;
 		}
 		return suma;
 	}

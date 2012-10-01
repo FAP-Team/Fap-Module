@@ -740,7 +740,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             models.Firmante firmante = firma.getFirmantes().get(0);
     		if (propiedadesAdministrativas.getFirma() == null) {
     			firmaActual = new Firma();
-    			propiedadesAdministrativas.setFirma(firmaActual);
     			firmaActual.setContenido(firma.getContenido());
     			firmaActual.setTipoMime("text/xml");
     			boolean clasificado = isClasificado(documento);
@@ -751,19 +750,25 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			firmanteAed.setFecha(firmante.fechaFirma.toDate());
     			firmaActual.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
     			
+    			propiedadesAdministrativas.setFirma(firmaActual);
+    			propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
+    			
     			actualizarPropiedades(propiedadesDocumento, clasificado);
     		} else if (!containsFirmante(firmante, firmaActual.getFirmantes())){
-            	Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
-            	propiedadesAdministrativas.setFirma(firmaNueva);
+            	// TODO: 
+    			Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
             	
-            	es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
-    			firmanteAed.setFirmanteNombre(firmante.nombre);
-    			firmanteAed.setFirmanteNif(firmante.idvalor);
-    			firmanteAed.setFecha(firmante.fechaFirma.toDate());
-    			firmaNueva.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
-    
+            	// Comentamos lo siguiente, porque se estaba insertando en el AED dos veces la firma
+//            	es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
+//    			firmanteAed.setFirmanteNombre(firmante.nombre);
+//    			firmanteAed.setFirmanteNif(firmante.idvalor);
+//    			firmanteAed.setFecha(firmante.fechaFirma.toDate());
+//    			firmaNueva.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
             	boolean clasificado = isClasificado(documento);
+            	
+            	propiedadesAdministrativas.setFirma(firmaNueva);
             	propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
+            	
             	actualizarPropiedades(propiedadesDocumento, clasificado);
             }
             else {

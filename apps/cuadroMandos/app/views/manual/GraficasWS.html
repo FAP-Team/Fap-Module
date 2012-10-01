@@ -5,19 +5,34 @@
      botonEditar:'Guardar', 
      encType:'application/x-www-form-urlencoded', 
      formulario:'CuadroDeMandos', 
-     hayForm:true, 
+     hayForm:false, 
      mensajeFinal:false, 
-     pagina:'GraficasWS', 
+     pagina:'GraficasWSCM', 
      titulo:'Gráficas servicios web', 
-     urlBorrar:play.mvc.Router.reverse('GraficasWSController.borrar' , ['idAplicacion':aplicacion?.id, 'idRelacionWSConsultas':relacionWSConsultas?.id]), 
-     urlCrear:play.mvc.Router.reverse('GraficasWSController.crear' , ['idAplicacion':aplicacion?.id]), 
-     urlEditar:play.mvc.Router.reverse('GraficasWSController.editar' , ['idAplicacion':aplicacion?.id, 'idRelacionWSConsultas':relacionWSConsultas?.id])
+     urlBorrar:play.mvc.Router.reverse('GraficasWSCMController.borrar' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]), 
+     urlCrear:play.mvc.Router.reverse('GraficasWSCMController.crear' , ['idAplicacion':aplicacion?.id]), 
+     urlEditar:play.mvc.Router.reverse('GraficasWSCMController.editar' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id])
 }
 	
-			<div class="wiki ">
-<p>Aquí se mostrará el SuperTag</p>
+	<div class="wiki ">
+		<p>Aquí se mostrará el SuperTag</p>
 
-			</div>
-		
+	</div>
+			
+	%{
+		def ws = serviciosWeb;
+		System.out.println("Servicio web: "+ws);
+		System.out.println("Servicio web: "+ws.peticion.get(0).fechaPeticion);
+	%}
+	
+	#{form play.mvc.Router.reverse('GraficasWSCMController.formBtnRecargaDatos' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtnRecargaDatos"}
+		#{fap.boton ayuda:tags.TagAyuda.popover('Pulse este botón para obligar a actualizar los datos de los servicios web'), id:'recargasDatos', titulo:'Recargar datos' /}
+	#{/form}
+
+	<div id="grafica"></div>
+	#{fap.simplePie id:'grafica', titulo:'Estados Solicitudes', name:'Solicitudes', data:"${data.raw()}" /}
+	
+	#{form play.mvc.Router.reverse('GraficasWSCMController.formBtnVolver' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtnVolver"}				
+		#{fap.enlace action:play.mvc.Router.reverse("ServiciosWebAppCMController.index" , ['idAplicacion':aplicacion?.id]), estilo:'btn ', id:'btnVolverIDenlace', titulo:'Volver a la lista de Servicios Web' /}
+	#{/form}
 #{/fap.pagina}
-		

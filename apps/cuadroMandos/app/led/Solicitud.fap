@@ -7,7 +7,7 @@ Formulario CuadroDeMandos inicial {
 	Pagina CuadroMandos inicial noForm titulo="Cuadro de Mandos" permiso=administrador {
 		Tabla aplicaciones titulo="Aplicaciones" campo=Aplicacion 
 		popupCrear=NuevaAplicacion 
-		paginaEditar=ServiciosWebApps
+		paginaEditar=ServiciosWebAppCM
 		popupBorrar=NuevaAplicacion
 		{
 			Columna titulo="Nombre de la aplicación" campo=Aplicacion.nombreApp
@@ -20,34 +20,38 @@ Formulario CuadroDeMandos inicial {
 		Texto campo=Aplicacion.urlApp titulo="URL" requerido
 	}
 	
-	Pagina ServiciosWebApps noForm titulo="Servicios web de la aplicación" campo=Aplicacion  permiso=administrador {
+	Pagina ServiciosWebAppCM noForm titulo="Servicios web de la aplicación" campo=Aplicacion  permiso=administrador {
 		Grupo permiso=noEditable titulo="Datos de la aplicación" {
 			Texto campo=Aplicacion.nombreApp titulo="Nombre de la aplicación" 
 			Texto campo=Aplicacion.urlApp titulo="URL de la aplicación"
 		}
 		
-		Tabla serviciosWeb titulo="Servicios web activos" campo=Aplicacion.relacionWSConsultas
-		paginaEditar=GraficasWSApp
+		Tabla serviciosWeb titulo="Servicios web activos" campo=Aplicacion.serviciosWeb
+		paginaEditar=GraficasWSCM
 		{
-			Columna titulo="Nombre del servicio web" campo=RelacionWSConsultas.serviciosWeb.nombre expandir
-			Columna titulo="URL del servicio web" campo=RelacionWSConsultas.serviciosWeb.urlWS expandir
-			//Columna titulo="Activo" campo=RelacionWSConsultas.serviciosWeb.activo expandir
+			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
+			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
 		}
 		
 		Form formBtnRecargaWS {
 			Boton recargasWS titulo="Recargar Servicios Web" ayuda="Pulse este botón para obligar a actualizar los servicios web de la aplicación" (popover)
-			Boton recargasDatos titulo="Recargar datos" ayuda="Pulse este botón para obligar a actualizar los datos de los servicios web" (popover)
 		}
 		
-		Tabla historialServiciosWeb titulo="Historial de servicios web" campo=Aplicacion.relacionWSConsultas
-		paginaEditar=GraficasWSApp
+		Tabla historialServiciosWeb titulo="Historial de servicios web" campo=Aplicacion.serviciosWeb
+		paginaEditar=GraficasWSCM
 		{
-			Columna titulo="Nombre del servicio web" campo=RelacionWSConsultas.serviciosWeb.nombre expandir
-			Columna titulo="URL del servicio web" campo=RelacionWSConsultas.serviciosWeb.urlWS expandir
+			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
+			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
 		}
 	}
 	
-	Pagina GraficasWSApp noForm titulo="Gráficas servicios web" campo=Aplicacion.relacionWSConsultas {
+	Pagina GraficasWSCM noForm titulo="Gráficas servicios web" campo=Aplicacion.serviciosWeb {
 		Wiki {"Aquí se mostrará el SuperTag"}
+		Form formBtnRecargaDatos {
+			Boton recargasDatos titulo="Recargar datos" ayuda="Pulse este botón para obligar a actualizar los datos de los servicios web" (popover)
+		}
+		Form formBtnVolver {
+			Boton btnVolver titulo="Volver a la lista de Servicios Web" pagina=ServiciosWebAppCM
+		}
 	}
 }

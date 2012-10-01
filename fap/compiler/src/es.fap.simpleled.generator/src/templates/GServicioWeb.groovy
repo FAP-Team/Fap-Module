@@ -106,36 +106,39 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 		for (EntidadInfo subcampo: subcampos) {
 			allEntities.add(subcampo.entidad);
 		}
-		String ret = """ListaConsultas listaConsultas = new ListaConsultas();
-						List<ConsultaWS> consulta = new ArrayList<ConsultaWS>();
+		String ret = """
+						List<ResultadoPeticion> resultadoPeticion = new ArrayList<ResultadoPeticion>();
 					 """;
 		
 		// En allEntities tendria todas las entidades xToMany que tuviera concatenadas el campoEntidad
 		if (allEntities.size() > 0) {
 			ret += 	"""List<${allEntities.get(0).entidad.name}> ${allEntities.get(0).getVariable()} = ${allEntities.get(0).entidad.name}.findAll();
-				ConsultaWS objetito = null;
+				ResultadoPeticion resultado = null;
+				Peticion peticion = new Peticion();
+
 				for(${allEntities.get(0).entidad.name} ${allEntities.get(0).getVariable()}Aux: ${allEntities.get(0).getVariable()}){
 				// Ir creando el Array de Array de Objetitos por defecto.
 				// El Objetito sería el "id${allEntities.get(0).getVariable()}":${allEntities.get(0).getVariable()}Aux.id
 
-					  objetito = new ConsultaWS("id${allEntities.get(0).entidad.name}", ${allEntities.get(0).getVariable()}Aux.id);
-				   	  consulta.add(objetito);
+					  resultado = new ResultadoPeticion("id${allEntities.get(0).entidad.name}", ${allEntities.get(0).getVariable()}Aux.id);
+				   	  resultadoPeticion.add(resultado);
 			 """
 			if (allEntities.size() > 1) {
 				int i = 1;
 				for (i = 1; i < allEntities.size(); i++) {
 					ret += """List<${allEntities.get(i).entidad.name}> ${allEntities.get(i).getVariable()} = ${allEntities.get(i).entidad.name}.find("select ${allEntities.get(i).getVariable()} from ${allEntities.get(0).entidad.name} ${allEntities.get(0).getVariable()} join ${campoEntidad.str} ${allEntities.get(i).getVariable()} where ${allEntities.get(0).getVariable()}.id=?", ${allEntities.get(0).getVariable()}Aux.id).fetch();
-							  ConsultaWS objetito${allEntities.get(i).getVariable()} = null;
-							 	  
+							  ResultadoPeticion resultado${allEntities.get(i).getVariable()} = null;
+							  
 							  for(${allEntities.get(i).entidad.name} ${allEntities.get(i).getVariable()}Aux: ${allEntities.get(i).getVariable()}){
 							  // Ir creando el Array de Array de Objetitos por defecto.
 						      // El Objetito sería el "id${allEntities.get(i).getVariable()}":${allEntities.get(i).getVariable()}Aux.id
 							  		
-							  	List<ConsultaWS> listaObjetitos = new ArrayList<ConsultaWS>();
-								
-								 objetito${allEntities.get(i).getVariable()} = new ConsultaWS("id${allEntities.get(i).entidad.name}", ${allEntities.get(i).getVariable()}Aux.id);
-								 consulta.add(objetito${allEntities.get(i).getVariable()});
-								 listaObjetitos.add(objetito${allEntities.get(i).getVariable()});
+							  	 List<ResultadoPeticion> listaResultados = new ArrayList<ResultadoPeticion>();
+								 ResultadosPeticion lista = new ResultadosPeticion();
+
+								 resultado${allEntities.get(i).getVariable()} = new ResultadoPeticion("id${allEntities.get(i).entidad.name}", ${allEntities.get(i).getVariable()}Aux.id);
+								 resultadoPeticion.add(resultado${allEntities.get(i).getVariable()});
+								 listaResultados.add(resultado${allEntities.get(i).getVariable()});
 								"""
 				}
 
@@ -146,27 +149,26 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 					variableName = ((CampoUtils)e.getValue()).str.split("\\.")[1];
 					if (!variableName.equals("id")) {
 						ret += 	"""
-								ConsultaWS objetito${variableName} = null;
-								objetito${variableName} = new ConsultaWS("${e.getKey()}", ${allEntities.get(allEntities.size()-1).getVariable()}Aux.${variableName});
-								consulta.add(objetito${variableName});
-								listaObjetitos.add(objetito${variableName});
+								ResultadoPeticion resultado${variableName} = null;
+								resultado${variableName} = new ResultadoPeticion("${e.getKey()}", ${allEntities.get(allEntities.size()-1).getVariable()}Aux.${variableName});
+								resultadoPeticion.add(resultado${variableName});
+								listaResultados.add(resultado${variableName});
 								"""
 					}
 				}
 				
 				ret += 	"""
-						ConsultasWS c = new ConsultasWS();
-						c.consultaWS.add(objetito);
-						for (int j = 0; j < listaObjetitos.size(); j++) {
-							c.consultaWS.add(listaObjetitos.get(j));
+						lista.resultadoPeticion.add(resultado);
+						for (int j = 0; j < listaResultados.size(); j++) {
+							lista.resultadoPeticion.add(listaResultados.get(j));
 						}
-						listaConsultas.consultasWS.add(c);
+						peticion.resultadosPeticion.add(lista);
 						}
 						"""
 
 			} else {
 				String variableName = "";
-				ret += """List<ConsultaWS> listaObjetitos = new ArrayList<ConsultaWS>();	
+				ret += """List<ResultadoPeticion> listaResultados = new ArrayList<ResultadoPeticion>();	
 						""";
 				Iterator it2 = camposAtributos.entrySet().iterator();
 				while (it2.hasNext()) {
@@ -174,33 +176,32 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 					variableName = ((CampoUtils)e.getValue()).str.split("\\.")[1];
 					if (!variableName.equals("id")) {
 						ret += 	"""
-								ConsultaWS objetito${variableName} = null;
-								objetito${variableName} = new ConsultaWS("${e.getKey()}", ${allEntities.get(allEntities.size()-1).getVariable()}Aux.${variableName});
-								consulta.add(objetito${variableName});
-								listaObjetitos.add(objetito${variableName});
+								ResultadoPeticion resultado${variableName} = null;
+								resultado${variableName} = new ResultadoPeticion("${e.getKey()}", ${allEntities.get(allEntities.size()-1).getVariable()}Aux.${variableName});
+								resultadoPeticion.add(resultado${variableName});
+								listaResultados.add(resultado${variableName});
 								"""
 					}
 				}
 
 				ret +=	"""
-						ConsultasWS c = new ConsultasWS();
-						c.consultaWS.add(objetito);
-						for (int j = 0; j < listaObjetitos.size(); j++) {
-							c.consultaWS.add(listaObjetitos.get(j));
+						ResultadosPeticion lista = new ResultadosPeticion();
+						lista.resultadoPeticion.add(resultado);
+						for (int j = 0; j < listaResultados.size(); j++) {
+							lista.resultadoPeticion.add(listaResultados.get(j));
 						}
-						listaConsultas.consultasWS.add(c);
+						peticion.resultadosPeticion.add(lista);
 						"""
 			}
 		}
 		ret += 	"""
 				}
-				DatosGraficas datos = new DatosGraficas();
-				DateTime de = new DateTime();
-				datos.fechaConsulta = de.toString();
-				datos.lista.add(listaConsultas);
+
+				DateTime hoy = new DateTime();
+				peticion.fechaPeticion = hoy.toString();
 
 				Gson gson = new Gson();
-				String string_json = gson.toJson(datos);
+				String string_json = gson.toJson(peticion);
 				renderJSON(string_json);
 				"""
 		return ret;
@@ -208,8 +209,8 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 	
 	private String metodoGetInfoWS(){
 		String out ="""
-					public static ServiciosWebApp getInfoWS() {
-						ServiciosWebApp swi = new ServiciosWebApp();
+					public static ServicioWebInfo getInfoWS() {
+						ServicioWebInfo swi = new ServicioWebInfo();
 					"""
 		Iterator it2 = camposAtributos.entrySet().iterator();
 		while (it2.hasNext()) {
@@ -220,10 +221,10 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 			String tipoParam = s.getAtributos().getAtributo().getType().getSimple().getType().toString();
 			
 			out += 	"""
-					InfoWS info${atr} = new InfoWS();
+					InfoParams info${atr} = new InfoParams();
 					info${atr}.tipo = "${tipoParam}";
 					info${atr}.nombreParam = "${nombreParam}";
-					swi.infoRet.add(info${atr});
+					swi.infoParams.add(info${atr});
 					"""
 		}
 		out += 	"""

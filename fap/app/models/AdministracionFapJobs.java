@@ -47,6 +47,12 @@ public class AdministracionFapJobs extends Singleton {
 
 	public Integer valorNotificarAlertasAnotaciones;
 
+	public Boolean actualizarServiciosWeb;
+
+	public Boolean valorPropioActualizarServiciosWeb;
+
+	public Integer valorActualizarServiciosWeb;
+
 	public AdministracionFapJobs() {
 		init();
 	}
@@ -77,6 +83,12 @@ public class AdministracionFapJobs extends Singleton {
 
 		if (valorPropioNotificarAlertasAnotaciones == null)
 			valorPropioNotificarAlertasAnotaciones = false;
+
+		if (actualizarServiciosWeb == null)
+			actualizarServiciosWeb = true;
+
+		if (valorPropioActualizarServiciosWeb == null)
+			valorPropioActualizarServiciosWeb = false;
 
 		postInit();
 	}

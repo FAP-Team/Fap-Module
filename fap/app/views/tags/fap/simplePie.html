@@ -36,8 +36,10 @@
 
 }*
 
+<input type="button" onClick="ejecutar();"/>
+
 <script>
-$(function () {
+function ejecutar() {
     var chart;
     $(document).ready(function() {
         chart = new Highcharts.Chart({
@@ -70,12 +72,12 @@ $(function () {
                 }
             },
             series: [{
-                type: 'pie',
+                type: 'column',
                 name: '${name}',
                 data: ${strData.raw()}
             }]
         });
     });
     
-});
+};
 </script>

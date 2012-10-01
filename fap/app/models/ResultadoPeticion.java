@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class ConsultaWS extends FapModel {
+public class ResultadoPeticion extends FapModel {
 	// Código de los atributos
 
 	public String nombre;
@@ -45,7 +45,7 @@ public class ConsultaWS extends FapModel {
 
 	// === MANUAL REGION START ===
 
-	public ConsultaWS(String nombre, Integer integer) {
+	public ResultadoPeticion(String nombre, Integer integer) {
 		this.nombre = nombre;
 		this.valorInteger = integer;
 		this.valorLong = null;
@@ -55,7 +55,7 @@ public class ConsultaWS extends FapModel {
 		this.valorString = null;
 	}
 
-	public ConsultaWS(String nombre, Long _long) {
+	public ResultadoPeticion(String nombre, Long _long) {
 		this.nombre = nombre;
 		this.valorInteger = null;
 		this.valorLong = _long;
@@ -65,7 +65,7 @@ public class ConsultaWS extends FapModel {
 		this.valorString = null;
 	}
 
-	public ConsultaWS(String nombre, Boolean bool) {
+	public ResultadoPeticion(String nombre, Boolean bool) {
 		this.nombre = nombre;
 		this.valorInteger = null;
 		this.valorLong = null;
@@ -75,7 +75,7 @@ public class ConsultaWS extends FapModel {
 		this.valorString = null;
 	}
 
-	public ConsultaWS(String nombre, DateTime datetime) {
+	public ResultadoPeticion(String nombre, DateTime datetime) {
 		this.nombre = nombre;
 		this.valorInteger = null;
 		this.valorLong = null;
@@ -85,7 +85,7 @@ public class ConsultaWS extends FapModel {
 		this.valorString = null;
 	}
 
-	public ConsultaWS(String nombre, Double doubl) {
+	public ResultadoPeticion(String nombre, Double doubl) {
 		this.nombre = nombre;
 		this.valorInteger = null;
 		this.valorLong = null;
@@ -95,7 +95,7 @@ public class ConsultaWS extends FapModel {
 		this.valorString = null;
 	}
 
-	public ConsultaWS(String nombre, String string) {
+	public ResultadoPeticion(String nombre, String string) {
 		this.nombre = nombre;
 		this.valorInteger = null;
 		this.valorLong = null;
@@ -104,7 +104,6 @@ public class ConsultaWS extends FapModel {
 		this.valorDouble = null;
 		this.valorString = string;
 	}
-
 	// === MANUAL REGION END ===
 
 }

@@ -13,16 +13,15 @@ import com.google.gson.Gson;
 import javassist.tools.reflect.Reflection;
 
 import messages.Messages;
-import models.InfoWS;
-import models.ServiciosWebApp;
+import models.ServicioWebInfo;
 
 public class WSInfoController extends GenericController {
 	
 	public static void getInfoAllWS() {
 		try {
-			List<ServiciosWebApp> listaRet = WSController.invoke("getInfoWS", new Object[] {});	
+			List<ServicioWebInfo> listaInfoWS = WSController.invoke("getInfoWS", new Object[] {});	
 			Gson gson = new Gson();
-			String string_json = gson.toJson(listaRet);
+			String string_json = gson.toJson(listaInfoWS);
 			renderJSON(string_json);
 		} catch (Throwable e) {
 			play.Logger.error("Hubo un problema al invocar el método getInfoWS: "+e.getMessage());

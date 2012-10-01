@@ -1,78 +1,53 @@
 package controllers;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import javax.servlet.http.HttpServletRequest;
-
-import oauth.signpost.http.HttpRequest;
-
-import org.apache.cxf.jaxrs.ext.RequestHandler;
-import org.apache.ws.security.handler.RequestData;
-
-import play.libs.F.Promise;
 import play.libs.WS;
-import play.libs.WS.HttpResponse;
 import play.libs.WS.WSRequest;
-import play.mvc.Http;
-import play.mvc.Http.Request;
 import play.mvc.Util;
-import play.utils.HTML;
-import properties.FapProperties;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.ning.http.client.RequestBuilder;
-import com.sun.net.httpserver.HttpContext;
 
 import messages.Messages;
 import models.Aplicacion;
 import models.ServicioWebInfo;
 import models.ServiciosWeb;
-import controllers.gen.ServiciosWebAppControllerGen;
+import controllers.gen.ServiciosWebAppCMControllerGen;
 
-public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
-	
+public class ServiciosWebAppCMController extends ServiciosWebAppCMControllerGen {
 	public static void index(String accion, Long idAplicacion) {
 		if (accion == null)
 			accion = getAccion();
 		if (!permiso(accion)) {
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-			renderTemplate("gen/ServiciosWebApp/ServiciosWebApp.html");
+			renderTemplate("gen/ServiciosWebAppCM/ServiciosWebAppCM.html");
 		}
 
-		String appName = FapProperties.get("application.name");
-		String path = FapProperties.get("http.path");
-		Aplicacion aplicacion = Aplicacion.find("select aplicacion from Aplicacion aplicacion where aplicacion.nombreApp=?", appName).first();
-		if (aplicacion == null) {
-			aplicacion = ServiciosWebAppController.getAplicacion();
-			aplicacion.nombreApp = appName;
-			String host = Http.Request.current.get().host;
-			if (path != null)
-				aplicacion.urlApp = "http://" + host + path + "/WSInfo";
-			else
-				aplicacion.urlApp = "http://" + host + "/WSInfo";
-			aplicacion.save();
-			
+		Aplicacion aplicacion = null;
+		if ("crear".equals(accion)) {
+			aplicacion = ServiciosWebAppCMController.getAplicacion();
 			if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")) {
+
 				aplicacion.save();
 				idAplicacion = aplicacion.id;
+
 				accion = "editar";
 			}
-		}
-		
-		idAplicacion = aplicacion.id;
-		if (aplicacion.serviciosWeb.size() == 0)
+
+		} else if (!"borrado".equals(accion))
+			aplicacion = ServiciosWebAppCMController.getAplicacion(idAplicacion);
+		if (aplicacion.serviciosWeb.size() == 0) {
 			getWS(accion, idAplicacion, aplicacion);
-		else {
-			log.info("Visitando página: " + "gen/ServiciosWebApp/ServiciosWebApp.html");
-			renderTemplate("gen/ServiciosWebApp/ServiciosWebApp.html", accion, idAplicacion, aplicacion);
 		}
-			
+		else {
+			log.info("Visitando página: " + "gen/ServiciosWebAppCM/ServiciosWebAppCM.html");
+			renderTemplate("gen/ServiciosWebAppCM/ServiciosWebAppCM.html", accion, idAplicacion, aplicacion);
+	
+		}
 	}
 	
 	@Util
@@ -105,12 +80,13 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 				i++;
 			}
 		}
-		log.info("Visitando página: " + "gen/ServiciosWebApp/ServiciosWebApp.html");
-		renderTemplate("gen/ServiciosWebApp/ServiciosWebApp.html", accion, idAplicacion, aplicacion);
-	
+		log.info("Visitando página: " + "gen/ServiciosWebAppCM/ServiciosWebAppCM.html");
+		renderTemplate("gen/ServiciosWebAppCM/ServiciosWebAppCM.html", accion, idAplicacion, aplicacion);
+
 	}
 	
 	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void formBtnRecargaWS(Long idAplicacion, String recargasWS) {
 		checkAuthenticity();
 		if (!permisoFormBtnRecargaWS("editar")) {
@@ -122,14 +98,14 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		}
 
 		if (!Messages.hasErrors()) {
-			ServiciosWebAppController.formBtnRecargaWSValidateRules();
+			ServiciosWebAppCMController.formBtnRecargaWSValidateRules();
 		}
 		if (!Messages.hasErrors()) {
 
-			log.info("Acción Editar de página: " + "gen/ServiciosWebApp/ServiciosWebApp.html" + " , intentada con éxito");
+			log.info("Acción Editar de página: " + "gen/ServiciosWebAppCM/ServiciosWebAppCM.html" + " , intentada con éxito");
 		} else
-			log.info("Acción Editar de página: " + "gen/ServiciosWebApp/ServiciosWebApp.html" + " , intentada sin éxito (Problemas de Validación)");
-		ServiciosWebAppController.formBtnRecargaWSRender(idAplicacion);
+			log.info("Acción Editar de página: " + "gen/ServiciosWebAppCM/ServiciosWebAppCM.html" + " , intentada sin éxito (Problemas de Validación)");
+		ServiciosWebAppCMController.formBtnRecargaWSRender(idAplicacion);
 	}
 	
 	@Util
@@ -257,59 +233,6 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		}
 	}
 	
-//	@Util
-//	public static void recargasDatosFormBtnRecargaWS(Long idAplicacion) {
-//		
-//		Aplicacion app = getAplicacion(idAplicacion);
-//		String urlApp = app.urlApp;
-//		List<ServiciosWeb> anterioresServiciosWeb = ServiciosWeb.find("select serviciosWeb from Aplicacion aplicacion join aplicacion.serviciosWeb serviciosWeb where aplicacion.id=? and serviciosWeb.servicioWebInfo.activo=true", idAplicacion).fetch();
-//		int i = 0;
-//		int anteriorNumWS = anterioresServiciosWeb.size();		
-//		
-//		while (i < anteriorNumWS) {
-//			String urlWS = anterioresServiciosWeb.get(i).servicioWebInfo.urlWS;
-//			WSRequest request = null;
-//			JsonElement json = null;
-//			String url = urlApp + urlWS;
-//			try {
-//				request = WS.url(url);
-//				json = request.get().getJson();
-//			} catch (RuntimeException ce) {
-//				Messages.warning("El servicio web no está disponible en estos momentos");
-//				play.Logger.error("El servicio web no está disponible en estos momentos");
-//			}
-//			
-////			if ((json != null) && (anterioresServiciosWeb.get(i).peticion.size() > 0)) {
-////				ListaConsultas anterioresConsultas = anterioresServiciosWeb.get(i).peticion.get(0).lista.get(0);
-////				Gson gson = new Gson();
-////				DatosGraficas nuevaConsulta = gson.fromJson(json, DatosGraficas.class);
-////				ListaConsultas nuevasConsulta = nuevaConsulta.lista.get(0);
-////				
-////				if ((anterioresConsultas.consultasWS.size() < nuevasConsulta.consultasWS.size()) || (anterioresConsultas.consultasWS.size() > nuevasConsulta.consultasWS.size())) {
-////					recargasWSFormBtnRecargaWS(idAplicacion);
-////				}
-////				else {
-////					for (int j = 0; j < anterioresConsultas.consultasWS.size(); j++) {
-////						ConsultasWS consultaAnt = anterioresConsultas.consultasWS.get(j);
-////						ConsultasWS consultaPost = nuevasConsulta.consultasWS.get(j);
-////						for (int k = 0; k < consultaAnt.consultaWS.size(); k++) {
-////							if ((!consultaAnt.consultaWS.get(k).nombre.equals(consultaPost.consultaWS.get(k).nombre))
-////									|| (consultaAnt.consultaWS.get(k).valorBoolean != consultaPost.consultaWS.get(k).valorBoolean)
-////									|| (consultaAnt.consultaWS.get(k).valorDouble != consultaPost.consultaWS.get(k).valorDouble)
-////									|| (consultaAnt.consultaWS.get(k).valorDateTime != consultaPost.consultaWS.get(k).valorDateTime)
-////									|| (consultaAnt.consultaWS.get(k).valorLong != consultaPost.consultaWS.get(k).valorLong)
-////									|| (consultaAnt.consultaWS.get(k).valorString != consultaPost.consultaWS.get(k).valorString)) {
-////								recargasWSFormBtnRecargaWS(idAplicacion);
-////							}
-////						}
-////					}
-////				}
-////				
-////			}
-//			i++;
-//		}
-//	}
-	
 	/**
 	 * Tabla en la que se muestran los servicios web activos.
 	 * @param idAplicacion
@@ -345,5 +268,4 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		tables.TableRenderResponse<ServiciosWeb> response = new tables.TableRenderResponse<ServiciosWeb>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 		renderJSON(response.toJSON("servicioWebInfo.nombre", "servicioWebInfo.urlWS", "id"));
 	}
-	
 }

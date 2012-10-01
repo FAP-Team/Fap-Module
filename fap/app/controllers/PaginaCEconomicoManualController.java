@@ -48,12 +48,18 @@ public class PaginaCEconomicoManualController extends PaginaCEconomicoManualCont
 				accion = "editar";
 			}
 
-		} else if (!"borrado".equals(accion))
-			cEconomicosManuales = PaginaCEconomicoManualController.getCEconomicosManuales(idCEconomico, idCEconomicosManuales);
-
+		} else if (!"borrado".equals(accion)){
+				cEconomicosManuales = PaginaCEconomicoManualController.getCEconomicosManuales(idCEconomico, idCEconomicosManuales);
+				if (cEconomicosManuales == null){
+					cEconomicosManuales = getFlashCEconomicosManuales();
+					accion= "crear";
+					Messages.clear();
+				}
+		}
 
 		log.info("Visitando página: " + "fap/PaginaCEconomicoManual/PaginaCEconomicoManual.html");
 		renderTemplate("fap/PaginaCEconomicoManual/PaginaCEconomicoManual.html", accion, idSolicitud, idCEconomico, idCEconomicosManuales, solicitud, cEconomico, cEconomicosManuales, duracion);
+		
 	}
 	
 	@Util
@@ -89,7 +95,7 @@ public class PaginaCEconomicoManualController extends PaginaCEconomicoManualCont
 			redirect("PaginaCEconomicosController.index", controllers.PaginaCEconomicosController.getAccion(), idSolicitud, idCEconomico, duracion);
 		}
 		Messages.keep();
-		redirect("PaginaCEconomicoManualController.index", "editar", idSolicitud, idCEconomico, idCEconomicosManuales, duracion);
+		redirect("PaginaCEconomicoManualController.index", "editar", idSolicitud, idCEconomico, idCEconomicosManuales);
 	}
 	
 	@Util
@@ -103,27 +109,29 @@ public class PaginaCEconomicoManualController extends PaginaCEconomicoManualCont
 		CEconomicosManuales dbCEconomicosManuales;
 		if (idCEconomicosManuales == null) {
 			dbCEconomicosManuales = PaginaCEconomicoManualController.getCEconomicosManuales();
-			
-			// Creamos el Tipo ConceptoEconomico por defecto (el solicitante solo podrá cambiar el atributo nombre)
-			TipoCEconomico tipoCEconomico = new TipoCEconomico();
-			tipoCEconomico.clase="manual";
-			tipoCEconomico.comentariosAdministracion=true;
-			tipoCEconomico.comentariosSolicitante=true;
-			tipoCEconomico.descripcion=cEconomicosManuales.tipo.descripcion;
-			tipoCEconomico.nombre=cEconomicosManuales.tipo.nombre;
-			tipoCEconomico.instrucciones=null; //"Instrucciones";
-			tipoCEconomico.tipoOtro=false;
-			tipoCEconomico.creadoUsuario=true;
-			tipoCEconomico.jerarquia=dbCEconomico.tipo.jerarquia+"."+(dbCEconomico.otros.size()+1);
-			tipoCEconomico.save();
-			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
-			tipoEvaluacion.ceconomicos.add(tipoCEconomico);
-			tipoEvaluacion.save();
-			
-			dbCEconomicosManuales.tipo = tipoCEconomico;
-			dbCEconomicosManuales.save();
-			idCEconomicosManuales = dbCEconomicosManuales.id;
-			dbCEconomico.otros.add(dbCEconomicosManuales);
+			CustomValidation.required("cEconomicosManuales.tipo.nombre", cEconomicosManuales.tipo.nombre);
+			if (!Messages.hasErrors()){
+				// Creamos el Tipo ConceptoEconomico por defecto (el solicitante solo podrá cambiar el atributo nombre)
+				TipoCEconomico tipoCEconomico = new TipoCEconomico();
+				tipoCEconomico.clase="manual";
+				tipoCEconomico.comentariosAdministracion=true;
+				tipoCEconomico.comentariosSolicitante=true;
+				tipoCEconomico.descripcion=cEconomicosManuales.tipo.descripcion;
+				tipoCEconomico.nombre=cEconomicosManuales.tipo.nombre;
+				tipoCEconomico.instrucciones=null; //"Instrucciones";
+				tipoCEconomico.tipoOtro=false;
+				tipoCEconomico.creadoUsuario=true;
+				tipoCEconomico.jerarquia=dbCEconomico.tipo.jerarquia+"."+(dbCEconomico.otros.size()+1);
+				tipoCEconomico.save();
+				TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+				tipoEvaluacion.ceconomicos.add(tipoCEconomico);
+				tipoEvaluacion.save();
+				
+				dbCEconomicosManuales.tipo = tipoCEconomico;
+				dbCEconomicosManuales.save();
+				idCEconomicosManuales = dbCEconomicosManuales.id;
+				dbCEconomico.otros.add(dbCEconomicosManuales);
+			}
 		} else {
 			dbCEconomicosManuales = PaginaCEconomicoManualController.getCEconomicosManuales(idCEconomico, idCEconomicosManuales);
 		}
@@ -146,8 +154,10 @@ public class PaginaCEconomicoManualController extends PaginaCEconomicoManualCont
 			dbCEconomicosManuales.save();
 			idCEconomicosManuales = dbCEconomicosManuales.id;
 			log.info("Acción Editar de página: " + "gen/PaginaCEconomicoManual/PaginaCEconomicoManual.html" + " , intentada con éxito");
-		} else
+		} else{
+			flash(cEconomicosManuales);
 			log.info("Acción Editar de página: " + "gen/PaginaCEconomicoManual/PaginaCEconomicoManual.html" + " , intentada sin éxito (Problemas de Validación)");
+		}
 		PaginaCEconomicoManualController.guardarPCERender(idSolicitud, idCEconomico, idCEconomicosManuales);
 	}
 	
@@ -156,5 +166,53 @@ public class PaginaCEconomicoManualController extends PaginaCEconomicoManualCont
 	public static CEconomicosManuales getCEconomicosManuales() {
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 		return new CEconomicosManuales(tipoEvaluacion.duracion);
+	}
+	
+	@Util
+	private static void flash(CEconomicosManuales dbCEconomicoManual){
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+		String param = "cEconomicosManuales";
+		if (dbCEconomicoManual.tipo.tipoOtro){
+			for (int i = 0; i < tipoEvaluacion.duracion; i++){
+				Messages.setFlash(param + ".valores["+i+"].valorEstimado", dbCEconomicoManual.valores.get(i).valorEstimado);
+				Messages.setFlash(param + ".valores["+i+"].valorSolicitado", dbCEconomicoManual.valores.get(i).valorSolicitado);
+				Messages.setFlash(param + ".valores["+i+"].valorPropuesto", dbCEconomicoManual.valores.get(i).valorPropuesto);
+				Messages.setFlash(param + ".valores["+i+"].valorConcedido", dbCEconomicoManual.valores.get(i).valorConcedido);
+			}
+			Messages.setFlash(param + ".comentariosAdministracion", dbCEconomicoManual.comentariosAdministracion);
+			Messages.setFlash(param + ".comentariosSolicitante", dbCEconomicoManual.comentariosSolicitante);
+		} else {
+			for (int i = 0; i < tipoEvaluacion.duracion; i++){
+				Messages.setFlash(param + ".valores["+i+"].valorEstimado", params.get(param + ".valores["+i+"].valorEstimado", String.class));
+				Messages.setFlash(param + ".valores["+i+"].valorSolicitado", params.get(param + ".valores["+i+"].valorSolicitado", String.class));
+				Messages.setFlash(param + ".valores["+i+"].valorPropuesto", params.get(param + ".valores["+i+"].valorPropuesto", String.class));
+				Messages.setFlash(param + ".valores["+i+"].valorConcedido", params.get(param + ".valores["+i+"].valorConcedido", String.class));
+			}
+			Messages.setFlash(param + ".comentariosAdministracion", params.get(param + ".comentariosAdministracion", String.class));
+			Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
+		}
+	}
+	
+	private static CEconomicosManuales getFlashCEconomicosManuales (){
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+		CEconomicosManuales cEconomicosManuales = PaginaCEconomicoManualController.getCEconomicosManuales();
+		cEconomicosManuales.valores = new ArrayList<ValoresCEconomico>();
+		String param = "cEconomicosManuales";
+		for (int i=0; i <= tipoEvaluacion.duracion; i++) {
+			ValoresCEconomico vCE = new ValoresCEconomico(i);
+			//vCE.valorConcedido = Double.parseDouble(Messages.getFlash(param + ".valores["+i+"].valorConcedido").toString());
+			//vCE.valorPropuesto = Double.parseDouble(Messages.getFlash(param + ".valores["+i+"].valorPropuesto").toString());
+			// Recupera un 'Y' por ejemplo, y no la puede parsear a DOUBLE!!!!!!!
+			try {
+				vCE.valorSolicitado = Double.parseDouble(Messages.getFlash(param + ".valores["+i+"].valorSolicitado").toString());
+			} catch (Exception e){
+				vCE.valorSolicitado = null;
+			}
+			//vCE.valorEstimado = Double.parseDouble(Messages.getFlash(param + ".valores["+i+"].valorEstimado").toString());
+			cEconomicosManuales.valores.add(vCE);
+		}
+		//cEconomicosManuales.comentariosAdministracion=Messages.getFlash(param + ".comentariosAdministracion").toString();
+	    //cEconomicosManuales.comentariosSolicitante=Messages.getFlash(param + ".comentariosSolicitante").toString();
+	    return cEconomicosManuales;
 	}
 }

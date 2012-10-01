@@ -112,7 +112,7 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 			dbCEconomico.save();
 			log.info("Acción Editar de página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html" + " , intentada con éxito");
 		} else {
-			flash(dbCEconomico);
+			flash(cEconomico);
 			log.info("Acción Editar de página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html" + " , intentada sin éxito (Problemas de Validación)");
 		}
 		PaginaCEconomicosController.guardarRender(idSolicitud, idCEconomico, duracion);

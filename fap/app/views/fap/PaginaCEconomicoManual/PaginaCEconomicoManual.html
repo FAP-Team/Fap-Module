@@ -35,7 +35,7 @@
 					def paramName="cEconomico.valores[${i}]";
 					def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
 					def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
-					def anioLabel = "Año ${tipoEvaluacion.inicio+i}";
+					def anioLabel = "Total Año ${tipoEvaluacion.inicio+i}";
 					def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
 				%}
 				#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
@@ -55,6 +55,7 @@
 			def paramName="cEconomicosManuales.valores[${i}]";
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+			
 			def anioLabel = "Año ${tipoEvaluacion.inicio+i}";
 			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomicosManuales.valores[i].valorSolicitado);
 			def permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("editarSolicitudYIniciarBaremacion", "editar", tags.TagMapStack.top("idParams"), null);

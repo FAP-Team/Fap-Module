@@ -32,9 +32,10 @@
 
 <div class="row-fluid">
 <div id="instrucciones" class="span6 alpha">
-	#{fap.configurarMensaje pagina:"login"/}
+	#{fap.configurarMensaje pagina:"login", posicion: 'superior'/}
 	#{include 'fap/Secure/instrucciones.html' /}
 	#{include 'fap/Secure/help.html' /}
+	#{fap.configurarMensaje pagina:"login", posicion: 'inferior'/}
 </div>
 
 <div class="span6 omega">

@@ -67,6 +67,11 @@
 			form = $('#${id}').parents('form');
 			form.submit(function(){
 				$('#${id}').attr("disabled", "true");
+				#{if refrescar}
+					setTimeout(function(){
+        				$('#${id}').attr("disabled", false);
+    				}, 500);
+				#{/if}
 			});
 			$('#${id}').click(function(){
 				input = $("<input>").attr("type", "hidden").attr("name", "${idSolo}").val("${idSolo}");
@@ -74,11 +79,6 @@
 			});
 		});
 		#{/else}
-		#{if refrescar}
-			$('#${id}').click(function(){
-				$('#${id}').disabled('false');
-			});
-		#{/if}
 	</script>
 	
 

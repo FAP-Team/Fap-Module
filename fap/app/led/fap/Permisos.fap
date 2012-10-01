@@ -1172,3 +1172,11 @@ Permiso accesoNoCertificado{
 	return
 		all
 }
+
+/* Sobreescrito */
+Permiso autorizadoNoAutoriza{
+	vars
+	   SolicitudGenerica solicitud
+	   Agente ag
+	return all
+}

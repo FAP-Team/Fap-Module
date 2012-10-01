@@ -10,12 +10,15 @@ import properties.FapProperties;
 import verificacion.VerificacionUtils;
 
 import models.Agente;
+import models.AutorizacionesFAP;
 import models.Busqueda;
 import models.Documento;
+import models.Participacion;
 import models.SolicitudGenerica;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import enumerado.fap.gen.TiposParticipacionEnum;
 
 public class SecureFap extends Secure {
 	
@@ -37,6 +40,8 @@ public class SecureFap extends Secure {
 			return mostrarResultadoBusqueda(_permiso, action, ids, vars);
 		else if ("esFuncionarioHabilitadoYActivadaProperty".equals(id))
 			return esFuncionarioHabilitadoYActivadaProperty(_permiso, action, ids, vars);
+		else if ("autorizadoNoAutoriza".equals(id))
+			return autorizadoNoAutoriza(_permiso, action, ids, vars);
 		
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
@@ -55,8 +60,52 @@ public class SecureFap extends Secure {
 			return mostrarResultadoBusquedaAccion(ids, vars);
 		else if ("esFuncionarioHabilitadoYActivadaProperty".equals(id))
 			return esFuncionarioHabilitadoYActivadaPropertyAccion(ids, vars);
+		else if ("autorizadoNoAutoriza".equals(id))
+			return autorizadoNoAutorizaAccion(ids, vars);
 		
 		return nextAccion(id, ids, vars);
+	}
+	
+	private ResultadoPermiso autorizadoNoAutoriza(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+		if (solicitud == null)
+			return new ResultadoPermiso(Accion.Denegar);
+		
+		List<Participacion> participaciones = Participacion.findAll();
+		for (Participacion participacion: participaciones){
+			if ((participacion.agente.username.toUpperCase().equals(agente.username.toUpperCase())) &&
+					(participacion.solicitud.equals(solicitud)) &&
+					(participacion.tipo.equals(TiposParticipacionEnum.creador.name()))
+				   ){
+				return new ResultadoPermiso(Accion.All);
+			}
+		}
+		
+		return new ResultadoPermiso(Accion.Denegar);
+	}
+
+	private ResultadoPermiso autorizadoNoAutorizaAccion(Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+		if (solicitud == null)
+			return new ResultadoPermiso(Accion.Denegar);
+		
+		List<Participacion> participaciones = Participacion.findAll();
+		for (Participacion participacion: participaciones){
+			if ((participacion.agente.username.toUpperCase().equals(agente.username.toUpperCase())) &&
+					(participacion.solicitud.equals(solicitud)) &&
+					(participacion.tipo.equals(TiposParticipacionEnum.creador.name()))
+				   ){
+				return new ResultadoPermiso(Accion.Editar);
+			}
+		}
+		
+		return new ResultadoPermiso(Accion.Denegar);
 	}
 	
 	private ResultadoPermiso hayNuevaDocumentacionVerificacionAccion(Map<String, Long> ids, Map<String, Object> vars) {

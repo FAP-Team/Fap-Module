@@ -8,6 +8,7 @@
 	def tipo = _tipo != null? _tipo : "tipo";
 	def campoTipo = "${campo}.tipo";
 	def campoDescripcion = campo + ".descripcion"
+	def campoUri = campo + ".uri"
 	def comboId = field.id + "_tipo";
 	def oldComboId = field.id + "_tipo";
 	def upload = _upload != null? _upload : true
@@ -29,6 +30,10 @@
 
 	def listarDocumentosSubidos = _listarDocumentosSubidos != null? _listarDocumentosSubidos : false
 	def comboSeleccionado = null
+	
+	def listarDocumentosSubidosProperty = false
+	if (properties.FapProperties.getBoolean("fap.documentacion.listarDocumentosSubidos"))
+		listarDocumentosSubidosProperty = true
 }%	
 
 
@@ -38,35 +43,47 @@
 	#{fap.areaTexto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
 
     #{if upload}
-        #{fap.upload id:id, accept:_accept/}
+    	<div id="ocultaUpload">
+        	#{fap.upload id:id, accept:_accept/}
+        </div>
     #{/if}
     
-     <div id="ocultaTabla">
-    #{if listarDocumentosSubidos}
+    #{if listarDocumentosSubidos && listarDocumentosSubidosProperty}
+	    <div id="mostrarUriSubida">
+	    	#{fap.texto id:id+"_uri", campo:campoUri, titulo:"Documento", obj:obj/}
+	    <div>
+    
+    	%{
+    	   idUri = id+"_uri";
+    	%}
+    
+    	<div id="ocultaTabla">
 		    #{fap.tabla
 		           campo:'Documento', 
 		           id:'tablaDocumentos', 
-		           titulo:'Documentos', 
+		           titulo:'Documentos del mismo tipo ya subidos', 
 		           tipoContainer:'pagina',  
 		           combo:comboId,
 		           urlSubir:'true', 
+		           idCampoUri:idUri,
 		           urlTabla:@fap.DescargasAedController.getDocumentosPorTipoGestorDocumental()
 		      }   
 				    #{fap.columna ancho:180, cabecera:'Uri', campo:'uri' /}
                     #{fap.columna ancho:50, cabecera:'Descripción', campo:'descripcion', expandir:true /}
 				    #{fap.columna ancho:80, cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>' /}
-		    #{/fap.tabla} 
-  #{/if}
-   </div>
+		    #{/fap.tabla}
+		</div> 
+  	#{/if}
    
    
 	<script type="text/javascript">
 		    var $combo = $('#${comboId}');
 	         
 	        $(document).ready(function(){
-			   if ($combo.val() == "") {
+			    if ($combo.val() == "") {
                   document.getElementById("ocultaTabla").style.visibility = "hidden";
                 }
+                document.getElementById("mostrarUriSubida").style.visibility = "hidden";
              });
 	       
 		   $combo.change( function() {
@@ -74,7 +91,7 @@
 		         document.getElementById("ocultaTabla").style.visibility = "hidden";     	          
 		       }
 		       else {
-		       $('div#idOfDiv').removeAttr('class');
+		       	 $('div#idOfDiv').removeAttr('class');
 		         document.getElementById("ocultaTabla").style.visibility = "visible";		         
 		       }
 		   });

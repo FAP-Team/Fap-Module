@@ -34,7 +34,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos permiso=editarSolicitud{
 		Accion crear redirigir=DocumentacionFAP	
 		Grupo gSubirDocumento titulo="Adjuntar Documento"{
-			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
+			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
 		}
 	}
 	
@@ -116,7 +116,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	Pagina DocumentosAportacion titulo="Aportar Nuevo Documento" campo=SolicitudGenerica.aportaciones.actual.documentos{
 		Accion crear redirigir=Aportacion
 		Grupo gSubirDocumento titulo="Aportar Documento"{
-			SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+			SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" listarDocumentosSubidos
 		}
 	}
 	

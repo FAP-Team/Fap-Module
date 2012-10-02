@@ -1,6 +1,8 @@
 package templates;
 
 import utils.StringUtils;
+import java.util.Map;
+
 import es.fap.simpleled.led.*;
 import generator.utils.CampoUtils
 import generator.utils.Entidad;
@@ -96,26 +98,67 @@ public class GSubirArchivo extends GSaveCampoElement{
 					validation.addError("${subirArchivo.name}", "El tipo mime \\"" + mimeType + "\\" del documento a incorporar, no es válido. Compruebe los formatos de documentos aceptados.");
 			""";
 		}
-		return """
-			if(${subirArchivo.name} == null) validation.addError("${subirArchivo.name}", "Archivo requerido");
-			else if (${subirArchivo.name}.length() > properties.FapProperties.getLong("fap.file.maxsize")) validation.addError("${subirArchivo.name}", "Tamaño del archivo superior al máximo permitido ("+org.apache.commons.io.FileUtils.byteCountToDisplaySize(properties.FapProperties.getLong("fap.file.maxsize"))+")");
-			else{
-				${checkFile}
-			}
-			if(!validation.hasErrors()){
-				try {
+		if((subirArchivo.listarDocumentosSubidos != null) && subirArchivo.listarDocumentosSubidos){
+			return """
+	            if((${campo.firstLower()}.uri != null) && (!${campo.firstLower()}.uri.isEmpty())){
+					Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+					Long idSolicitud = ids.get("idSolicitud");
+					if (idSolicitud == null) {
+						Messages.fatal("Falta parámetro idSolicitud");
+						return;
+					}
+					SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 					services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
-					gestorDocumentalService.saveDocumentoTemporal(${campo.dbStr()}, ${subirArchivo.name});
+					try {
+						gestorDocumentalService.duplicarDocumentoSubido(${campo.firstLower()}.uri, ${campo.firstLower()}.descripcion, ${campo.dbStr()}, solicitud);
+					} catch (Exception e) {
+						log.error("Ha habido un error al subir el documento "+e.getMessage());
+						Messages.error("Ha habido un error al subir el documento"); 
+						Messages.keep();
+					}
+				} else {
+					if(${subirArchivo.name} == null) validation.addError("${subirArchivo.name}", "Archivo requerido");
+					else if (${subirArchivo.name}.length() > properties.FapProperties.getLong("fap.file.maxsize")) validation.addError("${subirArchivo.name}", "Tamaño del archivo superior al máximo permitido ("+org.apache.commons.io.FileUtils.byteCountToDisplaySize(properties.FapProperties.getLong("fap.file.maxsize"))+")");
+					else{
+						${checkFile}
+					}
+					if(!validation.hasErrors()){
+						try {
+							services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
+							gestorDocumentalService.saveDocumentoTemporal(${campo.dbStr()}, ${subirArchivo.name});
+						}
+						catch(services.GestorDocumentalServiceException e){
+		                	play.Logger.error(e, "Error al subir el documento al Gestor Documental");
+							validation.addError("", "Error al subir el documento al Gestor Documental");
+						} catch (Exception e) {
+							play.Logger.error(e, "Ex: Error al subir el documento al Gestor Documental");
+							validation.addError("", "Error al subir el documento al Gestor Documental");
+						}
+					}
 				}
-				catch(services.GestorDocumentalServiceException e){
-                	play.Logger.error(e, "Error al subir el documento al Gestor Documental");
-					validation.addError("", "Error al subir el documento al Gestor Documental");
-				} catch (Exception e) {
-					play.Logger.error(e, "Ex: Error al subir el documento al Gestor Documental");
-					validation.addError("", "Error al subir el documento al Gestor Documental");
+			""";
+		} else {
+			return """
+				if(${subirArchivo.name} == null) validation.addError("${subirArchivo.name}", "Archivo requerido");
+				else if (${subirArchivo.name}.length() > properties.FapProperties.getLong("fap.file.maxsize")) validation.addError("${subirArchivo.name}", "Tamaño del archivo superior al máximo permitido ("+org.apache.commons.io.FileUtils.byteCountToDisplaySize(properties.FapProperties.getLong("fap.file.maxsize"))+")");
+				else{
+					${checkFile}
 				}
-			}
-		""";
+				if(!validation.hasErrors()){
+					try {
+						services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
+						gestorDocumentalService.saveDocumentoTemporal(${campo.dbStr()}, ${subirArchivo.name});
+					}
+					catch(services.GestorDocumentalServiceException e){
+						play.Logger.error(e, "Error al subir el documento al Gestor Documental");
+						validation.addError("", "Error al subir el documento al Gestor Documental");
+					} catch (Exception e) {
+						play.Logger.error(e, "Ex: Error al subir el documento al Gestor Documental");
+						validation.addError("", "Error al subir el documento al Gestor Documental");
+					}
+				}
+			""";
+		}
 	}
 	
 	public List<String> extraParams(){

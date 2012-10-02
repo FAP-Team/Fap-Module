@@ -29,7 +29,7 @@ class ControllerUtils {
 	static List<String> camposPersona = "tipo,fisica.nombre,fisica.primerApellido,fisica.segundoApellido,fisica.nip,juridica.cif,juridica.entidad".split(',')
 	static List<String> camposPersonaFisica = "nombre,primerApellido,segundoApellido,nip".split(",")
 	static List<String> camposPersonaJuridica = "cif,entidad".split(',')
-	static List<String> camposAed = "tipo".split(",")
+	static List<String> camposAed = "tipo,descripcion".split(",")
 		
 	static Stack<Set<String>> validatedFields;
 	
@@ -378,10 +378,10 @@ class ControllerUtils {
 			camposFiltrados = camposAed
 		} else if(objeto instanceof EditarArchivoAed) {
 			camposFiltrados = camposAed;
-			validOut += """
-				if ((${campo.firstLower()}.descripcion != null) && (!${campo.firstLower()}.descripcion.trim().equals("")))
-					db${campo.str}.descripcion = ${campo.firstLower()}.descripcion;
-""";
+//			validOut += """
+//				if ((${campo.firstLower()}.descripcion != null) && (!${campo.firstLower()}.descripcion.trim().equals("")))
+//					db${campo.str}.descripcion = ${campo.firstLower()}.descripcion;
+//""";
 		}
 
 		String out = "";

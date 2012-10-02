@@ -541,11 +541,11 @@
                 icon: '@{'/public/images/table-leer.png'}',
                 disabled:true,
                 handler : function(){
-                    $("#${idCampoUri}").val(grid.getSelectionModel().getSelection()[0].data.uri);
-                    $("#${idCampoUri}").prop('readonly', true);
-                    document.getElementById("mostrarUriSubida").style.visibility = "visible";
-                    document.getElementById("ocultaTabla").style.visibility = "hidden";
-                    document.getElementById("ocultaUpload").style.visibility = "hidden";
+                    $('#${idCampoUri}').val(grid.getSelectionModel().getSelection()[0].data.uri);
+                    $('#${idCampoUri}').prop('readonly', true);
+                    $('#mostrarUriSubida').show();
+                    $('#ocultaTabla').hide();
+                    $('#ocultaUpload').hide();
                 }
             });
             #{/if}
@@ -574,6 +574,9 @@
 
 		   	var grid = new Ext.grid.GridPanel({
 				store : store${id},
+				#{if urlSubir}
+			 	hidden:true,
+			 	#{/if}
 				#{if seleccionable}
 				selModel: sm,
 	            #{/if}
@@ -738,7 +741,7 @@
 					window.location.reload();
 				#{/if}
 			};
-
+			
 		   	$('#${id}').data('grid', grid);
 
 		});

@@ -36,7 +36,6 @@
 		listarDocumentosSubidosProperty = true
 }%	
 
-
 	#{fap.combo id:comboId, idOld:oldComboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos,
 	   comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ordenarPorTexto:true/}
 	
@@ -51,7 +50,7 @@
     #{if listarDocumentosSubidos && listarDocumentosSubidosProperty}
 	    <div id="mostrarUriSubida">
 	    	#{fap.texto id:id+"_uri", campo:campoUri, titulo:"Documento", obj:obj/}
-	    <div>
+	    </div>
     
     	%{
     	   idUri = id+"_uri";
@@ -60,7 +59,7 @@
     	<div id="ocultaTabla">
 		    #{fap.tabla
 		           campo:'Documento', 
-		           id:'tablaDocumentos', 
+		           id:'tablaDocumentosSubidos', 
 		           titulo:'Documentos del mismo tipo ya subidos', 
 		           tipoContainer:'pagina',  
 		           combo:comboId,
@@ -72,31 +71,26 @@
                     #{fap.columna ancho:50, cabecera:'Descripción', campo:'descripcion', expandir:true /}
 				    #{fap.columna ancho:80, cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>' /}
 		    #{/fap.tabla}
-		</div> 
-  	#{/if}
-   
-   
-	<script type="text/javascript">
+		</div>
+		
+		<script type="text/javascript">
 		    var $combo = $('#${comboId}');
 	         
 	        $(document).ready(function(){
-			    if ($combo.val() == "") {
-                  document.getElementById("ocultaTabla").style.visibility = "hidden";
-                }
-                document.getElementById("mostrarUriSubida").style.visibility = "hidden";
+                $('#mostrarUriSubida').hide();
              });
 	       
 		   $combo.change( function() {
 		       if ($combo.val() == "") {
-		         document.getElementById("ocultaTabla").style.visibility = "hidden";     	          
+		         $('#tablaDocumentosSubidos').data('grid').hide();     	          
 		       }
 		       else {
-		       	 $('div#idOfDiv').removeAttr('class');
-		         document.getElementById("ocultaTabla").style.visibility = "visible";		         
+		         $('#tablaDocumentosSubidos').data('grid').show();		         
 		       }
 		   });
-	 </script>
-	 
+	 	</script>
+		 
+  	#{/if}	 
 
 	#{if download}
 		<div class="control-group">

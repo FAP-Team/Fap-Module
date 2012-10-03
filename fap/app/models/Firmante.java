@@ -59,10 +59,18 @@ public class Firmante extends FapModel {
 		} else {
 			Nip nip = new Nip();
 			nip.valor = agente.username;
+			/// Compruebo todos los posibles tipos
+			nip.tipo = "nif";
 			if (new NipCheck().validaNip(nip, texto)) {
 				this.tipo = "personafisica";
 			} else {
-				play.Logger.error("El firmante creado a partir del Agente no tiene tipo (username: " + agente.username + ")");
+				nip.tipo = "nie";
+				if (new NipCheck().validaNip(nip, texto)) {
+					this.tipo = "personafisica";
+				} else {
+					this.tipo = "personafisica";
+					play.Logger.error("El firmante creado a partir del Agente no tiene tipo (se le asigna \"personafisica\") (username: " + agente.username + ")");
+				}
 			}
 		}
 	}

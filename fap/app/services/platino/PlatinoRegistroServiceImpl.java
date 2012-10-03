@@ -346,7 +346,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             JustificanteRegistro justificante = registroPort.registrarEntrada(USERNAME,  PASSWORD_ENC, datos, datosFirmados, ALIAS, null, null);
             return justificante;
         }catch(Exception e){
-            throw new RegistroServiceException("Error en la llamada de registro de entrada", e);
+            throw new RegistroServiceException("Error en la llamada de registro de entrada"+ e);
         }
     }
     
@@ -363,7 +363,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 			datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
 			log.info("Datos normalizados firmados");
 		} catch(Exception e){
-            throw new RegistroServiceException("Error firmando los datos de registro de Salida", e);
+            throw new RegistroServiceException("Error firmando los datos de registro de Salida"+ e);
         }
 
 		try {	

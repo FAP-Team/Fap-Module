@@ -1,4 +1,4 @@
-Formulario Solicitud {
+Formulario Solicitud permiso=solicitudes{
 	
     Menu {
     	Enlace "Volver" pagina=Solicitudes

@@ -670,7 +670,7 @@ Entidad BusquedaLogs nonPersist {
 
 
 Entidad AutorizacionesFAP{
-	Nip nip
+	String numeroIdentificacion
 }
 
 Entidad AdministracionFapJobs extends Singleton{

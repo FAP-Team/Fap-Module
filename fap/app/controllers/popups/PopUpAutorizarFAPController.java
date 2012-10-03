@@ -1,6 +1,7 @@
 package controllers.popups;
 
 import java.util.List;
+import java.util.Map;
 
 import messages.Messages;
 import models.Agente;
@@ -9,7 +10,9 @@ import models.Nip;
 import models.Participacion;
 import models.SolicitudGenerica;
 import play.mvc.Util;
+import validation.CifCheck;
 import validation.CustomValidation;
+import validation.NipCheck;
 import controllers.gen.popups.PopUpAutorizarFAPControllerGen;
 import enumerado.fap.gen.TiposParticipacionEnum;
 
@@ -25,7 +28,7 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 		AutorizacionesFAP dbAutorizacionesFAP = PopUpAutorizarFAPController.getAutorizacionesFAP(idSolicitud, idAutorizacionesFAP);
 
 		PopUpAutorizarFAPController.PopUpAutorizarFAPBindReferences(autorizacionesFAP);
-		busqueda(idSolicitud,  autorizacionesFAP.nip, dbAutorizacionesFAP);
+		busqueda(idSolicitud,  autorizacionesFAP.numeroIdentificacion, dbAutorizacionesFAP);
 		if (!Messages.hasErrors()) {
 			PopUpAutorizarFAPController.PopUpAutorizarFAPValidateCopy("editar", dbAutorizacionesFAP, autorizacionesFAP);
 			AsignarAgente(idSolicitud, autorizacionesFAP);
@@ -52,7 +55,7 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 		SolicitudGenerica dbSolicitud = PopUpAutorizarFAPController.getSolicitudGenerica(idSolicitud);
 
 		PopUpAutorizarFAPController.PopUpAutorizarFAPBindReferences(autorizacionesFAP);
-		busqueda(idSolicitud,  autorizacionesFAP.nip, dbAutorizacionesFAP);
+		busqueda(idSolicitud,  autorizacionesFAP.numeroIdentificacion, dbAutorizacionesFAP);
 		if (!Messages.hasErrors()) {
 			PopUpAutorizarFAPController.PopUpAutorizarFAPValidateCopy("crear", dbAutorizacionesFAP, autorizacionesFAP);
 			AsignarAgente(idSolicitud, autorizacionesFAP);
@@ -79,22 +82,37 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 	@Util
 	public static void PopUpAutorizarFAPValidateCopy(String accion, AutorizacionesFAP dbAutorizacionesFAP, AutorizacionesFAP autorizacionesFAP) {
 		CustomValidation.clearValidadas();
-		CustomValidation.valid("autorizacionesFAP.nip", autorizacionesFAP.nip);
-		CustomValidation.valid("autorizacionesFAP", autorizacionesFAP);
-		CustomValidation.required("autorizacionesFAP.nip", autorizacionesFAP.nip);
-		dbAutorizacionesFAP.nip.tipo = autorizacionesFAP.nip.tipo;
-		dbAutorizacionesFAP.nip.valor = autorizacionesFAP.nip.valor.toUpperCase();
-
+		if (secure.checkGrafico("autorizadoNoAutoriza", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+			CustomValidation.valid("autorizacionesFAP", autorizacionesFAP);
+			CustomValidation.required("autorizacionesFAP.numeroIdentificacion", autorizacionesFAP.numeroIdentificacion);
+			NipCheck nipCheck = new NipCheck();
+			Nip nipAux = new Nip();
+			nipAux.tipo="nif";
+			nipAux.valor=autorizacionesFAP.numeroIdentificacion;
+			StringBuilder texto = new StringBuilder();
+			if (!nipCheck.validaNip(nipAux, texto)){
+				nipAux.tipo="nie";
+				nipAux.valor=autorizacionesFAP.numeroIdentificacion;
+				if (!nipCheck.validaNip(nipAux, texto)){
+					CifCheck cifCheck = new CifCheck();
+					if (!cifCheck.validaCif(autorizacionesFAP.numeroIdentificacion, texto))
+						CustomValidation.error("El NIF/CIF tiene un formato incorrecto", "autorizacionesFAP.numeroIdentificacion", autorizacionesFAP.numeroIdentificacion);
+				}
+			}
+			if (!Messages.hasErrors()){
+				dbAutorizacionesFAP.numeroIdentificacion = autorizacionesFAP.numeroIdentificacion;
+			}
+		}
 	}
 	
 	@Util
-	public static void busqueda(Long idSolicitud, Nip nip, AutorizacionesFAP autorizacionesFAP) {
+	public static void busqueda(Long idSolicitud, String identificador, AutorizacionesFAP autorizacionesFAP) {
 		//Tengo que buscar todas las autorizaciones asociadas a la solicitud
 		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 		List<AutorizacionesFAP> listaAuto = solicitud.autorizacion;
 		for (AutorizacionesFAP auto : listaAuto) {
-			if (auto.nip.valor.toUpperCase().equals(nip.valor.toUpperCase())){
-				CustomValidation.error("Ese nip ya ha sido autorizado para esta solicitud", "autorizacionesFAP.nip.valor", autorizacionesFAP.nip.valor);
+			if (auto.numeroIdentificacion.toUpperCase().equals(identificador.toUpperCase())){
+				CustomValidation.error("Ese NIF/CIF ya ha sido autorizado para esta solicitud", "autorizacionesFAP.numeroIdentificacion", autorizacionesFAP.numeroIdentificacion);
 				break;
 			}
 		}
@@ -105,7 +123,7 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 		boolean encontrado = false;
 		List<Agente> listaAgentes = Agente.findAll();
 		for (Agente ag : listaAgentes) {
-			if (ag.username.toUpperCase().equals(autorizaciones.nip.valor.toUpperCase())){
+			if (ag.username.toUpperCase().equals(autorizaciones.numeroIdentificacion.toUpperCase())){
 				encontrado = true;
 				Participacion p = new Participacion();
 				p.agente = ag;
@@ -117,7 +135,7 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 		}
 		if (!encontrado){
 			Agente ag = new Agente();
-			ag.username = autorizaciones.nip.valor.toUpperCase();
+			ag.username = autorizaciones.numeroIdentificacion.toUpperCase();
 			ag.roles.add("usuario");
 			ag.rolActivo = "usuario";
 			ag.save();
@@ -157,7 +175,7 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 	public static void BorrarParticipacion(Long idSolicitud, AutorizacionesFAP autorizacion) {
 		List<Participacion> participaciones = Participacion.findAll();
 		for (Participacion participacion: participaciones){
-			if ((participacion.agente.username.toUpperCase().equals(autorizacion.nip.valor.toUpperCase())) &&
+			if ((participacion.agente.username.toUpperCase().equals(autorizacion.numeroIdentificacion.toUpperCase())) &&
 				(participacion.solicitud.equals(getSolicitudGenerica(idSolicitud))) &&
 				(participacion.tipo.equals(TiposParticipacionEnum.autorizado.name()))
 			   ){

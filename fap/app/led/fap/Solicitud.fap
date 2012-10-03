@@ -939,16 +939,15 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 
 	Pagina AutorizacionFAP titulo="Usuarios Autorizados" campo=SolicitudGenerica noForm{
 		Grupo gAutorizaciones titulo="Usuarios Autorizados" permiso=autorizadoNoAutoriza{
-			Tabla nipsAutorizados titulo="Nips autorizados" campo=SolicitudGenerica.autorizacion popup=PopUpAutorizarFAP
+			Tabla nipsAutorizados titulo="Autorizados" campo=SolicitudGenerica.autorizacion popup=PopUpAutorizarFAP
 			{
-				Columna campo=AutorizacionesFAP.nip.tipo titulo="Tipo Documento"
-				Columna campo=AutorizacionesFAP.nip.valor titulo="Valor Documento" expandir
+				Columna campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF/CIF" expandir
 			}
 		}
 	}
 	
 	Popup PopUpAutorizarFAP titulo="Autorizar" campo=SolicitudGenerica.autorizacion permiso=autorizadoNoAutoriza{
-		Nip NIP campo=AutorizacionesFAP.nip titulo="Nip del autorizado" requerido
+		Texto id campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF / CIF" requerido
 	} 
 
 	/*

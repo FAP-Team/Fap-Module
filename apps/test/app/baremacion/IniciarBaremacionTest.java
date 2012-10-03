@@ -8,9 +8,9 @@ import models.Evaluacion;
 import models.SolicitudGenerica;
 import models.TipoEvaluacion;
 
-public class IniciarBaremacionTest extends IniciarBaremacion{
+public class IniciarBaremacionTest extends BaremacionFAP{
 
 	public static void iniciar(){
-		IniciarBaremacion.iniciar();
+		BaremacionFAP.iniciarBaremacion();
 	}
 }

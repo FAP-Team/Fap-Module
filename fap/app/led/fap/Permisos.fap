@@ -1173,10 +1173,14 @@ Permiso accesoNoCertificado{
 		all
 }
 
-/* Sobreescrito */
 Permiso autorizadoNoAutoriza{
 	vars
 	   SolicitudGenerica solicitud
-	   Agente ag
+	   Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+		or ( agente.rolActivo in ("usuario")
+			and participacion != null
+		)
 	return all
 }

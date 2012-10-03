@@ -72,6 +72,8 @@ public class NotificacionServiceImpl implements NotificacionService {
 	@Inject
 	protected GestorDocumentalService gestorDocumental;
 	
+	private boolean activo;
+	
 	protected static Logger log = Logger.getLogger(NotificacionServiceImpl.class);
 	
 	private final static String COD_ERROR_NOTIFICACION = "INSERCION_CORRECTA";
@@ -119,6 +121,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 	        
 	    httpConduit.setClient(httpClientPolicy);
  
+	    activo = FapProperties.getBoolean("fap.notificacion.activa");
 	}
 	
 	public boolean isConfigured() {
@@ -128,9 +131,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 	@Override
     public void mostrarInfoInyeccion() {
 		if (isConfigured())
-			play.Logger.info("El servicio de Notificación ha sido inyectado con NotificacionACIISI y está operativo.");
+			play.Logger.info("El servicio de Notificación ha sido inyectado con NotificacionACIISI y está operativo: "+activo);
 		else
-			play.Logger.info("El servicio de Notificación ha sido inyectado con NotificacionACIISI y NO está operativo.");
+			play.Logger.info("El servicio de Notificación ha sido inyectado con NotificacionACIISI y NO está operativo: "+activo);
     }
 	
 	protected String getEndPoint() {
@@ -143,9 +146,12 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public void crearDocumentoPuestaADisposicion(Notificacion dbNotificacion, List<String> urisDocumentos, List<Interesado> interesados, String descripcion) {
+		if (!activo)
+			return;
+		
 		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
 		String uriNotificacion = dbNotificacion.uri;
-		
+
 		try {
 	
 			// El estado de la notificación en el servicio de notificaciones debe ser igual al de la base de datos de fap
@@ -208,6 +214,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public void enviarNotificaciones(Notificacion notificacion, Agente gestor) throws NotificacionException {
+		if (!activo)
+			return;
+		
 		String uriNotificacion = notificacion.uri;
 		String idGestor = gestor.username; // Se refiere al dni
 		
@@ -336,6 +345,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public void crearDocumentoAcuseRecibo(Notificacion dbNotificacion, String dniInteresado) {
+		if (!activo)
+			return;
+		
 		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
 		String uriNotificacion = dbNotificacion.uri;
 		
@@ -395,6 +407,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public void enviarAcuseRecibo(Notificacion dbNotificacion, String dniInteresado, String firma) {
+		if (!activo)
+			return;
+		
 		String uriNotificacion = dbNotificacion.uri;
 		String uriDocAcuseRecibo = dbNotificacion.documentoAcuseRecibo.uri;
 		
@@ -449,6 +464,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 	 */
 	@Override
 	public List<Notificacion> getNotificaciones(String uriProcedimiento) {
+		if (!activo)
+			return new ArrayList<Notificacion>();
+		
 		List<Notificacion> notificacionesWS = new ArrayList<Notificacion>();
 		if ((uriProcedimiento == null) || (uriProcedimiento.trim().isEmpty())){
 			play.Logger.info("La uri del procedimiento no puede ser vacía");
@@ -473,6 +491,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 	
 	@Override
 	public List<Notificacion> getNotificaciones() {
+		if (!activo)
+			return new ArrayList<Notificacion>();
+		
 		List<Notificacion> notificacionesWS = new ArrayList<Notificacion>();
 		try {
 			NotificacionCriteriaType criterioBusqueda = new NotificacionCriteriaType();
@@ -489,6 +510,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public String estadoNotificacion(String uriNotificacion) {
+		if (!activo)
+			return "";
+		
 		EstadoNotificacionType estadoNotificacionType;
 		try {
 			estadoNotificacionType = notificacionPort.obtenerEstadoNotificacion(uriNotificacion);
@@ -501,6 +525,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public Notificacion obtenerNotificacion(String uriNotificacion) {
+		if (!activo)
+			return null;
+		
 		Notificacion notificacion = null;
 		try {
 			NotificacionType notificacionType = notificacionPort.obtenerNotificacion(uriNotificacion);
@@ -514,6 +541,10 @@ public class NotificacionServiceImpl implements NotificacionService {
 	@Override
 	public Documento obtenerDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
 		Documento documento = new Documento();
+		
+		if (!activo)
+			return documento;
+		
 		try {
 			DocumentoType documentoType = notificacionPort.obtenerDocumentoNotificacion(idUsuario, uriNotificacion, tipoDocumento);
 			documento.descripcion = documentoType.getNombre();
@@ -527,7 +558,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public void crearDocumentacionAnulacion(Notificacion dbNotificacion) {
-
+		if (!activo)
+			return;
+		
 		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
 		String uriNotificacion = dbNotificacion.uri;
 		
@@ -589,6 +622,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public void anularNotificacion(Notificacion dbNotificacion, String firma) {
+		if (!activo)
+			return;
+		
 		String uriNotificacion = dbNotificacion.uri;
 		String uriDocAnulacion = dbNotificacion.documentoAnulacion.uri;
 		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
@@ -642,7 +678,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public void crearDocumentoMarcarComoRespondida(Notificacion dbNotificacion) {
-
+		if (!activo)
+			return;
+		
 		String idGestor = AgenteController.getAgente().username; // Se refiere al dni
 		String uriNotificacion = dbNotificacion.uri;
 		
@@ -708,7 +746,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 	@Override
 	public void marcarNotificacionComoRespondida(Notificacion dbNotificacion, String firma) {
-
+		if (!activo)
+			return;
+		
 		String uriNotificacion = dbNotificacion.uri;
 		String uriDocRespondida = dbNotificacion.documentoRespondida.uri;
 		String idGestor = AgenteController.getAgente().username; // Se refiere al dni

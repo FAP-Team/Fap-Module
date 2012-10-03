@@ -207,6 +207,11 @@ public class Start extends Job {
 		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();
+		
+		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
+        if(assignableClasses.size() > 1){
+        	play.Logger.warn("¡¡ CUIDADO !! : Existen varias clases ("+assignableClasses.size()+") que extienden de SolicitudGenerica, esto creará conflictos GRAVES.");
+        }
 	}
 
 	/**

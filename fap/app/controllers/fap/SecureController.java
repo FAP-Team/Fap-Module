@@ -11,7 +11,6 @@ import org.apache.ivy.util.Message;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
-import baremacion.IniciarBaremacion;
 import config.InjectorConfig;
 
 

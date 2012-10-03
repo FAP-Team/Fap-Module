@@ -44,6 +44,10 @@ h2. ¿Qué debo sobreescribir para personalizar la Baremación?
 
 Si quieres que algunos comportamientos por defecto, como el cálculo de los criterios no hoja o cualquier otro aspecto, sea uno propio, se deberán sobreescribir una serie de métodos y funciones que puede conocer "aqui":app-baremacion-sobreescribir
 
+h2. ¿Cómo puedo personalizar la validación de los conceptos económicos que cumplimente el solicitante?
+
+Se puede sobreescribir el método que se ejecuta cuando el usuario _guarda_ la página de conceptos económicos que tiene la tabla que debe rellenar. Para corroborar que todo lo que ha guardado y rellenado se ciñe a lo que debería ser, se deberá sobreescribir el método que se ejecuta cuando el solicitante presiona _guardar_ de dicha página de conceptos económicos. Para ello ver qué hay que sobreescribir "aqui":app-baremacion-validarceconomicos
+
 h2. Ejemplo de Baremación de la aplicacion de Test
 
 En la aplicación de Test, se dispone de un ejemplo de Baremación simple, a continuación se explicará su composición.

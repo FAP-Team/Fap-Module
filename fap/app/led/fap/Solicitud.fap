@@ -568,8 +568,10 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	}
 
 	//Sobreescrita
-	Pagina PCEconomicos titulo="Conceptos Económicos" permiso=editarSolicitudYIniciarBaremacion{
-
+	Pagina PCEconomicos titulo="Conceptos Económicos" permiso=editarSolicitudYIniciarBaremacion guardarParaPreparar{
+		Form Guardar {
+			Boton botonGuardar titulo="Guardar" 
+		}
 	}
 	
 	//Sobreescrita

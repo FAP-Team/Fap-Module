@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.ivy.util.Message;
 import org.apache.log4j.Logger;
 
+import baremacion.BaremacionFAP;
 import baremacion.Evaluador;
-import baremacion.IniciarBaremacion;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -28,12 +28,12 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 	// Para iniciar cosas propias de la Baremación de cada aplicación
 	public static void iniciarBaremacion(){
 		
-		Class invokedClass = getIniciarBaremacionClass();
+		Class invokedClass = getBaremacionFAPClass();
 		
 		if (invokedClass != null){
 			Method method = null;
 			try {
-				method = invokedClass.getDeclaredMethod("iniciar");
+				method = invokedClass.getDeclaredMethod("iniciarBaremacion");
 			} catch (SecurityException e) {} catch (NoSuchMethodException e) {}
 			if (method != null){
 				try {
@@ -45,11 +45,11 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 				} catch (Exception e) {} 
 			} else{
 				play.Logger.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciar()'");
-				Message.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciar()'");
+				Messages.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciar()'");
 			}
 		} else{
 			play.Logger.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'IniciarBaremacion'");
-			Message.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'IniciarBaremacion'");
+			Messages.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'IniciarBaremacion'");
 		}
 		ActivarBaremacionController.activarFormBaremacionRender();
 	}
@@ -79,12 +79,14 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 		redirect("ActivarBaremacionController.index", "editar");
 	}
 	
-	private static Class getIniciarBaremacionClass() {
+	private static Class getBaremacionFAPClass() {
 		Class invokedClass = null;
 		//Busca una clase que herede del evaluador
-        List<Class> assignableClasses = Play.classloader.getAssignableClasses(IniciarBaremacion.class);
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(BaremacionFAP.class);
         if(assignableClasses.size() > 0){
             invokedClass = assignableClasses.get(0);
+        } else {
+        	invokedClass = BaremacionFAP.class;
         }
 		return invokedClass;
 	}

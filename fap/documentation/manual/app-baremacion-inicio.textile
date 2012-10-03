@@ -1,8 +1,8 @@
 h1. ¿Qué debo sobreescribir para personalizar el inicio de la Baremación?
 
-Se deberá crear una clase en la ruta _${PATH_APLICACION}/app/baremacion/${NOMBRE_CLASE_INICIAR_BAREMACION}_ donde ${NOMBRE_CLASE_INICIAR_BAREMACION} será el nombre que le queramos dar a nuestra clase que utilizaremos para sobreescribir el proceso de inicio de la baremación. Por ejemplo: _MiClaseIniciarBaremacion_, de forma que tendremos en el fichero java que representa dicha clase ("_MiClaseIniciarBaremacion.java_):
+Se deberá crear una clase(si no la hemos creado previamente para "personalizar la validación de los conceptos económicos":app-baremacion-validarceconomicos que introduzca el usuario) en la ruta _${PATH_APLICACION}/app/baremacion/${NOMBRE_CLASE_BAREMACION}_ donde ${NOMBRE_CLASE_BAREMACION} será el nombre que le queramos dar a nuestra clase que utilizaremos para sobreescribir el proceso de inicio de la baremación y que deberá extender de _BaremacionFAP_. Por ejemplo: _MiClaseBaremacion_, de forma que tendremos en el fichero java que representa dicha clase ("_MiClaseBaremacion.java_):
 
-bc. public class MiClaseIniciarBaremacion extends IniciarBaremacion{
+bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
 	public static void iniciar(){
 	   // Aquí indicaremos los pasos a seguir para el inicio de la baremación. 
 	}

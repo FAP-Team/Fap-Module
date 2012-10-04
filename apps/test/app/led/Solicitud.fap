@@ -152,7 +152,7 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		}
 	}
 
-	Pagina CombosOverwrite campo=Solicitud perteneceA = "fallo"{
+	Pagina CombosOverwrite campo=Solicitud {
 		
 		Grupo titulo="Combos sobreescritos en el controlador manual" {
 			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)"

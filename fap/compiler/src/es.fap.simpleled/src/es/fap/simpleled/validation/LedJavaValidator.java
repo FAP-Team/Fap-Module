@@ -101,6 +101,17 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
+	/**
+	 * Comprueba que los valores por defecto no se establezcan sobre transient
+	 * @param attribute
+	 */
+	@Check
+	public void checkDefaultValueNoTransient (Attribute attribute) {
+		if (attribute.getDefaultValue() != null)
+			if (attribute.isIsTransient())
+				error("Valores por defecto no aplicables sobre atributos transient", ledPackage.getAttribute_IsTransient());
+	}
+	
 	@Check
 	public void checkSolicitudSimpleAttributos(Attribute attr) {
 		if (attr.eContainer() instanceof Entity){

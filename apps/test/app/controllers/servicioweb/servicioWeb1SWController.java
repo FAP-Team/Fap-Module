@@ -1,7 +1,7 @@
 package controllers.servicioweb;
 
-import controllers.servicioweb.gen.servicioWeb1SWControllerGen;
+import controllers.servicioweb.gen.ServicioWeb1SWControllerGen;
 
-public class servicioWeb1SWController extends servicioWeb1SWControllerGen {
+public class ServicioWeb1SWController extends ServicioWeb1SWControllerGen {
 
 }

@@ -2,6 +2,8 @@ package controllers;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import messages.Messages;
 import models.Aplicacion;
 import models.Peticion;
@@ -70,8 +72,10 @@ public class GraficasWSController extends GraficasWSControllerGen {
 		}
 		
 		if (json != null) {
-			Gson gson = new Gson();
-			Peticion peticion = gson.fromJson(json, Peticion.class);
+			Peticion peticion = new Peticion();
+			DateTime hoy = new DateTime();
+			peticion.fechaPeticion = hoy.toString();
+			peticion.stringJson = json.toString();
 			peticion.save();
 			servicioWeb.peticion.add(peticion);
 			servicioWeb.save();
@@ -106,8 +110,10 @@ public class GraficasWSController extends GraficasWSControllerGen {
 				}
 				
 				if (json != null) {
-					Gson gson = new Gson();
-					Peticion peticion = gson.fromJson(json, Peticion.class);
+					Peticion peticion = new Peticion();
+					DateTime hoy = new DateTime();
+					peticion.fechaPeticion = hoy.toString();
+					peticion.stringJson = json.toString();
 					peticion.save();
 					servicioWeb.peticion.add(peticion);
 					servicioWeb.save();

@@ -15,23 +15,16 @@
      urlCrear:play.mvc.Router.reverse('GraficasWSController.crear' , ['idAplicacion':aplicacion?.id]), 
      urlEditar:play.mvc.Router.reverse('GraficasWSController.editar' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id])
 }
-	
-	<div class="wiki ">
-		<p>Aquí se mostrará el SuperTag</p>
+			<div class="wiki ">
+<p>Aquí se mostrará el SuperTag</p>
 
-	</div>
-			
-	%{
-		def ws = serviciosWeb;
-		System.out.println("Servicio web: "+ws);
-	%}
-	
-	#{form play.mvc.Router.reverse('GraficasWSController.formBtnRecargaDatos' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtnRecargaDatos"}			
-		#{fap.boton ayuda:tags.TagAyuda.popover('Pulse este botón para obligar a actualizar los datos de los servicios web'), id:'recargasDatos', titulo:'Recargar datos' /}
-	#{/form}	
-
-	<div id="grafica"></div>
-	#{fap.simplePie id:'grafica', titulo:'Estados Solicitudes', name:'Solicitudes', data:"${data.raw()}" /}
+			</div>
 		
+				#{form play.mvc.Router.reverse('GraficasWSController.formBtnRecargaDatos' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtnRecargaDatos"}
+					
+			#{fap.boton ayuda:tags.TagAyuda.popover('Pulse este botón para obligar a actualizar los datos de los servicios web'), id:'recargasDatos', titulo:'Recargar datos' /}
+		
+				#{/form}
+	
 #{/fap.pagina}
 		

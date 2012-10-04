@@ -731,7 +731,8 @@ Entidad InfoParams {
 
 Entidad Peticion {
 	String fechaPeticion
-	OneToMany ResultadosPeticion resultadosPeticion
+	LongText stringJson
+	//OneToMany ResultadosPeticion resultadosPeticion
 }
 
 Entidad ResultadosPeticion {

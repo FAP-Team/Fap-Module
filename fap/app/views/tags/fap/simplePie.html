@@ -13,7 +13,7 @@
 	def id = _id;
 	def titulo = _titulo;
 	def name = _name;
-	
+
 	System.out.println("Name: "+_name);
 	System.out.println("Data: "+_data);
 	def strData = _data;
@@ -36,10 +36,10 @@
 
 }*
 
-<input type="button" onClick="ejecutar();"/>
+<input type="button" value="Actualizar gráfica" onClick="ejecutarPie();"/>
 
 <script>
-function ejecutar() {
+function ejecutarPie() {
     var chart;
     $(document).ready(function() {
         chart = new Highcharts.Chart({
@@ -72,7 +72,7 @@ function ejecutar() {
                 }
             },
             series: [{
-                type: 'column',
+                type: 'pie',
                 name: '${name}',
                 data: ${strData.raw()}
             }]

@@ -13,25 +13,194 @@
      urlCrear:play.mvc.Router.reverse('GraficasWSCMController.crear' , ['idAplicacion':aplicacion?.id]), 
      urlEditar:play.mvc.Router.reverse('GraficasWSCMController.editar' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id])
 }
-	
-	<div class="wiki ">
-		<p>Aquí se mostrará el SuperTag</p>
 
-	</div>
-			
-	%{
-		def ws = serviciosWeb;
-		System.out.println("Servicio web: "+ws);
-		System.out.println("Servicio web: "+ws.peticion.get(0).fechaPeticion);
-	%}
+*{
+	Este SuperTag recibe un objeto serviciosWeb.
+								   /		 \
+					  ServicioWebInfo		Peticion _______
+					   |	 | 	 |				|			\
+					nombre urlWS InfoParams	 fechaPeticion  ResultadosPeticion
+								  |     |							|
+							nombreParam tipo				 ResultadoPeticion _____
+																|		 |			\
+															nombre    valorString  valorLong ...
+
+	En primer lugar se muestra la información del WS y luego se 
+	puede realizar la consulta que se desee.
+
+}*
 	
 	#{form play.mvc.Router.reverse('GraficasWSCMController.formBtnRecargaDatos' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtnRecargaDatos"}
 		#{fap.boton ayuda:tags.TagAyuda.popover('Pulse este botón para obligar a actualizar los datos de los servicios web'), id:'recargasDatos', titulo:'Recargar datos' /}
 	#{/form}
-
-	<div id="grafica"></div>
-	#{fap.simplePie id:'grafica', titulo:'Estados Solicitudes', name:'Solicitudes', data:"${data.raw()}" /}
 	
+	%{
+		def ws = serviciosWeb;
+		def app = aplicacion;
+		System.out.println("Servicio web: "+ws);
+		System.out.println("Servicio web: "+ws.peticion.get(0).fechaPeticion);
+		
+		// En la lista están todas los ResultadosPeticion del servicio web.
+		def lista = [];
+		for (int i = 0; i < ws.peticion.size(); i++) {
+			def x = ws.peticion.get(i).resultadosPeticion;
+			for (int j = 0; j < x.size(); j++) {
+				def y = x.get(j).resultadoPeticion;
+				for (int k = 0; k < y.size(); k++) {
+					lista.add(y.get(k));
+				}
+			}
+		}
+		System.out.println(lista);
+		
+	%}
+	
+	<h3>Información del servicio web que está consultando:</h3>
+	</br>
+	<p>Está consultando el Servicio Web <strong>'${ws.servicioWebInfo.nombre}'</strong> en la dirección
+	'${aplicacion.urlApp}${ws.servicioWebInfo.urlWS}'.</p>
+	<p>Resumen de la información que se puede consultar:</p>
+	<ul>
+	#{list items:ws.servicioWebInfo.infoParams, as:'info'}
+		<li>- Atributo '${info.nombreParam}' de tipo '${info.tipo}'</li>
+	#{/list}
+	</ul>
+	</br>
+	
+	<h3>Consulta</h3>
+	</br>
+	Fecha: <select name="Fecha" size=1 style="width: 110px">
+		#{list items:ws.peticion, as:'pet'}
+			<option value="${pet.fechaPeticion}">${pet.fechaPeticion.toString().split("T")[0]}</option>
+		#{/list}
+	</select>
+	</br></br>
+	Número de variables que quiere representar:
+	<select id="combo_numVar" name="combo_numVar" size=1 style="width: 50px" onClick="numVarChanged()">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+	</select>
+	</br></br>
+	Variable 1: <select id="combo_var1" name="combo_var1" size=1 style="width: 200px" onChange="variableChanged()">
+		#{list items:lista, as:'variable'}
+			content += "<option value=var1>${variable.nombre}</option>";
+		#{/list}
+	</select>
+	
+	<div id="combo_vars"></div>
+	<script>
+		function numVarChanged() {
+			console.log('cambio');
+			var index = combo_numVar.selectedIndex;
+			var optionSelected = combo_numVar.options[index].text;
+			console.log(optionSelected);
+			var content="";
+			if (optionSelected == 2) {
+				console.log('dos variable');
+				content += "Variable 2: <select id='combo_var2' style='width: 200px' onChange='variableChanged()'>";
+				#{list items:lista, as:'variable'}
+				content += "<option value=var2>${variable.nombre}</option>";
+				#{/list}
+				content += "</select>";
+			}
+			else if (optionSelected == 3) {
+				console.log('tres variable');
+				content += "Variable 2: <select id='combo_var2' style='width: 200px' onChange='variableChanged()'>";
+				#{list items:lista, as:'variable'}
+				content += "<option value=var2>${variable.nombre}</option>";
+				#{/list}
+				content += "</select>";
+				content += "</br>"
+				content += "Variable 3: <select id='combo_var3' style='width: 200px' onChange='variableChanged()'>";
+				#{list items:lista, as:'variable'}
+				content += "<option value=var3>${variable.nombre}</option>";
+				#{/list}
+				content += "</select>";
+			}
+			$('#combo_vars').html(content);
+		}
+		
+		
+	</script>
+	</br>
+	Tipo de gráfica:
+	<select id="combo_tipoGrafica" name="combo_tipoGrafica" size=1 style="width: 150px" onChange="tipoGraficaChanged()">
+		<option value="vacio"></option>
+		<option value="queso">Queso</option>
+		<option value="otro1">Otro 1</option>
+		<option value="otro2">Otro 2</option>
+	</select>
+	</br></br>
+	Título de la gráfica: <input type="text" name="tituloGrafica" id="tituloGrafica" style="width: 150px" onChange="tituloChanged()">
+	
+	<script>
+		var datos = new Array();
+		var optionSelectedTG = "";
+		var titulo = "";
+		var optionSelectedVar = "";
+		function tipoGraficaChanged() {
+			datos = new Array();
+			var indexNV = combo_numVar.selectedIndex;
+			var optionSelectedNV = combo_numVar.options[indexNV].text;
+			
+			var indexTG = combo_tipoGrafica.selectedIndex;
+			optionSelectedTG = combo_tipoGrafica.options[indexTG].text;
+			
+			if (optionSelectedTG == 'Queso') {
+				console.log("Quesooo");
+				
+				if (optionSelectedNV == 1) {
+					var indexVar = combo_var1.selectedIndex;
+					optionSelectedVar = combo_var1.options[indexVar].text;
+					console.log(optionSelectedVar);
+					titulo = optionSelectedVar;
+					var num =0;
+					#{list items:lista, as:'variable'}
+						console.log("En el for comparando ${variable.nombre} : " + optionSelectedVar);
+						if ('${variable.nombre.raw()}' == optionSelectedVar) {
+							if (${variable.nombre.startsWith("id")}) {
+								console.log("Añadiendo al array");
+								datos[num] = ['${variable.nombre.raw()}', ${variable.valorLong}];
+								num++;
+							} else {
+								console.log("Hacer sumatorio (pareja)");
+							}
+						}
+					#{/list}
+				} else if (optionSelectedNV == 2) {
+					var indexVar1 = combo_var1.selectedIndex;
+					var optionSelectedVar1 = combo_var1.options[indexVar1].text;
+					var indexVar2 = combo_var2.selectedIndex;
+					var optionSelectedVar2 = combo_var2.options[indexVar2].text;
+					console.log(optionSelectedVar1);
+					console.log(optionSelectedVar2);
+					console.log("Hacer sumatorio (pareja)");
+				}
+				
+				console.log(datos);
+				//
+			}
+		}
+		
+		function variableChanged() {
+			combo_tipoGrafica.selectedIndex = 0;
+		}
+		
+		function tituloChanged() {
+			titulo = tituloGrafica.textContent;
+			ejecutarPie(titulo, datos);
+		}
+	</script>
+	
+	</br></br>
+	<div id="grafica"></div>
+	
+	#{fap.simplePie id:'grafica', titulo:"titulo", name:"titulo", data:"datos" /}
+	
+	
+	
+	</br></br>
 	#{form play.mvc.Router.reverse('GraficasWSCMController.formBtnVolver' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtnVolver"}				
 		#{fap.enlace action:play.mvc.Router.reverse("ServiciosWebAppCMController.index" , ['idAplicacion':aplicacion?.id]), estilo:'btn ', id:'btnVolverIDenlace', titulo:'Volver a la lista de Servicios Web' /}
 	#{/form}

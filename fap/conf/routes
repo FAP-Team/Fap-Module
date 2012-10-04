@@ -59,6 +59,7 @@ GET /popups.popupceconomicoscontroller popups.PopupCEConomicosController.index
 POST /popups.popupceconomicoscontroller/editar popups.PopupCEConomicosController.editar
 
 GET /WSInfo  fap.WSInfoController.getinfoallws
+GET /WSController/getdata fap.WSController.getData
 
 # === FAPGENERATED ===
 GET /Solicitud/desistimiento DesistimientoController.index

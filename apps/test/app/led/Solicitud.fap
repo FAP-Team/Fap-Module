@@ -1,9 +1,9 @@
-ServicioWeb servicioWeb1 {
+ServicioWeb ServicioWeb1 {
 	campo=Solicitud.documentacion.documentos
 	return={titulo="Clasificado":Documento.clasificado, titulo="Descripción":Documento.descripcion}
 }
 
-ServicioWeb servicioWeb2 {
+ServicioWeb ServicioWeb2 {
 	campo=Solicitud
 	return={titulo="Estado":Solicitud.estado}
 }
@@ -749,7 +749,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 	Pagina ElementosBasicos campo=Solicitud{
 		Grupo Textos titulo = "Textos"{
 			Texto campo=Solicitud.elementos.texto titulo="Texto: "
-			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "Área de texto"
+			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "�?rea de texto"
 		}
 		
 		Grupo Numeros titulo="Números"{

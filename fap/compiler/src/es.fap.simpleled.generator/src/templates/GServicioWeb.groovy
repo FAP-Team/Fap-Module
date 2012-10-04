@@ -1,7 +1,9 @@
 package templates;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import generator.utils.*;
 
@@ -20,6 +22,10 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 import org.eclipse.emf.ecore.EObject
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import es.fap.simpleled.led.util.LedDocumentationUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
@@ -61,7 +67,24 @@ import java.util.List;
 import java.util.ArrayList;
 import models.*;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import org.joda.time.DateTime;
+import messages.Messages;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import play.libs.WS;
+import play.libs.WS.WSRequest;
+import play.mvc.Http;
+import properties.FapProperties;
 
 public class ${controllerGenFullName} extends WSController {
 
@@ -115,7 +138,7 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 			ret += 	"""List<${allEntities.get(0).entidad.name}> ${allEntities.get(0).getVariable()} = ${allEntities.get(0).entidad.name}.findAll();
 				ResultadoPeticion resultado = null;
 				Peticion peticion = new Peticion();
-
+				List<ResultadosPeticion> listaPeticiones = new ArrayList<ResultadosPeticion>();
 				for(${allEntities.get(0).entidad.name} ${allEntities.get(0).getVariable()}Aux: ${allEntities.get(0).getVariable()}){
 				// Ir creando el Array de Array de Objetitos por defecto.
 				// El Objetito sería el "id${allEntities.get(0).getVariable()}":${allEntities.get(0).getVariable()}Aux.id
@@ -162,7 +185,8 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 						for (int j = 0; j < listaResultados.size(); j++) {
 							lista.resultadoPeticion.add(listaResultados.get(j));
 						}
-						peticion.resultadosPeticion.add(lista);
+						listaPeticiones.add(lista);
+						//peticion.resultadosPeticion.add(lista);
 						}
 						"""
 
@@ -190,18 +214,19 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 						for (int j = 0; j < listaResultados.size(); j++) {
 							lista.resultadoPeticion.add(listaResultados.get(j));
 						}
-						peticion.resultadosPeticion.add(lista);
+						listaPeticiones.add(lista);
+						//peticion.resultadosPeticion.add(lista);
 						"""
 			}
 		}
 		ret += 	"""
 				}
 
-				DateTime hoy = new DateTime();
-				peticion.fechaPeticion = hoy.toString();
+				//DateTime hoy = new DateTime();
+				//peticion.fechaPeticion = hoy.toString();
 
 				Gson gson = new Gson();
-				String string_json = gson.toJson(peticion);
+				String string_json = gson.toJson(listaPeticiones);
 				renderJSON(string_json);
 				"""
 		return ret;

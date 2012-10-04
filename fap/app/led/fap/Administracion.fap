@@ -6,7 +6,7 @@ Formulario Administracion permiso=administrador{
 		Grupo "Administración" {
 			Enlace "Usuarios" pagina=Usuarios
 			Enlace "Convocatoria" pagina=Convocatoria
-			Enlace "Aed" pagina=Aed
+			Enlace "Gestor Documental" pagina=Aed
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tabla de tablas" pagina=TablaDeTablas

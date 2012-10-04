@@ -1,5 +1,7 @@
 package controllers;
 
+import org.joda.time.DateTime;
+
 import play.libs.WS;
 import play.libs.WS.WSRequest;
 import play.mvc.Util;
@@ -67,8 +69,10 @@ public class GraficasWSCMController extends GraficasWSCMControllerGen {
 		}
 		
 		if (json != null) {
-			Gson gson = new Gson();
-			Peticion peticion = gson.fromJson(json, Peticion.class);
+			Peticion peticion = new Peticion();
+			DateTime hoy = new DateTime();
+			peticion.fechaPeticion = hoy.toString();
+			peticion.stringJson = json.toString();
 			peticion.save();
 			servicioWeb.peticion.add(peticion);
 			servicioWeb.save();
@@ -103,8 +107,10 @@ public class GraficasWSCMController extends GraficasWSCMControllerGen {
 				}
 				
 				if (json != null) {
-					Gson gson = new Gson();
-					Peticion peticion = gson.fromJson(json, Peticion.class);
+					Peticion peticion = new Peticion();
+					DateTime hoy = new DateTime();
+					peticion.fechaPeticion = hoy.toString();
+					peticion.stringJson = json.toString();
 					peticion.save();
 					servicioWeb.peticion.add(peticion);
 					servicioWeb.save();

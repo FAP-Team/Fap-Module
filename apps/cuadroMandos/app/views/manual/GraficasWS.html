@@ -37,21 +37,6 @@
 	%{
 		def ws = serviciosWeb;
 		def app = aplicacion;
-		System.out.println("Servicio web: "+ws);
-		System.out.println("Servicio web: "+ws.peticion.get(0).fechaPeticion);
-		
-		// En la lista están todas los ResultadosPeticion del servicio web.
-		def lista = [];
-		for (int i = 0; i < ws.peticion.size(); i++) {
-			def x = ws.peticion.get(i).resultadosPeticion;
-			for (int j = 0; j < x.size(); j++) {
-				def y = x.get(j).resultadoPeticion;
-				for (int k = 0; k < y.size(); k++) {
-					lista.add(y.get(k));
-				}
-			}
-		}
-		System.out.println(lista);
 		
 	%}
 	

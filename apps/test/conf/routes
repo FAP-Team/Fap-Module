@@ -184,6 +184,8 @@ GET /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla popups.PopupP
 POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/editar popups.PopupPersonaSolicitantePersonaJuridicaJuridicaTablaController.editar
 POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/borrar popups.PopupPersonaSolicitantePersonaJuridicaJuridicaTablaController.borrar
 POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/crear popups.PopupPersonaSolicitantePersonaJuridicaJuridicaTablaController.crear
+GET /WSInfo/ServicioWeb1 servicioweb.ServicioWeb1SWController.index
+GET /WSInfo/ServicioWeb2 servicioweb.ServicioWeb2SWController.index
 
 # === END FAPGENERATED ===
 

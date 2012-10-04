@@ -89,5 +89,13 @@ apps/test/gestorDocumental
 # Generated sources
 *Gen.java
 
+
 # Documentacion html y javadoc
 fap/documentation/javadoc
+
+# Otras cosas que tienen versiones posteriores y esta no
+apps/test/gestorDocumental/*
+apps/test/app/enumerado/*
+apps/test/app/listas/*
+fap/app/listas/initial-data/paginasMsj*
+fap/compiler/src/es.fap.simpleled.generator/lib/diffutils-1.2.1.jar

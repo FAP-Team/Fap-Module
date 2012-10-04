@@ -89,9 +89,6 @@ public class NotificacionServiceImpl implements NotificacionService {
 	private final static String MSG_CON_WS = "No se pudo conectar con el servicio de notificaciones. ";
 	private final static String MSG_DESCONOCIDO = "Error desconocido. ";
 	
-	private final static String KEY_CONNECTION_TIMEOUT = "fap.notificacion.proxy.connectiontimeout";
-    private final static String KEY_RECEIVE_TIMEOUT = "fap.notificacion.proxy.receivetimeout";
-	
 	@Inject
 	public NotificacionServiceImpl (PropertyPlaceholder propertyPlaceholder) {
 		this.propertyPlaceholder = propertyPlaceholder;
@@ -116,8 +113,8 @@ public class NotificacionServiceImpl implements NotificacionService {
 	    HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
 	        
 	    HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-	    httpClientPolicy.setConnectionTimeout(FapProperties.getLong(KEY_CONNECTION_TIMEOUT));
-	    httpClientPolicy.setReceiveTimeout(FapProperties.getLong(KEY_RECEIVE_TIMEOUT));
+	    httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+	    httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 	        
 	    httpConduit.setClient(httpClientPolicy);
  

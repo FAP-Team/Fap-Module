@@ -118,8 +118,8 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         Client client = ClientProxy.getClient(registroPort);
 		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
 		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		httpConduit.setClient(httpClientPolicy);
         
         USERNAME = FapProperties.get("fap.platino.registro.username");

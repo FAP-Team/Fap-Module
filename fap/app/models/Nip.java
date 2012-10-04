@@ -59,7 +59,7 @@ public class Nip {
 	public boolean isNie() {
 		return tipo.equals("nie");
 	}
-	
+
 	public boolean isPasaporte() {
 		return tipo.equals("pasaporte");
 	}

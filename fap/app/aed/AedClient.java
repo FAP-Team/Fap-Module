@@ -25,7 +25,11 @@ import models.RepresentantePersonaJuridica;
 import models.SolicitudGenerica;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
@@ -64,6 +68,13 @@ public class AedClient {
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, FapProperties.get("fap.aed.url"));		
 	
 		PlatinoProxy.setProxy(aed);
+		
+		Client client = ClientProxy.getClient(aed);
+		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpConduit.setClient(httpClientPolicy);
 	}
 	
 	public static String getVersion() throws AedExcepcion{

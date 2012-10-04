@@ -11,6 +11,10 @@ import javax.xml.ws.soap.MTOMFeature;
 
 import models.ExpedientePlatino;
 
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 
 import properties.FapProperties;
@@ -51,6 +55,13 @@ public class PlatinoGestorDocumentalClient {
 
 		
 		PlatinoProxy.setProxy(gestorDocumental);
+		
+		Client client = ClientProxy.getClient(gestorDocumental);
+		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpConduit.setClient(httpClientPolicy);
 	}
 	
 	/**

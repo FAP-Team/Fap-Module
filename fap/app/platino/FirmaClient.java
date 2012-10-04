@@ -75,6 +75,13 @@ public class FirmaClient {
 
 		
 		PlatinoProxy.setProxy(firmaPlatino);
+		
+		Client client = ClientProxy.getClient(firmaPlatino);
+		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpConduit.setClient(httpClientPolicy);
 	}
 
 	public static String getVersion() {

@@ -95,7 +95,12 @@ public class End implements IWorkflowComponent {
 		String content = "";
 		for(Pagina pagina in LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getPagina())){
 			if (!LedUtils.inPath(pagina)) continue;
-			content += GElement.getInstance(pagina, null).routes();
+			
+			if (pagina.perteneceA != null) {
+				content += "%{if (config.Modules.getProperty(\"fap.modulo."+pagina.perteneceA+"\")) { }% \n"+GElement.getInstance(pagina, null).routes()+"%{ } }% \n";
+			}
+			else			
+				content += GElement.getInstance(pagina, null).routes();
 		}
 		for(Popup popup in LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getPopup())){
 			if (!LedUtils.inPath(popup)) continue;

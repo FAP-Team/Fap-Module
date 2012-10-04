@@ -166,6 +166,7 @@ Pagina:
 		& (guardarParaPreparar?="guardarParaPreparar")?
 		& (inicial?="inicial")?
 		& (mensajeFinal?="mensajeFinal")?
+		& ("perteneceA" "=" perteneceA=STRING)?
 	)
 	'{'
 		elementos+=Elemento*

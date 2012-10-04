@@ -860,12 +860,25 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoBefore(){
+		if ((isPagina()) && (element.perteneceA != null)){
+			return """
+				@Before
+				static void beforeMethod() {
+					renderArgs.put("controllerName", "${controllerGenName}");
+					if(!config.Modules.getProperty("fap.modulo.${element.perteneceA}")){
+						Messages.fatal("La aplicación no tiene disponible este módulo");
+					}
+				}
+			""";
+		}
 		return """
-			@Before
-			static void beforeMethod() {
-				renderArgs.put("controllerName", "${controllerGenName}");
-			}
-		""";
+				@Before
+				static void beforeMethod() {
+					renderArgs.put("controllerName", "${controllerGenName}");
+				}
+			"""
+		
+		
 	}	
 	
 	public String bindReferencesCall(){

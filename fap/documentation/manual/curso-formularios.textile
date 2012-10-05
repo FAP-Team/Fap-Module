@@ -1,4 +1,4 @@
-h1. Vista (Formularios y Páginas)
+h1. Las Vistas (Formularios y Páginas)
 
 h2. Formularios
 

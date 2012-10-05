@@ -5,7 +5,7 @@ Formulario Solicitud permiso=solicitudes{
     	
     	Grupo "Aplicación Test" {
     		Grupo "Elementos Básicos"{
-    			Enlace "Ejemplo: Elementos Básicos" pagina=ElementosBasicos
+    			Enlace "Ejemplo: Elementos Básicos" pagina=ElementosBasicos 
     			Enlace "Ejemplo: Botón Cancelar" pagina=PaginaCancelar
     		}
     		Grupo "Tipos de Solicitantes" {

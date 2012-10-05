@@ -1,4 +1,4 @@
-h3. Controladores en PopUp
+h1. Controladores en PopUp
 
 Al igual que en las páginas, existen dos controladores: el generado y el manual. El controlador generado se escribe en el paquete **controllers.popups.gen** mientras que el manual se sitúa en el paquete **controllers.popups**. Para un popup que se llame PopupSubvenciones tendrá los siguientes controladores: controllers.popup.gen.PopupSubvencionesControllerGen controllers.PopupSubvencionesController.
 

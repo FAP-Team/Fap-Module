@@ -1,4 +1,4 @@
-h1. Atributos
+h1. Atributos de las Entidades
 
 Las entidades tienen atributos, para más información ver "Atributos":dsl-attribute.
 

@@ -19,10 +19,10 @@
 	<condition property="ftp.fap.dir" value="${ftpdirnightly}" else="/public/fap-sdk2/">
 		<isset property="ftpdirnightly" />
 	</condition>
-	<condition property="ftp.user" value="${ftpusernightly}" else="yurena">
+	<condition property="ftp.user" value="${ftpusernightly}" else="undefined">
 		<isset property="ftpusernightly" />
 	</condition>
-	<condition property="ftp.pass" value="${ftppassnightly}" else="yurena">
+	<condition property="ftp.pass" value="${ftppassnightly}" else="undefined">
 		<isset property="ftppassnightly" />
 	</condition>
 	<condition property="zip.dir" value="dist-nightly" else="dist">

@@ -154,9 +154,17 @@ public class PCEconomicosController extends PCEconomicosControllerGen {
 				Method method = null;
 				try {
 					method = invokedClass.getDeclaredMethod("validarCEconomicos", long.class, List.class);
-				} catch (Exception e) {
-					play.Logger.error("Error g001: No se ha podido encontrar el método validarCEconomicos de la clase BaremacionFAP");
-					Messages.error("Error interno g001. No se ha podido Guardar correctamente");
+				} catch (Exception ex) {
+					invokedClass = BaremacionFAP.class;
+					if (invokedClass != null){
+						method = null;
+						try {
+							method = invokedClass.getDeclaredMethod("validarCEconomicos", long.class, List.class);
+						} catch (Exception e) {
+							play.Logger.error("Error g001: No se ha podido encontrar el método validarCEconomicos de la clase BaremacionFAP");
+							Messages.error("Error interno g001. No se ha podido Guardar correctamente");
+						}
+					}
 				}
 				if (!Messages.hasErrors()) {
 					if (method != null){

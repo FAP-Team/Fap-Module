@@ -155,9 +155,20 @@ public class ModelUtils {
 			for (Object o: parametrosMetodoMiClaseHija) 
 				clasesDeParametrosMetodoMiClaseHija[iterador++] = o.getClass();
 			method = invokedClass.getDeclaredMethod(metodoMiClaseHija, clasesDeParametrosMetodoMiClaseHija);
-		} catch (Exception e) {
-			play.Logger.error("Error 102: No se ha podido encontrar el método "+metodoMiClaseHija+" de la clase "+claseBuscada.getClass().getName());
-			Messages.error("Error interno 102. No se ha podido Guardar correctamente");
+		} catch (Exception ex) {
+			play.Logger.warn("Cuidado!!!: No existe una clase que herede de "+miClaseExtensionDeClaseHija.getName()+" y que tenga un método que se llame "+metodoMiClaseHija+" se usará esta clase por defecto");
+			invokedClass = miClaseExtensionDeClaseHija;
+			claseBuscada = null;
+			try {
+				Class[] clasesDeParametrosMetodoMiClaseHija = new Class[parametrosMetodoMiClaseHija.length];
+				int iterador = 0;
+				for (Object o: parametrosMetodoMiClaseHija) 
+					clasesDeParametrosMetodoMiClaseHija[iterador++] = o.getClass();
+				method = invokedClass.getDeclaredMethod(metodoMiClaseHija, clasesDeParametrosMetodoMiClaseHija);
+			} catch (Exception e) {
+				play.Logger.error("Error 102b: No se ha podido encontrar el método "+metodoMiClaseHija+" de la clase "+invokedClass.getName());
+				Messages.error("Error interno 102. No se ha podido Guardar correctamente");
+			}
 		}
 		if (!Messages.hasErrors()){
 			if (method != null){
@@ -197,7 +208,7 @@ public class ModelUtils {
         if(assignableClasses.size() > 0){
         	invokedClass = assignableClasses.get(0);
         	if (assignableClasses.size() > 1)
-        		play.Logger.warn("Cuidado!!!: Existen varias clases ("+assignableClasses.size()+") que heredan de "+miClaseExtensionDeClaseHija.getName()+" se usará la clase: "+invokedClass.getName()+" por defecto");
+        		play.Logger.warn("Cuidado!!!: Existen varias clases ("+assignableClasses.size()+") que heredan de "+miClaseExtensionDeClaseHija.getName()+", se usará la clase: "+invokedClass.getName()+" por defecto");
         } else{
         	invokedClass = miClaseExtensionDeClaseHija;
         	play.Logger.warn("Cuidado!!!: No existe una clase que herede de "+miClaseExtensionDeClaseHija.getName()+" se usará esta clase por defecto");
@@ -210,9 +221,19 @@ public class ModelUtils {
 			for (Object o: parametrosMetodoMiClaseHija) 
 				clasesDeParametrosMetodoMiClaseHija[iterador++] = o.getClass();
 			method = invokedClass.getDeclaredMethod(metodoMiClaseHija, clasesDeParametrosMetodoMiClaseHija);
-		} catch (Exception e) {
-			play.Logger.error("Error 102: No se ha podido encontrar el método "+metodoMiClaseHija+" de la clase "+invokedClass.getName());
-			Messages.error("Error interno 102. No se ha podido Guardar correctamente");
+		} catch (Exception ex) {
+			invokedClass = miClaseExtensionDeClaseHija;
+        	play.Logger.warn("Cuidado!!!: No existe una clase que herede de "+miClaseExtensionDeClaseHija.getName()+" y que contenga un método que se llame "+metodoMiClaseHija+", se usará esta clase por defecto");
+			try {
+				Class[] clasesDeParametrosMetodoMiClaseHija = new Class[parametrosMetodoMiClaseHija.length];
+				int iterador = 0;
+				for (Object o: parametrosMetodoMiClaseHija) 
+					clasesDeParametrosMetodoMiClaseHija[iterador++] = o.getClass();
+				method = invokedClass.getDeclaredMethod(metodoMiClaseHija, clasesDeParametrosMetodoMiClaseHija);
+			} catch (Exception e) {
+				play.Logger.error("Error 102: No se ha podido encontrar el método "+metodoMiClaseHija+" de la clase "+invokedClass.getName());
+				Messages.error("Error interno 102. No se ha podido Guardar correctamente");
+			}
 		}
 		if (!Messages.hasErrors()){
 			if (method != null){

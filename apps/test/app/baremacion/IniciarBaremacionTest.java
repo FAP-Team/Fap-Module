@@ -13,4 +13,5 @@ public class IniciarBaremacionTest extends BaremacionFAP{
 	public static void iniciar(){
 		BaremacionFAP.iniciarBaremacion();
 	}
+
 }

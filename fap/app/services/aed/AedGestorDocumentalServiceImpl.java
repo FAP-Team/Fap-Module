@@ -189,9 +189,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 * @throws GestorDocumentalServiceException Si el servicio web dio error                             
 	 */
 	@Override
-    public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException {        
-        Interesados interesados = getInteresados(solicitud);
+    public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
         String numeroExpediente = solicitud.expedienteAed.asignarIdAed();
+		try {
+			// Si ya existe el expediente, continuamos
+			List<Expediente> expedientes = aedPort.buscarExpedientes(null, null, null, numeroExpediente, null);
+			if (expedientes != null && !expedientes.isEmpty()) {
+				play.Logger.info("El expediente "+numeroExpediente+" ya existe en el AED");
+				return numeroExpediente;
+			}
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al buscar los expedientes en el AED.");
+		}
+        Interesados interesados = getInteresados(solicitud);
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
         String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
 
@@ -206,6 +216,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             aedPort.crearExpediente(expediente);
             log.info("Creado expediente " + numeroExpediente + " para la solicitud " + solicitud.id);
         }catch(AedExcepcion e){
+        	play.Logger.error("No se pudo crear el expediente: "+e);
             throw new GestorDocumentalServiceException("Error creando expediente " + numeroExpediente + " para la solicitud " + solicitud.id, e);
         }
         return numeroExpediente;
@@ -1007,8 +1018,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 */
 	@Override
     public String crearExpediente(ExpedienteAed expedienteAed) throws GestorDocumentalServiceException {        
-        Interesados interesados = getInteresadosPorDefecto();
         String numeroExpediente = expedienteAed.asignarIdAed();
+		try {
+			// Si ya existe el expediente, continuamos
+			List<Expediente> expedientes = aedPort.buscarExpedientes(null, null, null, numeroExpediente, null);
+			if (expedientes != null && !expedientes.isEmpty()) {
+				play.Logger.info("El expediente "+numeroExpediente+" ya existe en el AED");
+				return numeroExpediente;
+			}
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al buscar los expedientes en el AED.");
+		}
+		
+		Interesados interesados = getInteresadosPorDefecto();
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
         String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
 

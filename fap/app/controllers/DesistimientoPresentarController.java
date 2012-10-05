@@ -61,7 +61,7 @@ public class DesistimientoPresentarController extends DesistimientoPresentarCont
 		}
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "gen/DesistimientoPresentar/DesistimientoPresentar.html" + " , intentada con éxito");
-			redirect(REDIRECT_DESISTIMIENTO, "all", idSolicitud, idDesistimiento);
+			redirect(REDIRECT_DESISTIMIENTO, "editar", idSolicitud, idDesistimiento);
 		} else
 			log.info("Acción Editar de página: " + "gen/DesistimientoPresentar/DesistimientoPresentar.html" + " , intentada sin éxito (Problemas de Validación)");
 		DesistimientoPresentarController.formFirmaPFRender(idSolicitud, idDesistimiento);
@@ -89,7 +89,7 @@ public class DesistimientoPresentarController extends DesistimientoPresentarCont
 		if (!Messages.hasErrors()) {
 
 			log.info("Acción Editar de página: " + "gen/DesistimientoPresentar/DesistimientoPresentar.html" + " , intentada con éxito");
-			redirect(REDIRECT_DESISTIMIENTOPRESENTAR, "all", dbSolicitud.id, idDesistimiento);
+			redirect(REDIRECT_DESISTIMIENTOPRESENTAR, "editar", dbSolicitud.id, idDesistimiento);
 		} else
 			log.info("Acción Editar de página: " + "gen/DesistimientoPresentar/DesistimientoPresentar.html" + " , intentada sin éxito (Problemas de Validación)");
 		DesistimientoPresentarController.formFirmaRepresentanteRender(idSolicitud, idDesistimiento);

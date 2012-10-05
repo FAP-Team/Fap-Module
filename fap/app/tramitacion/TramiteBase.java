@@ -279,7 +279,7 @@ public abstract class TramiteBase {
 					tx.begin();
 					//Registra la solicitud
 					JustificanteRegistro justificante = registroService.registrarEntrada(this.solicitud.solicitante, registro.oficial, this.solicitud.expedientePlatino, null);
-					play.Logger.info("Se ha registrado la solicitud %s en platino", solicitud.id);
+					play.Logger.info("Se ha registrado la solicitud %s en platino (Algo relativo a ella)", solicitud.id);
 					tx.commit();
 					registro.refresh();
 					tx.begin();
@@ -329,7 +329,7 @@ public abstract class TramiteBase {
 					gestorDocumentalService.crearExpediente(solicitud);
 				} catch (GestorDocumentalServiceException e) {
 					Messages.error("Error al crear el expediente");
-					play.Logger.fatal("Error al crear el expediente para la solicitud "+solicitud.id);
+					play.Logger.fatal("Error al crear el expediente para la solicitud "+solicitud.id+": "+e);
 					throw new RegistroServiceException("Error al crear el expediente");
 				}
 				getRegistro().fasesRegistro.expedienteAed = true;

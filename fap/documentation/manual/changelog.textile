@@ -1,5 +1,24 @@
 h2. Changelog
 
+h3. Versión 2.1RC12
+
+* Desistimiento correcto.
+* Se puede configurar el timeout de los servicios.
+* Fixed bug registro de solicitantes con pasaporte.
+* Servicio de notificaciones (según property).
+* Rutas que se activan o no según properties.
+* Nombre de usuario se cambia cuando entra por primera vez con el certificado.
+* PCEconómicos tiene un guardar para preparar.
+* Añadidos certificados en el firma-fs.
+* Fixed bug conceptos manuales.
+* Fixed bug conceptos otros.
+* Fixed bug info certificado.
+* Fixed bug firmas en el Aed.
+* Reenumerados los pasos en Firma y Registro.
+* Mostrando info del "padre" en los conceptos económicos.
+* Se permite borrar en las tablas de Documentos y Conceptos Económicos.
+* Fixed bugs. 
+
 h3. Versión 2.1RC11
 
 * Hack para firmar y registrar con A9999999 y ESA9999999.

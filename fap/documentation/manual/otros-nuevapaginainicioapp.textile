@@ -2,7 +2,7 @@ h1. Documentación de la Aplicación: Nueva Página de Inicio
 
 h2. Creación y configuración de la aplicación
 
-Una vez "configurado el entorno":curso-instalacion, abrimos una consola del sistema, nos situamos donde queramos poner físicamente la nueva aplicación y tecleamos:
+Una vez "instalado el entorno":instalacion, abrimos una consola del sistema, nos situamos donde queramos poner físicamente la nueva aplicación y tecleamos:
 
 bc. play new nuevaPaginaInicio
 
@@ -32,7 +32,7 @@ repositories:
             - fap-modules -> guice
 
 
-Para este ejemplo vamos a utilizar el gestor de base de datos MySQL (si no la tiene instalada, volver al apartado de "configuración del entorno":curso-instalacion). Creamos una nueva base de datos para esta aplicación en nuestro propio equipo (en el ejemplo también la llamaremos _nuevaPaginaInicio_). Podemos usar un asistente gráfico o desde consola:
+Para este ejemplo vamos a utilizar el gestor de base de datos MySQL (si no la tiene instalada, volver al apartado de "instalación del entorno":instalacion). Creamos una nueva base de datos para esta aplicación en nuestro propio equipo (en el ejemplo también la llamaremos _nuevaPaginaInicio_). Podemos usar un asistente gráfico o desde consola:
 
 bc. mysql -u root -p
 // Nos pedirá la contraseña que hemos puesto en la instalación de MySQL para el administrador

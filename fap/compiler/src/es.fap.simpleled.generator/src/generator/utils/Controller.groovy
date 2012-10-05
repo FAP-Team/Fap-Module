@@ -218,6 +218,8 @@ ${metodoBefore()}
 
 ${metodoProcesandoEntidades()}
 
+${metodoModulo()}
+
 }
 """
 		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controllerGen));
@@ -860,17 +862,6 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoBefore(){
-		if ((isPagina()) && (element.perteneceA != null)){
-			return """
-				@Before
-				static void beforeMethod() {
-					renderArgs.put("controllerName", "${controllerGenName}");
-					if(!config.Modules.getProperty("fap.modulo.${element.perteneceA}")){
-						Messages.fatal("La aplicación no tiene disponible este módulo");
-					}
-				}
-			""";
-		}
 		return """
 				@Before
 				static void beforeMethod() {
@@ -1545,6 +1536,20 @@ public class ${controllerName} extends ${controllerGenName} {
 				setEntidadesProcesando();
 			}
 		"""
+	}
+	
+	private String metodoModulo(){
+		if ((isPagina()) && (element.perteneceA != null))
+		return """
+			@Before
+			static void moduleMethod() {
+				if(!config.Modules.getProperty("fap.modulo.${element.perteneceA}")){
+					Messages.fatal("La aplicación no tiene disponible este módulo");
+				}
+			}
+		"""
+		else
+			return"";
 	}
 			
 }

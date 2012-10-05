@@ -1,5 +1,10 @@
 h2. Changelog
 
+h3. Versión 1.3.10
+
+* Timeout en los servicios mediante la property "fap.servicios.httpTimeout".
+* Fixed bug en copia del campo descripción en Documento. 
+
 h3. Versión 1.3.9
 
 * Tipo de documentos Otros, reemplazado por la multiplicidad del tipo de documento.

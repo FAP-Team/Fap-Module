@@ -5,40 +5,48 @@
 <body>
 
 <h3 style="text-align: center;"></h3>
-<!-- TITULO -->
 %{
-def cabecera = 'AYUDA PARA LA REALIZACIÓN DE ESTANCIAS BREVES EN ESPAÑA Y EN EL EXTRANJERO - CONVOCATORIA 2012';
-def titulo = 'COMUNICACIÓN DE DESISTIMIENTO DE LA SOLICITUD';
+	def titulo = 'COMUNICACIÓN DE DESISTIMIENTO DE LA SOLICITUD';
 }%
-#{tagTitulo cab:cabecera, tit:titulo
-/}
+
+<h1>${titulo}</h1>
 
 <!-- SOLICITANTE -->
- %{
- def ttlSolte='SOLICITANTE';
- def solte = solicitud.solicitante;
- def datosSolte = solicitud.datosSolicitante;
- }% 
- #{tagSolicitante ttl:ttlSolte, slt:solte, dtslt:datosSolte 
- /} 
+
+<div id="divDatosPersonalesSolicitante">
+<table id="tblDatosPersonalesSolicitante" class="table-datos" >
+	<caption>SOLICITANTE:</caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>CIF/NIF:</th><td>${solicitud.solicitante.getNumeroId()?.toUpperCase()}</td></tr>
+	<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+	<tr><th>Teléfono:</th><td>${solicitud.solicitante.telefonoFijo}</td></tr>
+	<tr><th>Móvil:</th><td>${solicitud.solicitante.telefonoMovil}</td></tr>
+	<tr><th>Fax:</th><td>${solicitud.solicitante.fax}</td></tr>
+	<tr><th>Correo electrónico:</th><td>${solicitud.solicitante.email}</td></tr>
+	<tr><th>Web: </th><td>${solicitud.solicitante.web}</td></tr>
+</table>
+</div> 
+
+
 
 <!-- EXPONE DESISTIMIENTO -->
 %{
-	def ttlExpone = 'EXPONE';
 	def expedienteManifiesta = solicitud.expedienteAed.idAed;
 	def fechaRegistro = solicitud.registro.informacionRegistro.fechaRegistro;
 	def motivo = solicitud.desistimiento.motivo;
 }%
-#{tagExponeDesistimiento ttl:ttlExpone, expd:expedienteManifiesta, fchReg: fechaRegistro, css: motivo
-/}
+<h3>EXPONE:</h3>
+<p>Quiere desistir el expediente ${expedienteManifiesta} presentado el ${fechaRegistro}</p>
+<p>${motivo}</p>
 
 <br/><br/> 
 
 <!-- SOLICITA -->
-%{	def ttlSolicita='SOLICITA'
+%{
 	def solicita='Sea admitido el presente escrito, y se resuelva favorablemente mi desistimiento con exclusión de la solicitud de subvención presentada en el presente procedimiento.';
 }%
-#{tagSolicita ttl:ttlSolicita, slta:solicita /}
+<h3>SOLICITA</h3>
+<p>${solicita}</p>
 </br></br>
 
 </body>

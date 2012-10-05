@@ -75,6 +75,7 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "Verificaciones" pagina=AccesoVerificaciones
 			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
 			Enlace "PCEconómicos" pagina=PCEconomicos	
+			Enlace "Desistimiento" pagina=Desistimiento
     	}    	
 		
 		Enlace "Aportación" pagina=Aportacion

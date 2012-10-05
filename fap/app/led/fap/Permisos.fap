@@ -697,11 +697,6 @@ Permiso editarDesistimiento {
 		editable
 }
 
-/*
- * Permiso “modificarDesistimiento�?
- *
- */
-
 Permiso modificarDesistimiento{
 	vars
 	 	SolicitudGenerica solicitud
@@ -726,9 +721,7 @@ Permiso instruccionDesistimiento{
 	return
 		all
 }
-/*
- * Permiso “mesajeIntermedioDesistimiento"
- */
+
 Permiso mensajeIntermedioDesistimiento{
 	vars
 		SolicitudGenerica solicitud
@@ -740,10 +733,7 @@ Permiso mensajeIntermedioDesistimiento{
 	return
 		all
 }
-/*
- * Permiso “clasificadaDesistimiento�?
- *
- */
+
 
 Permiso clasificadaDesistimiento{
 	vars
@@ -755,10 +745,6 @@ Permiso clasificadaDesistimiento{
 	return
 		visible
 }
-/*
- * Permiso “firmarRegistrarDesistimiento�?
- *
- */
 
 Permiso firmarRegistrarDesistimiento{
 	vars
@@ -769,10 +755,6 @@ Permiso firmarRegistrarDesistimiento{
 	return
 		all
 }
-/*
- * Permiso “firmarDesistimiento�?
- *
- */
 
 Permiso firmarDesistimiento{
 	vars
@@ -783,10 +765,7 @@ Permiso firmarDesistimiento{
 	return
 		all
 }
-/*
- * Permiso “registrarDesistimiento�?
- *
- */
+
 
 Permiso registrarDesistimiento{
 	vars
@@ -794,10 +773,9 @@ Permiso registrarDesistimiento{
 	when
 		(_accion = leer) or
 		(solicitud.desistimiento.registro.fasesRegistro.firmada = "true" and
-		solicitud.desistimiento.registro.fasesRegistro.registro = "false" and
 		solicitud.desistimiento.registro.fasesRegistro.clasificarAed = "false")
 	return
-		visible
+		all
 }
 
 

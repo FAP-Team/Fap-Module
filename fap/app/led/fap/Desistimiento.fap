@@ -1,6 +1,6 @@
-Formulario Solicitud campo=SolicitudGenerica {
+Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
 
-	Pagina Desistimiento campo=SolicitudGenerica.desistimiento titulo="Desistimiento"{
+	Pagina Desistimiento campo=SolicitudGenerica.desistimiento titulo="Desistimiento" {
 	Grupo titulo="Solicitud de Desistimiento"  {  
 		
 			Grupo permiso=editarDesistimiento borde = false { 
@@ -50,14 +50,9 @@ Formulario Solicitud campo=SolicitudGenerica {
 	}
 		
 	Pagina  DesistimientoPresentar   titulo = "Presentar Desistimiento" noForm campo=SolicitudGenerica.desistimiento{
-		Grupo mensajeIntermedio permiso=mensajeIntermedioDesistimiento borde=false {
-			Wiki estilo ="box-warn box" {
-				"Se produjo un error en la presentación del desistimiento. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-			}
-		}
 
 		//Firma persona física	
-		Grupo titulo="Paso 1. Firmar y Registrar el Desistimiento" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica"  //permiso=presentacionFirmar 
+		Grupo titulo="Paso 3. Firmar y Registrar el Desistimiento" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica"  //permiso=presentacionFirmar 
 		{			
 			Form formFirmaPF permiso=firmarRegistrarDesistimiento { //redirigir=AceptarRenunciar
 		    	Wiki {"El desistimiento será firmado y registrado." }
@@ -66,17 +61,12 @@ Formulario Solicitud campo=SolicitudGenerica {
 			Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}			
 		}			
 						
-		//Firma Persona jurídica
-		Grupo titulo="Paso 1. Firmar y Registrar el Desistimiento" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica"{
-			Wiki {"Debe indicar si se firmará el desistimiento con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la aceptación/renuncia debe firmarse por todos los representantes mancomunados"}			
-			Form tipoCertificadoFirma autoEnviar {
-				Combo certificadoFirma titulo="Certificado que se usará en la firma" campo=SolicitudGenerica.desistimiento.registro.tipoFirma
-			}												
-			Grupo borde = false mostrarSiCampo Desistimiento.registro.tipoFirma = "representantes" {
+		// Firma si el Solicitante es Persona jurídica
+		Grupo titulo="Paso 3. Firmar y Registrar el Desistimiento" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=firmarRegistrarDesistimiento {
 
-				Grupo titulo="Paso 1.1. Firmar el Desistimiento"  {						
+				Grupo titulo="Paso 3.1. Firmar el Desistimiento"  permiso=firmarDesistimiento {						
 					Wiki {"El desistimiento será firmado. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación del desistimiento."}
-					Form formFirmaRepresentante permiso=firmarDesistimiento {
+					Form formFirmaRepresentante  {
 						FirmaSimple firmarRepresentante titulo="Firmar" documento=Desistimiento.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
 					}
 					Tabla tablaFirmantesHecho campo=Desistimiento.registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
@@ -92,24 +82,15 @@ Formulario Solicitud campo=SolicitudGenerica {
 											
 				}
 				
-				Grupo titulo="Paso 1.2. Registrar el Desistimiento" permiso=registrarDesistimiento
+				Grupo titulo="Paso 3.2. Registrar el Desistimiento" permiso=registrarDesistimiento
 				{
 					Wiki {"Su desistimiento ha sido firmado correctamente. Ahora puede presentarlo. Una vez presentado podrá obtener el recibo."}
-					Form frmRegistrar redirigir=Desistimiento {
+					Form frmRegistrar redirigir=Desistimiento permiso=registrarDesistimiento {
 						Boton botonRegistrar titulo="Registrar"
 					}								
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
 				}	
-													
-			}								
- 
-			Grupo borde=false mostrarSiCampo Desistimiento.registro.tipoFirma = "cif"
-			{
-				Wiki {"El desistimiento será firmado y registrado. "}			
-				Form formFirmaCif redirigir=Desistimiento permiso=firmarRegistrarDesistimiento {
-					FirmaSimple firmarRegistrarCif titulo="Firmar y Registrar" documento=Desistimiento.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
-				}
-			}			
+																
 		}		
 	}
 	

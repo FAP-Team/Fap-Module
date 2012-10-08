@@ -1,4 +1,100 @@
 h1. Estructura de un Proyecto FAP
 
+Una vez que hemos conocido ya como crear una aplicación desde cero con FAP, y los elementos que podemos utilizar para implementar nuestra propia aplicación y personalizarlao adaptarla lo máximo posible a nuestras necesidades, ahora nos tocará ver como se traduce todo lo visto en el arbol de directorios de nuestro proyecto o aplicación. Veremos la concordancia de lo que se generó al hacer un simple _play fap:init_ con lo que hemos aprendido del Modelo-Vista-Controlador (MVC) que sigue cualquier aplicación Play! y por ende cualquier aplicación FAP.
+
+h2. Un Vistazo General al Árbol de Directorios de nuestro Proyecto
+
+El proyecto puede llegar a tener muchas carpetas generadas por FAP y que explicaremos a continuación lo que es cada una.
 
 !images/efap0!
+
+* *app:* Esta carpeta tiene todos los ficheros fuentes propios que se utilizarán en nuestra aplicación. Más adelante explicaremos en detalle el contenido de dicha carpeta pero por ahora nos podemos quedar con que contendrá la definición de los Modelos, Controladores y Vistas (MVC).
+
+* *test:* Esta carpeta es la encargada de definir las pruebas unitarias o los test que queramos elaborar para ir depurando nuestra aplicación. Para la realización de los test se pueden usar tecnologías como JUnit o Selenium.
+
+* *modulos:* Como bien os habreis documentado anteriormente, en Play! se pueden usar modulos externos para aumentar las funcionalidades de nuestra aplicación. Las carpetas que aquí vemos, son todas modulos de Play! que complementan a nuestra aplicación. Existe un módulo para crear PDFs (*pdf-0.6*), otro para gestionar los estilos y maquetación web (*less-0.9*), para incluir códigos de verificación de identidad (*recaptcha-1.2*), para realizar pruebas en Selenium (*webdrive-0.2*), para utilizar objetos simulados (*mockito-0.1*), para la inyección de dependencias (*guice-1.3*) y por último el módulo FAP que permitirá utilizar el lenguaje específico que hemos creado, así como una serie de clases y métodos Java ya implementados por defecto y que facilitará en demasia el desarrollo de aplicaciónes web de administración electrónica (fap). Este último módulo tendrá el nombre de la versión que utilicemos en cada momento, de manera que si utilizamos la versión 2.1, aparecerá la carpeta *fap-2.1*. Todas estas carpetas son enlaces simbólicos a las carpetas que se encuentran en *modules*, y que se visualizan fuera de dicha carpeta para tener una visión mejorada del ecosistema FAP.
+
+* *JRE System Library:* Esta carpeta contiene el Entorno en tiempo de ejecución de Java que hayamos instalado en nuestro ordenador. Se recomienda la versión 6, por posibles incompatibilidades internas con la versión 7.
+
+* *Referenced Libraries:* Esta carpeta contiene todas las librerias externas Java que por defecto utiliza FAP. Son decenas de librerías que permiten a FAP tener muchas funcionalidades extras y otras funcionalidades obligatorias en aplicaciones de administración electrónica. Aquí están enlazadas las librerias para utilizar la PLATaforma de INterOperabilidad del Gobierno de Canarias (Platino), Diversos servicios desarrollados por la ACIISI (Agencia Canaria de Innovación, Investigación y Sociedad de la Información) como el servicio de Notificaciones por Comparescencia en Sede Electrónica. También existen librerias de MySQL, librerías Criptográficas, para utilizar formato ligero en el intercambio de datos JavaScript (JSON), etc, etc, etc.
+
+* *conf:* Esta carpeta contiene los archivos de configuración de nuestra aplicación en particular, donde podremos especificar por un lado las dependencias respecto a los modulos externos vistos antes y por otro lado las properties propias de nuestra aplicación que permiten personalizar el comportamiento de la misma. Contiene otros archivos que explicaremos más adelante.
+
+* *documentation:* El contenido de esta carpeta es el generado al realizar el comando _play fap:documentation_, y que generará la documentación (en formato HTML, para poder visualizarla en un navegador web), de los ficheros FAP que tengamos definidos en nuestra aplicación a raíz de los comentarios que hayamos incluído en los mismos.
+
+* *eclipse:* Esta carpeta se genera automáticamente para poder visualizar el proyecto en Eclipse cuando realizamos el comando _play eclipsify_ sobre la raíz de nuestra aplicación.
+
+* *gestorDocumental:* Esta carpeta se genera automáticamente cuando configuramos el Gestor Documental con el mock FileSystem en nuestra aplicación y lo cargamos e inicializamos, en la parte de Administración, por primera vez. Simulará el Gestor Documental, situándose en esta carpeta los archivos subidos desde la aplicación, PDF generados etc.
+
+* *javadoc:* Esta carpeta se generará automaticamente al realizar el comando _play javadoc_ y contendrá la documentación en formato JavaDoc que hayamos escrito en nuestros ficheros Java.
+
+* *lib:* Carpeta que se puede utilizar para situar las librerias externas Java que queramos utilizar propiamente en la aplicación.
+
+* *logs:* Carpeta donde se situarán los ficheros de LOGS que generará nuestra aplicación, utilizando la tecnología _log4j_.
+
+* *modules:* Carpeta donde están situados realmente todos los modulos externos, ya explicados, que por defecto utiliza FAP.
+
+* *precompiled:* Carpeta que se generará con los ficheros mínimos y estrictamente necesarios (.class y demás) para ejecutar nuestra aplicación al hacer su distribución con el comando _play fap:dist_.
+
+* *public:* Carpeta que contiene los ficheros _css_, _imágenes_, _javascripts_ y demás recursos que utilizará la aplicación para renderizar las páginas html, o sea para maquetar y dar funcionalidad a las vistas.
+
+* *test-result:* Carpeta que contendrá los resultados de las ejecuciones de los test definidos en la carpeta test de la aplicación.
+
+* *tmp:* Carpeta que utilizará la aplicación para ir generando los ficheros temporales que le sean necesarios en su ejecución.
+
+h2. Un Vistazo más detallado a la carpeta _app_
+
+Donde realmente está el código fuente de la aplicación Web (tanto generado por FAP, como el que tenemos que escribir nosotros, ya sea sobreescribiendo código Java, Html, etc, como a través del lenguaje específico de FAP), es en la carpeta _app_, que explicamos a continuación.
+
+!images/efap1!
+
+* *baremacion:* Paquete Generado que contiene las clases necesarias a sobreescribir para implementar un comportamiento personalizado de la fase de Baremación. También puede que se generen paquetes como los de *tramitacion*, *verificacion*, etc, y que permiten sobreescribir y personalizar esas funcionalidades que trae implementada FAP por defecto para poner al alcance del desarrollador una serie de paquetes o módulos predefinidos que puedan utilizar de manera versatil y particular en su aplicación de administración electrónica. Para más información, dirijase a la documentación de la parte en cuestión.
+
+* *config:* Paquete Generado que contiene las clases encargadas de la inyección de los servicios al arrancar la aplicación. Aquí es donde indicaremos que configuración de permisos (orden de prioridad de las clases Java que definen los Permisos) y servicios (File System (Mock), Platino, etc.) .utilizará nuestra aplicación.
+
+* *controllers:* Paquete Generado que representan los Controladores (en el MVC que sigue las aplicaciones FAP) de las Páginas definas con el lenguajes específico de FAP. Estos controladores son los que en FAP llamamos 'manuales' debido a que sólo se generarán una única vez (la primera vez que se genere cuando se defina la página en cuestión), y serán los que pueda sobreescribir el usuario para personalizar la lógica que vaya detrás de cada acción que se haga en una página. Cada controlador definido aquí, tendrá asociado (heredará de él) un Controlador Generado en la carpeta siguiente (controllers.gen) que será el que se genere y sobreescriba en cada generación (comando _play fap:generate_ que se realice a la aplicación).
+
+* *controllers.gen:* Paquete generado que contiene las clases padres de los Controladores Manuales de las Páginas, explicados anteriormente, y que se sobreescriben continuamente, cada vez que se genera la aplicación, por lo que estos fichero nunca se deben editar, sólo se deben utilizar como guía para poder sobreescribir algún método definido en él, en sus hijos (las clases situadas en el paquete _controllers_).
+
+* *controllers.gen.popups:* Homónimo de _controller.gen_, pero aplicado en vez de a Páginas a PopUps.
+
+* *controllers.popups:* Homónimo de controller, pero aplicado en vez de a Páginas a PopUps.
+
+* *emails:* Paquete generado que deberá contener el fichero _yml_ que carga las plantilla de Emails que se quieran utilizar en la aplicación. FAP tiene la posibilidad de enviar Emails a través de código Java muy sencillo, debido a una clase Propia de FAP. Uno de los parámetros de la clase es el nombre de la plantilla (a la que se le podrá pasar variables) que se utilizará para rellenar los campos del mail como: el asunto, el destinatario, el contenido, etc..
+
+* *enumerado.gen:* Paquete que se genera automáticamente al indicar a una Lista FAP que queremos que se genere su clase Enumerada para poder utilizar los items que definamos en la Lista como un tipo Enumerado de Java.
+
+* *led:* Paquete que contiene todos los ficheros fuentes FAP, con las definiciones en el lenguaje específico de FAP de las Entidades, Páginas, Formularios, PopUps, Permisos, Listas, etc. Estos son realmente los ficheros mínimos que tendremos que editar para generar nuestra aplicación y que demuestran el verdadero potencial de FAP simplificando de una manera ingente la realización de una aplicación web en general y en el ámbito de la administración electrónica en particular.
+
+* *listas:* Paquete que contiene la definición _yml_ de las diferentes instancias de las Entidades que queremos inicializar por defecto al arrancar la aplicación. Por ejemplo, para introducir en nuestra Base de Datos de la aplicación, mensajes por defecto que después podrán ser utilizados en las Páginas (Ver sección Configurar mensajes, de Administración).
+
+* *listas.gen:* Paquete en el que se generará automáticamente los ficheros _yml_ de las Listas que se definan en los fichero fuentes FAP. Una Lista no es más que una entidad con valores fijos, por lo que al iniciar la aplicación se setea la instancia de la lista con los valores que son fijos (los que hemos definido en el DSL).
+
+* *models:* Paquete que contiene la definición Java de los Modelos de la aplicación. Estas clases Java se generan a partir de las definiciones que hayamos implementado en los fichero fuentes de FAP, situados en el paquete _led_, a través del elemento Entidad. Estos modelos Java, tendrán una parte generada que se sobreescribirá cada vez que generemos nuestro proyecto y una parte manual que nunca se tocará al generar y siempre se mantendrá igual (desde la primera generación), para que el desarrollador pueda sobreescribir diversos métodos o implementar nuevos referentes a un Modelo en concreto.
+
+* *security:* Paquete que contendrá la definición generada (_SecureAppGen.java_) de los Permisos que hayamos implementado en nuestros ficheros fuentes FAP . Esto es, clases Java que se generan a partir del DSL de Permisos de nuestra Aplicación. Hay una clase manual (_SecureApp.java_), que permitirá sobreescribir los métodos generados en _SecureAppGen.java_, para aumentar la potencia de desarrollo que queramos incluir en el Permiso, ya que puede haber cosas que no sean implementable a nivel del DSL de los Permisos y habrá que desarrollar en Java, manualmente. Este será el fichero encargado para sobreescribir esos caso, siempre fijandonos de la función generada para sobreescribirlo en condiciones.
+
+* *views:* Si el paquete _models_ contenía la generación de los Modelos a partir del código FAP que escribamos, y el paquete _controllers_ (y todos sus homónimos) tenía la generación de los Controladores de Páginas y PopUps a partir del código FAP, este paquete tiene el otro integrante de la tripleta MVC (Modelo-Vista-Controlador), o sea: las Vistas que se generarán a partir del código FAP que escribamos. Contiene los HTML generados para renderizar las páginas y popups, así como será el paquete donde se pongan las vistas manuales (o sea aquellos HTML que se quieran sobreescribir a partir de los generados, o que se quieran introducir sin que tengan que ver nada con lo generado). Tambien se situarán las plantillas manuales que se quieran utilizar para generar PDFs.
+
+h2. Un vistazo más detallado a la carpeta _conf_
+
+La otra carpeta importante de entender en una aplicación FAP (al igual que en cualquier aplicació Play!), es la carpeta _conf_ En ella se situan tanto las dependencias de nuestro proyecto, como los properties particulares que queramos utilizar así como sus valores y otras configuraciones que explicamos a continuación.
+
+!images/efap2!
+
+* *modulos (fap, guice, mockito, recaptcha, webdrive):* Estas carpetas contienen las definiciones de las configuraciones de los modulos externos que utiliza una aplicación FAP.
+
+* *initial-data:* En esta carpeta se ponen una serie de ficheros que el usuario tiene que implementar para algunas funcionalidades específicas de FAP. Por ejemplo, para la parte de Baremación, si se desea utilizar _BaremacionFAP_ (el módulo de Baremación por defecto que implementa FAP), este será el lugar donde se deban situar los ficheros Json que definen la Baremación específica de nuestra aplicación y así se pueda cargar correctamente (Para más información acerca de esto es conveniente documentarse individualmente en cada funcionalidad por defecto FAP. En el caso de la BaremacionFAP, sería conveniente ir a la sección de documentación donde se explica y se detalla concretamente el contenido de estos ficheros Json, etc.).
+
+* *application.conf:* Este fichero, como bien sabreis ya debido a la documentación que habreis leído acerca de Play!, es un fichero que utiliza Play! para configurar algunos aspectos de la aplicación web. Se puede decir qué Gestor de Base de Datos utilizará la nuestra, o porque puerto de desplegará, el nombre etc. Es decir parámetros típicos de configuración de una aplicación web. Estas configuraciones se realizan a través de lo que se denominan properties, y FAP también tiene implementadas sus properties por defecto para poder configurar servicios como el Aed o Platino, además de funcionalidades tan diversas como los formatos de archivos que se pueden subir en un elemento SubirArchivo, entre otras muchas cosas. Para más información ir a la sección pertienente de la documetnación donde se explican todas las properties de FAP y las más relevantes de Play!. Para ello se deberán sobreescribir las properties que implementa por defecto FAP y así cambiar los valores por defectos. Esa sobreescritura de esas properties deberán ir en este ficherito que es donde se definen las de nuestra aplicación y FAP será lo suficientemente inteligente para observar si una property que él implementa está tambien definida en el _application.conf_ de nuestra aplicación y hacer caso al de la aplicación y no al de FAP.
+
+* *dependencies.yml:* Este fichero, como bien sabreis ya, debido a la documentación que habreis leído acerca de Play!, es un fichero que utiliza Play! para indicar las dependencias externas (tanto de librerías como de módulos Play!) que tendrá nuestra aplicación. Como bien habreis leído en secciones anteriores, este fichero se deberá rellenar con unas líneas específicas que indican la versión utilizada de FAP, los módulos externos a utilizar, librerias propias etc, etc, etc.
+
+* *log4j-#.properties:* Estos ficheros son los que definen la configuración de los Logs que se utilizarán en nuestra aplicación. Para que utilice la configuración que indica estos ficheros, previamente deberemos haber seteado la property correspondiente en el _application.conf_. Utiliza la tecnología _log4j_, que podeis ampliar documentación a través de Internet, es muy conocida. Vemos varios ficheros, porque en este proyecto de Test, nosotros hemos creado diferentes configuraciones de logs dependendiendo el modo de arranca de la aplicación (desarrollo: dev, producción: prod, etc.).
+
+* *messages:* Este fichero contiene definiciones de String que se utilizan en la aplicación. Es una forma elegante que tiene Play! de utilizar cadenas de texto en Java. En vez de poner la cadena a pelo con comillas dobles, se referencia a una property que se define en este fichero y es la que dice la cadena de texto que se utiliza. Este método es bastante utilizado por muchos desarrolladores en diferentes frameworks y lenguajes como por ejemplo en Android.
+
+* *routes:* Este fichero es otro de los fundamentales de Play! y es donde se definen las rutas de nuestra aplicación web. FAP por defecto genera rutas en función de las definiciones que se hayan puesto en los ficheros fuentes FAP de la carpeta (_app/led_), por lo que tendrá una parte generada automaticamente que se sobreescribirá cada vez que se genere la aplicación y otra parte manual que podremos editar, sin miedo a que se sobreescriba, para definir rutas especificas que queramos introducir manualmente.
+
+
+

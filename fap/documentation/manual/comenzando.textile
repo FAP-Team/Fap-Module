@@ -6,8 +6,8 @@ En esta sección nos adentraremos en los primeros pasos que realicemos con FAP. 
 
 # "Comandos Básicos":comandos
 # "Nuestra Primera Aplicación FAP":nuevaApp
-# "¿Qué Se Esconde Detrás de Nuestra Aplicación FAP?":dsl-home
-## "Modelo Vista Controlador (MVC)"
+# *¿Qué Se Esconde Detrás de Nuestra Aplicación FAP?:*
+## *Modelo Vista Controlador (MVC):*
 ### "Los Modelos":nuevaApp-entidades
 ### "Los Controladores":controladores
 ### "Las Vistas":curso-formularios

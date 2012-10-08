@@ -56,6 +56,14 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	}
 	
 	@Override
+	public void completeWSReturn_CampoRet(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		WSReturn c = (WSReturn) model;
+		ServicioWeb sw = (ServicioWeb)c.eContainer();
+		Entity entidad = LedCampoUtils.getUltimaEntidad(sw.getCampo());
+		acceptor.accept(createCompletionProposal(entidad.getName(), styledProposal(entidad.getName() + "  -  " + "Entidad", null), null, 0, context.getPrefix(), context));
+	}
+
+	@Override
 	public void completeKeyword(Keyword keyword, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		String value = keyword.getValue();
 		if (!value.startsWith(context.getPrefix()))
@@ -160,6 +168,8 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 	@Override
 	public void completeCampo_Entidad(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		LedElementValidator validator = LedElementValidator.getElementValidator(model);
+		if (model instanceof WSReturn)
+			return;
 		if (validator != null) {
 			for (Proposal proposal: validator.completeEntidades(context.getPrefix(), LedEntidadUtils.eliminaSolicitudGenerica(LedCampoUtils.getEntidadesValidas(model)).values(), model))
 				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, proposal.prio, context.getPrefix(), context));

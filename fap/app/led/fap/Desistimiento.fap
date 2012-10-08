@@ -1,6 +1,6 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
 
-	Pagina Desistimiento campo=SolicitudGenerica.desistimiento titulo="Desistimiento" {
+	Pagina Desistimiento campo=SolicitudGenerica.desistimiento titulo="Desistimiento" perteneceA="Desistimiento"{
 	Grupo titulo="Solicitud de Desistimiento"  {  
 		
 			Grupo permiso=editarDesistimiento borde = false { 
@@ -49,7 +49,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
 		}
 	}
 		
-	Pagina  DesistimientoPresentar   titulo = "Presentar Desistimiento" noForm campo=SolicitudGenerica.desistimiento{
+	Pagina  DesistimientoPresentar   titulo = "Presentar Desistimiento" noForm campo=SolicitudGenerica.desistimiento perteneceA="Desistimiento"{
 
 		//Firma persona física	
 		Grupo titulo="Paso 3. Firmar y Registrar el Desistimiento" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica"  //permiso=presentacionFirmar 

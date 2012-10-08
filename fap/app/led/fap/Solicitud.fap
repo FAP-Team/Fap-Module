@@ -1,6 +1,6 @@
-Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{	
+Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {	
 
-	Pagina DocumentacionFAP titulo = "Documentación" campo=SolicitudGenerica noForm {
+	Pagina DocumentacionFAP titulo = "Documentación" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
 	
 		Tabla documentos titulo="Documentos" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP popupBorrar=DocumentosEditarFAP{
 			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
@@ -31,7 +31,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	
 	
 	// Sobreescrito
-	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos permiso=editarSolicitud{
+	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos permiso=editarSolicitud perteneceA ="Documentacion"{
 		Accion crear redirigir=DocumentacionFAP	
 		Grupo gSubirDocumento titulo="Adjuntar Documento"{
 			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
@@ -45,7 +45,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	}
 	
 	// Página Sobreescrita
-	Pagina DocumentosExternosFAP titulo="Nuevo documento ya aportado en la Administración" campo=SolicitudGenerica.documentacion.documentosExternos permiso=editarSolicitud{
+	Pagina DocumentosExternosFAP titulo="Nuevo documento ya aportado en la Administración" campo=SolicitudGenerica.documentacion.documentosExternos permiso=editarSolicitud perteneceA ="Documentacion"{
 		Accion crear redirigir=DocumentacionFAP
 		
 		Combo tipoDocumento titulo="Tipo Documento" campo=DocumentoExterno.tipo requerido
@@ -74,7 +74,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		AreaTexto uri titulo="Dirección Electrónica" campo=DocumentoExterno.uri
 	}
 	
-	Pagina Aportacion titulo="Aportación"{
+	Pagina Aportacion titulo="Aportación" perteneceA ="Aportacion"{
 		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="btn"
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="btn"
@@ -113,14 +113,14 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		
 	}
 	
-	Pagina DocumentosAportacion titulo="Aportar Nuevo Documento" campo=SolicitudGenerica.aportaciones.actual.documentos{
+	Pagina DocumentosAportacion titulo="Aportar Nuevo Documento" campo=SolicitudGenerica.aportaciones.actual.documentos perteneceA ="Aportacion"{
 		Accion crear redirigir=Aportacion
 		Grupo gSubirDocumento titulo="Aportar Documento"{
 			SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" listarDocumentosSubidos
 		}
 	}
 	
-	Pagina AportacionAportados titulo="Documentos Aportados"{		
+	Pagina AportacionAportados titulo="Documentos Aportados" perteneceA ="Aportacion"{		
 		Tabla documentos titulo="Documentos Presentados" 
 		    campo=SolicitudGenerica.documentacion.documentos
 			popupLeer=PopUpDocPresentados
@@ -142,7 +142,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
 	}	
 	
-	Pagina AportacionRecibos titulo="Recibos de Aportaciones" noForm {
+	Pagina AportacionRecibos titulo="Recibos de Aportaciones" noForm  perteneceA ="Aportacion"{
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
 		{
@@ -169,7 +169,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	}
 		
 	// Sobreescrita
-	Pagina AportacionPresentar titulo="Presentar la Aportación" noForm{
+	Pagina AportacionPresentar titulo="Presentar la Aportación" noForm perteneceA ="Aportacion"{
 	  	Grupo titulo="Presentar Aportación de Documentos" {
 			Wiki {"Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
 
@@ -247,7 +247,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	// VERIFICACION
 	// *******************************************************************************************
 	
-	Pagina AccesoVerificaciones titulo="Verificaciones" noForm {
+	Pagina AccesoVerificaciones titulo="Verificaciones" noForm  perteneceA ="Verificacion"{
 		Tabla verificaciones titulo="Verificaciones" campo=SolicitudGenerica.verificaciones
 			paginaEditar=PaginaVerificacionesAnteriores
 		{
@@ -271,7 +271,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 	}
 	
-	Pagina PaginaVerificacionesAnteriores titulo="Ver Verificación" campo=SolicitudGenerica.verificaciones noForm{
+	Pagina PaginaVerificacionesAnteriores titulo="Ver Verificación" campo=SolicitudGenerica.verificaciones noForm perteneceA ="Verificacion"{
 
 		Grupo noEditable borde=false permiso=noEditable{
 			Grupo datosVerificacion titulo="Datos generales de la verificación" {
@@ -305,7 +305,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Enlace volverVerificacionAnteriores titulo="Volver" pagina=AccesoVerificaciones estilo="btn"
 	}
 	
-	Pagina PaginaDocumentoVerificacionLeerAnteriores titulo="Documento Verificado" campo=SolicitudGenerica.verificaciones.documentos noForm{
+	Pagina PaginaDocumentoVerificacionLeerAnteriores titulo="Documento Verificado" campo=SolicitudGenerica.verificaciones.documentos noForm perteneceA ="Verificacion"{
 		Grupo noEditable borde=false permiso=noEditable{
 			Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 				Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
@@ -333,7 +333,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Enlace volverVerificacionActual titulo="Volver" anterior estilo="btn"
 	}
 	
-	Pagina PaginaVerificacion titulo="Verificación" campo=SolicitudGenerica.verificacion noForm permiso=accederSiSolicituNoBorrador{
+	Pagina PaginaVerificacion titulo="Verificación" campo=SolicitudGenerica.verificacion noForm permiso=accederSiSolicituNoBorrador perteneceA ="Verificacion"{
 		Grupo datosVerificacion titulo="Datos generales de la verificación" permiso=noEditable{
 			Texto expediente titulo="Expediente" campo=Verificacion.expediente
 			Combo estadoS titulo="Estado Solicitud" campo=SolicitudGenerica.estadoValue
@@ -475,7 +475,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		EditarArchivo documentoProceso campo=Documento requerido
 	}
 	
-	Pagina PaginaDocumentoVerificacionLeer titulo="Ver Documento de la Verificación" campo=SolicitudGenerica.verificacion.documentos{
+	Pagina PaginaDocumentoVerificacionLeer titulo="Ver Documento de la Verificación" campo=SolicitudGenerica.verificacion.documentos perteneceA ="Verificacion"{
 		Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
@@ -500,7 +500,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Enlace volverVerificacionActual titulo="Volver" pagina=PaginaVerificacion estilo="btn"
 	}
 	
-	Pagina PaginaDocumentoVerificacionEditar titulo="Editar Documento" campo=SolicitudGenerica.verificacion.documentos{
+	Pagina PaginaDocumentoVerificacionEditar titulo="Editar Documento" campo=SolicitudGenerica.verificacion.documentos perteneceA ="Verificacion"{
 		Accion editar redirigir=PaginaVerificacion
 		Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
@@ -546,7 +546,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 	}
 	
-Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
+Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador  perteneceA ="Exclusion"{
 		Tabla exclusion titulo="Codigos de Exclusión" campo=SolicitudGenerica.exclusion.codigos
 		popup=PopUpExclusion
 		{
@@ -575,7 +575,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	}
 	
 	//Sobreescrita
-	Pagina PaginaCEconomicos titulo= "Conceptos Económicos" campo=SolicitudGenerica.ceconomicos permiso=editarSolicitudYIniciarBaremacion noForm{
+	Pagina PaginaCEconomicos titulo= "Conceptos Económicos" campo=SolicitudGenerica.ceconomicos permiso=editarSolicitudYIniciarBaremacion noForm  perteneceA ="Baremacion"{
 		Form Guardar { 
 			Texto Nombre titulo="Nombre" campo=CEconomico.tipo.nombre
 			Grupo conceptosManuales borde=false permiso=verTablaCEconomicosOtros {
@@ -589,7 +589,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	}
 	
 	//Sobreescrita
-	Pagina PaginaCEconomicoManual titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=editarSolicitudYIniciarBaremacion noForm{
+	Pagina PaginaCEconomicoManual titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=editarSolicitudYIniciarBaremacion noForm  perteneceA ="Baremacion"{
 		Accion editar redirigir=PaginaCEconomicos
 		Accion crear redirigir=PaginaCEconomicos
 		Grupo gInfoPadre titulo="Información Concepto Nivel Superior" permiso=noEditable{
@@ -611,7 +611,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	// ACEPTAR/RENUNCIAR
 	// *******************************************************************************************
 	
-	Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm permiso=accederSiSolicituNoBorrador {
+	Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm permiso=accederSiSolicituNoBorrador  perteneceA ="AceptarRenunciar"{
 		
 		Grupo titulo="Aceptación/Renuncia" {
 			Grupo permiso=editarAceptarRenunciar borde=false {
@@ -684,7 +684,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	/*
 	 * AportarDocumentacionAceptacionRenuncia
 	 */
-	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos {
+	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos  perteneceA ="AceptarRenunciar"{
 		Accion crear redirigir=PaginaAceptacionRenuncia
 		SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación/Renuncia" aportadoPor="CIUDADANO"	
     }
@@ -693,7 +693,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		EditarArchivo documentoPresentado campo=Documento requerido
 	}
 	
-	Pagina AceptacionRenunciaPresentar titulo="Presentar Aceptacion/Renuncia" noForm {
+	Pagina AceptacionRenunciaPresentar titulo="Presentar Aceptacion/Renuncia" noForm  perteneceA ="AceptarRenunciar"{
 		Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
 			Wiki estilo ="box-warn box" {
 				"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
@@ -764,7 +764,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	// ALEGACIÓN
 	// *******************************************************************************************
 	
-	Pagina Alegaciones noForm titulo= "Alegaciones" {
+	Pagina Alegaciones noForm titulo= "Alegaciones"  perteneceA ="Alegacion"{
 
 		Grupo titulo="Nueva Alegación" {
 			Grupo permiso=editarAlegacion borde=false {
@@ -837,12 +837,12 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	/*
 	 * AportarDocumentacionAlegacion
 	 */
-	Pagina AportarDocumentacionAlegacion titulo="Añadir Documentación Alegación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarSolicitud {
+	Pagina AportarDocumentacionAlegacion titulo="Añadir Documentación Alegación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarSolicitud  perteneceA ="Alegacion"{
 		Accion crear redirigir=Alegaciones
 		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"	
     }
 	
-	Pagina AlegacionPresentar titulo="Presentar Alegación" noForm {
+	Pagina AlegacionPresentar titulo="Presentar Alegación" noForm  perteneceA ="Alegacion"{
 		Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
 			Wiki estilo ="box-warn box" {
 				"Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
@@ -937,7 +937,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
  * Autorización de acceso a la solicitud
  */
 
-	Pagina AutorizacionFAP titulo="Usuarios Autorizados" campo=SolicitudGenerica noForm{
+	Pagina AutorizacionFAP titulo="Usuarios Autorizados" campo=SolicitudGenerica noForm perteneceA ="Principal"{
 		Grupo gAutorizaciones titulo="Usuarios Autorizados" permiso=autorizadoNoAutoriza{
 			Tabla nipsAutorizados titulo="Autorizados" campo=SolicitudGenerica.autorizacion popup=PopUpAutorizarFAP
 			{
@@ -953,7 +953,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	/*
      * Página Presentar
      */
-    Pagina PresentarFAP noForm titulo="Presentación de la Solicitud" campo=SolicitudGenerica.registro{
+    Pagina PresentarFAP noForm titulo="Presentación de la Solicitud" campo=SolicitudGenerica.registro  perteneceA ="Presentacion"{
 
 		Grupo titulo="Presentación de la solicitud" {
 			Grupo permiso=prepararSolicitud borde = false { 
@@ -1001,7 +1001,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	}
 
 	// Sobreescrito
-	Pagina SolicitudPresentarFAP titulo="Presentar Solicitud" noForm campo=SolicitudGenerica.registro{
+	Pagina SolicitudPresentarFAP titulo="Presentar Solicitud" noForm campo=SolicitudGenerica.registro perteneceA ="Presentacion"{
 		
 		Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHPresentacion{
 			Form formHabilitarFH {

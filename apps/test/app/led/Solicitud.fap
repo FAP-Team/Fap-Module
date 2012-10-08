@@ -136,7 +136,7 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		}
 	}
 	
-	Pagina Combos inicial campo=Solicitud perteneceA = "verificacion"{
+	Pagina Combos inicial campo=Solicitud perteneceA = "Verificacion"{
 
 		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"

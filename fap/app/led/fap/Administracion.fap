@@ -27,7 +27,7 @@ Formulario Administracion permiso=administrador{
     }
     
     // Pagina Sobreescrita
-    Pagina ConsultasBBDD titulo="Consultas" {
+    Pagina ConsultasBBDD titulo="Consultas" perteneceA="Administracion"{
     	Grupo titulo = "Consultas a la Base de Datos de la aplicación"{
     		Tabla consultasdb campo=Consulta titulo="Consultas" popup=PopUpConsultas {
     			Columna campo=Consulta.consulta titulo="Consulta" expandir
@@ -43,7 +43,7 @@ Formulario Administracion permiso=administrador{
     	Combo comboTipo titulo="Tipo" campo=Consulta.tipo requerido
     }
     
-    Pagina Jobs titulo="Configurar Jobs" campo=AdministracionFapJobs{
+    Pagina Jobs titulo="Configurar Jobs" campo=AdministracionFapJobs perteneceA="Administracion"{
     	Wiki{"*Esta Página permite habilitar/deshabilitar los Jobs que están activos del módulo FAP.*"}
     	
     	Grupo titulo="Job para la Actualización de las Notificaciones" mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.notificacion.activa\")"{
@@ -91,7 +91,7 @@ Formulario Administracion permiso=administrador{
     	}
     }
     
-    Pagina ConfigurarMensajes titulo="Configurar mensajes" {
+    Pagina ConfigurarMensajes titulo="Configurar mensajes"  perteneceA="Administracion"{
     	Tabla mensajesPagina campo=ConfigurarMensaje titulo="Mensajes configurados" paginaEditar=RellenarMensajes {
     		Columna campo=ConfigurarMensaje.formularioNombreText titulo="Página" expandir
     		Columna campo=ConfigurarMensaje.tipoMensaje titulo="Tipo Mensaje" expandir
@@ -99,7 +99,7 @@ Formulario Administracion permiso=administrador{
     	}
     }
     
-    Pagina RellenarMensajes titulo="Rellenar mensaje" campo=ConfigurarMensaje {
+    Pagina RellenarMensajes titulo="Rellenar mensaje" campo=ConfigurarMensaje perteneceA="Administracion" {
     	Accion editar redirigir = ConfigurarMensajes
     	Grupo permiso = paginaAConfigurar borde=false{
     		Texto paginaAconfigurar campo=ConfigurarMensaje.nombrePagina titulo="Página"
@@ -115,7 +115,7 @@ Formulario Administracion permiso=administrador{
 		Combo posicion campo=ConfigurarMensaje.msjFinal titulo = "Posición del mensaje en la página" requerido
    	}
     
-    Pagina ActivarBaremacion titulo="Activar Baremación" noForm{
+    Pagina ActivarBaremacion titulo="Activar Baremación" noForm perteneceA="Administracion"{
     	Grupo IniciarTipoEvaluacion titulo="Iniciar el Tipo de Evaluación" permiso=iniciarTipoEvaluacion{
     		Wiki {"Para cargar el tipo de Evaluación, es necesario pulsar el siguiente botón. El tipo de Evaluación sólo se cargará una única vez, téngalo en cuenta."}
     		Form iniciarTipoEvaluacionFormBaremacion {
@@ -136,7 +136,7 @@ Formulario Administracion permiso=administrador{
 	    }
     }
 	
-	Pagina Usuarios titulo="Administración de Usuarios"{
+	Pagina Usuarios titulo="Administración de Usuarios" perteneceA="Administracion"{
 		Wiki {"Para asignar roles seleccione el usuario y pulse en editar"}
 
 		Tabla listaUsuarios titulo="Usuarios" campo=Agente
@@ -162,7 +162,7 @@ Formulario Administracion permiso=administrador{
 		Check campo=Agente.funcionario titulo="Funcionario habilitado"
 	}
 		
-	Pagina Aed noForm permiso=administrador titulo="Gestor Documental"{
+	Pagina Aed noForm permiso=administrador titulo="Gestor Documental" perteneceA="Administracion"{
 		
 		Grupo titulo="Configurar" {
 			Wiki {
@@ -207,11 +207,11 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 		}	
 	}
 	
-	Pagina Convocatoria campo=Convocatoria titulo="Convocatoria"{
+	Pagina Convocatoria campo=Convocatoria titulo="Convocatoria" perteneceA="Administracion"{
 		Combo campo=Convocatoria.estado titulo="Estado de la convocatoria"
 	}
 	
-	Pagina ConfiguracionQuartz titulo="Configuración del Quartz" {
+	Pagina ConfiguracionQuartz titulo="Configuración del Quartz" perteneceA="Administracion"{
 		Grupo configQuartz titulo="Configuración del quartz" {
 			Wiki {"El quartz es el proceso que se encarga de comprobar los accesos a la sede cuando se emiten los requerimientos y asignar correctamente las fechas de acceso y de vencimiento de los requerimientos."}
 			
@@ -226,7 +226,7 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 	}
 
 
-	Pagina TablaDeTablas noForm titulo="Tabla de tablas" permiso=administrador {
+	Pagina TablaDeTablas noForm titulo="Tabla de tablas" permiso=administrador perteneceA="Administracion" {
 		Wiki {"La tabla de tablas almacena la información de la listas. "}
 
 		Tabla tabladetablas titulo="Tabla de tablas" campo=TableKeyValue popup=PopupTablaDeTablas {
@@ -267,7 +267,7 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 		Texto campo=TableKeyValueDependency.key titulo="Clave"
 	}
 
-	Pagina Emails titulo="Configuración de Correos Electrónicos" noForm{
+	Pagina Emails titulo="Configuración de Correos Electrónicos" noForm perteneceA="Administracion"{
 		Tabla emails titulo="Plantillas de emails" campo=Mail popup=PopupEmail {
 			Columna campo=Mail.idMail titulo="Identificador"
 			Columna campo=Mail.content titulo="Contenido" expandir
@@ -309,7 +309,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Combo campo=Consulta.tipo titulo="Tipo" requerido
 	}
 
-	Pagina Propiedades titulo="Propiedades de la aplicación" {
+	Pagina Propiedades titulo="Propiedades de la aplicación"  perteneceA="Administracion"{
 		Tabla tablaPropiedades titulo="Tabla de properties" campo=Propiedades popup=PopupProperties {
 			Columna campo=Propiedades.descripcion titulo="Descripción"
 			Columna campo=Propiedades.clave titulo="Clave"
@@ -322,7 +322,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Texto campo=Propiedades.clave titulo="Clave" requerido
 	}
     
-    Pagina EstadosVisibles titulo="Visibilidad de Estados" {
+    Pagina EstadosVisibles titulo="Visibilidad de Estados" perteneceA="Administracion" {
     	Tabla tabladeEstadosSolicitud titulo="Estados de la solicitud visibles para los usuarios" campo=VisibilidadEstadoUsuario popupEditar=PopupVisibilidadDeSolicitudes {
 	        Columna campo=VisibilidadEstadoUsuario.estadoInterno titulo="Estado Interno"
 	        Columna campo=VisibilidadEstadoUsuario.estadoUsuario titulo="Estado Visible por el Usuario" expandir
@@ -337,7 +337,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	    Combo comboEstadoInterno campo=VisibilidadEstadoUsuario.estadoUsuario titulo="Estado que ve el usuario" requerido
 	}
 	
-	Pagina Codigos titulo="Códigos de Requerimientos y de Exclusión"{
+	Pagina Codigos titulo="Códigos de Requerimientos y de Exclusión" perteneceA="Administracion"{
 		Wiki{"Para actualizar estos códigos debe dirigirse a la página 'Aed' y actualizar todos los trámites."}
 		Tabla tablacodrequerimientos titulo="Códigos de Requerimientos" campo=TiposCodigoRequerimiento popupLeer=PopupVerCodReq{
 			Columna titulo="Código" campo=TiposCodigoRequerimiento.codigo
@@ -365,7 +365,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		AreaTexto descripcion campo=TipoCodigoExclusion.descripcion titulo="Descripción"
 	}
  
-	Pagina BuscarLgs titulo="Búsqueda de Logs" campo=BusquedaLogs noForm {
+	Pagina BuscarLgs titulo="Búsqueda de Logs" campo=BusquedaLogs noForm  perteneceA="Administracion"{
 		Form buscar {
 			Wiki {
 				"**En esta página podrá decidir como quiere hacer la búsqueda de los Logs, tanto por atributos como por fecha.** </br>"
@@ -394,7 +394,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		}
 	}
 	
-	Pagina MostrarLogs titulo="Logs" noForm {
+	Pagina MostrarLogs titulo="Logs" noForm  perteneceA="Administracion"{
 		Tabla logs campo=Logs titulo="Logs" {
 			Columna titulo="Fecha" campo=Logs.time expandir
 			Columna titulo="Tipo" campo=Logs.level expandir

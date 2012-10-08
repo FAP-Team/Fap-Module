@@ -11,4 +11,23 @@ bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
 	}
 }
 
+El método public static void _validarCEconomicos_ de la clase creada que extienda de BaremacionFAP es el que se ejecutará cuando el usuario pulse sobre guardar en la página de Conceptos Económicos.
 
+Y la entidadas CEconomico es la siguiente. Donde los valores se encuentran en un OneToMany (uno por año) llamado valores, en concreto en valorSolicitado.
+
+bc.. Entidad CEconomico {
+	TipoCEconomico tipo
+	OneToMany ValoresCEconomico valores
+	Moneda total transient
+	LongText comentariosAdministracion
+	LongText comentariosSolicitante		
+	OneToMany CEconomicosManuales otros
+}
+
+Entidad ValoresCEconomico {
+	Integer anio
+	Moneda valorSolicitado
+	Moneda valorEstimado
+	Moneda valorPropuesto
+	Moneda valorConcedido
+}

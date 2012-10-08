@@ -151,7 +151,7 @@ h2. Ciclo de vida de los formularios
 
 Nos referiremos en concreto al ciclo de vida de las páginas (ya que cada una tiene un controlador diferente). El ciclo de vida de una página es el que provee Play. Todos los controladores de las páginas tendrán un método *index* que hace la carga de la solicitud, y a partir de ésta realiza el render de la misma (se "dibuja" en pantalla la página con los datos incluidos).
 
-Las páginas que permitan "guardar" algo, tendrán también los siguientes métodos (por defecto): *save*, *saveValidateCopy* y *saveRender*, los cuales podemos sobreescribir su comportamiento. El método *save* es el que se ejecuta cuando pulsamos sobre el botón guardar de una página (éste botón se crea por defecto en las páginas, a no ser que la página tenga un *noForm* especificado), y él es el que se encarga de realizar las otras 2 llamadas a *saveValidateCopy* y a *saveRender* si se cumplen los requisitos necesarios (no hay errores de validación, los permisos se cumplen, ...)  
+Las páginas que permitan "guardar" algo, tendrán también los siguientes métodos (por defecto): *editar*, *#ValidateCopy* y *editarRender*, los cuales podemos sobreescribir su comportamiento. El método *editar* es el que se ejecuta cuando pulsamos sobre el botón guardar de una página (éste botón se crea por defecto en las páginas siempre y cuando tenga un campo asociado, a no ser que la página tenga un *noForm* especificado), y él es el que se encarga de realizar las otras 2 llamadas a *#ValidateCopy* y a *editarRender* si se cumplen los requisitos necesarios (no hay errores de validación, los permisos se cumplen, ...)  
 
 h2. Relación con las entidades
 

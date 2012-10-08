@@ -66,6 +66,11 @@ public class TramiteAplicacion extends TramiteSolicitud{
 	public List<Documento> getDocumentos() {
 		return this.solicitud.documentacion.documentos;
 	}
+	
+	@Override
+	public List<DocumentoExterno> getDocumentosExternos() {
+		return this.solicitud.documentacion.documentosExternos;
+	}
 
 	@Override
 	public String getPrefijoJustificantePdf() {

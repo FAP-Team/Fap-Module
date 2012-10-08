@@ -1,0 +1,5 @@
+h1. Aportación
+
+Para utilizar este módulo de FAP basta con referenciar la Página FAP en el enlace que queramos en nuestra aplicación.
+
+bc. Enlace "Aportación de Documentación" pagina=Aportacion

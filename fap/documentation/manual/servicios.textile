@@ -68,3 +68,18 @@ Un esquema que complementa la anterior explicación es el siguiente:
 !images/gestorDocumentalService!
 
 Vemos que el módulo FAP tiene 2 implementaciones del servicio, y nuestra aplicación puede a su vez tener todas las implementaciones que queramos y usaremos la que configuremos en el _AppModule.java_.
+
+h2. Tipos de Servicios
+
+h3. Gestor Documental: 
+
+* Puede tratarse del "Aed":ws-aed-gd o del "FileSystem":ws-fs-gd.
+h3. Firma:
+
+* Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.	
+h3. Notificaciones:
+
+* Puede utilizarse el servicio de la ACIISI o el "FileSystem":ws-fs-gd.
+h3. Registro: 
+
+* Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.

@@ -1,0 +1,17 @@
+h1. Otros Recursos
+
+h2. "Generación de PDFs":fap-generacion-informes
+
+El módulo FAP permite generar ficheros PDF a partir de plantillas. En éste apartado se explica cómo crear las plantillas para generar esos PDF.
+
+h2. "Puesta en Producción":app-deploy
+
+Aprende de forma simple cómo poner tu aplicación FAP en producción, properties, configuración de logs, empaquetado de la aplicación, ...
+
+h2. "Desplegar Aplicaciones":curso-deploy
+
+Podrás encontrar la explicación simple de como crear y desplegar tu aplicación mediante un .war
+
+h2. "Configuraciones Apache para el despliegue":curso-configuracionProxyReverse
+
+Anotaciones especiales sobre como desplegar tu aplicación fap utilizando un servidor Apache, resolución de problemas en rutas, balanceador de carga,...

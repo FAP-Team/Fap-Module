@@ -4,12 +4,24 @@ En esta sección nos adentraremos en los primeros pasos que realicemos con FAP. 
 
 ¿A qué esperas? ... ¡Comienza a explorar FAP! 
 
-# "Comandos Básicos":comandos
-# "Nuestra Primera Aplicación FAP":nuevaApp
-# *¿Qué Se Esconde Detrás de Nuestra Aplicación FAP?:*
-## *Modelo Vista Controlador (MVC):*
-### "Los Modelos":nuevaApp-entidades
-### "Los Controladores":controladores
-### "Las Vistas":curso-formularios
-## "Otros Elementos de Nuestro Lenguaje":dsl-home
-# "Estructura de Nuestra Aplicación FAP":estructurafap
+h1. "Comandos Básicos":comandos
+
+Conozca los comandos que FAP implementa para utilizar con Play!
+
+h1.  "Nuestra Primera Aplicación FAP":nuevaApp
+
+Haga su primer 'Hola Mundo' con FAP.
+
+h1. ¿Qué Se Esconde Detrás de Nuestra Aplicación FAP?
+
+h2. Modelo Vista Controlador (MVC)
+
+h3. "Los Modelos":nuevaApp-entidades
+
+h3. "Los Controladores":controladores
+
+h3.  "Las Vistas":curso-formularios
+
+h2.  "Otros Elementos de Nuestro Lenguaje":dsl-home
+
+h1. "Estructura de Nuestra Aplicación FAP":estructurafap

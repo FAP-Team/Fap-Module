@@ -95,6 +95,8 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public DatosAnotaciones datosAnotaciones;
 
+	public Boolean activoFH;
+
 	public SolicitudGenerica() {
 		init();
 	}
@@ -182,6 +184,9 @@ public class SolicitudGenerica extends FapModel {
 			datosAnotaciones = new DatosAnotaciones();
 		else
 			datosAnotaciones.init();
+
+		if (activoFH == null)
+			activoFH = false;
 
 		postInit();
 	}

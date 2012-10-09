@@ -4,6 +4,10 @@ h2. "Aceptación/Renuncia":app-tramitacion
 
 Permiten añadir la funcionalidad, simplemente referenciando las páginas en cuestión en el DSL de nuestra aplicación, de Aceptación y Renuncia. Esto será usado por aquellos solicitantes a los que se le ha concecido aquello que han solicitado en la aplicación en cuestión. Una vez que se haya fallado positivamente en favor del solicitante, este tendrá la potestad de aceptar o renunciar dicha concesión. 
 
+h2. "Firma y Registro por Funcionario Habilitado":app-funcionariohabilitado
+
+Existe la posibilidad de qu epor diversos motivos un solicitante no pueda firmar ni registrar la solicitud, ya sea por un problemas con su navegador o cualquier otra causa. En estos casos, existe la posibilidad de utilizar una funcionalidad que trae FAP implementada y que permite que un usuario delegue estas acciones en un Funcionario Público (denominado Habilitado).
+
 h2. "Administración":app-administracion
 
 Es el panel de Administración que tiene toda aplicación FAP. Por defecto ya viene implementado y enlazado en el menú lateral de cualquier aplicación FAP. Sólo es visible para usuarios con rol Administrador, y permite entre otras muchas cosas, Inicializar distintos componentes como el Gestor Documental, tener uns visión rápida de los logs que genera la aplicación, gestionar las plantillas de emails, las cuentas de usuarios, controlar las distintas etapas de la fase de Baremación, etc.

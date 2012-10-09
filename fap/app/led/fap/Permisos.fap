@@ -1156,3 +1156,16 @@ Permiso autorizadoNoAutoriza{
 		)
 	return all
 }
+
+Permiso ActivarHabilitarFH{
+	vars
+		SolicitudGenerica solicitud
+	when
+		(solicitud?.activoFH="true")
+	return
+		visible
+	when
+		(solicitud?.activoFH=null) or (solicitud?.activoFH="false")
+	return
+		all
+}

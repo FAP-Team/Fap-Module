@@ -21,10 +21,12 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}
 		}
 		
-		Grupo titulo="Plantilla a rellenar para habilitar a firmar a un Funcionario" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")"{
-			Wiki{"Para habilitar la firma a un Funcionario habilitado, deberá abrir la plantilla siguiente. Descárguese y rellene dicha plantilla y adjuntela como documento."}
-			Form formAbrirPlantillaFH destino="_blank"{
-				Boton btnAbrirPlantillaFH titulo="Abrir Plantilla"
+		Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+			Grupo titulo="Habilitar la firma y presentación por Funcionario Público" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")"{
+				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación” de esta página."}
+				Form formAbrirPlantillaFH destino="_blank"{
+					Boton btnAbrirPlantillaFH titulo="Descargar Autorización"
+				}
 			}
 		}
 	}
@@ -200,12 +202,14 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			
 			// Sobreescrito HTML
 			
-			Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHAportacion{
-				Form formHabilitarFH {
-					Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
-				}
-				Grupo borde=false mostrarSiCampo SolicitudGenerica.registro.habilitaFuncionario="true"{
-					Wiki{"Ya ha sido habilitada la opción de que un funcionario habilitado firmar y registrar."}
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+				Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHAportacion{
+					Form formHabilitarFH {
+						Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
+					}
+					Grupo borde=false mostrarSiCampo SolicitudGenerica.registro.habilitaFuncionario="true"{
+						Wiki{"Ya ha sido habilitada la opción de que un funcionario habilitado pueda firmar y registrar."}
+					}
 				}
 			}
 			
@@ -546,7 +550,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 	}
 	
-Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador  perteneceA ="Exclusion"{
+	Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador  perteneceA ="Exclusion"{
 		Tabla exclusion titulo="Codigos de Exclusión" campo=SolicitudGenerica.exclusion.codigos
 		popup=PopUpExclusion
 		{
@@ -1003,28 +1007,30 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador 
 	// Sobreescrito
 	Pagina SolicitudPresentarFAP titulo="Presentar Solicitud" noForm campo=SolicitudGenerica.registro perteneceA ="Presentacion"{
 		
-		Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHPresentacion{
-			Form formHabilitarFH {
-				Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
-			}
-			Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
-				Wiki{"Ya ha sido requerida la firma por un Funcionario habilitado, en breve un funcionario lo firmará y registrará."}
-			}
-		}
-		
-		// Sobreescrito HTML
-		//Firma Funcionario Habilitado
-		Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
-			Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.presentacion.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarSolicitudFH
-			{
-				Form formFirmaFH { 
-			    	Wiki {"La solicitud será firmada y registrada." }
-					FirmaSimple firmarRegistrarFH titulo="Firmar y registrar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+		Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+			Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHPresentacion{
+				Form formHabilitarFH {
+					Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
 				}
-	
-				Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+				Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
+					Wiki{"Ya ha sido requerida la firma por un Funcionario habilitado, en breve un funcionario lo firmará y registrará."}
+				}
 			}
-		}
+		
+			// Sobreescrito HTML
+			//Firma Funcionario Habilitado
+			Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
+				Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.presentacion.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarSolicitudFH
+				{
+					Form formFirmaFH { 
+				    	Wiki {"La solicitud será firmada y registrada." }
+						FirmaSimple firmarRegistrarFH titulo="Firmar y registrar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+					}
+		
+					Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+				}
+			}
+		 }
 
 		//Firma persona física
 		Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=firmarRegistrarSolicitud
@@ -1072,5 +1078,17 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador 
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
 				}
 			}
+	}
+	
+	Pagina ActivarFuncionarioHabilitado titulo="Activar Posibilidadad de Requerir Firma de Funcionario Habilitado" permiso=adminOrGestor noForm{
+		
+		Grupo titulo="Activar Posibilidadad de Requerir Firma de Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=ActivarHabilitarFH{
+			Form formActivarFH {
+				Boton activarFH titulo="Activar Funcionario Habilitado"
+			}
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+				Wiki{"Ya ha sido activada la posibilidad de habilitar la firma de un Funcionario Habilitado."}
+			}
+		}
 	}
 }

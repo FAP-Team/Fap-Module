@@ -76,6 +76,7 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
 			Enlace "PCEconómicos" pagina=PCEconomicos	
 			Enlace "Desistimiento" pagina=Desistimiento
+			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
     	}    	
 		
 		Enlace "Aportación" pagina=Aportacion

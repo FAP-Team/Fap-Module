@@ -16,6 +16,8 @@
      urlCrear:play.mvc.Router.reverse('SolicitudPresentarFAPController.crear' , ['idSolicitud':solicitud?.id]), 
      urlEditar:play.mvc.Router.reverse('SolicitudPresentarFAPController.editar' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id])
 }
+
+		#{fap.grupo borde:false, mostrarSi:solicitud.activoFH==true}
 			
 			#{fap.grupo titulo:'Firma Requerida a Funcionario Habilitado', mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'habilitarFHPresentacion'}
 				
@@ -56,6 +58,8 @@
 				#{/fap.grupo}
 				
 			#{/fap.grupo}
+			
+		#{/fap.grupo}
 		
 			#{fap.grupo mostrarSi:['fisica'].contains(solicitud.solicitante.tipo), permiso:'firmarRegistrarSolicitud', titulo:'Paso 3. Firmar y Registrar la solicitud'}
 				

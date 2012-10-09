@@ -39,6 +39,7 @@ h4. Documentación
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
 | Configurar filtro por tipo MIMES  |  *fap.gestordocumental.mimes* | | _fap.gestordocumental.mimes=image/png, image/jpg, application/pdf_
 | Configurar filtro por extensiones  | *fap.gestordocumental.extensions* | | _fap.gestordocumental.extensions=pdf, png, jpg_
+| Tamaño maximo permitido de los ficheros a subir | *fap.file.maxsize* | | fap.file.maxsize=100000 |
 
 
 h3. Servicios
@@ -47,6 +48,7 @@ h3. Servicios
 | Permitir definir el HttpTimeout de los servicios | *fap.servicios.httpTimeout* | _long_ | _fap.servicios.httpTimeout=240000_ (Se activa el timeout de los servicios cada 24 segundos (se representa en milisegundos.) |
 | Configuración del AED | *fap.aed.[...]*  | | Más información sobre la configuración del AED, "aquí":ws-aed
 | Configuración de Platino | *fap.platino.[...]* | | Más información sobre la configuración de Platino, "aquí":ws-platino
+| Configuración del servicio de Notificaciones | *fap.notificaciones.[...]* | | Más información sobre la configuración del servicio "aquí":ws-notificacion |
 
 h3. Formato
 
@@ -75,6 +77,14 @@ h4. Interno
 | Tiempo máximo que tiene una petición el control cuando se habilita la concurrencia | *fap.cache.time* | _[Xmin]_ | _fap.cache.time=5min_ (Si una petición tiene el control más de 5 minutos, el control vuelve a liberarse) |
 | Configurar que las entidades se guarden nada mas invocarlas con el Nuevo de las tablas. | *fap.entidades.guardar.antes* | _[true / false]_ | _fap.entidades.guardar.antes=false_ (Valor por defecto que trae el mñodulo FAP) |
 | Envío de los campos no visibles en el formulario (ocultos por algún grupo). Defecto: _true_. | *fap.form.sendHiddenFields* | _[true / false]_ | _fap.form.sendHiddenFields=false_ (No se enviarán los campos ocultos, ya que se les modifica su atributo *name* para que el controlador no los reciba correctamente.) |
+| Compatibilidad con las direcciones anteriores a la version 2.1, que se sigan respetando y no se pierdan los valores | *fap.direccion.anterior.version2.1* | _[true/false]_ | fap.direccion.anterior.version2.1=true |
+| Para que se validen y guarden los datos de la pagina que contiene una tabla que redirige a otra pagina antes de ir a esa otra pagina. | *fap.tablas.validacion.antesRedirigirPaginas* | _[true/false]_ |  fap.tablas.validacion.antesRedirigirPaginas=true |
+| Para permitir que el solicitante pueda habilitar a que un Funcionario Habilitado firme y registre por él | *fap.firmaYRegistro.funcionarioHabilitado* |  _[true/false]_ |
+fap.firmaYRegistro.funcionarioHabilitado=false |
+| Tipo de documento para la autorizacion de firma de un Funcionario Habilitado | *fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento* | | fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento=eadmon://uriDoc |
+| Indica si se envían los campos ocultos en las páginas, los que son ocultos por grupos | *fap.form.sendHiddenFields* | | fap.form.sendHiddenFields=true |
+| Elimina los logs antiguos de texto plano (siguen almacenándose los .zip) | *fap.deleteLogs.textoPlano* | | fap.deleteLogs.textoPlano=false |
+
 
 h4. Visible 
 
@@ -82,6 +92,8 @@ h4. Visible
 | Aparece un formulario de búsqueda en la pantalla inicial para todos los roles (excepto Usuario) | *fap.index.search* | _[true / false]_ | _fap.index.search=true_ |
 | Tipo de direcciones usadas en el combo tipo de direcciones del elemento dirección | *fap.direcciones.tipo* | _tiposDirecciones_ | _fap.direcciones.tipo=canaria,nacional,internacional_ (Valor por defecto que trae el módulo FAP) |
 | Validación y guardado de la pagina antes de abrir la página de una tabla | *fap.tablas.validacion.antesRedirigirPaginas* | _[true / false]_ | _fap.tablas.validacion.antesRedirigirPaginas=true_ (Valor por defecto que trae el módulo FAP, a partir de la versión 2.1, antes _false_)
-| Permitir que un Funcionario Habilitado firme | *fap.firmaYRegistro.funcionarioHabilitado* | _[true / false]_ | _fap.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el mñodulo FAP) |
+| Permitir que un Funcionario Habilitado firme | *fap.firmaYRegistro.funcionarioHabilitado* | _[true / false]_ | _fap.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el módulo FAP) |
 | Permitir que se muestren los iconos o no en los elementos Texto | *fap.iconos.mostrar* | _[true / false]_ | _fap.iconos.mostrar=true_ (Se activa la visualización de los iconos, valor por defecto en FAP.)
+| Personalizar el mensaje de error en los elementos de tipo moneda | *fap.mensaje.error.moneda* | | fap.mensaje.error.moneda=El formato correcto es 0,00 |
 | Permitir listar la tabla de Documentos Subidos, en la Documentación | *fap.documentacion.listarDocumentosSubidos* | _[true / false]_ | _fap.documentacion.listarDocumentosSubidos=true_ (Se activa la visualización de la tabla, valor por defecto en FAP.) |
+| Deshabilita chosen (js) para los tests | *fap.unable.chosen* | | fap.unable.chosen=false |

@@ -8,15 +8,25 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Set;
 
+import models.Agente;
 import models.PlantillaDocumento;
 
 import org.allcolor.yahp.converter.IHtmlToPdfTransformer;
 import org.allcolor.yahp.converter.IHtmlToPdfTransformer.PageSize;
+
+import com.ning.http.client.Request;
+
+import controllers.fap.AgenteController;
 
 import play.Play;
 import play.libs.Codec;
@@ -45,14 +55,14 @@ public class ReportFAP {
 	 * @param template Plantilla que se sustituirá para generar el PDF
 	 */
 	public ReportFAP(String template) {
-		this(template, true, true);
+		this(template, true);
 	}
 	
 	/**
 	 * @param idTemplate Identificador de la plantilla que se sustituirá para generar el PDF
 	 */
 	public ReportFAP(Long idTemplate) {
-		this(idTemplate, true, true);
+		this(idTemplate, true);
 	}
 
 	/**
@@ -61,67 +71,26 @@ public class ReportFAP {
 	 * 			sino que se lo pasamos como una cadena de texto en el primer argumento.
 	 * @param sustituirEntidades no sustituir el valor de las entidades ({$Agente.username}). 
 	 */
-	public ReportFAP(String template, boolean contenidoEnFichero, boolean sustituirEntidades) {
-		String plantilla = generarPlantilla(template, contenidoEnFichero);
-		System.out.println("********** [ReportFAP] sustituirEntidades = " + sustituirEntidades);
-		
-		String nombreFichero = "tmp_" + Codec.UUID().substring(0, FILENAME_SIZE);
-		String rutaMasNombreFicheroTemporal = null;
-		
-		if (!sustituirEntidades) {
-			try {
-				BufferedReader reader = null;
-				// XXX: Revisar ruta
-				reader = new BufferedReader(new FileReader(plantilla));
-				rutaMasNombreFicheroTemporal = FapProperties.get("fap.path.editor.tmp") + "/" + nombreFichero + ".html";
-				PrintWriter writer = new PrintWriter(new FileWriter(rutaMasNombreFicheroTemporal));
-				String line = null;
-				while ((line = reader.readLine()) != null) {
-					// FIXME: mejorar esta sustitución
-					writer.println(line.replaceAll( Matcher.quoteReplacement("$"),"0") );
-				}
-			    reader.close();
-			    writer.close();
-			} catch (Exception e) { e.printStackTrace(); }
-			this.template = rutaMasNombreFicheroTemporal;
-		}
-		else
+	public ReportFAP(String template, boolean contenidoEnFichero) {
+		if (contenidoEnFichero) 
+			this.template = template;
+		else {
+			String plantilla = generarPlantilla(template, contenidoEnFichero);
 			this.template = plantilla;
+		}
 		normalSize();
 	}
-	
+
 	/**
 	 * @param template Identificador de la plantilla que se sustituirá para generar el PDF
 	 * @param contenidoEnFichero Con valor 'false', el contenido que queremos renderizar a PDF, no está físicamente en un fichero, 
 	 * 			sino que se lo pasamos como una cadena de texto en el primer argumento.
 	 * @param sustituirEntidades no sustituir el valor de las entidades ({$Agente.username}). 
 	 */
-	public ReportFAP(Long idTemplate, boolean contenidoEnFichero, boolean sustituirEntidades) {
-		String nombrePlantilla = getNombreFromId(idTemplate);
+	public ReportFAP(Long idTemplate, boolean contenidoEnFichero) {
+		String nombrePlantilla = getNombreFromId(idTemplate);	
 		String plantilla = generarPlantilla(nombrePlantilla, contenidoEnFichero);
-		
-		String nombreFichero = "tmp_" + Codec.UUID().substring(0, FILENAME_SIZE);
-		String rutaMasNombreFicheroTemporal = null;
-		
-		if (!sustituirEntidades) {
-			// FIXME: arreglar esta chapuza de sustitución (reemplazamos la imagen de pagebreak por un pixel transparente). 
-			try {
-				BufferedReader reader = null;
-				// XXX: Revisar ruta
-				reader = new BufferedReader(new FileReader(plantilla));
-				rutaMasNombreFicheroTemporal = FapProperties.get("fap.path.editor.tmp") + "/" + nombreFichero + ".html";
-				PrintWriter writer = new PrintWriter(new FileWriter(rutaMasNombreFicheroTemporal));
-				String line = null;
-				while ((line = reader.readLine()) != null)
-					// FIXME: mejorar esta sustitución
-					writer.println(line.replaceAll( Matcher.quoteReplacement("$"),"0") );
-			    reader.close();
-			    writer.close();
-			} catch (Exception e) { e.printStackTrace(); }
-			this.template = rutaMasNombreFicheroTemporal;
-		}
-		else
-			this.template = plantilla;
+		this.template = plantilla;
 		
 		normalSize();
 	}
@@ -211,6 +180,20 @@ public class ReportFAP {
 	}
 	
 	/**
+	 * Renderiza un PDF y genera una Http.Response con el contenido
+	 * del pdf.
+	 * 
+	 * Este método únicamente se puede utilizar desde los controladores.
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
+	public void renderResponse(Object... args) throws Exception {
+		PDF.renderTemplateAsPDF(null, getRenderOptions(), args);
+	}
+	
+	
+	/**
 	 * Renderiza un PDF a un fichero temporal.
 	 * 
 	 * Este método únicamente puede ser utilizada desde los controladores. Para utilizarla desde 
@@ -222,12 +205,12 @@ public class ReportFAP {
 	 * @return
 	 * @throws Exception
 	 */
-	public File renderTmpFile(Object... args) throws Exception {		
+	public File renderTmpFile(Object... args) throws Exception {	
 		File tmp = File.createTempFile("report_", ".pdf", Play.tmpDir);
 		PDF.renderTemplateAsPDF(new FileOutputStream(tmp), getRenderOptions(), args);
 		return tmp;
 	}
-	
+
 	/**
 	 * Renderiza un PDF a un fichero temporal.
 	 * 
@@ -253,19 +236,6 @@ public class ReportFAP {
 		
 		PDF.renderTemplateAsPDF(new FileOutputStream(tmp), getRenderOptions());
 		return tmp;
-	}
-	
-	/**
-	 * Renderiza un PDF y genera una Http.Response con el contenido
-	 * del pdf.
-	 * 
-	 * Este método únicamente se puede utilizar desde los controladores.
-	 * 
-	 * @param args
-	 * @throws Exception
-	 */
-	public void renderResponse(Object... args) throws Exception {
-		PDF.renderTemplateAsPDF(null, getRenderOptions(), args);
 	}
 	
 	/*
@@ -315,6 +285,7 @@ public class ReportFAP {
 
 		return rutaMasNombreFicheroTemporal;
 	}
+
 	
 	/*
 	 * Genera la plantilla del header/footer

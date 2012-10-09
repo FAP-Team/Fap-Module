@@ -9,10 +9,10 @@ var EliminarPlantillaDialog = {
 		  var indice = document.forms[0].selectplantilla.selectedIndex;
 		  var idPlantilla = document.forms[0].selectplantilla.options[indice].value;
 		  
-		  tinyMCEPopup.editor.setContent(''); 
+		  //tinyMCEPopup.editor.setContent(''); 
           
           $.post("/plantillasdoccontroller/eliminarPlantilla", {'idPlantilla': idPlantilla}, function() {
-                    tinyMCEPopup.execCommand('putIdPlantillaURL', '');      // borramos el anchor
+          //          tinyMCEPopup.execCommand('putIdPlantillaURL', '');      // borramos el anchor
                     tinyMCEPopup.close(); 
           }).error(function (xhr, ajaxOptions, thrownError) { 
                     alert('Error al eliminar la plantilla: (' + xhr.status + ') ' + thrownError); 

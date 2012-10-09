@@ -13,17 +13,24 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -32,6 +39,7 @@ import com.google.inject.Injector;
 
 import messages.Messages;
 import models.Agente;
+import models.SolicitudGenerica;
 import models.CodigoExclusion;
 import models.Convocatoria;
 import models.ImagenesPlantilla;
@@ -54,7 +62,10 @@ import utils.BinaryResponse;
 import validation.CustomValidation;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
+import controllers.fap.UtilsController;
 import controllers.gen.PlantillasDocControllerGen;
+import es.gobcan.eadmon.aed.ws.dominio.Solicitud;
+
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import java.net.URL;
@@ -69,9 +80,15 @@ import org.apache.log4j.Logger;
 
 
 public class PlantillasDocController extends PlantillasDocControllerGen {
-	
+
 	// Entidades a excluir en el plugin de TinyMCE que inserta una entidad FAP en una plantilla del editor
 	private static final String[] ENTIDADES_A_EXCLUIR = {"Singleton", "TableKeyValue", "TableKeyValueDependency", "Quartz"};
+	// Entidades a incluir en el plugin de TinyMCE que inserta una entidad FAP en una plantilla del editor
+	private static final String[] ENTIDADES_A_INCLUIR = {"Agente"};
+	// Clases que tienen un métod getClase() en el paquete controllers.fap para poder instanciarlas 
+	// Ej: getAgente() en AgenteControllers.java
+	private static final List<String> GET_OBJECT_EN_CONTROLLERSFAP = 
+			Collections.unmodifiableList( new ArrayList<String>(Arrays.asList("Agente"/*, ""*/)) );
     
 	public static void index(String accion) {
 		if (accion == null)
@@ -125,7 +142,7 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	
 	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en TextEditor.html
-	 * Comprobamos si 
+	 * Comprobamos que no se creen dos plantillas con el mismo nombre.
 	 */
 	public static void comprobarNombrePlantillaUnico(String nombrePlantilla) {
 		List<PlantillaDocumento> listaPlantillas = PlantillaDocumento.find("select plantilla from PlantillaDocumento plantilla " +
@@ -245,20 +262,33 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en el .init de TinyMCE (TextEditor.html)
 	 * Genera un pdf a partir del texto actual del editor.
 	 */
-	public static void html2pdf(String contenido, Long idPlantilla, Long idHeader, Long idFooter, boolean sustituirEntidades) {
+	public static void html2pdf(String contenido, Long idPlantilla, Long idHeader, Long idFooter, boolean sustituirEntidades) {	
 		if (contenido == null)
 			contenido = "";
-		
+
+		contenido = insertarPlantillaEnContenido(contenido);		// si se requiere una plantilla en medio del contenido
+
 		File borrador = null;
 		try {
-			borrador = new ReportFAP(contenido, false, sustituirEntidades).header(idHeader).footer(idFooter).renderTmpFile();
-			//borrador = new ReportFAP("reports/plantillaBaseEditorCopia.html", false).header("reports/header2.html").footer("reports/footer2.html").renderTmpFile();		
+			if (!sustituirEntidades) { 
+				contenido = contenido.replaceAll( Pattern.quote("${"), "-->{");
+				borrador = new ReportFAP(contenido, false).header(idHeader).footer(idFooter).renderTmpFile();
+			}
+			else {
+				String plantilla = null;
+				Map<String, Object> listaObjetos = new HashMap<String, Object>();			
+				plantilla = ReportFAP.generarPlantilla(contenido, false);
+				Set<String> listaEntidades = new HashSet<String>();
+				listaEntidades = getListaEntidadesASustituir(plantilla);
+				listaObjetos = getListaObjetosASustituir(listaEntidades);
+				borrador = new ReportFAP(contenido, false).header(idHeader).footer(idFooter).renderTmpFile(listaObjetos);	
+			}
 		} catch (Exception e) { e.printStackTrace(); }
 	
 		// Copiamos el pdf de la carpeta temporal de la aplicación a /public/tmp
-		try {
-			Process proc = null;
-			String osName = System.getProperty("os.name" );
+		Process proc = null;
+		try {		
+			String osName = System.getProperty("os.name");
 			if (osName.contains("Win"))			// windows
 				proc = Runtime.getRuntime().exec("copy " + Play.tmpDir + "/" + borrador.getName() + " public/tmp/");
 			else								// linux, mac, ...
@@ -280,17 +310,26 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 
 		renderText("/" + FapProperties.get("fap.path.editor.tmp") + "/" + borrador.getName());
 	}
-	
+
 	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en dialog.html (plugin 'insertarentidadfap' del TinyMCE).
 	 * Devolvemos al plugin del editor TinyMCE una lista con todas las entidades (propias de la aplicación más 
-	 * las heredadas del módulo FAP)
+	 * las heredadas del módulo FAP).
 	 */
 	public static void obtenerListaEntidades() {
 		List<String> listaEntidades = new ArrayList<String>();
 		List<String> listaEntidadesAExluir = new ArrayList<String>(); // entidades que no queremos que aparezcan en la lista para insertarlas en las plantillas
-		List<String> listaEntidadesPadre = new ArrayList<String>();	 // entidades del módulo FAP que son padres de alguna entidad de la aplicación (hija extends padre)
-																	 // (para eliminarlas del listado de entidades que se presenta)		
+		// Entidades del módulo FAP que son padres de alguna entidad de la aplicación (hija extends padre) (para eliminarlas del listado de entidades que se presenta)	
+		List<String> listaEntidadesPadre = new ArrayList<String>();	 
+
+		// Si la lista de entidades disponibles es la lista constante ENTIDADES_A_INCLUIR
+		if (FapProperties.getBoolean("fap.editor.entidades.incluir")) {
+			listaEntidades = Arrays.asList(ENTIDADES_A_INCLUIR);
+			Collections.sort(listaEntidades, Collections.reverseOrder());
+			renderJSON(listaEntidades);	
+		}
+		
+		// Si la lista de entidades disponibles son todas las de la aplicación exceptuando la lista constante ENTIDADES_A_EXCLUIR
 		for (String entidad : ENTIDADES_A_EXCLUIR)
 			listaEntidadesAExluir.add(entidad);
 	
@@ -341,9 +380,10 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	 * 
 	 */
 	public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
-	    for (Field field: type.getDeclaredFields()) {
+	    for (Field field: type.getFields()) {
 	        fields.add(field);
 	    }
+	    
 	    return fields;
 	}
 	
@@ -358,11 +398,19 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		} catch (ClassNotFoundException e) {e.printStackTrace();}
 		
 		List<Field> listaFields = getAllFields(new LinkedList<Field>(), clase);
+		// Ordenamos por el nombre del atributo
+		Collections.sort(listaFields, new Comparator(){
+					            public int compare(Object o1, Object o2) {
+					                Field f1 = (Field) o1;
+					                Field f2 = (Field) o2;
+					               return f1.getName().compareToIgnoreCase(f2.getName());
+					            }		
+						});
 		
 		String tipo,						// tipo genérico del Field 
 				entidadAtributo = null, 	// almacenamos la entidad del atributo (si corresponde)
 				jsonString = "[";			// json que vamos a renderizar
-		boolean entidadPropia;				// si un atributo es un tipo de java o es una entidad de nuestra aplicación
+		boolean entidadPropia;				// si un atributo es un tipo java o es una entidad de nuestra aplicación
 		for (int i = 0; i < listaFields.size(); i++) {
 			entidadPropia = false;
 			tipo = 	listaFields.get(i).getGenericType().toString();	// Ej: java.util.List<models.Tema>
@@ -381,5 +429,84 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		}
 		jsonString += "]";
 		renderJSON(jsonString);
+	}
+
+	/*
+	 * Si no hay entidades a sustituir se invalida la cadena ${} que permite al report sustituir los valores internamente
+	 * 
+	 */
+	public static Set<String> getListaEntidadesASustituir(String plantilla) {
+		Set<String> listaEntidades = new HashSet<String>();
+		try {
+			BufferedReader reader = null;
+			reader = new BufferedReader(new FileReader(plantilla));
+			String line = null;
+			Pattern pattern = Pattern.compile( ".*?" + Pattern.quote("${") + "([_A-Za-z0-9\\.]+)" + Pattern.quote("}"));
+			Matcher matcher;
+			while ((line = reader.readLine()) != null) {
+				
+				matcher = pattern.matcher(line);
+				while (matcher.find())
+					listaEntidades.add( matcher.group(1).split("\\.")[0] );   	// cogemos la entidad (Ej: "Agente" de Agente.username)
+			}
+			reader.close();
+		} catch (Exception e) { e.printStackTrace(); }
+		
+		return listaEntidades;
+	}
+	
+	/**
+	 * Pasándole una lista de entidades, devuelve el objeto instanciado de cada una de ellas.
+	 * 
+	 * @param listaEntidades
+	 * @return Lista de los objetos instanciados
+	 */
+	public static Map<String, Object> getListaObjetosASustituir(Set<String> listaEntidades) {
+		Map<String, Object> objetosARenderizar = new HashMap<String, Object>();
+		String nombreClase = null, 
+				rutaControlador = null;
+		Object obj;
+		Class clase;
+		
+		for (String entidad : listaEntidades) {
+			obj = clase = null;
+			nombreClase = entidad.substring(0,1).toUpperCase() + entidad.substring(1);		// del editor viene con la clase en minúscula				
+			
+			if ( GET_OBJECT_EN_CONTROLLERSFAP.contains(nombreClase) )
+				rutaControlador = "controllers.fap.";
+//			if  ( GET_OBJECT_EN_CONTROLLERSGEN.contains(nombreClase) ) 
+//				rutaControlador = "controllers.gen.";
+			else
+			 	rutaControlador = "controllers.";
+			
+			try {
+				clase = Class.forName(rutaControlador + nombreClase + "Controller");
+				Method method = clase.getMethod("get" + nombreClase, new Class[0]);
+				obj = method.invoke("get" + nombreClase, new Object[0]);
+			} catch (Exception e) { e.printStackTrace(); }
+			
+			objetosARenderizar.put(entidad, obj);
+		}
+		
+		return objetosARenderizar;
+	}
+	
+	/**
+	 * Sustituye el tag propio del editor (insertado con el plugin "requerirplantilla") con su contenido
+	 * correspondiente buscado en base de datos.
+	 * 
+	 * @param contenido Cadena de texto capturada en el editor, del que vamos a sustituir si tiene una plantilla
+	 * requerida, por su contenido correspondiente.
+	 * @return Plantilla ya sustituida
+	 */
+	public static String insertarPlantillaEnContenido(String contenido) {
+		Pattern pattern = Pattern.compile("@([_A-Za-z0-9]+)@");		// ejemplo de tag: @plantilla.html@
+		Matcher matcher = pattern.matcher(contenido);
+		PlantillaDocumento plantilla; 
+		while (matcher.find()) {
+			plantilla = PlantillaDocumento.find("select plantilla from PlantillaDocumento plantilla where nombrePlantilla = '" + matcher.group(1) + "'").first();
+			contenido = contenido.replaceFirst("@" + matcher.group(1) + "@", plantilla.plantilla);
+		}
+		return contenido;
 	}
 }

@@ -2,27 +2,51 @@ h1. Módulos FAP
 
 h2. "Aceptación/Renuncia":app-tramitacion
 
+Permiten añadir la funcionalidad, simplemente referenciando las páginas en cuestión en el DSL de nuestra aplicación, de Aceptación y Renuncia. Esto será usado por aquellos solicitantes a los que se le ha concecido aquello que han solicitado en la aplicación en cuestión. Una vez que se haya fallado positivamente en favor del solicitante, este tendrá la potestad de aceptar o renunciar dicha concesión. 
+
 h2. "Administración":app-administracion
+
+Es el panel de Administración que tiene toda aplicación FAP. Por defecto ya viene implementado y enlazado en el menú lateral de cualquier aplicación FAP. Sólo es visible para usuarios con rol Administrador, y permite entre otras muchas cosas, Inicializar distintos componentes como el Gestor Documental, tener uns visión rápida de los logs que genera la aplicación, gestionar las plantillas de emails, las cuentas de usuarios, controlar las distintas etapas de la fase de Baremación, etc.
 
 h2. "Alegación":app-tramitacion
 
+Añade una página a las aplicaciones que permite realizar una Alegación por parte del solicitante.
+
 h2. "Aportación":app-aportacion
+
+Permite añadir todas las páginas necesarias para la aportación de documentación en nuestra aplicación. Esta funcionalidad es usada, normalmente, después de que el solicitante haya presentado correctamente la solicitud. Se utiliza para que el solicitante pueda seguir aportando documentos (ya sea porque se despistó de subir alguno en la fase de Presentación, o porque alguno de los que subió no sea correcto y se le haya requerido por parte de la administración o incluso porque esta última le solicita un nuevo documento a subir que no se tenía contemplado previamente.)
 
 h2. "Baremación":app-baremacion
 
+Funcionalidad que suelen necesitar bastantes aplicaciones telemáticas de administración eletrónica. Su cometido es el de poder evaluar las solicitudes siguiendo el baremo que se haya estipulado en la convocatoria pertinente, para así poder calcular que solicitudes son supceptibles de percibir lo que piden. Se usa mucho en convocatorias de procedimientos competitivos.
+
 h2. "Desestimiento":app-tramitacion
+
+Esta funcionalidad, también está orientada al solicitante. Permite que este desista la solicitud, una vez la haya presentado correctamente, en cualquier momento. De forma que la administración no la va a seguir teniendo en cuenta en sucesivas fases del proceso administrativos. Obviamente el desestimiento tiene una vida de uso, que va desde que se presenta la solicitud hasta justo antes de resolverse la convocatoria en cuestión, ese es el tiempo que tiene el solicitante para desistir su solicitud si así lo ve conveniente.
 
 h2. "Documentación":app-documentacionfap
 
+El módulo de Documentación, permite adjuntar la documentación a una solicitud. Es usado, usualmente, en la fase de Presentación y tiene la posibilidad de incorporar documentos directamente al Gestor Documental de la aplicación o indicar la referencia de un documento que ya ha sido subido previamente en otras aplicaciones de la adminsitración (lo que se denomina documentos externos).
+
 h2. "Exclusión":app-exclusion
+
+Esta funcionalidad está pensada para que la utilicen los gestores de las aplicaciones. Permite excluir una solicitud. Cuando se resuelve una convocatoria, las solicitudes normalmente o son aceptadas o son denegadas. Esta página permite denegar las solicitudes que no hayan sido agraciadas en el proceso administrativo, indicando los motivos derogatorios del mismo.
 
 h2. "Login":app-login
 
+Este módulo es el que permite loguearte a la aplicación. FAP por defecto permite el login de dos tipos: con certificado digital y con usuario y contraseña, permitiendo usar estos métodos de forma totalmente independientes, usar uno sólo o ambos. También FAP está preparado para que mediante al sobreescritura de unos métodos concretos, podamos implementar otro tipos de autenticaciones, como pueden ser por ejemplo con OpenID o incluso con las cuentas de las Redes Sociales.
+
 h2. "Presentación":app-presentacion
+
+El proceso de Presentación, permite realizar todos los pasos que se llevan a acabo para que el solicitante pueda presentar correctamente su solicitud que habrá tenido que rellenar previamente. En esta fase se comprueba que todo lo introducido por parte del solicitante es correcto para la convocatoria del procedimiento en cuestión (tanto los datos como los tipos de documentos que ha subido), se firma con su certificado digital la solicitud y se registra de entrada en la Plataforma de Interoperabilidad del Gobierno de Canarias (Platino), para que surja los efectos correspondientes. Como resultado de que todo ha ido correctamente, se le devolverá un documento en PDF que será el recibo de que ha presentado en plazo y de forma adecuada lo que se le solicitaba para participar en dicha convocatoria. 
 
 h2. "Seguimiento":app-seguimiento
 
+El módulo de Seguimiento permite a los gestores notificarse entre ellos los cambios que van realizando al ir verificando y evaluando las solicitudes para que de una manera sencilla haya un control de lo que cada gestor va realizando sobre cada solicitud y no pisarse unos a otros. Permite otras cosas como generar informes de esto, etc.
+
 h2. "Verificación":app-verificacion
+
+La Verificación es el proceso que se lleva a cabo normalmente en la fase de Instrucción, y permite checkear, comprobar y validad que los documentos que ha subido el solicitante en la parte de Presentación mediante el módulo Documentación y sigue subiendo en la fase de Instrucción mediante la Aportación de Documentación, son correctos y era lo que se precisaba en la convocatoria. Si hay algún documento que no se adecua a lo que debería ser, se podrá hacer un requerimiento para notificar al solicitante que debe volver a subir el documento correctamente, por lo que habrá un feedback para que cuando lo suba corregido, el gestor lo pueda comprobar nuevamente y así ir subsanando los errores de documentación que puedan darse.
 
 
 

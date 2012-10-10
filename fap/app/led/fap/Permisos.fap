@@ -662,17 +662,15 @@ Permiso prepararDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
 		(solicitud?.desistimiento?.registro?.fasesRegistro?.borrador = "false")
 	return
-		editable
+		all
 }
 
 Permiso generarBorradorDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
 		solicitud?.desistimiento?.motivo != null
 	return
 		all
@@ -682,7 +680,6 @@ Permiso enBorradorDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
 		(solicitud?.desistimiento?.registro?.fasesRegistro?.borrador="true")
 	return
 		all
@@ -692,7 +689,7 @@ Permiso editarDesistimiento {
 	vars
 		SolicitudGenerica solicitud
 	when 
-		((agente.rolActivo = "usuario") and (_accion = leer))
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.registro="false")
 	return
 		editable
 }
@@ -701,7 +698,6 @@ Permiso modificarDesistimiento{
 	vars
 	 	SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
 		(solicitud?.desistimiento?.registro?.fasesRegistro?.registro="false")
 	return
 		all
@@ -739,8 +735,6 @@ Permiso clasificadaDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		//TODO SMB 04/04/2012
-		(_accion = leer) or
 		(solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed="true")
 	return
 		visible
@@ -750,7 +744,6 @@ Permiso firmarRegistrarDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
 		(solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed="false")
 	return
 		all
@@ -760,7 +753,6 @@ Permiso firmarDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
 		(solicitud?.desistimiento?.registro?.fasesRegistro.firmada="false")
 	return
 		all
@@ -771,7 +763,6 @@ Permiso registrarDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
 		(solicitud?.desistimiento?.registro?.fasesRegistro.firmada = "true" and
 		solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed = "false")
 	return
@@ -1148,7 +1139,7 @@ Permiso accesoNoCertificado{
 Permiso autorizadoNoAutoriza{
 	vars
 	   SolicitudGenerica solicitud
-	   Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
+	   Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=? AND p.tipo<>'autorizado'", agente, solicitud)
 	when
 		agente.rolActivo in ("administrador", "gestor", "revisor")
 		or ( agente.rolActivo in ("usuario")

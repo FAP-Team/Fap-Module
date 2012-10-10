@@ -56,7 +56,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
 		{			
 			Form formFirmaPF permiso=firmarRegistrarDesistimiento { //redirigir=AceptarRenunciar
 		    	Wiki {"El desistimiento será firmado y registrado." }
-				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=Desistimiento.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=Desistimiento.registro.oficial listaFirmantes=Desistimiento.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
 			}
 			Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}			
 		}			
@@ -67,7 +67,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
 				Grupo titulo="Paso 3.1. Firmar el Desistimiento"  permiso=firmarDesistimiento {						
 					Wiki {"El desistimiento será firmado. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación del desistimiento."}
 					Form formFirmaRepresentante  {
-						FirmaSimple firmarRepresentante titulo="Firmar" documento=Desistimiento.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+						FirmaSimple firmarRepresentante titulo="Firmar" documento=Desistimiento.registro.oficial listaFirmantes=Desistimiento.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
 					}
 					Tabla tablaFirmantesHecho campo=Desistimiento.registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
 						Columna campo=Firmante.idvalor titulo="NIP"

@@ -29,7 +29,7 @@ _NOTA_: En las aplicaciones creadas por el equipo utilizamos "MySQL":http://www.
 
 h3. Configuración para Desarrolladores del módulo FAP
 
-Si quieres ayudar a desarrollar el módulo, o simplemente quieres ver como funciona realmente internamente, deberás seguír los siguientes pasos.
+Si quieres ayudar a desarrollar el módulo, o simplemente quieres ver como funciona realmente internamente, deberás seguír alguno de los siguientes pasos.
 
 h3. Instalación del FAP-SDK
 
@@ -41,5 +41,7 @@ h3. Instalación del FAP-SDK
 ** Eclipse con versión de xtext 2.0.1 ("Instalación":xtext-instalacion).
 ** "ant":http://ant.apache.org/ mediante línea de comandos.
 
+h3. Instalación de la última versión de FAP (GitHub)
 
+En "Github":https://github.com/ están disponibles los últimos cambios del módulo FAP, en concreto en "Fap-Module":https://github.com/FAP-Team/Fap-Module. Haz un _clone_ del proyecto y establece la variable que se indica en el paso anterior.  
 

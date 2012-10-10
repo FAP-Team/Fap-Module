@@ -206,6 +206,7 @@ public abstract class TramiteBase {
     public void calcularFirmantes(){
         if(!Messages.hasErrors()){
             registro.firmantes = Firmantes.calcularFirmanteFromSolicitante(solicitud.solicitante);
+            registro.save();
         }
     }
     

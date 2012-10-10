@@ -1543,7 +1543,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		return """
 			@Before
 			static void moduleMethod() {
-				if(!config.Modules.getProperty("fap.modulo.${element.perteneceA}")){
+				if(FapProperties.get("fap.modulo.${element.perteneceA}") == null || !FapProperties.getBoolean("fap.modulo.${element.perteneceA}")){
 					Messages.fatal("La aplicación no tiene disponible este módulo");
 				}
 			}

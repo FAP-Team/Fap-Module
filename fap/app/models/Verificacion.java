@@ -96,11 +96,11 @@ public class Verificacion extends FapModel {
 	}
 
 	public void setNullOneToMany() {
-		play.Logger.error("Eliminando de la Verificación "+this.id+" la Lista Documentos: "+this.documentos.toString());
+		play.Logger.error("Eliminando de la Verificación " + this.id + " la Lista Documentos: " + this.documentos.toString());
 		this.documentos = null;
-		play.Logger.error("Eliminando de la Verificación "+this.id+" la Lista Nuevos Documentos: "+this.nuevosDocumentos.toString());
+		play.Logger.error("Eliminando de la Verificación " + this.id + " la Lista Nuevos Documentos: " + this.nuevosDocumentos.toString());
 		this.nuevosDocumentos = null;
-		play.Logger.error("Eliminando de la Verificación "+this.id+" la Lista Verificacion Tipos Documentos: "+this.verificacionTiposDocumentos.toString());
+		play.Logger.error("Eliminando de la Verificación " + this.id + " la Lista Verificacion Tipos Documentos: " + this.verificacionTiposDocumentos.toString());
 		this.verificacionTiposDocumentos = null;
 	}
 

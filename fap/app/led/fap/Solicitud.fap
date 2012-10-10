@@ -338,6 +338,14 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	}
 	
 	Pagina PaginaVerificacion titulo="Verificación" campo=SolicitudGenerica.verificacion noForm permiso=accederSiSolicituNoBorrador perteneceA ="Verificacion"{
+		
+		Grupo gAnularVerificacion titulo="Anular Verificación" permiso=anularVerificacion{
+			Wiki {"Presione el Botón de Anular Verificación bajo su propia responsabilidad."}
+			Form anularVerificacion {
+				Boton botonAnularVerificacion titulo="Anular la Verificación" type=danger
+			}
+		}
+		
 		Grupo datosVerificacion titulo="Datos generales de la verificación" permiso=noEditable{
 			Texto expediente titulo="Expediente" campo=Verificacion.expediente
 			Combo estadoS titulo="Estado Solicitud" campo=SolicitudGenerica.estadoValue

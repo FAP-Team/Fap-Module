@@ -95,6 +95,12 @@ public class Verificacion extends FapModel {
 		return tramite;
 	}
 
+	public void setNullOneToMany() {
+		this.documentos = null;
+		this.nuevosDocumentos = null;
+		this.verificacionTiposDocumentos = null;
+	}
+
 	// === MANUAL REGION END ===
 
 }

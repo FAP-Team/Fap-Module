@@ -444,48 +444,6 @@ Permiso verificarDocumentos{
 		all
 }
 
-Permiso verificacionRequerimientos{
-	vars
-		SolicitudGenerica solicitud
-	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
-		solicitud?.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido")
-	return all
-}
-
-Permiso nuevoRequerimiento{
-	vars
-		SolicitudGenerica solicitud
-	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
-		solicitud?.estado = "pendiente requerimiento"
-	return all
-}
-
-Permiso firmarRequerimiento{
-	vars
-		SolicitudGenerica solicitud
-	when
-		solicitud?.estado = "pendiente requerimiento" and
-		agente.rolActivo in ("administrador", "gestor")
-	return all
-	
-	when
-		solicitud?.estado = "pendiente requerimiento"
-		and
-		agente.rolActivo in ("administrador", "gestor", "revisor")
-	return leer
-}
-
-Permiso finalizarRequerimiento{
-	vars
-		SolicitudGenerica solicitud
-	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
-		solicitud?.estado in ("requerida", "requerida plazo vencido")
-	return all 
-}
-
 Permiso aportacionNoNull{
 	vars
 		Documento doc
@@ -565,7 +523,7 @@ Permiso hayverificacion{
 }
 
 // Permiso fantasma, ya que va a ser sobrescrito para su uso.
-// Lo que en verdad está declarado no es lo que hace.
+// Lo que en realidad está declarado no es lo que hace.
 // Este permiso comprueba que no haya documentación nueva adjuntada por el solicitante
 // y que no esté en la verificación actual.
 Permiso hayNuevaDocumentacionVerificacion{
@@ -584,6 +542,21 @@ Permiso verificarTiposDocumentos{
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 		(solicitud?.estado = "enVerificacion") and
 		(verificacion != null and verificacion.estado != null and verificacion.estado = "verificandoTipos")
+	return
+		all
+}
+
+Permiso anularVerificacion{
+	vars
+		SolicitudGenerica solicitud
+		Verificacion verificacion
+	when
+		(_accion = editar) and 
+		(agente.rolActivo in ("administrador", "gestor")) and
+		(solicitud?.estado = "enVerificacion") and
+		(verificacion?.requerimiento?.registro?.fasesRegistro?.registro != "true") and
+		(verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true") and
+		(verificacion?.estado != null and verificacion?.estado in ("enVerificacion", "verificandoTipos", "enVerificacionNuevosDoc", "enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada"))
 	return
 		all
 }

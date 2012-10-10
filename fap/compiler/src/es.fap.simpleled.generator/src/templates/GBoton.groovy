@@ -24,7 +24,7 @@ public class GBoton extends GElement{
 			Enlace enlace = LedFactory.eINSTANCE.createEnlace();
 			enlace.name = (boton.name ?: "") + "IDenlace";
 			enlace.titulo = boton.titulo;
-			String btnType = (boton.type!= null && (!boton.type.equals("default"))) ? "btn-"+boton.type : "";
+			String btnType = (boton.type!= null && (!boton.type.toString().equals("default"))) ? "btn-"+boton.type : "";
 			enlace.estilo = "btn ${btnType}";
 			if (boton.pagina)
 				enlace.getMetaClass().setAttribute(enlace, "pagina", boton.pagina);
@@ -46,7 +46,7 @@ public class GBoton extends GElement{
 		if (boton.isWaitPopup())
 			params.put "waitPopup", boton.isWaitPopup();
 		if (boton.type != null)
-			params.putStr "type", "btn "+boton.type;
+			params.putStr "type", "btn-"+boton.type;
 		if (boton.refrescar)
 			params.put "refrescar", true
 		if (boton.ayuda != null) {

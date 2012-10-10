@@ -51,25 +51,15 @@ bc. Formulario Solicitud {
 	}
 }
 
-9. Genera la aplicación. Este paso lo tendrás que repetir cada vez que modifiques algún fichero *.fap*. Puedes generar la aplicación mientras está arrancada. Actualiza la página en el navegador para ver los cambios reflejados. 
+9. Genera la aplicación. Este paso lo tendrás que repetir cada vez que modifiques algún fichero *.fap*. Puedes generar la aplicación mientras está arrancada. Actualiza la página en el navegador para ver los cambios reflejados. Existen diferentes opciones que puedes pasar al generar la aplicación, documentate acerca de ella "aqui":curso-generar 
 
 bc. play fap:generate
-
-h4. Configuración para generar desde Eclipse
-
-Puedes configurar Eclipse para generar la aplicación y no tener que hacerlo desde la consola:
-* Abrir Run/External Tools/External Tools Configurations...
-* Añadir un nuevo Program
-** Location (ruta a Play): ruta_play/play.bat
-** Working directory: Ruta raíz del proyecto (Seleccionar con Browse Workspace)
-** Arguments: fap:generate --opciones
 
 10. Para ejecutar la aplicación:
 
 bc. play run
 
- 
-11. A partir de este momento tenemos la aplicación ejecutándose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. El usuario por defecto es *admin* y la contraseña no se comprueba cuando se está en modo desarrollo. Crea una nueva solicitud e irás a la página con el mensaje que acabas de crear.
+11. A partir de este momento tenemos la aplicación ejecutándose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. El usuario por defecto es *admin* y la contraseña no se comprueba cuando se está en modo desarrollo, en producción la contraseña es *123456*. Crea una nueva solicitud e irás a la página con el mensaje que acabas de crear.
 
 Si quiere crear el proyecto de forma automática, pinche "aquí":creacion-automatica-proyecto
 
@@ -78,3 +68,20 @@ h2. Configuración de Eclipse
 Para abrir el proyecto que acabamos de crear en Eclipse.
 
 bc. play eclipsify
+
+h3. Configuración para generar desde Eclipse
+
+Puedes configurar Eclipse para generar la aplicación y no tener que hacerlo desde la consola:
+* Abrir Run/External Tools/External Tools Configurations...
+* Añadir un nuevo Program
+** Location (ruta a Play): ruta_play/play.bat
+** Working directory: Ruta raíz del proyecto (Seleccionar con Browse Workspace)
+** Arguments: fap:generate --opciones
+
+h3. Arrancar aplicación desde Eclipse
+
+También puedes lanzar la aplicación desde Eclipse, sin necesidad de hacer un _play run_ en una consola (Esta opción sólo es para modo desarrollo _play run_, si quieres ejecutar la aplicación en modo producción te aconsejamos que lo hagas en una consola con _play run --%prod_). Para ello basta con ir a la carpeta Eclipse de tu aplicación, desde el Package Explorer de tu Eclipse, y dentro de esta clickar con el botón derecho sobre el archivo *_${NombreApp}_.launch* y en el menú desplegable que aparecerá, ir a _Run as_ y pulsar sobre el *_${NombreApp}_* que te saldrá con un icono Java.
+
+h2. Trabajar con el Código Fuente del Módulo FAP
+
+Si eres de los que no puedes esperar a que saquemos una nueva versión y quieres tener lo último ¡ya!, o simplemente te gusta ayudar a la comunidad de software libre, y te sientes con ganas de experimentar con FAP y ver todo lo que se esconde detrás para aprender sobre ello e incluso para intentar ayudar al proyecto, te damos unas pautas de como obtener el código fuente de FAP y trabajar con él desde tu ordenador. "Aquí tienes toda la información":curso-fapfuente

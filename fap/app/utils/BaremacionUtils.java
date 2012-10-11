@@ -195,4 +195,20 @@ public class BaremacionUtils {
 	public static void ordenarTiposCriterios (List<TipoCriterio> lista){
 		Collections.sort(lista, new TipoCriterioComparator());
 	}
+	
+	public static void setEsNuevoFalse () {
+		List<TipoCEconomico> tiposCEconomico = TipoCEconomico.findAll();
+		for (TipoCEconomico tipo : tiposCEconomico) {
+			tipo.esNuevo = false;
+			tipo.save();
+		}
+		play.Logger.info("Tipos de conceptos económicos Actualizados");
+		
+		List<TipoCriterio> tiposCriterio = TipoCriterio.findAll();
+		for (TipoCriterio tipo : tiposCriterio) {
+			tipo.esNuevo = false;
+			tipo.save();
+		}
+		play.Logger.info("Tipos de criterio Actualizados");
+	}
 }

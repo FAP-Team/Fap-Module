@@ -102,7 +102,7 @@ public class Evaluacion extends FapModel {
 		for (TipoCriterio tCriterio : tipo.criterios) {
 			if (tCriterio.esNuevo) {
 				Criterio criterio = new Criterio();
-				tCriterio.esNuevo = false;
+				//tCriterio.esNuevo = false;
 				tCriterio.save();
 				criterio.tipo = tCriterio;
 				this.criterios.add(criterio);
@@ -111,7 +111,7 @@ public class Evaluacion extends FapModel {
 		for (TipoCEconomico tCEconomico : tipo.ceconomicos) {
 			if (tCEconomico.esNuevo) {
 				CEconomico cEconomico = new CEconomico();
-				tCEconomico.esNuevo = false;
+				//tCEconomico.esNuevo = false;
 				tCEconomico.save();
 				cEconomico.tipo = tCEconomico;
 				for (int i = 0; i < tipo.duracion; i++) {

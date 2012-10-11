@@ -164,10 +164,13 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 			if (TipoEvaluacion.count() > 0){
 				TipoEvaluacion tipoEvaluacion = (TipoEvaluacion) TipoEvaluacion.findAll().get(0);
 				BaremacionUtils.actualizarParametrosVariables(tipoEvaluacion);
-				Evaluacion evaluacion = (Evaluacion) Evaluacion.findAll().get(0);
-				evaluacion.actualizar(tipoEvaluacion);
-				evaluacion.save();
+				List<Evaluacion> evaluaciones = Evaluacion.findAll();
+				for (Evaluacion evaluacion : evaluaciones) {
+					evaluacion.actualizar(tipoEvaluacion);
+					evaluacion.save();
+				}
 				log.info("Tipo de Baremación y evaluaciones de ese tipo actualizada correctamente desde fichero");
+				BaremacionUtils.setEsNuevoFalse();
 			}
 		}
 

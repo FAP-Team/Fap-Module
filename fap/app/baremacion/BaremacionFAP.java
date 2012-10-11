@@ -11,6 +11,7 @@ import models.SolicitudGenerica;
 import models.TipoEvaluacion;
 import play.db.jpa.GenericModel.JPAQuery;
 import services.BaremacionService;
+import utils.BaremacionUtils;
 
 public class BaremacionFAP {
 	// Clase de la que extiende la Baremacion de cada Aplicacion independiente
@@ -34,6 +35,9 @@ public class BaremacionFAP {
 			evaluacion.actualizar(tipoEvaluacion);
 			evaluacion.save();
 		}
+		
+		BaremacionUtils.setEsNuevoFalse();
+		
 		
 		for(SolicitudGenerica solicitud : solicitudesSinEvaluacion){
 			Evaluacion evaluacion = new Evaluacion();

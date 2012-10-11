@@ -44,12 +44,29 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 					log.info("Acción Editar de página: " + "gen/ActivarBaremacion/ActivarBaremacion.html" + " , intentada con éxito, Baremación Iniciada");
 				} catch (Exception e) {} 
 			} else{
-				play.Logger.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciar()'");
-				Messages.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciar()'");
+				invokedClass = BaremacionFAP.class;
+				if (invokedClass != null){
+					method = null;
+					try {
+						method = invokedClass.getDeclaredMethod("iniciarBaremacion");
+					} catch (SecurityException e) {} catch (NoSuchMethodException e) {}
+					if (method != null){
+						try {
+							method.invoke(null);
+							TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+							tipoEvaluacion.estado="iniciada";
+							tipoEvaluacion.save();
+							log.info("Acción Editar de página: " + "gen/ActivarBaremacion/ActivarBaremacion.html" + " , intentada con éxito, Baremación Iniciada");
+						} catch (Exception e) {} 
+					} else{
+						play.Logger.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciarBaremacion()'");
+						Messages.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciarBaremacion()'");
+					}
+				}
 			}
 		} else{
-			play.Logger.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'IniciarBaremacion'");
-			Messages.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'IniciarBaremacion'");
+			play.Logger.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'BaremacionFAP'");
+			Messages.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'BaremacionFAP'");
 		}
 		ActivarBaremacionController.activarFormBaremacionRender();
 	}

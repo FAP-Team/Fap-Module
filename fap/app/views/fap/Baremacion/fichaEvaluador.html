@@ -356,7 +356,9 @@
 <div class="actions">
 	<input type="submit" class="btn" name="save" value="&{'baremacion.fichaevaluador.guardar'}">
 	<a href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id, duracion)}" target="_blank" class="btn">Obtener borrador en PDF</a>
-	<input type="submit" class="btn" name="end" value="&{'baremacion.fichaevaluador.end'}">
+	#{if properties.FapProperties.getBoolean("fap.baremacion.finalizar.evaluacion")}
+		<input type="submit" class="btn" name="end" value="&{'baremacion.fichaevaluador.end'}">
+	#{/if}
 </div>
 
 #{/form}

@@ -19,9 +19,9 @@
 
 <form>
 #{fap.grupo titulo:'Información del expediente'}
-	#{simple.uneditable value: evaluacion.solicitud.expedienteAed.idAed, label: "Expediente"/}
-	#{simple.uneditable value: evaluacion.solicitud.solicitante.nombreCompleto, label: "Nombre"/}
-	#{simple.uneditable value: evaluacion.solicitud.solicitante.numeroId, label: "DNI/CIF"/}
+	#{simple.uneditable name:"evaluacion.solicitud.expedienteAed.idAed", value: evaluacion.solicitud.expedienteAed.idAed, label: "Expediente"/}
+	#{simple.uneditable name:"evaluacion.solicitud.solicitante.nombreCompleto",value: evaluacion.solicitud.solicitante.nombreCompleto, label: "Nombre"/}
+	#{simple.uneditable name:"evaluacion.solicitud.solicitante.numeroId",value: evaluacion.solicitud.solicitante.numeroId, label: "DNI/CIF"/}
 	<div class="button_container">
 		<a href="${expedienteUrl}" class="btn">Ver expediente</a>
 	</div>
@@ -35,10 +35,15 @@
 
 #{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
 
-	#{simple.uneditable value: evaluacion.totalCriterios, label: "Total puntuación"/}
+	%{
+		def paramName  = "evaluacion.totalCriterios"
+		def valorTC = messages.Messages.flashOrValue(paramName, evaluacion.totalCriterios)
+	}%
+
+	#{simple.uneditable name:paramName, value:valorTC, label: "Total puntuación", format:'double'/}
 	
 	#{list items:evaluacion.tipo.getSortedDatosAdicionales(), as:"tipoDatoAdicional"}
-		#{simple.uneditable value:services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion), label: tipoDatoAdicional.descripcion /}	
+		#{simple.uneditable name:"tipoDatoAdicional.descripcion", value:services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion), label: tipoDatoAdicional.descripcion /}	
 	#{/list}
 
 	#{if evaluacion.tipo.comentariosAdministracion}
@@ -106,7 +111,7 @@
 			#{/if}
 			
 			#{if criterio.tipo.claseCriterio.equals("auto")}
-				#{simple.uneditable value:valor, ancho: tam/}
+				#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam, format:'double'/}
 			#{/if}
 
 			#{elseif criterio.tipo.claseCriterio.equals("automod")}

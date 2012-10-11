@@ -14,5 +14,5 @@
 %}
 
 #{simple.row id:_id, label:_label}
-	<input type="text" #{if id}id="${id}"#{/if} class="span3" disabled="disabled" select style="width: ${_ancho}px;  background-color: ${color}" value="${value}"/>
+	<input type="text" #{if id}id="${id}"#{/if} name="${_name}" class="span3" readonly="readonly" select style="width: ${_ancho}px;  background-color: ${color}" value="${value}"/>
 #{/simple.row}

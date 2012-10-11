@@ -179,6 +179,7 @@ public class FichaEvaluadorController extends Controller {
 	
 	private static void flash(Evaluacion evaluacion){
 		Messages.setFlash("evaluacion.id", params.get("evaluacion.id", String.class));
+		Messages.setFlash("evaluacion.totalCriterios", params.get("evaluacion.totalCriterios", String.class));
 		Messages.setFlash("evaluacion.comentariosAdministracion", params.get("evaluacion.comentariosAdministracion", String.class));
 		Messages.setFlash("evaluacion.comentariosSolicitante", params.get("evaluacion.comentariosSolicitante", String.class));
 		

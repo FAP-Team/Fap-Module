@@ -15,7 +15,12 @@
 		#{list items:_options, as:'option'}
 			%{
 				def optionText  = option."${_optionsText}"
-				def optionValue = option."${_optionsValue}"				
+				def optionValue = option."${_optionsValue}"		
+				if (_value != null){ // Para los doubles al recuperarlos de flash cuando ha habido un error, se recupera como String y lo debemos pasar a double otra vez para comparar
+					try {
+						_value = Double.parseDouble(_value.replaceAll(",", "."));
+					} catch(Exception e){}
+				}		
 				def selected = optionValue?.toString().equals(_value?.toString()) ? 'selected=selected' : '';
 				optionValue = format.FapFormat.format(optionValue);
 			}%

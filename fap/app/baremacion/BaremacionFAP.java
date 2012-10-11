@@ -21,9 +21,9 @@ public class BaremacionFAP {
 		
 		//Comprueba que todas las solicitudes tengan su evaluación creada
 		List<SolicitudGenerica> solicitudesSinEvaluacion = SolicitudGenerica.find("select solicitud from Solicitud solicitud " +
-					   "where solicitud.estado=? and " +
+					   "where (solicitud.estado=? or (solicitud.estado=?)) and " +
 				       "not exists (select evaluacion from Evaluacion evaluacion " +
-				       "where evaluacion.tipo.id=? and evaluacion.solicitud = solicitud)", "iniciada", tipoEvaluacion.id).fetch();
+				       "where evaluacion.tipo.id=? and evaluacion.solicitud = solicitud)", "iniciada", "verificado", tipoEvaluacion.id).fetch();
 		
 	
 		

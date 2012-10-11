@@ -98,7 +98,7 @@ public class AuditLogListener implements
 		Object[] oldValues = event.getOldState();
 		Object[] values = event.getState();
 		for(int dirtyIndex : event.getDirtyProperties()){
-			if (values[dirtyIndex].getClass().getAnnotation(Embeddable.class) != null) {
+			if (values[dirtyIndex] != null && values[dirtyIndex].getClass().getAnnotation(Embeddable.class) != null) {
 				onPostUpdateEmbeddable(properties[dirtyIndex], values[dirtyIndex], oldValues[dirtyIndex]);
 				continue;
 			}

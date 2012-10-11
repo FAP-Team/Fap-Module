@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 2.1RC14
 
+* Fixed Bug en el install de generado por fap:winservice.
+* Fixed bug en Baremación.
 * Fixed bug Desistimiento.
 * Fixed Bug en Funcionario Habilitado.
 * Inhabilitando el evento Enter como envio de Form en los PopUp.

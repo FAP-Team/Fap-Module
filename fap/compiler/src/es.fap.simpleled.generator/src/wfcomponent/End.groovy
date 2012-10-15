@@ -282,6 +282,7 @@ public class ${clazzName} extends Secure {
 		 
 		 dirs.add(new File(FileUtils.getRoute('CONTROLLER_GEN')));
 		 dirs.add(new File(FileUtils.getRoute('CONTROLLER_GEN_POPUP')));
+		 dirs.add(new File(FileUtils.getRoute('CONTROLLER_GEN_SERVICIOWEB')));
 		 dirs.add(new File(FileUtils.getRoute('LIST')));
 		 dirs.add(new File(FileUtils.getRoute('JSON_DOCUMENTATION')));
 		 dirs.add(new File(FileUtils.getRoute('ENUM')));

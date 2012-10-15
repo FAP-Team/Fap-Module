@@ -6,7 +6,9 @@ import org.joda.time.DateTime;
 
 import messages.Messages;
 import models.Aplicacion;
+import models.ListaResultadosPeticion;
 import models.Peticion;
+import models.ResultadosPeticion;
 import models.ServiciosWeb;
 import play.libs.WS;
 import play.libs.WS.WSRequest;
@@ -48,10 +50,32 @@ public class GraficasWSController extends GraficasWSControllerGen {
 		if ((serviciosWeb.peticion.size() == 0) && (serviciosWeb.servicioWebInfo.activo))
 			getDatosFromWS(idAplicacion, idServiciosWeb);
 		
-		log.info("Visitando página: " + "app/views/fap/Graficas/GraficasWS.html");
-		renderTemplate("app/views/fap/Graficas/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb);
+		Gson gson = new Gson();
+		ListaResultadosPeticion listaResultados = null;
+		Long peticionID = Peticion.find("select max(peticion.id) from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where serviciosWeb.id=?", serviciosWeb.id).first();
+		System.out.println(" * Id peticion a mirar: " + peticionID);
+		Peticion peticion = Peticion.find("select peticion from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where peticion.id=?", peticionID).first();
+		if (peticion != null) {
+			listaResultados = gson.fromJson(peticion.stringJson, ListaResultadosPeticion.class);
+			listaResultados.save();
+			System.out.println(" * ListaResultados: " + listaResultados);
+			log.info("Visitando página: " + "app/views/fap/Graficas/GraficasWS.html");
+			renderTemplate("app/views/fap/Graficas/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb, listaResultados, peticion);
+		}
+		else {
+			Messages.warning("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
+			play.Logger.error("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
+			Messages.keep();
+			redirect("ServiciosWebAppController.index", "editar", idAplicacion);
+		}
 	}
 	
+	/**
+	 * Función que se ejecuta cuando se pulse el botón de "Recargar Datos".
+	 * Lo que hace es actualizar el Json almacenado en BBDD.
+	 * @param idAplicacion
+	 * @param idServiciosWeb
+	 */
 	@Util
 	public static void getDatosFromWS(Long idAplicacion, Long idServiciosWeb) {
 		Aplicacion aplicacion = GraficasWSController.getAplicacion(idAplicacion);
@@ -118,6 +142,7 @@ public class GraficasWSController extends GraficasWSControllerGen {
 					servicioWeb.peticion.add(peticion);
 					servicioWeb.save();
 				}
+				
 			}
 			else {
 				Messages.warning("Está consultando un servicio web del historial, no se puede actualizar");
@@ -135,6 +160,19 @@ public class GraficasWSController extends GraficasWSControllerGen {
 		} else
 			log.info("Acción Editar de página: " + "gen/GraficasWS/GraficasWS.html" + " , intentada sin éxito (Problemas de Validación)");
 		GraficasWSController.formBtnRecargaDatosRender(idAplicacion, idServiciosWeb);
+		
+	}
+	
+	@Util
+	public static void formBtnRecargaDatosRender(Long idAplicacion, Long idServiciosWeb) {
+		if (!Messages.hasMessages()) {
+			Messages.warning("El servicio web puede haber cambiado, actualice el Servicio Web");
+			play.Logger.error("El servicio web puede haber cambiado, actualice el Servicio Web");
+			Messages.keep();
+			redirect("ServiciosWebAppController.index", "editar", idAplicacion);
+		}
+		Messages.keep();
+		redirect("ServiciosWebAppController.index", "editar", idAplicacion);
 	}
 	
 	

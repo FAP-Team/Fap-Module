@@ -36,6 +36,7 @@ Formulario Administracion permiso=administrador{
 		Tabla serviciosWeb titulo="Servicios web activos" campo=Aplicacion.serviciosWeb
 		paginaEditar=GraficasWS
 		{
+			Columna titulo="ID" campo=ServiciosWeb.id expandir
 			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
 			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
 		}
@@ -47,6 +48,7 @@ Formulario Administracion permiso=administrador{
 		Tabla historialServiciosWeb titulo="Historial de servicios web" campo=Aplicacion.serviciosWeb
 		paginaEditar=GraficasWS
 		{
+			Columna titulo="ID" campo=ServiciosWeb.id expandir
 			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
 			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
 		}

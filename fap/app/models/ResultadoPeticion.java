@@ -32,9 +32,7 @@ public class ResultadoPeticion extends FapModel {
 
 	public Double valorDouble;
 
-	@org.hibernate.annotations.Columns(columns = { @Column(name = "valorDateTime"), @Column(name = "valorDateTimeTZ") })
-	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
-	public DateTime valorDateTime;
+	public String valorDateTime;
 
 	public Boolean valorBoolean;
 
@@ -80,7 +78,7 @@ public class ResultadoPeticion extends FapModel {
 		this.valorInteger = null;
 		this.valorLong = null;
 		this.valorBoolean = null;
-		this.valorDateTime = datetime;
+		this.valorDateTime = datetime.toString();
 		this.valorDouble = null;
 		this.valorString = null;
 	}
@@ -103,6 +101,23 @@ public class ResultadoPeticion extends FapModel {
 		this.valorDateTime = null;
 		this.valorDouble = null;
 		this.valorString = string;
+	}
+
+	public Object getType() {
+		if (this.valorBoolean != null)
+			return "Boolean";
+		else if (this.valorDateTime != null)
+			return "DateTime";
+		else if (this.valorDouble != null)
+			return "Double";
+		else if (this.valorInteger != null)
+			return "Integer";
+		else if (this.valorLong != null)
+			return "Long";
+		else if (this.valorString != null)
+			return "String";
+
+		return null;
 	}
 	// === MANUAL REGION END ===
 

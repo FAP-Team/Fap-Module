@@ -11,11 +11,13 @@ import com.google.gson.JsonElement;
 
 import messages.Messages;
 import models.Aplicacion;
+import models.ListaResultadosPeticion;
 import models.Peticion;
 import models.ServiciosWeb;
 import controllers.gen.GraficasWSCMControllerGen;
 
 public class GraficasWSCMController extends GraficasWSCMControllerGen {
+	
 	public static void index(String accion, Long idAplicacion, Long idServiciosWeb) {
 		if (accion == null)
 			accion = getAccion();
@@ -45,8 +47,25 @@ public class GraficasWSCMController extends GraficasWSCMControllerGen {
 		if ((serviciosWeb.peticion.size() == 0) && (serviciosWeb.servicioWebInfo.activo))
 			getDatosFromWS(idAplicacion, idServiciosWeb);
 		
-		log.info("Visitando página: " + "manual/GraficasWS.html");
-		renderTemplate("manual/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb);
+		Gson gson = new Gson();
+		ListaResultadosPeticion listaResultados = null;
+		Long peticionID = Peticion.find("select max(peticion.id) from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where serviciosWeb.id=?", serviciosWeb.id).first();
+		System.out.println(" * Id peticion a mirar: " + peticionID);
+		Peticion peticion = Peticion.find("select peticion from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where peticion.id=?", peticionID).first();
+		if (peticion != null) {
+			listaResultados = gson.fromJson(peticion.stringJson, ListaResultadosPeticion.class);
+			listaResultados.save();
+			System.out.println(" * ListaResultados: " + listaResultados.id);
+			log.info("Visitando página: " + "manual/GraficasWS.html");
+			renderTemplate("manual/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb, listaResultados, peticion);
+		}
+		else {
+			Messages.warning("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
+			play.Logger.error("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
+			Messages.keep();
+			redirect("ServiciosWebAppCMController.index", "editar", idAplicacion);
+		}
+
 	}
 	
 	@Util

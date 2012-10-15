@@ -735,6 +735,10 @@ Entidad Peticion {
 	//OneToMany ResultadosPeticion resultadosPeticion
 }
 
+Entidad ListaResultadosPeticion {
+	OneToMany ResultadosPeticion resultadosPeticion
+}
+
 Entidad ResultadosPeticion {
 	OneToMany ResultadoPeticion resultadoPeticion
 }
@@ -745,6 +749,6 @@ Entidad ResultadoPeticion {
 	Long valorLong
 	String valorString
 	Double valorDouble
-	DateTime valorDateTime
+	String valorDateTime
 	Boolean valorBoolean
 }

@@ -55,7 +55,7 @@ public class GServicioWeb extends GElement{
 	
 	public void generate(){
 		String controllerGen = """
-package controllers.servicioweb.gen;
+package controllers.gen.serviciosweb;
 
 import play.*;
 import play.mvc.*;
@@ -96,18 +96,18 @@ ${metodoGetInfoWS()}
 
 }
 """
-		FileUtils.overwrite(FileUtils.getRoute('SERVICIOWEB_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controllerGen));
+		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN_SERVICIOWEB'),controllerGenFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controllerGen));
 			
 		String controller = """
-package controllers.servicioweb;
+package controllers.serviciosweb;
 
-import controllers.servicioweb.gen.${controllerGenFullName};
+import controllers.gen.serviciosweb.${controllerGenFullName};
 			
 public class ${controllerFullName} extends ${controllerGenFullName} {
 
 }
 		"""
-		FileUtils.write(FileUtils.getRoute('SERVICIOWEB'), controllerFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controller));
+		FileUtils.write(FileUtils.getRoute('CONTROLLER_SERVICIOWEB'), controllerFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controller));
 	}
 	
 	private String metodoIndex(){
@@ -129,6 +129,7 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 		for (EntidadInfo subcampo: subcampos) {
 			allEntities.add(subcampo.entidad);
 		}
+
 		String ret = """
 						List<ResultadoPeticion> resultadoPeticion = new ArrayList<ResultadoPeticion>();
 					 """;
@@ -186,7 +187,6 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 							lista.resultadoPeticion.add(listaResultados.get(j));
 						}
 						listaPeticiones.add(lista);
-						//peticion.resultadosPeticion.add(lista);
 						}
 						"""
 
@@ -215,18 +215,16 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 							lista.resultadoPeticion.add(listaResultados.get(j));
 						}
 						listaPeticiones.add(lista);
-						//peticion.resultadosPeticion.add(lista);
 						"""
 			}
 		}
 		ret += 	"""
 				}
 
-				//DateTime hoy = new DateTime();
-				//peticion.fechaPeticion = hoy.toString();
-
+				ListaResultadosPeticion resultadoJSON = new ListaResultadosPeticion();
+				resultadoJSON.resultadosPeticion = listaPeticiones;
 				Gson gson = new Gson();
-				String string_json = gson.toJson(listaPeticiones);
+				String string_json = gson.toJson(resultadoJSON);
 				renderJSON(string_json);
 				"""
 		return ret;
@@ -243,7 +241,12 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 			String nombreParam = ((CampoUtils)e.getValue()).str;
 			String atr = ((CampoUtils)e.getValue()).str.split("\\.")[1];
 			Campo s = ((CampoUtils)e.getValue()).campo;
-			String tipoParam = s.getAtributos().getAtributo().getType().getSimple().getType().toString();
+			String tipoParam = s.getAtributos().getAtributo().getType().getSimple();
+			
+			if (tipoParam == null)
+				tipoParam = s.getAtributos().getAtributo().getType().getSpecial().getType();
+			else
+				tipoParam = s.getAtributos().getAtributo().getType().getSimple().getType();
 			
 			out += 	"""
 					InfoParams info${atr} = new InfoParams();
@@ -252,18 +255,20 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 					swi.infoParams.add(info${atr});
 					"""
 		}
+
 		out += 	"""
 					swi.nombre = "${servicioWeb.getName()}";
 					swi.urlWS = "/${servicioWeb.getName()}";
 					return swi;
 				}
 				"""
+
 		return out;
 	}
 	
 	public String routes() {
 		String url = "/WSInfo/" + servicioWeb.getName();
-		String action = "servicioweb." + controllerFullName + ".index";
+		String action = "serviciosweb." + controllerFullName + ".index";
 		return RouteUtils.to("GET", url, action).toString() + "\n";
 	}
 

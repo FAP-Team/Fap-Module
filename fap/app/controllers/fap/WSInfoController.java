@@ -17,6 +17,9 @@ import models.ServicioWebInfo;
 
 public class WSInfoController extends GenericController {
 	
+	/**
+	 * Función que crea el Json con la información de cada servicio web.
+	 */
 	public static void getInfoAllWS() {
 		try {
 			List<ServicioWebInfo> listaInfoWS = WSController.invoke("getInfoWS", new Object[] {});	
@@ -25,7 +28,7 @@ public class WSInfoController extends GenericController {
 			renderJSON(string_json);
 		} catch (Throwable e) {
 			play.Logger.error("Hubo un problema al invocar el método getInfoWS: "+e.getMessage());
-			Messages.error("Error al obtner las información de los servicios web");
+			Messages.error("Error al obtener las información de los servicios web");
 		}
 	}
 	

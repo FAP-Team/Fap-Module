@@ -45,6 +45,7 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			renderTemplate("gen/ServiciosWebApp/ServiciosWebApp.html");
 		}
 
+		// Obtenemos el nombre de la aplicación y y la url de la misma.
 		String appName = FapProperties.get("application.name");
 		String path = FapProperties.get("http.path");
 		Aplicacion aplicacion = Aplicacion.find("select aplicacion from Aplicacion aplicacion where aplicacion.nombreApp=?", appName).first();
@@ -66,6 +67,9 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		}
 		
 		idAplicacion = aplicacion.id;
+		// En el caso que sea la primera vez que se entra a ver los WS
+		// se cargan por primera vez, si no es la primera vez se muestran
+		// los que estén en BBDD.
 		if (aplicacion.serviciosWeb.size() == 0)
 			getWS(accion, idAplicacion, aplicacion);
 		else {
@@ -75,6 +79,12 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			
 	}
 	
+	/**
+	 * Función que obtiene los servicios de web de la aplicación la primera vez.
+	 * @param accion
+	 * @param idAplicacion
+	 * @param aplicacion
+	 */
 	@Util
 	public static void getWS(String accion, Long idAplicacion, Aplicacion aplicacion) {
 		
@@ -132,6 +142,13 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		ServiciosWebAppController.formBtnRecargaWSRender(idAplicacion);
 	}
 	
+	
+	/**
+	 * Función que se ejecuta cuando se pulse el botón de "Recargar Servicios Web".
+	 * Comprueba cada WS. Si hay alguna diferencia en la información del mismo, el
+	 * primero pasa al historial y se crea un nuevo WS con la información nueva.
+	 * @param idAplicacion
+	 */
 	@Util
 	public static void recargaWS(Long idAplicacion) {
 		
@@ -149,104 +166,125 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 		
 		if (json != null) {
 			JsonArray array = json.getAsJsonArray();		
-			int i = 0;
 			List<ServiciosWeb> anteriorServicioWeb = ServiciosWeb.find("select serviciosWeb from Aplicacion aplicacion join aplicacion.serviciosWeb serviciosWeb where aplicacion.id=? and serviciosWeb.servicioWebInfo.activo=true", idAplicacion).fetch();
-			int numWS = array.size();
+			int numWSNuevos = array.size();
 			int anteriorNumWS = anteriorServicioWeb.size();
-			if (numWS < anteriorNumWS) {
-				while (i < numWS) {
-					diferentesWS(array, i, anteriorServicioWeb, app);
-					i++;
-				}
-				for (int j = i; j < anteriorNumWS; j++) {
-					anteriorServicioWeb.get(j).servicioWebInfo.activo = false;
-					anteriorServicioWeb.get(j).servicioWebInfo.save();
-				}
-			} else {
-				i = 0;
-				if (numWS > anteriorNumWS) {
-					while (i < anteriorNumWS) {
-						diferentesWS(array, i, anteriorServicioWeb, app);
-						i++;
+//			System.out.println("anteriores: " + anteriorServicioWeb);
+			List<ServiciosWeb> listaActivos = new ArrayList<ServiciosWeb>();
+			Gson gson = new Gson();
+		
+			if (numWSNuevos <= anteriorNumWS) {
+//				System.out.println("Hay menos nuevos");
+				ServicioWebInfo swiActual = null;
+				// Se comprueban los WS que siguen iguales.
+				for (int i = 0; i < anteriorNumWS; i++) {
+					ServicioWebInfo swi = anteriorServicioWeb.get(i).servicioWebInfo;
+					boolean iguales = false;
+					for (int j = 0; j < numWSNuevos; j++) {
+						swiActual = gson.fromJson(array.get(j), ServicioWebInfo.class);
+//						System.out.println("Vamos a comparar " + swiActual.nombre + " con " + swi.nombre);
+						
+						if (((swi.nombre.equals(swiActual.nombre)) && (swi.urlWS.equals(swiActual.urlWS)))) {
+							int infoAnterior = swi.infoParams.size();
+							int infoActual = swiActual.infoParams.size();
+							
+							if (infoAnterior == infoActual) {
+								for (int k = 0; k < infoActual; k++) {
+									if ((swi.infoParams.get(k).nombreParam.equals(swiActual.infoParams.get(k).nombreParam))
+										&& (swi.infoParams.get(k).tipo.equals(swiActual.infoParams.get(k).tipo))) {
+//											System.out.println("Todo los infoparams igual!!!!");
+											iguales = true;
+											
+									}
+								}
+								if (iguales)
+									listaActivos.add(anteriorServicioWeb.get(i));
+							}
+						}	
 					}
-					for (int j = i; j < numWS; j++) {
-						Gson gson = new Gson();
-						ServiciosWeb servicioWeb = new ServiciosWeb();
-						servicioWeb.servicioWebInfo = gson.fromJson(array.get(j), ServicioWebInfo.class);
-						servicioWeb.save();
-						servicioWeb.servicioWebInfo.activo = true;
-						servicioWeb.servicioWebInfo.save();
-						app.serviciosWeb.add(servicioWeb);
+				}
+//				System.out.println("Activos: " + listaActivos);
+				
+				// Los WS que no están en la lista de activos y estaban
+				// antes se pasan al historial.
+				for (int k = 0; k < anteriorNumWS; k++) {
+					if (!listaActivos.contains(anteriorServicioWeb.get(k))) {
+//						System.out.println("No contiene " + anteriorServicioWeb.get(k));
+						anteriorServicioWeb.get(k).servicioWebInfo.activo = false;
+						anteriorServicioWeb.get(k).save();
+					}
+				}
+
+				// Se añaden los WS nuevos (que no están en BBDD).
+				for (int k = 0; k < numWSNuevos; k++) {
+					swiActual = gson.fromJson(array.get(k), ServicioWebInfo.class);
+					ServiciosWeb swNuevo = ServiciosWeb.find("select serviciosWeb from Aplicacion aplicacion join aplicacion.serviciosWeb serviciosWeb where aplicacion.id=? and serviciosWeb.servicioWebInfo.activo=true and serviciosWeb.servicioWebInfo.nombre=?", idAplicacion, swiActual.nombre).first();
+//					System.out.println(swNuevo);
+					if (swNuevo == null) {
+//						System.out.println("No Contiene " + swiActual.nombre + " Hay que activarlo!!!");
+						swiActual.activo = true;
+						swiActual.save();
+						ServiciosWeb ws = new ServiciosWeb();
+						ws.servicioWebInfo = swiActual;
+						ws.save();
+						app.serviciosWeb.add(ws);
 						app.save();
 					}
 				}
-				else {
-					while (i < anteriorNumWS) {
-						diferentesWS(array, i, anteriorServicioWeb, app);
-						i++;
-					}
-				}
-			}
-		}
-	}
-	
-	@Util
-	public static void diferentesWS(JsonArray array, int i, List<ServiciosWeb> serviciosWeb, Aplicacion app) {
-	
-		Gson gson = new Gson();
-		ServicioWebInfo anteriorServicioWebInfo = serviciosWeb.get(i).servicioWebInfo;
-		ServicioWebInfo actualServicioWebInfo = gson.fromJson(array.get(i), ServicioWebInfo.class);
-	
-		if (((!anteriorServicioWebInfo.nombre.equals(actualServicioWebInfo.nombre)) ||
-			(!anteriorServicioWebInfo.urlWS.equals(actualServicioWebInfo.urlWS)))) {
-	
-			anteriorServicioWebInfo.activo = false;
-			anteriorServicioWebInfo.save();
-			actualServicioWebInfo.activo= true;
-			actualServicioWebInfo.save();
-			ServiciosWeb ws = new ServiciosWeb();
-			ws.servicioWebInfo = actualServicioWebInfo;
-			ws.save();
-			app.serviciosWeb.add(ws);
-			app.save();
-		}
-		else {
-			int infoAnterior = anteriorServicioWebInfo.infoParams.size();
-			int infoActual = actualServicioWebInfo.infoParams.size();
-			if (infoAnterior < infoActual) {
-				anteriorServicioWebInfo.activo = false;
-				anteriorServicioWebInfo.save();
-				actualServicioWebInfo.activo= true;
-				actualServicioWebInfo.save();
-				ServiciosWeb ws = new ServiciosWeb();
-				ws.servicioWebInfo = actualServicioWebInfo;
-				ws.save();
-				app.serviciosWeb.add(ws);
-				app.save();
-			}
-			else {
-				if (infoAnterior > infoActual) {
-					anteriorServicioWebInfo.activo = false;
-					anteriorServicioWebInfo.save();
-					actualServicioWebInfo.activo= true;
-					actualServicioWebInfo.save();
-					ServiciosWeb ws = new ServiciosWeb();
-					ws.servicioWebInfo = actualServicioWebInfo;
-					ws.save();
-					app.serviciosWeb.add(ws);
-					app.save();
-				}
-				else {
-					for (int j = 0; j < infoActual; j++) {
-						if ((!anteriorServicioWebInfo.infoParams.get(j).nombreParam.equals(actualServicioWebInfo.infoParams.get(j).nombreParam))
-							|| (!anteriorServicioWebInfo.infoParams.get(j).tipo.equals(actualServicioWebInfo.infoParams.get(j).tipo))) {
+			} else {
+				if (numWSNuevos > anteriorNumWS) {
+//					System.out.println("Hay mas nuevos");
+					ServicioWebInfo swiActual = null;
+					// Se comprueban los WS que siguen iguales.
+					for (int i = 0; i < numWSNuevos; i++) {
+						swiActual = gson.fromJson(array.get(i), ServicioWebInfo.class);
+						boolean iguales = false;
+						for (int j = 0; j < anteriorNumWS; j++) {
+							ServicioWebInfo swi = anteriorServicioWeb.get(j).servicioWebInfo;
+//							System.out.println("Vamos a comparar " + swiActual.nombre + " con " + swi.nombre);
 							
-							anteriorServicioWebInfo.activo = false;
-							anteriorServicioWebInfo.save();
-							actualServicioWebInfo.activo= true;
-							actualServicioWebInfo.save();
+							if (((swi.nombre.equals(swiActual.nombre)) && (swi.urlWS.equals(swiActual.urlWS)))) {
+								int infoAnterior = swi.infoParams.size();
+								int infoActual = swiActual.infoParams.size();
+								
+								if (infoAnterior == infoActual) {
+									for (int k = 0; k < infoActual; k++) {
+										if ((swi.infoParams.get(k).nombreParam.equals(swiActual.infoParams.get(k).nombreParam))
+											&& (swi.infoParams.get(k).tipo.equals(swiActual.infoParams.get(k).tipo))) {
+//												System.out.println("Todo los infoparams igual!!!!");
+												iguales = true;
+										}
+									}
+									if (iguales)
+										listaActivos.add(anteriorServicioWeb.get(j));
+								}
+							}
+						}
+					}
+					
+//					System.out.println("Activos: " + listaActivos);
+
+					// Los WS que no están en la lista de activos y estaban
+					// antes se pasan al historial.
+					for (int k = 0; k < anteriorNumWS; k++) {
+						if (!listaActivos.contains(anteriorServicioWeb.get(k))) {
+//							System.out.println("No contiene " + anteriorServicioWeb.get(k));
+							anteriorServicioWeb.get(k).servicioWebInfo.activo = false;
+							anteriorServicioWeb.get(k).save();
+						}
+					}
+
+					// Se añaden los WS nuevos (que no están en BBDD).
+					for (int k = 0; k < numWSNuevos; k++) {
+						swiActual = gson.fromJson(array.get(k), ServicioWebInfo.class);
+						ServiciosWeb swNuevo = ServiciosWeb.find("select serviciosWeb from Aplicacion aplicacion join aplicacion.serviciosWeb serviciosWeb where aplicacion.id=? and serviciosWeb.servicioWebInfo.activo=true and serviciosWeb.servicioWebInfo.nombre=?", idAplicacion, swiActual.nombre).first();
+//						System.out.println(swNuevo);
+						if (swNuevo == null) {
+//							System.out.println("No Contiene " + swiActual.nombre + " Hay que activarlo!!!");
+							swiActual.activo= true;
+							swiActual.save();
 							ServiciosWeb ws = new ServiciosWeb();
-							ws.servicioWebInfo = actualServicioWebInfo;
+							ws.servicioWebInfo = swiActual;
 							ws.save();
 							app.serviciosWeb.add(ws);
 							app.save();
@@ -256,59 +294,6 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			}
 		}
 	}
-	
-//	@Util
-//	public static void recargasDatosFormBtnRecargaWS(Long idAplicacion) {
-//		
-//		Aplicacion app = getAplicacion(idAplicacion);
-//		String urlApp = app.urlApp;
-//		List<ServiciosWeb> anterioresServiciosWeb = ServiciosWeb.find("select serviciosWeb from Aplicacion aplicacion join aplicacion.serviciosWeb serviciosWeb where aplicacion.id=? and serviciosWeb.servicioWebInfo.activo=true", idAplicacion).fetch();
-//		int i = 0;
-//		int anteriorNumWS = anterioresServiciosWeb.size();		
-//		
-//		while (i < anteriorNumWS) {
-//			String urlWS = anterioresServiciosWeb.get(i).servicioWebInfo.urlWS;
-//			WSRequest request = null;
-//			JsonElement json = null;
-//			String url = urlApp + urlWS;
-//			try {
-//				request = WS.url(url);
-//				json = request.get().getJson();
-//			} catch (RuntimeException ce) {
-//				Messages.warning("El servicio web no está disponible en estos momentos");
-//				play.Logger.error("El servicio web no está disponible en estos momentos");
-//			}
-//			
-////			if ((json != null) && (anterioresServiciosWeb.get(i).peticion.size() > 0)) {
-////				ListaConsultas anterioresConsultas = anterioresServiciosWeb.get(i).peticion.get(0).lista.get(0);
-////				Gson gson = new Gson();
-////				DatosGraficas nuevaConsulta = gson.fromJson(json, DatosGraficas.class);
-////				ListaConsultas nuevasConsulta = nuevaConsulta.lista.get(0);
-////				
-////				if ((anterioresConsultas.consultasWS.size() < nuevasConsulta.consultasWS.size()) || (anterioresConsultas.consultasWS.size() > nuevasConsulta.consultasWS.size())) {
-////					recargasWSFormBtnRecargaWS(idAplicacion);
-////				}
-////				else {
-////					for (int j = 0; j < anterioresConsultas.consultasWS.size(); j++) {
-////						ConsultasWS consultaAnt = anterioresConsultas.consultasWS.get(j);
-////						ConsultasWS consultaPost = nuevasConsulta.consultasWS.get(j);
-////						for (int k = 0; k < consultaAnt.consultaWS.size(); k++) {
-////							if ((!consultaAnt.consultaWS.get(k).nombre.equals(consultaPost.consultaWS.get(k).nombre))
-////									|| (consultaAnt.consultaWS.get(k).valorBoolean != consultaPost.consultaWS.get(k).valorBoolean)
-////									|| (consultaAnt.consultaWS.get(k).valorDouble != consultaPost.consultaWS.get(k).valorDouble)
-////									|| (consultaAnt.consultaWS.get(k).valorDateTime != consultaPost.consultaWS.get(k).valorDateTime)
-////									|| (consultaAnt.consultaWS.get(k).valorLong != consultaPost.consultaWS.get(k).valorLong)
-////									|| (consultaAnt.consultaWS.get(k).valorString != consultaPost.consultaWS.get(k).valorString)) {
-////								recargasWSFormBtnRecargaWS(idAplicacion);
-////							}
-////						}
-////					}
-////				}
-////				
-////			}
-//			i++;
-//		}
-//	}
 	
 	/**
 	 * Tabla en la que se muestran los servicios web activos.

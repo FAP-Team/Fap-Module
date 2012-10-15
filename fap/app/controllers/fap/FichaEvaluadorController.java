@@ -136,23 +136,28 @@ public class FichaEvaluadorController extends Controller {
 						validation.required(key, valor);
 						//TODO validaciones de tamaño máximo
 					}
-					criterio.valor = valor;
+					if(!validation.hasErrors()){
+						criterio.valor = valor;
+					}
 				}else if(criterio.tipo.claseCriterio.equals("automod")){
 					//TODO criterio automático modificable
 				}
 				
-				//Comentarios
-				if(criterio.tipo.comentariosAdministracion){				
-					criterio.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
-				}
-				
-				if(criterio.tipo.comentariosSolicitante){
-					criterio.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
+				if(!validation.hasErrors()){
+					//Comentarios
+					if(criterio.tipo.comentariosAdministracion){				
+						criterio.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
+					}
+					
+					if(criterio.tipo.comentariosSolicitante){
+						criterio.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
+					}
 				}
 			}
-			BaremacionService.calcularTotales(evaluacion);
-			evaluacion.save();
-			if(validation.hasErrors()){
+			if (!validation.hasErrors()){
+				BaremacionService.calcularTotales(evaluacion);
+				evaluacion.save();
+			} else {
 				flash(evaluacion);
 			}
 			

@@ -223,7 +223,8 @@ Elemento:
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple |
-	EntidadAutomatica | Accion
+	EntidadAutomatica | Accion |
+	Editor
 ;
 
 Campo:
@@ -543,6 +544,12 @@ EntidadAutomatica:
 		('campo' '=' campo=Campo) & 
 		("permiso" "=" permiso=[Permiso])?
 	)
+;
+
+Editor:
+    elemento='Editor' (name=ID) (
+        ('campo' '=' campo=Campo)
+    )
 ;
 
 Lista:

@@ -21,6 +21,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	
 	OneToMany MiConcepto misConceptos
 	ConceptosMios conceptos
+	
+	Historico historico
 }
 
 Entidad ConceptosMios {
@@ -155,4 +157,8 @@ Entidad MiConcepto {
 	Integer unInteger
 	Double unDouble
 	Moneda unaMoneda
+}
+
+Entidad Historico {
+    LongText logHistorico      // guardar el histórico creado por el administrador en el editor
 }

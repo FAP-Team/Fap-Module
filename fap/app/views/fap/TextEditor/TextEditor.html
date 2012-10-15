@@ -18,7 +18,8 @@
 <script type="text/javascript">
 	tinyMCE.init({
 	        // General options
-	        mode : "textareas",
+	        mode : "exact",
+	        elements: "textareaEditor",
 	        theme : "advanced",
 	        height: 700,
 	        language : "es",     
@@ -105,7 +106,7 @@
 
 
 <form method="post" action="#">
-    <textarea name="content" style="width:100%"></textarea>
+    <textarea id="textareaEditor" name="content" style="width:100%"></textarea>
 </form>
 
 #{/fap.pagina}

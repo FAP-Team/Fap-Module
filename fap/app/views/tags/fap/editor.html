@@ -1,0 +1,54 @@
+*{
+	Editor
+	=====================================
+	_id			- ID
+	_campo		- Campo donde se almacenará el texto
+}*
+
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+	def campo = _campo ?: field.campo
+	def value = field.flashorvalue ?: ""
+	//def id = campo.replaceAll("\\.", "_");
+	def id = "textAreaEditor" + (new Random().nextInt(600) + 1) 
+}%
+
+
+<script type="text/javascript">
+    tinyMCE.init({
+            // General options
+            mode : "exact",
+            elements: "${id}",
+            theme : "advanced",
+            height: 500,
+            language : "es",     
+            plugins : "save",
+            
+            // Theme options
+            theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,cut,copy,paste",
+            theme_advanced_toolbar_location : "top",
+            theme_advanced_toolbar_align : "left",
+            theme_advanced_statusbar_location : "bottom",
+            theme_advanced_resizing : true,
+                        
+            // Sobreescribimos el comportamiento del botón save con la función guardar
+            save_onsavecallback : "saveModificado",
+            
+            // This is required for the image paths to display properly
+            relative_urls : false,
+            
+            // Skin options
+            skin : "o2k7",
+            skin_variant : "silver",
+    });    
+    
+</script>        
+
+
+<textarea id="${id}" name="${campo}" style="width:100%">${value}</textarea>
+<br />
+
+#{/fap.field}

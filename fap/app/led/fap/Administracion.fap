@@ -20,7 +20,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Configurar Jobs" pagina=Jobs
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 			Enlace "Configurar mensajes" pagina=ConfigurarMensajes
-			Enlace "Plantillas Documentos" pagina=PlantillasDoc
+			Enlace "Editor Plantillas" pagina=PlantillasDoc
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
@@ -391,4 +391,5 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
     Pagina PlantillasDoc noForm campo=PlantillaDocumento permiso=administrador {
         Combo campo=PlantillaDocumento.nombrePlantilla titulo="Editar plantilla"
     }
+
 }

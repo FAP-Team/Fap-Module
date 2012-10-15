@@ -77,7 +77,10 @@ Formulario Solicitud {
 		Grupo "Envío de Mails"{
 			Enlace "Envío de Mails" pagina=EnvioMails
 		}
-		
+		Grupo "Editor histórico Solicitud"{
+            Enlace "Editor histórico Solicitud" pagina=EditorHistorico
+        }
+        
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
     }
@@ -496,5 +499,9 @@ Formulario Solicitud {
     	Texto titulo="Doble" campo=MiConcepto.unDouble
     	Texto titulo="Moneda" campo=MiConcepto.unaMoneda
     }
-	
+	    
+    Pagina EditorHistorico campo=Solicitud {
+        Editor editorPrueba campo=Solicitud.historico.logHistorico
+    }
+
 }

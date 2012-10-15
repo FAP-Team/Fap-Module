@@ -217,6 +217,9 @@ public class GElement {
 				
 			else if (element instanceof BarraDeslizante)
 				cache.put(element, new GBarraDeslizante(element, container));
+				
+			else if (element instanceof Editor)
+				cache.put(element, new GEditor(element, container));
 		}
 		
 		return cache.get(element);

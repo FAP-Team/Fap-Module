@@ -509,4 +509,5 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		}
 		return contenido;
 	}
+
 }

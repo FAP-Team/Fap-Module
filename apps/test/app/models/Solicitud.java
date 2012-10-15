@@ -75,6 +75,9 @@ public class Solicitud extends SolicitudGenerica {
 	public ConceptosMios conceptos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Historico historico;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
 
 	public Solicitud() {
@@ -151,6 +154,11 @@ public class Solicitud extends SolicitudGenerica {
 			conceptos = new ConceptosMios();
 		else
 			conceptos.init();
+
+		if (historico == null)
+			historico = new Historico();
+		else
+			historico.init();
 
 		if (savePages == null)
 			savePages = new SavePages();

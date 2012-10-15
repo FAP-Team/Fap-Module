@@ -135,6 +135,12 @@ public class FichaEvaluadorController extends Controller {
 					if(actionEnd){
 						validation.required(key, valor);
 						//TODO validaciones de tamaño máximo
+						if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(valor) > 0) {
+							validation.addError(key, "El valor "+valor+" es superior al valor máximo permitido: "+criterio.tipo.valorMaximo);
+						}
+						if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(valor) < 0) {
+							validation.addError(key, "El valor "+valor+" es inferior al valor mínimo permitido: "+criterio.tipo.valorMinimo);
+						}
 					}
 					if(!validation.hasErrors()){
 						criterio.valor = valor;

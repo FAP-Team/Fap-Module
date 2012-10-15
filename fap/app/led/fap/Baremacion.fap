@@ -109,6 +109,10 @@ Entidad TipoDatoAdicional {
 	LongText descripcion
 }
 
+Entidad TipoDocumentoAccesible{
+	String uri
+}
+
 Entidad TipoEvaluacion {
     String nombre
     List<String> tiposDocumentos

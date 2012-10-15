@@ -23,6 +23,7 @@ import models.Documento;
 import models.Evaluacion;
 import models.TipoCEconomico;
 import models.TipoCriterio;
+import models.TipoDocumentoAccesible;
 import models.TipoEvaluacion;
 import play.data.validation.Validation;
 import play.db.jpa.JPABase;
@@ -73,6 +74,34 @@ public class FichaEvaluadorController extends Controller {
 		}else{
 			forbidden();
 		}
+	}
+	
+	public static void tabladocumentosAccesiblesEvaluador(Long idSolicitud) {
+
+		java.util.List<Documento> rows = new ArrayList<Documento>();
+		if (TipoDocumentoAccesible.count() > 0){
+			String completarConsultaTiposDocumentos = "";
+			List<TipoDocumentoAccesible> tiposDocumentosAccesibles = TipoDocumentoAccesible.findAll();
+			completarConsultaTiposDocumentos =" and (";
+			boolean primero=true;
+			for (TipoDocumentoAccesible tipo: tiposDocumentosAccesibles){
+				if (primero){
+					completarConsultaTiposDocumentos += " documento.tipo='"+tipo.uri+"'";
+					primero=false;
+				} else {
+					completarConsultaTiposDocumentos += " or documento.tipo='"+tipo.uri+"'";
+				}
+			}
+			completarConsultaTiposDocumentos +=")";
+			rows = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.documentacion.documentos documento where solicitud.id=? and documento.verificado=true "+completarConsultaTiposDocumentos, idSolicitud).fetch();
+		}
+
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		List<Documento> rowsFiltered = rows; //Tabla sin permisos, no filtra
+
+		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered, false, false, false, "", "", "", "editar", ids);
+
+		renderJSON(response.toJSON("descripcionVisible", "tipo", "urlDescarga", "id"));
 	}
 
 	private static String redirectToFirstPage(Long idSolicitud) {

@@ -23,6 +23,7 @@ import models.SolicitudGenerica;
 import models.TipoCEconomico;
 import models.TipoCriterio;
 import models.TipoDatoAdicional;
+import models.TipoDocumentoAccesible;
 import models.TipoEvaluacion;
 import models.ValoresCEconomico;
 
@@ -123,6 +124,17 @@ public class BaremacionUtils {
 			actualizarTiposDatosAdicionales(tipoEvaluacion, tiposDatosAdicionales);
 		} else {
 			Logger.info("No se puede leer el fichero que contiene los parámetros de los Datos Adicionales (/conf/initial-data/datosAdicionales.json)");
+		}
+		if (new File(Play.applicationPath+"/conf/initial-data/tiposDocumentos.json").exists()){
+			// Actualizamos en BBDD los Tipos de Documentos, a través del fichero .json que los define. La actualización borra toda la tabla y la vuelve a crear a partir del fichero.
+			type = new TypeToken<ArrayList<TipoDocumentoAccesible>>(){}.getType();
+			List<TipoDocumentoAccesible> tiposDocumentos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/tiposDocumentos.json", type);
+			TipoDocumentoAccesible.deleteAll();
+			for (TipoDocumentoAccesible tipo: tiposDocumentos){
+				tipo.save();
+			}
+		} else {
+			Logger.info("No se puede leer el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)");
 		}
 	}
 	

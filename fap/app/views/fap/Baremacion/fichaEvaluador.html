@@ -28,6 +28,25 @@
 #{/fap.grupo}
 </form>
 
+#{if models.TipoDocumentoAccesible.count() > 0}
+	#{fap.tabla 
+	     campo:'Solicitud.documentacion.documentos', 
+	     id:'documentosAccesiblesEvaluador', 
+	     idEntidad:'idDocumento', 
+	     saveEntity:false, 
+	     tipoContainer:'pagina', 
+	     titulo:'Documentos', 
+	     urlTabla:@fap.FichaEvaluadorController.tabladocumentosAccesiblesEvaluador(evaluacion.solicitud.id)
+	}
+		
+		#{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
+			
+		#{fap.columna alignPosition:'left', ancho:200, cabecera:'Tipo Documento', campo:'tipo', expandir:true /}
+			
+		#{fap.columna alignPosition:'left', ancho:80, cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>' /}
+			
+	#{/fap.tabla}
+#{/if}
 
 #{form @fap.FichaEvaluadorController.save(), class:"form-stacked"}
 

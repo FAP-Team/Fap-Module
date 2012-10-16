@@ -10,7 +10,7 @@ El solicitante/usuario, podrá ver la página de conceptos económicos que puede
 
 h2. Creación de los ficheros JSON asociados
 
-Para conocer la estructura que deben tener los ficheros JSON (tipoEvaluacion.json, conceptosEconomicos.json, criterios.json, datosAdicionales.json) pulsar "aqui":app-baremacion-creacionJSON
+Para conocer la estructura que deben tener los ficheros JSON (tipoEvaluacion.json, conceptosEconomicos.json, criterios.json, datosAdicionales.json, tiposDocumentos.json) pulsar "aqui":app-baremacion-creacionJSON
 
 h2. Iniciar el Tipo de Evaluación
 
@@ -27,7 +27,7 @@ Para llevar a cabo el inicio de la baremación, en la parte de Administración, 
 
 !images/admin-Baremacion-iniciarEvaluacion!
 
-Una vez Iniciada la Baremación, se podrá Actualizar la misma tantas veces como se requiera, a través del botón "Actualizar Baremación", y modificando los ficheros variables .json de la Baremación (criterios.json, conceptosEconomicos.json y datosAdicionales.json).
+Una vez Iniciada la Baremación, se podrá Actualizar la misma tantas veces como se requiera, a través del botón "Actualizar Baremación", y modificando los ficheros variables .json de la Baremación (criterios.json, conceptosEconomicos.json, datosAdicionales.json y tiposDocumentos.json).
 
 !images/admin-Baremacion-actualizarBaremacion!
 
@@ -37,7 +37,7 @@ h2. Actualizar la Baremación
 
 Si queremos actualizar algún dato variable de nuestra Baremación (o insertar nuevos datos), se deberá:
 
-* *Primero:* Modificar o Insertar los nuevos datos en los fichero pertinentes (criterios.json, conceptosEconomicos.json o datosAdicionales.json).
+* *Primero:* Modificar o Insertar los nuevos datos en los fichero pertinentes (criterios.json, conceptosEconomicos.json, datosAdicionales.json o tiposDocumentos.json).
 * *Despues:* Pulsar el Botón de "Actualizar Baremación" de la página de Administración, _Gestionar Baremación_ para que se cambie en los modelos FAP. 
 
 h2. ¿Qué debo sobreescribir para personalizar la Baremación?
@@ -46,7 +46,11 @@ Si quieres que algunos comportamientos por defecto, como el cálculo de los crit
 
 h2. ¿Cómo puedo personalizar la validación de los conceptos económicos que cumplimente el solicitante?
 
-Se puede sobreescribir el método que se ejecuta cuando el usuario _guarda_ la página de conceptos económicos que tiene la tabla que debe rellenar. Para corroborar que todo lo que ha guardado y rellenado se ciñe a lo que debería ser, se deberá sobreescribir el método que se ejecuta cuando el solicitante presiona _guardar_ de dicha página de conceptos económicos. Para ello ver qué hay que sobreescribir "aqui":app-baremacion-validarceconomicos
+Se puede sobreescribir el método que se ejecuta cuando el usuario _guarda_ la página de conceptos económicos que tiene la tabla que debe rellenar. Para corroborar que todo lo que ha guardado y rellenado se ciñe a lo que debería ser, se deberá sobreescribir el método que se ejecuta cuando el solicitante presiona _guardar_ de dicha página de conceptos económicos. Para ello, ver qué hay que sobreescribir "aqui":app-baremacion-validarceconomicos
+
+h2. ¿Y si quiero que personalizar los documentos en los que se busquen los tipos de Documentos de ese tipo de Evaluación?
+
+Se puede también personalizar aquellos documentos que se utilicen en la Evaluación para buscar los tipos de documentos que serán accesibles al evaluador para llevar a cabo su cometido y así restringir también el acceso de este a todos los documentos de una determinada solicitud. Por defecto, FAP, tiene en cuenta los documentos almacenados en *solicitud.documentacion.documentos* más el documento *solicitud.registro.oficial*, si se quiere personaliza esto, vea lo que debe sobreescribir "aqui":app-baremacion-getDocumentosAccesibles
 
 h2. Ejemplo de Baremación de la aplicacion de Test
 
@@ -172,7 +176,7 @@ bc. [
 	}
 ]
 
-Finalmente, para completar la configuración de las características de este ejemplo de baremación simple, se añadieron 3 datos adicionales (_datosAdicionales.json_).
+También se añadieron 3 datos adicionales (_datosAdicionales.json_).
 
 bc. [
 	{
@@ -191,6 +195,21 @@ bc. [
 		descripcion: "Elemento añadido como dato adicional"
 	}
 ]
+
+Finalmente, para completar la configuración de las características de este ejemplo de baremación simple, se han configurado 2 tipos de documentos como los que pertenecen a este tipo de Evaluación, y que serán los que pueda descargarse y ver el Evaluador en cuestión de la lista de documentos que ha subido el solicitante. Para que el evaluador puede ver el documento que ha subido el solicitante del tipo quí definido, debe de estar 'verificado' correctamente.
+
+bc. [
+	{
+		uri: "fs://type1/v01"
+	},
+	{
+		uri: "fs://type2/v01"
+	}
+]
+
+Si no se desee rellenar alguno de estos fichero anteriores, porque no procede su utilización, bastará con definir en el fichero que no queramos utilizar, la lista vacía, como sigue:
+
+bc. []
 
 
 h3. Inicio de Baremación

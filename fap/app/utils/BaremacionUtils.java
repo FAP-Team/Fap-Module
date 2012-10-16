@@ -134,7 +134,7 @@ public class BaremacionUtils {
 				tipo.save();
 			}
 		} else {
-			Logger.info("No se puede leer el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)");
+			Logger.info("No se puede leer el fichero que contiene los parámetros de los Tipos de Documentos (/conf/initial-data/tiposDocumentos.json)");
 		}
 	}
 	

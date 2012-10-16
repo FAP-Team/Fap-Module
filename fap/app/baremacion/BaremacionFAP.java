@@ -1,11 +1,13 @@
 package baremacion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import messages.Messages;
 import models.CEconomico;
 import models.CEconomicosManuales;
 import models.Criterio;
+import models.Documento;
 import models.Evaluacion;
 import models.SolicitudGenerica;
 import models.TipoEvaluacion;
@@ -75,5 +77,13 @@ public class BaremacionFAP {
 	}
 	
 	public static void validarCEconomicos(long idSolicitud, List<CEconomico> ceconomicos){
+	}
+	
+	public static List<Documento> getDocumentosAccesibles(Long idSolicitud){
+		List <Documento> documentos = new ArrayList<Documento>();
+		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+		documentos.addAll(dbSolicitud.documentacion.documentos);
+		documentos.add(dbSolicitud.registro.oficial);
+		return documentos;
 	}
 }

@@ -1,0 +1,21 @@
+h1. ¿Qué debo sobreescribir para personalizar los documentos en los que se busque los Tipos de Documentos accesibles?
+
+Se deberá crear una clase(si no la hemos creado previamente para "personalizar la validación de los conceptos económicos":app-baremacion-validarceconomicos que introduzca el usuario o en la personalización del "Inicio de la Baremacion"app-baremacion-inicio) en la ruta _${PATH_APLICACION}/app/baremacion/${NOMBRE_CLASE_BAREMACION}_ donde ${NOMBRE_CLASE_BAREMACION} será el nombre que le queramos dar a nuestra clase que utilizaremos para sobreescribir el proceso de inicio de la baremación y que deberá extender de _BaremacionFAP_. Por ejemplo: _MiClaseBaremacion_, de forma que tendremos en el fichero java que representa dicha clase ("_MiClaseBaremacion.java_):
+
+bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
+	public static List<Documento> getDocumentosAccesibles(Long idSolicitud){
+		// Deberemos devolver la lista de documentos que queramos que se utilice para buscar los tipos de documentos
+		// accesibles por el evaluador
+		//
+		// Aquí está el comportamiento FAP por defecto, devolver todos los documentos presentados y el oficial de la   
+		// solicitud.
+		//
+		List <Documento> documentos = new ArrayList<Documento>();
+		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+		documentos.addAll(dbSolicitud.documentacion.documentos);
+		documentos.add(dbSolicitud.registro.oficial);
+		return documentos;
+	}
+}
+
+

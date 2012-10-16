@@ -6,6 +6,7 @@ import java.util.HashMap;
 import static play.modules.pdf.PDF.renderPDF;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -14,6 +15,10 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import baremacion.BaremacionFAP;
+
+import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
+
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.CEconomico;
@@ -21,10 +26,13 @@ import models.Criterio;
 import models.CriterioListaValores;
 import models.Documento;
 import models.Evaluacion;
+import models.SolicitudGenerica;
 import models.TipoCEconomico;
 import models.TipoCriterio;
 import models.TipoDocumentoAccesible;
 import models.TipoEvaluacion;
+import models.VerificacionDocumento;
+import play.Play;
 import play.data.validation.Validation;
 import play.db.jpa.JPABase;
 import play.modules.pdf.PDF.Options;
@@ -42,6 +50,7 @@ import security.Secure;
 import services.BaremacionService;
 import tables.TableRecord;
 import utils.BaremacionUtils;
+import utils.ModelUtils;
 
 @With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class FichaEvaluadorController extends Controller {
@@ -80,20 +89,34 @@ public class FichaEvaluadorController extends Controller {
 
 		java.util.List<Documento> rows = new ArrayList<Documento>();
 		if (TipoDocumentoAccesible.count() > 0){
-			String completarConsultaTiposDocumentos = "";
 			List<TipoDocumentoAccesible> tiposDocumentosAccesibles = TipoDocumentoAccesible.findAll();
-			completarConsultaTiposDocumentos =" and (";
-			boolean primero=true;
+			boolean encontrado;
+			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
 			for (TipoDocumentoAccesible tipo: tiposDocumentosAccesibles){
-				if (primero){
-					completarConsultaTiposDocumentos += " documento.tipo='"+tipo.uri+"'";
-					primero=false;
-				} else {
-					completarConsultaTiposDocumentos += " or documento.tipo='"+tipo.uri+"'";
+				encontrado = false;
+				for (int i=dbSolicitud.verificaciones.size()-1; i>=0; i--){
+					for (VerificacionDocumento documento: dbSolicitud.verificaciones.get(i).documentos){
+						if ((documento.uriTipoDocumento.equals(tipo.uri)) && (documento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.valido.name()))){
+							List<Documento> documentosAportados = (List<Documento>) ModelUtils.invokeMethodClassStatic(BaremacionFAP.class, "getDocumentosAccesibles", idSolicitud);
+							if (documentosAportados != null){
+								for (Documento doc: documentosAportados){
+									if (doc.uri.equals(documento.uriDocumento)){
+										rows.add(doc);
+										encontrado = true;
+										break;
+									}	
+								}
+							} else {
+								play.Logger.error("No existe ningun documento en la lista de documentos Accesibles para buscar los del tipo requerido en la Evaluación.");
+							}
+							break;
+						}
+					}
+					if (encontrado)
+						break;
 				}
 			}
-			completarConsultaTiposDocumentos +=")";
-			rows = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.documentacion.documentos documento where solicitud.id=? and documento.verificado=true "+completarConsultaTiposDocumentos, idSolicitud).fetch();
+			
 		}
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
@@ -339,6 +362,18 @@ public class FichaEvaluadorController extends Controller {
 			record.permisoBorrar = false;
 		}
 		return records;
+	}
+	
+	private static Class getBaremacionFAPClass() {
+		Class invokedClass = null;
+		//Busca una clase que herede del evaluador
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(BaremacionFAP.class);
+        if(assignableClasses.size() > 0){
+            invokedClass = assignableClasses.get(0);
+        } else {
+        	invokedClass = BaremacionFAP.class;
+        }
+		return invokedClass;
 	}
 		
 }

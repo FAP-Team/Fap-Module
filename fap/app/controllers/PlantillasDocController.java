@@ -181,27 +181,6 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	}
 	
 	/*
-	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en template.js (plugin 'headerfooter' del TinyMCE).
-	 * 
-	 * Retorna los ids de la cabecera y el pie de la plantilla con idPlantilla.
-	 */
-	/*
-	public static void getHeaderFooter(Long idPlantilla) {	
-		List<PlantillaDocumentoEncabezado> listaPlantillas = PlantillaDocumentoEncabezado.find("select plantilla from PlantillaDocumentoEncabezado plantilla " +
-				   																		 "where plantillaDocumento.id = '" + idPlantilla + "'").fetch();
-		
-		String jsonString = "[";			// json que vamos a renderizar
-		for (int i = 0; i < listaPlantillas.size(); i++) {
-			jsonString += "{\"idHeader\" : \"" + listaPlantillas.get(i).header.id + "\", \"idFooter\" : \"" + listaPlantillas.get(i).footer.id + "\"}";
-			if (i < listaPlantillas.size()-1 )
-				jsonString += ", ";
-		}
-		jsonString += "]";
-		renderJSON(jsonString);
-	}
-	*/
-	
-	/*
 	 * ¡¡Aviso!! Está puesta la url de este controlador "hardcodeada" en dialog.js (plugin 'eliminarplantilla' del TinyMCE).
 	 */
 	public static void eliminarPlantilla(Long idPlantilla) {	

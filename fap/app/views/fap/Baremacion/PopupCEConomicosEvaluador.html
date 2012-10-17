@@ -41,23 +41,23 @@
 		<b>${anioLabel}</b>
 		#{if cEconomico.tipo.clase.equals("manual")}
 			#{simple.text id:valorSolicitado.name, name:valorSolicitado.name, value:valorSolicitado.value, label:valorSolicitado.label, error:valorPropuesto.error, color:'#f2f2f2', format:'moneda' /}
-			#{simple.text id:valorPropuesto.name, name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value.toDouble().format("${formato}"), error:valorPropuesto.error /}
-			#{simple.text id:valorEstimado.name, name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value.toDouble().format("${formato}"), error:valorEstimado.error /}
-			#{simple.text id:valorConcedido.name, name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value.toDouble().format("${formato}"), error:valorConcedido.error /}
+			#{simple.text id:valorPropuesto.name, name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error, format:'moneda' /}
+			#{simple.text id:valorEstimado.name, name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorEstimado.error, format:'moneda' /}
+			#{simple.text id:valorConcedido.name, name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value, error:valorConcedido.error, format:'moneda' /}
 		#{/if}
 		#{else}
 			#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, id:valorSolicitado.name, format:'moneda'/}
-			#{simple.uneditable label:valorPropuesto.label, value:valorPropuesto.value.toDouble().format("${formato}"), id:valorPropuesto.name /}
-			#{simple.uneditable label:valorEstimado.label, value:valorEstimado.value.toDouble().format("${formato}"), id:valorEstimado.name /}
-			#{simple.uneditable label:valorConcedido.label, value:valorConcedido.value.toDouble().format("${formato}"), id:valorConcedido.name /}
+			#{simple.uneditable label:valorPropuesto.label, value:valorPropuesto.value, id:valorPropuesto.name, format:'moneda' /}
+			#{simple.uneditable label:valorEstimado.label, value:valorEstimado.value, id:valorEstimado.name, format:'moneda' /}
+			#{simple.uneditable label:valorConcedido.label, value:valorConcedido.value, id:valorConcedido.name, format:'moneda' /}
 		#{/else}
 	#{/list}
 	
 	<b>Totales</b>
-	#{simple.uneditable label:"Total Valor Solicitado", value:totalSolicitado.toDouble().format("${formato}"), id:"totalSolicitado"/}
-	#{simple.uneditable label:"Total Valor Propuesto", value:totalPropuesto.toDouble().format("${formato}"), id:"totalPropuesto" /}
-	#{simple.uneditable label:"Total Valor Estimado", value:totalEstimado.toDouble().format("${formato}"), id:"totalEstimado" /}
-	#{simple.uneditable label:"Total Valor Concedido", value:totalConcedido.toDouble().format("${formato}"), id:"totalConcedido" /}
+	#{simple.uneditable label:"Total Valor Solicitado", value:totalSolicitado, id:"totalSolicitado", format:'moneda'/}
+	#{simple.uneditable label:"Total Valor Propuesto", value:totalPropuesto, id:"totalPropuesto", format:'moneda' /}
+	#{simple.uneditable label:"Total Valor Estimado", value:totalEstimado, id:"totalEstimado", format:'moneda' /}
+	#{simple.uneditable label:"Total Valor Concedido", value:totalConcedido, id:"totalConcedido", format:'moneda' /}
 	
 #{/fap.popup}
 

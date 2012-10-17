@@ -19,6 +19,7 @@ import play.Play;
 import play.mvc.Util;
 import services.BaremacionService;
 import utils.BaremacionUtils;
+import utils.ModelUtils;
 import controllers.gen.ActivarBaremacionControllerGen;
 
 public class ActivarBaremacionController extends ActivarBaremacionControllerGen {
@@ -169,8 +170,11 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 					evaluacion.actualizar(tipoEvaluacion);
 					evaluacion.save();
 				}
-				log.info("Tipo de Baremación y evaluaciones de ese tipo actualizada correctamente desde fichero");
 				BaremacionUtils.setEsNuevoFalse();
+				
+				ModelUtils.invokeMethodClassStatic(BaremacionFAP.class, "iniciarNuevasEvaluaciones");
+				
+				log.info("Tipo de Baremación y evaluaciones de ese tipo actualizada correctamente desde fichero");
 			}
 		}
 

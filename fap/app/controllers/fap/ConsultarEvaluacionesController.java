@@ -16,6 +16,9 @@ import java.lang.reflect.Field;
 
 import javax.inject.Inject;
 
+import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
+import enumerado.fap.gen.EstadosEvaluacionEnum;
+
 @With({SecureController.class, AgenteController.class})
 public class ConsultarEvaluacionesController extends GenericController {
 	
@@ -52,7 +55,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
 			if (eval != null) {
-				eval.estado = "EnTramite";
+				eval.estado = EstadosEvaluacionEnum.enTramite.name();
 				eval.save();
 			}
 		}else{
@@ -65,11 +68,21 @@ public class ConsultarEvaluacionesController extends GenericController {
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
 			if (eval != null) {
-				eval.estado = "Rechazada";
+				eval.estado = EstadosEvaluacionEnum.rechazada.name();
 				eval.save();
 			}
 		}else{
 			forbidden();
+		}
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void botonEvaluacionesFinalizadas(String btnEvaluacionesFinalizadas) {
+		checkAuthenticity();
+		if (!Messages.hasErrors()) {
+			String accion = "editable";
+			renderTemplate("fap/EvaluacionesFinalizadas/EvaluacionesFinalizadas.html", accion);
 		}
 	}
 }

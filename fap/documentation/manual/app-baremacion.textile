@@ -23,11 +23,11 @@ Además de que se activará en ese momento el botón pertinente para Iniciar la 
 h2. Inicializar la Baremación
 
 Como el proceso de Baremación es muy dependiente del procedimiento en cuestión, para llevar a cabo el inicio de la misma de forma personalizada se debe sobreescribir una clase tal y como se describe "aqui":app-baremacion-inicio
-Para llevar a cabo el inicio de la baremación, en la parte de Administración, esta "Iniciar Evaluación de Baremación", que contiene un botón con el mismo nombre que permite el Inicio de la Baremación. Una vez activada la Baremación, no se podrá volver a Iniciar, lo que conlleva a que los datos genericos sólo son cargados una única vez.
+Para llevar a cabo el inicio de la baremación, en la parte de Administración, esta "Iniciar Evaluación de Baremación", que contiene un botón con el mismo nombre que permite el Inicio de la Baremación. Una vez activada la Baremación, no se podrá volver a Iniciar, lo que conlleva a que los datos genericos que se utilizan en este método sólo son cargados una única vez.
 
 !images/admin-Baremacion-iniciarEvaluacion!
 
-Una vez Iniciada la Baremación, se podrá Actualizar la misma tantas veces como se requiera, a través del botón "Actualizar Baremación", y modificando los ficheros variables .json de la Baremación (criterios.json, conceptosEconomicos.json, datosAdicionales.json y tiposDocumentos.json).
+Una vez Iniciada la Baremación, se podrá Actualizar la misma tantas veces como se requiera, a través del botón "Actualizar Baremación", y modificando los ficheros variables .json de la Baremación (criterios.json, conceptosEconomicos.json, datosAdicionales.json y tiposDocumentos.json). Al actualizar la baremación, si existen nuevas solicitudes sin evaluación, pero que cumplen los requisitos para tenerla, se creará su evaluación correspondiente.
 
 !images/admin-Baremacion-actualizarBaremacion!
 
@@ -38,7 +38,11 @@ h2. Actualizar la Baremación
 Si queremos actualizar algún dato variable de nuestra Baremación (o insertar nuevos datos), se deberá:
 
 * *Primero:* Modificar o Insertar los nuevos datos en los fichero pertinentes (criterios.json, conceptosEconomicos.json, datosAdicionales.json o tiposDocumentos.json).
-* *Despues:* Pulsar el Botón de "Actualizar Baremación" de la página de Administración, _Gestionar Baremación_ para que se cambie en los modelos FAP. 
+* *Despues:* Pulsar el Botón de "Actualizar Baremación" de la página de Administración, _Gestionar Baremación_ para que se cambie en los modelos FAP.
+
+Este paso, también crea las evaluaciones que se deban crear de solicitudes que en ese instante son propensas a evaluar y que todavía no se habían creado sus evaluaciones correspondientes.
+
+Si queremos personalizar la actualización de la baremación, en lo referente a la creación de las nuevas evaluaciones de las solicitudes que no la tengan, podremos sobreescribir el método que se encarga de ello visitando la siguiente "documentacion":app-baremacion-actualizarNuevasEvaluaciones
 
 h2. ¿Qué debo sobreescribir para personalizar la Baremación?
 

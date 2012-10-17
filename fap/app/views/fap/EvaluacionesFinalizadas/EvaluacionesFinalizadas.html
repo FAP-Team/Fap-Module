@@ -1,0 +1,45 @@
+
+#{fap.pagina 
+     accion:_accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Baremacion', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'EvaluacionesFinalizadas', 
+     permiso:'adminGestorRevisor', 
+     titulo:'Evaluaciones Finalizadas', 
+     urlBorrar:play.mvc.Router.reverse('EvaluacionesFinalizadasController.borrar' ), 
+     urlCrear:play.mvc.Router.reverse('EvaluacionesFinalizadasController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('EvaluacionesFinalizadasController.editar' )
+}
+	
+		#{fap.tabla 
+		     campo:'Evaluacion', 
+		     id:'tablaEvaluacionesFinalizadas', 
+		     idEntidad:'idEvaluacion', 
+		     saveEntity:false, 
+		     tipoContainer:'pagina', 
+		     paginaEditar:'fichaEvaluador', 
+		     paginaLeer:'fichaEvaluador', 
+		     urlEditar:play.mvc.Router.reverse("EvaluacionesFinalizadasController.editarEvaluacion" , ['accion':'editar', 'idEvaluacion':evaluacion?.id? evaluacion.id:'_idEvaluacion_']), 
+		     urlLeer:play.mvc.Router.reverse("EvaluacionesFinalizadasController.editarEvaluacion" , ['accion':'leer', 'idEvaluacion':evaluacion?.id? evaluacion.id:'_idEvaluacion_']), 
+		     urlTabla:@EvaluacionesFinalizadasController.tablatablaEvaluacionesFinalizadas()
+		}
+		
+			#{fap.columna alignPosition:'left', ancho:200, cabecera:'Total Criterios', campo:'totalCriterios', expandir:true /}
+				
+			#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'solicitud.expedienteAed.idAed', expandir:true /}
+				
+			#{fap.columna alignPosition:'left', ancho:200, cabecera:'NIP/CIF', campo:'solicitud.solicitante.numeroId', expandir:true /}
+				
+			#{fap.columna alignPosition:'left', ancho:200, cabecera:'Solicitante', campo:'solicitud.solicitante.nombreCompleto', expandir:true /}
+				
+			#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estado', expandir:true /}
+			
+		#{/fap.tabla}
+
+#{/fap.pagina}
+		

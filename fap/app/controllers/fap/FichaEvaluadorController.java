@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import baremacion.BaremacionFAP;
 
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
+import enumerado.fap.gen.EstadosEvaluacionEnum;
 
 import messages.Messages;
 import messages.Messages.MessageType;
@@ -63,7 +64,7 @@ public class FichaEvaluadorController extends Controller {
 		Messages.deleteFlash();
 	}
 	
-	public static void index(long idEvaluacion){
+	public static void index(Long idEvaluacion, String accion){
 		
 		if(secure.checkGrafico("evaluacion", "visible", "leer", null, null)){
 			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
@@ -76,16 +77,15 @@ public class FichaEvaluadorController extends Controller {
 			}
 			notFoundIfNull(evaluacion);
 			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
-			List<Documento> documentos = evaluacion.getDocumentosAccesibles();
 			int duracion = tipoEvaluacion.duracion-1;
 			BaremacionUtils.calcularTotalesCEconomicosFichaEvaluacion(evaluacion);
-			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos, expedienteUrl, duracion, idEvaluacion);
+			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, expedienteUrl, duracion, idEvaluacion, accion);
 		}else{
 			forbidden();
 		}
 	}
 	
-	public static void tabladocumentosAccesiblesEvaluador(Long idSolicitud) {
+	public static void tabladocumentosAccesiblesEvaluador(Long idSolicitud, Long idEvaluacion) {
 
 		java.util.List<Documento> rows = new ArrayList<Documento>();
 		if (TipoDocumentoAccesible.count() > 0){
@@ -97,7 +97,7 @@ public class FichaEvaluadorController extends Controller {
 				for (int i=dbSolicitud.verificaciones.size()-1; i>=0; i--){
 					for (VerificacionDocumento documento: dbSolicitud.verificaciones.get(i).documentos){
 						if ((documento.uriTipoDocumento.equals(tipo.uri)) && (documento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.valido.name()))){
-							List<Documento> documentosAportados = (List<Documento>) ModelUtils.invokeMethodClassStatic(BaremacionFAP.class, "getDocumentosAccesibles", idSolicitud);
+							List<Documento> documentosAportados = (List<Documento>) ModelUtils.invokeMethodClassStatic(BaremacionFAP.class, "getDocumentosAccesibles", idSolicitud, idEvaluacion);
 							if (documentosAportados != null){
 								for (Documento doc: documentosAportados){
 									if (doc.uri.equals(documento.uriDocumento)){
@@ -141,7 +141,7 @@ public class FichaEvaluadorController extends Controller {
 	public static void generaPDF(Long idEvaluacion, Integer duracion){
 		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 		if(evaluacion == null){
-			notFound("Evaluación no encontrada");
+			Messages.error("Error al recuperar la evaluacion");
 		}
 		try {
 			new Report("reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, duracion);
@@ -162,9 +162,13 @@ public class FichaEvaluadorController extends Controller {
 			}
 			Evaluacion evaluacion = Evaluacion.findById(params.get("evaluacion.id", Long.class));
 			if(evaluacion == null){
-				notFound("Evaluación no encontrada");
+				notFound("Fallo al recuperar la evaluación");
 			}
-			
+			if (!evaluacion.estado.equals(EstadosEvaluacionEnum.enTramite.name())){
+				Messages.error("No se puede guardar porque esta evaluación ya ha sido finalizada");
+				Messages.keep();
+				index(evaluacion.id, "leer");
+			}
 			//Comentarios
 			if(evaluacion.tipo.comentariosAdministracion){
 				evaluacion.comentariosAdministracion = params.get("evaluacion.comentariosAdministracion");
@@ -177,28 +181,36 @@ public class FichaEvaluadorController extends Controller {
 			//Criterios de evaluacion
 			for(Criterio criterio : evaluacion.criterios){
 				String param = "criterio[" + criterio.id + "]";
+				String key = param + ".valor";
+				Double valor = params.get(key, Double.class);
+				
 	
 				if(criterio.tipo.claseCriterio.equals("manual")){
-					String key = param + ".valor";
-					Double valor = params.get(key, Double.class);
 					
 					// Únicamente valida cuando se va a finalizar
 					// la verificación
 					if(actionEnd){
 						validation.required(key, valor);
 						//TODO validaciones de tamaño máximo
-						if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(valor) > 0) {
+						if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(valor) < 0) {
 							validation.addError(key, "El valor "+valor+" es superior al valor máximo permitido: "+criterio.tipo.valorMaximo);
 						}
-						if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(valor) < 0) {
+						if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(valor) > 0) {
 							validation.addError(key, "El valor "+valor+" es inferior al valor mínimo permitido: "+criterio.tipo.valorMinimo);
 						}
 					}
 					if(!validation.hasErrors()){
 						criterio.valor = valor;
 					}
-				}else if(criterio.tipo.claseCriterio.equals("automod")){
-					//TODO criterio automático modificable
+				}else if ((criterio.tipo.claseCriterio.equals("automod")) || (criterio.tipo.claseCriterio.equals("auto"))) {
+					if(actionEnd){
+						if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(valor) < 0) {
+							criterio.valor = criterio.tipo.valorMaximo;
+						}
+						if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(valor) > 0) {
+							criterio.valor = criterio.tipo.valorMinimo;
+						}
+					}
 				}
 				
 				if(!validation.hasErrors()){
@@ -221,7 +233,7 @@ public class FichaEvaluadorController extends Controller {
 			
 			if(actionSave || actionEnd){
 				if(actionEnd && !validation.hasErrors()){
-					evaluacion.estado = "evaluada";
+					evaluacion.estado = EstadosEvaluacionEnum.evaluada.name();
 					evaluacion.save();
 					Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " finalizó correctamente");
 					ConsultarEvaluacionesController.index();
@@ -232,7 +244,7 @@ public class FichaEvaluadorController extends Controller {
 				}
 				
 				Messages.keep();
-				index(evaluacion.id);
+				index(evaluacion.id, "editar");
 			}
 		}else{
 			forbidden();
@@ -363,17 +375,5 @@ public class FichaEvaluadorController extends Controller {
 		}
 		return records;
 	}
-	
-	private static Class getBaremacionFAPClass() {
-		Class invokedClass = null;
-		//Busca una clase que herede del evaluador
-        List<Class> assignableClasses = Play.classloader.getAssignableClasses(BaremacionFAP.class);
-        if(assignableClasses.size() > 0){
-            invokedClass = assignableClasses.get(0);
-        } else {
-        	invokedClass = BaremacionFAP.class;
-        }
-		return invokedClass;
-	}
-		
+
 }

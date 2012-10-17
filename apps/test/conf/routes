@@ -30,11 +30,9 @@ GET /Solicitud/fechas FechasController.index
 POST /Solicitud/fechas/editar FechasController.editar
 GET /Solicitud/direcciones DireccionesController.index
 POST /Solicitud/direcciones/editar DireccionesController.editar
-%{if (config.Modules.getProperty("fap.modulo.Verificacion")) { }% 
 GET /Solicitud/combos CombosController.index
 POST /Solicitud/combos/editar CombosController.editar
 GET /Solicitud/combos/comboTestRef CombosController.tablacomboTestRef
-%{ } }% 
 GET /Solicitud/combosoverwrite CombosOverwriteController.index
 POST /Solicitud/combosoverwrite/editar CombosOverwriteController.editar
 GET /Solicitud/combosoverwrite/comboTestRef CombosOverwriteController.tablacomboTestRef

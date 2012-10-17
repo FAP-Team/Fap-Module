@@ -75,6 +75,8 @@
 	def idCampoUri = _idCampoUri ?: "";
 	
 	def codePrint = _codePrint ?: "";
+	
+	def submitPage = _submitPage ?: false;
 
 %}
 
@@ -555,11 +557,29 @@
 		    	text: '${seleccionable}',
 		    	handler : function(){
 		    		var selected = sm.getSelection();
-		    		var params = new Array();
-		    		for (var i in selected) {
-		    			params[i] = "idsSeleccionados="+selected[i].data.id;
-		    		}
-		    		createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
+
+		    		#{if submitPage}
+		    			var urlSubmitPage = "${urlSeleccionable}";
+		    			var j = 1;
+		    			for (var i in selected) {
+		    				if ( j == 1 ) {
+		    					urlSubmitPage += "?"
+		    				} else {
+		    					urlSubmitPage += "&"
+		    				}
+		    				j += 1;
+		    				urlSubmitPage += "idsSeleccionados="+selected[i].data.id;
+		    			}
+		    			alert("url: "+urlSubmitPage);
+		    			$('#${id}').closest('form').attr("action",urlSubmitPage).submit();
+		    		#{/if}
+		    		#{else}
+		    			var params = new Array();
+		    			for (var i in selected) {
+		    				params[i] = "idsSeleccionados="+selected[i].data.id;
+		    			}
+		    			createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
+		    		#{/else}
 			   	}
 		    });
 			#{/if}

@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.persistence.Query;
+import javax.swing.JFileChooser;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.log4j.PropertyConfigurator;
@@ -81,7 +82,6 @@ import utils.JsonUtils;
 public class Start extends Job {
 	
 	public void doJob() {
-
 		// Context Path, para el despliegue de varias aplicaciones en Apache y no tener el problema del Path
 		String ctxPath = FapProperties.get("fap.ctxPath");
 		if (ctxPath != null){
@@ -199,9 +199,11 @@ public class Start extends Job {
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();
 		
-		// Crear la carpeta public/tmp si no existe
+		// Crear la carpeta <app>/public/tmp si no existe
 		try {
-			Runtime.getRuntime().exec("mkdir public/tmp");
+			File tmpDir = new File(Play.applicationPath.getAbsoluteFile() + System.getProperty("file.separator") + "public" 
+								+ System.getProperty("file.separator") + "tmp");
+			tmpDir.mkdir();
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 

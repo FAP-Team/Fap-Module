@@ -264,12 +264,8 @@ public class ReportFAP {
 		String nombreFichero = "tmp_" + Codec.UUID().substring(0, FILENAME_SIZE);
 		String rutaMasNombreFicheroTemporal = null;
 		
-		// Quitamos las imágenes que respresentan en la plantilla al salto de línea
-		// FIXME: arreglar esta chapuza de sustitución (reemplazamos la imagen de pagebreak por un pixel transparente). 
-		contenido = contenido.replaceAll("pagebreak.png", "pixel_transparente.png");
 		try {
 			BufferedReader reader = null;
-			// XXX: Revisar ruta
 			if(Play.mode.isDev())	// modo desarrollo
 				reader = new BufferedReader(new FileReader("../../fap/app/views/reports/" + PLANTILLA_BASE));
 			else 					// modo producción
@@ -332,7 +328,6 @@ public class ReportFAP {
 		if ( (template == null) || (template.isEmpty()) )
 			return false;
 		
-		// FIXME: ver ruta para comprobar que no está en el reports del módulo fap
 		File fich1 = new File("../../fap/app/views/" + template);
 		File fich2 = new File(template);
 		if ( fich1.exists() || fich2.exists() )

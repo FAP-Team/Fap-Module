@@ -77,6 +77,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.allcolor.yahp.converter.IHtmlToPdfTransformer;
 import org.apache.log4j.Logger;
+import org.h2.constant.SysProperties;
 
 
 public class PlantillasDocController extends PlantillasDocControllerGen {
@@ -245,8 +246,10 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		if (contenido == null)
 			contenido = "";
 
-		contenido = insertarPlantillaEnContenido(contenido);		// si se requiere una plantilla en medio del contenido
-
+		contenido = insertarPlantillaEnContenido(contenido);			// si se requiere una plantilla en medio del contenido
+		
+		contenido = contenido.replaceAll("pagebreak.png", "pixel_transparente.png"); // quitamos las imagen que respresenta el salto de línea
+		
 		File borrador = null;
 		try {
 			if (!sustituirEntidades) { 
@@ -267,9 +270,20 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		// Copiamos el pdf de la carpeta temporal de la aplicación a /public/tmp
 		Process proc = null;
 		try {		
+			// FIXME: probar el renameTo en linux y dejar de usar entonces osName.
 			String osName = System.getProperty("os.name");
-			if (osName.contains("Win"))			// windows
-				proc = Runtime.getRuntime().exec("copy " + Play.tmpDir + "/" + borrador.getName() + " public/tmp/");
+			if (osName.contains("Win"))	{		// windows
+				// File (or directory) to be moved
+				File file = new File(Play.tmpDir + System.getProperty("file.separator") + borrador.getName());
+				// Destination directory
+				File dir = new File(Play.applicationPath.getAbsolutePath() + System.getProperty("file.separator") + "public"
+		    			    + System.getProperty("file.separator") + "tmp" + System.getProperty("file.separator"));
+				// Move file to new directory
+				boolean success = file.renameTo(new File(dir, file.getName()));
+				if (!success) {
+				    System.out.println(" ---------------- File was not successfully moved");
+				}
+			}	
 			else								// linux, mac, ...
 				proc = Runtime.getRuntime().exec("cp " + Play.tmpDir + "/" + borrador.getName() + " public/tmp/");
 			/*
@@ -314,7 +328,6 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	
 		try {
 			// Primero obtenemos las entidades propias de la aplicación
-			// XXX: Revisar ruta
 			BufferedReader reader = new BufferedReader(new FileReader("app/led/Entidades.fap")); 
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -331,7 +344,6 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 			}
 			
 			// Ahora obtenemos las entidades del módulo fap (excluyendo las que no nos interesan)
-			// XXX: Revisar ruta
 			if(Play.mode.isDev())	// modo desarrollo
 				reader = new BufferedReader(new FileReader("../../fap/app/led/fap/Entidades.fap"));
 			else					// modo producción
@@ -479,7 +491,7 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	 * @return Plantilla ya sustituida
 	 */
 	public static String insertarPlantillaEnContenido(String contenido) {
-		Pattern pattern = Pattern.compile("@([_A-Za-z0-9]+)@");		// ejemplo de tag: @plantilla.html@
+		Pattern pattern = Pattern.compile("@([_A-Za-z0-9\\./]+)@");		// ejemplo de tag: @plantilla.html@
 		Matcher matcher = pattern.matcher(contenido);
 		PlantillaDocumento plantilla; 
 		while (matcher.find()) {

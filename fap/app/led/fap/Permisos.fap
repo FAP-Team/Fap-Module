@@ -22,6 +22,13 @@ Permiso noUsuario{
 		agente.rolActivo != "usuario"
 	return all
 }
+
+Permiso noEvaluador {
+	when
+		agente.rolActivo != "evaluador"
+	return
+		all
+}
 		
 Permiso logeado{
 	when 
@@ -184,6 +191,10 @@ Permiso solicitudes{
 		or
 		participacion != null 			
 	return all
+	when
+		agente.rolActivo in ("evaluador")
+	return
+		leer
 }
 
 // Permisos pagina de presentacion
@@ -244,6 +255,10 @@ Permiso solicitudEnBorrador{
 Permiso editarSolicitud {
 	vars
 		SolicitudGenerica solicitud
+	when
+		agente.rolActivo = "evaluador"
+	return
+		leer
 	when
 		!usuario is visible
 		or (
@@ -463,13 +478,13 @@ Permiso nuevaSolicitud{
 //Baremación	
 Permiso listaEvaluaciones{
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "revisor", "evaluador")
 	return editable
 }
 
 Permiso evaluacion{
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "revisor", "evaluador")
 	return all
 }
 

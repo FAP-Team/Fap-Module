@@ -61,7 +61,9 @@ public class WSController extends GenericController {
 	public static void getData(Long listaResultadosId, String nameVariable, int rango, boolean activo) {
 		ListaResultadosPeticion listaResultados = ListaResultadosPeticion.findById(listaResultadosId);
 		Map<String, Object> mapa = new HashMap<String, Object>();
-		
+		boolean type1 = false;
+		boolean type2 = false;
+		boolean type3 = false;
 		for (int i = 0; i < listaResultados.resultadosPeticion.size(); i++) {
 			ResultadosPeticion resultados = listaResultados.resultadosPeticion.get(i);
 			
@@ -88,16 +90,22 @@ public class WSController extends GenericController {
 							String agno = fecha.split("-")[0];
 							if (rango == 0)
 								valor = "Día "+dia;
-							else if (rango == 1)
+							else if (rango == 1) {
 								valor = dia+"-"+getMes(mes);
+								type1 = true;
+							}
 							else if (rango == 2) {
 								DateTime date = new DateTime(fecha);
 								valor = "Semana " + date.getWeekOfWeekyear();
 							}
-							else if (rango == 3)
+							else if (rango == 3) {
 								valor = getMes(mes);
-							else if (rango == 4)
+								type2 = true;
+							}
+							else if (rango == 4) {
 								valor = getMes(mes)+"-"+agno;
+								type3 = true;
+							}
 							else if (rango == 5)
 								valor = agno;
 						}
@@ -114,9 +122,10 @@ public class WSController extends GenericController {
 				
 			}
 		}
-		
-		Map<String, Object> mapaOrdenado = sortByComparator(mapa);
-
+		Map<String, Object> mapaOrdenado = sortByComparator(mapa, type1, type2, type3);
+		type1 = false;
+		type2 = false;
+		type3 = false;
 		// Teniendo en el mapa la información que se va a representar,
 		// se crea un array de pares con esa información.
 		String jsData = "[";
@@ -137,12 +146,24 @@ public class WSController extends GenericController {
 	 * @param mapa
 	 * @return mapaOrdenado
 	 */
-	private static Map sortByComparator(Map mapa) {		 
+	private static Map sortByComparator(Map mapa, final boolean type1, final boolean type2, final boolean type3) {		 
         List lista = new LinkedList(mapa.entrySet());
         Collections.sort(lista, new Comparator() {
              public int compare(Object o1, Object o2) {
-	           return ((Comparable) ((Map.Entry) (o1)).getKey())
-	           .compareTo(((Map.Entry) (o2)).getKey());
+            	if (type1) {
+            		String clave1 = getNumMes(((String) ((Map.Entry) (o1)).getKey()).split("-")[1]) + "-" +  ((String) ((Map.Entry) (o1)).getKey()).split("-")[0];
+            		String clave2 = getNumMes(((String) ((Map.Entry) (o2)).getKey()).split("-")[1]) + "-" + ((String) ((Map.Entry) (o2)).getKey()).split("-")[0];
+            		return ((Comparable) clave1).compareTo(clave2);
+            	} else if (type2) {
+            		String clave1 = ((String) ((Map.Entry) (o1)).getKey());
+            		String clave2 = ((String) ((Map.Entry) (o2)).getKey());
+            		return ((Comparable) getNumMes(clave1)).compareTo(getNumMes(clave2));
+            	} else if (type3) {
+            		String clave1 = ((String) ((Map.Entry) (o1)).getKey()).split("-")[0];
+            		String clave2 = ((String) ((Map.Entry) (o2)).getKey()).split("-")[0];
+            		return ((Comparable) getNumMes(clave1)).compareTo(getNumMes(clave2));
+            	}
+            	return ((Comparable) ((Map.Entry) (o1)).getKey()).compareTo(((Map.Entry) (o2)).getKey());
              }
 		});
 
@@ -218,5 +239,33 @@ public class WSController extends GenericController {
 			break;
 		}
 		return null;
+	}
+	
+	private static int getNumMes(String mes) {
+		if (mes.equals("Ene"))
+			return 1;
+		else if (mes.equals("Feb"))
+			return 2;
+		else if (mes.equals("Mar"))
+			return 3;
+		else if (mes.equals("Abr"))
+			return 4;
+		else if (mes.equals("May"))
+			return 5;
+		else if (mes.equals("Jun"))
+			return 6;
+		else if (mes.equals("Jul"))
+			return 7;
+		else if (mes.equals("Ago"))
+			return 8;
+		else if (mes.equals("Sept"))
+			return 9;
+		else if (mes.equals("Oct"))
+			return 10;
+		else if (mes.equals("Nov"))
+			return 11;
+		else if (mes.equals("Dic"))
+			return 12;
+		return 0;
 	}
 }

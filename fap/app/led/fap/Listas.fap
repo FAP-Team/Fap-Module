@@ -17,6 +17,7 @@ Lista roles crearEnumerado {
 	gestor: "Gestor"
 	revisor: "Revisor"
 	evaluador: "Evaluador"
+	lector: "Lector"
 }
 
 Lista FaseRegistro crearEnumerado {

@@ -42,7 +42,8 @@ bc. public static void evalA_1_1(Criterio criterio, List<Criterio> childs) {
 			criterio.valor=b111*(a111+a112+(4*a113)-a114);
 		}
 	}
-	
+
+
 h2. Valores de los Datos Adicionales
 
 También es posible crear los _Getters_ que nos devuelvan el valor que queramos que representen los datos Adicionales, que no se englobaban ni en Criterios ni en Conceptos Económicos. 

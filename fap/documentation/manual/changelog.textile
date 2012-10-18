@@ -1,5 +1,11 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC1
+
+* Mejorada y Optimizada la Carga de la Tabla de Tablas.
+* Fixed Bug en Baremación.
+* Nuevos rol de Evaluador.
+
 h3. Versión 2.1
 
 * Nuevo módulo de Presentación.

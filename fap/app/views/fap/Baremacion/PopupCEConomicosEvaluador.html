@@ -40,13 +40,13 @@
 		%}
 		<b>${anioLabel}</b>
 		#{if cEconomico.tipo.clase.equals("manual")}
-			#{simple.text id:valorSolicitado.name, name:valorSolicitado.name, value:valorSolicitado.value.toDouble().format("${formato}"), label:valorSolicitado.label, error:valorPropuesto.error, color:'#f2f2f2' /}
+			#{simple.text id:valorSolicitado.name, name:valorSolicitado.name, value:valorSolicitado.value, label:valorSolicitado.label, error:valorPropuesto.error, color:'#f2f2f2', format:'moneda' /}
 			#{simple.text id:valorPropuesto.name, name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value.toDouble().format("${formato}"), error:valorPropuesto.error /}
 			#{simple.text id:valorEstimado.name, name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value.toDouble().format("${formato}"), error:valorEstimado.error /}
 			#{simple.text id:valorConcedido.name, name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value.toDouble().format("${formato}"), error:valorConcedido.error /}
 		#{/if}
 		#{else}
-			#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value.toDouble().format("${formato}"), id:valorSolicitado.name/}
+			#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, id:valorSolicitado.name, format:'moneda'/}
 			#{simple.uneditable label:valorPropuesto.label, value:valorPropuesto.value.toDouble().format("${formato}"), id:valorPropuesto.name /}
 			#{simple.uneditable label:valorEstimado.label, value:valorEstimado.value.toDouble().format("${formato}"), id:valorEstimado.name /}
 			#{simple.uneditable label:valorConcedido.label, value:valorConcedido.value.toDouble().format("${formato}"), id:valorConcedido.name /}

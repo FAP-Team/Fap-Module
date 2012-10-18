@@ -292,7 +292,6 @@ public class FichaEvaluadorController extends Controller {
 		List<Double> totalesSolicitadoAnio = new ArrayList<Double>();
 		List<Double> totalesPropuestoAnio = new ArrayList<Double>();
 		List<Double> totalesEstimadoAnio = new ArrayList<Double>();
-		int indiceTotales=0;
 		for (int i=0; i<tipoEvaluacion.duracion; i++){
 			totalesConcedidoAnio.add(0.0);
 			totalesSolicitadoAnio.add(0.0);
@@ -328,7 +327,6 @@ public class FichaEvaluadorController extends Controller {
 		  	 columna.put("totalPropuesto", (new BigDecimal(Double.toString(totalesPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 		  	 columna.put("totalEstimado", (new BigDecimal(Double.toString(totalesEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 		  	 columnasCEconomicos.add(columna);
-		  	 indiceTotales++;
 		}
 		Map<String, String> columna = new HashMap<String, String>();
 		columna.put("id", "0");

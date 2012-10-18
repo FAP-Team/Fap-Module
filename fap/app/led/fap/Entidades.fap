@@ -710,4 +710,7 @@ Entidad AnotacionFAP {
 	ManyToOne Agente personaSolucion noConstruct
 }
 
-
+Entidad CargarTablaDeTablas extends Singleton{
+	Boolean checkNoCargarMunicipiosActualizando
+	Boolean checkNoCargarMunicipiosSoloCreando
+}

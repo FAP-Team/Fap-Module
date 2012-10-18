@@ -242,15 +242,36 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 		}
 
 		Grupo titulo="Actualizar desde fichero" {
-			Form actualizarDesdeFichero {
-				Wiki {"
-**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en la generación.
-
-**IMPORTANTE** : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
-Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de documentos desde el AED.
-                "}
-
-				Boton botonCargarTablaDeTablas titulo="Borrar todas y leer desde ficheros"
+			Wiki {"**Estas operaciones pueden tardar un tiempo bastante considerable**, sobre todo las dos últimas de Actualización sin Borrado previo. Si quiere agilizar el tiempo de computo puede desactivar la carga de la Tabla Municipios en las acciones de Actualización."}
+			Grupo titulo="Resetear Tabla de Tablas"{
+				Form actualizarDesdeFichero {
+					Wiki {"
+	**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en la generación.
+	
+	**IMPORTANTE** : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
+	Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de documentos desde el AED.
+	                "}
+	
+					Boton botonCargarTablaDeTablas titulo="Borrar todas y leer desde ficheros" type=danger
+				}
+			}
+			Grupo titulo="Actualizar Tabla de Tablas"{
+				Form actualizarDesdeFicheroModicando {
+					Wiki {"
+	**Perderá todas las modificaciones** que ha hecho y se actualizarán a los valores nuevos. Para agilizar la carga puede desactivar la actualización de la tabla Muncipios por defecto de FAP, que acapara la mayoría del tiempo.
+	                "}
+					Boton botonCargarTablaDeTablasModificando titulo="Actualizar Valores desde fichero" type=warning
+					Boton botonCargarTablaDeTablasModificandoSinMunicipios titulo="Actualizar Valores desde fichero Sin Cargar Municipios" type=warning
+				}
+			}
+			Grupo titulo="Actualizar Creando sólo los Nuevos Elementos de la Tabla de Tablas"{
+				Form actualizarDesdeFicheroSoloCreando {
+					Wiki {"
+	**Sólo se crearan los nuevos valores** que se encuentren, respetando los que ya estaban. Para agilizar la carga puede desactivar la actualización de la tabla Muncipios por defecto de FAP, que acapara la mayoría del tiempo.
+	                "}
+					Boton botonCargarTablaDeTablasSoloCreando titulo="Crear Nuevos desde fichero"
+					Boton botonCargarTablaDeTablasSoloCreandoSinMunicipios titulo="Crear Nuevos desde fichero Sin Cargar Municipios"
+				}
 			}
 		}
 	}

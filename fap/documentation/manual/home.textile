@@ -12,7 +12,7 @@ h2. "Comenzando":comenzando
 
 Aprende sobre los comandos básicos, haz tu primera aplicación FAP y conoce una primera aproximación a todo el ecosistema FAP.
 
-h2. "Desarollando":desarrollando
+h2. "Desarrollando":desarrollando
 
 Entra más en detalle en FAP. Conoce los servicios que utiliza FAP, los módulos que trae ya implementados, diversas personalizaciones y otros muchos recursos que pone FAP a tu alcance para que puedas dar el toque distintivo a tu aplicación web. 
 

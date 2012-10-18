@@ -6,9 +6,11 @@ import java.util.Map;
 
 import controllers.gen.TablaDeTablasControllerGen;
 import messages.Messages;
+import models.AdministracionFapJobs;
 import models.TableKeyValue;
 import models.TableKeyValueDependency;
 import play.mvc.Util;
+import play.test.Fixtures;
 
 public class TablaDeTablasController extends TablaDeTablasControllerGen {
 
@@ -55,6 +57,52 @@ public class TablaDeTablasController extends TablaDeTablasControllerGen {
 		tables.TableRenderResponse<TableKeyValueDependency> response = new tables.TableRenderResponse<TableKeyValueDependency>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 
 		renderJSON(response.toJSON("table", "dependency", "key", "id"));
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void actualizarDesdeFicheroSoloCreando(String botonCargarTablaDeTablasSoloCreando, String botonCargarTablaDeTablasSoloCreandoSinMunicipios) {
+		checkAuthenticity();
+		if (!permisoActualizarDesdeFicheroSoloCreando("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+			if (botonCargarTablaDeTablasSoloCreandoSinMunicipios != null)
+				utils.Fixtures.updateTKVAndDependencyFromAppAndFap("app/listas/gen/", 1, true);
+			else
+				utils.Fixtures.updateTKVAndDependencyFromAppAndFap("app/listas/gen/", 1, false);
+		}
+
+		if (!Messages.hasErrors()) {
+
+			log.info("Acción Editar de página: " + "gen/TablaDeTablas/TablaDeTablas.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/TablaDeTablas/TablaDeTablas.html" + " , intentada sin éxito (Problemas de Validación)");
+		TablaDeTablasController.actualizarDesdeFicheroSoloCreandoRender();
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void actualizarDesdeFicheroModicando(String botonCargarTablaDeTablasModificando, String botonCargarTablaDeTablasModificandoSinMunicipios) {
+		checkAuthenticity();
+		if (!permisoActualizarDesdeFicheroModicando("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+			if (botonCargarTablaDeTablasModificandoSinMunicipios != null)
+				utils.Fixtures.updateTKVAndDependencyFromAppAndFap("app/listas/gen/", 0, true);
+			else
+				utils.Fixtures.updateTKVAndDependencyFromAppAndFap("app/listas/gen/", 0, false);
+		}
+
+		if (!Messages.hasErrors()) {
+
+			log.info("Acción Editar de página: " + "gen/TablaDeTablas/TablaDeTablas.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/TablaDeTablas/TablaDeTablas.html" + " , intentada sin éxito (Problemas de Validación)");
+		TablaDeTablasController.actualizarDesdeFicheroModicandoRender();
 	}
 
 }

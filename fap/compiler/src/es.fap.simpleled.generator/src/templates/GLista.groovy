@@ -17,6 +17,8 @@ public class GLista extends GElement{
 	
 	Lista lista;
 	int numFichero;
+	int contadorGlobal;
+	String contenidoGlobal;
 	
 	public GLista(Lista lista, GElement container){
 		super(lista, container);
@@ -30,42 +32,42 @@ public class GLista extends GElement{
 	}
 	
 	public String generateFile(){
-		String contenido = "";
-		int contador=0;
+		contenidoGlobal = "";
+		contadorGlobal=0;
 		numFichero=1;
 		boolean pendienteEscribir=false;
 		for(ElementoLista el : lista.elementos){
 			// Distinguir si el elemento es de tipo 'normal' o 'dependiente' para generarlo de una forma u otra
 			if (el.value){
 				// Generacion de tipo 'normal'
-				contenido += generateElemento(el);
+				contenidoGlobal += generateElemento(el);
+				contadorGlobal++;
 			}
 			else {
 				// Generación de tipo 'dependiente
-				contenido += generateElementoDependiente(el);
+				generateElementoDependiente(el);
 				// Nombre generado de la tabla : table-key-key
 			}
-			contador++;
-			if (!contenido.equals("")){
+			if (!contenidoGlobal.equals("")){
 				pendienteEscribir=true;
-				if (contador == 100){
-					contador = 0;
+				if (contadorGlobal >= 100){
+					contadorGlobal = 0;
 					NumberFormat formatter = new DecimalFormat("0000");
 					String numeroFormateado = formatter.format(numFichero);
-					FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numeroFormateado + ".yaml", contenido);
-					contenido = "";
+					FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numeroFormateado + ".yaml", contenidoGlobal);
+					contenidoGlobal = "";
 					numFichero++;
 					pendienteEscribir=false;
 				}
 			}
 		}
-		if ((pendienteEscribir) && (!contenido.equals(""))){
+		if ((pendienteEscribir) && (!contenidoGlobal.equals(""))){
 			if (numFichero != 1){
 				NumberFormat formatter = new DecimalFormat("0000");
 				String numeroFormateado = formatter.format(numFichero);
-				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numeroFormateado + ".yaml", contenido);
+				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numeroFormateado + ".yaml", contenidoGlobal);
 			} else
-				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + ".yaml", contenido);
+				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + ".yaml", contenidoGlobal);
 		}
 	}
 	
@@ -220,7 +222,7 @@ public class GLista extends GElement{
 """
 	}
 	
-	private String generateElementoDependiente(ElementoLista el){
+	private void generateElementoDependiente(ElementoLista el){
 		String table = lista.name;
 		String key = el.key.getFirst();
 		String keyDep = "";
@@ -229,8 +231,6 @@ public class GLista extends GElement{
 		for (String rest : el.key.getResto()) {
 			key += "."+rest;
 		}
-		String out = "";
-		int contador=0;
 		// Recorremos todos los elementos que tiene el elemento Dependiente
 		for (ElementoListaDependiente elDep : el.elementosDependientes){
 			// Calculamos el nombre de la clave de cada uno de los elementos
@@ -242,7 +242,7 @@ public class GLista extends GElement{
 			valueDep = elDep.value?:elDep.key;
 			// Empezamos a crear la salida
 			// Para la tabla TKV
-			out += """TableKeyValue(${table}-${key}-${keyDep}):
+			contenidoGlobal += """TableKeyValue(${table}-${key}-${keyDep}):
   table: '${table}'
   key: '${keyDep}'
   value: '${valueDep}'
@@ -250,25 +250,23 @@ public class GLista extends GElement{
 
 """
 			// Para la tabla TKVDependency
-			out += """TableKeyValueDependency(${table}-${key}-${keyDep}):
+			contenidoGlobal += """TableKeyValueDependency(${table}-${key}-${keyDep}):
   table: '${table}'
   dependency: '${key}'
   key: '${keyDep}'
   noVisible: '${lista.ocultar}'
 
 """
-			contador+=2;
-			if (contador == 100){
-				contador = 0;
+			contadorGlobal+=2;
+			if (contadorGlobal >= 100){
+				contadorGlobal = 0;
 				NumberFormat formatter = new DecimalFormat("0000");
 				String numeroFormateado = formatter.format(numFichero);
-				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numeroFormateado + ".yaml", out);
-				out = "";
+				FileUtils.overwrite(FileUtils.getRoute('LIST'), lista.name + numeroFormateado + ".yaml", contenidoGlobal);
+				contenidoGlobal= "";
 				numFichero++;
 			}
 		}
-		//String value = el.value?:el.key;
-		return out;
 	}
 	
 }

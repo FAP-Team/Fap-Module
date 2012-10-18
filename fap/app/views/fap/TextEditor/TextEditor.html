@@ -15,6 +15,7 @@
      urlEditar:play.mvc.Router.reverse('PlantillasDocController.editar' , ['idPlantillaDocumento':plantillaDocumento?.id])
 }
 
+
 <script type="text/javascript">
 	tinyMCE.init({
 	        // General options
@@ -55,7 +56,7 @@
 	            // Utilizamos un botón propio en "Nuevo Documento" para poder limpiar el ancla que marca el id de la plantilla actual
 	            ed.addButton('nuevodocumento', {
 	                title : 'Nuevo Documento',
-	                image : '/public/images/nuevodocumento_editor_icono.png',
+	                image : '@{'/public/images/nuevodocumento_editor_icono.png'}',
 	                onclick : function() {
 	                      ed.windowManager.confirm('advanced.newdocument', function(s) {
 	                             if (s) {

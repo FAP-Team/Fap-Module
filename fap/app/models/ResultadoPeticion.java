@@ -78,7 +78,10 @@ public class ResultadoPeticion extends FapModel {
 		this.valorInteger = null;
 		this.valorLong = null;
 		this.valorBoolean = null;
-		this.valorDateTime = datetime.toString();
+		if (datetime != null)
+			this.valorDateTime = datetime.toString();
+		else
+			this.valorDateTime = null;
 		this.valorDouble = null;
 		this.valorString = null;
 	}

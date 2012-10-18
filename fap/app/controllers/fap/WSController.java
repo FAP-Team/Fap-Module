@@ -69,43 +69,46 @@ public class WSController extends GenericController {
 				ResultadoPeticion resultado = resultados.resultadoPeticion.get(j);
 				String nombreVariable = resultado.nombre;
 				String valor = null;
+				
 				if (nameVariable.equals(nombreVariable)) {
-					if (resultado.getType().equals("String"))
-						valor = resultado.valorString;
-					else if (resultado.getType().equals("Boolean")) {
-						if (resultado.valorBoolean.toString().toLowerCase().equals("true"))
-							valor = "Sí";
-						else
-							valor = "No";
-					}
-					else if (resultado.getType().equals("DateTime")) {
-						valor = resultado.valorDateTime;
-						String fecha = valor.split("T")[0];
-						String dia = fecha.split("-")[2];
-						String mes = fecha.split("-")[1];
-						String agno = fecha.split("-")[0];
-						if (rango == 0)
-							valor = "Día "+dia;
-						else if (rango == 1)
-							valor = dia+"-"+getMes(mes);
-						else if (rango == 2) {
-							DateTime date = new DateTime(fecha);
-							valor = "Semana " + date.getWeekOfWeekyear();
+					if (resultado.getType() != null) {
+						if (resultado.getType().equals("String"))
+							valor = resultado.valorString;
+						else if (resultado.getType().equals("Boolean")) {
+							if (resultado.valorBoolean.toString().toLowerCase().equals("true"))
+								valor = "Sí";
+							else
+								valor = "No";
 						}
-						else if (rango == 3)
-							valor = getMes(mes);
-						else if (rango == 4)
-							valor = getMes(mes)+"-"+agno;
-						else if (rango == 5)
-							valor = agno;
-					}
-					
-					if (mapa.containsKey(valor)) {
-						int numAnterior = (Integer) mapa.get(valor);
-						mapa.remove(valor);
-						mapa.put(valor, numAnterior + 1);
-					} else {
-						mapa.put(valor, 1);
+						else if (resultado.getType().equals("DateTime")) {
+							valor = resultado.valorDateTime;
+							String fecha = valor.split("T")[0];
+							String dia = fecha.split("-")[2];
+							String mes = fecha.split("-")[1];
+							String agno = fecha.split("-")[0];
+							if (rango == 0)
+								valor = "Día "+dia;
+							else if (rango == 1)
+								valor = dia+"-"+getMes(mes);
+							else if (rango == 2) {
+								DateTime date = new DateTime(fecha);
+								valor = "Semana " + date.getWeekOfWeekyear();
+							}
+							else if (rango == 3)
+								valor = getMes(mes);
+							else if (rango == 4)
+								valor = getMes(mes)+"-"+agno;
+							else if (rango == 5)
+								valor = agno;
+						}
+						
+						if (mapa.containsKey(valor)) {
+							int numAnterior = (Integer) mapa.get(valor);
+							mapa.remove(valor);
+							mapa.put(valor, numAnterior + 1);
+						} else {
+							mapa.put(valor, 1);
+						}
 					}
 				}
 				

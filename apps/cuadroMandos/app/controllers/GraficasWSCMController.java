@@ -50,14 +50,21 @@ public class GraficasWSCMController extends GraficasWSCMControllerGen {
 		Gson gson = new Gson();
 		ListaResultadosPeticion listaResultados = null;
 		Long peticionID = Peticion.find("select max(peticion.id) from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where serviciosWeb.id=?", serviciosWeb.id).first();
-		System.out.println(" * Id peticion a mirar: " + peticionID);
 		Peticion peticion = Peticion.find("select peticion from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where peticion.id=?", peticionID).first();
+		
 		if (peticion != null) {
 			listaResultados = gson.fromJson(peticion.stringJson, ListaResultadosPeticion.class);
 			listaResultados.save();
-			System.out.println(" * ListaResultados: " + listaResultados.id);
-			log.info("Visitando página: " + "manual/GraficasWS.html");
-			renderTemplate("manual/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb, listaResultados, peticion);
+
+			if (listaResultados.resultadosPeticion.size() != 0) {
+				log.info("Visitando página: " + "manual/GraficasWS.html");
+				renderTemplate("manual/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb, listaResultados, peticion);
+			} else {
+				Messages.warning("No existen datos para ese servicio web.");
+				play.Logger.error("No existen datos para ese servicio web.");
+				Messages.keep();
+				redirect("ServiciosWebAppCMController.index", "editar", idAplicacion);
+			}
 		}
 		else {
 			Messages.warning("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
@@ -138,7 +145,6 @@ public class GraficasWSCMController extends GraficasWSCMControllerGen {
 			else {
 				Messages.warning("Está consultando un servicio web del historial, no se puede actualizar");
 				play.Logger.error("Está consultando un servicio web del historial, no se puede actualizar");
-				
 			}
 		}
 

@@ -209,6 +209,7 @@
 		#{/fap.grupo}
 	#{/fap.grupo}
 	</br></br>
+	<div id="noData"></div>
 	<div id="grafica" style="height: 500px"></div>
 	
 	<script>
@@ -268,9 +269,11 @@
 				%{
 					for (Map.Entry<String, String> entry: mapVars.entrySet()) {
 				%}
-						if ("${entry.getKey()}" == optionSelectedVar1) {
+						if ("${entry.getKey().raw()}" == optionSelectedVar1) {
 							if ("${entry.getValue()}" == "DateTime") {
 								$('#combo_rango').parent().parent().attr('style', 'display:block');
+							} else {
+								$('#combo_rango').parent().parent().attr('style', 'display:none');
 							}
 						}
 				%{ 	
@@ -337,9 +340,16 @@
 				url: urlController,
 				type: "GET",
 				data: {listaResultadosId:idListaResultados,nameVariable:optionSelectedVar, rango:optionSelectedRango, activo:${ws.servicioWebInfo.activo}}
-			}).done(function(m) {
-				console.log(m);
-				ejecutarPie(m, texttitulo, textsubtitulo, texttituloleyenda);
+			}).done(function(map) {
+				if (map == "[]") {
+					$('#noData').attr('style', 'display:block');
+					$('#grafica').html("");
+					$('#noData').html("<h3>No existen datos para esta variable.</h3>");
+				}
+				else {
+					$('#noData').attr('style', 'display:none');
+					ejecutarPie(map, texttitulo, textsubtitulo, texttituloleyenda);
+				}
 			});
 		}
 		
@@ -364,30 +374,38 @@
 				url: urlController,
 				type: "GET",
 				data: {listaResultadosId:idListaResultados,nameVariable:optionSelectedVar, rango:optionSelectedRango, activo:${ws.servicioWebInfo.activo}}
-			}).done(function(m) {
-				console.log(m);
-				var index = 0;
-				var array = _.toArray(eval(m));
-				_.each(array, function(obj) {
-					// Formateo todo los pares [valor, número] a [valor, ...] [número, ...]
-					var key = _.first(obj);
-					var value = _.last(obj);
-					keyArray += "'" + key + "'"; 
-					valueArray += value;
-					if (index != (_.size(array)-1)) {
-						keyArray += ",";
-						valueArray += ",";
-					}
-					index++;
-				});
+			}).done(function(map) {
+				if (map == "[]") {
+					$('#noData').attr('style', 'display:block');
+					$('#grafica').html("");
+					$('#noData').html("<h3>No existen datos para esta variable.</h3>");
+				}
+				else {
+					$('#noData').attr('style', 'display:none');
+					var index = 0;
+					var array = _.toArray(eval(map));
+					_.each(array, function(obj) {
+						// Formateo todo los pares [valor, número] a [valor, ...] [número, ...]
+						var key = _.first(obj);
+						var value = _.last(obj);
+						keyArray += "'" + key + "'"; 
+						valueArray += value;
+						if (index != (_.size(array)-1)) {
+							keyArray += ",";
+							valueArray += ",";
+						}
+						index++;
+					});
 				
-				keyArray += "]";
-				valueArray += "]";
-				
-				ejecutarColumn(keyArray, valueArray, texttitulo, textsubtitulo, optionSelectedVar, texttituloejey, texttituloleyenda);
+					keyArray += "]";
+					valueArray += "]";
+					
+					ejecutarColumn(keyArray, valueArray, texttitulo, textsubtitulo, optionSelectedVar, texttituloejey, texttituloleyenda);
+				}	
 			});
 		}
-		
+			
+			
 		// Si se modifica alguno de los textbox se actualiza la gráfica.
 		function dibujarGrafica() {
 			var indexTipo = combo_tipoGrafica.selectedIndex;

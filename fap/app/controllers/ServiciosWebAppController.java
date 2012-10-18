@@ -104,15 +104,18 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			JsonArray array = json.getAsJsonArray();		
 			Gson gson = new Gson();
 			int i = 0;
-			
-			while (i < array.size()) {
-				ServiciosWeb servicioWeb = new ServiciosWeb();
-				servicioWeb.servicioWebInfo = gson.fromJson(array.get(i), ServicioWebInfo.class);
-				servicioWeb.servicioWebInfo.activo = true;
-				servicioWeb.save();
-				aplicacion.serviciosWeb.add(servicioWeb);
-				aplicacion.save();
-				i++;
+
+			// Comprobamos primero que el JSON contiene algo
+			if (!array.get(i).toString().equals("null")) {
+				while (i < array.size()) {
+					ServiciosWeb servicioWeb = new ServiciosWeb();
+					servicioWeb.servicioWebInfo = gson.fromJson(array.get(i), ServicioWebInfo.class);
+					servicioWeb.servicioWebInfo.activo = true;
+					servicioWeb.save();
+					aplicacion.serviciosWeb.add(servicioWeb);
+					aplicacion.save();
+					i++;
+				}
 			}
 		}
 		log.info("Visitando página: " + "gen/ServiciosWebApp/ServiciosWebApp.html");

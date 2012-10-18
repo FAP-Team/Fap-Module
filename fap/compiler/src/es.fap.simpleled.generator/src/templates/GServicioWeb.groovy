@@ -167,14 +167,29 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 				}
 
 				Iterator it2 = camposAtributos.entrySet().iterator();
-				String variableName = "";
 				while (it2.hasNext()) {
+					String variableName = "";
+					String variableComp = "";
 					Map.Entry e = (Map.Entry)it2.next();
-					variableName = ((CampoUtils)e.getValue()).str.split("\\.")[1];
+					String[] vars = ((CampoUtils)e.getValue()).str.split("\\.");
+					
+					if (vars.size() > 2) {
+						int k = 1;
+						for (k = 1; k < vars.size(); k++) {
+							variableComp += vars[k];
+							if (k < vars.size()-1) {
+								variableComp += ".";
+							}
+						}
+					} else
+						variableComp = ((CampoUtils)e.getValue()).str.split("\\.")[-1];
+					
+					variableName = ((CampoUtils)e.getValue()).str.split("\\.")[-1];
+					
 					if (!variableName.equals("id")) {
 						ret += 	"""
 								ResultadoPeticion resultado${variableName} = null;
-								resultado${variableName} = new ResultadoPeticion("${e.getKey()}", ${allEntities.get(allEntities.size()-1).getVariable()}Aux.${variableName});
+								resultado${variableName} = new ResultadoPeticion("${e.getKey()}", ${allEntities.get(allEntities.size()-1).getVariable()}Aux.${variableComp});
 								resultadoPeticion.add(resultado${variableName});
 								listaResultados.add(resultado${variableName});
 								"""
@@ -191,17 +206,33 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 						"""
 
 			} else {
-				String variableName = "";
+
 				ret += """List<ResultadoPeticion> listaResultados = new ArrayList<ResultadoPeticion>();	
 						""";
 				Iterator it2 = camposAtributos.entrySet().iterator();
 				while (it2.hasNext()) {
+					String variableName = "";
+					String variableComp = "";
 					Map.Entry e = (Map.Entry)it2.next();
-					variableName = ((CampoUtils)e.getValue()).str.split("\\.")[1];
+					String[] vars = ((CampoUtils)e.getValue()).str.split("\\.");
+					
+					if (vars.size() > 2) {
+						int k = 1;
+						for (k = 1; k < vars.size(); k++) {
+							variableComp += vars[k];
+							if (k < vars.size()-1) {
+								variableComp += ".";
+							}
+						}
+					} else
+						variableComp = ((CampoUtils)e.getValue()).str.split("\\.")[-1];
+
+					variableName = ((CampoUtils)e.getValue()).str.split("\\.")[-1];
+					
 					if (!variableName.equals("id")) {
 						ret += 	"""
 								ResultadoPeticion resultado${variableName} = null;
-								resultado${variableName} = new ResultadoPeticion("${e.getKey()}", ${allEntities.get(allEntities.size()-1).getVariable()}Aux.${variableName});
+								resultado${variableName} = new ResultadoPeticion("${e.getKey()}", ${allEntities.get(allEntities.size()-1).getVariable()}Aux.${variableComp});
 								resultadoPeticion.add(resultado${variableName});
 								listaResultados.add(resultado${variableName});
 								"""
@@ -239,21 +270,35 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 		while (it2.hasNext()) {
 			Map.Entry e = (Map.Entry)it2.next();
 			String nombreParam = ((CampoUtils)e.getValue()).str;
-			String atr = ((CampoUtils)e.getValue()).str.split("\\.")[1];
-			Campo s = ((CampoUtils)e.getValue()).campo;
-			String tipoParam = s.getAtributos().getAtributo().getType().getSimple();
+			String atr = ((CampoUtils)e.getValue()).str.split("\\.")[-1];
+			Campo campo = ((CampoUtils)e.getValue()).campo;
+			CampoAtributos attrs = campo.getAtributos();
+			CampoAtributos anterior;
+			String tipoParam;
 			
-			if (tipoParam == null)
-				tipoParam = s.getAtributos().getAtributo().getType().getSpecial().getType();
-			else
-				tipoParam = s.getAtributos().getAtributo().getType().getSimple().getType();
+			while (attrs != null){
+				anterior = attrs;
+				attrs = attrs.getAtributos();
+				if (attrs == null) {
+					tipoParam = anterior.getAtributo().getType().getSimple();
+					if (tipoParam == null) {
+						if (anterior.getAtributo().getType().getSpecial() != null) {
+							tipoParam = anterior.getAtributo().getType().getSpecial().getType();
+						} else {
+							tipoParam = "Lista";
+						}
+					}
+					else
+						tipoParam = anterior.getAtributo().getType().getSimple().getType();
+				}
+			}
 			
 			out += 	"""
-					InfoParams info${atr} = new InfoParams();
-					info${atr}.tipo = "${tipoParam}";
-					info${atr}.nombreParam = "${nombreParam}";
-					swi.infoParams.add(info${atr});
-					"""
+				InfoParams info${atr} = new InfoParams();
+				info${atr}.tipo = "${tipoParam}";
+				info${atr}.nombreParam = "${atr}";
+				swi.infoParams.add(info${atr});
+				"""
 		}
 
 		out += 	"""

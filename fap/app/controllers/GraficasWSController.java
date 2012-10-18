@@ -53,14 +53,21 @@ public class GraficasWSController extends GraficasWSControllerGen {
 		Gson gson = new Gson();
 		ListaResultadosPeticion listaResultados = null;
 		Long peticionID = Peticion.find("select max(peticion.id) from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where serviciosWeb.id=?", serviciosWeb.id).first();
-		System.out.println(" * Id peticion a mirar: " + peticionID);
 		Peticion peticion = Peticion.find("select peticion from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where peticion.id=?", peticionID).first();
+		
 		if (peticion != null) {
 			listaResultados = gson.fromJson(peticion.stringJson, ListaResultadosPeticion.class);
 			listaResultados.save();
-			System.out.println(" * ListaResultados: " + listaResultados);
-			log.info("Visitando página: " + "app/views/fap/Graficas/GraficasWS.html");
-			renderTemplate("app/views/fap/Graficas/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb, listaResultados, peticion);
+			
+			if (listaResultados.resultadosPeticion.size() != 0) {
+				log.info("Visitando página: " + "app/views/fap/Graficas/GraficasWS.html");
+				renderTemplate("app/views/fap/Graficas/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb, listaResultados, peticion);
+			} else {
+				Messages.warning("No existen datos para ese servicio web.");
+				play.Logger.error("No existen datos para ese servicio web.");
+				Messages.keep();
+				redirect("ServiciosWebAppController.index", "editar", idAplicacion);
+			}
 		}
 		else {
 			Messages.warning("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
@@ -147,7 +154,6 @@ public class GraficasWSController extends GraficasWSControllerGen {
 			else {
 				Messages.warning("Está consultando un servicio web del historial, no se puede actualizar");
 				play.Logger.error("Está consultando un servicio web del historial, no se puede actualizar");
-				
 			}
 		}
 
@@ -155,7 +161,6 @@ public class GraficasWSController extends GraficasWSControllerGen {
 			GraficasWSController.formBtnRecargaDatosValidateRules();
 		}
 		if (!Messages.hasErrors()) {
-
 			log.info("Acción Editar de página: " + "gen/GraficasWS/GraficasWS.html" + " , intentada con éxito");
 		} else
 			log.info("Acción Editar de página: " + "gen/GraficasWS/GraficasWS.html" + " , intentada sin éxito (Problemas de Validación)");

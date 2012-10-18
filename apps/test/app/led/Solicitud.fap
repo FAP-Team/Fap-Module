@@ -90,28 +90,9 @@ Formulario Solicitud {
 			Enlace "PCEconómicos" pagina=PCEconomicos	
     	}
     	
-//    	Enlace "Ejemplo Lucas" pagina=Agenda
-		
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
     }
-    
-    
-//    Pagina Agenda {
-//		Wiki {" **Página de agenda** : Tabla para insertar la agenda "}
-//		Form frmBoton {
-//			Boton borrarMultiple popup=popUpBorrarMultiple titulo="Borrar múltiples instancias"
-//		}
-//	}
-//	
-//	Popup popUpBorrarMultiple campo=AdministracionFapJobs titulo="Borrar múltiples eventos" {
-//	    Texto campo=AdministracionFapJobs.id
-//	    Wiki {"<br/><br/><br/>"}
-//	    
-//	    	Boton borrarM titulo="Borrar"
-//	
-//
-//	}
     
     Popup PruebaBigPopUp campo=Solicitud titulo="BigPopUp" maximizar {
     	Texto campo=Solicitud.bigPopUp.prueba1 titulo="Prueba1" 
@@ -773,7 +754,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 	Pagina ElementosBasicos campo=Solicitud{
 		Grupo Textos titulo = "Textos"{
 			Texto campo=Solicitud.elementos.texto titulo="Texto: "
-			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "�?rea de texto"
+			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "�rea de texto"
 		}
 		
 		Grupo Numeros titulo="Números"{

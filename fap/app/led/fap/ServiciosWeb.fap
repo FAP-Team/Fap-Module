@@ -1,0 +1,24 @@
+ServicioWeb WSSolicitudes {
+	campo=SolicitudGenerica
+	return={titulo="Estado":SolicitudGenerica.estado, 
+			titulo="Fecha registro":SolicitudGenerica.registro.informacionRegistro.fechaRegistro
+	}
+}
+
+ServicioWeb WSAportaciones {
+	campo=SolicitudGenerica.aportaciones.registradas
+	return={titulo="Estado":Aportacion.estado, 
+			titulo="Fecha registro":Aportacion.informacionRegistro.fechaRegistro
+	}
+}
+
+ServicioWeb WSNotificaciones {
+	campo=SolicitudGenerica
+	return={titulo="Estado notificación":SolicitudGenerica.verificacion.requerimiento.notificacion.estado, 
+			titulo="Expediente Aed":SolicitudGenerica.verificacion.requerimiento.notificacion.idExpedienteAed,
+			titulo="Fecha puesta a disposición":SolicitudGenerica.verificacion.requerimiento.notificacion.fechaPuestaADisposicion,
+			titulo="Fecha Acceso":SolicitudGenerica.verificacion.requerimiento.notificacion.fechaAcceso
+	}
+}
+
+

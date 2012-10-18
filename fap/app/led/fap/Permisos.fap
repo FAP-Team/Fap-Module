@@ -205,6 +205,12 @@ Permiso adminGestorRevisor{
 	return editable
 }
 
+Permiso adminGestorRevisorEvaluador{
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor", "evaluador")
+	return editable
+}
+
 Permiso aportacion{
 	vars
 		SolicitudGenerica solicitud

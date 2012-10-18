@@ -187,7 +187,7 @@ Formulario Baremacion {
 		Enlace "Salir" accion=logout
     }
     
-    Pagina EvaluacionesFinalizadas titulo="Evaluaciones Finalizadas" noForm permiso=adminGestorRevisor{
+    Pagina EvaluacionesFinalizadas titulo="Evaluaciones Finalizadas" noForm permiso=adminGestorRevisorEvaluador{
 		Tabla tablaEvaluacionesFinalizadas campo=Evaluacion {
 			Columna campo=Evaluacion.totalCriterios titulo="Total Criterios" expandir
 			Columna campo=Evaluacion.solicitud.expedienteAed.idAed titulo="Expediente" expandir

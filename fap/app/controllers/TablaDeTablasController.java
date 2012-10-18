@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -72,6 +73,7 @@ public class TablaDeTablasController extends TablaDeTablasControllerGen {
 				utils.Fixtures.updateTKVAndDependencyFromAppAndFap("app/listas/gen/", 1, true);
 			else
 				utils.Fixtures.updateTKVAndDependencyFromAppAndFap("app/listas/gen/", 1, false);
+			actualizarCacheTablaDeTablas();
 		}
 
 		if (!Messages.hasErrors()) {
@@ -80,6 +82,27 @@ public class TablaDeTablasController extends TablaDeTablasControllerGen {
 		} else
 			log.info("Acción Editar de página: " + "gen/TablaDeTablas/TablaDeTablas.html" + " , intentada sin éxito (Problemas de Validación)");
 		TablaDeTablasController.actualizarDesdeFicheroSoloCreandoRender();
+	}
+	
+	public static void actualizarCacheTablaDeTablas(){
+		List<TableKeyValue> all = TableKeyValue.findAll();
+		HashSet<String> tables = new HashSet<String>();
+		for (TableKeyValue keyValue : all) {
+			tables.add(keyValue.table);
+		}
+		for (String table : tables) {
+			TableKeyValue.renewCache(table);
+		}
+		
+		List<TableKeyValueDependency> allD = TableKeyValueDependency.findAll();
+		HashSet<String> tablesD = new HashSet<String>();
+		for (TableKeyValueDependency keyDependency : allD) {
+			tablesD.add(keyDependency.table);
+		}
+		for (String table : tablesD) {
+			TableKeyValueDependency.renewCache(table);
+		}
+		utils.DataBaseUtils.updateEstadosSolicitudUsuario();
 	}
 	
 	@Util
@@ -95,6 +118,7 @@ public class TablaDeTablasController extends TablaDeTablasControllerGen {
 				utils.Fixtures.updateTKVAndDependencyFromAppAndFap("app/listas/gen/", 0, true);
 			else
 				utils.Fixtures.updateTKVAndDependencyFromAppAndFap("app/listas/gen/", 0, false);
+			actualizarCacheTablaDeTablas();
 		}
 
 		if (!Messages.hasErrors()) {

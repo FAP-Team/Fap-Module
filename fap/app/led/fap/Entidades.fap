@@ -713,6 +713,7 @@ Entidad AnotacionFAP {
 }
 
 
+
 Entidad CargarTablaDeTablas extends Singleton{
 	Boolean checkNoCargarMunicipiosActualizando
 	Boolean checkNoCargarMunicipiosSoloCreando
@@ -790,3 +791,4 @@ Entidad RegistroDatos{
 	String nDocumento
 	String estado
 }
+

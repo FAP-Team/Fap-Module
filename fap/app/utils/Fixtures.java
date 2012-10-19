@@ -116,7 +116,7 @@ public class Fixtures extends play.test.Fixtures {
 			for (VirtualFile file: getFilesInFolder(utils.FileUtils.join(Play.modules.get("fap").getRealFile().getAbsolutePath(), path))){
 				Matcher m = p.matcher(file.getName());
 				esMunicipio = m.matches();
-				if ((noCargarMunicipios) && (!esMunicipio))
+				if (!esMunicipio || !noCargarMunicipios)
 					updateTableKeyValueAndDependency(file, modo);
 			}
 		}

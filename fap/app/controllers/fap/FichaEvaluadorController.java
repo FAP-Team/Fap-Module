@@ -27,6 +27,7 @@ import models.Criterio;
 import models.CriterioListaValores;
 import models.Documento;
 import models.Evaluacion;
+import models.ObligatoriedadDocumentos;
 import models.SolicitudGenerica;
 import models.TipoCEconomico;
 import models.TipoCriterio;
@@ -52,6 +53,7 @@ import services.BaremacionService;
 import tables.TableRecord;
 import utils.BaremacionUtils;
 import utils.ModelUtils;
+import verificacion.ObligatoriedadDocumentosFap;
 
 @With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class FichaEvaluadorController extends Controller {
@@ -96,7 +98,7 @@ public class FichaEvaluadorController extends Controller {
 				encontrado = false;
 				for (int i=dbSolicitud.verificaciones.size()-1; i>=0; i--){
 					for (VerificacionDocumento documento: dbSolicitud.verificaciones.get(i).documentos){
-						if ((documento.uriTipoDocumento.equals(tipo.uri)) && (documento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.valido.name()))){
+						if ((ObligatoriedadDocumentosFap.eliminarVersionUri(documento.uriTipoDocumento).equals(ObligatoriedadDocumentosFap.eliminarVersionUri(tipo.uri))) && (documento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.valido.name()))){
 							List<Documento> documentosAportados = (List<Documento>) ModelUtils.invokeMethodClassStatic(BaremacionFAP.class, "getDocumentosAccesibles", idSolicitud, idEvaluacion);
 							if (documentosAportados != null){
 								for (Documento doc: documentosAportados){

@@ -42,8 +42,9 @@ public class BaremacionFAP {
 	public static List<Documento> getDocumentosAccesibles(Long idSolicitud, Long idEvaluacion){
 		List <Documento> documentos = new ArrayList<Documento>();
 		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 		documentos.addAll(dbSolicitud.documentacion.documentos);
-		documentos.add(getOficialEvaluacion(idSolicitud, idEvaluacion));
+		documentos.add(evaluacion.solicitudEnEvaluacion);
 		return documentos;
 	}
 	
@@ -94,16 +95,14 @@ public class BaremacionFAP {
 		}
 	}
 	
-	public static Documento getOficialEvaluacion(Long idSolicitud, Long idEvaluacion){
+	public static void setOficialEvaluacion(Long idSolicitud, Long idEvaluacion){
 		File solicitudEnEvaluacion = null;
 		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
-        if(evaluacion.solicitudEnEvaluacion == null){
+        if(evaluacion.solicitudEnEvaluacion.uri == null){
             try {
             	TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
             	SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
-            	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-            	solicitudEnEvaluacion = new Report(tramite.getBodyReport()).header(tramite.getHeaderReport()).registroSize().renderTmpFile(solicitud);
-                evaluacion.solicitudEnEvaluacion = new Documento();
+            	solicitudEnEvaluacion = tramite.getDocumentoOficial();
                 evaluacion.solicitudEnEvaluacion.tipo = FapProperties.get("fap.baremacion.evaluacion.documento.solicitud");
                 evaluacion.save();
                 gestorDocumentalService.saveDocumentoTemporal(evaluacion.solicitudEnEvaluacion, solicitudEnEvaluacion);
@@ -119,6 +118,5 @@ public class BaremacionFAP {
                 play.Logger.error("Error generando el documento de solicitud para ver en evaluación, fallo en getTramiteObject: "+e.getMessage());
 			}
         }
-		return evaluacion.solicitudEnEvaluacion;
 	}
 }

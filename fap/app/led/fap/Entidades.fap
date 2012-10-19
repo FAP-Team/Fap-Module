@@ -709,4 +709,3 @@ Entidad AnotacionFAP {
 	ManyToOne Agente personaAsunto noConstruct
 	ManyToOne Agente personaSolucion noConstruct
 }
-

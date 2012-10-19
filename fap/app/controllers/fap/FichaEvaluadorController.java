@@ -15,6 +15,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.google.inject.spi.Message;
+
 import baremacion.BaremacionFAP;
 
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
@@ -54,6 +56,7 @@ import tables.TableRecord;
 import utils.BaremacionUtils;
 import utils.ModelUtils;
 import verificacion.ObligatoriedadDocumentosFap;
+import validation.CustomValidation;
 
 @With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class FichaEvaluadorController extends Controller {
@@ -90,16 +93,17 @@ public class FichaEvaluadorController extends Controller {
 	public static void tabladocumentosAccesiblesEvaluador(Long idSolicitud, Long idEvaluacion) {
 
 		java.util.List<Documento> rows = new ArrayList<Documento>();
+		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 		if (TipoDocumentoAccesible.count() > 0){
 			List<TipoDocumentoAccesible> tiposDocumentosAccesibles = TipoDocumentoAccesible.findAll();
 			boolean encontrado;
 			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+			List<Documento> documentosAportados = (List<Documento>) ModelUtils.invokeMethodClassStatic(BaremacionFAP.class, "getDocumentosAccesibles", idSolicitud, idEvaluacion);
 			for (TipoDocumentoAccesible tipo: tiposDocumentosAccesibles){
 				encontrado = false;
 				for (int i=dbSolicitud.verificaciones.size()-1; i>=0; i--){
 					for (VerificacionDocumento documento: dbSolicitud.verificaciones.get(i).documentos){
 						if ((ObligatoriedadDocumentosFap.eliminarVersionUri(documento.uriTipoDocumento).equals(ObligatoriedadDocumentosFap.eliminarVersionUri(tipo.uri))) && (documento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.valido.name()))){
-							List<Documento> documentosAportados = (List<Documento>) ModelUtils.invokeMethodClassStatic(BaremacionFAP.class, "getDocumentosAccesibles", idSolicitud, idEvaluacion);
 							if (documentosAportados != null){
 								for (Documento doc: documentosAportados){
 									if (doc.uri.equals(documento.uriDocumento)){
@@ -118,8 +122,10 @@ public class FichaEvaluadorController extends Controller {
 						break;
 				}
 			}
-			
 		}
+		// Siempre se añade el documento solicitud evaluación
+		if (evaluacion.solicitudEnEvaluacion.uri != null)
+			rows.add(evaluacion.solicitudEnEvaluacion);
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Documento> rowsFiltered = rows; //Tabla sin permisos, no filtra
@@ -179,7 +185,7 @@ public class FichaEvaluadorController extends Controller {
 			if(evaluacion.tipo.comentariosSolicitante){
 				evaluacion.comentariosSolicitante = params.get("evaluacion.comentariosSolicitante");
 			}
-				
+			boolean guardarMaximo=false;
 			//Criterios de evaluacion
 			for(Criterio criterio : evaluacion.criterios){
 				String param = "criterio[" + criterio.id + "]";
@@ -187,31 +193,33 @@ public class FichaEvaluadorController extends Controller {
 				Double valor = params.get(key, Double.class);
 				
 	
-				if(criterio.tipo.claseCriterio.equals("manual")){
+				if(criterio.tipo.claseCriterio.equals("manual") || criterio.tipo.claseCriterio.equals("automod")){
 					
 					// Únicamente valida cuando se va a finalizar
 					// la verificación
-					if(actionEnd){
-						validation.required(key, valor);
+					if(actionEnd || actionSave){
+						if (actionEnd)
+							validation.required(key, valor);
 						//TODO validaciones de tamaño máximo
 						if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(valor) < 0) {
-							validation.addError(key, "El valor "+valor+" es superior al valor máximo permitido: "+criterio.tipo.valorMaximo);
+							// validation.addError(key, "El valor "+valor+" es superior al valor máximo permitido: "+criterio.tipo.valorMaximo);
+							Messages.warning("El valor del criterio manual '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' es superior ("+valor+") al permitido en ese tipo de criterio: "+criterio.tipo.valorMaximo);
+							if (actionEnd){
+								criterio.valor=criterio.tipo.valorMaximo;
+								guardarMaximo=true;
+							}
 						}
 						if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(valor) > 0) {
-							validation.addError(key, "El valor "+valor+" es inferior al valor mínimo permitido: "+criterio.tipo.valorMinimo);
+							Messages.warning("El criterio manual/automod "+criterio.tipo.jerarquia+" no llega ("+valor+") al mínimo valor permitido: "+criterio.tipo.valorMinimo+". Se ha establecido como valor a 0.0");
+							if (actionEnd)
+								criterio.valor=0.0;
 						}
 					}
 					if(!validation.hasErrors()){
-						criterio.valor = valor;
-					}
-				}else if ((criterio.tipo.claseCriterio.equals("automod")) || (criterio.tipo.claseCriterio.equals("auto"))) {
-					if(actionEnd){
-						if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(valor) < 0) {
-							criterio.valor = criterio.tipo.valorMaximo;
-						}
-						if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(valor) > 0) {
-							criterio.valor = criterio.tipo.valorMinimo;
-						}
+						if (guardarMaximo)
+							guardarMaximo=false;
+						else
+							criterio.valor = valor;
 					}
 				}
 				
@@ -228,6 +236,21 @@ public class FichaEvaluadorController extends Controller {
 			}
 			if (!validation.hasErrors()){
 				BaremacionService.calcularTotales(evaluacion);
+				for(Criterio criterio : evaluacion.criterios){
+					if (criterio.tipo.claseCriterio.equals("auto")) {
+						if(actionEnd || actionSave){
+							if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(criterio.valor) < 0) {
+								if (actionSave)
+									Messages.warning("El criterio automático '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' sobrepasaba ("+criterio.valor+") el máximo valor permitido. Se ha establecido como valor, su valor máximo posible: "+criterio.tipo.valorMaximo);
+								criterio.valor = criterio.tipo.valorMaximo;
+							}
+							if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(criterio.valor) > 0) {
+								Messages.warning("El criterio automático "+criterio.tipo.jerarquia+" no llega ("+criterio.valor+") al mínimo valor permitido: "+criterio.tipo.valorMinimo+". Se ha establecido como valor a 0.0");
+								criterio.valor=0.0;
+							}
+						}
+					}
+				}
 				evaluacion.save();
 			} else {
 				flash(evaluacion);

@@ -64,7 +64,7 @@
 		#{/if}
 		#{else}
 		$(function() {
-			form = $('#${id}').parents('form');
+			var form = $('#${id}').parents('form');
 			form.submit(function(){
 				$('#${id}').attr("disabled", "true");
 				#{if refrescar}

@@ -110,11 +110,16 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		// Ordeno esta consulta en orden alfabético inverso, para que quede en el orden correcto en el <select>
 		List<PlantillaDocumento> plantillas = PlantillaDocumento.find("select plantilla from PlantillaDocumento plantilla order by plantilla.nombrePlantilla desc").fetch();
 		String rutaMasNombrePlantilla,
+			   httpPathProperty = "",
 			   jsonString = "[";
+				
+		if ( FapProperties.get("http.path") != null && !FapProperties.get("http.path").isEmpty() )
+			httpPathProperty = FapProperties.get("http.path");
+			   
 		for(int i = 0; i < plantillas.size(); i++) {
 			rutaMasNombrePlantilla = "/" + ReportFAP.generarPlantilla(plantillas.get(i).plantilla, false);
 			jsonString += "{\"idPlantilla\" : \"" + plantillas.get(i).id + "\", \"nombrePlantilla\" : \"" + plantillas.get(i).nombrePlantilla + 
-						  "\", \"ruta\" : \"" + rutaMasNombrePlantilla + "\", \"descripcion\" : \"" + plantillas.get(i).descripcion  +  "\"}";
+						  "\", \"ruta\" : \"" + httpPathProperty + rutaMasNombrePlantilla + "\", \"descripcion\" : \"" + plantillas.get(i).descripcion  +  "\"}";
 			if (i < plantillas.size()-1 )
 				jsonString += ", ";
 		}
@@ -219,7 +224,12 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		ImagenesPlantilla imgPlantilla = new ImagenesPlantilla();
 		imgPlantilla.nombreImagen = imagen.getName().trim();
 		String pathCarpetaImg = FapProperties.get("fap.path.editor.img");
-		imgPlantilla.uriImagen = pathCarpetaImg + "/" + imagen.getName();
+		if ( FapProperties.get("http.path") != null && !FapProperties.get("http.path").isEmpty() ) {
+			String httpPath = FapProperties.get("http.path").substring(1, FapProperties.get("http.path").length());	// quitamos la barra inicial
+			imgPlantilla.uriImagen = httpPath + "/" + pathCarpetaImg + "/" + imagen.getName();
+		}
+		else
+			imgPlantilla.uriImagen = pathCarpetaImg + "/" + imagen.getName();
 		imgPlantilla.save();
 		File file = new File(pathCarpetaImg, imgPlantilla.nombreImagen);
         try {
@@ -247,7 +257,6 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 			contenido = "";
 
 		contenido = insertarPlantillaEnContenido(contenido);			// si se requiere una plantilla en medio del contenido
-		
 		contenido = contenido.replaceAll("pagebreak.png", "pixel_transparente.png"); // quitamos las imagen que respresenta el salto de línea
 		
 		File borrador = null;
@@ -263,45 +272,29 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 				Set<String> listaEntidades = new HashSet<String>();
 				listaEntidades = getListaEntidadesASustituir(plantilla);
 				listaObjetos = getListaObjetosASustituir(listaEntidades);
-				borrador = new ReportFAP(contenido, false).header(idHeader).footer(idFooter).renderTmpFile(listaObjetos);	
+				borrador = new ReportFAP(contenido, false).header(idHeader).footer(idFooter).renderTmpFile(listaObjetos);
 			}
 		} catch (Exception e) { e.printStackTrace(); }
-	
+		
 		// Copiamos el pdf de la carpeta temporal de la aplicación a /public/tmp
-		Process proc = null;
 		try {		
-			// FIXME: probar el renameTo en linux y dejar de usar entonces osName.
-			String osName = System.getProperty("os.name");
-			if (osName.contains("Win"))	{		// windows
-				// File (or directory) to be moved
-				File file = new File(Play.tmpDir + System.getProperty("file.separator") + borrador.getName());
-				// Destination directory
-				File dir = new File(Play.applicationPath.getAbsolutePath() + System.getProperty("file.separator") + "public"
-		    			    + System.getProperty("file.separator") + "tmp" + System.getProperty("file.separator"));
-				// Move file to new directory
-				boolean success = file.renameTo(new File(dir, file.getName()));
-				if (!success) {
-				    System.out.println(" ---------------- File was not successfully moved");
-				}
-			}	
-			else								// linux, mac, ...
-				proc = Runtime.getRuntime().exec("cp " + Play.tmpDir + "/" + borrador.getName() + " public/tmp/");
-			/*
-			InputStream is = proc.getInputStream();
-			int size;
-			String s;
-			int exCode = proc.waitFor();
-			StringBuffer ret = new StringBuffer();
-			while((size = is.available()) != 0) {
-				byte[] b = new byte[size];
-				is.read(b);
-				s = new String(b);
-				ret.append(s);
+			// Borrador (con ruta completa) 
+			File file = new File(Play.tmpDir + System.getProperty("file.separator") + borrador.getName());
+			// Directorio destino
+			File dir = new File(Play.applicationPath.getAbsolutePath() + System.getProperty("file.separator") + "public"
+	    			    + System.getProperty("file.separator") + "tmp" + System.getProperty("file.separator"));
+			// Movemos el fichero
+			boolean success = file.renameTo(new File(dir, file.getName()));
+			if (!success) {
+				throw new Exception("¡ERROR! No se pudo mover el fichero " + file.getName() + " de " + Play.tmpDir + System.getProperty("file.separator") + " a " + 
+									Play.applicationPath.getAbsolutePath() + System.getProperty("file.separator") + "public" + System.getProperty("file.separator") + "tmp" + System.getProperty("file.separator"));
 			}
-			 */
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.getMessage(); e.printStackTrace(); }
 
-		renderText("/" + FapProperties.get("fap.path.editor.tmp") + "/" + borrador.getName());
+		if ( FapProperties.get("http.path") != null && !FapProperties.get("http.path").isEmpty() )
+			renderText(FapProperties.get("http.path") + "/" + FapProperties.get("fap.path.editor.tmp") + "/" + borrador.getName());
+		else
+			renderText("/" + FapProperties.get("fap.path.editor.tmp") + "/" + borrador.getName());
 	}
 
 	/*

@@ -15,6 +15,9 @@
      urlEditar:play.mvc.Router.reverse('PlantillasDocController.editar' , ['idPlantillaDocumento':plantillaDocumento?.id])
 }
 
+%{
+    httpPathProperty = properties.FapProperties.get("http.path") ?: ""
+}%
 
 <script type="text/javascript">
 	tinyMCE.init({
@@ -51,6 +54,9 @@
 	        // Skin options
 	        skin : "o2k7",
 	        skin_variant : "silver",
+	        
+	        // Variable que guarda el valor de la property http.path de application.conf
+	        httpPath : "${httpPathProperty}",
        
             setup : function(ed) {
 	            // Utilizamos un botón propio en "Nuevo Documento" para poder limpiar el ancla que marca el id de la plantilla actual
@@ -94,7 +100,7 @@
             ed.execCommand('mceGuardarComo');
         }
         else {
-            $.post("/plantillasdoccontroller/guardarPlantilla", {'contenido' : datos, 'idPlantilla' : idPlantilla}, function(idNuevaPlantilla) {
+            $.post("${httpPathProperty}" + "/plantillasdoccontroller/guardarPlantilla", {'contenido' : datos, 'idPlantilla' : idPlantilla}, function(idNuevaPlantilla) {
                     window.location.hash = idNuevaPlantilla;
             }).error(function (xhr, ajaxOptions, thrownError) { 
                     alert('Error al guardar la plantilla: (' + xhr.status + ') ' + thrownError); 

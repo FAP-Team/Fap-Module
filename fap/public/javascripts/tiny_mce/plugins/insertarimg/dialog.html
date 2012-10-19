@@ -18,11 +18,15 @@
 
 <script type="text/javascript">
     // Recogemos los datos del json devuelto por el controlador insertarImagen, para crear las <option> del <select>
-    $.getJSON('/plantillasdoccontroller/insertarImagen', function(data) {    
+    $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/insertarImagen', function(data) {    
 	   $.each(data.obj.rows, function(k,v) {
-	        $('<option value="' +v.objeto.uriImagen+ '">' +v.objeto.nombreImagen+ '</option>').insertAfter('#seleccion');
+	         $('<option value="' +v.objeto.uriImagen+ '">' +v.objeto.nombreImagen+ '</option>').insertAfter('#seleccion');
 	   });  
 	});
+	
+	window.onload = function() {
+	    $("#uploadform").attr("action", tinyMCE.settings.httpPath + "/plantillasdoccontroller/uploadImagen");
+	}
 </script>
 
 
@@ -45,7 +49,7 @@
 
  <br /><br /><br /><br />
  <span>¿Quiere subir una imagen diferente?</span> 
- <form id="uploadform" action="/plantillasdoccontroller/uploadImagen" method="post" enctype="multipart/form-data">
+ <form id="uploadform" method="post" enctype="multipart/form-data">
     <input type="file" name="imagen" id="fileupload" />
     <input type="submit" name="submit" value="Subir imagen" />
 </form> 
@@ -73,9 +77,9 @@
     //**********************************************************************************
     $(document).ready(function() { 
             var ruta = "";
-            $.getJSON('/plantillasdoccontroller/getRutaImagen', function(data) { 
+            $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/getRutaImagen', function(data) { 
 	               $.each(data, function(index,value) {
-	                    ruta = "/" + value.ruta + "/";
+	                    ruta = tinyMCE.settings.httpPath + "/" + value.ruta + "/";
 	               });  
 	         });
 	         

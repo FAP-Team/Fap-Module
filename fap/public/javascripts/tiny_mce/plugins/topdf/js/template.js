@@ -114,7 +114,7 @@ var ToPDFDialog = {
         $("#frm").after(divGeneracionPDF);
         $("#frm").remove();
         
-        $.post("/plantillasdoccontroller/html2pdf", {'contenido' : datos, 'idPlantilla': idPlantilla, 'idHeader' : idHeader, 'idFooter' : idFooter, 'sustituirEntidades': sustituirEntidades}, function(rutaFicheroPDF) {
+        $.post(tinyMCE.settings.httpPath + "/plantillasdoccontroller/html2pdf", {'contenido' : datos, 'idPlantilla': idPlantilla, 'idHeader' : idHeader, 'idFooter' : idFooter, 'sustituirEntidades': sustituirEntidades}, function(rutaFicheroPDF) {
                 $('#loading').remove();
                 var enlace = '<div id="descarga"><a class="enlacepdf" href="' + rutaFicheroPDF + '"><img id="imgpdf" src="img/pdf_editor_icono.png" /><br />Descargar PDF</a></div>';
                 var cerrar = '<div class="mceActionPanel"><input type="button" id="cancel" name="cancel" value="Cerrar" onclick="tinyMCEPopup.close();" /></div>'

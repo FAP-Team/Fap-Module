@@ -11,7 +11,7 @@
 (function() {
 	tinymce.create('tinymce.plugins.PageBreakPlugin', {
 		init : function(ed, url) {
-			var pb = '<img src="/public/images/pagebreak.png" style="page-break-after:always; display:block; margin:auto;" />', 
+			var pb = '<img src="' + tinyMCE.settings.httpPath + '/public/images/pagebreak.png" style="page-break-after:always; display:block; margin:auto;" />', 
 			    cls = 'mcePageBreak';
 
 			// Register commands

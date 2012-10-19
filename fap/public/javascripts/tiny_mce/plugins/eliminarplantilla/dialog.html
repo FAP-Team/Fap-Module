@@ -22,7 +22,7 @@
 <script type="text/javascript">
     // Recogemos los datos del json devuelto por el controlador getPlantillas, para crear las
     // <option> del <select>
-    $.getJSON('/plantillasdoccontroller/getAllPlantillas', function(data) {    
+    $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/getAllPlantillas', function(data) {    
 	   $.each(data.obj.rows, function(k,v) {
 	        $("#selectplantilla").append('<option value="' + v.objeto.id + '">' + v.objeto.nombrePlantilla + '</option>');
 	   });  

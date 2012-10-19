@@ -24,7 +24,7 @@
         // <option> del <select>. En el value del option concatenamos (separado por una coma) 
         // el id de la plantilla y la ruta de la misma
         //**********************************************************************************
-        $.getJSON('/plantillasdoccontroller/insertarPlantilla', function(data) {   
+        $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/insertarPlantilla', function(data) {   
              $.each(data, function(key,value) {
                     $("#header").append('<option id="h' + value.idPlantilla + '" value="' + value.idPlantilla + "|" + value.ruta + '|' + value.descripcion + '">' + value.nombrePlantilla + '</option>');
                     $("#footer").append('<option id="f' + value.idPlantilla + '" value="' + value.idPlantilla + "|" + value.ruta + '|' + value.descripcion + '">' + value.nombrePlantilla + '</option>');
@@ -36,7 +36,7 @@
         //console.log("[template.htm] tinyMCEPopup.editor.plantillaEnEditor = " + tinyMCEPopup.editor.plantillaEnEditor);
         //**********************************************************************************
         /*
-        $.getJSON('/plantillasdoccontroller/getHeaderFooter', {'idPlantilla' : tinyMCEPopup.editor.plantillaEnEditor}, function(data) { 
+        $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/getHeaderFooter', {'idPlantilla' : tinyMCEPopup.editor.plantillaEnEditor}, function(data) { 
                $.each(data, function(index,value) {
                     if (value.idHeader != "null") {
                         $("#h" + value.idHeader).attr('selected', 'selected');

@@ -22,7 +22,7 @@
 <script type="text/javascript">
     // Recogemos los datos del json devuelto por el controlador insertarImagen, para crear las
     // <option> del <select>
-    $.getJSON('/plantillasdoccontroller/obtenerListaEntidades', function(data) {   
+    $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/obtenerListaEntidades', function(data) {   
 	   $.each(data, function(index,value) {
 	         $('<option value="' + value +'">' + value + '</option>').insertAfter('#seleccion');
 	   });  
@@ -56,7 +56,7 @@
     // Función que recibe un json con los atributos de la entidad seleccionada y crea la lista 
     // *****************************************************************************************
     function obtenerAtributosEntidad(entidad) {
-         $.getJSON('/plantillasdoccontroller/obtenerAtributosEntidad?entidad='+entidad, function(data) {
+         $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/obtenerAtributosEntidad?entidad='+entidad, function(data) {
                var listaAtrib = '<table id="atributos">';
                if ($('#atributos').length) {     
                    $("#atributos").remove();

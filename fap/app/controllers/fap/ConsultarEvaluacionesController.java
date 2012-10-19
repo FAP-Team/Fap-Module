@@ -3,6 +3,7 @@ package controllers.fap;
 
 import play.*;
 import play.mvc.*;
+import baremacion.BaremacionFAP;
 import controllers.fap.*;
 import security.Secure;
 import tags.ReflectionUtils;
@@ -55,6 +56,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
 			if (eval != null) {
+				BaremacionFAP.setOficialEvaluacion(eval.solicitud.id, idEvaluacion);
 				eval.estado = EstadosEvaluacionEnum.enTramite.name();
 				eval.save();
 			}

@@ -742,6 +742,7 @@ Entidad Cesiones {
 	Documento documento
 }
 
+
 Entidad PeticionCesiones{
 	Lista listaCesiones tipo
 	Documento fichPeticion
@@ -751,6 +752,7 @@ Entidad PeticionCesiones{
 	RespuestaCesion respCesion
 	Lista estadosPeticion estado 
 }
+
 
 Entidad RespuestaCesion{
 	String uri

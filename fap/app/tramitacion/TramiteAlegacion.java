@@ -1,11 +1,13 @@
 package tramitacion;
 
+import java.io.File;
 import java.util.List;
 
 import emails.Mails;
 
 import properties.FapProperties;
 
+import reports.Report;
 import services.GestorDocumentalServiceException;
 import services.RegistroServiceException;
 import services.platino.PlatinoGestorDocumentalService;

@@ -186,7 +186,6 @@
 			    	var aceptar_disabled = false;
 			    	if (hasSelection) {
 			    		var estado = grid.getSelectionModel().getSelection()[0].data.estado;
-			    		console.log(estado);
 			    		evaluar_disabled = !(estado === "En Tramite" || estado === "Evaluada");
 			    		aceptar_disabled = (estado === "En Tramite");
 			    	}

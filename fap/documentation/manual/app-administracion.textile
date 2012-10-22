@@ -50,7 +50,21 @@ En esta página se permite la creación, modificación y borrado de mensajes, ta
 
 !images/admin-configurar-mensajes!
 
+h2. Editor de Plantillas
 
+Este editor javascript nos sirve para editar plantillas (guardadas en base de datos) que posteriormente se podrán exportar en pdf. Estas plantillas son útiles especialmente cuando se requiere una documentación por parte del solicitante con datos propios del solicitante o de una solicitud. Aparte de los botones típicos de cualquier editor de texto (negritas, cursiva, justificación, copiar, pegar, etc), se ha incluido una tercera barra de herramientas con funcionalidades propias de nuestra aplicación FAP. A continuación procedemos a explicar cada botón FAP (tercera fila de botones, listado por orden de aparición de izquierda a derecha en la imagen del editor):
 
+* *Nuevo documento:* Aparte de su funcionalidad principal de dejar el editor el blanco, resetea de la URL (si lo hubiera), alguna referencia a una plantilla.
+* *Guardar:* Guarda el contenido actual del editor en base de datos, en la plantilla actualmente en edición, o si no existe ninguna referencia a una plantilla, ofrece la posibilidad de guardarlo como una nueva plantilla.
+* *Guardar como:* Guarda el contenido actual del editor en base de datos como una nueva plantilla. Se deberá insertar obligatoriamente un nombre de la plantilla que servirá para su identificación (caracteres permitidos: letras, números, guiones, barra / ; sin espacios en blanco). Opcionalmente podremos insertar un título que nos describa el documento.
+* *Insertar contenido de plantilla predefinida:* Inserta en el editor el contenido de la plantilla elegida. Podemos optar por cualquier plantilla de la base de datos. Tenemos un visor para mostrar una vista previa de la plantilla antes de insertarla.
+* *Eliminar plantilla:* Mediante una lista desplegable, podemos elegir qué plantilla queremos eliminar de base de datos.
+* *Requerir plantilla:* Insertamos en el editor, una referencia a una plantilla, que cuando se genere en pdf, se sustituirá por el contenido de la plantilla a la que hemos referenciado.
+* *Insertar imagen:* Inserta una imagen previamente subida a la aplicación. También nos ofrece la posibilidad de subir una imagen desde nuestro equipo local. Para modificar las propiedades de dicha imagen una vez insertada, utilizar el botón propio del editor: !images/admin-boton-img-editor!
+* *Insertar entidad FAP:* Insertarmos una referencia a un campo de alguna entidad FAP, que en la generación del pdf, se sustituirá con el valor correspondiente.
+* *Insertar fin de página:* Insertamos una marca que indica, en la generación del pdf, que debe comenzar una nueva página.
+* *Generar pdf:* Genera el pdf con lo que hay +actualmente+ en el editor. Tenemos la posibilidad de añadirle una cabecera y un pie, eligiéndolos entre las plantillas almacenadas en base de datos. Igualmente, tenemos la posibilidad de seleccionar si queremos que se sustituyan los valores de las posibles entidades FAP a las que haga referencia el texto del editor. 
+
+!images/admin-editor-plantillas!
 
 

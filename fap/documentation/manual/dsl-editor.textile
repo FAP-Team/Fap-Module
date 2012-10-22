@@ -1,0 +1,22 @@
+h1. Editor
+
+h2. Descripción
+
+Define un editor básico de texto. 
+
+h2. Parámetros
+
+* **_[name]_** : Identificador del elemento.
+* **campo = _[campo]_** : Atributo donde se almacenará el texto.
+
+h2. Definición
+
+bc. Editor:
+    elemento='Editor' (name=ID) (
+        ('campo' '=' campo=Campo)
+    )
+;
+
+h2. Ejemplo de uso
+
+bc. Editor editorPrueba campo=Solicitud.historico.logHistorico

@@ -26,6 +26,8 @@ h1. Elementos gráficos de un DSL
 # "tabla":dsl-tabla
 # "texto":dsl-texto
 # "wiki":dsl-wiki
+# "editor":dsl-editor
+
 
 
 

@@ -107,7 +107,7 @@ public class BaremacionUtils {
 			List<TipoCriterio> tiposCriterios = JsonUtils.loadObjectFromJsonFile("conf/initial-data/criterios.json", type);
 			actualizarTiposCriterios(tipoEvaluacion, tiposCriterios);
 		} else {
-			Logger.info("No se puede leer el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)");
+			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)");
 		}
 		if (new File(Play.applicationPath+"/conf/initial-data/conceptosEconomicos.json").exists()) {
 			// Actualizamos en BBDD los Tipos de CEconomicos, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
@@ -115,7 +115,7 @@ public class BaremacionUtils {
 			List<TipoCEconomico> tiposCEconomicos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/conceptosEconomicos.json", type);
 			actualizarTiposCEconomicos(tipoEvaluacion, tiposCEconomicos);
 		} else {
-			Logger.info("No se puede leer el fichero que contiene los parámetros de los CEconomicos (/conf/initial-data/conceptosEconomicos.json)");
+			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los CEconomicos (/conf/initial-data/conceptosEconomicos.json)");
 		}
 		if (new File(Play.applicationPath+"/conf/initial-data/datosAdicionales.json").exists()) {
 			// Actualizamos en BBDD los Tipos de Datos Adicionales, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
@@ -123,7 +123,7 @@ public class BaremacionUtils {
 			List<TipoDatoAdicional> tiposDatosAdicionales = JsonUtils.loadObjectFromJsonFile("conf/initial-data/datosAdicionales.json", type);
 			actualizarTiposDatosAdicionales(tipoEvaluacion, tiposDatosAdicionales);
 		} else {
-			Logger.info("No se puede leer el fichero que contiene los parámetros de los Datos Adicionales (/conf/initial-data/datosAdicionales.json)");
+			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los Datos Adicionales (/conf/initial-data/datosAdicionales.json)");
 		}
 		if (new File(Play.applicationPath+"/conf/initial-data/tiposDocumentos.json").exists()){
 			// Actualizamos en BBDD los Tipos de Documentos, a través del fichero .json que los define. La actualización borra toda la tabla y la vuelve a crear a partir del fichero.
@@ -134,7 +134,7 @@ public class BaremacionUtils {
 				tipo.save();
 			}
 		} else {
-			Logger.info("No se puede leer el fichero que contiene los parámetros de los Tipos de Documentos (/conf/initial-data/tiposDocumentos.json)");
+			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los Tipos de Documentos (/conf/initial-data/tiposDocumentos.json)");
 		}
 	}
 	

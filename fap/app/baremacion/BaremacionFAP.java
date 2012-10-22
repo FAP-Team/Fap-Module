@@ -95,9 +95,17 @@ public class BaremacionFAP {
 		}
 	}
 	
-	public static void setOficialEvaluacion(Long idSolicitud, Long idEvaluacion){
+	
+	public static void setOficialEvaluacion(Long idSolicitud, Long idEvaluacion) throws Exception{
 		File solicitudEnEvaluacion = null;
 		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+		if (evaluacion == null){
+			throw new Exception("No existe la evaluación");
+		}
+		if (evaluacion.solicitudEnEvaluacion == null){
+			evaluacion.solicitudEnEvaluacion = new Documento();
+			evaluacion.save();
+		}
         if(evaluacion.solicitudEnEvaluacion.uri == null){
             try {
             	TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
@@ -113,10 +121,12 @@ public class BaremacionFAP {
                 evaluacion.save();
             } catch (Exception ex2) {
                 Messages.error("Error generando el documento de solicitud para ver en evaluación");
-                play.Logger.error("Error generando el de solicitud para ver en evaluación: "+ex2.getMessage());
+                play.Logger.error("Error generando el documento de solicitud para ver en evaluación: "+ex2.getMessage());
+                throw ex2;
             } catch (Throwable e) {
             	Messages.error("Error generando el documento de solicitud para ver en evaluación.");
                 play.Logger.error("Error generando el documento de solicitud para ver en evaluación, fallo en getTramiteObject: "+e.getMessage());
+                throw new Exception(e.getMessage());
 			}
         }
 	}

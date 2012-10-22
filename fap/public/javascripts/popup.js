@@ -72,7 +72,7 @@ function popupWait_open() {
 
 function popupWait_close() {
 	$popup = $("#popupWait_popup");	
-	$popup.dialog("close");
+	$popup.modal("hide");
 }
 
 function replaceId(url, entidad, id) {

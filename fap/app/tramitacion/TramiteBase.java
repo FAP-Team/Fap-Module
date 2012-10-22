@@ -447,7 +447,7 @@ public abstract class TramiteBase {
     		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
 			return new Report(getBodyReport()).header(getHeaderReport()).registroSize().renderTmpFile(solicitud);
 		} catch (Exception e) {
-			play.Logger.error("Error generando el documento Solicitud para la Evaluación", e.getMessage());
+			play.Logger.error("Error generando el documento Solicitud para la Evaluación"+ e.getMessage());
 			return null;
 		}
 	}

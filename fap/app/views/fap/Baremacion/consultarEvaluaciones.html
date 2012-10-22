@@ -108,10 +108,23 @@
 			    	text: 'Aceptar',
 			    	disabled:true,
 		    		handler : function(){
-						var aceptar = #{jsAction @fap.ConsultarEvaluacionesController.aceptar(':idEvaluacion') /}
 		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-		    			$.post(aceptar({idEvaluacion: selected_id}));
-		    			store.load();
+		    			
+						%{
+							aceptar = play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.aceptar' , ['idEvaluacion':selected_id]);
+						%}
+		    			
+		    			popupWait_open();
+		    			
+		    			$.ajax({
+  							type: "POST",
+  							url: "${aceptar}",
+  							data: {idEvaluacion: selected_id}
+						}).done(function( msg ) {
+							$popup = $("#popupWait_popup");	
+							$popup.modal("hide");
+							document.location.reload(true)
+						});
 		    		}
 			    });
 

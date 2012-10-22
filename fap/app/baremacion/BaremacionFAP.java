@@ -121,7 +121,7 @@ public class BaremacionFAP {
                 evaluacion.save();
             } catch (Exception ex2) {
                 Messages.error("Error generando el documento de solicitud para ver en evaluación");
-                play.Logger.error("Error generando el documento de solicitud para ver en evaluación: "+ex2.getMessage());
+                play.Logger.error("Error generando el de solicitud para ver en evaluación: "+ex2.getMessage());
                 throw ex2;
             } catch (Throwable e) {
             	Messages.error("Error generando el documento de solicitud para ver en evaluación.");

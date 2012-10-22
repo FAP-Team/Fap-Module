@@ -63,6 +63,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 				} catch (Exception e) {
 					Messages.error("Error generando el documento de solicitud para ver en evaluación. No se ha podido Iniciar esta Evaluación.");
 	                play.Logger.error("Error generando el de solicitud para ver en evaluación, no se ha ACEPTADO la evaluación: "+e.getMessage());
+	                Messages.keep();
 				}
 			}
 		}else{

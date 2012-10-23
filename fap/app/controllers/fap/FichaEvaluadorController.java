@@ -251,6 +251,8 @@ public class FichaEvaluadorController extends Controller {
 						}
 					}
 				}
+				// Para recalcular los totales por si hubo cambios en los "auto" por pasar o no llegar al valor maximo o minimo y se haya seteado al maximo o minimo pertinente.
+				BaremacionService.calcularTotales(evaluacion);
 				evaluacion.save();
 			} else {
 				flash(evaluacion);

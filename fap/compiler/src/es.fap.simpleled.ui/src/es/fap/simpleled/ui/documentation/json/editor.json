@@ -1,0 +1,1 @@
+{"nombre":"editor","descripcion":"Define un editor básico de texto. ","parametros":[{"nombre":"_[name]_","keyword":"name","tipo":"requerido","descripcion":"Identificador del elemento."},{"nombre":"campo \u003d _[campo]_","keyword":"campo","tipo":"requerido","descripcion":"Atributo donde se almacenará el texto."}]}

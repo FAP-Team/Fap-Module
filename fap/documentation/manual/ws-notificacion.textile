@@ -1,0 +1,44 @@
+h1. Servicio de Notificación
+
+h2. Descripción
+
+El servicio de Notificación es un servicio que permite notificar a los usuarios diferentes hechos. Así permitirá realizar una serie de acciones sobre ese servicio:
+
+* Listas las notificaciones
+* Enviar una notificación
+* Obtener una notificación
+* Anular notificaciones
+* Poner a disposición un documento
+* ...
+
+h2. Servicios disponibles
+
+En FAP tenemos 2 posibles servicios a utilizar:
+
+* **NotificacionServiceImpl**: Utiliza el servicio web creado por la ACIISI.
+* **FileSystemNotificacionServiceImpl**: Es un mock del servicio web, que valdrá para hacer pruebas.
+
+h2. Configuración en FAP
+
+bc. 
+# -----------------------------------------------------------------------------------------
+# Configuración de Notificaciones
+# -----------------------------------------------------------------------------------------
+fap.notificacion.activa=false
+fap.notificacion.procedimiento=FAP
+fap.notificacion.backoffice=FAP20120002
+fap.notificaciones.url=http://url?wsdl
+fap.aed.notificacion.tipodocumento.anulacion=eadmon://documento....
+fap.aed.notificacion.tipodocumento.puestaadisposicion=eadmon://documento....
+fap.aed.notificacion.tipodocumento.marcararespondida=eadmon://documento....
+fap.aed.notificacion.tipodocumento.acuserecibo=eadmon://documento....
+fap.aed.notificacion.tipodocumento.noacceso=eadmon://documento....
+fap.notificacion.plazoacceso=10
+fap.notificacion.plazorespuesta=10
+fap.notificacion.frecuenciarecordatorioacceso=2
+fap.notificacion.frecuenciarecordatoriorespuesta=2
+fap.notificacion.enlaceSede=undefined
+# En minutos, si no se pone nada, por defecto es cada minuto
+fap.notificacion.refrescoBaseDeDatosFromWS=1
+fap.notificacion.schedulerestado.delayed=100
+

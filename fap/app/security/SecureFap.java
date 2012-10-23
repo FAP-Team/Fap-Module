@@ -10,12 +10,15 @@ import properties.FapProperties;
 import verificacion.VerificacionUtils;
 
 import models.Agente;
+import models.AutorizacionesFAP;
 import models.Busqueda;
 import models.Documento;
+import models.Participacion;
 import models.SolicitudGenerica;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import enumerado.fap.gen.TiposParticipacionEnum;
 
 public class SecureFap extends Secure {
 	
@@ -35,6 +38,8 @@ public class SecureFap extends Secure {
 			return listaSolicitudesSinBusqueda(_permiso, action, ids, vars);
 		else if ("mostrarResultadoBusqueda".equals(id))
 			return mostrarResultadoBusqueda(_permiso, action, ids, vars);
+		else if ("esFuncionarioHabilitadoYActivadaProperty".equals(id))
+			return esFuncionarioHabilitadoYActivadaProperty(_permiso, action, ids, vars);
 		
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
@@ -51,9 +56,12 @@ public class SecureFap extends Secure {
 			return listaSolicitudesSinBusquedaAccion(ids, vars);
 		else if ("mostrarResultadoBusqueda".equals(id))
 			return mostrarResultadoBusquedaAccion(ids, vars);
+		else if ("esFuncionarioHabilitadoYActivadaProperty".equals(id))
+			return esFuncionarioHabilitadoYActivadaPropertyAccion(ids, vars);
 		
 		return nextAccion(id, ids, vars);
 	}
+
 	
 	private ResultadoPermiso hayNuevaDocumentacionVerificacionAccion(Map<String, Long> ids, Map<String, Object> vars) {
 		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
@@ -146,6 +154,27 @@ public class SecureFap extends Secure {
 		if ( (busqueda.mostrarTabla != null) && (busqueda.mostrarTabla) )
 			return new ResultadoPermiso(Accion.All); 
 		return new ResultadoPermiso(Accion.Denegar);
+	}
+	
+	private ResultadoPermiso esFuncionarioHabilitadoYActivadaProperty(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		if ((agente.funcionario.toString().equals("true".toString())) && (properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"))) {
+			return new ResultadoPermiso(Accion.All);
+		}
+
+		return null;
+	}
+
+	private ResultadoPermiso esFuncionarioHabilitadoYActivadaPropertyAccion(Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		if ((agente.funcionario.toString().equals("true".toString())) && (properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado")))
+			return new ResultadoPermiso(Accion.Editar);
+
+		return null;
 	}
 
 }

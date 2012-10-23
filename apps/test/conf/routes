@@ -142,6 +142,16 @@ POST /Solicitud/tablascondecimales/beforeOpenPageTable TablasConDecimalesControl
 GET /Solicitud/tablascondecimales/tablaConceptos TablasConDecimalesController.tablatablaConceptos
 GET /Solicitud/editorhistorico EditorHistoricoController.index
 POST /Solicitud/editorhistorico/editar EditorHistoricoController.editar
+GET /Solicitud/elementosbasicos ElementosBasicosController.index
+POST /Solicitud/elementosbasicos/editar ElementosBasicosController.editar
+GET /Solicitud/combonoeditable ComboNoEditableController.index
+POST /Solicitud/combonoeditable/editar ComboNoEditableController.editar
+GET /Solicitud/paginacancelar PaginaCancelarController.index
+POST /Solicitud/paginacancelar/guardarPCE PaginaCancelarController.guardarPCE
+GET /Solicitud/pruebabigpopup popups.PruebaBigPopUpController.index
+POST /Solicitud/pruebabigpopup/editar popups.PruebaBigPopUpController.editar
+GET /Solicitud/pruebabigpopup/documentosExternos popups.PruebaBigPopUpController.tabladocumentosExternos
+GET /Solicitud/pruebabigpopup/documentos popups.PruebaBigPopUpController.tabladocumentos
 GET /Solicitud/combotestref popups.ComboTestRefController.index
 POST /Solicitud/combotestref/editar popups.ComboTestRefController.editar
 POST /Solicitud/combotestref/borrar popups.ComboTestRefController.borrar

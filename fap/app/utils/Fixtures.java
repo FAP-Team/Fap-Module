@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 
 import messages.Messages;
 import models.ConfigurarMensaje;
+import models.TableKeyValue;
+import models.TableKeyValueDependency;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.scanner.ScannerException;
@@ -96,6 +98,44 @@ public class Fixtures extends play.test.Fixtures {
 		if(FapProperties.isApplication()){
 			loadFolder(utils.FileUtils.join(Play.modules.get("fap").getRealFile().getAbsolutePath(), path));
 		}
+	}
+	
+	/*
+	 * Actualiza toda la Tabla de Tablas recorriendo fichero por fichero YAML generado
+	 * Modo 0: Actualiza los valores, creando los nuevos si haya y modificando los que ya estaban si han cambiado respecto a los ficheros generados nuevos
+	 * Modo 1: Actualiza los valores, sólo creando los nuevos si haya, los que ya estaban los deja intacto.
+	 */
+	public static void updateTKVAndDependencyFromAppAndFap(String path, int modo, Boolean noCargarMunicipios){
+		for (VirtualFile file: getFilesInFolder(path)){
+			updateTableKeyValueAndDependency(file, modo);
+		}
+		
+		if(FapProperties.isApplication()){
+			boolean esMunicipio = false;
+			Pattern p = Pattern.compile("^municipios\\d{4}\\.yaml$");
+			for (VirtualFile file: getFilesInFolder(utils.FileUtils.join(Play.modules.get("fap").getRealFile().getAbsolutePath(), path))){
+				Matcher m = p.matcher(file.getName());
+				esMunicipio = m.matches();
+				if (!esMunicipio || !noCargarMunicipios)
+					updateTableKeyValueAndDependency(file, modo);
+			}
+		}
+	}
+	
+	public static List<VirtualFile> getFilesInFolder(File file){
+		return getFilesInFolder(file.getAbsolutePath());
+	}
+	
+	public static List<VirtualFile> getFilesInFolder(String path){
+		VirtualFile vfolder = VirtualFile.fromRelativePath(path);
+		if (!vfolder.exists()){
+			vfolder = VirtualFile.open(path);
+			if (!vfolder.exists()){
+				return null;
+			}
+		}
+		List<VirtualFile> all = utils.FileUtils.findByExtensionRecursively(vfolder, yamlExtension);
+		return all;
 	}
 	
     public static void delete(Class<? extends Model>... types) {
@@ -356,13 +396,66 @@ public class Fixtures extends play.test.Fixtures {
 					ConfigurarMensaje cm = (ConfigurarMensaje) myModel;
 					boolean encontrado = false;
 					for (ConfigurarMensaje configurarMensaje : paginasMensaje) {
-						if(configurarMensaje.nombrePagina.equals(cm.nombrePagina)){
+						if(configurarMensaje.nombrePagina != null && configurarMensaje.nombrePagina.equals(cm.nombrePagina)){
 							encontrado = true;
 							break; //Encontrado, dejamos de buscar.
 						}									
 					}
 					if (!encontrado)
 						myModel._save();
+				}
+				else{
+					Messages.error("Se produjo un error cargando los modelos desde fichero");
+				}
+			}
+		} 
+	}
+	
+	/*
+	 * Funcion que actualiza las Tablas de Tablas
+	 * Modo 0: Actualiza los valores, creando los nuevos si haya y modificando los que ya estaban si han cambiado respecto a los ficheros generados nuevos
+	 * Modo 1: Actualiza los valores, sólo creando los nuevos si haya, los que ya estaban los deja intacto.
+	 */
+	@Transactional
+	public static void updateTableKeyValueAndDependency(VirtualFile file, int modo) {
+		Pattern keyPattern = Pattern.compile("([^(]+)\\(([^)]+)\\)");
+		InputStream is = file.inputstream();
+        Yaml yaml = new Yaml();
+        Object o = yaml.load(is);
+
+		if (o instanceof LinkedHashMap<?, ?>) {
+			@SuppressWarnings("unchecked")
+			LinkedHashMap<Object, Map<?, ?>> objects = (LinkedHashMap<Object, Map<?, ?>>) o;
+			for (Object key : objects.keySet()) {
+				//Llamo al Load del modelo específico que quiero cargar desde fichero.
+				Model myModel = loadModel(key, keyPattern, objects, o);
+				
+				if (myModel != null){
+					if (myModel instanceof TableKeyValue){
+						TableKeyValue tkv = (TableKeyValue) myModel;
+						TableKeyValue tableKeyValueBBDD = TableKeyValue.find("select tkv from TableKeyValue tkv where tkv.table=? and tkv.key=?", tkv.table, tkv.key).first();
+						if (tableKeyValueBBDD != null){
+							if (modo == 0){
+								tableKeyValueBBDD.value=tkv.value;
+								tableKeyValueBBDD.noVisible=tkv.noVisible;
+								tableKeyValueBBDD.save();
+							}									
+						} else
+							myModel._save();
+						
+					} else if (myModel instanceof TableKeyValueDependency){
+						TableKeyValueDependency tkvd = (TableKeyValueDependency) myModel;
+						TableKeyValueDependency tableKeyValueDependencyBBDD = TableKeyValueDependency.find("select tkvd from TableKeyValueDependency tkvd where tkvd.table=? and tkvd.key=?", tkvd.table, tkvd.key).first();
+						if (tableKeyValueDependencyBBDD != null){
+							if (modo == 0){
+								tableKeyValueDependencyBBDD.dependency=tkvd.dependency;
+								tableKeyValueDependencyBBDD.noVisible=tkvd.noVisible;
+								tableKeyValueDependencyBBDD.save();
+							}									
+						} else
+							myModel._save();
+					}
+					
 				}
 				else{
 					Messages.error("Se produjo un error cargando los modelos desde fichero");

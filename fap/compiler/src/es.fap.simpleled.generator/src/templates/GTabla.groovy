@@ -65,6 +65,29 @@ public class GTabla extends GElement{
 		params.putStr 'campo', campo.str;
 		if (tabla.alto)
 			params.putStr 'alto', tabla.alto;
+		if (tabla.color){
+			String consulta = "";
+			if(tabla.color.codePrint){
+				params.putStr 'codePrint', tabla.color.codePrint;
+			}
+			else if (tabla.color.default) {
+				consulta = "if (record.data.permisoEditar) { return \\'filaEditable\\'; } else { return \\'filaNoEditable\\'; }";
+				params.putStr 'codePrint', consulta;
+			}
+			else{
+				if(tabla.color.textoB){
+					consulta += "if (record.data.permisoBorrar) { return \\'${tabla.color.claseB}\\'; } "
+				}
+				if(tabla.color.textoE){
+					consulta += "if (record.data.permisoEditar) { return \\'${tabla.color.claseE}\\'; }";
+				}
+				if(tabla.color.textoL){
+					consulta += "if (record.data.permisoLeer) { return \\'${tabla.color.claseL}\\'; }";
+				}
+				params.putStr 'codePrint', consulta;
+			}
+		}
+			
 		botonesPopup(params);
 		botonesPagina(params);
 		if (tabla.recargarPagina)
@@ -88,6 +111,10 @@ public class GTabla extends GElement{
 			params.put 'urlContainerCrear', controller.getRouteIndex("crear", false, false);
 			params.put 'urlContainerEditar', controller.getRouteIndex("editar", false, true);
 			params.put 'urlCrearEntidad', controller.getRouteAccion("crearForTablas");
+		}
+		
+		if (tabla.popup || tabla.popupCrear){
+			params.put 'urlRedirigir', controller.getRouteIndex("editar", false, true);
 		}
 		
 		if (tabla.pagina || tabla.paginaCrear || tabla.paginaBorrar || tabla.paginaEditar || tabla.paginaLeer){
@@ -149,7 +176,7 @@ public class GTabla extends GElement{
 			params.put("saveEntity", true);
 		else
 			params.put("saveEntity", false);
-			
+
 		String view = """
 #{fap.tabla ${params.lista(true)}
 }
@@ -258,8 +285,9 @@ public class GTabla extends GElement{
 			params.putStr("alignPosition", positionDefault);
 		}
 		
-		if (c.permiso != null)
-			params.putStr('permiso', c.permiso.name)	
+		if (c.permiso != null) {
+			params.putStr('permiso', c.permiso.name)
+		}	
 
 		if(c.isExpandir())
 			params.put("expandir", "true")	
@@ -512,6 +540,7 @@ public class GTabla extends GElement{
 			}
 			paramsPermiso+=paramsNombrePermiso+", getAccion(), ids"
 		}
+
 		ret+="""tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered, ${paramsPermiso});
 			"""
 		return ret;

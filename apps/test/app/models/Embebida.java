@@ -30,7 +30,8 @@ public class Embebida {
 
 	public void init() {
 
-		algo = "pepe";
+		if (algo == null)
+			algo = "pepe";
 
 	}
 

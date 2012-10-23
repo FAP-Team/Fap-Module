@@ -1,5 +1,6 @@
 %{
 	Integer d = duracion-1;
+	def tipoEvaluacion = models.TipoEvaluacion.all().first();
 %}
 
 
@@ -12,7 +13,7 @@
      formulario:'Solicitud', 
      hayForm:false,
      pagina:'PCEconomicos',
-     permisoFormulario:'solicitudes', 
+     permisoFormulario:'editarSolicitudYIniciarBaremacion', 
      permisoFormularioMsg:'No tiene suficientes privilegios para acceder a esta solicitud', 
      titulo:'Conceptos económicos', 
      urlBorrar:play.mvc.Router.reverse('PCEconomicosController.borrar' , ['idSolicitud':solicitud?.id]), 
@@ -20,31 +21,115 @@
      urlEditar:play.mvc.Router.reverse('PCEconomicosController.editar' , ['idSolicitud':solicitud?.id])
 }
 	
-#{fap.tabla 
-	 campo:'Solicitud.ceconomicos', 
-     id:'tablaCEconomicos', 
-     idEntidad:'idCEconomico',
-     paginaEditar:'PaginaCEConomicos',
-     tipoContainer:'pagina', 
-     titulo:'Conceptos económicos', 
-     urlTabla:@PCEconomicosController.tablatablaCEconomicos('idSolicitud':solicitud?.id), 
-     urlEditar:play.mvc.Router.reverse("PaginaCEConomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d])
-}
-
-	#{fap.columna ancho:80, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}
-
-	#{fap.columna ancho:200, cabecera:'Concepto', campo:'tipo.nombre' /}
+	#{form play.mvc.Router.reverse('PCEconomicosController.guardar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"guardar"}
+			
 	
-	#{list items:0..d, as:'i'}
-		%{	
-	  		String aux = "valores[${i}].valorSolicitado";
-	  		String label = "Año "+(i+1);
-		%}
-		#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true /}
-	#{/list}
-
+		#{fap.tabla 
+			 campo:'Solicitud.ceconomicos', 
+			 codePrint:'if (record.data.permisoEditar || record.data.permisoLeer) { return \'filaEditable\'; } else { return \'filaNoEditable\'; }',
+		     id:'tablaCEconomicos', 
+		     idEntidad:'idCEconomico',
+		     paginaEditar:'PaginaCEConomicos',
+		     paginaLeer:'PaginaCEConomicos',
+		     tipoContainer:'pagina', 
+		     titulo:'Conceptos económicos', 
+		     urlTabla:@PCEconomicosController.tablatablaCEconomicos('idSolicitud':solicitud?.id), 
+		     urlEditar:play.mvc.Router.reverse("PaginaCEConomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d]),
+		     urlLeer:play.mvc.Router.reverse("PaginaCEConomicosController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d])
+		}
 		
-#{/fap.tabla}
+			#{fap.columna ancho:80, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}
+
+			#{fap.columna ancho:200, cabecera:'Concepto', campo:'tipo.nombre' /}
+	
+			#{list items:0..d, as:'i'}
+				%{	
+	  				String aux = "valores[${i}].valorSolicitado";
+	  				String label = "Año ${tipoEvaluacion.inicio+i}";
+				%}
+				#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true, alignPosition:'right' /}
+			#{/list}
+	
+			#{fap.columna ancho:200, cabecera:'Total', campo:'total', expandir:true, alignPosition:'right' /}
+		
+		#{/fap.tabla}
+
+			<div class="wiki ">
+		<table class="table table-bordered table-striped">
+		<thead>
+		<tr>
+			<th class="tabla-encabezado">Concepto</th>
+			#{list items:0..d, as:'i'}
+			<th class="tabla-encabezado">Año ${tipoEvaluacion.inicio+i}</th>
+			#{/list}
+			<th class="tabla-encabezado">Total</th>
+		</tr>
+		</thead>
+		<tbody>
+		%{
+			java.util.List<models.CEconomico> rows = models.CEconomico.find("select cEconomico from SolicitudGenerica solicitud join solicitud.ceconomicos cEconomico where solicitud.id=?",idSolicitud).fetch();
+			Double total = 0
+			java.util.ArrayList<Double> arrayTotales = new java.util.ArrayList<Double>(d+1);
+		%}
+		
+		#{list items:rows, as:'fila'}
+			%{
+				// Calculamos si la jerarquía es de las principales
+				java.util.regex.Pattern pattern = java.util.regex.Pattern.compile ("^[a-zA-Z]\$");
+				def jerarquiaPrincipal = pattern.matcher("${fila.tipo.jerarquia}").matches();
+				
+				if (jerarquiaPrincipal) {
+					Double subTotal = 0;
+			%}
+			
+			<tr>
+				<td>${fila.tipo.jerarquia} (${fila.tipo.nombre})</td>
+			
+			%{  
+				int i = 0; // Contador de años
+			%}
+			
+			#{list items:fila.valores, as:'valor'}
+				%{
+					subTotal += valor.valorSolicitado;
+				%}
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(valor.valorSolicitado)} €</td>
+					
+				%{
+				    if (arrayTotales.size() <= i) {
+				    	arrayTotales.add(valor.valorSolicitado);
+				    } else {
+						arrayTotales.set(i, arrayTotales.get(i)+valor.valorSolicitado);
+					}
+					i++;
+				%}
+			#{/list}
+		
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotal)} €</td>
+				%{
+					total += subTotal;
+				%}
+			</tr>
+		
+			%{
+				} // Close IF
+			%}
+		#{/list}
+			<tr class="total">
+				<td><b>TOTAL</b></td>
+				#{list items:0..d, as:'i'}
+							<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(arrayTotales.get(i))} €</b></td>
+				#{/list}
+				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(total)} €</b></td>
+			</tr>
+		</tbody>
+		</table>
+		</div>
+		
+		<div class="well">
+			#{fap.boton id:'botonGuardar', titulo:'Guardar' /}
+		</div>
+	#{/form}
 
 #{/fap.pagina}
 		

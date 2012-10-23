@@ -1,0 +1,49 @@
+h1. Trabajando con el Código Fuente del Módulo FAP
+
+Si eres un aventurero, y quieres trabajar en crudo con el Módulo FAP, teniendo todo su código como un proyecto en tu ordenador, basta con bajartelo de GitHub haciendo un _git clone https://github.com/FAP-Team/Fap-Module.git_. Ahora, para trabajar utilizandolo en tus aplicaciones simplemente debes actualizar el _dependecies.yml_ de tu aplicación como sigue, y tener en cuenta un par de detalles a la hora de generar y demás, que a continuación explicamos.
+
+Fichero "dependencies.yml"
+
+bc. # Application dependencies
+require:
+    - play
+    - fap -> fap 2.1
+    - fap-modules -> guice 1.3
+    - play -> pdf 0.6
+    - play -> less 0.9
+    - play -> recaptcha 1.2
+    - play -> mockito 0.1
+    - play -> webdrive 0.2:
+        transitive: false
+repositories:
+    - Fap Local repository:
+        type:       local
+        artifact:   ${fapsdk}/fap
+        contains:
+            - fap -> *
+    - fap-devel modules repository:
+        type: http
+        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        contains:
+            - fap-modules -> guice
+
+Debemos tener la variable de entorno FAPSDK apuntando a la carpeta 'Fap-Module' que te has descargado a través de GitHub.
+
+*Cargar las dependencias del proyecto*
+
+bc. play dependencies -Dfapsdk="<ruta_al_fapsdk>"
+
+*Generación del módulo*
+
+Si deseas trastear y tocar el Módulo FAP, para añadir nuevas cosas, la forma de generar en FAP no es con un comando Play!, ya que el Módulo fap es un Módulo Play!, por lo que no verá ningún comando Play!.
+
+La generación del módulo ahora se realiza mediante el fichero python *generate.py*.
+
+*Generación de la aplicación*
+
+Para generar tu aplicación, deberás indicarle que estás utilizando el módulo FAP de desarrollo, es decir el código fuente, con la opción --dev. Para conocer más opciones del _play fap:generate_ puede acceder a su "documentación":curso-generar
+
+bc. play fap:generate --dev
+
+
+

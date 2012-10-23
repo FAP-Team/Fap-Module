@@ -1,0 +1,388 @@
+%{
+	def valorDelCriterio = {criterio ->
+		def valorNumerico = criterio.valor
+		def valor
+		if (criterio.tipo.tipoValor == "lista"){ 
+			def list = criterio.tipo.listaValores 
+			list.each{ 
+				if (it.valor == criterio.valor){
+					valor = it.descripcion
+					if(criterio.tipo.mostrarValor){
+						valor += " ($valorNumerico)"
+					}
+				} 
+			} 
+		}else{
+			valor = valorNumerico
+		}
+		return valor;
+	}
+}%
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+<style media="print">
+
+/*--Estilo general ---*/
+body {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+/*--- Saltos de página ---*/
+.div-saltoPagina {
+	page-break-after: always;
+}
+
+.Criterio {
+	page-break-inside: avoid;
+	page-break-after: auto;
+}
+
+/*---TABLA PARA TEXTOS y LISTAS GENERICA ---*/
+.table-datos {
+	width: 100%;
+	border: 1px solid #ccc;
+	page-break-inside: auto;
+}
+
+.table-datos caption {
+	background-color: #ccc;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-datos th {
+	background-color: #ccc;
+	font-weight: bold;
+	width: 150px;
+	text-align: left;
+	vertical-align: text-top;
+	padding-left: 5px;
+}
+
+.table-datos td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+/*--- TABLAS CON GRID ---*/
+.table-grid {
+	width: 100%;
+	border-collapse: collapse;
+	cellspacing: 0px;
+	cellpadding: 2px;
+	-fs-table-paginate: paginate;
+	page-break-inside: avoid;
+}
+
+.table-grid caption {
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.table-grid thead td {
+	border: 1px solid gray;
+	background-color: #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding: 6px;
+}
+
+.table-grid th {
+	background-color: #ddd;
+	font-weight: bold;
+	width: 500px;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-grid td {
+	border: 1px solid #ccc;
+	padding: 8px;
+	text-align: center;
+}
+
+.Cabecera td{
+	background-color: #ddd;
+	text-align: center;
+	font-weight: bold;
+	padding: 6px;
+}
+
+/*---ESTILO DE SECCIóN ---*/
+.table-seccion {
+	width: 100%;
+}
+
+.table-seccion caption {
+	background-color: #ccc;
+	border: 2px solid gray;
+	font-weight: bold;
+	text-align: left;
+	padding: 6px;
+}
+
+.table-seccion td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+</style>
+</head>
+<body>
+	<!-- TITULO -->
+	<div id="divTitulo">
+		<h2 style="text-align: center;">Borrador Baremación en PDF</h2>
+	</div>
+
+	<!-- SOLICITANTE -->
+	<table id="tblSolcitanteTitulo" class="table-seccion">
+
+		<caption>Solicitante:</caption>
+
+		<tr>
+			<td colspan="1"></td>
+		</tr>
+
+	</table>
+
+	<table id="tblDatosPersonalesSolicitante" class="table-datos">
+		%{ 
+		def solicitud = models.Solicitud.findById(evaluacion.solicitud.id); 
+		def tipo = evaluacion.solicitud.solicitante.fisica.nip.tipo.toUpperCase(); 
+		}%
+		
+		#{if (evaluacion.solicitud.solicitante.tipo == "fisica")}
+		<tr>
+			<th>${tipo}:</th>
+			<td>${evaluacion.solicitud.solicitante.fisica.nip.valor}</td>
+		</tr>
+		<tr>
+			<th>Nombre:</th>
+			<td>${evaluacion.solicitud.solicitante.fisica.nombre}</td>
+		</tr>
+		#{/if} 
+		#{if (evaluacion.solicitud.solicitante.tipo == "juridica")}
+		<tr>
+			<th>CIF:</th>
+			<td>${evaluacion.solicitud.solicitante.juridica.cif}</td>
+		</tr>
+		<tr>
+			<th>Nombre:</th>
+			<td>${evaluacion.solicitud.solicitante.juridica.entidad}</td>
+		</tr>
+		#{/if}
+		<tr>
+			<th>Telefono:</th>
+			<td>${evaluacion.solicitud.solicitante.telefonoFijo}</td>
+		</tr>
+		<tr>
+			<th>Movil:</th>
+			<td>${evaluacion.solicitud.solicitante.telefonoMovil}</td>
+		</tr>
+		<tr>
+			<th>Correo electrónico:</th>
+			<td>${evaluacion.solicitud.solicitante.email}</td>
+		</tr>
+	</table>
+	
+	<br/>
+	
+	<!-- Evaluacion -->
+	<table id="tblEvaluacionTitulo" class="table-seccion">
+		<caption>Evaluación:</caption>
+		<tr>
+			<td colspan="1"></td>
+		</tr>
+	</table>
+	
+	<table id="tblEvaluacion" class="table-datos">
+		#{list items:evaluacion.tipo.getSortedDatosAdicionales(), as:"tipoDatoAdicional"}
+			%{
+				def valor = services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion)
+			}%
+			<tr>
+				<th>${tipoDatoAdicional.descripcion}:</th>
+				<td>${valor}</td>
+			</tr>
+		#{/list}	
+		
+		#{if (evaluacion.comentariosAdministracion)}
+		<tr>
+			<th>Comentarios administracion:</th>
+			<td>${evaluacion.comentariosAdministracion}</td>
+		</tr>
+		#{/if}
+		#{if (evaluacion.comentariosSolicitante)}
+		<tr>
+			<th>Comentarios solicitante:</th>
+			<td>${evaluacion.comentariosSolicitante}</td>
+		</tr>
+		#{/if}
+	</table>
+	</br>
+	</br>
+
+	<!-- Tabla criterios resumida -->
+	<table id="tblCriteriosResumidosTitulo" class="table-seccion">
+		<caption>Criterios Resumidos:</caption>
+		<tr>
+			<td colspan="1"></td>
+		</tr>
+	</table>
+
+	<table id="tblCriteriosEvaluacionResumida" class="table-grid">
+		<thead>
+			<tr>
+				<td>Criterio</td>
+				<td>Valor</td>
+			<tr>
+		</thead>
+		
+		<tr class="Cabecera">
+			<td>Totales</td>
+			<td>Valor</td>
+		</tr>
+
+		<tr>
+			<th>Total puntuación</th>
+			<td>${evaluacion.totalCriterios}</td>
+		</tr>
+		
+		<tr class="Cabecera">
+			<td>Criterios de Evaluación</td>
+			<td>Valor</td>
+		</tr>
+		</thead>
+
+		#{list items:evaluacion.criterios, as:'criterio'} 
+		<tr>
+			<th>${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</th>
+			<td>${valorDelCriterio(criterio)}</td>
+		</tr>
+		#{/list}
+		<tr class="Cabecera">
+			<td>Criterios Económicos (Totales)</td>
+			<td>Valor</td>
+		</tr>
+		
+		#{list items:evaluacion.ceconomicos, as:'ceconomico'} 
+		<tr>
+			<th>${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</th>
+			
+			%{
+				def valorPropuestoTotal = 0.0;
+				for (int i=0; i<=duracion ; i++){
+					valorPropuestoTotal += ceconomico.valores.get(i).valorPropuesto;
+				}
+			%}
+			
+			<td>${valorPropuestoTotal}</td>
+		</tr>
+		#{/list}
+		
+	</table>
+
+	</br>
+	</br>
+
+	<!-- Criterios de Evaluacion -->
+	<table id="tblCriteriosTitulo" class="table-seccion">
+
+		<caption>Criterios de Evaluación:</caption>
+
+		<tr>
+			<td colspan="1"></td>
+		</tr>
+
+	</table>
+	#{list items:evaluacion.criterios, as:'criterio'} 
+	<div class="Criterio">
+		<p class="nombre" style="font-size:15px">${criterio.tipo.jerarquia} -
+			${criterio.tipo.nombre}</p>
+		<table id="tblCriteriosEvaluacion" +${criterio.id} class="table-datos">
+			#{if (criterio.tipo.descripcion)}
+			<p style="font-weight:bold">Descripcion:</p>
+				<p style="text-indent:25px">${criterio.tipo.descripcion}</p>
+			#{/if}
+			<tr>
+				<th>Valor:</th>
+				<td>${valorDelCriterio(criterio)}</td>
+			</tr>
+			#{if (criterio.comentariosAdministracion)}
+			<p style="font-weight:bold">Comentarios administracion:</p>
+				<p style="text-indent:25px">${criterio.comentariosAdministracion}</p>
+			#{/if} 
+			#{if (criterio.comentariosSolicitante)}
+			<p style="font-weight:bold">Comentarios solicitante:</p>
+				<p style="text-indent:25px">${criterio.comentariosSolicitante}</p>
+			#{/if}
+		</table>
+	</div>
+	#{/list}
+	
+	</br>
+	</br>
+	
+	<!-- Criterios Economicos -->
+	<table id="tblCriteriosTitulo" class="table-seccion">
+
+		<caption>Criterios Económicos:</caption>
+
+		<tr>
+			<td colspan="1"></td>
+		</tr>
+
+	</table>
+	#{list items:evaluacion.ceconomicos, as:'ceconomico'} 
+	<div class="Criterio">
+		<p class="nombre" style="font-size:15px">${ceconomico.tipo.jerarquia} -
+			${ceconomico.tipo.nombre}</p>
+		<table id="tblCriteriosEvaluacion" +${ceconomico.id} class="table-datos">
+			#{if (ceconomico.tipo.descripcion)}
+			<p style="font-weight:bold">Descripcion:</p>
+				<p style="text-indent:25px">${ceconomico.tipo.descripcion}</p>
+			#{/if}
+			#{list items:0..duracion, as:'i'}
+				%{
+					def etiquetaAnio = "Valor Propuesto Año "+ (i+1);
+					def valorPropuestoAnio = ceconomico.valores.get(i).valorPropuesto;
+				%}
+				<tr>
+					<th>${etiquetaAnio}</th>
+					<td>${valorPropuestoAnio}</td>
+				</tr>
+			#{/list}
+			%{
+				def valorPropuestoTotal = 0.0;
+				for (int i=0; i<=duracion ; i++){
+					valorPropuestoTotal += ceconomico.valores.get(i).valorPropuesto;
+				}
+			%}
+			<tr>
+				<th>Valor Propuesto Total:</th>
+				<td>${valorPropuestoTotal}</td>
+			</tr>
+			#{if (ceconomico.comentariosAdministracion)}
+			<p style="font-weight:bold">Comentarios administracion:</p>
+				<p style="text-indent:25px">${ceconomico.comentariosAdministracion}</p>
+			#{/if} 
+			#{if (ceconomico.comentariosSolicitante)}
+			<p style="font-weight:bold">Comentarios solicitante:</p>
+				<p style="text-indent:25px">${ceconomico.comentariosSolicitante}</p>
+			#{/if}
+		</table>
+	</div>
+	#{/list}
+</body>
+</html>

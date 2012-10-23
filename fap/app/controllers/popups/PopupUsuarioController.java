@@ -102,9 +102,8 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
 	@Util
 	public static void PopupUsuarioValidateCopy(String accion, Agente dbAgente, Agente agente) {
 		CustomValidation.clearValidadas();
-		if (!agente.password.isEmpty()){
-			CustomValidation.valid("agente", agente);
-		}
+		CustomValidation.valid("agente", agente);
+
 		CustomValidation.required("agente.username", agente.username);
 		dbAgente.username = agente.username;
 

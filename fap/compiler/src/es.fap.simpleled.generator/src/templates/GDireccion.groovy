@@ -72,7 +72,9 @@ public class GDireccion extends GSaveCampoElement{
  """
 		}
 		validation += super.validate(validatedFields);
-		validation += """if (${campo.addMore("tipo").firstLower()}.equals("canaria")){
+		validation += """if (properties.FapProperties.getBoolean("fap.direccion.anterior.version2.1")){
+    //CustomValidation.validValueFromTable("${campo.addMore("municipio").firstLower()}", ${campo.addMore("municipio").firstLower()}.replace(",", "").trim());
+} else if (${campo.addMore("tipo").firstLower()}.equals("canaria")){
 	CustomValidation.validValueFromTable("${campo.addMore("provincia").firstLower()}", ${campo.addMore("provincia").firstLower()}.replace(",", "").trim());
 	CustomValidation.validValueFromTable("${campo.addMore("isla").firstLower()}", ${campo.addMore("isla").firstLower()});
 	CustomValidation.validValueFromTable("${campo.addMore("municipio").firstLower()}", ${campo.addMore("municipio").firstLower()}.replace(",", "").trim());
@@ -90,7 +92,9 @@ public class GDireccion extends GSaveCampoElement{
 	public String copy(){
 		String dev="";
 		dev = copyCampos(campo);
-		dev += """ if (${campo.firstLower()}.tipo.equals("canaria")){
+		dev += """ if (properties.FapProperties.getBoolean("fap.direccion.anterior.version2.1")){
+		${campo.dbStr()}.municipio = ${campo.firstLower()}.municipio.replace(",", "").trim();
+} else if (${campo.firstLower()}.tipo.equals("canaria")){
 		${campo.dbStr()}.provincia = ${campo.firstLower()}.provincia.replace(",", "").trim();
 		${campo.dbStr()}.municipio = ${campo.firstLower()}.municipio.replace(",", "").trim();
 		${campo.dbStr()}.pais = "_724";

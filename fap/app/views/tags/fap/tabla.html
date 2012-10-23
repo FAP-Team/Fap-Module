@@ -28,6 +28,7 @@
 	
 	def obj = _obj ?: _caller.get(campo.split("\\.")[0]);
 	
+	def urlRedirigir = _urlRedirigir ?: "";
 	
 	// Para que lo de la validacion y el guardado de la pagina actual al abrir la pagina de la tabla no funcione, siga comportandose como antes de la versión 2.1
 	def saveBefore = properties.FapProperties.getBoolean("fap.tablas.validacion.antesRedirigirPaginas") ?: false;
@@ -70,6 +71,13 @@
 		saveBefore = false;
 	
 	def saveEntity = _saveEntity ?: false;
+	
+	def idCampoUri = _idCampoUri ?: "";
+	
+	def codePrint = _codePrint ?: "";
+	
+	def submitPage = _submitPage ?: false;
+
 %}
 
 	#{doBody /}
@@ -100,6 +108,7 @@
 	</div>
 	
 	<div id="${id}" class="tabla"></div>
+	
 
 	<script>
 	
@@ -456,9 +465,14 @@
 	    			var urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
 					var funcionCrear = function(){
 						#{if popupCrear}
+							var urlCrearRedirigir;
+							if ("${urlRedirigir}" !== "")
+								urlCrearRedirigir = urlCrear+"&urlRedirigir="+replaceAmpersand("${urlRedirigir}").split("&")[0];
+							else
+								urlCrearRedirigir = urlCrear;
 	    					popup_open(
 	    						"${popupCrear}_popup",
-	    						urlCrear,
+	    						urlCrearRedirigir,
 	    						reload
 	    					);
 	    				#{/if}
@@ -525,13 +539,15 @@
 
 	        #{if urlSubir}
             var boton_subir = new Ext.Button({
-                text: 'Subir Documento',
+                text: 'Adjuntar este Documento',
                 icon: '@{'/public/images/table-leer.png'}',
                 disabled:true,
                 handler : function(){
-                    var uriDocumento = grid.getSelectionModel().getSelection()[0].data.uri;            
-                    window.location.replace('@{fap.DescargasAedController.asignarASolicitudDocumentoSubido()}' + 
-                                          '?uriDocumento=' + uriDocumento);
+                    $('#${idCampoUri}').val(grid.getSelectionModel().getSelection()[0].data.uri);
+                    $('#${idCampoUri}').prop('readonly', true);
+                    $('#mostrarUriSubida').show();
+                    $('#ocultaTabla').hide();
+                    $('#ocultaUpload').hide();
                 }
             });
             #{/if}
@@ -541,11 +557,29 @@
 		    	text: '${seleccionable}',
 		    	handler : function(){
 		    		var selected = sm.getSelection();
-		    		var params = new Array();
-		    		for (var i in selected) {
-		    			params[i] = "idsSeleccionados="+selected[i].data.id;
-		    		}
-		    		createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
+
+		    		#{if submitPage}
+		    			var urlSubmitPage = "${urlSeleccionable}";
+		    			var j = 1;
+		    			for (var i in selected) {
+		    				if ( j == 1 ) {
+		    					urlSubmitPage += "?"
+		    				} else {
+		    					urlSubmitPage += "&"
+		    				}
+		    				j += 1;
+		    				urlSubmitPage += "idsSeleccionados="+selected[i].data.id;
+		    			}
+		    			alert("url: "+urlSubmitPage);
+		    			$('#${id}').closest('form').attr("action",urlSubmitPage).submit();
+		    		#{/if}
+		    		#{else}
+		    			var params = new Array();
+		    			for (var i in selected) {
+		    				params[i] = "idsSeleccionados="+selected[i].data.id;
+		    			}
+		    			createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
+		    		#{/else}
 			   	}
 		    });
 			#{/if}
@@ -560,6 +594,9 @@
 
 		   	var grid = new Ext.grid.GridPanel({
 				store : store${id},
+				#{if urlSubir}
+			 	hidden:true,
+			 	#{/if}
 				#{if seleccionable}
 				selModel: sm,
 	            #{/if}
@@ -617,7 +654,15 @@
 			            boton_actualizar
         				]
     				}
-				]
+				],
+				viewConfig: {
+					getRowClass: function(record, index, rowParams, ds) {
+						#{if codePrint}
+							${codePrint.raw()}
+						#{/if}
+					}
+				}
+
 			});
 		   	
 
@@ -716,54 +761,39 @@
 					window.location.reload();
 				#{/if}
 			};
-
+			
 		   	$('#${id}').data('grid', grid);
-		   	
+
+		});
+		
+		Ext.onReady(function() {
+			var tableName = ${id};
+			var ancho = document.body.clientWidth;
+			if (ancho < 850) {
+				// Ocultamos el campo de búsqueda
+				var campoBusqueda = tableName.getElementsByClassName('x-field x-form-item x-field-default-toolbar x-box-item x-toolbar-item')[0].id;
+				$("#"+campoBusqueda).hide();
 				
-		   	Ext.onReady(function() {
-		   		var gridLength = 0;
-		   		var countBtn = 0;
-				var count = 0;
-		   		while (gridLength < document.getElementsByClassName('x-panel x-grid x-panel-default').length) {
-		   			var idTabla = document.getElementsByClassName('x-panel x-grid x-panel-default')[gridLength].id;
-			   		var anchoTabla = parseInt(document.getElementById(idTabla).style.width);
-					var idCampoBuscar = document.getElementsByClassName('x-field x-form-item x-field-default-toolbar x-box-item x-toolbar-item')[gridLength].id;
-					
-					var idBtn = "";
-					if (anchoTabla < 635) {
-						$("#"+idCampoBuscar).hide();
-						#{if seleccionable}
-							idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item')[count].id;
-							count++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-				        #{/if}
-						#{if botonCrear }
-				            idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item')[count].id;
-							count++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-				        #{/if}
-				        #{if urlEditar}
-					        idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item')[countBtn].id;
-							countBtn++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-					    #{/if} 
-				        #{if urlBorrar}
-					       	idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item')[countBtn].id;
-							countBtn++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-					    #{/if}
-				        #{if urlLeer}
-					      	idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item')[countBtn].id;
-							countBtn++;
-					        document.getElementById(idBtn).style.marginLeft = "-300px";
-					    #{/if}
-			        	idBtn = document.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item')[count].id;
-				    	document.getElementById(idBtn).style.marginLeft = "-300px";
-				    	count++;
-					}
-					gridLength++;
+				// Hay dos clases de botones. Obtenemos los botones agrupados por
+				// clases y los rodamos todos a la izquierda.
+				
+				var botonesTipoA = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item');
+				var i = 0;
+				var idBtn = "";
+				while (i < botonesTipoA.length) {
+					idBtn = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item')[i].id;
+					document.getElementById(idBtn).style.marginLeft = "-300px";
+					i++;
 				}
-			});
+				var botonesTipoB = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item');
+				var j = 0;
+				idBtn = "";
+				while (j < botonesTipoB.length) {
+					idBtn = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item')[j].id;
+					document.getElementById(idBtn).style.marginLeft = "-300px";
+					j++;
+				}
+			}
 		});
 </script>
 	

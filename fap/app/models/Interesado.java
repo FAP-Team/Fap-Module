@@ -44,7 +44,9 @@ public class Interesado extends FapModel {
 			persona = new Persona();
 		else
 			persona.init();
-		notificar = true;
+
+		if (notificar == null)
+			notificar = true;
 
 		postInit();
 	}

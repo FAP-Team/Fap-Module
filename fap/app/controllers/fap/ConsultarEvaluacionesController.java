@@ -3,6 +3,7 @@ package controllers.fap;
 
 import play.*;
 import play.mvc.*;
+import baremacion.BaremacionFAP;
 import controllers.fap.*;
 import security.Secure;
 import tags.ReflectionUtils;
@@ -15,6 +16,9 @@ import messages.Messages;
 import java.lang.reflect.Field;
 
 import javax.inject.Inject;
+
+import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
+import enumerado.fap.gen.EstadosEvaluacionEnum;
 
 @With({SecureController.class, AgenteController.class})
 public class ConsultarEvaluacionesController extends GenericController {
@@ -52,8 +56,15 @@ public class ConsultarEvaluacionesController extends GenericController {
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
 			if (eval != null) {
-				eval.estado = "EnTramite";
-				eval.save();
+				try {
+					BaremacionFAP.setOficialEvaluacion(eval.solicitud.id, idEvaluacion);
+					eval.estado = EstadosEvaluacionEnum.enTramite.name();
+					eval.save();
+				} catch (Exception e) {
+					Messages.error("Error generando el documento de solicitud para ver en evaluación. No se ha podido Iniciar esta Evaluación.");
+	                play.Logger.error("Error generando el de solicitud para ver en evaluación, no se ha ACEPTADO la evaluación: "+e.getMessage());
+	                Messages.keep();
+				}
 			}
 		}else{
 			forbidden();
@@ -65,11 +76,21 @@ public class ConsultarEvaluacionesController extends GenericController {
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
 			if (eval != null) {
-				eval.estado = "Rechazada";
+				eval.estado = EstadosEvaluacionEnum.rechazada.name();
 				eval.save();
 			}
 		}else{
 			forbidden();
+		}
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void botonEvaluacionesFinalizadas(String btnEvaluacionesFinalizadas) {
+		checkAuthenticity();
+		if (!Messages.hasErrors()) {
+			String accion = "editable";
+			renderTemplate("fap/EvaluacionesFinalizadas/EvaluacionesFinalizadas.html", accion);
 		}
 	}
 }

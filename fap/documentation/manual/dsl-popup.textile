@@ -10,6 +10,7 @@ h2. Parámetros
 * **titulo = _[string]_** (opcional) : Texto que se mostrara como título del Popup. 
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al Popup.
 * **campo = _[campo]_** : Define la entidad que se puede usar en los campos que se sitúen dentro del popup.
+* **maximizar** (opcional) : Permite que el tamaño del popup abarque la pantalla entera.
 
 
 h2. Definición
@@ -18,8 +19,9 @@ bc. Popup:
 	elemento='Popup' name=ID
 	(
 		('titulo' '=' titulo=STRING)?
-		& ("campo" "=" campo=Campo)
+		& ("campo" "=" campo=Campo)?
 		& ("permiso" "=" permiso=[Permiso])?
+		& (maximizar?="maximizar")?
 	)
 	'{'
 		elementos+=Elemento*

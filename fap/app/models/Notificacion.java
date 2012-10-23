@@ -146,8 +146,12 @@ public class Notificacion extends FapModel {
 			registro = new Registro();
 		else
 			registro.init();
-		preparadaAnulacion = false;
-		preparadaRespondida = false;
+
+		if (preparadaAnulacion == null)
+			preparadaAnulacion = false;
+
+		if (preparadaRespondida == null)
+			preparadaRespondida = false;
 
 		postInit();
 	}

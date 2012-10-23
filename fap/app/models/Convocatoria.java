@@ -31,7 +31,9 @@ public class Convocatoria extends Singleton {
 
 	public void init() {
 		super.init();
-		estado = "presentacion";
+		if (estado == null)
+			estado = "presentacion";
+
 		postInit();
 	}
 

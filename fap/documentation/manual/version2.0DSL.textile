@@ -76,7 +76,7 @@ Ahora:
 
 bc.. Pagina Documentos campo=Solicitud.documentacion.documentos {
 	Accion crear redirigir=SubirArchivoAedTest	
-	SubirArchivoAed fileAportacion campo=Documento requerido tramite="Solicitud"
+	SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud"
 }
 	
 Pagina SubirArchivoAedTest campo=Solicitud {

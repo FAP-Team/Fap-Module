@@ -140,6 +140,7 @@
 	#{/if}
 	#{else}
 		#{fap.grupo titulo:label, visible:label != null}
+			<input type="hidden" id="${idCombo}" name="${campo_combo}" value="nacional"/>
 			#{fap.combo id:id_municipio, titulo:"Municipio", campo:campo_municipio, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}
 			#{fap.texto id:id_codigoPostal, titulo:'Código Postal', campo:campo_codigoPostal, obj:obj, requerido:requerido, ancho:"100px" /}
 	

@@ -32,7 +32,11 @@ public interface FirmaService {
     
     public Firmante getFirmante(String firma, Documento documento);
     
+    public Firmante getFirmante(String firma, Documento documento, List<Firmante> todosFirmantes);
+    
     public Firmante validateXMLSignature(byte[] contenidoDoc, String firma);
+    
+    public Firmante validateXMLSignature(byte[] contenidoDoc, String firma, List<Firmante> todosFirmantes);
     
     public HashMap<String,String> extraerInfoFromFirma(String firma);
     

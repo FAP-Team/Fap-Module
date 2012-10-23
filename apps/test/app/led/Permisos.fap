@@ -17,3 +17,7 @@ Permiso autorizaFuncionario {
 	else
 	return editable
 }
+
+Permiso colorFondo{
+	return visible
+}

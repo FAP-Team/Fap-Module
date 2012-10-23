@@ -15,6 +15,7 @@ h2. Parámetros
 * **inicial** (opcional) : Establece esta página como la inicial de la aplicación.
 * **titulo = _[string]_** (opcional) : Define un título para la página.
 * **mensajeFinal** (opcional) : En el caso que se quiera configurar un mensaje personalizado para la página y se especifique esta opción, se indicará que se quiere poner el mensaje al final de la página. Por defecto, se colocará al principio de la página.
+* **perteneceA = _[string]_** (opcional): En el caso de que se quiera agrupar las páginas por módulos, permite indicar a qué módulo pertenece la página. Si se emplea, se dependerá de una property que debe definirse en el @application.conf@ de la aplicacion de la siguiente manera: _fap.modulo.nombreModulo_. Esta property regula el acceso a las páginas del módulo correspondiente, si está igualada a true, las páginas son accesibles, si está igualada a false o no existe, no se podrá acceder.
 
 h2. Definición
 
@@ -29,6 +30,7 @@ bc.. Pagina:
 		& (guardarParaPreparar?="guardarParaPreparar")?
 		& (inicial?="inicial")?
 		& (mensajeFinal?="mensajeFinal")?
+		& ("perteneceA" "=" perteneceA=STRING)?
 	)
 	'{'
 		elementos+=Elemento*
@@ -57,3 +59,14 @@ bc. Pagina Solicitudes campo=Solicitud{
 		Boton titulo="Borrar Solicitud"
 	}
 }
+
+h3. Pagina perteneciente a un modulo
+
+bc. Pagina Combos inicial campo=Solicitud perteneceA = "verificacion"{
+	Grupo titulo="Campos sin sobreescribir los controladores manuales" {
+		Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"
+	...
+	}
+}
+
+Para el correcto funcionamiento, se define en el @application.conf@ la siguiente property _fap.modulo.verificacion_ que se iguala a true o false dependiendo del comportamiento que se desee.

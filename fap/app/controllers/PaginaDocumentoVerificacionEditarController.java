@@ -1,12 +1,15 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
 
 import play.mvc.Util;
 
+import tags.ComboItem;
 import validation.CustomValidation;
 import messages.Messages;
 import models.SolicitudGenerica;
@@ -98,6 +101,69 @@ public class PaginaDocumentoVerificacionEditarController extends PaginaDocumento
 			dbVerificacionDocumento.motivoRequerimiento = "";
 		}
 
+	}
+	
+	public static List<ComboItem> estado() {
+		Long idSolicitud = Long.parseLong(params.get("idSolicitud"));
+		Long idVerificacionDocumento = Long.parseLong(params.get("idVerificacionDocumento"));
+		List<ComboItem> result = new ArrayList<ComboItem>();
+		if ((idSolicitud != null) && (idVerificacionDocumento != null)){
+			VerificacionDocumento dbVerificacionDocumento = PaginaDocumentoVerificacionEditarController.getVerificacionDocumento(idSolicitud, idVerificacionDocumento);
+			if ((dbVerificacionDocumento == null) || (dbVerificacionDocumento.estadoDocumentoVerificacion == null) || (dbVerificacionDocumento.estadoDocumentoVerificacion.isEmpty())){
+				result.add(new ComboItem("noPresentado", "No Presentado"));
+				result.add(new ComboItem("noVerificado", "No Verificado"));
+				result.add(new ComboItem("noProcede", "No Procede"));
+				result.add(new ComboItem("valido", "Válido"));
+				result.add(new ComboItem("noValido", "No Válido"));
+			} else if (dbVerificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name())){
+				result.add(new ComboItem("noPresentado", "No Presentado"));
+				result.add(new ComboItem("noProcede", "No Procede"));
+			} else if (dbVerificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noVerificado.name())){
+				result.add(new ComboItem("noVerificado", "No Verificado"));
+				result.add(new ComboItem("noProcede", "No Procede"));
+				result.add(new ComboItem("valido", "Válido"));
+				result.add(new ComboItem("noValido", "No Válido"));
+			} else if (dbVerificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noProcede.name())){
+				result.add(new ComboItem("noPresentado", "No Presentado"));
+				result.add(new ComboItem("noVerificado", "No Verificado"));
+				result.add(new ComboItem("noProcede", "No Procede"));
+				result.add(new ComboItem("valido", "Válido"));
+				result.add(new ComboItem("noValido", "No Válido"));
+			} else if (dbVerificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.valido.name())){
+				result.add(new ComboItem("noPresentado", "No Presentado"));
+				result.add(new ComboItem("noVerificado", "No Verificado"));
+				result.add(new ComboItem("noProcede", "No Procede"));
+				result.add(new ComboItem("valido", "Válido"));
+				result.add(new ComboItem("noValido", "No Válido"));
+			} else if (dbVerificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noValido.name())){
+				result.add(new ComboItem("noPresentado", "No Presentado"));
+				result.add(new ComboItem("noVerificado", "No Verificado"));
+				result.add(new ComboItem("noProcede", "No Procede"));
+				result.add(new ComboItem("valido", "Válido"));
+				result.add(new ComboItem("noValido", "No Válido"));
+			} else {
+				System.out.println(dbVerificacionDocumento.estadoDocumentoVerificacion);
+			}
+		} else {
+			result.add(new ComboItem("noPresentado", "No Presentado"));
+			result.add(new ComboItem("noVerificado", "No Verificado"));
+			result.add(new ComboItem("noProcede", "No Procede"));
+			result.add(new ComboItem("valido", "Válido"));
+			result.add(new ComboItem("noValido", "No Válido"));
+		}
+		return result;
+	}
+	
+	@Util
+	public static void editarRender(Long idSolicitud, Long idVerificacionDocumento) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página editada correctamente");
+			Messages.keep();
+			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+			redirect("PaginaVerificacionController.index", controllers.PaginaVerificacionController.getAccion(), idSolicitud, solicitud.verificacion.id);
+		}
+		Messages.keep();
+		redirect("PaginaDocumentoVerificacionEditarController.index", "editar", idSolicitud, idVerificacionDocumento);
 	}
 
 }

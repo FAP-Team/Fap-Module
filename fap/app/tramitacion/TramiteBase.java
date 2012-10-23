@@ -125,7 +125,7 @@ public abstract class TramiteBase {
                 try{
                     gestorDocumentalService.deleteDocumento(borradorOld);
                 }catch(Exception e){
-                    play.Logger.error("Error eliminando borrador del gestor documental");
+                    play.Logger.error("Error eliminando borrador del gestor documental: "+e.getMessage());
                 };
             }
         }
@@ -140,7 +140,7 @@ public abstract class TramiteBase {
                 try {
                     gestorDocumentalService.deleteDocumento(oficialOld);
                 }catch(Exception e){
-                    play.Logger.error("Error eliminando documento oficial del gestor documental");
+                    play.Logger.error("Error eliminando documento oficial del gestor documental: "+e.getMessage());
                 };
             }
         }
@@ -206,6 +206,7 @@ public abstract class TramiteBase {
     public void calcularFirmantes(){
         if(!Messages.hasErrors()){
             registro.firmantes = Firmantes.calcularFirmanteFromSolicitante(solicitud.solicitante);
+            registro.save();
         }
     }
     
@@ -227,15 +228,29 @@ public abstract class TramiteBase {
     public void firmar(String firma){
         if(registro.fasesRegistro.borrador && !registro.fasesRegistro.firmada){
             String identificadorFirmante = FirmaController.getIdentificacionFromFirma(firma);
-            if(registro.firmantes.containsFirmanteConIdentificador(identificadorFirmante)){
+            if(registro.firmantes.containsFirmanteConIdentificador(identificadorFirmante) && !registro.firmantes.haFirmado(identificadorFirmante)){
             	Firmante firmante = firmaService.getFirmante(firma, registro.oficial);
+            	for (Firmante firmanteAux: registro.firmantes.todos){
+            		if (firmanteAux.idvalor.equals(identificadorFirmante)){
+            			firmante.cardinalidad = firmanteAux.cardinalidad;
+            			firmante.tipo = firmanteAux.tipo;
+            			registro.firmantes.todos.remove(firmanteAux);
+            			registro.firmantes.todos.add(firmante);
+            			registro.save();
+            			break;
+            		}
+            	}
             	firmante.fechaFirma = new DateTime();
                 almacenarFirma(firma, registro.oficial, firmante);
                 firmante.save();
                 if(registro.firmantes.hanFirmadoTodos()){
                     avanzarFaseFirmada();
                 }
-            }else{
+            } else if (registro.firmantes.haFirmado(identificadorFirmante)){
+            	play.Logger.error("La solicitud ya ha sido firmada por ese certificado");
+                Messages.error("La solicitud ya ha sido firmada por ese certificado");
+            } else {
+            	play.Logger.error("El certificado no se corresponde con uno que debe firmar la solicitud");
                 Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud");
             }
         }
@@ -244,6 +259,7 @@ public abstract class TramiteBase {
     public void avanzarFaseFirmada(){
         if(!Messages.hasErrors()){
             registro.fasesRegistro.firmada = true;
+            registro.save();
         }
     }
 	
@@ -254,7 +270,7 @@ public abstract class TramiteBase {
 	 * @throws RegistroException
 	 */
 	public void registrar() throws RegistroServiceException {
-		validarReglasConMensajes();
+
 		EntityTransaction tx = JPA.em().getTransaction();
 		tx.commit();
 		//Registra la solicitud
@@ -264,7 +280,7 @@ public abstract class TramiteBase {
 					tx.begin();
 					//Registra la solicitud
 					JustificanteRegistro justificante = registroService.registrarEntrada(this.solicitud.solicitante, registro.oficial, this.solicitud.expedientePlatino, null);
-					play.Logger.info("Se ha registrado la solicitud %s en platino", solicitud.id);
+					play.Logger.info("Se ha registrado la solicitud %s en platino (Algo relativo a ella)", solicitud.id);
 					tx.commit();
 					registro.refresh();
 					tx.begin();
@@ -284,15 +300,7 @@ public abstract class TramiteBase {
 					registro.fasesRegistro.registro = true;
 					getRegistro().fasesRegistro.registro=true;
 					
-					registro.fasesRegistro.save();
-					try {
-						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-						Mails.enviar(this.getMail(), solicitud);
-					} catch (Exception e){
-						play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail());
-					}
-					play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());				
-
+					registro.fasesRegistro.save();				
 
 					// Establecemos las fechas de registro para todos los documentos de la solicitud
 					List<Documento> documentos = new ArrayList<Documento>();
@@ -312,7 +320,7 @@ public abstract class TramiteBase {
 					throw new RegistroServiceException("Error al obtener el justificante del registro de entrada");
 				}
 			} else {
-				play.Logger.debug("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
+				play.Logger.info("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
 			}
 			registro.refresh();
 			//Crea el expediente en el AED
@@ -322,13 +330,14 @@ public abstract class TramiteBase {
 					gestorDocumentalService.crearExpediente(solicitud);
 				} catch (GestorDocumentalServiceException e) {
 					Messages.error("Error al crear el expediente");
+					play.Logger.fatal("Error al crear el expediente para la solicitud "+solicitud.id+": "+e);
 					throw new RegistroServiceException("Error al crear el expediente");
 				}
 				getRegistro().fasesRegistro.expedienteAed = true;
 				getRegistro().fasesRegistro.save();
 				tx.commit();
 			}else{
-				play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
+				play.Logger.info("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
 			}
 			registro.refresh();
 			
@@ -343,6 +352,7 @@ public abstract class TramiteBase {
 				try {
 					gestorDocumentalService.clasificarDocumentos(this.solicitud, documentos);
 				} catch (GestorDocumentalServiceException e){
+					play.Logger.fatal("No se clasificaron algunos documentos sin registro: "+e.getMessage());
 					Messages.error("Algunos documentos sin registro del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
 					throw new RegistroServiceException("Error al clasificar documentos sin registros");
 				}
@@ -358,13 +368,14 @@ public abstract class TramiteBase {
 						registro.fasesRegistro.save();
 						play.Logger.info("Se clasificaron todos los documentos del trámite de '%s'", this.getTipoTramite());
 					} catch (GestorDocumentalServiceException e){
+						play.Logger.fatal("No se clasificaron algunos documentos con registro de entrada: "+e.getMessage());
 						Messages.error("Algunos documentos con registro de entrada del trámite de '" + this.getTipoTramite() + "' no pudieron ser clasificados correctamente");
 						throw new RegistroServiceException("Error al clasificar documentos con registros");
 					}
 				}
 				tx.commit();
 			} else {
-				play.Logger.debug("Ya están clasificados todos los documentos del trámite de '%s' de la solicitud %s", this.getTipoTramite(), this.solicitud.id);
+				play.Logger.info("Ya están clasificados todos los documentos del trámite de '%s' de la solicitud %s", this.getTipoTramite(), this.solicitud.id);
 			}
 			registro.refresh();
 			//Añade los documentos a la lista de documentos de la solicitud
@@ -377,7 +388,16 @@ public abstract class TramiteBase {
 				}
 				this.prepararNuevo();
 				solicitud.save();
-				play.Logger.debug("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
+				play.Logger.info("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
+				
+				try {
+					play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+					Mails.enviar(this.getMail(), solicitud);
+				} catch (Exception e){
+					play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail()+": "+e.getMessage());
+				}
+				play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());
+				
 				tx.commit();
 			}
 			
@@ -421,7 +441,16 @@ public abstract class TramiteBase {
 		solicitud.estado=EstadosSolicitudEnum.iniciada.name();
 		solicitud.save();
 	}
-
+	
+	public File getDocumentoOficial (){
+		try {
+    		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+			return new Report(getBodyReport()).header(getHeaderReport()).registroSize().renderTmpFile(solicitud);
+		} catch (Exception e) {
+			play.Logger.error("Error generando el documento Solicitud para la Evaluación"+ e.getMessage());
+			return null;
+		}
+	}
     
 }
 

@@ -78,6 +78,12 @@ public class Solicitud extends SolicitudGenerica {
 	public Historico historico;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public BigPopUpPrueba bigPopUp;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public ElementosBasicos elementos;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
 
 	public Solicitud() {
@@ -160,6 +166,16 @@ public class Solicitud extends SolicitudGenerica {
 		else
 			historico.init();
 
+		if (bigPopUp == null)
+			bigPopUp = new BigPopUpPrueba();
+		else
+			bigPopUp.init();
+
+		if (elementos == null)
+			elementos = new ElementosBasicos();
+		else
+			elementos.init();
+
 		if (savePages == null)
 			savePages = new SavePages();
 		else
@@ -171,6 +187,9 @@ public class Solicitud extends SolicitudGenerica {
 	public void savePagesPrepared() {
 		if ((savePages.paginaSolicitante == null) || (!savePages.paginaSolicitante))
 			Messages.error("La página paginaSolicitante no fue guardada correctamente");
+
+		if ((savePages.paginaPCEconomicos == null) || (!savePages.paginaPCEconomicos))
+			Messages.error("La página Conceptos Económicos no fue guardada correctamente");
 	}
 
 	// === MANUAL REGION START ===

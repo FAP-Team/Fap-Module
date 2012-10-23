@@ -32,6 +32,7 @@
 	def styleRow = "";
 	if (errores)
 		styleRow = "error";
+	def mostrarIcono = _mostrarIcono != null ? _mostrarIcono : false
 }%
 
 #{if visible && !labelRight}
@@ -63,7 +64,9 @@
 		#{if errores}
 			<span class="help-inline">${errores}</span>
 		#{/if}
-		#{fap.ayuda ayuda:ayuda, id:id_help /}
+		#{if !mostrarIcono}
+			#{fap.ayuda ayuda:ayuda, id:id_help /}
+		#{/if}
 </div> 
 </div>
 #{/if}

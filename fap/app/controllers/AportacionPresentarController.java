@@ -20,7 +20,9 @@ import models.Firma;
 import models.Firmante;
 import models.Firmantes;
 import models.JustificanteRegistro;
+import models.Registro;
 import models.SolicitudGenerica;
+import models.TableKeyValue;
 import platino.InfoCert;
 import play.mvc.Util;
 import properties.FapProperties;
@@ -31,9 +33,11 @@ import services.GestorDocumentalServiceException;
 import services.RegistroServiceException;
 import services.RegistroService;
 import sun.util.logging.resources.logging;
+import tramitacion.TramiteBase;
 import validation.CustomValidation;
 import controllers.fap.AgenteController;
 import controllers.fap.FirmaController;
+import controllers.fap.PresentacionFapController;
 import controllers.gen.AportacionPresentarControllerGen;
 import emails.Mails;
 
@@ -368,5 +372,46 @@ public class AportacionPresentarController extends AportacionPresentarController
             redirect("AportacionRecibosController.index", "editar", idSolicitud);
         }
     }
+    
+    @Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void formHabilitarFH(Long idSolicitud, String btnHabilitarFH) {
+		checkAuthenticity();
+		if (!permisoFormHabilitarFH("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		SolicitudGenerica dbSolicitud = AportacionPresentarController.getSolicitudGenerica(idSolicitud);
+		if (!Messages.hasErrors()) {
+			try {
+				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
+				boolean encontrado = false;
+				for (Documento doc: tramite.getDocumentos()){
+					if (doc.tipo.equals(FapProperties.get("fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento"))){
+						encontrado = true;
+						break;
+					}
+				}
+				if (!encontrado){
+					log.error("El documento que autoriza la firma de un funcionario habilitado no ha sido subido o su tipo no es correcto. Uri del tipo correcto: "+FapProperties.get("fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento"));
+					Messages.error("El documento que autoriza la firma de un funcionario habilitado no ha sido subido o su tipo no es correcto.");
+					Messages.error("Asegurese de haber subido el documento pertinente con tipo: "+TableKeyValue.getValue("tiposDocumentos", FapProperties.get("fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento")));
+				}
+			} catch (Throwable e) {
+				log.error("Hubo un problema al intentar verificar la presencia del documento de autorizacion funcionario habilitado: "+e.getMessage());
+				Messages.error("No se pudo habilitar la firma de un Funcionario");
+			}
+		}
+
+		if (!Messages.hasErrors()) {
+			AportacionPresentarController.formHabilitarFHValidateRules();
+		}
+		if (!Messages.hasErrors()) {
+			dbSolicitud.aportaciones.actual.habilitaFuncionario=true;
+			dbSolicitud.save();
+			log.info("Acción Editar de página: " + "gen/AportacionPresentar/AportacionPresentar.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/AportacionPresentar/AportacionPresentar.html" + " , intentada sin éxito (Problemas de Validación)");
+		AportacionPresentarController.formHabilitarFHRender(idSolicitud);
+	}
 
 }

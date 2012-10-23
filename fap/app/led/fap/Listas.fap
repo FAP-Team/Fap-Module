@@ -16,6 +16,8 @@ Lista roles crearEnumerado {
 	usuario: "Usuario"
 	gestor: "Gestor"
 	revisor: "Revisor"
+	evaluador: "Evaluador"
+	lector: "Lector"
 }
 
 Lista FaseRegistro crearEnumerado {
@@ -8865,4 +8867,9 @@ Lista tipoDireccion crearEnumerado {
 	canaria : "Canaria"
 	nacional : "Nacional"
 	internacional : "Internacional"
+}
+
+Lista posicionMensaje crearEnumerado {
+	superior: "Parte superior"
+	inferior: "Parte inferior"
 }

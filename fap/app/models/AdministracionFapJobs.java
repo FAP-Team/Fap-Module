@@ -53,14 +53,30 @@ public class AdministracionFapJobs extends Singleton {
 
 	public void init() {
 		super.init();
-		actualizarNotificaciones = true;
-		valorPropioActualizarNotificaciones = false;
-		comprimirLogs = true;
-		valorPropioComprimirLogs = false;
-		eliminarTemporales = true;
-		valorPropioEliminarTemporales = false;
-		notificarAlertasAnotaciones = true;
-		valorPropioNotificarAlertasAnotaciones = false;
+
+		if (actualizarNotificaciones == null)
+			actualizarNotificaciones = true;
+
+		if (valorPropioActualizarNotificaciones == null)
+			valorPropioActualizarNotificaciones = false;
+
+		if (comprimirLogs == null)
+			comprimirLogs = true;
+
+		if (valorPropioComprimirLogs == null)
+			valorPropioComprimirLogs = false;
+
+		if (eliminarTemporales == null)
+			eliminarTemporales = true;
+
+		if (valorPropioEliminarTemporales == null)
+			valorPropioEliminarTemporales = false;
+
+		if (notificarAlertasAnotaciones == null)
+			notificarAlertasAnotaciones = true;
+
+		if (valorPropioNotificarAlertasAnotaciones == null)
+			valorPropioNotificarAlertasAnotaciones = false;
 
 		postInit();
 	}

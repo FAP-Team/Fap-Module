@@ -1,0 +1,11 @@
+h1. ¿Qué debo sobreescribir para personalizar el inicio de Nuevas Evaluaciones?
+
+Se deberá crear una clase(si no la hemos creado previamente para "personalizar la validación de los conceptos económicos":app-baremacion-validarceconomicos que introduzca el usuario o para el "Inicio de la Baremacion":app-baremacion-inicio) en la ruta _${PATH_APLICACION}/app/baremacion/${NOMBRE_CLASE_BAREMACION}_ donde ${NOMBRE_CLASE_BAREMACION} será el nombre que le queramos dar a nuestra clase que utilizaremos para sobreescribir el proceso de inicio de las nuevas evaluaciones de la baremación y que deberá extender de _BaremacionFAP_. Por ejemplo: _MiClaseBaremacion_, de forma que tendremos en el fichero java que representa dicha clase ("_MiClaseBaremacion.java_):
+
+bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
+	public static void iniciarNuevasEvaluaciones(){
+	   // Aquí indicaremos los pasos a seguir para el inicio de las nuevas evaluaciones.
+	}
+}
+
+Por defecto en FAP, este método recorre todas las solicitudes en estado 'verificado', es decir que han sido verificadas correctamente por los gestores, y crea su evaluación correspondiente. Es el mismo código que se ejecuta en el Inicio de la Baremación por defecto en FAP.

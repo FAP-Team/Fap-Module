@@ -89,6 +89,9 @@ public class Registro extends FapModel {
 		else
 			firmantes.init();
 
+		if (habilitaFuncionario == null)
+			habilitaFuncionario = false;
+
 		postInit();
 	}
 

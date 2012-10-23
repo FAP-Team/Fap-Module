@@ -6,7 +6,7 @@ Formulario Ayuda {
     	Enlace "Ayuda" pagina=Soporte crear
     }
     
-	Pagina AyudaVistaCompatibilidad titulo = "Ayuda Vista de Compatibilidad" noAutenticar {
+	Pagina AyudaVistaCompatibilidad titulo = "Ayuda Vista de Compatibilidad" noAutenticar  perteneceA="Principal"{
 		Wiki {"
 h3. Usar Internet Explorer con la función Vista de compatibilidad habilitada.
 

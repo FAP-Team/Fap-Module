@@ -118,8 +118,8 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         Client client = ClientProxy.getClient(registroPort);
 		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
 		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		httpConduit.setClient(httpClientPolicy);
         
         USERNAME = FapProperties.get("fap.platino.registro.username");
@@ -183,6 +183,11 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	@Override
 	public models.JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion) throws RegistroServiceException{
 	    DatosRegistro datosRegistro = getDatosRegistro(solicitante, documento, expediente, descripcion);
+	    // Para las pruebas con estos certificados
+	    if (datosRegistro.getNumeroDocumento().equals("ESA99999999")
+	    		|| datosRegistro.getNumeroDocumento().equals("A99999999")) {
+	    	datosRegistro.setNumeroDocumento("A99999997");
+	    }
 	    String datos = getDatosRegistroNormalizados(expediente, datosRegistro);
 	    String datosFirmados = firmarDatosRegistro(datos);
         JustificanteRegistro justificantePlatino = registroDeEntrada(datos, datosFirmados);
@@ -209,7 +214,8 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             throw new NullPointerException();
         
         if (descripcion == null)
-        	descripcion=documento.descripcionVisible+" "+FapProperties.get("application.name");
+        	descripcion=documento.descripcionVisible;
+        	// Añadimos RE al asunto en los registros de entrada
 
         datosDoc.setDescripcion(descripcion);
         datosDoc.setFecha(fechaApertura);
@@ -340,7 +346,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             JustificanteRegistro justificante = registroPort.registrarEntrada(USERNAME,  PASSWORD_ENC, datos, datosFirmados, ALIAS, null, null);
             return justificante;
         }catch(Exception e){
-            throw new RegistroServiceException("Error en la llamada de registro de entrada", e);
+            throw new RegistroServiceException("Error en la llamada de registro de entrada"+ e);
         }
     }
     
@@ -357,7 +363,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 			datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
 			log.info("Datos normalizados firmados");
 		} catch(Exception e){
-            throw new RegistroServiceException("Error firmando los datos de registro de Salida", e);
+            throw new RegistroServiceException("Error firmando los datos de registro de Salida"+ e);
         }
 
 		try {	

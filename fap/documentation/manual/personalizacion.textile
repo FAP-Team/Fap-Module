@@ -1,0 +1,17 @@
+h1. Personalización
+
+h2. "Mensajes en Páginas":app-configurar-mensajes
+
+En FAP se pueden introducir mensajes personalizados en cada una de las páginas que se definan, de una manera totalmente transparente y sencilla. Desde el panel de Administración se podrá realizar toda esta gestión, ¡Aprende cómo hacerlo!.
+
+h2. "A nivel JavaScript":curso-personalizarJavaScriptPaginas
+
+Existen ocasiones que queremos personalizar de manera extrema el comportamiento de nuestro aplicación web, de tal forma que puede ser necesario querer introducir cierto código JavaScript en ciertas páginas para conseguir ciertas funcionalidades que se nos puedan ocurrir. FAP provee una forma de poder introducir este código de forma sencilla.
+
+h2. "A nivel CSS y HTML":curso-modificarPlantillaHTML
+
+Podemos querer cambiar los estilos de algunas páginas, o incluso el orden de los elementos que en esta se renderizan. Para ello FAP permite introducir código html extra a las páginas, para poder usar todo el potencial que Play! deja implementar en estas. Se podría metar código Groovy, Tags de Play! y muchas otras cosas para personalizar las páginas como queramos sin sobreescribirlas desde 0.
+
+h2. "Módulos":modulos
+
+Algunos módulos de los que trae de serie implementado FAP, pueden necesitar saber ciertas propiedades para comportarse en concordancia a lo que el desarrollador pretende representar en esa aplicación. Por ello, se dan las pautas de los métodos que se pueden sobreescribir para personalizar en todo lo posible, las funcionalidades de los módulos por defecto de FAP.

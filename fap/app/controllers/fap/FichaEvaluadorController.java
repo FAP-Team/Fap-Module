@@ -6,6 +6,7 @@ import java.util.HashMap;
 import static play.modules.pdf.PDF.renderPDF;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -14,6 +15,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.google.inject.spi.Message;
+
+import baremacion.BaremacionFAP;
+
+import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
+import enumerado.fap.gen.EstadosEvaluacionEnum;
+
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.CEconomico;
@@ -21,9 +29,14 @@ import models.Criterio;
 import models.CriterioListaValores;
 import models.Documento;
 import models.Evaluacion;
+import models.ObligatoriedadDocumentos;
+import models.SolicitudGenerica;
 import models.TipoCEconomico;
 import models.TipoCriterio;
+import models.TipoDocumentoAccesible;
 import models.TipoEvaluacion;
+import models.VerificacionDocumento;
+import play.Play;
 import play.data.validation.Validation;
 import play.db.jpa.JPABase;
 import play.modules.pdf.PDF.Options;
@@ -41,6 +54,9 @@ import security.Secure;
 import services.BaremacionService;
 import tables.TableRecord;
 import utils.BaremacionUtils;
+import utils.ModelUtils;
+import verificacion.ObligatoriedadDocumentosFap;
+import validation.CustomValidation;
 
 @With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class FichaEvaluadorController extends Controller {
@@ -53,7 +69,7 @@ public class FichaEvaluadorController extends Controller {
 		Messages.deleteFlash();
 	}
 	
-	public static void index(long idEvaluacion){
+	public static void index(Long idEvaluacion, String accion){
 		
 		if(secure.checkGrafico("evaluacion", "visible", "leer", null, null)){
 			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
@@ -66,13 +82,57 @@ public class FichaEvaluadorController extends Controller {
 			}
 			notFoundIfNull(evaluacion);
 			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
-			List<Documento> documentos = evaluacion.getDocumentosAccesibles();
 			int duracion = tipoEvaluacion.duracion-1;
 			BaremacionUtils.calcularTotalesCEconomicosFichaEvaluacion(evaluacion);
-			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, documentos, expedienteUrl, duracion, idEvaluacion);
+			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, expedienteUrl, duracion, idEvaluacion, accion);
 		}else{
 			forbidden();
 		}
+	}
+	
+	public static void tabladocumentosAccesiblesEvaluador(Long idSolicitud, Long idEvaluacion) {
+
+		java.util.List<Documento> rows = new ArrayList<Documento>();
+		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+		if (TipoDocumentoAccesible.count() > 0){
+			List<TipoDocumentoAccesible> tiposDocumentosAccesibles = TipoDocumentoAccesible.findAll();
+			boolean encontrado;
+			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+			List<Documento> documentosAportados = (List<Documento>) ModelUtils.invokeMethodClassStatic(BaremacionFAP.class, "getDocumentosAccesibles", idSolicitud, idEvaluacion);
+			for (TipoDocumentoAccesible tipo: tiposDocumentosAccesibles){
+				encontrado = false;
+				for (int i=dbSolicitud.verificaciones.size()-1; i>=0; i--){
+					for (VerificacionDocumento documento: dbSolicitud.verificaciones.get(i).documentos){
+						if ((ObligatoriedadDocumentosFap.eliminarVersionUri(documento.uriTipoDocumento).equals(ObligatoriedadDocumentosFap.eliminarVersionUri(tipo.uri))) && (documento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.valido.name()))){
+							if (documentosAportados != null){
+								for (Documento doc: documentosAportados){
+									if (doc.uri.equals(documento.uriDocumento)){
+										rows.add(doc);
+										encontrado = true;
+										break;
+									}	
+								}
+							} else {
+								play.Logger.error("No existe ningun documento en la lista de documentos Accesibles para buscar los del tipo requerido en la Evaluación.");
+							}
+							break;
+						}
+					}
+					if (encontrado)
+						break;
+				}
+			}
+		}
+		// Siempre se añade el documento solicitud evaluación
+		if (evaluacion.solicitudEnEvaluacion.uri != null)
+			rows.add(evaluacion.solicitudEnEvaluacion);
+
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		List<Documento> rowsFiltered = rows; //Tabla sin permisos, no filtra
+
+		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered, false, false, false, "", "", "", "editar", ids);
+
+		renderJSON(response.toJSON("descripcionVisible", "tipo", "urlDescarga", "id"));
 	}
 
 	private static String redirectToFirstPage(Long idSolicitud) {
@@ -89,10 +149,10 @@ public class FichaEvaluadorController extends Controller {
 	public static void generaPDF(Long idEvaluacion, Integer duracion){
 		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 		if(evaluacion == null){
-			notFound("Evaluación no encontrada");
+			Messages.error("Error al recuperar la evaluacion");
 		}
 		try {
-			new Report("app/views/reports/baremacion/borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, duracion);
+			new Report("reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, duracion);
 		} catch (Exception e) {
 			play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());
 			Messages.error("Error al generar el borrador del documento");
@@ -100,7 +160,7 @@ public class FichaEvaluadorController extends Controller {
 	}
 
 	public static void save(){
-		if(secure.checkGrafico("evaluacion", "none", "editar", null, null)){
+		if(secure.checkGrafico("evaluacion", "editable", "editar", null, null)){
 			boolean actionSave = params.get("save") != null;
 			boolean actionPdf = params.get("pdf") != null;
 			boolean actionEnd = params.get("end") != null;
@@ -110,9 +170,13 @@ public class FichaEvaluadorController extends Controller {
 			}
 			Evaluacion evaluacion = Evaluacion.findById(params.get("evaluacion.id", Long.class));
 			if(evaluacion == null){
-				notFound("Evaluación no encontrada");
+				notFound("Fallo al recuperar la evaluación");
 			}
-			
+			if (!evaluacion.estado.equals(EstadosEvaluacionEnum.enTramite.name())){
+				Messages.error("No se puede guardar porque esta evaluación ya ha sido finalizada");
+				Messages.keep();
+				index(evaluacion.id, "leer");
+			}
 			//Comentarios
 			if(evaluacion.tipo.comentariosAdministracion){
 				evaluacion.comentariosAdministracion = params.get("evaluacion.comentariosAdministracion");
@@ -121,45 +185,82 @@ public class FichaEvaluadorController extends Controller {
 			if(evaluacion.tipo.comentariosSolicitante){
 				evaluacion.comentariosSolicitante = params.get("evaluacion.comentariosSolicitante");
 			}
-				
+			boolean guardarMaximo=false;
 			//Criterios de evaluacion
 			for(Criterio criterio : evaluacion.criterios){
 				String param = "criterio[" + criterio.id + "]";
+				String key = param + ".valor";
+				Double valor = params.get(key, Double.class);
+				
 	
-				if(criterio.tipo.claseCriterio.equals("manual")){
-					String key = param + ".valor";
-					Double valor = params.get(key, Double.class);
+				if(criterio.tipo.claseCriterio.equals("manual") || criterio.tipo.claseCriterio.equals("automod")){
 					
 					// Únicamente valida cuando se va a finalizar
 					// la verificación
-					if(actionEnd){
-						validation.required(key, valor);
+					if(actionEnd || actionSave){
+						if (actionEnd)
+							validation.required(key, valor);
 						//TODO validaciones de tamaño máximo
+						if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(valor) < 0) {
+							// validation.addError(key, "El valor "+valor+" es superior al valor máximo permitido: "+criterio.tipo.valorMaximo);
+							Messages.warning("El valor del criterio manual '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' es superior ("+valor+") al permitido en ese tipo de criterio: "+criterio.tipo.valorMaximo);
+							if (actionEnd){
+								criterio.valor=criterio.tipo.valorMaximo;
+								guardarMaximo=true;
+							}
+						}
+						if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(valor) > 0) {
+							Messages.warning("El criterio manual/automod "+criterio.tipo.jerarquia+" no llega ("+valor+") al mínimo valor permitido: "+criterio.tipo.valorMinimo+". Se ha establecido como valor a 0.0");
+							if (actionEnd)
+								criterio.valor=0.0;
+						}
+					}
+					if(!validation.hasErrors()){
+						if (guardarMaximo)
+							guardarMaximo=false;
+						else
+							criterio.valor = valor;
+					}
+				}
+				
+				if(!validation.hasErrors()){
+					//Comentarios
+					if(criterio.tipo.comentariosAdministracion){				
+						criterio.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
 					}
 					
-					criterio.valor = valor;
-				}else if(criterio.tipo.claseCriterio.equals("automod")){
-					//TODO criterio automático modificable
-				}
-				
-				//Comentarios
-				if(criterio.tipo.comentariosAdministracion){				
-					criterio.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
-				}
-				
-				if(criterio.tipo.comentariosSolicitante){
-					criterio.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
+					if(criterio.tipo.comentariosSolicitante){
+						criterio.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
+					}
 				}
 			}
-			BaremacionService.calcularTotales(evaluacion);
-			evaluacion.save();
-			if(validation.hasErrors()){
+			if (!validation.hasErrors()){
+				BaremacionService.calcularTotales(evaluacion);
+				for(Criterio criterio : evaluacion.criterios){
+					if (criterio.tipo.claseCriterio.equals("auto")) {
+						if(actionEnd || actionSave){
+							if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(criterio.valor) < 0) {
+								if (actionSave)
+									Messages.warning("El criterio automático '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' sobrepasaba ("+criterio.valor+") el máximo valor permitido. Se ha establecido como valor, su valor máximo posible: "+criterio.tipo.valorMaximo);
+								criterio.valor = criterio.tipo.valorMaximo;
+							}
+							if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(criterio.valor) > 0) {
+								Messages.warning("El criterio automático "+criterio.tipo.jerarquia+" no llega ("+criterio.valor+") al mínimo valor permitido: "+criterio.tipo.valorMinimo+". Se ha establecido como valor a 0.0");
+								criterio.valor=0.0;
+							}
+						}
+					}
+				}
+				// Para recalcular los totales por si hubo cambios en los "auto" por pasar o no llegar al valor maximo o minimo y se haya seteado al maximo o minimo pertinente.
+				BaremacionService.calcularTotales(evaluacion);
+				evaluacion.save();
+			} else {
 				flash(evaluacion);
 			}
 			
 			if(actionSave || actionEnd){
 				if(actionEnd && !validation.hasErrors()){
-					evaluacion.estado = "evaluada";
+					evaluacion.estado = EstadosEvaluacionEnum.evaluada.name();
 					evaluacion.save();
 					Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " finalizó correctamente");
 					ConsultarEvaluacionesController.index();
@@ -170,7 +271,7 @@ public class FichaEvaluadorController extends Controller {
 				}
 				
 				Messages.keep();
-				index(evaluacion.id);
+				index(evaluacion.id, "editar");
 			}
 		}else{
 			forbidden();
@@ -180,6 +281,7 @@ public class FichaEvaluadorController extends Controller {
 	
 	private static void flash(Evaluacion evaluacion){
 		Messages.setFlash("evaluacion.id", params.get("evaluacion.id", String.class));
+		Messages.setFlash("evaluacion.totalCriterios", params.get("evaluacion.totalCriterios", String.class));
 		Messages.setFlash("evaluacion.comentariosAdministracion", params.get("evaluacion.comentariosAdministracion", String.class));
 		Messages.setFlash("evaluacion.comentariosSolicitante", params.get("evaluacion.comentariosSolicitante", String.class));
 		
@@ -217,7 +319,6 @@ public class FichaEvaluadorController extends Controller {
 		List<Double> totalesSolicitadoAnio = new ArrayList<Double>();
 		List<Double> totalesPropuestoAnio = new ArrayList<Double>();
 		List<Double> totalesEstimadoAnio = new ArrayList<Double>();
-		int indiceTotales=0;
 		for (int i=0; i<tipoEvaluacion.duracion; i++){
 			totalesConcedidoAnio.add(0.0);
 			totalesSolicitadoAnio.add(0.0);
@@ -253,7 +354,6 @@ public class FichaEvaluadorController extends Controller {
 		  	 columna.put("totalPropuesto", (new BigDecimal(Double.toString(totalesPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 		  	 columna.put("totalEstimado", (new BigDecimal(Double.toString(totalesEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 		  	 columnasCEconomicos.add(columna);
-		  	 indiceTotales++;
 		}
 		Map<String, String> columna = new HashMap<String, String>();
 		columna.put("id", "0");
@@ -300,5 +400,5 @@ public class FichaEvaluadorController extends Controller {
 		}
 		return records;
 	}
-		
+
 }

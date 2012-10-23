@@ -218,6 +218,8 @@ ${metodoBefore()}
 
 ${metodoProcesandoEntidades()}
 
+${metodoModulo()}
+
 }
 """
 		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controllerGen));
@@ -275,22 +277,71 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoIndex(){
+		
+		String crearSaveCall = """
+			${entidad.variable}.save();
+			${entidad.id} = ${entidad.variable}.id;
+		""";
+		if(!almacen.nulo()){
+			String lastSubcampoMinuscula = lastSubcampo.str.substring(0,1).toLowerCase()+lastSubcampo.str.substring(1);
+			if (LedCampoUtils.xToMany(lastSubcampo?.campo))
+				crearSaveCall += "${lastSubcampoMinuscula}.add(${entidad.variable});\n";
+			else
+				crearSaveCall += "${lastSubcampoMinuscula} = ${entidad.variable};\n";
+			// Recorre el ${lastSubcampo.str}, y voy comprobando que cada elemento (cortado por '.') es ManyToOne, en ese caso hago su save, ya que ahora por defecto FAP no pone Cascade a los ManyToOne, por lo que no se guardaria y fallaria.
+			String[] camposToSaveIfManyToOne = lastSubcampoMinuscula.split("\\.");
+			String campoConcatenado=camposToSaveIfManyToOne[0];
+			for(int i=1; i<camposToSaveIfManyToOne.size(); i++){
+				campoConcatenado+="."+camposToSaveIfManyToOne[i];
+				CampoUtils campo = CampoUtils.create((campoConcatenado.substring(0,1).toUpperCase()+campoConcatenado.substring(1)));
+				if (LedCampoUtils.ManyToOne(campo.campo)){
+					crearSaveCall += "${campoConcatenado}.save();\n";
+				}
+			}
+			crearSaveCall += "${almacen.variable}.save();\n";
+		}
+		String getVariablesRedirigir = "";
+		getVariablesRedirigir += """String variablesRedirigir="";\n""";
+		allEntities.collect{
+			if (it != entidad)
+				getVariablesRedirigir += """variablesRedirigir += "&$it.id="+$it.id;\n""";
+		}
+		getVariablesRedirigir += """urlRedirigir+=variablesRedirigir;\n""";
+		
 		String getEntidad = "";
 		if (!entidad.nulo()){
 			if (!entidad.isSingleton()){
-				getEntidad = """
+				getEntidad += """
 					$entidad.clase $entidad.variable = null;
-					if("crear".equals(accion))
+					if("crear".equals(accion)){
 						$entidad.variable = ${simpleGetterCall(entidad, false)};
-					else if (!"borrado".equals(accion))
+						if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")){
+							${crearSaveCall}
+							accion="editar";
+						}
+					"""
+				if (isPopup()){
+					getEntidad += """${getVariablesRedirigir}
+					"""
+				}
+				getEntidad += """
+					} else if (!"borrado".equals(accion))
 						$entidad.variable = ${complexGetterCall(entidad)};
-				""";
+					""";
 			}
 			else
 				getEntidad = """$entidad.clase $entidad.variable = ${simpleGetterCall(entidad, false)};""";
 		}
-		return """
-			public static void index(${StringUtils.params("String accion", allEntities.collect{it.typeId})}){
+		String devolver = "";
+		if (isPopup()){
+			devolver += """
+			public static void index(${StringUtils.params("String accion", allEntities.collect{it.typeId}, "String urlRedirigir")}"""
+		}
+		else {
+			devolver += """
+			public static void index(${StringUtils.params("String accion", allEntities.collect{it.typeId})}"""
+		}
+		devolver +=	"""){
 				if (accion == null)
 					accion = getAccion();
 				if (!permiso(accion)){
@@ -302,17 +353,28 @@ public class ${controllerName} extends ${controllerGenName} {
 					if (it != entidad)
 						return "$it.clase $it.variable = ${complexGetterCall(it)};"
 					else return "";
-				}.join("\n")}
-				${getEntidad}
+				}.join("\n")}""";
+		
+		devolver +=	"""${getEntidad}
 				log.info("Visitando página: "+${renderView});
-				renderTemplate(${StringUtils.params(
+				"""; 
+		if (isPopup()){
+			devolver += """renderTemplate(${StringUtils.params(
 					renderView,
 					"accion",
 					allEntities.collect{it.id},
-					allEntities.collect{it.variable}
-				)});
-			}
-		""";
+					allEntities.collect{it.variable},
+					"urlRedirigir" )});
+		}""";
+		} else {
+			devolver += """renderTemplate(${StringUtils.params(
+					renderView,
+					"accion",
+					allEntities.collect{it.id},
+					allEntities.collect{it.variable} )});
+		}""";
+		}
+		return devolver;
 	}
 	
 	private String metodoEditar(){
@@ -801,11 +863,13 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	private String metodoBefore(){
 		return """
-			@Before
-			static void beforeMethod() {
-				renderArgs.put("controllerName", "${controllerGenName}");
-			}
-		""";
+				@Before
+				static void beforeMethod() {
+					renderArgs.put("controllerName", "${controllerGenName}");
+				}
+			"""
+		
+		
 	}	
 	
 	public String bindReferencesCall(){
@@ -1472,6 +1536,20 @@ public class ${controllerName} extends ${controllerGenName} {
 				setEntidadesProcesando();
 			}
 		"""
+	}
+	
+	private String metodoModulo(){
+		if ((isPagina()) && (element.perteneceA != null))
+		return """
+			@Before
+			static void moduleMethod() {
+				if(FapProperties.get("fap.modulo.${element.perteneceA}") == null || !FapProperties.getBoolean("fap.modulo.${element.perteneceA}")){
+					Messages.fatal("La aplicación no tiene disponible este módulo");
+				}
+			}
+		"""
+		else
+			return"";
 	}
 			
 }

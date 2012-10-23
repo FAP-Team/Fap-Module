@@ -41,7 +41,9 @@ public class Busqueda extends Singleton {
 
 		if (estadoSolicitud == null)
 			estadoSolicitud = new HashSet<String>();
-		mostrarTabla = false;
+
+		if (mostrarTabla == null)
+			mostrarTabla = false;
 
 		postInit();
 	}

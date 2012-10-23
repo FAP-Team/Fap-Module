@@ -80,5 +80,7 @@ public interface GestorDocumentalService {
 	BinaryResponse getDocumentoByUri(String uriDocumento) throws GestorDocumentalServiceException;
 	
 	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
+	
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
     
 }

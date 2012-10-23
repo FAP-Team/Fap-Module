@@ -101,6 +101,17 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
+	/**
+	 * Comprueba que los valores por defecto no se establezcan sobre transient
+	 * @param attribute
+	 */
+	@Check
+	public void checkDefaultValueNoTransient (Attribute attribute) {
+		if (attribute.getDefaultValue() != null)
+			if (attribute.isIsTransient())
+				error("Valores por defecto no aplicables sobre atributos transient", ledPackage.getAttribute_IsTransient());
+	}
+	
 	@Check
 	public void checkSolicitudSimpleAttributos(Attribute attr) {
 		if (attr.eContainer() instanceof Entity){
@@ -438,4 +449,19 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
+	@Check
+	public void checkColorTablas(Tabla tabla){
+		if ((tabla.getColor().getTexto() != null && ((tabla.getColor().getCodePrint() == null) && (tabla.getColor().getDefault() == null) && (tabla.getColor().getTextoB() == null)&& (tabla.getColor().getTextoE() == null) && (tabla.getColor().getTextoL() == null))))
+			error("El campo Color no ha sido rellenado correctamente", null);
+	}
+	
+	@Check
+	public void checkPersonaFisicaNoUtilizarSetearTipoPadre(PersonaFisica personaFisica){
+		if (personaFisica.isSetearTipoPadre()){
+			error("setearTipoPadre no se debe utilizar nunca.", ledPackage.getPersonaFisica_SetearTipoPadre());
+		}
+	}
+	
 }
+
+

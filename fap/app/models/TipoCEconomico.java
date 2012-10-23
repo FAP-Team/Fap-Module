@@ -41,15 +41,22 @@ public class TipoCEconomico extends FapModel {
 
 	public Boolean tipoOtro;
 
+	public Boolean creadoUsuario;
+
 	public TipoCEconomico() {
 		init();
 	}
 
 	public void init() {
 
-		comentariosAdministracion = false;
-		comentariosSolicitante = false;
-		tipoOtro = false;
+		if (comentariosAdministracion == null)
+			comentariosAdministracion = false;
+
+		if (comentariosSolicitante == null)
+			comentariosSolicitante = false;
+
+		if (tipoOtro == null)
+			tipoOtro = false;
 
 		postInit();
 	}
@@ -80,6 +87,8 @@ public class TipoCEconomico extends FapModel {
 		this.instrucciones = tipoCEconomico.instrucciones;
 		this.jerarquia = tipoCEconomico.jerarquia;
 		this.nombre = tipoCEconomico.nombre;
+		this.tipoOtro = tipoCEconomico.tipoOtro;
+		this.creadoUsuario = tipoCEconomico.creadoUsuario;
 	}
 
 	public int estoyContenido(List<TipoCEconomico> lista) {

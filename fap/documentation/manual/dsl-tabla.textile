@@ -14,6 +14,7 @@ h2. Parámetros
 * **include = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la inclusión en las columnas de la tabla, sólo de aquellos atributos que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
 * **alto = _[string]_** (opcional) : Permite especificar el alto de la tabla.
 * **seleccionable = _[string]_** (opcional) : Se añade un check a cada elemento de la tabla que permite seleccionarlo, además se añade un botón en la tabla (con el nombre que se le indique en este parámetro) que obtendrá la lista de elementos seleccionados y llamara al método del controlador.
+* **metodoFilas = _[string]_** (opcional): Al emplear este parámetro se ejecutará el controlar indicado que devolverá la lista de elementos que se mostrarán en la tabla.
 * **popup = _[popup]_** (opcional) : Asigna un popup a la tabla, creando todos los botones disponibles para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupLeer = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Ver para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupEditar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Editar para abrirlo. "Ver documentación Popup":dsl-popup.
@@ -26,6 +27,7 @@ h2. Parámetros
 * **paginaEditar = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Editar para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaCrear = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Crear para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaBorrar = _[pagina]_** (opcional) : Asigna una pagina a la tabla, creando el botón Borrar para abrirla. "Ver documentación Pagina":dsl-pagina.
+* **Color: _[string | porDefecto | siFilaBorrar | siFilaLeer | siFilaEditar]_ = String** (opcional): Atributo que permite asignar una clase css para colorear las filas de una tabla de acuerdo a un código especificado, a sus permisos (siFilaLeer, siFilaBorrar, siFilaEditar) o por la opción por defecto (editable y no editable).
 
 h2. Definición
 
@@ -39,6 +41,7 @@ bc. Tabla:
 		& ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('seleccionable' "=" seleccionable=STRING)?
+		& ('metodoFilas' "=" metodoFilas=STRING)?
 		& ('popup' '=' popup=[Popup|QN])?
 		& ('popupCrear' '=' popupCrear=[Popup|QN])?
 	   	& ('popupBorrar' '=' popupBorrar=[Popup|QN])?
@@ -49,11 +52,24 @@ bc. Tabla:
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|QN])?
 	   	& ('paginaEditar' '=' paginaEditar=[Pagina|QN])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|QN])?
+	    & (color=Color)?
 	)
 	'{'
 		columnas += Columna*
 	'}'
 ;
+
+
+bc.	Color : 
+		"Color:" 
+		(codePrint = STRING
+		| default = "porDefecto"
+		|(
+			(textoB = "siFilaBorrar" "=" claseB=STRING)?
+			(textoE = "siFilaEditar" "=" claseE=STRING)?
+			(textoL = "siFilaLeer" "=" claseL=STRING)?
+		))
+	;
 
 h2. Columnas
 
@@ -112,3 +128,41 @@ Pagina CrearTablaPaginas campo=Solicitud.tablaPaginas.tpaginas{
 Pagina PaginaTablas campo=Solicitud {
 	Tabla TablaConPaginas campo=TablaPaginas.tpaginas paginaCrear=CrearTablaPaginas paginaEditar=ModificarTablaPaginas paginaBorrar=BorrarTablaPaginas titulo="Tabla con paginas" columnasAutomaticas include=id{}
 }
+
+h3. Tablas utilizando coloreado por defecto
+
+bc. ...
+Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos
+    	Color: porDefecto
+    	{
+    		Columna titulo="Entero" campo=MiConcepto.unInteger
+    		Columna titulo="Double" campo=MiConcepto.unDouble
+    		Columna titulo="Moneda" campo=MiConcepto.unaMoneda
+    	}
+...
+
+h3. Tablas utilizando coloreado de filas por permisos
+
+bc. ...
+Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos
+    	Color: siFilaBorrar = "colorSiBorrar" 
+    	siFilaEditar = "colorSiEditar"
+    	siFilaLeer = "colorSiLeer"
+    	{
+    		Columna titulo="Entero" campo=MiConcepto.unInteger
+    		Columna titulo="Double" campo=MiConcepto.unDouble
+    		Columna titulo="Moneda" campo=MiConcepto.unaMoneda
+    	}
+...
+
+h3. Tablas utilizando coloreado de filas definido por usuario
+
+bc. ...
+Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos 
+    	Color: "var c = record.data.id; if (c < 8) { return \\'docFirmado\\'; } else if (c > 8) { return \\'docNoFirmado\\'; }"
+    	{
+    		Columna titulo="Entero" campo=MiConcepto.unInteger
+    		Columna titulo="Double" campo=MiConcepto.unDouble
+    		Columna titulo="Moneda" campo=MiConcepto.unaMoneda
+    	}
+...

@@ -11,7 +11,6 @@ import org.apache.ivy.util.Message;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
-import baremacion.IniciarBaremacion;
 import config.InjectorConfig;
 
 
@@ -211,7 +210,7 @@ public class SecureController extends GenericController{
 			agente.name = name;
 			
 		}else{
-			if(agente.name == null){
+			if(agente.name == null || !agente.acceso.equals("certificado")){
 				agente.name = name;
 			}
 		}

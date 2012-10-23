@@ -64,8 +64,12 @@ public class TipoEvaluacion extends FapModel {
 
 		if (ceconomicos == null)
 			ceconomicos = new ArrayList<TipoCEconomico>();
-		comentariosAdministracion = false;
-		comentariosSolicitante = false;
+
+		if (comentariosAdministracion == null)
+			comentariosAdministracion = false;
+
+		if (comentariosSolicitante == null)
+			comentariosSolicitante = false;
 
 		if (datosAdicionales == null)
 			datosAdicionales = new ArrayList<TipoDatoAdicional>();

@@ -1,0 +1,1 @@
+{"nombre":"codigo","descripcion":"Elemento opcional que permite insertar fragmentos de código como ejemplo.","parametros":[{"nombre":"_[name]_","keyword":"name","tipo":"requerido","descripcion":"Identificador del elemento."}]}

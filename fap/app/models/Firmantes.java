@@ -116,7 +116,12 @@ public class Firmantes extends FapModel {
 	}
 
 	public boolean haFirmado(String id) {
-		return true;
+		for (Firmante firmante : todos) {
+			if (firmante.idvalor != null && firmante.idvalor.equals(id) && firmante.fechaFirma != null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// === MANUAL REGION END ===

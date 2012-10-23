@@ -6,15 +6,15 @@ Formulario Administracion permiso=administrador{
 		Grupo "Administración" {
 			Enlace "Usuarios" pagina=Usuarios
 			Enlace "Convocatoria" pagina=Convocatoria
-			Enlace "Aed" pagina=Aed
+			Enlace "Gestor Documental" pagina=Aed
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Codigos Requerimientos y Exclusión" pagina=Codigos
 			Enlace "Emails" pagina=Emails
-			Enlace "Logs" pagina=BuscarLogs
+			Enlace "Logs" pagina=BuscarLgs
 			Enlace "Informe" accion="fap.InformeController.index"
-			Enlace "Consultas a BBDD" accion="fap.ConsultasController.index"
+			Enlace "Consultas a BBDD" pagina=ConsultasBBDD
 			Enlace "Incidencias" accion="fap.IncidenciasController.index"
 			Enlace "Properties" pagina=Propiedades
 			Enlace "Configurar Jobs" pagina=Jobs
@@ -27,7 +27,24 @@ Formulario Administracion permiso=administrador{
 		Enlace "Salir" accion=logout
     }
     
-    Pagina Jobs titulo="Configurar Jobs" campo=AdministracionFapJobs{
+    // Pagina Sobreescrita
+    Pagina ConsultasBBDD titulo="Consultas" perteneceA="Administracion"{
+    	Grupo titulo = "Consultas a la Base de Datos de la aplicación"{
+    		Tabla consultasdb campo=Consulta titulo="Consultas" popup=PopUpConsultas {
+    			Columna campo=Consulta.consulta titulo="Consulta" expandir
+    			Columna campo=Consulta.descripcion titulo="Descripción" expandir
+    			Columna campo=Consulta.tipo titulo="Tipo" expandir
+    		}
+    	}
+    }
+    
+    Popup PopUpConsultas titulo="Consulta a la Base de Datos" campo=Consulta maximizar{
+    	AreaTexto areaDescripcion titulo="Descripción" campo=Consulta.descripcion requerido
+    	AreaTexto areaConsulta titulo="Consulta" campo=Consulta.consulta requerido
+    	Combo comboTipo titulo="Tipo" campo=Consulta.tipo requerido
+    }
+    
+    Pagina Jobs titulo="Configurar Jobs" campo=AdministracionFapJobs perteneceA="Administracion"{
     	Wiki{"*Esta Página permite habilitar/deshabilitar los Jobs que están activos del módulo FAP.*"}
     	
     	Grupo titulo="Job para la Actualización de las Notificaciones" mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.notificacion.activa\")"{
@@ -64,18 +81,18 @@ Formulario Administracion permiso=administrador{
     	}
     	
     	Grupo titulo="Job para Notificar Alertas de las Anotaciones" {
-    		Wiki{"Este Job es el encargado de notificar las alertas de las anotaciones creadas, comprobando cada X MINUTOS si existe alguna nueva."}
+    		Wiki{"Este Job es el encargado de notificar las alertas de las anotaciones creadas, comprobando cada X HORAS si existe alguna nueva."}
     		Check cNotificarAlertasAnotaciones titulo="Notificar Alertas Anotaciones" campo=AdministracionFapJobs.notificarAlertasAnotaciones alineadoAIzquierdas
     		Grupo borde=false mostrarSiCheck cNotificarAlertasAnotaciones = true{
 	    		RadioBooleano rNotificarAlertasAnotaciones titulo="Intervalo de tiempo" campo=AdministracionFapJobs.valorPropioNotificarAlertasAnotaciones alineadoAIzquierdas botonIzquierdo="Por Defecto" botonDerecho="Personalizar"
 	    		Grupo borde=false mostrarSiRadioBooleano rNotificarAlertasAnotaciones = true{
-	    			BarraDeslizante bdNotificarAlertasAnotaciones titulo="Seleccione el intervalo de tiempo (en minutos)" campo=AdministracionFapJobs.valorNotificarAlertasAnotaciones minimo=0 maximo=60 valorDefecto=1 alineadoAIzquierdas
+	    			BarraDeslizante bdNotificarAlertasAnotaciones titulo="Seleccione el intervalo de tiempo (en horas)" campo=AdministracionFapJobs.valorNotificarAlertasAnotaciones minimo=0 maximo=24 valorDefecto=24 alineadoAIzquierdas
 	    		}
 	    	}
     	}
     }
     
-    Pagina ConfigurarMensajes titulo="Configurar mensajes" {
+    Pagina ConfigurarMensajes titulo="Configurar mensajes"  perteneceA="Administracion"{
     	Tabla mensajesPagina campo=ConfigurarMensaje titulo="Mensajes configurados" paginaEditar=RellenarMensajes {
     		Columna campo=ConfigurarMensaje.formularioNombreText titulo="Página" expandir
     		Columna campo=ConfigurarMensaje.tipoMensaje titulo="Tipo Mensaje" expandir
@@ -83,10 +100,10 @@ Formulario Administracion permiso=administrador{
     	}
     }
     
-    Pagina RellenarMensajes titulo="Rellenar mensaje" campo=ConfigurarMensaje {
+    Pagina RellenarMensajes titulo="Rellenar mensaje" campo=ConfigurarMensaje perteneceA="Administracion" {
     	Accion editar redirigir = ConfigurarMensajes
     	Grupo permiso = paginaAConfigurar borde=false{
-    		Combo paginaAconfigurar campo=ConfigurarMensaje.nombrePagina titulo="Página"
+    		Texto paginaAconfigurar campo=ConfigurarMensaje.nombrePagina titulo="Página"
     	} 
     	Combo tipoMensaje campo=ConfigurarMensaje.tipoMensaje titulo="Tipo" ayuda="Seleccionar si se quiere configurar un wiki u otro tipo de mensaje" (popover) requerido
     	
@@ -96,10 +113,10 @@ Formulario Administracion permiso=administrador{
     	
     	AreaTexto contenido campo=ConfigurarMensaje.contenido titulo="Contenido del mensaje" ancho="500px" ayuda="Contenido del mensaje que podremos colocar en la página de la aplicación" (popover) requerido
     	Check habilitado campo=ConfigurarMensaje.habilitar titulo="Habilitar la aparición del mensaje en la página" ayuda="Será necesario habilitar en caso de querer mostrar en la página el mensaje" (popover)
-
+		Combo posicion campo=ConfigurarMensaje.msjFinal titulo = "Posición del mensaje en la página" requerido
    	}
     
-    Pagina ActivarBaremacion titulo="Activar Baremación" noForm{
+    Pagina ActivarBaremacion titulo="Activar Baremación" noForm perteneceA="Administracion"{
     	Grupo IniciarTipoEvaluacion titulo="Iniciar el Tipo de Evaluación" permiso=iniciarTipoEvaluacion{
     		Wiki {"Para cargar el tipo de Evaluación, es necesario pulsar el siguiente botón. El tipo de Evaluación sólo se cargará una única vez, téngalo en cuenta."}
     		Form iniciarTipoEvaluacionFormBaremacion {
@@ -120,7 +137,7 @@ Formulario Administracion permiso=administrador{
 	    }
     }
 	
-	Pagina Usuarios titulo="Administración de Usuarios"{
+	Pagina Usuarios titulo="Administración de Usuarios" perteneceA="Administracion"{
 		Wiki {"Para asignar roles seleccione el usuario y pulse en editar"}
 
 		Tabla listaUsuarios titulo="Usuarios" campo=Agente
@@ -146,7 +163,7 @@ Formulario Administracion permiso=administrador{
 		Check campo=Agente.funcionario titulo="Funcionario habilitado"
 	}
 		
-	Pagina Aed noForm permiso=administrador titulo="Gestor Documental"{
+	Pagina Aed noForm permiso=administrador titulo="Gestor Documental" perteneceA="Administracion"{
 		
 		Grupo titulo="Configurar" {
 			Wiki {
@@ -191,11 +208,11 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 		}	
 	}
 	
-	Pagina Convocatoria campo=Convocatoria titulo="Convocatoria"{
+	Pagina Convocatoria campo=Convocatoria titulo="Convocatoria" perteneceA="Administracion"{
 		Combo campo=Convocatoria.estado titulo="Estado de la convocatoria"
 	}
 	
-	Pagina ConfiguracionQuartz titulo="Configuración del Quartz" {
+	Pagina ConfiguracionQuartz titulo="Configuración del Quartz" perteneceA="Administracion"{
 		Grupo configQuartz titulo="Configuración del quartz" {
 			Wiki {"El quartz es el proceso que se encarga de comprobar los accesos a la sede cuando se emiten los requerimientos y asignar correctamente las fechas de acceso y de vencimiento de los requerimientos."}
 			
@@ -210,7 +227,7 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 	}
 
 
-	Pagina TablaDeTablas noForm titulo="Tabla de tablas" permiso=administrador {
+	Pagina TablaDeTablas noForm titulo="Tabla de tablas" permiso=administrador perteneceA="Administracion" {
 		Wiki {"La tabla de tablas almacena la información de la listas. "}
 
 		Tabla tabladetablas titulo="Tabla de tablas" campo=TableKeyValue popup=PopupTablaDeTablas {
@@ -226,15 +243,36 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 		}
 
 		Grupo titulo="Actualizar desde fichero" {
-			Form actualizarDesdeFichero {
-				Wiki {"
-**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en la generación.
-
-**IMPORTANTE** : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
-Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de documentos desde el AED.
-                "}
-
-				Boton botonCargarTablaDeTablas titulo="Borrar todas y leer desde ficheros"
+			Wiki {"**Estas operaciones pueden tardar un tiempo bastante considerable**, sobre todo las dos últimas de Actualización sin Borrado previo. Si quiere agilizar el tiempo de computo puede desactivar la carga de la Tabla Municipios en las acciones de Actualización."}
+			Grupo titulo="Resetear Tabla de Tablas"{
+				Form actualizarDesdeFichero {
+					Wiki {"
+	**Perderá todas las modificaciones** que ha hecho y recuperará los valores puestos en la generación.
+	
+	**IMPORTANTE** : Los tipos de documentos no se recuperan de valores puesto de la generación, se recuperan a partir del AED.
+	Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de documentos desde el AED.
+	                "}
+	
+					Boton botonCargarTablaDeTablas titulo="Borrar todas y leer desde ficheros" type=danger
+				}
+			}
+			Grupo titulo="Actualizar Tabla de Tablas"{
+				Form actualizarDesdeFicheroModicando {
+					Wiki {"
+	**Perderá todas las modificaciones** que ha hecho y se actualizarán a los valores nuevos. Para agilizar la carga puede desactivar la actualización de la tabla Muncipios por defecto de FAP, que acapara la mayoría del tiempo.
+	                "}
+					Boton botonCargarTablaDeTablasModificando titulo="Actualizar Valores desde fichero" type=warning
+					Boton botonCargarTablaDeTablasModificandoSinMunicipios titulo="Actualizar Valores desde fichero Sin Cargar Municipios" type=warning
+				}
+			}
+			Grupo titulo="Actualizar Creando sólo los Nuevos Elementos de la Tabla de Tablas"{
+				Form actualizarDesdeFicheroSoloCreando {
+					Wiki {"
+	**Sólo se crearan los nuevos valores** que se encuentren, respetando los que ya estaban. Para agilizar la carga puede desactivar la actualización de la tabla Muncipios por defecto de FAP, que acapara la mayoría del tiempo.
+	                "}
+					Boton botonCargarTablaDeTablasSoloCreando titulo="Crear Nuevos desde fichero"
+					Boton botonCargarTablaDeTablasSoloCreandoSinMunicipios titulo="Crear Nuevos desde fichero Sin Cargar Municipios"
+				}
 			}
 		}
 	}
@@ -251,7 +289,7 @@ Después de pulsar este botón vaya a Administración/Aed/Actualizar tipos de do
 		Texto campo=TableKeyValueDependency.key titulo="Clave"
 	}
 
-	Pagina Emails titulo="Configuración de Correos Electrónicos" noForm{
+	Pagina Emails titulo="Configuración de Correos Electrónicos" noForm perteneceA="Administracion"{
 		Tabla emails titulo="Plantillas de emails" campo=Mail popup=PopupEmail {
 			Columna campo=Mail.idMail titulo="Identificador"
 			Columna campo=Mail.content titulo="Contenido" expandir
@@ -293,7 +331,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Combo campo=Consulta.tipo titulo="Tipo" requerido
 	}
 
-	Pagina Propiedades titulo="Propiedades de la aplicación" {
+	Pagina Propiedades titulo="Propiedades de la aplicación"  perteneceA="Administracion"{
 		Tabla tablaPropiedades titulo="Tabla de properties" campo=Propiedades popup=PopupProperties {
 			Columna campo=Propiedades.descripcion titulo="Descripción"
 			Columna campo=Propiedades.clave titulo="Clave"
@@ -306,7 +344,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Texto campo=Propiedades.clave titulo="Clave" requerido
 	}
     
-    Pagina EstadosVisibles titulo="Visibilidad de Estados" {
+    Pagina EstadosVisibles titulo="Visibilidad de Estados" perteneceA="Administracion" {
     	Tabla tabladeEstadosSolicitud titulo="Estados de la solicitud visibles para los usuarios" campo=VisibilidadEstadoUsuario popupEditar=PopupVisibilidadDeSolicitudes {
 	        Columna campo=VisibilidadEstadoUsuario.estadoInterno titulo="Estado Interno"
 	        Columna campo=VisibilidadEstadoUsuario.estadoUsuario titulo="Estado Visible por el Usuario" expandir
@@ -321,7 +359,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	    Combo comboEstadoInterno campo=VisibilidadEstadoUsuario.estadoUsuario titulo="Estado que ve el usuario" requerido
 	}
 	
-	Pagina Codigos titulo="Códigos de Requerimientos y de Exclusión"{
+	Pagina Codigos titulo="Códigos de Requerimientos y de Exclusión" perteneceA="Administracion"{
 		Wiki{"Para actualizar estos códigos debe dirigirse a la página 'Aed' y actualizar todos los trámites."}
 		Tabla tablacodrequerimientos titulo="Códigos de Requerimientos" campo=TiposCodigoRequerimiento popupLeer=PopupVerCodReq{
 			Columna titulo="Código" campo=TiposCodigoRequerimiento.codigo
@@ -349,7 +387,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		AreaTexto descripcion campo=TipoCodigoExclusion.descripcion titulo="Descripción"
 	}
  
-	Pagina BuscarLogs titulo="Búsqueda de Logs" campo=BusquedaLogs noForm {
+	Pagina BuscarLgs titulo="Búsqueda de Logs" campo=BusquedaLogs noForm  perteneceA="Administracion"{
 		Form buscar {
 			Wiki {
 				"**En esta página podrá decidir como quiere hacer la búsqueda de los Logs, tanto por atributos como por fecha.** </br>"
@@ -378,7 +416,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		}
 	}
 	
-	Pagina MostrarLogs titulo="Logs" noForm {
+	Pagina MostrarLogs titulo="Logs" noForm  perteneceA="Administracion"{
 		Tabla logs campo=Logs titulo="Logs" {
 			Columna titulo="Fecha" campo=Logs.time expandir
 			Columna titulo="Tipo" campo=Logs.level expandir

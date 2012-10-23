@@ -18,7 +18,7 @@ QN: // Qualified Name
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "DireccionMapa" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
-	"agente" | "documento" | "password" | "aportadoPor" | "texto" | "isla"
+	"agente" | "documento" | "password" | "aportadoPor" | "texto" | "isla" | "CCC"
 ;
 
 Entity:
@@ -166,6 +166,7 @@ Pagina:
 		& (guardarParaPreparar?="guardarParaPreparar")?
 		& (inicial?="inicial")?
 		& (mensajeFinal?="mensajeFinal")?
+		& ("perteneceA" "=" perteneceA=STRING)?
 	)
 	'{'
 		elementos+=Elemento*
@@ -178,6 +179,7 @@ Popup:
 		('titulo' '=' titulo=STRING)?
 		& ("campo" "=" campo=Campo)?
 		& ("permiso" "=" permiso=[Permiso])?
+		& (maximizar?="maximizar")?
 	)
 	'{'
 		elementos+=Elemento*
@@ -223,7 +225,7 @@ Elemento:
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple |
-	EntidadAutomatica | Accion |
+	EntidadAutomatica | Accion | Codigo | CCC |
 	Editor
 ;
 
@@ -331,6 +333,7 @@ Boton:
 	    & ('popup' '=' popup=PopupAccion)?
 	    & (anterior?="anterior")?
 		& (waitPopup?="waitPopup")?	
+		& (refrescar?="refrescar")?	
 		& ('type' '=' type=('primary' | 'info' | 'success' | 'danger' | 'warning' | 'inverse'))?
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)
@@ -396,6 +399,7 @@ Tabla:
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|IDS])?
 	   	& ('paginaEditar' '=' paginaEditar=[Pagina|IDS])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
+	   	& (color=Color)?
 	)
 	'{'
 		columnas += Columna*
@@ -503,11 +507,21 @@ Nip:
 	)
 ;
 
+CCC:
+	elemento='CCC' (name=ID)? (
+		('campo' '=' campo=Campo) & 
+		('titulo' '=' titulo=STRING) &
+		(requerido?='requerido')? &
+		('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+	)
+;
+
 PersonaFisica:
 	elemento='PersonaFisica' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
-		(requerido?='requerido')?
+		(requerido?='requerido')? &
+		(setearTipoPadre?='setearTipoPadre')?
 	)
 ;
 
@@ -686,4 +700,22 @@ PermisoRuleCheckGroupOp:
 
 PermisoRuleCheckRight:
 	campo=CampoPermiso | str=STRING  | nulo?='null' | action=("leer" | "editar" | "crear" | "borrar")
+;
+
+Codigo:
+	elemento='Codigo'
+	'{' 
+		contenido=STRING
+	'}' 
+;
+
+Color : 
+	texto = "color" ":" 
+	(codePrint = STRING
+	| default = "porDefecto"
+	|(
+		(textoB = "siFilaBorrar" "=" claseB=STRING)?
+		(textoE = "siFilaEditar" "=" claseE=STRING)?
+		(textoL = "siFilaLeer" "=" claseL=STRING)?
+	))
 ;

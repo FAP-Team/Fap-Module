@@ -48,22 +48,22 @@ public class ConceptosMios extends FapModel {
 
 	// Getter del atributo del tipo moneda
 	public String getMoneda1_formatFapTabla() {
-		return format.FapFormat.format(moneda1);
+		return format.FapFormat.formatMoneda(moneda1);
 	}
 
 	// Getter del atributo del tipo moneda
 	public String getMoneda2_formatFapTabla() {
-		return format.FapFormat.format(moneda2);
+		return format.FapFormat.formatMoneda(moneda2);
 	}
 
 	// Getter del atributo del tipo moneda
 	public String getMoneda3_formatFapTabla() {
-		return format.FapFormat.format(moneda3);
+		return format.FapFormat.formatMoneda(moneda3);
 	}
 
 	// Getter del atributo del tipo moneda
 	public String getMoneda4_formatFapTabla() {
-		return format.FapFormat.format(moneda4);
+		return format.FapFormat.formatMoneda(moneda4);
 	}
 
 	public void init() {

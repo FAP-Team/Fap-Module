@@ -1,0 +1,35 @@
+[
+
+	{
+		nombre: "Criterio numero uno",
+		claseCriterio: "manual",
+		jerarquia: "A",
+		tipoValor: "cantidad",
+		descripcion: "Primer criterio",
+		comentariosAdministracion: true,
+		comentariosSolicitante: true
+	},
+	{
+		nombre: "Criterio numero dos (Lista)",
+		claseCriterio: "manual",
+		jerarquia: "B",
+		tipoValor: "lista",
+		listaValores: [
+						{
+							valor: 10,
+							descripcion: "ALTO: Puntuacion maxima"
+						},
+						{
+							valor: 5,
+							descripcion: "MEDIO: Puntuacion media"
+						},
+						{
+							valor: 0,
+							descripcion: "BAJO: Puntuacion nula"
+						}
+					  ],
+		descripcion: "Ejemplo de criterio con lista de valores",
+		comentariosAdministracion: false,
+		comentariosSolicitante: false
+	}
+]

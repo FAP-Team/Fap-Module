@@ -14,8 +14,19 @@ Lista LstTipoValorCriterio {
 	lista    : "Lista de valores"	
 }
 
+Lista EstadosEvaluacion crearEnumerado{
+	noAsignada : "No Asignada"
+	asignada : "Asignada"
+	rechazada : "Rechazada"
+	evaluada : "Evaluada"
+	enTramite: "En Tramite"
+	enEspera : "En Espera"
+	pendienteAbono : "Pendiente de Abono"
+	abonada : "Abonada"
+}
+
 Entidad CriterioListaValores {
-	Double valor
+	Moneda valor
 	String descripcion
 }
 
@@ -61,12 +72,15 @@ Entidad TipoCEconomico {
     // Para saber si hay que actualizarlo o crearlo en sucesivas actualizaciones de la Baremación (Boton de recargar Baremacion o Iniciar, etc.)
     boolean esNuevo
     Boolean tipoOtro default="false"
+    Boolean creadoUsuario // Concepto creado manualmente (no se debe buscar al iniciar uno nuevo)
 }
 
 Entidad CEconomico {
 	TipoCEconomico tipo
 
 	OneToMany ValoresCEconomico valores
+	
+	Moneda total transient
 	
 	LongText comentariosAdministracion
 	LongText comentariosSolicitante	
@@ -85,10 +99,10 @@ Entidad CEconomicosManuales {
 
 Entidad ValoresCEconomico {
 	Integer anio
-	Double valorSolicitado
-	Double valorEstimado
-	Double valorPropuesto
-	Double valorConcedido
+	Moneda valorSolicitado
+	Moneda valorEstimado
+	Moneda valorPropuesto
+	Moneda valorConcedido
 }
 
 // Tipo de la información adicional
@@ -104,6 +118,10 @@ Entidad TipoDatoAdicional {
 	
 	// Texto que se mostrará en la página
 	LongText descripcion
+}
+
+Entidad TipoDocumentoAccesible{
+	String uri
 }
 
 Entidad TipoEvaluacion {
@@ -136,6 +154,8 @@ Entidad Evaluacion {
 	OneToMany Criterio criterios
 	OneToMany CEconomico ceconomicos
 	
+	Documento solicitudEnEvaluacion
+	
 	Double totalCriterios
 	
 	Double inversionTotalAprobada
@@ -146,8 +166,7 @@ Entidad Evaluacion {
 	
 	TipoEvaluacion tipo
 	
-	//TODO cambiar por lista con los posibles estados
-	String estado
+	Lista EstadosEvaluacion estado
 	
 	//?Entidades distintas para manejar los cambios de estados??
 	//FechaCambioEstado
@@ -167,4 +186,14 @@ Formulario Baremacion {
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
     }
+    
+    Pagina EvaluacionesFinalizadas titulo="Evaluaciones Finalizadas" noForm permiso=adminGestorRevisorEvaluador{
+		Tabla tablaEvaluacionesFinalizadas campo=Evaluacion {
+			Columna campo=Evaluacion.totalCriterios titulo="Total Criterios" expandir
+			Columna campo=Evaluacion.solicitud.expedienteAed.idAed titulo="Expediente" expandir
+			Columna campo=Evaluacion.solicitud.solicitante.numeroId titulo="NIP/CIF" expandir
+			Columna campo=Evaluacion.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
+			Columna campo=Evaluacion.estado titulo="Estado" expandir
+		}
+	}
 }

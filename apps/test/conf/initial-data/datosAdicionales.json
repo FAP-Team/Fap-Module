@@ -1,0 +1,17 @@
+[
+	{
+		orden: 1,
+		nombre: "Porcentaje Adicional",
+		descripcion: "Porcentaje añadido como dato adicional"
+	},
+	{
+		orden: 2,
+		nombre: "Calculo Adicional",
+		descripcion: "Calculo añadido como dato adicional"
+	},
+	{
+		orden: 3,
+		nombre: "Elemento Adicional",
+		descripcion: "Elemento añadido como dato adicional"
+	}
+]

@@ -24,6 +24,10 @@ import models.RepresentantePersonaJuridica;
 import models.SolicitudGenerica;
 import models.Tramite;
 
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
@@ -93,6 +97,13 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         this.aedPort = new Aed(wsdlURL).getAed(new MTOMFeature());
         WSUtils.configureEndPoint(aedPort, getEndPoint());
         PlatinoProxy.setProxy(aedPort, propertyPlaceholder);
+        
+        Client client = ClientProxy.getClient(aedPort);
+		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpConduit.setClient(httpClientPolicy);
         
         tiposDocumentos = new TiposDocumentosService(propertyPlaceholder);
         procedimientosService = new ProcedimientosService(propertyPlaceholder, tiposDocumentos);
@@ -178,9 +189,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 * @throws GestorDocumentalServiceException Si el servicio web dio error                             
 	 */
 	@Override
-    public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException {        
-        Interesados interesados = getInteresados(solicitud);
+    public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
         String numeroExpediente = solicitud.expedienteAed.asignarIdAed();
+		try {
+			// Si ya existe el expediente, continuamos
+			List<Expediente> expedientes = aedPort.buscarExpedientes(null, null, null, numeroExpediente, null);
+			if (expedientes != null && !expedientes.isEmpty()) {
+				play.Logger.info("El expediente "+numeroExpediente+" ya existe en el AED");
+				return numeroExpediente;
+			}
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al buscar los expedientes en el AED.");
+		}
+        Interesados interesados = getInteresados(solicitud);
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
         String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
 
@@ -195,6 +216,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             aedPort.crearExpediente(expediente);
             log.info("Creado expediente " + numeroExpediente + " para la solicitud " + solicitud.id);
         }catch(AedExcepcion e){
+        	play.Logger.error("No se pudo crear el expediente: "+e);
             throw new GestorDocumentalServiceException("Error creando expediente " + numeroExpediente + " para la solicitud " + solicitud.id, e);
         }
         return numeroExpediente;
@@ -614,46 +636,45 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         String errores = "";
         for(models.Documento documento : documentos){
             if(!documento.clasificado){
-                try {
-                    if(informacionRegistro == null){
-                        clasificarDocumentoSinRegistro(idAed, documento, interesados, false);
-                    }else{
-                        //TODO: Pasar parámetro notificable
-                        clasificarDocumentoConRegistro(idAed, documento, interesados, informacionRegistro, false); 
-                    }
-                }catch(AedExcepcion e){
-                    todosClasificados = false;
-                    errores += "Error al clasificar el documento " + documento.uri + "\n";
-                }catch(SOAPFaultException e){
-                    todosClasificados = false;
-                    errores += "Error al clasificar el documento " + documento.uri + "\n";
-                    e.printStackTrace();
-                }
+            	 // Clasificación de los documentos que ya estaban subidos en otro expediente y queremos duplicar en este expediente
+            	if ((documento.refAed != null) && (documento.refAed == true)) {	
+    				idAed = solicitud.expedienteAed.idAed;
+    				String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+    				Ubicaciones ubicacion = new Ubicaciones();
+    				ubicacion.setProcedimiento(procedimiento);
+    				ubicacion.getExpedientes().add(idAed);
+    				List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
+    				ubicaciones.add(ubicacion);
+    				try {
+    					aedPort.copiarDocumento(documento.uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
+    				} catch (AedExcepcion e) {
+    					todosClasificados = false;
+    					log.error("Error al clasificar el documento copiado "+documento.uri + " : "+e.getMessage());
+	                    errores += "Error al clasificar el documento copiado " + documento.uri + "\n";
+    				}
+    				documento.refAed = false;
+    				documento.save();
+    			} else {
+	                try {
+	                    if(informacionRegistro == null){
+	                        clasificarDocumentoSinRegistro(idAed, documento, interesados, false);
+	                    }else{
+	                        //TODO: Pasar parámetro notificable
+	                        clasificarDocumentoConRegistro(idAed, documento, interesados, informacionRegistro, false); 
+	                    }
+	                }catch(AedExcepcion e){
+	                    todosClasificados = false;
+	                    errores += "Error al clasificar el documento " + documento.uri + "\n";
+	                }catch(SOAPFaultException e){
+	                    todosClasificados = false;
+	                    errores += "Error al clasificar el documento " + documento.uri + "\n";
+	                    e.printStackTrace();
+	                }
+    			}
             }else{
                 log.warn("El documento " + documento.uri + " ya está clasificado");
             }
         }
-        
-       // Clasificación de los documentos que ya estaban subidos en otro expediente y queremos duplicar en este expediente
-       for (models.Documento doc: solicitud.documentacion.documentos) {
-			if ((doc.refAed != null) && (doc.refAed == true)) {	
-				idAed = solicitud.expedienteAed.idAed;
-				String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
-				Ubicaciones ubicacion = new Ubicaciones();
-				ubicacion.setProcedimiento(procedimiento);
-				ubicacion.getExpedientes().add(idAed);
-				List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
-				ubicaciones.add(ubicacion);
-				try {
-					aedPort.copiarDocumento(doc.uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
-				} catch (AedExcepcion e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				doc.refAed = false;
-				doc.save();
-			}
-       }
         
         if(!todosClasificados){
             throw new GestorDocumentalServiceException("No se pudieron clasificar todos los documentos : " + errores);
@@ -740,7 +761,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             models.Firmante firmante = firma.getFirmantes().get(0);
     		if (propiedadesAdministrativas.getFirma() == null) {
     			firmaActual = new Firma();
-    			propiedadesAdministrativas.setFirma(firmaActual);
     			firmaActual.setContenido(firma.getContenido());
     			firmaActual.setTipoMime("text/xml");
     			boolean clasificado = isClasificado(documento);
@@ -751,18 +771,25 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			firmanteAed.setFecha(firmante.fechaFirma.toDate());
     			firmaActual.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
     			
+    			propiedadesAdministrativas.setFirma(firmaActual);
+    			propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
+    			
     			actualizarPropiedades(propiedadesDocumento, clasificado);
-    		} else if (!firmaActual.getFirmantes().contains(firmante)){
-            	Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
-            	propiedadesAdministrativas.setFirma(firmaNueva);
+    		} else if (!containsFirmante(firmante, firmaActual.getFirmantes())){
+            	// TODO: 
+    			Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
             	
-            	es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
-    			firmanteAed.setFirmanteNombre(firmante.nombre);
-    			firmanteAed.setFirmanteNif(firmante.idvalor);
-    			firmanteAed.setFecha(firmante.fechaFirma.toDate());
-    			firmaNueva.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
-    
+            	// Comentamos lo siguiente, porque se estaba insertando en el AED dos veces la firma
+//            	es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
+//    			firmanteAed.setFirmanteNombre(firmante.nombre);
+//    			firmanteAed.setFirmanteNif(firmante.idvalor);
+//    			firmanteAed.setFecha(firmante.fechaFirma.toDate());
+//    			firmaNueva.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
             	boolean clasificado = isClasificado(documento);
+            	
+            	propiedadesAdministrativas.setFirma(firmaNueva);
+            	propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
+            	
             	actualizarPropiedades(propiedadesDocumento, clasificado);
             }
             else {
@@ -991,8 +1018,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 */
 	@Override
     public String crearExpediente(ExpedienteAed expedienteAed) throws GestorDocumentalServiceException {        
-        Interesados interesados = getInteresadosPorDefecto();
         String numeroExpediente = expedienteAed.asignarIdAed();
+		try {
+			// Si ya existe el expediente, continuamos
+			List<Expediente> expedientes = aedPort.buscarExpedientes(null, null, null, numeroExpediente, null);
+			if (expedientes != null && !expedientes.isEmpty()) {
+				play.Logger.info("El expediente "+numeroExpediente+" ya existe en el AED");
+				return numeroExpediente;
+			}
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al buscar los expedientes en el AED.");
+		}
+		
+		Interesados interesados = getInteresadosPorDefecto();
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
         String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
 
@@ -1088,4 +1126,35 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		solicitud.documentacion.documentos.add(doc);
 		solicitud.save();
 	}
+	
+	private boolean containsFirmante (models.Firmante firmante, List<Firmante> listaFirmantes) {
+		for (Firmante f : listaFirmantes) {
+			if (firmante.idvalor.equalsIgnoreCase(f.getFirmanteNif()))
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException {
+		List<DocumentoEnUbicacion> documentoEnUbicacion = aedPort.obtenerDocumentoRutas(uriDocumento);
+		String expediente = null;
+		for (DocumentoEnUbicacion docEnUbicacion : documentoEnUbicacion) {
+			expediente = docEnUbicacion.getExpediente();
+			if (expediente != null)
+				break;
+		}
+		if (expediente == null) {
+			throw new AedExcepcion("No se encuentra el expediente que debe tener el documento con uri " + uriDocumento + 
+									" en la duplicación de un documento ya subido.");
+		}
+
+		dbDocumento.refAed = true;
+		dbDocumento.uri = uriDocumento;
+		dbDocumento.descripcion = descripcionDocumento;
+		dbDocumento.expedienteReferenciado = expediente;
+		dbDocumento.fechaSubida = new DateTime();
+
+	}
+	
 }

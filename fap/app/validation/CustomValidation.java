@@ -10,6 +10,7 @@ import java.util.Set;
 import antlr.StringUtils;
 
 import messages.Messages;
+import models.CCC;
 import models.Direccion;
 import models.Documento;
 import models.DocumentoExterno;
@@ -30,6 +31,7 @@ import play.data.validation.ValidCheck;
 import play.data.validation.Validation;
 import play.data.validation.Validation.ValidationResult;
 import play.exceptions.UnexpectedException;
+import properties.FapProperties;
 import tags.ReflectionUtils;
 
 public class CustomValidation {
@@ -92,6 +94,30 @@ public class CustomValidation {
         try {
             ValidationResult result = new ValidationResult();
             if (!check.validaCif(o.toString(), texto)) {
+            	
+            	String field = key;
+            	String message = texto.toString();
+            	String[] variables = new String[0];
+                
+            	Error error = new Error(field, message, variables);
+                Validation.addError(field, message, variables);
+                
+                result.error = error;
+                result.ok = false;
+            } else {
+                result.ok = true;
+            }
+            return result;
+        } catch (Exception e) {
+            throw new UnexpectedException(e);
+        }
+    }
+    
+    static ValidationResult applyCheck(CCCCheck check, String key, Object o) {
+    	StringBuilder texto = new StringBuilder();
+        try {
+            ValidationResult result = new ValidationResult();
+            if (!check.validaCCC((CCC)o, texto)) {
             	
             	String field = key;
             	String message = texto.toString();
@@ -182,21 +208,25 @@ public class CustomValidation {
     		Direccion direccion = (Direccion)o;
     		ValidationResult result = new ValidationResult();
     		result.ok = true;
-    		result.ok = applyCheck(requiredCheck, key + ".tipo", direccion.tipo).ok && result.ok;
-    		if (direccion.tipo.equals("canaria")){
-    			result.ok = applyCheck(requiredCheck, key + ".provincia", direccion.provincia.replace(",", "").trim()).ok && result.ok;
-    			result.ok = applyCheck(requiredCheck, key + ".isla", direccion.isla).ok && result.ok;
+    		if ((!FapProperties.getBoolean("fap.direccion.anterior.version2.1")) && (direccion.tipo != null)){ 
+    			result.ok = applyCheck(requiredCheck, key + ".tipo", direccion.tipo).ok && result.ok;
+	    		if (direccion.tipo.equals("canaria")){
+	    			result.ok = applyCheck(requiredCheck, key + ".provincia", direccion.provincia.replace(",", "").trim()).ok && result.ok;
+	    			result.ok = applyCheck(requiredCheck, key + ".isla", direccion.isla).ok && result.ok;
+	    			result.ok = applyCheck(requiredCheck, key + ".municipio", direccion.municipio.replace(",", "").trim()).ok && result.ok;
+	    		}
+	    		if (direccion.tipo.equals("nacional")){
+	    			result.ok = applyCheck(requiredCheck, key + ".comunidad", direccion.comunidad).ok && result.ok;
+	    			result.ok = applyCheck(requiredCheck, key + ".provincia", direccion.provincia.replace(",", "").trim()).ok && result.ok;
+	    			result.ok = applyCheck(requiredCheck, key + ".municipio", direccion.municipio.replace(",", "").trim()).ok && result.ok;
+	    		}
+	    		if (direccion.tipo.equals("internacional")){
+	    			result.ok = applyCheck(requiredCheck, key + ".pais", direccion.pais).ok && result.ok;
+	    			result.ok = applyCheck(requiredCheck, key + ".provinciaInternacional", direccion.provinciaInternacional).ok && result.ok;
+	    			result.ok = applyCheck(requiredCheck, key + ".localidad", direccion.localidad).ok && result.ok;
+	    		}
+    		} else {
     			result.ok = applyCheck(requiredCheck, key + ".municipio", direccion.municipio.replace(",", "").trim()).ok && result.ok;
-    		}
-    		if (direccion.tipo.equals("nacional")){
-    			result.ok = applyCheck(requiredCheck, key + ".comunidad", direccion.comunidad).ok && result.ok;
-    			result.ok = applyCheck(requiredCheck, key + ".provincia", direccion.provincia.replace(",", "").trim()).ok && result.ok;
-    			result.ok = applyCheck(requiredCheck, key + ".municipio", direccion.municipio.replace(",", "").trim()).ok && result.ok;
-    		}
-    		if (direccion.tipo.equals("internacional")){
-    			result.ok = applyCheck(requiredCheck, key + ".pais", direccion.pais).ok && result.ok;
-    			result.ok = applyCheck(requiredCheck, key + ".provinciaInternacional", direccion.provinciaInternacional).ok && result.ok;
-    			result.ok = applyCheck(requiredCheck, key + ".localidad", direccion.localidad).ok && result.ok;
     		}
     		result.ok = applyCheck(requiredCheck, key + ".codigoPostal", direccion.codigoPostal).ok && result.ok;
     		result.ok = applyCheck(requiredCheck, key + ".calle", direccion.calle).ok && result.ok;
@@ -273,6 +303,9 @@ public class CustomValidation {
     		} else if (o instanceof PersonaJuridica) {
     			CifCheck cCheck = new CifCheck();
     			return applyCheck(cCheck, key + ".cif", ((PersonaJuridica) o).cif);
+    		} else if (o instanceof CCC) {
+    			CCCCheck cccCheck = new CCCCheck();
+    			return applyCheck(cccCheck, key, ((CCC) o));
     		}
     		return result;
     	}

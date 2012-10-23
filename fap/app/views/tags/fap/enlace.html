@@ -33,7 +33,7 @@
 		throw new play.exceptions.TagInternalException("el atributo url y accion no pueden ser vacios");
 	}
 	if (_popup != null)
-		url = "javascript:popup_open('${_popup}', '${url}')";
+		url = "javascript:popup_open('${_popup}_popup', '${url}')";
 	
 	def target = _target
 	def stackDisabled = null; // Enlaces siempre editables! tags.TagMapStack.top("editable")
@@ -42,7 +42,12 @@
 }%
 
 #{if url != null}
-	<div class="form-row">
+	#{if _noRow}
 		<a id="${id}" href="${url}" #{if target}target="${target}"#{/if} ${disabled} #{if estilo}class="${estilo}"#{/if}>${label}</a>		
-	</div>
+	#{/if}
+	#{else}
+		<div class="form-row">
+			<a id="${id}" href="${url}" #{if target}target="${target}"#{/if} ${disabled} #{if estilo}class="${estilo}"#{/if}>${label}</a>		
+		</div>
+	#{/else}
 #{/if}

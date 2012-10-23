@@ -74,7 +74,7 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Desistimiento desistimiento;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_ceconomicos")
 	public List<CEconomico> ceconomicos;
 
@@ -94,6 +94,8 @@ public class SolicitudGenerica extends FapModel {
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public DatosAnotaciones datosAnotaciones;
+
+	public Boolean activoFH;
 
 	public SolicitudGenerica() {
 		init();
@@ -183,6 +185,9 @@ public class SolicitudGenerica extends FapModel {
 		else
 			datosAnotaciones.init();
 
+		if (activoFH == null)
+			activoFH = false;
+
 		postInit();
 	}
 
@@ -194,6 +199,8 @@ public class SolicitudGenerica extends FapModel {
 	}
 
 	public String getEstadoUsuario() {
+		if (estado == null || estado.isEmpty())
+			return "";
 		VisibilidadEstadoUsuario visibilidadEstado = VisibilidadEstadoUsuario.find("select visibilidad from VisibilidadEstadoUsuario visibilidad where visibilidad.estadoInterno = ?", estado).first();
 		if (visibilidadEstado == null) {
 			utils.DataBaseUtils.updateEstadosSolicitudUsuario();

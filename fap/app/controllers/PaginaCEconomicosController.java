@@ -28,7 +28,6 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 	}
 	
 	public static void index(String accion, Long idSolicitud, Long idCEconomico, Integer duracion) {
-		System.out.println(Messages.allMessages());
 		if (accion == null)
 			accion = getAccion();
 		if (!permiso(accion)) {
@@ -63,7 +62,8 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 		Double suma=0.0;
 		for (CEconomicosManuales cEconomicoManual: listaHijosOtro){
 			if (!cEconomicoManual.valores.isEmpty())
-				suma += cEconomicoManual.valores.get(anio).valorSolicitado;
+				if (cEconomicoManual.valores.get(anio).valorSolicitado != null)
+					suma += cEconomicoManual.valores.get(anio).valorSolicitado;
 		}
 		return suma;
 	}
@@ -113,7 +113,7 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 			dbCEconomico.save();
 			log.info("Acción Editar de página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html" + " , intentada con éxito");
 		} else {
-			flash(dbCEconomico);
+			flash(cEconomico);
 			log.info("Acción Editar de página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html" + " , intentada sin éxito (Problemas de Validación)");
 		}
 		PaginaCEconomicosController.guardarRender(idSolicitud, idCEconomico, duracion);
@@ -127,7 +127,7 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 			redirect("PCEconomicosController.index", "editar", idSolicitud);
 		}
 		Messages.keep();
-		redirect("PCEconomicosController.index", "editar", idSolicitud);
+		redirect("PaginaCEconomicosController.index", "editar", idSolicitud, idCEconomico, duracion);
 	}
 	
 	@Util
@@ -169,8 +169,12 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 		for (TableRecord<CEconomicosManuales> filaCEconomico: response.rows){
 			if (tipoEvaluacion.estado.equals("iniciada"))
 				filaCEconomico.permisoEditar = false;
+			else if (!permiso("editar")){
+				filaCEconomico.permisoEditar = false;
+				filaCEconomico.permisoLeer = true;
+			}
 		}
 		
-		renderJSON(response.toJSON("tipo.jerarquia", "tipo.nombre", "id"));
+		renderJSON(response.toJSON("tipo.jerarquia", "tipo.nombre", "id", "valores.valorSolicitado_formatFapTabla"));
 	}
 }

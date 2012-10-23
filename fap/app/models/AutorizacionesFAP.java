@@ -22,18 +22,9 @@ import java.text.SimpleDateFormat;
 public class AutorizacionesFAP extends FapModel {
 	// Código de los atributos
 
-	@CheckWith(NipCheck.class)
-	@Embedded
-	public Nip nip;
-
-	public AutorizacionesFAP() {
-		init();
-	}
+	public String numeroIdentificacion;
 
 	public void init() {
-
-		if (nip == null)
-			nip = new Nip();
 
 		postInit();
 	}

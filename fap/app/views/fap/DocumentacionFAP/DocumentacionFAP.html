@@ -1,0 +1,121 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'DocumentacionFAP', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Documentación', 
+     urlBorrar:play.mvc.Router.reverse('DocumentacionFAPController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('DocumentacionFAPController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('DocumentacionFAPController.editar' , ['idSolicitud':solicitud?.id])
+}
+	
+#{fap.tabla 
+     campo:'Solicitud.documentacion.documentos', 
+     crearEntidad:accion == 'crear', 
+     id:'documentos', 
+     idContainer:'idSolicitud', 
+     idEntidad:'idDocumento', 
+     nameContainer:'DocumentacionFAP', 
+     permisoCrear:'editarSolicitud', 
+     popupBorrar:'DocumentosEditarFAP', 
+     popupEditar:'DocumentosEditarFAP', 
+     popupLeer:'DocumentosEditarFAP', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Documentos', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("DocumentacionFAPController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'irDespuesDeValidar':'']), 
+     urlBorrar:play.mvc.Router.reverse("popups.DocumentosEditarFAPController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumento':documento?.id? documento?.id:'_idDocumento_']), 
+     urlContainerCrear:play.mvc.Router.reverse("DocumentacionFAPController.index" , ['accion':'crear']), 
+     urlContainerEditar:play.mvc.Router.reverse("DocumentacionFAPController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_']), 
+     urlCrear:play.mvc.Router.reverse("DocumentosFAPController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_']), 
+     urlCrearEntidad:play.mvc.Router.reverse('DocumentacionFAPController.crearForTablas' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse("popups.DocumentosEditarFAPController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumento':documento?.id? documento?.id:'_idDocumento_']), 
+     urlLeer:play.mvc.Router.reverse("popups.DocumentosEditarFAPController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumento':documento?.id? documento?.id:'_idDocumento_']), 
+     urlTabla:@DocumentacionFAPController.tabladocumentos(idSolicitud)
+}
+	
+	#{fap.columna alignPosition:'left', ancho:80, cabecera:'Fecha Subida', campo:'fechaSubida' /}
+		
+	#{fap.columna alignPosition:'left', ancho:85, cabecera:'Fecha Registro', campo:'fechaRegistro' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Tipo Documento', campo:'tipo', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:80, cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>' /}
+		
+#{/fap.tabla}
+
+			#{fap.grupo borde:false, mostrarSi:properties.FapProperties.getBoolean("fap.documentacion.documentosExternos")}
+				
+			#{fap.grupo titulo:'Documentos ya aportados en la Administración'}
+				
+			<div class="wiki ">
+<p>En aplicación del artículo 18 del Decreto 48/2009, de 28 de abril, por el que se establecen en la Administración Pública de la Comunidad Autónoma de Canarias medidas ante la crisis económica y de simplificación administrativa, el interesado puede NO aportar los documentos que ya se encuentren en poder de la Administración y que se relacionan a continuación.<br/>Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alternativos de los órganos gestores que se indican.</p>
+
+			</div>
+		
+#{fap.tabla 
+     campo:'Solicitud.documentacion.documentosExternos', 
+     crearEntidad:accion == 'crear', 
+     id:'documentosExternos', 
+     idContainer:'idSolicitud', 
+     idEntidad:'idDocumentoExterno', 
+     nameContainer:'DocumentacionFAP', 
+     permisoCrear:'editarSolicitud', 
+     popupBorrar:'DocumentosExternosEditarFAP', 
+     popupEditar:'DocumentosExternosEditarFAP', 
+     popupLeer:'DocumentosExternosLeerFAP', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Documentos ya aportados en la Administración', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("DocumentacionFAPController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'irDespuesDeValidar':'']), 
+     urlBorrar:play.mvc.Router.reverse("popups.DocumentosExternosEditarFAPController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumentoExterno':documentoExterno?.id? documentoExterno?.id:'_idDocumentoExterno_']), 
+     urlContainerCrear:play.mvc.Router.reverse("DocumentacionFAPController.index" , ['accion':'crear']), 
+     urlContainerEditar:play.mvc.Router.reverse("DocumentacionFAPController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_']), 
+     urlCrear:play.mvc.Router.reverse("DocumentosExternosFAPController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_']), 
+     urlCrearEntidad:play.mvc.Router.reverse('DocumentacionFAPController.crearForTablas' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse("popups.DocumentosExternosEditarFAPController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumentoExterno':documentoExterno?.id? documentoExterno?.id:'_idDocumentoExterno_']), 
+     urlLeer:play.mvc.Router.reverse("popups.DocumentosExternosLeerFAPController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumentoExterno':documentoExterno?.id? documentoExterno?.id:'_idDocumentoExterno_']), 
+     urlTabla:@DocumentacionFAPController.tabladocumentosExternos(idSolicitud)
+}
+	
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Tipo Documento', campo:'tipo' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, mostrarSi:solicitud.activoFH==true}
+				
+			#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), titulo:'Habilitar la firma y presentación por Funcionario Público'}
+				
+			<div class="wiki ">
+<p>Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación” de esta página.</p>
+
+			</div>
+		
+				#{form play.mvc.Router.reverse('DocumentacionFAPController.formAbrirPlantillaFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", target:"_blank", id:"formAbrirPlantillaFH"}
+					
+			#{fap.boton id:'btnAbrirPlantillaFH', titulo:'Descargar Autorización' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

@@ -1,105 +1,147 @@
-Formulario Solicitud {
+Formulario Solicitud permiso=solicitudes{
 	
     Menu {
     	Enlace "Volver" pagina=Solicitudes
     	
-    	Enlace "Verificaciones" pagina=AccesoVerificaciones
-    	Grupo "Combos" {
-			Enlace "Combos por defecto" pagina=Combos
-			Enlace "Combos sobreescritos" pagina=CombosOverwrite
-			Enlace "Valores por defecto" pagina=ValoresPorDefecto
-			Enlace "ErrorCombos" pagina=PaginaCombosError
-			Enlace "Combos dependientes" pagina=PaginaCombosDependientes
-		}
+    	Grupo "Aplicación Test" {
+    		Grupo "Elementos Básicos"{
+    			Enlace "Ejemplo: Elementos Básicos" pagina=ElementosBasicos 
+    			Enlace "Ejemplo: Botón Cancelar" pagina=PaginaCancelar
+    		}
+    		Grupo "Tipos de Solicitantes" {
+				Enlace "S. Normal" pagina=Solicitante
+				Enlace "S. PersonaFisica" pagina=SolicitantePF
+				Enlace "S. PersonaJuridica" pagina=SolicitantePJ
+				Enlace "Persona Fisica" pagina=PersonaF
+				Enlace "Autorizaciones" pagina=AutorizacionFAP
+			}
+						
+			Grupo "Ejemplo: Direccion y Fecha"{
+				Enlace "Direccion" pagina=Direcciones
+				Enlace "Fecha" pagina=Fechas
+			}
+			
+			Grupo "Ejemplo: Grupos" {
+				Enlace "Grupos" pagina=EjemplosdeGrupos
+			}
+			
+    		Grupo "Ejemplo: Combos" {
+				Enlace "Combos por defecto" pagina=Combos
+				Enlace "Combos sobreescritos" pagina=CombosOverwrite
+				Enlace "Valores por defecto" pagina=ValoresPorDefecto
+				Enlace "Error en Combos" pagina=PaginaCombosError
+				Enlace "Combos dependientes" pagina=PaginaCombosDependientes
+				Enlace "Combo ManytoOne" pagina=ComboTablasPaginas
+				Enlace "Combo No Editable" pagina=ComboNoEditable
+			}
+
+			Grupo "Ejemplo: Tablas y PopUps" {
+				Enlace "Tablas Simples" pagina=TablasSimples
+				Enlace "Tablas con Decimales" pagina=TablasConDecimales
+				Enlace "Tablas con páginas" pagina=PaginasTablas
+				Enlace "BigPopUp" popup=PruebaBigPopUp
+			}
 		
-		Grupo "Solicitantes" {
-			Enlace "S. Normal" pagina=Solicitante
-			Enlace "S. PersonaFisica" pagina=SolicitantePF
-			Enlace "S. PersonaJuridica" pagina=SolicitantePJ
-			Enlace "Persona Fisica" pagina=PersonaF
-			Enlace "Autorizaciones" pagina=Autorizacion
-		}
-		
-		Grupo "Direccion"{
-			Enlace "Direccion" pagina=Direcciones
-			Enlace "Fecha" pagina=Fechas
-		}
-		
-		Grupo "Tablas y PopUps" {
-			Enlace "Tablas con Decimales" pagina=TablasConDecimales
-			Enlace "Tablas Simples" pagina=TablasSimples
-		}
+			Grupo "Ejemplo: Subida de Archivos y Envío de Mails" {
+				Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
+				Enlace "Documentación FAP" pagina=DocumentacionFAP
+				Enlace "Envío de Mails" pagina=EnvioMails
+			}
 	
-		Grupo "SubirArchivo" {
-			Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
-			Enlace "Documentación FAP" pagina=DocumentacionFAP
-		}
-		
-		Grupo "Pagina del módulo"{
-			Enlace "Titulo" pagina=PCEconomicos
-		}	
-
-		Grupo "Test Grupos" {
-			Enlace "Ejemplos Grupos I" pagina=EjemplosdeGrupos
-		}
-		
-		Grupo "Paginas" {
-			Enlace "Combo ManytoOne" pagina=ComboTablasPaginas
-			Enlace "Tablas con páginas" pagina=PaginasTablas
-		}
-		
-		Grupo "Tipos de Ayuda" {
-			Enlace "Ayuda Texto" pagina=TipoDeAyudaTexto
-			Enlace "Ayuda Popover" pagina=TipoDeAyudaPopover
-		}
-
-		Grupo "Permisos" {
-			Enlace "Permiso pagina" pagina=PermisoPagina permiso=administrador
-			Enlace "Permiso grupo" pagina=PermisoGrupo permiso=administrador
-			Enlace "Permiso no editable" pagina=PermisoNoEditable permiso=noEditable
-			Enlace "Permiso tablas" pagina=PermisoEnTablas 
-		}
-
-		Grupo "Páginas Especiales" {
-			Enlace "Firma" pagina=PaginaFirma
-		}
-		
-		Grupo "Paginas FAP" {
-			Enlace "Presentación" pagina=PresentarFAP
+			Grupo "Tipos de Ayuda" {
+				Enlace "Ayuda Texto" pagina=TipoDeAyudaTexto
+				Enlace "Ayuda Popover" pagina=TipoDeAyudaPopover
+			}
+	
+			Grupo "Ejemplo: Permisos" {
+				Enlace "Permiso en Página" pagina=PermisoPagina permiso=administrador
+				Enlace "Permiso en Grupo" pagina=PermisoGrupo permiso=administrador
+				Enlace "Permiso no Editable" pagina=PermisoNoEditable permiso=noEditable
+				Enlace "Permiso en Tablas" pagina=PermisoEnTablas 
+			}
+	
+			Grupo "Páginas Especiales" {
+				Enlace "Firma" pagina=PaginaFirma
+			}
+			
+			Grupo "Anotación Inject"{
+				Enlace "Inject" pagina=PaginaInject
+			}
+    		
+    	}
+    	    	
+    	Grupo "Módulo FAP" {
+	    	Enlace "Presentación" pagina=PresentarFAP
 			Enlace "Verificaciones" pagina=AccesoVerificaciones
-			Enlace "Aportacion Documentacion" pagina=Aportacion
-		}
+			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
+			Enlace "PCEconómicos" pagina=PCEconomicos	
+			Enlace "Desistimiento" pagina=Desistimiento
+			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
+    	}    	
 		
-		Grupo "Anotación Inject"{
-			Enlace "Inject" pagina=PaginaInject
-		}
-		
-		Grupo "Envío de Mails"{
-			Enlace "Envío de Mails" pagina=EnvioMails
-		}
-		Grupo "Editor histórico Solicitud"{
-            Enlace "Editor histórico Solicitud" pagina=EditorHistorico
-        }
-        
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
+    }
+    
+    Popup PruebaBigPopUp campo=Solicitud titulo="BigPopUp" maximizar {
+    	Texto campo=Solicitud.bigPopUp.prueba1 titulo="Prueba1" 
+    	Texto campo=Solicitud.bigPopUp.prueba2 titulo="Prueba2" ayuda="Ayuda" (popover)
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Tabla documentosExternos titulo="Documentos Externos" campo=Solicitud.bigPopUp.doc  {
+			Columna titulo="Id" campo=DocumentoExterno.id
+			Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
+			Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
+		}
+		Tabla documentos titulo="Documentos" campo=Solicitud.bigPopUp.doc2 {
+			Columna titulo="Id" campo=Documento.id
+			Columna titulo="Tipo Documento" campo=Documento.tipo
+			Columna titulo="Descripcion" campo=Documento.descripcionVisible expandir
+		}
+		Check campo=Solicitud.bigPopUp.prueba5 titulo="Prueba5"
+		Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
+    	Texto campo=Solicitud.bigPopUp.prueba3 titulo="Prueba3"
+    	Texto campo=Solicitud.bigPopUp.prueba4 titulo="Prueba4"
     }
 		
 	Pagina Fechas campo=Solicitud{
 		Fecha campo=Solicitud.fechas.fechaRequerida titulo="Fecha Obligatoria" requerido
 		Fecha campo=Solicitud.fechas.fecha titulo="Fecha" requerido
+		
+		Codigo {
+			"Fecha campo=Solicitud.fechas.fechaRequerida titulo=\"Fecha Obligatoria\" requerido
+Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
+		}
 	}
 	
 	Pagina Direcciones campo=Solicitud{
 		Direccion titulo="La Dirección" campo=Solicitud.direccionTest.direccion
 		
+		Codigo  {
+			"Direccion titulo=\"La Dirección\" campo=Solicitud.direccionTest.direccion"
+		}
+		
 		DireccionMapa titulo="Nueva Dirección" campo=Solicitud.direccionTest.direccionMapa
+		
+		Codigo {
+			"DireccionMapa titulo=\"Nueva Dirección\" campo=Solicitud.direccionTest.direccionMapa"
+		}
 	}
 	
-	Pagina Combos inicial campo=Solicitud{
+	Pagina Combos inicial campo=Solicitud perteneceA = "Verificacion"{
 
 		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"
+			Combo campo=Solicitud.comboTest.listNumber titulo="Combo de numeritos" mostrarClave
 			Combo campo=Solicitud.comboTest.listSinDuplicados titulo="Combo de Tabla de Tablas sin elementos repetidos" eliminarDuplicados
 			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas"
 			Combo campo=Solicitud.comboTest.ref comboTexto=nombre titulo="Combo de Referencias" ordenarPorValor
@@ -112,7 +154,7 @@ Formulario Solicitud {
 		}
 	}
 
-	Pagina CombosOverwrite campo=Solicitud{
+	Pagina CombosOverwrite campo=Solicitud {
 		
 		Grupo titulo="Combos sobreescritos en el controlador manual" {
 			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)"
@@ -151,6 +193,20 @@ Formulario Solicitud {
 			Combo comunidades campo=Solicitud.comboTest.comunidades titulo="Comunidades Autónomas" dependeDe=paises
 			Combo provincias campo=Solicitud.comboTest.provincias titulo="Provincias" dependeDe=comunidades
 			Combo municipios campo=Solicitud.comboTest.municipios titulo="Municipios" dependeDe=provincias
+		}
+		
+		Codigo {
+"Pagina PaginaCombosDependientes campo=Solicitud{
+ Grupo titulo=\"Combos dependendientes\"{
+      Combo paises campo=Solicitud.comboTest.paises titulo=\"Paises\"
+	Combo comunidades campo=Solicitud.comboTest.comunidades
+ 	titulo=\"Comunidades Autónomas\" dependeDe=paises
+	Combo provincias campo=Solicitud.comboTest.provincias titulo=\"Provincias\"
+ 	dependeDe=comunidades
+	Combo municipios campo=Solicitud.comboTest.municipios titulo=\"Municipios\"
+	 dependeDe=provincias
+}
+}"
 		}
 	}
 	
@@ -201,12 +257,24 @@ Formulario Solicitud {
 	
 	Pagina SubirArchivoAedTest campo=Solicitud{
 		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos paginaEditar=DocumentosEditar{
-			Columna campo=Documento.id
+			//Columna campo=Documento.id
 			Columna campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible
 		}
 		Grupo botonObligatorios titulo="Comprobar que estan aportados todos los documentos obligatorios"{
 			Boton comprobarDocumentosObligatorios titulo="Comprobar Obligatorios"
+		}
+		
+		Codigo {
+			"Pagina SubirArchivoAedTest campo=Solicitud{
+	Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos paginaEditar=DocumentosEditar{
+		Columna campo=Documento.id
+		Columna campo=Documento.tipo
+		Columna campo=Documento.descripcionVisible
+	}
+	Grupo botonObligatorios titulo=\"Comprobar que estan aportados todos los documentos obligatorios\"{
+		Boton comprobarDocumentosObligatorios titulo=\"Comprobar Obligatorios\"
+	}}"
 		}
 	}
 	
@@ -237,6 +305,41 @@ Formulario Solicitud {
  		}
  		Grupo titulo="Grupo 1: Mostrar Si Combo" mostrarSiCombo comboMostrarSi != "c", "d" {
  			Wiki {"El combo tiene un valor distinto a 'A'"}
+ 		}
+ 		
+ 		Codigo {
+"Pagina EjemplosdeGrupos campo=Solicitud{
+ Grupo testMostrarSiExpresion titulo=\"Grupo 1: Mostrar Si Expression\"
+ mostrarSiExpresion \"4 == 4\"{
+	Texto ifTexto titulo=\"Texto\" campo=Solicitud.testGrupo.nombre
+}
+ 		
+Grupo test2MostrarSiExpresion titulo=\"Grupo 1: Mostrar Si Campo\" 
+ mostrarSiCampo Solicitud.solicitante.email = \"pepe@pepe.com\", \"juan@juan.com\" {
+	Texto if2Texto titulo=\"Texto\" campo=Solicitud.testGrupo.nombre
+}
+ 		
+Check checkMostrar1 campo=Solicitud.testGrupo.myCheck titulo=\"Prueba visibilidad conjunta\"
+Combo comboMostrarSi campo=Solicitud.comboTest.list titulo=\"Prueba para mostrarSiCombo\"
+ 		
+Grupo titulo=\"Grupo 1: Mostrar Si Check\" mostrarSiCheck checkMostrar1 = true {
+	Wiki {\"El check está seleccionado\"}
+	Texto campo=Solicitud.solicitante.telefonoFijo titulo=\"Telefono\" requerido
+}
+ 		
+Grupo titulo=\"Grupo 1: Mostrar Si Check\" mostrarSiCheck checkMostrar1 = false {
+	Wiki {\"El check NO está seleccionado\"}
+ 	Texto campo=Solicitud.solicitante.telefonoFijo titulo=\"Telefono\" requerido
+}
+ 		
+Grupo titulo=\"Grupo 1: Mostrar Si Combo\" mostrarSiCombo comboMostrarSi != \"a\", \"b\" {
+	Wiki {\"El combo tiene un valor distinto a 'A'\"}
+}
+
+Grupo titulo=\"Grupo 1: Mostrar Si Combo\" mostrarSiCombo comboMostrarSi != \"c\", \"d\" {
+	Wiki {\"El combo tiene un valor distinto a 'A'\"}
+}
+}"
  		}
  		
 	}
@@ -356,6 +459,30 @@ Formulario Solicitud {
 			columnasAutomaticas exclude=id
 		{
 		}
+		}
+		
+		Codigo {
+"Pagina PaginasTablas campo=Solicitud{
+ Grupo titulo=\"Tablas con paginas\"{
+	Texto titulo=\"Titulo\" campo=Solicitud.paginas.nombre
+	 Wiki {\"Para poder usar esta tabla, es necesario haber seleccionado un valor
+	del combo en la pagina: 'Combo ManyToOne'\"}
+	Boton irComboManyToOne titulo=\"Ir a Combo ManyToOne\" pagina=ComboTablasPaginas
+	Tabla paginasT campo=Solicitud.paginas.tpaginas_nivel1
+	paginaLeer=VerPaginas_nivel1 paginaCrear=Paginas_nivel1 
+	 paginaEditar=Paginas_nivel1 paginaBorrar=Paginas_nivel1 
+     	titulo=\"Tabla con paginas\" columnasAutomaticas exclude=id{}
+}
+Grupo titulo=\"Tablas con popups y paginas\"{
+	Tabla tablaNombres campo=Solicitud.popupPaginas titulo=\"Solicitantes\"
+	 popupCrear=popupPagina
+	popupLeer=popupPagina
+	popupEditar=popupPagina
+	popupBorrar=popupPagina
+	columnasAutomaticas exclude=id
+{
+}
+}"
 		}	
 	}
 
@@ -399,11 +526,34 @@ Formulario Solicitud {
 	    Texto campo=Solicitud.solicitante.fax titulo="Fax"  	
 	    Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar  	
 	    Texto campo=Solicitud.solicitante.web titulo="Página web"
+	    
+	    Codigo {"
+Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {
+	Wiki {\"El representante de este solicitante sólo puede ser de tipo 
+	 Persona Fisica\"}
+	Solicitante personaSolicitante campo=Solicitud.solicitante titulo=\"Solicitante\" 
+	requerido representantePersonaFisica
+	Direccion campo=Solicitud.solicitante.domicilio titulo=\"Domicilio Social\"
+	requerido	
+	 Texto campo=Solicitud.solicitante.telefonoFijo titulo=\"Teléfono\" requerido  	
+	Texto campo=Solicitud.solicitante.telefonoMovil titulo=\"Teléfono Móvil\"  	
+	Texto campo=Solicitud.solicitante.fax titulo=\"Fax\"  	
+	Texto campo=Solicitud.solicitante.email titulo=\"Correo electrónico\" 
+	requerido duplicar  	
+	 Texto campo=Solicitud.solicitante.web titulo=\"Página web\"
+}"}
 	}
 	
 	Pagina SolicitantePF campo=Solicitud{
 		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
 		SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Solicitante Persona Fisica" representantePersonaFisica
+		
+		Codigo {
+"Wiki {\"El representante de este solicitante sólo puede ser de tipo Persona Fisica\"}
+SolicitantePersonaFisica personaSolicitantePersonaFisica
+campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
+ representantePersonaFisica"
+		}
 	}
 	
 	Pagina SolicitantePJ campo=Solicitud{
@@ -411,7 +561,7 @@ Formulario Solicitud {
 	}
 	
 	Pagina PersonaF campo=Solicitud{
-		PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física"
+		PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física" 
 	}
 	
 	Pagina TipoDeAyudaTexto campo=Solicitud{
@@ -421,6 +571,23 @@ Formulario Solicitud {
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas" ayuda="Ayuda del combo simple"
 			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas" ayuda="Ayuda del otro combo" requerido
 			Boton noHagoNada titulo="Guardar desde aquí" ayuda="Ayuda del botón"
+		}
+		
+		Codigo {
+"Pagina TipoDeAyudaTexto campo=Solicitud{
+ Grupo ayudasDeTexto titulo=\"Ayudas de tipo texto simples\" ayuda=\"Ayuda. Esto es una ayuda
+ de Grupo\"{
+	 Texto campo=Solicitud.solicitante.telefonoFijo titulo=\"Texto\" requerido
+ 	ayuda=\"Ésto es una ayudita\"
+	Fecha campo=Solicitud.fechas.fechaRequerida titulo=\"Fecha Obligatoria\"
+ 	ayuda=\"Ayuda de fecha\"
+	Combo campo=Solicitud.comboTest.list titulo=\"Combo de Tabla de Tablas\"
+ 	 ayuda=\"Ayuda del combo simple\"
+	Combo campo=Solicitud.comboTest.listMultiple 
+ 	titulo=\"Combo Múltiple de Tabla de Tablas\" ayuda=\"Ayuda del otro combo\" requerido
+	Boton noHagoNada titulo=\"Guardar desde aquí\" ayuda=\"Ayuda del botón\"
+}
+}"
 		}
 	}
 	
@@ -432,16 +599,56 @@ Formulario Solicitud {
 			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas" ayuda="Ayuda del otro combo.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (popover) requerido
 			Boton noHagoNada titulo="Guardar desde aquí" ayuda="Titulo de la Ayuda del botón.  Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga que quieras. Pruébala!." (popover)
 		}
+		
+		Codigo {
+"Pagina TipoDeAyudaPopover campo=Solicitud{
+ Grupo ayudasDePopover titulo=\"Ayudas de tipo popover\" 
+ ayuda=\"Titulo de la Ayuda. Ésto es una ayuda de tipo popover en un grupo.\" (popover){
+	 Texto campo=Solicitud.solicitante.telefonoMovil titulo=\"Texto\" requerido
+   	ayuda=\"Titulo de la Ayuda. Ésto es un ejemplo de la ayuda de tipo popover,
+	la cual puede ser todo lo larga que quieras. Pruébala!.\" (popover)
+  	Fecha campo=Solicitud.fechas.fechaRequerida titulo=\"Fecha Obligatoria\"
+	ayuda=\"Titulo de la Ayuda de fecha.  Ésto es un ejemplo de la ayuda de tipo
+	 popover, la cual puede ser todo lo larga que quieras. Pruébala!.\" (popover)
+	Combo campo=Solicitud.comboTest.list titulo=\"Combo de Tabla de Tablas\"
+	ayuda=\"Ayuda del combo simple.  Ésto es un ejemplo de la ayuda de tipo popover,
+	la cual puede ser todo lo larga que quieras. Pruébala!.\" (popover)
+	Combo campo=Solicitud.comboTest.listMultiple titulo=\"Combo Múltiple de Tabla de
+	 Tablas\" ayuda=\"Ayuda del otro combo.  Ésto es un ejemplo de la ayuda de tipo
+	popover, la cual puede ser todo lo larga que quieras. Pruébala!.\" (popover)
+	 requerido
+	Boton noHagoNada titulo=\"Guardar desde aquí\" ayuda=\"Titulo de la Ayuda del botón.
+	Ésto es un ejemplo de la ayuda de tipo popover, la cual puede ser todo lo larga
+	 que quieras. Pruébala!.\" (popover)
+}
+}"
+		}
 	}
 	
 	Pagina PaginaFirma campo=Solicitud {
-		Wiki { "Botónm simple y botón de firma, que no hacen nada" }
+		Wiki { "Botón simple y botón de firma, que no hacen nada" }
 		Form form {
 			AgrupaBotones well {
 				Boton botonSimple titulo="Botón que no hace nada"
 				Boton botonSimple2 titulo="Botón 2 que nada"
 			}
 			FirmaSimple firmaSimple titulo="Firma Simple (por ahora no hace nada)" documento=Solicitud.registro.oficial listaFirmantes=Solicitud.registro.firmantes.todos calcularFirmantes=Solicitud.solicitante
+		}
+		
+		Codigo {
+"Pagina PaginaFirma campo=Solicitud {
+ Wiki { \"Botón simple y botón de firma, que no hacen nada\" }
+ Form form {
+	AgrupaBotones well {
+		Boton botonSimple titulo=\"Botón que no hace nada\"
+		Boton botonSimple2 titulo=\"Botón 2 que nada\"
+	}
+	FirmaSimple firmaSimple titulo=\"Firma Simple (por ahora no hace nada)\" 
+ 	 documento=Solicitud.registro.oficial
+	listaFirmantes=Solicitud.registro.firmantes.todos 
+ 	calcularFirmantes=Solicitud.solicitante
+ }
+ }"
 		}
 	}
 	
@@ -463,7 +670,7 @@ Formulario Solicitud {
     }
     
     Pagina TablasConDecimales campo=Solicitud {
-    	Texto campo=Solicitud.conceptos.moneda1
+    	Texto titulo="Moneda 1" campo=Solicitud.conceptos.moneda1
     	Texto campo=Solicitud.conceptos.moneda2
     	Texto campo=Solicitud.conceptos.moneda3
     	Texto campo=Solicitud.conceptos.moneda4
@@ -487,10 +694,40 @@ Formulario Solicitud {
 </tbody>
 </table>
 " }
-    	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos {
+    	
+	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos 
+    	permisoFilas = colorFondo
+    	color: "var c = record.data.unInteger; if (c < 20) { return \\'docFirmado\\'; } else { return \\'docNoFirmado\\'; }"
+    	{
     		Columna titulo="Entero" campo=MiConcepto.unInteger
     		Columna titulo="Double" campo=MiConcepto.unDouble
     		Columna titulo="Moneda" campo=MiConcepto.unaMoneda
+    	}
+    	
+    	Codigo {
+"Pagina TablasConDecimales campo=Solicitud {
+ Texto titulo=\"Moneda 1\" campo=Solicitud.conceptos.moneda1
+ Texto campo=Solicitud.conceptos.moneda2
+  Texto campo=Solicitud.conceptos.moneda3
+ Texto campo=Solicitud.conceptos.moneda4
+ Wiki { \"Probando los decimales en tablas y campos\" }
+    	
+ Tabla tablaConceptos campo=Solicitud.misConceptos titulo=\"Tabla de mis Conceptos\" 
+  popup=PopUpConceptos permisoFilas = colorFondo
+ Color: \"var c = record.data.unInteger; if (c < 20) { return \\'docFirmado\\'; } 
+ else { return \\'docNoFirmado\\'; }\"
+  {
+	Columna titulo=\"Entero\" campo=MiConcepto.unInteger
+	Columna titulo=\"Double\" campo=MiConcepto.unDouble
+	Columna titulo=\"Moneda\" campo=MiConcepto.unaMoneda
+}
+
+Popup PopUpConceptos campo=Solicitud.misConceptos {
+    Texto titulo=\"Entero\" campo=MiConcepto.unInteger
+    Texto titulo=\"Doble\" campo=MiConcepto.unDouble
+    Texto titulo=\"Moneda\" campo=MiConcepto.unaMoneda
+ }
+}"
     	}
     }
     
@@ -504,4 +741,42 @@ Formulario Solicitud {
         Editor editorPrueba campo=Solicitud.historico.logHistorico
     }
 
+
+	Pagina ElementosBasicos campo=Solicitud{
+		Grupo Textos titulo = "Textos"{
+			Texto campo=Solicitud.elementos.texto titulo="Texto: "
+			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "Area de texto"
+		}
+		
+		Grupo Numeros titulo="Números"{
+			Texto titulo="Ejemplo de integer: " campo=Solicitud.elementos.numeroI
+			Texto titulo="Ejemplo de double: " campo=Solicitud.elementos.numeroD
+			Texto titulo="Ejemplo de long: " campo=Solicitud.elementos.numeroL
+			CCC titulo="Ejemplo de Cuenta Bancaria: " campo=Solicitud.elementos.ccc
+		}
+		
+		Grupo Selectores titulo="Selectores"{
+			Check titulo="Check" campo=Solicitud.elementos.mBoolean
+			RadioBooleano titulo="Radio Booleano" campo=Solicitud.elementos.mBoolean botonIzquierdo="Botón Izquierdo" botonDerecho="Botón Derecho"
+		}
+	}
+	
+	Pagina ComboNoEditable titulo="Combo No Editable" campo=Solicitud {
+		Grupo permiso=noEditable {
+			Combo campo=Solicitud.comboTest.listNumber titulo="Combo de numeritos" mostrarClave
+		}
+		Texto email campo=Solicitud.solicitante.email
+	}
+
+	Pagina PaginaCancelar titulo="Pagina con Botón Cancelar" campo=Solicitud noForm {
+		Form guardarPCE {
+			Texto titulo="Introduce un integer: " campo=Solicitud.elementos.numeroI
+			Texto titulo="Introduce un double: " campo=Solicitud.elementos.numeroD
+			Texto titulo="Introduce un long: " campo=Solicitud.elementos.numeroL
+			Boton bGuardar titulo="Guardar"
+			Enlace titulo="Cancelar" estilo="btn btn-link" pagina=Solicitudes
+		}
+	}
+	
 }
+

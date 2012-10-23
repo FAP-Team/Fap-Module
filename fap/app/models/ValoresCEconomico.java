@@ -24,13 +24,49 @@ public class ValoresCEconomico extends FapModel {
 
 	public Integer anio;
 
+	@Moneda
 	public Double valorSolicitado;
 
+	@Moneda
 	public Double valorEstimado;
 
+	@Moneda
 	public Double valorPropuesto;
 
+	@Moneda
 	public Double valorConcedido;
+
+	@Transient
+	public String valorSolicitado_formatFapTabla;
+
+	@Transient
+	public String valorEstimado_formatFapTabla;
+
+	@Transient
+	public String valorPropuesto_formatFapTabla;
+
+	@Transient
+	public String valorConcedido_formatFapTabla;
+
+	// Getter del atributo del tipo moneda
+	public String getValorSolicitado_formatFapTabla() {
+		return format.FapFormat.formatMoneda(valorSolicitado);
+	}
+
+	// Getter del atributo del tipo moneda
+	public String getValorEstimado_formatFapTabla() {
+		return format.FapFormat.formatMoneda(valorEstimado);
+	}
+
+	// Getter del atributo del tipo moneda
+	public String getValorPropuesto_formatFapTabla() {
+		return format.FapFormat.formatMoneda(valorPropuesto);
+	}
+
+	// Getter del atributo del tipo moneda
+	public String getValorConcedido_formatFapTabla() {
+		return format.FapFormat.formatMoneda(valorConcedido);
+	}
 
 	public void init() {
 

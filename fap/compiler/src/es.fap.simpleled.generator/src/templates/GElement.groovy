@@ -181,6 +181,9 @@ public class GElement {
 				
 			else if(element instanceof Wiki)
 				cache.put(element, new GWiki(element, container));
+				
+			else if(element instanceof Codigo)
+				cache.put(element, new GCodigo(element, container));
 			
 			else if(element instanceof EntidadAutomatica)
 				cache.put(element, new GEntidadAutomatica(element, container));
@@ -220,6 +223,9 @@ public class GElement {
 				
 			else if (element instanceof Editor)
 				cache.put(element, new GEditor(element, container));
+
+			else if(element instanceof CCC)
+				cache.put(element, new GCCC(element, container));
 		}
 		
 		return cache.get(element);

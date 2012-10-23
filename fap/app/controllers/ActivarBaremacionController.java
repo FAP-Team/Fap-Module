@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.ivy.util.Message;
 import org.apache.log4j.Logger;
 
+import baremacion.BaremacionFAP;
 import baremacion.Evaluador;
-import baremacion.IniciarBaremacion;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +19,7 @@ import play.Play;
 import play.mvc.Util;
 import services.BaremacionService;
 import utils.BaremacionUtils;
+import utils.ModelUtils;
 import controllers.gen.ActivarBaremacionControllerGen;
 
 public class ActivarBaremacionController extends ActivarBaremacionControllerGen {
@@ -28,12 +29,12 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 	// Para iniciar cosas propias de la Baremación de cada aplicación
 	public static void iniciarBaremacion(){
 		
-		Class invokedClass = getIniciarBaremacionClass();
+		Class invokedClass = getBaremacionFAPClass();
 		
 		if (invokedClass != null){
 			Method method = null;
 			try {
-				method = invokedClass.getDeclaredMethod("iniciar");
+				method = invokedClass.getDeclaredMethod("iniciarBaremacion");
 			} catch (SecurityException e) {} catch (NoSuchMethodException e) {}
 			if (method != null){
 				try {
@@ -44,10 +45,29 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 					log.info("Acción Editar de página: " + "gen/ActivarBaremacion/ActivarBaremacion.html" + " , intentada con éxito, Baremación Iniciada");
 				} catch (Exception e) {} 
 			} else{
-				Message.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciar()'");
+				invokedClass = BaremacionFAP.class;
+				if (invokedClass != null){
+					method = null;
+					try {
+						method = invokedClass.getDeclaredMethod("iniciarBaremacion");
+					} catch (SecurityException e) {} catch (NoSuchMethodException e) {}
+					if (method != null){
+						try {
+							method.invoke(null);
+							TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+							tipoEvaluacion.estado="iniciada";
+							tipoEvaluacion.save();
+							log.info("Acción Editar de página: " + "gen/ActivarBaremacion/ActivarBaremacion.html" + " , intentada con éxito, Baremación Iniciada");
+						} catch (Exception e) {} 
+					} else{
+						play.Logger.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciarBaremacion()'");
+						Messages.error("No existe el Método apropiado para iniciar la Baremacion. El método debe llamarse 'iniciarBaremacion()'");
+					}
+				}
 			}
 		} else{
-			Message.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'IniciarBaremacion'");
+			play.Logger.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'BaremacionFAP'");
+			Messages.error("No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'BaremacionFAP'");
 		}
 		ActivarBaremacionController.activarFormBaremacionRender();
 	}
@@ -77,12 +97,14 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 		redirect("ActivarBaremacionController.index", "editar");
 	}
 	
-	private static Class getIniciarBaremacionClass() {
+	private static Class getBaremacionFAPClass() {
 		Class invokedClass = null;
 		//Busca una clase que herede del evaluador
-        List<Class> assignableClasses = Play.classloader.getAssignableClasses(IniciarBaremacion.class);
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(BaremacionFAP.class);
         if(assignableClasses.size() > 0){
             invokedClass = assignableClasses.get(0);
+        } else {
+        	invokedClass = BaremacionFAP.class;
         }
 		return invokedClass;
 	}
@@ -143,9 +165,15 @@ public class ActivarBaremacionController extends ActivarBaremacionControllerGen 
 			if (TipoEvaluacion.count() > 0){
 				TipoEvaluacion tipoEvaluacion = (TipoEvaluacion) TipoEvaluacion.findAll().get(0);
 				BaremacionUtils.actualizarParametrosVariables(tipoEvaluacion);
-				Evaluacion evaluacion = (Evaluacion) Evaluacion.findAll().get(0);
-				evaluacion.actualizar(tipoEvaluacion);
-				evaluacion.save();
+				List<Evaluacion> evaluaciones = Evaluacion.findAll();
+				for (Evaluacion evaluacion : evaluaciones) {
+					evaluacion.actualizar(tipoEvaluacion);
+					evaluacion.save();
+				}
+				BaremacionUtils.setEsNuevoFalse();
+				
+				ModelUtils.invokeMethodClassStatic(BaremacionFAP.class, "iniciarNuevasEvaluaciones");
+				
 				log.info("Tipo de Baremación y evaluaciones de ese tipo actualizada correctamente desde fichero");
 			}
 		}

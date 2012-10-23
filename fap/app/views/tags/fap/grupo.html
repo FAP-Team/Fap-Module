@@ -25,6 +25,8 @@
 		if (reverse) mostrarSi = !_mostrarSi;
 		else mostrarSi = _mostrarSi;
 	}
+	
+	boolean sendHiddenFields = properties.FapProperties.getBoolean("fap.form.sendHiddenFields");
 %}
 
 
@@ -60,7 +62,7 @@
 		
 		function change(){
 			if($combo.val() in #{fap.toJSMapNoValue siComboValue/} ){
-				var el = Ext.get('${id}').#{if reverse}hide#{/if}#{else}show#{/else}();
+				#{if reverse}_hide#{/if}#{else}_show#{/else}('${id}', ${sendHiddenFields});
 				$('#${id} .tabla').each( function(index){
 					if ((typeof $(this).data('grid')!=  "undefined")) {
 						$(this).data('grid').setWidth("10%"); // IE7
@@ -70,7 +72,7 @@
 			}else{
 				var el = Ext.get('${id}');
 				el.setVisibilityMode(Ext.Element.OFFSETS);
-				el.#{if reverse}show#{/if}#{else}hide#{/else}();
+				#{if reverse}_show#{/if}#{else}_hide#{/else}('${id}', ${sendHiddenFields});
 			}				
 		};
 		change();
@@ -88,8 +90,8 @@
 		var $group = $('#${id}');
 		function click${siCheck}(){
 			var value = $check.is(':checked');
-			if(value == ${siCheckValue} ){
-				var el = Ext.get('${id}').show();				
+			if(value == ${siCheckValue} ){	
+				_show ('${id}', ${sendHiddenFields});
 				$('#${id} .tabla').each( function(index){
 					if ((typeof $(this).data('grid')!=  "undefined")) {
 						$(this).data('grid').setWidth("10%"); // IE7
@@ -99,7 +101,8 @@
 			}else{
 				var el = Ext.get('${id}');
 				el.setVisibilityMode(Ext.Element.OFFSETS);
-				el.hide();
+				_hide ('${id}', ${sendHiddenFields});
+
 			}	
 		};
 		click${siCheck}();
@@ -116,7 +119,7 @@
 		var $group = $('#${id}');
 		function click${siRadioBooleano}Izquierda(){
 			if (${siRadioBooleanoValue} === false) {
-				var el = Ext.get('${id}').show();				
+				_show ('${id}', ${sendHiddenFields});				
 				$('#${id} .tabla').each( function(index){
 					if ((typeof $(this).data('grid')!=  "undefined")) {
 						$(this).data('grid').setWidth("10%"); // IE7
@@ -126,12 +129,12 @@
 			}else{
 				var el = Ext.get('${id}');
 				el.setVisibilityMode(Ext.Element.OFFSETS);
-				el.hide();
+				_hide ('${id}', ${sendHiddenFields});
 			}	
 		};
 		function click${siRadioBooleano}Derecha(){
 			if (${siRadioBooleanoValue} === true) {
-				var el = Ext.get('${id}').show();				
+				_show ('${id}', ${sendHiddenFields});			
 				$('#${id} .tabla').each( function(index){
 					if ((typeof $(this).data('grid')!=  "undefined")) {
 						$(this).data('grid').setWidth("10%"); // IE7
@@ -141,7 +144,7 @@
 			}else{
 				var el = Ext.get('${id}');
 				el.setVisibilityMode(Ext.Element.OFFSETS);
-				el.hide();
+				_hide ('${id}', ${sendHiddenFields});
 			}	
 		};
 		if ($('#${siRadioBooleano}Izquierda').hasClass('active')){

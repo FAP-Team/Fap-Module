@@ -23,6 +23,10 @@ Entidad Solicitud extends SolicitudGenerica {
 	ConceptosMios conceptos
 	
 	Historico historico
+
+	BigPopUpPrueba bigPopUp
+	
+	ElementosBasicos elementos
 }
 
 Entidad ConceptosMios {
@@ -101,6 +105,7 @@ Entidad ComboTest {
 	Lista municipios municipios
 
 	Lista ComboTestList list
+	Lista Numeritos listNumber 
 	Lista ComboTestList listSinDuplicados
 	Lista multiple ComboTestList listMultiple
 	ManyToOne ComboTestRef ref
@@ -161,4 +166,24 @@ Entidad MiConcepto {
 
 Entidad Historico {
     LongText logHistorico      // guardar el histórico creado por el administrador en el editor
+}
+
+Entidad BigPopUpPrueba {
+	String prueba1
+	String prueba2
+	String prueba3
+	String prueba4
+	OneToMany DocumentoExterno doc
+	OneToMany Documento doc2
+	boolean prueba5
+}
+
+Entidad ElementosBasicos{
+	String texto
+	LongText areaDeTexto
+	Boolean mBoolean default = "true"
+	Integer numeroI
+	Long numeroL
+	Double numeroD
+	CCC ccc
 }

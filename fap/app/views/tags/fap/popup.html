@@ -4,6 +4,7 @@
 	play.mvc.Router.ActionDefinition urlCrear = com.google.common.base.Preconditions.checkNotNull(_urlCrear, "urlCrear");
 	play.mvc.Router.ActionDefinition urlBorrar = com.google.common.base.Preconditions.checkNotNull(_urlBorrar, "urlBorrar");
 	String titulo = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
+	boolean maximizar = _maximizar? true : false;
 	
 	play.mvc.Router.ActionDefinition url;
 	if (accion == "editar")
@@ -12,6 +13,8 @@
 		url = urlCrear;
 	else if (accion == "borrar")
 		url = urlBorrar;
+
+	def urlRecargar = _urlRedirigir ?: "";
 
 	String permisoMensaje = _permisoMensaje? _permisoMensaje : "No tiene suficientes privilegios para acceder a éste popup";
 		
@@ -26,6 +29,8 @@
 		editable = false;
 
 	tags.TagMapStack.push("editable", editable);
+	
+	def guardarAntes = properties.FapProperties.getBoolean("fap.entidades.guardar.antes") ?: false;
 }%
 
 <!--div id="${idMensajes}"></div-->
@@ -39,7 +44,7 @@
 
 #{fap.permiso permiso:_permiso, mensaje:permisoMensaje }
 
-<form action="${url}" id="${popup}${accion}Form" method="post" enctype="multipart/form-data" class="form-horizontal">
+<form action="${url}" id="${popup}${accion}Form" method="post" enctype="multipart/form-data" class="form-horizontal noEnterSubmit">
 	<div class="modal-body">
 		#{authenticityToken /}
 
@@ -61,9 +66,18 @@ $(document).ready(function(){
   	popupMessages (idPopup, "${popup}_mensajes");
 	//Div donde mostrar mensajes
 	var mensajes = new Mensajes("#${popup}_mensajes");
-	console.log("Los mensajes se muestran en: ${popup}_mensajes");
 	
 	var buttons = {};
+	
+	 // Para saber si la url de la pagina que va el popup tiena ya la accion editar (no hace falta recargar esa pagina)
+	 // o tiene la accion crear (hace falta recargar la pagina, para que se muestre en la tabla la entrada creada del popup)
+	 var RegExPattern = /accion=crear/;
+	 var recargarPagina = true;
+	 if (!document.URL.match(RegExPattern)){
+	 	recargarPagina = false;
+	 } else {
+	 	recargarPagina = true;
+	 }
 	
 	#{if (accion != 'leer')}
 		${idBotonAccion} = function(){
@@ -85,18 +99,52 @@ $(document).ready(function(){
 						
 						//Todo correcto, cierra el popup
 						$('#'+idPopup).modal('hide');
+						// Para recargar la pagina, pasandole todos los id y la accion editar, para que se muestre bien los valores del popup en la tabla
+						if (recargarPagina === true){
+							if ("${urlRecargar}" !== ""){ // Comprobamos que la recarga que se va a realizar sea correcta
+								window.location.href = replaceAmpersand('${urlRecargar}');
+							}
+						}
 					}
 				}
 				$('#${idBotonAccion}').button('complete');
 			});
 		};
-	  	popupButtons (idPopup, {"${botonAccion}": "${idBotonAccion}()"}, "btn-primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"});
+	  	popupButtons (idPopup, {"${botonAccion}": "${idBotonAccion}()"}, "btn-primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"}, ${guardarAntes});
   	#{/if}
   	#{else}
-  		popupButtons (idPopup, {}, "btn-primary", true, true);
+  		popupButtons (idPopup, {}, "btn-primary", true, true, false);
   	#{/else}
   	popupTitle(idPopup, "${titulo}");
 
+
+});
+Ext.onReady(function() {
+
+	if (${maximizar})
+		$('.modal-header').parent().addClass("max");
+
+	var ancho = document.body.clientWidth;
+	if ($('.modal.max').height() != null) {
+		var alto = $('.modal.max').height();
+		if (alto <= 600)
+			$('.modal.max').css("position", "fixed");
+		else
+			window.scrollTo(0,0);
+	}
+		
+	if (ancho < 850) {
+		// No va a haber a la vez dos popups
+		var modalId = document.getElementsByClassName('modal hide fade in max')[0].id
+		$('#' + modalId).css('margin', '-45% -20% auto');
+	}
+	
+	
+	// Para obviar las pulsaciones de ENTER, preparamos una función para cuando capturemos el evento del ENTER, obviarlo de manera que
+	// recogemos los eventos ENTER de la clase -noEnterSubmit- que es una de las clases que hemos asignado al form del PopUp
+	$('.noEnterSubmit').keypress(function(e){
+    	if ( e.which == 13 ) e.preventDefault();
+	});
 
 });
 </script>

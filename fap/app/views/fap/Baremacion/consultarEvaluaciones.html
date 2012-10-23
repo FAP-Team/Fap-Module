@@ -14,6 +14,12 @@
 		
 <div id="tablaEvaluacionesAsignadas" class="tabla"></div>
 
+#{form play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.botonEvaluacionesFinalizadas') , class:"form-horizontal", id:"botonEvaluacionesFinalizadas"}
+					
+	#{fap.boton id:'btnEvaluacionesFinalizadas', titulo:'Ir a Evaluaciones Finalizadas' /}
+		
+#{/form}
+
 <script type="text/javascript">
 
 
@@ -102,10 +108,23 @@
 			    	text: 'Aceptar',
 			    	disabled:true,
 		    		handler : function(){
-						var aceptar = #{jsAction @fap.ConsultarEvaluacionesController.aceptar(':idEvaluacion') /}
 		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-		    			$.post(aceptar({idEvaluacion: selected_id}));
-		    			store.load();
+		    			
+						%{
+							aceptar = play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.aceptar' , ['idEvaluacion':selected_id]);
+						%}
+		    			
+		    			popupWait_open();
+		    			
+		    			$.ajax({
+  							type: "POST",
+  							url: "${aceptar}",
+  							data: {idEvaluacion: selected_id}
+						}).done(function( msg ) {
+							$popup = $("#popupWait_popup");	
+							$popup.modal("hide");
+							document.location.reload(true)
+						});
 		    		}
 			    });
 
@@ -124,9 +143,9 @@
 			    	text: 'Evaluar',
 			    	disabled:true,
 		    		handler : function(){
-		    			var action = #{jsAction @fap.FichaEvaluadorController.index(':idEvaluacion') /}
+		    			var action = #{jsAction @fap.FichaEvaluadorController.index(':idEvaluacion', ':accion') /}
 		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-		    			window.location.href = action({idEvaluacion : selected_id})
+		    			window.location.href = action({idEvaluacion : selected_id, accion : "editar"})
 		    		}
 			    });
 			    
@@ -177,11 +196,13 @@
 			    grid.addListener("selectionchange", function(){
 			    	var hasSelection = grid.getSelectionModel().hasSelection();
 			    	var evaluar_disabled = false;
+			    	var aceptar_disabled = false;
 			    	if (hasSelection) {
 			    		var estado = grid.getSelectionModel().getSelection()[0].data.estado;
-			    		evaluar_disabled = !(estado === "EnTramite" || estado === "evaluada");
+			    		evaluar_disabled = !(estado === "En Tramite" || estado === "Evaluada");
+			    		aceptar_disabled = (estado === "En Tramite");
 			    	}
-			    	boton_aceptar.setDisabled(!hasSelection);
+			    	boton_aceptar.setDisabled(aceptar_disabled);
 			    	boton_rechazar.setDisabled(!hasSelection);
 			    	boton_evaluar.setDisabled(evaluar_disabled);
 			    });

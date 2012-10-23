@@ -1,0 +1,9 @@
+{
+	nombre: "Tipo evaluacion de Test",
+	tipoProcedimiento: "Test",
+	numeroEvaluacion: 1,
+	duracion: 2,
+	inicio: 2012,
+	comentariosAdministracion : true,
+	comentariosSolicitante : true
+}

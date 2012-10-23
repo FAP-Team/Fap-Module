@@ -72,7 +72,7 @@ function popupWait_open() {
 
 function popupWait_close() {
 	$popup = $("#popupWait_popup");	
-	$popup.dialog("close");
+	$popup.modal("hide");
 }
 
 function replaceId(url, entidad, id) {
@@ -91,13 +91,16 @@ function replaceAmpersand(url) {
  * Añade los botones especificados en el map, con su función. Se le añade el botón cancelar también
  * @param popup
  */
-function popupButtons (popup, buttons, type, cancelButton, enable) {
+function popupButtons (popup, buttons, type, cancelButton, enable, recargarAlCancelar) {
 	for (var button in buttons) {
 		popupAddButton (popup, button, buttons[button], type, enable);
 	}
 	if (cancelButton) {
 		// Añadimos el botón de cancelar
-		popupAddButton (popup, "Cancelar", "$('#"+popup+"').modal('hide');", "btn-secondary", true);
+		if (recargarAlCancelar)
+			popupAddButton (popup, "Cancelar", "$('#"+popup+"').modal('hide'); location.reload();", "btn-secondary", true);
+		else
+			popupAddButton (popup, "Cancelar", "$('#"+popup+"').modal('hide'); ", "btn-secondary", true);
 	}
 }
 

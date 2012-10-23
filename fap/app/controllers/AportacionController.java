@@ -62,8 +62,6 @@ public class AportacionController extends AportacionControllerGen {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
-		dbSolicitud.aportaciones.actual.habilitaFuncionario = solicitud.aportaciones.actual.habilitaFuncionario;
-		dbSolicitud.save();
 		solicitud = dbSolicitud;
 		if (!Messages.hasErrors()) {
 			

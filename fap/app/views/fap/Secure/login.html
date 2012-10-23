@@ -32,9 +32,10 @@
 
 <div class="row-fluid">
 <div id="instrucciones" class="span6 alpha">
-	#{fap.configurarMensaje pagina:"login"/}
+	#{fap.configurarMensaje pagina:"login", posicion: 'superior'/}
 	#{include 'fap/Secure/instrucciones.html' /}
 	#{include 'fap/Secure/help.html' /}
+	#{fap.configurarMensaje pagina:"login", posicion: 'inferior'/}
 </div>
 
 <div class="span6 omega">
@@ -88,10 +89,10 @@
 			<div class="form-vertical">
 
 					<label for="username">&{'fap.login.username'}</label>
-					<input class="input-xlarge" type="text" name="username" id="login-username" value="${flash.username}" />
+					<div class="input-prepend"><span class="add-on" style="vertical-align: 18%"><i class="icon-user"></i></span><input class="input-xlarge" type="text" name="username" id="login-username" value="${flash.username}" /></div>
 
 					<label for="password">&{'fap.login.password'}</label>
-					<input class="input-xlarge" type="password" name="password" id="login-password" value="" />
+					<div class="input-prepend"><span class="add-on" style="vertical-align: 18%"><i class="icon-lock"></i></span><input class="input-xlarge" type="password" name="password" id="login-password" value="" /></div>
 				
 				#{if mostrarCaptcha == true}
 					<p>#{ugot.recaptcha theme:"clean"/}</p>

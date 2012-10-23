@@ -6,23 +6,10 @@
 %}
 
 <div class="control-group ${((play.data.validation.Validation!=null) && (play.data.validation.Validation.current().hasError(id))) ? "error" : ""}">
-<label for="${id}" class="control-label">Fichero</label>
-<div class="controls">
-    
-    <input id="${id}" name="${id}" type="file" style="display:none" ${accept}>
-	<div class="input-append">
-	   <div class="input-prepend">
-    		<span class="add-on"><i class="icon-folder-open"></i></span><input id="${id}visible" class="input-large" type="text">
-	   		<a class="btn" onclick="$('input[id=${id}]').click();">Seleccionar</a>
-	   </div>
+	<label for="${id}" class="control-label">Fichero</label>
+	<div class="controls">
+		<input class="input-file" id='${id}' name='${id}' type='file' ${accept}>
 	</div>
- 
-<script type="text/javascript">
-	$('input[id="${id}"]').change(function() {
-	   $('#${id}visible').val($(this).val());
-	}); 
-</script>
-    
 </div>
-</div>
+
 

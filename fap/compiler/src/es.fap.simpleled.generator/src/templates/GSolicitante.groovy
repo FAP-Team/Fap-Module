@@ -29,6 +29,11 @@ public class GSolicitante extends GElement{
 		Combo combo;
 		Grupo fisica;
 		Grupo juridica;
+		Direccion direccion;
+		Texto telefonoContacto;
+		Fecha fechaNacimiento;
+		Combo sexo;
+		Texto email;
 		boolean completo = solicitante.elemento == "Solicitante";
 		
 		if (completo){
@@ -44,6 +49,50 @@ public class GSolicitante extends GElement{
 		
 		if (solicitante.elemento == "SolicitantePersonaJuridica" || completo)
 			juridica = crearPersonaJuridica(combo);
+			
+		if (solicitante.conDireccion){
+			direccion = LedFactory.eINSTANCE.createDireccion();
+			direccion.titulo="Domicilio del Solicitante";
+			direccion.name="${solicitante.name}Direccion";
+			direccion.requerido=solicitante.requerido;
+			direccion.elemento="Direccion";
+			direccion.campo=CampoUtils.addMore(solicitante.campo, "domicilio").campo;
+		}
+		
+		telefonoContacto = LedFactory.eINSTANCE.createTexto();
+		telefonoContacto.titulo="Teléfono de Contacto";
+		telefonoContacto.name="${solicitante.name}TelefonoContacto";
+		telefonoContacto.campo=CampoUtils.addMore(solicitante.campo, "telefonoContacto").campo;
+		
+		fechaNacimiento = LedFactory.eINSTANCE.createFecha();
+		fechaNacimiento.titulo="Fecha Nacimiento";
+		fechaNacimiento.requerido=solicitante.requerido;
+		fechaNacimiento.campo=CampoUtils.addMore(solicitante.campo, "fechaNacimiento").campo;
+		
+		email = LedFactory.eINSTANCE.createTexto();
+		email.titulo="Email";
+		email.name="${solicitante.name}Email";
+		email.campo=CampoUtils.addMore(solicitante.campo, "email").campo;
+		
+		Grupo grupoOtrosDatos = LedFactory.eINSTANCE.createGrupo();
+		grupoOtrosDatos.borde = false;
+		grupoOtrosDatos.elementos.add(fechaNacimiento);
+		grupoOtrosDatos.elementos.add(telefonoContacto);
+		grupoOtrosDatos.elementos.add(email);
+		
+		if (solicitante.elemento == "SolicitantePersonaFisica" || completo) {
+			Grupo grupoSexo = LedFactory.eINSTANCE.createGrupo();
+			grupoSexo.borde = false;
+			grupoSexo.siCombo = combo;
+			grupoSexo.siComboValues = LedFactory.eINSTANCE.createValues();
+			grupoSexo.siComboValues.values.add("fisica");
+			sexo = LedFactory.eINSTANCE.createCombo();
+			sexo.titulo="Sexo";
+			sexo.name="${solicitante.name}Sexo";
+			sexo.campo=CampoUtils.addMore(solicitante.campo, "sexo").campo;
+			grupoSexo.elementos.add(sexo);
+			grupoOtrosDatos.elementos.add(grupoSexo);
+		}
 		
 		if (solicitante.titulo){
 			Grupo grupo = LedFactory.eINSTANCE.createGrupo();
@@ -51,12 +100,16 @@ public class GSolicitante extends GElement{
 			if (combo) grupo.elementos.add(combo);
 			if (fisica) grupo.elementos.add(fisica);
 			if (juridica) grupo.elementos.add(juridica);
+			grupo.elementos.add(grupoOtrosDatos);
+			if (direccion) grupo.elementos.add(direccion);
 			getGroupContainer().addElementAfter(grupo, solicitante);
 		}
 		else{
 			if (combo) getGroupContainer().addElementAfter(combo, solicitante);
 			if (fisica) getGroupContainer().addElementAfter(fisica, combo);
 			if (juridica) getGroupContainer().addElementAfter(juridica, fisica);
+			getGroupContainer().addElementAfter(grupoOtrosDatos, juridica);
+			if (direccion) getGroupContainer().addElementAfter(direccion, grupoOtrosDatos);
 		}
 	}
 	

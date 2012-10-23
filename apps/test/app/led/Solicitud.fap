@@ -518,14 +518,17 @@ Grupo titulo=\"Tablas con popups y paginas\"{
 	}
 	
 	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {
-		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
-	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido representantePersonaFisica
-	    Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido  	
-	    Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido  	
-	    Texto campo=Solicitud.solicitante.telefonoMovil titulo="Teléfono Móvil"  	
-	    Texto campo=Solicitud.solicitante.fax titulo="Fax"  	
-	    Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar  	
-	    Texto campo=Solicitud.solicitante.web titulo="Página web"
+//		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
+//	 	Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido representantePersonaFisica
+//	    Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido  	
+//	    Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido  	
+//	    Texto campo=Solicitud.solicitante.telefonoMovil titulo="Teléfono Móvil"  	
+//	    Texto campo=Solicitud.solicitante.fax titulo="Fax"  	
+//	    Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar  	
+//	    Texto campo=Solicitud.solicitante.web titulo="Página web"
+	    Grupo titulo="PRUEBA"{
+	    	Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido conDireccion
+	    }
 	    
 	    Codigo {"
 Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {

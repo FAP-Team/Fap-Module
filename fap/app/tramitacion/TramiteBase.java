@@ -9,9 +9,11 @@ import javax.persistence.EntityTransaction;
 
 import org.joda.time.DateTime;
 
+import config.InjectorConfig;
 import controllers.fap.FirmaController;
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
+import es.gobcan.platino.servicios.terceros.TerceroListItem;
 
 import messages.Messages;
 import models.Aportacion;
@@ -35,6 +37,7 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.RegistroService;
 import services.RegistroServiceException;
+import services.TercerosService;
 
 @InjectSupport
 public abstract class TramiteBase {
@@ -389,6 +392,34 @@ public abstract class TramiteBase {
 				this.prepararNuevo();
 				solicitud.save();
 				play.Logger.info("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
+				
+				
+				// Creamos el nuevo tercero, si no existe
+				if ((solicitud.solicitante.uriTerceros == null) || (solicitud.solicitante.uriTerceros.isEmpty())) {
+					try {
+						String tipoNumeroIdentificacion;
+						if (solicitud.solicitante.isPersonaFisica()){
+							tipoNumeroIdentificacion = solicitud.solicitante.fisica.nip.tipo;
+						} else {
+							tipoNumeroIdentificacion = "cif";
+						}
+						TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+						List<TerceroListItem> existeTercero = tercerosService.buscarTercerosDetalladosByNumeroIdentificacion(solicitud.solicitante.getNumeroId(), tipoNumeroIdentificacion);
+						if ((existeTercero == null) || (existeTercero.isEmpty())){
+							String uriTercero = tercerosService.crearTerceroMinimal(solicitud.solicitante);
+							solicitud.solicitante.uriTerceros = uriTercero;
+							solicitud.save();
+						} else {
+							String uriTercero = existeTercero.get(0).getUri();
+							solicitud.solicitante.uriTerceros = uriTercero;
+							solicitud.save();
+							play.Logger.warn("El Tercero ya existe en la BDD a Terceros de Platino: "+solicitud.solicitante.getNumeroId()+" - "+tipoNumeroIdentificacion+". Se ha seteado la uriTerceros a: "+uriTercero);
+						}
+					} catch (Exception e){
+						play.Logger.fatal("No se pudo crear el Tercero en Platino con id: "+solicitud.solicitante.getNumeroId()+" : "+e.getMessage());
+					}
+				}
+				
 				
 				try {
 					play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);

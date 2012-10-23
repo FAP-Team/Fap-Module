@@ -36,6 +36,15 @@ public class Solicitante extends Persona {
 	@Email
 	public String email;
 
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaNacimiento"), @Column(name = "fechaNacimientoTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaNacimiento;
+
+	@ValueFromTable("sexo")
+	public String sexo;
+
+	public String telefonoContacto;
+
 	public String web;
 
 	public Boolean representado;
@@ -48,6 +57,8 @@ public class Solicitante extends Persona {
 	public List<RepresentantePersonaJuridica> representantes;
 
 	public Boolean autorizaFuncionario;
+
+	public String uriTerceros;
 
 	public Solicitante() {
 		init();

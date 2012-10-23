@@ -57,12 +57,16 @@ Entidad Solicitante extends Persona auditable{
 	String telefonoMovil
 	String fax
 	Email email
+	DateTime fechaNacimiento
+	Lista sexo sexo
+	String telefonoContacto
 	String web
 	// Es el solicitante el que puede tener representantes. Según el tipo de solicitante puede tener 1, o varios representantes
 	Boolean representado
 	RepresentantePersonaFisica representante
 	OneToMany RepresentantePersonaJuridica representantes
 	Boolean autorizaFuncionario
+	String uriTerceros
 }
 
 Entidad FuncionariosHabilitados extends Singleton {

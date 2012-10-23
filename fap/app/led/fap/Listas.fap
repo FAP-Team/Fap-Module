@@ -8873,3 +8873,8 @@ Lista posicionMensaje crearEnumerado {
 	superior: "Parte superior"
 	inferior: "Parte inferior"
 }
+
+Lista sexo crearEnumerado {
+	hombre: "Hombre"
+	mujer: "Mujer"
+}

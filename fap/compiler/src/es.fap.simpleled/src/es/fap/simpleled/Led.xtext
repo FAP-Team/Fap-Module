@@ -549,6 +549,7 @@ Solicitante:
 		& (requerido?='requerido')?
 		& ("permiso" "=" permiso=[Permiso])?
 		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
+		& (conDireccion?='conDireccion')?
 	)
 ;
 

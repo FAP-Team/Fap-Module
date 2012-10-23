@@ -67,7 +67,10 @@ Formulario Solicitud permiso=solicitudes{
 			Grupo "Anotación Inject"{
 				Enlace "Inject" pagina=PaginaInject
 			}
-    		
+			
+			Grupo "Editor Histórico"{
+                Enlace "Histórico" pagina=EditorHistorico
+            }
     	}
     	    	
     	Grupo "Módulo FAP" {

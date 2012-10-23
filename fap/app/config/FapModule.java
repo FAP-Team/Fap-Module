@@ -9,11 +9,13 @@ import security.SecureFapGen;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.RegistroService;
+import services.TercerosService;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemNotificacionServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.notificacion.NotificacionServiceImpl;
+import services.platino.PlatinoTercerosServiceImpl;
 import services.NotificacionService;
 
 public class FapModule extends PlayAbstractModule {
@@ -26,6 +28,11 @@ public class FapModule extends PlayAbstractModule {
 		firma();
 		registro();
 		notificacion();
+		terceros();
+	}
+	
+	protected void terceros() {
+		bindLazySingletonOnDev(TercerosService.class, PlatinoTercerosServiceImpl.class);
 	}
 	
 	protected void notificacion() {

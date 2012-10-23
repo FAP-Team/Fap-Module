@@ -62,6 +62,15 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		Entity entidad = LedCampoUtils.getUltimaEntidad(sw.getCampo());
 		acceptor.accept(createCompletionProposal(entidad.getName(), styledProposal(entidad.getName() + "  -  " + "Entidad", null), null, 0, context.getPrefix(), context));
 	}
+	
+//	TODO: Autocompletado del campo del when. (Descomentar líneas 182 y 183??)
+//	@Override
+//	public void completeWSRuleCheck_Left(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+//		WSRuleCheck a = (WSRuleCheck)model;
+//		ServicioWeb sw = (ServicioWeb)a.eContainer();
+//		Entity entidad = LedCampoUtils.getUltimaEntidad(sw.getCampo());
+//		acceptor.accept(createCompletionProposal(entidad.getName(), styledProposal(entidad.getName() + "  -  " + "Entidad", null), null, 0, context.getPrefix(), context));
+//	}
 
 	@Override
 	public void completeKeyword(Keyword keyword, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
@@ -170,6 +179,8 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		LedElementValidator validator = LedElementValidator.getElementValidator(model);
 		if (model instanceof WSReturn)
 			return;
+//		if (model instanceof WSRuleCheck)
+//			return;
 		if (validator != null) {
 			for (Proposal proposal: validator.completeEntidades(context.getPrefix(), LedEntidadUtils.eliminaSolicitudGenerica(LedCampoUtils.getEntidadesValidas(model)).values(), model))
 				acceptor.accept(createCompletionProposal(proposal.getEditorText(), styledProposal(proposal.text, proposal.valid), null, proposal.prio, context.getPrefix(), context));

@@ -444,6 +444,30 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			error("El campo Color no ha sido rellenado correctamente", null);
 	}
 	
+	
+	//TODO: No se ha probado. Que el nombre del Servicio Web sea único.
+	/*
+	 * Se se llama a cada método que desea comparar dos páginas, para checkear condiciones.
+	 */
+//	@Check
+//	public void checkServicioWebStuff(ServicioWeb servicioWeb){
+//		for (ServicioWeb s : ModelUtils.<ServicioWeb>getVisibleNodes(ledPackage.getServicioWeb(), servicioWeb.eResource())) {
+//			String qn1 = qnProvider.getFullyQualifiedName(servicioWeb).toString();
+//			String qn2 = qnProvider.getFullyQualifiedName(s).toString();
+//			String uri1 = servicioWeb.eResource().getURI().toString();
+//			String uri2 = s.eResource().getURI().toString();
+//			if (!qn1.equals(qn2) || !uri1.equals(uri2)){
+//				checkNombreServicioWebUnico(servicioWeb, s);
+//			}
+//		}
+//	}
+//	
+//	public void checkNombreServicioWebUnico(ServicioWeb servicioWeb, ServicioWeb other){
+//		Formulario formulario = (Formulario)other.eContainer();
+//		if (servicioWeb.getName().equals(other.getName()))
+//			error("El servicio web " + servicioWeb.getName() + " ya existe en el formulario " + formulario.getName(), ledPackage.getServicioWeb_Name());
+//	}
+	
 }
 
 

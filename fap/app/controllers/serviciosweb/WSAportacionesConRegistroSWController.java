@@ -1,0 +1,7 @@
+package controllers.serviciosweb;
+
+import controllers.gen.serviciosweb.WSAportacionesConRegistroSWControllerGen;
+
+public class WSAportacionesConRegistroSWController extends WSAportacionesConRegistroSWControllerGen {
+
+}

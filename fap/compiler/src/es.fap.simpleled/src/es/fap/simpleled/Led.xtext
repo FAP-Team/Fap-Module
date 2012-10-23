@@ -592,17 +592,6 @@ Permiso:
 	"}"
 ;
 
-ServicioWeb:
-	elemento='ServicioWeb' name=ID "{"
-		"campo" "=" campo=Campo
-		"return" "=" "{" ret = WSReturn ("," retMore += WSReturn)* "}" 	
-	"}"
-;
-
-WSReturn:
-	"titulo" "=" titulo=STRING ":" campoRet=Campo
-;
-
 PermisoWhen:
 	'when'
 		rule = PermisoRule
@@ -693,6 +682,63 @@ PermisoRuleCheckGroupOp:
 
 PermisoRuleCheckRight:
 	campo=CampoPermiso | str=STRING  | nulo?='null' | action=("leer" | "editar" | "crear" | "borrar")
+;
+
+ServicioWeb:
+	elemento='ServicioWeb' name=ID "{"
+		"campo" "=" campo=Campo
+		(when=WSWhen)?
+		"return" "=" "{" ret = WSReturn ("," retMore += WSReturn)* "}"
+	"}"
+;
+
+WSWhen:
+	'when' rule=WSRule
+;
+
+WSReturn:
+	"titulo" "=" titulo=STRING ":" campoRet=Campo
+;
+
+WSRule:
+	WSRuleOr
+;
+
+WSRuleOr returns WSRule:
+	WSRuleAnd ({WSRuleOr.left=current} 'or' right=WSRuleAnd)*
+;
+
+WSRuleAnd returns WSRule:
+	WSPrimary ({WSRuleAnd.left=current} 'and' right=WSPrimary)*
+;
+
+WSPrimary returns WSRule:
+	WSRuleCheck |
+	 '(' WSRuleOr ')' {WSPrimary.left=current}
+;
+
+WSRuleCheck:
+	left=Campo (
+		(simpleOp=WSRuleCheckSimpleOp right=WSRuleCheckRight)
+		| (groupOp=WSRuleCheckGroupOp '(' rightGroup+=WSRuleCheckRight (',' rightGroup+=WSRuleCheckRight)* ')')
+		| (compareOp=WSRuleCheckCompareOp right=WSRuleCheckRight)
+	)
+;
+
+WSRuleCheckSimpleOp:
+	op = ('=' | '!=')
+;
+
+WSRuleCheckGroupOp:
+	op = ('in' | 'not in')
+;
+
+WSRuleCheckCompareOp:
+	op = ('<' | '>' | '<='| '>=')
+;
+
+WSRuleCheckRight:
+	str=STRING  | nulo?='null'
 ;
 
 Codigo:

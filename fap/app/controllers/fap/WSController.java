@@ -241,31 +241,31 @@ public class WSController extends GenericController {
 		return null;
 	}
 	
-	private static int getNumMes(String mes) {
+	private static String getNumMes(String mes) {
 		if (mes.equals("Ene"))
-			return 1;
+			return "01";
 		else if (mes.equals("Feb"))
-			return 2;
+			return "02";
 		else if (mes.equals("Mar"))
-			return 3;
+			return "03";
 		else if (mes.equals("Abr"))
-			return 4;
+			return "04";
 		else if (mes.equals("May"))
-			return 5;
+			return "05";
 		else if (mes.equals("Jun"))
-			return 6;
+			return "06";
 		else if (mes.equals("Jul"))
-			return 7;
+			return "07";
 		else if (mes.equals("Ago"))
-			return 8;
+			return "08";
 		else if (mes.equals("Sept"))
-			return 9;
+			return "09";
 		else if (mes.equals("Oct"))
-			return 10;
+			return "10";
 		else if (mes.equals("Nov"))
-			return 11;
+			return "11";
 		else if (mes.equals("Dic"))
-			return 12;
-		return 0;
+			return "12";
+		return "0";
 	}
 }

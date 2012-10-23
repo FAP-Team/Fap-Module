@@ -45,25 +45,26 @@
 	#{/form}
 
 	%{
-		def listaPeticiones = listaResultados;
 		def ws = serviciosWeb;
 		def app = aplicacion;
 		def fecha = peticion.fechaPeticion.split("T")[0];
 		def fechaPeticion = fecha.split("-")[2] + "/"+ fecha.split("-")[1]+ "/"+ fecha.split("-")[0];
 		def urlController = play.mvc.Router.reverse('fap.WSController.getData');
-		
 		def mapVars = [:];
 		def lista = [];
+		
 		for (int j = 0; j < ws.servicioWebInfo.infoParams.size(); j++) {
 			lista.add(ws.servicioWebInfo.infoParams.get(j).tipo);
 		}
-			
+		
 		def k = 0;
-		for (int i = 0; i < listaResultados.resultadosPeticion.get(0).resultadoPeticion.size(); i++) {
-			def x = listaResultados.resultadosPeticion.get(0).resultadoPeticion;
-			if (!x.get(i).nombre.startsWith("id")) {
-				mapVars.put(x.get(i).nombre, lista.get(k));
-				k++;
+		for (int m = 0; m < listaResultados.resultadosPeticion.size(); m++) {
+			for (int i = 0; i < listaResultados.resultadosPeticion.get(m).resultadoPeticion.size(); i++) {
+				def x = listaResultados.resultadosPeticion.get(m).resultadoPeticion;
+				if (!x.get(i).nombre.startsWith("id") && !mapVars.containsKey(x.get(i).nombre)) {
+					mapVars.put(x.get(i).nombre, lista.get(k));
+					k++;
+				}
 			}
 		}
 		
@@ -325,7 +326,7 @@
 		function dibujarQueso() {
 			var urlController = "${urlController}";
 			var wsName = "${ws.servicioWebInfo.urlWS.split("/")[1]}";
-			var idListaResultados = ${listaPeticiones.id};
+			var idListaResultados = ${listaResultados.id};
 			var indexRango = combo_rango.selectedIndex;
 			var optionSelectedRango = combo_rango.options[indexRango].value;
 			var indexVar = combo_var1.selectedIndex;
@@ -361,7 +362,7 @@
 			var indexVar = combo_var1.selectedIndex;
 			var optionSelectedVar = combo_var1.options[indexVar].text;
 			var urlController = "${urlController}";
-			var idListaResultados = ${listaPeticiones.id};
+			var idListaResultados = ${listaResultados.id};
 			var wsName = "${ws.servicioWebInfo.urlWS.split("/")[1]}";
 			var keyArray = "[";
 			var valueArray = "[";

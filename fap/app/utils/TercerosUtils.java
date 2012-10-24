@@ -288,4 +288,12 @@ public class TercerosUtils {
 			return "19";
 		return null;
 	}
+	
+	public static String getCodigoPaisFapFromTerceros (String idPais){
+		if (idPais == null)
+			return null;
+		if (idPais.equals("64")) // España
+			return "724";
+		return null;
+	}
 }

@@ -62,6 +62,7 @@ public class GForm extends GGroupElement{
 						\$('#${name} input, #${name} select, #${name} textarea').change(function(){
 							\$('#${name}').submit();
 						});
+					});
 				</script>
 			""";
 		}

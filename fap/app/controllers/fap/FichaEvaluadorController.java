@@ -109,13 +109,13 @@ public class FichaEvaluadorController extends Controller {
 									if (doc.uri.equals(documento.uriDocumento)){
 										rows.add(doc);
 										encontrado = true;
-										break;
+										//break;
 									}	
 								}
 							} else {
 								play.Logger.error("No existe ningun documento en la lista de documentos Accesibles para buscar los del tipo requerido en la Evaluación.");
 							}
-							break;
+							//break;
 						}
 					}
 					if (encontrado)
@@ -207,7 +207,7 @@ public class FichaEvaluadorController extends Controller {
 						if (actionEnd)
 							validation.required(key, valor);
 						//TODO validaciones de tamaño máximo
-						if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(valor) < 0) {
+						if (criterio.tipo.valorMaximo != null && valor != null && criterio.tipo.valorMaximo.compareTo(valor) < 0) {
 							// validation.addError(key, "El valor "+valor+" es superior al valor máximo permitido: "+criterio.tipo.valorMaximo);
 							Messages.warning("El valor del criterio manual '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' es superior ("+valor+") al permitido en ese tipo de criterio: "+criterio.tipo.valorMaximo);
 							if (actionEnd){
@@ -215,7 +215,7 @@ public class FichaEvaluadorController extends Controller {
 								guardarMaximo=true;
 							}
 						}
-						if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(valor) > 0) {
+						if (criterio.tipo.valorMinimo != null && valor != null && criterio.tipo.valorMinimo.compareTo(valor) > 0) {
 							Messages.warning("El criterio manual/automod "+criterio.tipo.jerarquia+" no llega ("+valor+") al mínimo valor permitido: "+criterio.tipo.valorMinimo+". Se ha establecido como valor a 0.0");
 							if (actionEnd)
 								criterio.valor=0.0;
@@ -245,12 +245,12 @@ public class FichaEvaluadorController extends Controller {
 				for(Criterio criterio : evaluacion.criterios){
 					if (criterio.tipo.claseCriterio.equals("auto")) {
 						if(actionEnd || actionSave){
-							if (criterio.tipo.valorMaximo != null && criterio.tipo.valorMaximo.compareTo(criterio.valor) < 0) {
+							if (criterio.tipo.valorMaximo != null && criterio.valor != null && criterio.tipo.valorMaximo.compareTo(criterio.valor) < 0) {
 								if (actionSave)
 									Messages.warning("El criterio automático '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' sobrepasaba ("+criterio.valor+") el máximo valor permitido. Se ha establecido como valor, su valor máximo posible: "+criterio.tipo.valorMaximo);
 								criterio.valor = criterio.tipo.valorMaximo;
 							}
-							if (criterio.tipo.valorMinimo != null && criterio.tipo.valorMinimo.compareTo(criterio.valor) > 0) {
+							if (criterio.tipo.valorMinimo != null && criterio.valor != null && criterio.tipo.valorMinimo.compareTo(criterio.valor) > 0) {
 								Messages.warning("El criterio automático "+criterio.tipo.jerarquia+" no llega ("+criterio.valor+") al mínimo valor permitido: "+criterio.tipo.valorMinimo+". Se ha establecido como valor a 0.0");
 								criterio.valor=0.0;
 							}

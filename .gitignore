@@ -57,6 +57,7 @@ Thumbs.db
 
 
 #Ficheros temporales
+apps/test/public/tmp/*
 apps/test/tmp/*
 apps/nuevaPaginaInicio/tmp/*
 fap/tmp/*

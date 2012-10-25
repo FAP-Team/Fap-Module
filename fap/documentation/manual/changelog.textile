@@ -1,5 +1,13 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC2
+
+* Nuevo atributo noVisibleEvaluador en Criterios.
+* Calculo de los criterios dependiendo de su valor máximo.
+* Recalculados los criterios dependiendo del rol de quien los vea.
+* Botón reevaluar en la tabla de evaluaciones.
+* Fixed Minor Bug en Baremación.
+
 h3. Versión 2.1.1RC1
 
 * Mejorada y Optimizada la Carga de la Tabla de Tablas.

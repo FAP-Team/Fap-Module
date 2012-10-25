@@ -55,6 +55,8 @@ fap.tags.personafisica.primerApellido=Primer apellido
 fap.tags.personafisica.segundoApellido=Segundo apellido
 fap.tags.personafisica.nip=NIP
 fap.tags.personafisica.representado=Asignar un representante
+fap.tags.personafisica.sexo=Sexo
+fap.tags.personafisica.fechaNacimiento=Fecha Nacimiento
 
 #Persona Jurídica
 fap.tags.personajuridica.grupo.titulo=Persona jurídica

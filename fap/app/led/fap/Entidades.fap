@@ -57,8 +57,6 @@ Entidad Solicitante extends Persona auditable{
 	String telefonoMovil
 	String fax
 	Email email
-	DateTime fechaNacimiento
-	Lista sexo sexo
 	String telefonoContacto
 	String web
 	// Es el solicitante el que puede tener representantes. Según el tipo de solicitante puede tener 1, o varios representantes
@@ -195,6 +193,8 @@ Entidad PersonaFisica inheritance=joined auditable{
 	String nombre
 	String primerApellido
 	String segundoApellido
+	Lista sexo sexo
+	DateTime fechaNacimiento
 	Nip nip
 }
 

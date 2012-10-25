@@ -117,9 +117,11 @@ public class TercerosUtils {
 			//En cualquier caso FAP solo admite uno por tipo en el objeto de la clase
 			//solicitante
 			if(tercero.getDomicilios()!=null && tercero.getDomicilios().size()>0){
+		
 				for(int i=0;i<tercero.getDomicilios().size();i++){
 					DomicilioItem d = tercero.getDomicilios().get(0);
 					if(d.isPrincipal()){
+						
 						s.domicilio.calle=d.getVia();
 						s.domicilio.codigoPostal=d.getCodigoPostal();
 						TercerosService terceros = InjectorConfig.getInjector().getInstance(TercerosService.class);
@@ -130,7 +132,7 @@ public class TercerosUtils {
 						s.domicilio.otros=d.getOtros();
 						PaisItem pais = terceros.recuperarPais(d.getIdPais());
 						if(pais!=null)
-							s.domicilio.pais=pais.getLiteral(); // TODO:
+							s.domicilio.pais="_"+getCodigoPaisFapFromTerceros(pais.getId());
 						ProvinciaItem prov = terceros.recuperarProvincia(d.getIdProvincia());
 						if(prov!=null){
 							s.domicilio.provincia="_"+getCodigoProvinciaFapFromTerceros(prov.getId());
@@ -139,7 +141,7 @@ public class TercerosUtils {
 						s.domicilio.provinciaInternacional=d.getEstado();
 						IslaItem isla = terceros.recuperarIsla(d.getIdIsla());
 						if (isla!=null)
-							s.domicilio.isla=isla.getLiteral(); // TODO:
+							s.domicilio.isla="_"+getCodigoIslaFapFromTerceros(isla.getId());
 					}
 				}
 			}
@@ -165,7 +167,8 @@ public class TercerosUtils {
 				TelefonoItem fax = buscarTfnoPrincipalRegistrado(tercero.getTelefonos(),"FAX");
 				if(fax!=null)
 					s.fax = fax.getNumero();
-
+				if (tfnoContacto != null)
+					s.telefonoContacto=tfnoContacto;
 			}
 		}
 
@@ -289,11 +292,98 @@ public class TercerosUtils {
 		return null;
 	}
 	
-	public static String getCodigoPaisFapFromTerceros (String idPais){
+	public static String getCodigoPaisFapFromTerceros (Long idPais){
 		if (idPais == null)
 			return null;
-		if (idPais.equals("64")) // España
+		if (idPais == 64) // España
 			return "724";
 		return null;
 	}
+	
+	public static String getCodigoIslaFapFromTerceros (Long idIsla){
+		if (idIsla == null)
+			return null;
+		if (idIsla == 10) // Lanzarote
+			return "353";
+		else if (idIsla == 20) // Fuerteventura
+			return "351";
+		else if (idIsla == 30) // Gran Canaria
+			return "352";
+		else if (idIsla == 40) // Tenerife
+			return "384";
+		else if (idIsla == 50) // La Gomera
+			return "381";
+		else if (idIsla == 60) // La Palma
+			return "383";
+		else if (idIsla == 70) // El Hierro
+			return "382";
+		return null;
+	}
+	
+	private static boolean isValid (String campo){
+		if ((campo != null) && (!campo.isEmpty()))
+			return true;
+		return false;
+	}
+	
+	public static String convertirSolicitanteAJS(Solicitante solicitante){
+		String ret = "{";
+		if (solicitante != null){
+			String tipoDireccion=null;
+			if (solicitante.isPersonaFisica()){
+				if (isValid(solicitante.fisica.nombre))
+					ret+="nombre%->%"+solicitante.fisica.nombre+"%,%";
+				if (isValid(solicitante.fisica.primerApellido))
+					ret+="primerApellido%->%"+solicitante.fisica.primerApellido+"%,%";
+				if (isValid(solicitante.fisica.segundoApellido))
+					ret+="segundoApellido%->%"+solicitante.fisica.segundoApellido+"%,%";
+				if (isValid(solicitante.fisica.sexo))
+					ret+="sexo%->%"+solicitante.fisica.sexo+"%,%";
+				if ((solicitante.fisica.fechaNacimiento!= null) && (isValid(solicitante.fisica.fechaNacimiento.toString("dd-MMM-yy"))))
+					ret+="fechaNacimiento%->%"+solicitante.fisica.fechaNacimiento.toString("dd-MMM-yy")+"%,%";
+			} else {
+				if (isValid(solicitante.juridica.entidad))
+					ret+="entidad%->%"+solicitante.juridica.entidad+"%,%";
+			}
+			if (isValid(solicitante.email))
+				ret+="email%->%"+solicitante.email+"%,%";
+			if (isValid(solicitante.telefonoContacto))
+				ret+="telefonoContacto%->%"+solicitante.telefonoContacto+"%,%";
+			// Direccion
+			if (isValid(solicitante.domicilio.calle))
+				ret+="%&%calle%->%"+solicitante.domicilio.calle+"%,%";
+			if (isValid(solicitante.domicilio.codigoPostal))
+				ret+="%&%codigoPostal%->%"+solicitante.domicilio.codigoPostal+"%,%";
+			if (isValid(solicitante.domicilio.comunidad))
+				ret+="%&%comunidad%->%"+solicitante.domicilio.comunidad+"%,%";
+			if (isValid(solicitante.domicilio.isla)){
+				ret+="%&%isla%->%"+solicitante.domicilio.isla+"%,%";
+				if (tipoDireccion == null)
+					tipoDireccion="canaria";
+			}
+			if (isValid(solicitante.domicilio.municipio))
+				ret+="%&%municipio%->%"+solicitante.domicilio.municipio+"%,%";
+			if (isValid(solicitante.domicilio.numero))
+				ret+="%&%numero%->%"+solicitante.domicilio.numero+"%,%";
+			if (isValid(solicitante.domicilio.provinciaInternacional)){
+				ret+="%&%provinciaInternacional%->%"+solicitante.domicilio.provinciaInternacional+"%,%";
+				if (tipoDireccion == null)
+					tipoDireccion = "internacional";
+			}
+			if (isValid(solicitante.domicilio.otros))
+				ret+="%&%otros%->%"+solicitante.domicilio.otros+"%,%";
+			if (isValid(solicitante.domicilio.pais))
+				ret+="%&%pais%->%"+solicitante.domicilio.pais+"%,%";
+			if (isValid(solicitante.domicilio.provincia))
+				ret+="%&%provincia%->%"+solicitante.domicilio.provincia+"%,%";
+
+			if (tipoDireccion == null)
+				tipoDireccion = "nacional";
+			
+			ret+="%&%tipo%->%"+tipoDireccion;
+		}
+		ret += "}";
+		return ret;
+	}
+	
 }

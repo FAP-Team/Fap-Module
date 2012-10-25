@@ -21,9 +21,25 @@ public class BaremacionService {
 
 	/**
 	 * Calcula los totales de los criterios de evalaución y los conceptos económicos
+	 * 
+	 * TODO: tener en cuenta el NoVisibleEvaluador solo en la primera etapa
+	 * 
 	 * @param evaluacion
 	 */
-	public static void calcularTotales(Evaluacion evaluacion){
+	public static void calcularTotales(Evaluacion evaluacion) {
+		calcularTotales(evaluacion, false);
+	}
+	
+	public static void calcularTotales(Evaluacion evaluacion, boolean tenerEnCuentaNoVisibles) {
+		calcularTotales(evaluacion, tenerEnCuentaNoVisibles, false);
+	}
+	
+	/**
+	 * 
+	 * @param evaluacion
+	 * @param tenerEnCuentaNoVisibles false Sumo los no visibles tambien
+	 */
+	public static void calcularTotales(Evaluacion evaluacion, boolean tenerEnCuentaNoVisibles, boolean seteaMaximosYMinimos){
 		//Ordena los elementos para calcularlos teniendo en cuenta las dependencias		
 		//Criterios y conceptos se calculan en orden inverso para tener en cuenta las dependencias
 		
@@ -34,19 +50,51 @@ public class BaremacionService {
 			for(int i = sortedCriterios.size() - 1; i >= 0; i--){
 				for(Criterio criterio : sortedCriterios.get(i)){
 					//TODO revisar código para automod
-					if(criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod")){
-						play.Logger.info("Calculando automático de criterios%", criterio.tipo.jerarquia);
-						if (i == sortedCriterios.size()-1){ // Para los nodos hojas
-							invokeEval(criterio.tipo.jerarquia, criterio, sinHijos);
+					if((criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod"))
+							&& (!criterio.tipo.noVisibleEvaluador || tenerEnCuentaNoVisibles)){
+						if (!tenerEnCuentaNoVisibles) {
+							
+                            if (i == sortedCriterios.size()-1){ // Para los nodos hojas
+                                invokeEval(criterio.tipo.jerarquia, criterio, sinHijos);
+                            } else {
+        						List<Criterio> childs = getChilds(criterio, sortedCriterios.get(i + 1));
+        						List<Criterio> falseChilds = childs;
+    							for (Criterio c: falseChilds) {
+    								if (c.tipo.noVisibleEvaluador)
+    									c.valor = 0.0;
+    							}
+                            	invokeEval(criterio.tipo.jerarquia, criterio, falseChilds);
+                            }
 						} else {
-							List<Criterio> childs = getChilds(criterio, sortedCriterios.get(i + 1));
-							invokeEval(criterio.tipo.jerarquia, criterio, childs);
+                            if (i == sortedCriterios.size()-1){ // Para los nodos hojas
+                                invokeEval(criterio.tipo.jerarquia, criterio, sinHijos);
+                            } else {
+                            	List<Criterio> childs = getChilds(criterio, sortedCriterios.get(i + 1));
+                            	invokeEval(criterio.tipo.jerarquia, criterio, childs);
+                            }
+						}
+					}
+					// El criterio está calculado (miro máximo y mínimo)
+					if (seteaMaximosYMinimos) {
+						if (criterio.tipo.valorMaximo != null && criterio.valor != null && criterio.tipo.valorMaximo.compareTo(criterio.valor) < 0) {
+							criterio.valor = criterio.tipo.valorMaximo;
+						}
+						if (criterio.tipo.valorMinimo != null && criterio.valor != null && criterio.tipo.valorMinimo.compareTo(criterio.valor) > 0) {
+							criterio.valor = 0.0;
 						}
 					}
 				}
 			}
-			// Para calcular la puntuacion total
-			invokeEvalTotal(evaluacion, totales, "Criterios");
+			if (!tenerEnCuentaNoVisibles) {
+				List<Criterio> falseTotales = totales;
+				for (Criterio c: falseTotales) {
+					if (c.tipo.noVisibleEvaluador)
+						c.valor = 0.0;
+				}
+				invokeEvalTotal(evaluacion, falseTotales, "Criterios");
+			} else {
+				invokeEvalTotal(evaluacion, totales, "Criterios");
+			}
 		}
 
 		if(evaluacion.ceconomicos != null && evaluacion.ceconomicos.size() > 0){
@@ -55,6 +103,7 @@ public class BaremacionService {
 			List<CEconomico>sinHijos = new ArrayList<CEconomico>();
 			for(int i = sortedCEconomicos.size()-1; i >= 0; i--){
 				for(CEconomico ceconomico : sortedCEconomicos.get(i)){
+					play.Logger.info("Calculando automático %", ceconomico.tipo.jerarquia);
 					if(ceconomico.tipo.clase.equals("auto")){
 						play.Logger.info("Calculando automático de ceconomicos %", ceconomico.tipo.jerarquia);
 						if (i == sortedCEconomicos.size()-1){ // Para los nodos hojas

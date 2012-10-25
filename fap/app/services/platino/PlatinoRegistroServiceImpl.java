@@ -161,7 +161,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 		try {
 			hasConnection = getVersion() != null;
 		} catch (Exception e) {
-			log.info("RegistroServiceImpl no tiene coneccion con " + getEndPoint());
+			log.info("RegistroServiceImpl no tiene conexión con " + getEndPoint());
 		}
 		return hasConnection;
 	}

@@ -40,6 +40,8 @@ Entidad TipoCriterio {
     Double valorMaximo
     Double valorMinimo
     
+    boolean noVisibleEvaluador 
+    
     // Para saber si hay que actualizarlo o crearlo en sucesivas actualizaciones de la Baremación (Boton de recargar Baremacion o Iniciar, etc.)
     Boolean esNuevo default="false"
     

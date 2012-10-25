@@ -43,6 +43,8 @@ public class TipoCriterio extends FapModel {
 
 	public Double valorMinimo;
 
+	public boolean noVisibleEvaluador;
+
 	public Boolean esNuevo;
 
 	@ValueFromTable("LstTipoValorCriterio")
@@ -106,6 +108,7 @@ public class TipoCriterio extends FapModel {
 		this.valorMaximo = tipoCriterio.valorMaximo;
 		this.valorMinimo = tipoCriterio.valorMinimo;
 		this.valorPrecision = tipoCriterio.valorPrecision;
+		this.noVisibleEvaluador = tipoCriterio.noVisibleEvaluador;
 	}
 
 	public int estoyContenido(List<TipoCriterio> lista) {

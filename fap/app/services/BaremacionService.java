@@ -30,12 +30,18 @@ public class BaremacionService {
 		if(evaluacion.criterios != null && evaluacion.criterios.size() > 0){
 			List<List<Criterio>> sortedCriterios = sortByProfundidad(evaluacion.criterios);
 			List<Criterio> totales=sortedCriterios.get(0);
-			for(int i = sortedCriterios.size() - 2; i >= 0; i--){
+			List<Criterio>sinHijos = new ArrayList<Criterio>();
+			for(int i = sortedCriterios.size() - 1; i >= 0; i--){
 				for(Criterio criterio : sortedCriterios.get(i)){
 					//TODO revisar código para automod
 					if(criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod")){
-						List<Criterio> childs = getChilds(criterio, sortedCriterios.get(i + 1));
-						invokeEval(criterio.tipo.jerarquia, criterio, childs);
+						play.Logger.info("Calculando automático de criterios%", criterio.tipo.jerarquia);
+						if (i == sortedCriterios.size()-1){ // Para los nodos hojas
+							invokeEval(criterio.tipo.jerarquia, criterio, sinHijos);
+						} else {
+							List<Criterio> childs = getChilds(criterio, sortedCriterios.get(i + 1));
+							invokeEval(criterio.tipo.jerarquia, criterio, childs);
+						}
 					}
 				}
 			}
@@ -46,12 +52,17 @@ public class BaremacionService {
 		if(evaluacion.ceconomicos != null && evaluacion.ceconomicos.size() > 0){
 			List<List<CEconomico>> sortedCEconomicos = sortByProfundidad(evaluacion.ceconomicos);
 			List<CEconomico> totales=sortedCEconomicos.get(0);
-			for(int i = sortedCEconomicos.size() -2; i >= 0; i--){
+			List<CEconomico>sinHijos = new ArrayList<CEconomico>();
+			for(int i = sortedCEconomicos.size()-1; i >= 0; i--){
 				for(CEconomico ceconomico : sortedCEconomicos.get(i)){
-					play.Logger.info("Calculando automático %", ceconomico.tipo.jerarquia);
 					if(ceconomico.tipo.clase.equals("auto")){
-						List<CEconomico> childs = getChilds(ceconomico, sortedCEconomicos.get(i + 1));
-						invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+						play.Logger.info("Calculando automático de ceconomicos %", ceconomico.tipo.jerarquia);
+						if (i == sortedCEconomicos.size()-1){ // Para los nodos hojas
+							invokeEval(ceconomico.tipo.jerarquia, ceconomico, sinHijos);
+						} else {
+							List<CEconomico> childs = getChilds(ceconomico, sortedCEconomicos.get(i + 1));
+							invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+						}
 					}
 				}
 			}

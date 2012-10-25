@@ -6,6 +6,7 @@ import play.mvc.*;
 import baremacion.BaremacionFAP;
 import controllers.fap.*;
 import security.Secure;
+import services.BaremacionService;
 import tags.ReflectionUtils;
 import validation.*;
 import models.*;
@@ -59,12 +60,27 @@ public class ConsultarEvaluacionesController extends GenericController {
 				try {
 					BaremacionFAP.setOficialEvaluacion(eval.solicitud.id, idEvaluacion);
 					eval.estado = EstadosEvaluacionEnum.enTramite.name();
+					BaremacionService.calcularTotales(eval);
 					eval.save();
 				} catch (Exception e) {
 					Messages.error("Error generando el documento de solicitud para ver en evaluación. No se ha podido Iniciar esta Evaluación.");
 	                play.Logger.error("Error generando el de solicitud para ver en evaluación, no se ha ACEPTADO la evaluación: "+e.getMessage());
 	                Messages.keep();
 				}
+			}
+		}else{
+			forbidden();
+		}
+	}
+	
+	public static void reevaluar(Long idEvaluacion){
+		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
+			Evaluacion eval = Evaluacion.findById(idEvaluacion);
+			if (eval != null) {
+				eval.estado = EstadosEvaluacionEnum.enTramite.name();
+				BaremacionService.calcularTotales(eval);
+				eval.save();
+				FichaEvaluadorController.index(idEvaluacion, "editar");
 			}
 		}else{
 			forbidden();
@@ -84,13 +100,13 @@ public class ConsultarEvaluacionesController extends GenericController {
 		}
 	}
 	
-	@Util
-	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void botonEvaluacionesFinalizadas(String btnEvaluacionesFinalizadas) {
-		checkAuthenticity();
-		if (!Messages.hasErrors()) {
-			String accion = "editable";
-			renderTemplate("fap/EvaluacionesFinalizadas/EvaluacionesFinalizadas.html", accion);
-		}
-	}
+//	@Util
+//	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+//	public static void botonEvaluacionesFinalizadas(String btnEvaluacionesFinalizadas) {
+//		checkAuthenticity();
+//		if (!Messages.hasErrors()) {
+//			String accion = "editable";
+//			renderTemplate("fap/EvaluacionesFinalizadas/EvaluacionesFinalizadas.html", accion);
+//		}
+//	}
 }

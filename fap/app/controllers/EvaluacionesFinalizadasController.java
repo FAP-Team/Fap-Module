@@ -36,15 +36,15 @@ public class EvaluacionesFinalizadasController extends EvaluacionesFinalizadasCo
 		renderJSON(response.toJSON("totalCriterios", "solicitud.expedienteAed.idAed", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado", "id"));
 	}
 	
-	public static void editarEvaluacion(Long idEvaluacion, String accion){
-		if ("editar".equals(accion)){
-			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
-			evaluacion.estado = EstadosEvaluacionEnum.enTramite.name();
-			evaluacion.save();
-			FichaEvaluadorController.index(idEvaluacion, accion);
-		} else {
-			FichaEvaluadorController.index(idEvaluacion, accion);
-		}
-	}
+//	public static void editarEvaluacion(Long idEvaluacion, String accion){
+//		if ("editar".equals(accion)){
+//			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+//			evaluacion.estado = EstadosEvaluacionEnum.enTramite.name();
+//			evaluacion.save();
+//			FichaEvaluadorController.index(idEvaluacion, accion);
+//		} else {
+//			FichaEvaluadorController.index(idEvaluacion, accion);
+//		}
+//	}
 	
 }

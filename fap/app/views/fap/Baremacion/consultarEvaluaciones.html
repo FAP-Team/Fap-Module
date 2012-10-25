@@ -14,11 +14,11 @@
 		
 <div id="tablaEvaluacionesAsignadas" class="tabla"></div>
 
-#{form play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.botonEvaluacionesFinalizadas') , class:"form-horizontal", id:"botonEvaluacionesFinalizadas"}
+<!-- #{form play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.botonEvaluacionesFinalizadas') , class:"form-horizontal", id:"botonEvaluacionesFinalizadas"}
 					
 	#{fap.boton id:'btnEvaluacionesFinalizadas', titulo:'Ir a Evaluaciones Finalizadas' /}
 		
-#{/form}
+#{/form} -->
 
 <script type="text/javascript">
 
@@ -139,6 +139,16 @@
 		    		}
 			    });
 			    
+			    var boton_reevaluar = new Ext.Button({
+			    	text: 'Reevaluar',
+			    	disabled:true,
+		    		handler : function(){
+		    			var action = #{jsAction @fap.ConsultarEvaluacionesController.reevaluar(':idEvaluacion') /}
+		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+		    			window.location.href = action({idEvaluacion : selected_id, accion : "editar"})
+		    		}
+			    });
+			    
 			    var boton_evaluar = new Ext.Button({
 			    	text: 'Evaluar',
 			    	disabled:true,
@@ -187,7 +197,7 @@
 							labelWidth : 50,
 							xtype : 'searchfield',
 							store : store
-						}, '->', boton_evaluar, boton_aceptar, boton_rechazar, boton_actualizar ]
+						}, '->', boton_aceptar, boton_evaluar, boton_rechazar, boton_reevaluar, boton_actualizar ]
 					} ]
 				});
 				
@@ -197,14 +207,19 @@
 			    	var hasSelection = grid.getSelectionModel().hasSelection();
 			    	var evaluar_disabled = false;
 			    	var aceptar_disabled = false;
+			    	var rechazar_disabled = false;
+			    	var reevaluar_disabled = false;
 			    	if (hasSelection) {
 			    		var estado = grid.getSelectionModel().getSelection()[0].data.estado;
-			    		evaluar_disabled = !(estado === "En Tramite" || estado === "Evaluada");
-			    		aceptar_disabled = (estado === "En Tramite");
+			    		evaluar_disabled = !(estado === "En Tramite");
+			    		aceptar_disabled = (estado === "En Tramite" || estado === "Evaluada" || estado === "Rechazada");
+			    		rechazar_disabled = (estado === "Rechazada" || estado === "Evaluada" || estado === null);
+			    		reevaluar_disabled = (estado === "En Tramite" || estado  === null)
 			    	}
 			    	boton_aceptar.setDisabled(aceptar_disabled);
-			    	boton_rechazar.setDisabled(!hasSelection);
+			    	boton_rechazar.setDisabled(rechazar_disabled);
 			    	boton_evaluar.setDisabled(evaluar_disabled);
+			    	boton_reevaluar.setDisabled(reevaluar_disabled);
 			    });
 
 				

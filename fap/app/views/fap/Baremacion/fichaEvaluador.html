@@ -28,7 +28,7 @@
 #{/fap.grupo}
 </form>
 
-#{if models.TipoDocumentoAccesible.count() > 0}
+#{if ((models.TipoDocumentoAccesible.count() > 0) || ((evaluacion.solicitudEnEvaluacion != null) && (evaluacion.solicitudEnEvaluacion.uri != null)))}
 	#{fap.tabla 
 	     campo:'Solicitud.documentacion.documentos', 
 	     id:'documentosAccesiblesEvaluador', 
@@ -102,7 +102,7 @@
 		%{
 			def paramName  = "criterio[${criterio.id}]"
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",")  
-			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor)
+			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor);
 			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", criterio.comentariosAdministracion);
 			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", criterio.comentariosSolicitante);
 			def tam=500

@@ -21,6 +21,7 @@ import baremacion.BaremacionFAP;
 
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosEvaluacionEnum;
+import format.FapFormat;
 
 import messages.Messages;
 import messages.Messages.MessageType;
@@ -83,7 +84,9 @@ public class FichaEvaluadorController extends Controller {
 			notFoundIfNull(evaluacion);
 			String expedienteUrl = redirectToFirstPage(evaluacion.solicitud.id);
 			int duracion = tipoEvaluacion.duracion-1;
-			BaremacionUtils.calcularTotalesCEconomicosFichaEvaluacion(evaluacion);
+			// Stupid hack
+			boolean admin = "administradorgestor".contains(AgenteController.getAgente().rolActivo);
+			BaremacionService.calcularTotales(evaluacion, admin, true);
 			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, expedienteUrl, duracion, idEvaluacion, accion);
 		}else{
 			forbidden();
@@ -118,8 +121,8 @@ public class FichaEvaluadorController extends Controller {
 							//break;
 						}
 					}
-					if (encontrado)
-						break;
+//					if (encontrado)
+//						break;
 				}
 			}
 		}
@@ -158,6 +161,9 @@ public class FichaEvaluadorController extends Controller {
 				BaremacionUtils.ordenarTiposCriterios(evaluacion.tipo.criterios);
 				BaremacionUtils.ordenarCriterios(evaluacion.criterios);
 			}
+			// Stupid hack
+			boolean admin = "administradorgestor".contains(AgenteController.getAgente().rolActivo);
+			BaremacionService.calcularTotales(evaluacion, admin, true);
 			new Report("reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, duracion);
 		} catch (Exception e) {
 			play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());
@@ -209,14 +215,14 @@ public class FichaEvaluadorController extends Controller {
 						//TODO validaciones de tamaño máximo
 						if (criterio.tipo.valorMaximo != null && valor != null && criterio.tipo.valorMaximo.compareTo(valor) < 0) {
 							// validation.addError(key, "El valor "+valor+" es superior al valor máximo permitido: "+criterio.tipo.valorMaximo);
-							Messages.warning("El valor del criterio manual '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' es superior ("+valor+") al permitido en ese tipo de criterio: "+criterio.tipo.valorMaximo);
+							Messages.warning("El valor del criterio manual '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' ("+FapFormat.formatMoneda(valor)+") es superior al permitido en ese tipo de criterio: "+FapFormat.formatMoneda(criterio.tipo.valorMaximo));
 							if (actionEnd){
 								criterio.valor=criterio.tipo.valorMaximo;
 								guardarMaximo=true;
 							}
 						}
 						if (criterio.tipo.valorMinimo != null && valor != null && criterio.tipo.valorMinimo.compareTo(valor) > 0) {
-							Messages.warning("El criterio manual/automod "+criterio.tipo.jerarquia+" no llega ("+valor+") al mínimo valor permitido: "+criterio.tipo.valorMinimo+". Se ha establecido como valor a 0.0");
+							Messages.warning("El criterio manual/automod "+criterio.tipo.jerarquia+" ("+FapFormat.formatMoneda(valor)+") no llega al mínimo valor permitido: "+criterio.tipo.valorMinimo+". Se ha establecido como valor a 0,00");
 							if (actionEnd)
 								criterio.valor=0.0;
 						}
@@ -241,24 +247,24 @@ public class FichaEvaluadorController extends Controller {
 				}
 			}
 			if (!validation.hasErrors()){
-				BaremacionService.calcularTotales(evaluacion);
+				boolean admin = "administradorgestor".contains(AgenteController.getAgente().rolActivo);
+				BaremacionService.calcularTotales(evaluacion, admin);
 				for(Criterio criterio : evaluacion.criterios){
 					if (criterio.tipo.claseCriterio.equals("auto")) {
 						if(actionEnd || actionSave){
 							if (criterio.tipo.valorMaximo != null && criterio.valor != null && criterio.tipo.valorMaximo.compareTo(criterio.valor) < 0) {
 								if (actionSave)
-									Messages.warning("El criterio automático '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' sobrepasaba ("+criterio.valor+") el máximo valor permitido. Se ha establecido como valor, su valor máximo posible: "+criterio.tipo.valorMaximo);
+									Messages.warning("El criterio automático '"+criterio.tipo.jerarquia+" - "+criterio.tipo.nombre+"' ("+FapFormat.formatMoneda(criterio.valor)+") sobrepasaba el máximo valor permitido. Se ha establecido como valor, su valor máximo posible: "+FapFormat.formatMoneda(criterio.tipo.valorMaximo));
 								criterio.valor = criterio.tipo.valorMaximo;
 							}
 							if (criterio.tipo.valorMinimo != null && criterio.valor != null && criterio.tipo.valorMinimo.compareTo(criterio.valor) > 0) {
-								Messages.warning("El criterio automático "+criterio.tipo.jerarquia+" no llega ("+criterio.valor+") al mínimo valor permitido: "+criterio.tipo.valorMinimo+". Se ha establecido como valor a 0.0");
+								Messages.warning("El criterio automático "+criterio.tipo.jerarquia+" ("+criterio.valor+") no llega al mínimo valor permitido: "+FapFormat.formatMoneda(criterio.tipo.valorMinimo)+". Se ha establecido como valor a 0,00");
 								criterio.valor=0.0;
 							}
 						}
 					}
 				}
-				// Para recalcular los totales por si hubo cambios en los "auto" por pasar o no llegar al valor maximo o minimo y se haya seteado al maximo o minimo pertinente.
-				BaremacionService.calcularTotales(evaluacion);
+				BaremacionService.calcularTotales(evaluacion, admin, true);
 				evaluacion.save();
 			} else {
 				flash(evaluacion);
@@ -293,7 +299,11 @@ public class FichaEvaluadorController extends Controller {
 		
 		for(Criterio c : evaluacion.criterios){
 			String param = "criterio[" + c.id + "]";
-			Messages.setFlash(param + ".valor", params.get(param + ".valor", String.class));
+			if (!c.tipo.noVisibleEvaluador) {
+				Messages.setFlash(param + ".valor", params.get(param + ".valor", String.class));
+			} else {
+				Messages.setFlash(param + ".valor", 0);
+			}
 			Messages.setFlash(param + ".comentariosAdministracion", params.get(param + ".comentariosAdministracion", String.class));
 			Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
 		}

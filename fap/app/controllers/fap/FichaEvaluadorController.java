@@ -152,6 +152,12 @@ public class FichaEvaluadorController extends Controller {
 			Messages.error("Error al recuperar la evaluacion");
 		}
 		try {
+			if (evaluacion != null) {
+				BaremacionUtils.ordenarTiposCEconomicos(evaluacion.tipo.ceconomicos);
+				BaremacionUtils.ordenarCEconomicos(evaluacion.ceconomicos);
+				BaremacionUtils.ordenarTiposCriterios(evaluacion.tipo.criterios);
+				BaremacionUtils.ordenarCriterios(evaluacion.criterios);
+			}
 			new Report("reports/baremacion/Borrador.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(evaluacion, duracion);
 		} catch (Exception e) {
 			play.Logger.error("Error al generar el borrador del documento %s", e.getMessage());

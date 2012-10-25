@@ -32,12 +32,17 @@ public class BaremacionUtils {
 	public static void calcularTotales (SolicitudGenerica solicitud){
 		if(solicitud.ceconomicos != null && solicitud.ceconomicos.size() > 0){
 			List<List<CEconomico>> sortedCEconomicos = BaremacionService.sortByProfundidad(solicitud.ceconomicos);
-			for(int i = sortedCEconomicos.size() -2; i >= 0; i--){
+			List<CEconomico>sinHijos = new ArrayList<CEconomico>();
+			for(int i = sortedCEconomicos.size()-1; i >= 0; i--){
 				for(CEconomico ceconomico : sortedCEconomicos.get(i)){
-					play.Logger.info("Calculando automático en la solicitud "+ceconomico.tipo.jerarquia);
 					if(ceconomico.tipo!= null && ceconomico.tipo.clase != null && ceconomico.tipo.clase.equals("auto") && (!ceconomico.tipo.tipoOtro)){
-						List<CEconomico> childs = BaremacionService.getChilds(ceconomico, sortedCEconomicos.get(i + 1));
-						BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+						play.Logger.info("Calculando automático en la solicitud "+ceconomico.tipo.jerarquia);
+						if (i == sortedCEconomicos.size()-1){ // Para los nodos hojas
+							BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, sinHijos);
+						} else {
+							List<CEconomico> childs = BaremacionService.getChilds(ceconomico, sortedCEconomicos.get(i + 1));
+							BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+						}
 					}
 				}
 			}
@@ -48,12 +53,17 @@ public class BaremacionUtils {
 	public static void calcularTotalesCEconomicosFichaEvaluacion (Evaluacion evaluacion){
 		if(evaluacion.ceconomicos != null && evaluacion.ceconomicos.size() > 0){
 			List<List<CEconomico>> sortedCEconomicos = BaremacionService.sortByProfundidad(evaluacion.ceconomicos);
-			for(int i = sortedCEconomicos.size() -2; i >= 0; i--){
+			List<CEconomico>sinHijos = new ArrayList<CEconomico>();
+			for(int i = sortedCEconomicos.size() - 1; i >= 0; i--){
 				for(CEconomico ceconomico : sortedCEconomicos.get(i)){
-					play.Logger.info("Calculando automático en la solicitud "+ceconomico.tipo.jerarquia);
 					if(ceconomico.tipo.clase.equals("auto")){
-						List<CEconomico> childs = BaremacionService.getChilds(ceconomico, sortedCEconomicos.get(i + 1));
-						BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+						play.Logger.info("Calculando automático en la solicitud "+ceconomico.tipo.jerarquia);
+						if (i == sortedCEconomicos.size()-1){ // Para los nodos hojas
+							BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, sinHijos);
+						} else {
+							List<CEconomico> childs = BaremacionService.getChilds(ceconomico, sortedCEconomicos.get(i + 1));
+							BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+						}
 					}
 				}
 			}

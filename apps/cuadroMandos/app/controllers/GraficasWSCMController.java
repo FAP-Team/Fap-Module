@@ -47,31 +47,8 @@ public class GraficasWSCMController extends GraficasWSCMControllerGen {
 		if ((serviciosWeb.peticion.size() == 0) && (serviciosWeb.servicioWebInfo.activo))
 			getDatosFromWS(idAplicacion, idServiciosWeb);
 		
-		Gson gson = new Gson();
-		ListaResultadosPeticion listaResultados = null;
-		Long peticionID = Peticion.find("select max(peticion.id) from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where serviciosWeb.id=?", serviciosWeb.id).first();
-		Peticion peticion = Peticion.find("select peticion from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where peticion.id=?", peticionID).first();
-		
-		if (peticion != null) {
-			listaResultados = gson.fromJson(peticion.stringJson, ListaResultadosPeticion.class);
-			listaResultados.save();
-
-			if (listaResultados.resultadosPeticion.size() != 0) {
-				log.info("Visitando página: " + "manual/GraficasWS.html");
-				renderTemplate("manual/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb, listaResultados, peticion);
-			} else {
-				Messages.warning("No existen datos para ese servicio web.");
-				play.Logger.error("No existen datos para ese servicio web.");
-				Messages.keep();
-				redirect("ServiciosWebAppCMController.index", "editar", idAplicacion);
-			}
-		}
-		else {
-			Messages.warning("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
-			play.Logger.error("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
-			Messages.keep();
-			redirect("ServiciosWebAppCMController.index", "editar", idAplicacion);
-		}
+		log.info("Visitando página: " + "manual/GraficasWS.html");
+		renderTemplate("manual/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb);
 
 	}
 	
@@ -88,8 +65,8 @@ public class GraficasWSCMController extends GraficasWSCMControllerGen {
 			request = WS.url(url);
 			json = request.get().getJson();
 		} catch (RuntimeException ce) {
-			Messages.warning("El servicio web no está disponible en estos momentos y no existe historial del mismo");
-			play.Logger.error("El servicio web no está disponible en estos momentos  y no existe historial del mismo");
+			Messages.warning("El servicio web no existe o no está disponible en estos momentos y no existe historial del mismo");
+			play.Logger.error("El servicio web no existe o no está disponible en estos momentos  y no existe historial del mismo");
 			Messages.keep();
 			redirect("ServiciosWebAppCMController.index", "editar", idAplicacion);
 		}
@@ -126,8 +103,8 @@ public class GraficasWSCMController extends GraficasWSCMControllerGen {
 					request = WS.url(url);
 					json = request.get().getJson();
 				} catch (RuntimeException ce) {
-					Messages.warning("El servicio web no está disponible en estos momentos y no existe historial del mismo");
-					play.Logger.error("El servicio web no está disponible en estos momentos  y no existe historial del mismo");
+					Messages.warning("El servicio web no existe o no está disponible en estos momentos y no existe historial del mismo");
+					play.Logger.error("El servicio web no existe o no está disponible en estos momentos  y no existe historial del mismo");
 					Messages.keep();
 					redirect("ServiciosWebAppCMController.index", "editar", idAplicacion);
 				}
@@ -157,6 +134,18 @@ public class GraficasWSCMController extends GraficasWSCMControllerGen {
 		} else
 			log.info("Acción Editar de página: " + "gen/GraficasWSCM/GraficasWSCM.html" + " , intentada sin éxito (Problemas de Validación)");
 		GraficasWSCMController.formBtnRecargaDatosRender(idAplicacion, idServiciosWeb);
+	}
+	
+	@Util
+	public static void formBtnRecargaDatosRender(Long idAplicacion, Long idServiciosWeb) {
+		if (!Messages.hasMessages()) {
+			Messages.warning("El servicio web puede haber cambiado, actualice el Servicio Web");
+			play.Logger.error("El servicio web puede haber cambiado, actualice el Servicio Web");
+			Messages.keep();
+			redirect("ServiciosWebAppCMController.index", "editar", idAplicacion);
+		}
+		Messages.keep();
+		redirect("ServiciosWebAppCMController.index", "editar", idAplicacion);
 	}
 	
 }

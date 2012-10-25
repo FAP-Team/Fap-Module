@@ -2,9 +2,11 @@ package controllers.fap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -23,6 +25,7 @@ import com.google.gson.JsonObject;
 import controllers.GraficasWSController;
 
 import messages.Messages;
+import models.Aplicacion;
 import models.ListaResultadosPeticion;
 import models.Peticion;
 import models.ResultadoPeticion;
@@ -58,8 +61,31 @@ public class WSController extends GenericController {
 	 * @param rango
 	 * @param activo
 	 */
-	public static void getData(Long listaResultadosId, String nameVariable, int rango, boolean activo) {
-		ListaResultadosPeticion listaResultados = ListaResultadosPeticion.findById(listaResultadosId);
+	public static void getData(Long idWS, String fecha, String nameVariable, int rango, boolean activo) {
+		
+		String tituloVariable = nameVariable.split(" \\(")[0];
+		String day = fecha.split("-")[0];
+		String time = fecha.split("-")[1];
+		DateTime fechaComparar = new DateTime(Integer.parseInt(day.split("/")[2]),
+								Integer.parseInt(day.split("/")[1]), 
+								Integer.parseInt(day.split("/")[0]),
+								Integer.parseInt(time.split(":")[0]), 
+								Integer.parseInt(time.split(":")[1]), 
+								Integer.parseInt(time.split(":")[2]));
+		
+		Gson gson = new Gson();
+		ServiciosWeb servicioWeb = ServiciosWeb.findById(idWS);
+		ListaResultadosPeticion listaResultados = new ListaResultadosPeticion();
+		for (int i = 0; i < servicioWeb.peticion.size(); i++) {
+			
+			String a = servicioWeb.peticion.get(i).fechaPeticion.split("\\.")[0];
+			String b = fechaComparar.toString().split("\\.")[0];
+	
+			if (a.equals(b)) {
+				listaResultados = gson.fromJson(servicioWeb.peticion.get(i).stringJson, ListaResultadosPeticion.class);
+			}
+		}
+		
 		Map<String, Object> mapa = new HashMap<String, Object>();
 		boolean type1 = false;
 		boolean type2 = false;
@@ -72,7 +98,7 @@ public class WSController extends GenericController {
 				String nombreVariable = resultado.nombre;
 				String valor = null;
 				
-				if (nameVariable.equals(nombreVariable)) {
+				if (tituloVariable.equals(nombreVariable)) {
 					if (resultado.getType() != null) {
 						if (resultado.getType().equals("String"))
 							valor = resultado.valorString;
@@ -84,10 +110,10 @@ public class WSController extends GenericController {
 						}
 						else if (resultado.getType().equals("DateTime")) {
 							valor = resultado.valorDateTime;
-							String fecha = valor.split("T")[0];
-							String dia = fecha.split("-")[2];
-							String mes = fecha.split("-")[1];
-							String agno = fecha.split("-")[0];
+							String fechaResultado = valor.split("T")[0];
+							String dia = fechaResultado.split("-")[2];
+							String mes = fechaResultado.split("-")[1];
+							String agno = fechaResultado.split("-")[0];
 							if (rango == 0)
 								valor = "Día "+dia;
 							else if (rango == 1) {
@@ -95,7 +121,7 @@ public class WSController extends GenericController {
 								type1 = true;
 							}
 							else if (rango == 2) {
-								DateTime date = new DateTime(fecha);
+								DateTime date = new DateTime(fechaResultado);
 								valor = "Semana " + date.getWeekOfWeekyear();
 							}
 							else if (rango == 3) {
@@ -267,5 +293,88 @@ public class WSController extends GenericController {
 		else if (mes.equals("Dic"))
 			return "12";
 		return "0";
+	}
+	
+	public static void getFechasPeticiones(Long idWS) {
+		ServiciosWeb servicioWeb = ServiciosWeb.findById(idWS);
+		List<Peticion> peticiones = servicioWeb.peticion;
+		String jsData = "[";
+		
+		for (int i = 0; i < peticiones.size(); i++) {
+			String fecha = peticiones.get(i).fechaPeticion.split("T")[0];
+			String hora = peticiones.get(i).fechaPeticion.split("T")[1].split("\\.")[0];
+			String fechaBien = fecha.split("-")[2] + "/" + fecha.split("-")[1] + "/" + fecha.split("-")[0];
+			jsData += "['" + fechaBien + "-" + hora + "']";
+			if (i != peticiones.size()-1)
+				jsData += ", ";
+		}
+		
+		jsData += "]";
+		renderText(jsData);
+	}
+	
+	public static void getDatosPeticiones(Long idWS, String fecha) {
+		
+		String day = fecha.split("-")[0];
+		String time = fecha.split("-")[1];
+		DateTime date = new DateTime(Integer.parseInt(day.split("/")[2]),
+								Integer.parseInt(day.split("/")[1]), 
+								Integer.parseInt(day.split("/")[0]),
+								Integer.parseInt(time.split(":")[0]), 
+								Integer.parseInt(time.split(":")[1]), 
+								Integer.parseInt(time.split(":")[2]));
+
+		Gson gson = new Gson();
+		ServiciosWeb servicioWeb = ServiciosWeb.findById(idWS);
+		ListaResultadosPeticion listaResultados = new ListaResultadosPeticion();
+		for (int i = 0; i < servicioWeb.peticion.size(); i++) {
+			
+			String a = servicioWeb.peticion.get(i).fechaPeticion.split("\\.")[0];
+			String b = date.toString().split("\\.")[0];
+
+			if (a.equals(b)) {
+				listaResultados = gson.fromJson(servicioWeb.peticion.get(i).stringJson, ListaResultadosPeticion.class);
+			}
+		}
+		
+		Map<String, String> mapVars = new HashMap<String, String>();
+		String jsData = "";
+		if (listaResultados.resultadosPeticion.size() != 0) {
+			List<String> lista = new ArrayList<String>();
+			
+			for (int j = 0; j < servicioWeb.servicioWebInfo.infoParams.size(); j++) {
+				lista.add(servicioWeb.servicioWebInfo.infoParams.get(j).tipo);
+			}
+			
+			int k = 0;
+			for (int m = 0; m < listaResultados.resultadosPeticion.size(); m++) {
+				for (int i = 0; i < listaResultados.resultadosPeticion.get(m).resultadoPeticion.size(); i++) {
+					List<ResultadoPeticion> x = listaResultados.resultadosPeticion.get(m).resultadoPeticion;
+					if (!x.get(i).nombre.startsWith("id") && !mapVars.containsKey(x.get(i).nombre)) {
+						mapVars.put(x.get(i).nombre, lista.get(k));
+						k++;
+					}
+				}
+			}
+			
+			jsData = "[";
+			Iterator it = mapVars.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry e = (Map.Entry)it.next();
+				jsData += "['" + e.getKey() + "', '"+ e.getValue()+"']";
+				if (it.hasNext())
+					jsData += ", ";
+			}
+			jsData += "]";
+
+			renderText(jsData);
+			
+		} else {
+			Messages.warning("No existen datos para ese servicio web.");
+			play.Logger.error("No existen datos para ese servicio web.");
+			Messages.keep();
+			renderText("");
+		}
+		
 	}
 }

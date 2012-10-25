@@ -50,31 +50,8 @@ public class GraficasWSController extends GraficasWSControllerGen {
 		if ((serviciosWeb.peticion.size() == 0) && (serviciosWeb.servicioWebInfo.activo))
 			getDatosFromWS(idAplicacion, idServiciosWeb);
 		
-		Gson gson = new Gson();
-		ListaResultadosPeticion listaResultados = null;
-		Long peticionID = Peticion.find("select max(peticion.id) from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where serviciosWeb.id=?", serviciosWeb.id).first();
-		Peticion peticion = Peticion.find("select peticion from ServiciosWeb serviciosWeb join serviciosWeb.peticion peticion where peticion.id=?", peticionID).first();
-		
-		if (peticion != null) {
-			listaResultados = gson.fromJson(peticion.stringJson, ListaResultadosPeticion.class);
-			listaResultados.save();
-			
-			if (listaResultados.resultadosPeticion.size() != 0) {
-				log.info("Visitando página: " + "app/views/fap/Graficas/GraficasWS.html");
-				renderTemplate("app/views/fap/Graficas/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb, listaResultados, peticion);
-			} else {
-				Messages.warning("No existen datos para ese servicio web.");
-				play.Logger.error("No existen datos para ese servicio web.");
-				Messages.keep();
-				redirect("ServiciosWebAppController.index", "editar", idAplicacion);
-			}
-		}
-		else {
-			Messages.warning("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
-			play.Logger.error("En su momento no se realizaron peticiones a este servicio web, por lo que no existe ninguna información en el historial.");
-			Messages.keep();
-			redirect("ServiciosWebAppController.index", "editar", idAplicacion);
-		}
+		log.info("Visitando página: " + "app/views/fap/Graficas/GraficasWS.html");
+		renderTemplate("app/views/fap/Graficas/GraficasWS.html", accion, idAplicacion, idServiciosWeb, aplicacion, serviciosWeb);
 	}
 	
 	/**
@@ -134,8 +111,8 @@ public class GraficasWSController extends GraficasWSControllerGen {
 					request = WS.url(url);
 					json = request.get().getJson();
 				} catch (RuntimeException ce) {
-					Messages.warning("El servicio web no está disponible en estos momentos y no existe historial del mismo");
-					play.Logger.error("El servicio web no está disponible en estos momentos  y no existe historial del mismo");
+					Messages.warning("El servicio web no existe o no está disponible en estos momentos y no existe historial del mismo");
+					play.Logger.error("El servicio web no existe o no está disponible en estos momentos  y no existe historial del mismo");
 					Messages.keep();
 					redirect("ServiciosWebAppController.index", "editar", idAplicacion);
 				}

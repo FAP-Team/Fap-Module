@@ -40,13 +40,13 @@ public class ServiciosWebAppCMController extends ServiciosWebAppCMControllerGen 
 
 		} else if (!"borrado".equals(accion))
 			aplicacion = ServiciosWebAppCMController.getAplicacion(idAplicacion);
+		
 		if (aplicacion.serviciosWeb.size() == 0) {
 			getWS(accion, idAplicacion, aplicacion);
 		}
 		else {
 			log.info("Visitando página: " + "gen/ServiciosWebAppCM/ServiciosWebAppCM.html");
 			renderTemplate("gen/ServiciosWebAppCM/ServiciosWebAppCM.html", accion, idAplicacion, aplicacion);
-	
 		}
 	}
 	
@@ -67,8 +67,8 @@ public class ServiciosWebAppCMController extends ServiciosWebAppCMControllerGen 
 			request = WS.url(urlApp);
 			json = request.get().getJson();
 		} catch (RuntimeException ce) {
-			Messages.warning("El servicio web no está disponible en estos momentos");
-			play.Logger.error("El servicio web no está disponible en estos momentos");
+			Messages.warning("El servicio web no existe o no está disponible en estos momentos");
+			play.Logger.error("El servicio web no existe o no está disponible en estos momentos");
 		} 
 		
 		if (json != null) {
@@ -130,8 +130,8 @@ public class ServiciosWebAppCMController extends ServiciosWebAppCMControllerGen 
 			request = WS.url(urlApp);
 			json = request.get().getJson();
 		} catch (RuntimeException ce) {
-			Messages.warning("El servicio web no está disponible en estos momentos");
-			play.Logger.error("El servicio web no está disponible en estos momentos");
+			Messages.warning("El servicio web no existe o no está disponible en estos momentos");
+			play.Logger.error("El servicio web no existe o no está disponible en estos momentos");
 		}
 		
 		if (json != null) {

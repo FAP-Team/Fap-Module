@@ -43,32 +43,34 @@
 	#{/form}
 
 %{
+		def urlControllerFecha = play.mvc.Router.reverse('fap.WSController.getFechasPeticiones');
+		def urlControllerAtr = play.mvc.Router.reverse('fap.WSController.getDatosPeticiones');
+	%}
+
+	<script>
+		var urlControllerFecha = "${urlControllerFecha}";
+		var urlControllerAtr = "${urlControllerAtr}"
+		var idServicioWeb = "${serviciosWeb.id}";
+		$.ajax({
+			url: urlControllerFecha,
+			type: "GET",
+			data: {idWS: idServicioWeb}
+		}).done(function(fechas) {
+			rellenarComboFechas(fechas);
+		});
+		
+	</script>
+
+	%{
 		def ws = serviciosWeb;
 		def app = aplicacion;
-		def fecha = peticion.fechaPeticion.split("T")[0];
-		def fechaPeticion = fecha.split("-")[2] + "/"+ fecha.split("-")[1]+ "/"+ fecha.split("-")[0];
 		def urlController = play.mvc.Router.reverse('fap.WSController.getData');
-		def mapVars = [:];
-		def lista = [];
-		
-		for (int j = 0; j < ws.servicioWebInfo.infoParams.size(); j++) {
-			lista.add(ws.servicioWebInfo.infoParams.get(j).tipo);
-		}
-		
-		def k = 0;
-		for (int m = 0; m < listaResultados.resultadosPeticion.size(); m++) {
-			for (int i = 0; i < listaResultados.resultadosPeticion.get(m).resultadoPeticion.size(); i++) {
-				def x = listaResultados.resultadosPeticion.get(m).resultadoPeticion;
-				if (!x.get(i).nombre.startsWith("id") && !mapVars.containsKey(x.get(i).nombre)) {
-					mapVars.put(x.get(i).nombre, lista.get(k));
-					k++;
-				}
-			}
-		}
-		
+
 		def esVisible = true;
 		def labelCheckInfo = "Ver información del servicio web";
 		def idCheckInfo = "checkInfo";
+		def labelFecha = "Fecha de la petición";
+		def idFecha = "comboFecha";
 		def label = "Número de variables que quiere representar";
 		def id = "comboNumVariables";
 		def labelVar = "Primera variable";
@@ -104,8 +106,8 @@
 	</br>
 	<div id="infoWS" style="display:none">
 	#{fap.grupo titulo:'Información del servicio web que está consultando'}
-		<p>Está consultando el Servicio Web <strong>'${ws.servicioWebInfo.nombre}'</strong> en la dirección
-		'${aplicacion.urlApp}${ws.servicioWebInfo.urlWS}'.</p>
+		<p>Está consultando el Servicio Web <strong>'${ws.servicioWebInfo.nombre}'</strong> en la dirección:<p>
+		<p align="center">'${aplicacion.urlApp}${ws.servicioWebInfo.urlWS}'</p>
 		<p>Datos que se pueden consultar:</p>
 		<ul>
 		#{list items:ws.servicioWebInfo.infoParams, as:'info'}
@@ -114,58 +116,36 @@
 		</ul>
 	#{/fap.grupo}
 	</div>
-	</br>	
+	</br>
 	
 	#{fap.grupo titulo:'Consulta'}
-		<p>Fecha de la última actualización: <i>${fechaPeticion}</i></p>
-		</br>
+	
+		#{fap.formrow id:idFecha, label:labelFecha, ayuda:ayuda, visible:showRow, requerido:requerido}
+			<select id="combo_fecha" name="combo_fecha" size=1 onChange="fechaChanged()">
+			</select>
+		#{/fap.formrow}
 		
 		#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido}
 			<select id="combo_numVar" name="combo_numVar" size=1 onChange="numVarChanged()">
 				<option value="1">1</option>
 			</select>
 		#{/fap.formrow}
-
+		
 		#{fap.formrow id:idVar, label:labelVar, ayuda:ayuda, visible:esVisible, requerido:requerido}
-			<select id="combo_var1" name="combo_var1" size=1 onChange="comprobarVariable()">	
-				<option value="vacio"></option>
-				%{
-					for (Map.Entry<String, String> entry: mapVars.entrySet()) {
-				%}
-						<option value=var1+"${entry.getKey()}">${entry.getKey()}</option>;
-				%{ 
-					}
-				%}
-					
+			<select id="combo_var1" name="combo_var1" size=1 onChange="comprobarVariable()">
 			</select>
 		#{/fap.formrow}
-
+		
 		#{fap.formrow id:idVar2, label:labelVar2, ayuda:ayuda, visible:esVisible, requerido:requerido}
 			<select id="combo_var2" name="combo_var2" size=1 onChange="comprobarVariable()">
-				<option value="vacio"></option>
-				%{
-					for (Map.Entry<String, String> entry: mapVars.entrySet()) {
-				%}
-						<option value=var2+"${entry.getKey()}">${entry.getKey()}</option>;
-				%{ 
-					}
-				%}
 			</select>
 		#{/fap.formrow}
-
+		
 		#{fap.formrow id:idVar3, label:labelVar3, ayuda:ayuda, visible:esVisible, requerido:requerido}
 			<select id="combo_var3" name="combo_var3" size=1 onChange="comprobarVariable()">
-				<option value="vacio"></option>
-				%{
-					for (Map.Entry<String, String> entry: mapVars.entrySet()) {
-				%}
-						<option value=var3+"${entry.getKey()}">${entry.getKey()}</option>;
-				%{ 
-					}
-				%}
 			</select>
 		#{/fap.formrow}
-
+		
 		#{fap.formrow id:idRango, label:labelRango, ayuda:ayuda, visible:esVisible, requerido:requerido}
 			<select id="combo_rango" name="combo_rango" size=1 onChange="rangoChanged()">
 				<option value="0">Día</option>
@@ -176,7 +156,7 @@
 				<option value="5">Año</option>
 			</select>
 		#{/fap.formrow}
-
+		
 		#{fap.formrow id:idTipo, label:labelTipo, ayuda:ayuda, visible:esVisible, requerido:requerido}
 			<select id="combo_tipoGrafica" name="combo_tipoGrafica" size=1 onChange="tipoGraficaChanged()">
 				<option value="queso">Queso</option>
@@ -204,82 +184,109 @@
 			#{fap.formrow id:idTituloejey, label:labelTituloejey, ayuda:ayuda, visible:esVisible, requerido:requerido}
 				<input type="text" id="texttituloejey" name="tituloejey" onChange="dibujarGrafica()"/>
 			#{/fap.formrow}		
-	
+
 		#{/fap.grupo}
+		
 	#{/fap.grupo}
-	</br></br>
+
 	<div id="noData"></div>
 	<div id="grafica" style="height: 500px"></div>
 	
 	<script>
-		var texttitulo = document.getElementById("texttitulo").value;
-		var textsubtitulo = document.getElementById("textsubtitulo").value;
-		var texttituloleyenda = document.getElementById("texttituloleyenda").value;
-		var texttituloejey = document.getElementById("texttituloejey").value;
-		
-		combo_var1.selectedIndex = 1;
-		$('#combo_var2').parent().parent().attr('style', 'display:none');
-		$('#combo_var3').parent().parent().attr('style', 'display:none');
-		$('#combo_rango').parent().parent().attr('style', 'display:none');
-		limpiarTitulos();
-		
-		// Cuando se modifica el número de variables a mostrar.
-		function numVarChanged() {
+		$(document).ready(function() {
 			var index = combo_numVar.selectedIndex;
 			var optionSelected = combo_numVar.options[index].text;
-			console.log(optionSelected);
+			
 			if (optionSelected == 1) {
-				$('#combo_var1').parent().parent().attr('style', 'display:block');
 				$('#combo_var2').parent().parent().attr('style', 'display:none');
 				$('#combo_var3').parent().parent().attr('style', 'display:none');
-				combo_var2.selectedIndex = 0;
-				combo_var3.selectedIndex = 0;
+			} // TODO: Poner los else cuando haya más variables.
+			
+			ocultarTodo();
+			$('#checkPersonalizar').attr('checked', false);
+			$('#checkInfo').attr('checked', false);
+			
+		});
+		
+		function fechaChanged() {
+			var indexFecha = combo_fecha.selectedIndex;
+			var optionSelectedFecha = combo_fecha.options[indexFecha].text;
+			if (optionSelectedFecha != "") {
+				var idServicioWeb = "${serviciosWeb.id}";
+				$.ajax({
+					url: urlControllerAtr,
+					type: "GET",
+					data: {idWS: idServicioWeb, fecha: optionSelectedFecha}
+				}).done(function(datos) {
+					if (datos != "") {
+						rellenarComboVariables(datos);
+						$('#combo_numVar').parent().parent().attr('style', 'display:block');
+						$('#combo_var1').parent().parent().attr('style', 'display:block');
+						$('#combo_tipoGrafica').parent().parent().attr('style', 'display:block');
+						$('#checkPersonalizar').parent().parent().attr('style', 'display:block');
+					}
+					else {
+						window.location.href = datos;
+					}
+				});
 			}
-			else if (optionSelected == 2) {
-				$('#combo_var1').parent().parent().attr('style', 'display:block');
-				$('#combo_var2').parent().parent().attr('style', 'display:block');
-				$('#combo_var3').parent().parent().attr('style', 'display:none');
-				combo_var3.selectedIndex = 0;
-			}
-			else if (optionSelected == 3) {
-				$('#combo_var1').parent().parent().attr('style', 'display:block');
-				$('#combo_var2').parent().parent().attr('style', 'display:block');
-				$('#combo_var3').parent().parent().attr('style', 'display:block');
+			else {
+				ocultarTodo();
 			}
 		}
 		
-		// Cuando se modifica el número de variables se muestran 
-		// los equivalentes combos para elegir variables.
-		function comprobarVariable() {
+		function rellenarComboFechas(fechas) {
+			var array = _.toArray(eval(fechas));
+			
+			content = "<option value=fechaVacio></option>";
+			_.each(array, function(fecha) {
+				content += "<option value=fecha"+_.first(fecha)+">"+_.first(fecha)+"</option>"
+			});
+			
+			$('#combo_fecha').html(content);
+		}
+		
+		function rellenarComboVariables(datos) {
+			var content = "";
+			var array = _.toArray(eval(datos));
+			var lista = [];
+			
+			_.each(array, function(variable) {
+				var val = _.first(variable)+" (" + _.last(variable) + ")";
+				content += "<option value=var1"+_.first(variable)+">"+ val +"</option>";
+			});
+			
 			var indexNumVariable = combo_numVar.selectedIndex;
 			var optionSelectedNumVariable = combo_numVar.options[indexNumVariable].text;
-			var indexVar1= combo_var1.selectedIndex;
-			var optionSelectedVar1 = combo_var1.options[indexVar1].text;
-			var indexVar2 = combo_var2.selectedIndex;
-			var optionSelectedVar2 = combo_var2.options[indexVar2].text;
-			var indexVar3 = combo_var3.selectedIndex;
-			var optionSelectedVar3 = combo_var3.options[indexVar3].text;
-
-			// TODO: Habría que añadir los if necesarios cuando se acepten más de 1 variable.
-			if ((optionSelectedNumVariable == 1)  && (optionSelectedVar1 == "")) {
-				 limpiarTodo();
+			
+			if (optionSelectedNumVariable == 1) {
+				$('#combo_var1').html(content);
 			}
-			else if ((optionSelectedNumVariable == 1) && (optionSelectedVar1 != 0)) {
-				%{
-					for (Map.Entry<String, String> entry: mapVars.entrySet()) {
-				%}
-						if ("${entry.getKey().raw()}" == optionSelectedVar1) {
-							if ("${entry.getValue()}" == "DateTime") {
-								$('#combo_rango').parent().parent().attr('style', 'display:block');
-							} else {
-								$('#combo_rango').parent().parent().attr('style', 'display:none');
-							}
-						}
-				%{ 	
-					}
-				%}
+			else if (optionSelectedNumVariable == 2) {
+				$('#combo_var1').html(content);
+				$('#combo_var2').html(content);
+			} else if (optionSelectedNumVariable == 3) {
+				$('#combo_var1').html(content);
+				$('#combo_var2').html(content);
+				$('#combo_var3').html(content);
+			}
+			
+			comprobarVariable();
+		}
+		
+		function comprobarVariable() {
+			var indexVar = document.getElementById('combo_var1').selectedIndex;
+			var optionSelectedVar = combo_var1.options[indexVar].text;
+			var tipo;
+			if (optionSelectedVar != "") 
+				tipo = optionSelectedVar.split("(")[1].split(")")[0];
+			else
+				tipo = "";
+			
+			if (tipo == "DateTime") {
+				$('#combo_rango').parent().parent().attr('style', 'display:block');
 			} else {
-				limpiarTitulos();
+				$('#combo_rango').parent().parent().attr('style', 'display:none');
 			}
 			
 			$('#combo_tipoGrafica').parent().parent().attr('style', 'display:block');
@@ -287,34 +294,13 @@
 			dibujarGrafica();
 		}
 		
-		// Cuando se modifica el rango se resetean algunos campos.
-		function limpiarTitulos() {
-			document.getElementById("texttitulo").value = "";
-			document.getElementById("textsubtitulo").value = "";
-			document.getElementById("texttituloleyenda").value = "";
-			document.getElementById("texttituloejey").value = "";
-			$('#checkPersonalizar').attr('checked', false);
-			$('#texttitulo').parent().parent().parent().parent().attr('style', 'display:none');
-		}
-		
-		// Cuando se modifica el tipo de gráfica, se muestra la personalización
-		// de las gráficas y se invoca a la función de la gráfica.
-		function tipoGraficaChanged() {
-			var indexNumVars = combo_numVar.selectedIndex;
-			var optionSelectedNumVars = combo_numVar.options[indexNumVars].text;
-			
+		// Si se modifica alguno de los textbox se actualiza la gráfica.
+		function dibujarGrafica() {
 			var indexTipo = combo_tipoGrafica.selectedIndex;
 			var optionSelectedTipo = combo_tipoGrafica.options[indexTipo].text;
-			
 			if (optionSelectedTipo == 'Queso') {
-				document.getElementById("texttituloejey").value = "";
-				document.getElementById("texttituloleyenda").value = "";
-				$('#texttituloejey').parent().parent().attr('style', 'display:none');
-				$('#texttituloleyenda').parent().parent().attr('style', 'display:none');
 				dibujarQueso();
 			} else if (optionSelectedTipo == 'Columna') {
-				$('#texttituloejey').parent().parent().attr('style', 'display:block');
-				$('#texttituloleyenda').parent().parent().attr('style', 'display:block');
 				dibujarColumnas();
 			}
 		}
@@ -324,7 +310,7 @@
 		function dibujarQueso() {
 			var urlController = "${urlController}";
 			var wsName = "${ws.servicioWebInfo.urlWS.split("/")[1]}";
-			var idListaResultados = ${listaResultados.id};
+			var idServicioWeb = ${serviciosWeb.id};
 			var indexRango = combo_rango.selectedIndex;
 			var optionSelectedRango = combo_rango.options[indexRango].value;
 			var indexVar = combo_var1.selectedIndex;
@@ -334,11 +320,13 @@
 			texttitulo = document.getElementById("texttitulo").value;
 			textsubtitulo = document.getElementById("textsubtitulo").value;
 			texttituloleyenda = document.getElementById("texttituloleyenda").value;
-			
+			var indexFecha = combo_fecha.selectedIndex;
+			var optionSelectedFecha = combo_fecha.options[indexFecha].text;
+
 			$.ajax({
 				url: urlController,
 				type: "GET",
-				data: {listaResultadosId:idListaResultados,nameVariable:optionSelectedVar, rango:optionSelectedRango, activo:${ws.servicioWebInfo.activo}}
+				data: {idWS:idServicioWeb, fecha: optionSelectedFecha, nameVariable:optionSelectedVar, rango:optionSelectedRango, activo:${ws.servicioWebInfo.activo}}
 			}).done(function(map) {
 				if (map == "[]") {
 					$('#noData').attr('style', 'display:block');
@@ -360,7 +348,7 @@
 			var indexVar = combo_var1.selectedIndex;
 			var optionSelectedVar = combo_var1.options[indexVar].text;
 			var urlController = "${urlController}";
-			var idListaResultados = ${listaResultados.id};
+			var idServicioWeb = ${serviciosWeb.id};
 			var wsName = "${ws.servicioWebInfo.urlWS.split("/")[1]}";
 			var keyArray = "[";
 			var valueArray = "[";
@@ -368,11 +356,13 @@
 			textsubtitulo = document.getElementById("textsubtitulo").value;
 			texttituloleyenda = document.getElementById("texttituloleyenda").value;
 			texttituloejey = document.getElementById("texttituloejey").value;
+			var indexFecha = combo_fecha.selectedIndex;
+			var optionSelectedFecha = combo_fecha.options[indexFecha].text;
 			
 			$.ajax({
 				url: urlController,
 				type: "GET",
-				data: {listaResultadosId:idListaResultados,nameVariable:optionSelectedVar, rango:optionSelectedRango, activo:${ws.servicioWebInfo.activo}}
+				data: {idWS:idServicioWeb, fecha: optionSelectedFecha, nameVariable:optionSelectedVar, rango:optionSelectedRango, activo:${ws.servicioWebInfo.activo}}
 			}).done(function(map) {
 				if (map == "[]") {
 					$('#noData').attr('style', 'display:block');
@@ -395,23 +385,33 @@
 						}
 						index++;
 					});
-				
+
 					keyArray += "]";
 					valueArray += "]";
-					
+
 					ejecutarColumn(keyArray, valueArray, texttitulo, textsubtitulo, optionSelectedVar, texttituloejey, texttituloleyenda);
 				}	
 			});
 		}
-			
-			
-		// Si se modifica alguno de los textbox se actualiza la gráfica.
-		function dibujarGrafica() {
+		
+		// Cuando se modifica el tipo de gráfica, se muestra la personalización
+		// de las gráficas y se invoca a la función de la gráfica.
+		function tipoGraficaChanged() {
+			var indexNumVars = combo_numVar.selectedIndex;
+			var optionSelectedNumVars = combo_numVar.options[indexNumVars].text;
+
 			var indexTipo = combo_tipoGrafica.selectedIndex;
 			var optionSelectedTipo = combo_tipoGrafica.options[indexTipo].text;
+
 			if (optionSelectedTipo == 'Queso') {
+				document.getElementById("texttituloejey").value = "";
+				document.getElementById("texttituloleyenda").value = "";
+				$('#texttituloejey').parent().parent().attr('style', 'display:none');
+				$('#texttituloleyenda').parent().parent().attr('style', 'display:none');
 				dibujarQueso();
 			} else if (optionSelectedTipo == 'Columna') {
+				$('#texttituloejey').parent().parent().attr('style', 'display:block');
+				$('#texttituloleyenda').parent().parent().attr('style', 'display:block');
 				dibujarColumnas();
 			}
 		}
@@ -428,7 +428,7 @@
 				$('#texttitulo').parent().parent().parent().parent().attr('style', 'display:block');
 			}	
 		}
-		
+
 		function checkInfoChanged() {
 			if (document.getElementById("checkInfo").checked) {
 				document.getElementById("infoWS").style.display = "block";
@@ -436,28 +436,37 @@
 				document.getElementById("infoWS").style.display = "none";
 			}
 		}
-		
+
 		function rangoChanged() {
-			//limpiarTitulos();
 			dibujarGrafica();
 		}
 		
-		function limpiarTodo() {
+		function ocultarTodo() {
 			combo_var1.selectedIndex = 0;
 			combo_var2.selectedIndex = 0;
 			combo_var3.selectedIndex = 0;
 			combo_rango.selectedIndex = 0;
 			combo_tipoGrafica.selectedIndex = 0;
+			$('#combo_numVar').parent().parent().attr('style', 'display:none');
+			$('#combo_var1').parent().parent().attr('style', 'display:none');
 			$('#combo_rango').parent().parent().attr('style', 'display:none');
 			$('#combo_tipoGrafica').parent().parent().attr('style', 'display:none');
 			$('#checkPersonalizar').parent().parent().attr('style', 'display:none');
+			$('#grafica').html("");
 			limpiarTitulos();
 		}
-	
-		$(document).ready(function() {
-			comprobarVariable();
-		});
-	
+		
+		// Cuando se modifica el rango se resetean algunos campos.
+		function limpiarTitulos() {
+			document.getElementById("texttitulo").value = "";
+			document.getElementById("textsubtitulo").value = "";
+			document.getElementById("texttituloleyenda").value = "";
+			document.getElementById("texttituloejey").value = "";
+			$('#checkPersonalizar').attr('checked', false);
+			$('#texttitulo').parent().parent().parent().parent().attr('style', 'display:none');
+		}
+		
+
 	</script>
 
 	#{form play.mvc.Router.reverse('GraficasWSCMController.formBtnVolver' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtnVolver"}				

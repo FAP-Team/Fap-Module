@@ -96,8 +96,8 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			request = WS.url(urlApp);
 			json = request.get().getJson();
 		} catch (RuntimeException ce) {
-			Messages.warning("El servicio web no está disponible en estos momentos");
-			play.Logger.error("El servicio web no está disponible en estos momentos");
+			Messages.warning("El servicio web no existe o no está disponible en estos momentos");
+			play.Logger.error("El servicio web no existe o no está disponible en estos momentos");
 		} 
 		
 		if (json != null) {
@@ -163,8 +163,8 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			request = WS.url(urlApp);
 			json = request.get().getJson();
 		} catch (RuntimeException ce) {
-			Messages.warning("El servicio web no está disponible en estos momentos");
-			play.Logger.error("El servicio web no está disponible en estos momentos");
+			Messages.warning("El servicio web no existe o no está disponible en estos momentos");
+			play.Logger.error("El servicio web no existe o no está disponible en estos momentos");
 		}
 		
 		if (json != null) {
@@ -172,12 +172,10 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 			List<ServiciosWeb> anteriorServicioWeb = ServiciosWeb.find("select serviciosWeb from Aplicacion aplicacion join aplicacion.serviciosWeb serviciosWeb where aplicacion.id=? and serviciosWeb.servicioWebInfo.activo=true", idAplicacion).fetch();
 			int numWSNuevos = array.size();
 			int anteriorNumWS = anteriorServicioWeb.size();
-//			System.out.println("anteriores: " + anteriorServicioWeb);
 			List<ServiciosWeb> listaActivos = new ArrayList<ServiciosWeb>();
 			Gson gson = new Gson();
 		
 			if (numWSNuevos <= anteriorNumWS) {
-//				System.out.println("Hay menos nuevos");
 				ServicioWebInfo swiActual = null;
 				// Se comprueban los WS que siguen iguales.
 				for (int i = 0; i < anteriorNumWS; i++) {
@@ -185,7 +183,6 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 					boolean iguales = false;
 					for (int j = 0; j < numWSNuevos; j++) {
 						swiActual = gson.fromJson(array.get(j), ServicioWebInfo.class);
-//						System.out.println("Vamos a comparar " + swiActual.nombre + " con " + swi.nombre);
 						
 						if (((swi.nombre.equals(swiActual.nombre)) && (swi.urlWS.equals(swiActual.urlWS)))) {
 							int infoAnterior = swi.infoParams.size();
@@ -195,7 +192,6 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 								for (int k = 0; k < infoActual; k++) {
 									if ((swi.infoParams.get(k).nombreParam.equals(swiActual.infoParams.get(k).nombreParam))
 										&& (swi.infoParams.get(k).tipo.equals(swiActual.infoParams.get(k).tipo))) {
-//											System.out.println("Todo los infoparams igual!!!!");
 											iguales = true;
 											
 									}
@@ -206,13 +202,11 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 						}	
 					}
 				}
-//				System.out.println("Activos: " + listaActivos);
 				
 				// Los WS que no están en la lista de activos y estaban
 				// antes se pasan al historial.
 				for (int k = 0; k < anteriorNumWS; k++) {
 					if (!listaActivos.contains(anteriorServicioWeb.get(k))) {
-//						System.out.println("No contiene " + anteriorServicioWeb.get(k));
 						anteriorServicioWeb.get(k).servicioWebInfo.activo = false;
 						anteriorServicioWeb.get(k).save();
 					}
@@ -222,9 +216,7 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 				for (int k = 0; k < numWSNuevos; k++) {
 					swiActual = gson.fromJson(array.get(k), ServicioWebInfo.class);
 					ServiciosWeb swNuevo = ServiciosWeb.find("select serviciosWeb from Aplicacion aplicacion join aplicacion.serviciosWeb serviciosWeb where aplicacion.id=? and serviciosWeb.servicioWebInfo.activo=true and serviciosWeb.servicioWebInfo.nombre=?", idAplicacion, swiActual.nombre).first();
-//					System.out.println(swNuevo);
 					if (swNuevo == null) {
-//						System.out.println("No Contiene " + swiActual.nombre + " Hay que activarlo!!!");
 						swiActual.activo = true;
 						swiActual.save();
 						ServiciosWeb ws = new ServiciosWeb();
@@ -236,7 +228,6 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 				}
 			} else {
 				if (numWSNuevos > anteriorNumWS) {
-//					System.out.println("Hay mas nuevos");
 					ServicioWebInfo swiActual = null;
 					// Se comprueban los WS que siguen iguales.
 					for (int i = 0; i < numWSNuevos; i++) {
@@ -244,7 +235,6 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 						boolean iguales = false;
 						for (int j = 0; j < anteriorNumWS; j++) {
 							ServicioWebInfo swi = anteriorServicioWeb.get(j).servicioWebInfo;
-//							System.out.println("Vamos a comparar " + swiActual.nombre + " con " + swi.nombre);
 							
 							if (((swi.nombre.equals(swiActual.nombre)) && (swi.urlWS.equals(swiActual.urlWS)))) {
 								int infoAnterior = swi.infoParams.size();
@@ -254,7 +244,6 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 									for (int k = 0; k < infoActual; k++) {
 										if ((swi.infoParams.get(k).nombreParam.equals(swiActual.infoParams.get(k).nombreParam))
 											&& (swi.infoParams.get(k).tipo.equals(swiActual.infoParams.get(k).tipo))) {
-//												System.out.println("Todo los infoparams igual!!!!");
 												iguales = true;
 										}
 									}
@@ -264,14 +253,11 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 							}
 						}
 					}
-					
-//					System.out.println("Activos: " + listaActivos);
 
 					// Los WS que no están en la lista de activos y estaban
 					// antes se pasan al historial.
 					for (int k = 0; k < anteriorNumWS; k++) {
 						if (!listaActivos.contains(anteriorServicioWeb.get(k))) {
-//							System.out.println("No contiene " + anteriorServicioWeb.get(k));
 							anteriorServicioWeb.get(k).servicioWebInfo.activo = false;
 							anteriorServicioWeb.get(k).save();
 						}
@@ -281,9 +267,7 @@ public class ServiciosWebAppController extends ServiciosWebAppControllerGen {
 					for (int k = 0; k < numWSNuevos; k++) {
 						swiActual = gson.fromJson(array.get(k), ServicioWebInfo.class);
 						ServiciosWeb swNuevo = ServiciosWeb.find("select serviciosWeb from Aplicacion aplicacion join aplicacion.serviciosWeb serviciosWeb where aplicacion.id=? and serviciosWeb.servicioWebInfo.activo=true and serviciosWeb.servicioWebInfo.nombre=?", idAplicacion, swiActual.nombre).first();
-//						System.out.println(swNuevo);
 						if (swNuevo == null) {
-//							System.out.println("No Contiene " + swiActual.nombre + " Hay que activarlo!!!");
 							swiActual.activo= true;
 							swiActual.save();
 							ServiciosWeb ws = new ServiciosWeb();

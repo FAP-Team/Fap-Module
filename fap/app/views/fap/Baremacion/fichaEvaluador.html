@@ -125,7 +125,7 @@
 				</div>
 			#{/if}
 			
-			#{if criterio.tipo.claseCriterio.equals("auto")}
+			#{if (criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod"))}
 				#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam, format:'double'/}
 			#{/if}
 

@@ -32,57 +32,97 @@
 		#{/fap.grupo}
 	#{/else}
 	
-	%{
-		urlGetTercero = play.mvc.Router.reverse('fap.UtilsController.getTerceroByNipOrCif')
-	%}
-
-	<script>
-		var urlTerceros = "${urlGetTercero}";
-		
-		// Si es Representante que no busque nada en Platino ¿Seria esto correcto?
-		if ("${id}".indexOf("representanteDelSolicitante_") !== 0){
+	#{if id.indexOf("representanteDelSolicitante_") != 0}
+	
+		%{
+			urlGetTercero = play.mvc.Router.reverse('fap.UtilsController.getTerceroByNipOrCif')
+		%}
+	
+		<script>
+			var urlTerceros = "${urlGetTercero}";
+			
 			$('#${id}_nip_tipo').blur(function(){
 				setDatosTercero${id}($('#${id}_nip_valor').val(), $('#${id}_nip_tipo').val());
 			});
 			$('#${id}_nip_valor').blur(function(){
 				setDatosTercero${id}($('#${id}_nip_valor').val(), $('#${id}_nip_tipo').val());
 			});
-		}
-		
-		function setDatosTercero${id}(id, tipo){
-			$.ajax({
-	  			type: "POST",
-	  			url: urlTerceros,
-	  			data: {numeroIdentificacion: id, tipoIdentificacion: tipo}
-			}).done(function( msg ) { 
- 				var params = msg;
-				if (params != "{}"){
-					params = params.replace("{", "");
-					params = params.replace("}", "");
-					params = params.split('%,%');
-					var hayDireccion = 0;
-					for (var i = 0; i < params.length; i++) {
- 						 var parts = params[i].split('%->%');
- 						 if (parts[0].indexOf("%&%") != -1){
- 						 	hayDireccion = 1;
- 						 	console.log("parts: "+parts[0]+" - "+parts[1]+" : "+$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).val());
- 						 	if ($('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).val() === "")
- 						 		$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).val(parts[1]);
- 						 	if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla")){
- 						 		$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
- 						 		$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).change();
- 						 	}
- 						 } else {
- 						 	if ($('#${id}_'+parts[0]).val() === "")
- 						 		$('#${id}_'+parts[0]).val(parts[1]);
+			
+			function setDatosTercero${id}(id, tipo){
+				$.ajax({
+		  			type: "POST",
+		  			url: urlTerceros,
+		  			data: {numeroIdentificacion: id, tipoIdentificacion: tipo}
+				}).done(function( msg ) { 
+	 				var params = msg;
+					if (params != "{}"){
+						params = params.replace("{", "");
+						params = params.replace("}", "");
+						params = params.split('%,%');
+						var hayDireccion = false;
+						
+						for (var i = 0; i < params.length; i++) {
+	 						 var parts = params[i].split('%->%');
+	 						 if (parts[0].indexOf("%&%") != -1){
+	 						 	if ($('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).val() === ""){
+	 						 		hayDireccion = true;
+	 						 		$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).val(parts[1]);
+									if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla")){
+	 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
+	 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).change();
+	 						 		}
+	 						 		$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).prop('readonly', true);
+	 						 	}
+	 						 } else {
+	 						 	if ($('#${id}_'+parts[0]).val() === ""){
+	 						 		$('#${id}_'+parts[0]).val(parts[1]);
+	 						 		$('#${id}_'+parts[0]).prop('readonly', true);
+	 						 	}
+							}
 						}
+						if (hayDireccion)
+							$('#${id.replace("Fisica","")}Direccion_tipo').change(); 
 					}
-					if (hayDireccion === 1)
-						$('#${id.replace("Fisica","")}Direccion_tipo').change(); 
-				}
+				});
+			}
+			
+			$('#${id}_nombre').parent().click(function(e){
+				if ($('#${id}_nombre').attr('readonly') == 'readonly')
+					$('#${id}_nombre').prop('readonly', false);
 			});
-		}
+			
+			$('#${id}_primerApellido').parent().click(function(e){
+				if ($('#${id}_primerApellido').attr('readonly') == 'readonly')
+					$('#${id}_primerApellido').prop('readonly', false);
+			});
+			
+			$('#${id}_segundoApellido').parent().click(function(e){
+				if ($('#${id}_segundoApellido').attr('readonly') == 'readonly')
+					$('#${id}_segundoApellido').prop('readonly', false);
+			});
+			
+			$('#${id}_sexo').parent().click(function(e){
+				if ($('#${id}_sexo').attr('readonly') == 'readonly')
+					$('#${id}_sexo').prop('readonly', false);
+			});
+			
+			$('#${id}_fechaNacimiento').parent().click(function(e){
+				if ($('#${id}_fechaNacimiento').attr('readonly') == 'readonly')
+					$('#${id}_fechaNacimiento').prop('readonly', false);
+			});
+			
+			$('#${id}_email').parent().click(function(e){
+				if ($('#${id}_email').attr('readonly') == 'readonly')
+					$('#${id}_email').prop('readonly', false);
+			});
+			
+			$('#${id}_telefonoContacto').parent().click(function(e){
+				if ($('#${id}_telefonoContacto').attr('readonly') == 'readonly')
+					$('#${id}_telefonoContacto').prop('readonly', false);
+			});
+			
+		</script>
 		
-	</script>
+	#{/if}
 	
 #{/fap.field}

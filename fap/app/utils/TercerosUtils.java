@@ -352,10 +352,23 @@ public class TercerosUtils {
 			// Direccion
 			if (isValid(solicitante.domicilio.calle))
 				ret+="%&%calle%->%"+solicitante.domicilio.calle+"%,%";
+			if (isValid(solicitante.domicilio.numero))
+				ret+="%&%numero%->%"+solicitante.domicilio.numero+"%,%";	
+			if (isValid(solicitante.domicilio.otros))
+				ret+="%&%otros%->%"+solicitante.domicilio.otros+"%,%";
 			if (isValid(solicitante.domicilio.codigoPostal))
 				ret+="%&%codigoPostal%->%"+solicitante.domicilio.codigoPostal+"%,%";
+			if (isValid(solicitante.domicilio.pais))
+				ret+="%&%pais%->%"+solicitante.domicilio.pais+"%,%";
 			if (isValid(solicitante.domicilio.comunidad))
 				ret+="%&%comunidad%->%"+solicitante.domicilio.comunidad+"%,%";
+			if (isValid(solicitante.domicilio.provinciaInternacional)){
+				ret+="%&%provinciaInternacional%->%"+solicitante.domicilio.provinciaInternacional+"%,%";
+				if (tipoDireccion == null)
+					tipoDireccion = "internacional";
+			}
+			if (isValid(solicitante.domicilio.provincia))
+				ret+="%&%provincia%->%"+solicitante.domicilio.provincia+"%,%";
 			if (isValid(solicitante.domicilio.isla)){
 				ret+="%&%isla%->%"+solicitante.domicilio.isla+"%,%";
 				if (tipoDireccion == null)
@@ -363,19 +376,6 @@ public class TercerosUtils {
 			}
 			if (isValid(solicitante.domicilio.municipio))
 				ret+="%&%municipio%->%"+solicitante.domicilio.municipio+"%,%";
-			if (isValid(solicitante.domicilio.numero))
-				ret+="%&%numero%->%"+solicitante.domicilio.numero+"%,%";
-			if (isValid(solicitante.domicilio.provinciaInternacional)){
-				ret+="%&%provinciaInternacional%->%"+solicitante.domicilio.provinciaInternacional+"%,%";
-				if (tipoDireccion == null)
-					tipoDireccion = "internacional";
-			}
-			if (isValid(solicitante.domicilio.otros))
-				ret+="%&%otros%->%"+solicitante.domicilio.otros+"%,%";
-			if (isValid(solicitante.domicilio.pais))
-				ret+="%&%pais%->%"+solicitante.domicilio.pais+"%,%";
-			if (isValid(solicitante.domicilio.provincia))
-				ret+="%&%provincia%->%"+solicitante.domicilio.provincia+"%,%";
 
 			if (tipoDireccion == null)
 				tipoDireccion = "nacional";

@@ -22,6 +22,10 @@
 
 <script type="text/javascript">
 
+	%{
+		boolean botonReevaluar = "administradorgestor".contains(controllers.fap.AgenteController.getAgente().rolActivo);
+	%}
+
 
 	Ext.onReady(function() {
 				if (!Ext.ModelManager.isRegistered('tablaEvaluacionesAsignadas_model')) {
@@ -149,6 +153,16 @@
 		    		}
 			    });
 			    
+			    var boton_ver = new Ext.Button({
+			    	text: 'Ver',
+			    	disabled:true,
+		    		handler : function(){
+		    			var action = #{jsAction @fap.FichaEvaluadorController.index(':idEvaluacion', ':accion') /}
+		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+		    			window.location.href = action({idEvaluacion : selected_id, accion : "leer"})
+		    		}
+			    });
+			    
 			    var boton_evaluar = new Ext.Button({
 			    	text: 'Evaluar',
 			    	disabled:true,
@@ -197,7 +211,7 @@
 							labelWidth : 50,
 							xtype : 'searchfield',
 							store : store
-						}, '->', boton_aceptar, boton_evaluar, boton_rechazar, boton_reevaluar, boton_actualizar ]
+						}, '->', boton_aceptar, boton_evaluar, boton_rechazar, #{if botonReevaluar}boton_reevaluar,#{/if} boton_ver, boton_actualizar ]
 					} ]
 				});
 				
@@ -209,17 +223,19 @@
 			    	var aceptar_disabled = false;
 			    	var rechazar_disabled = false;
 			    	var reevaluar_disabled = false;
+			    	var ver_disabled = false;
 			    	if (hasSelection) {
 			    		var estado = grid.getSelectionModel().getSelection()[0].data.estado;
 			    		evaluar_disabled = !(estado === "En Tramite");
 			    		aceptar_disabled = (estado === "En Tramite" || estado === "Evaluada" || estado === "Rechazada");
 			    		rechazar_disabled = (estado === "Rechazada" || estado === "Evaluada" || estado === null);
-			    		reevaluar_disabled = (estado === "En Tramite" || estado  === null)
+			    		reevaluar_disabled = (estado === "En Tramite" || estado  === null);
 			    	}
 			    	boton_aceptar.setDisabled(aceptar_disabled);
 			    	boton_rechazar.setDisabled(rechazar_disabled);
 			    	boton_evaluar.setDisabled(evaluar_disabled);
-			    	boton_reevaluar.setDisabled(reevaluar_disabled);
+					#{if botonReevaluar}boton_reevaluar.setDisabled(reevaluar_disabled);#{/if}
+			    	boton_ver.setDisabled(ver_disabled);
 			    });
 
 				

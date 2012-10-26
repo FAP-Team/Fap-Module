@@ -110,7 +110,7 @@ public class BaremacionFAP {
             try {
             	TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
             	SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
-            	solicitudEnEvaluacion = tramite.getDocumentoOficial();
+            	solicitudEnEvaluacion = tramite.getDocumentoBorrador();
             	evaluacion.solicitudEnEvaluacion.descripcion="Solicitud a Evaluar";
                 evaluacion.solicitudEnEvaluacion.tipo = FapProperties.get("fap.baremacion.evaluacion.documento.solicitud");
                 evaluacion.save();

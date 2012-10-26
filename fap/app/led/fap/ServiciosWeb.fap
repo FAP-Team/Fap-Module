@@ -1,11 +1,11 @@
-ServicioWeb WSTodasSolicitudes {
+ServicioWeb WSTodasSolicitudes "Todas las solicitudes creadas" {
 	campo=SolicitudGenerica
 	return={titulo="Estado":SolicitudGenerica.estado, 
 			titulo="Fecha registro":SolicitudGenerica.registro.informacionRegistro.fechaRegistro
 	}
 }
 
-ServicioWeb WSSolicitudesPresentadas {
+ServicioWeb WSSolicitudesPresentadas "Todas las solicitudes que no están en estado borrador" {
 	campo=SolicitudGenerica
 	when 
 		SolicitudGenerica.estado != "borrador"
@@ -14,14 +14,14 @@ ServicioWeb WSSolicitudesPresentadas {
 	}
 }
 
-ServicioWeb WSAportaciones {
+ServicioWeb WSAportaciones "Todas las aportaciones realizadas" {
 	campo=SolicitudGenerica.aportaciones.registradas
 	return={titulo="Estado":Aportacion.estado, 
 			titulo="Fecha registro":Aportacion.informacionRegistro.fechaRegistro
 	}
 }
 
-ServicioWeb WSAportacionesConRegistro {
+ServicioWeb WSAportacionesConRegistro "Todas las aportaciones registradas" {
 	campo=SolicitudGenerica.aportaciones.registradas
 	when
 		Aportacion.informacionRegistro.fechaRegistro != null
@@ -30,7 +30,7 @@ ServicioWeb WSAportacionesConRegistro {
 	}
 }
 
-ServicioWeb WSAportacionesSinRegistro {
+ServicioWeb WSAportacionesSinRegistro "Todas las aportaciones que no se han registrado" {
 	campo=SolicitudGenerica.aportaciones.registradas
 	when
 		Aportacion.fechaAportacionSinRegistro != null
@@ -39,7 +39,7 @@ ServicioWeb WSAportacionesSinRegistro {
 	}
 }
 
-ServicioWeb WSNotificaciones {
+ServicioWeb WSNotificaciones "Todas las notificaciones con un estado válido" {
 	campo=SolicitudGenerica
 	when
 		SolicitudGenerica.verificacion.requerimiento.notificacion.estado != null
@@ -51,5 +51,4 @@ ServicioWeb WSNotificaciones {
 			titulo="Fecha Acceso":SolicitudGenerica.verificacion.requerimiento.notificacion.fechaAcceso
 	}
 }
-
 

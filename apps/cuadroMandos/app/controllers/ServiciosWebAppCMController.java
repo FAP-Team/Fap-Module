@@ -162,8 +162,15 @@ public class ServiciosWebAppCMController extends ServiciosWebAppCMControllerGen 
 											iguales = true;
 									}
 								}
-								if (iguales)
+								if (iguales) {
+									// Comprobamos si solo la descripción ha cambiado y, en tal caso,
+									// actualizamos esa información.
+									if (!comprobarDescripcion(swi, swiActual)) {
+										anteriorServicioWeb.get(i).servicioWebInfo.descripcion = swiActual.descripcion;
+										anteriorServicioWeb.get(i).save();
+									}
 									listaActivos.add(anteriorServicioWeb.get(i));
+								}
 							}
 						}	
 					}
@@ -215,8 +222,15 @@ public class ServiciosWebAppCMController extends ServiciosWebAppCMControllerGen 
 												iguales = true;
 										}
 									}
-									if (iguales)
+									if (iguales) {
+										// Comprobamos si solo la descripción ha cambiado y, en tal caso,
+										// actualizamos esa información.
+										if (!comprobarDescripcion(swi, swiActual)) {
+											anteriorServicioWeb.get(j).servicioWebInfo.descripcion = swiActual.descripcion;
+											anteriorServicioWeb.get(j).save();
+										}
 										listaActivos.add(anteriorServicioWeb.get(j));
+									}
 								}
 							}
 						}
@@ -250,6 +264,14 @@ public class ServiciosWebAppCMController extends ServiciosWebAppCMControllerGen 
 		}
 	}
 	
+	private static boolean comprobarDescripcion(ServicioWebInfo swiAnterior, ServicioWebInfo swiNuevo) {
+		
+		if (swiAnterior.descripcion.equals(swiNuevo.descripcion))
+			return true;
+
+		return false;		
+	}
+	
 	/**
 	 * Tabla en la que se muestran los servicios web activos.
 	 * @param idAplicacion
@@ -265,7 +287,7 @@ public class ServiciosWebAppCMController extends ServiciosWebAppCMControllerGen 
 		}
 		
 		tables.TableRenderResponse<ServiciosWeb> response = new tables.TableRenderResponse<ServiciosWeb>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
-		renderJSON(response.toJSON("servicioWebInfo.nombre", "servicioWebInfo.urlWS", "id"));
+		renderJSON(response.toJSON("servicioWebInfo.nombre", "servicioWebInfo.urlWS", "id", "servicioWebInfo.descripcion"));
 	}
 	
 	/**
@@ -283,6 +305,6 @@ public class ServiciosWebAppCMController extends ServiciosWebAppCMControllerGen 
 		}
 		
 		tables.TableRenderResponse<ServiciosWeb> response = new tables.TableRenderResponse<ServiciosWeb>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
-		renderJSON(response.toJSON("servicioWebInfo.nombre", "servicioWebInfo.urlWS", "id"));
+		renderJSON(response.toJSON("servicioWebInfo.nombre", "servicioWebInfo.urlWS", "id", "servicioWebInfo.descripcion"));
 	}
 }

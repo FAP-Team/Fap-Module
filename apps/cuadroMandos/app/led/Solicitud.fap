@@ -29,8 +29,10 @@ Formulario CuadroDeMandos inicial {
 		Tabla serviciosWeb titulo="Servicios web activos" campo=Aplicacion.serviciosWeb
 		paginaEditar=GraficasWSCM
 		{
+			Columna titulo="ID" campo=ServiciosWeb.id ancho="35"
 			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
 			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
+			Columna titulo="Descripción" campo=ServiciosWeb.servicioWebInfo.descripcion expandir
 		}
 		
 		Form formBtnRecargaWS {
@@ -40,17 +42,17 @@ Formulario CuadroDeMandos inicial {
 		Tabla historialServiciosWeb titulo="Historial de servicios web" campo=Aplicacion.serviciosWeb
 		paginaEditar=GraficasWSCM
 		{
+			Columna titulo="ID" campo=ServiciosWeb.id ancho="35"
 			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
 			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
+			Columna titulo="Descripción" campo=ServiciosWeb.servicioWebInfo.descripcion expandir
 		}
 	}
 	
 	Pagina GraficasWSCM noForm titulo="Gráficas servicios web" campo=Aplicacion.serviciosWeb {
 		Wiki {"Aquí se mostrará el SuperTag"}
-		Form formBtnRecargaDatos {
-			Boton recargasDatos titulo="Recargar datos" ayuda="Pulse este botón para obligar a actualizar los datos de los servicios web" (popover)
-		}
-		Form formBtnVolver {
+		Form formBtn {
+			Boton btnRecargasDatos titulo="Recargar datos" ayuda="Pulse este botón para obligar a actualizar los datos de los servicios web" (popover)
 			Boton btnVolver titulo="Volver a la lista de Servicios Web" pagina=ServiciosWebAppCM
 		}
 	}

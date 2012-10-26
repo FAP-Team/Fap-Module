@@ -38,11 +38,17 @@
 
 }*
 	
-	#{form play.mvc.Router.reverse('GraficasWSCMController.formBtnRecargaDatos' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtnRecargaDatos"}
-		#{fap.boton ayuda:tags.TagAyuda.popover('Pulse este botón para obligar a actualizar los datos de los servicios web'), id:'recargasDatos', titulo:'Recargar datos' /}
+	%{
+		play.mvc.Router.ActionDefinition action = play.mvc.Router.reverse("ServiciosWebAppCMController.index" , ['idAplicacion':aplicacion?.id]);
+		def url = action.url;
+	%}
+
+	#{form play.mvc.Router.reverse('GraficasWSCMController.formBtn' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtn"}
+		<a id="btnVolverIDenlace" href="${url}" class="btn">Volver a la lista de Servicios Web</a>
+		#{fap.boton ayuda:tags.TagAyuda.popover('Pulse este botón para obligar a actualizar los datos de los servicios web'), id:'btnRecargasDatos', titulo:'Recargar datos' /}
 	#{/form}
 
-%{
+	%{
 		def urlControllerFecha = play.mvc.Router.reverse('fap.WSController.getFechasPeticiones');
 		def urlControllerAtr = play.mvc.Router.reverse('fap.WSController.getDatosPeticiones');
 	%}
@@ -468,9 +474,5 @@
 		
 
 	</script>
-
-	#{form play.mvc.Router.reverse('GraficasWSCMController.formBtnVolver' , ['idAplicacion':aplicacion?.id, 'idServiciosWeb':serviciosWeb?.id]) , class:"form-horizontal", id:"formBtnVolver"}				
-		#{fap.enlace action:play.mvc.Router.reverse("ServiciosWebAppCMController.index" , ['idAplicacion':aplicacion?.id]), estilo:'btn ', id:'btnVolverIDenlace', titulo:'Volver a la lista de Servicios Web' /}
-	#{/form}
 
 #{/fap.pagina}

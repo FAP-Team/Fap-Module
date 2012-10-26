@@ -28,6 +28,8 @@ public class ServicioWebInfo extends FapModel {
 
 	public Boolean activo;
 
+	public String descripcion;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "serviciowebinfo_infoparams")
 	public List<InfoParams> infoParams;

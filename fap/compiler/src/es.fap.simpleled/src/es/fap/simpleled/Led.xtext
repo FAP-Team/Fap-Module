@@ -685,7 +685,7 @@ PermisoRuleCheckRight:
 ;
 
 ServicioWeb:
-	elemento='ServicioWeb' name=ID "{"
+	elemento='ServicioWeb' name=ID (descripcion=STRING)? "{"
 		"campo" "=" campo=Campo
 		(when=WSWhen)?
 		"return" "=" "{" ret = WSReturn ("," retMore += WSReturn)* "}"

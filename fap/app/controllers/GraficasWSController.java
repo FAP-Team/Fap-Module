@@ -91,9 +91,9 @@ public class GraficasWSController extends GraficasWSControllerGen {
 	}
 	
 	@Util
-	public static void formBtnRecargaDatos(Long idAplicacion, Long idServiciosWeb, String recargasDatos) {
+	public static void formBtn(Long idAplicacion, Long idServiciosWeb, String btnRecargasDatos) {
 		checkAuthenticity();
-		if (!permisoFormBtnRecargaDatos("editar")) {
+		if (!permisoFormBtn("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
@@ -135,18 +135,18 @@ public class GraficasWSController extends GraficasWSControllerGen {
 		}
 
 		if (!Messages.hasErrors()) {
-			GraficasWSController.formBtnRecargaDatosValidateRules();
+			GraficasWSController.formBtnValidateRules();
 		}
 		if (!Messages.hasErrors()) {
+
 			log.info("Acción Editar de página: " + "gen/GraficasWS/GraficasWS.html" + " , intentada con éxito");
 		} else
 			log.info("Acción Editar de página: " + "gen/GraficasWS/GraficasWS.html" + " , intentada sin éxito (Problemas de Validación)");
-		GraficasWSController.formBtnRecargaDatosRender(idAplicacion, idServiciosWeb);
-		
+		GraficasWSController.formBtnRender(idAplicacion, idServiciosWeb);
 	}
-	
+
 	@Util
-	public static void formBtnRecargaDatosRender(Long idAplicacion, Long idServiciosWeb) {
+	public static void formBtnRender(Long idAplicacion, Long idServiciosWeb) {
 		if (!Messages.hasMessages()) {
 			Messages.warning("El servicio web puede haber cambiado, actualice el Servicio Web");
 			play.Logger.error("El servicio web puede haber cambiado, actualice el Servicio Web");
@@ -156,6 +156,5 @@ public class GraficasWSController extends GraficasWSControllerGen {
 		Messages.keep();
 		redirect("ServiciosWebAppController.index", "editar", idAplicacion);
 	}
-	
 	
 }

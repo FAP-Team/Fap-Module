@@ -315,10 +315,14 @@ public class ${controllerFullName} extends ${controllerGenFullName} {
 				swi.infoParams.add(info${atr});
 				""";
 		}
-
+		String descripcion = "";
+		if (servicioWeb.getDescripcion() != null)
+			descripcion = servicioWeb.getDescripcion();
+		
 		out += 	"""
 					swi.nombre = "${servicioWeb.getName()}";
 					swi.urlWS = "/${servicioWeb.getName()}";
+					swi.descripcion = "${descripcion}";
 					return swi;
 				}
 				""";

@@ -721,6 +721,7 @@ Entidad ServicioWebInfo {
 	String nombre
 	String urlWS
 	Boolean activo
+	String descripcion
 	OneToMany InfoParams infoParams
 }
 

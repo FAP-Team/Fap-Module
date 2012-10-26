@@ -8,6 +8,8 @@ import generator.utils.StringUtils;
 import generator.utils.LedUtils;
 import java.text.DecimalFormat
 import java.text.NumberFormat
+
+import es.fap.simpleled.led.impl.ElementoListaDependienteImpl;
 import es.fap.simpleled.led.impl.ElementoListaImpl;
 import es.fap.simpleled.led.util.ModelUtils;
 import es.fap.simpleled.led.*;
@@ -117,6 +119,20 @@ public class GLista extends GElement{
         }
         return escapeKey(key);
     }
+	
+	private String getEnumElementKey(ElementoListaDependiente elD){
+		String key;
+		if(elD.key == null){
+			key = StringUtils.id(elD.value);
+		}else{
+			key = elD.key.getFirst();
+			for(String resto : elD.key.getResto()){
+				key += "." + resto;
+			}
+			
+		}
+		return escapeKey(key);
+	}
     
     private String escapeKey(String clave){
         String result = clave;
@@ -127,8 +143,12 @@ public class GLista extends GElement{
     }
     
     private String getEnumElementValue(ElementoLista el){
-        return el.value?: getEnumElementKey(el);
+        return el.value? escapeKey(el.value): getEnumElementKey(el);
     }
+	
+	private String getEnumElementValue(ElementoListaDependiente el){
+		return el.value?: getEnumElementKey(el);
+	}
 
     private String getEnumElementsDefinition(List<ElementoLista> elementos){
         List<String> enumElementsDef = new ArrayList<String>();
@@ -224,13 +244,9 @@ public class GLista extends GElement{
 	
 	private void generateElementoDependiente(ElementoLista el){
 		String table = lista.name;
-		String key = el.key.getFirst();
+		String key = getEnumElementKey(el);
 		String keyDep = "";
 		String valueDep = "";
-		// Calculamos el nombre de la clave del elemento dependiente
-		for (String rest : el.key.getResto()) {
-			key += "."+rest;
-		}
 		// Recorremos todos los elementos que tiene el elemento Dependiente
 		for (ElementoListaDependiente elDep : el.elementosDependientes){
 			// Calculamos el nombre de la clave de cada uno de los elementos
@@ -238,6 +254,7 @@ public class GLista extends GElement{
 			for (String rest : elDep.key.getResto()) {
 				keyDep += "."+rest;
 			}
+			keyDep = getEnumElementKey(elDep);
 			// Calculamos que valor va a tener asociado cada clave
 			valueDep = elDep.value?:elDep.key;
 			// Empezamos a crear la salida

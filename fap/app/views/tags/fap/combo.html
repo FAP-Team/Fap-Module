@@ -187,7 +187,7 @@
 				  		type: "POST",
 				  		url: urlFilterDependency,
 				  		data: {tabla: "${field.table}", dependencia: dependency}
-					}).done(function( msg ) { 
+					}).done(function( msg ) {
 		 				var params = msg;
 						if (params != "{}"){
 							params = params.replace("{", "");
@@ -296,9 +296,6 @@
 			// Para los combos dependientes
 			function CargarValoresComboDependiente${id}(){
 				valorDependencia${id} = $('select[id=${dependencia}]').val();
-				if (valorDependencia${id}.match(/^_\d*/)){ // Para quitar el '_' que se pone automaticamente cuando la clave es un digito
-					valorDependencia${id}=valorDependencia${id}.replace("_", "");
-				}
                 calculateDependencies${id}(valorDependencia${id}); 
 			}
 			// Para cada vez que se renderiza la pagina, calculamos los posibles valores de ese combo

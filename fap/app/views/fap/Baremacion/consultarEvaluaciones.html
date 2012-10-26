@@ -230,6 +230,7 @@
 			    		aceptar_disabled = (estado === "En Tramite" || estado === "Evaluada" || estado === "Rechazada");
 			    		rechazar_disabled = (estado === "Rechazada" || estado === "Evaluada" || estado === null);
 			    		reevaluar_disabled = (estado === "En Tramite" || estado  === null);
+			    		ver_disabled = (estado === null);
 			    	}
 			    	boton_aceptar.setDisabled(aceptar_disabled);
 			    	boton_rechazar.setDisabled(rechazar_disabled);

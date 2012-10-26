@@ -494,6 +494,41 @@ Permiso evaluacion{
 	return all
 }
 
+Permiso accesoEvaluacion {
+	vars
+		Evaluacion evaluacion
+	when
+		( 
+			_accion = editar and
+		    agente?.rolActivo in ("administrador", "gestor", "revisor", "evaluador") and
+		    (evaluacion?.estado in ("enTramite"))
+		)
+	return
+		all
+		
+	when 
+		(
+           	_accion = leer and
+           	 agente?.rolActivo in ("administrador", "gestor", "revisor", "evaluador") and
+		    (evaluacion?.estado in ("enTramite", "evaluada", "rechazada"))
+		)
+	return
+		visible
+}
+
+Permiso guardarEvaluacion {
+	vars
+		Evaluacion evaluacion
+	when
+		( 
+			_accion = editar and
+		    agente?.rolActivo in ("administrador", "gestor", "revisor", "evaluador") and
+		    (evaluacion?.estado in ("enTramite"))
+		)
+	return
+		all
+}
+
 Permiso tableKeyOnlyEstadosSolicitud{
 	vars
 		TableKeyValue tableKeyValue

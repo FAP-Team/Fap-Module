@@ -71,8 +71,8 @@ public class FichaEvaluadorController extends Controller {
 	}
 	
 	public static void index(Long idEvaluacion, String accion){
-		
-		if(secure.checkGrafico("evaluacion", "visible", "leer", null, null)){
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		if(secure.checkGrafico("accesoEvaluacion", "visible", "leer", ids, null)){
 			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 			if (evaluacion != null) {
@@ -87,7 +87,8 @@ public class FichaEvaluadorController extends Controller {
 			// Stupid hack
 			boolean admin = "administradorgestor".contains(AgenteController.getAgente().rolActivo);
 			BaremacionService.calcularTotales(evaluacion, admin, true);
-			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, expedienteUrl, duracion, idEvaluacion, accion);
+			boolean puedoGuardar = secure.checkGrafico("guardarEvaluacion", "editable", "editar", ids, null);
+			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, expedienteUrl, duracion, idEvaluacion, accion, puedoGuardar);
 		}else{
 			forbidden();
 		}
@@ -109,7 +110,7 @@ public class FichaEvaluadorController extends Controller {
 						if ((ObligatoriedadDocumentosFap.eliminarVersionUri(documento.uriTipoDocumento).equals(ObligatoriedadDocumentosFap.eliminarVersionUri(tipo.uri))) && (documento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.valido.name()))){
 							if (documentosAportados != null){
 								for (Documento doc: documentosAportados){
-									if (doc.uri.equals(documento.uriDocumento)){
+									if ((doc.uri != null) && (doc.uri.equals(documento.uriDocumento))){
 										rows.add(doc);
 										encontrado = true;
 										//break;
@@ -135,7 +136,7 @@ public class FichaEvaluadorController extends Controller {
 
 		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered, false, false, false, "", "", "", "editar", ids);
 
-		renderJSON(response.toJSON("descripcionVisible", "tipo", "urlDescarga", "id"));
+		renderJSON(response.toJSON("fechaRegistro", "descripcionVisible", "tipo", "urlDescarga", "id"));
 	}
 
 	private static String redirectToFirstPage(Long idSolicitud) {
@@ -172,7 +173,8 @@ public class FichaEvaluadorController extends Controller {
 	}
 
 	public static void save(){
-		if(secure.checkGrafico("evaluacion", "editable", "editar", null, null)){
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		if(secure.checkGrafico("guardarEvaluacion", "editable", "editar", ids, null)){
 			boolean actionSave = params.get("save") != null;
 			boolean actionPdf = params.get("pdf") != null;
 			boolean actionEnd = params.get("end") != null;

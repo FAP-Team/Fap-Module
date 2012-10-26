@@ -1,5 +1,9 @@
+%{
+	def disabled = _disabled == null || !_disabled? '' : 'disabled="disabled"'
+%}
+
 <div class="textarea">
 #{simple.row id:_id, label:_label}
-	<textarea class="input-xlarge" name="${_name}" id="${_id}" rows="6">${_value}</textarea>
+	<textarea class="input-xlarge" name="${_name}" id="${_id}" ${disabled} rows="6">${_value}</textarea>
 #{/simple.row}
 </div>

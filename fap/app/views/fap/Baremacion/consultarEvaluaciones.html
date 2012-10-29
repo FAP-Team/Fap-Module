@@ -172,9 +172,26 @@
 		    			window.location.href = action({idEvaluacion : selected_id, accion : "editar"})
 		    		}
 			    });
+			    				
+				var editRow = new Ext.create('Ext.grid.plugin.Editing', {
+		    		clicksToEdit: 2,
+	    	  	 	startEdit: function(record, columnHeader) {
+	    	  	 		console.log("Dobleclick");
+						var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+						var estado = grid.getSelectionModel().getSelection()[0].data.estado;
+						var registro = store${id}.getAt(store${id}.find("id", selected_id));
+		    			if (estado == "En Tramite"){
+		    				var action = #{jsAction @fap.FichaEvaluadorController.index(':idEvaluacion', ':accion') /}
+		    				window.location.href = action({idEvaluacion : selected_id, accion : "editar"});
+        				}
+        			}
+    			});
 			    
 				var grid = new Ext.grid.GridPanel({
 					store : store,
+					plugins: [
+						editRow
+					],
 					columns : [ {
 						text : 'Expediente',
 						dataIndex : 'solicitud_expedienteAed_idAed',

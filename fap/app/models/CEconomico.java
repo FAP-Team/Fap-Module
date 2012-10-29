@@ -88,7 +88,7 @@ public class CEconomico extends FapModel {
 	public Double getTotal() {
 		Double total = 0.0;
 		for (ValoresCEconomico val : this.valores) {
-			total += val.valorSolicitado;
+			total += val.valorSolicitado==null? 0.0 : val.valorSolicitado;
 		}
 		return total;
 	}

@@ -41,6 +41,8 @@ public class Solicitud extends SolicitudGenerica {
 	}
 
 	public void savePagesPrepared() {
+		if ((savePages.paginaPCEconomicos == null) || (!savePages.paginaPCEconomicos))
+			Messages.error("La página Conceptos Económicos no fue guardada correctamente");
 	}
 
 	// === MANUAL REGION START ===

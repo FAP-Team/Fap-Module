@@ -114,6 +114,10 @@
 	#{fap.grupo titulo:'Información del servicio web que está consultando'}
 		<p>Está consultando el Servicio Web <strong>'${ws.servicioWebInfo.nombre}'</strong> en la dirección:<p>
 		<p align="center">'${aplicacion.urlApp}${ws.servicioWebInfo.urlWS}'</p>
+		#{if (ws.servicioWebInfo.descripcion != "")}
+			<p>Descripción del servicio web:</p>
+			<ul><li>- ${ws.servicioWebInfo.descripcion}</li></ul>
+		#{/if}
 		<p>Datos que se pueden consultar:</p>
 		<ul>
 		#{list items:ws.servicioWebInfo.infoParams, as:'info'}

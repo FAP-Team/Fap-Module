@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 public class SavePages extends FapModel {
 	// Código de los atributos
 
+	public Boolean paginaPCEconomicos;
+
 	public void init() {
 
 		postInit();

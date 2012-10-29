@@ -24,8 +24,7 @@ POST /CuadroDeMandos/servicioswebappcm/formBtnRecargaWS ServiciosWebAppCMControl
 GET /CuadroDeMandos/servicioswebappcm/historialServiciosWeb ServiciosWebAppCMController.tablahistorialServiciosWeb
 GET /CuadroDeMandos/graficaswscm GraficasWSCMController.index
 POST /CuadroDeMandos/graficaswscm GraficasWSCMController.index
-POST /CuadroDeMandos/graficaswscm/formBtnRecargaDatos GraficasWSCMController.formBtnRecargaDatos
-POST /CuadroDeMandos/graficaswscm/formBtnVolver GraficasWSCMController.formBtnVolver
+POST /CuadroDeMandos/graficaswscm/formBtn GraficasWSCMController.formBtn
 GET /CuadroDeMandos/nuevaaplicacion popups.NuevaAplicacionController.index
 POST /CuadroDeMandos/nuevaaplicacion/borrar popups.NuevaAplicacionController.borrar
 POST /CuadroDeMandos/nuevaaplicacion/crear popups.NuevaAplicacionController.crear

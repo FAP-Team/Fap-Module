@@ -123,7 +123,7 @@ public abstract class TramiteBase {
             // Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
         	if ((registro.borrador != null) && (registro.borrador.uri != null)){
                 Documento borradorOld = registro.borrador;
-                registro.oficial = null; 
+                registro.borrador = null; 
                 registro.save();
                 try{
                     gestorDocumentalService.deleteDocumento(borradorOld);

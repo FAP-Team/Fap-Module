@@ -83,3 +83,7 @@ h3. Notificaciones:
 h3. Registro: 
 
 * Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.
+h3. BDD Terceros: 
+
+* Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.
+Para más infomación acerca del servicio de la base de datos a terceros vaya a su "documentación.":app-terceros

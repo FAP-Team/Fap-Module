@@ -14,6 +14,7 @@ import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemNotificacionServiceImpl;
 import services.filesystem.FileSystemRegistroService;
+import services.filesystem.FileSystemTercerosServiceImpl;
 import services.notificacion.NotificacionServiceImpl;
 import services.platino.PlatinoTercerosServiceImpl;
 import services.NotificacionService;
@@ -32,7 +33,7 @@ public class FapModule extends PlayAbstractModule {
 	}
 	
 	protected void terceros() {
-		bindLazySingletonOnDev(TercerosService.class, PlatinoTercerosServiceImpl.class);
+		bindLazySingletonOnDev(TercerosService.class, FileSystemTercerosServiceImpl.class);
 	}
 	
 	protected void notificacion() {

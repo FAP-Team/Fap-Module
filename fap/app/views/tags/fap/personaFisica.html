@@ -18,7 +18,7 @@
 			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}		
 			#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
-			#{fap.texto id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}
+			#{fap.fecha id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}
 		#{/fap.grupo}
 	#{/if}
 	#{else}
@@ -28,100 +28,131 @@
 			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}
 			#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
-			#{fap.texto id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}		
+			#{fap.fecha id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}		
 		#{/fap.grupo}
 	#{/else}
 	
-	#{if id.indexOf("representanteDelSolicitante_") != 0}
+	#{if properties.FapProperties.getBoolean("fap.platino.tercero.activa")}
 	
-		%{
-			urlGetTercero = play.mvc.Router.reverse('fap.UtilsController.getTerceroByNipOrCif')
-		%}
+		#{if id.indexOf("representanteDelSolicitante_") != 0}
 	
-		<script>
-			var urlTerceros = "${urlGetTercero}";
-			
-			$('#${id}_nip_tipo').blur(function(){
-				setDatosTercero${id}($('#${id}_nip_valor').val(), $('#${id}_nip_tipo').val());
-			});
-			$('#${id}_nip_valor').blur(function(){
-				setDatosTercero${id}($('#${id}_nip_valor').val(), $('#${id}_nip_tipo').val());
-			});
-			
-			function setDatosTercero${id}(id, tipo){
-				$.ajax({
-		  			type: "POST",
-		  			url: urlTerceros,
-		  			data: {numeroIdentificacion: id, tipoIdentificacion: tipo}
-				}).done(function( msg ) { 
-	 				var params = msg;
-					if (params != "{}"){
-						params = params.replace("{", "");
-						params = params.replace("}", "");
-						params = params.split('%,%');
-						var hayDireccion = false;
-						
-						for (var i = 0; i < params.length; i++) {
-	 						 var parts = params[i].split('%->%');
-	 						 if (parts[0].indexOf("%&%") != -1){
-	 						 	if ($('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).val() === ""){
-	 						 		hayDireccion = true;
-	 						 		$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).val(parts[1]);
-									if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla")){
-	 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
-	 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).change();
-	 						 		}
-	 						 		$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).prop('readonly', true);
-	 						 	}
-	 						 } else {
-	 						 	if ($('#${id}_'+parts[0]).val() === ""){
-	 						 		$('#${id}_'+parts[0]).val(parts[1]);
-	 						 		$('#${id}_'+parts[0]).prop('readonly', true);
-	 						 	}
-							}
-						}
-						if (hayDireccion)
-							$('#${id.replace("Fisica","")}Direccion_tipo').change(); 
-					}
+			%{
+				urlGetTercero = play.mvc.Router.reverse('fap.UtilsController.getTerceroByNipOrCif')
+			%}
+		
+			<script>
+				var urlTerceros = "${urlGetTercero}";
+				
+				$('#${id}_nip_tipo').blur(function(){
+					if (($('#${id}_nip_valor').val() !== "") && ($('#${id}_nip_tipo').val() !== ""))
+						setDatosTercero${id}($('#${id}_nip_valor').val(), $('#${id}_nip_tipo').val());
 				});
-			}
-			
-			$('#${id}_nombre').parent().click(function(e){
-				if ($('#${id}_nombre').attr('readonly') == 'readonly')
-					$('#${id}_nombre').prop('readonly', false);
-			});
-			
-			$('#${id}_primerApellido').parent().click(function(e){
-				if ($('#${id}_primerApellido').attr('readonly') == 'readonly')
-					$('#${id}_primerApellido').prop('readonly', false);
-			});
-			
-			$('#${id}_segundoApellido').parent().click(function(e){
-				if ($('#${id}_segundoApellido').attr('readonly') == 'readonly')
-					$('#${id}_segundoApellido').prop('readonly', false);
-			});
-			
-			$('#${id}_sexo').parent().click(function(e){
-				if ($('#${id}_sexo').attr('readonly') == 'readonly')
-					$('#${id}_sexo').prop('readonly', false);
-			});
-			
-			$('#${id}_fechaNacimiento').parent().click(function(e){
-				if ($('#${id}_fechaNacimiento').attr('readonly') == 'readonly')
-					$('#${id}_fechaNacimiento').prop('readonly', false);
-			});
-			
-			$('#${id}_email').parent().click(function(e){
-				if ($('#${id}_email').attr('readonly') == 'readonly')
-					$('#${id}_email').prop('readonly', false);
-			});
-			
-			$('#${id}_telefonoContacto').parent().click(function(e){
-				if ($('#${id}_telefonoContacto').attr('readonly') == 'readonly')
-					$('#${id}_telefonoContacto').prop('readonly', false);
-			});
-			
-		</script>
+				$('#${id}_nip_valor').blur(function(){
+					if (($('#${id}_nip_valor').val() !== "") && ($('#${id}_nip_tipo').val() !== ""))
+						setDatosTercero${id}($('#${id}_nip_valor').val(), $('#${id}_nip_tipo').val());
+				});
+				
+				function setDatosTercero${id}(id, tipo){
+					popupWait_openWithMessage("Espere mientras se cargan sus datos personales ...");
+					$.ajax({
+			  			type: "POST",
+			  			url: urlTerceros,
+			  			data: {numeroIdentificacion: id, tipoIdentificacion: tipo}
+					}).done(function( msg ) { 
+		 				var params = msg;
+						if (params != "{}"){
+							params = params.replace("{", "");
+							params = params.replace("}", "");
+							params = params.split('%,%');
+							
+							var parts = params[params.length-1].split('%->%');
+							if ((parts[0].replace("%&%", "") === "tipo") && ($('#${id.replace("Fisica","")}Direccion_tipo').val() === "")){
+	 						 	$('#${id.replace("Fisica","")}Direccion_tipo').val(parts[1]);
+	 						 	$('#${id.replace("Fisica","")}Direccion_tipo').trigger("liszt:updated");
+	 						 	$('#${id.replace("Fisica","")}Direccion_tipo').prop('readonly', true);
+	 						 	$('#${id.replace("Fisica","")}Direccion_tipo').change();
+		 					}
+							
+							// Bucle con tiempo, entre cada iteracion espera un determinado 'tiempo', para dar tiempo a cargar los combos dependientes
+							(function myLoop (fin, tiempo) {        
+	   								setTimeout(function () {
+	   									var tiempoNuevo=1;
+	      								var i = (params.length-1)-fin;
+				 						parts = params[i].split('%->%');
+				 						if (parts[0].indexOf("%&%") != -1){
+				 						 	if ($('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).val() === ""){
+				 						 		$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).val(parts[1]);
+												if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla") || (parts[0].replace("%&%", "") === "provinciaIsla") || (parts[0].replace("%&%", "") === "municipioIsla")){
+				 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
+				 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).change();
+				 						 			tiempoNuevo=1500;
+				 						 		}
+				 						 		$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).prop('readonly', true);
+				 						 	}
+				 						} else {
+				 							if ((parts[0] === "email") || (parts[0] === "telefonoContacto")){
+				 								if ($('#${id.replace("Fisica","")}_'+parts[0]).val() === ""){
+				 						 			$('#${id.replace("Fisica","")}_'+parts[0]).val(parts[1]);
+				 						 			$('#${id.replace("Fisica","")}_'+parts[0]).prop('readonly', true);
+		 						 				}
+				 							} else if ($('#${id}_'+parts[0]).val() === ""){
+				 						 		$('#${id}_'+parts[0]).val(parts[1]);
+				 						 		$('#${id}_'+parts[0]).prop('readonly', true);
+		 						 			}
+										}
+										if (--fin) //  decrement i and call myLoop again if i > 0
+											myLoop(fin, tiempoNuevo);
+										else {
+										 	$popup = $("#popupWait_popup");	
+											$popup.modal("hide");
+										}
+	   								}, tiempo)
+							})(params.length-1, 1);
+						} else {
+							$popup = $("#popupWait_popup");	
+							$popup.modal("hide");
+						}
+					});
+				}
+					
+				$('#${id}_nombre').parent().click(function(e){
+					if ($('#${id}_nombre').attr('readonly') == 'readonly')
+						$('#${id}_nombre').prop('readonly', false);
+				});
+				
+				$('#${id}_primerApellido').parent().click(function(e){
+					if ($('#${id}_primerApellido').attr('readonly') == 'readonly')
+						$('#${id}_primerApellido').prop('readonly', false);
+				});
+				
+				$('#${id}_segundoApellido').parent().click(function(e){
+					if ($('#${id}_segundoApellido').attr('readonly') == 'readonly')
+						$('#${id}_segundoApellido').prop('readonly', false);
+				});
+				
+				$('#${id}_sexo').parent().click(function(e){
+					if ($('#${id}_sexo').attr('readonly') == 'readonly')
+						$('#${id}_sexo').prop('readonly', false);
+				});
+				
+				$('#${id}_fechaNacimiento').parent().click(function(e){
+					if ($('#${id}_fechaNacimiento').attr('readonly') == 'readonly')
+						$('#${id}_fechaNacimiento').prop('readonly', false);
+				});
+				
+				$('#${id}_email').parent().click(function(e){
+					if ($('#${id}_email').attr('readonly') == 'readonly')
+						$('#${id}_email').prop('readonly', false);
+				});
+				
+				$('#${id}_telefonoContacto').parent().click(function(e){
+					if ($('#${id}_telefonoContacto').attr('readonly') == 'readonly')
+						$('#${id}_telefonoContacto').prop('readonly', false);
+				});
+				
+			</script>
+		
+		#{/if}
 		
 	#{/if}
 	

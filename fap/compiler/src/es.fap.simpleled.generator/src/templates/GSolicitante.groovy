@@ -61,12 +61,12 @@ public class GSolicitante extends GElement{
 		
 		telefonoContacto = LedFactory.eINSTANCE.createTexto();
 		telefonoContacto.titulo="Teléfono de Contacto";
-		telefonoContacto.name="${solicitante.name}TelefonoContacto";
+		telefonoContacto.name="${solicitante.name}_telefonoContacto";
 		telefonoContacto.campo=CampoUtils.addMore(solicitante.campo, "telefonoContacto").campo;
 		
 		email = LedFactory.eINSTANCE.createTexto();
 		email.titulo="Email";
-		email.name="${solicitante.name}Email";
+		email.name="${solicitante.name}_email";
 		email.campo=CampoUtils.addMore(solicitante.campo, "email").campo;
 		
 		Grupo grupoOtrosDatos = LedFactory.eINSTANCE.createGrupo();

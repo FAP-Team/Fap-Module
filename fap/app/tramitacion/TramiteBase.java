@@ -13,7 +13,6 @@ import config.InjectorConfig;
 import controllers.fap.FirmaController;
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
-import es.gobcan.platino.servicios.terceros.TerceroListItem;
 
 import messages.Messages;
 import models.Aportacion;
@@ -24,6 +23,7 @@ import models.Firmante;
 import models.Firmantes;
 import models.JustificanteRegistro;
 import models.Registro;
+import models.Solicitante;
 import models.SolicitudGenerica;
 
 import platino.DatosRegistro;
@@ -404,13 +404,13 @@ public abstract class TramiteBase {
 							tipoNumeroIdentificacion = "cif";
 						}
 						TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
-						List<TerceroListItem> existeTercero = tercerosService.buscarTercerosDetalladosByNumeroIdentificacion(solicitud.solicitante.getNumeroId(), tipoNumeroIdentificacion);
+						List<Solicitante> existeTercero = tercerosService.buscarTercerosDetalladosByNumeroIdentificacion(solicitud.solicitante.getNumeroId(), tipoNumeroIdentificacion);
 						if ((existeTercero == null) || (existeTercero.isEmpty())){
 							String uriTercero = tercerosService.crearTerceroMinimal(solicitud.solicitante);
 							solicitud.solicitante.uriTerceros = uriTercero;
 							solicitud.save();
 						} else {
-							String uriTercero = existeTercero.get(0).getUri();
+							String uriTercero = existeTercero.get(0).uriTerceros;
 							solicitud.solicitante.uriTerceros = uriTercero;
 							solicitud.save();
 							play.Logger.warn("El Tercero ya existe en la BDD a Terceros de Platino: "+solicitud.solicitante.getNumeroId()+" - "+tipoNumeroIdentificacion+". Se ha seteado la uriTerceros a: "+uriTercero);

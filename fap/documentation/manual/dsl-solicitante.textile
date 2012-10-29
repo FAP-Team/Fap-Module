@@ -17,6 +17,7 @@ h2. Parámetros
 * **requerido** (opcional) : Indica si es obligatorio rellenar los campos necesarios de persona física.
 * **noRepresentante** (opcional) : En caso de estar presente, no se le permitirá asociar un representante al solicitante.
 * **representantePersonaFisica** (opcional) : Indica que en el caso de que haya representantes, estos sólo pueden ser de tipo PersonaFisica.
+* **conDireccion** (opcional): Para incluir todos los campos necesarios para representar un elemento Dirección.
 
 h2. Definición
 
@@ -25,8 +26,9 @@ bc. Solicitante:
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
-		("permiso" "=" permiso=[Permiso])?
-		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
+		("permiso" "=" permiso=[Permiso])? &
+		((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))? &
+		(conDireccion?='conDireccion')?
 	)
 ;
 

@@ -24,78 +24,105 @@
 			#{fap.texto id:id + '_entidad', titulo:play.i18n.Messages.get('fap.tags.personajuridica.entidad'), campo:campo + '.entidad', requerido:requerido, obj:obj /}		
 		#{/fap.grupo}
 	#{/else}
-
-	#{if id.indexOf("representanteDelSolicitante_") != 0}
 	
-		%{
-			urlGetTercero = play.mvc.Router.reverse('fap.UtilsController.getTerceroByNipOrCif')
-		%}
-	
-		<script>
-			var urlTerceros = "${urlGetTercero}";
+	#{if properties.FapProperties.getBoolean("fap.platino.tercero.activa")}
 
-			$('#${id}_cif').blur(function(){
-				setDatosTercero${id}($('#${id}_cif').val());
-			});
-			
-			function setDatosTercero${id}(id){
-				$.ajax({
-		  			type: "POST",
-		  			url: urlTerceros,
-		  			data: {numeroIdentificacion: id, tipoIdentificacion: "cif"}
-				}).done(function( msg ) { 
-	 				var params = msg;
-					if (params != "{}"){
-						params = params.replace("{", "");
-						params = params.replace("}", "");
-						params = params.split('%,%');
-						
-						var parts = params[params.length-1].split('%->%');
-						if ((parts[0].replace("%&%", "") === "tipo") && ($('#${id.replace("Juridica","")}Direccion_tipo').val() === "")){
- 						 	$('#${id.replace("Juridica","")}Direccion_tipo').val(parts[1]);
- 						 	$('#${id.replace("Juridica","")}Direccion_tipo').trigger("liszt:updated");
- 						 	$('#${id.replace("Juridica","")}Direccion_tipo').prop('readonly', true);
- 						 	$('#${id.replace("Juridica","")}Direccion_tipo').change();
-	 					}
-
-						for (var i = 0; i < params.length-1; i++) {
-	 						 parts = params[i].split('%->%');
-	 						 if (parts[0].indexOf("%&%") != -1){
-	 						 	if ($('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).val() === ""){
-	 						 		$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).val(parts[1]);
-									if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla")){
-	 						 			$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
-	 						 			$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).change();
-	 						 		}
-	 						 		$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).prop('readonly', true);
-	 						 	}
-	 						 } else {
-	 						 	if ($('#${id}_'+parts[0]).val() === ""){
-	 						 		$('#${id}_'+parts[0]).val(parts[1]);
-	 						 		$('#${id}_'+parts[0]).prop('readonly', true);
-	 						 	}
-							}
-						}					
-					}
-				});
-			}
-			
-			$('#${id}_entidad').parent().click(function(e){
-				if ($('#${id}_entidad').attr('readonly') == 'readonly')
-					$('#${id}_entidad').prop('readonly', false);
-			});
-			
-			$('#${id}_email').parent().click(function(e){
-				if ($('#${id}_email').attr('readonly') == 'readonly')
-					$('#${id}_email').prop('readonly', false);
-			});
-			
-			$('#${id}_telefonoContacto').parent().click(function(e){
-				if ($('#${id}_telefonoContacto').attr('readonly') == 'readonly')
-					$('#${id}_telefonoContacto').prop('readonly', false);
-			});
+		#{if id.indexOf("representanteDelSolicitante_") != 0}
 		
-		</script>
+			%{
+				urlGetTercero = play.mvc.Router.reverse('fap.UtilsController.getTerceroByNipOrCif')
+			%}
+		
+			<script>
+				var urlTerceros = "${urlGetTercero}";
+	
+				$('#${id}_cif').blur(function(){
+					if ($('#${id}_cif').val() != "")
+						setDatosTercero${id}($('#${id}_cif').val());
+				});
+				
+				function setDatosTercero${id}(id){
+					popupWait_openWithMessage("Espere mientras se cargan sus datos personales ...");
+					$.ajax({
+			  			type: "POST",
+			  			url: urlTerceros,
+			  			data: {numeroIdentificacion: id, tipoIdentificacion: "cif"}
+					}).done(function( msg ) { 
+		 				var params = msg;
+						if (params != "{}"){
+							params = params.replace("{", "");
+							params = params.replace("}", "");
+							params = params.split('%,%');
+							
+							var parts = params[params.length-1].split('%->%');
+							if ((parts[0].replace("%&%", "") === "tipo") && ($('#${id.replace("Juridica","")}Direccion_tipo').val() === "")){
+	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').val(parts[1]);
+	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').trigger("liszt:updated");
+	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').prop('readonly', true);
+	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').change();
+		 					}
+	
+							// Bucle con tiempo, entre cada iteracion espera un determinado 'tiempo', para dar tiempo a cargar los combos dependientes
+							(function myLoop (fin, tiempo) {        
+	   								setTimeout(function () {
+	   									var tiempoNuevo=1;
+	      								var i = (params.length-1)-fin;
+	      								parts = params[i].split('%->%');
+		 						 		if (parts[0].indexOf("%&%") != -1){
+		 						 			if ($('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).val() === ""){
+		 						 				$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).val(parts[1]);
+												if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla") || (parts[0].replace("%&%", "") === "provinciaIsla") || (parts[0].replace("%&%", "") === "municipioIsla")){
+		 						 					$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
+		 						 					$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).change();
+		 						 					tiempoNuevo=1500;
+		 						 				}
+		 						 				$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).prop('readonly', true);
+		 						 			}
+		 						 		} else {
+		 						 			if ((parts[0] === "email") || (parts[0] === "telefonoContacto")){
+				 								if ($('#${id.replace("Fisica","")}_'+parts[0]).val() === ""){
+				 						 			$('#${id.replace("Fisica","")}_'+parts[0]).val(parts[1]);
+				 						 			$('#${id.replace("Fisica","")}_'+parts[0]).prop('readonly', true);
+		 						 				}
+				 							} else if ($('#${id}_'+parts[0]).val() === ""){
+				 						 		$('#${id}_'+parts[0]).val(parts[1]);
+				 						 		$('#${id}_'+parts[0]).prop('readonly', true);
+		 						 			}
+								 		}           
+	      								if (--fin) //  decrement i and call myLoop again if i > 0
+										 	myLoop(fin, tiempoNuevo);
+										 else {
+										 	$popup = $("#popupWait_popup");	
+											$popup.modal("hide");
+										 }
+	   								}, tiempo)
+							})(params.length-1, 1);  	
+						} else {
+							$popup = $("#popupWait_popup");	
+							$popup.modal("hide");
+						}
+					});
+				}
+				
+				$('#${id}_entidad').parent().click(function(e){
+					if ($('#${id}_entidad').attr('readonly') == 'readonly')
+						$('#${id}_entidad').prop('readonly', false);
+				});
+				
+				$('#${id}_email').parent().click(function(e){
+					if ($('#${id}_email').attr('readonly') == 'readonly')
+						$('#${id}_email').prop('readonly', false);
+				});
+				
+				$('#${id}_telefonoContacto').parent().click(function(e){
+					if ($('#${id}_telefonoContacto').attr('readonly') == 'readonly')
+						$('#${id}_telefonoContacto').prop('readonly', false);
+				});
+			
+			</script>
+			
+		#{/if}
+		
 	#{/if}
 	
 #{/fap.field}

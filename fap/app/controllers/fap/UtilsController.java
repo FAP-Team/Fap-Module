@@ -12,15 +12,18 @@ import java.util.Properties;
 import config.InjectorConfig;
 
 import enumerado.fap.gen.EstadoNotificacionEnum;
+import es.gobcan.platino.servicios.terceros.TerceroItem;
 import es.gobcan.platino.servicios.terceros.TerceroListItem;
 
 import models.Agente;
 import models.Interesado;
 import models.Notificacion;
+import models.Solicitante;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
 import models.TableKeyValueDependency;
 import play.mvc.*;
+import properties.FapProperties;
 import services.TercerosService;
 import services.TercerosServiceException;
 import utils.DocumentosUtils;
@@ -105,27 +108,28 @@ public class UtilsController extends Controller {
     }
     
     public static String getTerceroByNipOrCif (String numeroIdentificacion, String tipoIdentificacion) {
-    	if ((numeroIdentificacion == null) || (numeroIdentificacion.isEmpty()) || (tipoIdentificacion == null) || (tipoIdentificacion.isEmpty()))
-    		return "{}";
-    	//if ((tipoIdentificacion.equals("cif")) || (AgenteController.getAgente().username.equals(numeroIdentificacion))){
-    		SolicitudGenerica sol = SolicitudGenerica.findById(4L);
-    		return TercerosUtils.convertirSolicitanteAJS(sol.solicitante);
-//	    	TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
-//	    	try {
-//				List <TerceroListItem> tercerosEncontrados = tercerosService.buscarTercerosDetalladosByNumeroIdentificacion(numeroIdentificacion, tipoIdentificacion);
-//				if ((tercerosEncontrados == null) || (tercerosEncontrados.isEmpty())){
-//					play.Logger.info("El Tercero no ha sido encontrado ["+numeroIdentificacion+" - "+tipoIdentificacion+"] en Platino.");
-//					return "{}";
-//				}
-//				return TercerosUtils.convertirSolicitanteAJS(TercerosUtils.convertirTerceroASolicitante(TercerosUtils.convertirTerceroListItemATerceroItem(tercerosEncontrados.get(0))));
-//			} catch (TercerosServiceException e) {
-//				play.Logger.error("Hubo un problema al intentar recuperar el Tercero["+numeroIdentificacion+" - "+tipoIdentificacion+"] de Platino: "+e.getMessage());
-//				return "{}";
-//			}
-    	//}
-    	//else
-    	//	play.Logger.info("No se recuperaran los datos de Terceros de Platino porque el Agente: "+AgenteController.getAgente().username+" está rellenando la solicitud para: "+numeroIdentificacion);
-    	//return "{}";
+    	if (FapProperties.getBoolean("fap.platino.tercero.activa")){
+	    	if ((numeroIdentificacion == null) || (numeroIdentificacion.isEmpty()) || (tipoIdentificacion == null) || (tipoIdentificacion.isEmpty()))
+	    		return "{}";
+	    	if ((tipoIdentificacion.equals("cif")) || (AgenteController.getAgente().username.equals(numeroIdentificacion))){
+		    	TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+		    	try {
+					List <Solicitante> tercerosEncontrados = tercerosService.buscarTercerosDetalladosByNumeroIdentificacion(numeroIdentificacion, tipoIdentificacion);
+					if ((tercerosEncontrados == null) || (tercerosEncontrados.isEmpty())){
+						play.Logger.info("El Tercero no ha sido encontrado ["+numeroIdentificacion+" - "+tipoIdentificacion+"] en la BDD a Terceros.");
+						return "{}";
+					}
+					return TercerosUtils.convertirSolicitanteAJS(tercerosEncontrados.get(0));
+				} catch (Exception e) {
+					play.Logger.error("Hubo un problema al intentar recuperar el Tercero["+numeroIdentificacion+" - "+tipoIdentificacion+"] de la BDD a Terceros: "+e.getMessage());
+					return "{}";
+				}
+	    	}
+	    	else
+	    		play.Logger.info("No se recuperaran los datos de Terceros de Platino porque el Agente: "+AgenteController.getAgente().username+" está rellenando la solicitud para: "+numeroIdentificacion);
+	    	return "{}";
+    	}
+    	return "{}";
     }
 
 }

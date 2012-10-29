@@ -1159,6 +1159,7 @@ Permiso accesoNoCertificado{
 	vars
 		Agente ag 
 	when
+		ag = null or
 		(ag.acceso = null) or
 		(ag.acceso != "certificado") 
 	return

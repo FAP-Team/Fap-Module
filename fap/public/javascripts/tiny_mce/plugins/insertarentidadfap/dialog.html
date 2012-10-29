@@ -20,11 +20,13 @@
 <body>
 
 <script type="text/javascript">
-    // Recogemos los datos del json devuelto por el controlador insertarImagen, para crear las
-    // <option> del <select>
-    $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/obtenerListaEntidades', function(data) {   
+    // *****************************************************************************************
+    // Recogemos los datos del json devuelto por el controlador insertarImagen, para crear las <option> del <select>
+    // *****************************************************************************************
+    var idPlantilla = tinyMCEPopup.editor.plantillaEnEditor;
+    $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/obtenerListaEntidades', {'idPlantilla' : idPlantilla}, function(data) {   
 	   $.each(data, function(index,value) {
-	         $('<option value="' + value +'">' + value + '</option>').insertAfter('#seleccion');
+	          $('<option value="' + value +'">' + value + '</option>').insertAfter('#seleccion');
 	   });  
 	});
 </script>
@@ -39,15 +41,9 @@
 	    <tr>
 	        <td class="icono"><img src="img/insert.png" alt="Insertar atributo" /></td><td>Atributo</td>
 	        <td class="icono"><img src="img/expand.png" alt="Expandir entidad" /></td><td>Entidad</td>
+	        <td class="icono"><img src="img/list.png" alt="Lista" /></td><td>Lista</td>
 	    </tr>
 	</table>
-
-	<!--
-	<div class="mceActionPanel">
-		<input type="button" id="insert" name="insert" value="Insertar" onclick="InsertarEntidadFAP.insert();" />
-		<input type="button" id="cancel" name="cancel" value="Cancelar" onclick="tinyMCEPopup.close();" />
-	</div>
-	-->
 </form>	
 
 
@@ -58,18 +54,26 @@
     function obtenerAtributosEntidad(entidad) {
          $.getJSON(tinyMCE.settings.httpPath + '/plantillasdoccontroller/obtenerAtributosEntidad?entidad='+entidad, function(data) {
                var listaAtrib = '<table id="atributos">';
-               if ($('#atributos').length) {     
+               if ($('#atributos').length)    
                    $("#atributos").remove();
-               }
+               
                $.each(data, function(key, value) {
                        listaAtrib += "<tr>";
-                       if (typeof value.entidad !== "undefined") {      // es una entidad
+                       var entidad = $('#breadcrumbs').text().split(".")[0];
+                       
+                       if (typeof value.entidad !== "undefined") {               // es una entidad
                             listaAtrib += '<td class="celdaEntidad" onclick="expandirEntidad(\'' + value.nombre + '\',\'' + value.entidad + '\')">' + value.nombre + '</td>';
                             listaAtrib += '<td onclick="expandirEntidad(\'' + value.nombre + '\',\'' + value.entidad + '\')"><img src="img/expand.png" alt="Expandir entidad" /></td>';
                        }
-                       else {                                           // es un atributo
-                            listaAtrib += '<td class="celdaEntidad" onclick="insertarAtributo(\'' + value.nombre + '\')">' + value.nombre + '</td>';
-                            listaAtrib += '<td onclick="insertarAtributo(\'' + value.nombre + '\')"><img src="img/insert.png" alt="Insertar atributo" /></td>';
+                       
+                       else if (typeof value.entidadLista !== "undefined") {      // es una entidad lista
+                                listaAtrib += '<td class="celdaEntidad" onclick="insertarEntidadLista(\'' + value.nombre + '\',\'' + entidad + '\', \'' + value.entidadLista + '\')">' + value.nombre + '</td>';
+                                listaAtrib += '<td onclick="insertarEntidadLista(\'' + value.nombre + '\',\'' + entidad + '\', \'' + value.entidadLista + '\')"><img src="img/list.png" alt="Insertar entidad lista" /></td>';
+                       }
+                       
+                       else {                                                    // es un atributo
+                            listaAtrib += '<td class="celdaEntidad" onclick="insertarAtributo(\'' + value.nombre + '\', \'' + entidad + '\')">' + value.nombre + '</td>';
+                            listaAtrib += '<td onclick="insertarAtributo(\'' + value.nombre + '\', \'' + entidad + '\')"><img src="img/insert.png" alt="Insertar atributo" /></td>';
                        }
                        listaAtrib += "</tr>";       	                       
                }); 
@@ -79,7 +83,7 @@
     }
     
     // *****************************************************************************************
-    // Expandimos la entidad seleccionada en nuestra lista <ul>
+    // Expandimos la entidad seleccionada en nuestra lista
     // *****************************************************************************************    
     function expandirEntidad(nombre, entidad) {
         $('#breadcrumbs').append("." + nombre);
@@ -87,24 +91,81 @@
     }
 
     // *****************************************************************************************
+    // Retorna la ruta nuestro atributo FAP
+    // *****************************************************************************************
+    function getRutaAtributo(atributo, entidad) {
+       // Insertamos el alias en vez del nombre real de la entidad
+       var rutaAtributo = $('#breadcrumbs').text().split(".");
+       rutaAtributo.shift();
+
+       // Si la entidad seleccionada en el desplegable ya es un alias, no existe el componente #aliasEntidad
+       var alias = "";
+       if  ( $('#aliasEntidad').val() != undefined ) 
+            alias = $('#aliasEntidad').val();
+       else 
+            alias = $.trim( $("#selectentidad").val().split("(")[0] );          // lo seleccionado en el desplegable ya es un alias
+
+       // Si hay algo entre el nombre de la entidad/alias y el atributo. 
+       // Un ejemplo sería "actual" en ${alegaciones.actual.estado}
+       if (rutaAtributo.length)
+           return ( alias + "." + rutaAtributo.join(".") + "." + atributo );
+
+       return alias + "." + atributo;
+    }
+    
+    // *****************************************************************************************
     // Insertamos en el editor el texto que corresponde a la identificación nuestro atributo FAP
     // *****************************************************************************************
-    function insertarAtributo(atributo) {
-       InsertarEntidadFAPDialog.insert($('#breadcrumbs').text() + "." + atributo);
+    function insertarAtributo(atributo, entidad) {
+       var rutaAtributo = getRutaAtributo(atributo, entidad);
+       var guardarAlias = true;
+       if ( $("#selectentidad").val().indexOf("(") != -1 )      // hemos seleccionado en el combo un alias
+           guardarAlias = false;
+       InsertarEntidadFAPDialog.insert(rutaAtributo, entidad, guardarAlias);
     }
-   
+    
+    // *****************************************************************************************
+	// Insertamos la entidad lista, con su código groovy correspondiente
+    // *****************************************************************************************
+    function insertarEntidadLista(atributo, entidad, entidadAtributo) {
+        var rutaAtributo = getRutaAtributo(atributo, entidad);
+        var aliasAtributo = atributo + Math.floor((Math.random()*1000)+1); 
+        var codigoGroovy = '#{list items:' + rutaAtributo + ', as:"' + aliasAtributo + '"} <br /><br /> #{/list}';
+        var guardarAlias = true;
+        if ( $("#selectentidad").val().indexOf("(") != -1 )      // hemos seleccionado en el combo un alias
+            guardarAlias = false;
+        InsertarEntidadFAPDialog.insertLista(codigoGroovy, entidad, $('#aliasEntidad').val(), aliasAtributo, entidadAtributo, guardarAlias);
+    }
+    
     // *****************************************************************************************
 	// Insertamos los atributos de la entidad seleccionada
     // *****************************************************************************************
     $("#selectentidad").change(function () {
-           if ($('#breadcrumbs').length) {       // si el nodo existe
+           var valorSeleccionado = $(this).val();
+           
+           if ($('#breadcrumbs').length)       // si el nodo existe
                 $('#breadcrumbs').remove();
-           }
-           $('<div id="breadcrumbs">' + $(this).val() + '</div>').insertAfter('#leyenda');   
+           
+           if ($('#alias').length)
+                $('#alias').remove();
 
-          $("select option:selected").each(function () {
-              obtenerAtributosEntidad( $(this).val() );
-          });
+           // Si no es un alias, insertamos el input text para poder definir uno.
+           // En la cadena del alias viene entre paréntesis la entidad a la que representan
+           if (valorSeleccionado.indexOf("(") == -1) {                                          // no está presente el carácter "("
+                $('<div id="breadcrumbs">' + valorSeleccionado + '</div>').insertAfter('#leyenda'); 
+                $('<p id="alias">Alias de la entidad: <input type="text" id="aliasEntidad" size="35" value="' + valorSeleccionado.toLowerCase() + '" /></p>').insertBefore('#leyenda');
+                $("select option:selected").each(function () {
+                    obtenerAtributosEntidad(valorSeleccionado);
+                });
+           }
+           else {                                                                               // alias
+                var entidad = $.trim( valorSeleccionado.split("(")[1].split(")")[0] );
+                $('<div id="breadcrumbs">' + entidad + '</div>').insertAfter('#leyenda'); 
+                $('<p id="alias">Alias de la entidad <strong>' + entidad + '</strong></p>').insertBefore('#leyenda');
+                $("select option:selected").each(function () {
+                    obtenerAtributosEntidad(entidad);
+                });
+           }
      });
 </script>
 

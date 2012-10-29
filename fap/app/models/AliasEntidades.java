@@ -19,28 +19,14 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class PlantillaDocumento extends FapModel {
+public class AliasEntidades extends FapModel {
 	// Código de los atributos
 
-	@Column(columnDefinition = "LONGTEXT")
-	public String plantilla;
+	public String alias;
 
-	public String nombrePlantilla;
-
-	public String descripcion;
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "plantilladocumento_aliasentidades")
-	public List<AliasEntidades> aliasEntidades;
-
-	public PlantillaDocumento() {
-		init();
-	}
+	public String entidad;
 
 	public void init() {
-
-		if (aliasEntidades == null)
-			aliasEntidades = new ArrayList<AliasEntidades>();
 
 		postInit();
 	}

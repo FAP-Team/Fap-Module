@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +37,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Injector;
 
 import messages.Messages;
 import models.Agente;
+import models.AliasEntidades;
 import models.SolicitudGenerica;
 import models.CodigoExclusion;
 import models.Convocatoria;
@@ -47,6 +51,7 @@ import models.PlantillaDocumento;
 import models.RepresentantePersonaFisica;
 import models.SolicitudGenerica;
 import play.Play;
+import play.db.jpa.GenericModel.JPAQuery;
 import play.db.jpa.JPABase;
 import play.libs.Codec;
 import play.libs.IO;
@@ -59,6 +64,7 @@ import properties.FapProperties;
 import reports.Report;
 import reports.ReportFAP;
 import utils.BinaryResponse;
+import utils.JsonUtils;
 import validation.CustomValidation;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
@@ -70,6 +76,8 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import java.net.URL;
 import java.net.URLConnection;
+
+import javax.persistence.Transient;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -83,7 +91,7 @@ import org.h2.constant.SysProperties;
 public class PlantillasDocController extends PlantillasDocControllerGen {
 
 	// Entidades a excluir en el plugin de TinyMCE que inserta una entidad FAP en una plantilla del editor
-	private static final String[] ENTIDADES_A_EXCLUIR = {"Singleton", "TableKeyValue", "TableKeyValueDependency", "Quartz"};
+	private static final String[] ENTIDADES_A_EXCLUIR = {"TableKeyValue", "TableKeyValueDependency", "Quartz"};
 	// Entidades a incluir en el plugin de TinyMCE que inserta una entidad FAP en una plantilla del editor
 	private static final String[] ENTIDADES_A_INCLUIR = {"Agente"};
 	// Clases que tienen un métod getClase() en el paquete controllers.fap para poder instanciarlas 
@@ -302,7 +310,7 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	 * Devolvemos al plugin del editor TinyMCE una lista con todas las entidades (propias de la aplicación más 
 	 * las heredadas del módulo FAP).
 	 */
-	public static void obtenerListaEntidades() {
+	public static void obtenerListaEntidades(Long idPlantilla) {
 		List<String> listaEntidades = new ArrayList<String>();
 		List<String> listaEntidadesAExluir = new ArrayList<String>(); // entidades que no queremos que aparezcan en la lista para insertarlas en las plantillas
 		// Entidades del módulo FAP que son padres de alguna entidad de la aplicación (hija extends padre) (para eliminarlas del listado de entidades que se presenta)	
@@ -320,7 +328,7 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 			listaEntidadesAExluir.add(entidad);
 	
 		try {
-			// Primero obtenemos las entidades propias de la aplicación
+			// 1. Primero obtenemos las entidades propias de la aplicación
 			BufferedReader reader = new BufferedReader(new FileReader("app/led/Entidades.fap")); 
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -336,7 +344,7 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 					listaEntidadesPadre.add(matcher.group(2));
 			}
 			
-			// Ahora obtenemos las entidades del módulo fap (excluyendo las que no nos interesan)
+			// 2. Ahora obtenemos las entidades del módulo fap (excluyendo las que no nos interesan)
 			if(Play.mode.isDev())	// modo desarrollo
 				reader = new BufferedReader(new FileReader("../../fap/app/led/fap/Entidades.fap"));
 			else					// modo producción
@@ -356,18 +364,32 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		} catch (Exception e1) {e1.printStackTrace();}
 		
 		Collections.sort(listaEntidades, Collections.reverseOrder());
+		
+		// 3. Por último obtenemos todos los alias a entidades creados en esta plantilla
+	    if (idPlantilla != null) {
+	    	List<String> listaAliasEntidades = new ArrayList<String>();
+	    	List<AliasEntidades> aliasEntidades = AliasEntidades.find("select alias from PlantillaDocumento plantilla join plantilla.aliasEntidades alias " +
+	    															  "where (plantilla.id = '" + idPlantilla + "')").fetch();
+	    	for (AliasEntidades a : aliasEntidades)
+	    		listaAliasEntidades.add(a.alias + " (" + a.entidad + ")");
+	    	
+	    	Collections.sort(listaAliasEntidades, Collections.reverseOrder());
+	 	    listaEntidades.addAll(listaAliasEntidades);
+	    }
+	   
 		renderJSON(listaEntidades);
 	}
 	
 	/*
-	 * Devuelve todos los atributos de una entidad (sin profundizar en las relaciones con otras entidades)
+	 * Devuelve todos los atributos de una entidad (sin profundizar en las relaciones con otras entidades),
+	 * y excluyendo de igual manera los atributos transient y el atributo willBeSaved
 	 * 
 	 */
-	public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+	public static List<Field> getAtributos(List<Field> fields, Class<?> type) {
 	    for (Field field: type.getFields()) {
-	        fields.add(field);
-	    }
-	    
+	    	if (!field.isAnnotationPresent(Transient.class) && !field.getName().equals("willBeSaved")) 	// quitamos atributos @Transient y willBeSaved
+	    		fields.add(field);
+	    }	    
 	    return fields;
 	}
 	
@@ -376,12 +398,18 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	 * Devolvemos al plugin del editor TinyMCE una lista con todos los atributos de la entidad seleccionada 
 	 */
 	public static void obtenerAtributosEntidad(String entidad) {
+		// Comprobamos si es un alias. En caso afirmativo, obtenemos la entidad a la que hace referencia
+		String entidadAlias = getEntidadDesdeAlias(entidad);
+		if (entidadAlias != null)	
+			entidad = entidadAlias;
+		
 		Class clase = null;
 		try {
 			clase = Class.forName("models."+entidad);
 		} catch (ClassNotFoundException e) {e.printStackTrace();}
 		
-		List<Field> listaFields = getAllFields(new LinkedList<Field>(), clase);
+		List<Field> listaFields = getAtributos(new LinkedList<Field>(), clase);
+		
 		// Ordenamos por el nombre del atributo
 		Collections.sort(listaFields, new Comparator(){
 					            public int compare(Object o1, Object o2) {
@@ -390,21 +418,27 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 					               return f1.getName().compareToIgnoreCase(f2.getName());
 					            }		
 						});
-		
 		String tipo,						// tipo genérico del Field 
 				entidadAtributo = null, 	// almacenamos la entidad del atributo (si corresponde)
 				jsonString = "[";			// json que vamos a renderizar
-		boolean entidadPropia;				// si un atributo es un tipo java o es una entidad de nuestra aplicación
+		boolean entidadPropia,				// si un atributo es un tipo java o es una entidad de nuestra aplicación
+				 entidadLista;				// si un atributo es OneToMany o ManyToMany 	
+		
+		// Resto de atributos
 		for (int i = 0; i < listaFields.size(); i++) {
-			entidadPropia = false;
-			tipo = 	listaFields.get(i).getGenericType().toString();	// Ej: java.util.List<models.Tema>
-			Pattern pattern = Pattern.compile("models\\.([_A-Za-z0-9]+)");
+			entidadPropia = entidadLista= false;
+			tipo = listaFields.get(i).getGenericType().toString();	// Ej: java.util.List<models.Tema>
+			Pattern pattern = Pattern.compile("([A-Za-z\\.]+)([ <])models\\.([_A-Za-z0-9]+)");  // ej: "java.utils.List<models.Alegacion>" o "class models.Registro"
 			Matcher matcher = pattern.matcher(tipo);
 			while (matcher.find()) {
-				entidadAtributo = matcher.group(1);
+				if (matcher.group(1).equals("java.util.List")) 	// entidades OneToMany y ManyToMany (entre otras ¿List<String?)
+					entidadLista = true;
+				entidadAtributo = matcher.group(3);
 				entidadPropia = true;
 			}
-			if (entidadPropia)  
+			if (entidadLista) 
+				jsonString += "{\"nombre\" : \"" + listaFields.get(i).getName() + "\", \"entidadLista\" : \"" + entidadAtributo + "\"}";
+			else if (entidadPropia)  
 				jsonString += "{\"nombre\" : \"" + listaFields.get(i).getName() + "\", \"entidad\" : \"" + entidadAtributo + "\"}";
 			else
 				jsonString += "{\"nombre\" : \"" + listaFields.get(i).getName() + "\"}";
@@ -412,6 +446,7 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 				jsonString += ", ";
 		}
 		jsonString += "]";
+		
 		renderJSON(jsonString);
 	}
 
@@ -437,6 +472,55 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 		} catch (Exception e) { e.printStackTrace(); }
 		
 		return listaEntidades;
+	}
+	
+	/**
+	 * Guarda un alias de una entidad (de una plantilla en concreto)
+	 * 
+	 * @param idPlantilla Identificador de la plantilla a la que pertenece el alias
+	 * @param alias String que identifica al alias
+	 * @param entidad Entidad a la que hace referencia el alias
+	 */
+	public static void insertarAliasEntidad(Long idPlantilla, String jsonAlias) {
+		if (idPlantilla != null) {
+			Gson gson = new Gson();
+			HashMap<String,String> hashAlias = gson.fromJson(jsonAlias, new TypeToken<Map<String, String>>() {}.getType());
+			Iterator it = hashAlias.entrySet().iterator();
+			String alias, entidad;
+			while (it.hasNext()) {
+				Map.Entry e = (Map.Entry)it.next();
+				alias = e.getKey().toString();
+				entidad = e.getValue().toString();
+		    	List<String> aliasEntidades = AliasEntidades.find("select alias.alias from PlantillaDocumento plantilla join plantilla.aliasEntidades alias " +
+		    													  "where (plantilla.id = '" + idPlantilla + "')").fetch();
+				if (!aliasEntidades.contains(alias)) {
+					AliasEntidades aliasEntidad = new AliasEntidades();
+					aliasEntidad.alias = alias;
+					aliasEntidad.entidad = entidad;
+					PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
+					plantilla.aliasEntidades.add(aliasEntidad);
+					plantilla.save();
+				}
+			}
+		}
+		ok();
+	}
+
+	/**
+	 * Si la cadena pasada por argumento es un alias de alguna entidad, retorna el nombre de esa entidad.
+	 * Null en caso contrario.
+	 * 
+	 * @param alias
+	 */
+	public static String getEntidadDesdeAlias(String alias) {
+		AliasEntidades aliasEntidades = AliasEntidades.find("select aliasE from AliasEntidades aliasE " +
+				  											"where (alias = '" + alias + "')").first();
+		// FIXME: "&& alias.equals(aliasEntidades.alias)" es innecesario si encuentro la forma de hacer una 
+		// consulta jpql case sensitive. (Por ejemplo, le puede llegar "Solicitud", que no es un alias sino 
+		// una entidad, y si existe el alias "solicitud", llegar a la conclusión errónea que es un alias).
+		if (aliasEntidades != null && alias.equals(aliasEntidades.alias))
+			return aliasEntidades.entidad;
+		return null;
 	}
 	
 	/**

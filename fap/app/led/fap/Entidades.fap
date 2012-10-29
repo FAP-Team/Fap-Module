@@ -711,7 +711,14 @@ Entidad AnotacionFAP {
 Entidad PlantillaDocumento {
     LongText plantilla
     String nombrePlantilla
-    String descripcion          // título de la plantilla
+    String descripcion                       // título de la plantilla
+    // En las plantillas, cuando insertamos una entidad FAP desde el editor, la creamos con un alias 
+    OneToMany AliasEntidades aliasEntidades
+}
+
+Entidad AliasEntidades {
+    String alias   
+    String entidad                           // entidad a la que hace referencia el alias
 }
 
 Entidad ImagenesPlantilla {

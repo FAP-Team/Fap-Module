@@ -1,5 +1,11 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC3
+
+* Fixed bug al crear un nuevo usuario.
+* Valores de tablas dependientes ahora tienen tambien el "_" en las key que empiezan con números.
+* En Evaluación se muestran los "automod" como los "auto".
+
 h3. Versión 2.1.1RC2
 
 * Fixed Bug en autoenviar en los Forms.

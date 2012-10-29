@@ -23,7 +23,7 @@ public class AccesoVerificacionesController extends AccesoVerificacionesControll
 			AccesoVerificacionesController.verificacionNuevaValidateRules();
 		}
 		
-		if ((!Messages.hasErrors()) && !dbSolicitud.estado.equals(EstadosSolicitudEnum.verificado.name())) {
+		if ((!Messages.hasErrors()) /*&& !dbSolicitud.estado.equals(EstadosSolicitudEnum.verificado.name())*/) {
 			// Asignamos una nueva verificacion con su fecha de creacion, cuando se pulse el boton de nueva verificación
 			dbSolicitud.verificacion = new Verificacion();
 			dbSolicitud.verificacion.expediente = dbSolicitud.expedienteAed.idAed;

@@ -35,6 +35,9 @@ public class Evaluacion extends FapModel {
 	@JoinTable(name = "evaluacion_ceconomicos")
 	public List<CEconomico> ceconomicos;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento solicitudEnEvaluacion;
+
 	public Double totalCriterios;
 
 	public Double inversionTotalAprobada;
@@ -44,6 +47,7 @@ public class Evaluacion extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public TipoEvaluacion tipo;
 
+	@ValueFromTable("EstadosEvaluacion")
 	public String estado;
 
 	@Column(columnDefinition = "LONGTEXT")
@@ -67,6 +71,11 @@ public class Evaluacion extends FapModel {
 		if (ceconomicos == null)
 			ceconomicos = new ArrayList<CEconomico>();
 
+		if (solicitudEnEvaluacion == null)
+			solicitudEnEvaluacion = new Documento();
+		else
+			solicitudEnEvaluacion.init();
+
 		if (tipo == null)
 			tipo = new TipoEvaluacion();
 		else
@@ -81,14 +90,14 @@ public class Evaluacion extends FapModel {
 		for (TipoCriterio tCriterio : tipo.criterios) {
 			Criterio criterio = new Criterio();
 			criterio.tipo = tCriterio;
-			tCriterio.esNuevo = false;
+			//tCriterio.esNuevo = false;
 			this.criterios.add(criterio);
 		}
 
 		for (TipoCEconomico tCEconomico : tipo.ceconomicos) {
 			CEconomico cEconomico = new CEconomico();
 			cEconomico.tipo = tCEconomico;
-			tCEconomico.esNuevo = false;
+			//tCEconomico.esNuevo = false;
 			for (int i = 0; i < tipo.duracion; i++) {
 				ValoresCEconomico vCEconomico = new ValoresCEconomico(tipo.inicio + i);
 				vCEconomico.initValues(tipo.inicio + i);
@@ -102,7 +111,7 @@ public class Evaluacion extends FapModel {
 		for (TipoCriterio tCriterio : tipo.criterios) {
 			if (tCriterio.esNuevo) {
 				Criterio criterio = new Criterio();
-				tCriterio.esNuevo = false;
+				//tCriterio.esNuevo = false;
 				tCriterio.save();
 				criterio.tipo = tCriterio;
 				this.criterios.add(criterio);
@@ -111,7 +120,7 @@ public class Evaluacion extends FapModel {
 		for (TipoCEconomico tCEconomico : tipo.ceconomicos) {
 			if (tCEconomico.esNuevo) {
 				CEconomico cEconomico = new CEconomico();
-				tCEconomico.esNuevo = false;
+				//tCEconomico.esNuevo = false;
 				tCEconomico.save();
 				cEconomico.tipo = tCEconomico;
 				for (int i = 0; i < tipo.duracion; i++) {
@@ -130,18 +139,21 @@ public class Evaluacion extends FapModel {
 	 * tipos de documentos accesibles por la definición 
 	 * del tipo de la evaluación
 	 * @return
+	 * 
+	 * Comentado porque se hace en BaremacionFAP, o cualquier clase hija sobreescrita
+	 * 
 	 */
-	public List<Documento> getDocumentosAccesibles() {
-		if (tipo.tiposDocumentos.size() > 0) {
-			JPAQuery jpaQuery = Documento.find("select documento" + " from Solicitud solicitud" + " join solicitud.documentacion.documentos documento" + " where solicitud.id=:id and documento.tipo in (:tipos)");
-			jpaQuery.query.setParameter("id", solicitud.id);
-			jpaQuery.query.setParameter("tipos", tipo.tiposDocumentos);
-			List<Documento> documentosAccesibles = jpaQuery.fetch();
-			return documentosAccesibles;
-		} else {
-			return null;
-		}
-	}
+	//	public List<Documento> getDocumentosAccesibles() {
+	//		if (tipo.tiposDocumentos.size() > 0) {
+	//			JPAQuery jpaQuery = Documento.find("select documento" + " from Solicitud solicitud" + " join solicitud.documentacion.documentos documento" + " where solicitud.id=:id and documento.tipo in (:tipos)");
+	//			jpaQuery.query.setParameter("id", solicitud.id);
+	//			jpaQuery.query.setParameter("tipos", tipo.tiposDocumentos);
+	//			List<Documento> documentosAccesibles = jpaQuery.fetch();
+	//			return documentosAccesibles;
+	//		} else {
+	//			return null;
+	//		}
+	//	}
 
 	/**
 	 * Devuelve el criterio que tiene cierta jerarquía

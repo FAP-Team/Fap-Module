@@ -1,0 +1,34 @@
+h1. Añadir botón Cancelar
+
+Para la personalización de un botón (por ejemplo poner un botón "Cancelar" en una página determinada), deberán seguirse los pasos que se explican a continuación:
+* Inicialmente, tenemos esta página, a la que se le quiere añadir el botón "Cancelar":
+
+!images/app-personalizar-antes!
+
+
+* Se debe ir al dsl, donde se tiene definida la página a la que se le quiere añadir el botón. Indicar, en la definición de la página, que no tiene form con la palabra reservada *noForm* y dentro, escribir el formulario a mano, puede verse un ejemplo en el siguiente código (Recuerda que al anadir el _noForm_, no se generará el botón "Guardar" por lo que debe añadirse a mano):
+
+bc. Pagina PaginaCancelar titulo="Pagina con Botón Cancelar" campo=Solicitud noForm {
+	Form guardar {
+		Texto titulo="Introduce un integer: " campo=Solicitud.elementos.numeroI
+		Texto titulo="Introduce un double: " campo=Solicitud.elementos.numeroD
+		Texto titulo="Introduce un long: " campo=Solicitud.elementos.numeroL
+		Boton bGuardar titulo="Guardar"
+		Enlace titulo="Cancelar" estilo="btn btn-link" pagina=Solicitudes
+	}
+}
+
+*AVISO:* Si anteriormente se había sobreescrito alguna característica, debe tenerse en cuenta que ahora los nombres de los métodos han cambiado, antes comenzaban con el nombre de la página y ahora con el nombre del form. Por ello, deberían revisarse los métodos sobreescritos y modificar los nombres.
+
+* A continuación, se debe personalizar la vista html de la página a la que hemos añadido el botón "Cancelar". Para ello, debemos copiar la pagina generada _PaginaCancelar.html_ y colocarla en _views/fap/PaginaCancelar/PaginaCancelar.html_.
+* Ahora, debe irse al controlador correspondiente a la página y actualizar los render que apuntan a la página generada, para que ahora, redirijan a la copia realizada en el paso anterior (_views/fap/PaginaCancelar/PaginaCancelar.html_)
+* Finalmente, debemos sobreescribir el botón que queramos personalizar en la página que hemos copiado, todo ello debe hacerse dentro de un @<div>...</div>@ y añadiendo @noRow:true@ al botón cancelar. A continuación se muestra un ejemplo realizado para añadir un botón "Guardar" y un botón "Cancelar".
+
+bc. <div class="well" align="right">
+	#{fap.boton id:'bGuardar', titulo:'Guardar' /}
+	#{fap.enlace action:play.mvc.Router.reverse(...), estilo:'btn btn-link', titulo:'Cancelar, noRow:true' /}
+</div>
+
+Así es como se vería ahora la página:
+
+!images/app-personalizar-despues!

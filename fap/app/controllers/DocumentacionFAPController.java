@@ -7,6 +7,33 @@ import reports.Report;
 import controllers.gen.DocumentacionFAPControllerGen;
 
 public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
+	
+	public static void index(String accion, Long idSolicitud) {
+		if (accion == null)
+			accion = getAccion();
+		if (!permiso(accion)) {
+			Messages.fatal("No tiene suficientes privilegios para acceder a esta solicitud");
+			renderTemplate("fap/DocumentacionFAP/DocumentacionFAP.html");
+		}
+
+		SolicitudGenerica solicitud = null;
+		if ("crear".equals(accion)) {
+			solicitud = DocumentacionFAPController.getSolicitudGenerica();
+			if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")) {
+
+				solicitud.save();
+				idSolicitud = solicitud.id;
+
+				accion = "editar";
+			}
+
+		} else if (!"borrado".equals(accion))
+			solicitud = DocumentacionFAPController.getSolicitudGenerica(idSolicitud);
+
+		log.info("Visitando página: " + "fap/DocumentacionFAP/DocumentacionFAP.html");
+		renderTemplate("fap/DocumentacionFAP/DocumentacionFAP.html", accion, idSolicitud, solicitud);
+	}
+	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void formAbrirPlantillaFH(Long idSolicitud, String btnAbrirPlantillaFH) {

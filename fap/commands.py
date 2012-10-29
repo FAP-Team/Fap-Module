@@ -266,6 +266,21 @@ def init_application (app, args):
     
     FILE.write("\n\n# === FAPGENERATED ===\n");
     FILE.write("# === END FAPGENERATED ===\n");
+        
+    # Para las properties de los modulos de las páginas FAP
+    FILE.write("\n#FAP modulos\n");
+    FILE.write("fap.modulo.Administracion=true\n");
+    FILE.write("fap.modulo.Principal=true\n");
+    FILE.write("fap.modulo.Seguimiento=true\n");
+    FILE.write("fap.modulo.Documentacion=true\n");
+    FILE.write("fap.modulo.Verificacion=true\n");
+    FILE.write("fap.modulo.Aportacion=true\n");
+    FILE.write("fap.modulo.Presentacion=true\n");
+    FILE.write("fap.modulo.Exclusion=true\n");
+    FILE.write("fap.modulo.Baremacion=true\n");
+    FILE.write("fap.modulo.Desistimiento=true\n");
+    FILE.write("fap.modulo.AceptarRenunciar=true\n");
+    FILE.write("fap.modulo.Alegacion=true\n");
     FILE.close();
    
 
@@ -299,6 +314,8 @@ def init_application (app, args):
     os.makedirs(os.path.join(app.path, "logs", "backups"));
     os.makedirs(os.path.join(app.path, "logs", "backups", "Auditable"));
     os.makedirs(os.path.join(app.path, "logs", "backups", "Daily"));
+    
+
     
 def copy_directory(source, target):
     if not os.path.exists(target):

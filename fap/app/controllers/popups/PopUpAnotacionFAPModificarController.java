@@ -42,7 +42,7 @@ public class PopUpAnotacionFAPModificarController extends PopUpAnotacionFAPModif
 		
 		if ((anotacionFAP.fechaAlerta != null)) {
 			if (anotacionFAP.fechaAlerta.getMillis() < new DateTime().getMillis()) {
-				CustomValidation.error("La fecha de la alerta no puede ser anterior a la actual.", "anotacionFAP.fechaAlerta", anotacionFAP.fechaAlerta);
+				CustomValidation.error("La fecha de la alerta debe ser posterior a la del día.", "anotacionFAP.fechaAlerta", anotacionFAP.fechaAlerta);
 				return;
 			} else if ((dbAnotacionFAP.fechaAlerta != null) && (! dbAnotacionFAP.fechaAlerta.equals(anotacionFAP.fechaAlerta)) && (dbAnotacionFAP.fechaAlerta.getMillis() < new DateTime().getMillis())) {
 				Messages.error("No se puede modificar la fecha de alerta de la anotación porque ya ha expirado.");

@@ -22,6 +22,13 @@ Permiso noUsuario{
 		agente.rolActivo != "usuario"
 	return all
 }
+
+Permiso noEvaluador {
+	when
+		agente.rolActivo != "evaluador"
+	return
+		all
+}
 		
 Permiso logeado{
 	when 
@@ -184,6 +191,10 @@ Permiso solicitudes{
 		or
 		participacion != null 			
 	return all
+	when
+		agente.rolActivo in ("evaluador")
+	return
+		leer
 }
 
 // Permisos pagina de presentacion
@@ -191,6 +202,12 @@ Permiso solicitudes{
 Permiso adminGestorRevisor{
 	when
 		agente.rolActivo in ("administrador", "gestor", "revisor")
+	return editable
+}
+
+Permiso adminGestorRevisorEvaluador{
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor", "evaluador")
 	return editable
 }
 
@@ -244,6 +261,10 @@ Permiso solicitudEnBorrador{
 Permiso editarSolicitud {
 	vars
 		SolicitudGenerica solicitud
+	when
+		agente.rolActivo = "evaluador"
+	return
+		leer
 	when
 		!usuario is visible
 		or (
@@ -323,7 +344,7 @@ Permiso solicitud {
 		participacionEnSolicitud contains _accion and
 	 	agente.rolActivo = "usuario" and
 	 	solicitud?.estado = "borrador" and
-	 	solicitud.registro.fasesRegistro.borrador = "false"
+	 	solicitud?.registro?.fasesRegistro?.borrador = "false"
 	return editar
 	
 	when
@@ -338,7 +359,7 @@ Permiso subirDocumentos{
 		adminOrGestor contains _accion
 		or (
 	 		solicitud?.estado = "borrador" and
-	 		solicitud.registro.fasesRegistro.borrador = "false"
+	 		solicitud?.registro?.fasesRegistro?.borrador = "false"
 		)
 	return crear
 }
@@ -359,7 +380,7 @@ Permiso documentoAutorizacionGenerado{
 	vars 
 		SolicitudGenerica solicitud
 	when 
-		solicitud?.registro.autorizacionFuncionario.urlDescarga != null and
+		solicitud?.registro?.autorizacionFuncionario?.urlDescarga != null and
 		agente.funcionario != "true"
 	return all
 }
@@ -369,7 +390,7 @@ Permiso visibleFuncionarioAutorizado{
 		SolicitudGenerica solicitud
 	when 
 		agente.funcionario = "true" and
-		solicitud?.solicitante.autorizaFuncionario = "true"
+		solicitud?.solicitante?.autorizaFuncionario = "true"
 	return all
 }
 
@@ -378,7 +399,7 @@ Permiso noVisibleFuncionarioAutorizado{
 		SolicitudGenerica solicitud
 	when 
 		agente.funcionario = "true" and
-		solicitud?.solicitante.autorizaFuncionario = "true"
+		solicitud?.solicitante?.autorizaFuncionario = "true"
 	return denegar
 }
 
@@ -387,7 +408,7 @@ Permiso aportacionModificar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.aportaciones.actual.estado in ("borrador")
+		solicitud?.aportaciones?.actual?.estado in ("borrador")
 	return editable
 }	
 	
@@ -400,7 +421,7 @@ Permiso aportacionMensajeIntermedio{
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.aportaciones.actual.estado in ("firmada", "registrada", "clasificada", "finalizada")
+		solicitud?.aportaciones?.actual?.estado in ("firmada", "registrada", "clasificada", "finalizada")
 	return editable
 }
 //	
@@ -436,61 +457,19 @@ Permiso verificarDocumentos{
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 		(
 			(_accion in (leer, editar))
-			and (solicitud.estado in ("enVerificacion", "excluido"))
-			and verificacion.estado != null
-			and verificacion.estado = "enVerificacion"
+			and (solicitud?.estado in ("enVerificacion", "excluido"))
+			and verificacion?.estado != null
+			and verificacion?.estado = "enVerificacion"
 		)	
 	return 
 		all
-}
-
-Permiso verificacionRequerimientos{
-	vars
-		SolicitudGenerica solicitud
-	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
-		solicitud?.estado in ("en verificacion", "pendiente requerimiento", "requerida", "requerida plazo vencido", "verificada", "excluido", "plazo vencido")
-	return all
-}
-
-Permiso nuevoRequerimiento{
-	vars
-		SolicitudGenerica solicitud
-	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
-		solicitud?.estado = "pendiente requerimiento"
-	return all
-}
-
-Permiso firmarRequerimiento{
-	vars
-		SolicitudGenerica solicitud
-	when
-		solicitud?.estado = "pendiente requerimiento" and
-		agente.rolActivo in ("administrador", "gestor")
-	return all
-	
-	when
-		solicitud?.estado = "pendiente requerimiento"
-		and
-		agente.rolActivo in ("administrador", "gestor", "revisor")
-	return leer
-}
-
-Permiso finalizarRequerimiento{
-	vars
-		SolicitudGenerica solicitud
-	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
-		solicitud?.estado in ("requerida", "requerida plazo vencido")
-	return all 
 }
 
 Permiso aportacionNoNull{
 	vars
 		Documento doc
 	when
-		doc.uri = null
+		doc?.uri = null
 	return editable
 }
 
@@ -498,28 +477,63 @@ Permiso nuevaSolicitud{
 	vars
 		Convocatoria convocatoria
 	when
-		convocatoria.estado = "presentacion"
+		convocatoria?.estado = "presentacion"
 	return all
 }
 
 //Baremación	
 Permiso listaEvaluaciones{
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "revisor", "evaluador")
 	return editable
 }
 
 Permiso evaluacion{
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "revisor", "evaluador")
 	return all
+}
+
+Permiso accesoEvaluacion {
+	vars
+		Evaluacion evaluacion
+	when
+		( 
+			_accion = editar and
+		    agente?.rolActivo in ("administrador", "gestor", "revisor", "evaluador") and
+		    (evaluacion?.estado in ("enTramite"))
+		)
+	return
+		all
+		
+	when 
+		(
+           	_accion = leer and
+           	 agente?.rolActivo in ("administrador", "gestor", "revisor", "evaluador") and
+		    (evaluacion?.estado in ("enTramite", "evaluada", "rechazada"))
+		)
+	return
+		visible
+}
+
+Permiso guardarEvaluacion {
+	vars
+		Evaluacion evaluacion
+	when
+		( 
+			_accion = editar and
+		    agente?.rolActivo in ("administrador", "gestor", "revisor", "evaluador") and
+		    (evaluacion?.estado in ("enTramite"))
+		)
+	return
+		all
 }
 
 Permiso tableKeyOnlyEstadosSolicitud{
 	vars
 		TableKeyValue tableKeyValue
 	when
-		tableKeyValue.table = "estadosSolicitud"
+		tableKeyValue?.table = "estadosSolicitud"
 	return all
 }
 
@@ -527,7 +541,7 @@ Permiso tableKeyOnlyEstadosSolicitudUsuario{
 	vars
 		TableKeyValue tableKeyValue
 	when
-		tableKeyValue.table = "estadosSolicitudUsuario"
+		tableKeyValue?.table = "estadosSolicitudUsuario"
 	return editable
 }
 
@@ -565,7 +579,7 @@ Permiso hayverificacion{
 }
 
 // Permiso fantasma, ya que va a ser sobrescrito para su uso.
-// Lo que en verdad está declarado no es lo que hace.
+// Lo que en realidad está declarado no es lo que hace.
 // Este permiso comprueba que no haya documentación nueva adjuntada por el solicitante
 // y que no esté en la verificación actual.
 Permiso hayNuevaDocumentacionVerificacion{
@@ -582,8 +596,23 @@ Permiso verificarTiposDocumentos{
 	when
 		(_accion in (leer, editar)) and 
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
-		(solicitud.estado = "enVerificacion") and
+		(solicitud?.estado = "enVerificacion") and
 		(verificacion != null and verificacion.estado != null and verificacion.estado = "verificandoTipos")
+	return
+		all
+}
+
+Permiso anularVerificacion{
+	vars
+		SolicitudGenerica solicitud
+		Verificacion verificacion
+	when
+		(_accion = editar) and 
+		(agente.rolActivo in ("administrador", "gestor")) and
+		(solicitud?.estado = "enVerificacion") and
+		(verificacion?.requerimiento?.registro?.fasesRegistro?.registro != "true") and
+		(verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true") and
+		(verificacion?.estado != null and verificacion?.estado in ("enVerificacion", "verificandoTipos", "enVerificacionNuevosDoc", "enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada"))
 	return
 		all
 }
@@ -592,7 +621,8 @@ Permiso verificacionConNuevosDoc{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and (solicitud.verificacion.estado != null) and (solicitud.verificacion.estado = "enVerificacionNuevosDoc") 
+		(agente.rolActivo in ("administrador", "gestor", "revisor"))
+		and (solicitud?.verificacion?.estado != null) and (solicitud?.verificacion?.estado = "enVerificacionNuevosDoc") 
 	return
     	all
 }
@@ -602,7 +632,7 @@ Permiso accederSiSolicituNoBorrador{
 		SolicitudGenerica solicitud
 	when 
 		(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
-		(solicitud.estado != "borrador")
+		(solicitud?.estado != "borrador")
 	return 
 		all
 }
@@ -614,7 +644,7 @@ Permiso loginTipoUser{
 		Agente ag
 	when
 		(agente.rolActivo = "administrador") and
-		(ag.acceso != "certificado")
+		(ag?.acceso != "certificado")
 	return 
 		all
 }
@@ -624,7 +654,7 @@ Permiso miAgente{
 	vars 
 		Agente agenteActual 
 	when 
-		agenteActual.id = agente.id
+		agenteActual?.id = agente?.id
 	return
 		all
 }
@@ -661,18 +691,16 @@ Permiso prepararDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
-		(solicitud.desistimiento.registro.fasesRegistro.borrador = "false")
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.borrador = "false")
 	return
-		editable
+		all
 }
 
 Permiso generarBorradorDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
-		solicitud.desistimiento.motivo != null
+		solicitud?.desistimiento?.motivo != null
 	return
 		all
 }
@@ -681,8 +709,7 @@ Permiso enBorradorDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
-		(solicitud.desistimiento.registro.fasesRegistro.borrador="true")
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.borrador="true")
 	return
 		all
 }
@@ -691,23 +718,16 @@ Permiso editarDesistimiento {
 	vars
 		SolicitudGenerica solicitud
 	when 
-		((agente.rolActivo = "usuario") and (_accion = leer))
-		or solicitud.id = solicitud.id // Eliminar esta línea
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.registro="false")
 	return
 		editable
 }
-
-/*
- * Permiso “modificarDesistimiento�?
- *
- */
 
 Permiso modificarDesistimiento{
 	vars
 	 	SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
-		(solicitud.desistimiento.registro.fasesRegistro.registro="false")
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.registro="false")
 	return
 		all
 }
@@ -726,78 +746,56 @@ Permiso instruccionDesistimiento{
 	return
 		all
 }
-/*
- * Permiso “mesajeIntermedioDesistimiento"
- */
+
 Permiso mensajeIntermedioDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(solicitud.desistimiento.registro.fasesRegistro.firmada = "true" or
-		solicitud.desistimiento.registro.fasesRegistro.registro = "true" or
-		solicitud.desistimiento.registro.fasesRegistro.expedienteAed = "true") and
-		solicitud.desistimiento.registro.fasesRegistro.clasificarAed = "false"
+		(solicitud?.desistimiento?.registro?.fasesRegistro.firmada = "true" or
+		solicitud?.desistimiento?.registro?.fasesRegistro.registro = "true" or
+		solicitud?.desistimiento?.registro?.fasesRegistro.expedienteAed = "true") and
+		solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed = "false"
 	return
 		all
 }
-/*
- * Permiso “clasificadaDesistimiento�?
- *
- */
+
 
 Permiso clasificadaDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		//TODO SMB 04/04/2012
-		(_accion = leer) or
-		(solicitud.desistimiento.registro.fasesRegistro.clasificarAed="true")
+		(solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed="true")
 	return
 		visible
 }
-/*
- * Permiso “firmarRegistrarDesistimiento�?
- *
- */
 
 Permiso firmarRegistrarDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
-		(solicitud.desistimiento.registro.fasesRegistro.clasificarAed="false")
+		(solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed="false")
 	return
 		all
 }
-/*
- * Permiso “firmarDesistimiento�?
- *
- */
 
 Permiso firmarDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
-		(solicitud.desistimiento.registro.fasesRegistro.firmada="false")
+		(solicitud?.desistimiento?.registro?.fasesRegistro.firmada="false")
 	return
 		all
 }
-/*
- * Permiso “registrarDesistimiento�?
- *
- */
+
 
 Permiso registrarDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or
-		(solicitud.desistimiento.registro.fasesRegistro.firmada = "true" and
-		solicitud.desistimiento.registro.fasesRegistro.registro = "false" and
-		solicitud.desistimiento.registro.fasesRegistro.clasificarAed = "false")
+		(solicitud?.desistimiento?.registro?.fasesRegistro.firmada = "true" and
+		solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed = "false")
 	return
-		visible
+		all
 }
 
 
@@ -805,7 +803,7 @@ Permiso verTablaCEconomicosOtros{
 	vars
 		CEconomico ceconomico
 	when
-		ceconomico.tipo.tipoOtro="true"
+		ceconomico?.tipo?.tipoOtro="true"
 	return all
 }
 
@@ -822,16 +820,37 @@ Permiso iniciarBaremacion {
 	vars
 		TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")
 	when
-		(tipoEvaluacion != null) and (tipoEvaluacion.estado = "cargada")
+		(tipoEvaluacion?.estado = "cargada")
 	return
 		all
+}
+
+Permiso editarSolicitudYIniciarBaremacion {
+	vars
+		SolicitudGenerica solicitud
+		TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")
+	when
+		!usuario is visible
+		or (
+	 		agente.rolActivo = "usuario" and
+	 		solicitud?.estado = "borrador" and
+	 		solicitud?.registro?.fasesRegistro?.borrador = "false" and
+	 		(tipoEvaluacion?.estado = "cargada")
+		)
+	return all
+	when
+		!usuario is visible
+		or (
+	 		agente.rolActivo = "usuario"
+		)
+	return [leer]
 }
 
 Permiso actualizarBaremacion {
 	vars
 		TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")
 	when
-		(tipoEvaluacion != null) and (tipoEvaluacion.estado = "iniciada")
+		(tipoEvaluacion?.estado = "iniciada")
 	return
 		all
 }
@@ -840,11 +859,11 @@ Permiso notificacionEditableSiNoLeida {
 	vars
 		Notificacion notificacion
 	when
-		notificacion.estado != null and notificacion.estado != "puestaadisposicion"
+		notificacion?.estado != null and notificacion?.estado != "puestaadisposicion"
 	return
 		visible
 	when
-		notificacion.estado != null
+		notificacion?.estado != null
 	return
 		all
 }
@@ -927,12 +946,14 @@ Permiso prepararSolicitud {
 		SolicitudGenerica solicitud
 	when
 		(_accion = editar) and
-		(solicitud.registro.fasesRegistro.borrador = "false")  
+		(solicitud?.registro?.fasesRegistro?.borrador = "false") and
+		(solicitud?.registro?.fasesRegistro?.clasificarAed = "false")
 	return
 		editable
 	when
 		(_accion = editar) and
-		(solicitud.registro.fasesRegistro.borrador = "true")  
+		(solicitud?.registro?.fasesRegistro?.borrador = "true") and
+		(solicitud?.registro?.fasesRegistro?.clasificarAed = "false") 
 	return
 		visible
 }
@@ -949,17 +970,13 @@ Permiso enBorradorSolicitud{
 	vars 
 		SolicitudGenerica solicitud
 	when
-		(_accion = leer) or 
-		((solicitud.registro.fasesRegistro.borrador="true") and
-		 (solicitud.registro.fasesRegistro.clasificarAed="false") 	
+		(_accion = leer)
+		or (
+			(solicitud?.registro?.fasesRegistro?.borrador="true") and
+		 	(solicitud?.registro?.fasesRegistro?.clasificarAed="false")
 		) 
 	return
 		all
-		
-	when
-		(solicitud.registro.fasesRegistro.clasificarAed="true") 
-	return
-		visible	
 }
 
 Permiso clasificadaSolicitud{
@@ -968,7 +985,7 @@ Permiso clasificadaSolicitud{
 	when
 		//TODO SMB 04/04/2012
 		(_accion = leer) or
-		(solicitud.registro.fasesRegistro.clasificarAed="true")   
+		(solicitud?.registro?.fasesRegistro?.clasificarAed="true")   
 	return
 		all
 }
@@ -986,7 +1003,7 @@ vars
  	SolicitudGenerica solicitud
 when
 	(_accion = leer) or
-	(solicitud.registro.fasesRegistro.registro="false")
+	(solicitud?.registro?.fasesRegistro?.registro="false")
 return
 	all
 }
@@ -997,10 +1014,10 @@ Permiso mensajeIntermedioSolicitud{
 vars
 	SolicitudGenerica solicitud
 when
-	(solicitud.registro.fasesRegistro.firmada = "true" or
-	solicitud.registro.fasesRegistro.registro = "true" or
-	solicitud.registro.fasesRegistro.expedienteAed = "true") and
-	solicitud.registro.fasesRegistro.clasificarAed = "false"
+	(solicitud?.registro?.fasesRegistro?.firmada = "true" or
+	solicitud?.registro?.fasesRegistro?.registro = "true" or
+	solicitud?.registro?.fasesRegistro?.expedienteAed = "true") and
+	solicitud?.registro?.fasesRegistro?.clasificarAed = "false"
 return
 	all
 }
@@ -1020,7 +1037,7 @@ vars
 	SolicitudGenerica solicitud
 when
 	(_accion = leer) or
-	(solicitud.registro.fasesRegistro.clasificarAed="false")
+	(solicitud?.registro?.fasesRegistro?.clasificarAed="false")
 return
 	all
 }
@@ -1032,7 +1049,7 @@ Permiso firmarRegistrarSolicitudFH{
 		SolicitudGenerica solicitud
 	when
 		((_accion = leer) or
-		(solicitud.registro.fasesRegistro.clasificarAed="false"))
+		(solicitud?.registro?.fasesRegistro?.clasificarAed="false"))
 		and
 		(agente.funcionario="true")
 	return
@@ -1044,7 +1061,7 @@ Permiso firmarRegistrarAportacionFH{
 		SolicitudGenerica solicitud
 	when
 		((_accion = leer) or
-		(solicitud.aportaciones.actual.estado!="finalizada"))
+		(solicitud?.aportaciones?.actual?.estado!="finalizada"))
 		and
 		(agente.funcionario="true")
 	return
@@ -1063,11 +1080,11 @@ Permiso habilitarFHPresentacion{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(solicitud.registro.habilitaFuncionario="true")
+		(solicitud?.registro?.habilitaFuncionario="true")
 	return
 		visible
 	when
-		(solicitud.registro.habilitaFuncionario=null) or (solicitud.registro.habilitaFuncionario="false")
+		(solicitud?.registro?.habilitaFuncionario=null) or (solicitud?.registro?.habilitaFuncionario="false")
 	return
 		all
 }
@@ -1076,11 +1093,11 @@ Permiso habilitarFHAportacion{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(solicitud.aportaciones.actual.habilitaFuncionario="true")
+		(solicitud?.aportaciones?.actual?.habilitaFuncionario="true")
 	return
 		visible
 	when
-		(solicitud.aportaciones.actual.habilitaFuncionario=null) or (solicitud.aportaciones.actual.habilitaFuncionario="false")
+		(solicitud?.aportaciones?.actual?.habilitaFuncionario=null) or (solicitud?.aportaciones?.actual?.habilitaFuncionario="false")
 	return
 		all
 }
@@ -1101,7 +1118,7 @@ vars
 	SolicitudGenerica solicitud
 when
 	(_accion = leer) or
-	(solicitud.registro.fasesRegistro.firmada="false")
+	(solicitud?.registro?.fasesRegistro?.firmada="false")
 return
 	all
 }
@@ -1120,9 +1137,8 @@ vars
 	SolicitudGenerica solicitud
 when
 	(_accion = leer) or
-	(solicitud.registro.fasesRegistro.firmada = "true" and
-		solicitud.registro.fasesRegistro.registro = "false" and
-		solicitud.registro.fasesRegistro.clasificarAed = "false")
+	(solicitud?.registro?.fasesRegistro?.firmada = "true" and
+		solicitud?.registro?.fasesRegistro?.clasificarAed = "false")
 return
 	all
 }
@@ -1145,6 +1161,31 @@ Permiso accesoNoCertificado{
 	when
 		(ag.acceso = null) or
 		(ag.acceso != "certificado") 
+	return
+		all
+}
+
+Permiso autorizadoNoAutoriza{
+	vars
+	   SolicitudGenerica solicitud
+	   Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=? AND p.tipo<>'autorizado'", agente, solicitud)
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+		or ( agente.rolActivo in ("usuario")
+			and participacion != null
+		)
+	return all
+}
+
+Permiso ActivarHabilitarFH{
+	vars
+		SolicitudGenerica solicitud
+	when
+		(solicitud?.activoFH="true")
+	return
+		visible
+	when
+		(solicitud?.activoFH=null) or (solicitud?.activoFH="false")
 	return
 		all
 }

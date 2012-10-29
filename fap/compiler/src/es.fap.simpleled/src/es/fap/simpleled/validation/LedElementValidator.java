@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 import es.fap.simpleled.led.AreaTexto;
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.BarraDeslizante;
+import es.fap.simpleled.led.CCC;
 import es.fap.simpleled.led.CalcularFirmantes;
 import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.Check;
@@ -240,6 +241,9 @@ public abstract class LedElementValidator {
 		}
 		if (container instanceof DireccionMapa) {
 			return new SimpleEntidadValidator(container, "DireccionMapa", false);
+		}
+		if (container instanceof CCC) {
+			return new SimpleEntidadValidator(container, "CCC", false);
 		}
 		if (container instanceof Nip) {
 			return new SimpleEntidadValidator(container, "Nip", false);

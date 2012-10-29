@@ -44,7 +44,7 @@
 
 #{fap.permiso permiso:_permiso, mensaje:permisoMensaje }
 
-<form action="${url}" id="${popup}${accion}Form" method="post" enctype="multipart/form-data" class="form-horizontal">
+<form action="${url}" id="${popup}${accion}Form" method="post" enctype="multipart/form-data" class="form-horizontal noEnterSubmit">
 	<div class="modal-body">
 		#{authenticityToken /}
 
@@ -125,12 +125,27 @@ Ext.onReady(function() {
 		$('.modal-header').parent().addClass("max");
 
 	var ancho = document.body.clientWidth;
-	
+	if ($('.modal.max').height() != null) {
+		var alto = $('.modal.max').height();
+		if (alto <= 600)
+			$('.modal.max').css("position", "fixed");
+		else
+			window.scrollTo(0,0);
+	}
+		
 	if (ancho < 850) {
 		// No va a haber a la vez dos popups
 		var modalId = document.getElementsByClassName('modal hide fade in max')[0].id
 		$('#' + modalId).css('margin', '-45% -20% auto');
 	}
+	
+	
+	// Para obviar las pulsaciones de ENTER, preparamos una función para cuando capturemos el evento del ENTER, obviarlo de manera que
+	// recogemos los eventos ENTER de la clase -noEnterSubmit- que es una de las clases que hemos asignado al form del PopUp
+	$('.noEnterSubmit').keypress(function(e){
+    	if ( e.which == 13 ) e.preventDefault();
+	});
+
 });
 </script>
 

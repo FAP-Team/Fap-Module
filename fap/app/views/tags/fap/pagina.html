@@ -1,6 +1,5 @@
 %{
 	String accion =_accion;
-	boolean mensajeFinal = _mensajeFinal? true : false;
 	play.mvc.Router.ActionDefinition urlEditar = com.google.common.base.Preconditions.checkNotNull(_urlEditar, "urlEditar");
 	play.mvc.Router.ActionDefinition urlCrear = com.google.common.base.Preconditions.checkNotNull(_urlCrear, "urlCrear");
 	play.mvc.Router.ActionDefinition urlBorrar = com.google.common.base.Preconditions.checkNotNull(_urlBorrar, "urlBorrar");
@@ -51,10 +50,7 @@
 
 #{fap.permiso permiso:_permiso, mensaje:permisoMensaje }
 
-
-#{if !mensajeFinal}
-	#{fap.configurarMensaje pagina:_pagina/}
-#{/if}
+#{fap.configurarMensaje pagina:_pagina, posicion: 'superior'/}
 
 #{if accion != "borrado"}
 
@@ -127,7 +123,5 @@
     #{include "manualEndPage/${formulario}/${pagina}.html" /}
 #{/if}
 
-#{if mensajeFinal}
-	#{fap.configurarMensaje pagina:_pagina/}
-#{/if}
+#{fap.configurarMensaje pagina:_pagina, posicion: 'inferior'/}
 		

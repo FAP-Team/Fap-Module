@@ -74,22 +74,26 @@
 		
 			#{/fap.grupo}
 			
-			#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'habilitarFHAportacion', titulo:'Firma Requerida a Funcionario Habilitado'}
-				
-				#{form play.mvc.Router.reverse('AportacionPresentarController.formHabilitarFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formHabilitarFH"}
-					
-					#{fap.boton id:'btnHabilitarFH', titulo:'Habilitar a los Funcionarios para firmar en mi nombre' /}
-		
-				#{/form}
+			#{fap.grupo borde:false, mostrarSi:solicitud.activoFH==true}
 			
-				#{fap.grupo borde:false, mostrarSi:solicitud.aportaciones.actual.habilitaFuncionario==true}
+				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'habilitarFHAportacion', titulo:'Firma Requerida a Funcionario Habilitado'}
+					
+					#{form play.mvc.Router.reverse('AportacionPresentarController.formHabilitarFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formHabilitarFH"}
+						
+						#{fap.boton id:'btnHabilitarFH', titulo:'Habilitar a los Funcionarios para firmar en mi nombre' /}
+			
+					#{/form}
 				
-					<div class="wiki ">
-						<p>Ya ha sido habilitada la opción de que un funcionario habilitado pueda firmar y registrar.</p>
-					</div>
-		
+					#{fap.grupo borde:false, mostrarSi:solicitud.aportaciones.actual.habilitaFuncionario==true}
+					
+						<div class="wiki ">
+							<p>Ya ha sido habilitada la opción de que un funcionario habilitado pueda firmar y registrar.</p>
+						</div>
+			
+					#{/fap.grupo}
+			
 				#{/fap.grupo}
-		
+				
 			#{/fap.grupo}
 
 			#{fap.grupo borde:false, mostrarSi:solicitud.aportaciones.actual.habilitaFuncionario==true}

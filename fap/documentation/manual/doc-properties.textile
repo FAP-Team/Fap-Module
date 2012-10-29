@@ -20,57 +20,98 @@ Para más información de las properties de Play!, así como un listado con toda
 
 h2. Properties originarias de FAP
 
-* Configurar los logs: *app.log.path=* _Ruta del log4j de configuración_
-** Ejemplo: _app.log.path=/log4j-logsApp.properties_
-* Configurar la activación de almacenar los log en la carpeta que se indica en fap.compresslogs.path: *fap.compresslogs.properties=* _[true | false]_
-** Ejemplo: _fap.compresslogs.properties=false_
-* Configurar filtro por tipo MIMES: *fap.gestordocumental.mimes=* _Tipos mimes_
-** Ejemplo: _fap.gestordocumental.mimes=image/png, image/jpg, application/pdf_
-* Configurar filtro por extensiones: *fap.gestordocumental.extensions=* _Extensiones_
-** Ejemplo: _fap.gestordocumental.extensions=pdf, png, jpg_
-* Ruta del manual de la aplicación (A partir de /public/): *fap.manual.aplicacion=* _RUTA_
-** Ejemplo: _fap.manual.aplicacion=manuales/manualApp1.pdf_
-* Pagina inicial de la aplicación: *fap.app.firstPage=* _Nombre pagina DSL_
-** Ejemplo: _fap.app.firstPage=DatosProyecto_
-* Configurar el formato de los doubles: *fap.format.double=* _Formato_
-** Ejemplo: _fap.format.double=0.00_
-* Configurar Login con Usuario y Contraseña: *fap.login.type.user=* _[true | false]_
-** Ejemplo: _fap.login.type.user=true_
-* Configurar Tamaño mínimo de las contraseñas: *fap.password.min=* _Número_
-** Ejemplo: _fap.login.type.min=6_
-* Configurar Tamaño máximo de las contraseñas: *fap.password.max=* _Número_
-** Ejemplo: _fap.login.type.max=10_
-* Nombre de la aplicación: *fap.app.name=* _NOMBRE_
-** Ejemplo: _fap.app.name=Tueri_
-* Configuración del AED: *fap.aed.[...]* 
-** Más información sobre la configuración del AED, "aquí":ws-aed
-* Configuración de Platino: *fap.platino.[...]*
-** Más información sobre la configuración de Platino, "aquí":ws-platino
-* Configuración del borrado de los pdf temporales: *fap.delete.temporals=* _[true | false]_
-** Ejemplo: _fap.delete.temporals=true_ (Activa el borrado, por defecto es false)
-* Vejez de los pdf temporales a borrar: *fap.delete.temporals.old=* _[Xd | Xh |Xm]_
-** Ejemplo: _fap.delete.temporals.old=3h_ (Borrar PDF temporales con más de 3 horas de antiguedad)
-* Habilitar concurrencia en la aplicación: *fap.cache=* _[true | false]_
-** Ejemplo: _fap.cache=true_ (Activar la concurrencia en la aplicación web, por defecto es true)
-* Tiempo máximo que tiene una petición el control cuando se habilita la concurrencia: *fap.cache.time=* _[Xmin]_
-** Ejemplo: _fap.cache.time=5min_ (Si una petición tiene el control más de 5 minutos, el control vuelve a liberarse)
-* Aparece un formulario de búsqueda en la pantalla inicial para todos los roles (excepto Usuario): *fap.index.search=* _[true | false]_
-** Ejemplo: _fap.index.search=true_
-* Tipo de direcciones usadas en el combo tipo de direcciones del elemento dirección: * *fap.direcciones.tipo=* _tiposDirecciones_
-** Ejemplo: _fap.direcciones.tipo=canaria,nacional,internacional_ (Valor por defecto que trae el módulo FAP)
-* Cada cuanto se debe ejecutar el Job encargado de actualizar las Notificaciones (en minutos) *fap.notificacion.refrescoBaseDeDatosFromWS=* _Número_
-** Ejemplo: _fap.notificacion.refrescoBaseDeDatosFromWS=1_ (Valor por defecto que trae el módulo FAP)
-* Cada cuanto se debe ejecutar el Job encargado de gestionar lo del Seguimiento (en minutos) *fap.seguimiento.notificarAlertar.anotaciones=* _Número_
-** Ejemplo: _fap.seguimiento.notificarAlertar.anotaciones=1_ (Valor por defecto que trae el módulo FAP)
-* Cada cuanto se debe ejecutar el Job encargado de comprimir los logs (en horas) *fap.log.compress.every=* _Número_
-** Ejemplo: _fap.log.compress.every=24_ (Valor por defecto que trae el módulo FAP)
-* Cada cuanto se debe ejecutar el Job encargado de eliminar los archivos temporales antiguos (en horas) *fap.delete.temporals.every=* _Número_
-** Ejemplo: _fap.delete.temporals.every=5_ (Valor por defecto que trae el módulo FAP)
-* Validación y guardado de la pagina antes de abrir la página de una tabla *fap.tablas.validacion.antesRedirigirPaginas*= _[true | false]_
-** Ejemplo: _fap.tablas.validacion.antesRedirigirPaginas=true_ (Valor por defecto que trae el módulo FAP, a partir de la versión 2.1, antes _false_)
-* Permitir que un Funcionario Habilitado firme. *fap.firmaYRegistro.funcionarioHabilitado*= _[true | false]_
-** Ejemplo: _fap.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el mñodulo FAP)
-* Configurar que las entidades se guarden nada mas invocarlas con el Nuevo de las tablas. *fap.entidades.guardar.antes*= _[true | false]_
-** Ejemplo: _fap.entidades.guardar.antes=false_ (Valor por defecto que trae el mñodulo FAP)
-* Envío de los campos no visibles en el formulario (ocultos por algún grupo). Defecto: _true_. *fap.form.sendHiddenFields*= _[true | false]_
-** Ejemplo: _fap.form.sendHiddenFields=false_ (No se enviarán los campos ocultos, ya que se les modifica su atributo *name* para que el controlador no los reciba correctamente.)
+h3. General
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Nombre de la aplicación | *fap.app.name* | _NOMBRE_ |  _fap.app.name=Mi Aplicación_ |
+| Pagina inicial de la aplicación. | *fap.app.firstPage* | _Nombre pagina DSL_ | _fap.app.firstPage=DatosProyecto_ |
+| Configurar los logs: _Ruta del log4j de configuración_ |  *app.log.path* |  | app.log.path=/log4j-logsApp.properties_ | 
+| Almacenar los log en la carpeta que se indica en fap.compresslogs.path | *fap.compresslogs.properties* | _[true / false]_ | _fap.compresslogs.properties=false_ |
+| Ruta del manual de la aplicación (A partir de /public/) | *fap.manual.aplicacion* |  | _fap.manual.aplicacion= manuales/manualApp1.pdf_ |
+| Permitir Login con Usuario y Contraseña | *fap.login.type.user* | _[true / false]_ | _fap.login.type.user=true_
+| Configurar Tamaño mínimo de las contraseñas | *fap.password.min* | _Integer_ | _fap.login.type.min=6_
+| Configurar Tamaño máximo de las contraseñas | *fap.password.max* | _Integer_ |  _fap.login.type.max=10_
+
+h3. Módulos
+
+h4. General
+
+Para habilitar o deshabilitar los diferentes módulos de FAP. Por defecto están todos habilitados.
+
+|_. Módulo |_. Nombre |_. Valor |
+| Verificación | *fap.modulo.Verificacion* | _[true/false]_ |
+| Administración | *fap.modulo.Administracion* | _[true/false]_ |
+| Principal | *fap.modulo.Principal* | _[true/false]_ |
+| Seguimiento | *fap.modulo.Seguimiento* | _[true/false]_ |
+| Documentación | *fap.modulo.Documentacion* | _[true/false]_ |
+| Aportación | *fap.modulo.Aportacion* | _[true/false]_ |
+| Presentación | *fap.modulo.Presentacion* | _[true/false]_ |
+| Exclusión | *fap.modulo.Exclusion* | _[true/false]_ |
+| Baremación | *fap.modulo.Baremacion* | _[true/false]_ |
+| Desistimiento | *fap.modulo.Desistimiento* | _[true/false]_ |
+| AceptarRenunciar | *fap.modulo.AceptarRenunciar* | _[true/false]_ |
+| Alegación | *fap.modulo.Alegacion* | _[true/false]_ |
+
+h4. Documentación
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Configurar filtro por tipo MIMES  |  *fap.gestordocumental.mimes* | | _fap.gestordocumental.mimes=image/png, image/jpg, application/pdf_
+| Configurar filtro por extensiones  | *fap.gestordocumental.extensions* | | _fap.gestordocumental.extensions=pdf, png, jpg_
+| Tamaño maximo permitido de los ficheros a subir | *fap.file.maxsize* | | fap.file.maxsize=100000 |
+
+
+h3. Servicios
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Permitir definir el HttpTimeout de los servicios | *fap.servicios.httpTimeout* | _long_ | _fap.servicios.httpTimeout=240000_ (Se activa el timeout de los servicios cada 24 segundos (se representa en milisegundos.) |
+| Configuración del AED | *fap.aed.[...]*  | | Más información sobre la configuración del AED, "aquí":ws-aed
+| Configuración de Platino | *fap.platino.[...]* | | Más información sobre la configuración de Platino, "aquí":ws-platino
+| Configuración del servicio de Notificaciones | *fap.notificaciones.[...]* | | Más información sobre la configuración del servicio "aquí":ws-notificacion |
+
+h3. Formato
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Número mínimo de decimales a mostrar en los doubles | *fap.format.double.min* | Integer | _fap.format.double.min=2_ |
+| Número maximo de decimales a mostrar en los doubles | *fap.format.double.max* | Integer | _fap.format.double.max=5_ |
+| Número mínimo de decimales a mostrar en las monedas | *fap.format.moneda.min* | Integer | _fap.format.moneda.min=2_ |
+| Número mínimo de decimales a mostrar en los doubles | *fap.format.moneda.min* | Integer | _fap.format.moneda.min=2_ |
+
+h3. Jobs
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Cada cuanto se debe ejecutar el Job encargado de actualizar las Notificaciones (en minutos) | *fap.notificacion.refrescoBaseDeDatosFromWS* | _Integer_ | _fap.notificacion.refrescoBaseDeDatosFromWS=1_ (Valor por defecto que trae el módulo FAP)
+| Cada cuanto se debe ejecutar el Job encargado de gestionar lo del Seguimiento (en minutos) | *fap.seguimiento.notificarAlertar.anotaciones* | _Integer_ | _fap.seguimiento.notificarAlertar.anotaciones=1_ (Valor por defecto que trae el módulo FAP)
+| Cada cuanto se debe ejecutar el Job encargado de comprimir los logs (en horas) | *fap.log.compress.every* | _Integer_ | _fap.log.compress.every=24_ (Valor por defecto que trae el módulo FAP)
+| Cada cuanto se debe ejecutar el Job encargado de eliminar los archivos temporales antiguos (en horas) | *fap.delete.temporals.every* | _Integer_ | _fap.delete.temporals.every=5_ (Valor por defecto que trae el módulo FAP)
+
+h3. Comportamiento
+
+h4. Interno
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Borrado de los pdf temporales | *fap.delete.temporals* | _[true / false]_ | _fap.delete.temporals=true_ (Activa el borrado, por defecto es false)
+| Tiempo de existencia de los pdf temporales a borrar | *fap.delete.temporals.old* | _[Xd / Xh / Xm]_ | _fap.delete.temporals.old=3h_ (Borrar PDF temporales con más de 3 horas de antiguedad) |
+| Habilitar concurrencia en la aplicación | *fap.cache* | _[true / false]_ | _fap.cache=true_ (Activar la concurrencia en la aplicación web, por defecto es true)
+| Tiempo máximo que tiene una petición el control cuando se habilita la concurrencia | *fap.cache.time* | _[Xmin]_ | _fap.cache.time=5min_ (Si una petición tiene el control más de 5 minutos, el control vuelve a liberarse) |
+| Configurar que las entidades se guarden nada mas invocarlas con el Nuevo de las tablas. | *fap.entidades.guardar.antes* | _[true / false]_ | _fap.entidades.guardar.antes=false_ (Valor por defecto que trae el mñodulo FAP) |
+| Envío de los campos no visibles en el formulario (ocultos por algún grupo). Defecto: _true_. | *fap.form.sendHiddenFields* | _[true / false]_ | _fap.form.sendHiddenFields=false_ (No se enviarán los campos ocultos, ya que se les modifica su atributo *name* para que el controlador no los reciba correctamente.) |
+| Compatibilidad con las direcciones anteriores a la version 2.1, que se sigan respetando y no se pierdan los valores | *fap.direccion.anterior.version2.1* | _[true/false]_ | fap.direccion.anterior.version2.1=true |
+| Para que se validen y guarden los datos de la pagina que contiene una tabla que redirige a otra pagina antes de ir a esa otra pagina. | *fap.tablas.validacion.antesRedirigirPaginas* | _[true/false]_ |  fap.tablas.validacion.antesRedirigirPaginas=true |
+| Para permitir que el solicitante pueda habilitar a que un Funcionario Habilitado firme y registre por él | *fap.firmaYRegistro.funcionarioHabilitado* |  _[true/false]_ |
+fap.firmaYRegistro.funcionarioHabilitado=false |
+| Tipo de documento para la autorizacion de firma de un Funcionario Habilitado | *fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento* | | fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento=eadmon://uriDoc |
+| Indica si se envían los campos ocultos en las páginas, los que son ocultos por grupos | *fap.form.sendHiddenFields* | | fap.form.sendHiddenFields=true |
+| Elimina los logs antiguos de texto plano (siguen almacenándose los .zip) | *fap.deleteLogs.textoPlano* | | fap.deleteLogs.textoPlano=false |
+
+
+h4. Visible 
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Aparece un formulario de búsqueda en la pantalla inicial para todos los roles (excepto Usuario) | *fap.index.search* | _[true / false]_ | _fap.index.search=true_ |
+| Tipo de direcciones usadas en el combo tipo de direcciones del elemento dirección | *fap.direcciones.tipo* | _tiposDirecciones_ | _fap.direcciones.tipo=canaria,nacional,internacional_ (Valor por defecto que trae el módulo FAP) |
+| Validación y guardado de la pagina antes de abrir la página de una tabla | *fap.tablas.validacion.antesRedirigirPaginas* | _[true / false]_ | _fap.tablas.validacion.antesRedirigirPaginas=true_ (Valor por defecto que trae el módulo FAP, a partir de la versión 2.1, antes _false_)
+| Permitir que un Funcionario Habilitado firme | *fap.firmaYRegistro.funcionarioHabilitado* | _[true / false]_ | _fap.firmaYRegistro.funcionarioHabilitado=false_ (Valor por defecto que trae el módulo FAP) |
+| Permitir que se muestren los iconos o no en los elementos Texto | *fap.iconos.mostrar* | _[true / false]_ | _fap.iconos.mostrar=true_ (Se activa la visualización de los iconos, valor por defecto en FAP.)
+| Personalizar el mensaje de error en los elementos de tipo moneda | *fap.mensaje.error.moneda* | | fap.mensaje.error.moneda=El formato correcto es 0,00 |
+| Permitir listar la tabla de Documentos Subidos, en la Documentación | *fap.documentacion.listarDocumentosSubidos* | _[true / false]_ | _fap.documentacion.listarDocumentosSubidos=true_ (Se activa la visualización de la tabla, valor por defecto en FAP.) |
+| Deshabilita chosen (js) para los tests | *fap.unable.chosen* | | fap.unable.chosen=false |

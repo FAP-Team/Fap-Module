@@ -5,7 +5,7 @@ Puedes ver una aplicación de ejemplo creada con fap en "Aplicación de ejemplo"
 h2. Tutorial
 
 # "Introducción":curso-introduccion
-# "Instalación":curso-instalacion
+# "Instalación":instalacion
 # "Creación de un proyecto":curso-nuevoProyecto
 # "Instalación del plugin de Eclipse":curso-plugin
 # "Generar la aplicación":curso-generar

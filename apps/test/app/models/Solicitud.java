@@ -179,6 +179,9 @@ public class Solicitud extends SolicitudGenerica {
 	public void savePagesPrepared() {
 		if ((savePages.paginaSolicitante == null) || (!savePages.paginaSolicitante))
 			Messages.error("La página paginaSolicitante no fue guardada correctamente");
+
+		if ((savePages.paginaPCEconomicos == null) || (!savePages.paginaPCEconomicos))
+			Messages.error("La página Conceptos Económicos no fue guardada correctamente");
 	}
 
 	// === MANUAL REGION START ===

@@ -10,12 +10,15 @@ import properties.FapProperties;
 import verificacion.VerificacionUtils;
 
 import models.Agente;
+import models.AutorizacionesFAP;
 import models.Busqueda;
 import models.Documento;
+import models.Participacion;
 import models.SolicitudGenerica;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import enumerado.fap.gen.TiposParticipacionEnum;
 
 public class SecureFap extends Secure {
 	
@@ -58,6 +61,7 @@ public class SecureFap extends Secure {
 		
 		return nextAccion(id, ids, vars);
 	}
+
 	
 	private ResultadoPermiso hayNuevaDocumentacionVerificacionAccion(Map<String, Long> ids, Map<String, Object> vars) {
 		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);

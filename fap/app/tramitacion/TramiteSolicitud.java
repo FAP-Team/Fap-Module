@@ -1,5 +1,6 @@
 package tramitacion;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,9 @@ import tramitacion.Documentos;
 import platino.DatosRegistro;
 import properties.FapProperties;
 import emails.Mails;
+import enumerado.fap.gen.EstadosSolicitudEnum;
 import es.gobcan.platino.servicios.registro.JustificanteRegistro;
+import reports.Report;
 import services.GestorDocumentalServiceException;
 import services.RegistroService;
 import services.RegistroServiceException;
@@ -109,10 +112,12 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	}
 
 	/**
-	 * No realiza cambios de estado
+	 * Realiza cambios de estado
 	 */
 	@Override
-	public final void cambiarEstadoSolicitud() {}
-
+	public final void cambiarEstadoSolicitud() {
+		solicitud.estado=EstadosSolicitudEnum.iniciada.name();
+		solicitud.save();
+	}
 
 }

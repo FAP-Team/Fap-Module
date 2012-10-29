@@ -85,8 +85,8 @@ public class PlatinoRegistro {
 		Client client = ClientProxy.getClient(registro);
 		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
 		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.platino.httpTimeout"));
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		httpConduit.setClient(httpClientPolicy);
 	}
 	

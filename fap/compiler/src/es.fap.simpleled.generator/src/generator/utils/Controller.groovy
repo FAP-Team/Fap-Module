@@ -218,6 +218,8 @@ ${metodoBefore()}
 
 ${metodoProcesandoEntidades()}
 
+${metodoModulo()}
+
 }
 """
 		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controllerGen));
@@ -861,11 +863,13 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	private String metodoBefore(){
 		return """
-			@Before
-			static void beforeMethod() {
-				renderArgs.put("controllerName", "${controllerGenName}");
-			}
-		""";
+				@Before
+				static void beforeMethod() {
+					renderArgs.put("controllerName", "${controllerGenName}");
+				}
+			"""
+		
+		
 	}	
 	
 	public String bindReferencesCall(){
@@ -1532,6 +1536,20 @@ public class ${controllerName} extends ${controllerGenName} {
 				setEntidadesProcesando();
 			}
 		"""
+	}
+	
+	private String metodoModulo(){
+		if ((isPagina()) && (element.perteneceA != null))
+		return """
+			@Before
+			static void moduleMethod() {
+				if(FapProperties.get("fap.modulo.${element.perteneceA}") == null || !FapProperties.getBoolean("fap.modulo.${element.perteneceA}")){
+					Messages.fatal("La aplicación no tiene disponible este módulo");
+				}
+			}
+		"""
+		else
+			return"";
 	}
 			
 }

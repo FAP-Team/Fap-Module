@@ -559,8 +559,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         TipoDocumento tipoDocumento = new TipoDocumento();
         tipoDocumento.nombre = "FileSystem " + nombre;
         tipoDocumento.uri=tipo;
-        tipoDocumento.aportadoPor = "Ciudadano";
-        tipoDocumento.obligatoriedad = "Obligatorio";
+        tipoDocumento.aportadoPor = "CIUDADANO";
+        tipoDocumento.obligatoriedad = "OBLIGATORIO";
         return tipoDocumento;
     }
 
@@ -598,15 +598,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	}
 	
 	public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
-		List <TipoDocumentoEnTramite> tdtList = new ArrayList<TipoDocumentoEnTramite>();
-		TipoDocumentoEnTramite tdt = new TipoDocumentoEnTramite();
-		tdt.setAportadoPor(AportadoPorEnum.CIUDADANO);
-		tdt.setCardinalidad(CardinalidadEnum.UNICO);
-		tdt.setIdentificador("1");
-		tdt.setObligatoriedad(ObligatoriedadEnum.OBLIGATORIO);
-		tdt.setVersion(1);
-		tdt.setUri("fs://type1/v01");
-		tdtList.add(tdt);
+		String consulta = "select tipoDoc from TipoDocumento tipoDoc where (tipoDoc.aportadoPor = ? and tipoDoc.tramitePertenece = ?) ";
+		List <TipoDocumentoEnTramite> tdtList = Documento.find(consulta, "CIUDADANO", tramite.uri).fetch();
 		return tdtList;
 	}
 	
@@ -675,6 +668,37 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		
 		solicitud.documentacion.documentos.add(doc);
 		solicitud.save();
+	}
+	
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException  {
+		SolicitudGenerica solicitudReferenciada = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud " +
+				 											"where ( solicitud.documentacion.id in (" +
+				 												"select documentacion.id from Documentacion documentacion join documentacion.documentos doc " + 
+				 												"where doc.uri = '" + uriDocumento + "') )").first();
+		if (solicitudReferenciada == null) {
+			throw new GestorDocumentalServiceException("No se encuentra la solicitud que debe tener el documento con uri " + uriDocumento + 
+									" en la duplicación de un documento ya subido.");
+		}
+		
+		Documento documento = Documento.findByUri(uriDocumento);
+		dbDocumento.duplicar(documento);
+		dbDocumento.descripcion = descripcionDocumento;
+		// El campo refAed se creó para verificar si el campo expedienteReferenciado/solicitudReferenciada es válido
+		// Ahora lo ponemos true para que en saveDocumentoTemporal no compruebe que doc esté en el aed (por haber hecho un duplicar documento)
+		dbDocumento.refAed = true;			
+		dbDocumento.save();	
+		
+		File contenidoOriginal = getFile(documento);
+		FileInputStream contenido = null;
+		try {
+			contenido = new FileInputStream(contenidoOriginal);
+		} catch (FileNotFoundException e) { System.out.println(e); }	
+
+		saveDocumentoTemporal(dbDocumento, contenido, contenidoOriginal.getName());
+		
+		dbDocumento.refAed = true;
+		dbDocumento.solicitudReferenciada = solicitudReferenciada.id;
+		dbDocumento.fechaSubida = new DateTime();
 	}
 
 	@Override

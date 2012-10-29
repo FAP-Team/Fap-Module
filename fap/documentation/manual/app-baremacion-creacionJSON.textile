@@ -9,6 +9,7 @@ Los ficheros deberán situarse en _${PATH_APLICACION}/conf/initial-data/_, crean
 * *criterios.json*, _contendrá los datos de los Criterios de la evaluación. Este fichero se podrá actualizar tantas veces como se quiera, recargandolo en la página pertinente de administración_
 * *conceptosEconomicos.json*, _contedrá los datos de los Conceptos Economicos de la evaluación. Este fichero se podrá actualizar tantas veces como se quiera, recargandolo en la página pertinente de administración. Pero teniendo en cuenta que los conceptos economicos que verá el solicitante, sólo se cargarán una única vez, y esta será cuando el solicitante visite por primera vez la página PCEconomicos, creada por defecto en fap._
 * *datosAdicionales.json*, _contendrá los Datos Adicionales de la evaluación, que así se quieran contemplar. Este fichero se podrá actualizar tantas veces como se quiera, recargandolo en la página pertinente de administración_
+* *tiposDocumentos.json*, _contendrá las uris de los Tipos de Documentos que podrá ver el evaluador en la evaluación para baremar correctamente una determinada solicitud. Para que puede ver el documento del tipo indicado, este tuvo que ser aportado por el solicitante y estar perfectamente 'verificado' por parte del gestor en la fase de Verificación._
 
 h2. Estructura de _tipoEvaluacion.json_
 
@@ -172,5 +173,22 @@ bc. [
 		orden : 5,
 		nombre : "garantias",
 		descripcion : "Garantías"
+	}
+]
+
+h2. Estructura de _tiposDocumentos.json_
+
+Este ficehro permite personalizar los tipos de documentos que puede ver un Evaluador en la evaluación, para restringir el acceso a toda la lista de documentos que ha subido el solicitante y sólo permitirle observar aquellos que sean necesarios para llevar a cabo la evaluación. Para que los pueda ver, el documento del tipo indicado tuvo que ser aportado correctamente por el solicitante y 'verificado' por el gestor.
+
+Cada elemento de la lista contendrá, simplemente:
+
+* **uri** Uri del tipo de documento que se quiere que aparezca como documento accesible por el evaluador en la evaluación.
+
+bc. [
+	{
+		uri: "fs://type1/v01"
+	},
+	{
+		uri: "fs://type2/v03"
 	}
 ]

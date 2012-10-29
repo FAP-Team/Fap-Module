@@ -1,7 +1,8 @@
 Firma._getCertificados = function(){
 	var certificados = [];
-	certificados.push(new Certificado('11111111H', 'Luke Skywalker'));
-	certificados.push(new Certificado('2', 'Darth Vader'));
+	certificados.push(new Certificado('11111111H', 'Luke Skywalker (11111111H)'));
+	certificados.push(new Certificado('12345678Z', 'Darth Vader (12345678Z)'));
+	certificados.push(new Certificado('A99999997', 'Estrella de la Muerte (A99999997)'));
 	return certificados;
 }
 

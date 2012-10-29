@@ -50,6 +50,9 @@ public class ConfigurarMensaje extends FapModel {
 	@Transient
 	public String formularioNombreText;
 
+	@ValueFromTable("posicionMensaje")
+	public String msjFinal;
+
 	public void init() {
 
 		postInit();

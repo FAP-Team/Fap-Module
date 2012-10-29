@@ -142,6 +142,10 @@ POST /Solicitud/tablascondecimales/beforeOpenPageTable TablasConDecimalesControl
 GET /Solicitud/tablascondecimales/tablaConceptos TablasConDecimalesController.tablatablaConceptos
 GET /Solicitud/elementosbasicos ElementosBasicosController.index
 POST /Solicitud/elementosbasicos/editar ElementosBasicosController.editar
+GET /Solicitud/combonoeditable ComboNoEditableController.index
+POST /Solicitud/combonoeditable/editar ComboNoEditableController.editar
+GET /Solicitud/paginacancelar PaginaCancelarController.index
+POST /Solicitud/paginacancelar/guardarPCE PaginaCancelarController.guardarPCE
 GET /Solicitud/pruebabigpopup popups.PruebaBigPopUpController.index
 POST /Solicitud/pruebabigpopup/editar popups.PruebaBigPopUpController.editar
 GET /Solicitud/pruebabigpopup/documentosExternos popups.PruebaBigPopUpController.tabladocumentosExternos
@@ -184,8 +188,6 @@ GET /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla popups.PopupP
 POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/editar popups.PopupPersonaSolicitantePersonaJuridicaJuridicaTablaController.editar
 POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/borrar popups.PopupPersonaSolicitantePersonaJuridicaJuridicaTablaController.borrar
 POST /Solicitud/popuppersonasolicitantepersonajuridicajuridicatabla/crear popups.PopupPersonaSolicitantePersonaJuridicaJuridicaTablaController.crear
-GET /WSInfo/ServicioWeb1 servicioweb.ServicioWeb1SWController.index
-GET /WSInfo/ServicioWeb2 servicioweb.ServicioWeb2SWController.index
 
 # === END FAPGENERATED ===
 

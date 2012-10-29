@@ -1,0 +1,5 @@
+h1. Exclusión
+
+Para utilizar este módulo de FAP basta con referenciar la Página FAP en el enlace que queramos en nuestra aplicación.
+
+bc. Enlace "Exclusión" pagina=Exclusión

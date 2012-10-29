@@ -1,0 +1,11 @@
+h1. Firma y Registro por Funcionario Habilitado (Funcionario Público)
+
+Existe la posibilidad de qu epor diversos motivos un solicitante no pueda firmar ni registrar la solicitud, ya sea por un problemas con su navegador o cualquier otra causa. En estos casos, existe la posibilidad de utilizar una funcionalidad que trae FAP implementada y que permite que un usuario delegue estas acciones en un Funcionario Público (denominado Habilitado).
+
+Para ello, y previamente seteada la property correspondiente que permite usar esta funcionalidad (ver "properties":doc-properties), el gestor deberá activar la posibilidad de que el solicitante habilite esta opción cuando vaya a Presentar. A efectos prácticos en la aplicación que use FAP simplemente hay que enlazar la página, como se observa debajo de estas líneas, que se encarga de esto y que ya trae implementada FAP y a la que sólo podrán acceder Gestores o Administradores. Esta página permite que en esa solicitud en cuestión, el solicitante pueda requerir la firma de un Funcionario Público habilitado para dicha causa. 
+
+bc. Enlace "Activar Funcionario Habilitado" pagina=ActivarFuncionarioHabilitado
+
+De esta forma, y siempre y cuando la property que permite realizar todo esto (como comentamos antes) este seteada, al solicitante le aparecerá los botones y elementos correspondientes en las páginas oportunas para que pueda dar permisos a un funcionario público habilitado. Para ello deberá de descargarse una autorización que deberá firmar y adjuntar a la documentación. Esta autorización la podrá descargar desde la página DocumentacionFAP. Una vez adjunto dicho documento firmado por el solicitante a la documentación, podrá proceder a solicitar la firma de un funcionario habilitado en los módulos de Presentación y de Aportación de Documentación, mediante un simple botón.
+
+Posteriormente sólo debe esperar a que un Funcionario Público habilitado para la causa haga las acciones requeridas. 

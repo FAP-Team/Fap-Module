@@ -60,14 +60,19 @@ public class Nip {
 		return tipo.equals("nie");
 	}
 
+	public boolean isPasaporte() {
+		return tipo.equals("pasaporte");
+	}
+
 	public String getPlatinoTipoDocumento() {
 		if (isNif()) {
 			return "N";
 		} else if (isNie()) {
 			return "E";
+		} else if (isPasaporte()) {
+			return "P";
 		}
-
-		return null;
+		return "X";
 	}
 	// === MANUAL REGION END ===
 

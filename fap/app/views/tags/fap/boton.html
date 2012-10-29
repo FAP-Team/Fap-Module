@@ -13,6 +13,7 @@
 
 %{ 
 	def id = _id ?: play.libs.Codec.UUID()
+	def refrescar = _refrescar ?: 'false'
 	def idFijo = _idFijo 
 	def label = _titulo
 	def ayuda = _ayuda
@@ -63,9 +64,14 @@
 		#{/if}
 		#{else}
 		$(function() {
-			form = $('#${id}').parents('form');
+			var form = $('#${id}').parents('form');
 			form.submit(function(){
 				$('#${id}').attr("disabled", "true");
+				#{if refrescar}
+					setTimeout(function(){
+        				$('#${id}').attr("disabled", false);
+    				}, 500);
+				#{/if}
 			});
 			$('#${id}').click(function(){
 				input = $("<input>").attr("type", "hidden").attr("name", "${idSolo}").val("${idSolo}");

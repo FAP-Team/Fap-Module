@@ -1,0 +1,15 @@
+h1. Los Controladores
+
+Existen diferentes tipos de controladores conceptualmente.
+
+Para empezar, sería recomendable visitar primero la explicación de los "Controladores en Play":controladores-play
+
+Una vez que sabemos la metodología que Play usa para permitir crear controladores, nos sumergeremos en los controladores de Páginas que FAP implementa y genera automáticamente y que podemos sobreescribir. Para ello visita la sección "Controladores en FAP (Páginas)":controladores-fap
+
+Y por último están otro tipo de controladores que tienen la misma función que los anteriores, pero en este caso aplicados a PopUps, en vez de a Páginas, para ello visita la sección "Controladores en FAP (PopUps)":controladores-popup
+
+h2. "Controladores en Play":controladores-play
+
+h2. "Controladores en FAP (Páginas)":controladores-fap
+
+h2. "Controladores en FAP (PopUps)":controladores-popup

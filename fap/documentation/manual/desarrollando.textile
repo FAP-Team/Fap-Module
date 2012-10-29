@@ -1,0 +1,17 @@
+h1. Desarrollando
+
+h2. "Módulos FAP":modulos
+
+FAP trae implementados módulos de funcionalidades típicas de una aplicación de administración electrónica, tales como el proceso de Subir Documentación, Verificar esa Documentación, Baremación de Solicitudes, Aportación de Documentación, etc.
+
+h2. "Servicios":servicios
+
+FAP puede funcionar en varios escenarios posibles, teniendo siempre el mismo comportamiento. Esto es que podemos, por ejemplo, indicar el proveedor de Firma Electrónica de nuestra aplicación, cambiando una simple línea y sin que afecte a todo el desarrollo de la aplicación. Esto se consigue con la inyección de dependencias de los Servicios que aquí se explican. 
+
+h2. "Personalización":personalizacion
+
+Se permiten personalizar prácticamente cualquier elemento de una aplicación FAP. Desde el código JavaScript de las páginas hasta los estilos de las mismas.
+
+h2. "Otros Recursos":otrosRecursos
+
+Existen otras funcionalidades que FAP pone a tu disposición de forma sencilla para que seas capaz de implementar lo que se te ocurra sin muchas complicaciones, como la creación de PDFs. Aquí también conoceras como puedes desplegar una aplicación FAP.

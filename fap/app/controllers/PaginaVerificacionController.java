@@ -260,6 +260,35 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void gnuevoRequerimientoBorradorPreliminargR(Long idSolicitud, Long idVerificacion, String obtenerBorradorPreliminar) {
+		checkAuthenticity();
+		if (!permisoGnuevoRequerimientoBorradorPreliminargR("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.gnuevoRequerimientoBorradorPreliminargRValidateRules();
+		}
+		
+		if (!Messages.hasErrors()) {
+			try {
+				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+				new Report("reports/requerimiento.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(dbSolicitud);
+			} catch (Exception e) {
+				play.Logger.error("Error generando el borrador", e.getMessage());
+				Messages.error("Error generando el borrador");
+			} catch (Throwable e) {
+				play.Logger.error("Error generando el borrador", e.getMessage());
+				Messages.error("Error generando el borrador");
+			}
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
+		PaginaVerificacionController.gnuevoRequerimientoBorradorPreliminargRRender(idSolicitud, idVerificacion);
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void finalizarVerificacion(Long idSolicitud, Long idVerificacion, String btnFinalizarVerificacion) {
 		checkAuthenticity();
 		if (!permisoFinalizarVerificacion("editar")) {
@@ -315,6 +344,8 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					
 					// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
 					VerificacionUtils.setVerificadoDocumentos(dbSolicitud.verificacion.documentos, dbSolicitud.documentacion.documentos);
+					if ((dbSolicitud.registro.oficial != null) && (!dbSolicitud.registro.oficial.uri.isEmpty()) && ((dbSolicitud.registro.oficial.verificado == null) || (!dbSolicitud.registro.oficial.verificado)))
+						VerificacionUtils.setVerificadoDocumento(dbSolicitud.verificacion.documentos, dbSolicitud.registro.oficial);
 					// Actualizamos los datos de la verificacion para verificaciones posteriores, en este caso el estado.
 					dbSolicitud.verificacion.estado = EstadosVerificacionEnum.verificacionPositiva.name();
 					
@@ -625,6 +656,37 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaVerificacionController.gPonerADisposicionRender(idSolicitud, idVerificacion);
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void anularVerificacion(Long idSolicitud, Long idVerificacion, String botonAnularVerificacion) {
+		checkAuthenticity();
+		if (!permisoAnularVerificacion("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+		long idVerificacionActualyMal=0;
+		if (!Messages.hasErrors()) {
+			// Cambiamos la verificación actual a null para 'resetear' la verificación y simular el anulamiento de la misma
+			solicitud.verificacion.setNullOneToMany();
+			solicitud.save();
+			idVerificacionActualyMal = solicitud.verificacion.id;
+			solicitud.verificacion = null;
+		}
+
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.anularVerificacionValidateRules();
+		}
+		if (!Messages.hasErrors()) {
+			solicitud.save();
+			log.info("Anulada Verificación Correctamente por el Agente: "+AgenteController.getAgente().username+". Deshechada la Verificación con ID: "+idVerificacionActualyMal);
+			Messages.warning("Verificación Anulada Correctamente, puede iniciar una Nueva Verificación");
+			Messages.keep();
+			redirect("AccesoVerificacionesController.index", getAccion(), idSolicitud);
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
+		PaginaVerificacionController.anularVerificacionRender(idSolicitud, idVerificacion);
 	}
 	
 }

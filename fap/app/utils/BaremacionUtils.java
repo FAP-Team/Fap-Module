@@ -23,6 +23,7 @@ import models.SolicitudGenerica;
 import models.TipoCEconomico;
 import models.TipoCriterio;
 import models.TipoDatoAdicional;
+import models.TipoDocumentoAccesible;
 import models.TipoEvaluacion;
 import models.ValoresCEconomico;
 
@@ -31,12 +32,17 @@ public class BaremacionUtils {
 	public static void calcularTotales (SolicitudGenerica solicitud){
 		if(solicitud.ceconomicos != null && solicitud.ceconomicos.size() > 0){
 			List<List<CEconomico>> sortedCEconomicos = BaremacionService.sortByProfundidad(solicitud.ceconomicos);
-			for(int i = sortedCEconomicos.size() -2; i >= 0; i--){
+			List<CEconomico>sinHijos = new ArrayList<CEconomico>();
+			for(int i = sortedCEconomicos.size()-1; i >= 0; i--){
 				for(CEconomico ceconomico : sortedCEconomicos.get(i)){
-					play.Logger.info("Calculando automático en la solicitud "+ceconomico.tipo.jerarquia);
-					if(ceconomico.tipo.clase.equals("auto") && (!ceconomico.tipo.tipoOtro)){
-						List<CEconomico> childs = BaremacionService.getChilds(ceconomico, sortedCEconomicos.get(i + 1));
-						BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+					if(ceconomico.tipo!= null && ceconomico.tipo.clase != null && ceconomico.tipo.clase.equals("auto") && (!ceconomico.tipo.tipoOtro)){
+						play.Logger.info("Calculando automático en la solicitud "+ceconomico.tipo.jerarquia);
+						if (i == sortedCEconomicos.size()-1){ // Para los nodos hojas
+							BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, sinHijos);
+						} else {
+							List<CEconomico> childs = BaremacionService.getChilds(ceconomico, sortedCEconomicos.get(i + 1));
+							BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+						}
 					}
 				}
 			}
@@ -47,12 +53,17 @@ public class BaremacionUtils {
 	public static void calcularTotalesCEconomicosFichaEvaluacion (Evaluacion evaluacion){
 		if(evaluacion.ceconomicos != null && evaluacion.ceconomicos.size() > 0){
 			List<List<CEconomico>> sortedCEconomicos = BaremacionService.sortByProfundidad(evaluacion.ceconomicos);
-			for(int i = sortedCEconomicos.size() -2; i >= 0; i--){
+			List<CEconomico>sinHijos = new ArrayList<CEconomico>();
+			for(int i = sortedCEconomicos.size() - 1; i >= 0; i--){
 				for(CEconomico ceconomico : sortedCEconomicos.get(i)){
-					play.Logger.info("Calculando automático en la solicitud "+ceconomico.tipo.jerarquia);
 					if(ceconomico.tipo.clase.equals("auto")){
-						List<CEconomico> childs = BaremacionService.getChilds(ceconomico, sortedCEconomicos.get(i + 1));
-						BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+						play.Logger.info("Calculando automático en la solicitud "+ceconomico.tipo.jerarquia);
+						if (i == sortedCEconomicos.size()-1){ // Para los nodos hojas
+							BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, sinHijos);
+						} else {
+							List<CEconomico> childs = BaremacionService.getChilds(ceconomico, sortedCEconomicos.get(i + 1));
+							BaremacionService.invokeEval(ceconomico.tipo.jerarquia, ceconomico, childs);
+						}
 					}
 				}
 			}
@@ -106,7 +117,7 @@ public class BaremacionUtils {
 			List<TipoCriterio> tiposCriterios = JsonUtils.loadObjectFromJsonFile("conf/initial-data/criterios.json", type);
 			actualizarTiposCriterios(tipoEvaluacion, tiposCriterios);
 		} else {
-			Logger.info("No se puede leer el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)");
+			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)");
 		}
 		if (new File(Play.applicationPath+"/conf/initial-data/conceptosEconomicos.json").exists()) {
 			// Actualizamos en BBDD los Tipos de CEconomicos, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
@@ -114,7 +125,7 @@ public class BaremacionUtils {
 			List<TipoCEconomico> tiposCEconomicos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/conceptosEconomicos.json", type);
 			actualizarTiposCEconomicos(tipoEvaluacion, tiposCEconomicos);
 		} else {
-			Logger.info("No se puede leer el fichero que contiene los parámetros de los CEconomicos (/conf/initial-data/conceptosEconomicos.json)");
+			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los CEconomicos (/conf/initial-data/conceptosEconomicos.json)");
 		}
 		if (new File(Play.applicationPath+"/conf/initial-data/datosAdicionales.json").exists()) {
 			// Actualizamos en BBDD los Tipos de Datos Adicionales, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
@@ -122,7 +133,18 @@ public class BaremacionUtils {
 			List<TipoDatoAdicional> tiposDatosAdicionales = JsonUtils.loadObjectFromJsonFile("conf/initial-data/datosAdicionales.json", type);
 			actualizarTiposDatosAdicionales(tipoEvaluacion, tiposDatosAdicionales);
 		} else {
-			Logger.info("No se puede leer el fichero que contiene los parámetros de los Datos Adicionales (/conf/initial-data/datosAdicionales.json)");
+			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los Datos Adicionales (/conf/initial-data/datosAdicionales.json)");
+		}
+		if (new File(Play.applicationPath+"/conf/initial-data/tiposDocumentos.json").exists()){
+			// Actualizamos en BBDD los Tipos de Documentos, a través del fichero .json que los define. La actualización borra toda la tabla y la vuelve a crear a partir del fichero.
+			type = new TypeToken<ArrayList<TipoDocumentoAccesible>>(){}.getType();
+			List<TipoDocumentoAccesible> tiposDocumentos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/tiposDocumentos.json", type);
+			TipoDocumentoAccesible.deleteAll();
+			for (TipoDocumentoAccesible tipo: tiposDocumentos){
+				tipo.save();
+			}
+		} else {
+			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los Tipos de Documentos (/conf/initial-data/tiposDocumentos.json)");
 		}
 	}
 	
@@ -194,5 +216,21 @@ public class BaremacionUtils {
 	
 	public static void ordenarTiposCriterios (List<TipoCriterio> lista){
 		Collections.sort(lista, new TipoCriterioComparator());
+	}
+	
+	public static void setEsNuevoFalse () {
+		List<TipoCEconomico> tiposCEconomico = TipoCEconomico.findAll();
+		for (TipoCEconomico tipo : tiposCEconomico) {
+			tipo.esNuevo = false;
+			tipo.save();
+		}
+		play.Logger.info("Tipos de conceptos económicos Actualizados");
+		
+		List<TipoCriterio> tiposCriterio = TipoCriterio.findAll();
+		for (TipoCriterio tipo : tiposCriterio) {
+			tipo.esNuevo = false;
+			tipo.save();
+		}
+		play.Logger.info("Tipos de criterio Actualizados");
 	}
 }

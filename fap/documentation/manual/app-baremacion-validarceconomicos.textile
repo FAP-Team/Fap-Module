@@ -1,0 +1,33 @@
+h1. ¿Qué debo sobreescribir para personalizar la validación de los Conceptos Económicos?
+
+Mediante la sobreescritura del método que aquí se explica, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _GUARDAR_ que aparece en la página de Conceptos Económicos que tendrá que rellenar el usuario y que será dispensable guardar correctamente para poder realizar con éxito el Preparar Para Firmas antes de Presentar la Solicitud.
+
+Se deberá crear una clase (si no la hemos creado previamente para "personalizar el inicio de la Baremación":app-baremacion-inicio) en la ruta _${PATH_APLICACION}/app/baremacion/${NOMBRE_CLASE_BAREMACION}_ donde ${NOMBRE_CLASE_BAREMACION} será el nombre que le queramos dar a nuestra clase que utilizaremos para sobreescribir el proceso de validación de los conceptos económicos y que deberá extender de _BaremacionFAP_. Por ejemplo: _MiClaseBaremacion_, de forma que tendremos en el fichero java que representa dicha clase ("_MiClaseBaremacion.java_):
+
+bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
+	public static void validarCEconomicos(long idSolicitud, List<CEconomico> ceconomicos){
+	   // Aquí indicaremos los pasos a seguir para la validación de los Conceptos Económicos.
+	   // Se deberán indicar los errores que se cometan en la validación con la clase Messages (Error, Warning, etc.) 
+	}
+}
+
+El método public static void _validarCEconomicos_ de la clase creada que extienda de BaremacionFAP es el que se ejecutará cuando el usuario pulse sobre guardar en la página de Conceptos Económicos.
+
+Y la entidadas CEconomico es la siguiente. Donde los valores se encuentran en un OneToMany (uno por año) llamado valores, en concreto en valorSolicitado.
+
+bc.. Entidad CEconomico {
+	TipoCEconomico tipo
+	OneToMany ValoresCEconomico valores
+	Moneda total transient
+	LongText comentariosAdministracion
+	LongText comentariosSolicitante		
+	OneToMany CEconomicosManuales otros
+}
+
+Entidad ValoresCEconomico {
+	Integer anio
+	Moneda valorSolicitado
+	Moneda valorEstimado
+	Moneda valorPropuesto
+	Moneda valorConcedido
+}

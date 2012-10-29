@@ -91,33 +91,4 @@ public class DescargasAedController extends GenericController {
 		renderJSON(response.toJSON("uri", "descripcion", "urlDescarga"));	
 	}
 	
-	/**
-	 * Función a la que se llama cuando hemos seleccionado un archivo ya subido anteriormente para volver a usarlo en otra solicitud.
-	 * 
-	 * Llama al método de la interfaz GestorDocumentalService duplicarDocumentoSubido.
-	 * 
-	 */
-	public static void asignarASolicitudDocumentoSubido(String uriDocumento) {
-		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		Long idSolicitud = ids.get("idSolicitud");
-		if (idSolicitud == null) {
-			Messages.fatal("Falta parámetro idSolicitud");
-			return;
-		}
-		SolicitudGenerica solicitud = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.id = " + idSolicitud.toString()).first();
-
-		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		try {
-			gestorDocumentalService.duplicarDocumentoSubido(uriDocumento, solicitud);
-		} catch (Exception e) { 
-			//System.out.println(e);
-			Messages.error("Ha habido un error al subir el documento"); 
-			Messages.keep();
-		    redirect("SubirArchivoAedTestController.index", "editar", idSolicitud);
-		}
-		Messages.ok("Documento subido correctamente");
-		Messages.keep();
-		redirect("SubirArchivoAedTestController.index", "editar", idSolicitud);
-	}
-	
 }

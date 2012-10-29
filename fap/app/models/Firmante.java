@@ -55,14 +55,22 @@ public class Firmante extends FapModel {
 		// Comprobamos el tipo
 		StringBuilder texto = new StringBuilder();
 		if (CifCheck.validaCif(agente.username, texto)) {
-			this.tipo = "personafisica";
+			this.tipo = "personajuridica";
 		} else {
 			Nip nip = new Nip();
 			nip.valor = agente.username;
+			/// Compruebo todos los posibles tipos
+			nip.tipo = "nif";
 			if (new NipCheck().validaNip(nip, texto)) {
-				this.tipo = "personajuridica";
+				this.tipo = "personafisica";
 			} else {
-				play.Logger.error("El firmante creado a partir del Agente no tiene tipo (username: " + agente.username + ")");
+				nip.tipo = "nie";
+				if (new NipCheck().validaNip(nip, texto)) {
+					this.tipo = "personafisica";
+				} else {
+					this.tipo = "personafisica";
+					play.Logger.error("El firmante creado a partir del Agente no tiene tipo (se le asigna \"personafisica\") (username: " + agente.username + ")");
+				}
 			}
 		}
 	}

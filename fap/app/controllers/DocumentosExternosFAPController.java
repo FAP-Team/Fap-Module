@@ -42,7 +42,6 @@ public class DocumentosExternosFAPController extends DocumentosExternosFAPContro
 		dbDocumentoExterno.organo = documentoExterno.organo;
 		CustomValidation.required("documentoExterno.expediente", documentoExterno.expediente);
 		dbDocumentoExterno.expediente = documentoExterno.expediente;
-		CustomValidation.required("documentoExterno.uri", documentoExterno.uri);
 		dbDocumentoExterno.uri = documentoExterno.uri;
 
 	}

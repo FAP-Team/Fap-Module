@@ -13,21 +13,22 @@ ServicioWeb ServicioWeb3 {
 	return={titulo="Fecha subida":Documento.fechaSubida}
 }
 
-Formulario Solicitud {
+Formulario Solicitud permiso=solicitudes{
 	
     Menu {
     	Enlace "Volver" pagina=Solicitudes
     	
     	Grupo "Aplicación Test" {
     		Grupo "Elementos Básicos"{
-    			Enlace "Ejemplo: Elementos Básicos" pagina=ElementosBasicos
+    			Enlace "Ejemplo: Elementos Básicos" pagina=ElementosBasicos 
+    			Enlace "Ejemplo: Botón Cancelar" pagina=PaginaCancelar
     		}
     		Grupo "Tipos de Solicitantes" {
 				Enlace "S. Normal" pagina=Solicitante
 				Enlace "S. PersonaFisica" pagina=SolicitantePF
 				Enlace "S. PersonaJuridica" pagina=SolicitantePJ
 				Enlace "Persona Fisica" pagina=PersonaF
-				Enlace "Autorizaciones" pagina=Autorizacion
+				Enlace "Autorizaciones" pagina=AutorizacionFAP
 			}
 						
 			Grupo "Ejemplo: Direccion y Fecha"{
@@ -46,6 +47,7 @@ Formulario Solicitud {
 				Enlace "Error en Combos" pagina=PaginaCombosError
 				Enlace "Combos dependientes" pagina=PaginaCombosDependientes
 				Enlace "Combo ManytoOne" pagina=ComboTablasPaginas
+				Enlace "Combo No Editable" pagina=ComboNoEditable
 			}
 
 			Grupo "Ejemplo: Tablas y PopUps" {
@@ -87,9 +89,11 @@ Formulario Solicitud {
 	    	Enlace "Presentación" pagina=PresentarFAP
 			Enlace "Verificaciones" pagina=AccesoVerificaciones
 			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
-			Enlace "PCEconómicos" pagina=PCEconomicos	
+			Enlace "PCEconómicos" pagina=PCEconomicos
+			Enlace "Desistimiento" pagina=Desistimiento
+			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
     	}
-    	
+
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
     }
@@ -148,10 +152,11 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		}
 	}
 	
-	Pagina Combos inicial campo=Solicitud{
+	Pagina Combos inicial campo=Solicitud perteneceA = "Verificacion"{
 
 		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"
+			Combo campo=Solicitud.comboTest.listNumber titulo="Combo de numeritos" mostrarClave
 			Combo campo=Solicitud.comboTest.listSinDuplicados titulo="Combo de Tabla de Tablas sin elementos repetidos" eliminarDuplicados
 			Combo campo=Solicitud.comboTest.listMultiple titulo="Combo Múltiple de Tabla de Tablas"
 			Combo campo=Solicitud.comboTest.ref comboTexto=nombre titulo="Combo de Referencias" ordenarPorValor
@@ -164,7 +169,7 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		}
 	}
 
-	Pagina CombosOverwrite campo=Solicitud{
+	Pagina CombosOverwrite campo=Solicitud {
 		
 		Grupo titulo="Combos sobreescritos en el controlador manual" {
 			Combo lista campo=Solicitud.comboTest.listOverwrite titulo="Combo manual (String)"
@@ -267,7 +272,7 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 	
 	Pagina SubirArchivoAedTest campo=Solicitud{
 		Tabla documentos campo=Solicitud.documentacion.documentos paginaCrear=Documentos paginaEditar=DocumentosEditar{
-			Columna campo=Documento.id
+			//Columna campo=Documento.id
 			Columna campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible
 		}
@@ -571,7 +576,7 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
 	}
 	
 	Pagina PersonaF campo=Solicitud{
-		PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física"
+		PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física" 
 	}
 	
 	Pagina TipoDeAyudaTexto campo=Solicitud{
@@ -680,7 +685,7 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
     }
     
     Pagina TablasConDecimales campo=Solicitud {
-    	Texto campo=Solicitud.conceptos.moneda1
+    	Texto titulo="Moneda 1" campo=Solicitud.conceptos.moneda1
     	Texto campo=Solicitud.conceptos.moneda2
     	Texto campo=Solicitud.conceptos.moneda3
     	Texto campo=Solicitud.conceptos.moneda4
@@ -706,12 +711,7 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
 " }
     	Tabla tablaConceptos campo=Solicitud.misConceptos titulo="Tabla de mis Conceptos" popup=PopUpConceptos 
     	permisoFilas = colorFondo
-    	Color: "var c = record.data.id; if (c < 2) { return \\'docFirmado\\'; } else if (c > 2) { return \\'docNoFirmado\\'; }"
-    	
-    	//siFilaBorrar = "docNoFirmado" 
-    	//siFilaEditar = "siEditable"
-    	//siFilaLeer = "docFirmado"
-    	//porDefecto
+    	color: "var c = record.data.unInteger; if (c < 20) { return \\'docFirmado\\'; } else { return \\'docNoFirmado\\'; }"
     	{
     		Columna titulo="Entero" campo=MiConcepto.unInteger
     		Columna titulo="Double" campo=MiConcepto.unDouble
@@ -720,7 +720,7 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
     	
     	Codigo {
 "Pagina TablasConDecimales campo=Solicitud {
- Texto campo=Solicitud.conceptos.moneda1
+ Texto titulo=\"Moneda 1\" campo=Solicitud.conceptos.moneda1
  Texto campo=Solicitud.conceptos.moneda2
   Texto campo=Solicitud.conceptos.moneda3
  Texto campo=Solicitud.conceptos.moneda4
@@ -728,8 +728,8 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
     	
  Tabla tablaConceptos campo=Solicitud.misConceptos titulo=\"Tabla de mis Conceptos\" 
   popup=PopUpConceptos permisoFilas = colorFondo
- Color: \"var c = record.data.id; if (c < 2) { return \\'docFirmado\\'; } 
- else if (c > 2) { return \\'docNoFirmado\\'; }\"
+ Color: \"var c = record.data.unInteger; if (c < 20) { return \\'docFirmado\\'; } 
+ else { return \\'docNoFirmado\\'; }\"
   {
 	Columna titulo=\"Entero\" campo=MiConcepto.unInteger
 	Columna titulo=\"Double\" campo=MiConcepto.unDouble
@@ -754,18 +754,36 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 	Pagina ElementosBasicos campo=Solicitud{
 		Grupo Textos titulo = "Textos"{
 			Texto campo=Solicitud.elementos.texto titulo="Texto: "
-			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "�rea de texto"
+			AreaTexto campo=Solicitud.elementos.areaDeTexto titulo = "Area de texto"
 		}
 		
 		Grupo Numeros titulo="Números"{
 			Texto titulo="Ejemplo de integer: " campo=Solicitud.elementos.numeroI
 			Texto titulo="Ejemplo de double: " campo=Solicitud.elementos.numeroD
 			Texto titulo="Ejemplo de long: " campo=Solicitud.elementos.numeroL
+			CCC titulo="Ejemplo de Cuenta Bancaria: " campo=Solicitud.elementos.ccc
 		}
 		
 		Grupo Selectores titulo="Selectores"{
 			Check titulo="Check" campo=Solicitud.elementos.mBoolean
 			RadioBooleano titulo="Radio Booleano" campo=Solicitud.elementos.mBoolean botonIzquierdo="Botón Izquierdo" botonDerecho="Botón Derecho"
+		}
+	}
+	
+	Pagina ComboNoEditable titulo="Combo No Editable" campo=Solicitud {
+		Grupo permiso=noEditable {
+			Combo campo=Solicitud.comboTest.listNumber titulo="Combo de numeritos" mostrarClave
+		}
+		Texto email campo=Solicitud.solicitante.email
+	}
+
+	Pagina PaginaCancelar titulo="Pagina con Botón Cancelar" campo=Solicitud noForm {
+		Form guardarPCE {
+			Texto titulo="Introduce un integer: " campo=Solicitud.elementos.numeroI
+			Texto titulo="Introduce un double: " campo=Solicitud.elementos.numeroD
+			Texto titulo="Introduce un long: " campo=Solicitud.elementos.numeroL
+			Boton bGuardar titulo="Guardar"
+			Enlace titulo="Cancelar" estilo="btn btn-link" pagina=Solicitudes
 		}
 	}
 	

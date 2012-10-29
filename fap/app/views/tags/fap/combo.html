@@ -12,6 +12,8 @@
 	def requerido = _requerido != null? _requerido : false;
 	def stackDisabled = tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
+	if (disabled)
+		value = value ?: field.value;
 	def showRow   = _noRow != null? !_noRow : true
 	def blanco    = _blanco != null? _blanco : true
 	def searchable = _searchable != null? _searchable : false
@@ -151,10 +153,13 @@
 			#{list items:items, as:'entry'}
 				%{				
 					def clave = entry.key
+					String claveFalsa = clave;
+					if(claveFalsa.startsWith("_"))
+						claveFalsa = claveFalsa.replace("_", "");
 					def valor = entry.value
 					def selected = (values.contains(clave) || values.contains(clave.toString().trim()))? 'selected="selected"' : ''
 				}%
-				<option value="${clave}" ${selected}>#{if mostrarClave}${clave} - #{/if}${valor}</option>
+				<option value="${clave}" ${selected}>#{if mostrarClave}${claveFalsa} - #{/if}${valor}</option>
 			#{/list}
 		</select>
 	#{/fap.formrow}

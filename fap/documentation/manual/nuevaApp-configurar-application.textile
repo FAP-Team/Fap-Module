@@ -24,3 +24,5 @@ bc. // File System
 	db=mem
 // MySQL
 	db=mysql:user:password@schema
+
+	Para más información sobre las properties, consultar "aqui":doc-properties

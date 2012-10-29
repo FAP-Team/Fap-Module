@@ -1,12 +1,15 @@
 %{
 	def pagina = _pagina; // Nombre de la página
+	def posicion = _posicion; //Lugar donde colocar MensajePagina	
 	def hayMensaje=false;
 	def contenido="";
 	def tituloMensaje="";
 	def tipoMensaje="";
+	
+	
 	if ((!models.ConfigurarMensaje.findAll().isEmpty())) {
 	   for (models.ConfigurarMensaje mensaje: models.ConfigurarMensaje.findAll()) {
-			if ((mensaje.nombrePagina.equals(pagina)) && (mensaje.habilitar)) {
+			if ((mensaje.nombrePagina.equals(pagina)) && (mensaje.habilitar) && (mensaje.msjFinal.equals(posicion))) {
 				hayMensaje=mensaje.habilitar;
 				tituloMensaje=mensaje.tituloMensaje;
 				tipoMensaje=mensaje.tipoMensaje;

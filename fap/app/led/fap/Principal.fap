@@ -13,7 +13,7 @@ Formulario Principal {
 	}
 	
 	
-	Pagina Solicitudes titulo="Solicitudes"{
+	Pagina Solicitudes titulo="Solicitudes" perteneceA="Principal"{
 		// Vista de búsqueda de solicitudes
 		Grupo titulo="Resultado de la búsqueda" permiso=listaSolicitudesConBusqueda borde=false {
 			Wiki {" Puede insertar en una misma caja de texto varias palabras separadas por espacios en blanco y se buscará cualquier referencia que concuerde en la base de datos. <br /> <br />"}
@@ -25,7 +25,8 @@ Formulario Principal {
             }
             
             Grupo titulo="Resultado de la búsqueda" permiso=mostrarResultadoBusqueda borde=false {
-                Tabla listaSolicitudesBuscadas titulo="Mis Solicitudes (Búsqueda)" campo=SolicitudGenerica paginaLeer=LeerSolicitud paginaEditar=EditarSolicitud paginaCrear=NuevaSolicitud {
+                Tabla listaSolicitudesBuscadas titulo="Mis Solicitudes (Búsqueda)" campo=SolicitudGenerica paginaLeer=LeerSolicitud paginaEditar=EditarSolicitud paginaCrear=NuevaSolicitud 
+                {
                     Columna campo=SolicitudGenerica.id titulo="ID" ancho="40"
                     Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
                     Columna campo=SolicitudGenerica.estado titulo="Estado Interno" ancho="80" permiso=noVisibleUsuario
@@ -50,13 +51,13 @@ Formulario Principal {
 		}
 	}
 	
-	Pagina NuevaSolicitud titulo ="Nueva Solicitud" campo=SolicitudGenerica permiso=nuevaSolicitud {}
+	Pagina NuevaSolicitud titulo ="Nueva Solicitud" campo=SolicitudGenerica permiso=nuevaSolicitud perteneceA="Principal"{}
 	
-	Pagina EditarSolicitud titulo= "Editar Solicitud" campo=SolicitudGenerica permiso=editarSolicitud {}
+	Pagina EditarSolicitud titulo= "Editar Solicitud" campo=SolicitudGenerica permiso=editarSolicitud perteneceA="Principal"{}
 	
-	Pagina LeerSolicitud titulo = "Leer Solicitud" campo=SolicitudGenerica {}
+	Pagina LeerSolicitud titulo = "Leer Solicitud" campo=SolicitudGenerica perteneceA="Principal"{}
 	
-	Pagina CambiarPass titulo = "Cambiar password" permiso=loginTipoUser {
+	Pagina CambiarPass titulo = "Cambiar password" permiso=loginTipoUser perteneceA="Principal"{
 		Wiki {" Utilice el siguiente formulario para cambiar su contraseña. "}
 		
 		Tabla tablaCambioPass campo=Agente permisoFilas=miAgente popupEditar=PopupPass { 		
@@ -78,7 +79,7 @@ Formulario Principal {
 		
 	}
 	
-	Pagina VerificacionesSinFinalizar titulo = "Verificaciones Sin Finalizar" permiso=noUsuario{
+	Pagina VerificacionesSinFinalizar titulo = "Verificaciones Sin Finalizar" permiso=noUsuario perteneceA="Verificacion"{
         Tabla listaVerificacionesSinFinalizar titulo="Verificaciones sin Finalizar" campo=SolicitudGenerica paginaEditar=IrVerificacionSinFinalizar {
             Columna campo=SolicitudGenerica.id titulo="ID Solicitud" ancho="80"
             Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente Solicitud" ancho="120"
@@ -90,15 +91,17 @@ Formulario Principal {
         }
 	}
 	
-	Pagina IrVerificacionSinFinalizar titulo="Ir a verificaciones sin finalizar" campo=SolicitudGenerica permiso=noUsuario{}
+	Pagina IrVerificacionSinFinalizar titulo="Ir a verificaciones sin finalizar" campo=SolicitudGenerica permiso=noUsuario perteneceA="Verificacion"{}
 	
-	Pagina Seguimiento titulo="Seguimiento" permiso=adminGestorRevisor noForm {
-		Form generarSeguimientoForm {
-			Boton generarSeguimiento titulo="Informe de Seguimiento"
+	Pagina Seguimiento titulo="Seguimiento" permiso=adminGestorRevisor noForm  perteneceA="Seguimiento"{
+		Form generarSeguimientoForm destino="_blank"{
+			Grupo titulo="Informe de Seguimiento"{
+				Boton generarSeguimiento titulo="Informe de Seguimiento" refrescar
+			}
 		}
 	}
 	
-	Pagina FirmasPendientesFH titulo = "Firmas Pendientes de Funcionarios Habilitados" permiso=esFuncionarioHabilitadoYActivadaProperty{
+	Pagina FirmasPendientesFH titulo = "Firmas Pendientes de Funcionarios Habilitados" permiso=esFuncionarioHabilitadoYActivadaProperty  perteneceA="Presentacion"{
 		
 		Grupo glistaPresentacionPendientesFH titulo="Presentaciones que han requerido la Firma de un Funcionario y están pendientes"{
 			Tabla listaPresentacionesPendientesFH titulo="Presentaciones Pendientes de Firmar" campo=SolicitudGenerica paginaEditar=IrPresentacionPendienteFH{
@@ -121,7 +124,7 @@ Formulario Principal {
 		}
 	}
 	
-	Pagina IrPresentacionPendienteFH titulo="Ir a presentar Funcionario Habilitado" campo=SolicitudGenerica permiso=esFuncionarioHabilitadoYActivadaProperty{}
+	Pagina IrPresentacionPendienteFH titulo="Ir a presentar Funcionario Habilitado" campo=SolicitudGenerica permiso=esFuncionarioHabilitadoYActivadaProperty perteneceA="Presentacion"{}
 	
-	Pagina IrAportacionPendienteFH titulo="Ir a presentar Funcionario Habilitado" campo=SolicitudGenerica permiso=esFuncionarioHabilitadoYActivadaProperty{}
+	Pagina IrAportacionPendienteFH titulo="Ir a presentar Funcionario Habilitado" campo=SolicitudGenerica permiso=esFuncionarioHabilitadoYActivadaProperty perteneceA="Presentacion"{}
 }

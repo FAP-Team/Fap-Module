@@ -23,6 +23,7 @@ import org.apache.commons.collections.MapUtils;
 
 import messages.Messages;
 import models.CodigoRequerimiento;
+import models.SolicitudGenerica;
 import models.TiposCodigoRequerimiento;
 
 import exceptions.ModelAccessException;
@@ -118,6 +119,136 @@ public class ModelUtils {
 		}
 		return codReq;
 	}
-
 	
+	/*
+	 * Clase que permite hacer llamadas a los métodos de una clase que extienda de otra, conociendo unicamente el nombre del método que se quiere llamar, los argumentos que se le pasa
+	 * y la clase de la que hereda la clase que tiene el método a llamar.
+	 * Para ello será necesario que la clase en cuestión (la que no conocemos a priori), sea la única que herede de la clase que conocemos, ya que sino habrá conflicots GRAVES y no
+	 * se asegurará el correcto funcionamiento.
+	 * PUEDE HABER PROBLEMA CON ALGUNOS METODOS QUE RECIBAN PARAMETROS NO SIMPLES, POR LOS TYPECAST (LISTAS, O TIPOS COMPLEJOS SIMILARES)
+	 */
+	public static Object invokeMethodClass (Class miClaseExtensionDeClaseHija, Object miObjetoClaseExtension, String metodoMiClaseHija, Object... parametrosMetodoMiClaseHija){
+		Class invokedClass = null;
+		Object ret = null;
+		
+		if ((miClaseExtensionDeClaseHija == null) || (miObjetoClaseExtension == null)){
+			play.Logger.error("Error 101: Fallo en los parametros de la llamada ModelUtils.invokeMethodClass. Parametros 'miClaseExtensionDeClaseHija': "+miClaseExtensionDeClaseHija+", 'miObjetoClaseExtension': "+miObjetoClaseExtension);
+			Messages.error("Error interno 101. No se ha podido Guardar correctamente");
+			return null;
+		}
+
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(miClaseExtensionDeClaseHija);
+        if(assignableClasses.size() > 0){
+        	invokedClass = assignableClasses.get(0);
+        	if (assignableClasses.size() > 1)
+        		play.Logger.warn("Cuidado!!!: Existen varias clases ("+assignableClasses.size()+") que heredan de "+miClaseExtensionDeClaseHija.getName()+" se usará la clase: "+invokedClass.getName()+" por defecto");
+        } else{
+        	invokedClass = miClaseExtensionDeClaseHija;
+        	play.Logger.warn("Cuidado!!!: No existe una clase que herede de "+miClaseExtensionDeClaseHija.getName()+" se usará esta clase por defecto");
+        }
+
+    	Object claseBuscada = invokedClass.cast(miObjetoClaseExtension);
+		Method method = null;
+		try {
+			Class[] clasesDeParametrosMetodoMiClaseHija = new Class[parametrosMetodoMiClaseHija.length];
+			int iterador = 0;
+			for (Object o: parametrosMetodoMiClaseHija) 
+				clasesDeParametrosMetodoMiClaseHija[iterador++] = o.getClass();
+			method = invokedClass.getDeclaredMethod(metodoMiClaseHija, clasesDeParametrosMetodoMiClaseHija);
+		} catch (Exception ex) {
+			play.Logger.warn("Cuidado!!!: No existe una clase que herede de "+miClaseExtensionDeClaseHija.getName()+" y que tenga un método que se llame "+metodoMiClaseHija+" se usará esta clase por defecto");
+			invokedClass = miClaseExtensionDeClaseHija;
+			claseBuscada = null;
+			try {
+				Class[] clasesDeParametrosMetodoMiClaseHija = new Class[parametrosMetodoMiClaseHija.length];
+				int iterador = 0;
+				for (Object o: parametrosMetodoMiClaseHija) 
+					clasesDeParametrosMetodoMiClaseHija[iterador++] = o.getClass();
+				method = invokedClass.getDeclaredMethod(metodoMiClaseHija, clasesDeParametrosMetodoMiClaseHija);
+			} catch (Exception e) {
+				play.Logger.error("Error 102b: No se ha podido encontrar el método "+metodoMiClaseHija+" de la clase "+invokedClass.getName());
+				Messages.error("Error interno 102. No se ha podido Guardar correctamente");
+			}
+		}
+		if (!Messages.hasErrors()){
+			if (method != null){
+				try {
+					ret = method.invoke(claseBuscada, parametrosMetodoMiClaseHija);
+				} catch (Exception e) {
+					play.Logger.error("Error 103: No se ha podido invocar el método "+metodoMiClaseHija+" de la clase "+claseBuscada.getClass().getName());
+					Messages.error("Error interno 103. No se ha podido Guardar correctamente");
+				} 
+			} else{
+				play.Logger.error("Error 104: No existe el Método apropiado "+metodoMiClaseHija+" de la clase "+claseBuscada.getClass().getName());
+				Messages.error("Error interno 104. No se ha podido Guardar correctamente");
+			}
+		}
+		
+        return ret;
+	}
+	
+	/*
+	 * Clase que permite hacer llamadas a los métodos de una clase estática que extienda de otra, conociendo unicamente el nombre del método que se quiere llamar y los argumentos que se le pasa
+	 * Para ello será necesario que la clase estática en cuestión (la que no conocemos a priori), sea la única que herede de la clase que conocemos, ya que sino habrá conflicots GRAVES y no
+	 * se asegurará el correcto funcionamiento.
+	 * PUEDE HABER PROBLEMA CON ALGUNOS METODOS QUE RECIBAN PARAMETROS NO SIMPLES, POR LOS TYPECAST
+	 * CUIDADO, TIENE PROBLEMAS AL PASARLE COMO UNO DE LOS ARGUMENTOS A PASAR AL METODO QUE BUSCAMOS, UNA LISTA, PORQUE EL GETCLASS DEL TIPO LISTA LO RECONOCE COMO UN OBJETO HIBERNATE O ALGO DE ESO
+	 */
+	public static Object invokeMethodClassStatic (Class miClaseExtensionDeClaseHija, String metodoMiClaseHija, Object... parametrosMetodoMiClaseHija){
+		Class invokedClass = null;
+		Object ret = null;
+		
+		if (miClaseExtensionDeClaseHija == null){
+			play.Logger.error("Error 101: Fallo en los parametros de la llamada ModelUtils.invokeMethodClass. Parametros 'miClaseExtensionDeClaseHija': "+miClaseExtensionDeClaseHija);
+			Messages.error("Error interno 101. No se ha podido Guardar correctamente");
+			return null;
+		}
+
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(miClaseExtensionDeClaseHija);
+        if(assignableClasses.size() > 0){
+        	invokedClass = assignableClasses.get(0);
+        	if (assignableClasses.size() > 1)
+        		play.Logger.warn("Cuidado!!!: Existen varias clases ("+assignableClasses.size()+") que heredan de "+miClaseExtensionDeClaseHija.getName()+", se usará la clase: "+invokedClass.getName()+" por defecto");
+        } else{
+        	invokedClass = miClaseExtensionDeClaseHija;
+        	play.Logger.warn("Cuidado!!!: No existe una clase que herede de "+miClaseExtensionDeClaseHija.getName()+" se usará esta clase por defecto");
+        }
+
+		Method method = null;
+		try {
+			Class[] clasesDeParametrosMetodoMiClaseHija = new Class[parametrosMetodoMiClaseHija.length];
+			int iterador = 0;
+			for (Object o: parametrosMetodoMiClaseHija) 
+				clasesDeParametrosMetodoMiClaseHija[iterador++] = o.getClass();
+			method = invokedClass.getDeclaredMethod(metodoMiClaseHija, clasesDeParametrosMetodoMiClaseHija);
+		} catch (Exception ex) {
+			invokedClass = miClaseExtensionDeClaseHija;
+        	play.Logger.warn("Cuidado!!!: No existe una clase que herede de "+miClaseExtensionDeClaseHija.getName()+" y que contenga un método que se llame "+metodoMiClaseHija+", se usará esta clase por defecto");
+			try {
+				Class[] clasesDeParametrosMetodoMiClaseHija = new Class[parametrosMetodoMiClaseHija.length];
+				int iterador = 0;
+				for (Object o: parametrosMetodoMiClaseHija) 
+					clasesDeParametrosMetodoMiClaseHija[iterador++] = o.getClass();
+				method = invokedClass.getDeclaredMethod(metodoMiClaseHija, clasesDeParametrosMetodoMiClaseHija);
+			} catch (Exception e) {
+				play.Logger.error("Error 102: No se ha podido encontrar el método "+metodoMiClaseHija+" de la clase "+invokedClass.getName());
+				Messages.error("Error interno 102. No se ha podido Guardar correctamente");
+			}
+		}
+		if (!Messages.hasErrors()){
+			if (method != null){
+				try {
+					ret = method.invoke(invokedClass, parametrosMetodoMiClaseHija);
+				} catch (Exception e) {
+					play.Logger.error("Error 103: No se ha podido invocar el método "+metodoMiClaseHija+" de la clase "+invokedClass.getName());
+					Messages.error("Error interno 103. No se ha podido Guardar correctamente");
+				} 
+			} else{
+				play.Logger.error("Error 104: No existe el Método apropiado "+metodoMiClaseHija+" de la clase "+invokedClass.getName());
+				Messages.error("Error interno 104. No se ha podido Guardar correctamente");
+			}
+		}
+		
+        return ret;
+	}
 }

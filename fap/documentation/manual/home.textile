@@ -1,115 +1,22 @@
 h1. Documentación FAP
 
-"Antigua documentación":oldHome
+h2. "¿Qué es FAP?":quees
 
+Son las siglas de Framework Administración Pública y como bien indican estas, es un Framework para modelar el funcionamiento de la Administración Pública y desarrollar sistemas de información basados en DSL (Lenguaje Específico del Dominio).
 
-Puedes ver una aplicación de ejemplo creada con fap en "Aplicación de ejemplo":otros-testapp
+h2. "Instalación":instalacion
 
-"Aplicación de ejemplo":otros-nuevapaginainicioapp de cómo crear una página de inicio diferente a la que se genera por defecto.
+Guía de recursos que son necesarios para empezar a utilizar FAP. Instalaciones necesarias previas.
 
-h2. ¿Qué es FAP?
+h2. "Comenzando":comenzando
 
-Es un framework para modelar el funcionamiento de la Administración Pública y desarrollar sistemas de información basados en DSL... __-Eyyy! para, para! ¿sistemas de información? ¿DSL?...__. Bueno tranquilo, empecemos por el principio. FAP surgió a raiz de que las aplicaciones relativas a la Administración Pública tenían un núcleo muy común y una parte específica de cada sistema de información (o aplicación). Y se pensó ¿por qué no separar esa parte común e integrarla en cada una de las aplicaciones por separado? ¿por qué no facilitar la creación de aplicaciones mediante un lenguaje sencillo?... de ahí surgió FAP.
+Aprende sobre los comandos básicos, haz tu primera aplicación FAP y conoce una primera aproximación a todo el ecosistema FAP.
 
-La opción para el lenguaje sencillo fue seleccionar un DSL (Domain Specific Language) o Lenguaje específico del dominio en el que los gestores de la Administración Pública (no tienen por qué ser informáticos) se sientan __como en casa__, utilizando definiciones que utilizan a diario para construir aplicaciones. Se desarrolló ese lenguaje y su gramática es "esta":https://github.com/FAP-Team/Fap-Module/blob/master/fap/compiler/src/es.fap.simpleled/src/es/fap/simpleled/Led.xtext.
+h2. "Desarrollando":desarrollando
 
-Así, idealmente un gestor podría hacer una aplicación __sin saber programar__, solo haciendo cosas como:
+Entra más en detalle en FAP. Conoce los servicios que utiliza FAP, los módulos que trae ya implementados, diversas personalizaciones y otros muchos recursos que pone FAP a tu alcance para que puedas dar el toque distintivo a tu aplicación web. 
 
-bc. Pagina Solicitante {
-	Persona personaSolicitante titulo="Datos solicitante" ...
-	Direccion titulo="Domicilio Social" ... 
-	Texto titulo="Teléfono" ...
-	Texto titulo="Teléfono Móvil" ...
-}
+h2. "Tutoriales":tutoriales
 
-En la aplicación obtendrá una página llamada __Solicitante__ que se ocupe de todo (guardar entidades en BBDD, validación, permisos, ...). Esa página permitirá insertar los datos una persona, una dirección...
-
-
-h2. Comenzando con FAP
-
-Para utilizar FAP básicamente lo que debes tener instalado es "Play Framework 1.2.4":http://www.playframework.org/documentation/1.2.4/home. La versión 2.0 de Play actualmente no está soportada.
-
-h3. "Instalación del entorno":curso-instalacion
-
-h4. "PLAY Framework":http://www.playframework.org/download
-
-h4. "FAP":curso-instalacion
-
-h3. Creando una nueva Aplicación
-
-"Hola Mundo":nuevaApp
-"Configurar el application.conf":nuevaApp-configurar-application
-"Creación automática de un proyecto":creacion-automatica-proyecto
-
-h2. Entendiendo FAP
-
-h3. DSL Básico (+ enlace Avanzado)
-
-* "Listas y enumerados":dsl-lista
-* "Elementos gráficos":dsl-graficos
-* "Acciones":dsl-accion
-
-"Permisos (Avanzado??)":curso-permisos
-
-h3. Entidad (Modelo)
-
-"Entidades":nuevaApp-entidades
-* "Tipos y relaciones":tipos-entidades
-* "Atributos":atributos-entidades
-
-h3. Controlador
-
-* "Controladores Play":controladores-play
-* "Controladores FAP":controladores-fap
-* "Controladores PopUp":controladores-popup
-
-h3. Vista
-
-* "Vistas":curso-formularios
-
-h2. Trabajando con FAP
-
-h3. Estructura de una aplicación FAP
-
-h3. "Comandos":comandos
-
-h3. Páginas por defecto
-
-(login, lista solicitudes, baremación, tramitación, ...)
-* "Login":app-login
-* "Tramitación":app-tramitacion
-* "Presentación":app-presentacion
-* "Verificación":app-verificacion
-* "Baremación":app-baremacion
-* "Desistimiento":app-tramitacion
-* "Administración":app-administracion
-* "Documentación":app-documentacionfap
-
-
-h2. Profundizando en FAP
-
-h3. Personalización (página login, página principal, tags, ...)
-
-* "JavaScript":curso-personalizarJavaScriptPaginas
-* "Configuración de mensajes personalizados en las páginas":app-configurar-mensajes 
-* "Pagina de Baremación":app-baremacion-sobreescribir
-* "Tags":tag-tags
-
-h3. "Lógica de Negocio":curso-controladores
-
-h3. "Generación de PDF":fap-generacion-informes
-
-h3. "Servicios":servicios (GD, firma, registro, ...)
-
-* Gestor Documental: Puede tratarse del "Aed":ws-aed-gd o del "FileSystem":ws-fs-gd.
-* Firma: Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.
-
-h3. Puesta en producción
-
-h2. Aplicaciones de ejemplo
-
-h2. Documentación adicional
-
-h3. Tecnologías FAP
-
+h2. "FAQ":preguntas-frecuentes
 

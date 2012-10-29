@@ -39,7 +39,7 @@ public class GFirmaSimple extends GElement{
 		Tabla tabla = LedFactory.eINSTANCE.createTabla();
 		tabla.setName(firmaSimple.name + "Firmantes");
 		tabla.getMetaClass().setAttribute(tabla, "campo", firmaSimple.firmantes.campo);
-		tabla.setTitulo("Firmantes");
+		tabla.setTitulo("Interesados");
 				
 		Columna idValor = LedFactory.eINSTANCE.createColumna();
 		idValor.setCampo(CampoUtils.create("Firmante.idvalor").campo);

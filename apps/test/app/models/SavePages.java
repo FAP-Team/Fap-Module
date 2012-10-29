@@ -24,6 +24,8 @@ public class SavePages extends FapModel {
 
 	public Boolean paginaSolicitante;
 
+	public Boolean paginaPCEconomicos;
+
 	public void init() {
 
 		postInit();

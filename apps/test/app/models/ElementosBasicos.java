@@ -35,6 +35,9 @@ public class ElementosBasicos extends FapModel {
 
 	public Double numeroD;
 
+	@Embedded
+	public CCC ccc;
+
 	public ElementosBasicos() {
 		init();
 	}
@@ -43,6 +46,9 @@ public class ElementosBasicos extends FapModel {
 
 		if (mBoolean == null)
 			mBoolean = true;
+
+		if (ccc == null)
+			ccc = new CCC();
 
 		postInit();
 	}

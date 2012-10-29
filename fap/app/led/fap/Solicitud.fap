@@ -1,64 +1,71 @@
-Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
+Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {	
 
-	Pagina DocumentacionFAP titulo = "Documentación FAP" campo=SolicitudGenerica noForm {
+	Pagina DocumentacionFAP titulo = "Documentación" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
 	
-		Tabla documentos titulo="Documentos" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP {
-			Columna titulo="Id" campo=Documento.id
-			Columna titulo="Tipo Documento" campo=Documento.tipo
-			Columna titulo="Descripcion" campo=Documento.descripcionVisible expandir
+		Tabla documentos titulo="Documentos" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP popupBorrar=DocumentosEditarFAP{
+			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
+            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="85"
+			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+            Columna campo=Documento.tipo titulo="Tipo Documento"expandir
+			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
 		}
 		
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
-			Tabla documentosExternos titulo="Documentos Externos" campo=SolicitudGenerica.documentacion.documentosExternos paginaCrear=DocumentosExternosFAP popupEditar=DocumentosExternosEditarFAP popupLeer=DocumentosExternosLeerFAP {
-				Columna titulo="Id" campo=DocumentoExterno.id
-				Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
-				Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
+			Grupo docExt titulo="Documentos ya aportados en la Administración"{
+				Wiki{"En aplicación del artículo 18 del Decreto 48/2009, de 28 de abril, por el que se establecen en la Administración Pública de la Comunidad Autónoma de Canarias medidas ante la crisis económica y de simplificación administrativa, el interesado puede NO aportar los documentos que ya se encuentren en poder de la Administración y que se relacionan a continuación.
+Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alternativos de los órganos gestores que se indican."}
+				Tabla documentosExternos titulo="Documentos ya aportados en la Administración" campo=SolicitudGenerica.documentacion.documentosExternos paginaCrear=DocumentosExternosFAP popupEditar=DocumentosExternosEditarFAP popupLeer=DocumentosExternosLeerFAP popupBorrar=DocumentosExternosEditarFAP {
+					Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
+					Columna titulo="Descripción" campo=DocumentoExterno.descripcionVisible expandir
+				}
 			}
 		}
 		
-		Grupo titulo="Plantilla a rellenar para habilitar a firmar a un Funcionario" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")"{
-			Wiki{"Para habilitar la firma a un Funcionario habilitado, deberá abrir la plantilla siguiente. Descárguese y rellene dicha plantilla y adjuntela como documento."}
-			Form formAbrirPlantillaFH destino="_blank"{
-				Boton btnAbrirPlantillaFH titulo="Abrir Plantilla"
+		Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+			Grupo titulo="Habilitar la firma y presentación por Funcionario Público" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")"{
+				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación�? de esta página."}
+				Form formAbrirPlantillaFH destino="_blank"{
+					Boton btnAbrirPlantillaFH titulo="Descargar Autorización"
+				}
 			}
 		}
 	}
 	
 	
 	// Sobreescrito
-	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos {
+	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos permiso=editarSolicitud perteneceA ="Documentacion"{
 		Accion crear redirigir=DocumentacionFAP	
 		Grupo gSubirDocumento titulo="Adjuntar Documento"{
-			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"
+			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
 		}
 	}
 	
 	//Sobreescrito
-	Popup DocumentosEditarFAP titulo="Documento" campo=SolicitudGenerica.documentacion.documentos {
+	Popup DocumentosEditarFAP titulo="Documento" campo=SolicitudGenerica.documentacion.documentos permiso=editarSolicitud{
 		Accion editar redirigir=DocumentacionFAP	
 		EditarArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO"
 	}
 	
 	// Página Sobreescrita
-	Pagina DocumentosExternosFAP titulo="Nuevo Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos {
+	Pagina DocumentosExternosFAP titulo="Nuevo documento ya aportado en la Administración" campo=SolicitudGenerica.documentacion.documentosExternos permiso=editarSolicitud perteneceA ="Documentacion"{
 		Accion crear redirigir=DocumentacionFAP
 		
 		Combo tipoDocumento titulo="Tipo Documento" campo=DocumentoExterno.tipo requerido
 		AreaTexto descripcion titulo="Descripción" campo=DocumentoExterno.descripcion
 		Texto organo titulo="Órgano" campo=DocumentoExterno.organo requerido
 		Texto expediente titulo="Expediente" campo=DocumentoExterno.expediente requerido
-		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri requerido
+		AreaTexto uri titulo="Dirección Electrónica" campo=DocumentoExterno.uri
 	}
 	
 	// Popup Sobrescrito
-	Popup DocumentosExternosEditarFAP titulo="Modificar Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos {
+	Popup DocumentosExternosEditarFAP titulo="Modificar Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos permiso=editarSolicitud{
 		Accion editar redirigir=DocumentacionFAP	
 
 		Combo tipoDocumento titulo="Tipo Documento" campo=DocumentoExterno.tipo requerido
 		AreaTexto descripcion titulo="Descripción" campo=DocumentoExterno.descripcion
 		Texto organo titulo="Órgano" campo=DocumentoExterno.organo requerido
 		Texto expediente titulo="Expediente" campo=DocumentoExterno.expediente requerido
-		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri requerido
+		AreaTexto uri titulo="Dirección Electrónica" campo=DocumentoExterno.uri
 	}
 	
 	Popup DocumentosExternosLeerFAP titulo="Ver Documento Externo" campo=SolicitudGenerica.documentacion.documentosExternos {
@@ -66,10 +73,10 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		AreaTexto descripcion titulo="Descripción" campo=DocumentoExterno.descripcion
 		Texto organo titulo="Órgano" campo=DocumentoExterno.organo
 		Texto expediente titulo="Expediente" campo=DocumentoExterno.expediente
-		AreaTexto uri titulo="Dirección (uri)" campo=DocumentoExterno.uri
+		AreaTexto uri titulo="Dirección Electrónica" campo=DocumentoExterno.uri
 	}
 	
-	Pagina Aportacion titulo="Aportación"{
+	Pagina Aportacion titulo="Aportación" perteneceA ="Aportacion"{
 		
 		Enlace titulo="Consultar documentos ya aportados" pagina=AportacionAportados estilo="btn"
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="btn"
@@ -108,14 +115,14 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		
 	}
 	
-	Pagina DocumentosAportacion titulo="Aportar Nuevo Documento" campo=SolicitudGenerica.aportaciones.actual.documentos{
+	Pagina DocumentosAportacion titulo="Aportar Nuevo Documento" campo=SolicitudGenerica.aportaciones.actual.documentos perteneceA ="Aportacion"{
 		Accion crear redirigir=Aportacion
 		Grupo gSubirDocumento titulo="Aportar Documento"{
-			SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+			SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" listarDocumentosSubidos
 		}
 	}
 	
-	Pagina AportacionAportados titulo="Documentos Aportados"{		
+	Pagina AportacionAportados titulo="Documentos Aportados" perteneceA ="Aportacion"{		
 		Tabla documentos titulo="Documentos Presentados" 
 		    campo=SolicitudGenerica.documentacion.documentos
 			popupLeer=PopUpDocPresentados
@@ -137,7 +144,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
 	}	
 	
-	Pagina AportacionRecibos titulo="Recibos de Aportaciones"{
+	Pagina AportacionRecibos titulo="Recibos de Aportaciones" noForm  perteneceA ="Aportacion"{
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
 		{
@@ -164,7 +171,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	}
 		
 	// Sobreescrita
-	Pagina AportacionPresentar titulo="Presentar la Aportación" noForm{
+	Pagina AportacionPresentar titulo="Presentar la Aportación" noForm perteneceA ="Aportacion"{
 	  	Grupo titulo="Presentar Aportación de Documentos" {
 			Wiki {"Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
 
@@ -195,12 +202,14 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 			
 			// Sobreescrito HTML
 			
-			Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHAportacion{
-				Form formHabilitarFH {
-					Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
-				}
-				Grupo borde=false mostrarSiCampo SolicitudGenerica.registro.habilitaFuncionario="true"{
-					Wiki{"Ya ha sido habilitada la opción de que un funcionario habilitado firmar y registrar."}
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+				Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHAportacion{
+					Form formHabilitarFH {
+						Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
+					}
+					Grupo borde=false mostrarSiCampo SolicitudGenerica.registro.habilitaFuncionario="true"{
+						Wiki{"Ya ha sido habilitada la opción de que un funcionario habilitado pueda firmar y registrar."}
+					}
 				}
 			}
 			
@@ -242,7 +251,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 	// VERIFICACION
 	// *******************************************************************************************
 	
-	Pagina AccesoVerificaciones titulo="Verificaciones" noForm {
+	Pagina AccesoVerificaciones titulo="Verificaciones" noForm  perteneceA ="Verificacion"{
 		Tabla verificaciones titulo="Verificaciones" campo=SolicitudGenerica.verificaciones
 			paginaEditar=PaginaVerificacionesAnteriores
 		{
@@ -266,7 +275,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 	}
 	
-	Pagina PaginaVerificacionesAnteriores titulo="Ver Verificación" campo=SolicitudGenerica.verificaciones noForm{
+	Pagina PaginaVerificacionesAnteriores titulo="Ver Verificación" campo=SolicitudGenerica.verificaciones noForm perteneceA ="Verificacion"{
 
 		Grupo noEditable borde=false permiso=noEditable{
 			Grupo datosVerificacion titulo="Datos generales de la verificación" {
@@ -300,7 +309,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Enlace volverVerificacionAnteriores titulo="Volver" pagina=AccesoVerificaciones estilo="btn"
 	}
 	
-	Pagina PaginaDocumentoVerificacionLeerAnteriores titulo="Documento Verificado" campo=Verificacion.documentos noForm{
+	Pagina PaginaDocumentoVerificacionLeerAnteriores titulo="Documento Verificado" campo=SolicitudGenerica.verificaciones.documentos noForm perteneceA ="Verificacion"{
 		Grupo noEditable borde=false permiso=noEditable{
 			Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 				Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
@@ -328,7 +337,15 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Enlace volverVerificacionActual titulo="Volver" anterior estilo="btn"
 	}
 	
-	Pagina PaginaVerificacion titulo="Verificación" campo=SolicitudGenerica.verificacion noForm permiso=accederSiSolicituNoBorrador{
+	Pagina PaginaVerificacion titulo="Verificación" campo=SolicitudGenerica.verificacion noForm permiso=accederSiSolicituNoBorrador perteneceA ="Verificacion"{
+		
+		Grupo gAnularVerificacion titulo="Anular Verificación" permiso=anularVerificacion{
+			Wiki {"Presione el Botón de Anular Verificación bajo su propia responsabilidad."}
+			Form anularVerificacion {
+				Boton botonAnularVerificacion titulo="Anular la Verificación" type=danger
+			}
+		}
+		
 		Grupo datosVerificacion titulo="Datos generales de la verificación" permiso=noEditable{
 			Texto expediente titulo="Expediente" campo=Verificacion.expediente
 			Combo estadoS titulo="Estado Solicitud" campo=SolicitudGenerica.estadoValue
@@ -401,19 +418,46 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 
 		}
 		
-		Grupo gRequerimientos permiso=requerimiento titulo="Requerimiento"{
-			Form gRequerirFirmaRequerimiento permiso=requerimientoRequerirFirma {
-				Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacion.requerimiento.firmante ancho="450px" requerido 
-				Boton requerirFirma titulo="Requerir firma al Gestor" 
-			} 
+		Grupo gRequerimientos permiso=requerimiento borde = false{
+		
+		    Grupo gDatosVerificacionDocumentos titulo = "Verificación de la Documentación"{
+		    	
+				Grupo botonDescargaReciboSolitudgR borde=false{
+					Enlace campo=SolicitudGenerica.registro.justificante.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="btn"
+				}	
 			
-			Form gFirmarRequerimiento permiso=requerimientoAFirmar {
-				FirmaSimple firmaRequerimiento titulo="Firmar y Registrar de salida el Requerimiento" documento=SolicitudGenerica.verificacion.requerimiento.oficial listaFirmantes=SolicitudGenerica.verificacion.requerimiento.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante  
+				Tabla verificacionDocumentosgR titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
+					paginaLeer=PaginaDocumentoVerificacionLeer 
+				{
+					//Columna titulo="Id" campo=VerificacionDocumento.id ancho="40"
+					Columna titulo="Fecha Presentación" campo=VerificacionDocumento.fechaPresentacion ancho="80"
+					Columna titulo="Descripción" campo=VerificacionDocumento.descripcion expandir
+					Columna titulo="Tipo documento" campo=VerificacionDocumento.nombreTipoDocumento
+					Columna titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion ancho="100"
+					Columna titulo="Multiplicidad" campo=VerificacionDocumento.identificadorMultiple ancho="80"
+					Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"	
+				}
+			
+				Form gnuevoRequerimientoBorradorPreliminargR destino="_blank"{ 
+					Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
+				}
 			}
 			
-			Form gPonerADisposicion permiso=requerimientoFirmado {
-				Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
-				Boton ponerADisposicion titulo="Notificar el requerimiento"
+			Grupo gRequerimientoFirmaYPonerADisposicion titulo="Requerimiento" {
+			
+				Form gRequerirFirmaRequerimiento permiso=requerimientoRequerirFirma {
+					Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacion.requerimiento.firmante ancho="450px" requerido 
+					Boton requerirFirma titulo="Requerir firma al Gestor" 
+				} 
+				
+				Form gFirmarRequerimiento permiso=requerimientoAFirmar {
+					FirmaSimple firmaRequerimiento titulo="Firmar y Registrar de salida el Requerimiento" documento=SolicitudGenerica.verificacion.requerimiento.oficial listaFirmantes=SolicitudGenerica.verificacion.requerimiento.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante  
+				}
+				
+				Form gPonerADisposicion permiso=requerimientoFirmado {
+					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
+					Boton ponerADisposicion titulo="Notificar el requerimiento"
+				}
 			}
 			
 		}
@@ -443,7 +487,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		EditarArchivo documentoProceso campo=Documento requerido
 	}
 	
-	Pagina PaginaDocumentoVerificacionLeer titulo="Ver Documento de la Verificación" campo=SolicitudGenerica.verificacion.documentos{
+	Pagina PaginaDocumentoVerificacionLeer titulo="Ver Documento de la Verificación" campo=SolicitudGenerica.verificacion.documentos perteneceA ="Verificacion"{
 		Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
@@ -468,8 +512,8 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		Enlace volverVerificacionActual titulo="Volver" pagina=PaginaVerificacion estilo="btn"
 	}
 	
-	Pagina PaginaDocumentoVerificacionEditar titulo="Editar Documento" campo=SolicitudGenerica.verificacion.documentos{
-		Accion editar
+	Pagina PaginaDocumentoVerificacionEditar titulo="Editar Documento" campo=SolicitudGenerica.verificacion.documentos perteneceA ="Verificacion"{
+		Accion editar redirigir=PaginaVerificacion
 		Grupo botonDescarga borde=false mostrarSiExpresion "verificacionDocumento.uriDocumento != null"{
 			Enlace campo=VerificacionDocumento.urlDescarga titulo="Descargar" destino="_blank" estilo="boton"
 		}
@@ -514,7 +558,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes{
 		}
 	}
 	
-Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
+	Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador  perteneceA ="Exclusion"{
 		Tabla exclusion titulo="Codigos de Exclusión" campo=SolicitudGenerica.exclusion.codigos
 		popup=PopUpExclusion
 		{
@@ -536,16 +580,18 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	}
 
 	//Sobreescrita
-	Pagina PCEconomicos titulo="Conceptos Económicos"{
-
+	Pagina PCEconomicos titulo="Conceptos Económicos" permiso=editarSolicitudYIniciarBaremacion guardarParaPreparar{
+		Form Guardar {
+			Boton botonGuardar titulo="Guardar" 
+		}
 	}
 	
 	//Sobreescrita
-	Pagina PaginaCEconomicos titulo= "Conceptos Económicos" campo=SolicitudGenerica.ceconomicos noForm{
+	Pagina PaginaCEconomicos titulo= "Conceptos Económicos" campo=SolicitudGenerica.ceconomicos permiso=editarSolicitudYIniciarBaremacion noForm  perteneceA ="Baremacion"{
 		Form Guardar { 
 			Texto Nombre titulo="Nombre" campo=CEconomico.tipo.nombre
 			Grupo conceptosManuales borde=false permiso=verTablaCEconomicosOtros {
-				Tabla ceconomicosManuales titulo="Conceptos Económicos Manuales" campo=CEconomico.otros popupCrear=PopupCEconomicoManual popupEditar=PopupCEconomicoManual recargarPagina{
+				Tabla ceconomicosManuales titulo="Especificar Detalle" campo=CEconomico.otros paginaCrear=PaginaCEconomicoManual paginaEditar=PaginaCEconomicoManual paginaLeer=PaginaCEconomicoManual popupBorrar=PopUpCEconomicoManualBorrar recargarPagina{
 					Columna campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquía"
 					Columna campo=CEconomicosManuales.tipo.nombre titulo="Nombre" expandir
 				}
@@ -555,16 +601,29 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	}
 	
 	//Sobreescrita
-	Popup PopupCEconomicoManual titulo="Concepto Económico" campo=CEconomico.otros permiso=iniciarBaremacion{
+	Pagina PaginaCEconomicoManual titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=editarSolicitudYIniciarBaremacion noForm  perteneceA ="Baremacion"{
 		Accion editar redirigir=PaginaCEconomicos
 		Accion crear redirigir=PaginaCEconomicos
+		Grupo gInfoPadre titulo="Información Concepto Nivel Superior" permiso=noEditable{
+			Texto titulo="Nombre" campo=CEconomico.tipo.nombre
+		}
+		Form guardarPCE {
+			Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+			Boton bGuardarPCE titulo="Guardar"
+			Enlace titulo="Volver" estilo="btn btn-link" pagina=PaginaCEconomicos
+		}
+	}
+	
+	Popup PopUpCEconomicoManualBorrar titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=editarSolicitudYIniciarBaremacion {
+		Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+		Texto campo=CEconomicosManuales.tipo.descripcion titulo="Descripción"
 	}
 
 	// ******************************************************************************************
 	// ACEPTAR/RENUNCIAR
 	// *******************************************************************************************
 	
-	Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm permiso=accederSiSolicituNoBorrador {
+	Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm permiso=accederSiSolicituNoBorrador  perteneceA ="AceptarRenunciar"{
 		
 		Grupo titulo="Aceptación/Renuncia" {
 			Grupo permiso=editarAceptarRenunciar borde=false {
@@ -637,7 +696,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	/*
 	 * AportarDocumentacionAceptacionRenuncia
 	 */
-	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos {
+	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos  perteneceA ="AceptarRenunciar"{
 		Accion crear redirigir=PaginaAceptacionRenuncia
 		SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación/Renuncia" aportadoPor="CIUDADANO"	
     }
@@ -646,7 +705,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		EditarArchivo documentoPresentado campo=Documento requerido
 	}
 	
-	Pagina AceptacionRenunciaPresentar titulo="Presentar Aceptacion/Renuncia" noForm {
+	Pagina AceptacionRenunciaPresentar titulo="Presentar Aceptacion/Renuncia" noForm  perteneceA ="AceptarRenunciar"{
 		Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
 			Wiki estilo ="box-warn box" {
 				"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
@@ -717,7 +776,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	// ALEGACIÓN
 	// *******************************************************************************************
 	
-	Pagina Alegaciones noForm titulo= "Alegaciones" {
+	Pagina Alegaciones noForm titulo= "Alegaciones"  perteneceA ="Alegacion"{
 
 		Grupo titulo="Nueva Alegación" {
 			Grupo permiso=editarAlegacion borde=false {
@@ -790,12 +849,12 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	/*
 	 * AportarDocumentacionAlegacion
 	 */
-	Pagina AportarDocumentacionAlegacion titulo="Añadir Documentación Alegación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarSolicitud {
+	Pagina AportarDocumentacionAlegacion titulo="Añadir Documentación Alegación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarSolicitud  perteneceA ="Alegacion"{
 		Accion crear redirigir=Alegaciones
 		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"	
     }
 	
-	Pagina AlegacionPresentar titulo="Presentar Alegación" noForm {
+	Pagina AlegacionPresentar titulo="Presentar Alegación" noForm  perteneceA ="Alegacion"{
 		Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
 			Wiki estilo ="box-warn box" {
 				"Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
@@ -890,24 +949,23 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
  * Autorización de acceso a la solicitud
  */
 
-	Pagina Autorizacion titulo="Autorizaciones" campo=SolicitudGenerica permiso=editarSolicitud { //TODO permiso autorizado no autoriza.
-		Tabla nipsAutorizados titulo="Nips autorizados" campo=SolicitudGenerica.autorizacion pagina=PaginaAutorizar 
-		{
-			Columna campo=AutorizacionesFAP.id titulo="Identificador"
-			Columna campo=AutorizacionesFAP.nip.tipo titulo="Tipo"
-			Columna campo=AutorizacionesFAP.nip.valor titulo="Valor"
+	Pagina AutorizacionFAP titulo="Usuarios Autorizados" campo=SolicitudGenerica noForm perteneceA ="Principal"{
+		Grupo gAutorizaciones titulo="Usuarios Autorizados" permiso=autorizadoNoAutoriza{
+			Tabla nipsAutorizados titulo="Autorizados" campo=SolicitudGenerica.autorizacion popup=PopUpAutorizarFAP
+			{
+				Columna campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF/CIF" expandir
+			}
 		}
 	}
 	
-	Pagina PaginaAutorizar titulo="Autorizar" campo=SolicitudGenerica.autorizacion {
-		Nip NIP campo=AutorizacionesFAP.nip titulo="Nip del autorizado" requerido
-		Boton btonvolver titulo="Volver" pagina=Autorizacion 
+	Popup PopUpAutorizarFAP titulo="Autorizar" campo=SolicitudGenerica.autorizacion permiso=autorizadoNoAutoriza{
+		Texto id campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF / CIF" requerido
 	} 
 
 	/*
      * Página Presentar
      */
-    Pagina PresentarFAP noForm titulo="Presentación de la Solicitud" campo=SolicitudGenerica.registro{
+    Pagina PresentarFAP noForm titulo="Presentación de la Solicitud" campo=SolicitudGenerica.registro  perteneceA ="Presentacion"{
 
 		Grupo titulo="Presentación de la solicitud" {
 			Grupo permiso=prepararSolicitud borde = false { 
@@ -938,7 +996,7 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 			}
 
 			// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
-			Grupo grpPresentar titulo="Paso 3. Registrar Solicitud" permiso=enBorradorSolicitud {
+			Grupo grpPresentar titulo="Paso 3. Firmar y Registrar la Solicitud" permiso=enBorradorSolicitud {
 				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
 				Form frmPresentar redirigir=SolicitudPresentarFAP permiso=enBorradorSolicitud {
 					Wiki {"Debe registrar la solicitud para que se considere presentada."}
@@ -955,39 +1013,35 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 	}
 
 	// Sobreescrito
-	Pagina SolicitudPresentarFAP titulo="Presentar Solicitud" noForm campo=SolicitudGenerica.registro{
+	Pagina SolicitudPresentarFAP titulo="Presentar Solicitud" noForm campo=SolicitudGenerica.registro perteneceA ="Presentacion"{
 		
-		Grupo mensajeIntermedio permiso=mensajeIntermedioSolicitud borde=false {
-			Wiki estilo ="box-warn box" {
-				"Se produjo un error en la presentación de la solicitud. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-			}
-		}
-		
-		Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHPresentacion{
-			Form formHabilitarFH {
-				Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
-			}
-			Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
-				Wiki{"Ya ha sido requerida la firma por un Funcionario habilitado, en breve un funcionario lo firmará y registrará."}
-			}
-		}
-		
-		// Sobreescrito HTML
-		//Firma Funcionario Habilitado
-		Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
-			Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.presentacion.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarSolicitudFH
-			{
-				Form formFirmaFH { 
-			    	Wiki {"La solicitud será firmada y registrada." }
-					FirmaSimple firmarRegistrarFH titulo="Firmar y registrar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+		Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+			Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHPresentacion{
+				Form formHabilitarFH {
+					Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
 				}
-	
-				Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+				Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
+					Wiki{"Ya ha sido requerida la firma por un Funcionario habilitado, en breve un funcionario lo firmará y registrará."}
+				}
 			}
-		}
+		
+			// Sobreescrito HTML
+			//Firma Funcionario Habilitado
+			Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
+				Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.presentacion.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarSolicitudFH
+				{
+					Form formFirmaFH { 
+				    	Wiki {"La solicitud será firmada y registrada." }
+						FirmaSimple firmarRegistrarFH titulo="Firmar y registrar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+					}
+		
+					Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+				}
+			}
+		 }
 
 		//Firma persona física
-		Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=firmarRegistrarSolicitud
+		Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=firmarRegistrarSolicitud
 		{
 			Form formFirmaPF { 
 		    	Wiki {"La solicitud será firmada y registrada." }
@@ -998,37 +1052,30 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 		}
 
 		//Firma Persona jurídica
-		Grupo titulo="Paso 1. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=firmarRegistrarSolicitud
+		Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=firmarRegistrarSolicitud
 		{
-			Wiki {"Debe indicar si se firmará la solicitud con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la reformulación debe firmarse por todos los representantes mancomunados"}
 
-			Form tipoCertificadoFirma autoEnviar {
-				Combo certificadoFirma titulo="Certificado que se usará en la firma" campo=Registro.tipoFirma
-			}
-
-			Grupo borde = false mostrarSiCampo Registro.tipoFirma = "representantes" {
-
-				// La firma y registro se hace en dos pasos
-				Grupo titulo="Paso 1.1. Firmar la solicitud"  {
-					Wiki {"La solicitud será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la reformulación."}
+			// La firma y registro se hace en dos pasos
+				Grupo titulo="Paso 3.1. Firmar la solicitud" permiso=firmarSolicitud{
+					Wiki {"La solicitud debe firmarse con el Certificado electrónico del solicitante o el de uno de los representantes del solicitante. Si la representación es  mancomunada todos los representantes deben firmar la solicitud."}
 
 					Form formFirmaRepresentante permiso=firmarSolicitud {
 						FirmaSimple firmarRepresentante titulo="Firmar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
 					}
 
-					Tabla tablaFirmantesHecho campo=Registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
+					Tabla tablaFirmantesHecho campo=SolicitudGenerica.registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
 						Columna campo=Firmante.idvalor titulo="NIP"
 						Columna campo=Firmante.nombre titulo="Nombre" expandir
 						Columna campo=Firmante.fechaFirma titulo="Fecha de firma"
 					}
 
-					Tabla tablaFirmantesEspera campo=Registro.firmantes.todos recargarPagina  titulo="Representantes que no han firmado" {
+					Tabla tablaFirmantesEspera campo=SolicitudGenerica.registro.firmantes.todos recargarPagina  titulo="Representantes que no han firmado" {
 						Columna campo=Firmante.idvalor titulo="NIP"
 						Columna campo=Firmante.nombre titulo="Nombre" expandir
 					}
 				}
 
-				Grupo titulo="Paso 1.2. Registrar la solicitud" permiso=registrarSolicitud
+				Grupo titulo="Paso 3.2. Registrar la solicitud" permiso=registrarSolicitud
 				{
 					Wiki {"Su solicitud ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 
@@ -1039,15 +1086,16 @@ Pagina Exclusion titulo="Exclusión" noForm permiso=accederSiSolicituNoBorrador{
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
 				}
 			}
-
-			Grupo borde=false mostrarSiCampo Registro.tipoFirma = "cif"
-			{
-				Wiki {"La solicitud será firmada y registrada. "}
-
-//La firma y registro se realiza en la misma acción
-				Form formFirmaCif redirigir=PresentarFAP permiso=firmarRegistrarSolicitud {
-					FirmaSimple firmarRegistrarCif titulo="Firmar y Registrar" documento=SolicitudGenerica.registro.oficial listaFirmantes=SolicitudGenerica.registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
-				}
+	}
+	
+	Pagina ActivarFuncionarioHabilitado titulo="Activar Posibilidadad de Requerir Firma de Funcionario Habilitado" permiso=adminOrGestor noForm{
+		
+		Grupo titulo="Activar Posibilidadad de Requerir Firma de Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=ActivarHabilitarFH{
+			Form formActivarFH {
+				Boton activarFH titulo="Activar Funcionario Habilitado"
+			}
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+				Wiki{"Ya ha sido activada la posibilidad de habilitar la firma de un Funcionario Habilitado."}
 			}
 		}
 	}

@@ -101,6 +101,17 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
+	/**
+	 * Comprueba que los valores por defecto no se establezcan sobre transient
+	 * @param attribute
+	 */
+	@Check
+	public void checkDefaultValueNoTransient (Attribute attribute) {
+		if (attribute.getDefaultValue() != null)
+			if (attribute.isIsTransient())
+				error("Valores por defecto no aplicables sobre atributos transient", ledPackage.getAttribute_IsTransient());
+	}
+	
 	@Check
 	public void checkSolicitudSimpleAttributos(Attribute attr) {
 		if (attr.eContainer() instanceof Entity){
@@ -444,6 +455,12 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			error("El campo Color no ha sido rellenado correctamente", null);
 	}
 	
+	@Check
+	public void checkPersonaFisicaNoUtilizarSetearTipoPadre(PersonaFisica personaFisica){
+		if (personaFisica.isSetearTipoPadre()){
+			error("setearTipoPadre no se debe utilizar nunca.", ledPackage.getPersonaFisica_SetearTipoPadre());
+		}
+	}
 	
 	//TODO: No se ha probado. Que el nombre del Servicio Web sea único.
 	/*
@@ -467,7 +484,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 //		if (servicioWeb.getName().equals(other.getName()))
 //			error("El servicio web " + servicioWeb.getName() + " ya existe en el formulario " + formulario.getName(), ledPackage.getServicioWeb_Name());
 //	}
-	
+
 }
 
 

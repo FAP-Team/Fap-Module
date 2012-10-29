@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import play.mvc.Util;
+import properties.FapProperties;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.NotificacionService;
@@ -149,11 +150,13 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 		String msg = "";
 		if (!platinoIsConfigured())
 			msg += "Platino";
-		if (!notificacionIsConfigured()) {
-			if (msg.isEmpty())
-				msg += "Notificación";
-			else
-				msg += ", Notificación";
+		if (FapProperties.getBoolean("fap.notificacion.activa")){
+			if (!notificacionIsConfigured()) {
+				if (msg.isEmpty())
+					msg += "Notificación";
+				else
+					msg += ", Notificación";
+			}
 		}
 		if (!gestorDocumentalIsConfigured()) {
 			if (msg.isEmpty())
@@ -163,33 +166,32 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 		}
 		return msg;
 	}
-	
-	public static List<ComboItem> paginaAconfigurar(){
-		List<ComboItem> result = new ArrayList<ComboItem>();
-		List<ConfigurarMensaje> paginasMensaje = ConfigurarMensaje.findAll();
-		for (ConfigurarMensaje lista: paginasMensaje){
-			result.add(new ComboItem(lista.nombrePagina, lista.nombrePagina));
-		}
-		return result; 
-	}
-	
+
 	public static void RellenarMensajesValidateCopy(String accion, ConfigurarMensaje dbConfigurarMensaje, ConfigurarMensaje configurarMensaje) {
 		CustomValidation.clearValidadas();
-		if (secure.checkGrafico("paginaAConfigurar", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
-			CustomValidation.valid("configurarMensaje", configurarMensaje);
-		}
-		CustomValidation.valid("configurarMensaje", configurarMensaje);
-		CustomValidation.required("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
-		CustomValidation.validValueFromTable("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
+		
 		dbConfigurarMensaje.tipoMensaje = configurarMensaje.tipoMensaje;
-		if (Arrays.asList(new String[] { "wiki" }).contains(dbConfigurarMensaje.tipoMensaje)) {
-			CustomValidation.required("configurarMensaje.tituloMensaje", configurarMensaje.tituloMensaje);
+		if (Arrays.asList(new String[] { "wiki" }).contains(dbConfigurarMensaje.tipoMensaje))
 			dbConfigurarMensaje.tituloMensaje = configurarMensaje.tituloMensaje;
-
-		}
-		CustomValidation.required("configurarMensaje.contenido", configurarMensaje.contenido);
 		dbConfigurarMensaje.contenido = configurarMensaje.contenido;
 		dbConfigurarMensaje.habilitar = configurarMensaje.habilitar;
-
+		dbConfigurarMensaje.msjFinal = configurarMensaje.msjFinal;
+		
+		if (configurarMensaje.habilitar){
+			CustomValidation.valid("configurarMensaje", configurarMensaje);
+			CustomValidation.validValueFromTable("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
+			CustomValidation.required("configurarMensaje.tipoMensaje", configurarMensaje.tipoMensaje);
+			
+			if (Arrays.asList(new String[] { "wiki" }).contains(dbConfigurarMensaje.tipoMensaje)) 
+				CustomValidation.required("configurarMensaje.tituloMensaje", configurarMensaje.tituloMensaje);
+			
+			if (secure.checkGrafico("paginaAConfigurar", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+				CustomValidation.valid("configurarMensaje", configurarMensaje);
+			}
+			
+			CustomValidation.required("configurarMensaje.contenido", configurarMensaje.contenido);
+			CustomValidation.validValueFromTable("configurarMensaje.msjFinal", configurarMensaje.msjFinal);
+			CustomValidation.required("configurarMensaje.msjFinal", configurarMensaje.msjFinal);
+		}
 	}
 }

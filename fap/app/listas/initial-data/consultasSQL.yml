@@ -1,0 +1,40 @@
+Consulta(consulta-registro):
+    descripcion: "Registro de Entrada de las Solicitudes. Por defecto está para que contabilice sólo las del mes de Enero (1). Para ir cambiando los meses, se deberá modificar la consulta y cambiar la última línea del WHERE igualandola al numero que represente el mes deseado (Ejemplo: Agosto sería el 8)."
+    consulta: "SELECT
+    COUNT(MONTH(informacionregistro.`fechaRegistro`)) AS informacionregistro_fechaRegistro
+FROM
+    `registro` registro INNER JOIN `solicitud` solicitud ON registro.`id` = solicitud.`registro_id`
+    INNER JOIN `informacionregistro` informacionregistro ON registro.`informacionregistro_id` = informacionregistro.`id`
+    INNER JOIN `fasesregistro` fasesregistro ON registro.`fasesregistro_id` = fasesregistro.`id`
+WHERE
+    informacionregistro.`fechaRegistro` IS NOT NULL
+    AND fasesregistro.`registro` = TRUE
+    AND MONTH(informacionregistro.`fechaRegistro`) = 1"
+    tipo: "tipoSQL"
+    
+Consulta(consulta-aportacion):
+    descripcion: "Aportaciones de Documentación. Por defecto está para que contabilice sólo las del mes de Enero (1). Para ir cambiando los meses, se deberá modificar la consulta y cambiar la última línea del WHERE igualandola al numero que represente el mes deseado (Ejemplo: Agosto sería el 8)."
+    consulta: "SELECT
+     COUNT(MONTH(informacionregistro.`fechaRegistro`)) AS informacionregistro_fechaRegistro
+FROM
+     `aportaciones` aportaciones INNER JOIN `solicitud` solicitud ON aportaciones.`id` = solicitud.`aportaciones_id`
+     INNER JOIN `aportaciones_registradas` aportaciones_registradas ON aportaciones.`id` = aportaciones_registradas.`Aportaciones_id`
+     INNER JOIN `aportacion` aportacion ON aportaciones_registradas.`registradas_id` = aportacion.`id`
+     INNER JOIN `informacionregistro` informacionregistro ON aportacion.`informacionregistro_id` = informacionregistro.`id`
+WHERE
+     informacionregistro.`fechaRegistro` IS NOT NULL
+     AND MONTH(informacionregistro.`fechaRegistro`)=1"
+    tipo: "tipoSQL"
+    
+Consulta(consulta-notificacion):
+    descripcion: "Notificaciones por Comparescencia. Por defecto está para que contabilice sólo las del mes de Enero (1). Para ir cambiando los meses, se deberá modificar la consulta y cambiar la última línea del WHERE igualandola al numero que represente el mes deseado (Ejemplo: Agosto sería el 8)."
+    consulta: "SELECT
+     COUNT(notificacion.`estado`)
+FROM
+     `notificacion` notificacion
+WHERE
+     (notificacion.`estado` = 'leida' OR 
+	  notificacion.`estado` = 'leidaplazorespuestavencido' OR 
+	  notificacion.`estado` = 'respondida') AND
+	  MONTH(notificacion.fechaPuestaADisposicion) = 1"
+    tipo: "tipoSQL"

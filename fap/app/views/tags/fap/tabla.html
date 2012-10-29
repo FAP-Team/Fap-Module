@@ -72,7 +72,11 @@
 	
 	def saveEntity = _saveEntity ?: false;
 	
+	def idCampoUri = _idCampoUri ?: "";
+	
 	def codePrint = _codePrint ?: "";
+	
+	def submitPage = _submitPage ?: false;
 
 %}
 
@@ -535,13 +539,15 @@
 
 	        #{if urlSubir}
             var boton_subir = new Ext.Button({
-                text: 'Subir Documento',
+                text: 'Adjuntar este Documento',
                 icon: '@{'/public/images/table-leer.png'}',
                 disabled:true,
                 handler : function(){
-                    var uriDocumento = grid.getSelectionModel().getSelection()[0].data.uri;            
-                    window.location.replace('@{fap.DescargasAedController.asignarASolicitudDocumentoSubido()}' + 
-                                          '?uriDocumento=' + uriDocumento);
+                    $('#${idCampoUri}').val(grid.getSelectionModel().getSelection()[0].data.uri);
+                    $('#${idCampoUri}').prop('readonly', true);
+                    $('#mostrarUriSubida').show();
+                    $('#ocultaTabla').hide();
+                    $('#ocultaUpload').hide();
                 }
             });
             #{/if}
@@ -551,11 +557,29 @@
 		    	text: '${seleccionable}',
 		    	handler : function(){
 		    		var selected = sm.getSelection();
-		    		var params = new Array();
-		    		for (var i in selected) {
-		    			params[i] = "idsSeleccionados="+selected[i].data.id;
-		    		}
-		    		createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
+
+		    		#{if submitPage}
+		    			var urlSubmitPage = "${urlSeleccionable}";
+		    			var j = 1;
+		    			for (var i in selected) {
+		    				if ( j == 1 ) {
+		    					urlSubmitPage += "?"
+		    				} else {
+		    					urlSubmitPage += "&"
+		    				}
+		    				j += 1;
+		    				urlSubmitPage += "idsSeleccionados="+selected[i].data.id;
+		    			}
+		    			alert("url: "+urlSubmitPage);
+		    			$('#${id}').closest('form').attr("action",urlSubmitPage).submit();
+		    		#{/if}
+		    		#{else}
+		    			var params = new Array();
+		    			for (var i in selected) {
+		    				params[i] = "idsSeleccionados="+selected[i].data.id;
+		    			}
+		    			createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
+		    		#{/else}
 			   	}
 		    });
 			#{/if}
@@ -570,6 +594,9 @@
 
 		   	var grid = new Ext.grid.GridPanel({
 				store : store${id},
+				#{if urlSubir}
+			 	hidden:true,
+			 	#{/if}
 				#{if seleccionable}
 				selModel: sm,
 	            #{/if}
@@ -630,7 +657,6 @@
 				],
 				viewConfig: {
 					getRowClass: function(record, index, rowParams, ds) {
-						console.log(this);
 						#{if codePrint}
 							${codePrint.raw()}
 						#{/if}
@@ -735,7 +761,7 @@
 					window.location.reload();
 				#{/if}
 			};
-
+			
 		   	$('#${id}').data('grid', grid);
 
 		});

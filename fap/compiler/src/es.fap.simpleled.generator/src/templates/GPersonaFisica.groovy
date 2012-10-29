@@ -1,11 +1,15 @@
 package templates;
 
+import org.apache.log4j.Logger;
+
 import es.fap.simpleled.led.*
 import generator.utils.*
 
 public class GPersonaFisica extends GSaveCampoElement{
 
 	PersonaFisica personaFisica;
+	
+	private static Logger logger = Logger.getLogger("GPersonaFisica")
 	
 	public GPersonaFisica(PersonaFisica personaFisica, GElement container){
 		super(personaFisica, container);
@@ -28,6 +32,12 @@ public class GPersonaFisica extends GSaveCampoElement{
 	}
 	
 	public String copy(){
-		return GSaveCampoElement.copyCamposFiltrados(campo, ["nombre","primerApellido","segundoApellido","nip"]);
+		String ret = "";
+		if (personaFisica.setearTipoPadre){
+			String var = "db"+StringUtils.firstUpper(campo.sinUltimoAtributo());
+			ret+=""" ${var}.tipo = "fisica";
+				 """
+		}
+		return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nombre","primerApellido","segundoApellido","nip"]);
 	}
 }

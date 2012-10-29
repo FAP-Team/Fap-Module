@@ -44,6 +44,8 @@ import com.google.inject.Inject;
 import config.InjectorConfig;
 
 import emails.Mails;
+import enumerado.fap.gen.EstadosSolicitudEnum;
+import enumerado.fap.gen.EstadosVerificacionEnum;
 
 import messages.Messages;
 import models.*;
@@ -95,12 +97,19 @@ public class Start extends Job {
 			AdministracionFapJobs jobs = new AdministracionFapJobs();
 			jobs.save();
 		}
-		
+
 		if (Agente.count() == 0){
             Fixtures.delete();
             String agentesFile = "listas/initial-data/agentes.yml";
             Logger.info("Cargando agentes desde %s", agentesFile);
             play.test.Fixtures.loadModels(agentesFile);
+        }
+		
+		if (Consulta.count() == 0){
+            Fixtures.delete();
+            String consultasFile = "listas/initial-data/consultasSQL.yml";
+            Logger.info("Cargando consultas desde %s", consultasFile);
+            play.test.Fixtures.loadModels(consultasFile);
         }
 		
 		//Cargando mensajes de pagina desde conf/initial-data/paginas.yml
@@ -198,6 +207,11 @@ public class Start extends Job {
 		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();
+		
+		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
+        if(assignableClasses.size() > 1){
+        	play.Logger.warn("¡¡ CUIDADO !! : Existen varias clases ("+assignableClasses.size()+") que extienden de SolicitudGenerica, esto creará conflictos GRAVES.");
+        }
 	}
 
 	/**

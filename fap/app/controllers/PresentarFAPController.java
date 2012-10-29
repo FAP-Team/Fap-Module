@@ -84,7 +84,6 @@ public class PresentarFAPController extends PresentarFAPControllerGen {
 	@Util
 	public static void frmPresentarRender(Long idSolicitud, Long idRegistro) {
 		if (!Messages.hasMessages()) {
-			Messages.ok("Página editada correctamente");
 			Messages.keep();
 			redirect("SolicitudPresentarFAPController.index", "editar", idSolicitud, idRegistro);
 		}

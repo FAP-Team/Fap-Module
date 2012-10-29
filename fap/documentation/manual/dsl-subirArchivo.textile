@@ -7,6 +7,7 @@ Elemento para la subida de archivos al servidor de la aplicación.
 h2. Parámetros
 
 * **_[name]_** : Identificador del elemento.
+* **campo** : Campo de tipo documento donde se almacenará el documento que quiere subirse.
 * **requerido** (opcional) : Indica la obligatoriedad de la subida de un archivo
 * **tramite** (opcional) : Sirve para filtrar los documentos, por el tipo de trámite, que se pueden subir.
 * **aportadoPor** (opcional) : Sirve para filtrar los documentos, que se pueden subir, por el tipo de persona que lo puede hacer (Por ejemplo puede haber ocasiones en que un determinado tipo de documento lo deba subir el Ciudadano y otro tipo especifico debe ser aportado por la Administración).

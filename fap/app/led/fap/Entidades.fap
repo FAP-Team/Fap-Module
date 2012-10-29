@@ -41,12 +41,13 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Exclusion exclusion
 	Desistimiento desistimiento
 	//Criterios economicos que rellena el solicitante
-	ManyToMany CEconomico ceconomicos	
+	OneToMany CEconomico ceconomicos	
 	AceptarRenunciar aceptarRenunciar
 	Alegaciones alegaciones
 	OneToMany Notificacion notificaciones
 	OneToMany AutorizacionesFAP autorizacion
 	DatosAnotaciones datosAnotaciones
+	Boolean activoFH default="false"
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -99,6 +100,13 @@ Entidad Direccion embeddable auditable{
 	String provinciaInternacional
 	String localidad
 	Lista tipoDireccion tipo
+}
+
+Entidad CCC embeddable {
+	String cccCodigoEntidad
+	String cccCodigoOficina
+	String cccDigitosControl
+	String cccNumeroCuenta
 }
 
 // Nuevos parametros para la busqueda mediante la Api de Google Places
@@ -551,8 +559,8 @@ Entidad ConfigurarMensaje {
 	String nombrePagina
 	String formulario
 	String formularioNombreText transient 
+	Lista posicionMensaje msjFinal
 }
-
 
 Entidad AceptarRenunciar {
 	Lista seleccion seleccion
@@ -663,7 +671,7 @@ Entidad BusquedaLogs nonPersist {
 
 
 Entidad AutorizacionesFAP{
-	Nip nip
+	String numeroIdentificacion
 }
 
 Entidad AdministracionFapJobs extends Singleton{

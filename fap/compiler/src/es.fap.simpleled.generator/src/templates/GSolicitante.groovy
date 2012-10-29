@@ -202,6 +202,7 @@ public class GSolicitante extends GElement{
 		else {
 			PersonaFisica personaFisica = LedFactory.eINSTANCE.createPersonaFisica();
 			personaFisica.requerido = true;
+			personaFisica.setearTipoPadre = true;
 			personaFisica.name = "representante_${popup.name}";
 			personaFisica.campo = CampoUtils.create("RepresentantePersonaJuridica.fisica").campo;
 			grupo.elementos.add(personaFisica);
@@ -221,11 +222,11 @@ public class GSolicitante extends GElement{
 	public String validateCopy(Stack<Set<String>> validatedFields){
 		String validation = "";
 		if (solicitante.representantePersonaFisica)
-			validation += """${campo.firstLower()}.representante.tipo = "fisica";""";
-		if (solicitante.elemento == "SolicitantePersonaFisica")
-			validation += """${campo.firstLower()}.tipo = "fisica";""";
-		else if (solicitante.elemento == "SolicitantePersonaJuridica")
-			validation += """${campo.firstLower()}.tipo = "juridica";""";
+			validation += """${campo.dbStr()}.representante.tipo = "fisica";""";
+		if (solicitante.elemento.equals("SolicitantePersonaFisica"))
+			validation += """${campo.dbStr()}.tipo = "fisica";""";
+		else if (solicitante.elemento.equals("SolicitantePersonaJuridica"))
+			validation += """${campo.dbStr()}.tipo = "juridica";""";
 		return validation + super.validate(validatedFields);
 	}
 	

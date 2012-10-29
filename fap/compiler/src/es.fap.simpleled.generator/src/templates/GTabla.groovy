@@ -71,7 +71,7 @@ public class GTabla extends GElement{
 				params.putStr 'codePrint', tabla.color.codePrint;
 			}
 			else if (tabla.color.default) {
-				consulta = "if (record.data.permisoEditar) { return \\'docFirmado\\'; } else { return \\'docNoFirmado\\'; }";
+				consulta = "if (record.data.permisoEditar) { return \\'filaEditable\\'; } else { return \\'filaNoEditable\\'; }";
 				params.putStr 'codePrint', consulta;
 			}
 			else{

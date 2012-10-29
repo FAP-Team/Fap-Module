@@ -64,6 +64,7 @@ import play.mvc.Scope.Flash;
 import play.templates.FastTags;
 import static play.templates.JavaExtensions.*;
 import play.templates.GroovyTemplate.ExecutableTemplate;
+import properties.FapProperties;
 import security.Secure;
 import utils.RoutesUtils;
 import validation.Moneda;
@@ -129,6 +130,25 @@ public class FapTags extends FastTags {
 	        boolean requerido = required != null;
 	        field.put("required", requerido);
 	        
+	        // Tipos de moneda con mensaje en property
+	        Moneda monedaM = f.getAnnotation(Moneda.class);
+	        boolean moneda = monedaM != null;
+	        if(moneda && hasErrors){
+	        	error = "";
+	        	Iterator<Error> iterator = errors.iterator();
+	        	while(iterator.hasNext()){
+	        		String nextMessage = iterator.next().message();
+	        		if (nextMessage.equals("Valor incorrecto")) {
+	        			error += nextMessage + "." + FapProperties.get("fap.mensaje.error.moneda");
+	        		} else {
+	        			error += nextMessage;
+	        		}
+	        		if(iterator.hasNext())
+	        			error += ", ";
+	        	}
+	            field.put("error", error);
+	        }
+	        
 	        //Value of table
 	        ValueFromTable valueFromTable = f.getAnnotation(ValueFromTable.class);
 	        if(valueFromTable != null){
@@ -189,7 +209,7 @@ public class FapTags extends FastTags {
         Object flashOrValue = field.get("flash");
         // Primero se comento el Validation.error, ya que debia entrar por aquí cuando es un campo no Editable (no tiene Flash) y hay errores de validacion.
         // Despues a la pregunta ¿Fallaría en otro caso?: Tras un tiempo nos dimos cuenta que Sí. En el caso de un combo ManyToX, si se setea a blanco y hay un fallo de validacion, recupera de BBDD y no deja el blanco
-        // Posteriormente se solucionó volviendo a descomentar el Validation.error, y añadiendo en el texto.html, la condición de que si el parametro 'disabled' es true, pues el value, lo coge directamente de BBDD (o sea field.value).
+        // Posteriormente se solucionó volviendo a descomentar el Validation.error, y añadiendo en el texto.html (y combo.html posteriormente), la condición de que si el parametro 'disabled' es true, pues el value, lo coge directamente de BBDD (o sea field.value).
         // Tras hacer todo esto, la pregunta sigue en el aire con la nueva forma de arreglarlo: ¿Fallaría esto último en otro caso?
         if ((flashOrValue == null) && (Validation.errors().size() == 0)) { 
         	flashOrValue = field.get("value");

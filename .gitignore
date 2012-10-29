@@ -58,6 +58,7 @@ Thumbs.db
 
 #Ficheros temporales
 apps/test/tmp/*
+apps/test/public/tmp/*
 apps/nuevaPaginaInicio/tmp/*
 fap/tmp/*
 
@@ -81,6 +82,7 @@ fap/compiler/src/es.fap.simpleled.generator/bin/*
 
 apps/test/javadoc/*
 fap/javadoc/*
+fap/documentation/javadoc/*
 fap/logs/*
 
 # Logs eliminar carpeta
@@ -108,7 +110,8 @@ apps/test/gestorDocumental/temporal/*
 apps/test/gestorDocumental/clasificado/*
 
 #Ignorar los yml
-fap/app/listas/initial-data/*.yml
+fap/app/listas/initial-data/paginasMsj.yml
+fap/app/listas/initial-data/paginasMsjLista.yml
 apps/test/app/listas/initial-data/*.yml
 
 #Aplicación Cuadro de Mandos

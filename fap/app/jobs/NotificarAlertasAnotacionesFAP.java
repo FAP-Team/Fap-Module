@@ -15,6 +15,8 @@ import es.gobcan.eadmon.aed.ws.dominio.Solicitud;
 
 import models.AdministracionFapJobs;
 import models.AnotacionFAP;
+import models.DatosAnotaciones;
+import models.SolicitudGenerica;
 import models.TableKeyValue;
 import play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesSupport;
 import play.db.jpa.GenericModel.JPAQuery;
@@ -23,7 +25,7 @@ import play.db.jpa.Transactional;
 import play.jobs.*;
 import properties.FapProperties;
 
-@Every("1min")
+@Every("1h")
 public class NotificarAlertasAnotacionesFAP extends Job implements LocalVariablesSupport {
 
 	static Integer tiempoRefresco = 1;
@@ -53,11 +55,18 @@ public class NotificarAlertasAnotacionesFAP extends Job implements LocalVariable
 								play.Logger.info("Titulo:" +  anotacion.tituloanotacion);
 								play.Logger.info("Descripción:" +  anotacion.descripcion);
 			
-								play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("anotacion", anotacion);
-								Mails.enviar("anotacion", anotacion);
-								anotacion.alertaNotificada = true;
-								anotacion.save();
-								play.Logger.debug("Nueva notificación de expiración de una alerta: email");
+								SolicitudGenerica solicitud = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud join solicitud.datosAnotaciones datosAnotaciones where datosAnotaciones.id=(select datoAnotacion.id from DatosAnotaciones datoAnotacion join datoAnotacion.anotaciones anotaciones where anotaciones.id=?)", anotacion.id).first();
+								if (solicitud != null){
+									play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("anotacion", anotacion);
+									play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+									Mails.enviar("anotacion", anotacion, solicitud);
+									anotacion.alertaNotificada = true;
+									anotacion.save();
+									play.Logger.debug("Nueva notificación de expiración de una alerta: email");
+								}
+								else {
+									play.Logger.error("No se pudo enviar el correo de la anotación con identificador '"	+ anotacion.id + "'. Debido a que la solicitud de la anotacion no se pudo recuperar.");
+								}
 							}
 						} catch (Exception e) {
 							play.Logger.error("No se pudo enviar el correo de la anotación con identificador '"	+ anotacion.id + "'. "+e);

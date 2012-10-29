@@ -11,7 +11,7 @@
      formulario:'Solicitud', 
      hayForm:false, 
      pagina:'PaginaCEconomicos', 
-     permiso:'solicitudes', 
+     permiso:'editarSolicitud', 
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
      titulo:'Conceptos Económicos', 
      urlBorrar:play.mvc.Router.reverse('PaginaCEconomicosController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
@@ -31,11 +31,11 @@
 			#{simple.uneditable name:'cEconomico.tipo.nombre', label:'Nombre', value:cEconomico.tipo.nombre, format:'moneda' /}
 		#{/else}	
 		<div class="wiki ">
-		<p>
-			${cEconomico.tipo.descripcion}
-			<br/>		
-		</p>
-	</div>
+			<p>
+				${cEconomico.tipo.descripcion}
+				<br/>		
+			</p>
+		</div>
 	#{/if}
 	#{else}
 		<div class="wiki ">
@@ -53,10 +53,11 @@
 			def paramName="cEconomico.valores[${i}]";
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
-			def anioLabel = "Año "+(i+1);
+			def anioLabel = "Año ${tipoEvaluacion.inicio+i}";
 			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
+			def permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("editarSolicitudYIniciarBaremacion", "editar", tags.TagMapStack.top("idParams"), null);
 		%}
-		#{if ((!cEconomico.tipo.tipoOtro) && (tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")))}
+		#{if ((!cEconomico.tipo.tipoOtro) && (tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")) && (permisoEditar))}
 			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
 		#{/if}
 		#{else}
@@ -66,30 +67,41 @@
 		
 	#{fap.grupo borde:false, permiso:'verTablaCEconomicosOtros'}
 				
-		#{fap.tabla 
-		     campo:'CEconomico.otros', 
-		     crearEntidad:accion == 'crear', 
-		     id:'ceconomicosManuales', 
-		     idContainer:'idCEconomico', 
-		     idEntidad:'idCEconomicosManuales', 
-		     nameContainer:'PaginaCEconomicos', 
-		     popupCrear:'PopupCEconomicoManual', 
-		     popupEditar:'PopupCEconomicoManual', 
-		     permisoCrear:'iniciarBaremacion', 
-		     recargarPagina:true,
-		     tipoContainer:'pagina', 
-		     titulo:'Conceptos Económicos Manuales', 
-		     urlContainerCrear:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id]), 
-		     urlContainerEditar:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
-		     urlCrear:play.mvc.Router.reverse("popups.PopupCEconomicoManualController.index" , ['accion':'crear', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
-		     urlCrearEntidad:play.mvc.Router.reverse('PaginaCEconomicosController.crearForTablas' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
-		     urlEditar:play.mvc.Router.reverse("popups.PopupCEconomicoManualController.index" , ['accion':'editar', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']), 
-		     urlTabla:@PaginaCEconomicosController.tablaceconomicosManuales(idCEconomico)
-		}
+#{fap.tabla 
+     campo:'CEconomico.otros', 
+     crearEntidad:accion == 'crear', 
+     id:'ceconomicosManuales', 
+     idContainer:'idCEconomico', 
+     idEntidad:'idCEconomicosManuales', 
+     nameContainer:'PaginaCEconomicos', 
+     permisoCrear:'editarSolicitudYIniciarBaremacion', 
+     popupBorrar:'PopUpCEconomicoManualBorrar', 
+     recargarPagina:true, 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Especificar Detalle', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("PaginaCEconomicosController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'irDespuesDeValidar':'']), 
+     urlBorrar:play.mvc.Router.reverse("popups.PopUpCEconomicoManualBorrarController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']), 
+     urlContainerCrear:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id]), 
+     urlContainerEditar:play.mvc.Router.reverse("PaginaCEconomicosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
+     urlCrear:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_']), 
+     urlCrearEntidad:play.mvc.Router.reverse('PaginaCEconomicosController.crearForTablas' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
+     urlEditar:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']), 
+     urlLeer:play.mvc.Router.reverse("PaginaCEconomicoManualController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']), 
+     urlTabla:@PaginaCEconomicosController.tablaceconomicosManuales(idCEconomico)
+}
+	
+			#{fap.columna alignPosition:'left', ancho:200, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}
 		
-			#{fap.columna ancho:200, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}
-			
-			#{fap.columna ancho:200, cabecera:'Nombre', campo:'tipo.nombre', expandir:true /}
+			#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre', campo:'tipo.nombre', expandir:true /}
+	
+			#{list items:0..anios, as:'i'}
+				%{	
+	  				String aux = "valores[${i}].valorSolicitado";
+	  				String label = "Año ${tipoEvaluacion.inicio+i}";
+				%}
+				#{fap.columna ancho:200, cabecera:label, campo:aux, expandir:true, alignPosition:'right' /}
+			#{/list}
 			
 		#{/fap.tabla}
 
@@ -104,4 +116,3 @@
   #{/form}
 		
 #{/fap.pagina}
-		

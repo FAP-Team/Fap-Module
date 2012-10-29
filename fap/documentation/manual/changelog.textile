@@ -1,77 +1,79 @@
 h2. Changelog
 
-h3. Versión 2.1RC5
+h3. Versión 2.1.1RC2
 
-* Mejorada la página de conceptos económicos.
-* En los conceptos económicos ahora son de tipo Moneda.
-* Añadida la cadena "RE" cuando se registra en Platino.
-* Fixed bug baremación.
-* Fixed bug al mostrar solicitudes sin estado.
-* Añadido el método formatMoneda() que es que se utilizará para los elementos tipo Moneda.
+* Fixed Bug en autoenviar en los Forms.
+* Añadiendo Permisos a toda la parte de Baremación.
+* Nuevo atributo noVisibleEvaluador en Criterios.
+* Calculo de los criterios dependiendo de su valor máximo.
+* Recalculados los criterios dependiendo del rol de quien los vea.
+* Botón reevaluar en la tabla de evaluaciones.
+* Footer de la Solicitud a Evaluar.
+* Fixed Minor Bug en Baremación.
+
+h3. Versión 2.1.1RC1
+
+* Mejorada y Optimizada la Carga de la Tabla de Tablas.
+* Fixed Bug en Baremación.
+* Nuevos rol de Evaluador.
+* Fixed bug cuando existen varios botones con varios forms en la misma página.
+
+h3. Versión 2.1
+
+* Nuevo módulo de Presentación.
+* Nuevo módulo de Desistimiento.
+* Nuevo módulo de Seguimiento.
+* Mejoras en Verificación.
+* Mejoras en Tramitación.
+* Mejoras en Baremación.
+* Mejoras en DocumentaciónFAP.
+* Mejoras en Aportación.
+* Mejoras en el Servicio de Notificaciones.
+* Mejoras en la página de Conceptos Económicos.
+* Bootstrap adaptativo.
+* Nueva funcionalidad de Funcionario Habilitado.
+* Nueva funcionalida de ConfigurarMensajes.
+* Nuevo elemento CCC, para representar una Cuenta Corriente Cliente.
+* Nuevo elemento BarraDeslizante.
+* Nuevo elemento RadioBooleano.
+* Nuevo elemento DireccionMapa, utilizando la API de Google Place.
+* Personalización de alguno tipos de atributos con iconos.
+* Mejoras notables en los tipo Moneda.
+* Mejoras en los números decimales.
+* Mejoras en la configuración de los Jobs.
+* Mejoras en los elementos Direcciones.
+* Mejoras en el DatePicker, ahora usando Bootstrap.
 * Se permite coloreado de tablas.
 * Se permite incluir ejemplos de código.
 * Se permite generar el javadoc del módulo desde una aplicación.
-* Fixed minimal bugs.
-
-h3. Versión 2.1RC4
-
-* Bootstrap adaptativo.
 * Se permite añadir check a las tablas de popups.
 * Se permite que los PopUp abarquen toda la pantalla (atributo maximizar).
-* Alineado de los elementos en las columnas de las tablas (tipo moneda alineado por defecto a la derecha).
-* Se permite especificar un número mínimo y máximo de decimales en los atributos de tipo moneda y en los double.
-* Fixed Bug redireción después de los PopUp.
-* Fixed Bug en cambiar password de los usuarios.
-* Fixed Bug en validar las páginas antes de abrir una página de tabla.
-* Fixed Minor Bugs.
-
-h3. Versión 2.1RC3
-
-* Validando y guardando datos en paginas que tienen tablas que van a otras paginas. 
-* Fixed Bug en Monedas y Doubles.
-* Fixed Bug al tener paginas o popups solo con crear o con un editar distinto en tablas.
-* No permitir al usuario que entra por certificado gestionar contraseñas.
-* Fixed Bug en el enlace al requerimiento en verificaciones anteriores.
-* Permitiendo algunas retrocompatibilidades con versiones anteriores a la versión 2.1.
-* Fixed Minor Bugs.
-
-h3. Versión 2.1RC2
-
-* Seguimiento incluido en el módulo de FAP.
-* Pagina en Administración que permite configurar mensajes en cualquier página definida en el DSL.
-* Fixed Bug en la carga del fichero .json de Baremación en modo Servicio de Windows.
-* Permitir habilitar/deshabilitar y configurar los Jobs del módulo FAP en el panel de Administración.
-* Nuevo elemento barraDeslizante.
-* Nuevo elemento RadioBooleano.
-* MostrarSiRadioBooleano en Grupos.
-* Personalizando algunos elementos con iconos.
-* DatePicker usando Bootstrap.
-* Cambiado los BigDecimal a Doubles, por problemas varios con los BigDecimal.
+* Nuevas funciones añadidas en algunos Modelos.
+* Añadidos certificados en el firma-fs.
 * Añadido método para mostrar información de la inyección de dependencias al iniciarse las aplicaciones.
-* Añadidos titulos a todas las páginas del módulo FAP.
-* Rediseño de la página de Subir Documentación del módulo FAP.
+* Añadiendo a cada página de FAP a que módulo pertenece.
+* Se puede configurar el timeout de los servicios.
+* No se envían ahora los campos ocultos por grupos.
+* Alineado de los elementos en las columnas de las tablas.
+* Validando y guardando datos en paginas que tienen tablas que van a otras paginas. 
 * No se muestran los logs de auditoría en la página Logs de Administración.
 * Elemento Ayuda en el elemento Grupo.
-* Fixed Bug en Tooltip de tablas.
-* Fixed Minor Bugs.
-
-h3. Versión 2.1RC1
-
-* Páginas por defecto en FAP para la Presentación.
-* Nueva tabla de Documentación Externa en la Documentación FAP y en Aportación.
-* Nuevo elemento DireccionMapa, utilizando la API de Google Place.
-* Mejoras en los otros elementos Direcciones.
-* Fixed Bug al utilizar código Groovy en los Wikis del DSL.
-* Mejoras en el campo Moneda y su representación en tablas.
-* Fixed Bug en el formato de los doubles en tablas.
-* Página de Autorizaciones.
-* Visbles todas las notificaciones por los roles admin y gestor.
-* Nuevas funciones de interesados y representantes en SolicitudGenerica.
-* Nuevas funciones para consultar los atributos de Documento.
-* Mayor nivel de contenido en la documentación.
 * Mensaje de recomendación de IE9 cuando se usa IE8.
-* Fixed Bug en los wikis o mensajes de la páginas FAP.
-* Fixed Minors Bugs.
+* Fixed Bug en el install generado por fap:winservice.
+* Fixed Bug al crear expedientes que ya existían.
+* Fixed Bug Info Certificado.
+* Fixed Bug Firmas en el Aed.
+* Fixed Bug en Consultas BBDD desde Administración.
+* Fixed Bug en Servicio de Firma.
+* Fixed Bug Búsqueda de firmantes.
+* Fixed Bug registro de solicitantes con pasaporte.
+* Fixed Bug en Permisos.
+* Fixed Bug en PersonaFisica.
+* Fixed Bug en no permitir al usuario que entra por certificado, gestionar contraseñas.
+* Fixed Bug en combos no Editables tras error de validación.
+* Fixed Bug redireción después de los PopUp.
+* Fixed Bug al utilizar código Groovy en los Wikis del DSL.
+* Fixed Minor Bugs.
 
 h3. Versión 2.0.6
 

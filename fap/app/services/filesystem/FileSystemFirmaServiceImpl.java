@@ -8,6 +8,8 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
+import controllers.fap.FirmaController;
+
 import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
 
 import net.java.dev.jaxb.array.StringArray;
@@ -134,9 +136,13 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 	public Firmante validateXMLSignature(byte[] contenidoDoc, String firma) {
 		
 		Firmante firmante = new Firmante();			
-		firmante = new Firmante();
 		firmante.idtipo = "nif";
-		firmante.idvalor = "12345678Z";
+		String idvalor = FirmaController.getIdentificacionFromFirma(firma);
+		System.out.println("Firmante con id: "+idvalor);
+		if ((idvalor != null) && (!idvalor.isEmpty()))
+			firmante.idvalor = idvalor;
+		else
+			firmante.idvalor = "11111111H";
 		firmante.nombre = "Fapito Etsiiano Ulliano";
 		return firmante;
 
@@ -144,6 +150,50 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 	
 	@Override
 	public void firmar(Documento documento, List<Firmante> firmantes, String firma, String valorDocumentofirmanteSolicitado){
+	}
+
+	@Override
+	public Firmante getFirmante(String firma, Documento documento, List<Firmante> todosFirmantes) {
+		if(firma == null || firma.isEmpty()){
+			Messages.error("La firma llegó vacía");
+			return null;
+		}	
+		Firmante firmante = null;
+		try {
+		    BinaryResponse response = gestorDocumentalService.getDocumento(documento);
+			byte[] contenido = response.getBytes();
+			firmante = validateXMLSignature(contenido, firma, todosFirmantes);
+			if(firmante == null){
+				Messages.error("Error validando la firma");
+			}
+		} catch (Exception e) {
+			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri);
+			Messages.error("Error validando la firma");
+		}
+		return firmante;
+	}
+
+	@Override
+	public Firmante validateXMLSignature(byte[] contenidoDoc, String firma, List<Firmante> todosFirmantes) {
+		Firmante firmante = null;		
+		String identificadorFirmante = FirmaController.getIdentificacionFromFirma(firma);
+		if ((identificadorFirmante == null) || (identificadorFirmante.isEmpty()))
+			identificadorFirmante="11111111H";
+		for (Firmante firmanteAux: todosFirmantes){
+    		if (firmanteAux.idvalor.equals(identificadorFirmante)){
+    			firmante = firmanteAux;
+    			break;
+    		}
+    	}
+		if (firmante == null){
+			log.error("Error en validateXMLSignature, Firmante NIF no encontrado: "+identificadorFirmante+" en la lista de firmantes.");
+			Messages.error("Error al recuperar el firmante físico.");
+			return null;
+		}
+
+		System.out.println("Firmante con id: "+identificadorFirmante);
+
+		return firmante;
 	}
  
 }

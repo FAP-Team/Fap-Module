@@ -1,0 +1,40 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'ActivarFuncionarioHabilitado', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Activar Posibilidadad de Requerir Firma de Funcionario Habilitado', 
+     urlBorrar:play.mvc.Router.reverse('ActivarFuncionarioHabilitadoController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('ActivarFuncionarioHabilitadoController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('ActivarFuncionarioHabilitadoController.editar' , ['idSolicitud':solicitud?.id])
+}
+	
+			#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'ActivarHabilitarFH', titulo:'Activar Posibilidadad de Requerir Firma de Funcionario Habilitado'}
+				
+				#{form play.mvc.Router.reverse('ActivarFuncionarioHabilitadoController.formActivarFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formActivarFH"}
+					
+			#{fap.boton id:'activarFH', titulo:'Activar Funcionario Habilitado' /}
+		
+				#{/form}
+			
+			#{fap.grupo borde:false, mostrarSi:solicitud.activoFH==true}
+				
+			<div class="wiki ">
+<p>Ya ha sido activada la posibilidad de habilitar la firma de un Funcionario Habilitado.</p>
+
+			</div>
+		
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

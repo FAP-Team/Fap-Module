@@ -1,4 +1,3 @@
-
 #{extends 'fap/template.html' /}
 #{set title:'ConsultarEvaluaciones' /}
 
@@ -176,7 +175,6 @@
 				var editRow = new Ext.create('Ext.grid.plugin.Editing', {
 		    		clicksToEdit: 2,
 	    	  	 	startEdit: function(record, columnHeader) {
-	    	  	 		console.log("Dobleclick");
 						var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
 						var estado = grid.getSelectionModel().getSelection()[0].data.estado;
 						var registro = store${id}.getAt(store${id}.find("id", selected_id));

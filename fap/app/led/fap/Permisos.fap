@@ -1121,8 +1121,8 @@ when
 	(solicitud?.registro?.fasesRegistro?.firmada="false")
 return
 	all
-/*
 }
+/*
  * Permiso “registrarSolicitud�?
  *
  * - Este botón estará habilitado si cumplen las siguientes condiciones:

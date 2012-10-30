@@ -102,17 +102,5 @@ public class PaginaAceptacionRenunciaController extends PaginaAceptacionRenuncia
 			log.info("Acción Editar de página: " + "gen/PaginaAceptacionRenuncia/PaginaAceptacionRenuncia.html" + " , intentada sin éxito (Problemas de Validación)");
 		
 		PaginaAceptacionRenunciaController.deshacerRender(idSolicitud);
-	}
-	
-	@Util
-	public static void prepararFirmarRender(Long idSolicitud) {
-		if (!Messages.hasMessages()) {
-			Messages.ok("Página editada correctamente");
-			Messages.keep();
-			redirect("AceptacionRenunciaPresentarController.index", "editar", idSolicitud);
-		}
-		Messages.keep();
-		redirect("PaginaAceptacionRenunciaController.index", "editar", idSolicitud);
-	}
-	
+	}	
 }

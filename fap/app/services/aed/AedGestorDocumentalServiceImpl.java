@@ -136,7 +136,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     /**
      * Comprueba que el servicio esté configurado
      * 
-     * El servicio está configurado si tiene conección con el servicio web
+     * El servicio está configurado si tiene conexión con el servicio web
      * y está la carpeta temporal creada
      */
     @Override

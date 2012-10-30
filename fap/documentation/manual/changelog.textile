@@ -1,5 +1,28 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC4
+
+* Fixed bug Redirección en preparar Aceptación o Renuncia.
+* Fixed bug Acceso a nuevas verificaciones.
+* Fixed Minor Bugs.
+
+h3. Versión 2.1.1RC3
+
+* Fixed bug al crear un nuevo usuario.
+* Valores de tablas dependientes ahora tienen tambien el "_" en las key que empiezan con números.
+* En Evaluación se muestran los "automod" como los "auto".
+
+h3. Versión 2.1.1RC2
+
+* Fixed Bug en autoenviar en los Forms.
+* Añadiendo Permisos a toda la parte de Baremación.
+* Nuevo atributo noVisibleEvaluador en Criterios.
+* Calculo de los criterios dependiendo de su valor máximo.
+* Recalculados los criterios dependiendo del rol de quien los vea.
+* Botón reevaluar en la tabla de evaluaciones.
+* Footer de la Solicitud a Evaluar.
+* Fixed Minor Bug en Baremación.
+
 h3. Versión 2.1.1RC1
 
 * Mejorada y Optimizada la Carga de la Tabla de Tablas.

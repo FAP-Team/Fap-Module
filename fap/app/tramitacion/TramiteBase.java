@@ -73,6 +73,9 @@ public abstract class TramiteBase {
  	public abstract String getBodyReport();
  	public abstract String getHeaderReport();
  	public abstract String getFooterReport();
+ 	public String getFooterEvaluacionReport() {
+ 		return getFooterReport();
+ 	}
 
  	public abstract String getMail(); // Cuando se registre un trámite
  	public abstract String getJustificanteRegistro();
@@ -123,7 +126,7 @@ public abstract class TramiteBase {
             // Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
         	if ((registro.borrador != null) && (registro.borrador.uri != null)){
                 Documento borradorOld = registro.borrador;
-                registro.oficial = null; 
+                registro.borrador = null; 
                 registro.save();
                 try{
                     gestorDocumentalService.deleteDocumento(borradorOld);
@@ -473,10 +476,10 @@ public abstract class TramiteBase {
 		solicitud.save();
 	}
 	
-	public File getDocumentoOficial (){
+	public File getDocumentoBorrador (){
 		try {
     		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-			return new Report(getBodyReport()).header(getHeaderReport()).registroSize().renderTmpFile(solicitud);
+			return new Report(getBodyReport()).header(getHeaderReport()).footer(getFooterEvaluacionReport()).registroSize().renderTmpFile(solicitud);
 		} catch (Exception e) {
 			play.Logger.error("Error generando el documento Solicitud para la Evaluación"+ e.getMessage());
 			return null;

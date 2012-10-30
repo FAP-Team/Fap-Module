@@ -28,7 +28,7 @@
 #{/fap.grupo}
 </form>
 
-#{if models.TipoDocumentoAccesible.count() > 0}
+#{if ((models.TipoDocumentoAccesible.count() > 0) || ((evaluacion.solicitudEnEvaluacion != null) && (evaluacion.solicitudEnEvaluacion.uri != null)))}
 	#{fap.tabla 
 	     campo:'Solicitud.documentacion.documentos', 
 	     id:'documentosAccesiblesEvaluador', 
@@ -38,6 +38,8 @@
 	     titulo:'Documentos', 
 	     urlTabla:@fap.FichaEvaluadorController.tabladocumentosAccesiblesEvaluador(evaluacion.solicitud.id, evaluacion.id)
 	}
+		
+		#{fap.columna alignPosition:'left', ancho:200, cabecera:'Fecha Registro', campo:'fechaRegistro', expandir:true /}
 		
 		#{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
 			
@@ -66,11 +68,11 @@
 	#{/list}
 
 	#{if evaluacion.tipo.comentariosAdministracion}
-		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion)/}
+		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion), disabled: !puedoGuardar/}
 	#{/if}
 	
 	#{if evaluacion.tipo.comentariosSolicitante}
-		#{simple.textarea name:'evaluacion.comentariosSolicitante', label:'Comentarios solicitante', value:messages.Messages.flashOrValue("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante) /}
+		#{simple.textarea name:'evaluacion.comentariosSolicitante', label:'Comentarios solicitante', value:messages.Messages.flashOrValue("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante) ,disabled: !puedoGuardar/}
 	#{/if}
 	
 	<div id="indice">
@@ -102,7 +104,7 @@
 		%{
 			def paramName  = "criterio[${criterio.id}]"
 			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",")  
-			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor)
+			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor);
 			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", criterio.comentariosAdministracion);
 			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", criterio.comentariosSolicitante);
 			def tam=500
@@ -123,7 +125,7 @@
 				</div>
 			#{/if}
 			
-			#{if criterio.tipo.claseCriterio.equals("auto")}
+			#{if (criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod"))}
 				#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam, format:'double'/}
 			#{/if}
 
@@ -133,21 +135,31 @@
 			
 			#{elseif criterio.tipo.claseCriterio.equals("manual")}
 				#{if criterio.tipo.tipoValor.equals('lista')}
-					#{simple.select name:paramName + ".valor", options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: criterio.tipo.mostrarValor, ancho: tam/}
+					#{if puedoGuardar}
+						#{simple.select name:paramName + ".valor", options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: criterio.tipo.mostrarValor, ancho: tam/}
+					#{/if}
+					#{else}
+						#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam/}
+					#{/else}
 				#{/if}
 				
 				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
-					#{simple.text name:paramName + ".valor", value:valor, error: error, ancho: tam, format:'double' /}
+					#{if puedoGuardar}
+						#{simple.text name:paramName + ".valor", value:valor, error: error, ancho: tam, format:'double' /}
+					#{/if}
+					#{else}
+						#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam, format:'double'/}
+					#{/else}
 				#{/elseif}
 			#{/elseif}
 			
 			
 			#{if criterio.tipo.comentariosAdministracion}
-				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion /}
+				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion, disabled: !puedoGuardar/}
 			#{/if}
 			
 			#{if criterio.tipo.comentariosSolicitante}
-				#{simple.textarea name:paramName + ".comentariosSolicitante", label:'Comentarios solicitante', value: comentariosSolicitante /}
+				#{simple.textarea name:paramName + ".comentariosSolicitante", label:'Comentarios solicitante', value: comentariosSolicitante, disabled: !puedoGuardar/}
 			#{/if}
 		
 		</div>	
@@ -333,8 +345,8 @@
                 				xtype: 'searchfield',
                 				store: store
             				},
-			            	'->',
-				        	boton_editar
+			            	'->'
+				        	#{if puedoGuardar}, boton_editar #{/if}
         				]
     				}
 				]
@@ -372,11 +384,11 @@
 <a style="font-size: 8pt"> Guardar antes de Obtener el borrador en PDF, para que se vean los cambios.</a>
 
 <div class="actions">
-	#{if "editar".equals(accion)}
+	#{if "editar".equals(accion) && puedoGuardar}
 		<input type="submit" class="btn" name="save" value="&{'baremacion.fichaevaluador.guardar'}">
 	#{/if}
 	<a href="@{fap.FichaEvaluadorController.generaPDF(evaluacion.id, duracion)}" target="_blank" class="btn">Obtener borrador en PDF</a>
-	#{if properties.FapProperties.getBoolean("fap.baremacion.finalizar.evaluacion") && "editar".equals(accion)}
+	#{if properties.FapProperties.getBoolean("fap.baremacion.finalizar.evaluacion") && "editar".equals(accion) && puedoGuardar}
 		<input type="submit" class="btn" name="end" value="&{'baremacion.fichaevaluador.end'}">
 	#{/if}
 </div>

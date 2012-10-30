@@ -6,6 +6,9 @@ import java.net.ConnectException;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -151,24 +154,29 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 		}
 	}
 	
-	public List<Solicitante> buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException{
+	public Solicitante buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException{
 		TerceroMinimalItem tercero = new TerceroMinimalItem();
 		tercero.setNumeroDocumento(numeroIdentificacion);
 		tercero.setTipoDocumento(convertirTipoNipATipoDocumentoItem(tipoIdentificacion));
-		List<Solicitante> listaTerceros = new ArrayList<Solicitante>();
-		for (TerceroListItem terceroListItem: buscarTercerosDetalladosByItem(tercero)){
-			TerceroItem terceroItem = consultarTercero(terceroListItem);
-			listaTerceros.add(convertirTerceroItemASolicitante(terceroItem));
+		
+		List<TerceroListItem> tercerosListItem = buscarTercerosDetalladosByItem(tercero);
+		
+		if ((tercerosListItem != null) && (!tercerosListItem.isEmpty())){
+			Collections.sort(tercerosListItem, new ComparadorFechaTerceroListItem());
+			TerceroItem terceroItem = consultarTercero(tercerosListItem.get(0));
+			return convertirTerceroItemASolicitante(terceroItem);
 		}
 	
-		return listaTerceros;
+		return null;
 	}
 	
-	// TODO: Ordenar Terceros por fecha de Actualizacion
-	
-//	private List<TerceroListItem> ordenarTercerosPorFechaActualizacion(List<TerceroListItem> tercerosDesordenados){
-//		List<TerceroListItem> tercerosOrdenados = new ArrayList<TerceroListItem>();
-//	}
+	// Ordenar Terceros por fecha de Actualizacion
+	public class ComparadorFechaTerceroListItem implements Comparator<TerceroListItem> {
+	    @Override
+	    public int compare(TerceroListItem o1, TerceroListItem o2) {
+	        return o2.getFechaActualizacion().compare(o1.getFechaActualizacion());
+	    }
+	}
 
 	public ProvinciaItem recuperarProvincia(Long idProvincia) {
 		if (idProvincia == null)
@@ -275,8 +283,8 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 		Solicitante  s= null;
 		if(tercero!=null){
 			s = new Solicitante();
-
-			if(tercero.getTipoTercero().getId().equalsIgnoreCase("JURIDICO") || ((tercero.getTipoTercero() != null) && (tercero.getTipoTercero().getDescripcion() != null) && (tercero.getTipoTercero().getDescripcion().equalsIgnoreCase("ORGANISMO")))){
+			s.uriTerceros=tercero.getUri();
+			if(tercero.getTipoTercero().getId().equalsIgnoreCase("JURIDICO") || tercero.getTipoTercero().getId().equalsIgnoreCase("ORGANISMO")){
 				s.tipo="juridica";
 				s.juridica.cif = tercero.getNumeroDocumento();
 				s.juridica.entidad = tercero.getNombre();

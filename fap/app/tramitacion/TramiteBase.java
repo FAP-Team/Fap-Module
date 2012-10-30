@@ -404,13 +404,13 @@ public abstract class TramiteBase {
 							tipoNumeroIdentificacion = "cif";
 						}
 						TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
-						List<Solicitante> existeTercero = tercerosService.buscarTercerosDetalladosByNumeroIdentificacion(solicitud.solicitante.getNumeroId(), tipoNumeroIdentificacion);
-						if ((existeTercero == null) || (existeTercero.isEmpty())){
+						Solicitante existeTercero = tercerosService.buscarTercerosDetalladosByNumeroIdentificacion(solicitud.solicitante.getNumeroId(), tipoNumeroIdentificacion);
+						if (existeTercero == null){
 							String uriTercero = tercerosService.crearTerceroMinimal(solicitud.solicitante);
 							solicitud.solicitante.uriTerceros = uriTercero;
 							solicitud.save();
 						} else {
-							String uriTercero = existeTercero.get(0).uriTerceros;
+							String uriTercero = existeTercero.uriTerceros;
 							solicitud.solicitante.uriTerceros = uriTercero;
 							solicitud.save();
 							play.Logger.warn("El Tercero ya existe en la BDD a Terceros de Platino: "+solicitud.solicitante.getNumeroId()+" - "+tipoNumeroIdentificacion+". Se ha seteado la uriTerceros a: "+uriTercero);

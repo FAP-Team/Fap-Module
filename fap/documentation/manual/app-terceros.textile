@@ -18,9 +18,9 @@ Existen únicamente dos métodos del servicio de BDD a Terceros de FAP:
 
 * **Buscar un Solicitante**: 
 
-bc. public List<Solicitante> buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException;
+bc. public Solicitante buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException;
 
-Que a través de un Numero de Identificación y su Tipo (Por ejemplo: 11111111H y "NIF") devuelve la lista de Solicitantes que tenga la BDD a Terceros consultada y que concuerde con esos dos datos.
+Que a través de un Numero de Identificación y su Tipo (Por ejemplo: 11111111H y "NIF") devuelve el Solicitante que tenga la fecha de Actualización más reciente en la BDD a Terceros consultada y que concuerde con esos dos datos.
 
 Este es el método usado por FAP para autorellenar los datos de un solicitante nada más que este setee en el formulario su numero de Identificación y el tipo.
 

@@ -19,7 +19,7 @@ public interface TercerosService {
 	
 	public void mostrarInfoInyeccion();
 	
-	public List<Solicitante> buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException;
+	public Solicitante buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException;
 	
 	public String crearTerceroMinimal(Solicitante tercero) throws TercerosServiceException;
 	

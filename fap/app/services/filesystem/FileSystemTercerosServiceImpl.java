@@ -75,20 +75,19 @@ public class FileSystemTercerosServiceImpl implements services.TercerosService {
 	    return new TercerosServiceException(msg, cause);
 	}
 	
-	public List<Solicitante> buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException{
+	public Solicitante buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException{
 		Solicitante solicitante = new Solicitante();
 		if ((numeroIdentificacion==null) || (tipoIdentificacion==null))
 			throw newTercerosServiceException("Parametros incorrectos, alguno de los dos ha sido null", null);
-		List<Solicitante> listaTerceros = new ArrayList<Solicitante>();
 		if (tipoIdentificacion.equals("cif")){
 			if (!numeroIdentificacion.toUpperCase().equals("A99999997"))
-				return listaTerceros;
+				return null;
 			solicitante.tipo="juridica";
 			solicitante.juridica.cif=numeroIdentificacion;
 			solicitante.juridica.entidad="FAP Company S.A.";
 		} else {
 			if (!numeroIdentificacion.toUpperCase().equals("11111111H"))
-				return listaTerceros;
+				return null;
 			solicitante.tipo="fisica";
 			solicitante.fisica.nip.tipo=tipoIdentificacion;
 			solicitante.fisica.nip.valor=numeroIdentificacion;
@@ -112,8 +111,7 @@ public class FileSystemTercerosServiceImpl implements services.TercerosService {
 		solicitante.email="miCorreo@miDireccion.com";
 		solicitante.telefonoContacto="92230000";
 		solicitante.uriTerceros="fs://tercero001/v01";
-		listaTerceros.add(solicitante);
-		return listaTerceros;
+		return solicitante;
 	}
 	
 	public String crearTerceroMinimal(Solicitante solicitante) throws TercerosServiceException{

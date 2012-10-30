@@ -15,6 +15,7 @@
          .icono { float: right; }
          .insertarAliasAtributo { padding: 10px 0 10px 0; font-size: 1.1em; }
          .insertarAliasAtributo input { width: 200px; }
+         .error { color: red; } 
     </style>
 </head>
 
@@ -123,28 +124,51 @@
        if ( $("#selectentidad").val().indexOf("(") != -1 )      // hemos seleccionado en el combo un alias
            guardarAlias = false;
            
-       InsertarEntidadFAPDialog.insert(rutaAtributo, entidad, guardarAlias);
+       var alias = rutaAtributo.split(".")[0];
+       
+       if (alias)     // si el alias no es una cadena vacía    
+            InsertarEntidadFAPDialog.insert(rutaAtributo, alias, entidad, guardarAlias);
+       else {
+            if ($('#errorAlias').length)
+                $('#errorAlias').remove();   
+            $('<p id="errorAlias" class="error">Debe escribir un alias</p>').insertBefore('#leyenda');
+       }
     }
     
     // *****************************************************************************************
     // Concatenamos el alias del atributo en el código groovy que después inserta en el editor
     // *****************************************************************************************
-    function insertarAtributoLista(atributo, entidad, entidadAtributo) {
+    function insertarAtributoLista(atributo, entidad, entidadAtributo, idFila) {
         var rutaAtributo = getRutaAtributo(atributo, entidad);
-        var aliasAtributo = $("#aliasAtributo").val();
+        var aliasAtributo = $("#aliasAtributo" + idFila).val();
+        var alias = $('#aliasEntidad').val();
 	    var codigoGroovy = '#{list items:' + rutaAtributo + ', as:"' + aliasAtributo + '"} <br /><br /> #{/list}';
 	    var guardarAlias = true;
 	    if ( $("#selectentidad").val().indexOf("(") != -1 )      // hemos seleccionado en el combo un alias
 	        guardarAlias = false;
-	    
-	    InsertarEntidadFAPDialog.insertLista(codigoGroovy, entidad, $('#aliasEntidad').val(), aliasAtributo, entidadAtributo, guardarAlias);
+	    console.log(guardarAlias);
+	
+	    if (!alias && guardarAlias) {     // si el alias es una cadena vacía (en el caso que no se seleccione un alias en el combo)    
+            if ($('#errorAlias').length)
+                $('#errorAlias').remove();   
+            $('<p id="errorAlias" class="error">Debe escribir un alias</p>').insertBefore('#leyenda');
+        }
+        else {
+	        if (aliasAtributo)
+	            InsertarEntidadFAPDialog.insertLista(codigoGroovy, entidad, alias, aliasAtributo, entidadAtributo, guardarAlias);
+	        else {
+	            if ($('#errorAliasAtributo').length)
+	                $('#errorAliasAtributo').remove();   
+	            $('<p id="errorAliasAtributo" class="error">Debe escribir un alias</p>').insertBefore('#aliasAtributo' + idFila);
+	        }
+        }
     }
     // *****************************************************************************************
 	// Insertamos la entidad lista, con su código groovy correspondiente
     // *****************************************************************************************
-    function insertarEntidadLista(atributo, entidad, entidadAtributo, idFila) {
-        var llamadaFuncion = "insertarAtributoLista('" + atributo +  "', '" + entidad +  "', '" + entidadAtributo + "');";
-        var filaAlias = '<div class="insertarAliasAtributo"><input id="aliasAtributo" type="text" /><br /><a href="#" onclick="' + 
+    function insertarEntidadLista(atributo, entidad, entidadAtributo, idFila) {   
+        var llamadaFuncion = "insertarAtributoLista('" + atributo +  "', '" + entidad +  "', '" + entidadAtributo + "', '" + idFila + "');";
+        var filaAlias = '<div class="insertarAliasAtributo"><input id="aliasAtributo' + idFila + '" type="text" /><br /><a href="#" onclick="' + 
                             llamadaFuncion +'">Insertar alias</a> de <strong>' + atributo + '</strong></div>';
         $("#" + idFila).after(filaAlias);
     }

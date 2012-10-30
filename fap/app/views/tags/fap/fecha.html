@@ -47,33 +47,9 @@
 	
 	<script type="text/javascript">
 
-    function disableWeekends($this) {
-        var $days = $this.find('.datepicker-days tr').each(function() {
-            var $days = $(this).find('.day');
-            // disable Sunday
-            $days.eq(0).addClass('old').click(false);
-            // disable Saturday
-            $days.eq(6).addClass('old').click(false);
-        });
-
-    }
-
-    $('#${id}').datepicker(${formatDate});
-
-    // get instance of the jQuery object created by
-    // datepicker    
-    var datepicker = $('#${id}').data('datepicker');
-
-    // disable weekends in the pre-rendered version
-    disableWeekends(datepicker.picker);
-
-    // disable weekends whenever the month changes
-    var _fill = datepicker.fill;
-    datepicker.fill = function() {
-        _fill.call(this);
-        disableWeekends(this.picker);
-    };
-
+		$(function(){                 
+			$('#${id}').datepicker(${formatDate});                
+		});
 
 	</script>
 

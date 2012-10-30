@@ -87,7 +87,7 @@ public class FichaEvaluadorController extends Controller {
 			// Stupid hack
 			boolean admin = "administradorgestor".contains(AgenteController.getAgente().rolActivo);
 			BaremacionService.calcularTotales(evaluacion, admin, true);
-			boolean puedoGuardar = secure.checkGrafico("guardarEvaluacion", "editable", "editar", ids, null);
+			boolean puedoGuardar = secure.checkGrafico("guardarEvaluacion", "editable", accion, ids, null);
 			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, expedienteUrl, duracion, idEvaluacion, accion, puedoGuardar);
 		}else{
 			forbidden();

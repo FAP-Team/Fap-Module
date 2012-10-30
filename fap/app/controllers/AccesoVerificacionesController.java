@@ -34,7 +34,6 @@ public class AccesoVerificacionesController extends AccesoVerificacionesControll
 			long idVerificacion=dbSolicitud.verificacion.id;
 			String accion = getAccion();
 			redirect("PaginaVerificacionController.index", accion, idSolicitud, idVerificacion);
-		
 		}
 		
 		log.info("Acción Editar de página: " + "gen/AccesoVerificaciones/AccesoVerificaciones.html" + " , intentada sin éxito (Problemas de Validación)");

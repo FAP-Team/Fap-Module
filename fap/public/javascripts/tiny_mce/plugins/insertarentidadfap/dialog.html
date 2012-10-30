@@ -13,6 +13,8 @@
          .celdaEntidad { width: 70%; }
          #atributos tr:hover { background: #C3F7A3; }
          .icono { float: right; }
+         .insertarAliasAtributo { padding: 10px 0 10px 0; font-size: 1.1em; }
+         .insertarAliasAtributo input { width: 200px; }
     </style>
 </head>
 
@@ -58,19 +60,18 @@
                    $("#atributos").remove();
                
                $.each(data, function(key, value) {
-                       listaAtrib += "<tr>";
                        var entidad = $('#breadcrumbs').text().split(".")[0];
-                       
+                       var idFila = "fila" + Math.floor((Math.random()*1000)+1); 
+                       listaAtrib += '<tr id=\'' + idFila + '\'>';
                        if (typeof value.entidad !== "undefined") {               // es una entidad
                             listaAtrib += '<td class="celdaEntidad" onclick="expandirEntidad(\'' + value.nombre + '\',\'' + value.entidad + '\')">' + value.nombre + '</td>';
                             listaAtrib += '<td onclick="expandirEntidad(\'' + value.nombre + '\',\'' + value.entidad + '\')"><img src="img/expand.png" alt="Expandir entidad" /></td>';
                        }
                        
                        else if (typeof value.entidadLista !== "undefined") {      // es una entidad lista
-                                listaAtrib += '<td class="celdaEntidad" onclick="insertarEntidadLista(\'' + value.nombre + '\',\'' + entidad + '\', \'' + value.entidadLista + '\')">' + value.nombre + '</td>';
-                                listaAtrib += '<td onclick="insertarEntidadLista(\'' + value.nombre + '\',\'' + entidad + '\', \'' + value.entidadLista + '\')"><img src="img/list.png" alt="Insertar entidad lista" /></td>';
+                                listaAtrib += '<td class="celdaEntidad" onclick="insertarEntidadLista(\'' + value.nombre + '\',\'' + entidad + '\', \'' + value.entidadLista + '\', \'' + idFila + '\')">' + value.nombre + '</td>';
+                                listaAtrib += '<td onclick="insertarEntidadLista(\'' + value.nombre + '\',\'' + entidad + '\', \'' + value.entidadLista + '\', \'' + idFila + '\')"><img src="img/list.png" alt="Insertar entidad lista" /></td>';
                        }
-                       
                        else {                                                    // es un atributo
                             listaAtrib += '<td class="celdaEntidad" onclick="insertarAtributo(\'' + value.nombre + '\', \'' + entidad + '\')">' + value.nombre + '</td>';
                             listaAtrib += '<td onclick="insertarAtributo(\'' + value.nombre + '\', \'' + entidad + '\')"><img src="img/insert.png" alt="Insertar atributo" /></td>';
@@ -121,20 +122,31 @@
        var guardarAlias = true;
        if ( $("#selectentidad").val().indexOf("(") != -1 )      // hemos seleccionado en el combo un alias
            guardarAlias = false;
+           
        InsertarEntidadFAPDialog.insert(rutaAtributo, entidad, guardarAlias);
     }
     
     // *****************************************************************************************
+    // Concatenamos el alias del atributo en el código groovy que después inserta en el editor
+    // *****************************************************************************************
+    function insertarAtributoLista(atributo, entidad, entidadAtributo) {
+        var rutaAtributo = getRutaAtributo(atributo, entidad);
+        var aliasAtributo = $("#aliasAtributo").val();
+	    var codigoGroovy = '#{list items:' + rutaAtributo + ', as:"' + aliasAtributo + '"} <br /><br /> #{/list}';
+	    var guardarAlias = true;
+	    if ( $("#selectentidad").val().indexOf("(") != -1 )      // hemos seleccionado en el combo un alias
+	        guardarAlias = false;
+	    
+	    InsertarEntidadFAPDialog.insertLista(codigoGroovy, entidad, $('#aliasEntidad').val(), aliasAtributo, entidadAtributo, guardarAlias);
+    }
+    // *****************************************************************************************
 	// Insertamos la entidad lista, con su código groovy correspondiente
     // *****************************************************************************************
-    function insertarEntidadLista(atributo, entidad, entidadAtributo) {
-        var rutaAtributo = getRutaAtributo(atributo, entidad);
-        var aliasAtributo = atributo + Math.floor((Math.random()*1000)+1); 
-        var codigoGroovy = '#{list items:' + rutaAtributo + ', as:"' + aliasAtributo + '"} <br /><br /> #{/list}';
-        var guardarAlias = true;
-        if ( $("#selectentidad").val().indexOf("(") != -1 )      // hemos seleccionado en el combo un alias
-            guardarAlias = false;
-        InsertarEntidadFAPDialog.insertLista(codigoGroovy, entidad, $('#aliasEntidad').val(), aliasAtributo, entidadAtributo, guardarAlias);
+    function insertarEntidadLista(atributo, entidad, entidadAtributo, idFila) {
+        var llamadaFuncion = "insertarAtributoLista('" + atributo +  "', '" + entidad +  "', '" + entidadAtributo + "');";
+        var filaAlias = '<div class="insertarAliasAtributo"><input id="aliasAtributo" type="text" /><br /><a href="#" onclick="' + 
+                            llamadaFuncion +'">Insertar alias</a> de <strong>' + atributo + '</strong></div>';
+        $("#" + idFila).after(filaAlias);
     }
     
     // *****************************************************************************************

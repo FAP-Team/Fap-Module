@@ -398,11 +398,6 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 	 * Devolvemos al plugin del editor TinyMCE una lista con todos los atributos de la entidad seleccionada 
 	 */
 	public static void obtenerAtributosEntidad(String entidad) {
-		// Comprobamos si es un alias. En caso afirmativo, obtenemos la entidad a la que hace referencia
-		String entidadAlias = getEntidadDesdeAlias(entidad);
-		if (entidadAlias != null)	
-			entidad = entidadAlias;
-		
 		Class clase = null;
 		try {
 			clase = Class.forName("models."+entidad);
@@ -491,12 +486,14 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 				Map.Entry e = (Map.Entry)it.next();
 				alias = e.getKey().toString();
 				entidad = e.getValue().toString();
-		    	List<String> aliasEntidades = AliasEntidades.find("select alias.alias from PlantillaDocumento plantilla join plantilla.aliasEntidades alias " +
-		    													  "where (plantilla.id = '" + idPlantilla + "')").fetch();
-				if (!aliasEntidades.contains(alias)) {
+		    	List<AliasEntidades> aliasEntidades = AliasEntidades.find("select aliasE from PlantillaDocumento plantilla join plantilla.aliasEntidades aliasE " +
+		    													  		"where (plantilla.id = '" + idPlantilla + "') and (aliasE.alias = '" + alias + "') and " +
+		    													  		"(aliasE.entidad = '" + entidad +"')").fetch();
+				if (aliasEntidades.isEmpty()) {
 					AliasEntidades aliasEntidad = new AliasEntidades();
 					aliasEntidad.alias = alias;
 					aliasEntidad.entidad = entidad;
+					aliasEntidad.save();
 					PlantillaDocumento plantilla = PlantillaDocumento.findById(idPlantilla);
 					plantilla.aliasEntidades.add(aliasEntidad);
 					plantilla.save();
@@ -504,23 +501,6 @@ public class PlantillasDocController extends PlantillasDocControllerGen {
 			}
 		}
 		ok();
-	}
-
-	/**
-	 * Si la cadena pasada por argumento es un alias de alguna entidad, retorna el nombre de esa entidad.
-	 * Null en caso contrario.
-	 * 
-	 * @param alias
-	 */
-	public static String getEntidadDesdeAlias(String alias) {
-		AliasEntidades aliasEntidades = AliasEntidades.find("select aliasE from AliasEntidades aliasE " +
-				  											"where (alias = '" + alias + "')").first();
-		// FIXME: "&& alias.equals(aliasEntidades.alias)" es innecesario si encuentro la forma de hacer una 
-		// consulta jpql case sensitive. (Por ejemplo, le puede llegar "Solicitud", que no es un alias sino 
-		// una entidad, y si existe el alias "solicitud", llegar a la conclusión errónea que es un alias).
-		if (aliasEntidades != null && alias.equals(aliasEntidades.alias))
-			return aliasEntidades.entidad;
-		return null;
 	}
 	
 	/**

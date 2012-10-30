@@ -20,12 +20,52 @@ Formulario Administracion permiso=administrador{
 			Enlace "Configurar Jobs" pagina=Jobs
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 			Enlace "Configurar mensajes" pagina=ConfigurarMensajes
+			Enlace "Gráficas" pagina=ServiciosWebApp
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
     }
+
     
+    Pagina ServiciosWebApp noForm titulo="Servicios web de la aplicación" campo=Aplicacion  permiso=administrador {
+		Grupo permiso=noEditable titulo="Datos de la aplicación" {
+			Texto campo=Aplicacion.nombreApp titulo="Nombre de la aplicación" 
+			Texto campo=Aplicacion.urlApp titulo="URL de la aplicación"
+		}
+		
+		Tabla serviciosWeb titulo="Servicios web activos" campo=Aplicacion.serviciosWeb
+		paginaEditar=GraficasWS
+		{
+			Columna titulo="ID" campo=ServiciosWeb.id ancho="35"
+			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
+			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
+			Columna titulo="Descripción" campo=ServiciosWeb.servicioWebInfo.descripcion expandir
+		}
+		
+		Form formBtnRecargaWS {
+			Boton recargasWS titulo="Recargar Servicios Web" ayuda="Pulse este botón para obligar a actualizar los servicios web de la aplicación" (popover)
+		}
+		
+		Tabla historialServiciosWeb titulo="Historial de servicios web" campo=Aplicacion.serviciosWeb
+		paginaEditar=GraficasWS
+		{
+			Columna titulo="ID" campo=ServiciosWeb.id ancho="35"
+			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
+			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
+			Columna titulo="Descripción" campo=ServiciosWeb.servicioWebInfo.descripcion expandir
+		}
+	}
+	
+	Pagina GraficasWS noForm titulo="Gráficas servicios web" campo=Aplicacion.serviciosWeb {
+		Wiki {"Aquí se mostrará el SuperTag"}
+		Form formBtn {
+			Boton btnRecargasDatos titulo="Recargar datos" ayuda="Pulse este botón para obligar a actualizar los datos de los servicios web" (popover)
+			Boton btnVolver titulo="Volver a la lista de Servicios Web" pagina=ServiciosWebApp
+		}
+
+	}
+
     // Pagina Sobreescrita
     Pagina ConsultasBBDD titulo="Consultas" perteneceA="Administracion"{
     	Grupo titulo = "Consultas a la Base de Datos de la aplicación"{

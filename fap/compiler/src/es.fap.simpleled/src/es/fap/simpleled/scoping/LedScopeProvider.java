@@ -25,7 +25,6 @@ import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.Popup;
 import es.fap.simpleled.led.ListaAtributos;
 import es.fap.simpleled.led.Tabla;
-import es.fap.simpleled.led.impl.LedPackageImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;

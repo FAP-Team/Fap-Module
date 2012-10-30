@@ -115,4 +115,7 @@ fap/app/listas/initial-data/paginasMsj.yml
 fap/app/listas/initial-data/paginasMsjLista.yml
 apps/test/app/listas/initial-data/*.yml
 
-apps/cuadroMandos/*
+#Aplicación Cuadro de Mandos
+apps/cuadroMandos/tmp/*
+apps/cuadroMandos/app/listas/initial-data/*.yml
+apps/cuadroMandos/app/views/gen/*

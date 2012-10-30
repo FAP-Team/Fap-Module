@@ -694,6 +694,10 @@ Entidad AdministracionFapJobs extends Singleton{
 	Boolean notificarAlertasAnotaciones default="true"
 	Boolean valorPropioNotificarAlertasAnotaciones default="false"
 	Integer valorNotificarAlertasAnotaciones
+	
+	Boolean actualizarServiciosWeb default="true"
+	Boolean valorPropioActualizarServiciosWeb default="false"
+	Integer valorActualizarServiciosWeb
 }
 
 Entidad DatosAnotaciones {
@@ -712,4 +716,52 @@ Entidad AnotacionFAP {
 	LongText solucion
 	ManyToOne Agente personaAsunto noConstruct
 	ManyToOne Agente personaSolucion noConstruct
+}
+
+Entidad Aplicacion {
+	String nombreApp
+	String urlApp
+	OneToMany ServiciosWeb serviciosWeb
+}
+
+Entidad ServiciosWeb {
+	ServicioWebInfo servicioWebInfo
+	OneToMany Peticion peticion
+}
+
+Entidad ServicioWebInfo {
+	String nombre
+	String urlWS
+	Boolean activo
+	String descripcion
+	OneToMany InfoParams infoParams
+}
+
+Entidad InfoParams {
+	String nombreParam
+	String tipo
+}
+
+Entidad Peticion {
+	String fechaPeticion
+	LongText stringJson
+	//OneToMany ResultadosPeticion resultadosPeticion
+}
+
+Entidad ListaResultadosPeticion {
+	OneToMany ResultadosPeticion resultadosPeticion
+}
+
+Entidad ResultadosPeticion {
+	OneToMany ResultadoPeticion resultadoPeticion
+}
+
+Entidad ResultadoPeticion {
+	String nombre
+	Integer valorInteger
+	Long valorLong
+	String valorString
+	Double valorDouble
+	String valorDateTime
+	Boolean valorBoolean
 }

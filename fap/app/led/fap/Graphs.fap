@@ -1,0 +1,14 @@
+Formulario Graficas permiso=adminGestorRevisor  {
+	Menu {
+		Enlace "Inicio" accion=login
+		Enlace "Mis Solicitudes" permiso=logeado pagina=Solicitudes
+		Grupo "Gráficas" permiso=noUsuario {
+			Enlace "Gráficas" pagina=GraficaSolicitudes
+		}
+    	Enlace "Ayuda" pagina=Soporte crear
+    }
+	
+	Pagina GraficaSolicitudes permiso=noUsuario {
+		
+	}
+}

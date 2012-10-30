@@ -1,0 +1,29 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Graficas', 
+     hayForm:false, 
+     pagina:'GraficaSolicitudes', 
+     permiso:'adminGestorRevisor', 
+     titulo:'GraficaSolicitudes', 
+     urlBorrar:play.mvc.Router.reverse('GraficaSolicitudesController.borrar' ), 
+     urlCrear:play.mvc.Router.reverse('GraficaSolicitudesController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('GraficaSolicitudesController.editar' )
+}
+	
+	%{
+		def data = jsData;
+		System.out.println("Data1: "+data);
+	%}
+	
+	<div id="grafica"></div>
+	
+	#{fap.simplePie id:'grafica', titulo:'Estados Solicitudes', name:'Solicitudes', data:"${data.raw()}" /}
+	
+#{/fap.pagina}
+		
+

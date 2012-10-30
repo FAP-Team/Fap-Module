@@ -1,3 +1,18 @@
+ServicioWeb ServicioWeb1 {
+	campo=Solicitud.documentacion.documentos
+	return={titulo="Clasificado":Documento.clasificado, titulo="Descripción":Documento.descripcion}
+}
+
+ServicioWeb ServicioWeb2 {
+	campo=Solicitud
+	return={titulo="Estado":Solicitud.estado}
+}
+
+ServicioWeb ServicioWeb3 {
+	campo=Solicitud.documentacion.documentos
+	return={titulo="Fecha subida":Documento.fechaSubida}
+}
+
 Formulario Solicitud permiso=solicitudes{
 	
     Menu {
@@ -74,11 +89,11 @@ Formulario Solicitud permiso=solicitudes{
 	    	Enlace "Presentación" pagina=PresentarFAP
 			Enlace "Verificaciones" pagina=AccesoVerificaciones
 			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
-			Enlace "PCEconómicos" pagina=PCEconomicos	
+			Enlace "PCEconómicos" pagina=PCEconomicos
 			Enlace "Desistimiento" pagina=Desistimiento
 			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
-    	}    	
-		
+    	}
+
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
     }

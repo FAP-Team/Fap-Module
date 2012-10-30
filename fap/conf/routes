@@ -15,8 +15,8 @@ POST        /changerol                     fap.SecureController.changeRol
 
 #Baremacion
 GET   /Baremacion/evaluaciones      								 fap.ConsultarEvaluacionesController.index
-GET   /Baremacion/evaluacion/{idEvaluacion}/fichaevaluador           fap.FichaEvaluadorController.index
-GET   /Baremacion/evaluacion/{idEvaluacion}/borradorpdf              fap.FichaEvaluadorController.generaPDF
+GET   /Baremacion/evaluacion/fichaevaluador           fap.FichaEvaluadorController.index
+GET   /Baremacion/evaluacion/borradorpdf              fap.FichaEvaluadorController.generaPDF
 
 #Utils
 

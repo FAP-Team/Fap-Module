@@ -1,5 +1,11 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC4
+
+* Fixed bug Redirección en preparar Aceptación o Renuncia.
+* Fixed bug Acceso a nuevas verificaciones.
+* Fixed Minor Bugs.
+
 h3. Versión 2.1.1RC3
 
 * Fixed bug al crear un nuevo usuario.

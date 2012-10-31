@@ -80,7 +80,7 @@ public class GSubirArchivo extends GSaveCampoElement{
 			for (String extension: subirArchivo.extensiones){
 				if (!check.equals(""))
 					check += " && ";
-				check += """!extension.equals("${extension}")""";
+				check += """!extension.equalsIgnoreCase("${extension}")""";
 			}
 			checkFile = """
 				String extension = GestorDocumentalUtils.getExtension(${subirArchivo.name});

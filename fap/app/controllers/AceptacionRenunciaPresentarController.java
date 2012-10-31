@@ -10,6 +10,7 @@ import tramitacion.TramiteAceptacionRenuncia;
 import messages.Messages;
 import models.Firmante;
 import models.SolicitudGenerica;
+import controllers.fap.PresentacionFapController;
 import controllers.gen.AceptacionRenunciaPresentarControllerGen;
 import emails.Mails;
 
@@ -53,22 +54,12 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 			trAceptacionRenuncia.firmar(firma);
 			try {
 				trAceptacionRenuncia.registrar();
-				if (dbSolicitud.aceptarRenunciar.seleccion.equalsIgnoreCase("acepta")) {
-					dbSolicitud.estado = "aceptadoRSLPROV";
-					try {
-						Mails.enviar(trAceptacionRenuncia.getMail(), dbSolicitud);
-					} catch (Exception e) {
-						play.Logger.error("No se pudo enviar mail de aceptación " + trAceptacionRenuncia.getMail() + " de la solicitud " + dbSolicitud.id);
-					}
-				} else {
-					dbSolicitud.estado = "renunciadoRSLPROV";
-					try {
-						Mails.enviar(trAceptacionRenuncia.getMail(), dbSolicitud);
-					} catch (Exception e) {
-						play.Logger.error("No se pudo enviar mail de renuncia " + trAceptacionRenuncia.getMail() + " de la solicitud " + dbSolicitud.id);
-					}
+				try {
+					PresentacionFapController.invoke("setEstadoAfterResolucion", idSolicitud);
+					dbSolicitud.save();
+				} catch (Throwable e) {
+					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia");
 				}
-				dbSolicitud.save();
 			} catch (RegistroServiceException e) {
 				e.printStackTrace();
 			}
@@ -137,22 +128,12 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 			trAceptacionRenuncia.firmar(firma);
 			try {
 				trAceptacionRenuncia.registrar();
-				if (dbSolicitud.aceptarRenunciar.seleccion.equalsIgnoreCase("acepta")) {
-					dbSolicitud.estado = "aceptadoRSLPROV";
-					try {
-						Mails.enviar(trAceptacionRenuncia.getMail(), dbSolicitud);
-					} catch (Exception e) {
-						play.Logger.error("No se pudo enviar mail de aceptación " + trAceptacionRenuncia.getMail() + " de la solicitud " + dbSolicitud.id);
-					}
-				} else {
-					dbSolicitud.estado = "renunciadoRSLPROV";
-					try {
-						Mails.enviar(trAceptacionRenuncia.getMail(), dbSolicitud);
-					} catch (Exception e) {
-						play.Logger.error("No se pudo enviar mail de renuncia " + trAceptacionRenuncia.getMail() + " de la solicitud " + dbSolicitud.id);
-					}
+				try {
+					PresentacionFapController.invoke("setEstadoAfterResolucion", idSolicitud);
+					dbSolicitud.save();
+				} catch (Throwable e) {
+					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia");
 				}
-				dbSolicitud.save();
 			} catch (RegistroServiceException e) {
 				e.printStackTrace();
 			}
@@ -182,22 +163,12 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 		if (!Messages.hasErrors()) {
 			try {
 				trAceptacionRenuncia.registrar();
-				if (dbSolicitud.aceptarRenunciar.seleccion.equalsIgnoreCase("acepta")) {
-					dbSolicitud.estado = "aceptadoRSLPROV";
-					try {
-						Mails.enviar(trAceptacionRenuncia.getMail(), dbSolicitud);
-					} catch (Exception e) {
-						play.Logger.error("No se pudo enviar mail de aceptación " + trAceptacionRenuncia.getMail() + " de la solicitud " + dbSolicitud.id);
-					}
-				} else {
-					dbSolicitud.estado = "renunciadoRSLPROV";
-					try {
-						Mails.enviar(trAceptacionRenuncia.getMail(), dbSolicitud);
-					} catch (Exception e) {
-						play.Logger.error("No se pudo enviar mail de renuncia " + trAceptacionRenuncia.getMail() + " de la solicitud " + dbSolicitud.id);
-					}
+				try {
+					PresentacionFapController.invoke("setEstadoAfterResolucion", idSolicitud);
+					dbSolicitud.save();
+				} catch (Throwable e) {
+					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia");
 				}
-				dbSolicitud.save();
 			} catch (RegistroServiceException e) {
 				e.printStackTrace();
 			}

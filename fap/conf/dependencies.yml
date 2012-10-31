@@ -1,6 +1,6 @@
 # Application dependencies
 
-self: play -> fap 2.1.1RC4
+self: play -> fap 2.1.1RC5
 
 require:
     - play 1.2.4 :

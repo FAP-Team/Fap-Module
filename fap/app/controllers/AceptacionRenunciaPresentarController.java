@@ -58,7 +58,7 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 					PresentacionFapController.invoke("setEstadoAfterResolucion", idSolicitud);
 					dbSolicitud.save();
 				} catch (Throwable e) {
-					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia");
+					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia"+e.getMessage());
 				}
 			} catch (RegistroServiceException e) {
 				e.printStackTrace();

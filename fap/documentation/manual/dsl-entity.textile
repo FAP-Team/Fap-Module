@@ -35,7 +35,7 @@ h3. Entidad Solicitud
 
 La entidad _Solicitud_ es una entidad especial dentro de las aplicaciones _FAP_, ya que en todas ellas ha de estar definida, y si no lo está, se generará automaticamente. Además, esta entidad extiende (aunque no se indique) de _SolicitudGenerica_, la cual ya viene proveída en el módulo y contiene todos aquellos atributos comunes a las aplicaciones.
 
-h3. "Atributos":dsl-atributo
+h3. "Atributos":dsl-attribute
 
 Se pueden definir uno o varios atributos en la entidad, los cuales crearán los mismos en las clases de esas entidades. Para definir un atributo "véase la documentación correspondiente":dsl-attribute.
 

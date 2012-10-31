@@ -49,10 +49,13 @@ Permiso enBorradorAceptarRenunciar {
 vars
 	SolicitudGenerica solicitud
 when
-	(_accion = leer) or
-	(solicitud.aceptarRenunciar.registro.fasesRegistro.borrador="true")
-return
-	editable
+	(_accion = leer)
+		or (
+			(solicitud?.aceptarRenunciar?.registro?.fasesRegistro?.borrador="true") and
+		 	(solicitud?.aceptarRenunciar?.registro?.fasesRegistro?.clasificarAed="false")
+		) 
+	return
+		all
 }
 
 Permiso modificarAceptarRenunciar {

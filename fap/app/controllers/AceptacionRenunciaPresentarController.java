@@ -10,7 +10,6 @@ import tramitacion.TramiteAceptacionRenuncia;
 import messages.Messages;
 import models.Firmante;
 import models.SolicitudGenerica;
-import controllers.fap.PresentacionFapController;
 import controllers.fap.ResolucionFapController;
 import controllers.gen.AceptacionRenunciaPresentarControllerGen;
 import emails.Mails;

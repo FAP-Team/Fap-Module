@@ -8,6 +8,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Convocatoria" pagina=Convocatoria
 			Enlace "Gestor Documental" pagina=Aed
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
+			Enlace "Cesion de Datos" permiso=adminOrGestor pagina=GenerarFichCesiones
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Codigos Requerimientos y Exclusión" pagina=Codigos
@@ -422,6 +423,72 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			Columna titulo="Mensaje" campo=Logs.message expandir
 			Columna titulo="Usuario" campo=Logs.user expandir
 			Columna titulo="Clase" campo=Logs.class_ expandir
+		}
+	}
+	
+	//Muestra todas las peticiones de cesion de datos realizadas sobre las solicitudes de la aplicacion
+	Pagina GenerarFichCesiones {
+		Tabla tblCesiones campo=PeticionCesiones titulo="Tabla de Peticiones de Cesiones" paginaCrear=NuevaCesion paginaEditar=EditarCesion paginaLeer=LeerCesion color: porDefecto{
+			Columna titulo="Tipo" campo=PeticionCesiones.tipo
+			Columna titulo="Fecha Generación" campo=PeticionCesiones.fechaGen
+			Columna titulo="Fecha de Validez" campo=PeticionCesiones.fechaValidez
+			Columna titulo="Estado" campo=PeticionCesiones.estado
+		}
+	}
+	
+	//Nueva petición de cesión de datos
+	Pagina NuevaCesion campo=PeticionCesiones{
+		Grupo permiso=permisoTipoElegido borde=false{
+			Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión" requerido
+		}
+		//Elegir de entre todas las solicitudes a cuales quiero generar la cesion de datos
+		Grupo permiso=permisoTipo{
+			Tabla tblSolicitudes campo=SolicitudGenerica seleccionable="Generar Peticion" {
+				Columna titulo="ID" campo=SolicitudGenerica.id
+				Columna titulo="Expediente" campo=SolicitudGenerica.expedienteAed.idAed
+				Columna titulo="Estado Interno" campo=SolicitudGenerica.estadoValue
+				Columna titulo="Estado" campo=SolicitudGenerica.estado
+				Columna titulo="Estado Usuario" campo=SolicitudGenerica.estadoUsuario
+				Columna titulo="ID Solicitante" campo=SolicitudGenerica.solicitante.id
+				Columna titulo="Nombre Solicitante" campo=SolicitudGenerica.solicitante.nombreCompleto
+			}
+		}
+	}
+	
+	Pagina LeerCesion campo=PeticionCesiones{
+		Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+		//Listar solicitudes
+		Tabla tblSolicitudes campo=SolicitudGenerica {
+			Columna titulo="ID" campo=SolicitudGenerica.id
+			Columna titulo="Expediente" campo=SolicitudGenerica.expedienteAed.idAed
+			Columna titulo="Estado Interno" campo=SolicitudGenerica.estadoValue
+			Columna titulo="Estado" campo=SolicitudGenerica.estado
+			Columna titulo="Estado Usuario" campo=SolicitudGenerica.estadoUsuario
+			Columna titulo="ID Solicitante" campo=SolicitudGenerica.solicitante.id
+			Columna titulo="Nombre Solicitante" campo=SolicitudGenerica.solicitante.nombreCompleto
+		}
+	}
+	
+	Pagina EditarCesion campo=PeticionCesiones permiso=ultimaEditable noForm{
+		Accion editar redirigir=anterior
+		Form formCesion{
+			Grupo titulo="Datos de cesion: Descargar fichero de petición" permiso=responderPeticion{
+				Enlace descargarFichero campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar" destino="_blank" estilo="btn"
+			}
+			Grupo titulo="Datos de Cesión: subir fichero de respuesta"{
+				Grupo borde=false permiso=noEditable{
+					Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+				}
+				Grupo borde=false permiso=responderPeticion{
+					SubirArchivo subirArchivo campo=PeticionCesiones.fichRespuesta
+					Boton tratarFich titulo="Subir fichero de respuesta"
+				}
+				Grupo borde=false permiso=aplicarCambios {
+					Enlace verFichero campo=PeticionCesiones.fichRespuesta.urlDescarga titulo="Ver el fichero subido" destino="_blank" estilo="btn"
+					Boton cambiarFichero titulo="Subir otro documento de respuesta"
+					Boton aplicarCambios titulo="Aplicar cambios"
+				}
+			}
 		}
 	}
 }

@@ -8873,3 +8873,83 @@ Lista posicionMensaje crearEnumerado {
 	superior: "Parte superior"
 	inferior: "Parte inferior"
 }
+
+Lista listaEstados crearEnumerado{
+	01: "Positivo"
+	02: "Negativo"
+	03: "No hay datos"
+	04: "Error"
+}
+
+Lista listaOrigen crearEnumerado{
+	cesion: "Cesion"
+	manual: "Manual"
+}
+
+Lista listaCesiones crearEnumerado{
+	aeat: "AEAT"
+	atc: "ATC"
+	//inssA008: "INSS A008"
+	inssR001: "INSS R001"
+}
+
+
+Lista estadosPeticion crearEnumerado {
+	creada: "Creada"
+	respondida: "Respondida"
+	asignada: "Asignada"
+}
+
+Lista tipoDocIdCesion crearEnumerado{
+	1: "DNI"
+	2: "Pasaporte"
+	6: "NIE"
+	9: "CIF"
+}
+
+Lista estadoCesionSolicitud crearEnumerado{
+	01: "No tiene reclamaciones de deuda vigente"
+	02: "Si tiene reclamaciones de deuda vigente"
+	03: "Identificador inexistente en BD"
+	04: "Identificador Incorrecto (formato erroneo)"
+	05: "Identificador con duplicidad"
+}
+
+Lista codigoIdent crearEnumerado{
+	0: "Interesado identificado"
+	2: "Interesado no identificado"
+	3: "Interesado de baja"
+	4: "Problemas técnicos"
+	5: "Denegado por sentencia o sanción"
+	6: "Entidad con C.I. revocado"
+}
+
+Lista codigoCert crearEnumerado{
+	P: "Positivo"
+	N: "Negativo"
+}
+
+Lista codigoAEATNegat crearEnumerado{
+	A: "Incumplimiento de Obligaciones Tributarias"
+	B: "Deudas Tributarias"
+	C: "A + B. Incumplimiento de Obligaciones + Deudas"
+	H: "Baja censal detectada"
+	M: "Delito Fiscal"
+	N: "A + B + M. Incumplimiento de Obligaciones + Deudas + Delito Fiscal"
+	O: "A + M. Incumplimiento de Obligaciones + Delito Fiscal"
+	P: "B + M. Existencia de deuda tributaria + Baja censal detectada"
+	Q: "A + H. Incumplimiento de obligación tributaria + Baja censal detectada"
+	R: "B + H. Existencia de deuda tributaria + Baja censal detectada"
+	S: "M + H. Existencia de delito fiscal + Baja censal detectada"
+	T: "A + B + M + H. Incumplimiento de obligación tributaria + Existencia de deuda tributaria + Existencia de delito fiscal + Baja censal detectada"
+	U: "A + M + H. Incumplimiento de obligación tributaria + Existencia de delito fiscal + Baja censal detectada"
+	V: "B + M + H. Existencia de deuda tributaria + Delito fiscal + Baja censal detectada"
+	X: "A + B + H. Incumplimiento de obligación tributaria + Existencia de deuda tributaria + Baja censal detectada"
+}
+
+Lista codigoRespuesta crearEnumerado{
+	00: "Resultado positivo"
+	01: "Resultado negativo"
+	02: "Inexistencia de datos solicitados"
+	03: "NIF erróneo"
+}

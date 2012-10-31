@@ -1,0 +1,52 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'multipart/form-data', 
+     formulario:'Administracion', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'EditarCesion', 
+     permiso:'administrador', 
+     titulo:'EditarCesion', 
+     urlBorrar:play.mvc.Router.reverse('EditarCesionController.borrar' , ['idPeticionCesiones':peticionCesiones?.id]), 
+     urlCrear:play.mvc.Router.reverse('EditarCesionController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('EditarCesionController.editar' , ['idPeticionCesiones':peticionCesiones?.id])
+}
+	
+				#{form play.mvc.Router.reverse('EditarCesionController.formCesion' , ['idPeticionCesiones':peticionCesiones?.id]) , enctype:"multipart/form-data", class:"form-horizontal", id:"formCesion"}
+			#{fap.grupo permiso:'responderPeticion', titulo:'Datos de cesion: Descargar fichero de petición'}
+				
+			#{fap.enlace estilo:'btn', id:'descargarFichero', target:'_blank', titulo:'Descargar', url:peticionCesiones.fichPeticion.urlDescarga /}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo titulo:'Datos de Cesión: Subir fichero de respuesta'}
+			#{fap.grupo borde:false, permiso:'noEditable'}
+				
+			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', titulo:'Tipo de Cesión' /}		
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, permiso:'responderPeticion'}
+				#{fap.documento accept:'', campo:'peticionCesiones.fichRespuesta', id:'subirArchivo', listarDocumentosSubidos:false, requerido:false, tipo:'tipoCiudadano' /}	
+			#{fap.boton id:'tratarFich', titulo:'Subir fichero de respuesta' /}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, permiso:'aplicarCambios'}
+			<div class="well">	
+			#{fap.enlace estilo:'btn', id:'verFichero', target:'_blank', titulo:'Ver el fichero subido', url:peticionCesiones.fichRespuesta.urlDescarga, noRow:true /}
+
+			#{fap.boton id:'cambiarFichero', titulo:'Subir otro documento de respuesta'/}
+
+			#{fap.boton id:'aplicarCambios', titulo:'Aplicar cambios'/}
+			</div>
+			#{/fap.grupo}
+			#{/fap.grupo}
+				#{/form}
+			
+#{/fap.pagina}
+		

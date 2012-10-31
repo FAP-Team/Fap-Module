@@ -172,7 +172,7 @@ public class TableRenderResponse<T> {
 					ids.put(paramClass, (Long) ReflectionUtils.getValueFromMethodFromClass(tablaTipo, "getId"));
 				}
 			}
-			
+
 			if (permisoEditar)
 				permisoFilasEditar = secure.check(permisoNombreEditar, "editable", accion, ids, null);
 			if (permisoLeer)
@@ -188,14 +188,16 @@ public class TableRenderResponse<T> {
 				else
 					record.permisoLeer=true;
 			}
-			if ((permisoFilasEditar != null) && (permisoFilasEditar.checkAcceso("editar")))
+			if ((permisoFilasEditar != null) && (permisoFilasEditar.checkAcceso("editar"))){
 				record.permisoEditar = true;
+			}
 			else {
 				if (permisoEditar)
 					record.permisoEditar=false;
 				else
 					record.permisoEditar=true;
 			}
+			
 			if ((permisoFilasBorrar != null) && (permisoFilasBorrar.checkAcceso("borrar")))
 				record.permisoBorrar = true;
 			else {
@@ -205,6 +207,7 @@ public class TableRenderResponse<T> {
 					record.permisoBorrar=true;
 			}
 		}
+		
 		return records;
 	}
 	

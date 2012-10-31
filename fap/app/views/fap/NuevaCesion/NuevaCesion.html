@@ -1,0 +1,57 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Administracion', 
+     hayForm:true, 
+     mensajeFinal:false, 
+     pagina:'NuevaCesion', 
+     permiso:'administrador', 
+     titulo:'NuevaCesion', 
+     urlBorrar:play.mvc.Router.reverse('NuevaCesionController.borrar' , ['idPeticionCesiones':peticionCesiones?.id]), 
+     urlCrear:play.mvc.Router.reverse('NuevaCesionController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('NuevaCesionController.editar' , ['idPeticionCesiones':peticionCesiones?.id]),
+     id: peticionCesiones?.id
+}
+			#{fap.grupo borde:false, permiso:'permisoTipoElegido'}
+				
+			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', requerido:true, titulo:'Tipo de Cesión' /}		
+		
+			#{/fap.grupo}
+			
+			#{fap.grupo permiso:'permisoTipo'}
+				
+#{fap.tabla 
+     campo:'Solicitud', 
+     id:'tblSolicitudes', 
+     idEntidad:'idSolicitud', 
+     saveEntity:false, 
+     seleccionable:'Generar Peticion', 
+     tipoContainer:'pagina', 
+     urlSeleccionable:'NuevaCesionController.generarPeticion', 
+     urlTabla: play.mvc.Router.reverse('NuevaCesionController.tablatblSolicitudes' , ['idPeticionCesiones':peticionCesiones?.id]),
+     idP: peticionCesiones?.id
+}
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'ID', campo:'id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'expedienteAed.idAed' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Interno', campo:'estadoValue' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estado' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Usuario', campo:'estadoUsuario' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'ID Solicitante', campo:'solicitante.id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre Solicitante', campo:'solicitante.nombreCompleto' /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

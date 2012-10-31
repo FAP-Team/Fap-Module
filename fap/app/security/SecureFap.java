@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import properties.FapProperties;
 
 import verificacion.VerificacionUtils;
@@ -14,6 +16,7 @@ import models.AutorizacionesFAP;
 import models.Busqueda;
 import models.Documento;
 import models.Participacion;
+import models.PeticionCesiones;
 import models.SolicitudGenerica;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
@@ -40,7 +43,8 @@ public class SecureFap extends Secure {
 			return mostrarResultadoBusqueda(_permiso, action, ids, vars);
 		else if ("esFuncionarioHabilitadoYActivadaProperty".equals(id))
 			return esFuncionarioHabilitadoYActivadaProperty(_permiso, action, ids, vars);
-		
+		else if ("ultimaEditable".equals(id))
+			return ultimaEditable(_permiso, action, ids, vars);
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
@@ -176,5 +180,51 @@ public class SecureFap extends Secure {
 
 		return null;
 	}
-
+	
+	private ResultadoPermiso ultimaEditable(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		List<PeticionCesiones> petCesiones = PeticionCesiones.findAll();
+		DateTime atcT = new DateTime(1970-01-01), aeatT= new DateTime(1970-01-01);
+		DateTime inssA008T= new DateTime(1970-01-01), inssR001T= new DateTime(1970-01-01);
+		
+		if (petCesiones != null)
+		for (PeticionCesiones pC : petCesiones) {
+			if ((pC.tipo.equals("atc")) && (pC.fechaGen.isAfter(atcT))){
+				atcT = pC.fechaGen; 
+			}
+			if ((pC.tipo.equals("aeat")) && (pC.fechaGen.isAfter(aeatT))){
+				aeatT = pC.fechaGen; 
+			}
+			if ((pC.tipo.equals("inssA008")) && (pC.fechaGen.isAfter(inssA008T))){
+				inssA008T = pC.fechaGen; 
+			}
+			if ((pC.tipo.equals("inssR001")) && (pC.fechaGen.isAfter(inssR001T))){
+				inssR001T = pC.fechaGen; 
+			}
+		}
+		
+		PeticionCesiones actual = getPeticionCesiones(ids, vars);
+		
+		if ((actual.tipo.equals("atc")) && (actual.fechaGen.equals(atcT))){
+			return new ResultadoPermiso(Accion.All);
+		}
+		if ((actual.tipo.equals("aeat")) && (actual.fechaGen.equals(aeatT))){
+			return new ResultadoPermiso(Accion.All);
+		}
+		if ((actual.tipo.equals("inssA008")) && (actual.fechaGen.equals(inssA008T))){
+			return new ResultadoPermiso(Accion.All);
+		}
+		if ((actual.tipo.equals("inssR001")) && (actual.fechaGen.equals(inssR001T))){
+			return new ResultadoPermiso(Accion.All);
+		}
+		return new ResultadoPermiso(Accion.Leer);
+	}
+	
+	public PeticionCesiones getPeticionCesiones(Map<String, Long> ids, Map<String, Object> vars) {
+		if (vars != null && vars.containsKey("peticionCesiones"))
+			return (PeticionCesiones) vars.get("peticionCesiones");
+		else if (ids != null && ids.containsKey("idPeticionCesiones"))
+			return PeticionCesiones.findById(ids.get("idPeticionCesiones"));
+		return null;
+	}
 }

@@ -50,6 +50,9 @@ public class SolicitudGenerica extends FapModel {
 	public Documentacion documentacionAportada;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documentacion documentacionCesion;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -97,6 +100,9 @@ public class SolicitudGenerica extends FapModel {
 
 	public Boolean activoFH;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Cesion cesion;
+
 	public SolicitudGenerica() {
 		init();
 	}
@@ -122,6 +128,11 @@ public class SolicitudGenerica extends FapModel {
 			documentacionAportada = new Documentacion();
 		else
 			documentacionAportada.init();
+
+		if (documentacionCesion == null)
+			documentacionCesion = new Documentacion();
+		else
+			documentacionCesion.init();
 
 		if (registro == null)
 			registro = new Registro();
@@ -187,6 +198,11 @@ public class SolicitudGenerica extends FapModel {
 
 		if (activoFH == null)
 			activoFH = false;
+
+		if (cesion == null)
+			cesion = new Cesion();
+		else
+			cesion.init();
 
 		postInit();
 	}

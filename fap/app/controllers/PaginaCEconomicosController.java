@@ -160,6 +160,7 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 		java.util.List<CEconomicosManuales> rows = CEconomicosManuales.find("select cEconomicosManuales from CEconomico cEconomico join cEconomico.otros cEconomicosManuales where cEconomico.id=?", idCEconomico).fetch();
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		
 		List<CEconomicosManuales> rowsFiltered = rows; //Tabla sin permisos, no filtra
 
 		tables.TableRenderResponse<CEconomicosManuales> response = new tables.TableRenderResponse<CEconomicosManuales>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);

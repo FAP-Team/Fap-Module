@@ -1136,6 +1136,7 @@ Permiso autorizadoNoAutoriza{
 	return all
 }
 
+
 Permiso ActivarHabilitarFH{
 	vars
 		SolicitudGenerica solicitud
@@ -1145,6 +1146,65 @@ Permiso ActivarHabilitarFH{
 		visible
 	when
 		(solicitud?.activoFH=null) or (solicitud?.activoFH="false")
+	return
+		all
+}
+
+
+Permiso ultimaEditable{
+	//Sobreescrito en SECUREFAP
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo = "administrador"
+	return 
+		editable
+}
+
+Permiso soloLeer{
+	return leer
+}
+
+Permiso permisoTipo{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.tipo != null)
+	return
+		all
+}
+
+Permiso permisoTipoElegido{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.tipo = null)
+	return
+		all
+	when agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.tipo != null)
+	return
+	  visible
+}
+
+Permiso responderPeticion{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "creada")
+	return
+		all
+}
+
+Permiso aplicarCambios{
+		vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "respondida")
 	return
 		all
 }

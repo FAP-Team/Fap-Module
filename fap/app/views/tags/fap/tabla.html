@@ -13,6 +13,7 @@
 }*
 
 %{
+	
 	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlTabla, "urlTabla");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");
@@ -35,7 +36,8 @@
 
 	def seleccionable = _seleccionable;
 	def urlSeleccionable = seleccionable ? play.mvc.Router.reverse(_urlSeleccionable) : null
-		
+	def idP = _idP;
+			
 	def recargarPagina = _recargarPagina;
 	
 	String popupCrear = _popupCrear;
@@ -551,8 +553,8 @@
                 }
             });
             #{/if}
-
-			#{if seleccionable}			
+			
+			#{if seleccionable}	
 		    var boton_select = new Ext.Button({
 		    	text: '${seleccionable}',
 		    	handler : function(){
@@ -574,11 +576,19 @@
 		    			$('#${id}').closest('form').attr("action",urlSubmitPage).submit();
 		    		#{/if}
 		    		#{else}
-		    			var params = new Array();
+		    		var params = new Array();
+		    		#{if idP}
+		    		params[0] = "id="+${idP};
+		    		for (var i in selected) {
+		    			params[i+1] = "idsSeleccionados="+selected[i].data.id;
+		    		}
+		    		#{/if}
+		    		#{else}
 		    			for (var i in selected) {
-		    				params[i] = "idsSeleccionados="+selected[i].data.id;
-		    			}
-		    			createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
+		    			params[i] = "idsSeleccionados="+selected[i].data.id;
+		    		}
+		    		#{/else}
+		    		createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
 		    		#{/else}
 			   	}
 		    });

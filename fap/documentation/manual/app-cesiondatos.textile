@@ -1,0 +1,52 @@
+h1. Cesión de datos
+
+En varios momentos del ciclo de vida de un expediente, es necesario comprobar que los solicitantes están al corriente en las obligaciones con el INSS, la AEAT y la ATC. Estos certificados pueden obtenerse de dos formas, de manera _manual_, el solicitante presenta los certificados, o _automática_, se realiza una comunicación de datos desde los organismos correspondientes.
+
+!images/app-cesiondatos-flujo!
+
+h2. Obtención automática de certificados 
+
+h3. Usuario
+
+Para la obtención automática por parte de la administración, el usuario debe autorizarlo expresamente en la siguiente página:
+
+!images/app-cesiondatos-autorizacion!
+
+Una vez que el usuario ha autorizado, comienza la gestión por parte de la administración.
+
+h3. Administración
+
+El Gestor o Administrador, debe poner en marcha el proceso de petición de cesiones de datos para las solicitudes que lo hayan autorizado. Para ello debe seguir los siguientes pasos:
+
+* Acceder a la página Administración/Cesión de Datos, donde podrá ver todas las cesiones de datos que se han realizado (la tabla aparecerá vacía si no se ha realizado ninguna).
+* En la tabla _Tabla de Peticiones de Cesiones_, pulsar en el botón *Nuevo* y en la nueva página que aparece, seleccionar en el combo _Tipo de Cesion_, el tipo de la cesión que quiere realizarse, en cuanto se pulse guardar, la petición pasa al estado _creada_.
+* Una vez elegido el tipo de cesión se mostrará una tabla con todas las solicitudes que han autorizado dicho tipo de cesión, de manera que podemos elegir los expedientes a consultar. Una vez seleccionados se pulsará _Generar Petición_ que generará el fichero de opetición de cesión de datos y nos devolverá a la pagina de Cesión de Datos.
+
+!images/app-cesiondatos-nueva!
+
+* El siguiente paso es enviar el fichero de petición generado al organismo cedente, pero primero, debemos descargarlo. Para ello accederemos a la petición de cesión que acabamos de crear y pulsaremos el botón _Descargar_. Ahora ya se dispone en la máquina local del fichero de petición de cesiones que deberá ser enviado al organismo pertinente.
+* Una vez enviado el fichero de petición y obtenida la respuesta, esta debe ser subida para poder procesar su contenido. En caso de que un interesado disponga de varios expedientes y sólo haya autorizado la comunicación en uno de ellos, se entenderá que ha autorizado para todos los expedientes en los que conste como solicitante.
+* Para subir el fichero, accedemos a la petición correspondiente y en la sección _Datos de Cesión: Subir fichero de respuesta_ donde rellenamos los datos que se piden, seleccionamos el archivo correspondiente a la respuesta y pulsamos el botón _Subir fichero de respuesta_. En este momento, la petición pasa al estado _respondida_.
+
+!images/app-cesiondatos-subirFich!
+
+* Una vez subido el fichero de respuesta, se dispone de tres opciones: ver el fichero subido, subir otro documento de respuesta y aplicar cambios. Para finalizar el proceso, debe pulsarse el botón _Aplicar cambios_. En caso de que se produzca un error, no se dejará aplicar los cambios y el sistema nos aconsejará comprobar que el fichero aportado está en el formato correcto.
+* En caso de haber subido un fichero incorrecto, tenemos la posibilidad de cambiar el fichero mediante el botón _Subir otro documento de respuesta_.
+
+!images/app-cesiondatos-aplicarCambios!
+
+* Una vez aplicados los cambios, la petición de cesion de datos pasará al estado _asignada_, de manera que no se podrán realizar modificaciones.
+
+En la Tabla de Peticiones de Cesiones, pueden verse todas las peticiones realizadas, pero sólo la última de cada tipo será editable esté o no asignada.
+
+
+h2. Obtención manual de certificados
+
+El interesado debe haber adjuntado los certificados pertienentes a la documentación añadida a la solicitud. De manera que el Gestor y Administrador debe de realizar la correspondencia, esto sólo será posible en la fase de instrucción. Para ello, deben seguirse los siguientes pasos:
+
+* Dentro de la solicitud, debe acceder a la página _Cesiones de Datos_, donde pueden verse las cesiones de datos asignadas a dicho expediente (ya sean automáticas o manuales).
+* Pulsando el botón *Nuevo*, se abrirá un popup en el que podrá rellenar los campos correspondientes a la cesión manual de datos y elegir el documento con el que se corresponde de los aportados por el interesado.
+
+!images/app-cesiondatos-manual!
+
+Sólo se muestra la cesión más actual de cada tipo.

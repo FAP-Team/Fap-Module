@@ -32,6 +32,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Documentacion documentacion
 	Documentacion documentacionProceso
 	Documentacion documentacionAportada
+	Documentacion documentacionCesion
 	Registro registro
 	ExpedientePlatino expedientePlatino
 	ExpedienteAed expedienteAed
@@ -48,6 +49,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	OneToMany AutorizacionesFAP autorizacion
 	DatosAnotaciones datosAnotaciones
 	Boolean activoFH default="false"
+	Cesion cesion
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -710,7 +712,81 @@ Entidad AnotacionFAP {
 	ManyToOne Agente personaSolucion noConstruct
 }
 
+
 Entidad CargarTablaDeTablas extends Singleton{
 	Boolean checkNoCargarMunicipiosActualizando
 	Boolean checkNoCargarMunicipiosSoloCreando
+}
+
+Entidad AutorizacionCesion {
+	Boolean aeat
+	Boolean inssR001
+	Boolean atc
+	Boolean inssA008
+	OneToMany Trabajador trabajadores
+	Boolean idi
+}
+
+Entidad Trabajador {
+	Integer regimen
+	Long codigoCuenta
+}
+
+Entidad Cesiones {
+	Lista listaCesiones tipo
+	DateTime fechaPeticion
+	DateTime fechaValidez
+	Lista listaEstados estado
+	Lista listaOrigen origen
+	Documento documento
+}
+
+Entidad PeticionCesiones{
+	Lista listaCesiones tipo
+	Documento fichPeticion
+	Documento fichRespuesta
+	DateTime fechaGen
+	DateTime fechaValidez
+	RespuestaCesion respCesion
+	Lista estadosPeticion estado 
+}
+
+Entidad RespuestaCesion{
+	String uri
+	DateTime fechaGeneracion
+	DateTime fechaActuacionGestor 
+}
+
+Entidad Cesion{
+	AutorizacionCesion autorizacionCesion
+	OneToMany Cesiones cesiones
+}
+
+Entidad INSS{
+	String cabeceraPrimera
+	String cabeceraSegunda
+	RegistroDatos registroDetalle
+}
+
+Entidad AEAT{
+	String nDocumento
+	String nombre
+	String ident
+	String cert
+	String negat
+	String estadoNegat
+	String datosPropios
+	String referencia
+}
+
+Entidad ATC{
+	String codigoEstado
+	String nombre
+	RegistroDatos registroDetalle
+}
+
+Entidad RegistroDatos{
+	String tipoRegistro
+	String nDocumento
+	String estado
 }

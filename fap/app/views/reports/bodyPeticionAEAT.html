@@ -1,0 +1,64 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+</style>
+
+</head>
+<body>
+
+<h3 style="text-align: center;"></h3>
+%{
+	def titulo = 'CESIÓN DE DATOS AEAT';
+}%
+
+<h1>${titulo}</h1>
+
+<!-- PRUEBA -->
+<div id="datosCesionDatos">
+<table id="tblDatosPeticionDatos1" class="table-datos" >
+	<caption>Datos disponibles de la petición de cesion:</caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>Tipo:</th><td>${pt.tipo}</td></tr>
+	<tr><th>Fecha de Generacion:</th><td>${pt.fechaGen}</td></tr>
+	<tr><th>Fecha de validez:</th><td>${pt.fechaValidez}</td></tr> 
+	<tr><th>Estado:</th><td>${pt.estado}</td></tr>
+</table>
+
+<table id="tblDatosPeticionDatos2" class="table-datos" >
+	<caption>Datos disponibles de la respuesta de la petición de cesion:</caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>URI:</th><td>${pt.respCesion.uri}</td></tr>
+	<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
+	<tr><th>Fecha Actualización Gestor:</th><td>${pt.respCesion.fechaActuacionGestor}</td></tr>
+</table>
+
+<table id="tblDatosPeticionDatos3" class="table-datos" >
+	<caption>Solicitante:</caption>
+	<tr><th>DNI:</th><td>${aeat.nDocumento}</td></tr>
+	<tr><th>Nombre Completo:</th><td>${aeat.nombre}</td></tr>
+	<tr><th>Ident:</th><td>${aeat.ident}</td></tr> 
+	<tr><th>Estado:</th><td>${aeat.cert}</td></tr> 
+	%{ if (aeat.cert.equals("N")){ %}
+		<tr><th>Tipo de Negativo:</th><td>${aeat.negat}</td></tr>
+		<tr><th>Causa de Negativo:</th><td>${aeat.estadoNegat}</td></tr>
+	%{ } %}
+	<tr><th>Datos Propios:</th><td>${aeat.datosPropios}</td></tr> 
+	<tr><th>Referencia:</th><td>${aeat.referencia}</td></tr> 
+</table>
+
+</div>
+
+
+
+
+</body>
+</html>

@@ -112,7 +112,7 @@
 			    	disabled:true,
 		    		handler : function(){
 		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-		    			
+		    			 console.log("selected_id = " + selected_id);
 						%{
 							aceptar = play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.aceptar' , ['idEvaluacion':selected_id]);
 						%}
@@ -126,8 +126,10 @@
 						}).done(function( msg ) {
 							$popup = $("#popupWait_popup");	
 							$popup.modal("hide");
-							document.location.reload(true)
-						});
+							//document.location.reload(true);
+							var action = #{jsAction @fap.FichaEvaluadorController.index(':idEvaluacion', ':accion') /};
+                            window.location.href = action({idEvaluacion : selected_id, accion : "editar"});
+						});		
 		    		}
 			    });
 

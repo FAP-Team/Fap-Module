@@ -3,6 +3,8 @@ package controllers.fap;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import enumerado.fap.gen.EstadosSolicitudEnum;
+
 import messages.Messages;
 import models.SolicitudGenerica;
 import tramitacion.*;

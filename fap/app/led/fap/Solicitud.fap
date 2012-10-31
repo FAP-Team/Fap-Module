@@ -623,7 +623,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	// ACEPTAR/RENUNCIAR
 	// *******************************************************************************************
 	
-	Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm permiso=accederSiSolicituNoBorrador  perteneceA ="AceptarRenunciar"{
+	Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm permiso=resolucionAceptarRenunciar  perteneceA ="AceptarRenunciar"{
 		
 		Grupo titulo="Aceptación/Renuncia" {
 			Grupo permiso=editarAceptarRenunciar borde=false {
@@ -633,7 +633,6 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 						Grupo titulo = "Renuncia" mostrarSiCombo comboAceptarRenunciar='renuncia' borde=false {
 				    		AreaTexto titulo="Motivo de renuncia" campo=SolicitudGenerica.aceptarRenunciar.motivoRenuncia filas=10
 			    		}
-			    		Boton btoGuardar titulo="Guardar trámite" 
 					}
 					
 					Grupo titulo="Aceptación" mostrarSiCombo formAceptarRenunciar.comboAceptarRenunciar='acepta' borde=false {
@@ -698,7 +697,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	 */
 	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos  perteneceA ="AceptarRenunciar"{
 		Accion crear redirigir=PaginaAceptacionRenuncia
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación/Renuncia" aportadoPor="CIUDADANO"	
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación" aportadoPor="CIUDADANO"	
     }
     
     Popup PopUpDocAceptacionRenuncia titulo="Documentación" campo=SolicitudGenerica.aceptarRenunciar.documentos {
@@ -713,7 +712,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 		
 		//Firma persona física	
-		Grupo titulo="Paso 1. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo="fisica" /*permiso=editarFirma*/{			
+		Grupo titulo="Paso 3. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo="fisica" /*permiso=editarFirma*/{			
 			Form formFirma permiso=firmarRegistrarAceptarRenunciar redirigir=PaginaAceptacionRenuncia {
 		    	Wiki {"La aceptación/renuncia será firmada y registrada."}
 				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=SolicitudGenerica.aceptarRenunciar.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.aceptarRenunciar.registro.firmantes.todos
@@ -723,7 +722,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}			
 						
 		//Firma Persona jurídica
-		Grupo titulo="Paso 1. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" {
+		Grupo titulo="Paso 3. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" {
 			Wiki {"Debe indicar si se firmará la aceptación/renuncia con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la aceptación/renuncia debe firmarse por todos los representantes mancomunados"}
 			
 			Form tipoCertificadoFirma autoEnviar {
@@ -731,7 +730,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}
 					
 			Grupo borde=false mostrarSiCampo SolicitudGenerica.aceptarRenunciar.registro.tipoFirma="representantes" {
-				Grupo titulo="Paso 1.1. Firmar la Aceptación/Renuncia" permiso=editarFirma{						
+				Grupo titulo="Paso 3.1. Firmar la Aceptación/Renuncia" permiso=editarFirma{						
 					Wiki {"La aceptación/renuncia será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la aceptación/renuncia."}
 					
 					Form formFirmaRepresentante permiso=firmarAceptarRenunciar {
@@ -750,7 +749,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 					}
 				}
 				
-				Grupo titulo="Paso 1.2. Registrar la Aceptación/Renuncia" permiso=registrarAceptarRenunciar {
+				Grupo titulo="Paso 3.2. Registrar la Aceptación/Renuncia" permiso=registrarAceptarRenunciar {
 					Wiki {"Su aceptación/renuncia ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 					
 					Form formRegistrar redirigir=PaginaAceptacionRenuncia {

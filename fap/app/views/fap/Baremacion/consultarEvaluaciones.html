@@ -110,27 +110,12 @@
 			    var boton_aceptar = new Ext.Button({
 			    	text: 'Aceptar',
 			    	disabled:true,
-		    		handler : function(){
-		    			var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
-		    			 console.log("selected_id = " + selected_id);
-						%{
-							aceptar = play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.aceptar' , ['idEvaluacion':selected_id]);
-						%}
-		    			
-		    			popupWait_open();
-		    			
-		    			$.ajax({
-  							type: "POST",
-  							url: "${aceptar}",
-  							data: {idEvaluacion: selected_id}
-						}).done(function( msg ) {
-							$popup = $("#popupWait_popup");	
-							$popup.modal("hide");
-							//document.location.reload(true);
-							var action = #{jsAction @fap.FichaEvaluadorController.index(':idEvaluacion', ':accion') /};
-                            window.location.href = action({idEvaluacion : selected_id, accion : "editar"});
-						});		
-		    		}
+			    	handler : function(){
+			    	    popupWait_open();
+                        var action = #{jsAction @fap.ConsultarEvaluacionesController.aceptar(':idEvaluacion') /}
+                        var selected_id = grid.getSelectionModel().getSelection()[0].internalId;
+                        window.location.href = action({idEvaluacion : selected_id, accion : "editar"})
+                    }
 			    });
 
 			    var boton_rechazar = new Ext.Button({

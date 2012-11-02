@@ -62,6 +62,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 					eval.estado = EstadosEvaluacionEnum.enTramite.name();
 					BaremacionService.calcularTotales(eval);
 					eval.save();
+					FichaEvaluadorController.index(idEvaluacion, "editar");
 				} catch (Exception e) {
 					Messages.error("Error generando el documento de solicitud para ver en evaluación. No se ha podido Iniciar esta Evaluación.");
 	                play.Logger.error("Error generando el de solicitud para ver en evaluación, no se ha ACEPTADO la evaluación: "+e.getMessage());
@@ -109,4 +110,5 @@ public class ConsultarEvaluacionesController extends GenericController {
 //			renderTemplate("fap/EvaluacionesFinalizadas/EvaluacionesFinalizadas.html", accion);
 //		}
 //	}
+	
 }

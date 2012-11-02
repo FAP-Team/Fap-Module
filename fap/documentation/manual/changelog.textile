@@ -2,7 +2,7 @@ h2. Changelog
 
 h3. Versión 2.1.1RC5
 
-* Fixed bugs en Aceptación/Renuncia
+* Fixed bugs en Aceptación/Renuncia.
 * Fixed bug extensiones ahora no tiene en cuenta las mayúsculas o minúsculas para diferenciar.
 
 h3. Versión 2.1.1RC4

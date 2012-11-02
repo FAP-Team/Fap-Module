@@ -19,7 +19,7 @@ import properties.FapProperties;
 import verificacion.ObligatoriedadDocumentosFap;
 import verificacion.VerificacionUtils;
 
-public class VerificacionFapController {
+public class VerificacionFapController extends InvokeClassController{
 	
 	
 	/**
@@ -112,19 +112,5 @@ public class VerificacionFapController {
     	else
     		return new ArrayList<String>();
 	}
-	
-	public static <T> T invoke(String m, Object... args) throws Throwable {
-		Class claseDelMetodoALlamar = null;
-        List<Class> classes = Play.classloader.getAssignableClasses(VerificacionFapController.class);
-        if(classes.size() != 0) {
-        	claseDelMetodoALlamar = classes.get(0);
-        } else {
-        	return (T)Java.invokeStatic(VerificacionFapController.class, m, args);
-        }
-        try {
-        	return (T)Java.invokeStaticOrParent(claseDelMetodoALlamar, m, args);
-        } catch(InvocationTargetException e) {
-        	throw e.getTargetException();
-        }
-	}
+
 }

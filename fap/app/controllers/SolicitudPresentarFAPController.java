@@ -55,7 +55,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		try {
-			PresentacionFapController.invoke("beforeFirma", idSolicitud);
+			PresentacionFapController.invoke(PresentacionFapController.class, "beforeFirma", idSolicitud);
 		} catch (Throwable e1) {
 			log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
 			Messages.error("Error al validar elementos previos a la firma");
@@ -63,7 +63,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica dbSolicitud = SolicitudPresentarFAPController.getSolicitudGenerica(idSolicitud);
 			try {
-				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
+				TramiteBase tramite = PresentacionFapController.invoke(PresentacionFapController.class, "getTramiteObject", idSolicitud);
 				SolicitudPresentarFAPController.firmarRegistrarFHFormFirmaFH(idSolicitud, idRegistro, firma);
 				if (!Messages.hasErrors()) {
 					try {
@@ -76,7 +76,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 						}
 						if (!Messages.hasErrors()) {
 							try {
-								PresentacionFapController.invoke("afterRegistro", idSolicitud);
+								PresentacionFapController.invoke(PresentacionFapController.class, "afterRegistro", idSolicitud);
 							} catch (Throwable e1) {
 								log.error("Hubo un problema al invocar los métodos afterRegistro: "+e1.getMessage());
 								Messages.error("Error al validar elementos posteriores al registro");
@@ -175,7 +175,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		try {
-			PresentacionFapController.invoke("beforeFirma", idSolicitud);
+			PresentacionFapController.invoke(PresentacionFapController.class, "beforeFirma", idSolicitud);
 		} catch (Throwable e1) {
 			log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
 			Messages.error("Error al validar elementos previos a la firma");
@@ -183,7 +183,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		SolicitudGenerica dbSolicitud = SolicitudPresentarFAPController.getSolicitudGenerica(idSolicitud);
 		if (!Messages.hasErrors()) {
 			try {
-				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
+				TramiteBase tramite = PresentacionFapController.invoke(PresentacionFapController.class, "getTramiteObject", idSolicitud);
 				tramite.firmar(firma);
 				if (!Messages.hasErrors()) {
 					try {
@@ -196,7 +196,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 						}
 						if (!Messages.hasErrors()) {
 							try {
-								PresentacionFapController.invoke("afterRegistro", idSolicitud);
+								PresentacionFapController.invoke(PresentacionFapController.class, "afterRegistro", idSolicitud);
 							} catch (Throwable e1) {
 								log.error("Hubo un problema al invocar los métodos afterRegistro: "+e1.getMessage());
 								Messages.error("Error al validar elementos posteriores al registro");
@@ -248,7 +248,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		}
 
 		try {
-			PresentacionFapController.invoke("beforeFirma", idSolicitud);
+			PresentacionFapController.invoke(PresentacionFapController.class, "beforeFirma", idSolicitud);
 		} catch (Throwable e1) {
 			log.error("Hubo un problema al invocar los métodos beforeFirma, en la firma con representantes: "+e1.getMessage());
 			Messages.error("Error al validar elementos previos a la firma de representante");
@@ -256,7 +256,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
+				TramiteBase tramite = PresentacionFapController.invoke(PresentacionFapController.class, "getTramiteObject", idSolicitud);
 				tramite.firmar(firma);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al firmar con representante en presentacion: "+e1.getMessage());
@@ -293,7 +293,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		if (!Messages.hasErrors()) {
 			
 			try {
-				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
+				TramiteBase tramite = PresentacionFapController.invoke(PresentacionFapController.class, "getTramiteObject", idSolicitud);
 				try {
 					dbSolicitud.registro.fasesRegistro.borrador = true;
 					dbSolicitud.registro.fasesRegistro.firmada = true;
@@ -306,7 +306,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 					}
 					if (!Messages.hasErrors()) {
 						try {
-							PresentacionFapController.invoke("afterRegistro", idSolicitud);
+							PresentacionFapController.invoke(PresentacionFapController.class, "afterRegistro", idSolicitud);
 						} catch (Throwable e1) {
 							log.error("Hubo un problema al invocar los métodos afterRegistro: "+e1.getMessage());
 							Messages.error("Error al validar elementos posteriores al registro");
@@ -345,7 +345,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 
 		if (!Messages.hasErrors()) {
 			try {
-				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
+				TramiteBase tramite = PresentacionFapController.invoke(PresentacionFapController.class, "getTramiteObject", idSolicitud);
 				boolean encontrado = false;
 				for (Documento doc: tramite.getDocumentos()){
 					if (doc.tipo.equals(FapProperties.get("fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento"))){

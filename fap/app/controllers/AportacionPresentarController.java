@@ -383,7 +383,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 		SolicitudGenerica dbSolicitud = AportacionPresentarController.getSolicitudGenerica(idSolicitud);
 		if (!Messages.hasErrors()) {
 			try {
-				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
+				TramiteBase tramite = PresentacionFapController.invoke(PresentacionFapController.class, "getTramiteObject", idSolicitud);
 				boolean encontrado = false;
 				for (Documento doc: tramite.getDocumentos()){
 					if (doc.tipo.equals(FapProperties.get("fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento"))){

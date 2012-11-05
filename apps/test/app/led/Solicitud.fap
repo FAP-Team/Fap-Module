@@ -92,6 +92,7 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "PCEconómicos" pagina=PCEconomicos
 			Enlace "Desistimiento" pagina=Desistimiento
 			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
+			Enlace "Certificados" pagina=CertificadosSolicitados
     	}
 
 		Enlace "Aportación" pagina=Aportacion

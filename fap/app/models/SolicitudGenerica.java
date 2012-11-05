@@ -97,6 +97,10 @@ public class SolicitudGenerica extends FapModel {
 
 	public Boolean activoFH;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "solicitudgenerica_certificados")
+	public List<CertificadoSolicitado> certificados;
+
 	public SolicitudGenerica() {
 		init();
 	}
@@ -187,6 +191,9 @@ public class SolicitudGenerica extends FapModel {
 
 		if (activoFH == null)
 			activoFH = false;
+
+		if (certificados == null)
+			certificados = new ArrayList<CertificadoSolicitado>();
 
 		postInit();
 	}

@@ -48,6 +48,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	OneToMany AutorizacionesFAP autorizacion
 	DatosAnotaciones datosAnotaciones
 	Boolean activoFH default="false"
+	OneToMany CertificadoSolicitado certificados
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -764,4 +765,23 @@ Entidad ResultadoPeticion {
 	Double valorDouble
 	String valorDateTime
 	Boolean valorBoolean
+}
+
+Entidad TipoCertificado {
+	String nombre
+	String descripcion
+	Lista tiposDocumentos tipoDocumento
+	String nombrePlantilla
+	Boolean necesitaFirma default="false"
+	Integer validez
+	DateTime fechaInicio
+	DateTime fechaFin
+}
+
+Entidad CertificadoSolicitado {
+	TipoCertificado tipo
+	Documento documento
+	DateTime fechaCreacion
+	String estado
+	Registro registro
 }

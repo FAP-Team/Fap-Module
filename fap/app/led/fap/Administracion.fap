@@ -9,6 +9,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Gestor Documental" pagina=Aed
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
+			Enlace "Tipos Certificados" pagina=ConfigurarCertificados
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Codigos Requerimientos y Exclusión" pagina=Codigos
 			Enlace "Emails" pagina=Emails
@@ -463,5 +464,25 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			Columna titulo="Usuario" campo=Logs.user expandir
 			Columna titulo="Clase" campo=Logs.class_ expandir
 		}
+	}
+	
+	Pagina ConfigurarCertificados titulo="Configurar Certificados" noForm perteneceA="Administracion"{
+		Wiki{"Creación de nuevos tipos de certificados o edición de los existentes."}
+		Tabla tablaTiposCertificados titulo="Tipos de Certificados" campo=TipoCertificado popup=PopupTipoCertificado{
+			Columna titulo="Nombre" campo=TipoCertificado.nombre
+			Columna titulo="Descripción" campo=TipoCertificado.descripcion
+			Columna titulo="Plantilla" campo=TipoCertificado.nombrePlantilla
+		}
+	}
+	
+	Popup PopupTipoCertificado titulo="Tipo de Certificado" campo=TipoCertificado {
+		Texto nombre campo=TipoCertificado.nombre titulo="Nombre" requerido
+		Texto descripcion campo=TipoCertificado.descripcion titulo="Descripcion"
+		Combo tipoDocumento campo=TipoCertificado.tipoDocumento titulo="Tipo de Documento" requerido
+		Texto plantilla campo=TipoCertificado.nombrePlantilla titulo="Nombre Plantilla PDF" requerido
+		Check firmado campo=TipoCertificado.necesitaFirma titulo="Requiere Firma del Emisor"
+		Texto validez campo=TipoCertificado.validez titulo="Periodo de validez (en meses)"
+		Fecha inicio campo=TipoCertificado.fechaInicio titulo="Fecha inicio de la emisión"
+		Fecha final campo=TipoCertificado.fechaFin titulo="Fecha fin de la emisión"
 	}
 }

@@ -12,6 +12,10 @@ h2. "Alegación":app-tramitacion
 
 Añade una página a las aplicaciones que permite realizar una Alegación por parte del solicitante.
 
+h2. "Anotaciones Administrativas Autorizadas":app-aaa
+
+Añade una página a las aplicaciones que permite al solicitante pedir ciertos tipos de certificados que se generan sobre la marcha. El Gestor podrá definir a través del panel de Administración los tipos de Certificados de la aplicación rellenando una serie de parámetros. El solicitante, podrá pedir tantos certificados como requiera, simplemente seleccionando su tipo en un combo que listará todos los tipos que haya definido el gestor en el panel de Administración.
+
 h2. "Aportación":app-aportacion
 
 Permite añadir todas las páginas necesarias para la aportación de documentación en nuestra aplicación. Esta funcionalidad es usada, normalmente, después de que el solicitante haya presentado correctamente la solicitud. Se utiliza para que el solicitante pueda seguir aportando documentos (ya sea porque se despistó de subir alguno en la fase de Presentación, o porque alguno de los que subió no sea correcto y se le haya requerido por parte de la administración o incluso porque esta última le solicita un nuevo documento a subir que no se tenía contemplado previamente.)

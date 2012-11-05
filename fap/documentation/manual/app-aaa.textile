@@ -1,0 +1,68 @@
+h1. Anotaciones Administrativas Autorizadas
+
+Para utilizar este módulo de FAP basta con referenciar la Página FAP en el enlace que queramos en nuestra aplicación.
+
+bc. Enlace "Obtención de Certificados" pagina=PedirCertificado
+
+h2. Diagrama de flujo
+
+!images/app-aaa!
+
+h2. Lo que debe hacer el Gestor
+
+El Gestor deberá unicamente rellenar los datos del tipo de certificado que va a ofrecer la aplicación en cuestión a los solicitantes
+
+Mediante la tabla Tipos Certificados que se encuentra en la página del mismo nombre en el Panel de Administración, el gestor deberá rellenar ciertos parámetros obligatorios y otros opcionales para poner a disposición de los solicitantes la emisión automática de los certificados en cuestión
+
+Los parámetros obligatorios a rellenar serán:
+
+* *Nombre:* Indicará el Nombre del Tipo de Certificado que el solicitante verá en el combo de selección del certificado a generar automaticamente.
+* *Tipo de Documento:* Es el tipo de documento asociado en el Gestor Documental al certificado en cuestión para almacenarlo correctamente. El tipo de documento se seleccionará mediante un combo que se rellenará a través de una property que indicará la lista de uris (separadas por comas) de los tipos de documentos válidos para asignar a los tipos de certificados. La property es la siguiente:
+
+bc. fap.anotaciones.administrativas.autorizadas.tipos.documentos=fs://type3/v01,fs://type1/v01
+
+* *Nombre Plantilla PDF:* Indica el nombre de la plantilla que se deberá situar en la carpeta '_reports_' para que al seleccionar el tipo de certificado por parte del solicitante, el sistema sepa a partir de que plantilla tiene que generar el certificado. El nombre debe ir sin la extensión html, ya que automaticamente se la introducirá FAP. A la plantilla se le pasarán tanto el id de la Solicitud que está pidiendo el certificado, como el id del Tipo de Certificado que se está solicitando.
+
+h2. Lo que puede hacer el Solicitante
+
+El solicitante simplemente deberá ir a la Tabla de los Certificados Solicitados en la aplicación, y mediante el botón _Nuevo_ de dicha tabla deberá generar un nuevo certificado que podrá descargarselo posteriormente. Unicamente deberá elegir el Tipo de Certificado que quiere obtener, a partir de un combo que lista todos los Tipos de Certificados que ha creado el Gestor en el panel correspondiente de Administración, y darle al botón indicado para generar el certificado. En ese momento, y si todo hay ido bien y el solicitante cumple todos los requisitos para la obtención de susodicho certificado, el sistema lo generará y lo añadirá a la tabla de Certificados Solicitados. Ahora simplemente le bastará con ver el certificado que acaba de generar en dicha tabla y seleccionar la opción '_Descargar_' de la tabla para que se le descargue.
+
+h2. Personalización de la lógica de Obtención de Certificados
+
+Existe una clase que define toda la lógica de la generación de los certificados. Dicha clase es: *AnotacionesAdministrativasAutorizadasFapController*. Si se quiere modificar algun comportamiento de la obtención de certificados se deberá implementar una clase que extienda de esta (como se ve a continuación) y sobreescribir aquel o aquellos métodos que se quieran personalizar.
+
+bc. public class AAAAppController extends AnotacionesAdministrativasAutorizadasFapController{
+	// Aquí irían los métodos que se quieran sobreescribir de la clase Padre
+}
+
+Concretamente la clase en cuestión tiene 3 métodos que se podrán sobreescribir y que a continuación se explicarán su cometido:
+
+* *prepararParaPedirCertificado:* Lógica que se sigue para corroborar que el solicitante puede o no obtener el certificado que está solicitando.
+
+bc. public static boolean prepararParaPedirCertificado (Long idSolicitud, Long idTipoCertificado)
+
+Se le pasa tanto el id de la Solicitud, para tener todos los datos disponibles, como el id del Tipo de Certificado que servirá para saber que Certificado está solicitando.
+
+La función debe devolver _TRUE_ si el solicitante puede generar dicho tipo de certificado y _FALSE_ en cualquier otro caso. Se pueden añadir mediente _Messages.error(...)_ y guardandolos antes de retornar la función mediante _Messages.keep()_, los mensajes de errores que se estimen oportunos para que los vea el Solicitante en caso de que no cumpla con los requisitos estipulados para solicitar dicho certificado.
+
+Por defecto en el modulo FAP, está función siempre va a devolver _TRUE_.
+
+Este es el único método que FAP estima oportuno personalizar, si se sobreescribe alguno de los métodos que a continuación se explican, será porque el desarrollador sabe en todo momento que quiere conseguir con ello y estima que su propósito es muy diferente a lo que FAP implementa de forma generalizada.
+
+* *generarCertificado:* Lógica necesaria para poder generar el documento PDF del certificado y almacenarlo en el Gestor Documental asociado al expediente de la solicitud habiendo sido firmado correctamente por la entidad emisora del certificado.
+
+bc. public static void generarCertificado (Long idSolicitud, Long idTipoCertificado)
+
+Se le pasa tanto el id de la Solicitud, para tener todos los datos disponibles, como el id del Tipo de Certificado que servirá para saber que Certificado está solicitando y así conocer la plantilla a renderizar.
+
+Por defecto en el módulo FAP esta función va a generar el certificado a raíz de la plantilla que se defina en el Tipo de Certificado, y va a almacenar el documento generado (el PDF), en el Gestor Documental configurado en la aplicación asociado al expediente de la solicitud siendo firmado con el sello de la ACIISI mediante el servicio de firma configurado.
+
+* *obtenerCertificado:* Esta es el método que se llama cuando el solicitante clicka en el botón de *Obtener Certificado* y es el encargado de realizar toda la lógica que se requiera cuando se pulse dicho botón.
+
+bc. public static void obtenerCertificado (Long idSolicitud, Long idTipoCertificado)
+
+Se le pasa tanto el id de la Solicitud, para tener todos los datos disponibles, como el id del Tipo de Certificado que servirá para saber que Certificado está solicitando.
+
+Por defecto en el módulo FAP, este método lo que hace es llamar a los dos métodos anteriores. Primero se verifica que el solicitante tiene los suficientes privilegios como para poder obtener el certificado requerido, y si esto se cumple, se generará dicho certificado almacenándose y firmandose correctamente.
+
+Este método quizás es el que menos se debería personalizar, porque su comportamiento ya es lo suficientemente genérico como para personalizarlo en sí mismo. Si se quiere realizar algo en concreto, seguro que se podrá conseguir sobreescribiendo los otros métodos dejando este intacto.Si aún así se considera oportuno sobreescribir este método, asegúrese de saber bien lo que está haciendo en cada momento, porque este es el método que se llamará en el evento del botón como se comentó antes.

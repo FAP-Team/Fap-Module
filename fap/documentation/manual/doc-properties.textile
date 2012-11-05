@@ -116,3 +116,4 @@ h4. Visible
 | Personalizar el mensaje de error en los elementos de tipo moneda | *fap.mensaje.error.moneda* | | fap.mensaje.error.moneda=El formato correcto es 0,00 |
 | Permitir listar la tabla de Documentos Subidos, en la Documentación | *fap.documentacion.listarDocumentosSubidos* | _[true / false]_ | _fap.documentacion.listarDocumentosSubidos=true_ (Se activa la visualización de la tabla, valor por defecto en FAP.) |
 | Deshabilita chosen (js) para los tests | *fap.unable.chosen* | | fap.unable.chosen=false |
+| Para habilitar la alerta cuando te rediriges a otra pagina y has modificado campos que no has guardado | *fap.javascript.detectarcambios.noguardados* | | fap.javascript.detectarcambios.noguardados=true |

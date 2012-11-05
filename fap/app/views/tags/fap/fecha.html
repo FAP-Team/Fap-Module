@@ -37,8 +37,6 @@
 		formatDate = "dateFormat: '" + formatDate + "'"
 		formatDate = formatDate.toLowerCase();
 	}
-	play.Logger.debug("Format Date: "+formatDate);
-	
 }%
 
 
@@ -46,9 +44,8 @@
 #{/fap.texto}
 	
 	<script type="text/javascript">
-
-		$(function(){                 
-			$('#${id}').datepicker(${formatDate});                
+		$(function(){
+			$('#${id}').datepicker(${formatDate}).on('changeDate', function(ev){ $(this).change() }); // Lanzamos el evento de cambio de fecha, por si cambio y lo queremos capturar en otro sitio
 		});
 
 	</script>

@@ -26,6 +26,8 @@ import es.fap.simpleled.led.LedFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
@@ -160,6 +162,8 @@ import properties.FapProperties;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -734,7 +738,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			return "";
 		return """
 			@Util
-			public static void checkRedirigir(){
+			public static void checkRedirigir() {
 				renderArgs.put("container", "${name}");
 				if (params._contains("redirigir") && !"no".equals(params.get("redirigir"))){
 					if ("anterior".equals(params.get("redirigir")) && request.headers.get("referer") != null){
@@ -747,10 +751,22 @@ public class ${controllerName} extends ${controllerGenName} {
 							else
 								refererHost += ":80";
 							String host = request.host;
-							if (host.indexOf(":") == -1)
-								host += ":80";
-							if (refererHost.equals(host))
-								response.setCookie("redirigir${name}", referer.replaceFirst("redirigir=anterior", "redirigir=no"));
+							if (properties.FapProperties.get("fap.proxy.preserve.host").equals("off")) {
+								String urlCompleta = FapProperties.get("application.baseUrl");
+								// urlCompleta algo como "http://www.mydomain.com/app"
+								Pattern patron = Pattern.compile("(http|https)://(.*?)(/(.*))?");
+								Matcher matcher = patron.matcher(urlCompleta);
+								if (matcher.matches()) {
+									response.setCookie("redirigir${name}", referer.replaceFirst("redirigir=anterior", "redirigir=no"));
+								} else {
+									play.Logger.error("No fue encontrado el patron url en "+urlCompleta);
+								}
+							} else {
+								if (host.indexOf(":") == -1)
+									host += ":80";
+								if (refererHost.equals(host))
+									response.setCookie("redirigir${name}", referer.replaceFirst("redirigir=anterior", "redirigir=no"));
+							}
 						} catch (MalformedURLException e) {}
 					}
 					else{

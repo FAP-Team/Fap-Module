@@ -12,6 +12,10 @@ Esta funcionalidad se puede deshabilitar, y que nunca intente recuperar los dato
 
 FAP está preparado para que si el solicitante es una persona física, sólo le recupere los datos y le autorellene los campos del elemento Solicitante, en caso de que el que esté conectado sea el propio solicitante que está rellenando una solicitud en su nombre. En caso de personas físicas, siempre se autorellenará los datos de una empresa, ya que estos son datos públicos.
 
+h2. Flujo de trabajo
+
+!images/app-bddTercerosWF!
+
 h2. Métodos del servicio
 
 Existen únicamente dos métodos del servicio de BDD a Terceros de FAP:

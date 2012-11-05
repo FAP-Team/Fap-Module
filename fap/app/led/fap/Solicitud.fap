@@ -704,7 +704,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		EditarArchivo documentoPresentado campo=Documento requerido
 	}
 	
-	Pagina AceptacionRenunciaPresentar titulo="Presentar Aceptacion/Renuncia" noForm  perteneceA ="AceptarRenunciar"{
+	Pagina AceptacionRenunciaPresentar titulo="Presentar Aceptacion" noForm  perteneceA ="AceptarRenunciar"{
 		Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
 			Wiki estilo ="box-warn box" {
 				"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."

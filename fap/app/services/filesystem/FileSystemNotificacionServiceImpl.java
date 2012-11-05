@@ -72,6 +72,7 @@ public class FileSystemNotificacionServiceImpl implements NotificacionService {
 		log.info(String.format("La notificación pasa al estado de puesta a disposición"));
 			// Asignamos el gestor a la notificación
 			notificacion.agente = gestor;
+			notificacion.estado = EstadoNotificacionEnum.puestaadisposicion.name();
 			notificacion.save();
 	}
 

@@ -1,0 +1,57 @@
+h1. Servicio Web
+
+h2. Descripción
+
+Con este nuevo elemento tenemos la posibilidad de observar mediante gráficas la información que queramos. Lo que hay que hacer es definir qué información queremos mostrar en la gráfica. Se declara de la siguiente manera:
+
+bc.. 'ServicioWeb' name "Descripción" {
+	'campo=' Entidad de la que se quiere sacar la información
+	'when' Condición
+	'return= {' Lista de atributos que se quieren representar '}' 
+}
+
+h2. Parámetros
+
+* **_[name]_** : Identificador del servicio web.
+* **descripción** (opcional) : Descripción del servicio web.
+
+h2. Definición
+
+bc.. ServicioWeb:
+	elemento='ServicioWeb' name=ID (descripcion=STRING)? "{"
+		"campo" "=" campo=Campo
+		(when=WSWhen)?
+		"return" "=" "{" ret = WSReturn ("," retMore += WSReturn)* "}"
+	"}"
+;
+
+h2. Ejemplo de uso
+
+h3. Ejemplo básico
+
+bc.. ServicioWeb WSTodasSolicitudes "Todas las solicitudes creadas" {
+	campo=SolicitudGenerica
+	return={titulo="Estado":SolicitudGenerica.estado, 
+		  titulo="Fecha registro":SolicitudGenerica.registro.informacionRegistro.fechaRegistro
+	}
+}
+
+h3. Ejemplos con condiciones
+
+bc.. ServicioWeb WSSolicitudesPresentadas "Todas las solicitudes que no están en estado borrador" {
+	campo=SolicitudGenerica
+	when 
+		SolicitudGenerica.estado != "borrador"
+	return={titulo="Estado":SolicitudGenerica.estado, 
+		  titulo="Fecha registro":SolicitudGenerica.registro.informacionRegistro.fechaRegistro
+	}
+}
+
+bc.. ServicioWeb WSRegistrosAntesJunio {
+	campo=Solicitud
+	when
+		Solicitud.registro.informacionRegistro.fechaRegistro < "01/06/2012"
+	return={titulo="Fechas registro":Solicitud.registro.informacionRegistro.fechaRegistro}
+}
+
+

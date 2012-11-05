@@ -19,6 +19,7 @@ import services.RegistroService;
 import org.joda.time.DateTime;
 
 import platino.FirmaUtils;
+import play.Play;
 import play.mvc.Util;
 import properties.FapProperties;
 
@@ -110,9 +111,9 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		Verificacion dbVerificacion = PaginaVerificacionController.getVerificacion(idSolicitud, idVerificacion);
 
 		PaginaVerificacionController.iniciarVerificacionBindReferences(verificacion);
-
+		
 		if (!Messages.hasErrors()) {
-			dbVerificacion.uriTramite = verificacion.tramiteNombre.uri;
+			//dbVerificacion.uriTramite = verificacion.tramiteNombre.uri;
 			PaginaVerificacionController.iniciarVerificacionValidateCopy("editar", dbVerificacion, verificacion);
 		}
 

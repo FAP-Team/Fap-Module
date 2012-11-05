@@ -15,6 +15,11 @@ bc. Grupo "Instruccion" permiso=instruccion {
 
 Con esto simplemente, ya tendremos acceso a toda la parte de Verificación. No obstante, si se quiere personalizar la documentación a verificar, se tiene que sobreescribir una serie de métodos, entre otras cosas, si se quiere un comportamiento especial propio de una determinada aplicación.
 
+h2. Flujo de trabajo
+
+!images/app-Verificacion-Workflow!
+
+
 h2. Deseo cambiar el comportamiento por defecto de los documentos a verificar ... ¿Qué métodos debo sobreescribir?
 
 Se deberá crear una clase propia en la aplicación que extienda de VerificacionFapController, que es una clase que está implementada en el módulo FAP:

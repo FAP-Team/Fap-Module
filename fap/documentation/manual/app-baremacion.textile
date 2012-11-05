@@ -8,6 +8,10 @@ El gestor/revisor, podrá ver en el menú lateral de la aplicación un elemento 
 
 El solicitante/usuario, podrá ver la página de conceptos económicos que puede rellenar (si procede), una vez se haya presionado el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración. Estos datos que rellene el usuario se tendrán en cuenta sólo la primera vez que se Inicie la Baremación a través del botón "Iniciar Evaluación de Baremación", de la página _Gestionar Baremación_ de Administración, que aparecerá cuando se haya iniciado el Tipo de Evaluación, en la misma página de Administración.
 
+h2. Flujo de trabajo
+
+!images/app-Baremacion-Workflow!
+
 h2. Creación de los ficheros JSON asociados
 
 Para conocer la estructura que deben tener los ficheros JSON (tipoEvaluacion.json, conceptosEconomicos.json, criterios.json, datosAdicionales.json, tiposDocumentos.json) pulsar "aqui":app-baremacion-creacionJSON

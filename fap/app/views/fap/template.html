@@ -243,5 +243,39 @@
 			}
         });
     	</script>
+    	
+    	
+    	#{if properties.FapProperties.getBoolean("fap.javascript.detectarcambios.noguardados")}
+	    	<script>
+	    		var hayCambiosSinGuardar=false;
+	    	
+	    		$('input.input-xlarge').change(function(){
+	    			hayCambiosSinGuardar=true;
+	    		});
+	    		
+	    		$('input.input-file').change(function(){
+	    			hayCambiosSinGuardar=true;
+	    		});
+	    		
+	    		$('input[type="checkbox"]').change(function(){
+	    			hayCambiosSinGuardar=true;
+	    		});
+	    				
+	    		$('select.combo').change(function(){
+	    			hayCambiosSinGuardar=true;
+	    		});
+	    		
+	    		$('form').submit(function(){
+	    			hayCambiosSinGuardar=false;
+	    		});
+	    		
+	    		window.onbeforeunload = function(e) {
+	    			if (hayCambiosSinGuardar)
+						return "Se han modificado valores en la página que no han sido guardados.";
+				};
+			</script>
+		#{/if}
+		
     </body>
+    
 </html>

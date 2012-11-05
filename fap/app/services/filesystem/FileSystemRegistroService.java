@@ -80,8 +80,7 @@ public class FileSystemRegistroService implements RegistroService {
 	public JustificanteRegistro registroDeSalida(Solicitante solicitante,
 			Documento documento, ExpedientePlatino expediente,
 			String descripcion) throws RegistroServiceException {
-		// TODO Auto-generated method stub
-		return null;
+			return new JustificanteRegistro(getDocumentoFromGestorDocumental(documento), new DateTime(), "fs", "FileSystemRegistro - " + Codec.UUID(), "FileSystemNRegistroGeneral - " + Codec.UUID());
 	}
 
 }

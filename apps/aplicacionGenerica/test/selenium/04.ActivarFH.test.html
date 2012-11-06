@@ -1,0 +1,23 @@
+*{
+	Test Activar Funcionario Habilitado.
+		- Se necesita tener rol Administrador o Gestor para activarlo.
+}*
+
+%{
+	// Obtenemos al última solicitud sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	// Cambiamos el rol a Administrador
+	play.mvc.Controller.session.put("username", "admin");
+    controllers.fap.AgenteController.findAgente();
+    controllers.fap.AgenteController.getAgente().cambiarRolActivo("administrador")
+}%
+
+#{selenium}
+	setSpeed('3000')
+	open('/Solicitud/activarfuncionariohabilitado?idSolicitud=${s.id}')
+	waitForPageToLoad()
+	verifyTextPresent('Activar Posibilidadad de Requerir Firma de Funcionario Habilitado')
+	clickAndWait(//input[@value='Activar Funcionario Habilitado'])
+	waitForPageToLoad()
+	verifyTextPresent('Se ha activado correctamente la posibilidad de que el solicitante de esta solicitud pueda requerir la firma de un Funcionario Publico')
+#{/selenium}

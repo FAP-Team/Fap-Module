@@ -1,0 +1,31 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Autogenerada por fap:create
+*     /                       module:fap
+
+
+# Dentro de esta region se van a escribir todas las rutas generadas
+# === FAPGENERATED ===
+  # Home page
+GET / SolicitudesController.index
+GET /Solicitud/solicitante SolicitanteController.index
+POST /Solicitud/solicitante/editar SolicitanteController.editar
+POST /Solicitud/solicitante/beforeOpenPageTable SolicitanteController.beforeOpenPageTable
+GET /Solicitud/solicitante/personaSolicitanteJuridicaTabla SolicitanteController.tablapersonaSolicitanteJuridicaTabla
+GET /Solicitud/popuppersonasolicitantejuridicatabla popups.PopupPersonaSolicitanteJuridicaTablaController.index
+POST /Solicitud/popuppersonasolicitantejuridicatabla/editar popups.PopupPersonaSolicitanteJuridicaTablaController.editar
+POST /Solicitud/popuppersonasolicitantejuridicatabla/borrar popups.PopupPersonaSolicitanteJuridicaTablaController.borrar
+POST /Solicitud/popuppersonasolicitantejuridicatabla/crear popups.PopupPersonaSolicitanteJuridicaTablaController.crear
+
+# === END FAPGENERATED ===
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

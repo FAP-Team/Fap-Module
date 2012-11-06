@@ -57,6 +57,7 @@ Thumbs.db
 
 
 #Ficheros temporales
+apps/test/public/tmp/*
 apps/test/tmp/*
 apps/test/public/tmp/*
 apps/nuevaPaginaInicio/tmp/*
@@ -115,4 +116,15 @@ fap/app/listas/initial-data/paginasMsjLista.yml
 apps/test/app/listas/initial-data/*.yml
 
 apps/cuadroMandos/*
-apps/AplicacionGenerica/*
+
+#Aplicación Genérica
+apps/AplicacionGenerica/gestorDocumental/temporal/*
+apps/AplicacionGenerica/gestorDocumental/clasificado/*
+apps/AplicacionGenerica/conf/platino
+apps/AplicacionGenerica/app/listas/gen
+apps/AplicacionGenerica/test-result
+apps/AplicacionGenerica/javadoc
+apps/AplicacionGenerica/logs
+apps/AplicacionGenerica/tmp/*
+apps/AplicacionGenerica/app/listas/initial-data/*.yml
+apps/AplicacionGenerica/app/views/gen/*

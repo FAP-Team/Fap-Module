@@ -1,0 +1,37 @@
+*{
+	Test Conceptos Económicos.
+		- Se rellenan los conceptos económicos A y B.
+}*
+
+%{
+	// Obtenemos al última solicitud sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+ 	// Rol Usuario
+ 	play.mvc.Controller.session.put("username", "admin");
+    controllers.fap.AgenteController.findAgente();
+    controllers.fap.AgenteController.getAgente().cambiarRolActivo("usuario")
+}%
+
+#{selenium}
+	setSpeed('3000')
+	open('/Solicitud/pceconomicos?idSolicitud=${s.id}&accion=editar')
+	waitForPageToLoad()
+	verifyTextPresent('Conceptos económicos')
+	waitForPageToLoad()
+	mouseOver(//div[text()='A']/parent::td/parent::tr)
+	mouseDown(//div[text()='A']/parent::td/parent::tr)
+	clickAndWait('ext-gen1051')
+	type('cEconomico.valores[0].valorSolicitado', '2000,0')
+	type('cEconomico.valores[1].valorSolicitado', '3000,0')
+	clickAndWait(//input[@value='Guardar'])
+	waitForPageToLoad()
+	verifyTextPresent('Conceptos económicos')
+	waitForPageToLoad()
+	mouseOver(//div[text()='B']/parent::td/parent::tr)
+	mouseDown(//div[text()='B']/parent::td/parent::tr)
+	clickAndWait('ext-gen1051')
+	type('cEconomico.valores[0].valorSolicitado', '2000,0')
+	type('cEconomico.valores[1].valorSolicitado', '3000,0')
+	clickAndWait(//input[@value='Guardar'])
+	clickAndWait(//input[@value='Guardar'])
+#{/selenium}

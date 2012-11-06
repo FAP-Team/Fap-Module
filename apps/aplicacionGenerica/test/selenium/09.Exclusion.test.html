@@ -1,0 +1,28 @@
+*{
+	Test Exclusión.
+}*
+
+%{
+	// Obtenemos al última solicitud sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	// Rol Administrador
+	play.mvc.Controller.session.put("username", "admin");
+    controllers.fap.AgenteController.findAgente();
+    controllers.fap.AgenteController.getAgente().cambiarRolActivo("administrador")
+}%
+
+#{selenium}
+	setSpeed('3000')
+	open('/Solicitud/exclusion?idSolicitud=${s.id}')
+	waitForPageToLoad()
+	#{if !s.estado.equals('excluido')}
+		click('ext-gen1051')
+		setTimeout('3000')
+		verifyTextPresent('Datos Exclusión')
+		select('descripcionCorta', 'Descripcion Corta 1')
+		click('Guardar_id')
+		waitForPageToLoad()
+		clickAndWait(//input[@value='Finalizar Exclusión'])
+		verifyTextPresent('La Solicitud ha pasado al estado Excluido')
+	#{/if}
+#{/selenium}

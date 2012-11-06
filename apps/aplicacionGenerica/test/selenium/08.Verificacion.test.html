@@ -1,0 +1,61 @@
+*{
+	Test Verificación.
+		- Se realiza un requerimiento y una verificación positiva.
+}*
+
+%{
+	// Obtenemos al última solicitud sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	models.Verificacion v = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1).verificacion;
+	// Rol Administrador
+	play.mvc.Controller.session.put("username", "admin");
+    controllers.fap.AgenteController.findAgente();
+    controllers.fap.AgenteController.getAgente().cambiarRolActivo("administrador")
+
+}%
+
+#{selenium}
+	setSpeed('3000')
+	open('/Solicitud/accesoverificaciones?idSolicitud=${s.id}')
+	waitForPageToLoad()
+	
+	#{if v.estado.equals("iniciada")}
+		clickAndWait(//a[text()="Ir a verificación"])
+	#{/if}
+	#{else}
+		clickAndWait(//input[@value='Nueva verificación'])	
+	#{/else}
+	
+	waitForPageToLoad()
+	
+	#{if !v.estado.equals("enVerificacion")}
+		select('getTramitesCombo', 'solicitud')
+		clickAndWait(//input[@value='Iniciar la verificación'])
+	#{/if}
+	
+	waitForPageToLoad()
+	clickAndWait(//input[@value='Finaliza verificación de tipos'])
+	verifyTextPresent('Finaliza la verificación de tipos')
+	type('motivoGeneralRequerimiento', 'Probando requerimiento')
+	clickAndWait(//input[@value='Guardar Motivo Requerimiento'])
+	clickAndWait(//input[@value='Finalizar Verificación'])
+	waitForPageToLoad()
+	clickAndWait('firmaRequerimiento')
+	waitForPageToLoad()
+	clickAndWait(//input[@value='Notificar el requerimiento'])
+	waitForPageToLoad()
+	verifyTextPresent('Notificación enviada correctamente')
+	clickAndWait('volverVerificaciones')
+	
+	waitForPageToLoad()
+	clickAndWait(//input[@value='Nueva verificación'])
+	waitForPageToLoad()
+	select('getTramitesCombo', 'solicitud')
+	clickAndWait(//input[@value='Iniciar la verificación'])
+	waitForPageToLoad()
+	clickAndWait(//input[@value='Finaliza verificación de tipos'])
+	verifyTextPresent('Finaliza la verificación de tipos')
+	clickAndWait(//input[@value='Finalizar Verificación'])
+	waitForPageToLoad()
+	verifyTextPresent('La verificación no tiene ningun requerimiento, finalizada correctamente y con éxito')
+#{/selenium}

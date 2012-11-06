@@ -1,0 +1,17 @@
+*{
+	Test Application.
+		- Comprobamos que no se produjeron errores al cargar la página.
+}*
+
+%{
+	play.mvc.Controller.session.put("username", "admin");
+	controllers.fap.AgenteController.findAgente();
+	controllers.fap.AgenteController.getAgente().cambiarRolActivo("administrador")
+}%
+
+#{selenium}
+    // Open the home page, and check that no error occured
+    open('Principal/solicitudes')
+    waitForPageToLoad()
+    assertNotTitle('Application error')
+#{/selenium}

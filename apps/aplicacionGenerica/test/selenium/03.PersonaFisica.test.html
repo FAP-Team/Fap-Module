@@ -1,0 +1,32 @@
+*{
+	Test Persona Física.
+		- Se rellenan los datos del solicitante.
+}*
+
+%{
+	// Obtenemos al última solicitud sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+}%
+
+#{selenium}
+	open('/Solicitud/solicitante?idSolicitud=${s.id}&accion=editar')
+	verifyTextPresent('Datos solicitante')
+	select('personaSolicitanteCombo', 'Persona física')
+	select('personaSolicitanteFisica_nip_tipo', 'NIF')
+	type('personaSolicitanteFisica_nip_valor', '11111111H')
+	type('personaSolicitanteFisica_nombre', 'María')
+	type('personaSolicitanteFisica_primerApellido', 'García')
+	select('personaSolicitanteFisica_sexo', 'Mujer')
+	type('personaSolicitanteFisica_fechaNacimiento', '01/08/1970')
+	type('personaSolicitante_telefonoContacto', '1')
+	type('personaSolicitante_email', 'm@m.c')
+	
+	select('solicitud_solicitante_domicilio_municipio', label=Añana)
+	type('solicitud_solicitante_domicilio_codigoPostal', '1')
+	type('solicitud_solicitante_domicilio_calle', 'A')
+	type('solicitud_solicitante_domicilio_numero', '1')
+	
+	clickAndWait(//input[@type='submit'])
+    verifyTextPresent('Página editada correctamente')
+
+#{/selenium}

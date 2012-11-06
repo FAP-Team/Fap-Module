@@ -1,0 +1,14 @@
+*{
+	Test Login.
+		- Nos logeamos como Administrador.
+}*
+
+#{selenium}
+    // Open the home page, and check that no error occured
+    open('login')
+    waitForPageToLoad()
+    waitForElementPresent(//input['login-username'])
+    type('id=login-username','admin')
+    type('id=login-password','a')
+    clickAndWait('signin')
+#{/selenium}

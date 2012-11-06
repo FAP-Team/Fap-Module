@@ -1,0 +1,32 @@
+Permiso permitirAportacion {
+vars
+	Solicitud solicitud
+when
+	solicitud.estado != "desistido"
+return
+	editable
+}
+
+Permiso instruccion {
+vars
+	SolicitudGenerica solicitud
+when
+	//TODO SMB 04/04/2012
+	solicitud.estado != "borrador"
+return
+	editable
+}
+
+/*
+ * Permiso "mensajeFirmarRegistrar"
+ *
+ * - Regla sobreescrita
+ */
+Permiso mensajeFirmarRegistrarSolicitud {
+vars
+	Solicitud solicitud
+when
+	solicitud.id = solicitud.id
+return
+	editable
+}

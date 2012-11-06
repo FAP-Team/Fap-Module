@@ -1,0 +1,238 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+// Estilos para tabla de datos
+.table-datos {
+    width:100%;
+}
+
+.table-datos caption {
+	background-color : #ccc;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-datos th {
+	background-color : #ccc;
+	font-weight: bold;
+	width: 150px; 
+	white-space: nowrap;
+	text-align: left;	
+	padding-left: 5px;
+}
+.table-datos td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+
+.table-gris {
+width:100%;
+	border-collapse: collapse;
+}
+
+.table-gris caption{
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+.table-gris thead td {
+	background-color : #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding-left: 2px;
+}
+
+
+.table-gris td {
+	border: 1px solid #000;
+}
+
+.table-info-conexiones {
+    width:100%;
+    font-size: 10px;
+}
+
+.table-info-conexiones th {
+    width:22%;
+    font-style: italic;
+    text-align: right; 
+    vertical-align: top; 
+    font-weight: bold;
+	padding-right: 5px;
+}
+.table-info-conexiones td {
+	text-align: left;
+}
+
+</style>
+
+</head>
+<body>
+
+<h2 style="text-align: center;">ANEXO II</h2>
+<h3 style="text-align: center;">Solicitud para la subvención de la compensación del sobrecoste que afrontan los operadores de telecomunicaciones para desplegar servicios de banda ancha en Canarias - Convocatoria 2011</h3>
+<!-- Solicitante -->
+
+	%{
+		def desMunicipio = models.TableKeyValue.getValue("municipios", solicitud.solicitante.domicilio.municipio);
+	}%
+	
+<div id="divDatosPersonalesSolicitante">
+<table id="tblDatosPersonalesSolicitante" class="table-datos" >
+	<caption>SOLICITANTE:</caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>CIF/NIF:</th><td>${solicitud.solicitante.getNumeroId()?.toUpperCase()}</td></tr>
+	<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+	<tr><th>Teléfono:</th><td>${solicitud.solicitante.telefonoFijo}</td></tr>
+	<tr><th>Móvil:</th><td>${solicitud.solicitante.telefonoMovil}</td></tr>
+	<tr><th>Fax:</th><td>${solicitud.solicitante.fax}</td></tr>
+	<tr><th>Correo electrónico:</th><td>${solicitud.solicitante.email}</td></tr>
+	<tr><th>Web: </th><td>${solicitud.solicitante.web}</td></tr>
+</table>
+</div>
+
+<div id="divDatosDireccionSolicitante">
+
+<table id="tblDatosDireccionSolicitante" class="table-datos" >
+	<tr><td colspan="2"><em><b><br>Dirección de ubicación de la entidad en Canarias:</b></em></td></tr>
+	<tr><th >Calle:</th><td>${solicitud.solicitante.domicilio.calle?.toUpperCase()}</td></tr>
+	<tr><th>Número:</th><td>${solicitud.solicitante.domicilio.numero}</td></tr>
+	<tr><th>Puerta/Piso/Otros:</th><td>${solicitud.solicitante.domicilio.otros?.toUpperCase()}</td></tr>	
+	<tr><th>Código Postal:</th><td>${solicitud.solicitante.domicilio.codigoPostal}</td></tr>
+<!--   	<tr><th>Municipio:</th><td>#{fap.valueFromTable "solicitud.solicitante.domicilio.municipio"}${valor?.toUpperCase()}#{/fap.valueFromTable}</td></tr> -->
+ 	<tr><th>Municipio:</th><td>${desMunicipio?.toUpperCase()}</td></tr> 
+ 	 
+</table>
+</div>
+<br/><br/>
+
+<!-- Representantes si los hubiera -->
+
+<div id="divDatosRepresentantes">
+#{if solicitud.solicitante.isPersonaJuridica() && solicitud.solicitante.representantes.size() > 0}
+<table id="tblTituloDatosRepresentantes" class="table-datos">
+	<caption>REPRESENTANTE O REPRESENTANTES LEGALES DE LA ENTIDAD: </caption>
+	<tr><td colspan="2"><br></td></tr>	
+</table>
+
+<table id="tblDatosRepresentantes" class="table-gris" cellspacing="0px" cellpadding="2px" >
+	<thead>
+	  <tr>
+		<td width='20%'>Tipo</td>
+		<td width='45%'>Nombre</td>
+		<td width='12%'>NIP/CIF</td>
+		<td width='23%'>Tipo Representación</td>
+	  </tr>
+	</thead>
+	#{list items:solicitud.solicitante.representantes, as:'representante' }
+		<tr>
+			<td>${models.TableKeyValue.getValue("TipoDePersona", representante.tipo).toUpperCase()}</td>
+			<td>${representante.getNombreCompleto()?.toUpperCase()}</td>
+			<td>${representante.getNumeroId()?.toUpperCase()}</td>
+			<td>${models.TableKeyValue.getValue("TiposRepresentantes",representante.tipoRepresentacion).toUpperCase()}</td>
+		</tr>		
+	#{/list}
+</table>
+#{/if}
+#{elseif solicitud.solicitante.isPersonaFisica() && solicitud.solicitante.representado == true}
+<table id="tblTituloDatosRepresentantes" class="table-datos">
+	<caption>REPRESENTANTE LEGAL DEL SOLICITANTE: </caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>Tipo:</th><td>${models.TableKeyValue.getValue("TipoDePersona", solicitud.solicitante.representante.tipo).toUpperCase()}</td></tr>
+	<tr><th>Nombre:</th><td>${solicitud.solicitante.representante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+	<tr><th>CIF/NIF:</th><td>${solicitud.solicitante.representante.getNumeroId()?.toUpperCase()}</td></tr>
+</table>
+#{/elseif}
+</div>
+
+<br/><br/>
+
+<!-- Expone -->
+<div id="divExpone">
+<table id="tblExpone" class="table-datos">
+	%{
+		def fecha = models.TableKeyValue.getValue("datosResolucion", "FechaResolucion");
+		def boletin = models.TableKeyValue.getValue("datosResolucion", "NumeroBoletin");
+	}%
+	<caption>EXPONE:</caption>	
+	<tr><td><p>Que a la vista de la Resolución de fecha <b>${fecha}</b> 	
+		por la que se aprueban las bases reguladoras con carácter indefinido del régimen
+		de concesión de ayudas en la forma de subvenciones para compensar el sobrecoste
+		que afrontan los operadores de telecomunicaciones para desplegar servicios de 
+		banda ancha en Canarias, publicada en el Boletín Oficial de Canarias 
+		nº <b><i>${boletin}</i></b> considerando reunir los requisitos exigidos según se muestran en los impresos y documentos que se adjuntan y con la expresa aceptación de todos los términos de la citada convocatoria.
+		</p><br></td></tr>
+	</table>
+</div>
+<!-- Declaraciones -->	
+<div id="divDeclara">
+<!-- Hay que actualizarlas según texto en formulario -->
+<table id="tblDeclara" class="table-datos">
+	<!-- <tr><td  style="width: 100%;" ><b>DECLARA RESPONSABLEMENTE:</b></td></tr> -->
+	<caption>DECLARA RESPONSABLEMENTE:</caption>	
+	<tr><td style="width:100%">
+	<ul>
+		<li><p>Que se halla al corriente en el cumplimiento de las obligaciones tributarias con la Comunidad Autónoma, las obligaciones tributarias estatales y con la Seguridad Social.</p></li>
+		<li><p>Que se encuentran habilitados para la prestación de servicios de comunicaciones electrónicas en España, conforme a lo establecido en la Ley 32/2003, de 3 de noviembre, General de Telecomunicaciones.</p></li>
+		<li><p>Que no ha recibido otras ayudas, ingresos o recursos con la misma finalidad, procedentes de cualesquiera Administraciones públicas o entes públicos o privados, nacionales, de la Unión Europea o de otros organismos internacionales.</p></li>
+		<li><p>Que no ha recibido ayudas u otras atribuciones patrimoniales gratuitas de entidades privadas o particulares para el mismo destino, o en su caso, hace constar el importe de las recibidas.</p></li>
+		<li><p>Que no se halla incurso en las causas de prohibición para ser beneficiario, establecidas en el artículo 13 de la Ley 38/2003, de 17 de noviembre, General de Subvenciones, ni se halla inhabilitado para recibir ayudas o subvenciones de la Administración Pública de la Comunidad Autónoma de Canarias.</p></li>
+		<li><p>Que ha procedido a la justificación de las subvenciones concedidas con anterioridad por los órganos de la Administración Pública de la Comunidad Autónoma en los términos establecidos en el artículo 31 del Decreto 337/1997, de 19 de diciembre.</p></li>
+		<li><p>Que tiene su domicilio social en la Comunidad Autónoma de Canarias o que, al menos, un centro de actividad está ubicado en dicha Comunidad.</p></li>
+	</ul>
+	</td></tr> 
+</table>
+</div>
+<br><br>
+
+<div id="divDocumentacion">
+<table id="tblDocumentacionTitulo" class="table-datos">
+    <caption>DOCUMENTACIÓN QUE SE ADJUNTA:</caption> 
+	<tr><td colspan="2"><br></td></tr>	
+</table>
+<table id="tblDocumentacion" class="table-gris" cellspacing="0px" cellpadding="2px" >
+ <thead>
+  <tr>		
+		<td>Documento</td>
+		<td>Tipo</td>
+		<td>Hash del documento</td>
+  <tr>
+ </thead>
+	#{list items:solicitud.documentacion.documentos, as:"documento"}
+	%{
+		String descripcionDevolver = documento.tipo;
+		if (models.TableKeyValue.getValue("tiposDocumentos", documento.tipo) != null)
+			descripcionDevolver = models.TableKeyValue.getValue("tiposDocumentos", documento.tipo);
+	%}
+	<tr>
+		<td>${documento.descripcionVisible}</td>
+		<td>${descripcionDevolver}</td>
+		<td>${documento.hash}</td>
+	</tr>
+   #{/list}
+</table>
+</div>
+<br/><br/><br/>
+<div id="divFinal">
+<table id="tblFinal" >
+	<tr><td>
+		<p><b>ILMO. SR.</b></p>
+	</td></tr>
+</table>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+[
+    {
+        nombre:"Criterio 1",
+        claseCriterio:"auto",
+        jerarquia:"A",
+        tipoValor:"cantidad",
+        descripcion:"",
+        comentariosAdministracion:true,
+        comentariosSolicitante:true
+    }
+]

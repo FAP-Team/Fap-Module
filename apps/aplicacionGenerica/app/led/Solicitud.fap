@@ -1,0 +1,41 @@
+Formulario Solicitud campo=Solicitud {
+	
+	Menu {
+    	Enlace "Volver" pagina=Solicitudes
+    	
+    	Grupo "Solicitud" {
+			Enlace "Solicitante" pagina=Solicitante
+			Enlace "Activar Funcionario Habilitado" pagina=ActivarFuncionarioHabilitado
+			Enlace "Documentación" pagina=DocumentacionFAP
+			Enlace "Conceptos Económicos" pagina=PCEconomicos
+			Enlace "Presentación" pagina=PresentarFAP
+		}
+		
+		Grupo "Instrucción" permiso=instruccion {
+			Enlace "Aportación de Documentación" pagina=Aportacion permiso=permitirAportacion
+			Enlace "Desistimiento" permiso=instruccionDesistimiento pagina=Desistimiento
+			Enlace "Verificación" permiso=noUsuario pagina=AccesoVerificaciones
+			Enlace "Exclusión" permiso=noUsuario pagina=Exclusion
+			Enlace "Seguimiento" permiso=noUsuario pagina=AnotacionesFAP	
+		}
+		
+//		Grupo "Resolución" permiso=resolucion {
+//				Enlace "Alegaciones" pagina=Alegaciones
+//				Enlace "Aceptación/Renuncia" pagina=PaginaAceptacionRenuncia permiso=resolucionAceptarRenunciar
+//		}
+
+		Enlace "Ayuda" pagina=Soporte crear
+		Enlace "Salir" accion=logout
+    }
+	
+	//---------------------------------------------------------------------------
+	//-----------Pagina Datos Solicitante----------------------------------------
+	//---------------------------------------------------------------------------
+	Pagina Solicitante guardarParaPreparar inicial permiso=editarSolicitud {
+		Wiki {
+			"Pulse guardar después de realizar los cambios"
+		}
+		Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=editarSolicitud requerido
+		Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio" requerido
+	}		
+}

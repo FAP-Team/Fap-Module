@@ -1,0 +1,16 @@
+*{
+	Test Nueva Solicitud.
+		- Como Usuario creamos una nueva solicitud.
+}*
+
+%{
+	play.mvc.Controller.session.put("username", "admin");
+	controllers.fap.AgenteController.findAgente();
+	controllers.fap.AgenteController.getAgente().cambiarRolActivo("usuario")
+}%
+
+#{selenium}
+    open('Principal/solicitudes')
+    waitForPageToLoad()
+    clickAndWait(//span[text()="Nuevo"])
+#{/selenium}

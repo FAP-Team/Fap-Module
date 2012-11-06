@@ -1,0 +1,20 @@
+*{
+	Test Persona Física.
+		- Se rellenan los datos del solicitante.
+}*
+
+%{
+	// Obtenemos al última solicitud sobre la que trabajamos
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+ 	// Volvemos al rol Usuario
+ 	play.mvc.Controller.session.put("username", "admin");
+    controllers.fap.AgenteController.findAgente();
+    controllers.fap.AgenteController.getAgente().cambiarRolActivo("usuario")
+}%
+
+#{selenium}
+	open('/Solicitud/documentacionfap?idSolicitud=${s.id}')
+	verifyTextPresent('Documentos')
+	waitForPageToLoad()
+	click(//input[@value='Descargar Autorización'])
+#{/selenium}

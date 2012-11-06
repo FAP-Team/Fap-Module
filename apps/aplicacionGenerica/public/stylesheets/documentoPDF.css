@@ -1,0 +1,165 @@
+/*-------------------------------------------------------------------------
+Estilo general ...*/
+
+body {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+h3 {
+text-transform: uppercase;
+}
+p {
+	text-align: justify;
+}
+
+/*-------------------------------------------------------------------------
+SALTO DE PÁGINAS*/
+.div-saltoPagina{
+page-break-after:always;
+}
+
+
+/*-------------------------------------------------------------------------
+ESTILO DE SECCIÓN */
+
+.table-seccion {
+    width:100%;
+}
+
+.table-seccion caption {
+	background-color : #ccc;
+	border:2px solid gray;
+	font-weight: bold;
+	text-align: left;
+	padding: 6px;
+}
+.table-seccion td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+/*-------------------------------------------------------------------------
+TABLA PARA TEXTOS y LISTAS GENERICA */
+
+.table-datos {
+    width:100%;
+    border:1px solid #ccc;
+}
+
+.table-datos caption {
+	background-color : #ccc;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-datos th {
+	background-color : #ccc;
+	font-weight: bold;
+	width: 150px;
+	white-space: nowrap;
+	text-align: left;
+	padding-left: 5px;
+}
+.table-datos td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+/*-------------------------------------------------------------------------
+TABLAS CON GRID*/
+
+.table-grid {
+	width:100%;
+	border-collapse: collapse;
+	cellspacing:0px;
+	cellpadding:2px;
+	-fs-table-paginate: paginate;
+}
+
+.table-grid caption{
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+.table-grid thead td {
+	border: 1px solid gray;
+	background-color : #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding: 4px;
+}
+
+.table-grid td {
+	border: 1px solid #ccc;
+	padding: 4px;
+}
+
+/*-------------------------------------------------------------------------
+Estilo para tablas de resultados*/
+.table-total{
+	width:50%;
+	border-collapse: collapse;
+	margin-left: 50%;
+}
+
+.table-total td{
+	font-weight: bold;
+	font-style: normal;
+	text-align: center;
+	border-bottom-color:black;
+	border-bottom-style:double;
+	border-bottom-width: 3px;
+}
+
+.table-total th{
+	text-align:right;
+	font-weight: bold;
+	font-style: italic;
+	/*text-decoration: underline;*/
+}
+
+/*-------------------------------------------------------------------------
+Estilo para tabla de cuentas cotizacion*/
+
+.table-cuentasCotizacion {
+	width:75%;
+	border-collapse: collapse;
+	font-size: 10px;
+}
+
+.table-cuentasCotizacion caption{
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+.table-cuentasCotizacion thead td {
+	background-color : #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding-left: 2px;
+}
+
+
+.table-cuentasCotizacion td {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.myarrow {
+   line-height: 0%; width: 0px;
+   border-top: 4px solid  transparent;
+   border-bottom: 4px solid  transparent;
+   border-left: 6.9px solid black;
+   margin-top: 30px;
+   margin-left: 3em;
+   text-indent: 1em;
+}
+
+ul {
+   list-style-type:circle
+   margin-left: 4em;
+   text-indent: 4em;
+}

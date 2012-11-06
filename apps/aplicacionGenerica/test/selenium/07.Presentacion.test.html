@@ -1,0 +1,26 @@
+*{
+	Test Presentación.
+}*
+
+%{
+	// Obtenemos al última solicitud sobre la que trabajamos y su correspondiente
+	// registro
+	models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	models.Registro r = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1).registro;
+ 	// Rol Usuario
+ 	play.mvc.Controller.session.put("username", "admin");
+    controllers.fap.AgenteController.findAgente();
+    controllers.fap.AgenteController.getAgente().cambiarRolActivo("usuario")
+}%
+
+#{selenium}
+	setSpeed('3000')
+	open('/Solicitud/presentarfap?idSolicitud=${s.id}&idRegistro=${r.id}')
+	waitForPageToLoad()
+	clickAndWait(//input[@value='Preparar para firmar'])
+	waitForPageToLoad()
+	clickAndWait(//input[@value='Presentar solicitud'])
+	waitForPageToLoad()
+	clickAndWait(//input[@value='Firmar y registrar'])
+	verifyTextPresent('Descargar el recibo')
+#{/selenium}

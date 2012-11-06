@@ -1,0 +1,18 @@
+[
+    {
+    	nombre:"Concepto Economico A",
+    	clase:"manual",
+    	jerarquia:"A",
+    	comentariosAdministracion:false,
+    	comentariosSolicitante:false,
+    	tipoOtro:false
+    },
+    {
+    	nombre:"Concepto Economico B",
+    	clase:"manual",
+    	jerarquia:"B",
+    	comentariosAdministracion:false,
+    	comentariosSolicitante:false,
+    	tipoOtro:false
+    }
+]

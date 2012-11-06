@@ -210,7 +210,7 @@ public class SecureController extends GenericController{
 			agente.name = name;
 			
 		}else{
-			if(agente.name == null || !agente.acceso.equals("certificado")){
+			if(agente.name == null || agente.acceso == null || !agente.acceso.equals("certificado")){
 				agente.name = name;
 			}
 		}

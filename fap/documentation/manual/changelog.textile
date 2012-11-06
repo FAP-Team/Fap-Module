@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC6
+
+* Alerta antes de redirigir a una pagina habiendo campos modificados y sin guardar.
+* Fixed Bug en Redireccion en Soporte en PRO.
+* Fixed Bug en Aceptación y Renuncia
+* Fixed Bug en Verificación.
+
 h3. Versión 2.1.1RC5
 
 * Fixed bugs en Aceptación/Renuncia.

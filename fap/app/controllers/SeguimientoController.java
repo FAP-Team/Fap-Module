@@ -21,7 +21,7 @@ public class SeguimientoController extends SeguimientoControllerGen {
 		}
 
 		if (!Messages.hasErrors()) {
-			List<SolicitudGenerica> todasSolicitudes = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud").fetch();
+			List<SolicitudGenerica> todasSolicitudes = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud order by solicitud.expedienteAed.idAed").fetch();
 			List<SolicitudGenerica> solicitudes = new ArrayList<SolicitudGenerica>();
 			for (SolicitudGenerica sol: todasSolicitudes) {
 				if (sol.datosAnotaciones.anotaciones.size() != 0) {

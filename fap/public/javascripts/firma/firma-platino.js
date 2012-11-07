@@ -1,25 +1,23 @@
 Firma._getCertificados = function(){
 		try {			
 			initPlatinoWebSigner();
-			arrCAs = new Array(
-					'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
-					'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-					'CN=AC DNIE 001, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-					'OU=AC APE, O=FNMT-RCM, C=ES',
-					'CN=Chambers of Commerce Root, OU=http://www.chambersign.org, O=AC Camerfirma SA CIF A82743287, C=EU',
-					'CN=AC RAIZ DNIE, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-					'OU=AC RAIZ FNMT-RCM, O=FNMT-RCM, C=ES',
-					'EMAILADDRESS=ca@firmaprofesional.com, CN=Autoridad de Certificacion Firmaprofesional CIF A62634068, L=C/ Muntaner 244 Barcelona, C=ES',
-					'CN=AC DNIE 002, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-					'CN=AC Firmaprofesional - CA1, O=Firmaprofesional S.A. NIF A-62634068, OU=Jerarquia de Certificacion Firmaprofesional, OU=Consulte http://www.firmaprofesional.com, L=C/ Muntaner 244 Barcelona, EMAILADDRESS=ca1@firmaprofesional.com, C=ES',
-					'CN=AC Camerfirma Certificados Camerales, O=AC Camerfirma SA, SERIALNUMBER=A82743287, L=Madrid (see current address at www.camerfirma.com/address), EMAILADDRESS=ac_camerfirma_cc@camerfirma.com, C=ES');
 
-			arrRestrictions = new Array(new Array('', ''), new Array('', ''),
-					new Array('', ''), new Array('', ''), new Array('', ''),
-					new Array('', ''), new Array('', ''), new Array('', ''),
-					new Array('', ''), new Array('', ''), new Array('', ''));
+			arrCAs = new Array('OU=FNMT Clase 2 CA, O=FNMT, C=ES',
+					'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
+					'CN=AC Camerfirma Certificados Camerales, O=AC Camerfirma SA, SERIALNUMBER=A82743287, L=Madrid (see current address at www.camerfirma.com/address), EMAILADDRESS=ac_camerfirma_cc@camerfirma.com, C=ES',
+					'CN=AC RAIZ DNIE, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
+					'CN=AC Firmaprofesional - CA1, O=Firmaprofesional S.A. NIF A-62634068, OU=Jerarquia de Certificacion Firmaprofesional, OU=Consulte http://www.firmaprofesional.com, L=C/ Muntaner 244 Barcelona, EMAILADDRESS=ca1@firmaprofesional.com, C=ES',
+					'CN=AC DNIE 001, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
+					'CN=ANF Server CA, SERIALNUMBER=G-63287510, OU=ANF Clase 1 CA, O=ANF Autoridad de Certificacion, L=Barcelona (see current address at https://www.anf.es/address/ ), ST=Barcelona, C=ES',
+					'CN=AC DNIE 002, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES');
+
 			
-			var arrValidCertificates = getTrustedCertificates('PLATINO', 'verificar', 'PLATINO');
+			arrRestrictions = new Array(new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
+					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
+					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
+					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'));
+			
+			var arrValidCertificates = getTrustedCertificates('PLATINO', 'firma', 'PLATINO');
 
 			var certificados = [];
 			for ( var i = 0; i < arrValidCertificates.length; i++) {
@@ -60,25 +58,22 @@ var Platino = {
 
 		try {			
 			initPlatinoWebSigner();
-			arrCAs = new Array(
-					'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
+			arrCAs = new Array('OU=FNMT Clase 2 CA, O=FNMT, C=ES',
 					'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-					'CN=AC DNIE 001, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-					'OU=AC APE, O=FNMT-RCM, C=ES',
-					'CN=Chambers of Commerce Root, OU=http://www.chambersign.org, O=AC Camerfirma SA CIF A82743287, C=EU',
+					'CN=AC Camerfirma Certificados Camerales, O=AC Camerfirma SA, SERIALNUMBER=A82743287, L=Madrid (see current address at www.camerfirma.com/address), EMAILADDRESS=ac_camerfirma_cc@camerfirma.com, C=ES',
 					'CN=AC RAIZ DNIE, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-					'OU=AC RAIZ FNMT-RCM, O=FNMT-RCM, C=ES',
-					'EMAILADDRESS=ca@firmaprofesional.com, CN=Autoridad de Certificacion Firmaprofesional CIF A62634068, L=C/ Muntaner 244 Barcelona, C=ES',
-					'CN=AC DNIE 002, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
 					'CN=AC Firmaprofesional - CA1, O=Firmaprofesional S.A. NIF A-62634068, OU=Jerarquia de Certificacion Firmaprofesional, OU=Consulte http://www.firmaprofesional.com, L=C/ Muntaner 244 Barcelona, EMAILADDRESS=ca1@firmaprofesional.com, C=ES',
-					'CN=AC Camerfirma Certificados Camerales, O=AC Camerfirma SA, SERIALNUMBER=A82743287, L=Madrid (see current address at www.camerfirma.com/address), EMAILADDRESS=ac_camerfirma_cc@camerfirma.com, C=ES');
+					'CN=AC DNIE 001, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
+					'CN=ANF Server CA, SERIALNUMBER=G-63287510, OU=ANF Clase 1 CA, O=ANF Autoridad de Certificacion, L=Barcelona (see current address at https://www.anf.es/address/ ), ST=Barcelona, C=ES',
+					'CN=AC DNIE 002, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES');
 
-			arrRestrictions = new Array(new Array('', ''), new Array('', ''),
-					new Array('', ''), new Array('', ''), new Array('', ''),
-					new Array('', ''), new Array('', ''), new Array('', ''),
-					new Array('', ''), new Array('', ''), new Array('', ''));
 			
-			var arrValidCertificates = getTrustedCertificates('PLATINO', 'verificar', 'PLATINO');
+			arrRestrictions = new Array(new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
+					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
+					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
+					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'));
+			
+			var arrValidCertificates = getTrustedCertificates('PLATINO', 'firma', 'PLATINO');
 
 			var options = '';
 			for ( var i = 0; i < arrValidCertificates.length; i++) {
@@ -122,20 +117,6 @@ var Platino = {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
 * Fichero que trabajo lista los certificados y firma con platino
  * Requisitos:
@@ -170,28 +151,23 @@ function actualizarCertificadosValidos(elementId, options) {
 			return;
 		
 		initPlatinoWebSigner();
-		arrCAs = new Array(
-				'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
+		arrCAs = new Array('OU=FNMT Clase 2 CA, O=FNMT, C=ES',
 				'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-				'CN=AC DNIE 001, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-				'OU=AC APE, O=FNMT-RCM, C=ES',
-				'CN=Chambers of Commerce Root, OU=http://www.chambersign.org, O=AC Camerfirma SA CIF A82743287, C=EU',
+				'CN=AC Camerfirma Certificados Camerales, O=AC Camerfirma SA, SERIALNUMBER=A82743287, L=Madrid (see current address at www.camerfirma.com/address), EMAILADDRESS=ac_camerfirma_cc@camerfirma.com, C=ES',
 				'CN=AC RAIZ DNIE, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
-				'OU=AC RAIZ FNMT-RCM, O=FNMT-RCM, C=ES',
-				'EMAILADDRESS=ca@firmaprofesional.com, CN=Autoridad de Certificacion Firmaprofesional CIF A62634068, L=C/ Muntaner 244 Barcelona, C=ES',
-				'CN=AC DNIE 002, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
 				'CN=AC Firmaprofesional - CA1, O=Firmaprofesional S.A. NIF A-62634068, OU=Jerarquia de Certificacion Firmaprofesional, OU=Consulte http://www.firmaprofesional.com, L=C/ Muntaner 244 Barcelona, EMAILADDRESS=ca1@firmaprofesional.com, C=ES',
-				'CN=AC Camerfirma Certificados Camerales, O=AC Camerfirma SA, SERIALNUMBER=A82743287, L=Madrid (see current address at www.camerfirma.com/address), EMAILADDRESS=ac_camerfirma_cc@camerfirma.com, C=ES');
+				'CN=AC DNIE 001, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
+				'CN=ANF Server CA, SERIALNUMBER=G-63287510, OU=ANF Clase 1 CA, O=ANF Autoridad de Certificacion, L=Barcelona (see current address at https://www.anf.es/address/ ), ST=Barcelona, C=ES',
+				'CN=AC DNIE 002, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES');
 
-
-		arrRestrictions = new Array(new Array('', ''), new Array('', ''),
-				new Array('', ''), new Array('', ''), new Array('', ''),
-				new Array('', ''), new Array('', ''), new Array('', ''),
-				new Array('', ''), new Array('', ''), new Array('', ''));
-		arrValidCertificates = getTrustedCertificates(
-				'PLATINO',
-				'verificar',
-				'PLATINO');
+		
+		arrRestrictions = new Array(new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
+				new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
+				new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
+				new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'));
+		
+		var arrValidCertificates = getTrustedCertificates('PLATINO', 'firma', 'PLATINO');
+		
 		for ( var i = 0; i < arrValidCertificates.length; i++) {
 			if (arrValidCertificates[i] != null)
 				if (arrValidCertificates[i] != "") {
@@ -232,18 +208,6 @@ function addEvent(obj, evType, fn) {
 		return false;
 	}
 }
-
-/*
- * function firmarUrl(url,idCampoCerts,idCampoFirma) { alert("Firmando URL
- * "+url+" con certificado en "+idCampoCerts+" guardando firma en campo
- * "+idCampoFirma); var certificados = document.getElementById(idCampoCerts);
- * var firma = document.getElementById(idCampoFirma); alert("Certificado
- * "+certificados.value);
- * 
- * firma.value = signFile(certificados.value, url); alert(firma.value); return
- * firma.value; }
- */
-
 
 /**
  * El campo options es un hash en el que se puede especificar
@@ -303,18 +267,9 @@ function copyInfoCert() {
 	var token = document.getElementById("token");
 
 	document.formData.j_username.value = token.value;
-	// if(certificado.value != null){
-	// if (certificado.value == "null" || certificado.value == "") {
+
 	document.formData.j_password.value = signPKCS7(certificado.value,
 			token.value);
-	// }
-	// else {
-	// document.formData.j_password.value="-1";
-	// }
-	// } else {
-	// document.formData.j_password.value="-1";
-	// }
 
 }
 
-// addEvent(window, 'load', actualizarCertificadosValidos);

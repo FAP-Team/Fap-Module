@@ -20,7 +20,7 @@ El Gestor o Administrador, debe poner en marcha el proceso de petición de cesio
 
 * Acceder a la página Administración/Cesión de Datos, donde podrá ver todas las cesiones de datos que se han realizado (la tabla aparecerá vacía si no se ha realizado ninguna).
 * En la tabla _Tabla de Peticiones de Cesiones_, pulsar en el botón *Nuevo* y en la nueva página que aparece, seleccionar en el combo _Tipo de Cesion_, el tipo de la cesión que quiere realizarse, en cuanto se pulse guardar, la petición pasa al estado _creada_.
-* Una vez elegido el tipo de cesión se mostrará una tabla con todas las solicitudes que han autorizado dicho tipo de cesión, de manera que podemos elegir los expedientes a consultar. Una vez seleccionados se pulsará _Generar Petición_ que generará el fichero de opetición de cesión de datos y nos devolverá a la pagina de Cesión de Datos.
+* Una vez elegido el tipo de cesión se mostrará un combo, para filtrar en la tabla con todas las solicitudes que han autorizado dicho tipo de cesión, de manera que podemos elegir los expedientes a consultar (manualmente uno por uno o con cualquiera de las opciones disponibles en el combo). Una vez seleccionados se pulsará _Generar Petición_ que generará el fichero de petición de cesión de datos y nos devolverá a la pagina de Cesión de Datos.
 
 !images/app-cesiondatos-nueva!
 

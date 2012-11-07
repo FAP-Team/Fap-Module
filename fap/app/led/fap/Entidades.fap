@@ -750,7 +750,10 @@ Entidad PeticionCesiones{
 	DateTime fechaGen
 	DateTime fechaValidez
 	RespuestaCesion respCesion
-	Lista estadosPeticion estado 
+	Lista estadosPeticion estado
+	
+	Lista seleccionExpedientesCesion seleccion
+	DateTime fechaCorte
 }
 
 

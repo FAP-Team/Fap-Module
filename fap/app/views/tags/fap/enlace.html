@@ -7,13 +7,14 @@
 	_url	- Url del enlace
 	_action - Accion de un controlador  
 	_destino- Indica al enlace donde tiene que abrirse (campo target en html)
+	_codigojs - Si procede, se indicará el codigo java script que deberá ejecutarse al pulsar el enlace
 	 
 }*
 
 %{ 
 	def id = _id ?: play.libs.Codec.UUID()
 	def label = _titulo ?: _pagina
-	
+	def codigojs;
 	def url;
 	if(_url != null){
 		url = _url;
@@ -29,17 +30,32 @@
        else if ((play.mvc.Controller.request != null) && (play.mvc.Controller.request.cookies != null) && (play.mvc.Controller.request.cookies.containsKey(key)))
        		url = play.mvc.Controller.request.cookies.get(key).value;
 	}
+	else if (_codigojs){
+		codigojs = _codigojs;
+	}
 	else{
-		throw new play.exceptions.TagInternalException("el atributo url y accion no pueden ser vacios");
+		throw new play.exceptions.TagInternalException("el atributo url, accion y codigojs no pueden ser vacios");
 	}
 	if (_popup != null)
 		url = "javascript:popup_open('${_popup}_popup', '${url}')";
+
 	
 	def target = _target
 	def stackDisabled = null; // Enlaces siempre editables! tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'
 	def estilo = _estilo;
+	
 }%
+#{if codigojs != null}
+	#{if _noRow}
+	<a id="${id}" onclick="${codigojs}" ${disabled} #{if estilo}class="${estilo}"#{/if}>${label}</a>
+	#{/if}
+	#{else}
+		<div class="form-row">
+			<a id="${id}" onclick="${codigojs}" ${disabled} #{if estilo}class="${estilo}"#{/if}>${label}</a>
+		</div>
+	#{/else}
+#{/if}
 
 #{if url != null}
 	#{if _noRow}

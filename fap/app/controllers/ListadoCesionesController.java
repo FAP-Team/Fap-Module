@@ -50,7 +50,7 @@ public class ListadoCesionesController extends ListadoCesionesControllerGen {
 		Cesiones cesionINSS = null, cesionAEAT = null, cesionATC = null;
 		for (Cesiones cesiones : rows) {
 			if (cesiones.tipo.equals(ListaCesionesEnum.inssR001.name())&& ((cesionINSS == null)||(cesiones.fechaPeticion.isAfter(cesionINSS.fechaPeticion)))){
-					cesionINSS = cesiones;
+				cesionINSS = cesiones;
 			}
 			if (cesiones.tipo.equals(ListaCesionesEnum.aeat.name())&& ((cesionAEAT == null)||(cesiones.fechaPeticion.isAfter(cesionAEAT.fechaPeticion)))){
 				cesionAEAT = cesiones;

@@ -45,6 +45,13 @@ public class PeticionCesiones extends FapModel {
 	@ValueFromTable("estadosPeticion")
 	public String estado;
 
+	@ValueFromTable("seleccionExpedientesCesion")
+	public String seleccion;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaCorte"), @Column(name = "fechaCorteTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaCorte;
+
 	public PeticionCesiones() {
 		init();
 	}

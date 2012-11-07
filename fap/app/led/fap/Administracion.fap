@@ -438,11 +438,19 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	
 	//Nueva petición de cesión de datos
 	Pagina NuevaCesion campo=PeticionCesiones{
-		Grupo permiso=permisoTipoElegido borde=false{
+		Grupo permiso=permisoTipoElegido borde=true titulo="Filtrar expedientes"{
 			Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión" requerido
 		}
+
 		//Elegir de entre todas las solicitudes a cuales quiero generar la cesion de datos
-		Grupo permiso=permisoTipo{
+		Grupo permiso=permisoTipo titulo="Expedientes autorizados"{
+			Grupo borde=true titulo="Seleccionar Expedientes"{
+				Combo cmbSeleccion campo=PeticionCesiones.seleccion titulo="Tipo de selección"
+				Grupo borde=false mostrarSiCombo cmbSeleccion="certificadoFecha"{
+				Fecha fechaLimite campo=PeticionCesiones.fechaCorte titulo="Fecha límite"
+			} 
+			Enlace seleccion titulo="Seleccionar" estilo="btn" codigojs="" //Sobreescrito
+			}
 			Tabla tblSolicitudes campo=SolicitudGenerica seleccionable="Generar Peticion" {
 				Columna titulo="ID" campo=SolicitudGenerica.id
 				Columna titulo="Expediente" campo=SolicitudGenerica.expedienteAed.idAed

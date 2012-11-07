@@ -1242,7 +1242,7 @@ Permiso responderPeticion{
 }
 
 Permiso aplicarCambios{
-		vars
+	vars
 		PeticionCesiones peticionCesiones
 	when
 		agente.rolActivo in ("administrador", "gestor")
@@ -1250,3 +1250,4 @@ Permiso aplicarCambios{
 	return
 		all
 }
+

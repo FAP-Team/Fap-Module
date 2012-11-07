@@ -48,7 +48,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 		Fecha fechaConsulta campo=Cesiones.fechaPeticion titulo="Fecha de consulta" requerido
 		Fecha fechaValidez campo=Cesiones.fechaValidez titulo="Fecha de validez" requerido
 		Combo comboEstado campo=Cesiones.estado titulo="Estado" requerido
-		Combo comboDoc campo=Cesiones.documento.uri titulo="Documento"
+		Combo comboDoc campo=Cesiones.documento.uri titulo="Documento" requerido
 	}
 	
 	Popup PopupLeerListadoCesiones campo=SolicitudGenerica.cesion.cesiones permiso=paginaAConfigurar {//SOLO LEER

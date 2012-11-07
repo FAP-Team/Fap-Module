@@ -43,6 +43,7 @@ public class PopupListadoCesionesController extends PopupListadoCesionesControll
 			CustomValidation.validValueFromTable("cesiones.estado", cesiones.estado);
 			dbCesiones.estado = cesiones.estado;
 			CustomValidation.valid("cesiones.documento", cesiones.documento);
+			CustomValidation.required("cesiones.documento.uri", cesiones.documento.uri);
 			CustomValidation.validValueFromTable("cesiones.documento.uri", cesiones.documento.uri);
 			dbCesiones.documento.uri = cesiones.documento.uri;
 			dbCesiones.documento = cesiones.documento;

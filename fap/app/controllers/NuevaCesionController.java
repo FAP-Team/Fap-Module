@@ -15,16 +15,19 @@ import com.jamonapi.utils.FileUtils;
 
 import play.libs.IO;
 import play.mvc.Util;
+import play.utils.PThreadFactory;
 import properties.FapProperties;
 import reports.Report;
 import utils.AEATUtils;
 import utils.ATCUtils;
 import utils.INSSUtils;
 import messages.Messages;
+import models.Cesiones;
 import models.PeticionCesiones;
 import models.SolicitudGenerica;
 import controllers.gen.NuevaCesionControllerGen;
 import enumerado.fap.gen.EstadosPeticionEnum;
+import enumerado.fap.gen.SeleccionExpedientesCesionEnum;
 
 
 public class NuevaCesionController extends NuevaCesionControllerGen {
@@ -96,17 +99,21 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 	
 	//Necesito saber el tipo para filtrar
 	public static void tablatblSolicitudes(Long idPeticionCesiones) {
-		//Recuperar la Peticion para saber el tipo
-		PeticionCesiones pt = getPeticionCesiones(idPeticionCesiones); 
-		java.util.List<SolicitudGenerica> rows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud").fetch();
-		
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		PeticionCesiones pt = getPeticionCesiones(idPeticionCesiones); 
+		List<SolicitudGenerica> rowsFiltered = filtroSolicitudes(idPeticionCesiones);
+		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estadoValue", "estado", "estadoUsuario", "solicitante.id", "solicitante.nombreCompleto"));
+	}
+	
+
+	public static List<SolicitudGenerica> filtroSolicitudes(Long idPeticionCesiones){
+		//Filtro dependiendo del valor del combo
+		PeticionCesiones pt = getPeticionCesiones(idPeticionCesiones);
+
+		java.util.List<SolicitudGenerica> rows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud").fetch();
 		List<SolicitudGenerica> rowsFiltered = new ArrayList<SolicitudGenerica>();		
-		
-		//Unificación de permisos: Desde que se autoriza en una solicitud, se autoriza en todas las del usuario
-		//unificarPermisos();
-		
-		//Filtro de solicitudes
+		//Filtro de solicitudes (tipo y filtro de combo)
 		for (SolicitudGenerica solGen : rows) {
 			if((solGen.cesion.autorizacionCesion.atc != null) && (solGen.cesion.autorizacionCesion.atc) && (pt.tipo.equals("atc"))){
 				rowsFiltered.add(solGen);
@@ -121,8 +128,73 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 				rowsFiltered.add(solGen);
 			}
 		}
-		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
-		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estadoValue", "estado", "estadoUsuario", "solicitante.id", "solicitante.nombreCompleto"));
+		
+		return rowsFiltered;
+	}
+	
+	//Llamado desde ajax
+	public static List<Long> filtroCombo (Long idPeticionCesiones, String combo, String fecha){
+		List<SolicitudGenerica> rows = filtroSolicitudes(idPeticionCesiones);
+		List<Long> id = new ArrayList<Long>();
+		if (combo.equals(SeleccionExpedientesCesionEnum.todos.name())){ 
+			for (Long i = (long)0; i < rows.size(); i++) {
+			//for (SolicitudGenerica sol : rows) {
+				id.add(i);
+			}
+		} else {
+			PeticionCesiones pt = getPeticionCesiones(idPeticionCesiones); 
+			Long index = (long) 0;
+			for (SolicitudGenerica sol : rows) {
+				if (combo.equals(SeleccionExpedientesCesionEnum.certificadoFecha.name())){
+					java.util.List<Cesiones> cesiones = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where solicitud.id=?", sol.id).fetch();
+					//Si tengo certificados de ese tipo -> fecha 
+					if (filtroFecha(pt, cesiones, fecha)){
+						id.add(index);
+					}
+				} else if (combo.equals(SeleccionExpedientesCesionEnum.noCertificado.name())) { //Sin certificado o caducado
+					java.util.List<Cesiones> cesiones = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where solicitud.id=?", sol.id).fetch();
+					//SI cesiones tiene algo -> Hay certificado no se de q -> comprobar tipo y si fecha pasada
+					if (filtroNoCertificado (pt, cesiones)){ //Vacia o caducada -> se muestra
+						id.add(index);
+					}
+				}
+				index++;
+			}
+		}
+		return id;
+	}
+	
+	public static boolean filtroNoCertificado (PeticionCesiones pt, List<Cesiones> cesiones){
+		Cesiones cesion = null;
+		for (Cesiones c : cesiones) {
+			if ((c.fechaValidez.isAfterNow()) && (pt.tipo.equals(c.tipo))) //Fecha de validez posterior a hoy
+				cesion = c; //Si es valida la igualo
+		}
+		if (cesion != null)
+			return false; //No caducada
+		else //Caducada
+			return true;
+	}
+	
+	public static boolean filtroFecha (PeticionCesiones pt, List<Cesiones> cesiones, String fecha){
+		//Si es anterior a fecha -> Devuelve true -> lo añado
+		Cesiones cesion = null;
+		for (Cesiones c : cesiones) {
+			if ((c.fechaValidez.isBefore(obtenerFecha(fecha))) && (pt.tipo.equals(c.tipo))) //Fecha de validez posterior a hoy
+				cesion = c; //Si es valida la igualo
+		}
+		if (cesion != null)
+			return true; //La fecha es anterior
+		else //Caducada
+			return false; //La fecha NO es anterior
+	}
+	
+	public static DateTime obtenerFecha(String fecha){
+		int dia = Integer.parseInt(fecha.substring(0, 2));
+		int mes = Integer.parseInt(fecha.substring(3, 5));
+		int anio = Integer.parseInt(fecha.substring(6, 10));
+		DateTime fechaGeneracion = new DateTime(anio, mes, dia, 0, 0);
+		return fechaGeneracion;
 	}
 	
 	/*@Util

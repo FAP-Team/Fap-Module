@@ -8953,3 +8953,9 @@ Lista codigoRespuesta crearEnumerado{
 	02: "Inexistencia de datos solicitados"
 	03: "NIF erróneo"
 }
+
+Lista seleccionExpedientesCesion crearEnumerado{
+	todos: "Todos"
+	noCertificado: "Los que no tengan certificado o lo tengan caducado"
+	certificadoFecha: "Los que tengan un certificado con una fecha de validez límite"	
+}

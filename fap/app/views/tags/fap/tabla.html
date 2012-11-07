@@ -240,7 +240,7 @@
 			}
 
 			#{if seleccionable}
-				var sm = Ext.create('Ext.selection.CheckboxModel');
+				sm${id} = Ext.create('Ext.selection.CheckboxModel');
 			#{/if}	
 		
 			function loadMessages${id}(data){
@@ -558,8 +558,10 @@
 		    var boton_select = new Ext.Button({
 		    	text: '${seleccionable}',
 		    	handler : function(){
-		    		var selected = sm.getSelection();
-
+		    		var selected = sm${id}.getSelection();
+					%{
+					System.out.println("Selected: "+selected)
+					%}
 		    		#{if submitPage}
 		    			var urlSubmitPage = "${urlSeleccionable}";
 		    			var j = 1;
@@ -608,7 +610,7 @@
 			 	hidden:true,
 			 	#{/if}
 				#{if seleccionable}
-				selModel: sm,
+				selModel: sm${id},
 	            #{/if}
 				columns : #{verbatim}${columnas}#{/verbatim},
 				renderTo: '${id}',

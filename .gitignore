@@ -115,3 +115,4 @@ fap/app/listas/initial-data/paginasMsjLista.yml
 apps/test/app/listas/initial-data/*.yml
 
 apps/cuadroMandos/*
+apps/AplicacionGenerica/*

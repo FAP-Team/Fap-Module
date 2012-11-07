@@ -310,6 +310,14 @@
 		<script>
 		#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
 			$("#${id}.combo").chosen();
+			$('#${id}_chzn').on("click", "a", function(){
+				if (comboTieneBind === false) {
+					comboTieneBind = true; 
+	    			$('select.combo').one("change", function(){
+	    					hayCambiosSinGuardar=true;
+	    			});	
+	    		}
+	    	});
 		#{/if}
 		</script>
 
@@ -320,6 +328,14 @@
 			if ($combo.attr('disabled') != "disabled") {
 				#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
 				$combo.chosen();
+				$('#${id}_chzn').on("click", "a", function(){
+					if (comboTieneBind === false) {
+						comboTieneBind = true; 
+	    				$('select.combo').one("change", function(){
+	    						hayCambiosSinGuardar=true;
+	    				});	
+	    			}
+	    		});
 				#{/if}
 			}
 		</script>

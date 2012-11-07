@@ -253,25 +253,34 @@
     	#{if properties.FapProperties.getBoolean("fap.javascript.detectarcambios.noguardados")}
 	    	<script>
 	    		var hayCambiosSinGuardar=false;
-	    	
-	    		$('input.input-xlarge').change(function(){
-	    			hayCambiosSinGuardar=true;
-	    		});
+	    		var comboTieneBind=false;
 	    		
-	    		$('input.input-file').change(function(){
-	    			hayCambiosSinGuardar=true;
-	    		});
 	    		
-	    		$('input[type="checkbox"]').change(function(){
-	    			hayCambiosSinGuardar=true;
-	    		});
-	    				
-	    		$('select.combo').change(function(){
-	    			hayCambiosSinGuardar=true;
-	    		});
+	    		$(document).ready(function () {
+	    			$('input.input-xlarge').change(function(){
+	    				hayCambiosSinGuardar=true;
+	    			});
 	    		
-	    		$('form').submit(function(){
-	    			hayCambiosSinGuardar=false;
+	    			$('input.input-file').change(function(){
+	    				hayCambiosSinGuardar=true;
+	    			});
+	    		
+	    			$('input[type="checkbox"]').change(function(){
+	    				hayCambiosSinGuardar=true;
+	    			});
+	    		
+	    			$('form').submit(function(){
+	    				hayCambiosSinGuardar=false;
+	    			});
+	    			
+	    			$('select.combo').on("click", function(){
+						if (comboTieneBind === false) {
+							comboTieneBind = true; 
+	    					$('select.combo').one("change", function(){
+	    						hayCambiosSinGuardar=true;
+	    					});	
+	    				}
+	    			});		
 	    		});
 	    		
 	    		window.onbeforeunload = function(e) {

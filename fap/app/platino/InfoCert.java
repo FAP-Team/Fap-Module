@@ -22,7 +22,7 @@ public class InfoCert {
 				String key = array.getItem().get(0);
 				if (key.toLowerCase().equals("pj")) {
 					tipo = "personajuridica";
-				} else if (key.toLowerCase().equals("pf")) {
+				} else if ((key.toLowerCase().equals("pf")) || (key.toLowerCase().equals("pv")) || (key.toLowerCase().equals("rep"))) {
 					tipo = "personafisica";
 				} else if(key.toLowerCase().equals("nif")){
 					nif = array.getItem().get(1);

@@ -107,3 +107,9 @@ apps/test/conf/platino
 # apps/test/gestorDocumental
 apps/test/gestorDocumental/temporal/*
 apps/test/gestorDocumental/clasificado/*
+
+apps/test/app/listas
+fap/app/listas/initial-data/paginasMsj.yml
+
+apps/cuadroMandos/*
+apps/AplicacionGenerica/*

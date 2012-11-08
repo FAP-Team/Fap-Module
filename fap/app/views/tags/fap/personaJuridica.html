@@ -124,5 +124,11 @@
 		#{/if}
 		
 	#{/if}
+
+	<script>
+		$('#${id}_cif').change(function () {
+			$('#${id}_cif').val($('#${id}_cif').val().toUpperCase());
+		});
+	</script>
 	
 #{/fap.field}

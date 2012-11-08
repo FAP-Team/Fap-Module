@@ -7,12 +7,24 @@ import net.java.dev.jaxb.array.StringArray;
 public class InfoCert {
 	public String nombrecompleto;
 	public String nombre;
+	public String fullname;
+	public String entidad;
 	public String apellido1;
 	public String apellido2;
 	public String apellidos;
 	public String nif;
 	public String cif;
 	public String tipo;
+	public String email;
+	public String cargo;
+	public String departamento;
+	public String finalidad;
+	public String organizacion;
+	public String serialNumber;
+	public String issuer;
+	public String subject;
+	public String notBefore;
+	public String notAfter;
 	
 	public InfoCert(){}
 	
@@ -36,17 +48,52 @@ public class InfoCert {
 					apellido2 = array.getItem().get(1);
 				} else if(key.toLowerCase().equals("nombrecompleto")){
 					nombrecompleto = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("entidad")){
+					entidad = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("nombre")){
+					nombre = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("fullname")){
+					fullname = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("email")){
+					email = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("cargo")){
+					cargo = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("departamento")){
+					departamento = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("finalidad")){
+					finalidad = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("organizacion")){
+					organizacion = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("serialnumber")){
+					serialNumber = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("issuer")){
+					issuer = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("subject")){
+					subject = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("notbefore")){
+					notBefore = array.getItem().get(1);
+				} else if(key.toLowerCase().equals("notafter")){
+					notAfter = array.getItem().get(1);
 				}
 			}
 		}
 	}
 	
 	public String getNombreCompleto(){
+		if (("personajuridica".equals(tipo)) && (entidad != null)) return entidad;
 		if(nombrecompleto != null) return nombrecompleto;
 		if(apellidos != null) return nombre + " " + apellidos;
 		String out = nombre + " " + apellido1;
 		if(apellido2 != null) out += " " + apellido2;
 		return out;
+	}
+	
+	public String getFinalidad(){
+		if (finalidad == null) return "";
+		if (finalidad.equals("f")) return "firma";
+		else if (finalidad.equals("a")) return "autenticacion";
+		else if (finalidad.equals("fa")) return "firmaryautenticacion";
+		return "";
 	}
 
 	@Override

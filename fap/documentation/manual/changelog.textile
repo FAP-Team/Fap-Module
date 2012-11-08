@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC8
+
+* Fixed Bug de CIF y NIF se convierten a mayúscula en javascript.
+* Fixed Bug al cargar combos dependientes.
+* Fixed Bug en Areas de Texto que no se incluían en la comprobación js de guardar.
+* Añadidos nuevos campos a InfoCert de FAP.
+
 h3. Versión 2.1.1RC7
 
 * Mapeadas a Personas Físicas de FAP los tipos PV y REP de Camerfirma.

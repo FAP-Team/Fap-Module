@@ -785,3 +785,15 @@ Entidad CertificadoSolicitado {
 	String estado
 	Registro registro
 }
+
+// Metadatos de los tipos de documentos. Hecho en principio para parsear de un JSON
+Entidad Metadatos {    
+    // Tipo de documento al que hacen referencia los metadatos. 
+    String tipoDocumento default="ALL"   // Si se parsea el JSON y no está presente, son metadatos comunes a todos los tipos de documentos
+    OneToMany Metadato listaMetadatos                                      
+}
+
+Entidad Metadato {
+    String nombre
+    String valor
+}

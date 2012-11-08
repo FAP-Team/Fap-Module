@@ -229,6 +229,13 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 				Boton actualizarTramites titulo="Actualizar trámites"
 			}
 			
+			Wiki {
+                "Actualiza los metadatos de los tipos de documentos."
+            }
+			Form actualizarMetadatos {
+                Boton actualizarMetadatos titulo="Actualizar metadatos"
+            }
+			
 			Tabla tramites campo=Tramite popupLeer=PopupTramite titulo="Trámites pertenecientes al procedimiento"{
 				Columna titulo="Nombre" campo=Tramite.nombre ancho="250"
 				Columna titulo="URI" campo=Tramite.uri expandir

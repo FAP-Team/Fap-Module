@@ -273,6 +273,10 @@
 	    				hayCambiosSinGuardar=false;
 	    			});
 	    			
+	    			$('textarea').change(function(){
+	    				hayCambiosSinGuardar=true;
+	    			});
+	    			
 	    			$('select.combo').on("click", function(){
 						if (comboTieneBind === false) {
 							comboTieneBind = true; 

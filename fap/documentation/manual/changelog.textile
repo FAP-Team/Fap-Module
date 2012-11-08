@@ -1,5 +1,13 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC7
+
+* Mapeadas a Personas Físicas de FAP los tipos PV y REP de Camerfirma.
+* Fixed Bug al entrar con Certificado ANF.
+* Fixed Bug al entrar con DNI Electrónico.
+* Reordenados los elementos de la lista de Seguimiento.
+* Mejorando el nivel de detalle del mock FileSystem.
+
 h3. Versión 2.1.1RC6
 
 * Alerta antes de redirigir a una pagina habiendo campos modificados y sin guardar.

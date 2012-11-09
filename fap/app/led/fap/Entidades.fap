@@ -141,6 +141,7 @@ Entidad Documento {
 	DateTime fechaRegistro
 	String urlDescarga transient
 	String urlDescargaFirmado transient
+	String enlaceDescargaFirmado transient
 	Boolean verificado	// Indica si el documento ya ha sido verificado
 	// Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente.
 	// Los dos campos siguientes se utilizan para referenciar de manera temporal (hasta su clasificación)

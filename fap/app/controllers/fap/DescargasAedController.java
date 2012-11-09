@@ -88,7 +88,6 @@ public class DescargasAedController extends GenericController {
 				if(documento == null) {
 					bresp = aedService.getDocumentoConInformeDeFirmaByUri(uri);
 					if(bresp == null){
-						System.out.println("Sin informe A");
 						bresp = aedService.getDocumentoByUri(uri);
 						if(bresp == null)
 							notFound();
@@ -97,14 +96,12 @@ public class DescargasAedController extends GenericController {
 				else {
 					bresp = aedService.getDocumentoConInformeDeFirma(documento);
 					if(bresp == null){
-						System.out.println("Sin informe B");
 						bresp = aedService.getDocumento(documento);
 						if(bresp == null)
 							notFound();
 					}
 				}
 				
-				System.out.println("OK!");
 	            response.setHeader("Content-Disposition", "inline; filename=\"" + bresp.nombre + "\"");
 	            response.contentType = bresp.contenido.getContentType();
 				

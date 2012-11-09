@@ -1,5 +1,6 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {	
 
+	// Sobreescrita
 	Pagina DocumentacionFAP titulo = "Documentación" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
 	
 		Tabla documentos titulo="Documentos" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP popupBorrar=DocumentosEditarFAP{
@@ -8,6 +9,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
             Columna campo=Documento.tipo titulo="Tipo Documento"expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
+			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 		}
 		
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
@@ -96,6 +98,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna titulo="Tipo Documento" campo=Documento.tipo
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 			}
 		}
 		
@@ -131,6 +134,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 		}
 
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
@@ -153,6 +157,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 		}
 		
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
@@ -192,6 +197,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna titulo="Tipo Documento" campo=Documento.tipo
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 			}
 			
 			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
@@ -377,6 +383,8 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna titulo="Tipo Documento" campo=Documento.tipo
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+				
 			}
 			Form verificaTipos {
 				Boton finalizaVerificarTipos titulo="Finaliza verificación de tipos"
@@ -470,6 +478,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna titulo="Tipo Documento" campo=Documento.tipo
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 			}
 			Form verificaTiposNuevosDoc {
 				Boton finalizaVerificarTipos titulo="Finaliza verificación de tipos"
@@ -647,6 +656,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 							Columna titulo="Tipo Documento" campo=Documento.tipo
 							Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 							Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+							Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 						}
 					}
 					
@@ -796,6 +806,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 						Columna titulo="Tipo Documento" campo=Documento.tipo
 						Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 						Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+						Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 					}
 			
             		Grupo gpreparar titulo="Paso 1. Preparar la alegación" permiso=generarBorradorAlegacion {
@@ -936,6 +947,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 		}	
 	}
 	

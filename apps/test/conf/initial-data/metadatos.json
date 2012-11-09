@@ -1,63 +1,96 @@
 [
+
     {
-        tipoDocumento: "Documento electrónico",
         listaMetadatos: [
                             {
-                                nombre: "Versión NTI",
+                                nombre: "VersionNTI",
                                 valor:  "http://administracionelectronica.gob.es/ENI/XSD/v1.0/documento-e"
                             },
                             {
-                                nombre: "Identificador",
-                                valor:  "ES_E00010207_2010_MPR000000000000010207"
-                            },
-                            {
-                                nombre: "Órgano",
-                                valor:  "AB0000000000000CD"
-                            },
-                            {
-                                nombre: "Fecha de captura",
-                                valor:  "2012-04-16T09:07:45.062+01:00"
-                            },
-                            {
-                                nombre: "Origen",
-                                valor:  "1"
-                            },
-                            {
-                                nombre: "Estado de elaboración",
-                                valor:  "Copia electrónica parcial auténtica"
-                            },
-                            {
-                                nombre: "Identificador de documento origen",
-                                valor:  "ES_E00056789_2010_MPR000000000000056789"
-                            },
-                            {
-                                nombre: "Tipo documental",
-                                valor:  "Resolución"
-                            },
-                            {
-                                nombre: "Tipo de firma",
-                                valor:  "CSV"
-                            },
-                            {
-                                nombre: "Valor CSV",
-                                valor: "XXXXXXXXXXXXXXXXXXXXXXXXXX"
-                            },
-                            {
-                                nombre: "Definición generación CSV",
-                                valor: "BOE-A-YYYY-XXXX"
+                                nombre: "Organo",
+                                valor:  "A05003341"
                             }
                         ]
     },
     {
+        tipoDocumento: "fs://base/v01",
         listaMetadatos: [
                             {
-                                nombre: "Metadato comun 1",
-                                valor: "Valor metadato comun 1"
-                            },
-                            {
-                                nombre: "Metadato comun 2",
-                                valor: "Valor metadato comun 2"
+                                nombre: "Tipo documental",
+                                valor:  "TD99"
                             }
                         ]
-    }
+    },
+    {
+        tipoDocumento: "fs://solicitud/v01",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD14"
+                            }
+                        ]
+    },
+    {
+        tipoDocumento: "fs://justificanteRegistro/v01",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD09"
+                            }
+                        ]
+    },
+    {
+        tipoDocumento: "fs://solicitud/v01",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD14"
+                            }
+                        ]
+    },
+    {
+        tipoDocumento: "fs://solicitudaportacion/v02",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD17"
+                            }
+                        ]
+    },
+    {
+        tipoDocumento: "fs://aportacionregistro/v01",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD09"
+                            }
+                        ]
+    },    
+    {
+        tipoDocumento: "fs://desestimiento/v01",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD06"
+                            }
+                        ]
+    },
+    {
+        tipoDocumento: "fs://justificanteregistro/v02",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD09"
+                            }
+                        ]
+    },   
+    {
+        tipoDocumento: "fs://prefijojustificantepdf/v01",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD16"
+                            }
+                        ]
+    }     
 ]

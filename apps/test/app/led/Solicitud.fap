@@ -276,6 +276,7 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 			//Columna campo=Documento.id
 			Columna campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible
+			Columna funcion="<a href=\"${Documento.urlDescargaFirmado}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
 		}
 		Grupo botonObligatorios titulo="Comprobar que estan aportados todos los documentos obligatorios"{
 			Boton comprobarDocumentosObligatorios titulo="Comprobar Obligatorios"

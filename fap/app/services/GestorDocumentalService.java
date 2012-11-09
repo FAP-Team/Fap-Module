@@ -36,6 +36,8 @@ public interface GestorDocumentalService {
     public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws AedExcepcion;
 
     public BinaryResponse getDocumento(Documento documento) throws GestorDocumentalServiceException;
+    
+    public BinaryResponse getDocumentoConInformeDeFirma(Documento documento) throws GestorDocumentalServiceException;
 
     public String saveDocumentoTemporal(models.Documento documento, InputStream inputStream, String filename)
             throws GestorDocumentalServiceException;
@@ -78,6 +80,8 @@ public interface GestorDocumentalService {
 	String modificarInteresados(ExpedienteAed expedienteAed, SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
 
 	BinaryResponse getDocumentoByUri(String uriDocumento) throws GestorDocumentalServiceException;
+	
+	BinaryResponse getDocumentoConInformeDeFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException;
 	
 	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
 	

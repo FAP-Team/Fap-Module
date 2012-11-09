@@ -347,6 +347,38 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return response;
     }
     
+    /**
+     * Recupera el contenido de un documento
+     * 
+     * El documento puede estar clasificado o no clasificado
+     * 
+     * @param documento
+     * @return Contenido y nombre del fichero
+     * 
+     * @throws GestorDocumentalServiceException Si se produjo un error al recuperar un documento
+     * 
+     */
+    @Override
+    public BinaryResponse getDocumentoConInformeDeFirma(models.Documento documento) throws GestorDocumentalServiceException {
+        boolean clasificado = documento.clasificado;
+        BinaryResponse response = new BinaryResponse();
+        try {
+            Contenido contenido;
+            if (!clasificado)
+                contenido = aedPort.obtenerDocumentoNoClasificadoConInformeFirma(documento.uri);
+            else
+                contenido = aedPort.obtenerDocumentoConInformeFirma(documento.uri);
+            
+            response.contenido = contenido.getFichero();
+            response.nombre = contenido.getNombre();
+        } catch (AedExcepcion e) {
+            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + documento.uri + " clasificado= "
+                    + clasificado + " - error: " + getLogMessage(e), e);
+        }        
+        log.info("Documento recuperado del aed " + documento.uri);
+        return response;
+    }
+    
     
     /**
      * Recupera el contenido de un documento dado su uri
@@ -376,6 +408,42 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	        	doc = aedPort.obtenerDocumento(uriDocumento);	            
 	            response.contenido = doc.getContenido().getFichero();
 	            response.nombre = doc.getContenido().getNombre();
+	        } catch (AedExcepcion e) {
+	            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
+	        }     
+        }
+        log.info("Documento recuperado del aed " + uriDocumento);
+        return response;
+    }
+    
+    /**
+     * Recupera el contenido de un documento Firmado dado su uri
+     * 
+     * El documento puede estar clasificado o no clasificado
+     * 
+     * @param uriDocumento
+     * @return Contenido y nombre del fichero
+     * 
+     * @throws GestorDocumentalServiceException Si se produjo un error al recuperar un documento
+     * 
+     */
+    @Override
+    public BinaryResponse getDocumentoConInformeDeFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
+        BinaryResponse response = new BinaryResponse();
+        Contenido contenido;
+        boolean obtuveDocumento = false;
+        try {
+        	 contenido = aedPort.obtenerDocumentoNoClasificadoConInformeFirma(uriDocumento);
+        	 response.contenido = contenido.getFichero();
+             response.nombre = contenido.getNombre();
+             obtuveDocumento = true;
+        } catch (AedExcepcion e) { ; }
+        
+        if (!obtuveDocumento) {
+	        try {
+	        	contenido = aedPort.obtenerDocumentoConInformeFirma(uriDocumento);	            
+	            response.contenido = contenido.getFichero();
+	            response.nombre = contenido.getNombre();
 	        } catch (AedExcepcion e) {
 	            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
 	        }     

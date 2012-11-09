@@ -756,4 +756,14 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 			throws GestorDocumentalServiceException {
 		clasificarDocumentos(solicitud, documentos);	
 	}
+
+	@Override
+	public BinaryResponse getDocumentoConInformeDeFirma(Documento documento) throws GestorDocumentalServiceException {
+		return getDocumento(documento);
+	}
+
+	@Override
+	public BinaryResponse getDocumentoConInformeDeFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
+		return getDocumentoByUri(uriDocumento);
+	}
 }

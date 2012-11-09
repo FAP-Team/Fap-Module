@@ -50,6 +50,9 @@ public class Documento extends FapModel {
 	@Transient
 	public String urlDescarga;
 
+	@Transient
+	public String urlDescargaFirmado;
+
 	public Boolean verificado;
 
 	public Boolean refAed;
@@ -79,6 +82,10 @@ public class Documento extends FapModel {
 		return AedUtils.crearUrl(uri);
 	}
 
+	public String getUrlDescargaFirmado() {
+		return AedUtils.crearUrlConInformeDeFirma(uri);
+	}
+	
 	public boolean isObligatorio() {
 		return (tipo != null && DocumentosUtils.esTipoObligatorio(tipo));
 	}

@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC9
+
+* Fixed Bug en Conceptos Economicos de tipo Otros del Solicitante.
+
 h3. Versión 2.1.1RC8
 
 * Fixed Bug de CIF y NIF se convierten a mayúscula en javascript.

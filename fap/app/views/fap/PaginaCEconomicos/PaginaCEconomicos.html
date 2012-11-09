@@ -24,12 +24,7 @@
 	#{fap.grupo titulo:cEconomico.tipo.nombre}
 			
 	#{if cEconomico.tipo.tipoOtro}
-		#{if ((tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")))}
-			#{fap.texto campo:'cEconomico.tipo.nombre', id:'Nombre', titulo:'Nombre', requerido:'true', format:'moneda'/}
-		#{/if}
-		#{else}
-			#{simple.uneditable name:'cEconomico.tipo.nombre', label:'Nombre', value:cEconomico.tipo.nombre, format:'moneda' /}
-		#{/else}	
+		#{simple.uneditable name:'cEconomico.tipo.nombre', label:'Nombre', value:cEconomico.tipo.nombre, format:'moneda' /}
 		<div class="wiki ">
 			<p>
 				${cEconomico.tipo.descripcion}

@@ -8889,12 +8889,13 @@ Lista listaOrigen crearEnumerado{
 Lista listaCesiones crearEnumerado{
 	aeat: "AEAT"
 	atc: "ATC"
-	//inssA008: "INSS A008"
+	inssA008: "INSS A008"
 	inssR001: "INSS R001"
 }
 
 
 Lista estadosPeticion crearEnumerado {
+	sinTipo: "Sin tipo"
 	creada: "Creada"
 	respondida: "Respondida"
 	asignada: "Asignada"

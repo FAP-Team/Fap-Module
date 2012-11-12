@@ -91,12 +91,12 @@ public class SolicitudGenerica extends FapModel {
 	@JoinTable(name = "solicitudgenerica_notificaciones")
 	public List<Notificacion> notificaciones;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DatosAnotaciones datosAnotaciones;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_autorizacion")
 	public List<AutorizacionesFAP> autorizacion;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public DatosAnotaciones datosAnotaciones;
 
 	public Boolean activoFH;
 
@@ -188,13 +188,13 @@ public class SolicitudGenerica extends FapModel {
 		if (notificaciones == null)
 			notificaciones = new ArrayList<Notificacion>();
 
-		if (autorizacion == null)
-			autorizacion = new ArrayList<AutorizacionesFAP>();
-
 		if (datosAnotaciones == null)
 			datosAnotaciones = new DatosAnotaciones();
 		else
 			datosAnotaciones.init();
+
+		if (autorizacion == null)
+			autorizacion = new ArrayList<AutorizacionesFAP>();
 
 		if (activoFH == null)
 			activoFH = false;

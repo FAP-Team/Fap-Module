@@ -27,6 +27,9 @@ import models.PeticionCesiones;
 import models.SolicitudGenerica;
 import controllers.gen.NuevaCesionControllerGen;
 import enumerado.fap.gen.EstadosPeticionEnum;
+import enumerado.fap.gen.EstadosSolicitudEnum;
+import enumerado.fap.gen.ListaCesionesEnum;
+import enumerado.fap.gen.ListaEstadosEnum;
 import enumerado.fap.gen.SeleccionExpedientesCesionEnum;
 
 
@@ -43,11 +46,12 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 		PeticionCesiones peticionCesiones = null;
 		if ("crear".equals(accion)) {
 			peticionCesiones = NuevaCesionController.getPeticionCesiones();
-			peticionCesiones.estado = EstadosPeticionEnum.creada.name();
 			peticionCesiones.fechaGen=DateTime.now();
+			peticionCesiones.estado = EstadosPeticionEnum.sinTipo.name();
 			peticionCesiones.save();
 			idPeticionCesiones = peticionCesiones.id;
 			accion = "editar";
+			
 			//Parcheado con esto -> Render de abajo no funciona con editar
 			NuevaCesionController.editarRender(idPeticionCesiones);
 
@@ -66,16 +70,16 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 		if (idsSeleccionados!=null){
 			//Generacion del fichero de consulta
 			PeticionCesiones pt = getPeticionCesiones(id);
-			if (pt.tipo.equals("atc")){
+			if (pt.tipo.equals(ListaCesionesEnum.atc.name())){
 				ATCUtils.peticionATC(pt, idsSeleccionados);
 			}
-			if (pt.tipo.equals("aeat")){
+			if (pt.tipo.equals(ListaCesionesEnum.aeat.name())){
 				AEATUtils.peticionAEAT(pt, idsSeleccionados);
 			}
-			if (pt.tipo.equals("inssA008")){
-				//INSSUtils.peticionINSSA008(idsSeleccionados);
+			if (pt.tipo.equals(ListaCesionesEnum.inssA008.name())){
+				INSSUtils.peticionINSSA008(pt, idsSeleccionados);
 			}
-			if (pt.tipo.equals("inssR001")){
+			if (pt.tipo.equals(ListaCesionesEnum.inssR001.name())){
 				INSSUtils.peticionINSSR001(pt, idsSeleccionados);
 			}
 			redirect("GenerarFichCesionesController.index", "crear");
@@ -115,16 +119,16 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 		List<SolicitudGenerica> rowsFiltered = new ArrayList<SolicitudGenerica>();		
 		//Filtro de solicitudes (tipo y filtro de combo)
 		for (SolicitudGenerica solGen : rows) {
-			if((solGen.cesion.autorizacionCesion.atc != null) && (solGen.cesion.autorizacionCesion.atc) && (pt.tipo.equals("atc"))){
+			if((solGen.estado.equals(EstadosSolicitudEnum.iniciada.name())) && (solGen.cesion.autorizacionCesion.atc != null) && (solGen.cesion.autorizacionCesion.atc) && (pt.tipo.equals(ListaCesionesEnum.atc.name()))){
 				rowsFiltered.add(solGen);
 			}
-			if((solGen.cesion.autorizacionCesion.aeat != null) && (solGen.cesion.autorizacionCesion.aeat) && (pt.tipo.equals("aeat"))){
+			if((solGen.estado.equals(EstadosSolicitudEnum.iniciada.name())) && (solGen.cesion.autorizacionCesion.aeat != null) && (solGen.cesion.autorizacionCesion.aeat) && (pt.tipo.equals(ListaCesionesEnum.aeat.name()))){
 				rowsFiltered.add(solGen);
 			}
-			if((solGen.cesion.autorizacionCesion.inssR001 != null) && (solGen.cesion.autorizacionCesion.inssR001) && (pt.tipo.equals("inssR001"))){
+			if((solGen.estado.equals(EstadosSolicitudEnum.iniciada.name())) && (solGen.cesion.autorizacionCesion.inssR001 != null) && (solGen.cesion.autorizacionCesion.inssR001) && (pt.tipo.equals(ListaCesionesEnum.inssR001.name()))){
 				rowsFiltered.add(solGen);
 			}
-			if((solGen.cesion.autorizacionCesion.inssA008 != null) && (solGen.cesion.autorizacionCesion.inssA008) && (pt.tipo.equals("inssA008"))){
+			if((solGen.estado.equals(EstadosSolicitudEnum.iniciada.name())) && (solGen.cesion.autorizacionCesion.inssA008 != null) && (solGen.cesion.autorizacionCesion.inssA008) && (pt.tipo.equals(ListaCesionesEnum.inssA008.name()))){
 				rowsFiltered.add(solGen);
 			}
 		}
@@ -138,7 +142,6 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 		List<Long> id = new ArrayList<Long>();
 		if (combo.equals(SeleccionExpedientesCesionEnum.todos.name())){ 
 			for (Long i = (long)0; i < rows.size(); i++) {
-			//for (SolicitudGenerica sol : rows) {
 				id.add(i);
 			}
 		} else {

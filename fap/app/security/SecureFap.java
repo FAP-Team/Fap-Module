@@ -20,7 +20,9 @@ import models.PeticionCesiones;
 import models.SolicitudGenerica;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
+import enumerado.fap.gen.EstadosPeticionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import enumerado.fap.gen.ListaCesionesEnum;
 import enumerado.fap.gen.TiposParticipacionEnum;
 
 public class SecureFap extends Secure {
@@ -186,36 +188,44 @@ public class SecureFap extends Secure {
 		List<PeticionCesiones> petCesiones = PeticionCesiones.findAll();
 		DateTime atcT = new DateTime(1970-01-01), aeatT= new DateTime(1970-01-01);
 		DateTime inssA008T= new DateTime(1970-01-01), inssR001T= new DateTime(1970-01-01);
+		DateTime prueba= new DateTime(1970-01-01);
 		
-		if (petCesiones != null)
+		if ((petCesiones != null) && (!petCesiones.isEmpty()))
 		for (PeticionCesiones pC : petCesiones) {
-			if ((pC.tipo.equals("atc")) && (pC.fechaGen.isAfter(atcT))){
-				atcT = pC.fechaGen; 
-			}
-			if ((pC.tipo.equals("aeat")) && (pC.fechaGen.isAfter(aeatT))){
-				aeatT = pC.fechaGen; 
-			}
-			if ((pC.tipo.equals("inssA008")) && (pC.fechaGen.isAfter(inssA008T))){
-				inssA008T = pC.fechaGen; 
-			}
-			if ((pC.tipo.equals("inssR001")) && (pC.fechaGen.isAfter(inssR001T))){
-				inssR001T = pC.fechaGen; 
+			if(pC.tipo != null){
+				if((pC.tipo.equals(ListaCesionesEnum.atc.name())) && (pC.fechaGen.isAfter(atcT))){
+					atcT = pC.fechaGen; 
+					System.out.println("ATCT: "+atcT);
+				}
+				if ((pC.tipo.equals(ListaCesionesEnum.aeat.name())) && (pC.fechaGen.isAfter(aeatT))){
+					aeatT = pC.fechaGen; 
+				}
+				if ((pC.tipo.equals(ListaCesionesEnum.inssA008.name())) && (pC.fechaGen.isAfter(inssA008T))){
+					inssA008T = pC.fechaGen;
+				}
+				if ((pC.tipo.equals(ListaCesionesEnum.inssR001.name())) && (pC.fechaGen.isAfter(inssR001T))){
+					inssR001T = pC.fechaGen; 
+				}
 			}
 		}
-		
+
 		PeticionCesiones actual = getPeticionCesiones(ids, vars);
-		
-		if ((actual.tipo.equals("atc")) && (actual.fechaGen.equals(atcT))){
-			return new ResultadoPermiso(Accion.All);
-		}
-		if ((actual.tipo.equals("aeat")) && (actual.fechaGen.equals(aeatT))){
-			return new ResultadoPermiso(Accion.All);
-		}
-		if ((actual.tipo.equals("inssA008")) && (actual.fechaGen.equals(inssA008T))){
-			return new ResultadoPermiso(Accion.All);
-		}
-		if ((actual.tipo.equals("inssR001")) && (actual.fechaGen.equals(inssR001T))){
-			return new ResultadoPermiso(Accion.All);
+		if ((actual != null) && (actual.estado != null)){
+			if ((actual.estado.equals(EstadosPeticionEnum.sinTipo.name()))){
+				return new ResultadoPermiso(Accion.All);
+			}	
+			if ((actual.tipo.equals(ListaCesionesEnum.atc.name())) && (actual.fechaGen.equals(atcT))){
+				return new ResultadoPermiso(Accion.All);
+			}
+			if ((actual.tipo.equals(ListaCesionesEnum.aeat.name())) && (actual.fechaGen.equals(aeatT))){
+				return new ResultadoPermiso(Accion.All);
+			}
+			if ((actual.tipo.equals(ListaCesionesEnum.inssA008.name())) && (actual.fechaGen.equals(inssA008T))){
+				return new ResultadoPermiso(Accion.All);
+			}
+			if ((actual.tipo.equals(ListaCesionesEnum.inssR001.name())) && (actual.fechaGen.equals(inssR001T))){
+				return new ResultadoPermiso(Accion.All);
+			}
 		}
 		return new ResultadoPermiso(Accion.Leer);
 	}

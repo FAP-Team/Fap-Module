@@ -19,26 +19,26 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class INSS extends FapModel {
+public class RegistroDatosA008 extends FapModel {
 	// Código de los atributos
 
-	public String cabeceraPrimera;
+	public String tipoRegistro;
 
-	public String cabeceraSegunda;
+	public String regimen;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public RegistroDatos registroDetalle;
+	public String cccPpal;
 
-	public INSS() {
-		init();
-	}
+	public String numMedioTrabajadores;
+
+	public String nombre;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaSolicitud"), @Column(name = "fechaSolicitudTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaSolicitud;
+
+	public String estado;
 
 	public void init() {
-
-		if (registroDetalle == null)
-			registroDetalle = new RegistroDatos();
-		else
-			registroDetalle.init();
 
 		postInit();
 	}

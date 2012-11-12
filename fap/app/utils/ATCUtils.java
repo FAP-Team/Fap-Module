@@ -79,15 +79,15 @@ public class ATCUtils {
 				if ((s.solicitante.isPersonaFisica()) && (!idNoRepetidos.contains(s.solicitante.fisica.nip.valor))){
 					contenido += "1";
 					String nombre = s.solicitante.nombreCompleto;
-					String nombre75 = nombre + String.format("%"+(nombreCte-nombre.length())+"s", "")+"\n";
-					contenido += s.solicitante.fisica.nip.valor+nombre75.substring(0, nombreCte);				
+					String nombre75 = nombre + String.format("%"+(nombreCte-nombre.length())+"s", "");
+					contenido += s.solicitante.fisica.nip.valor+nombre75.substring(0, nombreCte)+"\n";				
 					idNoRepetidos.add(s.solicitante.fisica.nip.valor);
 				}
 				if ((s.solicitante.isPersonaJuridica()) && (!idNoRepetidos.contains(s.solicitante.juridica.cif))){
 					contenido += "1";
 					String nombre = s.solicitante.nombreCompleto;
-					String nombre75 = nombre + String.format("%"+(nombreCte-nombre.length())+"s", "")+"\n";
-					contenido += s.solicitante.juridica.cif+nombre75.substring(0, nombreCte);
+					String nombre75 = nombre + String.format("%"+(nombreCte-nombre.length())+"s", "");
+					contenido += s.solicitante.juridica.cif+nombre75.substring(0, nombreCte)+"\n";
 					idNoRepetidos.add(s.solicitante.juridica.cif);
 				}
 		}

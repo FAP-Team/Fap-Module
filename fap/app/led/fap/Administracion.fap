@@ -484,8 +484,11 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 				Enlace descargarFichero campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar" destino="_blank" estilo="btn"
 			}
 			Grupo titulo="Datos de Cesión: subir fichero de respuesta"{
-				Grupo borde=false permiso=noEditable{
-					Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+				Grupo borde=false permiso=tipoAsignado{
+					Grupo borde=false permiso=noEditable{
+						Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+					}
+					Boton btnGuardar titulo="Guardar" 
 				}
 				Grupo borde=false permiso=responderPeticion{
 					SubirArchivo subirArchivo campo=PeticionCesiones.fichRespuesta
@@ -496,6 +499,11 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 					Boton cambiarFichero titulo="Subir otro documento de respuesta"
 					Boton aplicarCambios titulo="Aplicar cambios"
 				}
+				Grupo permiso=cesionTerminada titulo="Cesion Finalizada"{
+					Grupo borde=false permiso=noEditable{
+					Combo cmbTipoFin campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+				}
+			}
 			}
 		}
 	}

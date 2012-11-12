@@ -19,14 +19,15 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Trabajador extends FapModel {
+public class CargarTablaDeTablas extends Singleton {
 	// Código de los atributos
 
-	public String regimen;
+	public Boolean checkNoCargarMunicipiosActualizando;
 
-	public String codigoCuenta;
+	public Boolean checkNoCargarMunicipiosSoloCreando;
 
 	public void init() {
+		super.init();
 
 		postInit();
 	}

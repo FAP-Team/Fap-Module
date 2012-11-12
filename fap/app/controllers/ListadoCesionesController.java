@@ -47,10 +47,13 @@ public class ListadoCesionesController extends ListadoCesionesControllerGen {
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Cesiones> rowsFiltered = new ArrayList<Cesiones>();
-		Cesiones cesionINSS = null, cesionAEAT = null, cesionATC = null;
+		Cesiones cesionINSSR001 = null, cesionINSSA008 = null, cesionAEAT = null, cesionATC = null;
 		for (Cesiones cesiones : rows) {
-			if (cesiones.tipo.equals(ListaCesionesEnum.inssR001.name())&& ((cesionINSS == null)||(cesiones.fechaPeticion.isAfter(cesionINSS.fechaPeticion)))){
-				cesionINSS = cesiones;
+			if (cesiones.tipo.equals(ListaCesionesEnum.inssA008.name())&& ((cesionINSSA008 == null)||(cesiones.fechaPeticion.isAfter(cesionINSSA008.fechaPeticion)))){
+				cesionINSSA008 = cesiones;
+			}
+			if (cesiones.tipo.equals(ListaCesionesEnum.inssR001.name())&& ((cesionINSSR001 == null)||(cesiones.fechaPeticion.isAfter(cesionINSSR001.fechaPeticion)))){
+				cesionINSSR001 = cesiones;
 			}
 			if (cesiones.tipo.equals(ListaCesionesEnum.aeat.name())&& ((cesionAEAT == null)||(cesiones.fechaPeticion.isAfter(cesionAEAT.fechaPeticion)))){
 				cesionAEAT = cesiones;
@@ -59,8 +62,10 @@ public class ListadoCesionesController extends ListadoCesionesControllerGen {
 				cesionATC = cesiones;
 			}
 		}
-		if (cesionINSS!=null)
-			rowsFiltered.add(cesionINSS);
+		if (cesionINSSA008!=null)
+			rowsFiltered.add(cesionINSSA008);
+		if (cesionINSSR001!=null)
+			rowsFiltered.add(cesionINSSR001);
 		if (cesionAEAT!=null)
 			rowsFiltered.add(cesionAEAT);
 		if (cesionATC!=null)

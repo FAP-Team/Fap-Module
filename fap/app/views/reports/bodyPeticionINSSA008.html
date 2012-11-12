@@ -17,7 +17,7 @@ p {
 
 <h3 style="text-align: center;"></h3>
 %{
-	def titulo = 'CESIÓN DE DATOS DEL INSS';
+	def titulo = 'CESIÓN DE DATOS DEL INSSA008';
 }%
 
 <h1>${titulo}</h1>
@@ -47,7 +47,11 @@ p {
 	<tr><th>Cabecera Primera:</th><td>${inss.cabeceraPrimera}</td></tr>
 	<tr><th>Cabecera Segunda:</th><td>${inss.cabeceraSegunda}</td></tr>
 	<tr><th>Tipo de Registro:</th><td>${inss.registroDetalle.tipoRegistro}</td></tr>
-	<tr><th>DNI:</th><td>${inss.registroDetalle.nDocumento}</td></tr>
+	<tr><th>Régimen:</th><td>${inss.registroDetalle.regimen}</td></tr>
+	<tr><th>CCC Principal:</th><td>${inss.registroDetalle.cccPpal}</td></tr>
+	<tr><th>Número medio de trabajadores:</th><td>${inss.registroDetalle.numMedioTrabajadores}</td></tr>
+	<tr><th>Nombre:</th><td>${inss.registroDetalle.nombre}</td></tr>
+	<tr><th>Fecha de Solicitud:</th><td>${inss.registroDetalle.fechaSolicitud}</td></tr>
 	<tr><th>Estado:</th><td>${inss.registroDetalle.estado}</td></tr> 
 </table>
 

@@ -19,12 +19,14 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Trabajador extends FapModel {
+public class RegistroDetalle extends FapModel {
 	// Código de los atributos
+
+	public String tipoRegistro;
 
 	public String regimen;
 
-	public String codigoCuenta;
+	public String ccc;
 
 	public void init() {
 

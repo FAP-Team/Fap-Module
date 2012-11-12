@@ -19,14 +19,26 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Trabajador extends FapModel {
+public class INSSR001 extends FapModel {
 	// Código de los atributos
 
-	public String regimen;
+	public String cabeceraPrimera;
 
-	public String codigoCuenta;
+	public String cabeceraSegunda;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public RegistroDatos registroDetalle;
+
+	public INSSR001() {
+		init();
+	}
 
 	public void init() {
+
+		if (registroDetalle == null)
+			registroDetalle = new RegistroDatos();
+		else
+			registroDetalle.init();
 
 		postInit();
 	}

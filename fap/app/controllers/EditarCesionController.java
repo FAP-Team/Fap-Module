@@ -35,6 +35,7 @@ import config.InjectorConfig;
 import controllers.gen.EditarCesionControllerGen;
 import enumerado.fap.gen.EstadosPeticionEnum;
 import enumerado.fap.gen.ListaCesionesEnum;
+import enumerado.fap.gen.ListaEstadosEnum;
 
 
 public class EditarCesionController extends EditarCesionControllerGen {
@@ -43,7 +44,7 @@ public class EditarCesionController extends EditarCesionControllerGen {
 	
 	@Util
 	 // Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void formCesion(Long idPeticionCesiones, PeticionCesiones peticionCesiones, java.io.File subirArchivo, String tratarFich, String aplicarCambios, String cambiarFichero) {
+	public static void formCesion(Long idPeticionCesiones, PeticionCesiones peticionCesiones, java.io.File subirArchivo, String btnGuardar, String tratarFich, String cambiarFichero, String aplicarCambios) {
 		checkAuthenticity();
 		if (!permisoFormCesion("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
@@ -67,6 +68,10 @@ public class EditarCesionController extends EditarCesionControllerGen {
 			if (aplicarCambios != null){
 				tratarFich(dbPeticionCesiones);
 			}
+			if (btnGuardar != null) {
+				EditarCesionController.btnGuardarFormCesion(idPeticionCesiones, peticionCesiones, subirArchivo);
+				EditarCesionController.formCesionRender(idPeticionCesiones);
+			}
 			if (tratarFich != null){
 				subirFichero(dbPeticionCesiones); //Generacion del pdf de cada peticion/solicitud
 			}
@@ -86,7 +91,7 @@ public class EditarCesionController extends EditarCesionControllerGen {
 	@Util
 	public static void formCesionValidateCopy(String accion, PeticionCesiones dbPeticionCesiones, PeticionCesiones peticionCesiones, java.io.File subirArchivo) {
 		CustomValidation.clearValidadas();
-		if (secure.checkGrafico("noEditable", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+		if (secure.checkGrafico("tipoAsignado", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
 			CustomValidation.valid("peticionCesiones", peticionCesiones);
 			CustomValidation.validValueFromTable("peticionCesiones.tipo", peticionCesiones.tipo);
 			dbPeticionCesiones.tipo = peticionCesiones.tipo;
@@ -165,15 +170,16 @@ public class EditarCesionController extends EditarCesionControllerGen {
 			AEATUtils.parsearAEAT(peticionCesiones, fich);
 		}else if ((fich!=null) && (peticionCesiones.tipo.equals(ListaCesionesEnum.atc.name()))){
 			ATCUtils.parsearATC(peticionCesiones, fich);
-		}
-		else
+		}else if ((fich!=null) && (peticionCesiones.tipo.equals(ListaCesionesEnum.inssA008.name()))){
+			INSSUtils.parsearINSSA008(peticionCesiones, fich);
+		}else
 			Messages.error("Error recuperando el fichero del Gestor Documental");
 	}
 	
 	//Métodos en el controlador manual 
 	public static List<ComboItem> peticionCesiones_fichRespuesta_tipo() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
-		result.add(new ComboItem(FapProperties.get("fap.aed.tiposdocumentos.peticionINSS")));
+		result.add(new ComboItem(FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSA008")));
 		return result;
 	}
 	
@@ -202,6 +208,16 @@ public class EditarCesionController extends EditarCesionControllerGen {
 
 		log.info("Visitando página: " + "fap/EditarCesion/EditarCesion.html");
 		renderTemplate("fap/EditarCesion/EditarCesion.html", accion, idPeticionCesiones, peticionCesiones);
+	}
+
+	@Util
+	public static void btnGuardarFormCesion(Long idPeticionCesiones, PeticionCesiones peticionCesiones, java.io.File subirArchivo) {
+		//Sobreescribir este método para asignar una acción
+		PeticionCesiones dbPeticionCesiones = EditarCesionController.getPeticionCesiones(idPeticionCesiones);
+		dbPeticionCesiones.tipo = peticionCesiones.tipo;
+		dbPeticionCesiones.estado = EstadosPeticionEnum.creada.name();
+		dbPeticionCesiones.save();
+		redirect("NuevaCesionController.index", "editar", idPeticionCesiones);
 	}
 	
 }

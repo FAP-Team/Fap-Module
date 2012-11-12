@@ -1251,3 +1251,22 @@ Permiso aplicarCambios{
 		all
 }
 
+Permiso tipoAsignado{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "sinTipo")
+	return
+		all 
+}
+
+Permiso cesionTerminada{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "asignada")
+	return
+		visible 
+}

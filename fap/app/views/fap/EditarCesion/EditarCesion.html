@@ -16,22 +16,33 @@
      urlEditar:play.mvc.Router.reverse('EditarCesionController.editar' , ['idPeticionCesiones':peticionCesiones?.id])
 }
 	
-				#{form play.mvc.Router.reverse('EditarCesionController.formCesion' , ['idPeticionCesiones':peticionCesiones?.id]) , enctype:"multipart/form-data", class:"form-horizontal", id:"formCesion"}
-			#{fap.grupo permiso:'responderPeticion', titulo:'Datos de cesion: Descargar fichero de petición'}
+			#{form play.mvc.Router.reverse('EditarCesionController.formCesion' , ['idPeticionCesiones':peticionCesiones?.id]) , enctype:"multipart/form-data", class:"form-horizontal", id:"formCesion"}
+			
+			#{fap.grupo permiso:'responderPeticion', titulo:'Datos de cesion: Rellenar tipo de cesion'}
 				
 			#{fap.enlace estilo:'btn', id:'descargarFichero', target:'_blank', titulo:'Descargar', url:peticionCesiones.fichPeticion.urlDescarga /}
 		
 			#{/fap.grupo}
 		
 			#{fap.grupo titulo:'Datos de Cesión: Subir fichero de respuesta'}
+			
+			#{fap.grupo borde:false, permiso:'tipoAsignado'}
+				
+			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', titulo:'Tipo de Cesión' /}		
+		
+			#{fap.boton id:'btnGuardar', titulo:'Guardar' /}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, permiso:'responderPeticion'}
+			
 			#{fap.grupo borde:false, permiso:'noEditable'}
 				
 			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', titulo:'Tipo de Cesión' /}		
 		
 			#{/fap.grupo}
-		
-			#{fap.grupo borde:false, permiso:'responderPeticion'}
-				#{fap.documento accept:'', campo:'peticionCesiones.fichRespuesta', id:'subirArchivo', listarDocumentosSubidos:false, requerido:false, tipo:'tipoCiudadano' /}	
+			
+			#{fap.documento accept:'', campo:'peticionCesiones.fichRespuesta', id:'subirArchivo', listarDocumentosSubidos:false, requerido:false, tipo:'tipoCiudadano' /}	
 			#{fap.boton id:'tratarFich', titulo:'Subir fichero de respuesta' /}
 		
 			#{/fap.grupo}
@@ -45,8 +56,19 @@
 			#{fap.boton id:'aplicarCambios', titulo:'Aplicar cambios'/}
 			</div>
 			#{/fap.grupo}
+			
+			#{fap.grupo permiso:'cesionTerminada', titulo:'Cesion Finalizada'}
+				
+			#{fap.grupo borde:false, permiso:'noEditable'}
+				
+			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipoFin', titulo:'Tipo de Cesión' /}		
+		
 			#{/fap.grupo}
-				#{/form}
+		
+			#{/fap.grupo}
+			
+			#{/fap.grupo}
+			#{/form}
 			
 #{/fap.pagina}
 		

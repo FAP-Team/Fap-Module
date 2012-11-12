@@ -46,8 +46,8 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	AceptarRenunciar aceptarRenunciar
 	Alegaciones alegaciones
 	OneToMany Notificacion notificaciones
-	OneToMany AutorizacionesFAP autorizacion
 	DatosAnotaciones datosAnotaciones
+	OneToMany AutorizacionesFAP autorizacion
 	Boolean activoFH default="false"
 	Cesion cesion
 }
@@ -729,8 +729,8 @@ Entidad AutorizacionCesion {
 }
 
 Entidad Trabajador {
-	Integer regimen
-	Long codigoCuenta
+	String regimen
+	String codigoCuenta
 }
 
 Entidad Cesiones {
@@ -768,10 +768,22 @@ Entidad Cesion{
 	OneToMany Cesiones cesiones
 }
 
-Entidad INSS{
+Entidad INSSR001{
 	String cabeceraPrimera
 	String cabeceraSegunda
 	RegistroDatos registroDetalle
+}
+
+Entidad INSSA008{
+	String cabeceraPrimera
+	String cabeceraSegunda
+	RegistroDatosA008 registroDetalle
+}
+
+Entidad RegistroDetalle{
+	String tipoRegistro
+	String regimen
+	String ccc
 }
 
 Entidad AEAT{
@@ -797,3 +809,12 @@ Entidad RegistroDatos{
 	String estado
 }
 
+Entidad RegistroDatosA008{
+	String tipoRegistro
+	String regimen
+	String cccPpal
+	String numMedioTrabajadores
+	String nombre
+	DateTime fechaSolicitud
+	String estado
+}

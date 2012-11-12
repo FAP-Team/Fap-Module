@@ -11,14 +11,14 @@ Formulario Solicitud campo=SolicitudGenerica {
 			titulo="El acceso a la certificación acreditativa de hallarme al corriente en la Seguridad Social (INSS)"
 			Check checkATC campo=AutorizacionCesion.atc
 			titulo="El acceso a la certificación acreditativa de hallarme al corriente de las obligaciones tributarias en la Administración Tributaria Canaria (ATC)"
-			//Check checkObtenerTrab campo=AutorizacionCesion.inssA008
-			//titulo="Obtener de la Seguridad Social el Informe del número medio anual de trabajadores en situación de alta"
-			//Grupo borde=false mostrarSiCheck checkObtenerTrab = true{
-			//	Tabla trabajadoresSS campo=AutorizacionCesion.trabajadores popup=PopupTrabajadores titulo="Solicitante"{
-			//		Columna titulo="Régimen Seg. Social" campo=Trabajador.regimen ancho="200"
-			//		Columna titulo="Cód. Cuenta Cotización" campo=Trabajador.codigoCuenta ancho="200"
-			//	}
-			//}
+			Check checkObtenerTrab campo=AutorizacionCesion.inssA008
+			titulo="Obtener de la Seguridad Social el Informe del número medio anual de trabajadores en situación de alta"
+			Grupo borde=false mostrarSiCheck checkObtenerTrab = true{
+				Tabla trabajadoresSS campo=AutorizacionCesion.trabajadores popup=PopupTrabajadores titulo="Solicitante"{
+					Columna titulo="Régimen Seg. Social" campo=Trabajador.regimen ancho="200"
+					Columna titulo="Cód. Cuenta Cotización" campo=Trabajador.codigoCuenta ancho="200"
+				}
+			}
 			Check checkIDI campo=AutorizacionCesion.idi 
 			titulo="A efectos de lo previsto en la Ley Orgánica 15/1999, de 13 de Diciembre, de Regulación del Tratamiento Automatizado de los Datos de Carácter Personal, la utilización de la información contenida en la solicitud y memoria anexa así como en los documentos que acompañan a la misma, para su difución en bases de datos de la Agencia Canaria de Investigación, Innovación y Sociedad de la Información y en otras bases de datos de I+D+I"
 		}
@@ -26,7 +26,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 	
 	Popup PopupTrabajadores campo=SolicitudGenerica.cesion.autorizacionCesion.trabajadores titulo="Nueva cuenta de cotizacion"{ 
 		Texto regimen campo=Trabajador.regimen titulo="Régimen de la Seguridad Social" requerido
-		Texto codCuenta campo=Trabajador.codigoCuenta titulo="Código de cuenta de cotización" //requerido
+		Texto codCuenta campo=Trabajador.codigoCuenta titulo="Código de cuenta de cotización" requerido
 	}
 	
 	//Visible para el usuario en la fase de instrucción por administrador o gestor

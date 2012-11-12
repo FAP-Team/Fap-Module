@@ -54,17 +54,49 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		if (!permisoFormFirmaFH("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
-		try {
-			PresentacionFapController.invoke("beforeFirma", idSolicitud);
-		} catch (Throwable e1) {
-			log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
-			Messages.error("Error al validar elementos previos a la firma");
+		
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
+				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");
+			}
 		}
+		
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("beforeFirma", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
+				Messages.error("Error al validar elementos previos a la firma");
+			}
+		}
+		
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica dbSolicitud = SolicitudPresentarFAPController.getSolicitudGenerica(idSolicitud);
 			try {
 				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
 				SolicitudPresentarFAPController.firmarRegistrarFHFormFirmaFH(idSolicitud, idRegistro, firma);
+				
+				if (!Messages.hasErrors()) {
+					try {
+						PresentacionFapController.invoke("afterFirma", idSolicitud);
+					} catch (Throwable e1) {
+						log.error("Hubo un problema al invocar los métodos afterFirma: "+e1.getMessage());
+						Messages.error("Error al validar elementos posteriores a la firma");
+					}
+				}
+				
+				if (!Messages.hasErrors()) {
+					try {
+						PresentacionFapController.invoke("beforeRegistro", idSolicitud);
+					} catch (Throwable e1) {
+						log.error("Hubo un problema al invocar los métodos beforeRegistro: "+e1.getMessage());
+						Messages.error("Error al validar elementos previos al registro");
+					}
+				}
+				
 				if (!Messages.hasErrors()) {
 					try {
 						tramite.registrar();
@@ -92,12 +124,6 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 				Messages.error("Error al intentar firmar antes de registrar");
 			}
 		}
-		
-		
-//		if (firmarRegistrarFH != null) {
-//			SolicitudPresentarFAPController.firmarRegistrarFHFormFirmaFH(idSolicitud, idRegistro, firma);
-//			SolicitudPresentarFAPController.formFirmaFHRender(idSolicitud, idRegistro);
-//		}
 
 		if (!Messages.hasErrors()) {
 			SolicitudPresentarFAPController.formFirmaFHValidateRules(firma);
@@ -174,17 +200,49 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		if (!permisoFormFirmaPF("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
-		try {
-			PresentacionFapController.invoke("beforeFirma", idSolicitud);
-		} catch (Throwable e1) {
-			log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
-			Messages.error("Error al validar elementos previos a la firma");
+		
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
+				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");
+			}
 		}
+		
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("beforeFirma", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
+				Messages.error("Error al validar elementos previos a la firma");
+			}
+		}
+		
 		SolicitudGenerica dbSolicitud = SolicitudPresentarFAPController.getSolicitudGenerica(idSolicitud);
 		if (!Messages.hasErrors()) {
 			try {
 				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
 				tramite.firmar(firma);
+				
+				if (!Messages.hasErrors()) {
+					try {
+						PresentacionFapController.invoke("afterFirma", idSolicitud);
+					} catch (Throwable e1) {
+						log.error("Hubo un problema al invocar los métodos afterFirma: "+e1.getMessage());
+						Messages.error("Error al validar elementos posteriores a la firma");
+					}
+				}
+				
+				if (!Messages.hasErrors()) {
+					try {
+						PresentacionFapController.invoke("beforeRegistro", idSolicitud);
+					} catch (Throwable e1) {
+						log.error("Hubo un problema al invocar los métodos beforeRegistro: "+e1.getMessage());
+						Messages.error("Error al validar elementos previos al Registro");
+					}
+				}
+				
 				if (!Messages.hasErrors()) {
 					try {
 						tramite.registrar();
@@ -212,14 +270,6 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 				Messages.error("Error al intentar firmar antes de registrar");
 			}
 		}
-		
-//		if (!Messages.hasErrors()) {
-//			if (firmarRegistrarNif != null) {
-//				// OJO creo que sobraria
-//				//SolicitudPresentarFAPController.firmarRegistrarNifFormFirmaPF(idSolicitud, idRegistro, firma);
-//				SolicitudPresentarFAPController.formFirmaPFRender(idSolicitud, idRegistro);
-//			}
-//		}
 
 		if (!Messages.hasErrors()) {
 			SolicitudPresentarFAPController.formFirmaPFValidateRules(firma);
@@ -246,12 +296,23 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		if (!permisoFormFirmaRepresentante("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
+		
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
+				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");
+			}
+		}
 
-		try {
-			PresentacionFapController.invoke("beforeFirma", idSolicitud);
-		} catch (Throwable e1) {
-			log.error("Hubo un problema al invocar los métodos beforeFirma, en la firma con representantes: "+e1.getMessage());
-			Messages.error("Error al validar elementos previos a la firma de representante");
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("beforeFirma", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos beforeFirma, en la firma con representantes: "+e1.getMessage());
+				Messages.error("Error al validar elementos previos a la firma de representante");
+			}
 		}
 		
 		if (!Messages.hasErrors()) {
@@ -264,10 +325,14 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 			}
 		}
 		
-//		if (firmarRepresentante != null) {
-//			SolicitudPresentarFAPController.firmarRepresentanteFormFirmaRepresentante(idSolicitud, idRegistro, firma);
-//			SolicitudPresentarFAPController.formFirmaRepresentanteRender(idSolicitud, idRegistro);
-//		}
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("afterFirma", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos afterFirma, en la firma con representantes: "+e1.getMessage());
+				Messages.error("Error al validar elementos posteriores a la firma de representante");
+			}
+		}
 
 		if (!Messages.hasErrors()) {
 			SolicitudPresentarFAPController.formFirmaRepresentanteValidateRules(firma);
@@ -289,6 +354,24 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		}
 
 		SolicitudGenerica dbSolicitud = SolicitudPresentarFAPController.getSolicitudGenerica(idSolicitud);
+		
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
+				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");
+			}
+		}
+		
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("beforeRegistro", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos beforeRegistro: "+e1.getMessage());
+				Messages.error("Error al validar elementos previos al Registro");
+			}
+		}
 		
 		if (!Messages.hasErrors()) {
 			
@@ -341,6 +424,15 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		checkAuthenticity();
 		if (!permisoFormHabilitarFH("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		
+		if (!Messages.hasErrors()) {
+			try {
+				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
+				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");
+			}
 		}
 
 		if (!Messages.hasErrors()) {

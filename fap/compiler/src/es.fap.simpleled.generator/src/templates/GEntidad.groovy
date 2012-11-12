@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+
 import org.eclipse.emf.ecore.EObject
 
 import es.fap.simpleled.led.util.LedDocumentationUtils;
@@ -531,10 +532,19 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			String title = name;
 			if ((pag.titulo != null) && (!pag.titulo.isEmpty()))
 				title = pag.titulo;
-			out += """
-				if ((savePages.${name} == null) || (!savePages.${name}))
-					Messages.error("La página ${title} no fue guardada correctamente");
-			"""
+			if ("PCEconomicos".equals(pag.name)){
+				out += """
+					if (TipoCEconomico.count() > 0){
+						if ((savePages.${name} == null) || (!savePages.${name}))
+							Messages.error("La página ${title} no fue guardada correctamente");
+					}
+				""";
+			} else {
+				out += """
+					if ((savePages.${name} == null) || (!savePages.${name}))
+						Messages.error("La página ${title} no fue guardada correctamente");
+				""";
+			}
 		}
 		out += "}";
 		return out;

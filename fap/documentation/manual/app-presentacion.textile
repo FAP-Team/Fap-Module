@@ -45,7 +45,15 @@ bc. public static TramiteBase getTramiteObject (Long idSolicitud){
 	return new TramiteSolicitudFap(solicitud);
 }
 
-* *2. Método para personalizar acciones a realizar después de registrar.*
+* *2. Método para personalizar acciones a realizar antes de registrar.*
+
+bc. public static void beforeRegistro(Long idSolicitud)
+
+Esta función se utiliza para ejecutar código que sea necesario ejecutar antes del proceso de Registro en la Presentación. De esta manera, lo que en esta función pongamos, se ejecutará siempre antes de registrar las solicitudes.
+
+Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta nada especial antes de registrar.
+
+* *3. Método para personalizar acciones a realizar después de registrar.*
 
 bc. public static void afterRegistro(Long idSolicitud)
 
@@ -53,7 +61,7 @@ Esta función se utiliza para ejecutar código que sea necesario ejecutar despu�
 
 Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta nada especial después de registrar.
 
-* *3. Método para personalizar acciones a realizar antes de firmar.*
+* *4. Método para personalizar acciones a realizar antes de firmar.*
 
 bc. public static void beforeFirma(Long idSolicitud)
 
@@ -61,7 +69,23 @@ Esta función se utiliza para ejecutar código que sea necesario ejecutar antes 
 
 Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta ni comprueba nada especial antes de firmar.
 
-* *4.Método para comprobar si se ha guardado las páginas asociadas a la fase que se va a Presentar.*
+* *5. Método para personalizar acciones a realizar despues de firmar.*
+
+bc. public static void afterFirma(Long idSolicitud)
+
+Esta función se utiliza para ejecutar código que sea necesario ejecutar despues del proceso de Firma en la Presentación. De esta manera, lo que en esta función pongamos, se ejecutará siempre justo despues de firmar las solicitudes. Puede ser, por ejemplo, indicar alguna condición que se debe dar para proseguir con el registro (en este caso debemos especificar en esta función mediante Messages.error(...) que la condicion no se cumple para que no se haga nada posteriormente), o cualquier otra cosa.
+
+Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta ni comprueba nada especial despues de firmar.
+
+* *6. Método para personalizar la comprobación de la fecha límite de Presentación.*
+
+bc. public static void comprobarFechaLimitePresentacion(Long idSolicitud)
+
+Esta función se utiliza para ejecutar el código que verifique que la Presentación todavñia sigue vigente, o sea que su fecha límite no ha expirado, por lo que se seguirá permitiendo firmar, registrar y presentar. En caso contrario, en el que ya no se puedan hacer ninguna de las acciones descritas anteriormente, será labor del programador poner en esta función aquello que vea oportuno (en este caso debemos especificar en esta función mediante Messages.error(...) que la condicion no se cumple).
+
+Por defecto en Fap, esta función tiene implementado que a través del valor indicado en la property *fap.app.presentacion.fechacierre* con un formato de fecha como el que sigue _yyyy-MM-dd HH:mm:ss_, se permitirá seguir Presentando mientras la fecha del sistema no sobrepase (o iguale) la fecha indicada en dicha property. Si se ha llegado a dicha fecha, ya no se seguirá admitiendo más solicitudes a ser presentadas. Si la property no se define (por defecto el módulo FAP no lo tiene definida), se dejará presentar siempre.
+
+* *7. Método para comprobar si se ha guardado las páginas asociadas a la fase que se va a Presentar.*
 
 bc. public static boolean comprobarPaginasGuardadas(Long idSolicitud)
 

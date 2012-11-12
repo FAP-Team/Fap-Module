@@ -185,7 +185,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         try {
             result = firmaPort.verifyPKCS7Signature(texto, firma.getBytes(), INVOKING_APP);
         } catch (Exception e) {
-            throw newFirmaServiceException("Erro al validar la firma pkcs7", e);
+            throw newFirmaServiceException("Error al validar la firma pkcs7", e);
         }
         return result;  
     }

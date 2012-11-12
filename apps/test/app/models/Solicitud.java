@@ -180,8 +180,10 @@ public class Solicitud extends SolicitudGenerica {
 		if ((savePages.paginaSolicitante == null) || (!savePages.paginaSolicitante))
 			Messages.error("La página paginaSolicitante no fue guardada correctamente");
 
-		if ((savePages.paginaPCEconomicos == null) || (!savePages.paginaPCEconomicos))
-			Messages.error("La página Conceptos Económicos no fue guardada correctamente");
+		if (TipoCEconomico.count() > 0) {
+			if ((savePages.paginaPCEconomicos == null) || (!savePages.paginaPCEconomicos))
+				Messages.error("La página Conceptos Económicos no fue guardada correctamente");
+		}
 	}
 
 	// === MANUAL REGION START ===

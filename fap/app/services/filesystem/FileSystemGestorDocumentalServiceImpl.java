@@ -652,10 +652,10 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		td.setEtiqueta("Etiqueta1");
 		tdList.add(td);
 		es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento td2 = new es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento();
-		td2.setUri("fs://type2/v01");
-		td2.setDescripcion("FileSystem FileSystem 2");
+		td2.setUri("fs://solicitud/v01");
+		td2.setDescripcion("FileSystem FileSystem Solicitud");
 		td2.setVersion(1);
-		td2.setEtiqueta("Etiqueta2");
+		td2.setEtiqueta("Etiqueta Solicitud");
 		tdList.add(td2);
 		return tdList;
 	}

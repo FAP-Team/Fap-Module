@@ -3,6 +3,11 @@ package controllers.fap;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+
 import enumerado.fap.gen.EstadosSolicitudEnum;
 
 import messages.Messages;
@@ -12,6 +17,7 @@ import utils.ModelUtils;
 
 import play.Play;
 import play.utils.Java;
+import properties.FapProperties;
 
 public class PresentacionFapController extends InvokeClassController{
 	
@@ -20,10 +26,16 @@ public class PresentacionFapController extends InvokeClassController{
 		return new TramiteSolicitudFap(solicitud);
 	}
 	
+	public static void beforeRegistro(Long idSolicitud){
+	}
+	
 	public static void afterRegistro(Long idSolicitud){
 	}
 	
 	public static void beforeFirma(Long idSolicitud){
+	}
+	
+	public static void afterFirma(Long idSolicitud){
 	}
 	
 	public static boolean comprobarPaginasGuardadas(Long idSolicitud){
@@ -33,5 +45,5 @@ public class PresentacionFapController extends InvokeClassController{
         	return false;
         return true;
 	}
-
+	
 }

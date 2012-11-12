@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC10
+
+* Permiso Editar Solicitud dependiente del estado de la convocatoria.
+* Fixed Bug al Firmar con Certificado ANF.
+* Permitiendo Descargar documentos desde el AED con Informe de Firma.
+* Nuevos metodos en PresentacionFapController: afterFirma, BeforeRegistro y comprobarFechaLimitePresentacion.
+
 h3. Versión 2.1.1RC9
 
 * Fixed Bug en Conceptos Economicos de tipo Otros del Solicitante.

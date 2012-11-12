@@ -37,43 +37,43 @@ public class InfoCert {
 				} else if ((key.toLowerCase().equals("pf")) || (key.toLowerCase().equals("pv")) || (key.toLowerCase().equals("rep"))) {
 					tipo = "personafisica";
 				} else if(key.toLowerCase().equals("nif")){
-					nif = array.getItem().get(1);
+					nif = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("cif")){
-					cif = array.getItem().get(1);
+					cif = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("apellidos")){
-					apellidos = array.getItem().get(1);
+					apellidos = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("apellido1")){
-					apellido1 = array.getItem().get(1);
+					apellido1 = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("apellido2")){
-					apellido2 = array.getItem().get(1);
+					apellido2 = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("nombrecompleto")){
-					nombrecompleto = array.getItem().get(1);
+					nombrecompleto = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("entidad")){
-					entidad = array.getItem().get(1);
+					entidad = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("nombre")){
-					nombre = array.getItem().get(1);
+					nombre = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("fullname")){
-					fullname = array.getItem().get(1);
+					fullname = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("email")){
-					email = array.getItem().get(1);
+					email = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("cargo")){
-					cargo = array.getItem().get(1);
+					cargo = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("departamento")){
-					departamento = array.getItem().get(1);
+					departamento = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("finalidad")){
-					finalidad = array.getItem().get(1);
+					finalidad = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("organizacion")){
-					organizacion = array.getItem().get(1);
+					organizacion = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("serialnumber")){
-					serialNumber = array.getItem().get(1);
+					serialNumber = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("issuer")){
-					issuer = array.getItem().get(1);
+					issuer = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("subject")){
-					subject = array.getItem().get(1);
+					subject = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("notbefore")){
-					notBefore = array.getItem().get(1);
+					notBefore = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("notafter")){
-					notAfter = array.getItem().get(1);
+					notAfter = array.getItem().get(1).trim();
 				}
 			}
 		}

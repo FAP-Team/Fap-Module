@@ -30,7 +30,7 @@ import com.google.gson.reflect.TypeToken;
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosEvaluacionEnum;
 
-@With(CheckAccessController.class)
+@With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class ConsultarEvaluacionesController extends GenericController {
 	
 	@Finally(only="index")

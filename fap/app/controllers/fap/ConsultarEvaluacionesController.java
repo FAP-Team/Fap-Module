@@ -112,21 +112,17 @@ public class ConsultarEvaluacionesController extends GenericController {
 	
 	@Util
 	public static void recargarCE(Long idEvaluacion) {
-		if (FapProperties.getBoolean("fap.baremacion.evaluacion.permitirRecargarConceptos")) {
-			if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
-				Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
-				TipoEvaluacion tipoEvaluacion = evaluacion.tipo;
+		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
+			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+			TipoEvaluacion tipoEvaluacion = evaluacion.tipo;
 				
-				eliminarCEAnterior(evaluacion, tipoEvaluacion);
-				crearCENuevo(evaluacion, tipoEvaluacion);
-				play.Logger.info("Se han recargado los conceptos económicos");
-				Messages.info("Se han recargado los conceptos económicos");
-				Messages.keep();
-				aceptar(idEvaluacion);
+			eliminarCEAnterior(evaluacion, tipoEvaluacion);
+			crearCENuevo(evaluacion, tipoEvaluacion);
+			play.Logger.info("Se han recargado los conceptos económicos");
+			Messages.info("Se han recargado los conceptos económicos");
+			Messages.keep();
+			aceptar(idEvaluacion);
 				
-			} else {
-				forbidden();
-			}
 		} else {
 			forbidden();
 		}

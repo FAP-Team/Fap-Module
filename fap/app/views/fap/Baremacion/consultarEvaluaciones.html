@@ -229,7 +229,7 @@
 							labelWidth : 50,
 							xtype : 'searchfield',
 							store : store
-						}, '->', #{if botonRecargarCE}boton_recargarCE#{/if}, boton_aceptar, boton_evaluar, boton_rechazar, #{if botonReevaluar}boton_reevaluar,#{/if} boton_ver, boton_actualizar ]
+						}, '->', #{if (botonRecargarCE && permitirRecargar)}boton_recargarCE,#{/if} boton_aceptar, boton_evaluar, boton_rechazar, #{if botonReevaluar}boton_reevaluar,#{/if} boton_ver, boton_actualizar ]
 					} ]
 				});
 				

@@ -491,7 +491,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     	// ------- TRÁMITE 1: Solicitud ------- 
         Tramite tramiteSolicitud = new Tramite();
         tramiteSolicitud.nombre = "solicitud";
-        tramiteSolicitud.uri = "fs://";
+        tramiteSolicitud.uri = "fs://solicitud";
 
         TipoDocumento tipoBase = newTipoDocumento("Base", "fs://base/v01");
         tipoBase.cardinalidad = "UNICO";
@@ -517,7 +517,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         // ------- TRÁMITE 2: Aportación ------- 
         Tramite tramiteAportacion = new Tramite();
         tramiteAportacion.nombre = "aportacion";
-        tramiteAportacion.uri = "fs://";
+        tramiteAportacion.uri = "fs://aportacion";
 
         TipoDocumento tipoSolicitudAport = newTipoDocumento("SolicitudAportacion", "fs://solicitudaportacion/v02");
         tipoSolicitudAport.cardinalidad = "UNICO";
@@ -535,7 +535,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         // ------- TRÁMITE 3: Desestimiento ------- 
         Tramite tramiteDesestimiento = new Tramite();
         tramiteDesestimiento.nombre = "desestimiento";
-        tramiteDesestimiento.uri = "fs://";
+        tramiteDesestimiento.uri = "fs://desestimiento";
    			 
         TipoDocumento tipoDesestimiento = newTipoDocumento("Desestimiento", "fs://desestimiento/v01");
         tipoDesestimiento.cardinalidad = "UNICO";

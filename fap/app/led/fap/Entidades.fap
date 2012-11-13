@@ -711,3 +711,14 @@ Entidad AnotacionFAP {
 	ManyToOne Agente personaAsunto noConstruct
 	ManyToOne Agente personaSolucion noConstruct
 }
+
+Entidad VerificacionTramites extends Singleton {
+	OneToMany TramitesVerificables tramites
+	String uriTramitePorDefecto
+}
+
+Entidad TramitesVerificables {
+	String uriTramite
+	String nombre transient
+	Boolean verificable default="true"
+}

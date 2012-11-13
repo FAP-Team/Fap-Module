@@ -3,25 +3,34 @@ package controllers.fap;
 
 import play.*;
 import play.mvc.*;
+import properties.FapProperties;
 import baremacion.BaremacionFAP;
 import controllers.fap.*;
 import security.Secure;
 import services.BaremacionService;
 import tags.ReflectionUtils;
+import utils.BaremacionUtils;
+import utils.JsonUtils;
 import validation.*;
 import models.*;
 
 import java.security.Permission;
 import java.util.*;
+
 import messages.Messages;
+
+import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 import javax.inject.Inject;
+
+import com.google.gson.reflect.TypeToken;
 
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosEvaluacionEnum;
 
-@With({SecureController.class, AgenteController.class})
+@With(CheckAccessController.class)
 public class ConsultarEvaluacionesController extends GenericController {
 	
 	@Finally(only="index")
@@ -100,6 +109,92 @@ public class ConsultarEvaluacionesController extends GenericController {
 			forbidden();
 		}
 	}
+	
+	@Util
+	public static void recargarCE(Long idEvaluacion) {
+		if (FapProperties.getBoolean("fap.baremacion.evaluacion.permitirRecargarConceptos")) {
+			if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
+				Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+				TipoEvaluacion tipoEvaluacion = evaluacion.tipo;
+				
+				eliminarCEAnterior(evaluacion, tipoEvaluacion);
+				crearCENuevo(evaluacion, tipoEvaluacion);
+				play.Logger.info("Se han recargado los conceptos económicos");
+				Messages.info("Se han recargado los conceptos económicos");
+				Messages.keep();
+				aceptar(idEvaluacion);
+				
+			} else {
+				forbidden();
+			}
+		} else {
+			forbidden();
+		}
+	}
+	
+	@Util
+	public static void eliminarCEAnterior(Evaluacion evaluacion, TipoEvaluacion tipoEvaluacion) {
+		play.Logger.info("Eliminando los conceptos económicos de la evaluación "+ evaluacion.id);
+		int sizeCE = evaluacion.ceconomicos.size();
+		for (int i = 0; i < sizeCE; i++) {
+			int sizeValores = evaluacion.ceconomicos.get(0).valores.size();
+			Long idCEconomico = evaluacion.ceconomicos.get(0).id;
+			for (int j = 0; j < sizeValores; j++) {
+				Long idValoresCE = evaluacion.ceconomicos.get(0).valores.get(0).id;
+				evaluacion.ceconomicos.get(0).valores.remove(0);
+				evaluacion.save();
+				ValoresCEconomico.delete("delete from ValoresCEconomico where id=?", idValoresCE);
+				CEconomico c = new CEconomico();
+				c.valores.remove(idValoresCE);
+			}
+			evaluacion.ceconomicos.remove(0);
+			evaluacion.save();
+			CEconomico.delete("delete from CEconomico where id=?", idCEconomico);
+			evaluacion.save();
+		}
+	}
+	
+	@Util
+	public static void crearCENuevo(Evaluacion evaluacion, TipoEvaluacion tipoEvaluacion) {
+		play.Logger.info("Creando los conceptos económicos de la evaluación "+ evaluacion.id+ " a partir de los de la solicitud " + evaluacion.solicitud.id);
+		for (TipoCEconomico tCEconomico : tipoEvaluacion.ceconomicos) {
+			CEconomico cEconomico = new CEconomico();
+			cEconomico.tipo = tCEconomico;
+			for (int i = 0; i < tipoEvaluacion.duracion; i++) {
+				ValoresCEconomico vCEconomico = new ValoresCEconomico(i);
+				cEconomico.valores.add(vCEconomico);
+			}
+			evaluacion.ceconomicos.add(cEconomico);
+		}
+		
+		for(CEconomico ceconomicoS : evaluacion.solicitud.ceconomicos) {
+			for(CEconomico ceconomicoE : evaluacion.ceconomicos) {
+				if (ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)) {
+					for (int i = 0; i < tipoEvaluacion.duracion; i++) {
+						ceconomicoE.valores.get(i).valorSolicitado = ceconomicoS.valores.get(i).valorSolicitado;
+					}
+					break;
+				}
+			}
+			if (ceconomicoS.tipo.tipoOtro) {
+				for (CEconomicosManuales ceconomicoManual: ceconomicoS.otros) {
+					for(CEconomico ceconomicoE : evaluacion.ceconomicos) {
+						if (ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)) {
+							for (int i = 0; i < tipoEvaluacion.duracion; i++) {
+								ceconomicoE.valores.get(i).valorSolicitado = ceconomicoManual.valores.get(i).valorSolicitado;
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		// Cambiar estado
+		//evaluacion.estado = null;
+		//evaluacion.save();
+	}
+
 	
 //	@Util
 //	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).

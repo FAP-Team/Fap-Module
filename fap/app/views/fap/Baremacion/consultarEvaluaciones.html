@@ -23,6 +23,8 @@
 
 	%{
 		boolean botonReevaluar = "administradorgestor".contains(controllers.fap.AgenteController.getAgente().rolActivo);
+		boolean botonRecargarCE = "administradorgestorevaluador".contains(controllers.fap.AgenteController.getAgente().rolActivo);
+		boolean permitirRecargar = properties.FapProperties.getBoolean("fap.baremacion.evaluacion.permitirRecargarConceptos");
 	%}
 
 
@@ -158,6 +160,20 @@
 		    			window.location.href = action({idEvaluacion : selected_id, accion : "editar"})
 		    		}
 			    });
+			    
+			    var boton_recargarCE = new Ext.Button({
+			    	text: 'Recargar CE',
+			    	disabled:true,
+		    		handler : function(){
+		    			#{if permitirRecargar}
+			    			var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+			    			var functionButton = "recargar("+selected_id+")";
+			    			var idExpediente = grid.getSelectionModel().getSelection()[0].data.solicitud_expedienteAed_idAed;
+			    			var textBody = "Se van a borrar los conceptos económicos actuales del expediente "+ idExpediente +". ¿Está seguro de que quiere recargarlos?";
+		    				popupWarning_open(textBody, functionButton);
+		    			#{/if}
+		    		}
+			    });
 			    				
 				var editRow = new Ext.create('Ext.grid.plugin.Editing', {
 		    		clicksToEdit: 2,
@@ -213,7 +229,7 @@
 							labelWidth : 50,
 							xtype : 'searchfield',
 							store : store
-						}, '->', boton_aceptar, boton_evaluar, boton_rechazar, #{if botonReevaluar}boton_reevaluar,#{/if} boton_ver, boton_actualizar ]
+						}, '->', #{if botonRecargarCE}boton_recargarCE#{/if}, boton_aceptar, boton_evaluar, boton_rechazar, #{if botonReevaluar}boton_reevaluar,#{/if} boton_ver, boton_actualizar ]
 					} ]
 				});
 				
@@ -226,6 +242,7 @@
 			    	var rechazar_disabled = false;
 			    	var reevaluar_disabled = false;
 			    	var ver_disabled = false;
+			    	var recargarCE_disabled = false;
 			    	if (hasSelection) {
 			    		var estado = grid.getSelectionModel().getSelection()[0].data.estado;
 			    		evaluar_disabled = !(estado === "En Tramite");
@@ -233,12 +250,14 @@
 			    		rechazar_disabled = (estado === "Rechazada" || estado === "Evaluada" || estado === null);
 			    		reevaluar_disabled = (estado === "En Tramite" || estado  === null);
 			    		ver_disabled = (estado === null);
+			    		recargarCE_disabled = !(estado === "En Tramite");
 			    	}
 			    	boton_aceptar.setDisabled(aceptar_disabled);
 			    	boton_rechazar.setDisabled(rechazar_disabled);
 			    	boton_evaluar.setDisabled(evaluar_disabled);
 					#{if botonReevaluar}boton_reevaluar.setDisabled(reevaluar_disabled);#{/if}
 			    	boton_ver.setDisabled(ver_disabled);
+			    	#{if (botonRecargarCE && permitirRecargar)}boton_recargarCE.setDisabled(recargarCE_disabled)#{/if}
 			    });
 
 				
@@ -247,7 +266,14 @@
 				});
 				
 				$('#tablaEvaluacionesAsignadas').data('grid', grid);
+
 			});
+			
+			function recargar(selected_id) {
+				var action = #{jsAction @fap.ConsultarEvaluacionesController.recargarCE(':idEvaluacion') /}
+		    	window.location.href = action({idEvaluacion : selected_id})
+			}
+			
 </script>
 
 #{/fap.permiso}

@@ -84,7 +84,7 @@ function popupWarning_open(warningText, functionButton) {
 	var cancelType = "btn-secondary";
 	var acceptTextButton = "Aceptar";
 	var cancelTextButton = "Cancelar";
-	var cancelFunction = "$('#popupWarning_popup').modal('hide');";
+	var cancelFunction = "$('#popupWarning_popup').modal('hide');location.reload();";
 	var onClickAccept = "onclick=\""+functionButton+";\"";
 	var onClickCancel = "onclick=\""+cancelFunction+";\"";
 	

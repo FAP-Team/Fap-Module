@@ -178,7 +178,7 @@ bc. [
 
 h2. Estructura de _tiposDocumentos.json_
 
-Este ficehro permite personalizar los tipos de documentos que puede ver un Evaluador en la evaluación, para restringir el acceso a toda la lista de documentos que ha subido el solicitante y sólo permitirle observar aquellos que sean necesarios para llevar a cabo la evaluación. Para que los pueda ver, el documento del tipo indicado tuvo que ser aportado correctamente por el solicitante y 'verificado' por el gestor.
+Este fichero permite personalizar los tipos de documentos que puede ver un Evaluador en la evaluación, para restringir el acceso a toda la lista de documentos que ha subido el solicitante y sólo permitirle observar aquellos que sean necesarios para llevar a cabo la evaluación. Para que los pueda ver, el documento del tipo indicado tuvo que ser aportado correctamente por el solicitante y 'verificado' por el gestor.
 
 Cada elemento de la lista contendrá, simplemente:
 

@@ -71,7 +71,7 @@ public class BaremacionFAP {
 					if (ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)){
 						for (int i=0; i<tipoEvaluacion.duracion; i++){
 							ceconomicoE.valores.get(i).valorSolicitado = ceconomicoS.valores.get(i).valorSolicitado;
-							ceconomicoE.valores.get(i).valorEstimado = ceconomicoS.valores.get(i).valorSolicitado;
+//							ceconomicoE.valores.get(i).valorEstimado = ceconomicoS.valores.get(i).valorSolicitado;
 						}
 						break;
 					}
@@ -82,7 +82,7 @@ public class BaremacionFAP {
 							if (ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)){
 								for (int i=0; i<tipoEvaluacion.duracion; i++){
 									ceconomicoE.valores.get(i).valorSolicitado = ceconomicoManual.valores.get(i).valorSolicitado;
-									ceconomicoE.valores.get(i).valorEstimado = ceconomicoManual.valores.get(i).valorSolicitado;
+//									ceconomicoE.valores.get(i).valorEstimado = ceconomicoManual.valores.get(i).valorSolicitado;
 								}
 								break;
 							}

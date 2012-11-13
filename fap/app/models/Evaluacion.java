@@ -99,8 +99,7 @@ public class Evaluacion extends FapModel {
 			cEconomico.tipo = tCEconomico;
 			//tCEconomico.esNuevo = false;
 			for (int i = 0; i < tipo.duracion; i++) {
-				ValoresCEconomico vCEconomico = new ValoresCEconomico(tipo.inicio + i);
-				vCEconomico.initValues(tipo.inicio + i);
+				ValoresCEconomico vCEconomico = new ValoresCEconomico(i);
 				cEconomico.valores.add(vCEconomico);
 			}
 			this.ceconomicos.add(cEconomico);
@@ -124,8 +123,7 @@ public class Evaluacion extends FapModel {
 				tCEconomico.save();
 				cEconomico.tipo = tCEconomico;
 				for (int i = 0; i < tipo.duracion; i++) {
-					ValoresCEconomico vCEconomico = new ValoresCEconomico(tipo.inicio + i);
-					vCEconomico.initValues(tipo.inicio + i);
+					ValoresCEconomico vCEconomico = new ValoresCEconomico(i);
 					cEconomico.valores.add(vCEconomico);
 				}
 				this.ceconomicos.add(cEconomico);

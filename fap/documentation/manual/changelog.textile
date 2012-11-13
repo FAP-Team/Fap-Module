@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 2.1.1RC10
 
+* Copia extra de logs mediante property "fap.log.copy.extra".
+* Guardado obligatorio de PCEconomicos antes de presentar dependiendo de si hay TiposCEconomicos.
 * Permiso Editar Solicitud dependiente del estado de la convocatoria.
 * Fixed Bug al Firmar con Certificado ANF.
 * Permitiendo Descargar documentos desde el AED con Informe de Firma.

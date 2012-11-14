@@ -23,7 +23,7 @@
 
 	%{
 		boolean botonReevaluar = "administradorgestor".contains(controllers.fap.AgenteController.getAgente().rolActivo);
-		boolean botonRecargarCE = "administradorgestorevaluador".contains(controllers.fap.AgenteController.getAgente().rolActivo);
+		boolean botonRecargarCE = "administradorgestor".contains(controllers.fap.AgenteController.getAgente().rolActivo);
 		boolean permitirRecargar = properties.FapProperties.getBoolean("fap.baremacion.evaluacion.permitirRecargarConceptos");
 	%}
 

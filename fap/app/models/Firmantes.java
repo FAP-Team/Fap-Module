@@ -124,6 +124,15 @@ public class Firmantes extends FapModel {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		String out = "";
+		for (Firmante firmante : todos) {
+			out += firmante.toString();
+		}
+		return out;
+	}
+
 	// === MANUAL REGION END ===
 
 }

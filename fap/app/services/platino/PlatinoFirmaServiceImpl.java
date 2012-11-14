@@ -362,6 +362,13 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	@Override
 	public Firmante validateXMLSignature(byte[] contenidoDoc, String firma, List<Firmante> todosFirmantes) {
 		try {
+			
+			play.Logger.info("Firmantes Válidos: ");
+			for (Firmante firmanteAux: todosFirmantes){
+        		play.Logger.info(firmanteAux.toString());
+        	}
+			play.Logger.info("Firmante: "+FirmaController.getIdentificacionFromFirma(firma));
+			
 			//Valida la firma
 			if (verificarContentSignature(contenidoDoc, firma.getBytes())) {
 				

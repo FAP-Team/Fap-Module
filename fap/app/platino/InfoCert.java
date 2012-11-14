@@ -32,10 +32,12 @@ public class InfoCert {
 	
 	public InfoCert(List<StringArray> certInfo){
 		if (certInfo != null) {
+			String datosCertificado="[";
 			for (StringArray array : certInfo) {
 				String key = array.getItem().get(0).trim();
+				datosCertificado+=key+", "+array.getItem().get(1).trim()+" | ";
 				if (key.toLowerCase().equals("tipo")) {
-					if ("pj".equals(array.getItem().get(1).trim()))
+					if ("pj".equals(array.getItem().get(1).toLowerCase().trim()))
 						tipo = "personajuridica";
 					else // pf, pv o rep
 						tipo = "personafisica";
@@ -79,6 +81,8 @@ public class InfoCert {
 					notAfter = array.getItem().get(1).trim();
 				}
 			}
+			datosCertificado+="]";
+			play.Logger.info("Certificado Leído: "+datosCertificado);
 		}
 	}
 	
@@ -93,19 +97,18 @@ public class InfoCert {
 	
 	public String getFinalidad(){
 		if (finalidad == null) return "";
-		if (finalidad.equals("f")) return "firma";
-		else if (finalidad.equals("a")) return "autenticacion";
-		else if (finalidad.equals("fa")) return "firmaryautenticacion";
+		if (finalidad.equalsIgnoreCase("f")) return "firma";
+		else if (finalidad.equalsIgnoreCase("a")) return "autenticacion";
+		else if (finalidad.equalsIgnoreCase("fa")) return "firmaryautenticacion";
 		return "";
 	}
 
 	@Override
 	public String toString() {
-		return "InfoCert [nombrecompleto=" + nombrecompleto + ", nombre="
+		return "InfoCertUsada [IdTipo: "+getIdTipo()+", Id: "+getId()+", Name: "+getNombreCompleto()+"]\nInfoCertTotal [nombrecompleto=" + nombrecompleto + ", nombre="
 				+ nombre + ", apellido1=" + apellido1 + ", apellido2="
 				+ apellido2 + ", apellidos=" + apellidos + ", nif=" + nif
-				+ ", cif=" + cif + ", getNombreCompleto()="
-				+ getNombreCompleto() + "]";
+				+ ", cif=" + cif + ", entidad=" + entidad + "]";
 	}
 	
 	public String getId(){

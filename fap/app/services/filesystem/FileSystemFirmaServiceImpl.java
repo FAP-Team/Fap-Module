@@ -123,11 +123,6 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 	}
 	
 	@Override
-	public HashMap<String,String> extraerInfoFromFirma(String firma) {
-		return null;
-	}
-	
-	@Override
 	public List<StringArray> getCertInfo(String certificado) throws FirmaServiceException{
 		return null;
 	}

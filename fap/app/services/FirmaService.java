@@ -38,8 +38,6 @@ public interface FirmaService {
     
     public Firmante validateXMLSignature(byte[] contenidoDoc, String firma, List<Firmante> todosFirmantes);
     
-    public HashMap<String,String> extraerInfoFromFirma(String firma);
-    
     public List<StringArray> getCertInfo(String certificado) throws FirmaServiceException;
     
     public void firmar(Documento documento, List<Firmante> firmantes, String firma, String valorDocumentofirmanteSolicitado);

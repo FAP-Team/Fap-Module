@@ -332,86 +332,19 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		return null;
 	}
 	
-	private HashMap<String,String> extraerInformacionPersonal(String certificado) {
-		try {
-			List<StringArray> certificadoInfo = getCertInfo(certificado);
-			HashMap<String,String>values = new HashMap<String, String>();
-			if (certificadoInfo != null) {
-				for (StringArray array : certificadoInfo) {
-					String key = array.getItem().get(0);
-					String value = array.getItem().get(1);
-					if (key != null) {
-						values.put(key.toUpperCase(), value);
-					}
-				}
-			}
-			return values;
-		} catch (Exception e) {
-			play.Logger.error("Error al parsear al extraer el certificado "+e);
-		}
-		return null;
-	}
-	
-	@Override
-	public HashMap<String,String> extraerInfoFromFirma(String firma) {
-		try {
-			return extraerInformacionPersonal(extraerCertificadoDeFirma(firma));
-		} catch (FirmaServiceException e) {
-			play.Logger.error("Error al extraer Info From Firma "+e.getMessage());
-		}
-		return null;
-	}
-	
 	@Override
 	public Firmante validateXMLSignature(byte[] contenidoDoc, String firma) {
 		try {
-			extraerCertificado(firma);
-			
 			//Valida la firma
 			if (verificarContentSignature(contenidoDoc, firma.getBytes())) {
 				
 				//Firma válida, extrae la informacion del certificado
-				HashMap<String,String> certData = extraerInfoFromFirma(firma);
-				Firmante firmante = null;
-				
-				
-				//El certificado es de un NIF o NIE
-				if (certData != null && certData.containsKey("NIF")) {
-					play.Logger.debug("El certificado es un NIF o un CIE");
-					
-					firmante = new Firmante();
-					firmante.idtipo = "nif";
-					firmante.idvalor = certData.get("NIF");
-					
-					if (certData.containsKey("NOMBRECOMPLETO")){ 
-						firmante.nombre = certData.get("NOMBRECOMPLETO");
-					}else if (certData.containsKey("APELLIDOS")){ 
-						firmante.nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDOS");
-					}else if (certData.containsKey("APELLIDO1")) {
-						String nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDO1");
-						if (certData.containsKey("APELLIDO2"))
-							nombre = nombre + " " + certData.get("APELLIDO2"); 
-						firmante.nombre = nombre;
-					}
-				}
-				else if (certData != null && certData.containsKey("CIF")) {
-					play.Logger.debug("El certificado es un CIF");
-					
-					firmante = new Firmante();
-					firmante.idtipo = "cif";
-					firmante.idvalor = certData.get("CIF");
-					
-					if (certData.containsKey("NOMBRECOMPLETO")){ 
-						firmante.nombre = certData.get("NOMBRECOMPLETO");
-					}else if (certData.containsKey("APELLIDOS")){ 
-						firmante.nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDOS");
-					}else if (certData.containsKey("APELLIDO1")) {
-						String nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDO1");
-						if (certData.containsKey("APELLIDO2"))
-							nombre = nombre + " " + certData.get("APELLIDO2"); 
-						firmante.nombre = nombre;
-					}
-				}
+				InfoCert certData = extraerCertificado(firma);
+				Firmante firmante = new Firmante();
+				firmante.idtipo = certData.getIdTipo();
+				firmante.idvalor = certData.getId();
+				firmante.nombre = certData.getNombreCompleto();
+
 				return firmante;
 			}
 			return null;
@@ -421,90 +354,48 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			play.Logger.error("Error en validateXMLSignature "+e);
 			Messages.error("Error al validar la firma");
 		}
+		play.Logger.error("Error en validateXMLSignature, la firma no es válida.");
+		Messages.error("La firma no es válida.");
 		return null;
 	}
 	
 	@Override
 	public Firmante validateXMLSignature(byte[] contenidoDoc, String firma, List<Firmante> todosFirmantes) {
 		try {
-			extraerCertificado(firma);
-			
 			//Valida la firma
 			if (verificarContentSignature(contenidoDoc, firma.getBytes())) {
 				
 				//Firma válida, extrae la informacion del certificado
-				HashMap<String,String> certData = extraerInfoFromFirma(firma);
+				InfoCert certData = extraerCertificado(firma);
 				Firmante firmante = null;
-				
-				
-				//El certificado es de un NIF o NIE
-				if (certData != null && certData.containsKey("NIF")) {
-					play.Logger.debug("El certificado es un NIF o un CIE");
-					String identificadorFirmante = FirmaController.getIdentificacionFromFirma(firma);
-					for (Firmante firmanteAux: todosFirmantes){
-	            		if (firmanteAux.idvalor.equals(identificadorFirmante)){
-	            			firmante = firmanteAux;
-	            			break;
-	            		}
-	            	}
-					if (firmante == null){
-						log.error("Error en validateXMLSignature, Firmante NIF no encontrado: "+identificadorFirmante+" en la lista de firmantes.");
-						Messages.error("Error al recuperar el firmante físico.");
-						return null;
-					}
-						
-					firmante.idtipo = "nif";
-					firmante.idvalor = certData.get("NIF");
-					
-					if (certData.containsKey("NOMBRECOMPLETO")){ 
-						firmante.nombre = certData.get("NOMBRECOMPLETO");
-					}else if (certData.containsKey("APELLIDOS")){ 
-						firmante.nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDOS");
-					}else if (certData.containsKey("APELLIDO1")) {
-						String nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDO1");
-						if (certData.containsKey("APELLIDO2"))
-							nombre = nombre + " " + certData.get("APELLIDO2"); 
-						firmante.nombre = nombre;
-					}
+
+				String identificadorFirmante = FirmaController.getIdentificacionFromFirma(firma);
+				for (Firmante firmanteAux: todosFirmantes){
+            		if (firmanteAux.idvalor.equals(identificadorFirmante)){
+            			firmante = firmanteAux;
+            			break;
+            		}
+            	}
+				if (firmante == null){
+					play.Logger.error("Error en validateXMLSignature, Firmante "+certData.getIdTipo()+" no encontrado: "+identificadorFirmante+" en la lista de firmantes.");
+					Messages.error("Error al recuperar el firmante de tipo "+certData.getIdTipo());
+					return null;
 				}
-				else if (certData != null && certData.containsKey("CIF")) {
-					play.Logger.debug("El certificado es un CIF");
 					
-					String identificadorFirmante = FirmaController.getIdentificacionFromFirma(firma);
-					for (Firmante firmanteAux: todosFirmantes){
-	            		if (firmanteAux.idvalor.equals(identificadorFirmante)){
-	            			firmante = firmanteAux;
-	            			break;
-	            		}
-	            	}
-					if (firmante == null){
-						log.error("Error en validateXMLSignature, Firmante CIF no encontrado: "+identificadorFirmante+" en la lista de firmantes.");
-						Messages.error("Error al recuperar el firmante jurídico.");
-						return null;
-					}
-					firmante.idtipo = "cif";
-					firmante.idvalor = certData.get("CIF");
-					
-					if (certData.containsKey("NOMBRECOMPLETO")){ 
-						firmante.nombre = certData.get("NOMBRECOMPLETO");
-					}else if (certData.containsKey("APELLIDOS")){ 
-						firmante.nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDOS");
-					}else if (certData.containsKey("APELLIDO1")) {
-						String nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDO1");
-						if (certData.containsKey("APELLIDO2"))
-							nombre = nombre + " " + certData.get("APELLIDO2"); 
-						firmante.nombre = nombre;
-					}
-				}
+				firmante.idtipo = certData.getIdTipo();
+				firmante.idvalor = certData.getId();
+				firmante.nombre = certData.getNombreCompleto();
+				
 				return firmante;
 			}
-			return null;
 		} catch (FirmaServiceException e){
-			log.error("El certificado no es válido");
+			play.Logger.error("El certificado no es válido");
 		}catch (Exception e) {
-			log.error("Error en validateXMLSignature "+e);
+			play.Logger.error("Error en validateXMLSignature "+e);
 			Messages.error("Error al validar la firma");
 		}
+		play.Logger.error("Error en validateXMLSignature, la firma no es válida");
+		Messages.error("La firma no es válida");
 		return null;
 	}
 	

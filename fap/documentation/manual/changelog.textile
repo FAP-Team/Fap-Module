@@ -1,5 +1,14 @@
 h2. Changelog
 
+h3. Versión 2.1.1RC11
+
+* Fixed Bug en Recuperar Info Certificado para Agente y Firma.
+* No permitiendo a los Evaluadores recargar los Conceptos Economicos.
+* No se muestran los "firmantes" en Aportación (No eran los firmantes correctos).
+* Verificando sólo los trámites que se asignen como verificables.
+* Fixed Bug en ConsultarEvaluaciones.
+* Fixed Minor Bugs.
+
 h3. Versión 2.1.1RC10
 
 * Copia extra de logs mediante property "fap.log.copy.extra".

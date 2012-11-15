@@ -29,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosEvaluacionEnum;
+import enumerado.fap.gen.EstadosSolicitudEnum;
 
 @With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class ConsultarEvaluacionesController extends GenericController {
@@ -192,14 +193,45 @@ public class ConsultarEvaluacionesController extends GenericController {
 	}
 
 	
-//	@Util
-//	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-//	public static void botonEvaluacionesFinalizadas(String btnEvaluacionesFinalizadas) {
-//		checkAuthenticity();
-//		if (!Messages.hasErrors()) {
-//			String accion = "editable";
-//			renderTemplate("fap/EvaluacionesFinalizadas/EvaluacionesFinalizadas.html", accion);
-//		}
-//	}
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void botonFinalizarEvaluaciones(String btnEvaluacionesFinalizadas) {
+		checkAuthenticity();
+		if (!Messages.hasErrors()) {
+			List<Evaluacion> evaluaciones = Evaluacion.findAll();
+			for (Evaluacion evaluacion: evaluaciones){
+				if (evaluacion.estado == null)
+					Messages.error("La evaluación del expediente "+evaluacion.solicitud.expedienteAed.idAed+" está aún sin estado");
+				else if ((!evaluacion.estado.equals(EstadosEvaluacionEnum.rechazada.name())) && (!evaluacion.estado.equals(EstadosEvaluacionEnum.evaluada.name()))){
+					Messages.error("La evaluación del expediente "+evaluacion.solicitud.expedienteAed.idAed+" está aún en estado: "+evaluacion.estado);
+				}
+			}
+		}
+		if (Messages.hasErrors()) {
+			Messages.keep();
+			index();
+		} else { // Todo ha ido bien, se puede Finalizar (Pasar a la siguiente Fase de relleno de los dos últimos valores de los conceptos economicos)
+			List<Evaluacion> evaluaciones = Evaluacion.findAll();
+			for (Evaluacion evaluacion: evaluaciones){
+				for (CEconomico conceptoE: evaluacion.ceconomicos){
+					for (CEconomico conceptoS: evaluacion.solicitud.ceconomicos){
+						if (conceptoS.tipo.jerarquia.equals(conceptoE.tipo.jerarquia)){
+							for (int i=0; i<evaluacion.tipo.duracion; i++){
+								conceptoS.valores.get(0).valorEstimado = conceptoE.valores.get(0).valorEstimado;
+							}
+							conceptoS.save();
+							break;
+						}
+					}
+				}
+			}
+			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+			tipoEvaluacion.estado="evaluada";
+			tipoEvaluacion.save();
+			Messages.ok("La evaluación ha finalizado correctamente");
+			Messages.keep();
+			index();
+		}
+	}
 	
 }

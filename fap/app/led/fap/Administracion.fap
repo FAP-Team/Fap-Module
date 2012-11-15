@@ -442,4 +442,5 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			Columna titulo="Clase" campo=Logs.class_ expandir
 		}
 	}
+		
 }

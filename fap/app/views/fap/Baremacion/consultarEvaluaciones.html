@@ -13,11 +13,17 @@
 		
 <div id="tablaEvaluacionesAsignadas" class="tabla"></div>
 
-<!-- #{form play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.botonEvaluacionesFinalizadas') , class:"form-horizontal", id:"botonEvaluacionesFinalizadas"}
-					
-	#{fap.boton id:'btnEvaluacionesFinalizadas', titulo:'Ir a Evaluaciones Finalizadas' /}
-		
-#{/form} -->
+#{fap.permiso permiso:'adminOrGestor', accion:"editar"}
+
+		#{form play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.botonFinalizarEvaluaciones') , class:"form-horizontal", id:"botonEvaluacionesFinalizadas"}
+						
+			<div class="well">
+				#{fap.boton id:'btnEvaluacionesFinalizadas', titulo:'Finalizar Todas las Evaluaciones', type:'btn-danger' /}
+			</div>
+			
+		#{/form}
+
+#{/fap.permiso}
 
 <script type="text/javascript">
 
@@ -25,6 +31,10 @@
 		boolean botonReevaluar = "administradorgestor".contains(controllers.fap.AgenteController.getAgente().rolActivo);
 		boolean botonRecargarCE = "administradorgestor".contains(controllers.fap.AgenteController.getAgente().rolActivo);
 		boolean permitirRecargar = properties.FapProperties.getBoolean("fap.baremacion.evaluacion.permitirRecargarConceptos");
+		def tipoEvaluacion = models.TipoEvaluacion.all().first();
+		boolean evaluacionFinalizada = false;
+		if (tipoEvaluacion.estado.equals("evaluada"))
+			evaluacionFinalizada = true;
 	%}
 
 
@@ -255,9 +265,9 @@
 			    	boton_aceptar.setDisabled(aceptar_disabled);
 			    	boton_rechazar.setDisabled(rechazar_disabled);
 			    	boton_evaluar.setDisabled(evaluar_disabled);
-					#{if botonReevaluar}boton_reevaluar.setDisabled(reevaluar_disabled);#{/if}
+					#{if (botonReevaluar && !evaluacionFinalizada)}boton_reevaluar.setDisabled(reevaluar_disabled);#{/if}
 			    	boton_ver.setDisabled(ver_disabled);
-			    	#{if (botonRecargarCE && permitirRecargar)}boton_recargarCE.setDisabled(recargarCE_disabled)#{/if}
+			    	#{if (botonRecargarCE && permitirRecargar && !evaluacionFinalizada)}boton_recargarCE.setDisabled(recargarCE_disabled)#{/if}
 			    });
 
 				

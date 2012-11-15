@@ -8,9 +8,27 @@ El gestor/revisor, podrá ver en el menú lateral de la aplicación un elemento 
 
 El solicitante/usuario, podrá ver la página de conceptos económicos que puede rellenar (si procede), una vez se haya presionado el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración. Estos datos que rellene el usuario se tendrán en cuenta sólo la primera vez que se Inicie la Baremación a través del botón "Iniciar Evaluación de Baremación", de la página _Gestionar Baremación_ de Administración, que aparecerá cuando se haya iniciado el Tipo de Evaluación, en la misma página de Administración.
 
+Esta página, así como otras, deberán ser referenciadas en las aplicaciones por el desarrollador, para que se incluyan en estas.
+
 h2. Flujo de trabajo
 
 !images/app-Baremacion-Workflow!
+
+h2. Páginas por Defecto de FAP para incluir en nuestras Aplicaciones
+
+FAP posee una serie de Páginas por defecto que deberán ser referenciadas en los menús pertinentes de cada aplicación que quiera usar la Baremación que trae implementada el módulo FAP. Son concretamente 2 páginas:
+
+* *PCEconomicos*: Esta en la página que se encarga de permitir al solicitante rellenar los conceptos económicos con los valores que el va a Solicitar, así como le permitirá crear nuevos Conceptos Económicos Manuales para personalizar la información de las cantidades que solicita.
+
+Para usar la página en nuestra aplicación simplemente deberemos crear un Enlace que la referencie, en algún menú. Por ejemplo:
+
+bc. Enlace "Conceptos Económicos Solicitados" pagina=PCEconomicos	
+
+* *PaginaCEconomicosEvaluados*: Esta en la página se utilizará exclusivamente por gestores y cuando finalicen correctamente todas la evaluaciones de un tipo de Evaluación en curso (Botón Finalizar Todas las Evaluaciones) que se encarga de permitir a los gestores cumplimentar los dos últimos valores de cada Concepto Económico. Por un lado tendremos ya relleno el valor Solicitado por el Solicitante, y el valor Estimado por el Evaluador. Faltará que el Gestor cumplimente el Valor Propuesto y el Valor Concedido. Esta será la página encargado para ello que contendrá una tabla a semenjanza de la de FichaEvaluación. Realmente el Gestor tendrá potestad para modificar cualquier valor (incluido el Solicitado y el Estimado aunque aparecerán sombreados para indicar que no es lo más adecuado, modificar esos valores), así que se tendrá que tener esto en cuenta.
+
+Para usar la página en nuestra aplicación simplemente deberemos crear un Enlace que la referencie, en algún menú. Por ejemplo:
+
+bc. Enlace "Conceptos Económicos Evaluados" pagina=PaginaCEconomicosEvaluados	
 
 h2. Creación de los ficheros JSON asociados
 

@@ -21,7 +21,10 @@ import properties.FapProperties;
 import reports.Report;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import tramitacion.TramiteBase;
 import utils.StringUtils;
+import controllers.fap.AportacionFapController;
+import controllers.fap.PresentacionFapController;
 import controllers.gen.AportacionControllerGen;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 			
@@ -73,49 +76,33 @@ public class AportacionController extends AportacionControllerGen {
 				//Reinicia el estado de la aportación
 				aportacion.estado = null;
 				aportacion.save();
+				try {
+					TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
+					tramite.deshacer();
+				} catch (Throwable e) {
+					play.Logger.info("No se ha podido deshacer la aportación de la solicitud tras no haber ningun documento aportado: "+e.getMessage());
+				}
 			}
 			
-			if(!Messages.hasErrors() && aportacion.estado == null){
+			if(!Messages.hasErrors() && !aportacion.registro.fasesRegistro.borrador){
 				try {
-					String tipoDocumentoSolicitudAportacion = FapProperties.get("fap.aed.tiposdocumentos.aportacion.solicitud");
-					
-                    // Borramos los documentos que se pudieron generar en una llamada previa al metodo, para no dejar basura en la BBDD
-					if((aportacion.borrador != null) && (aportacion.borrador.uri != null) && (!aportacion.borrador.uri.trim().equals(""))){
-					    Documento borradorOld = aportacion.borrador;
-					    aportacion.oficial = null;
-					    aportacion.save();
-					    gestorDocumentalService.deleteDocumento(borradorOld);
+					TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
+					tramite.prepararFirmar();
+					if (!Messages.hasErrors()){
+						if (solicitud.registro.fasesRegistro.expedienteAed){
+							solicitud.aportaciones.actual.registro.fasesRegistro.expedienteAed = true;
+							solicitud.aportaciones.actual.registro.fasesRegistro.save();
+						}
+						if ((solicitud.expedientePlatino != null) && (solicitud.expedientePlatino.uri != null) && ((!solicitud.expedientePlatino.uri.isEmpty()))){
+							solicitud.aportaciones.actual.registro.fasesRegistro.expedientePlatino = true;
+							solicitud.aportaciones.actual.registro.fasesRegistro.save();
+						}
+						aportacion.estado = "borrador";
+						aportacion.save();
 					}
-					
-					if((aportacion.oficial != null) && (aportacion.oficial.uri != null) && (!aportacion.oficial.uri.trim().equals(""))){
-					    Documento oficialOld = aportacion.oficial;
-					    aportacion.oficial = null;
-					    aportacion.save();
-					    gestorDocumentalService.deleteDocumento(oficialOld);
-					}						
-	
-					//Genera el borrador
-					File borrador = new Report("reports/solicitudAportacion.html").header("reports/header.html").footer("reports/footer-borrador.html").renderTmpFile(solicitud);
-					aportacion.borrador = new Documento();
-					aportacion.borrador.tipo = tipoDocumentoSolicitudAportacion;
-					aportacion.borrador.descripcion = "Borrador solicitud aportación";
-					
-					gestorDocumentalService.saveDocumentoTemporal(aportacion.borrador, new FileInputStream(borrador), borrador.getName());
-											
-					//Genera el documento oficial
-					File oficial =  new Report("reports/solicitudAportacion.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
-					aportacion.oficial = new Documento();
-					aportacion.oficial.tipo = tipoDocumentoSolicitudAportacion;
-					aportacion.oficial.descripcion = "Solicitud aportación";
-					
-					gestorDocumentalService.saveDocumentoTemporal(aportacion.oficial, new FileInputStream(oficial), oficial.getName());
-					
-					aportacion.estado = "borrador";
-					aportacion.save();
-				}catch(Exception e){
-					Messages.error("Se produjo un error generando el documento de aportación.");
-					play.Logger.error(e, "Error al generar el documento de la aportación: " + e.getMessage());
-					e.printStackTrace();
+				} catch (Throwable e) {
+					log.error("Hubo un problema al intentar invocar a los métodos de la clase AportacionFAPController en prepararPresentar: "+e.getMessage());
+					Messages.error("No se pudo preparar para Presentar");
 				}
 			}
 		}
@@ -150,6 +137,12 @@ public class AportacionController extends AportacionControllerGen {
 				//Reinicia el estado de la aportación
 				aportacion.estado = null;
 				aportacion.save();
+				try {
+					TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
+					tramite.deshacer();
+				} catch (Throwable e) {
+					play.Logger.info("No se ha podido deshacer la aportación de la solicitud tras no haber ningun documento aportado: "+e.getMessage());
+				}
 			}
 			
 			if(!Messages.hasErrors()) {

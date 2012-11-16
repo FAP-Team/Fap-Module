@@ -180,7 +180,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	  	Grupo titulo="Presentar Aportación de Documentos" {
 			Wiki {"Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
 
-			Enlace campo=SolicitudGenerica.aportaciones.actual.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="btn"
+			Enlace campo=SolicitudGenerica.aportaciones.actual.registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="btn"
 		
 			Form modificarBorrador redirigir=Aportacion permiso=aportacionModificar{
 				Wiki {"Puede realizar cambios antes de su presentación definitiva."}
@@ -227,7 +227,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 					Wiki{"La solicitud será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud una vez 'Firmar y Presentar' se haya realizado con éxito"}
 					Form formFirmaFH { 
 						FirmaSimple firmarRegistrarFH titulo="Firmar y presentar por Funcionario Habilitado" 
-							documento=SolicitudGenerica.aportaciones.actual.oficial
+							documento=SolicitudGenerica.aportaciones.actual.registro.oficial
 							listaFirmantes=SolicitudGenerica.registro.firmantes.todos
 							calcularFirmantes=SolicitudGenerica.solicitante
 					}
@@ -239,7 +239,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Wiki{"La solicitud será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud una vez 'Firmar y Presentar' se haya realizado con éxito"}
 				Form presentar redirigir=AportacionRecibos {
 					FirmaSimple firmarRepresentante titulo="Firmar y presentar"
-						documento=SolicitudGenerica.aportaciones.actual.oficial
+						documento=SolicitudGenerica.aportaciones.actual.registro.oficial
 						listaFirmantes=SolicitudGenerica.registro.firmantes.todos
 						calcularFirmantes=SolicitudGenerica.solicitante
 				}

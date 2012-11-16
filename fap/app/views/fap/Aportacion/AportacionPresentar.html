@@ -24,7 +24,7 @@
 
 			</div>
 		
-			#{fap.enlace estilo:'btn', target:'_blank', titulo:'Obtener borrador', url:solicitud.aportaciones.actual.borrador.urlDescarga /}
+			#{fap.enlace estilo:'btn', target:'_blank', titulo:'Obtener borrador', url:solicitud.aportaciones.actual.registro.borrador.urlDescarga /}
 		
 				#{fap.permiso permiso:"aportacionModificar", accion:accion}
 					
@@ -112,7 +112,7 @@
 				
 					#{form play.mvc.Router.reverse('AportacionPresentarController.formFirmaFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formFirmaFH"}
 
-						#{fap.firma firma:'firma', id:'firmarRegistrarFH', titulo:'Firmar y presentar por Funcionario Habilitado', uri:"${solicitud.aportaciones.actual.oficial.uri}" /}
+						#{fap.firma firma:'firma', id:'firmarRegistrarFH', titulo:'Firmar y presentar por Funcionario Habilitado', uri:"${solicitud.aportaciones.actual.registro.oficial.uri}" /}
 		
 					#{/form}
 			
@@ -134,7 +134,7 @@
 		
 				#{form play.mvc.Router.reverse('AportacionPresentarController.presentar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"presentar"}
 
-			#{fap.firma firma:'firma', id:'firmarRepresentante', titulo:'Firmar y presentar', uri:"${solicitud.aportaciones.actual.oficial.uri}" /}
+			#{fap.firma firma:'firma', id:'firmarRepresentante', titulo:'Firmar y presentar', uri:"${solicitud.aportaciones.actual.registro.oficial.uri}" /}
 		
 				#{/form}
 			

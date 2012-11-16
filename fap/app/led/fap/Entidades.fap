@@ -333,12 +333,14 @@ Entidad Aportacion {
 	String estado
 	OneToMany Documento documentos
 	
+	Registro registro
+	
 	InformacionRegistro informacionRegistro
 	/* Cuando aportamos sin registro, se establece ésta fecha */
 	DateTime fechaAportacionSinRegistro
 
 	Boolean habilitaFuncionario default="false"
-
+	
 	Documento borrador
 	Documento oficial
 	Documento justificante

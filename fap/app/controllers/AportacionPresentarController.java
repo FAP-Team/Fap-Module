@@ -23,6 +23,7 @@ import models.JustificanteRegistro;
 import models.Registro;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
+import platino.FirmaUtils;
 import platino.InfoCert;
 import play.mvc.Util;
 import properties.FapProperties;
@@ -36,6 +37,7 @@ import sun.util.logging.resources.logging;
 import tramitacion.TramiteBase;
 import validation.CustomValidation;
 import controllers.fap.AgenteController;
+import controllers.fap.AportacionFapController;
 import controllers.fap.FirmaController;
 import controllers.fap.PresentacionFapController;
 import controllers.gen.AportacionPresentarControllerGen;
@@ -56,7 +58,7 @@ public class AportacionPresentarController extends AportacionPresentarController
         SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
         Aportacion aportacion = solicitud.aportaciones.actual;
 
-        if (aportacion.estado == null) {
+        if (!aportacion.registro.fasesRegistro.borrador) {
             // Si la aportación no esta preparada, vuelve a la página para subir
             // documentos
             Messages.warning("Su aportación de documentación no está preparada para el registro. Pulse el botón 'Registrar Aportacion'");
@@ -70,11 +72,14 @@ public class AportacionPresentarController extends AportacionPresentarController
     public static void modificarBorrador(Long idSolicitud) {
         checkAuthenticity();
         if (permisoModificarBorrador("editar") || permisoModificarBorrador("crear")) {
-            SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
-            Aportacion aportacion = solicitud.aportaciones.actual;
-            aportacion.estado = null;
-            aportacion.save();
-            Messages.ok("Ahora puede modificar los datos de la solicitud de aportación.");
+            try {
+				TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
+				tramite.deshacer();
+				Messages.ok("Ahora puede modificar los datos de la solicitud de aportación.");
+			} catch (Throwable e) {
+				Messages.error("No se ha podido deshacer la Aportación.");
+				play.Logger.info("No se ha podido deshacer la aportación de la solicitud: "+e.getMessage());
+			}
         } else {
             Messages.fatal("No tiene permisos suficientes para realizar esta acción");
             Messages.keep();
@@ -92,20 +97,109 @@ public class AportacionPresentarController extends AportacionPresentarController
 		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
         Aportacion aportacion = solicitud.aportaciones.actual;
 
-        if (aportacion.estado == null) {
+        if (!aportacion.registro.fasesRegistro.borrador) {
             Messages.error("La solicitud no está preparada para registrar");
         }
 
-        almacenarFirmaAportacionFH(firma, solicitud, aportacion);
-        registrarAportacion(solicitud, aportacion);
-        clasificarDocumentosAportacionConRegistro(solicitud, aportacion);
-        finalizarAportacion(solicitud, aportacion);
-
         if (!Messages.hasErrors()) {
+			try {
+				AportacionFapController.invoke("comprobarFechaLimiteAportacion", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos comprobarFechaLimiteAportación: "+e1.getMessage());
+				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Aportación");
+			}
+		}
+		
+		if (!Messages.hasErrors()) {
+			try {
+				AportacionFapController.invoke("beforeFirma", idSolicitud);
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
+				Messages.error("Error al validar elementos previos a la firma");
+			}
+		}
+		
+		if (!Messages.hasErrors()) {
+			SolicitudGenerica dbSolicitud = SolicitudPresentarFAPController.getSolicitudGenerica(idSolicitud);
+			try {
+				TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
+				AportacionPresentarController.firmarRegistrarFHFormFirmaFH(idSolicitud, firma);
+				
+				if (!Messages.hasErrors()) {
+					try {
+						AportacionFapController.invoke("afterFirma", idSolicitud);
+					} catch (Throwable e1) {
+						log.error("Hubo un problema al invocar los métodos afterFirma: "+e1.getMessage());
+						Messages.error("Error al validar elementos posteriores a la firma");
+					}
+				}
+				
+				if (!Messages.hasErrors()) {
+					try {
+						AportacionFapController.invoke("beforeRegistro", idSolicitud);
+					} catch (Throwable e1) {
+						log.error("Hubo un problema al invocar los métodos beforeRegistro: "+e1.getMessage());
+						Messages.error("Error al validar elementos previos al registro");
+					}
+				}
+				
+				if (!Messages.hasErrors()) {
+					try {
+						tramite.registrar();
+						if (dbSolicitud.aportaciones.actual.registro.fasesRegistro.clasificarAed){
+							aportacion.estado = "finalizada";
+			            	aportacion.save();
+						} else{
+							play.Logger.error("No se registro la aportacion correctamente por lo que no se cambiara el estado de la misma.");
+							Messages.error("Error al intentar sólo registrar.");
+						}
+						if (!Messages.hasErrors()) {
+							try {
+								AportacionFapController.invoke("afterRegistro", idSolicitud);
+							} catch (Throwable e1) {
+								log.error("Hubo un problema al invocar los métodos afterRegistro: "+e1.getMessage());
+								Messages.error("Error al validar elementos posteriores al registro");
+							}
+						}
+					} catch (Exception e) {
+						log.error("Hubo un error al registrar la solicitud: "+ e.getMessage());
+						Messages.error("No se pudo registrar la solicitud");
+					}
+				}
+			} catch (Throwable e1) {
+				log.error("Hubo un problema al invocar el metodo que devuelve la clase TramiteBase en la firma: "+e1.getMessage());
+				Messages.error("Error al intentar firmar antes de registrar");
+			}
+		}
+		
+        if (!Messages.hasErrors()) {
+        	aportacion.estado = "finalizada";
+            aportacion.save();
             Messages.ok("Su solicitud de aportación de documentación se registró correctamente");
         }
 
         presentarRender(idSolicitud);
+	}
+    
+    @Util
+	public static void firmarRegistrarFHFormFirmaFH(Long idSolicitud, String firma) {
+		SolicitudGenerica solicitud = AportacionController.getSolicitudGenerica(idSolicitud);
+
+		play.Logger.info("Metodo: firmarRegistrarFHFormFirmaFH");
+		Agente agente = AgenteController.getAgente();
+		if (agente.getFuncionario()){
+			List<Firmante> firmantes = new ArrayList<Firmante>();
+			firmantes.add(new Firmante(agente));
+			FirmaUtils.firmar(solicitud.aportaciones.actual.registro.oficial, firmantes, firma, null);
+		} else {
+			//ERROR
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		if (!Messages.hasErrors()) {
+			solicitud.aportaciones.actual.estado = "firmada";
+			solicitud.aportaciones.actual.registro.fasesRegistro.firmada = true;
+			solicitud.save();
+		}
 	}
 
     /**
@@ -122,16 +216,85 @@ public class AportacionPresentarController extends AportacionPresentarController
             SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
             Aportacion aportacion = solicitud.aportaciones.actual;
 
-            if (aportacion.estado == null) {
+            if (!aportacion.registro.fasesRegistro.borrador) {
                 Messages.error("La solicitud no está preparada para registrar");
             }
 
-            almacenarFirmaAportacion(firma, solicitud, aportacion);
-            registrarAportacion(solicitud, aportacion);
-            clasificarDocumentosAportacionConRegistro(solicitud, aportacion);
-            finalizarAportacion(solicitud, aportacion);
-
             if (!Messages.hasErrors()) {
+    			try {
+    				AportacionFapController.invoke("comprobarFechaLimiteAportacion", idSolicitud);
+    			} catch (Throwable e1) {
+    				log.error("Hubo un problema al invocar los métodos comprobarFechaLimiteAportación: "+e1.getMessage());
+    				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Aportación");
+    			}
+    		}
+    		
+    		if (!Messages.hasErrors()) {
+    			try {
+    				AportacionFapController.invoke("beforeFirma", idSolicitud);
+    			} catch (Throwable e1) {
+    				log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
+    				Messages.error("Error al validar elementos previos a la firma");
+    			}
+    		}
+    		
+    		if (!Messages.hasErrors()) {
+    			SolicitudGenerica dbSolicitud = SolicitudPresentarFAPController.getSolicitudGenerica(idSolicitud);
+    			try {
+    				TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
+    				// Llamará a la implementación de la última clase que extienda de TramiteBase
+    				tramite.firmar(firma);
+    				
+    				if (!Messages.hasErrors()) {
+    					try {
+    						AportacionFapController.invoke("afterFirma", idSolicitud);
+    					} catch (Throwable e1) {
+    						log.error("Hubo un problema al invocar los métodos afterFirma: "+e1.getMessage());
+    						Messages.error("Error al validar elementos posteriores a la firma");
+    					}
+    				}
+    				
+    				if (!Messages.hasErrors()) {
+    					try {
+    						AportacionFapController.invoke("beforeRegistro", idSolicitud);
+    					} catch (Throwable e1) {
+    						log.error("Hubo un problema al invocar los métodos beforeRegistro: "+e1.getMessage());
+    						Messages.error("Error al validar elementos previos al registro");
+    					}
+    				}
+    				
+    				if (!Messages.hasErrors()) {
+    					try {
+    						tramite.registrar();
+    						if (dbSolicitud.aportaciones.actual.registro.fasesRegistro.clasificarAed){
+    							aportacion.estado = "finalizada";
+    			            	aportacion.save();
+    						} else{
+    							play.Logger.error("No se registro la aportacion correctamente por lo que no se cambiara el estado de la misma.");
+    							Messages.error("Error al intentar sólo registrar.");
+    						}
+    						if (!Messages.hasErrors()) {
+    							try {
+    								AportacionFapController.invoke("afterRegistro", idSolicitud);
+    							} catch (Throwable e1) {
+    								log.error("Hubo un problema al invocar los métodos afterRegistro: "+e1.getMessage());
+    								Messages.error("Error al validar elementos posteriores al registro");
+    							}
+    						}
+    					} catch (Exception e) {
+    						log.error("Hubo un error al registrar la solicitud: "+ e.getMessage());
+    						Messages.error("No se pudo registrar la solicitud");
+    					}
+    				}
+    			} catch (Throwable e1) {
+    				log.error("Hubo un problema al invocar el metodo que devuelve la clase TramiteBase en la firma: "+e1.getMessage());
+    				Messages.error("Error al intentar firmar antes de registrar");
+    			}
+    		}
+    		
+            if (!Messages.hasErrors()) {
+            	aportacion.estado = "finalizada";
+                aportacion.save();
                 Messages.ok("Su solicitud de aportación de documentación se registró correctamente");
             }
 
@@ -141,226 +304,6 @@ public class AportacionPresentarController extends AportacionPresentarController
         presentarRender(idSolicitud);
     }
 
-    /**
-     * Valida que la firma sea correcta y que sea una de las personas que puede firmar la aportación
-     * 
-     * Cambia el estado a firmada
-     * 
-     * @param firma
-     * @param solicitud
-     * @param aportacion
-     */
-    private static void almacenarFirmaAportacion(String firma, SolicitudGenerica solicitud, Aportacion aportacion) {
-        if (!Messages.hasErrors() && "borrador".equals(aportacion.estado)) {
-            Firmante firmante = firmaService.getFirmante(firma, aportacion.oficial);
-
-            if(!Messages.hasErrors()){
-                if (isFirmanteValido(solicitud, firmante)) {
-                    almacenarFirma(firma, aportacion, firmante);
-                }
-            }
-
-            if (!Messages.hasErrors()) {
-                // Firma válida y almacenada
-                aportacion.estado = "firmada";
-                aportacion.save();
-            }
-        }
-    }
-    
-    private static void almacenarFirmaAportacionFH(String firma, SolicitudGenerica solicitud, Aportacion aportacion) {
-        if (!Messages.hasErrors() && "borrador".equals(aportacion.estado)) {
-            Firmante firmante = firmaService.getFirmante(firma, aportacion.oficial);
-            Agente agente = AgenteController.getAgente();
-            if(!Messages.hasErrors()){
-                if ((firmante != null) && (agente.username.equals(firmante.idvalor)) && (agente.getFuncionario())) {
-                    almacenarFirma(firma, aportacion, firmante);
-                } else {
-                	Messages.error("Firmante Funcionario Habilitado no Válido");
-                	play.Logger.error("El firmante no es valido o no coincide con el agente conectado en FH");
-                }
-            }
-
-            if (!Messages.hasErrors()) {
-                // Firma válida y almacenada
-                aportacion.estado = "firmada";
-                aportacion.save();
-            }
-        }
-    }
-
-    private static void almacenarFirma(String firma, Aportacion aportacion, Firmante firmante) {
-        try {
-        	firmante.fechaFirma = new DateTime();
-            gestorDocumentalService.agregarFirma(aportacion.oficial, new Firma(firma, firmante));
-        } catch (Exception e) {
-            Messages.error("Error guardando la firma del documento");
-        }
-    }
-
-    /**
-     * Comprueba si la firma se corresponde con uno de los firmantes válidos de
-     * la solicitud
-     * 
-     * @param firma
-     * @param solicitud
-     * @return
-     * @throws FirmaServiceException
-     */
-    private static boolean isFirmanteValido(SolicitudGenerica solicitud, Firmante firmante) {
-        Firmantes firmantesValidos = Firmantes.calcularFirmanteFromSolicitante(solicitud.solicitante);
-        boolean result = firmantesValidos.containsFirmanteConIdentificador(firmante.idvalor);
-
-        if (!result){
-        	String firmantes="{";
-        	for (Firmante firm: firmantesValidos.todos){
-        		firmantes+=firm.toString()+" | ";
-        	}
-        	firmantes+="}";
-        	play.Logger.error("El certificado <"+firmante.idvalor+"> no se corresponde con uno que debe firmar la solicitud: "+firmantes);
-            Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud");
-        }
-
-        return result;
-    }
-
-    /**
-     * Registra la solicitud
-     * 
-     * Cambia el estado a registrada
-     * 
-     * @param solicitud
-     * @param aportacion
-     */
-    private static void registrarAportacion(SolicitudGenerica solicitud, Aportacion aportacion) {
-        // Registro de entrada en platino
-        if (aportacion.estado != null && "firmada".equals(aportacion.estado)) {
-            try {
-                // Registra la solicitud
-                JustificanteRegistro justificante = registroService.registrarEntrada(solicitud.solicitante,
-                        aportacion.oficial, solicitud.expedientePlatino, null);
-                play.Logger.info("Se ha registrado la solicitud de aportacion %s de la solicitud %s en platino",
-                        aportacion.id, solicitud.id);
-
-                // Almacena la información de registro
-                aportacion.informacionRegistro.setDataFromJustificante(justificante);
-                play.Logger.info("Almacenada la información del registro en la base de datos");
-                
-                /// Establecemos la fecha de registro en todos los documentos de la aportación
-				for (Documento doc: aportacion.documentos) {
-					doc.fechaRegistro = aportacion.informacionRegistro.fechaRegistro;
-					doc.save();
-				}
-
-                // Guarda el justificante en el AED
-                play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
-                guardarJustificanteEnGestorDocumental(solicitud, aportacion, justificante);
-
-                // Cambia el estado
-                aportacion.estado = "registrada";
-                aportacion.save();
-            } catch (Exception e) {
-                Messages.error("Error al registrar de entrada la solicitud");
-                return;
-            }
-            
-            try {
-                //Envia el email
-                Mails.enviar("aportacionRealizada", solicitud);
-            }catch(Exception e){
-                play.Logger.info("Error enviando email de aportación realizada de la solicitud " + solicitud.id);
-            }
-        }
-    }
-
-    private static void guardarJustificanteEnGestorDocumental(SolicitudGenerica solicitud, Aportacion aportacion,
-            JustificanteRegistro justificante) throws GestorDocumentalServiceException, IOException {
-        Documento documento = aportacion.justificante;
-        documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitud");
-        documento.descripcion = "Justificante de registro";
-        documento.fechaRegistro = justificante.getFechaRegistro();
-        documento.save();
-
-        InputStream is = justificante.getDocumento().contenido.getInputStream();
-        gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteSolicitud" + solicitud.id + ".pdf");
-        play.Logger.info("Justificante almacenado en el AED");
-    }
-
-    /**
-     * Clasifica los documentos de la aportación
-     * 
-     * Cambia el estado de la aportación a clasificada
-     * 
-     * @param solicitud
-     * @param aportacion
-     */
-    private static void clasificarDocumentosAportacionConRegistro(SolicitudGenerica solicitud, Aportacion aportacion) {
-        // Clasifica los documentos
-        if (aportacion.estado.equals("registrada")) {
-            boolean todosClasificados = true;
-
-            // Clasifica los documentos sin registro
-            List<Documento> documentos = new ArrayList<Documento>();
-            documentos.add(aportacion.justificante);
-
-            try {
-                gestorDocumentalService.clasificarDocumentos(solicitud, documentos);
-            } catch (GestorDocumentalServiceException e) {
-                todosClasificados = false;
-            }
-
-            // Clasifica los documentos con registro de entrada
-            List<Documento> documentosRegistrados = new ArrayList<Documento>();
-            documentosRegistrados.add(aportacion.oficial);
-            documentosRegistrados.addAll(aportacion.documentos);
-            
-            try {
-                gestorDocumentalService.clasificarDocumentos(solicitud, documentosRegistrados,
-                        aportacion.informacionRegistro);
-            } catch (Exception e) {
-                todosClasificados = false;
-            }
-
-            if (todosClasificados) {
-                aportacion.estado = "clasificada";
-                aportacion.save();
-                play.Logger.info("Se clasificaron todos los documentos");
-            } else {
-                Messages.error("Algunos documentos no se pudieron clasificar correctamente");
-                Messages.fatal("Algunos documentos no se pudieron clasificar correctamente: Solicitud("
-                		+solicitud.id+") Aportación("+aportacion.id+")");
-            }
-        } else {
-            play.Logger.debug("Ya están clasificados todos los documentos de la solicitud %s", solicitud.id);
-        }
-    }
-
-    /**
-     * Mueve la aportación a la lista de aportaciones clasificadas Añade los
-     * documentos a la lista de documentos
-     * 
-     * Cambia el estado de la aportación a finalizada
-     * 
-     * @param solicitud
-     * @param aportacion
-     */
-    private static void finalizarAportacion(SolicitudGenerica solicitud, Aportacion aportacion) {
-        if (aportacion.estado.equals("clasificada")) {
-            solicitud.aportaciones.registradas.add(aportacion);
-            solicitud.documentacion.documentos.addAll(aportacion.documentos);
-            solicitud.aportaciones.actual = new Aportacion();
-            solicitud.save();
-            aportacion.estado = "finalizada";
-            aportacion.save();
-
-            play.Logger.debug("Los documentos de la aportacion se movieron correctamente");
-        }
-    }
-
-
-
-
-    
     /**
      * Redireccionamos a la página de documentos aportados, ya que por defecto
      * redireccionaba a la página de recibos

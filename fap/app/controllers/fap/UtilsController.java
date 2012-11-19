@@ -12,8 +12,6 @@ import java.util.Properties;
 import config.InjectorConfig;
 
 import enumerado.fap.gen.EstadoNotificacionEnum;
-import es.gobcan.platino.servicios.terceros.TerceroItem;
-import es.gobcan.platino.servicios.terceros.TerceroListItem;
 
 import models.Agente;
 import models.Interesado;

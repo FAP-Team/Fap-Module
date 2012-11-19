@@ -1,7 +1,6 @@
 package models;
 
 import java.util.*;
-
 import javax.persistence.*;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -45,7 +44,7 @@ public class Metadatos extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-	
+
 	public static void deleteAllMetadatos() {
 		List<Metadatos> listaMetadatos = Metadatos.findAll();
 		for (Metadatos metadatos : listaMetadatos) {
@@ -54,7 +53,7 @@ public class Metadatos extends FapModel {
 		}
 		Metadato.deleteAll();
 	}
-	
+
 	// === MANUAL REGION END ===
 
 }

@@ -12,18 +12,6 @@ import config.InjectorConfig;
 
 import services.TercerosService;
 import services.TercerosServiceException;
-import es.gobcan.platino.servicios.localizaciones.IslaItem;
-import es.gobcan.platino.servicios.localizaciones.MunicipioItem;
-import es.gobcan.platino.servicios.localizaciones.PaisItem;
-import es.gobcan.platino.servicios.localizaciones.ProvinciaItem;
-import es.gobcan.platino.servicios.terceros.DomicilioItem;
-import es.gobcan.platino.servicios.terceros.EmailItem;
-import es.gobcan.platino.servicios.terceros.TelefonoItem;
-import es.gobcan.platino.servicios.terceros.TerceroItem;
-import es.gobcan.platino.servicios.terceros.TerceroListItem;
-import es.gobcan.platino.servicios.terceros.TerceroMinimalItem;
-import es.gobcan.platino.servicios.terceros.TipoDocumentoItem;
-import es.gobcan.platino.servicios.terceros.TipoTerceroItem;
 
 public class TercerosUtils {
 

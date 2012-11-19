@@ -57,7 +57,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class, "comprobarFechaLimitePresentacion", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
 				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");
@@ -66,7 +66,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("beforeFirma", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class, "beforeFirma", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
 				Messages.error("Error al validar elementos previos a la firma");
@@ -81,7 +81,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 				
 				if (!Messages.hasErrors()) {
 					try {
-						PresentacionFapController.invoke("afterFirma", idSolicitud);
+						PresentacionFapController.invoke(PresentacionFapController.class, "afterFirma", idSolicitud);
 					} catch (Throwable e1) {
 						log.error("Hubo un problema al invocar los métodos afterFirma: "+e1.getMessage());
 						Messages.error("Error al validar elementos posteriores a la firma");
@@ -90,7 +90,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 				
 				if (!Messages.hasErrors()) {
 					try {
-						PresentacionFapController.invoke("beforeRegistro", idSolicitud);
+						PresentacionFapController.invoke(PresentacionFapController.class, "beforeRegistro", idSolicitud);
 					} catch (Throwable e1) {
 						log.error("Hubo un problema al invocar los métodos beforeRegistro: "+e1.getMessage());
 						Messages.error("Error al validar elementos previos al registro");
@@ -203,7 +203,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class, "comprobarFechaLimitePresentacion", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
 				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");
@@ -212,7 +212,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("beforeFirma", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class, "beforeFirma", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos beforeFirma: "+e1.getMessage());
 				Messages.error("Error al validar elementos previos a la firma");
@@ -227,7 +227,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 				
 				if (!Messages.hasErrors()) {
 					try {
-						PresentacionFapController.invoke("afterFirma", idSolicitud);
+						PresentacionFapController.invoke(PresentacionFapController.class, "afterFirma", idSolicitud);
 					} catch (Throwable e1) {
 						log.error("Hubo un problema al invocar los métodos afterFirma: "+e1.getMessage());
 						Messages.error("Error al validar elementos posteriores a la firma");
@@ -236,7 +236,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 				
 				if (!Messages.hasErrors()) {
 					try {
-						PresentacionFapController.invoke("beforeRegistro", idSolicitud);
+						PresentacionFapController.invoke(PresentacionFapController.class,"beforeRegistro", idSolicitud);
 					} catch (Throwable e1) {
 						log.error("Hubo un problema al invocar los métodos beforeRegistro: "+e1.getMessage());
 						Messages.error("Error al validar elementos previos al Registro");
@@ -299,7 +299,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class, "comprobarFechaLimitePresentacion", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
 				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");
@@ -308,7 +308,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("beforeFirma", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class, "beforeFirma", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos beforeFirma, en la firma con representantes: "+e1.getMessage());
 				Messages.error("Error al validar elementos previos a la firma de representante");
@@ -327,7 +327,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("afterFirma", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class, "afterFirma", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos afterFirma, en la firma con representantes: "+e1.getMessage());
 				Messages.error("Error al validar elementos posteriores a la firma de representante");
@@ -357,7 +357,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class, "comprobarFechaLimitePresentacion", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
 				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");
@@ -366,7 +366,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("beforeRegistro", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class, "beforeRegistro", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos beforeRegistro: "+e1.getMessage());
 				Messages.error("Error al validar elementos previos al Registro");
@@ -428,7 +428,7 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		
 		if (!Messages.hasErrors()) {
 			try {
-				PresentacionFapController.invoke("comprobarFechaLimitePresentacion", idSolicitud);
+				PresentacionFapController.invoke(PresentacionFapController.class,"comprobarFechaLimitePresentacion", idSolicitud);
 			} catch (Throwable e1) {
 				log.error("Hubo un problema al invocar los métodos comprobarFechaLimitePresentacion: "+e1.getMessage());
 				Messages.error("Error al validar las comprobaciones de la Fecha Límite de Presentación");

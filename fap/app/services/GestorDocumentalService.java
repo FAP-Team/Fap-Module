@@ -62,6 +62,9 @@ public interface GestorDocumentalService {
 
     public void agregarFirma(Documento documento, Firma firma) throws GestorDocumentalServiceException;
     
+    public void agregarFirma(Documento documento, String firmaStr) throws GestorDocumentalServiceException;
+
+    
     public Firma getFirma(Documento documento) throws GestorDocumentalServiceException;
 
     public List<Tramite> getTramites() throws GestorDocumentalServiceException;

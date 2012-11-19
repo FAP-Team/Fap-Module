@@ -457,6 +457,31 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		}
 	}
 	
+	/**
+	 * Realiza la firma mediante el sello del documento indicado.
+	 * 
+	 * 	1. Se obtiene la firma
+	 *  2. Se firma con el sello
+	 *  3. Se agrega la firma
+	 * 
+	 * @param documento
+	 * @return
+	 */
+	public String firmarEnServidor (Documento documento) throws FirmaServiceException {
+		String firma = "";
+		try {
+			firma = firmarDocumento(gestorDocumentalService.getDocumento(documento).getBytes());
+			gestorDocumentalService.agregarFirma(documento, firma);
+		} catch (GestorDocumentalServiceException ex) {
+			play.Logger.error("Error al agregar la firma al documento "+documento.uri+ ": "+ex.getMessage());
+			Messages.error("No se ha podido firmar en el servidor (AED exception)");
+		} catch (Exception ex) {
+			play.Logger.error("No se ha podido firmar en el servidor: "+ex.getMessage());
+			Messages.error("No se ha podido firmar en el servidor.");
+			throw new FirmaServiceException("Error al firmar XMLSignature ", ex);
+		}
+		return firma;
+	}
 
 	/*
 	@Override

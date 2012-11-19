@@ -766,4 +766,11 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	public BinaryResponse getDocumentoConInformeDeFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
 		return getDocumentoByUri(uriDocumento);
 	}
+
+	@Override
+	public void agregarFirma(Documento documento, String firmaStr)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		
+	}
 }

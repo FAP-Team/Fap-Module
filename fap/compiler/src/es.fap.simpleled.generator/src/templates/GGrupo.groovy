@@ -45,7 +45,8 @@ public class GGrupo extends GGroupElement{
 		if (grupo.campo){
 			def valores = ListUtils.list2GroovyListString(grupo.siCampoValues.values);
 			CampoUtils campo = CampoUtils.create(grupo.campo);
-			params.put("mostrarSi",  "${valores}.contains(${campo.firstLower()})")
+
+			params.put("mostrarSi",  "${valores}.contains(${campo.firstLower().toString()})")
             if(grupo.signoSiCampo.equals("!="))
                 params.put("reverse", true);
 		}

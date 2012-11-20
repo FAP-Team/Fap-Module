@@ -63,6 +63,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		}
 	}
 	
+	@Util
 	public static void aceptar(Long idEvaluacion){
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
@@ -77,6 +78,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 					Messages.error("Error generando el documento de solicitud para ver en evaluación. No se ha podido Iniciar esta Evaluación.");
 	                play.Logger.error("Error generando el de solicitud para ver en evaluación, no se ha ACEPTADO la evaluación: "+e.getMessage());
 	                Messages.keep();
+	                index();
 				}
 			}
 		}else{
@@ -84,6 +86,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		}
 	}
 	
+	@Util
 	public static void reevaluar(Long idEvaluacion){
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
@@ -98,7 +101,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		}
 	}
 		
-	
+	@Util
 	public static void rechazar(Long idEvaluacion){
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);

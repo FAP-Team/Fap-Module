@@ -45,8 +45,6 @@ public class AEATUtils {
 	static final int datosCte = 20;
 	static final int nombreCompletoCte = 50;
 	
-	private static final String NIF_NIE_ASOCIATION = "TRWAGMYFPDXBNJZSQVHLCKET";
-	
 	static final int iniID = 0;
 	static final int finID = 8;
 	static final int iniNombre = 9;
@@ -100,7 +98,7 @@ public class AEATUtils {
 			Documento doc = new Documento();
         	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionAEAT");
         	doc.descripcion = "Descripcion Peticion AEAT";
-        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "AEAT"+obtenerFechaNombre()+".txt");
+        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "TF AEAT"+obtenerFechaNombre()+".txt");
         	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionAEAT");
         	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 			pt.estado = EstadosPeticionEnum.creada.name();
@@ -112,6 +110,7 @@ public class AEATUtils {
 			Messages.error("Error escribiendo en el fichero de peticion, intentelo de nuevo");
 		} catch (GestorDocumentalServiceException e) {
 			Messages.error("Error subiendo el fichero de petición al AED");
+			play.Logger.info("Error subiendo el fichero de petición al AED");
 		}
 	}
 
@@ -129,14 +128,13 @@ public class AEATUtils {
 				aeat.cert = linea.substring(iniCERT, iniCERT+1);
 				aeat.negat = null;
 				String fecha;
-				
 				if (aeat.cert.equals(CodigoCertEnum.N.name())){
 					aeat.negat = linea.substring(iniNEGAT, iniNEGAT+1);
 					aeat.estadoNegat = CodigoAEATNegatEnum.valueOf(aeat.negat).value();
-					fecha = linea.substring(iniFecha+neg, iniDatosPpios+neg);
+					fecha = linea.substring(iniFecha, iniDatosPpios); //+neg
 					pt.respCesion.fechaGeneracion = obtenerFechaParseada(fecha);
-					aeat.datosPropios = linea.substring(iniDatosPpios+neg, iniReferencia+neg);
-					aeat.referencia = linea.substring(iniReferencia+neg, finReferencia+neg);
+					aeat.datosPropios = linea.substring(iniDatosPpios, iniReferencia);
+					aeat.referencia = linea.substring(iniReferencia, finReferencia);
 				}else if (aeat.cert.equals(CodigoCertEnum.P.name())){
 					fecha = linea.substring(iniFecha, iniDatosPpios);
 					pt.respCesion.fechaGeneracion = obtenerFechaParseada(fecha);
@@ -148,6 +146,7 @@ public class AEATUtils {
 			fr.close();
 		} catch (Exception e) {
 			Messages.error("Error parseando el documento de respuesta del AEAT, compruebe que el fichero es correcto");
+			play.Logger.info("Error parseando el documento de respuesta del AEAT");
 		}
 	}
 
@@ -157,7 +156,7 @@ public class AEATUtils {
         //Obtener solicitud correspondiente
         //Tipo dice si es dni, nie, pasaporte, cif
         List<SolicitudGenerica> solicitud = null;
-        if (tipo.equals("NIE")){ //dni, pasaporte,..
+        if (tipo.equals("NIP")){ //dni, pasaporte,..
         	solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.fisica.nip.valor = ?", aeat.nDocumento).fetch();
         }
         else if (tipo.equals("CIF")){
@@ -181,10 +180,12 @@ public class AEATUtils {
             	}
             } catch (Exception ex2) {
                 Messages.error("Error generando el documento pdf: "+ex2.getMessage());
+                play.Logger.error("Error generando el documento pdf: "+ex2.getMessage());
             }
         }
         else{
           	Messages.info("La cesion de datos para "+aeat.nDocumento+", no se corresponde con ninguna solicitud");
+          	play.Logger.info("La cesion de datos para "+aeat.nDocumento+", no se corresponde con ninguna solicitud");
         }
         return report;
 	}
@@ -227,18 +228,9 @@ public class AEATUtils {
 		StringBuilder texto = new StringBuilder();
 		if (CifCheck.validaCif(numdoc, texto)) //Si es un cif
 			return "CIF";
-		else if (checkNifNieLetter(numdoc)){ //Si es dni la letra tiene que ser correcta
-			return "NIE";
+		else{ 
+			return "NIP";
 		}
-		else
-			return "ERROR";	
-	}
-	
-	private static boolean checkNifNieLetter(String numero){
-		int digitosNif = Integer.parseInt(numero.substring(0,8));
-		int letraEsperada = NIF_NIE_ASOCIATION.charAt(digitosNif % 23); 
-		int letraActual = numero.charAt(8);
-		return (letraEsperada ==  letraActual);
 	}
 
 	private static void aplicarCambios(SolicitudGenerica solicitud, PeticionCesiones pt, Documento doc, AEAT aeat){
@@ -257,5 +249,6 @@ public class AEATUtils {
 		}
 		solicitud.cesion.cesiones.add(cesion);
 		solicitud.save(); //Guardar cambios en la solicitud
+		play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
 	}
 }

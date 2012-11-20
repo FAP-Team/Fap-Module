@@ -10,7 +10,7 @@
      mensajeFinal:false, 
      pagina:'NuevaCesion', 
      permiso:'administrador', 
-     titulo:'NuevaCesion', 
+     titulo:'Nueva Petición de Cesión de Datos', 
      urlBorrar:play.mvc.Router.reverse('NuevaCesionController.borrar' , ['idPeticionCesiones':peticionCesiones?.id]), 
      urlCrear:play.mvc.Router.reverse('NuevaCesionController.crear' ), 
      urlEditar:play.mvc.Router.reverse('NuevaCesionController.editar' , ['idPeticionCesiones':peticionCesiones?.id]),
@@ -93,8 +93,11 @@ function seleccion(){
 	  		combo: document.getElementById("cmbSeleccion").value,
 	  		fecha: fecha}
 		}).done(function(msg) {
-			if(msg == "[]")
+			if(msg == "[]"){
 				alert("No hay elementos que cumplan los criterios de búsqueda");
+				//Vaciar checkbox por si habia marcas anteriores
+				smtblSolicitudes.deselectAll();
+			}
 			else
   			  marcarLista(msg);
 		});

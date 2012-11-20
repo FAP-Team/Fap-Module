@@ -10,7 +10,7 @@
      mensajeFinal:false, 
      pagina:'EditarCesion', 
      permiso:'administrador', 
-     titulo:'EditarCesion', 
+     titulo:'Petición de Cesión de Datos', 
      urlBorrar:play.mvc.Router.reverse('EditarCesionController.borrar' , ['idPeticionCesiones':peticionCesiones?.id]), 
      urlCrear:play.mvc.Router.reverse('EditarCesionController.crear' ), 
      urlEditar:play.mvc.Router.reverse('EditarCesionController.editar' , ['idPeticionCesiones':peticionCesiones?.id])
@@ -71,4 +71,32 @@
 			#{/form}
 			
 #{/fap.pagina}
-		
+
+%{
+/*Url de la funcion del controlador que necesito llamar*/
+	urlConvertDataFunction = play.mvc.Router.reverse('LeerCesionController.descargarFichero');
+	uri = peticionCesiones.fichPeticion.uri;
+%}
+
+<script>	
+
+function funcion(){
+	var url = "${uri}";
+	var bb = new BlobBuilder();
+	var urlConvertData = "${urlConvertDataFunction}";
+	$.ajax({
+	  		type: "POST",
+	  		url: urlConvertData,
+	  		data: {uri: url}
+		}).done(function(msg) {
+			if (msg != []){
+				var campos = msg.split(", ");
+				bb.append(_.last(campos));
+				var blob = bb.getBlob();
+				saveAs(blob, _.first(campos));				
+			}else
+			    alert("Error guardando, intentelo de nuevo");
+		});
+}
+
+</script>

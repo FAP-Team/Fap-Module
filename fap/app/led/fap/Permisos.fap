@@ -1270,3 +1270,23 @@ Permiso cesionTerminada{
 	return
 		visible 
 }
+
+Permiso verPeticionCesion{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and ((peticionCesiones.estado = "creada") or (peticionCesiones.estado = "respondida") or peticionCesiones.estado = "asignada")
+	return
+		all
+}
+
+Permiso verRespuestaCesion{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and ((peticionCesiones.estado = "respondida") or peticionCesiones.estado = "asignada")
+	return
+		all
+}

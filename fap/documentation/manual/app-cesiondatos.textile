@@ -19,14 +19,14 @@ h3. Administración
 El Gestor o Administrador, debe poner en marcha el proceso de petición de cesiones de datos para las solicitudes que lo hayan autorizado. Para ello debe seguir los siguientes pasos:
 
 * Acceder a la página Administración/Cesión de Datos, donde podrá ver todas las cesiones de datos que se han realizado (la tabla aparecerá vacía si no se ha realizado ninguna).
-* En la tabla _Tabla de Peticiones de Cesiones_, pulsar en el botón *Nuevo* y en la nueva página que aparece, seleccionar en el combo _Tipo de Cesion_, el tipo de la cesión que quiere realizarse, en cuanto se pulse guardar, la petición pasa al estado _creada_.
-* Una vez elegido el tipo de cesión se mostrará un combo, para filtrar en la tabla con todas las solicitudes que han autorizado dicho tipo de cesión, de manera que podemos elegir los expedientes a consultar (manualmente uno por uno o con cualquiera de las opciones disponibles en el combo). Una vez seleccionados se pulsará _Generar Petición_ que generará el fichero de petición de cesión de datos y nos devolverá a la pagina de Cesión de Datos.
+* En la tabla _Tabla de Peticiones de Cesiones_, pulsar en el botón *Nuevo* y en la nueva página que aparece, seleccionar en el combo _Tipo de Cesion_, el tipo de la cesión que quiere realizarse.
+* Una vez elegido el tipo de cesión se mostrará un combo, para filtrar en la tabla con todas las solicitudes que han autorizado dicho tipo de cesión, de manera que podemos elegir los expedientes a consultar (manualmente uno por uno o con cualquiera de las opciones disponibles en el combo). Una vez seleccionados se pulsará _Generar Petición_ que generará el fichero de petición de cesión de datos y nos devolverá a la pagina de Cesión de Datos. En este momento, la petición pasa al estado _creada_.
 
 !images/app-cesiondatos-nueva!
 
 * El siguiente paso es enviar el fichero de petición generado al organismo cedente, pero primero, debemos descargarlo. Para ello accederemos a la petición de cesión que acabamos de crear y pulsaremos el botón _Descargar_. Ahora ya se dispone en la máquina local del fichero de petición de cesiones que deberá ser enviado al organismo pertinente.
 * Una vez enviado el fichero de petición y obtenida la respuesta, esta debe ser subida para poder procesar su contenido. En caso de que un interesado disponga de varios expedientes y sólo haya autorizado la comunicación en uno de ellos, se entenderá que ha autorizado para todos los expedientes en los que conste como solicitante.
-* Para subir el fichero, accedemos a la petición correspondiente y en la sección _Datos de Cesión: Subir fichero de respuesta_ donde rellenamos los datos que se piden, seleccionamos el archivo correspondiente a la respuesta y pulsamos el botón _Subir fichero de respuesta_. En este momento, la petición pasa al estado _respondida_.
+* Para subir el fichero, accedemos a la petición correspondiente y en la sección _Datos de Cesión: Subir fichero de respuesta_, donde rellenamos los datos que se piden, seleccionamos el archivo correspondiente a la respuesta y pulsamos el botón _Subir fichero de respuesta_. En este momento, la petición pasa al estado _respondida_.
 
 !images/app-cesiondatos-subirFich!
 
@@ -35,7 +35,7 @@ El Gestor o Administrador, debe poner en marcha el proceso de petición de cesio
 
 !images/app-cesiondatos-aplicarCambios!
 
-* Una vez aplicados los cambios, la petición de cesion de datos pasará al estado _asignada_, de manera que no se podrán realizar modificaciones.
+* Una vez aplicados los cambios, la petición de cesión de datos pasará al estado _asignada_, de manera que no se podrán realizar modificaciones.
 
 En la Tabla de Peticiones de Cesiones, pueden verse todas las peticiones realizadas, pero sólo la última de cada tipo será editable esté o no asignada.
 

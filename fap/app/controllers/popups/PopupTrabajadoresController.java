@@ -17,16 +17,13 @@ public class PopupTrabajadoresController extends PopupTrabajadoresControllerGen 
 		CustomValidation.required("trabajador.codigoCuenta", trabajador.codigoCuenta);
 		
 		if (!StringUtils.validarCuentaCotizacion(trabajador.codigoCuenta))
-			Messages.error("Error, compruebe el Código de Cuenta de Cotización");
+			CustomValidation.error("Error, compruebe la longitud del Código de Cuenta de Cotización", "trabajador.codigoCuenta", trabajador.codigoCuenta);
 
 		if (!StringUtils.validarRegimen(trabajador.regimen))
-			Messages.error("Error, compruebe el Régimen de la Seguridad Social");
+			CustomValidation.error("Error, compruebe la longitud del Régimen de la Seguridad Social", "trabajador.regimen", trabajador.regimen);
 		
 		dbTrabajador.codigoCuenta = trabajador.codigoCuenta;
 		dbTrabajador.regimen = trabajador.regimen;
-
 	}	
-	
-	
 	
 }

@@ -104,7 +104,6 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 	//Necesito saber el tipo para filtrar
 	public static void tablatblSolicitudes(Long idPeticionCesiones) {
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		PeticionCesiones pt = getPeticionCesiones(idPeticionCesiones); 
 		List<SolicitudGenerica> rowsFiltered = filtroSolicitudes(idPeticionCesiones);
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estadoValue", "estado", "estadoUsuario", "solicitante.id", "solicitante.nombreCompleto"));
@@ -183,7 +182,7 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 		//Si es anterior a fecha -> Devuelve true -> lo añado
 		Cesiones cesion = null;
 		for (Cesiones c : cesiones) {
-			if ((c.fechaValidez.isBefore(obtenerFecha(fecha))) && (pt.tipo.equals(c.tipo))) //Fecha de validez posterior a hoy
+			if ((!fecha.isEmpty()) && (pt.tipo.equals(c.tipo)) && (c.fechaValidez.isBefore(obtenerFecha(fecha))) ) //Fecha de validez posterior a hoy
 				cesion = c; //Si es valida la igualo
 		}
 		if (cesion != null)

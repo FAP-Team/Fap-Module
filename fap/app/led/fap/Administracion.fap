@@ -427,7 +427,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	}
 	
 	//Muestra todas las peticiones de cesion de datos realizadas sobre las solicitudes de la aplicacion
-	Pagina GenerarFichCesiones {
+	Pagina GenerarFichCesiones titulo= "Peticiones de Cesiones de Datos"{
 		Tabla tblCesiones campo=PeticionCesiones titulo="Tabla de Peticiones de Cesiones" paginaCrear=NuevaCesion paginaEditar=EditarCesion paginaLeer=LeerCesion color: porDefecto{
 			Columna titulo="Tipo" campo=PeticionCesiones.tipo
 			Columna titulo="Fecha Generación" campo=PeticionCesiones.fechaGen
@@ -437,7 +437,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	}
 	
 	//Nueva petición de cesión de datos
-	Pagina NuevaCesion campo=PeticionCesiones{
+	Pagina NuevaCesion campo=PeticionCesiones titulo="Nueva Petición de Cesión de Datos"{
 		Grupo permiso=permisoTipoElegido borde=true titulo="Filtrar expedientes"{
 			Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión" requerido
 		}
@@ -463,10 +463,20 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		}
 	}
 	
-	Pagina LeerCesion campo=PeticionCesiones{
-		Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+	Pagina LeerCesion campo=PeticionCesiones titulo="Petición de Cesión de Datos"{
+		Grupo titulo = "Petición de Cesión de Datos" {
+			Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+			Grupo grupoFicheros titulo="Ficheros disponibles"{
+				Grupo borde=false permiso=verPeticionCesion{
+					Enlace descargarFicheroP campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar fichero de petición" destino="_blank"
+				}
+				Grupo borde=false permiso=verRespuestaCesion{
+					Enlace descargarFicheroR campo=PeticionCesiones.fichRespuesta.urlDescarga titulo="Descargar fichero de respuesta" destino="_blank"
+				}
+			}
+		}
 		//Listar solicitudes
-		Tabla tblSolicitudes campo=SolicitudGenerica {
+		/*Tabla tblSolicitudes campo=SolicitudGenerica {
 			Columna titulo="ID" campo=SolicitudGenerica.id
 			Columna titulo="Expediente" campo=SolicitudGenerica.expedienteAed.idAed
 			Columna titulo="Estado Interno" campo=SolicitudGenerica.estadoValue
@@ -474,13 +484,13 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			Columna titulo="Estado Usuario" campo=SolicitudGenerica.estadoUsuario
 			Columna titulo="ID Solicitante" campo=SolicitudGenerica.solicitante.id
 			Columna titulo="Nombre Solicitante" campo=SolicitudGenerica.solicitante.nombreCompleto
-		}
+		}*/
 	}
 	
-	Pagina EditarCesion campo=PeticionCesiones permiso=ultimaEditable noForm{
+	Pagina EditarCesion campo=PeticionCesiones permiso=ultimaEditable noForm titulo="Petición de Cesión de Datos"{
 		Accion editar redirigir=anterior
 		Form formCesion{
-			Grupo titulo="Datos de cesion: Descargar fichero de petición" permiso=responderPeticion{
+			Grupo titulo="Datos de cesion: Descargar fichero de petición" { //permiso=responderPeticion{
 				Enlace descargarFichero campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar" destino="_blank" estilo="btn"
 			}
 			Grupo titulo="Datos de Cesión: subir fichero de respuesta"{
@@ -501,9 +511,9 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 				}
 				Grupo permiso=cesionTerminada titulo="Cesion Finalizada"{
 					Grupo borde=false permiso=noEditable{
-					Combo cmbTipoFin campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+						Combo cmbTipoFin campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+					}
 				}
-			}
 			}
 		}
 	}

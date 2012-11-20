@@ -195,7 +195,6 @@ public class SecureFap extends Secure {
 			if(pC.tipo != null){
 				if((pC.tipo.equals(ListaCesionesEnum.atc.name())) && (pC.fechaGen.isAfter(atcT))){
 					atcT = pC.fechaGen; 
-					System.out.println("ATCT: "+atcT);
 				}
 				if ((pC.tipo.equals(ListaCesionesEnum.aeat.name())) && (pC.fechaGen.isAfter(aeatT))){
 					aeatT = pC.fechaGen; 

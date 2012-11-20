@@ -117,7 +117,7 @@ public class INSSUtils {
 				Documento doc = new Documento();
             	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSR001");
             	doc.descripcion = "Descripcion Peticion INSS";
-            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "INSS"+obtenerFechaNombre()+".txt");
+            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "TF INSSR001"+obtenerFechaNombre()+".txt");
             	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSR001");
             	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 				pt.estado = EstadosPeticionEnum.creada.name();
@@ -125,11 +125,13 @@ public class INSSUtils {
 				pt.fechaValidez = pt.fechaGen.plusMonths(Integer.parseInt(FapProperties.get("fap.cesiondatos.validezPeticion")));
 				pt.save();
 				pt.fichPeticion.save();
+				play.Logger.info("Fichero de peticion de cesión de datos al INSS creado correctamente");
 			}
 		} catch (IOException e) {
 			Messages.error("Error escribiendo en el fichero de peticion, intentelo de nuevo");
 		} catch (GestorDocumentalServiceException e) {
 			Messages.error("Error subiendo el fichero de petición al AED");
+			play.Logger.info("Error subiendo el fichero de petición al AED");
 		}
 	}
 
@@ -163,7 +165,7 @@ public class INSSUtils {
 				Documento doc = new Documento();
             	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSA008");
             	doc.descripcion = "Descripcion Peticion INSS";
-            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "INSS"+obtenerFechaNombre()+".txt");
+            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "TF INSSA008"+obtenerFechaNombre()+".txt");
             	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSA008");
             	pt.fichPeticion.uri =  doc.uri; 
 				pt.estado = EstadosPeticionEnum.creada.name();
@@ -171,40 +173,33 @@ public class INSSUtils {
 				pt.fechaValidez = pt.fechaGen.plusMonths(Integer.parseInt(FapProperties.get("fap.cesiondatos.validezPeticion")));
 				pt.save();
 				pt.fichPeticion.save();
+				play.Logger.info("Fichero de peticion de cesión de datos al INSS creado correctamente");
 			}
 		} catch (IOException e) {
 			Messages.error("Error escribiendo en el fichero de peticion, intentelo de nuevo");
 		} catch (GestorDocumentalServiceException e) {
 			Messages.error("Error subiendo el fichero de petición al AED");
+			play.Logger.info("Error subiendo el fichero de petición al AED");
 		}
 	}
 	
 	public static void parsearINSSA008(PeticionCesiones pt, File fich){
 		FileReader fr = null;
 		String motivo = String.format("%"+motivoCte+"s", "");
-		System.out.println("Parseando");
 		try { //Abrir en modo lectura
 			fr = new FileReader (fich);
 			BufferedReader br = new BufferedReader(fr);
 			String linea = null;
 	        INSSA008 inss = new INSSA008(); //Entidad con datos parseados
-	        System.out.println("TRY");
 			//Registro cabecera 1
 	        inss.cabeceraPrimera=br.readLine(); //1C+Ley(8blancos)+año+mes+dia+h+m+s+"s"idTransmision(6 digitos -> hasta TGSS)+TGSS
 	        
-	        //AHORA la fecha se saca del registroDetalle
-			//DateTime fechaGeneracion = obtenerFecha(inss.cabeceraPrimera); //Parsear la fecha de generacion de consulta
-			//pt.respCesion.fechaGeneracion = fechaGeneracion; 
-	        
-			System.out.println("1");
 			//Registro cabecera 2
 			inss.cabeceraSegunda=br.readLine();
 			if (!inss.cabeceraSegunda.equals("2001"+motivo))
 				Messages.error("Error de formato en la cabecera segunda del archivo recibido");
 			//Registro detalle
 			while((linea=br.readLine())!=null){
-				System.out.println("Tamaño de linea: "+linea.length());
-				System.out.println("Leyendo: "+linea);
 				if (linea.length() == correcto){ //Correcto
 					inss.registroDetalle.tipoRegistro = linea.substring(0, 1); //Comprobar que empieza en 0
 					inss.registroDetalle.regimen = linea.substring(1, 5);
@@ -225,12 +220,14 @@ public class INSSUtils {
 				}
 				else{
 					Messages.error("Error en el formato del fichero de respuesta aportado");
+					play.Logger.info("Error de formato en el fichero de respuesta aportado");
 				}
 			}
 			fr.close();
 		}
 		catch (Exception e) {
 			Messages.error("Error parseando el documento de respuesta del INSS, compruebe que el fichero es correcto");
+			play.Logger.info("Error parseando el documento de respuesta del INSS");
 		}
 	}
 	
@@ -251,11 +248,14 @@ public class INSSUtils {
 			
 			//Registro cabecera 2
 			inss.cabeceraSegunda=br.readLine();
-			if (!inss.cabeceraSegunda.equals("2001"+motivo))
-				Messages.error("Error de formato en la cabecera segunda del archivo recibido");
+			//Los ejemplos traen más de 25 caracteres en blanco en motivo
+			/*if (!inss.cabeceraSegunda.equals("2001"+motivo))
+				Messages.error("Error de formato en la cabecera segunda del archivo recibido");*/
+			
+			
 			//Registro detalle
-			while((linea=br.readLine())!=null){ // TipoReg+TipoDoc(1)+NumDoc(10)+Nombre(25)+estado[2](TABLA)+literalEstado(17)
-				 inss.registroDetalle.nDocumento = linea.substring(iniID, finID);
+			while((linea=br.readLine())!=null){ // TipoReg+TipoDoc(1)+NumDoc(10)+Nombre(25)+estado[2](TABLA)+literalEstado(17) 
+				inss.registroDetalle.nDocumento = linea.substring(iniID, finID);
 				 inss.registroDetalle.tipoRegistro = linea.substring(tipoCte, tipoCte+1).toString();
 				 inss.registroDetalle.estado = linea.substring(iniEstadoCte, finEstadoCte).toString(); 
 				 generarPdfINSSR001(pt, inss);
@@ -263,6 +263,7 @@ public class INSSUtils {
 			fr.close();
 		} catch (Exception e) {
 			Messages.error("Error parseando el documento de respuesta del INSS, compruebe que el fichero es correcto");
+			play.Logger.info("Error parseando el documento de respuesta del INSS");
 		}
 	}
 
@@ -271,7 +272,6 @@ public class INSSUtils {
 		List<SolicitudGenerica> solicitud = null;
 		solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud join solicitud.cesion.autorizacionCesion.trabajadores trabajadores where trabajadores.regimen = ? and trabajadores.codigoCuenta = ?", inss.registroDetalle.regimen, inss.registroDetalle.cccPpal).fetch();
 
-		System.out.println("Solicitud: "+solicitud);
 		 if((!Messages.hasErrors()) && (!solicitud.isEmpty())){        	
 	            try {
 	            	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pt", pt);
@@ -295,6 +295,7 @@ public class INSSUtils {
 		 }	
 		 else{
 			 Messages.info("La cesion de datos para "+inss.registroDetalle.regimen+inss.registroDetalle.cccPpal+", no se corresponde con ninguna solicitud");
+			 play.Logger.info("La cesion de datos para "+inss.registroDetalle.regimen+inss.registroDetalle.cccPpal+", no se corresponde con ninguna solicitud");
 	      }
 		return report;
 	}
@@ -332,6 +333,7 @@ public class INSSUtils {
         }
         else{
         	Messages.info("La cesion de datos para "+inss.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
+        	play.Logger.info("La cesion de datos para "+inss.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
         }
         return report;
     } 
@@ -354,8 +356,8 @@ public class INSSUtils {
 				cesion.estado = estado;
 			}
 			solicitud.cesion.cesiones.add(cesion);
-			System.out.println("Guardando la cesion INSS en: "+solicitud.id);
-			solicitud.save(); //Guardar cambios en la solicitud
+			solicitud.save(); 
+			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
 	}
 
 	public static DateTime obtenerFecha(String fecha){
@@ -395,13 +397,10 @@ public class INSSUtils {
 	}
 	
 	public static DateTime obtenerFechaA008(String fecha){
-		System.out.println("Obtener fecha: "+fecha);
 		int anio = Integer.parseInt(fecha.substring(0, 4));
 		int mes = Integer.parseInt(fecha.substring(4, 6));
 		int dia = Integer.parseInt(fecha.substring(6, 8));
-		System.out.println("wii: "+anio+" "+mes+" "+dia);
 		DateTime fechaGeneracion = new DateTime(anio, mes, dia, 0, 0);
-		System.out.println("FECHA FINAL: "+fechaGeneracion);
 		return fechaGeneracion;
 	}
 }

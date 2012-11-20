@@ -811,4 +811,44 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void setMetadatosDocumento(String uriDocumento) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String construyeIdentificador(String uriDocumento)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DateTime construyeFechaCaptura(String uriDocumento)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String construyeEstadoElaboracion(String uriDocumento)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String construyeNombreFormato(String uriDocumento)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String construyeTipoFirmasElectronicas(String uriDocumento)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,11 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import com.lowagie.text.pdf.PdfReader;
+
+import controllers.fap.MetadatosFAPController;
 import controllers.fap.AgenteController;
+import controllers.fap.PresentacionFapController;
 
 import platino.PlatinoProxy;
 import play.db.jpa.GenericModel.JPAQuery;
@@ -1267,4 +1272,139 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 
 	
+	@Override
+	public void setMetadatosDocumento(String uriDocumento) {
+		try {
+			String a = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getIdentificador", uriDocumento);
+			DateTime b = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getFechaCaptura", uriDocumento);
+			String d = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getEstadoElaboracion", uriDocumento);
+			String e = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getNombreFormato", uriDocumento);
+			String f = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getTipoFirmasElectronicas", uriDocumento);
+		} catch (Throwable e1) { e1.printStackTrace(); }
+	}
+	
+	/**
+	 * Metadato Identificador: 
+	 * "ES_A05003341_" + AAAA + "_" + B(30). AAAA: Año en que se digitaliza el documento. B(30): El identificador 
+	 * único de documento asignado por el AED que forma parte de la URI del documento. Se rellena con espacios 
+	 * a la derecha.
+	 * 
+	 * @param uriDocumento
+	 * @return
+	 * @throws GestorDocumentalServiceException 
+	 */
+	@Override
+	public String construyeIdentificador(String uriDocumento) throws GestorDocumentalServiceException {
+		String organo = null;
+		try {
+			organo = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getOrgano", uriDocumento);
+		} catch (Throwable e1) { e1.printStackTrace(); }
+		
+//		PropiedadesDocumento propiedadesDoc;
+//		boolean obtuveDocumento = false;
+//		String identificador = null;
+//		try {
+//        	propiedadesDoc = aedPort.obtenerDocumentoPropiedadesNoClasificado(uriDocumento);
+//        	identificador = propiedadesDoc.getIdentificador();
+//            obtuveDocumento = true;
+//        } catch (AedExcepcion e) { ; }
+//        
+//        if (!obtuveDocumento) {
+//	        try {
+//	        	propiedadesDoc = aedPort.obtenerDocumentoPropiedades(uriDocumento);        
+//	        	identificador = propiedadesDoc.getIdentificador();
+//	        } catch (AedExcepcion e) {
+//	            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
+//	        }     
+//        }
+//        log.info("Documento recuperado del aed " + uriDocumento);        
+//        identificador = String.format("%-30s", identificador);			 
+        String uri = String.format("%-30s", uriDocumento);			// XXX probar esto
+		return "ES_" + organo + "_" + Calendar.getInstance().get(Calendar.YEAR) + "_" + uri;
+	}
+	
+	/**
+	 * Metadato FechaCaptura: 
+	 * Fecha en formato ISO 8601 en el que se incorpora el documento al AED. Fecha del AED.
+	 * 
+	 * @param uriDocumento
+	 * @return
+	 * @throws GestorDocumentalServiceException 
+	 */
+	@Override
+	public DateTime construyeFechaCaptura(String uriDocumento) throws GestorDocumentalServiceException {
+		PropiedadesDocumento propiedadesDoc;
+		boolean obtuveDocumento = false;
+		DateTime fechaCaptura = null;
+
+        try {
+        	propiedadesDoc = aedPort.obtenerDocumentoPropiedadesNoClasificado(uriDocumento);
+        	fechaCaptura = new DateTime( propiedadesDoc.getAuditoriaUbicacion().getFechaCreacion() );
+            obtuveDocumento = true;
+        } catch (AedExcepcion e) { ; }
+        
+        if (!obtuveDocumento) {
+	        try {
+	        	propiedadesDoc = aedPort.obtenerDocumentoPropiedades(uriDocumento);        
+	        	fechaCaptura = new DateTime( propiedadesDoc.getAuditoriaUbicacion().getFechaCreacion() );
+	        } catch (AedExcepcion e) {
+	            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
+	        }     
+        }
+        log.info("Documento recuperado del aed " + uriDocumento);
+		
+        return fechaCaptura; 
+	}
+	
+	/**
+	 * Metadato EstadoElaboracion: 
+	 * "EE01" Original.
+	 * "EE02" Copia electrónica auténtica con cambio de formato
+	 * "EE02" Copia electrónica auténtica de documento papel
+	 * "EE03" Copia electrónica parcial auténtica
+	 * "EE99" Otros
+	 *  
+	 * @param uriDocumento
+	 * @return 
+	 */
+	@Override
+	public String construyeEstadoElaboracion(String uriDocumento) throws GestorDocumentalServiceException {
+		// XXX: ???
+		return "";
+	}
+	
+	/**
+	 * Metadato NombreFormato: 
+	 * "PDF" o "PDF/A"
+	 *  
+	 * @param uriDocumento
+	 * @return 
+	 */
+	@Override
+	public String construyeNombreFormato(String uriDocumento) throws GestorDocumentalServiceException {
+		// XXX: ???
+//		PdfReader reader = new PdfReader("HelloWorldToRead.pdf");
+//		    if (reader.getMetadata() == null) {
+//		      System.out.println("No XML Metadata.");
+//		    } else {
+//		      System.out.println("XML Metadata: " + new String(reader.getMetadata()));
+//		      HashMap<String, String> info = reader.getInfo();
+//		    }
+//		  }
+		return "PDF";
+	}
+	
+	/**
+	 * Metadato TipoFirmasElectronicas: 
+	 * 
+	 *  ???????????????? Falta fijar el tipo de firma de los documentos  ?????????????
+	 * 
+	 * @param uriDocumento
+	 * @return 
+	 */
+	@Override
+	public String construyeTipoFirmasElectronicas(String uriDocumento) throws GestorDocumentalServiceException {
+		// XXX: ???
+		return "";
+	}
 }

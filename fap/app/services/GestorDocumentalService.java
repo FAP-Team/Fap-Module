@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
@@ -95,5 +97,18 @@ public interface GestorDocumentalService {
 	
 	@Deprecated
 	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
-    
+
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
+	
+	public void setMetadatosDocumento(String uriDocumento);
+
+	public String construyeIdentificador(String uriDocumento) throws GestorDocumentalServiceException;
+
+	public DateTime construyeFechaCaptura(String uriDocumento) throws GestorDocumentalServiceException;
+
+	public String construyeEstadoElaboracion(String uriDocumento) throws GestorDocumentalServiceException;
+
+	public String construyeNombreFormato(String uriDocumento) throws GestorDocumentalServiceException;
+
+	public String construyeTipoFirmasElectronicas(String uriDocumento) throws GestorDocumentalServiceException;
 }

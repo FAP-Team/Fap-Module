@@ -18,6 +18,10 @@
                             {
                                 nombre: "Tipo documental",
                                 valor:  "TD99"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
                             }
                         ]
     },
@@ -27,6 +31,10 @@
                             {
                                 nombre: "Tipo documental",
                                 valor:  "TD14"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
                             }
                         ]
     },
@@ -36,6 +44,10 @@
                             {
                                 nombre: "Tipo documental",
                                 valor:  "TD09"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
                             }
                         ]
     },
@@ -45,6 +57,10 @@
                             {
                                 nombre: "Tipo documental",
                                 valor:  "TD14"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
                             }
                         ]
     },
@@ -54,6 +70,10 @@
                             {
                                 nombre: "Tipo documental",
                                 valor:  "TD17"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
                             }
                         ]
     },
@@ -63,6 +83,10 @@
                             {
                                 nombre: "Tipo documental",
                                 valor:  "TD09"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
                             }
                         ]
     },    
@@ -72,6 +96,10 @@
                             {
                                 nombre: "Tipo documental",
                                 valor:  "TD06"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
                             }
                         ]
     },
@@ -81,6 +109,10 @@
                             {
                                 nombre: "Tipo documental",
                                 valor:  "TD09"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
                             }
                         ]
     },   
@@ -90,6 +122,10 @@
                             {
                                 nombre: "Tipo documental",
                                 valor:  "TD16"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
                             }
                         ]
     }     

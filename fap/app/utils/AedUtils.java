@@ -49,6 +49,18 @@ public class AedUtils {
 		return Router.getFullUrl("fap.DescargasAedController.descargar", params).toString();		
 	}
 	
+	public static String crearUrlConInformeDeFirma(String uri){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("k", encriptarUri(uri));
+		return Router.reverse("fap.DescargasAedController.descargarFirmado", params).toString();		
+	}
+	
+	public static String crearFullConInformeDeFirma(String uri){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("k", encriptarUri(uri));
+		return Router.getFullUrl("fap.DescargasAedController.descargarFirmado", params).toString();		
+	}
+	
 	/**
 	 * Si existe un servidor Apache delante, y no tiene configurado el ProxyPreserveHost;
 	 * es decir: ProxyPreserveHost Off

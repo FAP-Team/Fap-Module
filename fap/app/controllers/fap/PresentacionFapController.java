@@ -3,6 +3,11 @@ package controllers.fap;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+
 import enumerado.fap.gen.EstadosSolicitudEnum;
 
 import messages.Messages;
@@ -12,6 +17,7 @@ import utils.ModelUtils;
 
 import play.Play;
 import play.utils.Java;
+import properties.FapProperties;
 
 public class PresentacionFapController {
 	
@@ -20,10 +26,16 @@ public class PresentacionFapController {
 		return new TramiteSolicitudFap(solicitud);
 	}
 	
+	public static void beforeRegistro(Long idSolicitud){
+	}
+	
 	public static void afterRegistro(Long idSolicitud){
 	}
 	
 	public static void beforeFirma(Long idSolicitud){
+	}
+	
+	public static void afterFirma(Long idSolicitud){
 	}
 	
 	public static boolean comprobarPaginasGuardadas(Long idSolicitud){
@@ -58,6 +70,23 @@ public class PresentacionFapController {
         } catch(InvocationTargetException e) {
         	throw e.getTargetException();
         }
+	}
+	
+	public static void comprobarFechaLimitePresentacion(Long idSolicitud){
+		try {
+			if (FapProperties.get("fap.app.presentacion.fechacierre") != null){
+				String fechaStr = FapProperties.get("fap.app.presentacion.fechacierre");
+				DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+				DateTime fechaLimite = formatter.parseDateTime(fechaStr);
+				if (fechaLimite.isBeforeNow()){
+					play.Logger.error("La solicitud "+idSolicitud+" no se ha podido presentar (registrar o firmar). La fecha Límite de Presentación ha expirado: "+fechaStr);
+					Messages.error("La fecha Límite de Presentación ha expirado: "+fechaStr);
+					Messages.keep();
+				}
+			}
+		} catch (Exception e){
+			play.Logger.error("Fallo recuperando y verificando la fecha de cierre de la presentacion de la aplicación");
+		}
 	}
 
 }

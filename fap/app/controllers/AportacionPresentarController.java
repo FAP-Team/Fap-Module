@@ -211,8 +211,15 @@ public class AportacionPresentarController extends AportacionPresentarController
         Firmantes firmantesValidos = Firmantes.calcularFirmanteFromSolicitante(solicitud.solicitante);
         boolean result = firmantesValidos.containsFirmanteConIdentificador(firmante.idvalor);
 
-        if (!result)
+        if (!result){
+        	String firmantes="{";
+        	for (Firmante firm: firmantesValidos.todos){
+        		firmantes+=firm.toString()+" | ";
+        	}
+        	firmantes+="}";
+        	play.Logger.error("El certificado <"+firmante.idvalor+"> no se corresponde con uno que debe firmar la solicitud: "+firmantes);
             Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud");
+        }
 
         return result;
     }

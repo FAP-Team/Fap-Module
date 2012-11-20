@@ -15,6 +15,11 @@ bc. Grupo "Instruccion" permiso=instruccion {
 
 Con esto simplemente, ya tendremos acceso a toda la parte de Verificación. No obstante, si se quiere personalizar la documentación a verificar, se tiene que sobreescribir una serie de métodos, entre otras cosas, si se quiere un comportamiento especial propio de una determinada aplicación.
 
+h2. Flujo de trabajo
+
+!images/app-Verificacion-Workflow!
+
+
 h2. Deseo cambiar el comportamiento por defecto de los documentos a verificar ... ¿Qué métodos debo sobreescribir?
 
 Se deberá crear una clase propia en la aplicación que extienda de VerificacionFapController, que es una clase que está implementada en el módulo FAP:
@@ -75,3 +80,13 @@ La segunda parte, se encarga de confeccionarla el módulo FAP, y simplemente va 
 El PDF tendrá un aspecto como vemos en la imagen:
 
 !images/app-verifPDF!
+
+h2. Personalizar los Trámites Verificables y el Trámite Por Defecto
+
+Existe una página en administración (Tramites Verificables) que permiten indicar de todos los trámites del procedimiento que sean supceptibles a ser verificables (estos son los que posean Tipos de Documentos aportados por el _CIUDADANO_) cuales queremos que sean seleccionables para la parte de Verificación.
+
+De modo que en dicha página de Administración se puede indicar, de los Trámites que se pueden verificar, cuales queremos que sean verificables.
+
+Además se puede indicar el trámite por defecto que se utilice para rellenar el combo al Inicio de la Verificación y tener un valor por defecto para que el que relice dicha verificación tenga, al menos, cual de los trámites es más adecuado para utilizar en dicha verificación (en caso de que lo desconozca, ya que siempre podrá cambiar el valor del combo antes de Iniciar la Verificación).
+
+Los valores de los Trámites Verificables, se actualizan cuando lo hace la lista de Tramites en la parte de Gestor Documental. Se eliminarán los que utilicen Trámites que ya no existan y se crearán los que referencien a Trámites nuevos.

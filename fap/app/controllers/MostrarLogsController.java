@@ -201,8 +201,12 @@ public class MostrarLogsController extends MostrarLogsControllerGen {
 		
 		if (!porAtributos) {
 			tables.TableRenderNoPermisos<Log> response = null;
-			if (filas != 0)
-				response = new tables.TableRenderNoPermisos<Log>(rowsFiltered.subList(rows.size()-filas, rows.size()));
+			if (filas != 0) {
+				if (filas > rows.size())
+					response = new tables.TableRenderNoPermisos<Log>(rowsFiltered);
+				else 
+					response = new tables.TableRenderNoPermisos<Log>(rowsFiltered.subList(rows.size()-filas, rows.size()));
+			}
 			else
 				response = new tables.TableRenderNoPermisos<Log>(rowsFiltered);
 			flexjson.JSONSerializer flex = new flexjson.JSONSerializer().include("rows.level", "rows.time", "rows.class_", "rows.user", "rows.message", "rows.trace").transform(new serializer.DateTimeTransformer(), org.joda.time.DateTime.class).exclude("*");
@@ -268,7 +272,7 @@ public class MostrarLogsController extends MostrarLogsControllerGen {
 		}
 		for(int i=0; i<borrarDaily.size(); i++){
 			File borrado = new File(borrarDaily.get(i));
-			borrado.delete();
+			//borrado.delete();
 		}
 		renderJSON(serialize);
 	}

@@ -7,6 +7,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Usuarios" pagina=Usuarios
 			Enlace "Convocatoria" pagina=Convocatoria
 			Enlace "Gestor Documental" pagina=Aed
+			Enlace "Tramites Verificables" pagina=TramitesVerificables
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
 			Enlace "Cesion de Datos" permiso=adminOrGestor pagina=GenerarFichCesiones
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
@@ -25,6 +26,23 @@ Formulario Administracion permiso=administrador{
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
+    }
+    
+    Pagina TramitesVerificables titulo="Tramites Verificables" campo=VerificacionTramites perteneceA="Administracion"{
+    	Tabla tramitesVerificablesTbl titulo="Tramites Supceptibles de ser Verificables" campo=VerificacionTramites.tramites popupEditar=PopUpTramiteVerificable popupLeer=PopUpTramiteVerificable recargarPagina{
+    		Columna campo=TramitesVerificables.nombre titulo="Nombre" expandir
+    		Columna campo=TramitesVerificables.uriTramite titulo="Uri Tramite" expandir
+    		Columna campo=TramitesVerificables.verificable titulo="¿Verificable?"
+    	}
+    	Combo tramitePorDefecto campo=VerificacionTramites.uriTramitePorDefecto titulo="Tramite Por Defecto" requerido
+    }
+    
+    Popup PopUpTramiteVerificable campo=VerificacionTramites.tramites titulo="Configurar Tramite Verificable"{
+    	Grupo noEditable borde=false permiso=noEditable{
+    		Texto titulo="Nombre" campo=TramitesVerificables.nombre
+    		Texto titulo="Uri" campo=TramitesVerificables.uriTramite
+    	}
+    	Check titulo="Verificable" campo=TramitesVerificables.verificable
     }
     
     // Pagina Sobreescrita
@@ -425,6 +443,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			Columna titulo="Clase" campo=Logs.class_ expandir
 		}
 	}
+
 	
 	//Muestra todas las peticiones de cesion de datos realizadas sobre las solicitudes de la aplicacion
 	Pagina GenerarFichCesiones titulo= "Peticiones de Cesiones de Datos"{
@@ -517,4 +536,5 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			}
 		}
 	}
+	
 }

@@ -15,9 +15,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import utils.AedUtils;
 import utils.DocumentosUtils;
 import properties.FapProperties;
+import config.InjectorConfig;
 
 // === IMPORT REGION END ===
 
@@ -50,6 +53,12 @@ public class Documento extends FapModel {
 	@Transient
 	public String urlDescarga;
 
+	@Transient
+	public String urlDescargaFirmado;
+
+	@Transient
+	public String enlaceDescargaFirmado;
+
 	public Boolean verificado;
 
 	public Boolean refAed;
@@ -77,6 +86,25 @@ public class Documento extends FapModel {
 
 	public String getUrlDescarga() {
 		return AedUtils.crearUrl(uri);
+	}
+
+	public String getUrlDescargaFirmado() {
+		return AedUtils.crearUrlConInformeDeFirma(uri);
+	}
+
+	public String getEnlaceDescargaFirmado() {
+		GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		try {
+			if (gestorDocumental.getDocumentoConInformeDeFirmaByUri(uri) != null) {
+				String ret = "<a href=\"";
+				ret += AedUtils.crearUrlConInformeDeFirma(uri);
+				ret += "\" target=\"_blank\">Descargar Firmado</a>";
+				return ret;
+			}
+		} catch (Exception e) {
+			//play.Logger.error("Error al recuperar el documento con uri: " + uri + " del Gestor Documental con Informe de Firma");
+		}
+		return "";
 	}
 
 	public boolean isObligatorio() {

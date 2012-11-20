@@ -43,4 +43,10 @@
 		</div>
 	#{/fap.formrow}
 	
+	<script>
+		$('#${id_texto}').change(function () {
+			$('#${id_texto}').val($('#${id_texto}').val().toUpperCase());
+		});
+	</script>
+	
 #{/fap.field}

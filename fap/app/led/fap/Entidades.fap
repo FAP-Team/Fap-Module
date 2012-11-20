@@ -139,6 +139,8 @@ Entidad Documento {
 	DateTime fechaSubida
 	DateTime fechaRegistro
 	String urlDescarga transient
+	String urlDescargaFirmado transient
+	String enlaceDescargaFirmado transient
 	Boolean verificado	// Indica si el documento ya ha sido verificado
 	// Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente.
 	// Los dos campos siguientes se utilizan para referenciar de manera temporal (hasta su clasificación)
@@ -712,6 +714,7 @@ Entidad AnotacionFAP {
 	ManyToOne Agente personaSolucion noConstruct
 }
 
+
 Entidad CargarTablaDeTablas extends Singleton{
 	Boolean checkNoCargarMunicipiosActualizando
 	Boolean checkNoCargarMunicipiosSoloCreando
@@ -815,5 +818,17 @@ Entidad RegistroDatosA008{
 	String nombre
 	DateTime fechaSolicitud
 	String estado
+}
+
+
+Entidad VerificacionTramites extends Singleton {
+	OneToMany TramitesVerificables tramites
+	String uriTramitePorDefecto
+}
+
+Entidad TramitesVerificables {
+	String uriTramite
+	String nombre transient
+	Boolean verificable default="true"
 }
 

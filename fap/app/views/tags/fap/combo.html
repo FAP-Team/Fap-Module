@@ -56,7 +56,15 @@
 	// Obtenemos la lista con los valores de las dependencias del combo, si tuviera
 	def listaDependencias;
 	def listaTKV;
+	
+	def recuperaDDBB = false;
+	if (value != null && value.toString() != "")
+		recuperaDDBB = true;
 }%
+    
+    <script>
+    	var recupera${id} = ${recuperaDDBB};
+    </script>
     
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}
 		%{	
@@ -303,8 +311,13 @@
 			}
 			// Para cada vez que se renderiza la pagina, calculamos los posibles valores de ese combo
 			CargarValoresComboDependiente${id}();
-			// Para cada vez que cambie un combo del que depende otro, actualizar la lista de valores de ese otro
-			$('#${dependencia}').change(function(){CargarValoresComboDependiente${id}();});	
+			
+			if (recupera${id}) {
+				recupera${id} = false;
+			} else {
+				// Para cada vez que cambie un combo del que depende otro, actualizar la lista de valores de ese otro
+				$('#${dependencia}').change(function(){CargarValoresComboDependiente${id}();});
+			}
 		</script>
 		
 	#{/if}
@@ -313,6 +326,14 @@
 		<script>
 		#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
 			$("#${id}.combo").chosen();
+			$('#${id}_chzn').on("click", "a", function(){
+				if (comboTieneBind === false) {
+					comboTieneBind = true; 
+	    			$('select.combo').one("change", function(){
+	    					hayCambiosSinGuardar=true;
+	    			});	
+	    		}
+	    	});
 		#{/if}
 		</script>
 
@@ -323,6 +344,14 @@
 			if ($combo.attr('disabled') != "disabled") {
 				#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
 				$combo.chosen();
+				$('#${id}_chzn').on("click", "a", function(){
+					if (comboTieneBind === false) {
+						comboTieneBind = true; 
+	    				$('select.combo').one("change", function(){
+	    						hayCambiosSinGuardar=true;
+	    				});	
+	    			}
+	    		});
 				#{/if}
 			}
 		</script>

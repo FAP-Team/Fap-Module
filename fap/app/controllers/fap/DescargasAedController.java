@@ -74,6 +74,47 @@ public class DescargasAedController extends GenericController {
 	}
 	
 	/**
+	 * Descarga un documento Firmado del archivo electrónico
+	 * @param k Hash calculado a partir de la uri y de la fecha actual
+	 * @param uri
+	 */
+	public static void descargarFirmado(String k){
+		String uri= AedUtils.desencriptarUri(k);
+		
+		if(uri != null){
+			BinaryResponse bresp;
+			try {
+			    Documento documento = Documento.findByUri(uri);
+				if(documento == null) {
+					bresp = aedService.getDocumentoConInformeDeFirmaByUri(uri);
+					if(bresp == null){
+						bresp = aedService.getDocumentoByUri(uri);
+						if(bresp == null)
+							notFound();
+					}	
+				}
+				else {
+					bresp = aedService.getDocumentoConInformeDeFirma(documento);
+					if(bresp == null){
+						bresp = aedService.getDocumento(documento);
+						if(bresp == null)
+							notFound();
+					}
+				}
+				
+	            response.setHeader("Content-Disposition", "inline; filename=\"" + bresp.nombre + "\"");
+	            response.contentType = bresp.contenido.getContentType();
+				
+	            IO.write(bresp.contenido.getInputStream(), response.out);
+			} catch (Exception e) {
+				//play.Logger.error("Se produjo un error recuperando el documento del AED"+e);
+			}
+		}else{
+			forbidden("No tiene permisos para acceder a este documento");
+		}
+	}
+	
+	/**
 	 * Controlador intermedio necesario porque de una plantilla html no podemos invocar directamente 
 	 * un método de la interfaz GestorDocumentalService.
 	 * 

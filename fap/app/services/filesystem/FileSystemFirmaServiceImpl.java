@@ -123,11 +123,6 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 	}
 	
 	@Override
-	public HashMap<String,String> extraerInfoFromFirma(String firma) {
-		return null;
-	}
-	
-	@Override
 	public List<StringArray> getCertInfo(String certificado) throws FirmaServiceException{
 		return null;
 	}
@@ -194,6 +189,12 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 		System.out.println("Firmante con id: "+identificadorFirmante);
 
 		return firmante;
+	}
+
+	@Override
+	public String firmarEnServidor(Documento documento)
+			throws FirmaServiceException {
+		return "FileSystemFirmaService";
 	}
  
 }

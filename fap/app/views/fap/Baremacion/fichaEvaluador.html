@@ -11,6 +11,7 @@
 %{
 	def hasCriterios = !evaluacion.tipo.criterios.isEmpty();
 	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty();
+	def anioInicio = evaluacion.tipo.inicio;
 }%
 
 <div class="control-group">
@@ -201,14 +202,10 @@
         					%}
 			    			{name: '${valorSolicitado}', mapping: '${valorSolicitado}'},
 			    			{name: '${valorEstimado}', mapping: '${valorEstimado}'},
-			    			{name: '${valorConcedido}', mapping: '${valorConcedido}'},
-			    			{name: '${valorPropuesto}', mapping: '${valorPropuesto}'},
 			    		#{/list}
 			    		{name: 'permiso', mapping: 'permiso'},
 			    		{name: 'totalSolicitado', mapping: 'totalSolicitado'},
-			    		{name: 'totalPropuesto', mapping: 'totalPropuesto'},
-			    		{name: 'totalEstimado', mapping: 'totalEstimado'},
-			    		{name: 'totalConcedido', mapping: 'totalConcedido'}
+			    		{name: 'totalEstimado', mapping: 'totalEstimado'}
 					]
 		    	});
 			}
@@ -277,28 +274,19 @@
 					width : 200
 				#{list items:0..duracion, as:'i'}
 					} , {
-					text : 'Año '+(${i}+1),
+					text : 'Año '+(${i}+${anioInicio}),
 					columns : [{
 							text : 'Valor Solicitado',
 							sortable : true,
 							dataIndex : 'valorSolicitado'+${i},
 							width: 100
 						} , {
-							text : 'Valor Propuesto',
-							sortable : true,
-							dataIndex : 'valorPropuesto'+${i},
-							width: 100	
-						} , {
 							text : 'Valor Estimado',
 							sortable : true,
 							dataIndex : 'valorEstimado'+${i},
 							width: 100
-						} , {
-							text : 'Valor Concedido',
-							sortable : true,
-							dataIndex : 'valorConcedido'+${i},
-						width: 100
-					}]
+						}
+					]
 				#{/list}
 				} , {
 					text : 'TOTALES POR CONCEPTOS',
@@ -308,21 +296,12 @@
 							dataIndex : 'totalSolicitado',
 							width: 100
 						} , {
-							text : 'Valor Propuesto',
-							sortable : true,
-							dataIndex : 'totalPropuesto',
-							width: 100	
-						} , {
 							text : 'Valor Estimado',
 							sortable : true,
 							dataIndex : 'totalEstimado',
 							width: 100
-						} , {
-							text : 'Valor Concedido',
-							sortable : true,
-							dataIndex : 'totalConcedido',
-						width: 100
-					}]
+						} 
+					]
 				}],
 				renderTo: '${id}',
 				id: '${id}-grid',

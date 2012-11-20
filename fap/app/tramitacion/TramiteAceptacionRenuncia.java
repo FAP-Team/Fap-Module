@@ -4,6 +4,7 @@ import java.util.List;
 
 import controllers.fap.VerificacionFapController;
 import emails.Mails;
+import enumerado.fap.gen.SeleccionEnum;
 
 import properties.FapProperties;
 
@@ -19,16 +20,20 @@ import models.SolicitudGenerica;
 
 public class TramiteAceptacionRenuncia extends TramiteBase {
 	
-	private final static String TIPO_TRAMITE = "solicitud";
-	private final static String NOMBRE_TRAMITE = FapProperties.get("fap.aed.procedimientos.tramiteaceptacionrenuncia.nombre");
-	private final static String TIPO_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.aceptacionrenuncia");
+	private final static String TIPO_TRAMITE_ACEPTACION = "Aceptacion";
+	private final static String TIPO_TRAMITE_RENUNCIA = "Renuncia";
+	private final static String NOMBRE_TRAMITE_ACEPTACION = FapProperties.get("fap.aed.procedimientos.tramiteaceptacionrenuncia.aceptacion.nombre"); 
+	private final static String NOMBRE_TRAMITE_RENUNCIA = FapProperties.get("fap.aed.procedimientos.tramiteaceptacionrenuncia.renuncia.nombre");
+	private final static String TIPO_REGISTRO_ACEPTACION = FapProperties.get("fap.aed.tiposdocumentos.aceptacionrenuncia.aceptacion");
+	private final static String TIPO_REGISTRO_RENUNCIA = FapProperties.get("fap.aed.tiposdocumentos.aceptacionrenuncia.renuncia");
 	private final static String BODY_REPORT_ACEPTACION = "reports/aceptacion.html";
 	private final static String BODY_REPORT_RENUNCIA = "reports/renuncia.html";
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String MAILACEPTACION = "aceptacionRealizada";
 	private final static String MAILRENUNCIA = "renunciaRealizada";
-	private final static String JUSTIFICANTE = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroAceptacionRenuncia");
+	private final static String JUSTIFICANTE_ACEPTACION = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroAceptacionRenuncia.aceptacion");
+	private final static String JUSTIFICANTE_RENUNCIA = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroAceptacionRenuncia.renuncia");
 	private PlatinoGestorDocumentalService platinoGestorDocumentalService;
 	
 	public TramiteAceptacionRenuncia(SolicitudGenerica solicitud) {
@@ -45,12 +50,15 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 
 	@Override
 	public String getTipoRegistro() {
-		return TramiteAceptacionRenuncia.TIPO_REGISTRO;
+		if ((solicitud.aceptarRenunciar.seleccion != null) && (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase(SeleccionEnum.acepta.name())))
+			return TramiteAceptacionRenuncia.TIPO_REGISTRO_ACEPTACION;
+		else
+			return TramiteAceptacionRenuncia.TIPO_REGISTRO_RENUNCIA;
 	}
 
 	@Override
 	public String getBodyReport() {
-		if (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase("acepta"))
+		if ((solicitud.aceptarRenunciar.seleccion != null) && (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase(SeleccionEnum.acepta.name())))
 			return TramiteAceptacionRenuncia.BODY_REPORT_ACEPTACION;
 		else
 			return TramiteAceptacionRenuncia.BODY_REPORT_RENUNCIA;
@@ -68,7 +76,7 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 
 	@Override
 	public String getMail() {
-		if (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase("acepta"))
+		if ((solicitud.aceptarRenunciar.seleccion != null) && (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase(SeleccionEnum.acepta.name())))
 			return TramiteAceptacionRenuncia.MAILACEPTACION;
 		else
 			return TramiteAceptacionRenuncia.MAILRENUNCIA;
@@ -76,17 +84,26 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 
 	@Override
 	public String getJustificanteRegistro() {
-		return TramiteAceptacionRenuncia.JUSTIFICANTE;
+		if ((solicitud.aceptarRenunciar.seleccion != null) && (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase(SeleccionEnum.acepta.name())))
+			return TramiteAceptacionRenuncia.JUSTIFICANTE_ACEPTACION;
+		else
+			return TramiteAceptacionRenuncia.JUSTIFICANTE_RENUNCIA;
 	}
 
 	@Override
 	public String getDescripcionJustificante() {
-		return TramiteAceptacionRenuncia.TIPO_TRAMITE;
+		if ((solicitud.aceptarRenunciar.seleccion != null) && (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase(SeleccionEnum.acepta.name())))
+			return TramiteAceptacionRenuncia.TIPO_TRAMITE_ACEPTACION;
+		else
+			return TramiteAceptacionRenuncia.TIPO_REGISTRO_RENUNCIA;
 	}
 
 	@Override
 	public String getTipoTramite() {
-		return TramiteAceptacionRenuncia.TIPO_TRAMITE;
+		if ((solicitud.aceptarRenunciar.seleccion != null) && (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase(SeleccionEnum.acepta.name())))
+			return TramiteAceptacionRenuncia.TIPO_TRAMITE_ACEPTACION;
+		else
+			return TramiteAceptacionRenuncia.TIPO_TRAMITE_RENUNCIA;
 	}
 
 	/**
@@ -103,6 +120,13 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 	@Override
 	public String getPrefijoJustificantePdf() {
 		return FapProperties.get("fap.tramitacion.aceptacion.prefijojustificantepdf");
+	}
+	
+	public String getNombreTramite() {
+		if ((solicitud.aceptarRenunciar.seleccion != null) && (solicitud.aceptarRenunciar.seleccion.equalsIgnoreCase(SeleccionEnum.acepta.name())))
+			return TramiteAceptacionRenuncia.NOMBRE_TRAMITE_ACEPTACION;
+		else
+			return TramiteAceptacionRenuncia.NOMBRE_TRAMITE_RENUNCIA;
 	}
 
 	/**
@@ -181,7 +205,7 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 			VerificarDocumentacionService verificar = new VerificarDocumentacionService("solicitud", this.getDocumentos(), this.getDocumentosExternos());
 			List<String> condicionadosAutomaticosNoAportados;
 			try {
-				condicionadosAutomaticosNoAportados = VerificacionFapController.getDocumentosNoAportadosCondicionadosAutomaticos(NOMBRE_TRAMITE, solicitud.aceptarRenunciar.id);
+				condicionadosAutomaticosNoAportados = VerificacionFapController.getDocumentosNoAportadosCondicionadosAutomaticos(getNombreTramite(), solicitud.aceptarRenunciar.id);
 				verificar.preparaPresentacionTramite(condicionadosAutomaticosNoAportados);
 			} catch (Throwable e) {
 				play.Logger.debug("Error validando la documentacion aportada", e.getMessage());

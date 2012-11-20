@@ -68,6 +68,13 @@ public class Tramite extends FapModel {
 		TipoCodigoExclusion.deleteAll();
 		TiposCodigoRequerimiento.deleteAll();
 	}
+
+	public boolean existTipoDocumentoAportadoPorCiudadano() {
+		List<TipoDocumento> documentosCiudadanoTramite = Tramite.findTipoDocumentosAportadosPor(this.nombre, "CIUDADANO");
+		if ((documentosCiudadanoTramite == null) || (documentosCiudadanoTramite.isEmpty()))
+			return false;
+		return true;
+	}
 	// === MANUAL REGION END ===
 
 }

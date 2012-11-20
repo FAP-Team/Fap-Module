@@ -261,6 +261,7 @@ Permiso solicitudEnBorrador{
 Permiso editarSolicitud {
 	vars
 		SolicitudGenerica solicitud
+		Convocatoria convocatoria
 	when
 		agente.rolActivo = "evaluador"
 	return
@@ -270,7 +271,8 @@ Permiso editarSolicitud {
 		or (
 	 		agente.rolActivo = "usuario" and
 	 		solicitud?.estado = "borrador" and
-	 		solicitud?.registro?.fasesRegistro?.borrador = "false"
+	 		solicitud?.registro?.fasesRegistro?.borrador = "false" and
+	 		convocatoria.estado in ("presentacion")
 		)
 	return all
 	when
@@ -829,13 +831,15 @@ Permiso editarSolicitudYIniciarBaremacion {
 	vars
 		SolicitudGenerica solicitud
 		TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")
+		Convocatoria convocatoria
 	when
 		!usuario is visible
 		or (
 	 		agente.rolActivo = "usuario" and
 	 		solicitud?.estado = "borrador" and
 	 		solicitud?.registro?.fasesRegistro?.borrador = "false" and
-	 		(tipoEvaluacion?.estado = "cargada")
+	 		(tipoEvaluacion?.estado = "cargada") and
+	 		convocatoria.estado in ("presentacion")
 		)
 	return all
 	when
@@ -1193,6 +1197,7 @@ Permiso ActivarHabilitarFH{
 }
 
 
+
 Permiso ultimaEditable{
 	//Sobreescrito en SECUREFAP
 	vars
@@ -1289,4 +1294,14 @@ Permiso verRespuestaCesion{
 		and ((peticionCesiones.estado = "respondida") or peticionCesiones.estado = "asignada")
 	return
 		all
+
+Permiso evaluacionFinalizada{
+	vars
+		SolicitudGenerica solicitud
+	    Evaluacion evaluacion : sql("select evaluacion from Evaluacion evaluacion where evaluacion.solicitud.id=?", solicitud.id)
+	when
+	    (evaluacion?.tipo?.estado = "evaluada") and
+	    (agente.rolActivo in ("administrador", "gestor"))
+	return all
+
 }

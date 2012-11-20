@@ -457,82 +457,109 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 
     @Override
     public List<Tramite> getTramites() throws GestorDocumentalServiceException {
-        Tramite tramite = new Tramite();
-        tramite.nombre = "solicitud";
-        tramite.uri = "fs://";
+    	// ------- CÓDIGOS DE REQUERIMIENTO -------
+        TiposCodigoRequerimiento tipoCodReqdbObligatoriedad = new TiposCodigoRequerimiento();
+    	tipoCodReqdbObligatoriedad.codigo = "CodigoReqObligatoriedad";
+		tipoCodReqdbObligatoriedad.descripcion = "El documento es obligatorio";
+		tipoCodReqdbObligatoriedad.descripcionCorta = "CRO";
+		
+		TiposCodigoRequerimiento tipoCodReqdbCorrupto = new TiposCodigoRequerimiento();
+		tipoCodReqdbCorrupto.codigo = "CodigoReqCorrupto";
+		tipoCodReqdbCorrupto.descripcion = "El documento es ilegible y/o está corrupto";
+		tipoCodReqdbCorrupto.descripcionCorta = "CRC";
+		
+		TiposCodigoRequerimiento tipoCodReqdbIncompleto = new TiposCodigoRequerimiento();
+		tipoCodReqdbIncompleto.codigo = "CodigoReqIncompleto";
+		tipoCodReqdbIncompleto.descripcion = "Documento incompleto";
+		tipoCodReqdbIncompleto.descripcionCorta = "CRI";
+		
+		TiposCodigoRequerimiento tipoCodReqdbFirma = new TiposCodigoRequerimiento();
+		tipoCodReqdbFirma.codigo = "CodigoReqFirma";
+		tipoCodReqdbFirma.descripcion = "El documento no está debidamente firmado";
+		tipoCodReqdbFirma.descripcionCorta = "CRF";
+		
+		TiposCodigoRequerimiento tipoCodReqdbEspanol = new TiposCodigoRequerimiento();
+		tipoCodReqdbEspanol.codigo = "CodigoReqEspanol";
+		tipoCodReqdbEspanol.descripcion = "Se requiere nacionalidad española";
+		tipoCodReqdbEspanol.descripcionCorta = "CRE";
+		
+		TiposCodigoRequerimiento tipoCodReqdbDNI = new TiposCodigoRequerimiento();
+		tipoCodReqdbDNI.codigo = "CodigoReqDNI";
+		tipoCodReqdbDNI.descripcion = "Falta fotocopia del DNI";
+		tipoCodReqdbDNI.descripcionCorta = "CRDNI";
+  	
+    	// ------- TRÁMITE 1: Solicitud ------- 
+        Tramite tramiteSolicitud = new Tramite();
+        tramiteSolicitud.nombre = "solicitud";
+        tramiteSolicitud.uri = "fs://solicitud";
 
-        TipoDocumento tipo = newTipoDocumento("FileSystem1","fs://type1/v01");
-        tipo.cardinalidad = "UNICO";
-        tipo.tramitePertenece=tramite.uri;
-        tramite.documentos.add(tipo);
-        TiposCodigoRequerimiento tipoCodReqdb = new TiposCodigoRequerimiento();
-		tipoCodReqdb.codigo = "CodigoReq1";
-		tipoCodReqdb.descripcion = "Descripcion para el Código de Requerimiento 1 del tipo de documento FileSystem1";
-		tipoCodReqdb.descripcionCorta = "CR1FS1";
-		tipoCodReqdb.uriTipoDocumento = tipo.uri;
-		tipoCodReqdb.uriTramite = tramite.uri;
-		tipoCodReqdb.save();
-		TiposCodigoRequerimiento tipoCodReqdb2 = new TiposCodigoRequerimiento();
-		tipoCodReqdb2.codigo = "CodigoReq2";
-		tipoCodReqdb2.descripcion = "Descripcion para el Código de Requerimiento 2 del tipo de documento FileSystem1";
-		tipoCodReqdb2.descripcionCorta = "CR2FS1";
-		tipoCodReqdb2.uriTipoDocumento = tipo.uri;
-		tipoCodReqdb2.uriTramite = tramite.uri;
-		tipoCodReqdb2.save();
+        TipoDocumento tipoBase = newTipoDocumento("Base", "fs://base/v01");
+        tipoBase.cardinalidad = "UNICO";
+        tipoBase.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoBase);
+        newTiposCodigoRequerimiento(tipoCodReqdbCorrupto, tipoBase.uri, tramiteSolicitud.uri);
+        newTiposCodigoRequerimiento(tipoCodReqdbEspanol, tipoBase.uri, tramiteSolicitud.uri);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoBase.uri, tramiteSolicitud.uri);
         
-		TipoDocumento tipo2 = newTipoDocumento("FileSystem2", "fs://type2/v01");
-		tipo2.cardinalidad = "MULTIPLE";
-		tipo2.tramitePertenece=tramite.uri;
-        tramite.documentos.add(tipo2);
-        TiposCodigoRequerimiento tipoCodReqdb3 = new TiposCodigoRequerimiento();
-		tipoCodReqdb3.codigo = "CodigoReq1";
-		tipoCodReqdb3.descripcion = "Descripcion para el Código de Requerimiento 1 del tipo de documento FileSystem2";
-		tipoCodReqdb3.descripcionCorta = "CR1FS2";
-		tipoCodReqdb3.uriTipoDocumento = tipo2.uri;
-		tipoCodReqdb3.uriTramite = tramite.uri;
-		tipoCodReqdb3.save();
-		
-		TipoDocumento tipo3 = newTipoDocumento("FileSystem3", "fs://type3/v01");
-		tipo3.cardinalidad = "UNICO";
-		tipo3.tramitePertenece=tramite.uri;
-        tramite.documentos.add(tipo3);
-        TiposCodigoRequerimiento tipoCodReqdb4 = new TiposCodigoRequerimiento();
-		tipoCodReqdb4.codigo = "CodigoReq1";
-		tipoCodReqdb4.descripcion = "Descripcion para el Código de Requerimiento 1 del tipo de documento FileSystem3";
-		tipoCodReqdb4.descripcionCorta = "CR1FS3";
-		tipoCodReqdb4.uriTipoDocumento = tipo3.uri;
-		tipoCodReqdb4.uriTramite = tramite.uri;
-		tipoCodReqdb4.save();
-		TiposCodigoRequerimiento tipoCodReqdb5 = new TiposCodigoRequerimiento();
-		tipoCodReqdb5.codigo = "CodigoReq2";
-		tipoCodReqdb5.descripcion = "Descripcion para el Código de Requerimiento 2 del tipo de documento FileSystem3";
-		tipoCodReqdb5.descripcionCorta = "CR2FS3";
-		tipoCodReqdb5.uriTipoDocumento = tipo3.uri;
-		tipoCodReqdb5.uriTramite = tramite.uri;
-		tipoCodReqdb5.save();
-		TiposCodigoRequerimiento tipoCodReqdb6 = new TiposCodigoRequerimiento();
-		tipoCodReqdb6.codigo = "CodigoReq3";
-		tipoCodReqdb6.descripcion = "Descripcion para el Código de Requerimiento 3 del tipo de documento FileSystem3";
-		tipoCodReqdb6.descripcionCorta = "CR3FS3";
-		tipoCodReqdb6.uriTipoDocumento = tipo3.uri;
-		tipoCodReqdb6.uriTramite = tramite.uri;
-		tipoCodReqdb6.save();
-		
-		TipoDocumento tipo4=newTipoDocumento("Otros", "fs://otros/v01");
-		tipo4.cardinalidad = "MULTIPLE";
-		tipo4.tramitePertenece=tramite.uri;
-        tramite.documentos.add(tipo4);
-        TiposCodigoRequerimiento tipoCodReqdb7 = new TiposCodigoRequerimiento();
-		tipoCodReqdb7.codigo = "CodigoReq1";
-		tipoCodReqdb7.descripcion = "Descripcion para el Código de Requerimiento 1 del tipo de documento Otros";
-		tipoCodReqdb7.descripcionCorta = "CR1Otros";
-		tipoCodReqdb7.uriTipoDocumento = tipo4.uri;
-		tipoCodReqdb7.uriTramite = tramite.uri;
-		tipoCodReqdb7.save();
+        TipoDocumento tipoSolicitud = newTipoDocumento("Solicitud", "fs://solicitud/v01");
+        tipoSolicitud.cardinalidad = "MULTIPLE";
+        tipoSolicitud.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoSolicitud);
+        newTiposCodigoRequerimiento(tipoCodReqdbCorrupto, tipoSolicitud.uri, tramiteSolicitud.uri);
+        newTiposCodigoRequerimiento(tipoCodReqdbDNI, tipoSolicitud.uri, tramiteSolicitud.uri);
         
+        TipoDocumento tipoJustificanteRegistro = newTipoDocumento("JustificanteRegistro", "fs://justificanteRegistro/v01");
+        tipoJustificanteRegistro.cardinalidad = "UNICO";
+        tipoJustificanteRegistro.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoJustificanteRegistro);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoJustificanteRegistro.uri, tramiteSolicitud.uri);
+             
+        // ------- TRÁMITE 2: Aportación ------- 
+        Tramite tramiteAportacion = new Tramite();
+        tramiteAportacion.nombre = "aportacion";
+        tramiteAportacion.uri = "fs://aportacion";
+
+        TipoDocumento tipoSolicitudAport = newTipoDocumento("SolicitudAportacion", "fs://solicitudaportacion/v02");
+        tipoSolicitudAport.cardinalidad = "UNICO";
+        tipoSolicitudAport.tramitePertenece = tramiteAportacion.uri;
+        tramiteAportacion.documentos.add(tipoSolicitudAport);
+        newTiposCodigoRequerimiento(tipoCodReqdbIncompleto, tipoSolicitudAport.uri, tramiteAportacion.uri);
+        newTiposCodigoRequerimiento(tipoCodReqdbObligatoriedad, tipoSolicitudAport.uri, tramiteAportacion.uri);
+        
+        TipoDocumento tipoAportRegistro = newTipoDocumento("AportacionRegistro", "fs://aportacionregistro/v01");
+        tipoAportRegistro.cardinalidad = "UNICO";
+        tipoAportRegistro.tramitePertenece = tramiteAportacion.uri;
+        tramiteAportacion.documentos.add(tipoAportRegistro);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoAportRegistro.uri, tramiteAportacion.uri);
+        
+        // ------- TRÁMITE 3: Desestimiento ------- 
+        Tramite tramiteDesestimiento = new Tramite();
+        tramiteDesestimiento.nombre = "desestimiento";
+        tramiteDesestimiento.uri = "fs://desestimiento";
+   			 
+        TipoDocumento tipoDesestimiento = newTipoDocumento("Desestimiento", "fs://desestimiento/v01");
+        tipoDesestimiento.cardinalidad = "UNICO";
+        tipoDesestimiento.tramitePertenece= tramiteDesestimiento.uri;
+        tramiteDesestimiento.documentos.add(tipoDesestimiento);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoDesestimiento.uri, tramiteDesestimiento.uri);
+        newTiposCodigoRequerimiento(tipoCodReqdbIncompleto, tipoDesestimiento.uri, tramiteDesestimiento.uri);
+      
+        TipoDocumento tipoJustificanteRegistroDesest = newTipoDocumento("JustificanteRegistro", "fs://justificanteregistro/v02");
+        tipoJustificanteRegistroDesest.cardinalidad = "UNICO";
+        tipoJustificanteRegistroDesest.tramitePertenece= tramiteDesestimiento.uri;
+        tramiteDesestimiento.documentos.add(tipoJustificanteRegistroDesest);
+        newTiposCodigoRequerimiento(tipoCodReqdbCorrupto, tipoJustificanteRegistroDesest.uri, tramiteDesestimiento.uri);
+   		
+        TipoDocumento tipoPrefijoJustificantePDF = newTipoDocumento("PrefijoJustificantePDF", "fs://prefijojustificantepdf/v01");
+        tipoPrefijoJustificantePDF.cardinalidad = "MULTIPLE";
+        tipoPrefijoJustificantePDF.tramitePertenece= tramiteDesestimiento.uri;
+        tramiteDesestimiento.documentos.add(tipoPrefijoJustificantePDF);
+        newTiposCodigoRequerimiento(tipoCodReqdbCorrupto, tipoPrefijoJustificantePDF.uri, tramiteDesestimiento.uri);	 
         
         ArrayList<Tramite> tramites = new ArrayList<Tramite>();
-        tramites.add(tramite);
+        tramites.add(tramiteSolicitud);
+        tramites.add(tramiteAportacion);
+        tramites.add(tramiteDesestimiento);
         return tramites;
     }
     
@@ -557,13 +584,26 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     
     private TipoDocumento newTipoDocumento(String nombre, String tipo){
         TipoDocumento tipoDocumento = new TipoDocumento();
-        tipoDocumento.nombre = "FileSystem " + nombre;
-        tipoDocumento.uri=tipo;
+        //tipoDocumento.nombre = "FileSystem " + nombre;
+        tipoDocumento.nombre = nombre;
+        tipoDocumento.uri = tipo;
         tipoDocumento.aportadoPor = "CIUDADANO";
         tipoDocumento.obligatoriedad = "OBLIGATORIO";
         return tipoDocumento;
     }
 
+	private TiposCodigoRequerimiento newTiposCodigoRequerimiento(TiposCodigoRequerimiento codigoReq, 
+																	String uriTipoDocumento, String uriTramite) {
+		TiposCodigoRequerimiento tipoCodReqdb = new TiposCodigoRequerimiento();
+		tipoCodReqdb.codigo = codigoReq.codigo;
+		tipoCodReqdb.descripcion = codigoReq.descripcion;
+		tipoCodReqdb.descripcionCorta = codigoReq.descripcionCorta;
+		tipoCodReqdb.uriTipoDocumento = uriTipoDocumento;
+		tipoCodReqdb.uriTramite = uriTramite;
+		tipoCodReqdb.save();
+		return tipoCodReqdb;
+	}
+	
 	@Override
 	public String crearExpediente(ExpedienteAed expedienteAed)
 			throws GestorDocumentalServiceException {
@@ -612,10 +652,10 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		td.setEtiqueta("Etiqueta1");
 		tdList.add(td);
 		es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento td2 = new es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento();
-		td2.setUri("fs://type2/v01");
-		td2.setDescripcion("FileSystem FileSystem 2");
+		td2.setUri("fs://solicitud/v01");
+		td2.setDescripcion("FileSystem FileSystem Solicitud");
 		td2.setVersion(1);
-		td2.setEtiqueta("Etiqueta2");
+		td2.setEtiqueta("Etiqueta Solicitud");
 		tdList.add(td2);
 		return tdList;
 	}
@@ -715,5 +755,22 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 			List<Documento> documentos, boolean notificable)
 			throws GestorDocumentalServiceException {
 		clasificarDocumentos(solicitud, documentos);	
+	}
+
+	@Override
+	public BinaryResponse getDocumentoConInformeDeFirma(Documento documento) throws GestorDocumentalServiceException {
+		return getDocumento(documento);
+	}
+
+	@Override
+	public BinaryResponse getDocumentoConInformeDeFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
+		return getDocumentoByUri(uriDocumento);
+	}
+
+	@Override
+	public void agregarFirma(Documento documento, String firmaStr)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		
 	}
 }

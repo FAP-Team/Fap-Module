@@ -84,10 +84,7 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 		CustomValidation.clearValidadas();
 		CustomValidation.valid("cEconomico", cEconomico);
 		for (int i=0; i<=duracion; i++){
-			dbCEconomico.valores.get(i).valorSolicitado = cEconomico.valores.get(i).valorSolicitado;
-			dbCEconomico.valores.get(i).valorConcedido = cEconomico.valores.get(i).valorConcedido;
-			dbCEconomico.valores.get(i).valorEstimado = cEconomico.valores.get(i).valorEstimado;
-			dbCEconomico.valores.get(i).valorPropuesto = cEconomico.valores.get(i).valorPropuesto;
+			dbCEconomico.valores.get(i).valorEstimado = cEconomico.valores.get(i).valorEstimado != null ? cEconomico.valores.get(i).valorEstimado : 0.0;
 		}
 	}
 
@@ -104,7 +101,6 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 		if (!Messages.hasMessages()) {
 			renderJSON(utils.RestResponse.ok("Registro actualizado correctamente"));
 			Messages.keep();
-			System.out.println("Entre");
 			redirect("popups.PopupCEConomicosEvaluadorController.index", "editar", idEvaluacion, idCEconomico, duracion);
 		}
 		Messages.keep();
@@ -117,8 +113,8 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 
 		if (idEvaluacion == null) {
 			if (!Messages.messages(MessageType.FATAL).contains(
-					"Falta parámetro idSolicitud"))
-				Messages.fatal("Falta parámetro idSolicitud");
+					"Falta parámetro idEvaluacion"))
+				Messages.fatal("Falta parámetro idEvaluacion");
 		}
 		if (idCEconomico == null) {
 			if (!Messages.messages(MessageType.FATAL).contains(
@@ -147,9 +143,6 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 		String param = "cEconomico";
 		for (int i = 0; i < tipoEvaluacion.duracion; i++){
 			Messages.setFlash(param + ".valores["+i+"].valorEstimado", params.get(param + ".valores["+i+"].valorEstimado", String.class));
-			Messages.setFlash(param + ".valores["+i+"].valorSolicitado", params.get(param + ".valores["+i+"].valorSolicitado", String.class));
-			Messages.setFlash(param + ".valores["+i+"].valorPropuesto", params.get(param + ".valores["+i+"].valorPropuesto", String.class));
-			Messages.setFlash(param + ".valores["+i+"].valorConcedido", params.get(param + ".valores["+i+"].valorConcedido", String.class));
 		}
 		Messages.setFlash(param + ".comentariosAdministracion", params.get(param + ".comentariosAdministracion", String.class));
 		Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));

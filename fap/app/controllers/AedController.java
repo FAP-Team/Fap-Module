@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -8,12 +9,15 @@ import messages.Messages;
 import models.TableKeyValue;
 import models.TipoDocumento;
 import models.Tramite;
+import models.TramitesVerificables;
+import models.VerificacionTramites;
 import play.mvc.Util;
 import properties.FapProperties;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.aed.ProcedimientosService;
 import utils.Fixtures;
+import utils.ModelUtils;
 import controllers.gen.AedControllerGen;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
@@ -51,6 +55,7 @@ public class AedController extends AedControllerGen {
             	deleteTramites();
                 List<Tramite> tramites = gestorDocumentalService.getTramites();
                 saveTramites(tramites);
+                ModelUtils.actualizarTramitesVerificables(tramites);
                 updateTableKeyValueTiposDocumentos();
                 gestorDocumentalService.actualizarCodigosExclusion();
                 Messages.ok("Recuperados " + tramites.size() + " tramites");

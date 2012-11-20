@@ -24,4 +24,11 @@
 			#{fap.texto id:id + '_cif', titulo:play.i18n.Messages.get('fap.tags.personajuridica.cif'), campo:campo + '.cif', requerido:requerido, obj:obj /}
 		#{/fap.grupo}
 	#{/else}
+	
+	<script>
+		$('#${id}_cif').change(function () {
+			$('#${id}_cif').val($('#${id}_cif').val().toUpperCase());
+		});
+	</script>
+	
 #{/fap.field}

@@ -75,6 +75,38 @@ function popupWait_close() {
 	$popup.modal("hide");
 }
 
+function popupWarning_open(warningText, functionButton) {
+	var typeLocal = "btn-danger";
+	var cancelType = "btn-secondary";
+	var acceptTextButton = "Aceptar";
+	var cancelTextButton = "Cancelar";
+	var cancelFunction = "$('#popupWarning_popup').modal('hide');location.reload();";
+	var onClickAccept = "onclick=\""+functionButton+";\"";
+	var onClickCancel = "onclick=\""+cancelFunction+";\"";
+	
+	$("body").append("<div id=\"popupWarning_popup\" class=\"modal hide fade in\">"+
+					 "<div class=\"modal-header\">"+
+						"<button class=\"close\" data-dismiss=\"modal\">×</button>"+
+    					"<h3>Aviso</h3>"+
+					 "</div>"+
+					 "<div class=\"modal-body\">"+
+					 	"<div class='text'>"+ warningText +"</div>"+
+					 "</div>"+
+					 "<div class=\"modal-footer\">"+
+					 	"<a href=\"#\" id=\""+acceptTextButton+"_id\""+onClickAccept+" class=\"btn "+typeLocal+"\" data-loading-text=\"Enviando...\">"+ acceptTextButton +"</a>"+
+					 	"<a href=\"#\" id=\""+cancelTextButton+"_id\""+onClickCancel+" class=\"btn "+cancelType+"\" data-loading-text=\"Enviando...\">"+ cancelTextButton +"</a>"+
+					 "</div>"+
+					 "</div>");
+
+	$popup = $("#popupWarning_popup");
+	$popup.modal( {show : true, backdrop: "static"} );
+}
+
+function popupWarning_close() {
+	$popup = $("#popupWarning_popup");	
+	$popup.modal("hide");
+}
+
 function replaceId(url, entidad, id) {
 	return url.replace(entidad, id).replace(new RegExp("amp;", 'g'), "");
 }

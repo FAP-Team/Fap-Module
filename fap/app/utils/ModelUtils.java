@@ -25,6 +25,9 @@ import messages.Messages;
 import models.CodigoRequerimiento;
 import models.SolicitudGenerica;
 import models.TiposCodigoRequerimiento;
+import models.Tramite;
+import models.TramitesVerificables;
+import models.VerificacionTramites;
 
 import exceptions.ModelAccessException;
 
@@ -251,4 +254,45 @@ public class ModelUtils {
 		
         return ret;
 	}
+	
+	public static void actualizarTramitesVerificables(List<Tramite> tramites){
+    	VerificacionTramites vTramites = VerificacionTramites.get(VerificacionTramites.class);
+    	boolean encontrado=false;
+    	int tamLista = vTramites.tramites.size();
+    	// Primero eliminamos los obsoletos
+    	for (int i=tamLista-1; i>=0; i--){
+    		encontrado = false;
+    		for (Tramite t : tramites) {
+            	if ((t.existTipoDocumentoAportadoPorCiudadano()) && (t.uri.equals(vTramites.tramites.get(i).uriTramite))){
+            		encontrado = true;
+            		break;
+            	}
+            }
+            if (!encontrado){ // Borramos
+            	TramitesVerificables tvABorrar = vTramites.tramites.get(i);
+            	vTramites.tramites.remove(i);
+            	vTramites.save();
+            	tvABorrar.delete();
+            }
+        }
+    	
+    	// Despues creamos los nuevos
+    	for (Tramite t : tramites) {
+    		encontrado = false;
+    		for (TramitesVerificables tv: vTramites.tramites){
+            	if (t.uri.equals(tv.uriTramite)){
+            		encontrado = true;
+            		break;
+            	}
+            }
+            if ((!encontrado) && (t.existTipoDocumentoAportadoPorCiudadano())){ // Creamos
+            	TramitesVerificables tvNuevo = new TramitesVerificables();
+            	tvNuevo.uriTramite = t.uri;
+            	tvNuevo.verificable = true;
+            	tvNuevo.save();
+            	vTramites.tramites.add(tvNuevo);
+            	vTramites.save();
+            }
+        }
+    }
 }

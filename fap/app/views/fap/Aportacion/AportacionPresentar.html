@@ -62,6 +62,8 @@
 	#{fap.columna ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
 		
 	#{fap.columna ancho:100, cabecera:'Descargar', funcion:'<a href="${urlDescarga}" target="_blank">Descargar</a>' /}
+	
+	#{fap.columna alignPosition:'left', ancho:110, cabecera:'Descargar Firmado', funcion:'${enlaceDescargaFirmado}' /}
 		
 #{/fap.tabla}
 
@@ -131,26 +133,6 @@
 			</div>
 		
 				#{form play.mvc.Router.reverse('AportacionPresentarController.presentar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"presentar"}
-					
-#{fap.tabla 
-     campo:'Solicitud.registro.firmantes.todos', 
-     id:'firmarRepresentanteFirmantes', 
-     idEntidad:'idFirmante', 
-     saveEntity:false, 
-     tipoContainer:'pagina', 
-     titulo:'Firmantes', 
-     urlTabla:@AportacionPresentarController.tablafirmarRepresentanteFirmantes(idSolicitud)
-}
-	
-	#{fap.columna ancho:200, cabecera:'Nº', campo:'idvalor', expandir:true /}
-		
-	#{fap.columna ancho:200, cabecera:'Nombre', campo:'nombre', expandir:true /}
-		
-	#{fap.columna ancho:200, cabecera:'Cardinalidad', campo:'cardinalidad', expandir:true /}
-		
-	#{fap.columna ancho:200, cabecera:'Firmado', campo:'fechaFirma', expandir:true /}
-		
-#{/fap.tabla}
 
 			#{fap.firma firma:'firma', id:'firmarRepresentante', titulo:'Firmar y presentar', uri:"${solicitud.aportaciones.actual.oficial.uri}" /}
 		

@@ -64,6 +64,7 @@ Formulario Solicitud permiso=solicitudes{
 	
 			Grupo "Páginas Especiales" {
 				Enlace "Firma" pagina=PaginaFirma
+				Enlace "Firma en Servidor" pagina=CrearDocYFirma
 			}
 			
 			Grupo "Anotación Inject"{
@@ -262,6 +263,7 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 			//Columna campo=Documento.id
 			Columna campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible
+			Columna funcion="<a href=\"${Documento.urlDescargaFirmado}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
 		}
 		Grupo botonObligatorios titulo="Comprobar que estan aportados todos los documentos obligatorios"{
 			Boton comprobarDocumentosObligatorios titulo="Comprobar Obligatorios"
@@ -668,6 +670,33 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
     Pagina RenderPdf noForm campo=Solicitud {
     	Form renderPdfSolicitud {
     		Boton pdfBotonRender titulo="Render Response PDF"
+        }
+    }
+    
+    Pagina CrearDocYFirma titulo="Firmar Documento en Servidor" noForm campo=Solicitud {
+    	        
+    	Grupo titulo="Generar Documento" mostrarSiCampo Solicitud.firmaEnServidor.fueGenerado = "false" {
+        	Wiki { "Se generará un documento, para luego firmarlo " }
+        	Form generarDocumento {
+        		Boton pdfDocumento titulo="Generar Documento"	
+        	}
+        }
+        
+        Grupo titulo ="Documento Generado" mostrarSiCampo Solicitud.firmaEnServidor.fueGenerado = "true" {
+        	Enlace titulo="Ver documento" campo=Solicitud.firmaEnServidor.oficial.urlDescarga 
+        }
+        
+        Grupo  mostrarSiCampo Solicitud.firmaEnServidor.fueGenerado = "true" borde=false {
+        	Grupo titulo="Firmar en Servidor" mostrarSiCampo Solicitud.firmaEnServidor.fueFirmado = "false" {
+        		Wiki { "Se firmará el documento en Servidor " }
+        		Form firmarDocumento {
+        			Boton firmaServidorDocumento titulo="Firmar en Servidor"	
+        		}	
+        	}
+        }
+        
+		Grupo titulo ="Documento Firmado" mostrarSiCampo Solicitud.firmaEnServidor.fueFirmado = "true" {
+        	Enlace titulo="Ver documento con informe de Firma" campo=Solicitud.firmaEnServidor.oficial.urlDescargaFirmado
         }
     }
     

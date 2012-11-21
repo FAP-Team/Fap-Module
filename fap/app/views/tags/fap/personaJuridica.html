@@ -36,9 +36,15 @@
 			<script>
 				var urlTerceros = "${urlGetTercero}";
 	
+				var valorCif${id} = $('#${id}_cif').val();
+	
 				$('#${id}_cif').blur(function(){
-					if ($('#${id}_cif').val() != "")
-						setDatosTercero${id}($('#${id}_cif').val());
+					if (valorCif${id} !==  $('#${id}_cif').val()){
+						valorCif${id} = $('#${id}_cif').val();
+						if ($('#${id}_cif').val() != "")
+							setDatosTercero${id}($('#${id}_cif').val());
+					}
+					valorCif${id} = $('#${id}_cif').val();
 				});
 				
 				function setDatosTercero${id}(id){
@@ -58,7 +64,6 @@
 							if ((parts[0].replace("%&%", "") === "tipo") && ($('#${id.replace("Juridica","")}Direccion_tipo').val() === "")){
 	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').val(parts[1]);
 	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').trigger("liszt:updated");
-	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').prop('readonly', true);
 	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').change();
 		 					}
 	
@@ -76,17 +81,14 @@
 		 						 					$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).change();
 		 						 					tiempoNuevo=1500;
 		 						 				}
-		 						 				$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).prop('readonly', true);
 		 						 			}
 		 						 		} else {
 		 						 			if ((parts[0] === "email") || (parts[0] === "telefonoContacto")){
 				 								if ($('#${id.replace("Fisica","")}_'+parts[0]).val() === ""){
 				 						 			$('#${id.replace("Fisica","")}_'+parts[0]).val(parts[1]);
-				 						 			$('#${id.replace("Fisica","")}_'+parts[0]).prop('readonly', true);
 		 						 				}
 				 							} else if ($('#${id}_'+parts[0]).val() === ""){
 				 						 		$('#${id}_'+parts[0]).val(parts[1]);
-				 						 		$('#${id}_'+parts[0]).prop('readonly', true);
 		 						 			}
 								 		}           
 	      								if (--fin) //  decrement i and call myLoop again if i > 0
@@ -103,21 +105,6 @@
 						}
 					});
 				}
-				
-				$('#${id}_entidad').parent().click(function(e){
-					if ($('#${id}_entidad').attr('readonly') == 'readonly')
-						$('#${id}_entidad').prop('readonly', false);
-				});
-				
-				$('#${id}_email').parent().click(function(e){
-					if ($('#${id}_email').attr('readonly') == 'readonly')
-						$('#${id}_email').prop('readonly', false);
-				});
-				
-				$('#${id}_telefonoContacto').parent().click(function(e){
-					if ($('#${id}_telefonoContacto').attr('readonly') == 'readonly')
-						$('#${id}_telefonoContacto').prop('readonly', false);
-				});
 			
 			</script>
 			

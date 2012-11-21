@@ -121,13 +121,13 @@ apps/cuadroMandos/app/listas/initial-data/*.yml
 apps/cuadroMandos/app/views/gen/*
 
 #Aplicación Genérica
-apps/AplicacionGenerica/gestorDocumental/temporal/*
-apps/AplicacionGenerica/gestorDocumental/clasificado/*
-apps/AplicacionGenerica/conf/platino
-apps/AplicacionGenerica/app/listas/gen
-apps/AplicacionGenerica/test-result
-apps/AplicacionGenerica/javadoc
-apps/AplicacionGenerica/logs
-apps/AplicacionGenerica/tmp/*
-apps/AplicacionGenerica/app/listas/initial-data/*.yml
-apps/AplicacionGenerica/app/views/gen/*
+apps/aplicacionGenerica/gestorDocumental/temporal/*
+apps/aplicacionGenerica/gestorDocumental/clasificado/*
+apps/aplicacionGenerica/conf/platino
+apps/aplicacionGenerica/app/listas/gen
+apps/aplicacionGenerica/test-result
+apps/aplicacionGenerica/javadoc
+apps/aplicacionGenerica/logs
+apps/aplicacionGenerica/tmp/*
+apps/aplicacionGenerica/app/listas/initial-data/*.yml
+apps/aplicacionGenerica/app/views/gen/*

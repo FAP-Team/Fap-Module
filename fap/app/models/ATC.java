@@ -22,8 +22,6 @@ import java.text.SimpleDateFormat;
 public class ATC extends FapModel {
 	// Código de los atributos
 
-	public String codigoEstado;
-
 	public String nombre;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

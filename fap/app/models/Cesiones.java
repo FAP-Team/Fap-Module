@@ -42,6 +42,8 @@ public class Cesiones extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento documento;
 
+	public boolean firmada;
+
 	public Cesiones() {
 		init();
 	}

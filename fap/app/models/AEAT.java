@@ -32,8 +32,6 @@ public class AEAT extends FapModel {
 
 	public String negat;
 
-	public String estadoNegat;
-
 	public String datosPropios;
 
 	public String referencia;

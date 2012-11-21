@@ -741,6 +741,7 @@ Entidad Cesiones {
 	Lista listaEstados estado
 	Lista listaOrigen origen
 	Documento documento
+	boolean firmada
 }
 
 
@@ -793,13 +794,11 @@ Entidad AEAT{
 	String ident
 	String cert
 	String negat
-	String estadoNegat
 	String datosPropios
 	String referencia
 }
 
 Entidad ATC{
-	String codigoEstado
 	String nombre
 	RegistroDatos registroDetalle
 }

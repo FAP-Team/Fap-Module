@@ -49,16 +49,16 @@ public class ListadoCesionesController extends ListadoCesionesControllerGen {
 		List<Cesiones> rowsFiltered = new ArrayList<Cesiones>();
 		Cesiones cesionINSSR001 = null, cesionINSSA008 = null, cesionAEAT = null, cesionATC = null;
 		for (Cesiones cesiones : rows) {
-			if (cesiones.tipo.equals(ListaCesionesEnum.inssA008.name())&& ((cesionINSSA008 == null)||(cesiones.fechaPeticion.isAfter(cesionINSSA008.fechaPeticion)))){
+			if (cesiones.tipo.equals(ListaCesionesEnum.inssA008.name()) && ((cesionINSSA008 == null)||(cesiones.fechaPeticion.isAfter(cesionINSSA008.fechaPeticion)))){
 				cesionINSSA008 = cesiones;
 			}
-			if (cesiones.tipo.equals(ListaCesionesEnum.inssR001.name())&& ((cesionINSSR001 == null)||(cesiones.fechaPeticion.isAfter(cesionINSSR001.fechaPeticion)))){
+			if (cesiones.tipo.equals(ListaCesionesEnum.inssR001.name()) && ((cesionINSSR001 == null)||(cesiones.fechaPeticion.isAfter(cesionINSSR001.fechaPeticion)))){
 				cesionINSSR001 = cesiones;
 			}
-			if (cesiones.tipo.equals(ListaCesionesEnum.aeat.name())&& ((cesionAEAT == null)||(cesiones.fechaPeticion.isAfter(cesionAEAT.fechaPeticion)))){
+			if (cesiones.tipo.equals(ListaCesionesEnum.aeat.name()) && ((cesionAEAT == null)||(cesiones.fechaPeticion.isAfter(cesionAEAT.fechaPeticion)))){
 				cesionAEAT = cesiones;
 			}
-			if (cesiones.tipo.equals(ListaCesionesEnum.atc.name())&& ((cesionATC == null)||(cesiones.fechaPeticion.isAfter(cesionATC.fechaPeticion)))){
+			if (cesiones.tipo.equals(ListaCesionesEnum.atc.name()) && ((cesionATC == null)||(cesiones.fechaPeticion.isAfter(cesionATC.fechaPeticion)))){
 				cesionATC = cesiones;
 			}
 		}

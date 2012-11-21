@@ -22,44 +22,21 @@ p {
 
 <h1>${titulo}</h1>
 
-<!-- PRUEBA -->
-<div id="datosCesionDatos1">
-<table id="tblDatosPeticionDatos" class="table-datos" >
-	<caption>Datos disponibles de la petición de cesion:</caption>
-	<tr><td colspan="2"><br></td></tr>
-	<tr><th>Tipo:</th><td>${pt.tipo}</td></tr>
-	<tr><th>Fecha de Generacion:</th><td>${pt.fechaGen}</td></tr>
-	<tr><th>Fecha de validez:</th><td>${pt.fechaValidez}</td></tr> 
-	<tr><th>Estado:</th><td>${pt.estado}</td></tr>
+<table>
+	<tr>
+		<tr>
+			<tr><th>Nombre/Razón Social:</th><td>${sol.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+		</tr>	
+		<tr>
+			<tr><th>Número de Expediente:</th><td>${sol.expedienteAed.idAed}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum.valueOf(inss.registroDetalle.estado).value()}</td></tr> 
+		</tr>	
+	</tr>
 </table>
-
-<table id="tblDatosPeticionDatos2" class="table-datos" >
-	<caption>Datos disponibles de la respuesta de la petición de cesion:</caption>
-	<tr><td colspan="2"><br></td></tr>
-	<tr><th>URI:</th><td>${pt.respCesion.uri}</td></tr>
-	<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
-	<tr><th>Fecha Actualización Gestor:</th><td>${pt.respCesion.fechaActuacionGestor}</td></tr>
-</table>
-
-<table id="tblDatosPeticionDatos3" class="table-datos" >
-	<caption>Solicitante y datos parseados:</caption>
-	<tr><th>Nombre Completo:</th><td>${sol.solicitante.nombreCompleto}</td></tr>
-	<tr><th>Cabecera Primera:</th><td>${inss.cabeceraPrimera}</td></tr>
-	<tr><th>Cabecera Segunda:</th><td>${inss.cabeceraSegunda}</td></tr>
-	<tr><th>Tipo de Registro:</th><td>${inss.registroDetalle.tipoRegistro}</td></tr>
-	<tr><th>Régimen:</th><td>${inss.registroDetalle.regimen}</td></tr>
-	<tr><th>CCC Principal:</th><td>${inss.registroDetalle.cccPpal}</td></tr>
-	<tr><th>Número medio de trabajadores:</th><td>${inss.registroDetalle.numMedioTrabajadores}</td></tr>
-	<tr><th>Nombre:</th><td>${inss.registroDetalle.nombre}</td></tr>
-	<tr><th>Fecha de Solicitud:</th><td>${inss.registroDetalle.fechaSolicitud}</td></tr>
-	<tr><th>Estado:</th><td>${inss.registroDetalle.estado}</td></tr> 
-</table>
-
-
-</div>
-
-
-
-
 </body>
 </html>

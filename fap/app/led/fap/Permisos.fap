@@ -1294,7 +1294,7 @@ Permiso verRespuestaCesion{
 		and ((peticionCesiones.estado = "respondida") or peticionCesiones.estado = "asignada")
 	return
 		all
-
+}
 Permiso evaluacionFinalizada{
 	vars
 		SolicitudGenerica solicitud

@@ -22,8 +22,6 @@ import java.util.regex.*;
 import org.h2.constant.SysProperties;
 import org.joda.time.DateTime;
 
-import com.lowagie.text.pdf.codec.Base64.InputStream;
-
 import config.InjectorConfig;
 
 import properties.FapProperties;
@@ -36,6 +34,8 @@ import enumerado.fap.gen.ListaEstadosEnum;
 import enumerado.fap.gen.ListaOrigenEnum;
 
 import reports.Report;
+import services.FirmaService;
+import services.FirmaServiceException;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import validation.CifCheck;
@@ -108,7 +108,7 @@ public class ATCUtils {
 			Documento doc = new Documento();
         	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionATC");
         	doc.descripcion = "Descripcion Peticion ATC";
-        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "TF ATC"+obtenerFechaNombre()+".txt");
+        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.aed.peticion.provincia")+" ATC"+obtenerFechaNombre()+".txt");
         	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionATC");
         	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 			pt.estado = EstadosPeticionEnum.creada.name();
@@ -175,11 +175,10 @@ public class ATCUtils {
 			pt.respCesion.fechaGeneracion = obtenerFecha(linea.substring(inifecha, iniNumero));
 			//Lectura de los ficheros de registro:
 			while((linea=br.readLine())!=null){
-				System.out.println("Linea tildes: "+linea);
 				atc.registroDetalle.tipoRegistro = linea.substring(initipoReg, inifecha);
 				atc.registroDetalle.nDocumento = linea.substring(ininDoc, iniNombre);
 				atc.nombre = linea.substring(iniNombre, iniCodResp);
-				atc.codigoEstado = linea.substring(iniCodResp, linea.length()); //Nombre
+				atc.registroDetalle.estado  = "_"+linea.substring(iniCodResp, linea.length()); //Nombre
 				generarPdfATC(pt, atc);
 			}
 			fr.close();
@@ -207,7 +206,7 @@ public class ATCUtils {
             	for (SolicitudGenerica sol : solicitud) {
             		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("atc", atc);
             		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
-            		atc.registroDetalle.estado = CodigoRespuestaEnum.valueOf("_"+atc.codigoEstado).value();
+            		//atc.registroDetalle.estado = CodigoRespuestaEnum.valueOf("_"+atc.codigoEstado).value();
             		report = new Report("reports/bodyPeticionATC.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, atc);
                 	Documento doc = new Documento();
                 	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaAEAT");
@@ -216,7 +215,7 @@ public class ATCUtils {
                 	sol.documentacionCesion.documentos.add(doc);
                 	pt.respCesion.fechaActuacionGestor = new DateTime();
                 	pt.respCesion.uri = doc.uri;
-                	aplicarCambios(sol, pt, doc, atc.codigoEstado);
+                	aplicarCambios(sol, pt, doc, atc.registroDetalle.estado);
             	}
             } catch (Exception ex2) {
                 Messages.error("Error generando el documento pdf: "+ex2.getMessage());
@@ -237,19 +236,31 @@ public class ATCUtils {
 		cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
 		cesion.fechaValidez = pt.fechaValidez;
 		cesion.origen = ListaOrigenEnum.cesion.name();
+		cesion.firmada = false;
 		cesion.documento = doc;
-		if (("_"+estado).equals(CodigoRespuestaEnum._00.name())){
+		if (estado.equals(CodigoRespuestaEnum._00.name())){
 			cesion.estado = ListaEstadosEnum._01.name();	
 		}
-		else if (("_"+estado).equals(CodigoRespuestaEnum._01.name())){
+		else if (estado.equals(CodigoRespuestaEnum._01.name())){
 			cesion.estado = ListaEstadosEnum._02.name();
 		}
-		else if (("_"+estado).equals(CodigoRespuestaEnum._02.name())){
+		else if (estado.equals(CodigoRespuestaEnum._02.name())){
 			cesion.estado = ListaEstadosEnum._03.name();
 		}
-		else if (("_"+estado).equals(CodigoRespuestaEnum._03.name())){
+		else if (estado.equals(CodigoRespuestaEnum._03.name())){
 			cesion.estado = ListaEstadosEnum._04.name();
 		}
+		
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		try {
+			firmaService.firmarEnServidor(cesion.documento);
+			cesion.firmada = true;
+			//Messages.ok("Documento firmado correctamente");
+		} catch (FirmaServiceException e) {
+			// TODO Auto-generated catch block
+			play.Logger.error("No se pudo firmar en Servidor: "+e);
+		} 
+		
 		solicitud.cesion.cesiones.add(cesion);
 		solicitud.save(); //Guardar cambios en la solicitud
 		play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);

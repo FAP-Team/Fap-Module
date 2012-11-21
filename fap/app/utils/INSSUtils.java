@@ -28,10 +28,13 @@ import enumerado.fap.gen.ListaCesionesEnum;
 import enumerado.fap.gen.ListaEstadosEnum;
 import enumerado.fap.gen.ListaOrigenEnum;
 import enumerado.fap.gen.TipoDocIdCesionEnum;
+import services.FirmaService;
 
+import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 
 import reports.Report;
+import services.FirmaServiceException;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 
@@ -45,6 +48,7 @@ import models.PeticionCesiones;
 import models.SolicitudGenerica;
 import models.Trabajador;
 
+@InjectSupport
 public class INSSUtils {
 	
 	static final int nDocumentoCte = 10;
@@ -60,7 +64,7 @@ public class INSSUtils {
 	static final int iniMin = 20;
 	static final int finMin = 22;
 	static final int iniEstadoCte = 37; 
-	static final int finEstadoCte = 61;
+	static final int finEstadoCte = 39;
 	static final int iniIdEstado = 0;
 	static final int finIdEstado = 2;
 	
@@ -117,7 +121,7 @@ public class INSSUtils {
 				Documento doc = new Documento();
             	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSR001");
             	doc.descripcion = "Descripcion Peticion INSS";
-            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "TF INSSR001"+obtenerFechaNombre()+".txt");
+            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.aed.peticion.provincia")+" INSSR001"+obtenerFechaNombre()+".txt");
             	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSR001");
             	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 				pt.estado = EstadosPeticionEnum.creada.name();
@@ -165,7 +169,7 @@ public class INSSUtils {
 				Documento doc = new Documento();
             	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSA008");
             	doc.descripcion = "Descripcion Peticion INSS";
-            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "TF INSSA008"+obtenerFechaNombre()+".txt");
+            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.aed.peticion.provincia")+" INSSA008"+obtenerFechaNombre()+".txt");
             	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSA008");
             	pt.fichPeticion.uri =  doc.uri; 
 				pt.estado = EstadosPeticionEnum.creada.name();
@@ -255,9 +259,9 @@ public class INSSUtils {
 			
 			//Registro detalle
 			while((linea=br.readLine())!=null){ // TipoReg+TipoDoc(1)+NumDoc(10)+Nombre(25)+estado[2](TABLA)+literalEstado(17) 
-				inss.registroDetalle.nDocumento = linea.substring(iniID, finID);
+				 inss.registroDetalle.nDocumento = linea.substring(iniID, finID);
 				 inss.registroDetalle.tipoRegistro = linea.substring(tipoCte, tipoCte+1).toString();
-				 inss.registroDetalle.estado = linea.substring(iniEstadoCte, finEstadoCte).toString(); 
+				 inss.registroDetalle.estado = "_"+linea.substring(iniEstadoCte, finEstadoCte).toString(); 
 				 generarPdfINSSR001(pt, inss);
 			}		
 			fr.close();
@@ -270,7 +274,7 @@ public class INSSUtils {
 	public static File generarPdfINSSA008(PeticionCesiones pt, INSSA008 inss){
 		File report =  new File ("reports/bodyPeticion.html");
 		List<SolicitudGenerica> solicitud = null;
-		solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud join solicitud.cesion.autorizacionCesion.trabajadores trabajadores where trabajadores.regimen = ? and trabajadores.codigoCuenta = ?", inss.registroDetalle.regimen, inss.registroDetalle.cccPpal).fetch();
+		solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud join solicitud.cesion.autorizacionCesion.trabajadores trabajadores where trabajadores.regimen = ? and trabajadores.codigoCuenta = ? and solicitud.cesion.autorizacionCesion.inssA008 = ?", inss.registroDetalle.regimen, inss.registroDetalle.cccPpal, true).fetch();
 
 		 if((!Messages.hasErrors()) && (!solicitud.isEmpty())){        	
 	            try {
@@ -303,7 +307,6 @@ public class INSSUtils {
 	public static File generarPdfINSSR001(PeticionCesiones pt, INSSR001 inss){
 		File report =  new File ("reports/bodyPeticion.html");
         List<SolicitudGenerica> solicitud = null;
-        
         if ((("_"+inss.registroDetalle.tipoRegistro).equals(TipoDocIdCesionEnum._1.name())) || (("_"+inss.registroDetalle.tipoRegistro).equals(TipoDocIdCesionEnum._2.name())) || (("_"+inss.registroDetalle.tipoRegistro).equals(TipoDocIdCesionEnum._6.name()))){ //dni
         	solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.fisica.nip.valor = ?", inss.registroDetalle.nDocumento).fetch();
         }
@@ -344,17 +347,29 @@ public class INSSUtils {
 			cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
 			cesion.fechaValidez = pt.fechaValidez;
 			cesion.origen = ListaOrigenEnum.cesion.name();
+			cesion.firmada = false;
 			cesion.documento = doc;
 			//Estado de la Cesion (positivo, negativo, nodatos, error)
 			if (pt.tipo.equals(ListaCesionesEnum.inssR001.name())){
-				String idEstado = "_"+estado.subSequence(iniIdEstado, finIdEstado).toString();
-				if ((idEstado.equals("_05")) || (idEstado.equals("_06")))
+				//String idEstado = estado; //.subSequence(iniIdEstado, finIdEstado).toString();
+				if ((estado.equals("_05")) || (estado.equals("_06")))
 					cesion.estado = ListaEstadosEnum._04.name();
 				else
-					cesion.estado = ListaEstadosEnum.valueOf(idEstado).name();	
+					cesion.estado = ListaEstadosEnum.valueOf(estado).name();	
 			}else{
 				cesion.estado = estado;
 			}
+			
+			//Firma del documento generado
+			FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+			try {
+				firmaService.firmarEnServidor(cesion.documento);
+				cesion.firmada = true;
+			} catch (FirmaServiceException e) {
+				// TODO Auto-generated catch block
+				play.Logger.error("No se pudo firmar en Servidor: "+e);
+			} 
+			
 			solicitud.cesion.cesiones.add(cesion);
 			solicitud.save(); 
 			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);

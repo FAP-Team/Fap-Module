@@ -19,6 +19,8 @@ import config.InjectorConfig;
 import play.modules.pdf.PDF;
 import properties.FapProperties;
 import reports.Report;
+import services.FirmaService;
+import services.FirmaServiceException;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import sun.misc.Regexp;
@@ -98,7 +100,7 @@ public class AEATUtils {
 			Documento doc = new Documento();
         	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionAEAT");
         	doc.descripcion = "Descripcion Peticion AEAT";
-        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), "TF AEAT"+obtenerFechaNombre()+".txt");
+        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.aed.peticion.provincia")+" AEAT"+obtenerFechaNombre()+".txt");
         	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionAEAT");
         	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 			pt.estado = EstadosPeticionEnum.creada.name();
@@ -130,7 +132,7 @@ public class AEATUtils {
 				String fecha;
 				if (aeat.cert.equals(CodigoCertEnum.N.name())){
 					aeat.negat = linea.substring(iniNEGAT, iniNEGAT+1);
-					aeat.estadoNegat = CodigoAEATNegatEnum.valueOf(aeat.negat).value();
+					//aeat.estadoNegat = CodigoAEATNegatEnum.valueOf(aeat.negat).value();
 					fecha = linea.substring(iniFecha, iniDatosPpios); //+neg
 					pt.respCesion.fechaGeneracion = obtenerFechaParseada(fecha);
 					aeat.datosPropios = linea.substring(iniDatosPpios, iniReferencia);
@@ -239,6 +241,7 @@ public class AEATUtils {
 		cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
 		cesion.fechaValidez = pt.fechaValidez;
 		cesion.origen = ListaOrigenEnum.cesion.name();
+		cesion.firmada = false;
 		cesion.documento = doc;
 		//cesion.documento.urlDescarga = doc.urlDescarga;
 		//Estado de la Cesion (positivo, negativo, nodatos, error)
@@ -247,6 +250,16 @@ public class AEATUtils {
 		else{
 			cesion.estado = ListaEstadosEnum._02.name();
 		}
+		
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		try {
+			firmaService.firmarEnServidor(cesion.documento);
+			cesion.firmada = true;
+		} catch (FirmaServiceException e) {
+			// TODO Auto-generated catch block
+			play.Logger.error("No se pudo firmar en Servidor: "+e);
+		} 
+		
 		solicitud.cesion.cesiones.add(cesion);
 		solicitud.save(); //Guardar cambios en la solicitud
 		play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);

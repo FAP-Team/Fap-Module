@@ -201,7 +201,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 				return numeroExpediente;
 			}
 		} catch (AedExcepcion e) {
-			play.Logger.error("Error al buscar los expedientes en el AED.");
+			play.Logger.error("Error al buscar los expedientes en el AED: "+e);
 		}
         Interesados interesados = getInteresados(solicitud);
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");

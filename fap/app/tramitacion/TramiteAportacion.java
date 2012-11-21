@@ -126,37 +126,6 @@ public class TramiteAportacion extends TramiteBase {
 	}
 
 	/**
-	 * Crea el expediente en el AED
-	 */
-	@Override
-	public void crearExpedienteAed() {
-		
-		if (this.solicitud.registro.fasesRegistro.expedienteAed){
-			this.solicitud.aportaciones.actual.registro.fasesRegistro.expedienteAed = true;
-			this.solicitud.aportaciones.actual.registro.fasesRegistro.save();
-		}
-		
-		if (!this.solicitud.aportaciones.actual.registro.fasesRegistro.expedienteAed){
-			try {
-				gestorDocumentalService.crearExpediente(this.solicitud);
-				this.solicitud.aportaciones.actual.registro.fasesRegistro.expedienteAed = true;
-				this.solicitud.aportaciones.actual.registro.fasesRegistro.save();
-			} catch (GestorDocumentalServiceException e) {
-				play.Logger.debug("Error creando el expediente en el Gestor Documental", e.getMessage());
-				Messages.error("Error creando el expediente en el Gestor Documental");
-			}
-		}
-		else {
-			play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", this.solicitud.aportaciones.actual.id);
-		}
-
-		if (!this.solicitud.aportaciones.actual.estado.equals("iniciada")) {
-			Mails.enviar(this.getMail(), this.solicitud);
-		}
-		
-	}
-
-	/**
 	 * Crea el expediente en el archivo electrónico de platino
 	 */
 	@Override
@@ -224,5 +193,10 @@ public class TramiteAportacion extends TramiteBase {
             }
         }
     }
+
+	@Override
+	public void crearExpedienteAed() {
+		
+	}
 
 }

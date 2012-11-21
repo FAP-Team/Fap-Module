@@ -140,5 +140,4 @@ public class TramiteSolicitudFap extends TramiteSolicitud {
 			Messages.error("Error validando la documentacion aportada");
 		}
 	}
-
 }

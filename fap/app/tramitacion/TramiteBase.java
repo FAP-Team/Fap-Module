@@ -332,23 +332,8 @@ public abstract class TramiteBase {
 				play.Logger.info("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
 			}
 			registro.refresh();
-			//Crea el expediente en el AED
-			if(!getRegistro().fasesRegistro.expedienteAed){
-				tx.begin();
-				try {
-					gestorDocumentalService.crearExpediente(solicitud);
-				} catch (GestorDocumentalServiceException e) {
-					Messages.error("Error al crear el expediente");
-					play.Logger.fatal("Error al crear el expediente para la solicitud "+solicitud.id+": "+e);
-					throw new RegistroServiceException("Error al crear el expediente");
-				}
-				getRegistro().fasesRegistro.expedienteAed = true;
-				getRegistro().fasesRegistro.save();
-				tx.commit();
-			}else{
-				play.Logger.info("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
-			}
-			registro.refresh();
+			//Crea el expediente en el Gestor Documental
+			crearExpediente();
 			
 			//Ahora el estado de la solicitud se cambia después de registrar.
 			
@@ -440,6 +425,22 @@ public abstract class TramiteBase {
 	 * Crea el expediente del Aed
 	 */
 	public abstract void crearExpedienteAed();
+	
+	public void crearExpediente() throws RegistroServiceException{
+		if(!getRegistro().fasesRegistro.expedienteAed){
+			try {
+				gestorDocumentalService.crearExpediente(solicitud);
+			} catch (GestorDocumentalServiceException e) {
+				Messages.error("Error al crear el expediente");
+				play.Logger.error("Error al crear el expediente para la solicitud "+solicitud.id+": "+e);
+				throw new RegistroServiceException("Error al crear el expediente");
+			}
+			getRegistro().fasesRegistro.expedienteAed = true;
+			getRegistro().fasesRegistro.save();
+		}else{
+			play.Logger.info("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
+		}
+	}
 
 	/**
 	 * Crea el expediente en Platino

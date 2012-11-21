@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -818,20 +820,18 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         if(firma.getContenido() == null)
             throw new GestorDocumentalServiceException("La firma está vacia");
         
-        //if(!firma.isFirmaSimple())
-        //    throw new GestorDocumentalServiceException("La firma debe tener un único firmante");
-        
         try {
             PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(documento.uri, documento.clasificado);
             PropiedadesAdministrativas propiedadesAdministrativas = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
             Firma firmaActual = propiedadesAdministrativas.getFirma();
+            
+			boolean clasificado = isClasificado(documento);
             
             models.Firmante firmante = firma.getFirmantes().get(0);
     		if (propiedadesAdministrativas.getFirma() == null) {
     			firmaActual = new Firma();
     			firmaActual.setContenido(firma.getContenido());
     			firmaActual.setTipoMime("text/xml");
-    			boolean clasificado = isClasificado(documento);
     			
     			es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
     			firmanteAed.setFirmanteNombre(firmante.nombre);
@@ -842,23 +842,24 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			propiedadesAdministrativas.setFirma(firmaActual);
     			propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
     			
-    			actualizarPropiedades(propiedadesDocumento, clasificado);
+    			String uri = actualizarPropiedades(propiedadesDocumento, clasificado);
+            	if (documento.uri != uri) {
+            		play.Logger.info("Se actualiza la uri del documento "+documento.uri+ " -> "+uri);
+            		documento.uri = uri;
+    				documento.save();
+            	}
     		} else if (!containsFirmante(firmante, firmaActual.getFirmantes())){
-            	// TODO: 
     			Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
-            	
-            	// Comentamos lo siguiente, porque se estaba insertando en el AED dos veces la firma
-//            	es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
-//    			firmanteAed.setFirmanteNombre(firmante.nombre);
-//    			firmanteAed.setFirmanteNif(firmante.idvalor);
-//    			firmanteAed.setFecha(firmante.fechaFirma.toDate());
-//    			firmaNueva.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
-            	boolean clasificado = isClasificado(documento);
             	
             	propiedadesAdministrativas.setFirma(firmaNueva);
             	propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
             	
-            	actualizarPropiedades(propiedadesDocumento, clasificado);
+            	String uri = actualizarPropiedades(propiedadesDocumento, clasificado);
+            	if (documento.uri != uri) {
+            		play.Logger.info("Se actualiza la uri del documento "+documento.uri+ " -> "+uri);
+            		documento.uri = uri;
+    				documento.save();
+            	}
             }
             else {
             	throw new GestorDocumentalServiceException("La firma ya existía");
@@ -868,6 +869,64 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
     }
     
+
+	@Override
+	public void agregarFirma(models.Documento documento, String firmaStr)
+			throws GestorDocumentalServiceException {
+        if(firmaStr == null || firmaStr.isEmpty())
+            throw new GestorDocumentalServiceException("La firma está vacia");
+        
+        try {
+        	
+            PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(documento.uri, documento.clasificado);
+            PropiedadesAdministrativas propiedadesAdministrativas = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
+            Firma firmaActual = propiedadesAdministrativas.getFirma();            
+    		if (firmaActual == null) {
+    			firmaActual = new Firma();
+    			firmaActual.setContenido(firmaStr);
+    		} else {
+    			firmaActual.setContenido(firmaParalela(firmaActual, firmaStr).getContenido());
+    		}
+			firmaActual.setTipoMime("text/xml");
+    			
+			boolean clasificado = isClasificado(documento);
+            es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
+    		firmanteAed.setFirmanteNombre(FapProperties.get("fap.platino.firmante.nombre"));
+    		firmanteAed.setFirmanteNif(FapProperties.get("fap.platino.firmante.documento"));
+			String dateToken = getXMLElementValue("date", firmaStr);
+			String hourToken = getXMLElementValue("time", firmaStr);
+			hourToken = hourToken.substring(0, hourToken.length() - 1);
+			DateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+			try {
+				Date parsedDate = formatter.parse(dateToken + " " + hourToken);
+				firmanteAed.setFecha(parsedDate);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			
+			firmaActual.getFirmantes().add(firmanteAed);
+			
+            String uri = actualizarPropiedades(propiedadesDocumento, clasificado);
+        	if (documento.uri != uri) {
+        		play.Logger.info("Se actualiza la uri del documento "+documento.uri+ " -> "+uri);
+        		documento.uri = uri;
+				documento.save();
+        	}
+        }catch(AedExcepcion e){
+            throw serviceExceptionFrom(e);
+        }
+	}
+
+	protected static String getXMLElementValue(String elementName, String xml) {
+		try {
+			int idxBegin = xml.indexOf("<" + elementName + ">") + elementName.length() + 2;
+			int idxEnd = xml.indexOf("</" + elementName + ">", idxBegin);
+			return xml.substring(idxBegin, idxEnd);
+		} catch (Exception ex) {
+			return null;
+		}
+	}
+
     protected Firma concatenarFirma(Firma firma, models.Firmante firmante, String nueva){
         Firma firmaNueva = null;
         if(firma == null)
@@ -909,12 +968,15 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         firma.getFirmantes().add(firmanteAed); // puede haber firmas anteriores        
     }
     
-	private void actualizarPropiedades(PropiedadesDocumento propiedades, boolean clasificado) throws AedExcepcion {
+	private String actualizarPropiedades(PropiedadesDocumento propiedades, boolean clasificado) throws AedExcepcion {
         if(clasificado){
             //TODO falta ver las ubicaciones y si se incrementa la versión del documento
-            //aedPort.actualizarDocumentoPropiedades(propiedades, arg1)
+            List<DocumentoEnUbicacion> ubicaciones = aedPort.obtenerDocumentoRutas(propiedades.getUri());
+            List<Ubicaciones> newUbicaciones = clonarUbicaciones(ubicaciones);
+            return aedPort.actualizarDocumentoPropiedades(propiedades, newUbicaciones);
         }else{
             aedPort.actualizarDocumentoPropiedadesNoClasificado(propiedades);
+            return propiedades.getUri();
         }
 	}
 	
@@ -1224,5 +1286,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		dbDocumento.fechaSubida = new DateTime();
 
 	}
+
 	
 }

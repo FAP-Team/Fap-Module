@@ -190,5 +190,11 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 
 		return firmante;
 	}
+
+	@Override
+	public String firmarEnServidor(Documento documento)
+			throws FirmaServiceException {
+		return "FileSystemFirmaService";
+	}
  
 }

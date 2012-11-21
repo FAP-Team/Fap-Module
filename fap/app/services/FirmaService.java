@@ -42,6 +42,8 @@ public interface FirmaService {
     
     public void firmar(Documento documento, List<Firmante> firmantes, String firma, String valorDocumentofirmanteSolicitado);
 
+	public String firmarEnServidor (Documento documento) throws FirmaServiceException;
+    
     /**
      * Verifica si una firma es correcta
      * 

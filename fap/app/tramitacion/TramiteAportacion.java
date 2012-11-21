@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.joda.time.DateTime;
 
+import config.InjectorConfig;
 import controllers.fap.FirmaController;
 
 import emails.Mails;
@@ -29,9 +30,6 @@ import models.Registro;
 import models.SolicitudGenerica;
 
 public class TramiteAportacion extends TramiteBase {
-	
-	@Inject
-    private static FirmaService firmaService;
 
 	private final static String TIPO_TRAMITE = "aportacion";
 	private final static String TIPO_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.aportacion.solicitud");
@@ -40,7 +38,6 @@ public class TramiteAportacion extends TramiteBase {
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String MAIL = "aportacionRealizada";
 	private final static String JUSTIFICANTE = FapProperties.get("fap.aed.tiposdocumentos.aportacion.registro");
-	private PlatinoGestorDocumentalService platinoGestorDocumentalService;
 	
 	public TramiteAportacion(SolicitudGenerica solicitud) {
 		super(solicitud);
@@ -165,25 +162,25 @@ public class TramiteAportacion extends TramiteBase {
 	@Override
 	public void crearExpedientePlatino() throws RegistroServiceException {
 		
-		if ((this.solicitud.expedientePlatino != null) && (this.solicitud.expedientePlatino.uri != null) && ((!this.solicitud.expedientePlatino.uri.isEmpty()))){
-			this.solicitud.aportaciones.actual.registro.fasesRegistro.expedientePlatino = true;
-			this.solicitud.aportaciones.actual.registro.fasesRegistro.save();
-		}
-		
-		if (!this.solicitud.aportaciones.actual.registro.fasesRegistro.expedientePlatino){
-			try {
-				platinoGestorDocumentalService.crearExpediente(this.solicitud.expedientePlatino);
-
-				this.solicitud.aportaciones.actual.registro.fasesRegistro.expedientePlatino = true;
-				this.solicitud.aportaciones.actual.registro.fasesRegistro.save();
-			} catch (Exception e) {
-				Messages.error("Error creando expediente en el gestor documental de platino");
-				throw new RegistroServiceException("Error creando expediente en el gestor documental de platino");
-			}
-		}
-		else {
-			play.Logger.debug("El expediente de platino para la solicitud %s ya está creado", solicitud.id);
-		}
+//		if ((this.solicitud.expedientePlatino != null) && (this.solicitud.expedientePlatino.uri != null) && ((!this.solicitud.expedientePlatino.uri.isEmpty()))){
+//			this.solicitud.aportaciones.actual.registro.fasesRegistro.expedientePlatino = true;
+//			this.solicitud.aportaciones.actual.registro.fasesRegistro.save();
+//		}
+//		
+//		if (!this.solicitud.aportaciones.actual.registro.fasesRegistro.expedientePlatino){
+//			try {
+//				platinoGestorDocumentalService.crearExpediente(this.solicitud.expedientePlatino);
+//
+//				this.solicitud.aportaciones.actual.registro.fasesRegistro.expedientePlatino = true;
+//				this.solicitud.aportaciones.actual.registro.fasesRegistro.save();
+//			} catch (Exception e) {
+//				Messages.error("Error creando expediente en el gestor documental de platino");
+//				throw new RegistroServiceException("Error creando expediente en el gestor documental de platino");
+//			}
+//		}
+//		else {
+//			play.Logger.debug("El expediente de platino para la solicitud %s ya está creado", solicitud.id);
+//		}
 	}
 
 	@Override
@@ -197,6 +194,7 @@ public class TramiteAportacion extends TramiteBase {
         if(registro.fasesRegistro.borrador && !registro.fasesRegistro.firmada){
             String identificadorFirmante = FirmaController.getIdentificacionFromFirma(firma);
             if(registro.firmantes.containsFirmanteConIdentificador(identificadorFirmante) && !registro.firmantes.haFirmado(identificadorFirmante)){
+            	FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
             	Firmante firmante = firmaService.getFirmante(firma, registro.oficial);
             	for (Firmante firmanteAux: registro.firmantes.todos){
             		if (firmanteAux.idvalor.equals(identificadorFirmante)){

@@ -146,7 +146,7 @@ public class AportacionPresentarController extends AportacionPresentarController
 				if (!Messages.hasErrors()) {
 					try {
 						tramite.registrar();
-						if (dbSolicitud.aportaciones.actual.registro.fasesRegistro.clasificarAed){
+						if (aportacion.registro.fasesRegistro.clasificarAed){
 							aportacion.estado = "finalizada";
 			            	aportacion.save();
 						} else{
@@ -266,7 +266,7 @@ public class AportacionPresentarController extends AportacionPresentarController
     				if (!Messages.hasErrors()) {
     					try {
     						tramite.registrar();
-    						if (dbSolicitud.aportaciones.actual.registro.fasesRegistro.clasificarAed){
+    						if (aportacion.registro.fasesRegistro.clasificarAed){
     							aportacion.estado = "finalizada";
     			            	aportacion.save();
     						} else{

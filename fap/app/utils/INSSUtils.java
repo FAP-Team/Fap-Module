@@ -121,7 +121,7 @@ public class INSSUtils {
 				Documento doc = new Documento();
             	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSR001");
             	doc.descripcion = "Descripcion Peticion INSS";
-            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.aed.peticion.provincia")+" INSSR001"+obtenerFechaNombre()+".txt");
+            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" INSSR001"+obtenerFechaNombre()+".txt");
             	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSR001");
             	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 				pt.estado = EstadosPeticionEnum.creada.name();
@@ -169,7 +169,7 @@ public class INSSUtils {
 				Documento doc = new Documento();
             	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSA008");
             	doc.descripcion = "Descripcion Peticion INSS";
-            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.aed.peticion.provincia")+" INSSA008"+obtenerFechaNombre()+".txt");
+            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" INSSA008"+obtenerFechaNombre()+".txt");
             	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSA008");
             	pt.fichPeticion.uri =  doc.uri; 
 				pt.estado = EstadosPeticionEnum.creada.name();
@@ -197,11 +197,11 @@ public class INSSUtils {
 	        INSSA008 inss = new INSSA008(); //Entidad con datos parseados
 			//Registro cabecera 1
 	        inss.cabeceraPrimera=br.readLine(); //1C+Ley(8blancos)+año+mes+dia+h+m+s+"s"idTransmision(6 digitos -> hasta TGSS)+TGSS
-	        
 			//Registro cabecera 2
 			inss.cabeceraSegunda=br.readLine();
-			if (!inss.cabeceraSegunda.equals("2001"+motivo))
-				Messages.error("Error de formato en la cabecera segunda del archivo recibido");
+			if (!inss.cabeceraSegunda.equals("2001"+motivo)){
+				throw new Exception(new Throwable());
+			}
 			//Registro detalle
 			while((linea=br.readLine())!=null){
 				if (linea.length() == correcto){ //Correcto
@@ -223,8 +223,8 @@ public class INSSUtils {
 					Messages.warning("Rechazo en el registro: "+linea.substring(1, rechazo)+" no se creará fichero de cesión de datos");
 				}
 				else{
-					Messages.error("Error en el formato del fichero de respuesta aportado");
 					play.Logger.info("Error de formato en el fichero de respuesta aportado");
+					throw new Exception(new Throwable());
 				}
 			}
 			fr.close();

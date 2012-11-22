@@ -60,6 +60,7 @@ public class AEATUtils {
 	static final int iniReferencia = 89;
 	static final int finReferencia = 100;
 	static final int neg = 1;
+	static final int longitudRegistro = 100;
 	
 	
 	//Inyeccion manual	
@@ -100,7 +101,7 @@ public class AEATUtils {
 			Documento doc = new Documento();
         	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionAEAT");
         	doc.descripcion = "Descripcion Peticion AEAT";
-        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.aed.peticion.provincia")+" AEAT"+obtenerFechaNombre()+".txt");
+        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" AEAT"+obtenerFechaNombre()+".txt");
         	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionAEAT");
         	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 			pt.estado = EstadosPeticionEnum.creada.name();
@@ -124,26 +125,31 @@ public class AEATUtils {
 			String linea = null;
 			AEAT aeat = new AEAT();
 			while((linea=br.readLine())!=null){ 
-				aeat.nDocumento = linea.substring(iniID, iniNombre);
-				aeat.nombre =  linea.substring(iniNombre, iniIDENT).trim();
-				aeat.ident = linea.substring(iniIDENT, iniCERT);
-				aeat.cert = linea.substring(iniCERT, iniCERT+1);
-				aeat.negat = null;
-				String fecha;
-				if (aeat.cert.equals(CodigoCertEnum.N.name())){
-					aeat.negat = linea.substring(iniNEGAT, iniNEGAT+1);
-					//aeat.estadoNegat = CodigoAEATNegatEnum.valueOf(aeat.negat).value();
-					fecha = linea.substring(iniFecha, iniDatosPpios); //+neg
-					pt.respCesion.fechaGeneracion = obtenerFechaParseada(fecha);
-					aeat.datosPropios = linea.substring(iniDatosPpios, iniReferencia);
-					aeat.referencia = linea.substring(iniReferencia, finReferencia);
-				}else if (aeat.cert.equals(CodigoCertEnum.P.name())){
-					fecha = linea.substring(iniFecha, iniDatosPpios);
-					pt.respCesion.fechaGeneracion = obtenerFechaParseada(fecha);
-					aeat.datosPropios = linea.substring(iniDatosPpios, iniReferencia);
-					aeat.referencia = linea.substring(iniReferencia, finReferencia);
+				if (linea.length() != longitudRegistro)
+					throw new Exception(new Throwable());
+					//Messages.error("Error parseando el documento de respuesta del AEAT, compruebe que el fichero es correcto");
+				else{
+					aeat.nDocumento = linea.substring(iniID, iniNombre);
+					aeat.nombre =  linea.substring(iniNombre, iniIDENT).trim();
+					aeat.ident = linea.substring(iniIDENT, iniCERT);
+					aeat.cert = linea.substring(iniCERT, iniCERT+1);
+					aeat.negat = null;
+					String fecha;
+					if (aeat.cert.equals(CodigoCertEnum.N.name())){
+						aeat.negat = linea.substring(iniNEGAT, iniNEGAT+1);
+						//aeat.estadoNegat = CodigoAEATNegatEnum.valueOf(aeat.negat).value();
+						fecha = linea.substring(iniFecha, iniDatosPpios); //+neg
+						pt.respCesion.fechaGeneracion = obtenerFechaParseada(fecha);
+						aeat.datosPropios = linea.substring(iniDatosPpios, iniReferencia);
+						aeat.referencia = linea.substring(iniReferencia, finReferencia);
+					}else if (aeat.cert.equals(CodigoCertEnum.P.name())){
+						fecha = linea.substring(iniFecha, iniDatosPpios);
+						pt.respCesion.fechaGeneracion = obtenerFechaParseada(fecha);
+						aeat.datosPropios = linea.substring(iniDatosPpios, iniReferencia);
+						aeat.referencia = linea.substring(iniReferencia, finReferencia);
+					}
+					generarPdfAEAT(pt, aeat);
 				}
-				generarPdfAEAT(pt, aeat);
 			}	
 			fr.close();
 		} catch (Exception e) {

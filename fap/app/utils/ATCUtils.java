@@ -25,7 +25,6 @@ import org.joda.time.DateTime;
 import config.InjectorConfig;
 
 import properties.FapProperties;
-import enumerado.fap.gen.CodigoAEATNegatEnum;
 import enumerado.fap.gen.CodigoCertEnum;
 import enumerado.fap.gen.CodigoRespuestaEnum;
 import enumerado.fap.gen.EstadoCesionSolicitudEnum;
@@ -42,7 +41,6 @@ import validation.CifCheck;
 import validation.NipCheck;
 
 import messages.Messages;
-import models.AEAT;
 import models.ATC;
 import models.Cesiones;
 import models.Documento;
@@ -108,7 +106,7 @@ public class ATCUtils {
 			Documento doc = new Documento();
         	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionATC");
         	doc.descripcion = "Descripcion Peticion ATC";
-        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.aed.peticion.provincia")+" ATC"+obtenerFechaNombre()+".txt");
+        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" ATC"+obtenerFechaNombre()+".txt");
         	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionATC");
         	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 			pt.estado = EstadosPeticionEnum.creada.name();
@@ -183,8 +181,8 @@ public class ATCUtils {
 			}
 			fr.close();
 		} catch (Exception e) {
-			Messages.error("Error parseando el documento de respuesta del AEAT, compruebe que el fichero es correcto");
-			play.Logger.info("Error parseando el documento de respuesta del AEAT");
+			Messages.error("Error parseando el documento de respuesta del ATC, compruebe que el fichero es correcto");
+			play.Logger.info("Error parseando el documento de respuesta del ATC");
 		}
 	}
 	
@@ -209,7 +207,7 @@ public class ATCUtils {
             		//atc.registroDetalle.estado = CodigoRespuestaEnum.valueOf("_"+atc.codigoEstado).value();
             		report = new Report("reports/bodyPeticionATC.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, atc);
                 	Documento doc = new Documento();
-                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaAEAT");
+                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaATC");
                 	doc.descripcion = "Descripcion ATC";
                 	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionATC"+obtenerFechaNombre()+".pdf");
                 	sol.documentacionCesion.documentos.add(doc);

@@ -1,82 +1,38 @@
 h2. Changelog
 
-h3. Versión 2.1.1RC11
+h3. Versión 2.1.1
 
-* Fixed Bug en Recuperar Info Certificado para Agente y Firma.
-* No permitiendo a los Evaluadores recargar los Conceptos Economicos.
+* Mejorando la Baremación.
+* Mejorando la Verificación.
+* Mejorando el nivel de detalle del mock FileSystem.
+* Mejorada y Optimizada la Carga de la Tabla de Tablas.
+* Firma en Servidor.
+* Añadidos nuevos campos a InfoCert de FAP.
+* Mapeadas a Personas Físicas de FAP los tipos PV y REP de Camerfirma.
 * No se muestran los "firmantes" en Aportación (No eran los firmantes correctos).
-* Verificando sólo los trámites que se asignen como verificables.
-* Fixed Bug en ConsultarEvaluaciones.
-* Fixed Minor Bugs.
-
-h3. Versión 2.1.1RC10
-
 * Copia extra de logs mediante property "fap.log.copy.extra".
-* Guardado obligatorio de PCEconomicos antes de presentar dependiendo de si hay TiposCEconomicos.
-* Permiso Editar Solicitud dependiente del estado de la convocatoria.
-* Fixed Bug al Firmar con Certificado ANF.
 * Permitiendo Descargar documentos desde el AED con Informe de Firma.
 * Nuevos metodos en PresentacionFapController: afterFirma, BeforeRegistro y comprobarFechaLimitePresentacion.
-
-h3. Versión 2.1.1RC9
-
-* Fixed Bug en Conceptos Economicos de tipo Otros del Solicitante.
-
-h3. Versión 2.1.1RC8
-
+* Permiso Editar Solicitud dependiente del estado de la convocatoria.
+* Reordenados los elementos de la lista de Seguimiento.
+* Alerta antes de redirigir a una pagina habiendo campos modificados y sin guardar.
+* Valores de tablas dependientes ahora tienen tambien el "_" en las key que empiezan con números.
+* Fixed Bug en mostrarSi de los Grupos.
+* Fixed Bug solicitud.html con entidades que no existían.
+* Fixed Bug en Fecha de registro en los documentos de la aportación.
+* Fixed Bug en Recuperar Info Certificado para Agente y Firma.
+* Fixed Minor Bugs.
+* Fixed Bug al Firmar con Certificado ANF.
 * Fixed Bug de CIF y NIF se convierten a mayúscula en javascript.
 * Fixed Bug al cargar combos dependientes.
 * Fixed Bug en Areas de Texto que no se incluían en la comprobación js de guardar.
-* Añadidos nuevos campos a InfoCert de FAP.
-
-h3. Versión 2.1.1RC7
-
-* Mapeadas a Personas Físicas de FAP los tipos PV y REP de Camerfirma.
 * Fixed Bug al entrar con Certificado ANF.
 * Fixed Bug al entrar con DNI Electrónico.
-* Reordenados los elementos de la lista de Seguimiento.
-* Mejorando el nivel de detalle del mock FileSystem.
-
-h3. Versión 2.1.1RC6
-
-* Alerta antes de redirigir a una pagina habiendo campos modificados y sin guardar.
 * Fixed Bug en Redireccion en Soporte en PRO.
-* Fixed Bug en Aceptación y Renuncia
-* Fixed Bug en Verificación.
-
-h3. Versión 2.1.1RC5
-
-* Fixed bugs en Aceptación/Renuncia.
+* Fixed Bug en Aceptación y Renuncia.
 * Fixed bug extensiones ahora no tiene en cuenta las mayúsculas o minúsculas para diferenciar.
-
-h3. Versión 2.1.1RC4
-
-* Fixed bug Redirección en preparar Aceptación o Renuncia.
-* Fixed bug Acceso a nuevas verificaciones.
-* Fixed Minor Bugs.
-
-h3. Versión 2.1.1RC3
-
 * Fixed bug al crear un nuevo usuario.
-* Valores de tablas dependientes ahora tienen tambien el "_" en las key que empiezan con números.
-* En Evaluación se muestran los "automod" como los "auto".
-
-h3. Versión 2.1.1RC2
-
 * Fixed Bug en autoenviar en los Forms.
-* Añadiendo Permisos a toda la parte de Baremación.
-* Nuevo atributo noVisibleEvaluador en Criterios.
-* Calculo de los criterios dependiendo de su valor máximo.
-* Recalculados los criterios dependiendo del rol de quien los vea.
-* Botón reevaluar en la tabla de evaluaciones.
-* Footer de la Solicitud a Evaluar.
-* Fixed Minor Bug en Baremación.
-
-h3. Versión 2.1.1RC1
-
-* Mejorada y Optimizada la Carga de la Tabla de Tablas.
-* Fixed Bug en Baremación.
-* Nuevos rol de Evaluador.
 * Fixed bug cuando existen varios botones con varios forms en la misma página.
 
 h3. Versión 2.1

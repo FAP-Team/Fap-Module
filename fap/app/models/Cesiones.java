@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 public class Cesiones extends FapModel {
 	// Código de los atributos
 
+	public String idUnico;
+
 	@ValueFromTable("listaCesiones")
 	public String tipo;
 

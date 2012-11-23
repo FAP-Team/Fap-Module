@@ -202,18 +202,28 @@ public class ATCUtils {
         	try {
             	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pt", pt);
             	for (SolicitudGenerica sol : solicitud) {
-            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("atc", atc);
-            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
-            		//atc.registroDetalle.estado = CodigoRespuestaEnum.valueOf("_"+atc.codigoEstado).value();
-            		report = new Report("reports/bodyPeticionATC.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, atc);
-                	Documento doc = new Documento();
-                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaATC");
-                	doc.descripcion = "Descripcion ATC";
-                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionATC"+obtenerFechaNombre()+".pdf");
-                	sol.documentacionCesion.documentos.add(doc);
-                	pt.respCesion.fechaActuacionGestor = new DateTime();
-                	pt.respCesion.uri = doc.uri;
-                	aplicarCambios(sol, pt, doc, atc.registroDetalle.estado);
+            		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "inssR001", pt.id.toString(), sol.id).fetch();
+            		if (cesionesTipo.isEmpty()){ //No se han creado cesiones a partir de este fichero -> Creo
+	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("atc", atc);
+	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
+	            		System.out.println("Generando: "+sol.id);
+	            		report = new Report("reports/bodyPeticionATC.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, atc);
+	                	Documento doc = new Documento();
+	                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaATC");
+	                	doc.descripcion = "Descripcion ATC";
+	                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionATC"+obtenerFechaNombre()+".pdf");
+	                	sol.documentacionCesion.documentos.add(doc);
+	                	pt.respCesion.fechaActuacionGestor = new DateTime();
+	                	pt.respCesion.uri = doc.uri;
+	                	aplicarCambios(sol, pt, doc, atc.registroDetalle.estado);
+            		}
+            		else if (!cesionesTipo.get(0).firmada){ //La solicitud ya dispone de una cesion con este id
+            			play.Logger.info("La solicitud "+sol.id+" ya dispone de una cesión creada y no firmada para el fichero de respuesta con identificador "+pt.id+" se procede a firmarla");
+            			firmarDocumento(sol, cesionesTipo.get(0)); //Solo debe ser una
+            		}
+            		else {
+            			Messages.info("La Solicitud "+sol.id+" ya dispone de una cesión firmada creada con esta cesión de datos");
+            		}
             	}
             } catch (Exception ex2) {
                 Messages.error("Error generando el documento pdf: "+ex2.getMessage());
@@ -231,6 +241,7 @@ public class ATCUtils {
 	private static void aplicarCambios(SolicitudGenerica solicitud, PeticionCesiones pt, Documento doc, String estado) {
 		Cesiones cesion = new Cesiones();
 		cesion.tipo = pt.tipo;
+		cesion.idUnico = Long.toString(pt.id);
 		cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
 		cesion.fechaValidez = pt.fechaValidez;
 		cesion.origen = ListaOrigenEnum.cesion.name();
@@ -253,15 +264,13 @@ public class ATCUtils {
 		try {
 			firmaService.firmarEnServidor(cesion.documento);
 			cesion.firmada = true;
-			//Messages.ok("Documento firmado correctamente");
+			solicitud.cesion.cesiones.add(cesion);
+			solicitud.save(); //Guardar cambios en la solicitud
+			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
 		} catch (FirmaServiceException e) {
 			// TODO Auto-generated catch block
 			play.Logger.error("No se pudo firmar en Servidor: "+e);
 		} 
-		
-		solicitud.cesion.cesiones.add(cesion);
-		solicitud.save(); //Guardar cambios en la solicitud
-		play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
 	}
 
 	private static String getTipo (String numdoc){
@@ -281,4 +290,20 @@ public class ATCUtils {
 		DateTime fechaGeneracion = new DateTime(anio, mes, dia, 0, 0);
 		return fechaGeneracion;
 	}
+	
+	private static void firmarDocumento(SolicitudGenerica solicitud, Cesiones cesion){
+		//Firma del documento generado
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		try {
+			firmaService.firmarEnServidor(cesion.documento);
+			cesion.firmada = true;
+			cesion.save();
+			solicitud.save(); 
+			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
+		} catch (FirmaServiceException e) {
+			// TODO Auto-generated catch block
+			play.Logger.error("No se pudo firmar en Servidor: "+e);
+		} 
+	}
+	
 }

@@ -33,7 +33,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 	Pagina ListadoCesiones campo=SolicitudGenerica permiso=adminOrGestor titulo="Listado de cesiones"{
 		Accion editar crearSiempre
 		Grupo permiso=instruccion{
-			Tabla tablaCesiones titulo="Cesiones de datos" campo=SolicitudGenerica.cesion.cesiones popupLeer=PopupLeerListadoCesiones popupCrear=PopupListadoCesiones popupBorrar=PopupBorrarListadoCesiones{ // popupEditar=PopupListadoCesiones{
+			Tabla tablaCesiones titulo="Cesiones de datos" campo=SolicitudGenerica.cesion.cesiones popupLeer=PopupLeerListadoCesiones popupCrear=PopupListadoCesiones { // popupEditar=PopupListadoCesiones{
 				Columna titulo="Tipo" campo=Cesiones.tipo ancho="100"
 				Columna titulo="Fecha de Petición" campo=Cesiones.fechaPeticion ancho="100"
 				Columna titulo="Fecha de Validez" campo=Cesiones.fechaValidez ancho="100"
@@ -49,13 +49,6 @@ Formulario Solicitud campo=SolicitudGenerica {
 		Fecha fechaValidez campo=Cesiones.fechaValidez titulo="Fecha de validez" requerido
 		Combo comboEstado campo=Cesiones.estado titulo="Estado" requerido
 		Combo comboDoc campo=Cesiones.documento.uri titulo="Documento" requerido
-	}
-	
-	Popup PopupBorrarListadoCesiones campo=SolicitudGenerica.cesion.cesiones permiso=adminOrGestor titulo = "Borrar Cesión"{		
-		Combo comboTipo campo=Cesiones.tipo titulo="Tipo" requerido
-		Fecha fechaConsulta campo=Cesiones.fechaPeticion titulo="Fecha de consulta" requerido
-		Fecha fechaValidez campo=Cesiones.fechaValidez titulo="Fecha de validez" requerido
-		Combo comboEstado campo=Cesiones.estado titulo="Estado" requerido
 	}
 	
 	Popup PopupLeerListadoCesiones campo=SolicitudGenerica.cesion.cesiones permiso=paginaAConfigurar titulo = "Leer Cesión"{

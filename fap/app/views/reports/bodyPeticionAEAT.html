@@ -37,8 +37,12 @@ p {
 			<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
 		</tr>	
 		<tr>
-		  	<tr><th>Estado:</th><td>${aeat.cert}</td></tr> 
+		  	%{ if (aeat.cert.equals("P")){ %}
+				<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum._01.value()}</td></tr>
+			%{ } %} 
+		  	
 			%{ if (aeat.cert.equals("N")){ %}
+				<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum._02.value()}</td></tr>
 				<tr><th>Tipo de Negativo:</th><td>${aeat.negat}</td></tr>
 				<tr><th>Causa de Negativo:</th><td>${enumerado.fap.gen.CodigoAEATNegatEnum.valueOf(aeat.negat).value()}</td></tr>
 			%{ } %}

@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,6 +20,8 @@ import java.lang.String;
 import org.h2.constant.SysProperties;
 import org.joda.time.DateTime;
 import org.mozilla.javascript.regexp.SubString;
+
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 
 import config.InjectorConfig;
 
@@ -275,22 +278,32 @@ public class INSSUtils {
 		File report =  new File ("reports/bodyPeticion.html");
 		List<SolicitudGenerica> solicitud = null;
 		solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud join solicitud.cesion.autorizacionCesion.trabajadores trabajadores where trabajadores.regimen = ? and trabajadores.codigoCuenta = ? and solicitud.cesion.autorizacionCesion.inssA008 = ?", inss.registroDetalle.regimen, inss.registroDetalle.cccPpal, true).fetch();
-
+		
 		 if((!Messages.hasErrors()) && (!solicitud.isEmpty())){        	
 	            try {
 	            	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pt", pt);
 	            	for (SolicitudGenerica sol : solicitud) {
-	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("inss", inss);
-	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
-	                	report = new Report("reports/bodyPeticionINSSA008.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, inss);
-	                	Documento doc = new Documento();
-	                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSA008");
-	                	doc.descripcion = "Descripcion INSSA008";
-	                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionINSSA008"+obtenerFechaNombre()+".pdf");
-	                	sol.documentacionCesion.documentos.add(doc);
-	                	pt.respCesion.fechaActuacionGestor = new DateTime();
-	                	pt.respCesion.uri = doc.uri;
-	                	aplicarCambios(sol, pt, doc, inss.registroDetalle.estado);
+	            		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "inssR001", pt.id.toString(), sol.id).fetch();
+	            		if (cesionesTipo.isEmpty()){ //No se han creado cesiones a partir de este fichero -> Creo
+		            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("inss", inss);
+		            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
+		                	report = new Report("reports/bodyPeticionINSSA008.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, inss);
+		                	Documento doc = new Documento();
+		                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSA008");
+		                	doc.descripcion = "Descripcion INSSA008";
+		                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionINSSA008"+obtenerFechaNombre()+".pdf");
+		                	sol.documentacionCesion.documentos.add(doc);
+		                	pt.respCesion.fechaActuacionGestor = new DateTime();
+		                	pt.respCesion.uri = doc.uri;
+		                	aplicarCambios(sol, pt, doc, inss.registroDetalle.estado);
+	            		}
+	            		else if (!cesionesTipo.get(0).firmada){ //La solicitud ya dispone de una cesion con este id
+	            			play.Logger.info("La solicitud "+sol.id+" ya dispone de una cesión creada y no firmada para el fichero de respuesta con identificador "+pt.id+" se procede a firmarla");
+	            			firmarDocumento(sol, cesionesTipo.get(0)); //Solo debe ser una
+	            		}
+	            		else {
+	            			Messages.info("La Solicitud "+sol.id+" ya dispone de una cesión firmada creada con esta cesión de datos");
+	            		}
 					}
 	            } catch (Exception ex2) {
 	                Messages.error("Error generando el documento pdf: "+ex2.getMessage());
@@ -307,27 +320,38 @@ public class INSSUtils {
 	public static File generarPdfINSSR001(PeticionCesiones pt, INSSR001 inss){
 		File report =  new File ("reports/bodyPeticion.html");
         List<SolicitudGenerica> solicitud = null;
+        
         if ((("_"+inss.registroDetalle.tipoRegistro).equals(TipoDocIdCesionEnum._1.name())) || (("_"+inss.registroDetalle.tipoRegistro).equals(TipoDocIdCesionEnum._2.name())) || (("_"+inss.registroDetalle.tipoRegistro).equals(TipoDocIdCesionEnum._6.name()))){ //dni
         	solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.fisica.nip.valor = ?", inss.registroDetalle.nDocumento).fetch();
         }
         if (("_"+inss.registroDetalle.tipoRegistro).equals(TipoDocIdCesionEnum._9.name())){
         	solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.juridica.cif = ?", inss.registroDetalle.nDocumento).fetch();
         }
-        if((!Messages.hasErrors()) && (!solicitud.isEmpty())){        	
+        if((!Messages.hasErrors()) && (!solicitud.isEmpty())){   
             try {
             	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pt", pt);
             	for (SolicitudGenerica sol : solicitud) {
-            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("inss", inss);
-            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
-                	report = new Report("reports/bodyPeticionINSSR001.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, inss);
-                	Documento doc = new Documento();
-                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSR001");
-                	doc.descripcion = "Descripcion INSSR001";
-                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionINSSR001"+obtenerFechaNombre()+".pdf");
-                	sol.documentacionCesion.documentos.add(doc);
-                	pt.respCesion.fechaActuacionGestor = new DateTime();
-                	pt.respCesion.uri = doc.uri;
-                	aplicarCambios(sol, pt, doc, inss.registroDetalle.estado);
+            		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "inssR001", pt.id.toString(), sol.id).fetch();
+            		if (cesionesTipo.isEmpty()){ //No se han creado cesiones a partir de este fichero -> Creo
+            			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("inss", inss);
+	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
+	                	report = new Report("reports/bodyPeticionINSSR001.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, inss);
+	                	Documento doc = new Documento();
+	                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSR001");
+	                	doc.descripcion = "Descripcion INSSR001";
+	                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionINSSR001"+obtenerFechaNombre()+".pdf");
+	                	sol.documentacionCesion.documentos.add(doc);
+	                	pt.respCesion.fechaActuacionGestor = new DateTime();
+	                	pt.respCesion.uri = doc.uri;
+	                	aplicarCambios(sol, pt, doc, inss.registroDetalle.estado);
+	            	}
+            		else if (!cesionesTipo.get(0).firmada){ //La solicitud ya dispone de una cesion con este id
+            			play.Logger.info("La solicitud "+sol.id+" ya dispone de una cesión creada y no firmada para el fichero de respuesta con identificador "+pt.id+" se procede a firmarla");
+            			firmarDocumento(sol, cesionesTipo.get(0)); //Solo debe ser una
+            		}
+            		else {
+            			Messages.info("La Solicitud "+sol.id+" ya dispone de una cesión firmada creada con esta cesión de datos");
+            		}
 				}
             } catch (Exception ex2) {
                 Messages.error("Error generando el documento pdf: "+ex2.getMessage());
@@ -340,10 +364,26 @@ public class INSSUtils {
         }
         return report;
     } 
-
+	
+	private static void firmarDocumento(SolicitudGenerica solicitud, Cesiones cesion){
+		//Firma del documento generado
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		try {
+			firmaService.firmarEnServidor(cesion.documento);
+			cesion.firmada = true;
+			cesion.save();
+			solicitud.save(); 
+			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
+		} catch (FirmaServiceException e) {
+			// TODO Auto-generated catch block
+			play.Logger.error("No se pudo firmar en Servidor: "+e);
+		} 
+	}
+	
 	private static void aplicarCambios(SolicitudGenerica solicitud, PeticionCesiones pt, Documento doc, String estado){
 			Cesiones cesion = new Cesiones();
 			cesion.tipo = pt.tipo;
+			cesion.idUnico = Long.toString(pt.id);
 			cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
 			cesion.fechaValidez = pt.fechaValidez;
 			cesion.origen = ListaOrigenEnum.cesion.name();
@@ -351,7 +391,6 @@ public class INSSUtils {
 			cesion.documento = doc;
 			//Estado de la Cesion (positivo, negativo, nodatos, error)
 			if (pt.tipo.equals(ListaCesionesEnum.inssR001.name())){
-				//String idEstado = estado; //.subSequence(iniIdEstado, finIdEstado).toString();
 				if ((estado.equals("_05")) || (estado.equals("_06")))
 					cesion.estado = ListaEstadosEnum._04.name();
 				else
@@ -365,14 +404,13 @@ public class INSSUtils {
 			try {
 				firmaService.firmarEnServidor(cesion.documento);
 				cesion.firmada = true;
+				solicitud.cesion.cesiones.add(cesion);
+				solicitud.save(); 
+				play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
 			} catch (FirmaServiceException e) {
 				// TODO Auto-generated catch block
 				play.Logger.error("No se pudo firmar en Servidor: "+e);
 			} 
-			
-			solicitud.cesion.cesiones.add(cesion);
-			solicitud.save(); 
-			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
 	}
 
 	public static DateTime obtenerFecha(String fecha){

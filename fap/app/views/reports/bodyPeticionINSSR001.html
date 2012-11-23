@@ -18,6 +18,7 @@ p {
 <h3 style="text-align: center;"></h3>
 %{
 	def titulo = 'CESIÓN DE DATOS DEL INSSR001';
+	def estadoID;
 }%
 
 <h1>${titulo}</h1>
@@ -37,7 +38,14 @@ p {
 			<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
 		</tr>	
 		<tr>
-			<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum.valueOf(inss.registroDetalle.estado).value()}</td></tr>
+			%{
+			String idestado = "";
+			if ((inss.registroDetalle.estado.equals("_05")) || (inss.registroDetalle.estado.equals("_06")))
+					idestado = enumerado.fap.gen.ListaEstadosEnum._04.name();
+				else
+					idestado = enumerado.fap.gen.ListaEstadosEnum.valueOf(inss.registroDetalle.estado).name();	
+			%}
+			<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum.valueOf(idestado).value()}</td></tr>
 		</tr>	
 	</tr>
 </table>

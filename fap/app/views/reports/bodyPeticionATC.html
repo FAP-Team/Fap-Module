@@ -37,7 +37,22 @@ p {
 			<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
 		</tr>	
 		<tr>
-			<tr><th>Estado:</th><td>${enumerado.fap.gen.CodigoRespuestaEnum.valueOf(atc.registroDetalle.estado).value()}</td></tr>
+		%{
+			String idestado = "";
+			if (atc.registroDetalle.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._00.name())){
+				idestado = enumerado.fap.gen.ListaEstadosEnum._01.name();	
+			}
+			else if (atc.registroDetalle.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._01.name())){
+				idestado = enumerado.fap.gen.ListaEstadosEnum._02.name();
+			}
+			else if (atc.registroDetalle.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._02.name())){
+				idestado = enumerado.fap.gen.ListaEstadosEnum._03.name();
+			}
+			else if (atc.registroDetalle.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._03.name())){
+				idestado = enumerado.fap.gen.ListaEstadosEnum._04.name();
+			}
+		%}
+			<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum.valueOf(idestado).value()}</td></tr>
 		</tr>	
 	</tr>
 </table>

@@ -490,8 +490,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     		documento.fechaSubida = new DateTime();
     		documento.clasificado = false;
     		documento.refAed = false;					
-    		documento.expedienteReferenciado = null;
-    		documento.solicitudReferenciada = null;
     		
     		// Almacena el Hash del documento
     		documento.hash=getHash(uri);

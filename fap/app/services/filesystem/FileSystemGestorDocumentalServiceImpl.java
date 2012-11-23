@@ -303,9 +303,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         documento.clasificado = false;
         documento.hash = Codec.UUID();
         documento.fechaSubida = new DateTime();
-		documento.refAed = false;					
-		documento.solicitudReferenciada = null;	
-		documento.expedienteReferenciado = null;
+		documento.refAed = false;
         documento.save();
 
         return uri;

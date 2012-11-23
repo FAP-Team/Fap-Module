@@ -63,10 +63,6 @@ public class Documento extends FapModel {
 
 	public Boolean refAed;
 
-	public String expedienteReferenciado;
-
-	public Long solicitudReferenciada;
-
 	@ValueFromTable("estadoNotificacion")
 	public String estadoDocumento;
 
@@ -191,8 +187,6 @@ public class Documento extends FapModel {
 		urlDescarga = doc.urlDescarga;
 		verificado = doc.verificado;
 		refAed = doc.refAed;
-		expedienteReferenciado = doc.expedienteReferenciado;
-		solicitudReferenciada = doc.solicitudReferenciada;
 	}
 
 	// === MANUAL REGION END ===

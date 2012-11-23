@@ -144,8 +144,6 @@ Entidad Documento {
 	// Los dos campos siguientes se utilizan para referenciar de manera temporal (hasta su clasificación)
 	// dónde se encuentra el documento seleccionado en la subida (ya presente en el aed).
 	Boolean refAed                     // si el campo expedienteReferenciado/solicitudReferenciada es válido
-	String expedienteReferenciado      // identificador del expediente (aed) donde está este documento
-	Long solicitudReferenciada         // identificador de la solicitud (filesystem) donde está el documento
 	Lista estadoNotificacion estadoDocumento
 }
 

@@ -281,8 +281,9 @@
 			}
 
 			var urlTabla = "${actionDef.url.raw()}";
-			#{if combo} 
-			    urlTabla = "${actionDef.url}?tipoDocumento=" + $('#documento_tipo').val();
+			#{if combo}
+				var $combo = $('#${combo}');
+			    urlTabla = "${actionDef.url}?tipoDocumento=" + $combo.val();
 			#{/if}
 			
 
@@ -302,11 +303,11 @@
 		    peticionJSON${id}();
 			
 			#{if combo} 
-			     var $combo = $('#${combo}');
+			    var $combo = $('#${combo}');
             
 	            function change(){
 	                if($combo.val()){
-	                   urlTabla = "${actionDef.url}?tipoDocumento=" + $('#documento_tipo').val();
+	                   urlTabla = "${actionDef.url}?tipoDocumento=" + $combo.val();
 	                   $.ajax(urlTabla).done(function (data){
 	                       store${id}.loadData(ajax2Data(data.obj.rows));
 	                   });

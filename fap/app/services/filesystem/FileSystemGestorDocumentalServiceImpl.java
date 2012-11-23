@@ -488,7 +488,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		tipoCodReqdbDNI.descripcion = "Falta fotocopia del DNI";
 		tipoCodReqdbDNI.descripcionCorta = "CRDNI";
   	
-    	// ------- TRÁMITE 1: Solicitud ------- 
+    	// ------- TR�?MITE 1: Solicitud ------- 
         Tramite tramiteSolicitud = new Tramite();
         tramiteSolicitud.nombre = "solicitud";
         tramiteSolicitud.uri = "fs://solicitud";
@@ -514,7 +514,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tramiteSolicitud.documentos.add(tipoJustificanteRegistro);
         newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoJustificanteRegistro.uri, tramiteSolicitud.uri);
              
-        // ------- TRÁMITE 2: Aportación ------- 
+        // ------- TR�?MITE 2: Aportación ------- 
         Tramite tramiteAportacion = new Tramite();
         tramiteAportacion.nombre = "aportacion";
         tramiteAportacion.uri = "fs://aportacion";
@@ -532,7 +532,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tramiteAportacion.documentos.add(tipoAportRegistro);
         newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoAportRegistro.uri, tramiteAportacion.uri);
         
-        // ------- TRÁMITE 3: Desestimiento ------- 
+        // ------- TR�?MITE 3: Desestimiento ------- 
         Tramite tramiteDesestimiento = new Tramite();
         tramiteDesestimiento.nombre = "desestimiento";
         tramiteDesestimiento.uri = "fs://desestimiento";
@@ -666,7 +666,15 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		return expresionRegular;
 	}
 
+	@Deprecated
+	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
+		duplicarDocumentoSubido(uriDocumento);
+	}
 	
+	@Deprecated
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
+		duplicarDocumentoSubido(uriDocumento, descripcionDocumento, dbDocumento);
+	}
 	
 	/*
 	 * Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente (y clasificado). 
@@ -675,70 +683,26 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	 * documento pasa a formar parte a todos los efectos del expediente.
 	 * 
 	 */
-	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException  {
-		SolicitudGenerica solicitudReferenciada = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud " +
-				 											"where ( solicitud.documentacion.id in (" +
-				 												"select documentacion.id from Documentacion documentacion join documentacion.documentos doc " + 
-				 												"where doc.uri = '" + uriDocumento + "') )").first();
-		if (solicitudReferenciada == null) {
-			throw new GestorDocumentalServiceException("No se encuentra la solicitud que debe tener el documento con uri " + uriDocumento + 
-									" en la duplicación de un documento ya subido.");
-		}
-		
+	public void duplicarDocumentoSubido(String uriDocumento) throws GestorDocumentalServiceException  {
 		Documento documento = Documento.findByUri(uriDocumento);
 		Documento doc = new Documento();
 		doc.duplicar(documento);
 		// El campo refAed se creó para verificar si el campo expedienteReferenciado/solicitudReferenciada es válido
 		// Ahora lo ponemos true para que en saveDocumentoTemporal no compruebe que doc esté en el aed (por haber hecho un duplicar documento)
-		doc.refAed = true;			
-		doc.save();	
-		
-		File contenidoOriginal = getFile(documento);
-		FileInputStream contenido = null;
-		try {
-			contenido = new FileInputStream(contenidoOriginal);
-		} catch (FileNotFoundException e) { System.out.println(e); }	
-
-		saveDocumentoTemporal(doc, contenido, contenidoOriginal.getName());
-		
 		doc.refAed = true;
-		doc.solicitudReferenciada = solicitudReferenciada.id;
-        doc.fechaSubida = new DateTime();
+		doc.fechaSubida = new DateTime();
 		doc.save();
-		
-		solicitud.documentacion.documentos.add(doc);
-		solicitud.save();
 	}
 	
-	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException  {
-		SolicitudGenerica solicitudReferenciada = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud " +
-				 											"where ( solicitud.documentacion.id in (" +
-				 												"select documentacion.id from Documentacion documentacion join documentacion.documentos doc " + 
-				 												"where doc.uri = '" + uriDocumento + "') )").first();
-		if (solicitudReferenciada == null) {
-			throw new GestorDocumentalServiceException("No se encuentra la solicitud que debe tener el documento con uri " + uriDocumento + 
-									" en la duplicación de un documento ya subido.");
-		}
-		
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento) throws GestorDocumentalServiceException  {
 		Documento documento = Documento.findByUri(uriDocumento);
 		dbDocumento.duplicar(documento);
 		dbDocumento.descripcion = descripcionDocumento;
 		// El campo refAed se creó para verificar si el campo expedienteReferenciado/solicitudReferenciada es válido
 		// Ahora lo ponemos true para que en saveDocumentoTemporal no compruebe que doc esté en el aed (por haber hecho un duplicar documento)
-		dbDocumento.refAed = true;			
-		dbDocumento.save();	
-		
-		File contenidoOriginal = getFile(documento);
-		FileInputStream contenido = null;
-		try {
-			contenido = new FileInputStream(contenidoOriginal);
-		} catch (FileNotFoundException e) { System.out.println(e); }	
-
-		saveDocumentoTemporal(dbDocumento, contenido, contenidoOriginal.getName());
-		
 		dbDocumento.refAed = true;
-		dbDocumento.solicitudReferenciada = solicitudReferenciada.id;
 		dbDocumento.fechaSubida = new DateTime();
+		dbDocumento.save();
 	}
 
 	@Override

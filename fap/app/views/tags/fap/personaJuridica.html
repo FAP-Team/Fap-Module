@@ -35,11 +35,15 @@
 		
 			<script>
 				var urlTerceros = "${urlGetTercero}";
-	
+				var primeraPeticion${id}=true;
 				var valorCif${id} = $('#${id}_cif').val();
 	
+				if ((valorCif${id} !== null) && (valorCif${id} !== ""))
+					primeraPeticion${id}=false;
+			
+	
 				$('#${id}_cif').blur(function(){
-					if (valorCif${id} !==  $('#${id}_cif').val()){
+					if ((primeraPeticion${id})  && (valorCif${id} !==  $('#${id}_cif').val())){
 						valorCif${id} = $('#${id}_cif').val();
 						if ($('#${id}_cif').val() != "")
 							setDatosTercero${id}($('#${id}_cif').val());
@@ -56,6 +60,7 @@
 					}).done(function( msg ) { 
 		 				var params = msg;
 						if (params != "{}"){
+							primeraPeticion${id}=false; 
 							params = params.replace("{", "");
 							params = params.replace("}", "");
 							params = params.split('%,%');
@@ -83,7 +88,7 @@
 		 						 				}
 		 						 			}
 		 						 		} else {
-		 						 			if ((parts[0] === "email") || (parts[0] === "telefonoContacto")){
+		 						 			if ((parts[0] === "email") || (parts[0] === "telefonoContacto") || (parts[0] === "uriTerceros")){
 				 								if ($('#${id.replace("Fisica","")}_'+parts[0]).val() === ""){
 				 						 			$('#${id.replace("Fisica","")}_'+parts[0]).val(parts[1]);
 		 						 				}

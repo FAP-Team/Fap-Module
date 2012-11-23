@@ -44,6 +44,9 @@ public class TercerosUtils {
 				ret+="email%->%"+solicitante.email+"%,%";
 			if (isValid(solicitante.telefonoContacto))
 				ret+="telefonoContacto%->%"+solicitante.telefonoContacto+"%,%";
+			if (isValid(solicitante.uriTerceros))
+				ret+="uriTerceros%->%"+solicitante.uriTerceros+"%,%";
+			
 			// Direccion
 			if (isValid(solicitante.domicilio.calle))
 				ret+="%&%calle%->%"+solicitante.domicilio.calle+"%,%";

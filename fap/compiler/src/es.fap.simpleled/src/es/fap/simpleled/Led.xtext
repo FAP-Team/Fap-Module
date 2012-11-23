@@ -226,7 +226,7 @@ Elemento:
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple |
-	EntidadAutomatica | Accion | Codigo | CCC
+	EntidadAutomatica | Accion | Codigo | CCC | TextoOculto
 ;
 
 Campo:
@@ -252,6 +252,12 @@ Texto:
 		& (requerido?='requerido')?
 		& (duplicar?='duplicar')?
 		& (password?='password')?
+	)
+;
+
+TextoOculto:
+	elemento='TextoOculto' (name=ID)? (
+		('campo' '=' campo=Campo)
 	)
 ;
 

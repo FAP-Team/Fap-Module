@@ -31,6 +31,7 @@ public class GSolicitante extends GElement{
 		Grupo juridica;
 		Direccion direccion;
 		Texto telefonoContacto;
+		TextoOculto uriTercero;
 		Fecha fechaNacimiento;
 		Combo sexo;
 		Texto email;
@@ -64,6 +65,10 @@ public class GSolicitante extends GElement{
 		telefonoContacto.name="${solicitante.name}_telefonoContacto";
 		telefonoContacto.campo=CampoUtils.addMore(solicitante.campo, "telefonoContacto").campo;
 		
+		uriTercero = LedFactory.eINSTANCE.createTextoOculto();
+		uriTercero.name="${solicitante.name}_uriTerceros";
+		uriTercero.campo=CampoUtils.addMore(solicitante.campo, "uriTerceros").campo;
+		
 		email = LedFactory.eINSTANCE.createTexto();
 		email.titulo="Email";
 		email.name="${solicitante.name}_email";
@@ -73,6 +78,7 @@ public class GSolicitante extends GElement{
 		grupoOtrosDatos.borde = false;
 		grupoOtrosDatos.elementos.add(telefonoContacto);
 		grupoOtrosDatos.elementos.add(email);
+		grupoOtrosDatos.elementos.add(uriTercero);
 		
 		if (solicitante.titulo){
 			Grupo grupo = LedFactory.eINSTANCE.createGrupo();

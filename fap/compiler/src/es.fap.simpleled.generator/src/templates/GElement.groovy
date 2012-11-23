@@ -226,6 +226,9 @@ public class GElement {
 
 			else if(element instanceof CCC)
 				cache.put(element, new GCCC(element, container));
+				
+			else if(element instanceof TextoOculto)
+				cache.put(element, new GTextoOculto(element, container));
 		}
 		
 		return cache.get(element);

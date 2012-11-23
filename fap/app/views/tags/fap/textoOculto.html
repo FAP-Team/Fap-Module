@@ -1,0 +1,23 @@
+*{
+  Campo de Texto Oculta
+  ==================================
+  Argumentos
+  	_id     - ID
+  	_value  - Valor a mostrar, si no se especifica busca el valor del campo
+  	_campo  - Campo donde se almacenará el campo de texto
+    _obj     - Objeto a partir del cual se accede al value. 
+    		  Usar en el caso de que se llame desde otro tag
+}*
+
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+	def id = _id ?: field.id
+	def value = _value ?: field.flashorvalue
+}%
+	
+	<input id="${id}" name="${field.name}" value="${value}" style="display:none">
+	
+#{/fap.field}

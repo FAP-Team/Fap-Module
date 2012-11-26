@@ -107,7 +107,7 @@ public class DescargasAedController extends GenericController {
 				
 	            IO.write(bresp.contenido.getInputStream(), response.out);
 			} catch (Exception e) {
-				play.Logger.error(e, "Se produjo un error recuperando el documento del AED");
+				//play.Logger.error("Se produjo un error recuperando el documento del AED"+e);
 			}
 		}else{
 			forbidden("No tiene permisos para acceder a este documento");

@@ -304,10 +304,14 @@
 			// Para los combos dependientes
 			function CargarValoresComboDependiente${id}(){
 				valorDependencia${id} = $('select[id=${dependencia}]').val();
+				if (valorDependencia${id}.match(/^_\d*/)){ // Para quitar el '_' que se pone automaticamente cuando la clave es un digito
+					valorDependencia${id}=valorDependencia${id}.replace("_", "");
+				}
                 calculateDependencies${id}(valorDependencia${id}); 
 			}
 			// Para cada vez que se renderiza la pagina, calculamos los posibles valores de ese combo
 			CargarValoresComboDependiente${id}();
+			
 			
 			// Para cada vez que cambie un combo del que depende otro, actualizar la lista de valores de ese otro
 			$('#${dependencia}').change(function(){
@@ -317,6 +321,7 @@
 					CargarValoresComboDependiente${id}();
 				}
 			});
+
 		</script>
 		
 	#{/if}

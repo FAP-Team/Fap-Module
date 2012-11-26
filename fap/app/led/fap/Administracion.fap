@@ -7,6 +7,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Usuarios" pagina=Usuarios
 			Enlace "Convocatoria" pagina=Convocatoria
 			Enlace "Gestor Documental" pagina=Aed
+			Enlace "Tramites Verificables" pagina=TramitesVerificables
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tipos Certificados" pagina=ConfigurarCertificados
@@ -29,6 +30,7 @@ Formulario Administracion permiso=administrador{
     }
 
     
+
     Pagina ServiciosWebApp noForm titulo="Servicios web de la aplicación" campo=Aplicacion  permiso=administrador {
 		Grupo permiso=noEditable titulo="Datos de la aplicación" {
 			Texto campo=Aplicacion.nombreApp titulo="Nombre de la aplicación" 
@@ -66,6 +68,24 @@ Formulario Administracion permiso=administrador{
 		}
 
 	}
+
+    Pagina TramitesVerificables titulo="Tramites Verificables" campo=VerificacionTramites perteneceA="Administracion"{
+    	Tabla tramitesVerificablesTbl titulo="Tramites Supceptibles de ser Verificables" campo=VerificacionTramites.tramites popupEditar=PopUpTramiteVerificable popupLeer=PopUpTramiteVerificable recargarPagina{
+    		Columna campo=TramitesVerificables.nombre titulo="Nombre" expandir
+    		Columna campo=TramitesVerificables.uriTramite titulo="Uri Tramite" expandir
+    		Columna campo=TramitesVerificables.verificable titulo="¿Verificable?"
+    	}
+    	Combo tramitePorDefecto campo=VerificacionTramites.uriTramitePorDefecto titulo="Tramite Por Defecto" requerido
+    }
+    
+    Popup PopUpTramiteVerificable campo=VerificacionTramites.tramites titulo="Configurar Tramite Verificable"{
+    	Grupo noEditable borde=false permiso=noEditable{
+    		Texto titulo="Nombre" campo=TramitesVerificables.nombre
+    		Texto titulo="Uri" campo=TramitesVerificables.uriTramite
+    	}
+    	Check titulo="Verificable" campo=TramitesVerificables.verificable
+    }
+    
 
     // Pagina Sobreescrita
     Pagina ConsultasBBDD titulo="Consultas" perteneceA="Administracion"{

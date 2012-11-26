@@ -25,6 +25,15 @@ Entidad Solicitud extends SolicitudGenerica {
 	BigPopUpPrueba bigPopUp
 	
 	ElementosBasicos elementos
+	
+	FirmaEnServidor firmaEnServidor
+}
+
+Entidad FirmaEnServidor {
+	Boolean fueGenerado
+	Boolean fueFirmado
+	Documento oficial
+	Documento firmado
 }
 
 Entidad ConceptosMios {

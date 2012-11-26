@@ -256,7 +256,12 @@ public abstract class TramiteBase {
             	play.Logger.error("La solicitud ya ha sido firmada por ese certificado");
                 Messages.error("La solicitud ya ha sido firmada por ese certificado");
             } else {
-            	play.Logger.error("El certificado no se corresponde con uno que debe firmar la solicitud");
+            	String firmantes="{";
+            	for (Firmante firmante: registro.firmantes.todos){
+            		firmantes+=firmante.toString()+" | ";
+            	}
+            	firmantes+="}";
+            	play.Logger.error("El certificado <"+identificadorFirmante+"> no se corresponde con uno que debe firmar la solicitud: "+firmantes);
                 Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud");
             }
         }
@@ -316,6 +321,7 @@ public abstract class TramiteBase {
 					for (Documento doc: documentos) {
 						if (doc.fechaRegistro == null) {
 							doc.fechaRegistro = registro.informacionRegistro.fechaRegistro;
+							doc.save();
 						}
 					}
 					play.Logger.info("Fechas de registro establecidas a " + this.getRegistro().informacionRegistro.fechaRegistro);

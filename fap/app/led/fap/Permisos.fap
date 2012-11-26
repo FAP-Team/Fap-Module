@@ -1195,3 +1195,14 @@ Permiso ActivarHabilitarFH{
 	return
 		all
 }
+
+Permiso evaluacionFinalizada{
+	vars
+		SolicitudGenerica solicitud
+	    Evaluacion evaluacion : sql("select evaluacion from Evaluacion evaluacion where evaluacion.solicitud.id=?", solicitud.id)
+	when
+	    (evaluacion?.tipo?.estado = "evaluada") and
+	    (agente.rolActivo in ("administrador", "gestor"))
+	return all
+	  
+}

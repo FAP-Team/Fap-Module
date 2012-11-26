@@ -18,14 +18,23 @@ import models.TableKeyValue;
 import models.TipoCriterio;
 import models.TipoDocumento;
 import models.Tramite;
+
 import play.Play;
+
+import models.TramitesVerificables;
+import models.VerificacionTramites;
+
 import play.mvc.Util;
 import properties.FapProperties;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.aed.ProcedimientosService;
 import utils.Fixtures;
+
 import utils.JsonUtils;
+
+import utils.ModelUtils;
+
 import controllers.gen.AedControllerGen;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
@@ -63,6 +72,7 @@ public class AedController extends AedControllerGen {
             	deleteTramites();
                 List<Tramite> tramites = gestorDocumentalService.getTramites();
                 saveTramites(tramites);
+                ModelUtils.actualizarTramitesVerificables(tramites);
                 updateTableKeyValueTiposDocumentos();
                 gestorDocumentalService.actualizarCodigosExclusion();
                 Messages.ok("Recuperados " + tramites.size() + " tramites");

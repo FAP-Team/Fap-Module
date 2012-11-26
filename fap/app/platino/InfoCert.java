@@ -2,6 +2,8 @@ package platino;
 
 import java.util.List;
 
+import validation.NipCheck;
+
 import net.java.dev.jaxb.array.StringArray;
 
 public class InfoCert {
@@ -30,12 +32,15 @@ public class InfoCert {
 	
 	public InfoCert(List<StringArray> certInfo){
 		if (certInfo != null) {
+			String datosCertificado="[";
 			for (StringArray array : certInfo) {
-				String key = array.getItem().get(0);
-				if (key.toLowerCase().equals("pj")) {
-					tipo = "personajuridica";
-				} else if ((key.toLowerCase().equals("pf")) || (key.toLowerCase().equals("pv")) || (key.toLowerCase().equals("rep"))) {
-					tipo = "personafisica";
+				String key = array.getItem().get(0).trim();
+				datosCertificado+=key+", "+array.getItem().get(1).trim()+" | ";
+				if (key.toLowerCase().equals("tipo")) {
+					if ("pj".equals(array.getItem().get(1).toLowerCase().trim()))
+						tipo = "personajuridica";
+					else // pf, pv o rep
+						tipo = "personafisica";
 				} else if(key.toLowerCase().equals("nif")){
 					nif = array.getItem().get(1).trim();
 				} else if(key.toLowerCase().equals("cif")){
@@ -76,6 +81,8 @@ public class InfoCert {
 					notAfter = array.getItem().get(1).trim();
 				}
 			}
+			datosCertificado+="]";
+			play.Logger.info("Certificado Leído: "+datosCertificado);
 		}
 	}
 	
@@ -90,19 +97,18 @@ public class InfoCert {
 	
 	public String getFinalidad(){
 		if (finalidad == null) return "";
-		if (finalidad.equals("f")) return "firma";
-		else if (finalidad.equals("a")) return "autenticacion";
-		else if (finalidad.equals("fa")) return "firmaryautenticacion";
+		if (finalidad.equalsIgnoreCase("f")) return "firma";
+		else if (finalidad.equalsIgnoreCase("a")) return "autenticacion";
+		else if (finalidad.equalsIgnoreCase("fa")) return "firmaryautenticacion";
 		return "";
 	}
 
 	@Override
 	public String toString() {
-		return "InfoCert [nombrecompleto=" + nombrecompleto + ", nombre="
+		return "InfoCertUsada [IdTipo: "+getIdTipo()+", Id: "+getId()+", Name: "+getNombreCompleto()+"]\nInfoCertTotal [nombrecompleto=" + nombrecompleto + ", nombre="
 				+ nombre + ", apellido1=" + apellido1 + ", apellido2="
 				+ apellido2 + ", apellidos=" + apellidos + ", nif=" + nif
-				+ ", cif=" + cif + ", getNombreCompleto()="
-				+ getNombreCompleto() + "]";
+				+ ", cif=" + cif + ", entidad=" + entidad + "]";
 	}
 	
 	public String getId(){
@@ -114,6 +120,17 @@ public class InfoCert {
 		}
 		if(cif != null) return cif;
 		return nif;
+	}
+	
+	public String getIdTipo(){
+		if (tipo != null && !tipo.isEmpty()) {
+			if (tipo.equals("personajuridica"))
+				return "cif";
+			else
+				return "nif";
+		}
+		if(cif != null) return "cif";
+		return "nif";
 	}
 	
 }

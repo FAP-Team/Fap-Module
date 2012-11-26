@@ -102,7 +102,7 @@ public class Documento extends FapModel {
 				return ret;
 			}
 		} catch (Exception e) {
-			play.Logger.error("Error al recuperar el documento con uri: " + uri + " del Gestor Documental con Informe de Firma");
+			//play.Logger.error("Error al recuperar el documento con uri: " + uri + " del Gestor Documental con Informe de Firma");
 		}
 		return "";
 	}

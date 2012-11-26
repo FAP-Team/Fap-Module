@@ -37,14 +37,9 @@ public class AppModule extends FapModule {
        //bindLazySingletonOnDev(GestorDocumentalService.class, AedGestorDocumentalServiceImpl.class);
     }
 
-    @Override
-    protected void firma() {
-        bindLazySingletonOnDev(FirmaService.class, FileSystemFirmaServiceImpl.class);
-    }
-    
-    @Override
-    protected void registro(){
-        bindLazySingletonOnDev(RegistroService.class, FileSystemRegistroService.class);
-    }
+//    @Override
+//    protected void firma() {
+//        bindLazySingletonOnDev(FirmaService.class, PlatinoFirmaServiceImpl.class);
+//    }
 
 }

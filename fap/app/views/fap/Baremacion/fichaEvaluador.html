@@ -202,14 +202,10 @@
         					%}
 			    			{name: '${valorSolicitado}', mapping: '${valorSolicitado}'},
 			    			{name: '${valorEstimado}', mapping: '${valorEstimado}'},
-			    			{name: '${valorPropuesto}', mapping: '${valorPropuesto}'},
-			    			{name: '${valorConcedido}', mapping: '${valorConcedido}'},
 			    		#{/list}
 			    		{name: 'permiso', mapping: 'permiso'},
 			    		{name: 'totalSolicitado', mapping: 'totalSolicitado'},
-			    		{name: 'totalEstimado', mapping: 'totalEstimado'},
-			    		{name: 'totalPropuesto', mapping: 'totalPropuesto'},		    		
-			    		{name: 'totalConcedido', mapping: 'totalConcedido'}
+			    		{name: 'totalEstimado', mapping: 'totalEstimado'}
 					]
 		    	});
 			}
@@ -289,17 +285,8 @@
 							sortable : true,
 							dataIndex : 'valorEstimado'+${i},
 							width: 100
-						} , {
-							text : 'Valor Propuesto',
-							sortable : true,
-							dataIndex : 'valorPropuesto'+${i},
-							width: 100	
-						} , {
-							text : 'Valor Concedido',
-							sortable : true,
-							dataIndex : 'valorConcedido'+${i},
-						width: 100
-					}]
+						}
+					]
 				#{/list}
 				} , {
 					text : 'TOTALES POR CONCEPTOS',
@@ -313,17 +300,8 @@
 							sortable : true,
 							dataIndex : 'totalEstimado',
 							width: 100
-						} , {
-							text : 'Valor Propuesto',
-							sortable : true,
-							dataIndex : 'totalPropuesto',
-							width: 100	
-						} , {
-							text : 'Valor Concedido',
-							sortable : true,
-							dataIndex : 'totalConcedido',
-						width: 100
-					}]
+						} 
+					]
 				}],
 				renderTo: '${id}',
 				id: '${id}-grid',

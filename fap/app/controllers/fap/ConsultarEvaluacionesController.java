@@ -29,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosEvaluacionEnum;
+import enumerado.fap.gen.EstadosSolicitudEnum;
 
 @With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class ConsultarEvaluacionesController extends GenericController {
@@ -62,6 +63,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		}
 	}
 	
+	@Util
 	public static void aceptar(Long idEvaluacion){
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
@@ -76,6 +78,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 					Messages.error("Error generando el documento de solicitud para ver en evaluación. No se ha podido Iniciar esta Evaluación.");
 	                play.Logger.error("Error generando el de solicitud para ver en evaluación, no se ha ACEPTADO la evaluación: "+e.getMessage());
 	                Messages.keep();
+	                index();
 				}
 			}
 		}else{
@@ -83,6 +86,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		}
 	}
 	
+	@Util
 	public static void reevaluar(Long idEvaluacion){
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
@@ -97,7 +101,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		}
 	}
 		
-	
+	@Util
 	public static void rechazar(Long idEvaluacion){
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
@@ -192,14 +196,45 @@ public class ConsultarEvaluacionesController extends GenericController {
 	}
 
 	
-//	@Util
-//	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-//	public static void botonEvaluacionesFinalizadas(String btnEvaluacionesFinalizadas) {
-//		checkAuthenticity();
-//		if (!Messages.hasErrors()) {
-//			String accion = "editable";
-//			renderTemplate("fap/EvaluacionesFinalizadas/EvaluacionesFinalizadas.html", accion);
-//		}
-//	}
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void botonFinalizarEvaluaciones(String btnEvaluacionesFinalizadas) {
+		checkAuthenticity();
+		if (!Messages.hasErrors()) {
+			List<Evaluacion> evaluaciones = Evaluacion.findAll();
+			for (Evaluacion evaluacion: evaluaciones){
+				if (evaluacion.estado == null)
+					Messages.error("La evaluación del expediente "+evaluacion.solicitud.expedienteAed.idAed+" está aún sin estado");
+				else if ((!evaluacion.estado.equals(EstadosEvaluacionEnum.rechazada.name())) && (!evaluacion.estado.equals(EstadosEvaluacionEnum.evaluada.name()))){
+					Messages.error("La evaluación del expediente "+evaluacion.solicitud.expedienteAed.idAed+" está aún en estado: "+evaluacion.estado);
+				}
+			}
+		}
+		if (Messages.hasErrors()) {
+			Messages.keep();
+			index();
+		} else { // Todo ha ido bien, se puede Finalizar (Pasar a la siguiente Fase de relleno de los dos últimos valores de los conceptos economicos)
+			List<Evaluacion> evaluaciones = Evaluacion.findAll();
+			for (Evaluacion evaluacion: evaluaciones){
+				for (CEconomico conceptoE: evaluacion.ceconomicos){
+					for (CEconomico conceptoS: evaluacion.solicitud.ceconomicos){
+						if (conceptoS.tipo.jerarquia.equals(conceptoE.tipo.jerarquia)){
+							for (int i=0; i<evaluacion.tipo.duracion; i++){
+								conceptoS.valores.get(0).valorEstimado = conceptoE.valores.get(0).valorEstimado;
+							}
+							conceptoS.save();
+							break;
+						}
+					}
+				}
+			}
+			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+			tipoEvaluacion.estado="evaluada";
+			tipoEvaluacion.save();
+			Messages.ok("La evaluación ha finalizado correctamente");
+			Messages.keep();
+			index();
+		}
+	}
 	
 }

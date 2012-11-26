@@ -169,10 +169,12 @@ public class SecureController extends GenericController{
     	if(!validation.hasErrors()){
     	    try {
     	        boolean firmaCorrecta = firmaService.validarFirmaTexto(token.getBytes(), firma);
-    	        if(!firmaCorrecta)
+    	        if(!firmaCorrecta){
     	            validation.addError("login-certificado", "La firma no es válida");
+    	        }
     	    }catch(Exception e){
     	        validation.addError("login-certificado", "Error validando la firma");
+    	        play.Logger.error("Error validando la firma: "+e.getMessage());
     	    }
     	}
     	

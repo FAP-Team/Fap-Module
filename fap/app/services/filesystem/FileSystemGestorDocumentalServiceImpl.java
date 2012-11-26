@@ -475,7 +475,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
   	
 		String uriDocumento = null;
 		
-    	// ------------------------- TRÁMITE 1: Solicitud ------------------------- 
+    	// ------------------------- TR�?MITE 1: Solicitud ------------------------- 
         Tramite tramiteSolicitud = new Tramite();
         tramiteSolicitud.nombre = "Solicitud";
         tramiteSolicitud.uri = "fs://solicitud";
@@ -501,7 +501,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         uriDocumento = tramiteSolicitud.setDocumentoEnTramite("Baremación de la evaluación del documento", "fs://baremacionevaluaciondocumento/v01", "UNICO"); 	
         tramiteSolicitud.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto, tipoCodReqdbFirma);    
 
-    	// ------------------------- TRÁMITE 2: Alegación ------------------------- 
+    	// ------------------------- TR�?MITE 2: Alegación ------------------------- 
         Tramite tramiteAlegacion = new Tramite();
         tramiteAlegacion.nombre = "Alegación";
         tramiteAlegacion.uri = "fs://alegacion";
@@ -515,7 +515,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         uriDocumento = tramiteAlegacion.setDocumentoEnTramite("Prefijo justificante pdf alegación", "fs://prefijojustificantepdfalegacion/v01", "UNICO"); 	
         tramiteAlegacion.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto);    
  
-        // ------------------------- TRÁMITE 3: Desestimiento ------------------------- 
+        // ------------------------- TR�?MITE 3: Desestimiento ------------------------- 
         Tramite tramiteDesestimiento = new Tramite();
         tramiteDesestimiento.nombre = "Desestimiento";
         tramiteDesestimiento.uri = "fs://desestimiento";
@@ -529,7 +529,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         uriDocumento = tramiteDesestimiento.setDocumentoEnTramite("Prefijo justificante pdf desestimiento", "fs://prefijojustificantepdfdesestimiento/v01", "UNICO"); 	
         tramiteDesestimiento.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto);    
         
-        // ------------------------- TRÁMITE 4: AceptacionRenuncia -------------------------
+        // ------------------------- TR�?MITE 4: AceptacionRenuncia -------------------------
         Tramite tramiteAceptacionRenuncia = new Tramite();
         tramiteAceptacionRenuncia.nombre = "AceptacionRenuncia";
         tramiteAceptacionRenuncia.uri = "fs://aceptacionrenuncia";
@@ -585,7 +585,29 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     	tce.descripcionCorta="Descripcion Corta 3";
     	tce.save();
     }
+    
+    private TipoDocumento newTipoDocumento(String nombre, String tipo){
+        TipoDocumento tipoDocumento = new TipoDocumento();
+        //tipoDocumento.nombre = "FileSystem " + nombre;
+        tipoDocumento.nombre = nombre;
+        tipoDocumento.uri = tipo;
+        tipoDocumento.aportadoPor = "CIUDADANO";
+        tipoDocumento.obligatoriedad = "OBLIGATORIO";
+        return tipoDocumento;
+    }
 
+	private TiposCodigoRequerimiento newTiposCodigoRequerimiento(TiposCodigoRequerimiento codigoReq, 
+																	String uriTipoDocumento, String uriTramite) {
+		TiposCodigoRequerimiento tipoCodReqdb = new TiposCodigoRequerimiento();
+		tipoCodReqdb.codigo = codigoReq.codigo;
+		tipoCodReqdb.descripcion = codigoReq.descripcion;
+		tipoCodReqdb.descripcionCorta = codigoReq.descripcionCorta;
+		tipoCodReqdb.uriTipoDocumento = uriTipoDocumento;
+		tipoCodReqdb.uriTramite = uriTramite;
+		tipoCodReqdb.save();
+		return tipoCodReqdb;
+	}
+	
 	@Override
 	public String crearExpediente(ExpedienteAed expedienteAed)
 			throws GestorDocumentalServiceException {
@@ -635,6 +657,12 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		tdList.add(td);
 		td = newTipoDocumento("fs://justificanteregistro/v01", "Justificante del registro", "justificanteregistro");
 		tdList.add(td);
+		es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento td2 = new es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento();
+		td2.setUri("fs://solicitud/v01");
+		td2.setDescripcion("FileSystem FileSystem Solicitud");
+		td2.setVersion(1);
+		td2.setEtiqueta("Etiqueta Solicitud");
+		tdList.add(td2);
 		return tdList;
 	}
 
@@ -754,5 +782,12 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	@Override
 	public BinaryResponse getDocumentoConInformeDeFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
 		return getDocumentoByUri(uriDocumento);
+	}
+
+	@Override
+	public void agregarFirma(Documento documento, String firmaStr)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		
 	}
 }

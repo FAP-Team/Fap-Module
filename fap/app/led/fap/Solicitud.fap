@@ -627,6 +627,11 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
 		Texto campo=CEconomicosManuales.tipo.descripcion titulo="Descripción"
 	}
+	
+	//Sobreescrita TODO: REVISAR PERMISOS (con estado?)
+	Pagina PaginaCEconomicosEvaluados titulo= "Conceptos Económicos Evaluados" campo=SolicitudGenerica permiso=adminOrGestor noForm  perteneceA ="Baremacion" {
+		
+	}
 
 	// ******************************************************************************************
 	// ACEPTAR/RENUNCIAR

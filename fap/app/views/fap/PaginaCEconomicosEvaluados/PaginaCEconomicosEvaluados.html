@@ -1,0 +1,236 @@
+
+%{
+	Integer d = duracion-1;
+	def tipoEvaluacion = models.TipoEvaluacion.all().first();
+	def anioInicio = tipoEvaluacion.inicio;
+%}
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'PaginaCEconomicosEvaluados', 
+     permiso:'adminOrGestor', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Conceptos Económicos Evaluados', 
+     urlBorrar:play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.editar' , ['idSolicitud':solicitud?.id])
+}
+
+	#{fap.grupo titulo:'Conceptos Económicos Evaluados', id: 'CEconomicosEvaluados'}
+
+		<div id="tablaCEconomicosEvaluados" class="tabla"></div>
+
+		%{
+			play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition) play.mvc.Router.reverse("PaginaCEconomicosEvaluadosController.tablatablaCEconomicosEvaluados", ['idSolicitud':idSolicitud]), "url");
+			def id="tablaCEconomicosEvaluados";
+			def modelName = id + "_model";
+			String idEntidad="_idCEconomico_";
+			String popupEditar="PopupCEConomicosEvaluadosGestor";
+			String urlPopupEditar=play.mvc.Router.reverse("popups.PopupCEConomicosEvaluadosGestorController.index" , ['accion':'editar', 'idSolicitud':idSolicitud, 'idCEconomico':'_idCEconomico_', 'duracion':duracion]);
+		%}
+		<script>
+		
+		  Ext.onReady(function() {
+		  
+		    if (!Ext.ModelManager.isRegistered('${modelName}')){
+				Ext.define('${modelName}',{
+        			extend: 'Ext.data.Model',
+        			idProperty: 'id',
+        			fields:[
+        				{name: 'jerarquia', mapping: 'jerarquia'},
+        				{name: 'nombre', mapping: 'nombre'},
+        				#{list items:0..duracion, as:'i'}
+        					%{
+        						def valorSolicitado = "valorSolicitado"+i;
+        						def valorEstimado = "valorEstimado"+i;
+        						def valorConcedido = "valorConcedido"+i;
+        						def valorPropuesto = "valorPropuesto"+i;
+        					%}
+			    			{name: '${valorSolicitado}', mapping: '${valorSolicitado}'},
+			    			{name: '${valorEstimado}', mapping: '${valorEstimado}'},
+			    			{name: '${valorPropuesto}', mapping: '${valorPropuesto}'},
+			    			{name: '${valorConcedido}', mapping: '${valorConcedido}'},
+			    		#{/list}
+			    		{name: 'permiso', mapping: 'permiso'},
+			    		{name: 'totalSolicitado', mapping: 'totalSolicitado'},
+			    		{name: 'totalEstimado', mapping: 'totalEstimado'},
+			    		{name: 'totalPropuesto', mapping: 'totalPropuesto'},		    		
+			    		{name: 'totalConcedido', mapping: 'totalConcedido'}
+					]
+		    	});
+			}
+			
+			var store = Ext.create('Ext.data.Store', {
+				autoLoad: true,
+				model: '${modelName}',
+		        data: [],
+		        proxy: {
+		        	type: 'memory',
+		        	reader: {
+		                type: 'json',
+		                totalRecords: '@total'
+		            }
+		        }
+		    });
+		    
+		    function peticionJSON(){
+				$.ajax("${actionDef.url}").done(function (data){
+				 									store.loadData(data);
+												});
+		    }
+		    
+		    peticionJSON();
+		  
+			var boton_editar = new Ext.Button({
+		    	text: 'Editar',
+		    	icon: '@{'/public/images/table-editar.png'}',
+		    	disabled:true,
+		    	handler : function(){
+			   		var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+			   		popup_open(
+			   			"${popupEditar}_popup",
+			   			replaceId("${urlPopupEditar}", "${idEntidad}", selected_id),
+			   			reload
+			   		);
+		    	}
+		    });
+		    
+		    var editRow = new Ext.create('Ext.grid.plugin.Editing', {
+		    	clicksToEdit: 2,
+	    	   	startEdit: function(record, columnHeader) {
+	    	   		if (grid.getSelectionModel().getSelection()[0].data.permiso == "true"){
+						var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+						var registro = store.getAt(store.find("id", selected_id));
+			   			popup_open(
+			   				"${popupEditar}_popup",
+				   			replaceId("${urlPopupEditar}", "${idEntidad}", selected_id),
+		   					reload
+		   				);
+		   			}
+        		}
+    		});
+		    
+		    var grid = new Ext.grid.GridPanel({
+				store : store,
+				columns : [{
+					text : 'Jerarquía',
+					sortable : true,
+					dataIndex : 'jerarquia',
+					width : 80
+					} , {
+					text : 'Concepto',
+					sortable : true,
+					dataIndex : 'nombre',
+					width : 200
+				#{list items:0..duracion, as:'i'}
+					} , {
+					text : 'Año '+(${i}+${anioInicio}),
+					columns : [{
+							text : 'Valor Solicitado',
+							sortable : true,
+							dataIndex : 'valorSolicitado'+${i},
+							width: 100
+						} , {
+							text : 'Valor Estimado',
+							sortable : true,
+							dataIndex : 'valorEstimado'+${i},
+							width: 100
+						} , {
+							text : 'Valor Propuesto',
+							sortable : true,
+							dataIndex : 'valorPropuesto'+${i},
+							width: 100	
+						} , {
+							text : 'Valor Concedido',
+							sortable : true,
+							dataIndex : 'valorConcedido'+${i},
+						width: 100
+					}]
+				#{/list}
+				} , {
+					text : 'TOTALES POR CONCEPTOS',
+					columns : [{
+							text : 'Valor Solicitado',
+							sortable : true,
+							dataIndex : 'totalSolicitado',
+							width: 100
+						} , {
+							text : 'Valor Estimado',
+							sortable : true,
+							dataIndex : 'totalEstimado',
+							width: 100
+						} , {
+							text : 'Valor Propuesto',
+							sortable : true,
+							dataIndex : 'totalPropuesto',
+							width: 100	
+						} , {
+							text : 'Valor Concedido',
+							sortable : true,
+							dataIndex : 'totalConcedido',
+						width: 100
+					}]
+				}],
+				renderTo: '${id}',
+				id: '${id}-grid',
+				height: 400,
+				title: 'Conceptos Economicos Evaluados',
+				plugins: [
+					editRow
+				],
+				dockedItems: [
+					{
+						itemId: 'barraInferior',
+                		xtype: 'toolbar',
+        				dock: 'bottom',
+        				items: [
+  							 {
+  								itemId: 'searchbox',
+                				width: 300,
+                				fieldLabel: 'Buscar',
+                				labelWidth: 50,
+                				xtype: 'searchfield',
+                				store: store
+            				},
+			            	'->'
+			            	#{if !noPuedeEditar}, boton_editar #{/if}
+        				]
+    				}
+				]
+			});
+			
+			grid.addListener("selectionchange", function(){
+		    	if ((grid.getSelectionModel().hasSelection()) && (grid.getSelectionModel().getSelection()[0].data.permiso == "true")){
+		    		boton_editar.setDisabled(false);
+		    	} else {
+		    		boton_editar.setDisabled(true);
+		    	}
+		    });
+		    
+		    store.addListener("load", function(){
+				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
+		    });
+		    
+		    function reload(){
+				peticionJSON();
+				window.location.reload();
+			};
+		    
+		    $('#tablaCEconomicosEvaluados').data('grid', grid);
+		    
+		  });
+    		
+		</script>
+	
+	#{/fap.grupo}
+	
+#{/fap.pagina}
+		
+		

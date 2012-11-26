@@ -799,3 +799,15 @@ Entidad Metadato {
     String nombre
     String valor
 }
+    
+Entidad VerificacionTramites extends Singleton {
+	OneToMany TramitesVerificables tramites
+	String uriTramitePorDefecto
+}
+
+Entidad TramitesVerificables {
+	String uriTramite
+	String nombre transient
+	Boolean verificable default="true"
+
+}

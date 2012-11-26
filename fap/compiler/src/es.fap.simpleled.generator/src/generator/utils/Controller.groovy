@@ -307,8 +307,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		String getVariablesRedirigir = "";
 		getVariablesRedirigir += """String variablesRedirigir="";\n""";
 		allEntities.collect{
-			if (it != entidad)
+			if ((it != entidad) && (!it.id.isEmpty())){ //it.id="", en caso de que sea una entidad Singleton (Siempre se conocera su id=1L)
 				getVariablesRedirigir += """variablesRedirigir += "&$it.id="+$it.id;\n""";
+			}
 		}
 		getVariablesRedirigir += """urlRedirigir+=variablesRedirigir;\n""";
 		

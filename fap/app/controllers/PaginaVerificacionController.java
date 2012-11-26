@@ -41,8 +41,10 @@ import models.Requerimiento;
 import models.SolicitudGenerica;
 import models.TipoDocumento;
 import models.Tramite;
+import models.TramitesVerificables;
 import models.Verificacion;
 import models.VerificacionDocumento;
+import models.VerificacionTramites;
 
 import controllers.fap.AgenteController;
 import controllers.fap.VerificacionFapController;
@@ -87,6 +89,11 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 
         if ((solicitud != null) && (solicitud.verificacion != null) && (solicitud.verificacion.estado != null)){
         	log.info("Visitando página: " + "gen/PaginaVerificacion/PaginaVerificacion.html");
+        	if ((verificacion.uriTramite == null) || (verificacion.uriTramite.isEmpty())){
+        		VerificacionTramites vTramites = VerificacionTramites.get(VerificacionTramites.class);
+        		if ((vTramites.uriTramitePorDefecto != null) && (!vTramites.uriTramitePorDefecto.isEmpty()))
+        			verificacion.uriTramite=vTramites.uriTramitePorDefecto;
+        	}
         	renderTemplate("gen/PaginaVerificacion/PaginaVerificacion.html", accion, idSolicitud, idVerificacion, solicitud, verificacion);
         } else
         	redirect("AccesoVerificacionesController.index", accion, idSolicitud);
@@ -96,9 +103,10 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	//Métodos en el controlador manual
 	public static List<ComboItem> getTramitesCombo () {
 		List<ComboItem> result = new ArrayList<ComboItem>();
-		List<Tramite> lTrams = Tramite.findAll();
-		for (Tramite t: lTrams) {
-			result.add(new ComboItem(t.uri, t.nombre));
+		VerificacionTramites vTramites = VerificacionTramites.get(VerificacionTramites.class);
+		for (TramitesVerificables t: vTramites.tramites) {
+			if (t.verificable)
+				result.add(new ComboItem(t.uriTramite, t.nombre));
 		}
 		return result;
 	}

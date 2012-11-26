@@ -42,6 +42,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 
 import config.InjectorConfig;
+import controllers.AedController;
 
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
@@ -79,6 +80,7 @@ import services.RegistroService;
 import services.TercerosService;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
+import utils.ModelUtils;
 
 @OnApplicationStart
 public class Start extends Job {
@@ -195,6 +197,11 @@ public class Start extends Job {
 		BaremacionUtils.actualizarTipoEvaluacion();
 		
 		actualizarSemillaExpediente();
+		
+		if ((TramitesVerificables.count() == 0) && (Tramite.count() > 0)){
+			List<Tramite> tramites = Tramite.findAll();
+			ModelUtils.actualizarTramitesVerificables(tramites);
+		}
 		
 		// Para mostrar información acerca de la inyección de los servicios
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);

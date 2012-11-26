@@ -61,9 +61,7 @@ public class AEATUtils {
 	static final int finReferencia = 100;
 	static final int neg = 1;
 	static final int longitudRegistro = 100;
-	
-	
-	//Inyeccion manual	
+
 	static GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 	
 	public static void peticionAEAT(PeticionCesiones pt, List<Long> idsSeleccionados) {
@@ -137,7 +135,6 @@ public class AEATUtils {
 					String fecha;
 					if (aeat.cert.equals(CodigoCertEnum.N.name())){
 						aeat.negat = linea.substring(iniNEGAT, iniNEGAT+1);
-						//aeat.estadoNegat = CodigoAEATNegatEnum.valueOf(aeat.negat).value();
 						fecha = linea.substring(iniFecha, iniDatosPpios); //+neg
 						pt.respCesion.fechaGeneracion = obtenerFechaParseada(fecha);
 						aeat.datosPropios = linea.substring(iniDatosPpios, iniReferencia);
@@ -174,7 +171,7 @@ public class AEATUtils {
         	try {
             	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pt", pt);
             	for (SolicitudGenerica sol : solicitud) {
-            		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "inssR001", pt.id.toString(), sol.id).fetch();
+            		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "aeat", pt.id.toString(), sol.id).fetch();
             		if (cesionesTipo.isEmpty()){ //No se han creado cesiones a partir de este fichero -> Creo
 	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("aeat", aeat);
 	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
@@ -257,7 +254,7 @@ public class AEATUtils {
 		cesion.tipo = pt.tipo;
 		cesion.idUnico = Long.toString(pt.id);
 		cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
-		cesion.fechaValidez = pt.fechaValidez;
+		cesion.fechaValidez = pt.respCesion.fechaGeneracion.plusMonths(Integer.parseInt(FapProperties.get("fap.cesiondatos.validezPeticion")));;
 		cesion.origen = ListaOrigenEnum.cesion.name();
 		cesion.firmada = false;
 		cesion.documento = doc;

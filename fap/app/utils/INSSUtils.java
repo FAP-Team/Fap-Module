@@ -77,7 +77,6 @@ public class INSSUtils {
 	
 	static final int txtError = 80;
 	
-	//Inyeccion manual	
 	static GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 	
 	public static void peticionINSSR001(PeticionCesiones pt, List<Long> idsSeleccionados){
@@ -259,7 +258,6 @@ public class INSSUtils {
 			/*if (!inss.cabeceraSegunda.equals("2001"+motivo))
 				Messages.error("Error de formato en la cabecera segunda del archivo recibido");*/
 			
-			
 			//Registro detalle
 			while((linea=br.readLine())!=null){ // TipoReg+TipoDoc(1)+NumDoc(10)+Nombre(25)+estado[2](TABLA)+literalEstado(17) 
 				 inss.registroDetalle.nDocumento = linea.substring(iniID, finID);
@@ -375,7 +373,6 @@ public class INSSUtils {
 			solicitud.save(); 
 			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
 		} catch (FirmaServiceException e) {
-			// TODO Auto-generated catch block
 			play.Logger.error("No se pudo firmar en Servidor: "+e);
 		} 
 	}
@@ -385,7 +382,7 @@ public class INSSUtils {
 			cesion.tipo = pt.tipo;
 			cesion.idUnico = Long.toString(pt.id);
 			cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
-			cesion.fechaValidez = pt.fechaValidez;
+			cesion.fechaValidez = pt.respCesion.fechaGeneracion.plusMonths(Integer.parseInt(FapProperties.get("fap.cesiondatos.validezPeticion")));;;
 			cesion.origen = ListaOrigenEnum.cesion.name();
 			cesion.firmada = false;
 			cesion.documento = doc;
@@ -408,7 +405,6 @@ public class INSSUtils {
 				solicitud.save(); 
 				play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
 			} catch (FirmaServiceException e) {
-				// TODO Auto-generated catch block
 				play.Logger.error("No se pudo firmar en Servidor: "+e);
 			} 
 	}

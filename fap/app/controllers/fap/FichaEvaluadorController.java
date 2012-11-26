@@ -176,7 +176,7 @@ public class FichaEvaluadorController extends Controller {
 	}
 
 	@Util
-	public static void save(){
+	public static void save(Long idEvaluacion){
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		if(secure.checkGrafico("guardarEvaluacion", "editable", "editar", ids, null)){
 			boolean actionSave = params.get("save") != null;
@@ -289,7 +289,7 @@ public class FichaEvaluadorController extends Controller {
 				}
 				
 				Messages.keep();
-				index(evaluacion.id, "editar");
+				redirect("fap.FichaEvaluadorController.index", evaluacion.id, "editar");
 			}
 		}else{
 			play.Logger.error("No se cumple el permiso \"guardarEvaluacion\" con ids: "+ids);

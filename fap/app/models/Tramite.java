@@ -108,7 +108,6 @@ public class Tramite extends FapModel {
 		}
 	}
 
-
 	public boolean existTipoDocumentoAportadoPorCiudadano() {
 		List<TipoDocumento> documentosCiudadanoTramite = Tramite.findTipoDocumentosAportadosPor(this.nombre, "CIUDADANO");
 		if ((documentosCiudadanoTramite == null) || (documentosCiudadanoTramite.isEmpty()))

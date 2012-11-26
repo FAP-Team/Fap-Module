@@ -784,8 +784,6 @@ Entidad CertificadoSolicitado {
 	TipoCertificado tipo
 	Documento documento
 	DateTime fechaCreacion
-	String estado
-	Registro registro
 }
 
 // Metadatos de los tipos de documentos. Hecho en principio para parsear de un JSON

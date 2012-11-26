@@ -16,10 +16,13 @@ import models.Documento;
 import models.SolicitudGenerica;
 import models.TipoCertificado;
 import reports.Report;
+import services.FirmaService;
+import services.FirmaServiceException;
 import services.GestorDocumentalService;
 import utils.ModelUtils;
 
 import play.Play;
+import play.mvc.Util;
 import play.utils.Java;
 
 public class AnotacionesAdministrativasAutorizadasFapController extends InvokeClassController{
@@ -56,7 +59,7 @@ public class AnotacionesAdministrativasAutorizadasFapController extends InvokeCl
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 		TipoCertificado tipoCertificado=TipoCertificado.findById(idTipoCertificado);
-		CertificadoSolicitado certificado = new CertificadoSolicitado(); 
+		CertificadoSolicitado certificado = new CertificadoSolicitado();
     	File certificadoPDF;
 		try {
 			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
@@ -65,11 +68,24 @@ public class AnotacionesAdministrativasAutorizadasFapController extends InvokeCl
 			gestorDocumentalService.saveDocumentoTemporal(certificado.documento, certificadoPDF);
 			certificado.fechaCreacion=new DateTime();
 			certificado.tipo=tipoCertificado;
-			// TODO: Firma con sello de la ACIISI
-			// TODO: Añadir mas info al certificado
-			certificado.save();
-			solicitud.certificados.add(certificado);
-			solicitud.save();
+			// Firma con sello de la ACIISI
+			FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+			if (!Messages.hasErrors()) {
+				try {
+					String firma = firmaService.firmarEnServidor(certificado.documento);
+					play.Logger.info("Se realizó la firma "+firma+" en Servidor correctamente del tipo de certificado "+tipoCertificado.id+" de la solicitud: "+solicitud.id);
+				} catch (Exception e) {
+					play.Logger.error("No se pudo firmar en Servidor: "+e);
+					Messages.error("Hubo un error al intentar obtener el certificado. Vuelva a intentarlo");
+					Messages.keep();
+				} 
+			}
+			// ------------------------------
+			if (!Messages.hasErrors()) {
+				certificado.save();
+				solicitud.certificados.add(certificado);
+				solicitud.save();
+			}
 		} catch (Exception e) {
 			play.Logger.error("Hubo un error generando el certificado PDF "+e.getMessage());
 			Messages.error("Imposible generar el certificado");

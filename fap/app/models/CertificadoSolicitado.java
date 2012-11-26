@@ -32,11 +32,6 @@ public class CertificadoSolicitado extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaCreacion;
 
-	public String estado;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public Registro registro;
-
 	public CertificadoSolicitado() {
 		init();
 	}
@@ -52,11 +47,6 @@ public class CertificadoSolicitado extends FapModel {
 			documento = new Documento();
 		else
 			documento.init();
-
-		if (registro == null)
-			registro = new Registro();
-		else
-			registro.init();
 
 		postInit();
 	}

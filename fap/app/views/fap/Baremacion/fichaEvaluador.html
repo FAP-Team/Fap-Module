@@ -51,7 +51,7 @@
 	#{/fap.tabla}
 #{/if}
 
-#{form @fap.FichaEvaluadorController.save(), class:"form-stacked"}
+#{form play.mvc.Router.reverse('fap.FichaEvaluadorController.save' , ['idEvaluacion':evaluacion?.id]), class:"form-stacked"}
 
 <input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>
 

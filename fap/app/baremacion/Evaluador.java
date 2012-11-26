@@ -12,6 +12,17 @@ import models.TipoEvaluacion;
 
 public class Evaluador {
 
+	
+	public static Evaluacion getEvaluacion(CEconomico ceconomico){
+		Evaluacion evaluacion = Evaluacion.find("select evaluacion from Evaluacion evaluacion join evaluacion.ceconomicos ceconomico where ceconomico.id=?", ceconomico.id).first();
+		return evaluacion;
+	}
+	
+	public static Evaluacion getEvaluacion(Criterio criterio){
+		Evaluacion evaluacion = Evaluacion.find("select evaluacion from Evaluacion evaluacion join evaluacion.criterios criterio where criterio.id=?", criterio.id).first();
+		return evaluacion;
+	}
+	
 	public static void evalDefault(Criterio criterio, List<Criterio> childs) {
 		criterio.valor = sumatorio("valor", childs);
 	}

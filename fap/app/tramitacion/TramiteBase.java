@@ -318,6 +318,7 @@ public abstract class TramiteBase {
 					for (Documento doc: documentos) {
 						if (doc.fechaRegistro == null) {
 							doc.fechaRegistro = registro.informacionRegistro.fechaRegistro;
+							doc.save();
 						}
 					}
 					play.Logger.info("Fechas de registro establecidas a " + this.getRegistro().informacionRegistro.fechaRegistro);

@@ -312,12 +312,16 @@
 			// Para cada vez que se renderiza la pagina, calculamos los posibles valores de ese combo
 			CargarValoresComboDependiente${id}();
 			
-			if (recupera${id}) {
-				recupera${id} = false;
-			} else {
-				// Para cada vez que cambie un combo del que depende otro, actualizar la lista de valores de ese otro
-				$('#${dependencia}').change(function(){CargarValoresComboDependiente${id}();});
-			}
+			
+			// Para cada vez que cambie un combo del que depende otro, actualizar la lista de valores de ese otro
+			$('#${dependencia}').change(function(){
+				if (recupera${id}) {
+					recupera${id} = false;
+				} else {
+					CargarValoresComboDependiente${id}();
+				}
+			});
+
 		</script>
 		
 	#{/if}

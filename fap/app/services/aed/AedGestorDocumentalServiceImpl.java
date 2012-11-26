@@ -201,7 +201,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 				return numeroExpediente;
 			}
 		} catch (AedExcepcion e) {
-			play.Logger.error("Error al buscar los expedientes en el AED.");
+			play.Logger.error("Error al buscar los expedientes en el AED: "+e);
 		}
         Interesados interesados = getInteresados(solicitud);
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
@@ -490,8 +490,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     		documento.fechaSubida = new DateTime();
     		documento.clasificado = false;
     		documento.refAed = false;					
-    		documento.expedienteReferenciado = null;
-    		documento.solicitudReferenciada = null;
     		
     		// Almacena el Hash del documento
     		documento.hash=getHash(uri);
@@ -1226,6 +1224,16 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		return expresionRegular;
 	}
 	
+	@Deprecated
+	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion {
+		duplicarDocumentoSubido(uriDocumento);
+	}
+	
+	@Deprecated
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException {
+		duplicarDocumentoSubido(uriDocumento, descripcionDocumento, dbDocumento);
+	}
+		
 	/*
 	 * Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente (y clasificado). 
 	 * Esta función marca en ese documento (campos documento.RefAed y documento.expedienteReferenciado) que 
@@ -1233,28 +1241,12 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 * documento pasa a formar parte a todos los efectos del expediente.
 	 * 
 	 */
-	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion {
-		List<DocumentoEnUbicacion> documentoEnUbicacion = aedPort.obtenerDocumentoRutas(uriDocumento);
-		String expediente = null;
-		for (DocumentoEnUbicacion docEnUbicacion : documentoEnUbicacion) {
-			expediente = docEnUbicacion.getExpediente();
-			if (expediente != null)
-				break;
-		}
-		if (expediente == null) {
-			throw new AedExcepcion("No se encuentra el expediente que debe tener el documento con uri " + uriDocumento + 
-									" en la duplicación de un documento ya subido.");
-		}
-
+	public void duplicarDocumentoSubido(String uriDocumento) throws AedExcepcion {
 		models.Documento doc = new models.Documento(); 
 		doc.refAed = true;
 		doc.uri = uriDocumento;
-		doc.expedienteReferenciado = expediente;
         doc.fechaSubida = new DateTime();
 		doc.save();
-		
-		solicitud.documentacion.documentos.add(doc);
-		solicitud.save();
 	}
 	
 	private boolean containsFirmante (models.Firmante firmante, List<Firmante> listaFirmantes) {
@@ -1266,25 +1258,12 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 
 	@Override
-	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException {
-		List<DocumentoEnUbicacion> documentoEnUbicacion = aedPort.obtenerDocumentoRutas(uriDocumento);
-		String expediente = null;
-		for (DocumentoEnUbicacion docEnUbicacion : documentoEnUbicacion) {
-			expediente = docEnUbicacion.getExpediente();
-			if (expediente != null)
-				break;
-		}
-		if (expediente == null) {
-			throw new AedExcepcion("No se encuentra el expediente que debe tener el documento con uri " + uriDocumento + 
-									" en la duplicación de un documento ya subido.");
-		}
-
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento) throws AedExcepcion, GestorDocumentalServiceException {
 		dbDocumento.refAed = true;
 		dbDocumento.uri = uriDocumento;
 		dbDocumento.descripcion = descripcionDocumento;
-		dbDocumento.expedienteReferenciado = expediente;
 		dbDocumento.fechaSubida = new DateTime();
-
+		dbDocumento.save();
 	}
 
 	

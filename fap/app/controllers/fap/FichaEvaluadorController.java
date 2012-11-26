@@ -90,6 +90,7 @@ public class FichaEvaluadorController extends Controller {
 			boolean puedoGuardar = secure.checkGrafico("guardarEvaluacion", "editable", accion, ids, null);
 			renderTemplate("fap/Baremacion/fichaEvaluador.html", evaluacion, expedienteUrl, duracion, idEvaluacion, accion, puedoGuardar);
 		}else{
+			play.Logger.error("No se cumple el permiso \"accesoEvaluacion\" con ids: "+ids);
 			forbidden();
 		}
 	}
@@ -139,6 +140,7 @@ public class FichaEvaluadorController extends Controller {
 		renderJSON(response.toJSON("fechaRegistro", "descripcionVisible", "tipo", "urlDescarga", "id"));
 	}
 
+	@Util
 	private static String redirectToFirstPage(Long idSolicitud) {
 		//Url Primera pagina de la solicitud
 		String firstPage = FapProperties.get("fap.app.firstPage"); 
@@ -150,6 +152,7 @@ public class FichaEvaluadorController extends Controller {
 		return expedienteUrl;
 	}
 	
+	@Util
 	public static void generaPDF(Long idEvaluacion, Integer duracion){
 		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 		if(evaluacion == null){
@@ -172,7 +175,8 @@ public class FichaEvaluadorController extends Controller {
 		}
 	}
 
-	public static void save(){
+	@Util
+	public static void save(Long idEvaluacion){
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		if(secure.checkGrafico("guardarEvaluacion", "editable", "editar", ids, null)){
 			boolean actionSave = params.get("save") != null;
@@ -285,14 +289,15 @@ public class FichaEvaluadorController extends Controller {
 				}
 				
 				Messages.keep();
-				index(evaluacion.id, "editar");
+				redirect("fap.FichaEvaluadorController.index", evaluacion.id, "editar");
 			}
 		}else{
+			play.Logger.error("No se cumple el permiso \"guardarEvaluacion\" con ids: "+ids);
 			forbidden();
 		}
 	}
 	
-	
+	@Util
 	private static void flash(Evaluacion evaluacion){
 		Messages.setFlash("evaluacion.id", params.get("evaluacion.id", String.class));
 		Messages.setFlash("evaluacion.totalCriterios", params.get("evaluacion.totalCriterios", String.class));

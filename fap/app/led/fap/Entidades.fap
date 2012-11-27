@@ -728,7 +728,7 @@ Entidad AutorizacionCesion {
 }
 
 Entidad Trabajador {
-	String regimen
+	Lista codigosRegimen regimen
 	String codigoCuenta
 }
 

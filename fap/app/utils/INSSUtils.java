@@ -201,9 +201,10 @@ public class INSSUtils {
 	        inss.cabeceraPrimera=br.readLine(); //1C+Ley(8blancos)+año+mes+dia+h+m+s+"s"idTransmision(6 digitos -> hasta TGSS)+TGSS
 			//Registro cabecera 2
 			inss.cabeceraSegunda=br.readLine();
-			if (!inss.cabeceraSegunda.equals("2001"+motivo)){
-				throw new Exception(new Throwable());
-			}
+			//if (!inss.cabeceraSegunda.equals("2001"+motivo)){
+			//	System.out.println("Fallo de cabecera 2");
+			//	throw new Exception(new Throwable());
+			//}
 			//Registro detalle
 			while((linea=br.readLine())!=null){
 				if (linea.length() == correcto){ //Correcto
@@ -330,7 +331,7 @@ public class INSSUtils {
             	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pt", pt);
             	for (SolicitudGenerica sol : solicitud) {
             		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "inssR001", pt.id.toString(), sol.id).fetch();
-            		if (cesionesTipo.isEmpty()){ //No se han creado cesiones a partir de este fichero -> Creo
+            		if (cesionesTipo.isEmpty()){ 
             			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("inss", inss);
 	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
 	                	report = new Report("reports/bodyPeticionINSSR001.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, inss);

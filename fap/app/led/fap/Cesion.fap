@@ -25,7 +25,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 	} 
 	
 	Popup PopupTrabajadores campo=SolicitudGenerica.cesion.autorizacionCesion.trabajadores titulo="Nueva cuenta de cotizacion"{ 
-		Texto regimen campo=Trabajador.regimen titulo="Régimen de la Seguridad Social" requerido
+		Combo regimen campo=Trabajador.regimen titulo="Régimen de la Seguridad Social" mostrarClave requerido
 		Texto codCuenta campo=Trabajador.codigoCuenta titulo="Código de cuenta de cotización" requerido
 	}
 	

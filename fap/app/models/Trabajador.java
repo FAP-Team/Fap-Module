@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 public class Trabajador extends FapModel {
 	// Código de los atributos
 
+	@ValueFromTable("codigosRegimen")
 	public String regimen;
 
 	public String codigoCuenta;

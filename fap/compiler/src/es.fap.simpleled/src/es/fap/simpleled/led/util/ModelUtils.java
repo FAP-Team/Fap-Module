@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -15,6 +16,9 @@ import org.eclipse.xtext.resource.IResourceDescriptions;
 import org.eclipse.xtext.resource.containers.DescriptionAddingContainer;
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import com.google.inject.Inject;
+
+import es.fap.simpleled.led.Campo;
+import es.fap.simpleled.led.Elemento;
 
 public class ModelUtils{
 
@@ -72,8 +76,38 @@ public class ModelUtils{
 		while (!(clazz.isInstance(eo))) {
 			EObject eo1 = (EObject)eo.eContainer();
 			eo = eo1;
+			if (eo == null)
+				break;
 		}
 		return eo;
+	}
+	
+	public static Elemento getElemento(EObject object) {
+		if (object instanceof Elemento) 
+			return (Elemento) object;
+		for (Method method : object.getClass().getMethods()) {
+			if (method.getReturnType().equals(Campo.class)) {
+				try {
+					return (Elemento) method.invoke(object);
+				} catch (Exception e) {
+					return null;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static List<Elemento> buscarElementosRecursivos(EObject container){
+		EList<Elemento> elementos = LedCampoUtils.getElementos(container);
+		List<Elemento> listaElementos = new ArrayList<Elemento>();
+		if (elementos != null){
+			for (EObject obj: elementos){
+				listaElementos.addAll(buscarElementosRecursivos(obj));
+			}
+		} else {
+			listaElementos.add(getElemento(container));
+		}
+		return listaElementos;
 	}
 	
 }

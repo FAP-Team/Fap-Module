@@ -480,10 +480,12 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			}
 		} else {
 			EObject pagina = ModelUtils.getContenedorPadre(eo, ledPackage.getPagina());
-			if (pagina != eo) {
-				if (!((Pagina) pagina).isNoForm()) {
-					//error("La página que contiene el Form debe tener el atributo 'noForm'.", ledPackage.getForm_Name());
-					warning("La página que contiene el Form debe tener el atributo 'noForm'.", ledPackage.getForm_Name());
+			if (pagina != null) {
+				if (pagina != eo) {
+					if (!((Pagina) pagina).isNoForm()) {
+						//error("La página que contiene el Form debe tener el atributo 'noForm'.", ledPackage.getForm_Name());
+						warning("La página que contiene el Form debe tener el atributo 'noForm'.", ledPackage.getForm_Name());
+					}
 				}
 			}
 		}
@@ -522,19 +524,21 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 				}
 			} else {
 				EObject form = ModelUtils.getContenedorPadre(eo, ledPackage.getForm());
-				if (form != eo) {
-					List<Elemento> elementos = ((Form) form).getElementos();
-					if (!elementos.isEmpty()) {
-						for (Elemento elemento : elementos) {
-							if (elemento instanceof es.fap.simpleled.led.Check) {
-								if (((es.fap.simpleled.led.Check) elemento).getName().toString().equals(grupo.getSiCheck().getName())) {
-									encontrado = true;
+				if (form != null) {
+					if (form != eo) {
+						List<Elemento> elementos = ((Form) form).getElementos();
+						if (!elementos.isEmpty()) {
+							for (Elemento elemento : elementos) {
+								if (elemento instanceof es.fap.simpleled.led.Check) {
+									if (((es.fap.simpleled.led.Check) elemento).getName().toString().equals(grupo.getSiCheck().getName())) {
+										encontrado = true;
+									}
 								}
 							}
-						}
-						if (!encontrado) {
-							error("El Check al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiCheck());
-							encontrado = false;
+							if (!encontrado) {
+								error("El Check al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiCheck());
+								encontrado = false;
+							}
 						}
 					}
 				}
@@ -557,19 +561,21 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 				}
 			} else {
 				EObject form = ModelUtils.getContenedorPadre(eo, ledPackage.getForm());
-				if (form != eo) {
-					List<Elemento> elementos = ((Form) form).getElementos();
-					if (!elementos.isEmpty()) {
-						for (Elemento elemento : elementos) {
-							if (elemento instanceof Combo) {
-								if (((Combo) elemento).getName().toString().equals(grupo.getSiCombo().getName())) {
-									encontrado = true;
+				if (form != null) {
+					if (form != eo) {
+						List<Elemento> elementos = ((Form) form).getElementos();
+						if (!elementos.isEmpty()) {
+							for (Elemento elemento : elementos) {
+								if (elemento instanceof Combo) {
+									if (((Combo) elemento).getName().toString().equals(grupo.getSiCombo().getName())) {
+										encontrado = true;
+									}
 								}
 							}
-						}
-						if (!encontrado) {
-							error("El Combo al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiCombo());
-							encontrado = false;
+							if (!encontrado) {
+								error("El Combo al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiCombo());
+								encontrado = false;
+							}
 						}
 					}
 				}
@@ -592,26 +598,82 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 					}
 				} else {
 					EObject form = ModelUtils.getContenedorPadre(eo, ledPackage.getForm());
-					if (form != eo) {
-						List<Elemento> elementos = ((Form) form).getElementos();
-						if (!elementos.isEmpty()) {
-							for (Elemento elemento : elementos) {
-								if (elemento instanceof RadioBooleano) {
-									if (((RadioBooleano) elemento).getName().toString().equals(grupo.getSiRadioBooleano().getName())) {
-										encontrado = true;
+					if (form != null) {
+						if (form != eo) {
+							List<Elemento> elementos = ((Form) form).getElementos();
+							if (!elementos.isEmpty()) {
+								for (Elemento elemento : elementos) {
+									if (elemento instanceof RadioBooleano) {
+										if (((RadioBooleano) elemento).getName().toString().equals(grupo.getSiRadioBooleano().getName())) {
+											encontrado = true;
+										}
 									}
 								}
-							}
-							if (!encontrado) {
-								error("El RadioBooleano al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiRadioBooleano());
-								encontrado = false;
+								if (!encontrado) {
+									error("El RadioBooleano al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiRadioBooleano());
+									encontrado = false;
+								}
 							}
 						}
 					}
 				}
 		}
 	}
+	
+	/*
+	 * En el caso de que haya varios SubirArchivo en una página, no pueden hacer referencia
+	 * al mismo documento.
+	 */
+	@Check
+	public void checkReferenciaDocumentoUnicoSubirArchivo(SubirArchivo subirArchivo) {
+		EObject pagina = ModelUtils.getContenedorPadre(subirArchivo, ledPackage.getPagina());
+		if (pagina != null) {
+			if (checkDocumentoUsado(pagina))
+				error("No se puede hacer referencia al mismo documento.", ledPackage.getSubirArchivo_Campo());		
+		}
+	}
 
+	/*
+	 * Mira en todos los elementos de la página y comprueba si hay varias referencias
+	 * al mismo documento.
+	 */
+	public boolean checkDocumentoUsado(EObject obj) {
+		List<Campo> campos = LedCampoUtils.buscarCamposRecursivos(obj);
+		Set<String> unicos = new HashSet<String>();
+		String campoStr = "";
+		for (Campo campo: campos){
+			campoStr = LedCampoUtils.getCampoStr(campo);
+			if (!unicos.contains(campoStr))
+				unicos.add(campoStr);
+			else{
+				if (campo != null)
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	/*
+	 * En una misma página los identificadores de los SubirArchivo tienen
+	 * que ser diferente.
+	 */
+	@Check
+	public void checkNombreSubirArchivoUnico(SubirArchivo subirArchivo) {
+		EObject eo = ModelUtils.getContenedorPadre(subirArchivo, ledPackage.getPagina());
+		if (eo != null) {
+			if (eo instanceof Pagina) {
+				List<Elemento> elementos = ModelUtils.buscarElementosRecursivos(eo);
+				if (!elementos.isEmpty()) {
+					for (Elemento elemento : elementos) {
+						if (elemento instanceof SubirArchivo) {
+							if (elemento != subirArchivo)
+								if (((SubirArchivo) elemento).getName().equals(subirArchivo.getName()))
+									warning("Existe otro elemento SubirArchivo con el mismo nombre.", ledPackage.getSubirArchivo_Name());
+						}
+					}
+				}
+			}
+		}
+	}
 }
-
-

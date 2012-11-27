@@ -1,5 +1,6 @@
 package controllers;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -7,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import baremacion.BaremacionFAP;
+
+import play.Play;
 import play.mvc.Util;
 import tables.TableRecord;
 import messages.Messages;
@@ -131,6 +135,69 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 	  	columna.put("totalEstimado", (new BigDecimal(Double.toString(totalesEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 	  	columnasCEconomicos.add(columna);
 		renderJSON(columnasCEconomicos);
+	}
+	
+	@Util
+	public static void guardar(Long idSolicitud, String botonGuardar) {
+		checkAuthenticity();
+		if (!permisoGuardar("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+		if (!Messages.hasErrors()) {
+			Class invokedClass = null;
+			//Busca una clase que herede de BaremacionFAP
+	        List<Class> assignableClasses = Play.classloader.getAssignableClasses(BaremacionFAP.class);
+	        if(assignableClasses.size() > 0) {
+	            invokedClass = assignableClasses.get(0);
+	        } else {
+	        	invokedClass = BaremacionFAP.class;
+	        }
+	        if (invokedClass != null) {
+				Method method = null;
+				try {
+					method = invokedClass.getDeclaredMethod("validarCEconomicosEvaluados", long.class, List.class);
+				} catch (Exception ex) {
+					invokedClass = BaremacionFAP.class;
+					if (invokedClass != null) {
+						method = null;
+						try {
+							method = invokedClass.getDeclaredMethod("validarCEconomicosEvaluados", long.class, List.class);
+						} catch (Exception e) {
+							play.Logger.error("Error g001: No se ha podido encontrar el método validarCEconomicosEvaluados de la clase BaremacionFAP");
+							Messages.error("Error interno g001. No se ha podido Guardar correctamente");
+						}
+					}
+				}
+				if (!Messages.hasErrors()) {
+					if (method != null) {
+						try {
+							List<CEconomico> ceconomicos = solicitud.ceconomicos;
+							method.invoke(PaginaCEconomicosEvaluadosController.class, idSolicitud, ceconomicos);
+						} catch (Exception e) {
+							play.Logger.error("Error g002: No se ha podido invocar el método validarCEconomicosEvaluados de la clase BaremacionFAP");
+							Messages.error("Error interno g002. No se ha podido Guardar correctamente");
+						} 
+					} else {
+						play.Logger.error("Error g003: No existe el Método apropiado para validar los CEconomicos. El método debe llamarse 'validarCEconomicosEvaluados()'");
+						Messages.error("Error interno g003. No se ha podido Guardar correctamente");
+					}
+				}
+			} else {
+				play.Logger.error("Error g004: No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'BaremacionFAP'");
+				Messages.error("Error interno g004. No se ha podido Guardar correctamente");
+			}
+		}
+
+		if (!Messages.hasErrors()) {
+			PaginaCEconomicosEvaluadosController.guardarValidateRules();
+		}
+		if (!Messages.hasErrors()) {
+			log.info("Acción Editar de página: " + "gen/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada sin éxito (Problemas de Validación)");
+		PaginaCEconomicosEvaluadosController.guardarRender(idSolicitud);
 	}
 	
 }

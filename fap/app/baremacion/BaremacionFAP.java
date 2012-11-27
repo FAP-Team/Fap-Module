@@ -1,12 +1,15 @@
 package baremacion;
 
+import play.mvc.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import controllers.fap.ConsultarEvaluacionesController;
 import controllers.fap.PresentacionFapController;
+import enumerado.fap.gen.EstadosEvaluacionEnum;
 
 import messages.Messages;
 import models.CEconomico;
@@ -130,4 +133,46 @@ public class BaremacionFAP {
 			}
         }
 	}
+	
+	public static void validarCEconomicosEvaluados(long idSolicitud, List<CEconomico> ceconomicos) {
+	}
+	
+	public static void finalizarEvaluaciones() {
+		if (!Messages.hasErrors()) {
+			List<Evaluacion> evaluaciones = Evaluacion.findAll();
+			for (Evaluacion evaluacion: evaluaciones) {
+				if (evaluacion.estado == null)
+					Messages.error("La evaluación del expediente "+evaluacion.solicitud.expedienteAed.idAed+" está aún sin estado");
+				else if ((!evaluacion.estado.equals(EstadosEvaluacionEnum.rechazada.name())) && (!evaluacion.estado.equals(EstadosEvaluacionEnum.evaluada.name()))) {
+					Messages.error("La evaluación del expediente "+evaluacion.solicitud.expedienteAed.idAed+" está aún en estado: "+evaluacion.estado);
+				}
+			}
+		}
+		if (Messages.hasErrors()) {
+			Messages.keep();
+		} else { // Todo ha ido bien, se puede Finalizar (Pasar a la siguiente Fase de relleno de los dos últimos valores de los conceptos economicos)
+			List<Evaluacion> evaluaciones = Evaluacion.findAll();
+			for (Evaluacion evaluacion: evaluaciones) {
+				for (CEconomico conceptoE: evaluacion.ceconomicos) {
+					for (CEconomico conceptoS: evaluacion.solicitud.ceconomicos) {
+						if (conceptoS.tipo.jerarquia.equals(conceptoE.tipo.jerarquia)) {
+							for (int i=0; i<evaluacion.tipo.duracion; i++) {
+								conceptoS.valores.get(0).valorEstimado = conceptoE.valores.get(0).valorEstimado;
+							}
+							conceptoS.save();
+							break;
+						}
+					}
+				}
+			}
+			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+			// Mejorar: no se debería tocar.
+			tipoEvaluacion.estado="evaluada";
+			tipoEvaluacion.save();
+			Messages.ok("Todas las evaluaciones han finalizado correctamente");
+			Messages.keep();
+		}
+	}
+	
+	
 }

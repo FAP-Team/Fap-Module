@@ -5,6 +5,7 @@ import play.*;
 import play.mvc.*;
 import properties.FapProperties;
 import baremacion.BaremacionFAP;
+import controllers.PaginaCEconomicosEvaluadosController;
 import controllers.fap.*;
 import security.Secure;
 import services.BaremacionService;
@@ -21,6 +22,7 @@ import messages.Messages;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import javax.inject.Inject;
@@ -197,44 +199,53 @@ public class ConsultarEvaluacionesController extends GenericController {
 
 	
 	@Util
-	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void botonFinalizarEvaluaciones(String btnEvaluacionesFinalizadas) {
 		checkAuthenticity();
+
 		if (!Messages.hasErrors()) {
-			List<Evaluacion> evaluaciones = Evaluacion.findAll();
-			for (Evaluacion evaluacion: evaluaciones){
-				if (evaluacion.estado == null)
-					Messages.error("La evaluación del expediente "+evaluacion.solicitud.expedienteAed.idAed+" está aún sin estado");
-				else if ((!evaluacion.estado.equals(EstadosEvaluacionEnum.rechazada.name())) && (!evaluacion.estado.equals(EstadosEvaluacionEnum.evaluada.name()))){
-					Messages.error("La evaluación del expediente "+evaluacion.solicitud.expedienteAed.idAed+" está aún en estado: "+evaluacion.estado);
-				}
-			}
-		}
-		if (Messages.hasErrors()) {
-			Messages.keep();
-			index();
-		} else { // Todo ha ido bien, se puede Finalizar (Pasar a la siguiente Fase de relleno de los dos últimos valores de los conceptos economicos)
-			List<Evaluacion> evaluaciones = Evaluacion.findAll();
-			for (Evaluacion evaluacion: evaluaciones){
-				for (CEconomico conceptoE: evaluacion.ceconomicos){
-					for (CEconomico conceptoS: evaluacion.solicitud.ceconomicos){
-						if (conceptoS.tipo.jerarquia.equals(conceptoE.tipo.jerarquia)){
-							for (int i=0; i<evaluacion.tipo.duracion; i++){
-								conceptoS.valores.get(0).valorEstimado = conceptoE.valores.get(0).valorEstimado;
-							}
-							conceptoS.save();
-							break;
+			Class invokedClass = null;
+			//Busca una clase que herede de BaremacionFAP
+	        List<Class> assignableClasses = Play.classloader.getAssignableClasses(BaremacionFAP.class);
+	        if(assignableClasses.size() > 0) {
+	            invokedClass = assignableClasses.get(0);
+	        } else {
+	        	invokedClass = BaremacionFAP.class;
+	        }
+	        if (invokedClass != null) {
+				Method method = null;
+				try {
+					method = invokedClass.getDeclaredMethod("finalizarEvaluaciones");
+				} catch (Exception ex) {
+					invokedClass = BaremacionFAP.class;
+					if (invokedClass != null) {
+						method = null;
+						try {
+							method = invokedClass.getDeclaredMethod("finalizarEvaluaciones");
+						} catch (Exception e) {
+							play.Logger.error("Error g001: No se ha podido encontrar el método finalizarEvaluaciones de la clase BaremacionFAP");
+							Messages.error("Error interno g001. No se ha podido Guardar correctamente");
 						}
 					}
 				}
+				if (!Messages.hasErrors()) {
+					if (method != null) {
+						try {
+							method.invoke(ConsultarEvaluacionesController.class);
+						} catch (Exception e) {
+							play.Logger.error("Error g002: No se ha podido invocar el método finalizarEvaluaciones de la clase BaremacionFAP");
+							Messages.error("Error interno g002. No se ha podido Guardar correctamente");
+						} 
+					} else {
+						play.Logger.error("Error g003: No existe el Método apropiado para validar los CEconomicos. El método debe llamarse 'finalizarEvaluaciones()'");
+						Messages.error("Error interno g003. No se ha podido Guardar correctamente");
+					}
+				}
+			} else {
+				play.Logger.error("Error g004: No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'BaremacionFAP'");
+				Messages.error("Error interno g004. No se ha podido Guardar correctamente");
 			}
-			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
-			tipoEvaluacion.estado="evaluada";
-			tipoEvaluacion.save();
-			Messages.ok("La evaluación ha finalizado correctamente");
-			Messages.keep();
-			index();
 		}
+		index();
 	}
 	
 }

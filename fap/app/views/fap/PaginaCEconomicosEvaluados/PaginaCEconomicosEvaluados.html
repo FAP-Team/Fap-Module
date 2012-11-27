@@ -1,6 +1,5 @@
 
 %{
-	Integer d = duracion-1;
 	def tipoEvaluacion = models.TipoEvaluacion.all().first();
 	def anioInicio = tipoEvaluacion.inicio;
 %}
@@ -28,6 +27,7 @@
 		<div id="tablaCEconomicosEvaluados" class="tabla"></div>
 
 		%{
+			Integer d = duracion-1;
 			play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition) play.mvc.Router.reverse("PaginaCEconomicosEvaluadosController.tablatablaCEconomicosEvaluados", ['idSolicitud':idSolicitud]), "url");
 			def id="tablaCEconomicosEvaluados";
 			def modelName = id + "_model";
@@ -228,6 +228,12 @@
 		  });
     		
 		</script>
+		
+		<div class="well">
+			#{form play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.guardar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"guardar"}
+				#{fap.boton id:'botonGuardar', titulo:'Guardar' /}
+			#{/form}
+		</div>
 	
 	#{/fap.grupo}
 	

@@ -1,8 +1,13 @@
-h1. ¿Qué debo sobreescribir para personalizar la validación de los Conceptos Económicos?
+h1. ¿Qué debo sobreescribir para personalizar las validaciones de las diferentes páginas referentes a Conceptos Económicos?
+
+En primer lugar, se deberá crear una clase (si no la hemos creado previamente para "personalizar el inicio de la Baremación":app-baremacion-inicio) en la ruta _${PATH_APLICACION}/app/baremacion/${NOMBRE_CLASE_BAREMACION}_ donde ${NOMBRE_CLASE_BAREMACION} será el nombre que le queramos dar a nuestra clase que utilizaremos para sobreescribir el proceso de validación de los conceptos económicos y que deberá extender de _BaremacionFAP_. Por ejemplo: _MiClaseBaremacion_, de forma que tendremos en el fichero java que representa dicha clase ("_MiClaseBaremacion.java_):
+
+bc. public class MiClaseIniciarBaremacion extends BaremacionFAP {
+}
+
+h2. Validación de los conceptos económicos que cumplimente el solicitante
 
 Mediante la sobreescritura del método que aquí se explica, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _GUARDAR_ que aparece en la página de Conceptos Económicos que tendrá que rellenar el usuario y que será dispensable guardar correctamente para poder realizar con éxito el Preparar Para Firmas antes de Presentar la Solicitud.
-
-Se deberá crear una clase (si no la hemos creado previamente para "personalizar el inicio de la Baremación":app-baremacion-inicio) en la ruta _${PATH_APLICACION}/app/baremacion/${NOMBRE_CLASE_BAREMACION}_ donde ${NOMBRE_CLASE_BAREMACION} será el nombre que le queramos dar a nuestra clase que utilizaremos para sobreescribir el proceso de validación de los conceptos económicos y que deberá extender de _BaremacionFAP_. Por ejemplo: _MiClaseBaremacion_, de forma que tendremos en el fichero java que representa dicha clase ("_MiClaseBaremacion.java_):
 
 bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
 	public static void validarCEconomicos(long idSolicitud, List<CEconomico> ceconomicos){
@@ -11,9 +16,53 @@ bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
 	}
 }
 
-El método public static void _validarCEconomicos_ de la clase creada que extienda de BaremacionFAP es el que se ejecutará cuando el usuario pulse sobre guardar en la página de Conceptos Económicos.
+El método @validarCEconomicos@ de la clase creada que extienda de BaremacionFAP es el que se ejecutará cuando el usuario pulse sobre guardar en la página de Conceptos Económicos.
 
-Y la entidadas CEconomico es la siguiente. Donde los valores se encuentran en un OneToMany (uno por año) llamado valores, en concreto en valorSolicitado.
+h2. Los documentos en los que se busquen los tipos de Documentos de ese tipo de Evaluación
+
+Sobreescribir el método @getDocumentosAccesibles@ nos permite devolver la lista de documentos que queramos para que se utilice en la búsqueda de tipos de documentos accesibles por el evaluador.
+
+bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
+	public static List<Documento> getDocumentosAccesibles(Long idSolicitud, Long idEvaluacion){
+		// Deberemos devolver la lista de documentos que queramos que se utilice para buscar los tipos de documentos
+		// accesibles por el evaluador
+		//
+		// Aquí está el comportamiento FAP por defecto, devolver todos los documentos presentados y el de la   
+		// solicitud, que se volverá a generar de nuevo por si ha cambiado algún dato en la verificación.
+		//
+		List <Documento> documentos = new ArrayList<Documento>();
+		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+		documentos.addAll(dbSolicitud.documentacion.documentos);
+		documentos.add(getOficialEvaluacion(idSolicitud, idEvaluacion));
+		return documentos;
+	}
+}
+
+h2. Finalización de todas las evaluaciones
+
+Al sobreescribir el método @finalizarEvaluaciones@, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _Finalizar Todas las Evaluaciones_ que aparece en la página de Consultar Evaluaciones y a la que tendrán acceso aquellos con roles de Administrador o Gestor.
+
+bc. public class MiClaseIniciarBaremacion extends BaremacionFAP {
+	public static void finalizarEvaluaciones() {
+	   // Aquí indicaremos los pasos a seguir para finalizar todas las evaluaciones.
+	   // Se deberán indicar los errores que se cometan en la validación con la clase Messages (Error, Warning, etc.) 
+	}
+}
+
+h2. Validación de los conceptos económicos evaluados
+
+Al sobreescribir el método @validarCEconomicosEvaluados@, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _Guardar_ que aparece en la página de Conceptos Económicos Evaluados y a la que tendrán acceso aquellos con roles de Administrador o Gestor.
+
+bc. public class MiClaseIniciarBaremacion extends BaremacionFAP {
+	public static void validarCEconomicosEvaluados(long idSolicitud, List<CEconomico> ceconomicos) {
+	   // Aquí indicaremos los pasos a seguir para la validación de los conceptos económicos evaluados.
+	   // Se deberán indicar los errores que se cometan en la validación con la clase Messages (Error, Warning, etc.) 
+	}
+}
+
+h2. Entidad CEconomico
+
+La entidad CEconomico es la siguiente. Donde los valores se encuentran en un OneToMany (uno por año) llamado valores, en concreto en valorSolicitado.
 
 bc.. Entidad CEconomico {
 	TipoCEconomico tipo

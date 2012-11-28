@@ -70,13 +70,23 @@ h2. ¿Qué debo sobreescribir para personalizar la Baremación?
 
 Si quieres que algunos comportamientos por defecto, como el cálculo de los criterios no hoja o cualquier otro aspecto, sea uno propio, se deberán sobreescribir una serie de métodos y funciones que puede conocer "aqui":app-baremacion-sobreescribir
 
-h2. ¿Cómo puedo personalizar la validación de los conceptos económicos que cumplimente el solicitante?
+h2. ¿Cómo puedo personalizar las distintas validaciones que se realizan para los conceptos económicos?
+
+h3. Validación de los conceptos económicos que cumplimente el solicitante
 
 Se puede sobreescribir el método que se ejecuta cuando el usuario _guarda_ la página de conceptos económicos que tiene la tabla que debe rellenar. Para corroborar que todo lo que ha guardado y rellenado se ciñe a lo que debería ser, se deberá sobreescribir el método que se ejecuta cuando el solicitante presiona _guardar_ de dicha página de conceptos económicos. Para ello, ver qué hay que sobreescribir "aqui":app-baremacion-validarceconomicos
 
-h2. ¿Y si quiero que personalizar los documentos en los que se busquen los tipos de Documentos de ese tipo de Evaluación?
+h3. Los documentos en los que se busquen los tipos de Documentos de ese tipo de Evaluación
 
-Se puede también personalizar aquellos documentos que se utilicen en la Evaluación para buscar los tipos de documentos que serán accesibles al evaluador para llevar a cabo su cometido y así restringir también el acceso de este a todos los documentos de una determinada solicitud. Por defecto, FAP, tiene en cuenta los documentos almacenados en *solicitud.documentacion.documentos* más el documento *solicitud.registro.oficial*, si se quiere personaliza esto, vea lo que debe sobreescribir "aqui":app-baremacion-getDocumentosAccesibles
+Se puede también personalizar aquellos documentos que se utilicen en la Evaluación para buscar los tipos de documentos que serán accesibles al evaluador para llevar a cabo su cometido y así restringir también el acceso de este a todos los documentos de una determinada solicitud. Por defecto, FAP, tiene en cuenta los documentos almacenados en *solicitud.documentacion.documentos* más el documento *solicitud.registro.oficial*, si se quiere personalizar esto, vea lo que debe sobreescribir "aqui":app-baremacion-validarceconomicos#LosdocumentosenlosquesebusquenlostiposdeDocumentosdeesetipodeEvaluacin
+
+h3. Finalización de todas las evaluaciones
+
+Se puede sobreescribir el método que se ejecuta cuando el administrador/gestor _finaliza todas las evaluaciones_ en la página Consultar Evaluaciones. Ver qué hay que sobreescribir "aqui":app-baremacion-validarceconomicos#Finalizacindetodaslasevaluaciones
+
+h3. Validación de los conceptos económicos evaluados
+
+Se puede sobreescribir el método que se ejecuta cuando el administrador/gestor _guarda_ la página de Conceptos Económicos Evaluados. Ver qué hay que sobreescribir "aqui":app-baremacion-validarceconomicos#Validacindelosconceptoseconmicosevaluados
 
 h2. Ejemplo de Baremación de la aplicacion de Test
 

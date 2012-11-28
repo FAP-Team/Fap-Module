@@ -192,7 +192,7 @@ Permiso solicitudes{
 		participacion != null 			
 	return all
 	when
-		agente.rolActivo in ("evaluador")
+		agente.rolActivo in ("evaluador", "lector")
 	return
 		leer
 }
@@ -263,7 +263,7 @@ Permiso editarSolicitud {
 		SolicitudGenerica solicitud
 		Convocatoria convocatoria
 	when
-		agente.rolActivo = "evaluador"
+		agente.rolActivo in ("evaluador", "lector")
 	return
 		leer
 	when

@@ -18,7 +18,7 @@ public class WSPortafirma extends GenericController {
 		}
 		
 		String value = idSolicitud.toString() + "_" + token;
-		String clave = FapProperties.get("application.secret"); //fap.portafirma.key
+		String clave = FapProperties.get("fap.portafirma.secret.key"); //fap.portafirma.key
 		String result = "";
 		
 		try {

@@ -2,6 +2,7 @@ h2. Changelog
 
 h3. Versión 2.1.2RC1
 
+* Añadido controlador para el WS de escucha al Portafirma (no aplica cambios).
 * Añadidos permisos del rol Lector.
 * Nuevos métodos que permiten sobreescribir distintas validaciones de los conceptos económicos.
 * Nuevos métodos en Evaluación: getEvaluacion.

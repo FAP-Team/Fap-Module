@@ -118,6 +118,7 @@ public class EditarCesionController extends EditarCesionControllerGen {
 				services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
 				gestorDocumentalService.saveDocumentoTemporal(dbPeticionCesiones.fichRespuesta, subirArchivo);
 				dbPeticionCesiones.save();
+				Messages.ok("El fichero de peticiones se ha subido correctamente");
 			} catch (services.GestorDocumentalServiceException e) {
 				play.Logger.error(e, "Error al subir el documento al Gestor Documental");
 				validation.addError("", "Error al subir el documento al Gestor Documental");

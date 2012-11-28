@@ -511,7 +511,19 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tipoJustificanteRegistro.tramitePertenece = tramiteSolicitud.uri;
         tramiteSolicitud.documentos.add(tipoJustificanteRegistro);
         newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoJustificanteRegistro.uri, tramiteSolicitud.uri);
-             
+        
+        TipoDocumento tipoficheroPeticion = newTipoDocumento("Fichero Petición", "fs://ficheroPeticion/v01");
+        tipoficheroPeticion.cardinalidad = "UNICO";
+        tipoficheroPeticion.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoficheroPeticion);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoficheroPeticion.uri, tramiteSolicitud.uri);
+        
+        TipoDocumento tipoficheroRespuesta = newTipoDocumento("Fichero Respuesta", "fs://ficheroRespuesta/v01");
+        tipoficheroRespuesta.cardinalidad = "UNICO";
+        tipoficheroRespuesta.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoficheroRespuesta);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoficheroRespuesta.uri, tramiteSolicitud.uri);
+        
         // ------- TR�?MITE 2: Aportación ------- 
         Tramite tramiteAportacion = new Tramite();
         tramiteAportacion.nombre = "aportacion";

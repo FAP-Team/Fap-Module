@@ -58,12 +58,10 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 		} else if (!"borrado".equals(accion))
 			peticionCesiones = NuevaCesionController.getPeticionCesiones(idPeticionCesiones);
 
-		log.info("*Visitando página: " + "gen/NuevaCesion/NuevaCesion.html");
+		log.info("Visitando página: " + "fap/NuevaCesion/NuevaCesion.html");
 		renderTemplate("fap/NuevaCesion/NuevaCesion.html", accion, idPeticionCesiones, peticionCesiones);
 		
 	}
-	
-
 	
 	public static void generarpeticion(Long id, List<Long> idsSeleccionados) {
 		
@@ -82,7 +80,7 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 			if (pt.tipo.equals(ListaCesionesEnum.inssR001.name())){
 				INSSUtils.peticionINSSR001(pt, idsSeleccionados);
 			}
-			redirect("GenerarFichCesionesController.index", "crear");
+			EditarCesionController.index("editar", pt.id);
 		}
 		else{
 			Messages.error("Debe seleccionar al menos una solicitud de la lista");
@@ -198,46 +196,31 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 		DateTime fechaGeneracion = new DateTime(anio, mes, dia, 0, 0);
 		return fechaGeneracion;
 	}
-	
-	/*@Util
-	public static void unificarPermisos(){
-		java.util.List<SolicitudGenerica> rows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud").fetch();
-		java.util.List<SolicitudGenerica> rowsSol = new ArrayList<SolicitudGenerica>();
-		for (SolicitudGenerica solGen : rows) {
-			if (solGen.solicitante.isPersonaFisica()){ //Persona Fisica
-				rowsSol = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.solicitante.fisica.nip.valor = ?", solGen.solicitante.fisica.nip.valor).fetch();
-			}
-			if (solGen.solicitante.isPersonaJuridica()){ //Persona Juridica
-				rowsSol = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.solicitante.juridica.cif = ?", solGen.solicitante.juridica.cif).fetch();
-			}
+
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void formTipoCesion(Long idPeticionCesiones, PeticionCesiones peticionCesiones, String btnGuardar) {
+		checkAuthenticity();
+		if (!permisoFormTipoCesion("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
-		//Al ser del mismo solicitante, si autoriza en una solicitud, autoriza en todas
-		if (rowsSol.size()>1){ //Más de una solicitud por solicitante
-			Boolean atcS = false, aeatS = false, inssA008S = false, inssR001S = false;
-			for (SolicitudGenerica solGen : rowsSol) { //Busco los permisos que hay en todas las solicitudes
-				if((solGen.cesion.autorizacionCesion.atc != null) && (solGen.cesion.autorizacionCesion.atc))
-					atcS = true;
-				if((solGen.cesion.autorizacionCesion.aeat != null) && (solGen.cesion.autorizacionCesion.aeat))
-					aeatS = true;
-				if((solGen.cesion.autorizacionCesion.inssR001 != null) && (solGen.cesion.autorizacionCesion.inssR001))
-					inssR001S = true;
-				if((solGen.cesion.autorizacionCesion.inssA008 != null) && (solGen.cesion.autorizacionCesion.inssA008))
-					inssA008S = true;
-			}
-			
-			//Unifico los permisos entre todas las solicitudes del mismo solicitante
-			for (SolicitudGenerica solGen : rowsSol) {
-				if (atcS)
-					solGen.cesion.autorizacionCesion.atc = true;
-				if (aeatS)
-					solGen.cesion.autorizacionCesion.aeat = true;
-				if (inssR001S)
-					solGen.cesion.autorizacionCesion.inssR001 = true;
-				if (inssA008S)
-					solGen.cesion.autorizacionCesion.inssA008 = true;
-				
-			}
+		PeticionCesiones dbPeticionCesiones = NuevaCesionController.getPeticionCesiones(idPeticionCesiones);
+
+		NuevaCesionController.formTipoCesionBindReferences(peticionCesiones);
+
+		if (!Messages.hasErrors()) {
+			NuevaCesionController.formTipoCesionValidateCopy("editar", dbPeticionCesiones, peticionCesiones);
 		}
-	}*/
+
+		if (!Messages.hasErrors()) {
+			NuevaCesionController.formTipoCesionValidateRules(dbPeticionCesiones, peticionCesiones);
+		}
+		if (!Messages.hasErrors()) {
+			dbPeticionCesiones.save();
+			log.info("Acción Editar de página: " + "fap/NuevaCesion/NuevaCesion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "fap/NuevaCesion/NuevaCesion.html" + " , intentada sin éxito (Problemas de Validación)");
+		NuevaCesionController.formTipoCesionRender(idPeticionCesiones);
+	}
 	
 }

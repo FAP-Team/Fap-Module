@@ -203,7 +203,7 @@ public class ATCUtils {
             		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "atc", pt.id.toString(), sol.id).fetch();
             		if (cesionesTipo.isEmpty()){ //No se han creado cesiones a partir de este fichero -> Creo
 	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("atc", atc);
-	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
+	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", sol);
 
 	            		report = new Report("reports/bodyPeticionATC.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, atc);
 	                	Documento doc = new Documento();
@@ -229,7 +229,7 @@ public class ATCUtils {
             }
         }
         else{
-          	Messages.info("La cesion de datos para "+atc.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
+          	Messages.warning("La cesion de datos para "+atc.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
           	play.Logger.info("La cesion de datos para "+atc.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
         }
 		

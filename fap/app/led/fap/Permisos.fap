@@ -1203,9 +1203,15 @@ Permiso ultimaEditable{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo = "administrador"
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado != "asignada")
 	return 
 		editable
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "asignada")
+	return 
+		leer
 }
 
 Permiso soloLeer{

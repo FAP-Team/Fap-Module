@@ -285,7 +285,7 @@ public class INSSUtils {
 	            		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "inssR001", pt.id.toString(), sol.id).fetch();
 	            		if (cesionesTipo.isEmpty()){ //No se han creado cesiones a partir de este fichero -> Creo
 		            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("inss", inss);
-		            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
+		            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", sol);
 		                	report = new Report("reports/bodyPeticionINSSA008.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, inss);
 		                	Documento doc = new Documento();
 		                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSA008");
@@ -310,7 +310,7 @@ public class INSSUtils {
 	            }
 		 }	
 		 else{
-			 Messages.info("La cesion de datos para "+inss.registroDetalle.regimen+inss.registroDetalle.cccPpal+", no se corresponde con ninguna solicitud");
+			 Messages.warning("La cesion de datos para "+inss.registroDetalle.regimen+inss.registroDetalle.cccPpal+", no se corresponde con ninguna solicitud");
 			 play.Logger.info("La cesion de datos para "+inss.registroDetalle.regimen+inss.registroDetalle.cccPpal+", no se corresponde con ninguna solicitud");
 	      }
 		return report;
@@ -333,7 +333,7 @@ public class INSSUtils {
             		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "inssR001", pt.id.toString(), sol.id).fetch();
             		if (cesionesTipo.isEmpty()){ 
             			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("inss", inss);
-	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
+	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", sol);
 	                	report = new Report("reports/bodyPeticionINSSR001.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, inss);
 	                	Documento doc = new Documento();
 	                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSR001");
@@ -358,7 +358,7 @@ public class INSSUtils {
             }
         }
         else{
-        	Messages.info("La cesion de datos para "+inss.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
+        	Messages.warning("La cesion de datos para "+inss.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
         	play.Logger.info("La cesion de datos para "+inss.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
         }
         return report;

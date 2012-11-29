@@ -43,50 +43,95 @@ public class EditarCesionController extends EditarCesionControllerGen {
 	static GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 	
 	@Util
-	 // Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void formCesion(Long idPeticionCesiones, PeticionCesiones peticionCesiones, java.io.File subirArchivo, String btnGuardar, String tratarFich, String cambiarFichero, String aplicarCambios) {
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void formCesionFichRespuesta(Long idPeticionCesiones, PeticionCesiones peticionCesiones, java.io.File subirArchivo, String tratarFich) {
 		checkAuthenticity();
-		if (!permisoFormCesion("editar")) {
-			Messages.error("No tiene permisos suficientes para realizar la acción");
+		if (!permisoFormCesionFichRespuesta("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción (FicheroRespuesta)");
 		}
 		PeticionCesiones dbPeticionCesiones = EditarCesionController.getPeticionCesiones(idPeticionCesiones);
 
-		EditarCesionController.formCesionBindReferences(peticionCesiones, subirArchivo);
+		EditarCesionController.formCesionFichRespuestaBindReferences(peticionCesiones, subirArchivo);
 
-		if ((!Messages.hasErrors()) &&(tratarFich != null)) {
-			//Aqui se sube el fichero al Gestor Documental
-			EditarCesionController.formCesionValidateCopy("editar", dbPeticionCesiones, peticionCesiones, subirArchivo);
+		if (!Messages.hasErrors()) {
+			EditarCesionController.formCesionFichRespuestaValidateCopy("editar", dbPeticionCesiones, peticionCesiones, subirArchivo);
 		}
 
 		if (!Messages.hasErrors()) {
-			EditarCesionController.formCesionValidateRules(dbPeticionCesiones, peticionCesiones, subirArchivo);
+			EditarCesionController.formCesionFichRespuestaValidateRules(dbPeticionCesiones, peticionCesiones, subirArchivo);
 		}
 		if (!Messages.hasErrors()) {
-			if (cambiarFichero != null){
-				cambiarFichero(dbPeticionCesiones);
-			}
-			if (aplicarCambios != null){
-				tratarFich(dbPeticionCesiones);
-			}
-			if (btnGuardar != null) {
-				EditarCesionController.btnGuardarFormCesion(idPeticionCesiones, peticionCesiones, subirArchivo);
-				EditarCesionController.formCesionRender(idPeticionCesiones);
-			}
-			if (tratarFich != null){
-				subirFichero(dbPeticionCesiones); //Generacion del pdf de cada peticion/solicitud
-			}
+			subirFichero(dbPeticionCesiones); //Generacion del pdf de cada peticion/solicitud
 			if ((!Messages.hasErrors()) && (tratarFich != null)) { //Si no hubo errores subiendo -> Cambio de estado
 				dbPeticionCesiones.estado = EstadosPeticionEnum.respondida.name();
 			}
-			if ((!Messages.hasErrors()) && (aplicarCambios != null)) {
+			dbPeticionCesiones.save();
+			log.info("Acción Editar de página: " + "gen/EditarCesion/EditarCesion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarCesion/EditarCesion.html" + " , intentada sin éxito (Problemas de Validación)");
+		EditarCesionController.formCesionFichRespuestaRender(idPeticionCesiones);
+	}
+
+	
+	public static void formCesionFichSubida(Long idPeticionCesiones, PeticionCesiones peticionCesiones, String btnGuardar) {
+		checkAuthenticity();
+		if (!permisoFormCesionFichSubida("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción (FicheroSubida)");
+		}
+		PeticionCesiones dbPeticionCesiones = EditarCesionController.getPeticionCesiones(idPeticionCesiones);
+		EditarCesionController.formCesionFichSubidaBindReferences(peticionCesiones);
+
+		if (!Messages.hasErrors()) {
+			//Sube fichero
+			EditarCesionController.formCesionFichSubidaValidateCopy("editar", dbPeticionCesiones, peticionCesiones);
+		}
+
+		if (!Messages.hasErrors()) {
+			EditarCesionController.formCesionFichSubidaValidateRules(dbPeticionCesiones, peticionCesiones);
+		}
+		if (!Messages.hasErrors()) {
+			if (btnGuardar != null) {
+				EditarCesionController.btnGuardarFormCesion(idPeticionCesiones, peticionCesiones);
+			}
+			dbPeticionCesiones.save();
+			log.info("Acción Editar de página: " + "gen/EditarCesion/EditarCesion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarCesion/EditarCesion.html" + " , intentada sin éxito (Problemas de Validación)");
+		EditarCesionController.formCesionFichSubidaRender(idPeticionCesiones);
+	}
+
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void formCesionAplicarCambios(Long idPeticionCesiones, String cambiarFichero, String aplicarCambios) {
+		checkAuthenticity();
+		if (!permisoFormCesionAplicarCambios("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción (AplicarCambios)");
+		}
+		//Queremos subir otro fichero
+		if (cambiarFichero != null) {
+			PeticionCesiones peticionCesiones = EditarCesionController.getPeticionCesiones(idPeticionCesiones);
+			cambiarFichero(peticionCesiones);
+			peticionCesiones.save();
+		}
+		if (!Messages.hasErrors()) {
+			EditarCesionController.formCesionAplicarCambiosValidateRules();
+		}
+		//Queremos aplicar los cambios desde fichero
+		if (aplicarCambios != null){
+			PeticionCesiones dbPeticionCesiones = EditarCesionController.getPeticionCesiones(idPeticionCesiones);
+			tratarFich(dbPeticionCesiones);
+			if (!Messages.hasErrors()) {
 				dbPeticionCesiones.estado = EstadosPeticionEnum.asignada.name();
 			}
 			dbPeticionCesiones.save();
+		}
+		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "fap/EditarCesion/EditarCesion.html" + " , intentada con éxito");
 		} else
 			log.info("Acción Editar de página: " + "fap/EditarCesion/EditarCesion.html" + " , intentada sin éxito (Problemas de Validación)");
-		EditarCesionController.formCesionRender(idPeticionCesiones);
+		EditarCesionController.formCesionAplicarCambiosRender(idPeticionCesiones);
 	}
+	
 
 	@Util
 	public static void formCesionValidateCopy(String accion, PeticionCesiones dbPeticionCesiones, PeticionCesiones peticionCesiones, java.io.File subirArchivo) {
@@ -144,7 +189,7 @@ public class EditarCesionController extends EditarCesionControllerGen {
 			peticionCesiones.fichRespuesta.uri = null;
 		} catch (GestorDocumentalServiceException e) {
 			Messages.error("Error borrando el archivo del gestor documental");
-		}
+		}		
 	}
 	
 	@Util
@@ -180,7 +225,8 @@ public class EditarCesionController extends EditarCesionControllerGen {
 	//Métodos en el controlador manual 
 	public static List<ComboItem> peticionCesiones_fichRespuesta_tipo() {
 		List<ComboItem> result = new ArrayList<ComboItem>();
-		result.add(new ComboItem(FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSA008")));
+		String tipo = getPeticionCesiones(Long.parseLong(params.get("idPeticionCesiones"))).tipo.toUpperCase();
+		result.add(new ComboItem(FapProperties.get("fap.aed.tiposdocumentos.respuesta"+tipo)));
 		return result;
 	}
 	
@@ -188,7 +234,7 @@ public class EditarCesionController extends EditarCesionControllerGen {
 		if (accion == null)
 			accion = getAccion();
 		if (!permiso(accion)) {
-			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción (Index)");
 			renderTemplate("fap/EditarCesion/EditarCesion.html");
 		}
 		checkRedirigir();
@@ -212,7 +258,7 @@ public class EditarCesionController extends EditarCesionControllerGen {
 	}
 
 	@Util
-	public static void btnGuardarFormCesion(Long idPeticionCesiones, PeticionCesiones peticionCesiones, java.io.File subirArchivo) {
+	public static void btnGuardarFormCesion(Long idPeticionCesiones, PeticionCesiones peticionCesiones) {
 		//Sobreescribir este método para asignar una acción
 		PeticionCesiones dbPeticionCesiones = EditarCesionController.getPeticionCesiones(idPeticionCesiones);
 		dbPeticionCesiones.tipo = peticionCesiones.tipo;
@@ -221,4 +267,45 @@ public class EditarCesionController extends EditarCesionControllerGen {
 		redirect("NuevaCesionController.index", "editar", idPeticionCesiones);
 	}
 	
+	@Util
+	public static void formCesionFichRespuestaRender(Long idPeticionCesiones) {
+		if (!Messages.hasMessages()) {
+			Messages.keep();
+			redirect("EditarCesionController.index", "editar", idPeticionCesiones);
+		}
+		Messages.keep();
+		redirect("EditarCesionController.index", "editar", idPeticionCesiones);
+	}
+	
+	@Util
+	public static void formCesionAplicarCambiosRender(Long idPeticionCesiones) {
+		if (!Messages.hasErrors()) {
+			Messages.keep();
+			PeticionCesiones pt = getPeticionCesiones(idPeticionCesiones);
+			//Si respondida -> Aplico cambios
+			if (pt.estado.equals(EstadosPeticionEnum.asignada.name()))
+				redirect("LeerCesionController.index", "leer", idPeticionCesiones);
+			else{
+				redirect("EditarCesionController.index", "editar", idPeticionCesiones);
+			}
+		}
+		Messages.keep();
+		redirect("EditarCesionController.index", "editar", idPeticionCesiones);
+	}
+	
+	@Util
+	public static void formCesionFichSubidaRender(Long idPeticionCesiones) {
+		if (!Messages.hasMessages()) {
+			Messages.keep();
+			redirect("EditarCesionController.index", "editar", idPeticionCesiones);
+		}
+		Messages.keep();
+		redirect("EditarCesionController.index", "editar", idPeticionCesiones);
+	}
+	
+	
+	@Util
+	public static void btnVolver(Long idPeticionCesiones, PeticionCesiones peticionCesiones, java.io.File subirArchivo) {
+		redirect("GenerarFichCesionController.index", "editar", idPeticionCesiones);
+	}
 }

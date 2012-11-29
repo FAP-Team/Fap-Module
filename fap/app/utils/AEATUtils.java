@@ -174,7 +174,7 @@ public class AEATUtils {
             		List<Cesiones> cesionesTipo = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where  cesiones.tipo = ? and cesiones.idUnico = ? and solicitud.id = ?", "aeat", pt.id.toString(), sol.id).fetch();
             		if (cesionesTipo.isEmpty()){ //No se han creado cesiones a partir de este fichero -> Creo
 	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("aeat", aeat);
-	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("sol", sol);
+	            		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", sol);
 	                	report = new Report("reports/bodyPeticionAEAT.html").header("reports/headerPeticion.html").footer("reports/footer-cesion.html").renderTmpFile(sol, pt, aeat);
 	                	Documento doc = new Documento();
 	                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaAEAT");
@@ -199,7 +199,7 @@ public class AEATUtils {
             }
         }
         else{
-          	Messages.info("La cesion de datos para "+aeat.nDocumento+", no se corresponde con ninguna solicitud");
+          	Messages.warning("La cesion de datos para "+aeat.nDocumento+", no se corresponde con ninguna solicitud");
           	play.Logger.info("La cesion de datos para "+aeat.nDocumento+", no se corresponde con ninguna solicitud");
         }
         return report;

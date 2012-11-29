@@ -23,6 +23,7 @@ import controllers.fap.AgenteController;
 import enumerado.fap.gen.EstadosPeticionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import enumerado.fap.gen.ListaCesionesEnum;
+import enumerado.fap.gen.ListaEstadosEnum;
 import enumerado.fap.gen.TiposParticipacionEnum;
 
 public class SecureFap extends Secure {
@@ -45,8 +46,6 @@ public class SecureFap extends Secure {
 			return mostrarResultadoBusqueda(_permiso, action, ids, vars);
 		else if ("esFuncionarioHabilitadoYActivadaProperty".equals(id))
 			return esFuncionarioHabilitadoYActivadaProperty(_permiso, action, ids, vars);
-		else if ("ultimaEditable".equals(id))
-			return ultimaEditable(_permiso, action, ids, vars);
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
@@ -181,52 +180,6 @@ public class SecureFap extends Secure {
 			return new ResultadoPermiso(Accion.Editar);
 
 		return null;
-	}
-	
-	private ResultadoPermiso ultimaEditable(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
-		//Variables
-		List<PeticionCesiones> petCesiones = PeticionCesiones.findAll();
-		DateTime atcT = new DateTime(1970-01-01), aeatT= new DateTime(1970-01-01);
-		DateTime inssA008T= new DateTime(1970-01-01), inssR001T= new DateTime(1970-01-01);
-		DateTime prueba= new DateTime(1970-01-01);
-		
-		if ((petCesiones != null) && (!petCesiones.isEmpty()))
-		for (PeticionCesiones pC : petCesiones) {
-			if(pC.tipo != null){
-				if((pC.tipo.equals(ListaCesionesEnum.atc.name())) && (pC.fechaGen.isAfter(atcT))){
-					atcT = pC.fechaGen; 
-				}
-				if ((pC.tipo.equals(ListaCesionesEnum.aeat.name())) && (pC.fechaGen.isAfter(aeatT))){
-					aeatT = pC.fechaGen; 
-				}
-				if ((pC.tipo.equals(ListaCesionesEnum.inssA008.name())) && (pC.fechaGen.isAfter(inssA008T))){
-					inssA008T = pC.fechaGen;
-				}
-				if ((pC.tipo.equals(ListaCesionesEnum.inssR001.name())) && (pC.fechaGen.isAfter(inssR001T))){
-					inssR001T = pC.fechaGen; 
-				}
-			}
-		}
-
-		PeticionCesiones actual = getPeticionCesiones(ids, vars);
-		if ((actual != null) && (actual.estado != null)){
-			if ((actual.estado.equals(EstadosPeticionEnum.sinTipo.name()))){
-				return new ResultadoPermiso(Accion.All);
-			}	
-			if ((actual.tipo.equals(ListaCesionesEnum.atc.name())) && (actual.fechaGen.equals(atcT))){
-				return new ResultadoPermiso(Accion.All);
-			}
-			if ((actual.tipo.equals(ListaCesionesEnum.aeat.name())) && (actual.fechaGen.equals(aeatT))){
-				return new ResultadoPermiso(Accion.All);
-			}
-			if ((actual.tipo.equals(ListaCesionesEnum.inssA008.name())) && (actual.fechaGen.equals(inssA008T))){
-				return new ResultadoPermiso(Accion.All);
-			}
-			if ((actual.tipo.equals(ListaCesionesEnum.inssR001.name())) && (actual.fechaGen.equals(inssR001T))){
-				return new ResultadoPermiso(Accion.All);
-			}
-		}
-		return new ResultadoPermiso(Accion.Leer);
 	}
 	
 	public PeticionCesiones getPeticionCesiones(Map<String, Long> ids, Map<String, Object> vars) {

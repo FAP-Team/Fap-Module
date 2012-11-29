@@ -30,7 +30,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 	}
 	
 	//Visible para el usuario en la fase de instrucción por administrador o gestor
-	Pagina ListadoCesiones campo=SolicitudGenerica permiso=adminOrGestor titulo="Listado de cesiones"{
+	Pagina ListadoCesiones campo=SolicitudGenerica permiso=adminOrGestor titulo="Listado de cesiones" noForm {
 		Accion editar crearSiempre
 		Grupo permiso=instruccion{
 			Tabla tablaCesiones titulo="Cesiones de datos" campo=SolicitudGenerica.cesion.cesiones popupLeer=PopupLeerListadoCesiones popupCrear=PopupListadoCesiones { // popupEditar=PopupListadoCesiones{

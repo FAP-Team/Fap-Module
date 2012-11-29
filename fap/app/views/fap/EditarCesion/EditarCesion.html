@@ -15,67 +15,79 @@
      urlCrear:play.mvc.Router.reverse('EditarCesionController.crear' ), 
      urlEditar:play.mvc.Router.reverse('EditarCesionController.editar' , ['idPeticionCesiones':peticionCesiones?.id])
 }
-	
-			#{form play.mvc.Router.reverse('EditarCesionController.formCesion' , ['idPeticionCesiones':peticionCesiones?.id]) , enctype:"multipart/form-data", class:"form-horizontal", id:"formCesion"}
 			
-			#{fap.grupo permiso:'responderPeticion', titulo:'Datos de cesion: Rellenar tipo de cesion'}
+		#{fap.grupo permiso:'responderPeticion', titulo:'Datos de cesion: Rellenar tipo de cesion'}
 				
 			#{fap.enlace estilo:'btn', id:'descargarFichero', target:'_blank', titulo:'Descargar', url:peticionCesiones.fichPeticion.urlDescarga /}
 		
-			#{/fap.grupo}
+		#{/fap.grupo}
 		
-			#{fap.grupo titulo:'Datos de Cesión: Subir fichero de respuesta'}
+		#{fap.grupo titulo:'Datos de Cesión: Subir fichero de respuesta'}
+		
+		#{form play.mvc.Router.reverse('EditarCesionController.formCesionFichSubida' , ['idPeticionCesiones':peticionCesiones?.id]) , class:"form-horizontal", id:"formCesionFichSubida"}
 			
-			#{fap.grupo borde:false, permiso:'tipoAsignado'}
+				#{fap.grupo borde:false, permiso:'tipoAsignado'}
 				
-			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', titulo:'Tipo de Cesión' /}		
+					#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', titulo:'Tipo de Cesión' /}		
 		
-			#{fap.boton id:'btnGuardar', titulo:'Guardar' /}
+					#{fap.boton id:'btnGuardar', titulo:'Guardar' /}
 		
-			#{/fap.grupo}
-		
-			#{fap.grupo borde:false, permiso:'responderPeticion'}
+				#{/fap.grupo}
 			
-			#{fap.grupo borde:false, permiso:'noEditable'}
-				
-			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', titulo:'Tipo de Cesión' /}		
-		
-			#{/fap.grupo}
-			
-			#{fap.documento accept:'', campo:'peticionCesiones.fichRespuesta', id:'subirArchivo', listarDocumentosSubidos:false, requerido:false, tipo:'tipoCiudadano' /}	
-			#{fap.boton id:'tratarFich', titulo:'Subir fichero de respuesta' /}
-		
-			#{/fap.grupo}
-		
-			#{fap.grupo borde:false, permiso:'aplicarCambios'}
-			<div class="well">	
-			#{fap.enlace estilo:'btn', id:'verFichero', target:'_blank', titulo:'Ver el fichero subido', url:peticionCesiones.fichRespuesta.urlDescarga, noRow:true /}
-
-			#{fap.boton id:'cambiarFichero', titulo:'Subir otro documento de respuesta'/}
-
-			#{fap.boton id:'aplicarCambios', titulo:'Aplicar cambios'/}
-			</div>
-			#{/fap.grupo}
-			
-			#{fap.grupo permiso:'cesionTerminada', titulo:'Cesion Finalizada'}
-				
-			#{fap.grupo borde:false, permiso:'noEditable'}
-				
-			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipoFin', titulo:'Tipo de Cesión' /}		
-		
-			#{/fap.grupo}
-		
-			#{/fap.grupo}
-			
-			#{/fap.grupo}
 			#{/form}
+				
+			#{form play.mvc.Router.reverse('EditarCesionController.formCesionFichRespuesta' , ['idPeticionCesiones':peticionCesiones?.id]) , enctype:"multipart/form-data", class:"form-horizontal", id:"formCesionFichRespuesta"}
+			
+				#{fap.grupo borde:false, permiso:'responderPeticion'}
+				
+					#{fap.grupo borde:false, permiso:'noEditable'}
+					
+						#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', titulo:'Tipo de Cesión' /}		
+			
+					#{/fap.grupo}
+				
+					#{fap.documento accept:'text/plain', campo:'peticionCesiones.fichRespuesta', id:'subirArchivo', listarDocumentosSubidos:false, requerido:false, tipo:'tipoCiudadano' /}	
+				
+					#{fap.boton id:'tratarFich', titulo:'Subir fichero de respuesta' /}
+			
+				#{/fap.grupo}
+			
+			#{/form}
+				
+			#{form play.mvc.Router.reverse('EditarCesionController.formCesionAplicarCambios' , ['idPeticionCesiones':peticionCesiones?.id]) , class:"form-horizontal", id:"formCesionAplicarCambios"}
+			
+				#{fap.grupo borde:false, permiso:'aplicarCambios'}
+				<div class="well">	
+					#{fap.enlace estilo:'btn', id:'verFichero', target:'_blank', titulo:'Ver el fichero subido', url:peticionCesiones.fichRespuesta.urlDescarga, noRow:true /}
+	
+					#{fap.boton id:'cambiarFichero', titulo:'Subir otro documento de respuesta'/}
+	
+					#{fap.boton id:'aplicarCambios', titulo:'Aplicar cambios'/}
+				</div>
+				#{/fap.grupo}
+				
+			#{/form}
+				
+			#{fap.grupo permiso:'cesionTerminada', titulo:'Cesion Finalizada'}
+					
+				#{fap.grupo borde:false, permiso:'noEditable'}
+					
+					#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipoFin', titulo:'Tipo de Cesión' /}		
+			
+				#{/fap.grupo}
+				
+			#{/fap.grupo}
+			
+		#{/fap.grupo}
+		
+		#{fap.enlace action:play.mvc.Router.reverse("GenerarFichCesionesController.index" ), estilo:'btn', id:'enlaceVolver', titulo:'Volver' /}
 			
 #{/fap.pagina}
 
 %{
-/*Url de la funcion del controlador que necesito llamar*/
+/*Url de la funcion del controlador que necesito llamar
 	urlConvertDataFunction = play.mvc.Router.reverse('LeerCesionController.descargarFichero');
-	uri = peticionCesiones.fichPeticion.uri;
+	uri = peticionCesiones.fichPeticion.uri;*/
 %}
 
 <script>	

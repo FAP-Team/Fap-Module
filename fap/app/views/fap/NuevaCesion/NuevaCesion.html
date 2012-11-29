@@ -6,7 +6,7 @@
      botonEditar:'Guardar', 
      encType:'application/x-www-form-urlencoded', 
      formulario:'Administracion', 
-     hayForm:true, 
+     hayForm:false, 
      mensajeFinal:false, 
      pagina:'NuevaCesion', 
      permiso:'administrador', 
@@ -16,12 +16,17 @@
      urlEditar:play.mvc.Router.reverse('NuevaCesionController.editar' , ['idPeticionCesiones':peticionCesiones?.id]),
      id: peticionCesiones?.id
 }
+			#{form play.mvc.Router.reverse('NuevaCesionController.formTipoCesion' , ['idPeticionCesiones':peticionCesiones?.id]) , class:"form-horizontal", id:"formTipoCesion"}
 
 			#{fap.grupo borde:true, permiso:'permisoTipoElegido', titulo:'Filtrar expedientes'}
 				
 			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', requerido:true, titulo:'Tipo de Cesión' /}		
 		
+			#{fap.boton id:'btnGuardar', titulo:'Guardar' /}
+		
 			#{/fap.grupo}
+			
+			#{/form}
 		
 			#{fap.grupo permiso:'permisoTipo', titulo:'Expedientes autorizados'}
 				
@@ -67,7 +72,7 @@
 #{/fap.tabla}
 
 
-			#{/fap.grupo}
+#{/fap.grupo}
 		
 #{/fap.pagina}
 

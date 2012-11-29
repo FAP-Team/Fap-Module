@@ -17,7 +17,7 @@
      urlDescarga: peticionCesiones?.fichPeticion.urlDescarga
 }
 	
-			#{fap.grupo titulo:'Petición de Cesión de Datos'}
+			#{fap.grupo permiso:'noEditable', titulo:'Petición de Cesión de Datos'}
 				
 			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', titulo:'Tipo de Cesión' /}		
 		
@@ -39,6 +39,7 @@
 		
 			#{/fap.grupo}
 			
+			#{fap.enlace action:play.mvc.Router.reverse("GenerarFichCesionesController.index" ), estilo:'btn', id:'enlaceVolver', titulo:'Volver' /}
 		
 #{/fap.pagina}
 

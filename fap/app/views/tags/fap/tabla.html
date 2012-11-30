@@ -82,10 +82,14 @@
 	def primeraAccionMock = "editar";
 	
 	try {
-		String namePermisoPagina = groovy.util.Eval.me('controllers.'+controllerNameAndPackage+'.getNamePermiso()');
+		String sClazz = 'controllers.'+controllerNameAndPackage;
+		java.lang.Class clazz = java.lang.Class.forName(sClazz);
+		java.lang.reflect.Method m1 = clazz.getMethod("getNamePermiso", null);
+		String namePermisoPagina = m1.invoke(object, null);
 		if (namePermisoPagina != null)
-			primeraAccionMock = config.InjectorConfig.getInjector().getInstance(security.Secure.class).getPrimeraAccion(namePermisoPagina, tags.TagMapStack.top("idParams"), null);	
+			primeraAccionMock = config.InjectorConfig.getInjector().getInstance(security.Secure.class).getPrimeraAccion(namePermisoPagina, tags.TagMapStack.top("idParams"), null);
 	} catch (Exception e) {
+		//e.printStackTrace();
 		play.Logger.error("tabla.html "+e.getMessage());
 	}
 

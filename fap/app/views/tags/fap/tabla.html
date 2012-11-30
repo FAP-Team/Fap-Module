@@ -77,6 +77,17 @@
 	def codePrint = _codePrint ?: "";
 	
 	def submitPage = _submitPage ?: false;
+	
+	def controllerNameAndPackage = actionDef.action.substring(0,actionDef.action.lastIndexOf('.'));
+	def primeraAccionMock = "editar";
+	
+	try {
+		String namePermisoPagina = groovy.util.Eval.me('controllers.'+controllerNameAndPackage+'.getNamePermiso()');
+		if (namePermisoPagina != null)
+			primeraAccionMock = config.InjectorConfig.getInjector().getInstance(security.Secure.class).getPrimeraAccion(namePermisoPagina, tags.TagMapStack.top("idParams"), null);	
+	} catch (Exception e) {
+		play.Logger.error("tabla.html "+e.getMessage());
+	}
 
 %}
 
@@ -333,6 +344,7 @@
 			   		#{/if}
 			   		#{else}
 						#{if saveBefore && saveEntity}
+							console.log("${urlEditar}");
 	    					var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlEditar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
     						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
 						#{/if}
@@ -390,8 +402,9 @@
 						)
 					#{/if}
 			   		#{else}
-						#{if saveBefore && saveEntity}
+						#{if saveBefore && saveEntity && !"leer".equals(primeraAccionMock)}
 	    					var urlBeforeOpenPageTableLeer = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlLeer}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+	    					alert("${urlLeer} \n\n "+urlBeforeOpenPageTableLeer);
     						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableLeer).submit();
 						#{/if}
 						#{else}

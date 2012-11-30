@@ -844,21 +844,29 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	private String metodoPrimeraAccion(){
 		String content;
+		String content2;
 		if (permiso){
 			content = """
 				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 				return secure.getPrimeraAccion("${permiso.name}", ids, null);
 			""";
+			content2 = """return "${permiso.name}";""";
 		}
 		else{
 			content = """
 				return "editar";
 			""";
+			content2 = """return null;""";
 		}
 		return """
 			@Util
 			public static String getAccion() {
 				${content}
+			}
+			
+			@Util
+			public static String getNamePermiso() {
+				${content2}
 			}
 		"""
 	}

@@ -165,6 +165,7 @@ Pagina:
 		& (noAutenticar?='noAutenticar')?
 		& (guardarParaPreparar?="guardarParaPreparar")?
 		& (inicial?="inicial")?
+		& (copia?="copia")?
 		& (mensajeFinal?="mensajeFinal")?
 		& ("perteneceA" "=" perteneceA=STRING)?
 	)
@@ -449,6 +450,7 @@ FirmaSimple:
 		("titulo" "=" titulo=STRING)
 		& (documento=FirmaDocumento)
 		& (firmantes=FirmaFirmantes)
+		& (registroFirma=FirmaRegistro)?
 		& (calcularFirmantes=CalcularFirmantes)
 		& (setToTrue=FirmaSetTrue)?
 	)
@@ -462,6 +464,10 @@ FirmaSimple:
 
 FirmaDocumento:
 	"documento" "=" campo=Campo	
+;
+
+FirmaRegistro:
+	"registroFirma" "=" campo=Campo	
 ;
 
 FirmaFirmantes:

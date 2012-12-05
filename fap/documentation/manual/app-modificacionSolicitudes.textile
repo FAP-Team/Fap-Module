@@ -1,0 +1,40 @@
+h1. Modificación de Solicitudes
+
+El módulo FAP, tiene una serie de páginas que permiten la modificación de los datos de la solicitud que ya han sido registrados y firmados en la presentación correspondiente, haciendo que estos datos modificados se conviertan en los nuevos datos válidos siendo firmados y registrados nuevamente.
+
+Para usar esta funcionalidad hay que utilizar un par de página predefinidas ya en el módulo FAP, así como personalizar ciertos controladores que permiten presentar estas modificaciones en el registro correspondiente.
+
+h2. Permitiendo Modificar las Solicitudes (Datos que se dejan Modificar)
+
+El primer paso que hay que tener en cuenta es el de permitir a los solicitantes modificar los datos que se deseen. Para ello, antes que nada, debemos definir las páginas que contengan los campos determinados que vamos a dejar modificar por parte de los solicitantes.
+
+Simplemente debemos crear páginas que contengan los campos que queramos permitir modificar. Para la creación de estas páginas, debemos indicar que son para el efecto que buscamos, la modificación. Esto se consigue indicando estás páginas como de 'copia'.
+
+Un ejemplo sería algo como:
+
+bc. Pagina miPaginaModificacion campo=Solicitud permiso=miPermiso copia {
+	Texto nombre titulo="Nombre Proyecto" campo=Solicitud.datosProyecto.nombre
+	Fecha fecha titulo="Fecha Incorporación" campo=Solicitud.datosIncorporacion.fechas.fechaIncorporacion
+}
+
+h2. Permitiendo Modificar las Solicitudes (Habilitar la Modificación)
+
+Una vez tenemos definido lo que vamos a permitir modificar, el siguiente paso sería que el gestor/administrador diera al solicitante la potestad de empezar a modificar los datos requeridos. Esto se consigue mediante la creación de un nuevo registro de modificación que se traduce en la creación de una nueva entrada en una tabla que verán sólo los gestores/administradores. Esta tabla está en una página por defecto de FAP, que deberemos direccionar en el menú que queramos junto a las demás opciones de las Solicitudes.
+
+Para ello simplemente debemos indicar en el DSL correspondiente:
+
+bc. Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
+
+Esto nos permitirá acceder a una página que se compone de 2 partes:
+
+* La primera parte es la tabla nombrada anteriormente y que permite crear entradas, si no hay una entrada ya activada. El único parámetro que se solicita a la hora de crear un nuevo registro en esta tabla es la fecha límite que otorgamos al solicitante para modificar la solicitud. En ese mismo instante el solicitante podrá entrar a las páginas creadas anteriormente como de 'copia' y modificar los datos que allí hemos indicado. Cuando termine de realizar las modificaciones, deberá presentar dichas modificaciones en un proceso muy parecido al de la presentación de las solicitudes (que más adelante conoceremos), para consolidar oficialmente las modificaciones realizadas. Sólo se podrá crear una nueva entrada en esta tabla por parte del gestor o administrador, cuando no existe una modificación anterior en curso, es decir, que no haya ninguna todavía o las que existen estén todas debidamente finalizadas (que se hubiesen presentado en tiempo y forma o que se hubiese restaurado a un estado anterior como explicaremos a continuación).
+
+* La segunda parte de la página es un combo que permite restaurar los datos modificados al estado anterior, es decir, al estado como estaban la última vez que se hizo una presentación. Esto es util para en casos en que el solicitante haya pedido modificar pero se arrepienta y no quiera modificar nada, o el propio gestor/administrador se hayan equivocado y no procediera la modificación. Es una salvaguarda por motivos de seguridad e integridad de los datos tan delicados que se manejan.
+
+h2. Permitiendo Modificar las Solicitudes (Modificando los datos permitidos)
+
+Una vez se haya dado permiso, por parte del gestor o administrador, al solicitante para la modificación de ciertos datos. El siguiente paso es que el solicitante entre en las páginas definidas para tal efecto y modifique lo que crea conveniente. En este proceso, el gestor no podrá modificar nada  de las solicitud, por lo que deberá esperar a que el solicitante termine y presente para poder volver al comportamiento normal.
+
+h2. Permitiendo Modificar las Solicitudes (Presentando las Modificaciones)
+
+Por último, se deberán consolidar estos cambios de manera que a efectos oficiales conste como que los datos válidos son los modificados. Para ello se deberá presentar nuevamente la solicitud en un proceso muy parecido al de la presentación. De hecho existe tanto un trámite, como un controlador que permiten la personalización de este proceso a imagen y semejanza de como se hace en la presentación tradicional. Así que si queremos personalizar esta parte deberemos documentarnos como se hace en la presentación normal ("Presentación":app-presentacion) conociendo que el trámite que debemos sobreescribir para esta parte se llama ahora *TramiteSolicitudModificacionFAP* y el controlador que rige este trámite es *PresentacionModificacionFAPController*

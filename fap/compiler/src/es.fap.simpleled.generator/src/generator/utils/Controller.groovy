@@ -26,6 +26,7 @@ import es.fap.simpleled.led.LedFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,6 +61,7 @@ public class Controller implements Comparator<Entidad>{
 	public String renderView;
 	public Permiso permiso;
 	public String controllerGenName;
+	public boolean copia;
 	public String controllerName;
 	public String controllerGenFullName;
 	public String controllerFullName;
@@ -169,9 +171,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import com.google.gson.Gson;
 
 import services.FirmaService;
 import com.google.inject.Inject;
+import utils.PeticionModificacion;
 
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
@@ -915,6 +919,24 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	public String metodoValidateCopy(){
 		if (saveEntities.size() == 0 || (!editar && !crear)) return "";
+		String backupCopia = "";
+		if (copia)
+			backupCopia = """PeticionModificacion peticionModificacion = new PeticionModificacion();
+							 peticionModificacion.campoPagina="${campo.str}";
+							 boolean hayModificaciones=false;
+							 Map<String, String> allSimple = params.allSimple();
+							 for(Map.Entry<String, String> entry : allSimple.entrySet()){
+								 if(entry.getKey().startsWith("id")){
+									 try {
+									    peticionModificacion.idSimples.put(entry.getKey(), Long.parseLong(entry.getValue()));
+									 }catch(Exception e){
+										//El parámetro no era un long
+									 }
+								  }
+		                     }
+							 List<String> valoresAntiguos = new ArrayList<String>();
+							 List<String> valoresNuevos = new ArrayList<String>();
+			"""
 		return """
 			@Util
 			public static void ${name}ValidateCopy(String accion, ${StringUtils.params(
@@ -925,6 +947,7 @@ public class ${controllerName} extends ${controllerGenName} {
 				extraParams
 			)}){
 				CustomValidation.clearValidadas();
+				${backupCopia}
 				${gElement.validateCopy()}
 				${gElement.saveCode()}
 			}
@@ -1091,6 +1114,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (gpag.pagina.permiso == null)
 			controller.permiso = gpag.pagina.eContainer().permiso;
 		controller.controllerGenName = gpag.controllerGenName();
+		controller.copia = gpag.pagina.copia;
 		controller.controllerName = gpag.controllerName();
 		controller.controllerGenFullName = gpag.controllerGenFullName();
 		controller.controllerFullName = gpag.controllerFullName();

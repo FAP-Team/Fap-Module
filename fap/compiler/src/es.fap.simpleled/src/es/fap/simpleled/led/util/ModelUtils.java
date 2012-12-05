@@ -65,4 +65,19 @@ public class ModelUtils{
 		return (T)getVisibleNode(clazz, null, res);
 	}
 	
+	/*
+	 * Se busca un elemento padre concreto.
+	 */
+	public static EObject getContenedorPadre(EObject eo, EClass clazz) {
+		if (eo == null)
+			return null;
+		while (!(clazz.isInstance(eo))) {
+			EObject eo1 = (EObject)eo.eContainer();
+			if (eo1 == null)
+				return null;
+			eo = eo1;
+		}
+		return eo;
+	}
+	
 }

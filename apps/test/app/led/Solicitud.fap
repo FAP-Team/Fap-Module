@@ -79,6 +79,11 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "Desistimiento" pagina=Desistimiento
 			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
     	}    	
+    	
+    	Grupo "Paginas Copias" {
+    		Enlace "Copia" pagina=PaginaCopia
+    		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
+    	}
 		
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
@@ -801,5 +806,12 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		}
 	}
 	
+	Pagina PaginaCopia titulo="Página Copia" campo=Solicitud copia{
+		Texto titulo="Nombre desde FAP" campo=Solicitud.solicitante.fisica.nombre
+		Texto titulo="Texto desde la APP" campo=Solicitud.elementos.texto
+		Combo miCombo titulo="Combo Prueba" campo=Solicitud.comboTest.listMultiple
+		Combo miCombo2 titulo="Combo Prueba 2" campo=Solicitud.comboTest.refMultiple
+		Combo miCombo3 titulo="Combo Prueba 3" campo=Solicitud.paco
+	}
 }
 

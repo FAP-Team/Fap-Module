@@ -1202,6 +1202,25 @@ Permiso evaluacionFinalizada{
 	when
 	    (evaluacion?.tipo?.estado = "evaluada") and
 	    (agente.rolActivo in ("administrador", "gestor"))
-	return all
-	  
+	return all	  
+}
+
+Permiso habilitarModificacionSolicitud{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor") and
+		solicitud.estado != "borrador"
+	return
+	    all
+}
+
+Permiso crearModificacionSolicitud{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor") and
+		solicitud.activoModificacion = "false"
+	return
+	    all
 }

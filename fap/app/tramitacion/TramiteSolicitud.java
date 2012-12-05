@@ -115,7 +115,7 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	 * Realiza cambios de estado
 	 */
 	@Override
-	public final void cambiarEstadoSolicitud() {
+	public void cambiarEstadoSolicitud() {
 		solicitud.estado=EstadosSolicitudEnum.iniciada.name();
 		solicitud.save();
 	}

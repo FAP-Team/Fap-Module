@@ -1,7 +1,9 @@
 package templates;
 
 import es.fap.simpleled.led.*;
+import es.fap.simpleled.led.impl.LedPackageImpl;
 import es.fap.simpleled.led.util.LedEntidadUtils
+import es.fap.simpleled.led.util.ModelUtils;
 import generator.utils.CampoUtils
 import generator.utils.Entidad;
 import generator.utils.StringUtils
@@ -106,14 +108,50 @@ public class GSaveCampoElement extends GElement {
 	}
 	
 	public static String copyCampoMany2One(CampoUtils campo) {
-		return "db${campo.str} = ${campo.firstLower()};";
+		Pagina pagina = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPagina());
+		if ((pagina != null) && (pagina.copia)){
+			return """ if ((db${campo.str} != null) && (!${campo.firstLower()}.toString().equals(db${campo.str}.toString()))){
+						   valoresAntiguos = new ArrayList<String>();
+						   if (db${campo.str} != null)
+						      valoresAntiguos.add(db${campo.str}.toString());
+						   valoresNuevos = new ArrayList<String>();
+						   valoresNuevos.add(${campo.firstLower()}.toString());
+						   peticionModificacion.setValorModificado("${campo.firstLower()}", valoresAntiguos, valoresNuevos);
+						   hayModificaciones = true;
+					   }
+				       db${campo.str} = ${campo.firstLower()};
+                   """;
+		} else {
+			return "db${campo.str} = ${campo.firstLower()};";
+		}
 	}
 
 	public static String copyCampoMany2Many(CampoUtils campo) {
-		return """
-			db${campo.str}.retainAll(${campo.firstLower()});
-			db${campo.str}.addAll(${campo.firstLower()});
-		""";
+		Pagina pagina = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPagina());
+		if ((pagina != null) && (pagina.copia)){
+			return """
+				if ((db${campo.str} != null) && (!db${campo.str}.contains(${campo.firstLower()}))){
+					valoresAntiguos = new ArrayList<String>();
+					for (int i=0; i<db${campo.str}.size(); i++){
+						if (db${campo.str} != null)
+							valoresAntiguos.add(db${campo.str}.get(i).toString());
+					}
+					valoresNuevos = new ArrayList<String>();
+					for (int i=0; i<${campo.firstLower()}.size(); i++){
+						valoresNuevos.add(${campo.firstLower()}.get(i).toString());
+					}
+					peticionModificacion.setValorModificado("${campo.firstLower()}", valoresAntiguos, valoresNuevos);
+					hayModificaciones=true;
+				}
+				db${campo.str}.retainAll(${campo.firstLower()});
+				db${campo.str}.addAll(${campo.firstLower()});
+			""";
+		} else {
+			return """
+				db${campo.str}.retainAll(${campo.firstLower()});
+				db${campo.str}.addAll(${campo.firstLower()});
+			""";
+		}
 	}
 	
 	public static String copyCampos(CampoUtils campo) {
@@ -143,13 +181,72 @@ public class GSaveCampoElement extends GElement {
 			return copyCampoMany2One(campo);
 		else if (LedEntidadUtils.isManyToMany(campo.getUltimoAtributo()))
 			return copyCampoMany2Many(campo);
-		else if (campo.getUltimoAtributo()?.type.compound?.multiple){
-			return """
-			db${campo.str}.retainAll(${campo.firstLower()});
-			db${campo.str}.addAll(${campo.firstLower()});
-			"""
+		else if (campo.getUltimoAtributo()?.type.compound?.multiple){ // SET
+			Pagina pagina = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPagina());
+			if ((pagina != null) && (pagina.copia)){
+				return """
+					valoresAntiguos = new ArrayList<String>();
+					if (db${campo.str} != null) {
+						for (String str : db${campo.str}.toArray(new String[db${campo.str}.size()]))
+							valoresAntiguos.add(str);
+					}
+					valoresNuevos = new ArrayList<String>();
+					if (${campo.firstLower()} != null) {
+						for (String str : ${campo.firstLower()}.toArray(new String[${campo.firstLower()}.size()]))
+							valoresNuevos.add(str);
+					}
+					if (!valoresNuevos.isEmpty()){
+						peticionModificacion.setValorModificado("${campo.firstLower()}", valoresAntiguos, valoresNuevos);
+						hayModificaciones=true;
+					}
+
+					db${campo.str}.retainAll(${campo.firstLower()});
+					db${campo.str}.addAll(${campo.firstLower()});
+				""";
+			} else {
+				return """
+				db${campo.str}.retainAll(${campo.firstLower()});
+				db${campo.str}.addAll(${campo.firstLower()});
+				"""
+			}
 		}
-		return "db${campo.str} = ${campo.firstLower()};\n";
+		Pagina pagina = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPagina());
+		if ((pagina != null) && (pagina.copia)){
+			Attribute attr = campo.getUltimoAtributo();
+			if (attr.getType()?.getCompound()?.getCollectionType()?.getType()?.toString().equals("Set")){
+				return """
+					valoresAntiguos = new ArrayList<String>();
+					if (db${campo.str} != null){
+						for (String str : db${campo.str}.toArray(new String[db${campo.str}.size()]))
+							valoresAntiguos.add(str);
+					}
+					valoresNuevos = new ArrayList<String>();
+					if (${campo.firstLower()} != null) {
+						for (String str : ${campo.firstLower()}.toArray(new String[${campo.firstLower()}.size()]))
+							valoresNuevos.add(str);
+					}
+					if (!valoresNuevos.isEmpty()){
+						peticionModificacion.setValorModificado("${campo.firstLower()}", valoresAntiguos, valoresNuevos);
+						hayModificaciones=true;
+					}
+					db${campo.str} = ${campo.firstLower()};
+				""";
+			} else{
+				return """ if ((db${campo.str} != null) && (!${campo.firstLower()}.toString().equals(db${campo.str}.toString()))){
+						   valoresAntiguos = new ArrayList<String>();
+						   if (db${campo.str} != null)
+						      valoresAntiguos.add(db${campo.str}.toString());
+						   valoresNuevos = new ArrayList<String>();
+						   valoresNuevos.add(${campo.firstLower()}.toString());
+						   peticionModificacion.setValorModificado("${campo.firstLower()}", valoresAntiguos, valoresNuevos);
+						   hayModificaciones=true;
+					   }
+					   db${campo.str} = ${campo.firstLower()};
+				""";
+			}
+		} else{
+			return "db${campo.str} = ${campo.firstLower()};\n";
+		}
 	}
 
 	public static String copyCamposFiltrados(CampoUtils campo, List<String> subcampos){

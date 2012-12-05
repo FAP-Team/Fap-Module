@@ -96,6 +96,16 @@ public class GFirmaSimple extends GElement{
 		CampoUtils documento = CampoUtils.create(firmaSimple.documento.campo);
 		Entidad entidadDoc = documento.entidad;
 		CampoUtils firmantes = CampoUtils.create(firmaSimple.firmantes.campo);
+		CampoUtils registroFirma = null;
+		if (firmaSimple.registroFirma)
+			registroFirma = CampoUtils.create(firmaSimple.registroFirma.campo);
+		String strRegistroFirma = "";
+		if (registroFirma != null)
+			strRegistroFirma = """${registroFirma.firstLower()}.fasesRegistro.firmada = true;
+							 ${registroFirma.firstLower()}.save();
+						  """
+		else
+			strRegistroFirma = "${entidadDoc.variable}.registro.fasesRegistro.firmada = true;"
 		String strCampoFirmantes = "${firmantes.firstLower()}";
 		String strCampoToTrue = "";
 		if (firmaSimple.setToTrue) {
@@ -144,7 +154,7 @@ public class GFirmaSimple extends GElement{
 				if (!Messages.hasErrors()) {
 					${strCampoToTrue}
 					${strCampoSetTo}
-					${entidadDoc.variable}.registro.fasesRegistro.firmada = true;
+					${strRegistroFirma}
 					${entidadDoc.variable}.save();
 				}
 			}

@@ -136,6 +136,9 @@ GET /Solicitud/enviomails EnvioMailsController.index
 POST /Solicitud/enviomails/enviarMail EnvioMailsController.enviarMail
 GET /Solicitud/renderpdf RenderPdfController.index
 POST /Solicitud/renderpdf/renderPdfSolicitud RenderPdfController.renderPdfSolicitud
+GET /Solicitud/creardocyfirma CrearDocYFirmaController.index
+POST /Solicitud/creardocyfirma/generarDocumento CrearDocYFirmaController.generarDocumento
+POST /Solicitud/creardocyfirma/firmarDocumento CrearDocYFirmaController.firmarDocumento
 GET /Solicitud/tablascondecimales TablasConDecimalesController.index
 POST /Solicitud/tablascondecimales/editar TablasConDecimalesController.editar
 POST /Solicitud/tablascondecimales/beforeOpenPageTable TablasConDecimalesController.beforeOpenPageTable
@@ -146,6 +149,8 @@ GET /Solicitud/combonoeditable ComboNoEditableController.index
 POST /Solicitud/combonoeditable/editar ComboNoEditableController.editar
 GET /Solicitud/paginacancelar PaginaCancelarController.index
 POST /Solicitud/paginacancelar/guardarPCE PaginaCancelarController.guardarPCE
+GET /Solicitud/paginacopia PaginaCopiaController.index
+POST /Solicitud/paginacopia/editar PaginaCopiaController.editar
 GET /Solicitud/pruebabigpopup popups.PruebaBigPopUpController.index
 POST /Solicitud/pruebabigpopup/editar popups.PruebaBigPopUpController.editar
 GET /Solicitud/pruebabigpopup/documentosExternos popups.PruebaBigPopUpController.tabladocumentosExternos

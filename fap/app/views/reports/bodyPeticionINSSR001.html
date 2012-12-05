@@ -26,7 +26,7 @@ p {
 <table id="tblDatosPeticionDatosInicial" class="table-datos" >
 	<tr>
 		<tr>
-			<tr><th>DNI/CIF:</th><td>${inss.registroDetalle.nDocumento}</td></tr>
+			<tr><th>DNI/CIF:</th><td>${inss.registro.nDocumento}</td></tr>
 		</tr>	
 		<tr>
 			<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
@@ -40,10 +40,10 @@ p {
 		<tr>
 			%{
 			String idestado = "";
-			if ((inss.registroDetalle.estado.equals("_05")) || (inss.registroDetalle.estado.equals("_06")))
+			if ((inss.registro.estado.equals("_05")) || (inss.registro.estado.equals("_06")))
 					idestado = enumerado.fap.gen.ListaEstadosEnum._04.name();
 				else
-					idestado = enumerado.fap.gen.ListaEstadosEnum.valueOf(inss.registroDetalle.estado).name();	
+					idestado = enumerado.fap.gen.ListaEstadosEnum.valueOf(inss.registro.estado).name();	
 			%}
 			<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum.valueOf(idestado).value()}</td></tr>
 		</tr>	

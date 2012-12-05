@@ -19,19 +19,24 @@ import com.google.inject.Inject;
 import messages.Messages;
 import models.Documento;
 import models.PeticionCesiones;
+import peticionCesion.PeticionAEAT;
+import peticionCesion.PeticionATC;
+import peticionCesion.PeticionBase;
+import peticionCesion.PeticionINSSA008;
+import peticionCesion.PeticionINSSR001;
 import play.modules.guice.InjectSupport;
 import play.mvc.Util;
 import properties.FapProperties;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import tags.ComboItem;
-import utils.AEATUtils;
-import utils.ATCUtils;
+import tramitacion.TramiteBase;
 import utils.BinaryResponse;
 import utils.GestorDocumentalUtils;
-import utils.INSSUtils;
 import validation.CustomValidation;
 import config.InjectorConfig;
+import controllers.fap.PeticionFapController;
+import controllers.fap.PresentacionFapController;
 import controllers.gen.EditarCesionControllerGen;
 import enumerado.fap.gen.EstadosPeticionEnum;
 import enumerado.fap.gen.ListaCesionesEnum;
@@ -195,7 +200,6 @@ public class EditarCesionController extends EditarCesionControllerGen {
 	@Util
 	public static void tratarFich(PeticionCesiones peticionCesiones) {
 		peticionCesiones.respCesion.fechaActuacionGestor = new DateTime(); //Al actualizar
-
 		//Generar el pdf
 		File fich = null;
 		try {
@@ -209,17 +213,15 @@ public class EditarCesionController extends EditarCesionControllerGen {
 		} catch (GestorDocumentalServiceException e) {
 			Messages.error("Error del gestor documental ");
 		}
-		
-		if ((fich!=null) && (peticionCesiones.tipo.equals(ListaCesionesEnum.inssR001.name()))){
-			INSSUtils.parsearINSSR001(peticionCesiones, fich);
-		}else if ((fich!=null) && (peticionCesiones.tipo.equals(ListaCesionesEnum.aeat.name()))){
-			AEATUtils.parsearAEAT(peticionCesiones, fich);
-		}else if ((fich!=null) && (peticionCesiones.tipo.equals(ListaCesionesEnum.atc.name()))){
-			ATCUtils.parsearATC(peticionCesiones, fich);
-		}else if ((fich!=null) && (peticionCesiones.tipo.equals(ListaCesionesEnum.inssA008.name()))){
-			INSSUtils.parsearINSSA008(peticionCesiones, fich);
-		}else
-			Messages.error("Error recuperando el fichero del Gestor Documental");
+		if (fich!=null){
+			PeticionBase patc;
+			try {
+				patc = PeticionFapController.invoke(PeticionFapController.class, "getPeticionObject", peticionCesiones.tipo);
+				patc.parsearPeticionBase(peticionCesiones, fich);
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	//Métodos en el controlador manual 

@@ -36,10 +36,6 @@ public class AutorizacionCesion extends FapModel {
 
 	public Boolean idi;
 
-	public AutorizacionCesion() {
-		init();
-	}
-
 	public void init() {
 
 		if (trabajadores == null)
@@ -49,7 +45,12 @@ public class AutorizacionCesion extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-
+	public AutorizacionCesion() {
+		aeat = false;
+		inssR001 = false;
+		atc = false;
+		inssA008 = false;
+	}
 	// === MANUAL REGION END ===
 
 }

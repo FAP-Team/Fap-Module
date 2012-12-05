@@ -9,22 +9,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.cxf.common.util.ReflectionUtil;
 import org.joda.time.DateTime;
 
 import com.jamonapi.utils.FileUtils;
 
+import peticionCesion.PeticionBase;
+import peticionCesion.PeticionINSSR001;
 import play.libs.IO;
 import play.mvc.Util;
 import play.utils.PThreadFactory;
 import properties.FapProperties;
 import reports.Report;
-import utils.AEATUtils;
-import utils.ATCUtils;
-import utils.INSSUtils;
+import tags.ReflectionUtils;
+import tags.StringUtils;
+import utils.ModelUtils;
 import messages.Messages;
+import models.AutorizacionCesion;
 import models.Cesiones;
 import models.PeticionCesiones;
 import models.SolicitudGenerica;
+import controllers.fap.InvokeClassController;
+import controllers.fap.PeticionFapController;
 import controllers.gen.NuevaCesionControllerGen;
 import enumerado.fap.gen.EstadosPeticionEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
@@ -51,8 +57,6 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 			peticionCesiones.save();
 			idPeticionCesiones = peticionCesiones.id;
 			accion = "editar";
-			
-			//Parcheado con esto -> Render de abajo no funciona con editar
 			NuevaCesionController.editarRender(idPeticionCesiones);
 
 		} else if (!"borrado".equals(accion))
@@ -64,21 +68,15 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 	}
 	
 	public static void generarpeticion(Long id, List<Long> idsSeleccionados) {
-		
 		if (idsSeleccionados!=null){
 			//Generacion del fichero de consulta
 			PeticionCesiones pt = getPeticionCesiones(id);
-			if (pt.tipo.equals(ListaCesionesEnum.atc.name())){
-				ATCUtils.peticionATC(pt, idsSeleccionados);
-			}
-			if (pt.tipo.equals(ListaCesionesEnum.aeat.name())){
-				AEATUtils.peticionAEAT(pt, idsSeleccionados);
-			}
-			if (pt.tipo.equals(ListaCesionesEnum.inssA008.name())){
-				INSSUtils.peticionINSSA008(pt, idsSeleccionados);
-			}
-			if (pt.tipo.equals(ListaCesionesEnum.inssR001.name())){
-				INSSUtils.peticionINSSR001(pt, idsSeleccionados);
+			PeticionBase pbase;
+			try {
+				pbase = PeticionFapController.invoke(PeticionFapController.class, "getPeticionObject", pt.tipo);
+				pbase.generarPeticionBase(pt, idsSeleccionados);
+			} catch (Throwable e) {
+				e.printStackTrace();
 			}
 			EditarCesionController.index("editar", pt.id);
 		}
@@ -112,24 +110,22 @@ public class NuevaCesionController extends NuevaCesionControllerGen {
 		//Filtro dependiendo del valor del combo
 		PeticionCesiones pt = getPeticionCesiones(idPeticionCesiones);
 
-		java.util.List<SolicitudGenerica> rows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud").fetch();
-		List<SolicitudGenerica> rowsFiltered = new ArrayList<SolicitudGenerica>();		
-		//Filtro de solicitudes (tipo y filtro de combo)
+		java.util.List<SolicitudGenerica> rows = SolicitudGenerica.findAll();
+		List<SolicitudGenerica> rowsFiltered = new ArrayList<SolicitudGenerica>();
+		
 		for (SolicitudGenerica solGen : rows) {
-			if((solGen.estado.equals(EstadosSolicitudEnum.iniciada.name())) && (solGen.cesion.autorizacionCesion.atc != null) && (solGen.cesion.autorizacionCesion.atc) && (pt.tipo.equals(ListaCesionesEnum.atc.name()))){
-				rowsFiltered.add(solGen);
-			}
-			if((solGen.estado.equals(EstadosSolicitudEnum.iniciada.name())) && (solGen.cesion.autorizacionCesion.aeat != null) && (solGen.cesion.autorizacionCesion.aeat) && (pt.tipo.equals(ListaCesionesEnum.aeat.name()))){
-				rowsFiltered.add(solGen);
-			}
-			if((solGen.estado.equals(EstadosSolicitudEnum.iniciada.name())) && (solGen.cesion.autorizacionCesion.inssR001 != null) && (solGen.cesion.autorizacionCesion.inssR001) && (pt.tipo.equals(ListaCesionesEnum.inssR001.name()))){
-				rowsFiltered.add(solGen);
-			}
-			if((solGen.estado.equals(EstadosSolicitudEnum.iniciada.name())) && (solGen.cesion.autorizacionCesion.inssA008 != null) && (solGen.cesion.autorizacionCesion.inssA008) && (pt.tipo.equals(ListaCesionesEnum.inssA008.name()))){
+			String metodo = "get"+StringUtils.firstUpper(pt.tipo);
+			Boolean autorizado = false;
+			try {
+				autorizado = (Boolean)ReflectionUtils.getValueFromMethodFromClass(solGen.cesion.autorizacionCesion, metodo);
+				//Mostrar solo las solicitudes autorizadas
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}			
+			if((solGen.estado.equals(EstadosSolicitudEnum.iniciada.name())) && (autorizado)){
 				rowsFiltered.add(solGen);
 			}
 		}
-		
 		return rowsFiltered;
 	}
 	

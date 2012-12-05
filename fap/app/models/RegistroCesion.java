@@ -19,10 +19,14 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class AEAT extends FapModel {
+public class RegistroCesion extends FapModel {
 	// Código de los atributos
 
+	public String tipoRegistro;
+
 	public String nDocumento;
+
+	public String estado;
 
 	public String nombre;
 
@@ -35,6 +39,16 @@ public class AEAT extends FapModel {
 	public String datosPropios;
 
 	public String referencia;
+
+	public String regimen;
+
+	public String cccPpal;
+
+	public String numMedioTrabajadores;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaSolicitud"), @Column(name = "fechaSolicitudTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaSolicitud;
 
 	public void init() {
 

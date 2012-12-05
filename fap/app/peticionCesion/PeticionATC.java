@@ -1,54 +1,43 @@
-package utils;
+package peticionCesion;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Formatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import java.util.regex.*;
-
-import org.h2.constant.SysProperties;
 import org.joda.time.DateTime;
 
 import config.InjectorConfig;
 
 import properties.FapProperties;
-import enumerado.fap.gen.CodigoCertEnum;
-import enumerado.fap.gen.CodigoRespuestaEnum;
-import enumerado.fap.gen.EstadoCesionSolicitudEnum;
-import enumerado.fap.gen.EstadosPeticionEnum;
-import enumerado.fap.gen.ListaEstadosEnum;
-import enumerado.fap.gen.ListaOrigenEnum;
-
 import reports.Report;
 import services.FirmaService;
 import services.FirmaServiceException;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import validation.CifCheck;
-import validation.NipCheck;
+import enumerado.fap.gen.CodigoRespuestaEnum;
+import enumerado.fap.gen.EstadosPeticionEnum;
+import enumerado.fap.gen.ListaEstadosEnum;
+import enumerado.fap.gen.ListaOrigenEnum;
 
 import messages.Messages;
-import models.ATC;
+import models.CesionPDF;
 import models.Cesiones;
 import models.Documento;
-import models.Nip;
 import models.PeticionCesiones;
 import models.SolicitudGenerica;
 
-public class ATCUtils {
+public class PeticionATC extends PeticionBase{
 
 	static final int nombreCte = 75;
 	static final int libreCte = 72;
@@ -59,10 +48,10 @@ public class ATCUtils {
 	static final int ininDoc = 1;
 	static final int iniNombre = 10;
 	static final int iniCodResp = 85;
-
-	static GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 	
-	public static void peticionATC(PeticionCesiones pt, List<Long> idsSeleccionados){
+	@Override
+	public
+	void generarPeticionBase(PeticionCesiones pt, List<Long> idsSeleccionados) {
 		File file = null;
 		BufferedWriter bw = null;
 		try{
@@ -118,7 +107,76 @@ public class ATCUtils {
 			Messages.error("Error subiendo el fichero de petición al AED");
 			play.Logger.info("Error subiendo el fichero de petición al AED");
 		}
-	
+	}
+
+	@Override
+	public
+	void parsearPeticionBase(PeticionCesiones pt, File fich) {
+		FileReader fr = null;
+		try { //Abrir en modo lectura
+			fr = new FileReader (fich);
+			BufferedReader br = new BufferedReader(fr);
+			String linea = null;
+			CesionPDF atc = new CesionPDF();
+			//Lectura de la cabecera
+			linea=br.readLine();
+			pt.respCesion.fechaGeneracion = obtenerFecha(linea.substring(inifecha, iniNumero));
+			//Lectura de los ficheros de registro:
+			while((linea=br.readLine())!=null){
+				atc.registro.tipoRegistro = linea.substring(initipoReg, inifecha);
+				atc.registro.nDocumento = linea.substring(ininDoc, iniNombre);
+				atc.registro.nombre = linea.substring(iniNombre, iniCodResp);
+				atc.registro.estado  = "_"+linea.substring(iniCodResp, linea.length()); //Nombre
+				generarPdfATC(pt, atc);
+			}
+			fr.close();
+		} catch (Exception e) {
+			Messages.error("Error parseando el documento de respuesta del ATC, compruebe que el fichero es correcto");
+			play.Logger.info("Error parseando el documento de respuesta del ATC");
+		}
+	}
+
+	@Override
+	public
+	void aplicarCambiosBase(SolicitudGenerica solicitud, PeticionCesiones pt, Documento doc, String estado) {
+		Cesiones cesion = new Cesiones();
+		cesion.tipo = pt.tipo;
+		cesion.idUnico = Long.toString(pt.id);
+		cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
+		cesion.fechaValidez = pt.respCesion.fechaGeneracion.plusMonths(Integer.parseInt(FapProperties.get("fap.cesiondatos.validezPeticion")));;;
+		cesion.origen = ListaOrigenEnum.cesion.name();
+		cesion.firmada = false;
+		cesion.documento = doc;
+		if (estado.equals(CodigoRespuestaEnum._00.name())){
+			cesion.estado = ListaEstadosEnum._01.name();	
+		}
+		else if (estado.equals(CodigoRespuestaEnum._01.name())){
+			cesion.estado = ListaEstadosEnum._02.name();
+		}
+		else if (estado.equals(CodigoRespuestaEnum._02.name())){
+			cesion.estado = ListaEstadosEnum._03.name();
+		}
+		else if (estado.equals(CodigoRespuestaEnum._03.name())){
+			cesion.estado = ListaEstadosEnum._04.name();
+		}
+		solicitud.cesion.cesiones.add(cesion);
+		firmarDocumentoBase(solicitud, cesion);
+	}
+
+	@Override
+	public
+	void firmarDocumentoBase(SolicitudGenerica solicitud, Cesiones cesion) {
+		//Firma del documento generado
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		try {
+			firmaService.firmarEnServidor(cesion.documento);
+			cesion.firmada = true;
+			cesion.save();
+			solicitud.save(); 
+			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
+		} catch (FirmaServiceException e) {
+			play.Logger.error("No se pudo firmar en Servidor: "+e);
+		} 
 	}
 	
 	private static String obtenerFechaFormato() {
@@ -159,43 +217,21 @@ public class ATCUtils {
 		return fmtDia.toString()+fmtMes.toString()+anyo+hora+min;
 	}
 	
-	public static void parsearATC(PeticionCesiones pt, File fich) {
-		FileReader fr = null;
-		try { //Abrir en modo lectura
-			fr = new FileReader (fich);
-			BufferedReader br = new BufferedReader(fr);
-			String linea = null;
-			ATC atc = new ATC();
-			//Lectura de la cabecera
-			linea=br.readLine();
-			pt.respCesion.fechaGeneracion = obtenerFecha(linea.substring(inifecha, iniNumero));
-			//Lectura de los ficheros de registro:
-			while((linea=br.readLine())!=null){
-				atc.registroDetalle.tipoRegistro = linea.substring(initipoReg, inifecha);
-				atc.registroDetalle.nDocumento = linea.substring(ininDoc, iniNombre);
-				atc.nombre = linea.substring(iniNombre, iniCodResp);
-				atc.registroDetalle.estado  = "_"+linea.substring(iniCodResp, linea.length()); //Nombre
-				generarPdfATC(pt, atc);
-			}
-			fr.close();
-		} catch (Exception e) {
-			Messages.error("Error parseando el documento de respuesta del ATC, compruebe que el fichero es correcto");
-			play.Logger.info("Error parseando el documento de respuesta del ATC");
-		}
+	public static DateTime obtenerFecha(String fecha){
+		int anio = Integer.parseInt(fecha.substring(0, 4));
+		int mes = Integer.parseInt(fecha.substring(4, 6));
+		int dia = Integer.parseInt(fecha.substring(6, fecha.length()));
+		
+		DateTime fechaGeneracion = new DateTime(anio, mes, dia, 0, 0);
+		return fechaGeneracion;
 	}
 	
-	private static File generarPdfATC(PeticionCesiones pt, ATC atc){
+	private File generarPdfATC(PeticionCesiones pt, CesionPDF atc){
 		File report =  new File ("reports/bodyPeticion.html");
-		String tipo = getTipo(atc.registroDetalle.nDocumento);
         //Obtener solicitud correspondiente
         //Tipo dice si es dni, nie, pasaporte, cif
-        List<SolicitudGenerica> solicitud = null;
-        if (tipo.equals("NIP")){ //dni, pasaporte,..
-        	solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.fisica.nip.valor = ?", atc.registroDetalle.nDocumento).fetch();
-        }
-        else if (tipo.equals("CIF")){
-        	solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.juridica.cif = ?", atc.registroDetalle.nDocumento).fetch();
-        }
+        List<SolicitudGenerica> solicitud = getSolicitudes(getTipoId(atc.registro.nDocumento), atc.registro.nDocumento);
+        
         if((!Messages.hasErrors()) && (!solicitud.isEmpty())){
         	try {
             	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("pt", pt);
@@ -213,11 +249,11 @@ public class ATCUtils {
 	                	sol.documentacionCesion.documentos.add(doc);
 	                	pt.respCesion.fechaActuacionGestor = new DateTime();
 	                	pt.respCesion.uri = doc.uri;
-	                	aplicarCambios(sol, pt, doc, atc.registroDetalle.estado);
+	                	aplicarCambiosBase(sol, pt, doc, atc.registro.estado);
             		}
             		else if (!cesionesTipo.get(0).firmada){ //La solicitud ya dispone de una cesion con este id
             			play.Logger.info("La solicitud "+sol.id+" ya dispone de una cesión creada y no firmada para el fichero de respuesta con identificador "+pt.id+" se procede a firmarla");
-            			firmarDocumento(sol, cesionesTipo.get(0)); //Solo debe ser una
+            			firmarDocumentoBase(sol, cesionesTipo.get(0)); //Solo debe ser una
             		}
             		else {
             			Messages.info("La Solicitud "+sol.id+" ya dispone de una cesión firmada creada con esta cesión de datos");
@@ -229,77 +265,31 @@ public class ATCUtils {
             }
         }
         else{
-          	Messages.warning("La cesion de datos para "+atc.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
-          	play.Logger.info("La cesion de datos para "+atc.registroDetalle.nDocumento+", no se corresponde con ninguna solicitud");
+          	Messages.warning("La cesion de datos para "+atc.registro.nDocumento+", no se corresponde con ninguna solicitud");
+          	play.Logger.info("La cesion de datos para "+atc.registro.nDocumento+", no se corresponde con ninguna solicitud");
         }
 		
 		return null;
 	}
-	
-	private static void aplicarCambios(SolicitudGenerica solicitud, PeticionCesiones pt, Documento doc, String estado) {
-		Cesiones cesion = new Cesiones();
-		cesion.tipo = pt.tipo;
-		cesion.idUnico = Long.toString(pt.id);
-		cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
-		cesion.fechaValidez = pt.respCesion.fechaGeneracion.plusMonths(Integer.parseInt(FapProperties.get("fap.cesiondatos.validezPeticion")));;;
-		cesion.origen = ListaOrigenEnum.cesion.name();
-		cesion.firmada = false;
-		cesion.documento = doc;
-		if (estado.equals(CodigoRespuestaEnum._00.name())){
-			cesion.estado = ListaEstadosEnum._01.name();	
-		}
-		else if (estado.equals(CodigoRespuestaEnum._01.name())){
-			cesion.estado = ListaEstadosEnum._02.name();
-		}
-		else if (estado.equals(CodigoRespuestaEnum._02.name())){
-			cesion.estado = ListaEstadosEnum._03.name();
-		}
-		else if (estado.equals(CodigoRespuestaEnum._03.name())){
-			cesion.estado = ListaEstadosEnum._04.name();
-		}
-		
-		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
-		try {
-			firmaService.firmarEnServidor(cesion.documento);
-			cesion.firmada = true;
-			solicitud.cesion.cesiones.add(cesion);
-			solicitud.save(); //Guardar cambios en la solicitud
-			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
-		} catch (FirmaServiceException e) {
-			play.Logger.error("No se pudo firmar en Servidor: "+e);
-		} 
+
+	@Override
+	public String getTipoId(String dato) {
+		StringBuilder texto = new StringBuilder();
+		if (CifCheck.validaCif(dato, texto)) //Si es un cif
+			return "CIF";
+		else
+			return "NIP";
 	}
 
-	private static String getTipo (String numdoc){
-		StringBuilder texto = new StringBuilder();
-		if (CifCheck.validaCif(numdoc, texto)) //Si es un cif
-			return "CIF";
-		else{ 
-			return "NIP";
-		}
+	@Override
+	public List<SolicitudGenerica> getSolicitudes(String tipo, String id) {
+		List<SolicitudGenerica> solicitudes = new ArrayList<SolicitudGenerica>();
+		if (tipo.equals("NIP")){ //dni, pasaporte,..
+        	solicitudes = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.fisica.nip.valor = ?", id).fetch();
+        }
+        else if (tipo.equals("CIF")){
+        	solicitudes = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.juridica.cif = ?", id).fetch();
+        }
+		return solicitudes;
 	}
-	
-	public static DateTime obtenerFecha(String fecha){
-		int anio = Integer.parseInt(fecha.substring(0, 4));
-		int mes = Integer.parseInt(fecha.substring(4, 6));
-		int dia = Integer.parseInt(fecha.substring(6, fecha.length()));
-		
-		DateTime fechaGeneracion = new DateTime(anio, mes, dia, 0, 0);
-		return fechaGeneracion;
-	}
-	
-	private static void firmarDocumento(SolicitudGenerica solicitud, Cesiones cesion){
-		//Firma del documento generado
-		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
-		try {
-			firmaService.firmarEnServidor(cesion.documento);
-			cesion.firmada = true;
-			cesion.save();
-			solicitud.save(); 
-			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
-		} catch (FirmaServiceException e) {
-			play.Logger.error("No se pudo firmar en Servidor: "+e);
-		} 
-	}
-	
 }

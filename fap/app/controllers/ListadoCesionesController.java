@@ -1,12 +1,21 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import peticionCesion.PeticionBase;
+import utils.CesionesUtils;
+
 import messages.Messages;
+import models.Cesion;
 import models.Cesiones;
 import models.SolicitudGenerica;
+import models.TableKeyValue;
+import controllers.fap.PeticionFapController;
 import controllers.gen.ListadoCesionesControllerGen;
 import enumerado.fap.gen.ListaCesionesEnum;
 
@@ -37,42 +46,30 @@ public class ListadoCesionesController extends ListadoCesionesControllerGen {
 		java.util.List<Cesiones> rows = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where solicitud.id=?", idSolicitud).fetch();
 		if (rows.size() == 0)
 			Messages.info("No hay cesiones de datos asociadas a esta solicitud");
-		log.info("Visitando página: " + "gen/ListadoCesiones/ListadoCesiones.html");
+		log.info("Visitando página: " + "fap/ListadoCesiones/ListadoCesiones.html");
 		renderTemplate("gen/ListadoCesiones/ListadoCesiones.html", accion, idSolicitud, solicitud);
 	}
 
 	public static void tablatablaCesiones(Long idSolicitud) {
-
-		java.util.List<Cesiones> rows = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where solicitud.id=?", idSolicitud).fetch();
-
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Cesiones> rowsFiltered = new ArrayList<Cesiones>();
-		Cesiones cesionINSSR001 = null, cesionINSSA008 = null, cesionAEAT = null, cesionATC = null;
-		for (Cesiones cesiones : rows) {
-			if (cesiones.tipo.equals(ListaCesionesEnum.inssA008.name()) && ((cesionINSSA008 == null)||(cesiones.fechaPeticion.isAfter(cesionINSSA008.fechaPeticion)))){
-				cesionINSSA008 = cesiones;
-			}
-			if (cesiones.tipo.equals(ListaCesionesEnum.inssR001.name()) && ((cesionINSSR001 == null)||(cesiones.fechaPeticion.isAfter(cesionINSSR001.fechaPeticion)))){
-				cesionINSSR001 = cesiones;
-			}
-			if (cesiones.tipo.equals(ListaCesionesEnum.aeat.name()) && ((cesionAEAT == null)||(cesiones.fechaPeticion.isAfter(cesionAEAT.fechaPeticion)))){
-				cesionAEAT = cesiones;
-			}
-			if (cesiones.tipo.equals(ListaCesionesEnum.atc.name()) && ((cesionATC == null)||(cesiones.fechaPeticion.isAfter(cesionATC.fechaPeticion)))){
-				cesionATC = cesiones;
-			}
-		}
-		if (cesionINSSA008!=null)
-			rowsFiltered.add(cesionINSSA008);
-		if (cesionINSSR001!=null)
-			rowsFiltered.add(cesionINSSR001);
-		if (cesionAEAT!=null)
-			rowsFiltered.add(cesionAEAT);
-		if (cesionATC!=null)
-			rowsFiltered.add(cesionATC);
-			
-		tables.TableRenderResponse<Cesiones> response = new tables.TableRenderResponse<Cesiones>(rowsFiltered, true, true, true, "adminOrGestor", "adminOrGestor", "paginaAConfigurar", getAccion(), ids);
 
+		java.util.List<String> tipos = null;
+		try {
+			tipos = PeticionFapController.invoke(PeticionFapController.class, "getTiposCesiones");
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		//Ordenar lista de cesiones por fecha y tipo
+
+		for (String tipo : tipos) {
+			java.util.List<Cesiones> rows = Cesiones.find("select cesiones from SolicitudGenerica solicitud join solicitud.cesion.cesiones cesiones where solicitud.id=? and cesiones.tipo=?", idSolicitud, tipo).fetch();
+			//TODO: Mejorar la consulta de la última cesión de cada tipo
+			CesionesUtils.ordenarTiposCesiones(rows); //Lista ordenada por fecha mas próxima a más lejana
+			if (!rows.isEmpty())
+				rowsFiltered.add(rows.get(0)); //El primero es el más reciente
+		}		
+		tables.TableRenderResponse<Cesiones> response = new tables.TableRenderResponse<Cesiones>(rowsFiltered, true, true, true, "adminOrGestor", "adminOrGestor", "paginaAConfigurar", getAccion(), ids);
 		renderJSON(response.toJSON("tipo", "fechaPeticion", "fechaValidez", "estado", "origen", "id"));
 	}
 }

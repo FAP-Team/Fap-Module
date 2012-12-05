@@ -718,7 +718,7 @@ Entidad CargarTablaDeTablas extends Singleton{
 	Boolean checkNoCargarMunicipiosSoloCreando
 }
 
-Entidad AutorizacionCesion {
+Entidad AutorizacionCesion noConstruct{
 	Boolean aeat
 	Boolean inssR001
 	Boolean atc
@@ -769,7 +769,7 @@ Entidad Cesion{
 	OneToMany Cesiones cesiones
 }
 
-Entidad INSSR001{
+/*Entidad INSSR001{
 	String cabeceraPrimera
 	String cabeceraSegunda
 	RegistroDatos registroDetalle
@@ -787,7 +787,7 @@ Entidad RegistroDetalle{
 	String ccc
 }
 
-Entidad AEAT{
+Entidad RegistroAEAT{
 	String nDocumento
 	String nombre
 	String ident
@@ -802,13 +802,13 @@ Entidad ATC{
 	RegistroDatos registroDetalle
 }
 
-Entidad RegistroDatos{
+Entidad RegistroInssATC{
 	String tipoRegistro
 	String nDocumento
 	String estado
 }
 
-Entidad RegistroDatosA008{
+Entidad RegistroINSSA008{
 	String tipoRegistro
 	String regimen
 	String cccPpal
@@ -816,8 +816,36 @@ Entidad RegistroDatosA008{
 	String nombre
 	DateTime fechaSolicitud
 	String estado
+}*/
+
+Entidad CesionPDF{
+	Lista listaCesiones tipo
+	String cabeceraPrimera
+	String cabeceraSegunda
+	RegistroCesion registro
+	
 }
 
+Entidad RegistroCesion{
+	//InssR001 y ATC
+	String tipoRegistro //Tambien A008
+	String nDocumento   //Tambien AEAT
+	String estado		//Tambien A008
+	
+	//AEAT
+	String nombre		//Tambien A008
+	String ident
+	String cert
+	String negat
+	String datosPropios
+	String referencia
+	
+	//InssA008
+	String regimen
+	String cccPpal
+	String numMedioTrabajadores
+	DateTime fechaSolicitud
+}
 
 Entidad VerificacionTramites extends Singleton {
 	OneToMany TramitesVerificables tramites

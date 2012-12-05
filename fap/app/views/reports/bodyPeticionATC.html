@@ -25,7 +25,7 @@ p {
 <table>
 	<tr>
 		<tr>
-			<tr><th>DNI/CIF:</th><td>${atc.registroDetalle.nDocumento}</td></tr>
+			<tr><th>DNI/CIF:</th><td>${atc.registro.nDocumento}</td></tr>
 		</tr>	
 		<tr>
 			<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
@@ -39,16 +39,16 @@ p {
 		<tr>
 		%{
 			String idestado = "";
-			if (atc.registroDetalle.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._00.name())){
+			if (atc.registro.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._00.name())){
 				idestado = enumerado.fap.gen.ListaEstadosEnum._01.name();	
 			}
-			else if (atc.registroDetalle.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._01.name())){
+			else if (atc.registro.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._01.name())){
 				idestado = enumerado.fap.gen.ListaEstadosEnum._02.name();
 			}
-			else if (atc.registroDetalle.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._02.name())){
+			else if (atc.registro.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._02.name())){
 				idestado = enumerado.fap.gen.ListaEstadosEnum._03.name();
 			}
-			else if (atc.registroDetalle.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._03.name())){
+			else if (atc.registro.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._03.name())){
 				idestado = enumerado.fap.gen.ListaEstadosEnum._04.name();
 			}
 		%}

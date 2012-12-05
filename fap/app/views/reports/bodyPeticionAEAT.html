@@ -25,7 +25,7 @@ p {
 <table>
 	<tr>
 		<tr>
-			<tr><th>DNI/CIF:</th><td>${aeat.nDocumento}</td></tr>
+			<tr><th>DNI/CIF:</th><td>${aeat.registro.nDocumento}</td></tr>
 		</tr>	
 		<tr>
 			<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
@@ -37,14 +37,14 @@ p {
 			<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
 		</tr>	
 		<tr>
-		  	%{ if (aeat.cert.equals("P")){ %}
+		  	%{ if (aeat.registro.cert.equals("P")){ %}
 				<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum._01.value()}</td></tr>
 			%{ } %} 
 		  	
-			%{ if (aeat.cert.equals("N")){ %}
+			%{ if (aeat.registro.cert.equals("N")){ %}
 				<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum._02.value()}</td></tr>
-				<tr><th>Tipo de Negativo:</th><td>${aeat.negat}</td></tr>
-				<tr><th>Causa de Negativo:</th><td>${enumerado.fap.gen.CodigoAEATNegatEnum.valueOf(aeat.negat).value()}</td></tr>
+				<tr><th>Tipo de Negativo:</th><td>${aeat.registro.negat}</td></tr>
+				<tr><th>Causa de Negativo:</th><td>${enumerado.fap.gen.CodigoAEATNegatEnum.valueOf(aeat.registro.negat).value()}</td></tr>
 			%{ } %}
 		</tr>	
 	</tr>

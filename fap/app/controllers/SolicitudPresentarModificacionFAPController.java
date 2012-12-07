@@ -25,7 +25,6 @@ import controllers.fap.PresentacionModificacionFapController;
 import controllers.gen.SolicitudPresentarModificacionFAPControllerGen;
 
 public class SolicitudPresentarModificacionFAPController extends SolicitudPresentarModificacionFAPControllerGen {
-
 	
 	public static void index(String accion, Long idSolicitud, Long idRegistroModificacion, Long idRegistro) {
 		if (accion == null)
@@ -36,8 +35,10 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 		}
 
 		SolicitudGenerica solicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(idSolicitud);
+		idRegistroModificacion=solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).id;
 		RegistroModificacion registroModificacion = SolicitudPresentarModificacionFAPController.getRegistroModificacion(idSolicitud, idRegistroModificacion);
-
+		idRegistro = registroModificacion.registro.id;
+		
 		Registro registro = null;
 		if ("crear".equals(accion)) {
 			registro = SolicitudPresentarModificacionFAPController.getRegistro();
@@ -52,12 +53,32 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 			}
 
 		} else if (!"borrado".equals(accion)){
-			idRegistroModificacion=solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).id;
 			registro = SolicitudPresentarModificacionFAPController.getRegistro(idRegistroModificacion, idRegistro);
 		}
 
 		log.info("Visitando página: " + "gen/SolicitudPresentarModificacionFAP/SolicitudPresentarModificacionFAP.html");
 		renderTemplate("gen/SolicitudPresentarModificacionFAP/SolicitudPresentarModificacionFAP.html", accion, idSolicitud, idRegistroModificacion, idRegistro, solicitud, registroModificacion, registro);
+	}
+	
+	@Util
+	public static Registro getRegistro(Long idRegistroModificacion, Long idRegistro) {
+		Registro registro = null;
+
+		if (idRegistroModificacion == null) {
+			if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro idRegistroModificacion"))
+				Messages.fatal("Falta parámetro idRegistroModificacion");
+		}
+
+		if (idRegistro == null) {
+			RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+			idRegistro = registroModificacion.registro.id;
+		}
+		if (idRegistroModificacion != null && idRegistro != null) {
+			registro = Registro.find("select registro from RegistroModificacion registroModificacion join registroModificacion.registro registro where registroModificacion.id=? and registro.id=?", idRegistroModificacion, idRegistro).first();
+			if (registro == null)
+				Messages.fatal("Error al recuperar Registro");
+		}
+		return registro;
 	}
 	
 	@Util
@@ -89,6 +110,8 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 	public static void firmarRegistrarFHFormFirmaFH(Long idSolicitud, Long idRegistroModificacion, Long idRegistro, String firma) {
 		SolicitudGenerica solicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(idSolicitud);
 		idRegistroModificacion=solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		idRegistro = registroModificacion.registro.id;
 		Registro registro = SolicitudPresentarModificacionFAPController.getRegistro(idRegistroModificacion, idRegistro);
 
 		play.Logger.info("Metodo: firmarRegistrarFHFormFirmaFH");
@@ -112,6 +135,8 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 	public static void firmarRegistrarNifFormFirmaPF(Long idSolicitud, Long idRegistroModificacion, Long idRegistro, String firma) {
 		SolicitudGenerica solicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(idSolicitud);
 		idRegistroModificacion=solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		idRegistro = registroModificacion.registro.id;
 		Registro registro = SolicitudPresentarModificacionFAPController.getRegistro(idRegistroModificacion, idRegistro);
 
 		play.Logger.info("Metodo: firmarRegistrarNifFormFirmaPF");
@@ -140,6 +165,8 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 	public static void firmarRepresentanteFormFirmaRepresentante(Long idSolicitud, Long idRegistroModificacion, Long idRegistro, String firma) {
 		SolicitudGenerica solicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(idSolicitud);
 		idRegistroModificacion=solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		idRegistro = registroModificacion.registro.id;
 		Registro registro = SolicitudPresentarModificacionFAPController.getRegistro(idRegistroModificacion, idRegistro);
 
 		play.Logger.info("Metodo: firmarRepresentanteFormFirmaRepresentante");
@@ -173,6 +200,8 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 		}
 		SolicitudGenerica dbSolicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(idSolicitud);
 		idRegistroModificacion=dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		idRegistro = registroModificacion.registro.id;
 		Registro dbRegistro = SolicitudPresentarModificacionFAPController.getRegistro(idRegistroModificacion, idRegistro);
 
 		if (!Messages.hasErrors()) {
@@ -265,6 +294,8 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 		}
 		SolicitudGenerica dbSolicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(idSolicitud);
 		idRegistroModificacion=dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		idRegistro = registroModificacion.registro.id;
 		Registro dbRegistro = SolicitudPresentarModificacionFAPController.getRegistro(idRegistroModificacion, idRegistro);
 
 		if (!Messages.hasErrors()) {
@@ -357,6 +388,8 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 		}
 		SolicitudGenerica dbSolicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(idSolicitud);
 		idRegistroModificacion=dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		idRegistro = registroModificacion.registro.id;
 		Registro dbRegistro = SolicitudPresentarModificacionFAPController.getRegistro(idRegistroModificacion, idRegistro);
 
 		if (!Messages.hasErrors()) {
@@ -415,9 +448,13 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 	
 	public static void tablatablaFirmantesHecho(Long idRegistro) {
 
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		SolicitudGenerica dbSolicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(ids.get("idSolicitud"));
+		Long idRegistroModificacion=dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		idRegistro = registroModificacion.registro.id;
 		java.util.List<Firmante> rows = Firmante.find("select firmante from Registro registro join registro.firmantes.todos firmante where registro.id=? and firmante.tipo=? and firmante.fechaFirma is not null", idRegistro, "representante").fetch();
 
-		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Firmante> rowsFiltered = rows; //Tabla sin permisos, no filtra
 
 		tables.TableRenderResponse<Firmante> response = new tables.TableRenderResponse<Firmante>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
@@ -427,9 +464,14 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 
 	public static void tablatablaFirmantesEspera(Long idRegistro) {
 
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		SolicitudGenerica dbSolicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(ids.get("idSolicitud"));
+		Long idRegistroModificacion=dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		idRegistro = registroModificacion.registro.id;
+		
 		java.util.List<Firmante> rows = Firmante.find("select firmante from Registro registro join registro.firmantes.todos firmante where registro.id=? and firmante.tipo=? and firmante.fechaFirma is not null", idRegistro, "representante").fetch();
 
-		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Firmante> rowsFiltered = rows; //Tabla sin permisos, no filtra
 
 		tables.TableRenderResponse<Firmante> response = new tables.TableRenderResponse<Firmante>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
@@ -528,6 +570,8 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 
 		SolicitudGenerica dbSolicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(idSolicitud);
 		idRegistroModificacion=dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		idRegistro = registroModificacion.registro.id;
 		Registro dbRegistro = SolicitudPresentarModificacionFAPController.getRegistro(idRegistroModificacion, idRegistro);
 		
 		if (!Messages.hasErrors()) {

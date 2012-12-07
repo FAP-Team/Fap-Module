@@ -729,6 +729,7 @@ Entidad TramitesVerificables {
 Entidad RegistroModificacion {
 	DateTime fechaCreacion
 	DateTime fechaLimite
+	DateTime fechaFinalizacion
 	Registro registro noConstruct
 	OneToMany JsonPeticionModificacion jsonPeticionesModificacion
 	String estado transient

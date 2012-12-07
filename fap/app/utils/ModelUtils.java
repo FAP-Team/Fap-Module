@@ -20,22 +20,32 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.persistence.EntityTransaction;
+
 import org.apache.commons.collections.MapUtils;
 import org.joda.time.DateTime;
 
+import com.google.gson.Gson;
+
+import controllers.PresentarModificacionFAPController;
+
 import messages.Messages;
 import models.CodigoRequerimiento;
+import models.JsonPeticionModificacion;
+import models.RegistroModificacion;
 import models.SolicitudGenerica;
 import models.TiposCodigoRequerimiento;
 import models.Tramite;
 import models.TramitesVerificables;
 import models.VerificacionTramites;
 
+import enumerado.fap.gen.EstadosSolicitudEnum;
 import exceptions.ModelAccessException;
 
 import play.Play;
 import play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer;
 import play.data.binding.types.DateBinder;
+import play.db.jpa.JPA;
 import play.db.jpa.JPAPlugin;
 import play.db.jpa.Model;
 import play.mvc.Scope;
@@ -299,6 +309,97 @@ public class ModelUtils {
         }
     }
 	
+	public static void restaurarSolicitud(Long idRegistroModificacion, Long idSolicitud, boolean consolidarValoresNuevos){
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
+		PeticionModificacion peticionModificacion;
+		Gson gson = new Gson();
+		for (JsonPeticionModificacion json: registroModificacion.jsonPeticionesModificacion){
+			peticionModificacion = gson.fromJson(json.jsonPeticion, PeticionModificacion.class);
+			aplicarCambios(idSolicitud, peticionModificacion, consolidarValoresNuevos);
+		}
+		if (!Messages.hasErrors()){
+			SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
+			RegistroModificacion ultimoRegistro = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1);
+			if (ultimoRegistro.fechaFinalizacion == null){
+				ultimoRegistro.fechaFinalizacion=new DateTime();
+				ultimoRegistro.save();
+			}
+			solicitud.activoModificacion = false;
+			solicitud.estado = EstadosSolicitudEnum.iniciada.name();
+			solicitud.save();
+		}
+	}
+	
+	public static void aplicarCambios(Long idSolicitud, PeticionModificacion peticionModificacion){
+		aplicarCambios(idSolicitud, peticionModificacion, false);
+	}
+	
+	// consolidarValoresNuevos, para que los valores que se seteen sean los Nuevos, si no se setearan  los Antiguos (los que había antes de modificar)
+	public static void aplicarCambios(Long idSolicitud, PeticionModificacion peticionModificacion, boolean consolidarValoresNuevos){
+		EntityTransaction tx = JPA.em().getTransaction();
+		for (ValorCampoModificado valor: peticionModificacion.valoresModificado){
+			if (Messages.hasErrors())
+				break;
+			int numeroCampos = valor.nombreCampo.split("\\.").length;
+			Model modeloEntidad = null;
+			Model modeloEntidadPrimera = null;
+			Method metodo = null;
+			Class claseEntidad = null;
+			String entidad = "";
+			int camposRecorridos=1;
+			for (String campo : valor.nombreCampo.split("\\.")){
+				if (camposRecorridos == 1){
+					entidad = tags.StringUtils.firstUpper(campo);
+					Long idEntidad = peticionModificacion.idSimples.get("id"+entidad);
+					try {
+						claseEntidad = Class.forName("models."+entidad);				
+						Method findById = claseEntidad.getDeclaredMethod("findById", Object.class);
+						modeloEntidad = (Model)findById.invoke(claseEntidad.newInstance(), idEntidad);
+						modeloEntidadPrimera = (Model)findById.invoke(claseEntidad.newInstance(), idEntidad);
+					} catch (Exception e) {
+						play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
+						Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+						Messages.keep();
+						break;
+					}
+				} else {
+					if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
+						try {
+							entidad = tags.StringUtils.firstUpper(campo);
+							Field field = claseEntidad.getField(campo);
+							if (consolidarValoresNuevos)
+								setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
+							else
+								setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+							break;
+						} catch (Exception e) {
+							play.Logger.error("Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
+							Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+							Messages.keep();
+							break;
+						}
+					} else { // VAMOS RECUPERANDO GETTERS
+						try { 
+							entidad = tags.StringUtils.firstUpper(campo);
+							metodo = claseEntidad.getMethod("get"+entidad);
+							modeloEntidad = (Model) metodo.invoke(modeloEntidad);
+							claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+						} catch (Exception e) {
+							play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
+							Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+							Messages.keep();
+							break;
+						}
+					}
+				}
+				camposRecorridos++;
+			}
+		}
+		if (Messages.hasErrors()){ // Si hubo fallos se recupera todo lo anterior
+			tx.rollback();
+		}
+	}
+	
 	public static void setValueFromTypeAttribute(Class claseEntidad, Model modeloEntidad, Model entidadAGuardar, String nombreMetodo, Field field, List<String> values){
 		
 		if (field.getType().equals(String.class)){			
@@ -311,6 +412,9 @@ public class ModelUtils {
 				entidadAGuardar.save();
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
 			} 
 		} else if (field.getType().equals(Long.class)){
 			Long value = null;
@@ -322,6 +426,9 @@ public class ModelUtils {
 				entidadAGuardar.save();
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
 			}
 		} else if (field.getType().equals(Boolean.class)) {
 			Boolean value = null;
@@ -333,6 +440,9 @@ public class ModelUtils {
 				entidadAGuardar.save();
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
 			}
 		} else if (field.getType().equals(boolean.class)) {
 			boolean value = false;
@@ -344,6 +454,9 @@ public class ModelUtils {
 				entidadAGuardar.save();
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
 			}
 		} else if (field.getType().equals(Double.class)){
 			Double value = null;
@@ -355,6 +468,9 @@ public class ModelUtils {
 				entidadAGuardar.save();
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
 			}
 		} else if (field.getType().equals(DateTime.class)){
 			DateTime value = null;
@@ -366,6 +482,9 @@ public class ModelUtils {
 				entidadAGuardar.save();
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
 			}
 		} else if (field.getType().equals(Integer.class)){
 			Integer value = null;
@@ -377,6 +496,9 @@ public class ModelUtils {
 				entidadAGuardar.save();
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
 			}
 		} else if (field.getType().equals(Set.class)){
 			try {
@@ -392,6 +514,9 @@ public class ModelUtils {
 				entidadAGuardar.save();
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear los valores de un Set "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
 			}
 		} else if (field.getType().equals(List.class)){
 			try {
@@ -408,6 +533,8 @@ public class ModelUtils {
 						Long idEntidad = getIdEntidad(str);
 						if (idEntidad == null){
 							play.Logger.error("Error al intentar setear los valores de una List. Id no encontrado de la entidad en "+str);
+							Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+							Messages.keep();
 							return;
 						}
 						Method findById = claseTipo.getDeclaredMethod("findById", Object.class);
@@ -418,6 +545,9 @@ public class ModelUtils {
 				entidadAGuardar.save();
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear los valores de una List "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
 			}
 		}
 	}
@@ -449,6 +579,8 @@ public class ModelUtils {
 				return false;
 		} catch (Exception e) {
 			play.Logger.error("Error al intentar setear los valores de "+instanciaAtributo.getClass()+" - "+e.getMessage());
+			Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+			Messages.keep();
 		}
 		return false;
 	}

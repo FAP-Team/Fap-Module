@@ -8,6 +8,7 @@ import models.RegistroModificacion;
 import models.SolicitudGenerica;
 import play.mvc.Util;
 import controllers.gen.popups.popupCrearModificacionSolicitudControllerGen;
+import enumerado.fap.gen.EstadosSolicitudEnum;
 
 public class popupCrearModificacionSolicitudController extends popupCrearModificacionSolicitudControllerGen {
 	
@@ -39,6 +40,7 @@ public class popupCrearModificacionSolicitudController extends popupCrearModific
 			idRegistroModificacion = dbRegistroModificacion.id;
 			dbSolicitud.activoModificacion=true;
 			dbSolicitud.registroModificacion.add(dbRegistroModificacion);
+			dbSolicitud.estado = EstadosSolicitudEnum.modificacion.name();
 			dbSolicitud.save();
 
 			log.info("Acción Crear de página: " + "gen/popups/popupCrearModificacionSolicitud.html" + " , intentada con éxito");

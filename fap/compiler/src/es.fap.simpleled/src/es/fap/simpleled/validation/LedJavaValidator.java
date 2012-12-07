@@ -208,6 +208,31 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		checkTablaCampoPagina(tabla, tabla.getPaginaLeer(), concatenado, ledPackage.getTabla_PaginaLeer());
 	}
 	
+
+	@Check
+	public void checkTablaCopia(Tabla tabla){
+		EObject container = LedCampoUtils.getCampoScope(tabla);
+		if ((container != null ) && (container instanceof Pagina)){
+			Pagina pagina = (Pagina) container;
+			if (pagina.isCopia()){
+				if (tabla.getPopup() != null) 
+					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_Popup());
+				if (tabla.getPopupBorrar() != null)
+					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupBorrar());
+				if (tabla.getPopupCrear() != null)
+					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupCrear());
+				if (tabla.getPopupEditar() != null)
+					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupEditar());
+				if (tabla.getPagina() != null)
+					myError("No se puede Crear ni Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_Pagina());
+				if (tabla.getPaginaCrear() != null)
+					myError("No se pueden Crear campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaCrear());
+				if (tabla.getPaginaBorrar() != null)
+					myError("No se pueden Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaBorrar());
+			}
+		}
+	}
+	
 	@Check
 	public void checkNombreEntidadUnico(Entity entidad){
 		for (Entity e : ModelUtils.<Entity>getVisibleNodes(ledPackage.getEntity(), entidad.eResource())) {
@@ -343,6 +368,26 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			if (!entidad.equals("Solicitud") && !entidad.equals("SolicitudGenerica"))
 				error("El atributo guardarParaPreparar solo puede aplicarse a paginas de Solicitud", ledPackage.getPagina_GuardarParaPreparar());
 		
+		}
+	}
+	
+	@Check
+	public void checkPaginaCopiaNoTransient(Campo campo){
+		EObject container = LedCampoUtils.getCampoScope(campo);
+		if ((container != null ) && (container instanceof Pagina)){
+			Pagina pagina = (Pagina) container;
+			Attribute atributo = LedCampoUtils.getUltimoAtributo(campo);
+			if ((pagina.isCopia()) &&  (atributo != null) && (atributo.isIsTransient())){
+				error("No se puede usar atributos Transient en paginas 'copia'", ledPackage.getCampo_Atributos());
+			}
+		}
+	}
+	
+	@Check
+	public void checkCampoRegistroFirmaSimple(FirmaSimple firmaSimple){
+		Entity entidad = LedCampoUtils.getUltimaEntidad(firmaSimple.getRegistroFirma().getCampo());
+		if (!"Registro".equalsIgnoreCase(entidad.getName())){
+			error("Sólo se admiten campos de tipo Registro", ledPackage.getFirmaSimple_RegistroFirma());
 		}
 	}
 	

@@ -83,6 +83,7 @@ Formulario Solicitud permiso=solicitudes{
     	Grupo "Paginas Copias" {
     		Enlace "Copia" pagina=PaginaCopia
     		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
+    		Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
     	}
 		
 		Enlace "Aportación" pagina=Aportacion
@@ -806,7 +807,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		}
 	}
 	
-	Pagina PaginaCopia titulo="Página Copia" campo=Solicitud copia{
+	Pagina PaginaCopia titulo="Página Copia" campo=Solicitud copia permiso=modificacionTrasPresentacionDeSolicitud{
 		Texto titulo="Nombre desde FAP" campo=Solicitud.solicitante.fisica.nombre
 		Texto titulo="Texto desde la APP" campo=Solicitud.elementos.texto
 		Combo miCombo titulo="Combo Prueba" campo=Solicitud.comboTest.listMultiple

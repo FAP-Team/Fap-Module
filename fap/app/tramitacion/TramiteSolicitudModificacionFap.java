@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
+import emails.Mails;
 import enumerado.fap.gen.EstadoConvocatoriaEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 
@@ -21,6 +22,8 @@ import models.Registro;
 import models.RegistroModificacion;
 import models.SolicitudGenerica;
 import reports.Report;
+import services.GestorDocumentalServiceException;
+import services.RegistroServiceException;
 import services.VerificarDocumentacionService;
 import utils.PeticionModificacion;
 import utils.PeticionModificacion.ValorCampoModificado;
@@ -29,14 +32,14 @@ import messages.Messages;
 
 public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 	
-	private final static String TIPO_TRAMITE = FapProperties.get("fap.tramitacion.tramite.tipo");
-	private final static String TIPO_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.solicitud");
-	private final static String BODY_REPORT = "reports/solicitudModificacion.html";
+	private final static String TIPO_TRAMITE = FapProperties.get("fap.tramitacion.tramite.modificacion.tipo");
+	private final static String TIPO_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.solicitud.modificacion");
+	private final static String BODY_REPORT = "reports/solicitud.html";
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
-	private final static String MAIL = "solicitudIniciada";
-	private final static String JUSTIFICANTE_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitud");
-	private final static String PREFIJO_JUSTIFICANTE_PDF = FapProperties.get("fap.tramitacion.prefijojustificantepdf.solicitud");
+	private final static String MAIL = "solicitudModificada";
+	private final static String JUSTIFICANTE_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitudModificacion");
+	private final static String PREFIJO_JUSTIFICANTE_PDF = FapProperties.get("fap.tramitacion.prefijojustificantepdf.solicitudModificacion");
 	
 	public TramiteSolicitudModificacionFap(SolicitudGenerica solicitud) {
 		super(solicitud);
@@ -125,12 +128,6 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 	}
 	
 	@Override
-	public void cambiarEstadoSolicitud() {
-		solicitud.estado=EstadosSolicitudEnum.iniciada.name();
-		solicitud.save();
-	}
-	
-	@Override
 	public File generarBorrador(){
     	File borrador = null;
         borrador = new File (this.getBodyReport());
@@ -187,5 +184,37 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
         }
         return oficial;
     }
+	
+	/**
+	 * Realiza cambios de estado
+	 */
+	@Override
+	public void cambiarEstadoSolicitud() {
+		solicitud.estado=EstadosSolicitudEnum.iniciada.name();
+		solicitud.activoModificacion=false;
+		solicitud.save();
+	}
+	
+	/**
+	 * Crea el expediente en el AED
+	 */
+	@Override
+	public void crearExpedienteAed() {
+		if (!this.solicitud.registro.fasesRegistro.expedienteAed){
+			try {
+				gestorDocumentalService.crearExpediente(this.solicitud);
+				this.solicitud.registro.fasesRegistro.expedienteAed = true;
+				this.solicitud.registro.fasesRegistro.save();
+			} catch (GestorDocumentalServiceException e) {
+				play.Logger.debug("Error creando el expediente en el Gestor Documental", e.getMessage());
+				Messages.error("Error creando el expediente en el Gestor Documental");
+			}
+		}
+		else {
+			play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", this.solicitud.id);
+			this.registro.fasesRegistro.expedienteAed = true;
+			this.registro.fasesRegistro.save();
+		}
+	}
 
 }

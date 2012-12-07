@@ -12,10 +12,12 @@ Simplemente debemos crear páginas que contengan los campos que queramos permiti
 
 Un ejemplo sería algo como:
 
-bc. Pagina miPaginaModificacion campo=Solicitud permiso=miPermiso copia {
+bc. Pagina miPaginaModificacion campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud copia {
 	Texto nombre titulo="Nombre Proyecto" campo=Solicitud.datosProyecto.nombre
 	Fecha fecha titulo="Fecha Incorporación" campo=Solicitud.datosIncorporacion.fechas.fechaIncorporacion
 }
+
+Como vemos, se usa un Permiso que está definido por defecto en FAP, y que podemos usar en nuestras páginas: *modificacionTrasPresentacionDeSolicitud*. Dicho Permiso, permite que sólo puedan editar dichas páginas los usuarios cuando el Gestor/Administrador active la Modificación de la Solicitud. El resto de usuarios (Administrador/Gestor/Evaluador etc.) únicamente podrán _leer_.
 
 h2. Permitiendo Modificar las Solicitudes (Habilitar la Modificación)
 
@@ -38,3 +40,30 @@ Una vez se haya dado permiso, por parte del gestor o administrador, al solicitan
 h2. Permitiendo Modificar las Solicitudes (Presentando las Modificaciones)
 
 Por último, se deberán consolidar estos cambios de manera que a efectos oficiales conste como que los datos válidos son los modificados. Para ello se deberá presentar nuevamente la solicitud en un proceso muy parecido al de la presentación. De hecho existe tanto un trámite, como un controlador que permiten la personalización de este proceso a imagen y semejanza de como se hace en la presentación tradicional. Así que si queremos personalizar esta parte deberemos documentarnos como se hace en la presentación normal ("Presentación":app-presentacion) conociendo que el trámite que debemos sobreescribir para esta parte se llama ahora *TramiteSolicitudModificacionFAP* y el controlador que rige este trámite es *PresentacionModificacionFAPController*
+
+Los parámetros propios de este Trámite son los siguientes:
+
+_*Properties*_
+* *TIPO_TRAMITE* = _fap.tramitacion.tramite.modificacion.tipo_
+* *TIPO_REGISTRO* = _fap.aed.tiposdocumentos.solicitud.modificacion_
+* *JUSTIFICANTE_REGISTRO* = _fap.aed.tiposdocumentos.justificanteRegistroSolicitudModificacion_
+* *PREFIJO_JUSTIFICANTE_PDF* = _fap.tramitacion.prefijojustificantepdf.solicitudModificacion_
+
+_*Plantillas HTML*_
+* *BODY_REPORT* = _reports/solicitudModificacion.html_
+* *HEADER_REPORT* = _reports/header.html_
+* *FOOTER_REPORT* = _reports/footer-borrador.html_
+
+_*Mail a Enviar al Finalizar*_
+* *MAIL* = _solicitudModificada_
+
+h2. Permitiendo Modificar las Solicitudes (Restaurando los datos modificados)
+
+Puede ser que debamos restaurar los datos, por diferentes motivos, al registro justo anterior donde fue presentada correctamente. Para ello se hace de dos formas:
+
+* *Manual*: De manera que el gestor o administrador selecciona la fecha de restauración en un combo dentro de la página explicada anteriormente _ActivarModificacionSolicitudes_, siendo el valor que siempre muestra el combo la última presentación con éxito de la solicitud, ya sea presentación básica o presentación de modificación.
+
+* *Automática*: Esta restauración se ejecutará diariamente a las 12 de la noche y consisitirá en restaurar aquellas solicitudes que hayan sido modificadas y que no hayan sido registradas antes de la fecha límite que se le asignó al activar la modificación. Este método tiene la configuración de las plantillas de dos correos que se envían cuando ha sido restaurado con éxito y cuando no ha sido restaurado con éxito, para notificar de que ha ido todo correcto o ha habido un fallo en medio del proceso. A ambas plantillas se les pasa como parámetro la _'solicitud'_ y el nombre que tienen las plantillas de estos correos son:
+
+** *solicitudRestauradaAuto*: Para el correo que se envía cuando ha sido restaurada una solicitud con éxito.
+** *solicitudRestauradaAutoFallo*: Para cuando ha ocurrido un fallo en medio del proceso de restauración.

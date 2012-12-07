@@ -30,6 +30,10 @@ public class RegistroModificacion extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaLimite;
 
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinalizacion"), @Column(name = "fechaFinalizacionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaFinalizacion;
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
@@ -56,9 +60,13 @@ public class RegistroModificacion extends FapModel {
 
 	public String getEstado() {
 		if (this.registro.fasesRegistro.registro)
-			return "Finalizada";
+			return "Finalizada"; // Registrada correctamente (Presentada en tiempo y forma)
+		else if ((this.fechaFinalizacion != null) && (this.fechaFinalizacion.isAfterNow()))
+			return "Expirada"; // Restaurada automáticamente tras pasarse la fecha límite y no ser presentada en tiempo y forma
+		else if ((this.fechaFinalizacion != null) && (this.fechaFinalizacion.isBefore(this.fechaLimite)))
+			return "Abortada"; // Restaurada manualmente por un gestor o administrador antes de acabar la fecha límite
 		else
-			return "En Curso";
+			return "En Curso"; // Modificable actualmente
 	}
 
 	// === MANUAL REGION END ===

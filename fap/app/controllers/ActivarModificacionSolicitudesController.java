@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityTransaction;
+
 import org.joda.time.DateTime;
 
 import com.google.gson.Gson;
@@ -15,6 +17,7 @@ import models.JsonPeticionModificacion;
 import models.Registro;
 import models.RegistroModificacion;
 import models.SolicitudGenerica;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.mvc.Util;
 import tags.ComboItem;
@@ -55,70 +58,26 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 
 		if (!Messages.hasErrors()) {
 			Long idRegistroModificacion = Long.parseLong(solicitud.fechaARestaurarStr);
-			restaurarSolicitud(idRegistroModificacion, idSolicitud);
-			log.info("Acción Editar de página: " + "gen/ActivarModificacionSolicitudes/ActivarModificacionSolicitudes.html" + " , intentada con éxito");
+			if (idRegistroModificacion != null) {
+				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+				boolean recuperarPresentacion = true;
+				for (RegistroModificacion rm: dbSolicitud.registroModificacion){
+					if ((rm.registro != null) && (rm.registro.fasesRegistro.registro)){
+						recuperarPresentacion = false;
+						break;
+					}
+				}
+				if (recuperarPresentacion)
+					ModelUtils.restaurarSolicitud(idRegistroModificacion, idSolicitud, false);
+				else
+					ModelUtils.restaurarSolicitud(idRegistroModificacion, idSolicitud, true);
+				log.info("Acción Editar de página: " + "gen/ActivarModificacionSolicitudes/ActivarModificacionSolicitudes.html" + " , intentada con éxito");
+			} else {
+				Messages.error("Hubo un fallo al intentar recuperar el Registro correspondiente");
+			}
 		} else
 			log.info("Acción Editar de página: " + "gen/ActivarModificacionSolicitudes/ActivarModificacionSolicitudes.html" + " , intentada sin éxito (Problemas de Validación)");
 		ActivarModificacionSolicitudesController.formRestaurarModificacionRender(idSolicitud);
-	}
-	
-	@Util
-	public static void restaurarSolicitud(Long idRegistroModificacion, Long idSolicitud){
-		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
-		PeticionModificacion peticionModificacion;
-		Gson gson = new Gson();
-		for (JsonPeticionModificacion json: registroModificacion.jsonPeticionesModificacion){
-			peticionModificacion = gson.fromJson(json.jsonPeticion, PeticionModificacion.class);
-			aplicarCambios(idSolicitud, peticionModificacion);
-		}
-	}
-	
-	@Util 
-	public static void aplicarCambios(Long idSolicitud, PeticionModificacion peticionModificacion){
-		for (ValorCampoModificado valor: peticionModificacion.valoresModificado){
-			int numeroCampos = valor.nombreCampo.split("\\.").length;
-			Model modeloEntidad = null;
-			Model modeloEntidadPrimera = null;
-			Method metodo = null;
-			Class claseEntidad = null;
-			String entidad = "";
-			int camposRecorridos=1;
-			for (String campo : valor.nombreCampo.split("\\.")){
-				if (camposRecorridos == 1){
-					entidad = tags.StringUtils.firstUpper(campo);
-					Long idEntidad = peticionModificacion.idSimples.get("id"+entidad);
-					try {
-						claseEntidad = Class.forName("models."+entidad);				
-						Method findById = claseEntidad.getDeclaredMethod("findById", Object.class);
-						modeloEntidad = (Model)findById.invoke(claseEntidad.newInstance(), idEntidad);
-						modeloEntidadPrimera = (Model)findById.invoke(claseEntidad.newInstance(), idEntidad);
-					} catch (Exception e) {
-						play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
-					}
-				} else {
-					if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETER
-						try {
-							entidad = tags.StringUtils.firstUpper(campo);
-							Field field = claseEntidad.getField(campo);
-							ModelUtils.setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
-							break;
-						} catch (Exception e) {
-							play.Logger.error("Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
-						}
-					} else { // VAMOS RECUPERANDO GETTERS
-						try { 
-							entidad = tags.StringUtils.firstUpper(campo);
-							metodo = claseEntidad.getMethod("get"+entidad);
-							modeloEntidad = (Model) metodo.invoke(modeloEntidad);
-							claseEntidad = Class.forName(modeloEntidad.getClass().getName());
-						} catch (Exception e) {
-							play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
-						}
-					}
-				}
-				camposRecorridos++;
-			}
-		}
 	}
 	
 }

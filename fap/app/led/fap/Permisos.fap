@@ -1376,9 +1376,9 @@ Permiso modificacionTrasPresentacionDeSolicitud {
 		SolicitudGenerica solicitud
 		Registro registro
 	when
-		agente.rolActivo != "usuario"
+		agente.rolActivo in ("administrador", "gestor")
 	return
-		visible
+		all
 	when
  		agente.rolActivo = "usuario" and
  		solicitud?.estado != "borrador" and

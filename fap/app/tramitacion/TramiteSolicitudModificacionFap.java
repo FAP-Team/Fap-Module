@@ -34,7 +34,7 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 	
 	private final static String TIPO_TRAMITE = FapProperties.get("fap.tramitacion.tramite.modificacion.tipo");
 	private final static String TIPO_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.solicitud.modificacion");
-	private final static String BODY_REPORT = "reports/solicitud.html";
+	private final static String BODY_REPORT = "reports/solicitudModificacion.html";
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String MAIL = "solicitudModificada";

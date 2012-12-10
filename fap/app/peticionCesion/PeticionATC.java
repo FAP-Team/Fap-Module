@@ -49,6 +49,10 @@ public class PeticionATC extends PeticionBase{
 	static final int iniNombre = 10;
 	static final int iniCodResp = 85;
 	
+	private final static String BODY_REPORT = "reports/bodyPeticionATC.html";
+	private final static String HEADER_REPORT = "reports/headerPeticion.html";
+	private final static String FOOTER_REPORT = "reports/footer-cesion.html";
+	
 	@Override
 	public
 	void generarPeticionBase(PeticionCesiones pt, List<Long> idsSeleccionados) {
@@ -291,5 +295,20 @@ public class PeticionATC extends PeticionBase{
         	solicitudes = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.juridica.cif = ?", id).fetch();
         }
 		return solicitudes;
+	}
+	
+	@Override
+	public String getBodyReport() {
+		return BODY_REPORT;
+	}
+
+	@Override
+	public String getHeaderReport() {
+		return HEADER_REPORT;
+	}
+
+	@Override
+	public String getFooterReport() {
+		return FOOTER_REPORT;
 	}
 }

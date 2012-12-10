@@ -42,6 +42,10 @@ public class PeticionINSSA008 extends PeticionBase{
 	static final int rechazo = 100;
 	static final int txtError = 80;
 	
+	private final static String BODY_REPORT = "reports/bodyPeticionINSSA008.html";
+	private final static String HEADER_REPORT = "reports/headerPeticion.html";
+	private final static String FOOTER_REPORT = "reports/footer-cesion.html";
+	
 	@Override
 	public void generarPeticionBase(PeticionCesiones pt, List<Long> idsSeleccionados) {
 		String motivo = String.format("%"+motivoCte+"s", "")+"\n";
@@ -265,5 +269,20 @@ public class PeticionINSSA008 extends PeticionBase{
 		//Tipo es el regimen
 		//Id es el cccPpal
 		return SolicitudGenerica.find("Select solicitud from Solicitud solicitud join solicitud.cesion.autorizacionCesion.trabajadores trabajadores where trabajadores.regimen = ? and trabajadores.codigoCuenta = ? and solicitud.cesion.autorizacionCesion.inssA008 = ?", tipo, id, true).fetch();
+	}
+	
+	@Override
+	public String getBodyReport() {
+		return BODY_REPORT;
+	}
+
+	@Override
+	public String getHeaderReport() {
+		return HEADER_REPORT;
+	}
+
+	@Override
+	public String getFooterReport() {
+		return FOOTER_REPORT;
 	}
 }

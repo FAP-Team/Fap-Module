@@ -44,4 +44,9 @@ public abstract class PeticionBase {
 	
 	public abstract List<SolicitudGenerica> getSolicitudes(String tipo, String id);
 	
+	public abstract String getBodyReport();
+
+	public abstract String getHeaderReport();
+
+	public abstract String getFooterReport();
 }

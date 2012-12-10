@@ -56,6 +56,10 @@ public class PeticionINSSR001 extends PeticionBase{
 	static final int iniIdEstado = 0;
 	static final int finIdEstado = 2;
 	
+	private final static String BODY_REPORT = "reports/bodyPeticionINSSR001.html";
+	private final static String HEADER_REPORT = "reports/headerPeticion.html";
+	private final static String FOOTER_REPORT = "reports/footer-cesion.html";
+	
 	@Override
 	public void generarPeticionBase(PeticionCesiones pt, List<Long> idsSeleccionados) {
 		String motivo = String.format("%"+motivoCte+"s", "")+"\n";
@@ -299,5 +303,20 @@ public class PeticionINSSR001 extends PeticionBase{
 	     if (tipo.endsWith("CIF"))
 	      	solicitudes = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.juridica.cif = ?", id).fetch();
 		 return solicitudes;
+	}
+	
+	@Override
+	public String getBodyReport() {
+		return BODY_REPORT;
+	}
+
+	@Override
+	public String getHeaderReport() {
+		return HEADER_REPORT;
+	}
+
+	@Override
+	public String getFooterReport() {
+		return FOOTER_REPORT;
 	}
 }

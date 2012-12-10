@@ -54,6 +54,10 @@ public class PeticionAEAT extends PeticionBase{
 	static final int finReferencia = 100;
 	static final int neg = 1;
 	static final int longitudRegistro = 100;
+	
+	private final static String BODY_REPORT = "reports/bodyPeticionAEAT.html";
+	private final static String HEADER_REPORT = "reports/headerPeticion.html";
+	private final static String FOOTER_REPORT = "reports/footer-cesion.html";
 
 	@Override
 	public void generarPeticionBase(PeticionCesiones pt, List<Long> idsSeleccionados) {
@@ -280,5 +284,20 @@ public class PeticionAEAT extends PeticionBase{
         	solicitudes = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.juridica.cif = ?", id).fetch();
         }
 		return solicitudes;
+	}
+	
+	@Override
+	public String getBodyReport() {
+		return BODY_REPORT;
+	}
+
+	@Override
+	public String getHeaderReport() {
+		return HEADER_REPORT;
+	}
+
+	@Override
+	public String getFooterReport() {
+		return FOOTER_REPORT;
 	}
 }

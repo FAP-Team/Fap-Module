@@ -50,8 +50,6 @@ public class PeticionATC extends PeticionBase{
 	static final int iniCodResp = 85;
 	
 	private final static String BODY_REPORT = "reports/bodyPeticionATC.html";
-	private final static String HEADER_REPORT = "reports/headerPeticion.html";
-	private final static String FOOTER_REPORT = "reports/footer-cesion.html";
 	
 	@Override
 	public
@@ -165,22 +163,6 @@ public class PeticionATC extends PeticionBase{
 		}
 		solicitud.cesion.cesiones.add(cesion);
 		firmarDocumentoBase(solicitud, cesion);
-	}
-
-	@Override
-	public
-	void firmarDocumentoBase(SolicitudGenerica solicitud, Cesiones cesion) {
-		//Firma del documento generado
-		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
-		try {
-			firmaService.firmarEnServidor(cesion.documento);
-			cesion.firmada = true;
-			cesion.save();
-			solicitud.save(); 
-			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
-		} catch (FirmaServiceException e) {
-			play.Logger.error("No se pudo firmar en Servidor: "+e);
-		} 
 	}
 	
 	private static String obtenerFechaFormato() {
@@ -302,13 +284,4 @@ public class PeticionATC extends PeticionBase{
 		return BODY_REPORT;
 	}
 
-	@Override
-	public String getHeaderReport() {
-		return HEADER_REPORT;
-	}
-
-	@Override
-	public String getFooterReport() {
-		return FOOTER_REPORT;
-	}
 }

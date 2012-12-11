@@ -1,0 +1,75 @@
+h1. Cesiones de datos disponibles en el módulo
+
+El módulo Fap implementa cuatro tipos de cesiones de datos que pueden ser utilizadas sin tener que realizar ninguna modificación.
+
+!images/app-jerarquiacesiones!
+
+h2. Cesión del INSSR001
+
+Se informa acerca de si el solicitante indicado tiene o no deudas con la Seguridad Social a la fecha de la consulta.
+
+h2. Cesión del INSSA008
+
+Se podrá obtener información sobre el número medio de trabajadores que han permanecido en alta en algún momento durante los últimos tres años en la empresa indicada (Régimen + CCC).
+
+h2. Cesión del ATC
+
+Permite comprobar que el solicitante indicado está al corriente en el cumplimiento de sus obligaciones tributarias con la Agencia Tributaria Canaria (ATC).
+
+h2. Cesión del AEAT
+
+Permite comprobar que el solicitante indicado está al corriente en el cumplimiento de sus obligaciones tributarias con la Agencia Tributaria (AEAT).
+
+
+h1. Añadir nuevas cesiones
+
+El Petición Base, es la clase de mayor nivel en la Herencia de las clases de Petición de Cesiones de Datos. Se puede crear una clase que herede de Petición Base, para sobreescribir las funciones que define Petición Base y que son usadas por Fap, de manera que se pueda otorgar un comportamiento distinto a través de nuestra propia clase que herede de Petición Base. Para ello, se explican a continuación las funciones que componen Petición Base y que se pueden sobreescribir. No es necesario sobreescribir todas las funciones aquí explicadas (a excepción de todos aquellos métodos implementados como Abstract y que la propia definición de la clase hija de Petición Base te obliga a sobreescribir). Puedes sobreescribir sólo aquellas que necesites ya que las otras tendrán el comportamiendo por defecto que tiene definido Petición Base.
+
+!images/app-jerarquiacesionesNueva!
+
+bc. public class PeticionNueva extends PeticionBase { ... }
+
+h2. Métodos de la Petición Base
+
+h3. generarPeticionBase(petición, idsSeleccionados); Sobreescritura: Obligatoria
+
+bc. public abstract void generarPeticionBase(PeticionCesiones pt, List<Long> idsSeleccionados);
+
+Es la función encargada de generar el fichero de petición de datos correspondiente a la entidad correspondiente. Es personalizada, dependiendo de la entidad a la que le queramos solicitar los datos.
+
+h3. parsearPeticionBase(petición, fichero); Sobreescritura: Obligatoria
+
+bc. public abstract void parsearPeticionBase(PeticionCesiones pt, File fich) ;
+
+Es la función encargada de parsear el fichero de respuesta. Es personalizada, dependiendo del formato que le aplique la entidad que nos envía la respuesta.
+
+h3. aplicarCambiosBase(solicitud, petición, documento, estado); Sobreescritura: Obligatoria
+
+bc. public abstract void aplicarCambiosBase(SolicitudGenerica solicitud, PeticionCesiones pt, Documento doc, String estado); 
+
+Es la función encargada de aplicar los cambios sobre las solicitudes. En esta función, debe llevarse a cabo el tratamiento de la información: almacenamiento en alguna entidad, creación de un documento donde se almacenen,... todo dependiendo de las necesidades y el tratamiento que se quiera dar a los datos. Generalmente, debe ser llamada desde @parsearPeticionBase(...)@ para que los datos parseados desde el fichero de respuesta sean tratados apropiadamente.
+
+h3. firmarDocumentoBase(solicitud, cesion); Sobreescritura: Opcional
+
+bc. public void firmarDocumentoBase(SolicitudGenerica solicitud, Cesiones cesion) {
+
+Es la funcion encargada asociar una cesión a una solicitud y firmar el documento correspondiente a la cesión.
+
+h3. getTipoId(dato); Sobreescritura: Opcional
+
+bc. public String getTipoId(String dato);
+
+Es la función encargada de devolver el identificador correspondiente a una solicitud de cesión de datos (Dni/Nie, Cif,...). Ya que dependiendo de la entidad con la que se trabaje, la identificación de los solicitantes puede cambiar, se ha optado por hacer este método personalizable a cada trámite. 
+
+h3. List<solicitudes> getSolicitudes(tipo, id); Sobreescritura: Opcional
+
+bc. public List<SolicitudGenerica> getSolicitudes(String tipo, String id);
+
+Es la función encargada de obtener todas las solicitudes que corresponden con el identificador del tipo proporcionado. Tipo indica que es un NIF o un CIF. 
+
+h3. String getBodyReport();
+
+bc. public abstract String getBodyReport();
+
+Es la función encargada de obtener cual será el body correcto en caso de que se quiera generar un pdf con los datos de respuesta. Es dependiente de cada respuesta de cesión.
+

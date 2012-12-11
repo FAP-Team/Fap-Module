@@ -4,6 +4,10 @@ En varios momentos del ciclo de vida de un expediente, es necesario comprobar qu
 
 !images/app-cesiondatos-flujo!
 
+h2. Cesiones existentes en FAP
+
+En el siguiente "enlace":app-cesiones pueden verse las cesiones que provee el módulo y como añadir nuevas cesiones personalizadas.
+
 h2. Obtención automática de certificados 
 
 h3. Usuario

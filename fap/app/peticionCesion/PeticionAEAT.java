@@ -56,8 +56,6 @@ public class PeticionAEAT extends PeticionBase{
 	static final int longitudRegistro = 100;
 	
 	private final static String BODY_REPORT = "reports/bodyPeticionAEAT.html";
-	private final static String HEADER_REPORT = "reports/headerPeticion.html";
-	private final static String FOOTER_REPORT = "reports/footer-cesion.html";
 
 	@Override
 	public void generarPeticionBase(PeticionCesiones pt, List<Long> idsSeleccionados) {
@@ -154,7 +152,6 @@ public class PeticionAEAT extends PeticionBase{
 	@Override
 	public void aplicarCambiosBase(SolicitudGenerica solicitud, PeticionCesiones pt, Documento doc, String estado) {
 		Cesiones cesion = new Cesiones();
-		//pt.estado = EstadosPeticionEnum.sinFirmar.name();
 		cesion.tipo = pt.tipo;
 		cesion.idUnico = Long.toString(pt.id);
 		cesion.fechaPeticion = pt.respCesion.fechaGeneracion;
@@ -170,22 +167,6 @@ public class PeticionAEAT extends PeticionBase{
 		}
 		solicitud.cesion.cesiones.add(cesion);
 		firmarDocumentoBase(solicitud, cesion);
-	}
-
-	@Override
-	public void firmarDocumentoBase(SolicitudGenerica solicitud, Cesiones cesion) {
-		//Firma del documento generado
-		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
-		try {
-			firmaService.firmarEnServidor(cesion.documento);
-			cesion.firmada = true;
-			cesion.save();
-			solicitud.save(); 
-			play.Logger.info("Aplicados cambios de cesión de datos en la solicitud "+solicitud.id);
-		} catch (FirmaServiceException e) {
-			// TODO Auto-generated catch block
-			play.Logger.error("No se pudo firmar en Servidor: "+e);
-		} 	
 	}
 
 	private File generarPdfAEAT(PeticionCesiones pt, CesionPDF aeat){
@@ -262,42 +243,10 @@ public class PeticionAEAT extends PeticionBase{
 		DateTime fechaRespuesta = new DateTime(anyo, mes, dia, 0, 0); //Hora y Min = 0
 		return fechaRespuesta;
 	}
-
-	@Override
-	public String getTipoId(String dato) {
-		StringBuilder texto = new StringBuilder();
-		if (CifCheck.validaCif(dato, texto)) //Si es un cif
-			return "CIF";
-		else{ 
-			return "NIP";
-		}
-	}
-
-	@Override
-	public List<SolicitudGenerica> getSolicitudes(String tipo, String id) {
-		tipo = getTipoId(id);
-		List<SolicitudGenerica> solicitudes = new ArrayList<SolicitudGenerica>();
-        if (tipo.equals("NIP")){ //dni, pasaporte,..
-        	solicitudes = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.fisica.nip.valor = ?", id).fetch();
-        }
-        else if (tipo.equals("CIF")){
-        	solicitudes = SolicitudGenerica.find("Select solicitud from Solicitud solicitud where solicitud.solicitante.juridica.cif = ?", id).fetch();
-        }
-		return solicitudes;
-	}
 	
 	@Override
 	public String getBodyReport() {
 		return BODY_REPORT;
 	}
 
-	@Override
-	public String getHeaderReport() {
-		return HEADER_REPORT;
-	}
-
-	@Override
-	public String getFooterReport() {
-		return FOOTER_REPORT;
-	}
 }

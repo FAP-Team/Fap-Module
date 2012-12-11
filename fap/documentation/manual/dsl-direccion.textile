@@ -60,7 +60,7 @@ bc. Direccion titulo="Dirección" campo=Solicitud.domicilio.direccion
 
 h2. Ejemplo de uso de Dirección Canaria
 
-bc. Direccion titulo="DirecciónCanaria" campo=Solicitud.domicilio.direccion
+bc. DireccionCanaria titulo="DirecciónCanaria" campo=Solicitud.domicilio.direccion
 
 !images/dsl-direccionCanaria!
 

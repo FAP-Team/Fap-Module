@@ -32,10 +32,12 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Documentacion documentacion
 	Documentacion documentacionProceso
 	Documentacion documentacionAportada
+	Documentacion documentacionJustificacion
 	Registro registro
 	ExpedientePlatino expedientePlatino
 	ExpedienteAed expedienteAed
 	Aportaciones aportaciones
+	Justificaciones justificaciones
 	Verificacion verificacion
 	OneToMany Verificacion verificaciones
 	Exclusion exclusion
@@ -328,6 +330,27 @@ Entidad Aportaciones {
 	OneToMany Aportacion registradas
 }
 
+// Representación de las justificaciones actuales y las ya registradas
+Entidad Justificaciones {
+	Justificacion actual
+	OneToMany Justificacion registradas
+}
+
+// Entidad que representa una justificación realizada en un expediente
+Entidad Justificacion {
+	String estado
+	OneToMany Documento documentos
+	Registro registro
+	InformacionRegistro informacionRegistro
+	
+	/* Cuando aportamos sin registro, se establece esta fecha */
+	DateTime fechaJustificacionSinRegistro
+	Boolean habilitaFuncionario default="false"
+	Documento borrador
+	Documento oficial
+	Documento justificante
+}
+
 // Entidad que representa una aportación de documentación realizada en un expediente
 Entidad Aportacion {
 	String estado
@@ -336,7 +359,7 @@ Entidad Aportacion {
 	Registro registro
 	
 	InformacionRegistro informacionRegistro
-	/* Cuando aportamos sin registro, se establece ésta fecha */
+	/* Cuando aportamos sin registro, se establece esta fecha */
 	DateTime fechaAportacionSinRegistro
 
 	Boolean habilitaFuncionario default="false"

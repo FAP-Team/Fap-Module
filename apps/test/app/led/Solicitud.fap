@@ -75,12 +75,12 @@ Formulario Solicitud permiso=solicitudes{
 	    	Enlace "Presentación" pagina=PresentarFAP
 			Enlace "Verificaciones" pagina=AccesoVerificaciones
 			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
+			Enlace "Justificacion" pagina=Justificacion
 			Enlace "PCEconómicos" pagina=PCEconomicos	
 			Enlace "Desistimiento" pagina=Desistimiento
 			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
     	}    	
 		
-		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
     }
     

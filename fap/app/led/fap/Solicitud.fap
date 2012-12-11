@@ -1115,4 +1115,180 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}
 		}
 	}
+	
+	/*
+	 * Trámite Justificación
+	 */
+	
+	Pagina Justificacion titulo="Justificación" perteneceA ="Justificacion"{
+		
+		Enlace titulo="Consultar documentos de junstificación ya aportados" pagina=JustificacionAportados estilo="btn"
+		Enlace titulo="Consultar recibos de justificaciones" pagina=JustificacionRecibos estilo="btn"
+		
+		Grupo titulo="Paso 1. Agregar Nuevos Documentos de Justificacion"{
+			Wiki {"A partir de las plantillas que se adjuntan en la convocatoria, y una vez rellenadas correctamente, deberá añadirlas como documentación indicando el tipo de documento correspondiente."}
+	
+			Tabla documentos 
+			    titulo="Documentos nuevos pendientes de aportar" 
+			    campo=SolicitudGenerica.justificaciones.actual.documentos
+				popupBorrar=PopUpDocJustificacionProcesos
+				popupEditar=PopUpDocJustificacionProcesos  
+				popupLeer=PopUpDocJustificacionProcesos
+				paginaCrear=DocumentosJustificacion
+			{
+				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+				Columna titulo="Tipo Documento" campo=Documento.tipo
+				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+			}
+		}
+		
+		Grupo titulo="Incorporar Documentos sin Registro de Entrada" permiso=adminGestorRevisor {
+			Form presentarSinRegistrar redirigir=JustificacionRecibos {
+				Fecha fechaJustificacionSinRegistrar titulo="Fecha Incorporación" campo=SolicitudGenerica.justificaciones.actual.fechaJustificacionSinRegistro requerido
+				Boton justificarSinRegistrar titulo="Incorporar"
+			}
+		}
+		
+		Grupo titulo="Paso 1b. Registrar los documentos"{
+			Form presentar redirigir=JustificacionPresentar permiso=justificacionDocumentos {
+				Wiki {"Debe registrar los documentos para que se consideren aportados a la solicitud."}
+				Boton botonPresentar titulo="Preparar para registrar"
+			}
+		}
+		
+	}
+	
+	Pagina DocumentosJustificacion titulo="Justificacion Nuevo Documento" campo=SolicitudGenerica.justificaciones.actual.documentos perteneceA ="Justificacion"{
+		Accion crear redirigir=Justificacion
+		Grupo gSubirDocumento titulo="Aportar Documento de Justificación"{
+			SubirArchivo fileJustificacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" listarDocumentosSubidos
+		}
+	}
+	
+	Pagina JustificacionAportados titulo="Documentos Justificados" perteneceA ="Justificacion"{		
+		Tabla documentos titulo="Documentos Presentados" 
+		    campo=SolicitudGenerica.documentacion.documentos
+			popupLeer=PopUpDocJustificacionPresentados
+		{
+			Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80" 
+			Columna titulo="Tipo Documento" campo=Documento.tipo
+			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+		}
+
+		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
+			Tabla documentosExternos titulo="Documentos Externos" campo=SolicitudGenerica.documentacion.documentosExternos popupLeer=DocumentosExternosLeerFAP {
+				Columna titulo="Id" campo=DocumentoExterno.id
+				Columna titulo="Tipo Documento" campo=DocumentoExterno.tipo
+				Columna titulo="Descripcion" campo=DocumentoExterno.descripcionVisible expandir
+			}
+		}
+		
+		Enlace titulo="Volver" pagina=Justificacion estilo="btn"
+	}	
+	
+	Pagina JustificacionRecibos titulo="Recibos de Justificaciones aportadas" noForm  perteneceA ="Justificacion"{
+			
+		Tabla recibosJustificacion titulo="Recibos de las justificaciones" campo=SolicitudGenerica.documentacionJustificacion.documentos permisoFilas=justificacionNoNull
+		{
+			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
+			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
+			Columna titulo="Tipo Documento" campo=Documento.tipo
+			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+		}
+		
+		Enlace titulo="Volver" pagina=Justificacion estilo="btn"
+	}
+	
+	Popup PopUpDocJustificacionPresentados titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos{
+		EditarArchivo documentoPresentado campo=Documento requerido
+	}
+	
+	Popup PopUpDocJustificacionProcesos titulo="Documentación" campo=SolicitudGenerica.justificaciones.actual.documentos{
+		EditarArchivo documentoProceso campo=Documento requerido
+	}
+	
+	Popup PopUpDocJustificacionAportados titulo="Documentación" campo=SolicitudGenerica.documentacionJustificacion.documentos {
+		EditarArchivo documentoAportado campo=Documento requerido
+	}
+		
+	// Sobreescrita
+	Pagina JustificacionPresentar titulo="Presentar la Justificación" noForm perteneceA ="Justificacion"{
+	  	Grupo titulo="Presentar Justificación de Documentos" {
+			Wiki {"Puede obtener un borrador de la solicitud de justificacion de documentación, no válido para su presentación y comprobar que la información introducida es correcta."}
+
+			Enlace campo=SolicitudGenerica.justificaciones.actual.registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="btn"
+		
+			Form modificarBorrador redirigir=Justificacion permiso=justificacionModificar{
+				Wiki {"Puede realizar cambios antes de su presentación definitiva."}
+				Boton botonModificarBorrador titulo="Modificar datos"
+			}
+			
+			Tabla documentos 
+		    	titulo="Documentos aportados que se van a registrar" 
+		    	campo=SolicitudGenerica.justificaciones.actual.documentos
+				popupLeer=PopUpDocJustificacionProcesos
+			{
+				Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+				Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
+				Columna titulo="Tipo Documento" campo=Documento.tipo
+				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+			}
+			
+			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
+				Wiki estilo ="box-warn box" {
+					"Se produjo un error en la presentación de la justificación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+				}
+			}
+			
+			// Sobreescrito HTML
+			
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+				Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHJustificacion{
+					Form formHabilitarFH {
+						Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
+					}
+					Grupo borde=false mostrarSiCampo SolicitudGenerica.registro.habilitaFuncionario="true"{
+						Wiki{"Ya ha sido habilitada la opción de que un funcionario habilitado pueda firmar y registrar."}
+					}
+				}
+			}
+			
+			//Firma Funcionario Habilitado
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.justificaciones.actual.habilitaFuncionario="true"{
+				Grupo titulo="Paso 2. Presentar los Documentos por Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarJustificacionFH
+				{
+					Wiki{"**NOTA: Debe finalizar el Paso 2 pulsando en el botón 'Firmar y presentar' para que los Nuevos Documentos se consideren presentados. Cuando el proceso finalice los documentos nuevos desaparecerán del Paso 1 y se incorporarán a la lista de Documentos Presentados.**"}
+					Wiki{"La solicitud será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud una vez 'Firmar y Presentar' se haya realizado con éxito"}
+					Form formFirmaFH { 
+						FirmaSimple firmarRegistrarFH titulo="Firmar y presentar por Funcionario Habilitado" 
+							documento=SolicitudGenerica.justificaciones.actual.registro.oficial
+							listaFirmantes=SolicitudGenerica.registro.firmantes.todos
+							calcularFirmantes=SolicitudGenerica.solicitante
+					}
+				}
+			}
+			
+			Grupo titulo="Paso 2. Presentar los Documentos"{
+				Wiki{"**NOTA: Debe finalizar el Paso 2 pulsando en el botón 'Firmar y presentar' para que los Nuevos Documentos se consideren presentados. Cuando el proceso finalice los documentos nuevos desaparecerán del Paso 1 y se incorporarán a la lista de Documentos Presentados.**"}
+				Wiki{"La solicitud será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud una vez 'Firmar y Presentar' se haya realizado con éxito"}
+				Form presentar redirigir=JustificacionRecibos {
+					FirmaSimple firmarRepresentante titulo="Firmar y presentar"
+						documento=SolicitudGenerica.justificaciones.actual.registro.oficial
+						listaFirmantes=SolicitudGenerica.registro.firmantes.todos
+						calcularFirmantes=SolicitudGenerica.solicitante
+				}
+			}
+			
+			Wiki {"Nota: La operación de firmar y presentar puede tardar varios minutos."}
+		}
+	}
+	
 }

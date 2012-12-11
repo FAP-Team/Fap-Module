@@ -229,6 +229,15 @@ Permiso aportacionDocumentos{
 	return editable
 }
 
+Permiso justificacionDocumentos{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
+		solicitud?.estado not in ("borrador")
+	return editable
+}
+
 Permiso incorporarDocumentos {
 	vars
 		SolicitudGenerica solicitud
@@ -414,6 +423,14 @@ Permiso aportacionModificar{
 	return editable
 }	
 	
+Permiso justificacionModificar{
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud?.justificaciones?.actual?.estado in ("concedido")
+	return editable
+}	
+	
 /*
   Cuando la firma y registro se quedo en un paso intermedio. Se le muestra un mensaje
   al usuario diciendole que hubo un problema, que pulse otra vez el problema para
@@ -426,6 +443,15 @@ Permiso aportacionMensajeIntermedio{
 		solicitud?.aportaciones?.actual?.estado in ("firmada", "registrada", "clasificada", "finalizada")
 	return editable
 }
+
+Permiso justificacionMensajeIntermedio{
+	vars
+		SolicitudGenerica solicitud
+	when
+		solicitud?.justificaciones?.actual?.estado in ("firmada", "registrada", "clasificada", "finalizada")
+	return editable
+}
+
 //	
 ///* 
 // * Permisos de la pagina de presentacion
@@ -475,6 +501,13 @@ Permiso aportacionNoNull{
 	return editable
 }
 
+Permiso justificacionNoNull{
+	vars
+		Documento doc
+	when
+		doc?.uri = null
+	return editable
+}
 Permiso nuevaSolicitud{
 	vars
 		Convocatoria convocatoria
@@ -1072,6 +1105,18 @@ Permiso firmarRegistrarAportacionFH{
 		all
 }
 
+Permiso firmarRegistrarJustificacionFH{
+	vars
+		SolicitudGenerica solicitud
+	when
+		((_accion = leer) or
+		(solicitud?.justificaciones?.actual?.estado!="finalizada"))
+		and
+		(agente.funcionario="true")
+	return
+		all
+}
+
 // Sobreescrito
 Permiso esFuncionarioHabilitadoYActivadaProperty{
 	when
@@ -1106,6 +1151,18 @@ Permiso habilitarFHAportacion{
 		all
 }
 
+Permiso habilitarFHJustificacion{
+	vars
+		SolicitudGenerica solicitud
+	when
+		(solicitud?.justificaciones?.actual?.habilitaFuncionario="true")
+	return
+		visible
+	when
+		(solicitud?.justificaciones?.actual?.habilitaFuncionario=null) or (solicitud?.justificaciones?.actual?.habilitaFuncionario="false")
+	return
+		all
+}
 
 /*
  * Permiso “firmarSolicitud�?

@@ -1122,7 +1122,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	
 	Pagina Justificacion titulo="Justificación" perteneceA ="Justificacion"{
 		
-		Enlace titulo="Consultar documentos de junstificación ya aportados" pagina=JustificacionAportados estilo="btn"
+		Enlace titulo="Consultar documentos de justificación ya aportados" pagina=JustificacionAportados estilo="btn"
 		Enlace titulo="Consultar recibos de justificaciones" pagina=JustificacionRecibos estilo="btn"
 		
 		Grupo titulo="Paso 1. Agregar Nuevos Documentos de Justificacion"{

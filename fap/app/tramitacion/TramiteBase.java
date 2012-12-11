@@ -333,7 +333,9 @@ public abstract class TramiteBase {
 			}
 			registro.refresh();
 			//Crea el expediente en el Gestor Documental
+			tx.begin();
 			crearExpediente();
+			tx.commit();
 			
 			//Ahora el estado de la solicitud se cambia después de registrar.
 			
@@ -427,6 +429,7 @@ public abstract class TramiteBase {
 	public abstract void crearExpedienteAed();
 	
 	public void crearExpediente() throws RegistroServiceException{
+		
 		if(!getRegistro().fasesRegistro.expedienteAed){
 			try {
 				gestorDocumentalService.crearExpediente(solicitud);

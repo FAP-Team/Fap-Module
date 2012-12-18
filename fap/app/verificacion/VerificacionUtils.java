@@ -113,6 +113,19 @@ public class VerificacionUtils {
 					}
 				}
 				
+				// Si fue encontrado, pero su cardinalidad es múltiple, debo añadir un VerificacionDocumento más, con "NoProcede"
+				if (tipoEncontrado && tipoDoc.getCardinalidad().name().equalsIgnoreCase("multiple")) {
+					play.Logger.info("Encontrado un tipo de documento con cardinalidad Multiple (Add NoProcede)");
+					VerificacionDocumento vDoc = new VerificacionDocumento();
+					vDoc.existe = false;
+					vDoc.uriTipoDocumento = tipoDoc.getUri();
+					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
+					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
+					vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+					vDoc.save();
+					list.add(vDoc);
+				}
+				
 				// Si el tipo de documento no fue encontrado en los que aporta
 				if (!tipoEncontrado) {
 	

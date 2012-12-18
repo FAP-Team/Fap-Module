@@ -1,0 +1,61 @@
+h1. Solicitud manual de múltiples firmas en un trámite.
+
+En esta sección se comentan los pasos que hay que seguir para personalizar la firma de un trámite de manera que puedan especificarse qué firmas se necesitan.
+
+h2. Sobreescribir el trámite.
+
+El primer paso, consiste en sobreescribir el trámite al que queremos modificarle la firma, para ello, debemos crear un nuevo trámite que extienda de él.
+
+bc. public class TramiteVariasFirmas extends TramiteAnterior{ ... }
+
+!images/app-extenderfirma!
+
+Para que el nuevo trámite funcione correctamente, deben sobreescribirse los siguientes métodos:
+
+* _hanfirmadotodos():_ Este método, debe ser sobreescrito de manera que se compruebe que han firmado todos los firmantes que se desean.
+
+bc. @Override
+public boolean hanFirmadoTodos() { ... }
+
+A continuación se muestra un ejemplo de sobreescritura de este método:
+
+bc.	public boolean hanFirmadoTodos() {
+	boolean multiple = true;
+	boolean result = false;
+	boolean extra = false;
+					
+	//Extraer firmantes extra:
+	Solicitud misolicitud = (Solicitud)this.solicitud;
+	String firmanteExtra = misolicitud.personaDirector.numeroId;
+	for (Firmante f : registro.firmantes.todos) {
+		if ((f.cardinalidad.equals("unico") && f.fechaFirma != null)){
+			if (f.idvalor.equals(firmanteExtra)){
+				extra = true;
+				multiple = false;
+			}else{
+				result=true;
+				multiple = false;
+			}
+		}
+		//Uno de los firmantes múltiples no ha firmado
+		if ((f.cardinalidad.equals("multiple") && f.fechaFirma == null)){
+			multiple = false;
+		}
+	}
+	//Si ha firmado el firmante extra y la persona física o personas juridicas correspondientes, se ha terminado la firma	
+	if (extra && (result || multiple))
+		return true;
+	return false;
+	}
+
+* _calcularFirmantes():_ Este método, debe ser sobreescrito de manera que se calculen los firmantes de la solicitud (solicitante, representante,...) y además se añadan los nuevos firmantes que se desean solicitar.
+
+bc. @Override
+public void calcularFirmantes(){ ... }
+
+* _getBodyReport():_ Este método, se encarga de devolvernos la plantilla html correspondiente al body de la justificacion de firma. Debe devolver un html adaptado al número de firmas que se piden y a los datos que se desea mostrar.
+
+bc. @Override
+public String getBodyReport() {
+	return MiTramite.BODY_REPORT;
+}

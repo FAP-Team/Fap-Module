@@ -244,25 +244,27 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 				}
 				
 				if (!Messages.hasErrors()) {
-					try {
-						tramite.registrar();
-						if (dbSolicitud.registro.fasesRegistro.clasificarAed)
-							tramite.cambiarEstadoSolicitud();
-						else{
-							play.Logger.error("No se registro la solicitud correctamente por lo que no se cambiara el estado de la misma.");
-							Messages.error("Error al intentar sólo registrar.");
-						}
-						if (!Messages.hasErrors()) {
-							try {
-								PresentacionFapController.invoke("afterRegistro", idSolicitud);
-							} catch (Throwable e1) {
-								log.error("Hubo un problema al invocar los métodos afterRegistro: "+e1.getMessage());
-								Messages.error("Error al validar elementos posteriores al registro");
+					if(dbSolicitud.registro.fasesRegistro.firmada){
+						try {
+							tramite.registrar();
+							if (dbSolicitud.registro.fasesRegistro.clasificarAed)
+								tramite.cambiarEstadoSolicitud();
+							else{
+								play.Logger.error("No se registro la solicitud correctamente por lo que no se cambiara el estado de la misma.");
+								Messages.error("Error al intentar sólo registrar.");
 							}
+							if (!Messages.hasErrors()) {
+								try {
+									PresentacionFapController.invoke("afterRegistro", idSolicitud);
+								} catch (Throwable e1) {
+									log.error("Hubo un problema al invocar los métodos afterRegistro: "+e1.getMessage());
+									Messages.error("Error al validar elementos posteriores al registro");
+								}
+							}
+						} catch (Exception e) {
+							log.error("Hubo un error al registrar la solicitud: "+ e.getMessage());
+							Messages.error("No se pudo registrar la solicitud");
 						}
-					} catch (Exception e) {
-						log.error("Hubo un error al registrar la solicitud: "+ e.getMessage());
-						Messages.error("No se pudo registrar la solicitud");
 					}
 				}
 			} catch (Throwable e1) {
@@ -274,7 +276,12 @@ public class SolicitudPresentarFAPController extends SolicitudPresentarFAPContro
 		if (!Messages.hasErrors()) {
 			SolicitudPresentarFAPController.formFirmaPFValidateRules(firma);
 		}
-		if (!Messages.hasErrors()) {
+
+		if (!Messages.hasErrors() && (!dbSolicitud.registro.fasesRegistro.registro)) {
+			redirect("SolicitudPresentarFAPController.index", "editar", idSolicitud, idRegistro);
+		}
+		
+		if (!Messages.hasErrors() && (dbSolicitud.registro.fasesRegistro.registro)) {
 			Messages.ok("Solicitud registrada correctamente");
 			log.info("Acción Editar de página: " + "fap/Presentacion/SolicitudPresentarFAP.html" + " , intentada con éxito");
 			redirect("PresentarFAPController.index", "editar", idSolicitud, idRegistro);

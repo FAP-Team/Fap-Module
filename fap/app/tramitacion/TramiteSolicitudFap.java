@@ -141,4 +141,10 @@ public class TramiteSolicitudFap extends TramiteSolicitud {
 		}
 	}
 
+	@Override
+	public boolean hanFirmadoTodos() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

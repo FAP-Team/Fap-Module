@@ -116,6 +116,12 @@ public class TramiteDesistimiento extends TramiteBase {
 		// TODO Auto-generated method stub
 		return solicitud.desistimiento.documentosExternos;
 	}
+
+	@Override
+	public boolean hanFirmadoTodos() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 }

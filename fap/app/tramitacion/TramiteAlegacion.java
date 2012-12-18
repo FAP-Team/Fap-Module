@@ -167,4 +167,10 @@ public class TramiteAlegacion extends TramiteBase {
 		return solicitud.alegaciones.actual.documentosExternos;
 	}
 
+	@Override
+	public boolean hanFirmadoTodos() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

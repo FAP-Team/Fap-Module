@@ -246,7 +246,7 @@ public abstract class TramiteBase {
             	firmante.fechaFirma = new DateTime();
                 almacenarFirma(firma, registro.oficial, firmante);
                 firmante.save();
-                if(registro.firmantes.hanFirmadoTodos()){
+                if(hanFirmadoTodos()){
                     avanzarFaseFirmada();
                 }
             } else if (registro.firmantes.haFirmado(identificadorFirmante)){
@@ -278,7 +278,6 @@ public abstract class TramiteBase {
 	 * @throws RegistroException
 	 */
 	public void registrar() throws RegistroServiceException {
-
 		EntityTransaction tx = JPA.em().getTransaction();
 		tx.commit();
 		//Registra la solicitud
@@ -359,6 +358,7 @@ public abstract class TramiteBase {
 				List<Documento> documentos = new ArrayList<Documento>();
 				documentos.add(registro.justificante);
 				try {
+					System.out.println("Clasificar Documentos");
 					gestorDocumentalService.clasificarDocumentos(this.solicitud, documentos);
 				} catch (GestorDocumentalServiceException e){
 					play.Logger.fatal("No se clasificaron algunos documentos sin registro: "+e.getMessage());
@@ -460,6 +460,11 @@ public abstract class TramiteBase {
 			return null;
 		}
 	}
+	
+	public boolean hanFirmadoTodos(){
+		return registro.firmantes.hanFirmadoTodos();
+	}
+	
     
 }
 

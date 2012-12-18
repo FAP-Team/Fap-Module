@@ -27,6 +27,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	ElementosBasicos elementos
 	
 	FirmaEnServidor firmaEnServidor
+	
+	Persona personaDirector
 }
 
 Entidad FirmaEnServidor {

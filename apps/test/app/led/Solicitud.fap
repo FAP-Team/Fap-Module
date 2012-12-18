@@ -72,15 +72,14 @@ Formulario Solicitud permiso=solicitudes{
     	}
     	    	
     	Grupo "Módulo FAP" {
-	    	Enlace "Presentación" pagina=PresentarFAP
 			Enlace "Verificaciones" pagina=AccesoVerificaciones
 			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
 			Enlace "PCEconómicos" pagina=PCEconomicos	
 			Enlace "Desistimiento" pagina=Desistimiento
 			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
+			Enlace "Presentacion" pagina=PresentarFAP
     	}    	
-		
-		Enlace "Aportación" pagina=Aportacion
+		Enlace "Firmante Director" pagina=PaginaDirector
 		Enlace "Salir" accion=logout
     }
     
@@ -799,6 +798,10 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 			Boton bGuardar titulo="Guardar"
 			Enlace titulo="Cancelar" estilo="btn btn-link" pagina=Solicitudes
 		}
+	}
+	
+	Pagina PaginaDirector titulo="Pagina para rellenar el firmante director" campo=Solicitud{
+		Persona perdonaDir campo=Solicitud.personaDirector 
 	}
 	
 }

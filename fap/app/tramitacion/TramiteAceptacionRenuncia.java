@@ -229,6 +229,12 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 		// TODO Auto-generated method stub
 		return solicitud.aceptarRenunciar.documentosExternos;
 	}
+
+	@Override
+	public boolean hanFirmadoTodos() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 
 }

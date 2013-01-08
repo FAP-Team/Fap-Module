@@ -9,6 +9,7 @@ import services.RegistroServiceException;
 
 import models.Documento;
 import models.DocumentoExterno;
+import models.Firmantes;
 import models.Registro;
 import models.SolicitudGenerica;
 
@@ -119,8 +120,7 @@ public class TramiteDesistimiento extends TramiteBase {
 
 	@Override
 	public boolean hanFirmadoTodos() {
-		// TODO Auto-generated method stub
-		return false;
+		return registro.firmantes.hanFirmadoTodos();
 	}
 	
 	

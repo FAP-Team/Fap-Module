@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +59,7 @@ import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import es.gobcan.eadmon.verificacion.ws.dominio.DocumentoVerificacion;
 import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionException;
+import es.gobcan.platino.servicios.registro.Documentos;
 
 public class PaginaVerificacionController extends PaginaVerificacionControllerGen {
 	
@@ -172,7 +176,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 				play.Logger.error("Error recuperando los documentos nuevos a verificar", e.getMessage());
 			}
 
-			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
+			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.obtenerNoProcede.name();
 			dbSolicitud.verificacion.nuevosDocumentos.clear();
 			dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
 			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
@@ -206,7 +210,8 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 				vDoc.save();
 				dbSolicitud.verificacion.documentos.add(vDoc);
 			}
-			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
+			
+			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.obtenerNoProcede.name();
 			dbSolicitud.verificacion.nuevosDocumentos.clear();
 			dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
 			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
@@ -698,4 +703,66 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		PaginaVerificacionController.anularVerificacionRender(idSolicitud, idVerificacion);
 	}
 	
+	@Util
+	public static void obtenerNoProcede(Long idSolicitud, Long idVerificacion){
+		//Debe extraer los documentos clasificados como no procede en verificaciones anteriores
+		//todas las verificaciones de la solicitud
+		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
+		List<Verificacion> verificaciones = solicitud.verificaciones;
+		Map<String, VerificacionDocumento> docsnp = new HashMap<String, VerificacionDocumento>();		
+		
+		for (Verificacion verif : verificaciones) {
+			List<VerificacionDocumento> documentos = verif.documentos;
+			
+			for (VerificacionDocumento doc : documentos) {
+				//Si estado es noProcede, existe y no está ya en la lista -> Añadir
+				if ((doc.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noProcede.name())) && (doc.existe) && (!docsnp.containsKey(doc.uriDocumento))){
+					docsnp.put(doc.uriDocumento, new VerificacionDocumento(doc));
+				}
+				//Si está en lista, existe, el estado es distinto de noProcede y fecha posterior al almacenado
+				else if ((!doc.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noProcede.name())) && (doc.existe) && (docsnp.containsKey(doc.uriDocumento))){
+					docsnp.remove(doc.uriDocumento);
+				}
+			}
+		}
+		Verificacion verificacion = Verificacion.findById(idVerificacion);
+		verificacion.documentos.addAll(docsnp.values());
+		verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
+		verificacion.save();
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void frmtiposProceso(Long idSolicitud, Long idVerificacion, String obtenerNoProcede) {
+		checkAuthenticity();
+		if (!permisoFrmtiposProceso("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+			obtenerNoProcede(idSolicitud, idVerificacion);
+		}
+
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.frmtiposProcesoValidateRules();
+		}
+		if (!Messages.hasErrors()) {
+
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
+		PaginaVerificacionController.frmtiposProcesoRender(idSolicitud, idVerificacion);
+	}
+	
+
+	public static void tablaverificacionDocumentos(Long idSolicitud) {
+		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
+		java.util.List<VerificacionDocumento> rows = solicitud.verificacion.documentos;
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		List<VerificacionDocumento> rowsFiltered = rows; //Tabla sin permisos, no filtra
+
+		tables.TableRenderResponse<VerificacionDocumento> response = new tables.TableRenderResponse<VerificacionDocumento>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+
+		renderJSON(response.toJSON("fechaPresentacion", "descripcion", "nombreTipoDocumento", "estadoDocumentoVerificacion", "identificadorMultiple", "linkUrlDescarga", "id"));
+	}
 }

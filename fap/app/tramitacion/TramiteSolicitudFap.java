@@ -12,6 +12,7 @@ import models.Convocatoria;
 import models.Documento;
 import models.DocumentoExterno;
 import models.Firmante;
+import models.Firmantes;
 import models.Registro;
 import models.SolicitudGenerica;
 import services.VerificarDocumentacionService;
@@ -144,7 +145,7 @@ public class TramiteSolicitudFap extends TramiteSolicitud {
 	@Override
 	public boolean hanFirmadoTodos() {
 		// TODO Auto-generated method stub
-		return false;
+		return registro.firmantes.hanFirmadoTodos();
 	}
 
 }

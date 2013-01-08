@@ -31,9 +31,6 @@ public class TramiteFirmaDoble extends TramiteAplicacion{
 
 	private final static String BODY_REPORT = "reports/bodyMultiplesFirmantes.html";
 	
-	@Inject
-	private static FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
-	
 	public TramiteFirmaDoble(SolicitudGenerica solicitud) {
 		super(solicitud);
 	}
@@ -78,8 +75,10 @@ public class TramiteFirmaDoble extends TramiteAplicacion{
             
             //Nuevos firmantes dependientes de mi trámite que quiero añadir
             Solicitud misolicitud = (Solicitud)this.solicitud;
-            Firmante firmanteExtra = new Firmante(misolicitud.personaDirector, "unico");
-    		registro.firmantes.todos.add(firmanteExtra);
+            if (misolicitud.personaDirector.numeroId != null){
+	            Firmante firmanteExtra = new Firmante(misolicitud.personaDirector, "unico");
+	    		registro.firmantes.todos.add(firmanteExtra);
+            }
         }
     }
     

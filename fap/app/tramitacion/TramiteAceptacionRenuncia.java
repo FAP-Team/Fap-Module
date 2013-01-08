@@ -233,7 +233,7 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 	@Override
 	public boolean hanFirmadoTodos() {
 		// TODO Auto-generated method stub
-		return false;
+		return registro.firmantes.hanFirmadoTodos();
 	}
 	
 

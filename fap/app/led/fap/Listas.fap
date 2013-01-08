@@ -8805,6 +8805,7 @@ Lista estadoConvocatoria crearEnumerado {
 Lista estadosVerificacion crearEnumerado {
 	iniciada: "Iniciada"
 	verificandoTipos: "Verificando Tipos Documento"
+	obtenerNoProcede: "Obtener los no procede"
 	enVerificacion: "En Verificación"
 	enVerificacionNuevosDoc: "En Verificación con Nuevos Documentos"
 	enRequerimiento: "En Requerimiento"

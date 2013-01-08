@@ -461,7 +461,20 @@ Permiso verificarDocumentos{
 			(_accion in (leer, editar))
 			and (solicitud?.estado in ("enVerificacion", "excluido"))
 			and verificacion?.estado != null
-			and verificacion?.estado = "enVerificacion"
+			and verificacion?.estado in ("enVerificacion", "obtenerNoProcede")
+		)	
+	return 
+		all
+}
+
+Permiso verificarObtenerNoProcede{
+	vars
+		Verificacion verificacion
+	when
+		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+		(
+			(_accion in (leer, editar))
+			and verificacion?.estado in ("obtenerNoProcede")
 		)	
 	return 
 		all
@@ -599,7 +612,7 @@ Permiso verificarTiposDocumentos{
 		(_accion in (leer, editar)) and 
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 		(solicitud?.estado = "enVerificacion") and
-		(verificacion != null and verificacion.estado != null and verificacion.estado = "verificandoTipos")
+		(verificacion != null and verificacion.estado != null and verificacion.estado in ("verificandoTipos"))
 	return
 		all
 }
@@ -1203,5 +1216,14 @@ Permiso evaluacionFinalizada{
 	    (evaluacion?.tipo?.estado = "evaluada") and
 	    (agente.rolActivo in ("administrador", "gestor"))
 	return all
-	  
+}
+
+Permiso obtenerNoProcede{
+	vars
+		Verificacion verificacion
+	when
+		((verificacion.estado = "obtenerNoProcede") and
+		(agente.rolActivo in ("administrador", "gestor")))
+	return all
+		
 }

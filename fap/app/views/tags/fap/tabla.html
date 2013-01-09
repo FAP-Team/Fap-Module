@@ -88,9 +88,11 @@
 		String namePermisoPagina = m1.invoke(object, null);
 		if (namePermisoPagina != null)
 			primeraAccionMock = config.InjectorConfig.getInjector().getInstance(security.Secure.class).getPrimeraAccion(namePermisoPagina, tags.TagMapStack.top("idParams"), null);
-	} catch (Exception e) {
+	} catch (java.lang.Exception e) {
 		//e.printStackTrace();
-		play.Logger.error("tabla.html "+e.getMessage());
+		play.Logger.error("tabla.html e-> "+e.getMessage());
+	} catch (java.lang.Throwable t) {
+		play.Logger.error("tabla.html t-> "+t.getMessage());
 	}
 
 %}

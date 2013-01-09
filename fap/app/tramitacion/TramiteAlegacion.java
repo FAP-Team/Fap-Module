@@ -119,6 +119,12 @@ public class TramiteAlegacion extends TramiteBase {
 	 */
 	@Override
 	public void crearExpedienteAed() {
+		
+		if (this.solicitud.registro.fasesRegistro.expedienteAed){
+			this.solicitud.alegaciones.actual.registro.fasesRegistro.expedienteAed = true;
+			this.solicitud.alegaciones.actual.registro.fasesRegistro.save();
+		}
+		
 		if (!this.solicitud.alegaciones.actual.registro.fasesRegistro.expedienteAed){
 			try {
 				gestorDocumentalService.crearExpediente(this.solicitud);
@@ -144,6 +150,11 @@ public class TramiteAlegacion extends TramiteBase {
 	 */
 	@Override
 	public void crearExpedientePlatino() throws RegistroServiceException {
+		
+		if ((this.solicitud.expedientePlatino != null) && (this.solicitud.expedientePlatino.uri != null) && ((!this.solicitud.expedientePlatino.uri.isEmpty()))){
+			this.solicitud.alegaciones.actual.registro.fasesRegistro.expedientePlatino = true;
+			this.solicitud.alegaciones.actual.registro.fasesRegistro.save();
+		}
 		
 		if (!this.solicitud.alegaciones.actual.registro.fasesRegistro.expedientePlatino){
 			try {

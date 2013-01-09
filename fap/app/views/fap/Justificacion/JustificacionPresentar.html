@@ -1,4 +1,5 @@
 
+
 #{fap.pagina 
      accion:accion, 
      botonBorrar:'Borrar', 
@@ -8,27 +9,27 @@
      formulario:'Solicitud', 
      hayForm:false, 
      mensajeFinal:false, 
-     pagina:'AportacionPresentar', 
+     pagina:'JustificacionPresentar', 
      permiso:'solicitudes', 
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
-     titulo:'Presentar la Aportación', 
-     urlBorrar:play.mvc.Router.reverse('AportacionPresentarController.borrar' , ['idSolicitud':solicitud?.id]), 
-     urlCrear:play.mvc.Router.reverse('AportacionPresentarController.crear' ), 
-     urlEditar:play.mvc.Router.reverse('AportacionPresentarController.editar' , ['idSolicitud':solicitud?.id])
+     titulo:'Presentar la Justificación', 
+     urlBorrar:play.mvc.Router.reverse('JustificacionPresentarController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('JustificacionPresentarController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('JustificacionPresentarController.editar' , ['idSolicitud':solicitud?.id])
 }
 	
-			#{fap.grupo titulo:'Presentar Aportación de Documentos'}
+			#{fap.grupo titulo:'Presentar Justificación de Documentos'}
 				
 			<div class="wiki ">
-<p>Puede obtener un borrador de la solicitud de aportación de documentación, no válido para su presentación y comprobar que la información introducida es correcta.</p>
+<p>Puede obtener un borrador de la solicitud de justificación de documentación, no válido para su presentación y comprobar que la información introducida es correcta.</p>
 
 			</div>
 		
-			#{fap.enlace estilo:'btn', target:'_blank', titulo:'Obtener borrador', url:solicitud.aportaciones.actual.registro.borrador.urlDescarga /}
+			#{fap.enlace estilo:'btn', target:'_blank', titulo:'Obtener borrador', url:solicitud.justificaciones.actual.registro.borrador.urlDescarga /}
 		
-				#{fap.permiso permiso:"aportacionModificar", accion:accion}
+				#{fap.permiso permiso:"justificacionModificar", accion:accion}
 					
-				#{form play.mvc.Router.reverse('AportacionPresentarController.modificarBorrador' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"modificarBorrador"}
+				#{form play.mvc.Router.reverse('JustificacionPresentarController.modificarBorrador' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"modificarBorrador"}
 					
 			<div class="wiki ">
 <p>Puede realizar cambios antes de su presentación definitiva.</p>
@@ -42,15 +43,15 @@
 				#{/fap.permiso}		
 			
 #{fap.tabla 
-     campo:'Solicitud.aportaciones.actual.documentos', 
+     campo:'Solicitud.justificaciones.actual.documentos', 
      id:'documentos', 
      idEntidad:'idDocumento', 
      popupLeer:'PopUpDocProcesos', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Documentos aportados que se van a registrar', 
+     titulo:'Documentos justificados que se van a registrar', 
      urlLeer:play.mvc.Router.reverse("popups.PopUpDocProcesosController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idDocumento':documento?.id? documento?.id:'_idDocumento_']), 
-     urlTabla:@AportacionPresentarController.tabladocumentos(idSolicitud)
+     urlTabla:@JustificacionPresentarController.tabladocumentos(idSolicitud)
 }
 	
 	#{fap.columna ancho:80, cabecera:'Fecha', campo:'fechaSubida' /}
@@ -67,10 +68,10 @@
 		
 #{/fap.tabla}
 
-			#{fap.grupo borde:false, permiso:'aportacionMensajeIntermedio'}
+			#{fap.grupo borde:false, permiso:'justificacionMensajeIntermedio'}
 				
 			<div class="wiki box-warn box">
-<p>Se produjo un error en la presentación de la aportación. Pulse otra vez el botón &#8216;Firmar y presentar&#8217; para intentar finalizar el proceso.</p>
+<p>Se produjo un error en la presentación de la justificación. Pulse otra vez el botón &#8216;Firmar y presentar&#8217; para intentar finalizar el proceso.</p>
 
 			</div>
 		
@@ -78,15 +79,15 @@
 			
 			#{fap.grupo borde:false, mostrarSi:solicitud.activoFH==true}
 			
-				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'habilitarFHAportacion', titulo:'Firma Requerida a Funcionario Habilitado'}
+				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'habilitarFHJustificacion', titulo:'Firma Requerida a Funcionario Habilitado'}
 					
-					#{form play.mvc.Router.reverse('AportacionPresentarController.formHabilitarFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formHabilitarFH"}
+					#{form play.mvc.Router.reverse('JustificacionPresentarController.formHabilitarFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formHabilitarFH"}
 						
 						#{fap.boton id:'btnHabilitarFH', titulo:'Habilitar a los Funcionarios para firmar en mi nombre' /}
 			
 					#{/form}
 				
-					#{fap.grupo borde:false, mostrarSi:solicitud.aportaciones.actual.habilitaFuncionario==true}
+					#{fap.grupo borde:false, mostrarSi:solicitud.justificaciones.actual.habilitaFuncionario==true}
 					
 						<div class="wiki ">
 							<p>Ya ha sido habilitada la opción de que un funcionario habilitado pueda firmar y registrar.</p>
@@ -98,9 +99,9 @@
 				
 			#{/fap.grupo}
 
-			#{fap.grupo borde:false, mostrarSi:solicitud.aportaciones.actual.habilitaFuncionario==true}
+			#{fap.grupo borde:false, mostrarSi:solicitud.justificaciones.actual.habilitaFuncionario==true}
 
-				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarAportacionFH', titulo:'Paso 2. Presentar los Documentos por Funcionario Habilitado'}
+				#{fap.grupo mostrarSi:properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado"), permiso:'firmarRegistrarJustificacionFH', titulo:'Paso 2. Presentar los Documentos por Funcionario Habilitado'}
 				
 					<div class="wiki ">
 						<p><b>NOTA: Debe finalizar el Paso 2 pulsando en el botón &#8216;Firmar y presentar&#8217; para que los Nuevos Documentos se consideren presentados. Cuando el proceso finalice los documentos nuevos desaparecerán del Paso 1 y se incorporarán a la lista de Documentos Presentados.</b></p>
@@ -110,9 +111,9 @@
 						<p>La solicitud será firmada y registrada. Puede obtener un recibo de la presentación de la solicitud una vez &#8216;Firmar y Presentar&#8217; se haya realizado con éxito</p>
 					</div>
 				
-					#{form play.mvc.Router.reverse('AportacionPresentarController.formFirmaFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formFirmaFH"}
+					#{form play.mvc.Router.reverse('JustificacionPresentarController.formFirmaFH' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"formFirmaFH"}
 
-						#{fap.firma firma:'firma', id:'firmarRegistrarFH', titulo:'Firmar y presentar por Funcionario Habilitado', uri:"${solicitud.aportaciones.actual.registro.oficial.uri}" /}
+						#{fap.firma firma:'firma', id:'firmarRegistrarFH', titulo:'Firmar y presentar por Funcionario Habilitado', uri:"${solicitud.justificaciones.actual.registro.oficial.uri}" /}
 		
 					#{/form}
 			
@@ -132,9 +133,9 @@
 
 			</div>
 		
-				#{form play.mvc.Router.reverse('AportacionPresentarController.presentar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"presentar"}
+				#{form play.mvc.Router.reverse('JustificacionPresentarController.presentar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"presentar"}
 
-			#{fap.firma firma:'firma', id:'firmarRepresentante', titulo:'Firmar y presentar', uri:"${solicitud.aportaciones.actual.registro.oficial.uri}" /}
+			#{fap.firma firma:'firma', id:'firmarRepresentante', titulo:'Firmar y presentar', uri:"${solicitud.justificaciones.actual.registro.oficial.uri}" /}
 		
 				#{/form}
 			
@@ -148,5 +149,3 @@
 			#{/fap.grupo}
 		
 #{/fap.pagina}
-
-		

@@ -23,13 +23,12 @@ Formulario Administracion permiso=administrador{
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 			Enlace "Configurar mensajes" pagina=ConfigurarMensajes
 			Enlace "Gráficas" pagina=ServiciosWebApp
+			Enlace "Migración de Aportaciones" pagina=ActualizarAportaciones
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
     }
-
-    
 
     Pagina ServiciosWebApp noForm titulo="Servicios web de la aplicación" campo=Aplicacion  permiso=administrador {
 		Grupo permiso=noEditable titulo="Datos de la aplicación" {
@@ -68,6 +67,17 @@ Formulario Administracion permiso=administrador{
 		}
 
 	}
+
+
+    Pagina ActualizarAportaciones permiso=administrador perteneceA="Administracion"{
+    	Grupo titulo="Convertir Aportaciones al nuevo modelo"{
+	    	Wiki {"Será necesario ejecutar esta acción UNA única vez, si la aplicación utilizaba una versión de FAP anterior a la versión 2.1.1RC12, justo en el momento de la primera ejecución de la aplicación con la nueva versión"}
+	    	Form botonActualizarAportaciones {
+	    		Boton actualizar titulo="Migrar Aportaciones v2.x a v2.1.1RC12 y superiores" type=danger
+	    	}
+	    }
+    }
+    
 
     Pagina TramitesVerificables titulo="Tramites Verificables" campo=VerificacionTramites perteneceA="Administracion"{
     	Tabla tramitesVerificablesTbl titulo="Tramites Supceptibles de ser Verificables" campo=VerificacionTramites.tramites popupEditar=PopUpTramiteVerificable popupLeer=PopUpTramiteVerificable recargarPagina{

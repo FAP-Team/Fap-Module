@@ -1,0 +1,7 @@
+package controllers.popups;
+
+import controllers.gen.popups.PopUpDocJustificacionPresentadosControllerGen;
+
+public class PopUpDocJustificacionPresentadosController extends PopUpDocJustificacionPresentadosControllerGen {
+
+}

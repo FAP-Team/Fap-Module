@@ -1,7 +1,5 @@
 package controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,27 +8,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
-
 import messages.Messages;
-import models.Aportacion;
+import models.Justificacion;
 import models.Documento;
 import models.SolicitudGenerica;
+
+import org.joda.time.DateTime;
+
 import play.mvc.Util;
-import properties.FapProperties;
-import reports.Report;
 import services.GestorDocumentalService;
-import services.GestorDocumentalServiceException;
 import tramitacion.TramiteBase;
 import utils.StringUtils;
-import controllers.fap.AportacionFapController;
-import controllers.fap.PresentacionFapController;
-import controllers.gen.AportacionControllerGen;
-import es.gobcan.eadmon.aed.ws.AedExcepcion;
-			
-public class AportacionController extends AportacionControllerGen {
+import controllers.fap.JustificacionFapController;
+import controllers.gen.JustificacionControllerGen;
 
-	
+public class JustificacionController extends JustificacionControllerGen {
 	@Inject
 	static GestorDocumentalService gestorDocumentalService;
 
@@ -48,15 +40,15 @@ public class AportacionController extends AportacionControllerGen {
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
 		}
 		if(solicitud != null){
-    		Aportacion aportacion = solicitud.aportaciones.actual;
-    		if(StringUtils.in(aportacion.estado, "borrador", "firmada", "registrada", "clasificada")){
+    		Justificacion justificacion = solicitud.justificaciones.actual;
+    		if(StringUtils.in(justificacion.estado, "borrador", "firmada", "registrada", "clasificada")){
     			Messages.warning("Tiene una aportación pendiente de registro");
     			Messages.keep();
-    			redirect("AportacionPresentarController.index", accion, idSolicitud);
+    			redirect("JustificacionPresentarController.index", accion, idSolicitud);
     		}
 		}
-		log.info("Visitando página: " + "gen/Aportacion/Aportacion.html");
-		renderTemplate("gen/Aportacion/Aportacion.html", accion, idSolicitud, solicitud);
+		log.info("Visitando página: " + "gen/Justificacion/Justificacion.html");
+		renderTemplate("gen/Justificacion/Justificacion.html", accion, idSolicitud, solicitud);
 	}
 	
 	public static void presentar(Long idSolicitud, SolicitudGenerica solicitud, String botonPresentar) {
@@ -68,46 +60,46 @@ public class AportacionController extends AportacionControllerGen {
 		solicitud = dbSolicitud;
 		if (!Messages.hasErrors()) {
 			
-			Aportacion aportacion = solicitud.aportaciones.actual;
+			Justificacion justificacion = solicitud.justificaciones.actual;
 
-			if(aportacion.documentos.isEmpty()){
+			if(justificacion.documentos.isEmpty()){
 				Messages.error("Debe aportar al menos un documento");
 				
 				//Reinicia el estado de la aportación
-				aportacion.estado = null;
-				aportacion.save();
+				justificacion.estado = null;
+				justificacion.save();
 				try {
-					TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
+					TramiteBase tramite = JustificacionFapController.invoke("getTramiteObject", idSolicitud);
 					tramite.deshacer();
 				} catch (Throwable e) {
 					play.Logger.info("No se ha podido deshacer la aportación de la solicitud tras no haber ningun documento aportado: "+e.getMessage());
 				}
 			}
 			
-			if(!Messages.hasErrors() && !aportacion.registro.fasesRegistro.borrador){
+			if(!Messages.hasErrors() && !justificacion.registro.fasesRegistro.borrador){
 				try {
-					TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
+					TramiteBase tramite = JustificacionFapController.invoke("getTramiteObject", idSolicitud);
 					tramite.prepararFirmar();
 					if (!Messages.hasErrors()){
 						if (solicitud.registro.fasesRegistro.expedienteAed){
-							solicitud.aportaciones.actual.registro.fasesRegistro.expedienteAed = true;
-							solicitud.aportaciones.actual.registro.fasesRegistro.save();
+							solicitud.justificaciones.actual.registro.fasesRegistro.expedienteAed = true;
+							solicitud.justificaciones.actual.registro.fasesRegistro.save();
 						}
 						if ((solicitud.expedientePlatino != null) && (solicitud.expedientePlatino.uri != null) && ((!solicitud.expedientePlatino.uri.isEmpty()))){
-							solicitud.aportaciones.actual.registro.fasesRegistro.expedientePlatino = true;
-							solicitud.aportaciones.actual.registro.fasesRegistro.save();
+							solicitud.justificaciones.actual.registro.fasesRegistro.expedientePlatino = true;
+							solicitud.justificaciones.actual.registro.fasesRegistro.save();
 						}
-						aportacion.estado = "borrador";
-						aportacion.save();
+						justificacion.estado = "borrador";
+						justificacion.save();
 					}
 				} catch (Throwable e) {
-					log.error("Hubo un problema al intentar invocar a los métodos de la clase AportacionFAPController en prepararPresentar: "+e.getMessage());
+					log.error("Hubo un problema al intentar invocar a los métodos de la clase JustificacionFAPController en prepararPresentar: "+e.getMessage());
 					Messages.error("No se pudo preparar para Presentar");
 				}
 			}
 		}
 		if(!Messages.hasErrors()){
-			Messages.ok("La solicitud de aportación se preparó correctamente");		
+			Messages.ok("La solicitud de justificación se preparó correctamente");		
 		}
 		
 		presentarRender(idSolicitud);
@@ -124,48 +116,48 @@ public class AportacionController extends AportacionControllerGen {
 		if (!permisoPresentarSinRegistrar("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
-		SolicitudGenerica dbSolicitud = AportacionController.getSolicitudGenerica(idSolicitud);
+		SolicitudGenerica dbSolicitud = JustificacionController.getSolicitudGenerica(idSolicitud);
 
-		AportacionController.presentarSinRegistrarBindReferences(solicitud);
+		JustificacionController.presentarSinRegistrarBindReferences(solicitud);
 
 		if (!Messages.hasErrors()) {
-			Aportacion aportacion = dbSolicitud.aportaciones.actual;
+			Justificacion justificacion = dbSolicitud.justificaciones.actual;
 
-			if(aportacion.documentos.isEmpty()){
+			if(justificacion.documentos.isEmpty()){
 				Messages.error("Debe aportar al menos un documento");
 				
 				//Reinicia el estado de la aportación
-				aportacion.estado = null;
-				aportacion.save();
+				justificacion.estado = null;
+				justificacion.save();
 				try {
-					TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
+					TramiteBase tramite = JustificacionFapController.invoke("getTramiteObject", idSolicitud);
 					tramite.deshacer();
 				} catch (Throwable e) {
-					play.Logger.info("No se ha podido deshacer la aportación de la solicitud tras no haber ningun documento aportado: "+e.getMessage());
+					play.Logger.info("No se ha podido deshacer la justificación de la solicitud tras no haber ningun documento aportado: "+e.getMessage());
 				}
 			}
 			
 			if(!Messages.hasErrors()) {
-				aportacion.estado = "borrador";
-				aportacion.save();
-				AportacionController.presentarSinRegistrarValidateCopy("editar", dbSolicitud, solicitud);
+				justificacion.estado = "borrador";
+				justificacion.save();
+				JustificacionController.presentarSinRegistrarValidateCopy("editar", dbSolicitud, solicitud);
 				
-				validateDateIsAfterNow(aportacion.fechaAportacionSinRegistro);
-				clasificarDocumentosAportacionSinRegistro(dbSolicitud, aportacion);
-				finalizarAportacion(dbSolicitud, aportacion);
+				validateDateIsAfterNow(justificacion.fechaJustificacionSinRegistro);
+				clasificarDocumentosJustificacionSinRegistro(dbSolicitud, justificacion);
+				finalizarJustificacion(dbSolicitud, justificacion);
 			}
 
 		}
 
 		if (!Messages.hasErrors()) {
-			AportacionController.presentarSinRegistrarValidateRules(dbSolicitud, solicitud);
+			JustificacionController.presentarSinRegistrarValidateRules(dbSolicitud, solicitud);
 		}
 		if (!Messages.hasErrors()) {
 			dbSolicitud.save();
-			log.info("Acción Editar de página: " + "gen/Aportacion/Aportacion.html" + " , intentada con éxito");
+			log.info("Acción Editar de página: " + "gen/Justificacion/Justificacion.html" + " , intentada con éxito");
 		} else
-			log.info("Acción Editar de página: " + "gen/Aportacion/Aportacion.html" + " , intentada sin éxito (Problemas de Validación)");
-		AportacionController.presentarSinRegistrarRender(idSolicitud);
+			log.info("Acción Editar de página: " + "gen/Justificacion/Justificacion.html" + " , intentada sin éxito (Problemas de Validación)");
+		JustificacionController.presentarSinRegistrarRender(idSolicitud);
 	}
     
     private static void validateDateIsAfterNow(DateTime fecha) {
@@ -178,19 +170,19 @@ public class AportacionController extends AportacionControllerGen {
         }
     }
     
-    private static void clasificarDocumentosAportacionSinRegistro(SolicitudGenerica solicitud, Aportacion aportacion) {
-        if (!Messages.hasErrors() && aportacion.estado.equals("borrador")) {
+    private static void clasificarDocumentosJustificacionSinRegistro(SolicitudGenerica solicitud, Justificacion justificacion) {
+        if (!Messages.hasErrors() && justificacion.estado.equals("borrador")) {
             // Establecemos la fecha de registro en todos los documentos
             // de la aportación
-            for (Documento doc : aportacion.documentos) {
-                doc.fechaRegistro = aportacion.fechaAportacionSinRegistro;
+            for (Documento doc : justificacion.documentos) {
+                doc.fechaRegistro = justificacion.fechaJustificacionSinRegistro;
                 doc.save();
             }
 
             // Los documentos temporales se pasan a clasificados, pero sin
             // registrar
             List<Documento> documentos = new ArrayList<Documento>();
-            documentos.addAll(aportacion.documentos);
+            documentos.addAll(justificacion.documentos);
             boolean todosClasificados = true;
             try {
                 gestorDocumentalService.clasificarDocumentos(solicitud, documentos);
@@ -199,8 +191,8 @@ public class AportacionController extends AportacionControllerGen {
             }
 
             if (todosClasificados) {
-                aportacion.estado = "clasificada";
-                aportacion.save();
+            	justificacion.estado = "clasificada";
+            	justificacion.save();
                 play.Logger.info("Se clasificaron (sin registrar) todos los documentos");
             } else {
                 Messages.error("Algunos documentos no se pudieron clasificar (sin registrar) correctamente");
@@ -209,24 +201,24 @@ public class AportacionController extends AportacionControllerGen {
     }
     
     /**
-     * Mueve la aportación a la lista de aportaciones clasificadas Añade los
+     * Mueve la aportación a la lista de justificaciones clasificadas Añade los
      * documentos a la lista de documentos
      * 
      * Cambia el estado de la aportación a finalizada
      * 
      * @param solicitud
-     * @param aportacion
+     * @param justificacion
      */
-    private static void finalizarAportacion(SolicitudGenerica solicitud, Aportacion aportacion) {
-        if (aportacion.estado.equals("clasificada")) {
-            solicitud.aportaciones.registradas.add(aportacion);
-            solicitud.documentacion.documentos.addAll(aportacion.documentos);
-            solicitud.aportaciones.actual = new Aportacion();
+    private static void finalizarJustificacion(SolicitudGenerica solicitud, Justificacion justificacion) {
+        if (justificacion.estado.equals("clasificada")) {
+            solicitud.justificaciones.registradas.add(justificacion);
+            solicitud.documentacion.documentos.addAll(justificacion.documentos);
+            solicitud.justificaciones.actual = new Justificacion();
             solicitud.save();
-            aportacion.estado = "finalizada";
-            aportacion.save();
+            justificacion.estado = "finalizada";
+            justificacion.save();
 
-            play.Logger.debug("Los documentos de la aportacion se movieron correctamente");
+            play.Logger.debug("Los documentos de la justificacion se movieron correctamente");
         }
     }
 

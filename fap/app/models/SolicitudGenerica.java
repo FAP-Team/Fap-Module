@@ -50,6 +50,9 @@ public class SolicitudGenerica extends FapModel {
 	public Documentacion documentacionAportada;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documentacion documentacionJustificacion;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -60,6 +63,9 @@ public class SolicitudGenerica extends FapModel {
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Aportaciones aportaciones;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Justificaciones justificaciones;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Verificacion verificacion;
@@ -127,6 +133,11 @@ public class SolicitudGenerica extends FapModel {
 		else
 			documentacionAportada.init();
 
+		if (documentacionJustificacion == null)
+			documentacionJustificacion = new Documentacion();
+		else
+			documentacionJustificacion.init();
+
 		if (registro == null)
 			registro = new Registro();
 		else
@@ -146,6 +157,11 @@ public class SolicitudGenerica extends FapModel {
 			aportaciones = new Aportaciones();
 		else
 			aportaciones.init();
+
+		if (justificaciones == null)
+			justificaciones = new Justificaciones();
+		else
+			justificaciones.init();
 
 		if (verificacion == null)
 			verificacion = new Verificacion();

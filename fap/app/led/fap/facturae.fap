@@ -1,0 +1,52 @@
+/* -------------------------------------------
+ * Factura electrónica
+ * -------------------------------------------
+ */
+ 
+ Entidad FacturasFAP {
+	Documento documento
+	String identificadorLote
+	Moneda totalPagar
+	EmisorReceptor emisor
+	EmisorReceptor receptor
+	OneToMany FacturaDatos datosFactura
+}
+
+Entidad EmisorReceptor embeddable {
+	String nombreCompleto
+	String identificacionFiscal
+}
+
+Entidad FacturaDatos {
+	String numeroFactura
+	String numeroSerie
+	String fechaExpedicion
+	TotalesFactura totalesFactura
+	OneToMany ItemsFactura informacionDetallada
+}
+
+Entidad ItemsFactura {
+	String descripcionItem
+	Double cantidad
+	String unidadMedida
+	Moneda totalImporteDescuentos transient
+	Moneda totalImporteBruto
+	Moneda importeCargo
+	OneToMany Descuentos descuentos
+	Moneda precioUnidadSinImpuestos
+}
+
+Entidad TotalesFactura {
+	Moneda totalImporteBruto
+	OneToMany Descuentos descuentos
+	Moneda totalImporteBrutoAntesDeImpuestos
+	Moneda totalImpuestosRepercutidos
+	Moneda totalImpuestosRetenidos
+	Moneda totalFactura
+}
+
+Entidad Descuentos {
+	String descripcionDescuento
+	Moneda porcentajeDescuento
+	Moneda importeDescuento
+}

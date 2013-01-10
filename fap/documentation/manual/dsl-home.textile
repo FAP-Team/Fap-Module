@@ -11,6 +11,7 @@ Hemos visto previamente elementos que se pueden usar en una aplicación FAP como
 # "Combo":dsl-combo
 # "Direccion":dsl-direccion
 # "Editar archivo":dsl-editarArchivo
+# "Editar factura":dsl-editarFactura
 # "Enlace":dsl-enlace
 # "Entidad automática":dsl-entidadAutomatica
 # "Fecha":dsl-fecha
@@ -28,8 +29,10 @@ Hemos visto previamente elementos que se pueden usar en una aplicación FAP como
 # "Popup":dsl-popup
 # "Solicitante":dsl-solicitante
 # "Subir archivo":dsl-subirArchivo
+# "Subir factura":dsl-subirFactura
 # "Tabla":dsl-tabla
 # "Texto":dsl-texto
+# "Visor factura":dsl-visorFactura
 # "Wiki":dsl-wiki
 
 

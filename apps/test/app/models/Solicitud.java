@@ -83,6 +83,10 @@ public class Solicitud extends SolicitudGenerica {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public FirmaEnServidor firmaEnServidor;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "solicitud_facturas")
+	public List<FacturasFAP> facturas;
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
 
@@ -175,6 +179,9 @@ public class Solicitud extends SolicitudGenerica {
 			firmaEnServidor = new FirmaEnServidor();
 		else
 			firmaEnServidor.init();
+
+		if (facturas == null)
+			facturas = new ArrayList<FacturasFAP>();
 
 		if (savePages == null)
 			savePages = new SavePages();

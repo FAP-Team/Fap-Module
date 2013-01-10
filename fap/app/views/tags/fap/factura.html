@@ -1,0 +1,19 @@
+%{def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+%{ 
+	def id = _id ?: field.id
+	def requerido = _requerido != null? _requerido : false;
+	def campo = _campo
+	def tipo = _tipo != null? _tipo : "tipo";
+	def campoTipo = "${campo}.tipo";
+	def campoDescripcion = campo + ".descripcion";
+	def campoUri = campo + ".uri";
+	def campoDocumento = campo + ".documento";
+	def upload = _upload != null? _upload : true
+	def download = _download != null? _download : false
+}%
+
+	#{fap.documento obj:obj, accept:'', campo:campoDocumento, id:id+'_documento', requerido:true, upload: upload, download:download, esFactura:true /}
+	
+#{/fap.field}

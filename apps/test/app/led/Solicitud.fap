@@ -68,7 +68,10 @@ Formulario Solicitud permiso=solicitudes{
 			Grupo "Anotación Inject"{
 				Enlace "Inject" pagina=PaginaInject
 			}
-    		
+			
+			Grupo "Ejemplo: Factura electrónica" {
+				Enlace "Factura electrónica" pagina=FacturaElectronica
+			}
     	}
     	    	
     	Grupo "Módulo FAP" {
@@ -83,6 +86,35 @@ Formulario Solicitud permiso=solicitudes{
 		Enlace "Aportación" pagina=Aportacion
 		Enlace "Salir" accion=logout
     }
+    
+    Pagina FacturaElectronica campo=Solicitud {
+    	Tabla documentosFacturas campo=Solicitud.facturas paginaCrear=SubirFacturas paginaEditar=EditarFacturas paginaLeer=VerFactura {
+			Columna campo=FacturasFAP.documento.id titulo="Id Facturas"
+			Columna campo=FacturasFAP.documento.uri titulo="Uri"
+			Columna campo=FacturasFAP.documento.tipo titulo="Tipo"
+		}
+    }
+    
+	Pagina SubirFacturas campo=Solicitud.facturas titulo="Subir Factura" {
+		Grupo grpSubirFactura titulo="Factura Electrónica" {
+			Accion crear redirigir=FacturaElectronica
+			SubirFactura fileFactura1 campo=FacturasFAP requerido
+		}
+	}
+	
+	Pagina EditarFacturas campo=Solicitud.facturas titulo="Editar Factura" {
+		Grupo grpEditarFactura titulo="Factura Electrónica"{
+			Accion editar redirigir=FacturaElectronica
+			EditarFactura fileFactura2 campo=FacturasFAP requerido
+		}	
+	}
+
+	Pagina VerFactura noForm campo=Solicitud.facturas titulo="Ver Factura" {
+		 VisorFactura visor campo=FacturasFAP
+		 Form frmVolver {
+		 	Boton btnVolver titulo="Volver" anterior
+		 }
+	}
     
     Popup PruebaBigPopUp campo=Solicitud titulo="BigPopUp" maximizar {
     	Texto campo=Solicitud.bigPopUp.prueba1 titulo="Prueba1" 

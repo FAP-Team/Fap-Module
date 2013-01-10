@@ -15,17 +15,22 @@
 	def download = _download != null? _download : false
 	def tramite = _tramite
 	def aportadoPor = _aportadoPor
+	def esFactura = _esFactura != null? _esFactura : false
 
 	def tiposDocumentos
-	if (tramite == null){
-		if (aportadoPor == null)
-			tiposDocumentos = models.TipoDocumento.findAll();
-		else
-			tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(aportadoPor);
-	}else if(aportadoPor == null){
-		tiposDocumentos = models.Tramite.findTipoDocumentosFrom(tramite);
-	}else{
-		tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(tramite, aportadoPor);
+	if (esFactura) {
+		tiposDocumentos = models.TipoDocumento.findTiposFacturas();
+	} else {	
+		if (tramite == null) {
+			if (aportadoPor == null)
+				tiposDocumentos = models.TipoDocumento.findAll();
+			else
+				tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(aportadoPor);
+			}else if(aportadoPor == null) {
+			tiposDocumentos = models.Tramite.findTipoDocumentosFrom(tramite);
+		} else {
+			tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(tramite, aportadoPor);
+		}
 	}
 
 	def listarDocumentosSubidos = _listarDocumentosSubidos != null? _listarDocumentosSubidos : false

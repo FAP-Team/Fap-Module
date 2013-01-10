@@ -1,0 +1,110 @@
+%{def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{
+	def id = com.google.common.base.Preconditions.checkNotNull(_id, "id");
+	def factura = _campo;
+	def textoIdLote = factura + ".identificadorLote";
+	def textoTotalPagar = factura + ".totalPagar";
+	def textoNombreCompletoEmisor = factura + ".emisor.nombreCompleto";
+	def textoIdentificacionEmisor = factura + ".emisor.identificacionFiscal";
+	def textoNombreCompletoReceptor = factura + ".receptor.nombreCompleto";
+	def textoIdentificacionReceptor = factura + ".receptor.identificacionFiscal";
+	def facturaDatos = factura + ".datosFactura";
+	// Obtenemos la lista de FacturasDatos.
+	Object listaFacturaDatos = tags.ReflectionUtils.getValueRecursively(obj, facturaDatos);
+	def count = 0;
+%}
+
+	<div id="${id}_GWarning">
+		<div id="${id}_Warning" class="alert alert-warning">
+			<p>Aviso: Por simplicidad no se muestran todos los datos contenidos en la factura original.</p>
+		</div>
+	</div>
+
+	
+	#{fap.texto campo:textoIdLote, titulo:'Identificador Lote', obj:obj/}
+	
+	#{fap.grupo titulo:'Emisor'}
+		#{fap.texto campo:textoNombreCompletoEmisor, titulo:'Nombre', obj:obj /}
+		#{fap.texto campo:textoIdentificacionEmisor, titulo:'NIF/CIF', obj:obj /}
+	#{/fap.grupo}
+	
+	#{fap.grupo titulo:'Receptor'}
+		#{fap.texto campo:textoNombreCompletoReceptor, titulo:'Nombre', obj:obj /}
+		#{fap.texto campo:textoIdentificacionReceptor, titulo:'NIF/CIF', obj:obj /}
+	#{/fap.grupo}
+	
+	#{fap.grupo titulo:'Facturas'}
+		#{list items:listaFacturaDatos, as:'lista'}
+			
+			%{
+				def idFacturaDatos = listaFacturaDatos.id[count];
+				count++;
+				def nombreFactura = "factura" + idFacturaDatos;
+				def items = "lista.informacionDetallada";
+				def descuentosItems = lista.informacionDetallada.descuentos;
+				def descuentosTotales = lista.totalesFactura.descuentos;
+			%}
+			#{fap.grupo titulo:'Factura '+ count}
+				#{fap.texto campo:'lista.numeroFactura', titulo:'Numero de factura', obj:lista /}
+				#{fap.texto campo:'lista.numeroSerie', titulo:'Numero de serie', obj:lista /}
+				#{fap.texto campo:'lista.fechaExpedicion', fecha:true, titulo:'Fecha expedicion', obj:lista /}
+		
+				#{fap.tabla
+			           campo:items, 
+			           id:idFacturaDatos, 
+			           titulo:'Items', 
+			           tipoContainer:'pagina',
+			           urlTabla:@VerFacturaController.getItemsFactura(idFacturaDatos)
+			    }
+		
+					#{fap.columna ancho:180, cabecera:'Descripcion item', campo:'descripcionItem' /}   
+					#{fap.columna ancho:180, cabecera:'Cantidad', campo:'cantidad' /}
+					#{fap.columna ancho:180, cabecera:'Unidad Medida', campo:'unidadMedida' /}
+					#{fap.columna ancho:180, cabecera:'Precio sin Impuestos (€)', campo:'precioUnidadSinImpuestos' /}
+					#{fap.columna ancho:180, cabecera:'Total cargo (€)', campo:'importeCargo' /}
+					#{fap.columna ancho:180, cabecera:'Total importe descuentos (€)', campo:'totalImporteDescuentos' /}
+					#{fap.columna ancho:180, cabecera:'Total importe bruto (€)', campo:'totalImporteBruto' /}
+				
+				#{/fap.tabla}
+				
+				#{if (descuentosTotales.size() > 0)}
+					#{fap.grupo titulo:'Descuentos generales'}
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Descripción descuento</th>
+									<th>Porcentaje descuento</th>
+									<th>Importe descuento</th>
+								</tr>
+							</thead>
+							<tbody>
+								#{list items:descuentosTotales, as:'descuento'}
+									<tr>
+										<td>${descuento.descripcionDescuento}</td>
+										<td>${descuento.porcentajeDescuento}</td>
+										<td>${descuento.importeDescuento}</td>
+									</tr>
+								#{/list}
+							</tbody>
+						</table>
+					#{/fap.grupo}
+				#{/if}
+				
+				#{fap.texto campo:'lista.totalesFactura.totalImporteBruto', moneda:true, titulo:'Importe bruto', obj:lista /}
+				#{fap.texto campo:'lista.totalesFactura.totalImporteBrutoAntesDeImpuestos', moneda:true, titulo:'Importe bruto antes de impuestos', obj:lista /}
+				#{fap.texto campo:'lista.totalesFactura.totalImpuestosRepercutidos', moneda:true, titulo:'Impuestos repercutidos', obj:lista /}
+				#{fap.texto campo:'lista.totalesFactura.totalImpuestosRetenidos', moneda:true, titulo:'Impuestos retenido', obj:lista /}
+				#{fap.texto campo:'lista.totalesFactura.totalFactura', moneda:true, titulo:'Total factura', obj:lista /}
+			
+			#{/fap.grupo}
+		#{/list}
+		
+		#{fap.grupo titulo:'Total facturas'}
+			#{fap.texto campo:textoTotalPagar, moneda:true, titulo:'Total', obj:obj /}
+		#{/fap.grupo}
+	#{/fap.grupo}
+	
+#{/fap.field}

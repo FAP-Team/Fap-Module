@@ -223,6 +223,15 @@ public class GElement {
 				
 			else if(element instanceof CCC)
 				cache.put(element, new GCCC(element, container));
+			
+			else if(element instanceof SubirFactura)
+				cache.put(element, new GSubirFactura(element, container));
+			
+			else if(element instanceof EditarFactura)
+				cache.put(element, new GEditarFactura(element, container));
+			
+			else if(element instanceof VisorFactura)
+				cache.put(element, new GVisorFactura(element, container));
 		}
 		
 		return cache.get(element);

@@ -47,7 +47,7 @@ public class GPagina extends GGroupElement{
 		
 		TagParameters params = new TagParameters();
 		
-		if (getInstancesOf(GSubirArchivo.class).size() > 0)
+		if ((getInstancesOf(GSubirArchivo.class).size() > 0) || (getInstancesOf(GSubirFactura.class).size() > 0))
 			params.putStr "encType", "multipart/form-data";
 		else
 			params.putStr "encType", "application/x-www-form-urlencoded";

@@ -38,7 +38,7 @@ public class GForm extends GGroupElement{
 		}
 		
 		String encTypeStr = "";
-		if (getInstancesOf(GSubirArchivo.class).size() > 0)
+		if ((getInstancesOf(GSubirArchivo.class).size() > 0) || (getInstancesOf(GSubirFactura.class).size() > 0))
 			encTypeStr = ", enctype:\"multipart/form-data\"";
 		
 		String view;

@@ -15,3 +15,7 @@ Podrás encontrar la explicación simple de como crear y desplegar tu aplicació
 h2. "Configuraciones Apache para el despliegue":curso-configuracionProxyReverse
 
 Anotaciones especiales sobre como desplegar tu aplicación fap utilizando un servidor Apache, resolución de problemas en rutas, balanceador de carga,...
+
+h2. "Facturas Electrónicas":fap-facturas-electronicas
+
+Explicación de cómo visualizar una factura electrónica con formato Facturae 3.2.

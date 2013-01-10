@@ -18,55 +18,6 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
-/*Entidad INSSR001{
- String cabeceraPrimera
- String cabeceraSegunda
- RegistroDatos registroDetalle
- }
-
- Entidad INSSA008{
- String cabeceraPrimera
- String cabeceraSegunda
- RegistroDatosA008 registroDetalle
- }
-
- Entidad RegistroDetalle{
- String tipoRegistro
- String regimen
- String ccc
- }
-
- Entidad RegistroAEAT{
- String nDocumento
- String nombre
- String ident
- String cert
- String negat
- String datosPropios
- String referencia
- }
-
- Entidad ATC{
- String nombre
- RegistroDatos registroDetalle
- }
-
- Entidad RegistroInssATC{
- String tipoRegistro
- String nDocumento
- String estado
- }
-
- Entidad RegistroINSSA008{
- String tipoRegistro
- String regimen
- String cccPpal
- String numMedioTrabajadores
- String nombre
- DateTime fechaSolicitud
- String estado
- }*/
-
 @Entity
 public class CesionPDF extends FapModel {
 	// Código de los atributos

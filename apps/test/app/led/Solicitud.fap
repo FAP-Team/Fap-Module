@@ -29,6 +29,8 @@ Formulario Solicitud permiso=solicitudes{
 				Enlace "S. PersonaJuridica" pagina=SolicitantePJ
 				Enlace "Persona Fisica" pagina=PersonaF
 				Enlace "Autorizaciones" pagina=AutorizacionFAP
+				Enlace "Autorización de Cesion de Datos" pagina=CesionDatos
+				Enlace "Cesiones de Datos" pagina=ListadoCesiones
 			}
 						
 			Grupo "Ejemplo: Direccion y Fecha"{
@@ -157,7 +159,7 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		}
 	}
 	
-	Pagina Combos inicial campo=Solicitud perteneceA = "Verificacion"{
+	Pagina Combos inicial campo=Solicitud {
 
 		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"

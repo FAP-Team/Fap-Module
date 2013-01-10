@@ -462,6 +462,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
+
 	//TODO: No se ha probado. Que el nombre del Servicio Web sea único.
 	/*
 	 * Se se llama a cada método que desea comparar dos páginas, para checkear condiciones.
@@ -484,6 +485,157 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 //		if (servicioWeb.getName().equals(other.getName()))
 //			error("El servicio web " + servicioWeb.getName() + " ya existe en el formulario " + formulario.getName(), ledPackage.getServicioWeb_Name());
 //	}
+
+	/*
+	 * En caso de que haya un Form, dar error cuando:
+	 * 		- El elemento padre es una Pagina y no tiene el atributo noForm.
+	 * 		- Si el elemento padre no es una Pagina, buscar hacia arriba.
+	 * 			Si es una página comprobar que tiene el atributo noForm.
+	 * 		- El elemento padre es un grupo con una condición (mostrarSiCheck,
+	 * 			mostrarSiCombo).
+	 */
+	@Check
+	public void checkFormEnPaginaNoForm(Form form) {
+		EObject eo = (EObject)form.eContainer();
+		if (eo instanceof Pagina) {
+			if (!((Pagina) eo).isNoForm()) {
+				//error("La página que contiene el Form debe tener el atributo 'noForm'.", ledPackage.getForm_Name());
+				warning("La página que contiene el Form debe tener el atributo 'noForm'.", ledPackage.getForm_Name());
+			}
+		} else {
+			EObject pagina = ModelUtils.getContenedorPadre(eo, ledPackage.getPagina());
+			if (pagina != eo) {
+				if (!((Pagina) pagina).isNoForm()) {
+					//error("La página que contiene el Form debe tener el atributo 'noForm'.", ledPackage.getForm_Name());
+					warning("La página que contiene el Form debe tener el atributo 'noForm'.", ledPackage.getForm_Name());
+				}
+			}
+		}
+		
+		if (eo instanceof Grupo) {
+			if ((((Grupo) eo).getSiCheck() != null) || (((Grupo) eo).getSiCombo() != null) || (((Grupo) eo).getSiRadioBooleano() != null)) {
+				error("El grupo tiene que ir dentro del Form para que la condición tenga efecto.", ledPackage.getForm_Name());
+			}
+		}
+	}
+	
+	/*
+	 * En el caso de que un grupo tenga una condición, sea por 
+	 * Check o por Combo o por RadioBooleano, ese elemento tiene que estar definido
+	 * dentro del Form más cercano.
+	 */
+	@Check
+	public void checkFormContieneCondicion(Grupo grupo) {
+		EObject eo = (EObject)grupo.eContainer();
+		boolean encontrado = false;
+		if (grupo.getSiCheck() != null) {
+			if (eo instanceof Form) {
+				List<Elemento> elementos = ((Form) eo).getElementos();
+				if (!elementos.isEmpty()) {
+					for (Elemento elemento : elementos) {
+						if (elemento instanceof es.fap.simpleled.led.Check) {
+							if (((es.fap.simpleled.led.Check) elemento).getName().toString().equals(grupo.getSiCheck().getName())) {
+								encontrado = true;
+							}
+						}
+					}
+					if (!encontrado) {
+						error("El Check al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiCheck());
+						encontrado = false;
+					}
+				}
+			} else {
+				EObject form = ModelUtils.getContenedorPadre(eo, ledPackage.getForm());
+				if (form != eo) {
+					List<Elemento> elementos = ((Form) form).getElementos();
+					if (!elementos.isEmpty()) {
+						for (Elemento elemento : elementos) {
+							if (elemento instanceof es.fap.simpleled.led.Check) {
+								if (((es.fap.simpleled.led.Check) elemento).getName().toString().equals(grupo.getSiCheck().getName())) {
+									encontrado = true;
+								}
+							}
+						}
+						if (!encontrado) {
+							error("El Check al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiCheck());
+							encontrado = false;
+						}
+					}
+				}
+			}
+		} else if (grupo.getSiCombo() != null) {
+			if (eo instanceof Form) {
+				List<Elemento> elementos = ((Form) eo).getElementos();
+				if (!elementos.isEmpty()) {
+					for (Elemento elemento : elementos) {
+						if (elemento instanceof Combo) {
+							if (((Combo) elemento).getName().toString().equals(grupo.getSiCombo().getName())) {
+								encontrado = true;
+							}
+						}
+					}
+					if (!encontrado) {
+						error("El Combo al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiCombo());
+						encontrado = false;
+					}
+				}
+			} else {
+				EObject form = ModelUtils.getContenedorPadre(eo, ledPackage.getForm());
+				if (form != eo) {
+					List<Elemento> elementos = ((Form) form).getElementos();
+					if (!elementos.isEmpty()) {
+						for (Elemento elemento : elementos) {
+							if (elemento instanceof Combo) {
+								if (((Combo) elemento).getName().toString().equals(grupo.getSiCombo().getName())) {
+									encontrado = true;
+								}
+							}
+						}
+						if (!encontrado) {
+							error("El Combo al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiCombo());
+							encontrado = false;
+						}
+					}
+				}
+			}
+		} else if (grupo.getSiRadioBooleano() != null) {
+				if (eo instanceof Form) {
+					List<Elemento> elementos = ((Form) eo).getElementos();
+					if (!elementos.isEmpty()) {
+						for (Elemento elemento : elementos) {
+							if (elemento instanceof RadioBooleano) {
+								if (((RadioBooleano) elemento).getName().toString().equals(grupo.getSiRadioBooleano().getName())) {
+									encontrado = true;
+								}
+							}
+						}
+						if (!encontrado) {
+							error("El RadioBoolean al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiRadioBooleano());
+							encontrado = false;
+						}
+					}
+				} else {
+					EObject form = ModelUtils.getContenedorPadre(eo, ledPackage.getForm());
+					if (form != eo) {
+						List<Elemento> elementos = ((Form) form).getElementos();
+						if (!elementos.isEmpty()) {
+							for (Elemento elemento : elementos) {
+								if (elemento instanceof RadioBooleano) {
+									if (((RadioBooleano) elemento).getName().toString().equals(grupo.getSiRadioBooleano().getName())) {
+										encontrado = true;
+									}
+								}
+							}
+							if (!encontrado) {
+								error("El RadioBooleano al que se hace referencia debe estar definido dentro del Form más cercano.", ledPackage.getGrupo_SiRadioBooleano());
+								encontrado = false;
+							}
+						}
+					}
+				}
+		}
+	}
+
 
 }
 

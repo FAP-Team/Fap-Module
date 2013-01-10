@@ -33,6 +33,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Documentacion documentacionProceso
 	Documentacion documentacionAportada
 	Documentacion documentacionJustificacion
+	Documentacion documentacionCesion
 	Registro registro
 	ExpedientePlatino expedientePlatino
 	ExpedienteAed expedienteAed
@@ -47,10 +48,11 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	AceptarRenunciar aceptarRenunciar
 	Alegaciones alegaciones
 	OneToMany Notificacion notificaciones
-	OneToMany AutorizacionesFAP autorizacion
 	DatosAnotaciones datosAnotaciones
+	OneToMany AutorizacionesFAP autorizacion
 	Boolean activoFH default="false"
 	OneToMany CertificadoSolicitado certificados
+	Cesion cesion
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -149,8 +151,6 @@ Entidad Documento {
 	// Los dos campos siguientes se utilizan para referenciar de manera temporal (hasta su clasificación)
 	// dónde se encuentra el documento seleccionado en la subida (ya presente en el aed).
 	Boolean refAed                     // si el campo expedienteReferenciado/solicitudReferenciada es válido
-	String expedienteReferenciado      // identificador del expediente (aed) donde está este documento
-	Long solicitudReferenciada         // identificador de la solicitud (filesystem) donde está el documento
 	Lista estadoNotificacion estadoDocumento
 }
 
@@ -822,7 +822,95 @@ Entidad Metadato {
     String nombre
     String valor
 }
-    
+
+
+
+Entidad CargarTablaDeTablas extends Singleton{
+	Boolean checkNoCargarMunicipiosActualizando
+	Boolean checkNoCargarMunicipiosSoloCreando
+}
+
+Entidad AutorizacionCesion noConstruct{
+	Boolean aeat
+	Boolean inssR001
+	Boolean atc
+	Boolean inssA008
+	OneToMany Trabajador trabajadores
+	Boolean idi
+}
+
+Entidad Trabajador {
+	Lista codigosRegimen regimen
+	String codigoCuenta
+}
+
+Entidad Cesiones {
+	String idUnico
+	Lista listaCesiones tipo
+	DateTime fechaPeticion
+	DateTime fechaValidez
+	Lista listaEstados estado
+	Lista listaOrigen origen
+	Documento documento
+	boolean firmada
+}
+
+
+Entidad PeticionCesiones{
+	Lista listaCesiones tipo
+	Documento fichPeticion
+	Documento fichRespuesta
+	DateTime fechaGen
+	DateTime fechaValidez
+	RespuestaCesion respCesion
+	Lista estadosPeticion estado
+	
+	Lista seleccionExpedientesCesion seleccion
+	DateTime fechaCorte
+}
+
+
+Entidad RespuestaCesion{
+	String uri
+	DateTime fechaGeneracion
+	DateTime fechaActuacionGestor 
+}
+
+Entidad Cesion{
+	AutorizacionCesion autorizacionCesion
+	OneToMany Cesiones cesiones
+}
+
+Entidad CesionPDF{
+	Lista listaCesiones tipo
+	String cabeceraPrimera
+	String cabeceraSegunda
+	RegistroCesion registro
+	
+}
+
+Entidad RegistroCesion{
+	//InssR001 y ATC
+	String tipoRegistro //Tambien A008
+	String nDocumento   //Tambien AEAT
+	String estado		//Tambien A008
+	
+	//AEAT
+	String nombre		//Tambien A008
+	String ident
+	String cert
+	String negat
+	String datosPropios
+	String referencia
+	
+	//InssA008
+	String regimen
+	String cccPpal
+	String numMedioTrabajadores
+	DateTime fechaSolicitud
+}
+
+
 Entidad VerificacionTramites extends Singleton {
 	OneToMany TramitesVerificables tramites
 	String uriTramitePorDefecto
@@ -834,3 +922,4 @@ Entidad TramitesVerificables {
 	Boolean verificable default="true"
 
 }
+

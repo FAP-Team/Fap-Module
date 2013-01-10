@@ -22,5 +22,5 @@ public class InvokeClassController {
         	throw e.getTargetException();
         }
 	}
-	
 }
+

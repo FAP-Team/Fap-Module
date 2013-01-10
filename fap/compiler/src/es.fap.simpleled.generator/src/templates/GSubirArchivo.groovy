@@ -1,13 +1,11 @@
 package templates;
 
-import utils.StringUtils;
 import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 import es.fap.simpleled.led.*;
-import generator.utils.CampoUtils
-import generator.utils.Entidad;
-import generator.utils.StringUtils;
-import generator.utils.TagParameters;
+import generator.utils.*
 
 public class GSubirArchivo extends GSaveCampoElement{
 
@@ -54,8 +52,9 @@ public class GSubirArchivo extends GSaveCampoElement{
 		return mimes;
 	}
 	
-	public String saveCode(){
+	public String validateCopy(Stack<Set<String>> validatedFields) {
 		String checkFile = "";
+		String validationSaveCampo = validate(validatedFields) + copy();
 		if (subirArchivo.mimes.size > 0){
 			String check = "";
 			for (String type: typesAccepted()){
@@ -89,67 +88,54 @@ public class GSubirArchivo extends GSaveCampoElement{
 			""";
 		}
 		else{
-			checkFile = """
-				String extension = GestorDocumentalUtils.getExtension(${subirArchivo.name});
+			checkFile = """String extension = GestorDocumentalUtils.getExtension(${subirArchivo.name});
 				String mimeType = play.libs.MimeTypes.getMimeType(${subirArchivo.name}.getAbsolutePath());
 				if (!utils.GestorDocumentalUtils.acceptExtension(extension))
 					validation.addError("${subirArchivo.name}", "La extensión \\"" + extension + "\\" del documento a incorporar, no es válida. Compruebe los formatos de documentos aceptados.");
 				if (!utils.GestorDocumentalUtils.acceptMime(mimeType))
-					validation.addError("${subirArchivo.name}", "El tipo mime \\"" + mimeType + "\\" del documento a incorporar, no es válido. Compruebe los formatos de documentos aceptados.");
-			""";
+					validation.addError("${subirArchivo.name}", "El tipo mime \\"" + mimeType + "\\" del documento a incorporar, no es válido. Compruebe los formatos de documentos aceptados.");""";
 		}
-		if((subirArchivo.listarDocumentosSubidos != null) && subirArchivo.listarDocumentosSubidos){
-			return """
-	            if((${campo.firstLower()}.uri != null) && (!${campo.firstLower()}.uri.isEmpty())){
-					Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-					Long idSolicitud = ids.get("idSolicitud");
-					if (idSolicitud == null) {
-						Messages.fatal("Falta parámetro idSolicitud");
-						return;
-					}
-					SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
-					services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
-					try {
-						gestorDocumentalService.duplicarDocumentoSubido(${campo.firstLower()}.uri, ${campo.firstLower()}.descripcion, ${campo.dbStr()}, solicitud);
-					} catch (Exception e) {
-						log.error("Ha habido un error al subir el documento "+e.getMessage());
-						Messages.error("Ha habido un error al subir el documento"); 
-						Messages.keep();
-					}
-				} else {
-					if(${subirArchivo.name} == null) validation.addError("${subirArchivo.name}", "Archivo requerido");
-					else if (${subirArchivo.name}.length() > properties.FapProperties.getLong("fap.file.maxsize")) validation.addError("${subirArchivo.name}", "Tamaño del archivo superior al máximo permitido ("+org.apache.commons.io.FileUtils.byteCountToDisplaySize(properties.FapProperties.getLong("fap.file.maxsize"))+")");
-					else{
-						${checkFile}
-					}
-					if(!validation.hasErrors()){
-						try {
+
+		String out ="""${validationSaveCampo}
+					""";
+		if((subirArchivo.listarDocumentosSubidos != null) && subirArchivo.listarDocumentosSubidos) {
+			out += """if((${campo.firstLower()}.uri != null) && (!${campo.firstLower()}.uri.isEmpty())) {
 							services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
-							gestorDocumentalService.saveDocumentoTemporal(${campo.dbStr()}, ${subirArchivo.name});
-						}
-						catch(services.GestorDocumentalServiceException e){
-		                	play.Logger.error(e, "Error al subir el documento al Gestor Documental");
-							validation.addError("", "Error al subir el documento al Gestor Documental");
-						} catch (Exception e) {
-							play.Logger.error(e, "Ex: Error al subir el documento al Gestor Documental");
-							validation.addError("", "Error al subir el documento al Gestor Documental");
-						}
-					}
-				}
-			""";
-		} else {
-			return """
+							try {
+								gestorDocumentalService.duplicarDocumentoSubido(${campo.firstLower()}.uri, ${campo.firstLower()}.descripcion, ${campo.dbStr()});
+							} catch (Exception e) {
+								log.error("Ha habido un error al subir el documento "+e.getMessage());
+								Messages.error("Ha habido un error al subir el documento");
+								Messages.keep();
+							}
+						} else {""";
+		}
+		out += """
 				if(${subirArchivo.name} == null) validation.addError("${subirArchivo.name}", "Archivo requerido");
 				else if (${subirArchivo.name}.length() > properties.FapProperties.getLong("fap.file.maxsize")) validation.addError("${subirArchivo.name}", "Tamaño del archivo superior al máximo permitido ("+org.apache.commons.io.FileUtils.byteCountToDisplaySize(properties.FapProperties.getLong("fap.file.maxsize"))+")");
 				else{
 					${checkFile}
-				}
-				if(!validation.hasErrors()){
+				}""";
+		
+		if((subirArchivo.listarDocumentosSubidos != null) && subirArchivo.listarDocumentosSubidos)
+			out += """}""";
+				
+		return out;
+	}
+	
+	public String saveCode(){
+		String out = """if(!validation.hasErrors()) {""";
+		if((subirArchivo.listarDocumentosSubidos != null) && subirArchivo.listarDocumentosSubidos)
+			out += """if (${subirArchivo.name} != null && ${campo.firstLower()}.uri != null && ${campo.firstLower()}.uri.isEmpty()) {""";
+		else
+			out += """if (${subirArchivo.name} != null) {""";
+		
+		out += """
 					try {
 						services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
 						gestorDocumentalService.saveDocumentoTemporal(${campo.dbStr()}, ${subirArchivo.name});
 					}
-					catch(services.GestorDocumentalServiceException e){
+					catch(services.GestorDocumentalServiceException e) {
 						play.Logger.error(e, "Error al subir el documento al Gestor Documental");
 						validation.addError("", "Error al subir el documento al Gestor Documental");
 					} catch (Exception e) {
@@ -157,8 +143,9 @@ public class GSubirArchivo extends GSaveCampoElement{
 						validation.addError("", "Error al subir el documento al Gestor Documental");
 					}
 				}
-			""";
-		}
+			}""";
+			
+		return out;
 	}
 	
 	public List<String> extraParams(){

@@ -2,6 +2,7 @@ package utils;
 
 import java.io.StringWriter;
 import java.util.Random;
+import java.util.regex.*;
 
 import jj.play.org.eclipse.mylyn.wikitext.core.parser.MarkupParser;
 import jj.play.org.eclipse.mylyn.wikitext.core.parser.builder.HtmlDocumentBuilder;
@@ -85,4 +86,25 @@ public class StringUtils {
 		wikidatas.append(writer.toString());
 		return wikidatas;
 	}
+
+	//Permite comprobar si el string que representa el Codigo Cuenta Cotización contiene 11 dígitos
+	public static boolean validarCuentaCotizacion (String ccc){
+		Pattern p = Pattern.compile("^[0-9]{11}$");
+	    Matcher m = p.matcher(ccc);
+		if (m.find()){
+			return true;
+		}
+		return false;
+	}
+	//Permite comprobar si el string que representa el tiepo de régimen de la SS contiene 4 dígitos
+	public static boolean validarRegimen (String regimen){
+		Pattern p = Pattern.compile("^[0-9]{4}$");
+	    Matcher m = p.matcher(regimen);
+		if (m.find()){
+			return true;
+		}
+		return false;
+	}
+
+	
 }

@@ -13,6 +13,7 @@
 }*
 
 %{
+	
 	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlTabla, "urlTabla");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");
@@ -35,7 +36,8 @@
 
 	def seleccionable = _seleccionable;
 	def urlSeleccionable = seleccionable ? play.mvc.Router.reverse(_urlSeleccionable) : null
-		
+	def idP = _idP;
+			
 	def recargarPagina = _recargarPagina;
 	
 	String popupCrear = _popupCrear;
@@ -238,7 +240,7 @@
 			}
 
 			#{if seleccionable}
-				var sm = Ext.create('Ext.selection.CheckboxModel');
+				sm${id} = Ext.create('Ext.selection.CheckboxModel');
 			#{/if}	
 		
 			function loadMessages${id}(data){
@@ -281,8 +283,9 @@
 			}
 
 			var urlTabla = "${actionDef.url.raw()}";
-			#{if combo} 
-			    urlTabla = "${actionDef.url}?tipoDocumento=" + $('#documento_tipo').val();
+			#{if combo}
+				var $combo = $('#${combo}');
+			    urlTabla = "${actionDef.url}?tipoDocumento=" + $combo.val();
 			#{/if}
 			
 
@@ -302,11 +305,11 @@
 		    peticionJSON${id}();
 			
 			#{if combo} 
-			     var $combo = $('#${combo}');
+			    var $combo = $('#${combo}');
             
 	            function change(){
 	                if($combo.val()){
-	                   urlTabla = "${actionDef.url}?tipoDocumento=" + $('#documento_tipo').val();
+	                   urlTabla = "${actionDef.url}?tipoDocumento=" + $combo.val();
 	                   $.ajax(urlTabla).done(function (data){
 	                       store${id}.loadData(ajax2Data(data.obj.rows));
 	                   });
@@ -551,13 +554,12 @@
                 }
             });
             #{/if}
-
-			#{if seleccionable}			
+			
+			#{if seleccionable}	
 		    var boton_select = new Ext.Button({
 		    	text: '${seleccionable}',
 		    	handler : function(){
-		    		var selected = sm.getSelection();
-
+		    		var selected = sm${id}.getSelection();
 		    		#{if submitPage}
 		    			var urlSubmitPage = "${urlSeleccionable}";
 		    			var j = 1;
@@ -574,11 +576,19 @@
 		    			$('#${id}').closest('form').attr("action",urlSubmitPage).submit();
 		    		#{/if}
 		    		#{else}
-		    			var params = new Array();
+		    		var params = new Array();
+		    		#{if idP}
+		    		params[0] = "id="+${idP};
+		    		for (var i in selected) {
+		    			params[i+1] = "idsSeleccionados="+selected[i].data.id;
+		    		}
+		    		#{/if}
+		    		#{else}
 		    			for (var i in selected) {
-		    				params[i] = "idsSeleccionados="+selected[i].data.id;
-		    			}
-		    			createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
+		    			params[i] = "idsSeleccionados="+selected[i].data.id;
+		    		}
+		    		#{/else}
+		    		createAndSubmitDynamicForm("${urlSeleccionable}", params,$('#${id}'));
 		    		#{/else}
 			   	}
 		    });
@@ -598,7 +608,7 @@
 			 	hidden:true,
 			 	#{/if}
 				#{if seleccionable}
-				selModel: sm,
+				selModel: sm${id},
 	            #{/if}
 				columns : #{verbatim}${columnas}#{/verbatim},
 				renderTo: '${id}',

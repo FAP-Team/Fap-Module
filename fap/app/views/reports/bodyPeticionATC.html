@@ -1,0 +1,60 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+</style>
+
+</head>
+<body>
+
+<h3 style="text-align: center;"></h3>
+%{
+	def titulo = 'CESIÓN DE DATOS DE LA ATC';
+}%
+
+<h1>${titulo}</h1>
+
+<table>
+	<tr>
+		<tr>
+			<tr><th>DNI/CIF:</th><td>${atc.registro.nDocumento}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+		</tr>	
+		<tr>
+			<tr><th>Número de Expediente:</th><td>${solicitud.expedienteAed.idAed}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
+		</tr>	
+		<tr>
+		%{
+			String idestado = "";
+			if (atc.registro.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._00.name())){
+				idestado = enumerado.fap.gen.ListaEstadosEnum._01.name();	
+			}
+			else if (atc.registro.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._01.name())){
+				idestado = enumerado.fap.gen.ListaEstadosEnum._02.name();
+			}
+			else if (atc.registro.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._02.name())){
+				idestado = enumerado.fap.gen.ListaEstadosEnum._03.name();
+			}
+			else if (atc.registro.estado.equals(enumerado.fap.gen.CodigoRespuestaEnum._03.name())){
+				idestado = enumerado.fap.gen.ListaEstadosEnum._04.name();
+			}
+		%}
+			<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum.valueOf(idestado).value()}</td></tr>
+		</tr>	
+	</tr>
+</table>
+</body>
+</html>

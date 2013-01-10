@@ -9,6 +9,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Gestor Documental" pagina=Aed
 			Enlace "Tramites Verificables" pagina=TramitesVerificables
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
+			Enlace "Cesion de Datos" permiso=adminOrGestor pagina=GenerarFichCesiones
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tipos Certificados" pagina=ConfigurarCertificados
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
@@ -502,6 +503,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			Columna titulo="Clase" campo=Logs.class_ expandir
 		}
 	}
+
 	
 	Pagina ConfigurarCertificados titulo="Configurar Certificados" noForm perteneceA="Administracion"{
 		Wiki{"Creación de nuevos tipos de certificados o edición de los existentes."}
@@ -522,4 +524,101 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Fecha inicio campo=TipoCertificado.fechaInicio titulo="Fecha inicio de la emisión"
 		Fecha final campo=TipoCertificado.fechaFin titulo="Fecha fin de la emisión"
 	}
+
+
+	
+	//Muestra todas las peticiones de cesion de datos realizadas sobre las solicitudes de la aplicacion
+	Pagina GenerarFichCesiones titulo= "Peticiones de Cesiones de Datos"{
+		Tabla tblCesiones campo=PeticionCesiones titulo="Tabla de Peticiones de Cesiones" paginaCrear=NuevaCesion paginaEditar=EditarCesion paginaLeer=LeerCesion color: porDefecto{
+			Columna titulo="Tipo" campo=PeticionCesiones.tipo
+			Columna titulo="Fecha Generación" campo=PeticionCesiones.fechaGen
+			Columna titulo="Fecha de Validez" campo=PeticionCesiones.fechaValidez
+			Columna titulo="Estado" campo=PeticionCesiones.estado
+		}
+	}
+	
+	//Nueva petición de cesión de datos
+	Pagina NuevaCesion campo=PeticionCesiones titulo="Nueva Petición de Cesión de Datos" noForm{
+		Form formTipoCesion{
+			Grupo permiso=permisoTipoElegido borde=true titulo="Filtrar expedientes"{
+				Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión" requerido
+				Boton btnGuardar titulo="Guardar"
+			}
+		}
+
+		//Elegir de entre todas las solicitudes a cuales quiero generar la cesion de datos
+		Grupo permiso=permisoTipo titulo="Expedientes autorizados"{
+			Grupo borde=true titulo="Seleccionar Expedientes"{
+				Combo cmbSeleccion campo=PeticionCesiones.seleccion titulo="Tipo de selección"
+				Grupo borde=false mostrarSiCombo cmbSeleccion="certificadoFecha"{
+				Fecha fechaLimite campo=PeticionCesiones.fechaCorte titulo="Fecha límite"
+			} 
+			Enlace seleccion titulo="Seleccionar" estilo="btn" codigojs="" //Sobreescrito
+			}
+			Tabla tblSolicitudes campo=SolicitudGenerica seleccionable="Generar Peticion" {
+				Columna titulo="ID" campo=SolicitudGenerica.id
+				Columna titulo="Expediente" campo=SolicitudGenerica.expedienteAed.idAed
+				Columna titulo="Estado Interno" campo=SolicitudGenerica.estadoValue
+				Columna titulo="Estado" campo=SolicitudGenerica.estado
+				Columna titulo="Estado Usuario" campo=SolicitudGenerica.estadoUsuario
+				Columna titulo="ID Solicitante" campo=SolicitudGenerica.solicitante.id
+				Columna titulo="Nombre Solicitante" campo=SolicitudGenerica.solicitante.nombreCompleto
+			}
+		}
+	}
+	
+	Pagina LeerCesion campo=PeticionCesiones titulo="Petición de Cesión de Datos"{
+		Grupo titulo = "Petición de Cesión de Datos" permiso=noEditable{
+			Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+			Grupo grupoFicheros titulo="Ficheros disponibles"{
+				Grupo borde=false permiso=verPeticionCesion{
+					Enlace descargarFicheroP campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar fichero de petición" destino="_blank"
+				}
+				Grupo borde=false permiso=verRespuestaCesion{
+					Enlace descargarFicheroR campo=PeticionCesiones.fichRespuesta.urlDescarga titulo="Descargar fichero de respuesta" destino="_blank"
+				}
+			}
+		}
+		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
+	}
+	
+	Pagina EditarCesion campo=PeticionCesiones permiso=ultimaEditable noForm titulo="Petición de Cesión de Datos"{
+		Accion editar redirigir=anterior
+			Grupo titulo="Datos de cesion: Descargar fichero de petición" { 
+				Enlace descargarFichero campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar" destino="_blank" estilo="btn"
+			}
+		Grupo titulo="Datos de Cesión: subir fichero de respuesta"{
+			Form formCesionFichSubida{
+					Grupo borde=false permiso=tipoAsignado{
+						Grupo borde=false permiso=noEditable{
+							Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+						}
+						Boton btnGuardar titulo="Guardar" 
+					}
+				}
+		
+			Form formCesionFichRespuesta{
+				Grupo borde=false permiso=responderPeticion{
+					SubirArchivo subirArchivo campo=PeticionCesiones.fichRespuesta mimes="text/plain"
+					Boton tratarFich titulo="Subir fichero de respuesta"
+				}
+			}
+			
+			Form formCesionAplicarCambios{
+				Grupo borde=false permiso=aplicarCambios {
+					Enlace verFichero campo=PeticionCesiones.fichRespuesta.urlDescarga titulo="Ver el fichero subido" destino="_blank" estilo="btn"
+					Boton cambiarFichero titulo="Subir otro documento de respuesta"
+					Boton aplicarCambios titulo="Aplicar cambios"
+				}
+			}
+			Grupo permiso=cesionTerminada titulo="Cesion Finalizada"{
+				Grupo borde=false permiso=noEditable{
+					Combo cmbTipoFin campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+				}
+			}
+		}
+		//Boton btnVolver titulo="Volver"
+		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
+	}
+
 }

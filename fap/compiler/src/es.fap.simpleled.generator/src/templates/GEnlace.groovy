@@ -38,6 +38,9 @@ public class GEnlace extends GElement{
 			p.put("url", CampoUtils.create(enlace.campo).firstLower())
 		if(enlace.estilo)
 			p.putStr("estilo", enlace.estilo);
+		if(enlace.codigojs != null){
+			p.putStr("codigojs", enlace.codigojs)
+		}
 		
 		return """
 			#{fap.enlace ${p.lista()} /}

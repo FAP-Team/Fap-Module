@@ -2,25 +2,37 @@ package utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 
+import messages.Messages;
+
 import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.parser.PdfTextExtractor;
 
 import play.vfs.VirtualFile;
 
 public class FileUtils {
     
 	private static Logger log = Logger.getLogger(FileUtils.class);
+	static final String cambioPagina = "----------";
 	
 	public static List<VirtualFile> findByExtensionRecursively(VirtualFile folder, String[] extensions){
 		Collection<File> files = org.apache.commons.io.FileUtils.listFiles(folder.getRealFile(), extensions , true);
@@ -169,6 +181,23 @@ public class FileUtils {
 	
 	}
     
-
-	
+	public static String ConvertPDFToString(String uri) throws Exception{
+		PdfReader reader = new PdfReader(uri);
+		String buffer = "";
+		for (int i = 0; i < reader.getNumberOfPages(); i++){ //Pdf varias páginas - Ojo al parsear
+			PdfDictionary dictionary = reader.getPageN(1);
+			PRIndirectReference reference = null;
+			reference = (PRIndirectReference)dictionary.get(PdfName.CONTENTS);
+			PRStream stream = (PRStream) PdfReader.getPdfObject(reference);
+			byte[] bytes = PdfReader.getStreamBytes(stream);
+			PRTokeniser tokenizer = new PRTokeniser(bytes);
+			while (tokenizer.nextToken()) {
+				if (tokenizer.getTokenType() == PRTokeniser.TK_STRING) {
+					buffer+=tokenizer.getStringValue()+"\n";
+				}
+			}
+		    buffer += cambioPagina;
+		}
+		return buffer;
+	}
 }

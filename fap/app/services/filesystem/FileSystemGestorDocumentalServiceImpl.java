@@ -261,7 +261,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     @Override
     public String saveDocumentoTemporal(Documento documento, InputStream contenido, String filename)
             throws GestorDocumentalServiceException {
-        
+    	
         checkNotNull(documento.tipo, "tipo del documento no puede ser null");
         checkNotNull(documento.descripcionVisible, "descripcion del documento no puede ser null");
         checkNotNull(contenido, "contenido no puede ser null");
@@ -288,9 +288,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         documento.clasificado = false;
         documento.hash = Codec.UUID();
         documento.fechaSubida = new DateTime();
-		documento.refAed = false;					
-		documento.solicitudReferenciada = null;	
-		documento.expedienteReferenciado = null;
+		documento.refAed = false;
         documento.save();
 
         return uri;
@@ -473,12 +471,15 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		tipoCodReqdbDNI.descripcion = "Falta fotocopia del DNI";
 		tipoCodReqdbDNI.descripcionCorta = "CRDNI";
   	
+
 		String uriDocumento = null;
-		
-    	// ------------------------- TR�?MITE 1: Solicitud ------------------------- 
+
+    	// ------- TRAMITE 1: Solicitud ------- 
+
         Tramite tramiteSolicitud = new Tramite();
         tramiteSolicitud.nombre = "Solicitud";
         tramiteSolicitud.uri = "fs://solicitud";
+
         // fap.aed.tiposdocumentos.base      ***** ¿Base no necesaria?
         uriDocumento = tramiteSolicitud.setDocumentoEnTramite("Base solicitud", "fs://basesolicitud/v01", "UNICO"); 	
         tramiteSolicitud.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto, tipoCodReqdbEspanol, tipoCodReqdbFirma);    
@@ -501,7 +502,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         uriDocumento = tramiteSolicitud.setDocumentoEnTramite("Baremación de la evaluación del documento", "fs://baremacionevaluaciondocumento/v01", "UNICO"); 	
         tramiteSolicitud.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto, tipoCodReqdbFirma);    
 
-    	// ------------------------- TR�?MITE 2: Alegación ------------------------- 
+    	// ------------------------- TRAMITE 2: Alegación ------------------------- 
         Tramite tramiteAlegacion = new Tramite();
         tramiteAlegacion.nombre = "Alegación";
         tramiteAlegacion.uri = "fs://alegacion";
@@ -515,7 +516,62 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         uriDocumento = tramiteAlegacion.setDocumentoEnTramite("Prefijo justificante pdf alegación", "fs://prefijojustificantepdfalegacion/v01", "UNICO"); 	
         tramiteAlegacion.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto);    
  
-        // ------------------------- TR�?MITE 3: Desestimiento ------------------------- 
+        // ------------------------- TRAMITE 3: Desestimiento ------------------------- 
+
+
+        TipoDocumento tipoBase = newTipoDocumento("Base", "fs://base/v01");
+        tipoBase.cardinalidad = "UNICO";
+        tipoBase.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoBase);
+        newTiposCodigoRequerimiento(tipoCodReqdbCorrupto, tipoBase.uri, tramiteSolicitud.uri);
+        newTiposCodigoRequerimiento(tipoCodReqdbEspanol, tipoBase.uri, tramiteSolicitud.uri);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoBase.uri, tramiteSolicitud.uri);
+        
+        TipoDocumento tipoSolicitud = newTipoDocumento("Solicitud", "fs://solicitud/v01");
+        tipoSolicitud.cardinalidad = "MULTIPLE";
+        tipoSolicitud.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoSolicitud);
+        newTiposCodigoRequerimiento(tipoCodReqdbCorrupto, tipoSolicitud.uri, tramiteSolicitud.uri);
+        newTiposCodigoRequerimiento(tipoCodReqdbDNI, tipoSolicitud.uri, tramiteSolicitud.uri);
+        
+        TipoDocumento tipoJustificanteRegistro = newTipoDocumento("JustificanteRegistro", "fs://justificanteRegistro/v01");
+        tipoJustificanteRegistro.cardinalidad = "UNICO";
+        tipoJustificanteRegistro.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoJustificanteRegistro);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoJustificanteRegistro.uri, tramiteSolicitud.uri);
+        
+        TipoDocumento tipoficheroPeticion = newTipoDocumento("Fichero Petición", "fs://ficheroPeticion/v01");
+        tipoficheroPeticion.cardinalidad = "UNICO";
+        tipoficheroPeticion.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoficheroPeticion);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoficheroPeticion.uri, tramiteSolicitud.uri);
+        
+        TipoDocumento tipoficheroRespuesta = newTipoDocumento("Fichero Respuesta", "fs://ficheroRespuesta/v01");
+        tipoficheroRespuesta.cardinalidad = "UNICO";
+        tipoficheroRespuesta.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoficheroRespuesta);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoficheroRespuesta.uri, tramiteSolicitud.uri);
+        
+        // ------- TRAMITE 2: Aportación ------- 
+        Tramite tramiteAportacion = new Tramite();
+        tramiteAportacion.nombre = "aportacion";
+        tramiteAportacion.uri = "fs://aportacion";
+
+        TipoDocumento tipoSolicitudAport = newTipoDocumento("SolicitudAportacion", "fs://solicitudaportacion/v02");
+        tipoSolicitudAport.cardinalidad = "UNICO";
+        tipoSolicitudAport.tramitePertenece = tramiteAportacion.uri;
+        tramiteAportacion.documentos.add(tipoSolicitudAport);
+        newTiposCodigoRequerimiento(tipoCodReqdbIncompleto, tipoSolicitudAport.uri, tramiteAportacion.uri);
+        newTiposCodigoRequerimiento(tipoCodReqdbObligatoriedad, tipoSolicitudAport.uri, tramiteAportacion.uri);
+        
+        TipoDocumento tipoAportRegistro = newTipoDocumento("AportacionRegistro", "fs://aportacionregistro/v01");
+        tipoAportRegistro.cardinalidad = "UNICO";
+        tipoAportRegistro.tramitePertenece = tramiteAportacion.uri;
+        tramiteAportacion.documentos.add(tipoAportRegistro);
+        newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoAportRegistro.uri, tramiteAportacion.uri);
+        
+        // ------- TRAMITE 3: Desestimiento ------- 
+
         Tramite tramiteDesestimiento = new Tramite();
         tramiteDesestimiento.nombre = "Desestimiento";
         tramiteDesestimiento.uri = "fs://desestimiento";
@@ -529,7 +585,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         uriDocumento = tramiteDesestimiento.setDocumentoEnTramite("Prefijo justificante pdf desestimiento", "fs://prefijojustificantepdfdesestimiento/v01", "UNICO"); 	
         tramiteDesestimiento.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto);    
         
-        // ------------------------- TR�?MITE 4: AceptacionRenuncia -------------------------
+        // ------------------------- TRAMITE 4: AceptacionRenuncia -------------------------
         Tramite tramiteAceptacionRenuncia = new Tramite();
         tramiteAceptacionRenuncia.nombre = "AceptacionRenuncia";
         tramiteAceptacionRenuncia.uri = "fs://aceptacionrenuncia";
@@ -553,6 +609,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         ArrayList<Tramite> tramites = new ArrayList<Tramite>();
         tramites.add(tramiteSolicitud);
         tramites.add(tramiteAlegacion);
+        tramites.add(tramiteAportacion);
         tramites.add(tramiteDesestimiento);
         tramites.add(tramiteAceptacionRenuncia);
         return tramites;
@@ -683,7 +740,15 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		return expresionRegular;
 	}
 
+	@Deprecated
+	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
+		duplicarDocumentoSubido(uriDocumento);
+	}
 	
+	@Deprecated
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
+		duplicarDocumentoSubido(uriDocumento, descripcionDocumento, dbDocumento);
+	}
 	
 	/*
 	 * Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente (y clasificado). 
@@ -692,70 +757,26 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	 * documento pasa a formar parte a todos los efectos del expediente.
 	 * 
 	 */
-	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException  {
-		SolicitudGenerica solicitudReferenciada = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud " +
-				 											"where ( solicitud.documentacion.id in (" +
-				 												"select documentacion.id from Documentacion documentacion join documentacion.documentos doc " + 
-				 												"where doc.uri = '" + uriDocumento + "') )").first();
-		if (solicitudReferenciada == null) {
-			throw new GestorDocumentalServiceException("No se encuentra la solicitud que debe tener el documento con uri " + uriDocumento + 
-									" en la duplicación de un documento ya subido.");
-		}
-		
+	public void duplicarDocumentoSubido(String uriDocumento) throws GestorDocumentalServiceException  {
 		Documento documento = Documento.findByUri(uriDocumento);
 		Documento doc = new Documento();
 		doc.duplicar(documento);
 		// El campo refAed se creó para verificar si el campo expedienteReferenciado/solicitudReferenciada es válido
 		// Ahora lo ponemos true para que en saveDocumentoTemporal no compruebe que doc esté en el aed (por haber hecho un duplicar documento)
-		doc.refAed = true;			
-		doc.save();	
-		
-		File contenidoOriginal = getFile(documento);
-		FileInputStream contenido = null;
-		try {
-			contenido = new FileInputStream(contenidoOriginal);
-		} catch (FileNotFoundException e) { System.out.println(e); }	
-
-		saveDocumentoTemporal(doc, contenido, contenidoOriginal.getName());
-		
 		doc.refAed = true;
-		doc.solicitudReferenciada = solicitudReferenciada.id;
-        doc.fechaSubida = new DateTime();
+		doc.fechaSubida = new DateTime();
 		doc.save();
-		
-		solicitud.documentacion.documentos.add(doc);
-		solicitud.save();
 	}
 	
-	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException  {
-		SolicitudGenerica solicitudReferenciada = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud " +
-				 											"where ( solicitud.documentacion.id in (" +
-				 												"select documentacion.id from Documentacion documentacion join documentacion.documentos doc " + 
-				 												"where doc.uri = '" + uriDocumento + "') )").first();
-		if (solicitudReferenciada == null) {
-			throw new GestorDocumentalServiceException("No se encuentra la solicitud que debe tener el documento con uri " + uriDocumento + 
-									" en la duplicación de un documento ya subido.");
-		}
-		
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento) throws GestorDocumentalServiceException  {
 		Documento documento = Documento.findByUri(uriDocumento);
 		dbDocumento.duplicar(documento);
 		dbDocumento.descripcion = descripcionDocumento;
 		// El campo refAed se creó para verificar si el campo expedienteReferenciado/solicitudReferenciada es válido
 		// Ahora lo ponemos true para que en saveDocumentoTemporal no compruebe que doc esté en el aed (por haber hecho un duplicar documento)
-		dbDocumento.refAed = true;			
-		dbDocumento.save();	
-		
-		File contenidoOriginal = getFile(documento);
-		FileInputStream contenido = null;
-		try {
-			contenido = new FileInputStream(contenidoOriginal);
-		} catch (FileNotFoundException e) { System.out.println(e); }	
-
-		saveDocumentoTemporal(dbDocumento, contenido, contenidoOriginal.getName());
-		
 		dbDocumento.refAed = true;
-		dbDocumento.solicitudReferenciada = solicitudReferenciada.id;
 		dbDocumento.fechaSubida = new DateTime();
+		dbDocumento.save();
 	}
 
 	@Override

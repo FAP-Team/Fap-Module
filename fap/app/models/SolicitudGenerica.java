@@ -52,6 +52,8 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documentacion documentacionJustificacion;
 
+	public Documentacion documentacionCesion;
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
@@ -94,18 +96,23 @@ public class SolicitudGenerica extends FapModel {
 	@JoinTable(name = "solicitudgenerica_notificaciones")
 	public List<Notificacion> notificaciones;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DatosAnotaciones datosAnotaciones;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_autorizacion")
 	public List<AutorizacionesFAP> autorizacion;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public DatosAnotaciones datosAnotaciones;
-
 	public Boolean activoFH;
+
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_certificados")
 	public List<CertificadoSolicitado> certificados;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Cesion cesion;
+
 
 	public SolicitudGenerica() {
 		init();
@@ -133,10 +140,16 @@ public class SolicitudGenerica extends FapModel {
 		else
 			documentacionAportada.init();
 
+
 		if (documentacionJustificacion == null)
 			documentacionJustificacion = new Documentacion();
 		else
 			documentacionJustificacion.init();
+			
+		if (documentacionCesion == null)
+			documentacionCesion = new Documentacion();
+		else
+			documentacionCesion.init();
 
 		if (registro == null)
 			registro = new Registro();
@@ -197,19 +210,26 @@ public class SolicitudGenerica extends FapModel {
 		if (notificaciones == null)
 			notificaciones = new ArrayList<Notificacion>();
 
-		if (autorizacion == null)
-			autorizacion = new ArrayList<AutorizacionesFAP>();
-
 		if (datosAnotaciones == null)
 			datosAnotaciones = new DatosAnotaciones();
 		else
 			datosAnotaciones.init();
 
+		if (autorizacion == null)
+			autorizacion = new ArrayList<AutorizacionesFAP>();
+
 		if (activoFH == null)
 			activoFH = false;
 
+
 		if (certificados == null)
 			certificados = new ArrayList<CertificadoSolicitado>();
+
+		if (cesion == null)
+			cesion = new Cesion();
+		else
+			cesion.init();
+
 
 		postInit();
 	}

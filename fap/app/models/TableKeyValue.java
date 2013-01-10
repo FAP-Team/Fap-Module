@@ -174,7 +174,6 @@ public class TableKeyValue extends FapModel {
 	public static String getValue(String table, String key) {
 		if (table == null || key == null)
 			return null;
-
 		Map<String, String> m = findByTableAsMap(table);
 		if (m != null)
 			return m.get(key);

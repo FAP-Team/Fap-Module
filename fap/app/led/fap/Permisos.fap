@@ -1240,6 +1240,7 @@ Permiso autorizadoNoAutoriza{
 	return all
 }
 
+
 Permiso ActivarHabilitarFH{
 	vars
 		SolicitudGenerica solicitud
@@ -1253,6 +1254,111 @@ Permiso ActivarHabilitarFH{
 		all
 }
 
+
+
+Permiso ultimaEditable{
+	//Sobreescrito en SECUREFAP
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado != "asignada")
+	return 
+		editable
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "asignada")
+	return 
+		leer
+}
+
+Permiso soloLeer{
+	return leer
+}
+
+Permiso permisoTipo{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.tipo != null)
+	return
+		all
+}
+
+Permiso permisoTipoElegido{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.tipo = null)
+	return
+		all
+	when agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.tipo != null)
+	return
+	  visible
+}
+
+Permiso responderPeticion{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "creada")
+	return
+		all
+}
+
+Permiso aplicarCambios{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "respondida")
+	return
+		all
+}
+
+Permiso tipoAsignado{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "sinTipo")
+	return
+		all 
+}
+
+Permiso cesionTerminada{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and (peticionCesiones.estado = "asignada")
+	return
+		visible 
+}
+
+Permiso verPeticionCesion{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and ((peticionCesiones.estado = "creada") or (peticionCesiones.estado = "respondida") or peticionCesiones.estado = "asignada")
+	return
+		all
+}
+
+Permiso verRespuestaCesion{
+	vars
+		PeticionCesiones peticionCesiones
+	when
+		agente.rolActivo in ("administrador", "gestor")
+		and ((peticionCesiones.estado = "respondida") or peticionCesiones.estado = "asignada")
+	return
+		all
+}
 Permiso evaluacionFinalizada{
 	vars
 		SolicitudGenerica solicitud
@@ -1261,5 +1367,5 @@ Permiso evaluacionFinalizada{
 	    (evaluacion?.tipo?.estado = "evaluada") and
 	    (agente.rolActivo in ("administrador", "gestor"))
 	return all
-	  
+
 }

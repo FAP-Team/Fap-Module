@@ -86,8 +86,14 @@ public interface GestorDocumentalService {
 	
 	BinaryResponse getDocumentoConInformeDeFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException;
 	
+	public void duplicarDocumentoSubido(String uriDocumento) throws AedExcepcion, GestorDocumentalServiceException;
+	
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento) throws AedExcepcion, GestorDocumentalServiceException;
+    
+	@Deprecated
 	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
 	
-	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
+	@Deprecated
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
     
 }

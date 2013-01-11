@@ -5,6 +5,7 @@
 %{
 	def id = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	def factura = _campo;
+	def nombreControlador = _controllerName;
 	def textoIdLote = factura + ".identificadorLote";
 	def textoTotalPagar = factura + ".totalPagar";
 	def textoNombreCompletoEmisor = factura + ".emisor.nombreCompleto";
@@ -46,6 +47,9 @@
 				def items = "lista.informacionDetallada";
 				def descuentosItems = lista.informacionDetallada.descuentos;
 				def descuentosTotales = lista.totalesFactura.descuentos;
+				Map<String, Long> map = new HashMap<String, Long>();
+				map.put("idFacturaDatos", idFacturaDatos);
+				def url = play.mvc.Router.reverse(nombreControlador+".getItemsFactura", map);
 			%}
 			#{fap.grupo titulo:'Factura '+ count}
 				#{fap.texto campo:'lista.numeroFactura', titulo:'Numero de factura', obj:lista /}
@@ -57,7 +61,7 @@
 			           id:idFacturaDatos, 
 			           titulo:'Items', 
 			           tipoContainer:'pagina',
-			           urlTabla:@VerFacturaController.getItemsFactura(idFacturaDatos)
+			           urlTabla:url
 			    }
 		
 					#{fap.columna ancho:180, cabecera:'Descripcion item', campo:'descripcionItem' /}   

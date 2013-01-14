@@ -3,7 +3,7 @@ package controllers.fap;
 import resolucion.ResolucionBase;
 import models.Resolucion;
 
-public class ResolucionControllerFAP {
+public class ResolucionControllerFAP extends InvokeClassController {
 
 	public static void getTipoResolucion() {
 		

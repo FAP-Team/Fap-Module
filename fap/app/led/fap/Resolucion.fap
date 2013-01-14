@@ -1,0 +1,176 @@
+Lista tipoResolucion {
+	provisional: "Provisional"
+	definitiva: "Definitiva"
+}
+
+Lista modalidadResolucion {
+	simpleTotal: "Simple Total"
+	multipleTotal: "Múltiple Total"
+}
+
+// Estados por los que va pasando la resolución
+Lista estadoResolucion {
+	borrador: "Borrador"	// Ha sido creada, y establecido su tipo y modalidad
+}	
+
+Lista estadoTipoMultiple {
+	parcial: "Selecionar manualmente los expedientes"
+	total: "Todos los expedientes"
+}
+
+Lista estadoLineaResolucion crearEnumerado {
+	concedida: "Concedida"
+	excluida: "Excluida"
+}
+
+// Una línea de resolución afecta a un expediente (o Solicitud)
+Entidad LineaResolucion {
+	SolicitudGenerica solicitud noConstruct
+	Lista estadoLineaResolucion estado
+}
+
+// Entidades de la resolución
+Entidad Resolucion {
+	Lista modalidadResolucion modalidad
+	Lista tipoResolucion tipo
+	Lista estadoTipoMultiple tipoMultiple
+	
+	Lista estadoResolucion estado
+	
+	// Descripción de la Resolución
+	String descripcion length=2500
+	
+	// modalidad=Simple   --> Una sola línea de resolución
+	// modalidad=Múltiple --> Varias líneas de resolución
+	OneToMany LineaResolucion lineasResolucion
+	
+	Boolean conBaremacion default = 'false'
+	//DateTime fechaResolucion						// Fecha de la resolución
+	//Integer  folio_inicio							// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	//Integer  folio_final							// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	//Integer  numero									// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
+	//DateTime fechaFinAceptacion						// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
+	//DateTime fechaPublicacion						// Fecha de Publicación en el tablón de anuncios de la sede
+	//DateTime fechaBOC								// Fecha de Publicación en el BOC
+	DateTime fechaIncioPreparacion		// Fecha en la que se empieza a preparar la resolución y se crean las líneas
+	//DateTime fechaFinPreparacion					// Fecha en la que se finaliza la resolución
+	//Documento docResolucion							// Documento de Resolución
+	//OneToMany Documento docAnexoResolucion //Anexos individuales de resolucion
+	OneToMany Documento docConsultaPortafirmasResolucion //Documentos de Consulta Portafirmas.
+
+		//Long IDPortafirma					//ID devuelto por el Servicio WEb del Portafirmas
+		//String estadoPortafirmas			//??Pendiente de revisar
+	//SolicitudPortafirma solicitudFirmaJefeServicio
+	//SolicitudPortafirma solicitudFirmaDirector
+
+	//Lista estadoResolucionConcesion estado		//Estado de la resolución: 1.0:Creada,2.0:Preparada, 3.0:En_Firma, 4.0:Firmada, 5.0:Registrada, 6.0:Publicada
+		//OneToMany LineaResolucion lineasResolucion
+		// OneToMany ExpedientesAlegados expedientesAlegados
+		// OneToMany ExpedientesNoAceptados expedientesNoAceptados
+	//Agente destinatarioPortafirma transient
+
+	//Para firmar por jefe de servicio
+	//Firmantes firmantesJefeDeServicio
+		////Para poder firmar y crear el el metodo calcular firmantes
+		//Solicitante solicitanteJefeServicio transient
+	//Registro registro transient
+
+
+}
+
+
+Formulario Principal {
+	Pagina Resoluciones titulo="Lista de Resoluciones"{
+		Tabla listaResoluciones titulo="Resoluciones" campo=Resolucion paginaCrear=NuevaResolucion paginaEditar=EditarResolucion
+		{
+			Columna campo=Resolucion.id titulo="ID"
+			Columna campo=Resolucion.tipo titulo="Tipo"
+			Columna campo=Resolucion.modalidad titulo="Modalidad"
+		}
+	}
+	
+	Pagina NuevaResolucion titulo ="Resolución" campo=Resolucion perteneceA="Principal" {
+		Accion crear redirigir=EditarResolucion
+		Grupo gIniciarTipo titulo="Tipo y Modalidad" {
+			Combo campo=Resolucion.tipo titulo="Tipo de Resolución"
+			Combo campo=Resolucion.modalidad titulo="Modalidad de la Resolución"
+			Check campo=Resolucion.conBaremacion titulo="¿Tiene Baremación?"
+		}
+	}
+	
+	Pagina EditarResolucion titulo="Resolución" campo=Resolucion perteneceA="Principal" noForm {
+		Grupo gInfo permiso=noEditable titulo="Información de la Resolución" {
+			Combo campo=Resolucion.tipo titulo="Tipo de Resolución" requerido
+			Combo campo=Resolucion.modalidad titulo="Modalidad de la Resolución" requerido
+			AreaTexto campo=Resolucion.descripcion titulo="Descripción" requerido
+			Check campo=Resolucion.conBaremacion titulo="¿Tiene Baremación?"
+		}
+		
+		Grupo mostrarSiCampo Resolucion.modalidad = "multipleTotal" borde=false {
+			Form formSeleccionarExpedientes {
+				Grupo titulo="Seleccionar Expedientes"{
+					Combo cmbTipo campo=Resolucion.tipoMultiple titulo="Seleccionar" requerido
+					Boton btnGuardar titulo="Guardar"
+				}
+			}
+			
+			Grupo titulo="Expedientes a Resolver" mostrarSiCampo Resolucion.tipoMultiple = "parcial"{
+				Tabla tablaExpedientes campo=SolicitudGenerica seleccionable="Seleccionar" {
+					Columna titulo="ID" campo=SolicitudGenerica.id ancho="40"
+					Columna titulo="Expediente" campo=SolicitudGenerica.expedienteAed.idAed
+					Columna titulo="Estado Interno" campo=SolicitudGenerica.estadoValue ancho="120"
+					Columna titulo="Nombre Solicitante" campo=SolicitudGenerica.solicitante.nombreCompleto expandir
+				}
+			}
+		}
+		
+    	Grupo gCerrarResolucion titulo="Preparar la Resolución" {
+			Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
+			Form prepararResolucion {
+				Boton  btnPrepararResolucion titulo="Cerrar Resolución"
+			}
+		}
+
+		
+		Grupo gPrepararSolicitudFirmaPortafirma titulo="Preparar Solicitud de Firma (PORTAFIRMAS)" {
+			Enlace titulo="Obtener documento de Resolución" estilo="btn" url="www.google.com"
+			Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=Resolucion.docConsultaPortafirmasResolucion paginaCrear=DocumentoConsultaPortafirmaCrear {
+				Columna campo=Documento.id titulo="Id" ancho="40"
+				Columna campo=Documento.tipo titulo="Tipo"
+				Columna campo=Documento.uri titulo="Uri" expandir
+			}
+			
+		}
+		
+		Grupo gDatosResolucion titulo="Datos de la Resolución actual" permiso=noEditable {
+			Tabla lineasResolucion campo=Resolucion.lineasResolucion titulo="Lineas Resolución" {
+				Columna campo=LineaResolucion.id titulo="Id"
+				Columna campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
+				Columna campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
+				Columna campo=LineaResolucion.id
+			}
+		}
+		
+		
+	}
+	
+	Pagina DocumentoConsultaPortafirmaCrear campo=Resolucion.docConsultaPortafirmasResolucion
+	{
+		Accion crear redirigir=EditarResolucion
+		SubirArchivo fileAportacion campo=Documento requerido tramite="ESTANCIAS"
+	}
+}
+
+Permiso sinIniciarResolucion {
+	vars
+		Resolucion resolucion
+	when
+		resolucion = null
+		or resolucion.tipo = null
+	return
+		[editar crear]
+	when
+		resolucion.tipo != null
+	return
+		visible
+}

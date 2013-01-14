@@ -462,29 +462,43 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
-
-	//TODO: No se ha probado. Que el nombre del Servicio Web sea único.
+	@Check
+	public void checkNombreSercivioWebUnico(ServicioWeb servicioWeb){
+		for (ServicioWeb e : ModelUtils.<ServicioWeb>getVisibleNodes(ledPackage.getServicioWeb(), servicioWeb.eResource())) {
+			String uri1 = servicioWeb.eResource().getURI().toString();
+			String uri2 = e.eResource().getURI().toString();
+			if (servicioWeb.getName().equals(e.getName()) && !uri1.equals(uri2))
+				error("El servicio web " + servicioWeb.getName() + " ya existe.", ledPackage.getServicioWeb_Name());
+		}
+	}
+	
 	/*
-	 * Se se llama a cada método que desea comparar dos páginas, para checkear condiciones.
+	 * Se comprueba que el primer campo del Return sea correcto.
 	 */
-//	@Check
-//	public void checkServicioWebStuff(ServicioWeb servicioWeb){
-//		for (ServicioWeb s : ModelUtils.<ServicioWeb>getVisibleNodes(ledPackage.getServicioWeb(), servicioWeb.eResource())) {
-//			String qn1 = qnProvider.getFullyQualifiedName(servicioWeb).toString();
-//			String qn2 = qnProvider.getFullyQualifiedName(s).toString();
-//			String uri1 = servicioWeb.eResource().getURI().toString();
-//			String uri2 = s.eResource().getURI().toString();
-//			if (!qn1.equals(qn2) || !uri1.equals(uri2)){
-//				checkNombreServicioWebUnico(servicioWeb, s);
-//			}
-//		}
-//	}
-//	
-//	public void checkNombreServicioWebUnico(ServicioWeb servicioWeb, ServicioWeb other){
-//		Formulario formulario = (Formulario)other.eContainer();
-//		if (servicioWeb.getName().equals(other.getName()))
-//			error("El servicio web " + servicioWeb.getName() + " ya existe en el formulario " + formulario.getName(), ledPackage.getServicioWeb_Name());
-//	}
+	
+	@Check
+	public void checkCampoRet(ServicioWeb servicioWeb) {
+		String entidad = LedCampoUtils.getUltimaEntidad(servicioWeb.getCampo()).getName();
+		
+		if (servicioWeb.getRet().getCampoRet().getEntidad().getName() != entidad) {
+			error("La entidad \"" + servicioWeb.getRet().getCampoRet().getEntidad().getName() + "\" no es válida.", ledPackage.getServicioWeb_Ret());
+		}
+	}
+	
+	/*
+	 * Se comprueba que los campos del Return sean los correctos.
+	 */
+	@Check
+	public void checkCampoRetMore(ServicioWeb servicioWeb) {
+		String entidad = LedCampoUtils.getUltimaEntidad(servicioWeb.getCampo()).getName();
+	
+		for (int i = 0; i < servicioWeb.getRetMore().size(); i++) {
+			String ret = servicioWeb.getRetMore().get(i).getCampoRet().getEntidad().getName();
+			if (ret != entidad) {
+				error("La entidad \"" + ret + "\" no es válida.", ledPackage.getServicioWeb_RetMore());
+			}
+		}
+	}
 
 	/*
 	 * En caso de que haya un Form, dar error cuando:

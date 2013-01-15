@@ -1,0 +1,81 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+h2 {
+	margin-top: 30px;
+}
+
+.myarrow {
+   line-height: 0%; width: 0px;
+   border-top: 4px solid  transparent;
+   border-bottom: 4px solid  transparent;
+   border-left: 6.9px solid black;
+   margin-top: 30px;
+   margin-left: 3em;
+   text-indent: 1em;
+}
+
+ul {
+   list-style-type:circle
+   margin-left: 4em;
+   text-indent: 4em;
+}
+
+</style>
+
+%{
+	def ficheroAppCss = new File("public/stylesheets/documentoPDF.css");
+%}
+
+#{if ficheroAppCss.exists()}
+	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/documentoPDF.css'}">
+#{/if}
+
+</head>
+<body>
+
+	%{
+		def listaLineasResolucion = resolucion.lineasResolucion;
+	%}
+	
+	<table>
+		<tr>
+			<th>Estado Solicitud</th>
+			<th>Expediente</th>
+			<th>Estado Linea Resolucion</th>
+		</tr>
+		<tr>
+		#{list items:listaLineasResolucion, as:'lineaResolucion'}
+			<td>${lineaResolucion.solicitud.estado}</td>
+			<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
+			<td>${lineaResolucion.estado}</td>
+		#{/list}
+		</tr>
+	</table>
+	
+	<p><strong>Concedidas</strong></p>
+	#{list items:listaLineasResolucion, as:'lineaResolucion'}
+		#{if lineaResolucion.estado.equals("concedida")}
+			<td>${lineaResolucion.estado}</td>
+			<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
+		#{/if}
+	#{/list}
+	
+	<p><strong>Excluida</strong></p>
+	#{list items:listaLineasResolucion, as:'lineaResolucion'}
+		#{if lineaResolucion.estado.equals("excluida")}
+			<td>${lineaResolucion.estado}</td>
+			<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
+		#{/if}
+	#{/list}
+	
+</body>

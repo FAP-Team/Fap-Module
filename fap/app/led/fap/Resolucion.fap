@@ -9,9 +9,18 @@ Lista modalidadResolucion {
 }
 
 // Estados por los que va pasando la resolución
-Lista estadoResolucion {
+Lista estadoResolucion crearEnumerado {
 	borrador: "Borrador"	// Ha sido creada, y establecido su tipo y modalidad
-}	
+	creada: "Creada"
+	preparada: "Preparada"
+	pendienteFirmaJefeServicio: "Pendiente firma Jefe Servicio"
+	firmadaJefeServicio: "Firmada Jefe Servicio"
+	pendienteFirmaDirector: "Pendiente firma Director"
+	firmada: "Firmada"
+	registrada: "Registrada"
+	publicada: "Publicada"
+	finalizada: "Finalizada"
+}
 
 Lista estadoTipoMultiple {
 	parcial: "Selecionar manualmente los expedientes"
@@ -73,7 +82,7 @@ Entidad Resolucion {
 	//Firmantes firmantesJefeDeServicio
 		////Para poder firmar y crear el el metodo calcular firmantes
 		//Solicitante solicitanteJefeServicio transient
-	//Registro registro transient
+	Registro registro
 
 
 }

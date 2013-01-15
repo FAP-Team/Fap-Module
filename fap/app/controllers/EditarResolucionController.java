@@ -1,10 +1,12 @@
 package controllers;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 import play.mvc.Util;
 
+import reports.Report;
 import resolucion.ResolucionBase;
 
 import messages.Messages;
@@ -44,8 +46,16 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 
 		if (!Messages.hasErrors()) {
 			Resolucion resolucion = EditarResolucionController.getResolucion(idResolucion);
-			ResolucionBase resolBase = ResolucionControllerFAP.getResolucionObject(idResolucion);
-			resolBase.setLineasDeResolucion(idResolucion);
+			ResolucionBase resolBase = null;
+			try {
+				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+				resolBase.setLineasDeResolucion(idResolucion);
+			} catch (Throwable e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			resolBase.prepararResolucion(idResolucion);
 		}
 
 		if (!Messages.hasErrors()) {

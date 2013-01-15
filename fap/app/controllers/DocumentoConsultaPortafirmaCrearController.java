@@ -1,7 +1,0 @@
-package controllers;
-
-import controllers.gen.DocumentoConsultaPortafirmaCrearControllerGen;
-
-public class DocumentoConsultaPortafirmaCrearController extends DocumentoConsultaPortafirmaCrearControllerGen {
-
-}

@@ -10,7 +10,7 @@ import reports.Report;
 import resolucion.ResolucionBase;
 
 import messages.Messages;
-import models.Resolucion;
+import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.EditarResolucionControllerGen;
@@ -45,7 +45,8 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 
 		if (!Messages.hasErrors()) {
-			Resolucion resolucion = EditarResolucionController.getResolucion(idResolucion);
+
+			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucion);
 			ResolucionBase resolBase = null;
 			try {
 				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);

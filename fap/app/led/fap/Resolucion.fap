@@ -1,11 +1,17 @@
-Lista tipoResolucion {
+Lista resolucionesDefinidas crearEnumerado {
+	simpleTotal: "Simple Total"
+	multipleTotal: "Múltiple Todos Expedientes"
+	multipleParcialExpedientes: "Multiple Seleccionando Expedientes"
+}
+
+Lista tipoResolucion crearEnumerado {
 	provisional: "Provisional"
 	definitiva: "Definitiva"
 }
 
-Lista modalidadResolucion {
-	simpleTotal: "Simple Total"
-	multipleTotal: "Múltiple Total"
+Lista modalidadResolucion crearEnumerado {
+	resolucionSimple: "Simple"
+	resolucionMultiple: "Multiple"
 }
 
 // Estados por los que va pasando la resolución
@@ -22,7 +28,7 @@ Lista estadoResolucion crearEnumerado {
 	finalizada: "Finalizada"
 }
 
-Lista estadoTipoMultiple {
+Lista estadoTipoMultiple crearEnumerado {
 	parcial: "Selecionar manualmente los expedientes"
 	total: "Todos los expedientes"
 }
@@ -39,12 +45,15 @@ Entidad LineaResolucion {
 }
 
 // Entidades de la resolución
-Entidad Resolucion {
-	Lista modalidadResolucion modalidad
-	Lista tipoResolucion tipo
-	Lista estadoTipoMultiple tipoMultiple
+Entidad ResolucionFAP {
+	/// Tipo de los posibles entre los definidos de la resolución
+	Lista resolucionesDefinidas tipoDefinidoResolucion
 	
-	Lista estadoResolucion estado
+	Lista modalidadResolucion modalidad		// Simple, Multiple
+	Lista tipoResolucion tipo				// Provisional, Definitiva
+	Lista estadoTipoMultiple tipoMultiple	// Parcial, Total
+	
+	Lista estadoResolucion estado			// Borrador, creada, .... finalizada
 	
 	// Descripción de la Resolución
 	String descripcion length=2500
@@ -54,10 +63,13 @@ Entidad Resolucion {
 	OneToMany LineaResolucion lineasResolucion
 	
 	Boolean conBaremacion default = 'false'
-	//DateTime fechaResolucion						// Fecha de la resolución
-	//Integer  folio_inicio							// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
-	//Integer  folio_final							// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
-	//Integer  numero									// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
+	
+	
+	Integer  folio_inicio							// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	Integer  folio_final							// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	Integer  numero									// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
+	DateTime fechaResolucion						// Fecha de la resolución
+	
 	//DateTime fechaFinAceptacion						// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
 	//DateTime fechaPublicacion						// Fecha de Publicación en el tablón de anuncios de la sede
 	//DateTime fechaBOC								// Fecha de Publicación en el BOC
@@ -67,6 +79,8 @@ Entidad Resolucion {
 	//OneToMany Documento docAnexoResolucion //Anexos individuales de resolucion
 	OneToMany Documento docConsultaPortafirmasResolucion //Documentos de Consulta Portafirmas.
 
+	Registro registro
+	
 		//Long IDPortafirma					//ID devuelto por el Servicio WEb del Portafirmas
 		//String estadoPortafirmas			//??Pendiente de revisar
 	//SolicitudPortafirma solicitudFirmaJefeServicio
@@ -82,7 +96,6 @@ Entidad Resolucion {
 	//Firmantes firmantesJefeDeServicio
 		////Para poder firmar y crear el el metodo calcular firmantes
 		//Solicitante solicitanteJefeServicio transient
-	Registro registro
 
 
 }
@@ -90,40 +103,37 @@ Entidad Resolucion {
 
 Formulario Principal {
 	Pagina Resoluciones titulo="Lista de Resoluciones"{
-		Tabla listaResoluciones titulo="Resoluciones" campo=Resolucion paginaCrear=NuevaResolucion paginaEditar=EditarResolucion
+		Tabla listaResoluciones titulo="Resoluciones" campo=ResolucionFAP paginaCrear=NuevaResolucion paginaEditar=EditarResolucion
 		{
-			Columna campo=Resolucion.id titulo="ID"
-			Columna campo=Resolucion.tipo titulo="Tipo"
-			Columna campo=Resolucion.modalidad titulo="Modalidad"
+			Columna campo=ResolucionFAP.id titulo="ID"
+			Columna campo=ResolucionFAP.tipoDefinidoResolucion titulo="Resolución"
+			Columna campo=ResolucionFAP.tipo titulo="Tipo"
+			Columna campo=ResolucionFAP.modalidad titulo="Modalidad"
 		}
 	}
 	
-	Pagina NuevaResolucion titulo ="Resolución" campo=Resolucion perteneceA="Principal" {
+	Pagina NuevaResolucion titulo ="Resolución" campo=ResolucionFAP perteneceA="Principal" {
 		Accion crear redirigir=EditarResolucion
-		Grupo gIniciarTipo titulo="Tipo y Modalidad" {
-			Combo campo=Resolucion.tipo titulo="Tipo de Resolución"
-			Combo campo=Resolucion.modalidad titulo="Modalidad de la Resolución"
-			Check campo=Resolucion.conBaremacion titulo="¿Tiene Baremación?"
+		Grupo gIniciarTipo titulo="Seleccionar Resolución" {
+			Combo campo=ResolucionFAP.tipoDefinidoResolucion titulo="Resolución"
+			Combo campo=ResolucionFAP.tipo titulo="Tipo"
+			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción" requerido
+			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
 	}
 	
-	Pagina EditarResolucion titulo="Resolución" campo=Resolucion perteneceA="Principal" noForm {
-		Grupo gInfo permiso=noEditable titulo="Información de la Resolución" {
-			Combo campo=Resolucion.tipo titulo="Tipo de Resolución" requerido
-			Combo campo=Resolucion.modalidad titulo="Modalidad de la Resolución" requerido
-			AreaTexto campo=Resolucion.descripcion titulo="Descripción" requerido
-			Check campo=Resolucion.conBaremacion titulo="¿Tiene Baremación?"
-		}
+	Pagina EditarResolucion titulo="Resolución" campo=ResolucionFAP perteneceA="Principal" noForm {
 		
-		Grupo mostrarSiCampo Resolucion.modalidad = "multipleTotal" borde=false {
-			Form formSeleccionarExpedientes {
-				Grupo titulo="Seleccionar Expedientes"{
-					Combo cmbTipo campo=Resolucion.tipoMultiple titulo="Seleccionar" requerido
-					Boton btnGuardar titulo="Guardar"
-				}
-			}
+		Grupo mostrarSiCampo ResolucionFAP.modalidad = "multiple" borde=false {
+			Grupo titulo="Expedientes a Resolver" mostrarSiCampo ResolucionFAP.tipoMultiple = "parcial"{
 			
-			Grupo titulo="Expedientes a Resolver" mostrarSiCampo Resolucion.tipoMultiple = "parcial"{
+				Form formSeleccionarExpedientes {
+					Grupo titulo="Seleccionar Expedientes"{
+						Combo cmbTipo campo=ResolucionFAP.tipoMultiple titulo="Seleccionar" requerido
+						Boton btnGuardar titulo="Guardar"
+					}
+				}
+			
 				Tabla tablaExpedientes campo=SolicitudGenerica seleccionable="Seleccionar" {
 					Columna titulo="ID" campo=SolicitudGenerica.id ancho="40"
 					Columna titulo="Expediente" campo=SolicitudGenerica.expedienteAed.idAed
@@ -139,40 +149,65 @@ Formulario Principal {
 				Boton  btnPrepararResolucion titulo="Cerrar Resolución"
 			}
 		}
-
 		
 		Grupo gPrepararSolicitudFirmaPortafirma titulo="Preparar Solicitud de Firma (PORTAFIRMAS)" {
-			Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=Resolucion.registro.borrador.urlDescarga
-			Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=Resolucion.docConsultaPortafirmasResolucion paginaCrear=DocumentoConsultaPortafirmaCrear {
+			Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga
+			Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=ResolucionFAP.docConsultaPortafirmasResolucion paginaCrear=DocConsultaPortafirmaCrear paginaEditar=DocConsultaPortafirmaEditar {
 				Columna campo=Documento.id titulo="Id" ancho="40"
 				Columna campo=Documento.tipo titulo="Tipo"
-				Columna campo=Documento.uri titulo="Uri" expandir
+				Columna campo=Documento.urlDescarga titulo="Ver"
 			}
-			
+		}
+		
+		// Si el Agente es un JefeDeServicio, puede firmar directamente
+		Grupo grSolicitarFirmaPorJefeSevicio borde=false /*permiso=jefeServicio*/ {
+			Grupo grFirmaJefeServicio borde=false {
+     			Form frmFirmarJefeServicio redirigir=EditarResolucion {
+					FirmaSimple firFirmarResolucion titulo="Firmar Resolucion" documento=ResolucionFAP.registro.oficial
+						listaFirmantes=ResolucionFAP.registro.firmantes.todos calcularFirmantes="resolucionFAP.calcularFirmantes(AgenteController.getAgente())"
+				}
+				Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+			}
 		}
 		
 		Grupo gDatosResolucion titulo="Datos de la Resolución actual" permiso=noEditable {
-			Tabla lineasResolucion campo=Resolucion.lineasResolucion titulo="Lineas Resolución" {
+			Combo campo=ResolucionFAP.estado titulo="Estado"
+			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
+			Combo campo=ResolucionFAP.tipo titulo="Tipo de Resolución" requerido
+			Combo campo=ResolucionFAP.modalidad titulo="Modalidad de la Resolución" requerido
+			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
+			Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
 				Columna campo=LineaResolucion.id titulo="Id"
 				Columna campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
 				Columna campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
-				Columna campo=LineaResolucion.id
+				Columna campo=LineaResolucion.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+				Columna campo=LineaResolucion.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+				Columna campo=LineaResolucion.estado titulo="Estado"
 			}
+			Texto campo=ResolucionFAP.folio_inicio titulo="Folio Inicial"
+			Texto campo=ResolucionFAP.folio_final titulo="Folio Final"
+			Texto campo=ResolucionFAP.numero titulo="Numero"
+			Fecha campo=ResolucionFAP.fechaResolucion titulo="Fecha Resolución"
+			Wiki { " Faltan más cosas ................ " }
 		}
 		
 		
 	}
 	
-	Pagina DocumentoConsultaPortafirmaCrear campo=Resolucion.docConsultaPortafirmasResolucion
-	{
+	Pagina DocConsultaPortafirmaCrear campo=ResolucionFAP.docConsultaPortafirmasResolucion {
 		Accion crear redirigir=EditarResolucion
-		SubirArchivo fileAportacion campo=Documento requerido tramite="ESTANCIAS"
+		SubirArchivo file campo=Documento requerido /*tramite="ESTANCIAS"*/
+	}
+	
+	Pagina DocConsultaPortafirmaEditar campo=ResolucionFAP.docConsultaPortafirmasResolucion {
+		Accion editar redirigir=EditarResolucion
+		EditarArchivo file campo=Documento requerido /*tramite="ESTANCIAS"*/
 	}
 }
 
 Permiso sinIniciarResolucion {
 	vars
-		Resolucion resolucion
+		ResolucionFAP resolucion
 	when
 		resolucion = null
 		or resolucion.tipo = null

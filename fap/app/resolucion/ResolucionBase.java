@@ -20,7 +20,7 @@ import messages.Messages;
 import models.Documento;
 import models.LineaResolucion;
 import models.Registro;
-import models.Resolucion;
+import models.ResolucionFAP;
 import models.SolicitudGenerica;
 
 @InjectSupport
@@ -33,10 +33,9 @@ public class ResolucionBase {
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String BODY_REPORT = "reports/resolucion/resolucion.html";
 	private final static String TIPO_RESOLUCION = FapProperties.get("fap.aed.tiposdocumentos.resolucion");
+	public ResolucionFAP resolucion;
 	
-	public Resolucion resolucion;
-	
-	public ResolucionBase (Resolucion resolucion) {
+	public ResolucionBase (ResolucionFAP resolucion) {
 		this.resolucion = resolucion;
 	}
 	
@@ -73,11 +72,17 @@ public class ResolucionBase {
 	}
 	
 	/**
+	 * Inicializamos la resolución, una vez que sabemos el tipo
+	 */
+	public static void initResolucion () {
+		
+	}
+	
+	/**
 	 * Devuelve las solicitudes "posibles" a resolver (lista desde donde se seleccionará)
 	 * @return
 	 */
 	public static java.util.List<SolicitudGenerica> getSolicitudesAResolver () {
-		//return SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.estado=?", "iniciada").fetch();
 		return SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.estado in('verificado','excluido','desistido')").fetch();
 	}
 	
@@ -86,23 +91,25 @@ public class ResolucionBase {
 	 * @param idResolucion
 	 */
 	public static void setLineasDeResolucion (Long idResolucion) {
-		Resolucion resolucion = Resolucion.findById(idResolucion);
-		if (resolucion.lineasResolucion.size() == 0) {
-			// Por cada una de las solicitudes a resolver, añadimos una línea de resolución
-			for (SolicitudGenerica sol: getSolicitudesAResolver()) {
-				LineaResolucion lResolucion = new LineaResolucion();
-				lResolucion.solicitud = sol;
-				if (sol.estado.equals(EstadosSolicitudEnum.verificado)) {
-					lResolucion.estado = EstadoLineaResolucionEnum.concedida.name();
-				} else if (sol.estado.equals(EstadosSolicitudEnum.excluido.name())) {
-					lResolucion.estado = EstadoLineaResolucionEnum.excluida.name();
-				} else {
-					lResolucion.estado = EstadoLineaResolucionEnum.excluida.name();
-				}
-				lResolucion.save();
-				
-				resolucion.lineasResolucion.add(lResolucion);
-				resolucion.save();
+	}
+	
+	/**
+	 * Validación al inicio de la resolución
+	 * @param idResolLong
+	 */
+	public static void validaInicioResolucion (Long idResolucion) {
+		
+	}
+	
+	/**
+	 * Comprueba que las líneas de resolución estén en un estado "válido"
+	 * @param idResolucion
+	 */
+	public static void validarLineasResolucion (Long idResolucion) {
+		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
+		if (resolucion.estado.equals(EstadoResolucionEnum.borrador.name())) {
+			for (LineaResolucion lResolucion : resolucion.lineasResolucion) {
+				// TODO
 			}
 		}
 	}

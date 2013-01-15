@@ -19,8 +19,11 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Resolucion extends FapModel {
+public class ResolucionFAP extends FapModel {
 	// Código de los atributos
+
+	@ValueFromTable("resolucionesDefinidas")
+	public String tipoDefinidoResolucion;
 
 	@ValueFromTable("modalidadResolucion")
 	public String modalidad;
@@ -38,23 +41,33 @@ public class Resolucion extends FapModel {
 	public String descripcion;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "resolucion_lineasresolucion")
+	@JoinTable(name = "resolucionfap_lineasresolucion")
 	public List<LineaResolucion> lineasResolucion;
 
 	public Boolean conBaremacion;
+
+	public Integer folio_inicio;
+
+	public Integer folio_final;
+
+	public Integer numero;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaResolucion"), @Column(name = "fechaResolucionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaResolucion;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaIncioPreparacion"), @Column(name = "fechaIncioPreparacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaIncioPreparacion;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "resolucion_docconsultaportafirmasresolucion")
+	@JoinTable(name = "resolucionfap_docconsultaportafirmasresolucion")
 	public List<Documento> docConsultaPortafirmasResolucion;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
-	public Resolucion() {
+	public ResolucionFAP() {
 		init();
 	}
 
@@ -78,7 +91,15 @@ public class Resolucion extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
+	/**
+	 * Calcula la lista de firmantes para la resolución
+	 * @param agente
+	 * @return
+	 */
+	public List<Firmante> calcularFirmantes(Agente agente) {
 
+		return null;
+	}
 	// === MANUAL REGION END ===
 
 }

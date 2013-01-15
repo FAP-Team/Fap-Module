@@ -217,7 +217,7 @@ public class ResolucionBase {
 	
 	public void avanzarFase_Preparada(Resolucion resolucion) {
 		if (!Messages.hasErrors()) {
-			resolucion.estado = EstadoResolucionEnum.pendienteFirmarJefeServicio.name();
+			resolucion.estado = EstadoResolucionEnum.pendienteFirmaJefeServicio.name();
 			resolucion.save();
 		}
 	}
@@ -231,7 +231,7 @@ public class ResolucionBase {
 	
 	public void avanzarFase_FirmadaJefeServicio(Resolucion resolucion) {
 		if (!Messages.hasErrors()) {
-			resolucion.estado = EstadoResolucionEnum.pendienteFirmarDirector.name();
+			resolucion.estado = EstadoResolucionEnum.pendienteFirmaDirector.name();
 			resolucion.save();
 		}
 	}

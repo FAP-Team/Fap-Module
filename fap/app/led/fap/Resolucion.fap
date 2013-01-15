@@ -142,7 +142,7 @@ Formulario Principal {
 
 		
 		Grupo gPrepararSolicitudFirmaPortafirma titulo="Preparar Solicitud de Firma (PORTAFIRMAS)" {
-			Enlace titulo="Obtener documento de Resolución" estilo="btn" url="www.google.com"
+			Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=Resolucion.registro.borrador.urlDescarga
 			Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=Resolucion.docConsultaPortafirmasResolucion paginaCrear=DocumentoConsultaPortafirmaCrear {
 				Columna campo=Documento.id titulo="Id" ancho="40"
 				Columna campo=Documento.tipo titulo="Tipo"

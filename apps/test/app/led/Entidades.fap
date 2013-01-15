@@ -27,6 +27,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	ElementosBasicos elementos
 	
 	FirmaEnServidor firmaEnServidor
+	
+	PruebaConversion pruebaConversion
 }
 
 Entidad FirmaEnServidor {
@@ -190,3 +192,8 @@ Entidad ElementosBasicos{
 	Double numeroD
 	CCC ccc
 }
+
+Entidad PruebaConversion {
+	Documento docPrueba
+}
+

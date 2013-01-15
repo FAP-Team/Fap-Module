@@ -84,6 +84,9 @@ public class Solicitud extends SolicitudGenerica {
 	public FirmaEnServidor firmaEnServidor;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public PruebaConversion pruebaConversion;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
 
 	public Solicitud() {
@@ -175,6 +178,11 @@ public class Solicitud extends SolicitudGenerica {
 			firmaEnServidor = new FirmaEnServidor();
 		else
 			firmaEnServidor.init();
+
+		if (pruebaConversion == null)
+			pruebaConversion = new PruebaConversion();
+		else
+			pruebaConversion.init();
 
 		if (savePages == null)
 			savePages = new SavePages();

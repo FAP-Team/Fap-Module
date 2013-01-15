@@ -1,0 +1,53 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+h2 {
+	margin-top: 30px;
+}
+
+.myarrow {
+   line-height: 0%; width: 0px;
+   border-top: 4px solid  transparent;
+   border-bottom: 4px solid  transparent;
+   border-left: 6.9px solid black;
+   margin-top: 30px;
+   margin-left: 3em;
+   text-indent: 1em;
+}
+
+ul {
+   list-style-type:circle
+   margin-left: 4em;
+   text-indent: 4em;
+}
+
+</style>
+
+%{
+	def ficheroAppCss = new File("public/stylesheets/documentoPDF.css");
+%}
+
+#{if ficheroAppCss.exists()}
+	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/documentoPDF.css'}">
+#{/if}
+
+</head>
+<body>
+
+<h3 style="text-align: center;"></h3>
+<!-- TITULO -->
+
+PRUEBA DE CONVERSIÓN DE DOC A PDF:
+Está usando FileSystemConversor, para una conversión real del documento utilice OpenOfficeConversor
+
+</body>
+</html>

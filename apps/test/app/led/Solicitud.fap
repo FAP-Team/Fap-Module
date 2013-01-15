@@ -59,9 +59,10 @@ Formulario Solicitud permiso=solicitudes{
 				Enlace "BigPopUp" popup=PruebaBigPopUp
 			}
 		
-			Grupo "Ejemplo: Subida de Archivos y Envío de Mails" {
+			Grupo "Ejemplo: Archivos y Envío de Mails" {
 				Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
 				Enlace "Documentación FAP" pagina=DocumentacionFAP
+				Enlace "Conversión a PDF" pagina=PaginaConversion
 				Enlace "Envío de Mails" pagina=EnvioMails
 			}
 	
@@ -85,6 +86,7 @@ Formulario Solicitud permiso=solicitudes{
 			Grupo "Anotación Inject"{
 				Enlace "Inject" pagina=PaginaInject
 			}
+			
     		
     	}
     	    	
@@ -823,6 +825,17 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 			Boton bGuardar titulo="Guardar"
 			Enlace titulo="Cancelar" estilo="btn btn-link" pagina=Solicitudes
 		}
+	}
+	
+	Pagina PaginaConversion titulo="Pagina de conversión doc2pdf"campo=Solicitud noForm{
+		Accion editar crearSiempre
+		Form formArchivo{
+			SubirArchivo subirPrueba campo=Solicitud.pruebaConversion.docPrueba extensiones="doc"
+			Boton botonGuardar titulo="Guardar"
+		}
+		Form formBoton{
+			Boton botonPrueba titulo="RTF2PDF"
+		} 
 	}
 	
 }

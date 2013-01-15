@@ -6,16 +6,19 @@ import properties.PropertyPlaceholderImpl;
 import security.Secure;
 import security.SecureFap;
 import security.SecureFapGen;
+import services.ConversorService;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.RegistroService;
 import services.TercerosService;
+import services.filesystem.FileSystemConversor;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemNotificacionServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.filesystem.FileSystemTercerosServiceImpl;
 import services.notificacion.NotificacionServiceImpl;
+import services.openofice.OpenOfficeConversor;
 import services.platino.PlatinoTercerosServiceImpl;
 import services.NotificacionService;
 
@@ -30,6 +33,11 @@ public class FapModule extends PlayAbstractModule {
 		registro();
 		notificacion();
 		terceros();
+		conversor();
+	}
+	
+	protected void conversor() {
+		bindLazySingletonOnDev(ConversorService.class, OpenOfficeConversor.class);
 	}
 	
 	protected void terceros() {

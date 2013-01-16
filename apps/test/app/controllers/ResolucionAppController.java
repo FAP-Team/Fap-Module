@@ -1,15 +1,15 @@
 package controllers;
 
-import models.Resolucion;
-import resolucion.ResolucionApp;
+import models.ResolucionFAP;
 import resolucion.ResolucionBase;
+import resolucion.ResolucionMultipleTotal;
 import controllers.fap.ResolucionControllerFAP;
 
 public class ResolucionAppController extends ResolucionControllerFAP {
 
-	public static ResolucionApp getResolucionObject(Long idResolucion) {
-		Resolucion resolucion = Resolucion.findById(idResolucion);
-		return new ResolucionApp(resolucion);
+	public static ResolucionBase getResolucionObject(Long idResolucion) {
+		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
+		return new ResolucionMultipleTotal(resolucion);
 	}
 	
 }

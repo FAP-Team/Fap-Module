@@ -115,7 +115,7 @@ public class ResolucionBase {
 	}
 	
 	public void prepararResolucion(Long idResolucion){
-		Resolucion resolucion = Resolucion.findById(idResolucion);
+		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
         
         validar();
         eliminarBorradorResolucion(resolucion);
@@ -130,7 +130,7 @@ public class ResolucionBase {
 
 	}
 	
-	 public void eliminarBorradorResolucion(Resolucion resolucion){
+	 public void eliminarBorradorResolucion(ResolucionFAP resolucion){
 		if (!Messages.hasErrors()) {
 			// Borramos los documentos que se pudieron generar en una llamada
 			// previa al metodo, para no dejar basura en la BBDD
@@ -147,7 +147,7 @@ public class ResolucionBase {
 		}
 	}
 	 
-	 public void eliminarOficialResolucion(Resolucion resolucion) {
+	 public void eliminarOficialResolucion(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			if ((resolucion.registro.oficial != null)
 					&& (resolucion.registro.oficial.uri != null)) {
@@ -163,7 +163,7 @@ public class ResolucionBase {
 		}
 	 }
 	 
-	 public File generarBorradorResolucion(Resolucion resolucion) {
+	 public File generarBorradorResolucion(ResolucionFAP resolucion) {
 		File borrador = null;
 		borrador = new File(this.getBodyReport());
 		if (!Messages.hasErrors()) {
@@ -186,7 +186,7 @@ public class ResolucionBase {
 		return borrador;
 	 }
 	
-	 public File generarOficialResolucion(Resolucion resolucion){
+	 public File generarOficialResolucion(ResolucionFAP resolucion){
 		File oficial = null;
 		if (!Messages.hasErrors()) {
 			try {
@@ -203,7 +203,7 @@ public class ResolucionBase {
 		return oficial;
 	 }
 	 
-	 public void almacenarEnGestorDocumentalResolucion(Resolucion resolucion, File borrador, File oficial){
+	 public void almacenarEnGestorDocumentalResolucion(ResolucionFAP resolucion, File borrador, File oficial){
 		if (!Messages.hasErrors()) {
 			try {
 				gestorDocumentalService.saveDocumentoTemporal(resolucion.registro.borrador, borrador);
@@ -215,56 +215,56 @@ public class ResolucionBase {
 		}
 	 }
 	 
-	public void avanzarFase_Borrador(Resolucion resolucion) {
+	public void avanzarFase_Borrador(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.preparada.name();
 			resolucion.save();
 		}
 	}
 	
-	public void avanzarFase_Preparada(Resolucion resolucion) {
+	public void avanzarFase_Preparada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.pendienteFirmaJefeServicio.name();
 			resolucion.save();
 		}
 	}
 	
-	public void avanzarFase_PendienteFirmarJefeServicio(Resolucion resolucion) {
+	public void avanzarFase_PendienteFirmarJefeServicio(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.firmadaJefeServicio.name();
 			resolucion.save();
 		}
 	}
 	
-	public void avanzarFase_FirmadaJefeServicio(Resolucion resolucion) {
+	public void avanzarFase_FirmadaJefeServicio(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.pendienteFirmaDirector.name();
 			resolucion.save();
 		}
 	}
 	
-	public void avanzarFase_PendienteFirmarDirector(Resolucion resolucion) {
+	public void avanzarFase_PendienteFirmarDirector(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.firmada.name();
 			resolucion.save();
 		}
 	}
 	
-	public void avanzarFase_Firmada(Resolucion resolucion) {
+	public void avanzarFase_Firmada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.registrada.name();
 			resolucion.save();
 		}
 	}
 	
-	public void avanzarFase_Registrada(Resolucion resolucion) {
+	public void avanzarFase_Registrada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.publicada.name();
 			resolucion.save();
 		}
 	}
 	
-	public void avanzarFase_Publicada(Resolucion resolucion) {
+	public void avanzarFase_Publicada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.finalizada.name();
 			resolucion.save();

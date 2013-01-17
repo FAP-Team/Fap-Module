@@ -108,5 +108,4 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 	public IScope scope_Combo_comboValor(Combo combo, EReference ref) {
 		return scope_Combo_comboTexto(combo, ref);
 	}
-	
 }

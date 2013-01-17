@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.smartcardio.ATR;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -15,6 +17,7 @@ import com.google.inject.Inject;
 
 import es.fap.simpleled.led.*;
 import es.fap.simpleled.led.impl.EntityImpl;
+import es.fap.simpleled.led.impl.PermisoRuleCheckRightImpl;
 import es.fap.simpleled.led.util.LedCampoUtils;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
@@ -287,13 +290,31 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	
 	@Check
 	public void checkPermisoAction(PermisoRuleCheck rule){
+		PermisoRuleCheckRight prci = rule.getRight();
+		
+		//Si el valor en un boolean -> Comprobar que campo a la iquierda es boolean
+		if (!prci.getBooleano().isEmpty()){ 
+			CampoPermiso cp = rule.getLeft(); //Parte izq
+			CampoPermisoAtributos attr = cp.getAtributos();
+			
+			while (attr.getAtributos() != null){ //Mientras atributos, sigo bajando
+				attr = attr.getAtributos();
+			}
+			
+			Type tipoDato = attr.getAtributo().getType();
+			if ((tipoDato.getSimple() != null) && (!tipoDato.getSimple().getType().equals("Boolean"))){
+				error("Se ha asignado un valor booleano a un campo que no es de tipo Boolean",  ledPackage.getPermisoRuleCheck_Right());
+			}			
+		}
+		
 		if (!rule.getLeft().isAction())
 			return;
 		if (rule.getRight() != null && rule.getRight().getAction() == null)
-			error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", ledPackage.getPermisoRuleCheck_Right());
+			error("Tienes que especificar una de las siguientes acciones: leer, editar, crear, borrar, true o false", ledPackage.getPermisoRuleCheck_Right());
 		for (PermisoRuleCheckRight right: rule.getRightGroup()){
+			System.out.println("GRUPO");
 			if (right.getAction() == null)
-				error("Tienes que especificar una de las siguientes acciones: leer, editar, crear o borrar", ledPackage.getPermisoRuleCheck_Left());
+				error("Tienes que especificar una de las siguientes acciones: leer, editar, crear, borrar, true o false", ledPackage.getPermisoRuleCheck_Left());
 		}
 	}
 	

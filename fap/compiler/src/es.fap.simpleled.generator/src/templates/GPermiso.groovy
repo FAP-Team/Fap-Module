@@ -108,6 +108,9 @@ public class GPermiso extends GElement{
 	}
 
 	private String getPermisoRuleCheckRightStr(PermisoRuleCheckRight right){
+		if (right.booleano != null){
+			return "\"" + right.booleano + "\"";
+		}
 		if (right.action != null)
 			return "\"" + right.action + "\"";
 		if (right.str != null)

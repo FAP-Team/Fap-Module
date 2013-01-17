@@ -700,7 +700,7 @@ PermisoRuleCheckGroupOp:
 ;
 
 PermisoRuleCheckRight:
-	campo=CampoPermiso | str=STRING  | nulo?='null' | action=("leer" | "editar" | "crear" | "borrar")
+	campo=CampoPermiso | str=STRING | booleano = ("true" | "false")  | nulo?='null' | action=("leer" | "editar" | "crear" | "borrar")
 ;
 
 ServicioWeb:

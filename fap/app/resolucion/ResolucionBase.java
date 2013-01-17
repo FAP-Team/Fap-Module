@@ -15,7 +15,9 @@ import services.GestorDocumentalService;
 
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionEnum;
+import enumerado.fap.gen.EstadoTipoMultipleEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
+import enumerado.fap.gen.ModalidadResolucionEnum;
 import messages.Messages;
 import models.Documento;
 import models.LineaResolucion;
@@ -47,10 +49,6 @@ public class ResolucionBase {
 		return ResolucionBase.FOOTER_REPORT;
 	}
 	
-	public boolean isPublicable() {
-		return false;
-	}
-	
 	public String getBodyReport() {
 		return ResolucionBase.BODY_REPORT;
 	}
@@ -74,8 +72,15 @@ public class ResolucionBase {
 	/**
 	 * Inicializamos la resolución, una vez que sabemos el tipo
 	 */
-	public static void initResolucion () {
-		
+	public void initResolucion(Long idResolucion) {
+		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
+		resolucion.firmarJefeServicio = true;
+		resolucion.firmarDirector = true;
+		resolucion.permitirPortafirma = true;
+		resolucion.permitirRegistrar = true;
+		resolucion.permitirPublicar = true;
+		resolucion.estado = EstadoResolucionEnum.borrador.name();
+		resolucion.save();
 	}
 	
 	/**
@@ -90,7 +95,7 @@ public class ResolucionBase {
 	 * Establece las líneas de resolución a una resolución, en caso de que no existan.
 	 * @param idResolucion
 	 */
-	public static void setLineasDeResolucion (Long idResolucion) {
+	public void setLineasDeResolucion(Long idResolucion) {
 	}
 	
 	/**

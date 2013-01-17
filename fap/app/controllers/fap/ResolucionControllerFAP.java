@@ -3,13 +3,16 @@ package controllers.fap;
 import java.util.ArrayList;
 import java.util.List;
 
-import enumerado.fap.gen.ResolucionesDefinidasEnum;
-
-import resolucion.ResolucionBase;
-import resolucion.ResolucionParcial;
-import resolucion.ResolucionMultipleTotal;
-import tags.ComboItem;
+import messages.Messages;
+import models.Agente;
 import models.ResolucionFAP;
+import resolucion.ResolucionBase;
+import resolucion.ResolucionMultipleTotal;
+import resolucion.ResolucionParcial;
+import resolucion.ResolucionSimple;
+import tags.ComboItem;
+import enumerado.fap.gen.EstadoResolucionEnum;
+import enumerado.fap.gen.ResolucionesDefinidasEnum;
 
 public class ResolucionControllerFAP extends InvokeClassController {
 
@@ -32,7 +35,7 @@ public class ResolucionControllerFAP extends InvokeClassController {
 		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleParcialExpedientes.name())) {
 			return new ResolucionParcial(resolucion);
 		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleTotal.name())) {
-			return new ResolucionParcial(resolucion);
+			return new ResolucionSimple(resolucion);
 		}
 		return new ResolucionBase(resolucion);
 	}
@@ -42,7 +45,39 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	 * se inicializan los datos de la resolución.
 	 * @param idResolucion
 	 */
-	public static void inicializaResolucion (Long idResolucion) {
-		getResolucionObject(idResolucion).initResolucion();
+	public static void inicializaResolucion(Long idResolucion) {
+		getResolucionObject(idResolucion).initResolucion(idResolucion);
+	}
+	
+	
+	/**
+	 * Comprobar que las resoluciones existentes estén finalizadas. En el caso
+	 * de que haya una resolución que haya sido finalizada no se podrá crear
+	 * una nueva.
+	 */
+	public static void validarInicioResolucion() {
+		List<ResolucionFAP> resoluciones = ResolucionFAP.findAll();
+		for (int i = 0; i < resoluciones.size(); i++) {
+			if (!resoluciones.get(i).estado.equals(EstadoResolucionEnum.finalizada.name())) {
+				play.Logger.error("No se puede crear una nueva resolución habiendo otra activa.");
+				Messages.error("No se puede crear una nueva resolución habiendo otra activa.");
+				Messages.keep();
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @return La lista de Jefes de Servicio
+	 */
+	public static List<String> getJefeServicio() {
+		List<Agente> agentes = Agente.findAll();
+		List<String> listaJS = new ArrayList<String>();
+		for (int i = 0; i < agentes.size(); i++) {
+			if (agentes.get(i).roles.contains("jefeServicio")) {
+				listaJS.add(agentes.get(i).username);
+			}
+		}		
+		return listaJS;
 	}
 }

@@ -34,6 +34,16 @@ public class ResolucionFAP extends FapModel {
 	@ValueFromTable("estadoTipoMultiple")
 	public String tipoMultiple;
 
+	public Boolean firmarJefeServicio;
+
+	public Boolean firmarDirector;
+
+	public Boolean permitirPortafirma;
+
+	public Boolean permitirRegistrar;
+
+	public Boolean permitirPublicar;
+
 	@ValueFromTable("estadoResolucion")
 	public String estado;
 

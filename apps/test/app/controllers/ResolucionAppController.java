@@ -7,9 +7,4 @@ import controllers.fap.ResolucionControllerFAP;
 
 public class ResolucionAppController extends ResolucionControllerFAP {
 
-	public static ResolucionBase getResolucionObject(Long idResolucion) {
-		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
-		return new ResolucionMultipleTotal(resolucion);
-	}
-	
 }

@@ -52,6 +52,11 @@ Entidad ResolucionFAP {
 	Lista modalidadResolucion modalidad		// Simple, Multiple
 	Lista tipoResolucion tipo				// Provisional, Definitiva
 	Lista estadoTipoMultiple tipoMultiple	// Parcial, Total
+	Boolean firmarJefeServicio
+	Boolean firmarDirector
+	Boolean permitirPortafirma
+	Boolean permitirRegistrar
+	Boolean permitirPublicar
 	
 	Lista estadoResolucion estado			// Borrador, creada, .... finalizada
 	
@@ -124,8 +129,17 @@ Formulario Principal {
 	
 	Pagina EditarResolucion titulo="Resolución" campo=ResolucionFAP perteneceA="Principal" noForm {
 		
-		Grupo mostrarSiCampo ResolucionFAP.modalidad = "multiple" borde=false {
-			Grupo titulo="Expedientes a Resolver" mostrarSiCampo ResolucionFAP.tipoMultiple = "parcial"{
+		Grupo mostrarSiCampo ResolucionFAP.modalidad = "resolucionSimple" borde=false {
+			Tabla tablaExpedientesUnico campo=SolicitudGenerica seleccionable = "Crear Resolucion" {
+				Columna titulo = "ID" campo=SolicitudGenerica.id ancho = "40"
+				Columna titulo = "Expediente" campo=SolicitudGenerica.expedienteAed.idAed
+				Columna titulo = "Estado Interno" campo=SolicitudGenerica.estadoValue ancho = "120"
+				Columna titulo = "Nombre Solicitante" campo=SolicitudGenerica.solicitante.nombreCompleto expandir
+			}
+		}
+		
+		Grupo mostrarSiCampo ResolucionFAP.modalidad = "resolucionMultiple" borde=false  {
+			Grupo titulo="Expedientes a Resolver" permiso=seleccionarExpedientes {
 			
 				Form formSeleccionarExpedientes {
 					Grupo titulo="Seleccionar Expedientes"{
@@ -141,10 +155,25 @@ Formulario Principal {
 					Columna titulo="Nombre Solicitante" campo=SolicitudGenerica.solicitante.nombreCompleto expandir
 				}
 			}
+			
+			Grupo gCrearResolucion titulo="Preparar la Resolución" permiso=noSeleccionarExpedientes {
+				Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
+				Form crearResolucion {
+					Boton  btnCrearResolucion titulo="Crear Resolución"
+				}
+			}
 		}
 		
-    	Grupo gCerrarResolucion titulo="Preparar la Resolución" {
+    	Grupo gCerrarResolucion titulo="Preparar la Resolución" permiso=prepararResolucion {
 			Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
+			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
+				Columna campo=LineaResolucion.id titulo="Id"
+				Columna campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
+				Columna campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
+				Columna campo=LineaResolucion.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+				Columna campo=LineaResolucion.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+				Columna campo=LineaResolucion.estado titulo="Estado"
+			}
 			Form prepararResolucion {
 				Boton  btnPrepararResolucion titulo="Cerrar Resolución"
 			}
@@ -217,4 +246,36 @@ Permiso sinIniciarResolucion {
 		resolucion.tipo != null
 	return
 		visible
+}
+
+Permiso seleccionarExpedientes {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado = "borrador" and
+		resolucion.tipoMultiple = "parcial" and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return
+		all
+}
+
+Permiso noSeleccionarExpedientes {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado = "borrador" and
+		resolucion.tipoMultiple = "total" and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return
+		all
+}
+
+Permiso prepararResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado = "creada" and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return
+		all
 }

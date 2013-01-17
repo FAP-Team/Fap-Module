@@ -1,7 +1,10 @@
 package resolucion;
 
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
+import enumerado.fap.gen.EstadoResolucionEnum;
+import enumerado.fap.gen.EstadoTipoMultipleEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
+import enumerado.fap.gen.ModalidadResolucionEnum;
 import models.LineaResolucion;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
@@ -12,12 +15,28 @@ public class ResolucionMultipleTotal extends ResolucionBase {
 		super(resolucion);
 		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+	public void initResolucion(Long idResolucion) {
+		System.out.println("------->initResolucion del ResolucionMultipleTotal");
+		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
+		resolucion.modalidad = ModalidadResolucionEnum.resolucionMultiple.name();
+		resolucion.tipoMultiple = EstadoTipoMultipleEnum.total.name();
+		resolucion.firmarJefeServicio = true;
+		resolucion.firmarDirector = true;
+		resolucion.permitirPortafirma = true;
+		resolucion.permitirRegistrar = true;
+		resolucion.permitirPublicar = true;
+		resolucion.estado = EstadoResolucionEnum.borrador.name();
+		resolucion.save();
+	}
 
 	/**
 	 * Establece las líneas de resolución a una resolución, en caso de que no existan.
 	 * @param idResolucion
 	 */
-	public static void setLineasDeResolucion (Long idResolucion) {
+	@Override
+	public void setLineasDeResolucion(Long idResolucion) {
 		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
 		if (resolucion.lineasResolucion.size() == 0) {
 			// Por cada una de las solicitudes a resolver, añadimos una línea de resolución

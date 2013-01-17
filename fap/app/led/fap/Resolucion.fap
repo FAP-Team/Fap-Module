@@ -52,15 +52,13 @@ Entidad ResolucionFAP {
 	Lista modalidadResolucion modalidad		// Simple, Multiple
 	Lista tipoResolucion tipo				// Provisional, Definitiva
 	Lista estadoTipoMultiple tipoMultiple	// Parcial, Total
-	Boolean firmarJefeServicio
-	Boolean firmarDirector
-	Boolean permitirPortafirma
-	Boolean permitirRegistrar
-	Boolean permitirPublicar
-	
+
 	Boolean firmarJefeServicio				// Debe ser firmada por el Jefe de Servicio
 	String jefeDeServicio					// Jefe de Servicio Solicitado
 	Boolean firmarDirector					// Debe ser firmada por el Director
+	Boolean permitirPortafirma
+	Boolean permitirRegistrar
+	Boolean permitirPublicar
 	
 	Lista estadoResolucion estado			// borrador, creada, .... finalizada
 	

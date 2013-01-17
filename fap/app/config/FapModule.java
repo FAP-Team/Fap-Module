@@ -8,10 +8,12 @@ import security.SecureFap;
 import security.SecureFapGen;
 import services.FirmaService;
 import services.GestorDocumentalService;
+import services.PortafirmaFapService;
 import services.RegistroService;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemNotificacionServiceImpl;
+import services.filesystem.FileSystemPortafirmaImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.notificacion.NotificacionServiceImpl;
 import services.NotificacionService;
@@ -26,6 +28,11 @@ public class FapModule extends PlayAbstractModule {
 		firma();
 		registro();
 		notificacion();
+		portafirma();
+	}
+	
+	protected void portafirma() {
+		bindLazySingletonOnDev(PortafirmaFapService.class, FileSystemPortafirmaImpl.class);
 	}
 	
 	protected void notificacion() {

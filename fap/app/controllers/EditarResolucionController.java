@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +9,10 @@ import play.mvc.Util;
 
 import reports.Report;
 import resolucion.ResolucionBase;
+import tags.ComboItem;
 
 import messages.Messages;
+import models.Agente;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import controllers.fap.ResolucionControllerFAP;
@@ -113,4 +116,71 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		EditarResolucionController.crearResolucionRender(idResolucionFAP);
 	}
 	
+	public static List<ComboItem> selectJefeServicio() {
+		List<Agente> listaJefesServicio = new ArrayList<Agente>();
+		List<ComboItem> listaCombo = new ArrayList<ComboItem>();
+		try {
+			listaJefesServicio = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getJefesServicio");
+		} catch (Throwable e) {
+			Messages.error("No se pudieron obtener los jefes de servicio");
+			play.Logger.error("No se pudieron obtener los jefes de servicio"+e.getMessage());
+		}
+		for (Agente agente: listaJefesServicio) {
+			listaCombo.add(new ComboItem(agente.username, agente.username+" - "+agente.name));
+		}
+		return listaCombo;
+	}
+	
+	@Util
+	public static void formSelectJefeServicio(Long idResolucionFAP, ResolucionFAP resolucionFAP, String enviarFirmaJSPortafirma) {
+		checkAuthenticity();
+		if (!permisoFormSelectJefeServicio("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+
+		EditarResolucionController.formSelectJefeServicioBindReferences(resolucionFAP);
+
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.formSelectJefeServicioValidateCopy("editar", dbResolucionFAP, resolucionFAP);
+		}
+
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.formSelectJefeServicioValidateRules(dbResolucionFAP, resolucionFAP);
+			
+			// TODO: Enviar al portafirma los documentos, indicando qué jefe de Servicio lo debe Firmar
+		}
+		if (!Messages.hasErrors()) {
+			dbResolucionFAP.estado = EstadoResolucionEnum.pendienteFirmaJefeServicio.name();
+			dbResolucionFAP.save();
+			Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma del Jefe de Servicio");
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
+		EditarResolucionController.formSelectJefeServicioRender(idResolucionFAP);
+	}
+	
+	@Util
+	public static void firmaDirectorPortafirma(Long idResolucionFAP, String enviarFirmaDirectorPortafirma) {
+		checkAuthenticity();
+		if (!permisoFirmaDirectorPortafirma("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+
+		if (!Messages.hasErrors()) {
+		}
+
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.firmaDirectorPortafirmaValidateRules();
+		}
+		if (!Messages.hasErrors()) {
+			dbResolucionFAP.estado = EstadoResolucionEnum.pendienteFirmaDirector.name();
+			dbResolucionFAP.save();
+			Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma del Director");
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
+		EditarResolucionController.firmaDirectorPortafirmaRender(idResolucionFAP);
+	}
 }

@@ -58,7 +58,11 @@ Entidad ResolucionFAP {
 	Boolean permitirRegistrar
 	Boolean permitirPublicar
 	
-	Lista estadoResolucion estado			// Borrador, creada, .... finalizada
+	Boolean firmarJefeServicio				// Debe ser firmada por el Jefe de Servicio
+	String jefeDeServicio					// Jefe de Servicio Solicitado
+	Boolean firmarDirector					// Debe ser firmada por el Director
+	
+	Lista estadoResolucion estado			// borrador, creada, .... finalizada
 	
 	// Descripción de la Resolución
 	String descripcion length=2500
@@ -179,17 +183,55 @@ Formulario Principal {
 			}
 		}
 		
-		Grupo gPrepararSolicitudFirmaPortafirma titulo="Preparar Solicitud de Firma (PORTAFIRMAS)" {
-			Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga
-			Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=ResolucionFAP.docConsultaPortafirmasResolucion paginaCrear=DocConsultaPortafirmaCrear paginaEditar=DocConsultaPortafirmaEditar {
-				Columna campo=Documento.id titulo="Id" ancho="40"
-				Columna campo=Documento.tipo titulo="Tipo"
-				Columna campo=Documento.urlDescarga titulo="Ver"
+		Grupo gPrepararSolicitudFirmaPortafirma titulo="Preparar Solicitud de Firma" permiso=solicitudFirmaResolucion {
+			
+			Grupo gEnviarFirmaJSPortafirma permiso=firmaJefeServicio {
+				
+				Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga
+				Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=ResolucionFAP.docConsultaPortafirmasResolucion paginaCrear=DocConsultaPortafirmaCrear paginaEditar=DocConsultaPortafirmaEditar {
+					Columna campo=Documento.id titulo="Id" ancho="40"
+					Columna campo=Documento.tipo titulo="Tipo"
+					Columna campo=Documento.urlDescarga titulo="Ver"
+				}
+
+				Form formSelectJefeServicio {
+					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Jefe de Servicio" requerido
+					Boton enviarFirmaJSPortafirma titulo="Solicitar firma al Jefe Servicio"
+				} 
+			}
+			
+			Grupo gEsperaFirmaJSPortafirma permiso=esperaFirmaJefeServicio titulo="Firma del Jefe de Servicio"{
+				Grupo permiso=noEditable borde=false {
+					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Jefe de Servicio Seleccionado"
+				}
+				Wiki { "_El jefe de servicio aún no ha firmado en el portafirma_" } 
+			}
+			
+			Grupo gEnviarFirmaDirectorPortafirma permiso=firmaDirector titulo="Firma del Director" {
+				Form firmaDirectorPortafirma {
+					Boton enviarFirmaDirectorPortafirma titulo="Solicitar firma al Director"
+				}
+			}
+			
+			Grupo gEsperaFirmaDirectorPortafirma permiso=esperaFirmaDirector titulo="Firma Director"{
+				Wiki { "_El Director aún no ha firmado en el portafirma_" } 
 			}
 		}
 		
+		Grupo gRegistrarResolucion titulo="Registro de la Resolución" permiso=registrarResolucion {
+			Wiki { "Registrar resolución" }
+		}
+		
+		Grupo gPublicarResolucion titulo="Publicar la Resolución" permiso=publicarResolucion {
+			Wiki { "Registrar resolución" }
+		}
+		
+		Grupo gFinalizarResolucion titulo="Finalizar la Resolución" permiso=finalizarResolucion {
+			Wiki { "Finalizar resolución" }
+		}
+		
 		// Si el Agente es un JefeDeServicio, puede firmar directamente
-		Grupo grSolicitarFirmaPorJefeSevicio borde=false /*permiso=jefeServicio*/ {
+		/*Grupo grSolicitarFirmaPorJefeSevicio borde=false permiso=portafirmaJefeServicio {
 			Grupo grFirmaJefeServicio borde=false {
      			Form frmFirmarJefeServicio redirigir=EditarResolucion {
 					FirmaSimple firFirmarResolucion titulo="Firmar Resolucion" documento=ResolucionFAP.registro.oficial
@@ -197,7 +239,7 @@ Formulario Principal {
 				}
 				Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
 			}
-		}
+		}*/
 		
 		Grupo gDatosResolucion titulo="Datos de la Resolución actual" permiso=noEditable {
 			Combo campo=ResolucionFAP.estado titulo="Estado"
@@ -248,6 +290,7 @@ Permiso sinIniciarResolucion {
 		visible
 }
 
+
 Permiso seleccionarExpedientes {
 	vars
 		ResolucionFAP resolucion
@@ -258,6 +301,18 @@ Permiso seleccionarExpedientes {
 	return
 		all
 }
+
+Permiso portafirmaJefeServicio {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo = "jefeServicio"
+		and resolucion.firmarJefeServicio = "true"
+		and resolucion.estado = "preparada"
+	return
+		all
+}
+
 
 Permiso noSeleccionarExpedientes {
 	vars
@@ -270,12 +325,123 @@ Permiso noSeleccionarExpedientes {
 		all
 }
 
+Permiso solicitudFirmaResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and resolucion.estado in ("preparada", "pendienteFirmaJefeServicio", "firmadaJefeServicio", "pendienteFirmaDirector")
+	return
+		all
+}
+
 Permiso prepararResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
 		resolucion.estado = "creada" and
 		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return
+		all
+}
+
+/**
+ * Visible el envío a portafirma para el Jefe de Servicio
+ */
+Permiso firmaJefeServicio {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado in ("preparada")
+		and resolucion.firmarJefeServicio = "true"
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+	when
+		resolucion.estado in ("preparada")
+		and resolucion.firmarJefeServicio = "true"
+	return
+		visible
+}
+
+Permiso esperaFirmaJefeServicio {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado in ("pendienteFirmaJefeServicio")
+		and resolucion.firmarJefeServicio = "true"
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+	when
+		resolucion.estado in ("pendienteFirmaJefeServicio")
+		and resolucion.firmarJefeServicio = "true"
+	return
+		visible
+}
+
+
+/**
+ * Visible el envío a portafirma para el Director
+ */
+Permiso firmaDirector {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado in ("firmadaJefeServicio")
+		and resolucion.firmarDirector = "true"
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+	when
+		resolucion.estado in ("firmadaJefeServicio")
+		and resolucion.firmarDirector = "true"
+	return
+		visible
+}
+
+Permiso esperaFirmaDirector {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado in ("pendienteFirmaDirector")
+		and resolucion.firmarDirector = "true"
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+	when
+		resolucion.estado in ("pendienteFirmaDirector")
+		and resolucion.firmarDirector = "true"
+	return
+		visible
+}
+
+Permiso registrarResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado in ("firmada")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+Permiso publicarResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado in ("registrada")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+Permiso finalizarResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado in ("publicada")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }

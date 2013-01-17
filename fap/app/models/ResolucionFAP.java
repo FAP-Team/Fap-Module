@@ -36,6 +36,8 @@ public class ResolucionFAP extends FapModel {
 
 	public Boolean firmarJefeServicio;
 
+	public String jefeDeServicio;
+
 	public Boolean firmarDirector;
 
 	public Boolean permitirPortafirma;

@@ -13,6 +13,8 @@ import resolucion.ResolucionSimple;
 import tags.ComboItem;
 import enumerado.fap.gen.EstadoResolucionEnum;
 import enumerado.fap.gen.ResolucionesDefinidasEnum;
+import models.Agente;
+import models.ResolucionFAP;
 
 public class ResolucionControllerFAP extends InvokeClassController {
 
@@ -79,5 +81,16 @@ public class ResolucionControllerFAP extends InvokeClassController {
 			}
 		}		
 		return listaJS;
+	}
+	
+	/**
+	 * Obtenemos los jefes de Servicio de la Aplicación
+	 * @return Jefes de Servicio
+	 */
+	public static List<Agente> getJefesServicio () {
+		List<Agente> listaJefes = new ArrayList<Agente>();
+		listaJefes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'administrador'").fetch();		
+		//listaJefes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'jefeServicio'").fetch();		
+		return listaJefes;
 	}
 }

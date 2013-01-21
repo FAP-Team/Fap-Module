@@ -69,28 +69,34 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	}
 	
 	/**
-	 * 
-	 * @return La lista de Jefes de Servicio
-	 */
-	public static List<String> getJefeServicio() {
-		List<Agente> agentes = Agente.findAll();
-		List<String> listaJS = new ArrayList<String>();
-		for (int i = 0; i < agentes.size(); i++) {
-			if (agentes.get(i).roles.contains("jefeServicio")) {
-				listaJS.add(agentes.get(i).username);
-			}
-		}		
-		return listaJS;
-	}
-	
-	/**
 	 * Obtenemos los jefes de Servicio de la Aplicación
 	 * @return Jefes de Servicio
 	 */
 	public static List<Agente> getJefesServicio () {
 		List<Agente> listaJefes = new ArrayList<Agente>();
-		listaJefes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'administrador'").fetch();		
-		//listaJefes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'jefeServicio'").fetch();		
+		//listaJefes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'administrador'").fetch();		
+		listaJefes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'jefeServicio'").fetch();		
 		return listaJefes;
+	}
+	
+	/**
+	 * Propiedades posibles para el envío de solicitudes de firma al portafirma
+	 * @return Prioridades permitidas en la aplicación
+	 * 
+	 * Por defecto: BAJA, MEDIA, ALTA
+	 */
+	public static List<ComboItem> getPrioridadesFirma () {
+		return ComboItem.listFromTableOfTable("prioridadesFirmaEnPortafirma");
+	}
+	
+	
+	/**
+	 * Devuelve el número de días máximo para la fecha de tope de firma (Información que se
+	 * envía al portafirma, aunque la "usa" como guía)
+	 * @param idResolucion
+	 * @return
+	 */
+	public static int getDiasLimiteFirma (Long idResolucion) {
+		return 2;
 	}
 }

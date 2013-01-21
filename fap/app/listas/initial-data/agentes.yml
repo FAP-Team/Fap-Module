@@ -2,7 +2,7 @@ Agente(agente-admin):
     email: "admin@fap.com"
     username: "admin"
     password: "4QrcOUm6Wau+VuBX8g+IPg=="        # 123456     
-    roles: [administrador, usuario]
+    roles: [administrador, usuario, gestor, revisor, lector, jefeServicio, director]
     rolActivo: "administrador"
 
 Agente(agente-fap):

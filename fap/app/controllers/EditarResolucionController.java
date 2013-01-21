@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import play.mvc.Util;
 
 import reports.Report;
 import resolucion.ResolucionBase;
 import tags.ComboItem;
+import validation.CustomValidation;
 
 import messages.Messages;
 import models.Agente;
@@ -131,6 +134,17 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		return listaCombo;
 	}
 	
+	public static List<ComboItem> selectPrioridadFirma() {
+		List<ComboItem> listaPrioridades = new ArrayList<ComboItem>();
+		try {
+			listaPrioridades = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getPrioridadesFirma");
+		} catch (Throwable e) {
+			Messages.error("No se pudieron obtener las prioridades de la firma");
+			play.Logger.error("No se pudieron obtener las prioridades posibles en la firma"+e.getMessage());
+		}
+		return listaPrioridades;
+	}
+	
 	@Util
 	public static void formSelectJefeServicio(Long idResolucionFAP, ResolucionFAP resolucionFAP, String enviarFirmaJSPortafirma) {
 		checkAuthenticity();
@@ -158,6 +172,45 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		} else
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		EditarResolucionController.formSelectJefeServicioRender(idResolucionFAP);
+	}
+
+	@Util
+	public static void formSelectJefeServicioValidateCopy(String accion, ResolucionFAP dbResolucionFAP, ResolucionFAP resolucionFAP) {
+		CustomValidation.clearValidadas();
+		CustomValidation.valid("resolucionFAP", resolucionFAP);
+		CustomValidation.required("resolucionFAP.jefeDeServicio", resolucionFAP.jefeDeServicio);
+		CustomValidation.validValueFromTable("resolucionFAP.jefeDeServicio", resolucionFAP.jefeDeServicio);
+		dbResolucionFAP.jefeDeServicio = resolucionFAP.jefeDeServicio;
+		CustomValidation.required("resolucionFAP.prioridadFirma", resolucionFAP.prioridadFirma);
+		CustomValidation.validValueFromTable("resolucionFAP.prioridadFirma", resolucionFAP.prioridadFirma);
+		dbResolucionFAP.prioridadFirma = resolucionFAP.prioridadFirma;
+		CustomValidation.required("resolucionFAP.fechaTopeFirma", resolucionFAP.fechaTopeFirma);
+		dbResolucionFAP.fechaTopeFirma = resolucionFAP.fechaTopeFirma;
+
+		if (dbResolucionFAP.fechaTopeFirma != null) {
+			if (dbResolucionFAP.fechaTopeFirma.isBeforeNow()) {
+				play.Logger.error("La fecha tope de firma no puede ser anterior a hoy.");
+				CustomValidation.error("La fecha tope de firma no puede ser anterior a hoy.","resolucionFAP.fechaTopeFirma", resolucionFAP.fechaTopeFirma);
+			}
+			int dias = 0;
+			// Comprobar la fecha de tope de firma con el ResolucionBase
+			try {
+				dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id);
+				DateTime diaLimite = new DateTime();
+				diaLimite = diaLimite.plusDays(dias);
+				if (diaLimite.isBefore(dbResolucionFAP.fechaTopeFirma)) {
+					play.Logger.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".");
+					CustomValidation.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".", "resolucionFAP.fechaTopeFirma", resolucionFAP.fechaTopeFirma);					
+				}
+			} catch (Throwable e) {
+				e.printStackTrace();
+				play.Logger.error("No se ha podido calcular el límite de fecha para la firma."+e);
+				CustomValidation.error("No se ha podido calcular el límite de fecha para la firma", "resolucionFAP.fechaTopeFirma", resolucionFAP.fechaTopeFirma);
+			}
+			
+		}
+		
+
 	}
 	
 	@Util

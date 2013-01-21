@@ -38,6 +38,12 @@ Lista estadoLineaResolucion crearEnumerado {
 	excluida: "Excluida"
 }
 
+Lista prioridadesFirmaEnPortafirma crearEnumerado {
+	baja: "Baja"
+	media: "Media"
+	alta: "Alta"
+}
+
 // Una línea de resolución afecta a un expediente (o Solicitud)
 Entidad LineaResolucion {
 	SolicitudGenerica solicitud noConstruct
@@ -59,6 +65,9 @@ Entidad ResolucionFAP {
 	Boolean permitirPortafirma
 	Boolean permitirRegistrar
 	Boolean permitirPublicar
+	
+	String prioridadFirma
+	DateTime fechaTopeFirma
 	
 	Lista estadoResolucion estado			// borrador, creada, .... finalizada
 	
@@ -90,8 +99,8 @@ Entidad ResolucionFAP {
 	
 		//Long IDPortafirma					//ID devuelto por el Servicio WEb del Portafirmas
 		//String estadoPortafirmas			//??Pendiente de revisar
-	//SolicitudPortafirma solicitudFirmaJefeServicio
-	//SolicitudPortafirma solicitudFirmaDirector
+	SolicitudPortafirma solicitudFirmaJefeServicio
+	SolicitudPortafirma solicitudFirmaDirector
 
 	//Lista estadoResolucionConcesion estado		//Estado de la resolución: 1.0:Creada,2.0:Preparada, 3.0:En_Firma, 4.0:Firmada, 5.0:Registrada, 6.0:Publicada
 		//OneToMany LineaResolucion lineasResolucion
@@ -107,6 +116,20 @@ Entidad ResolucionFAP {
 
 }
 
+Entidad SolicitudPortafirma{
+	String codSolicitudPf
+	String estadoPf
+	String tituloPf
+	String descripcionPf
+	String solicitantePf
+	String destinatarioPf
+	String emailNotificacionPf
+	String comentarioPf
+	String urlCorreoRedireccionPf
+	String flujoAnteriorPf
+}
+	
+	
 
 Formulario Principal {
 	Pagina Resoluciones titulo="Lista de Resoluciones"{
@@ -194,6 +217,8 @@ Formulario Principal {
 
 				Form formSelectJefeServicio {
 					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Jefe de Servicio" requerido
+					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
+					Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirma titulo="Fecha Tope Firma" requerido
 					Boton enviarFirmaJSPortafirma titulo="Solicitar firma al Jefe Servicio"
 				} 
 			}

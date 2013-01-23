@@ -161,6 +161,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         }else{
             host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
         }
+        jsclient.add(host + "CAValidas.js");
         jsclient.add(host + "WS_Full.js");
         jsclient.add(host + "sfest.utils.js");
         jsclient.add(host + "sfest.base.js");

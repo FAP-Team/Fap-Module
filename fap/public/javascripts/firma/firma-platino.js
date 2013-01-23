@@ -2,7 +2,7 @@ Firma._getCertificados = function(){
 		try {			
 			initPlatinoWebSigner();
 
-			arrCAs = new Array('OU=FNMT Clase 2 CA, O=FNMT, C=ES',
+			/*arrCAs = new Array('OU=FNMT Clase 2 CA, O=FNMT, C=ES',
 					'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
 					'CN=AC Camerfirma Certificados Camerales, O=AC Camerfirma SA, SERIALNUMBER=A82743287, L=Madrid (see current address at www.camerfirma.com/address), EMAILADDRESS=ac_camerfirma_cc@camerfirma.com, C=ES',
 					'CN=AC RAIZ DNIE, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
@@ -15,7 +15,10 @@ Firma._getCertificados = function(){
 			arrRestrictions = new Array(new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
 					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
 					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'),
-					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'));
+					new Array('',''), new Array('Extension|2.5.29.15',',?(nonRepudiation)'));*/
+			
+			arrCAs = getArrayCAs();
+			arrRestrictions = getArrayRestrictions();
 			
 			var arrValidCertificates = getTrustedCertificates('PLATINO', 'firma', 'PLATINO');
 

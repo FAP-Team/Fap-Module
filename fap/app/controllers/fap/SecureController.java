@@ -2,14 +2,18 @@ package controllers.fap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
 import config.InjectorConfig;
+import es.gobcan.platino.servicios.sfst.FirmaService;
 
 
 import messages.Messages;
@@ -29,6 +33,7 @@ import play.libs.*;
 import play.utils.*;
 import properties.FapProperties;
 import security.Secure;
+import sun.security.pkcs.PKCS7;
 import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
@@ -37,7 +42,6 @@ import ugot.recaptcha.RecaptchaValidator;
 public class SecureController extends Controller {
 
 	private static Logger log = Logger.getLogger(SecureController.class);
-	
 	
 
     // ~~~ Login
@@ -186,7 +190,7 @@ public class SecureController extends Controller {
         		login();
         	}
     	}
-
+        
         if(!FapProperties.getBoolean("fap.login.type.user")){
             flash.keep("url");
             Messages.error("El acceso a la aplicación mediante usuario y contraseña está desactivado");
@@ -343,5 +347,6 @@ public class SecureController extends Controller {
     	log.debug("Redirigiendo a :" + url);
     	redirect(url);
     }
-        
+  
+    
 }

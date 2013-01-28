@@ -15,11 +15,18 @@ public class PlatinoCertificadosTest extends UnitTest {
 			return;
 		String texto = "Texto de prueba para firma";
 		String firma = FirmaClient.firmarPKCS7(texto);
-		String certificado = FirmaClient.extraerCertificadoDeFirma(firma);
-		Boolean certificadoValido = FirmaClient.validarCertificado(certificado);
-		Assert.assertNotNull(firma);
-		Assert.assertNotNull(certificado);
-		Assert.assertTrue(certificadoValido);
+		String certificado;
+		try {
+			certificado = FirmaClient.extraerCertificadoDeFirma(firma);
+			Boolean certificadoValido = FirmaClient.validarCertificado(certificado);
+			Assert.assertNotNull(firma);
+			Assert.assertNotNull(certificado);
+			Assert.assertTrue(certificadoValido);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@Test
@@ -29,9 +36,16 @@ public class PlatinoCertificadosTest extends UnitTest {
 		String texto = "Texto de prueba para firma";
 		String firma = FirmaClient.firmarPKCS7(texto);
 		Assert.assertNotNull(firma);
-		String certificado = FirmaClient.extraerCertificadoDeFirma(firma);
-		Assert.assertNotNull(certificado);
-		InfoCert info = FirmaClient.extraerInformacion(certificado);
-		Assert.assertNotNull(info);
+		String certificado;
+		try {
+			certificado = FirmaClient.extraerCertificadoDeFirma(firma);
+			Assert.assertNotNull(certificado);
+			InfoCert info = FirmaClient.extraerInformacion(certificado);
+			Assert.assertNotNull(info);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

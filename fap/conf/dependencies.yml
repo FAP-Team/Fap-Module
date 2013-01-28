@@ -37,7 +37,7 @@ require:
     - org.apache.santuario -> xmlsec 1.4.3:
         transitive: false
 
-    - es.gobcan.eadmon.aed.cliente -> eadmon-aed-cliente 1.1:
+    - es.gobcan.eadmon -> aed 20111125:
         transitive: false
 
     - es.gobcan.platino -> platino.pre 1.0:
@@ -64,6 +64,7 @@ repositories:
             - es.gobcan.eadmon -> *
             - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *
+            - es.gobcan.eadmon.aed.cliente -> *
 
     - fap-devel modules repository:
         type: http

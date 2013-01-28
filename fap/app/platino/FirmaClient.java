@@ -46,7 +46,7 @@ import es.gobcan.platino.servicios.sfst.ValidateCertResult;
 
 public class FirmaClient {
 	private static Logger log = Logger.getLogger(FirmaClient.class);
-	private static PlatinoSignatureServerBean firmaPlatino;
+	private static PlatinoSignatureServerBean firmaPlatino;	
 	
 	public static final int CERT_OK = 6;
 	public static final int CERT_NO_VALIDO = 2;
@@ -54,7 +54,8 @@ public class FirmaClient {
 	public static final int CERT_REVOCADO = 4;
 	public static final int CERT_NO_VERIFICADO = 5;
 	public static final int CADENA_CERT_NO_VALIDA = 25;
-
+	private final static String INVOKING_APP;
+	
 	static {
 		URL wsdlURL = FirmaClient.class.getClassLoader().getResource(
 				"wsdl/firma.wsdl");
@@ -82,6 +83,8 @@ public class FirmaClient {
 		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		httpConduit.setClient(httpClientPolicy);
+		
+		INVOKING_APP = FapProperties.get("fap.platino.firma.invokingApp");
 	}
 
 	public static String getVersion() {
@@ -177,7 +180,7 @@ public class FirmaClient {
 	
 	public static HashMap<String,String> extraerInfoFromFirma(String firma) {
 		try {
-			return extraerInformacionPersonal(extraerCertificado(firma));
+			return Info2HashMap(extraerCertificado(firma));
 		} catch (ParserConfigurationException e) {
 			log.error("Error al parsear al extraer el certificado "+e);
 		} catch (SAXException e) {
@@ -188,6 +191,53 @@ public class FirmaClient {
 		return null;
 	}
 	
+	private static HashMap<String, String> Info2HashMap(InfoCert infocert) {
+		HashMap<String, String> result = new HashMap<String, String>();
+		if (!infocert.nombrecompleto.isEmpty())
+			result.put("nombrecompleto", infocert.nombrecompleto);
+		if (!infocert.nombre.isEmpty())
+			result.put("nombre", infocert.nombre);
+		if (!infocert.fullname.isEmpty())
+			result.put("fullname", infocert.fullname);
+		if (!infocert.entidad.isEmpty())
+			result.put("entidad", infocert.entidad);
+		if (!infocert.apellido1.isEmpty())
+			result.put("apellido1", infocert.apellido1);
+		if (!infocert.apellido2.isEmpty())
+			result.put("apellido2", infocert.apellido2);
+		if (!infocert.apellidos.isEmpty())
+			result.put("apellidos", infocert.apellidos);
+		if (!infocert.nif.isEmpty())
+			result.put("nif", infocert.nif);
+		if (!infocert.cif.isEmpty())
+			result.put("cif", infocert.cif);
+		if (!infocert.tipo.isEmpty())
+			result.put("tipo", infocert.tipo);
+		if (!infocert.email.isEmpty())
+			result.put("email", infocert.email);
+		if (!infocert.cargo.isEmpty())
+			result.put("cargo", infocert.cargo);
+		if (!infocert.departamento.isEmpty())
+			result.put("departamento", infocert.departamento);
+		if (!infocert.finalidad.isEmpty())
+			result.put("finalidad", infocert.finalidad);
+		if (!infocert.organizacion.isEmpty())
+			result.put("organizacion", infocert.organizacion);
+		if (!infocert.serialNumber.isEmpty())
+			result.put("serialnumber", infocert.serialNumber);
+		if (!infocert.issuer.isEmpty())
+			result.put("issuer", infocert.issuer);
+		if (!infocert.subject.isEmpty())
+			result.put("subject", infocert.subject);
+		if (!infocert.notBefore.isEmpty())
+			result.put("notBefore", infocert.notBefore);
+		if (!infocert.notAfter.isEmpty())
+			result.put("notAfter", infocert.notAfter);
+
+		return result;
+	}
+
+	@Deprecated
 	private static HashMap<String,String> extraerInformacionPersonal(String certificado) {
 		try {
 			List<StringArray> certificadoInfo = getCertInfo(certificado);
@@ -226,99 +276,53 @@ public class FirmaClient {
 	 */
 	public static Firmante validateXMLSignature(byte[] contenidoDoc, String firma) {// throws ValidaFirmaException {
 		try {
+			//Valida la firma
+			if (verificarContentSignature(contenidoDoc, firma.getBytes())) {
 
-			String certificado = extraerCertificado(firma);
-			play.Logger.debug("Certificado extraido de la firma");
-			ValidateCertResult result = validarCertificadoVR(certificado);
-			play.Logger.debug("Validar certificadoVR");
-			
-			if (result.getCode() == CERT_OK) {
-				//Valida la firma
-				play.Logger.debug("Resultado de Validar certificadoVR OK");
-				if (verificarContentSignature(contenidoDoc, firma.getBytes())) {
-					play.Logger.debug("Firma válida ");
-					//Firma válida, extrae la informacion del certificado
-					HashMap<String,String> certData = extraerInfoFromFirma(firma);
-					Firmante firmante = null;
-					
-					
-					//El certificado es de un NIF o NIE
-					if (certData != null && certData.containsKey("NIF")) {
-						play.Logger.debug("El certificado es un NIF o un CIE");
-						
-						firmante = new Firmante();
-						firmante.idtipo = "nif";
-						firmante.idvalor = certData.get("NIF");
-						
-						if (certData.containsKey("NOMBRECOMPLETO")){ 
-							firmante.nombre = certData.get("NOMBRECOMPLETO");
-						}else if (certData.containsKey("APELLIDOS")){ 
-							firmante.nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDOS");
-						}else if (certData.containsKey("APELLIDO1")) {
-							String nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDO1");
-							if (certData.containsKey("APELLIDO2"))
-								nombre = nombre + " " + certData.get("APELLIDO2"); 
-							firmante.nombre = nombre;
-						}
-					}
-					else if (certData != null && certData.containsKey("CIF")) {
-						play.Logger.debug("El certificado es un CIF");
-						
-						firmante = new Firmante();
-						firmante.idtipo = "cif";
-						firmante.idvalor = certData.get("CIF");
-						
-						if (certData.containsKey("NOMBRECOMPLETO")){ 
-							firmante.nombre = certData.get("NOMBRECOMPLETO");
-						}else if (certData.containsKey("APELLIDOS")){ 
-							firmante.nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDOS");
-						}else if (certData.containsKey("APELLIDO1")) {
-							String nombre = certData.get("NOMBRE") + " " + certData.get("APELLIDO1");
-							if (certData.containsKey("APELLIDO2"))
-								nombre = nombre + " " + certData.get("APELLIDO2"); 
-							firmante.nombre = nombre;
-						}
-					}
-					play.Logger.debug("El firmante es "+firmante.idvalor);
-					return firmante;
-				}
-				return null;
-			} else {
-				switch (result.getCode()) {
-					case CERT_NO_VALIDO: log.error("certificadoNoValido"); break;
-					case CERT_NO_CONFIANZA: log.error("certificadoNoConfianza"); break;
-					case CERT_NO_VERIFICADO: log.error("certificadoNoVerificado"); break;
-					case CERT_REVOCADO: log.error("certificadoRevocado"); break;
-					case CADENA_CERT_NO_VALIDA: log.error("cadenaNoValida"); break;
-				}
+				//Firma válida, extrae la informacion del certificado
+				InfoCert certData = extraerCertificado(firma);
+				Firmante firmante = new Firmante();
+				firmante.idtipo = certData.getIdTipo();
+				firmante.idvalor = certData.getId();
+				firmante.nombre = certData.getNombreCompleto();
+
+				return firmante;
 			}
-		} catch (ParserConfigurationException e) {
-			log.error("Error al parsear al extraer el certificado "+e);
-			//throw new ValidaFirmaException();
-		} catch (SAXException e) {
-			log.error("Error al parsear al extraer el certificado. REINSTALAR EL APPLET O ACTIVEX "+e);
-			//throw new ValidaFirmaException();
-		} catch (IOException e) {
-			log.error("Error al parsear al extraer el certificado "+e);
-			//throw new ValidaFirmaException();
-		}
-		catch (Exception e) {
-			log.error("Error en validateXMLSignature "+e);
+			return null;
+		}catch (Exception e) {
+			play.Logger.error("Error en validateXMLSignature "+e);
 			Messages.error("Error al validar la firma");
-//			throw new ValidaFirmaException();
 		}
+		play.Logger.error("Error en validateXMLSignature, la firma no es válida.");
+		Messages.error("La firma no es válida.");
+		
 		return null;
 	}
+
 	
-	public static String extraerCertificado(String firma) throws ParserConfigurationException, SAXException, IOException {
-		//"Extrayendo el certificado de la firma 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db  = dbf.newDocumentBuilder();
-        org.w3c.dom.Document doc = db.parse(new InputSource(new StringReader(firma)));
-        //Pillamos certificado
-        Element x509Certificate = (Element) doc.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "X509Certificate").item(0);
-        return x509Certificate.getTextContent();
+	public static InfoCert extraerCertificado(String firma) throws ParserConfigurationException, SAXException, IOException {
+		String certificado;
+		try {
+			 certificado = extraerCertificadoDeFirma(firma);
+			 boolean certificadoValido = isValidCertificado(certificado);
+		     if(!certificadoValido)
+		         throw new Exception("El certificado no es válido");
+		     return extraerInformacion(certificado);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+       
+	}
+	
+	private static boolean isValidCertificado(String certificado) throws Exception{
+		try {
+			ValidateCertResult result = firmaPlatino.validateCert(certificado, INVOKING_APP);
+			return result.getCode() == 6; //Codigo 6 Certificado OK
+		} catch (Exception e) {
+		    throw new Exception("Error validando el certificado", e);
+		}
 	}
 	
 	public static boolean isFirmanteCertificate(String tipoDoc, String docId, FirmanteCertificado firmante) {
@@ -331,4 +335,5 @@ public class FirmaClient {
 			return docId.equals(firmante.getDocumento());
 		return false;
 	}
+	
 }

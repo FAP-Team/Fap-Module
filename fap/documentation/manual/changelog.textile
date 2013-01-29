@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 2.1.2RC3
+
+* Actualización de librerías
+* Verificación: Permite recuperar documentos noProcede de verificaciones anteriores.
+* Verificación: Se añade un documento de verificación con el estado noProcede por cada tipo de documento encontrado de tipo múltiple.
+* Añadido ejemplo de firmas múltiples
+
 h3. Versión 2.1.2RC2
 
 * Fixed acciones antes de los botones de la tabla.

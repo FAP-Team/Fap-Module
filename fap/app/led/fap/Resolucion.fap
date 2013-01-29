@@ -44,6 +44,17 @@ Lista prioridadesFirmaEnPortafirma crearEnumerado {
 	alta: "Alta"
 }
 
+Lista estadoPortafirma crearEnumerado {
+	Borrador: "Borrador"
+	Validandofirmas: "Validando firmas"
+	Pendiente: "Pendiente"
+	Enviada: "Enviada"
+	Firmadayfinalizada: "Firmada y finalizada"
+	Rechazada: "Rechazada"
+	Cerrada: "Cerrada"
+	Pendientevalidacionfirmas: "Perndiente de validación de firmas"
+}
+
 // Una línea de resolución afecta a un expediente (o Solicitud)
 Entidad LineaResolucion {
 	SolicitudGenerica solicitud noConstruct
@@ -79,13 +90,21 @@ Entidad ResolucionFAP {
 	OneToMany LineaResolucion lineasResolucion
 	
 	Boolean conBaremacion default = 'false'
-	
-	
-	Integer  folio_inicio							// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
-	Integer  folio_final							// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
-	Integer  numero									// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
-	DateTime fechaResolucion						// Fecha de la resolución
-	
+
+	String tituloInterno					// Obligatorio.
+	String sintesis
+	String observaciones
+	Integer folio_inicio					// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	Integer folio_final						// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	Integer numero_folios
+	Integer numero							// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
+	DateTime fechaRegistroResolucion		// Fecha de la resolución
+	String areasResolucion
+	String tiposResolucion
+
+	String idSolicitudFirma
+	String codigoResolucion
+
 	//DateTime fechaFinAceptacion						// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
 	//DateTime fechaPublicacion						// Fecha de Publicación en el tablón de anuncios de la sede
 	//DateTime fechaBOC								// Fecha de Publicación en el BOC
@@ -96,6 +115,7 @@ Entidad ResolucionFAP {
 	OneToMany Documento docConsultaPortafirmasResolucion //Documentos de Consulta Portafirmas.
 
 	Registro registro
+	OneToMany Interesado destinatarios transient
 	
 		//Long IDPortafirma					//ID devuelto por el Servicio WEb del Portafirmas
 		//String estadoPortafirmas			//??Pendiente de revisar
@@ -112,7 +132,6 @@ Entidad ResolucionFAP {
 	//Firmantes firmantesJefeDeServicio
 		////Para poder firmar y crear el el metodo calcular firmantes
 		//Solicitante solicitanteJefeServicio transient
-
 
 }
 
@@ -132,7 +151,7 @@ Entidad SolicitudPortafirma{
 	
 
 Formulario Principal {
-	Pagina Resoluciones titulo="Lista de Resoluciones"{
+	Pagina Resoluciones titulo="Lista de Resoluciones" {
 		Tabla listaResoluciones titulo="Resoluciones" campo=ResolucionFAP paginaCrear=NuevaResolucion paginaEditar=EditarResolucion
 		{
 			Columna campo=ResolucionFAP.id titulo="ID"
@@ -147,15 +166,20 @@ Formulario Principal {
 		Grupo gIniciarTipo titulo="Seleccionar Resolución" {
 			Combo campo=ResolucionFAP.tipoDefinidoResolucion titulo="Resolución"
 			Combo campo=ResolucionFAP.tipo titulo="Tipo"
+			Texto campo=ResolucionFAP.tituloInterno titulo="Título"
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción" requerido
+			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
+			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis"
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución"
+			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución"
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
 	}
-	
+
 	Pagina EditarResolucion titulo="Resolución" campo=ResolucionFAP perteneceA="Principal" noForm {
 		
-		Grupo mostrarSiCampo ResolucionFAP.modalidad = "resolucionSimple" borde=false {
-			Tabla tablaExpedientesUnico campo=SolicitudGenerica seleccionable = "Crear Resolucion" {
+		Grupo titulo="Seleccionar expediente" permiso=seleccionarUnExpediente {
+			Tabla tablaExpedientesUnico campo=SolicitudGenerica seleccionable="Crear Resolucion" {
 				Columna titulo = "ID" campo=SolicitudGenerica.id ancho = "40"
 				Columna titulo = "Expediente" campo=SolicitudGenerica.expedienteAed.idAed
 				Columna titulo = "Estado Interno" campo=SolicitudGenerica.estadoValue ancho = "120"
@@ -163,7 +187,7 @@ Formulario Principal {
 			}
 		}
 		
-		Grupo mostrarSiCampo ResolucionFAP.modalidad = "resolucionMultiple" borde=false  {
+		Grupo mostrarSiCampo ResolucionFAP.modalidad="resolucionMultiple" borde=false  {
 			Grupo titulo="Expedientes a Resolver" permiso=seleccionarExpedientes {
 			
 				Form formSeleccionarExpedientes {
@@ -182,8 +206,8 @@ Formulario Principal {
 			}
 			
 			Grupo gCrearResolucion titulo="Preparar la Resolución" permiso=noSeleccionarExpedientes {
-				Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
-				Form crearResolucion {
+				Wiki { "Si su resolución está lista para crearla, pulse el siguiente botón." }
+				Form frmCrearResolucion {
 					Boton  btnCrearResolucion titulo="Crear Resolución"
 				}
 			}
@@ -191,7 +215,7 @@ Formulario Principal {
 		
     	Grupo gCerrarResolucion titulo="Preparar la Resolución" permiso=prepararResolucion {
 			Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
-			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
+			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" popupEditar=ModificarEstadoExpediente popupLeer=VerExpediente {
 				Columna campo=LineaResolucion.id titulo="Id"
 				Columna campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
 				Columna campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
@@ -205,6 +229,17 @@ Formulario Principal {
 		}
 		
 		Grupo gPrepararSolicitudFirmaPortafirma titulo="Preparar Solicitud de Firma" permiso=solicitudFirmaResolucion {
+			
+			// Si el Agente es un JefeDeServicio, puede firmar directamente
+			Grupo grSolicitarFirmaPorJefeSevicio borde=false permiso=portafirmaJefeServicio {
+				Grupo grFirmaJefeServicio borde=false {
+	     			Form frmFirmarJefeServicio redirigir=EditarResolucion {
+						FirmaSimple firFirmarResolucion titulo="Firmar Resolucion" documento=ResolucionFAP.registro.oficial
+							listaFirmantes=ResolucionFAP.registro.firmantes.todos calcularFirmantes="resolucionFAP.calcularFirmantes()"
+					}
+					Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+				}
+			}
 			
 			Grupo gEnviarFirmaJSPortafirma permiso=firmaJefeServicio {
 				
@@ -237,34 +272,33 @@ Formulario Principal {
 			}
 			
 			Grupo gEsperaFirmaDirectorPortafirma permiso=esperaFirmaDirector titulo="Firma Director"{
-				Wiki { "_El Director aún no ha firmado en el portafirma_" } 
+				Wiki { "_El Director aún no ha firmado en el portafirma. Si quiere comprobar si ya se firmó darle al siguiente botón._" }
+				Form frmComprobarFirmas {
+					Boton comprobarFirmado titulo="Comprobar"
+				}
 			}
 		}
 		
 		Grupo gRegistrarResolucion titulo="Registro de la Resolución" permiso=registrarResolucion {
 			Wiki { "Registrar resolución" }
+			Grupo borde=false {
+				Enlace campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Obtener Documento Resolución" destino="_blank" estilo="boton"
+			}
+			
+			Form enviarRegistrarResolucion {
+      			Boton btnRegistrarResolucion titulo="Registrar Resolución"
+    		}
 		}
 		
 		Grupo gPublicarResolucion titulo="Publicar la Resolución" permiso=publicarResolucion {
-			Wiki { "Registrar resolución" }
+			Wiki { "Publicar resolución" }
 		}
 		
 		Grupo gFinalizarResolucion titulo="Finalizar la Resolución" permiso=finalizarResolucion {
 			Wiki { "Finalizar resolución" }
 		}
 		
-		// Si el Agente es un JefeDeServicio, puede firmar directamente
-		/*Grupo grSolicitarFirmaPorJefeSevicio borde=false permiso=portafirmaJefeServicio {
-			Grupo grFirmaJefeServicio borde=false {
-     			Form frmFirmarJefeServicio redirigir=EditarResolucion {
-					FirmaSimple firFirmarResolucion titulo="Firmar Resolucion" documento=ResolucionFAP.registro.oficial
-						listaFirmantes=ResolucionFAP.registro.firmantes.todos calcularFirmantes="resolucionFAP.calcularFirmantes(AgenteController.getAgente())"
-				}
-				Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
-			}
-		}*/
-		
-		Grupo gDatosResolucion titulo="Datos de la Resolución actual" permiso=noEditable {
+		Grupo gDatosResolucion titulo="Datos de la Resolución actual" permiso=mostrarDatosResolucion {
 			Combo campo=ResolucionFAP.estado titulo="Estado"
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			Combo campo=ResolucionFAP.tipo titulo="Tipo de Resolución" requerido
@@ -280,14 +314,32 @@ Formulario Principal {
 			}
 			Texto campo=ResolucionFAP.folio_inicio titulo="Folio Inicial"
 			Texto campo=ResolucionFAP.folio_final titulo="Folio Final"
-			Texto campo=ResolucionFAP.numero titulo="Numero"
-			Fecha campo=ResolucionFAP.fechaResolucion titulo="Fecha Resolución"
+			Texto campo=ResolucionFAP.codigoResolucion titulo="Numero"
+			Fecha campo=ResolucionFAP.fechaRegistroResolucion titulo="Fecha Resolución"
 			Wiki { " Faltan más cosas ................ " }
 		}
-		
-		
 	}
 	
+	Popup ModificarEstadoExpediente campo=ResolucionFAP.lineasResolucion {
+		Grupo grNoEditable borde=false permiso=noEditable {
+			Texto campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
+			Texto campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
+			Texto campo=LineaResolucion.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+			Texto campo=LineaResolucion.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+		}
+		Grupo grEditable borde=false {
+			Combo campo=LineaResolucion.estado titulo="Estado"
+		}
+	}
+	
+	Popup VerExpediente campo=ResolucionFAP.lineasResolucion {
+		Texto campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
+		Texto campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
+		Texto campo=LineaResolucion.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+		Texto campo=LineaResolucion.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+		Combo campo=LineaResolucion.estado titulo="Estado"
+	}
+
 	Pagina DocConsultaPortafirmaCrear campo=ResolucionFAP.docConsultaPortafirmasResolucion {
 		Accion crear redirigir=EditarResolucion
 		SubirArchivo file campo=Documento requerido /*tramite="ESTANCIAS"*/
@@ -313,6 +365,15 @@ Permiso sinIniciarResolucion {
 		visible
 }
 
+Permiso mostrarDatosResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado != "borrador" and
+		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
+	return 
+		visible
+}
 
 Permiso seleccionarExpedientes {
 	vars
@@ -320,7 +381,7 @@ Permiso seleccionarExpedientes {
 	when
 		resolucion.estado = "borrador" and
 		resolucion.tipoMultiple = "parcial" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
 	return
 		all
 }
@@ -329,13 +390,23 @@ Permiso portafirmaJefeServicio {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo = "jefeServicio"
+		agente.rolActivo = "jefeservicio"
 		and resolucion.firmarJefeServicio = "true"
 		and resolucion.estado = "preparada"
 	return
 		all
 }
 
+Permiso seleccionarUnExpediente {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.modalidad="resolucionSimple" and
+		resolucion.estado = "borrador" and
+		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
+	return
+		all
+}
 
 Permiso noSeleccionarExpedientes {
 	vars
@@ -343,7 +414,7 @@ Permiso noSeleccionarExpedientes {
 	when
 		resolucion.estado = "borrador" and
 		resolucion.tipoMultiple = "total" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
 	return
 		all
 }
@@ -352,7 +423,7 @@ Permiso solicitudFirmaResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		agente.rolActivo in ("gestor", "administrador", "jefeservicio")
 		and resolucion.estado in ("preparada", "pendienteFirmaJefeServicio", "firmadaJefeServicio", "pendienteFirmaDirector")
 	return
 		all
@@ -363,7 +434,7 @@ Permiso prepararResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado = "creada" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
 	return
 		all
 }
@@ -377,7 +448,7 @@ Permiso firmaJefeServicio {
 	when
 		resolucion.estado in ("preparada")
 		and resolucion.firmarJefeServicio = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
 	return
 		all
 	when
@@ -393,7 +464,7 @@ Permiso esperaFirmaJefeServicio {
 	when
 		resolucion.estado in ("pendienteFirmaJefeServicio")
 		and resolucion.firmarJefeServicio = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
 	return
 		all
 	when
@@ -413,7 +484,7 @@ Permiso firmaDirector {
 	when
 		resolucion.estado in ("firmadaJefeServicio")
 		and resolucion.firmarDirector = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
 	return
 		all
 	when
@@ -429,7 +500,7 @@ Permiso esperaFirmaDirector {
 	when
 		resolucion.estado in ("pendienteFirmaDirector")
 		and resolucion.firmarDirector = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
 	return
 		all
 	when
@@ -444,7 +515,7 @@ Permiso registrarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("firmada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
 	return
 		all
 }
@@ -454,7 +525,7 @@ Permiso publicarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("registrada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
 	return
 		all
 }
@@ -464,7 +535,7 @@ Permiso finalizarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("publicada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
 	return
 		all
 }

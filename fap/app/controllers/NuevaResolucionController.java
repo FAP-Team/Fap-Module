@@ -1,12 +1,29 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.joda.time.DateTime;
+
+import play.modules.guice.InjectSupport;
 import play.mvc.Util;
+import registroresolucion.AreaResolucion;
+import registroresolucion.TipoResolucion;
+import services.RegistroLibroResolucionesService;
+import services.RegistroLibroResolucionesServiceException;
+import tags.ComboItem;
 import messages.Messages;
 import models.ResolucionFAP;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.NuevaResolucionControllerGen;
 
+@InjectSupport
 public class NuevaResolucionController extends NuevaResolucionControllerGen {
+	
+	@Inject
+    public static RegistroLibroResolucionesService registroLibroResolucionesService;
 	
 	@Util
 	public static Long crearLogica(ResolucionFAP resolucionFAP) {
@@ -31,6 +48,7 @@ public class NuevaResolucionController extends NuevaResolucionControllerGen {
 		}
 		
 		if (!Messages.hasErrors()) {
+			dbResolucionFAP.fechaIncioPreparacion = new DateTime();
 			dbResolucionFAP.save();
 			idResolucionFAP = dbResolucionFAP.id;
 			ResolucionControllerFAP.inicializaResolucion(dbResolucionFAP.id);
@@ -40,4 +58,33 @@ public class NuevaResolucionController extends NuevaResolucionControllerGen {
 		}
 		return idResolucionFAP;
 	}
+	
+	public static List<ComboItem> areasResolucion() {
+		List<ComboItem> result = new ArrayList<ComboItem>();
+		List<AreaResolucion> listaAreas = null;
+		try {
+			listaAreas = registroLibroResolucionesService.leerAreas();
+		} catch (RegistroLibroResolucionesServiceException e) {
+			play.Logger.error("Error al obtener las áreas de resolución");
+		}
+		for (AreaResolucion area: listaAreas) {
+			result.add(new ComboItem(area.codigo, area.descripcion));
+		}
+		return result;
+	}
+	
+	public static List<ComboItem> tiposResolucion() {
+		List<ComboItem> result = new ArrayList<ComboItem>();
+		List<TipoResolucion> listaTipos = null;
+		try {
+			listaTipos = registroLibroResolucionesService.leerTipos();
+		} catch (RegistroLibroResolucionesServiceException e) {
+			play.Logger.error("Error al obtener las áreas de resolución");
+		}
+		for (TipoResolucion tipo: listaTipos) {
+			result.add(new ComboItem(tipo.codigo, tipo.descripcion));
+		}
+		return result;
+	}
+	
 }

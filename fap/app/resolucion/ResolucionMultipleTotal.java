@@ -18,7 +18,6 @@ public class ResolucionMultipleTotal extends ResolucionBase {
 	
 	@Override
 	public void initResolucion(Long idResolucion) {
-		System.out.println("------->initResolucion del ResolucionMultipleTotal");
 		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
 		resolucion.modalidad = ModalidadResolucionEnum.resolucionMultiple.name();
 		resolucion.tipoMultiple = EstadoTipoMultipleEnum.total.name();

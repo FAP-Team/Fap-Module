@@ -6,11 +6,14 @@ import javax.xml.ws.BindingProvider;
 
 import models.ResolucionFAP;
 
+import enumerado.fap.gen.EstadoPortafirmaEnum;
 import es.gobcan.aciisi.portafirma.ws.PortafirmaException;
 import es.gobcan.aciisi.portafirma.ws.PortafirmaService;
 import es.gobcan.aciisi.portafirma.ws.PortafirmaSoapService;
 import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudResponseType;
 import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudType;
+import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
+import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudType;
 
 import platino.PlatinoProxy;
 import properties.FapProperties;
@@ -69,6 +72,24 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	public String obtenerVersion() throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma) throws PortafirmaFapServiceException {
+		ObtenerEstadoSolicitudType o = new ObtenerEstadoSolicitudType();
+		o.setIdSolicitud(idSolicitudFirma);
+		ObtenerEstadoSolicitudResponseType response;
+		try {
+			response = portafirmaService.obtenerEstadoSolicitud(o);
+			play.Logger.info("¿La resolución ha sido firmada en el portafirma? Está en estado " + response.getEstado());
+		} catch (PortafirmaException e) {
+			throw new PortafirmaFapServiceException(e.getMessage(), e);
+		}
+		// TODO: dependiendo del valor de response devolver si está firmada o no.
+		if (response.getEstado().equals(EstadoPortafirmaEnum.Firmadayfinalizada))
+			return true;
+		
+		return false;
 	}
 
 }

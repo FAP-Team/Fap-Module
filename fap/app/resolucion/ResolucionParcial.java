@@ -18,7 +18,6 @@ public class ResolucionParcial extends ResolucionMultipleTotal {
 	
 	@Override
 	public void initResolucion(Long idResolucion) {
-		System.out.println("------->initResolucion del ResolucionParcial");
 		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
 		resolucion.modalidad = ModalidadResolucionEnum.resolucionMultiple.name();
 		resolucion.tipoMultiple = EstadoTipoMultipleEnum.parcial.name();

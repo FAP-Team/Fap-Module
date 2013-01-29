@@ -35,4 +35,9 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 		return VERSION;
 	}
 
+	@Override
+	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma) throws PortafirmaFapServiceException {
+		return true;
+	}
+
 }

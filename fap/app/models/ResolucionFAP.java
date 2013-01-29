@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+import controllers.fap.ResolucionControllerFAP;
 
 // === IMPORT REGION END ===
 
@@ -64,15 +65,31 @@ public class ResolucionFAP extends FapModel {
 
 	public Boolean conBaremacion;
 
+	public String tituloInterno;
+
+	public String sintesis;
+
+	public String observaciones;
+
 	public Integer folio_inicio;
 
 	public Integer folio_final;
 
+	public Integer numero_folios;
+
 	public Integer numero;
 
-	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaResolucion"), @Column(name = "fechaResolucionTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRegistroResolucion"), @Column(name = "fechaRegistroResolucionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
-	public DateTime fechaResolucion;
+	public DateTime fechaRegistroResolucion;
+
+	public String areasResolucion;
+
+	public String tiposResolucion;
+
+	public String idSolicitudFirma;
+
+	public String codigoResolucion;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaIncioPreparacion"), @Column(name = "fechaIncioPreparacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
@@ -84,6 +101,10 @@ public class ResolucionFAP extends FapModel {
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
+
+	@OneToMany
+	@Transient
+	public List<Interesado> destinatarios;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SolicitudPortafirma solicitudFirmaJefeServicio;
@@ -111,6 +132,9 @@ public class ResolucionFAP extends FapModel {
 		else
 			registro.init();
 
+		if (destinatarios == null)
+			destinatarios = new ArrayList<Interesado>();
+
 		if (solicitudFirmaJefeServicio == null)
 			solicitudFirmaJefeServicio = new SolicitudPortafirma();
 		else
@@ -130,10 +154,29 @@ public class ResolucionFAP extends FapModel {
 	 * @param agente
 	 * @return
 	 */
-	public List<Firmante> calcularFirmantes(Agente agente) {
+	public List<Firmante> calcularFirmantes() {
+		Firmantes firmantes = new Firmantes();
+		List<Agente> agentes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'jefeServicio'").fetch();
+		for (int i = 0; i < agentes.size(); i++) {
+			Firmante firmante = new Firmante(agentes.get(i));
+			firmantes.todos.add(firmante);
+		}
 
-		return null;
+		return firmantes.todos;
 	}
+
+	public List<Interesado> getInteresados(Long idResolucion) {
+		List<Interesado> listaInteresados = new ArrayList<Interesado>();
+		try {
+			listaInteresados = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getInteresados", idResolucion);
+		} catch (Throwable e) {
+			play.Logger.error("Error obteniendo los interesados", e);
+		}
+
+		return listaInteresados;
+
+	}
+
 	// === MANUAL REGION END ===
 
 }

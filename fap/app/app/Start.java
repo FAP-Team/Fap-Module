@@ -76,6 +76,8 @@ import services.BaremacionService;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.NotificacionService;
+import services.PublicarService;
+import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
@@ -214,6 +216,12 @@ public class Start extends Job {
 		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();
+		
+		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
+		publicarService.mostrarInfoInyeccion();
+		
+		RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
+		registroLibroResolucionesService.mostrarInfoInyeccion();
 		
 		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
         if(assignableClasses.size() > 1){

@@ -9,11 +9,15 @@ import security.SecureFapGen;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.PortafirmaFapService;
+import services.PublicarService;
+import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemNotificacionServiceImpl;
 import services.filesystem.FileSystemPortafirmaImpl;
+import services.filesystem.FileSystemPublicarServiceImpl;
+import services.filesystem.FileSystemRegistroLibroResolucionesServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.notificacion.NotificacionServiceImpl;
 import services.NotificacionService;
@@ -29,6 +33,8 @@ public class FapModule extends PlayAbstractModule {
 		registro();
 		notificacion();
 		portafirma();
+		publicar();
+		registroLibroResoluciones();
 	}
 	
 	protected void portafirma() {
@@ -49,6 +55,14 @@ public class FapModule extends PlayAbstractModule {
 	   
 	protected void registro(){
 		bindLazySingletonOnDev(RegistroService.class, FileSystemRegistroService.class);
+	}
+	
+	protected void publicar() {
+		bindLazySingletonOnDev(PublicarService.class, FileSystemPublicarServiceImpl.class);
+	}
+	
+	protected void registroLibroResoluciones() {
+		bindLazySingletonOnDev(RegistroLibroResolucionesService.class, FileSystemRegistroLibroResolucionesServiceImpl.class);
 	}
 	
 	protected void secure() {

@@ -2,28 +2,53 @@ package controllers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
 
+import javax.inject.Inject;
+
+import platino.FirmaUtils;
+import play.modules.guice.InjectSupport;
 import play.mvc.Util;
 
+import registroresolucion.RegistroResolucion;
 import reports.Report;
 import resolucion.ResolucionBase;
+import services.PortafirmaFapService;
+import services.PortafirmaFapServiceException;
+import services.RegistroLibroResolucionesService;
+import services.RegistroLibroResolucionesServiceException;
+import services.RegistroService;
+import services.portafirma.PortafirmaImpl;
+import services.responses.PortafirmaCrearSolicitudResponse;
+import sun.net.www.content.text.plain;
 import tags.ComboItem;
 import validation.CustomValidation;
 
 import messages.Messages;
 import models.Agente;
+import models.JustificanteRegistro;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.EditarResolucionControllerGen;
 import enumerado.fap.gen.EstadoResolucionEnum;
 
+@InjectSupport
 public class EditarResolucionController extends EditarResolucionControllerGen {
 
+	@Inject
+    public static RegistroService registroService;
+	
+	@Inject
+    public static PortafirmaFapService portafirmaService;
+	
+	@Inject
+    public static RegistroLibroResolucionesService registroLibroResolucionesService;
+	
 	/**
 	 * Expedientes que se muestran en la tabla para poder seleccionar
 	 */
@@ -70,10 +95,10 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			ResolucionBase resolBase = null;
 			try {
 				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
+				resolBase.prepararResolucion(idResolucionFAP);
 			} catch (Throwable e1) {
 				play.Logger.error("Error obteniendo tipo de resolución: " + e1.getMessage());
 			}
-			resolBase.prepararResolucion(idResolucionFAP);
 		}
 
 		if (!Messages.hasErrors()) {
@@ -89,34 +114,53 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void crearResolucion(Long idResolucionFAP, String btnCrearResolucion) {
+	public static void frmCrearResolucion(Long idResolucionFAP, String btnCrearResolucion) {
 		checkAuthenticity();
-		if (!permisoCrearResolucion("editar")) {
+		if (!permisoFrmCrearResolucion("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
 		if (!Messages.hasErrors()) {
 			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
-			resolucion.estado = EstadoResolucionEnum.creada.name();
-			resolucion.save();
 			ResolucionBase resolBase = null;
 			try {
 				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
 				resolBase.setLineasDeResolucion(idResolucionFAP);
+				ResolucionBase.avanzarFase_Borrador(resolucion);
 			} catch (Throwable e) {
 				play.Logger.error("Error obteniendo tipo de resolución: " + e.getMessage());
 			}
 		}
 
 		if (!Messages.hasErrors()) {
-			EditarResolucionController.crearResolucionValidateRules();
+			EditarResolucionController.frmCrearResolucionValidateRules();
 		}
 		if (!Messages.hasErrors()) {
 
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
 		} else
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
-		EditarResolucionController.crearResolucionRender(idResolucionFAP);
+		EditarResolucionController.frmCrearResolucionRender(idResolucionFAP);
+	}
+	
+	public static void crearResolucion(List<Long> idsSeleccionados) {
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		Long idResolucionFAP = ids.get("idResolucionFAP");
+		if (idsSeleccionados == null) {
+			play.Logger.error("Se debe seleccionar un expediente");
+			Messages.error("Se debe seleccionar un expediente");
+			Messages.keep();
+		} else if (idsSeleccionados.size() > 1) {
+			play.Logger.error("Se debe seleccionar solo un expediente");
+			Messages.error("Se debe seleccionar solo un expediente");
+			Messages.keep();
+		} else {
+			ResolucionBase resolBase = ResolucionControllerFAP.getResolucionObject(idResolucionFAP);
+			resolBase.setLineasDeResolucion(idResolucionFAP);
+			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+			ResolucionBase.avanzarFase_Borrador(resolucion);
+		}
+		index("editar", idResolucionFAP);
 	}
 	
 	public static List<ComboItem> selectJefeServicio() {
@@ -163,9 +207,17 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			EditarResolucionController.formSelectJefeServicioValidateRules(dbResolucionFAP, resolucionFAP);
 			
 			// TODO: Enviar al portafirma los documentos, indicando qué jefe de Servicio lo debe Firmar
+			dbResolucionFAP.save();
+			try {
+				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
+				dbResolucionFAP.idSolicitudFirma = response.getIdSolicitud();
+			} catch (PortafirmaFapServiceException e) {
+				play.Logger.error("Error al enviar los documentos al portafirma", e);
+				Messages.error("Error al enviar los documentos al portafirma");
+			}
 		}
 		if (!Messages.hasErrors()) {
-			dbResolucionFAP.estado = EstadoResolucionEnum.pendienteFirmaJefeServicio.name();
+			ResolucionBase.avanzarFase_Preparada_Portafirma(dbResolucionFAP);
 			dbResolucionFAP.save();
 			Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma del Jefe de Servicio");
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
@@ -228,7 +280,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			EditarResolucionController.firmaDirectorPortafirmaValidateRules();
 		}
 		if (!Messages.hasErrors()) {
-			dbResolucionFAP.estado = EstadoResolucionEnum.pendienteFirmaDirector.name();
+			ResolucionBase.avanzarFase_FirmadaJefeServicio(dbResolucionFAP);
 			dbResolucionFAP.save();
 			Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma del Director");
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
@@ -236,4 +288,94 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		EditarResolucionController.firmaDirectorPortafirmaRender(idResolucionFAP);
 	}
+	
+	@Util
+	public static void firFirmarResolucionFrmFirmarJefeServicio(Long idResolucionFAP, String firma) {
+		ResolucionFAP resolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+
+		play.Logger.info("Metodo: firFirmarResolucionFrmFirmarJefeServicio");
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		Map<String, Object> vars = new HashMap<String, Object>();
+		if (secure.checkAcceso("editarFirma", "editar", ids, vars)) {
+			if (resolucionFAP.registro.firmantes.todos == null || resolucionFAP.registro.firmantes.todos.size() == 0) {
+				resolucionFAP.registro.firmantes.todos = resolucionFAP.calcularFirmantes();
+				resolucionFAP.registro.firmantes.save();
+			}
+			FirmaUtils.firmar(resolucionFAP.registro.oficial, resolucionFAP.registro.firmantes.todos, firma, null);
+		} else {
+			//ERROR
+			Messages.error("No tiene permisos suficientes para realizar la acción++");
+		}
+		if (!Messages.hasErrors()) {
+
+			resolucionFAP.registro.fasesRegistro.firmada = true;
+			resolucionFAP.save();
+			ResolucionBase.avanzarFase_Preparada_FirmaJefeServicio(resolucionFAP);
+		}
+	}
+	
+	@Util
+	public static void frmComprobarFirmas(Long idResolucionFAP, String comprobarFirmado) {
+		checkAuthenticity();
+		if (!permisoFrmComprobarFirmas("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+			ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+			try {
+				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma))
+					ResolucionBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
+			} catch (PortafirmaFapServiceException e) {
+				play.Logger.error("Error al comprobar si ya se ha firmado la resolución en el portafirma.", e);
+			}
+		}
+
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.frmComprobarFirmasValidateRules();
+		}
+		
+		if (!Messages.hasErrors()) {
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
+		EditarResolucionController.frmComprobarFirmasRender(idResolucionFAP);
+	}
+	
+	@Util
+	public static void enviarRegistrarResolucion(Long idResolucionFAP, String btnRegistrarResolucion) {
+		checkAuthenticity();
+		if (!permisoEnviarRegistrarResolucion("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+		RegistroResolucion datosRegistro = null;
+		if (!Messages.hasErrors()) {
+			try {
+				datosRegistro = registroLibroResolucionesService.crearResolucion(dbResolucionFAP);
+			} catch (RegistroLibroResolucionesServiceException e) {
+				play.Logger.info("No se puede crear el registro de resolución");
+			}
+		}
+		
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.enviarRegistrarResolucionValidateRules();
+		}
+		
+		if (!Messages.hasErrors()) {
+			dbResolucionFAP.codigoResolucion = Integer.toString(datosRegistro.numero);
+			dbResolucionFAP.fechaRegistroResolucion = datosRegistro.fecha;
+			dbResolucionFAP.folio_inicio = datosRegistro.primerFolio;
+			dbResolucionFAP.folio_final = datosRegistro.ultimoFolio;
+			dbResolucionFAP.save();
+			ResolucionBase.avanzarFase_Firmada(dbResolucionFAP);
+		}
+		
+		if (!Messages.hasErrors()) {
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
+		EditarResolucionController.enviarRegistrarResolucionRender(idResolucionFAP);
+	}
+	
 }

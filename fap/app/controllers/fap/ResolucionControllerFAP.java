@@ -5,6 +5,8 @@ import java.util.List;
 
 import messages.Messages;
 import models.Agente;
+import models.Interesado;
+import models.LineaResolucion;
 import models.ResolucionFAP;
 import resolucion.ResolucionBase;
 import resolucion.ResolucionMultipleTotal;
@@ -99,4 +101,17 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	public static int getDiasLimiteFirma (Long idResolucion) {
 		return 2;
 	}
+
+	public static List<Interesado> getInteresados(Long idResolucion) {
+		ResolucionFAP resoluciones = ResolucionFAP.findById(idResolucion);
+		List<LineaResolucion> lineasResolucion = resoluciones.lineasResolucion;
+		List<Interesado> listaInteresados = new ArrayList<Interesado>();
+		
+		for (LineaResolucion linea: lineasResolucion) {
+			Interesado interesado = linea.solicitud.solicitante.getInteresado();
+			listaInteresados.add(interesado);
+		}
+		return listaInteresados;
+	}
+
 }

@@ -100,3 +100,19 @@ Agencia Canaria de Investigación, Innovación y Sociedad de la Información
 
 
 Por favor, no intente responder a este mensaje. La dirección desde la que se ha enviado no está habilitada para la recepción de correos."
+
+Mail(registrarResolucion):
+   idMail: "registrarResolucion"
+   sender: "tesisyestancias.aciisi@gmail.com"
+   sendTo: "${agente.email}"
+   bcc: "tesisyestancias.aciisi@gmail.com"
+   subject: "Registro de Resolución"
+   content: "Se ha registrado una resolución - Convocatoria 2012"
+
+   footer: "Atentamente
+
+
+Agencia Canaria de Investigación, Innovación y Sociedad de la Información
+
+
+Por favor, no intente responder a este mensaje. La dirección desde la que se ha enviado no está habilitada para la recepción de correos."

@@ -17,6 +17,8 @@ import play.mvc.Util;
 import registroresolucion.RegistroResolucion;
 import reports.Report;
 import resolucion.ResolucionBase;
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
 import services.RegistroLibroResolucionesService;
@@ -35,6 +37,7 @@ import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.EditarResolucionControllerGen;
+import emails.Mails;
 import enumerado.fap.gen.EstadoResolucionEnum;
 
 @InjectSupport
@@ -48,6 +51,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	
 	@Inject
     public static RegistroLibroResolucionesService registroLibroResolucionesService;
+	
+	@Inject
+	public static GestorDocumentalService gestorDocumentalService;
 	
 	/**
 	 * Expedientes que se muestran en la tabla para poder seleccionar
@@ -363,12 +369,29 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 		
 		if (!Messages.hasErrors()) {
+			try {
+				gestorDocumentalService.clasificarDocumentoResolucion(dbResolucionFAP);
+			} catch (GestorDocumentalServiceException e) {
+				play.Logger.error("Error al clasificar el documento de la resolución.", e);
+				Messages.error("Error al clasificar el documento de la resolución.");
+			}
+		}
+		
+		if (!Messages.hasErrors()) {
 			dbResolucionFAP.codigoResolucion = Integer.toString(datosRegistro.numero);
 			dbResolucionFAP.fechaRegistroResolucion = datosRegistro.fecha;
 			dbResolucionFAP.folio_inicio = datosRegistro.primerFolio;
 			dbResolucionFAP.folio_final = datosRegistro.ultimoFolio;
 			dbResolucionFAP.save();
 			ResolucionBase.avanzarFase_Firmada(dbResolucionFAP);
+			
+			// Enviar correo al Jefe de Servicio correspondiente
+			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", dbResolucionFAP.jefeDeServicio).first();
+			try {
+				Mails.enviar("registrarResolucion", agente);
+			} catch (Exception e) {
+				play.Logger.error("No se ha podido enviar el correo al Jefe de Servicio.");
+			}
 		}
 		
 		if (!Messages.hasErrors()) {

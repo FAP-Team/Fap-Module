@@ -43,6 +43,7 @@ import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
 import models.Participacion;
+import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import models.TipoCodigoExclusion;
 import models.TipoDocumento;
@@ -734,5 +735,20 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 			throws GestorDocumentalServiceException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
+		File dst = clasificadoPath;
+        if(!resolucionFap.registro.oficial.clasificado){
+            File file = getFile(resolucionFap.registro.oficial);
+            boolean ok = move(file, dst);
+            if(ok){
+            	resolucionFap.registro.oficial.clasificado = true;
+            	resolucionFap.registro.oficial.save();
+            } else{
+            	throw new GestorDocumentalServiceException("No se pudo clasificar el documento de resolución");
+            }
+        }
 	}
 }

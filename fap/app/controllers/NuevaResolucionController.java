@@ -68,7 +68,7 @@ public class NuevaResolucionController extends NuevaResolucionControllerGen {
 			play.Logger.error("Error al obtener las áreas de resolución");
 		}
 		for (AreaResolucion area: listaAreas) {
-			result.add(new ComboItem(area.codigo, area.descripcion));
+			result.add(new ComboItem(area.idArea, area.codigo + " - " +area.descripcion));
 		}
 		return result;
 	}
@@ -82,7 +82,7 @@ public class NuevaResolucionController extends NuevaResolucionControllerGen {
 			play.Logger.error("Error al obtener las áreas de resolución");
 		}
 		for (TipoResolucion tipo: listaTipos) {
-			result.add(new ComboItem(tipo.codigo, tipo.descripcion));
+			result.add(new ComboItem(tipo.idTipo, tipo.codigo + " - " + tipo.descripcion));
 		}
 		return result;
 	}

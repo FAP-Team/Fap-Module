@@ -15,6 +15,7 @@ import models.ExpedienteAed;
 import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
+import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import models.Tramite;
 import properties.PropertyPlaceholder;
@@ -60,11 +61,12 @@ public interface GestorDocumentalService {
     public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, boolean notificable)
             throws GestorDocumentalServiceException;
 
+    public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException;
+    
     public void agregarFirma(Documento documento, Firma firma) throws GestorDocumentalServiceException;
     
     public void agregarFirma(Documento documento, String firmaStr) throws GestorDocumentalServiceException;
 
-    
     public Firma getFirma(Documento documento) throws GestorDocumentalServiceException;
 
     public List<Tramite> getTramites() throws GestorDocumentalServiceException;

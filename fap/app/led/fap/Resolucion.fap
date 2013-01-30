@@ -116,6 +116,7 @@ Entidad ResolucionFAP {
 
 	Registro registro
 	OneToMany Interesado destinatarios transient
+	ExpedienteAed expedienteAed
 	
 		//Long IDPortafirma					//ID devuelto por el Servicio WEb del Portafirmas
 		//String estadoPortafirmas			//??Pendiente de revisar
@@ -170,7 +171,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción" requerido
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución"
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución"
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución"
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}

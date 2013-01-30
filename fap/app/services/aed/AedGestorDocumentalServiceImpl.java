@@ -23,6 +23,7 @@ import models.Agente;
 import models.ExpedienteAed;
 import models.InformacionRegistro;
 import models.RepresentantePersonaJuridica;
+import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import models.Tramite;
 
@@ -1264,6 +1265,24 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		dbDocumento.descripcion = descripcionDocumento;
 		dbDocumento.fechaSubida = new DateTime();
 		dbDocumento.save();
+	}
+
+	@Override
+	public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
+		log.debug("Clasificando documento resolución");
+        String idAed = resolucionFap.expedienteAed.idAed;
+        
+        if(idAed == null)
+            throw new NullPointerException();
+        
+        Interesados interesados = (Interesados) resolucionFap.getInteresados(resolucionFap.id);
+        
+        try {
+        	clasificarDocumentoSinRegistro(idAed, resolucionFap.registro.oficial, interesados, false);
+        } catch (AedExcepcion e) {
+        	throw new GestorDocumentalServiceException("Error clasificando documento de resolucion sin registro.", e);
+		}
+		
 	}
 
 	

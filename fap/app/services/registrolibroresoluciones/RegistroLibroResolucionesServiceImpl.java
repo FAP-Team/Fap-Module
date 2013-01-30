@@ -27,6 +27,7 @@ import es.gobcan.resoluciones.Resoluciones;
 import es.gobcan.resoluciones.ResolucionesResult;
 import es.gobcan.resoluciones.ResolucionesWeb;
 import es.gobcan.resoluciones.ResolucionesWeb_Service;
+import es.gobcan.resoluciones.TipoResult;
 import es.gobcan.resoluciones.Tipos;
 import es.gobcan.resoluciones.TiposResult;
 
@@ -156,15 +157,11 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 		resolucion.setObservaciones(resolucionFAP.observaciones);
 		resolucion.setPaginas(resolucionFAP.numero_folios);
 
-		//TODO: setArea y setTipo
-		Areas areas = new Areas();
-		areas.setCodigo(resolucionFAP.areasResolucion);
-		resolucion.setArea(areas);
-//		resolucion.setArea(AreaResolucion.getWebServiceType(resolucionFAP.areasResolucion, areaFuncional));
-		Tipos tipos = new Tipos();
-		tipos.setCodigo(resolucionFAP.tiposResolucion);
-		resolucion.setTipo(tipos);
-//		resolucion.setTipo(TipoResolucion.getWebServiceType(resolucionFAP.tiposResolucion, areaFuncional));
+		AreaResult areaResponse = port.getArea(usuario, Long.parseLong(resolucionFAP.areasResolucion, 10));
+		resolucion.setArea(areaResponse.getArea());
+		
+		TipoResult tipoResponse = port.getTipo(usuario, Long.parseLong(resolucionFAP.tiposResolucion, 10));
+		resolucion.setTipo(tipoResponse.getTipo());
 		
 		resolucion.setTomo(1);
 		resolucion.setAnio(new GregorianCalendar().get(GregorianCalendar.YEAR));

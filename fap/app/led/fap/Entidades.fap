@@ -317,7 +317,8 @@ Entidad ExpedientePlatino auditable{
 
 // Representación del expediente en el AED
 Entidad ExpedienteAed auditable{
-	String idAed	
+	String idAed
+	Lista tipoCrearExpedienteAed selectCrearExpedienteAed
 }
 
 // Representación de las aportaciones de documentos actual y las ya registradas
@@ -355,6 +356,10 @@ Entidad Incidencia {
 }
 
 Entidad SemillaExpediente extends Singleton{
+	Long semilla
+}
+
+Entidad SemillaExpedienteResolucion extends Singleton{
 	Long semilla
 }
 

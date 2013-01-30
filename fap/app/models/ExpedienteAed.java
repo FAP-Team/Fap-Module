@@ -26,6 +26,9 @@ public class ExpedienteAed extends FapModel {
 
 	public String idAed;
 
+	@ValueFromTable("tipoCrearExpedienteAed")
+	public String selectCrearExpedienteAed;
+
 	public void init() {
 
 		postInit();
@@ -38,12 +41,14 @@ public class ExpedienteAed extends FapModel {
 	 */
 	public String asignarIdAed() {
 		if (idAed == null) {
-			SemillaExpediente semilla = new SemillaExpediente();
-			semilla.save();
-			Long id = (Long) semilla.id;
-			java.text.NumberFormat formatter = new java.text.DecimalFormat("0000");
-			String prefijo = FapProperties.get("fap.aed.expediente.prefijo");
-			idAed = prefijo + formatter.format(id);
+			try {
+				if (selectCrearExpedienteAed == null)
+					idAed = IdentificadorExpedientesController.invoke(IdentificadorExpedientesController.class, "getNuevoIdExpediente", "");
+				else
+					idAed = IdentificadorExpedientesController.invoke(IdentificadorExpedientesController.class, "getNuevoIdExpediente", selectCrearExpedienteAed);
+			} catch (Throwable e) {
+				play.Logger.error("No se pudo generar el identificador para el expediente. " + e);
+			}
 			this.save();
 		}
 		return idAed;

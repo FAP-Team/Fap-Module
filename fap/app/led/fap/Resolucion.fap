@@ -167,11 +167,11 @@ Formulario Principal {
 		Grupo gIniciarTipo titulo="Seleccionar Resolución" {
 			Combo campo=ResolucionFAP.tipoDefinidoResolucion titulo="Resolución"
 			Combo campo=ResolucionFAP.tipo titulo="Tipo"
-			Texto campo=ResolucionFAP.tituloInterno titulo="Título"
+			Texto campo=ResolucionFAP.tituloInterno titulo="Título" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción" requerido
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución"
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución"
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución"
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
@@ -246,9 +246,9 @@ Formulario Principal {
 				
 				Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga
 				Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=ResolucionFAP.docConsultaPortafirmasResolucion paginaCrear=DocConsultaPortafirmaCrear paginaEditar=DocConsultaPortafirmaEditar {
-					Columna campo=Documento.id titulo="Id" ancho="40"
 					Columna campo=Documento.tipo titulo="Tipo"
-					Columna campo=Documento.urlDescarga titulo="Ver"
+					Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+					Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Ver" ancho="80"
 				}
 
 				Form formSelectJefeServicio {
@@ -281,10 +281,11 @@ Formulario Principal {
 		}
 		
 		Grupo gRegistrarResolucion titulo="Registro de la Resolución" permiso=registrarResolucion {
-			Wiki { "Registrar resolución" }
 			Grupo borde=false {
-				Enlace campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Obtener Documento Resolución" destino="_blank" estilo="boton"
+				Enlace campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 			}
+			
+			Wiki { "Para proceder a registrar la resolución pulse el siguiente botón: \"Registrar resolución\"" }
 			
 			Form enviarRegistrarResolucion {
       			Boton btnRegistrarResolucion titulo="Registrar Resolución"

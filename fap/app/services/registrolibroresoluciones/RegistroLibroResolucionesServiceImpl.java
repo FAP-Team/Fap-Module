@@ -86,9 +86,9 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 	public void mostrarInfoInyeccion() {
 		if (isConfigured())
 			// TODO: inyectado con...
-			play.Logger.info("El servicio de Registro de Libro de Resoluciones ha sido inyectado con * y está operativo.");
+			play.Logger.info("El servicio de Registro de Libro de Resoluciones ha sido inyectado con RegistroLibroResoluciones y está operativo.");
 		else
-			play.Logger.info("El servicio de Registro de Libro de Resoluciones ha sido inyectado con * y NO está operativo.");
+			play.Logger.info("El servicio de Registro de Libro de Resoluciones ha sido inyectado con RegistroLibroResoluciones y NO está operativo.");
 	}
 
 	@Override

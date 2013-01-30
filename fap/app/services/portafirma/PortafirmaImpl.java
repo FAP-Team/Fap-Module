@@ -14,6 +14,7 @@ import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudResponseType;
 import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudType;
+import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
 
 import platino.PlatinoProxy;
 import properties.FapProperties;
@@ -38,10 +39,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 
 	@Override
 	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
-		CrearSolicitudType solFirma=new CrearSolicitudType();
-		solFirma.setTitulo(FapProperties.get("portafirma.resolucion.titulo"));
-		solFirma.setDescripcion(FapProperties.get("portafirma.resolucion.descripcion"));
-		// TODO: Rellenar los datos necesarios
+		CrearSolicitudType solFirma = getCrearSolicitudWSTypeFromResolucionFAP(resolucion);
 		
 		CrearSolicitudResponseType wsType = new CrearSolicitudResponseType();
 		try {
@@ -54,6 +52,28 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		response.setIdSolicitud(wsType.getIdSolicitud());
 		response.setComentarios(wsType.getComentario());
 		return response;
+	}
+	
+	private CrearSolicitudType getCrearSolicitudWSTypeFromResolucionFAP (ResolucionFAP resolucion) {
+		CrearSolicitudType solFirma=new CrearSolicitudType();
+		solFirma.setTitulo(resolucion.tituloInterno);
+		solFirma.setDescripcion(resolucion.descripcion);
+		solFirma.setPrioridad(getEnumTypeFromValue(resolucion.prioridadFirma));
+//		solFirma.setEmailNotificacion();
+//		solFirma.
+//		solFirma.setComentario("");
+		
+		// TODO: Rellenar los datos necesarios
+		
+		return solFirma;
+	}
+	
+	private PrioridadEnumType getEnumTypeFromValue (String strPrioridad) {
+		if (strPrioridad.equalsIgnoreCase("ALTA"))
+			return PrioridadEnumType.ALTA;
+		if (strPrioridad.equalsIgnoreCase("NORMAL"))
+			return PrioridadEnumType.NORMAL;
+		return PrioridadEnumType.BAJA;
 	}
 
 	@Override

@@ -144,6 +144,23 @@ public class Agente extends FapModel {
 	public Boolean accedidoPorCertificado() {
 		return this.acceso != null && this.acceso.equalsIgnoreCase("certificado");
 	}
+
+	/**
+	 * Devuelve un agente buscando por su nombre (el primero que encuentra)
+	 * @param usernameSearch
+	 * @return
+	 */
+	public static Agente getAgenteByUsername(String usernameSearch) {
+		List<Agente> listaAgentes = Agente.find("select agente from Agente agente where agente.username = ?", usernameSearch).fetch();
+		if (listaAgentes.isEmpty()) {
+			play.Logger.warn("No se han encontrado agentes con username: " + usernameSearch);
+			return null;
+		} else if (listaAgentes.size() > 1) {
+			play.Logger.warn("Existen " + listaAgentes.size() + " agentes con username: " + usernameSearch);
+		}
+		return listaAgentes.get(0);
+	}
+
 	// === MANUAL REGION END ===
 
 }

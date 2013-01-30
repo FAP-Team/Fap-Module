@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 
 import services.BaremacionService;
 
+import messages.Messages;
 import models.CEconomico;
 import models.Criterio;
 import models.Evaluacion;
@@ -112,36 +113,56 @@ public class BaremacionUtils {
 	public static void actualizarParametrosVariables (TipoEvaluacion tipoEvaluacion){
 		Type type;
 		if (new File(Play.applicationPath+"/conf/initial-data/criterios.json").exists()){
-			// Actualizamos en BBDD los Tipos de Criterios, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
-			type = new TypeToken<ArrayList<TipoCriterio>>(){}.getType();
-			List<TipoCriterio> tiposCriterios = JsonUtils.loadObjectFromJsonFile("conf/initial-data/criterios.json", type);
-			actualizarTiposCriterios(tipoEvaluacion, tiposCriterios);
+			try {
+				// Actualizamos en BBDD los Tipos de Criterios, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
+				type = new TypeToken<ArrayList<TipoCriterio>>(){}.getType();
+				List<TipoCriterio> tiposCriterios = JsonUtils.loadObjectFromJsonFile("conf/initial-data/criterios.json", type);
+				actualizarTiposCriterios(tipoEvaluacion, tiposCriterios);
+			} catch (Exception e) {
+				play.Logger.error("No se puede leer y actualizar el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)"+e);
+				Messages.error("No se puede leer el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)");
+			}
 		} else {
 			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los Criterios (/conf/initial-data/criterios.json)");
 		}
 		if (new File(Play.applicationPath+"/conf/initial-data/conceptosEconomicos.json").exists()) {
-			// Actualizamos en BBDD los Tipos de CEconomicos, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
-			type = new TypeToken<ArrayList<TipoCEconomico>>(){}.getType();
-			List<TipoCEconomico> tiposCEconomicos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/conceptosEconomicos.json", type);
-			actualizarTiposCEconomicos(tipoEvaluacion, tiposCEconomicos);
+			try {
+				// Actualizamos en BBDD los Tipos de CEconomicos, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
+				type = new TypeToken<ArrayList<TipoCEconomico>>(){}.getType();
+				List<TipoCEconomico> tiposCEconomicos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/conceptosEconomicos.json", type);
+				actualizarTiposCEconomicos(tipoEvaluacion, tiposCEconomicos);
+			} catch (Exception e) {
+				play.Logger.error("No se puede leer y actualizar el fichero que contiene los parámetros de los CEconomicos (/conf/initial-data/conceptosEconomicos.json)"+e);
+				Messages.error("No se puede leer el fichero que contiene los parámetros de los CEconomicos (/conf/initial-data/conceptosEconomicos.json)");
+			}
 		} else {
 			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los CEconomicos (/conf/initial-data/conceptosEconomicos.json)");
 		}
 		if (new File(Play.applicationPath+"/conf/initial-data/datosAdicionales.json").exists()) {
-			// Actualizamos en BBDD los Tipos de Datos Adicionales, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
-			type = new TypeToken<ArrayList<TipoDatoAdicional>>(){}.getType();
-			List<TipoDatoAdicional> tiposDatosAdicionales = JsonUtils.loadObjectFromJsonFile("conf/initial-data/datosAdicionales.json", type);
-			actualizarTiposDatosAdicionales(tipoEvaluacion, tiposDatosAdicionales);
+			try {
+				// Actualizamos en BBDD los Tipos de Datos Adicionales, a través del fichero .json que los define. La actualización simplemente inserta en BBDD si no está metido, no hace nada más.
+				type = new TypeToken<ArrayList<TipoDatoAdicional>>(){}.getType();
+				List<TipoDatoAdicional> tiposDatosAdicionales = JsonUtils.loadObjectFromJsonFile("conf/initial-data/datosAdicionales.json", type);
+				actualizarTiposDatosAdicionales(tipoEvaluacion, tiposDatosAdicionales);
+			} catch (Exception e) {
+				play.Logger.error("No se puede leer y actualizar el fichero que contiene los parámetros de los Datos Adicionales (/conf/initial-data/datosAdicionales.json)"+e);
+				Messages.error("No se puede leer el fichero que contiene los parámetros de los Datos Adicionales (/conf/initial-data/datosAdicionales.json)");
+			}
 		} else {
 			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los Datos Adicionales (/conf/initial-data/datosAdicionales.json)");
 		}
 		if (new File(Play.applicationPath+"/conf/initial-data/tiposDocumentos.json").exists()){
-			// Actualizamos en BBDD los Tipos de Documentos, a través del fichero .json que los define. La actualización borra toda la tabla y la vuelve a crear a partir del fichero.
-			type = new TypeToken<ArrayList<TipoDocumentoAccesible>>(){}.getType();
-			List<TipoDocumentoAccesible> tiposDocumentos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/tiposDocumentos.json", type);
-			TipoDocumentoAccesible.deleteAll();
-			for (TipoDocumentoAccesible tipo: tiposDocumentos){
-				tipo.save();
+			try {
+				// Actualizamos en BBDD los Tipos de Documentos, a través del fichero .json que los define. La actualización borra toda la tabla y la vuelve a crear a partir del fichero.
+				type = new TypeToken<ArrayList<TipoDocumentoAccesible>>(){}.getType();
+				List<TipoDocumentoAccesible> tiposDocumentos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/tiposDocumentos.json", type);
+				TipoDocumentoAccesible.deleteAll();
+				for (TipoDocumentoAccesible tipo: tiposDocumentos){
+					tipo.save();
+				}
+			} catch (Exception e) {
+				play.Logger.error("No se puede leer y actualizar el fichero que contiene los parámetros de los Tipos de Documentos (/conf/initial-data/tiposDocumentos.json)"+e);
+				Messages.error("No se puede leer el fichero que contiene los parámetros de los Tipos de Documentos (/conf/initial-data/tiposDocumentos.json)");
 			}
 		} else {
 			play.Logger.info("No se puede leer el fichero que contiene los parámetros de los Tipos de Documentos (/conf/initial-data/tiposDocumentos.json)");

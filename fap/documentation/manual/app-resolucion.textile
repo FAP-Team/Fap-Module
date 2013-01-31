@@ -1,0 +1,22 @@
+h1. Resolución FAP
+
+El módulo de Resolución de FAP nos permitirá realizar resoluciones de los expedientes, tanto resoluciones simples como múltiples, provisionales y definitivas, con baremación o sin ella,...
+
+FAP provee diferentes tipos de resolución por defecto, las cuales podemos ver en la siguiente imagen:
+
+TODO
+
+
+
+h2. Personalizar la resolución.
+
+
+h2. Crear una clase que extienda de ResolucionControllerFAP.
+
+
+h2. Plantillas que se pueden sobreeescribir
+
+
+h2. Conclusiones
+
+

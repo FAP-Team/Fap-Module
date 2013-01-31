@@ -103,6 +103,13 @@ public class ResolucionControllerFAP extends InvokeClassController {
 		return 2;
 	}
 
+	/**
+	 * Devuelve la lista de interesados de una resolución. Por defecto el solicitante y
+	 * los representantes.
+	 *  
+	 * @param idResolucion
+	 * @return
+	 */
 	public static List<Interesado> getInteresados(Long idResolucion) {
 		ResolucionFAP resoluciones = ResolucionFAP.findById(idResolucion);
 		List<LineaResolucion> lineasResolucion = resoluciones.lineasResolucion;

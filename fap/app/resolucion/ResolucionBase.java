@@ -119,6 +119,14 @@ public class ResolucionBase {
 		}
 	}
 	
+	/**
+	 * Prepara la resolución para ser firmada
+	 * 1. Valida
+	 * 2. Elimina el borrador y oficial anterior
+	 * 3. Genera y almacena los nuevos borrador y oficial
+	 * 
+	 * @param idResolucion
+	 */
 	public void prepararResolucion(Long idResolucion){
 		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
         
@@ -131,6 +139,10 @@ public class ResolucionBase {
         avanzarFase_Creada(resolucion);
     }
 	
+	/**
+	 * Sobreescribir si queremos realizar alguna validación en la resolución antes de preparar.
+	 * 
+	 */
 	public void validar() {
 
 	}

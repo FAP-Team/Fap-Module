@@ -163,6 +163,12 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
             jsclient.add("http://www.gobiernodecanarias.org/platino/js/CAValidas.js");
         }
+        // Si no existe la property o es true (utilizamos webSigner 6.3)
+        if ((FapProperties.get("fap.platino.websigner63") == null) || (FapProperties.getBoolean("fap.platino.websigner63"))) {
+        	jsclient.add(host + "CAValidas.js");
+        } else {
+        	jsclient.add("/public/javascript/firma/firma-WebSignerExtra.js");
+        }
         jsclient.add(host + "WS_Full.js");
         jsclient.add(host + "sfest.utils.js");
         jsclient.add(host + "sfest.base.js");

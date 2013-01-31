@@ -10,24 +10,70 @@ p {
 	text-align: justify;
 }
 
-h2 {
-	margin-top: 30px;
+// Estilos para tabla de datos
+.table-datos {
+    width:100%;
 }
 
-.myarrow {
-   line-height: 0%; width: 0px;
-   border-top: 4px solid  transparent;
-   border-bottom: 4px solid  transparent;
-   border-left: 6.9px solid black;
-   margin-top: 30px;
-   margin-left: 3em;
-   text-indent: 1em;
+.table-datos caption {
+	background-color : #ccc;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 5px;
 }
 
-ul {
-   list-style-type:circle
-   margin-left: 4em;
-   text-indent: 4em;
+.table-datos th {
+	background-color : #ccc;
+	font-weight: bold;
+	width: 150px; 
+	white-space: nowrap;
+	text-align: left;	
+	padding-left: 5px;
+}
+.table-datos td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+
+.table-gris {
+width:100%;
+	border-collapse: collapse;
+}
+
+.table-gris caption{
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+.table-gris thead td {
+	background-color : #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding-left: 2px;
+}
+
+
+.table-gris td {
+	border: 1px solid #000;
+}
+
+.table-info-conexiones {
+    width:100%;
+    font-size: 10px;
+}
+
+.table-info-conexiones th {
+    width:22%;
+    font-style: italic;
+    text-align: right; 
+    vertical-align: top; 
+    font-weight: bold;
+	padding-right: 5px;
+}
+.table-info-conexiones td {
+	text-align: left;
 }
 
 </style>
@@ -43,39 +89,81 @@ ul {
 </head>
 <body>
 
+	<h2 style="text-align: center;">Resolución - Convocatoria 2013</h2>
+	
+	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
+		<tr> <th>Título</th> <td>${resolucion.tituloInterno}</td> </tr>
+		<tr> <th>Descripción</th> <td>${resolucion.descripcion}</td> </tr>
+		<tr> <th>Observaciones</th> <td>${resolucion.observaciones}</td> </tr>
+		<tr> <th>Síntesis</th> <td>${resolucion.sintesis}</td> </tr>
+	</table>
+	
+	</br>
+	
+	%{
+		
+	%}
+	
+	<p><strong>Datos de la resolución</strong></p>
+	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
+		<tr> <th>Resolución</th> <td>${models.TableKeyValue.getValue("resolucionesDefinidas", resolucion.tipoDefinidoResolucion)}</td> </tr>
+		<tr> <th>Tipo</th> <td>${models.TableKeyValue.getValue("tipoResolucion", resolucion.tipo)}</td> </tr>
+		<tr> <th>Área resolución</th> <td>${models.TableKeyValue.getValue("areasResolucion", resolucion.areasResolucion)}</td> </tr>
+		<tr> <th>Tipo resolución</th> <td>${models.TableKeyValue.getValue("tiposResolucion", resolucion.tiposResolucion)}</td> </tr>
+	</table>
+	
+	</br>
+
 	%{
 		def listaLineasResolucion = resolucion.lineasResolucion;
 	%}
 	
-	<table>
+	<p><strong>Todas las líneas de resolución</strong></p>
+	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
 		<tr>
 			<th>Estado Solicitud</th>
 			<th>Expediente</th>
 			<th>Estado Linea Resolucion</th>
 		</tr>
-		<tr>
 		#{list items:listaLineasResolucion, as:'lineaResolucion'}
+		<tr>
 			<td>${lineaResolucion.solicitud.estado}</td>
 			<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
-			<td>${lineaResolucion.estado}</td>
-		#{/list}
+			<td>${lineaResolucion.estado}</td>	
 		</tr>
+		#{/list}
 	</table>
 	
-	<p><strong>Concedidas</strong></p>
-	#{list items:listaLineasResolucion, as:'lineaResolucion'}
-		#{if lineaResolucion.estado.equals("concedida")}
-			<td>${lineaResolucion.estado}</td>
-			<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
-		#{/if}
-	#{/list}
+	<p><strong>Líneas de resolución concedidas</strong></p>
+	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
+		<tr>
+			<th>Estado</th>
+			<th>Expediente</th>
+		</tr>
+		#{list items:listaLineasResolucion, as:'lineaResolucion'}
+			#{if lineaResolucion.estado.equals("concedida")}
+			<tr>
+				<td>${lineaResolucion.estado}</td>
+				<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
+			</tr>
+			#{/if}
+		#{/list}
+	</table>
 	
-	<p><strong>Excluida</strong></p>
-	#{list items:listaLineasResolucion, as:'lineaResolucion'}
-		#{if lineaResolucion.estado.equals("excluida")}
-			<td>${lineaResolucion.estado}</td>
-			<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
-		#{/if}
-	#{/list}
+	<p><strong>Líneas de resolución excluidas</strong></p>
+	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
+		<tr>
+			<th>Estado</th>
+			<th>Expediente</th>
+		</tr>
+		#{list items:listaLineasResolucion, as:'lineaResolucion'}
+			#{if lineaResolucion.estado.equals("excluida")}
+			<tr>
+				<td>${lineaResolucion.estado}</td>
+				<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
+			</tr>
+			#{/if}
+		#{/list}
+	</table>
 	
 </body>

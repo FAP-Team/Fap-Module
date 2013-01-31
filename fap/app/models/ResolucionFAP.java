@@ -83,8 +83,10 @@ public class ResolucionFAP extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaRegistroResolucion;
 
+	@ValueFromTable("areasResolucion")
 	public String areasResolucion;
 
+	@ValueFromTable("tiposResolucion")
 	public String tiposResolucion;
 
 	public String idSolicitudFirma;

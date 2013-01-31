@@ -21,6 +21,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Configurar Jobs" pagina=Jobs
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 			Enlace "Configurar mensajes" pagina=ConfigurarMensajes
+			Enlace "Resoluciones" pagina=CargarTiposAreasResoluciones
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
@@ -440,6 +441,19 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			Columna titulo="Mensaje" campo=Logs.message expandir
 			Columna titulo="Usuario" campo=Logs.user expandir
 			Columna titulo="Clase" campo=Logs.class_ expandir
+		}
+	}
+	
+	Pagina CargarTiposAreasResoluciones titulo="Resoluciones" noForm perteneceA="Administracion" {
+		Grupo grpCargarAreas titulo="Cargar Áreas" {
+			Form frmCargarAreas {
+				Boton cargarAreas titulo="Actualizar"
+			}
+		}
+		Grupo grpCargarTipos titulo="Cargar Tipos" {
+			Form frmCargarTipos {
+				Boton cargarTipos titulo="Actualizar"
+			}
 		}
 	}
 		

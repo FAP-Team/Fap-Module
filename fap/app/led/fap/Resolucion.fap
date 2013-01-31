@@ -14,6 +14,14 @@ Lista modalidadResolucion crearEnumerado {
 	resolucionMultiple: "Multiple"
 }
 
+Lista areasResolucion crearEnumerado {
+	
+}
+
+Lista tiposResolucion crearEnumerado {
+	
+}
+
 // Estados por los que va pasando la resolución
 Lista estadoResolucion crearEnumerado {
 	borrador: "Borrador"	// Ha sido creada, y establecido su tipo y modalidad
@@ -99,8 +107,8 @@ Entidad ResolucionFAP {
 	Integer numero_folios
 	Integer numero							// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
 	DateTime fechaRegistroResolucion		// Fecha de la resolución
-	String areasResolucion
-	String tiposResolucion
+	Lista areasResolucion areasResolucion
+	Lista tiposResolucion tiposResolucion
 
 	String idSolicitudFirma
 	String codigoResolucion

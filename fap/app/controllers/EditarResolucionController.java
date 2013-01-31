@@ -1,21 +1,23 @@
 package controllers;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import messages.Messages;
+import models.Agente;
+import models.ResolucionFAP;
+import models.SolicitudGenerica;
+
 import org.joda.time.DateTime;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import platino.FirmaUtils;
 import play.modules.guice.InjectSupport;
 import play.mvc.Util;
-
 import registroresolucion.RegistroResolucion;
-import reports.Report;
 import resolucion.ResolucionBase;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
@@ -24,23 +26,12 @@ import services.PortafirmaFapServiceException;
 import services.RegistroLibroResolucionesService;
 import services.RegistroLibroResolucionesServiceException;
 import services.RegistroService;
-import services.aed.Interesados;
-import services.portafirma.PortafirmaImpl;
 import services.responses.PortafirmaCrearSolicitudResponse;
-import sun.net.www.content.text.plain;
 import tags.ComboItem;
 import validation.CustomValidation;
-
-import messages.Messages;
-import models.Agente;
-import models.JustificanteRegistro;
-import models.ResolucionFAP;
-import models.SolicitudGenerica;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.EditarResolucionControllerGen;
 import emails.Mails;
-import enumerado.fap.gen.EstadoResolucionEnum;
-import enumerado.fap.gen.TipoCrearExpedienteAedEnum;
 
 @InjectSupport
 public class EditarResolucionController extends EditarResolucionControllerGen {

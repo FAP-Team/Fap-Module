@@ -405,6 +405,8 @@ Entidad Verificacion {
 		
 	DateTime fechaCreacion
 	DateTime fechaUltimaActualizacion	
+	
+	String incluirFichMultiple
 }
 
 // Permite controlar el documento de la verificación, y el estado de la misma

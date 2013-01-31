@@ -15,6 +15,7 @@ import reports.Report;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.aed.ProcedimientosService;
+import services.filesystem.TipoDocumentoEnTramite;
 
 import config.InjectorConfig;
 import controllers.fap.VerificacionFapController;
@@ -30,7 +31,6 @@ import models.VerificacionDocumento;
 import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
-import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 import es.gobcan.eadmon.verificacion.ws.dominio.EstadoDocumentoVerificacion;
 
 public class VerificacionUtils {
@@ -57,6 +57,7 @@ public class VerificacionUtils {
 		List<Documento> aux = new ArrayList<Documento>();
 		List<Documento> auxIterar = new ArrayList<Documento>();
 		aux.addAll(listDoc);
+		System.out.println("Lista de documentos verif y sin verif: "+listDoc.size());
 		auxIterar.addAll(listDoc);
 		
 		GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
@@ -84,6 +85,7 @@ public class VerificacionUtils {
 			} catch (Throwable e) {
 				play.Logger.error("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
 			}
+			System.out.println("Lista de tipos: "+listaTipos.size());
 			for (TipoDocumentoEnTramite tipoDoc : listaTipos) {
 				boolean tipoEncontrado = false;
 				// Mejorar la implementación
@@ -114,17 +116,17 @@ public class VerificacionUtils {
 				}
 				
 				// Si fue encontrado, pero su cardinalidad es múltiple, debo añadir un VerificacionDocumento más, con "NoProcede"
-				if (tipoEncontrado && tipoDoc.getCardinalidad().name().equalsIgnoreCase("multiple")) {
-					play.Logger.info("Encontrado un tipo de documento con cardinalidad Multiple (Add NoProcede)");
-					VerificacionDocumento vDoc = new VerificacionDocumento();
-					vDoc.existe = false;
-					vDoc.uriTipoDocumento = tipoDoc.getUri();
-					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
-					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
-					vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
-					vDoc.save();
-					list.add(vDoc);
-				}
+//				if (tipoEncontrado && tipoDoc.getCardinalidad().name().equalsIgnoreCase("multiple")) {
+//					play.Logger.info("Encontrado un tipo de documento con cardinalidad Multiple (Add NoProcede)");
+//					VerificacionDocumento vDoc = new VerificacionDocumento();
+//					vDoc.existe = false;
+//					vDoc.uriTipoDocumento = tipoDoc.getUri();
+//					vDoc.identificadorMultiple = tipoDoc.getCardinalidad().name();
+//					vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.getUri());
+//					vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+//					vDoc.save();
+//					list.add(vDoc);
+//				}
 				
 				// Si el tipo de documento no fue encontrado en los que aporta
 				if (!tipoEncontrado) {

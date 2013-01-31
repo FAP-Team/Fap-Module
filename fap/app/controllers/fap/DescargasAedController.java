@@ -22,6 +22,7 @@ import play.mvc.Router.ActionDefinition;
 import play.mvc.Util;
 
 import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import utils.AedUtils;
 import utils.BinaryResponse;
 
@@ -122,9 +123,10 @@ public class DescargasAedController extends GenericController {
 	 * de las solicitudes donde el agente actualmente logueado es solicitante).
 	 * 
 	 * @param tipoDocumento Tipo del documento 
+	 * @throws GestorDocumentalServiceException 
 	 * 
 	 */
-	public static void getDocumentosPorTipoGestorDocumental(String tipoDocumento) throws AedExcepcion {
+	public static void getDocumentosPorTipoGestorDocumental(String tipoDocumento) throws GestorDocumentalServiceException {
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		List<Documento> rows = gestorDocumentalService.getDocumentosPorTipo(tipoDocumento);
 		

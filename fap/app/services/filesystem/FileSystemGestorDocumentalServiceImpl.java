@@ -18,14 +18,7 @@ import org.joda.time.DateTime;
 import com.google.common.base.Preconditions;
 
 import controllers.fap.AgenteController;
-
 import enumerado.fap.gen.TipoCrearExpedienteAedEnum;
-import es.gobcan.eadmon.aed.ws.AedExcepcion;
-import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
-import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
-import es.gobcan.eadmon.procedimientos.ws.dominio.CardinalidadEnum;
-import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
-import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 
 import play.Play;
 import play.libs.Codec;
@@ -639,23 +632,24 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	
 	public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
 		String consulta = "select tipoDoc from TipoDocumento tipoDoc where (tipoDoc.aportadoPor = ? and tipoDoc.tramitePertenece = ?) ";
-		List <TipoDocumentoEnTramite> tdtList = Documento.find(consulta, "CIUDADANO", tramite.uri).fetch();
+		List <TipoDocumento> tdList = Documento.find(consulta, "CIUDADANO", tramite.uri).fetch();
+		List <TipoDocumentoEnTramite> tdtList = TipoDocumentoEnTramite.conversor2TipoDocumentoEnTramite(tdList);
 		return tdtList;
 	}
 	
-	public List<es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
-		List <es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento> tdList = new ArrayList<es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento>();
-		es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento td = new es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento();
-		td.setUri("fs://type1/v01");
-		td.setDescripcion("FileSystem FileSystem 1");
-		td.setVersion(1);
-		td.setEtiqueta("Etiqueta1");
+	public List<TipoDocumentoGestorDocumental> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		List <TipoDocumentoGestorDocumental> tdList = new ArrayList<TipoDocumentoGestorDocumental>();
+		TipoDocumentoGestorDocumental td = new TipoDocumentoGestorDocumental();
+		td.uri = "fs://type1/v01";
+		td.descripcion = "FileSystem FileSystem 1";
+		td.version =1;
+		td.etiqueta = "Etiqueta1";
 		tdList.add(td);
-		es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento td2 = new es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento();
-		td2.setUri("fs://solicitud/v01");
-		td2.setDescripcion("FileSystem FileSystem Solicitud");
-		td2.setVersion(1);
-		td2.setEtiqueta("Etiqueta Solicitud");
+		TipoDocumentoGestorDocumental td2 = new TipoDocumentoGestorDocumental();
+		td2.uri = "fs://solicitud/v01";
+		td2.descripcion = "FileSystem FileSystem Solicitud";
+		td2.version = 1;
+		td2.etiqueta = "Etiqueta Solicitud";
 		tdList.add(td2);
 		return tdList;
 	}

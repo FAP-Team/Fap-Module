@@ -5,11 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import es.gobcan.eadmon.aed.ws.AedExcepcion;
-import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
-import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
-import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
-
 import models.Documento;
 import models.ExpedienteAed;
 import models.Firma;
@@ -20,6 +15,8 @@ import models.SolicitudGenerica;
 import models.Tramite;
 import properties.PropertyPlaceholder;
 import services.aed.Interesados;
+import services.filesystem.TipoDocumentoEnTramite;
+import services.filesystem.TipoDocumentoGestorDocumental;
 import utils.BinaryResponse;
 
 public interface GestorDocumentalService {
@@ -34,7 +31,7 @@ public interface GestorDocumentalService {
 
     public List<String> getDocumentosEnExpediente(String expediente) throws GestorDocumentalServiceException;
     
-    public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws AedExcepcion;
+    public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws GestorDocumentalServiceException;
 
     public BinaryResponse getDocumento(Documento documento) throws GestorDocumentalServiceException;
     
@@ -80,7 +77,7 @@ public interface GestorDocumentalService {
     // Devuelve la expresión regular que queremos que case con parte de la URI del trámite de la verificación, para componer el nombre de la plantilla que se utilizará como cabecera del PDF del requerimiento.
     public String getExpReg();
     
-    public List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite);
+    public List<TipoDocumentoGestorDocumental> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite);
 
 	String crearExpediente(ExpedienteAed expedienteAed) throws GestorDocumentalServiceException;
 
@@ -90,14 +87,14 @@ public interface GestorDocumentalService {
 	
 	BinaryResponse getDocumentoConInformeDeFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException;
 	
-	public void duplicarDocumentoSubido(String uriDocumento) throws AedExcepcion, GestorDocumentalServiceException;
+	public void duplicarDocumentoSubido(String uriDocumento) throws GestorDocumentalServiceException;
 	
-	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento) throws AedExcepcion, GestorDocumentalServiceException;
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento) throws GestorDocumentalServiceException;
     
 	@Deprecated
-	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
+	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
 	
 	@Deprecated
-	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
     
 }

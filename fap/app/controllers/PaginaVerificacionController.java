@@ -18,6 +18,7 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.NotificacionService;
 import services.RegistroService;
+import services.filesystem.TipoDocumentoEnTramite;
 
 import org.joda.time.DateTime;
 
@@ -42,6 +43,7 @@ import models.Firmantes;
 import models.Notificacion;
 import models.Requerimiento;
 import models.SolicitudGenerica;
+import models.TableKeyValue;
 import models.TipoDocumento;
 import models.Tramite;
 import models.TramitesVerificables;
@@ -765,4 +767,66 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 
 		renderJSON(response.toJSON("fechaPresentacion", "descripcion", "nombreTipoDocumento", "estadoDocumentoVerificacion", "identificadorMultiple", "linkUrlDescarga", "id"));
 	}
+	
+	@Util
+	public static void incluirNoProcede(SolicitudGenerica solicitud, Long idVerificacion) {
+		Verificacion verificacion = Verificacion.findById(idVerificacion);
+		VerificacionDocumento tipoDoc = VerificacionDocumento.findById(Long.parseLong(verificacion.incluirFichMultiple));
+		VerificacionDocumento vDoc = new VerificacionDocumento();
+		vDoc.existe = false;
+		vDoc.uriTipoDocumento = tipoDoc.uriTipoDocumento;
+		vDoc.identificadorMultiple = tipoDoc.identificadorMultiple;
+		vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.uriTipoDocumento);
+		vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
+		vDoc.save();
+		verificacion.documentos.add(vDoc);
+		verificacion.save();
+	}
+	
+	public static List<ComboItem> comboMultiples() {
+		Long idSolicitud = Long.parseLong(params.get("idSolicitud"));
+		Long idVerificacion = Long.parseLong(params.get("idVerificacion"));
+		Verificacion verificacion = Verificacion.findById(idVerificacion);
+		List<VerificacionDocumento> documentos = verificacion.documentos;
+		List<ComboItem> result = new ArrayList<ComboItem>();
+		for (VerificacionDocumento doc : documentos) {
+			if ((doc.existe) && (doc.identificadorMultiple.equals("MULTIPLE"))){
+				result.add(new ComboItem(doc.id, doc.descripcion));
+			}
+		}
+
+		return result;
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void incluirNoProcedeMultiples(Long idSolicitud, Long idVerificacion, SolicitudGenerica solicitud, String incluirNoProcede) {
+		checkAuthenticity();
+		
+		if (!permisoIncluirNoProcedeMultiples("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		SolicitudGenerica dbSolicitud = PaginaVerificacionController.getSolicitudGenerica(idSolicitud);
+
+		PaginaVerificacionController.incluirNoProcedeMultiplesBindReferences(solicitud);
+
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.incluirNoProcedeMultiplesValidateCopy("editar", dbSolicitud, solicitud);
+		}
+		
+		if ((!Messages.hasErrors()) && (!incluirNoProcede.isEmpty())){
+			incluirNoProcede(solicitud, idVerificacion);
+		}
+
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.incluirNoProcedeMultiplesValidateRules(dbSolicitud, solicitud);
+		}
+		if (!Messages.hasErrors()) {
+			dbSolicitud.save();
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
+		PaginaVerificacionController.incluirNoProcedeMultiplesRender(idSolicitud, idVerificacion);
+	}
+	
 }

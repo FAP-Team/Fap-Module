@@ -3,6 +3,7 @@ package services.aed;
 import java.util.List;
 import java.util.ArrayList;
 
+import models.Interesado;
 import models.Persona;
 import models.PersonaFisica;
 import models.PersonaJuridica;
@@ -46,6 +47,14 @@ public class Interesados {
     
     public List<String> getDocumentos(){
         return documentos;
+    }
+    
+    public static Interesados getListaInteresados(List<Interesado> listaInteresados) {
+		Interesados interesados = new Interesados();
+    	for (Interesado interesado: listaInteresados) {
+			interesados.add(interesado.persona);
+		}
+    	return interesados;
     }
     
  }

@@ -63,6 +63,8 @@ public interface GestorDocumentalService {
 
     public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException;
     
+    public String crearExpedienteResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException;
+    
     public void agregarFirma(Documento documento, Firma firma) throws GestorDocumentalServiceException;
     
     public void agregarFirma(Documento documento, String firmaStr) throws GestorDocumentalServiceException;

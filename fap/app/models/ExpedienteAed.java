@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import properties.FapProperties;
+import controllers.fap.IdentificadorExpedientesController;
 
 // === IMPORT REGION END ===
 

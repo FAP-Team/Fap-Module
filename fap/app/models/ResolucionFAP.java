@@ -173,7 +173,7 @@ public class ResolucionFAP extends FapModel {
 		return firmantes.todos;
 	}
 
-	public List<Interesado> getInteresados(Long idResolucion) {
+	public static List<Interesado> getInteresados(Long idResolucion) {
 		List<Interesado> listaInteresados = new ArrayList<Interesado>();
 		try {
 			listaInteresados = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getInteresados", idResolucion);

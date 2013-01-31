@@ -48,6 +48,7 @@ import tramitacion.Documentos;
 import utils.BinaryResponse;
 import utils.StreamUtils;
 import utils.WSUtils;
+import enumerado.fap.gen.TipoCrearExpedienteAedEnum;
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.AedPortType;
@@ -1275,13 +1276,53 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         if(idAed == null)
             throw new NullPointerException();
         
-        Interesados interesados = (Interesados) resolucionFap.getInteresados(resolucionFap.id);
+        Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
         
         try {
         	clasificarDocumentoSinRegistro(idAed, resolucionFap.registro.oficial, interesados, false);
         } catch (AedExcepcion e) {
         	throw new GestorDocumentalServiceException("Error clasificando documento de resolucion sin registro.", e);
 		}
+		
+	}
+
+	@Override
+	public String crearExpedienteResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
+		
+		resolucionFap.expedienteAed.selectCrearExpedienteAed = TipoCrearExpedienteAedEnum.resolucion.name();
+		String numeroExpediente = resolucionFap.expedienteAed.asignarIdAed();
+		resolucionFap.save();
+	
+		try {
+			// Si ya existe el expediente, continuamos
+			List<Expediente> expedientes = aedPort.buscarExpedientes(null, null, null, numeroExpediente, null);
+			if (expedientes != null && !expedientes.isEmpty()) {
+				play.Logger.info("El expediente "+numeroExpediente+" ya existe en el AED");
+				return numeroExpediente;
+			}
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al buscar los expedientes en el AED: "+e);
+		}
+		
+		Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
+        String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+        String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
+
+        Expediente expediente = new Expediente();
+        expediente.setIdExterno(numeroExpediente);
+        expediente.setProcedimiento(procedimiento);
+        expediente.setValorModalidad(convocatoria);
+        expediente.getInteresados().addAll(interesados.getDocumentos());
+        expediente.getInteresadosNombre().addAll(interesados.getNombres());
+        
+        try {
+            aedPort.crearExpediente(expediente);
+            log.info("Creado expediente " + numeroExpediente + " para la resolucion " + resolucionFap.id);
+        }catch(AedExcepcion e){
+        	play.Logger.error("No se pudo crear el expediente: "+e);
+            throw new GestorDocumentalServiceException("Error creando expediente " + numeroExpediente + " para la resolucion " + resolucionFap.id, e);
+        }
+		return numeroExpediente;
 		
 	}
 

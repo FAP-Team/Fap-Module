@@ -24,6 +24,7 @@ import services.PortafirmaFapServiceException;
 import services.RegistroLibroResolucionesService;
 import services.RegistroLibroResolucionesServiceException;
 import services.RegistroService;
+import services.aed.Interesados;
 import services.portafirma.PortafirmaImpl;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import sun.net.www.content.text.plain;
@@ -39,6 +40,7 @@ import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.EditarResolucionControllerGen;
 import emails.Mails;
 import enumerado.fap.gen.EstadoResolucionEnum;
+import enumerado.fap.gen.TipoCrearExpedienteAedEnum;
 
 @InjectSupport
 public class EditarResolucionController extends EditarResolucionControllerGen {
@@ -314,7 +316,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 		if (!Messages.hasErrors()) {
 
-			resolucionFAP.registro.fasesRegistro.firmada = true;
 			resolucionFAP.save();
 			ResolucionBase.avanzarFase_Preparada_FirmaJefeServicio(resolucionFAP);
 		}
@@ -330,10 +331,14 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		if (!Messages.hasErrors()) {
 			ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			try {
-				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma))
+				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma)) {
 					ResolucionBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
+					dbResolucionFAP.registro.fasesRegistro.firmada = true;
+					dbResolucionFAP.save();
+				}
 			} catch (PortafirmaFapServiceException e) {
 				play.Logger.error("Error al comprobar si ya se ha firmado la resolución en el portafirma.", e);
+				Messages.error("Error al comprobar si ya se ha firmado la resolución en el portafirma.");
 			}
 		}
 
@@ -362,6 +367,12 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			if ((dbResolucionFAP.registro.fasesRegistro.firmada) && (!dbResolucionFAP.registro.fasesRegistro.registro)) {
 				try {
 					datosRegistro = registroLibroResolucionesService.crearResolucion(dbResolucionFAP);
+					dbResolucionFAP.codigoResolucion = Integer.toString(datosRegistro.numero);
+					dbResolucionFAP.fechaRegistroResolucion = datosRegistro.fecha;
+					dbResolucionFAP.folio_inicio = datosRegistro.primerFolio;
+					dbResolucionFAP.folio_final = datosRegistro.ultimoFolio;
+					dbResolucionFAP.registro.fasesRegistro.registro = true;
+					dbResolucionFAP.save();
 				} catch (RegistroLibroResolucionesServiceException e) {
 					play.Logger.error("No se puede crear el registro de resolución. "+e);
 					Messages.error("No se puede crear el registro de resolución");
@@ -376,9 +387,16 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		/// 2. Crear el expediente de la resolución en el AED
 		if (!Messages.hasErrors()) {
 			if ((dbResolucionFAP.registro.fasesRegistro.registro) && (!dbResolucionFAP.registro.fasesRegistro.expedienteAed)) {
-				
+				// TODO: Crear expediente en el AED
+				try {
+					gestorDocumentalService.crearExpedienteResolucion(dbResolucionFAP);
+					dbResolucionFAP.registro.fasesRegistro.expedienteAed = true;
+					dbResolucionFAP.save();
+				} catch (GestorDocumentalServiceException e) {
+					play.Logger.error("Error. No se ha podido crear el expediente de la resolución el el AED.", e);
+					Messages.error("Error. No se ha podido crear el expediente de la resolución el el AED.");
+				}
 			}
-
 		}
 
 		// 3. Clasificar el documento de resolución
@@ -386,6 +404,8 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			if ((dbResolucionFAP.registro.fasesRegistro.expedienteAed) && (!dbResolucionFAP.registro.fasesRegistro.clasificarAed)) {
 				try {
 					gestorDocumentalService.clasificarDocumentoResolucion(dbResolucionFAP);
+					dbResolucionFAP.registro.fasesRegistro.clasificarAed = true;
+					dbResolucionFAP.save();
 				} catch (GestorDocumentalServiceException e) {
 					play.Logger.error("Error al clasificar el documento de la resolución.", e);
 					Messages.error("Error al clasificar el documento de la resolución.");
@@ -394,18 +414,15 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 		
 		if (!Messages.hasErrors()) {
-			dbResolucionFAP.codigoResolucion = Integer.toString(datosRegistro.numero);
-			dbResolucionFAP.fechaRegistroResolucion = datosRegistro.fecha;
-			dbResolucionFAP.folio_inicio = datosRegistro.primerFolio;
-			dbResolucionFAP.folio_final = datosRegistro.ultimoFolio;
-			dbResolucionFAP.save();
 			ResolucionBase.avanzarFase_Firmada(dbResolucionFAP);
 			
 			// Enviar correo al Jefe de Servicio correspondiente
 			try {
-				Mails.enviar("registrarResolucion", Agente.getAgenteByUsername(dbResolucionFAP.jefeDeServicio));
+				Agente agente = Agente.getAgenteByUsername(dbResolucionFAP.jefeDeServicio);
+				Mails.enviar("registrarResolucion", agente);
 			} catch (Exception e) {
 				play.Logger.fatal("No se ha podido enviar el correo al Jefe de Servicio: "+dbResolucionFAP.jefeDeServicio+" de la resolución: "+dbResolucionFAP.id);
+				Messages.error("No se ha podido enviar el correo al Jefe de Servicio: "+dbResolucionFAP.jefeDeServicio+" de la resolución: "+dbResolucionFAP.id);
 			}
 		}
 		

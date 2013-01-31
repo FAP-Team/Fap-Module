@@ -19,6 +19,7 @@ import com.google.common.base.Preconditions;
 
 import controllers.fap.AgenteController;
 
+import enumerado.fap.gen.TipoCrearExpedienteAedEnum;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.AportadoPorEnum;
@@ -750,5 +751,20 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
             	throw new GestorDocumentalServiceException("No se pudo clasificar el documento de resolución");
             }
         }
+	}
+
+	@Override
+	public String crearExpedienteResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
+		resolucionFap.expedienteAed.selectCrearExpedienteAed = TipoCrearExpedienteAedEnum.resolucion.name();
+		String expediente = resolucionFap.expedienteAed.asignarIdAed();
+		resolucionFap.save();
+        File folder = getExpedienteFolder(expediente);
+        try {
+            FileUtils.forceMkdir(folder);
+        }catch(IOException e){
+            throw new GestorDocumentalServiceException("Error al crear la carpeta " + folder.getAbsolutePath());
+        }
+        return expediente;
+		
 	}
 }

@@ -7,6 +7,7 @@ import messages.Messages;
 import models.Agente;
 import models.Interesado;
 import models.LineaResolucion;
+import models.RepresentantePersonaJuridica;
 import models.ResolucionFAP;
 import resolucion.ResolucionBase;
 import resolucion.ResolucionMultipleTotal;
@@ -110,6 +111,15 @@ public class ResolucionControllerFAP extends InvokeClassController {
 		for (LineaResolucion linea: lineasResolucion) {
 			Interesado interesado = linea.solicitud.solicitante.getInteresado();
 			listaInteresados.add(interesado);
+			if (linea.solicitud.solicitante.isPersonaFisica() && linea.solicitud.solicitante.representado) {
+				Interesado interesadoR = linea.solicitud.solicitante.representante.getInteresado();
+				listaInteresados.add(interesadoR);
+			} else if (linea.solicitud.solicitante.isPersonaJuridica() && linea.solicitud.solicitante.representantes != null) {
+				for (RepresentantePersonaJuridica r : linea.solicitud.solicitante.representantes) {
+					Interesado interesadoR = r.getInteresado();
+					listaInteresados.add(interesadoR);
+				}
+			}
 		}
 		return listaInteresados;
 	}

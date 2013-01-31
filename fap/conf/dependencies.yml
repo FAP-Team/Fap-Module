@@ -46,7 +46,7 @@ require:
 
     - es.gobcan.eadmon -> aed 2.1.0:
         transitive: false
-    - es.gobcan.platino -> platino.pre 1.0:
+    - es.gobcan.platino -> platino.pre v20130117:
         transitive: false   
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false

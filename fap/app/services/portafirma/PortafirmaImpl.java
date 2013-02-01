@@ -123,7 +123,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 			throw new PortafirmaFapServiceException(e.getMessage(), e);
 		}
 		// TODO: dependiendo del valor de response devolver si está firmada o no.
-		if (response.getEstado().equals(EstadoPortafirmaEnum.Firmadayfinalizada))
+		if (response.getEstado().equals(EstadoPortafirmaEnum.Firmadayfinalizada.name()))
 			return true;
 		
 		return false;

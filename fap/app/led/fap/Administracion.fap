@@ -229,8 +229,8 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 	Pagina Convocatoria campo=Convocatoria titulo="Datos Convocatoria" perteneceA="Administracion"{
 		Combo campo=Convocatoria.estado titulo="Estado de la convocatoria"
 		
-		Grupo grpExpedienteConvocatoria mostrarSiCampo Convocatoria.expedienteAed.idAed != "null" {
-			Texto campo=Convocatoria.expedienteAed.idAed titulo="Expediente de la convocatoria"
+		Grupo grpExpedienteConvocatoria titulo ="Expediente de la Convocatoria" permiso=convocatoriaTieneExpediente {
+			Texto campo=Convocatoria.expedienteAed.idAed titulo="Identificador del Expediente"
 		}
 	}
 	

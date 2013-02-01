@@ -1227,3 +1227,14 @@ Permiso obtenerNoProcede{
 	return all
 		
 }
+
+Permiso convocatoriaTieneExpediente {
+	vars
+		Convocatoria convocatoria
+	when
+		convocatoria?.expedienteAed?.idAed != null
+		and convocatoria?.expedienteAed?.idAed != ""
+	return
+		visible
+	
+}

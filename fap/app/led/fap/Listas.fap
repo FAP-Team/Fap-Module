@@ -8878,5 +8878,5 @@ Lista posicionMensaje crearEnumerado {
 
 Lista tipoCrearExpedienteAed crearEnumerado {
 	solicitud: "Solicitud"
-	resolucion: "Resolución"
+	convocatoria: "Convocatoria"
 }

@@ -20,6 +20,7 @@ import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import models.Agente;
+import models.Convocatoria;
 import models.ExpedienteAed;
 import models.InformacionRegistro;
 import models.RepresentantePersonaJuridica;
@@ -1297,11 +1298,13 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 
 	@Override
-	public String crearExpedienteResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
+	public String crearExpedienteConvocatoria() throws GestorDocumentalServiceException {
 		
-		resolucionFap.expedienteAed.selectCrearExpedienteAed = TipoCrearExpedienteAedEnum.resolucion.name();
-		String numeroExpediente = resolucionFap.expedienteAed.asignarIdAed();
-		resolucionFap.save();
+		Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
+				
+		convocatoria.expedienteAed.selectCrearExpedienteAed = TipoCrearExpedienteAedEnum.convocatoria.name();
+		String numeroExpediente = convocatoria.expedienteAed.asignarIdAed();
+		convocatoria.save();
 	
 		try {
 			// Si ya existe el expediente, continuamos
@@ -1314,23 +1317,22 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			play.Logger.error("Error al buscar los expedientes en el AED: "+e);
 		}
 		
-		Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
-        String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
+        String strConvocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
 
         Expediente expediente = new Expediente();
         expediente.setIdExterno(numeroExpediente);
         expediente.setProcedimiento(procedimiento);
-        expediente.setValorModalidad(convocatoria);
-        expediente.getInteresados().addAll(interesados.getDocumentos());
-        expediente.getInteresadosNombre().addAll(interesados.getNombres());
+        expediente.setValorModalidad(strConvocatoria);
+        expediente.getInteresados().add(FapProperties.get("fap.aed.expediente.convocatoria.interesado.nip"));
+        expediente.getInteresadosNombre().add(FapProperties.get("fap.aed.expediente.convocatoria.interesado.nombre"));
         
         try {
             aedPort.crearExpediente(expediente);
-            log.info("Creado expediente " + numeroExpediente + " para la resolucion " + resolucionFap.id);
+            log.info("Creado expediente " + numeroExpediente + " para la convocatoria ");
         }catch(AedExcepcion e){
         	play.Logger.error("No se pudo crear el expediente: "+e);
-            throw new GestorDocumentalServiceException("Error creando expediente " + numeroExpediente + " para la resolucion " + resolucionFap.id, e);
+            throw new GestorDocumentalServiceException("Error creando expediente " + numeroExpediente + " para la convocatoria ", e);
         }
 		return numeroExpediente;
 		

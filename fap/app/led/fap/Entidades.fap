@@ -359,11 +359,6 @@ Entidad SemillaExpediente extends Singleton{
 	Long semilla
 }
 
-Entidad SemillaExpedienteResolucion extends Singleton{
-	Long semilla
-}
-
-
 // Plantillas de mails automáticos a enviar
 Entidad Mail tableName = "email" {
 	String idMail
@@ -528,6 +523,7 @@ Entidad Propiedades {
 // Estado de la convocatoria en la aplicación
 Entidad Convocatoria extends Singleton {
 	Lista estadoConvocatoria estado default = "presentacion"
+	ExpedienteAed expedienteAed
 }
 
 Entidad TipoDocumento {

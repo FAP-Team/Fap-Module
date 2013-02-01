@@ -375,12 +375,12 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			EditarResolucionController.enviarRegistrarResolucionValidateRules();
 		}
 		
-		/// 2. Crear el expediente de la resolución en el AED
+		/// 2. Crear el expediente de la convocatoria en el AED por si no existe
 		if (!Messages.hasErrors()) {
 			if ((dbResolucionFAP.registro.fasesRegistro.registro) && (!dbResolucionFAP.registro.fasesRegistro.expedienteAed)) {
 				// TODO: Crear expediente en el AED
 				try {
-					gestorDocumentalService.crearExpedienteResolucion(dbResolucionFAP);
+					gestorDocumentalService.crearExpedienteConvocatoria();
 					dbResolucionFAP.registro.fasesRegistro.expedienteAed = true;
 					dbResolucionFAP.save();
 				} catch (GestorDocumentalServiceException e) {

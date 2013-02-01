@@ -30,6 +30,7 @@ import properties.PropertyPlaceholder;
 
 import models.Agente;
 import models.Consulta;
+import models.Convocatoria;
 import models.Documento;
 import models.Documentacion;
 import models.ExpedienteAed;
@@ -748,10 +749,11 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	}
 
 	@Override
-	public String crearExpedienteResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
-		resolucionFap.expedienteAed.selectCrearExpedienteAed = TipoCrearExpedienteAedEnum.resolucion.name();
-		String expediente = resolucionFap.expedienteAed.asignarIdAed();
-		resolucionFap.save();
+	public String crearExpedienteConvocatoria() throws GestorDocumentalServiceException {
+		Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
+		convocatoria.expedienteAed.selectCrearExpedienteAed = TipoCrearExpedienteAedEnum.convocatoria.name();
+		String expediente = convocatoria.expedienteAed.asignarIdAed();
+		convocatoria.save();
         File folder = getExpedienteFolder(expediente);
         try {
             FileUtils.forceMkdir(folder);

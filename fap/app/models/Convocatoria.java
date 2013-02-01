@@ -25,6 +25,9 @@ public class Convocatoria extends Singleton {
 	@ValueFromTable("estadoConvocatoria")
 	public String estado;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public ExpedienteAed expedienteAed;
+
 	public Convocatoria() {
 		init();
 	}
@@ -33,6 +36,11 @@ public class Convocatoria extends Singleton {
 		super.init();
 		if (estado == null)
 			estado = "presentacion";
+
+		if (expedienteAed == null)
+			expedienteAed = new ExpedienteAed();
+		else
+			expedienteAed.init();
 
 		postInit();
 	}

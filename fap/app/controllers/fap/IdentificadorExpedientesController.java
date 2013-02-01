@@ -2,7 +2,6 @@ package controllers.fap;
 
 import enumerado.fap.gen.TipoCrearExpedienteAedEnum;
 import models.SemillaExpediente;
-import models.SemillaExpedienteResolucion;
 import properties.FapProperties;
 
 public class IdentificadorExpedientesController extends InvokeClassController {
@@ -22,13 +21,8 @@ public class IdentificadorExpedientesController extends InvokeClassController {
 			java.text.NumberFormat formatter = new java.text.DecimalFormat("0000");
 			String prefijo = FapProperties.get("fap.aed.expediente.prefijo");
 			idAed = prefijo + formatter.format(id);
-		} else if (tipoExpediente.equalsIgnoreCase(TipoCrearExpedienteAedEnum.resolucion.name())) {
-			SemillaExpedienteResolucion semilla = new SemillaExpedienteResolucion();
-			semilla.save();
-			Long id = (Long) semilla.id;
-			java.text.NumberFormat formatter = new java.text.DecimalFormat("0000");
-			String prefijo = FapProperties.get("fap.aed.expediente.resolucion.prefijo");
-			idAed = prefijo + formatter.format(id);
+		} else if (tipoExpediente.equalsIgnoreCase(TipoCrearExpedienteAedEnum.convocatoria.name())) {
+			idAed = FapProperties.get("fap.aed.expediente.convocatoria");
 		}
 		return idAed;
 	}

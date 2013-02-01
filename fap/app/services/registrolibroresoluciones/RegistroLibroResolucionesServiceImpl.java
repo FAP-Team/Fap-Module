@@ -62,25 +62,8 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 	}
 
 	public boolean isConfigured() {
-//		return hasConnection();
-		return true;
+		return port.getAreas(usuario, idAreaFuncional) != null;
 	}
-	
-//	private boolean hasConnection() {
-//		boolean hasConnection = false;
-//		try {
-//			hasConnection = getVersion() != null;
-//			// TODO: Conexión con ???
-//			play.Logger.info("El servicio tiene conexion con  ");
-//		}catch(Exception e){
-//			play.Logger.info("El servicio no tiene conexion con ");
-//		}
-//		return hasConnection; 
-//	}
-//	
-//	private String getVersion() {
-//        return port.getVersion();
-//    }
 	
 	@Override
 	public void mostrarInfoInyeccion() {

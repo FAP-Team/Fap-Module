@@ -75,6 +75,23 @@ public class PortafirmaImpl implements PortafirmaFapService {
 			return PrioridadEnumType.NORMAL;
 		return PrioridadEnumType.BAJA;
 	}
+	
+	public boolean isConfigured() {
+		try {
+			return (portafirmaService.obtenerVersion() != null);
+		} catch (PortafirmaException e) {
+			play.Logger.error("Error al obetner la versión del servicio de Portafirma", e);
+		}
+		return false;
+	}
+	
+	@Override
+	public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio de Portafirma ha sido inyectado con PortafirmaService y está operativo.");
+		else
+			play.Logger.info("El servicio de Portafirma ha sido inyectado con PortafirmaService y NO está operativo.");
+	}
 
 	@Override
 	public void obtenerEstadoFirma() throws PortafirmaFapServiceException {

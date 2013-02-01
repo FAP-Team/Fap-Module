@@ -1282,7 +1282,9 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	@Override
 	public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
 		log.debug("Clasificando documento resolución");
-        String idAed = resolucionFap.expedienteAed.idAed;
+		
+        Convocatoria convocatoria = Convocatoria.find("select convocatoria form Convocatoria convocatoria").first();
+        String idAed = convocatoria.expedienteAed.idAed;
         
         if(idAed == null)
             throw new NullPointerException();

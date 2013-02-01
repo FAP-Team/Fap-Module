@@ -76,6 +76,7 @@ import services.BaremacionService;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.NotificacionService;
+import services.PortafirmaFapService;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
@@ -217,6 +218,9 @@ public class Start extends Job {
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();
 		
+		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
+		portafirmaService.mostrarInfoInyeccion();
+		
 		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
 		publicarService.mostrarInfoInyeccion();
 		
@@ -227,6 +231,13 @@ public class Start extends Job {
         if(assignableClasses.size() > 1){
         	play.Logger.warn("¡¡ CUIDADO !! : Existen varias clases ("+assignableClasses.size()+") que extienden de SolicitudGenerica, esto creará conflictos GRAVES.");
         }
+        
+		Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();	
+		if (convocatoria.expedienteAed == null) {
+			convocatoria.expedienteAed = new ExpedienteAed();
+			convocatoria.save();
+		}
+        
 	}
 
 	/**

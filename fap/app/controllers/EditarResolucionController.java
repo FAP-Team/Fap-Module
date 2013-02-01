@@ -29,24 +29,13 @@ import services.RegistroService;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
 import validation.CustomValidation;
+import config.InjectorConfig;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.EditarResolucionControllerGen;
 import emails.Mails;
 
 @InjectSupport
 public class EditarResolucionController extends EditarResolucionControllerGen {
-
-	@Inject
-    public static RegistroService registroService;
-	
-	@Inject
-    public static PortafirmaFapService portafirmaService;
-	
-	@Inject
-    public static RegistroLibroResolucionesService registroLibroResolucionesService;
-	
-	@Inject
-	public static GestorDocumentalService gestorDocumentalService;
 	
 	/**
 	 * Expedientes que se muestran en la tabla para poder seleccionar
@@ -208,6 +197,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			// TODO: Enviar al portafirma los documentos, indicando qué jefe de Servicio lo debe Firmar
 			dbResolucionFAP.save();
 			try {
+				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
 				dbResolucionFAP.idSolicitudFirma = response.getIdSolicitud();
 			} catch (PortafirmaFapServiceException e) {
@@ -322,6 +312,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		if (!Messages.hasErrors()) {
 			ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			try {
+				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma)) {
 					ResolucionBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
 					dbResolucionFAP.registro.fasesRegistro.firmada = true;
@@ -357,6 +348,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		if (!Messages.hasErrors()) {
 			if ((dbResolucionFAP.registro.fasesRegistro.firmada) && (!dbResolucionFAP.registro.fasesRegistro.registro)) {
 				try {
+					RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
 					datosRegistro = registroLibroResolucionesService.crearResolucion(dbResolucionFAP);
 					dbResolucionFAP.codigoResolucion = Integer.toString(datosRegistro.numero);
 					dbResolucionFAP.fechaRegistroResolucion = datosRegistro.fecha;
@@ -374,7 +366,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		if (!Messages.hasErrors()) {
 			EditarResolucionController.enviarRegistrarResolucionValidateRules();
 		}
-		
+
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+
 		/// 2. Crear el expediente de la convocatoria en el AED por si no existe
 		if (!Messages.hasErrors()) {
 			if ((dbResolucionFAP.registro.fasesRegistro.registro) && (!dbResolucionFAP.registro.fasesRegistro.expedienteAed)) {

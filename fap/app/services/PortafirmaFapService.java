@@ -5,6 +5,7 @@ import models.ResolucionFAP;
 
 public interface PortafirmaFapService {
 
+	public void mostrarInfoInyeccion();
 	public String obtenerVersion () throws PortafirmaFapServiceException; 
 	public PortafirmaCrearSolicitudResponse crearSolicitudFirma (ResolucionFAP resolucion) throws PortafirmaFapServiceException;
 	public void obtenerEstadoFirma () throws PortafirmaFapServiceException;

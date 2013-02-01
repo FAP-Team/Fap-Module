@@ -6,11 +6,11 @@ Añade una columna en un elemento de tipo tabla.
 
 h2. Parámetros
 
-* **campo = _[campo]_** (opcional) : Atributo de la entidad que se mostrara en la columna.
-* **funcion = _[string]_** (opcional) : Permite asignar el código que representara el valor de esta columna, en el código las variables (${nombreVariable}) serán sustituidas por su valor correspondiente.  
+* **campo = _[campo]_** (opcional) : Atributo de la entidad que se mostrará en la columna.
+* **funcion = _[string]_** (opcional) : Permite asignar el código que representará el valor de esta columna, en el código las variables (${nombreVariable}) serán sustituidas por su valor correspondiente.  
 * **titulo = _[string]_** (opcional) : Título de la columna en la tabla, si no se especifica se mostrará el nombre del campo.
 * **ancho = _[string]_** (opcional) : Permite especificar el ancho de la columna en píxeles.
-* **permiso = _[permiso]_** (opcional) : Permite asociar un permiso a la columna, por ejemplo para que solo la muestre a un usuario determinado. 
+* **permiso = _[permiso]_** (opcional) : Permite asociar un permiso a la columna, por ejemplo para que sólo la muestre a un usuario determinado. 
 * **expandir** (opcional) : Se asigna a la columna todo el espacio no ocupado en la tabla.
 * **align = (left|center|right)** (opcional) : Permite alinear el texto contenido en la columna.
 

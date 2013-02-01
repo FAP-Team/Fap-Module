@@ -2,9 +2,9 @@ h1. Verificación de Documentación FAP
 
 El módulo FAP, tiene una serie de páginas y popups que integran la funcionalidad de verificar la documentación de una determinada solicitud en un determinado trámite.
 
-Las verificaciones pueden ser múltiples y estaran asociadas a la solicitud. Simultáneamente sólo se podrá llevar a cabo una única verificación, no pudiendo empezar una nueva hasta que se haya dado por finalizada la que está actualmente en curso. El proceso de verificación puede concluir satisfactoriamente, o insatisfactoriamente en cuyo caso se generará un requerimiento.
+Las verificaciones pueden ser múltiples y estarán asociadas a la solicitud. Simultáneamente sólo se podrá llevar a cabo una única verificación, no pudiendo empezar una nueva hasta que se haya dado por finalizada la que está actualmente en curso. El proceso de verificación puede concluir satisfactoriamente, o insatisfactoriamente en cuyo caso se generará un requerimiento.
 
-Matizar que para poder utilizarla en las aplicaciones que se desarrollen en FAP, simplemente habrá que instanciar a la Página FAP: 'AccesoVerificaciones'. Nombrandola en la parte del .fap, que se quiera, ya tendremos acceso a todo lo concerniente a ello. 
+Matizar que para poder utilizarla en las aplicaciones que se desarrollen en FAP, simplemente habrá que instanciar a la Página FAP: 'AccesoVerificaciones'. Nombrándola en la parte del .fap, que se quiera, ya tendremos acceso a todo lo concerniente a ello. 
 Por ejemplo, estoy creando una aplicación FAP y deseo utilizar la parte de Verificación de Documentación del módulo FAP. En el Solicitud.fap, por ejemplo, de mi aplicación, podría poner un Enlace en el menú como sigue:
 
 bc. Grupo "Instruccion" permiso=instruccion {
@@ -28,7 +28,7 @@ bc. public class miClase extends VerificacionFapController {
    ...
 }
 
-En dicha clase nueva creada, deberan de sobreescribirse todos los métodos que permiten personalizar la documentación a verificar que por defecto trae el módulo FAP:
+En dicha clase nueva creada, deberán de sobreescribirse todos los métodos que permiten personalizar la documentación a verificar que por defecto trae el módulo FAP:
 
 _NOTA: Para llamar a los métodos que sobreescribamos deberemos llamarlos de la siguiente forma (si queremos llamar al getDocumentosNoAportadosCondicionadosAutomaticos, por ejemplo):_
 
@@ -72,7 +72,7 @@ Para cada requerimiento, se generá su PDF correspondiente (tanto el borrador co
 
 Se puede personalizar el CSS que afecta a todos los PDF, incluyendo el del requerimiento, sobreescribiendo el fichero 'documentoPDF.css'. Para ello basta con modificar (crear si no existe), dicho fichero en "${APP_PATH}/public/stylesheets/".
 
-Dicho PDF, se compone de dos partes. La primera es propia de la aplicación ya que deberá contener los datos del solicitante y demás formalismos. Como esto es dependiente de cada solicitud y de cada trámite, y no generalizable, se debe sobreescribir la plantilla asociada a esa cabecera. La plantilla se debe crear en (app/views/reports/) de cada aplicación y indicarle en ella todo aquello que queramos que aparezca en el PDF del requerimiento.
+Dicho PDF, se compone de dos partes. La primera es propia de la aplicación ya que deberá contener los datos del solicitante y demás formalismos. Como esto es dependiente de cada solicitud y de cada trámite, y no generalizable, se debe sobreescribir la plantilla asociada a esa cabecera. La plantilla se debe crear en (app/views/reports/) de cada aplicación e indicarle en ella todo aquello que queramos que aparezca en el PDF del requerimiento.
 El nombre de la plantilla estará formado por _requerimiento-_*_XXXX_* donde *XXXX* sera el texto que case a partir de la URI del trámite de la verificación y con la expresión regular (en formato String) que devuelve una función que se deberá sobreescribir en la clase Gestor Documental que utilicemos. Dicha función se denomina _getExpReg()_ y simplemente debe devolver un String con la expresión regular que queramos utilizar para capturar en la URI del trámite asociado a la verificación el texto identificativo del nombre de la cabecera del PDF.
 
 La segunda parte, se encarga de confeccionarla el módulo FAP, y simplemente va listando las causas de requerimientos, así como los documentos que tienen algun defecto y cuales fueron sus motivos de requerimientos.
@@ -83,7 +83,7 @@ El PDF tendrá un aspecto como vemos en la imagen:
 
 h2. Personalizar los Trámites Verificables y el Trámite Por Defecto
 
-Existe una página en administración (Tramites Verificables) que permiten indicar de todos los trámites del procedimiento que sean supceptibles a ser verificables (estos son los que posean Tipos de Documentos aportados por el _CIUDADANO_) cuales queremos que sean seleccionables para la parte de Verificación.
+Existe una página en administración (Tramites Verificables) que permiten indicar de todos los trámites del procedimiento que sean susceptibles a ser verificables (estos son los que posean Tipos de Documentos aportados por el _CIUDADANO_) cuales queremos que sean seleccionables para la parte de Verificación.
 
 De modo que en dicha página de Administración se puede indicar, de los Trámites que se pueden verificar, cuales queremos que sean verificables.
 

@@ -181,7 +181,7 @@ Donde _value_ será el atributo que estamos validando.
 
 h3(#validacionRegexp). Validación utilizando una expresión regular 
 
-Para validar un atributo utilizando una expresión regualar se utiliza el la anotación 
+Para validar un atributo utilizando una expresión regular se utiliza la anotación 
 *vaildate="RegExp"*, esta anotación solo es valida para atributos de tipo String y LongText. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.match* en el fichero de mensajes.
 
 bc. Entidad PersonaFisica Inheritance=joined {
@@ -200,7 +200,7 @@ bc. Entidad Presupuesto {
 	Double total validate="min=0, max=1000"
 }
 
-*NOTA:* El valor null considera valido.
+*NOTA:* El valor null se considera valido.
 
 Si el atributo es Booleano se permite validar si su valor es True. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.isTrue* en el fichero de mensajes.
 

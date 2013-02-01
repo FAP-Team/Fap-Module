@@ -7,7 +7,7 @@ Crea un Popup. Se definen cuatro posibles usos para este elemento: crear una ent
 h2. Parámetros
 
 * **_[name]_** : Identificador del elemento.
-* **titulo = _[string]_** (opcional) : Texto que se mostrara como título del Popup. 
+* **titulo = _[string]_** (opcional) : Texto que se mostrará como título del Popup. 
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al Popup.
 * **campo = _[campo]_** : Define la entidad que se puede usar en los campos que se sitúen dentro del popup.
 * **maximizar** (opcional) : Permite que el tamaño del popup abarque la pantalla entera.

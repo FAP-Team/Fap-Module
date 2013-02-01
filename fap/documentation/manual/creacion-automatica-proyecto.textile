@@ -2,7 +2,7 @@ h1. Creación de un proyecto de forma automática
 
 Otra manera de realizar la creación de un proyecto FAP, es utilizando un script (puede que no esté actualizado y que no funcione correctamente) creado para ello que automatiza los pasos anteriores de manera que el usuario sólo se preocupa de elegir el nombre de su proyecto.
 
-Dicho script se encuentra den el módulo descargado, en concreto en el directorio _scripts_, el fichero *init-script.py*.
+Dicho script se encuentra en el módulo descargado, en concreto en el directorio _scripts_, el fichero *init-script.py*.
 
 Su ejecución se realizará lanzando el script en python, pasándole como único argumento el nombre que queremos darle al proyecto FAP:
 

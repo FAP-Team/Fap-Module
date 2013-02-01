@@ -67,4 +67,4 @@ Entidad Direccion Embeddable {
 
 !images/curso_2_1-relacion_entidades!
 
-En este caso, la entidad Solicitante tiene definido el atributo domicilio que es de tipo Direccion. Por lo que existe una relación OneToOne entre Solicitante y Direccion, OneToOne es la relación por defecto, esto se puede cambiar. Ejemplo: 
+En este caso, la entidad Solicitante tiene definido el atributo domicilio que es de tipo Direccion. Por lo que existe una relación OneToOne entre Solicitante y Direccion, OneToOne es la relación por defecto, esto se puede cambiar.  

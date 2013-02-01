@@ -46,7 +46,9 @@ bc. public static void crear(Long idSolicitud, Long idTablaDeNombres, TablaDeNom
 	}
 }
 
-* *crearLogica* - Recupera el objeto que va a utilizar para almacenar en Base de Datos, de manera que con la llamada al _getTablaDeNombres_ al no pasarle ningún id, lo que hará será devolver un nuevo objeto, es decir un _new TablaDeNombres()_. Posteriormente, guarda los datos del formulario en esa nueva instancia de la entidad. El algoritmo completo es: Comprueba si el usuario esta autentificado, comprueba si tiene permisos para crear la entidad, crea la nueva entidad, valida el formulario y si no hay errores guarda la entidad en base de datos y lo notifica renderizando un mensaje ok en el PopUp.
+* *crearLogica* - Recupera el objeto que va a utilizar para almacenar en Base de Datos, de manera que con la llamada al _getTablaDeNombres_ al no pasarle ningún id, lo que hará será devolver un nuevo objeto, es decir un _new TablaDeNombres()_. Posteriormente, guarda los datos del formulario en esa nueva instancia de la entidad. El algoritmo completo es:
+**  Comprueba si el usuario esta autentificado.
+**  Comprueba si tiene permisos para crear la entidad, crea la nueva entidad, valida el formulario y si no hay errores guarda la entidad en base de datos y lo notifica renderizando un mensaje ok en el PopUp.
 
 bc. @Util
 public static Long crearLogica(Long idSolicitud, TablaDeNombres tablaDeNombres) 

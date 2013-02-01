@@ -19,7 +19,7 @@ Los tipos de documentos que se permiten seleccionar son aquellos correspondiente
 Los documentos nuevos que se suben (a _solicitud.documentacion.documentos_) están representados por la entidad *Documento*.
 
 bc. Entidad Documento {
-	String uri
+	String uri                     // uri del documento en el AED
 	Lista tiposDocumentos tipo
 	String descripcion
 	String descripcionVisible transient
@@ -28,10 +28,10 @@ bc. Entidad Documento {
 	DateTime fechaSubida
 	DateTime fechaRegistro
 	String urlDescarga transient
-	Boolean verificado
-	Boolean refAed
-	String expedienteReferenciado
-	Long solicitudReferenciada
+	String urlDescargaFirmado transient
+	String enlaceDescargaFirmado transient
+	Boolean verificado	
+	Boolean refAed     
 	Lista estadoNotificacion estadoDocumento
 }
 

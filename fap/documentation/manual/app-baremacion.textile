@@ -18,7 +18,7 @@ h2. Páginas por Defecto de FAP para incluir en nuestras Aplicaciones
 
 FAP posee una serie de Páginas por defecto que deberán ser referenciadas en los menús pertinentes de cada aplicación que quiera usar la Baremación que trae implementada el módulo FAP. Son concretamente 2 páginas:
 
-* *PCEconomicos*: Esta en la página que se encarga de permitir al solicitante rellenar los conceptos económicos con los valores que el va a Solicitar, así como le permitirá crear nuevos Conceptos Económicos Manuales para personalizar la información de las cantidades que solicita.
+* *PCEconomicos*: Esta es la página que se encarga de permitir al solicitante rellenar los conceptos económicos con los valores que el va a Solicitar, así como le permitirá crear nuevos Conceptos Económicos Manuales para personalizar la información de las cantidades que solicita.
 
 Para usar la página en nuestra aplicación simplemente deberemos crear un Enlace que la referencie, en algún menú. Por ejemplo:
 
@@ -60,7 +60,7 @@ h2. Actualizar la Baremación
 Si queremos actualizar algún dato variable de nuestra Baremación (o insertar nuevos datos), se deberá:
 
 * *Primero:* Modificar o Insertar los nuevos datos en los fichero pertinentes (criterios.json, conceptosEconomicos.json, datosAdicionales.json o tiposDocumentos.json).
-* *Despues:* Pulsar el Botón de "Actualizar Baremación" de la página de Administración, _Gestionar Baremación_ para que se cambie en los modelos FAP.
+* *Después:* Pulsar el Botón de "Actualizar Baremación" de la página de Administración/_Gestionar Baremación_ para que se cambie en los modelos FAP.
 
 Este paso, también crea las evaluaciones que se deban crear de solicitudes que en ese instante son propensas a evaluar y que todavía no se habían creado sus evaluaciones correspondientes.
 

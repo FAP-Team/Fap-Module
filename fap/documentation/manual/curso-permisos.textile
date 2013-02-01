@@ -1,6 +1,12 @@
 h1. Utilizando permisos
 
-Todo esto que se ha visto está muy bien, pero ¿Todas las partes de la aplicación son vistas por todos los usuarios? ¿qué pasa si necesitamos que en la aplicación algunos usuarios puedan ver o efectuar cosas que otros no? ¿Se puede hacer esto en una aplicación FAP? La respuesta es sí. Para ello existen los *permisos*, los cuales se declaran mediante la siguiente sintaxis:
+En nuestra aplicación,...
+
+* ¿Todas las partes de la aplicación son vistas por todos los usuarios? 
+* ¿Qué pasa si necesitamos que en la aplicación algunos usuarios puedan ver o efectuar cosas que otros no? 
+* ¿Se puede hacer esto en una aplicación FAP? 
+
+La respuesta es sí. Para ello existen los *permisos*, los cuales se declaran mediante la siguiente sintaxis:
 
 bc. 'Permiso' name{
 	'vars'
@@ -8,10 +14,21 @@ bc. 'Permiso' name{
 	'when'
 		condiciones
 	'return'
-		'editable' | 'visible' | 'none'
+		permisoReturn
+	'when'
+		condiciones
+	'return'
+		permisoReturn
+	...
 }
 
+**_Nota:_** Pueden colocarse tantas cláusulas when-return como sean necesarias.
+
+h3. Cláusula Vars
+
 La sección *vars* permite declarar variables que serán utilizadas en la sección *condiciones*, donde se utilizarán expresiones para realizar el cálculo de permisos. Existen variables por defecto, las cuales no hará falta declarar (_agente_ y ___accion__).
+
+h3. Cláusula When
 
 La sección *when* contiene el conjunto de condiciones que se van a comprobar a la hora de consultar un permiso. Pueden existir múltiples secciones _when_ dentro de un permiso. Si al comprobar una de ellas, se cumplen todas las condiciones, entonces no se siguen comprobando las demás que estén a continuación.
 
@@ -24,15 +41,80 @@ Para consultar por una acción en concreto es necesario utilizar la variable pre
 * **editar** : permitir la navegación a páginas y popups cuando la acción es __editar__. Esta acción incluye un botón para editar una entidad ya existente a partir de los datos suministrados en el formulario.
 * **borrar** : permitir la navegación a páginas y popups cuando la acción es __borrar__. Esta acción incluye un botón para borrar de base de datos la entidad que se está visualizando en el formulario.
 
-La sección *return* establece lo que el permiso va a devolver cuando se cumplan las condiciones que están justo encima. Los posibles modos de presentación son:
+h3. Cláusula Return
+
+La sección *return* establece lo que el permiso va a devolver cuando se cumplan las condiciones que están justo encima. Debe tenerse en cuenta, que el permiso puede considerarse que está dividido en dos partes:
+* _**Permiso de Acción**_: Indica que acciones pueden realizarse sobre las entidades utilizadas en la sección donde el permiso es efectivo (_all / crear / editar / borrar / leer_).
+* _**Permiso de Gráfico**_: Indica que acciones pueden realizarse sobre los elementos gráficos que están actuado en la sección donde el permiso es efectivo (_editable / visible / oculto_). Si no se especifica, depende de la acción con la que consultemos el permiso y no es aplicable al _Permiso de Acción_ denegar.
+
+A continuación, se explica en que consiste cada _Permiso de Acción_:
+
+* **all**: Permite las operaciones de crear, editar, borrar y leer sobre los elementos en los que está actuando el permiso.
+* **crear**: Permite las operación de crear y leer sobre los elementos en los que está actuando el permiso.
+* **editar**: Permite las operaciones de leer y editar sobre los elementos en los que está actuando el permiso.
+* **leer**: Permite la operacion de leer sobre los elementos en los que está actuando el permiso.
+* **borrar**: Permite la operaccion de borrar sobre los elementos en los que está actuando el permiso.
+* **denegar**: No permite realizar ninguna operación sobre los elementos en los que está actuando el permiso.
+
+A continuación, se explica en que consiste cada _Permiso de Gráfico_:
 
 * **editable** : permite que todos los controles gráficos web sobre los que está actuando el permiso sean visibles y editables.
 * **visible** : permite que todos los controles gráficos web sobre los que está actuando el permiso sean visibles, pero no editables.
-* **none** : deshabilita el renderizado de todos los controles gráficos web sobre los que está actuando el permiso.
+* **oculto** : deshabilita el renderizado de todos los controles gráficos web sobre los que está actuando el permiso.
 
 Si se está consultando con permiso igual a _editable_ y el permiso define _return editable_, el método del permiso devolverá _true_. Si por el contrario el permiso define _return visible_ o _return none_, devolverá _false_. La jerarquía de permisos es la siguiente:
 
 bc. Editable > Visible > None
+
+_Permiso de Acción_ y _Permiso de Gráfico_, pueden emplearse tanto juntos como por separado en la declaración del *return* siempre que se siga la sintaxis definida en la regla PermisoReturn que se muestra a continuación:
+
+
+bc. PermisoReturn:
+	'denegar' | 
+	permisoGrafico | 
+	permisoAccion |
+	permisoAccion ':' permisoGrafico
+;
+
+h4. Empleando _Permiso de Acción_ y _Permiso de Gráfico_:
+
+bc. Permiso permisoAccionGrafico{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		solicitud.mientidad.campo1 = "true"
+	return
+		all:editable
+}
+
+En este ejemplo, se indica que cuando solicitud.mientidad.campo1 sea true, permitirá realizar cualquier accion de crear, editar, leer o borrar sobre los elementos en los que actúa el permiso y, que todos los elemetos gráficos web sean editables y visibles.
+
+h4. Empleando _Permiso de Acción_:
+
+bc. Permiso permisoAccion{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		solicitud.mientidad.campo1 = "true" 
+	return
+		editar
+}
+
+En este ejemplo, se indica que cuando solicitud.mientidad.campo1 sea true, permitirá realizar operaciones de editar y leer sobre los elementos en los que actúa el permiso.
+
+h4. Empleando _Permiso de Gráfico_:
+
+bc. Permiso permisoGrafico{
+	vars
+		SolicitudGenerica solicitud
+	when 
+		solicitud.mientidad.campo1 = "true" 
+	return
+		editable
+}
+
+En este ejemplo, se indica que que cuando solicitud.mientidad.campo1 sea true, permitirá que todos los elemetos gráficos web sean editables y visibles.
+
 
 Los permisos son mucho más potentes que lo que hemos explicado aquí, pudiendo referirnos a las entidades utilizadas en la aplicación, utilizar variables a partir de una consulta SQL, referirnos dentro de un permiso a otro, etc. Más información sobre los mismos "aquí":dsl-permisos.
 

@@ -1,6 +1,6 @@
 h1. Personalizar la autenticación en la aplicación
 
-Es posible personalizar el modo de loguearse en la aplicación si no se quiere autenticarse como lo hace por defecto FAP.
+Es posible personalizar el modo de loguearse en la aplicación si no se quiere autenticar como lo hace por defecto FAP.
 
 Para ello se deberá crear una clase en el paquete controllers de la aplicación, que extienda de la clase FAP SecureController, es decir:
 

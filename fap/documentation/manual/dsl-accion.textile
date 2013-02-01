@@ -6,7 +6,7 @@ Permite definir un elemento Accion. Los elementos Accion no generan ningún elem
 
 h2. Parámetros
 
-* **_[name]_**: Identificador del elemento. Solo puede ser uno de los siguientes valores: crear, editar o borrar. El nombre que reciba el elemento determinará cual es las acciones es la que se va a configurar mediante este elemento.
+* **_[name]_**: Identificador del elemento. Sólo puede ser uno de los siguientes valores: crear, editar o borrar. El nombre que reciba el elemento determinará cual es las acciones es la que se va a configurar mediante este elemento.
 * **boton = _[string]_** (opcional): Permite personalizar la etiqueta del botón. Si no se le especifica pondrá en la etiqueta el _name_.
 * **redirigir = _[string]_ | _[Pagina]_ | anterior** (opcional): Permite redirigir a una Página en concreto, a la página anterior o a una URL, al darle al botón de la acción, siempre y cuando la acción en cuestión se haya podido realizar con éxito, en otro caso, redirigiría a la misma página.
 * **mensajeOk = _[string]_** (opcional): Permite personalizar los mensajes de éxito que apareceran en la página al realizar sin problemas la acción en cuestión.

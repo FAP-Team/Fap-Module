@@ -50,7 +50,7 @@ bc. Pagina Solicitante campo=Solicitud{
 
 h3. Pagina donde el usuario define Form dentro de la pagina
 
-bc. Pagina Solicitudes campo=Solicitud{
+bc. Pagina Solicitudes campo=Solicitud noForm{
 	....
 	Form nuevaSolicitud {
 		Boton titulo="Nueva Solicitud"

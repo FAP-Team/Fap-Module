@@ -769,7 +769,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	}
 	
 	@Util
-	public static void incluirNoProcede(SolicitudGenerica solicitud, Long idVerificacion) {
+	public static void incluirNoProcede(Long idVerificacion) {
 		Verificacion verificacion = Verificacion.findById(idVerificacion);
 		VerificacionDocumento tipoDoc = VerificacionDocumento.findById(Long.parseLong(verificacion.incluirFichMultiple));
 		VerificacionDocumento vDoc = new VerificacionDocumento();
@@ -815,7 +815,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		}
 		
 		if ((!Messages.hasErrors()) && (!incluirNoProcede.isEmpty())){
-			incluirNoProcede(solicitud, idVerificacion);
+			incluirNoProcede(idVerificacion);
 		}
 
 		if (!Messages.hasErrors()) {

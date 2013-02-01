@@ -36,8 +36,7 @@ h2. Ejemplos de uso
 h3. Creación de un elemento SubirArchivo con nombre "subir" y requerido
 
 bc. Pagina Subida {
-   Texto campo=Solicitud.solicitante.web titulo="Página web"
-   SubirArchivo subir requerido
+   SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
 }
 
 h3. Resultado
@@ -45,6 +44,6 @@ h3. Resultado
 !images/dsl-subirArchivo!
 
 El archivo se crea en la siguiente ruta relativa a la aplicación:
-* \tmp\uploads\1311252086233_0000000001\subir\main.css
+* \tmp\uploads\1311252086233_0000000001\subir\nombreArchivoSubido
 
 

@@ -55,7 +55,7 @@ Formulario Solicitud campo=Solicitud {
     }
 }
 
-Podemos observar cómo definimos el formulario *Solicitud*, incluyendo un *menu* y una *pagina* de _Solicitante_ donde permitiremos rellenar datos al usuario de la aplicación, y el *permiso* de la página deberá estar definido en nuestra aplicación, o en el módulo FAP (que provee varios permisos por defecto). 
+Podemos observar cómo definimos el formulario *Solicitud*, incluyendo un *menu* y una *página* de _Solicitante_ donde permitiremos rellenar datos al usuario de la aplicación, y el *permiso* de la página deberá estar definido en nuestra aplicación, o en el módulo FAP (que provee varios permisos por defecto). 
 
 El menú tiene el siguiente contenido:
 
@@ -155,7 +155,7 @@ Las páginas que permitan "guardar" algo, tendrán también los siguientes méto
 
 h2. Relación con las entidades
 
-Para poder indicar elementos en las páginas y en los popups, deberemos haber creado las entidades que utilizaremos primero. Si hacemos referencia en algún elemento a por ejemplo *Solicitud.datosSolicitante.telefono*:
+Para poder indicar elementos en las páginas y en los popups, deberemos haber creado las entidades que utilizaremos primero. Si hacemos referencia en algún elemento, por ejemplo *Solicitud.datosSolicitante.telefono*:
 
 bc. Texto campo=Solicitud.datosSolicitante.telefono titulo="Telefono"
 

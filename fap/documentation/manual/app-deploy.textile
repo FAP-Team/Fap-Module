@@ -44,7 +44,7 @@ Los pasos que se realiza este comando son:
 * Precompilar la aplicación
 * Crear la carpeta @dist/%app_name%%date%/@ con las carpetas
 ** @lib@ - Esta carpeta contiene las librerías
-** @%app_name%@ - Es carpeta contiene la aplicación precompilada.
+** @%app_name%@ - Esta carpeta contiene la aplicación precompilada.
 
 La razón de separar las librerías y la aplicación es que normalmente, cuando se quiere subir una nueva versión de la aplicación no es necesario volver a subir las librerías. 
 
@@ -65,7 +65,7 @@ Utilizando el comando en el servidor
 
 bc. play fap:winservice
 
-Se generan los fichero @installService.bat@ y @unistallService.bat@. 
+Se generan los ficheros @installService.bat@ y @unistallService.bat@. 
 
 Por defecto @installService.bat@ crea un servicio que ejecuta el comando
 

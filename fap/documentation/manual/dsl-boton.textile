@@ -2,7 +2,7 @@ h1. Boton
 
 h2. Descripción
 
-Permite definir un botón, por defecto al pulsar el botón se llama al método del controlador del form que lo contenga. 
+Permite definir un botón, por defecto al pulsar el botón se llama al método del controlador del form que lo contenga. Dicho método recibirá tantos parámetros como botones se hayan declarado dentro del form, de manera que para saber que botón ha sido pulsado, debe comprobarse que el parámetro asociado a que botón no es null.  
 
 h2. Parámetros
 
@@ -11,7 +11,7 @@ h2. Parámetros
 * **ancho = _[string]_** (opcional) : Ancho en píxeles del botón.
 * **popup = _[popup]_** (opcional) : Si se especifica, al pulsar el botón se abrirá el popup indicado.
 * **pagina = _[pagina]_** (opcional) : Si se especifica, al pulsar el botón se redirige a la pagina indicada.
-* **waitPopup** (opcional) : En la navegación, muestra al usuario un popup indicandole que espere hasta que la acción que desemboca el botón haya terminado.
+* **waitPopup** (opcional) : En la navegación, muestra al usuario un popup indicándole que espere hasta que la acción que desemboca el botón haya terminado.
 * **type** : Tipo de botón
 * **anterior** : Para redirigir a la pagina anterior en la que estabamos
 * **ayuda** : Ayuda asociada al botón

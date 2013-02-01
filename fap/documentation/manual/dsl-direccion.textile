@@ -40,15 +40,15 @@ Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numer
 
 h3. Dirección Nacional
 
-Supone que el pais será España. A partir de ahí deja seleccionar la comunidad autonoma que queramos, y dependiendo de esta, su provincia. Dependiendo de esta provincia podremos seleccionar un municipio.
+Supone que el país será España. A partir de ahí deja seleccionar la comunidad autonoma que queramos, y dependiendo de esta, su provincia. Dependiendo de esta provincia podremos seleccionar un municipio.
 
 Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numero, otros (puerta,etc.).
 
 h3. Dirección Internacional
 
-Permite seleccionar un Pais, de la lista de todos los paises del mundo.
+Permite seleccionar un País, de la lista de todos los paises del mundo.
 
-Además de que tiene campos distintos a las otras direcciones, como el Estado, y no tiene campos como Comunidad Autónoma, Provincia y Muncipio.
+Además de que tiene campos distintos a las otras direcciones, como el Estado, y no tiene campos como Comunidad Autónoma, Provincia y Municipio.
 
 Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numero, otros (puerta,etc.).
 

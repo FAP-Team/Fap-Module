@@ -2,7 +2,7 @@ h1. Tramitación
 
 Los trámites son procesos en los que el solicitante aporta documentación al expediente.
 
-Cada trámite estrá activo en una o varias fases del procedimiento administrativo (Solicitud, Instrucción, Resolución y Ejecución). Los trámites estándares son:
+Cada trámite está activo en una o varias fases del procedimiento administrativo (Solicitud, Instrucción, Resolución y Ejecución). Los trámites estándares son:
 * *Solicitud*. Activo en las fases de _Solicitud_ e _Instrucción_.
 * *Desistimiento*. Activo en la fase de _Instrucción_.
 * *Alegaciones*. Activo en la fase de _Resolución_.
@@ -34,7 +34,7 @@ En el caso de que se quiera personalizar algunos métodos concretos de un trámi
 
 bc.  TramiteNuevo -->  TramiteBase/TramiteAlegacion/TramiteDesistimiento/TramiteAceptacionRenuncia
 
-Simplemente hay que crear una clase en _tramitación_ de la aplicación:
+Simplemente hay que crear una clase en el paquete _tramitación_ de la aplicación:
 
 bc. public class TramiteNuevo extends TramiteBase {
 ...

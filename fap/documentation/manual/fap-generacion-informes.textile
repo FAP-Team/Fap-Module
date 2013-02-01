@@ -25,7 +25,7 @@ h4. Métodos:
 
 h4. Ejemplo de uso
 
-Lo ideal sería mantener la misma jerarquía en la aplicación que en FAP. Por tanto, las plantillas que se crean guardarlas en app/views/reports.
+Lo ideal sería mantener la misma jerarquía en la aplicación que en FAP. Por tanto, las plantillas que se crean, deberían guardarse en app/views/reports.
 
 bc.. File borrador = new Report("reports/solicitud.html")
                          .header("reports/header.html")
@@ -52,7 +52,7 @@ Las plantillas se definen utilizando HTML, CSS y los tags de play. Puedes consul
 
 h3. Ejemplo de plantilla
 
-Como se comentó antes, en la plantilla solo se tendrá acceso a aquellas variables que se le pasó por parámetro. En este caso solo se podrá acceder a toda la información que dispone la "solicitud" que se le pasa.
+Como se comentó antes, en la plantilla sólo se tendrá acceso a aquellas variables que se le pasó por parámetro. En este caso sólo se podrá acceder a toda la información que dispone la "solicitud" que se le pasa.
 
 bc.. <html>
 <head>

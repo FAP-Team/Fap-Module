@@ -1,6 +1,6 @@
 h1. Administración
 
-Es una de las páginas que se crean por defecto, para mantener una parte común a todas las aplicaciones. Aquí podrán gestinarse una serie de parámetros que influyen en nuestra aplicación.
+Es una de las páginas que se crean por defecto, para mantener una parte común a todas las aplicaciones. Aquí podrán gestionarse una serie de parámetros que influyen en nuestra aplicación.
 
 h2. Usuarios
 
@@ -34,7 +34,7 @@ En esta página se configura el quartz, proceso que se encarga de la comprobaci�
 
 h2. Tabla de Tablas
 
-La tabla de tabla, almacena toda la información (listas, tipos de documentos, trámites,...). Se da la opción de restaurar a los valores iniciales desde fichero. Recordar que al activar esta opción, se perderán todas las modificaciones, que los tipos de documentos se recuperan a partir del Aed, por lo que al despues ed actualizar la tabla de tablas, es necesario ir a Administración/Aed/Actualizar tipos de documentos desde el Aed. 
+La tabla de tabla, almacena toda la información (listas, tipos de documentos, trámites,...). Se da la opción de restaurar a los valores iniciales desde fichero. Recordar que al activar esta opción, se perderán todas las modificaciones, que los tipos de documentos se recuperan a partir del Aed, por lo que al actualizar la tabla de tablas, es necesario ir a Administración/Aed/Actualizar tipos de documentos desde el Aed. 
 
 !images/admin-tabladetablas!
 

@@ -8,21 +8,30 @@ h2. Parámetros
 
 * **_[name]_** : Identificador de la lista.
 * **crearEnumerado** (opcional) : Genera la clase Java de tipo Enumerado correspondiente de esa lista, para permitir usar el "IntelliSense" del IDE, y hacer más fácil localizar elementos de la lista.
+* **ocultar** (opcional) : Al indicar esta opción ocultamos la lista a la Tabla de Tablas de manera que **no** se cargarán sus valores. Un ejemplo de uso de esta opción es la lista de municipios que al ser muy grande, se evita cargarla ya que consumiría mucho tiempo.
 
 h2. Definición
 
 bc.. Lista:
-	elemento='Lista' name=ID (enumerado?='crearEnumerado')? '{'
+	elemento='Lista' name=ID (enumerado?='crearEnumerado')? &
+	(ocultar?='ocultar')?
+	'{'
 		elementos+=ElementoLista*
 	'}'
 ;
 
 ElementoLista:
 	value=STRING |
-	key=ElementoListaKey ':' value=STRING |
-	key=ElementoListaKey
+	key=ElementoListaKey (':' value=STRING)? |
+	key=ElementoListaKey ':' '{'
+		elementosDependientes+=ElementoListaDependiente*
+	'}'
 ;
 
+ElementoListaDependiente:
+	value=STRING |
+	key=ElementoListaKey (':' value=STRING)?
+;
 
 ElementoListaKey:
 	first=IdOrInt (("." resto+=IdOrInt)*)
@@ -30,7 +39,10 @@ ElementoListaKey:
 
 IdOrInt:
 	ID | INT
-;
+; 
+ 
+ 
+p. Se permite declarar listas dependientes, de manera que el valor de una lista, dependerá del valor que tenga otra lista en un momento determinado.
 
 h2. Ejemplos de uso
 
@@ -99,4 +111,32 @@ Lista provincias {
 	}
 	...
 }
+
+h3. Ejemplo de listas dependientes
+
+bc.. Lista islas{
+	35 : {
+		351: "Fuerteventura"
+		352: "Gran Canaria"
+		353: "Lanzarote"
+	}
+	38 : {
+		381: "Gomera, La"
+		382: "Hierro, El"  <---
+		383: "Palma, La"
+		384: "Tenerife"
+	}
+}
+
+Lista municipios ocultar{
+	...
+	382 : {//"Hierro, El"   <---
+		380131: "Frontera"
+		389013: "Pinar de El Hierro (El)"
+		380488: "Valverde"
+	}
+	...
+}
+
+
 

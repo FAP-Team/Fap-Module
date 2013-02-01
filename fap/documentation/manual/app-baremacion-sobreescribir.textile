@@ -29,7 +29,7 @@ h3. Cambiar comportamiento específico
 
 Puede resultar que lo que queramos es que cada criterio se calcule de una forma determinada, es decir, que una función por defecto, como la anterior, no nos sirva para representar el cálculo de todos los criterios en general, ya que cada uno necesita un cálculo distinto.
 
-Por ello se pueden crear métodos que permiten el cálculo personalizado por criterios. Para ello el método tendra que confeccionarse con el siguiente nombre: _eval${JERARQUIA}_ donde ${JERARQUIA} representa la jerarquia del criterio, pero con la peculiaridad que los "." se convierten en "_" así que si tenemos la Jerarquia _A.1.1_ el método correspondiente se llamará *evalA_1_1*
+Por ello se pueden crear métodos que permiten el cálculo personalizado por criterios. Para ello el método tendrá que confeccionarse con el siguiente nombre: _eval${JERARQUIA}_ donde ${JERARQUIA} representa la jerarquia del criterio, pero con la peculiaridad que los "." se convierten en "_" así que si tenemos la Jerarquia _A.1.1_ el método correspondiente se llamará *evalA_1_1*
 
 Así, para el criterio con Jerarquía anterior, se debería crear la función dentro de nuestra clase nueva que extiende de Evaluador y personalizar el cálculo del valor de dicho criterio, por ejemplo:
 

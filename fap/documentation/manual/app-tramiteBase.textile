@@ -1,6 +1,6 @@
 h1. Tramite Base
 
-El Trámite Base, es la clase de mayor nivel en la Herencia de las clases de Trámite. Es usada páginas de FAP, como en toda la parte de Presentación.
+El Trámite Base, es la clase de mayor nivel en la Herencia de las clases de Trámite. Es usada en páginas de FAP, como en toda la parte de Presentación.
 
 Se puede crear una clase que herede de Trámite Base, para sobreescribir las funciones que define Trámite Base y que son usadas por FAP en Presentación, de manera que se pueda otorgar un comportamiento distinto a la Presentación a través de nuestra propia clase hereditaria de Trámite Base. Para ello se explican a continuación las funciones que tiene Trámite Base y que se pueden sobreescribir. No es necesario sobreescribir todas las funciones aquí explicadas (a excepcion de todos aquellos métodos implementados como Abstract y que la propia definición de la clase hija de Trámite Base te obliga a sobreescribir). Puedes sobreescribir sólo aquellas que necesite, ya que las otras tendran el comportamiento por defecto que tiene definido Trámite Base.
 
@@ -70,20 +70,20 @@ h3. getDescripcionJustificante(); Sobreeescritura: Obligatoria
 
 bc. public abstract String getDescripcionJustificante();
 
-Debe devolver la descripción que va asociada al documento que se genera a raiz del justificante de entrada que obtenemos al registrar la solicitud.
+Debe devolver la descripción que va asociada al documento que se genera a raíz del justificante de entrada que obtenemos al registrar la solicitud.
 
 h3. getTipoTramite(); Sobreescritura: Obligatoria
 
 bc. public abstract String getTipoTramite();
 
-Debe devolver el tipo de trámita que se le asocia a la solicitud. 
+Debe devolver el tipo de trámite que se le asocia a la solicitud. 
 _De momento sólo se utiliza en Logs, debido a que se coge el trámite que está vinculado a la propia solicitud, para el resto de operaciones en el que es necesario._
 
 h3. getDocumentos(); Sobreescritura: Obligatoria
 
 bc. public abstract List<Documento> getDocumentos(); 
 
-Devuelve la lista de locumentos aportados por el solicitante que se tienen que tener en cuenta para presentar la Solicitud. De esta lista se verificará que los documentos imprescindibles han sido aportados (dando un mensaje de error e impidiendo que continue el proceso de Presentación, en caso de que hubiese algun tipo de documento de tipo imprescindible no aportado por el solicitante), y los documentos condicionados automáticos, condicionados manuales y obligatorios (dando un mensaje de Warning, si falta algún tipo de documento de estos y que el solicitante no ha aportado, pero no impidiendo que se continue con la Presentación).
+Devuelve la lista de documentos aportados por el solicitante que se tienen que tener en cuenta para presentar la Solicitud. De esta lista se verificará que los documentos imprescindibles han sido aportados (dando un mensaje de error e impidiendo que continue el proceso de Presentación, en caso de que hubiese algun tipo de documento de tipo imprescindible no aportado por el solicitante), y los documentos condicionados automáticos, condicionados manuales y obligatorios (dando un mensaje de Warning, si falta algún tipo de documento de estos y que el solicitante no ha aportado, pero no impidiendo que se continue con la Presentación).
 
 h3. getDocumentosExternos(); Sobreescritura: Obligatoria
 
@@ -95,9 +95,9 @@ h3. validarReglasConMensajes(); Sobreescritura: Obligatoria
 
 bc. public abstract void validarReglasConMensajes();
 
-Método encargado de validar que el tipo de documentación que ha adjuntado el solicitante en la solicitud se ajusta a los documentos que debería haber subido para poder presentar. Esta función debe setear mensajes de error (Messages.error(...)), en caso de que el tipo de documento no adjuntado fuese tan importante como para no continuar con la presentación hasta que el solicitnate lo adjuntase. Cualquier otro tipo de documento que no se haya aportado y no sea concluyente para abortar la operación de Presentación, se deberá indicar mediante mensajes de tipo warnings, Messages.warning(...).
+Método encargado de validar que el tipo de documentación que ha adjuntado el solicitante en la solicitud se ajusta a los documentos que debería haber subido para poder presentar. Esta función debe setear mensajes de error (Messages.error(...)), en caso de que el tipo de documento no adjuntado fuese tan importante como para no continuar con la presentación hasta que el solicitante lo adjuntase. Cualquier otro tipo de documento que no se haya aportado y no sea concluyente para abortar la operación de Presentación, se deberá indicar mediante mensajes de tipo warnings (Messages.warning(...)).
 
-De este modo, en el TramiteSolicitudFap que hay por defecto en FAP para la presentación y que tiene sobreescrita esta función debido a que extiende de Trámite Base, se comprueba si el tipo de documento no aportado fuese imprescindible para setear los mensajes de error pertinentes. Si es de cualquier otro tipo, los mensajes son Warnings por defecto en FAP, por lo que se podría continuar con la presentación. En FAP los documentos que se validan son los que devuelve la función explicada anteriormente: getDocumentos() y getDocumentosExternos(), del Trámite Base.
+De este modo, en el TramiteSolicitudFap que hay por defecto en FAP para la presentación y que tiene sobreescrita esta función, debido a que extiende de Trámite Base, se comprueba si el tipo de documento no aportado fuese imprescindible para setear los mensajes de error pertinentes. Si es de cualquier otro tipo, los mensajes son Warnings por defecto en FAP, por lo que se podría continuar con la presentación. En FAP los documentos que se validan son los que devuelve la función explicada anteriormente: getDocumentos() y getDocumentosExternos(), del Trámite Base.
 
 Esta acción por defecto FAP la hace apoyandose en la clase VerificacionService, como se muestra a continuación:
 
@@ -132,7 +132,7 @@ bc. public void prepararFirmar(){
 
 Método que se ejecutará justo después de verificar los tipos de documentos de la documentación aportada por el solicitante, y antes de firmar y registrar la solicitud. Debe contener los pasos previos a firmar y registrar como puede ser generar los documentos oficial y borrador, almacenarlos en el gestor Documental, calcular los firmantes válidos, etc.
 
-Por defecto, Trámite Base tiene su propia implementación para que no sea necesario su sobreescritura si así se desea, como vemos en el fragmente de código superior.
+Por defecto, Trámite Base tiene su propia implementación para que no sea necesario su sobreescritura si así se desea, como vemos en el fragmento de código superior.
 
 h3. validar(); Sobreescritura: Opcional
 
@@ -205,7 +205,6 @@ bc. public File generarBorrador(){
             play.Logger.error("Error generando el documento borrador: "+ex2.getMessage());
         }
     }
-
     return borrador;
 }
 

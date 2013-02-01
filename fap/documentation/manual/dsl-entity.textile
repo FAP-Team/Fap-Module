@@ -10,8 +10,8 @@ h2. Parámetros
 * **extends _[entidad]_** (opcional) : Entidad padre de la que extenderá esta entidad. Heredará todos sus atributos definidos.
 * **tableName = _[string]_** (opcional) : Nombre en base de datos de la tabla que almacena los atributos de la entidad.
 * **nonPersist** (opcional) : La entidad no se almacenara en base de datos.
-* **embedded** (opcional) : No se creara una tabla para almacenar los atributos de la entidad, estos se almacenaran en la tabla de la endidad que la referencie.
-* **inheritance = joined** (opcional) : Hhace que las clases hijas creen su propia tabla para almacenar sus atributos.
+* **embedded** (opcional) : No se creara una tabla para almacenar los atributos de la entidad, estos se almacenaran en la tabla de la entidad que la referencie.
+* **inheritance = joined** (opcional) : Hace que las clases hijas creen su propia tabla para almacenar sus atributos.
 * **superClass** (opcional) : No se creará una tabla en la base de datos para esta entidad, sus atributos se almacenaran en las tablas que creen sus hijos.
 * **noConstruct** (opcional) : No se genera el constructor para esta entidad.
 * **noAuditable** (porDefecto) : No se realizará un seguimiento de los cambios realizados en los atributos de la entidad.
@@ -19,7 +19,7 @@ h2. Parámetros
 
 h3. Entidades Singleton
 
-Aquellas entidades que extiendan de la entidad _Singleton_ tendrán una peculiaridad: en base de datos solo estará permitido como máximo una instancia de la clase generada por esta entidad. Ejemplo:
+Aquellas entidades que extiendan de la entidad _Singleton_ tendrán una peculiaridad: en base de datos sólo estará permitido como máximo una instancia de la clase generada por esta entidad. Ejemplo:
 
 bc. Entidad Quartz extends Singleton{
 	Boolean execute

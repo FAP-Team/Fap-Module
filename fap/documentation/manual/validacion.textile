@@ -6,12 +6,11 @@ Para la validación de los formularios se utiliza la clase "CustomValidation" qu
 
 bc. CustomValidation.valid("solicitud.solicitante", solicitud.solicitante);
 
-* **required** - Se utiliza en los campos requeridos, comprueba si el usuario asigno un valor para un elemento en concreto del formulario. 
+* **required** - Se utiliza en los campos requeridos, comprueba si el usuario asignó un valor para un elemento en concreto del formulario. 
 
 bc. CustomValidation.required("solicitud.solicitante.email", solicitud.solicitante.email);
 
-* **validValueFromTable** - Se utiliza en los combos y comprueba si el valor que se asigno en el formulario se corresponde con un valor de la lista de 
-valores disponibles.
+* **validValueFromTable** - Se utiliza en los combos y comprueba si el valor que se asignó en el formulario se corresponde con un valor de la lista de valores disponibles.
 
 bc. CustomValidation.validValueFromTable("solicitud.solicitante.domicilio.municipio", solicitud.solicitante.domicilio.municipio);
 

@@ -51,23 +51,21 @@ bc. Menu {
 
 h3. Menú con varios enlaces y grupos
 
-bc.. Menu {
-	Enlace "Volver" pagina=Principal.Solicitudes
-   
-	Grupo "Solicitud" {
-		Enlace "Solicitante" pagina=Solicitud.Solicitante
-		Enlace "Documentación" pagina=Solicitud.Documentacion
-	}
-   
-	Grupo "Instruccion" permiso=instruccion {
-		Enlace "Aportación de Documentacion" pagina=Solicitud.Aportacion
-		Enlace "Verificacion"
-		Enlace "Seguimiento"
-	}
-   
-	Enlace "Salir" accion="fap.SecureController.logout"
-	// Una manera más fácil de especificar "Salir"
-	Enlace "Salir2" accion=logout
+bc..     Menu {
+    	Enlace "Volver" pagina=Solicitudes
+    	
+    	Grupo "Aplicación Test" {
+    		Grupo "Elementos Básicos"{
+    			Enlace "Ejemplo: Elementos Básicos" pagina=ElementosBasicos 
+    			Enlace "Ejemplo: Botón Cancelar" pagina=PaginaCancelar
+    		}
+    		Grupo "Tipos de Solicitantes" {
+				Enlace "S. Normal" pagina=Solicitante
+				Enlace "S. PersonaFisica" pagina=SolicitantePF
+				Enlace "S. PersonaJuridica" pagina=SolicitantePJ
+			}
+		}
+	Enlace "Salir" accion=logout
 }
 
 h3. Resultado

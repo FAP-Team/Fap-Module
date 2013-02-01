@@ -17,7 +17,7 @@ h2. Desarrollo
 
 h3. Opciones adicionales
 
-*  **--dev**: No añade en el classpath las liberías compiladas y añade las rutas $FAPSDK/compiler-src/es.fap.simpleled.generator/bin y $FAPSDK/compiler-src/es.fap.simpleled/bin de manera que permite trabajar directamente con el generador compilado con Eclipse, sin tener que exportar el jar.
+*  **--dev**: No añade en el classpath las librerías compiladas y añade las rutas $FAPSDK/compiler-src/es.fap.simpleled.generator/bin y $FAPSDK/compiler-src/es.fap.simpleled/bin de manera que permite trabajar directamente con el generador compilado con Eclipse, sin tener que exportar el jar.
 bc. play fap:generate --dev
 
 *  **--debug**: Por defecto, se utiliza el fichero de log que está en $modulofap/compiler/config/log4.properties. Pasando este parámetro se utiliza $modulofap/compiler/config/log4-debug.properties

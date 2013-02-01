@@ -24,7 +24,7 @@ bc. PersonaFisica:
 
 h2. Ejemplo de uso
 
-bc. PersonaFisica amigo campo=Solicitud.datosSolicitante.amigo titulo="Amigo del solicitante"
+bc. PersonaFisica solicitantePF campo=Solicitud.datosSolicitante.solicitantePF titulo="Solicitante Persona Fisica"
 
 !images/dsl-personaFisica!
 

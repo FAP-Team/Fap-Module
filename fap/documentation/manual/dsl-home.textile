@@ -1,6 +1,6 @@
 h1. Elementos del Lenguaje FAP
 
-Hemos visto previamente elementos que se pueden usar en una aplicación FAP como 'Entidad'. Pero existen muchos más que permiten una personalización bastante grande de nuestra aplicación de administración electrónica, como son los que veremos a continuación y que van desde una simple elemento para representar un atributo de tipo "Fecha":dsl-fecha hasta las complejas y elaboradas restricciones que se pueden llegar a realizar para controlar el acceso a determinados "Formularios":dsl-formulario y "Páginas":dsl-pagina... o incluso controlar la visualización de determinados "Grupos":dsl-grupo de elementos.
+Hemos visto previamente elementos que se pueden usar en una aplicación FAP como 'Entidad'. Pero existen muchos más que permiten una personalización bastante grande de nuestra aplicación de administración electrónica, como son los que veremos a continuación y que van desde un simple elemento para representar un atributo de tipo "Fecha":dsl-fecha hasta las complejas y elaboradas restricciones que se pueden llegar a realizar para controlar el acceso a determinados "Formularios":dsl-formulario y "Páginas":dsl-pagina... o incluso controlar la visualización de determinados "Grupos":dsl-grupo de elementos.
 
 
 # "Acciones":dsl-accion

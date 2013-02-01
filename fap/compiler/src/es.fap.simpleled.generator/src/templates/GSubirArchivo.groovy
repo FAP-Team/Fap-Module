@@ -31,6 +31,8 @@ public class GSubirArchivo extends GSaveCampoElement{
 			params.putStr("aportadoPor", subirArchivo.aportadoPor)
 		if(subirArchivo.listarDocumentosSubidos != null) 
 			params.put("listarDocumentosSubidos", subirArchivo.listarDocumentosSubidos)
+		if(subirArchivo.conMetadato != null)
+			params.put("conMetadato", subirArchivo.conMetadato)
 		return "#{fap.documento ${params.lista()} /}	";
 	}
 	
@@ -156,6 +158,20 @@ public class GSubirArchivo extends GSaveCampoElement{
 	
 	public String copy(){
 		return GSaveCampoElement.copyCamposFiltrados(campo, ["tipo","descripcion"]);
+	}
+	
+	public String validateCopy(Stack<Set<String>> validatedFields) {
+		String codigo = """
+						if(documento.estadoElaboracion != null) {
+							dbDocumento.estadoElaboracion = documento.estadoElaboracion;
+							documento.sinMetadatos = false;
+						}
+						else {
+							documento.sinMetadatos = true;
+						}
+						dbDocumento.sinMetadatos = documento.sinMetadatos;
+						""";
+		return codigo + validate(validatedFields) + copy();
 	}
 	
 }

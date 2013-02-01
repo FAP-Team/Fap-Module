@@ -66,6 +66,12 @@ public class Documento extends FapModel {
 	@ValueFromTable("estadoNotificacion")
 	public String estadoDocumento;
 
+	@Transient
+	public String estadoElaboracion;
+
+	@Transient
+	public Boolean sinMetadatos;
+
 	public void init() {
 
 		postInit();
@@ -187,6 +193,9 @@ public class Documento extends FapModel {
 		urlDescarga = doc.urlDescarga;
 		verificado = doc.verificado;
 		refAed = doc.refAed;
+		expedienteReferenciado = doc.expedienteReferenciado;
+		solicitudReferenciada = doc.solicitudReferenciada;
+		estadoElaboracion = doc.estadoElaboracion;
 	}
 
 	// === MANUAL REGION END ===

@@ -15,6 +15,7 @@
 	def download = _download != null? _download : false
 	def tramite = _tramite
 	def aportadoPor = _aportadoPor
+	
 
 	def tiposDocumentos
 	if (tramite == null){
@@ -28,6 +29,12 @@
 		tiposDocumentos = models.Tramite.findTipoDocumentosAportadosPor(tramite, aportadoPor);
 	}
 
+    def conMetadato = _conMetadato != null? _conMetadato : false;
+    def comboEstadoElaboracionId = field.id + "_estadoElaboracion";   
+    def oldComboEstadoElaboracionId = field.id + "_estadoElaboracion";
+    def campoEstadoElaboracion = "${campo}.estadoElaboracion";
+    def estadoElaboracion = models.EstadoElaboracion.findAll();
+
 	def listarDocumentosSubidos = _listarDocumentosSubidos != null? _listarDocumentosSubidos : false
 	def comboSeleccionado = null
 	
@@ -38,6 +45,11 @@
 
 	#{fap.combo id:comboId, idOld:oldComboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos,
 	   comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ordenarPorTexto:true/}
+	
+	#{if conMetadato}
+		#{fap.combo id:comboEstadoElaboracionId, idOld:oldComboEstadoElaboracionId, campo:campoEstadoElaboracion, titulo:"Estado de elaboración",
+		   itemsModificables:estadoElaboracion, comboValue:"nombre", comboText:"valor", obj:obj, requerido:requerido, eliminarDuplicados:true, ordenarPorTexto:true/}
+	#{/if}
 	
 	#{fap.areaTexto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
 

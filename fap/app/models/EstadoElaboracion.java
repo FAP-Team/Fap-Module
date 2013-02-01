@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Metadato extends FapModel {
+public class EstadoElaboracion extends FapModel {
 	// Código de los atributos
 
 	public String nombre;
@@ -32,20 +32,6 @@ public class Metadato extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-
-	public Metadato() {
-	}
-
-	public Metadato(String nombre, String valor) {
-		this.nombre = nombre;
-		this.valor = valor;
-	}
-
-	public void putMetadato(String nombre, String valor) {
-		this.nombre = nombre;
-		this.valor = valor;
-		this.save();
-	}
 
 	// === MANUAL REGION END ===
 

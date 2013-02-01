@@ -135,6 +135,9 @@ Entidad DireccionMapa embeddable auditable{
 
 // Entidad que representa un Documento y todo lo necesario para representarlo
 Entidad Documento {
+    //
+    // ¡¡¡¡OJO!!!! Cada atributo nuevo, hay que ponerlo en el método "duplicar" de Documento.java 
+    //
 	String uri                     // uri del documento en el AED
 	Lista tiposDocumentos tipo
 	String descripcion
@@ -152,6 +155,8 @@ Entidad Documento {
 	// dónde se encuentra el documento seleccionado en la subida (ya presente en el aed).
 	Boolean refAed                     // si el campo expedienteReferenciado/solicitudReferenciada es válido
 	Lista estadoNotificacion estadoDocumento
+	String estadoElaboracion transient      // metadato
+	Boolean sinMetadatos transient
 }
 
 // La entidad Documentación agrupa aportaciones de documentos
@@ -811,10 +816,11 @@ Entidad CertificadoSolicitado {
 	DateTime fechaCreacion
 }
 
-// Metadatos de los tipos de documentos. Hecho en principio para parsear de un JSON
+// Metadatos de los tipos de documentos. Datos cargados desde metadatos.json
 Entidad Metadatos {    
-    // Tipo de documento al que hacen referencia los metadatos. 
-    String tipoDocumento default="ALL"   // Si se parsea el JSON y no está presente, son metadatos comunes a todos los tipos de documentos
+    // Ponemos tipoDocumento ALL a esa parte del json donde no está presente el tipo de documento,
+    // lo que significa que son metadatos comunes a todos los tipos de documentos.
+    String tipoDocumento default="ALL"      // tipo de documento al que hacen referencia los metadatos
     OneToMany Metadato listaMetadatos                                      
 }
 
@@ -823,6 +829,11 @@ Entidad Metadato {
     String valor
 }
 
+// Posibles valores del metadato EstadoElaboracion. Datos cargados desde estadoElaboracion.json
+Entidad EstadoElaboracion {
+    String nombre
+    String valor
+}
 
 
 Entidad CargarTablaDeTablas extends Singleton{

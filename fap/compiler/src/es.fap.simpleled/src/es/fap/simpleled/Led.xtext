@@ -438,6 +438,7 @@ SubirArchivo:
 			('extensiones' '=' extensiones+=STRING ("," extensiones+=STRING)*)
 		)?
 		& (listarDocumentosSubidos?='listarDocumentosSubidos')?
+		& (conMetadato?='conMetadato')?
 	)
 ;
 
@@ -447,6 +448,7 @@ EditarArchivo:
 		& (requerido?='requerido')?
 		& ('tramite' '=' tramite=STRING)?		
 		& ('aportadoPor' '=' aportadoPor=STRING)?
+		& (conMetadato?='conMetadato')?
 	)
 ;
 

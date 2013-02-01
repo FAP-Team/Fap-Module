@@ -29,7 +29,8 @@ public class GEditarArchivo extends GSaveCampoElement{
 		if (editarArchivo.tramite != null && editarArchivo.tramite.trim() != "")
 			params.putStr("tramite", editarArchivo.tramite);
 		if (editarArchivo.aportadoPor != null && editarArchivo.aportadoPor.trim() != "")
-			params.putStr("aportadoPor", editarArchivo.aportadoPor)
+			params.putStr("aportadoPor", editarArchivo.aportadoPor)	
+		params.put("conMetadato", true);	// editando siempre damos la posibilidad de añadir metadatos al documento
 		params.put("upload", false);
 		params.put("download", true);
 		params.putStr("tipo", "tipoCiudadano")
@@ -52,7 +53,17 @@ public class GEditarArchivo extends GSaveCampoElement{
 	}
 	
 	public String validateCopy(Stack<Set<String>> validatedFields){
-		return validate(validatedFields) + """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
+		String codigo = """
+						if(documento.estadoElaboracion != null) {
+							dbDocumento.estadoElaboracion = documento.estadoElaboracion;
+							documento.sinMetadatos = false;
+						}
+						else {
+							documento.sinMetadatos = true;
+						}
+						dbDocumento.sinMetadatos = documento.sinMetadatos;
+						""";	
+		return codigo + validate(validatedFields) + """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
  ${campo.dbStr()}.descripcion = ${campo.firstLower()}.descripcion;
 		""";
 	}

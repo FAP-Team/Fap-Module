@@ -60,15 +60,17 @@ require:
     # XmlGregorianCalendar    
     - xerces -> xercesImpl 2.9.1
 
-    - es.gobcan.eadmon -> aed 20111125:
+    - es.gobcan.eadmon -> aed 2.1.0:
         transitive: false
     - es.gobcan.platino -> platino.pre v20121022:
         transitive: false   
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false
-    - es.gobcan.eadmon -> procedimientos 1.0:
+    - es.gobcan.eadmon -> procedimientos 2.2.0:
         transitive: false
     - es.gobcan.eadmon.tiposdocumentos -> tiposdocumentos 1.0:
+        transitive: false
+    - es.gobcan.eadmon -> gestordocumental 2.1.0:
         transitive: false
     - es.gobcan -> certificados 1.1:
         transitive: false

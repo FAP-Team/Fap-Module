@@ -9,6 +9,10 @@
                             {
                                 nombre: "Organo",
                                 valor:  "A05003341"
+                            },
+                            {
+                                nombre: "TipoFirmasElectronicas",
+                                valor:  "XML-DSig"
                             }
                         ]
     },
@@ -128,5 +132,44 @@
                                 valor:  "0"
                             }
                         ]
-    }     
+    },
+    {
+        tipoDocumento: "eadmon://gobcan.es/tiposDocumentos/TDC000000000000000003/v01",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD16"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
+                            }
+                        ]
+    },
+    {
+        tipoDocumento: "eadmon://gobcan.es/tiposDocumentos/TDC000000000000000015/v01",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD16"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
+                            }
+                        ]
+    },
+    {
+        tipoDocumento: "eadmon://gobcan.es/tiposDocumentos/TDC000000000000000008/v01",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD16"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
+                            }
+                        ]
+    }      
 ]

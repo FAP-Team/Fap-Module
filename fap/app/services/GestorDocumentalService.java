@@ -17,6 +17,7 @@ import models.ExpedienteAed;
 import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
+import models.Metadato;
 import models.SolicitudGenerica;
 import models.Tramite;
 import properties.PropertyPlaceholder;
@@ -100,15 +101,14 @@ public interface GestorDocumentalService {
 
 	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
 	
-	public void setMetadatosDocumento(String uriDocumento);
+	public String construyeMetadatoIdentificador(String uriDocumento, String organo) throws GestorDocumentalServiceException;
 
-	public String construyeIdentificador(String uriDocumento) throws GestorDocumentalServiceException;
+	public DateTime construyeMetadatoFechaCaptura(String uriDocumento) throws GestorDocumentalServiceException;
 
-	public DateTime construyeFechaCaptura(String uriDocumento) throws GestorDocumentalServiceException;
+	public String construyeMetadatoNombreFormato(String uriDocumento) throws GestorDocumentalServiceException;
 
-	public String construyeEstadoElaboracion(String uriDocumento) throws GestorDocumentalServiceException;
-
-	public String construyeNombreFormato(String uriDocumento) throws GestorDocumentalServiceException;
-
-	public String construyeTipoFirmasElectronicas(String uriDocumento) throws GestorDocumentalServiceException;
+	public List<Metadato> getMetadatosDocumento(String uriDocumento) throws GestorDocumentalServiceException;
+	
+	public boolean setMetadatosDocumento(String uriDocumento, List<models.Metadato> listaMetadatos) throws GestorDocumentalServiceException;
+    
 }

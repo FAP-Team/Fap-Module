@@ -1,11 +1,18 @@
 package controllers;
 
+import java.util.Map;
+
+import play.mvc.Util;
+
+import utils.GestorDocumentalUtils;
+import validation.CustomValidation;
 import messages.Messages;
 import models.Documento;
 import models.SolicitudGenerica;
 import controllers.gen.DocumentosFAPControllerGen;
 
 public class DocumentosFAPController extends DocumentosFAPControllerGen {
+	
 	public static void index(String accion, Long idSolicitud, Long idDocumento) {
 		if (accion == null)
 			accion = getAccion();
@@ -25,4 +32,5 @@ public class DocumentosFAPController extends DocumentosFAPControllerGen {
 		log.info("Visitando página: " + "fap/Documentacion/DocumentosFAP.html");
 		renderTemplate("fap/Documentacion/DocumentosFAP.html", accion, idSolicitud, idDocumento, solicitud, documento);
 	}
+	
 }

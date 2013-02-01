@@ -1,0 +1,22 @@
+[
+	{
+		nombre: "EE01",
+		valor: "Original"
+	},
+	{
+		nombre: "EE02",
+		valor: "Copia electrónica auténtica con cambio de formato"
+	},
+	{
+        nombre: "EE03",
+        valor: "Copia electrónica auténtica de documento papel"
+    },
+    {
+        nombre: "EE04",
+        valor: "Copia electrónica parcial auténtica"
+    },
+	{
+		nombre: "EE99",
+		valor: "Otros"
+	}
+]

@@ -269,9 +269,9 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 	
-	Pagina Documentos campo=Solicitud.documentacion.documentos{
-		Accion crear redirigir=SubirArchivoAedTest	
-		SubirArchivo fileAportacion campo=Documento requerido listarDocumentosSubidos tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"  
+	Pagina Documentos campo=Solicitud.documentacion.documentos {
+	    Accion crear redirigir=SubirArchivoAedTest	
+		SubirArchivo fileAportacion campo=Documento requerido listarDocumentosSubidos conMetadato tramite="Solicitud" aportadoPor="CIUDADANO" extensiones="pdf", "png" // mimes="application/pdf"  
 	}
 	
 	Pagina DocumentosEditar campo=Solicitud.documentacion.documentos{
@@ -303,9 +303,9 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		}
 	}
 	
-	Pagina EjemplosdeGrupos campo=Solicitud{
-		Grupo testMostrarSiExpresion titulo="Grupo 1: Mostrar Si Expression" mostrarSiExpresion "4 == 4"{
-			Texto ifTexto titulo="Texto" campo=Solicitud.testGrupo.nombre
+	Pagina EjemplosdeGrupos campo=Solicitud {
+		Grupo testMostrarSiExpresion titulo="Grupo 1: Mostrar Si Expression" mostrarSiExpresion "4 == 4" {
+		    Texto ifTexto titulo="Texto" campo=Solicitud.testGrupo.nombre
  		}
  		
  		Grupo test2MostrarSiExpresion titulo="Grupo 1: Mostrar Si Campo" mostrarSiCampo Solicitud.solicitante.email = "pepe@pepe.com", "juan@juan.com" {

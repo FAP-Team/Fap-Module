@@ -1,21 +1,25 @@
 package controllers;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
-
 import com.google.gson.reflect.TypeToken;
 
 import messages.Messages;
+import models.EstadoElaboracion;
 import models.Metadato;
 import models.Metadatos;
 import models.TableKeyValue;
 import models.TipoCriterio;
+import models.TipoDatoAdicional;
 import models.TipoDocumento;
 import models.Tramite;
 
@@ -24,6 +28,7 @@ import play.Play;
 import models.TramitesVerificables;
 import models.VerificacionTramites;
 
+import play.modules.pdf.PDF;
 import play.mvc.Util;
 import properties.FapProperties;
 import services.GestorDocumentalService;
@@ -38,6 +43,7 @@ import utils.ModelUtils;
 import controllers.gen.AedControllerGen;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
+
 
 public class AedController extends AedControllerGen {
 
@@ -119,6 +125,7 @@ public class AedController extends AedControllerGen {
      */
 	public static void actualizarMetadatos(String actualizarMetadatos) {
 		Metadatos.deleteAllMetadatos();
+		EstadoElaboracion.deleteAll();
 		
 		Type type;
 		if ( new File(Play.applicationPath+"/conf/initial-data/metadatos.json").exists() ) {
@@ -135,13 +142,22 @@ public class AedController extends AedControllerGen {
 
 			for (Metadatos metadatos : listaMetadatos) {
 				for (Metadato metadato : metadatosComunes.listaMetadatos) {
-					Metadato nuevoMetadatoComun = new Metadato();
-					nuevoMetadatoComun.nombre = metadato.nombre;
-					nuevoMetadatoComun.valor = metadato.valor;
+					Metadato nuevoMetadatoComun = new Metadato(metadato.nombre, metadato.valor);
 					metadatos.listaMetadatos.add(nuevoMetadatoComun);
 				}
 				metadatos.save();	
 			}
+			
+			// Metadatos EstadoElaboracion
+			type = new TypeToken<ArrayList<EstadoElaboracion>>(){}.getType();
+			List<EstadoElaboracion> listaEstadoElaboracion = JsonUtils.loadObjectFromJsonFile("conf/initial-data/estadosElaboracion.json", type);
+			for (EstadoElaboracion estadoElaboracion : listaEstadoElaboracion) {
+				EstadoElaboracion estadoElab = new EstadoElaboracion();
+				estadoElab.nombre = estadoElaboracion.nombre;
+				estadoElab.valor = estadoElaboracion.valor;
+				estadoElab.save();
+			}
+			
 			Messages.ok("Metadatos actualizados correctamente");
 		} 
 		else {

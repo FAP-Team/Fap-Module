@@ -239,6 +239,9 @@ public class CustomValidation {
     		ValidationResult result = new ValidationResult();
     		result.ok = true;
     		result.ok = applyCheck(requiredCheck, key + ".tipo", documento.tipo).ok && result.ok;
+    		if(!documento.sinMetadatos)
+    			result.ok = applyCheck(requiredCheck, key + ".estadoElaboracion", documento.estadoElaboracion).ok && result.ok;
+
     		if(documento.isMultiple()){
     			result.ok = applyCheck(requiredCheck, key + ".descripcion", documento.descripcion).ok && result.ok;
     		}

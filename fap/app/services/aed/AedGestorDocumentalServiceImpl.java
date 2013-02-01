@@ -1,5 +1,8 @@
 package services.aed;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,8 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.xml.ws.Holder;
@@ -23,60 +27,62 @@ import javax.xml.ws.soap.SOAPFaultException;
 import models.Agente;
 import models.ExpedienteAed;
 import models.InformacionRegistro;
+import models.Metadatos;
 import models.RepresentantePersonaJuridica;
 import models.SolicitudGenerica;
 import models.Tramite;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
+import org.apache.xerces.parsers.DOMParser;
 import org.joda.time.DateTime;
-
-import com.lowagie.text.pdf.PdfReader;
-
-import controllers.fap.MetadatosFAPController;
-import controllers.fap.AgenteController;
-import controllers.fap.PresentacionFapController;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import platino.PlatinoProxy;
-import play.db.jpa.GenericModel.JPAQuery;
+import play.Play;
 import play.libs.MimeTypes;
 import play.modules.guice.InjectSupport;
+import play.mvc.Http;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
-import tramitacion.Documentos;
+import utils.AedUtils;
 import utils.BinaryResponse;
 import utils.StreamUtils;
 import utils.WSUtils;
+
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
+
+import controllers.fap.AgenteController;
+import controllers.fap.MetadatosFAPController;
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.AedPortType;
 import es.gobcan.eadmon.aed.ws.dominio.DocumentoEnUbicacion;
 import es.gobcan.eadmon.aed.ws.dominio.Expediente;
-import es.gobcan.eadmon.aed.ws.dominio.Solicitud;
 import es.gobcan.eadmon.aed.ws.dominio.Ubicaciones;
 import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
-import es.gobcan.eadmon.aed.ws.servicios.ObtenerDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Contenido;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Documento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.ListaMetadatos;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Metadato;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAdministrativas;
-import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAvanzadas;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
-import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
-import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
-import es.gobcan.eadmon.verificacion.ws.dominio.ListaDocumentosVerificacion;
-
-import static com.google.common.base.Preconditions.*;
 
 /**
  * 
@@ -1272,17 +1278,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 
 	
-	@Override
-	public void setMetadatosDocumento(String uriDocumento) {
-		try {
-			String a = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getIdentificador", uriDocumento);
-			DateTime b = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getFechaCaptura", uriDocumento);
-			String d = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getEstadoElaboracion", uriDocumento);
-			String e = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getNombreFormato", uriDocumento);
-			String f = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getTipoFirmasElectronicas", uriDocumento);
-		} catch (Throwable e1) { e1.printStackTrace(); }
-	}
-	
 	/**
 	 * Metadato Identificador: 
 	 * "ES_A05003341_" + AAAA + "_" + B(30). AAAA: Año en que se digitaliza el documento. B(30): El identificador 
@@ -1294,32 +1289,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 * @throws GestorDocumentalServiceException 
 	 */
 	@Override
-	public String construyeIdentificador(String uriDocumento) throws GestorDocumentalServiceException {
-		String organo = null;
-		try {
-			organo = MetadatosFAPController.invoke(AedGestorDocumentalServiceImpl.class, "getOrgano", uriDocumento);
-		} catch (Throwable e1) { e1.printStackTrace(); }
-		
-//		PropiedadesDocumento propiedadesDoc;
-//		boolean obtuveDocumento = false;
-//		String identificador = null;
-//		try {
-//        	propiedadesDoc = aedPort.obtenerDocumentoPropiedadesNoClasificado(uriDocumento);
-//        	identificador = propiedadesDoc.getIdentificador();
-//            obtuveDocumento = true;
-//        } catch (AedExcepcion e) { ; }
-//        
-//        if (!obtuveDocumento) {
-//	        try {
-//	        	propiedadesDoc = aedPort.obtenerDocumentoPropiedades(uriDocumento);        
-//	        	identificador = propiedadesDoc.getIdentificador();
-//	        } catch (AedExcepcion e) {
-//	            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
-//	        }     
-//        }
-//        log.info("Documento recuperado del aed " + uriDocumento);        
-//        identificador = String.format("%-30s", identificador);			 
-        String uri = String.format("%-30s", uriDocumento);			// XXX probar esto
+	public String construyeMetadatoIdentificador(String uriDocumento, String organo) throws GestorDocumentalServiceException {		 
+        String uri = String.format("%30s", uriDocumento);		
 		return "ES_" + organo + "_" + Calendar.getInstance().get(Calendar.YEAR) + "_" + uri;
 	}
 	
@@ -1332,7 +1303,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 * @throws GestorDocumentalServiceException 
 	 */
 	@Override
-	public DateTime construyeFechaCaptura(String uriDocumento) throws GestorDocumentalServiceException {
+	public DateTime construyeMetadatoFechaCaptura(String uriDocumento) throws GestorDocumentalServiceException {
 		PropiedadesDocumento propiedadesDoc;
 		boolean obtuveDocumento = false;
 		DateTime fechaCaptura = null;
@@ -1357,23 +1328,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 	
 	/**
-	 * Metadato EstadoElaboracion: 
-	 * "EE01" Original.
-	 * "EE02" Copia electrónica auténtica con cambio de formato
-	 * "EE02" Copia electrónica auténtica de documento papel
-	 * "EE03" Copia electrónica parcial auténtica
-	 * "EE99" Otros
-	 *  
-	 * @param uriDocumento
-	 * @return 
-	 */
-	@Override
-	public String construyeEstadoElaboracion(String uriDocumento) throws GestorDocumentalServiceException {
-		// XXX: ???
-		return "";
-	}
-	
-	/**
 	 * Metadato NombreFormato: 
 	 * "PDF" o "PDF/A"
 	 *  
@@ -1381,30 +1335,171 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 * @return 
 	 */
 	@Override
-	public String construyeNombreFormato(String uriDocumento) throws GestorDocumentalServiceException {
-		// XXX: ???
-//		PdfReader reader = new PdfReader("HelloWorldToRead.pdf");
-//		    if (reader.getMetadata() == null) {
-//		      System.out.println("No XML Metadata.");
-//		    } else {
-//		      System.out.println("XML Metadata: " + new String(reader.getMetadata()));
-//		      HashMap<String, String> info = reader.getInfo();
-//		    }
-//		  }
+	public String construyeMetadatoNombreFormato(String uriDocumento) throws GestorDocumentalServiceException {
+//		El estándar PDF/A especifica dos niveles para archivos PDF:
+//	    	PDF/A-1a - Nivel A contenido en la parte 1.
+//	    	PDF/A-1b - Nivel B contenido en la parte 1.
+
+//	A conforming PDF/A-1a file is identified by:
+//		1. being a PDF file; and
+//		2. having a Metadata key in the Catalog dictionary, whose value is a well-formed XMP packet
+//			* having an rdf:Description element containing a pdfaid:part attribute (or child element), 
+//			whose value is “1” and a pdfaid:conformance attribute (or child element) whose values is “A”.
+//	A conforming PDF/A-1b file is identified by:
+//		1. being a PDF file; and
+//		2. having a Metadata key in the Catalog dictionary, whose value is a well-formed XMP
+//		packet
+//			* having an rdf:Description element containing a pdfaid:part attribute (or child element), 
+//			whose value is “1” and a pdfaid:conformance attribute (or child element) whose values is “B”.
+//	An example might look like:
+//		<rdf:Description pdfaid:amd="2005" pdfaid:conformance="B" pdfaid:part="1" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" />
+//	The same information can also be represented using the expanded XMP format via child
+//	elements instead of attributes:
+//		<rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/">
+//			<pdfaid:conformance>B</pdfaid:conformance>
+//			<pdfaid:part>1</pdfaid:part>
+//			<pdfaid:amd>2005</pdfaid:amd>
+//		</rdf:Description>
+
+		PdfReader reader;	
+		String nombreFichero = Play.tmpDir.getAbsolutePath() + "_" + RandomStringUtils.randomAlphanumeric(10).toLowerCase() + ".pdf";
+		File fichero = new File(nombreFichero);
+		URL url;
+		try {
+			url = new URL( Http.Request.current().getBase() + AedUtils.crearUrl(uriDocumento) );
+			FileUtils.copyURLToFile(url, fichero);
+		} catch (Exception e) { e.printStackTrace(); }
+		
+		String xmlMetadata;
+		Document doc = null;
+		DOMParser parser = new DOMParser();
+		try {
+			reader = new PdfReader(nombreFichero);
+			// XXX: Versiones >= 1.4?
+			// getPdfVersion: Only the last version char is returned. For example version 1.4 is returned as '4'.
+			//versionPDF = "1." + Character.toString( reader.getPdfVersion() );   
+			if (reader.getMetadata() == null)
+				log.error("El PDF correspondiente al documento con uri " + uriDocumento + " no tiene medatados (XML).");
+			else {	
+		    	xmlMetadata = new String( reader.getMetadata() );    
+		    	parser.parse(new InputSource(new java.io.StringReader(xmlMetadata)));
+		    	doc = parser.getDocument();
+		    }
+		} catch (Exception e) { e.printStackTrace(); }
+		
+		try {
+		    NodeList pdfaidPart = doc.getElementsByTagName("pdfaid:part");
+		    NodeList pdfaidConformance = doc.getElementsByTagName("pdfaid:conformance");
+		    if ( pdfaidPart.item(0).getTextContent().equals("1") )
+		    	if ( pdfaidConformance.item(0).getTextContent().equals("A") || pdfaidConformance.item(0).getTextContent().equals("B") )
+		    		return "PDF/A";
+		} catch (Exception e) {  
+			log.info("El documento con uri " + uriDocumento + " no es un pdf/a");/*  */  
+		}	
 		return "PDF";
-	}
+	}	
 	
 	/**
-	 * Metadato TipoFirmasElectronicas: 
-	 * 
-	 *  ???????????????? Falta fijar el tipo de firma de los documentos  ?????????????
+	 * Obtiene los metadatos del documento uriDocumento
 	 * 
 	 * @param uriDocumento
 	 * @return 
 	 */
 	@Override
-	public String construyeTipoFirmasElectronicas(String uriDocumento) throws GestorDocumentalServiceException {
-		// XXX: ???
-		return "";
+	public List<models.Metadato> getMetadatosDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		boolean obtuveDocumento = false;
+		PropiedadesDocumento propDoc = null;
+		try {
+			propDoc = aedPort.obtenerDocumentoPropiedadesNoClasificado(uriDocumento);
+			obtuveDocumento = true;
+		} catch (AedExcepcion e) { ; }
+
+		if (!obtuveDocumento) {
+	        try {
+	        	propDoc = aedPort.obtenerDocumentoPropiedades(uriDocumento);
+	        } catch (AedExcepcion e) {
+	        	 throw new GestorDocumentalServiceException("No se ha podido obtener las propiedades del documento " + uriDocumento + " - error: " + getLogMessage(e), e);
+	        } 
+		}
+		
+		List<models.Metadato> listaMetadatos = new ArrayList<models.Metadato>();
+		try {
+			System.out.println("propDoc.getMetadatos().getMetadato() = " + propDoc.getMetadatos().getMetadato());
+			for(Metadato metadato : propDoc.getMetadatos().getMetadato()) {
+				listaMetadatos.add( new models.Metadato( metadato.getNombre(), metadato.getValor() ) );
+			}
+		 } catch (NullPointerException e) {
+			 log.error("El documento " + uriDocumento + " no tiene metadatos.");
+		 }
+
+		return listaMetadatos;
 	}
+	
+	/**
+	 * @throws GestorDocumentalServiceException 
+	 * Setea un conjunto de metadatos del documento uriDocumento
+	 * 
+	 * @param uriDocumento
+	 * @param listaMetadatos Lista de metadatos a setear (List<models.Metadato>)
+	 * @return true en caso de inserción correcta de los metadatos, false en caso contrario
+	 * @throws  
+	 */
+	@Override
+	public boolean setMetadatosDocumento(String uriDocumento, List<models.Metadato> listaMetadatos) throws GestorDocumentalServiceException {		
+		List<Metadato> listaMetadatosAed2 = new ArrayList<Metadato>(); 
+		ListaMetadatos listaMetadatosAed = new ListaMetadatos();
+		for(models.Metadato metadato : listaMetadatos) {
+			Metadato metadatoAed = new Metadato();
+			metadatoAed.setNombre(metadato.nombre);
+			metadatoAed.setValor(metadato.valor);
+			listaMetadatosAed.getMetadato().add(metadatoAed);	
+			listaMetadatosAed2.add(metadatoAed);
+		}
+
+		boolean obtuveDocumento = false;
+		Documento documento = null;
+		try {
+			documento = aedPort.obtenerDocumentoNoClasificado(uriDocumento);
+			obtuveDocumento = true;
+			
+			try {
+				documento.getPropiedades().getMetadatos().getMetadato().addAll(listaMetadatosAed2);
+			}
+			catch (NullPointerException npe) {
+				log.error("El documento con uri " + uriDocumento + " no tiene metadatos, por lo que no se han podido insertar los nuevos.");
+				return false;
+			}
+
+			aedPort.actualizarDocumentoNoClasificado(documento);
+			
+		} catch (AedExcepcion e) { e.printStackTrace(); }
+		
+		if (!obtuveDocumento) {
+	        try {
+				documento = aedPort.obtenerDocumento(uriDocumento);
+				List<DocumentoEnUbicacion> ubicaciones = null;
+				ubicaciones = aedPort.obtenerDocumentoRutas(uriDocumento);
+				if (ubicaciones.size() == 0) {
+					log.error("No se pudieron obtener las ubicaciones del documento " + uriDocumento);
+					throw new GestorDocumentalServiceException("No se han podido obtener las ubicaciones del documento " + uriDocumento);
+				}
+				List<Ubicaciones> newUbicaciones = new ArrayList<Ubicaciones>();
+				for (DocumentoEnUbicacion docUbic : ubicaciones) {
+					Ubicaciones ubic = new Ubicaciones();
+					ubic.setProcedimiento(FapProperties.get("fap.aed.procedimiento"));
+					ubic.getExpedientes().add(docUbic.getExpediente());
+					newUbicaciones.add(ubic);
+				}
+				
+				aedPort.actualizarDocumento(documento, newUbicaciones);
+				
+	        } catch (AedExcepcion e) {
+	        	log.error("No se ha podido obtener el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
+	        	return false;
+	        } 
+		}
+		
+    	return true; 
+	}
+	
 }

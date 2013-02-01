@@ -6,18 +6,27 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.xerces.parsers.DOMParser;
 import org.joda.time.DateTime;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import com.google.common.base.Preconditions;
+import com.lowagie.text.pdf.PdfReader;
 
 import controllers.fap.AgenteController;
+import controllers.fap.MetadatosFAPController;
 
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
@@ -42,6 +51,7 @@ import models.ExpedienteAed;
 import models.Firma;
 import models.Firmante;
 import models.InformacionRegistro;
+import models.Metadato;
 import models.Participacion;
 import models.SolicitudGenerica;
 import models.TipoCodigoExclusion;
@@ -50,6 +60,7 @@ import models.TiposCodigoRequerimiento;
 import models.Tramite;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import services.aed.AedGestorDocumentalServiceImpl;
 import services.aed.Interesados;
 import utils.BinaryResponse;
 
@@ -812,43 +823,32 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		
 	}
 
-	public void setMetadatosDocumento(String uriDocumento) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String construyeIdentificador(String uriDocumento)
-			throws GestorDocumentalServiceException {
-		// TODO Auto-generated method stub
+	// Metadato Identificador: no se hace nada en el filesystem
+	public String construyeMetadatoIdentificador(String uriDocumento, String organo) throws GestorDocumentalServiceException {
 		return null;
 	}
 
 	@Override
-	public DateTime construyeFechaCaptura(String uriDocumento)
-			throws GestorDocumentalServiceException {
-		// TODO Auto-generated method stub
+	// Metadato FechaCaptura: no se hace nada en el filesystem
+	public DateTime construyeMetadatoFechaCaptura(String uriDocumento) throws GestorDocumentalServiceException {
 		return null;
 	}
 
 	@Override
-	public String construyeEstadoElaboracion(String uriDocumento)
-			throws GestorDocumentalServiceException {
-		// TODO Auto-generated method stub
+	// Metadato NombreFormato: no se hace nada en el filesystem
+	public String construyeMetadatoNombreFormato(String uriDocumento) throws GestorDocumentalServiceException {
 		return null;
 	}
 
 	@Override
-	public String construyeNombreFormato(String uriDocumento)
-			throws GestorDocumentalServiceException {
-		// TODO Auto-generated method stub
+	// No se hace nada en el filesystem
+	public List<Metadato> getMetadatosDocumento(String uriDocumento) throws GestorDocumentalServiceException {
 		return null;
 	}
-
+	
 	@Override
-	public String construyeTipoFirmasElectronicas(String uriDocumento)
-			throws GestorDocumentalServiceException {
-		// TODO Auto-generated method stub
-		return null;
+	// No se hace nada en el filesystem
+	public boolean setMetadatosDocumento(String uriDocumento, List<models.Metadato> listaMetadatos) throws GestorDocumentalServiceException {
+		return true;		// true si se pudo setear los metadatos
 	}
 }

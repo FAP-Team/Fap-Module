@@ -1,13 +1,20 @@
 package controllers.fap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import org.joda.time.DateTime;
 
 import models.Metadato;
+import models.Metadatos;
+
 import org.apache.log4j.Logger;
+
+import config.InjectorConfig;
 
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
@@ -19,100 +26,27 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Propiedades
 public class MetadatosFAPController extends InvokeClassController {
 	
 	private static final Logger logger = Logger.getLogger(MetadatosFAPController.class);
-	@Inject
-	public static GestorDocumentalService gestorDocumentalService;
 	
+	// (Metadatos.json)
+	// Metadatos comunes:  VersionNTI, Organo, Tipo documental, OrigenCiudadanoAdministracion, TipoFirmasElectronicas 
+	// Metadatos calculados:  Identificador, FechaCaptura, Nombre del formato
+	// Metadatos preguntados al usuario:  EstadoElaboracion
 	
-	//
-	// Metadatos fijos: 		VersionNTI, Organo y Tipo documental, OrigenCiudadanoAdministracion (ver metadatos.json)
-	// Metadatos calculados: 	Identificador, FechaCaptura, EstadoElaboracion, Nombre del formato, TipoFirmasElectronicas
-	//
-	
-	public static String getVersionNTI() {
-		Metadato metadato = Metadato.find("select metadato from Metadato metadato where nombre = 'VersionNTI'").first();
-		if (metadato != null)
-			return metadato.valor;
+	/**
+	 * Obtenemos la lista de metadatos correspondientes a un tipoDocumento seteados en base de datos (metadatos.json).
+	 * 
+	 * @param tipoDocumento
+	 * @return Lista con los metadatos 
+	 */
+	public static List<Metadato> getMetadatosComunes(String tipoDocumento) {
+		Metadatos metadatos = Metadatos.find("select metadato from Metadatos metadato where tipodocumento=?", tipoDocumento).first();
+		if (metadatos != null)
+			return metadatos.listaMetadatos;
 		else 
-			 logger.error("No se ha podido obtener el metadato VersionNTI");
+			 logger.error("No se ha podido obtener los metadatos correspondientes al tipoDocumento " + tipoDocumento);
 		return null;
-	}
-	
-	public static String getOrgano() {
-		Metadato metadato = Metadato.find("select metadato from Metadato metadato where nombre = 'Organo'").first();
-		if (metadato != null)
-			return metadato.valor;
-		else
-			logger.error("No se ha podido obtener el metadato Organo");
-		return null;
-	}
-	
-	public static String getTipoDocumental() {
-		Metadato metadato = Metadato.find("select metadato from Metadato metadato where nombre = 'TipoDocumental'").first();
-		if (metadato != null)
-			return metadato.valor;
-		else
-			logger.error("No se ha podido obtener el metadato TipoDocumental");
-		return null;
-	}
-	
-	public static String getOrigenCiudadanoAdministracion() {
-		Metadato metadato = Metadato.find("select metadato from Metadato metadato where nombre = 'OrigenCiudadanoAdministracion'").first();
-		if (metadato != null)
-			return metadato.valor;
-		else
-			logger.error("No se ha podido obtener el metadato OrigenCiudadanoAdministracion");
-		return null;
-	}
-	
-	
-	/**
-	 * Metadato Identificador: 
-	 * "ES_A05003341_" + AAAA + "_" + B(30). AAAA Año en que se digitaliza el documento. B(30) El identificador 
-	 * único de documento asignado por el AED que forma parte de la URI del documento. Se rellena con espacios 
-	 * a la derecha.
-	 * 
-	 * @param uriDocumento
-	 * @return Identificador
-	 */
-	public static String getIdentificador(String uriDocumento) {
-		try {
-			return gestorDocumentalService.construyeIdentificador(uriDocumento);
-		} catch (GestorDocumentalServiceException e) { e.printStackTrace(); }
-		return null;
-	}
-	
-	/**
-	 * Metadato FechaCaptura: 
-	 * Fecha en formato ISO 8601 en el que se incorpora el documento al AED. Fecha del AED.
-	 * 
-	 * @param uriDocumento
-	 * @return Fecha de la captura
-	 */
-	public static DateTime getFechaCaptura(String uriDocumento) {
-		try {
-			return gestorDocumentalService.construyeFechaCaptura(uriDocumento);
-		} catch (GestorDocumentalServiceException e) { e.printStackTrace(); }
-		return null;
-	}
-	
-	/**
-	 * Metadato EstadoElaboracion: 
-	 * "EE01" Original.
-	 * "EE02" Copia electrónica auténtica con cambio de formato
-	 * "EE02" Copia electrónica auténtica de documento papel
-	 * "EE03" Copia electrónica parcial auténtica
-	 * "EE99" Otros
-	 *  
-	 * @param uriDocumento
-	 * @return 
-	 */
-	public static String getEstadoElaboracion(String uriDocumento) {
-		try {
-			return gestorDocumentalService.construyeEstadoElaboracion(uriDocumento);
-		} catch (GestorDocumentalServiceException e) { e.printStackTrace(); }
-		return null;
-	}
-	
+	}	
+
 	/**
 	 * Metadato NombreFormato: 
 	 * "PDF" o "PDF/A"
@@ -121,17 +55,72 @@ public class MetadatosFAPController extends InvokeClassController {
 	 * @return
 	 */
 	public static String getNombreFormato(String uriDocumento) {
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		try {
-			return gestorDocumentalService.construyeNombreFormato(uriDocumento);
+			return gestorDocumentalService.construyeMetadatoNombreFormato(uriDocumento);
 		} catch (GestorDocumentalServiceException e) { e.printStackTrace(); }
 		return null;
 	}
-	
-	/*
-	 *  ???????????????? Falta fijar el tipo de firma de los documentos  ?????????????
+
+	/**
+	 * 
+	 * @param uriDocumento
 	 */
-	public static String getTipoFirmasElectronicas(String uriDocumento) {	
-		return null; 
+	public static void setMetadatos(String uriDocumento, String estadoElaboracion, String tipoDocumento) {
+		List<Metadato> listaMetadatos = new ArrayList<Metadato>();
+		List<Metadato> listaMetadatosComunes = new ArrayList<Metadato>();
+		listaMetadatosComunes = getMetadatosComunes(tipoDocumento);
+		String organo = null;
+		
+		// Metadatos comunes a todos los tipos de documentos (guardados en bbdd a partir de metadatos.json)
+		//  VersionNTI, Organo, Tipo documental, OrigenCiudadanoAdministracion, TipoFirmasElectronicas 
+		if (listaMetadatosComunes != null)
+			for(Metadato m : listaMetadatosComunes) {
+				listaMetadatos.add(m);
+				if (m.nombre.equals("Organo"))
+						organo = m.valor;
+			}
+		
+		// Metadatos preguntados al usuario
+		Metadato metadatoEE = new Metadato("EstadoElaboracion", estadoElaboracion);
+		listaMetadatos.add(metadatoEE);
+		
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);			
+		try {
+			// Metadatos calculados
+			Metadato metadatoId = new Metadato("Identificador", gestorDocumentalService.construyeMetadatoIdentificador(uriDocumento, organo));
+			listaMetadatos.add(metadatoId);
+			String fecha = (gestorDocumentalService.construyeMetadatoFechaCaptura(uriDocumento) == null) ? null : gestorDocumentalService.construyeMetadatoFechaCaptura(uriDocumento).toString();
+			Metadato metadatoFecha = new Metadato("FechaCaptura", fecha);	
+			listaMetadatos.add(metadatoFecha);
+			Metadato metadatoFormato = new Metadato("Nombre del formato", gestorDocumentalService.construyeMetadatoNombreFormato(uriDocumento));		
+			listaMetadatos.add(metadatoFormato);
+		} catch (GestorDocumentalServiceException e) { e.printStackTrace(); }
+		
+		try {
+			gestorDocumentalService.setMetadatosDocumento(uriDocumento, listaMetadatos);
+		} catch (GestorDocumentalServiceException e) { e.printStackTrace(); }
+		
+		System.out.println("OBTENIENDO METADATOS EN FAP CONTROLLER");
+		try {
+			List<Metadato> listaMetadatos2 = gestorDocumentalService.getMetadatosDocumento(uriDocumento);
+			for(Metadato m : listaMetadatos2) {
+				System.out.println("--[" + m.nombre + "] = " + m.valor);
+			}
+		} catch (GestorDocumentalServiceException e) { System.out.println("ñññññ"); e.printStackTrace(); }
+	}
+	
+	/**
+	 * 
+	 * @param uriDocumento
+	 * @return lista de metadatos del documento
+	 */
+	public static List<Metadato> getMetadatosDocumento(String uriDocumento) {
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		try {
+			return gestorDocumentalService.getMetadatosDocumento(uriDocumento);
+		} catch (GestorDocumentalServiceException e) { e.printStackTrace(); }
+		return null;
 	}
 
 }

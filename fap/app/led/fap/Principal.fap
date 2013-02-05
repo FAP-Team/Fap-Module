@@ -4,6 +4,7 @@ Formulario Principal {
 		Enlace "Administración" permiso=administrador pagina=Usuarios
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
 		Enlace "Verificaciones sin Finalizar" permiso=adminOrGestor pagina=VerificacionesSinFinalizar
+		Enlace "Resoluciones" permiso=adminOrGestor pagina=Resoluciones
 		Enlace "Firmas Pendientes de FH" pagina=FirmasPendientesFH permiso=esFuncionarioHabilitadoYActivadaProperty
 		Enlace "Seguimiento" permiso=adminGestorRevisor pagina=Seguimiento
 		Enlace "Mis Notificaciones" pagina=Notificaciones

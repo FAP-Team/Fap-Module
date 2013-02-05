@@ -80,7 +80,9 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		try {
 			return (portafirmaService.obtenerVersion() != null);
 		} catch (PortafirmaException e) {
-			play.Logger.error("Error al obetner la versión del servicio de Portafirma", e);
+			play.Logger.error("Error al obtener la versión del servicio de Portafirma" + e);
+		} catch (Exception e1) {
+			play.Logger.error("Error al obtener la versión del servicio de Portafirma" + e1);
 		}
 		return false;
 	}

@@ -128,3 +128,4 @@ apps/AplicacionGenerica/logs
 apps/AplicacionGenerica/tmp/*
 apps/AplicacionGenerica/app/listas/initial-data/*.yml
 apps/AplicacionGenerica/app/views/gen/*
+apps/AplicacionGenerica/precompiled/*

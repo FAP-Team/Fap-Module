@@ -233,9 +233,11 @@ public class Start extends Job {
         }
         
 		Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();	
-		if (convocatoria.expedienteAed == null) {
-			convocatoria.expedienteAed = new ExpedienteAed();
-			convocatoria.save();
+		if (convocatoria != null) {
+			if (convocatoria.expedienteAed == null) {
+				convocatoria.expedienteAed = new ExpedienteAed();
+				convocatoria.save();
+			}
 		}
         
 	}

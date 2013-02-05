@@ -62,7 +62,12 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 	}
 
 	public boolean isConfigured() {
-		return port.getAreas(usuario, idAreaFuncional) != null;
+		try {
+			return port.getAreas(usuario, idAreaFuncional) != null;
+		} catch (Exception e) {
+			play.Logger.error("Error al comprobar el servicio de Registro" + e);
+		}
+		return false;
 	}
 	
 	@Override

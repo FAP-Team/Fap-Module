@@ -281,12 +281,12 @@ public class AedClient {
 	
 	private static String crearExpediente(String idExpediente, List<String> interesadoNif, List<String> interesadoNombre) throws AedExcepcion {
 		String procedimiento = FapProperties.get("fap.aed.procedimiento");
-		String convocatoria = FapProperties.get("fap.aed.convocatoria");
+		String convocatoria = FapProperties.get("fap.aed.convocatoria.prefijo");
 		
 		Expediente expediente = new Expediente();
 		expediente.setIdExterno(idExpediente);
 		expediente.setProcedimiento(procedimiento);
-		expediente.setValorModalidad(convocatoria);
+		expediente.setValorModalidad(convocatoria + String.valueOf(new DateTime().getYear()));
 		for (int i = 0; i < interesadoNif.size(); i++) {
 			expediente.getInteresados().add(interesadoNif.get(i));
 			expediente.getInteresadosNombre().add(interesadoNombre.get(i));
@@ -362,12 +362,12 @@ public class AedClient {
 		}
 		
 		String procedimiento = FapProperties.get("fap.aed.procedimiento");
-		String convocatoria = FapProperties.get("fap.aed.convocatoria");
+		String convocatoria = FapProperties.get("fap.aed.convocatoria.prefijo");
 		
 		Expediente expediente = new Expediente();
 		expediente.setIdExterno(expedienteAed.idAed);
 		expediente.setProcedimiento(procedimiento);
-		expediente.setValorModalidad(convocatoria);
+		expediente.setValorModalidad(convocatoria + String.valueOf(new DateTime().getYear()));
 		for (int i = 0; i < interesadosDocumentos.size(); i++) {
 			expediente.getInteresados().add(interesadosDocumentos.get(i));
 			expediente.getInteresadosNombre().add(interesadosNombres.get(i));

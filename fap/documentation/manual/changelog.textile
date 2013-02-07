@@ -1,5 +1,10 @@
 h2. Changelog
 
+h3. Versión 2.1.2RC4
+
+* Soporte actualización WebSigner Platino (14 de Febrero)
+* Fixed bug Enlaces en el Menú. 
+
 h3. Versión 2.1.2RC3
 
 * Actualización de librerías

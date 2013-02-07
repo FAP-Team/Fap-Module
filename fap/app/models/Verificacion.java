@@ -60,6 +60,8 @@ public class Verificacion extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaUltimaActualizacion;
 
+	public String incluirFichMultiple;
+
 	public Verificacion() {
 		init();
 	}

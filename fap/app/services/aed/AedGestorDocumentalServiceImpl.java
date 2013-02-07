@@ -43,6 +43,8 @@ import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import services.filesystem.TipoDocumentoEnTramite;
+import services.filesystem.TipoDocumentoGestorDocumental;
 import tramitacion.Documentos;
 import utils.BinaryResponse;
 import utils.StreamUtils;
@@ -68,7 +70,6 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropied
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
-import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 import es.gobcan.eadmon.verificacion.ws.dominio.ListaDocumentosVerificacion;
 
 import static com.google.common.base.Preconditions.*;
@@ -281,32 +282,41 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     
     /**
      * Obtiene la lista de documentos que se corresponden a un determinado tipo y donde el interesado es el agente logueado.
+     * @throws AedExcepcion 
      * 
      */
     @Override
-    public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws AedExcepcion {
+    public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws GestorDocumentalServiceException {
     	if (tipoDocumento == null || tipoDocumento.isEmpty())
     		return Collections.emptyList();
     	
     	Agente agente = AgenteController.getAgente();
     	String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
     	// Conjunto de documentos donde su tipo es 'tipoDocumento' y el interesado es el usuario logueado
-    	List<PropiedadesDocumento> listaDocs = aedPort.buscarDocumentos(procedimiento, null, null, tipoDocumento, agente.username, null, null, null, null);
-    	if(listaDocs.isEmpty())
-    		return Collections.emptyList();
-
-    	// En la interfaz GestorDocumentalService tengo que poner qué entidad retorna esta función. Puedo elegir entre la entidad
-    	// Documento de FAP (models.Documento) y la entidad Documento del Gobierno de Canarias. Elegimos la entidad de FAP.
-    	// Con la función docAed2Doc, transformamos la entidad del Gobierno (devuelto en aedPort.buscarDocumentos) por la de FAP.
+    	List<PropiedadesDocumento> listaDocs;
     	List<models.Documento> listaDocumentos = new ArrayList<models.Documento>();
-    	for (PropiedadesDocumento propiedadesDoc : listaDocs) {
-    		models.Documento doc = new models.Documento();
-    		propiedadesDoc.getIdentificador();
-    		doc.docAed2Doc(propiedadesDoc, tipoDocumento);
-    		listaDocumentos.add(doc);
-    		doc.delete();
-    	}
-    	return listaDocumentos;
+		try {
+			listaDocs = aedPort.buscarDocumentos(procedimiento, null, null, tipoDocumento, agente.username, null, null, null, null);
+			if(listaDocs.isEmpty())
+	    		return Collections.emptyList();
+
+	    	// En la interfaz GestorDocumentalService tengo que poner qué entidad retorna esta función. Puedo elegir entre la entidad
+	    	// Documento de FAP (models.Documento) y la entidad Documento del Gobierno de Canarias. Elegimos la entidad de FAP.
+	    	// Con la función docAed2Doc, transformamos la entidad del Gobierno (devuelto en aedPort.buscarDocumentos) por la de FAP.
+	    	
+	    	for (PropiedadesDocumento propiedadesDoc : listaDocs) {
+	    		models.Documento doc = new models.Documento();
+	    		propiedadesDoc.getIdentificador();
+	    		doc.docAed2Doc(propiedadesDoc, tipoDocumento);
+	    		listaDocumentos.add(doc);
+	    		doc.delete();
+	    	}
+
+		} catch (AedExcepcion e) {
+			throw new GestorDocumentalServiceException("Error extrayendo los documentos por tipo");
+			
+		}
+    	    	return listaDocumentos;
     }
     
     private List<PropiedadesDocumento> obtenerPropiedadesDocumentos(String expediente) throws AedExcepcion {
@@ -1211,11 +1221,11 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 	
 	public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
-		return procedimientosService.getTiposDocumentosAportadosCiudadano(tramite);
+		return  TipoDocumentoEnTramite.conversorTipoDocumentoEnTramite(procedimientosService.getTiposDocumentosAportadosCiudadano(tramite));
 	}
 	
-	public List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
-		return procedimientosService.getListTiposDocumentosAportadosCiudadano(tramite);
+	public List<TipoDocumentoGestorDocumental> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
+		return TipoDocumentoGestorDocumental.ConversorTipoDocumento(procedimientosService.getListTiposDocumentosAportadosCiudadano(tramite));
 	}
 	
 	@Override
@@ -1225,12 +1235,12 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 	
 	@Deprecated
-	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion {
+	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
 		duplicarDocumentoSubido(uriDocumento);
 	}
 	
 	@Deprecated
-	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException {
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
 		duplicarDocumentoSubido(uriDocumento, descripcionDocumento, dbDocumento);
 	}
 		
@@ -1241,7 +1251,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 * documento pasa a formar parte a todos los efectos del expediente.
 	 * 
 	 */
-	public void duplicarDocumentoSubido(String uriDocumento) throws AedExcepcion {
+	public void duplicarDocumentoSubido(String uriDocumento) throws GestorDocumentalServiceException {
 		models.Documento doc = new models.Documento(); 
 		doc.refAed = true;
 		doc.uri = uriDocumento;
@@ -1258,7 +1268,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 
 	@Override
-	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento) throws AedExcepcion, GestorDocumentalServiceException {
+	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento) throws GestorDocumentalServiceException {
 		dbDocumento.refAed = true;
 		dbDocumento.uri = uriDocumento;
 		dbDocumento.descripcion = descripcionDocumento;

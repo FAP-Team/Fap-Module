@@ -398,9 +398,16 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}	
 			
 			Form FrmtiposProceso permiso=verificarObtenerNoProcede {
+				Wiki {"\t "}
 				Boton obtenerNoProcede titulo="Obtener los NoProcede" type=warning
 			}
 			
+			Form incluirNoProcedeMultiples {
+				Grupo GrupoMultiples titulo = "Añadir tipo de documento a la verificacion"{
+					Combo comboMultiples titulo="Documentos Múltiples" campo=SolicitudGenerica.verificacion.incluirFichMultiple //sobreescribir que muestre descripcion
+					Boton incluirNoProcede titulo="Añadir"
+				}
+			}
 			
 				Tabla verificacionDocumentos titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
 					paginaLeer=PaginaDocumentoVerificacionLeer 

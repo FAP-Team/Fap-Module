@@ -61,7 +61,7 @@ public class AedClient {
 	protected static Logger log = Logger.getLogger(AedClient.class);
 	
 	static {		
-		URL wsdlURL = Aed.class.getClassLoader().getResource ("wsdl/aed/aed.wsdl");
+		URL wsdlURL = Aed.class.getClassLoader().getResource ("aed/aed.wsdl");
 		aed = new Aed(wsdlURL).getAed(new MTOMFeature());
 		
 		BindingProvider bp = (BindingProvider) aed;

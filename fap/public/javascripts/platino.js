@@ -15,8 +15,8 @@ var Platino = {
 		try {			
 			initPlatinoWebSigner();
 
-			arrCAs = getArraysCAs();
-			arrRestrictions = getArraysRestrictions();
+			arrCAs = getArrayCAs();
+			arrRestrictions = getArrayRestrictions();
 			
 			var arrValidCertificates = getTrustedCertificates('PLATINO', 'verificar', 'PLATINO');
 

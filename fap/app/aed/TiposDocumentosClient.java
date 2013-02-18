@@ -60,7 +60,7 @@ public class TiposDocumentosClient {
 	protected static ProcedimientosInterface procedimientos;
 	protected static Logger log = Logger.getLogger(TiposDocumentosClient.class);
 	static {		
-		URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("wsdl/tipos-documentos/tipos-documentos.wsdl");
+		URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("tipos-documentos/tipos-documentos.wsdl");
 		tipos = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
 		
 		BindingProvider bpTipo = (BindingProvider) tipos;

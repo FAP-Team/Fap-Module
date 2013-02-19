@@ -39,7 +39,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	
 	static {
 		URL wsdlURL =PortafirmaFapService.class.getClassLoader()
-				.getResource("wsdl/PortafirmaServiceImpl.wsdl");
+				.getResource("wsdl/portafirma.wsdl");
 
 		portafirmaService= new PortafirmaSoapService(wsdlURL).getPortafirmaSoapService();
 		BindingProvider bp = (BindingProvider) portafirmaService;

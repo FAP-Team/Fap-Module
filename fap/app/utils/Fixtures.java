@@ -106,8 +106,10 @@ public class Fixtures extends play.test.Fixtures {
 	 * Modo 1: Actualiza los valores, sólo creando los nuevos si haya, los que ya estaban los deja intacto.
 	 */
 	public static void updateTKVAndDependencyFromAppAndFap(String path, int modo, Boolean noCargarMunicipios){
-		for (VirtualFile file: getFilesInFolder(path)){
-			updateTableKeyValueAndDependency(file, modo);
+		if (getFilesInFolder(path) != null) {
+			for (VirtualFile file: getFilesInFolder(path)){
+				updateTableKeyValueAndDependency(file, modo);
+			}
 		}
 		
 		if(FapProperties.isApplication()){

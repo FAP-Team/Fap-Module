@@ -380,7 +380,7 @@ Permiso mostrarDatosResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado != "borrador" and
-		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
 	return 
 		visible
 }
@@ -391,7 +391,7 @@ Permiso seleccionarExpedientes {
 	when
 		resolucion.estado = "borrador" and
 		resolucion.tipoMultiple = "parcial" and
-		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
 	return
 		all
 }
@@ -400,7 +400,7 @@ Permiso portafirmaJefeServicio {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo = "jefeservicio"
+		agente.rolActivo = "jefeServicio"
 		and resolucion.firmarJefeServicio = "true"
 		and resolucion.estado = "preparada"
 	return
@@ -413,7 +413,7 @@ Permiso seleccionarUnExpediente {
 	when
 		resolucion.modalidad="resolucionSimple" and
 		resolucion.estado = "borrador" and
-		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
 	return
 		all
 }
@@ -424,7 +424,7 @@ Permiso noSeleccionarExpedientes {
 	when
 		resolucion.estado = "borrador" and
 		resolucion.tipoMultiple = "total" and
-		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
 	return
 		all
 }
@@ -433,7 +433,7 @@ Permiso solicitudFirmaResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("gestor", "administrador", "jefeservicio")
+		agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 		and resolucion.estado in ("preparada", "pendienteFirmaJefeServicio", "firmadaJefeServicio", "pendienteFirmaDirector")
 	return
 		all
@@ -444,7 +444,7 @@ Permiso prepararResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado = "creada" and
-		agente.rolActivo in ("administrador", "gestor", "jefeservicio")
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
 	return
 		all
 }
@@ -458,7 +458,7 @@ Permiso firmaJefeServicio {
 	when
 		resolucion.estado in ("preparada")
 		and resolucion.firmarJefeServicio = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 	when
@@ -474,7 +474,7 @@ Permiso esperaFirmaJefeServicio {
 	when
 		resolucion.estado in ("pendienteFirmaJefeServicio")
 		and resolucion.firmarJefeServicio = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 	when
@@ -494,7 +494,7 @@ Permiso firmaDirector {
 	when
 		resolucion.estado in ("firmadaJefeServicio")
 		and resolucion.firmarDirector = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 	when
@@ -510,7 +510,7 @@ Permiso esperaFirmaDirector {
 	when
 		resolucion.estado in ("pendienteFirmaDirector")
 		and resolucion.firmarDirector = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 	when
@@ -525,7 +525,7 @@ Permiso registrarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("firmada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }
@@ -535,7 +535,7 @@ Permiso publicarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("registrada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }
@@ -545,7 +545,7 @@ Permiso finalizarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("publicada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeservicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }

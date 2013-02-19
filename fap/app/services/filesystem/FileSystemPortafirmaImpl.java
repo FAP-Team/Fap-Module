@@ -36,7 +36,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma) throws PortafirmaFapServiceException {
+	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma, String idAgente) throws PortafirmaFapServiceException {
 		return true;
 	}
 

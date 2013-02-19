@@ -2,21 +2,166 @@ h1. Resolución FAP
 
 El módulo de Resolución de FAP nos permitirá realizar resoluciones de los expedientes, tanto resoluciones simples como múltiples, provisionales y definitivas, con baremación o sin ella,...
 
-FAP provee diferentes tipos de resolución por defecto, las cuales podemos ver en la siguiente imagen:
+FAP provee diferentes tipos de resolución por defecto:
 
-TODO
+* Resolución Simple: Se hace referencia a la resolución de un único expediente y lo resuelve en su totalidad (todas las líneas de resolución).
 
+* Resolución Múltiple Total: Se hace referencia a la resolución de un conjunto de expedientes y los resuelve totalmente.
 
+* Resolución Parcial: Se hace referencia a la resolución de conjunto de expedientes y de cada uno de ellos a un conjunto de líneas de expediente.
+
+!images/app-resolucion-tipos!
 
 h2. Personalizar la resolución.
+
+Se pueden personalizar los distintos tipos de resolucion sobreescribiendo una serie de métodos que se encuentran en la Resolución Base.
+La Resolución Base es la clase de mayor nivel en la herencia de las clases de Resolución.
+
+* getHeaderReport(): Debe devolver la plantilla HTML de la cabecera del documento oficial y borrador de la Resolución. Se debe conocer que la ruta es relativa a partir de app/views.
+
+* getFooterReport(): Debe devolver la plantilla HTML del pie de pagina del documento borrador de la Resolución. Se debe conocer que la ruta es relativa a partir de app/views.
+
+* getBodyReport(): Debe devolver la plantilla HTML del documento oficial y borrador de la Resolución. Se debe conocer que la ruta es relativa a partir de app/views.
+
+* getTipoRegistroResolucion(): Se espera el String con el tipo de Registro, utilizado para asignarle el tipo de Documento al documento borrador y oficial que se generarán en la Resolución.
+
+* hasAnexoConcedido(): Debe devolver si la resolución tiene un anexo de concedidos.
+
+* hasAnexoDenegado(): Debe devolver si la resolución tiene un anexo de denegados.
+
+* hasAnexoExcluido(): Debe devolver si la resolución tiene un anexo de excluidos.
+
+* initResolucion(Long idResolucion): En esta función hay que inicializar la resolución especificando si se acepta firma del jefe de servicio, firma del director, si se permite firmar en el portafirma la resolución, si se permite registrar la resolución, si se permite publicar la resolución. Además, se modifica el estado de la resolución. Por ejemplo:
+
+bc. resolucion.estado = EstadoResolucionEnum.borrador.name();
+
+* getSolicitudesAResolver(Long idResolucion): Debe devolver una lista con las solicitudes que se van a permitir resolver.
+
+* setLineasDeResolucion(Long idResolucion): Añade a la resolución las líneas de resolución correspondientes a las solicitudes que se permiten resolver.
+
+* validaInicioResolucion(Long idResolucion): Permite realizar algún tipo de validación al comenzar la resolución.
+
+* validarLineasResolucion(Long idResolucion): Permite realizar algún tipo de validación sobre las líneas de resolución.
+
+* prepararResolucion(Long idResolucion): Prepara la resolución para ser firmada.
+
+
+Para avanzar a las distintas fases de una resolución se han creado los siguientes métodos para facilitar su manejo:
+
+* avanzarFase_Borrador(ResolucionFAP resolucion): Permite avanzar del estado *"borrador"* al estado *"creada"*.
+* avanzarFase_Creada(ResolucionFAP resolucion): Permite avanzar a los siguientes estados dependiendo de la inicialización de la resolución. Si se permite firmar al Jefe de Servicio pasa de *"creada"* a *"preparada"*. Si no se permite firmar al Jefe de Servicio, pero sí al Director pasa de *"creada"* a *"firmadaJefeServicio"*. Si no se permite firmar al Jefe de Servicio y tampoco al Director pasa de *"creada"* a *"firmada"*.
+* avanzarFase_Preparada(ResolucionFAP resolucion): Permite avanzar del estado *"preparada"* al estado *"pendienteFirmaJefeServicio"*.
+* avanzarFase_Preparada_FirmaJefeServicio(ResolucionFAP resolucion): Permite avanzar del estado *"preparada"* al estado *"firmadaJefeServicio"*.
+* avanzarFase_Preparada_Portafirma(ResolucionFAP resolucion): Permite avanzar del estado *"preparada"* al estado *"pendienteFirmaDirector"*.
+* avanzarFase_PendienteFirmarJefeServicio(ResolucionFAP resolucion): Permite avanzar a dos estados diferentes dependiendo de las circunstancias. Si se permite firmar al Director para del estado *"pendienteFirmaJefeServicio"* al estado *"firmadaJefeServicio"*. Si no se permite firmar al Director pasa al estado *"firmada"*.
+* avanzarFase_FirmadaJefeServicio(ResolucionFAP resolucion): Permite avanzar del estado *"firmadaJefeServicio"* al estado *"pendienteFirmaDirector"*.
+* avanzarFase_PendienteFirmarDirector(ResolucionFAP resolucion): Permite avanzar del estado *"pendienteFirmaDirector"* al estado *"firmada"*.
+* avanzarFase_Firmada(ResolucionFAP resolucion): Permite avanzar del estado *"firmada"* al estado *"registrada"*.
+* avanzarFase_Registrada(ResolucionFAP resolucion): Permite avanzar del estado *"registrada"* al estado *"publicada"*.
+* avanzarFase_Publicada(ResolucionFAP resolucion): Permite avanzar del estado *"publicada"* al estado *"finalizada"*.
 
 
 h2. Crear una clase que extienda de ResolucionControllerFAP.
 
+La clase ResolucionControllerFAP tiene implementados una serie de métodos que personalizan más aún la Resolución. Por ello, si se quiere personalizar se deberá sobreescribir los métodos de esta clase mediante la creación de una clase hija que extienda de esta, y que tenga implementado los métodos de la clase padre.
+
+Los métodos que posee esta clase, y que se deberán sobreescribir en la clase hija son:
+
+* Método para obtener los tipos de resolución disponibles.
+
+bc. public static List<ComboItem> getTiposResolucion()
+
+Esta función debe devolver una lista con los distintos tipos de resoluciones que se han definido.
+
+* Método para obtener la clase encargada de gestionar la resolución específica.
+
+bc. public static ResolucionBase getResolucionObject(Long idResolucion)
+
+Esta función deberá devolver el objeto que hayamos implementado para tratar una resolución específica. Por defecto, hay tres objetos creados en el módulo de FAP: ResolucionMultipleTotal, ResolucionParcial y ResolucionSimple.
+
+Ejemplo (Comportamiento por defecto de FAP):
+
+bc. public static ResolucionBase getResolucionObject(Long idResolucion) {
+	ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
+	if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleTotal.name())) {
+		return new ResolucionMultipleTotal(resolucion);
+	} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleParcialExpedientes.name())) {
+		return new ResolucionParcial(resolucion);
+	} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleTotal.name())) {
+		return new ResolucionSimple(resolucion);
+	}
+	return new ResolucionBase(resolucion);
+}
+
+* Método para inicializar la resolución.
+
+bc. public static void inicializaResolucion(Long idResolucion)
+
+Una vez se haya establecido el tipo de resolución, se inicializan los datos de la resolución.
+
+* Método para realizar algún tipo de validación antes de iniciar la resolución.
+
+bc. public static void validarInicioResolucion()
+
+Esta función comprueba, por defecto, que antes de crear una nueva resolución estén todas las anteriores en estado finalizada. Este comportamiento, como ya se ha dichoa antes, se puede modificar sobreescribiendo la función.
+
+* Método para obtener los Jefes de Servicio.
+
+bc. public static List<Agente> getJefesServicio()
+
+Esta función debe devolver una lista con todos los agentes que tienen el rol de Jefe de Servicio.
+
+* Método para obtener la prioridad de la firma al enviar la solicitud de firma al portafirma.
+
+bc. public static List<ComboItem> getPrioridadesFirma()
+
+Esta función debe devolver las prioridades permitidas en la aplicación. Por defecto, son baja, media y alta.
+
+* Método para obtener el número de días máximo para obtener la firma.
+
+bc. public static int getDiasLimiteFirma(Long idResolucion)
+
+Esta función devuelve el número de días máximo para la fecha tope de firma en el portafirma.
+
+* Método para obtener los interesados de la resolución.
+
+bc. public static List<Interesado> getInteresados(Long idResolucion)
+
+Esta función debe devolver la lista de interesados de una resolución. Por defecto, el solicitante y los representantes.
+
 
 h2. Plantillas que se pueden sobreeescribir
 
+Para personalizar el documento generado en la resolución se deberá sobreescribir una serie de plantillas, que deberán ir en la ruta _app/views/reports_ situada en la raíz de nuestra aplicación.
+
+Para la generación del documento de resolución, se hará uso de la plantilla que se indique en una de las funciones de la clase ResolucionBase: getBodyReport(), así que si nos creamos una clase que herede de ResolucionBase y no queremos usar el nombre por defecto de la plantilla que indica FAP, deberemos sobreescribir dicho método. También existen métodos para indicar la cabecera y el pie de página de dicho documento.
+
+Si por el contrario queremos hacer uso de lo que ya trae definido FAP, las funciones pertinentes de FAP, para la cabecera, el contenido y el pie de página de dicho documento son las siguientes:
+
+bc.. public static String getHeaderReport() {
+	return "reports/header.html";
+}
+
+bc.. public static String getFooterReport() {
+	return "reports/footer-borrador.html";
+}
+
+bc. public String getBodyReport() {
+	return "reports/resolucion/resolucion.html";
+}
+
+Por lo que si queremos sobreescribir el documento que se genera en la Resolución deberemos situar en nuestra carpeta _reports_ de la aplicación (situada en el path que se dijo antes), las plantillas que nosotros hagamos, con los nombres que vemos en el código:
+
+* *header.html*: Para la cabecera del documento.
+* *resolucion.html*: Para el contenido del documento.
+* *footer-borrador.html*: Para el pie de página del documento borrador.
+
+_*NOTA:*_ La cabecera y el contenido serán los mismos para el documento borrador y el oficial. Por el contrario el pie de página sólo será utilizado en el documento borrador, ya que el oficial se generará sin pie de página.
 
 h2. Conclusiones
+
+Hemos visto que tenemos la posibilidad de personalizar la Resolución o, por el contrario, dejarlo tal cual funciona por defecto en FAP. En el caso de decidirnos por la personalización, podemos sobreescribir los métodos de la clase ResolucionControllerFAP sin crear una nueva clase que extienda de ResolucionBase, o sobreescribiendo todo.
+
+Hay que tener en cuenta que siempre que sobreescribimos los métodos de la clase ResolucionBase con nuestra propia clase, deberemos sobreescribir forzosamente el método _getResolucionObject_ de la clase ResolucionControllerFAP para poder utilizar el objeto nuevo que hemos creado que hereda de ResolucionBase.
 
 

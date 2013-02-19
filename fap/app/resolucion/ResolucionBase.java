@@ -87,7 +87,7 @@ public class ResolucionBase {
 	 * Devuelve las solicitudes "posibles" a resolver (lista desde donde se seleccionará)
 	 * @return
 	 */
-	public static java.util.List<SolicitudGenerica> getSolicitudesAResolver () {
+	public static java.util.List<SolicitudGenerica> getSolicitudesAResolver (Long idResolucion) {
 		return SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.estado in('verificado','excluido','desistido')").fetch();
 	}
 	

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.ws.soap.SOAPFaultException;
+
 import messages.Messages;
 import models.Agente;
 import models.ResolucionFAP;
@@ -30,6 +32,7 @@ import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
 import validation.CustomValidation;
 import config.InjectorConfig;
+import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.EditarResolucionControllerGen;
 import emails.Mails;
@@ -47,7 +50,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = ResolucionControllerFAP.getResolucionObject(ids.get("idResolucionFAP"));
 		
-		java.util.List<SolicitudGenerica> rows = resolBase.getSolicitudesAResolver();
+		java.util.List<SolicitudGenerica> rows = resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
 		
 		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
@@ -62,7 +65,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = ResolucionControllerFAP.getResolucionObject(ids.get("idResolucionFAP"));
 		
-		java.util.List<SolicitudGenerica> rows = resolBase.getSolicitudesAResolver();
+		java.util.List<SolicitudGenerica> rows = resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
 		
 		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
@@ -201,8 +204,11 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
 				dbResolucionFAP.idSolicitudFirma = response.getIdSolicitud();
 			} catch (PortafirmaFapServiceException e) {
-				play.Logger.error("Error al enviar los documentos al portafirma", e);
-				Messages.error("Error al enviar los documentos al portafirma");
+				play.Logger.error("Error al crear la solicitud de firma: " + e);
+				Messages.error("Error al crear la solicitud de firma");
+			} catch (SOAPFaultException e) {
+				play.Logger.error("Error al crear la solicitud de firma: " + e);
+				Messages.error("Error al crear la solicitud de firma");
 			}
 		}
 		if (!Messages.hasErrors()) {
@@ -248,10 +254,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				play.Logger.error("No se ha podido calcular el límite de fecha para la firma."+e);
 				CustomValidation.error("No se ha podido calcular el límite de fecha para la firma", "resolucionFAP.fechaTopeFirma", resolucionFAP.fechaTopeFirma);
 			}
-			
 		}
-		
-
 	}
 	
 	@Util
@@ -313,13 +316,17 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma)) {
+				Agente agente = AgenteController.getAgente();
+				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma, agente.username)) {
 					ResolucionBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
 					dbResolucionFAP.registro.fasesRegistro.firmada = true;
 					dbResolucionFAP.save();
 				}
 			} catch (PortafirmaFapServiceException e) {
-				play.Logger.error("Error al comprobar si ya se ha firmado la resolución en el portafirma.", e);
+				play.Logger.error("Error al comprobar si ya se ha firmado la resolución en el portafirma: " + e);
+				Messages.error("Error al comprobar si ya se ha firmado la resolución en el portafirma.");
+			} catch (SOAPFaultException e) {
+				play.Logger.error("Error al comprobar si ya se ha firmado la resolución en el portafirma: " + e);
 				Messages.error("Error al comprobar si ya se ha firmado la resolución en el portafirma.");
 			}
 		}

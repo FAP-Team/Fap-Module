@@ -1236,5 +1236,10 @@ Permiso convocatoriaTieneExpediente {
 		and convocatoria?.expedienteAed?.idAed != ""
 	return
 		visible
-	
+}
+
+Permiso adminGestorJefeServicio {
+	when
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return all
 }

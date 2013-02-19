@@ -358,7 +358,6 @@ public abstract class TramiteBase {
 				List<Documento> documentos = new ArrayList<Documento>();
 				documentos.add(registro.justificante);
 				try {
-					System.out.println("Clasificar Documentos");
 					gestorDocumentalService.clasificarDocumentos(this.solicitud, documentos);
 				} catch (GestorDocumentalServiceException e){
 					play.Logger.fatal("No se clasificaron algunos documentos sin registro: "+e.getMessage());

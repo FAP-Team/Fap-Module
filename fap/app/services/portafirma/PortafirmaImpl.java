@@ -1,9 +1,19 @@
 package services.portafirma;
 
 import java.net.URL;
+import java.util.GregorianCalendar;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
 
+import org.joda.time.DateTime;
+
+import controllers.fap.AgenteController;
+import controllers.fap.ResolucionControllerFAP;
+
+import models.Agente;
 import models.ResolucionFAP;
 
 import enumerado.fap.gen.EstadoPortafirmaEnum;
@@ -15,6 +25,7 @@ import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudType;
 import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
+import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
 
 import platino.PlatinoProxy;
 import properties.FapProperties;
@@ -58,14 +69,32 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		CrearSolicitudType solFirma=new CrearSolicitudType();
 		solFirma.setTitulo(resolucion.tituloInterno);
 		solFirma.setDescripcion(resolucion.descripcion);
+		Agente agenteActual = AgenteController.getAgente();
+		// Agente activo
+		solFirma.setIdSolicitante(agenteActual.username);
+		// Destinatario -> Jefe de Servicio
+		solFirma.setIdDestinatario(resolucion.jefeDeServicio);
+		solFirma.setComentario(resolucion.observaciones);
+		// Email del agente activo
+		solFirma.setEmailNotificacion(agenteActual.email);
+		solFirma.setTipoSolicitud(TipoSolicitudEnumType.RESOLUCION);		
 		solFirma.setPrioridad(getEnumTypeFromValue(resolucion.prioridadFirma));
-//		solFirma.setEmailNotificacion();
-//		solFirma.
-//		solFirma.setComentario("");
-		
-		// TODO: Rellenar los datos necesarios
+		try {
+			solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar((new DateTime()).plusDays(ResolucionControllerFAP.getDiasLimiteFirma(resolucion.id))));
+		} catch (DatatypeConfigurationException e) {
+			play.Logger.error("Error al setear la fecha tope de firma.", e);
+		}
 		
 		return solFirma;
+	}
+	
+	private static XMLGregorianCalendar DateTime2XMLGregorianCalendar(DateTime fecha) throws DatatypeConfigurationException {
+		if (fecha == null)
+			return null;
+		GregorianCalendar gcal = new GregorianCalendar();
+		gcal.setTime(fecha.toDate());
+		gcal.setTimeInMillis(fecha.getMillis());
+		return DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
 	}
 	
 	private PrioridadEnumType getEnumTypeFromValue (String strPrioridad) {
@@ -114,21 +143,12 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma) throws PortafirmaFapServiceException {
-		ObtenerEstadoSolicitudType o = new ObtenerEstadoSolicitudType();
-		o.setIdSolicitud(idSolicitudFirma);
-		ObtenerEstadoSolicitudResponseType response;
+	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma, String idAgente) throws PortafirmaFapServiceException {
 		try {
-			response = portafirmaService.obtenerEstadoSolicitud(o);
-			play.Logger.info("¿La resolución ha sido firmada en el portafirma? Está en estado " + response.getEstado());
+			return portafirmaService.comprobarSolicitudFinalizada(idSolicitudFirma, idAgente);
 		} catch (PortafirmaException e) {
 			throw new PortafirmaFapServiceException(e.getMessage(), e);
 		}
-		// TODO: dependiendo del valor de response devolver si está firmada o no.
-		if (response.getEstado().equals(EstadoPortafirmaEnum.Firmadayfinalizada.name()))
-			return true;
-		
-		return false;
 	}
 
 }

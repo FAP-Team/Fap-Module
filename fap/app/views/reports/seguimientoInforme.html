@@ -178,12 +178,15 @@ ul {
 	<body>
 	<!-- EXPEDIENTES -->
 	%{
-	  def titulo='INFORME DE SEGUIMIENTO';
+	  def appTitle = properties.FapProperties.get('fap.app.name');
+	  def titulo = 'INFORME DE SEGUIMIENTO';
+	  if (appTitle != NULL)
+	  	titulo = titulo + ' DE ' + appTitle.toUpperCase();
 	  def fecha=new Date(new Date().getTime()).format('dd/MM/yyyy HH:mm');
 	}%
 	
 	<div id="divTituloSeguimiento">
-		<h2 align="center">${titulo} <br/>DEL DIA: ${fecha}</h2>
+		<h2 align="center">${titulo} <br/>DEL DIA: ${fecha} <br/><br/>Solicitud: ${solicitud.expedienteAed.idAed}</h2>
 	</div>
 	<br/>
 	<br/>

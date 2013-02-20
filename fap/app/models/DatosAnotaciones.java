@@ -42,7 +42,7 @@ public class DatosAnotaciones extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-	public Boolean isResueltasTodasNotificaciones() {
+	public Boolean getIsResueltasTodasAnotaciones() {
 		if ((this.anotaciones == null) || (this.anotaciones.size() <= 0)) {
 			return true;
 		} else {

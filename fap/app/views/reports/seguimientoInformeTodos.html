@@ -178,7 +178,10 @@ ul {
 	<body>
 	<!-- EXPEDIENTES -->
 	%{
-	  def titulo='INFORME DE SEGUIMIENTO';
+	  def appTitle = properties.FapProperties.get('fap.app.name');
+	  def titulo = 'INFORME DE SEGUIMIENTO';
+	  if (appTitle != NULL)
+	  	titulo = titulo + ' DE ' + appTitle.toUpperCase(); 
 	  def fecha=new Date(new Date().getTime()).format('dd/MM/yyyy HH:mm');
 	}%
 	

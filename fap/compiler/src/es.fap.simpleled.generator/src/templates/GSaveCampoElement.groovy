@@ -232,7 +232,7 @@ public class GSaveCampoElement extends GElement {
 					db${campo.str} = ${campo.firstLower()};
 				""";
 			} else{
-				return """ if ((db${campo.str} != null) && (!${campo.firstLower()}.toString().equals(db${campo.str}.toString()))){
+				return """ if (((db${campo.str} != null) && (!${campo.firstLower()}.toString().equals(db${campo.str}.toString()))) || (db${campo.str} == null)){
 						   valoresAntiguos = new ArrayList<String>();
 						   if (db${campo.str} != null)
 						      valoresAntiguos.add(db${campo.str}.toString());

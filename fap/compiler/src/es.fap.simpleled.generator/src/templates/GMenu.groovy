@@ -163,10 +163,13 @@ public class GMenu extends GElement {
 		String scriptEntidades = "";
 		for (Entidad entidad: controller.allEntities){
 			if (!scriptVariables.contains(entidad.variable)){
-				scriptVariables.add(entidad.variable);
 				scriptEntidadesDeclaracion += """ models.${entidad.clase} ${entidad.variable};\n """;
-				scriptEntidades += """${entidad.variable} = play.mvc.Scope.RenderArgs.current().get("${entidad.variable}");\n""";
 			}
+			scriptVariables.add(entidad.variable);
+			
+			scriptEntidades += """ if (${entidad.variable} == null)
+											${entidad.variable} = play.mvc.Scope.RenderArgs.current().get("${entidad.variable}");\n""";
+			
 		}
 		String url = "url = ${link};";
 		if (!scriptVariables.contains("url")){

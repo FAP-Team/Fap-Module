@@ -47,8 +47,6 @@ public class SecureFap extends Secure {
 			return enBorradorSolicitudModificada(_permiso, action, ids, vars);
 		else if ("mensajeIntermedioSolicitudModificada".equals(id))
 			return mensajeIntermedioSolicitudModificada(_permiso, action, ids, vars);
-		else if ("clasificadaSolicitudModificada".equals(id))
-			return clasificadaSolicitudModificada(_permiso, action, ids, vars);
 		else if ("habilitarFHPresentacionModificada".equals(id))
 			return habilitarFHPresentacionModificada(_permiso, action, ids, vars);
 		else if ("firmarRegistrarSolicitudModificadaFH".equals(id))
@@ -391,27 +389,27 @@ public class SecureFap extends Secure {
 		return null;
 	}
 	
-	private ResultadoPermiso clasificadaSolicitudModificada(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
-		//Variables
-		Agente agente = AgenteController.getAgente();
-
-		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
-
-		Registro registro=null;
-		if ((solicitud != null) && (!solicitud.registroModificacion.isEmpty()))
-			registro = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).registro;
-		else
-			return null;
-
-		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
-
-		if ((accion.toString().equals("leer".toString())) || (registro != null && registro.fasesRegistro != null && registro.fasesRegistro.clasificarAed.toString().equals("true".toString()))) {
-			return new ResultadoPermiso(Accion.All);
-
-		}
-
-		return null;
-	}
+//	private ResultadoPermiso clasificadaSolicitudModificada(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+//		//Variables
+//		Agente agente = AgenteController.getAgente();
+//
+//		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+//
+//		Registro registro=null;
+//		if ((solicitud != null) && (!solicitud.registroModificacion.isEmpty()))
+//			registro = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).registro;
+//		else
+//			return null;
+//
+//		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+//
+//		if ((accion.toString().equals("leer".toString())) || (registro != null && registro.fasesRegistro != null && registro.fasesRegistro.clasificarAed.toString().equals("true".toString()))) {
+//			return new ResultadoPermiso(Accion.All);
+//
+//		}
+//
+//		return null;
+//	}
 
 	private ResultadoPermiso clasificadaSolicitudModificadaAccion(Map<String, Long> ids, Map<String, Object> vars) {
 		String grafico = "visible";

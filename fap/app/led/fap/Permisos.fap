@@ -976,7 +976,7 @@ Permiso prepararSolicitudModificacion {
 		(registro?.fasesRegistro?.borrador = "false") and
 		(registro?.fasesRegistro?.clasificarAed = "false")
 	return
-		editable
+		all
 	when
 		(_accion = editar) and
 		(registro?.fasesRegistro?.borrador = "true") and
@@ -1032,14 +1032,15 @@ Permiso clasificadaSolicitud{
 		all
 }
 
-// Sobreescrito
+
 Permiso clasificadaSolicitudModificada{
 	vars 
 	 	SolicitudGenerica solicitud
-	 	Registro registro
+	 	RegistroModificacion registroModificacion
 	when
-		(_accion = leer) or
-		(registro?.fasesRegistro?.clasificarAed="true")   
+		solicitud?.estado = "iniciada" and
+		(solicitud?.registro?.fasesRegistro?.clasificarAed="true")
+		  
 	return
 		all
 }

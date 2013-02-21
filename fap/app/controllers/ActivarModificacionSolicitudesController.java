@@ -57,20 +57,26 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 		}
 
 		if (!Messages.hasErrors()) {
+			Long idRecuperar = null;
 			Long idRegistroModificacion = Long.parseLong(solicitud.fechaARestaurarStr);
 			if (idRegistroModificacion != null) {
 				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
 				boolean recuperarPresentacion = true;
 				for (RegistroModificacion rm: dbSolicitud.registroModificacion){
-					if ((rm.registro != null) && (rm.registro.fasesRegistro.registro)){
-						recuperarPresentacion = false;
-						break;
+					//Comprobar si se han creado elementos nuevos que haya que borrar
+					if (rm.estado.equals("En Curso")){
+						idRecuperar = rm.id;
+						ModelUtils.restaurarBorrados(rm.id, idSolicitud);
+						ModelUtils.restaurarSolicitud(idRecuperar, idSolicitud, false);
+					}
+				}			
+				for (RegistroModificacion rm: dbSolicitud.registroModificacion){
+					if (rm.estado.equals("En Curso")){
+						ModelUtils.eliminarCreados(rm.id, idSolicitud);
 					}
 				}
-				if (recuperarPresentacion)
-					ModelUtils.restaurarSolicitud(idRegistroModificacion, idSolicitud, false);
-				else
-					ModelUtils.restaurarSolicitud(idRegistroModificacion, idSolicitud, true);
+				ModelUtils.finalizarDeshacerModificacion(idSolicitud);
+				
 				log.info("Acción Editar de página: " + "gen/ActivarModificacionSolicitudes/ActivarModificacionSolicitudes.html" + " , intentada con éxito");
 			} else {
 				Messages.error("Hubo un fallo al intentar recuperar el Registro correspondiente");

@@ -223,12 +223,12 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupCrear());
 				if (tabla.getPopupEditar() != null)
 					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupEditar());
-				if (tabla.getPagina() != null)
-					myError("No se puede Crear ni Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_Pagina());
-				if (tabla.getPaginaCrear() != null)
-					myError("No se pueden Crear campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaCrear());
-				if (tabla.getPaginaBorrar() != null)
-					myError("No se pueden Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaBorrar());
+				//if (tabla.getPagina() != null)
+				//	myError("No se puede Crear ni Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_Pagina());
+				//if (tabla.getPaginaCrear() != null)
+				//	myError("No se pueden Crear campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaCrear());
+				//if (tabla.getPaginaBorrar() != null)
+				//	myError("No se pueden Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaBorrar());
 			}
 		}
 	}
@@ -244,7 +244,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	}
 	
 	/*
-	 * Se se llama a cada método que desea comparar dos páginas, para checkear condiciones.
+	 * Se llama a cada método que desea comparar dos páginas, para checkear condiciones.
 	 */
 	@Check
 	public void checkPaginasStuff(Pagina pagina){
@@ -377,6 +377,11 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		if ((container != null ) && (container instanceof Pagina)){
 			Pagina pagina = (Pagina) container;
 			Attribute atributo = LedCampoUtils.getUltimoAtributo(campo);
+
+			if ((pagina.isCopia()) && (!campo.getEntidad().getName().equalsIgnoreCase(LedCampoUtils.getUltimaEntidad(pagina.getCampo()).getName()))){
+				error("No se puede usar atributos de entidades no pertenecientes a Solicitud en páginas de copia", ledPackage.getCampo_Entidad());
+			}
+			
 			if ((pagina.isCopia()) &&  (atributo != null) && (atributo.isIsTransient())){
 				error("No se puede usar atributos Transient en paginas 'copia'", ledPackage.getCampo_Atributos());
 			}
@@ -504,6 +509,13 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	public void checkPersonaFisicaNoUtilizarSetearTipoPadre(PersonaFisica personaFisica){
 		if (personaFisica.isSetearTipoPadre()){
 			error("setearTipoPadre no se debe utilizar nunca.", ledPackage.getPersonaFisica_SetearTipoPadre());
+		}
+	}
+	
+	@Check
+	public void checkNombrePagina (Pagina pagina){
+		if (!Character.isUpperCase(pagina.getName().charAt(0))){
+			error("El nombre de las páginas debe empezar por mayuscula", ledPackage.getPagina_Name());
 		}
 	}
 	

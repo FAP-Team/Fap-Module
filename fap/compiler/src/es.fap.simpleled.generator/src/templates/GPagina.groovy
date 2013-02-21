@@ -120,12 +120,18 @@ public class GPagina extends GGroupElement{
 	
 	public String saveCode(){
 		String saveCode = super.saveCode();
+		String saveSolicitud = "";
+		
+		if ((pagina.copia) && (!Controller.create(this).getItvariableDb().contains("dbSolicitud"))){
+			saveSolicitud="""dbSolicitud.save(); """;
+		}
 		if (pagina.guardarParaPreparar){
 			saveCode += """
 				if(!validation.hasErrors()){
 					dbSolicitud.savePages.pagina${pagina.name} = true;
 				}
 			""";
+			
 		}
 		if (pagina.copia){
 			saveCode += """
@@ -135,8 +141,10 @@ public class GPagina extends GGroupElement{
 							   JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
 							   jsonPeticionModificacion.jsonPeticion = jsonPM;
 							   dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
-						   }
+						   	   dbSolicitud.save();
+							}
 						""";
+						//${saveSolicitud}
 		}
 		return saveCode;
 	}

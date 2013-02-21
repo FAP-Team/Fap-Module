@@ -81,7 +81,8 @@ Formulario Solicitud permiso=solicitudes{
     	}    	
     	
     	Grupo "Paginas Copias" {
-    		Enlace "Copia" pagina=PaginaCopia
+    		Enlace "Copia (Modificaciones permitidas)" pagina=PaginaCopia
+    		Enlace "Copia tablas" pagina=CopiaTablas
     		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
     		Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
     	}
@@ -806,13 +807,32 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 			Enlace titulo="Cancelar" estilo="btn btn-link" pagina=Solicitudes
 		}
 	}
+
 	
-	Pagina PaginaCopia titulo="Página Copia" campo=Solicitud copia permiso=modificacionTrasPresentacionDeSolicitud{
-		Texto titulo="Nombre desde FAP" campo=Solicitud.solicitante.fisica.nombre
-		Texto titulo="Texto desde la APP" campo=Solicitud.elementos.texto
+	Pagina CopiaTablas titulo="Página de copia con tablas" campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud copia{
+		Tabla tablaCopia campo=Solicitud.tablaDeNombres titulo="Solicitantes"
+		paginaEditar=PaginaNombreCopia
+		paginaBorrar=PaginaNombreCopia
+		paginaCrear=PaginaNombreCopia
+		columnasAutomaticas exclude=id, fecha
+		{}
+		
+	}
+
+	
+	Pagina PaginaCopia titulo="Página de Copia" campo=Solicitud copia permiso=modificacionTrasPresentacionDeSolicitud{
+		Texto titulo="Nombre Persona Física " campo=Solicitud.solicitante.fisica.nombre
+		Texto titulo="Texto Añandido " campo=Solicitud.elementos.texto
 		Combo miCombo titulo="Combo Prueba" campo=Solicitud.comboTest.listMultiple
-		Combo miCombo2 titulo="Combo Prueba 2" campo=Solicitud.comboTest.refMultiple
-		Combo miCombo3 titulo="Combo Prueba 3" campo=Solicitud.paco
+	}	
+	
+	Pagina PaginaNombreCopia campo=Solicitud.tablaDeNombres copia{
+		Accion crear redirigir=anterior
+		Accion editar redirigir=anterior
+		Accion borrar redirigir=anterior
+		Wiki{ "PopUp de copia" }
+		Texto campo=TablaDeNombres.nombre titulo="Nombre"
+		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 }
 

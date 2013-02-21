@@ -1152,34 +1152,35 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	/*
      * Página Presentar
      */
-    Pagina PresentarModificacionFAP noForm titulo="Presentación de las Modificaciones de la Solicitud" permiso=presentarModificacionTrasPresentacionDeSolicitud campo=SolicitudGenerica.registroModificacion.registro  perteneceA ="Presentacion"{
+    Pagina PresentarModificacionFAP noForm titulo="Presentación de las Modificaciones de la Solicitud" campo=SolicitudGenerica.registroModificacion.registro  perteneceA ="Presentacion"{
 
 		Grupo titulo="Presentación de la Modificación de la solicitud" {
-			Grupo permiso=prepararSolicitudModificacion borde = false {
-        		Grupo gpreparar titulo="Paso 1. Preparar la solicitud de modificación"  {
-            		Wiki { "Si su solicitud de modificación está lista para firmar, pulse el siguiente botón." }
-              		Form prepararFirmar {
-                    	Boton botonPrepararFirmar titulo="Preparar para firmar"
-              		}
-        		}
-        	} // Fin Grupo para controlar prepararAlegacion
-
-			Grupo titulo="Paso 2. Obtener borrador de la Solicitud de Modificación" permiso=enBorradorSolicitudModificada {
-				Wiki {"Puede obtener un borrador de la solicitud de modificación, no válido para su presentación y comprobar que la información introducida es correcta."}
-				Enlace campo=Registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
-
-				Form deshacer permiso=modificarSolicitudModificada {
-					Wiki {"Para realizar cambios, antes de su presentación definitiva, pulse el siguiente botón."}
-					Boton botonModificar titulo="Modificar solicitud de modificación"
-				}
-
-				Grupo mensajeIntermedio permiso=mensajeIntermedioSolicitudModificada borde=false {
-					Wiki estilo ="box-warn box" {
-						"Se produjo un error en la presentación de la solicitud de modificación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+			Grupo permiso=presentarModificacionTrasPresentacionDeSolicitud borde=false{
+				Grupo permiso=prepararSolicitudModificacion borde = false {
+	        		Grupo gpreparar titulo="Paso 1. Preparar la solicitud de modificación" {
+	            		Wiki { "Si su solicitud de modificación está lista para firmar, pulse el siguiente botón." }
+	              		Form prepararFirmar {
+	                    	Boton botonPrepararFirmar titulo="Preparar para firmar"
+	              		}
+	        		}
+	        	} // Fin Grupo para controlar prepararAlegacion
+	
+				Grupo titulo="Paso 2. Obtener borrador de la Solicitud de Modificación" permiso=enBorradorSolicitudModificada {
+					Wiki {"Puede obtener un borrador de la solicitud de modificación, no válido para su presentación y comprobar que la información introducida es correcta."}
+					Enlace campo=Registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+	
+					Form deshacer permiso=modificarSolicitudModificada {
+						Wiki {"Para realizar cambios, antes de su presentación definitiva, pulse el siguiente botón."}
+						Boton botonModificar titulo="Modificar solicitud de modificación"
+					}
+	
+					Grupo mensajeIntermedio permiso=mensajeIntermedioSolicitudModificada borde=false {
+						Wiki estilo ="box-warn box" {
+							"Se produjo un error en la presentación de la solicitud de modificación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+						}
 					}
 				}
 			}
-
 			// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
 			Grupo grpPresentar titulo="Paso 3. Firmar y Registrar la Solicitud de Modificación" permiso=enBorradorSolicitudModificada {
 				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
@@ -1188,13 +1189,13 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 					Boton botonPresentar titulo="Presentar solicitud de Modificación"
 				}
 			}
-
-			// Hay que poner bien el permiso
-			Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaSolicitudModificada {
-				Wiki {"Puede obtener un recibo de la presentación de la solicitud de modificación pulsando el enlace 'Obtener recibo'." }
-				Enlace campo=Registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton"
-			}
+				
+		Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaSolicitudModificada {
+			Wiki {"Puede obtener un recibo de la presentación de la solicitud de modificación pulsando el enlace 'Obtener recibo'." }
+			Enlace campo=Registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton"
 		}
+		}
+
 	}
 
 	Pagina SolicitudPresentarModificacionFAP titulo="Presentar Solicitud de Modificación" noForm permiso=presentarModificacionTrasPresentacionDeSolicitud campo=SolicitudGenerica.registroModificacion.registro perteneceA ="Presentacion"{

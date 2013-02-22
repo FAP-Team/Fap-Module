@@ -78,6 +78,7 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "Desistimiento" pagina=Desistimiento
 			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
 			Enlace "Presentacion" pagina=PresentarFAP
+			Enlace "Resolucion" pagina=Resoluciones
     	}    	
 		Enlace "Firmante Director" pagina=PaginaDirector
 		Enlace "Salir" accion=logout

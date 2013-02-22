@@ -14,7 +14,6 @@ import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import models.Tramite;
 import properties.PropertyPlaceholder;
-import services.aed.Interesados;
 import services.filesystem.TipoDocumentoEnTramite;
 import services.filesystem.TipoDocumentoGestorDocumental;
 import utils.BinaryResponse;

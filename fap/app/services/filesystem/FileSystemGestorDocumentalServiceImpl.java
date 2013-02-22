@@ -48,7 +48,6 @@ import models.TiposCodigoRequerimiento;
 import models.Tramite;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
-import services.aed.Interesados;
 import utils.BinaryResponse;
 
 import static com.google.common.base.Preconditions.*;

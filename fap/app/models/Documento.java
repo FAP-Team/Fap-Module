@@ -193,8 +193,6 @@ public class Documento extends FapModel {
 		urlDescarga = doc.urlDescarga;
 		verificado = doc.verificado;
 		refAed = doc.refAed;
-		expedienteReferenciado = doc.expedienteReferenciado;
-		solicitudReferenciada = doc.solicitudReferenciada;
 		estadoElaboracion = doc.estadoElaboracion;
 	}
 

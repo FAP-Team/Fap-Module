@@ -171,5 +171,18 @@
                                 valor:  "0"
                             }
                         ]
-    }      
+    },
+    {
+        tipoDocumento: "eadmon://gobcan.es/tiposDocumentos/TDC000000000000000124/v06",
+        listaMetadatos: [
+                            {
+                                nombre: "Tipo documental",
+                                valor:  "TD16"
+                            },
+                            {
+                                nombre: "OrigenCiudadanoAdministracion",
+                                valor:  "0"
+                            }
+                        ]
+    }       
 ]

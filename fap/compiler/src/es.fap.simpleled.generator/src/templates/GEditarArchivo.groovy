@@ -53,16 +53,15 @@ public class GEditarArchivo extends GSaveCampoElement{
 	}
 	
 	public String validateCopy(Stack<Set<String>> validatedFields){
-		String codigo = """
-						if(documento.estadoElaboracion != null) {
-							dbDocumento.estadoElaboracion = documento.estadoElaboracion;
-							documento.sinMetadatos = false;
-						}
-						else {
-							documento.sinMetadatos = true;
-						}
-						dbDocumento.sinMetadatos = documento.sinMetadatos;
-						""";	
+		String codigo = """if(${campo.firstLower()}.estadoElaboracion != null) {
+					${campo.dbStr()}.estadoElaboracion = ${campo.firstLower()}.estadoElaboracion;
+					${campo.firstLower()}.sinMetadatos = false;
+				}
+				else {
+					${campo.firstLower()}.sinMetadatos = true;
+				}
+				${campo.dbStr()}.sinMetadatos = ${campo.firstLower()}.sinMetadatos;
+			""";	
 		return codigo + validate(validatedFields) + """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
  ${campo.dbStr()}.descripcion = ${campo.firstLower()}.descripcion;
 		""";

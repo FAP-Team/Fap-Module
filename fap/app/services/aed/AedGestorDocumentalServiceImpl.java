@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 import javax.inject.Inject;
 import javax.xml.ws.Holder;
@@ -25,6 +26,7 @@ import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import models.Agente;
+import models.DocumentoNotificacion;
 import models.ExpedienteAed;
 import models.InformacionRegistro;
 import models.Metadatos;
@@ -78,9 +80,11 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.ListaMetadatos;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Metadato;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAdministrativas;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAvanzadas;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Version;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 import es.gobcan.eadmon.procedimientos.ws.dominio.TipoDocumentoEnTramite;
 
@@ -880,8 +884,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     
 
 	@Override
-	public void agregarFirma(models.Documento documento, String firmaStr)
-			throws GestorDocumentalServiceException {
+	public void agregarFirma(models.Documento documento, String firmaStr) throws GestorDocumentalServiceException {
         if(firmaStr == null || firmaStr.isEmpty())
             throw new GestorDocumentalServiceException("La firma está vacia");
         
@@ -1362,7 +1365,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 //		</rdf:Description>
 
 		PdfReader reader;	
-		String nombreFichero = Play.tmpDir.getAbsolutePath() + "_" + RandomStringUtils.randomAlphanumeric(10).toLowerCase() + ".pdf";
+		String nombreFichero = Play.tmpDir.getAbsolutePath() + "/tmp_" + RandomStringUtils.randomAlphanumeric(10).toLowerCase() + ".pdf";
 		File fichero = new File(nombreFichero);
 		URL url;
 		try {
@@ -1375,9 +1378,9 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		DOMParser parser = new DOMParser();
 		try {
 			reader = new PdfReader(nombreFichero);
-			// XXX: Versiones >= 1.4?
-			// getPdfVersion: Only the last version char is returned. For example version 1.4 is returned as '4'.
-			//versionPDF = "1." + Character.toString( reader.getPdfVersion() );   
+			int versionPDF = Integer.parseInt( Character.toString( reader.getPdfVersion() ) );   // getPdfVersion: Only the last version char is returned. For example version 1.4 is returned as '4'.
+			if (versionPDF < 4)			// para que sea PDF/A, admitimos versiones >= 1.4
+				return "PDF";
 			if (reader.getMetadata() == null)
 				log.error("El PDF correspondiente al documento con uri " + uriDocumento + " no tiene medatados (XML).");
 			else {	
@@ -1424,7 +1427,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		
 		List<models.Metadato> listaMetadatos = new ArrayList<models.Metadato>();
 		try {
-			System.out.println("propDoc.getMetadatos().getMetadato() = " + propDoc.getMetadatos().getMetadato());
 			for(Metadato metadato : propDoc.getMetadatos().getMetadato()) {
 				listaMetadatos.add( new models.Metadato( metadato.getNombre(), metadato.getValor() ) );
 			}
@@ -1447,21 +1449,20 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	@Override
 	public boolean setMetadatosDocumento(String uriDocumento, List<models.Metadato> listaMetadatos) throws GestorDocumentalServiceException {		
 		List<Metadato> listaMetadatosAed2 = new ArrayList<Metadato>(); 
-		ListaMetadatos listaMetadatosAed = new ListaMetadatos();
+		//ListaMetadatos listaMetadatosAed = new ListaMetadatos();
 		for(models.Metadato metadato : listaMetadatos) {
 			Metadato metadatoAed = new Metadato();
 			metadatoAed.setNombre(metadato.nombre);
 			metadatoAed.setValor(metadato.valor);
-			listaMetadatosAed.getMetadato().add(metadatoAed);	
+			//listaMetadatosAed.getMetadato().add(metadatoAed);	
 			listaMetadatosAed2.add(metadatoAed);
 		}
-
+		
 		boolean obtuveDocumento = false;
 		Documento documento = null;
 		try {
 			documento = aedPort.obtenerDocumentoNoClasificado(uriDocumento);
 			obtuveDocumento = true;
-			
 			try {
 				documento.getPropiedades().getMetadatos().getMetadato().addAll(listaMetadatosAed2);
 			}
@@ -1469,14 +1470,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 				log.error("El documento con uri " + uriDocumento + " no tiene metadatos, por lo que no se han podido insertar los nuevos.");
 				return false;
 			}
-
 			aedPort.actualizarDocumentoNoClasificado(documento);
-			
 		} catch (AedExcepcion e) { e.printStackTrace(); }
 		
 		if (!obtuveDocumento) {
 	        try {
 				documento = aedPort.obtenerDocumento(uriDocumento);
+				try {
+					documento.getPropiedades().getMetadatos().getMetadato().addAll(listaMetadatosAed2);
+				}
+				catch (NullPointerException npe) {
+					log.error("El documento con uri " + uriDocumento + " no tiene metadatos, por lo que no se han podido insertar los nuevos.");
+					return false;
+				}
 				List<DocumentoEnUbicacion> ubicaciones = null;
 				ubicaciones = aedPort.obtenerDocumentoRutas(uriDocumento);
 				if (ubicaciones.size() == 0) {
@@ -1489,10 +1495,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 					ubic.setProcedimiento(FapProperties.get("fap.aed.procedimiento"));
 					ubic.getExpedientes().add(docUbic.getExpediente());
 					newUbicaciones.add(ubic);
-				}
-				
-				aedPort.actualizarDocumento(documento, newUbicaciones);
-				
+				}			
+				aedPort.actualizarDocumento(documento, newUbicaciones);	
 	        } catch (AedExcepcion e) {
 	        	log.error("No se ha podido obtener el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
 	        	return false;

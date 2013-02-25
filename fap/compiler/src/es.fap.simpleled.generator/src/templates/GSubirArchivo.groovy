@@ -56,7 +56,17 @@ public class GSubirArchivo extends GSaveCampoElement{
 	
 	public String validateCopy(Stack<Set<String>> validatedFields) {
 		String checkFile = "";
-		String validationSaveCampo = validate(validatedFields) + copy();
+		//String validationSaveCampo = validate(validatedFields) + copy();
+		String codigo = """if(${campo.firstLower()}.estadoElaboracion != null) {
+					${campo.dbStr()}.estadoElaboracion = ${campo.firstLower()}.estadoElaboracion;
+					${campo.firstLower()}.sinMetadatos = false;
+				}
+				else {
+					${campo.firstLower()}.sinMetadatos = true;
+				}
+				${campo.dbStr()}.sinMetadatos = ${campo.firstLower()}.sinMetadatos;
+			""";
+		String validationSaveCampo = codigo + validate(validatedFields) + copy();
 		if (subirArchivo.mimes.size > 0){
 			String check = "";
 			for (String type: typesAccepted()){
@@ -160,18 +170,18 @@ public class GSubirArchivo extends GSaveCampoElement{
 		return GSaveCampoElement.copyCamposFiltrados(campo, ["tipo","descripcion"]);
 	}
 	
-	public String validateCopy(Stack<Set<String>> validatedFields) {
-		String codigo = """
-						if(documento.estadoElaboracion != null) {
-							dbDocumento.estadoElaboracion = documento.estadoElaboracion;
-							documento.sinMetadatos = false;
-						}
-						else {
-							documento.sinMetadatos = true;
-						}
-						dbDocumento.sinMetadatos = documento.sinMetadatos;
-						""";
-		return codigo + validate(validatedFields) + copy();
-	}
+//	public String validateCopy(Stack<Set<String>> validatedFields) {
+//		String codigo = """
+//						if(documento.estadoElaboracion != null) {
+//							dbDocumento.estadoElaboracion = documento.estadoElaboracion;
+//							documento.sinMetadatos = false;
+//						}
+//						else {
+//							documento.sinMetadatos = true;
+//						}
+//						dbDocumento.sinMetadatos = documento.sinMetadatos;
+//						""";
+//		return codigo + validate(validatedFields) + copy();
+//	}
 	
 }

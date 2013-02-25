@@ -96,18 +96,10 @@ public class MetadatosFAPController extends InvokeClassController {
 			Metadato metadatoFormato = new Metadato("Nombre del formato", gestorDocumentalService.construyeMetadatoNombreFormato(uriDocumento));		
 			listaMetadatos.add(metadatoFormato);
 		} catch (GestorDocumentalServiceException e) { e.printStackTrace(); }
-		
+
 		try {
 			gestorDocumentalService.setMetadatosDocumento(uriDocumento, listaMetadatos);
 		} catch (GestorDocumentalServiceException e) { e.printStackTrace(); }
-		
-		System.out.println("OBTENIENDO METADATOS EN FAP CONTROLLER");
-		try {
-			List<Metadato> listaMetadatos2 = gestorDocumentalService.getMetadatosDocumento(uriDocumento);
-			for(Metadato m : listaMetadatos2) {
-				System.out.println("--[" + m.nombre + "] = " + m.valor);
-			}
-		} catch (GestorDocumentalServiceException e) { System.out.println("ñññññ"); e.printStackTrace(); }
 	}
 	
 	/**

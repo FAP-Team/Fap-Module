@@ -98,8 +98,6 @@ public interface GestorDocumentalService {
 	
 	@Deprecated
 	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
-
-	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
 	
 	public String construyeMetadatoIdentificador(String uriDocumento, String organo) throws GestorDocumentalServiceException;
 

@@ -130,17 +130,20 @@ public class FirmaClient {
 		return firma;		
 	}
 	
-	public static String extraerCertificadoDeFirma(String firma){
+	public static String extraerCertificadoDeFirma(String firma) throws Exception{
 		String certificado = null;
 		try {
-			PKCS7 pkcs7 = new PKCS7(Codec.decodeBASE64(firma));
-			X509Certificate certificate = pkcs7.getCertificates()[0];
-			byte[] certificadoEncoded = certificate.getEncoded();
-			certificado = Codec.encodeBASE64(certificadoEncoded);
+	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	        dbf.setNamespaceAware(true);
+	        DocumentBuilder db  = dbf.newDocumentBuilder();
+	        org.w3c.dom.Document doc = db.parse(new InputSource(new StringReader(firma)));
+	        //Pillamos certificado
+	        Element x509Certificate = (Element) doc.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "X509Certificate").item(0);
+	        return x509Certificate.getTextContent();
 		} catch (Exception e) {
-			log.error("Error al extraer la información del certificado");
+			System.out.println("Exception extraer: "+e.getMessage());
+			throw new Exception("Error al extraer el certificado de la firma", e);
 		}
-		return certificado;
 	}
 	
 	public static Boolean validarCertificado(String certificado){
@@ -193,45 +196,45 @@ public class FirmaClient {
 	
 	private static HashMap<String, String> Info2HashMap(InfoCert infocert) {
 		HashMap<String, String> result = new HashMap<String, String>();
-		if (!infocert.nombrecompleto.isEmpty())
+		if (infocert.nombrecompleto != null && !infocert.nombrecompleto.isEmpty())
 			result.put("nombrecompleto", infocert.nombrecompleto);
-		if (!infocert.nombre.isEmpty())
+		if (infocert.nombre != null && !infocert.nombre.isEmpty())
 			result.put("nombre", infocert.nombre);
-		if (!infocert.fullname.isEmpty())
+		if (infocert.fullname != null && !infocert.fullname.isEmpty())
 			result.put("fullname", infocert.fullname);
-		if (!infocert.entidad.isEmpty())
+		if (infocert.entidad != null && !infocert.entidad.isEmpty())
 			result.put("entidad", infocert.entidad);
-		if (!infocert.apellido1.isEmpty())
+		if (infocert.apellido1 != null && !infocert.apellido1.isEmpty())
 			result.put("apellido1", infocert.apellido1);
-		if (!infocert.apellido2.isEmpty())
+		if (infocert.apellido2 != null && !infocert.apellido2.isEmpty())
 			result.put("apellido2", infocert.apellido2);
-		if (!infocert.apellidos.isEmpty())
+		if (infocert.apellidos != null && !infocert.apellidos.isEmpty())
 			result.put("apellidos", infocert.apellidos);
-		if (!infocert.nif.isEmpty())
+		if (infocert.nif != null && !infocert.nif.isEmpty())
 			result.put("nif", infocert.nif);
-		if (!infocert.cif.isEmpty())
+		if (infocert.cif != null && !infocert.cif.isEmpty())
 			result.put("cif", infocert.cif);
-		if (!infocert.tipo.isEmpty())
+		if (infocert.tipo != null && !infocert.tipo.isEmpty())
 			result.put("tipo", infocert.tipo);
-		if (!infocert.email.isEmpty())
+		if (infocert.email != null && !infocert.email.isEmpty())
 			result.put("email", infocert.email);
-		if (!infocert.cargo.isEmpty())
+		if (infocert.cargo != null && !infocert.cargo.isEmpty())
 			result.put("cargo", infocert.cargo);
-		if (!infocert.departamento.isEmpty())
+		if (infocert.departamento != null && !infocert.departamento.isEmpty())
 			result.put("departamento", infocert.departamento);
-		if (!infocert.finalidad.isEmpty())
+		if (infocert.finalidad != null && !infocert.finalidad.isEmpty())
 			result.put("finalidad", infocert.finalidad);
-		if (!infocert.organizacion.isEmpty())
+		if (infocert.organizacion != null && !infocert.organizacion.isEmpty())
 			result.put("organizacion", infocert.organizacion);
-		if (!infocert.serialNumber.isEmpty())
+		if (infocert.serialNumber != null && !infocert.serialNumber.isEmpty())
 			result.put("serialnumber", infocert.serialNumber);
-		if (!infocert.issuer.isEmpty())
+		if (infocert.issuer != null && !infocert.issuer.isEmpty())
 			result.put("issuer", infocert.issuer);
-		if (!infocert.subject.isEmpty())
+		if (infocert.subject != null && !infocert.subject.isEmpty())
 			result.put("subject", infocert.subject);
-		if (!infocert.notBefore.isEmpty())
+		if (infocert.notBefore != null && !infocert.notBefore.isEmpty())
 			result.put("notBefore", infocert.notBefore);
-		if (!infocert.notAfter.isEmpty())
+		if (infocert.notAfter != null && !infocert.notAfter.isEmpty())
 			result.put("notAfter", infocert.notAfter);
 
 		return result;

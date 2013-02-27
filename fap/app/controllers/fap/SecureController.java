@@ -108,7 +108,7 @@ public class SecureController extends Controller {
     	String certificadoExtraido = null;
     	if(!validation.hasErrors()){
     		log.debug("Validando certificado");
-    		certificadoExtraido = FirmaClient.extraerCertificadoDeFirma(firma);
+    		certificadoExtraido = FirmaClient.extraerCertificadoLogin(firma);
     		Boolean certificadoValido = FirmaClient.validarCertificado(certificadoExtraido);
     		if(!certificadoValido) validation.addError("login-certificado", "El certificado no es válido");
     		log.debug("Certificado validado");

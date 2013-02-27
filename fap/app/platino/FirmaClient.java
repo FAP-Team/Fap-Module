@@ -130,6 +130,19 @@ public class FirmaClient {
 		return firma;		
 	}
 	
+	public static String extraerCertificadoLogin(String firma) throws Exception{
+		String certificado = null;
+		try {
+			PKCS7 pkcs7 = new PKCS7(Codec.decodeBASE64(firma));
+			X509Certificate certificate = pkcs7.getCertificates()[0];
+			byte[] certificadoEncoded = certificate.getEncoded();
+			certificado = Codec.encodeBASE64(certificadoEncoded);
+		} catch (Exception e) {
+			log.error("Error al extraer la información del certificado"+e);
+		}
+		return certificado;
+	}
+	
 	public static String extraerCertificadoDeFirma(String firma) throws Exception{
 		String certificado = null;
 		try {

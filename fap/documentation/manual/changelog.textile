@@ -2,8 +2,7 @@ h2. Changelog
 
 h3. Versión 2.1.2RC5
 
-* Verificación: Fixed bug en permiso.
-* Verificación: Eliminada la opción de obtener todas los no procede de verificaciones anteriores.
+* Fixed bug Verificación.
 * Fixed bug en el método que comprueba si están resueltas todas las anotaciones.
 * Añadidos los nombres de la aplicación en los informes.
 

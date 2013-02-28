@@ -7,6 +7,8 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
 import org.joda.time.DateTime;
+
+import enumerado.fap.gen.AccesoAgenteEnum;
 import models.*;
 import messages.Messages;
 import validation.*;
@@ -50,6 +52,7 @@ public class Agente extends FapModel {
 	@ValueFromTable("roles")
 	public String rolActivo;
 
+	@ValueFromTable("accesoAgente")
 	public String acceso;
 
 	public Boolean funcionario;
@@ -142,7 +145,7 @@ public class Agente extends FapModel {
 	 * @return
 	 */
 	public Boolean accedidoPorCertificado() {
-		return this.acceso != null && this.acceso.equalsIgnoreCase("certificado");
+		return this.acceso != null && this.acceso.equals(AccesoAgenteEnum.certificado.name());
 	}
 
 	/**

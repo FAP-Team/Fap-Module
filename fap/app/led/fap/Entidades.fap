@@ -80,7 +80,7 @@ Entidad Agente inheritance=joined auditable {
 	String name
 	Lista multiple roles roles
 	Lista roles rolActivo
-	String acceso
+	Lista accesoAgente acceso
 	Boolean funcionario
 	String verificacion transient		// campo auxiliar para el cambio de password
 }

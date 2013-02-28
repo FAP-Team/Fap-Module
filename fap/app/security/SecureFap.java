@@ -17,6 +17,7 @@ import models.Participacion;
 import models.SolicitudGenerica;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
+import enumerado.fap.gen.AccesoAgenteEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import enumerado.fap.gen.TiposParticipacionEnum;
 
@@ -95,7 +96,7 @@ public class SecureFap extends Secure {
 	
 	private ResultadoPermiso loginTipoUser(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
 		Agente agente = AgenteController.getAgente();
-		if ((FapProperties.getBoolean("fap.login.type.user")) && ((agente.acceso == null) || (!agente.acceso.toString().equals("certificado".toString())))) 
+		if ((FapProperties.getBoolean("fap.login.type.user")) && ((agente.acceso == null) || (!agente.acceso.equals(AccesoAgenteEnum.certificado.name())))) 
 			return new ResultadoPermiso(Accion.All); 
 		return new ResultadoPermiso(Accion.Denegar);
 	}

@@ -8880,3 +8880,9 @@ Lista tipoCrearExpedienteAed crearEnumerado {
 	solicitud: "Solicitud"
 	convocatoria: "Convocatoria"
 }
+
+Lista accesoAgente crearEnumerado {
+	certificado: "Certificado"
+	usuario: "Usuario"
+	ticketing: "Ticketing"
+}

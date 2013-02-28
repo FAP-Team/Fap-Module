@@ -19,6 +19,8 @@ import models.Agente;
 
 import org.apache.log4j.Logger;
 
+import enumerado.fap.gen.AccesoAgenteEnum;
+
 import platino.InfoCert;
 import play.Play;
 import play.cache.Cache;
@@ -212,13 +214,13 @@ public class SecureController extends GenericController{
 			agente.name = name;
 			
 		}else{
-			if(agente.name == null || agente.acceso == null || !agente.acceso.equals("certificado")){
+			if(agente.name == null || agente.acceso == null || !agente.acceso.equals(AccesoAgenteEnum.certificado.name())){
 				agente.name = name;
 			}
 		}
 		
 		//Almacena el modo de acceso del agente
-		agente.acceso = "certificado";
+		agente.acceso = AccesoAgenteEnum.certificado.name();
 		agente.save();
 
 		//Almacena el usuario en la sesion
@@ -348,7 +350,7 @@ public class SecureController extends GenericController{
     	}
         
 		//Almacena el modo de acceso del agente
-		agente.acceso = "usuario";
+		agente.acceso = AccesoAgenteEnum.usuario.name();
 		agente.save();
 
         session.put("accesoFallido", 0);

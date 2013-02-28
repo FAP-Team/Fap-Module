@@ -397,9 +397,17 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Enlace campo=SolicitudGenerica.registro.justificante.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="btn"
 			}	
 			
+			Wiki { "<br/> " }
+			
+			Form frmtiposProceso permiso=verificarObtenerNoProcede {
+				Grupo noProcedeAnteriores titulo="Obtener los documentos No Procede de verificaciones anteriores"{
+					Boton obtenerNoProcede titulo="Obtener los NoProcede" type=warning
+				}
+			}	
+			
 			Form incluirNoProcedeMultiples {
 				Grupo GrupoMultiples titulo = "Añadir tipo de documento a la verificacion"{
-					Combo comboMultiples titulo="Documentos Múltiples" campo=SolicitudGenerica.verificacion.incluirFichMultiple //sobreescribir que muestre descripcion
+					Combo comboMultiples titulo="Documentos Múltiples" campo=SolicitudGenerica.verificacion.incluirFichMultiple requerido//sobreescribir que muestre descripcion
 					Boton incluirNoProcede titulo="Añadir"
 				}
 			}

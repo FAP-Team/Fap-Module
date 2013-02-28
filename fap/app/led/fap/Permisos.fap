@@ -588,7 +588,7 @@ Permiso hayverificacion{
 		SolicitudGenerica solicitud
 		Verificacion verificacion : sql("select verificacion from SolicitudGenerica s where s.id=?", solicitud.id)
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion != null) and (verificacion.estado!=null) and (verificacion.estado in ("iniciada", "verificandoTipos", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada")))
+		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion != null) and (verificacion.estado!=null) and (verificacion.estado in ("iniciada", "verificandoTipos", "obtenerNoProcede", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada")))
 	return
     	all
 }

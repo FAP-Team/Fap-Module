@@ -8874,3 +8874,7 @@ Lista posicionMensaje crearEnumerado {
 	superior: "Parte superior"
 	inferior: "Parte inferior"
 }
+
+Lista tipoCrearExpedienteAed crearEnumerado {
+	solicitud: "Solicitud"
+}

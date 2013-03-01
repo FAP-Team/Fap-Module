@@ -15,6 +15,7 @@ import models.Busqueda;
 import models.Documento;
 import models.Participacion;
 import models.SolicitudGenerica;
+import models.Verificacion;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
 import enumerado.fap.gen.EstadosVerificacionEnum;
@@ -40,6 +41,8 @@ public class SecureFap extends Secure {
 			return mostrarResultadoBusqueda(_permiso, action, ids, vars);
 		else if ("esFuncionarioHabilitadoYActivadaProperty".equals(id))
 			return esFuncionarioHabilitadoYActivadaProperty(_permiso, action, ids, vars);
+		else if ("verificarObtenerNoProcede".equals(id))
+			return verificarObtenerNoProcede(_permiso, action, ids, vars);
 		
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
@@ -174,6 +177,41 @@ public class SecureFap extends Secure {
 		if ((agente.funcionario.toString().equals("true".toString())) && (properties.FapProperties.getBoolean("fap.firmaYRegistro.funcionarioHabilitado")))
 			return new ResultadoPermiso(Accion.Editar);
 
+		return null;
+	}
+	
+	/**
+	 * Si no tiene verificaciones anteriores, no se cumple el permiso.
+	 * @param grafico
+	 * @param accion
+	 * @param ids
+	 * @param vars
+	 * @return
+	 */
+	private ResultadoPermiso verificarObtenerNoProcede(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+		if (solicitud.verificaciones.size() == 0)
+			return null;
+		Verificacion verificacion = getVerificacion(ids, vars);
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if ((utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "revisor")) && ((utils.StringUtils.in(accion.toString(), "leer", "editar")) && verificacion != null && utils.StringUtils.in(verificacion.estado.toString(), "obtenerNoProcede"))) {
+			return new ResultadoPermiso(Accion.All);
+
+		}
+
+		return null;
+	}
+	
+	public Verificacion getVerificacion(Map<String, Long> ids, Map<String, Object> vars) {
+		if (vars != null && vars.containsKey("verificacion"))
+			return (Verificacion) vars.get("verificacion");
+		else if (ids != null && ids.containsKey("idVerificacion"))
+			return Verificacion.findById(ids.get("idVerificacion"));
 		return null;
 	}
 

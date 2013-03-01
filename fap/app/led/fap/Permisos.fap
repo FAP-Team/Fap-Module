@@ -467,6 +467,7 @@ Permiso verificarDocumentos{
 		all
 }
 
+/** Además Sobreescribimos */
 Permiso verificarObtenerNoProcede{
 	vars
 		Verificacion verificacion

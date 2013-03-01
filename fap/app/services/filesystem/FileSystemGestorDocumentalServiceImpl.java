@@ -730,4 +730,10 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		// TODO Auto-generated method stub
 		
 	}
+
+	//Se devuelve el documento porque no hay forma de obtener la firma
+	@Override
+	public BinaryResponse getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
+		return getDocumentoByUri(uriDocumento);
+	}
 }

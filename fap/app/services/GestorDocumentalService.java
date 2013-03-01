@@ -36,6 +36,8 @@ public interface GestorDocumentalService {
     
     public BinaryResponse getDocumentoConInformeDeFirma(Documento documento) throws GestorDocumentalServiceException;
 
+    public BinaryResponse getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException;
+    
     public String saveDocumentoTemporal(models.Documento documento, InputStream inputStream, String filename)
             throws GestorDocumentalServiceException;
 

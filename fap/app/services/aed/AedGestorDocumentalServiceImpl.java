@@ -1276,5 +1276,16 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		dbDocumento.save();
 	}
 
-	
+	@Override
+	public BinaryResponse getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
+		BinaryResponse response = new BinaryResponse();
+    	try{
+    		Firma firma = aedPort.obtenerDocumentoFirma(uriDocumento);
+    	}
+    	catch (AedExcepcion e) {
+			// TODO: handle exception
+		}
+    	
+    	return response;
+	}	
 }

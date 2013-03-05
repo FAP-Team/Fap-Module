@@ -383,7 +383,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna titulo="Tipo Documento" campo=Documento.tipo
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+				Columna campo=Documento.enlaceDescargaFirmado titulo="Descargar Firmado" ancho="110"
 				
 			}
 			Form verificaTipos {
@@ -407,7 +407,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			
 			Form incluirNoProcedeMultiples {
 				Grupo GrupoMultiples titulo = "Añadir tipo de documento a la verificacion"{
-					Combo comboMultiples titulo="Documentos Múltiples" campo=SolicitudGenerica.verificacion.incluirFichMultiple requerido//sobreescribir que muestre descripcion
+					Combo comboMultiples titulo="Tipos de Documentos" campo=SolicitudGenerica.verificacion.incluirFichMultiple requerido//sobreescribir que muestre descripcion
 					Boton incluirNoProcede titulo="Añadir"
 				}
 			}

@@ -213,7 +213,12 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 				dbSolicitud.verificacion.documentos.add(vDoc);
 			}
 			
-			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.obtenerNoProcede.name();
+			/// Si existen verificaciones anteriores el estado al que pasa es "obtenerNoProcede",
+			/// en caso contrario a "enVerificacion"
+			if (dbSolicitud.verificaciones.size() > 0)
+				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.obtenerNoProcede.name();
+			else
+				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
 			dbSolicitud.verificacion.nuevosDocumentos.clear();
 			dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
 			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
@@ -799,7 +804,6 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		Long idSolicitud = Long.parseLong(params.get("idSolicitud"));
 		Long idVerificacion = Long.parseLong(params.get("idVerificacion"));
 		Verificacion verificacion = Verificacion.findById(idVerificacion);
-		System.out.println("combosMultiples -> "+verificacion.estado);
 		// Obtenemos el trámite actual
 		Tramite tramite = verificacion.tramiteNombre;
 		List<ComboItem> result = new ArrayList<ComboItem>();

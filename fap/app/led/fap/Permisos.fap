@@ -628,7 +628,7 @@ Permiso anularVerificacion{
 		(solicitud?.estado = "enVerificacion") and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.registro != "true") and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true") and
-		(verificacion?.estado != null and verificacion?.estado in ("enVerificacion", "verificandoTipos", "enVerificacionNuevosDoc", "enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada"))
+		(verificacion?.estado != null and verificacion?.estado in ("enVerificacion", "verificandoTipos", "obtenerNoProcede", "enVerificacionNuevosDoc", "enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada"))
 	return
 		all
 }

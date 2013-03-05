@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 2.1.3RC6
+
+* Generalización de la creación de identificadores de expediente.
+* Verificación: Se permite añadir cualquier tipo de documento a la actual verificación.
+* Verificación: Fixed bug permiso.
+
+
 h3. Versión 2.1.2RC5
 
 * Fixed bug Verificación.

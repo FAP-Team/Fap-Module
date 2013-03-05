@@ -5,7 +5,7 @@ import enumerado.fap.gen.EstadoResolucionEnum;
 import enumerado.fap.gen.EstadoTipoMultipleEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.ModalidadResolucionEnum;
-import models.LineaResolucion;
+import models.LineaResolucionFAP;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
 
@@ -40,7 +40,7 @@ public class ResolucionMultipleTotal extends ResolucionBase {
 		if (resolucion.lineasResolucion.size() == 0) {
 			// Por cada una de las solicitudes a resolver, añadimos una línea de resolución
 			for (SolicitudGenerica sol: getSolicitudesAResolver(idResolucion)) {
-				LineaResolucion lResolucion = new LineaResolucion();
+				LineaResolucionFAP lResolucion = new LineaResolucionFAP();
 				lResolucion.solicitud = sol;
 				if (sol.estado.equals(EstadosSolicitudEnum.verificado)) {
 					lResolucion.estado = EstadoLineaResolucionEnum.concedida.name();

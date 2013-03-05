@@ -20,7 +20,7 @@ import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.ModalidadResolucionEnum;
 import messages.Messages;
 import models.Documento;
-import models.LineaResolucion;
+import models.LineaResolucionFAP;
 import models.Registro;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
@@ -113,7 +113,7 @@ public class ResolucionBase {
 	public static void validarLineasResolucion (Long idResolucion) {
 		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
 		if (resolucion.estado.equals(EstadoResolucionEnum.borrador.name())) {
-			for (LineaResolucion lResolucion : resolucion.lineasResolucion) {
+			for (LineaResolucionFAP lResolucion : resolucion.lineasResolucion) {
 				// TODO
 			}
 		}

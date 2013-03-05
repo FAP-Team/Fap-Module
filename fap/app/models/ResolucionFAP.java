@@ -61,7 +61,7 @@ public class ResolucionFAP extends FapModel {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "resolucionfap_lineasresolucion")
-	public List<LineaResolucion> lineasResolucion;
+	public List<LineaResolucionFAP> lineasResolucion;
 
 	public Boolean conBaremacion;
 
@@ -124,7 +124,7 @@ public class ResolucionFAP extends FapModel {
 	public void init() {
 
 		if (lineasResolucion == null)
-			lineasResolucion = new ArrayList<LineaResolucion>();
+			lineasResolucion = new ArrayList<LineaResolucionFAP>();
 
 		if (conBaremacion == null)
 			conBaremacion = false;

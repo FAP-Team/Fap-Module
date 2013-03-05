@@ -5,7 +5,7 @@ import enumerado.fap.gen.EstadoResolucionEnum;
 import enumerado.fap.gen.EstadoTipoMultipleEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.ModalidadResolucionEnum;
-import models.LineaResolucion;
+import models.LineaResolucionFAP;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
 

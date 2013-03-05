@@ -64,7 +64,7 @@ Lista estadoPortafirma crearEnumerado {
 }
 
 // Una línea de resolución afecta a un expediente (o Solicitud)
-Entidad LineaResolucion {
+Entidad LineaResolucionFAP {
 	SolicitudGenerica solicitud noConstruct
 	Lista estadoLineaResolucion estado
 }
@@ -95,7 +95,7 @@ Entidad ResolucionFAP {
 	
 	// modalidad=Simple   --> Una sola línea de resolución
 	// modalidad=Múltiple --> Varias líneas de resolución
-	OneToMany LineaResolucion lineasResolucion
+	OneToMany LineaResolucionFAP lineasResolucion
 	
 	Boolean conBaremacion default = 'false'
 
@@ -160,7 +160,7 @@ Entidad SolicitudPortafirma{
 	
 
 Formulario Principal {
-	Pagina Resoluciones titulo="Lista de Resoluciones" {
+	Pagina ResolucionesFAP titulo="Lista de Resoluciones" {
 		Tabla listaResoluciones titulo="Resoluciones" campo=ResolucionFAP paginaCrear=NuevaResolucion paginaEditar=EditarResolucion
 		{
 			Columna campo=ResolucionFAP.id titulo="ID"
@@ -225,12 +225,12 @@ Formulario Principal {
     	Grupo gCerrarResolucion titulo="Preparar la Resolución" permiso=prepararResolucion {
 			Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
 			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" popupEditar=ModificarEstadoExpediente popupLeer=VerExpediente {
-				Columna campo=LineaResolucion.id titulo="Id"
-				Columna campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
-				Columna campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
-				Columna campo=LineaResolucion.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
-				Columna campo=LineaResolucion.solicitud.solicitante.nombreCompleto titulo="Solicitante"
-				Columna campo=LineaResolucion.estado titulo="Estado"
+				Columna campo=LineaResolucionFAP.id titulo="Id"
+				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
+				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
+				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+				Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+				Columna campo=LineaResolucionFAP.estado titulo="Estado"
 			}
 			Form prepararResolucion {
 				Boton  btnPrepararResolucion titulo="Cerrar Resolución"
@@ -315,12 +315,12 @@ Formulario Principal {
 			Combo campo=ResolucionFAP.modalidad titulo="Modalidad de la Resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
-				Columna campo=LineaResolucion.id titulo="Id"
-				Columna campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
-				Columna campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
-				Columna campo=LineaResolucion.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
-				Columna campo=LineaResolucion.solicitud.solicitante.nombreCompleto titulo="Solicitante"
-				Columna campo=LineaResolucion.estado titulo="Estado"
+				Columna campo=LineaResolucionFAP.id titulo="Id"
+				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
+				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
+				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+				Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+				Columna campo=LineaResolucionFAP.estado titulo="Estado"
 			}
 			Texto campo=ResolucionFAP.folio_inicio titulo="Folio Inicial"
 			Texto campo=ResolucionFAP.folio_final titulo="Folio Final"
@@ -332,22 +332,22 @@ Formulario Principal {
 	
 	Popup ModificarEstadoExpediente campo=ResolucionFAP.lineasResolucion {
 		Grupo grNoEditable borde=false permiso=noEditable {
-			Texto campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
-			Texto campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
-			Texto campo=LineaResolucion.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
-			Texto campo=LineaResolucion.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+			Texto campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
+			Texto campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
+			Texto campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+			Texto campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante"
 		}
 		Grupo grEditable borde=false {
-			Combo campo=LineaResolucion.estado titulo="Estado"
+			Combo campo=LineaResolucionFAP.estado titulo="Estado"
 		}
 	}
 	
 	Popup VerExpediente campo=ResolucionFAP.lineasResolucion {
-		Texto campo=LineaResolucion.solicitud.expedienteAed.idAed titulo="Expediente"
-		Texto campo=LineaResolucion.solicitud.estado titulo="Estado Solicitud"
-		Texto campo=LineaResolucion.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
-		Texto campo=LineaResolucion.solicitud.solicitante.nombreCompleto titulo="Solicitante"
-		Combo campo=LineaResolucion.estado titulo="Estado"
+		Texto campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
+		Texto campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
+		Texto campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+		Texto campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+		Combo campo=LineaResolucionFAP.estado titulo="Estado"
 	}
 
 	Pagina DocConsultaPortafirmaCrear campo=ResolucionFAP.docConsultaPortafirmasResolucion {

@@ -6,7 +6,7 @@ import java.util.List;
 import messages.Messages;
 import models.Agente;
 import models.Interesado;
-import models.LineaResolucion;
+import models.LineaResolucionFAP;
 import models.RepresentantePersonaJuridica;
 import models.ResolucionFAP;
 import resolucion.ResolucionBase;
@@ -112,10 +112,10 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	 */
 	public static List<Interesado> getInteresados(Long idResolucion) {
 		ResolucionFAP resoluciones = ResolucionFAP.findById(idResolucion);
-		List<LineaResolucion> lineasResolucion = resoluciones.lineasResolucion;
+		List<LineaResolucionFAP> lineasResolucion = resoluciones.lineasResolucion;
 		List<Interesado> listaInteresados = new ArrayList<Interesado>();
 		
-		for (LineaResolucion linea: lineasResolucion) {
+		for (LineaResolucionFAP linea: lineasResolucion) {
 			Interesado interesado = linea.solicitud.solicitante.getInteresado();
 			listaInteresados.add(interesado);
 			if (linea.solicitud.solicitante.isPersonaFisica() && linea.solicitud.solicitante.representado) {

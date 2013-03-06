@@ -7,8 +7,6 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
 import org.joda.time.DateTime;
-
-import enumerado.fap.gen.AccesoAgenteEnum;
 import models.*;
 import messages.Messages;
 import validation.*;
@@ -20,6 +18,7 @@ import validation.PasswordCheck;
 
 // === IMPORT REGION START ===
 import play.mvc.Scope.Session;
+import enumerado.fap.gen.AccesoAgenteEnum;
 
 // === IMPORT REGION END ===
 

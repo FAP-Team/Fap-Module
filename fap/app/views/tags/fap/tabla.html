@@ -313,6 +313,9 @@
 		        	writeAllMessages${id}(); 
 		        	// Para las filas de la tabla
 				 	store${id}.loadData(ajax2Data(data.obj.rows));
+				 	
+				 	// Quitamos la mask loading
+				 	grid.body.unmask();
 				});
 		    }
 		    
@@ -607,6 +610,7 @@
 		    var boton_actualizar = new Ext.Button({
 		    	text: 'Actualizar',
 		    	handler : function(){
+		    		grid.body.mask("Cargando....");
 		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
 		    		peticionJSON${id}();
 		    	}
@@ -681,6 +685,11 @@
 							${codePrint.raw()}
 						#{/if}
 					}
+				},
+				listeners : {
+					render : function(grid){      
+       			    	grid.body.mask('Cargando...');
+       				}
 				}
 
 			});

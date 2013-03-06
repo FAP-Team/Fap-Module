@@ -25,7 +25,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		
 		Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
 			Grupo titulo="Habilitar la firma y presentación por Funcionario Público" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")"{
-				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación�? de esta página."}
+				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación�? de esta página."}
 				Form formAbrirPlantillaFH destino="_blank"{
 					Boton btnAbrirPlantillaFH titulo="Descargar Autorización"
 				}
@@ -383,7 +383,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna titulo="Tipo Documento" campo=Documento.tipo
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 				Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+				Columna campo=Documento.enlaceDescargaFirmado titulo="Descargar Firmado" ancho="110"
 				
 			}
 			Form verificaTipos {
@@ -397,14 +397,17 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Enlace campo=SolicitudGenerica.registro.justificante.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="btn"
 			}	
 			
-			Form FrmtiposProceso permiso=verificarObtenerNoProcede {
-				Wiki {"\t "}
-				Boton obtenerNoProcede titulo="Obtener los NoProcede" type=warning
-			}
+			Wiki { "<br/> " }
+			
+			Form frmtiposProceso permiso=verificarObtenerNoProcede {
+				Grupo noProcedeAnteriores titulo="Obtener los documentos No Procede de verificaciones anteriores"{
+					Boton obtenerNoProcede titulo="Obtener los NoProcede" type=warning
+				}
+			}	
 			
 			Form incluirNoProcedeMultiples {
 				Grupo GrupoMultiples titulo = "Añadir tipo de documento a la verificacion"{
-					Combo comboMultiples titulo="Documentos Múltiples" campo=SolicitudGenerica.verificacion.incluirFichMultiple //sobreescribir que muestre descripcion
+					Combo comboMultiples titulo="Tipos de Documentos" campo=SolicitudGenerica.verificacion.incluirFichMultiple requerido//sobreescribir que muestre descripcion
 					Boton incluirNoProcede titulo="Añadir"
 				}
 			}

@@ -14,6 +14,7 @@ import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import models.Tramite;
 import properties.PropertyPlaceholder;
+import services.aed.Interesados;
 import services.filesystem.TipoDocumentoEnTramite;
 import services.filesystem.TipoDocumentoGestorDocumental;
 import utils.BinaryResponse;
@@ -36,6 +37,8 @@ public interface GestorDocumentalService {
     
     public BinaryResponse getDocumentoConInformeDeFirma(Documento documento) throws GestorDocumentalServiceException;
 
+    public String getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException;
+    
     public String saveDocumentoTemporal(models.Documento documento, InputStream inputStream, String filename)
             throws GestorDocumentalServiceException;
 

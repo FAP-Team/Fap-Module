@@ -1,5 +1,25 @@
 h2. Changelog
 
+h3. Versión 2.1.2RC7
+
+* Máscara "Cargando..." en las tablas.
+* Verificación: Fixed some bugs.
+* GestorDocumental: Método que devuelve la firma de un documento (and fixed).
+
+h3. Versión 2.1.2RC6
+
+* Generalización de la creación de identificadores de expediente.
+* Verificación: Se permite añadir cualquier tipo de documento a la actual verificación.
+* Verificación: Fixed bug permiso.
+
+
+h3. Versión 2.1.2RC5
+
+* Fixed bug Verificación.
+* Fixed bug en el método que comprueba si están resueltas todas las anotaciones.
+* Añadidos los nombres de la aplicación en los informes.
+
+
 h3. Versión 2.1.2RC4
 
 * Soporte actualización WebSigner Platino (14 de Febrero)

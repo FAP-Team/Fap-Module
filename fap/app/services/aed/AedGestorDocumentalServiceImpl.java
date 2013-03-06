@@ -1341,4 +1341,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 
 	
+
+	public String getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
+		String response = null;
+    	try{
+    		Firma firma = aedPort.obtenerDocumentoFirma(uriDocumento);
+    		if (firma != null)
+    			response = firma.getContenido();
+    	}
+    	catch (AedExcepcion e) {
+			// TODO: handle exception
+		}
+    	
+    	return response;
+	}	
+
 }

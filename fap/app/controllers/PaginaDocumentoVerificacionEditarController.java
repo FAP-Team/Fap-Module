@@ -49,7 +49,7 @@ public class PaginaDocumentoVerificacionEditarController extends PaginaDocumento
 			   || (verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noProcede.name())))){
 				if (dbVerificacionDocumento.codigosRequerimiento.size() != 0)
 				   CustomValidation.error("Con el estado No Verificado o No Procede, no puede existir ningun código de requerimiento, vuelva al estado anterior y elimine los codigos de requerimiento", "dbVerificacionDocumento.codigosRequerimiento", dbVerificacionDocumento.codigosRequerimiento);
-				if (!verificacionDocumento.motivoRequerimiento.isEmpty())
+				if (verificacionDocumento.motivoRequerimiento != null && !verificacionDocumento.motivoRequerimiento.isEmpty())
 				   CustomValidation.error("Con el estado No Verificado o No Procede, no puede existir motivo de requerimiento, vuelva al estado anterior y elimine el motivo de requerimiento", "verificacionDocumento.motivoRequerimiento", verificacionDocumento.motivoRequerimiento);
 			}
 			if ((dbVerificacionDocumento.estadoDocumentoVerificacion != null) && (dbVerificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name())) && (!verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noProcede.name())) && (!verificacionDocumento.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noPresentado.name()))){

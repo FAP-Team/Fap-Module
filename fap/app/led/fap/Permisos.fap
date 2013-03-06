@@ -467,6 +467,7 @@ Permiso verificarDocumentos{
 		all
 }
 
+/** Además Sobreescribimos */
 Permiso verificarObtenerNoProcede{
 	vars
 		Verificacion verificacion
@@ -588,7 +589,7 @@ Permiso hayverificacion{
 		SolicitudGenerica solicitud
 		Verificacion verificacion : sql("select verificacion from SolicitudGenerica s where s.id=?", solicitud.id)
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion != null) and (verificacion.estado!=null) and (verificacion.estado in ("iniciada", "verificandoTipos", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada")))
+		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion != null) and (verificacion.estado!=null) and (verificacion.estado in ("iniciada", "verificandoTipos", "obtenerNoProcede", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada")))
 	return
     	all
 }
@@ -627,7 +628,7 @@ Permiso anularVerificacion{
 		(solicitud?.estado = "enVerificacion") and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.registro != "true") and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true") and
-		(verificacion?.estado != null and verificacion?.estado in ("enVerificacion", "verificandoTipos", "enVerificacionNuevosDoc", "enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada"))
+		(verificacion?.estado != null and verificacion?.estado in ("enVerificacion", "verificandoTipos", "obtenerNoProcede", "enVerificacionNuevosDoc", "enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada"))
 	return
 		all
 }

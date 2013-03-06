@@ -734,6 +734,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		
 	}
 
+
 	@Override
 	public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
 		File dst = clasificadoPath;
@@ -763,5 +764,13 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         }
         return expediente;
 		
+
+	//Se devuelve el documento porque no hay forma de obtener la firma
+	@Override
+	public String getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
+		BinaryResponse br = getDocumentoByUri(uriDocumento);
+		if (br == null)
+			return null;
+		return br.toString();
 	}
 }

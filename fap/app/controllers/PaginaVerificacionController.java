@@ -213,7 +213,12 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 				dbSolicitud.verificacion.documentos.add(vDoc);
 			}
 			
-			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.obtenerNoProcede.name();
+			/// Si existen verificaciones anteriores el estado al que pasa es "obtenerNoProcede",
+			/// en caso contrario a "enVerificacion"
+			if (dbSolicitud.verificaciones.size() > 0)
+				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.obtenerNoProcede.name();
+			else
+				dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
 			dbSolicitud.verificacion.nuevosDocumentos.clear();
 			dbSolicitud.verificacion.verificacionTiposDocumentos.clear();
 			dbSolicitud.verificacion.fechaUltimaActualizacion = new DateTime();
@@ -769,29 +774,42 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	}
 	
 	@Util
-	public static void incluirNoProcede(Long idVerificacion) {
+	public static void incluirNoProcede(SolicitudGenerica solicitud, Long idVerificacion) {
 		Verificacion verificacion = Verificacion.findById(idVerificacion);
-		VerificacionDocumento tipoDoc = VerificacionDocumento.findById(Long.parseLong(verificacion.incluirFichMultiple));
+		TipoDocumento tDoc = TipoDocumento.find("select tDoc from TipoDocumento tDoc where uri=? and tramitePertenece=?", verificacion.incluirFichMultiple, verificacion.uriTramite).first();
+		if (tDoc == null) {
+			play.Logger.error("No existe el tipo de documento "+verificacion.incluirFichMultiple+"en el trámite "+verificacion.uriTramite+" de la verificación actual: "+verificacion.id);
+			Messages.error("No existe el tipo de documento en el trámite de la verificación actual");
+			return;
+		}
 		VerificacionDocumento vDoc = new VerificacionDocumento();
 		vDoc.existe = false;
-		vDoc.uriTipoDocumento = tipoDoc.uriTipoDocumento;
-		vDoc.identificadorMultiple = tipoDoc.identificadorMultiple;
-		vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tipoDoc.uriTipoDocumento);
+		vDoc.uriTipoDocumento = tDoc.uri;
+		vDoc.identificadorMultiple = tDoc.cardinalidad;
+		vDoc.descripcion = TableKeyValue.getValue("tiposDocumentos", tDoc.uri);
 		vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noProcede.name();
 		vDoc.save();
 		verificacion.documentos.add(vDoc);
 		verificacion.save();
 	}
 	
+	/**
+	 * A partir del trámite de la verificación, devuelve todos los tipos de documentos
+	 * que cumplan:
+	 * 		- Aportado por CIUDADANO
+	 * 
+	 * @return
+	 */
 	public static List<ComboItem> comboMultiples() {
 		Long idSolicitud = Long.parseLong(params.get("idSolicitud"));
 		Long idVerificacion = Long.parseLong(params.get("idVerificacion"));
 		Verificacion verificacion = Verificacion.findById(idVerificacion);
-		List<VerificacionDocumento> documentos = verificacion.documentos;
+		// Obtenemos el trámite actual
+		Tramite tramite = verificacion.tramiteNombre;
 		List<ComboItem> result = new ArrayList<ComboItem>();
-		for (VerificacionDocumento doc : documentos) {
-			if ((doc.existe) && (doc.identificadorMultiple.equals("MULTIPLE"))){
-				result.add(new ComboItem(doc.id, doc.descripcion));
+		for (TipoDocumento tDoc : tramite.documentos) {
+			if (tDoc.aportadoPor.equalsIgnoreCase("CIUDADANO")) {
+				result.add(new ComboItem(tDoc.uri, tDoc.nombre));
 			}
 		}
 
@@ -815,7 +833,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		}
 		
 		if ((!Messages.hasErrors()) && (!incluirNoProcede.isEmpty())){
-			incluirNoProcede(idVerificacion);
+			incluirNoProcede(solicitud, idVerificacion);
 		}
 
 		if (!Messages.hasErrors()) {

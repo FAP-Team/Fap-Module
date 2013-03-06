@@ -734,6 +734,9 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	//Se devuelve el documento porque no hay forma de obtener la firma
 	@Override
 	public String getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
-		return getDocumentoByUri(uriDocumento).toString();
+		BinaryResponse br = getDocumentoByUri(uriDocumento);
+		if (br == null)
+			return null;
+		return br.toString();
 	}
 }

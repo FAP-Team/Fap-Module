@@ -153,7 +153,6 @@ public class GenericController extends Controller {
 		if (indice != -1) {
 			String paramName = param.substring(0, indice);
 			String identificador = param.substring(indice+1, param.length());
-			play.Logger.info("Nombre del parámetro: "+paramName+ " ---> "+identificador);
 			if (params.get(paramName) != null) {
 				HashMap<String, String> idsEnt = (HashMap<String, String>) Cache.get("entidadesProcesando");
 				if ((idsEnt != null) && idsEnt.containsKey(param)) {

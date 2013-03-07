@@ -27,6 +27,11 @@
 	}
 	
 	boolean sendHiddenFields = properties.FapProperties.getBoolean("fap.form.sendHiddenFields");
+	// Hack sucio! En la edición de la verificación de documentos se deben enviar los campos ocultos
+	if (request.url.contains("paginadocumentoverificacioneditarcontroller")) {
+		sendHiddenFields = true;
+	}
+	
 %}
 
 

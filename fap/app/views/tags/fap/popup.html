@@ -81,7 +81,7 @@ $(document).ready(function(){
 	
 	#{if (accion != 'leer')}
 		${idBotonAccion} = function(){
-			$('#${idBotonAccion}').button('loading');
+			$('#${botonAccion}_id').button('loading');
   			var data = $('#'+idPopup+' form').serialize();
 			$.post(replaceAmpersand('${url}'), data, function(data){
  				mensajes.clear(); //Quita los mensajes

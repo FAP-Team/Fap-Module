@@ -9,6 +9,7 @@
 	def permiso = _permiso
 	def ayuda = _ayuda
 	def id_help  = id + '-help' 
+	def sendHidden = _sendHiddenFields 
 	
 	def reverse = _reverse ?: false;
 	
@@ -27,6 +28,9 @@
 	}
 	
 	boolean sendHiddenFields = properties.FapProperties.getBoolean("fap.form.sendHiddenFields");
+	if (sendHidden != null)
+		sendHiddenFields = sendHidden;
+	
 %}
 
 

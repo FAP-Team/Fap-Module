@@ -65,6 +65,12 @@ public class GGrupo extends GGroupElement{
 
 		if (grupo.permiso)
 			params.putStr("permiso", grupo.permiso.name);
+			
+		if (grupo.sendHiddenFieldsAlways)
+			params.put("sendHiddenFields", true);
+			
+		if (grupo.sendHiddenFieldsNever)
+			params.put("sendHiddenFields", false);
 		
 		def out = """
 			#{fap.grupo ${params.lista()}}

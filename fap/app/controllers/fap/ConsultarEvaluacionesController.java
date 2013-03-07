@@ -116,7 +116,6 @@ public class ConsultarEvaluacionesController extends GenericController {
 		}
 	}
 	
-	@Util
 	public static void recargarCE(Long idEvaluacion) {
 		if(secure.checkGrafico("listaEvaluaciones", "editable", "leer", null, null)){
 			Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);

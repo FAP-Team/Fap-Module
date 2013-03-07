@@ -198,7 +198,8 @@ Grupo:
 		)? &
 		('borde' '=' borde=("true" | "false"))? &
 		('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)? &
-		("permiso" "=" permiso=[Permiso])?
+		("permiso" "=" permiso=[Permiso])? &
+		('enviarCamposOcultos' '=' (sendHiddenFieldsAlways?='true' | sendHiddenFieldsNever?='false'))?
 	)
 	'{'
 		elementos+=Elemento*

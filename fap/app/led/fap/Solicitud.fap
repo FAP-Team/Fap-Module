@@ -546,11 +546,11 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			Fecha fechaPresentacion titulo="Fecha de presentación" campo=VerificacionDocumento.fechaPresentacion
 		}
 		Combo estado titulo="Estado" campo=VerificacionDocumento.estadoDocumentoVerificacion requerido
-		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado"{
-			Grupo requerimientoTexto borde=false mostrarSiCombo estado="noValido","noPresentado"{
+		Grupo requerimientosNoValido titulo="Requerimiento/s del documento" mostrarSiCombo estado="noValido","noPresentado" enviarCamposOcultos=true {
+			Grupo requerimientoTexto borde=false mostrarSiCombo estado="noValido","noPresentado" enviarCamposOcultos=true {
 				AreaTexto requerimientoTexto titulo="Motivo requerimiento" campo=VerificacionDocumento.motivoRequerimiento ancho="450px"
 			}
-			Grupo requerimientoCodigos borde=false mostrarSiCombo estado="noValido" {
+			Grupo requerimientoCodigos borde=false mostrarSiCombo estado="noValido"  enviarCamposOcultos=true {
 				Tabla requerimientosDocumento titulo="Requerimientos" campo=VerificacionDocumento.codigosRequerimiento
 					popupCrear=PopUpDocumentoRequerimientosVerificacionEditar
 					popupEditar=PopUpDocumentoRequerimientosVerificacionEditar

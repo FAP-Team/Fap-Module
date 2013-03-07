@@ -763,7 +763,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
             throw new GestorDocumentalServiceException("Error al crear la carpeta " + folder.getAbsolutePath());
         }
         return expediente;
-		
+	}
 
 	//Se devuelve el documento porque no hay forma de obtener la firma
 	@Override

@@ -41,6 +41,18 @@ public class TipoDocumento extends FapModel {
 
 	// === MANUAL REGION START ===
 
+	public static List<TipoDocumento> findTiposFacturas() {
+		String tipos = properties.FapProperties.get("fap.gestordocumental.tiposfacturas.url");
+		String[] lista = tipos.split(", ");
+		List<TipoDocumento> listaTipos = new ArrayList<TipoDocumento>();
+		for (int i = 0; i < lista.length; i++) {
+			Long idTipo = TipoDocumento.find("select id from TipoDocumento where uri=?", lista[i]).first();
+			TipoDocumento tipo = TipoDocumento.findById(idTipo);
+			listaTipos.add(tipo);
+		}
+		return listaTipos;
+	}
+
 	// === MANUAL REGION END ===
 
 }

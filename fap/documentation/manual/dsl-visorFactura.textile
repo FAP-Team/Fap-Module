@@ -1,0 +1,27 @@
+h1. Visor de facturas
+
+h2. Descripción
+
+Elemento que permite visualizar la información básica de una factura electrónica.
+
+h2. Parámetros
+
+* **_[name]_** : Identificador del elemento.
+* **campo** : Campo de tipo factura de donde se obtienen los datos de la factura a visualizar.
+
+h2. Definición
+
+bc. VisorFactura:
+	elemento='VisorFactura' (name=ID)? (
+		('campo' '=' campo=Campo)
+	)
+;
+
+h2. Ejemplos de uso
+
+bc. Pagina VerFactura campo=Solicitud.facturas titulo="Ver Factura" {
+	VisorFactura visor campo=FacturasFAP
+}
+
+!images/dsl-visorFactura1!
+!images/dsl-visorFactura2!

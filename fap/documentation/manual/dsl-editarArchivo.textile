@@ -1,4 +1,4 @@
-h1. Editar Archivo AED
+h1. Editar Archivo
 
 h2. Descripción
 
@@ -14,8 +14,8 @@ h2. Parámetros
 
 h2. Definición
 
-bc. EditarArchivoAed:
-	elemento='EditarArchivoAed' name=ID (
+bc. EditarArchivo:
+	elemento='EditarArchivo' name=ID (
 		('campo' '=' campo=Campo)
 		& (requerido?='requerido')?
 		& ('tramite' '=' tramite=STRING)?		
@@ -25,8 +25,8 @@ bc. EditarArchivoAed:
 
 h2. Ejemplos de uso
 
-h3. Elemento SubirArchivoAed dentro de un Form
+h3. Elemento EditarArchivo dentro de un Form
 
 bc. Popup PopUpDocumentacion titulo="Documentación" campo=Solicitud.documentacion.documentos {
-   EditarArchivoAed modificarDocumento campo=Documento requerido
+   EditarArchivo modificarDocumento campo=Documento requerido
 }

@@ -226,7 +226,7 @@ Elemento:
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple |
-	EntidadAutomatica | Accion | Codigo | CCC
+	EntidadAutomatica | Accion | Codigo | CCC | VisorFactura | SubirFactura | EditarFactura
 ;
 
 Campo:
@@ -712,4 +712,24 @@ Color :
 		(textoE = "siFilaEditar" "=" claseE=STRING)?
 		(textoL = "siFilaLeer" "=" claseL=STRING)?
 	))
+;
+
+EditarFactura:
+	elemento='EditarFactura' name=ID (
+		('campo' '=' campo=Campo)
+		& (requerido?='requerido')?
+	)
+;
+
+SubirFactura:
+	elemento='SubirFactura' name=ID (
+		('campo' '=' campo=Campo)
+		& (requerido?='requerido')?
+	)
+;
+
+VisorFactura:
+	elemento='VisorFactura' (name=ID)? (
+		('campo' '=' campo=Campo)
+	)
 ;

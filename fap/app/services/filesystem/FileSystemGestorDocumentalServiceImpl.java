@@ -508,7 +508,13 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tipoJustificanteRegistro.tramitePertenece = tramiteSolicitud.uri;
         tramiteSolicitud.documentos.add(tipoJustificanteRegistro);
         newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoJustificanteRegistro.uri, tramiteSolicitud.uri);
-             
+        
+        TipoDocumento tipoFacturaTipo1 = newTipoDocumento("FacturaTipo1", "fs://facturatipo1/v01");
+        tipoFacturaTipo1.cardinalidad = "UNICO";
+        tipoFacturaTipo1.tramitePertenece = tramiteSolicitud.uri;
+        tramiteSolicitud.documentos.add(tipoFacturaTipo1);
+        newTiposCodigoRequerimiento(tipoCodReqdbCorrupto, tipoFacturaTipo1.uri, tramiteSolicitud.uri);
+        
         // ------- TR�?MITE 2: Aportación ------- 
         Tramite tramiteAportacion = new Tramite();
         tramiteAportacion.nombre = "aportacion";
@@ -526,6 +532,12 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         tipoAportRegistro.tramitePertenece = tramiteAportacion.uri;
         tramiteAportacion.documentos.add(tipoAportRegistro);
         newTiposCodigoRequerimiento(tipoCodReqdbFirma, tipoAportRegistro.uri, tramiteAportacion.uri);
+        
+        TipoDocumento tipoFacturaTipo2 = newTipoDocumento("FacturaTipo2", "fs://facturatipo2/v01");
+        tipoFacturaTipo2.cardinalidad = "UNICO";
+        tipoFacturaTipo2.tramitePertenece = tramiteAportacion.uri;
+        tramiteAportacion.documentos.add(tipoFacturaTipo2);
+        newTiposCodigoRequerimiento(tipoCodReqdbCorrupto, tipoFacturaTipo2.uri, tramiteAportacion.uri);
         
         // ------- TR�?MITE 3: Desestimiento ------- 
         Tramite tramiteDesestimiento = new Tramite();

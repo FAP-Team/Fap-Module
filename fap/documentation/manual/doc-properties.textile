@@ -57,7 +57,8 @@ h4. Documentación
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
 | Configurar filtro por tipo MIMES  |  *fap.gestordocumental.mimes* | | _fap.gestordocumental.mimes=image/png, image/jpg, application/pdf_
 | Configurar filtro por extensiones  | *fap.gestordocumental.extensions* | | _fap.gestordocumental.extensions=pdf, png, jpg_
-| Tamaño maximo permitido de los ficheros a subir | *fap.file.maxsize* | | fap.file.maxsize=100000 |
+| Tamaño maximo permitido de los ficheros a subir | *fap.file.maxsize* | | fap.file.maxsize=100000 
+| Tipos de facturas | *fap.gestordocumental.tiposfacturas.url* | | fap.gestordocumental.tiposfacturas.url=fs://facturatipo1/v01, fs://facturatipo2/v01
 
 
 h3. Servicios

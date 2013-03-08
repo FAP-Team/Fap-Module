@@ -1,0 +1,26 @@
+h1. Editar Factura
+
+h2. Descripción
+
+Elemento que permite modificar los campos tipo y descripción de una factura previamente subida al Archivo Electrónico de Documentos.
+
+h2. Parámetros
+
+* **_[name]_** : Identificador del elemento.
+* **campo = _[campo]_** : Especifica la entidad de la que se va a obtener la uri, descripción y tipo de la factura. La uri se necesita para recuperar el archivo previamente subido al AED, mientras que la descripción y el tipo serán para actualizar las propiedades de la factura.
+* **requerido** (opcional) : Indica la obligatoriedad de la edición de una factura.
+
+h2. Definición
+
+bc. EditarFactura:
+	elemento='EditarFactura' name=ID (
+		('campo' '=' campo=Campo)
+		& (requerido?='requerido')?
+	)
+;
+
+h2. Ejemplos de uso
+
+bc. Pagina EditarFacturas campo=Solicitud.facturas titulo="Editar Factura" {
+	EditarFactura fileFactura2 campo=FacturasFAP requerido
+}

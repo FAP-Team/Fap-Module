@@ -1,0 +1,59 @@
+h1. Facturas Electrónicas
+
+h2. Introducción
+
+Se ha incorporado un nuevo recurso al módulo de FAP que permite visualizar una factura electrónica con formato "Facturae 3.2":http://www.facturae.es/es-ES/Documentacion/EsquemaFormato/Paginas/Index.aspx. A continuación veremos los pasos a seguir para poder llegar a visualizar una factura correctamente.
+
+h2. Subir una factura
+
+En primer lugar, hay que subir la factura en el formato correcto (extensión .xsig). Para hacer esto hay que utilizar el elemento _SubirFactura_.
+
+h3. Ejemplo
+
+bc. Pagina SubirFacturas campo=Solicitud.facturas titulo="Subir Factura" {
+	SubirFactura fileFactura1 campo=FacturasFAP requerido
+}
+
+!images/fap-facturas-electronicas-subir-factura!
+
+Al subir una factura hay que tener en cuenta que hay que procesarla en ese momento para tener acceso a todos los datos posteriormente.
+
+El tipo de documento de la factura se puede modificar mediante la property _fap.gestordocumental.tiposfacturas.url_. Ejemplo:
+
+bc. fap.aed.tiposfacturas.url=fs://facturatipo1/v01, fs://facturatipo2/v01
+
+Para tener acceso a los datos de la factura que se acaba de subir se dispone de una función llamada _getFacturaeObject_ que devuelve un objeto de tipo Facturae. Una vez se tiene este objeto se puede tratar la información contenida en la factura. En el módulo de FAP solo trabajamos con la información básica de una factura mediante la función _getDataFromFacturae_.
+
+bc. Facturae invoice32 = dbFacturasFAP.getFacturaeObject();
+FacturasFAP.getDataFromFacturae(invoice32, dbFacturasFAP);
+
+Si quieres visualizar más información de la que proporciona por defecto FAP habría que personalizar la forma de extraer la información y guardarla.
+
+
+
+h2. Editar una factura
+
+Una vez subida la factura podrá editarse, pero solo el tipo de documento y la descripción. El fichero solo se podrá descargar.
+
+h3. Ejemplo
+
+bc. Pagina EditarFacturas campo=Solicitud.facturas titulo="Editar Factura" {
+	EditarFactura fileFactura2 campo=FacturasFAP requerido
+}
+
+!images/fap-facturas-electronicas-editar-factura!
+
+h2. Ver una factura
+
+Una vez se haya subido la factura y procesado su infromación se puede visualizar. Para poder ver la factura hay que hacer uso del elemento _VisorFactura_.
+
+h3. Ejemplo
+
+bc. Pagina VerFactura noForm campo=Solicitud.facturas titulo="Ver Factura" {
+	VisorFactura visor campo=FacturasFAP
+}
+
+!images/dsl-visorFactura1!
+!images/dsl-visorFactura2!
+
+Tal como se dijo antes, no se visualizan todos los datos de la factura, solamente los básicos. Por lo que si se quiere ver más información hay que personalizar la extracción de información y añadir más elementos por debajo del _VisorFactura_.

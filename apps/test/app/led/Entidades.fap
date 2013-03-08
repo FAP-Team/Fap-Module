@@ -29,6 +29,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	FirmaEnServidor firmaEnServidor
 	
 	Persona personaDirector
+
+	OneToMany FacturasFAP facturas
 }
 
 Entidad FirmaEnServidor {

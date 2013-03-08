@@ -1,0 +1,26 @@
+h1. Subir Facturas
+
+h2. Descripción
+
+Elemento para la subida de facturas al servidor de la aplicación.
+
+h2. Parámetros
+
+* **_[name]_** : Identificador del elemento.
+* **campo** : Campo de tipo documento donde se almacenará la factura que quiere subirse.
+* **requerido** (opcional) : Indica la obligatoriedad de la subida de un archivo.
+
+h2. Definición
+
+bc. SubirFactura:
+	elemento='SubirFactura' name=ID (
+		('campo' '=' campo=Campo)
+		& (requerido?='requerido')?
+	)
+;
+
+h2. Ejemplos de uso
+
+bc. Pagina SubirFacturas campo=Solicitud.facturas titulo="Subir Factura" {
+	SubirFactura fileFactura1 campo=FacturasFAP requerido
+}

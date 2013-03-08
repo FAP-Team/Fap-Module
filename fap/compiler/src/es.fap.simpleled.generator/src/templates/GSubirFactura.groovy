@@ -53,7 +53,18 @@ class GSubirFactura extends GSaveCampoElement {
 									validation.addError("", "Error al subir el documento al Gestor Documental");
 								}
 						}
-					}""";
+					}
+					
+					if (!validation.hasErrors()) {
+						try {
+							Facturae invoice32${subirFactura.name} = ${campo.dbStr()}.getFacturaeObject();
+							FacturasFAP.getDataFromFacturae(invoice32${subirFactura.name}, ${campo.dbStr()});
+						} catch (Exception e) {
+							play.Logger.error("Error al extraer la información de la factura"+e);
+							validation.addError("", "El formato del archivo de factura no es correcto");
+						}
+					}
+					""";
 	
 		return out;
 	}

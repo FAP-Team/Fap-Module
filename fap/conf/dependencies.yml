@@ -67,6 +67,10 @@ require:
     
     - es.gobcan.platino.servicios.enotificacion ->  notificaciones 1.1:
         transitive: false
+    
+    - es.mityc -> facturae 2.0:
+        transitive: false
+    
 
 repositories:
     - Fap nexus:
@@ -83,7 +87,8 @@ repositories:
             - es.gobcan.eadmon -> *
             - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *
-            - es.gobcan.platino.servicios.enotificacion -> * 
+            - es.gobcan.platino.servicios.enotificacion -> *
+            - es.mityc -> * 
 
     - fap-devel modules repository:
         type: http

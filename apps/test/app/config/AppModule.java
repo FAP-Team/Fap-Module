@@ -4,11 +4,15 @@ import security.*;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.RegistroService;
+import services.TercerosService;
 import services.aed.AedGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemRegistroService;
+import services.filesystem.FileSystemTercerosServiceImpl;
 import services.platino.PlatinoFirmaServiceImpl;
+import services.platino.PlatinoTercerosServiceImpl;
+
 
 /**
  * Configuración de Guice.
@@ -36,6 +40,11 @@ public class AppModule extends FapModule {
        bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
        //bindLazySingletonOnDev(GestorDocumentalService.class, AedGestorDocumentalServiceImpl.class);
     }
+    
+    protected void terceros() {
+		bindLazySingletonOnDev(TercerosService.class, FileSystemTercerosServiceImpl.class);
+		//bindLazySingletonOnDev(TercerosService.class, PlatinoTercerosServiceImpl.class);
+	}
 
 //    @Override
 //    protected void firma() {

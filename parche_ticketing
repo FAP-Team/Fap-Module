@@ -1,0 +1,506 @@
+diff --git a/apps/test/app/config/AppModule.java b/apps/test/app/config/AppModule.java
+index 27f92a3..80eb1b0 100644
+--- a/apps/test/app/config/AppModule.java
++++ b/apps/test/app/config/AppModule.java
+@@ -4,11 +4,15 @@ import security.*;
+ import services.FirmaService;
+ import services.GestorDocumentalService;
+ import services.RegistroService;
++import services.TercerosService;
+ import services.aed.AedGestorDocumentalServiceImpl;
+ import services.filesystem.FileSystemFirmaServiceImpl;
+ import services.filesystem.FileSystemGestorDocumentalServiceImpl;
+ import services.filesystem.FileSystemRegistroService;
++import services.filesystem.FileSystemTercerosServiceImpl;
+ import services.platino.PlatinoFirmaServiceImpl;
++import services.platino.PlatinoTercerosServiceImpl;
++
+ 
+ /**
+  * Configuración de Guice.
+@@ -36,6 +40,11 @@ public class AppModule extends FapModule {
+        bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
+        //bindLazySingletonOnDev(GestorDocumentalService.class, AedGestorDocumentalServiceImpl.class);
+     }
++    
++    protected void terceros() {
++		bindLazySingletonOnDev(TercerosService.class, FileSystemTercerosServiceImpl.class);
++		//bindLazySingletonOnDev(TercerosService.class, PlatinoTercerosServiceImpl.class);
++	}
+ 
+ //    @Override
+ //    protected void firma() {
+diff --git a/fap/app/controllers/fap/SecureController.java b/fap/app/controllers/fap/SecureController.java
+index 1c740cc..8421372 100644
+--- a/fap/app/controllers/fap/SecureController.java
++++ b/fap/app/controllers/fap/SecureController.java
+@@ -7,6 +7,7 @@ import java.util.Map;
+ 
+ import javax.inject.Inject;
+ 
++import org.apache.commons.lang.RandomStringUtils;
+ import org.apache.ivy.util.Message;
+ import org.apache.log4j.Logger;
+ import org.apache.log4j.MDC;
+@@ -16,6 +17,7 @@ import config.InjectorConfig;
+ 
+ import messages.Messages;
+ import models.Agente;
++import models.Solicitante;
+ 
+ import org.apache.log4j.Logger;
+ 
+@@ -25,6 +27,8 @@ import play.cache.Cache;
+ import play.data.validation.Required;
+ import play.libs.Codec;
+ import play.libs.Crypto;
++import play.libs.WS;
++import play.libs.WS.HttpResponse;
+ import play.mvc.Before;
+ import play.mvc.Controller;
+ import play.mvc.Http;
+@@ -38,6 +42,8 @@ import properties.FapProperties;
+ import security.Secure;
+ import services.FirmaService;
+ import services.FirmaServiceException;
++import services.TercerosService;
++import services.TercerosServiceException;
+ import ugot.recaptcha.Recaptcha;
+ import ugot.recaptcha.RecaptchaCheck;
+ import ugot.recaptcha.RecaptchaValidator;
+@@ -409,5 +415,64 @@ public class SecureController extends GenericController{
+     	AgenteController.getAgente().cambiarRolActivo(rol);
+     	redirectToUrlOrOriginal(url);
+     }
+-        
++    
++    /**
++     * Login con el sistema de ticketing
++     * 
++     * @param asunto Asunto acordado con la sede
++     * @param ticket Ticket que nos envía la sede
++     */
++    public static void ticketing(String asunto, String ticket) { 
++    	String urlTicketing = FapProperties.get("fap.ticketing.url");
++    	String asuntoProperty = FapProperties.get("fap.ticketing.sede.asunto");
++    	// Si el asunto que nos llega en el paso del ticket de la sede no es igual a la que hemos
++    	// acordado previamente (guardada en la property "fap.ticketing.sede.asunto"), falla la autenticación
++    	if (!asuntoProperty.equalsIgnoreCase(asunto))
++    		return;
++    	  	
++    	// XXX: BORRAR LA SIGUIENTE LÍNEA CUANDO SE QUIERA CONECTAR DE VERDAD AL SISTEMA DE TICKETING
++    	urlTicketing = request.getBase() + "/mockJsonTicketing";
++    	HttpResponse wsResponse = WS.url(urlTicketing + "/" + asunto + "/" + ticket).get();
++    	if (wsResponse.getStatus() != 200)
++    		return;
++    	
++    	String numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
++    	String tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
++    	String uriTercero = wsResponse.getJson().getAsJsonObject().get("uri").getAsString();
++    	
++		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
++		tercerosService.mostrarInfoInyeccion();
++		Agente agente = new Agente();
++		try {
++			agente = tercerosService.buscarTercerosAgenteByNumeroIdentificacion(numDocumento, tipoDocumento);
++		} catch (TercerosServiceException e) { 
++			play.Logger.error("No se ha podido recuperar de Platino el tercero con numDoc = " + numDocumento + " y uri = " + uriTercero);
++			e.printStackTrace();
++			return;
++		}
++		if(agente == null) {
++			play.Logger.error("El agente recuperado por TercerosService es NULL (numDoc = " + numDocumento + " y uri = " + uriTercero + ")");
++			agente = new Agente();
++			//agente.name = ;
++			agente.username = numDocumento;
++			//agente.email = ;
++		}
++    	
++    	agente.roles.add("usuario");
++    	agente.rolActivo = "usuario";
++    	agente.acceso = "ticketing";
++    	agente.save();
++    	AgenteController.setAgente(agente);
++    	MDC.put("username", agente.username);
++    	session.put("username", agente.username);
++    }
++
++	//
++	// XXX: Borrar
++	// Simula el json devuelto por el sistema de ticketing
++	public static void mockJsonTicketing(String asunto, String ticket) {
++		String tipoDoc = RandomStringUtils.randomNumeric(8) + RandomStringUtils.randomAlphabetic(1).toUpperCase();
++		String json = "{ \"tipoDoc\": \"NIF\", \"numDoc\": \"" + tipoDoc + "\", \"uri\": \"" + RandomStringUtils.randomAlphanumeric(20) + "\" }";
++		renderText(json);
++	}
+ }
+\ No newline at end of file
+diff --git a/fap/app/services/TercerosService.java b/fap/app/services/TercerosService.java
+index f37bfa8..4f26b52 100644
+--- a/fap/app/services/TercerosService.java
++++ b/fap/app/services/TercerosService.java
+@@ -3,6 +3,7 @@ package services;
+ import java.util.List;
+ 
+ import models.Solicitante;
++import models.Agente;
+ 
+ public interface TercerosService {
+ 	
+@@ -12,6 +13,8 @@ public interface TercerosService {
+ 	
+ 	public Solicitante buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException;
+ 	
++	public Agente buscarTercerosAgenteByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException;
++	
+ 	public String crearTerceroMinimal(Solicitante tercero) throws TercerosServiceException;
+ 	
+ }
+\ No newline at end of file
+diff --git a/fap/app/services/filesystem/FileSystemTercerosServiceImpl.java b/fap/app/services/filesystem/FileSystemTercerosServiceImpl.java
+index ae61193..4c60911 100644
+--- a/fap/app/services/filesystem/FileSystemTercerosServiceImpl.java
++++ b/fap/app/services/filesystem/FileSystemTercerosServiceImpl.java
+@@ -20,6 +20,7 @@ import javax.xml.ws.BindingProvider;
+ import javax.xml.ws.soap.SOAPFaultException;
+ 
+ import messages.Messages;
++import models.Agente;
+ import models.Solicitante;
+ 
+ import net.java.dev.jaxb.array.StringArray;
+@@ -118,4 +119,10 @@ public class FileSystemTercerosServiceImpl implements services.TercerosService {
+ 		return "fs://tercero001/v01";
+ 	}
+ 
++	@Override
++	public Agente buscarTercerosAgenteByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException {
++		Agente agente = Agente.find("select agente from Agente agente where agente.username = ?", numeroIdentificacion).first();
++		return (agente == null) ? null : agente;
++	}
++
+ }
+diff --git a/fap/app/services/platino/PlatinoTercerosServiceImpl.java b/fap/app/services/platino/PlatinoTercerosServiceImpl.java
+index 793b699..c7587fb 100644
+--- a/fap/app/services/platino/PlatinoTercerosServiceImpl.java
++++ b/fap/app/services/platino/PlatinoTercerosServiceImpl.java
+@@ -23,6 +23,7 @@ import javax.xml.ws.BindingProvider;
+ import javax.xml.ws.soap.SOAPFaultException;
+ 
+ import messages.Messages;
++import models.Agente;
+ import models.Solicitante;
+ 
+ import net.java.dev.jaxb.array.StringArray;
+@@ -170,6 +171,25 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
+ 		return null;
+ 	}
+ 	
++	
++	@Override
++	public Agente buscarTercerosAgenteByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException {
++		TerceroMinimalItem tercero = new TerceroMinimalItem();
++		tercero.setNumeroDocumento(numeroIdentificacion);
++		tercero.setTipoDocumento(convertirTipoNipATipoDocumentoItem(tipoIdentificacion));
++		
++		List<TerceroListItem> tercerosListItem = buscarTercerosDetalladosByItem(tercero);
++		
++		if ((tercerosListItem != null) && (!tercerosListItem.isEmpty())){
++			Collections.sort(tercerosListItem, new ComparadorFechaTerceroListItem());
++			TerceroItem terceroItem = consultarTercero(tercerosListItem.get(0));
++			return convertirTerceroItemAAgente(terceroItem);
++		}
++	
++		return null;
++	}
++	
++	
+ 	// Ordenar Terceros por fecha de Actualizacion
+ 	public class ComparadorFechaTerceroListItem implements Comparator<TerceroListItem> {
+ 	    @Override
+@@ -272,6 +292,29 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
+ 		return ret;
+ 	}
+ 
++	
++	/**
++	 * Método para mapear los datos de tercero del objeto TerceroItem a la clase Agente de FAP
++	 * @param tercero 
++	 * @return Agente Devuelve un objeto Agente(FAP)
++	 */
++	private Agente convertirTerceroItemAAgente(TerceroItem tercero) throws TercerosServiceException {
++		Agente agente = null;	
++		if(tercero != null){
++			agente = new Agente();
++			agente.username = tercero.getNumeroDocumento();
++			agente.name = tercero.getNombre() + tercero.getApellido1() + tercero.getApellido2();
++			if( (tercero.getEmails() != null) && (tercero.getEmails().size() > 0) ) {	
++				EmailItem correo = buscarCorreoPrincipal(tercero.getEmails());
++				if(correo != null){
++					agente.email = correo.getDireccion();
++				}
++			}
++		}
++		// TODO: Añadir más campos al agente
++		return agente;
++	}
++	
+ 	/**
+ 	 * Método para mapear los datos de tercero del objeto TerceroItem a la clase Solicitante de FAP
+ 	 * @param tercero 
+diff --git a/fap/conf/application.conf b/fap/conf/application.conf
+index dc91882..e2fdf34 100644
+--- a/fap/conf/application.conf
++++ b/fap/conf/application.conf
+@@ -572,3 +572,23 @@ fap.javascript.detectarcambios.noguardados=true
+ 
+ fap.portafirma.secret.key=undefined
+ 
++
++
++#---------------------------------------------------------
++# Login mediante ticketing
++#---------------------------------------------------------
++
++# Asunto acordado entre la aplicación y la sede para recibir el ticket
++fap.ticketing.sede.asunto=asunto
++
++# URL del sistema de ticketing
++fap.ticketing.url=http://example.com
++
++# Follow redirects (default true)
++#ws.followRedirects=true
++# Connection timeout in ms (default 120000)
++#ws.timeout=120000
++# Whether to use http.proxy* JVM system properties (default true)
++#ws.useProxyProperties=true
++# A user agent string to set on each request (default none)
++#ws.useragent="My Play Application"
+diff --git a/fap/conf/routes b/fap/conf/routes
+index 0f8384c..41fdad8 100644
+--- a/fap/conf/routes
++++ b/fap/conf/routes
+@@ -13,8 +13,13 @@ GET         /logout                        fap.SecureController.logoutFap
+ 
+ POST        /changerol                     fap.SecureController.changeRol
+ 
++#Login ticketing
++GET         /ticketing/{asunto}/{ticket}              fap.SecureController.ticketing
++# BORRAR mock
++GET         /mockJsonTicketing/{asunto}/{ticket}      fap.SecureController.mockJsonTicketing
++
+ #Baremacion
+-GET   /Baremacion/evaluaciones      								 fap.ConsultarEvaluacionesController.index
++GET   /Baremacion/evaluaciones      				  fap.ConsultarEvaluacionesController.index
+ GET   /Baremacion/evaluacion/fichaevaluador           fap.FichaEvaluadorController.index
+ GET   /Baremacion/evaluacion/borradorpdf              fap.FichaEvaluadorController.generaPDF
+ 
+@@ -64,15 +69,6 @@ GET /WSController/getfechaspeticiones fap.WSController.getFechasPeticiones
+ GET /WSController/getdatospeticiones fap.WSController.getDatosPeticiones
+ 
+ # === FAPGENERATED ===
+-GET /Solicitud/anotacionesfap AnotacionesFAPController.index
+-POST /Solicitud/anotacionesfap/beforeOpenPageTable AnotacionesFAPController.beforeOpenPageTable
+-GET /Solicitud/anotacionesfap/Anotaciones AnotacionesFAPController.tablaAnotaciones
+-POST /Solicitud/anotacionesfap/frmSeguimientoSolicitud AnotacionesFAPController.frmSeguimientoSolicitud
+-GET /Notificacion/notificaciones NotificacionesController.index
+-GET /Notificacion/notificaciones/listaNotificaciones NotificacionesController.tablalistaNotificaciones
+-GET /Notificacion/notificacionver NotificacionVerController.index
+-POST /Notificacion/notificacionver NotificacionVerController.index
+-GET /Ayuda/ayudavistacompatibilidad AyudaVistaCompatibilidadController.index
+ GET /Principal/solicitudes SolicitudesController.index
+ POST /Principal/solicitudes/busquedaForm SolicitudesController.busquedaForm
+ GET /Principal/solicitudes/listaSolicitudesBuscadas SolicitudesController.tablalistaSolicitudesBuscadas
+@@ -104,6 +100,41 @@ POST /Principal/irpresentacionpendientefh/editar IrPresentacionPendienteFHContro
+ GET /Principal/iraportacionpendientefh IrAportacionPendienteFHController.index
+ POST /Principal/iraportacionpendientefh IrAportacionPendienteFHController.index
+ POST /Principal/iraportacionpendientefh/editar IrAportacionPendienteFHController.editar
++GET /Ayuda/ayudavistacompatibilidad AyudaVistaCompatibilidadController.index
++GET /Solicitud/anotacionesfap AnotacionesFAPController.index
++POST /Solicitud/anotacionesfap/beforeOpenPageTable AnotacionesFAPController.beforeOpenPageTable
++GET /Solicitud/anotacionesfap/Anotaciones AnotacionesFAPController.tablaAnotaciones
++POST /Solicitud/anotacionesfap/frmSeguimientoSolicitud AnotacionesFAPController.frmSeguimientoSolicitud
++GET /Notificacion/notificaciones NotificacionesController.index
++GET /Notificacion/notificaciones/listaNotificaciones NotificacionesController.tablalistaNotificaciones
++GET /Notificacion/notificacionver NotificacionVerController.index
++POST /Notificacion/notificacionver NotificacionVerController.index
++GET /Solicitud/desistimiento DesistimientoController.index
++POST /Solicitud/desistimiento/frmMotivo DesistimientoController.frmMotivo
++POST /Solicitud/desistimiento/prepararFirmar DesistimientoController.prepararFirmar
++POST /Solicitud/desistimiento/deshacer DesistimientoController.deshacer
++POST /Solicitud/desistimiento/frmPresentar DesistimientoController.frmPresentar
++GET /Solicitud/desistimientopresentar DesistimientoPresentarController.index
++POST /Solicitud/desistimientopresentar/formFirmaPF DesistimientoPresentarController.formFirmaPF
++GET /Solicitud/desistimientopresentar/firmarRegistrarNifFirmantes DesistimientoPresentarController.tablafirmarRegistrarNifFirmantes
++POST /Solicitud/desistimientopresentar/formFirmaRepresentante DesistimientoPresentarController.formFirmaRepresentante
++GET /Solicitud/desistimientopresentar/firmarRepresentanteFirmantes DesistimientoPresentarController.tablafirmarRepresentanteFirmantes
++GET /Solicitud/desistimientopresentar/tablaFirmantesHecho DesistimientoPresentarController.tablatablaFirmantesHecho
++GET /Solicitud/desistimientopresentar/tablaFirmantesEspera DesistimientoPresentarController.tablatablaFirmantesEspera
++POST /Solicitud/desistimientopresentar/frmRegistrar DesistimientoPresentarController.frmRegistrar
++GET /Solicitud/cesiondatos CesionDatosController.index
++POST /Solicitud/cesiondatos/editar CesionDatosController.editar
++POST /Solicitud/cesiondatos/beforeOpenPageTable CesionDatosController.beforeOpenPageTable
++GET /Solicitud/cesiondatos/trabajadoresSS CesionDatosController.tablatrabajadoresSS
++GET /Solicitud/listadocesiones ListadoCesionesController.index
++POST /Solicitud/listadocesiones/beforeOpenPageTable ListadoCesionesController.beforeOpenPageTable
++GET /Solicitud/listadocesiones/tablaCesiones ListadoCesionesController.tablatablaCesiones
++GET /Soporte/soporte SoporteController.index
++POST /Soporte/soporte/editar SoporteController.editar
++POST /Soporte/soporte/crear SoporteController.crear
++GET /Graficas/graficasolicitudes GraficaSolicitudesController.index
++GET /Baremacion/evaluacionesfinalizadas EvaluacionesFinalizadasController.index
++GET /Baremacion/evaluacionesfinalizadas/tablaEvaluacionesFinalizadas EvaluacionesFinalizadasController.tablatablaEvaluacionesFinalizadas
+ GET /Administracion/servicioswebapp ServiciosWebAppController.index
+ GET /Administracion/servicioswebapp/serviciosWeb ServiciosWebAppController.tablaserviciosWeb
+ POST /Administracion/servicioswebapp/formBtnRecargaWS ServiciosWebAppController.formBtnRecargaWS
+@@ -111,6 +142,11 @@ GET /Administracion/servicioswebapp/historialServiciosWeb ServiciosWebAppControl
+ GET /Administracion/graficasws GraficasWSController.index
+ POST /Administracion/graficasws GraficasWSController.index
+ POST /Administracion/graficasws/formBtn GraficasWSController.formBtn
++GET /Administracion/actualizaraportaciones ActualizarAportacionesController.index
++POST /Administracion/actualizaraportaciones/botonActualizarAportaciones ActualizarAportacionesController.botonActualizarAportaciones
++GET /Administracion/tramitesverificables TramitesVerificablesController.index
++POST /Administracion/tramitesverificables/editar TramitesVerificablesController.editar
++GET /Administracion/tramitesverificables/tramitesVerificablesTbl TramitesVerificablesController.tablatramitesVerificablesTbl
+ GET /Administracion/consultasbbdd ConsultasBBDDController.index
+ GET /Administracion/consultasbbdd/consultasdb ConsultasBBDDController.tablaconsultasdb
+ GET /Administracion/jobs JobsController.index
+@@ -129,6 +165,7 @@ GET /Administracion/usuarios/listaUsuarios UsuariosController.tablalistaUsuarios
+ GET /Administracion/aed AedController.index
+ POST /Administracion/aed/configurar AedController.configurar
+ POST /Administracion/aed/actualizarTramites AedController.actualizarTramites
++POST /Administracion/aed/actualizarMetadatos AedController.actualizarMetadatos
+ GET /Administracion/aed/tramites AedController.tablatramites
+ GET /Administracion/convocatoria ConvocatoriaController.index
+ POST /Administracion/convocatoria/editar ConvocatoriaController.editar
+@@ -153,6 +190,22 @@ GET /Administracion/buscarlgs BuscarLgsController.index
+ POST /Administracion/buscarlgs/buscar BuscarLgsController.buscar
+ GET /Administracion/mostrarlogs MostrarLogsController.index
+ GET /Administracion/mostrarlogs/logs MostrarLogsController.tablalogs
++GET /Administracion/configurarcertificados ConfigurarCertificadosController.index
++GET /Administracion/configurarcertificados/tablaTiposCertificados ConfigurarCertificadosController.tablatablaTiposCertificados
++GET /Administracion/generarfichcesiones GenerarFichCesionesController.index
++GET /Administracion/generarfichcesiones/tblCesiones GenerarFichCesionesController.tablatblCesiones
++GET /Administracion/nuevacesion NuevaCesionController.index
++POST /Administracion/nuevacesion NuevaCesionController.index
++POST /Administracion/nuevacesion/formTipoCesion NuevaCesionController.formTipoCesion
++GET /Administracion/nuevacesion/tblSolicitudes NuevaCesionController.tablatblSolicitudes
++POST /Administracion/nuevacesion/generarPeticion NuevaCesionController.generarPeticion
++GET /Administracion/leercesion LeerCesionController.index
++POST /Administracion/leercesion LeerCesionController.index
++GET /Administracion/editarcesion EditarCesionController.index
++POST /Administracion/editarcesion EditarCesionController.index
++POST /Administracion/editarcesion/formCesionFichSubida EditarCesionController.formCesionFichSubida
++POST /Administracion/editarcesion/formCesionFichRespuesta EditarCesionController.formCesionFichRespuesta
++POST /Administracion/editarcesion/formCesionAplicarCambios EditarCesionController.formCesionAplicarCambios
+ GET /Solicitud/documentacionfap DocumentacionFAPController.index
+ POST /Solicitud/documentacionfap/beforeOpenPageTable DocumentacionFAPController.beforeOpenPageTable
+ GET /Solicitud/documentacionfap/documentos DocumentacionFAPController.tabladocumentos
+@@ -239,6 +292,7 @@ GET /Solicitud/paginaceconomicos/ceconomicosManuales PaginaCEconomicosController
+ GET /Solicitud/paginaceconomicomanual PaginaCEconomicoManualController.index
+ POST /Solicitud/paginaceconomicomanual PaginaCEconomicoManualController.index
+ POST /Solicitud/paginaceconomicomanual/guardarPCE PaginaCEconomicoManualController.guardarPCE
++GET /Solicitud/paginaceconomicosevaluados PaginaCEconomicosEvaluadosController.index
+ GET /Solicitud/paginaaceptacionrenuncia PaginaAceptacionRenunciaController.index
+ POST /Solicitud/paginaaceptacionrenuncia/beforeOpenPageTable PaginaAceptacionRenunciaController.beforeOpenPageTable
+ POST /Solicitud/paginaaceptacionrenuncia/formAceptarRenunciar PaginaAceptacionRenunciaController.formAceptarRenunciar
+@@ -304,25 +358,37 @@ GET /Solicitud/solicitudpresentarfap/tablaFirmantesEspera SolicitudPresentarFAPC
+ POST /Solicitud/solicitudpresentarfap/frmRegistrar SolicitudPresentarFAPController.frmRegistrar
+ GET /Solicitud/activarfuncionariohabilitado ActivarFuncionarioHabilitadoController.index
+ POST /Solicitud/activarfuncionariohabilitado/formActivarFH ActivarFuncionarioHabilitadoController.formActivarFH
+-GET /Baremacion/evaluacionesfinalizadas EvaluacionesFinalizadasController.index
+-GET /Baremacion/evaluacionesfinalizadas/tablaEvaluacionesFinalizadas EvaluacionesFinalizadasController.tablatablaEvaluacionesFinalizadas
+-GET /Graficas/graficasolicitudes GraficaSolicitudesController.index
+-GET /Solicitud/desistimiento DesistimientoController.index
+-POST /Solicitud/desistimiento/frmMotivo DesistimientoController.frmMotivo
+-POST /Solicitud/desistimiento/prepararFirmar DesistimientoController.prepararFirmar
+-POST /Solicitud/desistimiento/deshacer DesistimientoController.deshacer
+-POST /Solicitud/desistimiento/frmPresentar DesistimientoController.frmPresentar
+-GET /Solicitud/desistimientopresentar DesistimientoPresentarController.index
+-POST /Solicitud/desistimientopresentar/formFirmaPF DesistimientoPresentarController.formFirmaPF
+-GET /Solicitud/desistimientopresentar/firmarRegistrarNifFirmantes DesistimientoPresentarController.tablafirmarRegistrarNifFirmantes
+-POST /Solicitud/desistimientopresentar/formFirmaRepresentante DesistimientoPresentarController.formFirmaRepresentante
+-GET /Solicitud/desistimientopresentar/firmarRepresentanteFirmantes DesistimientoPresentarController.tablafirmarRepresentanteFirmantes
+-GET /Solicitud/desistimientopresentar/tablaFirmantesHecho DesistimientoPresentarController.tablatablaFirmantesHecho
+-GET /Solicitud/desistimientopresentar/tablaFirmantesEspera DesistimientoPresentarController.tablatablaFirmantesEspera
+-POST /Solicitud/desistimientopresentar/frmRegistrar DesistimientoPresentarController.frmRegistrar
+-GET /Soporte/soporte SoporteController.index
+-POST /Soporte/soporte/editar SoporteController.editar
+-POST /Soporte/soporte/crear SoporteController.crear
++GET /Solicitud/certificadossolicitados CertificadosSolicitadosController.index
++POST /Solicitud/certificadossolicitados/beforeOpenPageTable CertificadosSolicitadosController.beforeOpenPageTable
++GET /Solicitud/certificadossolicitados/tablaCertificados CertificadosSolicitadosController.tablatablaCertificados
++GET /Solicitud/pedircertificado PedirCertificadoController.index
++POST /Solicitud/pedircertificado PedirCertificadoController.index
++POST /Solicitud/pedircertificado/pedirCertificado PedirCertificadoController.pedirCertificado
++GET /Solicitud/justificacion JustificacionController.index
++POST /Solicitud/justificacion/beforeOpenPageTable JustificacionController.beforeOpenPageTable
++GET /Solicitud/justificacion/documentos JustificacionController.tabladocumentos
++POST /Solicitud/justificacion/presentarSinRegistrar JustificacionController.presentarSinRegistrar
++POST /Solicitud/justificacion/presentar JustificacionController.presentar
++GET /Solicitud/documentosjustificacion DocumentosJustificacionController.index
++POST /Solicitud/documentosjustificacion DocumentosJustificacionController.index
++POST /Solicitud/documentosjustificacion/editar DocumentosJustificacionController.editar
++POST /Solicitud/documentosjustificacion/crear DocumentosJustificacionController.crear
++GET /Solicitud/justificacionaportados JustificacionAportadosController.index
++POST /Solicitud/justificacionaportados/editar JustificacionAportadosController.editar
++GET /Solicitud/justificacionaportados/documentos JustificacionAportadosController.tabladocumentos
++GET /Solicitud/justificacionaportados/documentosExternos JustificacionAportadosController.tabladocumentosExternos
++GET /Solicitud/justificacionrecibos JustificacionRecibosController.index
++GET /Solicitud/justificacionrecibos/recibosJustificacion JustificacionRecibosController.tablarecibosJustificacion
++GET /Solicitud/justificacionpresentar JustificacionPresentarController.index
++POST /Solicitud/justificacionpresentar/modificarBorrador JustificacionPresentarController.modificarBorrador
++GET /Solicitud/justificacionpresentar/documentos JustificacionPresentarController.tabladocumentos
++POST /Solicitud/justificacionpresentar/formHabilitarFH JustificacionPresentarController.formHabilitarFH
++POST /Solicitud/justificacionpresentar/formFirmaFH JustificacionPresentarController.formFirmaFH
++GET /Solicitud/justificacionpresentar/firmarRegistrarFHFirmantes JustificacionPresentarController.tablafirmarRegistrarFHFirmantes
++POST /Solicitud/justificacionpresentar/presentar JustificacionPresentarController.presentar
++GET /Solicitud/justificacionpresentar/firmarRepresentanteFirmantes JustificacionPresentarController.tablafirmarRepresentanteFirmantes
++GET /Principal/popuppass popups.PopupPassController.index
++POST /Principal/popuppass/editar popups.PopupPassController.editar
+ GET /Solicitud/popupanotacionfapcrear popups.PopUpAnotacionFAPCrearController.index
+ POST /Solicitud/popupanotacionfapcrear/editar popups.PopUpAnotacionFAPCrearController.editar
+ POST /Solicitud/popupanotacionfapcrear/crear popups.PopUpAnotacionFAPCrearController.crear
+@@ -331,8 +397,16 @@ GET /Solicitud/popupanotacionfapmodificar popups.PopUpAnotacionFAPModificarContr
+ POST /Solicitud/popupanotacionfapmodificar/editar popups.PopUpAnotacionFAPModificarController.editar
+ GET /Solicitud/popupanotacionfapborrar popups.PopUpAnotacionFAPBorrarController.index
+ POST /Solicitud/popupanotacionfapborrar/borrar popups.PopUpAnotacionFAPBorrarController.borrar
+-GET /Principal/popuppass popups.PopupPassController.index
+-POST /Principal/popuppass/editar popups.PopupPassController.editar
++GET /Solicitud/popupdocdesistimiento popups.PopUpDocDesistimientoController.index
++GET /Solicitud/popuptrabajadores popups.PopupTrabajadoresController.index
++POST /Solicitud/popuptrabajadores/editar popups.PopupTrabajadoresController.editar
++POST /Solicitud/popuptrabajadores/borrar popups.PopupTrabajadoresController.borrar
++POST /Solicitud/popuptrabajadores/crear popups.PopupTrabajadoresController.crear
++GET /Solicitud/popuplistadocesiones popups.PopupListadoCesionesController.index
++POST /Solicitud/popuplistadocesiones/crear popups.PopupListadoCesionesController.crear
++GET /Solicitud/popupleerlistadocesiones popups.PopupLeerListadoCesionesController.index
++GET /Administracion/popuptramiteverificable popups.PopUpTramiteVerificableController.index
++POST /Administracion/popuptramiteverificable/editar popups.PopUpTramiteVerificableController.editar
+ GET /Administracion/popupconsultas popups.PopUpConsultasController.index
+ POST /Administracion/popupconsultas/editar popups.PopUpConsultasController.editar
+ POST /Administracion/popupconsultas/borrar popups.PopUpConsultasController.borrar
+@@ -367,6 +441,10 @@ GET /Administracion/popupvisibilidaddesolicitudes popups.PopupVisibilidadDeSolic
+ POST /Administracion/popupvisibilidaddesolicitudes/editar popups.PopupVisibilidadDeSolicitudesController.editar
+ GET /Administracion/popupvercodreq popups.PopupVerCodReqController.index
+ GET /Administracion/popupvercodexc popups.PopupVerCodExcController.index
++GET /Administracion/popuptipocertificado popups.PopupTipoCertificadoController.index
++POST /Administracion/popuptipocertificado/editar popups.PopupTipoCertificadoController.editar
++POST /Administracion/popuptipocertificado/borrar popups.PopupTipoCertificadoController.borrar
++POST /Administracion/popuptipocertificado/crear popups.PopupTipoCertificadoController.crear
+ GET /Solicitud/documentoseditarfap popups.DocumentosEditarFAPController.index
+ POST /Solicitud/documentoseditarfap/editar popups.DocumentosEditarFAPController.editar
+ POST /Solicitud/documentoseditarfap/borrar popups.DocumentosEditarFAPController.borrar
+@@ -406,7 +484,11 @@ GET /Solicitud/popupautorizarfap popups.PopUpAutorizarFAPController.index
+ POST /Solicitud/popupautorizarfap/editar popups.PopUpAutorizarFAPController.editar
+ POST /Solicitud/popupautorizarfap/borrar popups.PopUpAutorizarFAPController.borrar
+ POST /Solicitud/popupautorizarfap/crear popups.PopUpAutorizarFAPController.crear
+-GET /Solicitud/popupdocdesistimiento popups.PopUpDocDesistimientoController.index
++GET /Solicitud/popupdocjustificacionpresentados popups.PopUpDocJustificacionPresentadosController.index
++GET /Solicitud/popupdocjustificacionprocesos popups.PopUpDocJustificacionProcesosController.index
++POST /Solicitud/popupdocjustificacionprocesos/editar popups.PopUpDocJustificacionProcesosController.editar
++POST /Solicitud/popupdocjustificacionprocesos/borrar popups.PopUpDocJustificacionProcesosController.borrar
++GET /Solicitud/popupdocjustificacionaportados popups.PopUpDocJustificacionAportadosController.index
+ GET /WSInfo/WSTodasSolicitudes serviciosweb.WSTodasSolicitudesSWController.index
+ GET /WSInfo/WSSolicitudesPresentadas serviciosweb.WSSolicitudesPresentadasSWController.index
+ GET /WSInfo/WSAportaciones serviciosweb.WSAportacionesSWController.index

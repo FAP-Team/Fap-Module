@@ -23,6 +23,7 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import messages.Messages;
+import models.Agente;
 import models.Solicitante;
 
 import net.java.dev.jaxb.array.StringArray;
@@ -170,6 +171,25 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 		return null;
 	}
 	
+	
+	@Override
+	public Agente buscarTercerosAgenteByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException {
+		TerceroMinimalItem tercero = new TerceroMinimalItem();
+		tercero.setNumeroDocumento(numeroIdentificacion);
+		tercero.setTipoDocumento(convertirTipoNipATipoDocumentoItem(tipoIdentificacion));
+		
+		List<TerceroListItem> tercerosListItem = buscarTercerosDetalladosByItem(tercero);
+		
+		if ((tercerosListItem != null) && (!tercerosListItem.isEmpty())){
+			Collections.sort(tercerosListItem, new ComparadorFechaTerceroListItem());
+			TerceroItem terceroItem = consultarTercero(tercerosListItem.get(0));
+			return convertirTerceroItemAAgente(terceroItem);
+		}
+	
+		return null;
+	}
+	
+	
 	// Ordenar Terceros por fecha de Actualizacion
 	public class ComparadorFechaTerceroListItem implements Comparator<TerceroListItem> {
 	    @Override
@@ -272,6 +292,29 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 		return ret;
 	}
 
+	
+	/**
+	 * Método para mapear los datos de tercero del objeto TerceroItem a la clase Agente de FAP
+	 * @param tercero 
+	 * @return Agente Devuelve un objeto Agente(FAP)
+	 */
+	private Agente convertirTerceroItemAAgente(TerceroItem tercero) throws TercerosServiceException {
+		Agente agente = null;	
+		if(tercero != null){
+			agente = new Agente();
+			agente.username = tercero.getNumeroDocumento();
+			agente.name = tercero.getNombre() + tercero.getApellido1() + tercero.getApellido2();
+			if( (tercero.getEmails() != null) && (tercero.getEmails().size() > 0) ) {	
+				EmailItem correo = buscarCorreoPrincipal(tercero.getEmails());
+				if(correo != null){
+					agente.email = correo.getDireccion();
+				}
+			}
+		}
+		// TODO: Añadir más campos al agente
+		return agente;
+	}
+	
 	/**
 	 * Método para mapear los datos de tercero del objeto TerceroItem a la clase Solicitante de FAP
 	 * @param tercero 

@@ -20,6 +20,7 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import messages.Messages;
+import models.Agente;
 import models.Solicitante;
 
 import net.java.dev.jaxb.array.StringArray;
@@ -116,6 +117,12 @@ public class FileSystemTercerosServiceImpl implements services.TercerosService {
 	
 	public String crearTerceroMinimal(Solicitante solicitante) throws TercerosServiceException{
 		return "fs://tercero001/v01";
+	}
+
+	@Override
+	public Agente buscarTercerosAgenteByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException {
+		Agente agente = Agente.find("select agente from Agente agente where agente.username = ?", numeroIdentificacion).first();
+		return (agente == null) ? null : agente;
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.ivy.util.Message;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -16,6 +17,7 @@ import config.InjectorConfig;
 
 import messages.Messages;
 import models.Agente;
+import models.Solicitante;
 
 import org.apache.log4j.Logger;
 
@@ -25,6 +27,8 @@ import play.cache.Cache;
 import play.data.validation.Required;
 import play.libs.Codec;
 import play.libs.Crypto;
+import play.libs.WS;
+import play.libs.WS.HttpResponse;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -38,6 +42,8 @@ import properties.FapProperties;
 import security.Secure;
 import services.FirmaService;
 import services.FirmaServiceException;
+import services.TercerosService;
+import services.TercerosServiceException;
 import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
@@ -409,5 +415,64 @@ public class SecureController extends GenericController{
     	AgenteController.getAgente().cambiarRolActivo(rol);
     	redirectToUrlOrOriginal(url);
     }
-        
+    
+    /**
+     * Login con el sistema de ticketing
+     * 
+     * @param asunto Asunto acordado con la sede
+     * @param ticket Ticket que nos envía la sede
+     */
+    public static void ticketing(String asunto, String ticket) { 
+    	String urlTicketing = FapProperties.get("fap.ticketing.url");
+    	String asuntoProperty = FapProperties.get("fap.ticketing.sede.asunto");
+    	// Si el asunto que nos llega en el paso del ticket de la sede no es igual a la que hemos
+    	// acordado previamente (guardada en la property "fap.ticketing.sede.asunto"), falla la autenticación
+    	if (!asuntoProperty.equalsIgnoreCase(asunto))
+    		return;
+    	  	
+    	// XXX: BORRAR LA SIGUIENTE LÍNEA CUANDO SE QUIERA CONECTAR DE VERDAD AL SISTEMA DE TICKETING
+    	urlTicketing = request.getBase() + "/mockJsonTicketing";
+    	HttpResponse wsResponse = WS.url(urlTicketing + "/" + asunto + "/" + ticket).get();
+    	if (wsResponse.getStatus() != 200)
+    		return;
+    	
+    	String numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
+    	String tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
+    	String uriTercero = wsResponse.getJson().getAsJsonObject().get("uri").getAsString();
+    	
+		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+		tercerosService.mostrarInfoInyeccion();
+		Agente agente = new Agente();
+		try {
+			agente = tercerosService.buscarTercerosAgenteByNumeroIdentificacion(numDocumento, tipoDocumento);
+		} catch (TercerosServiceException e) { 
+			play.Logger.error("No se ha podido recuperar de Platino el tercero con numDoc = " + numDocumento + " y uri = " + uriTercero);
+			e.printStackTrace();
+			return;
+		}
+		if(agente == null) {
+			play.Logger.error("El agente recuperado por TercerosService es NULL (numDoc = " + numDocumento + " y uri = " + uriTercero + ")");
+			agente = new Agente();
+			//agente.name = ;
+			agente.username = numDocumento;
+			//agente.email = ;
+		}
+    	
+    	agente.roles.add("usuario");
+    	agente.rolActivo = "usuario";
+    	agente.acceso = "ticketing";
+    	agente.save();
+    	AgenteController.setAgente(agente);
+    	MDC.put("username", agente.username);
+    	session.put("username", agente.username);
+    }
+
+	//
+	// XXX: Borrar
+	// Simula el json devuelto por el sistema de ticketing
+	public static void mockJsonTicketing(String asunto, String ticket) {
+		String tipoDoc = RandomStringUtils.randomNumeric(8) + RandomStringUtils.randomAlphabetic(1).toUpperCase();
+		String json = "{ \"tipoDoc\": \"NIF\", \"numDoc\": \"" + tipoDoc + "\", \"uri\": \"" + RandomStringUtils.randomAlphanumeric(20) + "\" }";
+		renderText(json);
+	}
 }

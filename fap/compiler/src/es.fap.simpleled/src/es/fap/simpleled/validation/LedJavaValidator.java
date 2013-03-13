@@ -702,12 +702,15 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		Set<String> unicos = new HashSet<String>();
 		String campoStr = "";
 		for (Campo campo: campos){
-			campoStr = LedCampoUtils.getCampoStr(campo);
-			if (!unicos.contains(campoStr))
-				unicos.add(campoStr);
-			else{
-				if (campo != null)
-					return true;
+			Entity en = LedCampoUtils.getUltimaEntidad(campo);
+			if (en.getName().equalsIgnoreCase("Documento")) {
+				campoStr = LedCampoUtils.getCampoStr(campo);
+				if (!unicos.contains(campoStr))
+					unicos.add(campoStr);
+				else{
+					if (campo != null)
+						return true;
+				}
 			}
 		}
 		return false;

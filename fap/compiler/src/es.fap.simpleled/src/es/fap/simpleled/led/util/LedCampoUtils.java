@@ -319,7 +319,8 @@ public class LedCampoUtils {
 				campos.addAll(buscarCamposRecursivos(obj));
 			}
 		} else {
-			campos.add(LedCampoUtils.getCampo(container));
+			if (LedCampoUtils.getCampo(container) != null)
+				campos.add(LedCampoUtils.getCampo(container));
 		}
 		return campos;
 	}

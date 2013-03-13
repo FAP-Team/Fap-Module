@@ -1,0 +1,59 @@
+Formulario CuadroDeMandos inicial {
+	
+	Menu {
+		Enlace "Cuadro de Mandos" pagina=CuadroMandos permiso=administrador
+	}
+	
+	Pagina CuadroMandos inicial noForm titulo="Cuadro de Mandos" permiso=administrador {
+		Tabla aplicaciones titulo="Aplicaciones" campo=Aplicacion 
+		popupCrear=NuevaAplicacion 
+		paginaEditar=ServiciosWebAppCM
+		popupBorrar=NuevaAplicacion
+		{
+			Columna titulo="Nombre de la aplicación" campo=Aplicacion.nombreApp
+			Columna titulo="URL de la aplicación" campo=Aplicacion.urlApp expandir
+		}
+	}
+	
+	Popup NuevaAplicacion titulo="Añadir nueva aplicación" campo=Aplicacion  permiso=administrador {
+		Texto campo=Aplicacion.nombreApp titulo="Nombre de la aplicación" requerido
+		Texto campo=Aplicacion.urlApp titulo="URL" requerido
+	}
+	
+	Pagina ServiciosWebAppCM noForm titulo="Servicios web de la aplicación" campo=Aplicacion  permiso=administrador {
+		Grupo permiso=noEditable titulo="Datos de la aplicación" {
+			Texto campo=Aplicacion.nombreApp titulo="Nombre de la aplicación" 
+			Texto campo=Aplicacion.urlApp titulo="URL de la aplicación"
+		}
+		
+		Tabla serviciosWeb titulo="Servicios web activos" campo=Aplicacion.serviciosWeb
+		paginaEditar=GraficasWSCM
+		{
+			Columna titulo="ID" campo=ServiciosWeb.id ancho="35"
+			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
+			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
+			Columna titulo="Descripción" campo=ServiciosWeb.servicioWebInfo.descripcion expandir
+		}
+		
+		Form formBtnRecargaWS {
+			Boton recargasWS titulo="Recargar Servicios Web" ayuda="Pulse este botón para obligar a actualizar los servicios web de la aplicación" (popover)
+		}
+		
+		Tabla historialServiciosWeb titulo="Historial de servicios web" campo=Aplicacion.serviciosWeb
+		paginaEditar=GraficasWSCM
+		{
+			Columna titulo="ID" campo=ServiciosWeb.id ancho="35"
+			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
+			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
+			Columna titulo="Descripción" campo=ServiciosWeb.servicioWebInfo.descripcion expandir
+		}
+	}
+	
+	Pagina GraficasWSCM noForm titulo="Gráficas servicios web" campo=Aplicacion.serviciosWeb {
+		Wiki {"Aquí se mostrará el SuperTag"}
+		Form formBtn {
+			Boton btnRecargasDatos titulo="Recargar datos" ayuda="Pulse este botón para obligar a actualizar los datos de los servicios web" (popover)
+			Boton btnVolver titulo="Volver a la lista de Servicios Web" pagina=ServiciosWebAppCM
+		}
+	}
+}

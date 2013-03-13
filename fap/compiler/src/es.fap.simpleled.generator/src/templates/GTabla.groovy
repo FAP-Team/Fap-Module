@@ -553,10 +553,18 @@ public class GTabla extends GElement{
 	public String routes(){
 		String url = gPaginaPopup.url() + "/" + id();
 		String action = gPaginaPopup.controllerFullName() + "." + controllerMethodName();
+		
+		//Si es una tabla de elementos seleccionables añadir la ruta del metodo que se aplica
+		if(tabla.seleccionable){
+			String urlSeleccionable = gPaginaPopup.url() + "/" +seleccionableMethodName();
+			String accionSeleccionable = gPaginaPopup.controllerFullName() + "." +seleccionableMethodName();
+			return RouteUtils.to("GET", url, action).toString() + "\n"+RouteUtils.to("POST", urlSeleccionable, accionSeleccionable).toString() + "\n";
+		}
 		return RouteUtils.to("GET", url, action).toString() + "\n";
 	}
 	
 	private String seleccionableMethodName () {
+		//Quitar las tildes!
 		return StringUtils.firstLower(tabla.seleccionable.replaceAll(" ", ""))
 	}
 
@@ -564,7 +572,7 @@ public class GTabla extends GElement{
 		if (! tabla.seleccionable)
 			return "";
 		return """
-			public static void ${seleccionableMethodName()}(List<Long> idsSeleccionados){
+			public static void ${seleccionableMethodName()}(Long id, List<Long> idsSeleccionados){
 				//Sobreescribir para incorporar funcionalidad
 				//No olvide asignar los permisos
 				//index();

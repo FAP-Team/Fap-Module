@@ -4,33 +4,31 @@ Para configurar el FileSystem como Gestor Documental de nuestra aplicación debe
 
 * Poner el fichero app/config/AppModule.java como sigue, indicando FileSystemGestorDocumentalServiceImpl en gestorDocumental().
 
-* Si se quiere firmar y registrar con Platino, PlatinoFirmaServiceImpl en firma() y PlatinoRegistroServiceImpl en registro().
-* Si se quiere firmar y registrar con el FileSystem, FileSystemFirmaServiceImpl en firma() y FileSystemRegistroService en registro().
+* Si se quiere firmar, registrar o usar la base de datos a terceros con Platino, PlatinoFirmaServiceImpl en firma(), PlatinoRegistroServiceImpl en registro() y PlatinoTercerosServiceImpl() en terceros().
+* Si se quiere firmar, egistrar o usar la base de datos a terceros con el FileSystem, FileSystemFirmaServiceImpl en firma(), FileSystemRegistroService en registro()  y FileSystemTercerosServiceImpl() en terceros().
 
 bc. public class AppModule extends FapModule {
 	@Override
 	protected void secure() {
 		bind(Secure.class).toInstance(new SecureApp(new SecureAppGen(new SecureFap(new SecureFapGen(null)))));
-	}
-	
+	}	
 	@Override
 	protected void gestorDocumental() {
 		bindLazySingletonOnDev(GestorDocumentalService.class,FileSystemGestorDocumentalServiceImpl.class);
-	}
-	
+	}	
 	@Override
 	protected void firma() {
 		bindLazySingletonOnDev(FirmaService.class, FileSystemFirmaServiceImpl.class);
-	}
-	
+	}	
 	@Override
 	protected void registro(){
 		bindLazySingletonOnDev(RegistroService.class, FileSystemRegistroService.class);
 	}
+	@Override
+	protected void terceros() {
+		bindLazySingletonOnDev(TercerosService.class, FileSystemTercerosServiceImpl.class);
+	}
 }
 
 
-
-
-
-* Ir a Administración/Aed, en la aplicación arrancada y pulsar los botones _Configurar gestor documental_ y _Actualizar trámites_.
+* _NOTA:_ Para recargar todo lo necesario, una vez reconfigurado el GestorDocumental, deberemos Ir a Administración/GestorDocumental, en la aplicación arrancada y pulsar los botones _Configurar gestor documental_ y _Actualizar trámites_.

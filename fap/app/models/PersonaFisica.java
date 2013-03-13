@@ -36,6 +36,13 @@ public class PersonaFisica extends FapModel {
 
 	public String segundoApellido;
 
+	@ValueFromTable("sexo")
+	public String sexo;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaNacimiento"), @Column(name = "fechaNacimientoTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaNacimiento;
+
 	@CheckWith(NipCheck.class)
 	@Embedded
 	public Nip nip;

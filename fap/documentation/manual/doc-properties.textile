@@ -103,6 +103,7 @@ fap.firmaYRegistro.funcionarioHabilitado=false |
 | Tipo de documento para la autorizacion de firma de un Funcionario Habilitado | *fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento* | | fap.firmaYRegistro.funcionarioHabilitado.tipoDocumento=eadmon://uriDoc |
 | Indica si se envían los campos ocultos en las páginas, los que son ocultos por grupos | *fap.form.sendHiddenFields* | | fap.form.sendHiddenFields=true |
 | Elimina los logs antiguos de texto plano (siguen almacenándose los .zip) | *fap.deleteLogs.textoPlano* | | fap.deleteLogs.textoPlano=false |
+| Tipos de Documentos de los Certificados (AAA) | *fap.anotaciones.administrativas.autorizadas.tipos.documentos* | | fap.anotaciones.administrativas.autorizadas.tipos.documentos=fs://type3/v01,fs://type1/v01 |
 
 
 h4. Visible 

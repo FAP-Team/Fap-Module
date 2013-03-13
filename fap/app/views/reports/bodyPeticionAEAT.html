@@ -1,0 +1,54 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+</style>
+
+</head>
+<body>
+
+<h3 style="text-align: center;"></h3>
+%{
+	def titulo = 'CESIÓN DE DATOS AEAT';
+}%
+
+<h1>${titulo}</h1>
+
+<table>
+	<tr>
+		<tr>
+			<tr><th>DNI/CIF:</th><td>${aeat.registro.nDocumento}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+		</tr>	
+		<tr>
+			<tr><th>Número de Expediente:</th><td>${solicitud.expedienteAed.idAed}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
+		</tr>	
+		<tr>
+		  	%{ if (aeat.registro.cert.equals("P")){ %}
+				<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum._01.value()}</td></tr>
+			%{ } %} 
+		  	
+			%{ if (aeat.registro.cert.equals("N")){ %}
+				<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum._02.value()}</td></tr>
+				<tr><th>Tipo de Negativo:</th><td>${aeat.registro.negat}</td></tr>
+				<tr><th>Causa de Negativo:</th><td>${enumerado.fap.gen.CodigoAEATNegatEnum.valueOf(aeat.registro.negat).value()}</td></tr>
+			%{ } %}
+		</tr>	
+	</tr>
+</table>
+
+</body>
+</html>

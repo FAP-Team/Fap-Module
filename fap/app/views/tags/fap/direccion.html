@@ -135,6 +135,71 @@
 					$(requerido).text("");
 				}
 			}
+			
+			$('#${id_calle}').parent().click(function(e){
+				if ($('#${id_calle}').attr('readonly') == 'readonly')
+					$('#${id_calle}').prop('readonly', false);
+			});
+			
+			$('#${id_otros}').parent().click(function(e){
+				if ($('#${id_otros}').attr('readonly') == 'readonly')
+					$('#${id_otros}').prop('readonly', false);
+			});
+			
+			$('#${id_numero}').parent().click(function(e){
+				if ($('#${id_numero}').attr('readonly') == 'readonly')
+					$('#${id_numero}').prop('readonly', false);
+			});
+			
+			$('#${id_codigoPostal}').parent().click(function(e){
+				if ($('#${id_codigoPostal}').attr('readonly') == 'readonly')
+					$('#${id_codigoPostal}').prop('readonly', false);
+			});
+			
+			$('#${id_municipio}').parent().click(function(e){
+				if ($('#${id_municipio}').attr('readonly') == 'readonly')
+					$('#${id_municipio}').prop('readonly', false);
+			});
+			
+			$('#${id_municipioIsla}').parent().click(function(e){
+				if ($('#${id_municipioIsla}').attr('readonly') == 'readonly')
+					$('#${id_municipioIsla}').prop('readonly', false);
+			});
+			
+			$('#${id_isla}').parent().click(function(e){
+				if ($('#${id_isla}').attr('readonly') == 'readonly')
+					$('#${id_isla}').prop('readonly', false);
+			});
+			
+			$('#${id_provincia}').parent().click(function(e){
+				if ($('#${id_provincia}').attr('readonly') == 'readonly')
+					$('#${id_provincia}').prop('readonly', false);
+			});
+			
+			$('#${id_provinciaIsla}').parent().click(function(e){
+				if ($('#${id_provinciaIsla}').attr('readonly') == 'readonly')
+					$('#${id_provinciaIsla}').prop('readonly', false);
+			});
+			
+			$('#${id_comunidad}').parent().click(function(e){
+				if ($('#${id_comunidad}').attr('readonly') == 'readonly')
+					$('#${id_comunidad}').prop('readonly', false);
+			});
+			
+			$('#${id_provinciaInternacional}').parent().click(function(e){
+				if ($('#${id_provinciaInternacional}').attr('readonly') == 'readonly')
+					$('#${id_provinciaInternacional}').prop('readonly', false);
+			});
+			
+			$('#${id_pais}').parent().click(function(e){
+				if ($('#${id_pais}').attr('readonly') == 'readonly')
+					$('#${id_pais}').prop('readonly', false);
+			});
+			
+			$('#${id_tipo}').parent().click(function(e){
+				if ($('#${id_tipo}').attr('readonly') == 'readonly')
+					$('#${id_tipo}').prop('readonly', false);
+			});
 		</script>
 		
 	#{/if}

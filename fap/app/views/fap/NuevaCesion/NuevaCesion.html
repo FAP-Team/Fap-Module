@@ -1,0 +1,128 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Administracion', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'NuevaCesion', 
+     permiso:'administrador', 
+     titulo:'Nueva Petición de Cesión de Datos', 
+     urlBorrar:play.mvc.Router.reverse('NuevaCesionController.borrar' , ['idPeticionCesiones':peticionCesiones?.id]), 
+     urlCrear:play.mvc.Router.reverse('NuevaCesionController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('NuevaCesionController.editar' , ['idPeticionCesiones':peticionCesiones?.id]),
+     id: peticionCesiones?.id
+}
+			#{form play.mvc.Router.reverse('NuevaCesionController.formTipoCesion' , ['idPeticionCesiones':peticionCesiones?.id]) , class:"form-horizontal", id:"formTipoCesion"}
+
+			#{fap.grupo borde:true, permiso:'permisoTipoElegido', titulo:'Filtrar expedientes'}
+				
+			#{fap.combo campo:'peticionCesiones.tipo', id:'cmbTipo', requerido:true, titulo:'Tipo de Cesión' /}		
+		
+			#{fap.boton id:'btnGuardar', titulo:'Guardar' /}
+		
+			#{/fap.grupo}
+			
+			#{/form}
+		
+			#{fap.grupo permiso:'permisoTipo', titulo:'Expedientes autorizados'}
+				
+			#{fap.grupo borde:true, titulo:'Seleccionar Expedientes'}
+				
+			#{fap.combo campo:'peticionCesiones.seleccion', id:'cmbSeleccion', titulo:'Tipo de selección' /}		
+		
+			#{fap.grupo borde:false, siCombo:'cmbSeleccion', siComboValue:['certificadoFecha']}
+				
+			#{fap.fecha campo:'peticionCesiones.fechaCorte', titulo:'Fecha límite' /}		
+		
+			#{/fap.grupo}
+		
+			#{fap.enlace codigojs:'seleccion();', estilo:'btn', id:'seleccion', titulo:'Seleccionar' /}
+			
+			#{/fap.grupo}
+
+#{fap.tabla 
+     campo:'Solicitud', 
+     id:'tblSolicitudes', 
+     idEntidad:'idSolicitud', 
+     saveEntity:false, 
+     seleccionable:'Generar Peticion', 
+     tipoContainer:'pagina', 
+     urlSeleccionable:'NuevaCesionController.generarPeticion', 
+     urlTabla: play.mvc.Router.reverse('NuevaCesionController.tablatblSolicitudes' , ['idPeticionCesiones':peticionCesiones?.id]),
+     idP: peticionCesiones?.id
+}
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'ID', campo:'id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'expedienteAed.idAed' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Interno', campo:'estadoValue' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estado' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Usuario', campo:'estadoUsuario' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'ID Solicitante', campo:'solicitante.id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre Solicitante', campo:'solicitante.nombreCompleto' /}
+				
+#{/fap.tabla}
+
+
+#{/fap.grupo}
+		
+#{/fap.pagina}
+
+%{
+/*Url de la funcion del controlador que necesito llamar*/
+	urlConvertDataFunction = play.mvc.Router.reverse('NuevaCesionController.filtroCombo')
+	idPeticion = peticionCesiones?.id;
+	
+%}
+
+<script>
+
+function seleccion(){
+	var urlConvertData = "${urlConvertDataFunction}";
+	var ids = "${idPeticion}";
+	var fecha = "";
+	if (document.getElementById("peticionCesiones_fechaCorte") != null)
+		fecha = document.getElementById("peticionCesiones_fechaCorte").value;
+		$.ajax({
+	  		type: "POST",
+	  		url: urlConvertData,
+	  		data: {idPeticionCesiones: ids,
+	  		combo: document.getElementById("cmbSeleccion").value,
+	  		fecha: fecha}
+		}).done(function(msg) {
+			if(msg == "[]"){
+				alert("No hay elementos que cumplan los criterios de búsqueda");
+				//Vaciar checkbox por si habia marcas anteriores
+				smtblSolicitudes.deselectAll();
+			}
+			else
+  			  marcarLista(msg);
+  			  //Marcar que no hay cambios para evitar popup de aviso sin guardar
+  			  hayCambiosSinGuardar=false;
+		});
+}
+
+function marcarLista(msg){
+	smtblSolicitudes.deselectAll();
+	var all = document.querySelectorAll(".x-grid-row");
+
+	if (all != null){
+  		for (i = 0; i < all.length; i++){
+			if (_.contains(msg, i+"")){	
+				smtblSolicitudes.select(i, true, true);
+			}
+		}
+	}
+
+}
+
+</script>  
+		

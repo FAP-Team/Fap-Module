@@ -1,0 +1,35 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Autogenerada por fap:create
+*     /                       module:fap
+
+# Dentro de esta region se van a escribir todas las rutas generadas
+# === FAPGENERATED ===
+  # Home page
+GET / CuadroMandosController.index
+GET /CuadroDeMandos/cuadromandos CuadroMandosController.index
+GET /CuadroDeMandos/cuadromandos/aplicaciones CuadroMandosController.tablaaplicaciones
+GET /CuadroDeMandos/servicioswebappcm ServiciosWebAppCMController.index
+POST /CuadroDeMandos/servicioswebappcm ServiciosWebAppCMController.index
+GET /CuadroDeMandos/servicioswebappcm/serviciosWeb ServiciosWebAppCMController.tablaserviciosWeb
+POST /CuadroDeMandos/servicioswebappcm/formBtnRecargaWS ServiciosWebAppCMController.formBtnRecargaWS
+GET /CuadroDeMandos/servicioswebappcm/historialServiciosWeb ServiciosWebAppCMController.tablahistorialServiciosWeb
+GET /CuadroDeMandos/graficaswscm GraficasWSCMController.index
+POST /CuadroDeMandos/graficaswscm GraficasWSCMController.index
+POST /CuadroDeMandos/graficaswscm/formBtn GraficasWSCMController.formBtn
+GET /CuadroDeMandos/nuevaaplicacion popups.NuevaAplicacionController.index
+POST /CuadroDeMandos/nuevaaplicacion/borrar popups.NuevaAplicacionController.borrar
+POST /CuadroDeMandos/nuevaaplicacion/crear popups.NuevaAplicacionController.crear
+
+# === END FAPGENERATED ===
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

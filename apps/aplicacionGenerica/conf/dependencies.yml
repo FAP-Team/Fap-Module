@@ -2,12 +2,13 @@
 
 require:
     - play
-    - fap -> fap 2.1.5RC2
+    - fap -> fap 2.2RC0
     - fap-modules -> guice 1.3
     - play -> pdf 0.6
     - play -> less 0.9
     - play -> recaptcha 1.2
     - play -> mockito 0.1
+    - es.gobcan.aciisi -> portafirma 1.1
     - play -> webdrive 0.2:
         transitive: false
 

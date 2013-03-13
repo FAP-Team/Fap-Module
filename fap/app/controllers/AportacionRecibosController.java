@@ -14,12 +14,12 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 
 	public static void tablarecibosAportados(Long idSolicitud) {
 	    List<Documento> rows = Documento
-				.find("select registradas.justificante from Solicitud solicitud " +
-					  "join solicitud.aportaciones.registradas registradas " +
-					  "where solicitud.id=? and registradas.justificante.uri is not null",
-					  idSolicitud).fetch();
+	    		.find("select registradas.registro.justificante from Solicitud solicitud " +
+						  "join solicitud.aportaciones.registradas registradas " +
+						  "where solicitud.id=? and registradas.registro.justificante.uri is not null",
+						  idSolicitud).fetch();
 	    TableRenderResponse<Documento> response = TableRenderResponse.sinPermisos(rows);
-		renderJSON(response.toJSON("fechaSubida", "fechaRegistro", "tipo", "descripcionVisible", "urlDescarga", "id"));
+		renderJSON(response.toJSON("fechaSubida", "fechaRegistro", "tipo", "descripcionVisible", "urlDescarga", "enlaceDescargaFirmado", "id"));
 	}
 
 }

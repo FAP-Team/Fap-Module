@@ -19,6 +19,8 @@ public class FileUtils {
 		CONTROLLER : "app/controllers/",
 		CONTROLLER_GEN_POPUP : "app/controllers/gen/popups/",
 		CONTROLLER_POPUP : "app/controllers/popups/",
+		CONTROLLER_SERVICIOWEB : "app/controllers/serviciosweb/",
+		CONTROLLER_GEN_SERVICIOWEB : "app/controllers/gen/serviciosweb/",
 		CONF  : "conf/",
 		CONF_APPLICATION : "conf/application.conf",
 		CONF_ROUTES : "conf/routes",

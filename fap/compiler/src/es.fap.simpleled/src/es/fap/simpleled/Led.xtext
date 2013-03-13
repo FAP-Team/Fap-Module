@@ -7,7 +7,8 @@ Model:
 		(entidades += Entity) |
 	 	(formularios += Formulario) |
 	 	(listas += Lista) |
-	 	(permisos += Permiso)
+	 	(permisos += Permiso) |
+	 	(servicioWeb += ServicioWeb)
 	 ) *
 ;
 
@@ -226,7 +227,7 @@ Elemento:
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple |
-	EntidadAutomatica | Accion | Codigo | CCC | VisorFactura | SubirFactura | EditarFactura
+	EntidadAutomatica | Accion | Codigo | CCC | VisorFactura | SubirFactura | EditarFactura | TextoOculto
 ;
 
 Campo:
@@ -252,6 +253,12 @@ Texto:
 		& (requerido?='requerido')?
 		& (duplicar?='duplicar')?
 		& (password?='password')?
+	)
+;
+
+TextoOculto:
+	elemento='TextoOculto' (name=ID)? (
+		('campo' '=' campo=Campo)
 	)
 ;
 
@@ -305,7 +312,7 @@ BarraDeslizante:
 
 Enlace:
 	elemento='Enlace' (name=ID)? (
-		(('pagina' '=' pagina=PaginaAccion) | ('popup' '=' popup=PopupAccion) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING) | (anterior?="anterior")) 
+		(('pagina' '=' pagina=PaginaAccion) | ('popup' '=' popup=PopupAccion) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING) | (anterior?="anterior") | ('codigojs' '=' codigojs=STRING)) 
 		& ('titulo' '=' titulo=STRING)?
 		& ('destino' '=' destino=STRING)?
 		& ('estilo' '=' estilo=STRING)?
@@ -550,6 +557,7 @@ Solicitante:
 		& (requerido?='requerido')?
 		& ("permiso" "=" permiso=[Permiso])?
 		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
+		& (conDireccion?='conDireccion')?
 	)
 ;
 
@@ -693,7 +701,64 @@ PermisoRuleCheckGroupOp:
 ;
 
 PermisoRuleCheckRight:
-	campo=CampoPermiso | str=STRING  | nulo?='null' | action=("leer" | "editar" | "crear" | "borrar")
+	campo=CampoPermiso | str=STRING | booleano = ("true" | "false")  | nulo?='null' | action=("leer" | "editar" | "crear" | "borrar")
+;
+
+ServicioWeb:
+	elemento='ServicioWeb' name=ID (descripcion=STRING)? "{"
+		"campo" "=" campo=Campo
+		(when=WSWhen)?
+		"return" "=" "{" ret = WSReturn ("," retMore += WSReturn)* "}"
+	"}"
+;
+
+WSWhen:
+	'when' rule=WSRule
+;
+
+WSReturn:
+	"titulo" "=" titulo=STRING ":" campoRet=Campo
+;
+
+WSRule:
+	WSRuleOr
+;
+
+WSRuleOr returns WSRule:
+	WSRuleAnd ({WSRuleOr.left=current} 'or' right=WSRuleAnd)*
+;
+
+WSRuleAnd returns WSRule:
+	WSPrimary ({WSRuleAnd.left=current} 'and' right=WSPrimary)*
+;
+
+WSPrimary returns WSRule:
+	WSRuleCheck |
+	 '(' WSRuleOr ')' {WSPrimary.left=current}
+;
+
+WSRuleCheck:
+	left=Campo (
+		(simpleOp=WSRuleCheckSimpleOp right=WSRuleCheckRight)
+		| (groupOp=WSRuleCheckGroupOp '(' rightGroup+=WSRuleCheckRight (',' rightGroup+=WSRuleCheckRight)* ')')
+		| (compareOp=WSRuleCheckCompareOp right=WSRuleCheckRight)
+	)
+;
+
+WSRuleCheckSimpleOp:
+	op = ('=' | '!=')
+;
+
+WSRuleCheckGroupOp:
+	op = ('in' | 'not in')
+;
+
+WSRuleCheckCompareOp:
+	op = ('<' | '>' | '<='| '>=')
+;
+
+WSRuleCheckRight:
+	str=STRING  | nulo?='null'
 ;
 
 Codigo:

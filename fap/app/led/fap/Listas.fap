@@ -160,7 +160,7 @@ Lista paises{
     218:"Ecuador"
     818:"Egipto"
     222:"El Salvador"
-    784:"Emiratos Árabes Unidos"
+    784:"Emiratos �?rabes Unidos"
     232:"Eritrea"
     703:"Eslovaquia"
     705:"Eslovenia"
@@ -323,7 +323,7 @@ Lista paises{
     158:"Taiwán"
     834:"Tanzania"
     762:"Tayikistán"
-    086:"Territorio Británico del Oceano Índico"
+    086:"Territorio Británico del Oceano �?ndico"
     260:"Territorios Australes Franceses"
     626:"Timor Oriental"
     768:"Togo"
@@ -402,7 +402,7 @@ Lista provincias ocultar{
 		39 : "Cantabria"
 	}
 	07 : {
-		05: "Ávila"
+		05: "�?vila"
 		09: "Burgos"
 		24: "León"
 		34: "Palencia"
@@ -450,7 +450,7 @@ Lista provincias ocultar{
 		31: "Navarra"
 	}
 	16 : {
-		01: "Araba/Álava"
+		01: "Araba/�?lava"
 		20: "Gipuzkoa"
 		48: "Bizkaia"
 	}
@@ -499,7 +499,7 @@ Lista municipios ocultar{
 		010360: "Laudio/Llodio"
 		010587: "Legutiano"
 		010344: "Leza"
-		010395: "Moreda de Álava"
+		010395: "Moreda de �?lava"
 		010416: "Navaridas"
 		010421: "Okondo"
 		010437: "Oyón-Oion"
@@ -511,7 +511,7 @@ Lista municipios ocultar{
 		010534: "San Millán/Donemiliaga"
 		010549: "Urkabustaiz"
 		010552: "Valdegovía"
-		010571: "Villabuena de Álava/Eskuernaga"
+		010571: "Villabuena de �?lava/Eskuernaga"
 		010590: "Vitoria-Gasteiz"
 		010604: "Yécora/Iekora"
 		010611: "Zalduondo"
@@ -552,7 +552,7 @@ Lista municipios ocultar{
 		020306: "Elche de la Sierra"
 		020313: "Férez"
 		020328: "Fuensanta"
-		020334: "Fuente-Álamo"
+		020334: "Fuente-�?lamo"
 		020349: "Fuentealbilla"
 		020352: "Gineta (La)"
 		020365: "Golosalvo"
@@ -869,8 +869,8 @@ Lista municipios ocultar{
 		050163: "Arévalo"
 		050179: "Aveinte"
 		050185: "Avellaneda"
-		050198: "Ávila"
-		050219: "Barco de Ávila (El)"
+		050198: "�?vila"
+		050219: "Barco de �?vila (El)"
 		050224: "Barraco (El)"
 		050230: "Barromán"
 		050245: "Becedas"
@@ -917,7 +917,7 @@ Lista municipios ocultar{
 		050697: "Donjimeno"
 		050701: "Donvidas"
 		050723: "Espinosa de los Caballeros"
-		050739: "Flores de Ávila"
+		050739: "Flores de �?vila"
 		050744: "Fontiveros"
 		050757: "Fresnedilla"
 		050760: "Fresno (El)"
@@ -984,7 +984,7 @@ Lista municipios ocultar{
 		051414: "Muñopepe"
 		051429: "Muñosancho"
 		051435: "Muñotello"
-		051440: "Narrillos del Álamo"
+		051440: "Narrillos del �?lamo"
 		051453: "Narrillos del Rebollar"
 		051491: "Narros de Saldueña"
 		051472: "Narros del Castillo"
@@ -1023,7 +1023,7 @@ Lista municipios ocultar{
 		051820: "Pedro Bernardo"
 		051836: "Pedro-Rodríguez"
 		051841: "Peguerinos"
-		051854: "Peñalba de Ávila"
+		051854: "Peñalba de �?vila"
 		051867: "Piedrahíta"
 		051873: "Piedralaves"
 		051889: "Poveda"
@@ -1074,7 +1074,7 @@ Lista municipios ocultar{
 		052336: "Serranillos"
 		052341: "Sigeres"
 		052354: "Sinlabajos"
-		052367: "Solana de Ávila"
+		052367: "Solana de �?vila"
 		052373: "Solana de Rioalmar"
 		052389: "Solosancho"
 		052392: "Sotalbo"
@@ -1083,7 +1083,7 @@ Lista municipios ocultar{
 		052428: "Tiñosillos"
 		052434: "Tolbaños"
 		052449: "Tormellas"
-		052452: "Tornadizos de Ávila"
+		052452: "Tornadizos de �?vila"
 		052471: "Torre (La)"
 		052465: "Tórtoles"
 		052490: "Umbrías"
@@ -1093,7 +1093,7 @@ Lista municipios ocultar{
 		052546: "Velayos"
 		052562: "Villaflor"
 		052578: "Villafranca de la Sierra"
-		059053: "Villanueva de Ávila"
+		059053: "Villanueva de �?vila"
 		052584: "Villanueva de Gómez"
 		052597: "Villanueva del Aceral"
 		052601: "Villanueva del Campillo"
@@ -1148,7 +1148,7 @@ Lista municipios ocultar{
 		060397: "Coronada (La)"
 		060401: "Corte de Peleas"
 		060418: "Cristina"
-		060439: "Don Álvaro"
+		060439: "Don �?lvaro"
 		060444: "Don Benito"
 		060457: "Entrín Bajo"
 		060460: "Esparragalejo"
@@ -2213,7 +2213,7 @@ Lista municipios ocultar{
 		101843: "Torno (El)"
 		101875: "Torre de Don Miguel"
 		101881: "Torre de Santa María"
-		101856: "Torrecilla de los Ángeles"
+		101856: "Torrecilla de los �?ngeles"
 		101869: "Torrecillas de la Tiesa"
 		101908: "Torrejón el Rubio"
 		101894: "Torrejoncillo"
@@ -4551,7 +4551,7 @@ Lista municipios ocultar{
 		252555: "Vinaixa"
 	}
 	26 : {
-		260012: "Ábalos"
+		260012: "�?balos"
 		260027: "Agoncillo"
 		260033: "Aguilar del Río Alhama"
 		260048: "Ajamil"
@@ -4799,7 +4799,7 @@ Lista municipios ocultar{
 		280014: "Acebeda (La)"
 		280029: "Ajalvir"
 		280035: "Alameda del Valle"
-		280040: "Álamo (El)"
+		280040: "�?lamo (El)"
 		280053: "Alcalá de Henares"
 		280066: "Alcobendas"
 		280072: "Alcorcón"
@@ -4988,11 +4988,11 @@ Lista municipios ocultar{
 		290094: "Almáchar"
 		290108: "Almargen"
 		290115: "Almogía"
-		290120: "Álora"
+		290120: "�?lora"
 		290136: "Alozaina"
 		290141: "Alpandeire"
 		290154: "Antequera"
-		290167: "Árchez"
+		290167: "�?rchez"
 		290173: "Archidona"
 		290189: "Ardales"
 		290192: "Arenas"
@@ -5081,7 +5081,7 @@ Lista municipios ocultar{
 	30 : {
 		300011: "Abanilla"
 		300026: "Abarán"
-		300032: "Águilas"
+		300032: "�?guilas"
 		300047: "Albudeite"
 		300050: "Alcantarilla"
 		309027: "Alcázares (Los)"
@@ -5100,7 +5100,7 @@ Lista municipios ocultar{
 		300183: "Ceutí"
 		300196: "Cieza"
 		300200: "Fortuna"
-		300217: "Fuente Álamo de Murcia"
+		300217: "Fuente �?lamo de Murcia"
 		300222: "Jumilla"
 		300238: "Librilla"
 		300243: "Lorca"
@@ -6053,7 +6053,7 @@ Lista municipios ocultar{
 		371514: "Golpejas"
 		371529: "Gomecello"
 		371540: "Guadramiro"
-		371553: "Guijo de Ávila"
+		371553: "Guijo de �?vila"
 		371566: "Guijuelo"
 		371572: "Herguijuela de Ciudad Rodrigo"
 		371588: "Herguijuela de la Sierra"
@@ -6577,7 +6577,7 @@ Lista municipios ocultar{
 		400812: "Frumales"
 		400827: "Fuente de Santa Cruz"
 		400833: "Fuente el Olmo de Fuentidueña"
-		400848: "Fuente el Olmo de Áscar"
+		400848: "Fuente el Olmo de �?scar"
 		400864: "Fuentepelayo"
 		400870: "Fuentepiñel"
 		400886: "Fuenterrebollo"
@@ -6704,7 +6704,7 @@ Lista municipios ocultar{
 		402234: "Vegas de Matute"
 		402249: "Ventosilla y Tejadilla"
 		402252: "Villacastín"
-		402287: "Villaverde de Íscar"
+		402287: "Villaverde de �?scar"
 		402290: "Villaverde de Montejo"
 		402304: "Villeguillo"
 		402311: "Yanguas de Eresma"
@@ -6821,7 +6821,7 @@ Lista municipios ocultar{
 	42 : {
 		420011: "Abejar"
 		420032: "Adradas"
-		420047: "Ágreda"
+		420047: "�?greda"
 		420063: "Alconaba"
 		420079: "Alcubilla de Avellaneda"
 		420085: "Alcubilla de las Peñas"
@@ -6884,7 +6884,7 @@ Lista municipios ocultar{
 		420695: "Covaleda"
 		420709: "Cubilla"
 		420716: "Cubo de la Solana"
-		420737: "Cueva de Ágreda"
+		420737: "Cueva de �?greda"
 		420755: "Dévanos"
 		420768: "Deza"
 		420780: "Duruelo de la Sierra"
@@ -7953,7 +7953,7 @@ Lista municipios ocultar{
 		470506: "Cigales"
 		470513: "Ciguñuela"
 		470528: "Cistérniga"
-		470534: "Cogeces de Íscar"
+		470534: "Cogeces de �?scar"
 		470549: "Cogeces del Monte"
 		470552: "Corcos"
 		470565: "Corrales de Duero"
@@ -7974,7 +7974,7 @@ Lista municipios ocultar{
 		470719: "Geria"
 		470730: "Herrín de Campos"
 		470745: "Hornillos de Eresma"
-		470758: "Íscar"
+		470758: "�?scar"
 		470761: "Laguna de Duero"
 		470777: "Langayo"
 		470796: "Llano de Olmedo"
@@ -8876,6 +8876,7 @@ Lista posicionMensaje crearEnumerado {
 	inferior: "Parte inferior"
 }
 
+
 Lista tipoCrearExpedienteAed crearEnumerado {
 	solicitud: "Solicitud"
 	convocatoria: "Convocatoria"
@@ -8885,4 +8886,144 @@ Lista accesoAgente crearEnumerado {
 	certificado: "Certificado"
 	usuario: "Usuario"
 	ticketing: "Ticketing"
+}
+
+Lista sexo crearEnumerado {
+	hombre: "Hombre"
+	mujer: "Mujer"
+}
+
+Lista listaEstados crearEnumerado{
+	01: "Positivo"
+	02: "Negativo"
+	03: "No hay datos"
+	04: "Error"
+}
+
+Lista listaOrigen crearEnumerado{
+	cesion: "Cesion"
+	manual: "Manual"
+}
+
+Lista listaCesiones crearEnumerado{
+	aeat: "AEAT"
+	atc: "ATC"
+	inssA008: "INSS A008"
+	inssR001: "INSS R001"
+}
+
+
+Lista estadosPeticion crearEnumerado {
+	sinTipo: "Sin tipo"
+	creada: "Creada"
+	respondida: "Respondida"
+	asignada: "Asignada"
+}
+
+Lista tipoDocIdCesion crearEnumerado{
+	1: "DNI"
+	2: "Pasaporte"
+	6: "NIE"
+	9: "CIF"
+}
+
+Lista estadoCesionSolicitud crearEnumerado{
+	01: "No tiene reclamaciones de deuda vigente"
+	02: "Si tiene reclamaciones de deuda vigente"
+	03: "Identificador inexistente en BD"
+	04: "Identificador Incorrecto (formato erroneo)"
+	05: "Identificador con duplicidad"
+}
+
+Lista codigoIdent crearEnumerado{
+	0: "Interesado identificado"
+	2: "Interesado no identificado"
+	3: "Interesado de baja"
+	4: "Problemas técnicos"
+	5: "Denegado por sentencia o sanción"
+	6: "Entidad con C.I. revocado"
+}
+
+Lista codigoCert crearEnumerado{
+	P: "Positivo"
+	N: "Negativo"
+}
+
+Lista codigoAEATNegat crearEnumerado{
+	A: "Incumplimiento de Obligaciones Tributarias"
+	B: "Deudas Tributarias"
+	C: "A + B. Incumplimiento de Obligaciones + Deudas"
+	H: "Baja censal detectada"
+	M: "Delito Fiscal"
+	N: "A + B + M. Incumplimiento de Obligaciones + Deudas + Delito Fiscal"
+	O: "A + M. Incumplimiento de Obligaciones + Delito Fiscal"
+	P: "B + M. Existencia de deuda tributaria + Baja censal detectada"
+	Q: "A + H. Incumplimiento de obligación tributaria + Baja censal detectada"
+	R: "B + H. Existencia de deuda tributaria + Baja censal detectada"
+	S: "M + H. Existencia de delito fiscal + Baja censal detectada"
+	T: "A + B + M + H. Incumplimiento de obligación tributaria + Existencia de deuda tributaria + Existencia de delito fiscal + Baja censal detectada"
+	U: "A + M + H. Incumplimiento de obligación tributaria + Existencia de delito fiscal + Baja censal detectada"
+	V: "B + M + H. Existencia de deuda tributaria + Delito fiscal + Baja censal detectada"
+	X: "A + B + H. Incumplimiento de obligación tributaria + Existencia de deuda tributaria + Baja censal detectada"
+}
+
+Lista codigoRespuesta crearEnumerado{
+	00: "Resultado positivo"
+	01: "Resultado negativo"
+	02: "Inexistencia de datos solicitados"
+	03: "NIF erróneo"
+}
+
+Lista seleccionExpedientesCesion crearEnumerado{
+	todos: "Todos"
+	noCertificado: "Los que no tengan certificado o lo tengan caducado"
+	certificadoFecha: "Los que tengan un certificado con una fecha de validez límite"	
+}
+
+Lista codigosRegimen crearEnumerado{
+	0111: "Régimen General"
+	0112: "Régimen General. Artistas."
+	0114: "Régimen General. Profesionales taurinos."
+	0121: "Régimen General (Representantes de comercio)."
+	0131: "Régimen General. Sistema especial Resina."
+	0132: "Régimen General. Sistema especial de Frutas, Hortalizas y conservas Vegetales."
+	0134: "Régimen General. Sistema especial manipulado y empaquetado tomate fresco."
+	0135: "Régimen General. Sistema especial Industria Hostelera."
+	0136: "Régimen General. Sistema especial trabajadores fijos discontinuos en empresas de exhibición de cine y salas de bailes, discotecas y salas fiesta."
+	0137: "Régimen General. Sistema especial de trabajadores discontinuos en empresas de estudios de mercado y opinión publica."
+	0138: "Régimen General. Sistema Especial para Empleados de Hogar."
+	0140: "Regimen General. Convenio Especial."
+	0150: "Régimen General. Situación Especial."
+	0151: "Cuenta Convencional."
+	0152: "Cuenta Convencional."
+	0160: "Cuenta Convencional."
+	0161: "Régimen General. Sistema Especial Agrario. (Inactividad)"
+	0163: "Régimen General. Sistema Especial Agrario. (Actividad en CCC)"
+	0170: "Cuenta Convencional."
+	0180: "Cuenta Convencional."
+	0521: "Régimen Especial Trabajadores Autónomos."
+	0522: "Régimen Esp. Autónomos (De un Régimen Extinguido)."
+	0540: "Régimen Esp. Autónomos (Convenio Especial)."
+	0611: "Régimen Especial Agrario (Cuenta Ajena)."
+	0640: "Régimen Especial Agrario (Convenio Especial)."
+	0650: "Régimen Especial Agrario (Situación Especial)."
+	0811: "Régimen Especial de los trabajadores del Mar, Trabajadores por cuenta ajena grupo 1."
+	0812: "Régimen Especial de los trabajadores del Mar. Trabajadores por cuenta ajena grupo 2A."
+	0813: "Régimen Especial de los trabajadores del Mar. Trabajadores por cuenta ajena grupo 2B."
+	0814: "Régimen Especial de los trabajadores del Mar. Trabajadores por cuenta ajena grupo 3."
+	0821: "Régimen Especial de los trabajadores del Mar. Armadores y asimilados por cuenta ajena Grupo 1."
+	0822: "Régimen Especial Trabajadores del Mar. Armadores y asimilados por cuenta ajena Grupo 2A."
+	0823: "Régimen Especial Trabajadores del Mar. Armadores y asimilados por cuenta ajena Grupo 2B."
+	0825: "Régimen Especial del Mar (Autónomos)."
+	0840: "Régimen Especial del Mar (Convenio Especial)."
+	0850: "Régimen Especial del Mar Cuenta Ajena (Situación Especial)."
+	0899: "Cuenta Convencional."
+	0911: "Régimen Especial Minería del carbón."
+	0940: "Régimen Especial Minería del carbón (Convenio Especial)."
+	0950: "Régimen Especial Minería del carbón (Situación Especial)."
+	1211: "Régimen especial empleados hogar (Fijos)."
+	1240: "Régimen especial empleados hogar (Convenio especial)."
+	1250: "Régimen especial empleados hogar (Fijos + Situación Especial)."
+	3011: "Asistencia Sanitaria Concertada."
+
 }

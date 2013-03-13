@@ -1,6 +1,6 @@
 # Application dependencies
 
-self: play -> fap 2.1.5RC2
+self: play -> fap 2.2RC0
 
 
 require:
@@ -43,6 +43,21 @@ require:
         transitive: false
     - org.apache.santuario -> xmlsec 1.4.3:
         transitive: false
+    
+    # Generacion de pdf OpenOffice
+    - com.artofsolving -> jodconverter 2.2.1:
+        transitive: false
+    - org.openoffice -> juh 2.3.0:
+        transitive: false
+    - org.openoffice -> jurt 2.3.0:
+        transitive: false
+    - org.openoffice -> ridl 2.3.0:
+        transitive: false
+    - org.openoffice -> unoil 2.3.0:
+        transitive: false
+    - de.devsurf.components.converter.integrations -> openoffice 0.1.1:
+        transitive: false
+    
     
     # XmlGregorianCalendar    
     - xerces -> xercesImpl 2.9.1
@@ -87,8 +102,9 @@ repositories:
             - es.gobcan.eadmon -> *
             - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *
-            - es.gobcan.platino.servicios.enotificacion -> *
             - es.mityc -> * 
+            - es.gobcan.platino.servicios.enotificacion -> * 
+            - de.devsurf.components.converter.integrations -> *
 
     - fap-devel modules repository:
         type: http

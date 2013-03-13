@@ -8,6 +8,7 @@ Está formado por una serie de servicios de los cuales en la actualidad se utili
 * **Firma y sellado de tiempo**
 * **Registro de entrada y de salida**
 * **Gestor documental**
+* **Base de Datos a Terceros**
 
 
 h2. Documentación del servicio
@@ -66,6 +67,13 @@ fap.platino.registro.asunto=Tecnólogos
 fap.platino.registro.unidadOrganica=0
 fap.platino.registro.aliasServidor=aciisi-7177660
 
+# BDD De Terceros
+fap.platino.terceros.url=undefined
+# Para activar o no el servicio de BDD de Terceros de Platino
+fap.platino.tercero.activa=true
+# Localizaciones
+fap.platino.localizaciones.url=undefined
+
 h2. Clases de ayuda
 
 El paquete platino que está dentro del módulo contiene las clases de ayuda para trabajar con platino.
@@ -74,6 +82,7 @@ Las clases más importantes son:
 * **FirmaClient**
 * **PlatinoRegistro**
 * **PlatinoGestorDocumental**
+* **PlatinoTerceros**
 
 El resto de clases son clases de apoyo
 

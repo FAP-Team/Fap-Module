@@ -29,9 +29,12 @@ public class Aportacion extends FapModel {
 	public List<Documento> documentos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Registro registro;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public InformacionRegistro informacionRegistro;
 
-	/* Cuando aportamos sin registro, se establece ésta fecha */
+	/* Cuando aportamos sin registro, se establece esta fecha */
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaAportacionSinRegistro"), @Column(name = "fechaAportacionSinRegistroTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
@@ -56,6 +59,11 @@ public class Aportacion extends FapModel {
 
 		if (documentos == null)
 			documentos = new ArrayList<Documento>();
+
+		if (registro == null)
+			registro = new Registro();
+		else
+			registro.init();
 
 		if (informacionRegistro == null)
 			informacionRegistro = new InformacionRegistro();

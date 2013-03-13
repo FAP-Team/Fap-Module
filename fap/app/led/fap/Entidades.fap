@@ -32,10 +32,13 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Documentacion documentacion
 	Documentacion documentacionProceso
 	Documentacion documentacionAportada
+	Documentacion documentacionJustificacion
+	Documentacion documentacionCesion
 	Registro registro
 	ExpedientePlatino expedientePlatino
 	ExpedienteAed expedienteAed
 	Aportaciones aportaciones
+	Justificaciones justificaciones
 	Verificacion verificacion
 	OneToMany Verificacion verificaciones
 	Exclusion exclusion
@@ -45,9 +48,11 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	AceptarRenunciar aceptarRenunciar
 	Alegaciones alegaciones
 	OneToMany Notificacion notificaciones
-	OneToMany AutorizacionesFAP autorizacion
 	DatosAnotaciones datosAnotaciones
+	OneToMany AutorizacionesFAP autorizacion
 	Boolean activoFH default="false"
+	OneToMany CertificadoSolicitado certificados
+	Cesion cesion
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -57,12 +62,14 @@ Entidad Solicitante extends Persona auditable{
 	String telefonoMovil
 	String fax
 	Email email
+	String telefonoContacto
 	String web
 	// Es el solicitante el que puede tener representantes. Según el tipo de solicitante puede tener 1, o varios representantes
 	Boolean representado
 	RepresentantePersonaFisica representante
 	OneToMany RepresentantePersonaJuridica representantes
 	Boolean autorizaFuncionario
+	String uriTerceros
 }
 
 Entidad FuncionariosHabilitados extends Singleton {
@@ -191,6 +198,8 @@ Entidad PersonaFisica inheritance=joined auditable{
 	String nombre
 	String primerApellido
 	String segundoApellido
+	Lista sexo sexo
+	DateTime fechaNacimiento
 	Nip nip
 }
 
@@ -327,17 +336,40 @@ Entidad Aportaciones {
 	OneToMany Aportacion registradas
 }
 
+// Representación de las justificaciones actuales y las ya registradas
+Entidad Justificaciones {
+	Justificacion actual
+	OneToMany Justificacion registradas
+}
+
+// Entidad que representa una justificación realizada en un expediente
+Entidad Justificacion {
+	String estado
+	OneToMany Documento documentos
+	Registro registro
+	InformacionRegistro informacionRegistro
+	
+	/* Cuando aportamos sin registro, se establece esta fecha */
+	DateTime fechaJustificacionSinRegistro
+	Boolean habilitaFuncionario default="false"
+	Documento borrador
+	Documento oficial
+	Documento justificante
+}
+
 // Entidad que representa una aportación de documentación realizada en un expediente
 Entidad Aportacion {
 	String estado
 	OneToMany Documento documentos
 	
+	Registro registro
+	
 	InformacionRegistro informacionRegistro
-	/* Cuando aportamos sin registro, se establece ésta fecha */
+	/* Cuando aportamos sin registro, se establece esta fecha */
 	DateTime fechaAportacionSinRegistro
 
 	Boolean habilitaFuncionario default="false"
-
+	
 	Documento borrador
 	Documento oficial
 	Documento justificante
@@ -693,6 +725,10 @@ Entidad AdministracionFapJobs extends Singleton{
 	Boolean notificarAlertasAnotaciones default="true"
 	Boolean valorPropioNotificarAlertasAnotaciones default="false"
 	Integer valorNotificarAlertasAnotaciones
+	
+	Boolean actualizarServiciosWeb default="true"
+	Boolean valorPropioActualizarServiciosWeb default="false"
+	Integer valorActualizarServiciosWeb
 }
 
 Entidad DatosAnotaciones {
@@ -713,6 +749,171 @@ Entidad AnotacionFAP {
 	ManyToOne Agente personaSolucion noConstruct
 }
 
+Entidad Aplicacion {
+	String nombreApp
+	String urlApp
+	OneToMany ServiciosWeb serviciosWeb
+}
+
+Entidad ServiciosWeb {
+	ServicioWebInfo servicioWebInfo
+	OneToMany Peticion peticion
+}
+
+Entidad ServicioWebInfo {
+	String nombre
+	String urlWS
+	Boolean activo
+	String descripcion
+	OneToMany InfoParams infoParams
+}
+
+Entidad InfoParams {
+	String nombreParam
+	String tipo
+}
+
+Entidad Peticion {
+	String fechaPeticion
+	LongText stringJson
+	//OneToMany ResultadosPeticion resultadosPeticion
+}
+
+Entidad ListaResultadosPeticion {
+	OneToMany ResultadosPeticion resultadosPeticion
+}
+
+Entidad ResultadosPeticion {
+	OneToMany ResultadoPeticion resultadoPeticion
+}
+
+Entidad ResultadoPeticion {
+	String nombre
+	Integer valorInteger
+	Long valorLong
+	String valorString
+	Double valorDouble
+	String valorDateTime
+	Boolean valorBoolean
+}
+
+Entidad TipoCertificado {
+	String nombre
+	String descripcion
+	Lista tiposDocumentos tipoDocumento
+	String nombrePlantilla
+	Boolean necesitaFirma default="false"
+	Integer validez
+	DateTime fechaInicio
+	DateTime fechaFin
+}
+
+Entidad CertificadoSolicitado {
+	TipoCertificado tipo
+	Documento documento
+	DateTime fechaCreacion
+}
+
+// Metadatos de los tipos de documentos. Hecho en principio para parsear de un JSON
+Entidad Metadatos {    
+    // Tipo de documento al que hacen referencia los metadatos. 
+    String tipoDocumento default="ALL"   // Si se parsea el JSON y no está presente, son metadatos comunes a todos los tipos de documentos
+    OneToMany Metadato listaMetadatos                                      
+}
+
+Entidad Metadato {
+    String nombre
+    String valor
+}
+
+
+
+Entidad CargarTablaDeTablas extends Singleton{
+	Boolean checkNoCargarMunicipiosActualizando
+	Boolean checkNoCargarMunicipiosSoloCreando
+}
+
+Entidad AutorizacionCesion noConstruct{
+	Boolean aeat
+	Boolean inssR001
+	Boolean atc
+	Boolean inssA008
+	OneToMany Trabajador trabajadores
+	Boolean idi
+}
+
+Entidad Trabajador {
+	Lista codigosRegimen regimen
+	String codigoCuenta
+}
+
+Entidad Cesiones {
+	String idUnico
+	Lista listaCesiones tipo
+	DateTime fechaPeticion
+	DateTime fechaValidez
+	Lista listaEstados estado
+	Lista listaOrigen origen
+	Documento documento
+	boolean firmada
+}
+
+
+Entidad PeticionCesiones{
+	Lista listaCesiones tipo
+	Documento fichPeticion
+	Documento fichRespuesta
+	DateTime fechaGen
+	DateTime fechaValidez
+	RespuestaCesion respCesion
+	Lista estadosPeticion estado
+	
+	Lista seleccionExpedientesCesion seleccion
+	DateTime fechaCorte
+}
+
+
+Entidad RespuestaCesion{
+	String uri
+	DateTime fechaGeneracion
+	DateTime fechaActuacionGestor 
+}
+
+Entidad Cesion{
+	AutorizacionCesion autorizacionCesion
+	OneToMany Cesiones cesiones
+}
+
+Entidad CesionPDF{
+	Lista listaCesiones tipo
+	String cabeceraPrimera
+	String cabeceraSegunda
+	RegistroCesion registro
+	
+}
+
+Entidad RegistroCesion{
+	//InssR001 y ATC
+	String tipoRegistro //Tambien A008
+	String nDocumento   //Tambien AEAT
+	String estado		//Tambien A008
+	
+	//AEAT
+	String nombre		//Tambien A008
+	String ident
+	String cert
+	String negat
+	String datosPropios
+	String referencia
+	
+	//InssA008
+	String regimen
+	String cccPpal
+	String numMedioTrabajadores
+	DateTime fechaSolicitud
+}
+
+
 Entidad VerificacionTramites extends Singleton {
 	OneToMany TramitesVerificables tramites
 	String uriTramitePorDefecto
@@ -722,4 +923,6 @@ Entidad TramitesVerificables {
 	String uriTramite
 	String nombre transient
 	Boolean verificable default="true"
+
 }
+

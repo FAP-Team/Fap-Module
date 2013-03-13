@@ -49,13 +49,17 @@ function popup_open(popup, url, callback) {
 }
 
 function popupWait_open() {
+	popupWait_openWithMessage("Espere mientras se realiza la acción solicitada...");
+}
+
+function popupWait_openWithMessage(mensaje) {
 	$("body").append("<div id=\"popupWait_popup\" class=\"modal hide fade in\">"+
 					 "<div class=\"modal-header\">"+
 						"<button class=\"close\" data-dismiss=\"modal\">×</button>"+
     					"<h3>En proceso ...</h3>"+
 					 "</div>"+
 					 "<div class=\"modal-body\">"+
-					 	"<div class='text'>Espere mientras se realiza la acción solicitada...</div>"+
+					 	"<div class='text'>"+mensaje+"</div>"+
 						"<div class='adv'>Esta acción puede tardar varios minutos</div>"+
 						"<div class='rec'>Por favor, no pulse ninguna tecla mientras se realiza la operación</div>"+
 					 "</div>"+

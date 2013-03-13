@@ -1,0 +1,186 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+// Estilos para tabla de datos
+.table-datos {
+    width:100%;
+}
+
+.table-datos caption {
+	background-color : #ccc;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-datos th {
+	background-color : #ccc;
+	font-weight: bold;
+	width: 150px; 
+	white-space: nowrap;
+	text-align: left;	
+	padding-left: 5px;
+}
+.table-datos td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+
+.table-gris {
+width:100%;
+	border-collapse: collapse;
+}
+
+.table-gris caption{
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+.table-gris thead td {
+	background-color : #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding-left: 2px;
+}
+
+
+.table-gris td {
+	border: 1px solid #000;
+}
+
+</style>
+
+</head>
+<body>
+
+<h3 style="text-align: center;">Solicitud de incorporación de justificación al expediente de subvención para la compensación del sobrecoste que afrontan los operadores de telecomunicaciones para desplegar servicios de banda ancha en Canarias - Convocatoria 2011</h3>
+<!-- Solicitante -->
+
+	%{
+		def desMunicipio = models.TableKeyValue.getValue("municipios", solicitud.solicitante.domicilio.municipio);
+	}%
+	
+<div id="divDatosPersonalesSolicitante">
+<table id="tblDatosPersonalesSolicitante" class="table-datos" >
+	<caption>SOLICITANTE:</caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>CIF/NIF:</th><td>${solicitud.solicitante.getNumeroId()?.toUpperCase()}</td></tr>
+	<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+	<tr><th>Teléfono:</th><td>${solicitud.solicitante.telefonoFijo}</td></tr>
+	<tr><th>Móvil:</th><td>${solicitud.solicitante.telefonoMovil}</td></tr>
+	<tr><th>Fax:</th><td>${solicitud.solicitante.fax}</td></tr>
+	<tr><th>Correo electrónico:</th><td>${solicitud.solicitante.email}</td></tr>
+	<tr><th>Web: </th><td>${solicitud.solicitante.web}</td></tr>
+</table>
+</div>
+
+<div id="divDatosDireccionSolicitante">
+
+<table id="tblDatosDireccionSolicitante" class="table-datos" >
+	<tr><td colspan="2"><em><b><br>Dirección de ubicación de la entidad en Canarias:</b></em></td></tr>
+	<tr><th >Calle:</th><td>${solicitud.solicitante.domicilio.calle?.toUpperCase()}</td></tr>
+	<tr><th>Número:</th><td>${solicitud.solicitante.domicilio.numero}</td></tr>
+	<tr><th>Puerta/Piso/Otros:</th><td>${solicitud.solicitante.domicilio.otros?.toUpperCase()}</td></tr>	
+	<tr><th>Código Postal:</th><td>${solicitud.solicitante.domicilio.codigoPostal}</td></tr>
+ 	<tr><th>Municipio:</th><td>${desMunicipio?.toUpperCase()}</td></tr> 
+ 	 
+</table>
+</div>
+<br/><br/>
+
+*{
+<!-- Datos de contacto -->
+<div id="divDatosContacto">
+<table id="tblDatosContacto" class="table-datos">
+	<caption>PERSONA DE CONTACTO:</caption>
+	<tr><td colspan="2"><br></td></tr>
+	<tr><th>Nombre:</th><td>${solicitud.datosSolicitante.contacto.nombre?.toUpperCase()} , &nbsp
+				${solicitud.datosSolicitante.contacto.apellido1?.toUpperCase()} &nbsp
+				${solicitud.datosSolicitante.contacto.apellido2?.toUpperCase()}</td>
+	</tr>	
+	<tr><th>Teléfono:</th><td>${solicitud.datosSolicitante.contacto.telefono}</td></tr>
+	<tr><th>Móvil:</th><td>${solicitud.datosSolicitante.contacto.movil}</td></tr>
+	<tr><th>Fax:</th><td>${solicitud.datosSolicitante.contacto.fax}</td></tr>
+	<tr><th>Correo electrónico:</th><td>${solicitud.datosSolicitante.contacto.email}</td></tr>
+</table>
+</div>
+
+<br/><br/>
+}*
+
+<!-- Expone -->
+<div id="divExpone">
+<table id="tblExpone" class="table-datos">
+
+	<caption>EXPONE:</caption>	
+	<tr><td>
+	<p>Que habiendo presentado una solicitud de subvención para la compensación del sobrecoste que afrontan los operadores de telecomunicaciones para desplegar servicios de banda ancha en Canarias - Convocatoria 2011, a la que se le asignó el número de expediente
+	 ${solicitud.expedienteAed.idAed}  
+	</p><br></td></tr>
+	</table>
+</div>
+
+<!-- Solicita -->
+<div id="divSolicita">
+<table id="tblSolicita" class="table-datos">
+	<caption>SOLICITA:</caption>	
+	<tr>
+		<td><p>Que se incorporen a dicho expediente, los documentos que a continuación se relacionan.</p></td>
+	</tr>
+</table>
+</div>
+</br></br>
+
+<div id="divDocumentacion">
+<table id="tblDocumentacionTitulo" class="table-datos">
+    <caption>DOCUMENTACIÓN QUE SE ADJUNTA:</caption> 
+	<tr><td colspan="2"><br></td></tr>	
+</table>
+<table id="tblDocumentacion" class="table-gris" cellspacing="0px" cellpadding="2px" >
+ <thead>
+  <tr>		
+		<td>Documento</td>
+		<td>Tipo</td>
+		<td>Hash del documento</td>
+		
+  <tr>
+ </thead>
+	#{list items:solicitud.justificaciones.actual.documentos, as:"documento"}
+	%{
+		String descripcionDevolver = documento.tipo;
+		if (models.TableKeyValue.getValue("tiposDocumentos", documento.tipo) != null)
+			descripcionDevolver = models.TableKeyValue.getValue("tiposDocumentos", documento.tipo);
+	%}
+	<tr>
+		<td>${documento.descripcionVisible}</td>
+		<td>${descripcionDevolver}</td>
+		<td>${documento.hash}</td>
+	</tr>
+   #{/list}
+</table>
+</div>
+<br/><br/><br/>
+<div id="divFinal">
+<table id="tblFinal" >
+	<tr><td>
+		<p><b>ILMO. SR. DIRECTOR DE LA AGENCIA CANARIA DE INVESTIGACIÓN,INNOVACIÓN Y SOCIEDAD DE LA INFORMACIÓN.</b></p>
+	</td></tr>
+	<tr><td style="font-size:10px">
+		<p>Estos datos, salvo en los casos legalmente permitidos, no serán cedidos sin su consentimiento a entidad ni persona alguna. Si así lo desea puede ejercitar los derechos de acceso, rectificación, cancelación y oposición, a través de las solicitudes que se encuentran disponibles en el sitio web www.gobiernodecanarias.org.cpj/igs/temas/proteccion/derechos.html en el Registro electrónico de la ACIISI, lo que se informa en cumplimiento del artículo 5 de la Ley Orgánica 15/1999, de 13 de diciembre, de Protección de Datos de Carácter Personal.</p>
+	</td></tr>	
+</table>
+</div>
+
+</body>
+</html>

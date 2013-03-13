@@ -9,6 +9,7 @@ import javax.persistence.EntityTransaction;
 
 import org.joda.time.DateTime;
 
+import config.InjectorConfig;
 import controllers.fap.FirmaController;
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
@@ -22,6 +23,7 @@ import models.Firmante;
 import models.Firmantes;
 import models.JustificanteRegistro;
 import models.Registro;
+import models.Solicitante;
 import models.SolicitudGenerica;
 
 import platino.DatosRegistro;
@@ -35,6 +37,7 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.RegistroService;
 import services.RegistroServiceException;
+import services.TercerosService;
 
 @InjectSupport
 public abstract class TramiteBase {
@@ -331,23 +334,10 @@ public abstract class TramiteBase {
 				play.Logger.info("El trámite de '%s' de la solicitud %s ya está registrada", this.getTipoTramite(), this.solicitud.id);
 			}
 			registro.refresh();
-			//Crea el expediente en el AED
-			if(!getRegistro().fasesRegistro.expedienteAed){
-				tx.begin();
-				try {
-					gestorDocumentalService.crearExpediente(solicitud);
-				} catch (GestorDocumentalServiceException e) {
-					Messages.error("Error al crear el expediente");
-					play.Logger.fatal("Error al crear el expediente para la solicitud "+solicitud.id+": "+e);
-					throw new RegistroServiceException("Error al crear el expediente");
-				}
-				getRegistro().fasesRegistro.expedienteAed = true;
-				getRegistro().fasesRegistro.save();
-				tx.commit();
-			}else{
-				play.Logger.info("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
-			}
-			registro.refresh();
+			//Crea el expediente en el Gestor Documental
+			tx.begin();
+			crearExpediente();
+			tx.commit();
 			
 			//Ahora el estado de la solicitud se cambia después de registrar.
 			
@@ -398,6 +388,34 @@ public abstract class TramiteBase {
 				solicitud.save();
 				play.Logger.info("Los documentos del trámite de '%s' se movieron correctamente", this.getTipoTramite());
 				
+				
+				// Creamos el nuevo tercero, si no existe
+				if ((solicitud.solicitante.uriTerceros == null) || (solicitud.solicitante.uriTerceros.isEmpty())) {
+					try {
+						String tipoNumeroIdentificacion;
+						if (solicitud.solicitante.isPersonaFisica()){
+							tipoNumeroIdentificacion = solicitud.solicitante.fisica.nip.tipo;
+						} else {
+							tipoNumeroIdentificacion = "cif";
+						}
+						TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+						Solicitante existeTercero = tercerosService.buscarTercerosDetalladosByNumeroIdentificacion(solicitud.solicitante.getNumeroId(), tipoNumeroIdentificacion);
+						if (existeTercero == null){
+							String uriTercero = tercerosService.crearTerceroMinimal(solicitud.solicitante);
+							solicitud.solicitante.uriTerceros = uriTercero;
+							solicitud.save();
+						} else {
+							String uriTercero = existeTercero.uriTerceros;
+							solicitud.solicitante.uriTerceros = uriTercero;
+							solicitud.save();
+							play.Logger.warn("El Tercero ya existe en la BDD a Terceros de Platino: "+solicitud.solicitante.getNumeroId()+" - "+tipoNumeroIdentificacion+". Se ha seteado la uriTerceros a: "+uriTercero);
+						}
+					} catch (Exception e){
+						play.Logger.fatal("No se pudo crear el Tercero en Platino con id: "+solicitud.solicitante.getNumeroId()+" : "+e.getMessage());
+					}
+				}
+				
+				
 				try {
 					play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
 					Mails.enviar(this.getMail(), solicitud);
@@ -439,6 +457,23 @@ public abstract class TramiteBase {
 	 * Crea el expediente del Aed
 	 */
 	public abstract void crearExpedienteAed();
+	
+	public void crearExpediente() throws RegistroServiceException{
+		
+		if(!getRegistro().fasesRegistro.expedienteAed){
+			try {
+				gestorDocumentalService.crearExpediente(solicitud);
+			} catch (GestorDocumentalServiceException e) {
+				Messages.error("Error al crear el expediente");
+				play.Logger.error("Error al crear el expediente para la solicitud "+solicitud.id+": "+e);
+				throw new RegistroServiceException("Error al crear el expediente");
+			}
+			getRegistro().fasesRegistro.expedienteAed = true;
+			getRegistro().fasesRegistro.save();
+		}else{
+			play.Logger.info("El expediente del aed para la solicitud %s ya está creado", solicitud.id);
+		}
+	}
 
 	/**
 	 * Crea el expediente en Platino

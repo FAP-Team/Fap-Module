@@ -36,6 +36,8 @@ public class Solicitante extends Persona {
 	@Email
 	public String email;
 
+	public String telefonoContacto;
+
 	public String web;
 
 	public Boolean representado;
@@ -48,6 +50,8 @@ public class Solicitante extends Persona {
 	public List<RepresentantePersonaJuridica> representantes;
 
 	public Boolean autorizaFuncionario;
+
+	public String uriTerceros;
 
 	public Solicitante() {
 		init();

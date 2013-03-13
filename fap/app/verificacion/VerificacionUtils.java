@@ -81,7 +81,7 @@ public class VerificacionUtils {
 			// Documentos condicionados automaticos obligatorios de la aplicacion en cuestion
 			List<String> docCondicionadosAutomaticosNoAportados=new ArrayList<String>();
 			try {
-				docCondicionadosAutomaticosNoAportados = VerificacionFapController.invoke("getDocumentosNoAportadosCondicionadosAutomaticos", tramite.nombre, idSolicitud);
+				docCondicionadosAutomaticosNoAportados = VerificacionFapController.invoke(VerificacionFapController.class, "getDocumentosNoAportadosCondicionadosAutomaticos", tramite.nombre, idSolicitud);
 			} catch (Throwable e) {
 				play.Logger.error("Fallo al recuperar la lista con los tipos de documentos condicionados automaticos: "+e);
 			}
@@ -315,8 +315,8 @@ public class VerificacionUtils {
 		List<Documento> documentosNuevos=null;
 		List <Documento> documentosNuevosSinVerificacionActual = null;
 		try {
-			documentosNuevos = (List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
-			documentosNuevosSinVerificacionActual = (List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
+			documentosNuevos = (List<Documento>)VerificacionFapController.invoke(VerificacionFapController.class, "getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
+			documentosNuevosSinVerificacionActual = (List<Documento>)VerificacionFapController.invoke(VerificacionFapController.class, "getNuevosDocumentosVerificar", verificacionActual.id, idSolicitud);
 		} catch (Throwable e) {
 			e.printStackTrace();
 			play.Logger.error("Error recuperando los documentos nuevos a verificar", e.getMessage());

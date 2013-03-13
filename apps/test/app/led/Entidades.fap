@@ -31,6 +31,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	Persona personaDirector
 
 	OneToMany FacturasFAP facturas
+	
+	PruebaConversion pruebaConversion
 }
 
 Entidad FirmaEnServidor {
@@ -194,3 +196,8 @@ Entidad ElementosBasicos{
 	Double numeroD
 	CCC ccc
 }
+
+Entidad PruebaConversion {
+	Documento docPrueba
+}
+

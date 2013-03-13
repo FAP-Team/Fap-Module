@@ -9,7 +9,9 @@ Formulario Administracion permiso=administrador{
 			Enlace "Gestor Documental" pagina=Aed
 			Enlace "Tramites Verificables" pagina=TramitesVerificables
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
+			Enlace "Cesion de Datos" permiso=adminOrGestor pagina=GenerarFichCesiones
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
+			Enlace "Tipos Certificados" pagina=ConfigurarCertificados
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
 			Enlace "Codigos Requerimientos y Exclusión" pagina=Codigos
 			Enlace "Emails" pagina=Emails
@@ -22,12 +24,63 @@ Formulario Administracion permiso=administrador{
 			Enlace "Visibilidad de Estados" pagina=EstadosVisibles
 			Enlace "Configurar mensajes" pagina=ConfigurarMensajes
 			Enlace "Resoluciones" pagina=CargarTiposAreasResoluciones
+			Enlace "Gráficas" pagina=ServiciosWebApp
+			Enlace "Migración de Aportaciones" pagina=ActualizarAportaciones
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
 		Enlace "Salir" accion=logout
     }
+
+    Pagina ServiciosWebApp noForm titulo="Servicios web de la aplicación" campo=Aplicacion  permiso=administrador {
+		Grupo permiso=noEditable titulo="Datos de la aplicación" {
+			Texto campo=Aplicacion.nombreApp titulo="Nombre de la aplicación" 
+			Texto campo=Aplicacion.urlApp titulo="URL de la aplicación"
+		}
+		
+		Tabla serviciosWeb titulo="Servicios web activos" campo=Aplicacion.serviciosWeb
+		paginaEditar=GraficasWS
+		{
+			Columna titulo="ID" campo=ServiciosWeb.id ancho="35"
+			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
+			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
+			Columna titulo="Descripción" campo=ServiciosWeb.servicioWebInfo.descripcion expandir
+		}
+		
+		Form formBtnRecargaWS {
+			Boton recargasWS titulo="Recargar Servicios Web" ayuda="Pulse este botón para obligar a actualizar los servicios web de la aplicación" (popover)
+		}
+		
+		Tabla historialServiciosWeb titulo="Historial de servicios web" campo=Aplicacion.serviciosWeb
+		paginaEditar=GraficasWS
+		{
+			Columna titulo="ID" campo=ServiciosWeb.id ancho="35"
+			Columna titulo="Nombre del servicio web" campo=ServiciosWeb.servicioWebInfo.nombre expandir
+			Columna titulo="URL del servicio web" campo=ServiciosWeb.servicioWebInfo.urlWS expandir
+			Columna titulo="Descripción" campo=ServiciosWeb.servicioWebInfo.descripcion expandir
+		}
+	}
+	
+	Pagina GraficasWS noForm titulo="Gráficas servicios web" campo=Aplicacion.serviciosWeb {
+		Wiki {"Aquí se mostrará el SuperTag"}
+		Form formBtn {
+			Boton btnRecargasDatos titulo="Recargar datos" ayuda="Pulse este botón para obligar a actualizar los datos de los servicios web" (popover)
+			Boton btnVolver titulo="Volver a la lista de Servicios Web" pagina=ServiciosWebApp
+		}
+
+	}
+
+
+    Pagina ActualizarAportaciones permiso=administrador perteneceA="Administracion"{
+    	Grupo titulo="Convertir Aportaciones al nuevo modelo"{
+	    	Wiki {"Será necesario ejecutar esta acción UNA única vez, si la aplicación utilizaba una versión de FAP anterior a la versión 2.1.1RC12, justo en el momento de la primera ejecución de la aplicación con la nueva versión"}
+	    	Form botonActualizarAportaciones {
+	    		Boton actualizar titulo="Migrar Aportaciones v2.x a v2.1.1RC12 y superiores" type=danger
+	    	}
+	    }
+    }
     
+
     Pagina TramitesVerificables titulo="Tramites Verificables" campo=VerificacionTramites perteneceA="Administracion"{
     	Tabla tramitesVerificablesTbl titulo="Tramites Supceptibles de ser Verificables" campo=VerificacionTramites.tramites popupEditar=PopUpTramiteVerificable popupLeer=PopUpTramiteVerificable recargarPagina{
     		Columna campo=TramitesVerificables.nombre titulo="Nombre" expandir
@@ -45,6 +98,7 @@ Formulario Administracion permiso=administrador{
     	Check titulo="Verificable" campo=TramitesVerificables.verificable
     }
     
+
     // Pagina Sobreescrita
     Pagina ConsultasBBDD titulo="Consultas" perteneceA="Administracion"{
     	Grupo titulo = "Consultas a la Base de Datos de la aplicación"{
@@ -206,6 +260,13 @@ También actualiza la tabla de tablas, añadiendo los tipos de documentos en la 
 			Form actualizarTramites {
 				Boton actualizarTramites titulo="Actualizar trámites"
 			}
+			
+			Wiki {
+                "Actualiza los metadatos de los tipos de documentos."
+            }
+			Form actualizarMetadatos {
+                Boton actualizarMetadatos titulo="Actualizar metadatos"
+            }
 			
 			Tabla tramites campo=Tramite popupLeer=PopupTramite titulo="Trámites pertenecientes al procedimiento"{
 				Columna titulo="Nombre" campo=Tramite.nombre ancho="250"
@@ -449,7 +510,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	}
 	
 	Pagina CargarTiposAreasResoluciones titulo="Resoluciones" noForm perteneceA="Administracion" {
-		Grupo grpCargarAreas titulo="Cargar Áreas" {
+		Grupo grpCargarAreas titulo="Cargar �?reas" {
 			Form frmCargarAreas {
 				Boton cargarAreas titulo="Actualizar"
 			}
@@ -460,5 +521,122 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 			}
 		}
 	}
+
+	
+	Pagina ConfigurarCertificados titulo="Configurar Certificados" noForm perteneceA="Administracion"{
+		Wiki{"Creación de nuevos tipos de certificados o edición de los existentes."}
+		Tabla tablaTiposCertificados titulo="Tipos de Certificados" campo=TipoCertificado popup=PopupTipoCertificado{
+			Columna titulo="Nombre" campo=TipoCertificado.nombre
+			Columna titulo="Descripción" campo=TipoCertificado.descripcion
+			Columna titulo="Plantilla" campo=TipoCertificado.nombrePlantilla
+		}
+	}
+	
+	Popup PopupTipoCertificado titulo="Tipo de Certificado" campo=TipoCertificado {
+		Texto nombre campo=TipoCertificado.nombre titulo="Nombre" requerido
+		Texto descripcion campo=TipoCertificado.descripcion titulo="Descripcion"
+		Combo tipoDocumento campo=TipoCertificado.tipoDocumento titulo="Tipo de Documento" requerido
+		Texto plantilla campo=TipoCertificado.nombrePlantilla titulo="Nombre Plantilla PDF" requerido
+		Check firmado campo=TipoCertificado.necesitaFirma titulo="Requiere Firma del Emisor"
+		Texto validez campo=TipoCertificado.validez titulo="Periodo de validez (en meses)"
+		Fecha inicio campo=TipoCertificado.fechaInicio titulo="Fecha inicio de la emisión"
+		Fecha final campo=TipoCertificado.fechaFin titulo="Fecha fin de la emisión"
+	}
+
+
+	
+	//Muestra todas las peticiones de cesion de datos realizadas sobre las solicitudes de la aplicacion
+	Pagina GenerarFichCesiones titulo= "Peticiones de Cesiones de Datos"{
+		Tabla tblCesiones campo=PeticionCesiones titulo="Tabla de Peticiones de Cesiones" paginaCrear=NuevaCesion paginaEditar=EditarCesion paginaLeer=LeerCesion color: porDefecto{
+			Columna titulo="Tipo" campo=PeticionCesiones.tipo
+			Columna titulo="Fecha Generación" campo=PeticionCesiones.fechaGen
+			Columna titulo="Fecha de Validez" campo=PeticionCesiones.fechaValidez
+			Columna titulo="Estado" campo=PeticionCesiones.estado
+		}
+	}
+	
+	//Nueva petición de cesión de datos
+	Pagina NuevaCesion campo=PeticionCesiones titulo="Nueva Petición de Cesión de Datos" noForm{
+		Form formTipoCesion{
+			Grupo permiso=permisoTipoElegido borde=true titulo="Filtrar expedientes"{
+				Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión" requerido
+				Boton btnGuardar titulo="Guardar"
+			}
+		}
+
+		//Elegir de entre todas las solicitudes a cuales quiero generar la cesion de datos
+		Grupo permiso=permisoTipo titulo="Expedientes autorizados"{
+			Grupo borde=true titulo="Seleccionar Expedientes"{
+				Combo cmbSeleccion campo=PeticionCesiones.seleccion titulo="Tipo de selección"
+				Grupo borde=false mostrarSiCombo cmbSeleccion="certificadoFecha"{
+				Fecha fechaLimite campo=PeticionCesiones.fechaCorte titulo="Fecha límite"
+			} 
+			Enlace seleccion titulo="Seleccionar" estilo="btn" codigojs="" //Sobreescrito
+			}
+			Tabla tblSolicitudes campo=SolicitudGenerica seleccionable="Generar Peticion" {
+				Columna titulo="ID" campo=SolicitudGenerica.id
+				Columna titulo="Expediente" campo=SolicitudGenerica.expedienteAed.idAed
+				Columna titulo="Estado Interno" campo=SolicitudGenerica.estadoValue
+				Columna titulo="Estado" campo=SolicitudGenerica.estado
+				Columna titulo="Estado Usuario" campo=SolicitudGenerica.estadoUsuario
+				Columna titulo="ID Solicitante" campo=SolicitudGenerica.solicitante.id
+				Columna titulo="Nombre Solicitante" campo=SolicitudGenerica.solicitante.nombreCompleto
+			}
+		}
+	}
+	
+	Pagina LeerCesion campo=PeticionCesiones titulo="Petición de Cesión de Datos"{
+		Grupo titulo = "Petición de Cesión de Datos" permiso=noEditable{
+			Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+			Grupo grupoFicheros titulo="Ficheros disponibles"{
+				Grupo borde=false permiso=verPeticionCesion{
+					Enlace descargarFicheroP campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar fichero de petición" destino="_blank"
+				}
+				Grupo borde=false permiso=verRespuestaCesion{
+					Enlace descargarFicheroR campo=PeticionCesiones.fichRespuesta.urlDescarga titulo="Descargar fichero de respuesta" destino="_blank"
+				}
+			}
+		}
+		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
+	}
+	
+	Pagina EditarCesion campo=PeticionCesiones permiso=ultimaEditable noForm titulo="Petición de Cesión de Datos"{
+		Accion editar redirigir=anterior
+			Grupo titulo="Datos de cesion: Descargar fichero de petición" { 
+				Enlace descargarFichero campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar" destino="_blank" estilo="btn"
+			}
+		Grupo titulo="Datos de Cesión: subir fichero de respuesta"{
+			Form formCesionFichSubida{
+					Grupo borde=false permiso=tipoAsignado{
+						Grupo borde=false permiso=noEditable{
+							Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+						}
+						Boton btnGuardar titulo="Guardar" 
+					}
+				}
 		
+			Form formCesionFichRespuesta{
+				Grupo borde=false permiso=responderPeticion{
+					SubirArchivo subirArchivo campo=PeticionCesiones.fichRespuesta mimes="text/plain"
+					Boton tratarFich titulo="Subir fichero de respuesta"
+				}
+			}
+			
+			Form formCesionAplicarCambios{
+				Grupo borde=false permiso=aplicarCambios {
+					Enlace verFichero campo=PeticionCesiones.fichRespuesta.urlDescarga titulo="Ver el fichero subido" destino="_blank" estilo="btn"
+					Boton cambiarFichero titulo="Subir otro documento de respuesta"
+					Boton aplicarCambios titulo="Aplicar cambios"
+				}
+			}
+			Grupo permiso=cesionTerminada titulo="Cesion Finalizada"{
+				Grupo borde=false permiso=noEditable{
+					Combo cmbTipoFin campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
+				}
+			}
+		}
+		//Boton btnVolver titulo="Volver"
+		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
+	}
+
 }

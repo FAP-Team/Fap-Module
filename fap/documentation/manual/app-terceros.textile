@@ -1,0 +1,50 @@
+h1. Base de Datos a Terceros
+
+Funcionalidad para permitir rellenar automaticamente los datos de un solicitante, consultando el servicio de base de datos a Tercero. Existen una implementación usando el servicio de Platino y otra implementación usando FileSystem. Dependiendo como se "inyecte el servicio":ws-fs-gd se configurará una implementación del servicio u otra. La funcionalidad consiste en cargar dinámicamente (en la pagina donde se defina un elemento DSL Solicitante), los campos de un determinado solicitante haciendo las consultas pertinentes a la BDD a Terceros configurada.
+
+De esta manera, se pueden cargar los datos de un solicitante consultando la BDD a Terceros de Platino y recuperar toda la información de un solicitante que ya la haya rellenado previamente en otra solicitud que haya presentado y no obligarle a volver a realizarlo.
+
+Por defecto, el comportamiento que tiene FAP respecto a esta funcionalidad, es que siempre va a intentar recuperar los datos del solicitante de una base de datos a terceros. En el módulo FAP está configurado el FileSystem para inyectar este servicio, si se quiere utilizar la otra implementación que trae de serie FAP (Platino), se deberá indicar en el _AppModule_ de la aplicación, tal y como se explica en la "documentación":ws-fs-gd pertinente.
+
+Si se decide utilizar la Base de Datos a Terceros de Platino, se deberán configurar las properties (urls, etc.) pertinentes que "aquí":ws-platino se explican.
+
+Esta funcionalidad se puede deshabilitar, y que nunca intente recuperar los datos de ese solicitante, mediante la configuración de la property *fap.platino.tercero.activa=false*.
+
+FAP está preparado para que si el solicitante es una persona física, sólo le recupere los datos y le autorellene los campos del elemento Solicitante, en caso de que el que esté conectado sea el propio solicitante que está rellenando una solicitud en su nombre. En caso de personas físicas, siempre se autorellenará los datos de una empresa, ya que estos son datos públicos.
+
+h2. Flujo de trabajo
+
+!images/app-bddTercerosWF!
+
+h2. Métodos del servicio
+
+Existen únicamente dos métodos del servicio de BDD a Terceros de FAP:
+
+* **Buscar un Solicitante**: 
+
+bc. public Solicitante buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException;
+
+Que a través de un Numero de Identificación y su Tipo (Por ejemplo: 11111111H y "NIF") devuelve el Solicitante que tenga la fecha de Actualización más reciente en la BDD a Terceros consultada y que concuerde con esos dos datos.
+
+Este es el método usado por FAP para autorellenar los datos de un solicitante nada más que este setee en el formulario su numero de Identificación y el tipo.
+
+* **Crear Tercero**:
+
+bc. public String crearTerceroMinimal(Solicitante tercero) throws TercerosServiceException;
+
+Que pasandole un Solicitante, crea un nuevo tercero en la BDD a Terceros configurada. Devuelve la URI del tercero que le ha asignado la BDD en cuestión.
+
+Este es el método que utiliza FAP para crear un nuevo Tercero, en caso de que no exista (buscandolo con la funcion anterior), en la llamada al método _registrar()_ de TramiteBase, para crearlo al registrar la solicitud en caso de que no existe en la BDD en cuestión y así permitir el autorellenado de los campos en otras aplicaciones o futuras solicitudes.
+
+h2. BDD a Terceros de Platino
+
+La conversión que se realiza en FAP para mapear los datos que devuelve Platino en los datos que maneja el módulo FAP se puede ver esquemáticamente en los diagramas siguientes. Cada diagrama representa el método en cuestión del Servicio.
+
+h3. Buscar un Solicitante
+
+!images/traerDatosPlatinoAFAP!
+
+h3. Crear un Tercero
+
+!images/crearDatosFAPAPlatino!
+

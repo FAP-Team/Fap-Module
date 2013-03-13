@@ -174,7 +174,6 @@ public class TableKeyValue extends FapModel {
 	public static String getValue(String table, String key) {
 		if (table == null || key == null)
 			return null;
-
 		Map<String, String> m = findByTableAsMap(table);
 		if (m != null)
 			return m.get(key);
@@ -226,17 +225,17 @@ public class TableKeyValue extends FapModel {
 	 * @param value
 	 * @param renewCache
 	 */
-	public static void updateValue(String oldTable, String oldKey, String newTable, String newKey, String newValue, boolean renewCache) {
+	public static void updateValue(String oldTable, String oldKey, String newTable, String newKey, String newValue, boolean noVisible, boolean renewCache) {
 		removeValue(oldTable, oldKey, renewCache);
-		setValue(newTable, newKey, newValue, renewCache);
+		setValue(newTable, newKey, newValue, noVisible, renewCache);
 	}
 
 	public static void updateValue(TableKeyValue oldTkv, TableKeyValue newTkv) {
-		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.value, true);
+		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.value, oldTkv.noVisible, true);
 	}
 
 	public static void updateValue(TableKeyValue oldTkv, TableKeyValue newTkv, boolean renewCache) {
-		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.value, renewCache);
+		updateValue(oldTkv.table, oldTkv.key, newTkv.table, newTkv.key, newTkv.value, oldTkv.noVisible, renewCache);
 	}
 
 	/**

@@ -50,6 +50,12 @@ public class SolicitudGenerica extends FapModel {
 	public Documentacion documentacionAportada;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documentacion documentacionJustificacion;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documentacion documentacionCesion;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -60,6 +66,9 @@ public class SolicitudGenerica extends FapModel {
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Aportaciones aportaciones;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Justificaciones justificaciones;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Verificacion verificacion;
@@ -88,14 +97,21 @@ public class SolicitudGenerica extends FapModel {
 	@JoinTable(name = "solicitudgenerica_notificaciones")
 	public List<Notificacion> notificaciones;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DatosAnotaciones datosAnotaciones;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_autorizacion")
 	public List<AutorizacionesFAP> autorizacion;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public DatosAnotaciones datosAnotaciones;
-
 	public Boolean activoFH;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "solicitudgenerica_certificados")
+	public List<CertificadoSolicitado> certificados;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Cesion cesion;
 
 	public SolicitudGenerica() {
 		init();
@@ -123,6 +139,16 @@ public class SolicitudGenerica extends FapModel {
 		else
 			documentacionAportada.init();
 
+		if (documentacionJustificacion == null)
+			documentacionJustificacion = new Documentacion();
+		else
+			documentacionJustificacion.init();
+
+		if (documentacionCesion == null)
+			documentacionCesion = new Documentacion();
+		else
+			documentacionCesion.init();
+
 		if (registro == null)
 			registro = new Registro();
 		else
@@ -142,6 +168,11 @@ public class SolicitudGenerica extends FapModel {
 			aportaciones = new Aportaciones();
 		else
 			aportaciones.init();
+
+		if (justificaciones == null)
+			justificaciones = new Justificaciones();
+		else
+			justificaciones.init();
 
 		if (verificacion == null)
 			verificacion = new Verificacion();
@@ -177,16 +208,24 @@ public class SolicitudGenerica extends FapModel {
 		if (notificaciones == null)
 			notificaciones = new ArrayList<Notificacion>();
 
-		if (autorizacion == null)
-			autorizacion = new ArrayList<AutorizacionesFAP>();
-
 		if (datosAnotaciones == null)
 			datosAnotaciones = new DatosAnotaciones();
 		else
 			datosAnotaciones.init();
 
+		if (autorizacion == null)
+			autorizacion = new ArrayList<AutorizacionesFAP>();
+
 		if (activoFH == null)
 			activoFH = false;
+
+		if (certificados == null)
+			certificados = new ArrayList<CertificadoSolicitado>();
+
+		if (cesion == null)
+			cesion = new Cesion();
+		else
+			cesion.init();
 
 		postInit();
 	}

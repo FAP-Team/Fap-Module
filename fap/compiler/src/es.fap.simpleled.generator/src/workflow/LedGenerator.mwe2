@@ -38,6 +38,11 @@ Workflow {
 			type = "Formulario"
 		}
 		
+		load = {
+			slot = "serviciosweb"
+			type = "ServicioWeb"
+		}
+		
 	}
 
 	component = wfcomponent.Start {
@@ -68,6 +73,15 @@ Workflow {
 	//Expande las listas
 	component = org.eclipse.xpand2.Generator {
 		expand = "templates::Template::main FOREACH listas"
+		outlet = {
+			path = targetPath	
+		}
+		fileEncoding = fileEncoding
+	}
+	
+	//Expande los Servicios Web
+	component = org.eclipse.xpand2.Generator {
+		expand = "templates::Template::main FOREACH serviciosweb"
 		outlet = {
 			path = targetPath	
 		}

@@ -22,7 +22,7 @@ public class PresentarFAPController extends PresentarFAPControllerGen {
 			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 			solicitud.estado = "borrador";
 			try {
-				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
+				TramiteBase tramite = PresentacionFapController.invoke(PresentacionFapController.class, "getTramiteObject", idSolicitud);
 				tramite.deshacer();
 			} catch (Throwable e) {
 				log.info("No se ha podido deshacer la presentación de la solicitud: "+e.getMessage());
@@ -52,8 +52,8 @@ public class PresentarFAPController extends PresentarFAPControllerGen {
 		if (!Messages.hasErrors()) {
 			
 			try {
-				TramiteBase tramite = PresentacionFapController.invoke("getTramiteObject", idSolicitud);
-				if (PresentacionFapController.invoke("comprobarPaginasGuardadas", idSolicitud)){
+				TramiteBase tramite = PresentacionFapController.invoke(PresentacionFapController.class, "getTramiteObject", idSolicitud);
+				if (PresentacionFapController.invoke(PresentacionFapController.class, "comprobarPaginasGuardadas", idSolicitud)){
 					// Valido si hay alguna pagina sin guardar y si da error
 					// No evaluo los documentos;
 					if (!Messages.hasErrors()) {

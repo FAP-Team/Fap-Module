@@ -22,6 +22,7 @@ GET   /Baremacion/evaluacion/borradorpdf              fap.FichaEvaluadorControll
 * /externalWS/setFirmada  fap.WSPortafirma.setFirmada
 
 #Utils
+
 GET /utils/documentoEsMultiple/{tipoUri}				fap.UtilsController.documentoEsMultiple
 GET /utils/filterDependency/{tabla}/{dependencia}		fap.UtilsController.filterDependency
 GET /utils/filterTKV/{tabla}/{elementos}				fap.UtilsController.filterTKV
@@ -60,6 +61,10 @@ GET /Administracion/consultas/ejecutarConsulta  fap.ConsultasController.ejecutar
 GET /popups.popupceconomicoscontroller popups.PopupCEConomicosController.index
 POST /popups.popupceconomicoscontroller/editar popups.PopupCEConomicosController.editar
 
+GET /WSInfo  fap.WSInfoController.getinfoallws
+GET /WSController/getdata fap.WSController.getData
+GET /WSController/getfechaspeticiones fap.WSController.getFechasPeticiones
+GET /WSController/getdatospeticiones fap.WSController.getDatosPeticiones
 
 # === FAPGENERATED ===
 

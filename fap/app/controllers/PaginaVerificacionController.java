@@ -173,7 +173,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
 			
 			try {
-				dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos((List<Documento>)VerificacionFapController.invoke("getNuevosDocumentosVerificar", dbSolicitud.verificacion.id, idSolicitud), dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones, idSolicitud);
+				dbSolicitud.verificacion.documentos = VerificacionUtils.getVerificacionDocumentosFromNewDocumentos((List<Documento>)VerificacionFapController.invoke(VerificacionFapController.class, "getNuevosDocumentosVerificar", dbSolicitud.verificacion.id, idSolicitud), dbSolicitud.verificacion.uriTramite, dbSolicitud.verificaciones, idSolicitud);
 			} catch (Throwable e) {
 				play.Logger.error("Error recuperando los documentos nuevos a verificar", e.getMessage());
 			}

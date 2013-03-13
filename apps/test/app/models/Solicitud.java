@@ -91,6 +91,9 @@ public class Solicitud extends SolicitudGenerica {
 	public List<FacturasFAP> facturas;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public PruebaConversion pruebaConversion;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
 
 	public Solicitud() {
@@ -190,6 +193,11 @@ public class Solicitud extends SolicitudGenerica {
 
 		if (facturas == null)
 			facturas = new ArrayList<FacturasFAP>();
+
+		if (pruebaConversion == null)
+			pruebaConversion = new PruebaConversion();
+		else
+			pruebaConversion.init();
 
 		if (savePages == null)
 			savePages = new SavePages();

@@ -50,7 +50,16 @@ En esta página se permite la creación, modificación y borrado de mensajes, ta
 
 !images/admin-configurar-mensajes!
 
+h2. Gráficas
 
+En esta página pueden observarse los servicios web activos que se definieron en el DSL y también aquellos servicios web que están en el historial.
+
+!images/app-administracion-ws!
+!images/app-administracion-wsHistorial!
+
+Cuando se accede a uno de los servicios web se vería lo siguiente:
+
+!images/app-administracion-wsgrafica!
 
 
 

@@ -1,0 +1,42 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+</style>
+
+</head>
+<body>
+
+<h3 style="text-align: center;"></h3>
+%{
+	def titulo = 'CESIÓN DE DATOS DEL INSSA008';
+}%
+
+<h1>${titulo}</h1>
+
+<table>
+	<tr>
+		<tr>
+			<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+		</tr>	
+		<tr>
+			<tr><th>Número de Expediente:</th><td>${solicitud.expedienteAed.idAed}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum.valueOf(inss.registro.estado).value()}</td></tr> 
+		</tr>	
+	</tr>
+</table>
+</body>
+</html>

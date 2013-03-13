@@ -80,6 +80,7 @@ import services.PortafirmaFapService;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
+import services.TercerosService;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
@@ -226,6 +227,9 @@ public class Start extends Job {
 		
 		RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
 		registroLibroResolucionesService.mostrarInfoInyeccion();
+
+		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+		tercerosService.mostrarInfoInyeccion();
 		
 		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
         if(assignableClasses.size() > 1){

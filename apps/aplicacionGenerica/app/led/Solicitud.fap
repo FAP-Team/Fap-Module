@@ -35,7 +35,6 @@ Formulario Solicitud campo=Solicitud {
 		Wiki {
 			"Pulse guardar después de realizar los cambios"
 		}
-		Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=editarSolicitud requerido
-		Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio" requerido
+		Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=editarSolicitud conDireccion requerido
 	}		
 }

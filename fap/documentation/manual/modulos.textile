@@ -4,10 +4,6 @@ h2. "Aceptación/Renuncia":app-tramitacion
 
 Permiten añadir la funcionalidad, simplemente referenciando las páginas en cuestión en el DSL de nuestra aplicación, de Aceptación y Renuncia. Esto será usado por aquellos solicitantes a los que se le ha concecido aquello que han solicitado en la aplicación en cuestión. Una vez que se haya fallado positivamente en favor del solicitante, este tendrá la potestad de aceptar o renunciar dicha concesión. 
 
-h2. "Firma y Registro por Funcionario Habilitado":app-funcionariohabilitado
-
-Existe la posibilidad de qu epor diversos motivos un solicitante no pueda firmar ni registrar la solicitud, ya sea por un problemas con su navegador o cualquier otra causa. En estos casos, existe la posibilidad de utilizar una funcionalidad que trae FAP implementada y que permite que un usuario delegue estas acciones en un Funcionario Público (denominado Habilitado).
-
 h2. "Administración":app-administracion
 
 Es el panel de Administración que tiene toda aplicación FAP. Por defecto ya viene implementado y enlazado en el menú lateral de cualquier aplicación FAP. Sólo es visible para usuarios con rol Administrador, y permite entre otras muchas cosas, Inicializar distintos componentes como el Gestor Documental, tener uns visión rápida de los logs que genera la aplicación, gestionar las plantillas de emails, las cuentas de usuarios, controlar las distintas etapas de la fase de Baremación, etc.
@@ -15,6 +11,10 @@ Es el panel de Administración que tiene toda aplicación FAP. Por defecto ya vi
 h2. "Alegación":app-tramitacion
 
 Añade una página a las aplicaciones que permite realizar una Alegación por parte del solicitante.
+
+h2. "Anotaciones Administrativas Autorizadas":app-aaa
+
+Añade una página a las aplicaciones que permite al solicitante pedir ciertos tipos de certificados que se generan sobre la marcha. El Gestor podrá definir a través del panel de Administración los tipos de Certificados de la aplicación rellenando una serie de parámetros. El solicitante, podrá pedir tantos certificados como requiera, simplemente seleccionando su tipo en un combo que listará todos los tipos que haya definido el gestor en el panel de Administración.
 
 h2. "Aportación":app-aportacion
 
@@ -36,6 +36,10 @@ h2. "Exclusión":app-exclusion
 
 Esta funcionalidad está pensada para que la utilicen los gestores de las aplicaciones. Permite excluir una solicitud. Cuando se resuelve una convocatoria, las solicitudes normalmente o son aceptadas o son denegadas. Esta página permite denegar las solicitudes que no hayan sido agraciadas en el proceso administrativo, indicando los motivos derogatorios del mismo.
 
+h2. "Firma y Registro por Funcionario Habilitado":app-funcionariohabilitado
+
+Existe la posibilidad de qu epor diversos motivos un solicitante no pueda firmar ni registrar la solicitud, ya sea por un problemas con su navegador o cualquier otra causa. En estos casos, existe la posibilidad de utilizar una funcionalidad que trae FAP implementada y que permite que un usuario delegue estas acciones en un Funcionario Público (denominado Habilitado).
+
 h2. "Login":app-login
 
 Este módulo es el que permite loguearte a la aplicación. FAP por defecto permite el login de dos tipos: con certificado digital y con usuario y contraseña, permitiendo usar estos métodos de forma totalmente independientes, usar uno sólo o ambos. También FAP está preparado para que mediante al sobreescritura de unos métodos concretos, podamos implementar otro tipos de autenticaciones, como pueden ser por ejemplo con OpenID o incluso con las cuentas de las Redes Sociales.
@@ -56,7 +60,9 @@ h2. "Verificación":app-verificacion
 
 La Verificación es el proceso que se lleva a cabo normalmente en la fase de Instrucción, y permite checkear, comprobar y validad que los documentos que ha subido el solicitante en la parte de Presentación mediante el módulo Documentación y sigue subiendo en la fase de Instrucción mediante la Aportación de Documentación, son correctos y era lo que se precisaba en la convocatoria. Si hay algún documento que no se adecua a lo que debería ser, se podrá hacer un requerimiento para notificar al solicitante que debe volver a subir el documento correctamente, por lo que habrá un feedback para que cuando lo suba corregido, el gestor lo pueda comprobar nuevamente y así ir subsanando los errores de documentación que puedan darse.
 
+h2. "Cesión de datos":app-cesiondatos
 
+El módulo de Cesión de Datos permite la obtención de certificado de que los beneficiarios están al corriente en las obligaciones con el INSS, la ATC y la AEAT.
 
 
 

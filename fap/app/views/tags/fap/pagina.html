@@ -3,9 +3,11 @@
 	play.mvc.Router.ActionDefinition urlEditar = com.google.common.base.Preconditions.checkNotNull(_urlEditar, "urlEditar");
 	play.mvc.Router.ActionDefinition urlCrear = com.google.common.base.Preconditions.checkNotNull(_urlCrear, "urlCrear");
 	play.mvc.Router.ActionDefinition urlBorrar = com.google.common.base.Preconditions.checkNotNull(_urlBorrar, "urlBorrar");
-	String titulo = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
 	String formulario = com.google.common.base.Preconditions.checkNotNull(_formulario, "formulario");
 	String pagina = com.google.common.base.Preconditions.checkNotNull(_pagina, "pagina");
+	String titulo = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
+	if (properties.FapProperties.get("fap.pagina.titulo." + pagina))
+	   titulo = properties.FapProperties.get("fap.pagina.titulo." + pagina);
 	String encType = com.google.common.base.Preconditions.checkNotNull(_encType, "encType");
 	boolean hayForm = com.google.common.base.Preconditions.checkNotNull(_hayForm, "hayForm");
 	String botonEditar = com.google.common.base.Preconditions.checkNotNull(_botonEditar, "botonEditar");

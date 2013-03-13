@@ -38,6 +38,6 @@ public class GPersonaFisica extends GSaveCampoElement{
 			ret+=""" ${var}.tipo = "fisica";
 				 """
 		}
-		return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nombre","primerApellido","segundoApellido","nip"]);
+		return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido","sexo","fechaNacimiento"]);
 	}
 }

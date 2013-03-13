@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import properties.FapProperties;
 
 import verificacion.VerificacionUtils;
@@ -14,12 +16,16 @@ import models.AutorizacionesFAP;
 import models.Busqueda;
 import models.Documento;
 import models.Participacion;
+import models.PeticionCesiones;
 import models.SolicitudGenerica;
 import models.Verificacion;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
 import enumerado.fap.gen.AccesoAgenteEnum;
+import enumerado.fap.gen.EstadosPeticionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import enumerado.fap.gen.ListaCesionesEnum;
+import enumerado.fap.gen.ListaEstadosEnum;
 import enumerado.fap.gen.TiposParticipacionEnum;
 
 public class SecureFap extends Secure {
@@ -84,7 +90,7 @@ public class SecureFap extends Secure {
 			return new ResultadoPermiso(Accion.Denegar);
 		
 		List<Documento> documentosNuevos = VerificacionUtils.existDocumentosNuevosVerificacionTipos(solicitud.verificacion, solicitud.verificaciones, solicitud.documentacion.documentos, solicitud.id);
-		if ((documentosNuevos.isEmpty()) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enVerificacionNuevosDoc.name())) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.iniciada.name())))
+		if ((documentosNuevos.isEmpty()) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enVerificacionNuevosDoc.name())) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.iniciada.name())) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enRequerimiento)) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enRequerido)) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enRequerimientoFirmaSolicitada)) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.verificacionNegativa)) || (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.verificacionPositiva))|| (solicitud.verificacion.estado.equals(EstadosVerificacionEnum.plazoVencido)))
 			return new ResultadoPermiso(Accion.Denegar);
 		return new ResultadoPermiso(Accion.All);
 	}
@@ -181,6 +187,7 @@ public class SecureFap extends Secure {
 		return null;
 	}
 	
+
 	/**
 	 * Si no tiene verificaciones anteriores, no se cumple el permiso.
 	 * @param grafico
@@ -216,4 +223,11 @@ public class SecureFap extends Secure {
 		return null;
 	}
 
+	public PeticionCesiones getPeticionCesiones(Map<String, Long> ids, Map<String, Object> vars) {
+		if (vars != null && vars.containsKey("peticionCesiones"))
+			return (PeticionCesiones) vars.get("peticionCesiones");
+		else if (ids != null && ids.containsKey("idPeticionCesiones"))
+			return PeticionCesiones.findById(ids.get("idPeticionCesiones"));
+		return null;
+	}
 }

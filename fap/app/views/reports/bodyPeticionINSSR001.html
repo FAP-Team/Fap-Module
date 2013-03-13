@@ -1,0 +1,55 @@
+<html>
+<head>
+<style media="print"> 
+body { 
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+</style>
+
+</head>
+<body>
+
+<h3 style="text-align: center;"></h3>
+%{
+	def titulo = 'CESIÓN DE DATOS DEL INSSR001';
+	def estadoID;
+}%
+
+<h1>${titulo}</h1>
+<div id="inicial">
+<table id="tblDatosPeticionDatosInicial" class="table-datos" >
+	<tr>
+		<tr>
+			<tr><th>DNI/CIF:</th><td>${inss.registro.nDocumento}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+		</tr>	
+		<tr>
+			<tr><th>Número de Expediente:</th><td>${solicitud.expedienteAed.idAed}</td></tr>
+		</tr>	
+		<tr>
+			<tr><th>Fecha de Generacion:</th><td>${pt.respCesion.fechaGeneracion}</td></tr>
+		</tr>	
+		<tr>
+			%{
+			String idestado = "";
+			if ((inss.registro.estado.equals("_05")) || (inss.registro.estado.equals("_06")))
+					idestado = enumerado.fap.gen.ListaEstadosEnum._04.name();
+				else
+					idestado = enumerado.fap.gen.ListaEstadosEnum.valueOf(inss.registro.estado).name();	
+			%}
+			<tr><th>Estado:</th><td>${enumerado.fap.gen.ListaEstadosEnum.valueOf(idestado).value()}</td></tr>
+		</tr>	
+	</tr>
+</table>
+</div>
+
+</body>
+</html>

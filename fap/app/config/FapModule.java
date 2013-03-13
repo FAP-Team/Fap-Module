@@ -6,12 +6,15 @@ import properties.PropertyPlaceholderImpl;
 import security.Secure;
 import security.SecureFap;
 import security.SecureFapGen;
+import services.ConversorService;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.PortafirmaFapService;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
+import services.TercerosService;
+import services.filesystem.FileSystemConversor;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemNotificacionServiceImpl;
@@ -19,7 +22,10 @@ import services.filesystem.FileSystemPortafirmaImpl;
 import services.filesystem.FileSystemPublicarServiceImpl;
 import services.filesystem.FileSystemRegistroLibroResolucionesServiceImpl;
 import services.filesystem.FileSystemRegistroService;
+import services.filesystem.FileSystemTercerosServiceImpl;
 import services.notificacion.NotificacionServiceImpl;
+import services.openofice.OpenOfficeConversor;
+import services.platino.PlatinoTercerosServiceImpl;
 import services.NotificacionService;
 
 public class FapModule extends PlayAbstractModule {
@@ -35,10 +41,20 @@ public class FapModule extends PlayAbstractModule {
 		portafirma();
 		publicar();
 		registroLibroResoluciones();
+		terceros();
+		conversor();
 	}
 	
 	protected void portafirma() {
 		bindLazySingletonOnDev(PortafirmaFapService.class, FileSystemPortafirmaImpl.class);
+	}
+	
+	protected void conversor() {
+		bindLazySingletonOnDev(ConversorService.class, OpenOfficeConversor.class);
+	}
+	
+	protected void terceros() {
+		bindLazySingletonOnDev(TercerosService.class, FileSystemTercerosServiceImpl.class);
 	}
 	
 	protected void notificacion() {

@@ -10,7 +10,7 @@ import tramitacion.TramiteAceptacionRenuncia;
 import messages.Messages;
 import models.Firmante;
 import models.SolicitudGenerica;
-import controllers.fap.PresentacionFapController;
+import controllers.fap.ResolucionFapController;
 import controllers.gen.AceptacionRenunciaPresentarControllerGen;
 import emails.Mails;
 
@@ -55,7 +55,7 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 			try {
 				trAceptacionRenuncia.registrar();
 				try {
-					PresentacionFapController.invoke("setEstadoAfterResolucion", idSolicitud);
+					ResolucionFapController.invoke(ResolucionFapController.class, "setEstadoAfterResolucion", idSolicitud);
 					dbSolicitud.save();
 				} catch (Throwable e) {
 					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia"+e.getMessage());
@@ -129,7 +129,7 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 			try {
 				trAceptacionRenuncia.registrar();
 				try {
-					PresentacionFapController.invoke("setEstadoAfterResolucion", idSolicitud);
+					ResolucionFapController.invoke(ResolucionFapController.class, "setEstadoAfterResolucion", idSolicitud);
 					dbSolicitud.save();
 				} catch (Throwable e) {
 					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia");
@@ -164,7 +164,7 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 			try {
 				trAceptacionRenuncia.registrar();
 				try {
-					PresentacionFapController.invoke("setEstadoAfterResolucion", idSolicitud);
+					ResolucionFapController.invoke(ResolucionFapController.class, "setEstadoAfterResolucion", idSolicitud);
 					dbSolicitud.save();
 				} catch (Throwable e) {
 					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia");

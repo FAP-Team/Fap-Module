@@ -40,30 +40,25 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	}
 
 	/**
-	 * Crea el expediente en el AED
+	 * Crea el expediente en el Gestor Documental
 	 */
 	@Override
-	public void crearExpedienteAed() {
-		if (!this.solicitud.registro.fasesRegistro.expedienteAed){
+	public void crearExpediente() throws RegistroServiceException{
+		
+		if(!getRegistro().fasesRegistro.expedienteAed){
 			try {
 				gestorDocumentalService.crearExpediente(this.solicitud);
-				this.solicitud.registro.fasesRegistro.expedienteAed = true;
-				this.solicitud.registro.fasesRegistro.save();
 			} catch (GestorDocumentalServiceException e) {
-				play.Logger.debug("Error creando el expediente en el Gestor Documental", e.getMessage());
-				Messages.error("Error creando el expediente en el Gestor Documental");
+				Messages.error("Error al crear el expediente");
+				play.Logger.fatal("Error al crear el expediente para la solicitud "+this.solicitud.id+": "+e);
+				throw new RegistroServiceException("Error al crear el expediente");
 			}
-		}
-		else {
-			play.Logger.debug("El expediente del aed para la solicitud %s ya está creado", this.solicitud.id);
+			getRegistro().fasesRegistro.expedienteAed = true;
+			getRegistro().fasesRegistro.save();
+		}else{
+			play.Logger.info("El expediente del aed para la solicitud %s ya está creado", this.solicitud.id);
 		}
 
-		//Cambiamos el estado de la solicitud
-		if (!this.solicitud.estado.equals("iniciada")) {
-			this.solicitud.estado = "iniciada";
-			this.solicitud.save();
-			Mails.enviar(this.getMail(), this.solicitud);
-		}
 	}
 
 	/**
@@ -87,6 +82,12 @@ public abstract class TramiteSolicitud extends TramiteBase {
 		}
 	}
 
+	
+	@Override
+	public void crearExpedienteAed() {
+		
+	}
+	
 	/**
 	 *
 	 */

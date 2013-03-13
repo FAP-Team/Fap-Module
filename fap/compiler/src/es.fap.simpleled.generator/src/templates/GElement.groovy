@@ -220,7 +220,10 @@ public class GElement {
 				
 			else if (element instanceof BarraDeslizante)
 				cache.put(element, new GBarraDeslizante(element, container));
-				
+
+			else if (element instanceof ServicioWeb)
+				cache.put(element, new GServicioWeb(element, container));
+
 			else if(element instanceof CCC)
 				cache.put(element, new GCCC(element, container));
 			
@@ -232,6 +235,9 @@ public class GElement {
 			
 			else if(element instanceof VisorFactura)
 				cache.put(element, new GVisorFactura(element, container));
+
+			else if(element instanceof TextoOculto)
+				cache.put(element, new GTextoOculto(element, container));
 		}
 		
 		return cache.get(element);

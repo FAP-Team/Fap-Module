@@ -9,15 +9,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import config.InjectorConfig;
+
 import enumerado.fap.gen.EstadoNotificacionEnum;
 
 import models.Agente;
 import models.Interesado;
 import models.Notificacion;
+import models.Solicitante;
+import models.SolicitudGenerica;
 import models.TableKeyValue;
 import models.TableKeyValueDependency;
 import play.mvc.*;
+import properties.FapProperties;
+import services.TercerosService;
+import services.TercerosServiceException;
 import utils.DocumentosUtils;
+import utils.TercerosUtils;
+import validation.CifCheck;
 
 @With(CheckAccessController.class)
 public class UtilsController extends Controller {
@@ -93,6 +102,44 @@ public class UtilsController extends Controller {
 			}
 			js += "}";
 	    	return js;
+    	}
+    	return "{}";
+    }
+    
+    public static String getTerceroByNipOrCif (String numeroIdentificacion, String tipoIdentificacion) {
+    	if (FapProperties.getBoolean("fap.platino.tercero.activa")){
+    		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+    		SolicitudGenerica solicitud = null;
+    		if ((ids != null) && (ids.get("idSolicitud") != null))
+    			solicitud = SolicitudGenerica.findById((Long)ids.get("idSolicitud"));
+
+	    	if ((numeroIdentificacion == null) || (numeroIdentificacion.isEmpty()) || (tipoIdentificacion == null) || (tipoIdentificacion.isEmpty())){
+	    		return "{}";
+	    	}
+	    	if ((tipoIdentificacion.equals("cif")) || (AgenteController.getAgente().username.equals(numeroIdentificacion))){
+	    		if (tipoIdentificacion.equals("cif")){
+	    			if (!CifCheck.validaCif(numeroIdentificacion, new StringBuilder())){
+	    				play.Logger.info("CIF no válido: ["+numeroIdentificacion+"]");
+						return "{}";
+	    			}
+	    		}
+		    	TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+		    	try {
+					Solicitante terceroEncontrado = tercerosService.buscarTercerosDetalladosByNumeroIdentificacion(numeroIdentificacion, tipoIdentificacion);
+					if (terceroEncontrado == null){
+						play.Logger.info("El Tercero no ha sido encontrado ["+numeroIdentificacion+" - "+tipoIdentificacion+"] en la BDD a Terceros.");
+						return "{}";
+					}
+					return TercerosUtils.convertirSolicitanteAJS(terceroEncontrado);
+				} catch (Exception e) {
+					play.Logger.error("Hubo un problema al intentar recuperar el Tercero["+numeroIdentificacion+" - "+tipoIdentificacion+"] de la BDD a Terceros: "+e.getMessage());
+					return "{}";
+				}
+	    	}
+	    	else
+	    		play.Logger.info("No se recuperaran los datos de Terceros de Platino porque el Agente: "+AgenteController.getAgente().username+" está rellenando la solicitud para: "+numeroIdentificacion);
+
+	    	return "{}";
     	}
     	return "{}";
     }

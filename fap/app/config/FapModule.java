@@ -42,16 +42,16 @@ public class FapModule extends PlayAbstractModule {
 		publicar();
 		registroLibroResoluciones();
 		terceros();
-		conversor();
+//		conversor();
 	}
 	
 	protected void portafirma() {
 		bindLazySingletonOnDev(PortafirmaFapService.class, FileSystemPortafirmaImpl.class);
 	}
 	
-	protected void conversor() {
-		bindLazySingletonOnDev(ConversorService.class, OpenOfficeConversor.class);
-	}
+//	protected void conversor() {
+//		bindLazySingletonOnDev(ConversorService.class, OpenOfficeConversor.class);
+//	}
 	
 	protected void terceros() {
 		bindLazySingletonOnDev(TercerosService.class, FileSystemTercerosServiceImpl.class);

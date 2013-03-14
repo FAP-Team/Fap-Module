@@ -18,13 +18,14 @@ public class FileSystemConversor implements ConversorService{
 	}
 	
 	public File convertToPdf(File inputFile){
-		File outputFile = null;
-		try {
-			outputFile = new Report("reports/conversor.html").header("reports/header.html").registroSize().renderTmpFile(new Object());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return outputFile;
+//		File outputFile = null;
+//		try {
+//			outputFile = new Report("reports/conversor.html").header("reports/header.html").registroSize().renderTmpFile(new Object());
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return outputFile;
+		return null;
 	}
 }

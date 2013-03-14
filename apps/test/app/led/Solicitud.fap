@@ -62,7 +62,7 @@ Formulario Solicitud permiso=solicitudes{
 			Grupo "Ejemplo: Archivos y Envío de Mails" {
 				Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
 				Enlace "Documentación FAP" pagina=DocumentacionFAP
-				Enlace "Conversión a PDF" pagina=PaginaConversion
+				//Enlace "Conversión a PDF" pagina=PaginaConversion
 				Enlace "Envío de Mails" pagina=EnvioMails
 			}
 	
@@ -865,16 +865,16 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		Persona perdonaDir campo=Solicitud.personaDirector 
 	}
 	
-	Pagina PaginaConversion titulo="Pagina de conversión doc2pdf"campo=Solicitud noForm{
-		Accion editar crearSiempre
-		Form formArchivo{
-			SubirArchivo subirPrueba campo=Solicitud.pruebaConversion.docPrueba extensiones="doc"
-			Boton botonGuardar titulo="Guardar"
-		}
-		Form formBoton{
-			Boton botonPrueba titulo="RTF2PDF"
-		} 
-	}
+//	Pagina PaginaConversion titulo="Pagina de conversión doc2pdf"campo=Solicitud noForm{
+//		Accion editar crearSiempre
+//		Form formArchivo{
+//			SubirArchivo subirPrueba campo=Solicitud.pruebaConversion.docPrueba extensiones="doc"
+//			Boton botonGuardar titulo="Guardar"
+//		}
+//		Form formBoton{
+//			Boton botonPrueba titulo="RTF2PDF"
+//		} 
+//	}
 	
 }
 

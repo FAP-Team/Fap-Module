@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import controllers.fap.AgenteController;
 import controllers.fap.ConsultarEvaluacionesController;
 import controllers.fap.PresentacionFapController;
 import enumerado.fap.gen.EstadosEvaluacionEnum;
@@ -172,6 +173,19 @@ public class BaremacionFAP {
 			Messages.ok("Todas las evaluaciones han finalizado correctamente");
 			Messages.keep();
 		}
+	}
+	
+	
+	public static void recalcularEvaluaciones() {
+		boolean admin = "administradorgestor".contains(AgenteController.getAgente().rolActivo);
+		if (!Messages.hasErrors()) {
+			List<Evaluacion> evaluaciones = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.estado = ?", "evaluada").fetch();
+			for (Evaluacion evaluacion: evaluaciones) {
+				BaremacionService.calcularTotales(evaluacion, admin, true);
+			}
+		}
+		Messages.ok("Se han recalculado las evaluaciones correctamente");
+		Messages.keep();
 	}
 	
 	

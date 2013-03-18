@@ -15,6 +15,14 @@
 
 #{fap.permiso permiso:'adminOrGestor', accion:"editar"}
 
+		#{form play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.botonRecalcularEvaluaciones') , class:"form-horizontal", id:"botonRecalcularEvaluacionesFinalizadas"}
+						
+			<div class="well">
+				#{fap.boton id:'btnRecalcularEvaluacionesFinalizadas', titulo:'Recalcular Evaluaciones', type:'btn-danger' /}
+			</div>
+			
+		#{/form}
+		
 		#{form play.mvc.Router.reverse('fap.ConsultarEvaluacionesController.botonFinalizarEvaluaciones') , class:"form-horizontal", id:"botonEvaluacionesFinalizadas"}
 						
 			<div class="well">

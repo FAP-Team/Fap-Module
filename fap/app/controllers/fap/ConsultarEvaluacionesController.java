@@ -196,6 +196,54 @@ public class ConsultarEvaluacionesController extends GenericController {
 		//evaluacion.save();
 	}
 
+	public static void botonRecalcularEvaluaciones(String btnRecalcularEvaluacionesFinalizadas) {
+		checkAuthenticity();
+		
+		if (!Messages.hasErrors()) {
+			Class invokedClass = null;
+			//Busca una clase que herede de BaremacionFAP
+	        List<Class> assignableClasses = Play.classloader.getAssignableClasses(BaremacionFAP.class);
+	        if(assignableClasses.size() > 0) {
+	            invokedClass = assignableClasses.get(0);
+	        } else {
+	        	invokedClass = BaremacionFAP.class;
+	        }
+	        if (invokedClass != null) {
+				Method method = null;
+				try {
+					method = invokedClass.getDeclaredMethod("recalcularEvaluaciones");
+				} catch (Exception ex) {
+					invokedClass = BaremacionFAP.class;
+					if (invokedClass != null) {
+						method = null;
+						try {
+							method = invokedClass.getDeclaredMethod("recalcularEvaluaciones");
+						} catch (Exception e) {
+							play.Logger.error("Error g011: No se ha podido encontrar el método recalcularEvaluaciones de la clase BaremacionFAP");
+							Messages.error("Error interno g011. No se ha podido Guardar correctamente");
+						}
+					}
+				}
+				if (!Messages.hasErrors()) {
+					if (method != null) {
+						try {
+							method.invoke(ConsultarEvaluacionesController.class);
+						} catch (Exception e) {
+							play.Logger.error("Error g012: No se ha podido invocar el método recalcularEvaluaciones de la clase BaremacionFAP");
+							Messages.error("Error interno g012. No se ha podido Guardar correctamente");
+						} 
+					} else {
+						play.Logger.error("Error g013: No existe el Método apropiado. El método debe llamarse 'recalcularEvaluaciones()'");
+						Messages.error("Error interno g013. No se ha podido Guardar correctamente");
+					}
+				}
+			} else {
+				play.Logger.error("Error g014: No existe la Clase apropiada para iniciar la Baremacion. La clase debe extender de 'BaremacionFAP'");
+				Messages.error("Error interno g014. No se ha podido Guardar correctamente");
+			}
+		}
+		index();
+	}
 	
 	@Util
 	public static void botonFinalizarEvaluaciones(String btnEvaluacionesFinalizadas) {

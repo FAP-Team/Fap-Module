@@ -95,7 +95,7 @@ public class FacturasFAP extends FapModel {
 		String uri = documento.uri;
 		services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
 		File factura32 = null;
-		
+
 		try {
 			factura32 = File.createTempFile("factura", ".xsig");
 			BinaryResponse response = gestorDocumentalService.getDocumentoByUri(uri);
@@ -111,7 +111,7 @@ public class FacturasFAP extends FapModel {
 			play.Logger.info("No se ha podido obtener el documento.");
 			e.printStackTrace();
 		}
-		
+
 		Facturae invoice32 = null;
 		try {
 			UnmarshallerUtil unmarshallerUtil32 = UnmarshallerUtil.getInstance(FacturaeVersion.FACTURAE_32);
@@ -121,10 +121,10 @@ public class FacturasFAP extends FapModel {
 			play.Logger.info("No se ha podido desserializar la factura.");
 			e.printStackTrace();
 		}
-		
+
 		return invoice32;
 	}
-	
+
 	public static void getDataFromFacturae(Facturae factura, FacturasFAP dbFacturasFAP) {
 
 		dbFacturasFAP.identificadorLote = factura.getFileHeader().getBatch().getBatchIdentifier();

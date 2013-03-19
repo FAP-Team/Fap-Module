@@ -45,7 +45,7 @@ public class TipoDocumento extends FapModel {
 		String tipos = properties.FapProperties.get("fap.gestordocumental.tiposfacturas.url");
 		String[] lista = tipos.split(", ");
 		List<TipoDocumento> listaTipos = new ArrayList<TipoDocumento>();
-		boolean typeNotExist = false; 
+		boolean typeNotExist = false;
 		for (int i = 0; i < lista.length; i++) {
 			Long idTipo = TipoDocumento.find("select id from TipoDocumento where uri=?", lista[i]).first();
 			if (idTipo == null) {

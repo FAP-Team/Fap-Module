@@ -171,7 +171,6 @@ public class BaremacionFAP {
 			tipoEvaluacion.estado="evaluada";
 			tipoEvaluacion.save();
 			Messages.ok("Todas las evaluaciones han finalizado correctamente");
-			Messages.keep();
 		}
 	}
 	
@@ -181,11 +180,13 @@ public class BaremacionFAP {
 		if (!Messages.hasErrors()) {
 			List<Evaluacion> evaluaciones = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.estado = ?", "evaluada").fetch();
 			for (Evaluacion evaluacion: evaluaciones) {
+				Messages.clear();
 				BaremacionService.calcularTotales(evaluacion, admin, true);
 			}
 		}
-		Messages.ok("Se han recalculado las evaluaciones correctamente");
-		Messages.keep();
+		if (!Messages.hasErrors()) {
+			Messages.ok("Se han recalculado las evaluaciones correctamente");
+		}
 	}
 	
 	

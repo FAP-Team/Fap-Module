@@ -548,13 +548,24 @@ Grupo titulo=\"Tablas con popups y paginas\"{
 
 	Pagina PermisoPagina campo=Solicitud permiso=administrador{
 		Wiki {"Si puedes ver esta página tienes que ser administrador."}
+		Codigo {"Pagina PermisoPagina campo=Solicitud permiso=administrador{
+	Wiki {\"Si puedes ver esta página tienes que ser administrador.\"}
+}
+		"}
 	}
 	
 	Pagina PermisoGrupo campo=Solicitud permiso=administrador {
 		Wiki {"La página tiene un grupo que es sólo visible para administradores"}
 		Grupo permiso=administrador {
-			Wiki {"Este grupo es sólo visible para administradores"}	
+			Wiki {"
+Este grupo es sólo visible para administradores"}	
 		}
+	Codigo {"Pagina PermisoGrupo campo=Solicitud permiso=administrador {
+	Wiki {\"La página tiene un grupo que es sólo visible para administradores\"}
+	Grupo permiso=administrador {
+		Wiki {\"Este grupo es sólo visible para administradores\"}	
+	}
+}"}
 	}
 	
 	Pagina PermisoNoEditable campo=Solicitud permiso=noEditable {
@@ -585,24 +596,14 @@ Grupo titulo=\"Tablas con popups y paginas\"{
 //	    Texto campo=Solicitud.solicitante.fax titulo="Fax"  	
 //	    Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar  	
 //	    Texto campo=Solicitud.solicitante.web titulo="Página web"
-	    Grupo titulo="PRUEBA"{
+	    Grupo titulo="Solicitante"{
 	    	Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido conDireccion
 	    }
 	    
 	    Codigo {"
-Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {
-	Wiki {\"El representante de este solicitante sólo puede ser de tipo 
-	 Persona Fisica\"}
-	Solicitante personaSolicitante campo=Solicitud.solicitante titulo=\"Solicitante\" 
-	requerido representantePersonaFisica
-	Direccion campo=Solicitud.solicitante.domicilio titulo=\"Domicilio Social\"
-	requerido	
-	 Texto campo=Solicitud.solicitante.telefonoFijo titulo=\"Teléfono\" requerido  	
-	Texto campo=Solicitud.solicitante.telefonoMovil titulo=\"Teléfono Móvil\"  	
-	Texto campo=Solicitud.solicitante.fax titulo=\"Fax\"  	
-	Texto campo=Solicitud.solicitante.email titulo=\"Correo electrónico\" 
-	requerido duplicar  	
-	 Texto campo=Solicitud.solicitante.web titulo=\"Página web\"
+	    Grupo titulo=\"Solicitante\"{
+	    	Solicitante personaSolicitante campo=Solicitud.solicitante titulo=\"Solicitante\" requerido conDireccion
+	    }
 }"}
 	}
 	

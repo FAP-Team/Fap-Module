@@ -182,6 +182,7 @@ public class BaremacionFAP {
 			for (Evaluacion evaluacion: evaluaciones) {
 				Messages.clear();
 				BaremacionService.calcularTotales(evaluacion, admin, true);
+				evaluacion.save();
 			}
 		}
 		if (!Messages.hasErrors()) {

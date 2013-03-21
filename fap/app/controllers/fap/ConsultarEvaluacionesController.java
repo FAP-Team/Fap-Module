@@ -33,7 +33,7 @@ import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosEvaluacionEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 
-@With({SecureController.class, AgenteController.class, CheckAccessController.class})
+@With(CheckAccessController.class)
 public class ConsultarEvaluacionesController extends GenericController {
 	
 	@Finally(only="index")
@@ -79,8 +79,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 				} catch (Exception e) {
 					Messages.error("Error generando el documento de solicitud para ver en evaluación. No se ha podido Iniciar esta Evaluación.");
 	                play.Logger.error("Error generando el de solicitud para ver en evaluación, no se ha ACEPTADO la evaluación: "+e.getMessage());
-	                Messages.keep();
-	                index();
+	                indexRender();
 				}
 			}
 		}else{
@@ -196,6 +195,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 		//evaluacion.save();
 	}
 
+	@Util
 	public static void botonRecalcularEvaluaciones(String btnRecalcularEvaluacionesFinalizadas) {
 		checkAuthenticity();
 		
@@ -242,7 +242,18 @@ public class ConsultarEvaluacionesController extends GenericController {
 				Messages.error("Error interno g014. No se ha podido Guardar correctamente");
 			}
 		}
-		index();
+		indexRender();
+	}
+	
+	@Util
+	public static void indexRender() {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página editada correctamente");
+			Messages.keep();
+			redirect("fap.ConsultarEvaluacionesController.index");
+		}
+		Messages.keep();
+		redirect("fap.ConsultarEvaluacionesController.index");
 	}
 	
 	@Util
@@ -292,7 +303,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 				Messages.error("Error interno g004. No se ha podido Guardar correctamente");
 			}
 		}
-		index();
+		indexRender();
 	}
 	
 }

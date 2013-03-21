@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 2.1.2RC9
+
+* Baremación: El cálculo de todos los criterios y conceptos se realiza, aunque no se muestren los que no tiene que ver el Evaluador. Se permite a un administrador o gestor recalcular el de todas las evaluaciones evaluadas.
+
 h3. Versión 2.1.2RC8
 
 * Se permite recalcular las evaluaciones a los administradores.

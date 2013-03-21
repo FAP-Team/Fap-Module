@@ -270,7 +270,9 @@ public class FichaEvaluadorController extends Controller {
 						}
 					}
 				}
-				BaremacionService.calcularTotales(evaluacion, admin, true);
+				if (!Messages.hasErrors()) {
+					BaremacionService.calcularTotales(evaluacion, true, true);
+				}
 				evaluacion.save();
 			} else {
 				flash(evaluacion);

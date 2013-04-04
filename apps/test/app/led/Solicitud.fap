@@ -809,7 +809,13 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 	}
 
 	
-	Pagina CopiaTablas titulo="Página de copia con tablas" campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud copia{
+	Pagina CopiaTablas titulo="Página de copia con tablas" campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud {
+		Tabla tablaDocCopia campo = Solicitud.documentacion.documentos titulo="Copia de documentos" 
+		paginaEditar=DocumentosCopia
+		paginaBorrar=DocumentosCopia
+		paginaCrear=DocumentosSubirCopia
+		columnasAutomaticas {}
+		
 		Tabla tablaCopia campo=Solicitud.tablaDeNombres titulo="Solicitantes"
 		paginaEditar=PaginaNombreCopia
 		paginaBorrar=PaginaNombreCopia
@@ -819,6 +825,15 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		
 	}
 
+	Pagina DocumentosCopia campo=Solicitud.documentacion.documentos copia{
+		Accion editar redirigir=CopiaTablas	
+		EditarArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+	}
+
+	Pagina DocumentosSubirCopia campo=Solicitud.documentacion.documentos copia{
+		Accion crear redirigir=CopiaTablas	
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+	}
 	
 	Pagina PaginaCopia titulo="Página de Copia" campo=Solicitud copia permiso=modificacionTrasPresentacionDeSolicitud{
 		Texto titulo="Nombre Persona Física " campo=Solicitud.solicitante.fisica.nombre

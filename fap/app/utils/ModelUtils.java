@@ -389,18 +389,26 @@ public class ModelUtils {
 						}
 					} else {
 						if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
-							try {
+							try { 
+								String entidadAux = "";
+								Class claseEntidadBorrar = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
 								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);								
-								
-								Class claseEntidadBorrar = Class.forName("models."+entidad);
+								Pattern patternClase = Pattern.compile("\\[(\\s*)(.*?)(\\[.*?\\].*?\\,*)");
+								Matcher matcherClase = patternClase.matcher(aux.toString());
+
+								if(matcherClase.find()) {
+									entidadAux = matcherClase.group(2);
+								}
+
+    							claseEntidadBorrar = Class.forName("models."+entidadAux);
 								Method findById = claseEntidadBorrar.getDeclaredMethod("findById", Object.class);
-								Object restaurar = findById.invoke(claseEntidadBorrar.newInstance(), idRestaurar); 
+								Object restaurar = findById.invoke(claseEntidadBorrar.newInstance(), idRestaurar);
 								aux.add(restaurar);
 								break;
 							} catch (Exception e) {
-								play.Logger.error("Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
+								play.Logger.error("(1)Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
 								Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
 								Messages.keep();
 								break;
@@ -412,7 +420,7 @@ public class ModelUtils {
 								modeloEntidad = (Model) metodo.invoke(modeloEntidad);
 								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
 							} catch (Exception e) {
-								play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
+								play.Logger.error("(2)Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
 								Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
 								Messages.keep();
 								break;
@@ -470,11 +478,19 @@ public class ModelUtils {
 					} else {
 						if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 							try {
+								String entidadAux = "";
+								Class claseEntidadBorrar = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
 								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);								
-								
-								Class claseEntidadBorrar = Class.forName("models."+entidad);
+								Pattern patternClase = Pattern.compile("\\[(\\s*)(.*?)(\\[.*?\\].*?\\,*)");
+								Matcher matcherClase = patternClase.matcher(aux.toString());
+
+								if(matcherClase.find()) {
+									entidadAux = matcherClase.group(2);
+								}
+
+    							claseEntidadBorrar = Class.forName("models."+entidadAux);
 								Method findById = claseEntidadBorrar.getDeclaredMethod("findById", Object.class);
 								Object borrar = findById.invoke(claseEntidadBorrar.newInstance(), idBorrar);
 								aux.remove(borrar);

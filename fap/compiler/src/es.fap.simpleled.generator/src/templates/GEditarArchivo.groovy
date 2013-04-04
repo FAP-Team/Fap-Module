@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import es.fap.simpleled.led.*;
+import es.fap.simpleled.led.util.ModelUtils;
 import generator.utils.CampoUtils
 import generator.utils.Entidad;
 import generator.utils.StringUtils;
@@ -52,7 +53,26 @@ public class GEditarArchivo extends GSaveCampoElement{
 	}
 	
 	public String validateCopy(Stack<Set<String>> validatedFields){
-		return validate(validatedFields) + """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
+		Pagina pagina = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPagina());
+		String result = "";
+		if ((pagina != null) && (pagina.copia)){
+			campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
+				if (!item.name.startsWith("id"))
+					result += """if ((db${campo.str}.${item.name} != null) && (${campo.firstLower()}.${item.name} != null) && (!${campo.firstLower()}.${item.name}.toString().equals(db${campo.str}.toString()))){
+					valoresNuevos = new ArrayList<String>();
+					if (db${campo.str}.${item.name} != null)
+						valoresAntiguos.add(db${campo.str}.${item.name}.toString());
+					valoresNuevos = new ArrayList<String>();
+					hayModificaciones = true;
+					peticionModificacion.setValorModificado("${campo.firstLower()}.${item.name}", valoresAntiguos, valoresNuevos);
+					hayModificaciones = true;
+					db${campo.str}.${item.name} = ${campo.firstLower()}.${item.name};
+				}
+			"""
+			}
+			return result;
+		}else
+			return validate(validatedFields) + """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
  ${campo.dbStr()}.descripcion = ${campo.firstLower()}.descripcion;
 		""";
 	}

@@ -110,7 +110,7 @@ public class GSaveCampoElement extends GElement {
 	public static String copyCampoMany2One(CampoUtils campo) {
 		Pagina pagina = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPagina());
 		if ((pagina != null) && (pagina.copia)){
-			return """ if ((db${campo.str} != null) && (!${campo.firstLower()}.toString().equals(db${campo.str}.toString()))){
+			return """ if ((db${campo.str} != null) && (${campo.firstLower()} != null) && (!db${campo.str}.toString().equals(${campo.firstLower()}.toString()))){
 						   valoresAntiguos = new ArrayList<String>();
 						   if (db${campo.str} != null)
 						      valoresAntiguos.add(db${campo.str}.toString());
@@ -232,7 +232,7 @@ public class GSaveCampoElement extends GElement {
 					db${campo.str} = ${campo.firstLower()};
 				""";
 			} else{
-				return """ if (((db${campo.str} != null) && (!${campo.firstLower()}.toString().equals(db${campo.str}.toString()))) || (db${campo.str} == null)){
+				return """ if (((db${campo.str} != null) && (${campo.firstLower()}.toString() != null) && (!db${campo.str}.toString().equals(${campo.firstLower()}.toString()))) || (db${campo.str} == null)){
 						   valoresAntiguos = new ArrayList<String>();
 						   if (db${campo.str} != null)
 						      valoresAntiguos.add(db${campo.str}.toString());

@@ -52,7 +52,7 @@ bc. Menu {
 h3. Menú con varios enlaces y grupos
 
 bc.. Menu {
-	Enlace "Volver" pagina=Principal.Solicitudes
+	Enlace "Volver" pagina=Solicitudes
    
 	Grupo "Solicitud" {
 		Enlace "Solicitante" pagina=Solicitud.Solicitante

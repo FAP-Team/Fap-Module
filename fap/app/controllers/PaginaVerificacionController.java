@@ -440,21 +440,10 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			PaginaVerificacionController.gRequerirFirmaRequerimientoValidateRules(dbSolicitud, solicitud);
 			Messages.ok("Se estableció correctamente el firmante del Requerimiento");
 			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimientoFirmaSolicitada.name();
+			dbSolicitud.save();
 			
 			// Se debe enviar el mail de "solicitarFirmaRequerimiento"
-			String mailRevisor = null;
-			String mailGestor = null;
-			try {
-				Agente revisor = AgenteController.getAgente();
-				mailRevisor = revisor.email;
-				mailGestor = ((Agente) Agente.find("select agente from Agente agente where agente.username=?", solicitud.verificacion.requerimiento.firmante).first()).email;
-				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailGestor", mailGestor);
-				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailRevisor", mailRevisor);
-				Mails.enviar("solicitarFirmaRequerimiento", solicitud, mailGestor, mailRevisor);
-			} catch (Exception e) {
-				play.Logger.error("No se pudo enviar el mail solicitarFirmaRequerimiento a los mails: "+mailGestor+", "+mailRevisor+". Error: "+e.getMessage());
-			}
+			envioMailFirmaRequerimiento(dbSolicitud);
 		}
 		if (!Messages.hasErrors()) {
 			dbSolicitud.save();
@@ -462,6 +451,23 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaVerificacionController.gRequerirFirmaRequerimientoRender(idSolicitud, idVerificacion);
+	}
+
+	private static void envioMailFirmaRequerimiento(SolicitudGenerica solicitud) {
+		String mailRevisor = null;
+		String mailGestor = null;
+		try {
+			Agente revisor = AgenteController.getAgente();
+			mailRevisor = revisor.email;
+			mailGestor = ((Agente) Agente.find("select agente from Agente agente where agente.username=?", solicitud.verificacion.requerimiento.firmante).first()).email;
+			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailGestor", mailGestor);
+			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailRevisor", mailRevisor);
+			
+			Mails.enviar("solicitarFirmaRequerimiento", solicitud, mailGestor, mailRevisor);
+		} catch (Exception e) {
+			play.Logger.error("No se pudo enviar el mail solicitarFirmaRequerimiento a los mails: "+mailGestor+", "+mailRevisor+". Error: "+e.getMessage());
+		}
 	}
 	
 	@Util

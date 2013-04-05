@@ -3,7 +3,7 @@ Formulario Principal {
 		Enlace "Mis Solicitudes" pagina=Solicitudes
 		Enlace "Administración" permiso=administrador pagina=Usuarios
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
-		Enlace "Verificaciones sin Finalizar" permiso=adminOrGestor pagina=VerificacionesSinFinalizar
+		Enlace "Verificaciones sin Finalizar" permiso=adminOrGestorOrRevisor pagina=VerificacionesSinFinalizar
 		Enlace "Resoluciones" permiso=adminGestorJefeServicio pagina=ResolucionesFAP
 		Enlace "Firmas Pendientes de FH" pagina=FirmasPendientesFH permiso=esFuncionarioHabilitadoYActivadaProperty
 		Enlace "Seguimiento" permiso=adminGestorRevisor pagina=Seguimiento

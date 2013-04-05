@@ -11,6 +11,12 @@ Permiso adminOrGestor{
 	return all
 }
 
+Permiso adminOrGestorOrRevisor{
+	when
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+	return all
+}
+
 Permiso usuario{
 	when
 		agente.rolActivo = "usuario"

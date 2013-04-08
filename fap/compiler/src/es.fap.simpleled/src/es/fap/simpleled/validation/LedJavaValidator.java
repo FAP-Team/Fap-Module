@@ -749,9 +749,6 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		}
 	}
 	
-}
-
-
 
 	/*
 	 * Mira en todos los elementos de la página y comprueba si hay varias referencias

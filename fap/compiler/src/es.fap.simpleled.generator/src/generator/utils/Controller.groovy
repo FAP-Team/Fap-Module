@@ -1,5 +1,7 @@
 package generator.utils;
 
+import java.util.ArrayList;
+
 import es.fap.simpleled.led.Accion
 import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Boton
@@ -26,6 +28,7 @@ import es.fap.simpleled.led.LedFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +36,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
 import org.eclipse.xtext.generator.IGenerator
+
 
 import templates.GBoton;
 import templates.GElement
@@ -60,6 +64,7 @@ public class Controller implements Comparator<Entidad>{
 	public String renderView;
 	public Permiso permiso;
 	public String controllerGenName;
+	public boolean copia;
 	public String controllerName;
 	public String controllerGenFullName;
 	public String controllerFullName;
@@ -170,9 +175,11 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import es.mityc.facturae32.Facturae;
+import com.google.gson.Gson;
 
 import services.FirmaService;
 import com.google.inject.Inject;
+import utils.PeticionModificacion;
 
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
@@ -583,6 +590,9 @@ public class ${controllerName} extends ${controllerGenName} {
 	}
 	
 	private String metodoBorrar(){
+		String codigoBorrar = "";
+		String backupCopia = "";
+		
 		if (!borrar)
 			return "";
 		def borrarEntidad = "";
@@ -593,11 +603,43 @@ public class ${controllerName} extends ${controllerGenName} {
 				borrarEntidad += "db${lastSubcampo.str} = null;\n";
 			borrarEntidad += "${almacen.variableDb}.save();\n";
 		}
-		if (!noBorrarEntidad) {
+		if ((!noBorrarEntidad) && (!copia)){
 			borrarEntidad += """
 				${borrarListasXToMany()}
 				${entidad.variableDb}.delete();
 			""";
+		}
+		if (copia){
+			backupCopia = """
+				PeticionModificacion peticionModificacion = new PeticionModificacion();
+				peticionModificacion.campoPagina="${campo.str}";
+				
+				Map<String, String> allSimple = params.allSimple();
+				for(Map.Entry<String, String> entry : allSimple.entrySet()){
+					if(entry.getKey().startsWith("id")){
+						 try {
+						    peticionModificacion.idSimples.put(entry.getKey(), Long.parseLong(entry.getValue()));
+						 }catch(Exception e){
+						//El parámetro no era un long
+					}
+				}
+	         }
+			List<String> valoresAntiguos = new ArrayList<String>();
+			boolean hayModificaciones = false;
+			"""			
+			campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
+			if (!item.name.startsWith("id"))
+				codigoBorrar += """
+				if (${entidad.variableDb}.${item.name} != null){
+					valoresAntiguos.add(${entidad.variableDb}.${item.name}.toString());
+					peticionModificacion.setValorBorrado("${entidad.variableDb}.${item.name}", new ArrayList<String>(), valoresAntiguos);
+					hayModificaciones = true;
+				}
+			"""
+			}
+			codigoBorrar += """
+							${gElement.saveCode()}
+							"""
 		}
 		return """
 			public static void borrar(${StringUtils.params(allEntities.collect{it.typeId})}){
@@ -610,6 +652,12 @@ public class ${controllerName} extends ${controllerGenName} {
 				if(!Messages.hasErrors()){
 					${controllerName}.borrarValidateRules(${StringUtils.params(entidad.variableDb)});
 				}
+				
+				if (!Messages.hasErrors()) {
+					${backupCopia}
+					${codigoBorrar}
+				}
+
 				if(!Messages.hasErrors()){
 					$borrarEntidad
 					log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito");
@@ -924,6 +972,66 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	public String metodoValidateCopy(){
 		if (saveEntities.size() == 0 || (!editar && !crear)) return "";
+		String backupCopia = "";
+		String copiaTexto = "";
+		String codigoCopia="";
+		String cierre = "";
+		String codigoCrear="";
+		
+		if (copia){
+			backupCopia = """
+				PeticionModificacion peticionModificacion = new PeticionModificacion();
+				peticionModificacion.campoPagina="${campo.str}";
+				boolean hayModificaciones=false;
+				Map<String, String> allSimple = params.allSimple();
+				for(Map.Entry<String, String> entry : allSimple.entrySet()){
+					if(entry.getKey().startsWith("id")){
+						 try {
+						    peticionModificacion.idSimples.put(entry.getKey(), Long.parseLong(entry.getValue()));
+						 }catch(Exception e){
+						//El parámetro no era un long
+					}
+				}
+	         }
+			List<String> valoresAntiguos = new ArrayList<String>();
+			List<String> valoresNuevos = new ArrayList<String>();
+			"""				
+		}
+		
+		//Validate copy de pagina de tabla
+		if ((copia) && (!saveEntities.collect{ it.variableDb }.contains("dbSolicitud"))){
+			copiaTexto = """
+				String idSolicitud = params.get("idSolicitud");
+				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(Long.parseLong(idSolicitud));
+				Boolean creando = false;
+			""";
+			
+			//Comprobacion de nuevo elemento en modificacionSolicitudes
+			List<String> lista = saveEntities.collect{"${it.typeVariable}"}.join(" ").toString().split(" ");
+			codigoCopia = """if (db${lista.get(0)}.id == null){
+						db${lista.get(0)}.save();
+						params.put("id${lista.get(0)}", db${lista.get(0)}.id.toString());
+						creando = true;
+						}
+						""";
+			List<String> atributos =  new ArrayList<String>();
+			codigoCrear = """if (creando) {"""
+			campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
+				atributos.addAll(item.name);
+				if (!item.name.startsWith("id"))
+					codigoCrear += """
+					if (${lista.get(1)}.${item.name} != null){
+						valoresNuevos = new ArrayList<String>();
+						valoresNuevos.add(${lista.get(1)}.${item.name}.toString());
+						peticionModificacion.setValorCreado("${lista.get(1)}.${item.name}", new ArrayList<String>(), valoresNuevos);
+						hayModificaciones = true;
+						db${lista.get(0)}.${item.name} = ${lista.get(1)}.${item.name};
+					}
+					"""
+			}
+			codigoCrear += "}";
+		}
+		
 		return """
 			@Util
 			public static void ${name}ValidateCopy(String accion, ${StringUtils.params(
@@ -934,6 +1042,10 @@ public class ${controllerName} extends ${controllerGenName} {
 				extraParams
 			)}){
 				CustomValidation.clearValidadas();
+				${copiaTexto}
+				${codigoCopia}	
+				${backupCopia}
+				${codigoCrear}
 				${gElement.validateCopy()}
 				${gElement.saveCode()}
 			}
@@ -1100,6 +1212,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (gpag.pagina.permiso == null)
 			controller.permiso = gpag.pagina.eContainer().permiso;
 		controller.controllerGenName = gpag.controllerGenName();
+		controller.copia = gpag.pagina.copia;
 		controller.controllerName = gpag.controllerName();
 		controller.controllerGenFullName = gpag.controllerGenFullName();
 		controller.controllerFullName = gpag.controllerFullName();
@@ -1577,5 +1690,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		else
 			return"";
 	}
-			
+	public Collection getItvariableDb(){
+		return saveEntities.collect{it.variableDb};
+	}
+	
+				
 }

@@ -53,6 +53,9 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Boolean activoFH default="false"
 	OneToMany CertificadoSolicitado certificados
 	Cesion cesion
+	Boolean activoModificacion default="false"
+	OneToMany RegistroModificacion registroModificacion
+	String fechaARestaurarStr transient
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -926,3 +929,16 @@ Entidad TramitesVerificables {
 
 }
 
+
+Entidad RegistroModificacion {
+	DateTime fechaCreacion
+	DateTime fechaLimite
+	DateTime fechaFinalizacion
+	Registro registro noConstruct
+	OneToMany JsonPeticionModificacion jsonPeticionesModificacion
+	String estado transient
+}
+
+Entidad JsonPeticionModificacion{
+	LongText jsonPeticion
+}

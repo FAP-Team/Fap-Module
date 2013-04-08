@@ -5,6 +5,8 @@ import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject
 
+import com.google.gson.Gson;
+
 
 import es.fap.simpleled.led.*
 import es.fap.simpleled.led.impl.PopupImpl
@@ -118,12 +120,31 @@ public class GPagina extends GGroupElement{
 	
 	public String saveCode(){
 		String saveCode = super.saveCode();
+		String saveSolicitud = "";
+		
+		if ((pagina.copia) && (!Controller.create(this).getItvariableDb().contains("dbSolicitud"))){
+			saveSolicitud="""dbSolicitud.save(); """;
+		}
 		if (pagina.guardarParaPreparar){
 			saveCode += """
 				if(!validation.hasErrors()){
 					dbSolicitud.savePages.pagina${pagina.name} = true;
 				}
 			""";
+			
+		}
+		if (pagina.copia){
+			saveCode += """
+						   if (hayModificaciones){
+							   Gson gson = new Gson();
+							   String jsonPM = gson.toJson(peticionModificacion);
+							   JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
+							   jsonPeticionModificacion.jsonPeticion = jsonPM;
+							   dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
+						   	   dbSolicitud.save();
+							}
+						""";
+						//${saveSolicitud}
 		}
 		return saveCode;
 	}

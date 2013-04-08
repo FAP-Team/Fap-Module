@@ -41,7 +41,7 @@ bc. Menu {
 h3. Menú con enlace a una pagina de otro formulario
 
 bc. Menu {
-   Enlace "Volver" pagina=Principal.Solicitudes
+   Enlace "Volver" pagina=Solicitudes
 }
 
 h3. Menú con enlace a una URL externa

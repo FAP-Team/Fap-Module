@@ -109,6 +109,15 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "Certificados" pagina=CertificadosSolicitados
     	}    	
 
+    	Grupo "Paginas Copias" {
+    		Enlace "Copia (Modificaciones permitidas)" pagina=PaginaCopia
+    		Enlace "Copia tablas" pagina=CopiaTablas
+    		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
+    		Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
+    	}
+		
+		Enlace "Aportación" pagina=Aportacion
+
 		Enlace "Salir" accion=logout
     }
     
@@ -861,7 +870,9 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 			Enlace titulo="Cancelar" estilo="btn btn-link" pagina=Solicitudes
 		}
 	}
+
 	
+
 	Pagina PaginaDirector titulo="Pagina para rellenar el firmante director" campo=Solicitud{
 		Persona perdonaDir campo=Solicitud.personaDirector 
 	}
@@ -877,5 +888,47 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 //		} 
 //	}
 	
+
+	Pagina CopiaTablas titulo="Página de copia con tablas" campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud {
+		Tabla tablaDocCopia campo = Solicitud.documentacion.documentos titulo="Copia de documentos" 
+		paginaEditar=DocumentosCopia
+		paginaBorrar=DocumentosCopia
+		paginaCrear=DocumentosSubirCopia
+		columnasAutomaticas {}
+		
+		Tabla tablaCopia campo=Solicitud.tablaDeNombres titulo="Solicitantes"
+		paginaEditar=PaginaNombreCopia
+		paginaBorrar=PaginaNombreCopia
+		paginaCrear=PaginaNombreCopia
+		columnasAutomaticas exclude=id, fecha
+		{}
+		
+	}
+
+	Pagina DocumentosCopia campo=Solicitud.documentacion.documentos copia{
+		Accion editar redirigir=CopiaTablas	
+		EditarArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+	}
+
+	Pagina DocumentosSubirCopia campo=Solicitud.documentacion.documentos copia{
+		Accion crear redirigir=CopiaTablas	
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"
+	}
+	
+	Pagina PaginaCopia titulo="Página de Copia" campo=Solicitud copia permiso=modificacionTrasPresentacionDeSolicitud{
+		Texto titulo="Nombre Persona Física " campo=Solicitud.solicitante.fisica.nombre
+		Texto titulo="Texto Añandido " campo=Solicitud.elementos.texto
+		Combo miCombo titulo="Combo Prueba" campo=Solicitud.comboTest.listMultiple
+	}	
+	
+	Pagina PaginaNombreCopia campo=Solicitud.tablaDeNombres copia{
+		Accion crear redirigir=anterior
+		Accion editar redirigir=anterior
+		Accion borrar redirigir=anterior
+		Wiki{ "PopUp de copia" }
+		Texto campo=TablaDeNombres.nombre titulo="Nombre"
+		Texto campo=TablaDeNombres.apellido titulo="Apellido"
+	}
+
 }
 

@@ -211,6 +211,31 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		checkTablaCampoPagina(tabla, tabla.getPaginaLeer(), concatenado, ledPackage.getTabla_PaginaLeer());
 	}
 	
+
+	@Check
+	public void checkTablaCopia(Tabla tabla){
+		EObject container = LedCampoUtils.getCampoScope(tabla);
+		if ((container != null ) && (container instanceof Pagina)){
+			Pagina pagina = (Pagina) container;
+			if (pagina.isCopia()){
+				if (tabla.getPopup() != null) 
+					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_Popup());
+				if (tabla.getPopupBorrar() != null)
+					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupBorrar());
+				if (tabla.getPopupCrear() != null)
+					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupCrear());
+				if (tabla.getPopupEditar() != null)
+					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupEditar());
+				//if (tabla.getPagina() != null)
+				//	myError("No se puede Crear ni Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_Pagina());
+				//if (tabla.getPaginaCrear() != null)
+				//	myError("No se pueden Crear campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaCrear());
+				//if (tabla.getPaginaBorrar() != null)
+				//	myError("No se pueden Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaBorrar());
+			}
+		}
+	}
+	
 	@Check
 	public void checkNombreEntidadUnico(Entity entidad){
 		for (Entity e : ModelUtils.<Entity>getVisibleNodes(ledPackage.getEntity(), entidad.eResource())) {
@@ -222,7 +247,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	}
 	
 	/*
-	 * Se se llama a cada método que desea comparar dos páginas, para checkear condiciones.
+	 * Se llama a cada método que desea comparar dos páginas, para checkear condiciones.
 	 */
 	@Check
 	public void checkPaginasStuff(Pagina pagina){
@@ -368,6 +393,31 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	}
 	
 	@Check
+	public void checkPaginaCopiaNoTransient(Campo campo){
+		EObject container = LedCampoUtils.getCampoScope(campo);
+		if ((container != null ) && (container instanceof Pagina)){
+			Pagina pagina = (Pagina) container;
+			Attribute atributo = LedCampoUtils.getUltimoAtributo(campo);
+
+			if ((pagina.isCopia()) && (!campo.getEntidad().getName().equalsIgnoreCase(LedCampoUtils.getUltimaEntidad(pagina.getCampo()).getName()))){
+				error("No se puede usar atributos de entidades no pertenecientes a Solicitud en páginas de copia", ledPackage.getCampo_Entidad());
+			}
+			
+			if ((pagina.isCopia()) &&  (atributo != null) && (atributo.isIsTransient())){
+				error("No se puede usar atributos Transient en paginas 'copia'", ledPackage.getCampo_Atributos());
+			}
+		}
+	}
+	
+	@Check
+	public void checkCampoRegistroFirmaSimple(FirmaSimple firmaSimple){
+		Entity entidad = LedCampoUtils.getUltimaEntidad(firmaSimple.getRegistroFirma().getCampo());
+		if (!"Registro".equalsIgnoreCase(entidad.getName())){
+			error("Sólo se admiten campos de tipo Registro", ledPackage.getFirmaSimple_RegistroFirma());
+		}
+	}
+	
+	@Check
 	public void checkCampoUsadoEnPagina(Pagina pagina){
 		checkCampoUsado(pagina);
 	}
@@ -484,6 +534,7 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	}
 	
 	@Check
+
 	public void checkNombreSercivioWebUnico(ServicioWeb servicioWeb){
 		for (ServicioWeb e : ModelUtils.<ServicioWeb>getVisibleNodes(ledPackage.getServicioWeb(), servicioWeb.eResource())) {
 			String uri1 = servicioWeb.eResource().getURI().toString();
@@ -691,6 +742,15 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 				error("No se puede hacer referencia al mismo documento.", ledPackage.getSubirArchivo_Campo());		
 		}
 	}
+
+	public void checkNombrePagina (Pagina pagina){
+		if (!Character.isUpperCase(pagina.getName().charAt(0))){
+			error("El nombre de las páginas debe empezar por mayuscula", ledPackage.getPagina_Name());
+		}
+	}
+	
+}
+
 
 
 	/*

@@ -30,7 +30,7 @@ bc.
 Formulario Solicitud campo=Solicitud {
 	
     Menu {
-    	Enlace "Volver" pagina=Principal.Solicitudes
+    	Enlace "Volver" pagina=Solicitudes
     	
     	Grupo "Solicitud" {
 		Enlace "Solicitante" pagina=Solicitante

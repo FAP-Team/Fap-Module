@@ -41,6 +41,7 @@ Lista estadosSolicitud crearEnumerado {
 	borrador: "Borrador"
 	iniciada: "Iniciada"
 	desistido: "Desistido"
+	modificacion: "Modificacion"
     // ESTADOS ASOCIADOS A LA FASE DE INSTRUCCIÓN
     enVerificacion: "En Verificación"
     verificado: "Verificado"

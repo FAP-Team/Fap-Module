@@ -16,6 +16,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	Solicitante solicitantePersonaFisica
 	Solicitante solicitantePersonaJuridica
 	
+	Set<String> paco
+	
 	PersonaFisica amigo
 	Documento doc
 	

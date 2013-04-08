@@ -1132,6 +1132,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	}
 	
 
+
 	Pagina CertificadosSolicitados titulo="Solicitar Certificado" noForm{
 		Tabla tablaCertificados titulo="Certificados Solicitados" campo=SolicitudGenerica.certificados paginaCrear=PedirCertificado { 
 			Columna titulo="Nombre" campo=CertificadoSolicitado.tipo.nombre
@@ -1326,5 +1327,162 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 	}
 	
+
+
+	Popup popupCrearModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Habilitar una nueva Modificación" permiso=crearModificacionSolicitud {
+		Grupo titulo="Habilitar una nueva Modificación de la Solicitud para el Solicitante" {
+			Fecha fechaLimite campo=RegistroModificacion.fechaLimite titulo="Fecha Límite de Modificación"
+		}
+	}
+	
+	Popup popupLeerModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Datos Modificación" permiso=adminOrGestor{
+		Grupo titulo="Datos de la Modificación" permiso=noEditable{
+			Texto estado campo=RegistroModificacion.estado titulo="Estado Actual"
+			Fecha fechaCreacion campo=RegistroModificacion.fechaCreacion titulo="Fecha de Creación"
+			Fecha fechaLimite campo=RegistroModificacion.fechaLimite titulo="Fecha Limite"
+			Fecha fechaRegistro campo=RegistroModificacion.registro.informacionRegistro.fechaRegistro titulo="Fecha Registro"
+		}
+	}
+	
+	Pagina ActivarModificacionSolicitudes titulo="Habilitar Modificación Solicitud" campo=SolicitudGenerica noForm permiso=habilitarModificacionSolicitud {
+		Grupo titulo="Modificaciones de los Datos de la Solicitud por parte del Solicitante" {
+			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Totales" popupCrear=popupCrearModificacionSolicitud popupLeer=popupLeerModificacionSolicitud recargarPagina {
+				Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
+				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
+				Columna campo=RegistroModificacion.fechaFinalizacion titulo="Fecha Finalización" expandir
+				Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+			}
+		}
+		
+		Grupo titulo="Restaurar valores de los Datos de la Solicitud" mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
+			Form formRestaurarModificacion{
+				Combo fechaARestaurar campo=SolicitudGenerica.fechaARestaurarStr titulo="Fecha Creación de la Modificación" // Sobreescrito
+				Boton restaurarBtn titulo="Restaurar" type=danger
+			}
+		}
+	}
+	
+	/*
+     * Página Presentar
+     */
+    Pagina PresentarModificacionFAP noForm titulo="Presentación de las Modificaciones de la Solicitud" campo=SolicitudGenerica.registroModificacion.registro  perteneceA ="Presentacion"{
+
+		Grupo titulo="Presentación de la Modificación de la solicitud" {
+			Grupo permiso=presentarModificacionTrasPresentacionDeSolicitud borde=false{
+				Grupo permiso=prepararSolicitudModificacion borde = false {
+	        		Grupo gpreparar titulo="Paso 1. Preparar la solicitud de modificación" {
+	            		Wiki { "Si su solicitud de modificación está lista para firmar, pulse el siguiente botón." }
+	              		Form prepararFirmar {
+	                    	Boton botonPrepararFirmar titulo="Preparar para firmar"
+	              		}
+	        		}
+	        	} // Fin Grupo para controlar prepararAlegacion
+	
+				Grupo titulo="Paso 2. Obtener borrador de la Solicitud de Modificación" permiso=enBorradorSolicitudModificada {
+					Wiki {"Puede obtener un borrador de la solicitud de modificación, no válido para su presentación y comprobar que la información introducida es correcta."}
+					Enlace campo=Registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+	
+					Form deshacer permiso=modificarSolicitudModificada {
+						Wiki {"Para realizar cambios, antes de su presentación definitiva, pulse el siguiente botón."}
+						Boton botonModificar titulo="Modificar solicitud de modificación"
+					}
+	
+					Grupo mensajeIntermedio permiso=mensajeIntermedioSolicitudModificada borde=false {
+						Wiki estilo ="box-warn box" {
+							"Se produjo un error en la presentación de la solicitud de modificación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+						}
+					}
+				}
+			}
+			// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
+			Grupo grpPresentar titulo="Paso 3. Firmar y Registrar la Solicitud de Modificación" permiso=enBorradorSolicitudModificada {
+				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
+				Form frmPresentar redirigir=SolicitudPresentarModificacionFAP permiso=enBorradorSolicitudModificada {
+					Wiki {"Debe registrar la solicitud para que se considere presentada."}
+					Boton botonPresentar titulo="Presentar solicitud de Modificación"
+				}
+			}
+				
+		Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaSolicitudModificada {
+			Wiki {"Puede obtener un recibo de la presentación de la solicitud de modificación pulsando el enlace 'Obtener recibo'." }
+			Enlace campo=Registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton"
+		}
+		}
+
+	}
+
+	Pagina SolicitudPresentarModificacionFAP titulo="Presentar Solicitud de Modificación" noForm permiso=presentarModificacionTrasPresentacionDeSolicitud campo=SolicitudGenerica.registroModificacion.registro perteneceA ="Presentacion"{
+		
+		Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+			Grupo titulo="Firma Requerida a Funcionario Habilitado" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")" permiso=habilitarFHPresentacionModificada{
+				Form formHabilitarFH {
+					Boton btnHabilitarFH titulo="Habilitar a los Funcionarios para firmar en mi nombre"
+				}
+				Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
+					Wiki{"Ya ha sido requerida la firma por un Funcionario habilitado, en breve un funcionario lo firmará y registrará."}
+				}
+			}
+
+			//Firma Funcionario Habilitado
+			Grupo borde=false mostrarSiCampo Registro.habilitaFuncionario="true"{
+				Grupo titulo="Paso 3. Firmar y Registrar la solicitud" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.presentacion.firmaYRegistro.funcionarioHabilitado\")" permiso=firmarRegistrarSolicitudModificadaFH
+				{
+					Form formFirmaFH { 
+				    	Wiki {"La solicitud de modificación será firmada y registrada." }
+						FirmaSimple firmarRegistrarFH titulo="Firmar y registrar" documento=Registro.oficial registroFirma=Registro listaFirmantes=Registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+					}
+		
+					Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+				}
+			}
+		 }
+
+		//Firma persona física
+		Grupo titulo="Paso 3. Firmar y Registrar la solicitud de modificación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=firmarRegistrarSolicitudModificada
+		{
+			Form formFirmaPF { 
+		    	Wiki {"La solicitud de modificación será firmada y registrada." }
+				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=Registro.oficial registroFirma=Registro listaFirmantes=Registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+			}
+
+			Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
+		}
+
+		//Firma Persona jurídica
+		Grupo titulo="Paso 3. Firmar y Registrar la solicitud de modificación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=firmarRegistrarSolicitudModificada
+		{
+
+			// La firma y registro se hace en dos pasos
+				Grupo titulo="Paso 3.1. Firmar la solicitud de modificación" permiso=firmarSolicitudModificada{
+					Wiki {"La solicitud de modificación debe firmarse con el Certificado electrónico del solicitante o el de uno de los representantes del solicitante. Si la representación es  mancomunada todos los representantes deben firmar la solicitud."}
+
+					Form formFirmaRepresentante permiso=firmarSolicitudModificada {
+						FirmaSimple firmarRepresentante titulo="Firmar" documento=Registro.oficial registroFirma=Registro listaFirmantes=Registro.firmantes.todos calcularFirmantes=SolicitudGenerica.solicitante
+					}
+
+					Tabla tablaFirmantesHecho campo=Registro.firmantes.todos recargarPagina  titulo="Representantes que ya han firmado" {
+						Columna campo=Firmante.idvalor titulo="NIP"
+						Columna campo=Firmante.nombre titulo="Nombre" expandir
+						Columna campo=Firmante.fechaFirma titulo="Fecha de firma"
+					}
+
+					Tabla tablaFirmantesEspera campo=Registro.firmantes.todos recargarPagina  titulo="Representantes que no han firmado" {
+						Columna campo=Firmante.idvalor titulo="NIP"
+						Columna campo=Firmante.nombre titulo="Nombre" expandir
+					}
+				}
+
+				Grupo titulo="Paso 3.2. Registrar la solicitud de modificación" permiso=registrarSolicitudModificada
+				{
+					Wiki {"Su solicitud de modificación ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
+
+					Form frmRegistrar redirigir=PresentarModificacionFAP {
+						Boton botonRegistrar titulo="Registrar"
+					}
+
+					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
+				}
+			}
+	}
 
 }

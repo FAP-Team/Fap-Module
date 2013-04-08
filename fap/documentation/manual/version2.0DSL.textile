@@ -120,7 +120,7 @@ En las referencias a popups y páginas, ahora ya no puede aparecer el segmento d
 
 Antes:
 
-bc. Enlace "Mis Solicitudes" permiso=logeado pagina=Principal.Solicitudes 	
+bc. Enlace "Mis Solicitudes" permiso=logeado pagina=Solicitudes 	
 
 Ahora:
 

@@ -73,15 +73,17 @@ public class ModelUtils{
 	 * Se busca un elemento padre concreto.
 	 */
 	public static EObject getContenedorPadre(EObject eo, EClass clazz) {
+		if (eo == null)
+			return null;
 		while (!(clazz.isInstance(eo))) {
 			EObject eo1 = (EObject)eo.eContainer();
+			if (eo1 == null)
+				return null;
 			eo = eo1;
-			if (eo == null)
-				break;
 		}
 		return eo;
 	}
-	
+
 	public static Elemento getElemento(EObject object) {
 		if (object instanceof Elemento) 
 			return (Elemento) object;
@@ -109,5 +111,5 @@ public class ModelUtils{
 		}
 		return listaElementos;
 	}
-	
+
 }

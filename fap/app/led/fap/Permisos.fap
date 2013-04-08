@@ -278,7 +278,11 @@ Permiso editarSolicitud {
 		SolicitudGenerica solicitud
 		Convocatoria convocatoria
 	when
-		agente.rolActivo in ("evaluador", "lector")
+		agente.rolActivo = "evaluador" or
+		(
+			agente.rolActivo != "usuario" and
+			solicitud?.estado = "modificacion"
+		)
 	return
 		leer
 	when
@@ -1016,6 +1020,25 @@ Permiso prepararSolicitud {
 		visible
 }
 
+// Sobreescrito
+Permiso prepararSolicitudModificacion {
+	vars
+		SolicitudGenerica solicitud
+		Registro registro
+	when
+		(_accion = editar) and
+		(registro?.fasesRegistro?.borrador = "false") and
+		(registro?.fasesRegistro?.clasificarAed = "false")
+	return
+		all
+	when
+		(_accion = editar) and
+		(registro?.fasesRegistro?.borrador = "true") and
+		(registro?.fasesRegistro?.clasificarAed = "false") 
+	return
+		visible
+}
+
 /*
  * Permiso “enBorradorSolicitud�?
  *
@@ -1037,6 +1060,21 @@ Permiso enBorradorSolicitud{
 		all
 }
 
+//Sobreescrito
+Permiso enBorradorSolicitudModificada{ 
+	vars 
+		SolicitudGenerica solicitud
+		Registro registro
+	when
+		(_accion = leer)
+		or (
+			(registro?.fasesRegistro?.borrador="true") and
+		 	(registro?.fasesRegistro?.clasificarAed="false")
+		) 
+	return
+		all
+}
+
 Permiso clasificadaSolicitud{
 	vars 
 	 	SolicitudGenerica solicitud
@@ -1044,6 +1082,19 @@ Permiso clasificadaSolicitud{
 		//TODO SMB 04/04/2012
 		(_accion = leer) or
 		(solicitud?.registro?.fasesRegistro?.clasificarAed=true)   
+	return
+		all
+}
+
+
+Permiso clasificadaSolicitudModificada{
+	vars 
+	 	SolicitudGenerica solicitud
+	 	RegistroModificacion registroModificacion
+	when
+		solicitud?.estado = "iniciada" and
+		(solicitud?.registro?.fasesRegistro?.clasificarAed="true")
+		  
 	return
 		all
 }
@@ -1065,6 +1116,19 @@ when
 return
 	all
 }
+
+// Sobreescrito
+Permiso modificarSolicitudModificada{
+vars
+ 	SolicitudGenerica solicitud
+ 	Registro registro
+when
+	(_accion = leer) or
+	(registro?.fasesRegistro?.registro="false")
+return
+	all
+}
+
  /*
  * Permiso “mesajeIntermedioSolicitud"
  */
@@ -1079,6 +1143,21 @@ when
 return
 	all
 }
+
+// Sobreescrito
+Permiso mensajeIntermedioSolicitudModificada{
+vars
+	SolicitudGenerica solicitud
+	Registro registro
+when
+	(registro?.fasesRegistro?.firmada = "true" or
+	registro?.fasesRegistro?.registro = "true" or
+	registro?.fasesRegistro?.expedienteAed = "true") and
+	registro?.fasesRegistro?.clasificarAed = "false"
+return
+	all
+}
+
 /*
  * Permiso “firmarRegistrarSolicitud�?
  *
@@ -1100,6 +1179,18 @@ return
 	all
 }
 
+// Sobreescrita
+Permiso firmarRegistrarSolicitudModificada{
+vars
+	SolicitudGenerica solicitud
+	Registro registro
+when
+	(_accion = leer) or
+	(registro?.fasesRegistro?.clasificarAed="false")
+return
+	all
+}
+
 // 	Permite firmar a un funcionario habilitado
 
 Permiso firmarRegistrarSolicitudFH{
@@ -1110,6 +1201,20 @@ Permiso firmarRegistrarSolicitudFH{
 		(solicitud?.registro?.fasesRegistro?.clasificarAed=false))
 		and
 		(agente.funcionario=true)
+	return
+		all
+}
+
+// Sobreescrita
+Permiso firmarRegistrarSolicitudModificadaFH{
+	vars
+		SolicitudGenerica solicitud
+		Registro registro
+	when
+		((_accion = leer) or
+		(registro?.fasesRegistro?.clasificarAed="false"))
+		and
+		(agente.funcionario="true")
 	return
 		all
 }
@@ -1159,6 +1264,21 @@ Permiso habilitarFHPresentacion{
 		all
 }
 
+// Sobreescrita
+Permiso habilitarFHPresentacionModificada{
+	vars
+		SolicitudGenerica solicitud
+		Registro registro
+	when
+		(registro?.habilitaFuncionario="true")
+	return
+		visible
+	when
+		(registro?.habilitaFuncionario=null) or (registro?.habilitaFuncionario="false")
+	return
+		all
+}
+
 Permiso habilitarFHAportacion{
 	vars
 		SolicitudGenerica solicitud
@@ -1204,6 +1324,19 @@ when
 return
 	all
 }
+
+// Sobreescrito
+Permiso firmarSolicitudModificada{
+vars
+	SolicitudGenerica solicitud
+	Registro registro
+when
+	(_accion = leer) or
+	(registro?.fasesRegistro?.firmada="false")
+return
+	all
+}
+
 /*
  * Permiso “registrarSolicitud�?
  *
@@ -1221,6 +1354,19 @@ when
 	(_accion = leer) or
 	(solicitud?.registro?.fasesRegistro?.firmada = true and
 		solicitud?.registro?.fasesRegistro?.clasificarAed = false)
+return
+	all
+}
+
+// Sobreescrita
+Permiso registrarSolicitudModificada{
+vars
+	SolicitudGenerica solicitud
+	Registro registro
+when
+	(_accion = leer) or
+	(registro?.fasesRegistro?.firmada = "true" and
+	 registro?.fasesRegistro?.clasificarAed = "false")
 return
 	all
 }
@@ -1386,6 +1532,77 @@ Permiso evaluacionFinalizada{
 	when
 	    (evaluacion?.tipo?.estado = "evaluada") and
 	    (agente.rolActivo in ("administrador", "gestor"))
+	return all	  
+}
+
+Permiso habilitarModificacionSolicitud{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor") and
+		solicitud.estado != "borrador"
+	return
+	    all
+}
+
+Permiso crearModificacionSolicitud{
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "gestor") and
+		solicitud.activoModificacion = "false"
+	return
+	    all
+}
+
+// Sobreescrito
+Permiso modificacionTrasPresentacionDeSolicitud {
+	vars
+		SolicitudGenerica solicitud
+		Registro registro
+	when
+		agente.rolActivo in ("administrador", "gestor")
+	return
+		all
+	when
+ 		agente.rolActivo = "usuario" and
+ 		solicitud?.estado != "borrador" and
+ 		solicitud?.activoModificacion = "false"
+	return 
+		visible
+	when
+ 		agente.rolActivo = "usuario" and
+ 		solicitud?.estado = "modificacion" and
+ 		solicitud?.activoModificacion = "true" and
+ 		registro?.fasesRegistro.borrador = "true"
+	return 
+		visible
+	when
+ 		agente.rolActivo = "usuario" and
+ 		solicitud?.estado = "modificacion" and
+ 		solicitud?.activoModificacion = "true" and
+ 		registro?.fasesRegistro.borrador = "false"
+	return all
+}
+
+Permiso presentarModificacionTrasPresentacionDeSolicitud {
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo != "usuario" and
+		solicitud?.estado = "modificacion"
+	return
+		visible
+	when
+ 		agente.rolActivo = "usuario" and
+ 		solicitud?.estado != "borrador" and
+ 		solicitud?.activoModificacion = "false"
+ 	return
+ 		visible
+	when
+ 		agente.rolActivo = "usuario" and
+ 		solicitud?.estado = "modificacion" and
+ 		solicitud?.activoModificacion = "true"
 	return all
 }
 
@@ -1413,4 +1630,5 @@ Permiso adminGestorJefeServicio {
 	when
 		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
 	return all
+
 }

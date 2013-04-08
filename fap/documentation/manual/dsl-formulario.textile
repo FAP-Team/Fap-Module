@@ -42,7 +42,7 @@ h3. Formulario con menú
 bc.. Formulario Solicitud permiso=administrador {
 	
 	Menu {
-		Enlace "Volver" pagina=Principal.Solicitudes
+		Enlace "Volver" pagina=Solicitudes
 		Grupo "Solicitud" {
 			Enlace "Solicitante" pagina=Solicitante
 		}

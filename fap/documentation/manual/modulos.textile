@@ -58,7 +58,7 @@ El módulo de Seguimiento permite a los gestores notificarse entre ellos los cam
 
 h2. "Verificación":app-verificacion
 
-La Verificación es el proceso que se lleva a cabo normalmente en la fase de Instrucción, y permite checkear, comprobar y validad que los documentos que ha subido el solicitante en la parte de Presentación mediante el módulo Documentación y sigue subiendo en la fase de Instrucción mediante la Aportación de Documentación, son correctos y era lo que se precisaba en la convocatoria. Si hay algún documento que no se adecua a lo que debería ser, se podrá hacer un requerimiento para notificar al solicitante que debe volver a subir el documento correctamente, por lo que habrá un feedback para que cuando lo suba corregido, el gestor lo pueda comprobar nuevamente y así ir subsanando los errores de documentación que puedan darse.
+La Verificación es el proceso que se lleva a cabo normalmente en la fase de Instrucción, y permite checkear, comprobar y validar que los documentos que ha subido el solicitante en la parte de Presentación mediante el módulo Documentación y sigue subiendo en la fase de Instrucción mediante la Aportación de Documentación, son correctos y era lo que se precisaba en la convocatoria. Si hay algún documento que no se adecua a lo que debería ser, se podrá hacer un requerimiento para notificar al solicitante que debe volver a subir el documento correctamente, por lo que habrá un feedback para que cuando lo suba corregido, el gestor lo pueda comprobar nuevamente y así ir subsanando los errores de documentación que puedan darse.
 
 h2. "Cesión de datos":app-cesiondatos
 

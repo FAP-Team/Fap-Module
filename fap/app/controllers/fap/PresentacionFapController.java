@@ -46,4 +46,21 @@ public class PresentacionFapController extends InvokeClassController{
         return true;
 	}
 	
+	public static void comprobarFechaLimitePresentacion(Long idSolicitud){
+		try {
+			if (FapProperties.get("fap.app.presentacion.fechacierre") != null){
+				String fechaStr = FapProperties.get("fap.app.presentacion.fechacierre");
+				DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+				DateTime fechaLimite = formatter.parseDateTime(fechaStr);
+				if (fechaLimite.isBeforeNow()){
+					play.Logger.error("La solicitud "+idSolicitud+" no se ha podido presentar (registrar o firmar). La fecha Límite de Presentación ha expirado: "+fechaStr);
+					Messages.error("La fecha Límite de Presentación ha expirado: "+fechaStr);
+					Messages.keep();
+				}
+			}
+		} catch (Exception e){
+			play.Logger.error("Fallo recuperando y verificando la fecha de cierre de la presentacion de la aplicación");
+		}
+	}
+	
 }

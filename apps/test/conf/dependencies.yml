@@ -2,9 +2,9 @@
 
 require:
     - play
-    - fap-module -> fap 2.0
+    - fap-module -> fap 2.1.2
     - fap-modules -> guice 1.3
-    - play -> pdf 0.6
+    - play -> pdf 0.9
     - play -> less 0.9
     - play -> recaptcha 1.2
     - play -> mockito 0.1

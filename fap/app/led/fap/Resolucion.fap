@@ -44,6 +44,7 @@ Lista estadoTipoMultiple crearEnumerado {
 Lista estadoLineaResolucion crearEnumerado {
 	concedida: "Concedida"
 	excluida: "Excluida"
+	denegada: "Denegada"
 }
 
 Lista prioridadesFirmaEnPortafirma crearEnumerado {
@@ -67,6 +68,9 @@ Lista estadoPortafirma crearEnumerado {
 Entidad LineaResolucionFAP {
 	SolicitudGenerica solicitud noConstruct
 	Lista estadoLineaResolucion estado
+	Double puntuacionBaremacion
+	Moneda importeTotal
+	Moneda importeConcedido
 }
 
 // Entidades de la resolución
@@ -128,8 +132,8 @@ Entidad ResolucionFAP {
 	
 		//Long IDPortafirma					//ID devuelto por el Servicio WEb del Portafirmas
 		//String estadoPortafirmas			//??Pendiente de revisar
-	SolicitudPortafirma solicitudFirmaJefeServicio
-	SolicitudPortafirma solicitudFirmaDirector
+	SolicitudPortafirmaFAP solicitudFirmaJefeServicio
+	SolicitudPortafirmaFAP solicitudFirmaDirector
 
 	//Lista estadoResolucionConcesion estado		//Estado de la resolución: 1.0:Creada,2.0:Preparada, 3.0:En_Firma, 4.0:Firmada, 5.0:Registrada, 6.0:Publicada
 		//OneToMany LineaResolucion lineasResolucion
@@ -144,7 +148,7 @@ Entidad ResolucionFAP {
 
 }
 
-Entidad SolicitudPortafirma{
+Entidad SolicitudPortafirmaFAP {
 	String codSolicitudPf
 	String estadoPf
 	String tituloPf
@@ -163,9 +167,10 @@ Formulario Principal {
 	Pagina ResolucionesFAP titulo="Lista de Resoluciones" {
 		Tabla listaResoluciones titulo="Resoluciones" campo=ResolucionFAP paginaCrear=NuevaResolucion paginaEditar=EditarResolucion
 		{
-			Columna campo=ResolucionFAP.id titulo="ID"
+			Columna campo=ResolucionFAP.id titulo="ID" ancho="40"
 			Columna campo=ResolucionFAP.tipoDefinidoResolucion titulo="Resolución"
-			Columna campo=ResolucionFAP.tipo titulo="Tipo"
+			Columna campo=ResolucionFAP.tipo titulo="Tipo" ancho="100"
+			Columna campo=ResolucionFAP.estado titulo="Estado"
 			Columna campo=ResolucionFAP.modalidad titulo="Modalidad"
 		}
 	}
@@ -176,11 +181,11 @@ Formulario Principal {
 			Combo campo=ResolucionFAP.tipoDefinidoResolucion titulo="Resolución"
 			Combo campo=ResolucionFAP.tipo titulo="Tipo"
 			Texto campo=ResolucionFAP.tituloInterno titulo="Título" requerido
-			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción" requerido
+			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
+			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución"
-			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución"
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
 	}
@@ -217,7 +222,7 @@ Formulario Principal {
 			Grupo gCrearResolucion titulo="Preparar la Resolución" permiso=noSeleccionarExpedientes {
 				Wiki { "Si su resolución está lista para crearla, pulse el siguiente botón." }
 				Form frmCrearResolucion {
-					Boton  btnCrearResolucion titulo="Crear Resolución"
+					Boton  btnCrearResolucion titulo="Crear Líneas de Resolución"
 				}
 			}
 		}
@@ -225,7 +230,7 @@ Formulario Principal {
     	Grupo gCerrarResolucion titulo="Preparar la Resolución" permiso=prepararResolucion {
 			Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
 			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" popupEditar=ModificarEstadoExpediente popupLeer=VerExpediente {
-				Columna campo=LineaResolucionFAP.id titulo="Id"
+				Columna campo=LineaResolucionFAP.id titulo="Id" ancho="40"
 				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
 				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
 				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
@@ -233,7 +238,7 @@ Formulario Principal {
 				Columna campo=LineaResolucionFAP.estado titulo="Estado"
 			}
 			Form prepararResolucion {
-				Boton  btnPrepararResolucion titulo="Cerrar Resolución"
+				Boton  btnPrepararResolucion titulo="Preparar Resolución"
 			}
 		}
 		
@@ -309,11 +314,19 @@ Formulario Principal {
 		}
 		
 		Grupo gDatosResolucion titulo="Datos de la Resolución actual" permiso=mostrarDatosResolucion {
-			Combo campo=ResolucionFAP.estado titulo="Estado"
-			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
-			Combo campo=ResolucionFAP.tipo titulo="Tipo de Resolución" requerido
+			Combo campo=ResolucionFAP.tipoDefinidoResolucion titulo="Resolución"
+			Combo campo=ResolucionFAP.tipo titulo="Tipo"
 			Combo campo=ResolucionFAP.modalidad titulo="Modalidad de la Resolución" requerido
+			Combo campo=ResolucionFAP.estado titulo="Estado"
+			Texto campo=ResolucionFAP.tituloInterno titulo="Título" requerido
+			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
+			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
+			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
+			
+			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
 			Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
 				Columna campo=LineaResolucionFAP.id titulo="Id"
 				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
@@ -321,6 +334,7 @@ Formulario Principal {
 				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
 				Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante"
 				Columna campo=LineaResolucionFAP.estado titulo="Estado"
+			}
 			}
 			Texto campo=ResolucionFAP.folio_inicio titulo="Folio Inicial"
 			Texto campo=ResolucionFAP.folio_final titulo="Folio Final"
@@ -379,7 +393,7 @@ Permiso mostrarDatosResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estado != "borrador" and
+		resolucion.estado != null and
 		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
 	return 
 		visible

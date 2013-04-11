@@ -28,6 +28,30 @@ public class LineaResolucionFAP extends FapModel {
 	@ValueFromTable("estadoLineaResolucion")
 	public String estado;
 
+	public Double puntuacionBaremacion;
+
+	@Moneda
+	public Double importeTotal;
+
+	@Moneda
+	public Double importeConcedido;
+
+	@Transient
+	public String importeTotal_formatFapTabla;
+
+	@Transient
+	public String importeConcedido_formatFapTabla;
+
+	// Getter del atributo del tipo moneda
+	public String getImporteTotal_formatFapTabla() {
+		return format.FapFormat.formatMoneda(importeTotal);
+	}
+
+	// Getter del atributo del tipo moneda
+	public String getImporteConcedido_formatFapTabla() {
+		return format.FapFormat.formatMoneda(importeConcedido);
+	}
+
 	public void init() {
 
 		postInit();

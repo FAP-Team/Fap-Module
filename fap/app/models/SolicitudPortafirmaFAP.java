@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class SolicitudPortafirma extends FapModel {
+public class SolicitudPortafirmaFAP extends FapModel {
 	// Código de los atributos
 
 	public String codSolicitudPf;

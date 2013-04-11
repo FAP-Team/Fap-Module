@@ -87,8 +87,8 @@ public class ResolucionBase {
 	 * Devuelve las solicitudes "posibles" a resolver (lista desde donde se seleccionará)
 	 * @return
 	 */
-	public static java.util.List<SolicitudGenerica> getSolicitudesAResolver (Long idResolucion) {
-		return SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.estado in('verificado','excluido','desistido')").fetch();
+	public java.util.List<?> getSolicitudesAResolver (Long idResolucion) {
+		return SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.estado not in('borrador')").fetch();
 	}
 	
 	/**
@@ -96,6 +96,14 @@ public class ResolucionBase {
 	 * @param idResolucion
 	 */
 	public void setLineasDeResolucion(Long idResolucion) {
+	}
+	
+	/**
+	 * Prepara todo antes de obtener las líneas de resolución.
+	 * @param idResolucion
+	 */
+	public void prepararLineasResolucion (Long idResolucion) {
+		
 	}
 	
 	/**

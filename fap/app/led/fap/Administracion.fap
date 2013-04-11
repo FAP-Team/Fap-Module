@@ -510,7 +510,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	}
 	
 	Pagina CargarTiposAreasResoluciones titulo="Resoluciones" noForm perteneceA="Administracion" {
-		Grupo grpCargarAreas titulo="Cargar √?reas" {
+		Grupo grpCargarAreas titulo="Cargar √Åreas" {
 			Form frmCargarAreas {
 				Boton cargarAreas titulo="Actualizar"
 			}

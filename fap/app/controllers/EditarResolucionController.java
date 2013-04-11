@@ -50,7 +50,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = ResolucionControllerFAP.getResolucionObject(ids.get("idResolucionFAP"));
 		
-		java.util.List<SolicitudGenerica> rows = resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
+		java.util.List<SolicitudGenerica> rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
 		
 		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
@@ -65,7 +65,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = ResolucionControllerFAP.getResolucionObject(ids.get("idResolucionFAP"));
 		
-		java.util.List<SolicitudGenerica> rows = resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
+		java.util.List<SolicitudGenerica> rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
 		
 		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
@@ -110,6 +110,18 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		if (!permisoFrmCrearResolucion("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
+		
+		if (!Messages.hasErrors()) {
+			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+			ResolucionBase resolBase = null;
+			try {
+				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
+				resolBase.prepararLineasResolucion(idResolucionFAP);
+			} catch (Throwable e) {
+				play.Logger.error("Error antes de obtener las líneas de resolución: " + e.getMessage());
+				Messages.error("Error antes de obtener las líneas de resolución");
+			}
+		}
 
 		if (!Messages.hasErrors()) {
 			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
@@ -120,6 +132,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				ResolucionBase.avanzarFase_Borrador(resolucion);
 			} catch (Throwable e) {
 				play.Logger.error("Error obteniendo tipo de resolución: " + e.getMessage());
+				Messages.error("Error obteniendo el tipo de resolución");
 			}
 		}
 

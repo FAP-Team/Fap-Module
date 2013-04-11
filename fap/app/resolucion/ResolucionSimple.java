@@ -35,7 +35,8 @@ public class ResolucionSimple extends ResolucionBase {
 		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
 		if (resolucion.lineasResolucion.size() == 0) {
 			// Por cada una de las solicitudes a resolver, añadimos una línea de resolución
-			for (SolicitudGenerica sol: getSolicitudesAResolver(idResolucion)) {
+			for (Object solObject: getSolicitudesAResolver(idResolucion)) {
+				SolicitudGenerica sol = (SolicitudGenerica) solObject;
 				LineaResolucionFAP lResolucion = new LineaResolucionFAP();
 				lResolucion.solicitud = sol;
 				if (sol.estado.equals(EstadosSolicitudEnum.verificado)) {

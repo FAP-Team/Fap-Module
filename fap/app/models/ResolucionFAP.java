@@ -112,10 +112,10 @@ public class ResolucionFAP extends FapModel {
 	public ExpedienteAed expedienteAed;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public SolicitudPortafirma solicitudFirmaJefeServicio;
+	public SolicitudPortafirmaFAP solicitudFirmaJefeServicio;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public SolicitudPortafirma solicitudFirmaDirector;
+	public SolicitudPortafirmaFAP solicitudFirmaDirector;
 
 	public ResolucionFAP() {
 		init();
@@ -146,12 +146,12 @@ public class ResolucionFAP extends FapModel {
 			expedienteAed.init();
 
 		if (solicitudFirmaJefeServicio == null)
-			solicitudFirmaJefeServicio = new SolicitudPortafirma();
+			solicitudFirmaJefeServicio = new SolicitudPortafirmaFAP();
 		else
 			solicitudFirmaJefeServicio.init();
 
 		if (solicitudFirmaDirector == null)
-			solicitudFirmaDirector = new SolicitudPortafirma();
+			solicitudFirmaDirector = new SolicitudPortafirmaFAP();
 		else
 			solicitudFirmaDirector.init();
 

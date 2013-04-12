@@ -1,0 +1,18 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+
+%{
+	def parent = _parent
+	def titulo = _titulo ?: _valor
+	def valor = _valor
+	def parentValue = field.flashorvalue
+}%
+
+<div class="controls">
+	<input type="radio" name="${parent}" value="${valor}" #{if parentValue.equals(valor)} checked #{/if} >
+	${titulo}
+</div>
+
+#{/fap.field}

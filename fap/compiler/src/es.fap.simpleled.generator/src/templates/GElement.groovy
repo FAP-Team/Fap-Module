@@ -238,6 +238,12 @@ public class GElement {
 
 			else if(element instanceof TextoOculto)
 				cache.put(element, new GTextoOculto(element, container));
+				
+			else if(element instanceof RadioButton)
+				cache.put(element, new GRadioButton(element, container));
+			
+			else if(element instanceof GrupoRadioButtons)
+				cache.put(element, new GGrupoRadioButtons(element, container));
 		}
 		
 		return cache.get(element);

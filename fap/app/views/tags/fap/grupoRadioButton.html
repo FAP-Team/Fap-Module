@@ -1,0 +1,27 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{
+	def label = _label
+	def requerido = _requerido;
+	if(_requerido != null) 
+		requerido = _requerido
+	else if(field.required != null) 
+		requerido = field.required
+	else
+		requerido = false
+	def error = field.error? " error" : "";
+}%
+
+<div class="control-group${error}">
+	<label class="control-label" >
+		${label}
+		#{if requerido}
+			<span class="required">*</span>
+		#{/if}
+	</label>
+	#{doBody/}
+</div>
+
+#{/fap.field}

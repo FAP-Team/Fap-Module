@@ -230,7 +230,8 @@ Elemento:
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple |
-	EntidadAutomatica | Accion | Codigo | CCC | VisorFactura | SubirFactura | EditarFactura | TextoOculto
+	EntidadAutomatica | Accion | Codigo | CCC | VisorFactura | SubirFactura | EditarFactura | TextoOculto |
+	GrupoRadioButtons
 ;
 
 Campo:
@@ -285,6 +286,24 @@ Check:
 		& ('anchoTitulo' '=' anchoTitulo=STRING)?
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& (alineadoAIzquierdas?='alineadoAIzquierdas')?
+	)
+;
+
+GrupoRadioButtons:
+	elemento='GrupoRadioButtons' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& (requerido ?= 'requerido')?
+	)
+	'{'
+		radios+=RadioButton*
+	'}'
+;
+
+RadioButton:
+	elemento='RadioButton' (name=ID)? (
+		('titulo' '=' titulo=STRING)?
+		('valor' '=' valor=STRING)
 	)
 ;
 

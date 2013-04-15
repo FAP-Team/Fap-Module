@@ -18,5 +18,9 @@ Entra más en detalle en FAP. Conoce los servicios que utiliza FAP, los módulos
 
 h2. "Tutoriales":tutoriales
 
+h2. "Colabora":grammarDeveloperDoc
+
+Si quieres colaborar con el equipo de desarrollo del módulo, aquí dispones de una pequeña guía de como realizar los primeros pasos.
+
 h2. "FAQ":preguntas-frecuentes
 

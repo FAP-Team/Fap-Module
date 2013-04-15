@@ -1,0 +1,142 @@
+h1. Ejemplo de modificación de la gramática
+
+Imaginemos que tenemos un DSL y queremos añadir un nuevo atributo a un elemento. En concreto, añadiremos un nuevo atributo _concatenarTexto_ al elemento *Texto* y se utilizaría de la siguiente manera:
+
+bc. Texto campo=Solicitud.sol.nombre titulo="Nombre" concatenarTexto="prueba"
+
+En primer lugar, hay que modificar la gramática. Para ello, lo que debemos hacer es acceder al fichero _/es.fap.simpleled/src/es/fap/simpleled/Led.xtext_ y definir el elemento *Texto* como sigue:
+
+bc. Texto:
+	elemento='Texto' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('titulo' '=' titulo=STRING)?
+		& ('ancho' '=' ancho=STRING)?
+		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& ('anchoTitulo' '=' anchoTitulo=STRING)?
+		& (requerido?='requerido')?
+		& (duplicar?='duplicar')?
+		& (password?='password')?
+		& ('concatenarTexto' '=' concatenarTexto=STRING)?
+	)
+;
+
+Una vez modificada la gramática se ejecuta _/es.fap.simpleled/src/es/fap/simpleled/GenerateLed.mwe2_ (_Run as -> MWE2 Workflow_).
+
+h2. Desde la vista
+
+Si queremos que el valor del nuevo atributo _concatenarTexto_ se añada al final del contenido del atributo *value* se debe realizar lo siguiente:
+
+En el método _view()_ del template _/es.fap.simpleled.generator/src/templates/GTexto.groovy_ añadir el nuevo atributo a params (TagParameters) como se muestra a continuación:
+
+bc. if(texto.concatenarTexto != null)
+ params.putStr "concatenarTexto", texto.concatenarTexto
+
+En el template _/fap/app/views/tags/fap/texto.html_ se modifica la vista del tag texto. En el código groovy se actualiza el contenido del atributo “value” concatenando éste con nuestro nuevo atributo “concatenarTexto”.
+
+bc. def concatenarTexto = _concatenarTexto
+if (concatenarTexto)
+value += concatenarTexto;
+
+De esta forma, para la siguiente línea de un fichero .fap
+
+bc. Texto campo=Solicitud.elementos.texto titulo="Texto: " concatenarTexto=" estoEsTextoAñadido"
+
+se visualizará lo siguiente:
+
+!images/ejemploTexto!
+
+h2. Desde el controlador
+
+Otra forma de atajar este “problema” es hacer que el controlador se encargue. Para ello tendremos que localizar donde se encuentra la cadena _concatenarTexto_ para poder indicarle que se proceda a la concatenación del string que contenga dicho parámetro. 
+
+
+Lo primero que debemos hacer es comprobar donde se está realizando la inserción de los datos en bbdd, dentro del controlador generado. Si tenemos una página llamada SolicitantePrueba tal que así:
+
+bc. Pagina SolicitantePrueba campo=Solicitud {
+		
+	Texto campo=Solicitud.sol.nombre titulo="Nombre" concatenarTexto="prueba" 
+    	Texto campo=Solicitud.sol.apellido1 titulo="Primer Apellido" 
+    	Texto campo=Solicitud.sol.apellido2 titulo="Segundo Apellido"
+	EntidadAutomatica aquiponesloquequieras  campo=Solicitud.contacto
+}
+
+deberemos acudir al controlador  _SolicitantePruebaControllerGen.java_. Ahí  podemos ver que en el método _ValidateCopy_ de dicho controlador se realizan las inserciones:
+
+bc. public static void SolicitantePruebaValidateCopy(String accion, Solicitud dbSolicitud, Solicitud solicitud) {
+		CustomValidation.clearValidadas();
+		CustomValidation.valid("solicitud.sol", solicitud.sol);
+		CustomValidation.valid("solicitud", solicitud);
+		dbSolicitud.sol.nombre = solicitud.sol.nombre + "prueba";
+		dbSolicitud.sol.apellido1 = solicitud.sol.apellido1;
+		dbSolicitud.sol.apellido2 = solicitud.sol.apellido2;
+		CustomValidation.valid("solicitud.contacto", solicitud.contacto);
+		CustomValidation.required("solicitud.contacto.nombre", solicitud.contacto.nombre);
+		dbSolicitud.contacto.nombre = solicitud.contacto.nombre;
+		CustomValidation.required("solicitud.contacto.apellido1", solicitud.contacto.apellido1);
+		dbSolicitud.contacto.apellido1 = solicitud.contacto.apellido1;
+		dbSolicitud.contacto.apellido2 = solicitud.contacto.apellido2;
+		CustomValidation.required("solicitud.contacto.telefono", solicitud.contacto.telefono);
+		dbSolicitud.contacto.telefono = solicitud.contacto.telefono;
+		dbSolicitud.contacto.movil = solicitud.contacto.movil;
+		dbSolicitud.contacto.fax = solicitud.contacto.fax;
+		CustomValidation.required("solicitud.contacto.email", solicitud.contacto.email);
+		dbSolicitud.contacto.email = solicitud.contacto.email;
+
+	}
+
+Si nos fijamos es en el campo _solicitud.sol.nombre_ donde queremos que se le añada el valor prueba, para comprobar que es esto lo que queremos hacer y sin que sirva de precedente, sobreescribimos el controlador generador tal que así:
+
+bc. 		...
+CustomValidation.valid("solicitud", solicitud);
+dbSolicitud.sol.nombre = solicitud.sol.nombre + "prueba";
+dbSolicitud.sol.apellido1 = solicitud.sol.apellido1;
+		...
+
+Con lo cual si nosotros escribimos algo en el campo Nombre:
+
+!images/dsl-grammar1!
+
+Al pulsar el botón guardar el resultado es este:
+
+!images/dsl-grammar2!
+
+Este es el comportamiento esperado, pero lógicamente no podemos sobreescribir el controlador generado debido a que la próxima vez que se genere la aplicación, este será sobreescrito. Por lo que deberemos acudir al template del elemento en cuestión, en este caso _/es.fap.simpleled.generator/src/templates/GTexto.groovy_ y buscamos si tiene un método llamado Validatecopy.
+En este caso no disponía del mismo por lo que tendremos que fijarnos de donde extiende la clase _GTexto_ y acceder a ella.
+
+bc. public class GTexto extends GSaveCampoElement{...}
+
+
+Una vez en _GSaveCampoElement.groovy_ buscamos el método ValidateCopy el cual se compone de dos llamadas a otros dos métodos, validate y copy.
+
+Nos centramos en el método copy y miramos que devuelve, en este caso devuelve:
+
+bc. return copyCampos(campo);
+
+Entonces nos dirigimos hacia el método copyCampos, el cual devuelve:
+
+bc. return copyCampo(campo);
+
+Finalmente copyCampo devuelve:
+
+bc. return "db${campo.str} = ${campo.firstLower()};\n";
+
+que es la línea que se crea en el controlador generado para la inserción en la bbdd.
+
+Con lo cual debemos crearnos un método copy en _/es.fap.simpleled.generator/src/templates/GTexto.groovy_ que indique que debe hacerse en dicho caso en el controlador generado:
+
+bc. public String copy(){
+	return "db${campo.str} = ${campo.firstLower()}" + "+ \"" + texto.concatenarTexto + "\";\n";	
+}
+
+Ahora si generamos veremos como el método ValidateCopy de _/pruebita/app/controllers/gen/SolicitantePruebaControllerGen.java_ se ha generado con la cadena “prueba” concatenada a todos nuestros campos, pero eso no es lo que queríamos. Debemos indicar en que campo queremos concaternarla, para ello:
+
+bc. public String copy(){
+if(texto.valor != null)
+		return "db${campo.str} = ${campo.firstLower()}" + "+ \"" + texto.concatenarTexto + "\";\n";
+	else
+	return "db${campo.str} = ${campo.firstLower()};\n";
+}
+
+Con este código sólo se concatenará la cadena a los Textos que contengan el parámetro valor
+
+Una vez hecho esto deberíamos generar nuestra aplicación, realizar la ejecución tal y como se indicó en los pasos anteriores y debería ocurrir que al guardar se muestra la cadena “prueba” concatenada al valor del parámetro “nombre”.

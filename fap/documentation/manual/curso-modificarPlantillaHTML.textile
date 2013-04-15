@@ -36,7 +36,7 @@ Podemos ver todas las plantillas HTML que utiliza nuestra aplicación, así que 
 
 * ${APP}/modules/fap/app/views/errors/
 
-Existe una página "404.html", que es la que se muestra en las aplicaciones FAP por defecto antes dicho error. Sobreescribiendo esta página en nuestro proyecto, cambiaríamos este comportamiento y cuando ocurriese el error 404 se mostraría nuestra nueva página de error.
+Existe una página "404.html", que es la que se muestra en las aplicaciones FAP por defecto ante dicho error. Sobreescribiendo esta página en nuestro proyecto, cambiaríamos este comportamiento y cuando ocurriese el error 404 se mostraría nuestra nueva página de error.
 
 Recordemos que para sobreescribir la página, haremos análogamente lo mismo que lo que hemos explicado para el "template.html":
 * Situarnos en la carpeta del proyecto

@@ -8,7 +8,7 @@ Rotundamente NO. Crea y edita tus propios ficheros ".fap" en tu aplicación y co
 
 h2. ¿Puedo crear una entidad cuyo nombre sea *Solicitud*?
 
-Si, y lo lógico sería hacer que extendiera de *SolicitudGenerica*.
+Sí, y lo lógico sería hacer que extendiera de *SolicitudGenerica*.
 
 h2. ¿Puedo crear una entidad cuyo nombre sea *SolicitudGenerica*?
 
@@ -20,7 +20,7 @@ No.
 
 h2. ¿Puedo hacer que una entidad *EntidadA* extienda de otra *EntidadB*?
 
-Si, de la siguiente manera:
+Sí, de la siguiente manera:
 
 bc. Entidad EntidadA extends EntidadB {
 	String campoEntidadA
@@ -34,7 +34,7 @@ Así, la entidadA tendrá "internamente" los campos *campoEntidadA* y *campo*.
 
 h2. ¿Qué implica la declaración de una entidad en un fichero de tipo ".fap"?
 
-Por defecto una entidad representa una tabla en la base de datos. En la aplicación se crea una clase entity, esta clase se instancia al crear una nueva solicitud, aunque el desarrollador puede crear una instancia en cualquier momento. Si la clase es Singleton solo se crear una instancia de la clase para toda la aplicación. 
+Por defecto una entidad representa una tabla en la base de datos. En la aplicación se crea una clase entity, esta clase se instancia al crear una nueva solicitud, aunque el desarrollador puede crear una instancia en cualquier momento. Si la clase es Singleton sólo se creará una instancia de la clase para toda la aplicación. 
 
 La entidad solicitante
 
@@ -94,4 +94,4 @@ h2. Atributos del elemento "Grupo", tales como "SiCombo" o "SiCheck". Por ejempl
 
 h2. Al introducir las fechas en la aplicación me indica que el formato es incorrecto, ¿qué pasa?
 
-Probablemente la property *format.date* del fichero _pplication.conf_ de la aplicación no esté correcta. Su valor debería ser: *format.date=dd/MM/yyyy*. 
+Probablemente la property *format.date* del fichero _application.conf_ de la aplicación no esté correcta. Su valor debería ser: *format.date=dd/MM/yyyy*. 

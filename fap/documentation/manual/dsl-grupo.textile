@@ -9,10 +9,10 @@ h2. Parámetros
 * **_[name]_** (opcional) : Identificador del elemento.
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará al lado del campo de texto, si no se especifica se mostrará el nombre del campo.
 * **mostrarSiCombo _[combo]_ = _[string]_, _[string]_, ...** (opcional) : Muestra el grupo si el valor del combo específicado es alguno de la lista.
-* **mostrarSiCheck _[check]_ = true | false** (opcional) : Muestra el grupo si el valor del check específicado es "true" o "false".
-* **mostrarSiRadioBooleano _[radioBooleano]_ = true | false** (opcional) : Muestra el grupo si el valor del radioBooleano específicado es "true" o "false". False significa que está activo el botón izquierdo, y true que es el botón de la derecha el que está presionado.
+* **mostrarSiCheck _[check]_ = true | false** (opcional) : Muestra el grupo si el valor del check especificado es "true" o "false".
+* **mostrarSiRadioBooleano _[radioBooleano]_ = true | false** (opcional) : Muestra el grupo si el valor del radioBooleano especificado es "true" o "false". False significa que está activo el botón izquierdo, y true que es el botón de la derecha el que está presionado.
 * **mostrarSiCampo _[campo]_ = _[string]_, _[string]_, ...** (opcional) : Muestra el grupo si el valor del campo corresponde con alguno de los valores especificados.
-* **mostrarSiExpresion _[string]_** (opcional) : Muestra el grupo si el valor de la expresion que se especifique es verdadero.
+* **mostrarSiExpresion _[string]_** (opcional) : Muestra el grupo si el valor de la expresión que se especifique es verdadero.
 * _Nota: Sólo se permitirá indicar un 'mostrarSi...' en un combo_
 * **ayuda = _[string]_** (opcional) : Muestra, bajo la etiqueta del título, el texto de ayuda especificado.
 * **borde = true | false** (opcional) : Si es false no se mostrara el cuadro que engloba a los elementos del grupo.

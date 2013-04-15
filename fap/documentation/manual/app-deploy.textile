@@ -4,7 +4,7 @@ En esta sección se comentan los pasos que hay que seguir para poner una aplicac
 
 h2. Preparar el servidor
 
-El servidor debe tener instalado Java y la versión de Play utiliza la aplicación.
+El servidor debe tener instalado Java y la versión de Play que utiliza la aplicación.
 
 h2. Preparar las properties
 

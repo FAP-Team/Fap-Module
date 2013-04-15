@@ -22,7 +22,7 @@ El tipo de documento de la factura se puede modificar mediante la property _fap.
 
 bc. fap.aed.tiposfacturas.url=fs://facturatipo1/v01, fs://facturatipo2/v01
 
-Para tener acceso a los datos de la factura que se acaba de subir se dispone de una función llamada _getFacturaeObject_ que devuelve un objeto de tipo Facturae. Una vez se tiene este objeto se puede tratar la información contenida en la factura. En el módulo de FAP solo trabajamos con la información básica de una factura mediante la función _getDataFromFacturae_.
+Para tener acceso a los datos de la factura que se acaba de subir se dispone de una función llamada _getFacturaeObject_ que devuelve un objeto de tipo Facturae. Una vez se tiene este objeto se puede tratar la información contenida en la factura. En el módulo de FAP sólo trabajamos con la información básica de una factura mediante la función _getDataFromFacturae_.
 
 bc. Facturae invoice32 = dbFacturasFAP.getFacturaeObject();
 FacturasFAP.getDataFromFacturae(invoice32, dbFacturasFAP);
@@ -33,7 +33,7 @@ Si quieres visualizar más información de la que proporciona por defecto FAP ha
 
 h2. Editar una factura
 
-Una vez subida la factura podrá editarse, pero solo el tipo de documento y la descripción. El fichero solo se podrá descargar.
+Una vez subida la factura podrá editarse, pero sólo el tipo de documento y la descripción. El fichero sólo se podrá descargar.
 
 h3. Ejemplo
 

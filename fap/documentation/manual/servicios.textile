@@ -2,7 +2,7 @@ h1. Servicios
 
 A partir de la versión 2.0 de FAP, los servicios se implementan mediante inyección de dependencias, utilizando Google Guice. Para más infomación "aquí.":http://www.playframework.org/modules/guice Ésta implementación facilita la depuración, cambio de implementaciones, ...
 
-Ahora tanto la seguridad en los permisos como los servicios que utiliza FAP (GestorDocumental, Firma, Registro, Notificaciones, ...) utilizan esta inyección de dependencias. Pero... _¿qué es lo que nos permite hacer la inyección de dependencias?_. Fácil: Nosotros definimos la interfaz de un servicio, y tu en tu aplicación puedes utilizar la implementación que desees oportuna, alguna de las disponibles en el módulo FAP o cualquieras que tu quieras implementar.
+Ahora tanto la seguridad en los permisos como los servicios que utiliza FAP (GestorDocumental, Firma, Registro, Notificaciones, ...) utilizan esta inyección de dependencias. Pero... _¿qué es lo que nos permite hacer la inyección de dependencias?_ Fácil: Nosotros definimos la interfaz de un servicio, y tú en tu aplicación puedes utilizar la implementación que desees oportuna, alguna de las disponibles en el módulo FAP o cualquieras que tu quieras implementar.
 
 Utilizando la clase *AppModule* configuramos los diferentes servicios que utilizaremos. Esta clase hereda de la configuración que está definida en el módulo donde se declaran todos los servicios.
 
@@ -52,7 +52,7 @@ bc. protected void gestorDocumental() {
 	bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
 }
 
-Vemos que utiliza el gestor documental del sistema de ficheros, pero... ¿y si queremos que utilice el AED (qu ya configuramos todas sus properties en el fichero _application.conf_)? Pues simplemente en nuestra aplicación, en el fichero _AppModule.java_ haríamos algo como lo siguiente:
+Vemos que utiliza el gestor documental del sistema de ficheros, pero... ¿y si queremos que utilice el AED (que ya configuramos todas sus properties en el fichero _application.conf_)? Pues simplemente en nuestra aplicación, en el fichero _AppModule.java_ haríamos algo como lo siguiente:
 
 bc. public class AppModule extends FapModule {
     @Override

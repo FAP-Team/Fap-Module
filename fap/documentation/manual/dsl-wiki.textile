@@ -29,9 +29,10 @@ bc. Wiki {
 Podemos poner código groovy dentro del Wiki para hacerlo más flexible y potente.
 
 bc. Wiki{"El solicitante  
-			%{ def habitante = solicitud.solicitante.fisica.nombreCompleto
-			   habitante += \" de España\"
-			%} 
-			${habitante} tiene unos ingresos que ascienden a ${solicitud.ingresos.valorNeto.format('#,##0.00')} *Euros*"}
+	%{ def habitante =  solicitud.solicitante.fisica.nombreCompleto
+	       habitante += \" de España\"
+	%} 
+	${habitante} tiene unos ingresos que ascienden a 
+	${solicitud.ingresos.valorNeto.format('#,##0.00')} *Euros*"}
 
 De esta forma, se parsea a textile (que es el formato que muestra el texto del Wiki), todo el contenido que hayamos puesto en dicho Wiki, a excepción de los ${...} y los %{...%}, que no se sustituirá por su correspondiente homónimo en formato Wiki, debido a las incompatibilidades que supondría los caracteres como ('', comillas simples entre otros) en su representación en UTF8 con el comportamiento que debe otorgar la utilización de los ${...} para permitir utilizar variables, así como poder hacer uso de funciones sobre dichas variables y los %{...%} para poder utilizar código Groovy. 

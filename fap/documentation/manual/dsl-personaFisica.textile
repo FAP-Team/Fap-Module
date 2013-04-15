@@ -10,6 +10,7 @@ h2. Parámetros
 * **campo = _[campo]_** : Campo de tipo PersonaFisica donde se almacenarán los datos.
 * **titulo = _[string]_** (opcional) : Título que aparecerá en la cabecera del grupo.
 * **requerido** (opcional) : Indica si es obligatorio rellenar los campos necesarios de persona física.
+* **setearTipoPadre** (opcional) : Indica si lo que quieres mostrar es la persona física de un solicitante.
 
 h2. Definición
 
@@ -17,7 +18,8 @@ bc. PersonaFisica:
 	elemento='PersonaFisica' (name=ID) (
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
-		(requerido?='requerido')?
+		(requerido?='requerido')? &
+		(setearTipoPadre?='setearTipoPadre')?
 	)
 ;
 

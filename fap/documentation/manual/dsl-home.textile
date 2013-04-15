@@ -27,6 +27,7 @@ Hemos visto previamente elementos que se pueden usar en una aplicación FAP como
 # "Persona fisica":dsl-personaFisica
 # "Persona juridica":dsl-personaJuridica
 # "Popup":dsl-popup
+# "Radio Booleano":dsl-radioBooleano
 # "Servicio web":dsl-servicioWeb
 # "Solicitante":dsl-solicitante
 # "Subir archivo":dsl-subirArchivo

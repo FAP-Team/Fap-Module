@@ -82,7 +82,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		try {
 			solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar((new DateTime()).plusDays(ResolucionControllerFAP.getDiasLimiteFirma(resolucion.id))));
 		} catch (DatatypeConfigurationException e) {
-			play.Logger.error("Error al setear la fecha tope de firma.", e);
+			play.Logger.error("Error al setear la fecha tope de firma."+ e);
 		}
 		
 		return solFirma;

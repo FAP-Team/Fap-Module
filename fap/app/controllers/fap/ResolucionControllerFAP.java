@@ -9,6 +9,7 @@ import models.Interesado;
 import models.LineaResolucionFAP;
 import models.RepresentantePersonaJuridica;
 import models.ResolucionFAP;
+import models.TableKeyValue;
 import resolucion.ResolucionBase;
 import resolucion.ResolucionMultipleTotal;
 import resolucion.ResolucionParcial;
@@ -20,7 +21,7 @@ import models.Agente;
 import models.ResolucionFAP;
 
 public class ResolucionControllerFAP extends InvokeClassController {
-
+	
 	/**
 	 * Devolverá los posibles tipos de resolución que existan en la app.
 	 * Para mostrar en el combo (Y seleccionarlos).
@@ -50,9 +51,9 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	 * se inicializan los datos de la resolución.
 	 * @param idResolucion
 	 */
-	public static void inicializaResolucion(Long idResolucion) {
-		getResolucionObject(idResolucion).initResolucion(idResolucion);
-	}
+//	public static void inicializaResolucion(Long idResolucion) {
+//		getResolucionObject(idResolucion).initResolucion(idResolucion);
+//	}
 	
 	
 	/**

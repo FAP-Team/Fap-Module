@@ -18,6 +18,7 @@ import enumerado.fap.gen.EstadoResolucionEnum;
 import enumerado.fap.gen.EstadoTipoMultipleEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.ModalidadResolucionEnum;
+import enumerado.fap.gen.TipoResolucionEnum;
 import messages.Messages;
 import models.Documento;
 import models.LineaResolucionFAP;
@@ -34,7 +35,8 @@ public class ResolucionBase {
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String BODY_REPORT = "reports/resolucion/resolucion.html";
-	private final static String TIPO_RESOLUCION = FapProperties.get("fap.aed.tiposdocumentos.resolucion");
+	private final static String TIPO_RESOLUCION_PROVISIONAL = FapProperties.get("fap.aed.tiposdocumentos.resolucion.provisional");
+	private final static String TIPO_RESOLUCION_DEFINITIVA = FapProperties.get("fap.aed.tiposdocumentos.resolucion.definitiva");
 	public ResolucionFAP resolucion;
 	
 	public ResolucionBase (ResolucionFAP resolucion) {
@@ -53,8 +55,12 @@ public class ResolucionBase {
 		return ResolucionBase.BODY_REPORT;
 	}
 	
-	public String getTipoRegistroResolucion() {
-		return ResolucionBase.TIPO_RESOLUCION;
+	public String getTipoRegistroResolucion(String tipo) {
+		if (tipo != null) {
+			if (TipoResolucionEnum.provisional.name().equals(tipo))
+				return ResolucionBase.TIPO_RESOLUCION_PROVISIONAL;
+		}
+		return ResolucionBase.TIPO_RESOLUCION_DEFINITIVA;
 	}
 	
 	public boolean hasAnexoConcedido() {
@@ -200,7 +206,7 @@ public class ResolucionBase {
 						.renderTmpFile(resolucion);
 				
 				resolucion.registro.borrador = new Documento();
-				resolucion.registro.borrador.tipo = getTipoRegistroResolucion();
+				resolucion.registro.borrador.tipo = getTipoRegistroResolucion(resolucion.tipo);
 				resolucion.registro.save();
 			} catch (Exception ex2) {
 				Messages.error("Error generando el documento borrador");
@@ -218,7 +224,7 @@ public class ResolucionBase {
 				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucion", resolucion);
 				oficial = new Report(this.getBodyReport()).header(this.getHeaderReport()).registroSize().renderTmpFile(resolucion);
 				resolucion.registro.oficial = new Documento();
-				resolucion.registro.oficial.tipo = getTipoRegistroResolucion();
+				resolucion.registro.oficial.tipo = getTipoRegistroResolucion(resolucion.tipo);
 				resolucion.registro.save();
 			} catch (Exception ex2) {
 				Messages.error("Error generando el documento oficial");

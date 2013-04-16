@@ -178,7 +178,7 @@ Formulario Principal {
 	Pagina NuevaResolucion titulo ="Resolución" campo=ResolucionFAP perteneceA="Principal" {
 		Accion crear redirigir=EditarResolucion
 		Grupo gIniciarTipo titulo="Seleccionar Resolución" {
-			Combo campo=ResolucionFAP.tipoDefinidoResolucion titulo="Resolución"
+			Combo tipoDefinidoResolucion campo=ResolucionFAP.tipoDefinidoResolucion titulo="Resolución"
 			Combo campo=ResolucionFAP.tipo titulo="Tipo"
 			Texto campo=ResolucionFAP.tituloInterno titulo="Título" requerido
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido

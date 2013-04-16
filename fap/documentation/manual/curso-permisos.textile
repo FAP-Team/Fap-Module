@@ -87,7 +87,7 @@ bc. Permiso permisoAccionGrafico{
 		all:editable
 }
 
-En este ejemplo, se indica que cuando solicitud.mientidad.campo1 sea true, permitirá realizar cualquier accion de crear, editar, leer o borrar sobre los elementos en los que actúa el permiso y, que todos los elemetos gráficos web sean editables y visibles.
+En este ejemplo, se indica que cuando solicitud.mientidad.campo1 sea true, permitirá realizar cualquier accion de crear, editar, leer o borrar sobre los elementos en los que actúa el permiso y, que todos los elementos gráficos web sean editables y visibles.
 
 h4. Empleando _Permiso de Acción_:
 
@@ -118,7 +118,115 @@ En este ejemplo, se indica que que cuando solicitud.mientidad.campo1 sea true, p
 
 Los permisos son mucho más potentes que lo que hemos explicado aquí, pudiendo referirnos a las entidades utilizadas en la aplicación, utilizar variables a partir de una consulta SQL, referirnos dentro de un permiso a otro, etc. Más información sobre los mismos "aquí":dsl-permisos.
 
-h2. Ejemplo práctico
+h2. Ejemplo práctico uno
+
+En el siguiente ejemplo se mostrará la definición DSL de 3 permisos y su utilización en una página en la que habrá:
+*	Un primer grupo que es visible y podrá ser editado tanto por el _usuario_ como por el _administrador_.
+*	Un segundo grupo en el cual el _administrador_ tendrá permisos de edición y el _usuario_ solo de lectura.
+*	Un último grupo que solo puede ser visto y editado por el _administrador_.
+
+Dependiendo de que rol activo tenga el usuario tendremos ciertos permisos o no.
+
+El usuario con rol activo _*administrador*_ debe ver esto:
+ 
+ !images/ejem_permisos1!
+ 
+ El usuario con rol activo _*usuario*_ debe ver esto otro:
+ 
+ !images/ejem_permisos2!
+ 
+ Para conseguir que el primer grupo sea visible y editable tanto para el _*usuario*_ como para el _*administrador*_ declaramos un permiso como el siguiente:
+
+bc. Permiso adminOrUsuario{
+	when
+		agente.rolActivo in ("administrador", "usuario")
+	return all
+}
+
+!images/diagrama-permiso-adminOrUsuario!
+
+Si le aplicamos dicho permiso al grupo, tal que así:
+
+bc. Grupo titulo="Grupo que pueden ver y editar roles de administrador y usuario" permiso=adminOrUsuario{
+		Texto campo=Solicitud.sol.nombre titulo="Nombre"
+	}
+
+Tanto el _*usuario*_ como el _*administrador*_ podrán ver y editar el texto de este grupo:
+
+!images/ejem_permisos3! 
+
+!images/ejem_permisos4! 
+
+
+Para conseguir que el segundo grupo sea visible y editable para el administrador y *solo* visible para el usuario declaramos el siguiente permiso:
+
+bc. Permiso adminOrUsuario2{
+	when
+		agente.rolActivo in ("administrador")
+	return all:editable
+	when
+		agente.rolActivo in ("usuario")
+	return visible
+}
+
+!images/diagrama-permiso-adminorUsuario2!
+
+Ahora le ponemos el permiso al grupo en cuestión:
+
+bc. 		Grupo titulo="Grupo que puede editar y ver el administrador y solo ver el usuario" permiso=adminOrUsuario2{
+			Combo campo=Solicitud.comboTest.paises titulo="Combo de países"
+		}
+
+Ahora vemos como el _*administrador*_ puede ver y editar:
+
+!images/ejem_permisos5! 
+
+Por el contrario el usuario podrá ver pero no editar:
+
+!images/ejem_permisos6! 
+
+Por último necesitamos un permiso para que el tercer grupo sea solo visible y editable por el administrador:
+
+bc. Permiso administrador{
+	when
+		agente.rolActivo = "administrador"
+	return all
+}
+
+ !images/diagrama-permiso-administrador!
+
+Finalmente le aplicamos este permiso al tercer grupo, tal que así:
+
+bc. Grupo titulo="Grupo con persmisos solo para el administrador" permiso=administrador{
+		Boton botonej titulo="Botón"
+	}
+
+
+Ahora el _*administrador*_ podrá ver y ejecutar la acción del botón del grupo 3:
+
+!images/ejem_permisos7!
+
+mientras que el _*usuario*_ ni siquiera podrá ver el grupo.
+
+!images/ejem_permisos8!
+
+A continuación mostramos el código total, con todos los grupos y sus respectivos permisos:
+
+bc. Pagina Ejemplo campo=Solicitud{
+		Grupo titulo="Grupo que pueden ver y editar roles de administrador y usuario" permiso=adminOrUsuario{
+			Texto campo=Solicitud.sol.nombre titulo="Nombre"
+		}
+		
+		Grupo titulo="Grupo que puede editar y ver el administrador y solo ver el usuario" permiso=adminOrUsuario2{
+			Combo campo=Solicitud.comboTest.paises titulo="Combo de países"
+		}
+		
+		Grupo titulo="Grupo con persmisos solo para el administrador" permiso=administrador{
+			Boton botonej titulo="Botón"
+		}
+}
+
+h2. Ejemplo práctico 2
 
 En el siguiente ejemplo se mostrará la definición DSL de dos permisos y su utilización en una página, para demostrar su uso y visualizar el resultado en la web.
 

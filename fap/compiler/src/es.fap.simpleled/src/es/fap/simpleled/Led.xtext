@@ -535,6 +535,7 @@ PersonaFisica:
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
 		(setearTipoPadre?='setearTipoPadre')?
+		& (noSexo?='noSexo')?
 	)
 ;
 
@@ -553,6 +554,7 @@ Persona:
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
 		("permiso" "=" permiso=[Permiso])?
+		& (noSexo?='noSexoPersonaFisica')?
 	)
 ;
 
@@ -565,6 +567,8 @@ Solicitante:
 		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
 		& (conDireccion?='conDireccion')?
 		& (noEmail?='noEmail')?
+		& (noSexo?='noSexo')?
+
 	)
 ;
 

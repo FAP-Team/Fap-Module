@@ -25,6 +25,8 @@ public class GPersonaFisica extends GSaveCampoElement{
 			params.putStr("titulo", personaFisica.titulo);
 		if (personaFisica.requerido)
 			params.put("requerido", true);
+		if (personaFisica.noSexo)
+			params.put("noSexo", true);
 		
 		return """
 			#{fap.personaFisica ${params.lista()} /}
@@ -38,6 +40,9 @@ public class GPersonaFisica extends GSaveCampoElement{
 			ret+=""" ${var}.tipo = "fisica";
 				 """
 		}
-		return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido","sexo","fechaNacimiento"]);
+		if (personaFisica.noSexo != true)
+			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido","sexo","fechaNacimiento"]);
+		else
+			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido","fechaNacimiento"]);
 	}
 }

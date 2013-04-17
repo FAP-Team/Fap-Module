@@ -10,6 +10,8 @@
 	def campo = _campo		
 	def siCombo = _siCombo
 	def siComboValue = _siComboValue
+	def noSexo = _noSexo != null? _noSexo : false;
+	
 }%
 	#{if label != null}
 		#{fap.grupo titulo:label, siCombo:siCombo, siComboValue:siComboValue, borde:grupoVisible}
@@ -17,7 +19,10 @@
 			#{fap.texto id:id + '_nombre', titulo:play.i18n.Messages.get('fap.tags.personafisica.nombre'), campo:campo + '.nombre', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}		
-			#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
+
+			#{if noSexo == false}
+				#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
+			#{/if}	
 			#{fap.fecha id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}
 		#{/fap.grupo}
 	#{/if}
@@ -27,7 +32,10 @@
 			#{fap.texto id:id + '_nombre', titulo:play.i18n.Messages.get('fap.tags.personafisica.nombre'), campo:campo + '.nombre', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}
-			#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
+
+			#{if noSexo == false}
+				#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
+			#{/if}
 			#{fap.fecha id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}		
 		#{/fap.grupo}
 	#{/else}

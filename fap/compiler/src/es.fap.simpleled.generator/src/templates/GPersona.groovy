@@ -49,6 +49,7 @@ public class GPersona extends GElement{
 		fisica.name = "${persona.name}Fisica";
 		fisica.campo = CampoUtils.addMore(persona.campo, "fisica").campo;
 		fisica.requerido = persona.requerido;
+		fisica.noSexo = persona.noSexo;
 		
 		Grupo grupo = LedFactory.eINSTANCE.createGrupo();
 		grupo.borde = "false";

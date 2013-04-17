@@ -564,6 +564,7 @@ Solicitante:
 		& ("permiso" "=" permiso=[Permiso])?
 		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
 		& (conDireccion?='conDireccion')?
+		& (noEmail?='noEmail')?
 	)
 ;
 

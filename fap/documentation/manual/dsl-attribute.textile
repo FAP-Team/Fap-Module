@@ -22,7 +22,7 @@ h2. Parámetros
 * **length = _[int]_** (opcional) : Para atributos tipo String y LongText. Define el máximo de caracteres del atributo en base de datos.
 * **requerido** (opcional) : Si se especifica, indica que el atributo será requerido rellenarlo allá donde se use.
 * **noConstruct** (opcional) : Al inicializar la entidad, no se inicializa una instancia de este atributo.
-* **noCascade** (opcional) : En atributos que sean referencias a otras entidades, indica que no se realizarán operaciones en cascada.
+* **cascadeType = _[string]_** (opcional) : En atributos que sean referencias a otras entidades permite definir qué operaciones se harán en cascada.
 * **checkWith = _[string]_** (opcional) : Permite realizar una validación manual del atributo, indicándole el nombre completo de la clase validadora. Para más información, ver "Validación manual":#validacionManual.
 * **column = _[string]_** (opcional) : Establece como se llamará la columna en la que se persistirá el atributo.
 * **validate = _[string]_** (opcional) : Permite realizar una validación manual del atributo mediante una expresión regular. Para más información, ver "Validación utilizando una expresión regular":#validacionRegexp.
@@ -33,9 +33,9 @@ h3. Tipos Simples
 
 Los tipos simples son los siguientes:
 
-bc. "String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText"
+bc. "String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText" | "boolean"
 
-Al definirnos un atributo con uno de éstos tipos, se crea en la entidad un atributo con ese nombre y con éste tipo. Ejemplo:
+Al definirnos un atributo con uno de estos tipos, se crea en la entidad un atributo con ese nombre y con este tipo. Ejemplo:
 
 bc. Entidad Prueba {
 	String nombre
@@ -182,7 +182,7 @@ Donde _value_ será el atributo que estamos validando.
 h3(#validacionRegexp). Validación utilizando una expresión regular 
 
 Para validar un atributo utilizando una expresión regular se utiliza la anotación 
-*vaildate="RegExp"*, esta anotación solo es valida para atributos de tipo String y LongText. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.match* en el fichero de mensajes.
+*validate="RegExp"*, esta anotación solo es válida para atributos de tipo String y LongText. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.match* en el fichero de mensajes.
 
 bc. Entidad PersonaFisica Inheritance=joined {
 	String nombre validate="[A-Z].*"
@@ -191,7 +191,7 @@ bc. Entidad PersonaFisica Inheritance=joined {
 	Nip nip
 }
 
-*NOTA:* la cadena vacía se considera valida.
+*NOTA:* la cadena vacía se considera válida.
 
 Si el atributo es de tipo Integer, Double o Long se puede indicar el rango de valores que puede tomar. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.range* en el fichero de mensajes.
 
@@ -200,7 +200,7 @@ bc. Entidad Presupuesto {
 	Double total validate="min=0, max=1000"
 }
 
-*NOTA:* El valor null se considera valido.
+*NOTA:* El valor null se considera válido.
 
 Si el atributo es Booleano se permite validar si su valor es True. Para sobreescribir el mensaje de error de la validación modifique el valor de la clave *validation.isTrue* en el fichero de mensajes.
 
@@ -209,7 +209,7 @@ bc. Entidad Aceptacion {
 	Boolean acepta validate="true"
 }
 
-*Nota:* Solo se puede validar si el valor es true. Si el valor es null se considera false.
+*Nota:* Sólo se puede validar si el valor es true. Si el valor es null se considera false.
 
 h2. Definición
 
@@ -221,11 +221,23 @@ bc.. Attribute:
 	& (hasLength?="length" "=" length=INT)?
 	& (required?="requerido")?
 	& (noConstruct?="noConstruct")?
-	& (noCascade?="noCascade")?
+	& ("cascadeType" "=" cascade=CascadeType)?
 	& ("checkWith" "=" checkWith=STRING)?
 	& ("column" "=" column=STRING)?
 	& ("validate" "=" validate=STRING)?
 	)
+;
+
+CascadeType:
+	type = ("ALL" | "NONE") | simpleType = CascadeListSimpleType
+;
+
+CascadeListSimpleType:
+	list += CascadeSimpleType+
+;
+
+CascadeSimpleType:
+	"PERSIST" | "DETACH" | "MERGE" | "REFRESH" | "REMOVE"
 ;
 
 Type:
@@ -233,7 +245,7 @@ Type:
 ;
 
 SimpleType:
-	type = ("String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText")
+	type = ("String" | "Long" | "Integer" | "Boolean" | "Double" | "LongText" | "boolean")
 ;
 
 SpecialType:
@@ -248,7 +260,7 @@ CompoundType:
 
 tipoColeccion:
 	"Set" | "List"
-;	
+;
 
 AttributeReferences:
 	"OneToOne" | "OneToMany" | "ManyToOne" | "ManyToMany"

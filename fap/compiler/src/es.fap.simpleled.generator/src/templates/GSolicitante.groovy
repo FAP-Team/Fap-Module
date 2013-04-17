@@ -59,7 +59,7 @@ public class GSolicitante extends GElement{
 			direccion.elemento="Direccion";
 			direccion.campo=CampoUtils.addMore(solicitante.campo, "domicilio").campo;
 		}
-		
+
 		telefonoContacto = LedFactory.eINSTANCE.createTexto();
 		telefonoContacto.titulo="Teléfono de Contacto";
 		telefonoContacto.name="${solicitante.name}_telefonoContacto";
@@ -68,18 +68,22 @@ public class GSolicitante extends GElement{
 		uriTercero = LedFactory.eINSTANCE.createTextoOculto();
 		uriTercero.name="${solicitante.name}_uriTerceros";
 		uriTercero.campo=CampoUtils.addMore(solicitante.campo, "uriTerceros").campo;
-		
-		email = LedFactory.eINSTANCE.createTexto();
-		email.titulo="Email";
-		email.name="${solicitante.name}_email";
-		email.campo=CampoUtils.addMore(solicitante.campo, "email").campo;
-		
+
+		if (!solicitante.noEmail) {
+			email = LedFactory.eINSTANCE.createTexto();
+			email.titulo="Email";
+			email.duplicar=true;
+			email.name="${solicitante.name}_email";
+			email.campo=CampoUtils.addMore(solicitante.campo, "email").campo;
+		}
+
 		Grupo grupoOtrosDatos = LedFactory.eINSTANCE.createGrupo();
 		grupoOtrosDatos.borde = false;
 		grupoOtrosDatos.elementos.add(telefonoContacto);
-		grupoOtrosDatos.elementos.add(email);
+		if (!solicitante.noEmail)
+			grupoOtrosDatos.elementos.add(email);
 		grupoOtrosDatos.elementos.add(uriTercero);
-		
+
 		if (solicitante.titulo){
 			Grupo grupo = LedFactory.eINSTANCE.createGrupo();
 			grupo.titulo = solicitante.titulo;

@@ -1,20 +1,21 @@
 h1. Boton
 
-h2. Descripción
+h2. Descripción  
 
-Permite definir un botón, por defecto al pulsar el botón se llama al método del controlador del form que lo contenga. Dicho método recibirá tantos parámetros como botones se hayan declarado dentro del form, de manera que para saber que botón ha sido pulsado, debe comprobarse que el parámetro asociado a que botón no es null.  
+Permite definir un botón. Por defecto, al pulsar el botón se llama al método del controlador del form que lo contenga. Dicho método recibirá tantos parámetros como botones se hayan declarado dentro del form. Para saber qué botón ha sido pulsado, debe comprobarse cuál de los parámetros no es null.
 
 h2. Parámetros
 
 * **_[name]_** : Identificador del elemento.
 * **titulo = _[string]_** : Etiqueta que se mostrará dentro del botón.
 * **ancho = _[string]_** (opcional) : Ancho en píxeles del botón.
-* **popup = _[popup]_** (opcional) : Si se especifica, al pulsar el botón se abrirá el popup indicado.
 * **pagina = _[pagina]_** (opcional) : Si se especifica, al pulsar el botón se redirige a la pagina indicada.
+* **popup = _[popup]_** (opcional) : Si se especifica, al pulsar el botón se abrirá el popup indicado.
+* **anterior** : Para redirigir a la pagina anterior en la que estábamos.
 * **waitPopup** (opcional) : En la navegación, muestra al usuario un popup indicándole que espere hasta que la acción que desemboca el botón haya terminado.
-* **type** : Tipo de botón
-* **anterior** : Para redirigir a la pagina anterior en la que estabamos
-* **ayuda** : Ayuda asociada al botón
+* **refrescar** (opcional) : Deshabilita el botón mientras se refresca la página.
+* **type** : Tipo de botón.
+* **ayuda** : Ayuda asociada al botón.
 
 h2. Definición
 
@@ -25,7 +26,8 @@ bc. Boton:
 	 	& ('pagina' '=' pagina=PaginaAccion)?
 	 	& ('popup' '=' popup=PopupAccion)?
 	 	& (anterior?="anterior")?
-		& (waitPopup?="waitPopup")?	
+		& (waitPopup?="waitPopup")?
+		& (refrescar?="refrescar")?
 		& ('type' '=' type=('primary' | 'info' | 'success' | 'danger' | 'warning' | 'inverse'))?
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 	)

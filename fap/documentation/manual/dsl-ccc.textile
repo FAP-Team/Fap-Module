@@ -1,16 +1,16 @@
-h1. CCC (Código de Cuenta Bancario)
+h1. CCC (Código Cuenta Cliente)
 
 h2. Descripción
 
-Permite definir un Código de Cuenta Bancario
+Permite definir un Código Cuenta Cliente.
 
 h2. Parámetros
 
 * **_[name]_** (opcional) : Identificador del elemento.
-* **campo = _[campo]_** : Atributo donde se almacenará el valor del ccc.
-* **titulo = _[string]_** : Etiqueta que se mostrará al lado del ccc, si no se especifica se mostrara el nombre del campo.
+* **campo = _[campo]_** : Atributo donde se almacenará el valor del CCC.
+* **titulo = _[string]_** : Etiqueta que se mostrará al lado del CCC, si no se especifica se mostrará el nombre del campo.
 * **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
-* **ayuda = _[string]_** (opcional) : Ayuda asociada al ccc.
+* **ayuda = _[string]_** (opcional) : Ayuda asociada al CCC.
 
 h2. Definición
 
@@ -26,3 +26,5 @@ bc. CCC:
 h2. Ejemplo de uso
 
 bc. CCC titulo="Código Cuenta Bancario" campo=Solicitud.datos.codigoCuenta
+
+!images/dsl-ccc!

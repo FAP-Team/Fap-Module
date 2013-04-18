@@ -1,0 +1,25 @@
+<h2 style="text-align: center;">Resolución - Convocatoria 2013</h2>
+	
+<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
+	<tr> <th>Título</th> <td>${resolucion.tituloInterno}</td> </tr>
+	<tr> <th>Descripción</th> <td>${resolucion.descripcion}</td> </tr>
+	<tr> <th>Observaciones</th> <td>${resolucion.observaciones}</td> </tr>
+	<tr> <th>Síntesis</th> <td>${resolucion.sintesis}</td> </tr>
+</table>
+	
+</br>
+	
+%{
+	
+%}
+	
+<p><strong>Datos de la resolución</strong></p>
+<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
+	<tr> <th>Resolución</th> <td>${models.TableKeyValue.getValue("resolucionesDefinidas", resolucion.tipoDefinidoResolucion)}</td> </tr>
+	<tr> <th>Tipo</th> <td>${models.TableKeyValue.getValue("tipoResolucion", resolucion.tipo)}</td> </tr>
+	<tr> <th>Área resolución</th> <td>${models.TableKeyValue.getValue("areasResolucion", resolucion.areasResolucion)}</td> </tr>
+	<tr> <th>Tipo resolución</th> <td>${models.TableKeyValue.getValue("tiposResolucion", resolucion.tiposResolucion)}</td> </tr>
+</table>
+
+</br>
+

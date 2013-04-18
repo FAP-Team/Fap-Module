@@ -1,0 +1,39 @@
+%{
+	def listaLineasResolucion = resolucion.lineasResolucion;
+	def listaEstadosLineasResolucion = models.LineaResolucionFAP.getOrdenEstados();
+%}
+	
+<p><strong>Todas las líneas de resolución</strong></p>
+<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
+	<tr>
+		<th>Estado Solicitud</th>
+		<th>Expediente</th>
+		<th>Estado Linea Resolucion</th>
+	</tr>
+	#{list items:listaLineasResolucion, as:'lineaResolucion'}
+	<tr>
+		<td>${lineaResolucion.solicitud.estado}</td>
+		<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
+		<td>${lineaResolucion.estado}</td>	
+	</tr>
+	#{/list}
+</table>
+
+
+#{list items:listaEstadosLineasResolucion, as:'estadoLinea'}
+<p><strong>Líneas de resolución ${estadoLinea}</strong></p>
+<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
+	<tr>
+		<th>Estado</th>
+		<th>Expediente</th>
+	</tr>
+	#{list items:listaLineasResolucion, as:'lineaResolucion'}
+		#{if lineaResolucion.estado.equals(estadoLinea)}
+		<tr>
+			<td>${lineaResolucion.estado}</td>
+			<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
+		</tr>
+		#{/if}
+	#{/list}
+</table> 
+#{/list} 

@@ -88,82 +88,8 @@ width:100%;
 
 </head>
 <body>
-
-	<h2 style="text-align: center;">Resolución - Convocatoria 2013</h2>
 	
-	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
-		<tr> <th>Título</th> <td>${resolucion.tituloInterno}</td> </tr>
-		<tr> <th>Descripción</th> <td>${resolucion.descripcion}</td> </tr>
-		<tr> <th>Observaciones</th> <td>${resolucion.observaciones}</td> </tr>
-		<tr> <th>Síntesis</th> <td>${resolucion.sintesis}</td> </tr>
-	</table>
-	
-	</br>
-	
-	%{
-		
-	%}
-	
-	<p><strong>Datos de la resolución</strong></p>
-	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
-		<tr> <th>Resolución</th> <td>${models.TableKeyValue.getValue("resolucionesDefinidas", resolucion.tipoDefinidoResolucion)}</td> </tr>
-		<tr> <th>Tipo</th> <td>${models.TableKeyValue.getValue("tipoResolucion", resolucion.tipo)}</td> </tr>
-		<tr> <th>Área resolución</th> <td>${models.TableKeyValue.getValue("areasResolucion", resolucion.areasResolucion)}</td> </tr>
-		<tr> <th>Tipo resolución</th> <td>${models.TableKeyValue.getValue("tiposResolucion", resolucion.tiposResolucion)}</td> </tr>
-	</table>
-	
-	</br>
-
-	%{
-		def listaLineasResolucion = resolucion.lineasResolucion;
-	%}
-	
-	<p><strong>Todas las líneas de resolución</strong></p>
-	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
-		<tr>
-			<th>Estado Solicitud</th>
-			<th>Expediente</th>
-			<th>Estado Linea Resolucion</th>
-		</tr>
-		#{list items:listaLineasResolucion, as:'lineaResolucion'}
-		<tr>
-			<td>${lineaResolucion.solicitud.estado}</td>
-			<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
-			<td>${lineaResolucion.estado}</td>	
-		</tr>
-		#{/list}
-	</table>
-	
-	<p><strong>Líneas de resolución concedidas</strong></p>
-	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
-		<tr>
-			<th>Estado</th>
-			<th>Expediente</th>
-		</tr>
-		#{list items:listaLineasResolucion, as:'lineaResolucion'}
-			#{if lineaResolucion.estado.equals("concedida")}
-			<tr>
-				<td>${lineaResolucion.estado}</td>
-				<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
-			</tr>
-			#{/if}
-		#{/list}
-	</table>
-	
-	<p><strong>Líneas de resolución excluidas</strong></p>
-	<table class="table-datos" border=1 cellspacing=0 cellpadding=2>
-		<tr>
-			<th>Estado</th>
-			<th>Expediente</th>
-		</tr>
-		#{list items:listaLineasResolucion, as:'lineaResolucion'}
-			#{if lineaResolucion.estado.equals("excluida")}
-			<tr>
-				<td>${lineaResolucion.estado}</td>
-				<td>${lineaResolucion.solicitud.expedienteAed.idAed}</td>
-			</tr>
-			#{/if}
-		#{/list}
-	</table>
+	#{include 'reports/resolucion/resolucionInfo.html' /}
+	#{include 'reports/resolucion/resolucionLineas.html' /}
 	
 </body>

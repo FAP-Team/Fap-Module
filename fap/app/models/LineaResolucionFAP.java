@@ -59,6 +59,16 @@ public class LineaResolucionFAP extends FapModel {
 
 	// === MANUAL REGION START ===
 
+	public static List<String> getOrdenEstados(){
+		List<LineaResolucionFAP> listalineasResolucion = LineaResolucionFAP.findAll();
+		List<String> result = new ArrayList<String>();
+		for (LineaResolucionFAP linea : listalineasResolucion) {
+			if (!result.contains(linea.estado)){ //Añadir nuevo estado a lista
+				result.add(linea.estado);
+			}
+		}
+		return result;
+	}
 	// === MANUAL REGION END ===
 
 }

@@ -70,31 +70,31 @@
 	
 			#{fap.combo id:id_combo, titulo:'Tipo Dirección', campo:campo_combo, obj:obj, requerido:requerido/}
 		
-			#{fap.grupo siCombo:id_combo, siComboValue:['canaria'], borde:false}
+			#{fap.grupo siCombo:id_combo, siComboValue:['canaria'], borde:false, sendHiddenFields:false}
 				
 				<select id="${id_comunidad}_canaria" style="display:none">
 					<option value="_05" selected></option>
 				</select>
-				
+
 				#{fap.combo id:id_provinciaIsla, dependeDe:id_comunidad+"_canaria", titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, searchable:true /}
 				#{fap.combo id:id_isla, dependeDe:id_provinciaIsla, titulo:'Isla', campo:campo_isla, obj:obj, requerido:requerido, searchable:true /}
 				#{fap.combo id:id_municipioIsla, dependeDe:id_isla, titulo:'Municipio', campo:campo_municipio, obj:obj, requerido:requerido, searchable:true /}	
 			#{/fap.grupo}
 		
 		
-			#{fap.grupo siCombo:id_combo, siComboValue:['nacional'], borde:false}
+			#{fap.grupo siCombo:id_combo, siComboValue:['nacional'], borde:false, sendHiddenFields:false}
 				
 				<select id="${id_pais}_nacional" style="display:none">
 					<option value="_724" selected></option>
 				</select>
-				
+
 				#{fap.combo id:id_comunidad, dependeDe:id_pais+"_nacional", titulo:'Comunidad Autónoma', campo:campo_comunidad, obj:obj, requerido:requerido, searchable:true /}
 				#{fap.combo id:id_provincia, dependeDe:id_comunidad, titulo:'Provincia', campo:campo_provincia, obj:obj, requerido:requerido, searchable:true /}
 				#{fap.combo id:id_municipio, dependeDe:id_provincia, titulo:'Municipio', campo:campo_municipio, obj:obj, requerido:requerido, searchable:true /}	
 			#{/fap.grupo}
 			
 			
-			#{fap.grupo siCombo:id_combo, siComboValue:['internacional'], borde:false}
+			#{fap.grupo siCombo:id_combo, siComboValue:['internacional'], borde:false, sendHiddenFields:false}
 				#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:requerido, searchable:true /}
 				#{fap.texto id:id_provinciaInternacional, titulo:'Estado/Provincia/Región', campo:campo_provinciaInternacional, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
 			#{/fap.grupo}

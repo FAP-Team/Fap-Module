@@ -27,4 +27,6 @@ h2. Ejemplo de uso
 
 bc. CCC titulo="Código Cuenta Bancario" campo=Solicitud.datos.codigoCuenta
 
+h3. Resultado
+
 !images/dsl-ccc!

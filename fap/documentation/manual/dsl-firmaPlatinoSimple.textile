@@ -9,18 +9,22 @@ h2. Parámetros
 * **_[name]_** : Identificador del elemento.
 * **titulo = _[string]_** : Etiqueta que se mostrará en el botón que realiza la acción de firmar.
 * **documento = _[campo]_** : Campo donde estará el documento que se va a firmar.
-* **listaFirmantes = _[campo]_** : Campo donde se encuentra la lista de personas que tienen que firmar el documento. Tiene que ser un OneToMany de Firmante.
-* **setTrue = _[campo]_** : Una vez que se firma bien, setea el campo especificado a true.
+* **firmantes = _[campo]_** : Campo donde se encuentra la lista de personas que tienen que firmar el documento. Tiene que ser un OneToMany de Firmante.
+* **registroFirma = _[campo]_** : 
+* **calcularFirmantes = _[campo]_** : Campo donde se almacenará la cantidad de firmantes que han firmado.
+* **setToTrue = _[campo]_** : Una vez que se firma bien, setea el campo especificado a true.
 * **setCamposTo { (_[campo]_ to _[String]_)+ }** : Una vez que se firma bien, setea los campos especificados a los valores que se indica.
 
 h2. Definición
 
-bc. FirmaPlatinoSimple:
+bc. FirmaSimple:
 	elemento="FirmaSimple" (name=ID)
 	(
 		("titulo" "=" titulo=STRING)
 		& (documento=FirmaDocumento)
 		& (firmantes=FirmaFirmantes)
+		& (registroFirma=FirmaRegistro)?
+		& (calcularFirmantes=CalcularFirmantes)
 		& (setToTrue=FirmaSetTrue)?
 	)
 	(

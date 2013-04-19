@@ -2,7 +2,7 @@ h1. Fecha
 
 h2. Descripción
 
-Permitirá insertar una fecha del calendario de una manera simple.
+Permite insertar una fecha del calendario de una manera simple.
 
 h2. Parámetros
 

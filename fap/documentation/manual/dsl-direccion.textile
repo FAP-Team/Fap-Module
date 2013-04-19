@@ -2,7 +2,7 @@ h1. Dirección
 
 h2. Descripción
 
-Nos permitirá insertar de una forma simple los datos de una dirección en un formulario. Existe un tipo especial de dirección, direccionMapa, que puede verse "aquí":dsl-direccionMapa
+Nos permitirá insertar de una forma simple los datos de una dirección en un formulario. Existe un tipo especial de dirección, direccionMapa, que puede verse "aquí":dsl-direccionMapa.
 
 h2. Parámetros
 
@@ -36,21 +36,21 @@ h3. Dirección Canaria
 Es uno de los tres tipos de direcciones que se definen en este elemento Dirección.
 La dirección Canaria, da por supuesto que el País será España y que la Comunidad Autonóma será Canarias. A partir de ahí, deja seleccionar una de las dos provincias que tiene Canarias, y dependiendo de la provincia seleccionada, permitirá seleccionar la isla. Dependiendo de la isla se podrá seleccionar el municipio.
 
-Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numero, otros (puerta,etc.).
+Otros valores que se pueden rellenar son: localidad, código postal, calle, número, otros (puerta,etc.).
 
 h3. Dirección Nacional
 
-Supone que el país será España. A partir de ahí deja seleccionar la comunidad autonoma que queramos, y dependiendo de esta, su provincia. Dependiendo de esta provincia podremos seleccionar un municipio.
+Supone que el país será España. A partir de ahí deja seleccionar la comunidad autónoma que queramos, y dependiendo de ésta, su provincia. Dependiendo de esta provincia podremos seleccionar un municipio.
 
-Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numero, otros (puerta,etc.).
+Otros valores que se pueden rellenar son: localidad, código postal, calle, número, otros (puerta,etc.).
 
 h3. Dirección Internacional
 
-Permite seleccionar un País, de la lista de todos los paises del mundo.
+Permite seleccionar un País, de la lista de todos los países del mundo.
 
 Además de que tiene campos distintos a las otras direcciones, como el Estado, y no tiene campos como Comunidad Autónoma, Provincia y Municipio.
 
-Otros valores que se pueden rellenar son: localidad, codigo postal, calle, numero, otros (puerta,etc.).
+Otros valores que se pueden rellenar son: localidad, código postal, calle, número, otros (puerta,etc.).
 
 h2. Ejemplo de uso de Dirección
 

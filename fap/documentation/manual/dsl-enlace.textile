@@ -2,17 +2,18 @@ h1. Enlace
 
 h2. Descripción
 
-Muestra un enlace a otra pagina.
+Muestra un enlace a otra página.
 
 h2. Parámetros
 
 * **_[name]_** (opcional) : Identificador del elemento.
-* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará en el enlace.
 * **pagina = _[pagina]_** (opcional) : Página de la aplicación a la que apunta el enlace.
 * **popup = _[popup]_** (opcional) : Popup de la aplicación a la que apunta el enlace.
 * **campo = _[campo]_** (opcional) : Indica un atributo en el que se encuentra almacenada una url.
 * **url = _[string]_** (opcional) : Especifica una url externa a la aplicación.
-* **anterior** : Para redirigir a la pagina anterior en la que estabamos.
+* **anterior** : Para redirigir a la página anterior en la que estabamos.
+* **codigojs = _[string]_** : Ejecuta código JavaScript.
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará en el enlace.
 * **destino = _[string]_** (opcional) : Indica al enlace donde tiene que abrirse (campo target en html).
 * **estilo = _[string]_** (opcional) : Especifica un estilo CSS para el enlace.
 
@@ -20,7 +21,7 @@ h2. Definición
 
 bc. Enlace:
 	elemento='Enlace' (name=ID)? (
-		(('pagina' '=' pagina=PaginaAccion) | ('popup' '=' popup=PopupAccion) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING) | (anterior?="anterior")) 
+		(('pagina' '=' pagina=PaginaAccion) | ('popup' '=' popup=PopupAccion) | ('campo' '=' campo=Campo) | ('url' '=' url=STRING) | (anterior?="anterior") | ('codigojs' '=' codigojs=STRING)) 
 		& ('titulo' '=' titulo=STRING)?
 		& ('destino' '=' destino=STRING)?
 		& ('estilo' '=' estilo=STRING)?
@@ -29,6 +30,16 @@ bc. Enlace:
 
 h2. Ejemplo de uso
 
-bc. Enlace pagina=Solicitud.Presentacion titulo="Ir a presentación"
-
 bc. Enlace campo=Solicitud.aportaciones.actual.borrador.urlDescarga titulo="Obtener solicitud" destino="_blank"
+
+bc. Form guardarPCE {
+	Texto titulo = "Introduce un long: " campo = Solicitud.elementos.numeroL
+	Boton bGuardar titulo = "Guardar"
+	Enlace titulo = "Cancelar" estilo = "btn btn-link" pagina=Solicitudes
+	Enlace titulo = "JavaScript" estilo = "btn btn-link" codigojs = "alert('Esto es código JavaScript.');"
+}
+
+h3. Resultado
+
+!images/dsl-enlace!
+!images/dsl-enlacejs!

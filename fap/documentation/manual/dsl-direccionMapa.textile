@@ -25,7 +25,7 @@ bc. DireccionMapa:
 
 h2. Ejemplo de uso de Dirección
 
-bc. DireccioMapa titulo="Dirección Autocompletada" campo=Solicitud.direccionTest.direccionMapa
+bc. DireccionMapa titulo="Dirección Autocompletada" campo=Solicitud.direccionTest.direccionMapa
 
 h2. Resultado
 

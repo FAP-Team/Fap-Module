@@ -21,7 +21,7 @@ bc. EntidadAutomatica:
 
 h2. Ejemplo de uso
 
-bc. EntidadAutomatica idcontacto campo=Solicitud.datosSolicitante.contacto
+bc. EntidadAutomatica idcontacto campo=Solicitud.contacto
 
 donde la entidad está definida de la siguiente manera:
 
@@ -36,3 +36,15 @@ bc. Entidad Contacto {
 }
 
 !images/dsl-entidadAutomatica!
+
+Para modificar los nombres de los campos se añade al fichero _/nombreAplicacion/conf/messages_ las siguientes líneas:
+
+bc. solicitud.contacto.nombre=Nombre
+solicitud.contacto.apellido1=Primer apellido	
+solicitud.contacto.apellido2=Segundo apellido
+solicitud.contacto.telefono=Teléfono
+solicitud.contacto.movil:Móvil	
+solicitud.contacto.fax:Fax
+solicitud.contacto.email:Email
+
+!images/dsl-entidadAutomatica2!

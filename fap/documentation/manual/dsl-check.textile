@@ -7,10 +7,10 @@ Permite definir un check box.
 h2. Parámetros
 
 * **_[name]_** (opcional) : Identificador del elemento.
-* **titulo = _[string]_** : Etiqueta que se mostrará al lado del check, si no se especifica se mostrara el nombre del campo.
+* **titulo = _[string]_** : Etiqueta que se mostrará al lado del check, si no se especifica se mostrará el nombre del campo.
 * **campo = _[campo]_** : Atributo donde se almacenará el valor del check.
 * **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de título.
-* **ayuda = _[string]_** (opcional) : Ayuda asociada al radio booleano.
+* **ayuda = _[string]_** (opcional) : Ayuda asociada al check box.
 * **alineadoAIzquierdas** (opcional) : Si se especifica, se alineará el check a la izquierda del todo.
 
 h2. Definición
@@ -28,3 +28,7 @@ bc. Check:
 h2. Ejemplo de uso
 
 bc. Check titulo="Estoy de acuerdo" campo=Solicitud.aceptacion.declaraciones
+
+h3. Resultado
+
+!images/dsl-check!

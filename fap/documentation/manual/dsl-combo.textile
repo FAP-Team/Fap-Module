@@ -17,9 +17,9 @@ h2. Parámetros
 * **comboTexto = _[atributo]_** (opcional) : Indica el atributo que se va a visualizar en cada elemento mostrado en el combo.
 * **comboValor = _[atributo]_** (opcional) : Indica el atributo que se va a utilizar como clave identificativa de cada elemento mostrado en el combo.
 * **ayuda = _[string]_** (opcional) : Ayuda asociada al combo.
-* **dependeDe = _[combo]_** (opcional): Indica que el combo es un combo dependiente del combo que se especifica, o sea que los valores que se mostraran en dicho combo, para sus selección, dependeran del valor seleccionado en el combo del que depende.
-* **ordenar = (ordenarPorClave | ordenarPorValor)** (opcional): Permite ordenar los elementos del combo por el elemento especificado.
-* **eliminarDuplicados** (opcional) : Los elementos del combo, nunca tendran valores repetidos, por lo que se filtraran si esto ocurriese.
+* **dependeDe = _[combo]_** (opcional) : Indica que el combo es un combo dependiente del combo que se especifica, o sea que los valores que se mostrarán en dicho combo, para sus selección, dependerán del valor seleccionado en el combo del que depende.
+* **ordenar = (ordenarPorClave | ordenarPorValor)** (opcional) : Permite ordenar los elementos del combo por el elemento especificado.
+* **eliminarDuplicados** (opcional) : Los elementos del combo, nunca tendrán valores repetidos, por lo que se filtrarán si esto ocurriese.
 
 h2(#atributosPermitidos). Tipos de atributos permitidos
 
@@ -137,11 +137,14 @@ Combo comunidades campo=Solicitud.comboTest.comunidades titulo="Comunidades Aut�
 Combo provincias campo=Solicitud.comboTest.provincias titulo="Provincias" dependeDe=comunidades
 Combo municipios campo=Solicitud.comboTest.municipios titulo="Municipios" dependeDe=provincias
 
+h3. Resultado
+
+!images/dsl-comboDependiente!
 
 h2. Método para especificar la lista de elementos
 
 Es posible especificar mediante código cuales son los elementos que van a aparecer en un combo, para ello es necesario crear un método en el controlador manual de la página donde aparece el combo.
-El método definido en el controlador devuelva una lista de **ComboItem**. Es importante que la clave de los elementos ComboItem coincida con el tipo de dato, definido en la entidad donde se va a guardar el dato. En caso contrario dará error.
+El método definido en el controlador devuelva una lista de **ComboItem**. Es importante que la clave de los elementos ComboItem coincida con el tipo de dato definido en la entidad donde se va a guardar el dato. En caso contrario dará error.
 
 h4. Esqueleto del método sobreescrito
 
@@ -200,6 +203,12 @@ public static List<ComboItem> listaMultipleLong(){
 	return result;
 }
 
+h3. Resultado
+
+!images/dsl-comboManual!
+
+!images/dsl-comboMultiple!
+
 h3. Lista de elementos de tipo referencia. Lista Simple y Múltiple
 
 En este ejemplo se filtran los elementos de tipo ComboTestRef con nombre que contenga la letra "a".
@@ -237,9 +246,13 @@ public static List<ComboItem> referenciaMultiple() {
 	return result;
 }
 
+h3. Resultado
+
+!images/dsl-comboReferencia!
+
 h3. Lista de elemento a partir de un servicio web (JSON o XML)
 
-En este ejemplo para acceder a los servicio web se utilizan las librerías que provee PlayFramework y se hace un parseo manual de la respuesta que da el servicio. En el caso de que se esté accediendo a servicio web SOAP es conveniente crear una librería para acceder al servicio de una manera más cómoda.
+En este ejemplo para acceder a los servicios web se utilizan las librerías que provee PlayFramework y se hace un parseo manual de la respuesta que da el servicio. En el caso de que se esté accediendo a un servicio web SOAP es conveniente crear una librería para acceder al servicio de una manera más cómoda.
 
 
 bc.. Entidad ComboTest {

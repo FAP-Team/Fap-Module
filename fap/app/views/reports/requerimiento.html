@@ -104,33 +104,34 @@ ul {
 	<div id="divDocumentacionNoPresentada">
     	<h2>Documentos no presentados:</h2> 
    		#{list items:noPresentados, as:"documento"}
-			<p  class="myarrow"> ${documento.descripcion}</p>
-			<ul>
-			#{if documento.motivoRequerimiento}
-				<li> ${documento.motivoRequerimiento} </li>
-			#{/if}
-			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
-				<li> ${requerimiento.descripcion} </li>
-			#{/list}
-			</ul>
-   		#{/list}
-	</div>
+           <p  class="myarrow"> ${documento.descripcion}</p>                               
+           <ul style="margin-left: 20px;">
+           #{if documento.motivoRequerimiento}
+              <li> ${documento.motivoRequerimiento.nl2br()} </li> </br>
+           #{/if}
+           #{list items:documento.codigosRequerimiento, as:"requerimiento"}
+              <li> ${requerimiento.descripcion} </li> </br>
+           #{/list}
+           </ul>
+        #{/list}
+   	</div>		
+	
 #{/if}
 
 #{if noValidos.size > 0}
 	<div id="divDocumentacionNoValida">
     	<h2>Documentos no válidos:</h2> 
    		#{list items:noValidos, as:"documento"}
-			<p  class="myarrow"> ${documento.descripcion}</p>
-			<ul>
-			#{if documento.motivoRequerimiento}
-				<li> ${documento.motivoRequerimiento} </li>
-			#{/if}
-			#{list items:documento.codigosRequerimiento, as:"requerimiento"}
-				<li> ${requerimiento.descripcion} </li>
-			#{/list}
-			</ul>
-   		#{/list}
+           <p  class="myarrow"> ${documento.descripcion}</p>                               
+           <ul style="margin-left: 20px;">
+           #{if documento.motivoRequerimiento}
+              <li> ${documento.motivoRequerimiento.nl2br()} </li> </br>
+           #{/if}
+           #{list items:documento.codigosRequerimiento, as:"requerimiento"}
+              <li> ${requerimiento.descripcion} </li> </br>
+           #{/list}
+           </ul>
+        #{/list}   		
 	</div>
 #{/if}
 

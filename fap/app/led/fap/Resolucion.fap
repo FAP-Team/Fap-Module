@@ -255,7 +255,7 @@ Formulario Principal {
 				}
 			}
 			
-			Grupo gEnviarFirmaJSPortafirma permiso=firmaJefeServicio {
+			Grupo gEnviarFirmaJSPortafirma permiso=firmaJefeServicio borde=false {
 				
 				Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga
 				Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=ResolucionFAP.docConsultaPortafirmasResolucion paginaCrear=DocConsultaPortafirmaCrear paginaEditar=DocConsultaPortafirmaEditar {
@@ -268,7 +268,7 @@ Formulario Principal {
 					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Jefe de Servicio" requerido
 					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
 					Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirma titulo="Fecha Tope Firma" requerido
-					Boton enviarFirmaJSPortafirma titulo="Solicitar firma al Jefe Servicio"
+					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma"
 				} 
 			}
 			
@@ -352,7 +352,16 @@ Formulario Principal {
 			Texto campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante"
 		}
 		Grupo grEditable borde=false {
-			Combo campo=LineaResolucionFAP.estado titulo="Estado"
+			Grupo borde=false permiso=noEditable {
+				Texto campo=LineaResolucionFAP.puntuacionBaremacion titulo="Puntuación Baremación"
+			}
+			
+			Combo comboEstadoLinea campo=LineaResolucionFAP.estado titulo="Estado"
+
+			Grupo gConcedido borde=false mostrarSiCombo comboEstadoLinea = "concedida"{
+				Texto campo=LineaResolucionFAP.importeTotal titulo="Importe Total"
+				Texto campo=LineaResolucionFAP.importeConcedido titulo="Importe Concedido"
+			}
 		}
 	}
 	

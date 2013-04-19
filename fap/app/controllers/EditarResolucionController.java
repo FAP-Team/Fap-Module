@@ -168,16 +168,12 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	}
 	
 	public static List<ComboItem> selectJefeServicio() {
-		List<Agente> listaJefesServicio = new ArrayList<Agente>();
 		List<ComboItem> listaCombo = new ArrayList<ComboItem>();
 		try {
-			listaJefesServicio = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getJefesServicio");
+			listaCombo = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getJefesServicio");
 		} catch (Throwable e) {
 			Messages.error("No se pudieron obtener los jefes de servicio");
 			play.Logger.error("No se pudieron obtener los jefes de servicio"+e.getMessage());
-		}
-		for (Agente agente: listaJefesServicio) {
-			listaCombo.add(new ComboItem(agente.username, agente.username+" - "+agente.name));
 		}
 		return listaCombo;
 	}
@@ -214,6 +210,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			dbResolucionFAP.save();
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
+				//String version = portafirmaService.obtenerVersion();
+				//play.Logger.error("La versión del portafirma es: "+version);
+				//Messages.error("La versión del portafirma es: "+version);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
 				dbResolucionFAP.idSolicitudFirma = response.getIdSolicitud();
 			} catch (PortafirmaFapServiceException e) {

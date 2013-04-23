@@ -278,11 +278,7 @@ Permiso editarSolicitud {
 		SolicitudGenerica solicitud
 		Convocatoria convocatoria
 	when
-		agente.rolActivo = "evaluador" or
-		(
-			agente.rolActivo != "usuario" and
-			solicitud?.estado = "modificacion"
-		)
+		agente.rolActivo in ("evaluador", "lector")
 	return
 		leer
 	when
@@ -301,6 +297,32 @@ Permiso editarSolicitud {
 		)
 	return [leer]
 }
+
+/** Permiso que pasa a ser el Principal en la lista de Solicitudes */
+Permiso editarSolicitudCopia {
+	vars
+		SolicitudGenerica solicitud
+		Convocatoria convocatoria
+	when
+		agente.rolActivo in ("evaluador", "lector")
+	return
+		leer
+	when
+		!usuario is visible
+		or (
+	 		agente.rolActivo = "usuario" and
+	 		(solicitud?.estado in ("borrador", "modificacion")) and
+	 		convocatoria.estado in ("presentacion")
+		)
+	return all
+	when
+		!usuario is visible
+		or (
+	 		agente.rolActivo = "usuario"
+		)
+	return [leer]
+}
+
 
 Permiso editarFirma {
 	vars

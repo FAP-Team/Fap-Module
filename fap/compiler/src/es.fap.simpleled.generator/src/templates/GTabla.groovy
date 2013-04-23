@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
-
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import generator.utils.*;
 import es.fap.simpleled.led.*;
@@ -275,8 +275,12 @@ public class GTabla extends GElement{
 			}
 		}
 		else if(c.funcion != null){
-			String str = c.funcion;
+			String str = StringEscapeUtils.escapeEcmaScript(c.funcionRaw);
 			params.putStr("funcion", funcionSinEntidades(str));	
+		}
+		else if(c.funcionRaw != null){
+			String str = StringEscapeUtils.escapeEcmaScript(c.funcionRaw);
+			params.putStr("funcionRaw", funcionSinEntidades(str));
 		}
 		
 		if (c.position != null) {
@@ -327,9 +331,10 @@ public class GTabla extends GElement{
 				campos.add(CampoUtils.create(CampoUtils.getCampoStr(c.campo)+"_formatFapTabla"));
 			}
 		}
-		else if(c.funcion != null){
+		else if(c.funcion != null || c.funcionRaw != null){
+			String strFuncion = c.funcion != null ? c.funcion : c.funcionRaw;
 			Pattern funcionSinEntidadPattern = Pattern.compile('\\$\\{(.*?)\\}');
-			Matcher matcher = funcionSinEntidadPattern.matcher(c.funcion);
+			Matcher matcher = funcionSinEntidadPattern.matcher(strFuncion);
 			StringBuffer buffer = new StringBuffer();
 			while (matcher.find()) {
 				campos.add(CampoUtils.create(matcher.group(1).trim()));
@@ -344,9 +349,13 @@ public class GTabla extends GElement{
 	 * @return
 	 */
 	public static String renderer(Columna c){
-		if(c.funcion ==  null) return null;
-		def f = c.funcion
-		return  "return '" + (c.funcion.replaceAll(/\$\{(.*?)\}/, '\' + record[\'$1\'] + \'')) + "';"
+		String strFuncion = c.funcion != null ? c.funcion : c.funcionRaw;
+		if(strFuncion == null)
+			return null;
+		if(c.funcionRaw != null)
+			return "return " + (strFuncion.replaceAll(/\$\{(.*?)\}/, 'record[\'$1\']')) + ";"
+		else
+			return  "return '" + (strFuncion.replaceAll(/\$\{(.*?)\}/, '\' + record[\'$1\'] + \'')) + "';"
 	}
 	
 	public List<CampoUtils> uniqueCamposTabla(Tabla tabla){

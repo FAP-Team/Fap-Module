@@ -379,6 +379,7 @@ R
 		
 		String campo = (String)args.get("campo");
 		String funcion = (String)args.get("funcion");
+		String funcionRaw = (String)args.get("funcionRaw");
 		String renderer = (String)args.get("renderer");
 		String permiso = (String)args.get("permiso");
 		
@@ -389,8 +390,12 @@ R
 		}
 		
 		if (hasPermiso) {
-			if(campo == null && funcion == null){
+			if(campo == null && funcion == null && funcionRaw == null){
 				String msg = "Especifica un campo o función o renderer + campo";
+				throw new TemplateExecutionException(template.template, fromLine, msg, new TagInternalException(msg));
+			}
+			else if(funcion != null && funcionRaw != null){
+				String msg = "Solo se puede especificar funcion o funcionRaw, no ambas al mismo tiempo";
 				throw new TemplateExecutionException(template.template, fromLine, msg, new TagInternalException(msg));
 			}
 			
@@ -426,6 +431,30 @@ R
 					String msg = "Especificaste una función sin ningún campo. Los campos se especifican con ${campo}";
 					throw new TemplateExecutionException(template.template, fromLine, msg, new TagInternalException(msg));				
 				}
+				
+				//El dataIndex al primer campo, por especificar alguno
+				//En la función se va a utilizar el record, no el value
+				dataIndex = campo2id(campos.get(0));
+				
+			}else if(funcionRaw != null){
+				//Función Raw
+				//Busca los campos que aparecen en la función
+				Matcher m = columnaFuncionPattern.matcher(funcionRaw);
+				
+				//Crea el contenido de la función renderer y almacena los campos encontrados
+				StringBuffer renderFunc = new StringBuffer();
+				renderFunc.append("return ");
+				while(m.find()){
+					String campoEncontrado = m.group(1);
+					campos.add(campoEncontrado); //Lo añade a la lista de campos
+					
+	                String replacement = "record.data['" + campo2id(campoEncontrado) + "']";
+	                m.appendReplacement(renderFunc, "");
+	                renderFunc.append(replacement);
+				}
+				m.appendTail(renderFunc);
+				renderFunc.append(";");
+				rendererFunctionContent = renderFunc.toString();
 				
 				//El dataIndex al primer campo, por especificar alguno
 				//En la función se va a utilizar el record, no el value

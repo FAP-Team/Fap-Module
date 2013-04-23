@@ -275,7 +275,7 @@ public class GTabla extends GElement{
 			}
 		}
 		else if(c.funcion != null){
-			String str = StringEscapeUtils.escapeEcmaScript(c.funcionRaw);
+			String str = StringEscapeUtils.escapeEcmaScript(c.funcion);
 			params.putStr("funcion", funcionSinEntidades(str));	
 		}
 		else if(c.funcionRaw != null){

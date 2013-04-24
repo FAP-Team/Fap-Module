@@ -16,6 +16,7 @@ import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
 
 import models.Agente;
+import models.Documento;
 import models.ResolucionFAP;
 
 import enumerado.fap.gen.EstadoPortafirmaEnum;
@@ -24,9 +25,14 @@ import es.gobcan.aciisi.portafirma.ws.PortafirmaService;
 import es.gobcan.aciisi.portafirma.ws.PortafirmaSoapService;
 import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudResponseType;
 import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudType;
+import es.gobcan.aciisi.portafirma.ws.dominio.DocumentoAedType;
+import es.gobcan.aciisi.portafirma.ws.dominio.DocumentoType;
+import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosAedType;
+import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudType;
 import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
+import es.gobcan.aciisi.portafirma.ws.dominio.TipoDocumentoEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.UsuarioType;
 
@@ -59,7 +65,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		CrearSolicitudResponseType wsType = new CrearSolicitudResponseType();
 		try {
 			wsType = portafirmaService.crearSolicitud(solFirma);
-		} catch (PortafirmaException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new PortafirmaFapServiceException(e.getMessage(), e);
 		}
@@ -83,6 +89,28 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		solFirma.setEmailNotificacion(agenteActual.email);
 		solFirma.setTipoSolicitud(TipoSolicitudEnumType.RESOLUCION);		
 		solFirma.setPrioridad(getEnumTypeFromValue(resolucion.prioridadFirma));
+		
+		// Documentos a Firmar
+		Integer numOrden = new Integer(1);
+		ListaDocumentosAedType listaDocumentos = new ListaDocumentosAedType();
+		DocumentoAedType docAedType = new DocumentoAedType();
+		docAedType.setUriAed(resolucion.registro.oficial.uri);
+		docAedType.setTipoDocumento(TipoDocumentoEnumType.FIRMA);
+		docAedType.setNumeroOrden(numOrden.toString());
+		docAedType.setDescripcion(resolucion.registro.oficial.descripcionVisible);
+		listaDocumentos.getListaDocumento().add(docAedType);
+		
+		// Añadimos todos los documentos que se utilizan para consulta
+		for (Documento doc: resolucion.docConsultaPortafirmasResolucion) {
+			numOrden++;
+			DocumentoAedType docPortafirma = new DocumentoAedType();
+			docPortafirma.setTipoDocumento(TipoDocumentoEnumType.CONSULTA);
+			docPortafirma.setUriAed(doc.uri);
+			docPortafirma.setDescripcion(doc.descripcionVisible);
+			docPortafirma.setNumeroOrden(numOrden.toString());
+			listaDocumentos.getListaDocumento().add(docPortafirma);
+		}
+		solFirma.setDocumentosAed(listaDocumentos);
 		
 		try {
 			solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar((new DateTime()).plusDays(ResolucionControllerFAP.getDiasLimiteFirma(resolucion.id))));

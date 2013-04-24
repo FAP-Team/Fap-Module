@@ -301,6 +301,7 @@ Formulario Principal {
 			Wiki { "Para proceder a registrar la resolución pulse el siguiente botón: \"Registrar resolución\"" }
 			
 			Form enviarRegistrarResolucion {
+				Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido
       			Boton btnRegistrarResolucion titulo="Registrar Resolución"
     		}
 		}

@@ -1,7 +1,9 @@
 package services.filesystem;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import models.Agente;
 import models.ResolucionFAP;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
@@ -59,7 +61,12 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	@Override
 	public List<ComboItem> obtenerUsuariosAdmitenEnvio()
 			throws PortafirmaFapServiceException {
-		return null;
+		List<ComboItem> listaCombo = new ArrayList<ComboItem>();
+		List<Agente> listaJefes = Agente.find("select agente from Agente agente").fetch();
+		for (Agente agente: listaJefes) {
+			listaCombo.add(new ComboItem(agente.username, agente.username+" - "+agente.name));
+		}
+		return listaCombo;
 		
 	}
 

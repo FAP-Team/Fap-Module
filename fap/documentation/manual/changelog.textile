@@ -1,5 +1,19 @@
 h2. Changelog
 
+h3. Versión 2.2RC4
+
+* Resolución: Envío al libro de resoluciones.
+
+h3. Versión 2.2RC3
+
+* Avanzando la Resolución hasta envío al portafirma.
+* Fixed bug grupode direcciones y envío de datos.
+
+h3. Versión 2.2RC2
+
+* Avanzando en la Resolución.
+* Modificación de Solicitudes (atributo "copia" en las páginas hechas para ello).
+
 h3. Versión 2.2RC1
 
 * Comezando a incluir la Resolución.

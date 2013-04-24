@@ -192,6 +192,8 @@ Entidad BigPopUpPrueba {
 Entidad ElementosBasicos{
 	String texto
 	LongText areaDeTexto
+	String textoRadio1
+	String textoRadio2
 	Boolean mBoolean default = "true"
 	Integer numeroI
 	Long numeroL

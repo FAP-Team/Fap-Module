@@ -25,6 +25,12 @@
     verifyTextPresent('Error al guardar. La página contiene errores.')
     
     type('solicitud_elementos_numeroL', '99')
+    click('solicitud.elementos.textoRadio2')
+    
+    clickAndWait(//input[@type='submit'])
+    verifyTextPresent('Error al guardar. La página contiene errores.')
+    
+    click('solicitud.elementos.textoRadio1')
     
     clickAndWait(//input[@type='submit'])
     verifyTextPresent('Página editada correctamente')

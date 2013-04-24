@@ -1061,26 +1061,26 @@ public class ${controllerName} extends ${controllerGenName} {
 	public String metodoValidateCopyBeforeOpenPageTable(){
 		if (saveEntities.size() == 0 || (!editar && !crear && !borrar) || (!hayTablasDeEntidad(element))) 
 			return "";
-		String backupCopia = "";
-		if (copia){
-			backupCopia = """
-                    PeticionModificacion peticionModificacion = new PeticionModificacion();
-                               peticionModificacion.campoPagina="${campo.str}";
-                               boolean hayModificaciones=false;
-                               Map<String, String> allSimple = params.allSimple();
-                               for(Map.Entry<String, String> entry : allSimple.entrySet()){
-                                      if(entry.getKey().startsWith("id")){
-                                                try {
-                                                   peticionModificacion.idSimples.put(entry.getKey(), Long.parseLong(entry.getValue()));
-                                                }catch(Exception e){
-                                               //El parámetro no era un long
-                                       }
-                               }
-                }
-                       List<String> valoresAntiguos = new ArrayList<String>();
-                       List<String> valoresNuevos = new ArrayList<String>();
-                       """                                
-		}
+			String backupCopia="";
+			if (copia){
+				backupCopia = """
+				PeticionModificacion peticionModificacion = new PeticionModificacion();
+				peticionModificacion.campoPagina="${campo.str}";
+				boolean hayModificaciones=false;
+				Map<String, String> allSimple = params.allSimple();
+				for(Map.Entry<String, String> entry : allSimple.entrySet()){
+					if(entry.getKey().startsWith("id")){
+						 try {
+						    peticionModificacion.idSimples.put(entry.getKey(), Long.parseLong(entry.getValue()));
+						 }catch(Exception e){
+						//El parámetro no era un long
+					}
+				}
+	         }
+			List<String> valoresAntiguos = new ArrayList<String>();
+			List<String> valoresNuevos = new ArrayList<String>();
+			"""				
+			}
 		String redirectMethod = "\"${controllerFullName}.index\"";
 		return """
 			@Util

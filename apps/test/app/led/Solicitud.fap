@@ -877,6 +877,14 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		Grupo Selectores titulo="Selectores"{
 			Check titulo="Check" campo=Solicitud.elementos.mBoolean
 			RadioBooleano titulo="Radio Booleano" campo=Solicitud.elementos.mBoolean botonIzquierdo="Botón Izquierdo" botonDerecho="Botón Derecho"
+			GrupoRadioButtons titulo="Grupo 1" campo=Solicitud.elementos.textoRadio1 requerido {
+				RadioButton valor="Opcion1"
+				RadioButton valor="Opcion2"
+			}
+			GrupoRadioButtons titulo="Grupo 2" campo=Solicitud.elementos.textoRadio2 {
+				RadioButton titulo="Valor del radio 1" valor="Opcion1"
+				RadioButton titulo="Valor del radio 2" valor="Opcion2"
+			}
 		}
 	}
 	

@@ -458,7 +458,7 @@ R
 				
 				//El dataIndex al primer campo, por especificar alguno
 				//En la función se va a utilizar el record, no el value
-				dataIndex = campo2id(campos.get(0));
+				dataIndex = campos.size() == 0 ? null : campo2id(campos.get(0));
 				
 			}else{
 				//Campo

@@ -11,11 +11,13 @@ public class GRadioButton extends GElement {
 	RadioButton rb;
 	String parent;
 	String parentCampo;
+	String parentDefault;
 	
 	public GRadioButton(RadioButton radioButton, GElement container) {
 		super(radioButton, container);
 		parent = container.getName();
 		parentCampo = container.campo.firstLower();
+		parentDefault = container.getDefault();
 		rb = radioButton;
 	}
 	
@@ -25,6 +27,14 @@ public class GRadioButton extends GElement {
 		params.putStr("campo", parentCampo);
 		
 		params.putStr("parent", parent);
+		
+		if(rb.name != null)
+			params.putStr("id", rb.name)
+			
+		if ((parentDefault != null) && (parentDefault == rb.name))
+			params.put("default", true);
+		else
+			params.put("default", false);
 		
 		if(rb.valor != null)
 			params.putStr("valor", rb.valor);

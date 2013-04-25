@@ -8,10 +8,17 @@
 	def titulo = _titulo ?: _valor
 	def valor = _valor
 	def parentValue = field.flashorvalue
+	
+	def checked = ""
+	if (parentValue == null)
+		checked = _default ? "checked" : "";
+	else
+		checked = parentValue.equals(valor) ? "checked" : "";
+		
 }%
 
 <div class="controls">
-	<input type="radio" name="${parent}" value="${valor}" #{if parentValue.equals(valor)} checked #{/if} >
+	<input type="radio" name="${parent}" value="${valor}" ${checked}>
 	${titulo}
 </div>
 

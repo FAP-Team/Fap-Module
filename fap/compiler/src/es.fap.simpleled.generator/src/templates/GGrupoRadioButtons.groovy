@@ -2,6 +2,9 @@ package templates;
 
 import java.util.Set;
 import java.util.Stack;
+
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 import es.fap.simpleled.led.util.LedEntidadUtils
 import es.fap.simpleled.led.*;
 import generator.utils.*;
@@ -18,6 +21,10 @@ public class GGrupoRadioButtons extends GSaveCampoElement {
 	
 	public String getName() {
 		return campo.firstLower();
+	}
+	
+	public String getDefault() {
+		return grb.valor;
 	}
 	
 	public String view () {

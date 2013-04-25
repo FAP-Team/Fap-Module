@@ -1,6 +1,8 @@
 package resolucion;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -25,6 +27,7 @@ import models.LineaResolucionFAP;
 import models.Registro;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
+import models.TableKeyValue;
 
 @InjectSupport
 public class ResolucionBase {
@@ -244,6 +247,15 @@ public class ResolucionBase {
 				play.Logger.error("Error almacenando documentos en el aed: " + e.getMessage());
 			}
 		}
+	 }
+	 
+	 public static List<String> getOrdenEstados () {
+		 List<TableKeyValue> lista = TableKeyValue.findByTable("estadoLineaResolucion");
+		 List<String> listRet = new ArrayList<String>();
+		 for (TableKeyValue tk : lista) {
+			 listRet.add(tk.key);
+		 }
+		 return listRet;
 	 }
 	 
 	public static void avanzarFase_Borrador(ResolucionFAP resolucion) {

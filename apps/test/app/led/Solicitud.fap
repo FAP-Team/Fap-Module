@@ -881,9 +881,9 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 				RadioButton valor="Opcion1"
 				RadioButton valor="Opcion2"
 			}
-			GrupoRadioButtons titulo="Grupo 2" campo=Solicitud.elementos.textoRadio2 {
-				RadioButton titulo="Valor del radio 1" valor="Opcion1"
-				RadioButton titulo="Valor del radio 2" valor="Opcion2"
+			GrupoRadioButtons titulo="Grupo 2" campo=Solicitud.elementos.textoRadio2 valor=radio2 {
+				RadioButton radio1 titulo="Valor del radio 1" valor="Opcion1"
+				RadioButton radio2 titulo="Valor del radio 2" valor="Opcion2"
 			}
 		}
 	}

@@ -292,6 +292,7 @@ Check:
 GrupoRadioButtons:
 	elemento='GrupoRadioButtons' (name=ID)? (
 		('campo' '=' campo=Campo)
+		& ('valor' '=' valor=ID)?
 		& ('titulo' '=' titulo=STRING)?
 		& (requerido ?= 'requerido')?
 	)

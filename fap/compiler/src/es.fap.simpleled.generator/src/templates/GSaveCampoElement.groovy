@@ -237,7 +237,10 @@ public class GSaveCampoElement extends GElement {
 						   if (db${campo.str} != null)
 						      valoresAntiguos.add(db${campo.str}.toString());
 						   valoresNuevos = new ArrayList<String>();
-						   valoresNuevos.add(${campo.firstLower()}.toString());
+						   if ((${campo.firstLower()} == null))
+						      valoresNuevos.add("");
+						   else
+						   	  valoresNuevos.add(${campo.firstLower()}.toString());
 						   peticionModificacion.setValorModificado("${campo.firstLower()}", valoresAntiguos, valoresNuevos);
 						   hayModificaciones=true;
 					   }

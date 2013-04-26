@@ -158,9 +158,15 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public void obtenerEstadoFirma() throws PortafirmaFapServiceException {
-		// TODO Auto-generated method stub
-
+	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
+		try {
+			ObtenerEstadoSolicitudType oEstado = new ObtenerEstadoSolicitudType();
+			oEstado.setIdSolicitud(resolucion.idSolicitudFirma);
+			oEstado.setIdUsuario(FapProperties.get("portafirma.usuario"));
+			return portafirmaService.obtenerEstadoSolicitud(oEstado);
+		} catch (Exception e) {
+			throw new PortafirmaFapServiceException("Error al comprobar el estado de la solicitud en el portafirma", e);
+		}
 	}
 
 	@Override
@@ -180,9 +186,9 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma, String idAgente) throws PortafirmaFapServiceException {
+	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma) throws PortafirmaFapServiceException {
 		try {
-			return portafirmaService.comprobarSolicitudFinalizada(idSolicitudFirma, idAgente);
+			return portafirmaService.comprobarSolicitudFinalizada(idSolicitudFirma, FapProperties.get("portafirma.usuario"));
 		} catch (PortafirmaException e) {
 			throw new PortafirmaFapServiceException(e.getMessage(), e);
 		}
@@ -203,5 +209,6 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		}
 		return listResult;
 	}
+
 
 }

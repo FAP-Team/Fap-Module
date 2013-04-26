@@ -20,6 +20,7 @@ import platino.FirmaUtils;
 import play.modules.guice.InjectSupport;
 import play.mvc.Util;
 import registroresolucion.RegistroResolucion;
+import reports.Report;
 import resolucion.ResolucionBase;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
@@ -36,9 +37,15 @@ import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.EditarResolucionControllerGen;
 import emails.Mails;
+import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
 
 @InjectSupport
 public class EditarResolucionController extends EditarResolucionControllerGen {
+	
+	@Util
+	private static ResolucionBase getResolucionObject (Long idResolucionFAP) throws Throwable {
+		return ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
+	}
 	
 	/**
 	 * Expedientes que se muestran en la tabla para poder seleccionar
@@ -48,7 +55,12 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		
 		// Obtenemos el objeto "ResolucionBase"
-		ResolucionBase resolBase = ResolucionControllerFAP.getResolucionObject(ids.get("idResolucionFAP"));
+		ResolucionBase resolBase = null;
+		try {
+			resolBase = getResolucionObject(ids.get("idResolucionFAP"));
+		} catch (Throwable e) {
+			play.Logger.error("No se ha podido obtener el objeto resolución: "+ids.get("idResolucionFAP"));
+		}
 		
 		java.util.List<SolicitudGenerica> rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
 		
@@ -63,8 +75,12 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		
 		// Obtenemos el objeto "ResolucionBase"
-		ResolucionBase resolBase = ResolucionControllerFAP.getResolucionObject(ids.get("idResolucionFAP"));
-		
+		ResolucionBase resolBase = null;
+		try {
+			resolBase = getResolucionObject(ids.get("idResolucionFAP"));
+		} catch (Throwable e) {
+			play.Logger.error("No se ha podido obtener el objeto resolución: "+ids.get("idResolucionFAP"));
+		}
 		java.util.List<SolicitudGenerica> rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
 		
 		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
@@ -81,8 +97,14 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
+		
 		if (!Messages.hasErrors()) {
 			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+			try {
+				new Report("reports/resolucion/resolucion.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(resolucion);
+			} catch (Exception e) {
+				Messages.error("No se pudo generar el borrador. "+e);
+			}
 			ResolucionBase resolBase = null;
 			try {
 				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
@@ -115,7 +137,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			ResolucionBase resolBase = null;
 			try {
-				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
+				resolBase = getResolucionObject (idResolucionFAP);
 				resolBase.prepararLineasResolucion(idResolucionFAP);
 			} catch (Throwable e) {
 				play.Logger.error("Error antes de obtener las líneas de resolución: " + e.getMessage());
@@ -127,9 +149,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			ResolucionBase resolBase = null;
 			try {
-				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
+				resolBase = getResolucionObject (idResolucionFAP);
 				resolBase.setLineasDeResolucion(idResolucionFAP);
-				ResolucionBase.avanzarFase_Borrador(resolucion);
+				resolBase.avanzarFase_Borrador(resolucion);
 			} catch (Throwable e) {
 				play.Logger.error("Error obteniendo tipo de resolución: " + e.getMessage());
 				Messages.error("Error obteniendo el tipo de resolución");
@@ -159,10 +181,15 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			Messages.error("Se debe seleccionar solo un expediente");
 			Messages.keep();
 		} else {
-			ResolucionBase resolBase = ResolucionControllerFAP.getResolucionObject(idResolucionFAP);
+			ResolucionBase resolBase = null;
+			try {
+				resolBase = getResolucionObject(idResolucionFAP);
+			} catch (Throwable e) {
+				new Exception ("No se ha podido obtener el objeto resolución", e);
+			}
 			resolBase.setLineasDeResolucion(idResolucionFAP);
 			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
-			ResolucionBase.avanzarFase_Borrador(resolucion);
+			resolBase.avanzarFase_Borrador(resolucion);
 		}
 		index("editar", idResolucionFAP);
 	}
@@ -215,6 +242,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				//Messages.error("La versión del portafirma es: "+version);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
 				dbResolucionFAP.idSolicitudFirma = response.getIdSolicitud();
+				dbResolucionFAP.save();
 			} catch (PortafirmaFapServiceException e) {
 				play.Logger.error("Error al crear la solicitud de firma: " + e);
 				Messages.error("Error al crear la solicitud de firma");
@@ -224,9 +252,16 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			}
 		}
 		if (!Messages.hasErrors()) {
-			ResolucionBase.avanzarFase_Preparada_Portafirma(dbResolucionFAP);
-			dbResolucionFAP.save();
-			Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma del Jefe de Servicio");
+			ResolucionBase resolBase = null;
+			try {
+				resolBase = getResolucionObject(dbResolucionFAP.id);
+				resolBase.avanzarFase_Preparada_Portafirma(dbResolucionFAP);
+				dbResolucionFAP.save();
+				Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma del Jefe de Servicio");
+			} catch (Throwable e) {
+				play.Logger.error("No se ha enviado correctamente al portafirma la solicitud de firma: "+e);
+				Messages.error("No se ha enviado correctamente al portafirma la solicitud de firma. ");
+			}
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
 		} else
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
@@ -328,14 +363,26 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-				Agente agente = AgenteController.getAgente();
-				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma, agente.username)) {
+				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma)) {
 					ResolucionBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
 					dbResolucionFAP.registro.fasesRegistro.firmada = true;
 					dbResolucionFAP.save();
 				} else {
-					play.Logger.warn("La resolución ["+dbResolucionFAP.id+"] no ha sido firmada aún en el portafirma");
-					Messages.warning("El documento de resolución no ha sido firmado aún");
+					play.Logger.warn("La resolución ["+dbResolucionFAP.id+"] no ha sido firmada y finalizada ");
+					Messages.warning("El documento de resolución no ha sido firmado y finalizado");
+					
+					ObtenerEstadoSolicitudResponseType response = portafirmaService.obtenerEstadoFirma(dbResolucionFAP);
+					if (response == null) {
+						throw new PortafirmaFapServiceException("No se pudo obtener el estado de la firma: Response null. ");
+					}
+					play.Logger.info("El estado de la solicitud en el portafirma es: "+response.getEstado());
+					if (response.getEstado().equalsIgnoreCase("Rechazada")) {
+						// TODO: Volver a estado anterior
+						ResolucionBase.retrocederFase_Modificacion(dbResolucionFAP);
+					} else {
+						play.Logger.warn("La Solicitud está en el estado: "+response.getEstado()+ ": "+response.getComentario());
+						Messages.error("La Solicitud está en el estado: "+response.getEstado());
+					}
 				}
 			} catch (PortafirmaFapServiceException e) {
 				play.Logger.error("Error al comprobar si ya se ha firmado la resolución en el portafirma: " + e);
@@ -443,5 +490,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		EditarResolucionController.enviarRegistrarResolucionRender(idResolucionFAP);
 	}
+	
+	
 	
 }

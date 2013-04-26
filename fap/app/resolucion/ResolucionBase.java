@@ -157,6 +157,19 @@ public class ResolucionBase {
     }
 	
 	/**
+	 * Permite modificar la resolución una vez ya preparada,
+	 * por ejemplo tras ser rechazada.
+	 *  
+	 * @param idResolucion
+	 */
+	public void retrocederFase_Modificacion(ResolucionFAP resolucion) {
+		if (!Messages.hasErrors()) {
+			resolucion.estado = EstadoResolucionEnum.creada.name();
+			resolucion.save();
+		}		
+	}
+
+	/**
 	 * Sobreescribir si queremos realizar alguna validación en la resolución antes de preparar.
 	 * 
 	 */
@@ -258,14 +271,14 @@ public class ResolucionBase {
 		 return listRet;
 	 }
 	 
-	public static void avanzarFase_Borrador(ResolucionFAP resolucion) {
+	public void avanzarFase_Borrador(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.creada.name();
 			resolucion.save();
 		}
 	}
 	
-	public static void avanzarFase_Creada(ResolucionFAP resolucion) {
+	public void avanzarFase_Creada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			if (resolucion.firmarJefeServicio) {
 				resolucion.estado = EstadoResolucionEnum.preparada.name();
@@ -282,28 +295,28 @@ public class ResolucionBase {
 		}
 	}
 	
-	public static void avanzarFase_Preparada(ResolucionFAP resolucion) {
+	public void avanzarFase_Preparada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.pendienteFirmaJefeServicio.name();
 			resolucion.save();
 		}
 	}
 	
-	public static void avanzarFase_Preparada_FirmaJefeServicio(ResolucionFAP resolucion) {
+	public void avanzarFase_Preparada_FirmaJefeServicio(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.firmadaJefeServicio.name();
 			resolucion.save();
 		}
 	}
 	
-	public static void avanzarFase_Preparada_Portafirma(ResolucionFAP resolucion) {
+	public void avanzarFase_Preparada_Portafirma(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.pendienteFirmaDirector.name();
 			resolucion.save();
 		}
 	}
 	
-	public static void avanzarFase_PendienteFirmarJefeServicio(ResolucionFAP resolucion) {
+	public void avanzarFase_PendienteFirmarJefeServicio(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			if (resolucion.firmarDirector) {
 				resolucion.estado = EstadoResolucionEnum.firmadaJefeServicio.name();
@@ -315,35 +328,35 @@ public class ResolucionBase {
 		}
 	}
 	
-	public static void avanzarFase_FirmadaJefeServicio(ResolucionFAP resolucion) {
+	public void avanzarFase_FirmadaJefeServicio(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.pendienteFirmaDirector.name();
 			resolucion.save();
 		}
 	}
 	
-	public static void avanzarFase_PendienteFirmarDirector(ResolucionFAP resolucion) {
+	public void avanzarFase_PendienteFirmarDirector(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.firmada.name();
 			resolucion.save();
 		}
 	}
 	
-	public static void avanzarFase_Firmada(ResolucionFAP resolucion) {
+	public void avanzarFase_Firmada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.registrada.name();
 			resolucion.save();
 		}
 	}
 	
-	public static void avanzarFase_Registrada(ResolucionFAP resolucion) {
+	public void avanzarFase_Registrada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.publicada.name();
 			resolucion.save();
 		}
 	}
 	
-	public static void avanzarFase_Publicada(ResolucionFAP resolucion) {
+	public void avanzarFase_Publicada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.finalizada.name();
 			resolucion.save();

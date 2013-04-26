@@ -275,11 +275,11 @@ public class GTabla extends GElement{
 			}
 		}
 		else if(c.funcion != null){
-			String str = StringEscapeUtils.escapeEcmaScript(c.funcion);
+			String str = StringEscapeUtils.escapeJava(c.funcion).replace("'", "\\'");
 			params.putStr("funcion", funcionSinEntidades(str));	
 		}
 		else if(c.funcionRaw != null){
-			String str = StringEscapeUtils.escapeEcmaScript(c.funcionRaw);
+			String str = StringEscapeUtils.escapeJava(c.funcionRaw).replace("'", "\\'");
 			params.putStr("funcionRaw", funcionSinEntidades(str));
 		}
 		

@@ -78,11 +78,7 @@ width:100%;
 
 </style>
 
-%{
-	def ficheroAppCss = new File("public/stylesheets/documentoPDF.css");
-%}
-
-#{if ficheroAppCss.exists()}
+#{if (play.Play.getVirtualFile("public/stylesheets/documentoPDF.css") != null}
 	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/documentoPDF.css'}">
 #{/if}
 

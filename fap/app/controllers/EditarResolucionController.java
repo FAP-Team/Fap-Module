@@ -319,7 +319,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			EditarResolucionController.firmaDirectorPortafirmaValidateRules();
 		}
 		if (!Messages.hasErrors()) {
-			ResolucionBase.avanzarFase_FirmadaJefeServicio(dbResolucionFAP);
+			ResolucionBase resolBase = null;
+			try {
+				resolBase = getResolucionObject(idResolucionFAP);
+			} catch (Throwable e) {
+				new Exception ("No se ha podido obtener el objeto resolución", e);
+			}
+			resolBase.avanzarFase_FirmadaJefeServicio(dbResolucionFAP);
 			dbResolucionFAP.save();
 			Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma del Director");
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
@@ -348,7 +354,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		if (!Messages.hasErrors()) {
 
 			resolucionFAP.save();
-			ResolucionBase.avanzarFase_Preparada_FirmaJefeServicio(resolucionFAP);
+			ResolucionBase resolBase = null;
+			try {
+				resolBase = getResolucionObject(idResolucionFAP);
+			} catch (Throwable e) {
+				new Exception ("No se ha podido obtener el objeto resolución", e);
+			}
+			resolBase.avanzarFase_Preparada_FirmaJefeServicio(resolucionFAP);
 		}
 	}
 	
@@ -364,7 +376,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma)) {
-					ResolucionBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
+					ResolucionBase resolBase = null;
+					try {
+						resolBase = getResolucionObject(idResolucionFAP);
+					} catch (Throwable e) {
+						new Exception ("No se ha podido obtener el objeto resolución", e);
+					}
+					resolBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
 					dbResolucionFAP.registro.fasesRegistro.firmada = true;
 					dbResolucionFAP.save();
 				} else {
@@ -378,7 +396,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 					play.Logger.info("El estado de la solicitud en el portafirma es: "+response.getEstado());
 					if (response.getEstado().equalsIgnoreCase("Rechazada")) {
 						// TODO: Volver a estado anterior
-						ResolucionBase.retrocederFase_Modificacion(dbResolucionFAP);
+						ResolucionBase resolBase = null;
+						try {
+							resolBase = getResolucionObject(idResolucionFAP);
+						} catch (Throwable e) {
+							new Exception ("No se ha podido obtener el objeto resolución", e);
+						}
+						resolBase.retrocederFase_Modificacion(dbResolucionFAP);
 					} else {
 						play.Logger.warn("La Solicitud está en el estado: "+response.getEstado()+ ": "+response.getComentario());
 						Messages.error("La Solicitud está en el estado: "+response.getEstado());
@@ -472,7 +496,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 		
 		if (!Messages.hasErrors()) {
-			ResolucionBase.avanzarFase_Firmada(dbResolucionFAP);
+			ResolucionBase resolBase = null;
+			try {
+				resolBase = getResolucionObject(idResolucionFAP);
+			} catch (Throwable e) {
+				new Exception ("No se ha podido obtener el objeto resolución", e);
+			}
+			resolBase.avanzarFase_Firmada(dbResolucionFAP);
 			
 			// Enviar correo al Jefe de Servicio correspondiente
 			try {

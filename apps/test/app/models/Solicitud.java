@@ -99,6 +99,9 @@ public class Solicitud extends SolicitudGenerica {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public SavePagesCopy savePagesCopy;
+
 	public Solicitud() {
 		init();
 	}
@@ -206,6 +209,11 @@ public class Solicitud extends SolicitudGenerica {
 			savePages = new SavePages();
 		else
 			savePages.init();
+
+		if (savePagesCopy == null)
+			savePagesCopy = new SavePagesCopy();
+		else
+			savePagesCopy.init();
 
 		postInit();
 	}

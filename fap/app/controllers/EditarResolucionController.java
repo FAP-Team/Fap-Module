@@ -100,11 +100,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		
 		if (!Messages.hasErrors()) {
 			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
-			try {
-				new Report("reports/resolucion/resolucion.html").header("reports/header.html").footer("reports/footer-borrador.html").renderResponse(resolucion);
-			} catch (Exception e) {
-				Messages.error("No se pudo generar el borrador. "+e);
-			}
 			ResolucionBase resolBase = null;
 			try {
 				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
@@ -280,9 +275,12 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		dbResolucionFAP.prioridadFirma = resolucionFAP.prioridadFirma;
 		CustomValidation.required("resolucionFAP.fechaTopeFirma", resolucionFAP.fechaTopeFirma);
 		dbResolucionFAP.fechaTopeFirma = resolucionFAP.fechaTopeFirma;
+		CustomValidation.required("resolucionFAP.numero_folios", resolucionFAP.numero_folios);
+		dbResolucionFAP.numero_folios = resolucionFAP.numero_folios;
 
 		if (dbResolucionFAP.fechaTopeFirma != null) {
-			if (dbResolucionFAP.fechaTopeFirma.isBeforeNow()) {
+			DateTime today = new DateTime().withTimeAtStartOfDay();
+			if (dbResolucionFAP.fechaTopeFirma.isBefore(today)) {
 				play.Logger.error("La fecha tope de firma no puede ser anterior a hoy.");
 				CustomValidation.error("La fecha tope de firma no puede ser anterior a hoy.","resolucionFAP.fechaTopeFirma", resolucionFAP.fechaTopeFirma);
 			}
@@ -382,6 +380,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 					} catch (Throwable e) {
 						new Exception ("No se ha podido obtener el objeto resolución", e);
 					}
+					Messages.ok("La solicitud de firma asociada a la resolución se ha firmado y finalizado correctamente.");
 					resolBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
 					dbResolucionFAP.registro.fasesRegistro.firmada = true;
 					dbResolucionFAP.save();
@@ -437,10 +436,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 		RegistroResolucion datosRegistro = null;
 		
-		if (!Messages.hasErrors()) {
-			EditarResolucionController.enviarRegistrarResolucionValidateCopy("editar", dbResolucionFAP, resolucionFAP);
-		}
-		
 		/// 1. Crear la resolución
 		if (!Messages.hasErrors()) {
 			if ((dbResolucionFAP.registro.fasesRegistro.firmada) && (!dbResolucionFAP.registro.fasesRegistro.registro)) {
@@ -461,7 +456,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 		
 		if (!Messages.hasErrors()) {
-			EditarResolucionController.enviarRegistrarResolucionValidateRules(dbResolucionFAP, resolucionFAP);
+			EditarResolucionController.enviarRegistrarResolucionValidateRules();
 		}
 
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);

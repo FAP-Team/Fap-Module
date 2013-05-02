@@ -78,13 +78,16 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	private CrearSolicitudType getCrearSolicitudWSTypeFromResolucionFAP (ResolucionFAP resolucion) {
 		CrearSolicitudType solFirma=new CrearSolicitudType();
 		solFirma.setTitulo(resolucion.tituloInterno);
-		solFirma.setDescripcion(resolucion.descripcion);
+        if ((resolucion.descripcion == null) || (resolucion.descripcion.trim().equals("")))
+              solFirma.setDescripcion(resolucion.sintesis);
+        else
+              solFirma.setDescripcion(resolucion.descripcion);
 		Agente agenteActual = AgenteController.getAgente();
 		// Agente activo
-		solFirma.setIdSolicitante(agenteActual.username);
+		solFirma.setIdSolicitante(FapProperties.get("portafirma.usuario"));
 		// Destinatario -> Jefe de Servicio
 		solFirma.setIdDestinatario(resolucion.jefeDeServicio);
-		solFirma.setComentario(resolucion.observaciones);
+		solFirma.setComentario(""); // Dejarlo vacío, antes: resolucion.observaciones
 		// Email del agente activo
 		solFirma.setEmailNotificacion(agenteActual.email);
 		solFirma.setTipoSolicitud(TipoSolicitudEnumType.RESOLUCION);		

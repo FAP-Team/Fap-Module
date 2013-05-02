@@ -800,8 +800,14 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 	@Check
 	public void checkUsaIdSiValor(RadioButton rb) {
 		GrupoRadioButtons grb = (GrupoRadioButtons) ModelUtils.getContenedorPadre(rb, ledPackage.getGrupoRadioButtons());
-		System.out.println("AAAAA" + grb);
 		if ((grb.getValor() != null) && (rb.getName() == null))
 			error("RadioButton deben tener ID si se utiliza el atributo valor en el grupo", ledPackage.getRadioButton_Elemento());
+	}
+	
+	@Check
+	public void checkListaSinContenido(RadioButton rb) {
+		GrupoRadioButtons grb = (GrupoRadioButtons) ModelUtils.getContenedorPadre(rb, ledPackage.getGrupoRadioButtons());
+		if ((LedEntidadUtils.esLista(LedCampoUtils.getUltimoAtributo(grb.getCampo()))))
+			warning("El uso de RadioButton con campos tipo Lista no surte efecto ", ledPackage.getRadioButton_Elemento());
 	}
 }

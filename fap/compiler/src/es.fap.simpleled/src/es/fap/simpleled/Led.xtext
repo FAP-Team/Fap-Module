@@ -296,9 +296,11 @@ GrupoRadioButtons:
 		& ('titulo' '=' titulo=STRING)?
 		& (requerido ?= 'requerido')?
 	)
-	'{'
+	('{'
 		radios+=RadioButton*
-	'}'
+	'}')?
+	
+	
 ;
 
 RadioButton:

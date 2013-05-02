@@ -7,14 +7,13 @@
 	def parent = _parent
 	def titulo = _titulo ?: _valor
 	def valor = _valor
-	def parentValue = field.flashorvalue
+	def parentValue = _parentValue ?: field.flashorvalue
 	
 	def checked = ""
 	if (parentValue == null)
 		checked = _default ? "checked" : "";
 	else
 		checked = parentValue.equals(valor) ? "checked" : "";
-		
 }%
 
 <div class="controls">

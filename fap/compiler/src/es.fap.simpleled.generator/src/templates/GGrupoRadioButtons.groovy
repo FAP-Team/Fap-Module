@@ -6,8 +6,11 @@ import java.util.Stack;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 import es.fap.simpleled.led.util.LedEntidadUtils
+import es.fap.simpleled.led.util.LedCampoUtils
 import es.fap.simpleled.led.*;
 import generator.utils.*;
+
+import fap.app.tags.*;
 
 public class GGrupoRadioButtons extends GSaveCampoElement {
 	
@@ -60,19 +63,26 @@ public class GGrupoRadioButtons extends GSaveCampoElement {
 		String validation = "";
 		String campoStr = StringUtils.firstLower(campo.str);
 		ArrayList<String> radios = new ArrayList<String>();
-		for(RadioButton rb: grb.getRadios())
-			radios.add(((GRadioButton) getInstance(rb)).toString());
-		if (LedEntidadUtils.getEntidad(campo.getUltimoAtributo()))
-			validation += valid(campo.str, validatedFields);
-		validation += valid(campo.str, validatedFields, radios);
-		int dotPlace = campoStr.lastIndexOf('.', campoStr.length() - 1);
-		dotPlace = campoStr.lastIndexOf('.', dotPlace - 1);
-		while (dotPlace != -1) {
-			validation += valid(campoStr.substring(0, dotPlace), validatedFields);
+		if (LedEntidadUtils.esLista(campo.getUltimoAtributo())) {
+			if (LedCampoUtils.getUltimoAtributo(grb.campo).type.compound?.multiple)
+				validation += validListOfValuesFromTable(campo);
+			else
+				validation += validValueFromTable(campo);
+		} else {
+			for(RadioButton rb: grb.getRadios())
+				radios.add(((GRadioButton) getInstance(rb)).toString());
+			if (LedEntidadUtils.getEntidad(campo.getUltimoAtributo()))
+				validation += valid(campo.str, validatedFields);
+			validation += valid(campo.str, validatedFields, radios);
+			int dotPlace = campoStr.lastIndexOf('.', campoStr.length() - 1);
 			dotPlace = campoStr.lastIndexOf('.', dotPlace - 1);
+			while (dotPlace != -1) {
+				validation += valid(campoStr.substring(0, dotPlace), validatedFields);
+				dotPlace = campoStr.lastIndexOf('.', dotPlace - 1);
+			}
+			if (element.metaClass.respondsTo(element, "isRequerido") && element.isRequerido())
+				validation += required(campo);
 		}
-		if (element.metaClass.respondsTo(element, "isRequerido") && element.isRequerido())
-			validation += required(campo);
 		return validation;
 	}
 	
@@ -90,6 +100,14 @@ public class GGrupoRadioButtons extends GSaveCampoElement {
 			toRet += varName + ".add(\"" + val + "\");"
 		toRet += "CustomValidation.valid(\"${campo}\", ${campo}, " + varName + ");"
 		return toRet;
+	}
+	
+	private static String validValueFromTable(CampoUtils campo){
+		return "CustomValidation.validValueFromTable(\"${campo.firstLower()}\", ${campo.firstLower()});\n";
+	}
+	
+	private static String validListOfValuesFromTable(CampoUtils campo){
+		return "CustomValidation.validListOfValuesFromTable(\"${campo.firstLower()}\", ${campo.firstLower()});\n";
 	}
 	
 }

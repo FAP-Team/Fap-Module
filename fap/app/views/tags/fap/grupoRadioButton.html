@@ -21,7 +21,49 @@
 			<span class="required">*</span>
 		#{/if}
 	</label>
-	#{doBody/}
+	#{if field.table == null}
+		#{doBody/}
+	#{/if}
+	#{else}
+		%{
+			def items = null;
+			if (tags.ReflectionUtils.existsControllerMethod(id)){
+				items = tags.ReflectionUtils.callControllerMethodIfExists(id) // Devuelve null si no existe el método
+			} else if (tags.ReflectionUtils.existsControllerMethod(oldId)){
+				// Mantenemos la antigua llamada (por compatibilidad)
+				items = tags.ReflectionUtils.callControllerMethodIfExists(oldId) // Devuelve null si no existe el método
+			} else {
+				items = _itemsModificables.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")} // Devuelve lista vacia si no existe _itemsModificable
+				// Este IF antes iba por fuera del ELSE, pero como los métodos sobreescritos que devuelven los valores de los combos pueden devolver listas vacías, podía entrar por este IF cuando no debería
+				if ((items == null) || (items.size() == 0)){
+					//No existe método en el controlador ni _itemsModificable (que solo existira si se llama al combo desde un tag documento)
+					if(field.reference){
+						//Opciones buscando todas las filas de una tabla
+						items = [];
+						
+						for(row in field.referenceClass.findAll()){
+							def ik; 
+							def iv;
+						try {
+							ik = row."$comboValue";
+							iv = row."$comboText"?.toString();
+						}catch(Exception e){
+							ik = row.id.toString();
+							iv = ik;
+						}							
+						items.add(new tags.ComboItem(ik, iv));
+					}
+					}else{
+						//Opciones desde tabla de tablas
+						items = tags.ComboItem.listFromTableOfTable(field.table)				
+					}
+				}
+			}
+		}%
+		#{list items:items, as:'entry'}
+			#{fap.radioButton campo:'field', parent:field.name, valor:entry.key, titulo:entry.value, parentValue:field.value /}
+		#{/list}
+	#{/else}
 </div>
 
 #{/fap.field}

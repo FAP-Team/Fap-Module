@@ -653,7 +653,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	// *******************************************************************************************	
 
 	//Sobreescrita
-	Pagina PCEconomicosCopia titulo="Conceptos Económicos" copia permiso=modificacionTrasPresentacionDeSolicitud {
+	Pagina PCEconomicosCopia titulo="Conceptos Económicos" permiso=modificacionTrasPresentacionDeSolicitud {
 		Form Guardar {
 			Boton botonGuardar titulo="Guardar" 
 		}
@@ -677,14 +677,14 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 	}
 
-	Pagina PaginaCEconomicoManualBorrarCopia copia titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=modificacionTrasPresentacionDeSolicitud {
+	Pagina PaginaCEconomicoManualBorrarCopia  titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=modificacionTrasPresentacionDeSolicitud {
 		Accion editar redirigir= PaginaCEconomicosCopia
 		Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
 		Texto campo=CEconomicosManuales.tipo.descripcion titulo="Descripción"
 	}
 	
 	//Sobreescrita
-	Pagina PaginaCEconomicoManualCopia copia titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=modificacionTrasPresentacionDeSolicitud noForm  perteneceA ="Baremacion"{
+	Pagina PaginaCEconomicoManualCopia  titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=modificacionTrasPresentacionDeSolicitud noForm  perteneceA ="Baremacion"{
 		Accion editar redirigir=PaginaCEconomicosCopia
 		Accion crear redirigir=PaginaCEconomicosCopia
 		Form guardarPCE {

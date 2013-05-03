@@ -569,9 +569,30 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		return savePages;
 	}
 	
+	private Entity getEntitySavePagesCopy(){
+		EntityImpl savePagesCopy = LedFactory.eINSTANCE.createEntity();
+		savePagesCopy.setName("SavePagesCopy");
+	
+		for (PaginaImpl pag: ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getPagina(), LedUtils.resource)){
+			if (!pag.guardarParaPrepararCopia){
+				continue;
+			}
+			Type tipoBoolean = LedFactory.eINSTANCE.createType();
+			tipoBoolean.setSimple(LedFactory.eINSTANCE.createSimpleType());
+			tipoBoolean.getSimple().setType("Boolean");
+			AttributeImpl at = LedFactory.eINSTANCE.createAttribute();
+			at.setName("pagina" + pag.name);
+			at.setType(tipoBoolean);
+			savePagesCopy.getAttributes().add(at);
+		}
+		return savePagesCopy;
+	}
+	
 	private void solicitudStuff(){
 		if (!entity.getExtends()?.name.equals("SolicitudGenerica"))
 			entity.setExtends(ModelUtils.getVisibleNode(LedFactory.eINSTANCE.getLedPackage().getEntity(), "SolicitudGenerica", LedUtils.resource));
+		
+		// Se asocia savePages a solicitud
 		Entity savePages = getEntitySavePages();
 		GElement.getInstance(savePages, null).generate();
 		Type tipo = LedFactory.eINSTANCE.createType();
@@ -582,6 +603,18 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		at.setName("savePages");
 		at.setType(tipo);
 		entity.getAttributes().add(at);
+		
+		// Se asocia savePagesCopy a solicitud
+		Entity savePagesCopy = getEntitySavePagesCopy();
+		GElement.getInstance(savePagesCopy, null).generate();
+		Type tipo2 = LedFactory.eINSTANCE.createType();
+		CompoundType compound2 = LedFactory.eINSTANCE.createCompoundType();
+		compound2.setEntidad(savePagesCopy);
+		tipo2.setCompound(compound2);
+		Attribute at2 = LedFactory.eINSTANCE.createAttribute();
+		at2.setName("savePagesCopy");
+		at2.setType(tipo2);
+		entity.getAttributes().add(at2);
 	}
 	
 	/**

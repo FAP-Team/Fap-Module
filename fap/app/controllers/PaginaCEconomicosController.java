@@ -77,7 +77,11 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 			if (!dbCEconomico.tipo.tipoOtro){
 				int anios=0;
 				for (ValoresCEconomico valor: dbCEconomico.valores){
-					valor.valorSolicitado = cEconomico.valores.get(anios++).valorSolicitado;
+					if (cEconomico.valores.get(anios).valorSolicitado == null)
+						valor.valorSolicitado = 0.0;
+					else
+						valor.valorSolicitado = cEconomico.valores.get(anios).valorSolicitado;
+					anios++;
 				}
 			} else {
 				CustomValidation.required("cEconomico.tipo.nombre", cEconomico.tipo.nombre);

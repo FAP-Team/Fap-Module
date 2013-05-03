@@ -164,7 +164,7 @@ Pagina:
 		& ("permiso" "=" permiso=[Permiso])?
 		& (noForm?='noForm')?
 		& (noAutenticar?='noAutenticar')?
-		& (guardarParaPreparar?="guardarParaPreparar")?
+		& ((guardarParaPreparar?="guardarParaPreparar") | (guardarParaPrepararCopia?="guardarParaPrepararCopia"))?
 		& (inicial?="inicial")?
 		& (copia?="copia")?
 		& (mensajeFinal?="mensajeFinal")?

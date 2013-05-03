@@ -232,12 +232,15 @@ public class GSaveCampoElement extends GElement {
 					db${campo.str} = ${campo.firstLower()};
 				""";
 			} else{
-				return """ if (((db${campo.str} != null) && (${campo.firstLower()}.toString() != null) && (!db${campo.str}.toString().equals(${campo.firstLower()}.toString()))) || (db${campo.str} == null)){
+				return """ if (((db${campo.str} == null) ^ (${campo.firstLower()} == null)) || ((${campo.firstLower()} != null) && (!${campo.firstLower()}.equals(db${campo.str})))) {
 						   valoresAntiguos = new ArrayList<String>();
 						   if (db${campo.str} != null)
 						      valoresAntiguos.add(db${campo.str}.toString());
 						   valoresNuevos = new ArrayList<String>();
-						   valoresNuevos.add(${campo.firstLower()}.toString());
+						   if ((${campo.firstLower()} == null))
+						      valoresNuevos.add("");
+						   else
+						   	  valoresNuevos.add(${campo.firstLower()}.toString());
 						   peticionModificacion.setValorModificado("${campo.firstLower()}", valoresAntiguos, valoresNuevos);
 						   hayModificaciones=true;
 					   }

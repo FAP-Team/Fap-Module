@@ -3,6 +3,8 @@ package controllers.fap;
 import java.util.ArrayList;
 import java.util.List;
 
+import config.InjectorConfig;
+
 import messages.Messages;
 import models.Agente;
 import models.Interesado;
@@ -14,6 +16,8 @@ import resolucion.ResolucionBase;
 import resolucion.ResolucionMultipleTotal;
 import resolucion.ResolucionParcial;
 import resolucion.ResolucionSimple;
+import services.PortafirmaFapService;
+import services.PortafirmaFapServiceException;
 import tags.ComboItem;
 import enumerado.fap.gen.EstadoResolucionEnum;
 import enumerado.fap.gen.ResolucionesDefinidasEnum;
@@ -76,11 +80,16 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	 * Obtenemos los jefes de Servicio de la Aplicación
 	 * @return Jefes de Servicio
 	 */
-	public static List<Agente> getJefesServicio () {
-		List<Agente> listaJefes = new ArrayList<Agente>();
-		//listaJefes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'administrador'").fetch();		
-		listaJefes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'jefeServicio'").fetch();		
-		return listaJefes;
+	public static List<ComboItem> getJefesServicio () {
+		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
+		List<ComboItem> listaWS = new ArrayList<ComboItem>();
+		try {
+			listaWS = portafirmaService.obtenerUsuariosAdmitenEnvio();
+		} catch (PortafirmaFapServiceException e) {
+			play.Logger.error("No se han podido obtener los usuarios del portafirma."+e);
+			Messages.error("No se han podido obtener los usuarios del portafirma");
+		}
+		return listaWS;
 	}
 	
 	/**

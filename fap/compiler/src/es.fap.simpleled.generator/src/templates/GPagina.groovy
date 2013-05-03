@@ -133,6 +133,13 @@ public class GPagina extends GGroupElement{
 			""";
 			
 		}
+		if (pagina.guardarParaPrepararCopia){
+			saveCode += """
+				if(!validation.hasErrors()){
+					dbSolicitud.savePagesCopy.pagina${pagina.name} = true;
+				}
+			""";
+		}
 		if (pagina.copia){
 			saveCode += """
 						   if (hayModificaciones){

@@ -168,16 +168,12 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	}
 	
 	public static List<ComboItem> selectJefeServicio() {
-		List<Agente> listaJefesServicio = new ArrayList<Agente>();
 		List<ComboItem> listaCombo = new ArrayList<ComboItem>();
 		try {
-			listaJefesServicio = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getJefesServicio");
+			listaCombo = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getJefesServicio");
 		} catch (Throwable e) {
 			Messages.error("No se pudieron obtener los jefes de servicio");
 			play.Logger.error("No se pudieron obtener los jefes de servicio"+e.getMessage());
-		}
-		for (Agente agente: listaJefesServicio) {
-			listaCombo.add(new ComboItem(agente.username, agente.username+" - "+agente.name));
 		}
 		return listaCombo;
 	}
@@ -214,6 +210,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			dbResolucionFAP.save();
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
+				//String version = portafirmaService.obtenerVersion();
+				//play.Logger.error("La versión del portafirma es: "+version);
+				//Messages.error("La versión del portafirma es: "+version);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
 				dbResolucionFAP.idSolicitudFirma = response.getIdSolicitud();
 			} catch (PortafirmaFapServiceException e) {
@@ -334,6 +333,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 					ResolucionBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
 					dbResolucionFAP.registro.fasesRegistro.firmada = true;
 					dbResolucionFAP.save();
+				} else {
+					play.Logger.warn("La resolución ["+dbResolucionFAP.id+"] no ha sido firmada aún en el portafirma");
+					Messages.warning("El documento de resolución no ha sido firmado aún");
 				}
 			} catch (PortafirmaFapServiceException e) {
 				play.Logger.error("Error al comprobar si ya se ha firmado la resolución en el portafirma: " + e);
@@ -356,13 +358,17 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	}
 	
 	@Util
-	public static void enviarRegistrarResolucion(Long idResolucionFAP, String btnRegistrarResolucion) {
+	public static void enviarRegistrarResolucion(Long idResolucionFAP, ResolucionFAP resolucionFAP, String btnRegistrarResolucion) {
 		checkAuthenticity();
 		if (!permisoEnviarRegistrarResolucion("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 		RegistroResolucion datosRegistro = null;
+		
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.enviarRegistrarResolucionValidateCopy("editar", dbResolucionFAP, resolucionFAP);
+		}
 		
 		/// 1. Crear la resolución
 		if (!Messages.hasErrors()) {
@@ -384,7 +390,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 		
 		if (!Messages.hasErrors()) {
-			EditarResolucionController.enviarRegistrarResolucionValidateRules();
+			EditarResolucionController.enviarRegistrarResolucionValidateRules(dbResolucionFAP, resolucionFAP);
 		}
 
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);

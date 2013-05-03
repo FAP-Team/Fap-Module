@@ -1,9 +1,14 @@
 package services.filesystem;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import models.Agente;
 import models.ResolucionFAP;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
 import services.responses.PortafirmaCrearSolicitudResponse;
+import tags.ComboItem;
 
 public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	
@@ -51,6 +56,18 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 			play.Logger.info("El servicio de Portafirma ha sido inyectado con FileSystem y está operativo.");
 		else
 			play.Logger.info("El servicio de Portafirma ha sido inyectado con FileSystem y NO está operativo.");
+	}
+
+	@Override
+	public List<ComboItem> obtenerUsuariosAdmitenEnvio()
+			throws PortafirmaFapServiceException {
+		List<ComboItem> listaCombo = new ArrayList<ComboItem>();
+		List<Agente> listaJefes = Agente.find("select agente from Agente agente").fetch();
+		for (Agente agente: listaJefes) {
+			listaCombo.add(new ComboItem(agente.username, agente.username+" - "+agente.name));
+		}
+		return listaCombo;
+		
 	}
 
 }

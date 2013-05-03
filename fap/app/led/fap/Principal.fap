@@ -54,7 +54,7 @@ Formulario Principal {
 	
 	Pagina NuevaSolicitud titulo ="Nueva Solicitud" campo=SolicitudGenerica permiso=nuevaSolicitud perteneceA="Principal"{}
 	
-	Pagina EditarSolicitud titulo= "Editar Solicitud" campo=SolicitudGenerica permiso=editarSolicitud perteneceA="Principal"{}
+	Pagina EditarSolicitud titulo= "Editar Solicitud" campo=SolicitudGenerica permiso=editarSolicitudCopia perteneceA="Principal"{}
 	
 	Pagina LeerSolicitud titulo = "Leer Solicitud" campo=SolicitudGenerica perteneceA="Principal"{}
 	

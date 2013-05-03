@@ -592,6 +592,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String metodoBorrar(){
 		String codigoBorrar = "";
 		String backupCopia = "";
+		String identificador = "";
 		
 		if (!borrar)
 			return "";
@@ -641,6 +642,13 @@ public class ${controllerName} extends ${controllerGenName} {
 							${gElement.saveCode()}
 							"""
 		}
+		if ((copia) && (!allEntities.collect{it.typeId}.contains("idSolicitud")) && (almacen.variableDb != "dbSolicitud")){
+			identificador = """
+			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+			Boolean creando = false;
+		""";
+			}
+			
 		return """
 			public static void borrar(${StringUtils.params(allEntities.collect{it.typeId})}){
 				checkAuthenticity();
@@ -654,6 +662,7 @@ public class ${controllerName} extends ${controllerGenName} {
 				}
 				
 				if (!Messages.hasErrors()) {
+					${identificador}
 					${backupCopia}
 					${codigoBorrar}
 				}
@@ -1061,6 +1070,35 @@ public class ${controllerName} extends ${controllerGenName} {
 	public String metodoValidateCopyBeforeOpenPageTable(){
 		if (saveEntities.size() == 0 || (!editar && !crear && !borrar) || (!hayTablasDeEntidad(element))) 
 			return "";
+			String backupCopia="";
+			String copiaTexto="";
+			String identificador="";
+			if (copia){
+				backupCopia = """
+				PeticionModificacion peticionModificacion = new PeticionModificacion();
+				peticionModificacion.campoPagina="${campo.str}";
+				boolean hayModificaciones=false;
+				Map<String, String> allSimple = params.allSimple();
+				for(Map.Entry<String, String> entry : allSimple.entrySet()){
+					if(entry.getKey().startsWith("id")){
+						 try {
+						    peticionModificacion.idSimples.put(entry.getKey(), Long.parseLong(entry.getValue()));
+						 }catch(Exception e){
+						//El parámetro no era un long
+					}
+				}
+	         }
+			List<String> valoresAntiguos = new ArrayList<String>();
+			List<String> valoresNuevos = new ArrayList<String>();
+			"""				
+			}
+			if ((copia) && (!saveEntities.collect{ it.variableDb }.contains("dbSolicitud"))){
+				identificador = """
+				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+				Boolean creando = false;
+			""";
+			}
+
 		String redirectMethod = "\"${controllerFullName}.index\"";
 		return """
 			@Util
@@ -1072,6 +1110,9 @@ public class ${controllerName} extends ${controllerGenName} {
 				extraParams
 			)}){
 				CustomValidation.clearValidadas();
+				${identificador}
+				${saveEntities.size() > 0? bindReferencesCall() : ""}
+				${backupCopia}
 				${saveDbEntities.collect{"$it.clase $it.variableDb = ${complexGetterCall(it)};"}.join("\n")}
 				${gElement.validateCopy()}
 

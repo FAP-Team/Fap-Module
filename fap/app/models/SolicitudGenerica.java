@@ -106,7 +106,6 @@ public class SolicitudGenerica extends FapModel {
 
 	public Boolean activoFH;
 
-
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_certificados")
 	public List<CertificadoSolicitado> certificados;
@@ -122,7 +121,6 @@ public class SolicitudGenerica extends FapModel {
 
 	@Transient
 	public String fechaARestaurarStr;
-
 
 	public SolicitudGenerica() {
 		init();
@@ -243,7 +241,6 @@ public class SolicitudGenerica extends FapModel {
 
 		if (registroModificacion == null)
 			registroModificacion = new ArrayList<RegistroModificacion>();
-
 
 		postInit();
 	}

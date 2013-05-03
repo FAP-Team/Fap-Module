@@ -45,8 +45,17 @@ public class GGrupoRadioButtons extends GSaveCampoElement {
 			params.putStr("label", grb.titulo);
 		else
 			params.putStr("label", "");
-			
+
+		if(grb.grupoTexto != null)
+			params.putStr("grupoTexto", grb.grupoTexto.name)
+
 		params.put("requerido", grb.requerido);
+		
+		/// Si el atributo es una referencia Many2One o ManyToMany
+		if (campo.getUltimoAtributo().type?.compound?.tipoReferencia?.type?.equals("ManyToMany")
+			|| campo.getUltimoAtributo()?.type?.compound?.tipoReferencia?.type?.equals("ManyToOne")) {
+			params.put "manyTo", true;
+		}
 
 		def out = """
 			#{fap.grupoRadioButton ${params.lista()}}
@@ -64,10 +73,9 @@ public class GGrupoRadioButtons extends GSaveCampoElement {
 		String campoStr = StringUtils.firstLower(campo.str);
 		ArrayList<String> radios = new ArrayList<String>();
 		if (LedEntidadUtils.esLista(campo.getUltimoAtributo())) {
-			if (LedCampoUtils.getUltimoAtributo(grb.campo).type.compound?.multiple)
-				validation += validListOfValuesFromTable(campo);
-			else
-				validation += validValueFromTable(campo);
+			validation += validValueFromTable(campo);
+		} else	if (LedCampoUtils.getUltimoAtributo(grb.campo).type.compound?.multiple) {
+			validation += validListOfValuesFromTable(campo);
 		} else {
 			for(RadioButton rb: grb.getRadios())
 				radios.add(((GRadioButton) getInstance(rb)).toString());

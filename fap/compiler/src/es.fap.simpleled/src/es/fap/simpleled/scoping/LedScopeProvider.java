@@ -20,6 +20,7 @@ import es.fap.simpleled.led.CampoPermiso;
 import es.fap.simpleled.led.CampoPermisoAtributos;
 import es.fap.simpleled.led.Combo;
 import es.fap.simpleled.led.Entity;
+import es.fap.simpleled.led.GrupoRadioButtons;
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Pagina;
 import es.fap.simpleled.led.Popup;
@@ -107,5 +108,14 @@ public class LedScopeProvider extends AbstractDeclarativeScopeProvider {
 	
 	public IScope scope_Combo_comboValor(Combo combo, EReference ref) {
 		return scope_Combo_comboTexto(combo, ref);
+	}
+	
+	public IScope scope_GrupoRadioButtons_grupoTexto(GrupoRadioButtons grb, EReference ref) {
+		Attribute attr = LedCampoUtils.getUltimoAtributo(grb.getCampo());
+		Entity entidad = null;
+		if (LedEntidadUtils.ManyToX(attr)){
+			entidad = LedEntidadUtils.getEntidad(attr);
+		}
+		return Scopes.scopeFor(LedEntidadUtils.getAllDirectAttributes(entidad));
 	}
 }

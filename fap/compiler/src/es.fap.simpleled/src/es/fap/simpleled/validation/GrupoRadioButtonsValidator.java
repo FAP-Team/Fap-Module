@@ -24,13 +24,15 @@ public class GrupoRadioButtonsValidator extends LedElementValidator {
 
 	@Override
 	public boolean aceptaAtributo(Attribute atributo) {
-		return "String".equals(LedEntidadUtils.getSimpleTipo(atributo)) || LedEntidadUtils.esLista(atributo);
+		return "String".equals(LedEntidadUtils.getSimpleTipo(atributo))
+				|| LedEntidadUtils.esLista(atributo)
+				|| LedEntidadUtils.esColeccion(atributo)
+				|| LedEntidadUtils.ManyToX(atributo);
 	}
 	
 	@Override
 	public String mensajeError() {
-		// TODO Auto-generated method stub
-		return "El campo debe ser de tipo String o Lista";
+		return "El campo debe ser de tipo String, Lista o Referencia (ManyToOne o ManyToMany)";
 	}
 
 }

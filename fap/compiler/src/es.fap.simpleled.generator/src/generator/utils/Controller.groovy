@@ -1111,6 +1111,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			)}){
 				CustomValidation.clearValidadas();
 				${identificador}
+				${saveEntities.size() > 0? bindReferencesCall() : ""}
 				${backupCopia}
 				${saveDbEntities.collect{"$it.clase $it.variableDb = ${complexGetterCall(it)};"}.join("\n")}
 				${gElement.validateCopy()}

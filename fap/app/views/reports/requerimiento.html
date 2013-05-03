@@ -32,11 +32,7 @@ ul {
 
 </style>
 
-%{
-	def ficheroAppCss = new File("public/stylesheets/documentoPDF.css");
-%}
-
-#{if ficheroAppCss.exists()}
+#{if (play.Play.getVirtualFile("public/stylesheets/documentoPDF.css") != null}
 	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/documentoPDF.css'}">
 #{/if}
 
@@ -53,10 +49,10 @@ ul {
 
 %{ 
 	def nombreFichero;
-	if (dbSolicitud.verificacion.tramiteNombre.uri != null){
+	if (dbSolicitud.verificacion.uriTramite != null){
 		services.GestorDocumentalService gestorDocumental = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
 		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(gestorDocumental.getExpReg());
-		java.util.regex.Matcher matcher = pattern.matcher(dbSolicitud.verificacion.tramiteNombre.uri);
+		java.util.regex.Matcher matcher = pattern.matcher(dbSolicitud.verificacion.uriTramite);
 		if(matcher.find())
 			nombreFichero = "requerimiento-"+matcher.group()+".html";
 		else
@@ -65,10 +61,9 @@ ul {
 	else {
 		nombreFichero = "requerimiento-TRPFileSystemMock.html";
 	}
-	def ficheroApp = new File("app/views/reports/"+nombreFichero);
 %}
 
-#{if ficheroApp.exists()}
+#{if (play.Play.getVirtualFile("app/views/reports/"+nombreFichero) != null}
 	#{include 'reports/'+nombreFichero /}
 #{/if}
 #{else}

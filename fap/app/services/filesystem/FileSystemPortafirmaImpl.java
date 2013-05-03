@@ -3,6 +3,8 @@ package services.filesystem;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
+
 import models.Agente;
 import models.ResolucionFAP;
 import services.PortafirmaFapService;
@@ -23,11 +25,6 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 		return response;
 	}
 
-	@Override
-	public void obtenerEstadoFirma() throws PortafirmaFapServiceException {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void eliminarSolicitudFirma() throws PortafirmaFapServiceException {
@@ -41,7 +38,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma, String idAgente) throws PortafirmaFapServiceException {
+	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma) throws PortafirmaFapServiceException {
 		return true;
 	}
 
@@ -68,6 +65,13 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 		}
 		return listaCombo;
 		
+	}
+
+	@Override
+	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(
+			ResolucionFAP resolucion) throws PortafirmaFapServiceException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

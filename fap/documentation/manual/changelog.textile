@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 2.2RC5
+
+* Fixed bugs en resolución.
+
 h3. Versión 2.2RC4
 
 * Resolución: Envío al libro de resoluciones.
@@ -23,57 +27,34 @@ h3. Versión 2.2RC1
 * Incluida la cesión de datos.
 * Incluida la factura electrónica (visor y conversor _facturae_).
 
-h3. Versión 2.1.2RC8
 
-* Se permite recalcular las evaluaciones a los administradores.
+h3. Versión 2.1.2
 
-h3. Versión 2.1.2RC7
-
-* Máscara "Cargando..." en las tablas.
-* Verificación: Fixed some bugs.
-* GestorDocumental: Método que devuelve la firma de un documento (and fixed).
-
-h3. Versión 2.1.2RC6
-
-* Generalización de la creación de identificadores de expediente.
-* Verificación: Se permite añadir cualquier tipo de documento a la actual verificación.
-* Verificación: Fixed bug permiso.
-
-
-h3. Versión 2.1.2RC5
-
-* Fixed bug Verificación.
-* Fixed bug en el método que comprueba si están resueltas todas las anotaciones.
-* Añadidos los nombres de la aplicación en los informes.
-
-
-h3. Versión 2.1.2RC4
-
-* Soporte actualización WebSigner Platino (14 de Febrero)
-* Fixed bug Enlaces en el Menú. 
-
-h3. Versión 2.1.2RC3
-
-* Actualización de librerías
-* Verificación: Permite recuperar documentos noProcede de verificaciones anteriores.
-* Verificación: Se añade un documento de verificación con el estado noProcede por cada tipo de documento encontrado de tipo múltiple.
-* Añadido ejemplo de firmas múltiples
-
-h3. Versión 2.1.2RC2
-
-* Fixed acciones antes de los botones de la tabla.
-
-h3. Versión 2.1.2RC1
-
-* Añadido controlador para el WS de escucha al Portafirma (no aplica cambios).
-* Añadidos permisos del rol Lector.
 * Nuevos métodos que permiten sobreescribir distintas validaciones de los conceptos económicos.
 * Nuevos métodos en Evaluación: getEvaluacion.
 * Nuevas validaciones en el DSL (mostrarSiCheck, mostrarSiCombo, mostrarSiRadioBooleano, noForm, SubirArchivo).
 * Mejorada la validación de SubirArchivo.
-* Fixed buf duplicar documento AED.
+* Verificación: Permite recuperar documentos noProcede de verificaciones anteriores.
+* Soporte actualización WebSigner Platino (14 de Febrero)
+* Baremación: Se permite recalcular las evaluaciones a los administradores.
+* Verificación: Se añade un documento de verificación con el estado noProcede por cada tipo de documento encontrado de tipo múltiple.
+* Añadidos los nombres de la aplicación en los informes.
+* Añadido ejemplo de firmas múltiples
+* Añadido controlador para el WS de escucha al Portafirma (no aplica cambios).
+* Añadidos permisos del rol Lector.
+* Actualización de librerías
+* Verificación: Se permite añadir cualquier tipo de documento a la actual verificación.
+* Baremación: El cálculo de todos los criterios y conceptos se realiza, aunque no se muestren los que no tiene que ver el Evaluador. Se permite a un administrador o gestor recalcular el de todas las evaluaciones evaluadas.
+* Máscara "Cargando..." en las tablas.
+* GestorDocumental: Método que devuelve la firma de un documento (and fixed).
+* Generalización de la creación de identificadores de expediente.
+* Fixed bug en el método que comprueba si están resueltas todas las anotaciones.
+* Fixed bug Enlaces en el Menú. 
+* Fixed acciones antes de los botones de la tabla.
+* Fixed bug duplicar documento AED.
 * Fixed bug combos dependientes.
 * Fixed bugs en Evaluación.
+* Fixed bug Verificación.
 
 h3. Versión 2.1.1
 

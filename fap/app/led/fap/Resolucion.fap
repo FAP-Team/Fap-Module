@@ -265,9 +265,10 @@ Formulario Principal {
 				}
 
 				Form formSelectJefeServicio {
-					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Jefe de Servicio" requerido
+					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Destinatario Portafirma" requerido
 					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
 					Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirma titulo="Fecha Tope Firma" requerido
+					Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido ayuda = "Número de folios del documento de la resolución" (popover)
 					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma"
 				} 
 			}
@@ -295,13 +296,12 @@ Formulario Principal {
 		
 		Grupo gRegistrarResolucion titulo="Registro de la Resolución" permiso=registrarResolucion {
 			Grupo borde=false {
-				Enlace campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
+				Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 			}
 			
 			Wiki { "Para proceder a registrar la resolución pulse el siguiente botón: \"Registrar resolución\"" }
 			
 			Form enviarRegistrarResolucion {
-				Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido
       			Boton btnRegistrarResolucion titulo="Registrar Resolución"
     		}
 		}

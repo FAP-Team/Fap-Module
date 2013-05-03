@@ -114,6 +114,9 @@ Formulario Solicitud permiso=solicitudes{
     		Enlace "Copia tablas" pagina=CopiaTablas
     		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
     		Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
+    		//Copia de los ConceptosEconomicos
+			Enlace "PCEconomicosCopia" pagina=PCEconomicosCopia
+			Enlace "PaginaCEconomicosCopia" pagina=PaginaCEconomicosCopia 
     	}
 		
 		Enlace "Aportación" pagina=Aportacion

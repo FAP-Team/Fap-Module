@@ -358,7 +358,8 @@ public class ModelUtils {
 		Matcher matcher = pattern.matcher(IdSimpleString);
 		String idAux = "";
 		Long idRestaurar = null;
-		while(matcher.find()) {
+		Boolean restaurado = false;
+		while ((matcher.find()) &&(!restaurado)) {
 		    idAux = matcher.group(1);
 		    idRestaurar = peticionModificacion.idSimples.get(idAux);
 
@@ -390,22 +391,34 @@ public class ModelUtils {
 					} else {
 						if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 							try { 
-								String entidadAux = "";
+								Type tipoO2M = null;
 								Class claseEntidadBorrar = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
-								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);								
-								Pattern patternClase = Pattern.compile("\\[(\\s*)(.*?)(\\[.*?\\].*?\\,*)");
-								Matcher matcherClase = patternClase.matcher(aux.toString());
-
-								if(matcherClase.find()) {
-									entidadAux = matcherClase.group(2);
+								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);
+								Field field = extraerField(claseEntidad, campo);
+								Type type = field.getGenericType();  
+							    if (type instanceof ParameterizedType) {  
+							    	ParameterizedType pt = (ParameterizedType) type;  
+							        for (Type t : pt.getActualTypeArguments()) {   
+							           Pattern patternClase = Pattern.compile("class (.*)");
+							           Matcher matcherClase = patternClase.matcher(t.toString());
+							           tipoO2M = t;
+							           if(matcherClase.find()) {
+							        	   claseEntidadBorrar = Class.forName(matcherClase.group(1).toString());
+							           }
+							        }  
+							    }  
+							       
+							    Method findById = claseEntidadBorrar.getDeclaredMethod("findById", Object.class);
+								if (matcher.find()){									
+									idAux = matcher.group(1);
+								    idRestaurar = peticionModificacion.idSimples.get(idAux);
 								}
-
-    							claseEntidadBorrar = Class.forName("models."+entidadAux);
-								Method findById = claseEntidadBorrar.getDeclaredMethod("findById", Object.class);
 								Object restaurar = findById.invoke(claseEntidadBorrar.newInstance(), idRestaurar);
 								aux.add(restaurar);
+								modeloEntidad.save();
+								restaurado = true;
 								break;
 							} catch (Exception e) {
 								play.Logger.error("(1)Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
@@ -414,11 +427,45 @@ public class ModelUtils {
 								break;
 							}
 						} else { // VAMOS RECUPERANDO GETTERS
-							try { 
+							try {
+								String claseO2MString = "";
+								Type tipoO2M = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
-								modeloEntidad = (Model) metodo.invoke(modeloEntidad);
-								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+//								//CODIGO o2m
+								if (metodo.invoke(modeloEntidad) instanceof PersistentBag){					
+									Field field = extraerField(claseEntidad, campo);
+									Type type = field.getGenericType();  
+								    if (type instanceof ParameterizedType) {  
+								    	ParameterizedType pt = (ParameterizedType) type;  
+								        for (Type t : pt.getActualTypeArguments()) {   
+								           Pattern patternClase = Pattern.compile("class models\\.(.*)");
+								           Matcher matcherClase = patternClase.matcher(t.toString());
+								           tipoO2M = t;
+								           if(matcherClase.find()) {
+								        	   claseO2MString=matcherClase.group(1).toString();
+								           }
+								        }  
+								    }  
+								    Class claseO2M = Class.forName("models."+claseO2MString);
+									Method findById = claseO2M.getDeclaredMethod("findById", Object.class);
+									Long idEntidad = peticionModificacion.idSimples.get("id"+claseO2MString);
+									modeloEntidad = (Model)findById.invoke(claseO2M.newInstance(), idEntidad); //Model
+									claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+								}else{
+									modeloEntidad = (Model) metodo.invoke(modeloEntidad);
+									
+									//Quitar nombres raros
+							        Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+							        Matcher matcherModelo = patternModelo.matcher(modeloEntidad.getClass().getName());
+							        
+							        if (matcherModelo.find()){
+							        	claseEntidad = Class.forName(matcherModelo.group(1));
+							        }
+							        else{
+							        	claseEntidad = Class.forName(modeloEntidad.getClass().getName());	
+							        }
+								}
 							} catch (Exception e) {
 								play.Logger.error("(2)Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
 								Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
@@ -478,22 +525,28 @@ public class ModelUtils {
 					} else {
 						if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 							try {
-								String entidadAux = "";
 								Class claseEntidadBorrar = null;
+								Type tipoO2M = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
 								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);								
-								Pattern patternClase = Pattern.compile("\\[(\\s*)(.*?)(\\[.*?\\].*?\\,*)");
-								Matcher matcherClase = patternClase.matcher(aux.toString());
-
-								if(matcherClase.find()) {
-									entidadAux = matcherClase.group(2);
-								}
-
-    							claseEntidadBorrar = Class.forName("models."+entidadAux);
+								Field field = extraerField(claseEntidad, campo);
+								Type type = field.getGenericType();  
+							    if (type instanceof ParameterizedType) {  
+							    	ParameterizedType pt = (ParameterizedType) type;  
+							        for (Type t : pt.getActualTypeArguments()) {   
+							           Pattern patternClase = Pattern.compile("class (.*)");
+							           Matcher matcherClase = patternClase.matcher(t.toString());
+							           tipoO2M = t;
+							           if(matcherClase.find()) {
+							        	   claseEntidadBorrar = Class.forName(matcherClase.group(1).toString());
+							           }
+							        }  
+							    }  
 								Method findById = claseEntidadBorrar.getDeclaredMethod("findById", Object.class);
 								Object borrar = findById.invoke(claseEntidadBorrar.newInstance(), idBorrar);
 								aux.remove(borrar);
+								modeloEntidad.save();
 								break;
 							} catch (Exception e) {
 								play.Logger.error("Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
@@ -503,10 +556,43 @@ public class ModelUtils {
 							}
 						} else { // VAMOS RECUPERANDO GETTERS
 							try { 
+								String claseO2MString = "";
+								Type tipoO2M = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
-								modeloEntidad = (Model) metodo.invoke(modeloEntidad);
-								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+								//CODIGO o2m
+								if (metodo.invoke(modeloEntidad) instanceof PersistentBag){									
+									Field field = extraerField(claseEntidad, campo);
+									Type type = field.getGenericType();  
+								    if (type instanceof ParameterizedType) {  
+								    	ParameterizedType pt = (ParameterizedType) type;  
+								        for (Type t : pt.getActualTypeArguments()) {   
+								        	Pattern patternClase = Pattern.compile("class models\\.(.*)");
+								        	Matcher matcherClase = patternClase.matcher(t.toString());
+								        	tipoO2M = t;
+								        	if(matcherClase.find()) {
+								        	   claseO2MString=matcherClase.group(1).toString();
+								        	}
+								        }  
+								    }  
+								    Class claseO2M = Class.forName("models."+claseO2MString);
+									Method findById = claseO2M.getDeclaredMethod("findById", Object.class);
+									Long idEntidad = peticionModificacion.idSimples.get("id"+claseO2MString);
+									modeloEntidad = (Model)findById.invoke(claseO2M.newInstance(), idEntidad); //Model
+									claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+								}else{
+									modeloEntidad = (Model) metodo.invoke(modeloEntidad);
+									//Quitar nombres raros
+							        Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+							        Matcher matcherModelo = patternModelo.matcher(modeloEntidad.getClass().getName());
+							        
+							        if (matcherModelo.find()){
+							        	claseEntidad = Class.forName(matcherModelo.group(1));
+							        }
+							        else{
+							        	claseEntidad = Class.forName(modeloEntidad.getClass().getName());	
+							        }
+								}
 							} catch (Exception e) {
 								play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
 								Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
@@ -557,11 +643,12 @@ public class ModelUtils {
 					if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 						try {
 							entidad = tags.StringUtils.firstUpper(campo);
-							Field field = claseEntidad.getField(campo);
+							Field field = extraerField(claseEntidad, campo);
 							if (consolidarValoresNuevos){
 								setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
 							}else
 								setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+							modeloEntidad.save();
 							break;
 						} catch (Exception e) {
 							play.Logger.error("Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
@@ -572,10 +659,45 @@ public class ModelUtils {
 						}
 					} else { // VAMOS RECUPERANDO GETTERS
 						try { 
+							String claseO2MString = "";
+							Type tipoO2M = null;
 							entidad = tags.StringUtils.firstUpper(campo);
 							metodo = claseEntidad.getMethod("get"+entidad);
-							modeloEntidad = (Model) metodo.invoke(modeloEntidad);
-							claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+							//CODIGO o2m
+							if (metodo.invoke(modeloEntidad) instanceof PersistentBag){
+								Field field = extraerField(claseEntidad, campo);
+								Type type = field.getGenericType();  
+							    if (type instanceof ParameterizedType) {  
+							    	ParameterizedType pt = (ParameterizedType) type;  
+							        for (Type t : pt.getActualTypeArguments()) {   
+							        	Pattern patternClase = Pattern.compile("class models\\.(.*)");
+							        	Matcher matcherClase = patternClase.matcher(t.toString());
+							        	tipoO2M = t;
+							        	if(matcherClase.find()) {
+							        	   claseO2MString=matcherClase.group(1).toString();
+							        	}
+							        }  
+							    }  
+							    
+							    Class claseO2M = Class.forName("models."+claseO2MString);
+								Method findById = claseO2M.getDeclaredMethod("findById", Object.class);
+								Long idEntidad = peticionModificacion.idSimples.get("id"+claseO2MString);
+								modeloEntidad = (Model)findById.invoke(claseO2M.newInstance(), idEntidad); //Model
+								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+							}else{
+								//Codigo normal
+								modeloEntidad = (Model) metodo.invoke(modeloEntidad);
+
+						        Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+						        Matcher matcherModelo = patternModelo.matcher(modeloEntidad.getClass().getName());
+						        if (matcherModelo.find()){
+						        	claseEntidad = Class.forName(matcherModelo.group(1));
+						        }
+						        else{
+						        	claseEntidad = Class.forName(modeloEntidad.getClass().getName());	
+						        }
+							}
+							
 						} catch (Exception e) {
 							play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
 							Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
@@ -590,6 +712,21 @@ public class ModelUtils {
 		if (Messages.hasErrors()){ // Si hubo fallos se recupera todo lo anterior
 			tx.rollback();
 		}
+	}
+
+	private static Field extraerField(Class claseEntidad, String campo) throws NoSuchFieldException {
+		Field field = null;
+		try{
+			field = claseEntidad.getDeclaredField(campo); //Solo si campo propio no vale campo padre
+		} catch (Exception e) {
+			// Caso de que campo sea de padre
+		}
+		
+		if (field == null){ //Campo en padre
+			Class clasePadre = claseEntidad.getSuperclass();
+			field = clasePadre.getDeclaredField(campo);
+		}
+		return field;
 	}
 	
 
@@ -609,7 +746,6 @@ public class ModelUtils {
 	
 	public static void setValueFromTypeAttribute(Class claseEntidad, Model modeloEntidad, Model entidadAGuardar, String nombreMetodo, Field field, List<String> values){
 		//Aqui en donde se vuelven a asignar los valores cambiados
-		
 		if (field.getType().equals(String.class)){			
 			String value = "";
 			if (!values.isEmpty())
@@ -737,8 +873,9 @@ public class ModelUtils {
 				metodo = field.getType().getMethod("add", Object.class);
 				for (String str : values){
 					if (!setValueSimple(tipoList, m, metodo, str)){ // Si es de tipo especial (Entidades)
-						Class claseTipo = Class.forName(tipoList.getName());
+						Class claseTipo = Class.forName(tipoList.getName());						
 						Long idEntidad = getIdEntidad(str);
+//						String valor = getValorEntidad(str);
 						if (idEntidad == null){
 							play.Logger.error("Error al intentar setear los valores de una List. Id no encontrado de la entidad en "+str);
 							Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
@@ -746,7 +883,12 @@ public class ModelUtils {
 							return;
 						}
 						Method findById = claseTipo.getDeclaredMethod("findById", Object.class);
+//						Method get = claseTipo.getDeclaredMethod("get", Object.class);
+//						Model modelGet = (Model)get.invoke(claseTipo.newInstance(), idEntidad);
 						Model instancia = (Model)findById.invoke(claseTipo.newInstance(), idEntidad);
+//						Object obj = metodo.invoke(m, modelGet);
+//						setValueSimple(instancia.getClass(), m, metodo, valor);
+						
 						metodo.invoke(m, instancia);
 					}
 				}
@@ -794,11 +936,20 @@ public class ModelUtils {
 	}
 	
 	private static Long getIdEntidad(String entidadToString){
-		Pattern p = Pattern.compile(".+?\\[(\\d+)\\]");
+		Pattern p = Pattern.compile(".+?\\[(\\d+)\\](.)+");
 	    Matcher m = p.matcher(entidadToString);
 	    m.matches();
 	    if (m.groupCount() != 0)
 	    	return Long.parseLong(m.group(1));
+	    return null;
+	}
+	
+	private static String getValorEntidad(String entidadToString){
+		Pattern p = Pattern.compile(".+?\\[(\\d+)\\](.)+");
+	    Matcher m = p.matcher(entidadToString);
+	    m.matches();
+	    if (m.groupCount() != 0)
+	    	return m.group(2);
 	    return null;
 	}
 	

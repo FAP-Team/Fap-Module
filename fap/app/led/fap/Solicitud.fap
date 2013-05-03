@@ -25,7 +25,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		
 		Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
 			Grupo titulo="Habilitar la firma y presentación por Funcionario Público" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")"{
-				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación�? de esta página."}
+				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación�? de esta página."}
 				Form formAbrirPlantillaFH destino="_blank"{
 					Boton btnAbrirPlantillaFH titulo="Descargar Autorización"
 				}
@@ -645,6 +645,52 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	Pagina PaginaCEconomicosEvaluados titulo= "Conceptos Económicos Evaluados" campo=SolicitudGenerica permiso=evaluacionFinalizada noForm  perteneceA ="Baremacion" {
 		Form Guardar { 
 			Boton botonGuardar titulo="Guardar" 
+		}
+	}
+
+	// ******************************************************************************************
+	// PAGINA CONCEPTOS ECONOMICOS COPIA
+	// *******************************************************************************************	
+
+	//Sobreescrita
+	Pagina PCEconomicosCopia titulo="Conceptos Económicos" copia permiso=modificacionTrasPresentacionDeSolicitud {
+		Form Guardar {
+			Boton botonGuardar titulo="Guardar" 
+		}
+	}
+
+	//Sobreescrita
+	Pagina PaginaCEconomicosCopia titulo= "Conceptos Económicos" campo=SolicitudGenerica.ceconomicos permiso=modificacionTrasPresentacionDeSolicitud noForm  perteneceA ="Baremacion"{
+		Form Guardar { 
+			Texto Nombre titulo="Nombre" campo=CEconomico.tipo.nombre
+			Grupo conceptosManuales borde=false permiso=verTablaCEconomicosOtros {
+				Tabla ceconomicosManuales titulo="Especificar Detalle" campo=CEconomico.otros 
+				paginaCrear=PaginaCEconomicoManualCopia 
+				paginaEditar=PaginaCEconomicoManualCopia 
+				paginaLeer=PaginaCEconomicoManualCopia 
+				paginaBorrar=PaginaCEconomicoManualBorrarCopia recargarPagina{
+					Columna campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquía"
+					Columna campo=CEconomicosManuales.tipo.nombre titulo="Nombre" expandir
+				}
+			}
+			Boton botonGuardar titulo="Guardar" 
+		}
+	}
+
+	Pagina PaginaCEconomicoManualBorrarCopia copia titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=modificacionTrasPresentacionDeSolicitud {
+		Accion editar redirigir= PaginaCEconomicosCopia
+		Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+		Texto campo=CEconomicosManuales.tipo.descripcion titulo="Descripción"
+	}
+	
+	//Sobreescrita
+	Pagina PaginaCEconomicoManualCopia copia titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=modificacionTrasPresentacionDeSolicitud noForm  perteneceA ="Baremacion"{
+		Accion editar redirigir=PaginaCEconomicosCopia
+		Accion crear redirigir=PaginaCEconomicosCopia
+		Form guardarPCE {
+			Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+			Boton bGuardarPCE titulo="Guardar"
+			Enlace titulo="Volver" estilo="btn btn-link" pagina=PaginaCEconomicosCopia
 		}
 	}
 
@@ -1331,7 +1377,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 
 	Popup popupCrearModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Habilitar una nueva Modificación" permiso=crearModificacionSolicitud {
 		Grupo titulo="Habilitar una nueva Modificación de la Solicitud para el Solicitante" {
-			Fecha fechaLimite campo=RegistroModificacion.fechaLimite titulo="Fecha Límite de Modificación"
+			Fecha fechaLimite campo=RegistroModificacion.fechaLimite titulo="Fecha Límite de Modificación" requerido
 		}
 	}
 	

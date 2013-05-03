@@ -294,6 +294,7 @@ GrupoRadioButtons:
 		('campo' '=' campo=Campo)
 		& ('valor' '=' valor=ID)?
 		& ('titulo' '=' titulo=STRING)?
+		& ('grupoTexto' '=' grupoTexto=[Attribute|IDS])?
 		& (requerido ?= 'requerido')?
 	)
 	('{'

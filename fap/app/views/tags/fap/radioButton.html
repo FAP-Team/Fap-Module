@@ -13,7 +13,7 @@
 	if (parentValue == null)
 		checked = _default ? "checked" : "";
 	else
-		checked = parentValue.equals(valor) ? "checked" : "";
+		checked = (parentValue.equals(valor) || parentValue.toString().contains(valor.toString())) ? "checked" : "";
 }%
 
 <div class="controls">

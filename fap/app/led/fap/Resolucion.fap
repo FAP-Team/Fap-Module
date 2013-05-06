@@ -345,7 +345,7 @@ Formulario Principal {
 		}
 	}
 	
-	Popup ModificarEstadoExpediente campo=ResolucionFAP.lineasResolucion {
+	Popup ModificarEstadoExpediente campo=ResolucionFAP.lineasResolucion titulo="Modificar estado del expediente en la resolución"{
 		Grupo grNoEditable borde=false permiso=noEditable {
 			Texto campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
 			Texto campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
@@ -359,7 +359,7 @@ Formulario Principal {
 			
 			Combo comboEstadoLinea campo=LineaResolucionFAP.estado titulo="Estado"
 
-			Grupo gConcedido borde=false mostrarSiCombo comboEstadoLinea = "concedida"{
+			Grupo gConcedido borde=false mostrarSiCombo comboEstadoLinea = "concedida","concedidaTurismo"{
 				Texto campo=LineaResolucionFAP.importeTotal titulo="Importe Total"
 				Texto campo=LineaResolucionFAP.importeConcedido titulo="Importe Concedido"
 			}

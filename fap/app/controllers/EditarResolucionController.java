@@ -393,6 +393,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 						throw new PortafirmaFapServiceException("No se pudo obtener el estado de la firma: Response null. ");
 					}
 					play.Logger.info("El estado de la solicitud en el portafirma es: "+response.getEstado());
+					Messages.warning("El estado de la solicitud en el portafirma es: "+response.getEstado());
 					if (response.getEstado().equalsIgnoreCase("Rechazada")) {
 						// TODO: Volver a estado anterior
 						ResolucionBase resolBase = null;
@@ -404,7 +405,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 						resolBase.retrocederFase_Modificacion(dbResolucionFAP);
 					} else {
 						play.Logger.warn("La Solicitud está en el estado: "+response.getEstado()+ ": "+response.getComentario());
-						Messages.error("La Solicitud está en el estado: "+response.getEstado());
+						Messages.warning("La Solicitud está en el estado: "+response.getEstado());
 					}
 				}
 			} catch (PortafirmaFapServiceException e) {

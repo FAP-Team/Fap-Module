@@ -186,28 +186,6 @@ public class PCEconomicosCopiaController extends PCEconomicosCopiaControllerGen 
 			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicos", true);
 			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "save");
 		}
-//		if (!Messages.hasErrors()) {
-//			//Modificacion de solicitudes.
-//			PeticionModificacion peticionModificacion = new PeticionModificacion();
-//			peticionModificacion.campoPagina = "Solicitud.ceconomicos"; //<- OJOOO
-//			boolean hayModificaciones = false;
-//			Map<String, String> allSimple = params.allSimple();
-//			for (Map.Entry<String, String> entry : allSimple.entrySet()) {
-//				if (entry.getKey().startsWith("id")) {
-//					try {
-//						peticionModificacion.idSimples.put(entry.getKey(), Long.parseLong(entry.getValue()));
-//					} catch (Exception e) {
-//						//El parámetro no era un long
-//					}
-//				}
-//			}
-//			List<String> valoresAntiguos = new ArrayList<String>();
-//			List<String> valoresNuevos = new ArrayList<String>();
-//			
-//			if (secure.checkGrafico("modificacionTrasPresentacionDeSolicitud", "editable", getAccion(), (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
-//				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
-//			}
-//		}
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "gen/PCEconomicosCopia/PCEconomicosCopia.html" + " , intentada con éxito");
 		} else

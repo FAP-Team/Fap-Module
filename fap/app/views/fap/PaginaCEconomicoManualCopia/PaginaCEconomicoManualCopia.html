@@ -58,7 +58,7 @@
 			
 			def anioLabel = "Año ${tipoEvaluacion.inicio+i}";
 			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomicosManuales.valores[i].valorSolicitado);
-			def permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("editarSolicitudYIniciarBaremacion", "editar", tags.TagMapStack.top("idParams"), null);
+			def permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("modificacionTrasPresentacionDeSolicitud", "editar", tags.TagMapStack.top("idParams"), null);
 		%}
 		#{if permisoEditar}	
 			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}

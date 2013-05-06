@@ -678,7 +678,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	}
 
 	Pagina PaginaCEconomicoManualBorrarCopia  titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=modificacionTrasPresentacionDeSolicitud {
-		Accion editar redirigir= PaginaCEconomicosCopia
+		Accion borrar redirigir=PaginaCEconomicosCopia
 		Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
 		Texto campo=CEconomicosManuales.tipo.descripcion titulo="Descripción"
 	}

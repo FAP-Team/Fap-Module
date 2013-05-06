@@ -50,7 +50,7 @@
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
 			def anioLabel = "Año ${tipoEvaluacion.inicio+i}";
 			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
-			def permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("editarSolicitudYIniciarBaremacion", "editar", tags.TagMapStack.top("idParams"), null);
+			def permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("modificacionTrasPresentacionDeSolicitud", "editar", tags.TagMapStack.top("idParams"), null);
 		%}
 		#{if ((!cEconomico.tipo.tipoOtro) && (tipoEvaluacion != null) && (!tipoEvaluacion.estado.equals("iniciada")) && (permisoEditar))}
 			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
@@ -60,7 +60,7 @@
 		#{/else}
 	#{/list}	
 		
-	#{fap.grupo borde:false}
+	#{fap.grupo borde:false, permiso:'verTablaCEconomicosOtros'}
 				
 #{fap.tabla 
      campo:'CEconomico.otros', 

@@ -235,7 +235,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 		if (!Messages.hasMessages()) {
 			Messages.ok("Página editada correctamente");
 			Messages.keep();
-			redirect("PaginaCEconomicosCopiaController.index", controllers.PaginaCEconomicosController.getAccion(), idSolicitud, idCEconomico, duracion);
+			redirect("PaginaCEconomicosCopiaController.index", controllers.PaginaCEconomicosCopiaController.getAccion(), idSolicitud, idCEconomico, duracion);
 		}
 		Messages.keep();
 		redirect("PaginaCEconomicoManualCopiaController.index", "editar", idSolicitud, idCEconomico, idCEconomicosManuales);

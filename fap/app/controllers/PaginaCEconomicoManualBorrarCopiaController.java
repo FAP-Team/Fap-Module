@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import play.mvc.Util;
+
 import com.google.gson.Gson;
 
 import utils.PeticionModificacion;
@@ -12,6 +14,7 @@ import models.CEconomico;
 import models.CEconomicosManuales;
 import models.JsonPeticionModificacion;
 import models.SolicitudGenerica;
+import models.TipoEvaluacion;
 import controllers.gen.PaginaCEconomicoManualBorrarCopiaControllerGen;
 import controllers.popups.PopUpCEconomicoManualBorrarController;
 
@@ -67,6 +70,19 @@ public class PaginaCEconomicoManualBorrarCopiaController extends PaginaCEconomic
 			log.info("Acción Borrar de página: " + "gen/popups/PaginaCEconomicoManualBorrar.html" + " , intentada sin éxito (Problemas de Validación)");
 		}
 		PaginaCEconomicoManualBorrarCopiaController.borrarRender(idSolicitud, idCEconomico, idCEconomicosManuales);
+	}
+
+	@Util
+	public static void borrarRender(Long idSolicitud, Long idCEconomico, Long idCEconomicosManuales) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página borrada correctamente");
+			Messages.keep();
+			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+			Integer duracion = tipoEvaluacion.duracion-1;
+			redirect("PaginaCEconomicosCopiaController.index", controllers.PaginaCEconomicosCopiaController.getAccion(), idSolicitud, idCEconomico, duracion);
+		}
+		Messages.keep();
+		redirect("PaginaCEconomicoManualBorrarCopiaController.index", "borrar", idSolicitud, idCEconomico, idCEconomicosManuales);
 	}
 	
 }

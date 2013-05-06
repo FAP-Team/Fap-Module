@@ -13,7 +13,7 @@
      formulario:'Solicitud', 
      hayForm:false,
      pagina:'PCEconomicos',
-     permiso:'editarSolicitudYIniciarBaremacion', 
+     permiso:'modificacionTrasPresentacionDeSolicitud', 
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
      titulo:'Conceptos económicos', 
      urlBorrar:play.mvc.Router.reverse('PCEconomicosCopiaController.borrar' , ['idSolicitud':solicitud?.id]), 
@@ -30,12 +30,12 @@
 		     id:'tablaCEconomicos', 
 		     idEntidad:'idCEconomico',
 		     paginaEditar:'PaginaCEConomicosCopia',
-		     paginaLeer:'PaginaCEConomicos',
+		     paginaLeer:'PaginaCEConomicosCopia',
 		     tipoContainer:'pagina', 
 		     titulo:'Conceptos económicos', 
-		     urlTabla:@PCEconomicosController.tablatablaCEconomicos('idSolicitud':solicitud?.id), 
+		     urlTabla:@PCEconomicosCopiaController.tablatablaCEconomicos('idSolicitud':solicitud?.id), 
 		     urlEditar:play.mvc.Router.reverse("PaginaCEConomicosCopiaController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d]),
-		     urlLeer:play.mvc.Router.reverse("PaginaCEConomicosController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d])
+		     urlLeer:play.mvc.Router.reverse("PaginaCEConomicosCopiaController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id, 'idCEconomico':'_idCEconomico_', 'duracion':d])
 		}
 		
 			#{fap.columna ancho:80, cabecera:'Jerarquía', campo:'tipo.jerarquia' /}

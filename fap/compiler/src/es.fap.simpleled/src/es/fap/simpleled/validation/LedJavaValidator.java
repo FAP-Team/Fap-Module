@@ -402,10 +402,6 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 			if ((pagina.isCopia()) && (!campo.getEntidad().getName().equalsIgnoreCase(LedCampoUtils.getUltimaEntidad(pagina.getCampo()).getName()))){
 				error("No se puede usar atributos de entidades no pertenecientes a Solicitud en páginas de copia", ledPackage.getCampo_Entidad());
 			}
-			
-			if ((pagina.isCopia()) &&  (atributo != null) && (atributo.isIsTransient())){
-				error("No se puede usar atributos Transient en paginas 'copia'", ledPackage.getCampo_Atributos());
-			}
 		}
 	}
 	

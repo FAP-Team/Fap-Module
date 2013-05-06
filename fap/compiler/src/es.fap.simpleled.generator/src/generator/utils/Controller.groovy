@@ -629,7 +629,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			boolean hayModificaciones = false;
 			"""			
 			campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
-			if (!item.name.startsWith("id"))
+			if ((!item.name.startsWith("id")) && (!item.isTransient))
 				codigoBorrar += """
 				if (${entidad.variableDb}.${item.name} != null){
 					valoresAntiguos.add(${entidad.variableDb}.${item.name}.toString());
@@ -1027,7 +1027,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			codigoCrear = """if (creando) {"""
 			campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
 				atributos.addAll(item.name);
-				if (!item.name.startsWith("id"))
+				if ((!item.name.startsWith("id")) && (!item.isTransient))
 					codigoCrear += """
 					if (${lista.get(1)}.${item.name} != null){
 						valoresNuevos = new ArrayList<String>();

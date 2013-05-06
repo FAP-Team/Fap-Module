@@ -85,7 +85,7 @@ public class AedControllerTest extends FunctionalTest {
         assertNull(tramite);
         
         //Comprueba que registra los tipos de documentos
-        long nTipoDocumento = TipoDocumento.count();
+        long nTipoDocumento = TipoDocumento.find("select tipoDocumento.uri from TipoDocumento tipoDocumento group by uri").fetch().size();
         List<TableKeyValue> findByTable = TableKeyValue.findByTable("tiposDocumentos");
         assertTrue(nTipoDocumento > 0);
         assertEquals(nTipoDocumento, findByTable.size());

@@ -1281,6 +1281,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.editar = controller.editar || controller.accionEditar.crearSiempre;
 		controller.borrar = controller.borrar || controller.accionBorrar.crearSiempre;
 		controller.campo = gpop.campo;
+		controller.copia = gpop.popup.copia;
 		controller.renderView = "\"gen/popups/${gpop.viewName()}\"";
 		controller.permiso = gpop.popup.permiso;
 		if (gpop.popup.permiso == null)

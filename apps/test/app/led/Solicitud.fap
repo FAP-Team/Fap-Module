@@ -891,7 +891,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 //	}
 	
 
-	Pagina CopiaTablas titulo="Página de copia con tablas" campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud {
+	Pagina CopiaTablas titulo="Página de copia con tablas" campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud copia{
 		Tabla tablaDocCopia campo = Solicitud.documentacion.documentos titulo="Copia de documentos" 
 		paginaEditar=DocumentosCopia
 		paginaBorrar=DocumentosCopia
@@ -899,12 +899,21 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		columnasAutomaticas {}
 		
 		Tabla tablaCopia campo=Solicitud.tablaDeNombres titulo="Solicitantes"
-		paginaEditar=PaginaNombreCopia
+		popupEditar=PopupNombreCopia
 		paginaBorrar=PaginaNombreCopia
 		paginaCrear=PaginaNombreCopia
 		columnasAutomaticas exclude=id, fecha
 		{}
 		
+	}
+
+	Popup PopupNombreCopia campo=Solicitud.tablaDeNombres copia{
+		Accion crear redirigir=anterior
+		Accion editar redirigir=anterior
+		Accion borrar redirigir=anterior
+		Wiki{ "PopUp de copia" }
+		Texto campo=TablaDeNombres.nombre titulo="Nombre"
+		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 
 	Pagina DocumentosCopia campo=Solicitud.documentacion.documentos copia{

@@ -183,7 +183,8 @@ public class GSaveCampoElement extends GElement {
 			return copyCampoMany2Many(campo);
 		else if (campo.getUltimoAtributo()?.type.compound?.multiple){ // SET
 			Pagina pagina = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPagina());
-			if ((pagina != null) && (pagina.copia)){
+			Popup popup = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPopup());
+			if (((pagina != null) && (pagina.copia)) || ((popup != null) && (popup.copia))){
 				return """
 					valoresAntiguos = new ArrayList<String>();
 					if (db${campo.str} != null) {
@@ -211,7 +212,8 @@ public class GSaveCampoElement extends GElement {
 			}
 		}
 		Pagina pagina = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPagina());
-		if ((pagina != null) && (pagina.copia)){
+		Popup popup = ModelUtils.getContenedorPadre(campo.campo, LedFactory.eINSTANCE.getLedPackage().getPopup());
+		if (((pagina != null) && (pagina.copia)) || ((popup != null) && (popup.copia))){
 			Attribute attr = campo.getUltimoAtributo();
 			if (attr.getType()?.getCompound()?.getCollectionType()?.getType()?.toString().equals("Set")){
 				return """

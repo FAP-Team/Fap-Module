@@ -138,6 +138,7 @@ public class ${entity.name} ${extendz} {
 	${gettersAttrMonedaType}
 	${initCode}
 	${savePagesPrepared()}
+	${savePagesCopyPrepared()}
 ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}	
 	
 	}
@@ -549,6 +550,35 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		out += "}";
 		return out;
 	}
+	
+	private String savePagesCopyPrepared() {
+		if (!entity.name.equals("Solicitud"))
+				return "";
+		String out = "public void savePagesCopyPrepared () {"
+		for (PaginaImpl pag: ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getPagina(), LedUtils.resource)){
+				if (!pag.guardarParaPrepararCopia)
+						continue;
+				String name = "pagina" + pag.name;
+				String title = name;
+				if ((pag.titulo != null) && (!pag.titulo.isEmpty()))
+						title = pag.titulo;
+				if ("PCEconomicos".equals(pag.name)){
+						out += """
+                                       if (TipoCEconomico.count() > 0){
+                                               if ((savePagesCopy.${name} == null) || (!savePagesCopy.${name}))
+                                                       Messages.error("La pÃ¡gina ${title} no fue guardada correctamente");
+                                       }
+                               """;
+				} else {
+						out += """
+                                       if ((savePagesCopy.${name} == null) || (!savePagesCopy.${name}))
+                                               Messages.error("La pÃ¡gina ${title} no fue guardada correctamente");
+                               """;
+				}
+		}
+		out += "}";
+		return out;
+}
 	
 	private Entity getEntitySavePages(){
 		EntityImpl savePages = LedFactory.eINSTANCE.createEntity();

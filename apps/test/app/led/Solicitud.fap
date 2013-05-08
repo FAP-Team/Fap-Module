@@ -885,6 +885,11 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 				RadioButton radio1 titulo="Valor del radio 1" valor="Opcion1"
 				RadioButton radio2 titulo="Valor del radio 2" valor="Opcion2"
 			}
+			GrupoRadioButtons titulo="lista" campo=Solicitud.comboTest.listNumber
+			GrupoRadioButtons titulo="paginas" campo=Solicitud.paginas grupoTexto=nombre
+			Tabla comboTP2 campo=PaginasTab paginaCrear=Paginas_Combo_niveles paginaEditar=Paginas_Combo_niveles  titulo="Referencias de grupoRadioButtons"{
+				Columna campo=PaginasTab.nombre
+			}
 		}
 	}
 	

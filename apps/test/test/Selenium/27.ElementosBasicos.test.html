@@ -30,7 +30,13 @@
     clickAndWait(//input[@type='submit'])
     verifyTextPresent('Error al guardar. La página contiene errores.')
     
+	clickAndWait('ext-gen1055')
+	type('paginasTab_nombre', 'A')
+    clickAndWait(//input[@type='submit'])
+    waitForPageToLoad()
+	waitForElementPresent(//input[@type='radio'][@value='1'])
     click('solicitud.elementos.textoRadio1')
+	
     
     clickAndWait(//input[@type='submit'])
     verifyTextPresent('Página editada correctamente')

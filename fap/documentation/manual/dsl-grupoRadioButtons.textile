@@ -1,0 +1,102 @@
+h1. GrupoRadioButtons
+
+h2. Descripción
+
+Permite definir un grupo de selectores de tipo radio que están asociados al mismo campo
+
+h2. Parámetros
+
+* **_[name]_** (opcional) : Identificador del elemento.
+* **campo = _[campo]_** : Atributo donde se almacenará la clave. Los tipos de atributos permitidos son listas, tipos simples, referencias ManyToOne y referencias ManyToMany. Ver "Tipos de atributos permitidos":#atributosPermitidos para más información.
+* **valor = _[ID]_** : Identificador del elemento RadioButton que queremos que sea el valor por defecto.
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como nombre del grupo.
+* **grupoTexto = _[atributo]_** (opcional) : Indica el atributo que se va a utilizar como nombre de cada elemento mostrado en el grupo. Se utiliza solo cuando el campo es de tipo referencia.
+* **requerido** (opcional) : Si se especifica, indica que se deberá seleccionar obligatoriamente uno de los radios del grupo.
+
+h2(#atributosPermitidos). Tipos de atributos permitidos
+
+h4. Tipo simple
+
+Únicamente _Strings_. Se le asociará a este atributo el valor del radio seleccionado.
+
+h4. Listas
+
+Cuando el atributo es de tipo lista, se creará automáticamente tantos selectores de tipo radio como elementos definidos en la lista.
+
+h4. Referencias
+
+Referencias a otras entidades. Las referencias pueden ser **ManyToOne** o **ManyToMany**. En el caso de las referencias es importante especificar el campo **grupoTexto** para mostrar la descripción adecuada, en caso contrario se mostrará el identificador.
+
+h2. Definición
+
+bc. GrupoRadioButtons:
+	elemento='GrupoRadioButtons' (name=ID)? (
+		('campo' '=' campo=Campo)
+		& ('valor' '=' valor=ID)?
+		& ('titulo' '=' titulo=STRING)?
+		& ('grupoTexto' '=' grupoTexto=[Attribute|IDS])?
+		& (requerido ?= 'requerido')?
+	)
+	('{'
+		radios+=RadioButton*
+	'}')?
+;
+
+h2. Ejemplos de uso
+
+h3. Campos de tipo _String_
+
+bc.. Entidad ElementosBasicos{
+	String texto
+	LongText areaDeTexto
+}
+ 
+GrupoRadioButtons titulo="Grupo 1" campo=ElementosBasicos.texto {
+	RadioButton valor="Opcion1"
+	RadioButton valor="Opcion2"
+}
+
+h4. Resultado:
+
+!images/dsl-grupoRadiosSimple!
+
+h3. Campo de tipo Lista
+
+bc.. Entidad GrupoRadiosTest {
+	Lista Numeritos listNumber 
+}
+
+Lista Numeritos {
+	1 : "Uno"
+	2 : "Dos"
+	3 : "Tres"
+	4 : "Cuatro"
+	5 : "Cinco"
+}
+
+GrupoRadioButtons titulo="lista" campo=GrupoRadiosTest.listNumber
+
+h4. Resultado:
+
+!images/dsl-grupoRadiosLista!
+
+h3. Campo de referencia
+
+bc.. Entidad PaginasTab {
+	String nombre
+} 
+
+Entidad Solicitud extends SolicitudGenerica {
+	ManyToOne PaginasTab paginas
+}
+
+Pagina ElementosBasicos campo=Solicitud {
+	GrupoRadioButtons titulo="paginas" campo=Solicitud.paginas grupoTexto=nombre
+	Tabla comboTP2 campo=PaginasTab paginaCrear=Paginas_GrupoRadiosTest_niveles  titulo="Referencias de grupoRadioButtons"{
+		Columna campo=PaginasTab.nombre
+	}
+}
+
+h4. Resultado:
+
+!images/dsl-grupoRadiosRef!

@@ -1,5 +1,10 @@
 h2. Changelog
 
+h3. Versión 2.2RC6
+
+* Fixed bug requerimiento.html.
+* Conflicto en librerías al arrancar el dist (pdf 0.9 con alguna de un parser). Volviendo a pdf 0.6.
+
 h3. Versión 2.2RC5
 
 * Fixed bugs en resolución.

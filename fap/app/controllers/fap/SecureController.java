@@ -27,6 +27,8 @@ import play.cache.Cache;
 import play.data.validation.Required;
 import play.libs.Codec;
 import play.libs.Crypto;
+import play.libs.WS;
+import play.libs.WS.HttpResponse;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -37,9 +39,14 @@ import play.mvc.Scope.Session;
 import play.mvc.Util;
 import play.mvc.With;
 import properties.FapProperties;
+import reports.Report;
 import security.Secure;
 import services.FirmaService;
 import services.FirmaServiceException;
+import services.TercerosService;
+import services.TercerosServiceException;
+import services.ticketing.TicketingService;
+import services.ticketing.TicketingServiceException;
 import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
@@ -411,5 +418,128 @@ public class SecureController extends GenericController{
     	AgenteController.getAgente().cambiarRolActivo(rol);
     	redirectToUrlOrOriginal(url);
     }
+    
+    
+    public static void authenticateTicketingFap(@Required String asunto, @Required String ticket) throws Throwable {
+    	//checkAuthenticity();
+    	if (!buscarAuthenticateTicketingOverwrite(asunto, ticket))
+    		authenticateTicketingPorDefecto(asunto, ticket);
+    }
+    
+    @Util
+    private static boolean buscarAuthenticateTicketingOverwrite(String asunto, String ticket){
+    	Class invokedClass = getSecureClass();
+    	Object object=null;
+    	
+    	if (invokedClass != null){
+			Method method = null;
+			try {
+    			object = invokedClass.newInstance();
+    			method = invokedClass.getDeclaredMethod("authenticateTicketing", String.class, String.class, String.class);
+    			if (method != null){
+    				method.invoke(object, asunto, ticket);
+    				return true;
+    			}
+    			else{
+    				log.info("No existe el método authenticateTicketing() en la clase "+invokedClass.getName());
+    				return false;
+    			}
+			} catch (Exception e) {
+				log.info("No se puede instanciar la clase propia de la aplicación que se encargará del authenticateCertificate, por defecto se usará la autenticación de FAP");
+				return false;
+			}
+    	} else {
+    		log.info("No existe una clase en la aplicación que extienda de SecureController, por defecto se usará la autenticación de FAP");
+    		return false;
+    	}
+    }
+    
+    @Util
+    public static void authenticateTicketingPorDefecto(String asunto, String ticket) {
+    	
+    	if(!FapProperties.getBoolean("fap.login.type.ticketing")){
+            flash.keep("url");
+            play.Logger.error("Se ha intentado un login con ticketing y está desactivada esta opción. Asunto["+asunto+"]  Ticket["+ticket+"]");
+            Messages.error("El acceso a la aplicación mediante ticketing electrónico está desactivado");
+            Messages.keep();
+            loginFap();   		
+    	}
+    	// Asunto
+    	if (asunto == null || !asunto.equals(FapProperties.get("fap.login.ticketing.sede.asunto"))) {
+    		play.Logger.error("Se ha intentado un login con ticketing y el asunto no es correcto. Asunto["+asunto+"]  Ticket["+ticket+"]");
+    		Messages.error("El acceso a la aplicación mediante ticketing ha fallado");
+            Messages.keep();
+    		loginFap();
+    	}
+    
+		TicketingService ticketingService = InjectorConfig.getInjector().getInstance(TicketingService.class);
+		HttpResponse wsResponse = null;
+		try {
+			wsResponse = ticketingService.hazPeticion(asunto, ticket);
+		} catch (TicketingServiceException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	if (wsResponse == null || wsResponse.getStatus() != 200)
+    		return;
+    
+		String numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
+		String tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
+		String uriTercero = wsResponse.getJson().getAsJsonObject().get("uri").getAsString();
+
+		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+		tercerosService.mostrarInfoInyeccion();
+		Agente agente = new Agente();
+		try {
+			agente = tercerosService.buscarTercerosAgenteByNumeroIdentificacion (numDocumento,tipoDocumento);
+		} catch (TercerosServiceException e) {
+			play.Logger.error("No se ha podido recuperar el tercero con numDoc = " + numDocumento + " y uri = " + uriTercero);
+			Messages.error("No se ha podido recuperar el tercero con numDoc = " + numDocumento);
+			e.printStackTrace();
+			
+            flash.keep("url");
+            Messages.error(play.i18n.Messages.get("fap.login.error.user"));
+            Messages.keep();
+            loginFap();
+		}
+		
+		if (agente == null) {
+			play.Logger.error("El agente recuperado por TercerosService es NULL (numDoc = "+ numDocumento + " y uri = " + uriTercero + ")");
+			Messages.error("El agente recuperado por TercerosService es NULL");
+			
+            flash.keep("url");
+            Messages.error(play.i18n.Messages.get("fap.login.error.user"));
+            Messages.keep();
+            loginFap();
+			// TODO: Los demás datos... no se pueden obtener
+		}
+    	
+    	
+     	log.info("Login con ticketing. User: "+agente.username);
+     	// Check tokens
+        Boolean allowed = false;
+     	
+     	log.debug("Agente encontrado " + agente);
+     	
+     	if(agente != null){
+     		if(Play.mode.isDev()){
+     			//En modo desarrollo se permite hacer login a cualquier usuario
+     			allowed = true;
+     		}else {
+     	        // TODO: Comprobar algo?
+     		}
+     	}
+		log.debug("Allowed " + allowed);
+
+		// Almacena el modo de acceso del agente
+		agente.acceso = AccesoAgenteEnum.ticketing.name();
+		agente.save();
+
+		// Mark user as connected
+		session.put("username", agente.username);
+
+		// Redirect to the original URL (or /)
+		redirectToOriginalURL();
+    }    
         
 }

@@ -8,10 +8,15 @@
 #Rutas de login
 GET			/login			               fap.SecureController.loginFap
 POST        /login/password                fap.SecureController.authenticateFap
+GET			/login/ticketing/{asunto}/{ticket}	fap.SecureController.authenticateTicketingFap
 POST        /login/cert                    fap.SecureController.authenticateCertificateFap
 GET         /logout                        fap.SecureController.logoutFap
 
 POST        /changerol                     fap.SecureController.changeRol
+
+%{ if (play.mode.isDev()) { }%
+GET			/mock/ticketing				   fap.MockTicketing.index
+€{ } }%
 
 #Baremacion
 GET   /Baremacion/evaluaciones      								 fap.ConsultarEvaluacionesController.index

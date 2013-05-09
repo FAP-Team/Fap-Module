@@ -93,6 +93,10 @@ public class ResolucionFAP extends FapModel {
 
 	public String codigoResolucion;
 
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinAceptacion"), @Column(name = "fechaFinAceptacionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaFinAceptacion;
+
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaIncioPreparacion"), @Column(name = "fechaIncioPreparacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaIncioPreparacion;

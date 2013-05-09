@@ -271,6 +271,10 @@ public class ResolucionBase {
 		 return listRet;
 	 }
 	 
+	 public void  publicarResolucion (Long idResolucion) {
+		 
+	 }
+	 
 	public void avanzarFase_Borrador(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.creada.name();

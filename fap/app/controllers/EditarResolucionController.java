@@ -517,6 +517,39 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		EditarResolucionController.enviarRegistrarResolucionRender(idResolucionFAP);
 	}
 	
-	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void publicarResolucion(Long idResolucionFAP, ResolucionFAP resolucionFAP, String btnPublicarResolucion) {
+		checkAuthenticity();
+		if (!permisoPublicarResolucion("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+
+		EditarResolucionController.publicarResolucionBindReferences(resolucionFAP);
+
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.publicarResolucionValidateCopy("editar", dbResolucionFAP, resolucionFAP);
+		}
+
+		if (!Messages.hasErrors()) {
+			ResolucionBase resolBase = null;
+			try {
+				resolBase = getResolucionObject(idResolucionFAP);
+				resolBase.publicarResolucion(idResolucionFAP);
+			} catch (Throwable e) {
+				new Exception ("No se ha podido obtener el objeto resolución", e);
+			}
+			resolBase.avanzarFase_Registrada(dbResolucionFAP);
+			
+		}
+		if (!Messages.hasErrors()) {
+			dbResolucionFAP.save();
+			Messages.info("Se ha publicado la resolución");
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
+		EditarResolucionController.publicarResolucionRender(idResolucionFAP);
+	}
 	
 }

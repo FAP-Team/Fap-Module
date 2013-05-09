@@ -117,7 +117,7 @@ Entidad ResolucionFAP {
 	String idSolicitudFirma
 	String codigoResolucion
 
-	//DateTime fechaFinAceptacion						// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
+	DateTime fechaFinAceptacion						// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
 	//DateTime fechaPublicacion						// Fecha de Publicación en el tablón de anuncios de la sede
 	//DateTime fechaBOC								// Fecha de Publicación en el BOC
 	DateTime fechaIncioPreparacion		// Fecha en la que se empieza a preparar la resolución y se crean las líneas
@@ -306,8 +306,12 @@ Formulario Principal {
     		}
 		}
 		
-		Grupo gPublicarResolucion titulo="Publicar la Resolución" permiso=publicarResolucion {
+		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion {
 			Wiki { "Publicar resolución" }
+			Form publicarResolucion {
+				Fecha campo=ResolucionFAP.fechaFinAceptacion titulo="Fecha Fin de Aceptación" requerido
+				Boton btnPublicarResolucion titulo="Publicar la Resolución"
+			}
 		}
 		
 		Grupo gFinalizarResolucion titulo="Finalizar la Resolución" permiso=finalizarResolucion {

@@ -116,6 +116,7 @@ Formulario Solicitud permiso=solicitudes{
     		Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
     		//Copia de los ConceptosEconomicos
 			Enlace "PCEconomicosCopia" pagina=PCEconomicosCopia
+			Enlace "DireccionesCopia" pagina=DireccionesCopia
     	}
 		
 		Enlace "Aportación" pagina=Aportacion
@@ -192,7 +193,7 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		}
 	}
 	
-	Pagina Direcciones campo=Solicitud{
+	Pagina Direcciones campo=Solicitud {
 		Direccion titulo="La Dirección" campo=Solicitud.direccionTest.direccion
 		
 		Codigo  {
@@ -939,6 +940,18 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		Wiki{ "PopUp de copia" }
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
+	}
+
+Pagina DireccionesCopia campo=Solicitud copia{
+		Grupo grupoCanaria /*mostrarSiCombo comboDireccion = "canaria"*/ titulo="Direccion" {
+			Combo comboProvincia campo=Solicitud.direccionTest.direccion.provincia titulo= "Provincia" requerido
+			Combo comboIsla campo=Solicitud.direccionTest.direccion.isla titulo="Isla" dependeDe=comboProvincia requerido
+			Combo cmbMunicipio campo=Solicitud.direccionTest.direccion.municipio titulo="Municipio" dependeDe=comboIsla requerido
+			Texto textoLocalidad campo=Solicitud.direccionTest.direccion.localidad titulo="Localidad" requerido
+			Texto textoCodigoPostal campo=Solicitud.direccionTest.direccion.codigoPostal titulo="Codigo Postal" requerido
+			Texto textoNumero campo=Solicitud.direccionTest.direccion.numero titulo="Numero" requerido
+			Texto textoPPO campo=Solicitud.direccionTest.direccion.otros titulo="Puerta/Piso/Otros" requerido
+		}
 	}
 
 }

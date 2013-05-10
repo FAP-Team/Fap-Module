@@ -35,6 +35,7 @@ import controllers.PresentarModificacionFAPController;
 
 import messages.Messages;
 import models.CodigoRequerimiento;
+import models.Direccion;
 import models.JsonPeticionModificacion;
 import models.Persona;
 import models.RegistroModificacion;
@@ -622,6 +623,7 @@ public class ModelUtils {
 			Class claseEntidad = null;
 			String entidad = "";
 			int camposRecorridos=1;
+			Direccion dir = null;
 			for (String campo : valor.nombreCampo.split("\\.")){
 				if (camposRecorridos == 1){
 					entidad = tags.StringUtils.firstUpper(campo);
@@ -642,12 +644,23 @@ public class ModelUtils {
 				} else {
 					if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 						try {
+							boolean direccion = false;
+							if (entidad.equals("Direccion")){
+								direccion = true;
+							}
 							entidad = tags.StringUtils.firstUpper(campo);
 							Field field = extraerField(claseEntidad, campo);
 							if (consolidarValoresNuevos){
-								setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
-							}else
-								setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+								if(direccion)
+									setValueFromTypeAttributeDireccion(claseEntidad, dir, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
+								else
+									setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
+							}else{
+								if(direccion)
+									setValueFromTypeAttributeDireccion(claseEntidad, dir, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+								else
+									setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+							}
 							modeloEntidad.save();
 							break;
 						} catch (Exception e) {
@@ -685,19 +698,30 @@ public class ModelUtils {
 								modeloEntidad = (Model)findById.invoke(claseO2M.newInstance(), idEntidad); //Model
 								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
 							}else{
+								if (entidad.equals("Direccion")){ //Excepcion 
+									dir = (Direccion)metodo.invoke(modeloEntidad);									
+									//Asignacion
+									 Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+								        Matcher matcherModelo = patternModelo.matcher(dir.getClass().getName());
+								        if (matcherModelo.find()){
+								        	claseEntidad = Class.forName(matcherModelo.group(1));
+								        }
+								        else{
+								        	claseEntidad = Class.forName(dir.getClass().getName());	
+								        }
+								}else{
 								//Codigo normal
-								modeloEntidad = (Model) metodo.invoke(modeloEntidad);
-
-						        Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
-						        Matcher matcherModelo = patternModelo.matcher(modeloEntidad.getClass().getName());
-						        if (matcherModelo.find()){
-						        	claseEntidad = Class.forName(matcherModelo.group(1));
-						        }
-						        else{
-						        	claseEntidad = Class.forName(modeloEntidad.getClass().getName());	
-						        }
-							}
-							
+									modeloEntidad = (Model) metodo.invoke(modeloEntidad);
+							        Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+							        Matcher matcherModelo = patternModelo.matcher(modeloEntidad.getClass().getName());
+							        if (matcherModelo.find()){
+							        	claseEntidad = Class.forName(matcherModelo.group(1));
+							        }
+							        else{
+							        	claseEntidad = Class.forName(modeloEntidad.getClass().getName());	
+							        }
+								}
+							}							
 						} catch (Exception e) {
 							play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
 							Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
@@ -970,4 +994,24 @@ public class ModelUtils {
 		}
 		return null;
 	}
+
+
+	public static void setValueFromTypeAttributeDireccion(Class claseEntidad, Direccion modeloEntidad, Model entidadAGuardar, String nombreMetodo, Field field, List<String> values){
+		if (field.getType().equals(String.class)){			
+			String value = "";
+			if (!values.isEmpty())
+				value = values.get(0);
+			try {
+				Method metodo = claseEntidad.getMethod("set"+nombreMetodo, String.class);
+				metodo.invoke(modeloEntidad, value);
+				entidadAGuardar.save();
+			} catch (Exception e) {
+				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
+			} 
+		}
+	}
+	
 }

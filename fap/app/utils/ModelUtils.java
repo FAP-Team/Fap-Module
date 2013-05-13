@@ -624,6 +624,7 @@ public class ModelUtils {
 			String entidad = "";
 			int camposRecorridos=1;
 			Direccion dir = null;
+			boolean direccion = false;
 			for (String campo : valor.nombreCampo.split("\\.")){
 				if (camposRecorridos == 1){
 					entidad = tags.StringUtils.firstUpper(campo);
@@ -644,7 +645,7 @@ public class ModelUtils {
 				} else {
 					if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 						try {
-							boolean direccion = false;
+							
 							if (entidad.equals("Direccion")){
 								direccion = true;
 							}
@@ -698,8 +699,9 @@ public class ModelUtils {
 								modeloEntidad = (Model)findById.invoke(claseO2M.newInstance(), idEntidad); //Model
 								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
 							}else{
-								if (entidad.equals("Direccion")){ //Excepcion 
-									dir = (Direccion)metodo.invoke(modeloEntidad);									
+								if (metodo.invoke(modeloEntidad).getClass().getSimpleName().equals("Direccion")){ //Excepcion  
+									dir = (Direccion)metodo.invoke(modeloEntidad);
+									direccion = true;
 									//Asignacion
 									 Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
 								        Matcher matcherModelo = patternModelo.matcher(dir.getClass().getName());

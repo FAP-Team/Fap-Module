@@ -1402,7 +1402,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		
 		Grupo titulo="Restaurar valores de los Datos de la Solicitud" mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
 			Form formRestaurarModificacion{
-				Combo fechaARestaurar campo=SolicitudGenerica.fechaARestaurarStr titulo="Fecha Creación de la Modificación" // Sobreescrito
+				Combo fechaARestaurar campo=SolicitudGenerica.fechaARestaurarStr titulo="Fecha Creación de la Modificación" requerido // Sobreescrito
 				Boton restaurarBtn titulo="Restaurar" type=danger
 			}
 		}

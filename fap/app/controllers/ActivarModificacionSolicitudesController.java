@@ -52,13 +52,15 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void formRestaurarModificacion(Long idSolicitud, SolicitudGenerica solicitud, String restaurarBtn) {
 		checkAuthenticity();
+		Long idRegistroModificacion = null;
 		if (!permisoFormRestaurarModificacion("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
 		if (!Messages.hasErrors()) {
 			Long idRecuperar = null;
-			Long idRegistroModificacion = Long.parseLong(solicitud.fechaARestaurarStr);
+			if (!solicitud.fechaARestaurarStr.isEmpty())
+			 idRegistroModificacion = Long.parseLong(solicitud.fechaARestaurarStr);
 			if (idRegistroModificacion != null) {
 				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
 				boolean recuperarPresentacion = true;

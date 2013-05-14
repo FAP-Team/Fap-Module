@@ -30,8 +30,8 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 	private final static String BODY_REPORT_RENUNCIA = "reports/renuncia.html";
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
-	private final static String MAILACEPTACION = "aceptacionRealizada";
-	private final static String MAILRENUNCIA = "renunciaRealizada";
+	private final static String MAILACEPTACION = FapProperties.get("fap.tramitacion.aceptacion.identificadoremail");
+	private final static String MAILRENUNCIA = FapProperties.get("fap.tramitacion.renuncia.identificadoremail");
 	private final static String JUSTIFICANTE_ACEPTACION = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroAceptacionRenuncia.aceptacion");
 	private final static String JUSTIFICANTE_RENUNCIA = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroAceptacionRenuncia.renuncia");
 	private PlatinoGestorDocumentalService platinoGestorDocumentalService;

@@ -36,7 +36,7 @@ public class TramiteAportacion extends TramiteBase {
 	private final static String BODY_REPORT = "reports/solicitudAportacion.html";
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
-	private final static String MAIL = "aportacionRealizada";
+	private final static String MAIL = FapProperties.get("fap.tramitacion.aportacion.identificadoremail");
 	private final static String JUSTIFICANTE = FapProperties.get("fap.aed.tiposdocumentos.aportacion.registro");
 	
 	public TramiteAportacion(SolicitudGenerica solicitud) {

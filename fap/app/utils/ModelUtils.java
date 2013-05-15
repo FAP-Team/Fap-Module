@@ -37,6 +37,7 @@ import messages.Messages;
 import models.CodigoRequerimiento;
 import models.Direccion;
 import models.JsonPeticionModificacion;
+import models.Nip;
 import models.Persona;
 import models.RegistroModificacion;
 import models.SolicitudGenerica;
@@ -623,8 +624,10 @@ public class ModelUtils {
 			Class claseEntidad = null;
 			String entidad = "";
 			int camposRecorridos=1;
-			Direccion dir = null;
-			boolean direccion = false;
+			Direccion direccionModel = null;
+			boolean direccionBoolean = false;
+			Nip nipModel = null;
+			boolean nipBoolean = false;
 			for (String campo : valor.nombreCampo.split("\\.")){
 				if (camposRecorridos == 1){
 					entidad = tags.StringUtils.firstUpper(campo);
@@ -645,20 +648,26 @@ public class ModelUtils {
 				} else {
 					if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 						try {
-							
 							if (entidad.equals("Direccion")){
-								direccion = true;
+								direccionBoolean = true;
+							}
+							if (entidad.equals("Nip")){
+								nipBoolean = true;
 							}
 							entidad = tags.StringUtils.firstUpper(campo);
 							Field field = extraerField(claseEntidad, campo);
 							if (consolidarValoresNuevos){
-								if(direccion)
-									setValueFromTypeAttributeDireccion(claseEntidad, dir, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
+								if(direccionBoolean)
+									setValueFromTypeAttributeDireccion(claseEntidad, direccionModel, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
+								else if (nipBoolean)
+									setValueFromTypeAttributeNip(claseEntidad, nipModel, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
 								else
 									setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
 							}else{
-								if(direccion)
-									setValueFromTypeAttributeDireccion(claseEntidad, dir, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+								if(direccionBoolean)
+									setValueFromTypeAttributeDireccion(claseEntidad, direccionModel, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+								else if (nipBoolean)
+									setValueFromTypeAttributeNip(claseEntidad, nipModel, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
 								else
 									setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
 							}
@@ -700,18 +709,32 @@ public class ModelUtils {
 								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
 							}else{
 								if (metodo.invoke(modeloEntidad).getClass().getSimpleName().equals("Direccion")){ //Excepcion  
-									dir = (Direccion)metodo.invoke(modeloEntidad);
-									direccion = true;
+									direccionModel = (Direccion)metodo.invoke(modeloEntidad);
+									direccionBoolean = true;
 									//Asignacion
 									 Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
-								        Matcher matcherModelo = patternModelo.matcher(dir.getClass().getName());
+								        Matcher matcherModelo = patternModelo.matcher(direccionModel.getClass().getName());
 								        if (matcherModelo.find()){
 								        	claseEntidad = Class.forName(matcherModelo.group(1));
 								        }
 								        else{
-								        	claseEntidad = Class.forName(dir.getClass().getName());	
+								        	claseEntidad = Class.forName(direccionModel.getClass().getName());	
 								        }
-								}else{
+								}
+								else if (metodo.invoke(modeloEntidad).getClass().getSimpleName().equals("Nip")){ //Excepcion  
+									nipModel = (Nip)metodo.invoke(modeloEntidad);
+									nipBoolean = true;
+									//Asignacion
+									 Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+								        Matcher matcherModelo = patternModelo.matcher(nipModel.getClass().getName());
+								        if (matcherModelo.find()){
+								        	claseEntidad = Class.forName(matcherModelo.group(1));
+								        }
+								        else{
+								        	claseEntidad = Class.forName(nipModel.getClass().getName());	
+								        }
+								}
+								else{
 								//Codigo normal
 									modeloEntidad = (Model) metodo.invoke(modeloEntidad);
 							        Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
@@ -1016,4 +1039,21 @@ public class ModelUtils {
 		}
 	}
 	
+	public static void setValueFromTypeAttributeNip(Class claseEntidad, Nip modeloEntidad, Model entidadAGuardar, String nombreMetodo, Field field, List<String> values){
+		if (field.getType().equals(String.class)){			
+			String value = "";
+			if (!values.isEmpty())
+				value = values.get(0);
+			try {
+				Method metodo = claseEntidad.getMethod("set"+nombreMetodo, String.class);
+				metodo.invoke(modeloEntidad, value);
+				entidadAGuardar.save();
+			} catch (Exception e) {
+				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
+			} 
+		}
+	}
 }

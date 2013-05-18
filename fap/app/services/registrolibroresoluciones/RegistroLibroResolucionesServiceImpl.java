@@ -156,7 +156,9 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 		
 		try {
 			GregorianCalendar cal = new GregorianCalendar();
+			resolucionFAP.fechaRegistroResolucion = new DateTime().now(); //Asignamos fecha actual
 			cal.setTimeInMillis(resolucionFAP.fechaRegistroResolucion.getMillis());
+			//cal.setTimeInMillis(System.currentTimeMillis());
 			resolucion.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar(cal));
 		} catch (Exception e) {
 			throw new RegistroLibroResolucionesServiceException("El formato de la fecha no es válido.", e);

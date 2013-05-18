@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import models.CEconomico;
+import models.Criterio;
 import models.Evaluacion;
 import models.LineaResolucionFAP;
 import models.ResolucionFAP;
@@ -17,6 +18,7 @@ public class ResolucionUtils {
 	public static class LineasResolucionSortComparator implements Comparator {
 		static final int BEFORE = -1;
 		static final int AFTER = 1;
+		static final int IGUALES = 0;
 		
 		  public int compare(Object o1, Object o2) {
 			  LineaResolucionFAP u1 = (LineaResolucionFAP) o1;
@@ -38,26 +40,23 @@ public class ResolucionUtils {
 			  return result;
 		  }
 		  public boolean equals(Object o) {
-			  System.out.println("Notas iguales");
 			  return this == o;
 		  }
 		  
 		  public int comparacionPorCriterios(LineaResolucionFAP u1, LineaResolucionFAP u2){
-			  //Obtener los criterios
-			  List<CEconomico> ce1 = u1.solicitud.ceconomicos;
-			  List<CEconomico> ce2 = u2.solicitud.ceconomicos;
-			  //Recorrer cada pareja de CEconomicos comparando criterios.
-			  for (int i = 0; i < ce1.size(); i++) { //Ambos tienen el mismo tamaño
-//				List<CEconomico> aComparar = new ArrayList<CEconomico>();
-//				aComparar.add(ce2.get(i));
-//				aComparar.add(ce1.get(i));
-				if (ce1.get(i).total < ce2.get(i).total){
-					return BEFORE;
-				} else if (ce1.get(i).total > ce2.get(i).total){
-					return AFTER;
-				} 
+			  Evaluacion evaluacionU1 = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.estado = ? and evaluacion.solicitud = ?", "evaluada", u1.solicitud).first();
+			  Evaluacion evaluacionU2 = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.estado = ? and evaluacion.solicitud = ?", "evaluada", u2.solicitud).first();
+			  BaremacionUtils.ordenarCriterios(evaluacionU1.criterios);
+			  BaremacionUtils.ordenarCriterios(evaluacionU2.criterios);
+			  for (int i = 0; i <evaluacionU1.criterios.size(); i++) {
+				  if (evaluacionU1.criterios.get(i).valor < evaluacionU2.criterios.get(i).valor){
+					  return BEFORE;
+				  }
+				  if (evaluacionU1.criterios.get(i).valor > evaluacionU2.criterios.get(i).valor){
+					  return AFTER;
+				  }
 			  }
-			  return 0; //Son iguales en todo
+			  return IGUALES;
 		  }
 	}
 	

@@ -4,11 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import utils.BaremacionUtils.TipoCriterioComparator;
-
 import models.Cesiones;
-import models.Criterio;
-import models.TipoCriterio;
 
 public class CesionesUtils {
 

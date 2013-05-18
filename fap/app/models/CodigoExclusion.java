@@ -53,6 +53,12 @@ public class CodigoExclusion extends FapModel {
 		return null;
 	}
 
+	/*Devuelve una lista con todos los códigos de exclusion */
+	public static List<TipoCodigoExclusion> obtenerListaCodigosExclusion() {
+		List<TipoCodigoExclusion> lst = new ArrayList<TipoCodigoExclusion>();
+		lst = TipoCodigoExclusion.find("select tipos from TipoCodigoExclusion tipos order by tipos.codigo").fetch();
+		return lst;
+	}
 	// === MANUAL REGION END ===
 
 }

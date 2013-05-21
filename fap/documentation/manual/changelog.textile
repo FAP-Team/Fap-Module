@@ -1,7 +1,11 @@
 h2. Changelog
 
-h3. Versión 2.2RC6
+Version 2.2RC7
+* Añadido método de obtenerListaCodigosExclusion
+* Añadido ResolucionUtils para ordenar lineas de resolucion (comparacion por criterios)
 
+h3. Versión 2.2RC6
+* Añadido ticketing
 * Fixed bug requerimiento.html.
 * Conflicto en librerías al arrancar el dist (pdf 0.9 con alguna de un parser). Volviendo a pdf 0.6.
 

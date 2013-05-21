@@ -33,9 +33,6 @@ public class ResolucionUtils {
 				  result = u2.puntuacionBaremacion.compareTo(u1.puntuacionBaremacion);
 			  
 			  if (result == 0){ //Si son iguales, se compara por criterios.
-				  System.out.println("Caso1: "+u1.solicitud.solicitante.nombreCompleto+" nota: "+u1.puntuacionBaremacion);
-				  System.out.println("Caso2: "+u2.solicitud.solicitante.nombreCompleto+" nota: "+u2.puntuacionBaremacion);
-				  
 				  return comparacionPorCriterios(u1, u2);
 			  }
 			  return result;

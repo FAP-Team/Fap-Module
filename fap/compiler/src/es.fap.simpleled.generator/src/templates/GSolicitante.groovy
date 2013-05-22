@@ -60,10 +60,12 @@ public class GSolicitante extends GElement{
 			direccion.campo=CampoUtils.addMore(solicitante.campo, "domicilio").campo;
 		}
 
-		telefonoContacto = LedFactory.eINSTANCE.createTexto();
-		telefonoContacto.titulo="Teléfono de Contacto";
-		telefonoContacto.name="${solicitante.name}_telefonoContacto";
-		telefonoContacto.campo=CampoUtils.addMore(solicitante.campo, "telefonoContacto").campo;
+		if (!solicitante.noTelefono) {
+			telefonoContacto = LedFactory.eINSTANCE.createTexto();
+			telefonoContacto.titulo="Teléfono móvil";
+			telefonoContacto.name="${solicitante.name}_telefonoContacto";
+			telefonoContacto.campo=CampoUtils.addMore(solicitante.campo, "telefonoContacto").campo;
+		}
 		
 		uriTercero = LedFactory.eINSTANCE.createTextoOculto();
 		uriTercero.name="${solicitante.name}_uriTerceros";
@@ -79,7 +81,8 @@ public class GSolicitante extends GElement{
 
 		Grupo grupoOtrosDatos = LedFactory.eINSTANCE.createGrupo();
 		grupoOtrosDatos.borde = false;
-		grupoOtrosDatos.elementos.add(telefonoContacto);
+		if (!solicitante.noTelefono)
+			grupoOtrosDatos.elementos.add(telefonoContacto);
 		if (!solicitante.noEmail)
 			grupoOtrosDatos.elementos.add(email);
 		grupoOtrosDatos.elementos.add(uriTercero);
@@ -109,6 +112,7 @@ public class GSolicitante extends GElement{
 		fisica.campo = CampoUtils.addMore(solicitante.campo, "fisica").campo;
 		fisica.requerido = solicitante.requerido;
 		fisica.noSexo = solicitante.noSexo;
+		fisica.noNacimiento = solicitante.noNacimiento;
 		
 		Grupo grupo = LedFactory.eINSTANCE.createGrupo();
 		grupo.borde = false;
@@ -139,6 +143,7 @@ public class GSolicitante extends GElement{
 				persona.name = "representanteDelSolicitante_${solicitante.name}";
 				persona.campo = CampoUtils.addMore(solicitante.campo, "representante").campo;
 				persona.noSexo = solicitante.noSexo;
+				persona.noNacimiento = solicitante.noNacimiento;
 				grupoRepFisica.elementos.add(persona);
 				textoEmail.campo = CampoUtils.addMore(persona.campo, "email").campo;
 			}
@@ -147,6 +152,7 @@ public class GSolicitante extends GElement{
 				personaFisica.requerido = true;
 				personaFisica.name = "representanteDelSolicitante_${solicitante.name}";
 				personaFisica.noSexo = solicitante.noSexo;
+				personaFisica.noNacimiento = solicitante.noNacimiento;
 				personaFisica.campo = CampoUtils.addMore(solicitante.campo, "representante.fisica").campo;
 				grupoRepFisica.elementos.add(personaFisica);
 				textoEmail.campo = CampoUtils.addMore(solicitante.campo, "representante.email").campo;

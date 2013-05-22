@@ -539,6 +539,7 @@ PersonaFisica:
 		(requerido?='requerido')? &
 		(setearTipoPadre?='setearTipoPadre')?
 		& (noSexo?='noSexo')?
+		& (noNacimiento?='noNacimiento')?
 	)
 ;
 
@@ -558,6 +559,7 @@ Persona:
 		(requerido?='requerido')? &
 		("permiso" "=" permiso=[Permiso])?
 		& (noSexo?='noSexoPersonaFisica')?
+		& (noNacimiento?='noNacimientoPersonaFisica')?
 	)
 ;
 
@@ -571,7 +573,8 @@ Solicitante:
 		& (conDireccion?='conDireccion')?
 		& (noEmail?='noEmail')?
 		& (noSexo?='noSexo')?
-
+		& (noNacimiento?='noNacimiento')?
+		& (noTelefono?='noTelefono')?
 	)
 ;
 

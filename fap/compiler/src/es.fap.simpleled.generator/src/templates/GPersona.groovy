@@ -50,7 +50,8 @@ public class GPersona extends GElement{
 		fisica.campo = CampoUtils.addMore(persona.campo, "fisica").campo;
 		fisica.requerido = persona.requerido;
 		fisica.noSexo = persona.noSexo;
-		
+		fisica.noNacimiento = persona.noNacimiento;
+
 		Grupo grupo = LedFactory.eINSTANCE.createGrupo();
 		grupo.borde = "false";
 		grupo.siCombo = combo;

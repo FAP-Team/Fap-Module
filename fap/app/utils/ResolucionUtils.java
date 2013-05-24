@@ -33,7 +33,7 @@ public class ResolucionUtils {
 				  result = u2.puntuacionBaremacion.compareTo(u1.puntuacionBaremacion);
 			  
 			  if (result == 0){ //Si son iguales, se compara por criterios.
-				  return comparacionPorCriterios(u1, u2);
+				  result = comparacionPorCriterios(u1, u2);
 			  }
 			  return result;
 		  }
@@ -50,13 +50,7 @@ public class ResolucionUtils {
 			  for (int i = 0; i < evaluacionU1.criterios.size(); i++) {
 				 if (!evaluacionU1.criterios.get(i).tipo.jerarquia.contains(".")){ //Si no contiene . es criterio primer orden
 					if (evaluacionU1.criterios.get(i).tipo.esIgual(evaluacionU2.criterios.get(i).tipo)){ //misma jerarquia
-						//Comprobacion de valores
-						if (evaluacionU1.criterios.get(i).valor > evaluacionU2.criterios.get(i).valor){
-							return AFTER;
-						}
-						if (evaluacionU1.criterios.get(i).valor < evaluacionU2.criterios.get(i).valor){
-							return BEFORE;
-						}
+						return evaluacionU2.criterios.get(i).valor.compareTo(evaluacionU1.criterios.get(i).valor);
 					}
 				}
 			}

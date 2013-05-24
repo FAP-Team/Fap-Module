@@ -228,6 +228,9 @@ public class Solicitud extends SolicitudGenerica {
 		}
 	}
 
+	public void savePagesCopyPrepared() {
+	}
+
 	// === MANUAL REGION START ===
 	public Solicitud(Agente agente) {
 		super.init();

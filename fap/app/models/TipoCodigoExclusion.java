@@ -42,7 +42,7 @@ public class TipoCodigoExclusion extends FapModel {
 		lst = TipoCodigoExclusion.find("select tipos from TipoCodigoExclusion tipos order by tipos.codigo").fetch();
 		return lst;
 	}
-	
+
 	// === MANUAL REGION END ===
 
 }

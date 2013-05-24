@@ -51,10 +51,12 @@ public class ResolucionUtils {
 				 if (!evaluacionU1.criterios.get(i).tipo.jerarquia.contains(".")){ //Si no contiene . es criterio primer orden
 					if (evaluacionU1.criterios.get(i).tipo.esIgual(evaluacionU2.criterios.get(i).tipo)){ //misma jerarquia
 						//Comprobacion de valores
-						if (evaluacionU1.criterios.get(i).valor > evaluacionU2.criterios.get(i).valor)
+						if (evaluacionU1.criterios.get(i).valor > evaluacionU2.criterios.get(i).valor){
 							return AFTER;
-						if (evaluacionU1.criterios.get(i).valor < evaluacionU2.criterios.get(i).valor)
+						}
+						if (evaluacionU1.criterios.get(i).valor < evaluacionU2.criterios.get(i).valor){
 							return BEFORE;
+						}
 					}
 				}
 			}

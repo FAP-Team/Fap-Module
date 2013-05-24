@@ -3,6 +3,7 @@ h2. Changelog
 Version 2.2RC7
 * Añadido método de obtenerListaCodigosExclusion
 * Añadido ResolucionUtils para ordenar lineas de resolucion (comparacion por criterios)
+* Añadida opciones noTelefono, noNacimiento.
 
 h3. Versión 2.2RC6
 * Añadido ticketing

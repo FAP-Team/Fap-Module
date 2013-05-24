@@ -1283,7 +1283,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
 		log.debug("Clasificando documento resolución");
 		
-        Convocatoria convocatoria = Convocatoria.find("select convocatoria form Convocatoria convocatoria").first();
+        Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
         String idAed = convocatoria.expedienteAed.idAed;
         
         if(idAed == null)

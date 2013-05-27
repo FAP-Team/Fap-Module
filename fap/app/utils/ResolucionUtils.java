@@ -32,7 +32,7 @@ public class ResolucionUtils {
 			  } else
 				  result = u2.puntuacionBaremacion.compareTo(u1.puntuacionBaremacion);
 			  
-			  if (result == 0){ //Si son iguales, se compara por criterios.
+			  if ((result == 0) && (u2.puntuacionBaremacion != 0)){ //Si son iguales, se compara por criterios.
 				  result = comparacionPorCriterios(u1, u2);
 			  }
 			  return result;
@@ -44,13 +44,17 @@ public class ResolucionUtils {
 		  public int comparacionPorCriterios(LineaResolucionFAP u1, LineaResolucionFAP u2){
 			  Evaluacion evaluacionU1 = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.estado = ? and evaluacion.solicitud = ?", "evaluada", u1.solicitud).first();
 			  Evaluacion evaluacionU2 = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.estado = ? and evaluacion.solicitud = ?", "evaluada", u2.solicitud).first();
+			  int result = 0;
 			  BaremacionUtils.ordenarCriterios(evaluacionU1.criterios);
 			  BaremacionUtils.ordenarCriterios(evaluacionU2.criterios);
 			  
 			  for (int i = 0; i < evaluacionU1.criterios.size(); i++) {
 				 if (!evaluacionU1.criterios.get(i).tipo.jerarquia.contains(".")){ //Si no contiene . es criterio primer orden
 					if (evaluacionU1.criterios.get(i).tipo.esIgual(evaluacionU2.criterios.get(i).tipo)){ //misma jerarquia
-						return evaluacionU2.criterios.get(i).valor.compareTo(evaluacionU1.criterios.get(i).valor);
+						result = evaluacionU2.criterios.get(i).valor.compareTo(evaluacionU1.criterios.get(i).valor);
+						if (result != 0){
+							return result;
+						}
 					}
 				}
 			}

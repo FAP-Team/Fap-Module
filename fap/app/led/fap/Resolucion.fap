@@ -257,7 +257,7 @@ Formulario Principal {
 			
 			Grupo gEnviarFirmaJSPortafirma permiso=firmaJefeServicio borde=false {
 				
-				Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga
+				Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga destino="_blank"
 				Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=ResolucionFAP.docConsultaPortafirmasResolucion paginaCrear=DocConsultaPortafirmaCrear paginaEditar=DocConsultaPortafirmaEditar {
 					Columna campo=Documento.tipo titulo="Tipo"
 					Columna campo=Documento.descripcionVisible titulo="Descripción" expandir

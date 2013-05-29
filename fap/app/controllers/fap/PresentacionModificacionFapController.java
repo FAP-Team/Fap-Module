@@ -55,6 +55,14 @@ public class PresentacionModificacionFapController {
         }
 	}
 	
+	public static boolean comprobarPaginasCopiaGuardadas(Long idSolicitud){
+		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
+		ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "savePagesCopyPrepared");
+        if (Messages.hasErrors())
+        	return false;
+        return true;
+	}
+	
 	public static void comprobarFechaLimitePresentacion(Long idSolicitud){
 		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 		if (solicitud.registroModificacion.isEmpty()){

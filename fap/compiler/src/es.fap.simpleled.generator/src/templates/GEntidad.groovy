@@ -566,13 +566,13 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 						out += """
                                        if (TipoCEconomico.count() > 0){
                                                if ((savePagesCopy.${name} == null) || (!savePagesCopy.${name}))
-                                                       Messages.error("La pÃ¡gina ${title} no fue guardada correctamente");
+                                                       Messages.error("La página ${title} no fue guardada correctamente");
                                        }
                                """;
 				} else {
 						out += """
                                        if ((savePagesCopy.${name} == null) || (!savePagesCopy.${name}))
-                                               Messages.error("La pÃ¡gina ${title} no fue guardada correctamente");
+                                               Messages.error("La página ${title} no fue guardada correctamente");
                                """;
 				}
 		}
@@ -613,6 +613,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			AttributeImpl at = LedFactory.eINSTANCE.createAttribute();
 			at.setName("pagina" + pag.name);
 			at.setType(tipoBoolean);
+			at.setDefaultValue("true");
 			savePagesCopy.getAttributes().add(at);
 		}
 		return savePagesCopy;

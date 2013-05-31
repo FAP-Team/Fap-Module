@@ -356,7 +356,7 @@ public class ModelUtils {
 	public static void aplicarRestauracion (Long idSolicitud, PeticionModificacion peticionModificacion){
 		EntityTransaction tx = JPA.em().getTransaction();
 		String IdSimpleString = peticionModificacion.idSimples.keySet().toString(); //Paso a string los valores
-		Pattern pattern = Pattern.compile("(id[^(Solicitud)][^,\\]]*)");
+		Pattern pattern = Pattern.compile("(id([^,\\]])*)");
 		Matcher matcher = pattern.matcher(IdSimpleString);
 		String idAux = "";
 		Long idRestaurar = null;
@@ -491,7 +491,7 @@ public class ModelUtils {
 	public static void aplicarEliminacion (Long idSolicitud, PeticionModificacion peticionModificacion){
 		EntityTransaction tx = JPA.em().getTransaction();
 		String IdSimpleString = peticionModificacion.idSimples.keySet().toString(); //Paso a string los valores
-		Pattern pattern = Pattern.compile("(id[^(Solicitud)][^,\\]]*)");
+		Pattern pattern = Pattern.compile("(id([^,\\]])*)");
 		Matcher matcher = pattern.matcher(IdSimpleString);
 		String idAux = "";
 		Long idBorrar = null;

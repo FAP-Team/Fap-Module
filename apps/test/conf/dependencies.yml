@@ -2,7 +2,7 @@
 
 require:
     - play
-    - fap -> fap 2.2
+    - fap -> fap 
     - fap-modules -> guice 1.3
     - play -> pdf 0.9
     - play -> less 0.9

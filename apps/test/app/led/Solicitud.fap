@@ -606,7 +606,7 @@ Este grupo es sólo visible para administradores"}
 //	    Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar  	
 //	    Texto campo=Solicitud.solicitante.web titulo="Página web"
 	    Grupo titulo="Solicitante"{
-	    	Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido conDireccion
+	    	Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido conDireccion noSexo noNacimiento
 	    }
 	    
 	    Codigo {"

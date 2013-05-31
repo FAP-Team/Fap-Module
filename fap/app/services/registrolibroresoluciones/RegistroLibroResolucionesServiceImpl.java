@@ -1,5 +1,8 @@
 package services.registrolibroresoluciones;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -11,7 +14,10 @@ import javax.xml.ws.BindingProvider;
 
 import org.joda.time.DateTime;
 
+import config.InjectorConfig;
+
 import models.Interesado;
+import models.Persona;
 import models.ResolucionFAP;
 
 import es.gobcan.resoluciones.AreaResult;
@@ -31,6 +37,7 @@ import es.gobcan.resoluciones.TipoResult;
 import es.gobcan.resoluciones.Tipos;
 import es.gobcan.resoluciones.TiposResult;
 
+import play.libs.IO;
 import properties.FapProperties;
 
 import registroresolucion.AreaResolucion;
@@ -39,6 +46,11 @@ import registroresolucion.RegistroResolucion;
 import registroresolucion.TipoResolucion;
 import services.RegistroLibroResolucionesService;
 import services.RegistroLibroResolucionesServiceException;
+import services.aed.AedGestorDocumentalServiceImpl;
+import utils.BinaryResponse;
+import services.GestorDocumentalService;
+
+import utils.AedUtils;
 
 public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolucionesService {
 
@@ -144,13 +156,17 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 		resolucion.setSintesis(resolucionFAP.sintesis);
 		resolucion.setObservaciones(resolucionFAP.observaciones);
 		resolucion.setPaginas(resolucionFAP.numero_folios);
-
+		
 		AreaResult areaResponse = port.getArea(usuario, Long.parseLong(resolucionFAP.areasResolucion, 10));
 		resolucion.setArea(areaResponse.getArea());
+		play.Logger.info("Area resolucion" + areaResponse.getArea());
 		
 		TipoResult tipoResponse = port.getTipo(usuario, Long.parseLong(resolucionFAP.tiposResolucion, 10));
 		resolucion.setTipo(tipoResponse.getTipo());
+		play.Logger.info("Tipo resolucion" + tipoResponse.getTipo());
 		
+		resolucion.setAnulada(false);
+		resolucion.setVigenciaIndefinida(true);
 		resolucion.setTomo(1);
 		resolucion.setAnio(new GregorianCalendar().get(GregorianCalendar.YEAR));
 		
@@ -165,9 +181,10 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 		}
 		
 		// Asociar destinatarios.
+		List<Personas> personas = new ArrayList<Personas>();
+		
 		ArrayOfPersonas arrayPersonas = new ArrayOfPersonas();
-		resolucion.setPersonas(arrayPersonas);
-		List<Personas> personas = arrayPersonas.getPersonas();
+		
 		
 		try {
 			for (Interesado interesado: resolucionFAP.getInteresados(resolucionFAP.id)) {
@@ -180,9 +197,25 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 							interesado.persona.fisica.getNombreCompleto());
 				}
 				
-				// TODO: Hace falta??
-				personas.add(wsPersonas.getPersonasList().getPersonas().get(0));
+				// Debo comprobar que no exista ya
+				if (personas.size() == 0) {
+					personas.add(wsPersonas.getPersonasList().getPersonas().get(0));
+				} else {
+					boolean encontrado = false;
+					for (Personas p: personas) {
+						if ((p.getId().equals(wsPersonas.getPersonasList().getPersonas().get(0).getId()))) {
+							encontrado = true;
+							break;
+						}
+					}
+					if (!encontrado)
+						personas.add(wsPersonas.getPersonasList().getPersonas().get(0));
+				}
+				
 			}
+			arrayPersonas.getPersonas().addAll(personas);
+			resolucion.setPersonas(arrayPersonas);
+
 		} catch (Exception e) {
 			throw new RegistroLibroResolucionesServiceException("Error al acceder al servicio de Resoluciones al intentar asociar los Destinatarios.", e);
 		}
@@ -190,17 +223,44 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 		// Registrar la resolución en el sistema.
 		ResolucionesResult  response = null;
 		try {
-			response = port.saveResolucionWithUrl(usuario, 
-					resolucion,
-					usuario, 
-					resolucionFAP.registro.oficial.urlDescarga);
+//			String urlExterna = AedUtils.crearFullConInformeDeFirma(resolucionFAP.registro.oficial.uri);
+//			if (properties.FapProperties.get("fap.proxy.preserve.host").equals("off")) {
+//				urlExterna = utils.AedUtils.crearExternalFirmadoFullUrl(resolucionFAP.registro.oficial.uri);
+//			}
+//			play.Logger.info("La url del documento para la resolución es: "+urlExterna);
+//			response = port.saveResolucionWithUrl(usuario, 
+//					resolucion,
+//					usuario, 
+//					urlExterna);
 			
+			GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+			BinaryResponse br = gestorDocumentalService.getDocumentoConInformeDeFirmaByUri(resolucionFAP.registro.oficial.uri);
+			if (br == null)
+				play.Logger.error("El documento no tiene contenido");
+			response = port.saveResolucionWithDocumento(usuario,
+					resolucion,
+					usuario,
+					br.getBytes(),
+					resolucionFAP.tituloInterno);
+			/*
+			InputStream istream = 
+					getDocumentoConInformeDeFirma(resolucionFAP.registro.oficial);
+					//AedClientExtended.obtenerDocumentoConInformeFirma(resolucionFAP.registro.oficial.uri);
+			byte[] pdfContent = IOUtils.toByteArray(istream);
+			response = port.saveResolucionWithDocumento(
+					usuario,
+					resolucion,
+					usuario,
+					pdfContent,
+					resolucionFAP.registro.oficial.descripcion);
+			
+			*/
 		} catch (Exception e) {
 			throw new RegistroLibroResolucionesServiceException("Error al acceder al servicio de Resoluciones.", e);
 		}
 		
 		if (!response.getErrores().equals("")) {
-			throw new RegistroLibroResolucionesServiceException("Los datos de entrada han sido rechazados por el servicio de Resoluciones.", new IllegalArgumentException());
+			throw new RegistroLibroResolucionesServiceException("Los datos de entrada han sido rechazados por el servicio de Resoluciones. "+response.getErrores(), new IllegalArgumentException());
 		}
 		
 		Resoluciones responseData = response.getResolucion();

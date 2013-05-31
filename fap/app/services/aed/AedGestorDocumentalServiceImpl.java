@@ -780,6 +780,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	propAdmin.setNotificable(true);
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
+    
+    protected void clasificarDocumentoConRegistroDeResolucion(String idAed, models.Documento documento, Interesados interesados, ResolucionFAP resolucion, boolean notificable) throws AedExcepcion {
+        PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
+        PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
+        propAdmin.getResolucion().setPrimerFolio(resolucion.folio_inicio.toString());
+        propAdmin.getResolucion().setUltimoFolio(resolucion.folio_final.toString());
+        propAdmin.getResolucion().setNumeroResolucion(resolucion.numero.toString());
+        propAdmin.getResolucion().setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+        // Marca como notificable
+        if (notificable)
+        	propAdmin.setNotificable(true);
+        clasificarDocumento(idAed, documento, propiedades, interesados);
+    }
 
     protected void clasificarDocumentoConRegistro(String idAed, models.Documento documento, Interesados interesados, InformacionRegistro informacionRegistro, boolean notificable) throws AedExcepcion {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
@@ -1292,7 +1305,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
         
         try {
-        	clasificarDocumentoSinRegistro(idAed, resolucionFap.registro.oficial, interesados, false);
+        	clasificarDocumentoConRegistroDeResolucion(idAed, resolucionFap.registro.oficial, interesados, resolucionFap, false);
         } catch (AedExcepcion e) {
         	throw new GestorDocumentalServiceException("Error clasificando documento de resolucion sin registro.", e);
 		}

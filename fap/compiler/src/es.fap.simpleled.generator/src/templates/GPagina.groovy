@@ -142,7 +142,7 @@ public class GPagina extends GGroupElement{
 		}
 		if (pagina.copia){
 			saveCode += """
-						   if (hayModificaciones){
+						   if (!peticionModificacion.isEmpty()){
 							   Gson gson = new Gson();
 							   String jsonPM = gson.toJson(peticionModificacion);
 							   JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();

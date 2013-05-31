@@ -232,6 +232,8 @@ ${metodoProcesandoEntidades()}
 
 ${metodoModulo()}
 
+${copyModificacionCamposSimples()}
+
 }
 """
 		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controllerGen));
@@ -1736,5 +1738,23 @@ public class ${controllerName} extends ${controllerGenName} {
 		return saveEntities.collect{it.variableDb};
 	}
 	
-				
+	public static String copyModificacionCamposSimples(){
+		return """
+		@Util
+		public static void copyModificacionCamposSimples(String campoStr, Object campo, Object dbCampo, utils.PeticionModificacion peticionModificacion){
+			List<String> valoresNuevos = new ArrayList<String>();
+			List<String> valoresAntiguos = new ArrayList<String>();
+			if (((dbCampo == null) ^ (campo == null)) || ((campo != null) && (!campo.equals("db"+campo)))) {
+				if (dbCampo != null)
+				   valoresAntiguos.add(dbCampo.toString());
+				if ((campo == null))
+				   valoresNuevos.add("");
+				else
+					  valoresNuevos.add(campo.toString());
+				peticionModificacion.setValorModificado(campoStr, valoresAntiguos, valoresNuevos);
+			}
+		}""";
+	}
+	
+	
 }

@@ -107,7 +107,7 @@ public class GPopup extends GGroupElement{
 
 		if (popup.copia){
 			saveCode += """
-						   if (hayModificaciones){
+						   if (!peticionModificacion.isEmpty()){
 							   Gson gson = new Gson();
 							   String jsonPM = gson.toJson(peticionModificacion);
 							   JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();

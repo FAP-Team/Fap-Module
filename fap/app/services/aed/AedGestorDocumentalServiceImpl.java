@@ -1367,6 +1367,29 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		}
     	
     	return response;
-	}	
+	}
+	
+	/**
+	 * Copiamos el documento en cada uno de los expedientes que se le pasen
+	 * @param uri
+	 * @param expedienteAed
+	 * @throws GestorDocumentalServiceException
+	 */
+	@Override
+	public void copiarDocumentoEnExpediente (String uri, List<ExpedienteAed> expedientesAed) throws GestorDocumentalServiceException {
+		String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+		Ubicaciones ubicacion = new Ubicaciones();
+		ubicacion.setProcedimiento(procedimiento);
+		for (ExpedienteAed exp: expedientesAed) {
+			ubicacion.getExpedientes().add(exp.idAed);
+		}
+		List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
+		ubicaciones.add(ubicacion);
+		try {
+			aedPort.copiarDocumento(uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al copiar el documento de resolución en los expedientes");
+		}
+	}
 
 }

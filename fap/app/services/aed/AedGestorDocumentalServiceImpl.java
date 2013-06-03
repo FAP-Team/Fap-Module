@@ -69,6 +69,7 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Propiedades
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAvanzadas;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDocumento;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Resolucion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
@@ -784,10 +785,20 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     protected void clasificarDocumentoConRegistroDeResolucion(String idAed, models.Documento documento, Interesados interesados, ResolucionFAP resolucion, boolean notificable) throws AedExcepcion {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
         PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
-        propAdmin.getResolucion().setPrimerFolio(resolucion.folio_inicio.toString());
-        propAdmin.getResolucion().setUltimoFolio(resolucion.folio_final.toString());
-        propAdmin.getResolucion().setNumeroResolucion(resolucion.numero.toString());
-        propAdmin.getResolucion().setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+        if (propAdmin.getResolucion() == null) {
+        	play.Logger.info("resolucion es NULL ");
+        	Resolucion res = new Resolucion();
+        	res.setPrimerFolio(resolucion.folio_inicio.toString());
+        	res.setUltimoFolio(resolucion.folio_final.toString());
+        	res.setNumeroResolucion(resolucion.numero.toString());
+        	res.setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+        	propAdmin.setResolucion(res);
+        } else {
+        	propAdmin.getResolucion().setPrimerFolio(resolucion.folio_inicio.toString());
+        	propAdmin.getResolucion().setUltimoFolio(resolucion.folio_final.toString());
+        	propAdmin.getResolucion().setNumeroResolucion(resolucion.numero.toString());
+        	propAdmin.getResolucion().setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+        }
         // Marca como notificable
         if (notificable)
         	propAdmin.setNotificable(true);

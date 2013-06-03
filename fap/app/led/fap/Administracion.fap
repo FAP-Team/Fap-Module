@@ -229,6 +229,8 @@ Formulario Administracion permiso=administrador{
 		Grupo permiso=accesoNoCertificado borde=false{
 			Texto campo=Agente.passwordAntiguo titulo="Contraseña Antigua" password
 			Texto campo=Agente.password titulo="Contraseña Nueva" password duplicar
+			Enlace generarPass titulo="Generar contraseña" estilo="btn btn-link" codigojs="usuarioGenerarPass(hiddenPass);"
+			Texto hiddenPass campo=Agente.password titulo=" "
 		}
 		Combo campo=Agente.roles titulo="Roles" busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido

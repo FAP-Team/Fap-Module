@@ -8,12 +8,13 @@ import models.Agente;
 import play.Logger;
 import play.libs.Crypto;
 import play.mvc.Util;
+import utils.StringUtils;
 import validation.CustomValidation;
 import controllers.gen.popups.PopupUsuarioControllerGen;
 			
 public class PopupUsuarioController extends PopupUsuarioControllerGen {
 	
-	public static void index(String accion, Long idAgente) {
+	public static void index(String accion, Long idAgente, String urlRedirigir) {
 		if (accion == null)
 			accion = getAccion();
 		if (!permiso(accion)) {
@@ -22,17 +23,20 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
 		}
 
 		Agente agente = null;
-		if ("crear".equals(accion))
+		if ("crear".equals(accion)) {
 			agente = PopupUsuarioController.getAgente();
+			String variablesRedirigir = "";
+			urlRedirigir += variablesRedirigir;
+		}
 		else if (!"borrado".equals(accion))
 			agente = PopupUsuarioController.getAgente(idAgente);
 
 		log.info("Visitando página: " + "fap/Admin/PopupUsuario.html");
-		renderTemplate("fap/Admin/PopupUsuario.html", accion, idAgente, agente);
+		renderTemplate("fap/Admin/PopupUsuario.html", accion, idAgente, agente, urlRedirigir);
 	}
 
 	
-	public static void editar(Long idAgente,Agente agente){
+	public static void editar(Long idAgente, Agente agente){
         checkAuthenticity();
         if(!permiso("editar")){
             Messages.error("No tiene permisos suficientes para realizar la acción");
@@ -62,7 +66,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
             renderJSON(utils.RestResponse.ok("Registro actualizado correctamente"));
         }else{
             Messages.keep();
-            index("editar",idAgente);
+            redirect("popups.PopupUsuarioController.index", "editar", idAgente);
         }
 
     }
@@ -95,7 +99,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
             renderJSON(utils.RestResponse.ok("Registro creado correctamente"));
         }else{
             Messages.keep();
-            index("crear",  null);
+            redirect("popups.PopupUsuarioController.index", "crear", agente.id);
         }
     }
 	

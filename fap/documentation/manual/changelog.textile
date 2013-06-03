@@ -1,11 +1,19 @@
 h2. Changelog
 
-Version 2.2RC7
+h3. Versión 2.2RC8
+
+* Mejorada Resolución.
+* Añadidos los atributos "noSexo" y "noNacimiento".
+* Fixed some minimal bugs.
+
+h3. Version 2.2RC7
+
 * Añadido método de obtenerListaCodigosExclusion
 * Añadido ResolucionUtils para ordenar lineas de resolucion (comparacion por criterios)
 * Añadida opciones noTelefono, noNacimiento.
 
 h3. Versión 2.2RC6
+
 * Añadido ticketing
 * Fixed bug requerimiento.html.
 * Conflicto en librerías al arrancar el dist (pdf 0.9 con alguna de un parser). Volviendo a pdf 0.6.

@@ -24,6 +24,8 @@ Formulario Solicitud permiso=solicitudes{
     			Enlace "Ejemplo: Botón Cancelar" pagina=PaginaCancelar
     		}
     		Grupo "Tipos de Solicitantes" {
+    			Enlace "S. campos no" pagina=SolicitantePFcamposNo
+    			Enlace "S. campos si" pagina=SolicitantePFcamposSi
 				Enlace "S. Normal" pagina=Solicitante
 				Enlace "S. PersonaFisica" pagina=SolicitantePF
 				Enlace "S. PersonaJuridica" pagina=SolicitantePJ
@@ -594,6 +596,30 @@ Este grupo es sólo visible para administradores"}
 	Popup ComboTestRefPermiso campo=ComboTestRef permiso=editAdminGestorVisibleUser {
 		Texto campo=ComboTestRef.nombre requerido
 		Combo campo=ComboTestRef.list titulo="Combo"
+	}
+	
+	Pagina SolicitantePFcamposNo campo=Solicitud{
+		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
+		SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Con campos noAlgo" noSexo noEmail noNacimiento noTelefono noRepresentante 
+		
+		Codigo {
+"Wiki {\"El representante de este solicitante sólo puede ser de tipo Persona Fisica\"}
+SolicitantePersonaFisica personaSolicitantePersonaFisica
+campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
+ representantePersonaFisica"
+		}
+	}
+	
+	Pagina SolicitantePFcamposSi campo=Solicitud{
+		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
+		SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Con todos los campos" representantePersonaFisica
+		
+		Codigo {
+"Wiki {\"El representante de este solicitante sólo puede ser de tipo Persona Fisica\"}
+SolicitantePersonaFisica personaSolicitantePersonaFisica
+campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
+ representantePersonaFisica"
+		}
 	}
 	
 	Pagina Solicitante guardarParaPreparar campo=Solicitud permiso=editarSolicitud {

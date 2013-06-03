@@ -76,7 +76,7 @@ require:
         transitive: false
     - es.gobcan -> certificados 1.1:
         transitive: false
-    - es.gobcan -> resoluciones v05022013:
+    - es.gobcan -> resoluciones v20130529:
         transitive: false
     - platinowssinterceptor -> platinowssinterceptor 2
     

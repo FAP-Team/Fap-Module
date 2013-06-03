@@ -237,6 +237,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				//Messages.error("La versión del portafirma es: "+version);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
 				dbResolucionFAP.idSolicitudFirma = response.getIdSolicitud();
+				dbResolucionFAP.hacePeticionPortafirma = AgenteController.getAgente();
 				dbResolucionFAP.save();
 			} catch (PortafirmaFapServiceException e) {
 				play.Logger.error("Error al crear la solicitud de firma: " + e);
@@ -502,8 +503,11 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			
 			// Enviar correo al Jefe de Servicio correspondiente
 			try {
-				Agente agente = Agente.getAgenteByUsername(dbResolucionFAP.jefeDeServicio);
-				Mails.enviar("registrarResolucion", agente);
+				Agente agente = dbResolucionFAP.hacePeticionPortafirma;
+				ResolucionFAP resolucionfap = dbResolucionFAP;
+				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucionfap", resolucionfap);
+				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("agente", agente);
+				Mails.enviar("registrarResolucion", resolucionfap, agente);
 			} catch (Exception e) {
 				play.Logger.fatal("No se ha podido enviar el correo al Jefe de Servicio: "+dbResolucionFAP.jefeDeServicio+" de la resolución: "+dbResolucionFAP.id);
 				Messages.error("No se ha podido enviar el correo al Jefe de Servicio: "+dbResolucionFAP.jefeDeServicio+" de la resolución: "+dbResolucionFAP.id);

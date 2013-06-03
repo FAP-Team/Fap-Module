@@ -121,6 +121,9 @@ public class ResolucionFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SolicitudPortafirmaFAP solicitudFirmaDirector;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Agente hacePeticionPortafirma;
+
 	public ResolucionFAP() {
 		init();
 	}

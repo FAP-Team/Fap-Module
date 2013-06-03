@@ -141,6 +141,7 @@ Entidad ResolucionFAP {
 		// OneToMany ExpedientesNoAceptados expedientesNoAceptados
 	//Agente destinatarioPortafirma transient
 
+	Agente hacePeticionPortafirma noConstruct
 	//Para firmar por jefe de servicio
 	//Firmantes firmantesJefeDeServicio
 		////Para poder firmar y crear el el metodo calcular firmantes

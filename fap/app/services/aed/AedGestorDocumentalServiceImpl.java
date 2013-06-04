@@ -1392,14 +1392,16 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		Ubicaciones ubicacion = new Ubicaciones();
 		ubicacion.setProcedimiento(procedimiento);
 		for (ExpedienteAed exp: expedientesAed) {
+			play.Logger.info("Añado la ubicación: "+exp.idAed);
 			ubicacion.getExpedientes().add(exp.idAed);
 		}
 		List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
 		ubicaciones.add(ubicacion);
 		try {
 			aedPort.copiarDocumento(uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
-		} catch (AedExcepcion e) {
-			play.Logger.error("Error al copiar el documento de resolución en los expedientes");
+		} catch (Exception e) {
+			play.Logger.error("Error al copiar el documento de resolución en los expedientes"+e);
+			new GestorDocumentalServiceException("Error al copiar el documento de resolución en los expedientes", e);
 		}
 	}
 

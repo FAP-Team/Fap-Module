@@ -420,10 +420,10 @@ public class SecureController extends GenericController{
     }
     
     
-    public static void authenticateTicketingFap(@Required String ticket) throws Throwable {
+    public static void authenticateTicketingFap(@Required String idTicket) throws Throwable {
     	//checkAuthenticity();
-    	if (!buscarAuthenticateTicketingOverwrite(ticket))
-    		authenticateTicketingPorDefecto(ticket);
+    	if (!buscarAuthenticateTicketingOverwrite(idTicket))
+    		authenticateTicketingPorDefecto(idTicket);
     }
     
     @Util

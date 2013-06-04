@@ -420,14 +420,14 @@ public class SecureController extends GenericController{
     }
     
     
-    public static void authenticateTicketingFap(@Required String asunto, @Required String ticket) throws Throwable {
+    public static void authenticateTicketingFap(@Required String ticket) throws Throwable {
     	//checkAuthenticity();
-    	if (!buscarAuthenticateTicketingOverwrite(asunto, ticket))
-    		authenticateTicketingPorDefecto(asunto, ticket);
+    	if (!buscarAuthenticateTicketingOverwrite(ticket))
+    		authenticateTicketingPorDefecto(ticket);
     }
     
     @Util
-    private static boolean buscarAuthenticateTicketingOverwrite(String asunto, String ticket){
+    private static boolean buscarAuthenticateTicketingOverwrite(String ticket){
     	Class invokedClass = getSecureClass();
     	Object object=null;
     	
@@ -437,7 +437,7 @@ public class SecureController extends GenericController{
     			object = invokedClass.newInstance();
     			method = invokedClass.getDeclaredMethod("authenticateTicketing", String.class, String.class, String.class);
     			if (method != null){
-    				method.invoke(object, asunto, ticket);
+    				method.invoke(object, ticket);
     				return true;
     			}
     			else{
@@ -455,17 +455,18 @@ public class SecureController extends GenericController{
     }
     
     @Util
-    public static void authenticateTicketingPorDefecto(String asunto, String ticket) {
+    public static void authenticateTicketingPorDefecto(String ticket) {
     	
     	if(!FapProperties.getBoolean("fap.login.type.ticketing")){
             flash.keep("url");
-            play.Logger.error("Se ha intentado un login con ticketing y está desactivada esta opción. Asunto["+asunto+"]  Ticket["+ticket+"]");
+            play.Logger.error("Se ha intentado un login con ticketing y está desactivada esta opción. Ticket["+ticket+"]");
             Messages.error("El acceso a la aplicación mediante ticketing electrónico está desactivado");
             Messages.keep();
             loginFap();   		
     	}
     	// Asunto
-    	if (asunto == null || !asunto.equals(FapProperties.get("fap.login.ticketing.sede.asunto"))) {
+    	String asunto = FapProperties.get("fap.login.ticketing.sede.asunto");
+    	if (asunto == null || asunto.isEmpty()) {
     		play.Logger.error("Se ha intentado un login con ticketing y el asunto no es correcto. Asunto["+asunto+"]  Ticket["+ticket+"]");
     		Messages.error("El acceso a la aplicación mediante ticketing ha fallado");
             Messages.keep();

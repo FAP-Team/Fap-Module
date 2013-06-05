@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityTransaction;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import messages.Messages;
@@ -17,6 +18,7 @@ import org.joda.time.DateTime;
 import com.google.inject.Inject;
 
 import platino.FirmaUtils;
+import play.db.jpa.JPA;
 import play.modules.guice.InjectSupport;
 import play.mvc.Util;
 import registroresolucion.RegistroResolucion;
@@ -438,9 +440,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 		RegistroResolucion datosRegistro = null;
 		
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		
 		/// 1. Crear la resolución
 		if (!Messages.hasErrors()) {
 			if ((dbResolucionFAP.registro.fasesRegistro.firmada) && (!dbResolucionFAP.registro.fasesRegistro.registro)) {
+				tx.begin();
 				try {
 					RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
 					datosRegistro = registroLibroResolucionesService.crearResolucion(dbResolucionFAP);
@@ -448,12 +454,14 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 					dbResolucionFAP.fechaRegistroResolucion = datosRegistro.fecha;
 					dbResolucionFAP.folio_inicio = datosRegistro.primerFolio;
 					dbResolucionFAP.folio_final = datosRegistro.ultimoFolio;
+					dbResolucionFAP.numero = datosRegistro.numero;
 					dbResolucionFAP.registro.fasesRegistro.registro = true;
 					dbResolucionFAP.save();
 				} catch (RegistroLibroResolucionesServiceException e) {
 					play.Logger.error("No se puede crear el registro de resolución. "+e);
 					Messages.error("No se puede crear el registro de resolución");
 				}
+				tx.commit();
 			}
 		}
 		
@@ -463,10 +471,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 
+		dbResolucionFAP.refresh();
+		
 		/// 2. Crear el expediente de la convocatoria en el AED por si no existe
 		if (!Messages.hasErrors()) {
 			if ((dbResolucionFAP.registro.fasesRegistro.registro) && (!dbResolucionFAP.registro.fasesRegistro.expedienteAed)) {
 				// TODO: Crear expediente en el AED
+				tx.begin();
 				try {
 					gestorDocumentalService.crearExpedienteConvocatoria();
 					dbResolucionFAP.registro.fasesRegistro.expedienteAed = true;
@@ -475,12 +486,16 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 					play.Logger.error("Error. No se ha podido crear el expediente de la resolución el el AED.", e);
 					Messages.error("Error. No se ha podido crear el expediente de la resolución el el AED.");
 				}
+				tx.commit();
 			}
 		}
 
+		dbResolucionFAP.refresh();
+		
 		// 3. Clasificar el documento de resolución
 		if (!Messages.hasErrors()) {
 			if ((dbResolucionFAP.registro.fasesRegistro.expedienteAed) && (!dbResolucionFAP.registro.fasesRegistro.clasificarAed)) {
+				tx.begin();
 				try {
 					gestorDocumentalService.clasificarDocumentoResolucion(dbResolucionFAP);
 					dbResolucionFAP.registro.fasesRegistro.clasificarAed = true;
@@ -489,11 +504,15 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 					play.Logger.error("Error al clasificar el documento de la resolución.", e);
 					Messages.error("Error al clasificar el documento de la resolución.");
 				}
+				tx.commit();
 			}
 		}
 		
+		dbResolucionFAP.refresh();
+		
 		if (!Messages.hasErrors()) {
 			ResolucionBase resolBase = null;
+			tx.begin();
 			try {
 				resolBase = getResolucionObject(idResolucionFAP);
 			} catch (Throwable e) {
@@ -512,7 +531,10 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				play.Logger.fatal("No se ha podido enviar el correo al Jefe de Servicio: "+dbResolucionFAP.jefeDeServicio+" de la resolución: "+dbResolucionFAP.id);
 				Messages.error("No se ha podido enviar el correo al Jefe de Servicio: "+dbResolucionFAP.jefeDeServicio+" de la resolución: "+dbResolucionFAP.id);
 			}
+			tx.commit();
 		}
+		
+		tx.begin();
 		
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");

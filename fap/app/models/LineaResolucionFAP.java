@@ -36,6 +36,9 @@ public class LineaResolucionFAP extends FapModel {
 	@Moneda
 	public Double importeConcedido;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento docBaremacion;
+
 	@Transient
 	public String importeTotal_formatFapTabla;
 
@@ -52,7 +55,16 @@ public class LineaResolucionFAP extends FapModel {
 		return format.FapFormat.formatMoneda(importeConcedido);
 	}
 
+	public LineaResolucionFAP() {
+		init();
+	}
+
 	public void init() {
+
+		if (docBaremacion == null)
+			docBaremacion = new Documento();
+		else
+			docBaremacion.init();
 
 		postInit();
 	}

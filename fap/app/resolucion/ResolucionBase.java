@@ -8,12 +8,15 @@ import javax.inject.Inject;
 
 import org.joda.time.DateTime;
 
+import controllers.fap.ResolucionControllerFAP;
+
 import play.modules.guice.InjectSupport;
 import play.mvc.results.RenderBinary;
 import properties.FapProperties;
 
 import reports.Report;
 import services.GestorDocumentalService;
+import utils.ResolucionUtils.LineasResolucionSortComparator;
 
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionEnum;
@@ -366,6 +369,82 @@ public class ResolucionBase {
 			resolucion.save();
 		}
 	}
+	
+	/**
+	 * Devuelve las líneas de Resolución a las que se le añadirá el documento de baremación visible al usuario
+	 * @param resolucion
+	 * @return
+	 */
+	public List<LineaResolucionFAP> getLineasDocBaremacion(ResolucionFAP resolucion){
+		return null;
+	}
+	
+	public File generarDocumentoBaremacion (LineaResolucionFAP linea) {
+		return null;
+	}
+	
+	public void generarDocumentosResolucion (Long idResolucion) {
+		ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
+		ResolucionBase res = null;
+		
+		try {
+			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			
+			// Si tiene Baremación
+			if (resolucionFap.conBaremacion) {
+				List<LineaResolucionFAP> lineas = res.getLineasDocBaremacion(resolucionFap);
+				if (lineas != null) {
+					for (LineaResolucionFAP linea : lineas) {
+						// 1. TODO: Generar documento en linea.docBaremacion
+						File docBaremacionOficial = res.generarDocumentoBaremacion(linea);
+						// 2. Subir al AED el File anterior
+						gestorDocumentalService.saveDocumentoTemporal(linea.docBaremacion, docBaremacionOficial);
+						
+						// 3. Clasificar el documento en el Expediente de la Solicitud
+						if (!linea.docBaremacion.clasificado) {
+							List<Documento> listDocs = new ArrayList<Documento>();
+							listDocs.add(linea.docBaremacion);
+							gestorDocumentalService.clasificarDocumentos(linea.solicitud, listDocs);
+							
+							linea.docBaremacion.clasificado = true;
+							linea.save();
+						}
+						
+						// 4. Hacerlo visible en la lista de documentos de la Solicitud
+						boolean encontrado = false;
+						for (Documento doc : linea.solicitud.documentacion.documentos) {
+							if (linea.docBaremacion.uri.equals(doc.uri)) {
+								encontrado = true;
+								break;
+							}
+						}
+						
+						if (!encontrado) {
+							linea.solicitud.documentacion.documentos.add(linea.docBaremacion);
+						} else {
+							play.Logger.info("El documento de resolución ya es visible en la solicitud");
+						}
+						linea.save();
+					}
+				} else {
+					play.Logger.warn("No existen líneas a las que añadirle el documento de baremación");
+					Messages.warning("No existen líneas a las que añadirle el documento de baremación");
+				}
+				
+				
+			}
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			play.Logger.error("Error al obtener el objeto de Resolución"+e);
+			Messages.error("Error al generar los documentos de Resolución");
+		}
+
+	}
+
+	public void saveDocumentoBaremacion (LineaResolucionFAP linea, File docBaremacionOficial) {
+	}
+	
+
 	
 	
 }

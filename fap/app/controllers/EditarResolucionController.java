@@ -39,6 +39,8 @@ import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.EditarResolucionControllerGen;
 import emails.Mails;
+import enumerado.fap.gen.EstadoResolucionEnum;
+import enumerado.fap.gen.EstadoResolucionPublicacionEnum;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
 
 @InjectSupport
@@ -558,20 +560,51 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			EditarResolucionController.publicarResolucionValidateCopy("editar", dbResolucionFAP, resolucionFAP);
 		}
 
+		ResolucionBase resolBase = null;
+		
 		if (!Messages.hasErrors()) {
-			ResolucionBase resolBase = null;
 			try {
 				resolBase = getResolucionObject(idResolucionFAP);
-				resolBase.publicarResolucion(idResolucionFAP);
 			} catch (Throwable e) {
 				new Exception ("No se ha podido obtener el objeto resolución", e);
 			}
-			resolBase.avanzarFase_Registrada(dbResolucionFAP);
-			
 		}
+		
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		
+		if (!Messages.hasErrors() && ((dbResolucionFAP.estadoPublicacion == null) || (dbResolucionFAP.estadoPublicacion.isEmpty()))) {
+			tx.begin();
+			resolBase.publicarResolucion(idResolucionFAP);
+			dbResolucionFAP.estadoPublicacion = EstadoResolucionPublicacionEnum.publicada.name();
+			dbResolucionFAP.save();
+			tx.commit();
+		}
+		
+		dbResolucionFAP.refresh();
+		
+		if (!Messages.hasErrors() && (EstadoResolucionPublicacionEnum.publicada.name().equals(dbResolucionFAP.estadoPublicacion))) {
+			tx.begin();
+			resolBase.generarDocumentosResolucion(idResolucionFAP);
+			dbResolucionFAP.estadoPublicacion = EstadoResolucionPublicacionEnum.documentoGenerado.name();
+			dbResolucionFAP.save();
+			tx.commit();
+		}
+		
+		dbResolucionFAP.refresh();
+		
+		if (!Messages.hasErrors() && (EstadoResolucionEnum.publicada.name().equals(dbResolucionFAP.estado))) {
+			tx.begin();
+			resolBase.avanzarFase_Registrada(dbResolucionFAP);
+			tx.commit();
+		}
+		
+		tx.begin();
+		
 		if (!Messages.hasErrors()) {
 			dbResolucionFAP.save();
 			Messages.info("Se ha publicado la resolución");
+			play.Logger.info("Se ha publicado la Resolución: "+dbResolucionFAP.id);
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
 		} else
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");

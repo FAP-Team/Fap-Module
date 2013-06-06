@@ -64,6 +64,12 @@ Lista estadoPortafirma crearEnumerado {
 	Pendientevalidacionfirmas: "Perndiente de validación de firmas"
 }
 
+Lista estadoResolucionPublicacion crearEnumerado {
+	publicada: "Publicada"
+	documentoGenerado: "Documento Resolución Generado"
+	
+}
+
 // Una línea de resolución afecta a un expediente (o Solicitud)
 Entidad LineaResolucionFAP {
 	SolicitudGenerica solicitud noConstruct
@@ -71,6 +77,7 @@ Entidad LineaResolucionFAP {
 	Double puntuacionBaremacion
 	Moneda importeTotal
 	Moneda importeConcedido
+	Documento docBaremacion // Documento visible para el solicitante de la Baremación del Expediente
 }
 
 // Entidades de la resolución
@@ -93,6 +100,7 @@ Entidad ResolucionFAP {
 	DateTime fechaTopeFirma
 	
 	Lista estadoResolucion estado			// borrador, creada, .... finalizada
+	Lista estadoResolucionPublicacion estadoPublicacion
 	
 	// Descripción de la Resolución
 	String descripcion length=2500

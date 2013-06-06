@@ -383,13 +383,7 @@ public class ResolucionBase {
 	 * @param resolucion
 	 * @return
 	 */
-	public List<LineaResolucionFAP> getLineasDocBaremacion(ResolucionFAP resolucion){
-		return null;
-	}
-	
-	public File generarDocumentoBaremacion (LineaResolucionFAP linea) {
-		return null;
-	}
+
 	
 	public void generarDocumentosResolucion (Long idResolucion) {
 		ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
@@ -449,13 +443,6 @@ public class ResolucionBase {
 
 	}
 
-	public void saveDocumentoBaremacion (LineaResolucionFAP linea, File docBaremacionOficial) {
-	}
-	
-
-	
-	
-
 	public File generarDocumentoBaremacion (LineaResolucionFAP linea) {
 		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
 		File report = null;
@@ -480,5 +467,9 @@ public class ResolucionBase {
 		}
 		return lista;
 	}
+
+	public void saveDocumentoBaremacion (LineaResolucionFAP linea, File docBaremacionOficial) {
+	}
 	
+
 }

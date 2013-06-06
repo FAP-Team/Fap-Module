@@ -583,7 +583,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			tx.commit();
 		}
 		
-		dbResolucionFAP.refresh();
+		
 		
 		if (!Messages.hasErrors() && (EstadoResolucionPublicacionEnum.publicada.name().equals(dbResolucionFAP.estadoPublicacion))) {
 			tx.begin();
@@ -593,9 +593,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			tx.commit();
 		}
 		
-		dbResolucionFAP.refresh();
+		
 		 if (!Messages.hasErrors() && (EstadoResolucionPublicacionEnum.documentoGenerado.name().equals(dbResolucionFAP.estadoPublicacion))
-                 && (EstadoResolucionEnum.publicada.name().equals(dbResolucionFAP.estado))) {
+                 && (!EstadoResolucionEnum.publicada.name().equals(dbResolucionFAP.estado))) {
 			tx.begin();
 			resolBase.avanzarFase_Registrada(dbResolucionFAP);
 			tx.commit();

@@ -549,6 +549,10 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void publicarResolucion(Long idResolucionFAP, ResolucionFAP resolucionFAP, String btnPublicarResolucion) {
 		checkAuthenticity();
+		
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		
 		if (!permisoPublicarResolucion("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
@@ -570,8 +574,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			}
 		}
 		
-		EntityTransaction tx = JPA.em().getTransaction();
-		tx.commit();
 		
 		if (!Messages.hasErrors() && ((dbResolucionFAP.estadoPublicacion == null) || (dbResolucionFAP.estadoPublicacion.isEmpty()))) {
 			tx.begin();
@@ -592,8 +594,8 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 		
 		dbResolucionFAP.refresh();
-		
-		if (!Messages.hasErrors() && (EstadoResolucionEnum.publicada.name().equals(dbResolucionFAP.estado))) {
+		 if (!Messages.hasErrors() && (EstadoResolucionPublicacionEnum.documentoGenerado.name().equals(dbResolucionFAP.estadoPublicacion))
+                 && (EstadoResolucionEnum.publicada.name().equals(dbResolucionFAP.estado))) {
 			tx.begin();
 			resolBase.avanzarFase_Registrada(dbResolucionFAP);
 			tx.commit();

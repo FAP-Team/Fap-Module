@@ -1,6 +1,7 @@
 package resolucion;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import properties.FapProperties;
 import reports.Report;
 import services.GestorDocumentalService;
 import utils.ResolucionUtils.LineasResolucionSortComparator;
+import utils.StringUtils;
 
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionEnum;
@@ -26,6 +28,7 @@ import enumerado.fap.gen.ModalidadResolucionEnum;
 import enumerado.fap.gen.TipoResolucionEnum;
 import messages.Messages;
 import models.Documento;
+import models.Evaluacion;
 import models.LineaResolucionFAP;
 import models.Registro;
 import models.ResolucionFAP;
@@ -41,6 +44,7 @@ public class ResolucionBase {
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String BODY_REPORT = "reports/resolucion/resolucion.html";
+	private final static String BODY_CRITERIOS_REPORT = "reports/resolucion/criteriosResolucion.html";
 	private final static String TIPO_RESOLUCION_PROVISIONAL = FapProperties.get("fap.aed.tiposdocumentos.resolucion.provisional");
 	private final static String TIPO_RESOLUCION_DEFINITIVA = FapProperties.get("fap.aed.tiposdocumentos.resolucion.definitiva");
 	public ResolucionFAP resolucion;
@@ -59,6 +63,10 @@ public class ResolucionBase {
 	
 	public String getBodyReport() {
 		return ResolucionBase.BODY_REPORT;
+	}
+	
+	public String getBodyCriteriosReport() {
+		return ResolucionBase.BODY_CRITERIOS_REPORT;
 	}
 	
 	public String getTipoRegistroResolucion(String tipo) {
@@ -228,7 +236,7 @@ public class ResolucionBase {
 				resolucion.registro.borrador.tipo = getTipoRegistroResolucion(resolucion.tipo);
 				resolucion.registro.save();
 			} catch (Exception ex2) {
-				Messages.error("Error generando el documento borrador");
+				Messages.error("Error generando el documento borrador "+ex2);
 				play.Logger.error("Error generando el documento borrador: " + ex2.getMessage());
 			}
 		}
@@ -446,5 +454,31 @@ public class ResolucionBase {
 	
 
 	
+	
+
+	public File generarDocumentoBaremacion (LineaResolucionFAP linea) {
+		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
+		File report = null;
+		try {
+			report = new Report(getBodyCriteriosReport()).header(getHeaderReport()).footer(getFooterReport()).renderTmpFile(linea.solicitud);
+			
+			linea.docBaremacion = new Documento();
+			linea.docBaremacion.tipo = FapProperties.get("fap.resolucion.baremacion.tipo");
+			linea.docBaremacion.save();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return report;
+	}
+	
+	public List<LineaResolucionFAP> getLineasDocBaremacion(ResolucionFAP resolucion){
+		List<LineaResolucionFAP> lista = new ArrayList<LineaResolucionFAP>();
+		for (LineaResolucionFAP linea : resolucion.lineasResolucion) {
+			if (linea.estado.equals("concedida")) // Base
+				lista.add(linea);
+		}
+		return lista;
+	}
 	
 }

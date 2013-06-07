@@ -315,6 +315,10 @@ Formulario Principal {
     		}
 		}
 		
+		Grupo gDocumentoDeResolucion titulo="Documento de Resolución" permiso=verDocumentoResolucion {
+			Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Resolución" destino="_blank" estilo="boton"
+		}
+		
 		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion {
 			Wiki { "Publicar resolución" }
 			Form publicarResolucion {
@@ -583,6 +587,16 @@ Permiso finalizarResolucion {
 	when
 		resolucion.estado in ("publicada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+Permiso verDocumentoResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+	resolucion.estado in ("registrada", "publicada", "finalizada")
+	and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }

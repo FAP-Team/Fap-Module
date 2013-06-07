@@ -385,7 +385,10 @@ def dist(app, args):
    # Precompila
    # TODO ver si se puede cambiar por la llamada directa a la clase
    # para que no aparezca otra vez el logo de play
-   ret = subprocess.call(["play.bat", "precompile"]);
+   command = "play";
+   if (os.name != "posix"):
+      command = "play.bat";
+   ret = subprocess.call([command, "precompile"]);
    if ret != 0:
       print "~ Error precompilando la aplicación"
       exit(ret)

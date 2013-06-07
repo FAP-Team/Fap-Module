@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 2.2RC10
+
+* Resolución: Fixed bugs.
+
 h3. Versión 2.2RC9
 
 * Resolución: Fixed some bugs.

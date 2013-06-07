@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityTransaction;
 
 import org.joda.time.DateTime;
 
 import controllers.fap.ResolucionControllerFAP;
 
+import play.db.jpa.JPA;
 import play.modules.guice.InjectSupport;
 import play.mvc.results.RenderBinary;
 import properties.FapProperties;
@@ -389,6 +391,9 @@ public class ResolucionBase {
 		ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
 		ResolucionBase res = null;
 		
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		
 		try {
 			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
 			
@@ -397,10 +402,14 @@ public class ResolucionBase {
 				List<LineaResolucionFAP> lineas = res.getLineasDocBaremacion(resolucionFap);
 				if (lineas != null) {
 					for (LineaResolucionFAP linea : lineas) {
-						// 1. TODO: Generar documento en linea.docBaremacion
-						File docBaremacionOficial = res.generarDocumentoBaremacion(linea);
-						// 2. Subir al AED el File anterior
-						gestorDocumentalService.saveDocumentoTemporal(linea.docBaremacion, docBaremacionOficial);
+						tx.begin();
+						
+						if ((linea.docBaremacion == null) && ((linea.docBaremacion.uri == null) || (linea.docBaremacion.uri.isEmpty()))) {
+							// 1. TODO: Generar documento en linea.docBaremacion
+							File docBaremacionOficial = res.generarDocumentoBaremacion(linea);
+							// 2. Subir al AED el File anterior
+							gestorDocumentalService.saveDocumentoTemporal(linea.docBaremacion, docBaremacionOficial);
+						}
 						
 						// 3. Clasificar el documento en el Expediente de la Solicitud
 						if (!linea.docBaremacion.clasificado) {
@@ -427,6 +436,10 @@ public class ResolucionBase {
 							play.Logger.info("El documento de resolución ya es visible en la solicitud");
 						}
 						linea.save();
+						
+						tx.commit();
+						
+						play.Logger.info("Se generó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
 					}
 				} else {
 					play.Logger.warn("No existen líneas a las que añadirle el documento de baremación");
@@ -440,6 +453,8 @@ public class ResolucionBase {
 			play.Logger.error("Error al obtener el objeto de Resolución"+e);
 			Messages.error("Error al generar los documentos de Resolución");
 		}
+		
+		tx.begin();
 
 	}
 

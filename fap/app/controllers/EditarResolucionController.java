@@ -472,8 +472,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-
-		dbResolucionFAP.refresh();
 		
 		/// 2. Crear el expediente de la convocatoria en el AED por si no existe
 		if (!Messages.hasErrors()) {
@@ -491,8 +489,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				tx.commit();
 			}
 		}
-
-		dbResolucionFAP.refresh();
 		
 		// 3. Clasificar el documento de resolución
 		if (!Messages.hasErrors()) {
@@ -509,8 +505,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				tx.commit();
 			}
 		}
-		
-		dbResolucionFAP.refresh();
 		
 		if (!Messages.hasErrors()) {
 			ResolucionBase resolBase = null;

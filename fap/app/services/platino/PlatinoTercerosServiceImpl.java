@@ -261,11 +261,11 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 
 	private TipoDocumentoItem convertirTipoNipATipoDocumentoItem (String tipoNipCif){
 		TipoDocumentoItem ret = new TipoDocumentoItem();
-		if ("nif".equals(tipoNipCif)){
+		if ("nif".equalsIgnoreCase(tipoNipCif)){
 			ret.setId("NIF");
-		} else if ("nie".equals(tipoNipCif)){
+		} else if ("nie".equalsIgnoreCase(tipoNipCif)){
 			ret.setId("NIE");
-		} else if ("cif".equals(tipoNipCif)){ 
+		} else if ("cif".equalsIgnoreCase(tipoNipCif)){ 
 			ret.setId("CIF");
 		} else { // Pasaporte
 			ret.setId("PASAPORTE");

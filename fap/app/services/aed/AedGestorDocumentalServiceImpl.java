@@ -786,7 +786,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
         PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
         if (propAdmin.getResolucion() == null) {
-        	play.Logger.info("resolucion es NULL ");
         	Resolucion res = new Resolucion();
         	res.setPrimerFolio(resolucion.folio_inicio.toString());
         	res.setUltimoFolio(resolucion.folio_final.toString());

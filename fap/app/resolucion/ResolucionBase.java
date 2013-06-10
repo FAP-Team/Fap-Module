@@ -46,7 +46,9 @@ public class ResolucionBase {
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String BODY_REPORT = "reports/resolucion/resolucion.html";
-	private final static String BODY_CRITERIOS_REPORT = "reports/resolucion/criteriosResolucion.html";
+	private final static String HEADER_BAREMACION_INDIVIDUAL_REPORT = "reports/header.html";
+	private final static String BODY_BAREMACION_INDIVIDUAL_REPORT = "reports/resolucion/criteriosResolucion.html";
+	private final static String FOOTER_BAREMACION_INDIVIDUAL_REPORT = "reports/footer-borrador.html";
 	private final static String TIPO_RESOLUCION_PROVISIONAL = FapProperties.get("fap.aed.tiposdocumentos.resolucion.provisional");
 	private final static String TIPO_RESOLUCION_DEFINITIVA = FapProperties.get("fap.aed.tiposdocumentos.resolucion.definitiva");
 	public ResolucionFAP resolucion;
@@ -67,9 +69,18 @@ public class ResolucionBase {
 		return ResolucionBase.BODY_REPORT;
 	}
 	
-	public String getBodyCriteriosReport() {
-		return ResolucionBase.BODY_CRITERIOS_REPORT;
+	public static String getHeaderBaremacionIndividualReport() {
+		return ResolucionBase.HEADER_BAREMACION_INDIVIDUAL_REPORT;
 	}
+	
+	public String getBodyBaremacionIndividualReport() {
+		return ResolucionBase.BODY_BAREMACION_INDIVIDUAL_REPORT;
+	}
+	
+	public static String getFooterBaremacionIndividualReport() {
+		return ResolucionBase.FOOTER_BAREMACION_INDIVIDUAL_REPORT;
+	}
+	
 	
 	public String getTipoRegistroResolucion(String tipo) {
 		if (tipo != null) {
@@ -462,10 +473,10 @@ public class ResolucionBase {
 		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
 		File report = null;
 		try {
-			report = new Report(getBodyCriteriosReport()).header(getHeaderReport()).footer(getFooterReport()).renderTmpFile(linea.solicitud);
+			report = new Report(getBodyBaremacionIndividualReport()).header(getHeaderBaremacionIndividualReport()).footer(getFooterBaremacionIndividualReport()).renderTmpFile(linea.solicitud);
 			
 			linea.docBaremacion = new Documento();
-			linea.docBaremacion.tipo = FapProperties.get("fap.resolucion.baremacion.tipo");
+			linea.docBaremacion.tipo = getTipoDocumentoResolucionIndividual();
 			linea.docBaremacion.save();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -486,10 +497,16 @@ public class ResolucionBase {
 	public void saveDocumentoBaremacion (LineaResolucionFAP linea, File docBaremacionOficial) {
 	
 	}
-	
 
-	public void firmarDocumentosBaremacionEnResolucion (ResolucionBase resolucion){
+
+	public void firmarDocumentosBaremacionEnResolucion (ResolucionBase resolucion){ 
 		
+	}
+		
+
+	public String getTipoDocumentoResolucionIndividual(){
+		return FapProperties.get("fap.resolucion.baremacion.tipo");
+
 	}
 	
 }

@@ -44,7 +44,7 @@ public class ResolucionBase {
     public static GestorDocumentalService gestorDocumentalService;
 	
 	private final static String HEADER_REPORT = "reports/header.html";
-	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
+	private final static String FOOTER_REPORT = "reports/footer.html";
 	private final static String BODY_REPORT = "reports/resolucion/resolucion.html";
 	private final static String HEADER_BAREMACION_INDIVIDUAL_REPORT = "reports/header.html";
 	private final static String BODY_BAREMACION_INDIVIDUAL_REPORT = "reports/resolucion/criteriosResolucion.html";

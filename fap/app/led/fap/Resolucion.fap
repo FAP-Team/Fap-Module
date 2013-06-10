@@ -323,7 +323,7 @@ Formulario Principal {
 			Wiki { "Publicar resolución" }
 			Form publicarResolucion {
 				Fecha campo=ResolucionFAP.fechaFinAceptacion titulo="Fecha Fin de Aceptación" requerido
-				Boton btnPublicarResolucion titulo="Publicar la Resolución"
+				Boton btnPublicarResolucion titulo="Publicar la Resolución" waitPopup
 			}
 			Form firmarBaremacion {
 				Boton btnFirmarBaremacion titulo="Firmar documentos de Baremación"

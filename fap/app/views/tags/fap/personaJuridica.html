@@ -49,7 +49,7 @@
 							setDatosTercero${id}($('#${id}_cif').val());
 					}
 					valorCif${id} = $('#${id}_cif').val();
-				});
+				},false);
 				
 				function setDatosTercero${id}(id){
 					popupWait_openWithMessage("Espere mientras se cargan sus datos personales ...");

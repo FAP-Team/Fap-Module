@@ -77,4 +77,17 @@ public class AedUtils {
         
         return urlCompleta;                
 	}
+	
+	public static String crearExternalFirmadoFullUrl(String uri) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("k", encriptarUri(uri));
+        Router.ActionDefinition rd = Router.reverse("fap.DescargasAedController.descargarFirmado", params);
+        
+        String urlCompleta = FapProperties.get("application.baseUrl");
+        urlCompleta += rd.url;
+        
+        return urlCompleta;                
+	}
+	
+	
 }

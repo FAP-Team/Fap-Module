@@ -56,6 +56,9 @@ public class ResolucionFAP extends FapModel {
 	@ValueFromTable("estadoResolucion")
 	public String estado;
 
+	@ValueFromTable("estadoResolucionPublicacion")
+	public String estadoPublicacion;
+
 	@Column(length = 2500)
 	public String descripcion;
 
@@ -93,6 +96,10 @@ public class ResolucionFAP extends FapModel {
 
 	public String codigoResolucion;
 
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinAceptacion"), @Column(name = "fechaFinAceptacionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaFinAceptacion;
+
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaIncioPreparacion"), @Column(name = "fechaIncioPreparacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaIncioPreparacion;
@@ -116,6 +123,9 @@ public class ResolucionFAP extends FapModel {
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SolicitudPortafirmaFAP solicitudFirmaDirector;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Agente hacePeticionPortafirma;
 
 	public ResolucionFAP() {
 		init();

@@ -1,0 +1,240 @@
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+<style media="print">
+
+/*--Estilo general ---*/
+body {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	text-align: justify;
+}
+
+/*--- Saltos de página ---*/
+.div-saltoPagina {
+	page-break-after: always;
+}
+
+.Criterio {
+	page-break-inside: avoid;
+	page-break-after: auto;
+}
+
+/*---TABLA PARA TEXTOS y LISTAS GENERICA ---*/
+.table-datos {
+	width: 100%;
+	border: 1px solid #ccc;
+	page-break-inside: auto;
+}
+
+.table-datos caption {
+	background-color: #ccc;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-datos th {
+	background-color: #ccc;
+	font-weight: bold;
+	text-align: left;
+	vertical-align: text-top;
+	padding-left: 5px;
+	width: 150px;
+}
+
+.table-datos td {
+	border: 1px solid #ccc;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-datos th.puntuacion {
+	background-color: #ccc;
+	font-weight: bold;
+	text-align: left;
+	vertical-align: text-top;
+	padding-left: 5px;
+	width: 25px;
+}
+
+.table-datos td.puntuacion {
+	border: 1px solid #ccc;
+	text-align: left;
+	padding-left: 5px;
+	width: "25px";
+}
+
+/*--- TABLAS CON GRID ---*/
+.table-grid {
+	width: 100%;
+	border-collapse: collapse;
+	cellspacing: 0px;
+	cellpadding: 2px;
+	-fs-table-paginate: paginate;
+	page-break-inside: avoid;
+}
+
+.table-grid caption {
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.table-grid thead td {
+	border: 1px solid gray;
+	background-color: #ccc;
+	text-align: center;
+	font-weight: bold;
+	padding: 6px;
+}
+
+.table-grid th {
+	background-color: #ddd;
+	font-weight: bold;
+	width: 500px;
+	text-align: left;
+	padding-left: 5px;
+}
+
+.table-grid td {
+	border: 1px solid #ccc;
+	padding: 8px;
+	text-align: center;
+}
+
+.Cabecera td{
+	background-color: #ddd;
+	text-align: center;
+	font-weight: bold;
+	padding: 6px;
+}
+
+/*---ESTILO DE SECCIóN ---*/
+.table-seccion {
+	width: 100%;
+}
+
+.table-seccion caption {
+	background-color: #ccc;
+	border: 2px solid gray;
+	font-weight: bold;
+	text-align: left;
+	padding: 6px;
+}
+
+.table-seccion td {
+	text-align: left;
+	padding-left: 5px;
+}
+
+</style>
+</head>
+<body>
+	<!-- TITULO -->
+	<div id="divTitulo">
+		<h2 style="text-align: center;">Informe de Evaluación</h2>
+	</div>
+
+	<!-- SOLICITANTE -->
+	<table id="tblSolcitanteTitulo" class="table-seccion">
+
+		<caption>Solicitante:</caption>
+
+		<tr>
+			<td colspan="1"></td>
+		</tr>
+
+	</table>
+
+	<table id="tblDatosPersonalesSolicitante" class="table-datos">
+	%{ 
+		models.Evaluacion evaluacion = models.Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.estado = ? and evaluacion.solicitud = ?", "evaluada", solicitud).first();
+		def solicitud = models.Solicitud.findById(evaluacion.solicitud.id); 
+		def tipo = evaluacion.solicitud.solicitante.fisica.nip.tipo.toUpperCase(); 
+	}%
+			
+			#{if (evaluacion.solicitud.solicitante.tipo == "fisica")}
+		<tr>
+			<th>Numero de Expediente:</th>
+			<td>${evaluacion.solicitud.expedienteAed.idAed}</td>
+		</tr>
+		<tr>
+			<th>${tipo}:</th>
+			<td>${evaluacion.solicitud.solicitante.fisica.nip.valor}</td>
+		</tr>
+		<tr>
+			<th>Nombre:</th>
+			<td>${evaluacion.solicitud.solicitante.fisica.nombreCompleto}</td>
+		</tr>
+		#{/if} 
+		#{if (evaluacion.solicitud.solicitante.tipo == "juridica")}
+		<tr>
+			<th>CIF:</th>
+			<td>${evaluacion.solicitud.solicitante.juridica.cif}</td>
+		</tr>
+		<tr>
+			<th>Nombre:</th>
+			<td>${evaluacion.solicitud.solicitante.juridica.entidad}</td>
+		</tr>
+		#{/if}
+		<tr>
+			<th>Teléfono:</th>
+			<td>${evaluacion.solicitud.solicitante.telefonoFijo}</td>
+		</tr>
+		<tr>
+			<th>Móvil:</th>
+			<td>${evaluacion.solicitud.solicitante.telefonoMovil}</td>
+		</tr>
+		<tr>
+			<th>Correo electrónico:</th>
+			<td>${evaluacion.solicitud.solicitante.email}</td>
+		</tr>
+	</table>
+	
+	<br/>
+
+
+<div id="idCriterios" style="width:100%;">	
+		<table id="tblEvaluacionTitulo" class="table-seccion">
+	
+			<caption>Evaluación: </caption>
+	
+			<tr>
+				<td colspan="1"></td>
+			</tr>
+	
+		</table>
+		<table class="table-datos" style="font-size: 5pt;">
+			<tr>
+				<th>CRITERIO</th>
+				<th class="puntuacion">VALOR</th>
+				<th>COMENTARIO</th>
+			</tr>
+			#{list items:evaluacion.criterios, as:'criterio'}
+				#{if (!criterio.tipo.jerarquia.contains("."))}
+					<tr>
+						<th>${criterio.tipo.nombre}</td>
+						<td class="puntuacion">${criterio.valor} </td>
+						<td>
+						#{if (!criterio.comentariosSolicitante != null)}
+							${criterio.comentariosSolicitante}
+						#{/if}
+						</td>
+					</tr>
+				#{/if}
+			#{/list}
+			<tr>
+				<th>Total puntuación</th>
+				<td colspan="2">${evaluacion.totalCriterios}</td>
+			</tr>
+		</table>
+<br/></div>
+
+
+

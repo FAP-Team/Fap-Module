@@ -32,7 +32,9 @@ function hideNameFromGrupo (idGrupo) {
 	$node.contents ().each (function processNodes () {
     	var $node = $(this);
     	if ($node.attr("name")) {
-    		$node.attr("name", "fakeNAME"+$node.attr("name"));
+    	    var found = /fakeNAME/.test($node.attr("name"));
+    	    if (!found)	
+    			$node.attr("name", "fakeNAME"+$node.attr("name"));
     	}
         $(this).contents ().each (processNodes);
 	});

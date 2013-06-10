@@ -69,6 +69,7 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Propiedades
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAvanzadas;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDocumento;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Resolucion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
@@ -780,6 +781,28 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	propAdmin.setNotificable(true);
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
+    
+    protected void clasificarDocumentoConRegistroDeResolucion(String idAed, models.Documento documento, Interesados interesados, ResolucionFAP resolucion, boolean notificable) throws AedExcepcion {
+        PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
+        PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
+        if (propAdmin.getResolucion() == null) {
+        	Resolucion res = new Resolucion();
+        	res.setPrimerFolio(resolucion.folio_inicio.toString());
+        	res.setUltimoFolio(resolucion.folio_final.toString());
+        	res.setNumeroResolucion(resolucion.numero.toString());
+        	res.setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+        	propAdmin.setResolucion(res);
+        } else {
+        	propAdmin.getResolucion().setPrimerFolio(resolucion.folio_inicio.toString());
+        	propAdmin.getResolucion().setUltimoFolio(resolucion.folio_final.toString());
+        	propAdmin.getResolucion().setNumeroResolucion(resolucion.numero.toString());
+        	propAdmin.getResolucion().setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+        }
+        // Marca como notificable
+        if (notificable)
+        	propAdmin.setNotificable(true);
+        clasificarDocumento(idAed, documento, propiedades, interesados);
+    }
 
     protected void clasificarDocumentoConRegistro(String idAed, models.Documento documento, Interesados interesados, InformacionRegistro informacionRegistro, boolean notificable) throws AedExcepcion {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
@@ -1283,7 +1306,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
 		log.debug("Clasificando documento resolución");
 		
-        Convocatoria convocatoria = Convocatoria.find("select convocatoria form Convocatoria convocatoria").first();
+        Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
         String idAed = convocatoria.expedienteAed.idAed;
         
         if(idAed == null)
@@ -1292,7 +1315,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
         
         try {
-        	clasificarDocumentoSinRegistro(idAed, resolucionFap.registro.oficial, interesados, false);
+        	clasificarDocumentoConRegistroDeResolucion(idAed, resolucionFap.registro.oficial, interesados, resolucionFap, false);
         } catch (AedExcepcion e) {
         	throw new GestorDocumentalServiceException("Error clasificando documento de resolucion sin registro.", e);
 		}
@@ -1354,6 +1377,31 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		}
     	
     	return response;
-	}	
+	}
+	
+	/**
+	 * Copiamos el documento en cada uno de los expedientes que se le pasen
+	 * @param uri
+	 * @param expedienteAed
+	 * @throws GestorDocumentalServiceException
+	 */
+	@Override
+	public void copiarDocumentoEnExpediente (String uri, List<ExpedienteAed> expedientesAed) throws GestorDocumentalServiceException {
+		String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+		Ubicaciones ubicacion = new Ubicaciones();
+		ubicacion.setProcedimiento(procedimiento);
+		for (ExpedienteAed exp: expedientesAed) {
+			play.Logger.info("Añado la ubicación: "+exp.idAed);
+			ubicacion.getExpedientes().add(exp.idAed);
+		}
+		List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
+		ubicaciones.add(ubicacion);
+		try {
+			aedPort.copiarDocumento(uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
+		} catch (Exception e) {
+			play.Logger.error("Error al copiar el documento de resolución en los expedientes"+e);
+			new GestorDocumentalServiceException("Error al copiar el documento de resolución en los expedientes", e);
+		}
+	}
 
 }

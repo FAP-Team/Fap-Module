@@ -883,4 +883,12 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 			return null;
 		return br.toString();
 	}
+
+	@Override
+	public void copiarDocumentoEnExpediente(String uri,
+			List<ExpedienteAed> expedientesAed)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		
+	}
 }

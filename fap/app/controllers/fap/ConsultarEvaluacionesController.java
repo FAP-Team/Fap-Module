@@ -93,7 +93,7 @@ public class ConsultarEvaluacionesController extends GenericController {
 			Evaluacion eval = Evaluacion.findById(idEvaluacion);
 			if (eval != null) {
 				eval.estado = EstadosEvaluacionEnum.enTramite.name();
-				BaremacionService.calcularTotales(eval);
+				BaremacionService.calcularTotales(eval, true);
 				eval.save();
 				FichaEvaluadorController.index(idEvaluacion, "editar");
 			}

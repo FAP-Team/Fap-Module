@@ -157,6 +157,7 @@ Entidad Evaluacion {
 	OneToMany CEconomico ceconomicos
 	
 	Documento solicitudEnEvaluacion
+	Boolean firmadoDocBaemacion default="false"
 	
 	Double totalCriterios
 	

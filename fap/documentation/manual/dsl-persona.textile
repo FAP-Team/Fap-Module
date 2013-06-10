@@ -10,7 +10,9 @@ h2. Parámetros
 * **campo = _[campo]_** : Campo de tipo Persona donde se almacenarán los datos.
 * **titulo = _[string]_** (opcional) : Título que aparecerá en la cabecera del grupo.
 * **permiso = _[permiso]_** (opcional) : Permiso que se le aplicará al Popup de creación de representantes (cuando la opción seleccionada sea Persona Jurídica).
-* **requerido** (opcional) : Indica si es obligatorio rellenar los campos necesarios de persona física.
+* **requerido** (opcional) : Indica si es obligatorio rellenar los campos necesarios.
+* **noSexoPersonaFisica** (opcional) :  Si se indica no aparece el atributo sexo (cuando la opción seleccionada sea Persona Física).
+* **noNacimientoPersonaFisica** (opcional) : Si se indica no aparece el atributo fechaNacimiento (cuando la opción seleccionada sea Persona Física).
 
 h2. Definición
 
@@ -19,11 +21,38 @@ bc. Persona:
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
-		("permiso" "=" permiso=[Permiso])?
+		("permiso" "=" permiso=[Permiso])? &
+		(noSexo?='noSexoPersonaFisica')? &
+		(noNacimiento?='noNacimientoPersonaFisica')?
 	)
 ;
 
 h2. Ejemplo de uso
 
-bc. Persona personaSolicitante campo=Solicitud.solicitante titulo="Datos solicitante" permiso=solicitudEditable requerido
+h3. Completo
 
+bc. Persona director campo=Solicitud.personaDirector
+
+!images/dsl-persona1!
+
+!images/dsl-persona2!
+
+!images/dsl-persona3!
+
+h3. Sin atributo sexo
+
+bc. Persona director campo=Solicitud.personaDirector titulo="Director" noSexoPersonaFisica
+
+!images/dsl-persona4!
+
+h3. Sin atributo fechaNacimiento
+
+bc. Persona director campo=Solicitud.personaDirector titulo="Director" noNacimientoPersonaFisica
+
+!images/dsl-persona5!
+
+h3. Sin atributos sexo y fechaNacimiento
+
+bc. Persona director campo=Solicitud.personaDirector titulo="Director" noSexoPersonaFisica noNacimientoPersonaFisica
+
+!images/dsl-persona6!

@@ -64,6 +64,12 @@ Lista estadoPortafirma crearEnumerado {
 	Pendientevalidacionfirmas: "Perndiente de validación de firmas"
 }
 
+Lista estadoResolucionPublicacion crearEnumerado {
+	publicada: "Publicada"
+	documentoGenerado: "Documento Resolución Generado"
+	
+}
+
 // Una línea de resolución afecta a un expediente (o Solicitud)
 Entidad LineaResolucionFAP {
 	SolicitudGenerica solicitud noConstruct
@@ -71,6 +77,7 @@ Entidad LineaResolucionFAP {
 	Double puntuacionBaremacion
 	Moneda importeTotal
 	Moneda importeConcedido
+	Documento docBaremacion // Documento visible para el solicitante de la Baremación del Expediente
 }
 
 // Entidades de la resolución
@@ -93,6 +100,7 @@ Entidad ResolucionFAP {
 	DateTime fechaTopeFirma
 	
 	Lista estadoResolucion estado			// borrador, creada, .... finalizada
+	Lista estadoResolucionPublicacion estadoPublicacion
 	
 	// Descripción de la Resolución
 	String descripcion length=2500
@@ -117,7 +125,7 @@ Entidad ResolucionFAP {
 	String idSolicitudFirma
 	String codigoResolucion
 
-	//DateTime fechaFinAceptacion						// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
+	DateTime fechaFinAceptacion						// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
 	//DateTime fechaPublicacion						// Fecha de Publicación en el tablón de anuncios de la sede
 	//DateTime fechaBOC								// Fecha de Publicación en el BOC
 	DateTime fechaIncioPreparacion		// Fecha en la que se empieza a preparar la resolución y se crean las líneas
@@ -141,6 +149,7 @@ Entidad ResolucionFAP {
 		// OneToMany ExpedientesNoAceptados expedientesNoAceptados
 	//Agente destinatarioPortafirma transient
 
+	Agente hacePeticionPortafirma noConstruct
 	//Para firmar por jefe de servicio
 	//Firmantes firmantesJefeDeServicio
 		////Para poder firmar y crear el el metodo calcular firmantes
@@ -257,7 +266,7 @@ Formulario Principal {
 			
 			Grupo gEnviarFirmaJSPortafirma permiso=firmaJefeServicio borde=false {
 				
-				Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga
+				Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga destino="_blank"
 				Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=ResolucionFAP.docConsultaPortafirmasResolucion paginaCrear=DocConsultaPortafirmaCrear paginaEditar=DocConsultaPortafirmaEditar {
 					Columna campo=Documento.tipo titulo="Tipo"
 					Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
@@ -306,8 +315,19 @@ Formulario Principal {
     		}
 		}
 		
-		Grupo gPublicarResolucion titulo="Publicar la Resolución" permiso=publicarResolucion {
+		Grupo gDocumentoDeResolucion titulo="Documento de Resolución" permiso=verDocumentoResolucion {
+			Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Resolución" destino="_blank" estilo="boton"
+		}
+		
+		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion {
 			Wiki { "Publicar resolución" }
+			Form publicarResolucion {
+				Fecha campo=ResolucionFAP.fechaFinAceptacion titulo="Fecha Fin de Aceptación" requerido
+				Boton btnPublicarResolucion titulo="Publicar la Resolución"
+			}
+			Form firmarBaremacion {
+				Boton btnFirmarBaremacion titulo="Firmar documentos de Baremación"
+			}
 		}
 		
 		Grupo gFinalizarResolucion titulo="Finalizar la Resolución" permiso=finalizarResolucion {
@@ -345,7 +365,7 @@ Formulario Principal {
 		}
 	}
 	
-	Popup ModificarEstadoExpediente campo=ResolucionFAP.lineasResolucion {
+	Popup ModificarEstadoExpediente campo=ResolucionFAP.lineasResolucion titulo="Modificar estado del expediente en la resolución"{
 		Grupo grNoEditable borde=false permiso=noEditable {
 			Texto campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
 			Texto campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
@@ -359,7 +379,7 @@ Formulario Principal {
 			
 			Combo comboEstadoLinea campo=LineaResolucionFAP.estado titulo="Estado"
 
-			Grupo gConcedido borde=false mostrarSiCombo comboEstadoLinea = "concedida"{
+			Grupo gConcedido borde=false mostrarSiCombo comboEstadoLinea = "concedida","concedidaTurismo"{
 				Texto campo=LineaResolucionFAP.importeTotal titulo="Importe Total"
 				Texto campo=LineaResolucionFAP.importeConcedido titulo="Importe Concedido"
 			}
@@ -570,6 +590,16 @@ Permiso finalizarResolucion {
 	when
 		resolucion.estado in ("publicada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+Permiso verDocumentoResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+	resolucion.estado in ("registrada", "publicada", "finalizada")
+	and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }

@@ -11,6 +11,8 @@ h2. Parámetros
 * **titulo = _[string]_** (opcional) : Título que aparecerá en la cabecera del grupo.
 * **requerido** (opcional) : Indica si es obligatorio rellenar los campos necesarios de persona física.
 * **setearTipoPadre** (opcional) : Indica si lo que quieres mostrar es la persona física de un solicitante.
+* **noSexo** (opcional) : Si se indica no aparece el atributo sexo.
+* **noNacimiento** (opcional) : Si se indica no aparece el atributo fechaNacimiento.
 
 h2. Definición
 
@@ -19,18 +21,43 @@ bc. PersonaFisica:
 		('campo' '=' campo=Campo) & 
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
-		(setearTipoPadre?='setearTipoPadre')?
+		(setearTipoPadre?='setearTipoPadre')? &
+		(noSexo?='noSexo')? &
+		(noNacimiento?='noNacimiento')?
 	)
 ;
 
-
 h2. Ejemplo de uso
 
-bc. PersonaFisica solicitantePF campo=Solicitud.datosSolicitante.solicitantePF titulo="Solicitante Persona Fisica"
+h3. Completo
 
-!images/dsl-personaFisica!
+bc. PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física"
 
+!images/dsl-personaFisica1!
 
+h3. Sin atributo sexo
+
+bc. PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física" noSexo
+
+!images/dsl-personaFisica2!
+
+h3. Sin atributo fechaNacimiento
+
+bc. PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física" noNacimiento
+
+!images/dsl-personaFisica3!
+
+h3. Sin atributos sexo y fechaNacimiento
+
+bc. PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física" noSexo noNacimiento
+
+!images/dsl-personaFisica4!
+
+h3. Con campos requeridos
+
+bc. PersonaFisica personita campo=Solicitud.amigo titulo="Amigo es Persona Física" requerido
+
+!images/dsl-personaFisica5!
 
 
 

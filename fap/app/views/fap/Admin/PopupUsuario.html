@@ -1,12 +1,14 @@
 
 #{fap.popup 
-     accion:accion, 
-     permiso:'administrador', 
-     popup:'PopupUsuario', 
-     titulo:'Usuario', 
-     urlBorrar:play.mvc.Router.reverse('popups.PopupUsuarioController.borrar' , ['idAgente':agente?.id]), 
-     urlCrear:play.mvc.Router.reverse('popups.PopupUsuarioController.crear' ), 
-     urlEditar:play.mvc.Router.reverse('popups.PopupUsuarioController.editar' , ['idAgente':agente?.id])
+     accion:accion,
+     maximizar:false,
+     permiso:'administrador',
+     popup:'PopupUsuario',
+     titulo:'Usuario',
+     urlBorrar:play.mvc.Router.reverse('popups.PopupUsuarioController.borrar' , ['idAgente':agente?.id]),
+     urlCrear:play.mvc.Router.reverse('popups.PopupUsuarioController.crear' ),
+     urlEditar:play.mvc.Router.reverse('popups.PopupUsuarioController.editar' , ['idAgente':agente?.id]),
+     urlRedirigir:urlRedirigir
 }
 	
 			#{fap.texto campo:'agente.username', requerido:true, titulo:'Username' /}		
@@ -15,7 +17,13 @@
 				
 			#{fap.texto campo:'agente.passwordAntiguo', password:true, titulo:'Contraseña Antigua' /}		
 		
-			#{fap.texto campo:'agente.password', duplicado:true, password:true, titulo:'Contraseña Nueva' /}		
+			#{fap.texto campo:'agente.password', duplicado:true, password:true, titulo:'Contraseña Nueva' /}
+						
+			<label class="control-label" >
+			#{fap.enlace codigojs:'usuarioGenerarPass(hiddenPass);', estilo:'btn btn-link', id:'generarPass', titulo:'Generar contraseña' /}
+			</label>
+		
+			#{fap.texto campo:'agente.password', id:'hiddenPass', titulo:' ' /}			
 		
 			#{/fap.grupo}
 		
@@ -32,5 +40,23 @@
    		$('#agente_passwordAntiguo').val("");
    		$('#agente_password').val("");
    		$('#agente_passwordcopy').val("");
+   		$('#hiddenPass').val("");
    });
+   
+   function usuarioGenerarPass (pass) {
+		var generated = makeid();
+		$(pass).val(generated);
+		$('#agente_password').val(generated);
+		$('#agente_passwordcopy').val(generated);
+	}
+
+	function makeid() {
+	    var text = "";
+	    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+	    for( var i=0; i < 8; i++ )
+	        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+	    return text;
+	}
 </script>

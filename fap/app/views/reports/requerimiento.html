@@ -32,7 +32,7 @@ ul {
 
 </style>
 
-#{if (play.Play.getVirtualFile("public/stylesheets/documentoPDF.css") != null}
+#{if (play.Play.getVirtualFile("public/stylesheets/documentoPDF.css") != null)}
 	<link rel="stylesheet" media="print" href="@{'/public/stylesheets/documentoPDF.css'}">
 #{/if}
 
@@ -63,7 +63,7 @@ ul {
 	}
 %}
 
-#{if (play.Play.getVirtualFile("app/views/reports/"+nombreFichero) != null}
+#{if (play.Play.getVirtualFile("app/views/reports/"+nombreFichero) != null)}
 	#{include 'reports/'+nombreFichero /}
 #{/if}
 #{else}

@@ -1,19 +1,26 @@
 package resolucion;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityTransaction;
 
 import org.joda.time.DateTime;
 
+import controllers.fap.ResolucionControllerFAP;
+
+import play.db.jpa.JPA;
 import play.modules.guice.InjectSupport;
 import play.mvc.results.RenderBinary;
 import properties.FapProperties;
 
 import reports.Report;
 import services.GestorDocumentalService;
+import utils.ResolucionUtils.LineasResolucionSortComparator;
+import utils.StringUtils;
 
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionEnum;
@@ -23,6 +30,7 @@ import enumerado.fap.gen.ModalidadResolucionEnum;
 import enumerado.fap.gen.TipoResolucionEnum;
 import messages.Messages;
 import models.Documento;
+import models.Evaluacion;
 import models.LineaResolucionFAP;
 import models.Registro;
 import models.ResolucionFAP;
@@ -36,8 +44,11 @@ public class ResolucionBase {
     public static GestorDocumentalService gestorDocumentalService;
 	
 	private final static String HEADER_REPORT = "reports/header.html";
-	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
+	private final static String FOOTER_REPORT = "reports/footer.html";
 	private final static String BODY_REPORT = "reports/resolucion/resolucion.html";
+	private final static String HEADER_BAREMACION_INDIVIDUAL_REPORT = "reports/header.html";
+	private final static String BODY_BAREMACION_INDIVIDUAL_REPORT = "reports/resolucion/criteriosResolucion.html";
+	private final static String FOOTER_BAREMACION_INDIVIDUAL_REPORT = "reports/footer-borrador.html";
 	private final static String TIPO_RESOLUCION_PROVISIONAL = FapProperties.get("fap.aed.tiposdocumentos.resolucion.provisional");
 	private final static String TIPO_RESOLUCION_DEFINITIVA = FapProperties.get("fap.aed.tiposdocumentos.resolucion.definitiva");
 	public ResolucionFAP resolucion;
@@ -57,6 +68,19 @@ public class ResolucionBase {
 	public String getBodyReport() {
 		return ResolucionBase.BODY_REPORT;
 	}
+	
+	public static String getHeaderBaremacionIndividualReport() {
+		return ResolucionBase.HEADER_BAREMACION_INDIVIDUAL_REPORT;
+	}
+	
+	public String getBodyBaremacionIndividualReport() {
+		return ResolucionBase.BODY_BAREMACION_INDIVIDUAL_REPORT;
+	}
+	
+	public static String getFooterBaremacionIndividualReport() {
+		return ResolucionBase.FOOTER_BAREMACION_INDIVIDUAL_REPORT;
+	}
+	
 	
 	public String getTipoRegistroResolucion(String tipo) {
 		if (tipo != null) {
@@ -225,7 +249,7 @@ public class ResolucionBase {
 				resolucion.registro.borrador.tipo = getTipoRegistroResolucion(resolucion.tipo);
 				resolucion.registro.save();
 			} catch (Exception ex2) {
-				Messages.error("Error generando el documento borrador");
+				Messages.error("Error generando el documento borrador "+ex2);
 				play.Logger.error("Error generando el documento borrador: " + ex2.getMessage());
 			}
 		}
@@ -238,7 +262,7 @@ public class ResolucionBase {
 		if (!Messages.hasErrors()) {
 			try {
 				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucion", resolucion);
-				oficial = new Report(this.getBodyReport()).header(this.getHeaderReport()).registroSize().renderTmpFile(resolucion);
+				oficial = new Report(this.getBodyReport()).header(this.getHeaderReport()).normalSize().renderTmpFile(resolucion);
 				resolucion.registro.oficial = new Documento();
 				resolucion.registro.oficial.tipo = getTipoRegistroResolucion(resolucion.tipo);
 				resolucion.registro.save();
@@ -269,6 +293,10 @@ public class ResolucionBase {
 			 listRet.add(tk.key);
 		 }
 		 return listRet;
+	 }
+	 
+	 public void  publicarResolucion (Long idResolucion) {
+		 
 	 }
 	 
 	public void avanzarFase_Borrador(ResolucionFAP resolucion) {
@@ -363,5 +391,127 @@ public class ResolucionBase {
 		}
 	}
 	
+	/**
+	 * Devuelve las líneas de Resolución a las que se le añadirá el documento de baremación visible al usuario
+	 * @param resolucion
+	 * @return
+	 */
+
+	
+	public void generarDocumentosResolucion (Long idResolucion) {
+		ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
+		ResolucionBase res = null;
+		
+		EntityTransaction tx = JPA.em().getTransaction();
+		
+		try {
+			tx.commit();
+			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			
+			// Si tiene Baremación
+			if (resolucionFap.conBaremacion) {
+				List<LineaResolucionFAP> lineas = res.getLineasDocBaremacion(resolucionFap);
+				if (lineas != null) {
+					for (LineaResolucionFAP linea : lineas) {
+						tx.begin();
+						
+						if ((linea.docBaremacion == null) && ((linea.docBaremacion.uri == null) || (linea.docBaremacion.uri.isEmpty()))) {
+							// 1. TODO: Generar documento en linea.docBaremacion
+							File docBaremacionOficial = res.generarDocumentoBaremacion(linea);
+							// 2. Subir al AED el File anterior
+							gestorDocumentalService.saveDocumentoTemporal(linea.docBaremacion, docBaremacionOficial);
+							play.Logger.info("Línea "+linea.id+": Guardado el documento de Evaluación "+linea.docBaremacion);
+						}
+						
+						// 3. Clasificar el documento en el Expediente de la Solicitud
+						if (!linea.docBaremacion.clasificado) {
+							List<Documento> listDocs = new ArrayList<Documento>();
+							listDocs.add(linea.docBaremacion);
+							gestorDocumentalService.clasificarDocumentos(linea.solicitud, listDocs);
+							
+							linea.docBaremacion.clasificado = true;
+							linea.save();
+							play.Logger.info("Línea "+linea.id+": Clasificado el documento de Evaluación "+linea.docBaremacion);
+						}
+						
+						// 4. Hacerlo visible en la lista de documentos de la Solicitud
+						boolean encontrado = false;
+						for (Documento doc : linea.solicitud.documentacion.documentos) {
+							if (linea.docBaremacion.uri.equals(doc.uri)) {
+								encontrado = true;
+								break;
+							}
+						}
+						
+						if (!encontrado) {
+							linea.solicitud.documentacion.documentos.add(linea.docBaremacion);
+							
+						} else {
+							play.Logger.info("El documento de resolución ya es visible en la solicitud");
+						}
+						linea.save();
+						play.Logger.info("Documento de Resolución visible en la Solicitud "+linea.docBaremacion);
+						
+						tx.commit();
+						
+						play.Logger.info("Se generó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
+					}
+				} else {
+					play.Logger.warn("No existen líneas a las que añadirle el documento de baremación");
+					Messages.warning("No existen líneas a las que añadirle el documento de baremación");
+				}
+				
+				
+			}
+			tx.begin();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			play.Logger.error("Error al obtener el objeto de Resolución"+e);
+			Messages.error("Error al generar los documentos de Resolución");
+		}
+		
+
+
+	}
+
+	public File generarDocumentoBaremacion (LineaResolucionFAP linea) {
+		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
+		File report = null;
+		try {
+			report = new Report(getBodyBaremacionIndividualReport()).header(getHeaderBaremacionIndividualReport()).footer(getFooterBaremacionIndividualReport()).renderTmpFile(linea.solicitud);
+			
+			linea.docBaremacion = new Documento();
+			linea.docBaremacion.tipo = getTipoDocumentoResolucionIndividual();
+			linea.docBaremacion.save();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return report;
+	}
+	
+	public List<LineaResolucionFAP> getLineasDocBaremacion(ResolucionFAP resolucion){
+		List<LineaResolucionFAP> lista = new ArrayList<LineaResolucionFAP>();
+		for (LineaResolucionFAP linea : resolucion.lineasResolucion) {
+			if (linea.estado.equals("concedida")) // Base
+				lista.add(linea);
+		}
+		return lista;
+	}
+
+	public void saveDocumentoBaremacion (LineaResolucionFAP linea, File docBaremacionOficial) {
+	
+	}
+
+
+	public void firmarDocumentosBaremacionEnResolucion (ResolucionBase resolucion){ 
+		
+	}
+		
+
+	public String getTipoDocumentoResolucionIndividual(){
+		return FapProperties.get("fap.resolucion.baremacion.tipo");
+
+	}
 	
 }

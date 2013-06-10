@@ -325,6 +325,9 @@ Formulario Principal {
 				Fecha campo=ResolucionFAP.fechaFinAceptacion titulo="Fecha Fin de Aceptación" requerido
 				Boton btnPublicarResolucion titulo="Publicar la Resolución"
 			}
+			Form firmarBaremacion {
+				Boton btnFirmarBaremacion titulo="Firmar documentos de Baremación"
+			}
 		}
 		
 		Grupo gFinalizarResolucion titulo="Finalizar la Resolución" permiso=finalizarResolucion {

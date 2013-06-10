@@ -38,6 +38,8 @@ public class Evaluacion extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento solicitudEnEvaluacion;
 
+	public Boolean firmadoDocBaemacion;
+
 	public Double totalCriterios;
 
 	public Double inversionTotalAprobada;
@@ -75,6 +77,9 @@ public class Evaluacion extends FapModel {
 			solicitudEnEvaluacion = new Documento();
 		else
 			solicitudEnEvaluacion.init();
+
+		if (firmadoDocBaemacion == null)
+			firmadoDocBaemacion = false;
 
 		if (tipo == null)
 			tipo = new TipoEvaluacion();

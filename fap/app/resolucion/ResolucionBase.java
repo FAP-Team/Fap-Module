@@ -484,7 +484,12 @@ public class ResolucionBase {
 	}
 
 	public void saveDocumentoBaremacion (LineaResolucionFAP linea, File docBaremacionOficial) {
+	
 	}
 	
 
+	public void firmarDocumentosBaremacionEnResolucion (ResolucionBase resolucion){
+		
+	}
+	
 }

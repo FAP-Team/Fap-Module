@@ -24,6 +24,7 @@ import play.mvc.Util;
 import registroresolucion.RegistroResolucion;
 import reports.Report;
 import resolucion.ResolucionBase;
+import services.FirmaServiceException;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.PortafirmaFapService;
@@ -606,5 +607,41 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		EditarResolucionController.publicarResolucionRender(idResolucionFAP);
 	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void firmarBaremacion(Long idResolucionFAP, String btnFirmarBaremacion) {
+		checkAuthenticity();
+		if (!permisoFirmarBaremacion("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.firmarBaremacionValidateRules();
+		}
+		
+		if (!Messages.hasErrors()) {
+			//Obtener tipo de Resolucion
+			ResolucionBase resolucion = null;
+			try {
+				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(resolucion.resolucion.conBaremacion){
+				resolucion.firmarDocumentosBaremacionEnResolucion (resolucion);
+			}
+		}
+		
+		if (!Messages.hasErrors()) {
+
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
+		EditarResolucionController.firmarBaremacionRender(idResolucionFAP);
+	}
+
 	
 }

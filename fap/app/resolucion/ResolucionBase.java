@@ -403,9 +403,9 @@ public class ResolucionBase {
 		ResolucionBase res = null;
 		
 		EntityTransaction tx = JPA.em().getTransaction();
-		tx.commit();
 		
 		try {
+			tx.commit();
 			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
 			
 			// Si tiene Baremación
@@ -420,6 +420,7 @@ public class ResolucionBase {
 							File docBaremacionOficial = res.generarDocumentoBaremacion(linea);
 							// 2. Subir al AED el File anterior
 							gestorDocumentalService.saveDocumentoTemporal(linea.docBaremacion, docBaremacionOficial);
+							play.Logger.info("Línea "+linea.id+": Guardado el documento de Evaluación "+linea.docBaremacion);
 						}
 						
 						// 3. Clasificar el documento en el Expediente de la Solicitud
@@ -430,6 +431,7 @@ public class ResolucionBase {
 							
 							linea.docBaremacion.clasificado = true;
 							linea.save();
+							play.Logger.info("Línea "+linea.id+": Clasificado el documento de Evaluación "+linea.docBaremacion);
 						}
 						
 						// 4. Hacerlo visible en la lista de documentos de la Solicitud
@@ -443,10 +445,12 @@ public class ResolucionBase {
 						
 						if (!encontrado) {
 							linea.solicitud.documentacion.documentos.add(linea.docBaremacion);
+							
 						} else {
 							play.Logger.info("El documento de resolución ya es visible en la solicitud");
 						}
 						linea.save();
+						play.Logger.info("Documento de Resolución visible en la Solicitud "+linea.docBaremacion);
 						
 						tx.commit();
 						
@@ -459,13 +463,14 @@ public class ResolucionBase {
 				
 				
 			}
+			tx.begin();
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			play.Logger.error("Error al obtener el objeto de Resolución"+e);
 			Messages.error("Error al generar los documentos de Resolución");
 		}
 		
-		tx.begin();
+
 
 	}
 

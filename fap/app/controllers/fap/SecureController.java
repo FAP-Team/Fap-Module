@@ -536,7 +536,7 @@ public class SecureController extends GenericController{
 		agente.acceso = AccesoAgenteEnum.ticketing.name();
 		if (agente.getSortRoles().isEmpty()) {
 			log.info("Usuario carece de roles, se modificara el campo para permitir el rol de usuario");
-			agente.getSortRoles().add("usuario");
+			agente.roles.add("usuario");
 			agente.cambiarRolActivo("usuario");
 		}
 		agente.save();

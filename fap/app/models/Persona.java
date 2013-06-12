@@ -39,6 +39,9 @@ public class Persona extends FapModel {
 	@Transient
 	public String nombreCompleto;
 
+	@Transient
+	public String tipoDeDocumento;
+
 	public Persona() {
 		init();
 	}
@@ -80,6 +83,15 @@ public class Persona extends FapModel {
 			return fisica.nip.valor;
 		else if (isPersonaJuridica())
 			return juridica.cif;
+		return null;
+	}
+
+	public String getTipoDocumento() {
+		if (isPersonaFisica()) {
+			return fisica.nip.tipo;
+		} else if (isPersonaJuridica()) {
+			return "cif";
+		}
 		return null;
 	}
 

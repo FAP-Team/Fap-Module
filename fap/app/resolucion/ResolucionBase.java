@@ -600,7 +600,7 @@ public class ResolucionBase {
 						linea.save();
 						play.Logger.info("Documento de Resolución visible en la Solicitud "+linea.docBaremacion);
 						tx.commit();
-						play.Logger.info("Se generó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
+						play.Logger.info("Se clasificó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
 					}
 				} else {
 					play.Logger.warn("No existen líneas a las que añadirle el documento de baremación");

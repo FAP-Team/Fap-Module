@@ -36,6 +36,11 @@ Lista estadoResolucion crearEnumerado {
 	finalizada: "Finalizada"
 }
 
+Lista estadosDocBaremacion crearEnumerado{
+	generado: "Documentos Generado"
+	clasificado: "Documentos Clasificado"
+}
+
 Lista estadoTipoMultiple crearEnumerado {
 	parcial: "Selecionar manualmente los expedientes"
 	total: "Todos los expedientes"
@@ -68,6 +73,10 @@ Lista estadoResolucionPublicacion crearEnumerado {
 	publicada: "Publicada"
 	documentoGenerado: "Documento Resolución Generado"
 	
+	estadoFecha: "Publicacion: Estado y Fecha"
+	//copiaExpedientes: "Publicacion: Copiados Expedientes" ES publicada
+	firmaBaremacionResolucion: "Firmados Documentos de Baremación"
+	
 }
 
 // Una línea de resolución afecta a un expediente (o Solicitud)
@@ -78,6 +87,8 @@ Entidad LineaResolucionFAP {
 	Moneda importeTotal
 	Moneda importeConcedido
 	Documento docBaremacion // Documento visible para el solicitante de la Baremación del Expediente
+	Documento docEvaluacionCompleto//docBaremacionOficialConComentarios
+	Documento docEvaluacionCompletoConComentarios //docBaremacionOficialSinComentarios
 }
 
 // Entidades de la resolución
@@ -101,6 +112,9 @@ Entidad ResolucionFAP {
 	
 	Lista estadoResolucion estado			// borrador, creada, .... finalizada
 	Lista estadoResolucionPublicacion estadoPublicacion
+	Lista estadosDocBaremacion estadoDocBaremacionResolucion
+	Lista estadosDocBaremacion estadoInformeBaremacionConComentarios
+	Lista estadosDocBaremacion estadoInformeBaremacionSinComentarios
 	
 	// Descripción de la Resolución
 	String descripcion length=2500
@@ -110,6 +124,7 @@ Entidad ResolucionFAP {
 	OneToMany LineaResolucionFAP lineasResolucion
 	
 	Boolean conBaremacion default = 'false'
+	Boolean oficialEvaluacionCompleto default = 'false'
 
 	String tituloInterno					// Obligatorio.
 	String sintesis
@@ -320,13 +335,8 @@ Formulario Principal {
 		}
 		
 		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion {
-			Wiki { "Publicar resolución" }
-			Form publicarResolucion {
-				Fecha campo=ResolucionFAP.fechaFinAceptacion titulo="Fecha Fin de Aceptación" requerido
-				Boton btnPublicarResolucion titulo="Publicar la Resolución"
-			}
-			Form firmarBaremacion {
-				Boton btnFirmarBaremacion titulo="Firmar documentos de Baremación"
+			Form publicacionResolucion{
+				Enlace publicarResolucionPasos titulo="Publicar la Resolucion" pagina=PaginaPublicarResolucion estilo="btn"
 			}
 		}
 		
@@ -403,6 +413,212 @@ Formulario Principal {
 		Accion editar redirigir=EditarResolucion
 		EditarArchivo file campo=Documento requerido /*tramite="ESTANCIAS"*/
 	}
+	
+	Pagina PaginaPublicarResolucion campo=ResolucionFAP perteneceA="Principal" noForm{
+		Grupo grupo titulo="Publicación de la Resolución" {
+			Form cambioEstadoFecha {
+				Grupo grupoCambioEstadoFecha titulo="Paso 1: Cambio de estado y actualizacion de datos" permiso=permisoCambioEstadoFecha{
+					Fecha campo=ResolucionFAP.fechaFinAceptacion titulo="Fecha Fin de Aceptación" requerido
+					Boton btnCambioEstadoFecha titulo="Actualizar"
+				}
+			}
+			Form copiaExpediente permiso=permisoCopiaExpedientes{
+				Grupo grupoCopiaExpediente titulo="Paso 2: Copia del Registro de Resolucion"{
+					Boton btnCopiaExpediente titulo="Copiar" waitPopup
+				}
+			}
+			Grupo grupoDocumentoResolucion titulo="Paso 3: Documento de Baremacion en Resolucion" permiso=permisoGenerarBaremacionResolucion{
+				Form generarDocumentoBaremacionResolucion permiso=permisoGenerarDocBaremacion{
+					Grupo grupoGenerarDocumento titulo="Paso 3.1: Generación y Almacenamiento de Documentos"{
+						Boton btnGenerarDocumento titulo="Generar" waitPopup
+					}
+				}
+				Form generarClasificarDocumentos permiso=permisoClasificarDocBaremacion {
+					Grupo grupoClasificarDocumentos titulo="Paso 3.2: Clasificar los documentos"{
+						Boton btnClasificarDocumentos titulo="Clasificar" waitPopup
+					}
+				}
+				
+				Form generarInformeConComentarios permiso=permisoGenerarInformeConComentarios{
+					Grupo grupoGenerarInformeConComentarios titulo="Generar Informe con Comentarios de la Administracion"{
+						Boton btnGenerarInformeConComentarios titulo="Generar"
+					}
+				}
+				Form clasificarInformeConComentarios permiso=permisoClasificarInformeConComentarios{
+					Grupo grupoClasificarInformeConComentarios titulo="Clasificar Informe con Comentarios" {
+						Wiki {"El informe ya ha sido generado, debe proceder a su clasificacion"}
+						Boton btnClasificarInformeConComentarios titulo="Clasificar"
+					}
+				}
+				Form generarInformeSinComentarios permiso=permisoGenerarInformeSinComentarios{
+					Grupo grupoGenerarInformeSinComentarios titulo="Generar Informe sin Comentarios de la Administracion"{
+						Boton btnGenerarInformeSinComentarios titulo="Generar"	
+					}
+				}
+				Form clasificarInformeSinComentarios permiso=permisoClasificarInformeSinComentarios{
+					Grupo grupoClasificarInformeSinComentarios titulo="Clasificar Informe con Comentarios" {
+						Wiki {"El informe ya ha sido generado, debe proceder a su clasificacion"}
+						Boton btnClasificarInformeSinComentarios titulo="Clasificar"
+					}
+				}
+				
+			}
+			Form firmarBaremacion permiso=permisoFirmarDocBaremacionResolucion{
+				Grupo grupoFirmarBaremacion titulo="Firmar Documentos de Baremación en Resolución"{
+					Boton btnFirmarBaremacion titulo="Firmar"
+				}
+			}
+			Form volver{
+				Grupo grupovolver borde=false {
+					Boton btnVolver titulo="Volver" pagina=EditarResolucion 
+				}
+			}
+		}
+	}
+}
+
+//Sobreescrito
+Permiso permisoGenerarInformeConComentarios {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio") and
+		resolucion.estadoInformeBaremacionConComentarios = null and
+		resolucion.estadoDocBaremacionResolucion = "clasificado"
+	return
+		editable
+}
+
+//Sobreescrito
+Permiso permisoGenerarInformeSinComentarios {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio") and
+		resolucion.estadoInformeBaremacionSinComentarios = null
+		and resolucion.estadoDocBaremacionResolucion = "clasificado"
+	return 
+		editable
+}
+
+//Sobreescrito
+Permiso permisoClasificarInformeConComentarios {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+		and resolucion.estadoInformeBaremacionConComentarios != null
+		and resolucion.estadoInformeBaremacionConComentarios = "generado"
+	return
+		editable
+}
+
+//Sobreescrito
+Permiso permisoClasificarInformeSinComentarios {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+		and resolucion.estadoInformeBaremacionSinComentarios != null
+		and resolucion.estadoInformeBaremacionSinComentarios = "generado"
+	return 
+		editable
+}
+
+Permiso permisoClasificarDocBaremacion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoDocBaremacionResolucion != null and
+		resolucion.estadoDocBaremacionResolucion = "generado" and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return
+		editar
+	when
+		resolucion.estadoDocBaremacionResolucion != null and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return 
+		visible
+}
+
+Permiso permisoGenerarDocBaremacion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoDocBaremacionResolucion = null and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return
+		editar
+	when
+		resolucion.estadoDocBaremacionResolucion != null and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return 
+		visible
+}
+
+Permiso permisoCambioEstadoFecha {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoPublicacion = null and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return
+		editar
+	when
+		resolucion.estadoPublicacion != null and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return 
+		visible
+}
+
+Permiso permisoCopiaExpedientes {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoPublicacion != null and
+		resolucion.estadoPublicacion = "estadoFecha" and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return
+		editar
+	when
+		resolucion.estadoPublicacion != null and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+	return 
+		visible
+}
+
+
+//Sobreescrito para que consulte los métodos de si se generan los documentos
+Permiso permisoGenerarBaremacionResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoPublicacion != null and
+		resolucion.estadoPublicacion = "publicada" and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio") and
+		resolucion.conBaremacion = true
+	return
+		editar
+	when
+		resolucion.estadoPublicacion != null and
+		resolucion.conBaremacion = true
+	return 
+		visible
+}
+
+//Sobreescrito
+Permiso permisoFirmarDocBaremacionResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoPublicacion != null and
+		resolucion.estadoPublicacion = "documentoGenerado" and
+		agente.rolActivo in ("administrador", "gestor", "jefeServicio") and
+		resolucion.estadoInformeBaremacionConComentarios = "clasificado" and
+		resolucion.estadoInformeBaremacionSinComentarios = "clasificado" and
+		resolucion.conBaremacion = true
+	return
+		editable
 }
 
 Permiso sinIniciarResolucion {

@@ -39,6 +39,12 @@ public class LineaResolucionFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento docBaremacion;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento docEvaluacionCompleto;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento docEvaluacionCompletoConComentarios;
+
 	@Transient
 	public String importeTotal_formatFapTabla;
 
@@ -65,6 +71,16 @@ public class LineaResolucionFAP extends FapModel {
 			docBaremacion = new Documento();
 		else
 			docBaremacion.init();
+
+		if (docEvaluacionCompleto == null)
+			docEvaluacionCompleto = new Documento();
+		else
+			docEvaluacionCompleto.init();
+
+		if (docEvaluacionCompletoConComentarios == null)
+			docEvaluacionCompletoConComentarios = new Documento();
+		else
+			docEvaluacionCompletoConComentarios.init();
 
 		postInit();
 	}

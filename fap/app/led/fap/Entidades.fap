@@ -192,6 +192,7 @@ Entidad Persona inheritance=joined auditable{
 	Lista TipoDePersona tipo
 	String numeroId transient
 	String nombreCompleto transient
+	String tipoDeDocumento transient
 }
 
 // Representación de una persona física

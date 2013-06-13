@@ -33,9 +33,9 @@ public class BaremacionService {
 	public static void calcularTotales(Evaluacion evaluacion, boolean tenerEnCuentaNoVisibles) {
 		calcularTotales(evaluacion, tenerEnCuentaNoVisibles, false);
 	}
-	
+		
 	/**
-	 * 
+	 * Se calculan los totales de la Evaluación (esté evaluada ya o no).
 	 * @param evaluacion
 	 * @param tenerEnCuentaNoVisibles false Sumo los no visibles tambien
 	 */

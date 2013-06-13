@@ -52,7 +52,7 @@ public class ResolucionBase {
     public static GestorDocumentalService gestorDocumentalService;
 	
 	private final static String HEADER_REPORT = "reports/header.html";
-	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
+	private final static String FOOTER_REPORT = "reports/footer.html";
 	private final static String BODY_REPORT = "reports/resolucion/resolucion.html";
 	private final static String BODY_REPORT_BAREMACION_CON_COMENTARIOS = "reports/baremacion/oficialEvaluacionCompleto.html";
 	private final static String BODY_REPORT_BAREMACION_SIN_COMENTARIOS = "reports/baremacion/oficialEvaluacionCompleto.html";
@@ -523,8 +523,9 @@ public class ResolucionBase {
 		ResolucionBase res = null;
 		
 		EntityTransaction tx = JPA.em().getTransaction();
-		tx.commit(); //OJO
+
 		try {
+			tx.commit();
 			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
 			
 			// Si tiene Baremación
@@ -533,12 +534,12 @@ public class ResolucionBase {
 				if (lineas != null) {
 					for (LineaResolucionFAP linea : lineas) {
 						tx.begin();
-						
 						if (((linea.docBaremacion.uri == null) || (linea.docBaremacion.uri.isEmpty()))) {
 							// 1. TODO: Generar documento en linea.docBaremacion
 							File docBaremacionOficial = res.generarDocumentoBaremacion(linea);
 							// 2. Subir al AED el File anterior
 							gestorDocumentalService.saveDocumentoTemporal(linea.docBaremacion, docBaremacionOficial);
+							play.Logger.info("Línea "+linea.id+": Guardado el documento de Evaluación "+linea.docBaremacion);
 						}
 						tx.commit();
 					}
@@ -578,6 +579,7 @@ public class ResolucionBase {
 							gestorDocumentalService.clasificarDocumentos(linea.solicitud, listDocs);
 							linea.docBaremacion.clasificado = true;
 							linea.save();
+							play.Logger.info("Línea "+linea.id+": Clasificado el documento de Evaluación "+linea.docBaremacion);
 						}
 						
 						// 4. Hacerlo visible en la lista de documentos de la Solicitud
@@ -591,10 +593,12 @@ public class ResolucionBase {
 						
 						if (!encontrado) {
 							linea.solicitud.documentacion.documentos.add(linea.docBaremacion);
+							
 						} else {
 							play.Logger.info("El documento de resolución ya es visible en la solicitud");
 						}
 						linea.save();
+						play.Logger.info("Documento de Resolución visible en la Solicitud "+linea.docBaremacion);
 						tx.commit();
 						play.Logger.info("Se generó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
 					}
@@ -604,15 +608,11 @@ public class ResolucionBase {
 				}
 			}
 			tx.begin();
+
 			res.resolucion.estadoDocBaremacionResolucion=EstadosDocBaremacionEnum.clasificado.name(); //Estado a docs Generados
 			res.resolucion.save();
 			tx.commit();
-			
-			//Una vez clasificados todos los documentos, termina la publicacion
-//			tx.begin();
-//			res.avanzarFase_Registrada(resolucionFap);
-//			tx.commit();
-			
+
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			play.Logger.error("Error al obtener el objeto de Resolución"+e);

@@ -121,7 +121,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	Pagina DocumentosAportacion titulo="Aportar Nuevo Documento" campo=SolicitudGenerica.aportaciones.actual.documentos perteneceA ="Aportacion"{
 		Accion crear redirigir=Aportacion
 		Grupo gSubirDocumento titulo="Aportar Documento"{
-			SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO" listarDocumentosSubidos
+			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" listarDocumentosSubidos
 		}
 	}
 	

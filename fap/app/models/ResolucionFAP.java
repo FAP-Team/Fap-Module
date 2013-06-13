@@ -59,6 +59,15 @@ public class ResolucionFAP extends FapModel {
 	@ValueFromTable("estadoResolucionPublicacion")
 	public String estadoPublicacion;
 
+	@ValueFromTable("estadosDocBaremacion")
+	public String estadoDocBaremacionResolucion;
+
+	@ValueFromTable("estadosDocBaremacion")
+	public String estadoInformeBaremacionConComentarios;
+
+	@ValueFromTable("estadosDocBaremacion")
+	public String estadoInformeBaremacionSinComentarios;
+
 	@Column(length = 2500)
 	public String descripcion;
 
@@ -67,6 +76,8 @@ public class ResolucionFAP extends FapModel {
 	public List<LineaResolucionFAP> lineasResolucion;
 
 	public Boolean conBaremacion;
+
+	public Boolean oficialEvaluacionCompleto;
 
 	public String tituloInterno;
 
@@ -140,6 +151,9 @@ public class ResolucionFAP extends FapModel {
 
 		if (conBaremacion == null)
 			conBaremacion = false;
+
+		if (oficialEvaluacionCompleto == null)
+			oficialEvaluacionCompleto = false;
 
 		if (docConsultaPortafirmasResolucion == null)
 			docConsultaPortafirmasResolucion = new ArrayList<Documento>();

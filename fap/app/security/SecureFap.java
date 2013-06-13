@@ -8,6 +8,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 
 import properties.FapProperties;
+import resolucion.ResolucionBase;
 
 import verificacion.VerificacionUtils;
 
@@ -19,11 +20,13 @@ import models.Participacion;
 import models.PeticionCesiones;
 import models.Registro;
 import models.RegistroModificacion;
+import models.ResolucionFAP;
 
 import models.SolicitudGenerica;
 import models.Verificacion;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
+import controllers.fap.ResolucionControllerFAP;
 import enumerado.fap.gen.AccesoAgenteEnum;
 import enumerado.fap.gen.EstadosModificacionEnum;
 import enumerado.fap.gen.EstadosPeticionEnum;
@@ -78,8 +81,18 @@ public class SecureFap extends Secure {
 			return menuConModificacion(_permiso, action, ids, vars);
 		else if ("clasificadaSolicitudModificada".equals(id))
 			return clasificadaSolicitudModificada(_permiso, action, ids, vars);
-
-		
+		else if ("permisoGenerarBaremacionResolucion".equals(id))
+			return permisoGenerarBaremacionResolucion(_permiso, action, ids, vars);
+		if ("permisoGenerarInformeConComentarios".equals(id))
+			return permisoGenerarInformeConComentarios(_permiso, action, ids, vars);
+		else if ("permisoGenerarInformeSinComentarios".equals(id))
+			return permisoGenerarInformeSinComentarios(_permiso, action, ids, vars);
+		else if ("permisoClasificarInformeConComentarios".equals(id))
+			return permisoClasificarInformeConComentarios(_permiso, action, ids, vars);
+		else if ("permisoClasificarInformeSinComentarios".equals(id))
+			return permisoClasificarInformeSinComentarios(_permiso, action, ids, vars);
+		else if ("permisoFirmarDocBaremacionResolucion".equals(id))
+			return permisoFirmarDocBaremacionResolucion(_permiso, action, ids, vars);
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
@@ -897,6 +910,7 @@ public class SecureFap extends Secure {
 		return null;
 	}
 	
+
 	
 	private ResultadoPermiso menuConModificacion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
 		//Variables
@@ -924,6 +938,187 @@ public class SecureFap extends Secure {
 
 		} 
 		return new ResultadoPermiso(Accion.Denegar);
+
+	private ResultadoPermiso permisoGenerarBaremacionResolucion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+		ResolucionBase resolucion = null;
+		Long idResolucion = null;
+		if (ids != null && ids.containsKey("idResolucionFAP"))
+			idResolucion = (ids.get("idResolucionFAP"));
+		if (idResolucion != null){
+			try {
+				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			}
+			catch (Throwable e) {
+				// TODO: handle exception
+			}
+			
+			Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+			//Desde que se indique que se quiera generar algún documento de baremación, se muestra el grupo 
+			if (resolucion.resolucion.conBaremacion){
+				if (resolucion.resolucion.estadoPublicacion != null && resolucion.resolucion.estadoPublicacion.toString().equals("publicada".toString()) && utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.conBaremacion.toString().equals("true".toString())) {
+					if ("editar".equals(accion))
+						return new ResultadoPermiso(Accion.Editar);
+					else
+						return null;
+		
+				}
+				if (resolucion.resolucion.estadoPublicacion != null && resolucion.resolucion.conBaremacion.toString().equals("true".toString())) {
+					return new ResultadoPermiso(Grafico.Visible);
+		
+				}
+			}
+		}
+		return null;
+	}
+
+	private ResultadoPermiso permisoGenerarInformeConComentarios(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+		Long idResolucion = null;
+		ResolucionBase resolucion = null;
+		
+		if (ids != null && ids.containsKey("idResolucionFAP"))
+			idResolucion = (ids.get("idResolucionFAP"));
+		if (idResolucion != null){
+			try {
+				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			}
+			catch (Throwable e) {
+				// TODO: handle exception
+			}
+		}
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+		if(resolucion.isGenerarDocumentoBaremacionCompletoConComentarios()){
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.estadoInformeBaremacionConComentarios == null && (resolucion.resolucion.estadoDocBaremacionResolucion != null && "clasificado".toString().equals(resolucion.resolucion.estadoDocBaremacionResolucion.toString()))
+					&& resolucion.resolucion.estadoInformeBaremacionConComentarios == null) {
+				return new ResultadoPermiso(Grafico.Editable);
+	
+			}
+		}
+
+		return null;
+	}
+
+	private ResultadoPermiso permisoGenerarInformeSinComentarios(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		Long idResolucion = null;
+		ResolucionBase resolucion = null;
+		
+		if (ids != null && ids.containsKey("idResolucionFAP"))
+			idResolucion = (ids.get("idResolucionFAP"));
+		if (idResolucion != null){
+			try {
+				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			}
+			catch (Throwable e) {
+				// TODO: handle exception
+			}
+		}
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+		if(resolucion.isGenerarDocumentoBaremacionCompletoSinComentarios()){
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && (resolucion.resolucion.estadoDocBaremacionResolucion != null && "clasificado".toString().equals(resolucion.resolucion.estadoDocBaremacionResolucion.toString()))
+					&& resolucion.resolucion.estadoInformeBaremacionSinComentarios == null) {
+				return new ResultadoPermiso(Grafico.Editable);
+	
+			}
+		}
+
+		return null;
+	}
+
+	private ResultadoPermiso permisoClasificarInformeConComentarios(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		Long idResolucion = null;
+		ResolucionBase resolucion = null;
+		
+		if (ids != null && ids.containsKey("idResolucionFAP"))
+			idResolucion = (ids.get("idResolucionFAP"));
+		if (idResolucion != null){
+			try {
+				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			}
+			catch (Throwable e) {
+				// TODO: handle exception
+			}
+		}
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+		if(resolucion.isGenerarDocumentoBaremacionCompletoConComentarios()){
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.estadoInformeBaremacionConComentarios != null && resolucion.resolucion.estadoInformeBaremacionConComentarios.toString().equals("generado".toString())) {
+				return new ResultadoPermiso(Grafico.Editable);
+			}
+		}
+		return null;
+	}
+
+	private ResultadoPermiso permisoClasificarInformeSinComentarios(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		Long idResolucion = null;
+		ResolucionBase resolucion = null;
+		
+		if (ids != null && ids.containsKey("idResolucionFAP"))
+			idResolucion = (ids.get("idResolucionFAP"));
+		if (idResolucion != null){
+			try {
+				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			}
+			catch (Throwable e) {
+				// TODO: handle exception
+			}
+		}
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+		if(resolucion.isGenerarDocumentoBaremacionCompletoConComentarios()){
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.estadoInformeBaremacionSinComentarios != null && resolucion.resolucion.estadoInformeBaremacionSinComentarios.toString().equals("generado".toString())) {
+				return new ResultadoPermiso(Grafico.Editable);
+			}
+		}
+
+		return null;
+	}
+
+	private ResultadoPermiso permisoFirmarDocBaremacionResolucion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		ResolucionBase resolucion = null;
+		Long idResolucion = null;
+		if (ids != null && ids.containsKey("idResolucionFAP"))
+			idResolucion = (ids.get("idResolucionFAP"));
+		if (idResolucion != null){
+			try {
+				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			}
+			catch (Throwable e) {
+				// TODO: handle exception
+			}
+			Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.conBaremacion.toString().equals("true".toString()) && resolucion.resolucion.estadoPublicacion != null && !resolucion.resolucion.estado.equals("publicada")){
+				//Tengo que generar todos los docs
+					if (resolucion.isGenerarDocumentoBaremacionCompletoConComentarios() && resolucion.resolucion.estadoInformeBaremacionConComentarios!= null && resolucion.resolucion.estadoInformeBaremacionConComentarios.toString().equals("clasificado".toString())
+							&& resolucion.isGenerarDocumentoBaremacionCompletoSinComentarios() 
+							&& resolucion.resolucion.estadoInformeBaremacionSinComentarios!= null && resolucion.resolucion.estadoInformeBaremacionSinComentarios.toString().equals("clasificado".toString())){
+						return new ResultadoPermiso(Grafico.Editable);
+					} else if (!resolucion.isGenerarDocumentoBaremacionCompletoSinComentarios() && resolucion.isGenerarDocumentoBaremacionCompletoConComentarios() && resolucion.resolucion.estadoInformeBaremacionConComentarios!= null && resolucion.resolucion.estadoInformeBaremacionConComentarios.toString().equals("clasificado".toString())){
+						return new ResultadoPermiso(Grafico.Editable);
+					}else if (!resolucion.isGenerarDocumentoBaremacionCompletoConComentarios() && resolucion.isGenerarDocumentoBaremacionCompletoSinComentarios() && resolucion.resolucion.estadoInformeBaremacionSinComentarios!= null && resolucion.resolucion.estadoInformeBaremacionSinComentarios.toString().equals("clasificado".toString())){
+						return new ResultadoPermiso(Grafico.Editable);
+					}
+			}
+		}
+		return null;
+
 	}
 	
 }

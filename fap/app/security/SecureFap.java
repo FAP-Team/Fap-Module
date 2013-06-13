@@ -1078,7 +1078,7 @@ public class SecureFap extends Secure {
 		}
 
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
-		if(resolucion.isGenerarDocumentoBaremacionCompletoConComentarios()){
+		if(resolucion.isGenerarDocumentoBaremacionCompletoSinComentarios()){
 			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.estadoInformeBaremacionSinComentarios != null && resolucion.resolucion.estadoInformeBaremacionSinComentarios.toString().equals("generado".toString())) {
 				return new ResultadoPermiso(Grafico.Editable);
 			}

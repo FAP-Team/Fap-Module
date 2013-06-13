@@ -509,7 +509,7 @@ public class ResolucionBase {
 		
 
 	public String getTipoDocumentoResolucionIndividual(){
-		return FapProperties.get("fap.resolucion.baremacion.tipo");
+		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion");
 
 	}
 	

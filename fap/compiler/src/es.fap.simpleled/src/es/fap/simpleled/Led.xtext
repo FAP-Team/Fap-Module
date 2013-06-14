@@ -21,7 +21,7 @@ QN: // Qualified Name
 IDS:  
 	ID | "Solicitud" | "Nip" | "Direccion" | "DireccionMapa" | "Persona" | "PersonaFisica" |
 	"PersonaJuridica" | "provincia" | "pais" | "valor" | "Solicitante" |
-	"agente" | "documento" | "password" | "aportadoPor" | "texto" | "isla" | "CCC"
+	"agente" | "documento" | "password" | "aportadoPor" | "texto" | "isla" | "CCC" | "sexo"
 ;
 
 Entity:
@@ -560,8 +560,8 @@ PersonaFisica:
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
 		(setearTipoPadre?='setearTipoPadre')?
-		& (noSexo?='noSexo')?
-		& (noNacimiento?='noNacimiento')?
+		& (noSexo?='noSexo' | sexo?='sexo')?
+		& (noNacimiento?='noNacimiento' | nacimiento?='nacimiento' )?
 	)
 ;
 
@@ -580,8 +580,8 @@ Persona:
 		('titulo' '=' titulo=STRING)? &
 		(requerido?='requerido')? &
 		("permiso" "=" permiso=[Permiso])?
-		& (noSexo?='noSexoPersonaFisica')?
-		& (noNacimiento?='noNacimientoPersonaFisica')?
+		& (noSexo?='noSexoPersonaFisica' | sexo?='sexoPersonaFisica')?
+		& (noNacimiento?='noNacimientoPersonaFisica' | nacimiento?='nacimientoPersonaFisica')?
 	)
 ;
 
@@ -594,8 +594,8 @@ Solicitante:
 		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
 		& (conDireccion?='conDireccion')?
 		& (noEmail?='noEmail')?
-		& (noSexo?='noSexo')?
-		& (noNacimiento?='noNacimiento')?
+		& (noSexo?='noSexo' | sexo?='sexo')?
+		& (noNacimiento?='noNacimiento' | nacimiento?='nacimiento')?
 		& (noTelefono?='noTelefono')?
 	)
 ;
@@ -608,7 +608,7 @@ EntidadAutomatica:
 ;
 
 Lista:
-	elemento='Lista' name=ID (enumerado?='crearEnumerado')? &
+	elemento='Lista' name=IDS (enumerado?='crearEnumerado')? &
 	(ocultar?='ocultar')?
 	'{'
 		elementos+=ElementoLista*

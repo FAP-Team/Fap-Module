@@ -11,7 +11,9 @@
 	def siCombo = _siCombo
 	def siComboValue = _siComboValue
 	def noSexo = _noSexo != null? _noSexo : false;
+	def sexo = _sexo != null? _sexo : false;
 	def noNacimiento = _noNacimiento != null? _noNacimiento : false;
+	def nacimiento = _nacimiento != null? _nacimiento : false;
 
 }%
 	#{if label != null}
@@ -21,10 +23,10 @@
 			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}		
 
-			#{if noSexo == false}
+			#{if sexo == true}
 				#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
 			#{/if}
-			#{if noNacimiento == false}
+			#{if nacimiento == true}
 				#{fap.fecha id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}
 			#{/if}
 		#{/fap.grupo}
@@ -36,10 +38,10 @@
 			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}
 
-			#{if noSexo == false}
+			#{if sexo == true}
 				#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
 			#{/if}
-			#{if noNacimiento == false}
+			#{if nacimiento == true}
 				#{fap.fecha id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}
 			#{/if}
 		#{/fap.grupo}

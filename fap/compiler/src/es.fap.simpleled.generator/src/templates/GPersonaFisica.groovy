@@ -27,8 +27,12 @@ public class GPersonaFisica extends GSaveCampoElement{
 			params.put("requerido", true);
 		if (personaFisica.noSexo)
 			params.put("noSexo", true);
+		if (personaFisica.sexo)
+			params.put("sexo", true);
 		if (personaFisica.noNacimiento)
 			params.put("noNacimiento", true);
+		if (personaFisica.nacimiento)
+			params.put("nacimiento", true);
 
 		return """
 			#{fap.personaFisica ${params.lista()} /}
@@ -42,12 +46,12 @@ public class GPersonaFisica extends GSaveCampoElement{
 			ret+=""" ${var}.tipo = "fisica";
 				 """
 		}
-		if ((personaFisica.noSexo != true) && (personaFisica.noNacimiento != true))
-			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido","sexo","fechaNacimiento"]);
-		else if ((personaFisica.noSexo == true) && (personaFisica.noNacimiento != true))
-			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido","fechaNacimiento"]);
-		else if ((personaFisica.noSexo != true) && (personaFisica.noNacimiento == true))
-			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido","sexo"]);
+		if ((personaFisica.sexo != true) && (personaFisica.nacimiento != true))
+			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido"]);
+		else if ((personaFisica.sexo == true) && (personaFisica.nacimiento != true))
+			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido", "sexo"]);
+		else if ((personaFisica.sexo != true) && (personaFisica.nacimiento == true))
+			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido", "fechaNacimiento"]);
 		else
 			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido"]);
 	}

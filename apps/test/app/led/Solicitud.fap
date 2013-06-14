@@ -600,7 +600,7 @@ Este grupo es sólo visible para administradores"}
 	
 	Pagina SolicitantePFcamposNo campo=Solicitud{
 		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
-		SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Con campos noAlgo" noSexo noEmail noNacimiento noTelefono noRepresentante 
+		SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Con campos noAlgo" noEmail  noTelefono noRepresentante 
 		
 		Codigo {
 "Wiki {\"El representante de este solicitante sólo puede ser de tipo Persona Fisica\"}
@@ -609,10 +609,10 @@ campo=Solicitud.solicitantePersonaFisica  titulo=\"Solicitante Persona Fisica\"
  representantePersonaFisica"
 		}
 	}
-	
+	// Por retrocompatibilidad para que aparezcan los campos de "sexo" y "nacimiento" habrá que indicarlo, en caso contrario no aparecerán
 	Pagina SolicitantePFcamposSi campo=Solicitud{
 		Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
-		SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Con todos los campos" representantePersonaFisica
+		SolicitantePersonaFisica personaSolicitantePersonaFisica campo=Solicitud.solicitantePersonaFisica titulo="Con todos los campos" sexo nacimiento representantePersonaFisica
 		
 		Codigo {
 "Wiki {\"El representante de este solicitante sólo puede ser de tipo Persona Fisica\"}

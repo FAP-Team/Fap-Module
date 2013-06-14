@@ -112,6 +112,15 @@ public class CampoUtils implements Comparable{
 		return StringUtils.firstLower(str);
 	}
 	
+	public String firstLowerWithCheckNull() {
+		if (campo.method) return str;
+		String toRet = StringUtils.firstLower(str);
+		if ((toRet != null) && (!toRet.equals(""))) {
+			toRet = toRet.replace('.', "?.");
+		}
+		return toRet;
+	}
+	
 	public Attribute getUltimoAtributo(){
 		return LedCampoUtils.getUltimoAtributo(campo);
 	}

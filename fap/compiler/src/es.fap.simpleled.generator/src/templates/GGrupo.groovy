@@ -141,6 +141,7 @@ public class GGrupo extends GGroupElement{
 		elementos.tail().collect{ ifOut += " ${aComprobar}.${it} != null &&";
 								  aComprobar += "."+it;
 		};
+
 		return ifOut;
 	}
 	

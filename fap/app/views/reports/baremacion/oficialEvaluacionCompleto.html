@@ -18,7 +18,7 @@
 		return valor;
 	}
 	
-	def cAdmin = comentariosAdministracion ?: true;
+	def cAdmin = (comentariosAdministracion != null) ? comentariosAdministracion : true;
 	def title = titulo ?: "Informe de Evaluación Completo con Comentarios para la Administración";
 }%
 <html>
@@ -178,11 +178,11 @@ p {
 			<td>${evaluacion.solicitud.solicitante.nombreCompleto}</td>
 		</tr>
 		<tr>
-			<th>Telefono:</th>
+			<th>Teléfono:</th>
 			<td>${evaluacion.solicitud.solicitante.telefonoFijo}</td>
 		</tr>
 		<tr>
-			<th>Movil:</th>
+			<th>Móvil:</th>
 			<td>${evaluacion.solicitud.solicitante.telefonoMovil}</td>
 		</tr>
 		<tr>
@@ -260,31 +260,34 @@ p {
 		</tr>
 		</thead>
 
-		#{list items:evaluacion.criterios, as:'criterio'} 
+		#{list items:utils.BaremacionService.ordenarCriterios(evaluacion.criterios), as:'criterio'} 
 		<tr>
 			<th>${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</th>
 			<td>${valorDelCriterio(criterio)}</td>
 		</tr>
 		#{/list}
-		<tr class="Cabecera">
-			<td>Criterios Económicos (Totales)</td>
-			<td>Valor</td>
-		</tr>
 		
-		#{list items:evaluacion.ceconomicos, as:'ceconomico'} 
-		<tr>
-			<th>${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</th>
+		#{if (evaluacion.ceconomicos.size() > 0)}
+			<tr class="Cabecera">
+				<td>Criterios Económicos (Totales)</td>
+				<td>Valor</td>
+			</tr>
+		
+			#{list items:evaluacion.ceconomicos, as:'ceconomico'} 
+			<tr>
+				<th>${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</th>
 			
-			%{
-				def valorPropuestoTotal = 0.0;
-				for (int i=0; i<=duracion ; i++){
-					valorPropuestoTotal += ceconomico.valores.get(i).valorPropuesto;
-				}
-			%}
+				%{
+					def valorPropuestoTotal = 0.0;
+					for (int i=0; i<=duracion ; i++){
+						valorPropuestoTotal += ceconomico.valores.get(i).valorPropuesto;
+					}
+				%}
 			
-			<td>${valorPropuestoTotal}</td>
-		</tr>
-		#{/list}
+				<td>${valorPropuestoTotal}</td>
+			</tr>
+			#{/list}
+		#{/if}
 		
 	</table>
 
@@ -301,13 +304,13 @@ p {
 		</tr>
 
 	</table>
-	#{list items:evaluacion.criterios, as:'criterio'} 
+	#{list items:utils.BaremacionService.ordenarCriterios(evaluacion.criterios), as:'criterio'} 
 	<div class="Criterio">
 		<p class="nombre" style="font-size:15px">${criterio.tipo.jerarquia} -
 			${criterio.tipo.nombre}</p>
 		<table id="tblCriteriosEvaluacion" +${criterio.id} class="table-datos">
 			#{if (criterio.tipo.descripcion)}
-			<p style="font-weight:bold">Descripcion:</p>
+			<p style="font-weight:bold">Descripción:</p>
 				<p style="text-indent:25px">${criterio.tipo.descripcion}</p>
 			#{/if}
 			<tr>
@@ -315,7 +318,7 @@ p {
 				<td>${valorDelCriterio(criterio)}</td>
 			</tr>
 			#{if ((cAdmin) && (criterio.comentariosAdministracion))}
-			<p style="font-weight:bold">Comentarios administracion:</p>
+			<p style="font-weight:bold">Comentarios administración:</p>
 				<p style="text-indent:25px">${criterio.comentariosAdministracion}</p>
 			#{/if} 
 			#{if (criterio.comentariosSolicitante)}
@@ -330,6 +333,7 @@ p {
 	</br>
 	
 	<!-- Criterios Economicos -->
+	#{if (evaluacion.ceconomicos.size() > 0)}
 	<table id="tblCriteriosTitulo" class="table-seccion">
 
 		<caption>Criterios Económicos:</caption>
@@ -339,13 +343,14 @@ p {
 		</tr>
 
 	</table>
+	#{/if}
 	#{list items:evaluacion.ceconomicos, as:'ceconomico'} 
 	<div class="Criterio">
 		<p class="nombre" style="font-size:15px">${ceconomico.tipo.jerarquia} -
 			${ceconomico.tipo.nombre}</p>
 		<table id="tblCriteriosEvaluacion" +${ceconomico.id} class="table-datos">
 			#{if (ceconomico.tipo.descripcion)}
-			<p style="font-weight:bold">Descripcion:</p>
+			<p style="font-weight:bold">Descripción:</p>
 				<p style="text-indent:25px">${ceconomico.tipo.descripcion}</p>
 			#{/if}
 			#{list items:0..duracion, as:'i'}
@@ -369,7 +374,7 @@ p {
 				<td>${valorPropuestoTotal}</td>
 			</tr>
 			#{if ((cAdmin) && (ceconomico.comentariosAdministracion))}
-			<p style="font-weight:bold">Comentarios administracion:</p>
+			<p style="font-weight:bold">Comentarios administración:</p>
 				<p style="text-indent:25px">${ceconomico.comentariosAdministracion}</p>
 			#{/if} 
 			#{if (ceconomico.comentariosSolicitante)}

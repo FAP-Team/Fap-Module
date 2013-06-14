@@ -98,15 +98,15 @@ public class GGrupo extends GGroupElement{
 					if(grupo.signoSiCombo.equals("!="))
 						not = "!";
 				CampoUtils campo = CampoUtils.create(grupo.siCombo.campo);
-				out += """if (${not}Arrays.asList(new String[] {${grupo.siComboValues.values.collect{"\"${it}\""}.join(',')}}).contains(${campo.dbStr()})){\n""";
+				out += """${checkNullCampos(campo)} ${not}Arrays.asList(new String[] {${grupo.siComboValues.values.collect{"\"${it}\""}.join(',')}}).contains(${campo.dbStr()})){\n""";
 			}
 			if (grupo.siCheck) {
 				CampoUtils campo = CampoUtils.create(grupo.siCheck.campo);
 				if(campo.getUltimoAtributo().type.simple.type != "boolean"){
-					out += "if ((${campo.firstLower()} != null) && (${campo.firstLower()} == ${grupo.siCheckValues})) {\n";
+					out += "${checkNullCampos(campo)} (${campo.firstLower()} != null) && (${campo.firstLower()} == ${grupo.siCheckValues})) {\n";
 				}
 				else{
-					out += "if (${campo.firstLower()} == ${grupo.siCheckValues}) {\n";
+					out += "${checkNullCampos(campo)} ${campo.firstLower()} == ${grupo.siCheckValues}) {\n";
 				}
 			}
 			if (grupo.campo){
@@ -114,7 +114,7 @@ public class GGrupo extends GGroupElement{
 				if(grupo.signoSiCampo.equals("!="))
 					not = "!";
 				CampoUtils campo = CampoUtils.create(grupo.campo);
-				out += """if (${not}Arrays.asList(new String[] {${grupo.siCampoValues.values.collect{"\"${it}\""}.join(',')}}).contains(${campo.dbStr()})){\n""";
+				out +=  """ ${checkNullCampos(campo)} (${not}Arrays.asList(new String[] {${grupo.siCampoValues.values.collect{"\"${it}\""}.join(',')}}).contains(${campo.dbStr()}))){\n""";
 			}
 			if (grupo.siExpresion)
 				out += "if (${grupo.siExpresion}) {"
@@ -132,6 +132,17 @@ public class GGrupo extends GGroupElement{
 			if (grupo.siExpresion) out += "\n}\n";
 		}
 		return out;
+	}
+	
+	public static String checkNullCampos (CampoUtils campo){
+		List<String> elementos = campo.dbStr().split("\\."); //Array con todos los elementos
+		String aComprobar = elementos.get(0);
+		String ifOut = """if (${aComprobar} != null &&""";
+		elementos.tail().collect{ ifOut += " ${aComprobar}.${it} != null &&";
+								  aComprobar += "."+it;
+		};
+		System.out.println("IFOUT: "+ifOut);
+		return ifOut;
 	}
 	
 }

@@ -254,10 +254,8 @@ public class GSolicitante extends GElement{
 			persona.campo = CampoUtils.create("RepresentantePersonaJuridica").campo;
 			persona.name = "representante_${popup.name}";
 			persona.requerido = true;
-			persona.noNacimiento = true;
-			persona.noSexo = true;
-			persona.sexo = true;
-			persona.nacimiento = true;
+			persona.sexo = false;
+			persona.nacimiento = false;
 			grupo.elementos.add(persona);
 			textoEmail.campo = CampoUtils.addMore(persona.campo, "email").campo;
 		}
@@ -265,10 +263,8 @@ public class GSolicitante extends GElement{
 			PersonaFisica personaFisica = LedFactory.eINSTANCE.createPersonaFisica();
 			personaFisica.requerido = true;
 			personaFisica.setearTipoPadre = true;
-			personaFisica.noNacimiento = true;
-			personaFisica.noSexo = true;
-			personaFisica.sexo = true;
-			personafisica.nacimiento = true;
+			personaFisica.sexo = false;
+			personafisica.nacimiento = false;
 			personaFisica.name = "representante_${popup.name}";
 			personaFisica.campo = CampoUtils.create("RepresentantePersonaJuridica.fisica").campo;
 			grupo.elementos.add(personaFisica);

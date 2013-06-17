@@ -22,26 +22,64 @@ public class GPermiso extends GElement{
 	private String permisoVarsCode(List<PermisoVar> vars){
 		String varStr = "";
 		for(PermisoVar var : vars){
+			String varIfSql = "";
 			String varName = var.name;
 			Entidad entity = Entidad.create(var.getTipo());
 			if(var.sql != null){
+				List<String> sqlParams = new ArrayList<String>();
 				String params = var.sqlParams?.sqlParams?.collect{
+					sqlParams.add(CampoPermisoUtils.create(it).str);
+					
 					return CampoPermisoUtils.create(it).str;
 				}?.join(",");
-				if(params != null && !params.trim().isEmpty())
+			
+				if (sqlParams != null && !sqlParams.isEmpty()){
+					Boolean first = true;
+					varIfSql = "if (";
+					sqlParams.collect {
+						List<String> elementos = it.split("\\.");
+						String aComprobar = elementos.get(0);
+						if(first){
+							varIfSql += " ${aComprobar} != null";
+							first = false;
+						}
+						else{
+							varIfSql += " && ${aComprobar} != null";
+						}
+						elementos.tail().collect {
+							aComprobar += "."+it;
+							varIfSql += " && ${aComprobar} != null";
+							
+						}
+						
+					}
+					varIfSql += ") {";
+				}
+				
+				if(params != null && !params.trim().isEmpty()){
+					sqlParams.add(params);
 					params = ", " + params;
+				}
 				else
 					params = "";
 					
 				//Variable con consulta
 				varStr += """
-					${entity.clase} ${varName} = ${entity.clase}.find("${var.sql}"${params}).first();
+				${entity.clase} ${varName} = null;
+				${varIfSql}
+					${varName} = ${entity.clase}.find("${var.sql}"${params}).first();
 				""";
+
 			}
 			else{
-				varStr += """
-					${entity.clase} ${varName} = get${entity.clase}(ids, vars);
+				varStr += """ 
+				${entity.clase} ${varName} = null;
+				${varIfSql}
+					${varName} = get${entity.clase}(ids, vars);
 				""";
+			}
+			if(!varIfSql.equals("")){
+				varStr += "}";
 			}
 		}
 		return varStr;

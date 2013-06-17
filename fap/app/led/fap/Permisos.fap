@@ -53,7 +53,7 @@ Permiso presentacionPrepararParaFirmar{
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor") and
-		solicitud?.registro.fasesRegistro.borrador = false
+		solicitud?.registro?.fasesRegistro?.borrador = false
 	return editable
 	
 	when
@@ -65,7 +65,7 @@ Permiso presentacionModificar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.registro.fasesRegistro.registro = false
+		solicitud?.registro?.fasesRegistro?.registro = false
 	return editable
 	
 	else
@@ -77,7 +77,7 @@ Permiso presentacionObtenerBorrador{
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor") and
-		solicitud?.registro.fasesRegistro.borrador = true
+		solicitud?.registro?.fasesRegistro?.borrador = true
 	return editable
 }
 
@@ -86,13 +86,13 @@ Permiso presentacionFirmar{
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor") and 
-		solicitud?.registro.fasesRegistro.borrador = true and
-		solicitud.registro.fasesRegistro.firmada = false
+		solicitud?.registro?.fasesRegistro?.borrador = true and
+		solicitud?.registro?.fasesRegistro?.firmada = false
 	return editable
 	
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor") and
-		solicitud?.registro.fasesRegistro.borrador = true
+		solicitud?.registro?.fasesRegistro?.borrador = true
 	return visible
 }
 
@@ -100,19 +100,19 @@ Permiso presentacionRegistrar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.registro.fasesRegistro.firmada = true and
+		solicitud?.registro?.fasesRegistro?.firmada = true and
 		(
 			agente.rolActivo = "usuario" and
-			solicitud.registro.fasesRegistro.registro = false
+			solicitud?.registro?.fasesRegistro?.registro = false
 		) or
 		(
 			agente.rolActivo in ("administrador", "gestor") and
-			solicitud.registro.fasesRegistro.clasificarAed = false
+			solicitud?.registro?.fasesRegistro?.clasificarAed = false
 		)
 	return editable
 
 	when
-		solicitud?.registro.fasesRegistro.firmada = true
+		solicitud?.registro?.fasesRegistro?.firmada = true
 	return visible	
 }
 
@@ -121,7 +121,7 @@ Permiso presentacionRecibo{
 		SolicitudGenerica solicitud
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor") and
-		solicitud?.registro.fasesRegistro.registro = true
+		solicitud?.registro?.fasesRegistro?.registro = true
 	return editable	
 }	
 
@@ -139,7 +139,7 @@ Permiso solicitudPreparadaFirmarYPresentar{
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.estado = "borrador" and
-		solicitud.registro.fasesRegistro.borrador = true
+		solicitud?.registro?.fasesRegistro?.borrador = true
 	return all
 	
 	when
@@ -161,8 +161,8 @@ Permiso solicitudPreparadaFirmar{
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.estado = "borrador"  and
-		solicitud.registro.fasesRegistro.borrador != null and
-		solicitud.registro.fasesRegistro.borrador = true
+		solicitud?.registro?.fasesRegistro?.borrador != null and
+		solicitud?.registro?.fasesRegistro?.borrador = true
 	return all
 	
 	when
@@ -176,9 +176,9 @@ Permiso solicitudPreparadaPresentar{
 	when
 		agente.rolActivo in ("administrador", "usuario", "gestor") and
 		solicitud?.estado = "borrador" and
-		solicitud.registro.fasesRegistro.borrador != null and
-		solicitud.registro.fasesRegistro.borrador = true and
-		solicitud.registro.fasesRegistro.firmada = true
+		solicitud?.registro?.fasesRegistro?.borrador != null and
+		solicitud?.registro?.fasesRegistro?.borrador = true and
+		solicitud?.registro?.fasesRegistro?.firmada = true
 	return all
 
 	when
@@ -331,7 +331,7 @@ Permiso editarFirma {
 	when
 		!usuario is visible
 		or (
-			(participacion.tipo != "autorizado") and
+			(participacion?.tipo != "autorizado") and
 	 		(agente.rolActivo = "usuario" and
 	 		solicitud?.estado = "borrador" and
 	 		solicitud?.registro?.fasesRegistro?.borrador = false
@@ -833,10 +833,10 @@ Permiso mensajeIntermedioDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(solicitud?.desistimiento?.registro?.fasesRegistro.firmada = true or
-		solicitud?.desistimiento?.registro?.fasesRegistro.registro = true or
-		solicitud?.desistimiento?.registro?.fasesRegistro.expedienteAed = true) and
-		solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed = false
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.firmada = true or
+		solicitud?.desistimiento?.registro?.fasesRegistro?.registro = true or
+		solicitud?.desistimiento?.registro?.fasesRegistro?.expedienteAed = true) and
+		solicitud?.desistimiento?.registro?.fasesRegistro?.clasificarAed = false
 	return
 		all
 }
@@ -846,7 +846,7 @@ Permiso clasificadaDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed=true)
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.clasificarAed=true)
 	return
 		visible
 }
@@ -855,7 +855,7 @@ Permiso firmarRegistrarDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed=false)
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.clasificarAed=false)
 	return
 		all
 }
@@ -864,7 +864,7 @@ Permiso firmarDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(solicitud?.desistimiento?.registro?.fasesRegistro.firmada=false)
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.firmada=false)
 	return
 		all
 }
@@ -874,8 +874,8 @@ Permiso registrarDesistimiento{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(solicitud?.desistimiento?.registro?.fasesRegistro.firmada = true and
-		solicitud?.desistimiento?.registro?.fasesRegistro.clasificarAed = false)
+		(solicitud?.desistimiento?.registro?.fasesRegistro?.firmada = true and
+		solicitud?.desistimiento?.registro?.fasesRegistro?.clasificarAed = false)
 	return
 		all
 }

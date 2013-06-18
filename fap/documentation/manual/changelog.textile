@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 2.2RC13
+
+* Fixed bug agregando firma a documentos.
+
 h3. Versión 2.2RC12
 
 * Documento de informa de evaluación modificado.

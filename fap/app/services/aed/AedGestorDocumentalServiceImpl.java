@@ -940,6 +940,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			
 			firmaActual.getFirmantes().add(firmanteAed);
 			
+			propiedadesAdministrativas.setFirma(firmaActual);
+			
             String uri = actualizarPropiedades(propiedadesDocumento, clasificado);
         	if (documento.uri != uri) {
         		play.Logger.info("Se actualiza la uri del documento "+documento.uri+ " -> "+uri);
@@ -948,6 +950,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	}
         }catch(AedExcepcion e){
             throw serviceExceptionFrom(e);
+        } catch (Exception e) {
+        	play.Logger.info("No se ha podido agregar la firma al documento: "+documento+" -> "+e);
         }
 	}
 
@@ -1003,13 +1007,18 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
     
 	private String actualizarPropiedades(PropiedadesDocumento propiedades, boolean clasificado) throws AedExcepcion {
-        if(clasificado){
-            //TODO falta ver las ubicaciones y si se incrementa la versión del documento
+		if(clasificado){
+			//TODO falta ver las ubicaciones y si se incrementa la versión del documento
             List<DocumentoEnUbicacion> ubicaciones = aedPort.obtenerDocumentoRutas(propiedades.getUri());
             List<Ubicaciones> newUbicaciones = clonarUbicaciones(ubicaciones);
             return aedPort.actualizarDocumentoPropiedades(propiedades, newUbicaciones);
         }else{
-            aedPort.actualizarDocumentoPropiedadesNoClasificado(propiedades);
+        	try {
+        		aedPort.actualizarDocumentoPropiedadesNoClasificado(propiedades);
+        	} catch (Exception e) {
+        		play.Logger.error("No se ha podido actualizar las propiedades del documento"+e);
+        		new AedExcepcion("Error: "+e);
+        	}
             return propiedades.getUri();
         }
 	}

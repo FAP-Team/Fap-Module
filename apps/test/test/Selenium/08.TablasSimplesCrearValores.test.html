@@ -18,12 +18,12 @@
     waitForPageToLoad()
     
    	#{if !automatic}
-    	click('ext-gen1051')
+    	click(//span[text()="Nuevo"])
     	waitForElementPresent('tablaDeNombres_nombre')
     	waitForElementPresent('tablaDeNombres_apellido')
     	type('tablaDeNombres_nombre', 'NombreFAP')
     	type('tablaDeNombres_apellido', 'ApellidoFAP')
-    	click(//span[text()="Guardar"])
+    	click(link=Guardar)
     	waitForElementNotPresent('tablaDeNombres_nombre')
     #{/if}
     #{else}

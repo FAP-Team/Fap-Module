@@ -26,14 +26,14 @@
 		
 		 open('Solicitud/paginastablas?idSolicitud=${s.id}')
 		 waitForPageToLoad()
-	     clickAndWait('ext-gen1051')
+	     clickAndWait(//span[text()="Nuevo"])
 	     waitForPageToLoad()
 	     waitForElementPresent('tablaPaginas_nivel1_fecha')
 	     
 	     {% //Validar y guardar bien antes de abrir una pagina de tabla %}
 	     
 	     type('tablaPaginas_nivel1_nombre', 'pruebaOk')
-		 clickAndWait('ext-gen1051')
+		 clickAndWait(//span[text()="Nuevo"])
 		 waitForPageToLoad()
 		 waitForElementPresent('tablaPaginas_nivel2_nombre')
 		 clickAndWait(//input[@value='Guardar'])
@@ -44,19 +44,19 @@
 		 {% //Validar mal antes de abrir una pagina de tabla %}
 		 
 		 type('tablaPaginas_nivel1_fecha', 'pruebaMal')
-		 clickAndWait('ext-gen1051')
+		 clickAndWait(//span[text()="Nuevo"])
 		 waitForPageToLoad()
 		 waitForElementPresent('tablaPaginas_nivel1_fecha')
 		 click('tablaPaginas_nivel1_fecha')
 	     type('tablaPaginas_nivel1_fecha', '24/08/2012')
 		 
-		 clickAndWait('ext-gen1051')
+		 clickAndWait(//span[text()="Nuevo"])
 		 waitForPageToLoad()
 		 waitForElementPresent('tablaPaginas_nivel2_nombre')
-		 clickAndWait('ext-gen1051')
+		 clickAndWait(//span[text()="Nuevo"])
 		 waitForPageToLoad()
 		 waitForElementPresent('tablaPaginas_nivel3_nombre')
-		 click('ext-gen1051')
+		 click(//span[text()="Nuevo"])
 		 waitForElementPresent('tablaDeNombres_nombre')
 		 type('tablaDeNombres_nombre', 'fin de profundidad')
 		 click('Guardar_id')

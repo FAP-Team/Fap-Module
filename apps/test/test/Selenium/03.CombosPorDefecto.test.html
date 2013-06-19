@@ -5,13 +5,17 @@
 	
 	play.mvc.Controller.session.put("username", "admin");
 	controllers.fap.AgenteController.findAgente();
+
 }%
 
 #{selenium}
-
+	
 	open('Principal/solicitudes')
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='Borrador'])
+	%{
+		//controllers.fap.AgenteController.getAgente().cambiarRolActivo("administrador")
+	}%
 		
     open('/Solicitud/combos?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
@@ -19,27 +23,39 @@
     select('solicitud_comboTest_list', label=B)
     addSelection('solicitud_comboTest_listMultiple', label=A)
     addSelection('solicitud_comboTest_listMultiple', label=C)
-
-
-    
+   
     #{if !automatic}
+    	//Hay que hacer un submit aquí porque si no al cambiar de usuario, no se guardan los cambios
+   	 	clickAndWait(//input[@type='submit'])
+		click(//li[3]/a/i)
+		clickAndWait(link=Administrador)
+		waitForPageToLoad()
+		pause(3000)
     	click(//span[text()="Nuevo"])
     	waitForElementPresent('comboTestRef_nombre')
     	type('comboTestRef_nombre', 'Referencia1')
-    	click(//span[text()="Guardar"])
+    	click(link=Guardar)
     	waitForElementNotPresent('comboTestRef_nombre')
-    
+		
+		waitForPageToLoad()
+		pause(1000)   
     	click(//span[text()="Nuevo"])
     	waitForElementPresent('comboTestRef_nombre')
     	type('comboTestRef_nombre', 'Referencia2')
-    	click(//span[text()="Guardar"])
+    	click(link=Guardar)
     	waitForElementNotPresent('comboTestRef_nombre')
-    
+    	
+    	waitForPageToLoad()
+    	pause(1000)
     	click(//span[text()="Nuevo"])
     	waitForElementPresent('comboTestRef_nombre')
     	type('comboTestRef_nombre', 'Referencia3')
-    	click(//span[text()="Guardar"])
+    	click(link=Guardar)
     	waitForElementNotPresent('comboTestRef_nombre')
+    	waitForPageToLoad()
+    	pause(1000)
+    	click(//li[3]/a/i)
+		clickAndWait(link=Usuario)
     #{/if}
     #{else}
     	// Creamos en la BBDD lo que no pudimos crear en el test

@@ -34,6 +34,9 @@
 	addSelection('id=solicitud_comboErrorMany', 'label=Referencia1')
 	type(id=solicitud_solicitante_telefonoFijo, '')
 	clickAndWait(//input[@type='submit'])
+	waitForPageToLoad()
+    //A veces un waitForPageToLoad() no es suficiente, por eso el pause
+    pause(7000)
 	verifyTextPresent('Error al guardar. La página contiene errores.')
 	verifyText(//input[@id='solicitud_solicitante_telefonoFijo']/../span[@class='help-inline'], 'Requerido')
 	verifyValue(//input[@id='solicitud_solicitante_telefonoFijo'], '')

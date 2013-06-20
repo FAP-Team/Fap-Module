@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 import javax.xml.ws.Holder;
@@ -929,9 +930,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     		firmanteAed.setFirmanteNif(FapProperties.get("fap.platino.firmante.documento"));
 			String dateToken = getXMLElementValue("date", firmaStr);
 			String hourToken = getXMLElementValue("time", firmaStr);
-			hourToken = hourToken.substring(0, hourToken.length() - 1);
+			hourToken = hourToken.substring(0, hourToken.length());
 			DateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 			try {
+				formatter.setTimeZone(TimeZone.getTimeZone("Etc/GTM+1"));
 				Date parsedDate = formatter.parse(dateToken + " " + hourToken);
 				firmanteAed.setFecha(parsedDate);
 			} catch (Exception ex) {
@@ -949,6 +951,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 				documento.save();
         	}
         }catch(AedExcepcion e){
+        	play.Logger.info("No se ha podido agregar la firma al documento: "+documento);
             throw serviceExceptionFrom(e);
         } catch (Exception e) {
         	play.Logger.info("No se ha podido agregar la firma al documento: "+documento+" -> "+e);

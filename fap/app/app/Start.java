@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -243,6 +244,9 @@ public class Start extends Job {
 				convocatoria.save();
 			}
 		}
+		
+		// TimeZone por defecto del servidor
+		play.Logger.info("TimeZone por defecto: "+TimeZone.getDefault());
         
 	}
 

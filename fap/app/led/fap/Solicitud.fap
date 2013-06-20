@@ -1041,6 +1041,16 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Enlace campo=Registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton"
 			}
 		}
+		
+		Grupo titulo="Presentación de modificaciones"  mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
+			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Totales" recargarPagina {
+				Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
+				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
+				Columna campo=RegistroModificacion.registro.oficial.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+				Columna campo=RegistroModificacion.registro.oficial.enlaceDescargaFirmado titulo="Descarga" expandir
+			}
+		}
 	}
 
 	// Sobreescrito

@@ -933,7 +933,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			hourToken = hourToken.substring(0, hourToken.length());
 			DateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 			try {
-				formatter.setTimeZone(TimeZone.getTimeZone("Etc/GTM+1"));
+				formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 				Date parsedDate = formatter.parse(dateToken + " " + hourToken);
 				firmanteAed.setFecha(parsedDate);
 			} catch (Exception ex) {

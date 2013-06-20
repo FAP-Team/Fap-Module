@@ -1,5 +1,7 @@
 package controllers.popups;
 
+import java.util.Map;
+
 import org.joda.time.DateTime;
 
 import messages.Messages;
@@ -7,6 +9,7 @@ import models.Registro;
 import models.RegistroModificacion;
 import models.SolicitudGenerica;
 import play.mvc.Util;
+import validation.CustomValidation;
 import controllers.gen.popups.popupCrearModificacionSolicitudControllerGen;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 
@@ -48,6 +51,22 @@ public class popupCrearModificacionSolicitudController extends popupCrearModific
 			log.info("Acción Crear de página: " + "gen/popups/popupCrearModificacionSolicitud.html" + " , intentada sin éxito (Problemas de Validación)");
 		}
 		return idRegistroModificacion;
+	}
+	
+	@Util
+	public static void popupCrearModificacionSolicitudValidateCopy(String accion, RegistroModificacion dbRegistroModificacion, RegistroModificacion registroModificacion) {
+		CustomValidation.clearValidadas();
+
+		if (secure.checkGrafico("crearModificacionSolicitud", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+			CustomValidation.valid("registroModificacion", registroModificacion);
+			DateTime fechaHora = registroModificacion.fechaLimite;
+			fechaHora = fechaHora.withMinuteOfHour(59);
+			fechaHora = fechaHora.withSecondOfMinute(59);
+			fechaHora = fechaHora.withHourOfDay(23);
+			dbRegistroModificacion.fechaLimite = fechaHora;
+
+		}
+
 	}
 	
 }

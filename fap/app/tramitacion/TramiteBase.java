@@ -422,7 +422,7 @@ public abstract class TramiteBase {
 				} catch (Exception e){
 					play.Logger.error("Envío del Mail de registro del trámite fallido "+this.getMail()+": "+e.getMessage());
 				}
-				play.Logger.info("Correo Registro del trámtite de '%s' enviado", this.getTipoTramite());
+				play.Logger.info("Correo Registro del trámite de '%s' enviado", this.getTipoTramite());
 				
 				tx.commit();
 			}

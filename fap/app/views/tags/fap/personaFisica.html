@@ -12,6 +12,7 @@
 	def siComboValue = _siComboValue
 	def sexo = _sexo != null? _sexo : false;
 	def nacimiento = _nacimiento != null? _nacimiento : false;
+	def tiempoNuevo = properties.FapProperties.get("fap.terceros.reload");
 
 }%
 	#{if label != null}
@@ -110,7 +111,7 @@
 												if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla") || (parts[0].replace("%&%", "") === "provinciaIsla") || (parts[0].replace("%&%", "") === "municipioIsla")){
 				 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
 				 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).change();
-				 						 			tiempoNuevo=1500;
+				 						 			tiempoNuevo=${tiempoNuevo};
 				 						 		}
 				 						 	}
 				 						} else {

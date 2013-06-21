@@ -54,6 +54,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	OneToMany CertificadoSolicitado certificados
 	Cesion cesion
 	Boolean activoModificacion default="false"
+	String estadoAntesModificacion	//Estado al que se vuelve al finalizar la modificacion
 	OneToMany RegistroModificacion registroModificacion
 	String fechaARestaurarStr transient
 }

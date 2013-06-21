@@ -42,6 +42,7 @@ public class popupCrearModificacionSolicitudController extends popupCrearModific
 			dbRegistroModificacion.save();
 			idRegistroModificacion = dbRegistroModificacion.id;
 			dbSolicitud.activoModificacion=true;
+			dbSolicitud.estadoAntesModificacion = dbSolicitud.estado;
 			dbSolicitud.registroModificacion.add(dbRegistroModificacion);
 			dbSolicitud.estado = EstadosSolicitudEnum.modificacion.name();
 			dbSolicitud.save();

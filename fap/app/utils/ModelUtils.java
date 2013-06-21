@@ -788,7 +788,7 @@ public class ModelUtils {
 				ultimoRegistro.save();
 			}
 			solicitud.activoModificacion = false;
-			solicitud.estado = EstadosSolicitudEnum.iniciada.name();
+			solicitud.estado = solicitud.estadoAntesModificacion;
 			solicitud.save();
 		}
 	}

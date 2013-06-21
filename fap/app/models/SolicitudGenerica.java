@@ -115,6 +115,8 @@ public class SolicitudGenerica extends FapModel {
 
 	public Boolean activoModificacion;
 
+	public String estadoAntesModificacion;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_registromodificacion")
 	public List<RegistroModificacion> registroModificacion;

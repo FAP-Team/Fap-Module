@@ -112,13 +112,12 @@ Formulario Solicitud permiso=solicitudes{
     	}    	
 
     	Grupo "Paginas Copias" {
-    		Enlace "Copia (Modificaciones permitidas)" pagina=PaginaCopia
-    		Enlace "Copia tablas" pagina=CopiaTablas
     		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
-    		Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
-    		//Copia de los ConceptosEconomicos
-			Enlace "PCEconomicosCopia" pagina=PCEconomicosCopia
-			Enlace "DireccionesCopia" pagina=DireccionesCopia
+    		Enlace "- Modificaciones Simples" pagina=PaginaCopia
+    		Enlace "- Modificaciones en Tablas" pagina=CopiaTablas
+			Enlace "- Modificaciones en PCEconomicos" pagina=PCEconomicosCopia
+			Enlace "- Modificaciones en Direcciones" pagina=DireccionesCopia
+			Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
     	}
 		
 		Enlace "Aportación" pagina=Aportacion

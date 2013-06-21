@@ -25,6 +25,7 @@ import utils.ModelUtils;
 import utils.PeticionModificacion;
 import utils.PeticionModificacion.ValorCampoModificado;
 import controllers.gen.ActivarModificacionSolicitudesControllerGen;
+import enumerado.fap.gen.EstadosModificacionEnum;
 
 public class ActivarModificacionSolicitudesController extends ActivarModificacionSolicitudesControllerGen {
 	
@@ -66,7 +67,7 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 				boolean recuperarPresentacion = true;
 				for (RegistroModificacion rm: dbSolicitud.registroModificacion){
 					//Comprobar si se han creado elementos nuevos que haya que borrar
-					if (rm.estado.equals("En Curso")){
+					if (rm.estado.equals(EstadosModificacionEnum.enCurso.value())){
 						idRecuperar = rm.id;
 						ModelUtils.restaurarBorrados(rm.id, idSolicitud);
 						ModelUtils.restaurarSolicitud(idRecuperar, idSolicitud, false);

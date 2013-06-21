@@ -783,8 +783,8 @@ public class ModelUtils {
 		if (!Messages.hasErrors()){
 			SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 			RegistroModificacion ultimoRegistro = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1);
-			if (ultimoRegistro.fechaFinalizacion == null){
-				ultimoRegistro.fechaFinalizacion=new DateTime();
+			if (ultimoRegistro.fechaCancelacion == null){
+				ultimoRegistro.fechaCancelacion=new DateTime();
 				ultimoRegistro.save();
 			}
 			solicitud.activoModificacion = false;

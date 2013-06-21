@@ -9026,5 +9026,12 @@ Lista codigosRegimen crearEnumerado{
 	1240: "Régimen especial empleados hogar (Convenio especial)."
 	1250: "Régimen especial empleados hogar (Fijos + Situación Especial)."
 	3011: "Asistencia Sanitaria Concertada."
+}
 
+Lista estadosModificacion crearEnumerado{
+	enCurso: "En Curso"
+	registrada: "Registrada"  // Finalizada
+	cancelada: "Cancelada"    //Abortada
+	expirada: "Expirada"      //Pasada de fecha
+	
 }

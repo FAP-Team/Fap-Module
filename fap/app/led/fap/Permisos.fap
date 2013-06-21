@@ -1561,7 +1561,7 @@ Permiso habilitarModificacionSolicitud{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "gestor") and
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
 		solicitud.estado != "borrador"
 	return
 	    all

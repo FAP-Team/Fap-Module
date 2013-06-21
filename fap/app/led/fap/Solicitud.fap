@@ -1092,7 +1092,8 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Totales" recargarPagina {
 				Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
 				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
-				Columna campo=RegistroModificacion.registro.oficial.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=RegistroModificacion.fechaCancelacion titulo="Fecha Cancelación" expandir
 				Columna campo=RegistroModificacion.estado titulo="Estado" expandir
 				Columna campo=RegistroModificacion.registro.oficial.enlaceDescargaFirmado titulo="Descarga" expandir
 			}
@@ -1404,14 +1405,15 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Grupo titulo="Modificaciones de los Datos de la Solicitud por parte del Solicitante" {
 			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Totales" popupCrear=popupCrearModificacionSolicitud popupLeer=popupLeerModificacionSolicitud recargarPagina {
 				Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
-				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
-				Columna campo=RegistroModificacion.fechaFinalizacion titulo="Fecha Finalización" expandir
+				Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registrada" expandir
+				Columna campo=RegistroModificacion.fechaCancelacion titulo="Fecha Cancelada" expandir
 				Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+				Columna campo=RegistroModificacion.registro.justificante.enlaceDescargaFirmado titulo="Descarga"
 			}
 		}
 		
-		Grupo titulo="Restaurar valores de los Datos de la Solicitud" mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
-			Form formRestaurarModificacion{
+		Grupo titulo="Restaurar valores de los Datos de la Solicitud" mostrarSiExpresion "!solicitud.registroModificacion.isEmpty() && solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).estado == \"En Curso\" "  {
+			Form formRestaurarModificacion {
 				Combo fechaARestaurar campo=SolicitudGenerica.fechaARestaurarStr titulo="Fecha Creación de la Modificación" requerido // Sobreescrito
 				Boton restaurarBtn titulo="Restaurar" type=danger
 			}

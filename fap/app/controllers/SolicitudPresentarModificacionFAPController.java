@@ -250,7 +250,7 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 						tramite.registrar();
 						if (dbRegistro.fasesRegistro.clasificarAed){
 							tramite.cambiarEstadoSolicitud();
-							registroModificacion.fechaFinalizacion = dbRegistro.informacionRegistro.fechaRegistro;
+							registroModificacion.fechaRegistro = dbRegistro.informacionRegistro.fechaRegistro;
 							registroModificacion.save();
 						}
 						else{
@@ -347,7 +347,7 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 							tramite.registrar();
 							if (dbRegistro.fasesRegistro.clasificarAed){
 								tramite.cambiarEstadoSolicitud();
-								registroModificacion.fechaFinalizacion = dbRegistro.informacionRegistro.fechaRegistro;
+								registroModificacion.fechaRegistro = dbRegistro.informacionRegistro.fechaRegistro;
 								registroModificacion.save();
 							}
 							else{
@@ -532,7 +532,7 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 					tramite.registrar();
 					if (dbRegistro.fasesRegistro.clasificarAed){
 						tramite.cambiarEstadoSolicitud();
-						registroModificacion.fechaFinalizacion = dbRegistro.informacionRegistro.fechaRegistro;
+						registroModificacion.fechaRegistro = dbRegistro.informacionRegistro.fechaRegistro;
 						registroModificacion.save();
 					}
 					else{

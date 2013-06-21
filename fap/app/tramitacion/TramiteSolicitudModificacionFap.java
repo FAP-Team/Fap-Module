@@ -49,6 +49,11 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 	public String getTipoTramite() {
 		return TramiteSolicitudModificacionFap.TIPO_TRAMITE;
 	}
+	
+	@Override
+	public final String getDescripcionJustificante() {
+		return "Justificante de registro de la solicitud de Modificación "+TramiteSolicitudModificacionFap.TIPO_TRAMITE;
+	}
 
 	@Override
 	public String getTipoRegistro() {

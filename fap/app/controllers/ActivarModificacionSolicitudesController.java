@@ -67,14 +67,14 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 				boolean recuperarPresentacion = true;
 				for (RegistroModificacion rm: dbSolicitud.registroModificacion){
 					//Comprobar si se han creado elementos nuevos que haya que borrar
-					if (rm.estado.equals(EstadosModificacionEnum.enCurso.value())){
+					if ((rm.estado.equals(EstadosModificacionEnum.expirada.value())) ||(rm.estado.equals(EstadosModificacionEnum.enCurso.value()))){
 						idRecuperar = rm.id;
 						ModelUtils.restaurarBorrados(rm.id, idSolicitud);
 						ModelUtils.restaurarSolicitud(idRecuperar, idSolicitud, false);
 					}
 				}			
 				for (RegistroModificacion rm: dbSolicitud.registroModificacion){
-					if (rm.estado.equals("En Curso")){
+					if (rm.estado.equals(EstadosModificacionEnum.expirada.value()) || rm.estado.equals(EstadosModificacionEnum.enCurso.value())){
 						ModelUtils.eliminarCreados(rm.id, idSolicitud);
 					}
 				}

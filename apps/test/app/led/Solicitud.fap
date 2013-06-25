@@ -96,11 +96,7 @@ Formulario Solicitud permiso=solicitudes{
     	    	
     	Grupo "Módulo FAP" {
 			Enlace "Verificaciones" pagina=AccesoVerificaciones
-			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
-
-		
-
-			Enlace "Justificacion" pagina=Justificacion
+			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    				Enlace "Justificacion" pagina=Justificacion
 			Enlace "PCEconómicos" pagina=PCEconomicos	
 			Enlace "Desistimiento" pagina=Desistimiento
 			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
@@ -111,8 +107,8 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "Certificados" pagina=CertificadosSolicitados
     	}    	
 
-    	Grupo "Paginas Copias" {
-    		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
+		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
+    	Grupo "Paginas Copias" permiso=menuConModificacion{
     		Enlace "- Modificaciones Simples" pagina=PaginaCopia
     		Enlace "- Modificaciones en Tablas" pagina=CopiaTablas
 			Enlace "- Modificaciones en PCEconomicos" pagina=PCEconomicosCopia

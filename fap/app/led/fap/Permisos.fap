@@ -1654,3 +1654,21 @@ Permiso adminGestorJefeServicio {
 	return all
 
 }
+
+//Permiso sobreescrito
+Permiso menuConModificacion {
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "revisor", "gestor") and
+		(solicitud.estado = "modificacion")
+	return
+		all
+	when
+		agente.rolActivo = "usuario"
+		and
+		(solicitud.estado = "modificacion")
+		// Comprobar que está enCurso
+	return
+		all
+}

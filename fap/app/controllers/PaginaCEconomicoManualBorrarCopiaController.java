@@ -49,8 +49,8 @@ public class PaginaCEconomicoManualBorrarCopiaController extends PaginaCEconomic
 			}
 			List<String> valoresAntiguos = new ArrayList<String>();
 			peticionModificacion.idSimples.put("idCEconomicosManuales",idCEconomicosManuales); //ID que "borro" 
-			valoresAntiguos.add(dbCEconomico.tipo.nombre.toString());
-			peticionModificacion.setValorBorrado("Solicitud.ceconomicos.otros", new ArrayList<String>(), valoresAntiguos); //<-
+			valoresAntiguos.add(dbCEconomicosManuales.tipo.nombre.toString());
+			peticionModificacion.setValorBorrado("Solicitud.ceconomicos.otros.tipo.nombre", new ArrayList<String>(), valoresAntiguos); //<-
 			
 			Gson gson = new Gson();
 			String jsonPM = gson.toJson(peticionModificacion);
@@ -60,10 +60,6 @@ public class PaginaCEconomicoManualBorrarCopiaController extends PaginaCEconomic
 			dbSolicitud.save();
 
 			dbCEconomico.otros.remove(dbCEconomicosManuales);
-			System.out.println("BORRADO: "+dbCEconomicosManuales.id);
-			for (CEconomicosManuales id : dbCEconomico.otros) {
-				System.out.println("QUEDA: "+id.id);
-			}
 			dbCEconomico.save();	
 			log.info("Acción Borrar de página: " + "gen/popups/PaginaCEconomicoManualBorrar.html" + " , intentada con éxito");
 		} else {

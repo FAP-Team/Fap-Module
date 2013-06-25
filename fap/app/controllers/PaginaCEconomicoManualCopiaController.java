@@ -91,7 +91,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 					}
 				}
 			}
-			peticionModificacion.idSimples.put("idCEconomicosManuales",dbCEconomicosManuales.id); //Viernes añadido
+			peticionModificacion.idSimples.put("idCEconomicosManuales",dbCEconomicosManuales.id);
 			List<String> valoresAntiguos = new ArrayList<String>();
 			List<String> valoresNuevos = new ArrayList<String>();
 			Boolean hayModificaciones = false;

@@ -395,6 +395,7 @@ public class ModelUtils {
 							try { 
 								Type tipoO2M = null;
 								Class claseEntidadBorrar = null;
+								String claseEntidadBorrarString = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
 								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);
@@ -407,23 +408,25 @@ public class ModelUtils {
 							           Matcher matcherClase = patternClase.matcher(t.toString());
 							           tipoO2M = t;
 							           if(matcherClase.find()) {
-							        	   claseEntidadBorrar = Class.forName(matcherClase.group(1).toString());
+							        	   claseEntidadBorrarString = matcherClase.group(1).toString();
+							        	   claseEntidadBorrar = Class.forName(claseEntidadBorrarString);
 							           }
 							        }  
 							    }  
 							       
 							    Method findById = claseEntidadBorrar.getDeclaredMethod("findById", Object.class);
-								if (matcher.find()){									
-									idAux = matcher.group(1);
-								    idRestaurar = peticionModificacion.idSimples.get(idAux);
-								}
+							    Pattern patternModel = Pattern.compile("models\\.(.*)");
+						        Matcher matcherModel = patternModel.matcher(claseEntidadBorrarString.toString());
+							    if (matcherModel.find())
+							    	idRestaurar = peticionModificacion.idSimples.get("id"+matcherModel.group(1));
+								
 								Object restaurar = findById.invoke(claseEntidadBorrar.newInstance(), idRestaurar);
 								aux.add(restaurar);
 								modeloEntidad.save();
 								restaurado = true;
 								break;
 							} catch (Exception e) {
-								play.Logger.error("(1)Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
+								play.Logger.error("Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
 								Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
 								Messages.keep();
 								break;
@@ -469,7 +472,7 @@ public class ModelUtils {
 							        }
 								}
 							} catch (Exception e) {
-								play.Logger.error("(2)Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
+								play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
 								Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
 								Messages.keep();
 								break;

@@ -65,13 +65,13 @@ public class RegistroModificacion extends FapModel {
 
 	public String getEstado() {
 		if (this.registro.fasesRegistro.registro)
-			return EstadosModificacionEnum.registrada.value(); // Registrada correctamente (Presentada en tiempo y forma)
+			return EstadosModificacionEnum.registrada.name(); // Registrada correctamente (Presentada en tiempo y forma)
 		else if ((this.fechaCancelacion == null) && (this.fechaRegistro == null) && (this.fechaLimite != null) && (this.fechaLimite.isBeforeNow()))
-			return EstadosModificacionEnum.expirada.value(); // Restaurada automáticamente tras pasarse la fecha límite y no ser presentada en tiempo y forma
+			return EstadosModificacionEnum.expirada.name(); // Restaurada automáticamente tras pasarse la fecha límite y no ser presentada en tiempo y forma
 		else if ((this.fechaCancelacion != null)) // && (this.fechaCancelacion.isBefore(this.fechaLimite)))
-			return EstadosModificacionEnum.cancelada.value(); // Restaurada manualmente por un gestor o administrador antes de acabar la fecha límite
+			return EstadosModificacionEnum.cancelada.name(); // Restaurada manualmente por un gestor o administrador antes de acabar la fecha límite
 		else
-			return EstadosModificacionEnum.enCurso.value(); // Modificable actualmente
+			return EstadosModificacionEnum.enCurso.name(); // Modificable actualmente
 	}
 
 	// === MANUAL REGION END ===

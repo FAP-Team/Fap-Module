@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 2.3RC3
+
+* Copia conceptos económicos
+
 h3. Versión 2.2
 
 * Incluida la Resolución.

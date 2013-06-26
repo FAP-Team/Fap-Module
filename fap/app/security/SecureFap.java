@@ -845,7 +845,7 @@ public class SecureFap extends Secure {
 			return new ResultadoPermiso(Accion.Leer);
 
 		if (agente.rolActivo.toString().equals("usuario".toString()) && solicitud != null && solicitud.estado.toString().equals("modificacion".toString()) && solicitud != null && solicitud.activoModificacion.toString().equals("true".toString()) && registro != null && registro.fasesRegistro.borrador.toString().equals("false".toString()) 
-				&& (registroModificacion.estado.equals(EstadosModificacionEnum.enCurso.value())))
+				&& (registroModificacion.estado.equals(EstadosModificacionEnum.enCurso.name())))
 			return new ResultadoPermiso(Accion.Editar);
 
 		return null;

@@ -1,76 +1,23 @@
 h2. Changelog
 
-h3. Versión 2.2RC13
+h3. Versión 2.2
 
-* Fixed bug agregando firma a documentos.
-
-h3. Versión 2.2RC12
-
-* Documento de informa de evaluación modificado.
-* Fixed comprobación de campos null en grupos.
-
-h3. Versión 2.2RC11
-
-* Resolución: Añadidos documentos informes completos y fixed bugs.
-* Ticketing: Fixed bugs.
-* Aportación de documentación: Se listan ahora todos los tipos de documentos.
-
-h3. Versión 2.2RC10
-
-* Resolución: Fixed bugs.
-
-h3. Versión 2.2RC9
-
-* Resolución: Fixed some bugs.
-* Reevaluar criterios: Fixed bug.
-* Fixed bug: Eventos DOM.
-* Parámetro del servicio de ticket ahora es idTicket.
-* Generación de contraseñas para nuevos usuarios automática.
-
-h3. Versión 2.2RC8
-
-* Mejorada Resolución.
-* Añadidos los atributos "noSexo" y "noNacimiento".
-* Fixed some minimal bugs.
-
-h3. Version 2.2RC7
-
-* Añadido método de obtenerListaCodigosExclusion
-* Añadido ResolucionUtils para ordenar lineas de resolucion (comparacion por criterios)
-* Añadida opciones noTelefono, noNacimiento.
-
-h3. Versión 2.2RC6
-
-* Añadido ticketing
-* Fixed bug requerimiento.html.
-* Conflicto en librerías al arrancar el dist (pdf 0.9 con alguna de un parser). Volviendo a pdf 0.6.
-
-h3. Versión 2.2RC5
-
-* Fixed bugs en resolución.
-
-h3. Versión 2.2RC4
-
-* Resolución: Envío al libro de resoluciones.
-
-h3. Versión 2.2RC3
-
-* Avanzando la Resolución hasta envío al portafirma.
-* Fixed bug grupode direcciones y envío de datos.
-
-h3. Versión 2.2RC2
-
-* Avanzando en la Resolución.
-* Modificación de Solicitudes (atributo "copia" en las páginas hechas para ello).
-
-h3. Versión 2.2RC1
-
-* Comezando a incluir la Resolución.
+* Incluida la Resolución.
+* Servicio de Ticketing.
 * Incluidos Servicios Web.
 * Incluido servicio de Terceros de Platino.
 * Incluida la firma con el sello.
 * Incluida la cesión de datos.
 * Incluida la factura electrónica (visor y conversor _facturae_).
+* Modificación de Solicitudes (no está todo lo posible incluido).
+* Generación de contraseñas para nuevos usuarios automática.
+* Aportación de documentación: Se listan ahora todos los tipos de documentos.
+* Fixed bug agregando firma a documentos.
+* Fixed comprobación de campos null en grupos.
+* Fixed bug grupo de direcciones y envío de datos.
+* Fixed bug: Reevaluar criterios.
+* Fixed bug: Eventos DOM.
+* Fixed some bugs.
 
 
 h3. Versión 2.1.2

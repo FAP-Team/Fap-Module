@@ -1744,7 +1744,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		public static void copyModificacionCamposSimples(String campoStr, Object campo, Object dbCampo, utils.PeticionModificacion peticionModificacion){
 			List<String> valoresNuevos = new ArrayList<String>();
 			List<String> valoresAntiguos = new ArrayList<String>();
-			if (((dbCampo == null) ^ (campo == null)) || ((campo != null) && (!campo.equals("dbCampo)))) {
+			if (((dbCampo == null) ^ (campo == null)) || ((campo != null) && (!campo.equals(dbCampo)))) {
 				if (dbCampo != null)
 				   valoresAntiguos.add(dbCampo.toString());
 				if ((campo == null))

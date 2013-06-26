@@ -27,6 +27,10 @@ public class ElementosBasicos extends FapModel {
 	@Column(columnDefinition = "LONGTEXT")
 	public String areaDeTexto;
 
+	public String textoRadio1;
+
+	public String textoRadio2;
+
 	public Boolean mBoolean;
 
 	public Integer numeroI;

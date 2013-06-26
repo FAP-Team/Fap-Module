@@ -10,8 +10,9 @@
 	def campo = _campo		
 	def siCombo = _siCombo
 	def siComboValue = _siComboValue
-	def noSexo = _noSexo != null? _noSexo : false;
-	def noNacimiento = _noNacimiento != null? _noNacimiento : false;
+	def sexo = _sexo != null? _sexo : false;
+	def nacimiento = _nacimiento != null? _nacimiento : false;
+	def tiempoNuevo = properties.FapProperties.get("fap.terceros.reload");
 
 }%
 	#{if label != null}
@@ -21,10 +22,10 @@
 			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}		
 
-			#{if noSexo == false}
+			#{if sexo == true}
 				#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
 			#{/if}
-			#{if noNacimiento == false}
+			#{if nacimiento == true}
 				#{fap.fecha id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}
 			#{/if}
 		#{/fap.grupo}
@@ -36,10 +37,10 @@
 			#{fap.texto id:id + '_primerApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.primerApellido'), campo:campo + '.primerApellido', requerido:requerido, obj:obj /}		
 			#{fap.texto id:id + '_segundoApellido', titulo:play.i18n.Messages.get('fap.tags.personafisica.segundoApellido'), campo:campo + '.segundoApellido', obj:obj /}
 
-			#{if noSexo == false}
+			#{if sexo == true}
 				#{fap.combo id:id + '_sexo', titulo:play.i18n.Messages.get('fap.tags.personafisica.sexo'), campo:campo + '.sexo', obj:obj /}
 			#{/if}
-			#{if noNacimiento == false}
+			#{if nacimiento == true}
 				#{fap.fecha id:id + '_fechaNacimiento', titulo:play.i18n.Messages.get('fap.tags.personafisica.fechaNacimiento'), campo:campo + '.fechaNacimiento', requerido:requerido, obj:obj /}
 			#{/if}
 		#{/fap.grupo}
@@ -110,9 +111,9 @@
 				 						 	if ($('#${solicitante}Direccion_'+parts[0].replace("%&%", "")).val() === ""){
 				 						 		$('#${solicitante}Direccion_'+parts[0].replace("%&%", "")).val(parts[1]);
 												if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla") || (parts[0].replace("%&%", "") === "provinciaIsla") || (parts[0].replace("%&%", "") === "municipioIsla")){
-				 						 			$('#${solicitante}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
-				 						 			$('#${solicitante}Direccion_'+parts[0].replace("%&%", "")).change();
-				 						 			tiempoNuevo=1500;
+				 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
+				 						 			$('#${id.replace("Fisica","")}Direccion_'+parts[0].replace("%&%", "")).change();
+				 						 			tiempoNuevo=${tiempoNuevo};
 				 						 		}
 				 						 	}
 				 						} else {

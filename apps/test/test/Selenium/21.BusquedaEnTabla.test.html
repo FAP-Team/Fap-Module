@@ -5,6 +5,7 @@
 	
 	play.mvc.Controller.session.put("username", "admin");
 	controllers.fap.AgenteController.findAgente();
+	controllers.fap.AgenteController.getAgente().cambiarRolActivo('usuario')
 }%
 
 #{selenium}
@@ -18,7 +19,8 @@
     	waitForElementPresent('ext-gen1012')
     	type('ext-gen1012', 'prueba')
     	click('ext-gen1035')
-		waitForElementNotPresent(//table)
+    	//SE CAMBIÓ EL waitForElementNotPresent(//table) porque cuando se pasan todos los test, si hay algo en la tabla
+		waitForElementPresent(//div[text()='NombreFAP'])
 	#{/if}
 	
 #{/selenium}

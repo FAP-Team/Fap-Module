@@ -26,7 +26,7 @@ public class TramiteJustificacion extends TramiteBase{
 	private final static String BODY_REPORT = "reports/solicitudJustificacion.html";
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
-	private final static String MAIL = "justificacionRealizada";
+	private final static String MAIL = FapProperties.get("fap.tramitacion.justificacion.identificadoremail");
 	private final static String JUSTIFICANTE = FapProperties.get("fap.aed.tiposdocumentos.justificacion.registro");
 	
 	public TramiteJustificacion(SolicitudGenerica solicitud) {

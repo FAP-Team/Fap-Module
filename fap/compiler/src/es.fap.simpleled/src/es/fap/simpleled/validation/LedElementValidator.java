@@ -34,6 +34,7 @@ import es.fap.simpleled.led.FirmaSetTrue;
 import es.fap.simpleled.led.FirmaSimple;
 import es.fap.simpleled.led.Formulario;
 import es.fap.simpleled.led.Grupo;
+import es.fap.simpleled.led.GrupoRadioButtons;
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
 import es.fap.simpleled.led.Nip;
@@ -43,6 +44,7 @@ import es.fap.simpleled.led.PersonaFisica;
 import es.fap.simpleled.led.PersonaJuridica;
 import es.fap.simpleled.led.Popup;
 import es.fap.simpleled.led.RadioBooleano;
+import es.fap.simpleled.led.RadioButton;
 import es.fap.simpleled.led.ServicioWeb;
 import es.fap.simpleled.led.Solicitante;
 import es.fap.simpleled.led.SubirArchivo;
@@ -280,6 +282,9 @@ public abstract class LedElementValidator {
 		}
 		if (container instanceof FirmaSetTrue) {
 			return new CheckValidator(container);
+		}
+		if (container instanceof GrupoRadioButtons) {
+			return new GrupoRadioButtonsValidator(container);
 		}
 		return null;
 	}

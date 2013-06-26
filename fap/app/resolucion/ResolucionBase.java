@@ -414,8 +414,7 @@ public class ResolucionBase {
 				if (lineas != null) {
 					for (LineaResolucionFAP linea : lineas) {
 						tx.begin();
-						
-						if ((linea.docBaremacion == null) && ((linea.docBaremacion.uri == null) || (linea.docBaremacion.uri.isEmpty()))) {
+						if (((linea.docBaremacion.uri == null) || (linea.docBaremacion.uri.isEmpty()))) {
 							// 1. TODO: Generar documento en linea.docBaremacion
 							File docBaremacionOficial = res.generarDocumentoBaremacion(linea);
 							// 2. Subir al AED el File anterior
@@ -510,7 +509,7 @@ public class ResolucionBase {
 		
 
 	public String getTipoDocumentoResolucionIndividual(){
-		return FapProperties.get("fap.resolucion.baremacion.tipo");
+		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion");
 
 	}
 	

@@ -37,7 +37,7 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 	private final static String BODY_REPORT = "reports/solicitudModificacion.html";
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
-	private final static String MAIL = "solicitudModificada";
+	private final static String MAIL = FapProperties.get("fap.tramitacion.modificada.identificadoremail");
 	private final static String JUSTIFICANTE_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitudModificacion");
 	private final static String PREFIJO_JUSTIFICANTE_PDF = FapProperties.get("fap.tramitacion.prefijojustificantepdf.solicitudModificacion");
 	

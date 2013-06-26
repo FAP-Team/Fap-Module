@@ -1,0 +1,128 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{
+	def label = _label
+	def requerido = _requerido;
+	if(_requerido != null) 
+		requerido = _requerido
+	else if(field.required != null) 
+		requerido = field.required
+	else
+		requerido = false
+	def error = field.error? " error" : "";
+	
+	//Campo de los elementos de la lista a partir del cual se extrae la clave y el valor		
+	def grupoValue;
+	def grupoTexto;
+	// Si es con "reference" se pasa el id
+	if (field.reference) {
+		grupoValue = _grupoValue != null? _grupoValue : "id"
+		grupoTexto = _grupoTexto != null? _grupoTexto : "id"
+	} else {
+		grupoValue = _grupoValue != null? _grupoValue : "key"
+		grupoTexto = _grupoTexto != null? _grupoTexto : "value"
+	}
+	
+	def manyTo = _manyTo;
+	def name = "";
+}%
+
+<div class="control-group${error}">
+	<label class="control-label" >
+		${label}
+		#{if requerido}
+			<span class="required">*</span>
+		#{/if}
+	</label>
+	#{if ((field.table == null) && (field.reference == null))}
+		#{doBody/}
+	#{/if}
+	#{else}
+		%{
+			def items = null;
+			multiple = field.isCollection;
+			name = field.name;
+			if (manyTo) 
+				name = field.id ?: _id ;
+
+			if (tags.ReflectionUtils.existsControllerMethod(id)){
+				items = tags.ReflectionUtils.callControllerMethodIfExists(id) // Devuelve null si no existe el método
+			} else if (tags.ReflectionUtils.existsControllerMethod(oldId)){
+				// Mantenemos la antigua llamada (por compatibilidad)
+				items = tags.ReflectionUtils.callControllerMethodIfExists(oldId) // Devuelve null si no existe el método
+			} else {
+				items = _itemsModificables.collect{ new tags.ComboItem(it."$grupoValue", it."$grupoTexto")} // Devuelve lista vacia si no existe _itemsModificable
+				// Este IF antes iba por fuera del ELSE, pero como los métodos sobreescritos que devuelven los valores de los combos pueden devolver listas vacías, podía entrar por este IF cuando no debería
+				if ((items == null) || (items.size() == 0)){
+					//No existe método en el controlador ni _itemsModificable (que solo existira si se llama al combo desde un tag documento)
+					if(field.reference){
+						//Opciones buscando todas las filas de una tabla
+						items = [];
+						
+						for(row in field.referenceClass.findAll()){
+							def ik; 
+							def iv;
+							try {
+								ik = row."$grupoValue";
+								iv = row."$grupoTexto"?.toString();
+							}catch(Exception e){
+								ik = row.id.toString();
+								iv = ik;
+							}							
+							items.add(new tags.ComboItem(ik, iv));
+						}
+					}else
+						//Opciones desde tabla de tablas
+						items = tags.ComboItem.listFromTableOfTable(field.table)
+				}
+			}
+			
+			//Values
+			def values = [];			
+			if(value != null){
+				if(field.reference){
+					values.addAll(value.collect{ it."$grupoValue" })
+				}else{
+					//Tabla de tablas
+					if (value.getClass() == String.class)
+						values.addAll(value.split(","));
+					else
+						values.addAll(value);
+				}
+			}
+		}%
+		#{list items:items, as:'entry'}
+			#{if field.reference == null}
+				#{fap.radioButton campo:'field', parent:field.name, valor:entry.key, titulo:entry.value, parentValue:field.value /}
+			#{/if}
+			#{else}
+				%{				
+					String claveFalsa = field.name;
+					claveFalsa = claveFalsa.replace(".", "_");
+				}%
+				#{fap.radioButton campo:'field', parent:claveFalsa, valor:entry.key, titulo:entry.value, parentValue:field.value /}
+			#{/else}
+		#{/list}
+	#{/else}
+</div>
+
+#{if multiple}
+	<script>
+	#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
+		$("#${id}.combo").chosen();
+		$('#${id}_chzn').on("click", "a", function(){
+			if (comboTieneBind === false) {
+				comboTieneBind = true; 
+    			$('select.combo').one("change", function(){
+    					hayCambiosSinGuardar=true;
+    			});	
+    		}
+    	});
+	#{/if}
+	</script>
+
+#{/if}
+
+#{/fap.field}

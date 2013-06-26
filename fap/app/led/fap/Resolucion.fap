@@ -77,7 +77,9 @@ Entidad LineaResolucionFAP {
 	Double puntuacionBaremacion
 	Moneda importeTotal
 	Moneda importeConcedido
-	Documento docBaremacion // Documento visible para el solicitante de la Baremación del Expediente
+	Documento docBaremacion 			// Documento visible para el solicitante de la Baremación del Expediente
+	Documento docEvaluacionCompleto		// Documento con la Evaluación Completa
+	Documento docEvaluacionCompletoConComentarios 	// Documento con la Evaluación Completa con Comentarios de la Admin
 }
 
 // Entidades de la resolución
@@ -323,7 +325,7 @@ Formulario Principal {
 			Wiki { "Publicar resolución" }
 			Form publicarResolucion {
 				Fecha campo=ResolucionFAP.fechaFinAceptacion titulo="Fecha Fin de Aceptación" requerido
-				Boton btnPublicarResolucion titulo="Publicar la Resolución"
+				Boton btnPublicarResolucion titulo="Publicar la Resolución" waitPopup
 			}
 			Form firmarBaremacion {
 				Boton btnFirmarBaremacion titulo="Firmar documentos de Baremación"

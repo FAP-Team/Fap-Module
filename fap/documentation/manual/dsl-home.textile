@@ -9,6 +9,8 @@ Hemos visto previamente elementos que se pueden usar en una aplicación FAP como
 # "Check":dsl-check
 # "Columna":dsl-columna
 # "Combo":dsl-combo
+# "GrupoRadioButtons":dsl-grupoRadioButtons
+# "RadioButton":dsl-radioButton
 # "Direccion":dsl-direccion
 # "Editar archivo":dsl-editarArchivo
 # "Editar factura":dsl-editarFactura

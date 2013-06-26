@@ -1,0 +1,24 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+
+%{
+	def parent = _parent
+	def titulo = _titulo ?: _valor
+	def valor = _valor
+	def parentValue = _parentValue ?: field.flashorvalue
+	
+	def checked = ""
+	if (parentValue == null)
+		checked = _default ? "checked" : "";
+	else
+		checked = (parentValue.equals(valor) || parentValue.toString().contains(valor.toString())) ? "checked" : "";
+}%
+
+<div class="controls">
+	<input type="radio" name="${parent}" value="${valor}" ${checked}>
+	${titulo}
+</div>
+
+#{/fap.field}

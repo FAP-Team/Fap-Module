@@ -48,7 +48,7 @@ public class NotificarAlertasAnotacionesFAP extends Job implements LocalVariable
 			
 					for (AnotacionFAP anotacion : anotaciones) {
 						try {
-							if (anotacion.fechaAlerta.isBeforeNow()) {
+							if (anotacion.fechaAlerta!=null && anotacion.fechaAlerta.isBeforeNow()) {
 								play.Logger.info("Correo send to:" +  anotacion.personaAsunto.email);
 								play.Logger.info("Fecha:" +  anotacion.fecha);
 								play.Logger.info("Fecha Alerta:" +  anotacion.fechaAlerta);
@@ -59,7 +59,7 @@ public class NotificarAlertasAnotacionesFAP extends Job implements LocalVariable
 								if (solicitud != null){
 									play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("anotacion", anotacion);
 									play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-									Mails.enviar("anotacion", anotacion, solicitud);
+									Mails.enviar(FapProperties.get("fap.seguimiento.alerta.identificadoremail") , anotacion, solicitud);
 									anotacion.alertaNotificada = true;
 									anotacion.save();
 									play.Logger.debug("Nueva notificación de expiración de una alerta: email");

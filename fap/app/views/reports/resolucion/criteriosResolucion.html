@@ -159,11 +159,12 @@ p {
 		def tipo = evaluacion.solicitud.solicitante.fisica.nip.tipo.toUpperCase(); 
 	}%
 			
-			#{if (evaluacion.solicitud.solicitante.tipo == "fisica")}
 		<tr>
 			<th>Numero de Expediente:</th>
 			<td>${evaluacion.solicitud.expedienteAed.idAed}</td>
 		</tr>
+		
+		#{if (evaluacion.solicitud.solicitante.tipo == "fisica")}
 		<tr>
 			<th>${tipo}:</th>
 			<td>${evaluacion.solicitud.solicitante.fisica.nip.valor}</td>

@@ -25,7 +25,7 @@ public class TramiteAlegacion extends TramiteBase {
 	private final static String BODY_REPORT = "reports/alegacion.html";
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
-	private final static String MAIL = "alegacionRealizada";
+	private final static String MAIL = FapProperties.get("fap.tramitacion.alegacion.identificadoremail");
 	private final static String JUSTIFICANTE = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroAlegacion");
 	private PlatinoGestorDocumentalService platinoGestorDocumentalService;
 	

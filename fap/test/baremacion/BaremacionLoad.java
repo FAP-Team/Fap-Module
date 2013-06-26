@@ -44,7 +44,7 @@ public class BaremacionLoad extends UnitTest {
 		tipo.save();
 		
 		SolicitudGenerica solicitud = getOrCreateSolicitudGenerica();
-		
+		solicitud.save();
 		Evaluacion evaluacion = createEvaluacion(tipo);
 		evaluacion.solicitud = solicitud;
 		evaluacion.save();

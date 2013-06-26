@@ -19,21 +19,25 @@
     	waitForElementPresent(//div[text()='NombreFAP'])
     	mouseOver(//div[text()='NombreFAP']/parent::td/parent::tr)
 		mouseDown(//div[text()='NombreFAP']/parent::td/parent::tr)
-		click('ext-gen1059')
+		click(//span[text()="Borrar"])
 		waitForElementPresent('tablaDeNombres_nombre')
 		waitForElementPresent('tablaDeNombres_apellido')
-		waitForElementPresent(//span[text()='Borrar'])
-    	click(//*[text()='Cerrar']/parent::button/parent::div/button)
+		
+		//waitForElementPresent(//span[text()='Borrar']
+    	//click(//*[text()='Cerrar']/parent::button/parent::div/button)
+    	click(link=Borrar)
     	waitForElementNotPresent('tablaDeNombres_nombre')
     
     	// Creamos de nuevo el valor
     	waitForElementPresent('tablaNombres-grid')
-    	click('ext-gen1051')
+    	click(//span[text()="Nuevo"])
+    	//click('ext-gen1051')
     	waitForElementPresent('tablaDeNombres_nombre')
     	waitForElementPresent('tablaDeNombres_apellido')
     	type('tablaDeNombres_nombre', 'NombreFAP')
     	type('tablaDeNombres_apellido', 'ApellidoFAP')
-    	click(//span[text()='Guardar'])
+    	
+    	click(link=Guardar)
     	waitForElementNotPresent('tablaDeNombres_nombre') 
 	#{/if}
 	

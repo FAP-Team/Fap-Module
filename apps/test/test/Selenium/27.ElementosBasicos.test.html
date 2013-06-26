@@ -22,11 +22,34 @@
     type('solicitud_elementos_numeroL', 'palabraNoNumero')
     
     clickAndWait(//input[@type='submit'])
+    waitForPageToLoad()
+    //A veces un waitForPageToLoad() no es suficiente, por eso el pause
+    pause(7000)
     verifyTextPresent('Error al guardar. La página contiene errores.')
     
     type('solicitud_elementos_numeroL', '99')
+    click('solicitud.elementos.textoRadio2')
+      waitForPageToLoad()
+    //A veces un waitForPageToLoad() no es suficiente, por eso el pause
+    pause(1000)
+    clickAndWait(//input[@type='submit'])
+    waitForPageToLoad()
+    //A veces un waitForPageToLoad() no es suficiente, por eso el pause
+    pause(7000)
+    verifyTextPresent('Error al guardar. La página contiene errores.')
+    
+	clickAndWait('ext-gen1055')
+	type('paginasTab_nombre', 'A')
+    clickAndWait(//input[@type='submit'])
+    waitForPageToLoad()
+	waitForElementPresent(//input[@type='radio'][@value='1'])
+    click('solicitud.elementos.textoRadio1')
+	
     
     clickAndWait(//input[@type='submit'])
+    waitForPageToLoad()
+    //A veces un waitForPageToLoad() no es suficiente, por eso el pause
+    pause(7000)
     verifyTextPresent('Página editada correctamente')
     
 #{/selenium}

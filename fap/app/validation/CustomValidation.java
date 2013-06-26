@@ -184,6 +184,27 @@ public class CustomValidation {
         }
     }
     
+    static ValidationResult applyCheck(GRBCheck grbCheck, String key, Object o, ArrayList<String> values) {
+    	ValidationResult result = new ValidationResult();
+    	
+    	if (!grbCheck.validaGRB(((String) o), values)) {
+    		
+        	String field = key;
+        	String message = ((String) o);
+        	String[] variables = new String[0];
+            
+        	Error error = new Error(field, message, variables);
+            Validation.addError(field, message, variables);
+            
+            result.error = error;
+            result.ok = false;
+    		
+    	} else
+    		result.ok = true;
+    	
+    	return result;
+    }
+    
     public static ValidationResult required(String key, Object o) {
     	CustomRequiredCheck requiredCheck = new CustomRequiredCheck();
     	if (o instanceof PersonaFisica){
@@ -314,6 +335,19 @@ public class CustomValidation {
 		return result;
     }
     
+    public static ValidationResult valid(String key, Object o, ArrayList<String> values) {
+    	if (o != null)
+			if (!isValidada(key)) {
+		    	validada(key);
+				GRBCheck grbCheck = new GRBCheck();
+				return applyCheck(grbCheck, key, o, values);
+				
+			}
+
+		ValidationResult result = new ValidationResult();
+		result.ok = true;
+		return result;
+    }
     
     public static ValidationResult validValueFromTable(String key, Object o) {
 		if (o != null) {

@@ -570,8 +570,7 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 			if (agente == null)
 				agente = new Agente();
 			agente.username = tercero.getNumeroDocumento();
-			agente.name = tercero.getNombre() + tercero.getApellido1()
-					+ tercero.getApellido2();
+			agente.name = tercero.getNombre() + " " + tercero.getApellido1() + " " + tercero.getApellido2();
 			if ((tercero.getEmails() != null)
 					&& (tercero.getEmails().size() > 0)) {
 				EmailItem correo = buscarCorreoPrincipal(tercero.getEmails());

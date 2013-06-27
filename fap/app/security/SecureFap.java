@@ -909,7 +909,8 @@ public class SecureFap extends Secure {
 		
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 
-		if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "revisor", "gestor") && (solicitud.estado.toString().equals("modificacion".toString()))) {
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "revisor", "gestor") && (solicitud.estado.toString().equals("modificacion".toString())) 
+			&& (registroModificacion != null) && (registroModificacion.estado.equals(EstadosModificacionEnum.enCurso.name()))) {
 			return new ResultadoPermiso(Accion.All);
 
 		}

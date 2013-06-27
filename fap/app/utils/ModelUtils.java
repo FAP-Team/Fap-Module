@@ -324,6 +324,9 @@ public class ModelUtils {
 			peticionModificacion = gson.fromJson(json.jsonPeticion, PeticionModificacion.class);
 			if (!peticionModificacion.valoresModificado.isEmpty()){
 				aplicarCambios(idSolicitud, peticionModificacion, consolidarValoresNuevos);
+				//Añadiendo fechaRestauracion y boolean restaurado
+				json.fechaRestauracion = new DateTime().now();
+				json.restaurado = true;
 			}
 		}
 	}
@@ -337,6 +340,9 @@ public class ModelUtils {
 			peticionModificacion = gson.fromJson(json.jsonPeticion, PeticionModificacion.class);
 			if (!peticionModificacion.valoresBorrados.isEmpty()){
 				aplicarRestauracion (idSolicitud, peticionModificacion);
+				//Añadiendo fechaRestauracion y boolean restaurado
+				json.fechaRestauracion = new DateTime().now();
+				json.restaurado = true;
 			}
 		}
 	}
@@ -350,6 +356,9 @@ public class ModelUtils {
 			peticionModificacion = gson.fromJson(json.jsonPeticion, PeticionModificacion.class);
 			if (!peticionModificacion.valoresCreados.isEmpty())
 				aplicarEliminacion (idSolicitud, peticionModificacion);
+				//Añadiendo fechaRestauracion y boolean restaurado
+				json.fechaRestauracion = new DateTime().now();
+				json.restaurado = true;
 		}
 	}
 	

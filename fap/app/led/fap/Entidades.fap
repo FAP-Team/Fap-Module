@@ -940,8 +940,12 @@ Entidad RegistroModificacion {
 	Registro registro noConstruct
 	OneToMany JsonPeticionModificacion jsonPeticionesModificacion
 	String estado transient
+	String estadoValue transient
 }
 
 Entidad JsonPeticionModificacion{
+	DateTime fechaCreacion
 	LongText jsonPeticion
+	DateTime fechaRestauracion
+	Boolean restaurado default = "false"
 }

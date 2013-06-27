@@ -49,6 +49,9 @@ public class RegistroModificacion extends FapModel {
 	@Transient
 	public String estado;
 
+	@Transient
+	public String estadoValue;
+
 	public RegistroModificacion() {
 		init();
 	}
@@ -72,6 +75,10 @@ public class RegistroModificacion extends FapModel {
 			return EstadosModificacionEnum.cancelada.name(); // Restaurada manualmente por un gestor o administrador antes de acabar la fecha límite
 		else
 			return EstadosModificacionEnum.enCurso.name(); // Modificable actualmente
+	}
+
+	public String getEstadoValue() {
+		return EstadosModificacionEnum.valueOf(getEstado()).value();
 	}
 
 	// === MANUAL REGION END ===

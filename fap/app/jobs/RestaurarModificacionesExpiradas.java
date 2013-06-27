@@ -43,7 +43,7 @@ public class RestaurarModificacionesExpiradas extends Job {
     public void doJob() {
 //		List<SolicitudGenerica> solicitudes = SolicitudGenerica.findAll();
 //		for (SolicitudGenerica solicitud: solicitudes){
-//			if ((!solicitud.registroModificacion.isEmpty()) && (!solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).registro.fasesRegistro.registro) && (solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).fechaLimite.isAfterNow())){
+//			if ((!solicitud.registroModificacion.isEmpty()) && (!solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).registro.fasesRegistro.registro) && (solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).fechaLimite.isBeforeNow())){
 //				play.Logger.info("La solicitud "+solicitud.id+" va a ser restaurada a un estado anterior porque no ha sido presentada y la fecha de modificación ha expirado "+solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).fechaLimite.toString());
 //				ModelUtils.restaurarSolicitud(solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).id, solicitud.id, false);
 //				if (!Messages.hasErrors()){

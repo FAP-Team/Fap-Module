@@ -1408,7 +1408,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registrada" expandir
 				Columna campo=RegistroModificacion.fechaCancelacion titulo="Fecha Cancelada" expandir
 				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
-				Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+				Columna campo=RegistroModificacion.estadoValue titulo="Estado" expandir
 				Columna campo=RegistroModificacion.registro.justificante.enlaceDescargaFirmado titulo="Descarga"
 			}
 		}

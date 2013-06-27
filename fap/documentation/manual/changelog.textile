@@ -4,6 +4,11 @@ h3. Versión 2.3RC3
 
 * Copia conceptos económicos
 
+h3. Versión 2.2.1
+
+* Fixed bug botón editar solicitud para usuario.
+* Eliminado el job de restauran modificaciones.
+
 h3. Versión 2.2
 
 * Incluida la Resolución.

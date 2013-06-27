@@ -24,6 +24,8 @@ import tags.ComboItem;
 import utils.ModelUtils;
 import utils.PeticionModificacion;
 import utils.PeticionModificacion.ValorCampoModificado;
+import controllers.fap.JustificacionFapController;
+import controllers.fap.ModificacionFAPController;
 import controllers.gen.ActivarModificacionSolicitudesControllerGen;
 import enumerado.fap.gen.EstadosModificacionEnum;
 
@@ -79,6 +81,14 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 					}
 				}
 				ModelUtils.finalizarDeshacerModificacion(idSolicitud);
+				if (!Messages.hasErrors()) {
+					try {
+						ModificacionFAPController.invoke(ModificacionFAPController.class, "postRestaurarSolicitud", idSolicitud);
+					}catch (Throwable e1) {
+						log.error("Hubo un problema al invocar el métodos postRestaurarSolicitud: "+e1);
+						Messages.error("Error al postrestaurarlasolicitud");
+					}
+				}
 				
 				log.info("Acción Editar de página: " + "gen/ActivarModificacionSolicitudes/ActivarModificacionSolicitudes.html" + " , intentada con éxito");
 			} else {

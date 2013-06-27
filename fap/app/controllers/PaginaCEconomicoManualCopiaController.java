@@ -203,7 +203,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 					peticionModificacionTabla.idSimples = peticionModificacion.idSimples;
 					
 					
-					if (cEconomicosManuales.valores.get(i).valorSolicitado.toString() != dbCEconomicosManuales.valores.get(i).valorSolicitado.toString()){
+					if ((cEconomicosManuales.valores.get(i).valorSolicitado != null) &&(cEconomicosManuales.valores.get(i).valorSolicitado.toString() != dbCEconomicosManuales.valores.get(i).valorSolicitado.toString())){
 						valoresAntiguosTabla.add(dbCEconomicosManuales.valores.get(i).valorSolicitado.toString());
 						dbCEconomicosManuales.valores.get(i).valorSolicitado = cEconomicosManuales.valores.get(i).valorSolicitado; //Logica 
 						valoresNuevosTabla.add(cEconomicosManuales.valores.get(i).valorSolicitado.toString());

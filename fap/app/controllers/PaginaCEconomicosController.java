@@ -43,15 +43,15 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 		else if (!"borrado".equals(accion))
 			cEconomico = PaginaCEconomicosController.getCEconomico(idSolicitud, idCEconomico);
 
-		if (cEconomico.tipo.tipoOtro)
-			calcularValoresAuto(cEconomico);
+		//if (cEconomico.tipo.tipoOtro)
+		//	calcularValoresAuto(cEconomico);
 		
 		log.info("Visitando página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html");
 		
 		renderTemplate("fap/PaginaCEconomicos/PaginaCEconomicos.html", accion, idSolicitud, idCEconomico, solicitud, cEconomico, duracion);
 	}
 	
-	private static void calcularValoresAuto(CEconomico cEconomico){
+	public static void calcularValoresAuto(CEconomico cEconomico){
 		for (ValoresCEconomico valor: cEconomico.valores){
 			valor.valorSolicitado = sumarValoresHijosOtro(cEconomico.otros, valor.anio);
 		}

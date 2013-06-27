@@ -1,5 +1,10 @@
 h2. Changelog
 
+h3. Versión 2.3RC4
+
+* Incluida recuperación en modificación de entidades no básicas
+* Fixed bug en la suma de los conceptos económicos manuales al recuperar.
+
 h3. Versión 2.3RC3
 
 * Copia conceptos económicos

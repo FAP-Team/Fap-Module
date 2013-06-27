@@ -1,5 +1,10 @@
 h2. Changelog
 
+h3. Versión 2.2.1
+
+* Fixed bug botón editar solicitud para usuario.
+* Eliminado el job de restauran modificaciones.
+
 h3. Versión 2.2
 
 * Incluida la Resolución.

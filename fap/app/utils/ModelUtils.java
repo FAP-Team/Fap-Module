@@ -951,6 +951,36 @@ public class ModelUtils {
 				Messages.keep();
 				return;
 			}
+		}else { //entidad nuestra
+			String value = null;
+			if (!values.isEmpty())
+				value = values.get(0);
+			try {
+				Class clase = Class.forName("models."+nombreMetodo);
+				Method metodo = claseEntidad.getMethod("set"+nombreMetodo, clase);
+				
+				//Obtengo el objeto
+				Method metodoObjeto = clase.getDeclaredMethod("findById", Object.class);
+				//Obtener el id de value (value = entidad[numero]
+				Pattern p = Pattern.compile(".*?\\[([0-9]+)\\]");
+			    Matcher m = p.matcher(value);
+				Long id = new Long(0);
+			    if(m.find()){
+			    	id = Long.parseLong(m.group(1));
+				    Object objetoNuevo = metodoObjeto.invoke(clase.newInstance(), id);
+					metodo.invoke(modeloEntidad, objetoNuevo);
+					entidadAGuardar.save();
+					modeloEntidad.save();
+			    } else {
+			    	Messages.error("Se produjo un error recuperando datos para deshacer la modificacion");
+			    }
+
+			} catch (Exception e) {
+				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e);
+				Messages.error("(MIO)Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
+			}
 		}
 	}
 	

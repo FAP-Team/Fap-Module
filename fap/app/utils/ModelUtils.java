@@ -781,11 +781,19 @@ public class ModelUtils {
 			field = claseEntidad.getDeclaredField(campo); //Solo si campo propio no vale campo padre
 		} catch (Exception e) {
 			// Caso de que campo sea de padre
+			//play.Logger.info ("La execpción es = " +  e);
 		}
 		
-		if (field == null){ //Campo en padre
+		while (field == null){ //Campo en padre
 			Class clasePadre = claseEntidad.getSuperclass();
+			try {
 			field = clasePadre.getDeclaredField(campo);
+			} catch (Exception e){
+				// Caso de que campo sea de padre	
+			}
+			if (field == null){
+				claseEntidad = clasePadre;
+			}
 		}
 		return field;
 	}

@@ -22,7 +22,7 @@ public class ModificacionFAPController extends InvokeClassController {
 		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 		List<CEconomico> cEconomico = solicitud.ceconomicos;
 		for (CEconomico ceconomico : solicitud.ceconomicos){
-			play.Logger.info("El tipo otro es = " + ceconomico.tipo.tipoOtro);
+		//	play.Logger.info("El tipo otro es = " + ceconomico.tipo.tipoOtro);
 			if (ceconomico.tipo.tipoOtro){
 				calcularValoresAuto(ceconomico);
 			}

@@ -186,7 +186,6 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 					String jsonPMTabla = gsonTabla.toJson(peticionModificacionTabla);
 					JsonPeticionModificacion jsonPeticionModificaciontabla = new JsonPeticionModificacion();
 					jsonPeticionModificaciontabla.jsonPeticion = jsonPMTabla;
-					System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificaciontabla.jsonPeticion);
 					dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificaciontabla);
 					dbSolicitud.save();
 				}
@@ -216,7 +215,6 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 						String jsonPMTabla = gsonTabla.toJson(peticionModificacionTabla);
 						JsonPeticionModificacion jsonPeticionModificaciontabla = new JsonPeticionModificacion();
 						jsonPeticionModificaciontabla.jsonPeticion = jsonPMTabla;
-						System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificaciontabla.jsonPeticion);
 						dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificaciontabla);
 						dbSolicitud.save();
 					}
@@ -356,13 +354,11 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 				dbCEconomicosManuales.comentariosSolicitante = cEconomicosManuales.comentariosSolicitante;
 			}
 
-			System.out.println("------------dbCEconomicosManuales.id: "+dbCEconomicosManuales.id);
 			peticionModificacion.idSimples.put("idCEconomicosManuales",dbCEconomicosManuales.id);
 			Gson gson = new Gson();
 			String jsonPM = gson.toJson(peticionModificacion);
 			JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
 			jsonPeticionModificacion.jsonPeticion = jsonPM;
-			System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificacion.jsonPeticion);
 			dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
 			dbSolicitud.save();
 	}

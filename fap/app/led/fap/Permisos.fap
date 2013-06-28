@@ -1114,7 +1114,7 @@ Permiso clasificadaSolicitudModificada{
 	 	SolicitudGenerica solicitud
 	 	RegistroModificacion registroModificacion
 	when
-		solicitud?.estado = "iniciada" and
+		solicitud?.estado != "modificacion" and
 		(solicitud?.registro?.fasesRegistro?.clasificarAed="true")
 		  
 	return

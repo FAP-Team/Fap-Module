@@ -134,7 +134,6 @@ public class PaginaCEconomicosCopiaController extends PaginaCEconomicosCopiaCont
 					String jsonPM = gson.toJson(peticionModificacionTabla);
 					JsonPeticionModificacion jsonPeticionModificaciontabla = new JsonPeticionModificacion();
 					jsonPeticionModificaciontabla.jsonPeticion = jsonPM;
-					System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificaciontabla.jsonPeticion);
 					dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificaciontabla);
 					dbSolicitud.save();
 				}

@@ -1,12 +1,18 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import messages.Messages;
+import models.RegistroModificacion;
 import models.SolicitudGenerica;
 import play.mvc.Util;
 import tramitacion.TramiteBase;
 import controllers.fap.PresentacionFapController;
 import controllers.fap.VerificacionFapController;
 import controllers.gen.PresentarFAPControllerGen;
+import enumerado.fap.gen.EstadosModificacionEnum;
 
 public class PresentarFAPController extends PresentarFAPControllerGen {
 	
@@ -91,4 +97,22 @@ public class PresentarFAPController extends PresentarFAPControllerGen {
 		redirect("PresentarFAPController.index", "editar", idSolicitud, idRegistro);
 	}
 
+	
+	public static void tablatablaModificaciones(Long idSolicitud) {
+
+		java.util.List<RegistroModificacion> rows = RegistroModificacion.find("select registroModificacion from SolicitudGenerica solicitud join solicitud.registroModificacion registroModificacion where solicitud.id=?", idSolicitud).fetch();
+
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		List<RegistroModificacion> rowsFiltered = new ArrayList<RegistroModificacion>();
+		for (RegistroModificacion registroModificacion : rows) {
+			if (registroModificacion.estado.equals(EstadosModificacionEnum.registrada.name())){
+				rowsFiltered.add(registroModificacion);
+			}
+		}
+
+		tables.TableRenderResponse<RegistroModificacion> response = new tables.TableRenderResponse<RegistroModificacion>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+
+		renderJSON(response.toJSON("fechaCreacion", "fechaLimite", "fechaRegistro", "fechaCancelacion", "estado", "registro.oficial.enlaceDescargaFirmado", "id"));
+	}
+	
 }

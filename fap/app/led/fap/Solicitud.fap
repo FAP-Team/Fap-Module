@@ -1391,6 +1391,12 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			Fecha fechaLimite campo=RegistroModificacion.fechaLimite titulo="Fecha Límite de Modificación" requerido
 		}
 	}
+
+	Popup popupEditarModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Editar modificación" permiso=editarModificacionSolicitud {
+		Grupo titulo="Cambiar la fecha límite de modificación" {
+			Fecha fechaLimite campo=RegistroModificacion.fechaLimite titulo="Fecha Límite de Modificación" requerido
+		}
+	}
 	
 	Popup popupLeerModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Datos Modificación" permiso=adminOrGestor{
 		Grupo titulo="Datos de la Modificación" permiso=noEditable{
@@ -1403,7 +1409,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	
 	Pagina ActivarModificacionSolicitudes titulo="Habilitar Modificación Solicitud" campo=SolicitudGenerica noForm permiso=habilitarModificacionSolicitud {
 		Grupo titulo="Modificaciones de los Datos de la Solicitud por parte del Solicitante" {
-			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Totales" popupCrear=popupCrearModificacionSolicitud popupLeer=popupLeerModificacionSolicitud recargarPagina {
+			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Totales" popupCrear=popupCrearModificacionSolicitud popupEditar=popupEditarModificacionSolicitud popupLeer=popupLeerModificacionSolicitud permisoFilas=filaTablaModificaciones recargarPagina{
 				Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
 				Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registrada" expandir
 				Columna campo=RegistroModificacion.fechaCancelacion titulo="Fecha Cancelada" expandir

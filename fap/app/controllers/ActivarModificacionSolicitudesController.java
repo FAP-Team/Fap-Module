@@ -3,6 +3,7 @@ package controllers;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import models.SolicitudGenerica;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.mvc.Util;
+import tables.TableRecord;
 import tags.ComboItem;
 import utils.ModelUtils;
 import utils.PeticionModificacion;
@@ -98,5 +100,34 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 			log.info("Acción Editar de página: " + "gen/ActivarModificacionSolicitudes/ActivarModificacionSolicitudes.html" + " , intentada sin éxito (Problemas de Validación)");
 		ActivarModificacionSolicitudesController.formRestaurarModificacionRender(idSolicitud);
 	}
+
 	
+	public static void tablatablaModificaciones(Long idSolicitud) {
+
+		java.util.List<RegistroModificacion> rows = RegistroModificacion.find("select registroModificacion from SolicitudGenerica solicitud join solicitud.registroModificacion registroModificacion where solicitud.id=?", idSolicitud).fetch();
+
+		List<RegistroModificacion> rowsFiltered = new ArrayList<RegistroModificacion>();
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		for (RegistroModificacion registroModificacion : rows) {
+			Map<String, Object> vars = new HashMap<String, Object>();
+			vars.put("registroModificacion", registroModificacion);
+			if (secure.checkAcceso("filaTablaModificaciones", "leer", ids, vars)) {
+				rowsFiltered.add(registroModificacion);
+			}
+		}
+
+		tables.TableRenderResponse<RegistroModificacion> response = new tables.TableRenderResponse<RegistroModificacion>(rowsFiltered, false, false, false, "crearYEditarModificacionSolicitud", "", "adminOrGestor", getAccion(), ids);
+
+		for (TableRecord<RegistroModificacion> registroModificacion : response.rows) {
+			if (registroModificacion.objeto.estado.equals("enCurso")) {
+				registroModificacion.permisoEditar = true;
+			} else {
+				registroModificacion.permisoEditar = false;
+				registroModificacion.permisoLeer = false;
+			}
+		}
+			
+		renderJSON(response.toJSON("fechaCreacion", "fechaRegistro", "fechaCancelacion", "fechaLimite", "estadoValue", "registro.justificante.enlaceDescargaFirmado", "id"));
+	}
+
 }

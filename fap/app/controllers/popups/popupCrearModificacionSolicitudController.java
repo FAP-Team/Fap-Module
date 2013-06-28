@@ -75,10 +75,6 @@ public class popupCrearModificacionSolicitudController extends popupCrearModific
 					log.error("La fecha límite no puede ser anterior a la fecha de creación");
 				}
 			}
-			else{ //Error de asignacion de fechas
-				Messages.error("no tiene acceso a este popup");
-				log.error("La fecha límite no puede ser anterior a la fecha de creación");
-			}
 		}
 
 	}

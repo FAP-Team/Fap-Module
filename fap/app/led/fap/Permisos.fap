@@ -1577,6 +1577,34 @@ Permiso crearModificacionSolicitud{
 	    all
 }
 
+Permiso editarModificacionSolicitud{
+	vars
+		RegistroModificacion registroModificacion
+	when
+		_accion = editar and
+		agente.rolActivo in ("administrador", "gestor") and
+	    registroModificacion.estado = "enCurso"
+	return
+		all
+}
+
+Permiso filaTablaModificaciones {
+	vars
+		RegistroModificacion registroModificacion
+	when
+		_accion = leer and
+		agente.rolActivo in ("administrador", "gestor") and
+	    registroModificacion.estado = "enCurso"
+	return
+		all
+	when
+		_accion = leer and
+		agente.rolActivo in ("administrador", "gestor")
+	return
+		leer
+		
+}
+
 // Sobreescrito
 Permiso modificacionTrasPresentacionDeSolicitud {
 	vars

@@ -145,7 +145,7 @@ public class PCEconomicosCopiaController extends PCEconomicosCopiaControllerGen 
 	        if (invokedClass != null){
 				Method method = null;
 				try {
-					method = invokedClass.getDeclaredMethod("validarCEconomicos", long.class, List.class);
+					method = invokedClass.getDeclaredMethod("validarCEconomicosCopia", long.class, List.class);
 				} catch (Exception ex) {
 					invokedClass = BaremacionFAP.class;
 					if (invokedClass != null){

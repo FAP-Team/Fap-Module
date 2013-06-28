@@ -11,6 +11,7 @@ import play.mvc.Util;
 import security.Secure;
 import tables.TableRecord;
 import utils.BaremacionUtils;
+import utils.ModelUtils;
 import validation.CustomValidation;
 
 import com.google.inject.Inject;
@@ -113,7 +114,11 @@ public class PaginaCEconomicosController extends PaginaCEconomicosControllerGen 
 		if (!Messages.hasErrors()) {
 			PaginaCEconomicosController.guardarValidateRules(dbCEconomico, cEconomico);
 		}
-		if (!Messages.hasErrors()) {		
+		if (!Messages.hasErrors()) {
+			SolicitudGenerica solicitud = PaginaCEconomicosController.getSolicitudGenerica(idSolicitud);
+			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePages");
+			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicos", false);
+			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "save");
 			dbCEconomico.save();
 			log.info("Acción Editar de página: " + "fap/PaginaCEconomicos/PaginaCEconomicos.html" + " , intentada con éxito");
 		} else {

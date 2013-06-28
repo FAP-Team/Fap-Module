@@ -15,6 +15,7 @@ import models.TipoCEconomico;
 import models.TipoEvaluacion;
 import models.ValoresCEconomico;
 import play.mvc.Util;
+import utils.ModelUtils;
 import utils.PeticionModificacion;
 import validation.CustomValidation;
 import controllers.gen.PaginaCEconomicoManualCopiaControllerGen;
@@ -291,6 +292,10 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 			PaginaCEconomicoManualCopiaController.guardarPCEValidateRules(dbCEconomicosManuales, cEconomicosManuales);
 		}
 		if (!Messages.hasErrors()) {
+			SolicitudGenerica solicitud = PaginaCEconomicosController.getSolicitudGenerica(idSolicitud);
+			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePages");
+			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicosCopia", false);
+			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "save");
 			dbCEconomico.save();
 			dbCEconomicosManuales.save();
 			idCEconomicosManuales = dbCEconomicosManuales.id;

@@ -18,6 +18,7 @@ import play.mvc.Util;
 import security.Secure;
 import tables.TableRecord;
 import utils.BaremacionUtils;
+import utils.ModelUtils;
 import utils.PeticionModificacion;
 import validation.CustomValidation;
 
@@ -165,7 +166,11 @@ public class PaginaCEconomicosCopiaController extends PaginaCEconomicosCopiaCont
 		if (!Messages.hasErrors()) {
 			PaginaCEconomicosCopiaController.guardarValidateRules(dbCEconomico, cEconomico);
 		}
-		if (!Messages.hasErrors()) {		
+		if (!Messages.hasErrors()) {
+			SolicitudGenerica solicitud = PaginaCEconomicosController.getSolicitudGenerica(idSolicitud);
+			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePages");
+			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicosCopia", false);
+			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "save");
 			dbCEconomico.save();
 			log.info("Acción Editar de página: " + "fap/PaginaCEconomicosCopia/PaginaCEconomicosCopia.html" + " , intentada con éxito");
 		} else {

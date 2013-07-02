@@ -73,6 +73,12 @@ public class AportacionPresentarController extends AportacionPresentarController
         checkAuthenticity();
         if (permisoModificarBorrador("editar") || permisoModificarBorrador("crear")) {
             try {
+				//Reinicia el estado de la aportación
+            	SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+                Aportacion aportacion = solicitud.aportaciones.actual;
+            	aportacion.estado = null;
+				aportacion.save();
+				
 				TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
 				tramite.deshacer();
 				Messages.ok("Ahora puede modificar los datos de la solicitud de aportación.");

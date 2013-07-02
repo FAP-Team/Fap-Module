@@ -112,7 +112,7 @@ public class PresentarFAPController extends PresentarFAPControllerGen {
 
 		tables.TableRenderResponse<RegistroModificacion> response = new tables.TableRenderResponse<RegistroModificacion>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("fechaCreacion", "fechaLimite", "fechaRegistro", "fechaCancelacion", "estado", "registro.oficial.enlaceDescargaFirmado", "id"));
+		renderJSON(response.toJSON("fechaCreacion", "fechaLimite", "fechaRegistro", "fechaCancelacion", "estado", "registro.justificante.enlaceDescargaFirmado", "id"));
 	}
 	
 }

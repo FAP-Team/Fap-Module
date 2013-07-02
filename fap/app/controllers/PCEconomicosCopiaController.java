@@ -182,8 +182,8 @@ public class PCEconomicosCopiaController extends PCEconomicosCopiaControllerGen 
 			PCEconomicosCopiaController.guardarValidateRules();
 		}
 		if (!Messages.hasErrors()) {
-			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePages");
-			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicos", true);
+			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePagesCopy");
+			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicosCopia", true);
 			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "save");
 		}
 		if (!Messages.hasErrors()) {

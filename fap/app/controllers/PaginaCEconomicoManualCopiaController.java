@@ -291,7 +291,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 		}
 		if (!Messages.hasErrors()) {
 			SolicitudGenerica solicitud = PaginaCEconomicosController.getSolicitudGenerica(idSolicitud);
-			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePages");
+			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePagesCopy");
 			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicosCopia", false);
 			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "save");
 			dbCEconomico.save();

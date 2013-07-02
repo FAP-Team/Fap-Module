@@ -3,6 +3,8 @@ package templates;
 import java.util.List;
 import java.util.Map;
 
+//import messages.Messages;
+
 
 import generator.utils.*;
 import es.fap.simpleled.led.*;
@@ -108,12 +110,14 @@ public class GPopup extends GGroupElement{
 		if (popup.copia){
 			saveCode += """
 						   if (!peticionModificacion.isEmpty()){
+							if ((!Messages.hasErrors())){
 							   Gson gson = new Gson();
 							   String jsonPM = gson.toJson(peticionModificacion);
 							   JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
 							   jsonPeticionModificacion.jsonPeticion = jsonPM;
 							   dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
-								  dbSolicitud.save();
+							}
+							   dbSolicitud.save();
 							}
 						""";
 						//${saveSolicitud}

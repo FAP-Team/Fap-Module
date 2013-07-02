@@ -1,11 +1,15 @@
 h2. Changelog
 
+h3. Versión 2.3RC5
+
+* Fixed bugs en CEconomicosCopia
+* Fixed bug en Aportación de documentación
+
 h3. Versión 2.3RC4
 
 * Permitida la edicion de la fecha de finalización de una modificacion.
 * Incluida recuperación en modificación de entidades no básicas.
 * Fixed bug en la suma de los conceptos económicos manuales al recuperar.
-* Fixed bug en Aportación de documentación
 
 h3. Versión 2.3RC3
 

@@ -1571,7 +1571,7 @@ Permiso crearModificacionSolicitud{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "gestor") and
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
 		solicitud.activoModificacion = "false"
 	return
 	    all
@@ -1582,7 +1582,7 @@ Permiso editarModificacionSolicitud{
 		RegistroModificacion registroModificacion
 	when
 		_accion = editar and
-		agente.rolActivo in ("administrador", "gestor") and
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
 	    registroModificacion.estado = "enCurso"
 	return
 		all
@@ -1593,13 +1593,13 @@ Permiso filaTablaModificaciones {
 		RegistroModificacion registroModificacion
 	when
 		_accion = leer and
-		agente.rolActivo in ("administrador", "gestor") and
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
 	    registroModificacion.estado = "enCurso"
 	return
 		all
 	when
 		_accion = leer and
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "revisor")
 	return
 		leer
 		

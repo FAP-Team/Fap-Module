@@ -1398,7 +1398,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 	}
 	
-	Popup popupLeerModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Datos Modificación" permiso=adminOrGestor{
+	Popup popupLeerModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Datos Modificación" permiso=adminOrGestorOrRevisor{
 		Grupo titulo="Datos de la Modificación" permiso=noEditable{
 			Texto estado campo=RegistroModificacion.estado titulo="Estado Actual"
 			Fecha fechaCreacion campo=RegistroModificacion.fechaCreacion titulo="Fecha de Creación"

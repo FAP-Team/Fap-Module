@@ -1639,11 +1639,6 @@ Permiso presentarModificacionTrasPresentacionDeSolicitud {
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo != "usuario" and
-		solicitud?.estado = "modificacion"
-	return
-		visible
-	when
  		agente.rolActivo = "usuario" and
  		solicitud?.estado != "borrador" and
  		solicitud?.activoModificacion = "false"
@@ -1654,6 +1649,11 @@ Permiso presentarModificacionTrasPresentacionDeSolicitud {
  		solicitud?.estado = "modificacion" and
  		solicitud?.activoModificacion = "true"
 	return all
+	when
+		agente.rolActivo != "usuario" and
+		solicitud?.estado = "modificacion"
+	return
+		all
 }
 
 Permiso obtenerNoProcede{

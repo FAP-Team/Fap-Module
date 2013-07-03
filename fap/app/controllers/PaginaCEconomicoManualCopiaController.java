@@ -15,10 +15,7 @@ import models.TipoCEconomico;
 import models.TipoEvaluacion;
 import models.ValoresCEconomico;
 import play.mvc.Util;
-<<<<<<< Updated upstream
 import utils.ModelUtils;
-=======
->>>>>>> Stashed changes
 import utils.PeticionModificacion;
 import validation.CustomValidation;
 import controllers.gen.PaginaCEconomicoManualCopiaControllerGen;
@@ -37,7 +34,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 		Integer duracion = tipoEvaluacion.duracion-1;
-		
+
 		CEconomicosManuales cEconomicosManuales = null;
 		if ("crear".equals(accion)) {
 			cEconomicosManuales = PaginaCEconomicoManualCopiaController.getCEconomicosManuales();
@@ -67,24 +64,24 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 
 		log.info("Visitando página: " + "fap/PaginaCEconomicoManualCopia/PaginaCEconomicoManualCopia.html");
 		renderTemplate("fap/PaginaCEconomicoManualCopia/PaginaCEconomicoManualCopia.html", accion, idSolicitud, idCEconomico, idCEconomicosManuales, solicitud, cEconomico, cEconomicosManuales, duracion);
-		
+
 	}
-	
+
 	@Util
 	public static void guardarPCEValidateCopy(String accion, CEconomicosManuales dbCEconomicosManuales, CEconomicosManuales cEconomicosManuales) {
 		CustomValidation.clearValidadas();
 		if (secure.checkGrafico("modificacionTrasPresentacionDeSolicitud", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
 			CustomValidation.valid("cEconomicosManuales", cEconomicosManuales);
-			
+
 			// Código de Copia
 			// (1) Caso de modificacion (Existe y lo cambio) (2) Caso de Creacion (Lo creo desde 0)
-			
+
 			String idSolicitud = params.get("idSolicitud");
 			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(Long.parseLong(idSolicitud));
 
 			PeticionModificacion peticionModificacion = new PeticionModificacion();
 			peticionModificacion.campoPagina = "Solicitud.ceconomicos.otros"; 
-			
+
 			Map<String, String> allSimpleTabla = params.allSimple();
 			for (Map.Entry<String, String> entry : allSimpleTabla.entrySet()) {
 				if (entry.getKey().startsWith("id")) {
@@ -95,11 +92,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 					}
 				}
 			}
-<<<<<<< Updated upstream
 			peticionModificacion.idSimples.put("idCEconomicosManuales",dbCEconomicosManuales.id);
-=======
-			peticionModificacion.idSimples.put("idCEconomicosManuales",dbCEconomicosManuales.id); //Viernes añadido
->>>>>>> Stashed changes
 			List<String> valoresAntiguos = new ArrayList<String>();
 			List<String> valoresNuevos = new ArrayList<String>();
 			Boolean hayModificaciones = false;
@@ -107,7 +100,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 			//Validando el tipo.nombre 
 			CustomValidation.valid("cEconomicosManuales.tipo", cEconomicosManuales.tipo);
 			CustomValidation.required("cEconomicosManuales.tipo.nombre", cEconomicosManuales.tipo.nombre);
-			
+
 			//Código de Copia del tipo.nombre
 			if (((dbCEconomicosManuales.tipo.nombre != null) && (cEconomicosManuales.tipo.nombre.toString() != null) && (!dbCEconomicosManuales.tipo.nombre.toString().equals(cEconomicosManuales.tipo.nombre.toString()))) || ((cEconomicosManuales.tipo.nombre == null) && (!cEconomicosManuales.tipo.nombre.equals(dbCEconomicosManuales.tipo.nombre)))) {
 				valoresAntiguos = new ArrayList<String>();
@@ -119,7 +112,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 				hayModificaciones = true;
 			}
 			dbCEconomicosManuales.tipo.nombre = cEconomicosManuales.tipo.nombre;
-			
+
 			//Código de Copia del tipo.descripcion
 			if (((dbCEconomicosManuales.tipo.descripcion != null) && (cEconomicosManuales.tipo.descripcion.toString() != null) && (!dbCEconomicosManuales.tipo.descripcion.toString().equals(cEconomicosManuales.tipo.descripcion.toString()))) || ((cEconomicosManuales.tipo.descripcion == null) && (!cEconomicosManuales.tipo.descripcion.equals(dbCEconomicosManuales.tipo.descripcion)))) {
 				valoresAntiguos = new ArrayList<String>();
@@ -131,7 +124,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 				hayModificaciones = true;
 			}
 			dbCEconomicosManuales.tipo.descripcion = cEconomicosManuales.tipo.descripcion;
-			
+
 			//Código de Copia del comentarioAdministracion
 			if (((dbCEconomicosManuales.comentariosAdministracion != null) && (cEconomicosManuales.comentariosAdministracion.toString() != null) && (!dbCEconomicosManuales.comentariosAdministracion.toString().equals(cEconomicosManuales.comentariosAdministracion.toString()))) || ((cEconomicosManuales.comentariosAdministracion == null) && (!cEconomicosManuales.comentariosAdministracion.equals(dbCEconomicosManuales.comentariosAdministracion)))) {
 				valoresAntiguos = new ArrayList<String>();
@@ -143,7 +136,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 				hayModificaciones = true;
 			}
 			dbCEconomicosManuales.comentariosAdministracion = cEconomicosManuales.comentariosAdministracion;
-			
+
 			//Código de Copia del comentarioSolicitante
 			if (((dbCEconomicosManuales.comentariosSolicitante != null) && (cEconomicosManuales.comentariosSolicitante.toString() != null) && (!dbCEconomicosManuales.comentariosSolicitante.toString().equals(cEconomicosManuales.comentariosSolicitante.toString()))) || ((cEconomicosManuales.comentariosSolicitante == null) && (!cEconomicosManuales.comentariosSolicitante.equals(dbCEconomicosManuales.comentariosSolicitante)))) {
 				valoresAntiguos = new ArrayList<String>();
@@ -155,7 +148,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 				hayModificaciones = true;
 			}
 			dbCEconomicosManuales.comentariosSolicitante = cEconomicosManuales.comentariosSolicitante;
-			
+
 			//Guardo en el json los valores simples:
 			// Json por todos los valores
 			if (hayModificaciones){
@@ -168,35 +161,31 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 				dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
 				dbSolicitud.save();
 			}
-			
+
 			//Copia de los valores: O2M Un json por cada valor
-			
+
 			//Logica de copia a BBDD
 			List<String> valoresAntiguosTabla = new ArrayList<String>();
 			List<String> valoresNuevosTabla = new ArrayList<String>();
-			
+
 			if ((dbCEconomicosManuales.valores == null) || (dbCEconomicosManuales.valores.size() == 0)) { //Dead code?
 				//peticionModificacion.idSimples.put("idCEconomicosManuales",dbCEconomicosManuales.id); //Viernes añadido
 				//Guardo todos los nuevos valores
 				for (int i=0; i < cEconomicosManuales.valores.size(); i++) { //Modificando
 					valoresNuevosTabla = new ArrayList<String>();
 					valoresNuevosTabla.add(cEconomicosManuales.valores.get(i).valorSolicitado.toString());
-					
+
 					// Json por todos los valores
 					PeticionModificacion peticionModificacionTabla = new PeticionModificacion();
 					peticionModificacionTabla.campoPagina = "Solicitud.ceconomicos.otros.valores.valorSolicitado";
 					peticionModificacionTabla.idSimples = peticionModificacion.idSimples;
 					peticionModificacionTabla.idSimples.put("idValoresCEconomicoManuales",cEconomicosManuales.valores.get(i).id);
-					
+
 					peticionModificacionTabla.setValorCreado("Solicitud.ceconomicos.otros.valores.valorSolicitado", new ArrayList<String>(), valoresNuevosTabla); // PRUEBA
 					Gson gsonTabla = new Gson();
 					String jsonPMTabla = gsonTabla.toJson(peticionModificacionTabla);
 					JsonPeticionModificacion jsonPeticionModificaciontabla = new JsonPeticionModificacion();
 					jsonPeticionModificaciontabla.jsonPeticion = jsonPMTabla;
-<<<<<<< Updated upstream
-=======
-					System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificaciontabla.jsonPeticion);
->>>>>>> Stashed changes
 					dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificaciontabla);
 					dbSolicitud.save();
 				}
@@ -208,32 +197,24 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 					valoresAntiguosTabla = new ArrayList<String>();
 					valoresNuevosTabla = new ArrayList<String>();
 					hayModificaciones = false;
-					
+
 					PeticionModificacion peticionModificacionTabla = new PeticionModificacion();
 					peticionModificacionTabla.campoPagina = "Solicitud.ceconomicos.otros.valores.valorSolicitado";
 					peticionModificacionTabla.idSimples = peticionModificacion.idSimples;
-					
-					
-<<<<<<< Updated upstream
+
+
 					if ((cEconomicosManuales.valores.get(i).valorSolicitado != null) &&(cEconomicosManuales.valores.get(i).valorSolicitado.toString() != dbCEconomicosManuales.valores.get(i).valorSolicitado.toString())){
-=======
-					if (cEconomicosManuales.valores.get(i).valorSolicitado.toString() != dbCEconomicosManuales.valores.get(i).valorSolicitado.toString()){
->>>>>>> Stashed changes
 						valoresAntiguosTabla.add(dbCEconomicosManuales.valores.get(i).valorSolicitado.toString());
 						dbCEconomicosManuales.valores.get(i).valorSolicitado = cEconomicosManuales.valores.get(i).valorSolicitado; //Logica 
 						valoresNuevosTabla.add(cEconomicosManuales.valores.get(i).valorSolicitado.toString());
 						peticionModificacionTabla.idSimples.put("idValoresCEconomico",dbCEconomicosManuales.valores.get(i).id); //AQUI idValoresCEconomo
-						
+
 						//Json
 						peticionModificacionTabla.setValorModificado("Solicitud.ceconomicos.otros.valores.valorSolicitado", valoresAntiguosTabla, valoresNuevosTabla); // PRUEBA
 						Gson gsonTabla = new Gson();
 						String jsonPMTabla = gsonTabla.toJson(peticionModificacionTabla);
 						JsonPeticionModificacion jsonPeticionModificaciontabla = new JsonPeticionModificacion();
 						jsonPeticionModificaciontabla.jsonPeticion = jsonPMTabla;
-<<<<<<< Updated upstream
-=======
-						System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificaciontabla.jsonPeticion);
->>>>>>> Stashed changes
 						dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificaciontabla);
 						dbSolicitud.save();
 					}
@@ -243,9 +224,9 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 		}
 
 	}
-	
-	
-	
+
+
+
 	@Util
 	public static void guardarPCERender(Long idSolicitud, Long idCEconomico, Long idCEconomicosManuales) {
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
@@ -258,7 +239,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 		Messages.keep();
 		redirect("PaginaCEconomicoManualCopiaController.index", "editar", idSolicitud, idCEconomico, idCEconomicosManuales);
 	}
-	
+
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void guardarPCE(Long idSolicitud, Long idCEconomico, Long idCEconomicosManuales, CEconomicosManuales cEconomicosManuales, String bGuardarPCE) {
@@ -287,12 +268,12 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 				TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 				tipoEvaluacion.ceconomicos.add(tipoCEconomico);
 				tipoEvaluacion.save();
-				
+
 				dbCEconomicosManuales.tipo = tipoCEconomico;
 				dbCEconomicosManuales.save();
-				
+
 				CreandoEnModificacionSolicitudes("editar", dbCEconomicosManuales, cEconomicosManuales);
-				
+
 				idCEconomicosManuales = dbCEconomicosManuales.id;
 				dbCEconomico.otros.add(dbCEconomicosManuales);
 			}
@@ -309,13 +290,10 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 			PaginaCEconomicoManualCopiaController.guardarPCEValidateRules(dbCEconomicosManuales, cEconomicosManuales);
 		}
 		if (!Messages.hasErrors()) {
-<<<<<<< Updated upstream
 			SolicitudGenerica solicitud = PaginaCEconomicosController.getSolicitudGenerica(idSolicitud);
 			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePagesCopy");
 			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicosCopia", false);
 			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "save");
-=======
->>>>>>> Stashed changes
 			dbCEconomico.save();
 			dbCEconomicosManuales.save();
 			idCEconomicosManuales = dbCEconomicosManuales.id;
@@ -326,16 +304,16 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 		}
 		PaginaCEconomicoManualCopiaController.guardarPCERender(idSolicitud, idCEconomico, idCEconomicosManuales);
 	}
-	
-	
+
+
 	public static void CreandoEnModificacionSolicitudes(String accion, CEconomicosManuales dbCEconomicosManuales, CEconomicosManuales cEconomicosManuales) {
-		
+
 		String idSolicitud = params.get("idSolicitud");
 		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(Long.parseLong(idSolicitud));
-		
+
 		PeticionModificacion peticionModificacion = new PeticionModificacion();
 		peticionModificacion.campoPagina = "Solicitud.ceconomicos.otros"; //OJO
-		
+
 		Map<String, String> allSimpleTabla = params.allSimple();
 		for (Map.Entry<String, String> entry : allSimpleTabla.entrySet()) {
 			if (entry.getKey().startsWith("id")) {
@@ -347,28 +325,28 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 			}
 		}
 		List<String> valoresNuevos = new ArrayList<String>();
-		
+
 			if (cEconomicosManuales.tipo.nombre != null) {
 				valoresNuevos = new ArrayList<String>();
 				valoresNuevos.add(cEconomicosManuales.tipo.nombre.toString());
 				peticionModificacion.setValorCreado("Solicitud.ceconomicos.otros.tipo.nombre", new ArrayList<String>(), valoresNuevos);
 				dbCEconomicosManuales.tipo.nombre = cEconomicosManuales.tipo.nombre;
 			}
-			
+
 			if (cEconomicosManuales.tipo.descripcion!= null) {
 				valoresNuevos = new ArrayList<String>();
 				valoresNuevos.add(cEconomicosManuales.tipo.descripcion.toString());
 				peticionModificacion.setValorCreado("Solicitud.ceconomicos.otros.tipo.descripcion", new ArrayList<String>(), valoresNuevos);
 				dbCEconomicosManuales.tipo.descripcion = cEconomicosManuales.tipo.descripcion;
 			}
-			
+
 			if (cEconomicosManuales.comentariosAdministracion!= null) {
 				valoresNuevos = new ArrayList<String>();
 				valoresNuevos.add(cEconomicosManuales.tipo.comentariosAdministracion.toString());
 				peticionModificacion.setValorCreado("Solicitud.ceconomicos.otros.comentariosAdministracion", new ArrayList<String>(), valoresNuevos);
 				dbCEconomicosManuales.comentariosAdministracion = cEconomicosManuales.comentariosAdministracion;
 			}
-			
+
 			if (cEconomicosManuales.comentariosSolicitante!= null) {
 				valoresNuevos = new ArrayList<String>();
 				valoresNuevos.add(cEconomicosManuales.tipo.comentariosSolicitante.toString());
@@ -381,20 +359,16 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 			String jsonPM = gson.toJson(peticionModificacion);
 			JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
 			jsonPeticionModificacion.jsonPeticion = jsonPM;
-<<<<<<< Updated upstream
-=======
-			System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificacion.jsonPeticion);
->>>>>>> Stashed changes
 			dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
 			dbSolicitud.save();
 	}
-	
+
 	@Util
 	public static CEconomicosManuales getCEconomicosManuales() {
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 		return new CEconomicosManuales(tipoEvaluacion.duracion);
 	}
-	
+
 	@Util
 	private static void flash(CEconomicosManuales dbCEconomicoManual){
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
@@ -419,7 +393,7 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 			Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
 		}
 	}
-	
+
 	private static CEconomicosManuales getFlashCEconomicosManuales (){
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 		CEconomicosManuales cEconomicosManuales = PaginaCEconomicoManualCopiaController.getCEconomicosManuales();

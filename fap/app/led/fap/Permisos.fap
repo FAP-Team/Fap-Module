@@ -1611,7 +1611,7 @@ Permiso modificacionTrasPresentacionDeSolicitud {
 		SolicitudGenerica solicitud
 		Registro registro
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "revisor")
 	return
 		all
 	when

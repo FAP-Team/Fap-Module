@@ -15,7 +15,10 @@ import models.TipoCEconomico;
 import models.TipoEvaluacion;
 import models.ValoresCEconomico;
 import play.mvc.Util;
+<<<<<<< Updated upstream
 import utils.ModelUtils;
+=======
+>>>>>>> Stashed changes
 import utils.PeticionModificacion;
 import validation.CustomValidation;
 import controllers.gen.PaginaCEconomicoManualCopiaControllerGen;
@@ -92,7 +95,11 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 					}
 				}
 			}
+<<<<<<< Updated upstream
 			peticionModificacion.idSimples.put("idCEconomicosManuales",dbCEconomicosManuales.id);
+=======
+			peticionModificacion.idSimples.put("idCEconomicosManuales",dbCEconomicosManuales.id); //Viernes añadido
+>>>>>>> Stashed changes
 			List<String> valoresAntiguos = new ArrayList<String>();
 			List<String> valoresNuevos = new ArrayList<String>();
 			Boolean hayModificaciones = false;
@@ -186,6 +193,10 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 					String jsonPMTabla = gsonTabla.toJson(peticionModificacionTabla);
 					JsonPeticionModificacion jsonPeticionModificaciontabla = new JsonPeticionModificacion();
 					jsonPeticionModificaciontabla.jsonPeticion = jsonPMTabla;
+<<<<<<< Updated upstream
+=======
+					System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificaciontabla.jsonPeticion);
+>>>>>>> Stashed changes
 					dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificaciontabla);
 					dbSolicitud.save();
 				}
@@ -203,7 +214,11 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 					peticionModificacionTabla.idSimples = peticionModificacion.idSimples;
 					
 					
+<<<<<<< Updated upstream
 					if ((cEconomicosManuales.valores.get(i).valorSolicitado != null) &&(cEconomicosManuales.valores.get(i).valorSolicitado.toString() != dbCEconomicosManuales.valores.get(i).valorSolicitado.toString())){
+=======
+					if (cEconomicosManuales.valores.get(i).valorSolicitado.toString() != dbCEconomicosManuales.valores.get(i).valorSolicitado.toString()){
+>>>>>>> Stashed changes
 						valoresAntiguosTabla.add(dbCEconomicosManuales.valores.get(i).valorSolicitado.toString());
 						dbCEconomicosManuales.valores.get(i).valorSolicitado = cEconomicosManuales.valores.get(i).valorSolicitado; //Logica 
 						valoresNuevosTabla.add(cEconomicosManuales.valores.get(i).valorSolicitado.toString());
@@ -215,6 +230,10 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 						String jsonPMTabla = gsonTabla.toJson(peticionModificacionTabla);
 						JsonPeticionModificacion jsonPeticionModificaciontabla = new JsonPeticionModificacion();
 						jsonPeticionModificaciontabla.jsonPeticion = jsonPMTabla;
+<<<<<<< Updated upstream
+=======
+						System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificaciontabla.jsonPeticion);
+>>>>>>> Stashed changes
 						dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificaciontabla);
 						dbSolicitud.save();
 					}
@@ -290,10 +309,13 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 			PaginaCEconomicoManualCopiaController.guardarPCEValidateRules(dbCEconomicosManuales, cEconomicosManuales);
 		}
 		if (!Messages.hasErrors()) {
+<<<<<<< Updated upstream
 			SolicitudGenerica solicitud = PaginaCEconomicosController.getSolicitudGenerica(idSolicitud);
 			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePagesCopy");
 			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicosCopia", false);
 			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "save");
+=======
+>>>>>>> Stashed changes
 			dbCEconomico.save();
 			dbCEconomicosManuales.save();
 			idCEconomicosManuales = dbCEconomicosManuales.id;
@@ -359,6 +381,10 @@ public class PaginaCEconomicoManualCopiaController extends PaginaCEconomicoManua
 			String jsonPM = gson.toJson(peticionModificacion);
 			JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
 			jsonPeticionModificacion.jsonPeticion = jsonPM;
+<<<<<<< Updated upstream
+=======
+			System.out.println("jsonPeticionModificaciontabla: "+jsonPeticionModificacion.jsonPeticion);
+>>>>>>> Stashed changes
 			dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
 			dbSolicitud.save();
 	}

@@ -1089,13 +1089,12 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 		
 		Grupo titulo="Presentación de modificaciones"  mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
-			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Totales" recargarPagina {
+			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Presentadas" recargarPagina {
 				Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
 				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
 				Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registro" expandir
-				Columna campo=RegistroModificacion.fechaCancelacion titulo="Fecha Cancelación" expandir
 				Columna campo=RegistroModificacion.estado titulo="Estado" expandir
-				Columna campo=RegistroModificacion.registro.justificante.enlaceDescargaFirmado titulo="Descarga" expandir
+				Columna funcion="<a href=\"${RegistroModificacion.registro.justificante.urlDescarga}\" target=\"_blank\">Descargar</a>" ancho="80" titulo="Justificante" expandir
 			}
 		}
 	}
@@ -1415,7 +1414,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna campo=RegistroModificacion.fechaCancelacion titulo="Fecha Cancelada" expandir
 				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
 				Columna campo=RegistroModificacion.estadoValue titulo="Estado" expandir
-				Columna campo=RegistroModificacion.registro.justificante.enlaceDescargaFirmado titulo="Descarga"
+				Columna funcion="<a href=\"${RegistroModificacion.registro.justificante.urlDescarga}\" target=\"_blank\">Descargar</a>" ancho="80" titulo="Justificante"
 			}
 		}
 		

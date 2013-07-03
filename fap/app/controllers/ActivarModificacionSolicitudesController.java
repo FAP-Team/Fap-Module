@@ -116,7 +116,7 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 			}
 		}
 
-		tables.TableRenderResponse<RegistroModificacion> response = new tables.TableRenderResponse<RegistroModificacion>(rowsFiltered, false, false, false, "crearYEditarModificacionSolicitud", "", "adminOrGestor", getAccion(), ids);
+		tables.TableRenderResponse<RegistroModificacion> response = new tables.TableRenderResponse<RegistroModificacion>(rowsFiltered, false, false, false, "crearYEditarModificacionSolicitud", "", "adminOrGestorOrRevisor", getAccion(), ids);
 
 		for (TableRecord<RegistroModificacion> registroModificacion : response.rows) {
 			if (registroModificacion.objeto.estado.equals("enCurso")) {
@@ -127,7 +127,7 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 			}
 		}
 			
-		renderJSON(response.toJSON("fechaCreacion", "fechaRegistro", "fechaCancelacion", "fechaLimite", "estadoValue", "registro.justificante.enlaceDescargaFirmado", "id"));
+		renderJSON(response.toJSON("fechaCreacion", "fechaRegistro", "fechaCancelacion", "fechaLimite", "estadoValue", "registro.justificante.urlDescarga", "id"));
 	}
 
 }

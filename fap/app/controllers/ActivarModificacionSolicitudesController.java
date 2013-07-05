@@ -119,7 +119,7 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 		tables.TableRenderResponse<RegistroModificacion> response = new tables.TableRenderResponse<RegistroModificacion>(rowsFiltered, false, false, false, "crearYEditarModificacionSolicitud", "", "adminOrGestorOrRevisor", getAccion(), ids);
 
 		for (TableRecord<RegistroModificacion> registroModificacion : response.rows) {
-			if (registroModificacion.objeto.estado.equals("enCurso")) {
+			if ((registroModificacion.objeto.estado.equals("enCurso")) || (registroModificacion.objeto.estado.equals("expirada"))) {
 				registroModificacion.permisoEditar = true;
 			} else {
 				registroModificacion.permisoEditar = false;

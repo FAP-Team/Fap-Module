@@ -1583,7 +1583,7 @@ Permiso editarModificacionSolicitud{
 	when
 		_accion = editar and
 		agente.rolActivo in ("administrador", "gestor", "revisor") and
-	    registroModificacion.estado = "enCurso"
+	    registroModificacion.estado in ("enCurso", "expirada")
 	return
 		all
 }
@@ -1594,7 +1594,7 @@ Permiso filaTablaModificaciones {
 	when
 		_accion = leer and
 		agente.rolActivo in ("administrador", "gestor", "revisor") and
-	    registroModificacion.estado = "enCurso"
+	    registroModificacion.estado in ("enCurso", "expirada")
 	return
 		all
 	when

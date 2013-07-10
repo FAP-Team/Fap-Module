@@ -478,7 +478,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				
 				Form gPonerADisposicion permiso=requerimientoFirmado {
 					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
-					Boton ponerADisposicion titulo="Notificar el requerimiento"
+					Boton ponerADisposicion titulo="Notificar el requerimiento" waitPopup
 				}
 			}
 			

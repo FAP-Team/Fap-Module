@@ -115,6 +115,9 @@ public class ResolucionFAP extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaIncioPreparacion;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento docResolucion;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "resolucionfap_docconsultaportafirmasresolucion")
 	public List<Documento> docConsultaPortafirmasResolucion;
@@ -152,6 +155,11 @@ public class ResolucionFAP extends FapModel {
 
 		if (oficialEvaluacionCompleto == null)
 			oficialEvaluacionCompleto = false;
+
+		if (docResolucion == null)
+			docResolucion = new Documento();
+		else
+			docResolucion.init();
 
 		if (docConsultaPortafirmasResolucion == null)
 			docConsultaPortafirmasResolucion = new ArrayList<Documento>();

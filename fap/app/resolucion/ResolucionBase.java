@@ -937,4 +937,17 @@ public class ResolucionBase {
 			Messages.error("Error al generar los documentos de Resolución");
 		}
 	}
+	
+	public static boolean isGeneradoDocumentoResolucion() {
+		return false;
+	}
+
+	public static boolean isPublicarTablonAnuncios() {
+		return true;
+	}
+
+	public static boolean isNotificar() {
+		return false;
+	}
+	
 }

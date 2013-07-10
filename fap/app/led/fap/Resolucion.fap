@@ -145,7 +145,7 @@ Entidad ResolucionFAP {
 	//DateTime fechaBOC								// Fecha de Publicación en el BOC
 	DateTime fechaIncioPreparacion		// Fecha en la que se empieza a preparar la resolución y se crean las líneas
 	//DateTime fechaFinPreparacion					// Fecha en la que se finaliza la resolución
-	//Documento docResolucion							// Documento de Resolución
+	Documento docResolucion							// Documento de Resolución
 	//OneToMany Documento docAnexoResolucion //Anexos individuales de resolucion
 	OneToMany Documento docConsultaPortafirmasResolucion //Documentos de Consulta Portafirmas.
 
@@ -208,7 +208,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
@@ -353,7 +353,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -475,6 +475,25 @@ Formulario Principal {
 			}
 		}
 	}
+
+	Pagina AportarDocumentoResolucion titulo="Documento Resolución" campo=ResolucionFAP noForm {
+		Accion editar redirigir=EditarResolucion crearSiempre
+
+		Form formSubirDocumentoResolucion {
+			SubirArchivo subirArchivoSubirDocumentoResolucion campo=ResolucionFAP.docResolucion requerido
+			Boton botonSubirDocumentoResolucion titulo="Subir documento"
+		}
+	}
+	
+	Pagina CambiarDocumentoResolucion titulo="Documento Resolución" campo=ResolucionFAP noForm {
+		Accion editar redirigir=EditarResolucion crearSiempre
+
+		Form formCambiarDocumentoResolucion {
+			Enlace enlaceDocumentoResolucionActual campo=ResolucionFAP.docResolucion.urlDescarga titulo="Ver documento actual" destino="_blank" estilo="btn"
+			Boton botonSubirNuevoDocumentoResolucion titulo="Subir nuevo documento de resolucion"
+		}
+	}
+
 }
 
 //Sobreescrito

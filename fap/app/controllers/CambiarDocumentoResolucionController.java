@@ -21,9 +21,20 @@ public class CambiarDocumentoResolucionController extends CambiarDocumentoResolu
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 
-		if (botonSubirNuevoDocumentoResolucion != null)
-			botonSubirNuevoDocumentoResolucionFormCambiarDocumentoResolucion(idResolucionFAP);
-			
+		if (botonSubirNuevoDocumentoResolucion != null) {
+			ResolucionFAP resolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+			try {
+				gestorDocumentalService.deleteDocumento(resolucionFAP.docResolucion);
+				resolucionFAP.docResolucion.tipo = null;
+				resolucionFAP.docResolucion.descripcion = null;
+				resolucionFAP.docResolucion.uri = null;
+				resolucionFAP.save();
+				redirect("AportarDocumentoResolucionController.index", AportarDocumentoResolucionController.getAccion(), idResolucionFAP);
+			} catch (GestorDocumentalServiceException e) {
+				Messages.error("Error borrando el documento de resolución del gestor documental");
+			}
+		}
+		
 		if (!Messages.hasErrors()) {
 
 		}
@@ -37,19 +48,6 @@ public class CambiarDocumentoResolucionController extends CambiarDocumentoResolu
 		} else
 			log.info("Acción Editar de página: " + "gen/CambiarDocumentoResolucion/CambiarDocumentoResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		CambiarDocumentoResolucionController.formCambiarDocumentoResolucionRender(idResolucionFAP);
-	}
-	
-	@Util
-	public static void botonSubirNuevoDocumentoResolucionFormCambiarDocumentoResolucion(Long idResolucionFAP) {
-		//Sobreescribir este método para asignar una acción
-		ResolucionFAP resolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
-		try {
-			gestorDocumentalService.deleteDocumento(resolucionFAP.docResolucion);
-			resolucionFAP.docResolucion.uri = null;
-			redirect("AportarDocumentoResolucionController.index", AportarDocumentoResolucionController.getAccion(), idResolucionFAP);
-		} catch (GestorDocumentalServiceException e) {
-			Messages.error("Error borrando el documento de resolución del gestor documental");
-		}		
 	}
 
 }

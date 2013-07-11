@@ -208,7 +208,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
@@ -353,7 +353,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -476,21 +476,20 @@ Formulario Principal {
 		}
 	}
 
-	Pagina AportarDocumentoResolucion titulo="Documento Resolución" campo=ResolucionFAP noForm {
+	Pagina AportarDocumentoResolucion titulo="Documento Resolución" campo=ResolucionFAP {
 		Accion editar redirigir=EditarResolucion crearSiempre
-
-		Form formSubirDocumentoResolucion {
-			SubirArchivo subirArchivoSubirDocumentoResolucion campo=ResolucionFAP.docResolucion requerido
-			Boton botonSubirDocumentoResolucion titulo="Subir documento"
+		Grupo grupoAportarDocumentoResolucion titulo= "Aportar documento de resolución" {
+			SubirArchivo subirArchivoAportarDocumentoResolucion campo=ResolucionFAP.docResolucion requerido
 		}
 	}
 	
 	Pagina CambiarDocumentoResolucion titulo="Documento Resolución" campo=ResolucionFAP noForm {
-		Accion editar redirigir=EditarResolucion crearSiempre
-
-		Form formCambiarDocumentoResolucion {
-			Enlace enlaceDocumentoResolucionActual campo=ResolucionFAP.docResolucion.urlDescarga titulo="Ver documento actual" destino="_blank" estilo="btn"
-			Boton botonSubirNuevoDocumentoResolucion titulo="Subir nuevo documento de resolucion"
+		Grupo grupoCambiarDocumentoResolucion titulo="Cambiar documento de resolución" {
+			Enlace enlaceDocumentoResolucionActual campo=ResolucionFAP.docResolucion.urlDescarga titulo="Ver documento de resolución actual" destino="_blank" estilo="btn"
+			Form formCambiarDocumentoResolucion redirigir=EditarResolucion {
+				Boton botonSubirNuevoDocumentoResolucion titulo="Subir nuevo documento de resolucion"
+			}
+			Boton botonVolver titulo="Volver" pagina=EditarResolucion
 		}
 	}
 

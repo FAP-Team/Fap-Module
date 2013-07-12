@@ -1,5 +1,7 @@
 package utils;
 
+import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -7,15 +9,24 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import config.InjectorConfig;
+
 import play.db.jpa.Transactional;
 import play.modules.guice.InjectSupport;
 
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import services.NotificacionService;
 
+import messages.Messages;
+import models.Documento;
 import models.DocumentoNotificacion;
+import models.ExpedienteAed;
 import models.Interesado;
 import models.Notificacion;
+import models.SolicitudGenerica;
 import enumerado.fap.gen.EstadoNotificacionEnum;
+import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
 import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.EstadoNotificacionEnumType;
 import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.EstadoNotificacionType;
 import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.InteresadoType;
@@ -26,6 +37,9 @@ public class NotificacionUtils {
 	
 	@Inject
     protected static NotificacionService notificacionService;
+	
+	//Inyeccion manual del gestorDoc
+	protected static GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 
 	public static InteresadoType convertInteresadoToInteresadoType(Interesado interesado){
 		InteresadoType interesadoType = new InteresadoType();
@@ -54,6 +68,7 @@ public class NotificacionUtils {
 		notificacion.descripcion = notificacionType.getCuerpo();
 		notificacion.estado = convertEstadoNotificacionEnumTypeToEstadoNotificacion(notificacionType.getEstadoNotificacion().getEstado());
 		notificacion.fechaPuestaADisposicion = new DateTime(notificacionType.getEstadoNotificacion().getFechaCreacion().toGregorianCalendar().getTime());
+		notificacion.fechaFinPlazo = new DateTime(notificacionType.getFechaHoraFinPlazoRespuesta().toGregorianCalendar().getTime());
 		notificacion.idExpedienteAed = notificacionType.getNumeroExpediente();
 		notificacion.plazoAcceso = notificacionType.getPlazoAcceso();
 		notificacion.plazoRespuesta = notificacionType.getPlazoRespuesta();
@@ -105,4 +120,73 @@ public class NotificacionUtils {
 			play.Logger.error("No se pudo inyectar el servicio de Notificaciones");
 		}
 	}
+	
+	//Subir nuevos documentos al Expediente en el AED
+	public static void subirDocumentosNotificacionExpediente (List<DocumentoNotificacion> documentos, Notificacion notificacion){
+		//Pasar de documentoNotificacion a Documento para subir al AED
+		
+		List<ExpedienteAed> listaExp = new ArrayList<ExpedienteAed>();
+		List<String> listaDocs = new ArrayList<String>();
+		
+		for (DocumentoNotificacion documentoNotificacion : documentos) {
+			if (documentoNotificacion.uri != null){
+				listaDocs.add(documentoNotificacion.uri);
+			}
+		}
+		
+		// 1) Obtener el expediente del AED al que pertenece la notificacion
+		listaExp = new ArrayList<ExpedienteAed>();
+		ExpedienteAed expedienteAED = ExpedienteAed.find("select expediente from ExpedienteAed expediente where expediente.idAed = ?", notificacion.idExpedienteAed).first();
+		listaExp.add(expedienteAED);  //ExpedienteAED de solicitud
+		// 2) Copiar al AED 
+		try {
+			gestorDocumentalService.copiarListaDocumentoEnExpediente(listaDocs, listaExp);
+		} catch (GestorDocumentalServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Messages.error("Error copiando el documento al AED");
+		}
+	}
+	
+	//Subir un único Documento al expediente en el AED
+	public static void subirDocumentoNotificacionExpediente (Documento documento, Notificacion notificacion){
+		//Guardar en temporal
+		// 1) Obtener el expediente del AED al que pertenece la notificacion
+		List<ExpedienteAed> listaExp = new ArrayList<ExpedienteAed>();
+		ExpedienteAed expedienteAED = ExpedienteAed.find("select expediente from ExpedienteAed expediente where expediente.idAed = ?", notificacion.idExpedienteAed).first();
+	
+		listaExp.add(expedienteAED);  //ExpedienteAED de solicitud	
+		
+		// 2) Copiar al AED 
+		try {
+			gestorDocumentalService.copiarDocumentoEnExpediente(documento.uri, listaExp);
+		} catch (GestorDocumentalServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Messages.error("Error copiando el documento al AED");
+		}
+	}
+	
+	public static Documento obtenerDocumentos(Notificacion notificacion, DocumentoNotificacionEnumType tipo){
+		Documento documento = null;
+		try {
+			documento = notificacionService.obtenerDocumentoNotificacion(notificacion.agente.id.toString(), notificacion.uri, tipo);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return documento;
+	}
+	
+	public static String obtenerUriDocumentos(Notificacion notificacion, DocumentoNotificacionEnumType tipo){
+		String uri = "";
+		try {
+			uri = notificacionService.obtenerUriDocumentoNotificacion(notificacion.agente.id.toString(), notificacion.uri, tipo);
+			if(uri == null)
+				uri="";
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return uri;
+	}
+	
 }

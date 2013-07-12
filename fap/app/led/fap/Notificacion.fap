@@ -16,10 +16,12 @@ Formulario Notificacion {
 		Tabla listaNotificaciones titulo="Notificaciones de la Aplicación" campo=Notificacion
 	  	  paginaEditar=NotificacionVer{
 	  	  	Columna campo=Notificacion.todosInteresados titulo="Interesados" ancho="200" expandir
-			Columna campo=Notificacion.asunto titulo="Asunto" ancho="150"   //Asunto de la notificación
-			Columna campo=Notificacion.descripcion titulo="Descripción" ancho="200"               //Descripción de la notificación
-			Columna campo=Notificacion.fechaPuestaADisposicion titulo="Fecha creación" ancho="100" //Fecha en la que se creó la notificación
-			Columna campo=Notificacion.estado titulo="Estado" ancho="150"  //Estado actual de la notificación
+			Columna campo=Notificacion.asunto titulo="Asunto" ancho="150" expandir  //Asunto de la notificación
+			Columna campo=Notificacion.descripcion titulo="Descripción" ancho="100"  expandir             //Descripción de la notificación
+			Columna campo=Notificacion.fechaPuestaADisposicion titulo="Fecha creación" ancho="80" expandir//Fecha en la que se creó la notificación
+			Columna campo=Notificacion.estado titulo="Estado" ancho="120" expandir //Estado actual de la notificación
+			Columna campo=Notificacion.fechaFinPlazo titulo="Fecha fin de plazo" ancho="150" expandir
+			Columna campo=Notificacion.idExpedienteAed titulo="Expediente"  ancho="100" expandir
 		}
 	}
 	
@@ -42,9 +44,12 @@ Formulario Notificacion {
 		}
 		
 		Enlace atras anterior titulo="Volver a Mis Notificaciones" estilo="btn"
-//		Tabla listaDocumentosNotificados titulo="Documentos notificados" campo=Notificacion.documentosANotificar {
-//			Columna funcion="<a href=\"${DocumentoNotificacion.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100" expandir
-//		}
+		
+		Grupo grupoDocumentos titulo="Documentos" {
+			Tabla listaDocumentosNotificados titulo="Documentos notificados" campo=Notificacion.documentosANotificar {
+				Columna funcion="<a href=\"${DocumentoNotificacion.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100" expandir
+			}
+		}
 	}
 	
 //	Pagina NotificacionAcceder titulo="Confirmar Notificacion" noForm campo=Notificacion permiso=notificacionEditableSiNoLeida{

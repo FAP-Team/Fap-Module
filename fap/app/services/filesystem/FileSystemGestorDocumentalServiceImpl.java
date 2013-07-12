@@ -891,4 +891,12 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void copiarListaDocumentoEnExpediente(List<String> uri,
+			List<ExpedienteAed> expedientesAed)
+			throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		
+	}
 }

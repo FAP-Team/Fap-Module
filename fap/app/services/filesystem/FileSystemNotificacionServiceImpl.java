@@ -207,7 +207,14 @@ public class FileSystemNotificacionServiceImpl implements NotificacionService {
 	public Documento obtenerDocumentoNotificacion(String idUsuario,
 			String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
 		// TODO Auto-generated method stub
-		return null;
+		Documento doc = new Documento();
+		doc.descripcion="Descripcion de documento";
+		doc.tipo="DOC_Notificacion";
+		doc.enlaceDescargaFirmado="EnlaceDescargaFirmado";
+		doc.urlDescarga="urlDescarga";
+		doc.urlDescargaFirmado="urlDescargaFirmado";
+		
+		return doc;
 	}
 
 	@Override
@@ -233,6 +240,13 @@ public class FileSystemNotificacionServiceImpl implements NotificacionService {
 			String firma) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String obtenerUriDocumentoNotificacion(String idUsuario,
+			String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
+		// TODO Auto-generated method stub
+		return "";
 	}
 	
 }

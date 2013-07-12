@@ -35,7 +35,7 @@ public class NotificacionesController extends NotificacionesControllerGen {
 		
 		tables.TableRenderResponse<Notificacion> response = new tables.TableRenderResponse<Notificacion>(rowsFiltered, true, false, false, "notificacionEditableSiNoLeida", "", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("todosInteresados", "asunto", "descripcion", "fechaPuestaADisposicion", "estado", "id"));
+		renderJSON(response.toJSON("todosInteresados", "asunto", "descripcion", "fechaPuestaADisposicion", "estado", "fechaFinPlazo", "idExpedienteAed", "id"));
 	}
 	
 }

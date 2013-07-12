@@ -37,7 +37,7 @@ public class VerificacionesSinFinalizarController extends VerificacionesSinFinal
 
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, true, false, false, "noUsuario", "", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "expedienteAed.idAed", "verificacion.id", "verificacion.estado", "solicitante.numeroId", "solicitante.nombreCompleto"));
+		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estado", "verificacion.id", "verificacion.estado", "solicitante.numeroId", "solicitante.nombreCompleto"));
 	}
 	
 }

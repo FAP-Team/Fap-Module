@@ -1,3 +1,6 @@
+%{
+
+%}
 
 #{fap.pagina 
      accion:accion, 
@@ -31,6 +34,22 @@
 					#{fap.areaTexto ancho:'500px', campo:'notificacion.descripcion', filas:'5', titulo:'Descripción' /}		
 			
 				#{/fap.grupo}
+				#{fap.grupo titulo:'Documentos'}
+					#{fap.tabla 
+					     campo:'Documento', 
+					     id:'listaDocumentosNotificados', 
+					     idEntidad:'idDocumento', 
+					     saveEntity:false, 
+					     tipoContainer:'pagina', 
+					     titulo:'Documentos', 
+					     urlTabla:@NotificacionVerController.tablalistaDocumentosNotificados(idNotificacion)
+					}
+					#{fap.columna alignPosition:'left', ancho:100, cabecera:'Descripcion', expandir:true, campo: 'descripcion' /}
+					#{fap.columna alignPosition:'left', ancho:110, cabecera:'Descargar Firmado', expandir:true, campo: 'enlaceDescargaFirmado' /}
+						
+				#{/fap.tabla}
+
+		#{/fap.grupo}
 			
 				#{fap.grupo borde:false, mostrarSi:['leida', 'leidaplazorespuestavencido', 'respondida'].contains(notificacion.estado)}
 					
@@ -52,7 +71,7 @@
 				#{/if}
 		
 			#{/fap.grupo}
-		
+			
 			</br>
 			
 			#{fap.enlace anterior:true, container:'NotificacionVer', estilo:'btn', id:'atras', titulo:'Volver a Mis Notificaciones' /}

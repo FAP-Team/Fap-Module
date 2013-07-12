@@ -939,14 +939,20 @@ public class ResolucionBase {
 	}
 	
 	public static boolean isGeneradoDocumentoResolucion() {
+		if (properties.FapProperties.getBoolean("fap.resoluciones.generarDocumentoResolucion"))
+			return true;
 		return false;
 	}
 
 	public static boolean isPublicarTablonAnuncios() {
-		return true;
+		if (properties.FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios"))
+			return true;
+		return false;
 	}
 
 	public static boolean isNotificar() {
+		if (properties.FapProperties.getBoolean("fap.resoluciones.notificar"))
+			return true;
 		return false;
 	}
 	

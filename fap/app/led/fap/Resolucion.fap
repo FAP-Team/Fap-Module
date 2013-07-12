@@ -280,8 +280,13 @@ Formulario Principal {
 			}
 			
 			Grupo gEnviarFirmaJSPortafirma permiso=firmaJefeServicio borde=false {
-				
-				Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga destino="_blank"
+				Grupo documentoResolucionGenerado borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.resoluciones.generarDocumentoResolucion\")==true"{
+					Enlace enlaceDocumentoResolucionNoGenerado titulo="Obtener documento de Resolución" campo=ResolucionFAP.registro.borrador.urlDescarga destino="_blank" estilo="btn"
+				}
+				Grupo documentoResolucionNoGenerado borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.resoluciones.generarDocumentoResolucion\")==false"{
+					Enlace enlaceDocumentoResolucionGenerado titulo="Obtener documento de Resolución" campo=ResolucionFAP.docResolucion.urlDescarga destino="_blank" estilo="btn"
+				}
+
 				Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=ResolucionFAP.docConsultaPortafirmasResolucion paginaCrear=DocConsultaPortafirmaCrear paginaEditar=DocConsultaPortafirmaEditar {
 					Columna campo=Documento.tipo titulo="Tipo"
 					Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
@@ -489,8 +494,8 @@ Formulario Principal {
 			Form formCambiarDocumentoResolucion redirigir=EditarResolucion {
 				Boton botonSubirNuevoDocumentoResolucion titulo="Subir nuevo documento de resolucion"
 			}
-			Boton botonVolver titulo="Volver" pagina=EditarResolucion
 		}
+		Boton botonVolver titulo="Volver" pagina=EditarResolucion 
 	}
 
 }

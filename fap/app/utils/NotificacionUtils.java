@@ -69,6 +69,7 @@ public class NotificacionUtils {
 		notificacion.estado = convertEstadoNotificacionEnumTypeToEstadoNotificacion(notificacionType.getEstadoNotificacion().getEstado());
 		notificacion.fechaPuestaADisposicion = new DateTime(notificacionType.getEstadoNotificacion().getFechaCreacion().toGregorianCalendar().getTime());
 		notificacion.fechaFinPlazo = new DateTime(notificacionType.getFechaHoraFinPlazoRespuesta().toGregorianCalendar().getTime());
+		notificacion.fechaLimite = new DateTime(notificacionType.getFechaHoraFinPlazoAcceso().toGregorianCalendar().getTime());
 		notificacion.idExpedienteAed = notificacionType.getNumeroExpediente();
 		notificacion.plazoAcceso = notificacionType.getPlazoAcceso();
 		notificacion.plazoRespuesta = notificacionType.getPlazoRespuesta();

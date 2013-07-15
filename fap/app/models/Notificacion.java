@@ -255,36 +255,28 @@ public class Notificacion extends FapModel {
 		}
 
 		//Doc Acuse de recibo -> Negativo o Positivo
-		if ((((this.documentoAcuseRecibo.uri != null) && (notificacion.documentoAcuseRecibo.uri != null)) &&
-		    ((this.documentoAcuseRecibo.uri != notificacion.documentoAcuseRecibo.uri))) ||
-		    ((this.documentoAcuseRecibo.uri == null) && (notificacion.documentoAcuseRecibo.uri != null))){
+		if ((((this.documentoAcuseRecibo.uri != null) && (notificacion.documentoAcuseRecibo.uri != null)) && ((this.documentoAcuseRecibo.uri != notificacion.documentoAcuseRecibo.uri))) || ((this.documentoAcuseRecibo.uri == null) && (notificacion.documentoAcuseRecibo.uri != null))) {
 			this.documentoAcuseRecibo = notificacion.documentoAcuseRecibo;
 			//Subida independiente al AED
 			NotificacionUtils.subirDocumentoNotificacionExpediente(this.documentoAcuseRecibo, this);
 		}
-		
+
 		//Doc anulacion
-		if ((((this.documentoAnulacion.uri != null) && (notificacion.documentoAnulacion.uri != null)) && 
-			((this.documentoAnulacion.uri != notificacion.documentoAnulacion.uri))) ||
-			((this.documentoAnulacion.uri == null)) && (notificacion.documentoAnulacion.uri != null)){
+		if ((((this.documentoAnulacion.uri != null) && (notificacion.documentoAnulacion.uri != null)) && ((this.documentoAnulacion.uri != notificacion.documentoAnulacion.uri))) || ((this.documentoAnulacion.uri == null)) && (notificacion.documentoAnulacion.uri != null)) {
 			this.documentoAnulacion = notificacion.documentoAnulacion;
 			//Subida independiente al AED
 			NotificacionUtils.subirDocumentoNotificacionExpediente(this.documentoAnulacion, this);
 		}
 
 		//DocPuestaADisposicion
-		if ((((this.documentoPuestaADisposicion.uri != null) && (notificacion.documentoPuestaADisposicion.uri != null)) &&
-			((this.documentoPuestaADisposicion.uri != notificacion.documentoPuestaADisposicion.uri))) ||
-			((this.documentoPuestaADisposicion.uri == null)) && (notificacion.documentoPuestaADisposicion.uri != null)){
+		if ((((this.documentoPuestaADisposicion.uri != null) && (notificacion.documentoPuestaADisposicion.uri != null)) && ((this.documentoPuestaADisposicion.uri != notificacion.documentoPuestaADisposicion.uri))) || ((this.documentoPuestaADisposicion.uri == null)) && (notificacion.documentoPuestaADisposicion.uri != null)) {
 			this.documentoPuestaADisposicion = notificacion.documentoPuestaADisposicion;
 			//Subida independiente al AED
 			NotificacionUtils.subirDocumentoNotificacionExpediente(this.documentoPuestaADisposicion, this);
 		}
-		
+
 		//DocRespondida
-		if ((((this.documentoRespondida.uri != null) && (notificacion.documentoRespondida.uri != null)) &&
-			((this.documentoRespondida.uri != notificacion.documentoRespondida.uri))) ||
-			((this.documentoRespondida.uri == null)) && (notificacion.documentoRespondida.uri != null)){
+		if ((((this.documentoRespondida.uri != null) && (notificacion.documentoRespondida.uri != null)) && ((this.documentoRespondida.uri != notificacion.documentoRespondida.uri))) || ((this.documentoRespondida.uri == null)) && (notificacion.documentoRespondida.uri != null)) {
 			this.documentoRespondida = notificacion.documentoRespondida;
 			//Subida independiente al AED
 			NotificacionUtils.subirDocumentoNotificacionExpediente(this.documentoRespondida, this);

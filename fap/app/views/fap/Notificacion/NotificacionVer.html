@@ -1,6 +1,3 @@
-%{
-
-%}
 
 #{fap.pagina 
      accion:accion, 
@@ -20,18 +17,56 @@
 			#{fap.grupo titulo:'Datos Notificacion'}
 				
 				#{fap.grupo borde:false, permiso:'noEditable'}
+						
+				#{fap.texto campo:'notificacion.idExpedienteAed', titulo:'Expediente' /}		
+			
+				#{fap.texto campo:'notificacion.uri', titulo:'ID de la notificacion (URI)' /}		
+			
+				#{fap.texto campo:'notificacion.asunto', titulo:'Asunto' /}		
+			
+				#{fap.areaTexto ancho:'500px', campo:'notificacion.descripcion', filas:'5', titulo:'Descripción' /}	
 					
-					#{fap.texto campo:'notificacion.todosInteresados', titulo:'Interesados' /}	
+				#{fap.tabla 
+			     campo:'Notificacion.interesados', 
+			     id:'tablaInteresados', 
+			     idEntidad:'idInteresado', 
+			     saveEntity:false, 
+			     tipoContainer:'pagina', 
+			     titulo:'Interesados', 
+			     urlTabla:@NotificacionVerController.tablatablaInteresados(idNotificacion)
+			}
 				
-					#{fap.combo campo:'notificacion.estado', titulo:'Estado' /}	
+				#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre ', campo:'persona.nombreCompleto' /}
 					
-					#{fap.fecha campo:'notificacion.fechaPuestaADisposicion', titulo:'Fecha Generación' /}		
+				#{fap.columna alignPosition:'left', ancho:200, cabecera:'NIF/CIF', campo:'persona.numeroId'/}			
+					
+				#{fap.columna alignPosition:'left', ancho:200, cabecera:'Interesado.email', campo:'email', cabecera:'Correo Electrónico' /}
+					
+			#{/fap.tabla}
+		
+			#{fap.combo campo:'notificacion.estado', titulo:'Estado' /}		
+		
+			#{fap.fecha campo:'notificacion.fechaPuestaADisposicion', titulo:'Fecha Puesta a Disposición' /}		
+		
+			#{fap.fecha campo:'notificacion.fechaAcceso', titulo:'Fecha de Acceso' /}		
+		
+			#{fap.texto campo:'notificacion.plazoAcceso', titulo:'Plazo de Acceso' /}		
+		
+			#{fap.fecha campo:'notificacion.fechaLimite', titulo:'Fin de plazo de Acceso' /}		
+		
+			#{fap.texto campo:'notificacion.frecuenciaRecordatorioAcceso', titulo:'Días recordatorio de Acceso' /}		
+		
+			#{fap.texto campo:'notificacion.plazoRespuesta', titulo:'Plazo de Respuesta' /}		
+		
+			#{fap.fecha campo:'notificacion.fechaFinPlazo', titulo:'Fin de plazo de respuesta' /}		
+		
+			#{fap.texto campo:'notificacion.frecuenciaRecordatorioRespuesta', titulo:'Días recordatorio de Respuesta' /}			
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, mostrarSi:['leida', 'leidaplazorespuestavencido', 'respondida'].contains(notificacion?.estado?.toString())}
 				
-					#{fap.fecha campo:'notificacion.fechaAcceso', titulo:'Fecha Lectura' /}		
-				
-					#{fap.texto campo:'notificacion.asunto', titulo:'Asunto' /}		
-				
-					#{fap.areaTexto ancho:'500px', campo:'notificacion.descripcion', filas:'5', titulo:'Descripción' /}		
+			#{fap.enlace estilo:'btn', id:'enlaceRequerimiento', target:'_blank', titulo:'Ver Requerimiento', url:notificacion.documentoPuestaADisposicion.urlDescarga /}
 			
 				#{/fap.grupo}
 				#{fap.grupo titulo:'Documentos'}

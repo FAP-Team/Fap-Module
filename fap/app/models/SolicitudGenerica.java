@@ -8,11 +8,8 @@ import play.db.jpa.Model;
 import play.data.validation.*;
 import org.joda.time.DateTime;
 
-import com.google.gson.Gson;
-
 import models.*;
 import messages.Messages;
-import utils.PeticionModificacion;
 import validation.*;
 import audit.Auditable;
 import java.text.ParseException;
@@ -25,6 +22,8 @@ import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.TiposParticipacionEnum;
 import play.db.jpa.JPABase;
 import play.mvc.Http.Request;
+import utils.PeticionModificacion;
+import com.google.gson.Gson;
 
 // === IMPORT REGION END ===
 

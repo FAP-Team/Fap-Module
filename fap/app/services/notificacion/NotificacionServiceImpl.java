@@ -535,6 +535,23 @@ public class NotificacionServiceImpl implements NotificacionService {
 		return notificacion;
 	}
 
+	
+	@Override
+	public String obtenerUriDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
+		String uriDocNotificacion = "";
+		
+		if (!activo)
+			return uriDocNotificacion;
+		
+		try {
+			//DocumentoType documentoType = notificacionPort.obtenerDocumentoNotificacion(idUsuario, uriNotificacion, tipoDocumento);
+			uriDocNotificacion = notificacionPort.obtenerURIDocumentoNotificacion(idUsuario, uriNotificacion, tipoDocumento);
+		}catch (NotificacionException e) {
+			play.Logger.error("Hubo un error al intentar obtener la URI del documento de notificación del servicio web con uri "+uriNotificacion+" : "+e.getMessage());
+		}
+		return uriDocNotificacion;
+	}
+	
 	@Override
 	public Documento obtenerDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
 		Documento documento = new Documento();

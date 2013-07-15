@@ -162,6 +162,10 @@ Formulario Administracion permiso=administrador{
 	    		}
 	    	}
     	}
+    	
+    	Grupo titulo="Actualización manual de Notificaciones" {
+    		Boton btnNotificaciones titulo="Actualizar"
+    	}
     }
     
     Pagina ConfigurarMensajes titulo="Configurar mensajes"  perteneceA="Administracion"{

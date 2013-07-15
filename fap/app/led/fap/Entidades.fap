@@ -672,6 +672,8 @@ Entidad Notificacion {
 	String asunto							// Asunto sobre lo que va la notificación
 	DateTime fechaPuestaADisposicion		// Fecha en la que se creó la notificación
 	DateTime fechaAcceso					// Fecha en la que algún interesado accedió a la notificación 
+	DateTime fechaLimite					// Fecha máxima para acceder a la notificación (ACCESO)
+	DateTime fechaFinPlazo					// Fecha máxima para responder a la notificacion (RESPUESTA)
 	OneToMany DocumentoNotificacion documentosANotificar
 	OneToMany DocumentoNotificacion documentosAnexos
 	OneToMany DocumentoNotificacion documentosRespuesta

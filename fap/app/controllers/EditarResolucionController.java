@@ -127,7 +127,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			EditarResolucionController.prepararResolucionRender(idResolucionFAP);
 		} else {
 			ResolucionFAP resolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
-			if (resolucionFAP.docResolucion.uri == null) {
+			if (resolucionFAP.registro.oficial.uri == null) {
 				redirect("AportarDocumentoResolucionController.index", AportarDocumentoResolucionController.getAccion(), idResolucionFAP);
 			} else {
 				redirect("CambiarDocumentoResolucionController.index", CambiarDocumentoResolucionController.getAccion(), idResolucionFAP);

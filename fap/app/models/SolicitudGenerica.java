@@ -7,8 +7,12 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
 import org.joda.time.DateTime;
+
+import com.google.gson.Gson;
+
 import models.*;
 import messages.Messages;
+import utils.PeticionModificacion;
 import validation.*;
 import audit.Auditable;
 import java.text.ParseException;
@@ -16,6 +20,9 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import controllers.fap.SecureController;
+import enumerado.fap.gen.EstadosModificacionEnum;
+import enumerado.fap.gen.EstadosSolicitudEnum;
+import enumerado.fap.gen.TiposParticipacionEnum;
 import play.db.jpa.JPABase;
 import play.mvc.Http.Request;
 
@@ -282,12 +289,12 @@ public class SolicitudGenerica extends FapModel {
 			if (solicitante.isPersonaFisica()) {
 				compruebaUsuarioParticipacion(solicitante.fisica.nip.valor, solicitante.getNombreCompleto(), solicitante.email);
 				if (solicitante.representado) {
-					compruebaUsuarioParticipacion(solicitante.representante.getNumeroId(), solicitante.representante.getNombreCompleto(), solicitante.representante.email);
+					compruebaUsuarioParticipacionRepresentante(solicitante.representante.getNumeroId(), solicitante.representante.getNombreCompleto(), solicitante.representante.email);
 				}
 			} else {
 				compruebaUsuarioParticipacion(solicitante.juridica.cif, solicitante.getNombreCompleto(), solicitante.email);
 				for (RepresentantePersonaJuridica representante : solicitante.representantes) {
-					compruebaUsuarioParticipacion(representante.getNumeroId(), representante.getNombreCompleto(), representante.email);
+					compruebaUsuarioParticipacionRepresentante(representante.getNumeroId(), representante.getNombreCompleto(), representante.email);
 				}
 
 			}
@@ -318,10 +325,78 @@ public class SolicitudGenerica extends FapModel {
 			p = new Participacion();
 			p.agente = agente;
 			p.solicitud = this;
-			p.tipo = "solicitante";
+			p.tipo = TiposParticipacionEnum.solicitante.name();
 			p.save();
 			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
+		} //end if p == null
+	}// end método
+
+	private void compruebaUsuarioParticipacionRepresentante(String user, String name, String email) {
+		if (user == null) {
+			play.Logger.info("No se comprueba la participación, porque el usuario es: " + user);
+			return;
 		}
+		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).first();
+		if (p == null) {
+			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
+
+			if (agente == null) {
+				agente = new Agente();
+				agente.username = user;
+				agente.name = name;
+				agente.email = email;
+				agente.roles = new HashSet<String>();
+				agente.roles.add("usuario");
+				agente.rolActivo = "usuario";
+				agente.save();
+				play.Logger.info("Creado el agente %s", user);
+			}
+
+			p = new Participacion();
+			p.agente = agente;
+			p.solicitud = this;
+			p.tipo = TiposParticipacionEnum.representante.name();
+			p.save();
+			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
+
+			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(p.solicitud.id);
+
+			if (p.solicitud.estado.equals(EstadosSolicitudEnum.modificacion.name())) {
+				System.out.println("Estado = " + dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estado);
+				System.out.println("Estado value = " + dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estadoValue);
+				System.out.println("Condición = " + dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estado.equals(EstadosModificacionEnum.enCurso.name()));
+				System.out.println("Condición = " + EstadosModificacionEnum.enCurso.name().equals(dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estado));
+				if (EstadosModificacionEnum.enCurso.name().equals(dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estado)) {
+					PeticionModificacion peticionModificacionRepresentante = new PeticionModificacion();
+					peticionModificacionRepresentante.campoPagina = "participacion";
+					Participacion participacion = null;
+					try {
+						participacion = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", p.agente.username, p.solicitud.id).first();
+					} catch (Exception e) {
+						play.Logger.info("La execpción es: " + e);
+					}
+
+					List<String> valoresAntiguosRepresentante = new ArrayList<String>();
+					List<String> valoresNuevosRepresentante = new ArrayList<String>();
+
+					if (participacion.id != null) {
+						peticionModificacionRepresentante.idSimples.put("idParticipacion", participacion.id);
+						valoresNuevosRepresentante.add(participacion.id.toString());
+						peticionModificacionRepresentante.setValorCreado("participacion.id", new ArrayList<String>(), valoresNuevosRepresentante);
+					}
+					if (!peticionModificacionRepresentante.isEmpty()) {
+						if ((!Messages.hasErrors())) {
+							Gson gson = new Gson();
+							String jsonPM = gson.toJson(peticionModificacionRepresentante);
+							JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
+							jsonPeticionModificacion.jsonPeticion = jsonPM;
+							dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
+						}
+						dbSolicitud.save();
+					}
+				} //end if
+			}// end if
+		} //end if p == null
 	}
 
 	public boolean documentoEsObligatorio(String uri) {

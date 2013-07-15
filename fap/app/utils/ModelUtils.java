@@ -38,8 +38,10 @@ import models.CodigoRequerimiento;
 import models.Direccion;
 import models.JsonPeticionModificacion;
 import models.Nip;
+import models.Participacion;
 import models.Persona;
 import models.RegistroModificacion;
+import models.RepresentantePersonaFisica;
 import models.SolicitudGenerica;
 import models.TiposCodigoRequerimiento;
 import models.Tramite;
@@ -519,6 +521,25 @@ public class ModelUtils {
 			String entidad = "";
 			int camposRecorridos=1;
 			if (idBorrar != null)
+				if (numeroCampos == 1){
+					String campo = peticionModificacion.campoPagina;
+					entidad = tags.StringUtils.firstUpper(campo);
+					Long idEntidad = peticionModificacion.idSimples.get("id"+entidad);
+					try {
+						if ((idEntidad != null) && (entidad.equals("Participacion"))){ //CASO PARTICIPACIÓN
+							claseEntidad = Class.forName("models."+entidad);				
+							Method findById = claseEntidad.getDeclaredMethod("findById", Object.class);
+							modeloEntidad = (Model)findById.invoke(claseEntidad.newInstance(), idEntidad);
+							modeloEntidad.delete();
+							break;
+						}
+					} catch (Exception e) {
+						play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
+						Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+						Messages.keep();
+						break;
+					}
+				} // FINAL DEL ELEMENTO CON UN SOLO ID SIMPLE
 				for (String campo : peticionModificacion.campoPagina.split("\\.")){ //Para cada elemento 
 					if (camposRecorridos == 1){
 						entidad = tags.StringUtils.firstUpper(campo);
@@ -543,7 +564,7 @@ public class ModelUtils {
 								Type tipoO2M = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
-								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);								
+  								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);								
 								Field field = extraerField(claseEntidad, campo);
 								Type type = field.getGenericType();  
 							    if (type instanceof ParameterizedType) {  
@@ -616,7 +637,7 @@ public class ModelUtils {
 						}
 					}
 					camposRecorridos++;
-				}//While
+				}//While--- creo que es end for
 			}
 		if (Messages.hasErrors()){ // Si hubo fallos se recupera todo lo anterior
 			tx.rollback();

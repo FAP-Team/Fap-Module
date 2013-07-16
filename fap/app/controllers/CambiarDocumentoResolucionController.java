@@ -24,10 +24,10 @@ public class CambiarDocumentoResolucionController extends CambiarDocumentoResolu
 		if (botonSubirNuevoDocumentoResolucion != null) {
 			ResolucionFAP resolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			try {
-				gestorDocumentalService.deleteDocumento(resolucionFAP.docResolucion);
-				resolucionFAP.docResolucion.tipo = null;
-				resolucionFAP.docResolucion.descripcion = null;
-				resolucionFAP.docResolucion.uri = null;
+				gestorDocumentalService.deleteDocumento(resolucionFAP.registro.oficial);
+				resolucionFAP.registro.oficial.tipo = null;
+				resolucionFAP.registro.oficial.descripcion = null;
+				resolucionFAP.registro.oficial.uri = null;
 				resolucionFAP.save();
 				redirect("AportarDocumentoResolucionController.index", AportarDocumentoResolucionController.getAccion(), idResolucionFAP);
 			} catch (GestorDocumentalServiceException e) {

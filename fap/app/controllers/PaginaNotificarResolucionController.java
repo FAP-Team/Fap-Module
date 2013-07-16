@@ -26,7 +26,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		if (!Messages.hasErrors()) {
 			try {
 				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
-				resolBase.publicarCopiarEnExpedientes(idResolucionFAP);
+				resolBase.notificarCopiarEnExpedientes(idResolucionFAP);
 				resolBase.resolucion.estadoNotificacion = EstadoResolucionEnum.notificada.name();
 				resolBase.resolucion.save();
 			} catch (Throwable e) {

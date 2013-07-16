@@ -521,7 +521,7 @@ Formulario Principal {
 
 	Pagina PaginaNotificarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
 		Grupo grupoNotificar titulo="Notificación de la Resolución" {
-			Form formCopiaExpediente permiso=permisoCopiaExpedientes{
+			Form formCopiaExpediente {
 				Grupo grupoCopiaExpediente titulo="Copia del Registro de Resolucion"{
 					Boton btnCopiaExpediente titulo="Copiar" waitPopup
 				}

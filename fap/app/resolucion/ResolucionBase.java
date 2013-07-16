@@ -760,14 +760,14 @@ public class ResolucionBase {
 	//TODO: Modificar para utilizar documentoOficioRemison de lineaResolucionFAP
 	//      Y tener en cuenta la solicitud para generar el documento
 	public File generarDocumentoOficioRemision (LineaResolucionFAP linea) {
-		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
+		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("linea.solicitud", linea.solicitud);
 		File report = null;
 		try {
 			report = new Report(getBodyReportOficioRemision()).header(getHeaderReport()).footer(getFooterReport()).renderTmpFile(linea.solicitud, this.resolucion);
 			
-			linea.docBaremacion = new Documento();
-			linea.docBaremacion.tipo = getTipoDocumentoResolucionIndividual();
-			linea.docBaremacion.save();
+			linea.documentoOficioRemision = new Documento();
+			linea.documentoOficioRemision.tipo = getTipoDocumentoResolucionIndividual();
+			linea.documentoOficioRemision.save();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,31 +1,34 @@
 <html>
 	<body>
-		<h2 style="text-align: center;">ANEXO II</h2>
-		<h3 style="text-align: center;">Solicitud para la subvención de la compensación del sobrecoste que afrontan los operadores de telecomunicaciones para desplegar servicios de banda ancha en Canarias - Convocatoria 2011</h3>
-		<!-- Solicitante -->
+		<h2 style="text-align: center;">BLA BLA BLA</h2>
+		<h3 style="text-align: center;">BLE BLE BLE</h3>
 		<div id="divDatosPersonalesSolicitante">
-			<table id="tblDatosPersonalesSolicitante" class="table-datos" >
-				<caption>SOLICITANTE:</caption>
-				<tr><td colspan="2"><br></td></tr>
-				<tr><th>CIF/NIF:</th><td>${linea.solicitud.solicitante.getNumeroId()?.toUpperCase()}</td></tr>
-				<tr><th>Nombre/Razón Social:</th><td>${linea.solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
-				<tr><th>Teléfono:</th><td>${linea.solicitud.solicitante.telefonoFijo}</td></tr>
-				<tr><th>Móvil:</th><td>${linea.solicitud.solicitante.telefonoMovil}</td></tr>
-				<tr><th>Fax:</th><td>${linea.solicitud.solicitante.fax}</td></tr>
-				<tr><th>Correo electrónico:</th><td>${linea.solicitud.solicitante.email}</td></tr>
-				<tr><th>Web: </th><td>${linea.solicitud.solicitante.web}</td></tr>
-			</table>
+			<!-- SOLICITANTE -->
+			%{
+			def ttlSolte='SOLICITANTE';
+			def solte = solicitud.solicitante;
+			def	datosSolte = solicitud.datosSolicitante;
+			}%
+			#{tagSolicitante ttl:ttlSolte, slt:solte, dtslt:datosSolte
+			/}
 		</div>
 		</br>
 		<div>
+			%{
+				def num = resolucion.numero
+				def fech = resolucion.fechaRegistroResolucion
+				def sint = resolucion.sintesis
+			}%
 			<p>
-				<b>Asunto:</b> Remisión de la Resolución  Nº  resolucionFap.numero  de fecha  resolucionFap.fechaRegistroResolucion  
+				Asunto: Remisión de la Resolución Nº ${num} de fecha ${fech} 
 			</p>
 			</br>
 			<p>
+				Adjunto a este escrito se remite, a los efectos legales oportunos la Resolución Nº ${num} del Director de la Agencia Canaria de Investigación Innovación y Sociedad de la Información
 			</p>
 			</br>
 			<p>
+				${sint}
 			</p>
 		</div>
 	</body>

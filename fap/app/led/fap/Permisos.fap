@@ -956,7 +956,7 @@ Permiso requerimiento {
 	vars
 		Verificacion verificacion
 	when
-		verificacion?.estado in ("enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada")
+		verificacion?.estado in ("enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada", "enRequerimientoFirmadaRegistrada")
 	return
 		all
 }

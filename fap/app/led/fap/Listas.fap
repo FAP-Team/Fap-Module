@@ -8816,6 +8816,7 @@ Lista estadosVerificacion crearEnumerado {
 	verificacionPositiva: "Verificación Positiva"
 	verificacionNegativa: "Verificación Negativa"
 	enRequerimientoFirmaSolicitada: "Firma Solicitada"
+	enRequerimientoFirmadaRegistrada: "Firmada y Registrada"
 }
 
 Lista estadosDocumentoVerificacion crearEnumerado {

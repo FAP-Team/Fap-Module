@@ -84,11 +84,6 @@ Lista estadoResolucionPublicacion crearEnumerado {
 
 Lista estadoResolucionNotificacion crearEnumerado {
 	notificada: "Notificada"
-	documentoGenerado: "Documento Resolución Generado"
-	
-	estadoFecha: "Notificación: Estado y Fecha"
-	firmaBaremacionResolucion: "Firmados Documentos de Baremación"
-	
 }
 
 // Una línea de resolución afecta a un expediente (o Solicitud)
@@ -353,13 +348,13 @@ Formulario Principal {
 			Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Resolución" destino="_blank" estilo="boton"
 		}
 		
-		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.resoluciones.publicarTablonAnuncios\")==true" {
+		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.publicarTablonAnuncios\")==true)" {
 			Form publicacionResolucion {
 				Enlace publicarResolucionPasos titulo="Publicar la Resolucion" pagina=PaginaPublicarResolucion estilo="btn"
 			}
 		}
 		
-		Grupo gNotificarResolucion titulo="Notificar la Resolución a los interesados" permiso=notificarResolucion mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.resoluciones.notificar\")==true" {
+		Grupo gNotificarResolucion titulo="Notificar la Resolución a los interesados" permiso=notificarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.notificar\")==true)" {
 			Form formNotificarResolucion {
 				Enlace notificarResolucionPasos titulo="Notificar la Resolucion" pagina=PaginaNotificarResolucion estilo="btn"
 			}
@@ -521,6 +516,15 @@ Formulario Principal {
 
 	Pagina PaginaNotificarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
 		Grupo grupoNotificar titulo="Notificación de la Resolución" {
+			Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
+				Columna campo=LineaResolucionFAP.id titulo="Id"
+				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
+				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
+				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+				Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+				Columna campo=LineaResolucionFAP.estado titulo="Estado"
+				Columna campo=LineaResolucionFAP.solicitud.id titulo="Solicitud"
+			}
 			Form formCopiaExpediente {
 				Grupo grupoCopiaExpediente titulo="Copia del Registro de Resolucion"{
 					Boton btnCopiaExpediente titulo="Copiar" waitPopup
@@ -897,7 +901,7 @@ Permiso publicarResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estado in ("registrada")
+		resolucion.estado in ("registrada", "notificada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
@@ -907,17 +911,19 @@ Permiso notificarResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estado in ("registrada")
+		resolucion.estado in ("registrada", "publicada")
+		and resolucion.estadoNotificacion = null
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }
 
+// Sobreescrito
 Permiso finalizarResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estado in ("publicada")
+		resolucion.estado in ("publicada", "notificada", "publicadaYNotificada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
@@ -927,7 +933,7 @@ Permiso verDocumentoResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-	resolucion.estado in ("registrada", "publicada", "finalizada")
+	resolucion.estado in ("registrada", "publicada", "notificada", "publicadaYNotificada", "finalizada")
 	and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all

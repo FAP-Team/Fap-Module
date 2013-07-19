@@ -174,6 +174,15 @@ public class ResolucionBase {
 	public void setLineasDeResolucion(Long idResolucion) {
 	}
 	
+	
+	/**
+	 * Establece las líneas de resolución a una resolución, en caso de que no existan.
+	 * @param idResolucion
+	 * @param idsSeleccionados
+	 */
+	public void setLineasDeResolucion(Long idResolucion, List<Long> idsSeleccionados) {
+	}
+	
 	/**
 	 * Prepara todo antes de obtener las líneas de resolución.
 	 * @param idResolucion
@@ -760,13 +769,17 @@ public class ResolucionBase {
 	//TODO: Modificar para utilizar documentoOficioRemison de lineaResolucionFAP
 	//      Y tener en cuenta la solicitud para generar el documento
 	public File generarDocumentoOficioRemision (LineaResolucionFAP linea) {
-		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("linea.solicitud", linea.solicitud);
+		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
+		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucion", this.resolucion);
 		File report = null;
 		try {
-			report = new Report(getBodyReportOficioRemision()).header(getHeaderReport()).footer(getFooterReport()).renderTmpFile(linea.solicitud, this.resolucion);
+			report = new Report(getBodyReportOficioRemision())
+								.header(getHeaderReport())
+								.footer(getFooterReport())
+								.renderTmpFile(linea.solicitud, resolucion);
 			
 			linea.documentoOficioRemision = new Documento();
-			linea.documentoOficioRemision.tipo = getTipoDocumentoResolucionIndividual();
+			linea.documentoOficioRemision.tipo = getTipoDocumentoOficioRemision();
 			linea.documentoOficioRemision.save();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -851,6 +864,10 @@ public class ResolucionBase {
 	public String getTipoDocumentoOficialSinComentarios(){
 		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion.completa");
 
+	}
+	
+	public String getTipoDocumentoOficioRemision(){
+		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion.oficioRemision");
 	}
 	
 	public void generarDocumentoOficialBaremacionConComentarios(Long idResolucion){

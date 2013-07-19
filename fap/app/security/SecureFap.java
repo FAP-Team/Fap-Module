@@ -87,6 +87,8 @@ public class SecureFap extends Secure {
 			return permisoClasificarInformeSinComentarios(_permiso, action, ids, vars);
 		else if ("permisoFirmarDocBaremacionResolucion".equals(id))
 			return permisoFirmarDocBaremacionResolucion(_permiso, action, ids, vars);
+		else if ("finalizarResolucion".equals(id))
+			return finalizarResolucion(_permiso, action, ids, vars);
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
@@ -1072,6 +1074,49 @@ public class SecureFap extends Secure {
 					}
 			}
 		}
+		return null;
+	}
+	
+	public ResolucionFAP getResolucionFAP(Map<String, Long> ids, Map<String, Object> vars) {
+		if (vars != null && vars.containsKey("resolucionFAP"))
+			return (ResolucionFAP) vars.get("resolucionFAP");
+		else if (ids != null && ids.containsKey("idResolucionFAP"))
+			return ResolucionFAP.findById(ids.get("idResolucionFAP"));
+		return null;
+	}
+	
+	private ResultadoPermiso finalizarResolucion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		boolean publicar = properties.FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios");
+		boolean notificar = properties.FapProperties.getBoolean("fap.resoluciones.notificar");
+
+		if (publicar && notificar) {
+			if (utils.StringUtils.in(resolucion.estado.toString(), "publicadaYNotificada") && utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "jefeServicio")) {
+				return new ResultadoPermiso(Accion.All);
+
+			}
+		}
+
+		if (!publicar && notificar) {
+			if (utils.StringUtils.in(resolucion.estado.toString(), "notificada") && utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "jefeServicio")) {
+				return new ResultadoPermiso(Accion.All);
+
+			}
+		}
+
+		if (publicar && !notificar) {
+			if (utils.StringUtils.in(resolucion.estado.toString(), "publicada") && utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "jefeServicio")) {
+				return new ResultadoPermiso(Accion.All);
+
+			}
+		}
+
 		return null;
 	}
 	

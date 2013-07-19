@@ -38,9 +38,11 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		if (!Messages.hasErrors()) {
 
 			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito");
-		} else
+			redirect("EditarResolucionController.index", EditarResolucionController.getAccion(), idResolucionFAP);
+		} else {
 			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
-		PaginaNotificarResolucionController.formCopiaExpedienteRender(idResolucionFAP);
+			PaginaNotificarResolucionController.formCopiaExpedienteRender(idResolucionFAP);
+		}
 	}
 	
 }

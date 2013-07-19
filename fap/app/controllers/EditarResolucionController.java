@@ -197,7 +197,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			} catch (Throwable e) {
 				new Exception ("No se ha podido obtener el objeto resolución", e);
 			}
-			resolBase.setLineasDeResolucion(idResolucionFAP);
+			resolBase.setLineasDeResolucion(idResolucionFAP, idsSeleccionados);
 			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			resolBase.avanzarFase_Borrador(resolucion);
 		}

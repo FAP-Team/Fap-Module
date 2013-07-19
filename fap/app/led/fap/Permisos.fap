@@ -254,13 +254,22 @@ Permiso incorporarDocumentos {
 		all
 }
 
-Permiso noEditable{
+Permiso noEditable {
 	return visible
 }
 
 Permiso noVisibleUsuario{
 	when
 		usuario is visible
+	return denegar
+	else return all
+}
+
+Permiso noVisibleUsuarioNotificacion{
+	vars Notificacion notificacion
+	when
+		agente.rolActivo = "usuario" and
+		notificacion?.estado in ("puestaADisposicion", "anulada")
 	return denegar
 	else return all
 }

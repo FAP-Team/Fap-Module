@@ -26,7 +26,7 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 			accion = getAccion();
 		if (!permiso(accion)) {
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
-			renderTemplate("gen/NotificacionVer/NotificacionVer.html");
+			renderTemplate("fap/NotificacionVer/NotificacionVer.html");
 		}
 		checkRedirigir();
 

@@ -42,10 +42,12 @@ Formulario Notificacion {
 				Fecha campo=Notificacion.fechaAcceso titulo="Fecha de Acceso"
 				Texto campo=Notificacion.plazoAcceso titulo="Plazo de Acceso"
 				Fecha campo=Notificacion.fechaLimite titulo="Fin de plazo de Acceso"
-				Texto campo=Notificacion.frecuenciaRecordatorioAcceso titulo="Días recordatorio de Acceso"
-				Texto campo=Notificacion.plazoRespuesta titulo="Plazo de Respuesta"
-				Fecha campo=Notificacion.fechaFinPlazo titulo="Fin de plazo de respuesta"
-				Texto campo=Notificacion.frecuenciaRecordatorioRespuesta titulo="Días recordatorio de Respuesta"
+				Grupo datosNoVisiblesUsuario borde=false permiso=noVisibleUsuarioNotificacion {
+					Texto campo=Notificacion.frecuenciaRecordatorioAcceso titulo="Días recordatorio de Acceso"
+					Texto campo=Notificacion.plazoRespuesta titulo="Plazo de Respuesta"
+					Fecha campo=Notificacion.fechaFinPlazo titulo="Fin de plazo de respuesta"
+					Texto campo=Notificacion.frecuenciaRecordatorioRespuesta titulo="Días recordatorio de Respuesta"
+				}
 				Texto campo=Notificacion.idExpedienteAed titulo="Expediente"
 				Texto campo=Notificacion.uri titulo="ID de la notificacion (URI)"
 				Texto campo=Notificacion.asunto titulo="Asunto"
@@ -61,7 +63,7 @@ Formulario Notificacion {
 		
 		Enlace atras anterior titulo="Volver a Mis Notificaciones" estilo="btn"
 		
-		Grupo grupoDocumentos titulo="Documentos" {
+		Grupo grupoDocumentos titulo="Documentos" permiso=noVisibleUsuarioNotificacion {
 			Tabla listaDocumentosNotificados titulo="Documentos notificados" campo=Notificacion.documentosANotificar {
 				Columna funcion="<a href=\"${DocumentoNotificacion.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100" expandir
 			}

@@ -101,3 +101,21 @@ h3. Solicitante Persona Jurídica
 bc. SolicitantePersonaJuridica personaSolicitantePersonaJuridica campo=Solicitud.solicitantePersonaJuridica titulo="Solicitante Persona Juridica"
 
 !images/dsl-solicitante11!
+
+h2. Representante de un Solicitante
+
+h3. Comprobación de que el CIF/NIP del representante no es el mismo que el del solicitante
+
+En una solicitud en la cual existan representantes del solicitante debemos comprobar que el CIF/NIP de un representante no es el mismo que el del solicitante.
+
+Para ello, debemos sobreescribir el método @validateCopy@ del controlador del popup o página donde se rellenen los campos del representante. 
+
+Luego tendremos que añadirle la línea de comprobación.
+
+En el caso de que sea el representante de una persona física:
+
+bc. CustomValidation.notEqual(dbSolicitud.solicitante.getNumeroId(), representantePersonaJuridica.getNumeroId());
+
+En el caso de que sea representante de una persona física:
+
+bc. CustomValidation.notEqual(dbSolicitud.solicitante.getNumeroId(), solicitud.solicitante.representante.fisica.getNumeroId());

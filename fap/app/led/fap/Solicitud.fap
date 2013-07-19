@@ -151,6 +151,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	Pagina AportacionRecibos titulo="Recibos de Aportaciones" noForm  perteneceA ="Aportacion"{
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
+		popupLeer=PopUpAportaciones
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
 			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
@@ -161,6 +162,17 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 		
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
+	}
+	
+	Popup PopUpAportaciones titulo="Detalle Aportación" campo=SolicitudGenerica.documentacionAportada.documentos {
+		Fecha campo=Documento.fechaSubida titulo="Fecha Subida"
+		Fecha campo=Documento.fechaRegistro titulo="Fecha Registro"
+		Combo campo=Documento.tipo titulo="Tipo Documento"
+		Texto campo=Documento.uri titulo="Uri"
+		Texto campo=Documento.hash  titulo="Hash"
+		Texto campo=Documento.descripcionVisible titulo="Descripción" 
+		Enlace campo=Documento.urlDescarga titulo="Descargar"
+		Enlace campo=Documento.enlaceDescargaFirmado titulo="Descargar Firmado" 
 	}
 	
 	Popup PopUpDocPresentados titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos{

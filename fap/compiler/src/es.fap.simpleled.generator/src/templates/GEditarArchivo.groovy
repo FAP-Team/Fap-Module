@@ -72,8 +72,12 @@ public class GEditarArchivo extends GSaveCampoElement{
 			}
 			return result;
 		}else
-			return validate(validatedFields) + """ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo;
- ${campo.dbStr()}.descripcion = ${campo.firstLower()}.descripcion;
+			return validate(validatedFields) + """ int DESCMAXIMA = 255;  
+ ${campo.dbStr()}.tipo = ${campo.firstLower()}.tipo; 
+ if (${campo.firstLower()}.descripcion.length() > DESCMAXIMA){
+    validation.addError("${campo.firstLower()}.descripcion", "La descripción excede el tamaño máximo permitido de "+DESCMAXIMA+" caracteres");
+ }
+    ${campo.dbStr()}.descripcion = ${campo.firstLower()}.descripcion;
 		""";
 	}
 	

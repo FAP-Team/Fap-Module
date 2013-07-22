@@ -36,10 +36,9 @@ public class ResolucionSimple extends ResolucionBase {
 	public void setLineasDeResolucion(Long idResolucion, List<Long> idsSeleccionados) {
 		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
 		Long idSeleccionado = idsSeleccionados.get(0);
-		SolicitudGenerica sol = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where ((solicitud.estado not in('borrador')) and (solicitud.id =?))", idSeleccionado).first();
 		LineaResolucionFAP lResolucion = new LineaResolucionFAP();
-		lResolucion.solicitud = sol;
-		if (sol.estado.equals(EstadosSolicitudEnum.verificado.name())) {
+		lResolucion.solicitud = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where ((solicitud.estado not in('borrador')) and (solicitud.id =?))", idSeleccionado).first();
+		if (lResolucion.solicitud.estado.equals(EstadosSolicitudEnum.verificado.name())) {
 			lResolucion.estado = EstadoLineaResolucionEnum.concedida.name();
 		} else {
 			lResolucion.estado = EstadoLineaResolucionEnum.excluida.name();

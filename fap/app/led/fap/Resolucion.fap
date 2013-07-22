@@ -513,74 +513,20 @@ Formulario Principal {
 		Boton botonVolver titulo="Volver" pagina=EditarResolucion 
 	}
 
-
 	Pagina PaginaNotificarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
 		Grupo grupoNotificar titulo="Notificación de la Resolución" {
-			Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
-				Columna campo=LineaResolucionFAP.id titulo="Id"
-				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
-				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
-				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
-				Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante"
-				Columna campo=LineaResolucionFAP.estado titulo="Estado"
-				Columna campo=LineaResolucionFAP.solicitud.id titulo="Solicitud"
-			}
 			Form formCopiaExpediente {
-				Grupo grupoCopiaExpediente titulo="Copia del Registro de Resolucion"{
+				Grupo grupoCopiaExpediente titulo="Copia del documento de notificación"{
 					Boton btnCopiaExpediente titulo="Copiar" waitPopup
 				}
 			}
-			/*
-			Grupo grupoDocumentoResolucion titulo="Paso 3: Documento de Baremacion en Resolucion" permiso=permisoGenerarBaremacionResolucion{
-				Form generarDocumentoBaremacionResolucion permiso=permisoGenerarDocBaremacion{
-					Grupo grupoGenerarDocumento titulo="Paso 3.1: Generación y Almacenamiento de Documentos"{
-						Boton btnGenerarDocumento titulo="Generar" waitPopup
-					}
-				}
-				Form generarClasificarDocumentos permiso=permisoClasificarDocBaremacion {
-					Grupo grupoClasificarDocumentos titulo="Paso 3.2: Clasificar los documentos"{
-						Boton btnClasificarDocumentos titulo="Clasificar" waitPopup
-					}
-				}
-				
-				Form generarInformeConComentarios permiso=permisoGenerarInformeConComentarios{
-					Grupo grupoGenerarInformeConComentarios titulo="Generar Informe con Comentarios de la Administracion"{
-						Boton btnGenerarInformeConComentarios titulo="Generar"
-					}
-				}
-				Form clasificarInformeConComentarios permiso=permisoClasificarInformeConComentarios{
-					Grupo grupoClasificarInformeConComentarios titulo="Clasificar Informe con Comentarios" {
-						Wiki {"El informe ya ha sido generado, debe proceder a su clasificacion"}
-						Boton btnClasificarInformeConComentarios titulo="Clasificar"
-					}
-				}
-				Form generarInformeSinComentarios permiso=permisoGenerarInformeSinComentarios{
-					Grupo grupoGenerarInformeSinComentarios titulo="Generar Informe sin Comentarios de la Administracion"{
-						Boton btnGenerarInformeSinComentarios titulo="Generar"	
-					}
-				}
-				Form clasificarInformeSinComentarios permiso=permisoClasificarInformeSinComentarios{
-					Grupo grupoClasificarInformeSinComentarios titulo="Clasificar Informe con Comentarios" {
-						Wiki {"El informe ya ha sido generado, debe proceder a su clasificacion"}
-						Boton btnClasificarInformeSinComentarios titulo="Clasificar"
-					}
-				}
-				
-			}
-			Form firmarBaremacion permiso=permisoFirmarDocBaremacionResolucion{
-				Grupo grupoFirmarBaremacion titulo="Firmar Documentos de Baremación en Resolución"{
-					Boton btnFirmarBaremacion titulo="Firmar"
-				}
-			}
-			Form volver{
+			Form volver {
 				Grupo grupovolver borde=false {
 					Boton btnVolver titulo="Volver" pagina=EditarResolucion 
 				}
 			}
-		*/
 		}
 	}
-
 
 }
 
@@ -923,7 +869,7 @@ Permiso finalizarResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estado in ("publicada", "notificada", "publicadaYNotificada")
+		resolucion.estado in ("finalizada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
@@ -933,7 +879,7 @@ Permiso verDocumentoResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-	resolucion.estado in ("registrada", "publicada", "notificada", "publicadaYNotificada", "finalizada")
+	resolucion.estado in ("registrada", "publicada", "notificada", "finalizada")
 	and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all

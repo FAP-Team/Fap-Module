@@ -428,8 +428,8 @@ public class ResolucionBase {
 				EntityTransaction tx = JPA.em().getTransaction();
 				tx.commit();
 				tx.begin();
-				if (EstadoResolucionEnum.notificada.equals(resolucion.resolucion.estado))
-					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+				if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
+					resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
 				else
 					resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
 				tx.commit();
@@ -475,8 +475,8 @@ public class ResolucionBase {
 					EntityTransaction tx = JPA.em().getTransaction();
 					tx.commit();
 					tx.begin();
-					if (EstadoResolucionEnum.publicada.equals(resolucion.resolucion.estado))
-						resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+					if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+						resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
 					else
 						resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
 					tx.commit();
@@ -580,14 +580,7 @@ public class ResolucionBase {
 		}
 	}
 	
-	public void avanzarFase_Registrada_PublicadaYNotificada(ResolucionFAP resolucion) {
-		if (!Messages.hasErrors()) {
-			resolucion.estado = EstadoResolucionEnum.publicadaYNotificada.name();
-			resolucion.save();
-		}
-	}
-	
-	public void avanzarFase_Publicada(ResolucionFAP resolucion) {
+	public void avanzarFase_PublicadaYONotificada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.finalizada.name();
 			resolucion.save();
@@ -842,7 +835,7 @@ public class ResolucionBase {
 		tx.commit();
 		tx.begin();
 		if (EstadoResolucionEnum.notificada.equals(resolucion.resolucion.estado))
-			resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+			resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
 		else
 			resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
 		tx.commit();

@@ -428,7 +428,7 @@ public class ResolucionBase {
 				EntityTransaction tx = JPA.em().getTransaction();
 				tx.commit();
 				tx.begin();
-				if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
+				if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado) || !isNotificar())
 					resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
 				else
 					resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
@@ -437,56 +437,34 @@ public class ResolucionBase {
 		} 
 	 }
 	 
-	 //TODO: Hacen falta dos metodos por culpa de la firma intermedia entre generacion y registro
-	 public void notificarCopiarEnExpedientes (long idResolucion){
-			ResolucionBase resolucion = null;
-			try {
-				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
-			}catch (Throwable e) {
-				// TODO: handle exception
-			}
+	public void notificarCopiarEnExpedientes (long idResolucion) {
+		ResolucionBase resolucion = null;
+		try {
+			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+		}catch (Throwable e) {
+			// TODO: handle exception
+		}
+		
+		List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
+		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
+		if (!Messages.hasErrors()) {
 			
-			List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
-			play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
-			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-			FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
-
-			for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
-				try  {
-					//Genera el documento oficio de remision
-					SolicitudGenerica sol = SolicitudGenerica.findById(linea.solicitud.id);
-					File documentoOficioRemision = generarDocumentoOficioRemision(linea);
-					String uri = gestorDocumental.saveDocumentoTemporal(linea.documentoOficioRemision, documentoOficioRemision);
-					//Firmarlo
-					firmaService.firmarEnServidor(linea.documentoOficioRemision);
-					listaExpedientes.add(linea.solicitud.expedienteAed);
-					//Y copiarlo al expediente
-					gestorDocumental.copiarDocumentoEnExpediente(uri, listaExpedientes);
-					listaExpedientes.clear();
-					sol.save();
-				} catch (Throwable e)   {
-					
-				}
-			}
-			
-			//Una vez copiados los expedientes se comprueba si hay documentos de baremacion
-			//y se avanza de fase segun el tipo de la resolucion
-			if (!resolucion.resolucion.conBaremacion) {
-					EntityTransaction tx = JPA.em().getTransaction();
-					tx.commit();
-					tx.begin();
-					if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+		}
+		
+		if (!resolucion.resolucion.conBaremacion) {
+				EntityTransaction tx = JPA.em().getTransaction();
+				tx.commit();
+				tx.begin();
+				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado) || !isPublicarTablonAnuncios())
 						resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
-					else
-						resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
-					tx.commit();
-					tx.begin();
-			} 
-	 }
+				else
+					resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
+				tx.commit();
+				tx.begin();
+		}
+	}
 	 
-	 public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion){
-		 
-	 }
+	public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion) {}
 	 
 	public void avanzarFase_Borrador(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
@@ -759,27 +737,6 @@ public class ResolucionBase {
 		return report;
 	}
 	
-	//TODO: Modificar para utilizar documentoOficioRemison de lineaResolucionFAP
-	//      Y tener en cuenta la solicitud para generar el documento
-	public File generarDocumentoOficioRemision (LineaResolucionFAP linea) {
-		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
-		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucion", this.resolucion);
-		File report = null;
-		try {
-			report = new Report(getBodyReportOficioRemision())
-								.header(getHeaderReport())
-								.footer(getFooterReport())
-								.renderTmpFile(linea.solicitud, resolucion);
-			
-			linea.documentoOficioRemision = new Documento();
-			linea.documentoOficioRemision.tipo = getTipoDocumentoOficioRemision();
-			linea.documentoOficioRemision.save();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return report;
-	}
-	
 	public List<LineaResolucionFAP> getLineasDocBaremacion(ResolucionFAP resolucion){
 		List<LineaResolucionFAP> lista = new ArrayList<LineaResolucionFAP>();
 		for (LineaResolucionFAP linea : resolucion.lineasResolucion) {
@@ -834,7 +791,7 @@ public class ResolucionBase {
 		EntityTransaction tx = JPA.em().getTransaction();
 		tx.commit();
 		tx.begin();
-		if (EstadoResolucionEnum.notificada.equals(resolucion.resolucion.estado))
+		if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
 			resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
 		else
 			resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);

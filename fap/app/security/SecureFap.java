@@ -1097,7 +1097,7 @@ public class SecureFap extends Secure {
 		boolean notificar = properties.FapProperties.getBoolean("fap.resoluciones.notificar");
 
 		if (publicar && notificar) {
-			if (utils.StringUtils.in(resolucion.estado.toString(), "finalizada") && utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "jefeServicio")) {
+			if (utils.StringUtils.in(resolucion.estado.toString(), "publicadaYNotificada") && utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "jefeServicio")) {
 				return new ResultadoPermiso(Accion.All);
 
 			}

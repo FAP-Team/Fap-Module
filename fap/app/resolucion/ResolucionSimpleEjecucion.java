@@ -86,7 +86,7 @@ public class ResolucionSimpleEjecucion extends ResolucionSimple {
 				tx.commit();
 				tx.begin();
 				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
-					resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
+					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
 				else
 					resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
 				tx.commit();

@@ -2,7 +2,7 @@ Lista resolucionesDefinidas crearEnumerado {
 	simpleTotal: "Simple Total"
 	multipleTotal: "Múltiple Todos Expedientes"
 	multipleParcialExpedientes: "Multiple Seleccionando Expedientes"
-	simpleEjecucion: "Simple Fase de Ejecucion"
+	simpleEjecucion: "Simple Fase de Ejecución"
 }
 
 Lista tipoResolucion crearEnumerado {
@@ -35,6 +35,7 @@ Lista estadoResolucion crearEnumerado {
 	registrada: "Registrada"
 	publicada: "Publicada"
 	notificada: "Notificada"
+	publicadaYNotificada: "Publicada y nofitificada"
 	finalizada: "Finalizada"
 	afectado: "Expediente afectado"
 }
@@ -218,7 +219,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
@@ -351,18 +352,20 @@ Formulario Principal {
 		
 		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.publicarTablonAnuncios\")==true)" {
 			Form publicacionResolucion {
-				Enlace publicarResolucionPasos titulo="Publicar la Resolucion" pagina=PaginaPublicarResolucion estilo="btn"
+				Enlace publicarResolucionPasos titulo="Publicar la Resolución" pagina=PaginaPublicarResolucion estilo="btn"
 			}
 		}
 		
 		Grupo gNotificarResolucion titulo="Notificar la Resolución a los interesados" permiso=notificarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.notificar\")==true)" {
 			Form formNotificarResolucion {
-				Enlace notificarResolucionPasos titulo="Notificar la Resolucion" pagina=PaginaNotificarResolucion estilo="btn"
+				Enlace notificarResolucionPasos titulo="Notificar la Resolución" pagina=PaginaNotificarResolucion estilo="btn"
 			}
 		}
 		
 		Grupo gFinalizarResolucion titulo="Finalizar la Resolución" permiso=finalizarResolucion {
-			Wiki { "Finalizar resolución" }
+			Form formFinalizarResolucion {
+				Enlace enlaceFinalizarResolucion titulo="Finalizar la Resolución" pagina=PaginaFinalizarResolucion estilo="btn"
+			}
 		}
 		
 		Grupo gDatosResolucion titulo="Datos de la Resolución actual" permiso=mostrarDatosResolucion {
@@ -374,7 +377,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -524,6 +527,19 @@ Formulario Principal {
 			Form volver {
 				Grupo grupovolver borde=false {
 					Boton btnVolver titulo="Volver" pagina=EditarResolucion 
+				}
+			}
+		}
+	}
+
+	Pagina PaginaFinalizarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
+		Grupo grupoFinalizar titulo="Finalización de la Resolución" {
+			Form formFinalizar {
+				Boton btnFinalizar titulo="Finalizar" waitPopup
+			}
+			Form volver {
+				Grupo grupovolver borde=false {
+					Boton btnVolver titulo="Volver" pagina=EditarResolucion
 				}
 			}
 		}
@@ -870,7 +886,7 @@ Permiso finalizarResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estado in ("finalizada")
+		resolucion.estado in ("publicada", "notificada", "publicadaYNotificada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
@@ -880,8 +896,8 @@ Permiso verDocumentoResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-	resolucion.estado in ("registrada", "publicada", "notificada", "finalizada")
-	and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		resolucion.estado in ("registrada", "publicada", "notificada", "publicadaYNotificada", "finalizada")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }

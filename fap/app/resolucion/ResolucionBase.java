@@ -428,8 +428,8 @@ public class ResolucionBase {
 				EntityTransaction tx = JPA.em().getTransaction();
 				tx.commit();
 				tx.begin();
-				if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado) || !isNotificar())
-					resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
+				if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
+					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
 				else
 					resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
 				tx.commit();
@@ -455,8 +455,8 @@ public class ResolucionBase {
 				EntityTransaction tx = JPA.em().getTransaction();
 				tx.commit();
 				tx.begin();
-				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado) || !isPublicarTablonAnuncios())
-						resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
+				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
 				else
 					resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
 				tx.commit();
@@ -554,6 +554,13 @@ public class ResolucionBase {
 	public void avanzarFase_Registrada_Notificada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.notificada.name();
+			resolucion.save();
+		}
+	}
+	
+	public void avanzarFase_Registrada_PublicadaYNotificada(ResolucionFAP resolucion) {
+		if (!Messages.hasErrors()) {
+			resolucion.estado = EstadoResolucionEnum.publicadaYNotificada.name();
 			resolucion.save();
 		}
 	}
@@ -792,7 +799,7 @@ public class ResolucionBase {
 		tx.commit();
 		tx.begin();
 		if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
-			resolucion.avanzarFase_PublicadaYONotificada(resolucion.resolucion);
+			resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
 		else
 			resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
 		tx.commit();

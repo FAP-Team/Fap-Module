@@ -19,7 +19,7 @@
 
 				#{fap.texto campo:'notificacion.idExpedienteAed', titulo:'Expediente' /}		
 
-				#{fap.texto campo:'notificacion.uri', titulo:'ID de la notificacion (URI)' /}		
+				#{fap.texto campo:'notificacion.uri', titulo:'ID de la notificación (URI)' /}		
 
 				#{fap.texto campo:'notificacion.asunto', titulo:'Asunto' /}		
 
@@ -35,11 +35,11 @@
 			     urlTabla:@NotificacionVerController.tablatablaInteresados(idNotificacion)
 			}
 
-				#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre ', campo:'persona.nombreCompleto' /}
+				#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre ', campo:'persona.nombreCompleto', expandir:true  /}
 
-				#{fap.columna alignPosition:'left', ancho:200, cabecera:'NIF/CIF', campo:'persona.numeroId'/}			
+				#{fap.columna alignPosition:'left', ancho:200, cabecera:'NIF/CIF', campo:'persona.numeroId', expandir:true /}			
 
-				#{fap.columna alignPosition:'left', ancho:200, cabecera:'Interesado.email', campo:'email', cabecera:'Correo Electrónico' /}
+				#{fap.columna alignPosition:'left', ancho:200, campo:'email', cabecera:'Correo Electrónico', expandir:true /}
 
 			#{/fap.tabla}
 

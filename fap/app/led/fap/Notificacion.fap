@@ -30,12 +30,12 @@ Formulario Notificacion {
 	}
 	
 	Pagina NotificacionVer titulo="Ver Notificacion" campo=Notificacion noForm{
-		Grupo datosNotificacion titulo="Datos Notificacion" {
+		Grupo datosNotificacion titulo="Datos Notificación" {
 			Grupo datosBasicos borde=false permiso=noEditable{
 				Tabla tablaInteresados campo=Notificacion.interesados titulo="Interesados"{
-					Columna campo=Interesado.persona.nombreCompleto titulo="Nombre "
-					Columna campo=Interesado.persona.numeroId titulo="NIF/CIF" //Sobreescribir
-					Columna campo=Interesado.email					
+					Columna campo=Interesado.persona.nombreCompleto titulo="Nombre " expandir
+					Columna campo=Interesado.persona.numeroId titulo="NIF/CIF" expandir //Sobreescribir 
+					Columna campo=Interesado.email expandir			
 				}
 				Combo campo=Notificacion.estado titulo="Estado"
 				Fecha campo=Notificacion.fechaPuestaADisposicion titulo="Fecha Puesta a Disposición"
@@ -49,7 +49,7 @@ Formulario Notificacion {
 					Texto campo=Notificacion.frecuenciaRecordatorioRespuesta titulo="Días recordatorio de Respuesta"
 				}
 				Texto campo=Notificacion.idExpedienteAed titulo="Expediente"
-				Texto campo=Notificacion.uri titulo="ID de la notificacion (URI)"
+				Texto campo=Notificacion.uri titulo="ID de la notificación (URI)"
 				Texto campo=Notificacion.asunto titulo="Asunto"
 				AreaTexto campo=Notificacion.descripcion titulo="Descripción" filas=5 ancho="500px"
 			}

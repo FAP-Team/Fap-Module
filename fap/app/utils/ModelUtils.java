@@ -828,7 +828,6 @@ public class ModelUtils {
 				ultimoRegistro.fechaCancelacion=new DateTime();
 				ultimoRegistro.save();
 			}
-			solicitud.activoModificacion = false;
 			solicitud.estado = solicitud.estadoAntesModificacion;
 			solicitud.save();
 		}

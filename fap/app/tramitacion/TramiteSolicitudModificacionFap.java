@@ -196,7 +196,6 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 	@Override
 	public void cambiarEstadoSolicitud() {
 		solicitud.estado=solicitud.estadoAntesModificacion;
-		solicitud.activoModificacion=false;
 		solicitud.save();
 	}
 	

@@ -7,7 +7,6 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
 import org.joda.time.DateTime;
-
 import models.*;
 import messages.Messages;
 import validation.*;
@@ -119,6 +118,7 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Cesion cesion;
 
+	@Transient
 	public Boolean activoModificacion;
 
 	public String estadoAntesModificacion;
@@ -243,9 +243,6 @@ public class SolicitudGenerica extends FapModel {
 			cesion = new Cesion();
 		else
 			cesion.init();
-
-		if (activoModificacion == null)
-			activoModificacion = false;
 
 		if (registroModificacion == null)
 			registroModificacion = new ArrayList<RegistroModificacion>();
@@ -446,6 +443,16 @@ public class SolicitudGenerica extends FapModel {
 		}
 		interesados.addAll(interesadosSoloParticipacion);
 		return interesados;
+	}
+
+	public Boolean getActivoModificacion() {
+		if (registroModificacion == null)
+			return false;
+		if (registroModificacion.isEmpty())
+			return false;
+		if (("enCurso").equals(registroModificacion.get(registroModificacion.size() - 1).estado))
+			return true;
+		return false;
 	}
 
 	// === MANUAL REGION END ===

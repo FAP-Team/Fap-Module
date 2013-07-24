@@ -53,7 +53,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Boolean activoFH default="false"
 	OneToMany CertificadoSolicitado certificados
 	Cesion cesion
-	Boolean activoModificacion default="false"
+	Boolean activoModificacion transient
 	String estadoAntesModificacion	//Estado al que se vuelve al finalizar la modificacion
 	OneToMany RegistroModificacion registroModificacion
 	String fechaARestaurarStr transient

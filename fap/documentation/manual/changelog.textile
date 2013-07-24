@@ -1,5 +1,17 @@
 h2. Changelog
 
+h3. Versión 2.3RC8
+
+* Modificaciones en fichaEvaluador: Cambio de posición de la tabla de conceptos económicos y eliminada la lista de conceptos económicos. 
+* Añadido el nuevo estado "Firmada y Registrada" una vez que se firma la notificación.
+* Añadido popup de detalle en el justificante de las aportaciones (hash y uri)
+* Añadido que se muestre uri y hash de documentos ya subidos en el detalle de los documentos.
+* Añadido permiso que muestra datos de la notificacion sólo si el usuario ya la ha recibido.
+* Corregidas las tildes que faltaban en la página de detalle de la notificación.
+* Control de fechas que sean null devueltas por el servicio de notificaciones.
+* Fixed bug en el enlace de descarga del justificante las modificaciones (no mostrar enlace de descarga si no existe).
+* Añadida comprobación de que la descripción de un documento no supere los 255 caracteres.
+
 h3. Versión 2.3RC5
 
 * Fixed bugs en CEconomicosCopia

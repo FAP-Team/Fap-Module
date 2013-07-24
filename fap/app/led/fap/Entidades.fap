@@ -148,6 +148,7 @@ Entidad Documento {
 	DateTime fechaSubida
 	DateTime fechaRegistro
 	String urlDescarga transient
+	String enlaceDescarga transient
 	String urlDescargaFirmado transient
 	String enlaceDescargaFirmado transient
 	Boolean verificado	// Indica si el documento ya ha sido verificado

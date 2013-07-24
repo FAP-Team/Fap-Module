@@ -1106,7 +1106,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
 				Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registro" expandir
 				Columna campo=RegistroModificacion.estado titulo="Estado" expandir
-				Columna funcion="<a href=\"${RegistroModificacion.registro.justificante.urlDescarga}\" target=\"_blank\">Descargar</a>" ancho="80" titulo="Justificante" expandir
+				Columna campo=RegistroModificacion.registro.justificante.enlaceDescarga titulo="Justificante" expandir
 			}
 		}
 	}
@@ -1426,7 +1426,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna campo=RegistroModificacion.fechaCancelacion titulo="Fecha Cancelada" expandir
 				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
 				Columna campo=RegistroModificacion.estadoValue titulo="Estado" expandir
-				Columna funcion="<a href=\"${RegistroModificacion.registro.justificante.urlDescarga}\" target=\"_blank\">Descargar</a>" ancho="80" titulo="Justificante"
+				Columna campo=RegistroModificacion.registro.justificante.enlaceDescarga titulo="Justificante" expandir
 			}
 		}
 		

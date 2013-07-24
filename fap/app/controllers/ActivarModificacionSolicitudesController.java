@@ -127,7 +127,7 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 			}
 		}
 			
-		renderJSON(response.toJSON("fechaCreacion", "fechaRegistro", "fechaCancelacion", "fechaLimite", "estadoValue", "registro.justificante.urlDescarga", "id"));
+		renderJSON(response.toJSON("fechaCreacion", "fechaRegistro", "fechaCancelacion", "fechaLimite", "estadoValue", "registro.justificante.enlaceDescarga", "id"));
 	}
 
 }

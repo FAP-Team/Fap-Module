@@ -49,6 +49,8 @@ public class RegistroModificacion extends FapModel {
 	@Transient
 	public String estado;
 
+	public Boolean enRecuperacion;
+
 	@Transient
 	public String estadoValue;
 
@@ -60,6 +62,9 @@ public class RegistroModificacion extends FapModel {
 
 		if (jsonPeticionesModificacion == null)
 			jsonPeticionesModificacion = new ArrayList<JsonPeticionModificacion>();
+
+		if (enRecuperacion == null)
+			enRecuperacion = false;
 
 		postInit();
 	}

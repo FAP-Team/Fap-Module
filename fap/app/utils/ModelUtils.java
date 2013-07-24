@@ -530,7 +530,9 @@ public class ModelUtils {
 							claseEntidad = Class.forName("models."+entidad);				
 							Method findById = claseEntidad.getDeclaredMethod("findById", Object.class);
 							modeloEntidad = (Model)findById.invoke(claseEntidad.newInstance(), idEntidad);
-							modeloEntidad.delete();
+							if (modeloEntidad != null){
+								modeloEntidad.delete();
+							}
 							break;
 						}
 					} catch (Exception e) {

@@ -316,8 +316,7 @@ public class SolicitudGenerica extends FapModel {
 				agente.rolActivo = "usuario";
 				agente.save();
 				play.Logger.info("Creado el agente %s", user);
-			}
-
+			}	
 			p = new Participacion();
 			p.agente = agente;
 			p.solicitud = this;
@@ -347,21 +346,24 @@ public class SolicitudGenerica extends FapModel {
 				agente.save();
 				play.Logger.info("Creado el agente %s", user);
 			}
-
+			if ((this.estado.equals(EstadosSolicitudEnum.modificacion.name())) &&(this.registroModificacion.get(this.registroModificacion.size()-1).enRecuperacion)) {
+				Participacion par = Participacion.find("select participacion from Participacion participacion where participacion.tipo=? and participacion.solicitud.id=?", TiposParticipacionEnum.representante.name(), this.id).first();
+				if (par != null){
+					par.delete(); //si ya hubiera un representante antes de modificar creo que no serviría
+				}
+			}
 			p = new Participacion();
 			p.agente = agente;
 			p.solicitud = this;
 			p.tipo = TiposParticipacionEnum.representante.name();
 			p.save();
 			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
-
+			
 			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(p.solicitud.id);
+			
+			dbSolicitud.save();
 
 			if (p.solicitud.estado.equals(EstadosSolicitudEnum.modificacion.name())) {
-				System.out.println("Estado = " + dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estado);
-				System.out.println("Estado value = " + dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estadoValue);
-				System.out.println("Condición = " + dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estado.equals(EstadosModificacionEnum.enCurso.name()));
-				System.out.println("Condición = " + EstadosModificacionEnum.enCurso.name().equals(dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estado));
 				if (EstadosModificacionEnum.enCurso.name().equals(dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estado)) {
 					PeticionModificacion peticionModificacionRepresentante = new PeticionModificacion();
 					peticionModificacionRepresentante.campoPagina = "participacion";
@@ -380,15 +382,17 @@ public class SolicitudGenerica extends FapModel {
 						valoresNuevosRepresentante.add(participacion.id.toString());
 						peticionModificacionRepresentante.setValorCreado("participacion.id", new ArrayList<String>(), valoresNuevosRepresentante);
 					}
-					if (!peticionModificacionRepresentante.isEmpty()) {
-						if ((!Messages.hasErrors())) {
-							Gson gson = new Gson();
-							String jsonPM = gson.toJson(peticionModificacionRepresentante);
-							JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
-							jsonPeticionModificacion.jsonPeticion = jsonPM;
-							dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
+					if (!dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).enRecuperacion) {
+						if (!peticionModificacionRepresentante.isEmpty()) {
+							if ((!Messages.hasErrors())) {
+								Gson gson = new Gson();
+								String jsonPM = gson.toJson(peticionModificacionRepresentante);
+								JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
+								jsonPeticionModificacion.jsonPeticion = jsonPM;
+								dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
+							}
+							dbSolicitud.save();
 						}
-						dbSolicitud.save();
 					}
 				} //end if
 			}// end if

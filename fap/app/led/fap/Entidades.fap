@@ -943,6 +943,7 @@ Entidad RegistroModificacion {
 	Registro registro noConstruct
 	OneToMany JsonPeticionModificacion jsonPeticionesModificacion
 	String estado transient
+	Boolean enRecuperacion default = "false"// Flag que se activa al pulsar el botón "recuperar modificación" y se desactiva cuando acaba la recuperación
 	String estadoValue transient
 }
 

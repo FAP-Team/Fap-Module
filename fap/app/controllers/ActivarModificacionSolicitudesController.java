@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 
 import messages.Messages;
 import models.JsonPeticionModificacion;
+import models.Participacion;
 import models.Registro;
 import models.RegistroModificacion;
 import models.SolicitudGenerica;
@@ -30,6 +31,7 @@ import controllers.fap.JustificacionFapController;
 import controllers.fap.ModificacionFAPController;
 import controllers.gen.ActivarModificacionSolicitudesControllerGen;
 import enumerado.fap.gen.EstadosModificacionEnum;
+import enumerado.fap.gen.TiposParticipacionEnum;
 
 public class ActivarModificacionSolicitudesController extends ActivarModificacionSolicitudesControllerGen {
 	
@@ -72,15 +74,19 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 				for (RegistroModificacion rm: dbSolicitud.registroModificacion){
 					//Comprobar si se han creado elementos nuevos que haya que borrar
 					if ((rm.estado.equals(EstadosModificacionEnum.expirada.name())) ||(rm.estado.equals(EstadosModificacionEnum.enCurso.name()))){
+						rm.enRecuperacion = true;
 						idRecuperar = rm.id;
 						ModelUtils.restaurarBorrados(rm.id, idSolicitud);
 						ModelUtils.restaurarSolicitud(idRecuperar, idSolicitud, false);
 					}
+					rm.enRecuperacion = false;
 				}			
 				for (RegistroModificacion rm: dbSolicitud.registroModificacion){
 					if (rm.estado.equals(EstadosModificacionEnum.expirada.name()) || rm.estado.equals(EstadosModificacionEnum.enCurso.name())){
+						rm.enRecuperacion = true;
 						ModelUtils.eliminarCreados(rm.id, idSolicitud);
 					}
+					rm.enRecuperacion = false;
 				}
 				ModelUtils.finalizarDeshacerModificacion(idSolicitud);
 				if (!Messages.hasErrors()) {
@@ -89,6 +95,12 @@ public class ActivarModificacionSolicitudesController extends ActivarModificacio
 					}catch (Throwable e1) {
 						log.error("Hubo un problema al invocar el métodos postRestaurarSolicitud: "+e1);
 						Messages.error("Error al postrestaurarlasolicitud");
+					}
+					if ((dbSolicitud.solicitante.isPersonaFisica()) && (!dbSolicitud.solicitante.representado)){ //esto es si es física
+						Participacion par = Participacion.find("select participacion from Participacion participacion where participacion.tipo=? and participacion.solicitud.id=?", TiposParticipacionEnum.representante.name(), idSolicitud).first();
+						if (par != null){
+							par.delete();
+						}
 					}
 				}
 				

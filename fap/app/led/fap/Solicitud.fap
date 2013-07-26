@@ -1449,7 +1449,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	        		Grupo gpreparar titulo="Paso 1. Preparar la solicitud de modificación" {
 	            		Wiki { "Si su solicitud de modificación está lista para firmar, pulse el siguiente botón." }
 	              		Form prepararFirmar {
-	                    	Boton botonPrepararFirmar titulo="Preparar para firmar"
+	                    	Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
 	              		}
 	        		}
 	        	} // Fin Grupo para controlar prepararAlegacion
@@ -1475,7 +1475,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
 				Form frmPresentar redirigir=SolicitudPresentarModificacionFAP permiso=enBorradorSolicitudModificada {
 					Wiki {"Debe registrar la solicitud para que se considere presentada."}
-					Boton botonPresentar titulo="Presentar solicitud de Modificación"
+					Boton botonPresentar titulo="Presentar solicitud de Modificación" waitPopup
 				}
 			}
 				

@@ -24,7 +24,7 @@ h2. "Baremación":app-baremacion
 
 Funcionalidad que suelen necesitar bastantes aplicaciones telemáticas de administración eletrónica. Su cometido es el de poder evaluar las solicitudes siguiendo el baremo que se haya estipulado en la convocatoria pertinente, para así poder calcular que solicitudes son supceptibles de percibir lo que piden. Se usa mucho en convocatorias de procedimientos competitivos.
 
-h2. "Desestimiento":app-tramitacion
+h2. "Desistimiento":app-tramitacion
 
 Esta funcionalidad, también está orientada al solicitante. Permite que este desista la solicitud, una vez la haya presentado correctamente, en cualquier momento. De forma que la administración no la va a seguir teniendo en cuenta en sucesivas fases del proceso administrativos. Obviamente el desestimiento tiene una vida de uso, que va desde que se presenta la solicitud hasta justo antes de resolverse la convocatoria en cuestión, ese es el tiempo que tiene el solicitante para desistir su solicitud si así lo ve conveniente.
 

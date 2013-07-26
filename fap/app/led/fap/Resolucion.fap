@@ -114,8 +114,8 @@ Entidad ResolucionFAP {
 	Boolean conBaremacion default = 'false'
 
 	String tituloInterno					// Obligatorio.
-	String sintesis
-	String observaciones
+	String sintesis length=1000
+	String observaciones length=1000
 	Integer folio_inicio					// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
 	Integer folio_final						// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
 	Integer numero_folios

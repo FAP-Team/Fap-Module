@@ -250,7 +250,10 @@ public class AportacionPresentarController extends AportacionPresentarController
     				TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
     				// Llamará a la implementación de la última clase que extienda de TramiteBase
     				tramite.firmar(firma);
-    				
+    				if (aportacion.registro.fasesRegistro.firmada){
+    					aportacion.estado = "firmada";
+    					aportacion.save();
+    				}
     				if (!Messages.hasErrors()) {
     					try {
     						AportacionFapController.invoke("afterFirma", idSolicitud);

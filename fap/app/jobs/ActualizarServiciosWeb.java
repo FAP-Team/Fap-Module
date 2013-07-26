@@ -19,7 +19,7 @@ public class ActualizarServiciosWeb extends Job {
 	public void doJob() {
 		if (AdministracionFapJobs.all() != null) {
 			AdministracionFapJobs job = AdministracionFapJobs.all().first();
-			if (job.actualizarServiciosWeb) {
+			if ((job != null) && (job.actualizarServiciosWeb)) {
 				List<Aplicacion> listaApp = Aplicacion.findAll();
 				for (int numApp = 0; numApp < listaApp.size(); numApp++) {
 					Aplicacion app = listaApp.get(numApp);

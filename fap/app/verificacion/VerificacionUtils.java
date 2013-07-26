@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import org.joda.time.DateTime;
+
 import play.libs.F.Promise;
 
 import reports.Report;
@@ -22,6 +24,7 @@ import controllers.fap.VerificacionFapController;
 
 import messages.Messages;
 import models.Documento;
+import models.RegistroModificacion;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
 import models.TipoDocumento;
@@ -72,12 +75,36 @@ public class VerificacionUtils {
 			}
 		}
 		
+		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+		//Comprobamos si la solicitud ha tenido modificaciones
+				Boolean hayModificaciones = false;
+				if ((dbSolicitud.registroModificacion != null) && (!dbSolicitud.registroModificacion.isEmpty())){
+					hayModificaciones = true;
+				}
+				System.out.println("Hay modificacion: "+hayModificaciones);
+				//Tener en cuenta que hay que añadir los doc de SolicitudModificacion si he tenido modificaciones (Solo de la última)
+				if (hayModificaciones){
+					RegistroModificacion ultimoRegistroModificacion = obtenerUltimoRegistroModificacionRegistrado(dbSolicitud);
+					if (ultimoRegistroModificacion != null){
+						VerificacionDocumento vDoc = new VerificacionDocumento(ultimoRegistroModificacion.registro.justificante);
+						vDoc.existe = true;		
+						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+						vDoc.descripcion="PROBANDO";
+						TipoDocumento tipoDocAux = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.uri=?", ultimoRegistroModificacion.registro.justificante.tipo).first();
+						if (tipoDocAux != null) 
+							vDoc.identificadorMultiple = tipoDocAux.cardinalidad;
+						vDoc.save();
+						ultimoRegistroModificacion.registro.justificante.descripcion="PROBANDO";
+						list.add(vDoc);
+					}
+				}
+	
 		/// Si verificacionAnterior == null, NO tiene verificaciones anteriores en ese trámite
 		List<TipoDocumentoEnTramite> listaTipos = new ArrayList<TipoDocumentoEnTramite>();
 		if (verificacionAnterior == null) {
 			play.Logger.info("No existen verificaciones anteriores para la solicitud "+idSolicitud+" del trámite "+uriTramite);
 			listaTipos = gestorDocumental.getTiposDocumentosAportadosCiudadano(tramite);
-		
+			
 			// Documentos condicionados automaticos obligatorios de la aplicacion en cuestion
 			List<String> docCondicionadosAutomaticosNoAportados=new ArrayList<String>();
 			try {
@@ -329,6 +356,24 @@ public class VerificacionUtils {
 				}
 			}
 		}
+		
+		//AQuí tener en cuenta como "Nuevo documento" el de la solicitud de modificacion si la hay
+		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+		
+		//Comprobamos si la solicitud ha tenido modificaciones
+		Boolean hayModificaciones = false;
+		if ((dbSolicitud.registroModificacion != null) && (!dbSolicitud.registroModificacion.isEmpty())){
+			hayModificaciones = true;
+		}
+		//Tener en cuenta que hay que añadir los doc de SolicitudModificacion si he tenido modificaciones (Solo de la última)
+		if (hayModificaciones){
+			RegistroModificacion ultimoRegistroModificacion = obtenerUltimoRegistroModificacionRegistrado(dbSolicitud);
+			if (ultimoRegistroModificacion != null){
+				ultimoRegistroModificacion.registro.justificante.descripcion="PROBANDO";
+				documentosNuevosSinVerificacionActual.add(ultimoRegistroModificacion.registro.justificante);
+			}
+		}
+		
 		return documentosNuevosSinVerificacionActual;
 	}
 	
@@ -437,5 +482,24 @@ public class VerificacionUtils {
 		}
 	}
 	
+	public static RegistroModificacion obtenerUltimoRegistroModificacionRegistrado(SolicitudGenerica solicitud){
+		//Obtener la última modificacion 
+		Boolean encontrado = false;
+		RegistroModificacion ultimoRegistroModificacion = new RegistroModificacion();
+		//Fecha del ppio de los tiempos
+		ultimoRegistroModificacion.fechaRegistro = new DateTime(0, 1, 1, 1, 1);
+		System.out.println("ultimoRegistroModificacion.fechaRegistro: "+ultimoRegistroModificacion.fechaRegistro);
+		for (RegistroModificacion registroModificacion : solicitud.registroModificacion) {
+			//Solo se trabaja con los registros REGISTRADOS
+			if ((ultimoRegistroModificacion.fechaRegistro != null) && (registroModificacion.fechaRegistro != null)
+					&& (registroModificacion.fechaRegistro.isAfter(ultimoRegistroModificacion.fechaRegistro))){
+				ultimoRegistroModificacion = registroModificacion;
+				encontrado = true;
+			}
+		}
+		if (encontrado)
+			return ultimoRegistroModificacion;
+		return null;
+	}
 	
 }

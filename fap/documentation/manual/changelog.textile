@@ -11,6 +11,7 @@ h3. Versión 2.3RC8
 * Control de fechas que sean null devueltas por el servicio de notificaciones.
 * Fixed bug en el enlace de descarga del justificante las modificaciones (no mostrar enlace de descarga si no existe).
 * Añadida comprobación de que la descripción de un documento no supere los 255 caracteres.
+* Añadido cambios para tener en cuenta en verificaciones el documento de justificante de modificacion en caso de que se hayan registrado modificaciones
 
 h3. Versión 2.3RC5
 

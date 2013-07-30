@@ -25,7 +25,7 @@ public class NotificacionesController extends NotificacionesControllerGen {
 		if (agente != null){
 			for (Notificacion notificacion: rows){
 				for (Interesado interesado: notificacion.interesados){
-					if (((interesado.persona.getNumeroId() != null) && (interesado.persona.getNumeroId().equals(agente.username))) || ((agente.rolActivo.equals("gestor") || agente.rolActivo.equals("administrador")))){
+					if (((interesado.persona.getNumeroId() != null) && (interesado.persona.getNumeroId().equals(agente.username))) || ((agente.rolActivo.equals("gestor") || agente.rolActivo.equals("administrador") || agente.rolActivo.equals("revisor")))){
 						rowsFiltered.add(notificacion);
 						break;
 					}

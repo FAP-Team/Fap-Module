@@ -4,6 +4,7 @@ import java.util.List;
 
 import models.AdministracionFapJobs;
 import models.Aplicacion;
+import play.Logger;
 import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
@@ -26,6 +27,8 @@ public class ActualizarServiciosWeb extends Job {
 					play.Logger.info("Actualizando información de servicios web de la aplicación: "+app.nombreApp);
 					ServiciosWebAppController.recargaWS(app.id);
 				}
+			} else {
+				Logger.error("Error Actualizando los Servicios Web, job = null");
 			}
 		}
 	}

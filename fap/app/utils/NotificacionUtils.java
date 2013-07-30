@@ -156,7 +156,7 @@ public class NotificacionUtils {
 	}
 	
 	//Subir un único Documento al expediente en el AED
-	public static void subirDocumentoNotificacionExpediente (Documento documento, Notificacion notificacion){
+	public static void subirDocumentoNotificacionExpediente (String uri, Notificacion notificacion){
 		//Guardar en temporal
 		// 1) Obtener el expediente del AED al que pertenece la notificacion
 		List<ExpedienteAed> listaExp = new ArrayList<ExpedienteAed>();
@@ -166,7 +166,7 @@ public class NotificacionUtils {
 		
 		// 2) Copiar al AED 
 		try {
-			gestorDocumentalService.copiarDocumentoEnExpediente(documento.uri, listaExp);
+			gestorDocumentalService.copiarDocumentoEnExpediente(uri, listaExp);
 		} catch (GestorDocumentalServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

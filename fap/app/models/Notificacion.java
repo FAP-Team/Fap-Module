@@ -201,7 +201,7 @@ public class Notificacion extends FapModel {
 
 	public void actualizar(Notificacion notificacion) {
 		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
-		if ((this.estado != notificacion.estado) || (this.fechaAcceso != notificacion.fechaAcceso)) {
+		if ((this.estado != notificacion.estado) || (this.fechaAcceso != notificacion.fechaAcceso) || (this.fechaFinPlazo != notificacion.fechaFinPlazo)) {
 			//log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
 			//log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
 			this.estado = notificacion.estado;
@@ -254,37 +254,37 @@ public class Notificacion extends FapModel {
 			}
 		}
 
-		//Doc Acuse de recibo -> Negativo o Positivo
-		if ((((this.documentoAcuseRecibo.uri != null) && (notificacion.documentoAcuseRecibo.uri != null)) && ((this.documentoAcuseRecibo.uri != notificacion.documentoAcuseRecibo.uri))) || ((this.documentoAcuseRecibo.uri == null) && (notificacion.documentoAcuseRecibo.uri != null))) {
-			this.documentoAcuseRecibo = notificacion.documentoAcuseRecibo;
-			//Subida independiente al AED
-			NotificacionUtils.subirDocumentoNotificacionExpediente(this.documentoAcuseRecibo, this);
+//		//Doc Acuse de recibo -> Negativo o Positivo
+		String uriAcuseDeRecibo = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ACUSE_RECIBO);
+		if ((uriAcuseDeRecibo != "") && (!uriAcuseDeRecibo.equals(this.documentoAcuseRecibo.uri))){ 
+			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAcuseDeRecibo, this);
+			this.documentoAcuseRecibo.uri = uriAcuseDeRecibo;
 		}
 
-		//Doc anulacion
-		if ((((this.documentoAnulacion.uri != null) && (notificacion.documentoAnulacion.uri != null)) && ((this.documentoAnulacion.uri != notificacion.documentoAnulacion.uri))) || ((this.documentoAnulacion.uri == null)) && (notificacion.documentoAnulacion.uri != null)) {
-			this.documentoAnulacion = notificacion.documentoAnulacion;
-			//Subida independiente al AED
-			NotificacionUtils.subirDocumentoNotificacionExpediente(this.documentoAnulacion, this);
+//		//Doc anulacion
+		String uriAnulacion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ANULACION);
+		if ((uriAnulacion != "") && (!uriAnulacion.equals(this.documentoAnulacion.uri))){ 
+			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAnulacion, this);
+			this.documentoAnulacion.uri = uriAnulacion;
+		}
+		
+//		//DocPuestaADisposicion
+		String uriPuestaADisposicion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
+		if ((uriPuestaADisposicion != "") && (!uriPuestaADisposicion.equals(this.documentoPuestaADisposicion.uri))){ 
+			NotificacionUtils.subirDocumentoNotificacionExpediente(uriPuestaADisposicion, this);
+			this.documentoPuestaADisposicion.uri = uriPuestaADisposicion;
+		}
+		
+//		//DocRespondida
+		String uriRespondida = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
+		if ((uriRespondida != "") && (!uriRespondida.equals(this.documentoRespondida.uri))){ 
+			NotificacionUtils.subirDocumentoNotificacionExpediente(uriRespondida, this);
+			this.documentoRespondida.uri = uriRespondida;
 		}
 
-		//DocPuestaADisposicion
-		if ((((this.documentoPuestaADisposicion.uri != null) && (notificacion.documentoPuestaADisposicion.uri != null)) && ((this.documentoPuestaADisposicion.uri != notificacion.documentoPuestaADisposicion.uri))) || ((this.documentoPuestaADisposicion.uri == null)) && (notificacion.documentoPuestaADisposicion.uri != null)) {
-			this.documentoPuestaADisposicion = notificacion.documentoPuestaADisposicion;
-			//Subida independiente al AED
-			NotificacionUtils.subirDocumentoNotificacionExpediente(this.documentoPuestaADisposicion, this);
-		}
-
-		//DocRespondida
-		if ((((this.documentoRespondida.uri != null) && (notificacion.documentoRespondida.uri != null)) && ((this.documentoRespondida.uri != notificacion.documentoRespondida.uri))) || ((this.documentoRespondida.uri == null)) && (notificacion.documentoRespondida.uri != null)) {
-			this.documentoRespondida = notificacion.documentoRespondida;
-			//Subida independiente al AED
-			NotificacionUtils.subirDocumentoNotificacionExpediente(this.documentoRespondida, this);
-		}
-
-		//Subida de los nuevos documentos de tipo DocumentoNotificacion (lista docs no es vacía)
-		if (documentosNuevos != null) {
-			NotificacionUtils.subirDocumentosNotificacionExpediente(documentosNuevos, notificacion);
+//		//Subida de los nuevos documentos de tipo DocumentoNotificacion (lista docs no es vacía)
+		if ((documentosNuevos != null) && (!documentosNuevos.isEmpty())) {
+			NotificacionUtils.subirDocumentosNotificacionExpediente(documentosNuevos, this);
 		}
 	}
 

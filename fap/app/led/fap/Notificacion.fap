@@ -14,7 +14,7 @@ Formulario Notificacion {
 	
 	Pagina Notificaciones titulo="Mis Notificaciones" {
 		Tabla listaNotificaciones titulo="Notificaciones de la Aplicación" campo=Notificacion
-	  	  paginaEditar=NotificacionVer{
+	  	  paginaLeer=NotificacionVer{
 	  	  	Columna campo=Notificacion.idExpedienteAed titulo="Expediente"  ancho="100" expandir
 	  	  	Columna campo=Notificacion.fechaPuestaADisposicion titulo="Puesta Disposicion" ancho="120" expandir//Fecha en la que se creó la notificación
 	  	  	Columna campo=Notificacion.fechaLimite titulo="Fin de plazo Acceso" ancho="150" expandir

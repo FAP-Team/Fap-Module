@@ -52,6 +52,8 @@ public class GPersonaFisica extends GSaveCampoElement{
 			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido", "sexo"]);
 		else if ((personaFisica.sexo != true) && (personaFisica.nacimiento == true))
 			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido", "fechaNacimiento"]);
+		else if ((personaFisica.sexo == true) && (personaFisica.nacimiento == true))
+			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido", "sexo", "fechaNacimiento"]);
 		else
 			return ret + GSaveCampoElement.copyCamposFiltrados(campo, ["nip","nombre","primerApellido","segundoApellido"]);
 	}

@@ -209,7 +209,17 @@
 				        	#{if puedoGuardar}, boton_editar #{/if}
         				]
     				}
-				]
+				],
+				viewConfig: {
+					getRowClass: function(record, index, rowParams, ds) {
+						if (record.data.permiso != "false") {
+							return "filaEditable" 
+						} 
+						else { 
+							return "filaNoEditable" 
+						}
+					}
+				}
 			});
 			
 			grid.addListener("selectionchange", function(){

@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import org.joda.time.DateTime;
 
 import play.libs.F.Promise;
+import properties.FapProperties;
 
 import reports.Report;
 import services.FirmaService;
@@ -81,20 +82,18 @@ public class VerificacionUtils {
 				if ((dbSolicitud.registroModificacion != null) && (!dbSolicitud.registroModificacion.isEmpty())){
 					hayModificaciones = true;
 				}
-				System.out.println("Hay modificacion: "+hayModificaciones);
+
 				//Tener en cuenta que hay que añadir los doc de SolicitudModificacion si he tenido modificaciones (Solo de la última)
 				if (hayModificaciones){
 					RegistroModificacion ultimoRegistroModificacion = obtenerUltimoRegistroModificacionRegistrado(dbSolicitud);
 					if (ultimoRegistroModificacion != null){
-						VerificacionDocumento vDoc = new VerificacionDocumento(ultimoRegistroModificacion.registro.justificante);
+						VerificacionDocumento vDoc = new VerificacionDocumento(ultimoRegistroModificacion.registro.oficial);
 						vDoc.existe = true;		
 						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
-						vDoc.descripcion="PROBANDO";
 						TipoDocumento tipoDocAux = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.uri=?", ultimoRegistroModificacion.registro.justificante.tipo).first();
 						if (tipoDocAux != null) 
 							vDoc.identificadorMultiple = tipoDocAux.cardinalidad;
 						vDoc.save();
-						ultimoRegistroModificacion.registro.justificante.descripcion="PROBANDO";
 						list.add(vDoc);
 					}
 				}
@@ -157,7 +156,6 @@ public class VerificacionUtils {
 				
 				// Si el tipo de documento no fue encontrado en los que aporta
 				if (!tipoEncontrado) {
-	
 					// Si es OBLIGATORIO
 					if ((tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.OBLIGATORIO))
 						||(tipoDoc.getObligatoriedad().equals(ObligatoriedadEnum.IMPRESCINDIBLE))) {
@@ -248,6 +246,14 @@ public class VerificacionUtils {
 							break;
 						}
 					}
+					if ((!findActual) && (hayModificaciones) && (docVerif.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noValido.name())) 
+							&& (docVerif.uriTipoDocumento.equals(FapProperties.get("fap.aed.tiposdocumentos.solicitud.modificacion")))){
+						//Si soy la presentacion de solicitud NO modificacion: marcar como verificado y no añadir
+						docVerif.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.valido.name();
+						docVerif.save();
+						findActual = true; //Así no vuelve a mostrarse
+					}
+					
 					if (!findActual) {
 						VerificacionDocumento newVerDoc = new VerificacionDocumento(docVerif);
 						newVerDoc.save();
@@ -369,8 +375,7 @@ public class VerificacionUtils {
 		if (hayModificaciones){
 			RegistroModificacion ultimoRegistroModificacion = obtenerUltimoRegistroModificacionRegistrado(dbSolicitud);
 			if (ultimoRegistroModificacion != null){
-				ultimoRegistroModificacion.registro.justificante.descripcion="PROBANDO";
-				documentosNuevosSinVerificacionActual.add(ultimoRegistroModificacion.registro.justificante);
+				documentosNuevosSinVerificacionActual.add(ultimoRegistroModificacion.registro.oficial);
 			}
 		}
 		
@@ -488,7 +493,6 @@ public class VerificacionUtils {
 		RegistroModificacion ultimoRegistroModificacion = new RegistroModificacion();
 		//Fecha del ppio de los tiempos
 		ultimoRegistroModificacion.fechaRegistro = new DateTime(0, 1, 1, 1, 1);
-		System.out.println("ultimoRegistroModificacion.fechaRegistro: "+ultimoRegistroModificacion.fechaRegistro);
 		for (RegistroModificacion registroModificacion : solicitud.registroModificacion) {
 			//Solo se trabaja con los registros REGISTRADOS
 			if ((ultimoRegistroModificacion.fechaRegistro != null) && (registroModificacion.fechaRegistro != null)

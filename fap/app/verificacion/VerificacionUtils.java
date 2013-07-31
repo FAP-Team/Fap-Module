@@ -246,13 +246,13 @@ public class VerificacionUtils {
 							break;
 						}
 					}
-					if ((!findActual) && (hayModificaciones) && (docVerif.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noValido.name())) 
-							&& (docVerif.uriTipoDocumento.equals(FapProperties.get("fap.aed.tiposdocumentos.solicitud.modificacion")))){
-						//Si soy la presentacion de solicitud NO modificacion: marcar como verificado y no añadir
-						docVerif.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.valido.name();
-						docVerif.save();
-						findActual = true; //Así no vuelve a mostrarse
-					}
+//					if ((!findActual) && (hayModificaciones) && (docVerif.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noValido.name())) 
+//							&& (docVerif.uriTipoDocumento.equals(FapProperties.get("fap.aed.tiposdocumentos.solicitud.modificacion")))){
+//						//Si soy la presentacion de solicitud NO modificacion: marcar como verificado y no añadir
+//						docVerif.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.valido.name();
+//						docVerif.save();
+//						findActual = true; //Así no vuelve a mostrarse
+//					}
 					
 					if (!findActual) {
 						VerificacionDocumento newVerDoc = new VerificacionDocumento(docVerif);

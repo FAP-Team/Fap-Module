@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 2.3RC9
+* Fixed bug en modificaciones (copia de documentos a expediente AED)
+* Añadida tabla de recibos de modificación en página de verificacion (en caso de que existan)
+* Fixed minor bug en ActualizarServiciosWeb.
+* Añadido Rol revisor a MisNotificaciones.
+* Sombreado en tabla de Conceptos Económicos en Baremación y modificados permisos para que no deje editar conceptos autimáticos.
+
 h3. Versión 2.3RC8
 
 * Modificaciones en fichaEvaluador: Cambio de posición de la tabla de conceptos económicos y eliminada la lista de conceptos económicos. 

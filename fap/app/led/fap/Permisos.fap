@@ -526,7 +526,7 @@ Permiso verificarDocumentos{
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 		(
 			(_accion in (leer, editar))
-			and (solicitud?.estado in ("enVerificacion", "excluido"))
+			and (solicitud?.estado in ("enVerificacion", "excluido", "modificacion"))
 			and verificacion?.estado != null
 			and verificacion?.estado in ("enVerificacion", "obtenerNoProcede")
 		)	
@@ -699,7 +699,7 @@ Permiso anularVerificacion{
 	when
 		(_accion = editar) and 
 		(agente.rolActivo in ("administrador", "gestor")) and
-		(solicitud?.estado = "enVerificacion") and
+		((solicitud?.estado = "enVerificacion") or (solicitud?.estado = "modificacion")) and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.registro != "true") and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true") and
 		(verificacion?.estado != null and verificacion?.estado in ("enVerificacion", "verificandoTipos", "obtenerNoProcede", "enVerificacionNuevosDoc", "enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada"))

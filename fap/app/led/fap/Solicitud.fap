@@ -411,6 +411,18 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			
 			Wiki { "<br/> " }
 			
+			Grupo titulo="Presentación de modificaciones"  mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
+				Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Presentadas" recargarPagina {
+					Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
+					Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
+					Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registro" expandir
+					Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+					Columna campo=RegistroModificacion.registro.justificante.enlaceDescarga titulo="Justificante" expandir
+				}
+			}
+			
+			Wiki { "<br/> " }
+			
 			Form frmtiposProceso permiso=verificarObtenerNoProcede {
 				Grupo noProcedeAnteriores titulo="Obtener los documentos No Procede de verificaciones anteriores"{
 					Boton obtenerNoProcede titulo="Obtener los NoProcede" type=warning
@@ -459,7 +471,21 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Grupo botonDescargaReciboSolitudgR borde=false{
 					Enlace campo=SolicitudGenerica.registro.justificante.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="btn"
 				}	
-			
+				
+				Wiki { "<br/> " }
+				
+				Grupo grupoModificacionesRequerimiento titulo="Presentación de modificaciones"  mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
+					Tabla tablaModificacionesRequerimiento campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Presentadas" recargarPagina {
+						Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
+						Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
+						Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registro" expandir
+						Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+						Columna campo=RegistroModificacion.registro.justificante.enlaceDescarga titulo="Justificante" expandir
+					}
+				}
+				
+				Wiki { "<br/> " }
+				
 				Tabla verificacionDocumentosgR titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
 					paginaLeer=PaginaDocumentoVerificacionLeer 
 				{

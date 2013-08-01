@@ -95,6 +95,7 @@ public class VerificacionUtils {
 							vDoc.identificadorMultiple = tipoDocAux.cardinalidad;
 						vDoc.save();
 						list.add(vDoc);
+						listDoc.add(ultimoRegistroModificacion.registro.oficial);
 					}
 				}
 	
@@ -247,7 +248,7 @@ public class VerificacionUtils {
 						}
 					}
 //					if ((!findActual) && (hayModificaciones) && (docVerif.estadoDocumentoVerificacion.equals(EstadosDocumentoVerificacionEnum.noValido.name())) 
-//							&& (docVerif.uriTipoDocumento.equals(FapProperties.get("fap.aed.tiposdocumentos.solicitud.modificacion")))){
+//							&& (docVerif.uriTipoDocumento.equals(FapProperties.get("fap.aed.tiposdocumentos.solicitud.modificacion.modificacion")))){
 //						//Si soy la presentacion de solicitud NO modificacion: marcar como verificado y no añadir
 //						docVerif.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.valido.name();
 //						docVerif.save();

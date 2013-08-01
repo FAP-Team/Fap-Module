@@ -36,7 +36,7 @@ public class VerificacionFapController extends InvokeClassController{
 			if ((doc.verificado == null) || (!doc.verificado))
 				nuevosDocumentos.add(doc);
 		}
-		if ((solicitud.registro.oficial.uri != null) && ((verificacion.uriTramite != null) && (verificacion.uriTramite.equals(FapProperties.get("fap.aed.procedimientos.tramite.uri")))) && ((solicitud.registro.oficial.verificado == null) || (!solicitud.registro.oficial.verificado))){
+		if  ((solicitud.registroModificacion.isEmpty()) && (solicitud.registro.oficial.uri != null) && ((verificacion.uriTramite != null) && (verificacion.uriTramite.equals(FapProperties.get("fap.aed.procedimientos.tramite.uri")))) && ((solicitud.registro.oficial.verificado == null) || ((solicitud.registroModificacion.isEmpty()) && (!solicitud.registro.oficial.verificado)))){
 			nuevosDocumentos.add(solicitud.registro.oficial);
 		}
 		return nuevosDocumentos;

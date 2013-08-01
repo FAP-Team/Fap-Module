@@ -46,7 +46,6 @@ public class VerificacionFapController extends InvokeClassController{
 				&& (registroModificacion.registro.oficial.verificado == null) //No se ha verificado ese doc
 				&& (verificacion.uriTramite.equals(FapProperties.get("fap.aed.procedimientos.tramite.uri")))){ //Estoy en tramite Solicitud
 			//Existe un registroMod registrado
-			registroModificacion.registro.oficial.descripcion="3OFICIAL MODIFICACION";
 			nuevosDocumentos.add(registroModificacion.registro.oficial);
 		}
 		return nuevosDocumentos;

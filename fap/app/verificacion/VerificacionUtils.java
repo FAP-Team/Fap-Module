@@ -83,21 +83,21 @@ public class VerificacionUtils {
 					hayModificaciones = true;
 				}
 
-				//Tener en cuenta que hay que añadir los doc de SolicitudModificacion si he tenido modificaciones (Solo de la última)
-				if (hayModificaciones){
-					RegistroModificacion ultimoRegistroModificacion = obtenerUltimoRegistroModificacionRegistrado(dbSolicitud);
-					if (ultimoRegistroModificacion != null){
-						VerificacionDocumento vDoc = new VerificacionDocumento(ultimoRegistroModificacion.registro.oficial);
-						vDoc.existe = true;		
-						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
-						TipoDocumento tipoDocAux = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.uri=?", ultimoRegistroModificacion.registro.justificante.tipo).first();
-						if (tipoDocAux != null) 
-							vDoc.identificadorMultiple = tipoDocAux.cardinalidad;
-						vDoc.save();
-						list.add(vDoc);
-						listDoc.add(ultimoRegistroModificacion.registro.oficial);
-					}
-				}
+//				//Tener en cuenta que hay que añadir los doc de SolicitudModificacion si he tenido modificaciones (Solo de la última)
+//				if (hayModificaciones){
+//					RegistroModificacion ultimoRegistroModificacion = obtenerUltimoRegistroModificacionRegistrado(dbSolicitud);
+//					if (ultimoRegistroModificacion != null){
+//						VerificacionDocumento vDoc = new VerificacionDocumento(ultimoRegistroModificacion.registro.oficial);
+//						vDoc.existe = true;		
+//						vDoc.estadoDocumentoVerificacion = EstadosDocumentoVerificacionEnum.noVerificado.name();
+//						TipoDocumento tipoDocAux = TipoDocumento.find("select tipo from TipoDocumento tipo where tipo.uri=?", ultimoRegistroModificacion.registro.justificante.tipo).first();
+//						if (tipoDocAux != null) 
+//							vDoc.identificadorMultiple = tipoDocAux.cardinalidad;
+//						vDoc.save();
+//						list.add(vDoc);
+//						listDoc.add(ultimoRegistroModificacion.registro.oficial);
+//					}
+//				}
 	
 		/// Si verificacionAnterior == null, NO tiene verificaciones anteriores en ese trámite
 		List<TipoDocumentoEnTramite> listaTipos = new ArrayList<TipoDocumentoEnTramite>();
@@ -366,20 +366,6 @@ public class VerificacionUtils {
 		
 		//AQuí tener en cuenta como "Nuevo documento" el de la solicitud de modificacion si la hay
 		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
-		
-		//Comprobamos si la solicitud ha tenido modificaciones
-		Boolean hayModificaciones = false;
-		if ((dbSolicitud.registroModificacion != null) && (!dbSolicitud.registroModificacion.isEmpty())){
-			hayModificaciones = true;
-		}
-		//Tener en cuenta que hay que añadir los doc de SolicitudModificacion si he tenido modificaciones (Solo de la última)
-		if (hayModificaciones){
-			RegistroModificacion ultimoRegistroModificacion = obtenerUltimoRegistroModificacionRegistrado(dbSolicitud);
-			if (ultimoRegistroModificacion != null){
-				documentosNuevosSinVerificacionActual.add(ultimoRegistroModificacion.registro.oficial);
-			}
-		}
-		
 		return documentosNuevosSinVerificacionActual;
 	}
 	

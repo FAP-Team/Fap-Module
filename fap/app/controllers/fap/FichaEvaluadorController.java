@@ -339,7 +339,7 @@ public class FichaEvaluadorController extends Controller {
 //				.find("select cEconomico from Evaluacion evaluacion join evaluacion.ceconomicos cEconomico where evaluacion.id=?",
 //						idEvaluacion).fetch();
 
-		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first(); 
 
 		List<CEconomico> rowsFiltered = new ArrayList<CEconomico>();
 

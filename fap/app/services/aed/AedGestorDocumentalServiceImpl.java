@@ -1410,6 +1410,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		ubicaciones.add(ubicacion);
 		try {
 			aedPort.copiarDocumento(uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
+			System.out.println("Copiado: "+uri);
 		} catch (Exception e) {
 			play.Logger.error("Error al copiar el documento de resolución en los expedientes"+e);
 			new GestorDocumentalServiceException("Error al copiar el documento de resolución en los expedientes", e);

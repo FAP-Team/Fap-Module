@@ -207,6 +207,7 @@ public class Notificacion extends FapModel {
 			this.estado = notificacion.estado;
 			this.fechaAcceso = notificacion.fechaAcceso;
 			this.fechaFinPlazo = notificacion.fechaFinPlazo;
+			this.fechaLimite = notificacion.fechaLimite;
 		}
 
 		//Comprobación de que hay nueva documentación
@@ -254,36 +255,48 @@ public class Notificacion extends FapModel {
 			}
 		}
 
-//		//Doc Acuse de recibo -> Negativo o Positivo
+		//Doc Acuse de recibo -> Negativo o Positivo
 		String uriAcuseDeRecibo = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ACUSE_RECIBO);
-		if ((uriAcuseDeRecibo != "") && (!uriAcuseDeRecibo.equals(this.documentoAcuseRecibo.uri))){ 
+		if ((uriAcuseDeRecibo != "") && (!uriAcuseDeRecibo.equals(this.documentoAcuseRecibo.uri))) {
+			System.out.println("Nuevo fichero de AcuseRecibo para "+this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAcuseDeRecibo, this);
 			this.documentoAcuseRecibo.uri = uriAcuseDeRecibo;
 		}
 
-//		//Doc anulacion
+		//Doc anulacion
 		String uriAnulacion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ANULACION);
-		if ((uriAnulacion != "") && (!uriAnulacion.equals(this.documentoAnulacion.uri))){ 
+		if ((uriAnulacion != "") && (!uriAnulacion.equals(this.documentoAnulacion.uri))) {
+			System.out.println("Nuevo fichero de Anulacion para "+this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAnulacion, this);
 			this.documentoAnulacion.uri = uriAnulacion;
 		}
-		
-//		//DocPuestaADisposicion
+
+		//DocPuestaADisposicion
 		String uriPuestaADisposicion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
-		if ((uriPuestaADisposicion != "") && (!uriPuestaADisposicion.equals(this.documentoPuestaADisposicion.uri))){ 
+		if ((uriPuestaADisposicion != "") && (!uriPuestaADisposicion.equals(this.documentoPuestaADisposicion.uri))) {
+			System.out.println("Nuevo fichero de PuestaADisposicion para "+this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriPuestaADisposicion, this);
 			this.documentoPuestaADisposicion.uri = uriPuestaADisposicion;
 		}
-		
-//		//DocRespondida
+
+		//DocRespondida
 		String uriRespondida = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
-		if ((uriRespondida != "") && (!uriRespondida.equals(this.documentoRespondida.uri))){ 
+		if ((uriRespondida != "") && (!uriRespondida.equals(this.documentoRespondida.uri))) {
+			System.out.println("Nuevo fichero de Respondida para "+this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriRespondida, this);
 			this.documentoRespondida.uri = uriRespondida;
 		}
+		
+		//DocNoAcceso
+		String uriNoAcceso = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.NO_ACCESO);
+		if (uriNoAcceso != ""){
+			System.out.println("Nuevo fichero de Respondida para "+this.idExpedienteAed);
+			NotificacionUtils.subirDocumentoNotificacionExpediente(uriNoAcceso, this);
+		}
 
-//		//Subida de los nuevos documentos de tipo DocumentoNotificacion (lista docs no es vacía)
+		//Subida de los nuevos documentos de tipo DocumentoNotificacion (lista docs no es vacía)
 		if ((documentosNuevos != null) && (!documentosNuevos.isEmpty())) {
+			System.out.println("Nuevos Multiples Ficheros para "+this.idExpedienteAed);
 			NotificacionUtils.subirDocumentosNotificacionExpediente(documentosNuevos, this);
 		}
 	}

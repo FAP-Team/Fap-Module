@@ -106,15 +106,13 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 		}
 		
 		//Comprobar documento de noPresentacion
-		if (notificacion.documentosAnexos.size() > 1){ //Hay más documentos aparte de la puesta a disposicion
-			uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.NO_ACCESO);
-			if (!uriDocAux.equals("")){
-				Documento doc = new Documento();
-				doc.uri = uriDocAux;
-				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(uriDocAux)+"\" target=\"_blank\">Descargar Firmado</a>"; 
-				doc.descripcion = DocumentoNotificacionEnumType.NO_ACCESO.value();
-				rowsDocumentos.add(doc);
-			}
+		uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.NO_ACCESO);
+		if (!uriDocAux.equals("")){
+			Documento doc = new Documento();
+			doc.uri = uriDocAux;
+			doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(uriDocAux)+"\" target=\"_blank\">Descargar Firmado</a>"; 
+			doc.descripcion = DocumentoNotificacionEnumType.NO_ACCESO.value();
+			rowsDocumentos.add(doc);
 		}
 	
 		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsDocumentos, false, false, false, "", "", "", getAccion(), ids);

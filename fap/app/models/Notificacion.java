@@ -201,13 +201,14 @@ public class Notificacion extends FapModel {
 
 	public void actualizar(Notificacion notificacion) {
 		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
-		if ((this.estado != notificacion.estado) || (this.fechaAcceso != notificacion.fechaAcceso) || (this.fechaFinPlazo != notificacion.fechaFinPlazo)) {
+		if ((this.estado != notificacion.estado) || (this.fechaFinPlazo != notificacion.fechaFinPlazo)) {
 			//log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
 			//log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
 			this.estado = notificacion.estado;
-			this.fechaAcceso = notificacion.fechaAcceso;
+			//this.fechaAcceso = notificacion.fechaAcceso;
 			this.fechaFinPlazo = notificacion.fechaFinPlazo;
 			this.fechaLimite = notificacion.fechaLimite;
+			System.out.println("Actualizando fechas y estado de Notificacion: "+this.id+" para el expediente "+this.idExpedienteAed);
 		}
 
 		//Comprobación de que hay nueva documentación
@@ -258,7 +259,7 @@ public class Notificacion extends FapModel {
 		//Doc Acuse de recibo -> Negativo o Positivo
 		String uriAcuseDeRecibo = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ACUSE_RECIBO);
 		if ((uriAcuseDeRecibo != "") && (!uriAcuseDeRecibo.equals(this.documentoAcuseRecibo.uri))) {
-			System.out.println("Nuevo fichero de AcuseRecibo para "+this.idExpedienteAed);
+			System.out.println("Nuevo fichero de AcuseRecibo para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAcuseDeRecibo, this);
 			this.documentoAcuseRecibo.uri = uriAcuseDeRecibo;
 		}
@@ -266,7 +267,7 @@ public class Notificacion extends FapModel {
 		//Doc anulacion
 		String uriAnulacion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ANULACION);
 		if ((uriAnulacion != "") && (!uriAnulacion.equals(this.documentoAnulacion.uri))) {
-			System.out.println("Nuevo fichero de Anulacion para "+this.idExpedienteAed);
+			System.out.println("Nuevo fichero de Anulacion para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAnulacion, this);
 			this.documentoAnulacion.uri = uriAnulacion;
 		}
@@ -274,7 +275,7 @@ public class Notificacion extends FapModel {
 		//DocPuestaADisposicion
 		String uriPuestaADisposicion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
 		if ((uriPuestaADisposicion != "") && (!uriPuestaADisposicion.equals(this.documentoPuestaADisposicion.uri))) {
-			System.out.println("Nuevo fichero de PuestaADisposicion para "+this.idExpedienteAed);
+			System.out.println("Nuevo fichero de PuestaADisposicion para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriPuestaADisposicion, this);
 			this.documentoPuestaADisposicion.uri = uriPuestaADisposicion;
 		}
@@ -282,21 +283,21 @@ public class Notificacion extends FapModel {
 		//DocRespondida
 		String uriRespondida = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
 		if ((uriRespondida != "") && (!uriRespondida.equals(this.documentoRespondida.uri))) {
-			System.out.println("Nuevo fichero de Respondida para "+this.idExpedienteAed);
+			System.out.println("Nuevo fichero de Respondida para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriRespondida, this);
 			this.documentoRespondida.uri = uriRespondida;
 		}
-		
+
 		//DocNoAcceso
 		String uriNoAcceso = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.NO_ACCESO);
-		if (uriNoAcceso != ""){
-			System.out.println("Nuevo fichero de Respondida para "+this.idExpedienteAed);
+		if (uriNoAcceso != "") {
+			System.out.println("Nuevo fichero de Respondida para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriNoAcceso, this);
 		}
 
 		//Subida de los nuevos documentos de tipo DocumentoNotificacion (lista docs no es vacía)
 		if ((documentosNuevos != null) && (!documentosNuevos.isEmpty())) {
-			System.out.println("Nuevos Multiples Ficheros para "+this.idExpedienteAed);
+			System.out.println("Nuevos Multiples Ficheros para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentosNotificacionExpediente(documentosNuevos, this);
 		}
 	}

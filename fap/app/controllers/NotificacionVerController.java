@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import messages.Messages;
+import models.Agente;
 import models.Documento;
 import models.DocumentoNotificacion;
 import models.Notificacion;
@@ -16,6 +17,7 @@ import play.mvc.Util;
 import properties.FapProperties;
 import utils.AedUtils;
 import utils.NotificacionUtils;
+import controllers.fap.AgenteController;
 import controllers.gen.NotificacionVerControllerGen;
 import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
 
@@ -64,11 +66,14 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 				doc.uri = uriDocAux;
 				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(uriDocAux)+"\" target=\"_blank\">Descargar Firmado</a>";
 				doc.descripcion = DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION.value();
-				rowsDocumentos.add(doc);
+				Agente agente = AgenteController.getAgente();
+				if ((agente.rolActivo.equals("usuario") && (notificacion.estado.contains("leida") || notificacion.estado.contains("leidaplazorespuestavencido")
+						|| notificacion.estado.contains("respondida"))) || (!agente.rolActivo.equals("usuario")))
+					rowsDocumentos.add(doc);
 			}
 		}
 		//Obtener documento de acuseDeRecibo
-		if(notificacion.documentoAcuseRecibo != null){
+		if (notificacion.documentoAcuseRecibo != null){
 			uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
 			if (!uriDocAux.equals("")){
 				Documento doc = new Documento();

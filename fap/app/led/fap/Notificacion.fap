@@ -53,10 +53,10 @@ Formulario Notificacion {
 				Texto campo=Notificacion.asunto titulo="Asunto"
 				AreaTexto campo=Notificacion.descripcion titulo="Descripción" filas=5 ancho="500px"
 			}
-			Grupo gEnlaceRequerimiento borde=false mostrarSiCampo Notificacion.estado="leida", "leidaplazorespuestavencido", "respondida"{
+			//Grupo gEnlaceRequerimiento borde=false mostrarSiCampo Notificacion.estado="leida", "leidaplazorespuestavencido", "respondida"{
 				// Ojo HTML SOBREESCRITO, para poder obtener la URL del documento de notificacion (de la lista), que si no so se puede en el DSL.
-				Enlace enlaceRequerimiento campo=Notificacion.documentoPuestaADisposicion.urlDescarga titulo="Ver Requerimiento" destino="_blank" estilo="btn"
-			}
+				//Enlace enlaceRequerimiento campo=Notificacion.documentoPuestaADisposicion.urlDescarga titulo="Ver Requerimiento" destino="_blank" estilo="btn"
+			//}
 			Enlace enlaceSede url="" estilo="btn" titulo="Ir a la Sede Electrónica" // Sobreescrito
 			
 		}

@@ -67,8 +67,6 @@
 
 			#{fap.grupo borde:false, mostrarSi:['leida', 'leidaplazorespuestavencido', 'respondida'].contains(notificacion?.estado?.toString())}
 
-			#{fap.enlace estilo:'btn', id:'enlaceRequerimiento', target:'_blank', titulo:'Ver Requerimiento', url:notificacion.documentoPuestaADisposicion.urlDescarga /}
-
 				#{/fap.grupo}
 				#{fap.grupo titulo:'Documentos', permiso:'noVisibleUsuarioNotificacion'}
 					#{fap.tabla 

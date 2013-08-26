@@ -93,6 +93,9 @@ public class Notificacion extends FapModel {
 	public Documento documentoAcuseRecibo;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento documentoNoAcceso;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
 	public Integer plazoAcceso;
@@ -153,6 +156,11 @@ public class Notificacion extends FapModel {
 		else
 			documentoAcuseRecibo.init();
 
+		if (documentoNoAcceso == null)
+			documentoNoAcceso = new Documento();
+		else
+			documentoNoAcceso.init();
+
 		if (registro == null)
 			registro = new Registro();
 		else
@@ -199,18 +207,7 @@ public class Notificacion extends FapModel {
 		return listFirmantes;
 	}
 
-	public void actualizar(Notificacion notificacion) {
-		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
-		if ((this.estado != notificacion.estado) || (this.fechaFinPlazo != notificacion.fechaFinPlazo)) {
-			//log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
-			//log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
-			this.estado = notificacion.estado;
-			//this.fechaAcceso = notificacion.fechaAcceso;
-			this.fechaFinPlazo = notificacion.fechaFinPlazo;
-			this.fechaLimite = notificacion.fechaLimite;
-			System.out.println("Actualizando fechas y estado de Notificacion: "+this.id+" para el expediente "+this.idExpedienteAed);
-		}
-
+	public void actualizarDocumentacion(Notificacion notificacion) {
 		//Comprobación de que hay nueva documentación
 		//LO QUE SE ALMACENAN EN BBDD SON LAS URIS
 		//Se suben los expedientes al AED
@@ -282,6 +279,11 @@ public class Notificacion extends FapModel {
 
 		//DocRespondida
 		String uriRespondida = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
+		
+		//Código temporal: ya hay notificaciones creadas, que no tienen este doc inicialiado (nuevo doc)
+		if (this.documentoNoAcceso == null){
+			this.documentoNoAcceso = new Documento();
+		}
 		if ((uriRespondida != "") && (!uriRespondida.equals(this.documentoRespondida.uri))) {
 			System.out.println("Nuevo fichero de Respondida para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriRespondida, this);
@@ -290,9 +292,10 @@ public class Notificacion extends FapModel {
 
 		//DocNoAcceso
 		String uriNoAcceso = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.NO_ACCESO);
-		if (uriNoAcceso != "") {
-			System.out.println("Nuevo fichero de Respondida para " + this.idExpedienteAed);
+		if ((uriNoAcceso != "")  && (!uriNoAcceso.equals(this.documentoNoAcceso.uri))){
+			System.out.println("Nuevo fichero de NoAcceso para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriNoAcceso, this);
+			this.documentoNoAcceso.uri = uriNoAcceso;
 		}
 
 		//Subida de los nuevos documentos de tipo DocumentoNotificacion (lista docs no es vacía)
@@ -300,6 +303,20 @@ public class Notificacion extends FapModel {
 			System.out.println("Nuevos Multiples Ficheros para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentosNotificacionExpediente(documentosNuevos, this);
 		}
+	}
+
+	public void actualizar(Notificacion notificacion) {
+		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
+		if ((this.estado != notificacion.estado) || (this.fechaFinPlazo != notificacion.fechaFinPlazo)) {
+			//log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
+			//log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
+			this.estado = notificacion.estado;
+			//this.fechaAcceso = notificacion.fechaAcceso;
+			this.fechaFinPlazo = notificacion.fechaFinPlazo;
+			this.fechaLimite = notificacion.fechaLimite;
+			System.out.println("Actualizando fechas y estado de Notificacion: " + this.id + " para el expediente " + this.idExpedienteAed);
+		}
+
 	}
 
 	public String getTodosInteresados() {

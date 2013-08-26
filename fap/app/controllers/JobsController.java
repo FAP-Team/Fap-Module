@@ -66,7 +66,7 @@ public class JobsController extends JobsControllerGen {
 	
 	@Util
 	public static void btnNotificaciones(AdministracionFapJobs administracionFapJobs) {
-		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+		NotificacionUtils.recargarDocumentosNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 	}
 	
 }

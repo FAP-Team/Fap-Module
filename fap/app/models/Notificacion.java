@@ -279,9 +279,9 @@ public class Notificacion extends FapModel {
 
 		//DocRespondida
 		String uriRespondida = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
-		
+
 		//Código temporal: ya hay notificaciones creadas, que no tienen este doc inicialiado (nuevo doc)
-		if (this.documentoNoAcceso == null){
+		if (this.documentoNoAcceso == null) {
 			this.documentoNoAcceso = new Documento();
 		}
 		if ((uriRespondida != "") && (!uriRespondida.equals(this.documentoRespondida.uri))) {
@@ -292,7 +292,7 @@ public class Notificacion extends FapModel {
 
 		//DocNoAcceso
 		String uriNoAcceso = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.NO_ACCESO);
-		if ((uriNoAcceso != "")  && (!uriNoAcceso.equals(this.documentoNoAcceso.uri))){
+		if ((uriNoAcceso != "") && (!uriNoAcceso.equals(this.documentoNoAcceso.uri))) {
 			System.out.println("Nuevo fichero de NoAcceso para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriNoAcceso, this);
 			this.documentoNoAcceso.uri = uriNoAcceso;

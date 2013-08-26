@@ -15,13 +15,13 @@ import models.SolicitudGenerica;
 
 public class TramiteDesistimiento extends TramiteBase {
 
-	private final static String TIPO_TRAMITE = "Solicitud Estancia";
+	private final static String TIPO_TRAMITE = FapProperties.get("fap.aed.tiposdocumentos.tipo.tramite.desistimiento");;
 	private final static String TIPO_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.desistimiento");
 	private final static String BODY_REPORT = "reports/desistimiento.html"; //Solicitud.html?
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String MAIL = FapProperties.get("fap.tramitacion.desistimiento.identificadoremail");
-	private final static String JUSTIFICANTE_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSolicitud");
+	private final static String JUSTIFICANTE_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroDesistimientos");
 	private final static String PREFIJO_JUSTIFICANTE_PDF = FapProperties.get("fap.tramitacion.prefijojustificantepdf.solicitud");
 	
 	public TramiteDesistimiento(SolicitudGenerica solicitud) {

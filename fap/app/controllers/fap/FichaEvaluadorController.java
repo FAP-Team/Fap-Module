@@ -26,6 +26,7 @@ import format.FapFormat;
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.CEconomico;
+import models.CEconomicosManuales;
 import models.Criterio;
 import models.CriterioListaValores;
 import models.Documento;
@@ -334,13 +335,37 @@ public class FichaEvaluadorController extends Controller {
 
 	public static void tablatablaCEconomicos(Long idEvaluacion) {
 
-		java.util.List<CEconomico> rows = CEconomico
-				.find("select cEconomico from Evaluacion evaluacion join evaluacion.ceconomicos cEconomico where evaluacion.id=?",
-						idEvaluacion).fetch();
+//		java.util.List<CEconomico> rows = CEconomico
+//				.find("select cEconomico from Evaluacion evaluacion join evaluacion.ceconomicos cEconomico where evaluacion.id=?",
+//						idEvaluacion).fetch();
 
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 
-		List<CEconomico> rowsFiltered = rows; //Tabla sin permisos, no filtra
+		List<CEconomico> rowsFiltered = new ArrayList<CEconomico>();
+
+		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+		
+		SolicitudGenerica solicitud = evaluacion.solicitud;
+		
+		for(CEconomico ceconomicoS : solicitud.ceconomicos){
+			for(CEconomico ceconomicoE : evaluacion.ceconomicos){
+				if (ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)){
+						rowsFiltered.add(ceconomicoE);
+					break;
+				}
+			}
+			
+			if (ceconomicoS.tipo.tipoOtro){
+				for(CEconomico ceconomicoE : evaluacion.ceconomicos){
+					for (CEconomicosManuales ceconomicoManual: ceconomicoS.otros){
+						if (ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)){
+							rowsFiltered.add(ceconomicoE);
+						}
+					}
+				}
+			}
+		}
+		
 		List <Map<String, String>> columnasCEconomicos = new ArrayList <Map <String, String>>();
 		List<Double> totalesSolicitadoAnio = new ArrayList<Double>();
 		List<Double> totalesEstimadoAnio = new ArrayList<Double>();

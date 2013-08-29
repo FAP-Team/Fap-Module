@@ -99,6 +99,7 @@ Entidad LineaResolucionFAP {
 	Documento docEvaluacionCompleto		// Documento con la Evaluación Completa
 	Documento docEvaluacionCompletoConComentarios 	// Documento con la Evaluación Completa con Comentarios de la Admin
 	Documento documentoOficioRemision 
+	Registro registroDocumentoOficioRemision
 }
 
 // Entidades de la resolución
@@ -219,7 +220,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
@@ -356,7 +357,7 @@ Formulario Principal {
 			}
 		}
 		
-		Grupo gNotificarResolucion titulo="Notificar la Resolución a los interesados" permiso=notificarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.notificar\")==true)" {
+		Grupo gNotificarResolucion titulo="Notificar la Resolución" permiso=notificarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.notificar\")==true)" {
 			Form formNotificarResolucion {
 				Enlace notificarResolucionPasos titulo="Notificar la Resolución" pagina=PaginaNotificarResolucion estilo="btn"
 			}
@@ -377,7 +378,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -520,8 +521,8 @@ Formulario Principal {
 	Pagina PaginaNotificarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
 		Grupo grupoNotificar titulo="Notificación de la Resolución" {
 			Form formCopiaExpediente {
-				Grupo grupoCopiaExpediente titulo="Copia del documento de notificación"{
-					Boton btnCopiaExpediente titulo="Copiar" waitPopup
+				Grupo grupoCopiaExpediente borde=false {
+					Boton btnCopiaExpediente titulo="Notificar y copiar en expediente" waitPopup
 				}
 			}
 			Form volver {
@@ -534,6 +535,20 @@ Formulario Principal {
 
 	Pagina PaginaFinalizarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
 		Grupo grupoFinalizar titulo="Finalización de la Resolución" {
+			Grupo borde=false {
+				Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
+			}
+			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
+				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
+					Columna campo=LineaResolucionFAP.id titulo="Id" ancho="35"
+					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"  expandir
+					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
+					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" ancho="100"
+					Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
+					Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
+					Columna campo=LineaResolucionFAP.documentoOficioRemision.enlaceDescargaFirmado titulo="Documento Oficio de remisión" expandir
+				}
+			}
 			Form formFinalizar {
 				Boton btnFinalizar titulo="Finalizar" waitPopup
 			}

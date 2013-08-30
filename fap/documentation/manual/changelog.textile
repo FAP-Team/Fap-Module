@@ -1,5 +1,8 @@
 h2. Changelog
 
+h3 Versión 2.3RC12
+*Fixed bug en FichaEvaluadorController (Salen solo los ceconomicos manuales propios y los automáticos en otro color)
+
 h3. Versión 2.3RC9
 * Fixed bug en modificaciones (copia de documentos a expediente AED)
 * Añadida tabla de recibos de modificación en página de verificacion (en caso de que existan)

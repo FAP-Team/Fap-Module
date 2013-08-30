@@ -92,13 +92,15 @@ public class Documento extends FapModel {
 	}
 
 	public String getEnlaceDescarga() {
-		if (fechaRegistro != null) {
+		//if (fechaRegistro != null) {
+		try {
 			String ret = "<a href=\"";
 			ret += AedUtils.crearUrl(uri);
 			ret += "\" target=\"_blank\">Descargar</a>";
 			return ret;
+		} catch (Exception e) {
+			return "";
 		}
-		return "";
 	}
 
 	public String getEnlaceDescargaFirmado() {

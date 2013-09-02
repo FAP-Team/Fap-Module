@@ -938,6 +938,7 @@ public class SecureFap extends Secure {
 
 		} 
 		return new ResultadoPermiso(Accion.Denegar);
+	}
 
 	private ResultadoPermiso permisoGenerarBaremacionResolucion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
 		//Variables

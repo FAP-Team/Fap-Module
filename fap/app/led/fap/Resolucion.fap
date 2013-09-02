@@ -2,6 +2,7 @@ Lista resolucionesDefinidas crearEnumerado {
 	simpleTotal: "Simple Total"
 	multipleTotal: "Múltiple Todos Expedientes"
 	multipleParcialExpedientes: "Multiple Seleccionando Expedientes"
+	simpleEjecucion: "Simple Fase de Ejecución"
 }
 
 Lista tipoResolucion crearEnumerado {
@@ -33,7 +34,15 @@ Lista estadoResolucion crearEnumerado {
 	firmada: "Firmada"
 	registrada: "Registrada"
 	publicada: "Publicada"
+	notificada: "Notificada"
+	publicadaYNotificada: "Publicada y nofitificada"
 	finalizada: "Finalizada"
+	afectado: "Expediente afectado"
+}
+
+Lista estadosDocBaremacion crearEnumerado{
+	generado: "Documentos Generado"
+	clasificado: "Documentos Clasificado"
 }
 
 Lista estadosDocBaremacion crearEnumerado{
@@ -50,6 +59,7 @@ Lista estadoLineaResolucion crearEnumerado {
 	concedida: "Concedida"
 	excluida: "Excluida"
 	denegada: "Denegada"
+	afectada: "Expediente afectado"
 }
 
 Lista prioridadesFirmaEnPortafirma crearEnumerado {
@@ -79,6 +89,10 @@ Lista estadoResolucionPublicacion crearEnumerado {
 	
 }
 
+Lista estadoResolucionNotificacion crearEnumerado {
+	notificada: "Notificada"
+}
+
 // Una línea de resolución afecta a un expediente (o Solicitud)
 Entidad LineaResolucionFAP {
 	SolicitudGenerica solicitud noConstruct
@@ -89,6 +103,8 @@ Entidad LineaResolucionFAP {
 	Documento docBaremacion 			// Documento visible para el solicitante de la Baremación del Expediente
 	Documento docEvaluacionCompleto		// Documento con la Evaluación Completa
 	Documento docEvaluacionCompletoConComentarios 	// Documento con la Evaluación Completa con Comentarios de la Admin
+	Documento documentoOficioRemision 
+	Registro registroDocumentoOficioRemision
 }
 
 // Entidades de la resolución
@@ -111,6 +127,7 @@ Entidad ResolucionFAP {
 	DateTime fechaTopeFirma
 	
 	Lista estadoResolucion estado			// borrador, creada, .... finalizada
+	Lista estadoResolucionNotificacion estadoNotificacion
 	Lista estadoResolucionPublicacion estadoPublicacion
 	Lista estadosDocBaremacion estadoDocBaremacionResolucion
 	Lista estadosDocBaremacion estadoInformeBaremacionConComentarios
@@ -208,7 +225,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
@@ -280,8 +297,13 @@ Formulario Principal {
 			}
 			
 			Grupo gEnviarFirmaJSPortafirma permiso=firmaJefeServicio borde=false {
-				
-				Enlace titulo="Obtener documento de Resolución" estilo="btn" campo=ResolucionFAP.registro.borrador.urlDescarga destino="_blank"
+				Grupo documentoResolucionGenerado borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.resoluciones.generarDocumentoResolucion\")==true"{
+					Enlace enlaceDocumentoResolucionNoGenerado titulo="Obtener documento de Resolución" campo=ResolucionFAP.registro.borrador.urlDescarga destino="_blank" estilo="btn"
+				}
+				Grupo documentoResolucionNoGenerado borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.resoluciones.generarDocumentoResolucion\")==false"{
+					Enlace enlaceDocumentoResolucionGenerado titulo="Obtener documento de Resolución" campo=ResolucionFAP.registro.oficial.urlDescarga destino="_blank" estilo="btn"
+				}
+
 				Tabla documentosPortafirma titulo="Documentos de Consulta Portafirmas" campo=ResolucionFAP.docConsultaPortafirmasResolucion paginaCrear=DocConsultaPortafirmaCrear paginaEditar=DocConsultaPortafirmaEditar {
 					Columna campo=Documento.tipo titulo="Tipo"
 					Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
@@ -334,14 +356,22 @@ Formulario Principal {
 			Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Resolución" destino="_blank" estilo="boton"
 		}
 		
-		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion {
-			Form publicacionResolucion{
-				Enlace publicarResolucionPasos titulo="Publicar la Resolucion" pagina=PaginaPublicarResolucion estilo="btn"
+		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.publicarTablonAnuncios\")==true)" {
+			Form publicacionResolucion {
+				Enlace publicarResolucionPasos titulo="Publicar la Resolución" pagina=PaginaPublicarResolucion estilo="btn"
+			}
+		}
+		
+		Grupo gNotificarResolucion titulo="Notificar la Resolución" permiso=notificarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.notificar\")==true)" {
+			Form formNotificarResolucion {
+				Enlace notificarResolucionPasos titulo="Notificar la Resolución" pagina=PaginaNotificarResolucion estilo="btn"
 			}
 		}
 		
 		Grupo gFinalizarResolucion titulo="Finalizar la Resolución" permiso=finalizarResolucion {
-			Wiki { "Finalizar resolución" }
+			Form formFinalizarResolucion {
+				Enlace enlaceFinalizarResolucion titulo="Finalizar la Resolución" pagina=PaginaFinalizarResolucion estilo="btn"
+			}
 		}
 		
 		Grupo gDatosResolucion titulo="Datos de la Resolución actual" permiso=mostrarDatosResolucion {
@@ -353,7 +383,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -475,6 +505,67 @@ Formulario Principal {
 			}
 		}
 	}
+
+	Pagina AportarDocumentoResolucion titulo="Documento Resolución" campo=ResolucionFAP {
+		Accion editar redirigir=EditarResolucion crearSiempre
+		Grupo grupoAportarDocumentoResolucion titulo= "Aportar documento de resolución" {
+			SubirArchivo subirArchivoAportarDocumentoResolucion campo=ResolucionFAP.registro.oficial requerido
+		}
+	}
+	
+	Pagina CambiarDocumentoResolucion titulo="Documento Resolución" campo=ResolucionFAP noForm {
+		Grupo grupoCambiarDocumentoResolucion titulo="Cambiar documento de resolución" {
+			Enlace enlaceDocumentoResolucionActual campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Ver documento de resolución actual" destino="_blank" estilo="btn"
+			Form formCambiarDocumentoResolucion redirigir=EditarResolucion {
+				Boton botonSubirNuevoDocumentoResolucion titulo="Subir nuevo documento de resolucion"
+			}
+		}
+		Boton botonVolver titulo="Volver" pagina=EditarResolucion 
+	}
+
+	Pagina PaginaNotificarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
+		Grupo grupoNotificar titulo="Notificación de la Resolución" {
+			Form formCopiaExpediente {
+				Grupo grupoCopiaExpediente borde=false {
+					Boton btnCopiaExpediente titulo="Notificar y copiar en expediente" waitPopup
+				}
+			}
+			Form volver {
+				Grupo grupovolver borde=false {
+					Boton btnVolver titulo="Volver" pagina=EditarResolucion 
+				}
+			}
+		}
+	}
+
+	Pagina PaginaFinalizarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
+		Grupo grupoFinalizar titulo="Finalización de la Resolución" {
+			Grupo borde=false {
+				Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
+			}
+			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
+				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
+					Columna campo=LineaResolucionFAP.id titulo="Id" ancho="35"
+					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"  expandir
+					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
+					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" ancho="100"
+					Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
+					Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
+					Columna campo=LineaResolucionFAP.documentoOficioRemision.enlaceDescargaFirmado titulo="Documento Oficio de remisión" expandir
+					Columna campo=LineaResolucionFAP.registroDocumentoOficioRemision.justificante.enlaceDescarga titulo="Justificante" expandir
+				}
+			}
+			Form formFinalizar {
+				Boton btnFinalizar titulo="Finalizar" waitPopup
+			}
+			Form volver {
+				Grupo grupovolver borde=false {
+					Boton btnVolver titulo="Volver" pagina=EditarResolucion
+				}
+			}
+		}
+	}
+
 }
 
 //Sobreescrito
@@ -794,17 +885,29 @@ Permiso publicarResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estado in ("registrada")
+		resolucion.estado in ("registrada", "notificada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }
 
+Permiso notificarResolucion {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estado in ("registrada", "publicada")
+		and resolucion.estadoNotificacion = null
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+// Sobreescrito
 Permiso finalizarResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estado in ("publicada")
+		resolucion.estado in ("publicada", "notificada", "publicadaYNotificada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
@@ -814,8 +917,8 @@ Permiso verDocumentoResolucion {
 	vars
 		ResolucionFAP resolucion
 	when
-	resolucion.estado in ("registrada", "publicada", "finalizada")
-	and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		resolucion.estado in ("registrada", "publicada", "notificada", "publicadaYNotificada", "finalizada")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }

@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import config.InjectorConfig;
 import controllers.fap.ResolucionControllerFAP;
 
+import platino.FirmaUtils;
 import play.db.jpa.JPA;
 import play.modules.guice.InjectSupport;
 import play.mvc.results.RenderBinary;
@@ -59,12 +60,17 @@ public class ResolucionBase {
 	private final static String HEADER_BAREMACION_INDIVIDUAL_REPORT = "reports/header.html";
 	private final static String BODY_BAREMACION_INDIVIDUAL_REPORT = "reports/resolucion/criteriosResolucion.html";
 	private final static String FOOTER_BAREMACION_INDIVIDUAL_REPORT = "reports/footer-borrador.html";
+	private final static String BODY_REPORT_OFICIO_REMISION = "reports/notificacion/notificacionBodyOficioRemision.html";
 	private final static String TIPO_RESOLUCION_PROVISIONAL = FapProperties.get("fap.aed.tiposdocumentos.resolucion.provisional");
 	private final static String TIPO_RESOLUCION_DEFINITIVA = FapProperties.get("fap.aed.tiposdocumentos.resolucion.definitiva");
 	public ResolucionFAP resolucion;
 	
 	public ResolucionBase (ResolucionFAP resolucion) {
 		this.resolucion = resolucion;
+	}
+	
+	public static String getBodyReportOficioRemision() {
+		return ResolucionBase.BODY_REPORT_OFICIO_REMISION;
 	}
 	
 	public static String getHeaderReport() {
@@ -166,6 +172,15 @@ public class ResolucionBase {
 	 * @param idResolucion
 	 */
 	public void setLineasDeResolucion(Long idResolucion) {
+	}
+	
+	
+	/**
+	 * Establece las líneas de resolución a una resolución, en caso de que no existan.
+	 * @param idResolucion
+	 * @param idsSeleccionados
+	 */
+	public void setLineasDeResolucion(Long idResolucion, List<Long> idsSeleccionados) {
 	}
 	
 	/**
@@ -369,6 +384,9 @@ public class ResolucionBase {
 			
 			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
+			// ATENCIÓN:
+			// 		LISTAEXPEDIENTES SE CREA PERO NO SE MODIFICA NUNCA
+			//
 			int i = 1;
 			play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 
@@ -410,15 +428,43 @@ public class ResolucionBase {
 				EntityTransaction tx = JPA.em().getTransaction();
 				tx.commit();
 				tx.begin();
-				resolucion.avanzarFase_Registrada(resolucion.resolucion);
+				if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
+					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+				else
+					resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
 				tx.commit();
 				tx.begin();
-			} 
+		} 
 	 }
 	 
-	 public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion){
-		 
-	 }
+	public void notificarCopiarEnExpedientes (long idResolucion) {
+		ResolucionBase resolucion = null;
+		try {
+			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+		}catch (Throwable e) {
+			// TODO: handle exception
+		}
+		
+		List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
+		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
+		if (!Messages.hasErrors()) {
+			
+		}
+		
+		if (!resolucion.resolucion.conBaremacion) {
+				EntityTransaction tx = JPA.em().getTransaction();
+				tx.commit();
+				tx.begin();
+				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+				else
+					resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
+				tx.commit();
+				tx.begin();
+		}
+	}
+	 
+	public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion) {}
 	 
 	public void avanzarFase_Borrador(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
@@ -498,14 +544,28 @@ public class ResolucionBase {
 		}
 	}
 	
-	public void avanzarFase_Registrada(ResolucionFAP resolucion) {
+	public void avanzarFase_Registrada_Publicada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.publicada.name();
 			resolucion.save();
 		}
 	}
 	
-	public void avanzarFase_Publicada(ResolucionFAP resolucion) {
+	public void avanzarFase_Registrada_Notificada(ResolucionFAP resolucion) {
+		if (!Messages.hasErrors()) {
+			resolucion.estado = EstadoResolucionEnum.notificada.name();
+			resolucion.save();
+		}
+	}
+	
+	public void avanzarFase_Registrada_PublicadaYNotificada(ResolucionFAP resolucion) {
+		if (!Messages.hasErrors()) {
+			resolucion.estado = EstadoResolucionEnum.publicadaYNotificada.name();
+			resolucion.save();
+		}
+	}
+	
+	public void avanzarFase_PublicadaYONotificada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.finalizada.name();
 			resolucion.save();
@@ -524,7 +584,6 @@ public class ResolucionBase {
 		
 		EntityTransaction tx = JPA.em().getTransaction();
 
-		tx.commit(); //OJO
 		try {
 			tx.commit();
 			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
@@ -601,7 +660,6 @@ public class ResolucionBase {
 						linea.save();
 
 						play.Logger.info("Documento de Resolución visible en la Solicitud "+linea.docBaremacion);
-
 						tx.commit();
 						play.Logger.info("Se clasificó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
 					}
@@ -615,12 +673,7 @@ public class ResolucionBase {
 			res.resolucion.estadoDocBaremacionResolucion=EstadosDocBaremacionEnum.clasificado.name(); //Estado a docs Generados
 			res.resolucion.save();
 			tx.commit();
-			
-			//Una vez clasificados todos los documentos, termina la publicacion
-//			tx.begin();
-//			res.avanzarFase_Registrada(resolucionFap);
-//			tx.commit();
-			
+
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			play.Logger.error("Error al obtener el objeto de Resolución"+e);
@@ -665,7 +718,6 @@ public class ResolucionBase {
 			linea.docEvaluacionCompletoConComentarios.tipo = getTipoDocumentoOficialConComentarios();
 			linea.docEvaluacionCompletoConComentarios.save();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return report;
@@ -688,7 +740,6 @@ public class ResolucionBase {
 			linea.docEvaluacionCompleto.tipo = getTipoDocumentoOficialSinComentarios();
 			linea.docEvaluacionCompleto.save();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return report;
@@ -747,10 +798,13 @@ public class ResolucionBase {
 		}
 		EntityTransaction tx = JPA.em().getTransaction();
 		tx.commit();
-		//Publicar al acabar de firmar
-			tx.begin();
-			resolucion.avanzarFase_Registrada(resolucion.resolucion);
-			tx.commit();
+		tx.begin();
+		if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
+			resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+		else
+			resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
+		tx.commit();
+		tx.begin();
 
 	}
 		
@@ -768,6 +822,10 @@ public class ResolucionBase {
 	public String getTipoDocumentoOficialSinComentarios(){
 		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion.completa");
 
+	}
+	
+	public String getTipoDocumentoOficioRemision(){
+		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion.oficioRemision");
 	}
 	
 	public void generarDocumentoOficialBaremacionConComentarios(Long idResolucion){
@@ -945,4 +1003,23 @@ public class ResolucionBase {
 			Messages.error("Error al generar los documentos de Resolución");
 		}
 	}
+	
+	public static boolean isGeneradoDocumentoResolucion() {
+		if (properties.FapProperties.getBoolean("fap.resoluciones.generarDocumentoResolucion"))
+			return true;
+		return false;
+	}
+
+	public static boolean isPublicarTablonAnuncios() {
+		if (properties.FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios"))
+			return true;
+		return false;
+	}
+
+	public static boolean isNotificar() {
+		if (properties.FapProperties.getBoolean("fap.resoluciones.notificar"))
+			return true;
+		return false;
+	}
+	
 }

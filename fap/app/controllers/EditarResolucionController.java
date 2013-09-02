@@ -97,32 +97,42 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void prepararResolucion(Long idResolucionFAP, String btnPrepararResolucion) {
-		checkAuthenticity();
-		if (!permisoPrepararResolucion("editar")) {
-			Messages.error("No tiene permisos suficientes para realizar la acción");
-		}
+	
+		if (ResolucionBase.isGeneradoDocumentoResolucion()) {
+			checkAuthenticity();
+			if (!permisoPrepararResolucion("editar")) {
+				Messages.error("No tiene permisos suficientes para realizar la acción");
+			}
 
 		
-		if (!Messages.hasErrors()) {
-			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
-			ResolucionBase resolBase = null;
-			try {
-				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
-				resolBase.prepararResolucion(idResolucionFAP);
-			} catch (Throwable e1) {
-				play.Logger.error("Error obteniendo tipo de resolución: " + e1.getMessage());
+			if (!Messages.hasErrors()) {
+				
+				ResolucionBase resolBase = null;
+				try {
+					resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
+					resolBase.prepararResolucion(idResolucionFAP);
+				} catch (Throwable e1) {
+					play.Logger.error("Error obteniendo tipo de resolución: " + e1.getMessage());
+				}
+			}
+
+			if (!Messages.hasErrors()) {
+				EditarResolucionController.prepararResolucionValidateRules();
+			}
+			if (!Messages.hasErrors()) {
+
+				log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
+			} else
+				log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
+			EditarResolucionController.prepararResolucionRender(idResolucionFAP);
+		} else {
+			ResolucionFAP resolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+			if (resolucionFAP.registro.oficial.uri == null) {
+				redirect("AportarDocumentoResolucionController.index", AportarDocumentoResolucionController.getAccion(), idResolucionFAP);
+			} else {
+				redirect("CambiarDocumentoResolucionController.index", CambiarDocumentoResolucionController.getAccion(), idResolucionFAP);
 			}
 		}
-
-		if (!Messages.hasErrors()) {
-			EditarResolucionController.prepararResolucionValidateRules();
-		}
-		if (!Messages.hasErrors()) {
-
-			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito");
-		} else
-			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
-		EditarResolucionController.prepararResolucionRender(idResolucionFAP);
 	}
 	
 	@Util
@@ -187,7 +197,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			} catch (Throwable e) {
 				new Exception ("No se ha podido obtener el objeto resolución", e);
 			}
-			resolBase.setLineasDeResolucion(idResolucionFAP);
+			resolBase.setLineasDeResolucion(idResolucionFAP, idsSeleccionados);
 			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			resolBase.avanzarFase_Borrador(resolucion);
 		}

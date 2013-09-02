@@ -56,6 +56,9 @@ public class ResolucionFAP extends FapModel {
 	@ValueFromTable("estadoResolucion")
 	public String estado;
 
+	@ValueFromTable("estadoResolucionNotificacion")
+	public String estadoNotificacion;
+
 	@ValueFromTable("estadoResolucionPublicacion")
 	public String estadoPublicacion;
 

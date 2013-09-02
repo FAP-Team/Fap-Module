@@ -1,7 +1,7 @@
 package resolucion;
 
 import services.GestorDocumentalService;
-import config.InjectorConfig;
+import java.util.List;
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionEnum;
 import enumerado.fap.gen.EstadoTipoMultipleEnum;
@@ -33,28 +33,19 @@ public class ResolucionSimple extends ResolucionBase {
 	}
 	
 	@Override
-	public void setLineasDeResolucion(Long idResolucion) {
+	public void setLineasDeResolucion(Long idResolucion, List<Long> idsSeleccionados) {
 		ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
-		if (resolucion.lineasResolucion.size() == 0) {
-			// Por cada una de las solicitudes a resolver, añadimos una línea de resolución
-			for (Object solObject: getSolicitudesAResolver(idResolucion)) {
-				SolicitudGenerica sol = (SolicitudGenerica) solObject;
-				LineaResolucionFAP lResolucion = new LineaResolucionFAP();
-				lResolucion.solicitud = sol;
-				if (sol.estado.equals(EstadosSolicitudEnum.verificado)) {
-					lResolucion.estado = EstadoLineaResolucionEnum.concedida.name();
-				} else if (sol.estado.equals(EstadosSolicitudEnum.excluido.name())) {
-					lResolucion.estado = EstadoLineaResolucionEnum.excluida.name();
-				} else {
-					lResolucion.estado = EstadoLineaResolucionEnum.excluida.name();
-				}
-				lResolucion.save();
-				
-				resolucion.lineasResolucion.add(lResolucion);
-				resolucion.save();
-				break;
-			}
+		Long idSeleccionado = idsSeleccionados.get(0);
+		LineaResolucionFAP lResolucion = new LineaResolucionFAP();
+		lResolucion.solicitud = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where ((solicitud.estado not in('borrador')) and (solicitud.id =?))", idSeleccionado).first();
+		if (lResolucion.solicitud.estado.equals(EstadosSolicitudEnum.verificado.name())) {
+			lResolucion.estado = EstadoLineaResolucionEnum.concedida.name();
+		} else {
+			lResolucion.estado = EstadoLineaResolucionEnum.excluida.name();
 		}
+		lResolucion.save();
+		resolucion.lineasResolucion.add(lResolucion);
+		resolucion.save();
 	}
 	
 //	@Override

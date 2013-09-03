@@ -45,11 +45,6 @@ Lista estadosDocBaremacion crearEnumerado{
 	clasificado: "Documentos Clasificado"
 }
 
-Lista estadosDocBaremacion crearEnumerado{
-	generado: "Documentos Generado"
-	clasificado: "Documentos Clasificado"
-}
-
 Lista estadoTipoMultiple crearEnumerado {
 	parcial: "Selecionar manualmente los expedientes"
 	total: "Todos los expedientes"
@@ -543,7 +538,7 @@ Formulario Principal {
 			Grupo borde=false {
 				Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 			}
-			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
+			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false mostrarSiCampo ResolucionFAP.tipoDefinidoResolucion="Simple Fase de Ejecución" {
 				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
 					Columna campo=LineaResolucionFAP.id titulo="Id" ancho="35"
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"  expandir

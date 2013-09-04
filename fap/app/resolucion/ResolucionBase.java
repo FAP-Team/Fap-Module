@@ -364,16 +364,26 @@ public class ResolucionBase {
 
 				//Cambio de estado de las solicitudes
 				//Sacar un método único
-//				if (TipoResolucionEnum.provisional.name().equals(resolucion.resolucion.tipo)) {
-//					cambiaEstadoProvisional(linea);
-//				} else {
-//					cambiaEstadoDefinitiva(linea);
-//				}
+				if (TipoResolucionEnum.provisional.name().equals(resolucion.resolucion.tipo)) {
+					cambiaEstadoProvisional(linea);
+				} else {
+					cambiaEstadoDefinitiva(linea);
+				}
 				sol.save();
 			}
 	 }
 	
-	 public void publicarCopiarEnExpedientes (long idResolucion){
+	 private void cambiaEstadoDefinitiva(LineaResolucionFAP linea) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void cambiaEstadoProvisional(LineaResolucionFAP linea) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void publicarCopiarEnExpedientes (long idResolucion){
 		//ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
 			ResolucionBase resolucion = null;
 			try {

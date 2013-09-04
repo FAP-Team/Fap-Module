@@ -9,8 +9,6 @@ Hemos visto previamente elementos que se pueden usar en una aplicación FAP como
 # "Check":dsl-check
 # "Columna":dsl-columna
 # "Combo":dsl-combo
-# "GrupoRadioButtons":dsl-grupoRadioButtons
-# "RadioButton":dsl-radioButton
 # "Direccion":dsl-direccion
 # "Editar archivo":dsl-editarArchivo
 # "Editar factura":dsl-editarFactura
@@ -21,6 +19,7 @@ Hemos visto previamente elementos que se pueden usar en una aplicación FAP como
 # "Form":dsl-form
 # "Formulario":dsl-formulario
 # "Grupo":dsl-grupo
+# "GrupoRadioButtons":dsl-grupoRadioButtons
 # "Listas":dsl-lista
 # "Menu":dsl-menu
 # "Pagina":dsl-pagina
@@ -30,6 +29,7 @@ Hemos visto previamente elementos que se pueden usar en una aplicación FAP como
 # "Persona juridica":dsl-personaJuridica
 # "Popup":dsl-popup
 # "Radio Booleano":dsl-radioBooleano
+# "RadioButton":dsl-radioButton
 # "Servicio web":dsl-servicioWeb
 # "Solicitante":dsl-solicitante
 # "Subir archivo":dsl-subirArchivo

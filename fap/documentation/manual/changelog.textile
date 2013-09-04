@@ -1,7 +1,10 @@
 h2. Changelog
 
 h3 Versión 2.3RC12
-*Fixed bug en FichaEvaluadorController (Salen solo los ceconomicos manuales propios y los automáticos en otro color)
+* Fixed bug en FichaEvaluadorController (Salen solo los ceconomicos manuales propios y los automáticos en otro color)
+* Fixed bug en almacenamiendo de documento de noAcceso.
+* Separado el job de notificaciones en dos (uno actualiza fechas y estado y otro los documentos).
+* Fixed bug en los códigos de exclusión.
 
 h3. Versión 2.3RC9
 * Fixed bug en modificaciones (copia de documentos a expediente AED)

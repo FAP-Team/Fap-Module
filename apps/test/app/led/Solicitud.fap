@@ -111,12 +111,12 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "Certificados" pagina=CertificadosSolicitados
     	}    	
 
-    	Grupo "Paginas Copias" {
-    		Enlace "Copia (Modificaciones permitidas)" pagina=PaginaCopia
-    		Enlace "Copia tablas" pagina=CopiaTablas
-    		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
-    		Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
-    	}
+//    	Grupo "Paginas Copias" {
+//    		Enlace "Copia (Modificaciones permitidas)" pagina=PaginaCopia
+//    		Enlace "Copia tablas" pagina=CopiaTablas
+//    		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
+//    		Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
+//    	}
 		
 		Enlace "Aportación" pagina=Aportacion
 
@@ -916,16 +916,16 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		Persona perdonaDir campo=Solicitud.personaDirector 
 	}
 	
-//	Pagina PaginaConversion titulo="Pagina de conversión doc2pdf"campo=Solicitud noForm{
-//		Accion editar crearSiempre
-//		Form formArchivo{
-//			SubirArchivo subirPrueba campo=Solicitud.pruebaConversion.docPrueba extensiones="doc"
-//			Boton botonGuardar titulo="Guardar"
-//		}
-//		Form formBoton{
-//			Boton botonPrueba titulo="RTF2PDF"
-//		} 
-//	}
+	Pagina PaginaConversion titulo="Pagina de conversión doc2pdf"campo=Solicitud noForm{
+		Accion editar crearSiempre
+		Form formArchivo{
+			SubirArchivo subirPrueba campo=Solicitud.pruebaConversion.docPrueba extensiones="doc"
+			Boton botonGuardar titulo="Guardar"
+		}
+		Form formBoton{
+			Boton botonPrueba titulo="RTF2PDF"
+		} 
+	}
 	
 
 	Pagina CopiaTablas titulo="Página de copia con tablas" campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud {

@@ -1,4 +1,7 @@
-//package controllers;
+package controllers;
+import controllers.gen.PaginaConversionControllerGen;
+
+
 //
 //import java.io.File;
 //import java.io.FileNotFoundException;
@@ -17,7 +20,7 @@
 //import config.InjectorConfig;
 //import controllers.gen.PaginaConversionControllerGen;
 
-//public class PaginaConversionController extends PaginaConversionControllerGen {
+public class PaginaConversionController extends PaginaConversionControllerGen {
 //	
 //	static GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 //	
@@ -72,4 +75,4 @@
 //		PaginaConversionController.formBotonRender(idSolicitud);
 //	}	
 //	
-//}
+}

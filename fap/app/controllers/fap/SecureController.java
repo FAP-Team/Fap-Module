@@ -1,6 +1,5 @@
 package controllers.fap;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -158,7 +157,7 @@ public class SecureController extends GenericController{
      *  Buscar Logout Sobreescrito
      */
     @Util
-    private static boolean buscarLogoutOverwrite(){
+    private static String buscarRedireccionLogout(){
     	Class invokedClass = getSecureClass();
     	Object object=null;
     	
@@ -166,25 +165,24 @@ public class SecureController extends GenericController{
 			Method method = null;
 			try {
     			object = invokedClass.newInstance();
-    			method = invokedClass.getDeclaredMethod("logoutOverwrite");
+    			method = invokedClass.getDeclaredMethod("logoutRedireccion");
     			if (method != null){
-    				method.invoke(object);
-    				return true;
+    				return (String)method.invoke(object);
     			}
     			else{
     				log.info("No existe el método logout() en la clase "+invokedClass.getName());
-    				return false;
+    				return null;
     			}
 			} catch (Exception e) {
 				log.info("No se puede instanciar la clase propia de la aplicación que se encargará del logout, por defecto se usará el logout de FAP");
-//				e.printStackTrace();
-//				e.getMessage();
-				return false;
+				e.printStackTrace();
+				System.out.println("Causa: "+e.getCause());
+				e.getLocalizedMessage();
+				return null;
 			}
     	} else {
     		log.info("No existe una clase en la aplicación que extienda de SecureController, por defecto se usará el logout de FAP");
-    		System.out.println("(1)");
-    		return false;
+    		return null;
     	}
     }
     
@@ -273,6 +271,7 @@ public class SecureController extends GenericController{
 
     public static void authenticateFap(@Required String username, String password, boolean remember) throws Throwable {
     	checkAuthenticity();
+    	System.out.println("Autenticando");
     	if (!buscarAuthenticateOverwrite(username, password, remember))
     		authenticatePorDefecto(username, password, remember);
     }
@@ -288,6 +287,7 @@ public class SecureController extends GenericController{
     			object = invokedClass.newInstance();
     			method = invokedClass.getDeclaredMethod("authenticate", String.class, String.class, boolean.class);
     			if (method != null){
+    				System.out.println("Invocando el autenticate");
     				method.invoke(object, username, password, remember);
     				return true;
     			}
@@ -409,14 +409,17 @@ public class SecureController extends GenericController{
     }
 
     @Util
-    public static void logoutFap(){
-    	if (!buscarLogoutOverwrite()){
-	    	Cache.delete(session.getId());
-	        session.clear();
-	        response.removeCookie("rememberme");
-	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
-	        Messages.keep();
-	        redirect("fap.SecureController.loginFap");
+    public static void logoutFap() throws Throwable{
+    	String redireccion = buscarRedireccionLogout();
+    	Cache.delete(session.getId());
+        session.clear();
+        response.removeCookie("rememberme");
+        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
+        Messages.keep();
+    	if (redireccion != null){
+	        redirect(redireccion);
+        } else {
+        	redirect("fap.SecureController.loginFap");
         }
     }
     

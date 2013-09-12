@@ -1,5 +1,6 @@
 package controllers.fap;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -153,6 +154,40 @@ public class SecureController extends GenericController{
     	}
     }
    
+    /**
+     *  Buscar Logout Sobreescrito
+     */
+    @Util
+    private static boolean buscarLogoutOverwrite(){
+    	Class invokedClass = getSecureClass();
+    	Object object=null;
+    	
+    	if (invokedClass != null){
+			Method method = null;
+			try {
+    			object = invokedClass.newInstance();
+    			method = invokedClass.getDeclaredMethod("logoutOverwrite");
+    			if (method != null){
+    				method.invoke(object);
+    				return true;
+    			}
+    			else{
+    				log.info("No existe el método logout() en la clase "+invokedClass.getName());
+    				return false;
+    			}
+			} catch (Exception e) {
+				log.info("No se puede instanciar la clase propia de la aplicación que se encargará del logout, por defecto se usará el logout de FAP");
+//				e.printStackTrace();
+//				e.getMessage();
+				return false;
+			}
+    	} else {
+    		log.info("No existe una clase en la aplicación que extienda de SecureController, por defecto se usará el logout de FAP");
+    		System.out.println("(1)");
+    		return false;
+    	}
+    }
+    
     /**
      * Login con certificado electronico
      * @param certificado
@@ -373,13 +408,16 @@ public class SecureController extends GenericController{
         redirectToOriginalURL();
     }
 
-    public static void logoutFap() throws Throwable {
-    	Cache.delete(session.getId());
-        session.clear();
-        response.removeCookie("rememberme");
-        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
-        Messages.keep();
-        redirect("fap.SecureController.loginFap");
+    @Util
+    public static void logoutFap(){
+    	if (!buscarLogoutOverwrite()){
+	    	Cache.delete(session.getId());
+	        session.clear();
+	        response.removeCookie("rememberme");
+	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
+	        Messages.keep();
+	        redirect("fap.SecureController.loginFap");
+        }
     }
     
     @Util

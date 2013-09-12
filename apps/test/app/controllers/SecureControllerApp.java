@@ -6,7 +6,7 @@ import enumerado.fap.gen.AccesoAgenteEnum;
 import messages.Messages;
 import play.cache.Cache;
 import play.mvc.Util;
-
+import properties.FapProperties;
 
 public class SecureControllerApp extends SecureController{
 	

@@ -1,5 +1,18 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {	
 
+	Pagina FirmaMultipleDocumentos titulo = "Firma de múltiples documentos" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
+	
+		Tabla documentos titulo="Documentos a firmar" campo=SolicitudGenerica.documentacion.documentos seleccionable="Firmar" {
+			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
+            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="85"
+			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+            Columna campo=Documento.tipo titulo="Tipo Documento"expandir
+			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
+			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+			Columna campo=Documento.firmadoVisible titulo="Firmado" expandir
+		}
+	}
+
 	// Sobreescrita
 	Pagina DocumentacionFAP titulo = "Documentación" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
 	
@@ -10,6 +23,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
             Columna campo=Documento.tipo titulo="Tipo Documento"expandir
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
 			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+			Columna campo=Documento.firmadoVisible titulo="Firmado"expandir
 		}
 		
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{

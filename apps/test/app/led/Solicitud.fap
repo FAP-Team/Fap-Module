@@ -64,6 +64,7 @@ Formulario Solicitud permiso=solicitudes{
 			Grupo "Ejemplo: Archivos y Envío de Mails" {
 				Enlace "SubirArchivoAed" pagina=SubirArchivoAedTest
 				Enlace "Documentación FAP" pagina=DocumentacionFAP
+				Enlace "Firma de múltiples documentos" pagina=FirmaMultipleDocumentos
 				//Enlace "Conversión a PDF" pagina=PaginaConversion
 				Enlace "Envío de Mails" pagina=EnvioMails
 			}

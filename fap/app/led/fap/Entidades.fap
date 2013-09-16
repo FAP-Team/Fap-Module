@@ -145,7 +145,7 @@ Entidad Documento {
 	Lista tiposDocumentos tipo
 	String descripcion
 	String descripcionVisible transient
-	Boolean clasificado
+	Boolean clasificado default="false"
 	String hash
 	DateTime fechaSubida
 	DateTime fechaRegistro
@@ -159,6 +159,8 @@ Entidad Documento {
 	// dónde se encuentra el documento seleccionado en la subida (ya presente en el aed).
 	Boolean refAed                     // si el campo expedienteReferenciado/solicitudReferenciada es válido
 	Lista estadoNotificacion estadoDocumento
+	Boolean firmado default="false"
+	String firmadoVisible transient
 }
 
 // La entidad Documentación agrupa aportaciones de documentos

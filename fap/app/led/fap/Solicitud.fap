@@ -25,7 +25,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		
 		Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
 			Grupo titulo="Habilitar la firma y presentación por Funcionario Público" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")"{
-				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación�? de esta página."}
+				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación�? de esta página."}
 				Form formAbrirPlantillaFH destino="_blank"{
 					Boton btnAbrirPlantillaFH titulo="Descargar Autorización"
 				}
@@ -151,6 +151,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	Pagina AportacionRecibos titulo="Recibos de Aportaciones" noForm  perteneceA ="Aportacion"{
 			
 		Tabla recibosAportados titulo="Recibos de las aportaciones" campo=SolicitudGenerica.documentacionAportada.documentos permisoFilas=aportacionNoNull
+		popupLeer=PopUpAportaciones
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
 			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
@@ -161,6 +162,17 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 		
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
+	}
+	
+	Popup PopUpAportaciones titulo="Detalle Aportación" campo=SolicitudGenerica.documentacionAportada.documentos {
+		Fecha campo=Documento.fechaSubida titulo="Fecha Subida"
+		Fecha campo=Documento.fechaRegistro titulo="Fecha Registro"
+		Combo campo=Documento.tipo titulo="Tipo Documento"
+		Texto campo=Documento.uri titulo="Uri"
+		Texto campo=Documento.hash  titulo="Hash"
+		Texto campo=Documento.descripcionVisible titulo="Descripción" 
+		Enlace campo=Documento.urlDescarga titulo="Descargar"
+		Enlace campo=Documento.enlaceDescargaFirmado titulo="Descargar Firmado" 
 	}
 	
 	Popup PopUpDocPresentados titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos{
@@ -399,6 +411,18 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			
 			Wiki { "<br/> " }
 			
+			Grupo titulo="Presentación de modificaciones"  mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
+				Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Presentadas" recargarPagina {
+					Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
+					Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
+					Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registro" expandir
+					Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+					Columna campo=RegistroModificacion.registro.justificante.enlaceDescarga titulo="Justificante" expandir
+				}
+			}
+			
+			Wiki { "<br/> " }
+			
 			Form frmtiposProceso permiso=verificarObtenerNoProcede {
 				Grupo noProcedeAnteriores titulo="Obtener los documentos No Procede de verificaciones anteriores"{
 					Boton obtenerNoProcede titulo="Obtener los NoProcede" type=warning
@@ -447,7 +471,21 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Grupo botonDescargaReciboSolitudgR borde=false{
 					Enlace campo=SolicitudGenerica.registro.justificante.urlDescarga titulo="Descargar Recibo Solicitud" destino="_blank" estilo="btn"
 				}	
-			
+				
+				Wiki { "<br/> " }
+				
+				Grupo grupoModificacionesRequerimiento titulo="Presentación de modificaciones"  mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
+					Tabla tablaModificacionesRequerimiento campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Presentadas" recargarPagina {
+						Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
+						Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
+						Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registro" expandir
+						Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+						Columna campo=RegistroModificacion.registro.justificante.enlaceDescarga titulo="Justificante" expandir
+					}
+				}
+				
+				Wiki { "<br/> " }
+				
 				Tabla verificacionDocumentosgR titulo="Documentación" campo=SolicitudGenerica.verificacion.documentos
 					paginaLeer=PaginaDocumentoVerificacionLeer 
 				{
@@ -478,7 +516,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				
 				Form gPonerADisposicion permiso=requerimientoFirmado {
 					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
-					Boton ponerADisposicion titulo="Notificar el requerimiento"
+					Boton ponerADisposicion titulo="Notificar el requerimiento" waitPopup
 				}
 			}
 			
@@ -645,6 +683,52 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	Pagina PaginaCEconomicosEvaluados titulo= "Conceptos Económicos Evaluados" campo=SolicitudGenerica permiso=evaluacionFinalizada noForm  perteneceA ="Baremacion" {
 		Form Guardar { 
 			Boton botonGuardar titulo="Guardar" 
+		}
+	}
+
+	// ******************************************************************************************
+	// PAGINA CONCEPTOS ECONOMICOS COPIA
+	// *******************************************************************************************	
+
+	//Sobreescrita
+	Pagina PCEconomicosCopia titulo="Conceptos Económicos" permiso=modificacionTrasPresentacionDeSolicitud guardarParaPrepararCopia{
+		Form Guardar {
+			Boton botonGuardar titulo="Guardar" 
+		}
+	}
+
+	//Sobreescrita
+	Pagina PaginaCEconomicosCopia titulo= "Conceptos Económicos" campo=SolicitudGenerica.ceconomicos permiso=modificacionTrasPresentacionDeSolicitud noForm  perteneceA ="Baremacion"{
+		Form Guardar { 
+			Texto Nombre titulo="Nombre" campo=CEconomico.tipo.nombre
+			Grupo conceptosManuales borde=false permiso=verTablaCEconomicosOtros {
+				Tabla ceconomicosManuales titulo="Especificar Detalle" campo=CEconomico.otros 
+				paginaCrear=PaginaCEconomicoManualCopia 
+				paginaEditar=PaginaCEconomicoManualCopia 
+				paginaLeer=PaginaCEconomicoManualCopia 
+				paginaBorrar=PaginaCEconomicoManualBorrarCopia recargarPagina{
+					Columna campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquía"
+					Columna campo=CEconomicosManuales.tipo.nombre titulo="Nombre" expandir
+				}
+			}
+			Boton botonGuardar titulo="Guardar" 
+		}
+	}
+
+	Pagina PaginaCEconomicoManualBorrarCopia  titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=modificacionTrasPresentacionDeSolicitud {
+		Accion borrar redirigir=PaginaCEconomicosCopia
+		Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+		Texto campo=CEconomicosManuales.tipo.descripcion titulo="Descripción"
+	}
+	
+	//Sobreescrita
+	Pagina PaginaCEconomicoManualCopia  titulo="Concepto Económico" campo=SolicitudGenerica.ceconomicos.otros permiso=modificacionTrasPresentacionDeSolicitud noForm  perteneceA ="Baremacion"{
+		Accion editar redirigir=PaginaCEconomicosCopia
+		Accion crear redirigir=PaginaCEconomicosCopia
+		Form guardarPCE {
+			Texto campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+			Boton bGuardarPCE titulo="Guardar"
+			Enlace titulo="Volver" estilo="btn btn-link" pagina=PaginaCEconomicosCopia
 		}
 	}
 
@@ -1041,6 +1125,16 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Enlace campo=Registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton"
 			}
 		}
+		
+		Grupo titulo="Presentación de modificaciones"  mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
+			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Presentadas" recargarPagina {
+				Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
+				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
+				Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+				Columna campo=RegistroModificacion.registro.justificante.enlaceDescarga titulo="Justificante" expandir
+			}
+		}
 	}
 
 	// Sobreescrito
@@ -1331,11 +1425,17 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 
 	Popup popupCrearModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Habilitar una nueva Modificación" permiso=crearModificacionSolicitud {
 		Grupo titulo="Habilitar una nueva Modificación de la Solicitud para el Solicitante" {
-			Fecha fechaLimite campo=RegistroModificacion.fechaLimite titulo="Fecha Límite de Modificación"
+			Fecha fechaLimite campo=RegistroModificacion.fechaLimite titulo="Fecha Límite de Modificación" requerido
+		}
+	}
+
+	Popup popupEditarModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Editar modificación" permiso=editarModificacionSolicitud {
+		Grupo titulo="Cambiar la fecha límite de modificación" {
+			Fecha fechaLimite campo=RegistroModificacion.fechaLimite titulo="Fecha Límite de Modificación" requerido
 		}
 	}
 	
-	Popup popupLeerModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Datos Modificación" permiso=adminOrGestor{
+	Popup popupLeerModificacionSolicitud campo=SolicitudGenerica.registroModificacion titulo="Datos Modificación" permiso=adminOrGestorOrRevisor{
 		Grupo titulo="Datos de la Modificación" permiso=noEditable{
 			Texto estado campo=RegistroModificacion.estado titulo="Estado Actual"
 			Fecha fechaCreacion campo=RegistroModificacion.fechaCreacion titulo="Fecha de Creación"
@@ -1346,17 +1446,19 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	
 	Pagina ActivarModificacionSolicitudes titulo="Habilitar Modificación Solicitud" campo=SolicitudGenerica noForm permiso=habilitarModificacionSolicitud {
 		Grupo titulo="Modificaciones de los Datos de la Solicitud por parte del Solicitante" {
-			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Totales" popupCrear=popupCrearModificacionSolicitud popupLeer=popupLeerModificacionSolicitud recargarPagina {
+			Tabla tablaModificaciones campo=SolicitudGenerica.registroModificacion titulo="Modificaciones Totales" popupCrear=popupCrearModificacionSolicitud popupEditar=popupEditarModificacionSolicitud popupLeer=popupLeerModificacionSolicitud permisoFilas=filaTablaModificaciones recargarPagina{
 				Columna campo=RegistroModificacion.fechaCreacion titulo="Fecha Creación" expandir
+				Columna campo=RegistroModificacion.fechaRegistro titulo="Fecha Registrada" expandir
+				Columna campo=RegistroModificacion.fechaCancelacion titulo="Fecha Cancelada" expandir
 				Columna campo=RegistroModificacion.fechaLimite titulo="Fecha Límite" expandir
-				Columna campo=RegistroModificacion.fechaFinalizacion titulo="Fecha Finalización" expandir
-				Columna campo=RegistroModificacion.estado titulo="Estado" expandir
+				Columna campo=RegistroModificacion.estadoValue titulo="Estado" expandir
+				Columna campo=RegistroModificacion.registro.justificante.enlaceDescarga titulo="Justificante" expandir
 			}
 		}
 		
-		Grupo titulo="Restaurar valores de los Datos de la Solicitud" mostrarSiExpresion "!solicitud.registroModificacion.isEmpty()" {
-			Form formRestaurarModificacion{
-				Combo fechaARestaurar campo=SolicitudGenerica.fechaARestaurarStr titulo="Fecha Creación de la Modificación" // Sobreescrito
+		Grupo titulo="Restaurar valores de los Datos de la Solicitud" mostrarSiExpresion "!solicitud.registroModificacion.isEmpty() && ((solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).estado == \"enCurso\" ) || (solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).estado == \"expirada\" ))"  {
+			Form formRestaurarModificacion {
+				Combo fechaARestaurar campo=SolicitudGenerica.fechaARestaurarStr titulo="Fecha Creación de la Modificación" requerido // Sobreescrito
 				Boton restaurarBtn titulo="Restaurar" type=danger
 			}
 		}
@@ -1373,7 +1475,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	        		Grupo gpreparar titulo="Paso 1. Preparar la solicitud de modificación" {
 	            		Wiki { "Si su solicitud de modificación está lista para firmar, pulse el siguiente botón." }
 	              		Form prepararFirmar {
-	                    	Boton botonPrepararFirmar titulo="Preparar para firmar"
+	                    	Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
 	              		}
 	        		}
 	        	} // Fin Grupo para controlar prepararAlegacion
@@ -1399,7 +1501,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				// Hay que comprobar que se ha guardado fomulario antes de pulsar en botonPresentar o que este haga el guardado
 				Form frmPresentar redirigir=SolicitudPresentarModificacionFAP permiso=enBorradorSolicitudModificada {
 					Wiki {"Debe registrar la solicitud para que se considere presentada."}
-					Boton botonPresentar titulo="Presentar solicitud de Modificación"
+					Boton botonPresentar titulo="Presentar solicitud de Modificación" waitPopup
 				}
 			}
 				

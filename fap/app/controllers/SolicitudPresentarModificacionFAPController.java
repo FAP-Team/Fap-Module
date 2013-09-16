@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Agente;
@@ -150,14 +152,14 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 			FirmaUtils.firmar(registro.oficial, registro.firmantes.todos, firma, null);
 		} else {
 			//ERROR
-			Messages.error("No tiene permisos suficientes para realizar la acción++");
+			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		if (!Messages.hasErrors()) {
 
 			registro.fasesRegistro.firmada = true;
 			registro.save();
 
-			registro.save();
+			registroModificacion.save();
 		}
 	}
 	
@@ -183,10 +185,8 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 			Messages.error("No tiene permisos suficientes para realizar la acción++");
 		}
 		if (!Messages.hasErrors()) {
-
 			registro.fasesRegistro.firmada = true;
-			registro.save();
-
+			registroModificacion.save();
 			registro.save();
 		}
 	}
@@ -248,8 +248,11 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 				if (!Messages.hasErrors()) {
 					try {
 						tramite.registrar();
-						if (dbRegistro.fasesRegistro.clasificarAed)
+						if (dbRegistro.fasesRegistro.clasificarAed){
 							tramite.cambiarEstadoSolicitud();
+							registroModificacion.fechaRegistro = dbRegistro.informacionRegistro.fechaRegistro;
+							registroModificacion.save();
+						}
 						else{
 							play.Logger.error("No se registro la solicitud correctamente por lo que no se cambiara el estado de la misma.");
 							Messages.error("Error al intentar sólo registrar.");
@@ -342,8 +345,11 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 					if (!Messages.hasErrors()) {
 						try {
 							tramite.registrar();
-							if (dbRegistro.fasesRegistro.clasificarAed)
+							if (dbRegistro.fasesRegistro.clasificarAed){
 								tramite.cambiarEstadoSolicitud();
+								registroModificacion.fechaRegistro = dbRegistro.informacionRegistro.fechaRegistro;
+								registroModificacion.save();
+							}
 							else{
 								play.Logger.error("No se registro la solicitud correctamente por lo que no se cambiara el estado de la misma.");
 								Messages.error("Error al intentar sólo registrar.");
@@ -495,6 +501,7 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 
 		SolicitudGenerica dbSolicitud = SolicitudPresentarModificacionFAPController.getSolicitudGenerica(idSolicitud);
 		idRegistroModificacion=dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).id;
+		RegistroModificacion registroModificacion = RegistroModificacion.findById(idRegistroModificacion);
 		Registro dbRegistro = SolicitudPresentarModificacionFAPController.getRegistro(idRegistroModificacion, idRegistro);
 		
 		if (!Messages.hasErrors()) {
@@ -523,8 +530,11 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 					dbRegistro.fasesRegistro.borrador = true;
 					dbRegistro.fasesRegistro.firmada = true;
 					tramite.registrar();
-					if (dbRegistro.fasesRegistro.clasificarAed)
+					if (dbRegistro.fasesRegistro.clasificarAed){
 						tramite.cambiarEstadoSolicitud();
+						registroModificacion.fechaRegistro = dbRegistro.informacionRegistro.fechaRegistro;
+						registroModificacion.save();
+					}
 					else{
 						play.Logger.error("No se registro la solicitud de modificación correctamente por lo que no se cambiara el estado de la misma.");
 						Messages.error("Error al intentar sólo registrar.");
@@ -554,7 +564,7 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 			dbSolicitud.save();
 			Messages.ok("Solicitud Registrada correctamente");
 			log.info("Acción Editar de página: " + "gen/SolicitudPresentarModificacionFAP/SolicitudPresentarModificacionFAP.html" + " , intentada con éxito");
-			redirect("PresentarModificacionFAPController.index", "editar", idSolicitud, idRegistroModificacion, idRegistro);
+			redirect("PresentarFAPController.index", "editar", idSolicitud, dbSolicitud.registro.id);
 		} else
 			log.info("Acción Editar de página: " + "gen/SolicitudPresentarModificacionFAP/SolicitudPresentarModificacionFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		SolicitudPresentarModificacionFAPController.frmRegistrarRender(idSolicitud, idRegistroModificacion, idRegistro);

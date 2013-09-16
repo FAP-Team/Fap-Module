@@ -232,6 +232,8 @@ ${metodoProcesandoEntidades()}
 
 ${metodoModulo()}
 
+${copyModificacionCamposSimples()}
+
 }
 """
 		FileUtils.overwrite(FileUtils.getRoute('CONTROLLER_GEN'),controllerGenFullName.replaceAll("\\.", "/") + ".java", BeautifierUtils.formatear(controllerGen));
@@ -592,6 +594,7 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String metodoBorrar(){
 		String codigoBorrar = "";
 		String backupCopia = "";
+		String identificador = "";
 		
 		if (!borrar)
 			return "";
@@ -628,7 +631,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			boolean hayModificaciones = false;
 			"""			
 			campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
-			if (!item.name.startsWith("id"))
+			if ((!item.name.startsWith("id")) && (!item.isTransient))
 				codigoBorrar += """
 				if (${entidad.variableDb}.${item.name} != null){
 					valoresAntiguos.add(${entidad.variableDb}.${item.name}.toString());
@@ -641,6 +644,13 @@ public class ${controllerName} extends ${controllerGenName} {
 							${gElement.saveCode()}
 							"""
 		}
+		if ((copia) && (!allEntities.collect{it.typeId}.contains("idSolicitud")) && (almacen.variableDb != "dbSolicitud")){
+			identificador = """
+			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+			Boolean creando = false;
+		""";
+			}
+			
 		return """
 			public static void borrar(${StringUtils.params(allEntities.collect{it.typeId})}){
 				checkAuthenticity();
@@ -654,6 +664,7 @@ public class ${controllerName} extends ${controllerGenName} {
 				}
 				
 				if (!Messages.hasErrors()) {
+					${identificador}
 					${backupCopia}
 					${codigoBorrar}
 				}
@@ -1018,7 +1029,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			codigoCrear = """if (creando) {"""
 			campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
 				atributos.addAll(item.name);
-				if (!item.name.startsWith("id"))
+				if ((!item.name.startsWith("id")) && (!item.isTransient))
 					codigoCrear += """
 					if (${lista.get(1)}.${item.name} != null){
 						valoresNuevos = new ArrayList<String>();
@@ -1062,6 +1073,8 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (saveEntities.size() == 0 || (!editar && !crear && !borrar) || (!hayTablasDeEntidad(element))) 
 			return "";
 			String backupCopia="";
+			String copiaTexto="";
+			String identificador="";
 			if (copia){
 				backupCopia = """
 				PeticionModificacion peticionModificacion = new PeticionModificacion();
@@ -1081,6 +1094,13 @@ public class ${controllerName} extends ${controllerGenName} {
 			List<String> valoresNuevos = new ArrayList<String>();
 			"""				
 			}
+			if ((copia) && (!saveEntities.collect{ it.variableDb }.contains("dbSolicitud"))){
+				identificador = """
+				SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
+				Boolean creando = false;
+			""";
+			}
+
 		String redirectMethod = "\"${controllerFullName}.index\"";
 		return """
 			@Util
@@ -1092,6 +1112,8 @@ public class ${controllerName} extends ${controllerGenName} {
 				extraParams
 			)}){
 				CustomValidation.clearValidadas();
+				${identificador}
+				${saveEntities.size() > 0? bindReferencesCall() : ""}
 				${backupCopia}
 				${saveDbEntities.collect{"$it.clase $it.variableDb = ${complexGetterCall(it)};"}.join("\n")}
 				${gElement.validateCopy()}
@@ -1261,6 +1283,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.editar = controller.editar || controller.accionEditar.crearSiempre;
 		controller.borrar = controller.borrar || controller.accionBorrar.crearSiempre;
 		controller.campo = gpop.campo;
+		controller.copia = gpop.popup.copia;
 		controller.renderView = "\"gen/popups/${gpop.viewName()}\"";
 		controller.permiso = gpop.popup.permiso;
 		if (gpop.popup.permiso == null)
@@ -1715,5 +1738,23 @@ public class ${controllerName} extends ${controllerGenName} {
 		return saveEntities.collect{it.variableDb};
 	}
 	
-				
+	public static String copyModificacionCamposSimples(){
+		return """
+		@Util
+		public static void copyModificacionCamposSimples(String campoStr, Object campo, Object dbCampo, utils.PeticionModificacion peticionModificacion){
+			List<String> valoresNuevos = new ArrayList<String>();
+			List<String> valoresAntiguos = new ArrayList<String>();
+			if (((dbCampo == null) ^ (campo == null)) || ((campo != null) && (!campo.equals(dbCampo)))) {
+				if (dbCampo != null)
+				   valoresAntiguos.add(dbCampo.toString());
+				if ((campo == null))
+				   valoresNuevos.add("");
+				else
+					  valoresNuevos.add(campo.toString());
+				peticionModificacion.setValorModificado(campoStr, valoresAntiguos, valoresNuevos);
+			}
+		}""";
+	}
+	
+	
 }

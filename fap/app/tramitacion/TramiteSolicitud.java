@@ -35,7 +35,7 @@ public abstract class TramiteSolicitud extends TramiteBase {
 	}
 
 	@Override
-	public final String getDescripcionJustificante() {
+	public String getDescripcionJustificante() {
 		return "Justificante de registro de la solicitud de "+TramiteSolicitud.TIPO_TRAMITE;
 	}
 

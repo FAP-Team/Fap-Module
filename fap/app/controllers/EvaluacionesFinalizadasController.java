@@ -33,7 +33,7 @@ public class EvaluacionesFinalizadasController extends EvaluacionesFinalizadasCo
 
 		tables.TableRenderResponse<Evaluacion> response = new tables.TableRenderResponse<Evaluacion>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("totalCriterios", "solicitud.expedienteAed.idAed", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado", "id"));
+		renderJSON(response.toJSON("totalCriterios", "solicitud.expedienteAed.idAed", "estado", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado", "id"));
 	}
 	
 //	public static void editarEvaluacion(Long idEvaluacion, String accion){

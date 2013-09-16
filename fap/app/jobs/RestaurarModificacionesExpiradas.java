@@ -41,30 +41,30 @@ public class RestaurarModificacionesExpiradas extends Job {
 	
 	@Transactional
     public void doJob() {
-		List<SolicitudGenerica> solicitudes = SolicitudGenerica.findAll();
-		for (SolicitudGenerica solicitud: solicitudes){
-			if ((!solicitud.registroModificacion.isEmpty()) && (!solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).registro.fasesRegistro.registro) && (solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).fechaLimite.isAfterNow())){
-				play.Logger.info("La solicitud "+solicitud.id+" va a ser restaurada a un estado anterior porque no ha sido presentada y la fecha de modificación ha expirado "+solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).fechaLimite.toString());
-				ModelUtils.restaurarSolicitud(solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).id, solicitud.id, false);
-				if (!Messages.hasErrors()){
-					try {
-						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-						Mails.enviar("solicitudRestauradaAuto", solicitud);
-						play.Logger.info("Correo Solicitud "+solicitud.id+" Modificada por Expiración de Fecha enviado");
-					} catch (Exception e){
-						play.Logger.error("Envío del Mail de solicitud "+solicitud.id+" restaurada por expiración de fecha límite fallido: "+e.getMessage());
-					}
-				} else {
-					try {
-						play.Logger.error("La solicitud "+solicitud.id+" que debió ser restaurada a un estado anterior porque no ha sido presentada y la fecha de modificación ha expirado "+solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).fechaLimite.toString()+", NO ha sido restaurada con éxito");
-						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
-						Mails.enviar("solicitudRestauradaAutoFallo", solicitud);
-					} catch (Exception e){
-						play.Logger.error("Envío del Mail de solicitud "+solicitud.id+" restaurada sin éxito por problemas de expiración de fecha límite fallido: "+e.getMessage());
-					}
-				}
-			}
-		}
+//		List<SolicitudGenerica> solicitudes = SolicitudGenerica.findAll();
+//		for (SolicitudGenerica solicitud: solicitudes){
+//			if ((!solicitud.registroModificacion.isEmpty()) && (!solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).registro.fasesRegistro.registro) && (solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).fechaLimite.isBeforeNow())){
+//				play.Logger.info("La solicitud "+solicitud.id+" va a ser restaurada a un estado anterior porque no ha sido presentada y la fecha de modificación ha expirado "+solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).fechaLimite.toString());
+//				ModelUtils.restaurarSolicitud(solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).id, solicitud.id, false);
+//				if (!Messages.hasErrors()){
+//					try {
+//						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+//						Mails.enviar("solicitudRestauradaAuto", solicitud);
+//						play.Logger.info("Correo Solicitud "+solicitud.id+" Modificada por Expiración de Fecha enviado");
+//					} catch (Exception e){
+//						play.Logger.error("Envío del Mail de solicitud "+solicitud.id+" restaurada por expiración de fecha límite fallido: "+e.getMessage());
+//					}
+//				} else {
+//					try {
+//						play.Logger.error("La solicitud "+solicitud.id+" que debió ser restaurada a un estado anterior porque no ha sido presentada y la fecha de modificación ha expirado "+solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).fechaLimite.toString()+", NO ha sido restaurada con éxito");
+//						play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
+//						Mails.enviar("solicitudRestauradaAutoFallo", solicitud);
+//					} catch (Exception e){
+//						play.Logger.error("Envío del Mail de solicitud "+solicitud.id+" restaurada sin éxito por problemas de expiración de fecha límite fallido: "+e.getMessage());
+//					}
+//				}
+//			}
+//		}
     }
 
     

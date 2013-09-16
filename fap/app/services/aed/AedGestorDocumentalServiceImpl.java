@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 import javax.xml.ws.Holder;
@@ -929,9 +930,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     		firmanteAed.setFirmanteNif(FapProperties.get("fap.platino.firmante.documento"));
 			String dateToken = getXMLElementValue("date", firmaStr);
 			String hourToken = getXMLElementValue("time", firmaStr);
-			hourToken = hourToken.substring(0, hourToken.length() - 1);
+			hourToken = hourToken.substring(0, hourToken.length());
 			DateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 			try {
+				formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 				Date parsedDate = formatter.parse(dateToken + " " + hourToken);
 				firmanteAed.setFecha(parsedDate);
 			} catch (Exception ex) {
@@ -940,6 +942,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			
 			firmaActual.getFirmantes().add(firmanteAed);
 			
+			propiedadesAdministrativas.setFirma(firmaActual);
+			
             String uri = actualizarPropiedades(propiedadesDocumento, clasificado);
         	if (documento.uri != uri) {
         		play.Logger.info("Se actualiza la uri del documento "+documento.uri+ " -> "+uri);
@@ -947,7 +951,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 				documento.save();
         	}
         }catch(AedExcepcion e){
+        	play.Logger.info("No se ha podido agregar la firma al documento: "+documento);
             throw serviceExceptionFrom(e);
+        } catch (Exception e) {
+        	play.Logger.info("No se ha podido agregar la firma al documento: "+documento+" -> "+e);
         }
 	}
 
@@ -1003,13 +1010,18 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
     
 	private String actualizarPropiedades(PropiedadesDocumento propiedades, boolean clasificado) throws AedExcepcion {
-        if(clasificado){
-            //TODO falta ver las ubicaciones y si se incrementa la versión del documento
+		if(clasificado){
+			//TODO falta ver las ubicaciones y si se incrementa la versión del documento
             List<DocumentoEnUbicacion> ubicaciones = aedPort.obtenerDocumentoRutas(propiedades.getUri());
             List<Ubicaciones> newUbicaciones = clonarUbicaciones(ubicaciones);
             return aedPort.actualizarDocumentoPropiedades(propiedades, newUbicaciones);
         }else{
-            aedPort.actualizarDocumentoPropiedadesNoClasificado(propiedades);
+        	try {
+        		aedPort.actualizarDocumentoPropiedadesNoClasificado(propiedades);
+        	} catch (Exception e) {
+        		play.Logger.error("No se ha podido actualizar las propiedades del documento"+e);
+        		new AedExcepcion("Error: "+e);
+        	}
             return propiedades.getUri();
         }
 	}
@@ -1400,6 +1412,36 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			aedPort.copiarDocumento(uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
 		} catch (Exception e) {
 			play.Logger.error("Error al copiar el documento de resolución en los expedientes"+e);
+			new GestorDocumentalServiceException("Error al copiar el documento de resolución en los expedientes", e);
+		}
+	}
+	
+	/**
+	 * Copiamos el documento en cada uno de los expedientes que se le pasen
+	 * @param uris
+	 * @param expedienteAed
+	 * @throws GestorDocumentalServiceException
+	 */
+	@Override
+	public void copiarListaDocumentoEnExpediente(List<String> uri, List<ExpedienteAed> expedientesAed) throws GestorDocumentalServiceException {
+		String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
+		Ubicaciones ubicacion = new Ubicaciones();
+		ubicacion.setProcedimiento(procedimiento);
+		for (ExpedienteAed exp: expedientesAed) {
+			play.Logger.info("Añado la ubicación: "+exp.idAed);
+			ubicacion.getExpedientes().add(exp.idAed);
+		}
+		
+		List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
+		ubicaciones.add(ubicacion);
+		try {
+			for (String miUri : uri) {
+				aedPort.copiarDocumento(miUri, ubicaciones);
+				System.out.println("Copiado: "+miUri);
+			}
+		} catch (Exception e) {
+			play.Logger.error("Error al copiar el documento de en los expedientes "+e);
+			e.printStackTrace();
 			new GestorDocumentalServiceException("Error al copiar el documento de resolución en los expedientes", e);
 		}
 	}

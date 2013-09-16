@@ -67,3 +67,61 @@ Puede ser que debamos restaurar los datos, por diferentes motivos, al registro j
 
 ** *solicitudRestauradaAuto*: Para el correo que se envía cuando ha sido restaurada una solicitud con éxito.
 ** *solicitudRestauradaAutoFallo*: Para cuando ha ocurrido un fallo en medio del proceso de restauración.
+
+h2. Elementos no soportados en la modificación de solicitudes
+
+Algunos de los elemetos que pueden emplearse en los ficheros .fap, no están soportados en la seccion de modificación de solicitudes, de manera que deberán adaptarse para obtener código equivalente.
+
+* *Solicitante:* El elemento Solicitante/SolicitantePersonaFisica/SolicitantePersonaJuridica no está soportado en la modificación. Para obtener un código equivalente, puede hacerse lo siguiente:
+*Sustituir:*
+
+bc.  Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido conDireccion
+
+*Por:*
+
+bc.  Wiki {"El representante de este solicitante sólo puede ser de tipo Persona Fisica"}
+     Solicitante personaSolicitante campo=Solicitud.solicitante titulo="Solicitante" requerido representantePersonaFisica
+     Direccion campo=Solicitud.solicitante.domicilio titulo="Domicilio Social" requerido  	
+     Texto campo=Solicitud.solicitante.telefonoFijo titulo="Teléfono" requerido  	
+     Texto campo=Solicitud.solicitante.telefonoMovil titulo="Teléfono Móvil"  	
+     Texto campo=Solicitud.solicitante.fax titulo="Fax"  	
+     Texto campo=Solicitud.solicitante.email titulo="Correo electrónico" requerido duplicar  	
+     Texto campo=Solicitud.solicitante.web titulo="Página web"
+
+* *Persona*: El elemento Persona/PersonaFísica/PersonaJuridica no está soportado en la modificación. Para obtener un código equivalente, puede hacerse lo siguiente:
+*Sustituir:* 
+
+bc. PersonaFisica tecnico titulo = "Persona Física" campo = PersonalProyecto.personaFisica
+
+*Por:*
+
+bc. Grupo titulo = "Técnico Persona Física" {
+       Nip TecNipTipo titulo="NIP" campo=PersonalProyecto.tecnico.nip
+       Texto TecNombre titulo="Nombre" campo=PersonalProyecto.personaFisica.nombre
+       Texto TecPrimerApellido titulo="Primer Apellido" campo=PersonalProyecto.personaFisica.primerApellido
+       Texto TecSegundoApellido titulo="Segundo Apellido" campo=PersonalProyecto.personaFisica.segundoApellido
+       Fecha TecFechaNacimiento titulo="Fecha Nacimiento" campo=PersonalProyecto.personaFisica.fechaNacimiento
+       ...
+    }
+
+* *Direccion:* El elemento Direccion/DireccionCanaria/DireccionNacional /DireccionInternacional no está soportado en la modificación. Para obtener un código equivalente, puede hacerse lo siguiente:
+
+*Sustituir:*
+
+bc. Direccion titulo="La Dirección" campo=Solicitud.direccionTest.direccion
+
+*Por:*
+
+bc. Combo comboDireccion titulo="Tipo" campo=Solicitud.direccionTest.direccion.tipo 
+		Grupo grupoCanaria mostrarSiCombo comboDireccion = "canaria" titulo="Direccion" {
+			Combo comboProvincia campo=Solicitud.direccionTest.direccion.provincia titulo= "Provincia" requerido
+			Combo comboIsla campo=Solicitud.direccionTest.direccion.isla titulo="Isla" dependeDe=comboProvincia requerido
+			Combo cmbMunicipio campo=Solicitud.direccionTest.municipio titulo="Municipio" dependeDe=comboIsla requerido
+			Texto textoLocalidad campo=Solicitud.direccionTest.direccion.localidad titulo="Localidad" requerido
+			Texto textoCodigoPostal campo=Solicitud.direccionTest.direccion.codigoPostal titulo="Codigo Postal" requerido
+			Texto textoNumero campo=Solicitud.direccionTest.direccion.numero titulo="Numero" requerido
+			Texto textoPPO campo=Solicitud.direccionTest.direccion.otros titulo="Puerta/Piso/Otros" requerido
+		}
+		....
+
+

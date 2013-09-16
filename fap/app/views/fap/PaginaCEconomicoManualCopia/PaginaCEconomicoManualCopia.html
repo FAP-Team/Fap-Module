@@ -1,0 +1,82 @@
+%{
+   Integer anios = duracion;
+   def tipoEvaluacion = models.TipoEvaluacion.all().first();
+%}
+
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'PaginaCEconomicoManualCopia', 
+     permiso:'modificacionTrasPresentacionDeSolicitud', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Concepto Económico', 
+     urlBorrar:play.mvc.Router.reverse('PaginaCEconomicoManualCopiaController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaCEconomicoManualCopiaController.crear' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
+     urlEditar:play.mvc.Router.reverse('PaginaCEconomicoManualCopiaController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id])
+}
+
+	#{fap.grupo permiso:'noEditable', titulo:'Información Concepto Nivel Superior'}
+				
+			#{fap.texto campo:'cEconomico.tipo.nombre', titulo:'Nombre' /}	
+			
+			#{if ((cEconomico.tipo.descripcion != null) && (!cEconomico.tipo.descripcion.isEmpty()))}
+				#{fap.areatexto campo:'cEconomico.tipo.descripcion', titulo:'Descripción' /}	
+			#{/if}
+		
+			#{list items:0..anios, as:'i'}
+				%{
+					def paramName="cEconomico.valores[${i}]";
+					def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+					def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+					def anioLabel = "Total Año ${tipoEvaluacion.inicio+i}";
+					def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomico.valores[i].valorSolicitado);
+				%}
+				#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
+			#{/list}
+		
+	#{/fap.grupo}
+	
+	#{form play.mvc.Router.reverse('PaginaCEconomicoManualCopiaController.guardarPCE' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]) , class:"form-horizontal", id:"guardarPCE"}
+
+	#{fap.grupo titulo:'Editar Detalle'}
+					
+	#{fap.texto campo:'cEconomicosManuales.tipo.nombre', id:'Nombre', titulo:'Nombre', requerido:'true' /}		
+	#{fap.areaTexto campo:'cEconomicosManuales.tipo.descripcion', id:'Descripcion', titulo:'Descripción' /}		
+
+	#{list items:0..anios, as:'i'}
+		%{
+			def paramName="cEconomicosManuales.valores[${i}]";
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+			
+			def anioLabel = "Año ${tipoEvaluacion.inicio+i}";
+			def valorSolicitado=newValue(paramName + ".valorSolicitado", anioLabel, cEconomicosManuales.valores[i].valorSolicitado);
+			def permisoEditar = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("modificacionTrasPresentacionDeSolicitud", "editar", tags.TagMapStack.top("idParams"), null);
+		%}
+		#{if permisoEditar}	
+			#{simple.text name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
+		#{/if}
+		#{else}
+			#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
+		#{/else}
+	#{/list}
+	
+	#{/fap.grupo}
+	
+	<div class="well">
+	#{fap.boton id:'bGuardarPCE', titulo:'Guardar' /}
+		
+	#{fap.enlace action:play.mvc.Router.reverse("PaginaCEconomicosCopiaController.index" , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'duracion':duracion]), estilo:'btn btn-link', titulo:'Volver', noRow:true /}
+	</div>
+	
+	#{/form}
+	
+	
+#{/fap.pagina}

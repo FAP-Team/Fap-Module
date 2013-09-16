@@ -55,4 +55,11 @@ public class PeticionModificacion {
 		valor.valoresNuevos.addAll(valoresNuevos);
 		this.valoresBorrados.add(valor);
 	}
+	
+	public boolean isEmpty(){
+		if ((!valoresCreados.isEmpty()) || (!valoresModificado.isEmpty()) || (!valoresBorrados.isEmpty())){
+			return false;
+		}
+		return true;
+	}
 }

@@ -9,6 +9,7 @@
 	def campoTipo = "${campo}.tipo";
 	def campoDescripcion = campo + ".descripcion"
 	def campoUri = campo + ".uri"
+	def campoHash = campo + ".hash"
 	def comboId = field.id + "_tipo";
 	def oldComboId = field.id + "_tipo";
 	def upload = _upload != null? _upload : true
@@ -43,7 +44,12 @@
 
 	#{fap.combo id:comboId, idOld:oldComboId, campo:campoTipo, titulo:"Tipo de documento", itemsModificables:tiposDocumentos,
 	   comboValue:"uri", comboText:"nombre", obj:obj, requerido:requerido, eliminarDuplicados:true, ordenarPorTexto:true/}
-	
+	%{if (download) { %}
+	#{fap.grupo borde:false, permiso:'noEditable'}
+		#{fap.texto id:id+"_uri", campo:campoUri, titulo:"Uri", obj:obj/}
+		#{fap.texto id:id+"_hash", campo:campoHash, titulo:"Hash", obj:obj/}
+	#{/fap.grupo}
+	%{ } %}
 	#{fap.areaTexto id:id+"_descripcion", campo:campoDescripcion, titulo:"Descripción", obj:obj, requerido:requerido /}
 
     #{if upload}

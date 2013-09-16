@@ -260,7 +260,10 @@ p {
 		</tr>
 		</thead>
 
-		#{list items:utils.BaremacionService.ordenarCriterios(evaluacion.criterios), as:'criterio'} 
+%{
+	utils.BaremacionUtils.ordenarCriterios(evaluacion.criterios);
+%}
+		#{list items:evaluacion.criterios, as:'criterio'} 
 		<tr>
 			<th>${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</th>
 			<td>${valorDelCriterio(criterio)}</td>
@@ -304,7 +307,7 @@ p {
 		</tr>
 
 	</table>
-	#{list items:utils.BaremacionService.ordenarCriterios(evaluacion.criterios), as:'criterio'} 
+	#{list items:evaluacion.criterios, as:'criterio'} 
 	<div class="Criterio">
 		<p class="nombre" style="font-size:15px">${criterio.tipo.jerarquia} -
 			${criterio.tipo.nombre}</p>

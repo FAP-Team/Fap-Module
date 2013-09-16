@@ -16,7 +16,10 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import enumerado.fap.gen.EstadoNotificacionEnum;
+import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
+import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService;
 import properties.FapProperties;
+import utils.NotificacionUtils;
 
 // === IMPORT REGION END ===
 
@@ -52,6 +55,14 @@ public class Notificacion extends FapModel {
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaAcceso"), @Column(name = "fechaAccesoTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaAcceso;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaLimite"), @Column(name = "fechaLimiteTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaLimite;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinPlazo"), @Column(name = "fechaFinPlazoTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaFinPlazo;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "notificacion_documentosanotificar")
@@ -189,12 +200,91 @@ public class Notificacion extends FapModel {
 	}
 
 	public void actualizar(Notificacion notificacion) {
-		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
-		if ((this.estado != notificacion.estado) || (this.fechaAcceso != notificacion.fechaAcceso)) {
-			log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
-			log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
+		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
+		if ((this.estado != notificacion.estado) || (this.fechaAcceso != notificacion.fechaAcceso) || (this.fechaFinPlazo != notificacion.fechaFinPlazo)) {
+			//log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
+			//log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
 			this.estado = notificacion.estado;
 			this.fechaAcceso = notificacion.fechaAcceso;
+			this.fechaFinPlazo = notificacion.fechaFinPlazo;
+		}
+
+		//Comprobación de que hay nueva documentación
+		//LO QUE SE ALMACENAN EN BBDD SON LAS URIS
+		//Se suben los expedientes al AED
+
+		//List donde se almacenan los nuevos documentos a subir al AED
+		List<DocumentoNotificacion> documentosNuevos = new ArrayList<DocumentoNotificacion>();
+
+		//DocNotificacion (Requerimiento y/o más docs)
+		for (DocumentoNotificacion doc : notificacion.documentosANotificar) {
+			boolean encontrado = false;
+			for (DocumentoNotificacion docDB : this.documentosANotificar) {
+				if (doc.uri.equalsIgnoreCase(docDB.uri)) {
+					encontrado = true;
+					break;
+				}
+			}
+
+			if (!encontrado) {
+				this.documentosANotificar.add(doc);
+				doc.save();
+				this.save();
+				// Preparar para almacenar en AED
+				documentosNuevos.add(doc);
+			}
+		}
+
+		// Sincronizar los documentos asociados
+		for (DocumentoNotificacion doc : notificacion.documentosAnexos) {
+			boolean encontrado = false;
+			for (DocumentoNotificacion docDB : this.documentosAnexos) {
+				if (doc.uri.equalsIgnoreCase(docDB.uri)) {
+					encontrado = true;
+					break;
+				}
+			}
+
+			if (!encontrado) {
+				this.documentosAnexos.add(doc);
+				doc.save();
+				this.save();
+				// Preparar para almacenar en AED
+				documentosNuevos.add(doc);
+			}
+		}
+
+//		//Doc Acuse de recibo -> Negativo o Positivo
+		String uriAcuseDeRecibo = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ACUSE_RECIBO);
+		if ((uriAcuseDeRecibo != "") && (!uriAcuseDeRecibo.equals(this.documentoAcuseRecibo.uri))){ 
+			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAcuseDeRecibo, this);
+			this.documentoAcuseRecibo.uri = uriAcuseDeRecibo;
+		}
+
+//		//Doc anulacion
+		String uriAnulacion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ANULACION);
+		if ((uriAnulacion != "") && (!uriAnulacion.equals(this.documentoAnulacion.uri))){ 
+			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAnulacion, this);
+			this.documentoAnulacion.uri = uriAnulacion;
+		}
+		
+//		//DocPuestaADisposicion
+		String uriPuestaADisposicion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
+		if ((uriPuestaADisposicion != "") && (!uriPuestaADisposicion.equals(this.documentoPuestaADisposicion.uri))){ 
+			NotificacionUtils.subirDocumentoNotificacionExpediente(uriPuestaADisposicion, this);
+			this.documentoPuestaADisposicion.uri = uriPuestaADisposicion;
+		}
+		
+//		//DocRespondida
+		String uriRespondida = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
+		if ((uriRespondida != "") && (!uriRespondida.equals(this.documentoRespondida.uri))){ 
+			NotificacionUtils.subirDocumentoNotificacionExpediente(uriRespondida, this);
+			this.documentoRespondida.uri = uriRespondida;
+		}
+
+//		//Subida de los nuevos documentos de tipo DocumentoNotificacion (lista docs no es vacía)
+		if ((documentosNuevos != null) && (!documentosNuevos.isEmpty())) {
+			NotificacionUtils.subirDocumentosNotificacionExpediente(documentosNuevos, this);
 		}
 	}
 

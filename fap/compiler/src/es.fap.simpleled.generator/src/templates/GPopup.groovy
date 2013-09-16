@@ -3,6 +3,8 @@ package templates;
 import java.util.List;
 import java.util.Map;
 
+//import messages.Messages;
+
 
 import generator.utils.*;
 import es.fap.simpleled.led.*;
@@ -95,5 +97,31 @@ public class GPopup extends GGroupElement{
 
 	public String url(){
 		return "/${formulario.name}/${popup.name.toLowerCase()}";
+	}
+	
+	public String saveCode(){
+		String saveCode = super.saveCode();
+		String saveSolicitud = "";
+		
+		if ((popup.copia) && (!Controller.create(this).getItvariableDb().contains("dbSolicitud"))){
+			saveSolicitud="""dbSolicitud.save(); """;
+		}
+
+		if (popup.copia){
+			saveCode += """
+						   if (!peticionModificacion.isEmpty()){
+							if ((!Messages.hasErrors())){
+							   Gson gson = new Gson();
+							   String jsonPM = gson.toJson(peticionModificacion);
+							   JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
+							   jsonPeticionModificacion.jsonPeticion = jsonPM;
+							   dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
+							}
+							   dbSolicitud.save();
+							}
+						""";
+						//${saveSolicitud}
+		}
+		return saveCode;
 	}
 }

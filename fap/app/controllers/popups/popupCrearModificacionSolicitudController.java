@@ -1,5 +1,7 @@
 package controllers.popups;
 
+import java.util.Map;
+
 import org.joda.time.DateTime;
 
 import messages.Messages;
@@ -7,6 +9,7 @@ import models.Registro;
 import models.RegistroModificacion;
 import models.SolicitudGenerica;
 import play.mvc.Util;
+import validation.CustomValidation;
 import controllers.gen.popups.popupCrearModificacionSolicitudControllerGen;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 
@@ -38,7 +41,7 @@ public class popupCrearModificacionSolicitudController extends popupCrearModific
 			dbRegistroModificacion.registro =  new Registro();
 			dbRegistroModificacion.save();
 			idRegistroModificacion = dbRegistroModificacion.id;
-			dbSolicitud.activoModificacion=true;
+			dbSolicitud.estadoAntesModificacion = dbSolicitud.estado;
 			dbSolicitud.registroModificacion.add(dbRegistroModificacion);
 			dbSolicitud.estado = EstadosSolicitudEnum.modificacion.name();
 			dbSolicitud.save();
@@ -48,6 +51,31 @@ public class popupCrearModificacionSolicitudController extends popupCrearModific
 			log.info("Acción Crear de página: " + "gen/popups/popupCrearModificacionSolicitud.html" + " , intentada sin éxito (Problemas de Validación)");
 		}
 		return idRegistroModificacion;
+	}
+	
+	@Util
+	public static void popupCrearModificacionSolicitudValidateCopy(String accion, RegistroModificacion dbRegistroModificacion, RegistroModificacion registroModificacion) {
+		CustomValidation.clearValidadas();
+
+		if (secure.checkGrafico("crearModificacionSolicitud", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+			CustomValidation.valid("registroModificacion", registroModificacion);
+			CustomValidation.required("registroModificacion.fechaLimite", registroModificacion.fechaLimite);
+			if (!Messages.hasErrors()){
+				DateTime fechaHora = registroModificacion.fechaLimite;
+				fechaHora = fechaHora.withMinuteOfHour(59);
+				fechaHora = fechaHora.withSecondOfMinute(59);
+				fechaHora = fechaHora.withHourOfDay(23);
+				
+				if (fechaHora.isAfter(registroModificacion.fechaCreacion)){
+					dbRegistroModificacion.fechaLimite = fechaHora;
+				}
+				else{ //Error de asignacion de fechas
+					Messages.error("La fecha límite no puede ser anterior a la fecha de creación");
+					log.error("La fecha límite no puede ser anterior a la fecha de creación");
+				}
+			}
+		}
+
 	}
 	
 }

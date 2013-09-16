@@ -556,6 +556,11 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					play.Logger.info("Se ha registrado de Salida el documento del requerimiento de la solicitud "+dbSolicitud.id);
 					Messages.ok("Se ha registrado el Requerimiento correctamente.");
 					dbSolicitud.verificacion.requerimiento.registro.fasesRegistro.registro = true;
+					
+					//Si todo fue correcto, cambio el estado de la verificacion a firmada y registrada
+					//para diferenciarla de las que aún esperan la firma.
+					dbSolicitud.verificacion.estado=EstadosVerificacionEnum.enRequerimientoFirmadaRegistrada.name();
+					
 					dbSolicitud.save();
 					
 				} catch (Exception e) {

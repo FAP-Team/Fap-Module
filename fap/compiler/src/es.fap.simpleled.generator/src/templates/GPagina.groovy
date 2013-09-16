@@ -142,12 +142,14 @@ public class GPagina extends GGroupElement{
 		}
 		if (pagina.copia){
 			saveCode += """
-						   if (hayModificaciones){
+						   if (!peticionModificacion.isEmpty()){
+							if ((!Messages.hasErrors())){
 							   Gson gson = new Gson();
 							   String jsonPM = gson.toJson(peticionModificacion);
 							   JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
 							   jsonPeticionModificacion.jsonPeticion = jsonPM;
 							   dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
+							}
 						   	   dbSolicitud.save();
 							}
 						""";

@@ -20,24 +20,24 @@
     	waitForElementPresent(//div[text()='NombreFAP'])
     	mouseOver(//div[text()='NombreFAP']/parent::td/parent::tr)
 		mouseDown(//div[text()='NombreFAP']/parent::td/parent::tr)
-		click('ext-gen1055')
+		click(//span[text()="Editar"])
 		waitForElementPresent('tablaDeNombres_nombre')
 		waitForElementPresent('tablaDeNombres_apellido')
 		type('tablaDeNombres_nombre', 'NombreFAPModificado')
     	type('tablaDeNombres_apellido', 'ApellidoFAPModificado')
-    	click(//span[text()='Guardar'])
+    	click(link=Guardar)
     	waitForElementNotPresent('tablaDeNombres_nombre')
     
     	// Editamos los valores como estaban al principio
     	waitForElementPresent(//div[text()='NombreFAPModificado'])
     	mouseOver(//div[text()='NombreFAPModificado']/parent::td/parent::tr)
 		mouseDown(//div[text()='NombreFAPModificado']/parent::td/parent::tr)
-		click('ext-gen1055')
+		click(//span[text()="Editar"])
 		waitForElementPresent('tablaDeNombres_nombre')
 		waitForElementPresent('tablaDeNombres_apellido')
 		type('tablaDeNombres_nombre', 'NombreFAP')
     	type('tablaDeNombres_apellido', 'ApellidoFAP')
-    	click(//span[text()='Guardar'])
+    	click(link=Guardar)
     	waitForElementNotPresent('tablaDeNombres_nombre')
     #{/if}
 	

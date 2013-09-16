@@ -49,6 +49,11 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 	public String getTipoTramite() {
 		return TramiteSolicitudModificacionFap.TIPO_TRAMITE;
 	}
+	
+	@Override
+	public final String getDescripcionJustificante() {
+		return "Justificante de registro de la solicitud de Modificación ";
+	}
 
 	@Override
 	public String getTipoRegistro() {
@@ -190,8 +195,7 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 	 */
 	@Override
 	public void cambiarEstadoSolicitud() {
-		solicitud.estado=EstadosSolicitudEnum.iniciada.name();
-		solicitud.activoModificacion=false;
+		solicitud.estado=solicitud.estadoAntesModificacion;
 		solicitud.save();
 	}
 	
@@ -216,5 +220,5 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 			this.registro.fasesRegistro.save();
 		}
 	}
-
+	
 }

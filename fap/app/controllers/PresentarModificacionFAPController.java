@@ -142,11 +142,17 @@ public class PresentarModificacionFAPController extends PresentarModificacionFAP
 		if (!Messages.hasErrors()) {
 			try {
 				TramiteBase tramite = PresentacionModificacionFapController.invoke("getTramiteObject", idSolicitud);
-				tramite.validarReglasConMensajes();
+				if (PresentacionModificacionFapController.invoke("comprobarPaginasCopiaGuardadas", idSolicitud)){
+					// Valido si hay alguna pagina de copia sin guardar y si da error
+					// No evaluo los documentos;
+					if (!Messages.hasErrors()) {
+						tramite.validarReglasConMensajes();
+					}
 
-				// Si no da fallos => genero el documento
-				if (!Messages.hasErrors()) {
-					tramite.prepararFirmar();
+					// Si no da fallos => genero el documento
+					if (!Messages.hasErrors()) {
+						tramite.prepararFirmar();
+					}
 				}
 			} catch (Throwable e) {
 				play.Logger.error("Hubo un problema al intentar invocar a los métodos de la clase PresentacionModificacionFAPController en prepararFirmar: "+e.getMessage());

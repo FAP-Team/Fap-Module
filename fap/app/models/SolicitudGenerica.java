@@ -16,8 +16,13 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import controllers.fap.SecureController;
+import enumerado.fap.gen.EstadosModificacionEnum;
+import enumerado.fap.gen.EstadosSolicitudEnum;
+import enumerado.fap.gen.TiposParticipacionEnum;
 import play.db.jpa.JPABase;
 import play.mvc.Http.Request;
+import utils.PeticionModificacion;
+import com.google.gson.Gson;
 
 // === IMPORT REGION END ===
 
@@ -113,7 +118,10 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Cesion cesion;
 
+	@Transient
 	public Boolean activoModificacion;
+
+	public String estadoAntesModificacion;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_registromodificacion")
@@ -236,9 +244,6 @@ public class SolicitudGenerica extends FapModel {
 		else
 			cesion.init();
 
-		if (activoModificacion == null)
-			activoModificacion = false;
-
 		if (registroModificacion == null)
 			registroModificacion = new ArrayList<RegistroModificacion>();
 
@@ -280,12 +285,12 @@ public class SolicitudGenerica extends FapModel {
 			if (solicitante.isPersonaFisica()) {
 				compruebaUsuarioParticipacion(solicitante.fisica.nip.valor, solicitante.getNombreCompleto(), solicitante.email);
 				if (solicitante.representado) {
-					compruebaUsuarioParticipacion(solicitante.representante.getNumeroId(), solicitante.representante.getNombreCompleto(), solicitante.representante.email);
+					compruebaUsuarioParticipacionRepresentante(solicitante.representante.getNumeroId(), solicitante.representante.getNombreCompleto(), solicitante.representante.email);
 				}
 			} else {
 				compruebaUsuarioParticipacion(solicitante.juridica.cif, solicitante.getNombreCompleto(), solicitante.email);
 				for (RepresentantePersonaJuridica representante : solicitante.representantes) {
-					compruebaUsuarioParticipacion(representante.getNumeroId(), representante.getNombreCompleto(), representante.email);
+					compruebaUsuarioParticipacionRepresentante(representante.getNumeroId(), representante.getNombreCompleto(), representante.email);
 				}
 
 			}
@@ -311,15 +316,87 @@ public class SolicitudGenerica extends FapModel {
 				agente.rolActivo = "usuario";
 				agente.save();
 				play.Logger.info("Creado el agente %s", user);
-			}
-
+			}	
 			p = new Participacion();
 			p.agente = agente;
 			p.solicitud = this;
-			p.tipo = "solicitante";
+			p.tipo = TiposParticipacionEnum.solicitante.name();
 			p.save();
 			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
+		} //end if p == null
+	}// end método
+
+	private void compruebaUsuarioParticipacionRepresentante(String user, String name, String email) {
+		if (user == null) {
+			play.Logger.info("No se comprueba la participación, porque el usuario es: " + user);
+			return;
 		}
+		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).first();
+		if (p == null) {
+			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
+
+			if (agente == null) {
+				agente = new Agente();
+				agente.username = user;
+				agente.name = name;
+				agente.email = email;
+				agente.roles = new HashSet<String>();
+				agente.roles.add("usuario");
+				agente.rolActivo = "usuario";
+				agente.save();
+				play.Logger.info("Creado el agente %s", user);
+			}
+			if ((this.estado.equals(EstadosSolicitudEnum.modificacion.name())) &&(this.registroModificacion.get(this.registroModificacion.size()-1).enRecuperacion)) {
+				Participacion par = Participacion.find("select participacion from Participacion participacion where participacion.tipo=? and participacion.solicitud.id=?", TiposParticipacionEnum.representante.name(), this.id).first();
+				if (par != null){
+					par.delete(); //si ya hubiera un representante antes de modificar creo que no serviría
+				}
+			}
+			p = new Participacion();
+			p.agente = agente;
+			p.solicitud = this;
+			p.tipo = TiposParticipacionEnum.representante.name();
+			p.save();
+			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
+			
+			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(p.solicitud.id);
+			
+			dbSolicitud.save();
+
+			if (p.solicitud.estado.equals(EstadosSolicitudEnum.modificacion.name())) {
+				if (EstadosModificacionEnum.enCurso.name().equals(dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).estado)) {
+					PeticionModificacion peticionModificacionRepresentante = new PeticionModificacion();
+					peticionModificacionRepresentante.campoPagina = "participacion";
+					Participacion participacion = null;
+					try {
+						participacion = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", p.agente.username, p.solicitud.id).first();
+					} catch (Exception e) {
+						play.Logger.info("La execpción es: " + e);
+					}
+
+					List<String> valoresAntiguosRepresentante = new ArrayList<String>();
+					List<String> valoresNuevosRepresentante = new ArrayList<String>();
+
+					if (participacion.id != null) {
+						peticionModificacionRepresentante.idSimples.put("idParticipacion", participacion.id);
+						valoresNuevosRepresentante.add(participacion.id.toString());
+						peticionModificacionRepresentante.setValorCreado("participacion.id", new ArrayList<String>(), valoresNuevosRepresentante);
+					}
+					if (!dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).enRecuperacion) {
+						if (!peticionModificacionRepresentante.isEmpty()) {
+							if ((!Messages.hasErrors())) {
+								Gson gson = new Gson();
+								String jsonPM = gson.toJson(peticionModificacionRepresentante);
+								JsonPeticionModificacion jsonPeticionModificacion = new JsonPeticionModificacion();
+								jsonPeticionModificacion.jsonPeticion = jsonPM;
+								dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).jsonPeticionesModificacion.add(jsonPeticionModificacion);
+							}
+							dbSolicitud.save();
+						}
+					}
+				} //end if
+			}// end if
+		} //end if p == null
 	}
 
 	public boolean documentoEsObligatorio(String uri) {
@@ -370,6 +447,16 @@ public class SolicitudGenerica extends FapModel {
 		}
 		interesados.addAll(interesadosSoloParticipacion);
 		return interesados;
+	}
+
+	public Boolean getActivoModificacion() {
+		if (registroModificacion == null)
+			return false;
+		if (registroModificacion.isEmpty())
+			return false;
+		if (("enCurso").equals(registroModificacion.get(registroModificacion.size() - 1).estado))
+			return true;
+		return false;
 	}
 
 	// === MANUAL REGION END ===

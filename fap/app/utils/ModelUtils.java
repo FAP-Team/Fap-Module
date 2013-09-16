@@ -35,9 +35,13 @@ import controllers.PresentarModificacionFAPController;
 
 import messages.Messages;
 import models.CodigoRequerimiento;
+import models.Direccion;
 import models.JsonPeticionModificacion;
+import models.Nip;
+import models.Participacion;
 import models.Persona;
 import models.RegistroModificacion;
+import models.RepresentantePersonaFisica;
 import models.SolicitudGenerica;
 import models.TiposCodigoRequerimiento;
 import models.Tramite;
@@ -322,6 +326,9 @@ public class ModelUtils {
 			peticionModificacion = gson.fromJson(json.jsonPeticion, PeticionModificacion.class);
 			if (!peticionModificacion.valoresModificado.isEmpty()){
 				aplicarCambios(idSolicitud, peticionModificacion, consolidarValoresNuevos);
+				//Añadiendo fechaRestauracion y boolean restaurado
+				json.fechaRestauracion = new DateTime().now();
+				json.restaurado = true;
 			}
 		}
 	}
@@ -335,6 +342,9 @@ public class ModelUtils {
 			peticionModificacion = gson.fromJson(json.jsonPeticion, PeticionModificacion.class);
 			if (!peticionModificacion.valoresBorrados.isEmpty()){
 				aplicarRestauracion (idSolicitud, peticionModificacion);
+				//Añadiendo fechaRestauracion y boolean restaurado
+				json.fechaRestauracion = new DateTime().now();
+				json.restaurado = true;
 			}
 		}
 	}
@@ -348,17 +358,21 @@ public class ModelUtils {
 			peticionModificacion = gson.fromJson(json.jsonPeticion, PeticionModificacion.class);
 			if (!peticionModificacion.valoresCreados.isEmpty())
 				aplicarEliminacion (idSolicitud, peticionModificacion);
+				//Añadiendo fechaRestauracion y boolean restaurado
+				json.fechaRestauracion = new DateTime().now();
+				json.restaurado = true;
 		}
 	}
 	
 	public static void aplicarRestauracion (Long idSolicitud, PeticionModificacion peticionModificacion){
 		EntityTransaction tx = JPA.em().getTransaction();
 		String IdSimpleString = peticionModificacion.idSimples.keySet().toString(); //Paso a string los valores
-		Pattern pattern = Pattern.compile("(id[^(Solicitud)][^,\\]]*)");
+		Pattern pattern = Pattern.compile("(id([^,\\]])*)");
 		Matcher matcher = pattern.matcher(IdSimpleString);
 		String idAux = "";
 		Long idRestaurar = null;
-		while(matcher.find()) {
+		Boolean restaurado = false;
+		while ((matcher.find()) &&(!restaurado)) {
 		    idAux = matcher.group(1);
 		    idRestaurar = peticionModificacion.idSimples.get(idAux);
 
@@ -390,37 +404,86 @@ public class ModelUtils {
 					} else {
 						if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 							try { 
-								String entidadAux = "";
+								Type tipoO2M = null;
 								Class claseEntidadBorrar = null;
+								String claseEntidadBorrarString = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
-								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);								
-								Pattern patternClase = Pattern.compile("\\[(\\s*)(.*?)(\\[.*?\\].*?\\,*)");
-								Matcher matcherClase = patternClase.matcher(aux.toString());
-
-								if(matcherClase.find()) {
-									entidadAux = matcherClase.group(2);
-								}
-
-    							claseEntidadBorrar = Class.forName("models."+entidadAux);
-								Method findById = claseEntidadBorrar.getDeclaredMethod("findById", Object.class);
+								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);
+								Field field = extraerField(claseEntidad, campo);
+								Type type = field.getGenericType();  
+							    if (type instanceof ParameterizedType) {  
+							    	ParameterizedType pt = (ParameterizedType) type;  
+							        for (Type t : pt.getActualTypeArguments()) {   
+							           Pattern patternClase = Pattern.compile("class (.*)");
+							           Matcher matcherClase = patternClase.matcher(t.toString());
+							           tipoO2M = t;
+							           if(matcherClase.find()) {
+							        	   claseEntidadBorrarString = matcherClase.group(1).toString();
+							        	   claseEntidadBorrar = Class.forName(claseEntidadBorrarString);
+							           }
+							        }  
+							    }  
+							       
+							    Method findById = claseEntidadBorrar.getDeclaredMethod("findById", Object.class);
+							    Pattern patternModel = Pattern.compile("models\\.(.*)");
+						        Matcher matcherModel = patternModel.matcher(claseEntidadBorrarString.toString());
+							    if (matcherModel.find())
+							    	idRestaurar = peticionModificacion.idSimples.get("id"+matcherModel.group(1));
+								
 								Object restaurar = findById.invoke(claseEntidadBorrar.newInstance(), idRestaurar);
 								aux.add(restaurar);
+								modeloEntidad.save();
+								restaurado = true;
 								break;
 							} catch (Exception e) {
-								play.Logger.error("(1)Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
+								play.Logger.error("Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
 								Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
 								Messages.keep();
 								break;
 							}
 						} else { // VAMOS RECUPERANDO GETTERS
-							try { 
+							try {
+								String claseO2MString = "";
+								Type tipoO2M = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
-								modeloEntidad = (Model) metodo.invoke(modeloEntidad);
-								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+//								//CODIGO o2m
+								if (metodo.invoke(modeloEntidad) instanceof PersistentBag){					
+									Field field = extraerField(claseEntidad, campo);
+									Type type = field.getGenericType();  
+								    if (type instanceof ParameterizedType) {  
+								    	ParameterizedType pt = (ParameterizedType) type;  
+								        for (Type t : pt.getActualTypeArguments()) {   
+								           Pattern patternClase = Pattern.compile("class models\\.(.*)");
+								           Matcher matcherClase = patternClase.matcher(t.toString());
+								           tipoO2M = t;
+								           if(matcherClase.find()) {
+								        	   claseO2MString=matcherClase.group(1).toString();
+								           }
+								        }  
+								    }  
+								    Class claseO2M = Class.forName("models."+claseO2MString);
+									Method findById = claseO2M.getDeclaredMethod("findById", Object.class);
+									Long idEntidad = peticionModificacion.idSimples.get("id"+claseO2MString);
+									modeloEntidad = (Model)findById.invoke(claseO2M.newInstance(), idEntidad); //Model
+									claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+								}else{
+									modeloEntidad = (Model) metodo.invoke(modeloEntidad);
+									
+									//Quitar nombres raros
+							        Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+							        Matcher matcherModelo = patternModelo.matcher(modeloEntidad.getClass().getName());
+							        
+							        if (matcherModelo.find()){
+							        	claseEntidad = Class.forName(matcherModelo.group(1));
+							        }
+							        else{
+							        	claseEntidad = Class.forName(modeloEntidad.getClass().getName());	
+							        }
+								}
 							} catch (Exception e) {
-								play.Logger.error("(2)Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
+								play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
 								Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
 								Messages.keep();
 								break;
@@ -442,7 +505,7 @@ public class ModelUtils {
 	public static void aplicarEliminacion (Long idSolicitud, PeticionModificacion peticionModificacion){
 		EntityTransaction tx = JPA.em().getTransaction();
 		String IdSimpleString = peticionModificacion.idSimples.keySet().toString(); //Paso a string los valores
-		Pattern pattern = Pattern.compile("(id[^(Solicitud)][^,\\]]*)");
+		Pattern pattern = Pattern.compile("(id([^,\\]])*)");
 		Matcher matcher = pattern.matcher(IdSimpleString);
 		String idAux = "";
 		Long idBorrar = null;
@@ -458,6 +521,27 @@ public class ModelUtils {
 			String entidad = "";
 			int camposRecorridos=1;
 			if (idBorrar != null)
+				if (numeroCampos == 1){
+					String campo = peticionModificacion.campoPagina;
+					entidad = tags.StringUtils.firstUpper(campo);
+					Long idEntidad = peticionModificacion.idSimples.get("id"+entidad);
+					try {
+						if ((idEntidad != null) && (entidad.equals("Participacion"))){ //CASO PARTICIPACIÓN
+							claseEntidad = Class.forName("models."+entidad);				
+							Method findById = claseEntidad.getDeclaredMethod("findById", Object.class);
+							modeloEntidad = (Model)findById.invoke(claseEntidad.newInstance(), idEntidad);
+							if (modeloEntidad != null){
+								modeloEntidad.delete();
+							}
+							break;
+						}
+					} catch (Exception e) {
+						play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
+						Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+						Messages.keep();
+						break;
+					}
+				} // FINAL DEL ELEMENTO CON UN SOLO ID SIMPLE
 				for (String campo : peticionModificacion.campoPagina.split("\\.")){ //Para cada elemento 
 					if (camposRecorridos == 1){
 						entidad = tags.StringUtils.firstUpper(campo);
@@ -478,22 +562,28 @@ public class ModelUtils {
 					} else {
 						if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 							try {
-								String entidadAux = "";
 								Class claseEntidadBorrar = null;
+								Type tipoO2M = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
-								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);								
-								Pattern patternClase = Pattern.compile("\\[(\\s*)(.*?)(\\[.*?\\].*?\\,*)");
-								Matcher matcherClase = patternClase.matcher(aux.toString());
-
-								if(matcherClase.find()) {
-									entidadAux = matcherClase.group(2);
-								}
-
-    							claseEntidadBorrar = Class.forName("models."+entidadAux);
+  								PersistentBag aux = (PersistentBag) metodo.invoke(modeloEntidad);								
+								Field field = extraerField(claseEntidad, campo);
+								Type type = field.getGenericType();  
+							    if (type instanceof ParameterizedType) {  
+							    	ParameterizedType pt = (ParameterizedType) type;  
+							        for (Type t : pt.getActualTypeArguments()) {   
+							           Pattern patternClase = Pattern.compile("class (.*)");
+							           Matcher matcherClase = patternClase.matcher(t.toString());
+							           tipoO2M = t;
+							           if(matcherClase.find()) {
+							        	   claseEntidadBorrar = Class.forName(matcherClase.group(1).toString());
+							           }
+							        }  
+							    }  
 								Method findById = claseEntidadBorrar.getDeclaredMethod("findById", Object.class);
 								Object borrar = findById.invoke(claseEntidadBorrar.newInstance(), idBorrar);
 								aux.remove(borrar);
+								modeloEntidad.save();
 								break;
 							} catch (Exception e) {
 								play.Logger.error("Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
@@ -503,10 +593,43 @@ public class ModelUtils {
 							}
 						} else { // VAMOS RECUPERANDO GETTERS
 							try { 
+								String claseO2MString = "";
+								Type tipoO2M = null;
 								entidad = tags.StringUtils.firstUpper(campo);
 								metodo = claseEntidad.getMethod("get"+entidad);
-								modeloEntidad = (Model) metodo.invoke(modeloEntidad);
-								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+								//CODIGO o2m
+								if (metodo.invoke(modeloEntidad) instanceof PersistentBag){									
+									Field field = extraerField(claseEntidad, campo);
+									Type type = field.getGenericType();  
+								    if (type instanceof ParameterizedType) {  
+								    	ParameterizedType pt = (ParameterizedType) type;  
+								        for (Type t : pt.getActualTypeArguments()) {   
+								        	Pattern patternClase = Pattern.compile("class models\\.(.*)");
+								        	Matcher matcherClase = patternClase.matcher(t.toString());
+								        	tipoO2M = t;
+								        	if(matcherClase.find()) {
+								        	   claseO2MString=matcherClase.group(1).toString();
+								        	}
+								        }  
+								    }  
+								    Class claseO2M = Class.forName("models."+claseO2MString);
+									Method findById = claseO2M.getDeclaredMethod("findById", Object.class);
+									Long idEntidad = peticionModificacion.idSimples.get("id"+claseO2MString);
+									modeloEntidad = (Model)findById.invoke(claseO2M.newInstance(), idEntidad); //Model
+									claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+								}else{
+									modeloEntidad = (Model) metodo.invoke(modeloEntidad);
+									//Quitar nombres raros
+							        Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+							        Matcher matcherModelo = patternModelo.matcher(modeloEntidad.getClass().getName());
+							        
+							        if (matcherModelo.find()){
+							        	claseEntidad = Class.forName(matcherModelo.group(1));
+							        }
+							        else{
+							        	claseEntidad = Class.forName(modeloEntidad.getClass().getName());	
+							        }
+								}
 							} catch (Exception e) {
 								play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
 								Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
@@ -516,7 +639,7 @@ public class ModelUtils {
 						}
 					}
 					camposRecorridos++;
-				}//While
+				}//While--- creo que es end for
 			}
 		if (Messages.hasErrors()){ // Si hubo fallos se recupera todo lo anterior
 			tx.rollback();
@@ -536,6 +659,10 @@ public class ModelUtils {
 			Class claseEntidad = null;
 			String entidad = "";
 			int camposRecorridos=1;
+			Direccion direccionModel = null;
+			boolean direccionBoolean = false;
+			Nip nipModel = null;
+			boolean nipBoolean = false;
 			for (String campo : valor.nombreCampo.split("\\.")){
 				if (camposRecorridos == 1){
 					entidad = tags.StringUtils.firstUpper(campo);
@@ -556,12 +683,30 @@ public class ModelUtils {
 				} else {
 					if (camposRecorridos == numeroCampos){ // LLEGAMOS AL SETTER
 						try {
+							if (entidad.equals("Direccion")){
+								direccionBoolean = true;
+							}
+							if (entidad.equals("Nip")){
+								nipBoolean = true;
+							}
 							entidad = tags.StringUtils.firstUpper(campo);
-							Field field = claseEntidad.getField(campo);
+							Field field = extraerField(claseEntidad, campo);
 							if (consolidarValoresNuevos){
-								setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
-							}else
-								setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+								if(direccionBoolean)
+									setValueFromTypeAttributeDireccion(claseEntidad, direccionModel, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
+								else if (nipBoolean)
+									setValueFromTypeAttributeNip(claseEntidad, nipModel, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
+								else
+									setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresNuevos);
+							}else{
+								if(direccionBoolean)
+									setValueFromTypeAttributeDireccion(claseEntidad, direccionModel, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+								else if (nipBoolean)
+									setValueFromTypeAttributeNip(claseEntidad, nipModel, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+								else
+									setValueFromTypeAttribute(claseEntidad, modeloEntidad, modeloEntidadPrimera, entidad, field, valor.valoresAntiguos);
+							}
+							modeloEntidad.save();
 							break;
 						} catch (Exception e) {
 							play.Logger.error("Error recuperando por reflection el campo "+entidad+" - "+e.getMessage());
@@ -572,10 +717,71 @@ public class ModelUtils {
 						}
 					} else { // VAMOS RECUPERANDO GETTERS
 						try { 
+							String claseO2MString = "";
+							Type tipoO2M = null;
 							entidad = tags.StringUtils.firstUpper(campo);
 							metodo = claseEntidad.getMethod("get"+entidad);
-							modeloEntidad = (Model) metodo.invoke(modeloEntidad);
-							claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+							//CODIGO o2m
+							if (metodo.invoke(modeloEntidad) instanceof PersistentBag){
+								Field field = extraerField(claseEntidad, campo);
+								Type type = field.getGenericType();  
+							    if (type instanceof ParameterizedType) {  
+							    	ParameterizedType pt = (ParameterizedType) type;  
+							        for (Type t : pt.getActualTypeArguments()) {   
+							        	Pattern patternClase = Pattern.compile("class models\\.(.*)");
+							        	Matcher matcherClase = patternClase.matcher(t.toString());
+							        	tipoO2M = t;
+							        	if(matcherClase.find()) {
+							        	   claseO2MString=matcherClase.group(1).toString();
+							        	}
+							        }  
+							    }  
+							    
+							    Class claseO2M = Class.forName("models."+claseO2MString);
+								Method findById = claseO2M.getDeclaredMethod("findById", Object.class);
+								Long idEntidad = peticionModificacion.idSimples.get("id"+claseO2MString);
+								modeloEntidad = (Model)findById.invoke(claseO2M.newInstance(), idEntidad); //Model
+								claseEntidad = Class.forName(modeloEntidad.getClass().getName());
+							}else{
+								if (metodo.invoke(modeloEntidad).getClass().getSimpleName().equals("Direccion")){ //Excepcion  
+									direccionModel = (Direccion)metodo.invoke(modeloEntidad);
+									direccionBoolean = true;
+									//Asignacion
+									 Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+								        Matcher matcherModelo = patternModelo.matcher(direccionModel.getClass().getName());
+								        if (matcherModelo.find()){
+								        	claseEntidad = Class.forName(matcherModelo.group(1));
+								        }
+								        else{
+								        	claseEntidad = Class.forName(direccionModel.getClass().getName());	
+								        }
+								}
+								else if (metodo.invoke(modeloEntidad).getClass().getSimpleName().equals("Nip")){ //Excepcion  
+									nipModel = (Nip)metodo.invoke(modeloEntidad);
+									nipBoolean = true;
+									//Asignacion
+									 Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+								        Matcher matcherModelo = patternModelo.matcher(nipModel.getClass().getName());
+								        if (matcherModelo.find()){
+								        	claseEntidad = Class.forName(matcherModelo.group(1));
+								        }
+								        else{
+								        	claseEntidad = Class.forName(nipModel.getClass().getName());	
+								        }
+								}
+								else{
+								//Codigo normal
+									modeloEntidad = (Model) metodo.invoke(modeloEntidad);
+							        Pattern patternModelo = Pattern.compile("(.*?)\\_\\$\\$\\_.*");
+							        Matcher matcherModelo = patternModelo.matcher(modeloEntidad.getClass().getName());
+							        if (matcherModelo.find()){
+							        	claseEntidad = Class.forName(matcherModelo.group(1));
+							        }
+							        else{
+							        	claseEntidad = Class.forName(modeloEntidad.getClass().getName());	
+							        }
+								}
+							}							
 						} catch (Exception e) {
 							play.Logger.error("Error recuperando por reflection la entidad "+entidad+" - "+e.getMessage());
 							Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
@@ -591,25 +797,46 @@ public class ModelUtils {
 			tx.rollback();
 		}
 	}
+
+	private static Field extraerField(Class claseEntidad, String campo) throws NoSuchFieldException {
+		Field field = null;
+		try{
+			field = claseEntidad.getDeclaredField(campo); //Solo si campo propio no vale campo padre
+		} catch (Exception e) {
+			// Caso de que campo sea de padre
+			//play.Logger.info ("La execpción es = " +  e);
+		}
+		
+		while (field == null){ //Campo en padre
+			Class clasePadre = claseEntidad.getSuperclass();
+			try {
+			field = clasePadre.getDeclaredField(campo);
+			} catch (Exception e){
+				// Caso de que campo sea de padre	
+			}
+			if (field == null){
+				claseEntidad = clasePadre;
+			}
+		}
+		return field;
+	}
 	
 
 	public static void finalizarDeshacerModificacion(Long idSolicitud) {
 		if (!Messages.hasErrors()){
 			SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 			RegistroModificacion ultimoRegistro = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1);
-			if (ultimoRegistro.fechaFinalizacion == null){
-				ultimoRegistro.fechaFinalizacion=new DateTime();
+			if (ultimoRegistro.fechaCancelacion == null){
+				ultimoRegistro.fechaCancelacion=new DateTime();
 				ultimoRegistro.save();
 			}
-			solicitud.activoModificacion = false;
-			solicitud.estado = EstadosSolicitudEnum.iniciada.name();
+			solicitud.estado = solicitud.estadoAntesModificacion;
 			solicitud.save();
 		}
 	}
 	
 	public static void setValueFromTypeAttribute(Class claseEntidad, Model modeloEntidad, Model entidadAGuardar, String nombreMetodo, Field field, List<String> values){
 		//Aqui en donde se vuelven a asignar los valores cambiados
-		
 		if (field.getType().equals(String.class)){			
 			String value = "";
 			if (!values.isEmpty())
@@ -737,8 +964,9 @@ public class ModelUtils {
 				metodo = field.getType().getMethod("add", Object.class);
 				for (String str : values){
 					if (!setValueSimple(tipoList, m, metodo, str)){ // Si es de tipo especial (Entidades)
-						Class claseTipo = Class.forName(tipoList.getName());
+						Class claseTipo = Class.forName(tipoList.getName());						
 						Long idEntidad = getIdEntidad(str);
+//						String valor = getValorEntidad(str);
 						if (idEntidad == null){
 							play.Logger.error("Error al intentar setear los valores de una List. Id no encontrado de la entidad en "+str);
 							Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
@@ -746,7 +974,12 @@ public class ModelUtils {
 							return;
 						}
 						Method findById = claseTipo.getDeclaredMethod("findById", Object.class);
+//						Method get = claseTipo.getDeclaredMethod("get", Object.class);
+//						Model modelGet = (Model)get.invoke(claseTipo.newInstance(), idEntidad);
 						Model instancia = (Model)findById.invoke(claseTipo.newInstance(), idEntidad);
+//						Object obj = metodo.invoke(m, modelGet);
+//						setValueSimple(instancia.getClass(), m, metodo, valor);
+						
 						metodo.invoke(m, instancia);
 					}
 				}
@@ -754,6 +987,36 @@ public class ModelUtils {
 			} catch (Exception e) {
 				play.Logger.error("Error al intentar setear los valores de una List "+e.getMessage());
 				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
+			}
+		}else { //entidad nuestra
+			String value = null;
+			if (!values.isEmpty())
+				value = values.get(0);
+			try {
+				Class clase = Class.forName("models."+nombreMetodo);
+				Method metodo = claseEntidad.getMethod("set"+nombreMetodo, clase);
+				
+				//Obtengo el objeto
+				Method metodoObjeto = clase.getDeclaredMethod("findById", Object.class);
+				//Obtener el id de value (value = entidad[numero]
+				Pattern p = Pattern.compile(".*?\\[([0-9]+)\\]");
+			    Matcher m = p.matcher(value);
+				Long id = new Long(0);
+			    if(m.find()){
+			    	id = Long.parseLong(m.group(1));
+				    Object objetoNuevo = metodoObjeto.invoke(clase.newInstance(), id);
+					metodo.invoke(modeloEntidad, objetoNuevo);
+					entidadAGuardar.save();
+					modeloEntidad.save();
+			    } else {
+			    	Messages.error("Se produjo un error recuperando datos para deshacer la modificacion");
+			    }
+
+			} catch (Exception e) {
+				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e);
+				Messages.error("(MIO)Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
 				Messages.keep();
 				return;
 			}
@@ -794,11 +1057,20 @@ public class ModelUtils {
 	}
 	
 	private static Long getIdEntidad(String entidadToString){
-		Pattern p = Pattern.compile(".+?\\[(\\d+)\\]");
+		Pattern p = Pattern.compile(".+?\\[(\\d+)\\](.)+");
 	    Matcher m = p.matcher(entidadToString);
 	    m.matches();
 	    if (m.groupCount() != 0)
 	    	return Long.parseLong(m.group(1));
+	    return null;
+	}
+	
+	private static String getValorEntidad(String entidadToString){
+		Pattern p = Pattern.compile(".+?\\[(\\d+)\\](.)+");
+	    Matcher m = p.matcher(entidadToString);
+	    m.matches();
+	    if (m.groupCount() != 0)
+	    	return m.group(2);
 	    return null;
 	}
 	
@@ -818,5 +1090,42 @@ public class ModelUtils {
 			}
 		}
 		return null;
+	}
+
+
+	public static void setValueFromTypeAttributeDireccion(Class claseEntidad, Direccion modeloEntidad, Model entidadAGuardar, String nombreMetodo, Field field, List<String> values){
+		if (field.getType().equals(String.class)){			
+			String value = "";
+			if (!values.isEmpty())
+				value = values.get(0);
+			try {
+				Method metodo = claseEntidad.getMethod("set"+nombreMetodo, String.class);
+				metodo.invoke(modeloEntidad, value);
+				entidadAGuardar.save();
+			} catch (Exception e) {
+				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
+			} 
+		}
+	}
+	
+	public static void setValueFromTypeAttributeNip(Class claseEntidad, Nip modeloEntidad, Model entidadAGuardar, String nombreMetodo, Field field, List<String> values){
+		if (field.getType().equals(String.class)){			
+			String value = "";
+			if (!values.isEmpty())
+				value = values.get(0);
+			try {
+				Method metodo = claseEntidad.getMethod("set"+nombreMetodo, String.class);
+				metodo.invoke(modeloEntidad, value);
+				entidadAGuardar.save();
+			} catch (Exception e) {
+				play.Logger.error("Error al intentar setear el valor "+value+" a través de la función "+nombreMetodo+" - "+e.getMessage());
+				Messages.error("Hubo un problema al intentar recuperar un determinado valor. La recuperación no ha finalizado con éxito. Consulte los Logs o vuelva a intentar la acción");
+				Messages.keep();
+				return;
+			} 
+		}
 	}
 }

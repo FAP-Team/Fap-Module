@@ -18,12 +18,14 @@ import models.Documento;
 import models.Participacion;
 import models.PeticionCesiones;
 import models.Registro;
+import models.RegistroModificacion;
 
 import models.SolicitudGenerica;
 import models.Verificacion;
 import controllers.SolicitudesController;
 import controllers.fap.AgenteController;
 import enumerado.fap.gen.AccesoAgenteEnum;
+import enumerado.fap.gen.EstadosModificacionEnum;
 import enumerado.fap.gen.EstadosPeticionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import enumerado.fap.gen.ListaCesionesEnum;
@@ -72,6 +74,11 @@ public class SecureFap extends Secure {
 			return modificarSolicitudModificada(_permiso, action, ids, vars);
 		else if ("modificacionTrasPresentacionDeSolicitud".equals(id))
 			return modificacionTrasPresentacionDeSolicitud(_permiso, action, ids, vars);
+		else if ("menuConModificacion".equals(id))
+			return menuConModificacion(_permiso, action, ids, vars);
+		else if ("clasificadaSolicitudModificada".equals(id))
+			return clasificadaSolicitudModificada(_permiso, action, ids, vars);
+
 		
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
@@ -399,27 +406,27 @@ public class SecureFap extends Secure {
 		return null;
 	}
 	
-//	private ResultadoPermiso clasificadaSolicitudModificada(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
-//		//Variables
-//		Agente agente = AgenteController.getAgente();
-//
-//		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
-//
-//		Registro registro=null;
-//		if ((solicitud != null) && (!solicitud.registroModificacion.isEmpty()))
-//			registro = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).registro;
-//		else
-//			return null;
-//
-//		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
-//
-//		if ((accion.toString().equals("leer".toString())) || (registro != null && registro.fasesRegistro != null && registro.fasesRegistro.clasificarAed.toString().equals("true".toString()))) {
-//			return new ResultadoPermiso(Accion.All);
-//
-//		}
-//
-//		return null;
-//	}
+	private ResultadoPermiso clasificadaSolicitudModificada(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+
+		Registro registro=null;
+		if ((solicitud != null) && (!solicitud.registroModificacion.isEmpty()))
+			registro = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).registro;
+		else
+			return null;
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if ((accion.toString().equals("leer".toString())) || (registro != null && registro.fasesRegistro != null && registro.fasesRegistro.clasificarAed.toString().equals("true".toString()))) {
+			return new ResultadoPermiso(Accion.All);
+
+		}
+
+		return null;
+	}
 
 	private ResultadoPermiso clasificadaSolicitudModificadaAccion(Map<String, Long> ids, Map<String, Object> vars) {
 		String grafico = "visible";
@@ -783,7 +790,7 @@ public class SecureFap extends Secure {
 
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 
-		if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor")) {
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "revisor")) {
 			return new ResultadoPermiso(Accion.All);
 
 		}
@@ -797,8 +804,15 @@ public class SecureFap extends Secure {
 			return new ResultadoPermiso(Grafico.Visible);
 
 		}
+		
+		
+		if (agente.rolActivo.toString().equals("usuario".toString()) && solicitud != null && solicitud.estado.toString().equals("modificacion".toString()) && solicitud != null && solicitud.activoModificacion.toString().equals("true".toString()) && registro != null && registro.fasesRegistro.borrador.toString().equals("false".toString()) && solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).getEstado().equals("Expirada".toString())) {
+			if (!accion.equals("crear"))
+				return new ResultadoPermiso(Grafico.Visible);
 
-		if (agente.rolActivo.toString().equals("usuario".toString()) && solicitud != null && solicitud.estado.toString().equals("modificacion".toString()) && solicitud != null && solicitud.activoModificacion.toString().equals("true".toString()) && registro != null && registro.fasesRegistro.borrador.toString().equals("false".toString())) {
+		}
+
+		if (agente.rolActivo.toString().equals("usuario".toString()) && solicitud != null && solicitud.estado.toString().equals("modificacion".toString()) && solicitud != null && solicitud.activoModificacion.toString().equals("true".toString()) && registro != null && registro.fasesRegistro.borrador.toString().equals("false".toString()) && !solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).getEstado().equals("Expirada".toString())) {
 			return new ResultadoPermiso(Accion.All);
 
 		}
@@ -814,9 +828,11 @@ public class SecureFap extends Secure {
 		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
 
 		Registro registro=null;
-		if ((solicitud != null) && (!solicitud.registroModificacion.isEmpty()))
+		RegistroModificacion registroModificacion= null;
+		if ((solicitud != null) && (!solicitud.registroModificacion.isEmpty())){
 			registro = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1).registro;
-		else
+			registroModificacion = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1);
+		}else
 			return null;
 
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
@@ -831,7 +847,8 @@ public class SecureFap extends Secure {
 		if (agente.rolActivo.toString().equals("usuario".toString()) && solicitud != null && solicitud.estado.toString().equals("modificacion".toString()) && solicitud != null && solicitud.activoModificacion.toString().equals("true".toString()) && registro != null && registro.fasesRegistro.borrador.toString().equals("true".toString()))
 			return new ResultadoPermiso(Accion.Leer);
 
-		if (agente.rolActivo.toString().equals("usuario".toString()) && solicitud != null && solicitud.estado.toString().equals("modificacion".toString()) && solicitud != null && solicitud.activoModificacion.toString().equals("true".toString()) && registro != null && registro.fasesRegistro.borrador.toString().equals("false".toString()))
+		if (agente.rolActivo.toString().equals("usuario".toString()) && solicitud != null && solicitud.estado.toString().equals("modificacion".toString()) && solicitud != null && solicitud.activoModificacion.toString().equals("true".toString()) && registro != null && registro.fasesRegistro.borrador.toString().equals("false".toString()) 
+				&& (registroModificacion.estado.equals(EstadosModificacionEnum.enCurso.name())))
 			return new ResultadoPermiso(Accion.Editar);
 
 		return null;
@@ -879,4 +896,34 @@ public class SecureFap extends Secure {
 			return PeticionCesiones.findById(ids.get("idPeticionCesiones"));
 		return null;
 	}
+	
+	
+	private ResultadoPermiso menuConModificacion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+		
+		RegistroModificacion registroModificacion = null;
+		if ((solicitud != null) && (!solicitud.registroModificacion.isEmpty()))
+			registroModificacion = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1);
+		else
+			return null;
+		
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "revisor", "gestor") && (solicitud.estado.toString().equals("modificacion".toString())) 
+			&& (registroModificacion != null) && (registroModificacion.estado.equals(EstadosModificacionEnum.enCurso.name()))) {
+			return new ResultadoPermiso(Accion.All);
+
+		}
+
+		if (agente.rolActivo.toString().equals("usuario".toString()) && (solicitud.estado.toString().equals("modificacion".toString()))
+				&& (registroModificacion != null) && (registroModificacion.estado.equals(EstadosModificacionEnum.enCurso.name()))) {
+			return new ResultadoPermiso(Accion.All);
+
+		} 
+		return new ResultadoPermiso(Accion.Denegar);
+	}
+	
 }

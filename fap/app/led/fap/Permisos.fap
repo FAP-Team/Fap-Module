@@ -254,13 +254,22 @@ Permiso incorporarDocumentos {
 		all
 }
 
-Permiso noEditable{
+Permiso noEditable {
 	return visible
 }
 
 Permiso noVisibleUsuario{
 	when
 		usuario is visible
+	return denegar
+	else return all
+}
+
+Permiso noVisibleUsuarioNotificacion{
+	vars Notificacion notificacion
+	when
+		agente.rolActivo = "usuario" and
+		notificacion?.estado in ("puestaADisposicion", "anulada")
 	return denegar
 	else return all
 }
@@ -517,7 +526,7 @@ Permiso verificarDocumentos{
 		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
 		(
 			(_accion in (leer, editar))
-			and (solicitud?.estado in ("enVerificacion", "excluido"))
+			and (solicitud?.estado in ("enVerificacion", "excluido", "modificacion"))
 			and verificacion?.estado != null
 			and verificacion?.estado in ("enVerificacion", "obtenerNoProcede")
 		)	
@@ -690,7 +699,7 @@ Permiso anularVerificacion{
 	when
 		(_accion = editar) and 
 		(agente.rolActivo in ("administrador", "gestor")) and
-		(solicitud?.estado = "enVerificacion") and
+		((solicitud?.estado = "enVerificacion") or (solicitud?.estado = "modificacion")) and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.registro != "true") and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true") and
 		(verificacion?.estado != null and verificacion?.estado in ("enVerificacion", "verificandoTipos", "obtenerNoProcede", "enVerificacionNuevosDoc", "enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada"))
@@ -956,7 +965,7 @@ Permiso requerimiento {
 	vars
 		Verificacion verificacion
 	when
-		verificacion?.estado in ("enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada")
+		verificacion?.estado in ("enRequerido", "enRequerimiento", "enRequerimientoFirmaSolicitada", "enRequerimientoFirmadaRegistrada")
 	return
 		all
 }
@@ -1114,7 +1123,7 @@ Permiso clasificadaSolicitudModificada{
 	 	SolicitudGenerica solicitud
 	 	RegistroModificacion registroModificacion
 	when
-		solicitud?.estado = "iniciada" and
+		solicitud?.estado != "modificacion" and
 		(solicitud?.registro?.fasesRegistro?.clasificarAed="true")
 		  
 	return
@@ -1561,8 +1570,8 @@ Permiso habilitarModificacionSolicitud{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "gestor") and
-		solicitud.estado != "borrador"
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		solicitud?.estado != "borrador"
 	return
 	    all
 }
@@ -1571,10 +1580,38 @@ Permiso crearModificacionSolicitud{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "gestor") and
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
 		solicitud.activoModificacion = "false"
 	return
 	    all
+}
+
+Permiso editarModificacionSolicitud{
+	vars
+		RegistroModificacion registroModificacion
+	when
+		_accion = editar and
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+	    registroModificacion.estado in ("enCurso", "expirada")
+	return
+		all
+}
+
+Permiso filaTablaModificaciones {
+	vars
+		RegistroModificacion registroModificacion
+	when
+		_accion = leer and
+		agente.rolActivo in ("administrador", "gestor", "revisor") and
+	    registroModificacion.estado in ("enCurso", "expirada")
+	return
+		all
+	when
+		_accion = leer and
+		agente.rolActivo in ("administrador", "gestor", "revisor")
+	return
+		leer
+		
 }
 
 // Sobreescrito
@@ -1583,7 +1620,7 @@ Permiso modificacionTrasPresentacionDeSolicitud {
 		SolicitudGenerica solicitud
 		Registro registro
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "revisor")
 	return
 		all
 	when
@@ -1611,11 +1648,6 @@ Permiso presentarModificacionTrasPresentacionDeSolicitud {
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo != "usuario" and
-		solicitud?.estado = "modificacion"
-	return
-		visible
-	when
  		agente.rolActivo = "usuario" and
  		solicitud?.estado != "borrador" and
  		solicitud?.activoModificacion = "false"
@@ -1626,6 +1658,11 @@ Permiso presentarModificacionTrasPresentacionDeSolicitud {
  		solicitud?.estado = "modificacion" and
  		solicitud?.activoModificacion = "true"
 	return all
+	when
+		agente.rolActivo != "usuario" and
+		solicitud?.estado = "modificacion"
+	return
+		all
 }
 
 Permiso obtenerNoProcede{
@@ -1653,4 +1690,22 @@ Permiso adminGestorJefeServicio {
 		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
 	return all
 
+}
+
+//Permiso sobreescrito
+Permiso menuConModificacion {
+	vars
+		SolicitudGenerica solicitud
+	when
+		agente.rolActivo in ("administrador", "revisor", "gestor") and
+		(solicitud.estado = "modificacion")
+	return
+		all
+	when
+		agente.rolActivo = "usuario"
+		and
+		(solicitud.estado = "modificacion")
+		// Comprobar que está enCurso
+	return
+		all
 }

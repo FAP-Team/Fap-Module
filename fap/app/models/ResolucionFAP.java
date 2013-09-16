@@ -70,8 +70,10 @@ public class ResolucionFAP extends FapModel {
 
 	public String tituloInterno;
 
+	@Column(length = 1000)
 	public String sintesis;
 
+	@Column(length = 1000)
 	public String observaciones;
 
 	public Integer folio_inicio;

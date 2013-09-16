@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import play.mvc.Util;
+import utils.ModelUtils;
 import validation.CustomValidation;
 import messages.Messages;
 import models.CEconomico;
@@ -150,6 +151,10 @@ public class PaginaCEconomicoManualController extends PaginaCEconomicoManualCont
 			PaginaCEconomicoManualController.guardarPCEValidateRules(dbCEconomicosManuales, cEconomicosManuales);
 		}
 		if (!Messages.hasErrors()) {
+			SolicitudGenerica solicitud = PaginaCEconomicosController.getSolicitudGenerica(idSolicitud);
+			Object miSavePages = ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "getSavePages");
+			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "setPaginaPCEconomicos", false);
+			ModelUtils.invokeMethodClass(miSavePages.getClass(), miSavePages, "save");
 			dbCEconomico.save();
 			dbCEconomicosManuales.save();
 			idCEconomicosManuales = dbCEconomicosManuales.id;

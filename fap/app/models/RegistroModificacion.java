@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+import enumerado.fap.gen.EstadosModificacionEnum;
 
 // === IMPORT REGION END ===
 
@@ -30,9 +31,13 @@ public class RegistroModificacion extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaLimite;
 
-	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinalizacion"), @Column(name = "fechaFinalizacionTZ") })
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaCancelacion"), @Column(name = "fechaCancelacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
-	public DateTime fechaFinalizacion;
+	public DateTime fechaCancelacion;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRegistro"), @Column(name = "fechaRegistroTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaRegistro;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
@@ -44,6 +49,11 @@ public class RegistroModificacion extends FapModel {
 	@Transient
 	public String estado;
 
+	public Boolean enRecuperacion;
+
+	@Transient
+	public String estadoValue;
+
 	public RegistroModificacion() {
 		init();
 	}
@@ -53,20 +63,27 @@ public class RegistroModificacion extends FapModel {
 		if (jsonPeticionesModificacion == null)
 			jsonPeticionesModificacion = new ArrayList<JsonPeticionModificacion>();
 
+		if (enRecuperacion == null)
+			enRecuperacion = false;
+
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
 
 	public String getEstado() {
-		if (this.registro.fasesRegistro.registro)
-			return "Finalizada"; // Registrada correctamente (Presentada en tiempo y forma)
-		else if ((this.fechaFinalizacion != null) && (this.fechaFinalizacion.isAfterNow()))
-			return "Expirada"; // Restaurada automáticamente tras pasarse la fecha límite y no ser presentada en tiempo y forma
-		else if ((this.fechaFinalizacion != null) && (this.fechaFinalizacion.isBefore(this.fechaLimite)))
-			return "Abortada"; // Restaurada manualmente por un gestor o administrador antes de acabar la fecha límite
+		if ((this.registro.fasesRegistro.registro) && (this.registro.fasesRegistro.clasificarAed))
+			return EstadosModificacionEnum.registrada.name(); // Registrada correctamente (Presentada en tiempo y forma)
+		else if ((this.fechaCancelacion == null) && (this.fechaRegistro == null) && (this.fechaLimite != null) && (this.fechaLimite.isBeforeNow()))
+			return EstadosModificacionEnum.expirada.name(); // Restaurada automáticamente tras pasarse la fecha límite y no ser presentada en tiempo y forma
+		else if ((this.fechaCancelacion != null)) // && (this.fechaCancelacion.isBefore(this.fechaLimite)))
+			return EstadosModificacionEnum.cancelada.name(); // Restaurada manualmente por un gestor o administrador antes de acabar la fecha límite
 		else
-			return "En Curso"; // Modificable actualmente
+			return EstadosModificacionEnum.enCurso.name(); // Modificable actualmente
+	}
+
+	public String getEstadoValue() {
+		return EstadosModificacionEnum.valueOf(getEstado()).value();
 	}
 
 	// === MANUAL REGION END ===

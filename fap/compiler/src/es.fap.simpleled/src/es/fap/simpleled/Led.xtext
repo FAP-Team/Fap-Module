@@ -230,7 +230,7 @@ Elemento:
 	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones | RadioBooleano | BarraDeslizante |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
-	SubirArchivo | EditarArchivo | FirmaSimple |
+	SubirArchivo | EditarArchivo | FirmaSimple | FirmaMultiplesDocumentos |
 	EntidadAutomatica | Accion | Codigo | CCC | VisorFactura | SubirFactura | EditarFactura | TextoOculto |
 	GrupoRadioButtons
 ;
@@ -500,8 +500,30 @@ FirmaSimple:
 	)?
 ;
 
+FirmaMultiplesDocumentos:
+	elemento="FirmaMultiplesDocumentos" (name=ID)
+	(
+		("titulo" "=" titulo=STRING)
+		& (listaDocumentos=FirmaListaDocumentos)
+		& (firmantes=FirmaFirmantes)
+		& (registroFirma=FirmaRegistro)?
+		& (calcularFirmantes=CalcularFirmantes)
+		& (setToTrue=FirmaSetTrue)?
+	)
+	(
+		"setCamposTo" '{'
+			setCampos+=FirmaSetCampo
+			(',' setCampos+=FirmaSetCampo)*
+		'}'
+	)?
+;
+
 FirmaDocumento:
 	"documento" "=" campo=Campo	
+;
+
+FirmaListaDocumentos:
+	"listaDocumentos" "=" campo=Campo
 ;
 
 FirmaRegistro:

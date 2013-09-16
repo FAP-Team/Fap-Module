@@ -71,7 +71,22 @@ public class Documento extends FapModel {
 	@ValueFromTable("estadoNotificacion")
 	public String estadoDocumento;
 
+	public Boolean firmado;
+
+	@Transient
+	public String firmadoVisible;
+
+	public Documento() {
+		init();
+	}
+
 	public void init() {
+
+		if (clasificado == null)
+			clasificado = false;
+
+		if (firmado == null)
+			firmado = false;
 
 		postInit();
 	}
@@ -189,6 +204,20 @@ public class Documento extends FapModel {
 			return this.descripcion;
 		}
 		return descripcionDevolver;
+	}
+
+	public String getFirmadoVisible() {
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		try {
+			String firma = gestorDocumentalService.getDocumentoFirmaByUri(uri);
+			if (firma != null && !firma.isEmpty()) {
+				play.Logger.info("El documento " + descripcionVisible + " tiene la firma (" + firma + ")");
+				return "Sí";
+			}
+		} catch (Exception e) {
+			play.Logger.error("Error al obtener el documento " + descripcionVisible + " firmado");
+		}
+		return "No";
 	}
 
 	/*

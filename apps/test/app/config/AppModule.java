@@ -6,7 +6,6 @@ import services.GestorDocumentalService;
 import services.RegistroService;
 import services.aed.AedGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemFirmaServiceImpl;
-import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.platino.PlatinoFirmaServiceImpl;
 
@@ -33,8 +32,7 @@ public class AppModule extends FapModule {
 
     @Override
     protected void gestorDocumental() {
-       bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
-       //bindLazySingletonOnDev(GestorDocumentalService.class, AedGestorDocumentalServiceImpl.class);
+       bindLazySingletonOnDev(GestorDocumentalService.class, AedGestorDocumentalServiceImpl.class);
     }
 
 //    @Override

@@ -23,6 +23,7 @@ import play.mvc.Util;
 
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import services.async.GestorDocumentalServiceAsync;
 import utils.AedUtils;
 import utils.BinaryResponse;
 
@@ -35,7 +36,7 @@ import models.*;
 public class DescargasAedController extends GenericController {
 	
 	@Inject
-	static GestorDocumentalService aedService;
+	static GestorDocumentalServiceAsync aedServiceAsync;
 	
 	/**
 	 * Descarga un documento del archivo electrónico
@@ -50,12 +51,12 @@ public class DescargasAedController extends GenericController {
 			try {
 			    Documento documento = Documento.findByUri(uri);
 				if(documento == null) {
-					bresp = aedService.getDocumentoByUri(uri);
+					bresp = await(aedServiceAsync.getDocumentoByUri(uri));
 					if(bresp == null) 
 						notFound();
 				}
 				else {
-					bresp = aedService.getDocumento(documento);
+					bresp = await(aedServiceAsync.getDocumento(documento));
 				}
 				
 	            response.setHeader("Content-Disposition", "inline; filename=\"" + bresp.nombre + "\"");
@@ -87,17 +88,17 @@ public class DescargasAedController extends GenericController {
 			try {
 			    Documento documento = Documento.findByUri(uri);
 				if(documento == null) {
-					bresp = aedService.getDocumentoConInformeDeFirmaByUri(uri);
+					bresp = await(aedServiceAsync.getDocumentoConInformeDeFirmaByUri(uri));
 					if(bresp == null){
-						bresp = aedService.getDocumentoByUri(uri);
+						bresp = await(aedServiceAsync.getDocumentoByUri(uri));
 						if(bresp == null)
 							notFound();
 					}	
 				}
 				else {
-					bresp = aedService.getDocumentoConInformeDeFirma(documento);
+					bresp = await(aedServiceAsync.getDocumentoConInformeDeFirma(documento));
 					if(bresp == null){
-						bresp = aedService.getDocumento(documento);
+						bresp = await(aedServiceAsync.getDocumento(documento));
 						if(bresp == null)
 							notFound();
 					}

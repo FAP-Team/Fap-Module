@@ -24,6 +24,12 @@ import services.filesystem.FileSystemRegistroLibroResolucionesServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.filesystem.FileSystemTercerosServiceImpl;
 import services.filesystem.FilesystemTicketingServiceImpl;
+import services.async.*;
+import services.async.portafirma.PortafirmaServiceAsyncImpl;
+import services.async.publicar.PublicarServiceAsyncImpl;
+import services.async.ticketing.TicketingServiceAsyncImpl;
+import services.async.aed.*;
+import services.async.filesystem.FileSystemPublicarServiceAsyncImpl;
 import services.notificacion.NotificacionServiceImpl;
 import services.openofice.OpenOfficeConversor;
 import services.platino.PlatinoTercerosServiceImpl;
@@ -37,19 +43,27 @@ public class FapModule extends PlayAbstractModule {
 		secure();
 		propertyPlaceholder();
 		gestorDocumental();
+		gestorDocumentalAsync();
 		firma();
 		registro();
 		notificacion();
 		portafirma();
+		portafirmaAsync();
 		publicar();
+		publicarAsync();
 		registroLibroResoluciones();
 		terceros();
 		ticketing();
+		ticketingAsync();
 //		conversor();
 	}
 	
 	protected void portafirma() {
 		bindLazySingletonOnDev(PortafirmaFapService.class, FileSystemPortafirmaImpl.class);
+	}
+	
+	protected void portafirmaAsync() {
+		bindLazySingletonOnDev(PortafirmaServiceAsync.class, PortafirmaServiceAsyncImpl.class);
 	}
 	
 //	protected void conversor() {
@@ -67,6 +81,10 @@ public class FapModule extends PlayAbstractModule {
 	protected void gestorDocumental() {
 		bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
 	}
+	
+	protected void gestorDocumentalAsync() {
+		bindLazySingletonOnDev(GestorDocumentalServiceAsync.class, GestorDocumentalServiceAsyncImpl.class);
+	}
 
 	protected void firma() {
 		bindLazySingletonOnDev(FirmaService.class, FileSystemFirmaServiceImpl.class);
@@ -80,12 +98,20 @@ public class FapModule extends PlayAbstractModule {
 		bindLazySingletonOnDev(PublicarService.class, FileSystemPublicarServiceImpl.class);
 	}
 	
+	protected void publicarAsync() {
+		bindLazySingletonOnDev(PublicarServiceAsync.class, PublicarServiceAsyncImpl.class);
+	}
+	
 	protected void registroLibroResoluciones() {
 		bindLazySingletonOnDev(RegistroLibroResolucionesService.class, FileSystemRegistroLibroResolucionesServiceImpl.class);
 	}
 	
 	protected void ticketing () {
 		bindLazySingletonOnDev(TicketingService.class, FilesystemTicketingServiceImpl.class);
+	}
+	
+	protected void ticketingAsync () {
+		bindLazySingletonOnDev(TicketingServiceAsync.class, TicketingServiceAsyncImpl.class);
 	}
 	
 	protected void secure() {

@@ -29,6 +29,7 @@ import properties.FapProperties;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.aed.ProcedimientosService;
+import services.async.GestorDocumentalServiceAsync;
 import utils.Fixtures;
 
 import utils.JsonUtils;
@@ -42,12 +43,12 @@ import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
 public class AedController extends AedControllerGen {
 
     @Inject
-    static GestorDocumentalService gestorDocumentalService;
+    static GestorDocumentalServiceAsync gestorDocumentalServiceAsync;
 
     public static void configurar() {
         if (configurarHasAccess()) {
             try {
-                gestorDocumentalService.configure();
+                await(gestorDocumentalServiceAsync.configure());
                 Messages.ok("Se configuró correctamente el gestor documental");
             } catch (GestorDocumentalServiceException e) {
                 play.Logger.error(e, "Error configurando el gestor documental");
@@ -70,11 +71,11 @@ public class AedController extends AedControllerGen {
         if (actualizarTramitesHasAccess()) {
             try {
             	deleteTramites();
-                List<Tramite> tramites = gestorDocumentalService.getTramites();
+                List<Tramite> tramites = await(gestorDocumentalServiceAsync.getTramites());
                 saveTramites(tramites);
                 ModelUtils.actualizarTramitesVerificables(tramites);
                 updateTableKeyValueTiposDocumentos();
-                gestorDocumentalService.actualizarCodigosExclusion();
+                await(gestorDocumentalServiceAsync.actualizarCodigosExclusion());
                 Messages.ok("Recuperados " + tramites.size() + " tramites");
             } catch (GestorDocumentalServiceException e) {
                 Messages.error("Error al actualizar los trámites", e);

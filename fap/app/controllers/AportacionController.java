@@ -21,6 +21,7 @@ import properties.FapProperties;
 import reports.Report;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import services.async.GestorDocumentalServiceAsync;
 import tramitacion.TramiteBase;
 import utils.StringUtils;
 import controllers.fap.AportacionFapController;
@@ -32,7 +33,7 @@ public class AportacionController extends AportacionControllerGen {
 
 	
 	@Inject
-	static GestorDocumentalService gestorDocumentalService;
+	static GestorDocumentalServiceAsync gestorDocumentalServiceAsync;
 
 	public static void index(String accion, Long idSolicitud){
 		if (accion == null)
@@ -193,7 +194,7 @@ public class AportacionController extends AportacionControllerGen {
             documentos.addAll(aportacion.documentos);
             boolean todosClasificados = true;
             try {
-                gestorDocumentalService.clasificarDocumentos(solicitud, documentos);
+                await(gestorDocumentalServiceAsync.clasificarDocumentos(solicitud, documentos));
             } catch (Exception e) {
                 todosClasificados = false;
             }

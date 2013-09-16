@@ -9,6 +9,7 @@ import java.util.List;
 
 import play.mvc.Util;
 import services.GestorDocumentalService;
+import services.async.GestorDocumentalServiceAsync;
 import utils.BinaryResponse;
 import messages.Messages;
 import models.PeticionCesiones;
@@ -18,10 +19,10 @@ import controllers.gen.LeerCesionControllerGen;
 public class LeerCesionController extends LeerCesionControllerGen {
 
 	public static String descargarFichero(String uri){
-		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		GestorDocumentalServiceAsync gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalServiceAsync.class);
 	    try{
 	    	String contenido = "";
-	    	BinaryResponse brp = gestorDocumentalService.getDocumentoByUri(uri);
+	    	BinaryResponse brp = await(gestorDocumentalService.getDocumentoByUri(uri));
 	    	File fich = null;
 	    	if (brp.nombre.endsWith(".txt"))
 	    		fich = File.createTempFile("tmp", ".txt");

@@ -45,6 +45,7 @@ import services.FirmaService;
 import services.FirmaServiceException;
 import services.TercerosService;
 import services.TercerosServiceException;
+import services.async.TicketingServiceAsync;
 import services.ticketing.TicketingService;
 import services.ticketing.TicketingServiceException;
 import ugot.recaptcha.Recaptcha;
@@ -473,10 +474,10 @@ public class SecureController extends GenericController{
     		loginFap();
     	}
     
-		TicketingService ticketingService = InjectorConfig.getInjector().getInstance(TicketingService.class);
+		TicketingServiceAsync ticketingService = InjectorConfig.getInjector().getInstance(TicketingServiceAsync.class);
 		HttpResponse wsResponse = null;
 		try {
-			wsResponse = ticketingService.hazPeticion(asunto, ticket);
+			wsResponse = await(ticketingService.hazPeticion(asunto, ticket));
 		} catch (TicketingServiceException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

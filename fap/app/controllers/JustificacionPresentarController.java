@@ -18,6 +18,7 @@ import properties.FapProperties;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.RegistroService;
+import services.async.GestorDocumentalServiceAsync;
 import tramitacion.TramiteBase;
 import controllers.fap.AgenteController;
 import controllers.fap.JustificacionFapController;
@@ -33,7 +34,7 @@ public class JustificacionPresentarController extends JustificacionPresentarCont
     static RegistroService registroService;
 
     @Inject
-    static GestorDocumentalService gestorDocumentalService;
+    static GestorDocumentalServiceAsync gestorDocumentalServiceAsync;
 
     public static void index(String accion, Long idSolicitud) {
         SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);

@@ -33,6 +33,7 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.RegistroServiceException;
 import services.RegistroService;
+import services.async.GestorDocumentalServiceAsync;
 import sun.util.logging.resources.logging;
 import tramitacion.TramiteBase;
 import validation.CustomValidation;
@@ -52,7 +53,7 @@ public class AportacionPresentarController extends AportacionPresentarController
     static RegistroService registroService;
 
     @Inject
-    static GestorDocumentalService gestorDocumentalService;
+    static GestorDocumentalServiceAsync gestorDocumentalServiceAsync;
 
     public static void index(String accion, Long idSolicitud) {
         SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);

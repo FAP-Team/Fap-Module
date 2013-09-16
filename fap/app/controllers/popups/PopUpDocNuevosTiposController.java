@@ -12,6 +12,7 @@ import models.Documento;
 import models.SolicitudGenerica;
 import services.GestorDocumentalService;
 import services.aed.ProcedimientosService;
+import services.async.GestorDocumentalServiceAsync;
 import services.filesystem.TipoDocumentoGestorDocumental;
 import tags.ComboItem;
 import config.InjectorConfig;
@@ -24,8 +25,8 @@ public class PopUpDocNuevosTiposController extends PopUpDocNuevosTiposController
 		List<ComboItem> result = new ArrayList<ComboItem>();
 		Map <String, Long> parametrosUrl = (Map<String, Long>)tags.TagMapStack.top("idParams");
 		SolicitudGenerica solicitud = getSolicitudGenerica(parametrosUrl.get("idSolicitud"));
-		GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		List <TipoDocumentoGestorDocumental> tiposDocumentos = gestorDocumental.getListTiposDocumentosAportadosCiudadano (solicitud.verificacion.tramiteNombre);
+		GestorDocumentalServiceAsync gestorDocumentalAsync = InjectorConfig.getInjector().getInstance(GestorDocumentalServiceAsync.class);
+		List <TipoDocumentoGestorDocumental> tiposDocumentos = await(gestorDocumentalAsync.getListTiposDocumentosAportadosCiudadano (solicitud.verificacion.tramiteNombre));
 		for (TipoDocumentoGestorDocumental tDoc: tiposDocumentos){
 			result.add(new ComboItem(tDoc.getUri(), tDoc.getDescripcion()));
 		}

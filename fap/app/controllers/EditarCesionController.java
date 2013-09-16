@@ -29,6 +29,7 @@ import play.mvc.Util;
 import properties.FapProperties;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import services.async.GestorDocumentalServiceAsync;
 import tags.ComboItem;
 import tramitacion.TramiteBase;
 import utils.BinaryResponse;
@@ -45,7 +46,7 @@ import enumerado.fap.gen.ListaEstadosEnum;
 
 public class EditarCesionController extends EditarCesionControllerGen {
 	//Inyeccion manual	
-	static GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+	static GestorDocumentalServiceAsync gestorDocumentalServiceAsync = InjectorConfig.getInjector().getInstance(GestorDocumentalServiceAsync.class);
 	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
@@ -165,8 +166,8 @@ public class EditarCesionController extends EditarCesionControllerGen {
 		}
 		if (!validation.hasErrors()) {
 			try {
-				services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
-				gestorDocumentalService.saveDocumentoTemporal(dbPeticionCesiones.fichRespuesta, subirArchivo);
+				GestorDocumentalServiceAsync gestorDocumentalServiceAsync = config.InjectorConfig.getInjector().getInstance(GestorDocumentalServiceAsync.class);
+				await(gestorDocumentalServiceAsync.saveDocumentoTemporal(dbPeticionCesiones.fichRespuesta, subirArchivo));
 				dbPeticionCesiones.save();
 				Messages.ok("El fichero de peticiones se ha subido correctamente");
 			} catch (services.GestorDocumentalServiceException e) {
@@ -190,7 +191,7 @@ public class EditarCesionController extends EditarCesionControllerGen {
 		peticionCesiones.estado = EstadosPeticionEnum.creada.name();
 		Documento documento = peticionCesiones.fichRespuesta;
 		try {
-			gestorDocumentalService.deleteDocumento(documento);
+			await(gestorDocumentalServiceAsync.deleteDocumento(documento));
 			peticionCesiones.fichRespuesta.uri = null;
 		} catch (GestorDocumentalServiceException e) {
 			Messages.error("Error borrando el archivo del gestor documental");
@@ -204,7 +205,7 @@ public class EditarCesionController extends EditarCesionControllerGen {
 		File fich = null;
 		try {
 			fich = File.createTempFile("tmp", ".txt");
-			BinaryResponse brp = gestorDocumentalService.getDocumentoByUri(peticionCesiones.fichRespuesta.uri);
+			BinaryResponse brp = await(gestorDocumentalServiceAsync.getDocumentoByUri(peticionCesiones.fichRespuesta.uri));
 			FileOutputStream fichO = new FileOutputStream(fich);
 			fichO.write(brp.getBytes());
 			fichO.close();

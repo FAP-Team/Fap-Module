@@ -5,11 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import play.libs.F.Promise;
 import play.mvc.Util;
 import properties.FapProperties;
 import services.FirmaService;
-import services.GestorDocumentalService;
 import services.NotificacionService;
+import services.async.GestorDocumentalServiceAsync;
 import tags.ComboItem;
 import utils.StringUtils;
 import validation.CustomValidation;
@@ -135,9 +136,12 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 	 * Retorna false si el servicio Gestor Documental no está disponible, true en caso contrario.  
 	 * 
 	 */
-	private static boolean gestorDocumentalIsConfigured() {
-		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		return gestorDocumentalService.isConfigured();
+	private static Boolean gestorDocumentalIsConfigured() {
+		GestorDocumentalServiceAsync gestorDocumentalServiceAsync = InjectorConfig.getInjector().getInstance(GestorDocumentalServiceAsync.class);
+		play.Logger.info("gestorDocumentalIsConfigured " + gestorDocumentalServiceAsync);
+		boolean aux = await(gestorDocumentalServiceAsync.isConfigured()); 
+		play.Logger.info("gestorDocumentalIsConfigured " + aux);
+		return aux;
 	}
 	
 

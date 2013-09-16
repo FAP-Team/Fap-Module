@@ -18,6 +18,7 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.NotificacionService;
 import services.RegistroService;
+import services.async.GestorDocumentalServiceAsync;
 import services.filesystem.TipoDocumentoEnTramite;
 
 import org.joda.time.DateTime;
@@ -75,7 +76,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
     static NotificacionService notificacionService;
     
 	@Inject
-	static GestorDocumentalService gestorDocumentalService;
+	static GestorDocumentalServiceAsync gestorDocumentalServiceAsync;
 	
 	public static void index(String accion, Long idSolicitud, Long idVerificacion) {
 		if (accion == null)
@@ -332,7 +333,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 							    Documento oficialOld = requerimiento.oficial;
 							    requerimiento.oficial = null;
 							    requerimiento.save();
-							    gestorDocumentalService.deleteDocumento(oficialOld);
+							    await(gestorDocumentalServiceAsync.deleteDocumento(oficialOld));
 							}						
 
 							//Genera el documento oficial
@@ -343,7 +344,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 							requerimiento.oficial.descripcion = "Requerimiento";
 							requerimiento.oficial.clasificado=false;
 							
-							gestorDocumentalService.saveDocumentoTemporal(requerimiento.oficial, new FileInputStream(oficial), oficial.getName());
+							await(gestorDocumentalServiceAsync.saveDocumentoTemporal(requerimiento.oficial, new FileInputStream(oficial), oficial.getName()));
 							
 							requerimiento.estado = "borrador";
 							requerimiento.save();
@@ -523,7 +524,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			        documento.save();
 
 			        InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
-			        gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteRequerimiento" + dbSolicitud.verificacion.requerimiento.id + ".pdf");
+			        await(gestorDocumentalServiceAsync.saveDocumentoTemporal(documento, is, "JustificanteRequerimiento" + dbSolicitud.verificacion.requerimiento.id + ".pdf"));
 			        play.Logger.info("Justificante del Requerimiento almacenado en el AED");
 			        
 			        List<Documento> documentos = new ArrayList<Documento>();
@@ -536,7 +537,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					//       Ni poder los datos de registro del requerimiento
 			        
 			        try { // Sin registro
-		                gestorDocumentalService.clasificarDocumentos(dbSolicitud, documentos, false /*true*/);
+		                await(gestorDocumentalServiceAsync.clasificarDocumentos(dbSolicitud, documentos, false /*true*/));
 		            } catch (Exception e) {
 		                play.Logger.error("No se ha podido clasificar el justificante del requerimiento: "+e.getMessage());
 		            }

@@ -17,6 +17,7 @@ import org.joda.time.DateTime;
 
 import play.mvc.Util;
 import services.GestorDocumentalService;
+import services.async.GestorDocumentalServiceAsync;
 import tramitacion.TramiteBase;
 import utils.StringUtils;
 import controllers.fap.JustificacionFapController;
@@ -24,7 +25,7 @@ import controllers.gen.JustificacionControllerGen;
 
 public class JustificacionController extends JustificacionControllerGen {
 	@Inject
-	static GestorDocumentalService gestorDocumentalService;
+	static GestorDocumentalServiceAsync gestorDocumentalServiceAsync;
 
 	public static void index(String accion, Long idSolicitud){
 		if (accion == null)
@@ -185,7 +186,7 @@ public class JustificacionController extends JustificacionControllerGen {
             documentos.addAll(justificacion.documentos);
             boolean todosClasificados = true;
             try {
-                gestorDocumentalService.clasificarDocumentos(solicitud, documentos);
+                await(gestorDocumentalServiceAsync.clasificarDocumentos(solicitud, documentos));
             } catch (Exception e) {
                 todosClasificados = false;
             }

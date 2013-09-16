@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.joda.time.DateTime;
 
 import properties.FapProperties;
@@ -35,7 +37,8 @@ public abstract class PeticionBase {
 	private final static String HEADER_REPORT = "reports/headerPeticion.html";
 	private final static String FOOTER_REPORT = "reports/footer-cesion.html";
 	
-	static GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+	@Inject
+	static GestorDocumentalService gestorDocumentalService;
 	
 	public abstract void generarPeticionBase(PeticionCesiones pt, List<Long> idsSeleccionados);
 	

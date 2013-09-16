@@ -32,6 +32,7 @@ import services.PortafirmaFapServiceException;
 import services.RegistroLibroResolucionesService;
 import services.RegistroLibroResolucionesServiceException;
 import services.RegistroService;
+import services.async.GestorDocumentalServiceAsync;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
 import validation.CustomValidation;
@@ -472,7 +473,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			EditarResolucionController.enviarRegistrarResolucionValidateRules();
 		}
 
-		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		GestorDocumentalServiceAsync gestorDocumentalServiceAsync = InjectorConfig.getInjector().getInstance(GestorDocumentalServiceAsync.class);
 		
 		/// 2. Crear el expediente de la convocatoria en el AED por si no existe
 		if (!Messages.hasErrors()) {
@@ -480,7 +481,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				// TODO: Crear expediente en el AED
 				tx.begin();
 				try {
-					gestorDocumentalService.crearExpedienteConvocatoria();
+					await(gestorDocumentalServiceAsync.crearExpedienteConvocatoria());
 					dbResolucionFAP.registro.fasesRegistro.expedienteAed = true;
 					dbResolucionFAP.save();
 				} catch (GestorDocumentalServiceException e) {
@@ -496,7 +497,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			if ((dbResolucionFAP.registro.fasesRegistro.expedienteAed) && (!dbResolucionFAP.registro.fasesRegistro.clasificarAed)) {
 				tx.begin();
 				try {
-					gestorDocumentalService.clasificarDocumentoResolucion(dbResolucionFAP);
+					await(gestorDocumentalServiceAsync.clasificarDocumentoResolucion(dbResolucionFAP));
 					dbResolucionFAP.registro.fasesRegistro.clasificarAed = true;
 					dbResolucionFAP.save();
 				} catch (GestorDocumentalServiceException e) {

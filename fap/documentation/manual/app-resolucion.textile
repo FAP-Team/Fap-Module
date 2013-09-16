@@ -10,6 +10,8 @@ FAP provee diferentes tipos de resolución por defecto:
 
 * Resolución Parcial: Se hace referencia a la resolución de conjunto de expedientes y de cada uno de ellos a un conjunto de líneas de expediente.
 
+* Resolución Simple de la Fase Ejecución: Se hace referencia a la resolución de la fase de ejecución, afecta a un único expediente y lo resuelve en su totalidad.
+
 !images/app-resolucion-tipos!
 
 h2. Personalizar la resolución.
@@ -45,6 +47,9 @@ bc. resolucion.estado = EstadoResolucionEnum.borrador.name();
 
 * prepararResolucion(Long idResolucion): Prepara la resolución para ser firmada.
 
+* cambiaEstadoDefinitiva(LineaResolucionFAP linea): Cambia el tipo de resolución al estado correspondiente.
+
+* cambiaEstadoProvisional(LineaResolucionFAP linea): Cambia el tipo de resolución al estado correspondiente.
 
 Para avanzar a las distintas fases de una resolución se han creado los siguientes métodos para facilitar su manejo:
 
@@ -57,9 +62,12 @@ Para avanzar a las distintas fases de una resolución se han creado los siguient
 * avanzarFase_FirmadaJefeServicio(ResolucionFAP resolucion): Permite avanzar del estado *"firmadaJefeServicio"* al estado *"pendienteFirmaDirector"*.
 * avanzarFase_PendienteFirmarDirector(ResolucionFAP resolucion): Permite avanzar del estado *"pendienteFirmaDirector"* al estado *"firmada"*.
 * avanzarFase_Firmada(ResolucionFAP resolucion): Permite avanzar del estado *"firmada"* al estado *"registrada"*.
-* avanzarFase_Registrada(ResolucionFAP resolucion): Permite avanzar del estado *"registrada"* al estado *"publicada"*.
-* avanzarFase_Publicada(ResolucionFAP resolucion): Permite avanzar del estado *"publicada"* al estado *"finalizada"*.
+* avanzarFase_Registrada_Publicada(ResolucionFAP resolucion): Permite avanzar del estado *"registrada"* al estado *"publicada"*.
+* avanzarFase_Registrada_Notificada(ResolucionFAP resolucion): Permite avanzar del estado *"registrada"* al estado *"notificada"*.
+* avanzarFase_Registrada_PublicadaYNotificada(ResolucionFAP resolucion): Permite avanzar del estado *"registrada"* al estado *"publicadaYNotificada"*.
+* avanzarFase_PublicadaYONotificada(ResolucionFAP resolucion): Permite avanzar de los estados *"publicada"*, *"notificada"* y *"publicadaYNotificada"* al estado *"finalizada"*.
 
+!images/app-resolucion-fases!
 
 h2. Crear una clase que extienda de ResolucionControllerFAP.
 
@@ -77,7 +85,7 @@ Esta función debe devolver una lista con los distintos tipos de resoluciones qu
 
 bc. public static ResolucionBase getResolucionObject(Long idResolucion)
 
-Esta función deberá devolver el objeto que hayamos implementado para tratar una resolución específica. Por defecto, hay tres objetos creados en el módulo de FAP: ResolucionMultipleTotal, ResolucionParcial y ResolucionSimple.
+Esta función deberá devolver el objeto que hayamos implementado para tratar una resolución específica. Por defecto, hay cuatro objetos creados en el módulo de FAP: ResolucionMultipleTotal, ResolucionParcial, ResolucionSimple y ResolucionSimpleEjecucion.
 
 Ejemplo (Comportamiento por defecto de FAP):
 
@@ -89,21 +97,17 @@ bc. public static ResolucionBase getResolucionObject(Long idResolucion) {
 		return new ResolucionParcial(resolucion);
 	} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleTotal.name())) {
 		return new ResolucionSimple(resolucion);
+	} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleEjecucion.name())) {
+		return new ResolucionSimpleEjecucion(resolucion);
 	}
 	return new ResolucionBase(resolucion);
 }
-
-* Método para inicializar la resolución.
-
-bc. public static void inicializaResolucion(Long idResolucion)
-
-Una vez se haya establecido el tipo de resolución, se inicializan los datos de la resolución.
 
 * Método para realizar algún tipo de validación antes de iniciar la resolución.
 
 bc. public static void validarInicioResolucion()
 
-Esta función comprueba, por defecto, que antes de crear una nueva resolución estén todas las anteriores en estado finalizada. Este comportamiento, como ya se ha dichoa antes, se puede modificar sobreescribiendo la función.
+Esta función comprueba, por defecto, que antes de crear una nueva resolución estén todas las anteriores en estado finalizada. Este comportamiento, como ya se ha dicho antes, se puede modificar sobreescribiendo la función.
 
 * Método para obtener los Jefes de Servicio.
 
@@ -157,6 +161,38 @@ Por lo que si queremos sobreescribir el documento que se genera en la Resolució
 * *footer-borrador.html*: Para el pie de página del documento borrador.
 
 _*NOTA:*_ La cabecera y el contenido serán los mismos para el documento borrador y el oficial. Por el contrario el pie de página sólo será utilizado en el documento borrador, ya que el oficial se generará sin pie de página.
+
+h2. Propiedades
+
+Es necesario configurar algunas propiedades en el fichero /nombreAplicacion/conf/application.conf:
+
+* *fap.resoluciones.generarDocumentoResolucion*
+**	true: genera el documento de resolución
+**	false: permite subir el documento de resolución
+
+* *fap.resoluciones.publicarTablonAnuncios*
+**	true: se publica la resolución en el tablón de anuncios
+**	false: no se publica la resolución en el tablón de anuncios
+
+* *fap.resoluciones.notificar*
+**	true: se notifica la resolución a los interesados
+**	false: no se notifica la resolución a los interesados
+
+Por defecto, las propiedades tienen los siguientes valores:
+
+bc. ... 
+fap.resoluciones.generarDocumentoResolucion=true
+fap.resoluciones.publicarTablonAnuncios=true
+fap.resoluciones.notificar=false
+...
+
+En el caso de usar la ResolucionSimpleEjecucion hay que cambiar los valores:
+
+bc. ...
+fap.resoluciones.generarDocumentoResolucion=false
+fap.resoluciones.publicarTablonAnuncios=false
+fap.resoluciones.notificar=true
+...
 
 h2. Conclusiones
 

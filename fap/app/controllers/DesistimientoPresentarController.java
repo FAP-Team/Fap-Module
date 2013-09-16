@@ -14,6 +14,7 @@ import models.Desistimiento;
 import models.Firmante;
 import models.SolicitudGenerica;
 import controllers.gen.DesistimientoPresentarControllerGen;
+import enumerado.fap.gen.EstadosSolicitudEnum;
 
 public class DesistimientoPresentarController extends DesistimientoPresentarControllerGen {
 	private final static String REDIRECT_DESISTIMIENTO = "DesistimientoController.index";
@@ -47,7 +48,7 @@ public class DesistimientoPresentarController extends DesistimientoPresentarCont
 			if (!Messages.hasErrors()) {
 				try {
 					tramite.registrar();
-					dbSolicitud.estado = "desistido";
+					dbSolicitud.estado = EstadosSolicitudEnum.desistido.name();
 					dbSolicitud.save();
 				} catch (RegistroServiceException e) {
 					// TODO Auto-generated catch block
@@ -81,6 +82,13 @@ public class DesistimientoPresentarController extends DesistimientoPresentarCont
 		if (!Messages.hasErrors()) {
 			TramiteDesistimiento tramite = new TramiteDesistimiento(dbSolicitud);
 			tramite.firmar(firma);
+			if (!Messages.hasErrors()){ //Si no hubo errores firmando
+				//Si han firmado todos -> firmado el desistimiento
+				if (dbSolicitud.desistimiento.registro.fasesRegistro.firmada){ //Si no hubo errores firmando
+					//dbSolicitud.estado = EstadosSolicitudEnum.desistido.name();
+					dbSolicitud.save();
+				}
+			}
 		}
 
 		if (!Messages.hasErrors()) {
@@ -109,6 +117,8 @@ public class DesistimientoPresentarController extends DesistimientoPresentarCont
 			TramiteDesistimiento tramite = new TramiteDesistimiento(dbSolicitud);
 			try {
 				tramite.registrar();
+				dbSolicitud.estado = EstadosSolicitudEnum.desistido.name();
+				dbSolicitud.save();
 			} catch (RegistroServiceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

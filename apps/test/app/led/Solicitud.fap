@@ -96,11 +96,7 @@ Formulario Solicitud permiso=solicitudes{
     	    	
     	Grupo "Módulo FAP" {
 			Enlace "Verificaciones" pagina=AccesoVerificaciones
-			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    	
-
-		
-
-			Enlace "Justificacion" pagina=Justificacion
+			Enlace "Aportacion Documentacion" pagina=Aportacion //sol aport=inst    				Enlace "Justificacion" pagina=Justificacion
 			Enlace "PCEconómicos" pagina=PCEconomicos	
 			Enlace "Desistimiento" pagina=Desistimiento
 			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
@@ -111,12 +107,14 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "Certificados" pagina=CertificadosSolicitados
     	}    	
 
-//    	Grupo "Paginas Copias" {
-//    		Enlace "Copia (Modificaciones permitidas)" pagina=PaginaCopia
-//    		Enlace "Copia tablas" pagina=CopiaTablas
-//    		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
-//    		Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
-//    	}
+		Enlace "Habilitar Copia" pagina=ActivarModificacionSolicitudes
+    	Grupo "Paginas Copias" permiso=menuConModificacion{
+    		Enlace "- Modificaciones Simples" pagina=PaginaCopia
+    		Enlace "- Modificaciones en Tablas" pagina=CopiaTablas
+			Enlace "- Modificaciones en PCEconomicos" pagina=PCEconomicosCopia
+			Enlace "- Modificaciones en Direcciones" pagina=DireccionesCopia
+			Enlace "Presentacion Copia" pagina=PresentarModificacionFAP
+    	}
 		
 		Enlace "Aportación" pagina=Aportacion
 
@@ -192,7 +190,7 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		}
 	}
 	
-	Pagina Direcciones campo=Solicitud{
+	Pagina Direcciones campo=Solicitud {
 		Direccion titulo="La Dirección" campo=Solicitud.direccionTest.direccion
 		
 		Codigo  {
@@ -928,7 +926,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 	}
 	
 
-	Pagina CopiaTablas titulo="Página de copia con tablas" campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud {
+	Pagina CopiaTablas titulo="Página de copia con tablas" campo=Solicitud permiso=modificacionTrasPresentacionDeSolicitud copia{
 		Tabla tablaDocCopia campo = Solicitud.documentacion.documentos titulo="Copia de documentos" 
 		paginaEditar=DocumentosCopia
 		paginaBorrar=DocumentosCopia
@@ -936,12 +934,21 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		columnasAutomaticas {}
 		
 		Tabla tablaCopia campo=Solicitud.tablaDeNombres titulo="Solicitantes"
-		paginaEditar=PaginaNombreCopia
+		popupEditar=PopupNombreCopia
 		paginaBorrar=PaginaNombreCopia
 		paginaCrear=PaginaNombreCopia
 		columnasAutomaticas exclude=id, fecha
 		{}
 		
+	}
+
+	Popup PopupNombreCopia campo=Solicitud.tablaDeNombres copia{
+		Accion crear redirigir=anterior
+		Accion editar redirigir=anterior
+		Accion borrar redirigir=anterior
+		Wiki{ "PopUp de copia" }
+		Texto campo=TablaDeNombres.nombre titulo="Nombre"
+		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 
 	Pagina DocumentosCopia campo=Solicitud.documentacion.documentos copia{
@@ -967,6 +974,18 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		Wiki{ "PopUp de copia" }
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
+	}
+
+Pagina DireccionesCopia campo=Solicitud copia{
+		Grupo grupoCanaria /*mostrarSiCombo comboDireccion = "canaria"*/ titulo="Direccion" {
+			Combo comboProvincia campo=Solicitud.direccionTest.direccion.provincia titulo= "Provincia" requerido
+			Combo comboIsla campo=Solicitud.direccionTest.direccion.isla titulo="Isla" dependeDe=comboProvincia requerido
+			Combo cmbMunicipio campo=Solicitud.direccionTest.direccion.municipio titulo="Municipio" dependeDe=comboIsla requerido
+			Texto textoLocalidad campo=Solicitud.direccionTest.direccion.localidad titulo="Localidad" requerido
+			Texto textoCodigoPostal campo=Solicitud.direccionTest.direccion.codigoPostal titulo="Codigo Postal" requerido
+			Texto textoNumero campo=Solicitud.direccionTest.direccion.numero titulo="Numero" requerido
+			Texto textoPPO campo=Solicitud.direccionTest.direccion.otros titulo="Puerta/Piso/Otros" requerido
+		}
 	}
 
 }

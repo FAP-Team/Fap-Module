@@ -111,6 +111,10 @@ public class GSubirArchivo extends GSaveCampoElement{
 						} else {""";
 		}
 		out += """
+				int DESCMAXIMA = 255;
+				if (${campo.firstLower()}.descripcion.length() > DESCMAXIMA){
+					validation.addError("${campo.firstLower()}.descripcion", "La descripción excede el tamaño máximo permitido de "+DESCMAXIMA+" caracteres");
+				}
 				if(${subirArchivo.name} == null) validation.addError("${subirArchivo.name}", "Archivo requerido");
 				else if (${subirArchivo.name}.length() > properties.FapProperties.getLong("fap.file.maxsize")) validation.addError("${subirArchivo.name}", "Tamaño del archivo superior al máximo permitido ("+org.apache.commons.io.FileUtils.byteCountToDisplaySize(properties.FapProperties.getLong("fap.file.maxsize"))+")");
 				else{

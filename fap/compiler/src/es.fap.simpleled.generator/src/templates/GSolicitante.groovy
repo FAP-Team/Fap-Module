@@ -258,7 +258,7 @@ public class GSolicitante extends GElement{
 			personaFisica.requerido = true;
 			personaFisica.setearTipoPadre = true;
 			personaFisica.sexo = false;
-			personafisica.nacimiento = false;
+			personaFisica.nacimiento = false;
 			personaFisica.name = "representante_${popup.name}";
 			personaFisica.campo = CampoUtils.create("RepresentantePersonaJuridica.fisica").campo;
 			grupo.elementos.add(personaFisica);

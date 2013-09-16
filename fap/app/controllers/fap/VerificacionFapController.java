@@ -8,6 +8,7 @@ import java.util.Set;
 
 import models.Documento;
 import models.ObligatoriedadDocumentos;
+import models.RegistroModificacion;
 import models.SolicitudGenerica;
 import models.Tramite;
 import models.Verificacion;
@@ -36,8 +37,16 @@ public class VerificacionFapController extends InvokeClassController{
 			if ((doc.verificado == null) || (!doc.verificado))
 				nuevosDocumentos.add(doc);
 		}
-		if ((solicitud.registro.oficial.uri != null) && ((verificacion.uriTramite != null) && (verificacion.uriTramite.equals(FapProperties.get("fap.aed.procedimientos.tramite.uri")))) && ((solicitud.registro.oficial.verificado == null) || (!solicitud.registro.oficial.verificado))){
+		if  ((solicitud.registroModificacion.isEmpty()) && (solicitud.registro.oficial.uri != null) && ((verificacion.uriTramite != null) && (verificacion.uriTramite.equals(FapProperties.get("fap.aed.procedimientos.tramite.uri")))) && ((solicitud.registro.oficial.verificado == null) || ((solicitud.registroModificacion.isEmpty()) && (!solicitud.registro.oficial.verificado)))){
 			nuevosDocumentos.add(solicitud.registro.oficial);
+		}
+		RegistroModificacion registroModificacion = VerificacionUtils.obtenerUltimoRegistroModificacionRegistrado(solicitud);
+		if (!solicitud.registroModificacion.isEmpty() //Existen modificaciones
+				&& registroModificacion != null 	// Existe una registrada (ultima)
+				&& (registroModificacion.registro.oficial.verificado == null) //No se ha verificado ese doc
+				&& (verificacion.uriTramite.equals(FapProperties.get("fap.aed.procedimientos.tramite.uri")))){ //Estoy en tramite Solicitud
+			//Existe un registroMod registrado
+			nuevosDocumentos.add(registroModificacion.registro.oficial);
 		}
 		return nuevosDocumentos;
 	}

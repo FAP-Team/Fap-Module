@@ -3,6 +3,7 @@ package controllers.fap;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -54,6 +55,14 @@ public class PresentacionModificacionFapController {
         }
 	}
 	
+	public static boolean comprobarPaginasCopiaGuardadas(Long idSolicitud){
+		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
+		ModelUtils.invokeMethodClass(SolicitudGenerica.class, solicitud, "savePagesCopyPrepared");
+        if (Messages.hasErrors())
+        	return false;
+        return true;
+	}
+	
 	public static void comprobarFechaLimitePresentacion(Long idSolicitud){
 		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 		if (solicitud.registroModificacion.isEmpty()){
@@ -61,7 +70,7 @@ public class PresentacionModificacionFapController {
 			return;
 		}
 		RegistroModificacion registroModificacion = solicitud.registroModificacion.get(solicitud.registroModificacion.size()-1);
-		if (registroModificacion.fechaLimite.isBeforeNow()){
+		if (registroModificacion.fechaLimite.isBefore(new DateMidnight())){
 			play.Logger.error("La solicitud "+idSolicitud+" no se ha podido presentar (registrar o firmar). La fecha Límite de Presentación de la modificación ha expirado: "+registroModificacion.fechaLimite.toString());
 			Messages.error("La fecha Límite de Presentación de la modificación ha expirado: "+registroModificacion.fechaLimite.toString());
 			Messages.keep();

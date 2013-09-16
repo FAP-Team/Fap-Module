@@ -2,10 +2,12 @@ package controllers;
 
 import play.mvc.Util;
 import properties.FapProperties;
+import utils.NotificacionUtils;
 import validation.CustomValidation;
 import messages.Messages;
 import models.AdministracionFapJobs;
 import controllers.gen.JobsControllerGen;
+import utils.NotificacionUtils;
 
 public class JobsController extends JobsControllerGen {
 
@@ -60,6 +62,11 @@ public class JobsController extends JobsControllerGen {
 				dbAdministracionFapJobs.valorNotificarAlertasAnotaciones = FapProperties.getInt("fap.seguimiento.notificarAlertar.anotaciones");
 			}
 		}
+	}
+	
+	@Util
+	public static void btnNotificaciones(AdministracionFapJobs administracionFapJobs) {
+		NotificacionUtils.recargarDocumentosNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 	}
 	
 }

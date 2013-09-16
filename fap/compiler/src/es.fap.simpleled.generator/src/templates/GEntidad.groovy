@@ -138,6 +138,7 @@ public class ${entity.name} ${extendz} {
 	${gettersAttrMonedaType}
 	${initCode}
 	${savePagesPrepared()}
+	${savePagesCopyPrepared()}
 ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}	
 	
 	}
@@ -550,6 +551,35 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		return out;
 	}
 	
+	private String savePagesCopyPrepared() {
+		if (!entity.name.equals("Solicitud"))
+				return "";
+		String out = "public void savePagesCopyPrepared () {"
+		for (PaginaImpl pag: ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getPagina(), LedUtils.resource)){
+				if (!pag.guardarParaPrepararCopia)
+						continue;
+				String name = "pagina" + pag.name;
+				String title = name;
+				if ((pag.titulo != null) && (!pag.titulo.isEmpty()))
+						title = pag.titulo;
+				if ("PCEconomicos".equals(pag.name)){
+						out += """
+                                       if (TipoCEconomico.count() > 0){
+                                               if ((savePagesCopy.${name} == null) || (!savePagesCopy.${name}))
+                                                       Messages.error("La página ${title} no fue guardada correctamente");
+                                       }
+                               """;
+				} else {
+						out += """
+                                       if ((savePagesCopy.${name} == null) || (!savePagesCopy.${name}))
+                                               Messages.error("La página ${title} no fue guardada correctamente");
+                               """;
+				}
+		}
+		out += "}";
+		return out;
+}
+	
 	private Entity getEntitySavePages(){
 		EntityImpl savePages = LedFactory.eINSTANCE.createEntity();
 		savePages.setName("SavePages");
@@ -583,6 +613,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 			AttributeImpl at = LedFactory.eINSTANCE.createAttribute();
 			at.setName("pagina" + pag.name);
 			at.setType(tipoBoolean);
+			at.setDefaultValue("true");
 			savePagesCopy.getAttributes().add(at);
 		}
 		return savePagesCopy;

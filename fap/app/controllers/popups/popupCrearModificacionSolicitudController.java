@@ -41,7 +41,7 @@ public class popupCrearModificacionSolicitudController extends popupCrearModific
 			dbRegistroModificacion.registro =  new Registro();
 			dbRegistroModificacion.save();
 			idRegistroModificacion = dbRegistroModificacion.id;
-			dbSolicitud.activoModificacion=true;
+			dbSolicitud.estadoAntesModificacion = dbSolicitud.estado;
 			dbSolicitud.registroModificacion.add(dbRegistroModificacion);
 			dbSolicitud.estado = EstadosSolicitudEnum.modificacion.name();
 			dbSolicitud.save();
@@ -59,12 +59,21 @@ public class popupCrearModificacionSolicitudController extends popupCrearModific
 
 		if (secure.checkGrafico("crearModificacionSolicitud", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
 			CustomValidation.valid("registroModificacion", registroModificacion);
-			DateTime fechaHora = registroModificacion.fechaLimite;
-			fechaHora = fechaHora.withMinuteOfHour(59);
-			fechaHora = fechaHora.withSecondOfMinute(59);
-			fechaHora = fechaHora.withHourOfDay(23);
-			dbRegistroModificacion.fechaLimite = fechaHora;
-
+			CustomValidation.required("registroModificacion.fechaLimite", registroModificacion.fechaLimite);
+			if (!Messages.hasErrors()){
+				DateTime fechaHora = registroModificacion.fechaLimite;
+				fechaHora = fechaHora.withMinuteOfHour(59);
+				fechaHora = fechaHora.withSecondOfMinute(59);
+				fechaHora = fechaHora.withHourOfDay(23);
+				
+				if (fechaHora.isAfter(registroModificacion.fechaCreacion)){
+					dbRegistroModificacion.fechaLimite = fechaHora;
+				}
+				else{ //Error de asignacion de fechas
+					Messages.error("La fecha límite no puede ser anterior a la fecha de creación");
+					log.error("La fecha límite no puede ser anterior a la fecha de creación");
+				}
+			}
 		}
 
 	}

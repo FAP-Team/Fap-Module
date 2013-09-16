@@ -54,6 +54,9 @@ public class Documento extends FapModel {
 	public String urlDescarga;
 
 	@Transient
+	public String enlaceDescarga;
+
+	@Transient
 	public String urlDescargaFirmado;
 
 	@Transient
@@ -86,6 +89,18 @@ public class Documento extends FapModel {
 
 	public String getUrlDescargaFirmado() {
 		return AedUtils.crearUrlConInformeDeFirma(uri);
+	}
+
+	public String getEnlaceDescarga() {
+		//if (fechaRegistro != null) {
+		try {
+			String ret = "<a href=\"";
+			ret += AedUtils.crearUrl(uri);
+			ret += "\" target=\"_blank\">Descargar</a>";
+			return ret;
+		} catch (Exception e) {
+			return "";
+		}
 	}
 
 	public String getEnlaceDescargaFirmado() {

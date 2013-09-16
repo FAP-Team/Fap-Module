@@ -22,7 +22,16 @@ import java.text.SimpleDateFormat;
 public class SavePagesCopy extends FapModel {
 	// Código de los atributos
 
+	public Boolean paginaPCEconomicosCopia;
+
+	public SavePagesCopy() {
+		init();
+	}
+
 	public void init() {
+
+		if (paginaPCEconomicosCopia == null)
+			paginaPCEconomicosCopia = true;
 
 		postInit();
 	}

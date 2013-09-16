@@ -10,32 +10,41 @@ import javax.persistence.EntityTransaction;
 
 import org.joda.time.DateTime;
 
+import config.InjectorConfig;
 import controllers.fap.ResolucionControllerFAP;
 
+import platino.FirmaUtils;
 import play.db.jpa.JPA;
 import play.modules.guice.InjectSupport;
 import play.mvc.results.RenderBinary;
 import properties.FapProperties;
 
 import reports.Report;
+import services.FirmaService;
+import services.FirmaServiceException;
 import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import utils.ResolucionUtils.LineasResolucionSortComparator;
 import utils.StringUtils;
 
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionEnum;
+import enumerado.fap.gen.EstadoResolucionPublicacionEnum;
 import enumerado.fap.gen.EstadoTipoMultipleEnum;
+import enumerado.fap.gen.EstadosDocBaremacionEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.ModalidadResolucionEnum;
 import enumerado.fap.gen.TipoResolucionEnum;
 import messages.Messages;
 import models.Documento;
 import models.Evaluacion;
+import models.ExpedienteAed;
 import models.LineaResolucionFAP;
 import models.Registro;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
+import models.TipoEvaluacion;
 
 @InjectSupport
 public class ResolucionBase {
@@ -46,15 +55,22 @@ public class ResolucionBase {
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer.html";
 	private final static String BODY_REPORT = "reports/resolucion/resolucion.html";
+	private final static String BODY_REPORT_BAREMACION_CON_COMENTARIOS = "reports/baremacion/oficialEvaluacionCompleto.html";
+	private final static String BODY_REPORT_BAREMACION_SIN_COMENTARIOS = "reports/baremacion/oficialEvaluacionCompleto.html";
 	private final static String HEADER_BAREMACION_INDIVIDUAL_REPORT = "reports/header.html";
 	private final static String BODY_BAREMACION_INDIVIDUAL_REPORT = "reports/resolucion/criteriosResolucion.html";
 	private final static String FOOTER_BAREMACION_INDIVIDUAL_REPORT = "reports/footer-borrador.html";
+	private final static String BODY_REPORT_OFICIO_REMISION = "reports/notificacion/notificacionBodyOficioRemision.html";
 	private final static String TIPO_RESOLUCION_PROVISIONAL = FapProperties.get("fap.aed.tiposdocumentos.resolucion.provisional");
 	private final static String TIPO_RESOLUCION_DEFINITIVA = FapProperties.get("fap.aed.tiposdocumentos.resolucion.definitiva");
 	public ResolucionFAP resolucion;
 	
 	public ResolucionBase (ResolucionFAP resolucion) {
 		this.resolucion = resolucion;
+	}
+	
+	public static String getBodyReportOficioRemision() {
+		return ResolucionBase.BODY_REPORT_OFICIO_REMISION;
 	}
 	
 	public static String getHeaderReport() {
@@ -67,6 +83,14 @@ public class ResolucionBase {
 	
 	public String getBodyReport() {
 		return ResolucionBase.BODY_REPORT;
+	}
+	
+	public String getBodyBaremacionConComentariosReport(){
+		return ResolucionBase.BODY_REPORT_BAREMACION_CON_COMENTARIOS;
+	}
+	
+	public String getBodyBaremacionSinComentariosReport(){
+		return ResolucionBase.BODY_REPORT_BAREMACION_SIN_COMENTARIOS;
 	}
 	
 	public static String getHeaderBaremacionIndividualReport() {
@@ -103,6 +127,25 @@ public class ResolucionBase {
 	}
 	
 	/**
+	 *  Métodos que indican que documentos de Baremación deberán generarse para el tipo de resolucion
+	 *  Deberán sobreescribirse en cada tipo de Resolucion
+	 */
+	
+	public boolean isGenerarDocumentoBaremacionIndividual(){
+		if (this.resolucion.conBaremacion)
+			return true; // Por defecto se generaran siempre
+		return false;
+	}
+	
+	public boolean isGenerarDocumentoBaremacionCompletoSinComentarios(){
+		return false;
+	}
+	
+	public boolean isGenerarDocumentoBaremacionCompletoConComentarios(){
+		return false;
+	}
+	
+	/**
 	 * Inicializamos la resolución, una vez que sabemos el tipo
 	 */
 	public void initResolucion(Long idResolucion) {
@@ -129,6 +172,15 @@ public class ResolucionBase {
 	 * @param idResolucion
 	 */
 	public void setLineasDeResolucion(Long idResolucion) {
+	}
+	
+	
+	/**
+	 * Establece las líneas de resolución a una resolución, en caso de que no existan.
+	 * @param idResolucion
+	 * @param idsSeleccionados
+	 */
+	public void setLineasDeResolucion(Long idResolucion, List<Long> idsSeleccionados) {
 	}
 	
 	/**
@@ -295,9 +347,134 @@ public class ResolucionBase {
 		 return listRet;
 	 }
 	 
-	 public void  publicarResolucion (Long idResolucion) {
-		 
+	 public void publicarCambiarEstadoYDatos(long idResolucion){
+		//ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
+			ResolucionBase resolucion = null;
+			try {
+				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			}catch (Throwable e) {
+				// TODO: handle exception
+			}
+			
+			play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
+
+			for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
+				play.Logger.info("Línea: "+linea.id+" estado: "+linea.estado);
+				SolicitudGenerica sol = SolicitudGenerica.findById(linea.solicitud.id);
+
+				//Cambio de estado de las solicitudes
+				//Sacar un método único
+				if (TipoResolucionEnum.provisional.name().equals(resolucion.resolucion.tipo)) {
+					cambiaEstadoProvisional(linea);
+				} else {
+					cambiaEstadoDefinitiva(linea);
+				}
+				sol.save();
+			}
 	 }
+	
+	 private void cambiaEstadoDefinitiva(LineaResolucionFAP linea) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void cambiaEstadoProvisional(LineaResolucionFAP linea) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void publicarCopiarEnExpedientes (long idResolucion){
+		//ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
+			ResolucionBase resolucion = null;
+			try {
+				resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			}catch (Throwable e) {
+				// TODO: handle exception
+			}
+			
+			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+			List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
+			// ATENCIÓN:
+			// 		LISTAEXPEDIENTES SE CREA PERO NO SE MODIFICA NUNCA
+			//
+			int i = 1;
+			play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
+
+			for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
+				SolicitudGenerica sol = SolicitudGenerica.findById(linea.solicitud.id);
+				if ((i%10 == 0) || (i == resolucion.resolucion.lineasResolucion.size())) {
+					try {
+						gestorDocumental.copiarDocumentoEnExpediente(resolucion.resolucion.registro.oficial.uri, listaExpedientes);
+						listaExpedientes.clear();
+						play.Logger.info("Copiados los expedientes "+i);
+					} catch (GestorDocumentalServiceException e) {
+						play.Logger.error("No se han podido copiar el documento de resolución a los expedientes: "+i+" -> "+e);
+						Messages.error("No se han podido copiar el documento de resolución a los expedientes");
+					}
+				}
+				i++;
+
+				sol.save();
+			}
+
+			// Si quedan expedientes por copiar:
+			try {
+				if (listaExpedientes.size() != 0) {
+					gestorDocumental.copiarDocumentoEnExpediente(resolucion.resolucion.registro.oficial.uri, listaExpedientes);
+					listaExpedientes.clear();
+					play.Logger.info("Copiados los expedientes restantes");
+				} else {
+					play.Logger.info("No quedan expedientes a los que copiar la resolución");
+				}
+			} catch (GestorDocumentalServiceException e) {
+				play.Logger.error("No se han podido copiar el documento de resolución a los expedientes: "+" -> "+e);
+				Messages.error("No se han podido copiar el documento de resolución a los expedientes");
+			}
+			
+			//Una vez copiados los expedientes se comprueba si hay documentos de baremacion
+			//Si no hay, ha terminado la publicacion
+			
+			if (!resolucion.resolucion.conBaremacion) {
+				EntityTransaction tx = JPA.em().getTransaction();
+				tx.commit();
+				tx.begin();
+				if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
+					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+				else
+					resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
+				tx.commit();
+				tx.begin();
+		} 
+	 }
+	 
+	public void notificarCopiarEnExpedientes (long idResolucion) {
+		ResolucionBase resolucion = null;
+		try {
+			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+		}catch (Throwable e) {
+			// TODO: handle exception
+		}
+		
+		List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
+		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
+		if (!Messages.hasErrors()) {
+			
+		}
+		
+		if (!resolucion.resolucion.conBaremacion) {
+				EntityTransaction tx = JPA.em().getTransaction();
+				tx.commit();
+				tx.begin();
+				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+				else
+					resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
+				tx.commit();
+				tx.begin();
+		}
+	}
+	 
+	public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion) {}
 	 
 	public void avanzarFase_Borrador(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
@@ -377,14 +554,28 @@ public class ResolucionBase {
 		}
 	}
 	
-	public void avanzarFase_Registrada(ResolucionFAP resolucion) {
+	public void avanzarFase_Registrada_Publicada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.publicada.name();
 			resolucion.save();
 		}
 	}
 	
-	public void avanzarFase_Publicada(ResolucionFAP resolucion) {
+	public void avanzarFase_Registrada_Notificada(ResolucionFAP resolucion) {
+		if (!Messages.hasErrors()) {
+			resolucion.estado = EstadoResolucionEnum.notificada.name();
+			resolucion.save();
+		}
+	}
+	
+	public void avanzarFase_Registrada_PublicadaYNotificada(ResolucionFAP resolucion) {
+		if (!Messages.hasErrors()) {
+			resolucion.estado = EstadoResolucionEnum.publicadaYNotificada.name();
+			resolucion.save();
+		}
+	}
+	
+	public void avanzarFase_PublicadaYONotificada(ResolucionFAP resolucion) {
 		if (!Messages.hasErrors()) {
 			resolucion.estado = EstadoResolucionEnum.finalizada.name();
 			resolucion.save();
@@ -397,13 +588,12 @@ public class ResolucionBase {
 	 * @return
 	 */
 
-	
-	public void generarDocumentosResolucion (Long idResolucion) {
+	public void generarDocumentosBaremacionIndividualResolucion (Long idResolucion) {
 		ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
 		ResolucionBase res = null;
 		
 		EntityTransaction tx = JPA.em().getTransaction();
-		
+
 		try {
 			tx.commit();
 			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
@@ -421,13 +611,42 @@ public class ResolucionBase {
 							gestorDocumentalService.saveDocumentoTemporal(linea.docBaremacion, docBaremacionOficial);
 							play.Logger.info("Línea "+linea.id+": Guardado el documento de Evaluación "+linea.docBaremacion);
 						}
-						
+						tx.commit();
+					}
+				}
+			}
+			tx.begin();
+			res.resolucion.estadoDocBaremacionResolucion=EstadosDocBaremacionEnum.generado.name(); //Estado a docs Generados
+			res.resolucion.save();
+			tx.commit();
+		} catch (Throwable e) {
+		// TODO Auto-generated catch block
+			play.Logger.error("Error al obtener el objeto de Resolución"+e);
+			Messages.error("Error al generar los documentos de Resolución");
+		}
+
+	}
+	
+	public void clasificarDocumentosBaremacionIndividual(long idResolucion){
+		ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
+		ResolucionBase res = null;
+		
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		try {
+			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			
+			// Si tiene Baremación
+			if (resolucionFap.conBaremacion) {
+				List<LineaResolucionFAP> lineas = res.getLineasDocBaremacion(resolucionFap);
+				if (lineas != null) {
+					for (LineaResolucionFAP linea : lineas) {
+						tx.begin();
 						// 3. Clasificar el documento en el Expediente de la Solicitud
 						if (!linea.docBaremacion.clasificado) {
 							List<Documento> listDocs = new ArrayList<Documento>();
 							listDocs.add(linea.docBaremacion);
 							gestorDocumentalService.clasificarDocumentos(linea.solicitud, listDocs);
-							
 							linea.docBaremacion.clasificado = true;
 							linea.save();
 							play.Logger.info("Línea "+linea.id+": Clasificado el documento de Evaluación "+linea.docBaremacion);
@@ -449,30 +668,29 @@ public class ResolucionBase {
 							play.Logger.info("El documento de resolución ya es visible en la solicitud");
 						}
 						linea.save();
+
 						play.Logger.info("Documento de Resolución visible en la Solicitud "+linea.docBaremacion);
-						
 						tx.commit();
-						
-						play.Logger.info("Se generó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
+						play.Logger.info("Se clasificó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
 					}
 				} else {
 					play.Logger.warn("No existen líneas a las que añadirle el documento de baremación");
 					Messages.warning("No existen líneas a las que añadirle el documento de baremación");
 				}
-				
-				
 			}
 			tx.begin();
+
+			res.resolucion.estadoDocBaremacionResolucion=EstadosDocBaremacionEnum.clasificado.name(); //Estado a docs Generados
+			res.resolucion.save();
+			tx.commit();
+
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			play.Logger.error("Error al obtener el objeto de Resolución"+e);
 			Messages.error("Error al generar los documentos de Resolución");
 		}
-		
-
-
 	}
-
+	
 	public File generarDocumentoBaremacion (LineaResolucionFAP linea) {
 		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
 		File report = null;
@@ -484,6 +702,54 @@ public class ResolucionBase {
 			linea.docBaremacion.save();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return report;
+	}
+	
+	public File generarDocumentoOficialBaremacionConComentarios (LineaResolucionFAP linea) {
+		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
+		File report = null;
+		try {
+			Evaluacion evaluacion = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.solicitud.id=?", linea.solicitud.id).first();
+		 	String titulo = "Informe de Evaluación Completo";
+		 	Boolean comentariosAdministracion = false;
+		 	TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+			Long duracion = (long) (tipoEvaluacion.duracion-1);
+		 	
+		 	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("evaluacion", evaluacion);
+		 	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("duracion", duracion);
+		 	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("titulo", titulo);
+		 	play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("comentariosAdministracion", comentariosAdministracion);
+		 	
+		 	report = new Report(getBodyBaremacionConComentariosReport()).header(getHeaderBaremacionIndividualReport()).footer(getFooterBaremacionIndividualReport()).renderTmpFile(evaluacion, duracion, titulo, comentariosAdministracion);
+			
+			linea.docEvaluacionCompletoConComentarios = new Documento();
+			linea.docEvaluacionCompletoConComentarios.tipo = getTipoDocumentoOficialConComentarios();
+			linea.docEvaluacionCompletoConComentarios.save();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return report;
+	}
+	
+	public File generarDocumentoOficialBaremacionSinComentarios (LineaResolucionFAP linea) {
+		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
+		File report = null;
+		Evaluacion evaluacion = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.solicitud.id=?", linea.solicitud.id).first();
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+		Long duracion = (long) (tipoEvaluacion.duracion-1);
+		
+		try {
+			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("evaluacion", evaluacion);
+			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("duracion", duracion);
+			report = new Report(getBodyBaremacionSinComentariosReport()).header(getHeaderBaremacionIndividualReport()).footer(getFooterBaremacionIndividualReport()).renderTmpFile(evaluacion, duracion);
+			
+			
+			linea.docEvaluacionCompleto = new Documento();
+			linea.docEvaluacionCompleto.tipo = getTipoDocumentoOficialSinComentarios();
+			linea.docEvaluacionCompleto.save();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return report;
@@ -504,13 +770,266 @@ public class ResolucionBase {
 
 
 	public void firmarDocumentosBaremacionEnResolucion (ResolucionBase resolucion){ 
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		if(resolucion.isGenerarDocumentoBaremacionCompletoConComentarios() && 
+				resolucion.resolucion.estadoInformeBaremacionConComentarios != null 
+				&& resolucion.resolucion.estadoInformeBaremacionConComentarios.equals(EstadosDocBaremacionEnum.clasificado.name())){
+			//Firmar
+			for (LineaResolucionFAP linea : resolucion.resolucion.lineasResolucion) {
+				try {
+					String firma = firmaService.firmarEnServidor(linea.docEvaluacionCompleto);
+					play.Logger.info("La firma es: "+firma);
+					linea.solicitud.save();
+					Messages.ok("Se realizó la firma en Servidor correctamente");
+				} catch (FirmaServiceException e) {
+					// TODO Auto-generated catch block
+					play.Logger.error("No se pudo firmar en Servidor: "+e);
+				} 
+			}
+		}
 		
+		if(resolucion.isGenerarDocumentoBaremacionCompletoSinComentarios() && 
+				resolucion.resolucion.estadoInformeBaremacionSinComentarios != null 
+				&& resolucion.resolucion.estadoInformeBaremacionSinComentarios.equals(EstadosDocBaremacionEnum.clasificado.name())){
+			//Firmar
+			
+			for (LineaResolucionFAP linea : resolucion.resolucion.lineasResolucion) {
+				try {
+					String firma = firmaService.firmarEnServidor(linea.docEvaluacionCompleto);
+					play.Logger.info("La firma es: "+firma);
+					linea.solicitud.save();
+					Messages.ok("Se realizó la firma en Servidor correctamente");
+				} catch (FirmaServiceException e) {
+					// TODO Auto-generated catch block
+					play.Logger.error("No se pudo firmar en Servidor: "+e);
+				} 
+			}
+				
+		}
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		tx.begin();
+		if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
+			resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+		else
+			resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
+		tx.commit();
+		tx.begin();
+
 	}
 		
 
 	public String getTipoDocumentoResolucionIndividual(){
 		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion");
 
+	}
+	
+	public String getTipoDocumentoOficialConComentarios(){
+		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion.completa.concomentarios");
+
+	}
+	
+	public String getTipoDocumentoOficialSinComentarios(){
+		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion.completa");
+
+	}
+	
+	public String getTipoDocumentoOficioRemision(){
+		return FapProperties.get("fap.aed.tiposdocumentos.evaluacion.oficioRemision");
+	}
+	
+	public void generarDocumentoOficialBaremacionConComentarios(Long idResolucion){
+			ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
+			ResolucionBase res = null;
+			
+			EntityTransaction tx = JPA.em().getTransaction();
+			tx.commit();
+			try {
+				res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+				
+				// Si tiene Baremación
+				if (resolucionFap.conBaremacion) {
+					List<LineaResolucionFAP> lineas = res.getLineasDocBaremacion(resolucionFap);
+					if (lineas != null) {
+						for (LineaResolucionFAP linea : lineas) {
+							tx.begin();
+							
+							if (((linea.docEvaluacionCompletoConComentarios.uri == null) || (linea.docEvaluacionCompletoConComentarios.uri.isEmpty()))) {
+								// 1. TODO: Generar documento en linea.docBaremacion
+								File docBaremacionOficial = res.generarDocumentoOficialBaremacionConComentarios(linea);
+								// 2. Subir al AED el File anterior
+								gestorDocumentalService.saveDocumentoTemporal(linea.docEvaluacionCompletoConComentarios, docBaremacionOficial);
+							}
+							tx.commit();
+						}
+					}
+				}
+				tx.begin();
+				res.resolucion.estadoInformeBaremacionConComentarios=EstadosDocBaremacionEnum.generado.name(); //Estado a docs Generados
+				res.resolucion.save();
+				tx.commit();
+			} catch (Throwable e) {
+			// TODO Auto-generated catch block
+				play.Logger.error("Error al obtener el objeto de Resolución"+e);
+				Messages.error("Error al generar los documentos de Resolución");
+			}
+				
+	}
+
+	
+	public void generarDocumentoOficialBaremacionSinComentarios(Long idResolucion){
+			ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
+			ResolucionBase res = null;
+			
+			EntityTransaction tx = JPA.em().getTransaction();
+			tx.commit(); 
+			try {
+				res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+				
+				// Si tiene Baremación
+				if (resolucionFap.conBaremacion) {
+					List<LineaResolucionFAP> lineas = res.getLineasDocBaremacion(resolucionFap);
+					if (lineas != null) {
+						for (LineaResolucionFAP linea : lineas) {
+							tx.begin();
+							
+							if (((linea.docEvaluacionCompleto.uri == null) || (linea.docEvaluacionCompleto.uri.isEmpty()))) {
+								// 1. TODO: Generar documento en linea.docBaremacion
+								File docBaremacionOficial = res.generarDocumentoOficialBaremacionSinComentarios(linea);
+								// 2. Subir al AED el File anterior
+								gestorDocumentalService.saveDocumentoTemporal(linea.docEvaluacionCompleto, docBaremacionOficial);
+							}
+							tx.commit();
+						}
+					}
+				}
+				tx.begin();
+				res.resolucion.estadoInformeBaremacionSinComentarios=EstadosDocBaremacionEnum.generado.name(); //Estado a docs Generados
+				res.resolucion.save();
+				tx.commit();
+			} catch (Throwable e) {
+			// TODO Auto-generated catch block
+				play.Logger.error("Error al obtener el objeto de Resolución"+e);
+				Messages.error("Error al generar los documentos de Resolución");
+			}
+				
+	}
+	
+	public void clasificarDocumentoOficialBaremacionConComentarios(long idResolucion){
+		ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
+		ResolucionBase res = null;
+		
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		try {
+			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			
+			// Si tiene Baremación
+			if (resolucionFap.conBaremacion) {
+				List<LineaResolucionFAP> lineas = res.getLineasDocBaremacion(resolucionFap);
+				if (lineas != null) {
+					for (LineaResolucionFAP linea : lineas) {
+						tx.begin();
+						// 3. Clasificar el documento en el Expediente de la Solicitud
+						if (!linea.docEvaluacionCompletoConComentarios.clasificado) {
+							List<Documento> listDocs = new ArrayList<Documento>();
+							listDocs.add(linea.docBaremacion);
+							gestorDocumentalService.clasificarDocumentos(linea.solicitud, listDocs);
+							linea.docEvaluacionCompletoConComentarios.clasificado = true;
+							linea.save();
+						}
+						tx.commit();
+						play.Logger.info("Se clasificó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
+					}
+				}
+			}
+			tx.begin();
+			res.resolucion.estadoInformeBaremacionConComentarios=EstadosDocBaremacionEnum.clasificado.name(); //Estado a docs Generados
+			res.resolucion.save();
+			tx.commit();
+			
+//			//Una vez clasificados todos los documentos, termina la publicacion
+//			if (((res.isGenerarDocumentoBaremacionCompletoSinComentarios()) && ((resolucionFap.estadoInformeBaremacionSinComentarios != null) 
+//					&& (EstadosDocBaremacionEnum.clasificado.name().equals(resolucionFap.estadoInformeBaremacionSinComentarios.toString()))))
+//					||(!res.isGenerarDocumentoBaremacionCompletoSinComentarios())){
+//				tx.begin();
+//				res.avanzarFase_Registrada(resolucionFap);
+//				tx.commit();
+//			}
+			
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			play.Logger.error("Error al obtener el objeto de Resolución"+e);
+			Messages.error("Error al generar los documentos de Resolución");
+		}
+	}
+	
+	public void clasificarDocumentoOficialBaremacionSinComentarios(long idResolucion){
+		ResolucionFAP resolucionFap = ResolucionFAP.findById(idResolucion);
+		ResolucionBase res = null;
+		
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		try {
+			res = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			
+			// Si tiene Baremación
+			if (resolucionFap.conBaremacion) {
+				List<LineaResolucionFAP> lineas = res.getLineasDocBaremacion(resolucionFap);
+				if (lineas != null) {
+					for (LineaResolucionFAP linea : lineas) {
+						tx.begin();
+						// 3. Clasificar el documento en el Expediente de la Solicitud
+						if (!linea.docEvaluacionCompleto.clasificado) {
+							List<Documento> listDocs = new ArrayList<Documento>();
+							listDocs.add(linea.docBaremacion);
+							gestorDocumentalService.clasificarDocumentos(linea.solicitud, listDocs);
+							linea.docEvaluacionCompleto.clasificado = true;
+							linea.save();
+						}
+						tx.commit();
+						play.Logger.info("Se clasificó correctamente el documento de evaluación para el expediente: "+linea.solicitud.expedienteAed.idAed);
+					}
+				}
+			}
+			tx.begin();
+			res.resolucion.estadoInformeBaremacionSinComentarios=EstadosDocBaremacionEnum.clasificado.name(); //Estado a docs Generados
+			res.resolucion.save();
+			tx.commit();
+			
+//			//Una vez clasificados todos los documentos, termina la publicacion
+//			if (((res.isGenerarDocumentoBaremacionCompletoConComentarios()) 
+//					&& ((resolucionFap.estadoInformeBaremacionConComentarios != null)
+//					&& (EstadosDocBaremacionEnum.clasificado.name().equals(resolucionFap.estadoInformeBaremacionConComentarios.toString()))))
+//				||(!res.isGenerarDocumentoBaremacionCompletoConComentarios())){
+//				tx.begin();
+//				res.avanzarFase_Registrada(resolucionFap);
+//				tx.commit();
+//			}
+			
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			play.Logger.error("Error al obtener el objeto de Resolución"+e);
+			Messages.error("Error al generar los documentos de Resolución");
+		}
+	}
+	
+	public static boolean isGeneradoDocumentoResolucion() {
+		if (properties.FapProperties.getBoolean("fap.resoluciones.generarDocumentoResolucion"))
+			return true;
+		return false;
+	}
+
+	public static boolean isPublicarTablonAnuncios() {
+		if (properties.FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios"))
+			return true;
+		return false;
+	}
+
+	public static boolean isNotificar() {
+		if (properties.FapProperties.getBoolean("fap.resoluciones.notificar"))
+			return true;
+		return false;
 	}
 	
 }

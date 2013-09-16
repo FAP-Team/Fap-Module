@@ -19,10 +19,11 @@ h2. Parámetros
 * **representantePersonaFisica** (opcional) : Indica que en el caso de que haya representantes, éstos sólo pueden ser de tipo PersonaFisica.
 * **conDireccion** (opcional): Permite incluir todos los campos necesarios para representar un elemento Dirección.
 * **noEmail** (opcional) : Si se indica no aparece el atributo email.
-* **noSexo** (opcional) : Si se indica no aparece el atributo sexo.
-* **noNacimiento** (opcional) : Si se indica no aparece el atributo fechaNacimiento.
 * **noTelefono** (opcional) : Si se indica no aparece el atributo telefono.
-
+* **sexo** (opcional) : Si se indica aparece el atributo sexo.
+* **nacimiento** (opcional) : Si se indica aparece el atributo fechaNacimiento.
+* **noSexo** (opcional) : Si se indica no aparece el atributo sexo (opción por defecto).
+* **noNacimiento** (opcional) : Si se indica no aparece el atributo fechaNacimiento (opción por defecto).
 h2. Definición
 
 bc. Solicitante:
@@ -34,8 +35,8 @@ bc. Solicitante:
 		& ((noRepresentante?='noRepresentante') | (representantePersonaFisica?='representantePersonaFisica'))?
 		& (conDireccion?='conDireccion')?
 		& (noEmail?='noEmail')?
-		& (noSexo?='noSexo')?
-		& (noNacimiento?='noNacimiento')?
+		& (noSexo?='noSexo' | sexo?='sexo')?
+		& (noNacimiento?='noNacimiento' | nacimiento?='nacimiento')?
 		& (noTelefono?='noTelefono')?
 	)
 ;
@@ -70,25 +71,29 @@ bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicita
 
 !images/dsl-solicitante6!
 
-h4. Sin atributos telefono, email, sexo y fechaNacimiento
+h4. Sin atributos telefono y email (con representante PersonaFisica en el caso de que haya)
 
-bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono noSexo noNacimiento
-
-!images/dsl-solicitante5!
-
-!images/dsl-solicitante8!
-
-h4. Sin atributos telefono, email, sexo y fechaNacimiento (con representante PersonaFisica en el caso de que haya)
-
-bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono noSexo noNacimiento representantePersonaFisica
+bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono representantePersonaFisica
 
 !images/dsl-solicitante9!
 
-h4. Sin atributos telefono, email, sexo y fechaNacimiento (sin representante)
+h4. Sin atributos telefono y email (sin representante)
 
-bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono noSexo noNacimiento noRepresentante
+bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono noRepresentante
 
 !images/dsl-solicitante10!
+
+h4. Con atributos sexo y fechaNacimiento
+
+bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido sexo nacimiento
+
+!images/dsl-solicitante13!
+
+h4. Sin atributos telefono y email (con dirección)
+
+bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono noSexo noNacimiento conDireccion
+
+!images/dsl-solicitante12!
 
 h3. Solicitante Persona Física
 
@@ -101,3 +106,21 @@ h3. Solicitante Persona Jurídica
 bc. SolicitantePersonaJuridica personaSolicitantePersonaJuridica campo=Solicitud.solicitantePersonaJuridica titulo="Solicitante Persona Juridica"
 
 !images/dsl-solicitante11!
+
+h2. Representante de un Solicitante
+
+h3. Comprobación de que el CIF/NIP del representante no es el mismo que el del solicitante
+
+En una solicitud en la cual existan representantes del solicitante debemos comprobar que el CIF/NIP de un representante no es el mismo que el del solicitante.
+
+Para ello, debemos sobreescribir el método @validateCopy@ del controlador del popup o página donde se rellenen los campos del representante. 
+
+Luego tendremos que añadirle la línea de comprobación.
+
+En el caso de que sea el representante de una persona física:
+
+bc. CustomValidation.notEqual(dbSolicitud.solicitante.getNumeroId(), representantePersonaJuridica.getNumeroId());
+
+En el caso de que sea representante de una persona física:
+
+bc. CustomValidation.notEqual(dbSolicitud.solicitante.getNumeroId(), solicitud.solicitante.representante.fisica.getNumeroId());

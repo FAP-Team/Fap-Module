@@ -26,6 +26,7 @@ import format.FapFormat;
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.CEconomico;
+import models.CEconomicosManuales;
 import models.Criterio;
 import models.CriterioListaValores;
 import models.Documento;
@@ -61,7 +62,7 @@ import validation.CustomValidation;
 
 @With({SecureController.class, AgenteController.class, CheckAccessController.class})
 public class FichaEvaluadorController extends Controller {
-	
+
 	@Inject
 	protected static Secure secure;
 
@@ -69,7 +70,7 @@ public class FichaEvaluadorController extends Controller {
 	public static void end(){
 		Messages.deleteFlash();
 	}
-	
+
 	public static void index(Long idEvaluacion, String accion){
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		if(secure.checkGrafico("accesoEvaluacion", "visible", "leer", ids, null)){
@@ -86,7 +87,7 @@ public class FichaEvaluadorController extends Controller {
 			int duracion = tipoEvaluacion.duracion-1;
 			// Stupid hack
 			boolean admin = "administradorgestor".contains(AgenteController.getAgente().rolActivo);
-			
+
 			if (!EstadosEvaluacionEnum.evaluada.name().equals(evaluacion.estado)) {
 				BaremacionService.calcularTotales(evaluacion, admin, true);
 			}
@@ -97,7 +98,7 @@ public class FichaEvaluadorController extends Controller {
 			forbidden();
 		}
 	}
-	
+
 	public static void tabladocumentosAccesiblesEvaluador(Long idSolicitud, Long idEvaluacion) {
 
 		java.util.List<Documento> rows = new ArrayList<Documento>();
@@ -154,7 +155,7 @@ public class FichaEvaluadorController extends Controller {
 		String expedienteUrl = Router.reverse(firstPage + "Controller.index").add("idSolicitud", idSolicitud).url;
 		return expedienteUrl;
 	}
-	
+
 	@Util
 	public static void generaPDF(Long idEvaluacion, Integer duracion){
 		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
@@ -204,7 +205,7 @@ public class FichaEvaluadorController extends Controller {
 			if(evaluacion.tipo.comentariosAdministracion){
 				evaluacion.comentariosAdministracion = params.get("evaluacion.comentariosAdministracion");
 			}
-			
+
 			if(evaluacion.tipo.comentariosSolicitante){
 				evaluacion.comentariosSolicitante = params.get("evaluacion.comentariosSolicitante");
 			}
@@ -214,10 +215,10 @@ public class FichaEvaluadorController extends Controller {
 				String param = "criterio[" + criterio.id + "]";
 				String key = param + ".valor";
 				Double valor = params.get(key, Double.class);
-				
-	
+
+
 				if(criterio.tipo.claseCriterio.equals("manual") || criterio.tipo.claseCriterio.equals("automod")){
-					
+
 					// Únicamente valida cuando se va a finalizar
 					// la verificación
 					if(actionEnd || actionSave){
@@ -245,13 +246,13 @@ public class FichaEvaluadorController extends Controller {
 							criterio.valor = valor;
 					}
 				}
-				
+
 				if(!validation.hasErrors()){
 					//Comentarios
 					if(criterio.tipo.comentariosAdministracion){				
 						criterio.comentariosAdministracion = params.get(param + ".comentariosAdministracion");
 					}
-					
+
 					if(criterio.tipo.comentariosSolicitante){
 						criterio.comentariosSolicitante = params.get(param + ".comentariosSolicitante");
 					}
@@ -282,7 +283,7 @@ public class FichaEvaluadorController extends Controller {
 			} else {
 				flash(evaluacion);
 			}
-			
+
 			if(actionSave || actionEnd){
 				if(actionEnd && !validation.hasErrors()){
 					evaluacion.estado = EstadosEvaluacionEnum.evaluada.name();
@@ -290,11 +291,11 @@ public class FichaEvaluadorController extends Controller {
 					Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " finalizó correctamente");
 					ConsultarEvaluacionesController.index();
 				}
-				
+
 				if(actionSave && !validation.hasErrors()){
 					Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " se guardó correctamente");
 				}
-				
+
 				Messages.keep();
 				redirect("fap.FichaEvaluadorController.index", evaluacion.id, "editar");
 			}
@@ -303,14 +304,14 @@ public class FichaEvaluadorController extends Controller {
 			forbidden();
 		}
 	}
-	
+
 	@Util
 	private static void flash(Evaluacion evaluacion){
 		Messages.setFlash("evaluacion.id", params.get("evaluacion.id", String.class));
 		Messages.setFlash("evaluacion.totalCriterios", params.get("evaluacion.totalCriterios", String.class));
 		Messages.setFlash("evaluacion.comentariosAdministracion", params.get("evaluacion.comentariosAdministracion", String.class));
 		Messages.setFlash("evaluacion.comentariosSolicitante", params.get("evaluacion.comentariosSolicitante", String.class));
-		
+
 		for(Criterio c : evaluacion.criterios){
 			String param = "criterio[" + c.id + "]";
 			if (!c.tipo.noVisibleEvaluador) {
@@ -331,16 +332,40 @@ public class FichaEvaluadorController extends Controller {
 			Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
 		}
 	}
-	
-	public static void tablatablaCEconomicos(Long idEvaluacion) {
-		
-		java.util.List<CEconomico> rows = CEconomico
-				.find("select cEconomico from Evaluacion evaluacion join evaluacion.ceconomicos cEconomico where evaluacion.id=?",
-						idEvaluacion).fetch();
-		
-		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 
-		List<CEconomico> rowsFiltered = rows; //Tabla sin permisos, no filtra
+	public static void tablatablaCEconomicos(Long idEvaluacion) {
+
+//		java.util.List<CEconomico> rows = CEconomico
+//				.find("select cEconomico from Evaluacion evaluacion join evaluacion.ceconomicos cEconomico where evaluacion.id=?",
+//						idEvaluacion).fetch();
+
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first(); 
+
+		List<CEconomico> rowsFiltered = new ArrayList<CEconomico>();
+
+		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+		
+		SolicitudGenerica solicitud = evaluacion.solicitud;
+		
+		for(CEconomico ceconomicoS : solicitud.ceconomicos){
+			for(CEconomico ceconomicoE : evaluacion.ceconomicos){
+				if (ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)){
+						rowsFiltered.add(ceconomicoE);
+					break;
+				}
+			}
+			
+			if (ceconomicoS.tipo.tipoOtro){
+				for(CEconomico ceconomicoE : evaluacion.ceconomicos){
+					for (CEconomicosManuales ceconomicoManual: ceconomicoS.otros){
+						if (ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)){
+							rowsFiltered.add(ceconomicoE);
+						}
+					}
+				}
+			}
+		}
+		
 		List <Map<String, String>> columnasCEconomicos = new ArrayList <Map <String, String>>();
 		List<Double> totalesSolicitadoAnio = new ArrayList<Double>();
 		List<Double> totalesEstimadoAnio = new ArrayList<Double>();
@@ -363,7 +388,12 @@ public class FichaEvaluadorController extends Controller {
 			 }
 		  	 columna.put("nombre", cEconomico.tipo.nombre);
 		  	 columna.put("jerarquia", cEconomico.tipo.jerarquia);
-		  	 columna.put("permiso", "true");
+		  	 if (cEconomico.tipo.clase.equals("auto")){
+		  		columna.put("permiso", "false");
+		  	 }
+		 	 else{
+		 		 columna.put("permiso", "true");
+		 	 }
 		  	 columna.put("totalSolicitado", (new BigDecimal(Double.toString(totalesSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 		  	 columna.put("totalEstimado", (new BigDecimal(Double.toString(totalesEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 		  	 columnasCEconomicos.add(columna);

@@ -14,37 +14,60 @@ Formulario Notificacion {
 	
 	Pagina Notificaciones titulo="Mis Notificaciones" {
 		Tabla listaNotificaciones titulo="Notificaciones de la Aplicación" campo=Notificacion
-	  	  paginaEditar=NotificacionVer{
-	  	  	Columna campo=Notificacion.todosInteresados titulo="Interesados" ancho="200" expandir
-			Columna campo=Notificacion.asunto titulo="Asunto" ancho="150"   //Asunto de la notificación
-			Columna campo=Notificacion.descripcion titulo="Descripción" ancho="200"               //Descripción de la notificación
-			Columna campo=Notificacion.fechaPuestaADisposicion titulo="Fecha creación" ancho="100" //Fecha en la que se creó la notificación
-			Columna campo=Notificacion.estado titulo="Estado" ancho="150"  //Estado actual de la notificación
+	  	  paginaLeer=NotificacionVer{
+	  	  	Columna campo=Notificacion.idExpedienteAed titulo="Expediente"  ancho="100" expandir
+	  	  	Columna campo=Notificacion.fechaPuestaADisposicion titulo="Puesta Disposicion" ancho="120" expandir//Fecha en la que se creó la notificación
+	  	  	Columna campo=Notificacion.fechaLimite titulo="Fin de plazo Acceso" ancho="150" expandir
+	  	  	Columna campo=Notificacion.fechaFinPlazo titulo="Fin de plazo Respuesta" ancho="150" expandir
+	  	  	//Columna campo=Notificacion.todosInteresados titulo="Interesados" ancho="200" expandir
+			//Columna campo=Notificacion.asunto titulo="Asunto" ancho="150" expandir  //Asunto de la notificación
+			//Columna campo=Notificacion.descripcion titulo="Descripción" ancho="100"  expandir   //Descripción de la notificación
+			Columna campo=Notificacion.uri titulo="Identificador Notificacion" ancho="120" expandir //uri
+			Columna campo=Notificacion.estado titulo="Estado" ancho="120" expandir //Estado actual de la notificación
+			
+			
 		}
 	}
 	
 	Pagina NotificacionVer titulo="Ver Notificacion" campo=Notificacion noForm{
-		Grupo datosNotificacion titulo="Datos Notificacion" {
+		Grupo datosNotificacion titulo="Datos Notificación" {
 			Grupo datosBasicos borde=false permiso=noEditable{
-				Texto campo=Notificacion.todosInteresados titulo="Interesados"
+				Tabla tablaInteresados campo=Notificacion.interesados titulo="Interesados"{
+					Columna campo=Interesado.persona.nombreCompleto titulo="Nombre " expandir
+					Columna campo=Interesado.persona.numeroId titulo="NIF/CIF" expandir //Sobreescribir 
+					Columna campo=Interesado.email expandir			
+				}
 				Combo campo=Notificacion.estado titulo="Estado"
-				Fecha campo=Notificacion.fechaPuestaADisposicion titulo="Fecha Generación"
-				Fecha campo=Notificacion.fechaAcceso titulo="Fecha Lectura"
+				Fecha campo=Notificacion.fechaPuestaADisposicion titulo="Fecha Puesta a Disposición"
+				Fecha campo=Notificacion.fechaAcceso titulo="Fecha de Acceso"
+				Texto campo=Notificacion.plazoAcceso titulo="Plazo de Acceso"
+				Fecha campo=Notificacion.fechaLimite titulo="Fin de plazo de Acceso"
+				Grupo datosNoVisiblesUsuario borde=false permiso=noVisibleUsuarioNotificacion {
+					Texto campo=Notificacion.frecuenciaRecordatorioAcceso titulo="Días recordatorio de Acceso"
+					Texto campo=Notificacion.plazoRespuesta titulo="Plazo de Respuesta"
+					Fecha campo=Notificacion.fechaFinPlazo titulo="Fin de plazo de respuesta"
+					Texto campo=Notificacion.frecuenciaRecordatorioRespuesta titulo="Días recordatorio de Respuesta"
+				}
+				Texto campo=Notificacion.idExpedienteAed titulo="Expediente"
+				Texto campo=Notificacion.uri titulo="ID de la notificación (URI)"
 				Texto campo=Notificacion.asunto titulo="Asunto"
 				AreaTexto campo=Notificacion.descripcion titulo="Descripción" filas=5 ancho="500px"
 			}
-			Grupo gEnlaceRequerimiento borde=false mostrarSiCampo Notificacion.estado="leida", "leidaplazorespuestavencido", "respondida"{
+			//Grupo gEnlaceRequerimiento borde=false mostrarSiCampo Notificacion.estado="leida", "leidaplazorespuestavencido", "respondida"{
 				// Ojo HTML SOBREESCRITO, para poder obtener la URL del documento de notificacion (de la lista), que si no so se puede en el DSL.
-				Enlace enlaceRequerimiento campo=Notificacion.documentoPuestaADisposicion.urlDescarga titulo="Ver Requerimiento" destino="_blank" estilo="btn"
-			}
+				//Enlace enlaceRequerimiento campo=Notificacion.documentoPuestaADisposicion.urlDescarga titulo="Ver Requerimiento" destino="_blank" estilo="btn"
+			//}
 			Enlace enlaceSede url="" estilo="btn" titulo="Ir a la Sede Electrónica" // Sobreescrito
 			
 		}
 		
 		Enlace atras anterior titulo="Volver a Mis Notificaciones" estilo="btn"
-//		Tabla listaDocumentosNotificados titulo="Documentos notificados" campo=Notificacion.documentosANotificar {
-//			Columna funcion="<a href=\"${DocumentoNotificacion.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100" expandir
-//		}
+		
+		Grupo grupoDocumentos titulo="Documentos" permiso=noVisibleUsuarioNotificacion {
+			Tabla listaDocumentosNotificados titulo="Documentos notificados" campo=Notificacion.documentosANotificar {
+				Columna funcion="<a href=\"${DocumentoNotificacion.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100" expandir
+			}
+		}
 	}
 	
 //	Pagina NotificacionAcceder titulo="Confirmar Notificacion" noForm campo=Notificacion permiso=notificacionEditableSiNoLeida{

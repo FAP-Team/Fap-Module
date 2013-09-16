@@ -250,7 +250,7 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 						tramite.registrar();
 						if (dbRegistro.fasesRegistro.clasificarAed){
 							tramite.cambiarEstadoSolicitud();
-							registroModificacion.fechaFinalizacion = dbRegistro.informacionRegistro.fechaRegistro;
+							registroModificacion.fechaRegistro = dbRegistro.informacionRegistro.fechaRegistro;
 							registroModificacion.save();
 						}
 						else{
@@ -347,7 +347,7 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 							tramite.registrar();
 							if (dbRegistro.fasesRegistro.clasificarAed){
 								tramite.cambiarEstadoSolicitud();
-								registroModificacion.fechaFinalizacion = dbRegistro.informacionRegistro.fechaRegistro;
+								registroModificacion.fechaRegistro = dbRegistro.informacionRegistro.fechaRegistro;
 								registroModificacion.save();
 							}
 							else{
@@ -532,7 +532,7 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 					tramite.registrar();
 					if (dbRegistro.fasesRegistro.clasificarAed){
 						tramite.cambiarEstadoSolicitud();
-						registroModificacion.fechaFinalizacion = dbRegistro.informacionRegistro.fechaRegistro;
+						registroModificacion.fechaRegistro = dbRegistro.informacionRegistro.fechaRegistro;
 						registroModificacion.save();
 					}
 					else{
@@ -564,7 +564,7 @@ public class SolicitudPresentarModificacionFAPController extends SolicitudPresen
 			dbSolicitud.save();
 			Messages.ok("Solicitud Registrada correctamente");
 			log.info("Acción Editar de página: " + "gen/SolicitudPresentarModificacionFAP/SolicitudPresentarModificacionFAP.html" + " , intentada con éxito");
-			redirect("PresentarModificacionFAPController.index", "editar", idSolicitud, idRegistroModificacion, idRegistro);
+			redirect("PresentarFAPController.index", "editar", idSolicitud, dbSolicitud.registro.id);
 		} else
 			log.info("Acción Editar de página: " + "gen/SolicitudPresentarModificacionFAP/SolicitudPresentarModificacionFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		SolicitudPresentarModificacionFAPController.frmRegistrarRender(idSolicitud, idRegistroModificacion, idRegistro);

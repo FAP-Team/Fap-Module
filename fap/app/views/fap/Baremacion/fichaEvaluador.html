@@ -50,127 +50,8 @@
 			
 	#{/fap.tabla}
 #{/if}
-
-#{form play.mvc.Router.reverse('fap.FichaEvaluadorController.save' , ['idEvaluacion':evaluacion?.id]), class:"form-stacked"}
-
-<input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>
-
-#{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
-
-	%{
-		def paramName  = "evaluacion.totalCriterios"
-		def valorTC = messages.Messages.flashOrValue(paramName, evaluacion.totalCriterios)
-	}%
-
-	#{simple.uneditable name:paramName, value:valorTC, label: "Total puntuación", format:'double'/}
-	
-	#{list items:evaluacion.tipo.getSortedDatosAdicionales(), as:"tipoDatoAdicional"}
-		#{simple.uneditable name:"tipoDatoAdicional.descripcion", value:services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion), label: tipoDatoAdicional.descripcion /}	
-	#{/list}
-
-	#{if evaluacion.tipo.comentariosAdministracion}
-		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion), disabled: !puedoGuardar/}
-	#{/if}
-	
-	#{if evaluacion.tipo.comentariosSolicitante}
-		#{simple.textarea name:'evaluacion.comentariosSolicitante', label:'Comentarios solicitante', value:messages.Messages.flashOrValue("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante) ,disabled: !puedoGuardar/}
-	#{/if}
-	
-	<div id="indice">
-		#{if hasCriterios}
-			<div class="name">Criterios de evaluacion</div>
-			<ul>
-			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
-				<li><a href="#criterio${tcriterio.jerarquia}">${tcriterio.jerarquia} - ${tcriterio.nombre}</a></li>	
-			#{/list}	
-			</ul>	
-		#{/if}
-		
-		#{if hasCEconomicos}
-			<div class="name">Conceptos económicos</div>
-			<ul>	
-			#{list items:evaluacion.tipo.ceconomicos, as:'tceconomico'}
-				<li><a href="#ceconomico${tceconomico.jerarquia}">${tceconomico.jerarquia} - ${tceconomico.nombre}</a></li>	
-			#{/list}
-			</ul>		
-		#{/if}
-	</div>
-		
-#{/fap.grupo}
-
-#{if hasCriterios}
-	#{fap.grupo titulo:'Criterios de evaluación', id:'Criterios'}
-	
-	#{list items:evaluacion.criterios, as:'criterio'}
-		%{
-			def paramName  = "criterio[${criterio.id}]"
-			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",")  
-			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor);
-			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", criterio.comentariosAdministracion);
-			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", criterio.comentariosSolicitante);
-			def tam=500
-		}%
-		
-		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
-			<div class="name">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</div>
-			#{if criterio.tipo.descripcion != null}
-				<div class="control-group">
-					<p>#{verbatim}${criterio.tipo.descripcion}#{/verbatim}</p>
-				</div>
-			#{/if}
-			
-			#{if criterio.tipo.instrucciones != null}
-				<div class="control-group">
-					<h3>Instrucciones</h3> 
-					<p>#{verbatim}${criterio.tipo.instrucciones}#{/verbatim}</p>
-				</div>
-			#{/if}
-			
-			#{if (criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod"))}
-				#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam, format:'double'/}
-			#{/if}
-
-			#{elseif criterio.tipo.claseCriterio.equals("automod")}
-				
-			#{/elseif}
-			
-			#{elseif criterio.tipo.claseCriterio.equals("manual")}
-				#{if criterio.tipo.tipoValor.equals('lista')}
-					#{if puedoGuardar}
-						#{simple.select name:paramName + ".valor", options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: criterio.tipo.mostrarValor, ancho: tam/}
-					#{/if}
-					#{else}
-						#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam/}
-					#{/else}
-				#{/if}
-				
-				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
-					#{if puedoGuardar}
-						#{simple.text name:paramName + ".valor", value:valor, error: error, ancho: tam, format:'double' /}
-					#{/if}
-					#{else}
-						#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam, format:'double'/}
-					#{/else}
-				#{/elseif}
-			#{/elseif}
-			
-			
-			#{if criterio.tipo.comentariosAdministracion}
-				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion, disabled: !puedoGuardar/}
-			#{/if}
-			
-			#{if criterio.tipo.comentariosSolicitante}
-				#{simple.textarea name:paramName + ".comentariosSolicitante", label:'Comentarios solicitante', value: comentariosSolicitante, disabled: !puedoGuardar/}
-			#{/if}
-		
-		</div>	
-	#{/list}
-				
-	#{/fap.grupo}
-#{/if}
-
 #{if hasCEconomicos}
-	#{fap.grupo titulo:'Conceptos económicos', id: 'CEconomicos'}
+	#{fap.grupo titulo:'Conceptos económicos', id: 'CEconomicos'} 
 
 		<div id="tablaCEconomicos" class="tabla"></div>
 
@@ -328,7 +209,17 @@
 				        	#{if puedoGuardar}, boton_editar #{/if}
         				]
     				}
-				]
+				],
+				viewConfig: {
+					getRowClass: function(record, index, rowParams, ds) {
+						if (record.data.permiso != "false") {
+							return "filaEditable" 
+						} 
+						else { 
+							return "filaNoEditable" 
+						}
+					}
+				}
 			});
 			
 			grid.addListener("selectionchange", function(){
@@ -356,7 +247,126 @@
 	
 	#{/fap.grupo}
 	
+#{/if} 
+#{form play.mvc.Router.reverse('fap.FichaEvaluadorController.save' , ['idEvaluacion':evaluacion?.id]), class:"form-stacked"}
+
+<input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>
+
+#{fap.grupo titulo:'Evaluación', id:'Evaluacion'}
+
+	%{
+		def paramName  = "evaluacion.totalCriterios"
+		def valorTC = messages.Messages.flashOrValue(paramName, evaluacion.totalCriterios)
+	}%
+
+	#{simple.uneditable name:paramName, value:valorTC, label: "Total puntuación", format:'double'/}
+	
+	#{list items:evaluacion.tipo.getSortedDatosAdicionales(), as:"tipoDatoAdicional"}
+		#{simple.uneditable name:"tipoDatoAdicional.descripcion", value:services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion), label: tipoDatoAdicional.descripcion /}	
+	#{/list}
+
+	#{if evaluacion.tipo.comentariosAdministracion}
+		#{simple.textarea name:'evaluacion.comentariosAdministracion', label:'Comentarios administración', value:messages.Messages.flashOrValue("evaluacion.comentariosAdministracion", evaluacion.comentariosAdministracion), disabled: !puedoGuardar/}
+	#{/if}
+	
+	#{if evaluacion.tipo.comentariosSolicitante}
+		#{simple.textarea name:'evaluacion.comentariosSolicitante', label:'Comentarios solicitante', value:messages.Messages.flashOrValue("evaluacion.comentariosSolicitante", evaluacion.comentariosSolicitante) ,disabled: !puedoGuardar/}
+	#{/if}
+	
+	<div id="indice">
+		#{if hasCriterios}
+			<div class="name">Criterios de evaluacion</div>
+			<ul>
+			#{list items:evaluacion.tipo.criterios, as:'tcriterio'}
+				<li><a href="#criterio${tcriterio.jerarquia}">${tcriterio.jerarquia} - ${tcriterio.nombre}</a></li>	
+			#{/list}	
+			</ul>	
+		#{/if}
+		
+	<!--	#{if hasCEconomicos}
+			<div class="name">Conceptos económicos</div>
+			<ul>	
+			#{list items:evaluacion.tipo.ceconomicos, as:'tceconomico'}
+				<li><a href="#ceconomico${tceconomico.jerarquia}">${tceconomico.jerarquia} - ${tceconomico.nombre}</a></li>	
+			#{/list}
+			</ul>		
+		#{/if} -->
+	</div>
+		
+#{/fap.grupo}
+
+#{if hasCriterios}
+	#{fap.grupo titulo:'Criterios de evaluación', id:'Criterios'}
+	
+	#{list items:evaluacion.criterios, as:'criterio'}
+		%{
+			def paramName  = "criterio[${criterio.id}]"
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",")  
+			def valor = messages.Messages.flashOrValue(paramName + ".valor", criterio.valor);
+			def comentariosAdministracion = messages.Messages.flashOrValue(paramName + ".comentariosAdministracion", criterio.comentariosAdministracion);
+			def comentariosSolicitante = messages.Messages.flashOrValue(paramName + ".comentariosSolicitante", criterio.comentariosSolicitante);
+			def tam=500
+		}%
+		
+		<div class="criterio" id="criterio${criterio.tipo.jerarquia}">
+			<div class="name">${criterio.tipo.jerarquia} - ${criterio.tipo.nombre}</div>
+			#{if criterio.tipo.descripcion != null}
+				<div class="control-group">
+					<p>#{verbatim}${criterio.tipo.descripcion}#{/verbatim}</p>
+				</div>
+			#{/if}
+			
+			#{if criterio.tipo.instrucciones != null}
+				<div class="control-group">
+					<h3>Instrucciones</h3> 
+					<p>#{verbatim}${criterio.tipo.instrucciones}#{/verbatim}</p>
+				</div>
+			#{/if}
+			
+			#{if (criterio.tipo.claseCriterio.equals("auto") || criterio.tipo.claseCriterio.equals("automod"))}
+				#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam, format:'double'/}
+			#{/if}
+
+			#{elseif criterio.tipo.claseCriterio.equals("automod")}
+				
+			#{/elseif}
+			
+			#{elseif criterio.tipo.claseCriterio.equals("manual")}
+				#{if criterio.tipo.tipoValor.equals('lista')}
+					#{if puedoGuardar}
+						#{simple.select name:paramName + ".valor", options:criterio.tipo.listaValores, optionsText:'descripcion', optionsValue:'valor', value:valor, error: error, showKeyInLabel: criterio.tipo.mostrarValor, ancho: tam/}
+					#{/if}
+					#{else}
+						#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam/}
+					#{/else}
+				#{/if}
+				
+				#{elseif criterio.tipo.tipoValor.equals('cantidad')}
+					#{if puedoGuardar}
+						#{simple.text name:paramName + ".valor", value:valor, error: error, ancho: tam, format:'double' /}
+					#{/if}
+					#{else}
+						#{simple.uneditable name:paramName + ".valor", value:valor, ancho: tam, format:'double'/}
+					#{/else}
+				#{/elseif}
+			#{/elseif}
+			
+			
+			#{if criterio.tipo.comentariosAdministracion}
+				#{simple.textarea name:paramName + ".comentariosAdministracion", label:'Comentarios administración', value: comentariosAdministracion, disabled: !puedoGuardar/}
+			#{/if}
+			
+			#{if criterio.tipo.comentariosSolicitante}
+				#{simple.textarea name:paramName + ".comentariosSolicitante", label:'Comentarios solicitante', value: comentariosSolicitante, disabled: !puedoGuardar/}
+			#{/if}
+		
+		</div>	
+	#{/list}
+				
+	#{/fap.grupo}
 #{/if}
+
+
 
 
 

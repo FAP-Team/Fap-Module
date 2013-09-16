@@ -53,7 +53,8 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Boolean activoFH default="false"
 	OneToMany CertificadoSolicitado certificados
 	Cesion cesion
-	Boolean activoModificacion default="false"
+	Boolean activoModificacion transient
+	String estadoAntesModificacion	//Estado al que se vuelve al finalizar la modificacion
 	OneToMany RegistroModificacion registroModificacion
 	String fechaARestaurarStr transient
 }
@@ -147,6 +148,7 @@ Entidad Documento {
 	DateTime fechaSubida
 	DateTime fechaRegistro
 	String urlDescarga transient
+	String enlaceDescarga transient
 	String urlDescargaFirmado transient
 	String enlaceDescargaFirmado transient
 	Boolean verificado	// Indica si el documento ya ha sido verificado
@@ -671,6 +673,8 @@ Entidad Notificacion {
 	String asunto							// Asunto sobre lo que va la notificación
 	DateTime fechaPuestaADisposicion		// Fecha en la que se creó la notificación
 	DateTime fechaAcceso					// Fecha en la que algún interesado accedió a la notificación 
+	DateTime fechaLimite					// Fecha máxima para acceder a la notificación (ACCESO)
+	DateTime fechaFinPlazo					// Fecha máxima para responder a la notificacion (RESPUESTA)
 	OneToMany DocumentoNotificacion documentosANotificar
 	OneToMany DocumentoNotificacion documentosAnexos
 	OneToMany DocumentoNotificacion documentosRespuesta
@@ -679,6 +683,7 @@ Entidad Notificacion {
 	Documento documentoAnulacion
 	Documento documentoRespondida
 	Documento documentoAcuseRecibo
+	Documento documentoNoAcceso
 	Registro registro
 	Integer plazoAcceso					// Nº de dias naturales a partir de la fecha de puesta a disposición, en los cuales legalmente se debe recibir la notificación por parte del interesado
 	Integer frecuenciaRecordatorioAcceso	// Cada cuantos dias naturales, a patir de la fecha de puesta a disposición, se envía un recordatorio al/los interesado/s de que tiene/n pendiente el acceso.
@@ -934,12 +939,18 @@ Entidad TramitesVerificables {
 Entidad RegistroModificacion {
 	DateTime fechaCreacion
 	DateTime fechaLimite
-	DateTime fechaFinalizacion
+	DateTime fechaCancelacion
+	DateTime fechaRegistro
 	Registro registro noConstruct
 	OneToMany JsonPeticionModificacion jsonPeticionesModificacion
 	String estado transient
+	Boolean enRecuperacion default = "false"// Flag que se activa al pulsar el botón "recuperar modificación" y se desactiva cuando acaba la recuperación
+	String estadoValue transient
 }
 
 Entidad JsonPeticionModificacion{
+	DateTime fechaCreacion
 	LongText jsonPeticion
+	DateTime fechaRestauracion
+	Boolean restaurado default = "false"
 }

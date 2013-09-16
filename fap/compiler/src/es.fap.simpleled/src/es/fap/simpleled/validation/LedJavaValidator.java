@@ -218,20 +218,14 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 		if ((container != null ) && (container instanceof Pagina)){
 			Pagina pagina = (Pagina) container;
 			if (pagina.isCopia()){
-				if (tabla.getPopup() != null) 
-					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_Popup());
-				if (tabla.getPopupBorrar() != null)
-					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupBorrar());
-				if (tabla.getPopupCrear() != null)
-					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupCrear());
-				if (tabla.getPopupEditar() != null)
-					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupEditar());
-				//if (tabla.getPagina() != null)
-				//	myError("No se puede Crear ni Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_Pagina());
-				//if (tabla.getPaginaCrear() != null)
-				//	myError("No se pueden Crear campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaCrear());
-				//if (tabla.getPaginaBorrar() != null)
-				//	myError("No se pueden Borrar campos a modificar. Sólo se permite la acción editar", ledPackage.getTabla_PaginaBorrar());
+//				if (tabla.getPopup() != null) 
+//					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_Popup());
+//				if (tabla.getPopupBorrar() != null)
+//					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupBorrar());
+//				if (tabla.getPopupCrear() != null)
+//					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupCrear());
+//				if (tabla.getPopupEditar() != null)
+//					myError("No se pueden usar PopUps para editar campos a modificar", ledPackage.getTabla_PopupEditar());
 			}
 		}
 	}
@@ -401,10 +395,6 @@ public class LedJavaValidator extends AbstractLedJavaValidator {
 
 			if ((pagina.isCopia()) && (!campo.getEntidad().getName().equalsIgnoreCase(LedCampoUtils.getUltimaEntidad(pagina.getCampo()).getName()))){
 				error("No se puede usar atributos de entidades no pertenecientes a Solicitud en páginas de copia", ledPackage.getCampo_Entidad());
-			}
-			
-			if ((pagina.isCopia()) &&  (atributo != null) && (atributo.isIsTransient())){
-				error("No se puede usar atributos Transient en paginas 'copia'", ledPackage.getCampo_Atributos());
 			}
 		}
 	}

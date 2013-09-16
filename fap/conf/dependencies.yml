@@ -1,11 +1,11 @@
 # Application dependencies
 
-self: play -> fap 2.2.1
+self: play -> fap 2.3.2RC1
 
 
 require:
     - play 1.2.4 :
-         exclude:
+         exclude: 
           - junit
     - play -> pdf 0.6
     - play -> less 0.9
@@ -78,7 +78,7 @@ require:
         transitive: false
     - platinowssinterceptor -> platinowssinterceptor 2
     
-    - es.gobcan.platino.servicios.enotificacion ->  notificaciones 1.1:
+    - es.gobcan.platino.servicios.enotificacion ->  notificaciones v20130711:
         transitive: false
     
     - es.mityc -> facturae 2.0:

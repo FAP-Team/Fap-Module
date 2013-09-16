@@ -42,6 +42,9 @@ public class BaremacionFAP {
 	
 	public static void validarCEconomicos(long idSolicitud, List<CEconomico> ceconomicos){
 	}
+
+	public static void validarCEconomicosCopia(long idSolicitud, List<CEconomico> ceconomicos){
+	}
 	
 	public static List<Documento> getDocumentosAccesibles(Long idSolicitud, Long idEvaluacion){
 		List <Documento> documentos = new ArrayList<Documento>();

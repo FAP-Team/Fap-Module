@@ -1,5 +1,46 @@
 h2. Changelog
 
+h3 Versión 2.3RC12
+* Fixed bug en FichaEvaluadorController (Salen solo los ceconomicos manuales propios y los automáticos en otro color)
+* Fixed bug en almacenamiendo de documento de noAcceso.
+* Separado el job de notificaciones en dos (uno actualiza fechas y estado y otro los documentos).
+* Fixed bug en los códigos de exclusión.
+
+h3. Versión 2.3RC9
+* Fixed bug en modificaciones (copia de documentos a expediente AED)
+* Añadida tabla de recibos de modificación en página de verificacion (en caso de que existan)
+* Fixed minor bug en ActualizarServiciosWeb.
+* Añadido Rol revisor a MisNotificaciones.
+* Sombreado en tabla de Conceptos Económicos en Baremación y modificados permisos para que no deje editar conceptos autimáticos.
+
+h3. Versión 2.3RC8
+
+* Modificaciones en fichaEvaluador: Cambio de posición de la tabla de conceptos económicos y eliminada la lista de conceptos económicos. 
+* Añadido el nuevo estado "Firmada y Registrada" una vez que se firma la notificación.
+* Añadido popup de detalle en el justificante de las aportaciones (hash y uri)
+* Añadido que se muestre uri y hash de documentos ya subidos en el detalle de los documentos.
+* Añadido permiso que muestra datos de la notificacion sólo si el usuario ya la ha recibido.
+* Corregidas las tildes que faltaban en la página de detalle de la notificación.
+* Control de fechas que sean null devueltas por el servicio de notificaciones.
+* Fixed bug en el enlace de descarga del justificante las modificaciones (no mostrar enlace de descarga si no existe).
+* Añadida comprobación de que la descripción de un documento no supere los 255 caracteres.
+* Añadido cambios para tener en cuenta en verificaciones el documento de justificante de modificacion en caso de que se hayan registrado modificaciones
+
+h3. Versión 2.3RC5
+
+* Fixed bugs en CEconomicosCopia
+* Fixed bug en Aportación de documentación
+
+h3. Versión 2.3RC4
+
+* Permitida la edicion de la fecha de finalización de una modificacion.
+* Incluida recuperación en modificación de entidades no básicas.
+* Fixed bug en la suma de los conceptos económicos manuales al recuperar.
+
+h3. Versión 2.3RC3
+
+* Copia conceptos económicos
+
 h3. Versión 2.2.1
 
 * Fixed bug botón editar solicitud para usuario.

@@ -195,8 +195,7 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 	 */
 	@Override
 	public void cambiarEstadoSolicitud() {
-		solicitud.estado=EstadosSolicitudEnum.iniciada.name();
-		solicitud.activoModificacion=false;
+		solicitud.estado=solicitud.estadoAntesModificacion;
 		solicitud.save();
 	}
 	
@@ -221,5 +220,5 @@ public class TramiteSolicitudModificacionFap extends TramiteSolicitud {
 			this.registro.fasesRegistro.save();
 		}
 	}
-
+	
 }

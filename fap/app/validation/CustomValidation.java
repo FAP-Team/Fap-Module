@@ -474,6 +474,20 @@ public class CustomValidation {
 		return result;
 	}
 	
+	public static ValidationResult notEqual(String comprobar, String copia) {
+		ValidationResult result = new ValidationResult();
+		if (comprobar.equals(copia)){
+			String message = "El NIP/CIF del representante no puede ser el mismo que el del solicitante";
+			String[] variables = new String[0];
+			CustomValidation.error("El NIP/CIF del representante no puede ser el mismo que el del solicitante", "solicitud.solicitante.representante.juridica.cif", copia);
+		}
+		else {
+			
+			result.ok = true;
+		}
+		return result;
+    }
+	
 	public static ValidationResult compare(String comprobar, String copia) {
 		ValidationResult result = new ValidationResult();
 		if (comprobar.equals(copia))

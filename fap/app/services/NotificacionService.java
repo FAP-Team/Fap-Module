@@ -48,4 +48,6 @@ public interface NotificacionService {
 	public boolean isConfigured();
 	
 	public void mostrarInfoInyeccion();
+	
+	public String obtenerUriDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento); 
 }

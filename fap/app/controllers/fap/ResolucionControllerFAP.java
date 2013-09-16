@@ -16,6 +16,7 @@ import resolucion.ResolucionBase;
 import resolucion.ResolucionMultipleTotal;
 import resolucion.ResolucionParcial;
 import resolucion.ResolucionSimple;
+import resolucion.ResolucionSimpleEjecucion;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
 import tags.ComboItem;
@@ -46,6 +47,8 @@ public class ResolucionControllerFAP extends InvokeClassController {
 			return new ResolucionParcial(resolucion);
 		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleTotal.name())) {
 			return new ResolucionSimple(resolucion);
+		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleEjecucion.name())) {
+			return new ResolucionSimpleEjecucion(resolucion);
 		}
 		return new ResolucionBase(resolucion);
 	}

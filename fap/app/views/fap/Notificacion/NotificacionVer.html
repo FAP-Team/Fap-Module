@@ -45,9 +45,7 @@
 
 			#{fap.combo campo:'notificacion.estado', titulo:'Estado' /}		
 
-			#{fap.fecha campo:'notificacion.fechaPuestaADisposicion', titulo:'Fecha Puesta a Disposición' /}		
-
-			#{fap.fecha campo:'notificacion.fechaAcceso', titulo:'Fecha de Acceso' /}		
+			#{fap.fecha campo:'notificacion.fechaPuestaADisposicion', titulo:'Fecha Puesta a Disposición' /}			
 
 			#{fap.texto campo:'notificacion.plazoAcceso', titulo:'Plazo de Acceso' /}		
 
@@ -68,8 +66,6 @@
 			#{/fap.grupo}
 
 			#{fap.grupo borde:false, mostrarSi:['leida', 'leidaplazorespuestavencido', 'respondida'].contains(notificacion?.estado?.toString())}
-
-			#{fap.enlace estilo:'btn', id:'enlaceRequerimiento', target:'_blank', titulo:'Ver Requerimiento', url:notificacion.documentoPuestaADisposicion.urlDescarga /}
 
 				#{/fap.grupo}
 				#{fap.grupo titulo:'Documentos', permiso:'noVisibleUsuarioNotificacion'}

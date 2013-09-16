@@ -11,7 +11,7 @@ No tiene parámetros.
 h2. Definición
 
 bc.. Menu:
-	'Menu' '{'
+	elemento='Menu' '{'
 		elementos +=MenuElemento+
 	'}'
 ;

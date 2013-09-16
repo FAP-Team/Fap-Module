@@ -70,12 +70,8 @@ public class NotificacionUtils {
 		notificacion.fechaPuestaADisposicion = new DateTime(notificacionType.getEstadoNotificacion().getFechaCreacion().toGregorianCalendar().getTime());
 		if (notificacionType.getFechaHoraFinPlazoRespuesta() != null)
 			notificacion.fechaFinPlazo = new DateTime(notificacionType.getFechaHoraFinPlazoRespuesta().toGregorianCalendar().getTime());
-		else
-			notificacion.fechaFinPlazo = new DateTime().withTime(0, 0, 0, 0);
 		if (notificacionType.getFechaHoraFinPlazoAcceso() != null)
 			notificacion.fechaLimite = new DateTime(notificacionType.getFechaHoraFinPlazoAcceso().toGregorianCalendar().getTime());
-		else
-			notificacion.fechaLimite = new DateTime().withTime(0, 0, 0, 0);
 		notificacion.idExpedienteAed = notificacionType.getNumeroExpediente();
 		notificacion.plazoAcceso = notificacionType.getPlazoAcceso();
 		notificacion.plazoRespuesta = notificacionType.getPlazoRespuesta();
@@ -117,6 +113,26 @@ public class NotificacionUtils {
 					Notificacion dbNotificacion = (Notificacion) Notificacion.find("select notificacion from Notificacion notificacion where notificacion.uri=?", notificacion.uri).first();
 					if (dbNotificacion != null){
 						dbNotificacion.actualizar(notificacion);
+						dbNotificacion.save();
+					}
+				}
+			} else {
+				play.Logger.error("Hubo un problema al actualizar desde el servicio web, las notificaciones");
+			}
+		} else {
+			play.Logger.error("No se pudo inyectar el servicio de Notificaciones");
+		}
+	}
+	
+	@Transactional
+	public static void recargarDocumentosNotificacionesFromWS (String uriProcedimiento){
+		if (notificacionService != null){
+			List<Notificacion> notificaciones = notificacionService.getNotificaciones(uriProcedimiento);
+			if (notificaciones != null){
+				for (Notificacion notificacion: notificaciones){
+					Notificacion dbNotificacion = (Notificacion) Notificacion.find("select notificacion from Notificacion notificacion where notificacion.uri=?", notificacion.uri).first();
+					if (dbNotificacion != null){
+						dbNotificacion.actualizarDocumentacion(notificacion);
 						dbNotificacion.save();
 					}
 				}

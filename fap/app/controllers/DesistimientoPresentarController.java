@@ -85,7 +85,7 @@ public class DesistimientoPresentarController extends DesistimientoPresentarCont
 			if (!Messages.hasErrors()){ //Si no hubo errores firmando
 				//Si han firmado todos -> firmado el desistimiento
 				if (dbSolicitud.desistimiento.registro.fasesRegistro.firmada){ //Si no hubo errores firmando
-					dbSolicitud.estado = EstadosSolicitudEnum.desistido.name();
+					//dbSolicitud.estado = EstadosSolicitudEnum.desistido.name();
 					dbSolicitud.save();
 				}
 			}
@@ -117,6 +117,8 @@ public class DesistimientoPresentarController extends DesistimientoPresentarCont
 			TramiteDesistimiento tramite = new TramiteDesistimiento(dbSolicitud);
 			try {
 				tramite.registrar();
+				dbSolicitud.estado = EstadosSolicitudEnum.desistido.name();
+				dbSolicitud.save();
 			} catch (RegistroServiceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

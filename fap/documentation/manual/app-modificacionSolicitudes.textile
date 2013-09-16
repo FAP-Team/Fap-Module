@@ -91,18 +91,26 @@ bc.  Wiki {"El representante de este solicitante sólo puede ser de tipo Persona
 * *Persona*: El elemento Persona/PersonaFísica/PersonaJuridica no está soportado en la modificación. Para obtener un código equivalente, puede hacerse lo siguiente:
 *Sustituir:* 
 
-bc. PersonaFisica tecnico titulo = "Persona Física" campo = PersonalProyecto.personaFisica
+bc. PersonaFisica tecnico titulo = "Técnico" campo = PersonalProyecto.tecnico
 
 *Por:*
 
-bc. Grupo titulo = "Técnico Persona Física" {
-       Nip TecNipTipo titulo="NIP" campo=PersonalProyecto.tecnico.nip
-       Texto TecNombre titulo="Nombre" campo=PersonalProyecto.personaFisica.nombre
-       Texto TecPrimerApellido titulo="Primer Apellido" campo=PersonalProyecto.personaFisica.primerApellido
-       Texto TecSegundoApellido titulo="Segundo Apellido" campo=PersonalProyecto.personaFisica.segundoApellido
-       Fecha TecFechaNacimiento titulo="Fecha Nacimiento" campo=PersonalProyecto.personaFisica.fechaNacimiento
-       ...
-    }
+bc. Grupo titulo = "Técnico" {
+	Nip TecNipTipo titulo="NIP" campo=PersonalProyecto.tecnico.nip
+	Texto TecNombre titulo="Nombre" campo=PersonalProyecto.tecnico.nombre
+	Texto TecPrimerApellido titulo="Primer apellido" campo=PersonalProyecto.tecnico.primerApellido
+	Texto TecSegundoApellido titulo="Segundo apellido" campo=PersonalProyecto.tecnico.segundoApellido
+}
+
+*Además, se debe modificar el método validatecopy del controlador de la página:*
+
+bc. ...
+CustomValidation.valid("personalProyecto.tecnico.nip", personalProyecto.tecnico.nip);
+copyModificacionCamposSimples("personalProyecto.tecnico.nip.tipo", personalProyecto.tecnico.nip.tipo, dbPersonalProyecto.tecnico.nip.tipo, peticionModificacion);
+dbPersonalProyecto.tecnico.nip.tipo = personalProyecto.tecnico.nip.tipo;
+copyModificacionCamposSimples("personalProyecto.tecnico.nip.valor", personalProyecto.tecnico.nip.valor, dbPersonalProyecto.tecnico.nip.valor, peticionModificacion);
+dbPersonalProyecto.tecnico.nip.valor = personalProyecto.tecnico.nip.valor;
+...
 
 * *Direccion:* El elemento Direccion/DireccionCanaria/DireccionNacional /DireccionInternacional no está soportado en la modificación. Para obtener un código equivalente, puede hacerse lo siguiente:
 
@@ -112,16 +120,93 @@ bc. Direccion titulo="La Dirección" campo=Solicitud.direccionTest.direccion
 
 *Por:*
 
-bc. Combo comboDireccion titulo="Tipo" campo=Solicitud.direccionTest.direccion.tipo 
-		Grupo grupoCanaria mostrarSiCombo comboDireccion = "canaria" titulo="Direccion" {
-			Combo comboProvincia campo=Solicitud.direccionTest.direccion.provincia titulo= "Provincia" requerido
-			Combo comboIsla campo=Solicitud.direccionTest.direccion.isla titulo="Isla" dependeDe=comboProvincia requerido
-			Combo cmbMunicipio campo=Solicitud.direccionTest.municipio titulo="Municipio" dependeDe=comboIsla requerido
-			Texto textoLocalidad campo=Solicitud.direccionTest.direccion.localidad titulo="Localidad" requerido
-			Texto textoCodigoPostal campo=Solicitud.direccionTest.direccion.codigoPostal titulo="Codigo Postal" requerido
-			Texto textoNumero campo=Solicitud.direccionTest.direccion.numero titulo="Numero" requerido
-			Texto textoPPO campo=Solicitud.direccionTest.direccion.otros titulo="Puerta/Piso/Otros" requerido
-		}
-		....
+bc. Grupo domicilioFiscal titulo = "Domicilio Fiscal" {
+	Combo comboDireccion titulo = "Tipo Dirección" campo = Solicitud.datosSolicitante.domicilioFiscal.tipo
+	Grupo grupoDireccionCanaria mostrarSiCombo comboDireccion = "canaria" titulo = "Direccion" borde = false enviarCamposOcultos = false {
+		Combo comboProvinciaDireccionCanaria campo = Solicitud.datosSolicitante.domicilioFiscal.provincia titulo = "Provincia" busqueda requerido
+		Combo comboIslaDireccionCanaria campo = Solicitud.datosSolicitante.domicilioFiscal.isla titulo = "Isla" dependeDe = comboProvinciaDireccionCanaria busqueda requerido
+		Combo comboMunicipioDireccionCanaria campo = Solicitud.datosSolicitante.domicilioFiscal.municipio titulo = "Municipio" dependeDe = comboIslaDireccionCanaria busqueda requerido
+		Texto textoLocalidadDireccionCanaria campo = Solicitud.datosSolicitante.domicilioFiscal.localidad titulo = "Localidad"
+	}
+	Grupo grupoDireccionNacional mostrarSiCombo comboDireccion = "nacional" titulo = "Direccion" borde = false enviarCamposOcultos = false {
+		Combo comboComunidadAutonomaDireccionNacional campo = Solicitud.datosSolicitante.domicilioFiscal.comunidad titulo = "Comunidad Autónoma" busqueda requerido
+		Combo comboProvinciaDireccionNacional campo = Solicitud.datosSolicitante.domicilioFiscal.provincia titulo = "Provincia" dependeDe = comboComunidadAutonomaDireccionNacional busqueda requerido
+		Combo comboMunicipioDireccionNacional campo = Solicitud.datosSolicitante.domicilioFiscal.municipio titulo = "Municipio" dependeDe = comboProvinciaDireccionNacional busqueda requerido
+		Texto textoLocalidadDireccionNacional campo = Solicitud.datosSolicitante.domicilioFiscal.localidad titulo = "Localidad"
+	}
+	Grupo grupoDireccionInternacional mostrarSiCombo comboDireccion = "internacional" titulo = "Direccion" borde = false enviarCamposOcultos = false {
+		Combo comboPaisDireccionInternacional campo = Solicitud.datosSolicitante.domicilioFiscal.pais titulo = "País" busqueda requerido
+		Texto textoEPRDireccionInternacional campo = Solicitud.datosSolicitante.domicilioFiscal.provinciaInternacional titulo = "Estado/Provincia/Región" requerido
+		Texto textoLocalidadDireccionInternacional campo = Solicitud.datosSolicitante.domicilioFiscal.localidad titulo = "Localidad" requerido
+	}
+	Grupo grupoDireccionComun mostrarSiCombo comboDireccion = "canaria" , "nacional" , "internacional" titulo = "Direccion" borde = false enviarCamposOcultos = false {
+		Texto textoCodigoPostal campo = Solicitud.datosSolicitante.domicilioFiscal.codigoPostal titulo = "Codigo Postal" requerido
+		Texto textoCalle campo = Solicitud.datosSolicitante.domicilioFiscal.calle titulo = "Calle" requerido
+		Texto textoNumero campo = Solicitud.datosSolicitante.domicilioFiscal.numero titulo = "Número" requerido
+		Texto textoPPO campo = Solicitud.datosSolicitante.domicilioFiscal.otros titulo = "Puerta/Piso/Otros"
+	}
+}
 
+*Además, se debe modificar el html generado:*
 
+bc. ...
+<select id="domicilioFiscal_comunidad_canaria" style="display:none">
+	<option value="_05" selected></option>
+</select>
+#{fap.combo campo:'solicitud.datosSolicitante.domicilioFiscal.provincia', dependeDe:"domicilioFiscal_comunidad_canaria", id:'comboProvinciaDireccionCanaria', requerido:true, searchable:true, titulo:'Provincia' /}		
+...
+<select id="domicilioFiscal_pais_nacional" style="display:none">
+	<option value="_724" selected></option>
+</select>
+#{fap.combo campo:'solicitud.datosSolicitante.domicilioFiscal.comunidad', dependeDe:"domicilioFiscal_pais_nacional", id:'comboComunidadAutonomaDireccionNacional', requerido:true, searchable:true, titulo:'Comunidad Autónoma' /}		
+...
+
+*Y el método validatecopy del controlador de la página:*
+
+bc. ...
+if (Arrays.asList(new String[] { "canaria" }).contains(dbSolicitud.datosSolicitante.domicilioFiscal.tipo)) {
+	// Inicio añadidos manualmente
+	solicitud.datosSolicitante.domicilioFiscal.pais = "_724";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.pais", solicitud.datosSolicitante.domicilioFiscal.pais, dbSolicitud.datosSolicitante.domicilioFiscal.pais, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.pais = solicitud.datosSolicitante.domicilioFiscal.pais;
+	solicitud.datosSolicitante.domicilioFiscal.comunidad = "_05";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.comunidad", solicitud.datosSolicitante.domicilioFiscal.comunidad, dbSolicitud.datosSolicitante.domicilioFiscal.comunidad, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.comunidad = solicitud.datosSolicitante.domicilioFiscal.comunidad;
+	solicitud.datosSolicitante.domicilioFiscal.provinciaInternacional = "";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.provinciaInternacional", solicitud.datosSolicitante.domicilioFiscal.provinciaInternacional, dbSolicitud.datosSolicitante.domicilioFiscal.provinciaInternacional, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.provinciaInternacional = solicitud.datosSolicitante.domicilioFiscal.provinciaInternacional;
+	// Fin añadidos manualmente
+	...
+}
+if (Arrays.asList(new String[] { "nacional" }).contains(dbSolicitud.datosSolicitante.domicilioFiscal.tipo)) {
+	// Inicio añadidos manualmente
+	solicitud.datosSolicitante.domicilioFiscal.pais = "_724";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.pais", solicitud.datosSolicitante.domicilioFiscal.pais, dbSolicitud.datosSolicitante.domicilioFiscal.pais, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.pais = solicitud.datosSolicitante.domicilioFiscal.pais;
+	solicitud.datosSolicitante.domicilioFiscal.isla = "";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.isla", solicitud.datosSolicitante.domicilioFiscal.isla, dbSolicitud.datosSolicitante.domicilioFiscal.isla, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.isla = solicitud.datosSolicitante.domicilioFiscal.isla;
+	solicitud.datosSolicitante.domicilioFiscal.provinciaInternacional = "";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.provinciaInternacional", solicitud.datosSolicitante.domicilioFiscal.provinciaInternacional, dbSolicitud.datosSolicitante.domicilioFiscal.provinciaInternacional, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.provinciaInternacional = solicitud.datosSolicitante.domicilioFiscal.provinciaInternacional;
+	// Fin añadidos manualmente
+	...
+}
+if (Arrays.asList(new String[] { "internacional" }).contains(dbSolicitud.datosSolicitante.domicilioFiscal.tipo)) {
+	// Inicio añadidos manualmente
+	solicitud.datosSolicitante.domicilioFiscal.isla = "";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.isla", solicitud.datosSolicitante.domicilioFiscal.isla, dbSolicitud.datosSolicitante.domicilioFiscal.isla, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.isla = solicitud.datosSolicitante.domicilioFiscal.isla;
+	solicitud.datosSolicitante.domicilioFiscal.provincia = "";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.provincia", solicitud.datosSolicitante.domicilioFiscal.provincia, dbSolicitud.datosSolicitante.domicilioFiscal.provincia, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.provincia = solicitud.datosSolicitante.domicilioFiscal.provincia;
+	solicitud.datosSolicitante.domicilioFiscal.comunidad = "";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.comunidad", solicitud.datosSolicitante.domicilioFiscal.comunidad, dbSolicitud.datosSolicitante.domicilioFiscal.comunidad, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.comunidad = solicitud.datosSolicitante.domicilioFiscal.comunidad;
+	solicitud.datosSolicitante.domicilioFiscal.municipio = "";
+	copyModificacionCamposSimples("solicitud.datosSolicitante.domicilioFiscal.municipio", solicitud.datosSolicitante.domicilioFiscal.municipio, dbSolicitud.datosSolicitante.domicilioFiscal.municipio, peticionModificacion);
+	dbSolicitud.datosSolicitante.domicilioFiscal.municipio = solicitud.datosSolicitante.domicilioFiscal.municipio;
+	// Fin añadidos manualmente
+	...
+}
+...

@@ -683,6 +683,7 @@ Entidad Notificacion {
 	Documento documentoAnulacion
 	Documento documentoRespondida
 	Documento documentoAcuseRecibo
+	Documento documentoNoAcceso
 	Registro registro
 	Integer plazoAcceso					// Nº de dias naturales a partir de la fecha de puesta a disposición, en los cuales legalmente se debe recibir la notificación por parte del interesado
 	Integer frecuenciaRecordatorioAcceso	// Cada cuantos dias naturales, a patir de la fecha de puesta a disposición, se envía un recordatorio al/los interesado/s de que tiene/n pendiente el acceso.

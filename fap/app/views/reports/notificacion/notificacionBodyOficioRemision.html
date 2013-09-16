@@ -1,0 +1,36 @@
+<html>
+	<body>
+		<h2 style="text-align: center;"><!-- Titulo --></h2>
+		<h3 style="text-align: center;"><!-- Subtitulo --></h3>
+		<div id="divDatosPersonalesSolicitante">
+		<!-- SOLICITANTE -->
+			<table id="tblDatosPersonalesSolicitante" class="table-datos" >
+				<caption>SOLICITANTE:</caption>
+				<tr><td colspan="2"><br></td></tr>
+				<tr><th>NIF/CIF:</th><td>${solicitud.solicitante.getNumeroId()?.toUpperCase()}</td></tr>
+				<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+			</table>
+		</div>
+		</br>
+		<div>
+			%{
+				def num = resolucion.numero
+				def dia = resolucion.fechaRegistroResolucion.toDate().format('dd')
+				def mes = resolucion.fechaRegistroResolucion.toDate().format('MM')
+				def anio = resolucion.fechaRegistroResolucion.toDate().format('yyyy')
+				def sint = resolucion.sintesis
+			}%
+			<p>
+				<b>Asunto:</b> Remisión de la Resolución Nº ${num} de fecha ${dia} de ${mes} de ${anio}
+			</p>
+			</br>
+			<p>
+				Adjunto a este escrito se remite, a los efectos legales oportunos la Resolución Nº ${num} del Director de la Agencia Canaria de Investigación Innovación y Sociedad de la Información
+			</p>
+			</br>
+			<p>
+				${sint}
+			</p>
+		</div>
+	</body>
+</html>

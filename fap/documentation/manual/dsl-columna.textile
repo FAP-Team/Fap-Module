@@ -18,7 +18,7 @@ h2. Definición
 
 bc. Columna:
 	elemento='Columna' ( 
-	   ( ('campo' '=' campo=Campo) | ('funcion' '=' funcion=STRING) )
+	   ( ('campo' '=' campo=Campo) | ('funcion' '=' funcion=STRING) | ('funcionRaw' '=' funcionRaw=STRING) )
 	   & ('titulo' '=' titulo=STRING)? 
 	   & ('ancho' '=' ancho=STRING)? 
 	   & ("permiso" "=" permiso=[Permiso])?

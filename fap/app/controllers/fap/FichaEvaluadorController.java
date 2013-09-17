@@ -353,7 +353,9 @@ public class FichaEvaluadorController extends Controller {
 		
 		for(CEconomico ceconomicoS : solicitud.ceconomicos){
 			for(CEconomico ceconomicoE : evaluacion.ceconomicos){
-				if (ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)){
+				if ((ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)) &&
+						(ceconomicoE.tipo.jerarquia.equals(ceconomicoS.tipo.jerarquia))){
+					
 						rowsFiltered.add(ceconomicoE);
 					break;
 				}
@@ -362,7 +364,8 @@ public class FichaEvaluadorController extends Controller {
 			if (ceconomicoS.tipo.tipoOtro){
 				for(CEconomico ceconomicoE : evaluacion.ceconomicos){
 					for (CEconomicosManuales ceconomicoManual: ceconomicoS.otros){
-						if (ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)){
+						if ((ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)) && 
+								(ceconomicoE.tipo.jerarquia.equals(ceconomicoManual.tipo.jerarquia))){ 
 							rowsFiltered.add(ceconomicoE);
 						}
 					}

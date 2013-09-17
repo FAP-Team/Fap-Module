@@ -286,10 +286,14 @@ public class FichaEvaluadorController extends Controller {
 
 			if(actionSave || actionEnd){
 				if(actionEnd && !validation.hasErrors()){
-					evaluacion.estado = EstadosEvaluacionEnum.evaluada.name();
-					evaluacion.save();
-					Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " finalizó correctamente");
-					ConsultarEvaluacionesController.index();
+					//Si no hubo errores anteriores, se comprueba si existen validaciones propias de la aplicacion
+					botonFinalizar();
+					if (!Messages.hasErrors()){
+						evaluacion.estado = EstadosEvaluacionEnum.evaluada.name();
+						evaluacion.save();
+						Messages.ok("La evaluación del expediente " + evaluacion.solicitud.expedienteAed.idAed + " finalizó correctamente");
+						ConsultarEvaluacionesController.index();
+					}
 				}
 
 				if(actionSave && !validation.hasErrors()){
@@ -436,4 +440,52 @@ public class FichaEvaluadorController extends Controller {
 		return records;
 	}
 
+	public static void botonFinalizar() {
+		//Buscamos si hay una clase hija de BaremacionFAP que implemente un método de 
+		//chequeo de condiciones para finalizar la baremacion individual
+		Class invokedClass = null;
+		//Busca una clase que herede de BaremacionFAP
+        List<Class> assignableClasses = Play.classloader.getAssignableClasses(BaremacionFAP.class);
+        if(assignableClasses.size() > 0) {
+            invokedClass = assignableClasses.get(0);
+        } else {
+        	invokedClass = BaremacionFAP.class;
+        }
+        if (invokedClass != null) {
+			Method method = null;
+			try {
+				method = invokedClass.getDeclaredMethod("checkFinalizarEvaluacion");
+			} catch (Exception ex) {
+				invokedClass = BaremacionFAP.class;
+				if (invokedClass != null) {
+					method = null;
+					try {
+						method = invokedClass.getDeclaredMethod("checkFinalizarEvaluacion");
+					} catch (Exception e) {
+						play.Logger.error("Error: No se ha podido encontrar el método checkFinalizarEvaluacion de la clase BaremacionApp");
+						Messages.error("Error: No se ha podido ejecutar el método checkFinalizarEvaluacion correctamente");
+					}
+				}
+			}
+
+			if (!Messages.hasErrors()) {
+				boolean resultado = false;
+				if (method != null) {
+					try {
+						resultado = (Boolean)method.invoke(ConsultarEvaluacionesController.class);
+					} catch (Exception e) {
+						play.Logger.error("Error: No se ha podido invocar el método checkFinalizarEvaluacion de la clase BaremacionFAP");
+						Messages.error("Error: No se ha podido ejecutar el metodo checkFinalizarEvaluacion correctamente");
+					} 
+				} else {
+					play.Logger.error("Error: No existe el Método apropiado para validar checkFinalizarEvaluacion");
+					Messages.error("Error: No se ha podido ejecutar checkFinalizarEvaluacion correctamente");
+				}
+				if (!resultado){
+					play.Logger.error("Error: La evaluación no cumple las condiciones indicadas en checkFinalizarEvaluacion");
+					Messages.error("Error: La evaluación no cumple las condiciones indicadas en checkFinalizarEvaluacion");
+				}
+			}
+        }
+	}
 }

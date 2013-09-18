@@ -339,39 +339,12 @@ public class FichaEvaluadorController extends Controller {
 
 	public static void tablatablaCEconomicos(Long idEvaluacion) {
 
-//		java.util.List<CEconomico> rows = CEconomico
-//				.find("select cEconomico from Evaluacion evaluacion join evaluacion.ceconomicos cEconomico where evaluacion.id=?",
-//						idEvaluacion).fetch();
-
 		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first(); 
-
-		List<CEconomico> rowsFiltered = new ArrayList<CEconomico>();
 
 		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
 		
-		SolicitudGenerica solicitud = evaluacion.solicitud;
-		
-		for(CEconomico ceconomicoS : solicitud.ceconomicos){
-			for(CEconomico ceconomicoE : evaluacion.ceconomicos){
-				if ((ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)) &&
-						(ceconomicoE.tipo.jerarquia.equals(ceconomicoS.tipo.jerarquia))){
-					
-						rowsFiltered.add(ceconomicoE);
-					break;
-				}
-			}
-			
-			if (ceconomicoS.tipo.tipoOtro){
-				for(CEconomico ceconomicoE : evaluacion.ceconomicos){
-					for (CEconomicosManuales ceconomicoManual: ceconomicoS.otros){
-						if ((ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)) && 
-								(ceconomicoE.tipo.jerarquia.equals(ceconomicoManual.tipo.jerarquia))){ 
-							rowsFiltered.add(ceconomicoE);
-						}
-					}
-				}
-			}
-		}
+		List<CEconomico> rowsFiltered = filtroConceptosEconomicos(evaluacion);
+
 		
 		List <Map<String, String>> columnasCEconomicos = new ArrayList <Map <String, String>>();
 		List<Double> totalesSolicitadoAnio = new ArrayList<Double>();
@@ -491,4 +464,33 @@ public class FichaEvaluadorController extends Controller {
 			}
         }
 	}
+	
+	public static List<CEconomico> filtroConceptosEconomicos (Evaluacion evaluacion){
+		SolicitudGenerica solicitud = evaluacion.solicitud;
+		List<CEconomico> rowsFiltered = new ArrayList<CEconomico>();
+		for(CEconomico ceconomicoS : solicitud.ceconomicos){
+			for(CEconomico ceconomicoE : evaluacion.ceconomicos){
+				if ((ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)) &&
+						(ceconomicoE.tipo.jerarquia.equals(ceconomicoS.tipo.jerarquia))){
+						rowsFiltered.add(ceconomicoE);
+					break;
+				}
+			}
+			
+			if (ceconomicoS.tipo.tipoOtro){
+				for(CEconomico ceconomicoE : evaluacion.ceconomicos){
+					for (CEconomicosManuales ceconomicoManual: ceconomicoS.otros){
+						if ((ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)) && 
+								(ceconomicoE.tipo.jerarquia.equals(ceconomicoManual.tipo.jerarquia))){ 
+							rowsFiltered.add(ceconomicoE);
+						}
+					}
+				}
+			}
+		}
+		return rowsFiltered;
+	}
+
+	
+	
 }

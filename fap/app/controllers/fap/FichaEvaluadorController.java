@@ -12,6 +12,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -358,11 +360,18 @@ public class FichaEvaluadorController extends Controller {
 			 columna.put("id", cEconomico.id.toString());
 			 Double totalesSolicitado = 0.0;
 			 Double totalesEstimado = 0.0;
+			 
+			 Pattern pattern = Pattern.compile ("^[a-zA-Z]$");
+			 
 			 for (int i=0; i<tipoEvaluacion.duracion; i++){
-				totalesSolicitadoAnio.set(i, totalesSolicitadoAnio.get(i)+cEconomico.valores.get(i).valorSolicitado);
+				 Matcher matcher = pattern.matcher(cEconomico.tipo.jerarquia); 
+				 if (matcher.find()){
+					 totalesEstimadoAnio.set(i, totalesEstimadoAnio.get(i)+cEconomico.valores.get(i).valorEstimado);
+					 totalesSolicitadoAnio.set(i, totalesSolicitadoAnio.get(i)+cEconomico.valores.get(i).valorSolicitado);
+				 }
+
 				totalesSolicitado += cEconomico.valores.get(i).valorSolicitado;
 				columna.put("valorSolicitado"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
-				totalesEstimadoAnio.set(i, totalesEstimadoAnio.get(i)+cEconomico.valores.get(i).valorEstimado);
 				totalesEstimado += cEconomico.valores.get(i).valorEstimado;
 				columna.put("valorEstimado"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 			 }

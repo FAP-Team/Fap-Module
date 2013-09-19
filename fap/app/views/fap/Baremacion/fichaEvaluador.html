@@ -269,7 +269,6 @@
 		<tbody>
 		%{
 			Long idSolicitud = evaluacion.solicitud.id;
-			//java.util.List<models.CEconomico> rows = models.CEconomico.find("select cEconomico from SolicitudGenerica solicitud join solicitud.ceconomicos cEconomico where solicitud.id=?",idSolicitud).fetch();
 			java.util.List<models.CEconomico> rows = controllers.fap.FichaEvaluadorController.filtroConceptosEconomicos(evaluacion);
 			Double totalSolicitado = 0
 			Double totalEstimado = 0

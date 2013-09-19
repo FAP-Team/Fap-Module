@@ -1,6 +1,7 @@
 
 package controllers.popups;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -8,14 +9,17 @@ import javax.inject.Inject;
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.CEconomico;
+import models.CEconomicosManuales;
 import models.Criterio;
 import models.Evaluacion;
 import models.SolicitudGenerica;
 import models.TipoEvaluacion;
+import models.ValoresCEconomico;
 
 import org.apache.log4j.Logger;
 
 import controllers.fap.AgenteController;
+import controllers.fap.FichaEvaluadorController;
 import controllers.fap.GenericController;
 import controllers.fap.SecureController;
 
@@ -62,7 +66,9 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 			PopupCEConomicosEvaluadorController.PopupCEConomicosEvaluadorValidateCopy("editar", dbCEconomico, cEconomico, duracion);
 		}
 
-
+		//if (!Messages.hasErrors()) {
+		//	recalcular(idEvaluacion);
+		//}
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: "
 					+ "fap/PCEconomico/PopupCEConomicosEvaluador.html"
@@ -147,5 +153,40 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 		Messages.setFlash(param + ".comentariosAdministracion", params.get(param + ".comentariosAdministracion", String.class));
 		Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
 	}
+	
+//	@Util
+//	public static void calcularValoresAuto(CEconomico cEconomico){
+//		for (ValoresCEconomico valor: cEconomico.valores){
+//			valor.valorSolicitado = sumarValoresHijosOtro(cEconomico.otros, valor.anio);
+//		}
+//		cEconomico.save();
+//	}
+//	
+//	@Util
+//	private static Double sumarValoresHijosOtro(List<CEconomicosManuales> listaHijosOtro, Integer anio){
+//		Double suma=0.0;
+//		for (CEconomicosManuales cEconomicoManual: listaHijosOtro){
+//			if (!cEconomicoManual.valores.isEmpty())
+//				if (cEconomicoManual.valores.get(anio).valorSolicitado != null)
+//					suma += cEconomicoManual.valores.get(anio).valorSolicitado;
+//			}
+//		return suma;
+//	}
+//	
+//	@Util
+//	public static void recalcular (Long idEvaluacion){
+//		Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+//		for (CEconomico ceconomico : FichaEvaluadorController.filtroConceptosEconomicos(evaluacion)){
+//		    //play.Logger.info("El tipo otro es = " + ceconomico.tipo.tipoOtro);
+//		    if (ceconomico.tipo.tipoOtro){
+//		    	calcularValoresAuto(ceconomico);
+//		    } else {
+//		    	for (ValoresCEconomico valor: ceconomico.valores){
+//					valor.valorSolicitado = sumarValoresHijosOtro(ceconomico.otros, valor.anio);
+//				}
+//		    }
+//		}
+//		evaluacion.save();
+//	}
 }
 		

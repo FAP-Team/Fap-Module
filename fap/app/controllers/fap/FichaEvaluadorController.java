@@ -483,6 +483,7 @@ public class FichaEvaluadorController extends Controller {
 						if ((ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)) && 
 								(ceconomicoE.tipo.jerarquia.equals(ceconomicoManual.tipo.jerarquia))){ 
 							rowsFiltered.add(ceconomicoE);
+							break;
 						}
 					}
 				}

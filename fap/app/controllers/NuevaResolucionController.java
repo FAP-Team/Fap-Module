@@ -17,6 +17,7 @@ import services.RegistroLibroResolucionesService;
 import tags.ComboItem;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.NuevaResolucionControllerGen;
+import enumerado.fap.gen.ResolucionesDefinidasEnum;
 
 @InjectSupport
 public class NuevaResolucionController extends NuevaResolucionControllerGen {
@@ -42,7 +43,7 @@ public class NuevaResolucionController extends NuevaResolucionControllerGen {
 		}
 		
 		Long idResolucionFAP = null;
-		if (!Messages.hasErrors()) {
+		if ((!Messages.hasErrors()) && (!dbResolucionFAP.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleEjecucion.name()))) {
 			ResolucionBase resolBase = null;
 			try {
 				ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "validarInicioResolucion");

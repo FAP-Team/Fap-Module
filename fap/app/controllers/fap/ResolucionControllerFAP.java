@@ -75,6 +75,7 @@ public class ResolucionControllerFAP extends InvokeClassController {
 				play.Logger.error("No se puede crear una nueva resolución habiendo otra activa.");
 				Messages.error("No se puede crear una nueva resolución habiendo otra activa.");
 				Messages.keep();
+				break;
 			}
 		}
 	}

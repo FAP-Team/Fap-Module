@@ -248,8 +248,6 @@
 		</script>
 	
 	#{/fap.grupo}
-	
-#{/if}
 
 	<div class="wiki ">
 		<table class="table table-bordered table-striped">
@@ -347,7 +345,7 @@
 		</tbody>
 		</table>
 		</div>
- 
+ #{/if}
 #{form play.mvc.Router.reverse('fap.FichaEvaluadorController.save' , ['idEvaluacion':evaluacion?.id]), class:"form-stacked"}
 
 <input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>

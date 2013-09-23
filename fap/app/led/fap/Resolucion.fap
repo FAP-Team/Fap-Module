@@ -3,6 +3,7 @@ Lista resolucionesDefinidas crearEnumerado {
 	multipleTotal: "Múltiple Todos Expedientes"
 	multipleParcialExpedientes: "Multiple Seleccionando Expedientes"
 	simpleEjecucion: "Simple Fase de Ejecución"
+	multipleEjecucion: "Múltiple Fase de Ejecución"
 }
 
 Lista tipoResolucion crearEnumerado {

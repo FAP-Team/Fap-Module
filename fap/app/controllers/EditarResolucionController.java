@@ -550,6 +550,28 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		EditarResolucionController.enviarRegistrarResolucionRender(idResolucionFAP);
 	}
 	
+	public static void seleccionar(Long id, List<Long> idsSeleccionados) {
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		Long idResolucionFAP = ids.get("idResolucionFAP");
+			ResolucionBase resolBase = null;
+			if (idsSeleccionados == null) {
+				play.Logger.error("Se debe seleccionar un expediente");
+				Messages.error("Se debe seleccionar un expediente");
+				Messages.keep();
+			} else {
+				try {
+					resolBase = getResolucionObject(idResolucionFAP);
+				} catch (Throwable e) {
+					new Exception ("No se ha podido obtener el objeto resolución", e);
+				}
+				resolBase.setLineasDeResolucion(idResolucionFAP, idsSeleccionados);
+				ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+				resolBase.avanzarFase_Borrador(resolucion);
+			}
+		for (Long idSeleccionado : idsSeleccionados) {
+		}
+		index("editar", idResolucionFAP);
+	}
 
 	
 }

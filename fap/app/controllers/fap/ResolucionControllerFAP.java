@@ -13,6 +13,7 @@ import models.RepresentantePersonaJuridica;
 import models.ResolucionFAP;
 import models.TableKeyValue;
 import resolucion.ResolucionBase;
+import resolucion.ResolucionMultipleEjecucion;
 import resolucion.ResolucionMultipleTotal;
 import resolucion.ResolucionParcial;
 import resolucion.ResolucionSimple;
@@ -49,6 +50,8 @@ public class ResolucionControllerFAP extends InvokeClassController {
 			return new ResolucionSimple(resolucion);
 		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleEjecucion.name())) {
 			return new ResolucionSimpleEjecucion(resolucion);
+		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleEjecucion.name())) {
+			return new ResolucionMultipleEjecucion(resolucion);
 		}
 		return new ResolucionBase(resolucion);
 	}

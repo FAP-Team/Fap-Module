@@ -180,6 +180,7 @@ import com.google.gson.Gson;
 import services.FirmaService;
 import com.google.inject.Inject;
 import utils.PeticionModificacion;
+import controllers.fap.AgenteController;
 
 ${withSecure}
 public class ${controllerGenName} extends GenericController {
@@ -371,7 +372,7 @@ public class ${controllerName} extends ${controllerGenName} {
 				}.join("\n")}""";
 		
 		devolver +=	"""${getEntidad}
-				log.info("Visitando página: "+${renderView});
+				log.info("Visitando página: "+${renderView}+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
 				"""; 
 		if (isPopup()){
 			devolver += """renderTemplate(${StringUtils.params(
@@ -458,7 +459,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			}
 			if(!Messages.hasErrors()){
 				${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
-				log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito");
+				log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
 			}
 			else log.info("Acción Editar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 			${editarRenderCall}
@@ -536,10 +537,10 @@ public class ${controllerName} extends ${controllerGenName} {
 							return "${it.variableDb}.save();";
 						else return "";
 					}.join("\n")}
-					log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito");
+					log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
 				}
 				else{
-					log.info("Acción Crear de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
+					log.info("Acción Crear de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
 				}
 				return ${entidad.id};
 			}
@@ -671,9 +672,9 @@ public class ${controllerName} extends ${controllerGenName} {
 
 				if(!Messages.hasErrors()){
 					$borrarEntidad
-					log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito");
+					log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
 				} else{
-					log.info("Acción Borrar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
+					log.info("Acción Borrar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
 				}
 				${controllerName}.borrarRender(${StringUtils.params(allEntities.collect{it.id})});
 			}

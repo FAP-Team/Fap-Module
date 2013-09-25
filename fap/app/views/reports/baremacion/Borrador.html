@@ -276,7 +276,10 @@ p {
 			<td>Valor</td>
 		</tr>
 		
-		#{list items:evaluacion.ceconomicos, as:'ceconomico'} 
+		%{
+			List<models.CEconomico> cEconomicosFiltrados = controllers.fap.FichaEvaluadorController.filtroConceptosEconomicos(evaluacion); 
+		%}
+		#{list items:cEconomicosFiltrados, as:'ceconomico'} 
 		<tr>
 			<th>${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</th>
 			
@@ -312,8 +315,8 @@ p {
 			${criterio.tipo.nombre}</p>
 		<table id="tblCriteriosEvaluacion" +${criterio.id} class="table-datos">
 			#{if (criterio.tipo.descripcion)}
-			<p style="font-weight:bold">Descripcion:</p>
-				<p style="text-indent:25px">${criterio.tipo.descripcion}</p>
+			<p style="font-weight:bold">Descripción:</p>
+				<p style="text-indent:25px">${criterio.tipo.descripcion.nl2br()}</p>
 			#{/if}
 			<tr>
 				<th>Valor:</th>
@@ -350,8 +353,8 @@ p {
 			${ceconomico.tipo.nombre}</p>
 		<table id="tblCriteriosEvaluacion" +${ceconomico.id} class="table-datos">
 			#{if (ceconomico.tipo.descripcion)}
-			<p style="font-weight:bold">Descripcion:</p>
-				<p style="text-indent:25px">${ceconomico.tipo.descripcion}</p>
+			<p style="font-weight:bold">Descripción:</p>
+				<p style="text-indent:25px">${ceconomico.tipo.descripcion.nl2br()}</p>
 			#{/if}
 			#{list items:0..duracion, as:'i'}
 				%{

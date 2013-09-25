@@ -30,6 +30,7 @@ import play.mvc.Util;
 import play.mvc.With;
 import security.Accion;
 import security.Secure;
+import services.BaremacionService;
 import validation.CustomValidation;
 
 @With({SecureController.class, AgenteController.class})
@@ -66,15 +67,17 @@ public class PopupCEConomicosEvaluadorController extends Controller{
 			PopupCEConomicosEvaluadorController.PopupCEConomicosEvaluadorValidateCopy("editar", dbCEconomico, cEconomico, duracion);
 		}
 
-		//if (!Messages.hasErrors()) {
-		//	recalcular(idEvaluacion);
-		//}
+
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: "
 					+ "fap/PCEconomico/PopupCEConomicosEvaluador.html"
 					+ " , intentada con éxito");
 			dbCEconomico.save();
-
+			if (!Messages.hasErrors()) {
+				Evaluacion eval = Evaluacion.findById(idEvaluacion);
+				BaremacionService.calcularTotales(eval, true, true);
+				eval.save();
+			}
 		} else {
 			flash();
 			log.info("Acción Editar de página: "

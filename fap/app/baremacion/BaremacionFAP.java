@@ -193,7 +193,7 @@ public class BaremacionFAP {
 		}
 	}
 	
-	public static boolean checkFinalizarEvaluacion() {
+	public static boolean checkFinalizarEvaluacion(Evaluacion evaluacion) {
 		//Sobreescribir si es necesario realizar una comprobacion antes de finalizar la evaluacion
 		return true;
 	}

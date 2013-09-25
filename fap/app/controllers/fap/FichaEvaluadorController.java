@@ -439,13 +439,13 @@ public class FichaEvaluadorController extends Controller {
         if (invokedClass != null) {
 			Method method = null;
 			try {
-				method = invokedClass.getDeclaredMethod("checkFinalizarEvaluacion");
+				method = invokedClass.getDeclaredMethod("checkFinalizarEvaluacion", Evaluacion.class);
 			} catch (Exception ex) {
 				invokedClass = BaremacionFAP.class;
 				if (invokedClass != null) {
 					method = null;
 					try {
-						method = invokedClass.getDeclaredMethod("checkFinalizarEvaluacion");
+						method = invokedClass.getDeclaredMethod("checkFinalizarEvaluacion", Evaluacion.class);
 					} catch (Exception e) {
 						play.Logger.error("Error: No se ha podido encontrar el método checkFinalizarEvaluacion de la clase BaremacionApp");
 						Messages.error("Error: No se ha podido ejecutar el método checkFinalizarEvaluacion correctamente");
@@ -457,7 +457,9 @@ public class FichaEvaluadorController extends Controller {
 				boolean resultado = false;
 				if (method != null) {
 					try {
-						resultado = (Boolean)method.invoke(ConsultarEvaluacionesController.class);
+						Long idEvaluacion = Long.parseLong(params.get("idEvaluacion"));
+						Evaluacion evaluacion = Evaluacion.findById(idEvaluacion);
+						resultado = (Boolean)method.invoke(ConsultarEvaluacionesController.class, evaluacion);
 					} catch (Exception e) {
 						play.Logger.error("Error: No se ha podido invocar el método checkFinalizarEvaluacion de la clase BaremacionFAP");
 						Messages.error("Error: No se ha podido ejecutar el metodo checkFinalizarEvaluacion correctamente");

@@ -25,6 +25,8 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 
+import controllers.fap.AgenteController;
+
 import emails.Mails;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
@@ -192,6 +194,10 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	    String datosFirmados = firmarDatosRegistro(datos);
         JustificanteRegistro justificantePlatino = registroDeEntrada(datos, datosFirmados);
         models.JustificanteRegistro justificante = getJustificanteRegistroModel(justificantePlatino);
+        log.info("Realizando un Registro de Entrada: " +
+        		"Agente: "+AgenteController.getAgente().name+
+        		"Número de Registro: "+justificante.getNumeroRegistro()+
+        		"Fecha: "+justificante.getFechaRegistro());
         return justificante;
 	}
 	
@@ -371,6 +377,10 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 			log.info("Registro de entrada realizado con justificante con NDE " + justificantePlatino.getNDE() + " Numero Registro General: " + justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina());
 			log.info("RegistrarEntrada -> EXIT OK");
 			models.JustificanteRegistro justificante = getJustificanteRegistroModel(justificantePlatino);
+	        log.info("Realizando un Registro de Salida: " +
+	        		"Agente: "+AgenteController.getAgente().name+
+	        		"Número de Registro: "+justificante.getNumeroRegistro()+
+	        		"Fecha: "+justificante.getFechaRegistro());
 			return justificante;
 		} catch (Exception e) {
 			log.error("Error al obtener el justificante y EXIT "+e);

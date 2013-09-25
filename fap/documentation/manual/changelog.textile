@@ -1,5 +1,11 @@
 h2. Changelog
 
+h3 Versión 2.3.2RC3
+* Fixed bug en tabla ceconomicos de fichaEvaluador
+* Añadido y mejorado método de personalizacion de comprobaciones al finalizar evaluación.
+* Mejora de logs: Muestran usuario y solicitud en la que se realizó la acción siempre que esté disponible.
+* Permitiendo varias resolucionSimpleEjecucion simultáneas.
+
 h3 Versión 2.3.2RC2
 * Fixed minor bug en tabla ceconomicos de fichaEvaluador
 * Añadida tabla resumen en fichaEvaluador
